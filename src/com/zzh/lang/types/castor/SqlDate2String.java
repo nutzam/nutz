@@ -1,0 +1,10 @@
+package com.zzh.lang.types.castor;
+
+public class SqlDate2String extends DateTimeCastor<java.sql.Date,String> {
+
+	@Override
+	protected Object cast(Object src) {
+		return dateFormat.format(new java.util.Date(((java.sql.Date) src).getTime()));
+	}
+
+}
