@@ -7,7 +7,7 @@ import com.zzh.lang.types.Castor;
 public class TimeZone2String extends Castor<TimeZone, String> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected String cast(TimeZone src) {
 		return ((TimeZone) src).getID();
 	}
 

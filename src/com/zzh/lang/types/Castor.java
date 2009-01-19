@@ -20,5 +20,5 @@ public abstract class Castor<FROM, TO> {
 		return toClass;
 	}
 
-	protected abstract Object cast(Object src);
+	protected abstract TO cast(FROM src);
 }

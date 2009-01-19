@@ -7,7 +7,7 @@ import com.zzh.lang.Lang;
 public class String2SqlTime extends DateTimeCastor<String,java.sql.Time> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected java.sql.Time cast(String src) {
 		try {
 			return new java.sql.Time(timeFormat.parse((String) src).getTime());
 		} catch (ParseException e) {

@@ -9,7 +9,7 @@ import com.zzh.lang.types.Castor;
 public class Calendar2Timestamp extends Castor<Calendar,Timestamp> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected Timestamp cast(Calendar src) {
 		long ms = ((Calendar) src).getTimeInMillis();
 		return new Timestamp(ms);
 	}

@@ -6,7 +6,7 @@ import com.zzh.lang.types.Castor;
 public class String2Email extends Castor<String,Email> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected Email cast(String src) {
 		return new Email(src.toString());
 	}
 

@@ -7,7 +7,7 @@ import com.zzh.lang.Lang;
 public class String2Datetime extends DateTimeCastor<String,java.util.Date> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected java.util.Date cast(String src) {
 		try {
 			return dateTimeFormat.parse((String) src);
 		} catch (ParseException e) {

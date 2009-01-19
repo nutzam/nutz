@@ -62,20 +62,23 @@ public class Castors {
 		}
 		if (null != classNames)
 			for (String className : classNames) {
+				Castor<?, ?> castor;
 				try {
 					Class<?> klass = Class.forName(className);
-					Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-					Map<String, Castor<?, ?>> map2 = map.get(castor.getFromClass().getName());
-					if (null == map2) {
-						map2 = new HashMap<String, Castor<?, ?>>();
-						map.put(castor.getFromClass().getName(), map2);
-					}
-					if (!map2.containsKey(castor.getToClass())) {
-						map2.put(castor.getToClass().getName(), castor);
-						setting.setup(castor);
-					}
+					castor = (Castor<?, ?>) klass.newInstance();
 				} catch (Exception e) {
+					continue;
 				}
+				Map<String, Castor<?, ?>> map2 = map.get(castor.getFromClass().getName());
+				if (null == map2) {
+					map2 = new HashMap<String, Castor<?, ?>>();
+					map.put(castor.getFromClass().getName(), map2);
+				}
+				if (!map2.containsKey(castor.getToClass())) {
+					map2.put(castor.getToClass().getName(), castor);
+					setting.setup(castor);
+				}
+
 			}
 	}
 
@@ -84,7 +87,7 @@ public class Castors {
 		String[] classNames = null;
 		File f = Files.findFile(path);
 		String fpath = f.getAbsolutePath();
-		int posBegin = fpath.indexOf("file:")+4;
+		int posBegin = fpath.indexOf("file:") + 4;
 		int posEnd = fpath.lastIndexOf('!');
 		if (posBegin > 0 && posEnd > 0) {
 			String jarPath = fpath.substring(posBegin + 1, posEnd);
@@ -95,7 +98,8 @@ public class Castors {
 					classNames = new String[entrys.length];
 					for (int i = 0; i < entrys.length; i++) {
 						String ph = entrys[i].getName();
-						classNames[i] = ph.substring(0, ph.lastIndexOf('.')).replace('/', '.');
+						classNames[i] = ph.substring(0, ph.lastIndexOf('.')).replaceAll("[\\\\|/]",
+								".");
 					}
 				}
 			} catch (Exception e) {
@@ -119,7 +123,7 @@ public class Castors {
 			classNames = new String[files.length];
 			for (int i = 0; i < files.length; i++) {
 				String ph = files[i].getAbsolutePath();
-				classNames[i] = ph.substring(pos, ph.lastIndexOf('.')).replace('/', '.');
+				classNames[i] = ph.substring(pos, ph.lastIndexOf('.')).replaceAll("[\\\\|/]", ".");
 			}
 		}
 		return classNames;

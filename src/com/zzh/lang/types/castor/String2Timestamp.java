@@ -8,7 +8,7 @@ import com.zzh.lang.Lang;
 public class String2Timestamp extends DateTimeCastor<String,Timestamp> {
 
 	@Override
-	protected Object cast(Object src) {
+	protected Timestamp cast(String src) {
 		try {
 			return new java.sql.Timestamp(dateTimeFormat.parse((String) src).getTime());
 		} catch (ParseException e) {
