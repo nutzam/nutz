@@ -1,0 +1,36 @@
+.abc.drop:
+DROP TABLE IF EXISTS `t_abc`;
+#-------------------------------------------------------------------------
+.abc.create:
+CREATE TABLE `t_abc` (
+  `id` int(11) NOT NULL auto_increment,
+  `name` varchar(32) NOT NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+#-------------------------------------------------------------------------
+.abc.insert:
+INSERT INTO t_abc (name) VALUES("ZZH"),("Super Man"),("George W. Bush");
+#-------------------------------------------------------------------------
+.abc.update:
+UPDATE t_abc SET name='${name}' WHERE id=${id};
+#-------------------------------------------------------------------------
+fetch.abc:
+SELECT id,name FROM t_abc WHERE id=${id};
+#-------------------------------------------------------------------------
+query.abc:
+SELECT * FROM t_abc ${condition};
+#-------------------------------------------------------------------------
+.student.drop:
+DROP TABLE IF EXISTS `student`;
+#-------------------------------------------------------------------------
+.student.create:
+CREATE TABLE `student` (
+  `id` INTEGER(11) UNSIGNED NOT NULL AUTO_INCREMENT UNIQUE,
+  `name` VARCHAR(20) NOT NULL UNIQUE,
+  `age` TINYINT(4) DEFAULT NULL,
+  `email` VARCHAR(64) DEFAULT NULL,
+  `aboutme` TEXT,
+  `birthday` DATETIME DEFAULT NULL,
+  PRIMARY KEY (`id`))ENGINE=InnoDB;
+#-------------------------------------------------------------------------
+
