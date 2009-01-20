@@ -10,6 +10,10 @@ public class Json {
 		return new JsonParsing(Castors.me()).parseFromJson(ins, null);
 	}
 
+	public static Object fromJson(InputStream ins, Castors castors) {
+		return new JsonParsing(castors).parseFromJson(ins, null);
+	}
+
 	public static <T> T fromJson(InputStream ins, Class<T> type) {
 		return new JsonParsing(Castors.me()).parseFromJson(ins, type);
 	}
