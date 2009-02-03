@@ -1,0 +1,27 @@
+.host.drop:
+DROP TABLE IF EXISTS mo_host;
+#-------------------------------------------------------------------------
+.host.create:
+CREATE TABLE mo_host (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  tid INT NOT NULL
+)${.engine};
+#-------------------------------------------------------------------------
+.other.drop:
+DROP TABLE IF EXISTS mo_other;
+#-------------------------------------------------------------------------
+.other.create:
+CREATE TABLE mo_other (
+  hid BIGINT,
+  text VARCHAR(8) NOT NULL UNIQUE
+)${.engine};
+#-------------------------------------------------------------------------
+.type.drop:
+DROP TABLE IF EXISTS mo_host_type;
+#-------------------------------------------------------------------------
+.type.create:
+CREATE TABLE mo_host_type (
+  id INT UNIQUE,
+  text VARCHAR(6) NOT NULL
+)${.engine};

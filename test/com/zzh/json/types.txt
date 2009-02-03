@@ -1,0 +1,14 @@
+{
+	array	:[
+				"abc",
+				45
+			],
+	str		:"nice",
+	float	:8.79f,
+	double	:7.69,
+	int		:34,
+	long	:67L,
+	true	:true,
+	false	:false,
+	null	:null
+}

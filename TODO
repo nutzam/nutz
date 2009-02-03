@@ -1,0 +1,2 @@
+1. replace all StringBuffer to StringBuilder
+2. SQLMaker don't need make fetchById|Name deleteById|name methods

@@ -1,0 +1,18 @@
+{
+"father":{
+		"name" : "youoo",
+		"realname" : "YouChunSheng",
+		"age" : 69,
+		"birthday" : "1940-8-15"
+	},
+"age":32,"name":"zzh","realname":"Peter.Zhang","birthday":"1977-9-21",
+"company" : {
+		"name" : "dtri",
+		"creator" : {
+			"name" : "Dao",
+			"realname" : "CaiMingDao",
+			"age" : 52
+		}
+	}
+	
+}

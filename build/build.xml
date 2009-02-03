@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nutz" default="run" basedir=".">
+	<description>
+       Content Publish Server aumatic build
+    </description>
+	<!-- set global properties for this build -->
+	<property environment="env"/>
+	
+	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}"/>
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
+	<property name="WEBJAR_HOME" value="${env.WEBJAR_HOME}"/>
+	
+	<property name="PROJECT_HOME" value="../" />
+	<property name="WEB-LIB" value="${WEBJAR_HOME}" />
+	<property name="TOMCAT-LIB" value="${TOMCAT_HOME}/lib" />
+
+	<property name="SRC_DIR" location="${PROJECT_HOME}/src" />
+	<property name="DIST_FILE" location="${WEB-LIB}/nutz.jar" />
+	<property name="TEMP_DIR" value="${PROJECT_HOME}/build/temp" />
+
+	<path id="CLASSPATH">
+		<fileset dir="${TOMCAT-LIB}" casesensitive="no">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${WEB-LIB}" casesensitive="no">
+			<include name="*.jar" />
+			<exclude name="nutz.jar" />
+		</fileset>
+		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
+		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />
+		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />
+		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
+	</path>
+
+	<target name="init">
+		<tstamp />
+		<mkdir dir="${TEMP_DIR}" />
+	</target>
+
+	<target name="compile" depends="init">
+		<javac srcdir="${SRC_DIR}" destdir="${TEMP_DIR}" debug="true" deprecation="true" nowarn="true" source="1.6" target="1.6">
+			<classpath refid="CLASSPATH" />
+		</javac>
+	</target>
+
+	<target name="jar" depends="compile">
+		<jar destfile="${DIST_FILE}" basedir="${TEMP_DIR}" />
+	</target>
+
+	<target name="run" depends="jar">
+		<delete dir="${TEMP_DIR}" />
+	</target>
+</project>

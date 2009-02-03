@@ -1,0 +1,21 @@
+.object.drop:
+DROP TABLE IF EXISTS nut_object;
+#-------------------------------------------------------------------------
+.object.create:
+CREATE TABLE nut_object (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  type VARCHAR(256) NOT NULL,
+  singleton BOOLEAN DEFAULT '0',
+  anonymous BOOLEAN DEFAULT '0'
+);
+#-------------------------------------------------------------------------
+.field.drop:
+DROP TABLE IF EXISTS nut_field;
+#-------------------------------------------------------------------------
+.field.create:
+CREATE TABLE nut_field (
+  objectId BIGINT,
+  name VARCHAR(32) NOT NULL,
+  value VARCHAR(256)
+);

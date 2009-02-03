@@ -1,0 +1,12 @@
+.drop:
+DROP TABLE IF EXISTS t_person;
+#-------------------------------------------------------------------------
+.create:
+CREATE TABLE t_person (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(20) NOT NULL UNIQUE,
+	email VARCHAR(64) NOT NULL,
+	fid INT NOT NULL,
+	mid INT NOT NULL,
+	master varchar(32) default NULL
+)${.engine};

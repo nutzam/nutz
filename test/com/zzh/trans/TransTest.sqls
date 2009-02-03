@@ -1,0 +1,43 @@
+.company.drop:
+DROP TABLE IF EXISTS company;
+#-------------------------------------------------------------------------
+.company.create:
+CREATE TABLE company (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL UNIQUE
+)${.engine};
+#)ENGINE = InnoDB;
+#-------------------------------------------------------------------------
+.master.drop:
+DROP TABLE IF EXISTS master;
+#-------------------------------------------------------------------------
+.master.create:
+CREATE TABLE master (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL UNIQUE,
+  comId INT
+)${.engine};
+#-------------------------------------------------------------------------
+.cat.drop:
+DROP TABLE IF EXISTS cat;
+#-------------------------------------------------------------------------
+.cat.create:
+CREATE TABLE cat (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL UNIQUE,
+  masterId INT
+)${.engine};
+##########################################################################
+#.cat.drop:
+#DROP TABLE IF EXISTS cat;
+#DROP SEQUENCE IF EXISTS cat_id_seq;
+#-------------------------------------------------------------------------
+#.cat.create:
+#CREATE SEQUENCE cat_id_seq;
+#CREATE TABLE cat (
+#  id INT NOT NULL PRIMARY KEY DEFAULT nextval('cat_id_seq'),
+#  name VARCHAR(20) NOT NULL UNIQUE,
+#  masterId INT
+#);
+#ALTER SEQUENCE cat_id_seq OWNED BY cat.id;
+##########################################################################
