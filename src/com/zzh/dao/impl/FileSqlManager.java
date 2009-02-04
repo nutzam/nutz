@@ -49,11 +49,17 @@ public class FileSqlManager implements SqlManager {
 
 	@Override
 	public ComboSql createComboSQL(String... keys) {
+		checkSqlMaps(this);
 		ComboSql combo = new ComboSql();
-		for (String key : keys) {
-			Sql<?> sql = createSql(key);
-			combo.addSQL(sql);
-		}
+		if (null == keys || keys.length == 0) {
+			for (Iterator<Sql<?>> it = sqlMaps.values().iterator(); it.hasNext();) {
+				combo.addSQL(it.next());
+			}
+		} else
+			for (String key : keys) {
+				Sql<?> sql = createSql(key);
+				combo.addSQL(sql);
+			}
 		return combo;
 	}
 

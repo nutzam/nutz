@@ -25,7 +25,7 @@ public class Lang {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T extends RuntimeException> T wrapThrow(Throwable e, Class<T> wrapper) {
+	public static <T extends Throwable> T wrapThrow(Throwable e, Class<T> wrapper) {
 		if (wrapper.isAssignableFrom(e.getClass()))
 			return (T) e;
 		return Mirror.me(wrapper).born(e);

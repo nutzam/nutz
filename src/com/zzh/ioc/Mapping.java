@@ -16,5 +16,4 @@ public interface Mapping {
 	Map<Field, Value> getMappingFields();
 
 	Value[] getConstructorArguments();
-
 }

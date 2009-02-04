@@ -25,7 +25,7 @@ public interface SqlManager {
 	 * @return
 	 */
 	ComboSql createComboSQL(String... keys);
-
+	
 	/**
 	 * @return the SQL number
 	 */

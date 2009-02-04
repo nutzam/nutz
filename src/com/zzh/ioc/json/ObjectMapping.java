@@ -71,7 +71,7 @@ public class ObjectMapping implements Mapping {
 		}
 		return of;
 	}
-
+	
 	@Override
 	public Map<Field, Value> getMappingFields() {
 		return fields;

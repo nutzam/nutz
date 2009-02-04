@@ -3,6 +3,7 @@ package com.zzh.ioc;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import com.zzh.castor.Castors;
@@ -26,6 +27,8 @@ public class Nut {
 
 	private Castors castors;
 	private Assemble ass;
+	public boolean cache_names;
+	private List<String> names;
 
 	public synchronized void setAss(Assemble ass) {
 		this.clearCache();
@@ -41,6 +44,16 @@ public class Nut {
 	}
 
 	private Map<String, Object> cache;
+
+	public List<String> names() {
+		if (null != names)
+			return names;
+		if (cache_names) {
+			names = ass.names();
+			return names;
+		}
+		return ass.names();
+	}
 
 	public Object getObject(String name) throws ObjectNotFoundException {
 		Object obj = cache.get(name);
