@@ -33,11 +33,13 @@ class Pss {
 			stat.setBoolean(it.next() + 1, v);
 	}
 
+	@SuppressWarnings("unchecked")
 	static void setObject(PreparedStatement stat, Iterator<Integer> it, Object v, Castors castors)
 			throws SQLException {
 		Mirror<?> mirror = Mirror.me(v.getClass());
 		Object value = mirror.isOf(java.io.Serializable.class) ? (mirror.isStringLike() ? v
-				.toString() : v) : castors.castToString(v);
+				.toString() : mirror.getMyClass().isEnum() ? ((Enum) v).name() : v) : castors
+				.castToString(v);
 		for (; it.hasNext();) {
 			Integer i = it.next();
 			stat.setObject(i + 1, value);

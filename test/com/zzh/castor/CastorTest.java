@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
+import com.zzh.Nutz;
 import com.zzh.castor.Castors;
 import com.zzh.castor.FailToCastObjectException;
 import com.zzh.lang.meta.Email;
@@ -184,5 +185,10 @@ public class CastorTest extends TestCase {
 		assertEquals(2, emails.length);
 		assertEquals("zzh", emails[0].getAccount());
 		assertEquals("zozoh", emails[1].getAccount());
+	}
+
+	public void testEnum() throws Exception {
+		assertEquals("Dao", Castors.me().castToString(Nutz.Dao));
+		assertEquals(Nutz.Lang, Castors.me().castTo("Lang", Nutz.class));
 	}
 }

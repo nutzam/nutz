@@ -169,12 +169,16 @@ public class Castors {
 		}
 		if (null == c) {
 			if (from.is(String.class))
-				return Mirror.me(toType).born(src);
+				try {
+					return Mirror.me(toType).born(src);
+				} catch (Exception e) {
+					throw makeException(fromType, toType, "Fail to auto-born");
+				}
 			else if (to.is(String.class))
 				return (T) src.toString();
-			else
-				throw new FailToCastObjectException(String.format(
-						"Can not find castor for '%s'=>'%s'", fromType.getName(), toType.getName()));
+			else {
+				throw makeException(fromType, toType, "Fail to find matched castor");
+			}
 		}
 		try {
 			return (T) c.cast(src, toType);
@@ -183,6 +187,13 @@ public class Castors {
 					"Fail to cast type from <%s> to <%s> for {%s} because '%s'",
 					fromType.getName(), toType.getName(), src, e.getMessage()));
 		}
+	}
+
+	private static <F, T> FailToCastObjectException makeException(Class<F> fromType,
+			Class<T> toType, String reason) {
+		return new FailToCastObjectException(String.format(
+				"Can not find castor for '%s'=>'%s' for the reason: %s", fromType.getName(), toType
+						.getName(), reason));
 	}
 
 	@SuppressWarnings("unchecked")

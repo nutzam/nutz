@@ -150,6 +150,15 @@ public class Mirror<T> {
 		return list.toArray(new Method[list.size()]);
 	}
 
+	public Method[] getStaticMethods() {
+		List<Method> list = new LinkedList<Method>();
+		for (Method m : klass.getMethods()) {
+			if (Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers()))
+				list.add(m);
+		}
+		return list.toArray(new Method[list.size()]);
+	}
+
 	public void setValue(Object obj, Field field, Object value) {
 		try {
 			field.set(obj, value);
@@ -196,14 +205,16 @@ public class Mirror<T> {
 		Class<?> re = null != typeExtractor ? typeExtractor.extract(this) : null;
 		if (null != re)
 			return re;
-		if (this.isNumber())
+		if (klass.isEnum())
+			return Enum.class;
+		else if (this.klass.isArray())
+			return Array.class;
+		else if (this.isNumber())
 			return Number.class;
 		else if (this.isBoolean())
 			return Boolean.class;
 		else if (this.isChar())
 			return Character.class;
-		else if (this.klass.isArray())
-			return Array.class;
 		else if (Map.class.isAssignableFrom(klass))
 			return Map.class;
 		else if (Collection.class.isAssignableFrom(klass))
@@ -270,19 +281,33 @@ public class Mirror<T> {
 						args);
 			}
 		}
-		c = findConstructor(argList);
-		try {
-			return (T) c.newInstance(argList.toArray(new Object[argList.size()]));
-		} catch (Exception e) {
-			throw new FailToBornException(e, klass, args);
+		Class<?>[] paramTypes = new Class<?>[argList.size()];
+		for (int i = 0; i < argList.size(); i++)
+			paramTypes[i] = argList.get(i).getClass();
+		c = findConstructor(argList, paramTypes);
+		if (c != null)
+			try {
+				return (T) c.newInstance(argList.toArray(new Object[argList.size()]));
+			} catch (Exception e) {
+				throw new FailToBornException(e, klass, args);
+			}
+		else {
+			// try to find some static method
+			Method[] methods = this.getStaticMethods();
+			for (Method m : methods) {
+				if ((this.is(m.getReturnType()) || this.canCastToDirectly(m.getReturnType()))
+						&& doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
+					try {
+						return (T) m.invoke(null, argList.toArray(new Object[argList.size()]));
+					} catch (Exception e1) {
+					}
+			}
+			throw new FailToBornException(null, klass, args);
 		}
 	}
 
-	public Constructor<?> findConstructor(List<Object> args) {
+	public Constructor<?> findConstructor(List<Object> args, Class<?>[] paramTypes) {
 		Constructor<?> c = null;
-		Class<?>[] paramTypes = new Class<?>[args.size()];
-		for (int i = 0; i < args.size(); i++)
-			paramTypes[i] = args.get(i).getClass();
 		try {
 			c = klass.getConstructor(paramTypes);
 		} catch (NoSuchMethodException e) {
@@ -291,10 +316,10 @@ public class Mirror<T> {
 				Class<?>[] cTypes = cc.getParameterTypes();
 				boolean yesItis;
 				if (cTypes.length == paramTypes.length) {
-					yesItis = doMatchConstrucctor(paramTypes, cTypes);
+					yesItis = doMatchMethodParamsType(paramTypes, cTypes);
 				} else if (cTypes.length == paramTypes.length + 1
 						&& cTypes[paramTypes.length].isArray()) {
-					yesItis = doMatchConstrucctor(paramTypes, cTypes);
+					yesItis = doMatchMethodParamsType(paramTypes, cTypes);
 					args.add(Array.newInstance(cTypes[paramTypes.length].getComponentType(), 0));
 				} else
 					continue;
@@ -304,15 +329,15 @@ public class Mirror<T> {
 				}
 
 			}
-			if (c == null)
-				throw new FailToBornException(e, klass, args.toArray(new Object[args.size()]));
 		}
 		return c;
 	}
 
-	private static boolean doMatchConstrucctor(Class<?>[] paramTypes, Class<?>[] cTypes) {
+	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
+		if (paramTypes.length == 0 && methodArgTypes.length == 0)
+			return true;
 		for (int i = 0; i < paramTypes.length; i++)
-			if (Mirror.me(paramTypes[i]).canCastToDirectly((cTypes[i])))
+			if (Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
 				return true;
 		return false;
 	}
@@ -413,6 +438,8 @@ public class Mirror<T> {
 	}
 
 	public boolean canCastToDirectly(Class<?> type) {
+		if (klass == type)
+			return true;
 		if (type.isAssignableFrom(klass))
 			return true;
 		if (klass.isPrimitive() && type.isPrimitive()) {

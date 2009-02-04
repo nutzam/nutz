@@ -1,5 +1,8 @@
 package com.zzh.lang;
 
+import java.util.Calendar;
+
+import com.zzh.Nutz;
 import com.zzh.ioc.FailToMakeObjectException;
 
 import junit.framework.TestCase;
@@ -47,7 +50,7 @@ public class MirrorTest extends TestCase {
 		assertFalse(Mirror.me(String.class).canCastToDirectly(StringBuilder.class));
 		assertFalse(Mirror.me(boolean.class).canCastToDirectly(float.class));
 		assertFalse(Mirror.me(boolean.class).canCastToDirectly(short.class));
-		
+
 		assertTrue(Mirror.me(FailToMakeObjectException.class).canCastToDirectly(Throwable.class));
 	}
 
@@ -72,6 +75,10 @@ public class MirrorTest extends TestCase {
 
 	public void testExtractBoolean() {
 		assertEquals(Boolean.class, Mirror.me(boolean.class).extractType());
+	}
+
+	public void testExtractEnum() {
+		assertEquals(Enum.class, Mirror.me(Nutz.Dao.getClass()).extractType());
 	}
 
 	public class F {
@@ -159,4 +166,10 @@ public class MirrorTest extends TestCase {
 		assertTrue(e2.getCause() == e);
 	}
 
+	public void testBornByStatic() {
+		Calendar c = Mirror.me(Calendar.class).born();
+		assertNotNull(c);
+		Integer ii = Mirror.me(Integer.class).born(34);
+		assertTrue(34==ii);
+	}
 }
