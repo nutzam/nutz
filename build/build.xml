@@ -8,23 +8,18 @@
 	
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}"/>
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
-	<property name="WEBJAR_HOME" value="${env.WEBJAR_HOME}"/>
+	<property name="TARGET_DIR" value="${env.NUTZ_TARGET_DIR}"/>
 	
 	<property name="PROJECT_HOME" value="../" />
-	<property name="WEB-LIB" value="${WEBJAR_HOME}" />
 	<property name="TOMCAT-LIB" value="${TOMCAT_HOME}/lib" />
 
 	<property name="SRC_DIR" location="${PROJECT_HOME}/src" />
-	<property name="DIST_FILE" location="${WEB-LIB}/nutz.jar" />
+	<property name="DIST_FILE" location="${TARGET_DIR}/nutz.jar" />
 	<property name="TEMP_DIR" value="${PROJECT_HOME}/build/temp" />
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT-LIB}" casesensitive="no">
 			<include name="*.jar" />
-		</fileset>
-		<fileset dir="${WEB-LIB}" casesensitive="no">
-			<include name="*.jar" />
-			<exclude name="nutz.jar" />
 		</fileset>
 		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
 		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />

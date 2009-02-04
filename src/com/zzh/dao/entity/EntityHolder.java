@@ -29,7 +29,7 @@ public class EntityHolder {
 					if (parseResult)
 						mappings.put(klass, m);
 					else
-						m = null;
+						throw new ErrorEntitySyntaxException(klass, "Not a entity!");
 				}
 			}
 		}
