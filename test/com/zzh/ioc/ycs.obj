@@ -1,0 +1,14 @@
+{ 
+	type		: "com.zzh.ioc.Guy",
+	singleton	: true,
+	fields	: {
+		name	: "YouChunSheng",
+		dead	: false,
+		emails	: ["youoo@qq.com"],
+		age		: 69,
+		health  : .70,
+		ms		: 7984321,
+		birthday: "1940-8-15 14:18:34",
+		father	: null
+	}
+}

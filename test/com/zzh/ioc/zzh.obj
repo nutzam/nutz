@@ -1,0 +1,13 @@
+{
+	type		: "com.zzh.ioc.Guy", 
+	singleton	: false,
+	fields	: {
+		name	: "Peter.Zhang",
+		dead	: false,
+		emails	: ["zozoh@263.net","zozohtnt@gmail.com"],
+		age		: 32,
+		health  : .80,
+		birthday: "1977-9-21 8:8:34",
+		father	: "-> ycs"
+	}
+}
