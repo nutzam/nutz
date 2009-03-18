@@ -15,7 +15,8 @@ public class Array2Array<T> extends Castor<Object, Object> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected Object cast(Object src, Class<?> toType) throws FailToCastObjectException {
+	protected Object cast(Object src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		return Lang.array2array(src, (Class<T[]>) toType);
 	}
 

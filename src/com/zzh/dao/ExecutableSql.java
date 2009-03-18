@@ -5,23 +5,26 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import com.zzh.castor.Castors;
-import com.zzh.dao.callback.Callback;
+import com.zzh.dao.callback.SqlCallback;
 
-public class ExecutableSql<T> extends ConditionSql<T> {
+public class ExecutableSql extends ConditionSql<Object> {
 
-	public ExecutableSql(Castors castors) {
-		super(castors);
+	public ExecutableSql() {
+		super();
 	}
 
-	private Callback<T> next;
+	public ExecutableSql(String sql) {
+		super(sql);
+	}
 
-	public void setNext(Callback<T> next) {
+	private SqlCallback next;
+
+	public void setNext(SqlCallback next) {
 		this.next = next;
 	}
 
 	@Override
-	public T execute(Connection conn) throws Exception {
+	public Object execute(Connection conn) throws Exception {
 		PreparedStatement stat = null;
 		try {
 			for (Iterator<String> it = segment.keys().iterator(); it.hasNext();) {
@@ -41,8 +44,7 @@ public class ExecutableSql<T> extends ConditionSql<T> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {
-				}
+				} catch (SQLException e1) {}
 		}
 		if (null != next) {
 			setResult(next.invoke(conn));

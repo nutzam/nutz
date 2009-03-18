@@ -1,0 +1,3 @@
+{
+	$args : ["oo","=$JAVA: com.zzh.ioc.JsonDirNutTest$OO.email"] 
+}

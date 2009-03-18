@@ -14,6 +14,10 @@ public class JsonFormat {
 		return new JsonFormat(false).setNotNeedQuoteName(true).setIgnoreNull(true);
 	}
 
+	public JsonFormat() {
+		this(true);
+	}
+
 	public JsonFormat(boolean compact) {
 		this.compact = compact;
 		this.indentBy = "   ";

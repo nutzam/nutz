@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.Iterator;
 
 import com.zzh.castor.Castors;
-import com.zzh.lang.Mirror;
 
 class Pss {
 
@@ -27,19 +26,45 @@ class Pss {
 			stat.setTime(it.next() + 1, v);
 	}
 
-	static void setBoolean(PreparedStatement stat, Iterator<Integer> it, boolean v)
+	static void setBoolean(PreparedStatement stat, Iterator<Integer> it, Boolean v)
 			throws SQLException {
 		for (; it.hasNext();)
-			stat.setBoolean(it.next() + 1, v);
+			stat.setBoolean(it.next() + 1, null == v ? false : v);
 	}
 
-	@SuppressWarnings("unchecked")
-	static void setObject(PreparedStatement stat, Iterator<Integer> it, Object v, Castors castors)
+	static void setNumber(PreparedStatement stat, Iterator<Integer> it, Number v)
 			throws SQLException {
-		Mirror<?> mirror = Mirror.me(v.getClass());
-		Object value = mirror.isOf(java.io.Serializable.class) ? (mirror.isStringLike() ? v
-				.toString() : mirror.getMyClass().isEnum() ? ((Enum) v).name() : v) : castors
-				.castToString(v);
+		for (; it.hasNext();)
+			stat.setObject(it.next() + 1, v);
+	}
+
+	static void setChar(PreparedStatement stat, Iterator<Integer> it, Character v)
+			throws SQLException {
+		for (; it.hasNext();)
+			stat.setString(it.next() + 1, v.toString());
+	}
+
+	static void setString(PreparedStatement stat, Iterator<Integer> it, Boolean v)
+			throws SQLException {
+		for (; it.hasNext();)
+			stat.setBoolean(it.next() + 1, null == v ? false : v);
+	}
+
+	static void setEnumAsChar(PreparedStatement stat, Iterator<Integer> it, Enum<?> v)
+			throws SQLException {
+		for (; it.hasNext();)
+			stat.setString(it.next() + 1, v.name());
+	}
+
+	static void setEnumAsInt(PreparedStatement stat, Iterator<Integer> it, Enum<?> v)
+			throws SQLException {
+		for (; it.hasNext();)
+			stat.setInt(it.next() + 1, v.ordinal());
+	}
+
+	static void setObject(PreparedStatement stat, Iterator<Integer> it, Object v)
+			throws SQLException {
+		Object value = Castors.me().castToString(v);
 		for (; it.hasNext();) {
 			Integer i = it.next();
 			stat.setObject(i + 1, value);

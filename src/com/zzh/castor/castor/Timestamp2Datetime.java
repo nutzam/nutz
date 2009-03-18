@@ -9,7 +9,8 @@ import com.zzh.castor.FailToCastObjectException;
 public class Timestamp2Datetime extends Castor<Timestamp, java.util.Date> {
 
 	@Override
-	protected Date cast(Timestamp src, Class<?> toType) throws FailToCastObjectException {
+	protected Date cast(Timestamp src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		return new java.util.Date(src.getTime());
 	}
 

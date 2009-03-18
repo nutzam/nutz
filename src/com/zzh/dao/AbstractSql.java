@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import com.zzh.castor.Castors;
 import com.zzh.dao.Sql;
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.EntityField;
@@ -16,16 +15,19 @@ import com.zzh.lang.segment.Segment;
 
 public abstract class AbstractSql<T> implements Sql<T> {
 
-	protected AbstractSql(Castors castors) {
+	protected AbstractSql() {
 		this.values = new HashMap<String, Object>();
 		this.segment = new CharSegment();
-		this.castors = castors;
+	}
+	
+	protected AbstractSql(String sql) {
+		this();
+		this.valueOf(sql);
 	}
 
 	protected Segment segment;
 	private Entity<?> entity;
 	protected Map<String, Object> values;
-	protected Castors castors;
 
 	public void setEntity(Entity<?> entity) {
 		this.entity = entity;
@@ -41,24 +43,23 @@ public abstract class AbstractSql<T> implements Sql<T> {
 
 	@Override
 	public Sql<T> setValue(Object obj) {
-		Mirror<?> mirror = Mirror.me(obj.getClass());
 		// for (Field field : mirror.getFields()) {
 		for (Iterator<EntityField> it = entity.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			Object value = mirror.getValue(obj, ef.getField());
+			Object value = ef.getValue(obj);
 			Field field = ef.getField();
 			if (null == value) {
 				if (ef.hasDefaultValue()) {
 					String defv = ef.getDefaultValue(obj);
 					try {
-						Mirror.me(obj.getClass()).setValue(obj, field, defv);
-						values.put(field.getName(), defv);
+						ef.setValue(obj, defv);
+						values.put(field.getName(), ef.getValue(obj));
 					} catch (Exception e) {
 						throw Lang.wrapThrow(e);
 					}
 				} else if (ef.isNotNull()) {
 					throw new DaoException(String.format("[%s]->'%s' can not be null", entity
-							.getClassOfT().getName(), field.getName()));
+							.getMirror().getType().getName(), field.getName()));
 				} else
 					this.set(field.getName(), null);
 			} else if (Mirror.me(field.getType()).isBoolean()) {
@@ -73,14 +74,14 @@ public abstract class AbstractSql<T> implements Sql<T> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Sql<T> born() {
-		AbstractSql<T> sql = Mirror.me(this.getClass()).born(castors);
+		AbstractSql<T> sql = Mirror.me(this.getClass()).born();
 		sql.segment = this.segment.born();
 		return sql;
 	}
 
 	@Override
 	public Sql<T> clone() {
-		throw new RuntimeException("SQL can not clone!!!");
+		throw new RuntimeException("SQL can not be clone!!!");
 	}
 
 	@Override

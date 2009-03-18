@@ -1,7 +1,6 @@
 package com.zzh.castor.castor;
 
 import com.zzh.castor.Castor;
-import com.zzh.lang.Lang;
 
 @SuppressWarnings("unchecked")
 public class String2Class extends Castor<String, Class> {
@@ -12,11 +11,11 @@ public class String2Class extends Castor<String, Class> {
 	}
 
 	@Override
-	protected Class<?> cast(String src, Class toType) {
+	protected Class<?> cast(String src, Class toType, String... args) {
 		try {
 			return Class.forName(src);
 		} catch (ClassNotFoundException e) {
-			throw Lang.wrapThrow(e);
+			return String.class;
 		}
 	}
 

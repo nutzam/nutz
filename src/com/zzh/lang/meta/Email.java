@@ -1,5 +1,7 @@
 package com.zzh.lang.meta;
 
+import com.zzh.lang.Lang;
+
 public class Email {
 
 	private String account;
@@ -14,8 +16,7 @@ public class Email {
 			this.account = str.substring(0, pos);
 			this.host = str.substring(pos + 1, str.length());
 		} catch (Exception e) {
-			throw new RuntimeException(String.format("Error email format [%s]",
-					str));
+			throw Lang.makeThrow("Error email format [%s]", str);
 		}
 	}
 

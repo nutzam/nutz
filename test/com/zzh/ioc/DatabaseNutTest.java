@@ -7,25 +7,24 @@ import javax.sql.DataSource;
 import org.apache.commons.dbcp.BasicDataSource;
 
 import com.zzh.Main;
-import com.zzh.castor.Castors;
 import com.zzh.dao.ComboSql;
 import com.zzh.dao.Dao;
 import com.zzh.dao.ExecutableSql;
 import com.zzh.dao.Sql;
 import com.zzh.dao.impl.FileSqlManager;
 import com.zzh.dao.impl.NutDao;
-import com.zzh.ioc.db.DatabaseAssemble;
-import com.zzh.ioc.db.ObjectBean;
+import com.zzh.ioc.db.DatabaseMappingLoader;
 import com.zzh.ioc.db.FieldBean;
-import com.zzh.lang.Mirror;
+import com.zzh.ioc.db.ObjectBean;
+import com.zzh.ioc.db.ValueBean;
 import com.zzh.service.EntityService;
-import com.zzh.service.NutEntityService;
+import com.zzh.service.IdNameEntityService;
 
 import junit.framework.TestCase;
 
 public class DatabaseNutTest extends TestCase {
 
-	private static FieldBean makeField(int objId, String name, String value) {
+	private static FieldBean makeField(int objId, String name, ValueBean value) {
 		FieldBean fb = new FieldBean();
 		fb.setName(name);
 		fb.setValue(value);
@@ -33,11 +32,19 @@ public class DatabaseNutTest extends TestCase {
 		return fb;
 	}
 
+	private static ValueBean makeValue(String type, String value) {
+		ValueBean vb = new ValueBean();
+		vb.setType(type);
+		vb.setValue(value);
+
+		return vb;
+	}
+
 	private static ObjectBean makeObj(Class<?> classOfT, String objName, boolean singleton,
 			boolean anonymous) {
 		ObjectBean obj = new ObjectBean();
 		obj.setName(objName);
-		obj.setType(Mirror.me(classOfT));
+		obj.setType(classOfT);
 		obj.setSingleton(singleton);
 		obj.setAnonymous(anonymous);
 		return obj;
@@ -45,7 +52,7 @@ public class DatabaseNutTest extends TestCase {
 
 	private Nut nut;
 
-	public class Company {
+	public static class Company {
 		public String name;
 		public byte year;
 		public float profits;
@@ -53,7 +60,7 @@ public class DatabaseNutTest extends TestCase {
 		public Calendar createTime;
 	}
 
-	public class Employee {
+	public static class Employee {
 		public String name;
 		public Company company;
 	}
@@ -61,47 +68,51 @@ public class DatabaseNutTest extends TestCase {
 	@Override
 	protected void setUp() throws Exception {
 		Dao dao = Main.getDao("com/zzh/ioc/dbtest.sqls");
-		ComboSql combo = dao.sqls().createComboSQL(".object.drop", ".object.create", ".field.drop",
-				".field.create");
+		ComboSql combo = dao.sqls().createComboSql();
 		dao.execute(combo);
-		Assemble ass = new DatabaseAssemble(dao);
-		nut = new Nut(ass, Castors.me());
+		MappingLoader ass = new DatabaseMappingLoader(dao);
+		nut = new Nut(ass);
 		// prepare data service
-		NutEntityService<ObjectBean> objsrv = new NutEntityService<ObjectBean>(dao) {
-		};
+		IdNameEntityService<ObjectBean> objsrv = new IdNameEntityService<ObjectBean>(dao) {};
 		EntityService<FieldBean> fldsrv = new EntityService<FieldBean>(dao) {
+
+			@Override
+			public FieldBean insert(FieldBean obj) {
+				if (obj.getValue() != null) {
+					obj.setValueId(dao().insert(obj.getValue()).getId());
+				}
+				return super.insert(obj);
+			}
+
 		};
 		// prepare datasource
 		ObjectBean obj = objsrv.insert(makeObj(BasicDataSource.class, "dataSource", true, false));
-		fldsrv.insert(makeField(obj.getId(), "driverClassName", Main.getDriver()));
-		fldsrv.insert(makeField(obj.getId(), "url", Main.getUrl()));
-		fldsrv.insert(makeField(obj.getId(), "username", Main.getUserName()));
-		fldsrv.insert(makeField(obj.getId(), "password", Main.getPassword()));
-		// prepare castors
-		obj = objsrv.insert(makeObj(Castors.class, "castors", true, false));
+		fldsrv.insert(makeField(obj.getId(), "driverClassName", makeValue(null, Main.getDriver())));
+		fldsrv.insert(makeField(obj.getId(), "url", makeValue(null, Main.getUrl())));
+		fldsrv.insert(makeField(obj.getId(), "username", makeValue(null, Main.getUserName())));
+		fldsrv.insert(makeField(obj.getId(), "password", makeValue(null, Main.getPassword())));
 		// prepare sqlManager
 		obj = objsrv.insert(makeObj(FileSqlManager.class, "sqlManager", true, false));
-		fldsrv.insert(makeField(obj.getId(), "castors", "-> castors"));
-		fldsrv.insert(makeField(obj.getId(), "paths", "\"com/zzh/ioc/dbtest.sqls\""));
+		fldsrv.insert(makeField(obj.getId(), "paths",
+				makeValue(null, "\"com/zzh/ioc/dbtest.sqls\"")));
 		// prepare dao
 		obj = objsrv.insert(makeObj(NutDao.class, "dao", true, false));
-		fldsrv.insert(makeField(obj.getId(), "$0", "-> dataSource"));
-		fldsrv.insert(makeField(obj.getId(), "$1", "-> castors"));
-		fldsrv.insert(makeField(obj.getId(), "$2", "-> sqlManager"));
+		fldsrv.insert(makeField(obj.getId(), "dataSource", makeValue("refer", "dataSource")));
+		fldsrv.insert(makeField(obj.getId(), "sqlManager", makeValue("refer", "sqlManager")));
 		// Prepare company
 		obj = objsrv.insert(makeObj(Company.class, "dtri", true, false));
-		fldsrv.insert(makeField(obj.getId(), "name", "DT Research Inc."));
-		fldsrv.insert(makeField(obj.getId(), "year", "15"));
-		fldsrv.insert(makeField(obj.getId(), "profits", ".25"));
-		fldsrv.insert(makeField(obj.getId(), "closed", "false"));
-		fldsrv.insert(makeField(obj.getId(), "createTime", "1995-8-7 14:23:23"));
+		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "DT Research Inc.")));
+		fldsrv.insert(makeField(obj.getId(), "year", makeValue(null, "15")));
+		fldsrv.insert(makeField(obj.getId(), "profits", makeValue(null, ".25")));
+		fldsrv.insert(makeField(obj.getId(), "closed", makeValue(null, "false")));
+		fldsrv.insert(makeField(obj.getId(), "createTime", makeValue(null, "1995-8-7 14:23:23")));
 		// Prepare emplyoo
 		obj = objsrv.insert(makeObj(Employee.class, "zzh", false, false));
-		fldsrv.insert(makeField(obj.getId(), "name", "Peter.Zhang"));
-		fldsrv.insert(makeField(obj.getId(), "company", "-> dtri"));
+		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "Peter.Zhang")));
+		fldsrv.insert(makeField(obj.getId(), "company", makeValue("refer", "dtri")));
 		obj = objsrv.insert(makeObj(Employee.class, "joey", false, false));
-		fldsrv.insert(makeField(obj.getId(), "name", "Joey.Huang"));
-		fldsrv.insert(makeField(obj.getId(), "company", "-> dtri"));
+		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "Joey.Huang")));
+		fldsrv.insert(makeField(obj.getId(), "company", makeValue("refer", "dtri")));
 	}
 
 	@Override
@@ -120,7 +131,6 @@ public class DatabaseNutTest extends TestCase {
 		assertTrue(dao.count(ObjectBean.class, null) > 0);
 		Sql<?> sql = dao.sqls().createSql(".field.create");
 		assertTrue(sql instanceof ExecutableSql);
-		assertEquals(4, dao.sqls().count());
 	}
 
 	public void testSingleton() throws Exception {

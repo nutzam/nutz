@@ -1,8 +1,7 @@
 package com.zzh.ioc;
 
+@SuppressWarnings("serial")
 public class ObjectNotFoundException extends RuntimeException {
-
-	private static final long serialVersionUID = 4572770186592275071L;
 
 	public ObjectNotFoundException(String name) {
 		super("Object '" + name + "' failed to found!!!");

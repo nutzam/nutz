@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.zzh.castor.Castor;
+import com.zzh.castor.Castors;
 import com.zzh.castor.FailToCastObjectException;
 
 @SuppressWarnings("unchecked")
@@ -16,13 +17,13 @@ public class Collection2Array extends Castor<Collection, Object> {
 	}
 
 	@Override
-	protected Object cast(Collection src, Class<?> toType) throws FailToCastObjectException {
-		Collection coll = (Collection) src;
-		Class<?> eleType = toType.getComponentType();
-		Object ary = Array.newInstance(eleType, coll.size());
+	protected Object cast(Collection src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
+		Class<?> compType = toType.getComponentType();
+		Object ary = Array.newInstance(compType, src.size());
 		int index = 0;
-		for (Iterator it = coll.iterator(); it.hasNext();) {
-			Array.set(ary, index++, getCastors().castTo(it.next(), eleType));
+		for (Iterator it = src.iterator(); it.hasNext();) {
+			Array.set(ary, index++, Castors.me().castTo(it.next(), compType));
 		}
 		return ary;
 	}

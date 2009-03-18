@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.zzh.castor.Castors;
 import com.zzh.dao.callback.QueryCallback;
 
 public class FetchSql<T> extends ConditionSql<T> {
 
-	public FetchSql(Castors castors) {
-		super(castors);
+	public FetchSql() {
+		super();
+	}
+
+	public FetchSql(String sql) {
+		super(sql);
 	}
 
 	private QueryCallback<T> queryCallback;
@@ -49,8 +52,7 @@ public class FetchSql<T> extends ConditionSql<T> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {
-				}
+				} catch (SQLException e1) {}
 		}
 	}
 

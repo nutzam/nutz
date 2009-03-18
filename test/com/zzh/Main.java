@@ -14,7 +14,6 @@ import com.zzh.dao.impl.FileSqlManager;
 import com.zzh.dao.impl.NutDao;
 import com.zzh.lang.Files;
 import com.zzh.lang.Lang;
-import com.zzh.trans.TransactionTest;
 
 public class Main {
 
@@ -96,11 +95,11 @@ public class Main {
 		}
 	}
 
-	public static void prepareTables(Dao dao, String[] keys) {
-		ComboSql combo = dao.sqls().createComboSQL(keys);
+	public static void prepareTables(Dao dao, String... keys) {
+		ComboSql combo = dao.sqls().createComboSql(keys);
 		if (null != getEngin())
 			combo.set(".engine", "ENGINE=" + getEngin());
-		TransactionTest.dao.execute(combo);
+		dao.execute(combo);
 	}
 
 }

@@ -1,37 +1,46 @@
 package com.zzh.json;
 
-import java.io.InputStream;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 
-import com.zzh.castor.Castors;
+import com.zzh.lang.Lang;
 
 public class Json {
 
-	public static Object fromJson(InputStream ins) {
-		return new JsonParsing(Castors.me()).parseFromJson(ins, null);
+	public static Object fromJson(Reader reader) throws JsonException {
+		return new JsonParsing(reader).parseFromJson(null);
 	}
 
-	public static Object fromJson(InputStream ins, Castors castors) {
-		return new JsonParsing(castors).parseFromJson(ins, null);
-	}
-
-	public static <T> T fromJson(Class<T> type, InputStream ins) {
-		return new JsonParsing(Castors.me()).parseFromJson(ins, type);
-	}
-
-	public static <T> T fromJson(Class<T> type, InputStream ins, Castors castors) {
-		return new JsonParsing(castors).parseFromJson(ins, type);
+	public static <T> T fromJson(Class<T> type, Reader ins) throws JsonException {
+		return new JsonParsing(ins).parseFromJson(type);
 	}
 
 	public static String toJson(Object obj) {
-		return (new JsonRendering(null, Castors.me())).convert(obj).toString();
+		StringBuilder sb = new StringBuilder();
+		Writer w = Lang.opw(sb);
+		toJson(w, obj);
+		return sb.toString();
 	}
 
 	public static String toJson(Object obj, JsonFormat format) {
-		return (new JsonRendering(format, Castors.me())).convert(obj).toString();
+		StringBuilder sb = new StringBuilder();
+		Writer w = Lang.opw(sb);
+		toJson(w, obj, format);
+		return sb.toString();
 	}
 
-	public static String toJson(Object obj, JsonFormat format, Castors castors) {
-		return (new JsonRendering(format, castors)).convert(obj).toString();
+	public static void toJson(Writer writer, Object obj) {
+		toJson(writer, obj, JsonFormat.nice());
+	}
+
+	public static void toJson(Writer writer, Object obj, JsonFormat format) {
+		try {
+			(new JsonRendering(writer, format)).render(obj);
+			writer.flush();
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e, JsonException.class);
+		}
 	}
 
 }

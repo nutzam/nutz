@@ -3,10 +3,13 @@ package com.zzh.ioc.db;
 import java.util.List;
 
 import com.zzh.dao.entity.annotation.*;
-import com.zzh.lang.Mirror;
 
 @Table("nut_object")
 public class ObjectBean {
+
+	public ObjectBean() {
+		singleton = true;
+	}
 
 	@Column
 	@Id
@@ -23,10 +26,21 @@ public class ObjectBean {
 	private boolean anonymous;
 
 	@Column
-	private Mirror<?> type;
+	private Class<?> type;
+
+	@ManyMany(target = ValueBean.class, relation = "nut_obj_args", from = "oid", to = "vid")
+	private List<ValueBean> args;
 
 	@Many(target = FieldBean.class, field = "objectId")
 	private List<FieldBean> fields;
+
+	public List<ValueBean> getArgs() {
+		return args;
+	}
+
+	public void setArgs(List<ValueBean> args) {
+		this.args = args;
+	}
 
 	public int getId() {
 		return id;
@@ -60,11 +74,11 @@ public class ObjectBean {
 		this.singleton = singleton;
 	}
 
-	public Mirror<?> getType() {
+	public Class<?> getType() {
 		return type;
 	}
 
-	public void setType(Mirror<?> type) {
+	public void setType(Class<?> type) {
 		this.type = type;
 	}
 

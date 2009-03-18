@@ -35,11 +35,8 @@ public class CharInputStream extends InputStream {
 
 	@Override
 	public int read() throws IOException {
-		if (cursor == chars.length) {
-			cursor++;
+		if (cursor >= chars.length)
 			return -1;
-		} else if (cursor > chars.length)
-			throw new IOException("Reach the end!!!");
 		return chars[cursor++];
 	}
 

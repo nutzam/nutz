@@ -28,4 +28,10 @@ public class Company {
 		this.name = name;
 	}
 
+	public static Company create(String name) {
+		Company c = new Company();
+		c.setName(name);
+		return c;
+	}
+
 }

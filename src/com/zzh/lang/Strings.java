@@ -15,7 +15,7 @@ public class Strings {
 
 	public static CharSequence dup(char c, int num) {
 		StringBuffer sb = new StringBuffer(c);
-		for (int i = 1; i < num; i++)
+		for (int i = 0; i < num; i++)
 			sb.append(c);
 		return sb.toString();
 	}
@@ -92,7 +92,7 @@ public class Strings {
 	}
 
 	public static String[] splitIgnoreBlank(String s) {
-		return Strings.splitIgnoreBlank(s, "[,]");
+		return Strings.splitIgnoreBlank(s, ",");
 	}
 
 	public static String[] splitIgnoreBlank(String s, String regex) {

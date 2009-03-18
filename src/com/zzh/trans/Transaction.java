@@ -8,7 +8,7 @@ import javax.sql.DataSource;
 public abstract class Transaction {
 
 	public abstract int getId();
-
+	
 	protected abstract void commit() throws SQLException;
 
 	protected abstract void rollback();

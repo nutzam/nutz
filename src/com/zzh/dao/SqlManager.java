@@ -18,13 +18,13 @@ public interface SqlManager {
 	 * @param <T>
 	 * @return
 	 */
-	<S extends Sql<T>, T> S createSql(Class<S> classOfT, String key);
+	<S extends Sql<?>> S createSql(Class<S> classOfT, String key);
 
 	/**
 	 * @param keys
 	 * @return
 	 */
-	ComboSql createComboSQL(String... keys);
+	ComboSql createComboSql(String... keys);
 	
 	/**
 	 * @return the SQL number
@@ -32,5 +32,10 @@ public interface SqlManager {
 	int count();
 
 	void setPaths(String... paths);
+
+	/**
+	 * @return
+	 */
+	String[] keys();
 
 }

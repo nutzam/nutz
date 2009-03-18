@@ -50,4 +50,11 @@ public class Master {
 		this.comId = comId;
 	}
 
+	public static Master create(String name, Company com) {
+		Master c = new Master();
+		c.setName(name);
+		c.setCom(com);
+		return c;
+	}
+
 }

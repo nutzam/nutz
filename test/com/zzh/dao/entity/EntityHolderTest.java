@@ -17,9 +17,13 @@ public class EntityHolderTest extends TestCase {
 		holder = new EntityHolder();
 	}
 
-	public void testNormal() {
-		Entity<OneEntity> em = holder.getEntity(OneEntity.class);
-		assertNull(em);
+	public void testOneEntity() {
+		try {
+			holder.getEntity(OneEntity.class);
+			fail();
+		} catch (ErrorEntitySyntaxException e) {
+		}
+		
 		Entity<TableEntity> en = holder.getEntity(TableEntity.class);
 		assertNotNull(en);
 	}

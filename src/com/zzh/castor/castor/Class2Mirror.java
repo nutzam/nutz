@@ -7,7 +7,7 @@ import com.zzh.lang.Mirror;
 public class Class2Mirror extends Castor<Class, Mirror> {
 
 	@Override
-	protected Mirror<?> cast(Class src, Class toType) {
+	protected Mirror<?> cast(Class src, Class toType, String... args) {
 		return Mirror.me(src);
 	}
 

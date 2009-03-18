@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Target( { ElementType.FIELD })
 public @interface Id {
 	IdType value() default IdType.AUTO_INCREASE;
+
+	String fetch() default CONST.NULL;
 }

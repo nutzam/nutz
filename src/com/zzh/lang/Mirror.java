@@ -2,7 +2,6 @@ package com.zzh.lang;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -16,14 +15,82 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.zzh.castor.Castors;
+import com.zzh.castor.FailToCastObjectException;
+
 public class Mirror<T> {
 
+	private static class DefaultTypeExtractor implements TypeExtractor {
+
+		@Override
+		public Class<?>[] extract(Mirror<?> mirror) {
+			ArrayList<Class<?>> re = new ArrayList<Class<?>>(5);
+			re.add(mirror.getType());
+			if (mirror.klass.isEnum())
+				re.add(Enum.class);
+
+			else if (mirror.klass.isArray())
+				re.add(Array.class);
+
+			else if (mirror.isString())
+				re.add(String.class);
+
+			else if (mirror.is(Class.class))
+				re.add(Class.class);
+
+			else if (mirror.is(Mirror.class))
+				re.add(Mirror.class);
+
+			else if (mirror.isStringLike())
+				re.add(CharSequence.class);
+
+			else if (mirror.isNumber()) {
+				re.add(mirror.getType());
+				re.add(Number.class);
+
+			} else if (mirror.isBoolean())
+				re.add(Boolean.class);
+
+			else if (mirror.isChar())
+				re.add(Character.class);
+
+			else if (mirror.isOf(Map.class))
+				re.add(Map.class);
+
+			else if (mirror.isOf(Collection.class))
+				re.add(Collection.class);
+
+			else if (mirror.isOf(Calendar.class))
+				re.add(Calendar.class);
+
+			else if (mirror.isOf(Timestamp.class))
+				re.add(Timestamp.class);
+
+			else if (mirror.isOf(java.sql.Date.class))
+				re.add(java.sql.Date.class);
+
+			else if (mirror.isOf(java.sql.Time.class))
+				re.add(java.sql.Time.class);
+
+			else if (mirror.isOf(java.util.Date.class))
+				re.add(java.util.Date.class);
+
+			re.add(Object.class);
+			return re.toArray(new Class<?>[re.size()]);
+		}
+
+	}
+
+	private final static DefaultTypeExtractor defaultTypeExtractor = new DefaultTypeExtractor();
+
 	public static <T> Mirror<T> me(Class<T> classOfT) {
-		return null == classOfT ? null : new Mirror<T>(classOfT);
+		return null == classOfT ? null : new Mirror<T>(classOfT)
+				.setTypeExtractor(defaultTypeExtractor);
 	}
 
 	public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
-		return new Mirror<T>(classOfT).setTypeExtractor(typeExtractor);
+		return null == classOfT ? null : new Mirror<T>(classOfT)
+				.setTypeExtractor(typeExtractor == null ? defaultTypeExtractor : typeExtractor);
 	}
 
 	private Class<T> klass;
@@ -36,54 +103,94 @@ public class Mirror<T> {
 	}
 
 	private Mirror(Class<T> classOfT) {
-		if (null == classOfT)
-			throw new RuntimeException("Mirror can not accept NULL!!!");
 		klass = classOfT;
 	}
 
 	public Method getGetter(String fieldName) throws NoSuchMethodException {
-		String fn = Strings.capitalize(fieldName);
-		Method m;
 		try {
-			m = klass.getMethod("get" + fn);
-		} catch (NoSuchMethodException e) {
-			m = klass.getMethod("is" + fn);
+			String fn = Strings.capitalize(fieldName);
 			try {
-				if (!getField(fieldName).getType().getName().equals("boolean")) {
-					throw new NoSuchMethodException(String.format(
-							"Field '%s.%s' should be a boolean type", klass.getName(), fieldName));
+				try {
+					return klass.getMethod("get" + fn);
+				} catch (NoSuchMethodException e) {
+					Method m = klass.getMethod("is" + fn);
+					if (!Mirror.me(m.getReturnType()).isBoolean())
+						throw new NoSuchMethodException();
+					return m;
 				}
-			} catch (NoSuchFieldException e1) {
-				throw new NoSuchMethodException(String.format("Field '%s.%s' doesn't exist!", klass
-						.getName(), fieldName));
+			} catch (NoSuchMethodException e) {
+				return klass.getMethod(fieldName);
 			}
-
+		} catch (Exception e) {
+			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find getter for [%s]->[%s]",
+					klass.getName(), fieldName);
 		}
-		return m;
 	}
 
 	public Method getGetter(Field field) throws NoSuchMethodException {
-		String fn = Strings.capitalize(field.getName());
-		if (Mirror.me(field.getType()).is(boolean.class))
+		try {
 			try {
-				return klass.getMethod("is" + fn);
+				String fn = Strings.capitalize(field.getName());
+				if (Mirror.me(field.getType()).is(boolean.class))
+					return klass.getMethod("is" + fn);
+				else
+					return klass.getMethod("get" + fn);
 			} catch (NoSuchMethodException e) {
-				try {
-					return klass.getMethod(field.getName());
-				} catch (NoSuchMethodException e1) {
-				}
+				return klass.getMethod(field.getName());
 			}
-		return klass.getMethod("get" + fn);
+		} catch (Exception e) {
+			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find getter for [%s]->[%s]",
+					klass.getName(), field.getName());
+		}
 	}
 
 	public Method getSetter(Field field) throws NoSuchMethodException {
 		try {
-			return klass.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
-		} catch (NoSuchMethodException e) {
-			if (field.getName().startsWith("is") && Mirror.me(field.getType()).is(boolean.class))
-				return klass.getMethod("set" + field.getName().substring(2), field.getType());
-			throw e;
+			try {
+				return klass
+						.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
+			} catch (Exception e) {
+				try {
+					if (field.getName().startsWith("is")
+							&& Mirror.me(field.getType()).is(boolean.class))
+						return klass.getMethod("set" + field.getName().substring(2), field
+								.getType());
+					return klass.getMethod(field.getName(), field.getType());
+				} catch (Exception e1) {
+					return klass.getMethod(field.getName(), field.getType());
+				}
+			}
+		} catch (Exception e) {
+			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find setter for [%s]->[%s]",
+					klass.getName(), field.getName());
 		}
+	}
+
+	public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
+		try {
+			try {
+				return klass.getMethod("set" + Strings.capitalize(fieldName), paramType);
+			} catch (Exception e) {
+				return klass.getMethod(fieldName, paramType);
+			}
+		} catch (Exception e) {
+			throw Lang.makeThrow(NoSuchMethodException.class,
+					"Fail to find setter for [%s]->[%s(%s)]", klass.getName(), fieldName, paramType
+							.getName());
+		}
+	}
+
+	public Method[] findSetters(String fieldName) {
+		String mName = "set" + Strings.capitalize(fieldName);
+		ArrayList<Method> ms = new ArrayList<Method>();
+		for (Method m : getMethods()) {
+			if (Modifier.isStatic(m.getModifiers()) || m.getParameterTypes().length != 1)
+				continue;
+			if (m.getName().equals(mName)) {
+				ms.add(m);
+			}
+		}
+		return ms.toArray(new Method[ms.size()]);
 	}
 
 	public Field getField(String name) throws NoSuchFieldException {
@@ -98,7 +205,7 @@ public class Mirror<T> {
 			}
 		}
 		throw new NoSuchFieldException(String.format(
-				"Can NOT find field [%s] in class [%s] and it's parents classes", name, klass
+				"Can NO find field [%s] in class [%s] and it's parents classes", name, klass
 						.getName()));
 	}
 
@@ -108,7 +215,7 @@ public class Mirror<T> {
 				return field;
 		}
 		throw new NoSuchFieldException(String.format(
-				"Can NOT find field [@%s] in class [%s] and it's parents classes", ann.getName(),
+				"Can NO find field [@%s] in class [%s] and it's parents classes", ann.getName(),
 				klass.getName()));
 	}
 
@@ -159,99 +266,113 @@ public class Mirror<T> {
 		return list.toArray(new Method[list.size()]);
 	}
 
-	public void setValue(Object obj, Field field, Object value) {
+	private static RuntimeException makeSetValueException(Class<?> type, String name, Object value,
+			Exception e) {
+		return new FailToSetValueException(String.format(
+				"Fail to set value [%s] to [%s]->[%s] because '%s'", value, type.getName(), name, e
+						.getMessage()));
+	}
+
+	public void setValue(Object obj, Field field, Object value) throws FailToSetValueException {
+		if (!field.isAccessible())
+			field.setAccessible(true);
+		Mirror<?> me = Mirror.me(field.getType());
+		if (null != value)
+			try {
+				if (!Mirror.me(value.getClass()).canCastToDirectly(me.getType()))
+					value = Castors.me().castTo(value, field.getType());
+			} catch (FailToCastObjectException e) {
+				throw makeSetValueException(obj.getClass(), field.getName(), value, e);
+			}
+		else {
+			if (me.isNumber())
+				value = 0;
+			else if (me.isChar())
+				value = (char) 0;
+		}
 		try {
 			field.set(obj, value);
 		} catch (Exception e) {
-			try {
-				Method setter = getSetter(field);
-				setter.invoke(obj, value);
-			} catch (Exception e1) {
-				throw Lang.wrapThrow(e);
-			}
+			throw makeSetValueException(obj.getClass(), field.getName(), value, e);
 		}
 	}
 
-	public Object getValue(Object obj, Field f) {
+	public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
 		try {
-			return f.get(obj);
+			this.getSetter(fieldName, value.getClass()).invoke(obj, value);
 		} catch (Exception e) {
 			try {
-				return this.getGetter(f).invoke(obj);
+				Field field = this.getField(fieldName);
+				setValue(obj, field, value);
 			} catch (Exception e1) {
-				throw new RuntimeException(e1.getMessage());
+				throw makeSetValueException(obj.getClass(), fieldName, value, e1);
 			}
 		}
-
 	}
 
-	public Object getValue(Object obj, String name) {
+	private static RuntimeException makeGetValueException(Class<?> type, String name) {
+		return new FailToGetValueException(String.format("Fail to get value for [%s]->[%s]", type
+				.getName(), name));
+	}
+
+	public Object getValue(Object obj, Field f) throws FailToGetValueException {
+		try {
+			if (!f.isAccessible())
+				f.setAccessible(true);
+			return f.get(obj);
+		} catch (Exception e) {
+			throw makeGetValueException(obj.getClass(), f.getName());
+		}
+	}
+
+	public Object getValue(Object obj, String name) throws FailToGetValueException {
 		try {
 			return this.getGetter(name).invoke(obj);
 		} catch (Exception e) {
 			try {
-				return this.getValue(obj, this.getField(name));
+				Field f = getField(name);
+				return getValue(obj, f);
 			} catch (NoSuchFieldException e1) {
-				throw Lang.wrapThrow(e1);
+				throw makeGetValueException(obj.getClass(), name);
 			}
 		}
 	}
 
-	public Class<T> getMyClass() {
+	public Class<T> getType() {
 		return klass;
 	}
 
-	public Class<?> extractType() {
-		Class<?> re = null != typeExtractor ? typeExtractor.extract(this) : null;
-		if (null != re)
-			return re;
-		if (klass.isEnum())
-			return Enum.class;
-		else if (this.klass.isArray())
-			return Array.class;
-		else if (this.isNumber())
-			return Number.class;
-		else if (this.isBoolean())
-			return Boolean.class;
-		else if (this.isChar())
-			return Character.class;
-		else if (Map.class.isAssignableFrom(klass))
-			return Map.class;
-		else if (Collection.class.isAssignableFrom(klass))
-			return Collection.class;
-		else if (Calendar.class.isAssignableFrom(klass))
-			return Calendar.class;
-		else if (Timestamp.class.isAssignableFrom(klass))
-			return Timestamp.class;
-		else if (java.sql.Date.class.isAssignableFrom(klass))
-			return java.sql.Date.class;
-		else if (java.sql.Time.class.isAssignableFrom(klass))
-			return java.sql.Time.class;
-		else if (java.util.Date.class.isAssignableFrom(klass))
-			return java.util.Date.class;
-		return Object.class;
+	public Class<?>[] extractTypes() {
+		return typeExtractor.extract(this);
 	}
 
-	@SuppressWarnings("unchecked")
-	public Class<T> getWrpperClass() {
+	public Class<?> getWrpperClass() {
 		if (!klass.isPrimitive()) {
 			if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class))
 				return klass;
-			throw new RuntimeException(String.format("Class '%s' should be a primitive class",
-					klass.getName()));
+			throw Lang.makeThrow("Class '%s' should be a primitive class", klass.getName());
 		}
 		if (is(int.class))
-			return (Class<T>) Integer.class;
+			return Integer.class;
 		if (is(char.class))
-			return (Class<T>) Character.class;
-		try {
-			return (Class<T>) Class.forName("java.lang." + Strings.capitalize(klass.getName()));
-		} catch (ClassNotFoundException e) {
-			throw Lang.wrapThrow(e);
-		}
+			return Character.class;
+		if (is(boolean.class))
+			return Boolean.class;
+		if (is(long.class))
+			return Long.class;
+		if (is(float.class))
+			return Float.class;
+		if (is(byte.class))
+			return Byte.class;
+		if (is(short.class))
+			return Short.class;
+		if (is(double.class))
+			return Double.class;
+
+		throw Lang.makeThrow("Class [%s] has no wrapper class!", klass.getName());
 	}
 
-	public Class<?> getMyOuterClass() {
+	public Class<?> getOuterClass() {
 		if (Modifier.isStatic(klass.getModifiers()))
 			return null;
 		String name = klass.getName();
@@ -266,110 +387,137 @@ public class Mirror<T> {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public T born(Object... args) {
-		Class<?> oc = this.getMyOuterClass();
-		Constructor<?> c = null;
-		ArrayList<Object> argList = null;
-		if (null == oc) {
-			argList = Lang.fill(new ArrayList<Object>(args.length + 1), args);
-		} else {
-			if (args.length > 0 && Mirror.me(args[0].getClass()).is(oc))
-				argList = Lang.fill(new ArrayList<Object>(), args);
-			else {
-				argList = Lang.fill(new ArrayList<Object>(), new Object[] { Mirror.me(oc).born() },
-						args);
-			}
-		}
-		Class<?>[] paramTypes = new Class<?>[argList.size()];
-		for (int i = 0; i < argList.size(); i++)
-			paramTypes[i] = argList.get(i).getClass();
-		c = findConstructor(argList, paramTypes);
-		if (c != null)
-			try {
-				return (T) c.newInstance(argList.toArray(new Object[argList.size()]));
-			} catch (Exception e) {
-				throw new FailToBornException(e, klass, args);
-			}
-		else {
-			// try to find some static method
-			Method[] methods = this.getStaticMethods();
-			for (Method m : methods) {
-				if ((this.is(m.getReturnType()) || this.canCastToDirectly(m.getReturnType()))
-						&& doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
-					try {
-						return (T) m.invoke(null, argList.toArray(new Object[argList.size()]));
-					} catch (Exception e1) {
-					}
-			}
-			throw new FailToBornException(null, klass, args);
-		}
+	public Borning<T> getBorning(Object... args) {
+		return new Borning<T>(this, args);
 	}
 
-	public Constructor<?> findConstructor(List<Object> args, Class<?>[] paramTypes) {
-		Constructor<?> c = null;
-		try {
-			c = klass.getConstructor(paramTypes);
-		} catch (NoSuchMethodException e) {
-			// look for a constructor
-			for (Constructor<?> cc : klass.getConstructors()) {
-				Class<?>[] cTypes = cc.getParameterTypes();
-				boolean yesItis;
-				if (cTypes.length == paramTypes.length) {
-					yesItis = doMatchMethodParamsType(paramTypes, cTypes);
-				} else if (cTypes.length == paramTypes.length + 1
-						&& cTypes[paramTypes.length].isArray()) {
-					yesItis = doMatchMethodParamsType(paramTypes, cTypes);
-					args.add(Array.newInstance(cTypes[paramTypes.length].getComponentType(), 0));
-				} else
-					continue;
-				if (yesItis) {
-					c = cc;
-					break;
-				}
-
-			}
-		}
-		return c;
+	public T born(Object... args) {
+		return this.getBorning(args).born();
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
 		if (paramTypes.length == 0 && methodArgTypes.length == 0)
 			return true;
-		for (int i = 0; i < paramTypes.length; i++)
-			if (Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
-				return true;
+		if (paramTypes.length == methodArgTypes.length) {
+			for (int i = 0; i < paramTypes.length; i++)
+				if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
+					return false;
+			return true;
+		} else if (paramTypes.length + 1 == methodArgTypes.length) {
+			if (!methodArgTypes[paramTypes.length].isArray())
+				return false;
+			for (int i = 0; i < paramTypes.length; i++)
+				if (!Mirror.me(paramTypes[i]).canCastToDirectly((methodArgTypes[i])))
+					return false;
+			return true;
+		}
 		return false;
 	}
 
-	@SuppressWarnings("unchecked")
-	public T duplicate(T src) {
-		Method m;
+	public <A> Object invoke(Object obj, String methodName, A... args) {
 		try {
-			m = klass.getMethod("clone");
-			return (T) m.invoke(src);
-		} catch (Exception failToClone) {
+			Method m = klass.getMethod(methodName, args.getClass());
+			return m.invoke(obj, (Object) args);
+		} catch (Exception e1) {
+			Class<?>[] paramTypes = new Class<?>[null == args ? 0 : args.length];
+			for (int i = 0; i < paramTypes.length; i++)
+				paramTypes[i] = args[i].getClass();
 			try {
-				T obj = born();
-				Field[] fields = getFields();
-				for (Field field : fields) {
-					Object value = getValue(src, field);
-					setValue(obj, field, value);
+				return klass.getMethod(methodName, paramTypes).invoke(obj, args);
+			} catch (Exception e2) {
+				try {
+					return findMethod(methodName, paramTypes).invoke(obj, args);
+				} catch (Exception e) {
+					throw Lang.wrapThrow(e);
 				}
-				return obj;
-
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e);
 			}
 		}
 	}
+
+	public Method findMethod(String name, Class<?>... paramTypes) throws NoSuchMethodException {
+		try {
+			return klass.getMethod(name, paramTypes);
+		} catch (NoSuchMethodException e) {
+			for (Method m : klass.getMethods()) {
+				if (m.getName().equals(name))
+					if (doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
+						return m;
+			}
+		}
+		throw new NoSuchMethodException(String.format("Method %s->%s with params:\n%s", klass
+				.getName(), name, paramTypes));
+	}
+
+	public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
+			throws NoSuchMethodException {
+		for (Method m : klass.getMethods()) {
+			if (returnType == m.getReturnType())
+				if (paramTypes.length == m.getParameterTypes().length) {
+					boolean noThisOne = false;
+					for (int i = 0; i < paramTypes.length; i++) {
+						if (paramTypes[i] != m.getParameterTypes()[i]) {
+							noThisOne = true;
+							break;
+						}
+					}
+					if (!noThisOne)
+						return m;
+				}
+		}
+		throw new NoSuchMethodException(String.format(
+				"Can not find method in [%s] with return type '%s' and arguemtns \n'%s'!", klass
+						.getName(), returnType.getName(), paramTypes));
+
+	}
+
+	public static MatchType matchMethodParamsType(Class<?>[] methodArgTypes, Object... args) {
+		int len = args == null ? 0 : args.length;
+		if (len == 0 && methodArgTypes.length == 0)
+			return MatchType.YES;
+		if (methodArgTypes.length == len) {
+			for (int i = 0; i < len; i++)
+				if (!Mirror.me(args[i].getClass()).canCastToDirectly((methodArgTypes[i])))
+					return MatchType.NO;
+			return MatchType.YES;
+		} else if (len + 1 == methodArgTypes.length) {
+			if (!methodArgTypes[len].isArray())
+				return MatchType.NO;
+			for (int i = 0; i < len; i++)
+				if (!Mirror.me(args[i].getClass()).canCastToDirectly((methodArgTypes[i])))
+					return MatchType.NO;
+			return MatchType.LACK;
+		}
+		return MatchType.NO;
+	}
+
+	// @SuppressWarnings("unchecked")
+	// public T duplicate(T src) {
+	// Method m;
+	// try {
+	// m = klass.getMethod("clone");
+	// return (T) m.invoke(src);
+	// } catch (Exception failToClone) {
+	// try {
+	// T obj = born();
+	// Field[] fields = getFields();
+	// for (Field field : fields) {
+	// Object value = getValue(src, field);
+	// setValue(obj, field, value);
+	// }
+	// return obj;
+	//
+	// } catch (Exception e) {
+	// throw Lang.wrapThrow(e);
+	// }
+	// }
+	// }
 
 	public boolean is(Class<?> type) {
 		if (null == type)
 			return false;
 		if (klass == type)
 			return true;
-		return is(type.getName());
+		return false;
 	}
 
 	public boolean is(String className) {
@@ -390,6 +538,10 @@ public class Mirror<T> {
 
 	public boolean isChar() {
 		return is(char.class) || is(Character.class);
+	}
+
+	public boolean isEnum() {
+		return klass.isEnum();
 	}
 
 	public boolean isBoolean() {
@@ -429,12 +581,10 @@ public class Mirror<T> {
 	}
 
 	public boolean isWrpperOf(Class<?> type) {
-		if (!type.isPrimitive())
-			return false;
-		if ("int".equals(type.getName())) {
-			return is(Integer.class);
-		}
-		return klass.getSimpleName().toLowerCase().equals(type.getName());
+		try {
+			return Mirror.me(type).getWrpperClass() == klass;
+		} catch (Exception e) {}
+		return false;
 	}
 
 	public boolean canCastToDirectly(Class<?> type) {
@@ -446,7 +596,10 @@ public class Mirror<T> {
 			if (this.isPrimitiveNumber() && Mirror.me(type).isPrimitiveNumber())
 				return true;
 		}
-		return isWrpperOf(type) || Mirror.me(type).isWrpperOf(klass);
+		try {
+			return Mirror.me(type).getWrpperClass() == this.getWrpperClass();
+		} catch (Exception e) {}
+		return false;
 	}
 
 	public boolean isPrimitiveNumber() {
@@ -454,7 +607,8 @@ public class Mirror<T> {
 	}
 
 	public boolean isNumber() {
-		return Number.class.isAssignableFrom(klass) || klass.isPrimitive() && !is(boolean.class);
+		return Number.class.isAssignableFrom(klass) || klass.isPrimitive() && !is(boolean.class)
+				&& !is(char.class);
 	}
 
 	public boolean isDateTimeLike() {
@@ -473,4 +627,7 @@ public class Mirror<T> {
 		return ((ParameterizedType) superclass).getActualTypeArguments();
 	}
 
+	public static enum MatchType {
+		YES, LACK, NO
+	}
 }

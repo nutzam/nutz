@@ -6,68 +6,58 @@ import com.zzh.lang.Lang;
 
 public abstract class Trans {
 
-	private static ThreadLocal<Transaction> TN = new ThreadLocal<Transaction>();
 	private static Class<? extends Transaction> implClass;
 
+	static ThreadLocal<Transaction> trans = new ThreadLocal<Transaction>();
+	static ThreadLocal<Integer> count = new ThreadLocal<Integer>();
+
 	public static Transaction get() {
-		return TN.get();
+		return trans.get();
 	}
 
 	public static void setup(Class<? extends Transaction> classOfTransaction) {
 		implClass = classOfTransaction;
 	}
 
-	private static Transaction begain() {
-		if (null != TN.get())
-			return TN.get();
-		// throw new
-		// RuntimeException("Fail to create new trans because Transaction ["
-		// + TN.get().getId() + "] still opening.");
-		try {
-			if (null == implClass)
-				TN.set(new NutTransaction());
-			else
-				TN.set(implClass.newInstance());
-			return TN.get();
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
+	private static void begain() throws Exception {
+		if (null == trans.get()) {
+			trans.set(null == implClass ? new NutTransaction() : implClass.newInstance());
+			count.set(0);
 		}
+		count.set(count.get() + 1);
 	}
 
 	private static void commit() throws SQLException {
-		if (null == TN.get())
-			return;
-		// @TODO it is not safe! should prepare Savepoint for multi datasouce
-		// rollback together
-		TN.get().commit();
-		depose();
+		count.set(count.get() - 1);
+		if (count.get() == 0)
+			trans.get().commit();
 	}
 
 	private static void depose() {
-		TN.set(null);
+		if (count.get() == 0)
+			trans.set(null);
 	}
 
-	private static void rollback() {
-		if (null == TN.get())
-			return;
-		TN.get().rollback();
-		depose();
+	private static void rollback(Integer num) {
+		count.set(num);
+		if (count.get() == 0)
+			trans.get().rollback();
 	}
 
 	public static void exec(Atom... atoms) {
 		if (null == atoms)
 			return;
-		begain();
+		int num = count.get() == null ? 0 : count.get();
 		try {
+			begain();
 			for (Atom atom : atoms)
 				atom.run();
 			commit();
-		} catch (Exception e) {
-			rollback();
+		} catch (Throwable e) {
+			rollback(num);
 			throw Lang.wrapThrow(e);
 		} finally {
 			depose();
 		}
-
 	}
 }

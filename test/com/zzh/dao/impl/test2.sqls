@@ -1,0 +1,39 @@
+/*.dog.drop*/
+DROP TABLE IF EXISTS t_dog;
+/*-------------------------------------------------------------------------*/
+/*.dog.create*/
+CREATE TABLE t_dog (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  age SMALLINT
+);
+/*-------------------------------------------------------------------------*/
+/*.parrot.drop*/
+DROP TABLE IF EXISTS t_parrot;
+/*-------------------------------------------------------------------------*/
+/*.parrot.create*/
+CREATE TABLE t_parrot (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  age SMALLINT
+);
+/*-------------------------------------------------------------------------*/
+/*.eagle.drop*/
+DROP TABLE IF EXISTS t_eagle;
+/*-------------------------------------------------------------------------*/
+/*.eagle.create*/
+CREATE TABLE t_eagle (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  age SMALLINT
+);
+/*-------------------------------------------------------------------------*/
+/*.cayman.drop*/
+DROP TABLE IF EXISTS t_cayman;
+/*-------------------------------------------------------------------------*/
+/*.cayman.create*/
+CREATE TABLE t_cayman (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  age SMALLINT
+);

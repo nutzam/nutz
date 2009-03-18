@@ -34,7 +34,7 @@ public class Sqls {
 		return sb;
 	}
 
-	public static StringBuilder escapteCondition(CharSequence s) {
+	public static StringBuilder escapteConditionValue(CharSequence s) {
 		if (null == s)
 			return null;
 		StringBuilder sb = new StringBuilder();
@@ -59,45 +59,19 @@ public class Sqls {
 		return !me.isBoolean() && me.isPrimitiveNumber();
 	}
 
-	@Deprecated
-	public static String formatName(CharSequence cs) {
-		String name = null;
-		if (cs.charAt(0) == '`' || cs.charAt(cs.length() - 1) == '`') {
-			if (cs.charAt(0) == '`' && cs.charAt(cs.length() - 1) == '`') {
-				char[] ca = new char[cs.length() - 2];
-				for (int i = 0; i < ca.length; i++)
-					ca[i] = cs.charAt(i + 1);
-				name = String.valueOf(ca);
-			} else
-				throw new RuntimeException("Error field name: \"" + cs.toString() + "\"");
-		} else
-			name = new StringBuilder("`").append(cs).append('`').toString();
-		if (null == name || name.length() == 0) {
-			throw new RuntimeException("Error field name: \"" + cs.toString() + "\"");
-		}
-		return name;
-	}
-
-	public static SQLException wrapSQLException(Throwable t) {
-		if (t instanceof SQLException)
-			return (SQLException) t;
-		return new SQLException(t.getMessage());
-	}
-
 	public static Connection getConnection(DataSource dataSource) {
 		try {
 			if (Trans.get() != null)
 				return Trans.get().getConnection(dataSource);
 			return dataSource.getConnection();
 		} catch (SQLException e) {
-			throw new RuntimeException("Could not get JDBC Connection", e);
+			throw Lang.makeThrow("Could not get JDBC Connection : %s", e.getMessage());
 		}
 	}
 
 	public static void releaseConnection(Connection con, DataSource dataSource) {
 		try {
-			if (Trans.get() == null)
-				con.close();
+			con.close();
 		} catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}

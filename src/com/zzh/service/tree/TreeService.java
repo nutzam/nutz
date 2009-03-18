@@ -1,9 +1,11 @@
 package com.zzh.service.tree;
 
+import java.lang.reflect.Field;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.zzh.dao.Dao;
+import com.zzh.dao.entity.Entity;
 import com.zzh.lang.Each;
 import com.zzh.lang.ExitLoop;
 import com.zzh.lang.Lang;
@@ -16,36 +18,48 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 
 	protected TreeService() {
 		super();
+		resetDefaultFields();
+	}
+
+	private void resetDefaultFields() {
+		try {
+			this.setChildrenField("children");
+		} catch (NoSuchFieldException e) {}
+		try {
+			this.setParentField("parent");
+		} catch (NoSuchFieldException e) {}
 	}
 
 	protected TreeService(Dao dao) {
 		super(dao);
+		resetDefaultFields();
 	}
 
-	private String parentField;
-	private String childrenField;
+	private Field parentField;
+	private Field childrenField;
 
-	public String getParentField() {
+	public Field getParentField() {
 		return parentField;
 	}
 
-	public void setParentField(String parent) {
-		this.parentField = parent;
+	public void setParentField(String fieldName) throws NoSuchFieldException {
+		this.parentField = mirror().getField(fieldName);
 	}
 
-	public String getChildrenField() {
+	public Field getChildrenField() {
 		return childrenField;
 	}
 
-	public void setChildrenField(String children) {
-		this.childrenField = children;
+	public void setChildrenField(String fieldName) throws NoSuchFieldException {
+		this.childrenField = mirror().getField(fieldName);
 	}
 
 	public void clearDescendants(final T obj) {
 		Trans.exec(new Atom() {
-			public void run() throws Exception {
-				dao().fetchMany(obj, childrenField);
-				Object children = Mirror.me(obj.getClass()).getValue(obj, childrenField);
+			public void run(){
+				if (null == dao().fetchMany(obj, childrenField.getName()))
+					return;
+				Object children = Mirror.me(obj.getClass()).getValue(obj, childrenField.getName());
 				Lang.each(children, new Each<T>() {
 					public void invoke(int index, T child, int size) throws ExitLoop {
 						clearDescendants(child);
@@ -56,67 +70,128 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 		});
 	}
 
-	public void clearDescendants(long id) {
-		clearDescendants(fetch(id));
-	}
-
 	public void clearChildren(T obj) {
-		dao().clearMany(obj, childrenField);
+		dao().clearMany(obj, childrenField.getName());
 	}
 
-	public void clearChildren(long id) {
-		clearChildren(fetch(id));
-	}
-
-	public T fetchWithDescendants(T obj) {
-		if (null == obj)
-			return null;
-		dao().fetchMany(obj, childrenField);
-		Object children = Mirror.me(obj.getClass()).getValue(obj, childrenField);
+	public T fetchDescendants(T obj) {
+		if (null == dao().fetchMany(obj, childrenField.getName()))
+			return obj;
+		Mirror<?> mirror = Mirror.me(obj.getClass());
+		Object children = mirror.getValue(obj, childrenField.getName());
 		Lang.each(children, new Each<T>() {
 			public void invoke(int index, T child, int size) throws ExitLoop {
-				fetchWithDescendants(child);
+				fetchDescendants(child);
 			}
 		});
 		return obj;
 	}
 
-	public T fetchWithDescendants(long id) {
-		return fetchWithDescendants(fetch(id));
+	public T fetchAll(T obj) {
+		if (null == dao().fetchMany(obj, childrenField.getName()))
+			return obj;
+		Mirror<?> mirror = Mirror.me(obj.getClass());
+		Object children = setupParentForChildren(obj, mirror, childrenField, parentField);
+		Lang.each(children, new Each<T>() {
+			public void invoke(int index, T child, int size) throws ExitLoop {
+				fetchAll(child);
+			}
+		});
+		return obj;
 	}
 
-	public T fetchWithChildren(long id) {
-		return dao().fetchMany(fetch(id), childrenField);
-	}
-
-	public T fetchWithParent(long id) {
-		return dao().fetchOne(fetch(id), parentField);
-	}
-
-	public T fetchWithAncestors(long id) {
-		return fetchAncestors(fetch(id));
+	private static <T> Object setupParentForChildren(final T me, final Mirror<?> mirror,
+			final Field childrenField, final Field parentField) {
+		Object children = mirror.getValue(me, childrenField.getName());
+		Lang.each(children, new Each<T>() {
+			public void invoke(int index, T child, int size) throws ExitLoop {
+				mirror.setValue(child, parentField, me);
+			}
+		});
+		return children;
 	}
 
 	public T fetchChildren(T obj) {
-		return dao().fetchMany(obj, childrenField);
+		if (null == fetchChildrenOnly(obj))
+			return obj;
+		setupParentForChildren(obj, Mirror.me(obj.getClass()), childrenField, parentField);
+		return obj;
+	}
+
+	public T fetchChildrenOnly(T obj) {
+		return dao().fetchMany(obj, childrenField.getName());
 	}
 
 	public T fetchParent(T obj) {
-		return dao().fetchOne(obj, parentField);
+		return dao().fetchOne(obj, parentField.getName());
 	}
 
 	public T fetchAncestors(T obj) {
-		dao().fetchOne(obj, parentField);
+		if (null == dao().fetchOne(obj, parentField.getName()))
+			return obj;
 		T parent = evalParent(obj);
 		if (null != parent)
 			fetchAncestors(parent);
 		return obj;
 	}
 
+	public T insertChildren(T obj) {
+		if (null == obj)
+			return null;
+		Entity<?> entity = dao().getEntity(obj.getClass());
+		Mirror<?> mirror = entity.getMirror();
+		Object children = mirror.getValue(obj, childrenField.getName());
+		Field pIdField = entity.getManys().get(childrenField.getName()).getTargetField();
+		this.insertBy(obj, children, entity, mirror, pIdField, new InsertByCallback<T>() {
+			public void processInsert(T child) {
+				insert(child);
+			}
+		});
+		return obj;
+	}
+
+	private static interface InsertByCallback<T> {
+		void processInsert(T child);
+	}
+
+	private void insertBy(T obj, final Object children, Entity<?> entity, final Mirror<?> mirror,
+			final Field pIdField, final InsertByCallback<T> callback) {
+		if (Lang.lenght(children) > 0) {
+			final Object id = mirror.getValue(obj, entity.getIdField().getField());
+			Trans.exec(new Atom() {
+				public void run(){
+					Lang.each(children, new Each<T>() {
+						public void invoke(int i, T child, int length) throws ExitLoop {
+							mirror.setValue(child, pIdField, id);
+							callback.processInsert(child);
+						}
+					});
+				}
+			});
+		}
+	}
+
+	public T insertDescendants(T obj) {
+		if (null == obj)
+			return null;
+		final Entity<?> entity = dao().getEntity(obj.getClass());
+		final Mirror<?> mirror = entity.getMirror();
+		Object children = mirror.getValue(obj, childrenField.getName());
+		final Field pIdField = entity.getManys().get(childrenField.getName()).getTargetField();
+		InsertByCallback<T> callback = new InsertByCallback<T>() {
+			public void processInsert(T child) {
+				Object children = mirror.getValue(child, childrenField.getName());
+				insert(child);
+				insertBy(child, children, entity, mirror, pIdField, this);
+			}
+		};
+		insertBy(obj, children, entity, mirror, pIdField, callback);
+		return obj;
+	}
+
 	@SuppressWarnings("unchecked")
 	private T evalParent(T obj) {
-		T parent = (T) Mirror.me(obj.getClass()).getValue(obj, parentField);
-		return parent;
+		return (T) Mirror.me(obj.getClass()).getValue(obj, parentField);
 	}
 
 	public List<T> getAncestors(T obj) {
@@ -129,10 +204,6 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 			obj = parent;
 		}
 		return list;
-	}
-
-	public List<T> getAncestor(long id) {
-		return getAncestors(fetch(id));
 	}
 
 }

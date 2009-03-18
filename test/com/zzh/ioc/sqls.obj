@@ -1,0 +1,5 @@
+{
+	type 	: "com.zzh.dao.impl.FileSqlManager",
+	$args	: ["com/zzh/dao/impl/test.sqls"
+			   , "com/zzh/dao/impl/manyone.sqls"]
+}

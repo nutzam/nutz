@@ -1,28 +1,35 @@
 package com.zzh.json;
 
+import java.io.IOException;
+import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 
 import com.zzh.castor.Castors;
+import com.zzh.lang.FailToGetValueException;
 import com.zzh.lang.Mirror;
 import com.zzh.lang.Strings;
 
 class JsonRendering {
 	private static String NL = "\n";
 
-	JsonRendering(JsonFormat format, Castors castors) {
-		if (null == castors) {
-			throw new RuntimeException("You can not assign null as castors for JsonConverting!!!");
-		}
+	private Collection<Object> memo;
+
+	private Writer writer;
+
+	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
-		this.castors = castors;
+		this.writer = writer;
+		// TODO make a new faster collection implementation
+		memo = new HashSet<Object>();
 	}
 
 	private JsonFormat format;
-	private Castors castors;
 
 	private static boolean isCompact(JsonRendering render) {
 		if (null == render.format)
@@ -30,87 +37,112 @@ class JsonRendering {
 		return render.format.isCompact();
 	}
 
-	private void appendName(StringBuilder sb, String name) {
+	private void appendName(String name) throws IOException {
 		if (!isCompact(this) && format.notNeedQuoteName)
-			sb.append(name);
+			writer.append(name);
 		else
-			sb.append(string2Json(name));
+			string2Json(name);
 	}
 
-	private void appendPairBegin(StringBuilder sb) {
+	private void appendPairBegin() throws IOException {
 		if (!isCompact(this))
-			sb.append(NL).append(Strings.dup(format.indentBy, format.indent));
+			writer.append(NL).append(Strings.dup(format.indentBy, format.indent));
 	}
 
-	private void appendPairSep(StringBuilder sb) {
-		sb.append(!isCompact(this) ? " :" : ":");
+	private void appendPairSep() throws IOException {
+		writer.append(!isCompact(this) ? " :" : ":");
 	}
 
-	private void appendPair(StringBuilder sb, String name, Object value) {
+	private void appendPair(String name, Object value) throws IOException {
+		appendPairBegin();
+		appendName(name);
+		appendPairSep();
+		render(value);
+	}
+
+	private boolean isIgnore(String name, Object value) {
 		if (null == value)
 			if (null == format)
-				return;
+				return true;
 			else if (format.ignoreNull)
-				return;
+				return true;
 		if (null != format && format.ignore(name))
-			return;
-
-		appendPairBegin(sb);
-		appendName(sb, name);
-		appendPairSep(sb);
-		sb.append(convert(value));
-		appendPairEnd(sb);
+			return true;
+		return false;
 	}
 
-	private void appendPairEnd(StringBuilder sb) {
-		sb.append(',');
+	private void appendPairEnd() throws IOException {
+		writer.append(',');
 	}
 
-	private void appendBraceBegin(StringBuilder sb) {
-		sb.append("{");
+	private void appendBraceBegin() throws IOException {
+		writer.append("{");
 	}
 
-	private void appendBraceEnd(StringBuilder sb) {
+	private void appendBraceEnd() throws IOException {
 		if (!isCompact(this))
-			sb.append(NL).append(Strings.dup(format.indentBy, format.indent));
-		sb.append("}");
+			writer.append(NL).append(Strings.dup(format.indentBy, format.indent));
+		writer.append("}");
+	}
+
+	static class Pair {
+
+		public Pair(String name, Object value) {
+			this.name = name;
+			this.value = value;
+		}
+
+		String name;
+		Object value;
 	}
 
 	@SuppressWarnings("unchecked")
-	private StringBuilder map2Json(Map map) {
+	private void map2Json(Map map) throws IOException {
 		if (null == map)
-			return null;
-		StringBuilder sb = new StringBuilder();
-		appendBraceBegin(sb);
+			return;
+		appendBraceBegin();
 		increaseFormatIndent();
+		ArrayList<Pair> list = new ArrayList<Pair>(map.size());
 		for (Iterator it = map.keySet().iterator(); it.hasNext();) {
 			String name = it.next().toString();
 			Object value = map.get(name);
-			appendPair(sb, name, value);
+			if (!this.isIgnore(name, value))
+				list.add(new Pair(name, value));
 		}
-		sb.deleteCharAt(sb.length() - 1);
+		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
+			Pair p = it.next();
+			this.appendPair(p.name, p.value);
+			if (it.hasNext())
+				this.appendPairEnd();
+		}
 		decreaseFormatIndent();
-		appendBraceEnd(sb);
-		return sb;
+		appendBraceEnd();
 	}
 
-	private StringBuilder pojo2Json(Object obj) {
+	private void pojo2Json(Object obj) throws IOException {
 		if (null == obj)
-			return null;
+			return;
 		Mirror<?> me = Mirror.me(obj.getClass());
 		Field[] fields = me.getFields();
-		StringBuilder sb = new StringBuilder();
-		appendBraceBegin(sb);
+		appendBraceBegin();
 		increaseFormatIndent();
+		ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
 		for (Field f : fields) {
 			String name = f.getName();
-			Object value = me.getValue(obj, f);
-			appendPair(sb, name, value);
+			try {
+				Object value = me.getValue(obj, f);
+				if (!this.isIgnore(name, value))
+					list.add(new Pair(name, value));
+			} catch (FailToGetValueException e) {}
 		}
-		sb.deleteCharAt(sb.length() - 1);
+		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
+			Pair p = it.next();
+			this.appendPair(p.name, p.value);
+			if (it.hasNext())
+				this.appendPairEnd();
+		}
 		decreaseFormatIndent();
-		appendBraceEnd(sb);
-		return sb;
+		appendBraceEnd();
 	}
 
 	private void decreaseFormatIndent() {
@@ -123,57 +155,62 @@ class JsonRendering {
 			format.indent++;
 	}
 
-	private StringBuilder string2Json(String s) {
+	private void string2Json(String s) throws IOException {
 		if (null == s)
-			return new StringBuilder("null");
-		return new StringBuilder("\"").append(s.replaceAll("\"|\\\\", "\\\\$0")).append('"');
+			writer.append("null");
+		else
+			writer.append("\"").append(s.replaceAll("\"|\\\\", "\\\\$0")).append('"');
 	}
 
 	@SuppressWarnings("unchecked")
-	CharSequence convert(Object obj) {
-		if (null == obj)
-			return "null";
-		if (obj instanceof Map)
-			return map2Json((Map) obj);
-		else if (obj instanceof Collection)
-			return coll2Json((Collection) obj);
-		else if (obj.getClass().isArray())
-			return array2Json(obj);
-		else {
+	void render(Object obj) throws IOException {
+		if (null == obj) {
+			writer.write("null");
+		} else {
 			Mirror mr = Mirror.me(obj.getClass());
-			if (mr.isNumber() || mr.isBoolean()) {
-				return obj.toString();
+			if (mr.isEnum()) {
+				string2Json(((Enum) obj).name());
+			} else if (mr.isNumber() || mr.isBoolean() || mr.isChar()) {
+				writer.append(obj.toString());
 			} else if (mr.isStringLike()) {
-				return string2Json(obj.toString());
+				string2Json(obj.toString());
 			} else if (mr.isDateTimeLike()) {
-				return string2Json(castors.castToString(obj));
+				string2Json(Castors.me().castToString(obj));
+			} else if (memo.contains(obj)) {
+				writer.append("null");
+			} else {
+				memo.add(obj);
+				if (obj instanceof Map)
+					map2Json((Map) obj);
+				else if (obj instanceof Collection)
+					coll2Json((Collection) obj);
+				else if (obj.getClass().isArray())
+					array2Json(obj);
+				else
+					pojo2Json(obj);
 			}
 		}
-		return pojo2Json(obj);
 	}
 
-	private CharSequence array2Json(Object obj) {
-		StringBuilder sb = new StringBuilder();
-		sb.append('[');
+	private void array2Json(Object obj) throws IOException {
+		writer.append('[');
 		int len = Array.getLength(obj) - 1;
 		int i;
 		for (i = 0; i < len; i++) {
-			sb.append(convert(Array.get(obj, i))).append(',').append(' ');
+			render(Array.get(obj, i));
+			writer.append(',').append(' ');
 		}
-		sb.append(convert(Array.get(obj, i)));
-		sb.append(']');
-		return sb;
+		render(Array.get(obj, i));
+		writer.append(']');
 	}
 
-	private CharSequence coll2Json(Collection<?> obj) {
-		StringBuilder sb = new StringBuilder();
-		sb.append('[');
+	private void coll2Json(Collection<?> obj) throws IOException {
+		writer.append('[');
 		for (Iterator<?> it = obj.iterator(); it.hasNext();) {
-			sb.append(convert(it.next()));
+			render(it.next());
 			if (it.hasNext())
-				sb.append(',').append(' ');
+				writer.append(',').append(' ');
 		}
-		sb.append(']');
-		return sb;
+		writer.append(']');
 	}
 }

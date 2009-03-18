@@ -8,7 +8,7 @@ import com.zzh.lang.Mirror;
 public class String2Mirror extends Castor<String, Mirror> {
 
 	@Override
-	protected Mirror<?> cast(String src, Class<?> toType) {
+	protected Mirror<?> cast(String src, Class<?> toType, String... args) {
 		try {
 			return Mirror.me(Class.forName(src));
 		} catch (ClassNotFoundException e) {

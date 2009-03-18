@@ -1,8 +1,23 @@
 package com.zzh.ioc;
 
+@SuppressWarnings("serial")
 public class FailToMakeObjectException extends RuntimeException {
 
-	private static final long serialVersionUID = 5017414009775324162L;
+	public FailToMakeObjectException(String name, Throwable cause) {
+		this(name, cause.getMessage());
+	}
+
+	public FailToMakeObjectException(String name, String reason) {
+		super(String.format("Fail to make object [%s] because: '%s'", name, reason));
+	}
+
+	public FailToMakeObjectException() {
+		super();
+	}
+
+	public FailToMakeObjectException(String message) {
+		super(message);
+	}
 
 	public FailToMakeObjectException(Throwable cause) {
 		super(cause);

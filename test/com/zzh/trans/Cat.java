@@ -49,4 +49,11 @@ public class Cat {
 		this.masterId = masterId;
 	}
 
+	public static Cat create(String name, Master m) {
+		Cat c = new Cat();
+		c.setName(name);
+		c.setMaster(m);
+		return c;
+	}
+
 }

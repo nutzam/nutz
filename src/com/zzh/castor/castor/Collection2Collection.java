@@ -9,7 +9,8 @@ import com.zzh.castor.FailToCastObjectException;
 public class Collection2Collection extends Castor<Collection, Collection> {
 
 	@Override
-	protected Collection cast(Collection src, Class<?> toType) throws FailToCastObjectException {
+	protected Collection cast(Collection src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		Collection coll = createCollection(src, toType);
 		coll.addAll(src);
 		return coll;

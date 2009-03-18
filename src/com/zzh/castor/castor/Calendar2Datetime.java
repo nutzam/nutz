@@ -9,7 +9,8 @@ import com.zzh.castor.FailToCastObjectException;
 public class Calendar2Datetime extends Castor<java.util.Calendar, java.util.Date> {
 
 	@Override
-	protected Date cast(Calendar src, Class<?> toType) throws FailToCastObjectException {
+	protected Date cast(Calendar src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		return src.getTime();
 	}
 

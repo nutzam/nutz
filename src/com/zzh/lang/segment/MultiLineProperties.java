@@ -7,17 +7,18 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import com.zzh.lang.Strings;
 import com.zzh.lang.stream.CharInputStream;
 
-
 public class MultiLineProperties implements Map<String, String> {
-	public MultiLineProperties(InputStream ins, String encoding)
-			throws IOException {
+	public MultiLineProperties(InputStream ins, String encoding) throws IOException {
 		maps = new HashMap<String, String>();
+		keys = new LinkedList<String>();
 		this.encoding = encoding;
 		load(ins);
 	}
@@ -28,6 +29,7 @@ public class MultiLineProperties implements Map<String, String> {
 
 	public MultiLineProperties() {
 		maps = new HashMap<String, String>();
+		keys = new LinkedList<String>();
 		this.encoding = null;
 	}
 
@@ -38,10 +40,12 @@ public class MultiLineProperties implements Map<String, String> {
 	public MultiLineProperties(MultiLineProperties p) {
 		this();
 		maps.putAll(p.maps);
+		keys.addAll(p.keys);
 	}
 
 	public MultiLineProperties(java.util.Properties p) {
 		maps = new HashMap<String, String>();
+		keys = new LinkedList<String>();
 		Enumeration<?> en = p.keys();
 		while (en.hasMoreElements()) {
 			String key = en.nextElement().toString();
@@ -52,15 +56,15 @@ public class MultiLineProperties implements Map<String, String> {
 
 	protected Map<String, String> maps;
 	protected String encoding;
+	protected List<String> keys;
 
 	public void setEncoding(String encoding) {
 		this.encoding = encoding;
 	}
 
 	public synchronized void load(InputStream ins) throws IOException {
-		BufferedReader tr = new BufferedReader(
-				(null == encoding ? new InputStreamReader(ins)
-						: new InputStreamReader(ins, encoding)));
+		BufferedReader tr = new BufferedReader((null == encoding ? new InputStreamReader(ins)
+				: new InputStreamReader(ins, encoding)));
 		this.clear();
 		String s;
 		while (null != (s = tr.readLine())) {
@@ -78,6 +82,7 @@ public class MultiLineProperties implements Map<String, String> {
 			if (c == '=') {
 				String name = s.substring(0, pos);
 				maps.put(name, s.substring(pos + 1));
+				keys.add(name);
 			} else if (c == ':') {
 				String name = s.substring(0, pos);
 				StringBuffer sb = new StringBuffer();
@@ -89,10 +94,12 @@ public class MultiLineProperties implements Map<String, String> {
 					sb.append("\r\n" + ss);
 				}
 				maps.put(name, sb.toString());
+				keys.add(name);
 				if (null == ss)
 					return;
 			} else {
 				maps.put(s, null);
+				keys.add(s);
 			}
 		}
 	}
@@ -203,6 +210,10 @@ public class MultiLineProperties implements Map<String, String> {
 
 	public Set<String> keySet() {
 		return maps.keySet();
+	}
+
+	public List<String> keys() {
+		return keys;
 	}
 
 	public synchronized String put(String key, String value) {

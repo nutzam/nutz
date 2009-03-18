@@ -5,14 +5,25 @@ import com.zzh.dao.entity.annotation.*;
 @Table("nut_field")
 public class FieldBean {
 
-	@Column
+	@Column("oid")
 	private int objectId;
 
 	@Column
 	private String name;
 
-	@Column
-	private String value;
+	@Column("vid")
+	private int valueId;
+
+	@One(target = ValueBean.class, field = "valueId")
+	private ValueBean value;
+
+	public ValueBean getValue() {
+		return value;
+	}
+
+	public void setValue(ValueBean value) {
+		this.value = value;
+	}
 
 	public int getObjectId() {
 		return objectId;
@@ -30,12 +41,12 @@ public class FieldBean {
 		this.name = name;
 	}
 
-	public String getValue() {
-		return value;
+	public int getValueId() {
+		return valueId;
 	}
 
-	public void setValue(String value) {
-		this.value = value;
+	public void setValueId(int valueId) {
+		this.valueId = valueId;
 	}
 
 }

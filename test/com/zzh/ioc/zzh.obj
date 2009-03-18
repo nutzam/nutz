@@ -8,6 +8,8 @@
 		age		: 32,
 		health  : .80,
 		birthday: "1977-9-21 8:8:34",
-		father	: "-> ycs"
+		father	: "-> ycs",
+		fromJava: "=$JAVA:com.zzh.ioc.Guy.staticTestEmailObject",
+		tomcatHome : "=$ENV:PATH"
 	}
 }

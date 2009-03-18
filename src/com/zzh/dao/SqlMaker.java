@@ -1,129 +1,102 @@
 package com.zzh.dao;
 
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
-import com.zzh.castor.Castors;
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.EntityField;
-import com.zzh.lang.Lang;
 import com.zzh.lang.segment.CharSegment;
 
 public class SqlMaker {
 
-	private Castors castors;
+	public SqlMaker() {}
 
-	public SqlMaker() {
-		this.castors = Castors.me();
+	static <T extends ConditionSql<?>> T makeSQL(T sql, Entity<?> entity, String ptn,
+			String... args) {
+		return makeSQLByString(sql, entity, String.format(ptn, (Object[]) args));
 	}
 
-	public SqlMaker(Castors castors) {
-		this.castors = castors;
-	}
-
-	public Castors getCastors() {
-		return castors;
-	}
-
-	public void setCastors(Castors castors) {
-		this.castors = castors;
-	}
-
-	protected static <T extends ConditionSql<?>> T makeSQL(T sql,
-			Entity<?> entity, String ptn, String... args) {
-		return makeSQLByString(sql, entity, String.format(ptn, (Object[]) Lang
-				.join(entity.getTableName(), args)));
-	}
-
-	protected static <T extends ConditionSql<?>> T makeSQLByString(T sql,
-			Entity<?> entity, String str) {
+	protected static <T extends ConditionSql<?>> T makeSQLByString(T sql, Entity<?> entity,
+			String str) {
 		sql.valueOf(str);
 		sql.setEntity(entity);
 		return sql;
 	}
 
-	public ExecutableSql<?> makeClearSQL(Entity<?> en) {
-		return makeSQL(new ExecutableSql<Object>(castors), en,
-				"DELETE FROM %s ${condition};");
+	public ExecutableSql makeClearSQL(String tableName) {
+		return makeSQL(new ExecutableSql(), null, "DELETE FROM %s ${condition};", tableName);
 	}
 
-	public ExecutableSql<?> makeDeleteSQL(Entity<?> en, EntityField field) {
-		return makeSQL(new ExecutableSql<Object>(castors), en,
-				"DELETE FROM %s WHERE %s=${%s};", field.getColumnName(), field
-						.getField().getName());
+	public ExecutableSql makeDeleteSQL(Entity<?> en, EntityField ef) {
+		return makeSQL(new ExecutableSql(), en, "DELETE FROM %s WHERE %s=${%s};",
+				en.getTableName(), ef.getColumnName(), ef.getField().getName());
 	}
 
-	public <T> FetchSql<T> makeFetchSQL(Entity<T> en, EntityField field) {
-		return makeSQL(new FetchSql<T>(castors), en,
-				"SELECT * FROM %s WHERE %s=${%s};", field.getColumnName(),
-				field.getField().getName());
+	public <T> FetchSql<T> makeFetchSQL(Entity<T> en, EntityField ef) {
+		return makeSQL(new FetchSql<T>(), en, "SELECT * FROM %s WHERE %s=${%s};", en.getViewName(),
+				ef.getColumnName(), ef.getField().getName());
 	}
 
-	public <T> FetchSql<Integer> makeCountSQL(Entity<T> en) {
-		return makeSQL(new FetchSql<Integer>(castors), en,
-				"SELECT COUNT(*) FROM %s ${condition};");
+	public <T> FetchSql<Integer> makeCountSQL(Entity<T> en, String viewName) {
+		return makeSQL(new FetchSql<Integer>(), en, "SELECT COUNT(*) FROM %s ${condition};",
+				viewName);
 	}
 
 	public <T> FetchSql<Integer> makeFetchMaxSQL(Entity<T> en, EntityField ef) {
 		// TODO maybe escape % is better way
-		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s;").set(
-				"field", ef.getField().getName()).toString();
-		return makeSQL(new FetchSql<Integer>(castors), en, ptn);
+		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s;").set("field",
+				ef.getField().getName()).toString();
+		return makeSQL(new FetchSql<Integer>(), en, ptn, en.getViewName());
 	}
 
 	public <T> QuerySql<T> makeQuerySQL(Entity<T> en) {
-		return makeSQL(new QuerySql<T>(castors), en,
-				"SELECT * FROM %s ${condition};");
+		return makeSQL(new QuerySql<T>(), en, "SELECT * FROM %s ${condition};", en.getViewName());
 	}
 
-	public ExecutableSql<?> makeInsertSQL(Entity<?> en) {
+	public ExecutableSql makeInsertSQL(Entity<?> en, Object obj) {
 		StringBuffer fields = new StringBuffer();
 		StringBuffer values = new StringBuffer();
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			if (ef.isAutoIncrement())
+			if (ef.isAutoIncrement() || ef.isReadonly())
+				continue;
+			if (null != obj && !ef.hasDefaultValue() && null == ef.getValue(obj))
 				continue;
 			// fields.append(SQLUtils.formatName(ef.getColumnName()));
-			fields.append(ef.getColumnName());
-			values.append("${" + ef.getField().getName() + "}");
-			if (it.hasNext()) {
-				fields.append(',');
-				values.append(',');
-			}
+			fields.append(',').append(ef.getColumnName());
+			values.append(',').append("${" + ef.getField().getName() + "}");
 		}
-		return makeSQL(new ExecutableSql<Object>(castors), en,
-				"INSERT INTO %s(%s) VALUES(%s);", fields.toString(), values
-						.toString());
+		fields.deleteCharAt(0);
+		values.deleteCharAt(0);
+		return makeSQL(new ExecutableSql(), en, "INSERT INTO %s(%s) VALUES(%s);",
+				en.getTableName(), fields.toString(), values.toString());
 	}
 
-	public ExecutableSql<?> makeUpdateSQL(Entity<?> en, Object obj,
-			String ignoredFieldsPattern, String activedFieldsPattern) {
+	public ExecutableSql makeUpdateSQL(Entity<?> en, Object obj, String ignored, String actived) {
 		StringBuffer sb = new StringBuffer();
+		Pattern ign = null == ignored ? null : Pattern.compile(ignored);
+		Pattern act = null == actived ? null : Pattern.compile(actived);
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			if (ef.isId())
+			String fn = ef.getField().getName();
+			if (ef.isId() || ef.isReadonly())
 				continue;
-			if (null != obj
-					&& null == en.getMirror().getValue(obj, ef.getField()))
+			if (null != obj && null == ef.getValue(obj))
 				continue;
-			if (null != ignoredFieldsPattern
-					&& ignoredFieldsPattern.indexOf("["
-							+ ef.getField().getName() + "]") != -1)
-				continue;
-			if (null != activedFieldsPattern
-					&& activedFieldsPattern.indexOf("["
-							+ ef.getField().getName() + "]") == -1)
-				continue;
-			sb.append(ef.getColumnName()).append('=').append(
-					"${" + ef.getField().getName() + "}");
-			if (it.hasNext()) {
-				sb.append(',');
-			}
+			if (null != ign)
+				if (ign.matcher(fn).find())
+					continue;
+			if (null != actived)
+				if (!act.matcher(fn).find())
+					continue;
+			sb.append(',').append(ef.getColumnName()).append('=').append("${").append(fn).append(
+					'}');
 		}
+		sb.deleteCharAt(0);
 		EntityField idf = en.getIdentifiedField();
-		String condition = String.format("%s=${%s}", idf.getColumnName(), idf
-				.getField().getName());
-		return makeSQL(new ExecutableSql<Object>(castors), en,
-				"UPDATE %s SET %s WHERE %s;", sb.toString(), condition);
+		String condition = String.format("%s=${%s}", idf.getColumnName(), idf.getField().getName());
+		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s WHERE %s;", en.getTableName(), sb
+				.toString(), condition);
 
 	}
 }

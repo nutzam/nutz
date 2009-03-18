@@ -23,37 +23,45 @@ public interface Dao {
 
 	<T> T insert(T obj);
 
-	<T> T insertMany(T obj, String fieldName);
+	<T> T insertMany(T obj, String... fieldNames);
 
-	<T> T insertOne(T obj, String fieldName);
+	<T> T insertOne(T obj, String... fieldNames);
+
+	<T> T insertManyMany(T obj, String... fieldNames);
 
 	<T> T update(T obj);
 
 	<T> T update(T obj, boolean ignoreNull);
 
-	<T> T update(T obj, String ignoredFieldsPattern, String activedFieldsPattern);
+	<T> T update(T obj, String ignored, String actived);
 
 	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
 
-	void delete(Object obj);
+	<T> void delete(T obj);
 
 	<T> void delete(Class<T> classOfT, long id);
 
 	<T> void delete(Class<T> classOfT, String name);
 
-	<T> void deleteOne(T obj, String fieldName);
+	<T> void deleteOne(T obj, String... fieldNames);
 
 	<T> T fetch(Class<T> classOfT, long id);
 
 	<T> T fetch(Class<T> classOfT, String name);
 
-	<T> T fetchOne(T obj, String fieldName);
+	<T> T fetchOne(T obj, String... fieldNames);
 
-	<T> T fetchMany(T obj, String fieldName);
+	<T> T fetchMany(T obj, String... fieldNames);
+
+	<T> T fetchManyMany(T obj, String... fieldNames);
 
 	<T> void clear(Class<T> classOfT, Condition condition);
 
-	<T> void clearMany(T obj, String fieldName);
+	void clear(String tableName, Condition condition);
+
+	<T> void clearMany(T obj, String... fieldNames);
+
+	<T> void clearManyMany(T obj, String... fieldNames);
 
 	<T> Entity<T> getEntity(Class<T> classOfT);
 
@@ -61,5 +69,10 @@ public interface Dao {
 
 	int count(Class<?> classOfT);
 
+	int count(String name, Condition condition);
+
+	int count(String name);
+
 	int getMaxId(Class<?> classOfT);
+
 }

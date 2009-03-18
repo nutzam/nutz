@@ -75,5 +75,10 @@ public class DaoPersonTest extends TestCase {
 		dao.fetchMany(pp, "children");
 		assertEquals(0, pp.getChildren().size());
 	}
+	
+	public void testFetchObjectByMany() throws Exception{
+		Person zzh = dao.fetchMany(dao.fetch(Person.class, "zzh"), "profile");
+		assertEquals("BeiJing",zzh.getProfile().city);
+	}
 
 }

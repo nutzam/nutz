@@ -7,7 +7,8 @@ import com.zzh.castor.FailToCastObjectException;
 public class Enum2String extends Castor<Enum, String> {
 
 	@Override
-	protected String cast(Enum src, Class<?> toType) throws FailToCastObjectException {
+	protected String cast(Enum src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		return src.name();
 	}
 }

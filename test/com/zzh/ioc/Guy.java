@@ -17,4 +17,10 @@ public class Guy {
 	public Date workSince;
 	public Time sleepWhen;
 	public Guy father;
+	public String tomcatHome;
+	public String fromJava;
+	
+	public static Email getStaticTestEmailObject(){
+		return new Email("zzh","gmail.com");
+	}
 }

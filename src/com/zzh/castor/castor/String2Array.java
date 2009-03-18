@@ -1,5 +1,6 @@
 package com.zzh.castor.castor;
 
+import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 
 import com.zzh.castor.Castor;
@@ -16,7 +17,8 @@ public class String2Array extends Castor<String, Object> {
 	}
 
 	@Override
-	protected Object cast(String src, Class<?> toType) throws FailToCastObjectException {
+	protected Object cast(String src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		src = Strings.trim(src);
 		StringBuilder sb = new StringBuilder();
 		if (!src.startsWith("["))
@@ -24,7 +26,7 @@ public class String2Array extends Castor<String, Object> {
 		sb.append(src);
 		if (!src.endsWith("]"))
 			sb.append(']');
-		return Json.fromJson(toType, new CharInputStream(sb));
+		return Json.fromJson(toType, new InputStreamReader(new CharInputStream(sb)));
 	}
 
 }

@@ -7,7 +7,7 @@ import com.zzh.lang.Mirror;
 public class Boolean2Number extends Castor<Boolean, Number> {
 
 	@Override
-	protected Number cast(Boolean src, Class<?> toType) {
+	protected Number cast(Boolean src, Class<?> toType, String... args) {
 		try {
 			return (Number) Mirror.me(toType).getWrpperClass().getConstructor(String.class)
 					.newInstance(src ? "1" : "0");

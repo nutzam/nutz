@@ -10,8 +10,9 @@ import com.zzh.lang.Lang;
 public class Map2Object extends Castor<Map, Object> {
 
 	@Override
-	protected Object cast(Map src, Class<?> toType) throws FailToCastObjectException {
-		return Lang.map2Object(src, toType, this.getCastors());
+	protected Object cast(Map src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
+		return Lang.map2Object(src, toType);
 	}
 
 }

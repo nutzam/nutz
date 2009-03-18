@@ -1,5 +1,8 @@
 package com.zzh.castor;
 
+import java.io.File;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -17,7 +20,7 @@ public class CastorTest extends TestCase {
 		Calendar c = Calendar.getInstance();
 		c.set(2008, 5, 20, 5, 46, 26);
 		Castors castor = Castors.me();
-		String s = castor.castToString(c, Calendar.class);
+		String s = castor.castToString(c);
 		assertEquals("2008-06-20 05:46:26", s);
 	}
 
@@ -190,5 +193,114 @@ public class CastorTest extends TestCase {
 	public void testEnum() throws Exception {
 		assertEquals("Dao", Castors.me().castToString(Nutz.Dao));
 		assertEquals(Nutz.Lang, Castors.me().castTo("Lang", Nutz.class));
+	}
+
+	static class FFF {
+		String ID;
+	}
+
+	public void testCollection2Object() throws Exception {
+		FFF obj = new FFF();
+		obj.ID = "XYZ";
+		ArrayList<FFF> list = new ArrayList<FFF>(1);
+		list.add(obj);
+		FFF obj2 = Castors.me().cast(list, ArrayList.class, FFF.class);
+		assertEquals(obj, obj2);
+	}
+
+	public void testString2Char() throws Exception {
+		char c = Castors.me().castTo("HH", Character.class);
+		assertEquals('H', c);
+		char c2 = Castors.me().castTo("HH", char.class);
+		assertEquals('H', c2);
+	}
+
+	public void testCharacter2char() throws Exception {
+		Character cc = 'Z';
+		char c = Castors.me().castTo(cc, char.class);
+		assertEquals('Z', c);
+	}
+
+	public void testString2File() throws Exception {
+		File f = Castors.me().castTo("com/zzh", File.class);
+		assertTrue(f.exists());
+	}
+
+	public void testFile2String() throws Exception {
+		File f = Castors.me().castTo("com/zzh", File.class);
+		String path = Castors.me().castTo(f, String.class);
+		assertEquals(f.getAbsolutePath(), path);
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testTimestamp2sqlDate() throws Exception {
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		java.sql.Date date = Castors.me().castTo(ts, java.sql.Date.class);
+		assertEquals(ts.getYear(), date.getYear());
+		assertEquals(ts.getMonth(), date.getMonth());
+		assertEquals(ts.getDate(), date.getDate());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testSqlDate2Timestamp() throws Exception {
+		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+		Timestamp ts = Castors.me().castTo(date, Timestamp.class);
+		assertEquals(ts.getYear(), date.getYear());
+		assertEquals(ts.getMonth(), date.getMonth());
+		assertEquals(ts.getDate(), date.getDate());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testTimestamp2sqlTime() throws Exception {
+		Timestamp ts = new Timestamp(System.currentTimeMillis());
+		java.sql.Time time = Castors.me().castTo(ts, java.sql.Time.class);
+		assertEquals(ts.getHours(), time.getHours());
+		assertEquals(ts.getMinutes(), time.getMinutes());
+		assertEquals(ts.getSeconds(), time.getSeconds());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testSqlTime2Timestamp() throws Exception {
+		java.sql.Time time = new java.sql.Time(System.currentTimeMillis());
+		Timestamp ts = Castors.me().castTo(time, Timestamp.class);
+		assertEquals(ts.getHours(), time.getHours());
+		assertEquals(ts.getMinutes(), time.getMinutes());
+		assertEquals(ts.getSeconds(), time.getSeconds());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testDatetime2sqlDate() throws Exception {
+		java.util.Date ts = new java.util.Date(System.currentTimeMillis());
+		java.sql.Date date = Castors.me().castTo(ts, java.sql.Date.class);
+		assertEquals(ts.getYear(), date.getYear());
+		assertEquals(ts.getMonth(), date.getMonth());
+		assertEquals(ts.getDate(), date.getDate());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testSqlDate2Datetime() throws Exception {
+		java.sql.Date date = new java.sql.Date(System.currentTimeMillis());
+		java.util.Date ts = Castors.me().castTo(date, java.util.Date.class);
+		assertEquals(ts.getYear(), date.getYear());
+		assertEquals(ts.getMonth(), date.getMonth());
+		assertEquals(ts.getDate(), date.getDate());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testDatetime2sqlTime() throws Exception {
+		java.util.Date ts = new java.util.Date(System.currentTimeMillis());
+		java.sql.Time time = Castors.me().castTo(ts, java.sql.Time.class);
+		assertEquals(ts.getHours(), time.getHours());
+		assertEquals(ts.getMinutes(), time.getMinutes());
+		assertEquals(ts.getSeconds(), time.getSeconds());
+	}
+
+	@SuppressWarnings("deprecation")
+	public void testSqlTime2Datetime() throws Exception {
+		java.sql.Time time = new java.sql.Time(System.currentTimeMillis());
+		java.util.Date ts = Castors.me().castTo(time, java.util.Date.class);
+		assertEquals(ts.getHours(), time.getHours());
+		assertEquals(ts.getMinutes(), time.getMinutes());
+		assertEquals(ts.getSeconds(), time.getSeconds());
 	}
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import com.zzh.Main;
 import com.zzh.lang.random.GM;
 import com.zzh.lang.random.StringGenerator;
-import com.zzh.castor.Castors;
 import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
 import com.zzh.dao.ExecutableSql;
@@ -26,7 +25,7 @@ import junit.framework.TestCase;
 public class NutDaoTest extends TestCase {
 
 	@Table("t_abc")
-	public class Abc {
+	public static class Abc {
 
 		@Column
 		@Id
@@ -36,8 +35,7 @@ public class NutDaoTest extends TestCase {
 		@Name
 		public String name;
 
-		public Abc() {
-		}
+		public Abc() {}
 
 		public Abc(ResultSet rs) throws SQLException {
 			id = rs.getInt("id");
@@ -81,7 +79,7 @@ public class NutDaoTest extends TestCase {
 		}
 	}
 
-	public void testFetchByField() {
+	public void testFetchById() {
 		Abc abc = dao.fetch(Abc.class, 1);
 		assertEquals("ZZH", abc.name);
 	}
@@ -98,16 +96,11 @@ public class NutDaoTest extends TestCase {
 		}
 	}
 
-	public class FetchAbc extends FetchSql<Abc> {
-
-		public FetchAbc(Castors castors) {
-			super(castors);
-		}
-	}
+	public static class FetchAbc extends FetchSql<Abc> {}
 
 	public void testExecuteFetchSQL() {
 		try {
-			FetchAbc sql = dao.sqls().createSql(FetchAbc.class, "fetch.abc");
+			FetchAbc sql = dao.sqls().createSql(FetchAbc.class, "abc.fetch");
 			sql.set("id", 1);
 			sql.setCallback(new QueryCallback<Abc>() {
 				@Override
@@ -127,7 +120,7 @@ public class NutDaoTest extends TestCase {
 	@SuppressWarnings("unchecked")
 	public void testExecuteQuerySQL() {
 		try {
-			QuerySql sql = (QuerySql) dao.sqls().createSql("query.abc");
+			QuerySql sql = (QuerySql) dao.sqls().createSql("abc.query");
 			sql.setCallback(new QueryCallback() {
 				@Override
 				public Object invoke(ResultSet rs) throws SQLException {
@@ -146,7 +139,7 @@ public class NutDaoTest extends TestCase {
 
 	public static Student setupStudent(Student stu, String name) {
 		stu.setId(-1);
-		stu.setAge(GM.gRandom(10, 45));
+		stu.setAge(GM.random(10, 45));
 		stu.setAboutMe(new StringGenerator(6, 10).next());
 		stu.setBirthday(Calendar.getInstance());
 		stu.setEmail(new Email(new StringGenerator(3, 5).next(), "gmail.com"));
@@ -207,7 +200,7 @@ public class NutDaoTest extends TestCase {
 		Email email = stu.getEmail();
 		stu.setEmail(new Email("bbb@bbb.com"));
 		stu.setAboutMe("haha");
-		dao.update(stu, "[email]", null);
+		dao.update(stu, "email", null);
 		Student stu2 = dao.fetch(Student.class, 1);
 		assertEquals("haha", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());
@@ -216,12 +209,17 @@ public class NutDaoTest extends TestCase {
 	public void testUpdateActivedField() {
 		Student stu = dao.fetch(Student.class, 1);
 		Email email = stu.getEmail();
+		boolean isnew = stu.isNew();
 		stu.setEmail(new Email("bbb@bbb.com"));
 		stu.setAboutMe("xyz");
-		dao.update(stu, null, "[aboutMe]");
+		stu.setAge(77);
+		stu.setNew(!isnew);
+		dao.update(stu, null, "aboutMe|age");
 		Student stu2 = dao.fetch(Student.class, 1);
 		assertEquals("xyz", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());
+		assertEquals(77, stu2.getAge());
+		assertEquals(isnew, stu2.isNew());
 	}
 
 	public void testDeleteById() {

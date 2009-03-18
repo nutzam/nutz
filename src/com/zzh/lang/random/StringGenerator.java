@@ -30,7 +30,7 @@ public class StringGenerator {
 	public String next() {
 		if (maxLen <= 0 || minLen <= 0)
 			return null;
-		char[] buf = new char[GM.gRandom(minLen, maxLen)];
+		char[] buf = new char[GM.random(minLen, maxLen)];
 		for (int i = 0; i < buf.length; i++) {
 			buf[i] = CharGenerator.next();
 		}

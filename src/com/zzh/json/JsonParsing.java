@@ -1,7 +1,7 @@
 package com.zzh.json;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -11,238 +11,300 @@ import java.util.List;
 import java.util.Map;
 
 import com.zzh.castor.Castors;
-import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
 import com.zzh.lang.Strings;
 
 class JsonParsing {
-	private Castors castors;
 
-	JsonParsing(Castors castors) {
-		this.castors = castors;
+	JsonParsing(Reader reader) {
+		this.reader = reader;
+		col = 0;
+		row = 1;
 	}
 
 	private int cursor;
+	private Reader reader;
+	private int col;
+	private int row;
 
-	/**
-	 * A start of a json string could be '[' '{' '"' [0-9] t | f
-	 * 
-	 * 
-	 * @param ins
-	 * @param type
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	<T> T parseFromJson(InputStream ins, Class<T> type) {
-		Mirror<T> me = Mirror.me(type);
+	private int nextChar() throws IOException {
+		if (-1 == cursor)
+			return -1;
 		try {
-			cursor = ins.read();
-			// skip the start blank
-			while (cursor >= 0 && cursor <= 32)
-				cursor = ins.read();
-			switch (cursor) {
-			/*
-			 * Array, the T should indicate the inside type of arrays
-			 */
-			case '[':
-				boolean reurnAsList = false;
-				List list = null;
-				if (null != type && List.class.isAssignableFrom(type)) {
-					reurnAsList = true;
-					if (me.is(List.class))
-						list = new LinkedList();
-					else
-						list = (List) me.born();
-				} else if (null != type && !type.isArray()) {
-					throw new RuntimeException(String.format(
-							"type can NOT '%s', it should be a Array or List!!!", type.getName()));
-				} else {
-					list = new LinkedList();
-				}
-				do {
-					Object o = parseFromJson(ins, null);
-					list.add(o);
-					// find next element
-					while (cursor != -1 && cursor != ',' && cursor != ']') {
-						cursor = ins.read();
-					}
-				} while (cursor != -1 && cursor != ']');
-				if (reurnAsList)
-					return (T) list;
-				Class<?> componentType = null == type ? Object.class : type.getComponentType();
-				Object ary = Array.newInstance(componentType, list.size());
-				int i = 0;
-				for (Iterator it = list.iterator(); it.hasNext();)
-					Array.set(ary, i++, castors.castTo(it.next(), componentType));
-				return (T) ary;
-				// Object or Map
-			case '{':
-				/*
-				 * For Map
-				 */
-				if (null == me || Map.class.isAssignableFrom(type)) {
-					Map<String, Object> map = null == me ? new HashMap<String, Object>()
-							: (Map<String, Object>) me.born();
-					do {
-						String name = readFieldName(ins);
-						Object value = parseFromJson(ins, null);
-						map.put(name, value);
-						// find next pair begin, if } break
-						if (cursor == '}') {
-							break;
-						}
-						if (cursor != ',')
-							do {
-								cursor = ins.read();
-							} while (cursor != '}' && cursor != ',');
-					} while (cursor != -1 && cursor != '}');
-					cursor = ins.read();
-					return (T) map;
-				}
-				/*
-				 * For Object
-				 */
-				T obj = me.born();
-				do {
-					String name = readFieldName(ins);
-					Field f = me.getField(name);
-					Object value = parseFromJson(ins, f.getType());
-					me.setValue(obj, f, value);
-					// find next pair begin, if } break
-					if (cursor == '}') {
-						break;
-					}
-					if (cursor != ',')
-						do {
-							cursor = ins.read();
-						} while (cursor != -1 && cursor != '}' && cursor != ',');
-				} while (cursor != -1 && cursor != '}');
-				cursor = ins.read();
-				return obj;
-				/*
-				 * For String
-				 */
-			case 'n':
-				if ('u' != (char) ins.read() && 'l' != (char) ins.read()
-						&& 'l' != (char) ins.read())
-					throw new RuntimeException("String must in quote or it must be <null>");
-				return null;
-			case '\'':
-			case '"':
-				StringBuilder vs = readString(ins);
-				String value = vs.toString();
-				if (null == me || me.is(String.class))
-					return (T) value;
-				return castors.castTo(value, me.getMyClass());
-				/*
-				 * For true or false
-				 */
-			case 't': // true
-				if ('u' != (char) ins.read() && 'r' != (char) ins.read()
-						&& 'e' != (char) ins.read())
-					throw new RuntimeException("Expect boolean as input!");
-				if (null != me && !Mirror.me(type).isBoolean())
-					throw new RuntimeException("Expect boolean|Boolean as type!");
-				return (T) Boolean.valueOf(true);
-			case 'f': // false
-				if ('a' != (char) ins.read() && 'l' != (char) ins.read()
-						&& 's' != (char) ins.read() && 'e' != (char) ins.read())
-					throw new RuntimeException("Expect boolean as input!");
-				if (null != me && !Mirror.me(type).isBoolean())
-					throw new RuntimeException("Expect boolean|Boolean as type!");
-				return (T) Boolean.valueOf(false);
-				/*
-				 * For number
-				 */
-			case '.':
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9':
-				StringBuilder sb = new StringBuilder();
-				do {
-					sb.append((char) cursor);
-					cursor = ins.read();
-				} while (cursor != ' ' && cursor != -1 && cursor != ',' && cursor != ']'
-						&& cursor != '}');
-				String numValue = Strings.trim(sb);
+			cursor = reader.read();
+			if (cursor == '\n') {
+				row++;
+				col = 0;
+			} else
+				col++;
+		} catch (Exception e) {
+			cursor = -1;
+		}
+		return cursor;
+	}
 
-				if (null == me) { // guess the return type
-					char lastChar = Character.toUpperCase(numValue.charAt(numValue.length() - 1));
-					if (numValue.indexOf('.') >= 0) {
-						if (lastChar == 'F')
-							return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
-						else
-							return (T) Double.valueOf(numValue);
-					} else {
-						if (lastChar == 'L')
-							return (T) Long.valueOf(numValue.substring(0, numValue.length() - 1));
-						else
-							return (T) Integer.valueOf(numValue);
-					}
-				}
-				// try actually return type
-				if (me.isInt()) {
-					return (T) Integer.valueOf(numValue);
-				} else if (me.isLong()) {
-					return (T) Long.valueOf(numValue);
-				} else if (me.isFloat()) {
-					return (T) Float.valueOf(numValue);
-				} else if (me.isDouble()) {
-					return (T) Double.valueOf(numValue);
-				} else if (me.isByte()) {
-					return (T) Byte.valueOf(numValue);
-				} else {
-					throw new RuntimeException("type must by one of int|long|float|dobule|byte");
-				}
-			default:
-				throw new RuntimeException("Wrong syntax of JSON string!");
-			}
-		} catch (Throwable e) {
-			if (e instanceof RuntimeException) {
-				throw (RuntimeException) e;
-			}
-			throw Lang.wrapThrow(e);
+	private void skipBlank() throws IOException {
+		while (cursor >= 0 && cursor <= 32)
+			nextChar();
+	}
+
+	private void skipBlockComment() throws IOException {
+		nextChar();
+		while (cursor != -1) {
+			if (cursor == '*') {
+				if (nextChar() == '/')
+					break;
+			} else
+				nextChar();
 		}
 	}
 
-	private String readFieldName(InputStream ins) throws IOException {
+	private void skipInlineComment() throws IOException {
+		while (nextChar() != -1 && cursor != '\n') {}
+	}
+
+	private void skipCommentsandBlank() throws IOException {
+		skipBlank();
+		while (cursor == '/') {
+			nextChar();
+			if (cursor == '/') { // inline comment
+				skipInlineComment();
+				nextChar();
+			} else if (cursor == '*') { // block comment
+				skipBlockComment();
+				nextChar();
+			} else {
+				throw makeError("Error comment syntax!");
+			}
+			skipBlank();
+		}
+	}
+
+	private boolean findNextNamePair() throws IOException {
+		skipCommentsandBlank();
+		if (cursor == '}')
+			return false;
+		if (cursor != ',')
+			throw makeError("Wrong char between name-value pair!");
+		nextChar();
+		skipCommentsandBlank();
+		return true;
+	}
+
+	<T> T parseFromJson(Class<T> type) {
+		try {
+			nextChar();
+			skipCommentsandBlank();
+			return parseFromCurrentLocation(type);
+		} catch (JsonException e) {
+			throw e;
+		} catch (Exception e) {
+			throw makeError(e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private <T> T parseFromCurrentLocation(Class<T> type) throws Exception {
+		Mirror<T> me = Mirror.me(type);
+		switch (cursor) {
+		/*
+		 * Array, the T should indicate the inside type of arrays
+		 */
+		case '[':
+			Class<?> compType = null;
+			boolean reurnAsList = true;
+			List list = null;
+			if (null == type) {
+				list = new LinkedList();
+			} else if (type.isArray()) {
+				list = new LinkedList();
+				reurnAsList = false;
+				compType = type.getComponentType();
+			} else if (List.class.isAssignableFrom(type)) {
+				reurnAsList = true;
+				if (me.is(List.class))
+					list = new LinkedList();
+				else
+					list = (List) me.born();
+			} else {
+				throw makeError(String.format("type can NO '%s', it should be a Array or List!!!",
+						type.getName()));
+			}
+			do {
+				Object o = parseFromJson(compType);
+				list.add(o);
+				skipCommentsandBlank();
+				if (cursor == ']')
+					break;
+				if (cursor != ',')
+					throw makeError("Wrong char between elements!");
+				while (cursor != -1 && cursor != ',' && cursor != ']') {
+					nextChar();
+				}
+			} while (cursor != -1 && cursor != ']');
+			nextChar();
+			if (reurnAsList)
+				return (T) list;
+			Object ary = Array.newInstance(compType, list.size());
+			int i = 0;
+			for (Iterator it = list.iterator(); it.hasNext();)
+				Array.set(ary, i++, Castors.me().castTo(it.next(), compType));
+			return (T) ary;
+			// Object or Map
+		case '{':
+			nextChar();
+			skipCommentsandBlank();
+			/*
+			 * For Map
+			 */
+			if (null == me || Map.class.isAssignableFrom(type)) {
+				Map<String, Object> map = null == me ? new HashMap<String, Object>()
+						: (Map<String, Object>) me.born();
+				do {
+					String name = readFieldName();
+					Object value = parseFromJson(null);
+					map.put(name, value);
+					if (!findNextNamePair())
+						break;
+				} while (cursor != -1 && cursor != '}');
+				nextChar();
+				return (T) map;
+			}
+			/*
+			 * For Object
+			 */
+			T obj = me.born();
+			do {
+				Field f = me.getField(readFieldName());
+				Object value = parseFromJson(f.getType());
+				me.setValue(obj, f, value);
+				if (!findNextNamePair())
+					break;
+			} while (cursor != -1 && cursor != '}');
+			nextChar();
+			return obj;
+		case 'u': // For undefined
+			if ('n' != (char) nextChar() & 'd' != (char) nextChar() & 'e' != (char) nextChar()
+					& 'f' != (char) nextChar() & 'i' != (char) nextChar()
+					& 'n' != (char) nextChar() & 'e' != (char) nextChar()
+					& 'd' != (char) nextChar())
+				throw makeError("String must in quote or it must be <null>");
+			nextChar();
+			return null;
+		case 'n': // For NULL
+			if ('u' != (char) nextChar() & 'l' != (char) nextChar() & 'l' != (char) nextChar())
+				throw makeError("String must in quote or it must be <null>");
+			nextChar();
+			return null;
+		case '\'': // For String
+		case '"':
+			StringBuilder vs = readString();
+			String value = vs.toString();
+			if (null == me || me.is(String.class))
+				return (T) value;
+			return Castors.me().castTo(value, me.getType());
+		case 't': // true
+			if ('u' != (char) nextChar() & 'r' != (char) nextChar() & 'e' != (char) nextChar())
+				throw makeError("Expect boolean as input!");
+			if (null != type && !Mirror.me(type).isBoolean())
+				throw makeError("Expect boolean|Boolean as type!");
+			nextChar();
+			return (T) Boolean.valueOf(true);
+		case 'f': // false
+			if ('a' != (char) nextChar() & 'l' != (char) nextChar() & 's' != (char) nextChar()
+					& 'e' != (char) nextChar())
+				throw makeError("Expect boolean as input!");
+			if (null != type && !Mirror.me(type).isBoolean())
+				throw makeError("Expect boolean|Boolean as type!");
+			nextChar();
+			return (T) Boolean.valueOf(false);
+		case '.': // For number
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			StringBuilder sb = new StringBuilder();
+			do {
+				sb.append((char) cursor);
+				nextChar();
+			} while (cursor != ' ' && cursor != -1 && cursor != ',' && cursor != ']'
+					&& cursor != '}' && cursor != '/');
+			String numValue = Strings.trim(sb);
+
+			if (null == me) { // guess the return type
+				char lastChar = Character.toUpperCase(numValue.charAt(numValue.length() - 1));
+				if (numValue.indexOf('.') >= 0) {
+					if (lastChar == 'F')
+						return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
+					else
+						return (T) Double.valueOf(numValue);
+				} else {
+					if (lastChar == 'L')
+						return (T) Long.valueOf(numValue.substring(0, numValue.length() - 1));
+					else
+						return (T) Integer.valueOf(numValue);
+				}
+			}
+
+			// try actually return type
+			if (me.isInt()) {
+				return (T) Integer.valueOf(numValue);
+			} else if (me.isLong()) {
+				return (T) Long.valueOf(numValue);
+			} else if (me.isFloat()) {
+				return (T) Float.valueOf(numValue);
+			} else if (me.isDouble()) {
+				return (T) Double.valueOf(numValue);
+			} else if (me.isByte()) {
+				return (T) Byte.valueOf(numValue);
+			} else {
+				throw makeError("type must by one of int|long|float|dobule|byte");
+			}
+		default:
+			throw makeError("Don't know how to handle this char");
+		}
+	}
+
+	private JsonException makeError(String message) {
+		return new JsonException(row, col, (char) cursor, message);
+	}
+
+	private String readFieldName() throws IOException {
 		StringBuilder sb = new StringBuilder();
-		cursor = ins.read();
 		while (cursor != -1 && cursor != ':') {
 			sb.append((char) cursor);
-			cursor = ins.read();
+			nextChar();
 		}
 		char[] name = Strings.trim(sb).toCharArray();
 		int offset = 0;
 		int count = name.length;
 		if (name[0] == '\"') {
 			if (name[--count] != '"')
-				throw new RuntimeException(String.format("Error field name [%s]", new String(name)));
+				throw makeError(String.format("Error field name [%s]", new String(name)));
 			offset++;
 			count--;
 		} else if (name[0] == '\'') {
 			if (name[--count] != '\'')
-				throw new RuntimeException(String.format("Error field name [%s]", new String(name)));
+				throw makeError(String.format("Error field name [%s]", new String(name)));
 			offset++;
 			count--;
 		}
 		return String.valueOf(name, offset, count);
 	}
 
-	private StringBuilder readString(InputStream ins) throws IOException {
+	private StringBuilder readString() throws IOException {
 		StringBuilder sb = new StringBuilder();
 		int expEnd = cursor;
-		cursor = ins.read();
-		while (cursor != -1 && cursor != expEnd) {
+		nextChar();
+		do {
 			if (cursor == '\\') {
-				cursor = ins.read();
+				nextChar();
 				switch (cursor) {
 				case 'n':
 					cursor = 10;
@@ -256,18 +318,21 @@ class JsonParsing {
 				case 'u':
 					char[] hex = new char[4];
 					for (int i = 0; i < 4; i++)
-						hex[i] = (char) ins.read();
+						hex[i] = (char) nextChar();
 					cursor = Integer.valueOf(new String(hex), 16);
 					break;
 				case 'b':
-					throw new RuntimeException("don't support \\b");
+					throw makeError("don't support \\b");
 				case 'f':
-					throw new RuntimeException("don't support \\f");
+					throw makeError("don't support \\f");
 				}
 			}
 			sb.append((char) cursor);
-			cursor = ins.read();
-		}
+			nextChar();
+		} while (cursor != -1 && cursor != expEnd);
+		if (cursor == -1)
+			throw makeError("Unclose string");
+		nextChar();
 		return sb;
 	}
 

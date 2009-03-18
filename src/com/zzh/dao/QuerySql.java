@@ -7,14 +7,17 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.zzh.castor.Castors;
 import com.zzh.dao.callback.QueryCallback;
 import com.zzh.lang.meta.Pager;
 
 public class QuerySql<T> extends ConditionSql<List<T>> {
 
-	public QuerySql(Castors castors) {
-		super(castors);
+	public QuerySql() {
+		super();
+	}
+
+	public QuerySql(String sql) {
+		super(sql);
 	}
 
 	private QueryCallback<T> queryCallback;
@@ -77,8 +80,7 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {
-				}
+				} catch (SQLException e1) {}
 		}
 	}
 

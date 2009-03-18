@@ -19,17 +19,17 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-
 public class Files {
-	public static String addSuffixInFileName(String name, String suffix) {
-		if (null == name)
+	public static File setSuffix(File f, String suffix) {
+		if (null == f)
 			return null;
 		if (null == suffix || suffix.length() == 0)
-			return name;
-		int pos = name.lastIndexOf('.');
+			return f;
+		String path = f.getName();
+		int pos = path.lastIndexOf('.');
 		if (-1 == pos)
-			return name + suffix;
-		return name.substring(0, pos) + suffix + name.substring(pos);
+			return new File(path + null == suffix ? "" : suffix);
+		return new File(path.substring(0, pos) + suffix);
 	}
 
 	public static String getExtension(File f) {
@@ -193,29 +193,6 @@ public class Files {
 		if (deleteDir(dir))
 			return makeDir(dir);
 		return false;
-	}
-
-	public static File getFileById(int fId, File home, String extension) {
-		String fs = String.format("%08X", fId);
-		StringBuffer sb = new StringBuffer(home.getAbsolutePath());
-		for (int i = 0; i < 8; i += 2) {
-			sb.append("/" + fs.substring(i, i + 2));
-		}
-		if (!Strings.isBlank(extension))
-			sb.append("." + extension);
-		File f = new File(sb.toString());
-		return f;
-	}
-
-	public static String getFilePathById(int fId, String home, String extension) {
-		String fs = String.format("%08X", fId);
-		StringBuffer sb = new StringBuffer(home);
-		for (int i = 0; i < 8; i += 2) {
-			sb.append("/" + fs.substring(i, i + 2));
-		}
-		if (!Strings.isBlank(extension))
-			sb.append("." + extension);
-		return sb.toString();
 	}
 
 	public static boolean copyFile(File src, File target) throws IOException {

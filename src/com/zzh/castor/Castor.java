@@ -14,12 +14,6 @@ public abstract class Castor<FROM, TO> {
 		toClass = (Class<?>) Mirror.getTypeParams(getClass())[1];
 	}
 
-	Castors castors;
-
-	protected Castors getCastors() {
-		return castors;
-	}
-
 	protected Class<?> fromClass;
 	protected Class<?> toClass;
 
@@ -32,7 +26,8 @@ public abstract class Castor<FROM, TO> {
 		return toClass;
 	}
 
-	protected abstract TO cast(FROM src, Class<?> toType) throws FailToCastObjectException;
+	protected abstract TO cast(FROM src, Class<?> toType, String... args)
+			throws FailToCastObjectException;
 
 	@SuppressWarnings("unchecked")
 	protected static Collection createCollection(Object src, Class<?> toType)

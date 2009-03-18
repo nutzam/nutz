@@ -4,16 +4,17 @@ import java.util.List;
 
 import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
+import com.zzh.dao.entity.Entity;
 import com.zzh.lang.Mirror;
 import com.zzh.lang.meta.Pager;
 
 public abstract class EntityService<T> extends Service {
 
-	private Class<T> entityClass;
+	private Mirror<T> mirror;
 
 	@SuppressWarnings("unchecked")
 	protected EntityService() {
-		entityClass = (Class<T>) Mirror.getTypeParams(getClass())[0];
+		mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
 	}
 
 	protected EntityService(Dao dao) {
@@ -21,28 +22,32 @@ public abstract class EntityService<T> extends Service {
 		this.setDao(dao);
 	}
 
+	public Mirror<T> mirror() {
+		return mirror;
+	}
+
+	public Entity<T> getEntity() {
+		return dao().getEntity(mirror.getType());
+	}
+
 	public Class<T> getEntityClass() {
-		return entityClass;
+		return mirror.getType();
 	}
 
 	public void clear(Condition condition) {
-		dao().clear(entityClass, condition);
-	}
-
-	public void clearMany(Object obj, String fieldName) {
-		dao().clearMany(obj, fieldName);
+		dao().clear(getEntityClass(), condition);
 	}
 
 	public T insert(T obj) {
 		return dao().insert(obj);
 	}
 
-	public void delete(Object obj) {
+	public void delete(T obj) {
 		dao().delete(obj);
 	}
-	
+
 	public List<T> query(Condition condition, Pager pager) {
-		return (List<T>) dao().query(entityClass, condition, pager);
+		return (List<T>) dao().query(getEntityClass(), condition, pager);
 	}
 
 	public T update(T obj) {
@@ -50,11 +55,11 @@ public abstract class EntityService<T> extends Service {
 	}
 
 	public int count(Condition condition) {
-		return dao().count(entityClass, condition);
+		return dao().count(getEntityClass(), condition);
 	}
 
 	public int count() {
-		return dao().count(entityClass);
+		return dao().count(getEntityClass());
 	}
 
 }

@@ -2,124 +2,178 @@ package com.zzh.trans;
 
 import com.zzh.Main;
 import com.zzh.dao.Dao;
+import com.zzh.lang.Lang;
 import com.zzh.service.IdEntityService;
-import com.zzh.trans.NutTransaction;
 import com.zzh.trans.Atom;
 import com.zzh.trans.Trans;
 
 import junit.framework.TestCase;
+import junit.framework.TestResult;
 
 public class TransactionTest extends TestCase {
 
-	private static IdEntityService<Cat> catService = new IdEntityService<Cat>() {
-	};
-	private static IdEntityService<Company> comService = new IdEntityService<Company>() {
-	};
-	private static IdEntityService<Master> masterService = new IdEntityService<Master>() {
-	};
-	public static Dao dao;;
-
-	static {
-		dao = Main.getDao("com/zzh/trans/TransTest.sqls");
-		catService.setDao(dao);
-		comService.setDao(dao);
-		masterService.setDao(dao);
-		Trans.setup(NutTransaction.class);
+	@Override
+	public void run(TestResult result) {
+		// //System.out.println("Begin...");
+		super.run(result);
+		// //System.out.println("...End");
 	}
 
-	public static void reset() {
+	private IdEntityService<Cat> catService;
+	private IdEntityService<Company> comService;
+	private IdEntityService<Master> masterService;
+	private Dao dao;;
+
+	@Override
+	protected void setUp() throws Exception {
 		String[] keys = { ".company.drop", ".company.create", ".cat.drop", ".cat.create",
 				".master.drop", ".master.create" };
-		Main.prepareTables(dao,keys);
+		dao = Main.getDao("com/zzh/trans/TransTest.sqls");
+		catService = new IdEntityService<Cat>(dao) {};
+		comService = new IdEntityService<Company>(dao) {};
+		masterService = new IdEntityService<Master>(dao) {};
+		Main.prepareTables(dao, keys);
 	}
 
-	public static Cat createCat(String name, Master m) {
-		Cat c = new Cat();
-		c.setName(name);
-		c.setMaster(m);
-		return c;
+	private Cat insert(final Cat cat, final Bomb bomb) {
+		// //System.out.printf("\n>> insert cat: %d\n",
+		// bomb.times);
+		Trans.exec(new Atom() {
+			public void run() {
+				dao.insert(cat);
+				cat.setMaster(insert(cat.getMaster(), bomb));
+				bomb.bong();
+			}
+		});
+		// //System.out.printf("<< insert cat: %d\n",
+		// bomb.times);
+		return cat;
 	}
 
-	public static Master createMaster(String name, Company com) {
-		Master c = new Master();
-		c.setName(name);
-		c.setCom(com);
-		return c;
+	private Company insert(final Company com, final Bomb bomb) {
+		// //System.out.printf("\n>> insert company: %d\n",
+		// bomb.times);
+		Trans.exec(new Atom() {
+			public void run() {
+				dao.insert(com);
+				bomb.bong();
+			}
+		});
+		// //System.out.printf("<< insert company: %d\n",
+		// bomb.times);
+		return com;
 	}
 
-	public static Company createCompany(String name) {
-		Company c = new Company();
-		c.setName(name);
-		return c;
+	private Master insert(final Master master, final Bomb bomb) {
+		// //System.out.printf("\n>> insert master: %d\n",
+		// bomb.times);
+		Trans.exec(new Atom() {
+			public void run() {
+				dao.insert(master);
+				master.setCom(insert(master.getCom(), bomb));
+				bomb.bong();
+			}
+		});
+		// //System.out.printf("<< insert master: %d\n",
+		// bomb.times);
+		return master;
 	}
 
-	class Thread2 extends Thread {
+	private static class Bomb {
 
-		private boolean done = false;
+		private int times;
 
-		public boolean isDone() {
-			return done;
+		Bomb(int times) {
+			this.times = times;
+		}
+
+		Bomb bong() throws RuntimeException {
+			if (--times == 0) {
+				// //System.out.printf("Bong!!! bomb-- %d => %d\n",
+				// times + 1,
+				// times);
+				throw new RuntimeException("Bong!!!");
+			}
+			// //System.out.printf("bomb-- %d => %d\n",
+			// times + 1, times);
+			return this;
+		}
+	}
+
+	public void testNestedCommit() {
+		Cat cat = Cat.create("XiaoBai", Master.create("zzh", Company.create("Dtri")));
+		insert(cat, new Bomb(-1));
+		assertEquals(1, dao.count(Cat.class));
+		assertEquals(1, dao.count(Master.class));
+		assertEquals(1, dao.count(Company.class));
+		assertNull(Trans.get());
+		assertEquals(0, Trans.count.get().intValue());
+	}
+
+	public void testNestedRollback() {
+		Cat cat = Cat.create("XiaoBai", Master.create("zzh", Company.create("Dtri")));
+		try {
+			insert(cat, new Bomb(2));
+			fail();
+		} catch (Exception e) {
+			assertEquals(0, dao.count(Company.class));
+			assertEquals(0, dao.count(Master.class));
+			assertEquals(0, dao.count(Cat.class));
+			assertNull(Trans.get());
+		}
+	}
+
+	class CheckCheck extends Thread {
+
+		private Object lock;
+		private Object tellor;
+		private boolean standby;
+
+		public boolean isStandby() {
+			return standby;
 		}
 
 		@Override
 		public void run() {
-			if (0 != dao.count(Company.class, null) || 0 != dao.count(Master.class, null)
-					|| 0 != dao.count(Cat.class, null)) {
-				done = true;
-				throw new RuntimeException("Find change in another thread");
-			}
-			done = true;
-		}
-
-	}
-
-	public void testCommit() {
-		reset();
-		// In transaction
-		Trans.exec(new Atom() {
-			@Override
-			public void run() throws Exception {
-				Company com = createCompany("dtri");
-				Master m = createMaster("zzh", com);
-				Cat c1 = createCat("XiaoBai", m);
-				Cat c2 = createCat("Tony", m);
-
-				comService.insert(com);
-				assertEquals(1, dao.count(Company.class, null));
-				m.setComId(com.getId());
-				masterService.insert(m);
-				assertEquals(1, dao.count(Master.class, null));
-				c1.setMasterId(m.getId());
-				c2.setMasterId(m.getId());
-				catService.insert(c1);
-				catService.insert(c2);
-				assertEquals(2, dao.count(Cat.class, null));
-				// In another thread, can not see the result
-				Thread2 checker = new Thread2();
-				checker.setName("Another check Thread");
-				checker.start();
-				while (!checker.isDone()) {
-					Thread.sleep(10);
+			// System.out.println("\nI am checker");
+			try {
+				synchronized (lock) {
+					standby = true;
+					// System.out.println("\nchecker: I am standby and wait for another thread...");
+					lock.wait();
+					// System.out.println("\nchecker: I will do some check");
+				}
+				if (0 != dao.count(Company.class, null) || 0 != dao.count(Master.class, null)
+						|| 0 != dao.count(Cat.class, null)) {
+					throw new RuntimeException("Find change in another thread");
+				}
+			} catch (InterruptedException e) {
+				throw Lang.wrapThrow(e);
+			} finally {
+				synchronized (tellor) {
+					// System.out.println("\nchecker: I will notify tellor!");
+					tellor.notifyAll();
+					// System.out.println("\nchecker: I done for notify tellor");
 				}
 			}
-		});
-		// Out of transaction
-		assertEquals(1, dao.count(Company.class, null));
-		assertEquals(1, dao.count(Master.class, null));
-		assertEquals(2, dao.count(Cat.class, null));
+		}
 	}
 
-	public void testRollback() {
-		reset();
-		// In transaction
-		try {
+	class AnotherThread extends Thread {
+		private Object checker;
+		private Object tellor;
+		public Object waiter;
+
+		@Override
+		public void run() {
 			Trans.exec(new Atom() {
 				@Override
-				public void run() throws Exception {
-					Company com = createCompany("dtri");
-					Master m = createMaster("zzh", com);
-					Cat c1 = createCat("XiaoBai", m);
-					Cat c2 = createCat("Tony", m);
+				public void run() {
+					// System.out.println("\nI am another");
+					Company com = Company.create("dtri");
+					Master m = Master.create("zzh", com);
+					Cat c1 = Cat.create("XiaoBai", m);
+					Cat c2 = Cat.create("Tony", m);
 
 					comService.insert(com);
 					assertEquals(1, dao.count(Company.class, null));
@@ -131,21 +185,86 @@ public class TransactionTest extends TestCase {
 					catService.insert(c1);
 					catService.insert(c2);
 					assertEquals(2, dao.count(Cat.class, null));
-					// In another thread, can not see the result
-					Thread2 checker = new Thread2();
-					checker.start();
-					while (!checker.isDone()) {
-						Thread.sleep(10);
+					synchronized (checker) {
+						// System.out.println("\nanother: finished to myjob and I will tell checker...");
+						checker.notifyAll();
+						// System.out.println("\nanother: I done for notify checker");
 					}
+					try {
+						synchronized (tellor) {
+							// System.out.println("\nanother: I will wait 100 ms");
+							tellor.wait(100);
+							// System.out.println("\nanother: I am wake up");
+						}
+					} catch (InterruptedException e) {
+						throw Lang.wrapThrow(e);
+					}
+				}
+			});
+			// System.out.println("\nanother: I will tell waiter");
+			synchronized (waiter) {
+				waiter.notifyAll();
+			}
+			// System.out.println("\nanother: done for tell waiter");
+		}
+
+	}
+
+	public void testCommit() throws InterruptedException {
+		CheckCheck checker = new CheckCheck();
+		checker.setName("CheckCheck!!!");
+		checker.lock = new Object();
+		checker.tellor = new Object();
+		// System.out.println("> checker");
+		checker.start();
+		while (!checker.isStandby()) {
+			// //System.out.print('-');
+		}
+		// System.out.println("> another");
+		AnotherThread another = new AnotherThread();
+		another.setName("Another");
+		another.checker = checker.lock;
+		another.tellor = checker.tellor;
+		another.waiter = new Object();
+		another.start();
+		synchronized (another.waiter) {
+			another.waiter.wait();
+		}
+		assertEquals(1, dao.count(Company.class, null));
+		assertEquals(1, dao.count(Master.class, null));
+		assertEquals(2, dao.count(Cat.class, null));
+	}
+
+	public void testRollback() {
+		// In transaction
+		try {
+			Trans.exec(new Atom() {
+				public void run() {
+					Company com = Company.create("dtri");
+					Master m = Master.create("zzh", com);
+					Cat c1 = Cat.create("XiaoBai", m);
+					Cat c2 = Cat.create("Tony", m);
+
+					comService.insert(com);
+					assertEquals(1, dao.count(Company.class, null));
+					m.setComId(com.getId());
+					masterService.insert(m);
+					assertEquals(1, dao.count(Master.class, null));
+					c1.setMasterId(m.getId());
+					c2.setMasterId(m.getId());
+					catService.insert(c1);
+					catService.insert(c2);
+					assertEquals(2, dao.count(Cat.class, null));
 					throw new RuntimeException("Stop!!!");
 				}
 			});
 			fail();
 		} catch (Exception e) {
+			assertEquals(0, dao.count(Company.class, null));
+			assertEquals(0, dao.count(Master.class, null));
+			assertEquals(0, dao.count(Cat.class, null));
+			assertEquals(0, Trans.count.get().intValue());
+			assertNull(Trans.get());
 		}
-		// Out of transaction
-		assertEquals(0, dao.count(Company.class, null));
-		assertEquals(0, dao.count(Master.class, null));
-		assertEquals(0, dao.count(Cat.class, null));
 	}
 }

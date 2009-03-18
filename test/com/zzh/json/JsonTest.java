@@ -3,11 +3,12 @@ package com.zzh.json;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.zzh.lang.Files;
@@ -18,30 +19,31 @@ import com.zzh.lang.stream.CharOutputStream;
 
 import junit.framework.TestCase;
 
+@SuppressWarnings("unchecked")
 public class JsonTest extends TestCase {
 
 	public void testBoolean() {
-		assertTrue(Json.fromJson(boolean.class, Lang.ins("true")));
-		assertFalse(Json.fromJson(boolean.class, Lang.ins("false")));
-		assertTrue(((Boolean) Json.fromJson(Lang.ins("true"))).booleanValue());
-		assertFalse(((Boolean) Json.fromJson(Lang.ins("false"))).booleanValue());
+		assertTrue(Json.fromJson(boolean.class, Lang.inr("true")));
+		assertFalse(Json.fromJson(boolean.class, Lang.inr("false")));
+		assertTrue(((Boolean) Json.fromJson(Lang.inr("true"))).booleanValue());
+		assertFalse(((Boolean) Json.fromJson(Lang.inr("false"))).booleanValue());
 	}
 
 	public void testFloat() {
-		assertEquals(2.3f, Json.fromJson(float.class, Lang.ins("2.3")));
-		assertEquals(2.3f, ((Double) Json.fromJson(Lang.ins("2.3"))).floatValue());
-		assertEquals(.3f, Json.fromJson(float.class, Lang.ins(".3")));
+		assertEquals(2.3f, Json.fromJson(float.class, Lang.inr("2.3")));
+		assertEquals(2.3f, ((Double) Json.fromJson(Lang.inr("2.3"))).floatValue());
+		assertEquals(.3f, Json.fromJson(float.class, Lang.inr(".3")));
 	}
 
 	public void testLongg() {
-		assertEquals(87L, Json.fromJson(long.class, Lang.ins("87")).longValue());
-		assertEquals(87L, ((Long) Json.fromJson(Lang.ins("87L"))).longValue());
+		assertEquals(87L, Json.fromJson(long.class, Lang.inr("87")).longValue());
+		assertEquals(87L, ((Long) Json.fromJson(Lang.inr("87L"))).longValue());
 	}
 
 	@SuppressWarnings("deprecation")
 	public void testDatetime() {
 		java.util.Date date = Json.fromJson(java.util.Date.class, Lang
-				.ins("\"2008-05-16 14:35:43\""));
+				.inr("\"2008-05-16 14:35:43\""));
 		assertEquals(108, date.getYear());
 		assertEquals(4, date.getMonth());
 		assertEquals(16, date.getDate());
@@ -52,15 +54,15 @@ public class JsonTest extends TestCase {
 
 	public void testSimpleAbc() {
 		String s = "{\"id\":45,\"name\":'xyz'}";
-		Abc abc = Json.fromJson(Abc.class, Lang.ins(s));
+		Abc abc = Json.fromJson(Abc.class, Lang.inr(s));
 		assertEquals(45, abc.id);
 		assertEquals("xyz", abc.name);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testAllTypesInMap() throws FileNotFoundException {
 		File f = Files.findFile("com/zzh/json/types.txt");
-		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new FileInputStream(f));
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(
+				new FileInputStream(f)));
 		assertTrue((Boolean) map.get("true"));
 		assertFalse((Boolean) map.get("false"));
 		assertNull(map.get("null"));
@@ -68,25 +70,41 @@ public class JsonTest extends TestCase {
 		assertTrue(67L == (Long) map.get("long"));
 		assertTrue(7.69 == (Double) map.get("double"));
 		assertTrue(8.79f == (Float) map.get("float"));
-		Object ary = map.get("array");
-		assertTrue(ary.getClass().isArray());
-		assertEquals(2, Array.getLength(ary));
-		assertEquals("abc", Array.get(ary, 0));
-		assertTrue(45 == (Integer) Array.get(ary, 1));
+		List<?> ary = (List<?>) map.get("array");
+		assertEquals(2, ary.size());
+		assertEquals("abc", ary.get(0));
+		List<?> coll = ary;
+		assertTrue(45 == (Integer) coll.get(1));
 	}
 
-	@SuppressWarnings("unchecked")
 	public void testSimpleMap() {
-		String s = "{id:45,name:'xyz'}";
-		Map map = (Map) Json.fromJson(Lang.ins(s));
+		String s = "{id:45,m:{x:1},name:'xyz'}";
+		Map map = (Map) Json.fromJson(Lang.inr(s));
 		assertEquals(45, map.get("id"));
 		assertEquals("xyz", map.get("name"));
 	}
 
-	@SuppressWarnings("unchecked")
+	public void testSimpleMap2() {
+		String s = "{f:false,t:true,H:30}";
+		Map map = (Map) Json.fromJson(Lang.inr(s));
+		assertTrue((Boolean) map.get("t"));
+		assertFalse((Boolean) map.get("f"));
+		assertEquals(30, map.get("H"));
+	}
+
+	public void testSimpleMap3() {
+		String s = "{ary:[1,2],t:true,H:30}";
+		Map map = (Map) Json.fromJson(Lang.inr(s));
+		List<?> list = (List<?>) map.get("ary");
+		assertEquals(2, list.size());
+		assertTrue((Boolean) map.get("t"));
+		assertEquals(30, map.get("H"));
+	}
+
 	public void testMap() throws FileNotFoundException {
 		File f = Files.findFile("com/zzh/json/map.txt");
-		Map<String, Object> map = Json.fromJson(HashMap.class, new FileInputStream(f));
+		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(
+				new FileInputStream(f)));
 		assertEquals("value1", map.get("a1"));
 		assertEquals(35, map.get("a2"));
 		assertEquals((double) 4.7, map.get("a3"));
@@ -104,7 +122,7 @@ public class JsonTest extends TestCase {
 	@SuppressWarnings("deprecation")
 	public void testSimplePersonObject() throws Exception {
 		File f = Files.findFile("com/zzh/json/simplePerson.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
@@ -115,7 +133,7 @@ public class JsonTest extends TestCase {
 
 	public void testPersonObject() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		StringBuilder sb = new StringBuilder();
 		Writer w = new OutputStreamWriter(new CharOutputStream(sb));
 		w.write(p.dump());
@@ -134,14 +152,14 @@ public class JsonTest extends TestCase {
 	public void testSimpleArray() throws Exception {
 		String[] expAry = { "abc", "bbc", "fff" };
 		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
-		String[] reAry = Json.fromJson(String[].class, Lang.ins(s));
+		String[] reAry = Json.fromJson(String[].class, Lang.inr(s));
 		assertTrue(Arrays.equals(expAry, reAry));
 
 	}
 
 	public void testSimpleArraySingleInteger() throws Exception {
 		String s = "[2]";
-		int[] ary = Json.fromJson(int[].class, Lang.ins(s));
+		int[] ary = Json.fromJson(int[].class, Lang.inr(s));
 		assertEquals(1, ary.length);
 		assertEquals(2, ary[0]);
 	}
@@ -149,7 +167,7 @@ public class JsonTest extends TestCase {
 	@SuppressWarnings("deprecation")
 	public void testSimpleArraySingleDate() throws Exception {
 		String s = "[\"2008-8-1\"]";
-		java.sql.Date[] ary = Json.fromJson(java.sql.Date[].class, Lang.ins(s));
+		java.sql.Date[] ary = Json.fromJson(java.sql.Date[].class, Lang.inr(s));
 		assertEquals(1, ary.length);
 		assertEquals(108, ary[0].getYear());
 		assertEquals(7, ary[0].getMonth());
@@ -158,7 +176,7 @@ public class JsonTest extends TestCase {
 
 	public void testSimpleArraySingleObject() throws Exception {
 		String s = "[{\"id\":24,\"name\":\"RRR\"}]";
-		Abc[] ary = Json.fromJson(Abc[].class, Lang.ins(s));
+		Abc[] ary = Json.fromJson(Abc[].class, Lang.inr(s));
 		assertEquals(1, ary.length);
 		assertEquals(24, ary[0].id);
 		assertEquals("RRR", ary[0].name);
@@ -166,7 +184,7 @@ public class JsonTest extends TestCase {
 
 	public void testSimpleObjectArray() throws Exception {
 		String s = "[{\"id\":3,\"name\":\"A\"},{\"id\":10,\"name\":\"B\"}]";
-		Abc[] ary = Json.fromJson(Abc[].class, Lang.ins(s));
+		Abc[] ary = Json.fromJson(Abc[].class, Lang.inr(s));
 		assertEquals(2, ary.length);
 		assertEquals(3, ary[0].id);
 		assertEquals(10, ary[1].id);
@@ -176,12 +194,12 @@ public class JsonTest extends TestCase {
 
 	public void testNiceModeSimple() throws Exception {
 		String s = "{id:45,name:\"x{y:12,t:'yzy'}z\"}";
-		Abc abc = Json.fromJson(Abc.class, Lang.ins(s));
+		Abc abc = Json.fromJson(Abc.class, Lang.inr(s));
 		assertEquals(45, abc.id);
 		assertEquals("x{y:12,t:'yzy'}z", abc.name);
 
 		s = "{id:45,name:'\"X\"'}";
-		abc = Json.fromJson(Abc.class, Lang.ins(s));
+		abc = Json.fromJson(Abc.class, Lang.inr(s));
 		assertEquals(45, abc.id);
 		assertEquals("\"X\"", abc.name);
 	}
@@ -189,7 +207,7 @@ public class JsonTest extends TestCase {
 	@SuppressWarnings("deprecation")
 	public void testParseNullFieldObject() throws Exception {
 		File f = Files.findFile("com/zzh/json/personNull.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
@@ -200,9 +218,9 @@ public class JsonTest extends TestCase {
 
 	public void testPrintJsonObject() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		String json = Json.toJson(p, JsonFormat.nice());
-		Person p2 = Json.fromJson(Person.class, new CharInputStream(json));
+		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertEquals(p.getName(), p2.getName());
 		assertEquals(p.getRealname(), p2.getRealname());
 		assertEquals(p.getAge(), p2.getAge());
@@ -224,9 +242,9 @@ public class JsonTest extends TestCase {
 
 	public void testFilterField() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		String json = Json.toJson(p, JsonFormat.nice().setActivedFields("[name]"));
-		Person p2 = Json.fromJson(Person.class, new CharInputStream(json));
+		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertEquals(p.getName(), p2.getName());
 		assertNull(p2.getRealname());
 		assertNull(p2.getBirthday());
@@ -237,13 +255,53 @@ public class JsonTest extends TestCase {
 
 	public void testFilterField2() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
-		Person p = Json.fromJson(Person.class, new FileInputStream(f));
+		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		String json = Json.toJson(p, JsonFormat.nice().setIgnoreFields(
 				"[realname][father][company]"));
-		Person p2 = Json.fromJson(Person.class, new CharInputStream(json));
+		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertNull(p2.getRealname());
 		assertEquals(p.getName(), p2.getName());
 		assertEquals(p.getAge(), p2.getAge());
 		assertEquals(p.getBirthday(), p2.getBirthday());
 	}
+
+	public static class Project {
+		public int id;
+		public String name;
+		public String alias;
+	}
+
+	public void testOutpuProjectsAsList() throws Exception {
+		String exp = "{\"id\":1,\"name\":\"nutz\",\"alias\":\"nutz\"}";
+		Project p = new Project();
+		p.id = 1;
+		p.name = "nutz";
+		p.alias = "nutz";
+		assertEquals(exp, Json.toJson(p, JsonFormat.compact()));
+	}
+
+	public void testUndefined() throws Exception {
+		String exp = "{id:45,name:'GG',alias:undefined}";
+		Project p = Json.fromJson(Project.class, Lang.inr(exp));
+		assertEquals(45, p.id);
+		assertEquals("GG", p.name);
+		assertNull(p.alias);
+	}
+
+	public static class X {
+		public int id;
+		public XT type;
+	}
+
+	public static enum XT {
+		A, B
+	}
+
+	public void testEnumOutput() throws Exception {
+		X x = new X();
+		x.id = 5;
+		x.type = XT.B;
+		assertEquals("{\"id\":5,\"type\":\"B\"}", Json.toJson(x, JsonFormat.compact()));
+	}
+
 }

@@ -6,7 +6,8 @@ import com.zzh.castor.FailToCastObjectException;
 public class String2Boolean extends Castor<String, Boolean> {
 
 	@Override
-	protected Boolean cast(String src, Class<?> toType) throws FailToCastObjectException {
+	protected Boolean cast(String src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
 		return Boolean.valueOf(src);
 	}
 

@@ -1,19 +1,17 @@
 package com.zzh.ioc;
 
-import java.lang.reflect.Field;
 import java.util.Map;
-
-import com.zzh.lang.Mirror;
 
 public interface Mapping {
 
+	Class<?> getObjectType();
+
 	boolean isSingleton();
 
-	String getName();
+	void setSingleton(boolean sg);
 
-	Mirror<?> getType();
+	Object[] getBorningArguments();
 
-	Map<Field, Value> getMappingFields();
+	Map<String, Object> getFieldsSetting();
 
-	Value[] getConstructorArguments();
 }

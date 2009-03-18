@@ -4,21 +4,31 @@
        Content Publish Server aumatic build
     </description>
 	<!-- set global properties for this build -->
-	<property environment="env"/>
-	
-	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}"/>
-	<property name="JAVA_HOME" value="${env.JAVA_HOME}"/>
-	<property name="TARGET_DIR" value="${env.NUTZ_TARGET_DIR}"/>
-	
+	<property environment="env" />
+
+	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
+	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
+	<property name="DEPHOME" value="${env.NUTZ_DEPHOME}" />
+	<property name="OP" value="${env.NUTZ_TARGET_DIR}" />
+
 	<property name="PROJECT_HOME" value="../" />
 	<property name="TOMCAT-LIB" value="${TOMCAT_HOME}/lib" />
 
-	<property name="SRC_DIR" location="${PROJECT_HOME}/src" />
-	<property name="DIST_FILE" location="${TARGET_DIR}/nutz.jar" />
-	<property name="TEMP_DIR" value="${PROJECT_HOME}/build/temp" />
+	<property name="SRC" location="${PROJECT_HOME}/src" />
+	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
+
+	<property name="v" value="-1.a.0" />
+	<property name="zlang" value="com/zzh/lang/**,com/zzh/castor/**" />
+	<property name="zjson" value="com/zzh/json/**" />
+	<property name="zdao" value="com/zzh/dao/**,com/zzh/service/**,com/zzh/trans/**" />
+	<property name="zioc" value="com/zzh/ioc/**" />
+	<property name="zmvc" value="com/zzh/mvc/**,com/zzh/filepool/**,com/zzh/http/**" />
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT-LIB}" casesensitive="no">
+			<include name="*.jar" />
+		</fileset>
+		<fileset dir="${DEPHOME}" casesensitive="no">
 			<include name="*.jar" />
 		</fileset>
 		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
@@ -28,21 +38,27 @@
 	</path>
 
 	<target name="init">
-		<tstamp />
-		<mkdir dir="${TEMP_DIR}" />
+		<mkdir dir="${TMP}" />
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC_DIR}" destdir="${TEMP_DIR}" debug="true" deprecation="true" nowarn="true" source="1.6" target="1.6">
+		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" deprecation="true" nowarn="false" source="1.6" target="1.6">
 			<classpath refid="CLASSPATH" />
 		</javac>
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar destfile="${DIST_FILE}" basedir="${TEMP_DIR}" />
+		<jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}"/>
+		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}"
+				includes="${zlang},${zjson},${zioc},${zdao},${zmvc}"/>
+		<jar destfile="${OP}/nutz.lang${v}.jar" basedir="${TMP}" includes="${zlang}" />
+		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
+		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
+		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc}" />
+		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
 	</target>
 
 	<target name="run" depends="jar">
-		<delete dir="${TEMP_DIR}" />
+		<delete dir="${TMP}" />
 	</target>
 </project>

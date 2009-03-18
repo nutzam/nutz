@@ -8,7 +8,7 @@ import com.zzh.lang.Lang;
 public class String2Calendar extends DateTimeCastor<String, Calendar> {
 
 	@Override
-	protected Calendar cast(String src, Class<?> toType) {
+	protected Calendar cast(String src, Class<?> toType, String... args) {
 		Calendar c = Calendar.getInstance();
 		try {
 			c.setTime(dateTimeFormat.parse(src));
