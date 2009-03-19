@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.zzh.dao.callback.ConnCallback;
 import com.zzh.dao.entity.Entity;
-import com.zzh.lang.meta.Pager;
 
 public interface Dao {
 

@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.zzh.dao.callback.QueryCallback;
-import com.zzh.lang.meta.Pager;
 
 public class QuerySql<T> extends ConditionSql<List<T>> {
 
@@ -37,7 +36,7 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 		return pager;
 	}
 
-	public void setPager(Pager pager) {
+	void setPager(Pager pager) {
 		this.pager = pager;
 	}
 
@@ -91,7 +90,7 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 			ls.max = len;
 		} else {
 			pager.setRecordCount(len);
-			ls.start = pager.firstItemAbsolutIndex() - 1;
+			ls.start = pager.getOffset();
 			ls.max = ls.start + pager.getPageSize();
 		}
 		return ls;

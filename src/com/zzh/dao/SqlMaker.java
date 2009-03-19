@@ -5,6 +5,7 @@ import java.util.regex.Pattern;
 
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.EntityField;
+import com.zzh.lang.Strings;
 import com.zzh.lang.segment.CharSegment;
 
 public class SqlMaker {
@@ -49,8 +50,18 @@ public class SqlMaker {
 		return makeSQL(new FetchSql<Integer>(), en, ptn, en.getViewName());
 	}
 
-	public <T> QuerySql<T> makeQuerySQL(Entity<T> en) {
-		return makeSQL(new QuerySql<T>(), en, "SELECT * FROM %s ${condition};", en.getViewName());
+	public <T> QuerySql<T> makeQuerySQL(Entity<T> en, Pager pager) {
+		QuerySql<T> sql = new QuerySql<T>();
+		sql.setEntity(en);
+		String st = String.format("SELECT * FROM %s ${condition}", en.getViewName());
+		if (null == pager || Strings.isBlank(pager.getLimitString())) {
+			sql.valueOf(st);
+			sql.setPager(pager);
+		} else {
+			String lm = pager.getLimitString();
+			sql.valueOf(String.format(lm, st));
+		}
+		return sql;
 	}
 
 	public ExecutableSql makeInsertSQL(Entity<?> en, Object obj) {

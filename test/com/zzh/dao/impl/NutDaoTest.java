@@ -12,13 +12,13 @@ import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
 import com.zzh.dao.ExecutableSql;
 import com.zzh.dao.FetchSql;
+import com.zzh.dao.Pager;
 import com.zzh.dao.QuerySql;
 import com.zzh.dao.Sql;
 import com.zzh.dao.callback.QueryCallback;
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.annotation.*;
 import com.zzh.lang.meta.Email;
-import com.zzh.lang.meta.Pager;
 
 import junit.framework.TestCase;
 
@@ -258,7 +258,7 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public void testQueryByPager() {
-		Pager p = new Pager(2, 2);
+		Pager p = com.zzh.dao.Pager.create(null, 2, 2);
 		List<Student> list = dao.query(Student.class, null, p);
 		assertEquals(5, p.getRecordCount());
 		assertEquals(2, list.size());

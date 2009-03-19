@@ -6,7 +6,7 @@ import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
 import com.zzh.dao.entity.Entity;
 import com.zzh.lang.Mirror;
-import com.zzh.lang.meta.Pager;
+import com.zzh.dao.Pager;
 
 public abstract class EntityService<T> extends Service {
 

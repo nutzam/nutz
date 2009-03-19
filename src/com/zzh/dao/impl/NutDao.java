@@ -16,6 +16,7 @@ import com.zzh.dao.Dao;
 import com.zzh.dao.DaoException;
 import com.zzh.dao.ExecutableSql;
 import com.zzh.dao.FetchSql;
+import com.zzh.dao.Pager;
 import com.zzh.dao.QuerySql;
 import com.zzh.dao.Sql;
 import com.zzh.dao.SqlMaker;
@@ -32,7 +33,6 @@ import com.zzh.lang.Each;
 import com.zzh.lang.ExitLoop;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
-import com.zzh.lang.meta.Pager;
 import com.zzh.trans.Atom;
 import com.zzh.trans.Trans;
 import com.zzh.trans.Transaction;
@@ -425,13 +425,13 @@ public class NutDao implements Dao {
 	@Override
 	public <T> List<T> query(Class<T> classOfT, Condition condition, Pager pager) {
 		final Entity<T> entity = this.getEntity(classOfT);
-		QuerySql<T> sql = sqlMaker.makeQuerySQL(getEntity(classOfT));
-		sql.setPager(pager);
+		QuerySql<T> sql = sqlMaker.makeQuerySQL(getEntity(classOfT),pager);
 		sql.setCondition(condition);
 		sql.setCallback(new FetchCallback<T>(entity));
 		execute(sql);
 		return (List<T>) sql.getResult();
 	}
+	
 
 	@Override
 	public <T> Entity<T> getEntity(Class<T> classOfT) {
