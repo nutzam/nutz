@@ -2,6 +2,7 @@ package com.zzh.dao;
 
 import javax.servlet.ServletRequest;
 
+import com.zzh.dao.entity.Entity;
 import com.zzh.dao.impl.*;
 import com.zzh.lang.Lang;
 
@@ -19,7 +20,7 @@ public abstract class Pager {
 		Pager p;
 		if (null == type) {
 			p = new Pager() {
-				protected String getLimitString() {
+				protected String getLimitString(Entity<?> entity) {
 					return null;
 				}
 			};
@@ -108,5 +109,5 @@ public abstract class Pager {
 		return pageSize * (pageNumber - 1);
 	}
 
-	protected abstract String getLimitString();
+	protected abstract String getLimitString(Entity<?> entity);
 }
