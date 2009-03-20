@@ -54,7 +54,7 @@ public class SqlMaker {
 		QuerySql<T> sql = new QuerySql<T>();
 		sql.setEntity(en);
 		String st = String.format("SELECT * FROM %s ${condition}", en.getViewName());
-		String lm = pager.getLimitString(en);
+		String lm = null == pager ? null : pager.getLimitString(en);
 		if (null == pager || Strings.isBlank(lm)) {
 			sql.valueOf(st);
 			sql.setPager(pager);
