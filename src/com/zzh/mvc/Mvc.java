@@ -1,6 +1,7 @@
 package com.zzh.mvc;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -12,6 +13,7 @@ import com.zzh.json.JsonFormat;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Localize;
 import com.zzh.lang.Mirror;
+import com.zzh.mvc.localize.Localizations;
 import com.zzh.mvc.view.JsonView;
 
 public class Mvc {
@@ -78,18 +80,13 @@ public class Mvc {
 		return getNut(request.getSession().getServletContext());
 	}
 
-	private static View defaultView = null;
-
 	public static void doHttp(HttpServletRequest request, HttpServletResponse response) {
-		if (null == defaultView)
-			try {
-				defaultView = getNut(request).getObject(View.class, "$default-view");
-			} catch (Exception e1) {
-				defaultView = new JsonView(JsonFormat.nice());
-			}
 		String path = request.getServletPath();
 		path = path.substring(0, path.lastIndexOf('.'));
 		MvcSupport mvc = getMvcSupport(request);
+
+		Map<String, String> lz = Localizations.getLocalization(request.getSession());
+		request.setAttribute("msg", lz);
 
 		Url url = null;
 		Object obj;
@@ -121,6 +118,14 @@ public class Mvc {
 		}
 	}
 
+	private static View getDefaultView(HttpServletRequest request) {
+		try {
+			return getNut(request).getObject(View.class, "$default-view");
+		} catch (Exception e1) {
+			return new JsonView(JsonFormat.nice());
+		}
+	}
+
 	private static void renderSuccess(HttpServletRequest request, HttpServletResponse response,
 			Url url, Object obj) throws Exception {
 		View v;
@@ -131,13 +136,14 @@ public class Mvc {
 
 	private static void renderFail(HttpServletRequest request, HttpServletResponse response,
 			Url url, Object obj) {
-		View view = null != url ? null == url.getError() ? defaultView : url.getError()
-				: defaultView;
 		try {
-			view.render(request, response, obj);
+			if (null != url && null != url.getError()) {
+				url.getError().render(request, response, obj);
+			} else {
+				getDefaultView(request).render(request, response, obj);
+			}
 		} catch (Exception e1) {
 			throw Lang.wrapThrow(e1);
 		}
 	}
-
 }

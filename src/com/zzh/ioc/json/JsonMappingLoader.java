@@ -31,7 +31,7 @@ public class JsonMappingLoader implements MappingLoader {
 			else if (f.isDirectory()) {
 				File[] fs = f.listFiles(new FilenameFilter() {
 					public boolean accept(File dir, String name) {
-						return name.endsWith(".josn");
+						return name.endsWith(".json");
 					}
 				});
 				for (File sf : fs)

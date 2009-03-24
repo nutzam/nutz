@@ -18,9 +18,9 @@ import com.zzh.lang.LoopException;
 import com.zzh.lang.Mirror;
 
 @SuppressWarnings("unchecked")
-public class Nut {
+public class Nut implements Ioc {
 
-	public static RuntimeException failToMake(Exception e) {
+	static RuntimeException failToMake(Exception e) {
 		return Lang.wrapThrow(e);
 	}
 
@@ -125,12 +125,14 @@ public class Nut {
 		cache = new HashMap<String, Object>();
 		mappings = new HashMap<String, InnerMapping<?>>();
 		makers = new ArrayList<ObjectMaker<?>>();
+		deposers = new ArrayList<Deposer>();
 		add(new JavaObjectMaker()).add(new EvnObjectMaker()).add(new NutObjectMaker(this));
 	}
 
 	private Map<String, Object> cache;
 	private Map<String, InnerMapping<?>> mappings;
 	private List<ObjectMaker<?>> makers;
+	private List<Deposer> deposers;
 	private MappingLoader loader;
 
 	public Nut add(ObjectMaker<?> maker) {
@@ -138,6 +140,7 @@ public class Nut {
 		return this;
 	}
 
+	@Override
 	public <T> T getObject(Class<T> classOfT, String name) throws FailToMakeObjectException,
 			ObjectNotFoundException {
 		T obj = (T) cache.get(name);
@@ -197,4 +200,18 @@ public class Nut {
 		this.cache.clear();
 		this.mappings.clear();
 	}
+
+	@Override
+	public Ioc addDeposer(Deposer deposer) {
+		deposers.add(deposer);
+		return this;
+	}
+
+	@Override
+	public void depose() {
+		for (Iterator<Deposer> it = deposers.iterator(); it.hasNext();) {
+			it.next().depose(this);
+		}
+	}
+
 }

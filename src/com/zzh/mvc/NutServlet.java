@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zzh.ioc.Deposer;
 import com.zzh.ioc.Nut;
 import com.zzh.ioc.MappingLoader;
 import com.zzh.ioc.json.JsonMappingLoader;
@@ -28,15 +29,26 @@ public class NutServlet extends HttpServlet {
 				loader = new JsonMappingLoader(Strings.splitIgnoreBlank(mvcByJson));
 			} else {
 				throw Lang.makeThrow("You must setup one of parameters: '%s' | '%s' | '%s'",
-						"mvc-by-dir", "mvc-by-json", "mvc-by-db");
-
+						"mvc-by-json", "mvc-by-db");
 			}
 			Nut nut = new Nut(new MvcMappingLoader(loader));
+			// init deposer
+			String[] ss = Strings.splitIgnoreBlank(config.getInitParameter("deposers"));
+			if (null != ss && ss.length > 0) {
+				for (String s : ss) {
+					Class<?> deposerType = Class.forName(s);
+					Deposer deposer = (Deposer) deposerType.newInstance();
+					nut.addDeposer(deposer);
+				}
+			}
+			// store nut
 			getServletContext().setAttribute(Nut.class.getName(), nut);
 			NutMvc mvc = new NutMvc(nut, config);
 			Mvc.setMvcSupport(getServletContext(), mvc);
 			// store MvcSupport
 			getServletContext().setAttribute(MvcSupport.class.getName(), mvc);
+			// init local
+			
 			// init setup
 			String setupClass = config.getInitParameter("setup");
 			if (null != setupClass) {
