@@ -58,7 +58,7 @@ public class SqlMaker {
 			sql.valueOf(String.format("SELECT * FROM %s ${condition}", en.getViewName()));
 			sql.setPager(pager);
 		} else {
-			String rsName = pager.getResultSetName();
+			String rsName = pager.getResultSetName(en);
 			String st = String.format("SELECT * FROM %s ${condition}", rsName == null ? en
 					.getViewName() : rsName);
 			sql.valueOf(String.format(lm, st));
