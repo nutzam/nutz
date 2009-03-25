@@ -108,7 +108,8 @@ class JsonParsing {
 		Mirror<T> me = Mirror.me(type);
 		switch (cursor) {
 		/*
-		 * Array, the T should indicate the inside type of arrays
+		 * Array, the T should indicate the inside type of
+		 * arrays
 		 */
 		case '[':
 			Class<?> compType = null;
@@ -160,13 +161,13 @@ class JsonParsing {
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new HashMap<String, Object>()
 						: (Map<String, Object>) me.born();
-				do {
+				while (cursor != -1 && cursor != '}') {
 					String name = readFieldName();
 					Object value = parseFromJson(null);
 					map.put(name, value);
 					if (!findNextNamePair())
 						break;
-				} while (cursor != -1 && cursor != '}');
+				}
 				nextChar();
 				return (T) map;
 			}
@@ -174,13 +175,13 @@ class JsonParsing {
 			 * For Object
 			 */
 			T obj = me.born();
-			do {
+			while (cursor != -1 && cursor != '}') {
 				Field f = me.getField(readFieldName());
 				Object value = parseFromJson(f.getType());
 				me.setValue(obj, f, value);
 				if (!findNextNamePair())
 					break;
-			} while (cursor != -1 && cursor != '}');
+			}
 			nextChar();
 			return obj;
 		case 'u': // For undefined

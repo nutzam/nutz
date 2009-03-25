@@ -304,4 +304,16 @@ public class JsonTest extends TestCase {
 		assertEquals("{\"id\":5,\"type\":\"B\"}", Json.toJson(x, JsonFormat.compact()));
 	}
 
+	public void testEmptyMap() throws Exception {
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{}"));
+		assertEquals(0, map.size());
+		map = (Map<?, ?>) Json.fromJson(Lang.inr("  {/*rrrrrrrr*/   }"));
+		assertEquals(0, map.size());
+	}
+
+	public void testEmptyObject() throws Exception {
+		X x = Json.fromJson(X.class, Lang.inr("{}"));
+		assertEquals(0, x.id);
+		assertNull(x.type);
+	}
 }
