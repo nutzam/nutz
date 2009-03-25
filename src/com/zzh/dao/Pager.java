@@ -110,4 +110,8 @@ public abstract class Pager {
 	}
 
 	protected abstract String getLimitString(Entity<?> entity);
+
+	public String getResultSetName() {
+		return null;
+	}
 }

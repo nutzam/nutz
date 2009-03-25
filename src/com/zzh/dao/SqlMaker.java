@@ -53,12 +53,14 @@ public class SqlMaker {
 	public <T> QuerySql<T> makeQuerySQL(Entity<T> en, Pager pager) {
 		QuerySql<T> sql = new QuerySql<T>();
 		sql.setEntity(en);
-		String st = String.format("SELECT * FROM %s ${condition}", en.getViewName());
 		String lm = null == pager ? null : pager.getLimitString(en);
 		if (null == pager || Strings.isBlank(lm)) {
-			sql.valueOf(st);
+			sql.valueOf(String.format("SELECT * FROM %s ${condition}", en.getViewName()));
 			sql.setPager(pager);
 		} else {
+			String rsName = pager.getResultSetName();
+			String st = String.format("SELECT * FROM %s ${condition}", rsName == null ? en
+					.getViewName() : rsName);
 			sql.valueOf(String.format(lm, st));
 		}
 		return sql;

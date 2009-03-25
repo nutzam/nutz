@@ -153,7 +153,8 @@ public class AllTypeTest extends TestCase {
 			if (null == expValue)
 				continue;
 			if (!expValue.equals(ttValue))
-				throw Lang.makeThrow("expect [%s] but it was [%s]", expValue, ttValue);
+				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
+						ttValue);
 		}
 		assertTrue(true);
 	}
