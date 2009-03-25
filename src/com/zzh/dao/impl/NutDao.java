@@ -2,6 +2,7 @@ package com.zzh.dao.impl;
 
 import java.lang.reflect.Field;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ public class NutDao implements Dao {
 	private SqlMaker sqlMaker;
 	private SqlManager sqlManager;
 	private EntityHolder entityHolder;
+	private Class<? extends Pager> pagerType;
 
 	public DataSource getDataSource() {
 		return dataSource;
@@ -75,8 +77,42 @@ public class NutDao implements Dao {
 		this.sqlMaker = sqlMaker;
 	}
 
+	/**
+	 * 'databaseProductName' | 'driverName'
+	 * 
+	 * <pre>
+	 * psql:	'PostgreSQL'	|'PostgreSQL Native Driver'
+	 * MySQL:	'MySQL'			|'MySQL-AB JDBC Driver'
+	 * Oracle:	'Oracle'		|'Oracle JDBC driver'
+	 * db2:		'DB2/NT'		|'IBM DB2 JDBC Universal Driver Architecture'
+	 * SQLServer:	'Microsoft SQL Serve'	|'SQL Serve'
+	 * </pre>
+	 */
 	public void setDataSource(DataSource dataSource) {
 		this.dataSource = dataSource;
+		final Object[] holder = new Object[1];
+		this.execute(new ConnCallback() {
+			public void invoke(Connection conn) throws Exception {
+				DatabaseMetaData dmd = conn.getMetaData();
+				String proName = dmd.getDatabaseProductName().toLowerCase();
+				if (proName.startsWith("postgresql")) {
+					holder[0] = Pager.Postgresql;
+				} else if (proName.startsWith("mysql")) {
+					holder[0] = Pager.MySQL;
+				} else if (proName.startsWith("oracle")) {
+					holder[0] = Pager.Postgresql;
+				} else if (proName.startsWith("db2")) {
+					holder[0] = Pager.DB2;
+				} else if (proName.startsWith("microsoft sql")) {
+					holder[0] = Pager.SQLServer;
+				}
+			}
+		});
+	}
+
+	@Override
+	public Pager createPager(int pageNumber, int pageSize) {
+		return Pager.create(pagerType, pageNumber, pageSize);
 	}
 
 	public void setSqlManager(SqlManager sqlManager) {
@@ -425,13 +461,12 @@ public class NutDao implements Dao {
 	@Override
 	public <T> List<T> query(Class<T> classOfT, Condition condition, Pager pager) {
 		final Entity<T> entity = this.getEntity(classOfT);
-		QuerySql<T> sql = sqlMaker.makeQuerySQL(getEntity(classOfT),pager);
+		QuerySql<T> sql = sqlMaker.makeQuerySQL(getEntity(classOfT), pager);
 		sql.setCondition(condition);
 		sql.setCallback(new FetchCallback<T>(entity));
 		execute(sql);
 		return (List<T>) sql.getResult();
 	}
-	
 
 	@Override
 	public <T> Entity<T> getEntity(Class<T> classOfT) {

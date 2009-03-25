@@ -74,4 +74,6 @@ public interface Dao {
 
 	int getMaxId(Class<?> classOfT);
 
+	Pager createPager(int pageNumber, int pageSize);
+
 }
