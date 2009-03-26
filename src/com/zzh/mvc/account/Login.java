@@ -9,12 +9,12 @@ import com.zzh.mvc.Mvc;
 import com.zzh.mvc.Return;
 
 public class Login<T extends Account> implements Controllor {
-
-	private AccountService<T> service;
-
+	
 	public Login(AccountService<T> service) {
 		this.service = service;
 	}
+
+	private AccountService<T> service;
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)

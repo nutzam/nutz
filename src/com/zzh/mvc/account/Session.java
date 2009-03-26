@@ -15,28 +15,36 @@ public class Session {
 
 	private HttpSession session;
 
-	private String attrName = "account";
-
 	private Session(HttpSession session) {
 		this.session = session;
 	}
 
-	public Account getAccount() {
-		return (Account) session.getAttribute(attrName);
+	@SuppressWarnings("unchecked")
+	public <T extends Account> T getAccount(Class<T> type) {
+		return (T) session.getAttribute(type.getName());
 	}
 
-	public void setAccount(Account account) {
-		session.setAttribute(attrName, account);
+	public <T extends Account> void setAccount(T account) {
+		session.setAttribute(account.getClass().getName(), account);
 	}
 
-	public Account removeAccount() {
-		Account re = getAccount();
-		session.removeAttribute(attrName);
+	public <T extends Account> T removeAccount(Class<T> type) {
+		T re = getAccount(type);
+		session.removeAttribute(type.getName());
 		return re;
 	}
 
-	public boolean hasAccount() {
-		return null != session.getAttribute(attrName);
+	public <T extends Account> boolean hasAccount(Class<T> type) {
+		return null != session.getAttribute(type.getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	public <C> C getObject(Class<C> type) {
+		return (C) session.getAttribute(type.getName());
+	}
+
+	public void setObject(Object obj) {
+		session.setAttribute(obj.getClass().getName(), obj);
 	}
 
 }
