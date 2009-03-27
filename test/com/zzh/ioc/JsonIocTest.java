@@ -3,6 +3,7 @@ package com.zzh.ioc;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
 
 import com.zzh.ioc.json.JsonMappingLoader;
 import com.zzh.lang.Mirror;
@@ -169,6 +170,17 @@ public class JsonIocTest extends TestCase {
 		C c = nut.getObject(C.class, "c2");
 		assertEquals("abc", c.email.getAccount());
 		assertEquals("263.net", c.email.getHost());
+	}
+
+	public static class D {
+		private Map<String, C> map;
+	}
+
+	public void testMapAttribute() {
+		D d = nut.getObject(D.class, "d1");
+		assertEquals(2,d.map.size());
+		assertEquals("abc@263.net",d.map.get("cc1").email.toString());
+		assertEquals("abc@263.net",d.map.get("cc2").email.toString());
 	}
 
 }

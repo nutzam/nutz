@@ -44,6 +44,14 @@ public class Nut implements Ioc {
 				ObjectMaker<R> mk = nut.findMaker(type, map);
 				if (null != mk)
 					value = mk.make(map);
+				else { // deep to loop all values
+					for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
+						String key = it.next();
+						Object obj = map.get(key);
+						obj = makeValue(nut, null, obj);
+						map.put(key, obj);
+					}
+				}
 			} else if (value instanceof Collection || value.getClass().isArray()) {
 				final List<Object> list = new LinkedList<Object>();
 				Lang.each(value, new Each<Object>() {
