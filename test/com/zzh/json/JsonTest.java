@@ -21,6 +21,20 @@ import junit.framework.TestCase;
 
 @SuppressWarnings("unchecked")
 public class JsonTest extends TestCase {
+	
+	public void testSimpleObject() {
+		assertEquals("6.5", Json.toJson(6.5));
+		assertEquals("\"json\"", Json.toJson("json"));
+		int[] ints = new int[0];
+		assertEquals("[]", Json.toJson(ints));
+		ints = new int[1];
+		ints[0] = 65;
+		assertEquals("[65]", Json.toJson(ints));
+		assertEquals(65, Json.fromJson(Lang.inr("65")));
+		assertEquals(Float.parseFloat("65"), Json.fromJson(float.class, Lang.inr("65")));
+		assertEquals(ints[0], Json.fromJson(int[].class, Lang.inr("[65]"))[0]);
+	}
+
 
 	public void testBoolean() {
 		assertTrue(Json.fromJson(boolean.class, Lang.inr("true")));

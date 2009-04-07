@@ -195,12 +195,14 @@ class JsonRendering {
 	private void array2Json(Object obj) throws IOException {
 		writer.append('[');
 		int len = Array.getLength(obj) - 1;
-		int i;
-		for (i = 0; i < len; i++) {
+		if (len > -1) {
+			int i;
+			for (i = 0; i < len; i++) {
+				render(Array.get(obj, i));
+				writer.append(',').append(' ');
+			}
 			render(Array.get(obj, i));
-			writer.append(',').append(' ');
 		}
-		render(Array.get(obj, i));
 		writer.append(']');
 	}
 
