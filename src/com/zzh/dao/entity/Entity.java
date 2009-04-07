@@ -141,11 +141,11 @@ public class Entity<T> {
 	 */
 	boolean parse(Class<T> classOfT) {
 		this.mirror = Mirror.me(classOfT);
-		Table table = classOfT.getAnnotation(Table.class);
+		Table table = evalTable(classOfT);
 		if (null == table)
 			return false;
 		// eval table name
-		if (CONST.NULL.equals(table.value()))
+		if (Lang.NULL.equals(table.value()))
 			tableName = EntityName.create(mirror.getType().getSimpleName().toLowerCase());
 		else
 			tableName = EntityName.create(table.value());
@@ -204,6 +204,18 @@ public class Entity<T> {
 		}
 		/* done for parse all children fields */
 		return true;
+	}
+
+	private Table evalTable(Class<?> type) {
+		Table table = null;
+		Class<?> theClass = type;
+		while (null != theClass && !(theClass == Object.class)) {
+			table = theClass.getAnnotation(Table.class);
+			if (table != null)
+				return table;
+			theClass = theClass.getSuperclass();
+		}
+		return table;
 	}
 
 	private static <T> void evalBorning(Entity<T> entity) {

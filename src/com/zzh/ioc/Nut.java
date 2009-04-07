@@ -10,28 +10,80 @@ import java.util.List;
 import java.util.Map;
 
 import com.zzh.castor.Castors;
-import com.zzh.castor.FailToCastObjectException;
 import com.zzh.lang.Borning;
 import com.zzh.lang.Each;
 import com.zzh.lang.Lang;
 import com.zzh.lang.LoopException;
 import com.zzh.lang.Mirror;
+import com.zzh.lang.Strings;
 
 @SuppressWarnings("unchecked")
 public class Nut implements Ioc {
+
+	/**
+	 * @author zozoh
+	 * 
+	 */
+	static class ObjWrapper {
+
+		ObjWrapper(Object obj, Deposer dep) {
+			this.obj = obj;
+			this.deposer = dep;
+		}
+
+		Object obj;
+		Deposer deposer;
+	}
+
+	/**
+	 * @author zozoh
+	 * 
+	 */
+	static class MethodDeposer implements Deposer<Object> {
+
+		private Method method;
+
+		MethodDeposer(Method method) {
+			this.method = method;
+		}
+
+		@Override
+		public void depose(Object obj) {
+			try {
+				method.invoke(obj);
+			} catch (Exception e) {
+				throw Lang.wrapThrow(e);
+			}
+		}
+
+	}
 
 	static RuntimeException failToMake(Exception e) {
 		return Lang.wrapThrow(e);
 	}
 
+	/**
+	 * @author zozoh
+	 * 
+	 * @param <T>
+	 */
 	static class InnerMapping<T> {
 
 		private Mirror<T> mirror;
 		private Map<String, Object> fields;
 		private Borning<T> borning;
+		private Deposer deposer;
+		private boolean singleton;
 
-		private <R> R makeValue(final Nut nut, Class<R> type, Object value)
-				throws FailToCastObjectException {
+		public Deposer getDeposer() {
+			return deposer;
+		}
+
+		public boolean isSingleton() {
+			return singleton;
+		}
+
+		private <R> R makeValue(final Nut nut, Class<R> type, Object value) throws Exception {
 			if (value instanceof Mapping) {
 				return (new InnerMapping<R>(nut, type, (Mapping) value)).make();
 			} else if (value instanceof Map) {
@@ -59,7 +111,7 @@ public class Nut implements Ioc {
 						try {
 							Object re = makeValue(nut, null, obj);
 							list.add(re);
-						} catch (FailToCastObjectException e) {
+						} catch (Exception e) {
 							throw new LoopException(e);
 						}
 					}
@@ -71,13 +123,22 @@ public class Nut implements Ioc {
 			return Castors.me().castTo(value, type);
 		}
 
-		InnerMapping(final Nut nut, Class<T> classOfT, Mapping mapping)
-				throws FailToCastObjectException {
+		InnerMapping(final Nut nut, Class<T> classOfT, Mapping mapping) throws Exception {
 			this.mirror = (Mirror<T>) Mirror.me(mapping.getObjectType());
 			if (null == this.mirror)
 				this.mirror = Mirror.me(classOfT);
 			if (null == mirror)
 				Lang.makeThrow("Don't know how to build InnerMapping!");
+			singleton = mapping.isSingleton();
+			// deposer
+			if (!Strings.isBlank(mapping.getDeposeMethodName())) {
+				Method m = classOfT.getMethod(mapping.getDeposeMethodName());
+				deposer = new MethodDeposer(m);
+			} else if (!Strings.isBlank(mapping.getDeposerTypeName())) {
+				Class<?> depType = Class.forName(mapping.getDeposerTypeName());
+				deposer = (Deposer) depType.newInstance();
+			}
+			// fields
 			this.fields = new HashMap<String, Object>();
 			// format the constructor arguments
 			Object[] objs = mapping.getBorningArguments();
@@ -126,21 +187,104 @@ public class Nut implements Ioc {
 		}
 	}
 
+	static class MappingBean implements Mapping {
+
+		public MappingBean(Mapping mapping) {
+			objectType = mapping.getObjectType();
+			singleton = mapping.isSingleton();
+			fieldsSetting = new HashMap<String, Object>();
+			fieldsSetting.putAll(mapping.getFieldsSetting());
+			borningArguments = mapping.getBorningArguments();
+			deposeMethodName = mapping.getDeposeMethodName();
+			deposerTypeName = mapping.getDeposerTypeName();
+		}
+
+		private Class<?> objectType;
+		private boolean singleton;
+		private Map<String, Object> fieldsSetting;
+		private Object[] borningArguments;
+		private String deposeMethodName;
+		private String deposerTypeName;
+
+		Mapping merge(Mapping m) {
+			if (null != m.getObjectType())
+				objectType = m.getObjectType();
+			singleton = m.isSingleton();
+			if (null != m.getBorningArguments())
+				borningArguments = m.getBorningArguments();
+			if (null != m.getDeposeMethodName())
+				deposeMethodName = m.getDeposeMethodName();
+			if (null != m.getDeposerTypeName())
+				deposerTypeName = m.getDeposerTypeName();
+			for (Iterator<String> it = m.getFieldsSetting().keySet().iterator(); it.hasNext();) {
+				String key = it.next();
+				Object value = m.getFieldsSetting().get(key);
+				fieldsSetting.put(key, value);
+			}
+			return this;
+		}
+
+		@Override
+		public Object[] getBorningArguments() {
+			return borningArguments;
+		}
+
+		@Override
+		public Map<String, Object> getFieldsSetting() {
+			return fieldsSetting;
+		}
+
+		@Override
+		public Class<?> getObjectType() {
+			return objectType;
+		}
+
+		@Override
+		public boolean isSingleton() {
+			return singleton;
+		}
+
+		@Override
+		public void setSingleton(boolean sg) {
+			this.singleton = sg;
+		}
+
+		@Override
+		public String getDeposeMethodName() {
+			return deposeMethodName;
+		}
+
+		@Override
+		public String getDeposerTypeName() {
+			return deposerTypeName;
+		}
+
+		@Override
+		public String getParentName() {
+			return null;
+		}
+
+	}
+
+	/*
+	 * --------------------------------------------------------------------------
+	 * --
+	 */
 	public Nut(MappingLoader loader) {
 		if (null == loader)
 			Lang.makeThrow("Nut MappingLoader can not be null!!!");
 		this.loader = loader;
-		cache = new HashMap<String, Object>();
-		mappings = new HashMap<String, InnerMapping<?>>();
+		cache = new HashMap<String, ObjWrapper>();
+		innerMappings = new HashMap<String, InnerMapping<?>>();
+		mappings = new HashMap<String, Mapping>();
 		makers = new ArrayList<ObjectMaker<?>>();
-		deposers = new ArrayList<Deposer>();
 		add(new JavaObjectMaker()).add(new EvnObjectMaker()).add(new NutObjectMaker(this));
 	}
 
-	private Map<String, Object> cache;
-	private Map<String, InnerMapping<?>> mappings;
+	private Map<String, ObjWrapper> cache;
+	private Map<String, InnerMapping<?>> innerMappings;
+	private Map<String, Mapping> mappings;
 	private List<ObjectMaker<?>> makers;
-	private List<Deposer> deposers;
 	private MappingLoader loader;
 
 	public Nut add(ObjectMaker<?> maker) {
@@ -151,23 +295,16 @@ public class Nut implements Ioc {
 	@Override
 	public <T> T getObject(Class<T> classOfT, String name) throws FailToMakeObjectException,
 			ObjectNotFoundException {
-		T obj = (T) cache.get(name);
-		if (null != obj)
-			return obj;
-		InnerMapping<T> im = (InnerMapping<T>) mappings.get(name);
+		ObjWrapper ow = cache.get(name);
+		if (null != ow)
+			return (T) ow.obj;
+		InnerMapping<T> im = (InnerMapping<T>) innerMappings.get(name);
 		try {
 			if (null == im) {
 				synchronized (this) {
-					im = (InnerMapping<T>) mappings.get(name);
+					im = (InnerMapping<T>) innerMappings.get(name);
 					if (null == im) {
-						Mapping mapping;
-						try {
-							mapping = loader.load(name);
-						} catch (Exception e) {
-							throw new ObjectNotFoundException(name, e);
-						}
-						if (null == mapping)
-							throw new ObjectNotFoundException(name);
+						Mapping mapping = loadMapping(name);
 						Class<T> type = (Class<T>) mapping.getObjectType();
 						if (null == type)
 							if (null != classOfT)
@@ -175,16 +312,17 @@ public class Nut implements Ioc {
 							else
 								throw new FailToMakeObjectException(name, "object type is NULL");
 						im = new InnerMapping<T>(this, type, mapping);
-						obj = im.make();
-						if (mapping.isSingleton())
-							cache.put(name, obj);
-						else
-							mappings.put(name, im);
+						innerMappings.put(name, im);
 					}
 				}
 			} else {
-				obj = im.make();
+				return (T) im.make();
 			}
+			Object obj = im.make();
+			ow = new ObjWrapper(obj, im.getDeposer());
+			if (im.isSingleton())
+				cache.put(name, ow);
+
 		} catch (ObjectNotFoundException e) {
 			throw e;
 		} catch (FailToMakeObjectException e) {
@@ -192,7 +330,33 @@ public class Nut implements Ioc {
 		} catch (Exception e) {
 			throw new FailToMakeObjectException(name, e);
 		}
-		return obj;
+		return (T) ow.obj;
+	}
+
+	private Mapping loadMapping(String name) {
+		Mapping mapping = mappings.get(name);
+		if (null == mapping)
+			synchronized (this) {
+				mapping = mappings.get(name);
+				if (null == mapping) {
+					try {
+						mapping = loader.load(name);
+					} catch (Exception e) {
+						throw new ObjectNotFoundException(name, e);
+					}
+					if (null == mapping)
+						throw new ObjectNotFoundException(name);
+					// merge parent mapping
+					if (!Strings.isBlank(mapping.getParentName())) {
+						Mapping pm = loadMapping(mapping.getParentName());
+						MappingBean mb = new MappingBean(pm);
+						mapping = mb.merge(mapping);
+					}
+					// store
+					mappings.put(name, mapping);
+				}
+			}
+		return mapping;
 	}
 
 	private <T> ObjectMaker<T> findMaker(Class<T> type, Map<String, Object> properties) {
@@ -204,22 +368,23 @@ public class Nut implements Ioc {
 		return null;
 	}
 
-	public void clearCache() {
-		this.cache.clear();
-		this.mappings.clear();
-	}
-
-	@Override
-	public Ioc addDeposer(Deposer deposer) {
-		deposers.add(deposer);
-		return this;
-	}
-
 	@Override
 	public void depose() {
-		for (Iterator<Deposer> it = deposers.iterator(); it.hasNext();) {
-			it.next().depose(this);
+		for (Iterator<ObjWrapper> it = this.cache.values().iterator(); it.hasNext();) {
+			ObjWrapper ow = it.next();
+			if (ow.deposer != null)
+				ow.deposer.depose(ow.obj);
 		}
+		cache.clear();
+		mappings.clear();
+		innerMappings.clear();
+		cache = new HashMap<String, ObjWrapper>();
+		innerMappings = new HashMap<String, InnerMapping<?>>();
+	}
+
+	@Override
+	public String[] keys() {
+		return this.loader.keys();
 	}
 
 }

@@ -6,12 +6,14 @@ import com.zzh.dao.entity.Entity;
 public class DB2Pager extends Pager {
 
 	@Override
-	protected String getLimitString(Entity<?> entity)
-	{
+	protected String getLimitString(Entity<?> entity) {
 		/*
-		 * SELECT * FROM @tableName WHERE (@fieldName IN (SELECT @fieldName FROM
-		 * (SELECT @fieldName, rownumber() OVER(ORDER BY @fieldName ASC) AS rn
-		 * FROM @tableName) AS R WHERE R.rn BETWEEN @startNumber AND
+		 * SELECT FROM @tableName WHERE (@fieldName IN
+		 * (SELECT @fieldName FROM (SELECT @fieldName,
+		 * rownumber() OVER(ORDER BY @fieldName ASC) AS rn
+		 * FROM @tableName) AS R WHERE R.rn BETWEEN
+		 * @startNumber AND
+		 * 
 		 * @endNumber))
 		 */
 		String fieldName = entity.getIdentifiedField().getColumnName();

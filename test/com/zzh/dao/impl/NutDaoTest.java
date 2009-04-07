@@ -2,13 +2,12 @@ package com.zzh.dao.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Calendar;
 import java.util.List;
 
 import com.zzh.Main;
 import com.zzh.lang.random.GM;
-import com.zzh.lang.random.StringGenerator;
 import com.zzh.dao.Condition;
+import com.zzh.dao.Conditions;
 import com.zzh.dao.Dao;
 import com.zzh.dao.ExecutableSql;
 import com.zzh.dao.FetchSql;
@@ -35,7 +34,8 @@ public class NutDaoTest extends TestCase {
 		@Name
 		public String name;
 
-		public Abc() {}
+		public Abc() {
+		}
 
 		public Abc(ResultSet rs) throws SQLException {
 			id = rs.getInt("id");
@@ -96,7 +96,8 @@ public class NutDaoTest extends TestCase {
 		}
 	}
 
-	public static class FetchAbc extends FetchSql<Abc> {}
+	public static class FetchAbc extends FetchSql<Abc> {
+	}
 
 	public void testExecuteFetchSQL() {
 		try {
@@ -138,13 +139,7 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public static Student setupStudent(Student stu, String name) {
-		stu.setId(-1);
-		stu.setAge(GM.random(10, 45));
-		stu.setAboutMe(new StringGenerator(6, 10).next());
-		stu.setBirthday(Calendar.getInstance());
-		stu.setEmail(new Email(new StringGenerator(3, 5).next(), "gmail.com"));
-		stu.setName(name);
-		return stu;
+		return Student.make(name, GM.random(10, 45));
 	}
 
 	public void testInsert() {
@@ -161,8 +156,23 @@ public class NutDaoTest extends TestCase {
 		assertTrue(stu.equals(stu2));
 	}
 
+	public void testFetchByCondition() {
+		dao.clear(Student.class, null);
+		Student stu = setupStudent(new Student(), "linux");
+		stu.setAboutMe("I love Linux");
+		stu.setEmail(new Email("linux@zozoh.com"));
+		stu.setAge(32);
+		dao.insert(stu);
+
+		stu = dao.fetch(Student.class, Conditions.format("aboutme LIKE '%%%s%%'", "Linux"));
+		assertEquals(32, stu.getAge());
+	}
+
 	public void testUpdate() {
-		Student stu = dao.fetch(Student.class, 1);
+		dao.clear(Student.class, null);
+		Student stu = setupStudent(new Student(), "zzh");
+		stu = dao.insert(stu);
+		stu = dao.fetch(Student.class, "zzh");
 		String txt = "I am great!!!";
 		stu.setAboutMe(txt);
 		dao.update(stu);
@@ -171,43 +181,43 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public void testUpdate2Default() {
-		Student stu = dao.fetch(Student.class, 1);
+		Student stu = dao.fetch(Student.class, "zzh");
 		stu.setAboutMe(null);
 		dao.update(stu);
-		Student stu2 = dao.fetch(Student.class, 1);
+		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals("I am zzh", stu2.getAboutMe());
 	}
 
 	public void testUpdateNull() {
-		Student stu = dao.fetch(Student.class, 1);
+		Student stu = dao.fetch(Student.class, "zzh");
 		stu.setEmail(null);
 		dao.update(stu);
-		Student stu2 = dao.fetch(Student.class, 1);
+		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertNull(stu2.getEmail());
 	}
 
 	public void testUpdateIgnoreNull() {
-		Student stu = dao.fetch(Student.class, 1);
+		Student stu = dao.fetch(Student.class, "zzh");
 		Email email = stu.getEmail();
 		stu.setEmail(null);
 		dao.update(stu, true);
-		Student stu2 = dao.fetch(Student.class, 1);
+		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals(email, stu2.getEmail());
 	}
 
 	public void testUpdateIgnoredField() {
-		Student stu = dao.fetch(Student.class, 1);
+		Student stu = dao.fetch(Student.class, "zzh");
 		Email email = stu.getEmail();
 		stu.setEmail(new Email("bbb@bbb.com"));
 		stu.setAboutMe("haha");
 		dao.update(stu, "email", null);
-		Student stu2 = dao.fetch(Student.class, 1);
+		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals("haha", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());
 	}
 
 	public void testUpdateActivedField() {
-		Student stu = dao.fetch(Student.class, 1);
+		Student stu = dao.fetch(Student.class, "zzh");
 		Email email = stu.getEmail();
 		boolean isnew = stu.isNew();
 		stu.setEmail(new Email("bbb@bbb.com"));
@@ -215,7 +225,7 @@ public class NutDaoTest extends TestCase {
 		stu.setAge(77);
 		stu.setNew(!isnew);
 		dao.update(stu, null, "aboutMe|age");
-		Student stu2 = dao.fetch(Student.class, 1);
+		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals("xyz", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());
 		assertEquals(77, stu2.getAge());
@@ -223,27 +233,23 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public void testDeleteById() {
-		Student stu = setupStudent(new Student(), "s2");
-		dao.insert(stu);
-		assertEquals(2, stu.getId());
-		assertEquals(2, dao.count(Student.class, null));
+		initStudentsData(dao);
+		Student stu = dao.fetch(Student.class, (Condition) null);
+		assertEquals(5, dao.count(Student.class, null));
 		dao.delete(Student.class, stu.getId());
-		assertEquals(1, dao.count(Student.class, null));
+		assertEquals(4, dao.count(Student.class, null));
 	}
 
 	public void testDeleteByName() {
-		Student stu = setupStudent(new Student(), "s3");
-		dao.insert(stu);
-		assertEquals(2, dao.count(Student.class, null));
+		initStudentsData(dao);
+		Student stu = dao.fetch(Student.class, (Condition) null);
+		assertEquals(5, dao.count(Student.class, null));
 		dao.delete(Student.class, stu.getName());
-		assertEquals(1, dao.count(Student.class, null));
+		assertEquals(4, dao.count(Student.class, null));
 	}
 
 	public void testQuery() {
-		dao.insert(setupStudent(new Student(), "s4"));
-		dao.insert(setupStudent(new Student(), "s5"));
-		dao.insert(setupStudent(new Student(), "s6"));
-		dao.insert(setupStudent(new Student(), "s7"));
+		initStudentsData(dao);
 		List<?> list = (List<?>) dao.query(Student.class, null, null);
 		assertEquals(5, list.size());
 	}
@@ -258,27 +264,34 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public void testQueryByPager() {
+		initStudentsData(dao);
 		Pager p = com.zzh.dao.Pager.create(null, 2, 2);
 		List<Student> list = dao.query(Student.class, null, p);
 		assertEquals(5, p.getRecordCount());
 		assertEquals(2, list.size());
-		assertEquals(6, list.get(1).getId());
-		assertEquals("s6", list.get(1).getName());
+		assertEquals("ttt", list.get(1).getName());
 	}
 
 	public void testClear() {
-		dao.clear(Student.class, new Condition() {
-			@Override
-			public String toString(Entity<?> entity) {
-				return "WHERE name>'s5' AND name!='zzh'";
-			}
-		});
+		initStudentsData(dao);
+		dao.clear(Student.class, Conditions.wrap("name LIKE '%t%'"));
 		assertEquals(3, dao.count(Student.class, null));
 		dao.clear(Student.class, null);
 		assertEquals(0, dao.count(Student.class, null));
 	}
 
+	private static void initStudentsData(Dao dao) {
+		dao.clear(Student.class, null);
+		assertEquals(0, dao.count(Student.class, null));
+		dao.insert(setupStudent(new Student(), "abc"));
+		dao.insert(setupStudent(new Student(), "xyz"));
+		dao.insert(setupStudent(new Student(), "mmm"));
+		dao.insert(setupStudent(new Student(), "ttt"));
+		dao.insert(setupStudent(new Student(), "ytm"));
+	}
+
 	public void testDefaultValue() {
+		dao.clear(Student.class, null);
 		Student stu = setupStudent(new Student(), "zzh");
 		stu.setAboutMe(null);
 		stu = dao.insert(stu);

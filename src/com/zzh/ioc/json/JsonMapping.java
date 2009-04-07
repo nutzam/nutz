@@ -21,18 +21,26 @@ public class JsonMapping implements Mapping {
 		for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
 			String key = it.next();
 			Object value = map.get(key);
-			if (null != value && "type".equals(key)) {
+			if (null == value)
+				continue;
+			if ("type".equals(key)) {
 				try {
 					objectType = Class.forName(value.toString());
 				} catch (ClassNotFoundException e) {
 					throw Lang.wrapThrow(e);
 				}
-			} else if (null != value && "singleton".equals(key)) {
+			} else if ("singleton".equals(key)) {
 				try {
 					singleton = (Boolean) value;
 				} catch (Exception e) {
 					throw Lang.wrapThrow(e);
 				}
+			} else if ("extends".equals(key)) {
+				this.parentName = value.toString();
+			} else if ("depmethod".equals(key)) {
+				this.deposeMethodName = value.toString();
+			} else if ("deposer".equals(key)) {
+				this.deposerTypeName = value.toString();
 			} else if ("$args".equals(key)) {
 				Collection<Object> coll = (Collection<Object>) value;
 				borningArguments = new Object[coll.size()];
@@ -40,7 +48,7 @@ public class JsonMapping implements Mapping {
 				for (Iterator<Object> oit = coll.iterator(); oit.hasNext();) {
 					borningArguments[i++] = makeValue(oit.next());
 				}
-			} else if (null != value && "fields".equals(key)) {
+			} else if ("fields".equals(key)) {
 				Map<String, Object> fm = (Map<String, Object>) value;
 				for (Iterator<String> fi = fm.keySet().iterator(); fi.hasNext();) {
 					String name = fi.next();
@@ -48,7 +56,7 @@ public class JsonMapping implements Mapping {
 					Object vv = makeValue(fv);
 					fieldsSetting.put(name, vv);
 				}
-			} 
+			}
 		}
 	}
 
@@ -75,6 +83,9 @@ public class JsonMapping implements Mapping {
 	private boolean singleton;
 	private Map<String, Object> fieldsSetting;
 	private Object[] borningArguments;
+	private String parentName;
+	private String deposeMethodName;
+	private String deposerTypeName;
 
 	@Override
 	public Object[] getBorningArguments() {
@@ -99,6 +110,21 @@ public class JsonMapping implements Mapping {
 	@Override
 	public void setSingleton(boolean sg) {
 		this.singleton = sg;
+	}
+
+	@Override
+	public String getDeposeMethodName() {
+		return deposeMethodName;
+	}
+
+	@Override
+	public String getDeposerTypeName() {
+		return deposerTypeName;
+	}
+
+	@Override
+	public String getParentName() {
+		return parentName;
 	}
 
 }

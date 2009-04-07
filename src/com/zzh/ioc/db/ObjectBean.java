@@ -28,6 +28,15 @@ public class ObjectBean {
 	@Column
 	private Class<?> type;
 
+	@Column("parent")
+	private String parentName;
+
+	@Column("depmethod")
+	private String deposeMethodName;
+
+	@Column("deposer")
+	private String deposerTypeName;
+
 	@ManyMany(target = ValueBean.class, relation = "nut_obj_args", from = "oid", to = "vid")
 	private List<ValueBean> args;
 
@@ -88,6 +97,30 @@ public class ObjectBean {
 
 	public void setFields(List<FieldBean> fields) {
 		this.fields = fields;
+	}
+
+	public String getParentName() {
+		return parentName;
+	}
+
+	public void setParentName(String parentName) {
+		this.parentName = parentName;
+	}
+
+	public String getDeposeMethodName() {
+		return deposeMethodName;
+	}
+
+	public void setDeposeMethodName(String deposeMethodName) {
+		this.deposeMethodName = deposeMethodName;
+	}
+
+	public String getDeposerTypeName() {
+		return deposerTypeName;
+	}
+
+	public void setDeposerTypeName(String deposerTypeName) {
+		this.deposerTypeName = deposerTypeName;
 	}
 
 }

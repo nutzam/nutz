@@ -1,6 +1,7 @@
 package com.zzh.mvc;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -13,32 +14,46 @@ import com.zzh.json.JsonFormat;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Localize;
 import com.zzh.lang.Mirror;
+import com.zzh.mvc.annotation.Param;
+import com.zzh.mvc.annotation.Parameter;
 import com.zzh.mvc.localize.Localizations;
 import com.zzh.mvc.view.JsonView;
 
 public class Mvc {
 
+	public static <T> Parameter[] getParameterFields(Class<?> type) {
+		Field[] fields = type.getFields();
+		ArrayList<Parameter> list = new ArrayList<Parameter>(fields.length);
+		for (Field f : fields) {
+			Param ann = f.getAnnotation(Param.class);
+			if (ann != null) {
+				if (ann.value().equals(Lang.NULL)) {
+					list.add(new Parameter(f.getName(), f));
+				} else {
+					list.add(new Parameter(ann.value(), f));
+				}
+			}
+		}
+		return list.toArray(new Parameter[list.size()]);
+	}
+
+	public static <T> T getObjectAsNameValuePair(T obj, HttpServletRequest request) {
+		return getObjectAsNameValuePair(obj, request, getParameterFields(obj.getClass()));
+	}
+
 	public static <T> T getObjectAsNameValuePair(T obj, HttpServletRequest request,
-			String... fieldNames) {
+			Parameter[] fields) {
 		if (null == obj)
 			return null;
 		Mirror<? extends Object> me = Mirror.me(obj.getClass());
 		try {
-			Field[] fields;
-			if (null != fieldNames && fieldNames.length > 0) {
-				fields = new Field[fieldNames.length];
-				for (int i = 0; i < fields.length; i++) {
-					fields[i] = me.getField(fieldNames[i]);
-				}
-			} else {
-				fields = me.getFields();
-			}
-			for (Field f : fields) {
+			for (Parameter f : fields) {
 				String v = request.getParameter(f.getName());
 				if (null == v)
 					continue;
 				v = Localize.convertAscii2Native(v, '%');
-				me.setValue(obj, f, getCastors(request).castTo(v, f.getType()));
+				Object v2 = getCastors(request).castTo(v, f.getField().getType());
+				me.setValue(obj, f.getField(), v2);
 			}
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
@@ -112,7 +127,7 @@ public class Mvc {
 			} else {
 				renderSuccess(request, response, url, obj);
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			obj = Return.fail(e.getMessage());
 			renderFail(request, response, url, obj);
 		}
@@ -127,7 +142,7 @@ public class Mvc {
 	}
 
 	private static void renderSuccess(HttpServletRequest request, HttpServletResponse response,
-			Url url, Object obj) throws Exception {
+			Url url, Object obj) throws Throwable {
 		View v;
 		v = url.getOk();
 		if (null != v)
@@ -142,7 +157,7 @@ public class Mvc {
 			} else {
 				getDefaultView(request).render(request, response, obj);
 			}
-		} catch (Exception e1) {
+		} catch (Throwable e1) {
 			throw Lang.wrapThrow(e1);
 		}
 	}

@@ -14,4 +14,9 @@ public interface Mapping {
 
 	Map<String, Object> getFieldsSetting();
 
+	String getParentName();
+	
+	String getDeposeMethodName();
+	
+	String getDeposerTypeName();
 }

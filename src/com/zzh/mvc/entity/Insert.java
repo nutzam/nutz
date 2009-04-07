@@ -11,9 +11,9 @@ public class Insert<T> extends EntityControllor<T> {
 		super(service);
 	}
 
-	public String[] ones;
+	private String[] ones;
 
-	public String[] manys;
+	private String[] manys;
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)

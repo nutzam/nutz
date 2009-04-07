@@ -5,6 +5,7 @@ import java.util.List;
 import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
 import com.zzh.dao.entity.Entity;
+import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
 import com.zzh.dao.Pager;
 
@@ -26,6 +27,11 @@ public abstract class EntityService<T> extends Service {
 		return mirror;
 	}
 
+	@SuppressWarnings("unchecked")
+	public <C extends T> void setEntityType(Class<C> classOfT) {
+		mirror = (Mirror<T>) Mirror.me(classOfT);
+	}
+
 	public Entity<T> getEntity() {
 		return dao().getEntity(mirror.getType());
 	}
@@ -39,10 +45,20 @@ public abstract class EntityService<T> extends Service {
 	}
 
 	public T insert(T obj) {
+		checkObjectType(obj);
 		return dao().insert(obj);
 	}
 
+	private void checkObjectType(T obj) {
+		if (null != obj)
+			if (obj.getClass() != mirror.getType())
+				throw Lang.makeThrow(
+						"Current service is for type '%s', but you object type is '%s'", mirror
+								.getType().getName(), obj.getClass());
+	}
+
 	public void delete(T obj) {
+		checkObjectType(obj);
 		dao().delete(obj);
 	}
 
@@ -51,6 +67,7 @@ public abstract class EntityService<T> extends Service {
 	}
 
 	public T update(T obj) {
+		checkObjectType(obj);
 		return dao().update(obj);
 	}
 

@@ -57,7 +57,12 @@ public class JsonIocTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		nut = new Nut(new JsonMappingLoader("com/zzh/ioc/objects.txt"));
+		nut = new Nut(new JsonMappingLoader("com/zzh/ioc/objects.json"));
+	}
+
+	@Override
+	protected void tearDown() throws Exception {
+		nut.depose();
 	}
 
 	public void testFetchA1() {
@@ -178,9 +183,28 @@ public class JsonIocTest extends TestCase {
 
 	public void testMapAttribute() {
 		D d = nut.getObject(D.class, "d1");
-		assertEquals(2,d.map.size());
-		assertEquals("abc@263.net",d.map.get("cc1").email.toString());
-		assertEquals("abc@263.net",d.map.get("cc2").email.toString());
+		assertEquals(2, d.map.size());
+		assertEquals("abc@263.net", d.map.get("cc1").email.toString());
+		assertEquals("abc@263.net", d.map.get("cc2").email.toString());
+	}
+
+	public void testFruit() {
+		Fruit apple = nut.getObject(Fruit.class, "apple");
+		assertTrue(apple.isOnSale());
+		assertEquals(4, apple.getPrice());
+
+		Fruit gg = nut.getObject(Fruit.class, "guoguang");
+		assertTrue(gg.isOnSale());
+		assertEquals("Apple", gg.getName());
+		assertEquals(3, gg.getPrice());
+
+		Fruit strawberry = nut.getObject(Fruit.class, "strawberry");
+		assertFalse(strawberry.isOnSale());
+
+		// test depose
+		nut.depose();
+		assertEquals(-1, apple.getPrice());
+		assertEquals(-2, gg.getPrice());
 	}
 
 }

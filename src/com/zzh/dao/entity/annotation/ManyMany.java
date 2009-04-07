@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.zzh.lang.Lang;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
 public @interface ManyMany {
@@ -17,5 +19,5 @@ public @interface ManyMany {
 
 	String to();
 
-	String mapKeyField() default CONST.NULL;
+	String mapKeyField() default Lang.NULL;
 }

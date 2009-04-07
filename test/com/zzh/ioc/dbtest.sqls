@@ -5,9 +5,12 @@ DROP TABLE IF EXISTS nut_object;
 CREATE TABLE nut_object (
   id SERIAL PRIMARY KEY,
   name VARCHAR(32) NOT NULL UNIQUE,
+  parent VARCHAR(32),
   type VARCHAR(256) NOT NULL,
   singleton BOOLEAN DEFAULT '0',
-  anonymous BOOLEAN DEFAULT '0'
+  anonymous BOOLEAN DEFAULT '0',
+  depmethod VARCHAR(64),
+  deposer VARCHAR(256)
 );
 /*-------------------------------------------------------------------------*/
 /*.field.drop*/

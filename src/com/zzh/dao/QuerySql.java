@@ -47,8 +47,6 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 	}
 
 	protected List<T> execute(Connection conn, QueryCallback<T> callback) throws SQLException {
-		// @ TODO think about, make each DB more special way to increase the
-		// speed
 		PreparedStatement stat = null;
 		try {
 			List<T> list = new LinkedList<T>();

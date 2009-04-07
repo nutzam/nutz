@@ -113,7 +113,7 @@ public class EntityField {
 						entity.mirror.getType().getName(), field.getName(),
 						"for the reason it is auto-increament @Id.");
 		}
-		if (isId() && !CONST.NULL.equals(id.fetch())) {
+		if (isId() && !Lang.NULL.equals(id.fetch())) {
 			fetchSql = new FetchSql<Integer>(id.fetch()).setCallback(new QueryCallback<Integer>() {
 				public Integer invoke(ResultSet rs) throws SQLException {
 					return rs.getInt(1);
@@ -152,7 +152,7 @@ public class EntityField {
 		Column column = field.getAnnotation(Column.class);
 		if (null == column)
 			return false;
-		if (CONST.NULL.equals(column.value()))
+		if (Lang.NULL.equals(column.value()))
 			columnName = field.getName();
 		else
 			columnName = column.value();

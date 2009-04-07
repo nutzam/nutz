@@ -11,9 +11,9 @@ public class Update<T> extends EntityControllor<T> {
 		super(service);
 	}
 
-	public boolean ignoreNull;
-	public String ignored;
-	public String actived;
+	private boolean ignoreNull;
+	private String ignored;
+	private String actived;
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)

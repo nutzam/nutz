@@ -107,11 +107,9 @@ class JsonParsing {
 	private <T> T parseFromCurrentLocation(Class<T> type) throws Exception {
 		Mirror<T> me = Mirror.me(type);
 		switch (cursor) {
-		/*
-		 * Array, the T should indicate the inside type of
-		 * arrays
-		 */
-		case '[':
+		case -1:
+			return null;
+		case '[': // Array, the T should indicate the inside type of arrays
 			Class<?> compType = null;
 			boolean reurnAsList = true;
 			List list = null;
@@ -151,8 +149,7 @@ class JsonParsing {
 			for (Iterator it = list.iterator(); it.hasNext();)
 				Array.set(ary, i++, Castors.me().castTo(it.next(), compType));
 			return (T) ary;
-			// Object or Map
-		case '{':
+		case '{': // Object or Map
 			nextChar();
 			skipCommentsandBlank();
 			/*
@@ -303,7 +300,7 @@ class JsonParsing {
 		StringBuilder sb = new StringBuilder();
 		int expEnd = cursor;
 		nextChar();
-		do {
+		while (cursor != -1 && cursor != expEnd) {
 			if (cursor == '\\') {
 				nextChar();
 				switch (cursor) {
@@ -330,7 +327,7 @@ class JsonParsing {
 			}
 			sb.append((char) cursor);
 			nextChar();
-		} while (cursor != -1 && cursor != expEnd);
+		}
 		if (cursor == -1)
 			throw makeError("Unclose string");
 		nextChar();

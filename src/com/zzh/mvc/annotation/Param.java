@@ -1,4 +1,4 @@
-package com.zzh.dao.entity.annotation;
+package com.zzh.mvc.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,16 +7,10 @@ import java.lang.annotation.Target;
 
 import com.zzh.lang.Lang;
 
-/**
- * Delete one entity table name. support dynamice string like:
- * 
- * <b>xxx${yy}xxx</b>
- * 
- * @author zozoh
- * 
- */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
-public @interface Table {
+@Target( { ElementType.FIELD })
+public @interface Param {
+	
 	String value() default Lang.NULL;
+	
 }

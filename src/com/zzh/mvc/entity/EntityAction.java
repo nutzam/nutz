@@ -1,15 +1,15 @@
 package com.zzh.mvc.entity;
 
-import com.zzh.lang.Lang;
 import com.zzh.lang.Strings;
 import com.zzh.mvc.Action;
 import com.zzh.mvc.Return;
+import com.zzh.mvc.annotation.Param;
 import com.zzh.service.EntityService;
 
 public abstract class EntityAction<T> extends Action {
 
 	protected EntityAction() {
-		this.paramFields = Lang.array("id", "name");
+		super();
 	}
 
 	protected EntityAction(EntityService<T> service) {
@@ -20,9 +20,11 @@ public abstract class EntityAction<T> extends Action {
 
 	protected EntityService<T> service;
 
-	public long id;
+	@Param
+	private long id;
 
-	public String name;
+	@Param
+	private String name;
 
 	@Override
 	public Object execute() {

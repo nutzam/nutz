@@ -12,6 +12,9 @@ public class ObjectMapping implements Mapping {
 		objectType = ob.getType();
 		singleton = ob.isSingleton();
 		borningArguments = new Object[ob.getArgs().size()];
+		parentName = ob.getParentName();
+		deposeMethodName = ob.getDeposeMethodName();
+		deposerTypeName = ob.getDeposerTypeName();
 		int i = 0;
 		for (Iterator<ValueBean> it = ob.getArgs().iterator(); it.hasNext();) {
 			ValueBean vb = it.next();
@@ -29,6 +32,9 @@ public class ObjectMapping implements Mapping {
 	private boolean singleton;
 	private Map<String, Object> fieldsSetting;
 	private Object[] borningArguments;
+	private String parentName;
+	private String deposeMethodName;
+	private String deposerTypeName;
 
 	@Override
 	public Object[] getBorningArguments() {
@@ -53,6 +59,21 @@ public class ObjectMapping implements Mapping {
 	@Override
 	public void setSingleton(boolean sg) {
 		this.singleton = sg;
+	}
+
+	@Override
+	public String getDeposeMethodName() {
+		return deposeMethodName;
+	}
+
+	@Override
+	public String getDeposerTypeName() {
+		return deposerTypeName;
+	}
+
+	@Override
+	public String getParentName() {
+		return parentName;
 	}
 
 }

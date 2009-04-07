@@ -15,7 +15,7 @@ public class FileSQLManagerTest extends TestCase {
 
 	public void testCountSQL() {
 		sqls = new FileSqlManager("com/zzh/dao/impl/test.sqls");
-		assertEquals(8, sqls.count());
+		assertEquals(10, sqls.count());
 		String[] keys = { ".abc.drop", ".abc.create", ".abc.insert", ".abc.update", "abc.fetch",
 				"abc.query", ".student.drop", ".student.create" };
 		for (int i = 0; i < keys.length; i++) {

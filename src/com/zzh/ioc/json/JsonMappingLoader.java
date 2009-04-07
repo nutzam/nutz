@@ -59,4 +59,9 @@ public class JsonMappingLoader implements MappingLoader {
 		return mappings.get(name);
 	}
 
+	@Override
+	public String[] keys() {
+		return mappings.keySet().toArray(new String[mappings.size()]);
+	}
+
 }

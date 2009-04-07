@@ -5,24 +5,24 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpSession;
 
 import com.zzh.lang.Lang;
+import com.zzh.lang.Strings;
+import com.zzh.lang.segment.MultiLineProperties;
 
 public class Localizations {
 
-	public Localizations(File dir, final String suffix) {
+	private Localizations(File dir, final String suffix) {
 		File[] list = dir.listFiles(new FileFilter() {
 			@Override
 			public boolean accept(File f) {
-				if(!f.isFile())
+				if (!f.isFile())
 					return false;
-				if(null==suffix)
+				if (Strings.isBlank(suffix))
 					return true;
 				return f.getName().endsWith(suffix);
 			}
@@ -31,14 +31,8 @@ public class Localizations {
 		try {
 			for (File f : list) {
 				String lzName = f.getName().substring(0, f.getName().length() - suffix.length());
-				Map<String, String> lz = new HashMap<String, String>();
-				Properties p = new Properties();
-				p.load(new InputStreamReader(new FileInputStream(f)));
-				for (Iterator<?> it = p.keySet().iterator(); it.hasNext();) {
-					Object key = it.next();
-					Object value = p.get(key);
-					lz.put(key.toString(), value.toString());
-				}
+				MultiLineProperties lz = new MultiLineProperties(new InputStreamReader(
+						new FileInputStream(f), "UTF-8"));
 				lzs.put(lzName, lz);
 			}
 		} catch (Exception e) {
@@ -82,5 +76,13 @@ public class Localizations {
 			}
 		}
 		return null;
+	}
+
+	public static String[] available(ServletContext context) {
+		Localizations me = Localizations.me(context);
+		if (null == me)
+			return new String[0];
+		Map<String, Map<String, String>> lzs = me.lzs;
+		return lzs.keySet().toArray(new String[lzs.size()]);
 	}
 }

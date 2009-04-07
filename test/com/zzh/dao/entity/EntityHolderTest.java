@@ -21,9 +21,8 @@ public class EntityHolderTest extends TestCase {
 		try {
 			holder.getEntity(OneEntity.class);
 			fail();
-		} catch (ErrorEntitySyntaxException e) {
-		}
-		
+		} catch (ErrorEntitySyntaxException e) {}
+
 		Entity<TableEntity> en = holder.getEntity(TableEntity.class);
 		assertNotNull(en);
 	}
@@ -40,5 +39,13 @@ public class EntityHolderTest extends TestCase {
 		assertEquals("myEmail", ef.getColumnName());
 		assertFalse(ef.isId());
 		assertTrue(ef.isNotNull());
+	}
+
+	public static class SubTable extends TableEntity {}
+
+	public void testSubTable() {
+		Entity<SubTable> en = holder.getEntity(SubTable.class);
+		assertEquals("t_xyz", en.getTableName());
+		assertEquals(8, en.fields().size());
 	}
 }

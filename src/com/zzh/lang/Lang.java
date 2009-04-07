@@ -329,4 +329,6 @@ public class Lang {
 		}
 		return 1;
 	}
+
+	public static final String NULL = "";
 }

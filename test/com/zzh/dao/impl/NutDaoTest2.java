@@ -9,7 +9,7 @@ import com.zzh.dao.entity.annotation.*;
 
 import junit.framework.TestCase;
 
-public class NotDaoTest2 extends TestCase {
+public class NutDaoTest2 extends TestCase {
 
 	public static abstract class Animal {
 

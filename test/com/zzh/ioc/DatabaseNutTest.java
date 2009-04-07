@@ -40,6 +40,15 @@ public class DatabaseNutTest extends TestCase {
 		return vb;
 	}
 
+	private static ObjectBean makeObj(Class<?> classOfT, String parentName, String objName,
+			String depmd, String deptype) {
+		ObjectBean ob = makeObj(classOfT, objName, true, false);
+		ob.setParentName(parentName);
+		ob.setDeposeMethodName(depmd);
+		ob.setDeposerTypeName(deptype);
+		return ob;
+	}
+
 	private static ObjectBean makeObj(Class<?> classOfT, String objName, boolean singleton,
 			boolean anonymous) {
 		ObjectBean obj = new ObjectBean();
@@ -113,6 +122,24 @@ public class DatabaseNutTest extends TestCase {
 		obj = objsrv.insert(makeObj(Employee.class, "joey", false, false));
 		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "Joey.Huang")));
 		fldsrv.insert(makeField(obj.getId(), "company", makeValue("refer", "dtri")));
+		// Prepare Fruits
+		obj = objsrv.insert(makeObj(Fruit.class, "seasonFruit", true, false));
+		fldsrv.insert(makeField(obj.getId(), "onSale", makeValue(null, "true")));
+		obj = objsrv.insert(makeObj(Fruit.class, "expiredFruit", true, false));
+		fldsrv.insert(makeField(obj.getId(), "onSale", makeValue(null, "false")));
+
+		obj = objsrv.insert(makeObj(Fruit.class, "seasonFruit", "apple", "destroy", null));
+		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "Apple")));
+		fldsrv.insert(makeField(obj.getId(), "price", makeValue(null, "4")));
+
+		obj = objsrv.insert(makeObj(Fruit.class, "apple", "guoguang", "",
+				"com.zzh.ioc.FruitDeposer"));
+		fldsrv.insert(makeField(obj.getId(), "price", makeValue(null, "3")));
+		
+		obj = objsrv.insert(makeObj(Fruit.class, "expiredFruit", "strawberry", null, null));
+		fldsrv.insert(makeField(obj.getId(), "name", makeValue(null, "Strawberry")));
+		fldsrv.insert(makeField(obj.getId(), "price", makeValue(null, "15")));
+
 	}
 
 	@Override
@@ -156,6 +183,25 @@ public class DatabaseNutTest extends TestCase {
 		Employee joey = nut.getObject(Employee.class, "joey");
 		assertEquals("Joey.Huang", joey.name);
 		assertTrue(zzh.company == joey.company);
+	}
+	
+	public void testFruit() {
+		Fruit apple = nut.getObject(Fruit.class, "apple");
+		assertTrue(apple.isOnSale());
+		assertEquals(4, apple.getPrice());
+
+		Fruit gg = nut.getObject(Fruit.class, "guoguang");
+		assertTrue(gg.isOnSale());
+		assertEquals("Apple", gg.getName());
+		assertEquals(3, gg.getPrice());
+
+		Fruit strawberry = nut.getObject(Fruit.class, "strawberry");
+		assertFalse(strawberry.isOnSale());
+
+		// test depose
+		nut.depose();
+		assertEquals(-1, apple.getPrice());
+		assertEquals(-2, gg.getPrice());
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.zzh.ioc.db;
 
 import java.util.Iterator;
+import java.util.List;
 
 import com.zzh.dao.Dao;
 import com.zzh.ioc.Mapping;
@@ -22,13 +23,24 @@ public class DatabaseMappingLoader implements MappingLoader {
 			return null;
 		objsv.dao().fetchManyMany(ob, "args");
 		objsv.dao().fetchMany(ob, "fields");
-		if(null!=ob.getFields()){
-			for(Iterator<FieldBean> it = ob.getFields().iterator();it.hasNext();){
+		if (null != ob.getFields()) {
+			for (Iterator<FieldBean> it = ob.getFields().iterator(); it.hasNext();) {
 				FieldBean fb = it.next();
 				objsv.dao().fetchOne(fb, "value");
 			}
 		}
 		return new ObjectMapping(ob);
+	}
+
+	@Override
+	public String[] keys() {
+		List<ObjectBean> obs = objsv.query(null, null);
+		String[] re = new String[obs.size()];
+		int i = 0;
+		for (Iterator<ObjectBean> it = obs.iterator(); it.hasNext();) {
+			re[i++] = it.next().getName();
+		}
+		return re;
 	}
 
 }

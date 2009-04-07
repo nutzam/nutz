@@ -7,18 +7,18 @@ import com.zzh.dao.entity.EntityField;
 public class SQLServerPager extends Pager {
 
 	@Override
-	protected String getLimitString(Entity<?> entity)
-	{
+	protected String getLimitString(Entity<?> entity) {
 		return "%s";
 	}
 
 	@Override
-	public String getResultSetName(Entity<?> entity)
-	{
+	public String getResultSetName(Entity<?> entity) {
 		/*
-		 * SELECT TOP @pageSize FROM @tableName WHERE @fieldName NOT IN (SELECT
-		 * TOP @pageSize(@page-1) @fieldName FROM @tableName ORDER BY @fieldName
-		 * ASC ) ORDER BY @fieldName ASC
+		 * SELECT TOP @pageSize FROM @tableName WHERE
+		 * @fieldName NOT IN (SELECT TOP
+		 * @pageSize(@page-1) @fieldName FROM @tableName
+		 * ORDER BY @fieldName ASC ) ORDER BY @fieldName
+		 * ASC
 		 */
 		EntityField field = entity.getIdentifiedField();
 		String viewName = entity.getViewName();

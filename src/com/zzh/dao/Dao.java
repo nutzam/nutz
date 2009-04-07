@@ -48,6 +48,8 @@ public interface Dao {
 
 	<T> T fetch(Class<T> classOfT, String name);
 
+	<T> T fetch(Class<T> classOfT, Condition condition);
+
 	<T> T fetchOne(T obj, String... fieldNames);
 
 	<T> T fetchMany(T obj, String... fieldNames);
@@ -68,9 +70,9 @@ public interface Dao {
 
 	int count(Class<?> classOfT);
 
-	int count(String name, Condition condition);
+	int count(String tableName, Condition condition);
 
-	int count(String name);
+	int count(String tableName);
 
 	int getMaxId(Class<?> classOfT);
 

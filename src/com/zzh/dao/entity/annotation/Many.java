@@ -5,6 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import com.zzh.lang.Lang;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
 public @interface Many {
@@ -13,6 +15,6 @@ public @interface Many {
 
 	String field();
 
-	String mapKeyField() default CONST.NULL;
+	String mapKeyField() default Lang.NULL;
 
 }

@@ -1,7 +1,7 @@
 package com.zzh.ioc;
 
-public interface Deposer {
+public interface Deposer<T> {
 
-	void depose(Ioc ioc);
+	void depose(T obj);
 	
 }

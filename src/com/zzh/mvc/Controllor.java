@@ -5,6 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface Controllor {
 
-	Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception;
+	Object execute(HttpServletRequest request, HttpServletResponse response) throws Throwable;
 
 }

@@ -19,4 +19,9 @@ public class MvcMappingLoader implements MappingLoader {
 		return re;
 	}
 
+	@Override
+	public String[] keys() {
+		return loader.keys();
+	}
+
 }

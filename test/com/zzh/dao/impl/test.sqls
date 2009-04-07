@@ -50,3 +50,18 @@ CREATE TABLE student (
   isnew BOOLEAN DEFAULT '0'
 );
 /*-------------------------------------------------------------------------*/
+/*.student2.drop*/
+DROP TABLE IF EXISTS student2;
+/*-------------------------------------------------------------------------*/
+/*.student2.create*/
+CREATE TABLE student2 (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(20) NOT NULL UNIQUE,
+  age SMALLINT DEFAULT NULL,
+  email VARCHAR(64) DEFAULT NULL,
+  aboutme TEXT,
+  birthday TIMESTAMP NOT NULL,
+  isnew BOOLEAN DEFAULT '0',
+  brief VARCHAR(50)
+);
+/*-------------------------------------------------------------------------*/

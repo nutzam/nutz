@@ -53,7 +53,7 @@ public class Link {
 	private Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.Many;
-		this.mapKeyField = CONST.NULL.equals(many.mapKeyField()) ? null : many.mapKeyField();
+		this.mapKeyField = Lang.NULL.equals(many.mapKeyField()) ? null : many.mapKeyField();
 		this.targetClass = many.target();
 		evalDynamicTable();
 		if (this.isDynamicTarget()) {
@@ -72,7 +72,7 @@ public class Link {
 	private Link(Mirror<?> mirror, Field field, ManyMany mm) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
-		this.mapKeyField = CONST.NULL.equals(mm.mapKeyField()) ? null : mm.mapKeyField();
+		this.mapKeyField = Lang.NULL.equals(mm.mapKeyField()) ? null : mm.mapKeyField();
 		this.targetClass = mm.target();
 		evalDynamicTable();
 		this.from = mm.from();

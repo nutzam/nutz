@@ -7,8 +7,9 @@ import com.zzh.dao.impl.DaoPersonTest;
 import com.zzh.dao.impl.DynamicTableNameTest;
 import com.zzh.dao.impl.FileSQLManagerTest;
 import com.zzh.dao.impl.ManyOneTest;
-import com.zzh.dao.impl.NotDaoTest2;
+import com.zzh.dao.impl.NutDaoTest2;
 import com.zzh.dao.impl.NutDaoTest;
+import com.zzh.dao.impl.NutDaoTest3;
 import com.zzh.ioc.DatabaseNutTest;
 import com.zzh.ioc.JsonIocTest;
 import com.zzh.json.JsonCommentTest;
@@ -42,11 +43,12 @@ public class TestAll {
 		suite.addTestSuite(EntityHolderTest.class);
 		suite.addTestSuite(FileSQLManagerTest.class);
 		suite.addTestSuite(NutDaoTest.class);
+		suite.addTestSuite(NutDaoTest2.class);
+		suite.addTestSuite(NutDaoTest3.class);
 		suite.addTestSuite(DaoPersonTest.class);
 		suite.addTestSuite(ManyOneTest.class);
 		suite.addTestSuite(TreeServiceTest.class);
 		suite.addTestSuite(AllTypeTest.class);
-		suite.addTestSuite(NotDaoTest2.class);
 		// Nut
 		suite.addTestSuite(DatabaseNutTest.class);
 		suite.addTestSuite(JsonIocTest.class);

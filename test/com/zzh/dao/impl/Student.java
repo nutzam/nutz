@@ -10,9 +10,34 @@ import com.zzh.dao.entity.annotation.NotNull;
 import com.zzh.dao.entity.annotation.Table;
 import com.zzh.lang.Lang;
 import com.zzh.lang.meta.Email;
+import com.zzh.lang.random.StringGenerator;
 
 @Table("student")
 public class Student {
+
+	public static <T extends Student> T make(Class<T> type, String name, int age) {
+		try {
+			T stu = type.newInstance();
+			stu.setName(name);
+			stu.setAge(age);
+			stu.setAboutMe(new StringGenerator(6, 10).next());
+			stu.setBirthday(Calendar.getInstance());
+			stu.setEmail(new Email(new StringGenerator(3, 5).next(), "gmail.com"));
+			return stu;
+		} catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
+	public static Student make(String name, int age) {
+		Student stu = new Student();
+		stu.setName(name);
+		stu.setAge(age);
+		stu.setAboutMe(new StringGenerator(6, 10).next());
+		stu.setBirthday(Calendar.getInstance());
+		stu.setEmail(new Email(new StringGenerator(3, 5).next(), "gmail.com"));
+		return stu;
+	}
 
 	@Column
 	@Id

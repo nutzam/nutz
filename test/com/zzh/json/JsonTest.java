@@ -77,6 +77,14 @@ public class JsonTest extends TestCase {
 		assertTrue(45 == (Integer) coll.get(1));
 	}
 
+	public void testSimpleString() {
+		String s = (String) Json.fromJson(Lang.inr(""));
+		assertEquals(null, s);
+
+		s = (String) Json.fromJson(Lang.inr("\"\""));
+		assertEquals("", s);
+	}
+
 	public void testSimpleMap() {
 		String s = "{id:45,m:{x:1},name:'xyz'}";
 		Map map = (Map) Json.fromJson(Lang.inr(s));
@@ -99,6 +107,14 @@ public class JsonTest extends TestCase {
 		assertEquals(2, list.size());
 		assertTrue((Boolean) map.get("t"));
 		assertEquals(30, map.get("H"));
+	}
+
+	public void testSimpleMap4() {
+		String s = "{id:45,name:'',txt:\"\"}";
+		Map map = (Map) Json.fromJson(Lang.inr(s));
+		assertEquals(45, map.get("id"));
+		assertEquals("", map.get("name"));
+		assertEquals("", map.get("txt"));
 	}
 
 	public void testMap() throws FileNotFoundException {
