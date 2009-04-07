@@ -79,4 +79,8 @@ public abstract class EntityService<T> extends Service {
 		return dao().count(getEntityClass());
 	}
 
+	public T fetch(Condition condition) {
+		return dao().fetch(getEntityClass(), condition);
+	}
+
 }
