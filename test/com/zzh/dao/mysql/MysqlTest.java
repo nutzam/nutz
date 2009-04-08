@@ -16,7 +16,7 @@ public class MysqlTest extends DatabaseTest {
 	}
 
 	public void testQuery() {
-		Pager pager = Pager.create(Pager.MySQL, 2, 3);
+		Pager pager = dao.createPager(2, 3);
 		List<One> list = dao.query(One.class, new SimpleCondition("id>4 AND id<19"), pager);
 		assertEquals(3, list.size());
 		assertEquals("one_8", list.get(1).getTxt());

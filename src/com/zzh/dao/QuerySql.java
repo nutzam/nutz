@@ -36,6 +36,12 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 		return pager;
 	}
 
+	private FieldMatcher matcher;
+
+	void setMatcher(FieldMatcher fm) {
+		this.matcher = fm;
+	}
+
 	void setPager(Pager pager) {
 		this.pager = pager;
 	}
@@ -54,12 +60,16 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			super.setupStatement(stat);
 			ResultSet rs = stat.executeQuery();
-			if (rs.last()) {
-				if (null != pager)
-					if (pager.getPageSize() > 1000)
-						rs.setFetchSize(20);
-					else
-						rs.setFetchSize(pager.getPageSize());
+			callback.setMatcher(matcher);
+			if (null == pager) {
+				while (rs.next()) {
+					list.add(callback.invoke(rs));
+				}
+			} else if (rs.last()) {
+				if (pager.getPageSize() > 1000)
+					rs.setFetchSize(20);
+				else
+					rs.setFetchSize(pager.getPageSize());
 				LoopScope ls = evaluateLoopScopeAndPager(pager, rs.getRow());
 				if (rs.absolute(ls.start + 1))
 					for (int i = ls.start; i < ls.max; i++) {

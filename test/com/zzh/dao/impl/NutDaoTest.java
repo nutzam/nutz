@@ -11,6 +11,7 @@ import com.zzh.dao.Conditions;
 import com.zzh.dao.Dao;
 import com.zzh.dao.ExecutableSql;
 import com.zzh.dao.FetchSql;
+import com.zzh.dao.FieldFilter;
 import com.zzh.dao.Pager;
 import com.zzh.dao.QuerySql;
 import com.zzh.dao.Sql;
@@ -18,6 +19,7 @@ import com.zzh.dao.callback.QueryCallback;
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.annotation.*;
 import com.zzh.lang.meta.Email;
+import com.zzh.trans.Atom;
 
 import junit.framework.TestCase;
 
@@ -34,8 +36,7 @@ public class NutDaoTest extends TestCase {
 		@Name
 		public String name;
 
-		public Abc() {
-		}
+		public Abc() {}
 
 		public Abc(ResultSet rs) throws SQLException {
 			id = rs.getInt("id");
@@ -96,8 +97,7 @@ public class NutDaoTest extends TestCase {
 		}
 	}
 
-	public static class FetchAbc extends FetchSql<Abc> {
-	}
+	public static class FetchAbc extends FetchSql<Abc> {}
 
 	public void testExecuteFetchSQL() {
 		try {
@@ -206,25 +206,33 @@ public class NutDaoTest extends TestCase {
 	}
 
 	public void testUpdateIgnoredField() {
-		Student stu = dao.fetch(Student.class, "zzh");
+		final Student stu = dao.fetch(Student.class, "zzh");
 		Email email = stu.getEmail();
 		stu.setEmail(new Email("bbb@bbb.com"));
 		stu.setAboutMe("haha");
-		dao.update(stu, "email", null);
+		FieldFilter.create(Student.class, null, "email").run(new Atom() {
+			public void run() {
+				dao.update(stu);
+			}
+		});
 		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals("haha", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());
 	}
 
 	public void testUpdateActivedField() {
-		Student stu = dao.fetch(Student.class, "zzh");
+		final Student stu = dao.fetch(Student.class, "zzh");
 		Email email = stu.getEmail();
 		boolean isnew = stu.isNew();
 		stu.setEmail(new Email("bbb@bbb.com"));
 		stu.setAboutMe("xyz");
 		stu.setAge(77);
 		stu.setNew(!isnew);
-		dao.update(stu, null, "aboutMe|age");
+		FieldFilter.create(Student.class, "aboutMe|age").run(new Atom() {
+			public void run() {
+				dao.update(stu);
+			}
+		});
 		Student stu2 = dao.fetch(Student.class, "zzh");
 		assertEquals("xyz", stu2.getAboutMe());
 		assertEquals(email, stu2.getEmail());

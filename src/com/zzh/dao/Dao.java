@@ -18,7 +18,7 @@ public interface Dao {
 
 	void executeBySqlKey(String... keys);
 
-	<T> T getObject(Class<T> classOfT, ResultSet rs);
+	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
 
 	<T> T insert(T obj);
 
@@ -31,8 +31,6 @@ public interface Dao {
 	<T> T update(T obj);
 
 	<T> T update(T obj, boolean ignoreNull);
-
-	<T> T update(T obj, String ignored, String actived);
 
 	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
 

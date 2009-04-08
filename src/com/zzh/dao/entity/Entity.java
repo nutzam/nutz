@@ -8,7 +8,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
+import com.zzh.dao.FieldMatcher;
 import com.zzh.dao.entity.annotation.*;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
@@ -24,10 +26,12 @@ public class Entity<T> {
 	private Map<String, EntityField> fieldMapping;
 	Mirror<T> mirror;
 
+	/*---------------------------------------------------------------------------*/
 	private static interface Borning<T> {
-		T born(ResultSet rs) throws Exception;
+		T born(ResultSet rs, FieldMatcher fm) throws Exception;
 	}
 
+	/*---------------------------------------------------------------------------*/
 	static abstract class ReflectBorning<T> implements Borning<T> {
 		Entity<T> entity;
 
@@ -37,17 +41,19 @@ public class Entity<T> {
 
 		abstract T create() throws Exception;
 
-		public T born(ResultSet rs) throws Exception {
+		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
 			T obj = create();
 			Iterator<EntityField> it = entity.fields().iterator();
 			while (it.hasNext()) {
 				EntityField ef = it.next();
-				ef.fillFieldValueFromResultSet(obj, rs);
+				if (null == fm || fm.match(ef.getField().getName()))
+					ef.fillFieldValueFromResultSet(obj, rs);
 			}
 			return obj;
 		}
 	}
 
+	/*---------------------------------------------------------------------------*/
 	static class DefaultConstructorBorning<T> extends ReflectBorning<T> {
 		Constructor<T> c;
 
@@ -61,6 +67,7 @@ public class Entity<T> {
 		}
 	}
 
+	/*---------------------------------------------------------------------------*/
 	static class DefaultStaticMethodBorning<T> extends ReflectBorning<T> {
 		Method method;
 
@@ -75,6 +82,7 @@ public class Entity<T> {
 		}
 	}
 
+	/*---------------------------------------------------------------------------*/
 	static class StaticResultSetMethodBorning<T> implements Borning<T> {
 		Method method;
 
@@ -83,11 +91,26 @@ public class Entity<T> {
 		}
 
 		@SuppressWarnings("unchecked")
-		public T born(ResultSet rs) throws Exception {
+		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
 			return (T) method.invoke(null, rs);
 		}
 	}
 
+	/*---------------------------------------------------------------------------*/
+	static class FMStaticResultSetMethodBorning<T> implements Borning<T> {
+		Method method;
+
+		FMStaticResultSetMethodBorning(Method rsMethod) {
+			this.method = rsMethod;
+		}
+
+		@SuppressWarnings("unchecked")
+		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
+			return (T) method.invoke(null, rs, fm);
+		}
+	}
+
+	/*---------------------------------------------------------------------------*/
 	static class ResultSetConstructorBorning<T> implements Borning<T> {
 		Constructor<T> c;
 
@@ -96,10 +119,26 @@ public class Entity<T> {
 		}
 
 		@Override
-		public T born(ResultSet rs) throws Exception {
+		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
 			return c.newInstance(rs);
 		}
 	}
+
+	/*---------------------------------------------------------------------------*/
+	static class FMResultSetConstructorBorning<T> implements Borning<T> {
+		Constructor<T> c;
+
+		public FMResultSetConstructorBorning(Constructor<T> c) {
+			this.c = c;
+		}
+
+		@Override
+		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
+			return c.newInstance(rs, fm);
+		}
+	}
+
+	/*---------------------------------------------------------------------------*/
 
 	private EntityName tableName;
 	private EntityName viewName;
@@ -221,26 +260,35 @@ public class Entity<T> {
 	private static <T> void evalBorning(Entity<T> entity) {
 		Class<T> type = entity.mirror.getType();
 		Method rsMethod = null;
+		Method rsFmMethod = null;
 		Method defMethod = null;
 		for (Method method : entity.mirror.getStaticMethods()) {
 			if (entity.mirror.is(method.getReturnType())) {
 				Class<?>[] pts = method.getParameterTypes();
 				if (pts.length == 0)
 					defMethod = method;
+				else if (pts.length == 2 && pts[0] == ResultSet.class && pts[1] == Pattern.class)
+					rsFmMethod = method;
 				else if (pts.length == 1 && pts[0] == ResultSet.class)
 					rsMethod = method;
 			}
 		}
 		// static POJO getInstance(ResultSet);
-		if (null != rsMethod) {
+		if (null != rsFmMethod) {
+			entity.borning = new FMStaticResultSetMethodBorning<T>(rsMethod);
+		} else if (null != rsMethod) {
 			entity.borning = new StaticResultSetMethodBorning<T>(rsMethod);
 		} else {
 			try { // new POJO(ResultSet)
-				entity.borning = new ResultSetConstructorBorning<T>(type
-						.getConstructor(ResultSet.class));
+				try {
+					entity.borning = new FMResultSetConstructorBorning<T>(type.getConstructor(
+							ResultSet.class, Pattern.class));
+				} catch (Exception e) {
+					entity.borning = new ResultSetConstructorBorning<T>(type
+							.getConstructor(ResultSet.class));
+				}
 			} catch (Exception e) {
-				// static POJO getInstance();
-				if (null != defMethod)
+				if (null != defMethod) // static POJO getInstance();
 					entity.borning = new DefaultStaticMethodBorning<T>(entity, defMethod);
 				else
 					try {
@@ -253,8 +301,8 @@ public class Entity<T> {
 										"Entity [%s] is invailid, it should has at least one of:"
 												+ " \n1. %s \n2.%s \n3. %s \n4. %s, \n(%s)",
 										type.getName(),
-										"Accessable constructor with one parameter type as java.sql.ResultSet",
-										"Accessable static method with one parameter type as java.sql.ResultSet and return type is ["
+										"Accessable constructor with one parameter type as java.sql.ResultSet, another parameter type is com.zzh.dao.FiledMatcher(optional)",
+										"Accessable static method with one parameter type as java.sql.ResultSet, another parameter type is com.zzh.dao.FiledMatcher(optional) and return type is ["
 												+ type.getName() + "]",
 										"Accessable static method without parameter and return type is ["
 												+ type.getName() + "]",
@@ -277,9 +325,13 @@ public class Entity<T> {
 		return mirror;
 	}
 
-	public T getObject(final ResultSet rs) {
+	public Class<T> getType() {
+		return mirror.getType();
+	}
+
+	public T getObject(final ResultSet rs, FieldMatcher actived) {
 		try {
-			return borning.born(rs);
+			return borning.born(rs, actived);
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}

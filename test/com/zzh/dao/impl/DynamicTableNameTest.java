@@ -82,7 +82,7 @@ public class DynamicTableNameTest extends TestCase {
 	public void testDynamicManyManyRelation() {
 		int id = 4;
 		prepareTableForB(id);
-		TableName.wrap(id, new Atom() {
+		TableName.run(id, new Atom() {
 			public void run() {
 				B b = dao.insert(B.make("abc", "xyz"));
 				b.cs = new C[2];

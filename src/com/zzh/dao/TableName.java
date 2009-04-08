@@ -11,7 +11,7 @@ public class TableName {
 
 	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
 
-	public static void wrap(Object refer, Atom atom) {
+	public static void run(Object refer, Atom atom) {
 		Object old = get();
 		set(refer);
 		try {
@@ -32,8 +32,7 @@ public class TableName {
 
 	/**
 	 * @param obj
-	 * @return the reference object set by current thread
-	 *         last time
+	 * @return the reference object set by current thread last time
 	 */
 	public static Object set(Object obj) {
 		Object re = get();

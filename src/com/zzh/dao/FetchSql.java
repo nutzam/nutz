@@ -17,20 +17,26 @@ public class FetchSql<T> extends ConditionSql<T> {
 		super(sql);
 	}
 
-	private QueryCallback<T> queryCallback;
+	private QueryCallback<T> callback;
 
 	public FetchSql<T> setCallback(QueryCallback<T> callback) {
-		this.queryCallback = callback;
+		this.callback = callback;
 		return this;
 	}
 
 	public QueryCallback<T> getCallback() {
-		return queryCallback;
+		return callback;
+	}
+
+	private FieldMatcher matcher;
+
+	void setMatcher(FieldMatcher fm) {
+		this.matcher = fm;
 	}
 
 	@Override
 	public T execute(Connection conn) throws Exception {
-		setResult(execute(conn, queryCallback));
+		setResult(execute(conn, callback));
 		return getResult();
 	}
 
@@ -42,8 +48,10 @@ public class FetchSql<T> extends ConditionSql<T> {
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			super.setupStatement(stat);
 			ResultSet rs = stat.executeQuery();
-			if (rs.first())
+			if (rs.first()) {
+				callback.setMatcher(matcher);
 				o = callback.invoke(rs);
+			}
 			rs.close();
 			return o;
 		} catch (Exception e) {

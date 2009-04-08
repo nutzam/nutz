@@ -105,7 +105,8 @@ public class EntityField {
 			setter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
 		id = field.getAnnotation(Id.class);
-		// If auto-increasment, require a setter or public field
+		// If auto-increasment, require a setter or public
+		// field
 		if (isAutoIncrement()) {
 			if (!field.isAccessible() && null == setter)
 				Lang.makeThrow(

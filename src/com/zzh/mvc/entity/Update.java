@@ -3,7 +3,10 @@ package com.zzh.mvc.entity;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.zzh.dao.FieldFilter;
+import com.zzh.lang.Strings;
 import com.zzh.service.EntityService;
+import com.zzh.trans.Atom;
 
 public class Update<T> extends EntityControllor<T> {
 
@@ -18,12 +21,15 @@ public class Update<T> extends EntityControllor<T> {
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		T obj = this.getObject(request);
-		if (null != ignored || null != actived)
-			return service.dao().update(obj, ignored, actived);
-		if (ignoreNull)
-			return service.dao().update(obj, true);
-		return service.update(obj);
+		final T obj = this.getObject(request);
+		if (!Strings.isBlank(actived) || !Strings.isBlank(ignored)) {
+			FieldFilter.create(service.getEntityClass(), actived, ignored).run(new Atom() {
+				public void run() {
+					service.dao().update(obj, ignoreNull);
+				}
+			});
+		}
+		return obj;
 	}
 
 }
