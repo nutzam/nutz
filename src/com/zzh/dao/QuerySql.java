@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.zzh.dao.callback.QueryCallback;
+import com.zzh.dao.callback.Callback;
 
-public class QuerySql<T> extends ConditionSql<List<T>> {
+public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 
 	public QuerySql() {
 		super();
@@ -19,16 +19,13 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 		super(sql);
 	}
 
-	private QueryCallback<T> queryCallback;
-
-	public QuerySql<T> setCallback(QueryCallback<T> callback) {
-		this.queryCallback = callback;
-		return this;
-	}
-
-	public QueryCallback<T> getCallback() {
-		return queryCallback;
-	}
+	// private QueryCallback<T> queryCallback;
+	//
+	// public QuerySql<T> setCallback(QueryCallback<T>
+	// callback) {
+	// this.queryCallback = callback;
+	// return this;
+	// }
 
 	private Pager pager;
 
@@ -48,11 +45,11 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 
 	@Override
 	public List<T> execute(Connection conn) throws Exception {
-		setResult(execute(conn, queryCallback));
+		setResult(execute(conn, callback));
 		return this.getResult();
 	}
 
-	protected List<T> execute(Connection conn, QueryCallback<T> callback) throws SQLException {
+	protected List<T> execute(Connection conn, Callback<T, ResultSet> callback) throws SQLException {
 		PreparedStatement stat = null;
 		try {
 			List<T> list = new LinkedList<T>();
@@ -60,7 +57,7 @@ public class QuerySql<T> extends ConditionSql<List<T>> {
 					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 			super.setupStatement(stat);
 			ResultSet rs = stat.executeQuery();
-			callback.setMatcher(matcher);
+			callback.getContext().setFieldsMatcher(matcher);
 			if (null == pager) {
 				while (rs.next()) {
 					list.add(callback.invoke(rs));

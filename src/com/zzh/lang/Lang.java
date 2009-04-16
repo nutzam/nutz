@@ -1,6 +1,5 @@
 package com.zzh.lang;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -23,8 +22,10 @@ import com.zzh.lang.stream.CharOutputStream;
 
 public class Lang {
 
+	public static final String NULL = "";
+
 	public static RuntimeException makeThrow(String format, Object... args) {
-		return makeThrow(RuntimeException.class, format, args);
+		return new RuntimeException(String.format(format, args));
 	}
 
 	public static <T extends Throwable> T makeThrow(Class<T> classOfT, String format,
@@ -49,6 +50,10 @@ public class Lang {
 		if (a1 == null || a2 == null)
 			return false;
 		return a1.equals(a2);
+	}
+
+	public static InputStream ins(CharSequence cs) {
+		return new CharInputStream(cs);
 	}
 
 	public static Reader inr(CharSequence cs) {
@@ -156,7 +161,7 @@ public class Lang {
 	public static <T> StringBuilder concatBy(char c, T... objs) {
 		StringBuilder sb = new StringBuilder();
 		for (T obj : objs)
-			sb.append(obj.toString()).append(c);
+			sb.append(null == obj ? null : obj.toString()).append(c);
 		sb.deleteCharAt(sb.length() - 1);
 		return sb;
 	}
@@ -260,6 +265,15 @@ public class Lang {
 		return re;
 	}
 
+	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
+			throws FailToCastObjectException {
+		Object[] newArgs = new Object[args.length];
+		for (int i = 0; i < args.length; i++) {
+			newArgs[i] = Castors.me().castTo(args[i], pts[i]);
+		}
+		return newArgs;
+	}
+
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		Mirror<T> mirror = Mirror.me(toType);
 		T obj = mirror.born();
@@ -269,6 +283,46 @@ public class Lang {
 			mirror.setValue(obj, field, vv);
 		}
 		return obj;
+	}
+
+	public static int lenght(Object obj) {
+		if (null == obj)
+			return 0;
+		if (obj.getClass().isArray()) {
+			return Array.getLength(obj);
+		} else if (obj instanceof Collection) {
+			return ((Collection<?>) obj).size();
+		} else if (obj instanceof Map) {
+			return ((Map<?, ?>) obj).size();
+		}
+		return 1;
+	}
+
+	public static Object first(Object obj) {
+		final Object[] re = new Object[1];
+		each(obj, new Each<Object>() {
+			public void invoke(int i, Object obj, int length) throws ExitLoop {
+				re[0] = obj;
+				Lang.Break();
+			}
+		});
+		return re[0];
+	}
+
+	public static <T> T first(Collection<T> coll) {
+		if (null == coll || coll.size() == 0)
+			return null;
+		return coll.iterator().next();
+	}
+
+	public static <T> T first(Map<?, T> map) {
+		if (null == map || map.size() == 0)
+			return null;
+		return map.values().iterator().next();
+	}
+
+	public static void Break() throws ExitLoop {
+		throw new ExitLoop();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -311,24 +365,4 @@ public class Lang {
 		}
 	}
 
-	public static <T> int lenght(Object obj) {
-		if (null == obj)
-			return 0;
-		if (obj.getClass().isArray()) {
-			return Array.getLength(obj);
-		} else if (obj instanceof Collection) {
-			return ((Collection<?>) obj).size();
-		} else if (obj instanceof CharSequence) {
-			return ((CharSequence) obj).length();
-		} else if (obj instanceof InputStream) {
-			try {
-				return ((InputStream) obj).available();
-			} catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-		return 1;
-	}
-
-	public static final String NULL = "";
 }

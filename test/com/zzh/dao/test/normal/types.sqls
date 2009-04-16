@@ -1,0 +1,31 @@
+/*------------------------------------------------------------------------*/
+/*.drop*/
+DROP TABLE IF EXISTS dao_supported_type;
+/*------------------------------------------------------------------------*/
+/*.create*/
+CREATE TABLE dao_supported_type (
+	id		SERIAL PRIMARY KEY,
+	name		VARCHAR(20) NOT NULL UNIQUE,
+	email		VARCHAR(20),
+	enum_s		VARCHAR(10),
+	enum_i		SMALLINT,
+	bool_p		BOOLEAN,
+	bool_obj	BOOLEAN,
+	char_p		VARCHAR(2),
+	char_obj	VARCHAR(2),
+	int_p		INT,
+	int_obj		INTEGER,
+	float_p		FLOAT,
+	float_obj	FLOAT,
+	short_p		SMALLINT,
+	short_obj	SMALLINT,
+	byte_p		SMALLINT,
+	byte_obj	SMALLINT,
+	long_p		BIGINT,
+	long_obj	BIGINT,
+	double_p	NUMERIC(15,10),
+	double_obj	NUMERIC(15,10),
+	sqlDate 	DATE,
+	sqlTime 	TIME,
+	sqlDT		TIMESTAMP
+)${.engine};

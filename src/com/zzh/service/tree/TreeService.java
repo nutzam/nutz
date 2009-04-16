@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.zzh.dao.Dao;
 import com.zzh.dao.entity.Entity;
+import com.zzh.dao.entity.Link;
 import com.zzh.lang.Each;
 import com.zzh.lang.ExitLoop;
 import com.zzh.lang.Lang;
@@ -56,8 +57,8 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 
 	public void clearDescendants(final T obj) {
 		Trans.exec(new Atom() {
-			public void run(){
-				if (null == dao().fetchMany(obj, childrenField.getName()))
+			public void run() {
+				if (null == dao().fetchLinks(obj, childrenField.getName()))
 					return;
 				Object children = Mirror.me(obj.getClass()).getValue(obj, childrenField.getName());
 				Lang.each(children, new Each<T>() {
@@ -71,11 +72,11 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 	}
 
 	public void clearChildren(T obj) {
-		dao().clearMany(obj, childrenField.getName());
+		dao().deleteLinks(obj, childrenField.getName());
 	}
 
 	public T fetchDescendants(T obj) {
-		if (null == dao().fetchMany(obj, childrenField.getName()))
+		if (null == dao().fetchLinks(obj, childrenField.getName()))
 			return obj;
 		Mirror<?> mirror = Mirror.me(obj.getClass());
 		Object children = mirror.getValue(obj, childrenField.getName());
@@ -88,7 +89,7 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 	}
 
 	public T fetchAll(T obj) {
-		if (null == dao().fetchMany(obj, childrenField.getName()))
+		if (null == dao().fetchLinks(obj, childrenField.getName()))
 			return obj;
 		Mirror<?> mirror = Mirror.me(obj.getClass());
 		Object children = setupParentForChildren(obj, mirror, childrenField, parentField);
@@ -119,15 +120,15 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 	}
 
 	public T fetchChildrenOnly(T obj) {
-		return dao().fetchMany(obj, childrenField.getName());
+		return dao().fetchLinks(obj, childrenField.getName());
 	}
 
 	public T fetchParent(T obj) {
-		return dao().fetchOne(obj, parentField.getName());
+		return dao().fetchLinks(obj, parentField.getName());
 	}
 
 	public T fetchAncestors(T obj) {
-		if (null == dao().fetchOne(obj, parentField.getName()))
+		if (null == dao().fetchLinks(obj, parentField.getName()))
 			return obj;
 		T parent = evalParent(obj);
 		if (null != parent)
@@ -141,10 +142,11 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 		Entity<?> entity = dao().getEntity(obj.getClass());
 		Mirror<?> mirror = entity.getMirror();
 		Object children = mirror.getValue(obj, childrenField.getName());
-		Field pIdField = entity.getManys().get(childrenField.getName()).getTargetField();
+		Link link = Lang.first(entity.getLinks(childrenField.getName()));
+		Field pIdField = link.getTargetField();
 		this.insertBy(obj, children, entity, mirror, pIdField, new InsertByCallback<T>() {
 			public void processInsert(T child) {
-				insert(child);
+				dao().insert(child);
 			}
 		});
 		return obj;
@@ -159,7 +161,7 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 		if (Lang.lenght(children) > 0) {
 			final Object id = mirror.getValue(obj, entity.getIdField().getField());
 			Trans.exec(new Atom() {
-				public void run(){
+				public void run() {
 					Lang.each(children, new Each<T>() {
 						public void invoke(int i, T child, int length) throws ExitLoop {
 							mirror.setValue(child, pIdField, id);
@@ -177,11 +179,12 @@ public abstract class TreeService<T> extends IdEntityService<T> {
 		final Entity<?> entity = dao().getEntity(obj.getClass());
 		final Mirror<?> mirror = entity.getMirror();
 		Object children = mirror.getValue(obj, childrenField.getName());
-		final Field pIdField = entity.getManys().get(childrenField.getName()).getTargetField();
+		Link link = Lang.first(entity.getLinks(childrenField.getName()));
+		final Field pIdField = link.getTargetField();
 		InsertByCallback<T> callback = new InsertByCallback<T>() {
 			public void processInsert(T child) {
 				Object children = mirror.getValue(child, childrenField.getName());
-				insert(child);
+				dao().insert(child);
 				insertBy(child, children, entity, mirror, pIdField, this);
 			}
 		};

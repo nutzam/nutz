@@ -135,7 +135,7 @@ public class Mvc {
 
 	private static View getDefaultView(HttpServletRequest request) {
 		try {
-			return getNut(request).getObject(View.class, "$default-view");
+			return getNut(request).get(View.class, "$default-view");
 		} catch (Exception e1) {
 			return new JsonView(JsonFormat.nice());
 		}

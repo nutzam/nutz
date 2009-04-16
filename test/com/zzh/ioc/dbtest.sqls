@@ -1,0 +1,44 @@
+/*.object.drop*/
+DROP TABLE IF EXISTS nut_object;
+/*-------------------------------------------------------------------------*/
+/*.object.create*/
+CREATE TABLE nut_object (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(32) NOT NULL UNIQUE,
+  parent VARCHAR(32),
+  type VARCHAR(256) NOT NULL,
+  singleton BOOLEAN DEFAULT '0',
+  anonymous BOOLEAN DEFAULT '0',
+  depmethod VARCHAR(64),
+  deposer VARCHAR(256)
+);
+/*-------------------------------------------------------------------------*/
+/*.field.drop*/
+DROP TABLE IF EXISTS nut_field;
+/*-------------------------------------------------------------------------*/
+/*.field.create*/
+CREATE TABLE nut_field (
+  oid BIGINT,
+  name VARCHAR(32) NOT NULL,
+  vid BIGINT
+);
+/*-------------------------------------------------------------------------*/
+/*.value.drop*/
+DROP TABLE IF EXISTS nut_value;
+/*-------------------------------------------------------------------------*/
+/*.value.create*/
+CREATE TABLE nut_value (
+  id SERIAL PRIMARY KEY,
+  type VARCHAR(32),
+  value TEXT 
+);
+/*-------------------------------------------------------------------------*/
+/*.args.drop*/
+DROP TABLE IF EXISTS nut_obj_args;
+/*-------------------------------------------------------------------------*/
+/*.args.create*/
+CREATE TABLE nut_obj_args (
+  oid BIGINT,
+  vid BIGINT
+);
+/*-------------------------------------------------------------------------*/

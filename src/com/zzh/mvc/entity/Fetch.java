@@ -1,6 +1,5 @@
 package com.zzh.mvc.entity;
 
-import com.zzh.lang.Mirror;
 import com.zzh.service.EntityService;
 
 public class Fetch<T> extends EntityAction<T> {
@@ -9,23 +8,19 @@ public class Fetch<T> extends EntityAction<T> {
 		super(service);
 	}
 
-	public String[] ones;
-
-	public String[] manys;
+	private String cascade;
 
 	@Override
 	protected Object execute(long id) {
-		Object re = Mirror.me(service.getClass()).invoke(service, "fetch", id);
-		service.dao().fetchOne(re, ones);
-		service.dao().fetchMany(re, manys);
+		Object re = service.dao().fetch(service.getEntity(), id);
+		service.dao().fetchLinks(re, cascade);
 		return re;
 	}
 
 	@Override
 	protected Object execute(String name) {
-		Object re = Mirror.me(service.getClass()).invoke(service, "fetch", name);
-		service.dao().fetchOne(re, ones);
-		service.dao().fetchMany(re, manys);
+		Object re = service.dao().fetch(service.getEntity(), name);
+		service.dao().fetchLinks(re, cascade);
 		return re;
 	}
 

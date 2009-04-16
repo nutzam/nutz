@@ -19,19 +19,23 @@ public class NutTransaction extends Transaction {
 	}
 
 	@Override
-	protected void commit()  throws SQLException {
+	protected void commit() throws SQLException {
 		for (Iterator<Connection> it = map.values().iterator(); it.hasNext();) {
 			Connection conn = it.next();
-				conn.commit();
-				conn.close();
+			conn.commit();
+			conn.close();
 		}
 	}
 
 	@Override
 	public Connection getConnection(DataSource dataSource) throws SQLException {
-		if (map.containsKey(dataSource))
-			return map.get(dataSource);
+		if (map.containsKey(dataSource)) {
+			Connection c = map.get(dataSource);
+			// System.out.printf("#> %s\n", c.toString());
+			return c;
+		}
 		Connection conn = dataSource.getConnection();
+		// System.out.printf("=> %s\n", conn.toString());
 		conn.setAutoCommit(false);
 		map.put(dataSource, conn);
 		return conn;

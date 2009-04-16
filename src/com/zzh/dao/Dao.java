@@ -22,45 +22,60 @@ public interface Dao {
 
 	<T> T insert(T obj);
 
-	<T> T insertMany(T obj, String... fieldNames);
+	<T> T insertWith(T obj, String regex);
 
-	<T> T insertOne(T obj, String... fieldNames);
-
-	<T> T insertManyMany(T obj, String... fieldNames);
+	<T> T insertLinks(T obj, String regex);
 
 	<T> T update(T obj);
 
-	<T> T update(T obj, boolean ignoreNull);
+	<T> T updateWith(T obj, String regex);
+
+	<T> T updateLinks(T obj, String regex);
 
 	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
-
-	<T> void delete(T obj);
 
 	<T> void delete(Class<T> classOfT, long id);
 
 	<T> void delete(Class<T> classOfT, String name);
 
-	<T> void deleteOne(T obj, String... fieldNames);
+	void delete(Object obj);
+
+	<T> void deleteWith(T obj, String regex);
+
+	<T> void deleteLinks(T obj, String regex);
 
 	<T> T fetch(Class<T> classOfT, long id);
-
+	
 	<T> T fetch(Class<T> classOfT, String name);
 
 	<T> T fetch(Class<T> classOfT, Condition condition);
+	
+	<T> T fetch(Class<T> classOfT);
 
-	<T> T fetchOne(T obj, String... fieldNames);
+	<T> T fetch(Entity<T> classOfT, long id);
 
-	<T> T fetchMany(T obj, String... fieldNames);
+	<T> T fetch(Entity<T> classOfT, String name);
 
-	<T> T fetchManyMany(T obj, String... fieldNames);
+	<T> T fetch(Entity<T> classOfT, Condition condition);
+
+	<T> T fetch(T obj);
+
+	<T> T fetchLinks(T obj, String regex);
 
 	<T> void clear(Class<T> classOfT, Condition condition);
 
 	void clear(String tableName, Condition condition);
 
-	<T> void clearMany(T obj, String... fieldNames);
-
-	<T> void clearManyMany(T obj, String... fieldNames);
+	/**
+	 * <pre>
+	 * It will delete @One @Many entity records
+	 * clear the @ManyMany relations
+	 * </pre>
+	 * @param obj
+	 * @param regex
+	 * @return
+	 */
+	<T> T clearLinks(T obj, String regex);
 
 	<T> Entity<T> getEntity(Class<T> classOfT);
 

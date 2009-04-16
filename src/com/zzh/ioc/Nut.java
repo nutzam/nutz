@@ -1,5 +1,6 @@
 package com.zzh.ioc;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,6 +13,7 @@ import java.util.Map;
 import com.zzh.castor.Castors;
 import com.zzh.lang.Borning;
 import com.zzh.lang.Each;
+import com.zzh.lang.Invoking;
 import com.zzh.lang.Lang;
 import com.zzh.lang.LoopException;
 import com.zzh.lang.Mirror;
@@ -70,7 +72,7 @@ public class Nut implements Ioc {
 	static class InnerMapping<T> {
 
 		private Mirror<T> mirror;
-		private Map<String, Object> fields;
+		private List<Injector> injectors;
 		private Borning<T> borning;
 		private Deposer deposer;
 		private boolean singleton;
@@ -91,7 +93,7 @@ public class Nut implements Ioc {
 				// for @refer
 				Object refer = map.get("refer");
 				if (null != refer)
-					return nut.getObject(type, refer.toString());
+					return nut.get(type, refer.toString());
 				// for customized ObjectMaker
 				ObjectMaker<R> mk = nut.findMaker(type, map);
 				if (null != mk)
@@ -139,7 +141,7 @@ public class Nut implements Ioc {
 				deposer = (Deposer) depType.newInstance();
 			}
 			// fields
-			this.fields = new HashMap<String, Object>();
+			this.injectors = new LinkedList<Injector>();
 			// format the constructor arguments
 			Object[] objs = mapping.getBorningArguments();
 			if (null == objs)
@@ -154,35 +156,32 @@ public class Nut implements Ioc {
 			Map<String, Object> fss = mapping.getFieldsSetting();
 			for (Iterator<String> it = fss.keySet().iterator(); it.hasNext();) {
 				String key = it.next();
-				Object value = fss.get(key);
-				Class<?> type = null;
-
-				Method[] setters = mirror.findSetters(key);
-				if (setters.length > 0) {
-					type = setters[0].getParameterTypes()[0];
-					for (int i = 1; i < setters.length; i++) {
-						if (setters[i].getParameterTypes()[0] == value.getClass())
-							type = value.getClass();
+				Object value = makeValue(nut, null, fss.get(key));
+				Invoking invoking = null;
+				try {
+					try {
+						invoking = mirror.getInvoking(Mirror.getSetterName(key), value);
+					} catch (Exception e) {
+						invoking = mirror.getInvoking(key, value);
+					}
+					injectors.add(new Injector.InvokingInjector(invoking));
+				} catch (Exception e) {
+					try {
+						Field field = mirror.getField(key);
+						injectors.add(new Injector.FieldInjector(field, value));
+					} catch (Exception e1) {
+						throw Lang.makeThrow(
+								"Nut dont know how to inject [%s].%s by value [%s] because '%s'",
+								mirror.getType().getName(), key, value, e1.getMessage());
 					}
 				}
-				try {
-					if (null == type)
-						type = mirror.getField(key).getType();
-				} catch (NoSuchFieldException e) {}
-				this.fields.put(key, makeValue(nut, type, value));
 			}
 		}
 
 		T make() {
-			T obj = null;
-			if (null != obj)
-				return obj;
-			obj = borning.born();
-			for (Iterator<String> it = fields.keySet().iterator(); it.hasNext();) {
-				String name = it.next();
-				Object value = fields.get(name);
-				mirror.setValue(obj, name, value);
-			}
+			T obj = borning.born();
+			for (Iterator<Injector> it = injectors.iterator(); it.hasNext();)
+				it.next().inject(obj);
 			return obj;
 		}
 	}
@@ -267,12 +266,12 @@ public class Nut implements Ioc {
 	}
 
 	/*
-	 * --------------------------------------------------------------------------
-	 * --
+	 * ----------------------------------------------------
+	 * ---------------------- --
 	 */
 	public Nut(MappingLoader loader) {
 		if (null == loader)
-			Lang.makeThrow("Nut MappingLoader can not be null!!!");
+			Lang.makeThrow("Nut MappingLoader   t be null!!!");
 		this.loader = loader;
 		cache = new HashMap<String, ObjWrapper>();
 		innerMappings = new HashMap<String, InnerMapping<?>>();
@@ -286,6 +285,7 @@ public class Nut implements Ioc {
 	private Map<String, Mapping> mappings;
 	private List<ObjectMaker<?>> makers;
 	private MappingLoader loader;
+	private String[] keys;
 
 	public Nut add(ObjectMaker<?> maker) {
 		makers.add(maker);
@@ -293,7 +293,7 @@ public class Nut implements Ioc {
 	}
 
 	@Override
-	public <T> T getObject(Class<T> classOfT, String name) throws FailToMakeObjectException,
+	public <T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException,
 			ObjectNotFoundException {
 		ObjWrapper ow = cache.get(name);
 		if (null != ow)
@@ -369,22 +369,38 @@ public class Nut implements Ioc {
 	}
 
 	@Override
-	public void depose() {
-		for (Iterator<ObjWrapper> it = this.cache.values().iterator(); it.hasNext();) {
-			ObjWrapper ow = it.next();
-			if (ow.deposer != null)
-				ow.deposer.depose(ow.obj);
-		}
-		cache.clear();
-		mappings.clear();
-		innerMappings.clear();
-		cache = new HashMap<String, ObjWrapper>();
-		innerMappings = new HashMap<String, InnerMapping<?>>();
+	public String[] keys() {
+		if (keys == null)
+			keys = this.loader.keys();
+		return keys;
 	}
 
 	@Override
-	public String[] keys() {
-		return this.loader.keys();
+	public void clear() {
+		if (null != cache) {
+			for (Iterator<ObjWrapper> it = this.cache.values().iterator(); it.hasNext();) {
+				ObjWrapper ow = it.next();
+				if (ow.deposer != null)
+					ow.deposer.depose(ow.obj);
+			}
+			cache.clear();
+			mappings.clear();
+			innerMappings.clear();
+		}
+		keys = null;
+	}
+
+	@Override
+	public void depose() {
+		clear();
+		cache = null;
+		mappings = null;
+		innerMappings = null;
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		depose();
 	}
 
 }

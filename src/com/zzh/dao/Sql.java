@@ -34,4 +34,6 @@ public interface Sql<T> {
 	
 	String toOrginalString();
 
+	T getResult();
+
 }

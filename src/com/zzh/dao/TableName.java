@@ -44,7 +44,7 @@ public class TableName {
 		set(null);
 	}
 
-	public static String getName(Segment segment) {
+	public static String render(Segment segment) {
 		Object obj = get();
 		if (null == obj)
 			return segment.toString();

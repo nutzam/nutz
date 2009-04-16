@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import com.zzh.castor.Castors;
 import com.zzh.castor.FailToCastObjectException;
 import com.zzh.dao.Condition;
+import com.zzh.dao.callback.Callback;
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.EntityField;
 import com.zzh.lang.Mirror;
@@ -24,7 +25,7 @@ import com.zzh.lang.segment.Segment;
  * @author zozoh
  * 
  */
-public abstract class ConditionSql<T> extends AbstractSql<T> {
+public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 
 	public ConditionSql() {
 		super();
@@ -34,10 +35,18 @@ public abstract class ConditionSql<T> extends AbstractSql<T> {
 		super(sql);
 	}
 
+	protected Callback<R, P> callback;
+
+	public ConditionSql<T, R, P> setCallback(Callback<R, P> callback) {
+		this.callback = callback;
+		return this;
+	}
+
 	private T result;
 
 	private Condition condition;
 
+	@Override
 	public T getResult() {
 		return result;
 	}
@@ -55,8 +64,7 @@ public abstract class ConditionSql<T> extends AbstractSql<T> {
 			if ("condition".equals(key))
 				continue;
 			Object value = values.get(key);
-			Mirror<? extends Object> mirror = Mirror.me(ef == null ? value.getClass() : ef
-					.getField().getType());
+			Mirror<?> mirror = Mirror.me(ef == null ? value.getClass() : ef.getField().getType());
 			try {
 				List<Integer> indexes = this.segment.getIndex(key);
 				if (null == indexes || indexes.size() == 0)
@@ -100,7 +108,7 @@ public abstract class ConditionSql<T> extends AbstractSql<T> {
 		return stat;
 	}
 
-	public ConditionSql<T> setCondition(Condition condition) {
+	public ConditionSql<T, R, P> setCondition(Condition condition) {
 		this.condition = condition;
 		return this;
 	}

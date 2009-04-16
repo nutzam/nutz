@@ -7,9 +7,13 @@ import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.zzh.castor.Castors;
+import com.zzh.dao.Database;
 import com.zzh.dao.FieldMatcher;
 import com.zzh.dao.entity.annotation.*;
 import com.zzh.lang.Lang;
@@ -17,10 +21,12 @@ import com.zzh.lang.Mirror;
 
 public class Entity<T> {
 
-	Entity() {
-		manys = new HashMap<String, Link>();
+	public Entity() {
 		ones = new HashMap<String, Link>();
+		manys = new HashMap<String, Link>();
 		manyManys = new HashMap<String, Link>();
+		links = new LinkedList<Link>();
+		_ln_cache = new HashMap<String, List<Link>>();
 	}
 
 	private Map<String, EntityField> fieldMapping;
@@ -146,6 +152,7 @@ public class Entity<T> {
 	private Map<String, Link> manys;
 	private Map<String, Link> ones;
 	private Map<String, Link> manyManys;
+	private List<Link> links;
 	private EntityField nameField;
 	private Borning<T> borning;
 
@@ -167,18 +174,22 @@ public class Entity<T> {
 		return tableName.value();
 	}
 
+	public String getOrignalTableName() {
+		return tableName.orignalString();
+	}
+
 	public String getViewName() {
 		return viewName.value();
 	}
 
 	/**
-	 * Analyze one entity's setting. !!! This function must be invoked before
-	 * another method.
+	 * Analyze one entity's setting. !!! This function
+	 * must be invoked before another method.
 	 * 
 	 * @param classOfT
 	 * @return TODO
 	 */
-	boolean parse(Class<T> classOfT) {
+	public boolean parse(Class<T> classOfT, Database db) {
 		this.mirror = Mirror.me(classOfT);
 		Table table = evalTable(classOfT);
 		if (null == table)
@@ -203,7 +214,7 @@ public class Entity<T> {
 		/* parse all children fields */
 		for (Field f : mirror.getFields()) {
 			EntityField ef = new EntityField(this);
-			Object re = ef.valueOf(mirror, f);
+			Object re = ef.valueOf(db, tableName, mirror, f);
 			if (re instanceof Boolean) {
 				fieldMapping.put(f.getName(), ef);
 				if (ef.isId() && ef.isName())
@@ -239,6 +250,7 @@ public class Entity<T> {
 					this.manyManys.put(((Link) re).getOwnField().getName(), ((Link) re));
 				else
 					this.ones.put(((Link) re).getOwnField().getName(), ((Link) re));
+				this.links.add((Link) re);
 			}
 		}
 		/* done for parse all children fields */
@@ -288,7 +300,8 @@ public class Entity<T> {
 							.getConstructor(ResultSet.class));
 				}
 			} catch (Exception e) {
-				if (null != defMethod) // static POJO getInstance();
+				if (null != defMethod) // static POJO
+					// getInstance();
 					entity.borning = new DefaultStaticMethodBorning<T>(entity, defMethod);
 				else
 					try {
@@ -337,6 +350,30 @@ public class Entity<T> {
 		}
 	}
 
+	private Map<String, List<Link>> _ln_cache;
+
+	public List<Link> getLinks(String regex) {
+		if (null == regex)
+			return null;
+		List<Link> re = _ln_cache.get(regex);
+		if (null == re) {
+			synchronized (this) {
+				re = _ln_cache.get(regex);
+				if (null == re) {
+					re = new LinkedList<Link>();
+					Pattern p = Pattern.compile(regex);
+					for (Iterator<Link> it = links.iterator(); it.hasNext();) {
+						Link e = it.next();
+						if (p.matcher(e.getOwnField().getName()).find())
+							re.add(e);
+					}
+				}
+				_ln_cache.put(regex, re);
+			}
+		}
+		return re;
+	}
+
 	public Map<String, Link> getManys() {
 		return manys;
 	}
@@ -347,6 +384,18 @@ public class Entity<T> {
 
 	public Map<String, Link> getManyManys() {
 		return manyManys;
+	}
+
+	public long getId(Object obj) {
+		if (null == idField)
+			return 0;
+		return Castors.me().castTo(idField.getValue(obj), long.class);
+	}
+
+	public String getName(Object obj) {
+		if (null == nameField)
+			return null;
+		return Castors.me().castToString(nameField.getValue(obj));
 	}
 
 }

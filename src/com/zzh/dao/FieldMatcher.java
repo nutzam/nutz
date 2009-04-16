@@ -6,8 +6,9 @@ import com.zzh.lang.Strings;
 
 public class FieldMatcher {
 
-	public static FieldMatcher make(String actived, String locked) {
+	static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
 		FieldMatcher fm = new FieldMatcher();
+		fm.ignoreNull = ignoreNull;
 		if (!Strings.isBlank(actived))
 			fm.actived = Pattern.compile(actived);
 		if (!Strings.isBlank(locked))
@@ -17,13 +18,10 @@ public class FieldMatcher {
 
 	private Pattern actived;
 	private Pattern locked;
+	private boolean ignoreNull;
 
-	void setActived(Pattern actived) {
-		this.actived = actived;
-	}
-
-	void setLocked(Pattern locked) {
-		this.locked = locked;
+	public boolean isIgnoreNull() {
+		return ignoreNull;
 	}
 
 	public boolean match(String str) {

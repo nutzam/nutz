@@ -15,6 +15,6 @@ public @interface Many {
 
 	String field();
 
-	String mapKeyField() default Lang.NULL;
-
+	String key() default Lang.NULL;
+	
 }

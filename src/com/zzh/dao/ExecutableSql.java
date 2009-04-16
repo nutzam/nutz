@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 
-import com.zzh.dao.callback.SqlCallback;
-
-public class ExecutableSql extends ConditionSql<Object> {
+public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 
 	public ExecutableSql() {
 		super();
@@ -17,11 +15,11 @@ public class ExecutableSql extends ConditionSql<Object> {
 		super(sql);
 	}
 
-	private SqlCallback next;
-
-	public void setNext(SqlCallback next) {
-		this.next = next;
-	}
+	// private SqlCallback callback;
+	//
+	// public void setCallback(SqlCallback next) {
+	// this.callback = next;
+	// }
 
 	@Override
 	public Object execute(Connection conn) throws Exception {
@@ -46,8 +44,8 @@ public class ExecutableSql extends ConditionSql<Object> {
 					stat.close();
 				} catch (SQLException e1) {}
 		}
-		if (null != next) {
-			setResult(next.invoke(conn));
+		if (null != callback) {
+			setResult(callback.invoke(conn));
 			return getResult();
 		}
 		return null;
@@ -65,7 +63,8 @@ public class ExecutableSql extends ConditionSql<Object> {
 // Sqls.isNotNeedQuote(obj.getClass())) {
 // segment.set(key, castors.castToString(obj));
 // } else {
-// segment.set(key, "'" + castors.castToString(obj) + "'");
+// segment.set(key, "'" + castors.castToString(obj) +
+// "'");
 // }
 // }
 // segment.set("condition", evalCondition());

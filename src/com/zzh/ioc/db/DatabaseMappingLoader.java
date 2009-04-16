@@ -21,12 +21,11 @@ public class DatabaseMappingLoader implements MappingLoader {
 		ObjectBean ob = objsv.fetch(name);
 		if (null == ob)
 			return null;
-		objsv.dao().fetchManyMany(ob, "args");
-		objsv.dao().fetchMany(ob, "fields");
+		objsv.dao().fetchLinks(ob, "args|fields");
 		if (null != ob.getFields()) {
 			for (Iterator<FieldBean> it = ob.getFields().iterator(); it.hasNext();) {
 				FieldBean fb = it.next();
-				objsv.dao().fetchOne(fb, "value");
+				objsv.dao().fetchLinks(fb, "value");
 			}
 		}
 		return new ObjectMapping(ob);

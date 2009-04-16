@@ -4,6 +4,7 @@ import java.util.Iterator;
 
 import com.zzh.dao.entity.Entity;
 import com.zzh.dao.entity.EntityField;
+import com.zzh.dao.entity.Link;
 import com.zzh.lang.Strings;
 import com.zzh.lang.segment.CharSegment;
 
@@ -11,12 +12,11 @@ public class SqlMaker {
 
 	public SqlMaker() {}
 
-	static <T extends ConditionSql<?>> T makeSQL(T sql, Entity<?> entity, String ptn,
-			String... args) {
+	static <T extends AbstractSql<?>> T makeSQL(T sql, Entity<?> entity, String ptn, String... args) {
 		return makeSQLByString(sql, entity, String.format(ptn, (Object[]) args));
 	}
 
-	protected static <T extends ConditionSql<?>> T makeSQLByString(T sql, Entity<?> entity,
+	protected static <T extends AbstractSql<?>> T makeSQLByString(T sql, Entity<?> entity,
 			String str) {
 		sql.valueOf(str);
 		sql.setEntity(entity);
@@ -25,6 +25,45 @@ public class SqlMaker {
 
 	public ExecutableSql makeClearSQL(String tableName) {
 		return makeSQL(new ExecutableSql(), null, "DELETE FROM %s ${condition};", tableName);
+	}
+
+	public ExecutableSql makeResetSQL(String tableName) {
+		return makeSQL(new ExecutableSql(), null, "TRUNCATE TABLE %s;", tableName);
+	}
+
+	/**
+	 * This method can generate DELETE sql for delete @
+	 * Many and @ One
+	 * 
+	 * @param ta
+	 *            : Entity of the object will be deleted
+	 * @param link
+	 *            : the Link annotation
+	 * @return
+	 */
+	public ExecutableSql makeClearOneManySql(Entity<?> ta, Link link, Object value) {
+		EntityField ef = ta.getField(link.getTargetField().getName());
+		String s = String.format("DELETE FROM %s WHERE %s=%s", ta.getTableName(), ef
+				.getColumnName(), Sqls.formatFieldValue(value));
+		ExecutableSql sql = new ExecutableSql();
+		sql.valueOf(s);
+		return sql;
+	}
+
+	public ExecutableSql makeClearManyManyRelationSql(Link link, Object value) {
+		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getFrom(),
+				Sqls.formatFieldValue(value));
+		ExecutableSql sql = new ExecutableSql();
+		sql.valueOf(s);
+		return sql;
+	}
+
+	public ExecutableSql makeDeleteManyManyRelationSql(Link link, Object value) {
+		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getTo(),
+				Sqls.formatFieldValue(value));
+		ExecutableSql sql = new ExecutableSql();
+		sql.valueOf(s);
+		return sql;
 	}
 
 	public ExecutableSql makeDeleteSQL(Entity<?> en, EntityField ef) {
@@ -66,6 +105,15 @@ public class SqlMaker {
 		String fields = evalActivedFields(fm, en, "*");
 		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s ${condition};", fields,
 				en.getViewName());
+		sql.setMatcher(fm);
+		return sql;
+	}
+
+	public <T> FetchSql<T> makeFetchLuckyOneSQL(Entity<T> en) {
+		FieldMatcher fm = FieldFilter.get(en.getType());
+		String fields = evalActivedFields(fm, en, "*");
+		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s LIMIT 1;", fields, en
+				.getViewName());
 		sql.setMatcher(fm);
 		return sql;
 	}
@@ -119,6 +167,14 @@ public class SqlMaker {
 				en.getTableName(), fields.toString(), values.toString());
 	}
 
+	public ExecutableSql makeInsertManyManySql(Link link, Object fromValue, Object toValue) {
+		ExecutableSql sql = new ExecutableSql();
+		sql.valueOf(String.format("INSERT INTO %s (%s,%s) VALUES(%s,%s);", link.getRelation(), link
+				.getFrom(), link.getTo(), Sqls.formatFieldValue(fromValue), Sqls
+				.formatFieldValue(toValue)));
+		return sql;
+	}
+
 	public ExecutableSql makeUpdateSQL(Entity<?> en, Object obj) {
 		StringBuffer sb = new StringBuffer();
 		FieldMatcher fm = FieldFilter.get(en.getType());
@@ -127,11 +183,12 @@ public class SqlMaker {
 			String fn = ef.getField().getName();
 			if (ef.isId() || ef.isReadonly())
 				continue;
-			if (null != obj && null == ef.getValue(obj))
-				continue;
-			if (null != fm)
-				if (!fm.match(fn))
+			if (null != fm) {
+				if (fm.isIgnoreNull() && null == ef.getValue(obj))
 					continue;
+				else if (!fm.match(fn))
+					continue;
+			}
 			sb.append(',').append(ef.getColumnName()).append('=').append("${").append(fn).append(
 					'}');
 		}

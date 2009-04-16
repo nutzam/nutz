@@ -110,7 +110,7 @@ public class NutMvc implements MvcSupport {
 
 	@Override
 	public Url getUrl(String path) throws UrlNotFoundException {
-		return nut.getObject(Url.class, path);
+		return nut.get(Url.class, path);
 	}
 
 }

@@ -4,11 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 
 import com.zzh.castor.Castors;
-import com.zzh.dao.FetchSql;
-import com.zzh.dao.callback.QueryCallback;
+import com.zzh.dao.Database;
+import com.zzh.dao.Sql;
 import com.zzh.dao.entity.annotation.*;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
@@ -26,10 +25,10 @@ public class EntityField {
 	private String columnName;
 	private Segment defaultValue;
 	private String _defv;
-	private Types type;
+	private Type.DEF type;
 	private Method getter;
 	private Method setter;
-	private FetchSql<Integer> fetchSql;
+	private Next nextId;
 
 	private Field field;
 	private Entity<?> entity;
@@ -90,12 +89,22 @@ public class EntityField {
 		return CharSequence.class.isAssignableFrom(field.getType());
 	}
 
-	Object valueOf(Mirror<?> mirror, Field field) {
+	Object valueOf(Database db, EntityName entityName, Mirror<?> mirror, Field field) {
+		/*
+		 * Evaluate @One|@Many|@ManyMany
+		 */
 		link = Link.eval(mirror, field);
 		if (null != link)
 			return link;
 		if (!evalColumnName(field))
 			return null;
+		// Save field object
+		this.field = field;
+		this.field.setAccessible(true);
+		/*
+		 * Init current field getter/setter to speeded up
+		 * the reflection
+		 */
 		try {
 			getter = entity.mirror.getGetter(field);
 			getter.setAccessible(true);
@@ -104,6 +113,19 @@ public class EntityField {
 			setter = entity.mirror.getSetter(field);
 			setter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
+		/*
+		 * Load misc attributes
+		 */
+		readonly = (field.getAnnotation(Readonly.class) != null);
+		Type t = field.getAnnotation(Type.class);
+		type = null == t ? Type.DEF.AUTO : t.value();
+		/*
+		 * Check default value
+		 */
+		evalDefaultValue(field);
+		/*
+		 * Check @Id
+		 */
 		id = field.getAnnotation(Id.class);
 		// If auto-increasment, require a setter or public
 		// field
@@ -114,13 +136,14 @@ public class EntityField {
 						entity.mirror.getType().getName(), field.getName(),
 						"for the reason it is auto-increament @Id.");
 		}
-		if (isId() && !Lang.NULL.equals(id.fetch())) {
-			fetchSql = new FetchSql<Integer>(id.fetch()).setCallback(new QueryCallback<Integer>() {
-				public Integer invoke(ResultSet rs) throws SQLException {
-					return rs.getInt(1);
-				}
-			});
-		}
+		/*
+		 * Evaluate the fetch next Id SQL
+		 */
+		if (isId())
+			nextId = Next.create(db, entityName, id.next(), columnName);
+		/*
+		 * Check @Name
+		 */
 		name = (field.getAnnotation(Name.class) != null);
 		if (name) {
 			if (!Mirror.me(field.getType()).isStringLike())
@@ -130,12 +153,11 @@ public class EntityField {
 		} else {
 			notNull = (field.getAnnotation(NotNull.class) != null);
 		}
-		readonly = (field.getAnnotation(Readonly.class) != null);
-		Type t = field.getAnnotation(Type.class);
-		type = null == t ? Types.AUTO : t.value();
-		evalDefaultValue(field);
-		this.field = field;
-		this.field.setAccessible(true);
+		/*
+		 * Finish parsing, return true. If current field
+		 * is a Link (Return Link object) or not @Column
+		 * (return null) at the begining of this method.
+		 */
 		return true;
 	}
 
@@ -199,19 +221,19 @@ public class EntityField {
 		}
 	}
 
-	public FetchSql<Integer> getFetchSql() {
-		return fetchSql;
+	public Sql<Integer> getFetchSql() {
+		return nextId.sql();
 	}
 
 	public boolean isInt() {
-		return Types.INT == type;
+		return Type.DEF.INT == type;
 	}
 
 	public boolean isChar() {
-		return Types.CHAR == type;
+		return Type.DEF.CHAR == type;
 	}
 
 	public boolean isAuto() {
-		return Types.AUTO == type;
+		return Type.DEF.AUTO == type;
 	}
 }

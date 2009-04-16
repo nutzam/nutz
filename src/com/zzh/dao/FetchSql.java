@@ -5,9 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.zzh.dao.callback.QueryCallback;
+import com.zzh.dao.callback.Callback;
 
-public class FetchSql<T> extends ConditionSql<T> {
+public class FetchSql<T> extends ConditionSql<T, T, ResultSet> {
 
 	public FetchSql() {
 		super();
@@ -17,16 +17,13 @@ public class FetchSql<T> extends ConditionSql<T> {
 		super(sql);
 	}
 
-	private QueryCallback<T> callback;
-
-	public FetchSql<T> setCallback(QueryCallback<T> callback) {
-		this.callback = callback;
-		return this;
-	}
-
-	public QueryCallback<T> getCallback() {
-		return callback;
-	}
+	// private QueryCallback<T> callback;
+	//
+	// public FetchSql<T> setCallback(QueryCallback<T>
+	// callback) {
+	// this.callback = callback;
+	// return this;
+	// }
 
 	private FieldMatcher matcher;
 
@@ -40,7 +37,7 @@ public class FetchSql<T> extends ConditionSql<T> {
 		return getResult();
 	}
 
-	protected T execute(Connection conn, QueryCallback<T> callback) throws SQLException {
+	protected T execute(Connection conn, Callback<T, ResultSet> callback) throws SQLException {
 		PreparedStatement stat = null;
 		try {
 			T o = null;
@@ -49,7 +46,7 @@ public class FetchSql<T> extends ConditionSql<T> {
 			super.setupStatement(stat);
 			ResultSet rs = stat.executeQuery();
 			if (rs.first()) {
-				callback.setMatcher(matcher);
+				callback.getContext().setFieldsMatcher(matcher);
 				o = callback.invoke(rs);
 			}
 			rs.close();

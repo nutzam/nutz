@@ -15,8 +15,7 @@ import com.zzh.lang.stream.CharInputStream;
 
 public class CharSegment implements Segment {
 
-	public CharSegment() {
-	}
+	public CharSegment() {}
 
 	public CharSegment(String str) {
 		valueOf(str);
@@ -160,7 +159,7 @@ public class CharSegment implements Segment {
 		int IID = 0;
 		try {
 			int c;
-			StringBuffer sb = new StringBuffer();
+			StringBuilder sb = new StringBuilder();
 			boolean isInPP = false;
 			boolean lastIsString = false;
 			while ((c = ins.read()) != -1) {
@@ -181,7 +180,7 @@ public class CharSegment implements Segment {
 					indx.add(values.size() - 1);
 					ppIndx.add(IID++);
 					isInPP = false;
-					sb = new StringBuffer();
+					sb = new StringBuilder();
 				} else if (c == '$') { // Out of PlugPoint, and find $
 					int cc = ins.read();
 					org.append((char) cc);
@@ -192,7 +191,7 @@ public class CharSegment implements Segment {
 					case '{':
 						if (sb.length() > 0) {
 							values.add(sb);
-							sb = new StringBuffer();
+							sb = new StringBuilder();
 							lastIsString = true;
 						}
 						isInPP = true;
@@ -210,7 +209,7 @@ public class CharSegment implements Segment {
 				if (isInPP) {
 					sb.insert(0, "${");
 					if ((pps.size() == 0 && values.size() > 0) || lastIsString)
-						((StringBuffer) values.get(0)).append(sb);
+						((StringBuilder) values.get(0)).append(sb);
 					else
 						values.add(sb);
 				} else
@@ -230,7 +229,7 @@ public class CharSegment implements Segment {
 
 	@Override
 	public CharSequence render() {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		for (Iterator<?> it = values.iterator(); it.hasNext();) {
 			Object o = it.next();
 			if (o == null)

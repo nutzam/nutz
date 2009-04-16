@@ -10,13 +10,30 @@ public class FieldFilter {
 
 	private static ThreadLocal<FieldFilter> FF = new ThreadLocal<FieldFilter>();
 
+	public static FieldFilter create(Class<?> type, boolean ignoreNull) {
+		return create(type, null, null, ignoreNull);
+	}
+
 	public static FieldFilter create(Class<?> type, String actived) {
-		return create(type, actived, null);
+		return create(type, actived, null, false);
+	}
+
+	public static FieldFilter create(Class<?> type, String actived, boolean ignoreNull) {
+		return create(type, actived, null, ignoreNull);
 	}
 
 	public static FieldFilter create(Class<?> type, String actived, String locked) {
+		return FieldFilter.create(type, actived, locked, false);
+	}
+
+	public static FieldFilter create(Class<?> type, String actived, String locked,
+			boolean ignoreNull) {
+		return create(type, FieldMatcher.make(actived, locked, ignoreNull));
+	}
+
+	public static FieldFilter create(Class<?> type, FieldMatcher mathcer) {
 		FieldFilter ff = new FieldFilter();
-		ff.add(type, actived, locked);
+		ff.set(type, mathcer);
 		return ff;
 	}
 
@@ -26,13 +43,33 @@ public class FieldFilter {
 
 	private Map<Class<?>, FieldMatcher> map;
 
-	public FieldFilter add(Class<?> type, String actived, String locked) {
-		map.put(type, FieldMatcher.make(actived, locked));
+	public FieldFilter set(Class<?> type, boolean ignoreNull) {
+		map.put(type, FieldMatcher.make(null, null, ignoreNull));
 		return this;
 	}
 
-	public FieldFilter add(Class<?> type, FieldMatcher fm) {
-		map.put(type, fm);
+	public FieldFilter set(Class<?> type, String actived) {
+		map.put(type, FieldMatcher.make(actived, null, false));
+		return this;
+	}
+
+	public FieldFilter set(Class<?> type, String actived, boolean ignoreNull) {
+		map.put(type, FieldMatcher.make(actived, null, ignoreNull));
+		return this;
+	}
+
+	public FieldFilter set(Class<?> type, String actived, String locked) {
+		map.put(type, FieldMatcher.make(actived, locked, false));
+		return this;
+	}
+
+	public FieldFilter set(Class<?> type, String actived, String locked, boolean ignoreNull) {
+		map.put(type, FieldMatcher.make(actived, locked, ignoreNull));
+		return this;
+	}
+
+	public FieldFilter set(Class<?> type, FieldMatcher matcher) {
+		map.put(type, matcher);
 		return this;
 	}
 

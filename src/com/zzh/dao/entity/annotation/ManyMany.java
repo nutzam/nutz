@@ -19,5 +19,6 @@ public @interface ManyMany {
 
 	String to();
 
-	String mapKeyField() default Lang.NULL;
+	String key() default Lang.NULL;
+
 }

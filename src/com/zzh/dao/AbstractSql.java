@@ -28,6 +28,7 @@ public abstract class AbstractSql<T> implements Sql<T> {
 	protected Segment segment;
 	private Entity<?> entity;
 	protected Map<String, Object> values;
+		
 
 	public void setEntity(Entity<?> entity) {
 		this.entity = entity;

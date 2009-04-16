@@ -5,9 +5,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class ComboSql implements Sql<Object> {
+import com.zzh.lang.Strings;
+
+public class ComboSql implements Sql<List<Object>> {
 
 	private List<Sql<?>> sqls = new LinkedList<Sql<?>>();
+	private List<Object> result;
 
 	public ComboSql addSQL(Sql<?> sql) {
 		sqls.add(sql);
@@ -15,7 +18,7 @@ public class ComboSql implements Sql<Object> {
 	}
 
 	@Override
-	public Sql<Object> clone() {
+	public Sql<List<Object>> clone() {
 		ComboSql cSql = new ComboSql();
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();) {
 			Sql<?> sql = it.next();
@@ -25,83 +28,85 @@ public class ComboSql implements Sql<Object> {
 	}
 
 	@Override
-	public Sql<Object> born() {
+	public Sql<List<Object>> born() {
 		return new ComboSql();
 	}
 
 	@Override
-	public Object execute(Connection conn) throws Exception {
+	public List<Object> execute(Connection conn) throws Exception {
+		result = new LinkedList<Object>();
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();) {
-			it.next().execute(conn);
+			Sql<?> sql = it.next();
+			result.add(sql.execute(conn));
 		}
-		return null;
+		return result;
 	}
 
 	@Override
-	public Sql<Object> set(String key, boolean v) {
+	public Sql<List<Object>> set(String key, boolean v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, byte v) {
+	public Sql<List<Object>> set(String key, byte v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, double v) {
+	public Sql<List<Object>> set(String key, double v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, float v) {
+	public Sql<List<Object>> set(String key, float v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, int v) {
+	public Sql<List<Object>> set(String key, int v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, long v) {
+	public Sql<List<Object>> set(String key, long v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, Object v) {
+	public Sql<List<Object>> set(String key, Object v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> set(String key, short v) {
+	public Sql<List<Object>> set(String key, short v) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().set(key, v);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> setValue(Object obj) {
+	public Sql<List<Object>> setValue(Object obj) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().setValue(obj);
 		return this;
 	}
 
 	@Override
-	public Sql<Object> valueOf(String s) {
+	public Sql<List<Object>> valueOf(String s) {
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
 			it.next().valueOf(s);
 		return this;
@@ -110,8 +115,10 @@ public class ComboSql implements Sql<Object> {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();)
-			sb.append(it.next().toString());
+		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();) {
+			sb.append(String.format("/*%s*/\n", Strings.dup('-', 40)));
+			sb.append(it.next().toString()).append('\n');
+		}
 		return sb.toString();
 	}
 
@@ -124,7 +131,17 @@ public class ComboSql implements Sql<Object> {
 
 	@Override
 	public String toOrginalString() {
-		return null;
+		StringBuilder sb = new StringBuilder();
+		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();) {
+			sb.append(String.format("/*%s*/\n", Strings.dup('-', 40)));
+			sb.append(it.next().toOrginalString()).append('\n');
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public List<Object> getResult() {
+		return result;
 	}
 
 }

@@ -37,7 +37,7 @@ public class JsonMapping implements Mapping {
 				}
 			} else if ("extends".equals(key)) {
 				this.parentName = value.toString();
-			} else if ("depmethod".equals(key)) {
+			} else if ("deposeby".equals(key)) {
 				this.deposeMethodName = value.toString();
 			} else if ("deposer".equals(key)) {
 				this.deposerTypeName = value.toString();

@@ -11,17 +11,13 @@ public class Insert<T> extends EntityControllor<T> {
 		super(service);
 	}
 
-	private String[] ones;
-
-	private String[] manys;
+	private String cascade;
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		T obj = this.getObject(request);
-		service.insert(obj);
-		service.dao().insertOne(obj, ones);
-		service.dao().insertMany(obj, manys);
+		service.dao().insertWith(obj,cascade);
 		return obj;
 	}
 

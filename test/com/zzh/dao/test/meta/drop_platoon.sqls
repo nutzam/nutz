@@ -1,0 +1,15 @@
+/*--------------------------------------------------*/
+/*drop.soldier*/
+DROP TABLE IF EXISTS dao_d_soldier_${.id};
+/*--------------------------------------------------*/
+/*drop.tank*/
+DROP TABLE IF EXISTS dao_d_tank_${.id};
+/*--------------------------------------------------*/
+/*drop.gun*/
+DROP TABLE IF EXISTS dao_d_gun_${.id};
+/*--------------------------------------------------*/
+/*drop.mission*/
+DROP TABLE IF EXISTS dao_d_mission_${.id};
+/*--------------------------------------------------*/
+/*drop.soldier.tank*/
+DROP TABLE IF EXISTS dao_d_m_soldier_tank_${.id};

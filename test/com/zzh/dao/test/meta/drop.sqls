@@ -1,0 +1,18 @@
+/*--------------------------------------------------*/
+/*drop.country*/
+DROP TABLE IF EXISTS dao_country;
+/*--------------------------------------------------*/
+/*drop.platoon*/
+DROP TABLE IF EXISTS dao_platoon;
+/*--------------------------------------------------*/
+/*drop.base*/
+DROP TABLE IF EXISTS dao_base;
+/*--------------------------------------------------*/
+/*drop.base.fighters*/
+DROP TABLE IF EXISTS dao_m_base_fighter;
+/*--------------------------------------------------*/
+/*drop.fighter*/
+DROP TABLE IF EXISTS dao_fighter;
+/*--------------------------------------------------*/
+/*drop.waveband*/
+DROP TABLE IF EXISTS dao_waveband;

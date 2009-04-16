@@ -169,7 +169,7 @@ public class Mirror<T> {
 	public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
 		try {
 			try {
-				return klass.getMethod("set" + Strings.capitalize(fieldName), paramType);
+				return klass.getMethod(getSetterName(fieldName), paramType);
 			} catch (Exception e) {
 				return klass.getMethod(fieldName, paramType);
 			}
@@ -178,6 +178,26 @@ public class Mirror<T> {
 					"Fail to find setter for [%s]->[%s(%s)]", klass.getName(), fieldName, paramType
 							.getName());
 		}
+	}
+
+	public static String getSetterName(String fieldName) {
+		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
+	}
+
+	public static String getBooleanSetterName(String fieldName) {
+		if (fieldName.startsWith("is"))
+			fieldName = fieldName.substring(2);
+		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
+	}
+
+	public static String getGetterName(String fieldName) {
+		return new StringBuilder("get").append(Strings.capitalize(fieldName)).toString();
+	}
+
+	public static String getBooleanGetterName(String fieldName) {
+		if (fieldName.startsWith("is"))
+			fieldName = fieldName.substring(2);
+		return new StringBuilder("is").append(Strings.capitalize(fieldName)).toString();
 	}
 
 	public Method[] findSetters(String fieldName) {
@@ -205,7 +225,7 @@ public class Mirror<T> {
 			}
 		}
 		throw new NoSuchFieldException(String.format(
-				"Can NO find field [%s] in class [%s] and it's parents classes", name, klass
+				"Can NOT find field [%s] in class [%s] and it's parents classes", name, klass
 						.getName()));
 	}
 
@@ -215,7 +235,7 @@ public class Mirror<T> {
 				return field;
 		}
 		throw new NoSuchFieldException(String.format(
-				"Can NO find field [@%s] in class [%s] and it's parents classes", ann.getName(),
+				"Can NOT find field [@%s] in class [%s] and it's parents classes", ann.getName(),
 				klass.getName()));
 	}
 
@@ -414,24 +434,12 @@ public class Mirror<T> {
 		return false;
 	}
 
-	public <A> Object invoke(Object obj, String methodName, A... args) {
-		try {
-			Method m = klass.getMethod(methodName, args.getClass());
-			return m.invoke(obj, (Object) args);
-		} catch (Exception e1) {
-			Class<?>[] paramTypes = new Class<?>[null == args ? 0 : args.length];
-			for (int i = 0; i < paramTypes.length; i++)
-				paramTypes[i] = args[i].getClass();
-			try {
-				return klass.getMethod(methodName, paramTypes).invoke(obj, args);
-			} catch (Exception e2) {
-				try {
-					return findMethod(methodName, paramTypes).invoke(obj, args);
-				} catch (Exception e) {
-					throw Lang.wrapThrow(e);
-				}
-			}
-		}
+	public Invoking getInvoking(String methodName, Object... args) {
+		return new Invoking(klass, methodName, args);
+	}
+
+	public Object invoke(Object obj, String methodName, Object... args) {
+		return getInvoking(methodName, args).invoke(obj);
 	}
 
 	public Method findMethod(String name, Class<?>... paramTypes) throws NoSuchMethodException {
@@ -470,20 +478,61 @@ public class Mirror<T> {
 
 	}
 
-	public static MatchType matchMethodParamsType(Class<?>[] methodArgTypes, Object... args) {
-		int len = args == null ? 0 : args.length;
-		if (len == 0 && methodArgTypes.length == 0)
+	public static MatchType matchParamTypes(Class<?>[] methodParamTypes, Object... args) {
+		return matchParamTypes(methodParamTypes, evalToTypes(args));
+	}
+
+	public static Class<?>[] evalToTypes(Object... args) {
+		Class<?>[] types = new Class[args.length];
+		int i = 0;
+		for (Object arg : args)
+			types[i++] = null == arg ? Object.class : arg.getClass();
+		return types;
+	}
+
+	public static Object evalArgToRealArray(Object... args) {
+		if (null == args || args.length == 0)
+			return null;
+		if (null == args[0])
+			return null;
+		Object re = null;
+		/*
+		 * Check inside the arguments list, to see if all element is in same
+		 * type
+		 */
+		Class<?> type = args[0].getClass();
+		for (Object arg : args)
+			if (arg.getClass() != type) {
+				type = null;
+				break;
+			}
+		/*
+		 * If all argument elements in same type, make a new Array by the Type
+		 */
+		if (type != null) {
+			re = Array.newInstance(type, args.length);
+			for (int i = 0; i < args.length; i++) {
+				Array.set(re, i, args[i]);
+			}
+		}
+		return re;
+
+	}
+
+	public static MatchType matchParamTypes(Class<?>[] paramTypes, Class<?>[] argTypes) {
+		int len = argTypes == null ? 0 : argTypes.length;
+		if (len == 0 && paramTypes.length == 0)
 			return MatchType.YES;
-		if (methodArgTypes.length == len) {
+		if (paramTypes.length == len) {
 			for (int i = 0; i < len; i++)
-				if (!Mirror.me(args[i].getClass()).canCastToDirectly((methodArgTypes[i])))
+				if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i])))
 					return MatchType.NO;
 			return MatchType.YES;
-		} else if (len + 1 == methodArgTypes.length) {
-			if (!methodArgTypes[len].isArray())
+		} else if (len + 1 == paramTypes.length) {
+			if (!paramTypes[len].isArray())
 				return MatchType.NO;
 			for (int i = 0; i < len; i++)
-				if (!Mirror.me(args[i].getClass()).canCastToDirectly((methodArgTypes[i])))
+				if (!Mirror.me(argTypes[i]).canCastToDirectly((paramTypes[i])))
 					return MatchType.NO;
 			return MatchType.LACK;
 		}
@@ -617,6 +666,10 @@ public class Mirror<T> {
 				|| java.sql.Timestamp.class.isAssignableFrom(klass)
 				|| java.sql.Date.class.isAssignableFrom(klass)
 				|| java.sql.Time.class.isAssignableFrom(klass);
+	}
+
+	static Object[] blankArrayArg(Class<?>[] pts) {
+		return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
 	}
 
 	public static Type[] getTypeParams(Class<?> klass) {

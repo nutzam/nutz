@@ -14,9 +14,9 @@ public class Update<T> extends EntityControllor<T> {
 		super(service);
 	}
 
-	private boolean ignoreNull;
 	private String ignored;
 	private String actived;
+	private String cascade;
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)
@@ -25,7 +25,7 @@ public class Update<T> extends EntityControllor<T> {
 		if (!Strings.isBlank(actived) || !Strings.isBlank(ignored)) {
 			FieldFilter.create(service.getEntityClass(), actived, ignored).run(new Atom() {
 				public void run() {
-					service.dao().update(obj, ignoreNull);
+					service.dao().updateWith(obj, cascade);
 				}
 			});
 		}

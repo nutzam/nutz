@@ -8,6 +8,7 @@ import javax.sql.DataSource;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
 import com.zzh.trans.Trans;
+import com.zzh.trans.Transaction;
 
 public class Sqls {
 
@@ -59,19 +60,23 @@ public class Sqls {
 		return !me.isBoolean() && me.isPrimitiveNumber();
 	}
 
-	public static Connection getConnection(DataSource dataSource) {
+	public static ConnectionHolder getConnection(DataSource dataSource) {
 		try {
-			if (Trans.get() != null)
-				return Trans.get().getConnection(dataSource);
-			return dataSource.getConnection();
+			Transaction trans = Trans.get();
+			Connection conn = null;
+			if (trans != null)
+				conn = trans.getConnection(dataSource);
+			else
+				conn = dataSource.getConnection();
+			return ConnectionHolder.make(trans, conn);
 		} catch (SQLException e) {
 			throw Lang.makeThrow("Could not get JDBC Connection : %s", e.getMessage());
 		}
 	}
 
-	public static void releaseConnection(Connection con, DataSource dataSource) {
+	public static void releaseConnection(ConnectionHolder ch) {
 		try {
-			con.close();
+			ch.close();
 		} catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}

@@ -1,22 +1,18 @@
 package com.zzh.lang;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import com.zzh.castor.Castors;
-import com.zzh.castor.FailToCastObjectException;
 import com.zzh.lang.Mirror.MatchType;
 
 @SuppressWarnings("unchecked")
 public class Borning<T> {
 
-	// --------------------------------------------------------------------
-	static interface Invoker<T> {
+	private static interface Invoker<T> {
 		T invoke() throws Exception;
 	}
 
-	static class DynaConstructorInvoker<T> implements Invoker<T> {
+	private static class DynaConstructorInvoker<T> implements Invoker<T> {
 
 		private Constructor<T> c;
 		private Object arg;
@@ -31,7 +27,7 @@ public class Borning<T> {
 		}
 	}
 
-	static class EmptyArgsConstructorInvoker<T> implements Invoker<T> {
+	private static class EmptyArgsConstructorInvoker<T> implements Invoker<T> {
 
 		private Constructor<T> c;
 
@@ -44,7 +40,7 @@ public class Borning<T> {
 		}
 	}
 
-	static class ConstructorInvoker<T> implements Invoker<T> {
+	private static class ConstructorInvoker<T> implements Invoker<T> {
 
 		private Constructor<T> c;
 		private Object[] args;
@@ -59,7 +55,7 @@ public class Borning<T> {
 		}
 	}
 
-	static class EmptyArgsMethodInvoker<T> implements Invoker<T> {
+	private static class EmptyArgsMethodInvoker<T> implements Invoker<T> {
 
 		private Method method;
 
@@ -72,7 +68,7 @@ public class Borning<T> {
 		}
 	}
 
-	static class DynaMethodInvoker<T> implements Invoker<T> {
+	private static class DynaMethodInvoker<T> implements Invoker<T> {
 
 		private Method method;
 		private Object arg;
@@ -87,7 +83,7 @@ public class Borning<T> {
 		}
 	}
 
-	static class MethodInvoker<T> implements Invoker<T> {
+	private static class MethodInvoker<T> implements Invoker<T> {
 
 		private Method method;
 		private Object[] args;
@@ -113,22 +109,15 @@ public class Borning<T> {
 		this.mirror = mirror;
 		this.type = mirror.getType();
 		this.args = null == args ? new Object[0] : args;
-		if (this.args.length > 0) {
-			Class<?> type = this.args[0].getClass();
-			for (int i = 1; i < this.args.length; i++) {
-				if (this.args[i].getClass() != type) {
-					type = null;
-					break;
-				}
-			}
-			if (type != null) {
-				dynaArg = Array.newInstance(type, this.args.length);
-				for (int i = 0; i < this.args.length; i++) {
-					Array.set(dynaArg, i, this.args[i]);
-				}
-			}
+		dynaArg = Mirror.evalArgToRealArray(args);
+		if (args.length == 0) {
+			evalNullArgs();
+		} else {
+			evalWithArgs();
 		}
-		eval();
+		if (null == invoker)
+			throw new BorningException("Don't know how to borning [%s] by args:\n", type.getName(),
+					Lang.concatBy('\n', args));
 	}
 
 	public T born() {
@@ -137,16 +126,6 @@ public class Borning<T> {
 		} catch (Exception e) {
 			throw new BorningException(e, type, args);
 		}
-	}
-
-	private void eval() {
-		if (args.length == 0)
-			evalNullArgs();
-		else
-			evalWithArgs();
-		if (null == invoker)
-			throw Lang.makeThrow(BorningException.class, "Don't know how to borning [%s]", type
-					.getName());
 	}
 
 	/**
@@ -174,7 +153,7 @@ public class Borning<T> {
 				Class<?>[] pts = cc.getParameterTypes();
 				if (pts.length == 1 && pts[0].isArray()) {
 					args = new Object[1];
-					args[0] = blankArrayArg(pts);
+					args[0] = Mirror.blankArrayArg(pts);
 					invoker = new ConstructorInvoker(cc, args);
 					return;
 				}
@@ -185,16 +164,12 @@ public class Borning<T> {
 				if (m.getReturnType() == type && m.getParameterTypes().length == 1
 						&& pts[0].isArray()) {
 					args = new Object[1];
-					args[0] = blankArrayArg(pts);
+					args[0] = Mirror.blankArrayArg(pts);
 					invoker = new MethodInvoker(m, args);
 					return;
 				}
 			}
 		}
-	}
-
-	private Object[] blankArrayArg(Class<?>[] pts) {
-		return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
 	}
 
 	/**
@@ -212,32 +187,31 @@ public class Borning<T> {
 	 */
 
 	private void evalWithArgs() {
+		Class<?>[] argTypes = Mirror.evalToTypes(args);
 		for (Constructor<?> cc : type.getConstructors()) {
 			Class<?>[] pts = cc.getParameterTypes();
-			MatchType mt = Mirror.matchMethodParamsType(pts, args);
+			MatchType mt = Mirror.matchParamTypes(pts, argTypes);
 			if (MatchType.YES == mt) {
 				invoker = new ConstructorInvoker(cc, args);
 				return;
 			} else if (MatchType.LACK == mt) {
-				args = Lang.arrayLast(args, blankArrayArg(pts));
+				args = Lang.arrayLast(args, Mirror.blankArrayArg(pts));
 				invoker = new ConstructorInvoker(cc, args);
 				return;
-			} else if (null != dynaArg && pts.length == 1) {
-				if (pts[0] == dynaArg.getClass()) {
-					invoker = new DynaConstructorInvoker(cc, dynaArg);
-					return;
-				}
+			} else if (null != dynaArg && pts.length == 1 && pts[0] == dynaArg.getClass()) {
+				invoker = new DynaConstructorInvoker(cc, dynaArg);
+				return;
 			}
 		}
 		Method[] sms = mirror.getStaticMethods();
 		for (Method m : sms) {
 			Class<?>[] pts = m.getParameterTypes();
-			MatchType mt = Mirror.matchMethodParamsType(pts, args);
+			MatchType mt = Mirror.matchParamTypes(pts, args);
 			if (MatchType.YES == mt) {
 				invoker = new MethodInvoker(m, args);
 				return;
 			} else if (MatchType.LACK == mt) {
-				args = Lang.arrayLast(args, blankArrayArg(pts));
+				args = Lang.arrayLast(args, Mirror.blankArrayArg(pts));
 				invoker = new MethodInvoker(m, args);
 				return;
 			} else if (null != dynaArg && pts.length == 1) {
@@ -248,35 +222,29 @@ public class Borning<T> {
 			}
 		}
 		// casting constructor
-		try {
-			for (Constructor<?> cc : type.getConstructors()) {
-				Class<?>[] pts = cc.getParameterTypes();
-				if (pts.length == args.length) {
-					args = castArguments(pts, args);
-					invoker = new ConstructorInvoker(cc, args);
-					return;
+		if (null == invoker)
+			try {
+				for (Constructor<?> cc : type.getConstructors()) {
+					Class<?>[] pts = cc.getParameterTypes();
+					if (pts.length == args.length) {
+						args = Lang.array2ObjectArray(args, pts);
+						invoker = new ConstructorInvoker(cc, args);
+						return;
+					}
 				}
-			}
-		} catch (Exception e) {}
+			} catch (Exception e) {}
 		// casting static methods
-		try {
-			for (Method m : sms) {
-				Class<?>[] pts = m.getParameterTypes();
-				if (pts.length == args.length) {
-					args = castArguments(pts, args);
-					invoker = new MethodInvoker(m, args);
-					return;
+		if (null == invoker)
+			try {
+				for (Method m : sms) {
+					Class<?>[] pts = m.getParameterTypes();
+					if (pts.length == args.length) {
+						args = Lang.array2ObjectArray(args, pts);
+						invoker = new MethodInvoker(m, args);
+						return;
+					}
 				}
-			}
-		} catch (Exception e) {}
-	}
-
-	private Object[] castArguments(Class<?>[] pts, Object[] args) throws FailToCastObjectException {
-		Object[] newArgs = new Object[args.length];
-		for (int i = 0; i < args.length; i++) {
-			newArgs[i] = Castors.me().castTo(args[i], pts[i]);
-		}
-		return newArgs;
+			} catch (Exception e) {}
 	}
 
 }

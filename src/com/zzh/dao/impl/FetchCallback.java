@@ -15,7 +15,7 @@ class FetchCallback<T> extends QueryCallback<T> {
 
 	@Override
 	public T invoke(ResultSet rs){
-		return entity.getObject(rs,this.getMatcher());
+		return entity.getObject(rs,this.getContext().getFieldsMatcher());
 	}
 
 }

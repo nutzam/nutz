@@ -1,0 +1,8 @@
+{
+  age :69,
+  name :"youoo",
+  realname :"YouChunSheng",
+  birthday :"1940-08-15",
+  father :null,
+  company :null
+}

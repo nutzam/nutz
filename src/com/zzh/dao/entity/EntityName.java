@@ -22,7 +22,12 @@ abstract class EntityName {
 
 		@Override
 		String value() {
-			return TableName.getName(segment);
+			return TableName.render(segment);
+		}
+
+		@Override
+		String orignalString() {
+			return segment.toOrginalString();
 		}
 
 	}
@@ -40,7 +45,20 @@ abstract class EntityName {
 			return value;
 		}
 
+		@Override
+		String orignalString() {
+			return value;
+		}
+
 	}
 
 	abstract String value();
+
+	abstract String orignalString();
+
+	@Override
+	public String toString() {
+		return value();
+	}
+
 }

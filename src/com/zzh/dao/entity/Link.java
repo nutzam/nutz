@@ -27,8 +27,8 @@ public class Link {
 				}
 			}
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to eval linked field '%s' for the reason '%s'", field
-					.getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to eval linked field '%s' of class[%s] for the reason '%s'",
+					field.getName(), mirror.getType().getName(), e.getMessage());
 		}
 		return null;
 	}
@@ -37,11 +37,6 @@ public class Link {
 		this.ownField = field;
 		this.type = LinkType.One;
 		this.targetClass = one.target();
-		evalDynamicTable();
-		if (this.isDynamicTarget()) {
-			throw Lang.makeThrow("Dynamic Target [%s] only support by @Many or @ManyMany",
-					this.targetClass.getSimpleName());
-		}
 		this.referField = mirror.getField(one.field());
 		if (Mirror.me(this.referField.getType()).isStringLike()) {
 			this.targetField = Mirror.me(this.targetClass).getField(Name.class);
@@ -53,13 +48,9 @@ public class Link {
 	private Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.Many;
-		this.mapKeyField = Lang.NULL.equals(many.mapKeyField()) ? null : many.mapKeyField();
+		this.mapKeyField = Lang.NULL.equals(many.key()) ? null : many.key();
 		this.targetClass = many.target();
-		evalDynamicTable();
-		if (this.isDynamicTarget()) {
-			this.referField = mirror.getField(many.field());
-			this.targetField = null;
-		} else {
+		if (!Lang.NULL.equals(many.field())) {
 			this.targetField = Mirror.me(this.targetClass).getField(many.field());
 			if (Mirror.me(this.targetField.getType()).isStringLike()) {
 				this.referField = mirror.getField(Name.class);
@@ -72,59 +63,46 @@ public class Link {
 	private Link(Mirror<?> mirror, Field field, ManyMany mm) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
-		this.mapKeyField = Lang.NULL.equals(mm.mapKeyField()) ? null : mm.mapKeyField();
+		this.mapKeyField = Lang.NULL.equals(mm.key()) ? null : mm.key();
 		this.targetClass = mm.target();
-		evalDynamicTable();
 		this.from = mm.from();
 		this.to = mm.to();
 		this.relation = Relation.make(mm.relation());
-		// looking for the target Id or Name field
-		Mirror<?> ta = Mirror.me(targetClass);
-		for (Field f : ta.getFields()) {
-			this.targetField = f;
-			if (f.getAnnotation(Id.class) != null) {
-				Field nameField = null;
-				for (Field ff : mirror.getFields()) {
-					if (ff.getAnnotation(Id.class) != null) {
-						this.referField = ff;
-						break;
-					} else if (ff.getAnnotation(Name.class) != null) {
-						nameField = ff;
-					}
-				}
-				if (this.referField == null && nameField != null) {
-					this.referField = nameField;
-				}
-				if (null != this.referField)
-					break;
-			} else if (f.getAnnotation(Name.class) != null) {
-				Field idField = null;
-				for (Field ff : mirror.getFields()) {
-					if (ff.getAnnotation(Name.class) != null) {
-						this.referField = ff;
-						break;
-					} else if (ff.getAnnotation(Id.class) != null) {
-						idField = ff;
-					}
-				}
-				if (this.referField == null && idField != null) {
-					this.referField = idField;
-				}
-				if (null != this.referField)
-					break;
+		this.referField = lookupKeyField(mirror);
+		this.targetField = lookupKeyField(Mirror.me(targetClass));
+		if (null == this.referField || null == this.targetField) {
+			throw Lang.makeThrow("Fail to make ManyMany link for [%s].[%s], target: [%s]."
+					+ "\n referField: [%s]" + "\n targetField: [%s]", mirror.getType().getName(),
+					field.getName(), targetClass.getName(), referField, targetField);
+		}
+
+	}
+
+	private static Field lookupKeyField(Mirror<?> mirror) {
+		Field re = null;
+		for (Field f : mirror.getFields()) {
+			if (null != f.getAnnotation(Id.class))
+				return f;
+			if (null != f.getAnnotation(Name.class)) {
+				re = f;
 			}
 		}
-		if (null == this.referField)
-			throw Lang.makeThrow("Fail to make ManyMany link for [%s]->[%s], target: [%s]", mirror
-					.getType().getName(), field.getName(), targetClass.getName());
-
+		return re;
 	}
 
-	private void evalDynamicTable() {
-		Table annTab = this.targetClass.getAnnotation(Table.class);
-		if (null != annTab && (new CharSegment(annTab.value())).keys().size() > 0)
-			this.targetDynamic = true;
-	}
+	// private void evalMore(String dynamicBy) {
+	// Cascade cc =
+	// this.targetClass.getAnnotation(Cascade.class);
+	// if (null != cc && cc.value() == Cascade.TYPE.ON)
+	// cascade = true;
+	// Table annTab =
+	// this.targetClass.getAnnotation(Table.class);
+	// if (null != annTab && (new
+	// CharSegment(annTab.value())).keys().size() > 0)
+	// this.targetDynamic = true;
+	// dynamicReferField =
+	// DynamicReferPicker.eval(targetClass, dynamicBy);
+	// }
 
 	private Class<?> targetClass;
 	private Field targetField;
@@ -135,11 +113,6 @@ public class Link {
 	private String from;
 	private String to;
 	private String mapKeyField;
-	private boolean targetDynamic;
-
-	public boolean isDynamicTarget() {
-		return targetDynamic;
-	}
 
 	public Class<?> getTargetClass() {
 		return targetClass;
@@ -190,12 +163,22 @@ public class Link {
 
 		@Override
 		public String toString() {
-			return TableName.getName(cs);
+			return TableName.render(cs);
+		}
+
+		public String getOrginalString() {
+			return cs.toOrginalString();
 		}
 
 	}
 
 	public String getRelation() {
+		return relation.toString();
+	}
+
+	public String getRelationOrignalString() {
+		if (relation instanceof Relation)
+			return ((Relation) relation).getOrginalString();
 		return relation.toString();
 	}
 

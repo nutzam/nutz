@@ -1,18 +1,16 @@
 package com.zzh.lang;
 
+import static java.lang.String.*;
+
 @SuppressWarnings("serial")
 public class BorningException extends RuntimeException {
 
-	public BorningException(String message) {
-		super(message);
-	}
-
-	/**
-	 * @param klass
-	 * @param args
-	 */
 	public BorningException(Exception e, Class<?> klass, Object[] args) {
 		super(makeMessage(e, klass, args));
+	}
+
+	public BorningException(String format, Object... args) {
+		super(format(format, args));
 	}
 
 	private static String makeMessage(Exception e, Class<?> klass, Object[] args) {

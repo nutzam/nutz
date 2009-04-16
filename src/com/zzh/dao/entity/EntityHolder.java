@@ -3,6 +3,8 @@ package com.zzh.dao.entity;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.zzh.dao.Database;
+
 public class EntityHolder {
 
 	public EntityHolder() {
@@ -15,18 +17,18 @@ public class EntityHolder {
 	 * Get one EntityMapping
 	 * 
 	 * @param klass
-	 * @return EntityMapping class, create when it not existed
+	 * @return EntityMapping class, create when it not
+	 *         existed
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Entity<T> getEntity(Class<T> klass) {
+	public <T> Entity<T> getEntity(Class<T> klass, Database db) {
 		Entity<T> m = (Entity<T>) mappings.get(klass);
 		if (null == m) {
 			synchronized (this) {
 				m = (Entity<T>) mappings.get(klass);
 				if (null == m) {
 					m = new Entity<T>();
-					boolean parseResult = m.parse(klass);
-					if (parseResult)
+					if (m.parse(klass, db))
 						mappings.put(klass, m);
 					else
 						throw new ErrorEntitySyntaxException(klass, "Not a entity!");
