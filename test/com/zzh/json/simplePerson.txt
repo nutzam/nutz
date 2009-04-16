@@ -1,6 +1,0 @@
-{  name : 'youoo',
-		realname : "YouChunSheng",
-		age : 69,
-		"birthday" : "1940-8-15"
-}
-	
