@@ -41,7 +41,7 @@ public class JsonMapping implements Mapping {
 				this.deposeMethodName = value.toString();
 			} else if ("deposer".equals(key)) {
 				this.deposerTypeName = value.toString();
-			} else if ("$args".equals(key)) {
+			} else if ("args".equals(key)) {
 				Collection<Object> coll = (Collection<Object>) value;
 				borningArguments = new Object[coll.size()];
 				int i = 0;
@@ -56,6 +56,15 @@ public class JsonMapping implements Mapping {
 					Object vv = makeValue(fv);
 					fieldsSetting.put(name, vv);
 				}
+			}
+		}
+		if (singleton && null == objectType && null == parentName && null == deposeMethodName
+				&& null == deposerTypeName && null == borningArguments && 0 == fieldsSetting.size()) {
+			for (Iterator<String> it = map.keySet().iterator(); it.hasNext();) {
+				String name = it.next();
+				Object fv = map.get(name);
+				Object vv = makeValue(fv);
+				fieldsSetting.put(name, vv);
 			}
 		}
 	}

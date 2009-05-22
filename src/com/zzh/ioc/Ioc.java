@@ -1,5 +1,7 @@
 package com.zzh.ioc;
 
+import java.util.Map;
+
 public interface Ioc {
 
 	<T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException,
@@ -17,5 +19,11 @@ public interface Ioc {
 	 * availiable
 	 */
 	void depose();
+
+	ObjectMaker findMaker(Map<String, Object> map);
+
+	Ioc add(ObjectMaker maker);
+
+	boolean isSingleton(Class<?> classOfT, String name);
 
 }

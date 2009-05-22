@@ -1,12 +1,12 @@
 package com.zzh.lang;
 
+import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,11 +14,14 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 
 import com.zzh.castor.Castors;
 import com.zzh.castor.FailToCastObjectException;
-import com.zzh.lang.stream.CharInputStream;
-import com.zzh.lang.stream.CharOutputStream;
+import com.zzh.lang.stream.StringInputStream;
+import com.zzh.lang.stream.StringOutputStream;
+import com.zzh.lang.stream.StringReader;
+import com.zzh.lang.stream.StringWriter;
 
 public class Lang {
 
@@ -34,7 +37,11 @@ public class Lang {
 	}
 
 	public static RuntimeException wrapThrow(Throwable e) {
-		return wrapThrow(e, RuntimeException.class);
+		if (e instanceof RuntimeException)
+			return (RuntimeException) e;
+		if (e instanceof InvocationTargetException)
+			return wrapThrow(((InvocationTargetException) e).getTargetException());
+		return new RuntimeException(e);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -44,32 +51,112 @@ public class Lang {
 		return Mirror.me(wrapper).born(e);
 	}
 
+	@SuppressWarnings("unchecked")
 	public static boolean equals(Object a1, Object a2) {
 		if (a1 == a2)
 			return true;
 		if (a1 == null || a2 == null)
 			return false;
+		if (a1 instanceof Map && a2 instanceof Map) {
+			Map<?, ?> m1 = (Map<?, ?>) a1;
+			Map<?, ?> m2 = (Map<?, ?>) a2;
+			if (m1.size() != m2.size())
+				return false;
+			for (Iterator<?> it = m1.keySet().iterator(); it.hasNext();) {
+				Object key = it.next();
+				if (!m2.containsKey(key))
+					return false;
+				Object v1 = m1.get(key);
+				Object v2 = m2.get(key);
+				if (!equals(v1, v2))
+					return false;
+			}
+			return true;
+		} else if (a1.getClass().isArray()) {
+			if (a2.getClass().isArray()) {
+				int len = Array.getLength(a1);
+				if (len != Array.getLength(a2))
+					return false;
+				for (int i = 0; i < len; i++) {
+					if (!equals(Array.get(a1, i), Array.get(a2, i)))
+						return false;
+				}
+				return true;
+			} else if (a2 instanceof List) {
+				return equals(a1, Lang.collection2array((List<Object>) a2, Object.class));
+			}
+			return false;
+		} else if (a1 instanceof List) {
+			if (a2 instanceof List) {
+				List<?> l1 = (List<?>) a1;
+				List<?> l2 = (List<?>) a2;
+				if (l1.size() != l2.size())
+					return false;
+				int i = 0;
+				for (Iterator<?> it = l1.iterator(); it.hasNext();) {
+					if (!equals(it.next(), l2.get(i++)))
+						return false;
+				}
+				return true;
+			} else if (a2.getClass().isArray()) {
+				return equals(Lang.collection2array((List<Object>) a1, Object.class), a2);
+			}
+			return false;
+		} else if (a1 instanceof Collection && a2 instanceof Collection) {
+			Collection<?> c1 = (Collection<?>) a1;
+			Collection<?> c2 = (Collection<?>) a2;
+			if (c1.size() != c2.size())
+				return false;
+			return c1.containsAll(c2) && c2.containsAll(c1);
+		}
 		return a1.equals(a2);
 	}
 
+	public static String readAll(Reader reader) {
+		StringBuilder sb = new StringBuilder();
+		try {
+			int c;
+			while (-1 != (c = reader.read())) {
+				sb.append((char) c);
+			}
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+		return sb.toString();
+	}
+
 	public static InputStream ins(CharSequence cs) {
-		return new CharInputStream(cs);
+		return new StringInputStream(cs);
 	}
 
 	public static Reader inr(CharSequence cs) {
-		return new InputStreamReader(new CharInputStream(cs));
+		return new StringReader(cs);
 	}
 
 	public static Writer opw(StringBuilder sb) {
-		return new OutputStreamWriter(new CharOutputStream(sb));
+		return new StringWriter(sb);
 	}
 
-	public static CharOutputStream ops() {
-		return new CharOutputStream(new StringBuilder());
+	public static StringOutputStream ops() {
+		return new StringOutputStream(new StringBuilder());
 	}
 
-	public static <T> T[] array(T... ele) {
-		return ele;
+	public static <T> T[] array(T... eles) {
+		return eles;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <T> T[] merge(T[]... arys) {
+		Queue<T> list = new LinkedList<T>();
+		for (T[] ary : arys)
+			if (null != ary)
+				for (T e : ary)
+					if (null != e)
+						list.add(e);
+		if (list.size() == 0)
+			return null;
+		Class<T> type = (Class<T>) list.peek().getClass();
+		return list.toArray((T[]) Array.newInstance(type, list.size()));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -154,15 +241,19 @@ public class Lang {
 		StringBuilder sb = new StringBuilder();
 		for (T obj : objs)
 			sb.append(String.format(ptn, obj)).append(c);
-		sb.deleteCharAt(sb.length() - 1);
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length() - 1);
 		return sb;
 	}
 
 	public static <T> StringBuilder concatBy(char c, T... objs) {
 		StringBuilder sb = new StringBuilder();
+		if (null == objs)
+			return sb;
 		for (T obj : objs)
 			sb.append(null == obj ? null : obj.toString()).append(c);
-		sb.deleteCharAt(sb.length() - 1);
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length() - 1);
 		return sb;
 	}
 

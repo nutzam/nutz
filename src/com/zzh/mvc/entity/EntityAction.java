@@ -27,7 +27,7 @@ public abstract class EntityAction<T> extends Action {
 	private String name;
 
 	@Override
-	public Object execute() {
+	public Object execute() throws Exception {
 		try {
 			if (!Strings.isEmpty(name))
 				return execute(name);

@@ -18,13 +18,11 @@ import com.zzh.lang.meta.Email;
 
 public class JsonIocTest {
 
-	private Nut nut;
+	private Ioc ioc;
 
 	public static class B {
 
-		public B() {
-			super();
-		}
+		public B() {}
 
 		public B(String s) {
 			String[] ss = Strings.splitIgnoreBlank(s, ":");
@@ -32,6 +30,7 @@ public class JsonIocTest {
 			name = ss[1];
 		}
 
+		public Ioc ioc;
 		public int id;
 		public String name;
 		public List<Object> objs;
@@ -61,32 +60,32 @@ public class JsonIocTest {
 
 	@Before
 	public void setUp() throws Exception {
-		nut = new Nut(new JsonMappingLoader("com/zzh/ioc/objects.json"));
+		ioc = new Nut(new JsonMappingLoader("com/zzh/ioc/objects.js"));
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		if (null != null)
-			nut.depose();
+			ioc.depose();
 	}
 
 	@Test
 	public void try_to_fetch_A1() {
-		A a = nut.get(A.class, "a1");
+		A a = ioc.get(A.class, "a1");
 		assertEquals("account", a.getField().getName());
 		assertEquals(Email.class, a.mirror.getType());
 	}
 
 	@Test
 	public void try_to_fetch_A2() {
-		A a = nut.get(A.class, "a2");
+		A a = ioc.get(A.class, "a2");
 		assertEquals("host", a.getField().getName());
 		assertEquals(Email.class, a.mirror.getType());
 	}
 
 	@Test
 	public void try_to_fetch_A3() {
-		A a = nut.get(A.class, "a3");
+		A a = ioc.get(A.class, "a3");
 		assertEquals(2, a.bs.length);
 		assertEquals(11, a.bs[0].id);
 		assertEquals("b1", a.bs[0].name);
@@ -96,7 +95,7 @@ public class JsonIocTest {
 
 	@Test
 	public void try_to_fetch_A4() {
-		A a = nut.get(A.class, "a4");
+		A a = ioc.get(A.class, "a4");
 		assertEquals(2, a.bs.length);
 		assertEquals(9, a.bs[0].id);
 		assertEquals("f1", a.bs[0].name);
@@ -106,24 +105,26 @@ public class JsonIocTest {
 
 	@Test
 	public void try_to_fetch_B1() {
-		B b = nut.get(null, "b1");
+		B b = ioc.get(null, "b1");
 		assertEquals(11, b.id);
 		assertEquals("b1", b.name);
+		assertTrue(ioc == b.ioc);
 	}
 
 	@Test
 	public void try_to_fetch_A5() {
-		A a = nut.get(A.class, "a5");
-		assertEquals(2, a.bs.length);
+		A a = ioc.get(A.class, "a5");
+		assertEquals(3, a.bs.length);
 		assertEquals(11, a.bs[0].id);
 		assertEquals("b1", a.bs[0].name);
 		assertEquals(22, a.bs[1].id);
 		assertEquals("b2", a.bs[1].name);
+		assertNull(a.bs[2]);
 	}
 
 	@Test
 	public void trt_to_fetch_B_misc() throws NoSuchFieldException {
-		B b = nut.get(B.class, "b-misc");
+		B b = ioc.get(B.class, "b-misc");
 		assertEquals(4, b.objs.size());
 		assertEquals("ss", b.objs.get(0).toString());
 		assertEquals(23, b.objs.get(1));
@@ -147,7 +148,7 @@ public class JsonIocTest {
 	}
 
 	public void testIocFileByArgs() throws Exception {
-		IocFile iof = nut.get(IocFile.class, "ioc-file1");
+		IocFile iof = ioc.get(IocFile.class, "ioc-file1");
 		assertTrue(iof.file.isDirectory());
 	}
 
@@ -160,7 +161,7 @@ public class JsonIocTest {
 	}
 
 	public void testCallJava() throws Exception {
-		O o = nut.get(O.class, "o1");
+		O o = ioc.get(O.class, "o1");
 		assertEquals("xyz", o.name);
 	}
 
@@ -179,14 +180,14 @@ public class JsonIocTest {
 
 	@Test
 	public void inject_by_Arg_as_object() {
-		C c = nut.get(C.class, "c1");
+		C c = ioc.get(C.class, "c1");
 		assertEquals("abc", c.email.getAccount());
 		assertEquals("263.net", c.email.getHost());
 	}
 
 	@Test
 	public void inject_by_Fields_as_object() {
-		C c = nut.get(C.class, "c2");
+		C c = ioc.get(C.class, "c2");
 		assertEquals("abc", c.email.getAccount());
 		assertEquals("263.net", c.email.getHost());
 	}
@@ -197,35 +198,15 @@ public class JsonIocTest {
 
 	@Test
 	public void test_map_attribute() {
-		D d = nut.get(D.class, "d1");
+		D d = ioc.get(D.class, "d1");
 		assertEquals(2, d.map.size());
 		assertEquals("abc@263.net", d.map.get("cc1").email.toString());
 		assertEquals("abc@263.net", d.map.get("cc2").email.toString());
 	}
 
 	@Test
-	public void fruit_test_for_extends_and_deposer_and_deposeMethod() {
-		Fruit apple = nut.get(Fruit.class, "apple");
-		assertTrue(apple.isOnSale());
-		assertEquals(4, apple.getPrice());
-
-		Fruit gg = nut.get(Fruit.class, "guoguang");
-		assertTrue(gg.isOnSale());
-		assertEquals("Apple", gg.getName());
-		assertEquals(3, gg.getPrice());
-
-		Fruit strawberry = nut.get(Fruit.class, "strawberry");
-		assertFalse(strawberry.isOnSale());
-
-		// test depose
-		nut.depose();
-		assertEquals(-1, apple.getPrice());
-		assertEquals(-2, gg.getPrice());
-	}
-
-	@Test
 	public void set_value_pojo_dont_has_the_field() {
-		Fruit durian = nut.get(Fruit.class, "durian");
+		Fruit durian = ioc.get(Fruit.class, "durian");
 		assertEquals("[Durian]", durian.getName());
 		assertEquals(68, durian.getPrice());
 	}

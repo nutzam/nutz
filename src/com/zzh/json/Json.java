@@ -12,8 +12,16 @@ public class Json {
 		return new JsonParsing(reader).parseFromJson(null);
 	}
 
-	public static <T> T fromJson(Class<T> type, Reader ins) throws JsonException {
-		return new JsonParsing(ins).parseFromJson(type);
+	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
+		return new JsonParsing(reader).parseFromJson(type);
+	}
+
+	public static Object fromJson(CharSequence cs) throws JsonException {
+		return fromJson(Lang.inr(cs));
+	}
+
+	public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
+		return fromJson(type, Lang.inr(cs));
 	}
 
 	public static String toJson(Object obj) {

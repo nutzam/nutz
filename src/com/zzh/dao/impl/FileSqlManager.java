@@ -29,10 +29,7 @@ public class FileSqlManager implements SqlManager {
 		}
 	};
 
-	public FileSqlManager() {}
-
 	public FileSqlManager(String... paths) {
-		this();
 		this.paths = paths;
 	}
 
@@ -101,48 +98,52 @@ public class FileSqlManager implements SqlManager {
 
 	private void buildSQLMaps() {
 		sqlMaps = new HashMap<String, Sql<?>>();
-		for (String path : paths) {
-			File f = Files.findFile(Strings.trim(path));
-			if (f == null)
-				throw Lang.makeThrow("Can not find file [%s]", Strings.trim(path));
-			File[] files;
-			if (f.isDirectory()) {
-				files = f.listFiles(sqkFileFilter == null ? defaultSqkFileFilter : sqkFileFilter);
-			} else
-				files = Lang.array(f);
-			try {
-				for (File file : files) {
-					SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(new InputStreamReader(
-							new FileInputStream(file), "UTF-8")));
-					Iterator<String> it = p.keys().iterator();
-					keys = new String[p.map.size()];
-					int i = 0;
-					while (it.hasNext()) {
-						String key = it.next();
-						String value = Strings.trim(p.get(key));
-						if (sqlMaps.containsKey(key)) {
-							throw Lang.makeThrow("duplicate key '%s'", key);
+		if (null != paths)
+			for (String path : paths) {
+				if (null == path)
+					continue;
+				File f = Files.findFile(Strings.trim(path));
+				if (f == null)
+					throw Lang.makeThrow("Can not find file [%s]", Strings.trim(path));
+				File[] files;
+				if (f.isDirectory()) {
+					files = f.listFiles(sqkFileFilter == null ? defaultSqkFileFilter
+							: sqkFileFilter);
+				} else
+					files = Lang.array(f);
+				try {
+					for (File file : files) {
+						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(
+								new InputStreamReader(new FileInputStream(file), "UTF-8")));
+						Iterator<String> it = p.keys().iterator();
+						keys = new String[p.map.size()];
+						int i = 0;
+						while (it.hasNext()) {
+							String key = it.next();
+							String value = Strings.trim(p.get(key));
+							if (sqlMaps.containsKey(key)) {
+								throw Lang.makeThrow("duplicate key '%s'", key);
+							}
+							Sql<?> sql = null;
+							if (key.startsWith("fetch:")) {
+								sql = new FetchSql<Object>();
+								key = key.substring("fetch:".length());
+							} else if (key.startsWith("query:")) {
+								sql = new QuerySql<Object>();
+								key = key.substring("query:".length());
+							} else {
+								sql = new ExecutableSql();
+							}
+							key = Strings.trim(key);
+							sql.valueOf(value);
+							sqlMaps.put(key, sql);
+							keys[i++] = key;
 						}
-						Sql<?> sql = null;
-						if (key.startsWith("fetch:")) {
-							sql = new FetchSql<Object>();
-							key = key.substring("fetch:".length());
-						} else if (key.startsWith("query:")) {
-							sql = new QuerySql<Object>();
-							key = key.substring("query:".length());
-						} else {
-							sql = new ExecutableSql();
-						}
-						key = Strings.trim(key);
-						sql.valueOf(value);
-						sqlMaps.put(key, sql);
-						keys[i++] = key;
 					}
+				} catch (Exception e) {
+					throw Lang.wrapThrow(e);
 				}
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e);
 			}
-		}
 	}
 
 	static final Pattern ptn = Pattern.compile("(?<=^\n/[*])(.*)(?=[*]/)");

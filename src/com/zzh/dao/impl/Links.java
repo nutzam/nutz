@@ -37,12 +37,13 @@ final class Links {
 	private Entity<?> entity;
 
 	private void invoke(LinkInvoker walker, List<Link> list) {
-		for (Iterator<Link> it = list.iterator(); it.hasNext();) {
-			Link link = it.next();
-			Object value = entity.getMirror().getValue(obj, link.getOwnField());
-			if (null != value)
-				walker.invoke(link, value);
-		}
+		if (null != list)
+			for (Iterator<Link> it = list.iterator(); it.hasNext();) {
+				Link link = it.next();
+				Object value = entity.getMirror().getValue(obj, link.getOwnField());
+				if (null != value)
+					walker.invoke(link, value);
+			}
 	}
 
 	void invokeOnes(LinkInvoker invoker) {
@@ -62,9 +63,10 @@ final class Links {
 	}
 
 	private void walk(LinkWalker walker, List<Link> list) {
-		for (Iterator<Link> it = list.iterator(); it.hasNext();) {
-			walker.walk(it.next());
-		}
+		if (null != list)
+			for (Iterator<Link> it = list.iterator(); it.hasNext();) {
+				walker.walk(it.next());
+			}
 	}
 
 	void walkOnes(LinkWalker walker) {

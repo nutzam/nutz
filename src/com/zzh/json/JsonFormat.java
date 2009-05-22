@@ -1,17 +1,19 @@
 package com.zzh.json;
 
+import java.util.regex.Pattern;
+
 public class JsonFormat {
 
 	public static JsonFormat compact() {
 		return new JsonFormat(true).setIgnoreNull(true);
 	}
 
-	public static JsonFormat clear() {
-		return new JsonFormat(false).setNotNeedQuoteName(false).setIgnoreNull(false);
+	public static JsonFormat full() {
+		return new JsonFormat(false).setQuoteName(false).setIgnoreNull(false);
 	}
 
 	public static JsonFormat nice() {
-		return new JsonFormat(false).setNotNeedQuoteName(true).setIgnoreNull(true);
+		return new JsonFormat(false).setQuoteName(false).setIgnoreNull(true);
 	}
 
 	public JsonFormat() {
@@ -21,21 +23,22 @@ public class JsonFormat {
 	public JsonFormat(boolean compact) {
 		this.compact = compact;
 		this.indentBy = "   ";
+		this.quoteName = true;
 	}
 
-	protected int indent;
-	protected String indentBy;
-	protected boolean compact;
-	protected boolean notNeedQuoteName;
-	protected boolean ignoreNull;
-	protected String activedFields;
-	protected String ignoreFields;
+	private int indent;
+	private String indentBy;
+	private boolean compact;
+	private boolean quoteName;
+	private boolean ignoreNull;
+	private Pattern actived;
+	private Pattern locked;
 
 	public boolean ignore(String name) {
-		if (null != activedFields)
-			return activedFields.indexOf("[" + name + "]") == -1;
-		if (null != ignoreFields)
-			return ignoreFields.indexOf("[" + name + "]") != -1;
+		if (null != actived)
+			return !actived.matcher(name).find();
+		if (null != locked)
+			return locked.matcher(name).find();
 		return false;
 	}
 
@@ -57,6 +60,16 @@ public class JsonFormat {
 		return this;
 	}
 
+	public JsonFormat increaseIndent() {
+		this.indent++;
+		return this;
+	}
+
+	public JsonFormat decreaseIndent() {
+		this.indent--;
+		return this;
+	}
+
 	public String getIndentBy() {
 		return indentBy;
 	}
@@ -66,12 +79,12 @@ public class JsonFormat {
 		return this;
 	}
 
-	public boolean isNotNeedQuoteName() {
-		return notNeedQuoteName;
+	public boolean isQuoteName() {
+		return quoteName;
 	}
 
-	public JsonFormat setNotNeedQuoteName(boolean notNeedQuoteName) {
-		this.notNeedQuoteName = notNeedQuoteName;
+	public JsonFormat setQuoteName(boolean qn) {
+		this.quoteName = qn;
 		return this;
 	}
 
@@ -84,21 +97,14 @@ public class JsonFormat {
 		return this;
 	}
 
-	public String getActivedFields() {
-		return activedFields;
-	}
-
-	public JsonFormat setActivedFields(String activedFields) {
-		this.activedFields = activedFields;
+	public JsonFormat setActived(String regex) {
+		this.actived = Pattern.compile(regex);
 		return this;
 	}
 
-	public String getIgnoreFields() {
-		return ignoreFields;
-	}
-
-	public JsonFormat setIgnoreFields(String ignoreFields) {
-		this.ignoreFields = ignoreFields;
+	public JsonFormat setLocked(String regex) {
+		this.locked = Pattern.compile(regex);
 		return this;
 	}
+
 }

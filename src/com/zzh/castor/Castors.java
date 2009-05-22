@@ -146,7 +146,7 @@ public class Castors {
 						map2 = new HashMap<String, Castor<?, ?>>();
 						this.map.put(castor.getFromClass().getName(), map2);
 					}
-					if (!map2.containsKey(castor.getToClass())) {
+					if (!map2.containsKey(castor.getToClass().getName())) {
 						Method m = settingMap.get(castor.getClass());
 						if (null == m) {
 							for (Iterator<Class<?>> mit = settingMap.keySet().iterator(); mit
@@ -207,7 +207,7 @@ public class Castors {
 		}
 		if (null == c)
 			throw new FailToCastObjectException(String.format(
-					"Can not find castor for '%s'=>'%s' for the reason: %s", fromType.getName(),
+					"Can not find castor for '%s'=>'%s' because:\n%s", fromType.getName(),
 					toType.getName(), "Fail to find matched castor"));
 		try {
 			return (T) c.cast(src, toType, args);
@@ -215,7 +215,7 @@ public class Castors {
 			throw e;
 		} catch (Exception e) {
 			throw new FailToCastObjectException(String.format(
-					"Fail to cast type from <%s> to <%s> for {%s} because '%s'",
+					"Fail to cast type from <%s> to <%s> for {%s} because:\n%s",
 					fromType.getName(), toType.getName(), src, e.getMessage()));
 		}
 	}

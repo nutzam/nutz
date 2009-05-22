@@ -1,43 +1,37 @@
 package com.zzh.ioc.db;
 
-import java.util.Iterator;
 import java.util.List;
 
 import com.zzh.dao.Dao;
 import com.zzh.ioc.Mapping;
 import com.zzh.ioc.MappingLoader;
-import com.zzh.service.IdNameEntityService;
+import com.zzh.ioc.meta.MappingBean;
+import com.zzh.ioc.meta.Obj;
+import com.zzh.ioc.meta.ObjService;
 
 public class DatabaseMappingLoader implements MappingLoader {
 
 	public DatabaseMappingLoader(Dao dao) {
-		objsv = new IdNameEntityService<ObjectBean>(dao) {};
+		service = new ObjService(dao);
 	}
 
-	private IdNameEntityService<ObjectBean> objsv;
+	private ObjService service;
 
 	@Override
 	public Mapping load(String name) {
-		ObjectBean ob = objsv.fetch(name);
-		if (null == ob)
-			return null;
-		objsv.dao().fetchLinks(ob, "args|fields");
-		if (null != ob.getFields()) {
-			for (Iterator<FieldBean> it = ob.getFields().iterator(); it.hasNext();) {
-				FieldBean fb = it.next();
-				objsv.dao().fetchLinks(fb, "value");
-			}
-		}
-		return new ObjectMapping(ob);
+		Obj obj = service.fetchObject(name);
+		if (null == obj)
+			throw new RuntimeException("Fail to find in DB!");
+		return new MappingBean(obj);
 	}
 
 	@Override
 	public String[] keys() {
-		List<ObjectBean> obs = objsv.query(null, null);
-		String[] re = new String[obs.size()];
+		List<Obj> objs = service.objs().query(null, null);
+		String[] re = new String[objs.size()];
 		int i = 0;
-		for (Iterator<ObjectBean> it = obs.iterator(); it.hasNext();) {
-			re[i++] = it.next().getName();
+		for (Obj obj : objs) {
+			re[i++] = obj.getName();
 		}
 		return re;
 	}

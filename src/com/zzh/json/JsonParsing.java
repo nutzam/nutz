@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,7 +63,7 @@ class JsonParsing {
 		while (nextChar() != -1 && cursor != '\n') {}
 	}
 
-	private void skipCommentsandBlank() throws IOException {
+	private void skipCommentsAndBlank() throws IOException {
 		skipBlank();
 		while (cursor == '/') {
 			nextChar();
@@ -81,20 +81,20 @@ class JsonParsing {
 	}
 
 	private boolean findNextNamePair() throws IOException {
-		skipCommentsandBlank();
+		skipCommentsAndBlank();
 		if (cursor == '}')
 			return false;
 		if (cursor != ',')
 			throw makeError("Wrong char between name-value pair!");
 		nextChar();
-		skipCommentsandBlank();
+		skipCommentsAndBlank();
 		return true;
 	}
 
 	<T> T parseFromJson(Class<T> type) {
 		try {
 			nextChar();
-			skipCommentsandBlank();
+			skipCommentsAndBlank();
 			return parseFromCurrentLocation(type);
 		} catch (JsonException e) {
 			throw e;
@@ -103,13 +103,20 @@ class JsonParsing {
 		}
 	}
 
+	/**
+	 * @param <T>
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
 	@SuppressWarnings("unchecked")
 	private <T> T parseFromCurrentLocation(Class<T> type) throws Exception {
 		Mirror<T> me = Mirror.me(type);
 		switch (cursor) {
 		case -1:
 			return null;
-		case '[': // Array, the T should indicate the inside type of arrays
+		case '[': // Array, the T should indicate the
+			// inside type of arrays
 			Class<?> compType = null;
 			boolean reurnAsList = true;
 			List list = null;
@@ -129,18 +136,19 @@ class JsonParsing {
 				throw makeError(String.format("type can NO '%s', it should be a Array or List!!!",
 						type.getName()));
 			}
-			do {
-				Object o = parseFromJson(compType);
+			nextChar();
+			skipCommentsAndBlank();
+			while (cursor != -1 && cursor != ']') {
+				Object o = parseFromCurrentLocation(compType);
 				list.add(o);
-				skipCommentsandBlank();
+				skipCommentsAndBlank();
 				if (cursor == ']')
 					break;
 				if (cursor != ',')
 					throw makeError("Wrong char between elements!");
-				while (cursor != -1 && cursor != ',' && cursor != ']') {
-					nextChar();
-				}
-			} while (cursor != -1 && cursor != ']');
+				nextChar();
+				skipCommentsAndBlank();
+			}
 			nextChar();
 			if (reurnAsList)
 				return (T) list;
@@ -151,12 +159,12 @@ class JsonParsing {
 			return (T) ary;
 		case '{': // Object or Map
 			nextChar();
-			skipCommentsandBlank();
+			skipCommentsAndBlank();
 			/*
 			 * For Map
 			 */
 			if (null == me || Map.class.isAssignableFrom(type)) {
-				Map<String, Object> map = null == me ? new HashMap<String, Object>()
+				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
 						: (Map<String, Object>) me.born();
 				while (cursor != -1 && cursor != '}') {
 					String name = readFieldName();
@@ -264,6 +272,16 @@ class JsonParsing {
 			} else {
 				throw makeError("type must by one of int|long|float|dobule|byte");
 			}
+		case 'v':
+			/*
+			 * If meet the "var ioc = {", try to treat it as "{". For the reason
+			 * I have to use some JS editor to write JSON file. If without
+			 * "var ioc = ", JS editor "auto format" function will not work.
+			 */
+			if ('a' == nextChar() && 'r' == nextChar() && ' ' == nextChar() && 'i' == nextChar()
+					&& 'o' == nextChar() && 'c' == nextChar() && ' ' == nextChar()
+					&& '=' == nextChar() && ' ' == nextChar() && '{' == nextChar())
+				return parseFromCurrentLocation(type);
 		default:
 			throw makeError("Don't know how to handle this char");
 		}

@@ -18,18 +18,18 @@ public class Pojos extends Service {
 
 	}
 
-	private ComboSql c_platoon;
-	private ComboSql d_platoon;
-	private ComboSql c_all;
-	private ComboSql d_all;
+	private ComboSql createPlatoon;
+	private ComboSql dropPlatoon;
+	private ComboSql createAll;
+	private ComboSql dropAll;
 	private Dao dao;
 
 	public Pojos(Dao dao) {
 		super(dao);
-		c_platoon = sqls("com/zzh/dao/test/meta/create_platoon.sqls").createComboSql();
-		d_platoon = sqls("com/zzh/dao/test/meta/drop_platoon.sqls").createComboSql();
-		c_all = sqls("com/zzh/dao/test/meta/create.sqls").createComboSql();
-		d_all = sqls("com/zzh/dao/test/meta/drop.sqls").createComboSql();
+		createPlatoon = sqls("com/zzh/dao/test/meta/create_platoon.sqls").createComboSql();
+		dropPlatoon = sqls("com/zzh/dao/test/meta/drop_platoon.sqls").createComboSql();
+		createAll = sqls("com/zzh/dao/test/meta/create.sqls").createComboSql();
+		dropAll = sqls("com/zzh/dao/test/meta/drop.sqls").createComboSql();
 		this.dao = dao;
 	}
 
@@ -38,16 +38,16 @@ public class Pojos extends Service {
 	}
 
 	public void init() {
-		dao().execute(d_all);
-		dao().execute(c_all);
+		dao().execute(dropAll.clone());
+		dao().execute(createAll.clone());
 	}
 
 	public void createAll() {
-		dao().execute(c_all);
+		dao().execute(createAll.clone());
 	}
 
 	public void dropAll() {
-		dao().execute(d_all);
+		dao().execute(dropAll.clone());
 	}
 
 	public void execFile(String path) {
@@ -107,8 +107,8 @@ public class Pojos extends Service {
 	}
 
 	public void initPlatoon(String s) {
-		dao().execute(d_platoon.set(".id", s));
-		dao().execute(c_platoon.set(".id", s));
+		dao().execute(dropPlatoon.clone().set(".id", s));
+		dao().execute(createPlatoon.clone().set(".id", s));
 	}
 
 	public void initData() {

@@ -22,6 +22,7 @@ public class Invoking {
 		abstract Object invoke(Object obj) throws Exception;
 	}
 
+	/*------------------------------------------------------------------------*/
 	private static class DefaultInvoker extends Invoker {
 
 		private Object[] args;
@@ -37,6 +38,7 @@ public class Invoking {
 		}
 	}
 
+	/*------------------------------------------------------------------------*/
 	private static class DynamicArgsInvoker extends Invoker {
 
 		private Object args;
@@ -52,6 +54,7 @@ public class Invoking {
 		}
 	}
 
+	/*------------------------------------------------------------------------*/
 	private static class NullArgInvoker extends Invoker {
 
 		public NullArgInvoker(Method method) {
@@ -78,7 +81,9 @@ public class Invoking {
 				List<Method> candidates = new ArrayList<Method>(all.length);
 				for (Method m : all)
 					if (m.getName().equals(methodName)) {
-						// int mod = m.getParameterTypes().length - args.length;
+						// int mod =
+						// m.getParameterTypes().length -
+						// args.length;
 						// if (mod == 0 || mod == 1)
 						candidates.add(m);
 					}

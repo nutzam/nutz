@@ -2,6 +2,7 @@ package com.zzh.service;
 
 import java.util.List;
 
+import com.zzh.dao.Chain;
 import com.zzh.dao.Condition;
 import com.zzh.dao.Dao;
 import com.zzh.dao.entity.Entity;
@@ -14,7 +15,9 @@ public abstract class EntityService<T> extends Service {
 
 	@SuppressWarnings("unchecked")
 	protected EntityService() {
-		mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
+		try {
+			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
+		} catch (Exception e) {}
 	}
 
 	protected EntityService(Dao dao) {
@@ -43,6 +46,10 @@ public abstract class EntityService<T> extends Service {
 		dao().clear(getEntityClass(), condition);
 	}
 
+	public void clear() {
+		dao().clear(getEntityClass(), null);
+	}
+
 	public List<T> query(Condition condition, Pager pager) {
 		return (List<T>) dao().query(getEntityClass(), condition, pager);
 	}
@@ -59,4 +66,11 @@ public abstract class EntityService<T> extends Service {
 		return dao().fetch(getEntityClass(), condition);
 	}
 
+	public void update(Chain chain, Condition condition) {
+		dao().update(getEntityClass(), chain, condition);
+	}
+
+	public void updateRelation(String regex, Chain chain, Condition condition) {
+		dao().updateRelation(getEntityClass(), regex, chain, condition);
+	}
 }

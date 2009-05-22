@@ -194,7 +194,7 @@ public class CastorTest {
 	@Test
 	public void testArray2String() throws Exception {
 		Email[] mails = { new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn") };
-		String exp = "[{\"account\":\"zzh\",\"host\":\"263.net\"}, {\"account\":\"zozohtnt\",\"host\":\"yahoo.com.cn\"}]";
+		String exp = "[{\"host\":\"263.net\",\"account\":\"zzh\"}, {\"host\":\"yahoo.com.cn\",\"account\":\"zozohtnt\"}]";
 		String done = Castors.me().castToString(mails);
 		assertEquals(exp, done);
 	}

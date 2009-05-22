@@ -4,7 +4,7 @@ import com.zzh.trans.Atom;
 
 public class Stopwatch {
 
-	public static Stopwatch test(Atom atom){
+	public static Stopwatch test(Atom atom) {
 		Stopwatch sw = new Stopwatch();
 		sw.start();
 		atom.run();
@@ -12,7 +12,7 @@ public class Stopwatch {
 		return sw;
 	}
 
-	public static void printTest(Atom atom){
+	public static void printTest(Atom atom) {
 		System.out.println(test(atom).toString());
 	}
 
@@ -29,14 +29,22 @@ public class Stopwatch {
 		return to;
 	}
 
-	public long getTimeInMillis() {
+	public long getDuration() {
 		return to - from;
+	}
+
+	public long getStartTime() {
+		return from;
+	}
+
+	public long getEndTime() {
+		return to;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("Total: %dms : [%s]=>[%s]", this.getTimeInMillis(), new java.sql.Time(
-				from).toString(), new java.sql.Time(to).toString());
+		return String.format("Total: %dms : [%s]=>[%s]", this.getDuration(),
+				new java.sql.Time(from).toString(), new java.sql.Time(to).toString());
 	}
 
 }

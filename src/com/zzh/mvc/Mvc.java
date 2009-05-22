@@ -1,141 +1,88 @@
 package com.zzh.mvc;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.zzh.castor.Castors;
+import com.zzh.ioc.Ioc;
+import com.zzh.ioc.MappingLoader;
 import com.zzh.ioc.Nut;
 import com.zzh.json.JsonFormat;
 import com.zzh.lang.Lang;
-import com.zzh.lang.Localize;
-import com.zzh.lang.Mirror;
-import com.zzh.mvc.annotation.Param;
-import com.zzh.mvc.annotation.Parameter;
+import com.zzh.mvc.access.Session;
 import com.zzh.mvc.localize.Localizations;
 import com.zzh.mvc.view.JsonView;
 
+import static java.lang.String.*;
+
 public class Mvc {
 
-	public static <T> Parameter[] getParameterFields(Class<?> type) {
-		Field[] fields = type.getFields();
-		ArrayList<Parameter> list = new ArrayList<Parameter>(fields.length);
-		for (Field f : fields) {
-			Param ann = f.getAnnotation(Param.class);
-			if (ann != null) {
-				if (ann.value().equals(Lang.NULL)) {
-					list.add(new Parameter(f.getName(), f));
-				} else {
-					list.add(new Parameter(ann.value(), f));
-				}
-			}
-		}
-		return list.toArray(new Parameter[list.size()]);
+	public static Ioc ioc(ServletContext context) {
+		Object att = context.getAttribute(Ioc.class.getName());
+		if (att instanceof Ioc)
+			return (Ioc) att;
+		else if (att instanceof MappingLoader)
+			return new Nut((MappingLoader) att);
+		throw new RuntimeException(format("Attribute [%s] should be '%s' or %s", Ioc.class
+				.getName(), Ioc.class.getName(), MappingLoader.class));
 	}
 
-	public static <T> T getObjectAsNameValuePair(T obj, HttpServletRequest request) {
-		return getObjectAsNameValuePair(obj, request, getParameterFields(obj.getClass()));
-	}
-
-	public static <T> T getObjectAsNameValuePair(T obj, HttpServletRequest request,
-			Parameter[] fields) {
-		if (null == obj)
-			return null;
-		Mirror<? extends Object> me = Mirror.me(obj.getClass());
-		try {
-			for (Parameter f : fields) {
-				String v = request.getParameter(f.getName());
-				if (null == v)
-					continue;
-				v = Localize.convertAscii2Native(v, '%');
-				Object v2 = getCastors(request).castTo(v, f.getField().getType());
-				me.setValue(obj, f.getField(), v2);
-			}
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		return obj;
-	}
-
-	public static MvcSupport getMvcSupport(HttpServletRequest request) {
-		ServletContext context = request.getSession().getServletContext();
-		return getMvcSupport(context);
-	}
-
-	public static MvcSupport getMvcSupport(ServletContext context) {
-		return (MvcSupport) context.getAttribute(Mvc.class.getName());
-	}
-
-	static void setMvcSupport(ServletContext context, MvcSupport mvc) {
-		context.setAttribute(Mvc.class.getName(), mvc);
-	}
-
-	public static Castors getCastors(HttpServletRequest request) {
-		return getCastors(request.getSession().getServletContext());
-	}
-
-	public static Castors getCastors(ServletContext context) {
-		Castors castors = (Castors) context.getAttribute(Castors.class.getName());
-		if (null == castors) {
-			castors = Castors.me();
-			context.setAttribute(Castors.class.getName(), castors);
-		}
-		return castors;
-	}
-
-	public static Nut getNut(ServletContext context) {
-		return (Nut) context.getAttribute(Nut.class.getName());
-	}
-
-	public static Nut getNut(HttpServletRequest request) {
-		return getNut(request.getSession().getServletContext());
+	public static Ioc ioc(HttpServletRequest request) {
+		return Session.me(request).ioc();
 	}
 
 	public static void doHttp(HttpServletRequest request, HttpServletResponse response) {
 		String path = request.getServletPath();
-		path = path.substring(0, path.lastIndexOf('.'));
-		MvcSupport mvc = getMvcSupport(request);
+		int lio = path.lastIndexOf('.');
+		if (lio > 0)
+			path = path.substring(0, lio);
+		MvcSupport mvc = Session.me(request).mvc();
 
 		Map<String, String> lz = Localizations.getLocalization(request.getSession());
-		request.setAttribute("msg", lz);
+		if (lz != null)
+			request.setAttribute("msg", lz);
 
 		Url url = null;
-		Object obj;
+		Object obj = null;
 		try {
 			url = mvc.getUrl(path);
-			// Do Controllors
-			obj = null;
-			Controllor[] cs = url.getControllors();
-			if (null != cs)
-				for (Controllor c : cs) {
-					obj = c.execute(request, response);
-					// Action Chain
-					while (obj instanceof Controllor) {
-						obj = ((Controllor) obj).execute(request, response);
-					}
-					if (obj instanceof View) {
-						((View) obj).render(request, response, null);
-						return;
-					}
-				}
+			obj = process(request, response, url.getControllors());
 			if (obj instanceof Return && !((Return) obj).isSuccess()) {
 				renderFail(request, response, url, obj);
+			} else if (obj instanceof View) {
+				((View) obj).render(request, response, null);
 			} else {
 				renderSuccess(request, response, url, obj);
 			}
 		} catch (Throwable e) {
-			obj = Return.fail(e.getMessage());
+			response.reset();
+			obj = Return.fail("%s", e.getMessage());
 			renderFail(request, response, url, obj);
 		}
 	}
 
+	private static Object process(HttpServletRequest request, HttpServletResponse response,
+			Controllor[] cs) throws Throwable {
+		Object obj = null;
+		if (null != cs) {
+			for (Controllor c : cs) {
+				obj = c.execute(request, response);
+				while (obj instanceof Controllor) {
+					obj = ((Controllor) obj).execute(request, response);
+				}
+				if (obj instanceof View) {
+					return obj;
+				}
+			}
+		}
+		return obj;
+	}
+
 	private static View getDefaultView(HttpServletRequest request) {
 		try {
-			return getNut(request).get(View.class, "$default-view");
+			return ioc(request).get(View.class, "$default-view");
 		} catch (Exception e1) {
 			return new JsonView(JsonFormat.nice());
 		}

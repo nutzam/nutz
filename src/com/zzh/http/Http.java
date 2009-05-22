@@ -67,29 +67,29 @@ public class Http {
 		return sb.toString();
 	}
 
-	public static String post(String url, Map<String, Object> data, String inenc, String reenc) {
+	public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
 		StringBuilder sb = new StringBuilder();
 		try {
 			URL oUrl = new URL(url);
 			URLConnection conn = oUrl.openConnection();
-			if (null != data && data.size() > 0) {
+			if (null != params && params.size() > 0) {
 				conn.setDoOutput(true);
 				Writer w = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-				Iterator<String> it = data.keySet().iterator();
+				Iterator<String> it = params.keySet().iterator();
 				String key = it.next();
-				Object v = data.get(key);
+				Object v = params.get(key);
 				w.write(URLEncoder.encode(key, inenc));
 				w.write('=');
 				if (null != v)
-					w.write(URLEncoder.encode(data.get(key).toString(), inenc));
+					w.write(URLEncoder.encode(params.get(key).toString(), inenc));
 				while (it.hasNext()) {
 					key = it.next();
 					w.write('&');
 					w.write(URLEncoder.encode(key, inenc));
 					w.write('=');
-					v = data.get(key);
+					v = params.get(key);
 					if (null != v)
-						w.write(URLEncoder.encode(data.get(key).toString(), inenc));
+						w.write(URLEncoder.encode(params.get(key).toString(), inenc));
 				}
 				w.flush();
 				w.close();
@@ -104,7 +104,7 @@ public class Http {
 			}
 			br.close();
 			br = null;
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}
 		return sb.toString();

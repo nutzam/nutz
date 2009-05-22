@@ -64,7 +64,8 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 			if ("condition".equals(key))
 				continue;
 			Object value = values.get(key);
-			Mirror<?> mirror = Mirror.me(ef == null ? value.getClass() : ef.getField().getType());
+			Mirror<?> mirror = Mirror.me(ef == null ? null == value ? null : value.getClass() : ef
+					.getField().getType());
 			try {
 				List<Integer> indexes = this.segment.getIndex(key);
 				if (null == indexes || indexes.size() == 0)
@@ -148,6 +149,14 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 	}
 
 	public String getPreparedStatementString() {
+		for (Iterator<String> it = segment.keys().iterator(); it.hasNext();) {
+			String key = it.next();
+			if (key.startsWith("."))
+				segment.set(key, this.get(key));
+			else
+				segment.set(key, "${" + key + "}");
+		}
+		valueOf(this.segment.toString());
 		return this.getSegment().setAll('?').set("condition", evalCondition()).toString();
 	}
 

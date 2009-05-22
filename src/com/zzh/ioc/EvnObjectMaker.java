@@ -4,7 +4,7 @@ import java.util.Map;
 
 import com.zzh.lang.Strings;
 
-public class EvnObjectMaker extends ObjectMaker<String> {
+public class EvnObjectMaker extends ObjectMaker {
 
 	@Override
 	protected boolean accept(Map<String, Object> properties) {

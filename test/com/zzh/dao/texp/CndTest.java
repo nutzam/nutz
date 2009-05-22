@@ -45,5 +45,11 @@ public class CndTest extends TestCase {
 		String exp = "wid=37 AND (age>35 AND wid<47) OR (wname LIKE '%t%' AND age IN '(4,7,9)' OR (age>35 AND wid<47)) ORDER BY age ASC, wid DESC";
 		assertEquals(exp, c.toString(en));
 	}
+	
+	public void test04() {
+		Condition c = Cnd.where("ff", "=", true);
+		String exp = "ff='true'";
+		assertEquals(exp, c.toString(en));
+	}
 
 }

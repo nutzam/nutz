@@ -8,12 +8,6 @@ import com.zzh.lang.Lang;
 
 public class NutFilePool implements FilePool {
 
-	public static void main(String[] args) throws IOException {
-		NutFilePool nfp = new NutFilePool("D:/tmp/uploads");
-		nfp.empty();
-		System.out.println(nfp.cursor);
-	}
-
 	public NutFilePool(String homePath) {
 		this(homePath, 0);
 	}
@@ -21,8 +15,16 @@ public class NutFilePool implements FilePool {
 	public NutFilePool(String homePath, int fileNumber) {
 		this.fileNumber = fileNumber;
 		home = Files.findFile(homePath);
-		if (home == null || !home.isDirectory())
-			Lang.makeThrow(
+		if (null == home) {
+			home = new File(homePath);
+			try {
+				Files.makeDir(home);
+			} catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
+		}
+		if (!home.isDirectory())
+			throw Lang.makeThrow(
 					"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
 					homePath, this.getClass().getName());
 		File last = home;

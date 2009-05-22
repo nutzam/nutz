@@ -4,29 +4,34 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.zzh.castor.Castors;
 import com.zzh.lang.FailToGetValueException;
+import com.zzh.lang.Lang;
 import com.zzh.lang.Mirror;
 import com.zzh.lang.Strings;
 
 class JsonRendering {
 	private static String NL = "\n";
 
-	private Collection<Object> memo;
+	private HashMap<Object, Object> memo;
 
 	private Writer writer;
 
 	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
-		// TODO make a new faster collection implementation
-		memo = new HashSet<Object>();
+		// TODO make a new faster collection
+		// implementation
+		memo = new HashMap<Object, Object>();
 	}
 
 	private JsonFormat format;
@@ -37,16 +42,18 @@ class JsonRendering {
 		return render.format.isCompact();
 	}
 
+	private static final Pattern p = Pattern.compile("^[a-z_A-Z$]+[a-zA-Z_0-9$]*$");
+
 	private void appendName(String name) throws IOException {
-		if (!isCompact(this) && format.notNeedQuoteName)
-			writer.append(name);
-		else
+		if (format.isQuoteName() || !p.matcher(name).find())
 			string2Json(name);
+		else
+			writer.append(name);
 	}
 
 	private void appendPairBegin() throws IOException {
 		if (!isCompact(this))
-			writer.append(NL).append(Strings.dup(format.indentBy, format.indent));
+			writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
 	}
 
 	private void appendPairSep() throws IOException {
@@ -64,7 +71,7 @@ class JsonRendering {
 		if (null == value)
 			if (null == format)
 				return true;
-			else if (format.ignoreNull)
+			else if (format.isIgnoreNull())
 				return true;
 		if (null != format && format.ignore(name))
 			return true;
@@ -81,7 +88,7 @@ class JsonRendering {
 
 	private void appendBraceEnd() throws IOException {
 		if (!isCompact(this))
-			writer.append(NL).append(Strings.dup(format.indentBy, format.indent));
+			writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
 		writer.append("}");
 	}
 
@@ -122,50 +129,89 @@ class JsonRendering {
 	private void pojo2Json(Object obj) throws IOException {
 		if (null == obj)
 			return;
-		Mirror<?> me = Mirror.me(obj.getClass());
-		Field[] fields = me.getFields();
-		appendBraceBegin();
-		increaseFormatIndent();
-		ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
-		for (Field f : fields) {
-			String name = f.getName();
+		Class<? extends Object> type = obj.getClass();
+		ToJson tj = type.getAnnotation(ToJson.class);
+		if (null != tj) {
 			try {
-				Object value = me.getValue(obj, f);
-				if (!this.isIgnore(name, value))
-					list.add(new Pair(name, value));
-			} catch (FailToGetValueException e) {}
+				Method m = type.getMethod(tj.value(), JsonFormat.class);
+				Object re = m.invoke(obj, format);
+				writer.append(re.toString());
+			} catch (Exception e) {
+				throw Lang.wrapThrow(e);
+			}
+		} else {
+			Mirror<?> me = Mirror.me(type);
+			Field[] fields = me.getFields();
+			appendBraceBegin();
+			increaseFormatIndent();
+			ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
+			for (Field f : fields) {
+				String name = f.getName();
+				try {
+					Object value = me.getValue(obj, f);
+					if (!this.isIgnore(name, value))
+						list.add(new Pair(name, value));
+				} catch (FailToGetValueException e) {}
+			}
+			for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
+				Pair p = it.next();
+				this.appendPair(p.name, p.value);
+				if (it.hasNext())
+					this.appendPairEnd();
+			}
+			decreaseFormatIndent();
+			appendBraceEnd();
 		}
-		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
-			Pair p = it.next();
-			this.appendPair(p.name, p.value);
-			if (it.hasNext())
-				this.appendPairEnd();
-		}
-		decreaseFormatIndent();
-		appendBraceEnd();
 	}
 
 	private void decreaseFormatIndent() {
 		if (!isCompact(this))
-			format.indent--;
+			format.decreaseIndent();
 	}
 
 	private void increaseFormatIndent() {
 		if (!isCompact(this))
-			format.indent++;
+			format.increaseIndent();
 	}
+
+	private static final Pattern ESCAPING = Pattern.compile("\"|\\\\|\\x09|\\x0d|\\x0a");
 
 	private void string2Json(String s) throws IOException {
 		if (null == s)
 			writer.append("null");
-		else
-			writer.append("\"").append(s.replaceAll("\"|\\\\", "\\\\$0")).append('"');
+		else {
+			Matcher m = ESCAPING.matcher(s);
+			String[] ss = ESCAPING.split(s);
+			int i = 0;
+			writer.append('"').append(ss[i++]);
+			while (m.find()) {
+				switch (m.group().charAt(0)) {
+				case '\n':
+					writer.append("\\n");
+					break;
+				case '\t':
+					writer.append("\\t");
+					break;
+				case '\r':
+					writer.append("\\r");
+					break;
+				case '\\':
+					writer.append("\\\\");
+					break;
+				}
+				if (i < ss.length)
+					writer.append(ss[i++]);
+			}
+			writer.append('"');
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");
+		} else if (obj instanceof Class) {
+			string2Json(((Class<?>) obj).getName());
 		} else {
 			Mirror mr = Mirror.me(obj.getClass());
 			if (mr.isEnum()) {
@@ -176,18 +222,20 @@ class JsonRendering {
 				string2Json(obj.toString());
 			} else if (mr.isDateTimeLike()) {
 				string2Json(Castors.me().castToString(obj));
-			} else if (memo.contains(obj)) {
+			} else if (memo.containsKey(obj)) {
 				writer.append("null");
 			} else {
-				memo.add(obj);
 				if (obj instanceof Map)
 					map2Json((Map) obj);
 				else if (obj instanceof Collection)
 					coll2Json((Collection) obj);
 				else if (obj.getClass().isArray())
 					array2Json(obj);
-				else
+				else {
+					memo.put(obj, null);
 					pojo2Json(obj);
+					memo.remove(obj);
+				}
 			}
 		}
 	}

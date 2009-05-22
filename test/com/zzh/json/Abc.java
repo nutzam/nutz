@@ -1,8 +1,7 @@
 package com.zzh.json;
 
 public class Abc {
-	public Abc() {
-	}
+	public Abc() {}
 
 	public Abc(int id, String name) {
 		this.id = id;
@@ -11,6 +10,11 @@ public class Abc {
 
 	public int id;
 	public String name;
+
+	@Override
+	public int hashCode() {
+		return null == name ? 0 : name.hashCode();
+	}
 
 	@Override
 	public boolean equals(Object obj) {

@@ -27,8 +27,8 @@ public abstract class DaoCase {
 		after();
 	}
 
-	protected abstract void before();
+	protected void before() {}
 
-	protected abstract void after();
+	protected void after() {}
 
 }

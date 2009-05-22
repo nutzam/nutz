@@ -8,7 +8,7 @@ public class FailToMakeObjectException extends RuntimeException {
 	}
 
 	public FailToMakeObjectException(String name, String reason) {
-		super(String.format("Fail to make object [%s] because: '%s'", name, reason));
+		super(String.format("Fail to make object [%s] because:\n%s", name, reason));
 	}
 
 	public FailToMakeObjectException() {

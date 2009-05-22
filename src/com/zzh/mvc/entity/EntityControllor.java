@@ -9,7 +9,7 @@ import com.zzh.json.Json;
 import com.zzh.json.JsonException;
 import com.zzh.lang.Mirror;
 import com.zzh.mvc.Controllor;
-import com.zzh.mvc.Mvc;
+import com.zzh.mvc.Params;
 import com.zzh.service.EntityService;
 
 public abstract class EntityControllor<T> implements Controllor {
@@ -33,6 +33,6 @@ public abstract class EntityControllor<T> implements Controllor {
 		if (ObjectFormat.json == format)
 			return Json.fromJson(service.getEntityClass(), new InputStreamReader(request
 					.getInputStream(), (null == charset ? "UTF-8" : charset)));
-		return Mvc.getObjectAsNameValuePair(Mirror.me(service.getEntityClass()).born(), request);
+		return Params.getObjectAsNameValuePair(Mirror.me(service.getEntityClass()).born(), request);
 	}
 }

@@ -18,7 +18,7 @@ import java.util.TimeZone;
 import com.zzh.lang.Files;
 import com.zzh.lang.Streams;
 import com.zzh.lang.Strings;
-import com.zzh.lang.stream.CharOutputStream;
+import com.zzh.lang.stream.StringOutputStream;
 
 
 public class Localize {
@@ -87,7 +87,7 @@ public class Localize {
 		if (null == s)
 			return null;
 		StringBuilder sb = new StringBuilder();
-		OutputStream ops = new CharOutputStream(sb);
+		OutputStream ops = new StringOutputStream(sb);
 		for (int i = 0; i < s.length(); i++) {
 			char c = s.charAt(i);
 			writeChar(ops, c);

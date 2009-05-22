@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.zzh.lang.Strings;
 
-public class ComboSql implements Sql<List<Object>> {
+public class ComboSql implements Sql<List<Object>>, Cloneable {
 
 	private List<Sql<?>> sqls = new LinkedList<Sql<?>>();
 	private List<Object> result;
@@ -18,7 +18,7 @@ public class ComboSql implements Sql<List<Object>> {
 	}
 
 	@Override
-	public Sql<List<Object>> clone() {
+	public ComboSql clone() {
 		ComboSql cSql = new ComboSql();
 		for (Iterator<Sql<?>> it = sqls.iterator(); it.hasNext();) {
 			Sql<?> sql = it.next();
@@ -28,7 +28,7 @@ public class ComboSql implements Sql<List<Object>> {
 	}
 
 	@Override
-	public Sql<List<Object>> born() {
+	public ComboSql born() {
 		return new ComboSql();
 	}
 

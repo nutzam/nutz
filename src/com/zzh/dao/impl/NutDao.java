@@ -26,6 +26,7 @@ import com.zzh.dao.Sql;
 import com.zzh.dao.SqlMaker;
 import com.zzh.dao.SqlManager;
 import com.zzh.dao.Sqls;
+import com.zzh.dao.Chain;
 import com.zzh.dao.callback.ConnCallback;
 import com.zzh.dao.callback.QueryCallback;
 import com.zzh.dao.entity.Entity;
@@ -93,6 +94,9 @@ public class NutDao implements Dao {
 	public void setDataSource(DataSource dataSource) {
 		entities = new EntityHolder();
 		this.dataSource = dataSource;
+	}
+
+	private synchronized void checkDatabase() {
 		final Database[] holder = new Database[1];
 		this.execute(new ConnCallback() {
 			public Object invoke(Connection conn) throws Exception {
@@ -117,9 +121,19 @@ public class NutDao implements Dao {
 		database = holder[0];
 	}
 
+	private Database getDatabase() {
+		if (null == database) {
+			checkDatabase();
+		}
+		return database;
+	}
+
 	@Override
 	public Pager createPager(int pageNumber, int pageSize) {
-		return database.createPager(pageNumber, pageSize);
+		if (null == database) {
+			checkDatabase();
+		}
+		return getDatabase().createPager(pageNumber, pageSize);
 	}
 
 	public void setSqlManager(SqlManager sqlManager) {
@@ -231,6 +245,16 @@ public class NutDao implements Dao {
 		FetchSql<Integer> sql = maker.makeCountSQL(null, tableName);
 		sql.setCondition(condition);
 		return evalInt(sql);
+	}
+
+	@Override
+	public <T> void clear(Class<T> classOfT) {
+		this.clear(classOfT, null);
+	}
+
+	@Override
+	public void clear(String tableName) {
+		this.clear(tableName, null);
 	}
 
 	@Override
@@ -570,7 +594,7 @@ public class NutDao implements Dao {
 
 	@Override
 	public <T> Entity<T> getEntity(Class<T> classOfT) {
-		return entities.getEntity(classOfT, database);
+		return entities.getEntity(classOfT, getDatabase());
 	}
 
 	@Override
@@ -761,6 +785,30 @@ public class NutDao implements Dao {
 		Sql<?> sql = maker.makeUpdateSQL(getEntity(obj.getClass()), obj);
 		execute(sql.setValue(obj));
 		return obj;
+	}
+
+	@Override
+	public void update(Class<?> classOfT, Chain chain, Condition condition) {
+		Entity<?> en = getEntity(classOfT);
+		ExecutableSql sql = maker.makeBatchUpdateSQL(en, chain);
+		execute(sql.setCondition(condition));
+	}
+
+	@Override
+	public void updateRelation(Class<?> classOfT, String regex, final Chain chain,
+			final Condition condition) {
+		final Links lns = new Links(null, getEntity(classOfT), regex);
+		Trans.exec(new Atom() {
+			public void run() {
+				lns.walkManyManys(new LinkWalker() {
+					void walk(Link link) {
+						ExecutableSql sql = maker.makeBatchUpdateRelationSQL(link, chain);
+						sql.setCondition(condition);
+						execute(sql);
+					}
+				});
+			}
+		});
 	}
 
 	/*-------------------------------------------------------------------*/

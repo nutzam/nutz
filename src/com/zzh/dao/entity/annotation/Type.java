@@ -8,9 +8,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
 public @interface Type {
-	public static enum DEF {
+	public static enum ENUM {
 		AUTO, INT, CHAR
 	}
 
-	DEF value() default DEF.AUTO;
+	ENUM value() default ENUM.AUTO;
 }

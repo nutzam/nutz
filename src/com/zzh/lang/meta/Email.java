@@ -2,13 +2,12 @@ package com.zzh.lang.meta;
 
 import com.zzh.lang.Lang;
 
-public class Email {
+public class Email implements Cloneable {
 
 	private String account;
 	private String host;
 
-	public Email() {
-	}
+	public Email() {}
 
 	public Email(String str) {
 		try {
@@ -42,6 +41,13 @@ public class Email {
 	}
 
 	@Override
+	public int hashCode() {
+		if (null == account)
+			return 0;
+		return account.hashCode();
+	}
+
+	@Override
 	public Email clone() throws CloneNotSupportedException {
 		return new Email(account, host);
 	}
@@ -49,6 +55,8 @@ public class Email {
 	@Override
 	public boolean equals(Object obj) {
 		if (null == obj)
+			return false;
+		if (!Email.class.isAssignableFrom(obj.getClass()))
 			return false;
 		if (!account.equals(((Email) obj).account))
 			return false;

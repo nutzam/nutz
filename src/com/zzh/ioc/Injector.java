@@ -1,9 +1,9 @@
 package com.zzh.ioc;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 import com.zzh.castor.Castors;
-import com.zzh.lang.Invoking;
 import com.zzh.lang.Lang;
 
 interface Injector {
@@ -11,17 +11,28 @@ interface Injector {
 	void inject(Object obj);
 
 	/*----------------------------------------------------------------*/
-	static class InvokingInjector implements Injector {
+	static class SetterInjector implements Injector {
 
-		private Invoking invoking;
+		private Method setter;
+		private Value value;
+		private Class<?> paramType;
 
-		InvokingInjector(Invoking invoking) {
-			this.invoking = invoking;
+		SetterInjector(Method setter, Value value) {
+			this.setter = setter;
+			this.value = value;
+			this.paramType = setter.getParameterTypes()[0];
 		}
 
 		@Override
 		public void inject(Object obj) {
-			invoking.invoke(obj);
+			try {
+				Object v = value.get();
+				if (null != v && v.getClass() != paramType)
+					v = Castors.me().castTo(v, paramType);
+				setter.invoke(obj, v);
+			} catch (Exception e) {
+				throw Lang.wrapThrow(e);
+			}
 		}
 	}
 
@@ -29,10 +40,10 @@ interface Injector {
 	static class FieldInjector implements Injector {
 
 		private Field field;
-		private Object value;
+		private Value value;
 
-		FieldInjector(Field field, Object value) {
-			this.value = Castors.me().castTo(value, field.getType());
+		FieldInjector(Field field, Value value) {
+			this.value = value;
 			field.setAccessible(true);
 			this.field = field;
 		}
@@ -40,7 +51,10 @@ interface Injector {
 		@Override
 		public void inject(Object obj) {
 			try {
-				field.set(obj, value);
+				Object v = value.get();
+				if (null != v && v.getClass() != field.getType())
+					v = Castors.me().castTo(v, field.getType());
+				field.set(obj, v);
 			} catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}

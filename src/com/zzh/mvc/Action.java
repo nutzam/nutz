@@ -10,16 +10,16 @@ public abstract class Action implements Controllor {
 	private Parameter[] paramFields;
 
 	public Action() {
-		this.paramFields = Mvc.getParameterFields(this.getClass());
+		this.paramFields = Params.getParameterFields(this.getClass());
 	}
 
 	@Override
 	public Object execute(HttpServletRequest request, HttpServletResponse response)
 			throws Throwable {
-		Mvc.getObjectAsNameValuePair(this, request, paramFields);
+		Params.getObjectAsNameValuePair(this, request, paramFields);
 		return execute();
 	}
 
-	public abstract Object execute() throws Throwable;
+	public abstract Object execute() throws Exception;
 
 }

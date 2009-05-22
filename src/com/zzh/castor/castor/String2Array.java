@@ -7,7 +7,7 @@ import com.zzh.castor.Castor;
 import com.zzh.castor.FailToCastObjectException;
 import com.zzh.json.Json;
 import com.zzh.lang.Strings;
-import com.zzh.lang.stream.CharInputStream;
+import com.zzh.lang.stream.StringInputStream;
 
 public class String2Array extends Castor<String, Object> {
 
@@ -26,7 +26,7 @@ public class String2Array extends Castor<String, Object> {
 		sb.append(src);
 		if (!src.endsWith("]"))
 			sb.append(']');
-		return Json.fromJson(toType, new InputStreamReader(new CharInputStream(sb)));
+		return Json.fromJson(toType, new InputStreamReader(new StringInputStream(sb)));
 	}
 
 }

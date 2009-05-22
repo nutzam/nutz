@@ -187,14 +187,13 @@ public class Cnd implements OrderBy, ExpGroup {
 
 		@Override
 		public void render(StringBuilder sb, Entity<?> en) {
-			sb.append(en.getField(name).getColumnName()).append(op);
-			if (value == null) {
-				sb.append("NULL");
-			} else if (value instanceof CharSequence) {
-				sb.append('\'').append(value.toString()).append('\'');
-			} else {
-				sb.append(value.toString());
-			}
+			if (null != en) {
+				EntityField ef = en.getField(name);
+				sb.append(null != ef ? ef.getColumnName() : name);
+			} else
+				sb.append(name);
+			sb.append(op);
+			sb.append(Sqls.formatFieldValue(value));
 		}
 	}
 

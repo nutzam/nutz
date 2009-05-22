@@ -12,14 +12,16 @@ import com.zzh.trans.Transaction;
 
 public class Sqls {
 
-	public static <T> StringBuilder formatFieldValue(T v) {
-		if (isNotNeedQuote(v.getClass()))
+	public static CharSequence formatFieldValue(Object v) {
+		if (null == v)
+			return "NULL";
+		else if (isNotNeedQuote(v.getClass()))
 			return escapeFieldValue(v.toString());
 		else
 			return new StringBuilder("'").append(escapeFieldValue(v.toString())).append('\'');
 	}
 
-	public static StringBuilder escapeFieldValue(CharSequence s) {
+	public static CharSequence escapeFieldValue(CharSequence s) {
 		if (null == s)
 			return null;
 		StringBuilder sb = new StringBuilder();
@@ -35,7 +37,7 @@ public class Sqls {
 		return sb;
 	}
 
-	public static StringBuilder escapteConditionValue(CharSequence s) {
+	public static CharSequence escapteConditionValue(CharSequence s) {
 		if (null == s)
 			return null;
 		StringBuilder sb = new StringBuilder();

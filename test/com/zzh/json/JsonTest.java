@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -15,14 +16,29 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import com.zzh.dao.test.meta.Base;
 import com.zzh.lang.Files;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Streams;
-import com.zzh.lang.stream.CharInputStream;
-import com.zzh.lang.stream.CharOutputStream;
+import com.zzh.lang.stream.StringInputStream;
+import com.zzh.lang.stream.StringOutputStream;
 
 @SuppressWarnings("unchecked")
 public class JsonTest {
+
+	@Test
+	public void when_name_has_unsupport_char() {
+		Map map = new HashMap();
+		map.put("/tt", 123);
+		assertEquals("{\"/tt\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+	}
+
+	@Test
+	public void when_name_has_number_char_at_first() {
+		Map map = new HashMap();
+		map.put("3T", 123);
+		assertEquals("{\"3T\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+	}
 
 	@Test
 	public void testSimpleObject() {
@@ -181,7 +197,7 @@ public class JsonTest {
 		File f = Files.findFile("com/zzh/json/person.txt");
 		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
 		StringBuilder sb = new StringBuilder();
-		Writer w = new OutputStreamWriter(new CharOutputStream(sb));
+		Writer w = new OutputStreamWriter(new StringOutputStream(sb));
 		w.write(p.dump());
 		w.write("\n");
 		w.write(p.getFather().dump());
@@ -192,7 +208,7 @@ public class JsonTest {
 		w.close();
 		f = Files.findFile("com/zzh/json/person.expect.txt");
 
-		assertTrue(Streams.equals(new CharInputStream(sb), new FileInputStream(f)));
+		assertTrue(Streams.equals(new StringInputStream(sb), new FileInputStream(f)));
 	}
 
 	@Test
@@ -201,7 +217,12 @@ public class JsonTest {
 		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
 		String[] reAry = Json.fromJson(String[].class, Lang.inr(s));
 		assertTrue(Arrays.equals(expAry, reAry));
+	}
 
+	@Test
+	public void test_parse_simple_empty_array() throws Exception {
+		Object[] objs = Json.fromJson(Object[].class, "[]");
+		assertEquals(0, objs.length);
 	}
 
 	@Test
@@ -298,7 +319,7 @@ public class JsonTest {
 	public void testFilterField() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
 		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
-		String json = Json.toJson(p, JsonFormat.nice().setActivedFields("[name]"));
+		String json = Json.toJson(p, JsonFormat.nice().setActived("^name$"));
 		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertEquals(p.getName(), p2.getName());
 		assertNull(p2.getRealname());
@@ -312,8 +333,7 @@ public class JsonTest {
 	public void testFilterField2() throws Exception {
 		File f = Files.findFile("com/zzh/json/person.txt");
 		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
-		String json = Json.toJson(p, JsonFormat.nice().setIgnoreFields(
-				"[realname][father][company]"));
+		String json = Json.toJson(p, JsonFormat.nice().setLocked("realname|father|company"));
 		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertNull(p2.getRealname());
 		assertEquals(p.getName(), p2.getName());
@@ -329,7 +349,7 @@ public class JsonTest {
 
 	@Test
 	public void testOutpuProjectsAsList() throws Exception {
-		String exp = "{\"id\":1,\"name\":\"nutz\",\"alias\":\"nutz\"}";
+		String exp = "{\"id\":1,\"alias\":\"nutz\",\"name\":\"nutz\"}";
 		Project p = new Project();
 		p.id = 1;
 		p.name = "nutz";
@@ -377,4 +397,38 @@ public class JsonTest {
 		assertEquals(0, x.id);
 		assertNull(x.type);
 	}
+
+	@Test
+	public void test_output_not_quote_name() {
+		Base b = Base.make("Red");
+		String json = Json.toJson(b, JsonFormat.compact().setQuoteName(false));
+		String exp = "{countryId:0,level:0,name:\"Red\"}";
+		assertEquals(exp, json);
+	}
+
+	static class A {
+		List<String> list1;
+		List<String> list2;
+	}
+
+	@Test
+	public void testDuplicateArrayList() {
+		A a = new A();
+		a.list1 = new ArrayList<String>();
+		a.list1.add("aaa");
+		a.list2 = new ArrayList<String>();
+		a.list2.add("aaa");
+		String json = Json.toJson(a, JsonFormat.compact().setQuoteName(false));
+		String exp = "{list2:[\"aaa\"],list1:[\"aaa\"]}";
+		assertEquals(exp, json);
+	}
+
+	@Test
+	public void test_special_char() {
+		String s = "\\|\n|\r|\t";
+		String exp = "\"\\\\|\\n|\\r|\\t\"";
+		assertEquals(exp, Json.toJson(s));
+		assertEquals(s, Json.fromJson(exp));
+	}
+
 }

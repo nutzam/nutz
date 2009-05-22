@@ -2,11 +2,14 @@ package com.zzh.lang;
 
 import static org.junit.Assert.*;
 
+import java.lang.reflect.Field;
 import java.util.Calendar;
 
 import org.junit.Test;
 
 import com.zzh.Nutz;
+import com.zzh.dao.entity.annotation.Id;
+import com.zzh.dao.entity.annotation.Name;
 import com.zzh.dao.test.meta.Base;
 import com.zzh.ioc.FailToMakeObjectException;
 
@@ -102,6 +105,12 @@ public class MirrorTest {
 	}
 
 	public static class F {
+		@Id
+		String id;
+	}
+
+	public static class SubF extends F {
+		@Name
 		String id;
 	}
 
@@ -116,6 +125,13 @@ public class MirrorTest {
 		}
 
 		String fid;
+	}
+
+	@Test
+	public void test_get_fields() {
+		Field[] fields = Mirror.me(SubF.class).getFields();
+		assertEquals(1, fields.length);
+		assertNotNull(fields[0].getAnnotation(Name.class));
 	}
 
 	@Test

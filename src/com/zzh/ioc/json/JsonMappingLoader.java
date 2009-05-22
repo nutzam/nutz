@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,14 +42,33 @@ public class JsonMappingLoader implements MappingLoader {
 		mappings = new HashMap<String, Mapping>();
 		for (Iterator<File> it = files.iterator(); it.hasNext();) {
 			File f = it.next();
-			Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(
-					new FileInputStream(f)));
-			for (Iterator<String> ki = map.keySet().iterator(); ki.hasNext();) {
-				String key = ki.next();
-				Object value = map.get(key);
-				Mapping mapping = new JsonMapping((Map<String, Object>) value);
-				mappings.put(key, mapping);
+			try {
+				Map<String, Object> map = (Map<String, Object>) Json
+						.fromJson(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+				for (String key : map.keySet()) {
+					try {
+						Object value = map.get(key);
+						Mapping mapping = new JsonMapping((Map<String, Object>) value);
+						mappings.put(key, mapping);
+					} catch (Exception e) {
+						throw Lang.makeThrow("key [%s] error: '%s'", key, e.getMessage());
+					}
+				}
+			} catch (Exception e) {
+				throw Lang.makeThrow("Json file error [%s] : %s", f.getName(), e.getMessage());
 			}
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public JsonMappingLoader(Reader reader) {
+		mappings = new HashMap<String, Mapping>();
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson(reader);
+		for (Iterator<String> ki = map.keySet().iterator(); ki.hasNext();) {
+			String key = ki.next();
+			Object value = map.get(key);
+			Mapping mapping = new JsonMapping((Map<String, Object>) value);
+			mappings.put(key, mapping);
 		}
 	}
 

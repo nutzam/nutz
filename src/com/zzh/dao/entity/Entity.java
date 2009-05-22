@@ -295,11 +295,11 @@ public class Entity<T> {
 				try {
 					entity.borning = new FMResultSetConstructorBorning<T>(type.getConstructor(
 							ResultSet.class, Pattern.class));
-				} catch (Exception e) {
+				} catch (Throwable e) {
 					entity.borning = new ResultSetConstructorBorning<T>(type
 							.getConstructor(ResultSet.class));
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				if (null != defMethod) // static POJO
 					// getInstance();
 					entity.borning = new DefaultStaticMethodBorning<T>(entity, defMethod);

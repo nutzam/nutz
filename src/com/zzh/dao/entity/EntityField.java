@@ -18,14 +18,14 @@ import com.zzh.lang.segment.Segments;
 public class EntityField {
 
 	private Id id;
-	private boolean name;
+	private Name name;
 	private boolean notNull;
 	private boolean readonly;
 	private Link link;
 	private String columnName;
 	private Segment defaultValue;
 	private String _defv;
-	private Type.DEF type;
+	private Type.ENUM type;
 	private Method getter;
 	private Method setter;
 	private Next nextId;
@@ -42,7 +42,11 @@ public class EntityField {
 	}
 
 	public boolean isName() {
-		return name;
+		return name != null;
+	}
+
+	public boolean isCaseInsensitive() {
+		return isName() && !name.casesensitive();
 	}
 
 	public boolean isAutoIncrement() {
@@ -102,8 +106,7 @@ public class EntityField {
 		this.field = field;
 		this.field.setAccessible(true);
 		/*
-		 * Init current field getter/setter to speeded up
-		 * the reflection
+		 * Init current field getter/setter to speeded up the reflection
 		 */
 		try {
 			getter = entity.mirror.getGetter(field);
@@ -118,7 +121,7 @@ public class EntityField {
 		 */
 		readonly = (field.getAnnotation(Readonly.class) != null);
 		Type t = field.getAnnotation(Type.class);
-		type = null == t ? Type.DEF.AUTO : t.value();
+		type = null == t ? Type.ENUM.AUTO : t.value();
 		/*
 		 * Check default value
 		 */
@@ -144,8 +147,8 @@ public class EntityField {
 		/*
 		 * Check @Name
 		 */
-		name = (field.getAnnotation(Name.class) != null);
-		if (name) {
+		name = field.getAnnotation(Name.class);
+		if (isName()) {
 			if (!Mirror.me(field.getType()).isStringLike())
 				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.",
 						entity.mirror.getType().getName(), field.getName());
@@ -154,9 +157,8 @@ public class EntityField {
 			notNull = (field.getAnnotation(NotNull.class) != null);
 		}
 		/*
-		 * Finish parsing, return true. If current field
-		 * is a Link (Return Link object) or not @Column
-		 * (return null) at the begining of this method.
+		 * Finish parsing, return true. If current field is a Link (Return Link
+		 * object) or not @Column (return null) at the begining of this method.
 		 */
 		return true;
 	}
@@ -226,14 +228,14 @@ public class EntityField {
 	}
 
 	public boolean isInt() {
-		return Type.DEF.INT == type;
+		return Type.ENUM.INT == type;
 	}
 
 	public boolean isChar() {
-		return Type.DEF.CHAR == type;
+		return Type.ENUM.CHAR == type;
 	}
 
 	public boolean isAuto() {
-		return Type.DEF.AUTO == type;
+		return Type.ENUM.AUTO == type;
 	}
 }

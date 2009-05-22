@@ -8,32 +8,28 @@ import com.zzh.dao.entity.Link;
 import com.zzh.lang.Strings;
 import com.zzh.lang.segment.CharSegment;
 
+import static java.lang.String.*;
+
 public class SqlMaker {
 
 	public SqlMaker() {}
 
 	static <T extends AbstractSql<?>> T makeSQL(T sql, Entity<?> entity, String ptn, String... args) {
-		return makeSQLByString(sql, entity, String.format(ptn, (Object[]) args));
-	}
-
-	protected static <T extends AbstractSql<?>> T makeSQLByString(T sql, Entity<?> entity,
-			String str) {
-		sql.valueOf(str);
+		sql.valueOf(String.format(ptn, (Object[]) args));
 		sql.setEntity(entity);
 		return sql;
 	}
 
 	public ExecutableSql makeClearSQL(String tableName) {
-		return makeSQL(new ExecutableSql(), null, "DELETE FROM %s ${condition};", tableName);
+		return makeSQL(new ExecutableSql(), null, "DELETE FROM %s ${condition}", tableName);
 	}
 
 	public ExecutableSql makeResetSQL(String tableName) {
-		return makeSQL(new ExecutableSql(), null, "TRUNCATE TABLE %s;", tableName);
+		return makeSQL(new ExecutableSql(), null, "TRUNCATE TABLE %s", tableName);
 	}
 
 	/**
-	 * This method can generate DELETE sql for delete @
-	 * Many and @ One
+	 * This method can generate DELETE sql for delete @ Many and @ One
 	 * 
 	 * @param ta
 	 *            : Entity of the object will be deleted
@@ -67,15 +63,21 @@ public class SqlMaker {
 	}
 
 	public ExecutableSql makeDeleteSQL(Entity<?> en, EntityField ef) {
-		return makeSQL(new ExecutableSql(), en, "DELETE FROM %s WHERE %s=${%s};",
-				en.getTableName(), ef.getColumnName(), ef.getField().getName());
+		return makeSQL(new ExecutableSql(), en, "DELETE FROM %s WHERE %s=${%s}", en.getTableName(),
+				ef.getColumnName(), ef.getField().getName());
 	}
 
 	public <T> FetchSql<T> makeFetchSQL(Entity<T> en, EntityField ef) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		String fields = evalActivedFields(fm, en, ef.getColumnName());
-		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE %s=${%s};",
-				fields, en.getViewName(), ef.getColumnName(), ef.getField().getName());
+		FetchSql<T> sql;
+		if (ef.isCaseInsensitive()) {
+			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE LOWER(%s)=LOWER(${%s})",
+					fields, en.getViewName(), ef.getColumnName(), ef.getField().getName());
+		} else {
+			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE %s=${%s}", fields, en
+					.getViewName(), ef.getColumnName(), ef.getField().getName());
+		}
 		sql.setMatcher(fm);
 		return sql;
 	}
@@ -103,7 +105,7 @@ public class SqlMaker {
 	public <T> FetchSql<T> makeFetchByConditionSQL(Entity<T> en) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		String fields = evalActivedFields(fm, en, "*");
-		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s ${condition};", fields,
+		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s ${condition}", fields,
 				en.getViewName());
 		sql.setMatcher(fm);
 		return sql;
@@ -112,19 +114,19 @@ public class SqlMaker {
 	public <T> FetchSql<T> makeFetchLuckyOneSQL(Entity<T> en) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		String fields = evalActivedFields(fm, en, "*");
-		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s LIMIT 1;", fields, en
+		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s LIMIT 1", fields, en
 				.getViewName());
 		sql.setMatcher(fm);
 		return sql;
 	}
 
 	public <T> FetchSql<Integer> makeCountSQL(Entity<T> en, String viewName) {
-		return makeSQL(new FetchSql<Integer>(), en, "SELECT COUNT(*) FROM %s ${condition};",
+		return makeSQL(new FetchSql<Integer>(), en, "SELECT COUNT(*) FROM %s ${condition}",
 				viewName);
 	}
 
 	public <T> FetchSql<Integer> makeFetchMaxSQL(Entity<T> en, EntityField ef) {
-		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s;").set("field",
+		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s").set("field",
 				ef.getField().getName()).toString();
 		return makeSQL(new FetchSql<Integer>(), en, ptn, en.getViewName());
 	}
@@ -149,8 +151,8 @@ public class SqlMaker {
 	}
 
 	public ExecutableSql makeInsertSQL(Entity<?> en, Object obj) {
-		StringBuffer fields = new StringBuffer();
-		StringBuffer values = new StringBuffer();
+		StringBuilder fields = new StringBuilder();
+		StringBuilder values = new StringBuilder();
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
 			if (ef.isAutoIncrement() || ef.isReadonly())
@@ -163,20 +165,20 @@ public class SqlMaker {
 		}
 		fields.deleteCharAt(0);
 		values.deleteCharAt(0);
-		return makeSQL(new ExecutableSql(), en, "INSERT INTO %s(%s) VALUES(%s);",
-				en.getTableName(), fields.toString(), values.toString());
+		return makeSQL(new ExecutableSql(), en, "INSERT INTO %s(%s) VALUES(%s)", en.getTableName(),
+				fields.toString(), values.toString());
 	}
 
 	public ExecutableSql makeInsertManyManySql(Link link, Object fromValue, Object toValue) {
 		ExecutableSql sql = new ExecutableSql();
-		sql.valueOf(String.format("INSERT INTO %s (%s,%s) VALUES(%s,%s);", link.getRelation(), link
+		sql.valueOf(String.format("INSERT INTO %s (%s,%s) VALUES(%s,%s)", link.getRelation(), link
 				.getFrom(), link.getTo(), Sqls.formatFieldValue(fromValue), Sqls
 				.formatFieldValue(toValue)));
 		return sql;
 	}
 
 	public ExecutableSql makeUpdateSQL(Entity<?> en, Object obj) {
-		StringBuffer sb = new StringBuffer();
+		StringBuilder sb = new StringBuilder();
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
@@ -195,8 +197,20 @@ public class SqlMaker {
 		sb.deleteCharAt(0);
 		EntityField idf = en.getIdentifiedField();
 		String condition = String.format("%s=${%s}", idf.getColumnName(), idf.getField().getName());
-		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s WHERE %s;", en.getTableName(), sb
+		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s WHERE %s", en.getTableName(), sb
 				.toString(), condition);
 
+	}
+
+	public ExecutableSql makeBatchUpdateSQL(Entity<?> en, Chain chain) {
+		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s ${condition}", en.getTableName(),
+				chain.toString(en));
+	}
+
+	public ExecutableSql makeBatchUpdateRelationSQL(Link link, Chain chain) {
+		ExecutableSql sql = new ExecutableSql();
+		sql.valueOf(format("UPDATE %s SET %s ${condition}", link.getRelation(), chain
+				.toString(null)));
+		return sql;
 	}
 }

@@ -22,7 +22,7 @@ public class Platoon {
 	private int id;
 
 	@Column
-	@Name
+	@Name(casesensitive = false)
 	private String name;
 
 	@Column("base")

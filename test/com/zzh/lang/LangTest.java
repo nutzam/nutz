@@ -2,6 +2,9 @@ package com.zzh.lang;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
 import java.util.Map;
 
 import org.junit.Test;
@@ -22,6 +25,22 @@ public class LangTest {
 		A a = Lang.map2Object(map, A.class);
 		assertEquals(23, a.id);
 		assertEquals("zzh", a.name);
+	}
+
+	@Test
+	public void test_char_reader() throws IOException {
+		Reader r = Lang.inr("AB");
+		assertEquals('A', (char) r.read());
+		assertEquals('B', (char) r.read());
+		assertEquals(-1, r.read());
+	}
+
+	@Test
+	public void test_char_writer() throws IOException {
+		StringBuilder sb = new StringBuilder();
+		Writer w = Lang.opw(sb);
+		w.write("AB");
+		assertEquals("AB", sb.toString());
 	}
 
 }

@@ -1,7 +1,9 @@
 package com.zzh.mvc.view;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -21,15 +23,14 @@ public class JsonView implements View {
 	}
 
 	private JsonFormat format;
-	public String charset;
+	private String charset;
 
 	@Override
 	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
 			throws IOException {
-		OutputStreamWriter writer = new OutputStreamWriter(response.getOutputStream(),
-				null == charset ? "UTF-8" : charset);
-		String json = Json.toJson(obj, null == format ? defaultFormat : format);
-		writer.write(json);
+		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(),
+				null == charset ? "UTF-8" : charset));
+		Json.toJson(writer, obj, null == format ? defaultFormat : format);
 		writer.close();
 	}
 

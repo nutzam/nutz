@@ -11,9 +11,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.zzh.lang.Lang;
-import com.zzh.lang.stream.CharInputStream;
+import com.zzh.lang.stream.StringInputStream;
 
-public class CharSegment implements Segment {
+public class CharSegment implements Segment, Cloneable {
 
 	public CharSegment() {}
 
@@ -223,7 +223,7 @@ public class CharSegment implements Segment {
 
 	@Override
 	public Segment valueOf(String str) {
-		parse(new CharInputStream(str));
+		parse(new StringInputStream(str));
 		return this;
 	}
 

@@ -19,7 +19,7 @@ public abstract class AbstractSql<T> implements Sql<T> {
 		this.values = new HashMap<String, Object>();
 		this.segment = new CharSegment();
 	}
-	
+
 	protected AbstractSql(String sql) {
 		this();
 		this.valueOf(sql);
@@ -28,7 +28,6 @@ public abstract class AbstractSql<T> implements Sql<T> {
 	protected Segment segment;
 	private Entity<?> entity;
 	protected Map<String, Object> values;
-		
 
 	public void setEntity(Entity<?> entity) {
 		this.entity = entity;
@@ -63,8 +62,6 @@ public abstract class AbstractSql<T> implements Sql<T> {
 							.getMirror().getType().getName(), field.getName()));
 				} else
 					this.set(field.getName(), null);
-			} else if (Mirror.me(field.getType()).isBoolean()) {
-				values.put(field.getName(), value);
 			} else {
 				values.put(field.getName(), value);
 			}

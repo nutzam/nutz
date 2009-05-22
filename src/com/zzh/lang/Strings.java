@@ -38,6 +38,12 @@ public class Strings {
 		return s1.equalsIgnoreCase(s2);
 	}
 
+	public static boolean equals(String s1, String s2) {
+		if (s1 == null || s2 == null)
+			return false;
+		return s1.equals(s2);
+	}
+
 	public static boolean isEmpty(CharSequence cs) {
 		if (null == cs)
 			return true;

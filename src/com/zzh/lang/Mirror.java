@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -168,10 +169,25 @@ public class Mirror<T> {
 
 	public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
 		try {
+			String setterName = getSetterName(fieldName);
 			try {
-				return klass.getMethod(getSetterName(fieldName), paramType);
+				return klass.getMethod(setterName, paramType);
 			} catch (Exception e) {
-				return klass.getMethod(fieldName, paramType);
+				try {
+					return klass.getMethod(fieldName, paramType);
+				} catch (Exception e1) {
+					Mirror<?> type = Mirror.me(paramType);
+					for (Method method : klass.getMethods()) {
+						if (method.getParameterTypes().length == 1)
+							if (method.getName().equals(setterName)
+									|| method.getName().equals(fieldName)) {
+								if (null == paramType
+										|| type.canCastToDirectly(method.getParameterTypes()[0]))
+									return method;
+							}
+					}
+					throw new Exception();
+				}
 			}
 		} catch (Exception e) {
 			throw Lang.makeThrow(NoSuchMethodException.class,
@@ -251,17 +267,19 @@ public class Mirror<T> {
 
 	public Field[] getFields() {
 		Class<?> theClass = klass;
-		LinkedList<Field> list = new LinkedList<Field>();
+		Map<String, Field> list = new HashMap<String, Field>();
 		while (null != theClass && !(theClass == Object.class)) {
 			Field[] fs = theClass.getDeclaredFields();
 			for (int i = 0; i < fs.length; i++) {
 				if (isIgnoredField(fs[i]))
 					continue;
-				list.add(fs[i]);
+				if (list.containsKey(fs[i].getName()))
+					continue;
+				list.put(fs[i].getName(), fs[i]);
 			}
 			theClass = theClass.getSuperclass();
 		}
-		return list.toArray(new Field[list.size()]);
+		return list.values().toArray(new Field[list.size()]);
 	}
 
 	public Method[] getMethods() {
@@ -407,8 +425,8 @@ public class Mirror<T> {
 		}
 	}
 
-	public Borning<T> getBorning(Object... args) {
-		return new Borning<T>(this, args);
+	public MirrorBorning<T> getBorning(Object... args) {
+		return new MirrorBorning<T>(this, args);
 	}
 
 	public T born(Object... args) {
@@ -452,8 +470,9 @@ public class Mirror<T> {
 						return m;
 			}
 		}
-		throw new NoSuchMethodException(String.format("Method %s->%s with params:\n%s", klass
-				.getName(), name, paramTypes));
+		throw new NoSuchMethodException(String.format(
+				"Fail to find Method %s->%s with params:\n%s", klass.getName(), name, Castors.me()
+						.castToString(paramTypes)));
 	}
 
 	public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
@@ -474,7 +493,7 @@ public class Mirror<T> {
 		}
 		throw new NoSuchMethodException(String.format(
 				"Can not find method in [%s] with return type '%s' and arguemtns \n'%s'!", klass
-						.getName(), returnType.getName(), paramTypes));
+						.getName(), returnType.getName(), Castors.me().castToString(paramTypes)));
 
 	}
 

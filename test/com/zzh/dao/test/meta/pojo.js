@@ -15,13 +15,13 @@ dataSource: {
 // Dao
 dao : {
 	type	: "com.zzh.dao.impl.NutDao",
-	$args	: [{refer :"dataSource"}]
+	args	: [{refer :"dataSource"}]
 },
 /*------------------------------------------------------------------*/
 // Meta service
 metas: {
 	type : "com.zzh.dao.test.meta.Pojos",
-	$args	: [{refer :"dao"}]
+	args	: [{refer :"dao"}]
 }
 /*------------------------------------------------------------------*/
 }

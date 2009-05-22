@@ -2,13 +2,16 @@ package com.zzh.lang;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -20,6 +23,27 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class Files {
+
+	public String read(String path) {
+		StringBuilder sb = new StringBuilder();
+		File f = findFile(path);
+		if (null == f || !f.exists())
+			throw new RuntimeException(new FileNotFoundException(path));
+		try {
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),
+					"UTF-8"));
+			int c;
+			while (-1 != (c = reader.read())) {
+				sb.append((char) c);
+			}
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+		return sb.toString();
+	}
+
 	public static File setSuffix(File f, String suffix) {
 		if (null == f)
 			return null;
@@ -28,7 +52,7 @@ public class Files {
 		String path = f.getName();
 		int pos = path.lastIndexOf('.');
 		if (-1 == pos)
-			return new File(path + null == suffix ? "" : suffix);
+			return new File(path + suffix);
 		return new File(path.substring(0, pos) + suffix);
 	}
 
@@ -59,6 +83,8 @@ public class Files {
 	}
 
 	public static File findFile(String path, Class<Files> klass, String enc) {
+		if (null == path)
+			return null;
 		File f = new File(path);
 		if (!f.exists()) {
 			f = null;
@@ -266,4 +292,5 @@ public class Files {
 			Streams.safeClose(ins2);
 		}
 	}
+
 }

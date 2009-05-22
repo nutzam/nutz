@@ -17,7 +17,7 @@
 	<property name="SRC" location="${PROJECT_HOME}/src" />
 	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
 
-	<property name="v" value="-1.a.7" />
+	<property name="v" value="-1.a.11" />
 	<property name="zlang" value="com/zzh/lang/**,com/zzh/castor/**" />
 	<property name="zjson" value="com/zzh/json/**" />
 	<property name="zdao" value="com/zzh/dao/**,com/zzh/service/**,com/zzh/trans/**" />
@@ -54,7 +54,7 @@
 		<jar destfile="${OP}/nutz.lang${v}.jar" basedir="${TMP}" includes="${zlang}" />
 		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
 		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
-		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc}" />
+		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" />
 		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
 	</target>
 

@@ -28,9 +28,13 @@ public interface Dao {
 
 	<T> T update(T obj);
 
+	void update(Class<?> classOfT, Chain chain, Condition condition);
+
 	<T> T updateWith(T obj, String regex);
 
 	<T> T updateLinks(T obj, String regex);
+
+	void updateRelation(Class<?> classOfT, String regex, Chain chain, Condition condition);
 
 	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
 
@@ -45,11 +49,11 @@ public interface Dao {
 	<T> void deleteLinks(T obj, String regex);
 
 	<T> T fetch(Class<T> classOfT, long id);
-	
+
 	<T> T fetch(Class<T> classOfT, String name);
 
 	<T> T fetch(Class<T> classOfT, Condition condition);
-	
+
 	<T> T fetch(Class<T> classOfT);
 
 	<T> T fetch(Entity<T> classOfT, long id);
@@ -64,13 +68,18 @@ public interface Dao {
 
 	<T> void clear(Class<T> classOfT, Condition condition);
 
+	<T> void clear(Class<T> classOfT);
+
 	void clear(String tableName, Condition condition);
+
+	void clear(String tableName);
 
 	/**
 	 * <pre>
 	 * It will delete @One @Many entity records
 	 * clear the @ManyMany relations
 	 * </pre>
+	 * 
 	 * @param obj
 	 * @param regex
 	 * @return
