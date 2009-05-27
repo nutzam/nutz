@@ -7,8 +7,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.zzh.ioc.Ioc;
-import com.zzh.ioc.MappingLoader;
-import com.zzh.ioc.Nut;
+import com.zzh.ioc.ObjLoader;
+import com.zzh.ioc.impl.NutIoc;
 import com.zzh.json.JsonFormat;
 import com.zzh.lang.Lang;
 import com.zzh.mvc.access.Session;
@@ -23,10 +23,10 @@ public class Mvc {
 		Object att = context.getAttribute(Ioc.class.getName());
 		if (att instanceof Ioc)
 			return (Ioc) att;
-		else if (att instanceof MappingLoader)
-			return new Nut((MappingLoader) att);
+		else if (att instanceof ObjLoader)
+			return new NutIoc((ObjLoader) att);
 		throw new RuntimeException(format("Attribute [%s] should be '%s' or %s", Ioc.class
-				.getName(), Ioc.class.getName(), MappingLoader.class));
+				.getName(), Ioc.class.getName(), ObjLoader.class));
 	}
 
 	public static Ioc ioc(HttpServletRequest request) {

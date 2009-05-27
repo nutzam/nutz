@@ -9,15 +9,15 @@ import javax.servlet.http.HttpSession;
 
 import com.zzh.castor.Castors;
 import com.zzh.ioc.FailToMakeObjectException;
-import com.zzh.ioc.MappingLoader;
-import com.zzh.ioc.Nut;
+import com.zzh.ioc.ObjLoader;
 import com.zzh.ioc.ObjectNotFoundException;
+import com.zzh.ioc.impl.NutIoc;
 
-public class SessionIoc extends Nut {
+public class SessionIoc extends NutIoc {
 
 	private HttpSession session;
 
-	public SessionIoc(HttpSession session, MappingLoader loader) {
+	public SessionIoc(HttpSession session, ObjLoader loader) {
 		super(loader);
 		attachSession(session);
 	}

@@ -1,4 +1,4 @@
-package com.zzh.ioc;
+package com.zzh.ioc.impl;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import com.zzh.castor.Castors;
 import com.zzh.lang.Lang;
 
-interface Injector {
+public interface Injector {
 
 	void inject(Object obj);
 
@@ -14,10 +14,10 @@ interface Injector {
 	static class SetterInjector implements Injector {
 
 		private Method setter;
-		private Value value;
+		private ValueDelegate value;
 		private Class<?> paramType;
 
-		SetterInjector(Method setter, Value value) {
+		public SetterInjector(Method setter, ValueDelegate value) {
 			this.setter = setter;
 			this.value = value;
 			this.paramType = setter.getParameterTypes()[0];
@@ -40,9 +40,9 @@ interface Injector {
 	static class FieldInjector implements Injector {
 
 		private Field field;
-		private Value value;
+		private ValueDelegate value;
 
-		FieldInjector(Field field, Value value) {
+		public FieldInjector(Field field, ValueDelegate value) {
 			this.value = value;
 			field.setAccessible(true);
 			this.field = field;

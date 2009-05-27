@@ -6,7 +6,7 @@ import javax.servlet.http.HttpSession;
 
 import com.zzh.Const;
 import com.zzh.ioc.Ioc;
-import com.zzh.ioc.MappingLoader;
+import com.zzh.ioc.ObjLoader;
 import com.zzh.mvc.IocMvc;
 import com.zzh.mvc.MvcSupport;
 import com.zzh.mvc.SessionCallback;
@@ -104,8 +104,8 @@ public class Session {
 					Object obj = session.getServletContext().getAttribute(Ioc.class.getName());
 					if (obj instanceof Ioc) {
 						ioc = (Ioc) obj;
-					} else if (obj instanceof MappingLoader) {
-						ioc = new SessionIoc(session, (MappingLoader) obj);
+					} else if (obj instanceof ObjLoader) {
+						ioc = new SessionIoc(session, (ObjLoader) obj);
 					}
 					setObject(Ioc.class, ioc);
 				}

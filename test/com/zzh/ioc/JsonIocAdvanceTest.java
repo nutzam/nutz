@@ -8,31 +8,33 @@ import org.junit.Test;
 
 import com.zzh.dao.test.meta.Base;
 import com.zzh.dao.test.meta.Platoon;
-import com.zzh.ioc.json.JsonMappingLoader;
+import com.zzh.ioc.impl.NutIoc;
+import com.zzh.ioc.json.JsonLoader;
+
 
 public class JsonIocAdvanceTest {
 
-	private Nut nut;
+	private Ioc ioc;
 
 	@Before
 	public void setUp() throws Exception {
-		nut = new Nut(new JsonMappingLoader("com/zzh/ioc/ioc.js"));
+		ioc = new NutIoc(new JsonLoader("com/zzh/ioc/ioc.js"));
 	}
 
 	@After
 	public void tearDown() throws Exception {
 		if (null != null)
-			nut.depose();
+			ioc.depose();
 	}
 
 	@Test
 	public void test_deposer() {
-		Base b1 = nut.get(Base.class, "blue");
-		Base b2 = nut.get(Base.class, "blue");
+		Base b1 = ioc.get(Base.class, "blue");
+		Base b2 = ioc.get(Base.class, "blue");
 		assertTrue(b1 == b2);
 		assertEquals("Blue", b1.getName());
 		assertEquals("United States", b1.getCountry().getName());
-		nut.depose();
+		ioc.depose();
 		assertEquals("!!!", b1.getName());
 		assertEquals("#", b1.getCountry().getName());
 		assertTrue(b1.getPlatoons().get("DF") == b1.getPlatoons().get("DF2"));
@@ -40,8 +42,8 @@ public class JsonIocAdvanceTest {
 
 	@Test
 	public void test_cascade_unsingleton_injection() {
-		Base b1 = nut.get(Base.class, "red");
-		Base b2 = nut.get(Base.class, "red");
+		Base b1 = ioc.get(Base.class, "red");
+		Base b2 = ioc.get(Base.class, "red");
 		assertFalse(b1 == b2);
 		assertEquals("China", b1.getCountry().getName());
 		assertEquals("China", b2.getCountry().getName());
@@ -52,8 +54,8 @@ public class JsonIocAdvanceTest {
 
 	@Test
 	public void unsingleton_inside_fields_map() {
-		Base b1 = nut.get(Base.class, "green");
-		Base b2 = nut.get(Base.class, "green");
+		Base b1 = ioc.get(Base.class, "green");
+		Base b2 = ioc.get(Base.class, "green");
 		assertFalse(b1 == b2);
 		assertEquals("United States", b1.getCountry().getName());
 		assertEquals("United States", b2.getCountry().getName());
@@ -64,7 +66,7 @@ public class JsonIocAdvanceTest {
 
 	@Test
 	public void test_simple_inner_object_in_field() {
-		Platoon p = nut.get(Platoon.class, "SF");
+		Platoon p = ioc.get(Platoon.class, "SF");
 		assertEquals(Base.class,p.getBase().getClass());
 	}
 }

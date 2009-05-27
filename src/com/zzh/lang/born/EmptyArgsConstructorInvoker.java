@@ -3,23 +3,28 @@ package com.zzh.lang.born;
 import java.lang.reflect.Constructor;
 
 public class EmptyArgsConstructorInvoker<T> implements BorningInvoker<T> {
-	
+
 	private Constructor<T> c;
 
 	public EmptyArgsConstructorInvoker(Constructor<T> c) {
 		this.c = c;
 	}
 
-	public T born() throws Exception {
-		return c.newInstance();
+	public T born() {
+		try {
+			return c.newInstance();
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 	@Override
-	public T born(Object[] args) throws Exception {
-		return c.newInstance();
+	public T born(Object[] args) {
+		try {
+			return c.newInstance();
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
-	@Override
-	public void clearArgs() {}
-	
 }

@@ -115,11 +115,13 @@ class JsonParsing {
 		switch (cursor) {
 		case -1:
 			return null;
-		case '[': // Array, the T should indicate the
-			// inside type of arrays
+		case '[':
 			Class<?> compType = null;
 			boolean reurnAsList = true;
 			List list = null;
+			/*
+			 * The type must be null, T[] or subclass of List
+			 */
 			if (null == type) {
 				list = new LinkedList();
 			} else if (type.isArray()) {
@@ -157,12 +159,11 @@ class JsonParsing {
 			for (Iterator it = list.iterator(); it.hasNext();)
 				Array.set(ary, i++, Castors.me().castTo(it.next(), compType));
 			return (T) ary;
-		case '{': // Object or Map
+		case '{':
+			// It must be Object or Map
 			nextChar();
 			skipCommentsAndBlank();
-			/*
-			 * For Map
-			 */
+			// If Map
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
 						: (Map<String, Object>) me.born();
@@ -176,9 +177,7 @@ class JsonParsing {
 				nextChar();
 				return (T) map;
 			}
-			/*
-			 * For Object
-			 */
+			// If Object
 			T obj = me.born();
 			while (cursor != -1 && cursor != '}') {
 				Field f = me.getField(readFieldName());
@@ -189,7 +188,8 @@ class JsonParsing {
 			}
 			nextChar();
 			return obj;
-		case 'u': // For undefined
+		case 'u':
+			// For undefined
 			if ('n' != (char) nextChar() & 'd' != (char) nextChar() & 'e' != (char) nextChar()
 					& 'f' != (char) nextChar() & 'i' != (char) nextChar()
 					& 'n' != (char) nextChar() & 'e' != (char) nextChar()
@@ -197,7 +197,8 @@ class JsonParsing {
 				throw makeError("String must in quote or it must be <null>");
 			nextChar();
 			return null;
-		case 'n': // For NULL
+		case 'n':
+			// For NULL
 			if ('u' != (char) nextChar() & 'l' != (char) nextChar() & 'l' != (char) nextChar())
 				throw makeError("String must in quote or it must be <null>");
 			nextChar();

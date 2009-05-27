@@ -1,18 +1,18 @@
 package com.zzh.mvc;
 
-import java.util.Map;
-
-import com.zzh.ioc.ObjectMaker;
+import com.zzh.ioc.ValueMaker;
+import com.zzh.ioc.meta.Val;
 import com.zzh.mvc.view.RedirectView;
 
-public class RedirectViewMaker extends ObjectMaker {
+public class RedirectViewMaker implements ValueMaker {
+
 	@Override
-	protected boolean accept(Map<String, Object> properties) {
-		return properties.containsKey("redirect");
+	public String forType() {
+		return Val.redirect;
 	}
 
 	@Override
-	protected View make(Map<String, Object> properties) {
-		return new RedirectView(properties.get("redirect").toString());
+	public Object make(Val val) {
+		return new RedirectView(val.getValue().toString());
 	}
 }

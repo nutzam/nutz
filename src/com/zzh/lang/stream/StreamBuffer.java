@@ -39,6 +39,10 @@ public class StreamBuffer extends InputStream {
 	private int index = 0;
 	private int cursor = 0;
 
+	public OutputStream getBuffer() {
+		return buffer;
+	}
+
 	public void write(int b) throws IOException {
 		buffer.write(b);
 	}

@@ -12,18 +12,19 @@ public class ConstructorInvoker<T> implements BorningInvoker<T> {
 		this.args = args;
 	}
 
-	public T born() throws Exception {
-		return c.newInstance(args);
+	public T born(){
+		return born(args);
 	}
 
 	@Override
-	public T born(Object[] args) throws Exception {
-		return c.newInstance(args);
-	}
-
-	@Override
-	public void clearArgs() {
-		args = null;
+	public T born(Object[] args){
+		try {
+			if (args == null)
+				return c.newInstance();
+			return c.newInstance(args);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 }

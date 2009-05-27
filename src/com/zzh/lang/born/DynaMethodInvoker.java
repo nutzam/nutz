@@ -15,19 +15,22 @@ public class DynaMethodInvoker<T> implements BorningInvoker<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T born() throws Exception {
-		return (T) method.invoke(null, arg);
+	public T born() {
+		try {
+			return (T) method.invoke(null, arg);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T born(Object[] args) throws Exception {
-		return (T) method.invoke(null, Mirror.evalArgToRealArray(args));
-	}
-
-	@Override
-	public void clearArgs() {
-		arg = null;
+	public T born(Object[] args) {
+		try {
+			return (T) method.invoke(null, Mirror.evalArgToRealArray(args));
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 }

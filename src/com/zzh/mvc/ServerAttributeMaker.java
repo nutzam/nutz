@@ -1,12 +1,11 @@
 package com.zzh.mvc;
 
-import java.util.Map;
-
 import javax.servlet.ServletContext;
 
-import com.zzh.ioc.ObjectMaker;
+import com.zzh.ioc.ValueMaker;
+import com.zzh.ioc.meta.Val;
 
-public class ServerAttributeMaker extends ObjectMaker {
+public class ServerAttributeMaker implements ValueMaker {
 
 	private ServletContext context;
 
@@ -15,12 +14,12 @@ public class ServerAttributeMaker extends ObjectMaker {
 	}
 
 	@Override
-	protected boolean accept(Map<String, Object> properties) {
-		return properties.containsKey("server");
+	public String forType() {
+		return Val.server;
 	}
 
 	@Override
-	protected Object make(Map<String, Object> properties) {
-		return context.getAttribute(properties.get("server").toString());
+	public Object make(Val val) {
+		return context.getAttribute(val.getValue().toString());
 	}
 }

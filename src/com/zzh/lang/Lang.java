@@ -137,8 +137,8 @@ public class Lang {
 		return new StringWriter(sb);
 	}
 
-	public static StringOutputStream ops() {
-		return new StringOutputStream(new StringBuilder());
+	public static StringOutputStream ops(StringBuilder sb) {
+		return new StringOutputStream(sb);
 	}
 
 	public static <T> T[] array(T... eles) {

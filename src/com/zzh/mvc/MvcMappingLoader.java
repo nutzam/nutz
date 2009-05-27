@@ -1,22 +1,28 @@
 package com.zzh.mvc;
 
-import com.zzh.ioc.Mapping;
-import com.zzh.ioc.MappingLoader;
+import com.zzh.ioc.ObjLoader;
+import com.zzh.ioc.meta.Obj;
 
-public class MvcMappingLoader implements MappingLoader {
+public class MvcMappingLoader implements ObjLoader {
 
-	private MappingLoader loader;
+	private ObjLoader loader;
 
-	public MvcMappingLoader(MappingLoader loader) {
+	public MvcMappingLoader(ObjLoader loader) {
 		this.loader = loader;
 	}
 
 	@Override
-	public Mapping load(String name) {
-		Mapping re = loader.load(name);
-		if (null != re.getObjectType() && Action.class.isAssignableFrom(re.getObjectType()))
-			re.setSingleton(false);
-		return re;
+	public Obj load(String name) {
+		Obj obj = loader.load(name);
+		if (null != obj.getType()) {
+			try {
+				Class<?> type = Class.forName(obj.getType());
+				if (Action.class.isAssignableFrom(type)) {
+					obj.setSingleton(false);
+				}
+			} catch (ClassNotFoundException e) {}
+		}
+		return obj;
 	}
 
 	@Override

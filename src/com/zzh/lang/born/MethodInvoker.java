@@ -13,19 +13,22 @@ public class MethodInvoker<T> implements BorningInvoker<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T born() throws Exception {
-		return (T) method.invoke(null, args);
+	public T born() {
+		try {
+			return (T) method.invoke(null, args);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T born(Object[] args) throws Exception {
-		return (T) method.invoke(null, args);
-	}
-
-	@Override
-	public void clearArgs() {
-		args = null;
+	public T born(Object[] args) {
+		try {
+			return (T) method.invoke(null, args);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 }

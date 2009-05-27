@@ -11,17 +11,22 @@ public class EmptyArgsMethodInvoker<T> implements BorningInvoker<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T born() throws Exception {
-		return (T) method.invoke(null);
+	public T born() {
+		try {
+			return (T) method.invoke(null);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public T born(Object[] args) throws Exception {
-		return (T) method.invoke(null);
+	public T born(Object[] args) {
+		try {
+			return (T) method.invoke(null);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
-
-	@Override
-	public void clearArgs() {}
 
 }

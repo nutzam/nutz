@@ -7,25 +7,28 @@ import com.zzh.lang.Mirror;
 public class DynamicConstructorInvoker<T> implements BorningInvoker<T> {
 
 	private Constructor<T> c;
-	private Object arg;
+	private Object args;
 
 	public DynamicConstructorInvoker(Constructor<T> c, Object arg) {
 		this.c = c;
-		this.arg = arg;
+		this.args = arg;
 	}
 
-	public T born() throws Exception {
-		return c.newInstance(arg);
+	public T born() {
+		try {
+			return c.newInstance(args);
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 	@Override
-	public T born(Object[] args) throws Exception {
-		return c.newInstance(Mirror.evalArgToRealArray(args));
-	}
-
-	@Override
-	public void clearArgs() {
-		arg = null;
+	public T born(Object[] args) {
+		try {
+			return c.newInstance(Mirror.evalArgToRealArray(args));
+		} catch (Exception e) {
+			throw new BorningException(e);
+		}
 	}
 
 }

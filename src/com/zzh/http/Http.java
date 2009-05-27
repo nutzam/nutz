@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.net.URL;
 import java.net.URLConnection;
@@ -11,9 +12,42 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
+import com.zzh.http.header.J2EE;
 import com.zzh.lang.Lang;
 
 public class Http {
+
+	public static void main(String[] args) {
+		Cookie cookie = new Cookie();
+		J2EE.setSessionID(cookie, "6EAFAF28BB56CF95061C403CB447B154");
+		// cookie.set("ABC", "DDD");
+		Header header = header(cookie);
+		// JSESSIONID=A77F5D4960669B7375EFFB081A8CC9C7
+		String url = "http://localhost:8888/test/c/d?A=123";
+		Response re = Sender.create(
+				Request.create(url, Request.METHOD.GET, "{id:12,tt:66}", header)).send();
+		System.out.println(J2EE.getSessionID(re));
+		System.out.println(re.printAll());
+	}
+
+	public static Header header() {
+		return header(null);
+	}
+
+	public static Header header(Cookie cookie) {
+		Header header = new Header();
+		header.set("user-agent", "Nutz.Robot");
+		header.set("accept-encoding", "gzip,deflate,bzip2,sdch");
+		header.set("accept", "text/xml,application/xml,application/xhtml+xml,text/html;"
+				+ "q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
+		header.set("accept-language", "en-US,en,zh,zh-CN");
+		header.set("accept-charset", "ISO-8859-1,*,utf-8");
+		header.set("connection", "Keep-Alive");
+		header.set("cache-control", "max-age=0");
+		if (null != cookie)
+			header.set("cookie", cookie.remove("Path").toString());
+		return header;
+	}
 
 	public static class multipart {
 		public static String getBoundary(String contentType) {
@@ -48,23 +82,8 @@ public class Http {
 		}
 	}
 
-	public static String get(String url, String encoding) {
-		StringBuilder sb = new StringBuilder();
-		try {
-			URL oUrl = new URL(url);
-			URLConnection conn = oUrl.openConnection();
-			BufferedReader br = new BufferedReader(null == encoding ? new InputStreamReader(conn
-					.getInputStream()) : new InputStreamReader(conn.getInputStream(), encoding));
-			String line;
-			while ((line = br.readLine()) != null) {
-				sb.append(line).append('\n');
-			}
-			br.close();
-			br = null;
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		return sb.toString();
+	public static Response get(String url) {
+		return Sender.create(Request.get(url)).send();
 	}
 
 	public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
@@ -108,6 +127,12 @@ public class Http {
 			throw Lang.wrapThrow(e);
 		}
 		return sb.toString();
+	}
+
+	public static String encode(Object s) throws UnsupportedEncodingException {
+		if (null == s)
+			return "";
+		return URLEncoder.encode(s.toString(), "UTF-8");
 	}
 
 }

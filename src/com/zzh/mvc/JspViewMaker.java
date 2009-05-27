@@ -1,18 +1,19 @@
 package com.zzh.mvc;
 
-import java.util.Map;
+import com.zzh.ioc.ValueMaker;
+import com.zzh.ioc.meta.Val;
 
-import com.zzh.ioc.ObjectMaker;
 import com.zzh.mvc.view.JspView;
 
-public class JspViewMaker extends ObjectMaker {
+public class JspViewMaker implements ValueMaker {
+
 	@Override
-	protected boolean accept(Map<String, Object> properties) {
-		return properties.containsKey("jsp");
+	public String forType() {
+		return Val.jsp;
 	}
 
 	@Override
-	protected View make(Map<String, Object> properties) {
-		return new JspView(properties.get("jsp").toString());
+	public Object make(Val val) {
+		return new JspView(val.getValue().toString());
 	}
 }

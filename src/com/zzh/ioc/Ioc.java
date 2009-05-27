@@ -1,6 +1,6 @@
 package com.zzh.ioc;
 
-import java.util.Map;
+import com.zzh.ioc.meta.Val;
 
 public interface Ioc {
 
@@ -20,9 +20,9 @@ public interface Ioc {
 	 */
 	void depose();
 
-	ObjectMaker findMaker(Map<String, Object> map);
+	Ioc add(ValueMaker maker);
 
-	Ioc add(ObjectMaker maker);
+	ValueMaker findValueMaker(Val val);
 
 	boolean isSingleton(Class<?> classOfT, String name);
 

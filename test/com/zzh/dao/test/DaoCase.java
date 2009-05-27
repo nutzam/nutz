@@ -6,19 +6,19 @@ import org.junit.Before;
 import com.zzh.Main;
 import com.zzh.dao.Dao;
 import com.zzh.dao.test.meta.Pojos;
-import com.zzh.ioc.Nut;
+import com.zzh.ioc.Ioc;
 
 public abstract class DaoCase {
 
 	protected Dao dao;
-	protected Nut nut;
+	protected Ioc ioc;
 	protected Pojos pojos;
 
 	@Before
 	public void setUp() {
-		nut = Main.getNut("com/zzh/dao/test/meta/pojo.js");
-		dao = nut.get(Dao.class, "dao");
-		pojos = nut.get(Pojos.class, "metas");
+		ioc = Main.getIoc("com/zzh/dao/test/meta/pojo.js");
+		dao = ioc.get(Dao.class, "dao");
+		pojos = ioc.get(Pojos.class, "metas");
 		before();
 	}
 

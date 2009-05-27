@@ -110,8 +110,8 @@ class JsonRendering {
 		appendBraceBegin();
 		increaseFormatIndent();
 		ArrayList<Pair> list = new ArrayList<Pair>(map.size());
-		for (Iterator it = map.keySet().iterator(); it.hasNext();) {
-			String name = it.next().toString();
+		for (Object key : map.keySet()) {
+			String name = null == key ? "null" : key.toString();
 			Object value = map.get(name);
 			if (!this.isIgnore(name, value))
 				list.add(new Pair(name, value));

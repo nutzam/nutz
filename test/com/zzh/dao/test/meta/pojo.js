@@ -2,8 +2,8 @@
 /*------------------------------------------------------------------*/
 // Data source
 dataSource: { 
-	type 	: "org.apache.commons.dbcp.BasicDataSource",
-	depmethod : "close",
+	type 	 : "org.apache.commons.dbcp.BasicDataSource",
+	deposeby : "close",
 	fields	: {
 		driverClassName	: {java :"com.zzh.Main.driver"},
 		url				: {java :"com.zzh.Main.url"},

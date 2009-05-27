@@ -1,10 +1,7 @@
 package com.zzh.lang.born;
 
-public interface BorningInvoker<T> {
+public interface BorningInvoker<T>  extends Borning<T> {
 
-	T born() throws Exception;
-
-	void clearArgs();
-
-	T born(Object[] args) throws Exception;
+	T born(Object[] args);
+	
 }

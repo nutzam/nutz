@@ -4,11 +4,11 @@ import java.lang.reflect.Method;
 
 import com.zzh.lang.Lang;
 
-class MethodDeposer implements Deposer<Object> {
+public class MethodDeposer implements Deposer<Object> {
 
 	private Method method;
 
-	MethodDeposer(Method method) {
+	public MethodDeposer(Method method) {
 		this.method = method;
 	}
 

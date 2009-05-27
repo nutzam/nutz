@@ -1,13 +1,13 @@
 package com.zzh.mvc;
 
 import java.io.File;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 
-import com.zzh.ioc.ObjectMaker;
+import com.zzh.ioc.ValueMaker;
+import com.zzh.ioc.meta.Val;
 
-public class ServerFileMaker extends ObjectMaker {
+public class ServerFileMaker implements ValueMaker {
 
 	private ServletContext context;
 
@@ -16,13 +16,13 @@ public class ServerFileMaker extends ObjectMaker {
 	}
 
 	@Override
-	protected boolean accept(Map<String, Object> properties) {
-		return properties.containsKey("file");
+	public String forType() {
+		return Val.file;
 	}
 
 	@Override
-	protected File make(Map<String, Object> properties) {
-		String path = context.getRealPath(properties.get("file").toString());
+	public Object make(Val val) {
+		String path = context.getRealPath(val.getValue().toString());
 		return new File(path);
 	}
 }

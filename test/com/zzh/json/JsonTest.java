@@ -27,6 +27,12 @@ import com.zzh.lang.stream.StringOutputStream;
 public class JsonTest {
 
 	@Test
+	public void with_var_ioc_as_prefix() {
+		Map<?,?> map = (Map<?, ?>) Json.fromJson("var ioc = {id:6};");
+		assertEquals(6,map.get("id"));
+	}
+
+	@Test
 	public void when_name_has_unsupport_char() {
 		Map map = new HashMap();
 		map.put("/tt", 123);

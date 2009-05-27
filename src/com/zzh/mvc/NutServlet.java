@@ -11,9 +11,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.zzh.Const;
 import com.zzh.ioc.Ioc;
-import com.zzh.ioc.MappingLoader;
-import com.zzh.ioc.Nut;
-import com.zzh.ioc.json.JsonMappingLoader;
+import com.zzh.ioc.ObjLoader;
+import com.zzh.ioc.impl.NutIoc;
+import com.zzh.ioc.json.JsonLoader;
 import com.zzh.lang.Files;
 import com.zzh.lang.Lang;
 import com.zzh.lang.Strings;
@@ -32,11 +32,11 @@ public class NutServlet extends HttpServlet {
 			/*
 			 * eval MappingLoader
 			 */
-			MappingLoader loader = null;
+			ObjLoader loader = null;
 			if (!Strings.isBlank(config.getInitParameter(Const.MVC_BY_JSON))) {
 				String[] jsons = Strings.splitIgnoreBlank(config
 						.getInitParameter(Const.MVC_BY_JSON));
-				loader = new JsonMappingLoader(jsons);
+				loader = new JsonLoader(jsons);
 			} else if (!Strings.isBlank(config.getInitParameter(Const.MVC_BY_DB))) {
 				throw Lang.makeThrow("This feature will coming soonly :P");
 			} else {
@@ -55,7 +55,7 @@ public class NutServlet extends HttpServlet {
 			if (iocInSession) {
 				getServletContext().setAttribute(Ioc.class.getName(), loader);
 			} else {
-				Ioc ioc = new Nut(new MvcMappingLoader(loader));
+				Ioc ioc = new NutIoc(new MvcMappingLoader(loader));
 				getServletContext().setAttribute(Ioc.class.getName(), ioc);
 			}
 			/*
@@ -72,6 +72,8 @@ public class NutServlet extends HttpServlet {
 				if (null == msgDir || !msgDir.exists())
 					throw Lang.makeThrow("Can not access message file directory '%s'", msgDirPath);
 				String msgSuffix = config.getInitParameter(Const.MSG_SUFFIX);
+				if (Strings.isBlank(msgSuffix))
+					msgSuffix = Const.MSG_SUFFIX_DEFAULT;
 				Localizations.init(config.getServletContext(), msgDir, msgSuffix);
 			}
 			/*

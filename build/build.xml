@@ -17,8 +17,8 @@
 	<property name="SRC" location="${PROJECT_HOME}/src" />
 	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
 
-	<property name="v" value="-1.a.11" />
-	<property name="zlang" value="com/zzh/lang/**,com/zzh/castor/**" />
+	<property name="v" value="-1.a.12" />
+	<property name="zlang" value="com/zzh/lang/**,com/zzh/castor/**,com/zzh/*.*" />
 	<property name="zjson" value="com/zzh/json/**" />
 	<property name="zdao" value="com/zzh/dao/**,com/zzh/service/**,com/zzh/trans/**" />
 	<property name="zioc" value="com/zzh/ioc/**" />

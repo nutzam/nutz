@@ -1,12 +1,11 @@
 package com.zzh.mvc;
 
-import java.util.Map;
-
 import javax.servlet.ServletConfig;
 
-import com.zzh.ioc.ObjectMaker;
+import com.zzh.ioc.ValueMaker;
+import com.zzh.ioc.meta.Val;
 
-public class ServerConfigMaker extends ObjectMaker {
+public class ServerConfigMaker implements ValueMaker {
 
 	private ServletConfig config;
 
@@ -15,14 +14,14 @@ public class ServerConfigMaker extends ObjectMaker {
 	}
 
 	@Override
-	protected boolean accept(Map<String, Object> properties) {
-		return properties.containsKey("config");
+	public String forType() {
+		return Val.config;
 	}
 
 	@Override
-	protected String make(Map<String, Object> properties) {
-		String name = properties.get("config").toString();
-		if ("$server-name".equals(name))
+	public Object make(Val val) {
+		String name = val.getValue().toString();
+		if ("@name".equals(name))
 			return config.getServletName();
 		return config.getInitParameter(name);
 	}

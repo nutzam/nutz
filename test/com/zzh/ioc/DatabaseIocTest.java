@@ -9,11 +9,12 @@ import org.junit.Test;
 import com.zzh.dao.test.DaoCase;
 import com.zzh.dao.test.meta.Base;
 import com.zzh.dao.test.meta.Platoon;
-import com.zzh.ioc.db.DatabaseMappingLoader;
+import com.zzh.ioc.db.DatabaseLoader;
 import com.zzh.ioc.meta.Map2Obj;
 import com.zzh.ioc.meta.Obj;
 import com.zzh.ioc.meta.ObjService;
 import com.zzh.json.Json;
+import com.zzh.ioc.impl.NutIoc;
 
 public class DatabaseIocTest extends DaoCase {
 
@@ -23,7 +24,7 @@ public class DatabaseIocTest extends DaoCase {
 	@Override
 	protected void before() {
 		pojos.execFile("com/zzh/ioc/dbtest.sqls");
-		ioc = new Nut(new DatabaseMappingLoader(dao));
+		ioc = new NutIoc(new DatabaseLoader(dao));
 		srv = new ObjService(dao);
 	}
 

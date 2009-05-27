@@ -41,10 +41,12 @@ var ioc = {
 			field :"account",
 			bs : [ {
 				id :11,
-				name :"b1"
+				name :"b1",
+				ioc : {refer:"@ioc"}
 			}, {
 				id :22,
-				name :"b2"
+				name :"b2",
+				ioc : {refer:"@ioc"}
 			} ]
 		}
 	},

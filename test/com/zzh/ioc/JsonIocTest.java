@@ -11,10 +11,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.zzh.ioc.json.JsonMappingLoader;
+import com.zzh.ioc.json.JsonLoader;
 import com.zzh.lang.Mirror;
 import com.zzh.lang.Strings;
 import com.zzh.lang.meta.Email;
+import com.zzh.ioc.impl.NutIoc;
 
 public class JsonIocTest {
 
@@ -60,7 +61,7 @@ public class JsonIocTest {
 
 	@Before
 	public void setUp() throws Exception {
-		ioc = new Nut(new JsonMappingLoader("com/zzh/ioc/objects.js"));
+		ioc = new NutIoc(new JsonLoader("com/zzh/ioc/objects.js"));
 	}
 
 	@After
@@ -89,8 +90,10 @@ public class JsonIocTest {
 		assertEquals(2, a.bs.length);
 		assertEquals(11, a.bs[0].id);
 		assertEquals("b1", a.bs[0].name);
+		assertEquals(ioc,a.bs[0].ioc);
 		assertEquals(22, a.bs[1].id);
 		assertEquals("b2", a.bs[1].name);
+		assertEquals(ioc,a.bs[1].ioc);
 	}
 
 	@Test

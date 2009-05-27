@@ -2,12 +2,12 @@ package com.zzh;
 
 import java.io.FileInputStream;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
-import com.zzh.ioc.Nut;
-import com.zzh.ioc.json.JsonMappingLoader;
+import com.zzh.ioc.Ioc;
+import com.zzh.ioc.impl.NutIoc;
+import com.zzh.ioc.json.JsonLoader;
 import com.zzh.lang.Files;
 import com.zzh.lang.Lang;
 
@@ -50,17 +50,16 @@ public class Main {
 		return pp.getProperty("engin");
 	}
 
+	private static Map<String, Ioc> nuts = new HashMap<String, Ioc>();
 
-	private static Map<String, Nut> nuts = new HashMap<String, Nut>();
-
-	public static Nut getNut(String key) {
-		Nut nut = nuts.get(key);
+	public static Ioc getIoc(String key) {
+		Ioc nut = nuts.get(key);
 		if (null == nut) {
 			synchronized (Main.class) {
 				nut = nuts.get(key);
 				try {
 					if (null == nut) {
-						nut = new Nut(new JsonMappingLoader(key));
+						nut = new NutIoc(new JsonLoader(key));
 						nuts.put(key, nut);
 					}
 				} catch (Exception e) {
@@ -72,8 +71,10 @@ public class Main {
 	}
 
 	public static void depose() {
-		for (Iterator<Nut> it = nuts.values().iterator(); it.hasNext();)
-			it.next().depose();
+		for (Ioc ioc : nuts.values())
+			ioc.depose();
+		nuts.clear();
+		nuts = null;
 	}
 
 }
