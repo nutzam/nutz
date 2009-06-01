@@ -19,6 +19,8 @@ import com.zzh.lang.Mirror;
 import com.zzh.lang.Strings;
 import com.zzh.lang.segment.Segment;
 
+import static java.lang.String.*;
+
 /**
  * Preserver plug name "condition"
  * 
@@ -70,7 +72,7 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 				List<Integer> indexes = this.segment.getIndex(key);
 				if (null == indexes || indexes.size() == 0)
 					continue;
-				if (null == value && mirror == null) {
+				if (null == value) {
 					Pss.setNull(stat, indexes.iterator(), java.sql.Types.VARCHAR);
 				} else if (null != mirror && mirror.isBoolean()) {
 					Pss.setBoolean(stat, indexes.iterator(), (Boolean) value);
@@ -100,7 +102,6 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 				} else {
 					Pss.setObject(stat, indexes.iterator(), value);
 				}
-
 			} catch (SQLException e) {
 				throw new DaoException(String.format(
 						"Fail to prepareStatement: %s, for the reason '%s'", key, e.getMessage()));
@@ -138,10 +139,25 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 			Object obj = this.get(key);
 			if (null == obj)
 				seg.set(key, key.charAt(0) == '.' ? "" : "NULL");
-			else if (key.charAt(0) == '.' || Sqls.isNotNeedQuote(obj.getClass())) {
-				seg.set(key, Castors.me().castToString(obj));
-			} else {
-				seg.set(key, "'" + Castors.me().castToString(obj) + "'");
+			else {
+				Mirror<?> mirror = Mirror.me(obj.getClass());
+				if (mirror.isEnum() && null != this.getEntity()) {
+					EntityField ef = getEntity().getField(key);
+					if (ef.isInt()) {
+						seg.set(key, ((Enum<?>) obj).ordinal());
+					} else {
+						seg.set(key, "'" + ((Enum<?>) obj).name() + "'");
+					}
+				} else if (mirror.is(Timestamp.class)) {
+					seg.set(key, format("'%s'", obj.toString()));
+				} else if (mirror.isChar()) {
+					seg.set(key, format("'%s'", (0 == (Character) obj ? ' ' : (Character) obj)));
+				} else if (key.charAt(0) == '.' || Sqls.isNotNeedQuote(obj.getClass())) {
+					seg.set(key, Castors.me().castToString(obj));
+				} else {
+					seg.set(key, format("'%s'", Sqls.escapeFieldValue(Castors.me()
+							.castToString(obj))));
+				}
 			}
 		}
 		seg.set("condition", evalCondition());

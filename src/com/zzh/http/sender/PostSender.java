@@ -25,7 +25,7 @@ public class PostSender extends Sender {
 			setupRequestHeader();
 			setupDoInputOutputFlag();
 			Writer w = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-			Map<String, Object> params = request.getParams();
+			Map<String, ?> params = request.getParams();
 			if (null != params && params.size() > 0) {
 				for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
 					String key = it.next();

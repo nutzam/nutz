@@ -19,7 +19,7 @@ public class Response {
 		protocal = codes[0];
 		status = Integer.parseInt(codes[1]);
 		detail = codes[2];
-		this.header = new Header(reHeader);
+		this.header = Header.create(reHeader);
 		String s = header.get("Set-Cookie");
 		if (null != s)
 			this.cookie = new Cookie(s);
@@ -101,28 +101,8 @@ public class Response {
 		}
 
 	}
-
-	public String printAll() {
-		StringBuilder sb = new StringBuilder();
-		Writer w = Lang.opw(sb);
-		try {
-			w.write(String.format("%s %d %s\n\n", protocal, status, detail));
-		} catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-		printHeader(w);
-		print(w);
-		return sb.toString();
-	}
-
-	public String printHeader() {
-		StringBuilder sb = new StringBuilder();
-		Writer w = Lang.opw(sb);
-		printHeader(w);
-		return sb.toString();
-	}
-
-	public String print() {
+	
+	public String getContent() {
 		StringBuilder sb = new StringBuilder();
 		Writer w = Lang.opw(sb);
 		print(w);

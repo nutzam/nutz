@@ -1,8 +1,8 @@
 package com.zzh.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 
@@ -16,11 +16,14 @@ public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 
 	@Override
 	public Object execute(Connection conn) throws Exception {
-		PreparedStatement stat = null;
+		Statement stat = null;
 		try {
-			stat = conn.prepareStatement(this.getPreparedStatementString());
-			super.setupStatement(stat);
-			stat.execute();
+			// stat = conn.prepareStatement(this.getPreparedStatementString());
+			// super.setupStatement(stat);
+			// stat.execute();
+			stat = conn.createStatement();
+			String sql = this.toString();
+			executeSql(stat, sql);
 		} catch (SQLException e) {
 			throw new DaoException(this, e);
 		} finally {
@@ -34,6 +37,10 @@ public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 			return getResult();
 		}
 		return null;
+	}
+
+	private void executeSql(Statement stat, String sql) throws SQLException {
+		stat.execute(sql);
 	}
 
 }

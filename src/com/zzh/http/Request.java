@@ -34,15 +34,14 @@ public class Request {
 
 	@SuppressWarnings("unchecked")
 	public static Request create(String url, METHOD method, String paramsAsJson) {
-		return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson));
+		return create(url, method, (Map<String, ?>) Json.fromJson(paramsAsJson));
 	}
 
-	public static Request create(String url, METHOD method, Map<String, Object> params) {
-		return Request.create(url, method, params, Http.header());
+	public static Request create(String url, METHOD method, Map<String, ?> params) {
+		return Request.create(url, method, params, Header.create());
 	}
 
-	public static Request create(String url, METHOD method, Map<String, Object> params,
-			Header header) {
+	public static Request create(String url, METHOD method, Map<String, ?> params, Header header) {
 		return new Request().setMethod(method).setParams(params).setUrl(url).setHeader(header);
 	}
 
@@ -51,7 +50,7 @@ public class Request {
 	private String url;
 	private METHOD method;
 	private Header header;
-	private Map<String, Object> params;
+	private Map<String, ?> params;
 
 	public URL getUrl() {
 		StringBuilder sb = new StringBuilder(url);
@@ -71,17 +70,12 @@ public class Request {
 		}
 	}
 
-	public Map<String, Object> getParams() {
+	public Map<String, ?> getParams() {
 		return params;
 	}
 
-	public Request setParams(Map<String, Object> params) {
+	private Request setParams(Map<String, ?> params) {
 		this.params = params;
-		return this;
-	}
-
-	public Request setParam(String name, String value) {
-		this.params.put(name, value);
 		return this;
 	}
 
@@ -128,7 +122,7 @@ public class Request {
 	public Cookie getCookie() {
 		String s = header.get("cookie");
 		if (null == s)
-			return null;
+			return new Cookie();
 		return new Cookie(s);
 	}
 

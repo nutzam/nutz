@@ -23,6 +23,17 @@ public class SupportedFieldType extends DaoCase {
 		A, B
 	}
 
+	@Test
+	public void check_update_sqlTimestamp() {
+		EntityTypes exp = new EntityTypes();
+		exp.name = "T";
+		Timestamp tm = new Timestamp(System.currentTimeMillis());
+		exp.sqlDT = tm;
+		dao.insert(exp);
+		exp = dao.fetch(EntityTypes.class, "T");
+		assertTrue(tm.equals(exp.sqlDT));
+	}
+
 	@Table("dao_supported_type")
 	public static class EntityTypes {
 		@Column
@@ -153,6 +164,14 @@ public class SupportedFieldType extends DaoCase {
 				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
 						ttValue);
 		}
+		assertTrue(true);
+	}
+
+	@Test
+	public void check_insert_null_timestamp_field() {
+		EntityTypes exp = new EntityTypes();
+		exp.name = "JJ";
+		dao.insert(exp);
 		assertTrue(true);
 	}
 
