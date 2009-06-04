@@ -8,6 +8,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.zzh.http.sender.FilePostSender;
 import com.zzh.http.sender.GetSender;
 import com.zzh.http.sender.PostSender;
 import com.zzh.lang.Lang;
@@ -21,6 +22,8 @@ public abstract class Sender {
 	public static Sender create(Request request) {
 		if (request.isGet())
 			return new GetSender(request);
+		else if (request.isMultipart())
+			return new FilePostSender(request);
 		return new PostSender(request);
 	}
 

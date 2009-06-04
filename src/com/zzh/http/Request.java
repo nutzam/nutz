@@ -10,7 +10,7 @@ import com.zzh.json.Json;
 public class Request {
 
 	public static enum METHOD {
-		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT
+		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, MULTIPART
 	}
 
 	private static HashMap<String, Object> EMPTY = new HashMap<String, Object>();
@@ -89,7 +89,7 @@ public class Request {
 	}
 
 	public boolean isMultipart() {
-		throw new RuntimeException("no implment yet!!!");
+		return METHOD.MULTIPART == method;
 	}
 
 	public boolean isGet() {
