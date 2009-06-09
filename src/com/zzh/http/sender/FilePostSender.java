@@ -10,7 +10,6 @@ import java.util.Map;
 import com.zzh.http.HttpException;
 import com.zzh.http.Request;
 import com.zzh.http.Response;
-import com.zzh.http.Request.METHOD;
 
 public class FilePostSender extends PostSender {
 
@@ -36,7 +35,7 @@ public class FilePostSender extends PostSender {
 					String key = it.next();
 					File f = new File(params.get(key).toString());
 					if(f.exists()){
-						outs.writeBytes("content-disposition:	form-data;	name=\""+ key + "\";	filename=\""+ params.get(key) +"\"\r\n");
+						outs.writeBytes("Content-Disposition:	form-data;	name=\""+ key + "\";	filename=\""+ params.get(key) +"\"\r\n");
 						outs.writeBytes("Content-Type:   application/octet-stream\r\n\r\n");
 				        InputStream is = new FileInputStream(f);  			        	
 				        byte[] buffer = new byte[is.available()];
