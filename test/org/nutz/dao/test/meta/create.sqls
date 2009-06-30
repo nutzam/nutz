@@ -1,0 +1,39 @@
+/*--------------------------------------------------*/
+/*create.country*/
+CREATE TABLE dao_country (
+  id  SERIAL PRIMARY KEY,
+  name  VARCHAR(50) NOT NULL UNIQUE
+);
+/*--------------------------------------------------*/
+/*create.platoon*/
+CREATE TABLE dao_platoon (
+  id  SERIAL PRIMARY KEY,
+  name  VARCHAR(50) NOT NULL UNIQUE,
+  base  VARCHAR(50) ,
+  leader  VARCHAR(50) 
+);
+/*--------------------------------------------------*/
+/*create.base*/
+CREATE TABLE dao_base (
+   name VARCHAR(50) PRIMARY KEY,
+   cid INT ,
+   level INT 
+);
+/*--------------------------------------------------*/
+/*create.fighter*/
+CREATE TABLE dao_fighter (
+  id  SERIAL PRIMARY KEY,
+  type  VARCHAR(20) 
+);
+/*--------------------------------------------------*/
+/*create.base.fighters*/
+CREATE TABLE dao_m_base_fighter (
+  bname VARCHAR(50),
+  fid INT
+);
+/*--------------------------------------------------*/
+/*create.waveband*/
+CREATE TABLE dao_waveband (
+   name VARCHAR(50) PRIMARY KEY,
+   value FLOAT 
+);

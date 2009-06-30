@@ -1,0 +1,21 @@
+/*.drop*/
+DROP TABLE IF EXISTS srv_person;
+/*-------------------------------------------------------------------------*/
+/*.create*/
+CREATE TABLE srv_person (
+	id SERIAL PRIMARY KEY,
+	name VARCHAR(20) NOT NULL UNIQUE,
+	email VARCHAR(64) NOT NULL,
+	fid INT NOT NULL,
+	mid INT NOT NULL,
+	master varchar(32) default NULL
+)${.engine};
+/*-------------------------------------------------------------------------*/
+/*.profile.drop*/
+DROP TABLE IF EXISTS srv_profile;
+/*-------------------------------------------------------------------------*/
+/*.profile.create*/
+CREATE TABLE srv_profile (
+	id BIGINT PRIMARY KEY,
+	city VARCHAR(20) NOT NULL
+)${.engine};

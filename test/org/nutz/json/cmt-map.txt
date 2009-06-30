@@ -1,0 +1,18 @@
+
+// head
+ /* block 
+*/{
+	/*A*/
+	A:/*7*/ 34, // value A
+	//B
+	B: "XYZ" ,
+	/* this is a array */
+	arr : // the array
+		[ /*it is a int*/ 34 //end int
+		   , /*boolean*/ true /*end boolean*/
+		   // then I will make a string
+		   , //string
+		    "abc" //end string
+		
+		]
+}// dddddddddddddddddddddd

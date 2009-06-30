@@ -1,0 +1,8 @@
+/* one.drop */
+DROP TABLE IF EXISTS t_one;
+/* one.create */
+CREATE TABLE t_one (
+  id SERIAL PRIMARY KEY,
+  txt VARCHAR(32),
+  modified TIMESTAMP
+);

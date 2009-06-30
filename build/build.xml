@@ -17,12 +17,13 @@
 	<property name="SRC" location="${PROJECT_HOME}/src" />
 	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
 
-	<property name="v" value="-1.a.12" />
-	<property name="zlang" value="com/zzh/lang/**,com/zzh/castor/**,com/zzh/*.*" />
-	<property name="zjson" value="com/zzh/json/**" />
-	<property name="zdao" value="com/zzh/dao/**,com/zzh/service/**,com/zzh/trans/**" />
-	<property name="zioc" value="com/zzh/ioc/**" />
-	<property name="zmvc" value="com/zzh/mvc/**,com/zzh/filepool/**,com/zzh/http/**" />
+	<property name="v" value="-1.a.14a" />
+	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
+	<property name="zjson" value="org/nutz/json/**" />
+	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />
+	<property name="zaop" value="org/nutz/aop/**,org/nutz/log/**" />
+	<property name="zioc" value="org/nutz/ioc/**,${zaop}" />
+	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT-LIB}" casesensitive="no">
@@ -48,9 +49,9 @@
 	</target>
 
 	<target name="jar" depends="compile">
-		<jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}"/>
-		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}"
-				includes="${zlang},${zjson},${zioc},${zdao},${zmvc}"/>
+		<echo message="TMP: ${TMP}" />
+		<jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}" />
+		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
 		<jar destfile="${OP}/nutz.lang${v}.jar" basedir="${TMP}" includes="${zlang}" />
 		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
 		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />

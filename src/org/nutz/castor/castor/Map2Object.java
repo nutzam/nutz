@@ -1,0 +1,18 @@
+package org.nutz.castor.castor;
+
+import java.util.Map;
+
+import org.nutz.castor.Castor;
+import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
+
+@SuppressWarnings("unchecked")
+public class Map2Object extends Castor<Map, Object> {
+
+	@Override
+	protected Object cast(Map src, Class<?> toType, String... args)
+			throws FailToCastObjectException {
+		return Lang.map2Object(src, toType);
+	}
+
+}

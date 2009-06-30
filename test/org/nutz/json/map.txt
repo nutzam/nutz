@@ -1,0 +1,21 @@
+{
+	a1 :"value1",
+	m1 :{
+		m12 :{
+			w1 :"haha",
+			w2 :"fuck"
+		},
+		y :45,
+		x :12
+	},
+	a2 :35,
+	m2 :{
+		tomy :"nice",
+		today :"good",
+		bool-true : true,
+		bool-false: false,
+		arr : ["E1","E2"],
+		null: null
+	},
+	a3 :4.7
+}
