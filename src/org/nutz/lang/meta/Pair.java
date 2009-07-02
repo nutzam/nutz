@@ -6,9 +6,15 @@ public class Pair {
 
 	public Pair() {}
 
-	private static final String PTN_1 = "%s";
-	private static final String PTN_2 = "'%s'";
-	private static final String PTN_3 = "\"%s\"";
+	private static final String PTN_1 = "%s=%s";
+	private static final String PTN_2 = "%s='%s'";
+	private static final String PTN_3 = "%s=\"%s\"";
+
+	public Pair(String name, String value) {
+		this.name = name;
+		this.value = value;
+		pattern = PTN_3;
+	}
 
 	public Pair(String s) {
 		String[] ss = Strings.splitIgnoreBlank(s, "=");

@@ -1,6 +1,7 @@
 package org.nutz.filepool;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.nutz.lang.Files;
@@ -12,8 +13,8 @@ public class NutFilePool implements FilePool {
 		this(homePath, 0);
 	}
 
-	public NutFilePool(String homePath, int fileNumber) {
-		this.fileNumber = fileNumber;
+	public NutFilePool(String homePath, int size) {
+		this.size = size;
 		home = Files.findFile(homePath);
 		if (null == home) {
 			home = new File(homePath);
@@ -30,7 +31,12 @@ public class NutFilePool implements FilePool {
 		File last = home;
 		String[] subs = null;
 		while (last.isDirectory()) {
-			subs = last.list();
+			subs = last.list(new FilenameFilter(){
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.matches("^([\\d]{2})([.][a-zA-Z]{1,})?$");
+				}
+			});
 			if (null != subs && subs.length > 0) {
 				last = new File(last.getAbsolutePath() + "/" + subs[subs.length - 1]);
 				if (last.isFile()) {
@@ -45,7 +51,7 @@ public class NutFilePool implements FilePool {
 
 	private File home;
 	private long cursor;
-	private int fileNumber;
+	private int size;
 
 	@Override
 	public void empty() throws IOException {
@@ -56,8 +62,8 @@ public class NutFilePool implements FilePool {
 
 	@Override
 	public File createFile(long id, String suffix) throws IOException {
-		if (fileNumber > 0 && id >= fileNumber)
-			Lang.makeThrow("Id (%d) is out of range (%d)", id, fileNumber);
+		if (size > 0 && id >= size)
+			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
 		File re = Utils.getFileById(home, id, suffix);
 		if (!re.exists())
 			Files.createNewFile(re);
@@ -66,7 +72,7 @@ public class NutFilePool implements FilePool {
 
 	@Override
 	public File createFile(String suffix) throws IOException {
-		if (fileNumber > 0 && cursor >= fileNumber)
+		if (size > 0 && cursor >= size)
 			cursor = -1;
 		return createFile(++cursor, suffix);
 	}
