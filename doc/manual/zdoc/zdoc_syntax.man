@@ -1,0 +1,51 @@
+#index:3
+
+概述
+	* zDoc 是纯文本的文档
+	* zDoc 必须是 UTF-8 编码的
+	* 它以行为单位进行文档解析
+
+关于标题与段落
+	* 缩进的行是它上一行的{*子}
+	* 拥有{*子}的行就是标题行
+	* zDoc 理论上拥有无限层次的标题行
+
+关于超链接
+	* 在行内 被方括弧`[`和`]`包裹起来的就是超链接
+	* `[http://www.google.com]` 将显示成 [http://www.google.com]
+	* `[http://www.google.com Google]` 将显示成 [http://www.google.com Google]
+	* `[http://www.google.com text with whitespace]` 将显示成 [http://www.google.com text with whitespace]
+	* `[http://www.twitter.com @http://assets0.twitter.com/images/twitter_logo_header.png@]` 将显示成
+		[http://www.twitter.com @http://assets0.twitter.com/images/twitter_logo_header.png@]
+
+逃逸字符
+	* 被字符 `` 包括起来的内容将不做格式转换
+	* 连续两个 ````  将表示一个 ``
+
+关于文字及样式
+	zDoc 支持如下字体样式，暂时不支持下划线，以及字体颜色
+
+	|| {*名称}	|| {*zDoc}			|| {*文本}			||
+	|| 粗体		|| `{*some text}`	|| {*some text}		||
+	|| 斜体		|| `{_some text}`	|| {_some text}		||
+	|| 穿越线	|| `{~some text}`	|| {~some text}		||
+	|| 组合		|| `{*_~some text}`	|| {*_~some text}	||
+	|| 标注		|| `txt{^sup}`		|| txt{^sup}		||
+	|| 底注		|| `txt{,sup}`		|| txt{,sup}		||
+
+关于图片
+	* 在行内，被 `@` 包括起来文字将表示一个图片地址
+	* 这个地址如果以 http:// 或者 https:// 开头，将作为远程图片地址
+	* 否则将作为本地图片，在输出HTML的时候，将会将图片拷贝至目标文件所在目录下的 images 目录
+
+关于分隔线
+	* 任何行内内容全部为等于号 `=` 的行，将被认为是分隔线
+
+关于代码
+	* 以 {{{ 开始的行，下面所有的行都被认为是代码，一直到 }}} 开始的行为止
+	* {{{(java) 表示代码的类型
+
+关于表格
+	* 以 || 开始，并以 || 结束的行，被认为是表格行
+	* 连续的表格行被认为是一个表格
+	* 符号 || 之间的内容被认为是一个单元格
