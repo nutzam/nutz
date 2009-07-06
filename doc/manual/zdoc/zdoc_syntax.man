@@ -1,51 +1,57 @@
-#index:3
+zDoc 文档语法简要说明
+	#index:2,4
 
-����
-	* zDoc �Ǵ��ı����ĵ�
-	* zDoc ������ UTF-8 �����
-	* ������Ϊ��λ�����ĵ�����
+	概述
+		* zDoc 是纯文本的文档
+		* zDoc 必须是 UTF-8 编码的
+		* 它以行为单位进行文档解析
 
-���ڱ��������
-	* ��������������һ�е�{*��}
-	* ӵ��{*��}���о��Ǳ�����
-	* zDoc ������ӵ�����޲�εı�����
+	关于标题与段落
+		* 缩进的行是它上一行的{*子}
+		* 拥有{*子}的行就是标题行
+		* zDoc 理论上拥有无限层次的标题行
 
-���ڳ�����
-	* ������ ��������`[`��`]`���������ľ��ǳ�����
-	* `[http://www.google.com]` ����ʾ�� [http://www.google.com]
-	* `[http://www.google.com Google]` ����ʾ�� [http://www.google.com Google]
-	* `[http://www.google.com text with whitespace]` ����ʾ�� [http://www.google.com text with whitespace]
-	* `[http://www.twitter.com @http://assets0.twitter.com/images/twitter_logo_header.png@]` ����ʾ��
-		[http://www.twitter.com @http://assets0.twitter.com/images/twitter_logo_header.png@]
+	关于超链接
+		* 在行内 被方括弧`[`和`]`包裹起来的就是超链接
+		* `[http://www.google.com]` 将显示成 [http://www.google.com]
+		* `[http://www.google.com Google]` 将显示成 [http://www.google.com Google]
+		* `[http://www.google.com text with whitespace]` 将显示成 [http://www.google.com text with whitespace]
+		* `[http://nutz.googlecode.com <http://code.google.com/p/nutz/logo?logo_id=1239077401>]` 将显示成
+			[http://nutz.googlecode.com <http://code.google.com/p/nutz/logo?logo_id=1239077401>]
 
-�����ַ�
-	* ���ַ� `` �������������ݽ�������ʽת��
-	* �������� ````  ����ʾһ�� ``
+	逃逸字符
+		* 被字符 `` 包括起来的内容将不做格式转换
+		* 连续两个 ````  将表示一个 ``
 
-�������ּ���ʽ
-	zDoc ֧������������ʽ����ʱ��֧���»��ߣ��Լ�������ɫ
+	关于文字及样式
+		zDoc 支持如下字体样式，暂时不支持下划线，以及字体颜色
 
-	|| {*����}	|| {*zDoc}			|| {*�ı�}			||
-	|| ����		|| `{*some text}`	|| {*some text}		||
-	|| б��		|| `{_some text}`	|| {_some text}		||
-	|| ��Խ��	|| `{~some text}`	|| {~some text}		||
-	|| ���		|| `{*_~some text}`	|| {*_~some text}	||
-	|| ��ע		|| `txt{^sup}`		|| txt{^sup}		||
-	|| ��ע		|| `txt{,sup}`		|| txt{,sup}		||
+		|| {*名称}	|| {*zDoc}			|| {*文本}			||
+		|| 粗体		|| `{*some text}`	|| {*some text}		||
+		|| 斜体		|| `{_some text}`	|| {_some text}		||
+		|| 穿越线	|| `{~some text}`	|| {~some text}		||
+		|| 组合		|| `{*_~some text}`	|| {*_~some text}	||
+		|| 标注		|| `txt{^sup}`		|| txt{^sup}		||
+		|| 底注		|| `txt{,sup}`		|| txt{,sup}		||
 
-����ͼƬ
-	* �����ڣ��� `@` �����������ֽ���ʾһ��ͼƬ��ַ
-	* �����ַ����� http:// ���� https:// ��ͷ������ΪԶ��ͼƬ��ַ
-	* ������Ϊ����ͼƬ�������HTML��ʱ�򣬽��ὫͼƬ������Ŀ���ļ�����Ŀ¼�µ� images Ŀ¼
+	关于图片
+		* 在行内，被 `<` 和 `>` 包括起来文字将表示一个图片地址
+		* 这个地址如果以 http:// 或者 https:// 开头，将作为远程图片地址
+		* 否则将作为本地图片，在输出HTML的时候，将会将图片拷贝至目标文件所在目录下的 images 目录
 
-���ڷָ���
-	* �κ���������ȫ��Ϊ���ں� `=` ���У�������Ϊ�Ƿָ���
+	关于分隔线
+		* 任何行内内容全部为等于号 `=` ，并且数量不少于5个，的行，将被认为是分隔线
+		* 比如如果一行內容为
+			`=====`
+			将显示成：
+			=====
 
-���ڴ���
-	* �� {{{ ��ʼ���У��������е��ж�����Ϊ�Ǵ��룬һֱ�� }}} ��ʼ����Ϊֹ
-	* {{{(java) ��ʾ���������
+	关于代码
+		* 以 `{{{` 开始的行，下面所有的行都被认为是代码，一直到 `}}}` 开始的行为止
+		* `{{{(java)` 表示代码的类型为java源代码
+			* 你可以随便输入你的代码类型，比如 C#, Python, SQL, HTML 等等
 
-���ڱ���
-	* �� || ��ʼ������ || �������У�����Ϊ�Ǳ�����
-	* �����ı����б���Ϊ��һ������
-	* ���� || ֮������ݱ���Ϊ��һ����Ԫ��
+	关于表格
+		* 以 || 开始，并以 || 结束的行，被认为是表格行
+		* 连续的表格行被认为是一个表格
+		* 符号 || 之间的内容被认为是一个单元格

@@ -1,46 +1,46 @@
-��ΪʲôҪ���� zDoc ��Ŀ
-	���ݶ����ʹ���ĵ�д�������ҵó���������������
-		* Word ����
-		* �����ĵ�����
-	���ԣ��ұ��빹���Լ����ĵ�д����ʽ���������ǳ���Ա������Ȼ��Ȼ��׼���Լ�дһ�׹��ߣ������һ�û�з����дһ�� word �ĳ̶ȣ��Ҳ����ǽ�����һ��СС���ı��ļ�������Ⱦ����
+我为什么要建立 zDoc 项目
+	根据多年惨痛的文档写作经验我得出了如下两个结论
+		* Word 该死
+		* 在线文档很慢
+	所以，我必须构建自己的文档写作方式，由于我是程序员，我自然而然的准备自己写一套工具，但是我还没有疯狂到重写一个 word 的程度，我不过是建立了一个小小的文本文件解析渲染器。
 	
-	zDoc Ҫ�ﵽ��Ŀ��
-		* �ҽ�ʹ���κ�һ����ϲ����{*���ı��༭��}���༭�ҵ��ĵ�
-			* �����ҿ������� SVN �ȹ����������汾��Э����д�ĵ�
-		* �ҵ��ĵ����������֣��Լ� B/I/S �ȸ�ʽ��Ϣ
-		* ���������������ĵ��Ľṹ
-		* ���������ĵ�Ŀ¼����
-		* ֧�ֳ����ӣ������ĵ��ڲ����ⲿ
-		* ֧��ͼƬ
-			* ���е�ͼƬ
-			* ֧�� Icon
-			* ���Զ����С
-		* ֧������ĸ�ʽ
+	zDoc 要达到的目标
+		* 我将使用任何一款我喜欢的{*纯文本编辑器}来编辑我的文档
+			* 所以我可以利用 SVN 等工具来管理版本，协作编写文档
+		* 我的文档将包含文字，以及 B/I/S 等格式信息
+		* 利用缩进来划分文档的结构
+		* 可以生成文档目录索引
+		* 支持超链接，包括文档内部和外部
+		* 支持图片
+			* 流行的图片
+			* 支持 Icon
+			* 可自定义大小
+		* 支持输出的格式
 			* PDF
 			* HTML (browser from local)
 			* HTML (browser from web)
 			* Google Wikie
-		* �ĵ����� include ����һ���ĵ� 
-			* ���Ծ���·����Ҳ�������·��
-			* �����������ӣ�Ҳ������Ӳ����
+		* 文档可以 include 另外一个文档 
+			* 可以绝对路径，也可以相对路径
+			* 可以是软链接，也可以是硬链接
 
-���ʹ�� zDoc
-	zDoc �ṩ�������г���ʹ����֮ǰ����Ҫ�������趨
-		# �ڷ����������ҵ� run Ŀ¼
-		# �� win ���� linux (�����Լ��Ĳ���ϵͳ����)
-		# �޸Ľű��ļ� -- ����Ҫ�޸���������
-			# JAVA_HOME ָ����� Java ��װ�ĸ�Ŀ¼�����Ŀ¼���� lib ��Ŀ¼�������� tools.jar, dt.jar �Լ� rt.jar��
-			# NUTZ_HOME ָ�� Nutz �ĺ��� jar �� [http://nutz.googlecode.com ����ԴӴ˴����]
-			# ZDOC_HOME ָ�� Nutz.Doc ������ jar �� [http://code.google.com/p/nutzdoc/ �Ӵ˴����]
-		# �� run Ŀ¼���뵽���ϵͳ����������
+如何使用 zDoc
+	zDoc 提供了命令行程序，使用它之前你需要做如下设定
+		# 在发布包里面找到 run 目录
+		# 打开 win 或者 linux (依你自己的操作系统而定)
+		# 修改脚本文件 -- 你需要修改三个变量
+			# JAVA_HOME 指向你的 Java 安装的根目录（这个目录下有 lib 子目录，其内有 tools.jar, dt.jar 以及 rt.jar）
+			# NUTZ_HOME 指向 Nutz 的核心 jar 包 [http://nutz.googlecode.com 你可以从此处获得]
+			# ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包 [http://code.google.com/p/nutzdoc/ 从此处获得]
+		# 将 run 目录加入到你的系统环境变量中
 		
-	��������趨����ɴ�һ������̨���룺
+	当你完成设定，便可打开一个控制台输入：
 	{{{(Shell)
-	zdoc ���zDoc�ı��ļ�ȫ·��  ��Ҫ������ļ�ȫ·��
+	zdoc 你的zDoc文本文件全路径  你要输出的文件全路径
 	}}}
-	ִ����Ϻ���ͻ�������Ҫ���ļ�
+	执行完毕后，你就会获得你需要的文件
 
-	���� zdoc �ļ���ϸ���﷨����ο� [zdoc_syntax.htm zDoc ���﷨˵��]
+	关于 zdoc 文件详细的语法，请参看 [zdoc_syntax.htm zDoc 的语法说明]
 				
 			
 	

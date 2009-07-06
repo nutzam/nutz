@@ -245,14 +245,14 @@ public class Lang {
 		}
 	}
 
-	public static <T> StringBuilder concatBy(String ptn, T... o) {
+	public static <T> StringBuilder concatBy(String ptn, T[] o) {
 		StringBuilder sb = new StringBuilder();
 		for (T obj : o)
 			sb.append(String.format(ptn, obj));
 		return sb;
 	}
 
-	public static <T> StringBuilder concatBy(String ptn, char c, T... objs) {
+	public static <T> StringBuilder concatBy(String ptn, char c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		for (T obj : objs)
 			sb.append(String.format(ptn, obj)).append(c);
@@ -261,7 +261,7 @@ public class Lang {
 		return sb;
 	}
 
-	public static <T> StringBuilder concatBy(char c, T... objs) {
+	public static <T> StringBuilder concatBy(char c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		if (null == objs)
 			return sb;
@@ -272,8 +272,29 @@ public class Lang {
 		return sb;
 	}
 
-	public static <T> StringBuilder concat(T... objs) {
+	public static <T> StringBuilder concatBy(int offset, int len, char c, T[] objs) {
+		StringBuilder sb = new StringBuilder();
+		if (null == objs)
+			return sb;
+		for (int i = 0; i < len; i++) {
+			Object obj = objs[i + offset];
+			sb.append(null == obj ? null : obj.toString()).append(c);
+		}
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length() - 1);
+		return sb;
+	}
+
+	public static <T> StringBuilder concat(T[] objs) {
 		return concatBy(',', objs);
+	}
+
+	public static <T> StringBuilder concat(int offset, int len, T[] array) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < len; i++) {
+			sb.append(array[i + offset].toString());
+		}
+		return sb;
 	}
 
 	public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
