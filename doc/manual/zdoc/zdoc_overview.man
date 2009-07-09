@@ -1,7 +1,12 @@
-我为什么要建立 zDoc 项目
+#title:zDoc 概述
+#index:0,2
+
+我为什么要建立 zDoc 项目?
 	根据多年惨痛的文档写作经验我得出了如下两个结论
-		* Word 该死
-		* 在线文档很慢
+
+	* Word 该死
+	* 在线文档很慢
+	
 	所以，我必须构建自己的文档写作方式，由于我是程序员，我自然而然的准备自己写一套工具，但是我还没有疯狂到重写一个 word 的程度，我不过是建立了一个小小的文本文件解析渲染器。
 	
 	zDoc 要达到的目标
@@ -25,22 +30,24 @@
 			* 可以是软链接，也可以是硬链接
 
 如何使用 zDoc
-	zDoc 提供了命令行程序，使用它之前你需要做如下设定
+	设置运行环境
+		zDoc 提供了命令行程序，使用它之前你需要做如下设定
 		# 在发布包里面找到 run 目录
 		# 打开 win 或者 linux (依你自己的操作系统而定)
 		# 修改脚本文件 -- 你需要修改三个变量
 			# JAVA_HOME 指向你的 Java 安装的根目录（这个目录下有 lib 子目录，其内有 tools.jar, dt.jar 以及 rt.jar）
-			# NUTZ_HOME 指向 Nutz 的核心 jar 包 [http://nutz.googlecode.com 你可以从此处获得]
-			# ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包 [http://code.google.com/p/nutzdoc/ 从此处获得]
+			# NUTZ_HOME 指向 Nutz 的核心 jar 包: {_可从此处下载=>} [http://nutz.googlecode.com]
+			# ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包: {_可从此处下载=>} [http://nutzdoc.googlecode.com]
 		# 将 run 目录加入到你的系统环境变量中
-		
-	当你完成设定，便可打开一个控制台输入：
-	{{{(Shell)
-	zdoc 你的zDoc文本文件全路径  你要输出的文件全路径
-	}}}
-	执行完毕后，你就会获得你需要的文件
+	执行命令
+		当你完成设定，便可打开一个控制台输入：
+		{{{(Shell)
+		zdoc 你的zDoc文本文件全路径  你要输出的文件全路径
+		}}}
+		执行完毕后，你就会获得你需要的文件
 
-	关于 zdoc 文件详细的语法，请参看 [zdoc_syntax.htm zDoc 的语法说明]
+其他
+	关于 zdoc 文件详细的语法，请参看 [zdoc_syntax.html zDoc 的语法说明]
 				
 			
 	
