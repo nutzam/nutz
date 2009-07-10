@@ -293,4 +293,12 @@ public class Files {
 		}
 	}
 
+	public static String getName(File f) {
+		String name = f.getName();
+		int pos = name.lastIndexOf('.');
+		if (pos > 0)
+			return name.substring(0, pos);
+		return name;
+	}
+
 }

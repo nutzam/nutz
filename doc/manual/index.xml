@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<doc title="nutz 框架开发者手册" author="zozoh" index="0,2">
+	<doc path="overview.man"				title="概述"/>
+	<doc path="packages.man"				title="包结构"/>
+	<doc path="version_naming_rule.man" 	title="版本命名规范"/>
+	<doc path="dao"						title="Nutz.Dao 开发者手册">
+		<doc path="dao_get_start.man"		title="Nutz.Dao 入门"/>
+		<doc path="basic_operations.man"	title="基本操作"/>
+		<doc path="condition.man"			title="复杂条件"/>
+		<doc path="query_by_page.man"		title="分页查询"/>
+		<doc path="links_overview.man"		title="映射概述"/>
+		<doc path="links_one.man"			title="一对一映射"/>
+		<doc path="links_many.man"			title="一对多映射"/>
+		<doc path="links_many_many.man"		title="多对多映射"/>
+		<doc path="transaction.man"			title="事务"/>
+		<doc path="entity_annotations.man"	title="实体声明"/>
+		<doc path="services_tree.man"		title="树形实体服务"/>
+		<doc path="services.man"			title="内置的服务类"/>
+	</doc>
+	<doc path="ioc"						title="Nutz.Ioc 开发者手册">
+		<doc path="ioc_get_start.man"		title="Nutz.Ioc 入门"/>
+		<doc path="lifecycle.man"			title="对象生命周期"/>
+		<doc path="json_syntax.man"			title="Json 语法"/>
+		<doc path="mapping_by_db.man"		title="将 Mapping 关系保存在数据库中"/>
+	</doc>
+	<doc path="mvc"						title="Nutz.Mvc 开发者手册">
+		<doc path="mvc_overview.man"		title="Nutz.Mvc 概述"/>
+		<doc path="mvc_controllor.man"		title="控制器"/>
+		<doc path="mvc_view.man"			title="视图"/>
+	</doc>
+	<doc path="json"					title="Nutz.Json 使用手册">
+		<doc path="nutz_json.man"			title="Nutz.Json 简要说明"/>
+		<doc path="json_format.man"			title="控制输出的格式"/>
+		<doc path="json_with_castors.man"	title="利用 Castors 按类型控制字段输出"/>
+	</doc>
+	<doc path="lang"					title="Nutz.Lang -- 让 Java 变得有点甜">
+		<doc path="lang.man"				title="一些有用的类"/>
+		<doc path="lang_mirror.man"			title="Nutz.Lang.Mirror -- 增强反射"/>
+	</doc>
+	<doc path="castors"					title="Nutz.Castors - 让 Java 的类型不那么强">
+		<doc path="what_is_castors.man"				title="什么是 Castors"/>
+		<doc path="use_castors.man"					title="使用 Castors"/>
+		<doc path="customize_your_castors.man"		title="定制你自己的 Castors"/>
+	</doc>
+	<doc path="zmole"					title="zMole - 快速代码生成工具">
+		<doc path="zmole_get_start.man"			title="zMole 快速入门"/>
+	</doc>
+	<doc path="zdoc"					title="zDoc 手册">
+		<doc path="zdoc_overview.man"			title="zDoc 概述"/>
+		<doc path="zdoc_syntax.man"				title="zDoc 语法"/>
+	</doc>
+</doc>
