@@ -5,6 +5,7 @@
 	<doc path="version_naming_rule.man" 	title="版本命名规范"/>
 	<doc path="dao"						title="Nutz.Dao 开发者手册">
 		<doc path="dao_get_start.man"		title="Nutz.Dao 入门"/>
+		<doc path="entity_annotations.man"	title="实体声明"/>
 		<doc path="basic_operations.man"	title="基本操作"/>
 		<doc path="condition.man"			title="复杂条件"/>
 		<doc path="query_by_page.man"		title="分页查询"/>
@@ -12,8 +13,8 @@
 		<doc path="links_one.man"			title="一对一映射"/>
 		<doc path="links_many.man"			title="一对多映射"/>
 		<doc path="links_many_many.man"		title="多对多映射"/>
+		<doc path="customized_sql.man"		title="自定义 SQL "/>
 		<doc path="transaction.man"			title="事务"/>
-		<doc path="entity_annotations.man"	title="实体声明"/>
 		<doc path="services_tree.man"		title="树形实体服务"/>
 		<doc path="services.man"			title="内置的服务类"/>
 	</doc>
