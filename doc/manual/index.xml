@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <doc title="nutz 框架开发者手册" author="zozoh" index="0,2">
 	<doc path="overview.man"				title="概述"/>
-	<doc path="packages.man"				title="包结构"/>
-	<doc path="version_naming_rule.man" 	title="版本命名规范"/>
+	<doc path="packages.man"				title="Nutz 的包结构"/>
+	<doc path="version_naming_rule.man" 	title="Nutz 的版本命名规范"/>
 	<doc path="dao"						title="Nutz.Dao 开发者手册">
 		<doc path="dao_get_start.man"		title="Nutz.Dao 入门"/>
 		<doc path="entity_annotations.man"	title="实体声明"/>
