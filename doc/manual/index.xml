@@ -5,7 +5,7 @@
 	<doc path="version_naming_rule.man" 	title="Nutz 的版本命名规范"/>
 	<doc path="dao"						title="Nutz.Dao 开发者手册">
 		<doc path="dao_get_start.man"		title="Nutz.Dao 入门"/>
-		<doc path="entity_annotations.man"	title="实体声明"/>
+		<doc path="entity_annotations.man"	title="Nutz.Dao 实体注解(Entity Annotation)"/>
 		<doc path="basic_operations.man"	title="基本操作"/>
 		<doc path="condition.man"			title="复杂条件"/>
 		<doc path="query_by_page.man"		title="分页查询"/>

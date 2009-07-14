@@ -26,8 +26,6 @@
 			* HTML (browser from web)
 			* Google Wikie
 		* 文档可以 include 另外一个文档 
-			* 可以绝对路径，也可以相对路径
-			* 可以是软链接，也可以是硬链接
 
 如何使用 zDoc
 	设置运行环境
