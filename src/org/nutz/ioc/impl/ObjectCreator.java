@@ -104,9 +104,10 @@ public class ObjectCreator<T> {
 					Field field = mirror.getField(fld.getName());
 					fieldType = field.getType();
 				} catch (Exception e2) {}
-				ValueDelegate vd = ValueDelegate.eval(ioc, obj.getName(), fieldType, fld.getVal());
-				singleton &= !vd.isDynamic();
+				ValueDelegate vd = null;
 				try {
+					vd = ValueDelegate.eval(ioc, obj.getName(), fieldType, fld.getVal());
+					singleton &= !vd.isDynamic();
 					Object v = vd.get();
 					Class<?> paramType = null == v ? null : v.getClass();
 					Method setter = mirror.getSetter(fld.getName(), paramType);

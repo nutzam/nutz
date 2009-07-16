@@ -12,11 +12,11 @@ public interface MethodListener {
 	 * @return true, it will call super method. false, it will not call super
 	 *         method.
 	 */
-	public boolean beforeInvoke(Object obj, Method method, Object... args);
+	boolean beforeInvoke(Object obj, Method method, Object... args);
 
-	public void whenException(Exception e, Object obj, Method method, Object... args);
+	void whenException(Exception e, Object obj, Method method, Object... args);
 
-	public void whenError(Throwable e, Object obj, Method method, Object... args);
+	void whenError(Throwable e, Object obj, Method method, Object... args);
 
 	/**
 	 * @param obj
@@ -26,6 +26,6 @@ public interface MethodListener {
 	 * @param args
 	 * @return The object will be return to client.
 	 */
-	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args);
+	Object afterInvoke(Object obj, Object returnObj, Method method, Object... args);
 
 }

@@ -38,12 +38,12 @@ public class AopSetting {
 	public ClassAgent evalClassAgent(Class<?> type, String name) {
 		if (Modifier.isFinal(type.getModifiers()))
 			return null;
+		if (name.startsWith("$"))
+			return null;
 		if (null == type)
 			throw Lang.makeThrow("eval object [%s] failed, type is null!", name);
 		if (null == name)
 			throw Lang.makeThrow("eval object [%s] failed, name is null!", type.getName());
-		if (name.startsWith("$"))
-			return null;
 
 		for (AopMatcher am : matchType) {
 			ClassAgent ca = am.matchType(type);

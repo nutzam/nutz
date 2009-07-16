@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.nutz.aop.MethodListener;
 
-public class JavassistMethodListener implements MethodListener {
+class JavassistMethodListener implements MethodListener {
 
 	private List<MethodListener> listeners;
 
