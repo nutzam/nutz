@@ -48,7 +48,7 @@ public class Application {
 	@SuppressWarnings("unchecked")
 	public static Map<String, String> initLocalization(File dir) {
 		Map<String, String> map = new HashMap<String, String>();
-		if (dir.isDirectory()) {
+		if (null != dir && dir.isDirectory()) {
 			File[] fs = dir.listFiles();
 			for (File f : fs) {
 				Reader reader = Streams.fileInr(f);
