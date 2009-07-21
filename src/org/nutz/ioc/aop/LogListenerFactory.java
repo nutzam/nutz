@@ -2,19 +2,15 @@ package org.nutz.ioc.aop;
 
 import java.util.Map;
 
-import org.nutz.aop.MethodListener;
-import org.nutz.log.aop.LogListener;
-
 public class LogListenerFactory implements MethodListenerFactory {
-	
-	@Override
-	public <T extends MethodListener> Class<T> getListnerType() {
-		return null;
-	}
 
 	@Override
-	public MethodListener getListener(Map<String, Object> init, AopHook[] hooks) {
-		return null;
+	public AopMethodPair[] getListener(Map<String, Object> init, AopHook[] hooks) {
+		AopMethodPair[] array = new AopMethodPair[hooks.length];
+		for(int i=0;i<hooks.length;i++){
+			AopHook hook = hooks[i];
+		}
+		return array;
 	}
 
 }

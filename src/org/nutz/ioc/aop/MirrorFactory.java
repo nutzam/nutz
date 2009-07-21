@@ -20,7 +20,7 @@ public class MirrorFactory {
 				for (AopItem ai : as.getItems()) {
 					// find log
 					MethodListenerFactory mlf = ai.getFactoryType().newInstance();
-					MethodListener lstn = mlf.getListener(ai.getInit(), ai.getHooks());
+					AopMethodPair[] lstn = mlf.getListener(ai.getInit(), ai.getHooks());
 					
 					// find another method listener
 					// set mirror factory to Ioc
