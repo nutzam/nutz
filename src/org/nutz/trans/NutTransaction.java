@@ -2,9 +2,8 @@ package org.nutz.trans;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -12,32 +11,45 @@ public class NutTransaction extends Transaction {
 
 	private static int ID = 0;
 
-	private Map<DataSource, Connection> map;
+	private List<Pair> list;
+
+	private static class Pair {
+		Pair(DataSource ds, Connection conn) {
+			this.ds = ds;
+			this.conn = conn;
+		}
+
+		DataSource ds;
+		Connection conn;
+	}
 
 	public NutTransaction() {
-		map = new HashMap<DataSource, Connection>();
+		list = new ArrayList<Pair>();
 	}
 
 	@Override
 	protected void commit() throws SQLException {
-		for (Iterator<Connection> it = map.values().iterator(); it.hasNext();) {
-			Connection conn = it.next();
-			conn.commit();
-			conn.close();
+		for (Pair p : list) {
+			try {
+				p.conn.commit();
+			} catch (SQLException e) {
+				throw e;
+			} finally {
+				p.conn.close();
+			}
 		}
 	}
 
 	@Override
 	public Connection getConnection(DataSource dataSource) throws SQLException {
-		if (map.containsKey(dataSource)) {
-			Connection c = map.get(dataSource);
-			// System.out.printf("#> %s\n", c.toString());
-			return c;
-		}
+		for (Pair p : list)
+			if (p.ds == dataSource)
+				return p.conn;
 		Connection conn = dataSource.getConnection();
 		// System.out.printf("=> %s\n", conn.toString());
-		conn.setAutoCommit(false);
-		map.put(dataSource, conn);
+		if (conn.getAutoCommit())
+			conn.setAutoCommit(false);
+		list.add(new Pair(dataSource, conn));
 		return conn;
 	}
 
@@ -49,13 +61,17 @@ public class NutTransaction extends Transaction {
 	@Override
 	protected void rollback() {
 		StringBuilder es = new StringBuilder();
-		for (Iterator<Connection> it = map.values().iterator(); it.hasNext();) {
-			Connection conn = it.next();
+		for (Pair p : list) {
 			try {
-				conn.rollback();
-				conn.close();
+				p.conn.rollback();
 			} catch (Throwable e) {
-				es.append(e.toString()).append("\n");
+				es.append(e.getMessage()).append("\n");
+			} finally {
+				try {
+					p.conn.close();
+				} catch (SQLException e) {
+					es.append(e.getMessage()).append("\n");
+				}
 			}
 		}
 		if (es.length() > 0)
