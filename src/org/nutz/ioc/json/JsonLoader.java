@@ -76,4 +76,9 @@ public class JsonLoader implements ObjLoader {
 		return map.get(name);
 	}
 
+	@Override
+	public boolean hasObj(String name) {
+		return map.containsKey(name);
+	}
+
 }

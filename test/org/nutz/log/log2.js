@@ -8,12 +8,16 @@ var ioc = {
 		items : [
 		/*----------------------- AOP Logging -----*/
 		{
-			factoryType :"org.nutz.log.aop.LogListenerFactory",
+			factoryType :"org.nutz.ioc.aop.LogHookingFactory",
 			/*
 			 * Init params
 			 */
 			init : {
 				deep :6,
+				output :"org.nutz.log.file.FileLogOutput",
+				file : {
+					java :"org.nutz.log.LogTest.logFilePath"
+				},
 				format : {
 					showThread :true,
 					pattern :"yy-MM-dd hh-mm-ss.SSS",
@@ -25,32 +29,18 @@ var ioc = {
 			 */
 			hooks : [ {
 				/* print all service */
-				regex :"srv.*",
+				regex :"metas",
 				mode :"OBJECT_NAME",
 				config : {
-					file :""
+					re :true
 				},
 				methods : [ {
 					regex :".*",
-					access :"PUBLIC",
+					ignore :"dao",
 					config : {
-						args : [],
-						re :false
+						re :true
 					}
-				} ]
-			}, {
-				/* print by type */
-				regex :"com.dt.ps.func.hb.*",
-				mode :"OBJECT_TYPE",
-				methods : [ {
-					regex :".*",
-					access :"PROTECTED",
-					config : {
-						file :"",
-						args : [],
-						re :false
-					}
-				} ]
+				}]
 			} ]
 		} /* ~ end AOP Logging */
 		]

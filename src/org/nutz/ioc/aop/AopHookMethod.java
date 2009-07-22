@@ -10,12 +10,18 @@ public class AopHookMethod {
 
 	private String regex;
 
+	private String ignore;
+
 	private ACCESS access;
 
 	private Map<String, Object> config;
 
 	public String getRegex() {
 		return regex;
+	}
+
+	public String getIgnore() {
+		return ignore;
 	}
 
 	public ACCESS getAccess() {

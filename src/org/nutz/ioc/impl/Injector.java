@@ -51,7 +51,7 @@ public interface Injector {
 		@Override
 		public void inject(Object obj) {
 			try {
-				Object v = value.get();
+				Object v = null == value ? null : value.get();
 				if (null != v && v.getClass() != field.getType())
 					v = Castors.me().castTo(v, field.getType());
 				field.set(obj, v);

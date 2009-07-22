@@ -6,6 +6,8 @@ public interface Ioc {
 
 	<T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException,
 			ObjectNotFoundException;
+	
+	boolean hasName(String name);
 
 	String[] keys();
 

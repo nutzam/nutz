@@ -7,5 +7,7 @@ public interface ObjLoader {
 	Obj load(String name);
 
 	String[] keys();
+	
+	boolean hasObj(String name);
 
 }

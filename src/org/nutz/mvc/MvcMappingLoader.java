@@ -30,4 +30,9 @@ public class MvcMappingLoader implements ObjLoader {
 		return loader.keys();
 	}
 
+	@Override
+	public boolean hasObj(String name) {
+		return loader.hasObj(name);
+	}
+
 }

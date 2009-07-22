@@ -1,37 +1,54 @@
 package org.nutz.ioc.aop;
 
-import java.util.Map;
-
 import org.nutz.aop.ClassAgent;
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.javassist.JavassistClassAgent;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 public class MirrorFactory {
 
-	private Ioc ioc;
+	private AopObject[] objs;
 
-	public MirrorFactory(Ioc ioc) {
-		this.ioc = ioc;
-		AopSetting as = ioc.get(AopSetting.class, "$aop");
-		if (null != as.getItems())
-			try {
+	public void init(Ioc ioc, String aopObjName) {
+		if (ioc.hasName(aopObjName)) {
+			AopSetting as = ioc.get(AopSetting.class, aopObjName);
+			if (null != as.getItems())
 				for (AopItem ai : as.getItems()) {
-					// find log
-					MethodListenerFactory mlf = ai.getFactoryType().newInstance();
-					AopMethodPair[] lstn = mlf.getListener(ai.getInit(), ai.getHooks());
-					
-					// find another method listener
-					// set mirror factory to Ioc
+					ObjectHookingFactory ohf = evalObjectHookingFactory(ai);
+					ObjectHooking[] hookings = ohf.getHooking(ai);
+					objs = new AopObject[hookings.length];
+					for (int i = 0; i < hookings.length; i++) {
+						ObjectHooking oh = hookings[i];
+						ClassAgent ca = new JavassistClassAgent();
+						for (ObjectMethodHooking omh : oh.getMethodHookings()) {
+							ca.addListener(omh.getMatcher(), omh.getListener());
+						}
+						objs[i] = new AopObject(oh.getObjectMatcher(), ca);
+					}
 				}
+		}
+	}
+
+	private static ObjectHookingFactory evalObjectHookingFactory(AopItem ai) {
+		if (ai.getFactoryType() != null) {
+			try {
+				return ai.getFactoryType().newInstance();
 			} catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
+		} else if (ai.getType() != null) {
+			return new DefaultHookingFactory();
+		}
+		throw Lang.makeThrow("Don't know how to evaluate $aop, lack @type or @factoryType");
 	}
 
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		return null;
+		if (null != objs && name != null && name.length() > 0 && name.charAt(0) != '$')
+			for (AopObject ao : objs)
+				if (ao.getObjectMatcher().match(type, name)) {
+					return Mirror.me(ao.getClassAgent().define(type));
+				}
+		return Mirror.me(type);
 	}
-
 }

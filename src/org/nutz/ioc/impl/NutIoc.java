@@ -8,6 +8,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.ObjLoader;
 import org.nutz.ioc.ObjectNotFoundException;
 import org.nutz.ioc.ValueMaker;
+import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.json.JsonLoader;
 import org.nutz.ioc.maker.*;
 import org.nutz.ioc.meta.Obj;
@@ -29,16 +30,12 @@ public class NutIoc implements Ioc {
 		cache = new HashMap<String, ObjectHolder<?>>();
 		makers = new HashMap<String, ValueMaker>();
 		add(new JavaObjectMaker()).add(new EvnObjectMaker()).add(new DiskFileMaker());
-		/*
-		 * Load AOP setting
-		 */
-		try {
-			as = this.get(AopSetting.class, "$aop");
-			as.init();
-		} catch (Exception e) {}
+		mirrors = new MirrorFactory();
+		mirrors.init(this, "$aop");
 	}
 
 	private ObjLoader loader;
+	private MirrorFactory mirrors;
 	private Map<String, ObjectHolder<?>> cache;
 	private Map<String, Obj> objs;
 	private Map<String, ObjectCreator<?>> creators;
@@ -47,6 +44,10 @@ public class NutIoc implements Ioc {
 
 	AopSetting aop() {
 		return as;
+	}
+
+	MirrorFactory mirrors() {
+		return mirrors;
 	}
 
 	@Override
@@ -100,6 +101,9 @@ public class NutIoc implements Ioc {
 	}
 
 	<T> ObjectCreator<T> getCreator(Class<T> classOfT, String name) {
+		if (!hasName(name)) {
+			throw new ObjectNotFoundException(name);
+		}
 		ObjectCreator<T> creator = (ObjectCreator<T>) creators.get(name);
 		if (null == creator) {
 			synchronized (this) {
@@ -147,6 +151,15 @@ public class NutIoc implements Ioc {
 	@Override
 	public String[] keys() {
 		return loader.keys();
+	}
+
+	@Override
+	public boolean hasName(String name) {
+		if (cache.containsKey(name))
+			return true;
+		if (creators.containsKey(name))
+			return true;
+		return loader.hasObj(name);
 	}
 
 	@Override

@@ -23,7 +23,7 @@ import org.nutz.lang.born.Borning;
 public class ObjectCreator<T> {
 
 	@SuppressWarnings("unchecked")
-	private Mirror<T> evalMirror(Class<T> classOfT, Obj obj) {
+	Mirror<T> evalMirror(Class<T> classOfT, Obj obj) {
 		if (!Strings.isBlank(obj.getType()))
 			try {
 				classOfT = (Class<T>) Class.forName(obj.getType());
@@ -132,10 +132,18 @@ public class ObjectCreator<T> {
 	}
 
 	/*-----------------------------------------------------------------------------*/
+	@SuppressWarnings("unchecked")
 	ObjectCreator(NutIoc ioc, Class<T> classOfT, Obj obj) {
 		this.ioc = ioc;
 		this.obj = obj;
-		mirror = evalMirror(classOfT, obj);
+		try {
+			Class<T> type = classOfT;
+			if (obj.getType() != null)
+				type = (Class<T>) Class.forName(obj.getType());
+			mirror = ioc.mirrors().getMirror(type, obj.getName());
+		} catch (ClassNotFoundException e) {
+			throw Lang.wrapThrow(e);
+		}
 		events = evalLifecycle(mirror.getType(), obj);
 		singleton = obj.isSingleton();
 		evalBorning();

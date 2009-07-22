@@ -48,7 +48,7 @@ public class DatabaseIocTest extends DaoCase {
 
 	@Test
 	public void simple_inner_object_in_field() {
-		String str = "{id:12,name:'p1',leaderName:'zzh',base : {type :\"org/nutz.dao.test.meta.Base\"}}";
+		String str = "{id:12,name:'p1',leaderName:'zzh',base : {type :\"org.nutz.dao.test.meta.Base\"}}";
 		Obj obj = Map2Obj.parse((Map<?, ?>) Json.fromJson(str));
 		obj.setName("p1");
 		srv.insertObj(obj);

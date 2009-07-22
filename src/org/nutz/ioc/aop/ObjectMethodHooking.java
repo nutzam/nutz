@@ -3,9 +3,9 @@ package org.nutz.ioc.aop;
 import org.nutz.aop.MethodListener;
 import org.nutz.aop.MethodMatcher;
 
-public class AopMethodPair {
+public class ObjectMethodHooking {
 
-	public AopMethodPair(MethodMatcher matcher, MethodListener listener) {
+	public ObjectMethodHooking(MethodMatcher matcher, MethodListener listener) {
 		this.matcher = matcher;
 		this.listener = listener;
 	}

@@ -2,6 +2,7 @@ package org.nutz.ioc.db;
 
 import java.util.List;
 
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.ioc.ObjLoader;
 import org.nutz.ioc.meta.Obj;
@@ -29,6 +30,11 @@ public class DatabaseLoader implements ObjLoader {
 	@Override
 	public Obj load(String name) {
 		return service.fetchObject(name);
+	}
+
+	@Override
+	public boolean hasObj(String name) {
+		return service.objs().count(Cnd.where("name", "=", name)) > 0;
 	}
 
 }

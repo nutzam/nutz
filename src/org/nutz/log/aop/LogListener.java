@@ -9,31 +9,42 @@ import org.nutz.log.Log;
 
 public class LogListener implements MethodListener {
 
-	private Log log;
-	private int deep;
-
 	public LogListener(Log log) {
-		this(log, 6);
+		this.log = log;
 	}
 
-	public LogListener(Log log, int deep) {
-		this.log = log;
+	private Log log;
+	private int deep;
+	private boolean showReturn;
+	private int[] showArgs;
+
+	public void setDeep(int deep) {
 		this.deep = deep;
+	}
+
+	public void setShowReturn(boolean showReturn) {
+		this.showReturn = showReturn;
+	}
+
+	public void setShowArgs(int[] showArgs) {
+		this.showArgs = showArgs;
 	}
 
 	@Override
 	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
-		String re;
-		if (method.getReturnType() == void.class)
-			re = "void";
-		else if (returnObj == null)
-			re = "null";
-		else
-			re = returnObj.toString();
-		int w = log.getFormat().getWidth();
-		if (w > 0 && re.length() > w)
-			re = "\n\t" + re;
-		log.printlnf(getPrefix('~') + "%s.%s:%s", getClassName(obj), method.getName(), re);
+		if (showReturn) {
+			String re;
+			if (method.getReturnType() == void.class)
+				re = "void";
+			else if (returnObj == null)
+				re = "null";
+			else
+				re = returnObj.toString();
+			int w = log.getFormat().getWidth();
+			if (w > 0 && re.length() > w)
+				re = "\n\t" + re;
+			log.printlnf(getPrefix('~') + "%s.%s:%s", getClassName(obj), method.getName(), re);
+		}
 		return returnObj;
 	}
 
@@ -41,12 +52,23 @@ public class LogListener implements MethodListener {
 	public boolean beforeInvoke(Object obj, Method method, Object... args) {
 		int w = log.getFormat().getWidth();
 		StringBuilder sb = new StringBuilder();
-		for (Object arg : args) {
-			String s = argToString(arg);
-			if (w > 0 && s.length() > w)
-				sb.append("\n\t").append('(').append(s).append(")");
-			else
-				sb.append('(').append(s).append(')');
+		if (showArgs == null || showArgs.length > 0) {
+			for (int i = 0; i < args.length; i++) {
+				String s = "$arg" + i;
+				if (null != showArgs && showArgs.length > 0) {
+					for (int n : showArgs)
+						if (n == i) {
+							s = argToString(args[i]);
+							break;
+						}
+				} else {
+					s = argToString(args[i]);
+				}
+				if (w > 0 && s.length() > w)
+					sb.append("\n\t").append('(').append(s).append(")");
+				else
+					sb.append('(').append(s).append(')');
+			}
 		}
 		log.printlnf(getPrefix('>') + "%s.%s%s", getClassName(obj), method.getName(), sb);
 		return true;
