@@ -40,12 +40,15 @@ public abstract class Sender {
 	public abstract Response send() throws HttpException;
 
 	protected Response createResponse(Map<String, String> reHeaders) throws IOException {
-		Response rep = new Response(reHeaders);
-		if (rep.isOK()) {
-			InputStream ins = new BufferedInputStream(conn.getInputStream());
-			rep.setStream(ins);
-		} else {
-			rep.setStream(Lang.ins(""));
+		Response rep = null;
+		if(reHeaders != null && reHeaders.get(null) != null){
+			rep = new Response(reHeaders);
+			if (rep.isOK()) {
+				InputStream ins = new BufferedInputStream(conn.getInputStream());
+				rep.setStream(ins);
+			} else {
+				rep.setStream(Lang.ins(""));
+			}
 		}
 		return rep;
 	}
