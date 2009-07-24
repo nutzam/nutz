@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 import org.nutz.aop.MethodListener;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 
@@ -104,12 +105,12 @@ public class LogListener implements MethodListener {
 
 	@Override
 	public void whenError(Throwable e, Object obj, Method method, Object... args) {
-		log.printlnf("! " + e.getMessage());
+		log.printlnf("! " + Lang.getStackTrace(e));
 	}
 
 	@Override
 	public void whenException(Exception e, Object obj, Method method, Object... args) {
-		log.printlnf("@ " + e.getMessage());
+		log.printlnf("@ " + Lang.getStackTrace(e));
 	}
 
 }

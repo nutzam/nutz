@@ -2,6 +2,7 @@ package org.nutz.lang;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Array;
@@ -522,6 +523,15 @@ public class Lang {
 		} catch (LoopException e) {
 			throw Lang.wrapThrow(e.getCause());
 		}
+	}
+
+	public static String getStackTrace(Throwable e) {
+		StringBuilder sb = new StringBuilder();
+		StringOutputStream sbo = new StringOutputStream(sb);
+		PrintStream ps = new PrintStream(sbo);
+		e.printStackTrace(ps);
+		ps.flush();
+		return sbo.getStringBuilder().toString();
 	}
 
 }
