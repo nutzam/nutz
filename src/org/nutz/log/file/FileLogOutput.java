@@ -3,6 +3,7 @@ package org.nutz.log.file;
 import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -31,5 +32,8 @@ public class FileLogOutput implements LogOutput {
 		writer.append(str);
 		writer.flush();
 	}
+
+	@Override
+	public void setup(Map<String, Object> conf) {}
 
 }

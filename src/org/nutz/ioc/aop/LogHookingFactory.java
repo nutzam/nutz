@@ -94,6 +94,7 @@ public class LogHookingFactory extends DefaultHookingFactory {
 			Mirror<LogOutput> outputType = (Mirror<LogOutput>) Mirror.me(Class
 					.forName(outputClassName));
 			output = outputType.born(map.get("file"));
+			output.setup(map);
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
