@@ -1,0 +1,40 @@
+#title:zDoc 一对一映射
+#index:0,1
+概述
+	此映射表明了两个实体之间的一对一关系,比如，一个文件只有一个MD5值，一个人只应该有有一套身份证信息等。
+-------------------------------------------------------------------------------------------------------------
+配置	
+	* 在这里我们以一个人和他的身份证信息为例子介绍Nutz中一对一的使用:
+	{{{<java>
+		@Table("tbl_person")
+		public class Person{
+	
+			@Column("idcardnum")
+			private long idNum;
+		
+			@One(target = IDCard.class, field = "idNum")
+			private IDCard idCard;
+		
+			// 其他fields
+			... ...
+		}	
+	
+		@Table("tbl_idcard")
+		public class IDCard{
+			@Id
+			private long id;
+		
+		}
+	}}}
+	# 这两个实体分别对应两张表 tbl_person 和 tbl_idcard.
+	# 表 tbl_person 中有一字段 "idcardnum"，存储的是表 tbl_idcard 的某一条记录的id,当然你可以在数据库中声明外键约束.
+	# @One(target = IDCard.class, field = "idNum"):@One:指明是一一映射;  target = IDCard.class:指明对应记录存储于表tbl_idcard中; field = "idNum":指明通过字段 idNum 与 tbl_idcard 表对应.
+-----------------------------------------------------------------------------------------------------------------
+使用
+	假设你有一个Person对象"per",你想得到他的IDCard信息，可以这么做:
+	{{{<JAVA>
+	NutDao dao=...
+	dao.fetchLinks(per,"idNum");
+	}}}
+	这样 Nutz就会自动的填充idCard字段。
+	
