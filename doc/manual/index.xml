@@ -24,6 +24,7 @@
 	<doc path="ioc"						title="Nutz.Ioc 开发者手册">
 		<doc path="ioc_get_start.man"		title="Nutz.Ioc 入门"/>
 		<doc path="lifecycle.man"			title="对象生命周期"/>
+		<doc path="aop.man"					title="声明式拦截器"/>
 		<doc path="json_syntax.man"			title="Json 语法"/>
 		<doc path="mapping_by_db.man"		title="将 Mapping 关系保存在数据库中"/>
 	</doc>
