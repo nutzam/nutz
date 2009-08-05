@@ -141,6 +141,15 @@ public class Lang {
 		return sb.toString();
 	}
 
+	public static void writeAll(Writer writer, String str) {
+		try {
+			writer.write(str);
+			writer.flush();
+		} catch (IOException e) {
+			Streams.safeClose(writer);
+		}
+	}
+
 	public static InputStream ins(CharSequence cs) {
 		return new StringInputStream(cs);
 	}
