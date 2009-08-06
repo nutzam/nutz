@@ -129,14 +129,14 @@ public class JavaClass extends JavaType {
 				sb.append(ji.getFormalName()).append(",");
 			sb.deleteCharAt(sb.length() - 1);
 		}
-		sb.append(" {\n");
+		sb.append(" {");
 		// constructors
 		for (JavaConstructor c : this.getConstructors()) {
-			sb.append(Java.tab("\n" + c.renderSource()));
+			sb.append(Java.tab("\n\n" + c.renderSource()));
 		}
 		// fields
 		for (JavaField jf : this.getFields()) {
-			sb.append(Java.tab("\n" + jf.renderSource()));
+			sb.append(Java.tab("\n\n" + jf.renderSource()));
 		}
 		// methods
 		for (JavaMethod m : this.getMethods()) {

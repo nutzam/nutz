@@ -41,5 +41,9 @@ public interface SqlManager {
 	void refresh();
 
 	void addSql(String key, String value);
+	
+	void remove(String key);
+	
+	void clear();
 
 }

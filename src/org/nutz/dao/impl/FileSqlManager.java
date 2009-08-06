@@ -259,4 +259,16 @@ public class FileSqlManager implements SqlManager {
 		}
 	}
 
+	@Override
+	public void clear() {
+		this.keys.clear();
+		this.sqlMaps.clear();
+	}
+
+	@Override
+	public void remove(String key) {
+		this.keys.remove(key);
+		this.sqlMaps.remove(key);
+	}
+
 }
