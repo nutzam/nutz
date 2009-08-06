@@ -1,4 +1,4 @@
-#title:zDoc 一对一映射
+#title:在 POJO 对象里应用一对一映射的注解 --- @One
 #author:amos
 #index:0,1
 概述
@@ -6,27 +6,28 @@
 	主键可以是字符型或者整数型,比如，一个文件只有一个MD5值，一个人只应该有有一套身份证信息等。
 -------------------------------------------------------------------------------------------------------------
 配置	
-	* 在这里我们以一个人和他的身份证信息为例子介绍Nutz中一对一的使用:
+	在这里我们以一个人和他的身份证信息为例子介绍Nutz中一对一的使用:
 	{{{<java>
-		@Table("tbl_person")
-		public class Person{
+	@Table("tbl_person")
+	public class Person{
+
+		@Column("idcardnum")
+		private long idNum;
 	
-			@Column("idcardnum")
-			private long idNum;
-		
-			@One(target = IDCard.class, field = "idNum")
-			private IDCard idCard;
-		
-			// 其他fields
-			... ...
-		}	
+		@One(target = IDCard.class, field = "idNum")
+		private IDCard idCard;
 	
-		@Table("tbl_idcard")
-		public class IDCard{
-			@Id
-			private long id;
-		
-		}
+		// 其他fields
+		... ...
+	}	
+
+	@Table("tbl_idcard")
+	public class IDCard{
+		@Id
+		private long id;
+		private Date birthday;
+	
+	}
 	}}}
 	# 这两个实体分别对应两张表 tbl_person 和 tbl_idcard.
 	# 表 tbl_person 中有一字段 "idcardnum"，存储的是表 tbl_idcard 的某一条记录的id,当然你可以在数据库中声明外键约束.
@@ -36,11 +37,25 @@
 		# field = "idNum":指明通过字段 idNum 与 tbl_idcard 表对应.
 -----------------------------------------------------------------------------------------------------------------
 使用
-	假设你有一个Person对象"per",你想得到他的IDCard信息，可以这么做:
-	{{{<JAVA>
-	NutDao dao=...
-	dao.fetchLinks(per,"idNum");
-	}}}
-	这样 Nutz就会自动的填充idCard字段。
-	
-	注意: per 对象的 idNum 的值必须是有效的，否则它的 idCard 对象仍旧为 null。
+	# 获取	 
+		假设你有一个Person对象"per",你想得到他的IDCard信息，可以这么做:
+		{{{<JAVA>
+		NutDao dao=...
+		IDCard card=dao.fetchLinks(per,"idNum");
+		}}}
+		这样 Nutz就会自动的填充idCard字段。
+		
+		注意: per 对象的 idNum 的值必须是有效的，否则它的 idCard 对象即 card 仍旧为 null。
+	# 更新
+		现在你已经得到了想要的IDCard对象 card,加入你修改了birthday这个字段，然后更新到数据库中，你可以这么做:
+		{{{<JAVA>
+		Date date=...;
+		card.setBirthday(date);
+		dao.updateLinks(per,"idNum");
+		}}}
+		这样，card 对象就更新到数据库了。
+	# 删除
+		如果你想删除这个card对象，只需要这么做：
+		{{{<JAVA>
+		dao.deleteLinks(per,"idNum");
+		}}}
