@@ -1,0 +1,47 @@
+#title: 使用视图
+#author: zozoh
+#index:0,1
+-------------------------------------------------------------------------------------------------------------------------------
+为什么需要视图
+	数据库将数据存储在数据表中，有些时候，为了展现某些数据，还需要跨越多个表进行计算。比如你有两个数据表
+	 # 雇员表 t_employee
+	 # 任务表 t_task
+	每个雇员都会有多个任务，所以任务表有一个字段 eid 指向雇员的主键 id。 我们需要随时知道一个雇员有多少个任务，所以在雇员的的
+	POJO 里面，有一个 Java 字段叫做 taskCount 来描述雇员当前总的任务数量。
+
+	那么，如何获取这个 taskCount 呢？ 每次都执行 SELECT COUNT(*) 吗？比较理想的一个解决方法就是使用视图。在视图的 SQL 语句中我
+	们可以利用数据库的方言，发挥数据库的效率。并且在程序代码里也会更加简洁。比如我们建立一个视图 v_employee
+	{{{<SQL>
+	SELECT * , taskcount = (SELECT COUNT(id) FROM t_task AS t WHERE t.eid = e.id) FROM t_employee AS e;
+	}}}
+	{#080;_这段代码仅仅是个示意，在不同的数据库上，有不同的写法}
+
+	那么实际上，我们建立的这个 Employee 的 Java 对象就是要从 v_employee 获取，但是执行 insert, update 或者 delete 的时候，却是
+	操作 t_employee 的。为了这个特殊的需求， Nutz.Dao 提供了 @View 和 @Readonly 这两个注解。
+-------------------------------------------------------------------------------------------------------------------------------
+在 POJO 对象上使用视图
+	我们直接来表述一下 Employee 这个 POJO，这里仅仅是个示意
+	{{{<JAVA>
+	@Table("t_employee")
+	@View("v_employee")		// <- 这里声明了视图
+	public class Employee{
+		
+		@Column
+		@Id
+		private int id;
+
+		...
+
+		@Column("taskcount")	// 其实可以不用声明数据库字段名 "taskcount"，因为多数数据库忽略大小写
+		@Readonly		// <- 这里声明了只读字段，即视图里增加的字段
+		private int taskCount;
+
+		...
+
+	}
+	}}}
+	
+	* 通过 @View， Nutz.Dao 知道了当查询数据时候，应该从哪里获取数据
+	* 通过 @Readonly 注解 Nutz.Dao 知道，当修改或者删除数据的时候，那些字段应该忽略。
+
+	接下来，你就可以通过 org.nutz.dao.Dao 接口随意这个 POJO 了。

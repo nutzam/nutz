@@ -23,8 +23,8 @@
 	</doc>
 	<doc path="ioc"						title="Nutz.Ioc 开发者手册">
 		<doc path="ioc_get_start.man"		title="Nutz.Ioc 入门"/>
-		<doc path="json_syntax.man"			title="Json 语法"/>
-		<doc path="lifecycle.man"			title="对象生命周期"/>
+		<doc path="ioc_in_json.man"			title="JSON文件中的对象映射"/>
+		<doc path="ioc_in_db.man"			title="数据库中的对象映射"/>
 		<doc path="aop.man"					title="声明式拦截器"/>
 		<doc path="aop_logging.man"			title="基于拦截器的日志打印功能"/>
 		<doc path="mapping_by_db.man"		title="将 Mapping 关系保存在数据库中"/>
