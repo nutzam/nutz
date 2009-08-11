@@ -19,6 +19,7 @@ import java.util.Queue;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.json.Json;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
@@ -434,6 +435,22 @@ public class Lang {
 			mirror.setValue(obj, field, vv);
 		}
 		return obj;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> map(String str) {
+		if (null == str)
+			return null;
+		return (Map<String, Object>) Json.fromJson(str);
+	}
+
+	@SuppressWarnings("unchecked")
+	public static List<Object> list(String str) {
+		if (null == str)
+			return null;
+		if (str.startsWith("[") && str.endsWith("]"))
+			return (List<Object>) Json.fromJson(str);
+		return (List<Object>) Json.fromJson("[" + str + "]");
 	}
 
 	public static int lenght(Object obj) {

@@ -8,14 +8,42 @@ import org.nutz.dao.entity.Entity;
 
 public interface Dao {
 
+	/**
+	 * @return SQLManager interface
+	 */
 	SqlManager sqls();
 
+	/**
+	 * @return SQLMaker interface
+	 */
 	SqlMaker maker();
 
+	/**
+	 * Batch excute a group SQL
+	 * 
+	 * @param sqls
+	 *            the SQLs, which will be executed
+	 */
 	void execute(Sql<?>... sqls);
 
+	/**
+	 * This method try to give client most flexibility. You can do anything in
+	 * your ConnCallback implementation and don't need close the connection. In
+	 * fact, if you close the connection in your callback, SQLException will be
+	 * rised.
+	 * 
+	 * @param callback
+	 *            A ConnCallback Object
+	 */
 	void run(ConnCallback callback);
 
+	/**
+	 * For your convenience to customized your SQL. This method will execute
+	 * those sql stored in your SQLs file under the order of keys you given.
+	 * 
+	 * @param keys
+	 *            The key of each SQL in your SQL file
+	 */
 	void executeBySqlKey(String... keys);
 
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
@@ -54,6 +82,14 @@ public interface Dao {
 
 	<T> T fetch(Class<T> classOfT, Condition condition);
 
+	/**
+	 * Fetch one object from DB, it is upon the insert sequence and DB
+	 * implementation about which one will be fetched.
+	 * 
+	 * @param classOfT
+	 *            The POJO java type
+	 * @return a POJO object, null will be returned if the data set is empty
+	 */
 	<T> T fetch(Class<T> classOfT);
 
 	<T> T fetch(Entity<T> classOfT, long id);

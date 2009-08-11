@@ -5,13 +5,12 @@ import java.util.Iterator;
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
-import org.nutz.trans.Atom;
 
 public class TableName {
 
 	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
 
-	public static void run(Object refer, Atom atom) {
+	public static void run(Object refer, Runnable atom) {
 		Object old = get();
 		set(refer);
 		try {
