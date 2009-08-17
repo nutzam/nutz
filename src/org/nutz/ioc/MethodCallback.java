@@ -4,7 +4,7 @@ import java.lang.reflect.Method;
 
 import org.nutz.lang.Lang;
 
-public class MethodCallback implements Callback<Object> {
+public class MethodCallback implements ObjCallback<Object> {
 
 	private Method method;
 

@@ -1,6 +1,6 @@
 package org.nutz.ioc;
 
-public class FruitDeposer implements Callback<Fruit> {
+public class FruitDeposer implements ObjCallback<Fruit> {
 
 	@Override
 	public void invoke(Fruit obj) {

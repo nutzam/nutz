@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.aop.ClassAgent;
-import org.nutz.ioc.Callback;
+import org.nutz.ioc.ObjCallback;
 import org.nutz.ioc.impl.DynamicBorning;
 import org.nutz.ioc.Events;
 import org.nutz.ioc.FailToMakeObjectException;
@@ -60,17 +60,17 @@ public class ObjectCreator<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private static <T> Callback<T> evalCallback(Class<T> classOfT, String name) throws Exception {
+	private static <T> ObjCallback<T> evalCallback(Class<T> classOfT, String name) throws Exception {
 		if (Strings.isBlank(name))
 			return null;
 		if (!name.contains(".")) {
 			try {
 				Method m = classOfT.getMethod(name);
-				return (Callback<T>) new MethodCallback(m);
+				return (ObjCallback<T>) new MethodCallback(m);
 			} catch (Exception e) {}
 		}
 		Class<?> callbackType = Class.forName(name);
-		return (Callback<T>) callbackType.newInstance();
+		return (ObjCallback<T>) callbackType.newInstance();
 	}
 
 	/*-----------------------------------------------------------------------------*/

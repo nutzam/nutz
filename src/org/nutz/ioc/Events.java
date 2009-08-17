@@ -2,33 +2,33 @@ package org.nutz.ioc;
 
 public class Events<T> {
 
-	private Callback<T> whenCreate;
+	private ObjCallback<T> whenCreate;
 
-	private Callback<T> whenFetch;
+	private ObjCallback<T> whenFetch;
 
-	private Callback<T> whenDepose;
+	private ObjCallback<T> whenDepose;
 
-	public Callback<T> getWhenCreate() {
+	public ObjCallback<T> getWhenCreate() {
 		return whenCreate;
 	}
 
-	public void setWhenCreate(Callback<T> whenCreate) {
+	public void setWhenCreate(ObjCallback<T> whenCreate) {
 		this.whenCreate = whenCreate;
 	}
 
-	public Callback<T> getWhenFetch() {
+	public ObjCallback<T> getWhenFetch() {
 		return whenFetch;
 	}
 
-	public void setWhenFetch(Callback<T> whenFetch) {
+	public void setWhenFetch(ObjCallback<T> whenFetch) {
 		this.whenFetch = whenFetch;
 	}
 
-	public Callback<T> getWhenDepose() {
+	public ObjCallback<T> getWhenDepose() {
 		return whenDepose;
 	}
 
-	public void setWhenDepose(Callback<T> whenDepose) {
+	public void setWhenDepose(ObjCallback<T> whenDepose) {
 		this.whenDepose = whenDepose;
 	}
 
