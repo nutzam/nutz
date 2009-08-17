@@ -14,19 +14,114 @@ Nutz.Dao 自定义 SQL 的概述
 	注解是存放我的 SQL 语句好地方，我认为 SQL 存放的地方，应该是可以用 Eclipse 的 SQL 编辑器打开并且
 	能够被正确语法高亮的一种文本文件。
 
-
+	Nutz.Dao 最初的前身，就是一个自定义 SQL 的存储小工具。一直到今天，它这方面的功能一点都没有变弱，
+	你可以舒舒服服将你的 SQL 语句存在一个或者多个 SQL 文件中。那么这个 SQL 的文件是什么样子呢？请看
+	下一节。
 ----------------------------------------------------------------------------------------------------
-自定义 SQL 文件的格式
-	注释的写法
-	Sql 语句的 Key
+Nutz.Dao SQL 文件的格式
+	这是一种非常简单的纯文本文件，文件里只包含三种信息：
+	 # SQL 语句 ({#080;_可以支持 ${变量名} 形式的占位符})
+	 # SQL 语句的名称，或者是键值。你的程序可以通过语句的名称获取到某一条或几条 SQL 语句
+	 # 注释  (通常包括在 /* 与 */ 之间)
+	 {#F00;*请注意：} 你的 SQL 文件必须为 "UTF-8" 编码。
+	下面是一个例子
+	{{{<SQLs>
+	/*
+	这里是这个 SQL 文件的注释，你随便怎么写
+	*/
+	/* sql1 */
+	DROP TABLE t_abc
+	/* 你可以随便写任何的注释文字，只有距离 SQL 语句最近的那一行注释，才会被认为是键值 */
+	/* fetch: getpet*/
+	SELECT * FROM t_pet WHERE id=${id}
+	/* query: listpets*/
+	SELECT * FROM t_pet ${condition}
+	}}}
+	注释与 Sql 语句的 Key
+		* 注释写在 /* 与 */ 之间
+		* 距离你的 SQL 语句最近的那一行注释，在去掉前后空白后，便是该语句的键值
+			* 键值有三种类型
+				* 以 fetch: 开头的键将会生成 org.nutz.dao.FetchSql 对象
+					* 因此键 fetch:abc 的键值为 abc
+				* 以 query: 开头的键将会生成 org.nutz.dao.QuerySql 对象
+					* 因此键 query:abc 的键值为 abc
+				* 其他的键将会生成 org.nutz.dao.ExecutableSql 对象
+			* 下一节，将会详细告诉大家所谓 Sql 语句的三种类型是什么意思
 	Sql 语句的三种类型
-	一个简单的例子
+		Nutz.Dao 认为所有的 SQL 按照执行的目的，可以划分为三种类型
+		 # 执行：为了改变数据，这种 SQL 被成为可执行 SQL， org.nutz.dao.ExecutableSql
+		 # 获取：为了获取一条数据，这种SQL执行的目的是为了获得某一条记录的全部内容， org.nutz.dao.FetchSql
+		 # 查询：为了获得一批数据，这种SQL执行的目的是为了获得一组数据的全部内容， org.nutz.dao.QuerySql
+		对应到数据库的四种操作，执行可能是 insert,update,delete，获取和查询是 select
+		这种分类主要的根据是 SQL 的返回类型。它是构建在经验上的分类，Nutz认为这样的分类是对于程序员最
+		舒服的分类方式。
+	Sql 语句中的占位符
+		* 占位符可以位于 SQL 语句的任何部分
+		* 以 `${` 开头，以 `}` 结束，中间的部分为占位符的名称（不忽略前后空格）
+			* `$${` 是逃逸字符，将会输出 `${`
+		* 占位符的名称以字符点 . 开始，那么被认为是"{*替换占位符}"
+			* 在设置值时，需要写上点，如 sql.set(".abc","the value");
+			* 在{*获取}和{*查询}时，由于使用了PreparedStatement，{*替换占位符}会被预先替换，然后才生成 PreparedStatement，而其他占位符则变成 ?
+				* 很适合将 {*替换占位符} 插入在表名或者作为 SQL 关键字，从而让你的 SQL 语句更具灵活性
+			* 在｛*执行｝时，由于某些原因而没有使用 PreparedStatement，所以很其他的占位符效果相同
+				* 我不敢保证以后的版本，在｛*执行｝时不使用 PreparedStatement
+				* 因为可能需要对 CallableStatement 做点特殊的事情
+		
 ----------------------------------------------------------------------------------------------------
-使用存储在 SQL 文件
+使用 SQL 文件
 	加载到 Dao 中
 		在构造时加载
 		任何时加载
 	执行一个自定义的 Sql
+		直接执行
+			{{{<JAVA>
+			dao.executeBySqlKey("sql1","sql2");
+			}}}
+			executeBySqlKey 函数接受数目可变的参数
+		获取，修改，执行
+			{{{<JAVA>
+			Sql<?> sql = dao.sqls().createSql("keyOfSql");
+			sql.set("id", 34);
+			dao.execute(sql);
+			}}}
+		获取某种特别的SQL
+			如果你在 SQL 文件里是这么定义的
+			{{{<SQLs>
+			/* fetch: pet.get */
+			SELECT * FROM t_pet WHERE id=${id}
+			}}}
+			在Java代码里，你可以这么调用：
+			{{{<JAVA>
+			FetchSql<Pet> fp = (FetchSql<Pet>) dao.sqls().createSql("pet.get");
+			fp.set("id", 23);
+			fp.setCallback(new Callback<Pet, ResultSet>() {
+				@Override
+				public Pet invoke(ResultSet arg) throws Exception {
+					Pet pet = new Pet();
+					// set object 'pet' attribute by ResultSet here
+					return pet;
+				}
+			});
+			dao.execute(fp);
+			Pet pet = fp.getResult();
+			}}}
+			利用 Java 泛型， FetchSql 可以直接返回一个 Pet 类型的对象。但是如何获得这个对象，以及哪个
+			对象的控制权完全掌握在调用者手里。基本上操作 SQL 的过程就是：
+			1. 利用 dao.sqls().createSql 创建一个 SQL 对象
+			2. 为自己预留的占位符设值
+			3. 设置回调对象（如果是 ExecutableSql 多数情况不需要设置回调，除非你在执行完后马上还想做点别的什么事情）
+			4. 执行
+			5. 获得结果（这个结果就是你在回调函数里返回的那个对象，如果没设回调，返回的自然就是 null）
+
+			另外，你可以直接在 Java 代码里指明你的 SQL 的类型
+			{{{<JAVA>
+			FetchSql<Pet> fp = dao.sqls().createSql(FetchSql.class,"pet.get");
+			}}}
+			如果这样获取 SQL，在 SQL 文件中，你可以不用声明 pet.get 的类型，即可以省略 fetch: 。但是
+			这行代码依然会造成一个讨厌的类型安全的警告。是的，谁让 Java 的泛型是所谓的“擦除泛型”呢。
+
+			使用 Nutz.Dao 的自定义 SQL 会带来一些编译器警告（如果你不关闭这些警告的话），这是我暂时没
+			有解决好的一个问题。
 	ComboSql 的用处
 	Sql 的 Callback
 ----------------------------------------------------------------------------------------------------
