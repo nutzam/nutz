@@ -74,6 +74,6 @@ HttpCondition 接口
 		* 如果 HTTP 的参数为 {#A00;name=abc&age=15} 生成的 SQL 将为 {#00A;name='abc' AND age=15}
 	* 你可以通过继承 HttpCondition 实现自己的 HttpCondition
 		* 需要重载一个参数为 HttpServletRequest 的公共构造函数。
-		* 通过复写 setOrderBy 方法 以及实现 toString(Entity<?>) 来控制输出内容
+		* 通过复写 setOrderBy 方法 以及实现 `toString(Entity<?>)` 来控制输出内容
 		* 你可以将你的 HttpCondition 配置在 Nutz.mvc 框架提供的 Query 控制器中
 			* 通过 Nutz.Ioc 框架，你可以很容易做到这一点

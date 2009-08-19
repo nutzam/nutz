@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<doc title="nutz 框架开发者手册" author="zozoh" index="0,2">
-	<doc path="overview.man"				title="概述"/>
+<doc title="Nutz 框架开发者手册" author="zozoh" index="0,2">
+	<doc path="overview.man"				title="写在前面的话"/>
 	<doc path="packages.man"				title="Nutz 的包结构"/>
 	<doc path="version_naming_rule.man" 	title="Nutz 的版本命名规范"/>
 	<doc path="dao"						title="Nutz.Dao 开发者手册">

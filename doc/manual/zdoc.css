@@ -1,0 +1,86 @@
+/*---------------------------------------------------------------------------
+ * Body
+ */
+body{
+	
+}
+
+body,font,td,form,.zdoc_body{
+	font-family: arial, sans-serif;
+	font-size: 14px;
+	line-height: 19px;
+	letter-spacing: 0px;
+}
+
+hr{
+	display:none;
+}
+
+p{
+	text-indent:28px;
+}
+
+/*---------------------------------------------------------------------------
+ * Heading
+ */
+h1{
+	color:#00A;
+	font-size:20px;
+	font-weight:bold;
+	border-bottom:2px solid #FD3;
+	background-color:#FEA;
+	margin:2px;
+	padding:5px;
+}
+
+h2{
+	color:#00C;
+	font-size:16px;
+	font-weight:bold;
+	border-bottom:1px dotted #FD8;
+	background-color:#FEC;
+	margin:2px;
+	padding:5px;
+	text-indent:8px;
+}
+
+h3,h4,h5,h6{
+	color: #00D;
+	font-size:14px;
+	font-weight:bold;
+	border-bottom:1px dotted #555;
+	background-color:#DDD;
+	margin:2px;
+	padding:2px;
+	text-indent:16px;
+}
+/*---------------------------------------------------------------------------
+ * Code
+ */
+pre{
+	color: #126;
+	font-family:Courier New;
+	font-size: 12px;
+	line-height: 14px;
+	letter-spacing: 0px;
+
+	border-left:4px solid #CCC;
+	padding: 10px;
+	margin-left:38px;
+}
+/*---------------------------------------------------------------------------
+ * Index table
+ */
+.zdoc_index_table{
+	border:1px dashed #ADF;
+	background-color:#EEE;
+	display:inline-block;
+	padding:20px;
+	min-width:300px;
+	padding-left:40px;
+	margin-left:20px;
+}
+
+ul,ol{
+	margin-bottom:10px;
+}

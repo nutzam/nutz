@@ -1,96 +1,96 @@
-#title: �Զ��� SQL
+#title: 自定义 SQL
 #author: zozoh
 #index:0,1
 ----------------------------------------------------------------------------------------------------
-Nutz.Dao �Զ��� SQL �ĸ���
-	Nutz.Dao �ṩ�˴�����򵥵Ĳ�������80%���ϵ�����£��㲢����Ҫ��д SQL����Ϊ Nutz.Dao ���Զ�����
-	���ɿ���ʹ�õ� SQL�����ǣ���ĳЩ���������£������ǿ��ǵ�Ч�ʵ����⣬ֱ��д�� SQL ��Ȼ�ǳ���Ա��
-	��һ��ɱ��ﵣ��������ɱ��ﵣ�����Ա����Զ��������κ����ݿ���������Ҫ���κβ�����
+Nutz.Dao 自定义 SQL 的概述
+	Nutz.Dao 提供了大多数简单的操作，在80%以上的情况下，你并不需要编写 SQL，因为 Nutz.Dao 会自动替你
+	生成可以使用的 SQL。但是，在某些特殊的情况下，尤其是考虑到效率等问题，直接写作 SQL 仍然是程序员们
+	的一个杀手锏，有了这个杀手锏，程序员们永远可以针对任何数据库做他们想要的任何操作。
 
-	��֮ǰ��ʱ�����ܶ����Ա�� SQL ����ͬ Java ���������һ�𣬼���ν��{#00A;*Ӳ����}��Ӳ����ͨ���ǲ�
-	�õģ����Ժܶ����Ա�������˸��ְ취�� SQL �������������һ���������ļ��С����бȽ�������һ�����
-	���� iBatis�����С�ɵ� SQL ӳ���ܣ�Nutz.Dao ������С�������������ɵĲ�����������ȱ�� SQL ��
-	���� XML �ļ����ˡ��������µ� iBatis3 Ҳ�ṩ��JAVAע���д���������Ҳ�����Ϊ XML �ļ������� JAVA
-	ע���Ǵ���ҵ� SQL ���õط�������Ϊ SQL ��ŵĵط���Ӧ���ǿ����� Eclipse �� SQL �༭���򿪲���
-	�ܹ�����ȷ�﷨������һ���ı��ļ���
+	在之前的时代，很多程序员将 SQL 代码同 Java 代码混杂在一起，即所谓的{#00A;*硬编码}。硬编码通常是不
+	好的，所以很多程序员都采用了各种办法将 SQL 提炼出来存放在一个独立的文件中。其中比较著名的一个框架
+	就是 iBatis。这个小巧的 SQL 映射框架（Nutz.Dao 比它还小）在这个领域里干的不错。但是它缺将 SQL 存
+	放在 XML 文件中了。现在最新的 iBatis3 也提供了JAVA注解的写法。但是我并不认为 XML 文件或者是 JAVA
+	注解是存放我的 SQL 语句好地方，我认为 SQL 存放的地方，应该是可以用 Eclipse 的 SQL 编辑器打开并且
+	能够被正确语法高亮的一种文本文件。
 
-	Nutz.Dao �����ǰ��������һ���Զ��� SQL �Ĵ洢С���ߡ�һֱ�����죬���ⷽ��Ĺ���һ�㶼û�б�����
-	����������������� SQL ������һ�����߶�� SQL �ļ��С���ô��� SQL ���ļ���ʲô�����أ��뿴
-	��һ�ڡ�
+	Nutz.Dao 最初的前身，就是一个自定义 SQL 的存储小工具。一直到今天，它这方面的功能一点都没有变弱，
+	你可以舒舒服服将你的 SQL 语句存在一个或者多个 SQL 文件中。那么这个 SQL 的文件是什么样子呢？请看
+	下一节。
 ----------------------------------------------------------------------------------------------------
-Nutz.Dao SQL �ļ��ĸ�ʽ
-	����һ�ַǳ��򵥵Ĵ��ı��ļ����ļ���ֻ����������Ϣ��
-	 # SQL ��� ({#080;_����֧�� ${������} ��ʽ��ռλ��})
-	 # SQL �������ƣ������Ǽ�ֵ����ĳ������ͨ���������ƻ�ȡ��ĳһ������ SQL ���
-	 # ע��  (ͨ�������� /* �� */ ֮��)
-	 {#F00;*��ע�⣺} ��� SQL �ļ�����Ϊ "UTF-8" ���롣
-	������һ������
+Nutz.Dao SQL 文件的格式
+	这是一种非常简单的纯文本文件，文件里只包含三种信息：
+	 # SQL 语句 ({#080;_可以支持 ${变量名} 形式的占位符})
+	 # SQL 语句的名称，或者是键值。你的程序可以通过语句的名称获取到某一条或几条 SQL 语句
+	 # 注释  (通常包括在 /* 与 */ 之间)
+	 {#F00;*请注意：} 你的 SQL 文件必须为 "UTF-8" 编码。
+	下面是一个例子
 	{{{<SQLs>
 	/*
-	��������� SQL �ļ���ע�ͣ��������ôд
+	这里是这个 SQL 文件的注释，你随便怎么写
 	*/
 	/* sql1 */
 	DROP TABLE t_abc
-	/* ��������д�κε�ע�����֣�ֻ�о��� SQL ����������һ��ע�ͣ��Żᱻ��Ϊ�Ǽ�ֵ */
+	/* 你可以随便写任何的注释文字，只有距离 SQL 语句最近的那一行注释，才会被认为是键值 */
 	/* fetch: getpet*/
 	SELECT * FROM t_pet WHERE id=${id}
 	/* query: listpets*/
 	SELECT * FROM t_pet ${condition}
 	}}}
-	ע���� Sql ���� Key
-		* ע��д�� /* �� */ ֮��
-		* ������� SQL ����������һ��ע�ͣ���ȥ��ǰ��հ׺󣬱��Ǹ����ļ�ֵ
-			* ��ֵ����������
-				* �� fetch: ��ͷ�ļ��������� org.nutz.dao.FetchSql ����
-					* ��˼� fetch:abc �ļ�ֵΪ abc
-				* �� query: ��ͷ�ļ��������� org.nutz.dao.QuerySql ����
-					* ��˼� query:abc �ļ�ֵΪ abc
-				* �����ļ��������� org.nutz.dao.ExecutableSql ����
-			* ��һ�ڣ�������ϸ���ߴ����ν Sql ��������������ʲô��˼
-	Sql ������������
-		Nutz.Dao ��Ϊ���е� SQL ����ִ�е�Ŀ�ģ����Ի���Ϊ��������
-		 # ִ�У�Ϊ�˸ı����ݣ����� SQL ����Ϊ��ִ�� SQL�� org.nutz.dao.ExecutableSql
-		 # ��ȡ��Ϊ�˻�ȡһ�����ݣ�����SQLִ�е�Ŀ����Ϊ�˻��ĳһ����¼��ȫ�����ݣ� org.nutz.dao.FetchSql
-		 # ��ѯ��Ϊ�˻��һ�����ݣ�����SQLִ�е�Ŀ����Ϊ�˻��һ�����ݵ�ȫ�����ݣ� org.nutz.dao.QuerySql
-		��Ӧ�����ݿ�����ֲ�����ִ�п����� insert,update,delete����ȡ�Ͳ�ѯ�� select
-		���ַ�����Ҫ�ĸ����� SQL �ķ������͡����ǹ����ھ����ϵķ��࣬Nutz��Ϊ�����ķ����Ƕ��ڳ���Ա��
-		����ķ��෽ʽ��
-	Sql ����е�ռλ��
-		* ռλ������λ�� SQL �����κβ���
-		* �� `${` ��ͷ���� `}` �������м�Ĳ���Ϊռλ�������ƣ�������ǰ��ո�
-			* `$${` �������ַ���������� `${`
-		* ռλ�����������ַ��� . ��ʼ����ô����Ϊ��"{*�滻ռλ��}"
-			* ������ֵʱ����Ҫд�ϵ㣬�� sql.set(".abc","the value");
-			* ��{*��ȡ}��{*��ѯ}ʱ������ʹ����PreparedStatement��{*�滻ռλ��}�ᱻԤ���滻��Ȼ������� PreparedStatement��������ռλ������ ?
-				* ���ʺϽ� {*�滻ռλ��} �����ڱ���������Ϊ SQL �ؼ��֣��Ӷ������ SQL �����������
-			* �ڣ�*ִ�У�ʱ������ĳЩԭ���û��ʹ�� PreparedStatement�����Ժ�������ռλ��Ч����ͬ
-				* �Ҳ��ұ�֤�Ժ�İ汾���ڣ�*ִ�У�ʱ��ʹ�� PreparedStatement
-				* ��Ϊ������Ҫ�� CallableStatement �������������
+	注释与 Sql 语句的 Key
+		* 注释写在 /* 与 */ 之间
+		* 距离你的 SQL 语句最近的那一行注释，在去掉前后空白后，便是该语句的键值
+			* 键值有三种类型
+				* 以 fetch: 开头的键将会生成 org.nutz.dao.FetchSql 对象
+					* 因此键 fetch:abc 的键值为 abc
+				* 以 query: 开头的键将会生成 org.nutz.dao.QuerySql 对象
+					* 因此键 query:abc 的键值为 abc
+				* 其他的键将会生成 org.nutz.dao.ExecutableSql 对象
+			* 下一节，将会详细告诉大家所谓 Sql 语句的三种类型是什么意思
+	Sql 语句的三种类型
+		Nutz.Dao 认为所有的 SQL 按照执行的目的，可以划分为三种类型
+		 # 执行：为了改变数据，这种 SQL 被成为可执行 SQL， org.nutz.dao.ExecutableSql
+		 # 获取：为了获取一条数据，这种SQL执行的目的是为了获得某一条记录的全部内容， org.nutz.dao.FetchSql
+		 # 查询：为了获得一批数据，这种SQL执行的目的是为了获得一组数据的全部内容， org.nutz.dao.QuerySql
+		对应到数据库的四种操作，执行可能是 insert,update,delete，获取和查询是 select
+		这种分类主要的根据是 SQL 的返回类型。它是构建在经验上的分类，Nutz认为这样的分类是对于程序员最
+		舒服的分类方式。
+	Sql 语句中的占位符
+		* 占位符可以位于 SQL 语句的任何部分
+		* 以 `${` 开头，以 `}` 结束，中间的部分为占位符的名称（不忽略前后空格）
+			* `$${` 是逃逸字符，将会输出 `${`
+		* 占位符的名称以字符点 . 开始，那么被认为是"{*替换占位符}"
+			* 在设置值时，需要写上点，如 sql.set(".abc","the value");
+			* 在{*获取}和{*查询}时，由于使用了PreparedStatement，{*替换占位符}会被预先替换，然后才生成 PreparedStatement，而其他占位符则变成 ?
+				* 很适合将 {*替换占位符} 插入在表名或者作为 SQL 关键字，从而让你的 SQL 语句更具灵活性
+			* 在｛*执行｝时，由于某些原因而没有使用 PreparedStatement，所以很其他的占位符效果相同
+				* 我不敢保证以后的版本，在｛*执行｝时不使用 PreparedStatement
+				* 因为可能需要对 CallableStatement 做点特殊的事情
 		
 ----------------------------------------------------------------------------------------------------
-ʹ�� SQL �ļ�
-	���ص� Dao ��
-		�ڹ���ʱ����
-		�κ�ʱ����
-	ִ��һ���Զ���� Sql
-		ֱ��ִ��
+使用 SQL 文件
+	加载到 Dao 中
+		在构造时加载
+		任何时加载
+	执行一个自定义的 Sql
+		直接执行
 			{{{<JAVA>
 			dao.executeBySqlKey("sql1","sql2");
 			}}}
-			executeBySqlKey ����������Ŀ�ɱ�Ĳ���
-		��ȡ���޸ģ�ִ��
+			executeBySqlKey 函数接受数目可变的参数
+		获取，修改，执行
 			{{{<JAVA>
 			Sql<?> sql = dao.sqls().createSql("keyOfSql");
 			sql.set("id", 34);
 			dao.execute(sql);
 			}}}
-		��ȡĳ���ر��SQL
-			������� SQL �ļ�������ô�����
+		获取某种特别的SQL
+			如果你在 SQL 文件里是这么定义的
 			{{{<SQLs>
 			/* fetch: pet.get */
 			SELECT * FROM t_pet WHERE id=${id}
 			}}}
-			��Java������������ô���ã�
+			在Java代码里，你可以这么调用：
 			{{{<JAVA>
 			FetchSql<Pet> fp = (FetchSql<Pet>) dao.sqls().createSql("pet.get");
 			fp.set("id", 23);
@@ -105,26 +105,26 @@ Nutz.Dao SQL �ļ��ĸ�ʽ
 			dao.execute(fp);
 			Pet pet = fp.getResult();
 			}}}
-			���� Java ���ͣ� FetchSql ����ֱ�ӷ���һ�� Pet ���͵Ķ��󡣵�����λ����������Լ��ĸ�
-			����Ŀ���Ȩ��ȫ�����ڵ�������������ϲ��� SQL �Ĺ��̾��ǣ�
-			1. ���� dao.sqls().createSql ����һ�� SQL ����
-			2. Ϊ�Լ�Ԥ����ռλ����ֵ
-			3. ���ûص���������� ExecutableSql �����������Ҫ���ûص�����������ִ��������ϻ���������ʲô���飩
-			4. ִ��
-			5. ��ý�����������������ڻص������ﷵ�ص��Ǹ��������û��ص������ص���Ȼ���� null��
+			利用 Java 泛型， FetchSql 可以直接返回一个 Pet 类型的对象。但是如何获得这个对象，以及哪个
+			对象的控制权完全掌握在调用者手里。基本上操作 SQL 的过程就是：
+			1. 利用 dao.sqls().createSql 创建一个 SQL 对象
+			2. 为自己预留的占位符设值
+			3. 设置回调对象（如果是 ExecutableSql 多数情况不需要设置回调，除非你在执行完后马上还想做点别的什么事情）
+			4. 执行
+			5. 获得结果（这个结果就是你在回调函数里返回的那个对象，如果没设回调，返回的自然就是 null）
 
-			���⣬�����ֱ���� Java ������ָ����� SQL ������
+			另外，你可以直接在 Java 代码里指明你的 SQL 的类型
 			{{{<JAVA>
 			FetchSql<Pet> fp = dao.sqls().createSql(FetchSql.class,"pet.get");
 			}}}
-			���������ȡ SQL���� SQL �ļ��У�����Բ������� pet.get �����ͣ�������ʡ�� fetch: ������
-			���д�����Ȼ�����һ����������Ͱ�ȫ�ľ��档�ǵģ�˭�� Java �ķ�������ν�ġ��������͡��ء�
+			如果这样获取 SQL，在 SQL 文件中，你可以不用声明 pet.get 的类型，即可以省略 fetch: 。但是
+			这行代码依然会造成一个讨厌的类型安全的警告。是的，谁让 Java 的泛型是所谓的“擦除泛型”呢。
 
-			ʹ�� Nutz.Dao ���Զ��� SQL �����һЩ���������棨����㲻�ر���Щ����Ļ�������������ʱû
-			�н���õ�һ�����⡣
-	ComboSql ���ô�
-	Sql �� Callback
+			使用 Nutz.Dao 的自定义 SQL 会带来一些编译器警告（如果你不关闭这些警告的话），这是我暂时没
+			有解决好的一个问题。
+	ComboSql 的用处
+	Sql 的 Callback
 ----------------------------------------------------------------------------------------------------
-����Զ����Լ��� SQL �ļ���ʽ
-	org.nutz.dao.SqlManager �ӿ�
-	org.nutz.dao.Sql �ӿ�
+你可以定义自己的 SQL 文件格式
+	org.nutz.dao.SqlManager 接口
+	org.nutz.dao.Sql 接口
