@@ -86,9 +86,9 @@ public class LinkedCharArray {
 		return innerGet(offset);
 	}
 
-	public int last() {
+	public char last() {
 		if (size() == 0)
-			return -1;
+			return (char) 0;
 		return innerGet(cursor - 1);
 	}
 
