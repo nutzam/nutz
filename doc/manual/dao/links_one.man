@@ -1,4 +1,4 @@
-#title:在 POJO 对象里应用一对一映射的注解 --- @One
+#title:一对一映射
 #author:amos
 #index:0,1
 概述

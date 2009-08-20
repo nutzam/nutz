@@ -21,6 +21,42 @@ p{
 }
 
 /*---------------------------------------------------------------------------
+ * Document
+ */
+.zdoc_header{
+	font-size: 30px;
+	font-weight: bold;
+	padding: 20px;
+	background-color: #DDF;
+	border:1px dashed #33A;
+}
+
+.zdoc_footer{
+	border-top:1px solid #AAA;
+	background-color: #DDD;
+	padding: 5px;
+	padding-right:15px;
+	margin: 0px;
+	margin-top: 50px;
+	text-align: right;
+	font-size: 10px;
+}
+
+.zdoc_author{
+	text-align:right;
+	padding-right:10px;
+	font-size: 10px;
+	margin-bottom: 10px;
+}
+
+.zdoc_footer b, .zdoc_author b{
+	color: #666;
+	display: inline-block;
+	margin-left:10px;
+	margin-right:10px;
+}
+
+/*---------------------------------------------------------------------------
  * Heading
  */
 h1{
@@ -31,6 +67,7 @@ h1{
 	background-color:#FEA;
 	margin:2px;
 	padding:5px;
+	padding-left:10px;
 }
 
 h2{

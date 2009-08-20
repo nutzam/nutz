@@ -1,4 +1,4 @@
-#title: Nutz.Ioc 简要使用手册
+#title: Nutz.Ioc 入门
 #index:0,3
 
 概要介绍

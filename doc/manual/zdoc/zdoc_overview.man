@@ -37,13 +37,26 @@
 			# NUTZ_HOME 指向 Nutz 的核心 jar 包: {_可从此处下载=>} [http://nutz.googlecode.com]
 			# ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包: {_可从此处下载=>} [http://nutzdoc.googlecode.com]
 		# 将 run 目录加入到你的系统环境变量中
-	执行命令
+	转换单一文件
 		当你完成设定，便可打开一个控制台输入：
 		{{{(Shell)
-		zdoc 你的zDoc文本文件全路径  你要输出的文件全路径
+		zdoc 你的zDoc文本文件全路径 你要输出的文件全路径
 		}}}
-		执行完毕后，你就会获得你需要的文件
-
+		 * 执行完毕后，你就会获得你需要的文件
+		 * zDoc 会根据你的要输出的文件后缀名来觉得如何渲染你的 zdoc 文件
+			* 比如你给出个 /xxx/xx/xx.pdf， 它就会给你弄出个 PDF 来
+			* 支持 HTML 和 PDF
+	转换一个目录
+		{{{(Shell)
+		zdoc 你的源目录 你的目标目录 文件扩展名
+		}}}
+		 * 这三个参数缺一不可
+		 * 源目录根下必须有 index.xml ，请看 [zdoc_index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
+		 * 你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感
+		 * 更多的关于目录转换的细节请参看 [zdoc_dir_convert.html 目录转换细则]
+		 * 文件扩展名表示你要将你的 zdoc 文件转换成何种文件
+			* 如 .html 表示你要转换成 HTML 文件
+			* 如 .pdf 表示你要将所有的 ZDoc 文件转换成 pdf 文件
 其他
 	关于 zdoc 文件详细的语法，请参看 [zdoc_syntax.html zDoc 的语法说明]
 				
