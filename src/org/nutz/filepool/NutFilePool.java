@@ -34,7 +34,7 @@ public class NutFilePool implements FilePool {
 			subs = last.list(new FilenameFilter(){
 				@Override
 				public boolean accept(File dir, String name) {
-					return name.matches("^([\\d]{2})([.][a-zA-Z]{1,})?$");
+					return name.matches("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$");
 				}
 			});
 			if (null != subs && subs.length > 0) {
