@@ -123,6 +123,17 @@ Nutz.Dao SQL 文件的格式
 			有解决好的一个问题。
 	ComboSql 的用处
 		通过 Dao 接口的 execute 接口，可以传入数目可变的 SQL 对象。 SQL 对象可以从 Dao.sqls().createSql() 方法获得。
+		但是有些时候，你有可能需要批量的为多个 SQL 对象统一设定占位符的值。比如你有这么两个 SQL
+		{{{<SQL>
+		/* pet.update */
+		UPDATE t_pet SET name='XiaoBai' WHERE id=${id};
+		/* fetch: pet.get */
+		SELECT * FROM t_pet WHERE id=${id};
+		}}}
+		那么在 Java 代码中，你就需要这样写：
+		{{{<JAVA>
+		SQL<?> update = dao.sqls().g
+		}}}
 
 
 	Sql 的 Callback
