@@ -61,12 +61,12 @@ Nutz.Dao SQL 文件的格式
 		* 占位符可以位于 SQL 语句的任何部分
 		* 以 `${` 开头，以 `}` 结束，中间的部分为占位符的名称（不忽略前后空格）
 			* `$${` 是逃逸字符，将会输出 `${`
-		* 占位符的名称以字符｛*点｝ . 开始，那么被认为是"{*替换占位符}"
+		* 占位符的名称以字符{*点} . 开始，那么被认为是"{#00A;*替换占位符}"
 			* 在设置值时，需要写上点，如 sql.set(".abc","the value");
-			* 在{*获取}和{*查询}时，由于使用了PreparedStatement，{*替换占位符}会被预先替换，然后才生成 PreparedStatement，而其他占位符则变成 ?
-				* 很适合将 {*替换占位符} 插入在表名或者作为 SQL 关键字，从而让你的 SQL 语句更具灵活性
-			* 在｛*执行｝时，由于某些原因而没有使用 PreparedStatement，所以很其他的占位符效果相同
-				* 我不敢保证以后的版本，在｛*执行｝时不使用 PreparedStatement
+			* 在{*获取}和{*查询}时，由于使用了PreparedStatement，{#00A;*替换占位符}会被预先替换，然后才生成 PreparedStatement，而其他占位符则变成 ?
+				* 很适合将 {#00A;*替换占位符} 插入在表名或者作为 SQL 关键字，从而让你的 SQL 语句更具灵活性
+			* 在{*执行}时，由于某些原因而没有使用 PreparedStatement，所以很其他的占位符效果相同
+				* 我不敢保证以后的版本，在{*执行}时不使用 PreparedStatement
 				* 因为可能需要对 CallableStatement 做点特殊的事情
 		
 ----------------------------------------------------------------------------------------------------
@@ -252,7 +252,7 @@ Nutz.Dao SQL 文件的格式
 	------------------------------------------------------------------------------------------------
 	获取 -- FetchSql
 		FetchSql 专门针对 {*获取} 这种操作而设计的。同 ExecutableSql 一样，它即能通过 dao.sqls().createSql 函数来创建，又能直接
-		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 ｛#00A;*fetch:｝ 开头。
+		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 {#00A;*fetch:｝ 开头。
 
 		FetchSql 可以设置回调，因为通常的它都需要设置一个回调，在这个回调中，你可以写作你自己的代码，将一个对象返回。当 SQL 执行
 		完毕，则可以通过 SQL 的 getResult() 来获取这个对象。
@@ -271,7 +271,7 @@ Nutz.Dao SQL 文件的格式
 		System.out.println(pet.toString());
 		}}}
 		这个回调 SqlCallback 需要两个泛型参数 Pet（返回的对象类型）, 以及回调传入参数 ResultSet。 为此，我提供了另外一个简便一些的
-		回调 org.nutz.dao.callback.QueryCallback<T>
+		回调 `org.nutz.dao.callback.QueryCallback<T>`
 		{{{<JAVA>
 		FetchSql<Pet> sql = new FetchSql<Pet>("SELECT * FROM t_pet WHERE id=${id}");
 		sql.set("id", 35);
@@ -288,7 +288,7 @@ Nutz.Dao SQL 文件的格式
 	------------------------------------------------------------------------------------------------
 	查询 -- QuerySql
 		QuerySql 专门针对 {*查询} 这种操作而设计的。同 ExecutableSql 一样，它即能通过 dao.sqls().createSql 函数来创建，又能直接
-		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 ｛#00A;*query:｝ 开头。
+		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 {#00A;*query:｝ 开头。
 		
 		QuerySql 可以设置回调，因为通常的它都需要设置一个回调，在这个回调中，你可以写作你自己的代码，将一个对象返回。当 SQL 执行
 		完毕，则可以通过 SQL 的 getResult() 获取一个 List，其中每一个元素都是在回调中生成的。
