@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Condition;
-import org.nutz.dao.callback.Callback;
+import org.nutz.dao.callback.SqlCallback;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.lang.Mirror;
@@ -37,9 +37,9 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 		super(sql);
 	}
 
-	protected Callback<R, P> callback;
+	protected SqlCallback<R, P> callback;
 
-	public ConditionSql<T, R, P> setCallback(Callback<R, P> callback) {
+	public ConditionSql<T, R, P> setCallback(SqlCallback<R, P> callback) {
 		this.callback = callback;
 		return this;
 	}

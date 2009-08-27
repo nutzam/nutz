@@ -1,10 +1,10 @@
 package org.nutz.dao.callback;
 
-public abstract class Callback<R, P> {
+public abstract class SqlCallback<R, P> {
 
 	private Context context;
 
-	public Callback() {
+	public SqlCallback() {
 		context = new Context();
 	}
 

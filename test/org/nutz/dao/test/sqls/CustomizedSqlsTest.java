@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.nutz.dao.ExecutableSql;
 import org.nutz.dao.QuerySql;
 import org.nutz.dao.TableName;
-import org.nutz.dao.callback.Callback;
+import org.nutz.dao.callback.SqlCallback;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.test.DaoCase;
@@ -56,7 +56,7 @@ public class CustomizedSqlsTest extends DaoCase {
 		Platoon p = pojos.create4Platoon(Base.make("xyz"), "GG");
 		QuerySql<Tank> sql = dao.sqls().createSql(QuerySql.class, "tank.query");
 		sql.set(".id", p.getId());
-		sql.setCallback(new Callback<Tank, ResultSet>() {
+		sql.setCallback(new SqlCallback<Tank, ResultSet>() {
 			public Tank invoke(ResultSet rs) throws Exception {
 				Tank t = Tank.make(rs.getString("code"));
 				t.setId(rs.getInt("id"));

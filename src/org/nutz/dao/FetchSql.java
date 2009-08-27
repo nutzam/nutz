@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.nutz.dao.callback.Callback;
+import org.nutz.dao.callback.SqlCallback;
 
 public class FetchSql<T> extends ConditionSql<T, T, ResultSet> {
 
@@ -37,7 +37,7 @@ public class FetchSql<T> extends ConditionSql<T, T, ResultSet> {
 		return getResult();
 	}
 
-	protected T execute(Connection conn, Callback<T, ResultSet> callback) throws SQLException {
+	protected T execute(Connection conn, SqlCallback<T, ResultSet> callback) throws SQLException {
 		PreparedStatement stat = null;
 		try {
 			T o = null;

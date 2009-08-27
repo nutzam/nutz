@@ -36,6 +36,7 @@ Nutz.Dao SQL 文件的格式
 	/* query: listpets*/
 	SELECT * FROM t_pet ${condition}
 	}}}
+	------------------------------------------------------------------------------------------------
 	注释与 Sql 语句的 Key
 		* 注释写在 /* 与 */ 之间
 		* 距离你的 SQL 语句最近的那一行注释，在去掉前后空白后，便是该语句的键值
@@ -46,6 +47,7 @@ Nutz.Dao SQL 文件的格式
 					* 因此键 query:abc 的键值为 abc
 				* 其他的键将会生成 org.nutz.dao.ExecutableSql 对象
 			* 下一节，将会详细告诉大家所谓 Sql 语句的三种类型是什么意思
+	------------------------------------------------------------------------------------------------
 	Sql 语句的三种类型
 		Nutz.Dao 认为所有的 SQL 按照执行的目的，可以划分为三种类型
 		 # 执行：为了改变数据，这种 SQL 被成为可执行 SQL， org.nutz.dao.ExecutableSql
@@ -54,11 +56,12 @@ Nutz.Dao SQL 文件的格式
 		对应到数据库的四种操作，执行可能是 insert,update,delete，获取和查询是 select
 		这种分类主要的根据是 SQL 的返回类型。它是构建在经验上的分类，Nutz认为这样的分类是对于程序员最
 		舒服的分类方式。
+	------------------------------------------------------------------------------------------------
 	Sql 语句中的占位符
 		* 占位符可以位于 SQL 语句的任何部分
 		* 以 `${` 开头，以 `}` 结束，中间的部分为占位符的名称（不忽略前后空格）
 			* `$${` 是逃逸字符，将会输出 `${`
-		* 占位符的名称以字符点 . 开始，那么被认为是"{*替换占位符}"
+		* 占位符的名称以字符｛*点｝ . 开始，那么被认为是"{*替换占位符}"
 			* 在设置值时，需要写上点，如 sql.set(".abc","the value");
 			* 在{*获取}和{*查询}时，由于使用了PreparedStatement，{*替换占位符}会被预先替换，然后才生成 PreparedStatement，而其他占位符则变成 ?
 				* 很适合将 {*替换占位符} 插入在表名或者作为 SQL 关键字，从而让你的 SQL 语句更具灵活性
@@ -68,9 +71,30 @@ Nutz.Dao SQL 文件的格式
 		
 ----------------------------------------------------------------------------------------------------
 使用 SQL 文件
-	加载到 Dao 中
+	如何使用上述的 SQL 文件呢，可以将数个 SQL 文件加载到 Dao 对象中。在之后，只要得到 Dao 的对象，可以使用 dao.sqls() 方法获得
+	org.nutz.dao.SqlManager 接口，从这个接口中你可以获得你预先定义好的 SQL 语句，并通过 Dao.execute() 函数来执行它。
+	------------------------------------------------------------------------------------------------
+	将 SQL 文件加载到 Dao 中
+		对于 Dao 接口的默认实现， org.nutz.dao.impl.NutDao，提供两个方法，一个是通过构造函数，另一个是 setter 函数。
+
 		在构造时加载
-		任何时加载
+			{{{<JAVA>
+			Dao dao = new NutDao(datasource,new FileSqlManager("demo/sqls/all.sqls"));
+			System.out.println(dao.sqls().count());
+			}}}
+			路径 "demo/sqls/all.sqls" 是存在在 CLASSPATH 的一个文件。
+			FileSqlManager 的构造函数接受数目可变的字符串对象，每个对象就是 SQL 文件的路径。如不是存在在 CLASSPATH 中的文件，则
+			需要写上绝对路径。
+
+			上述代码将打印出 all.sqls 文件中 SQL 语句的数量。
+
+		在构造之后的任何时加载
+			{{{<JAVA>
+			Dao dao = new NutDao(datasource);
+			((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
+			System.out.println(dao.sqls().count());
+			}}}
+	------------------------------------------------------------------------------------------------
 	执行一个自定义的 Sql
 		直接执行
 			{{{<JAVA>
@@ -121,23 +145,222 @@ Nutz.Dao SQL 文件的格式
 
 			使用 Nutz.Dao 的自定义 SQL 会带来一些编译器警告（如果你不关闭这些警告的话），这是我暂时没
 			有解决好的一个问题。
-	ComboSql 的用处
+	------------------------------------------------------------------------------------------------
+	ComboSql （组合SQL） 的用处
 		通过 Dao 接口的 execute 接口，可以传入数目可变的 SQL 对象。 SQL 对象可以从 Dao.sqls().createSql() 方法获得。
-		但是有些时候，你有可能需要批量的为多个 SQL 对象统一设定占位符的值。比如你有这么两个 SQL
+		但是有些时候，你有可能需要批量的为多个 SQL 对象统一设定占位符的值。比如你有这么两个 SQL，需要同时执行。
 		{{{<SQL>
+		/* master.update */
+		UPDATE t_master SET petId=${petId} WHERE id=${masterId}
+
 		/* pet.update */
-		UPDATE t_pet SET name='XiaoBai' WHERE id=${id};
-		/* fetch: pet.get */
-		SELECT * FROM t_pet WHERE id=${id};
+		UPDATE t_pet SET masterid=${masterId} WHERE id=${petId};
 		}}}
-		那么在 Java 代码中，你就需要这样写：
+		为了能让主人和宠物建立一个双向的一对一关联，那么在 Java 代码中，你就需要这样写：
 		{{{<JAVA>
-		SQL<?> update = dao.sqls().g
+		Sql<?> uMaster = dao.sqls().createSql("master.update");
+		Sql<?> uPet = dao.sqls().createSql("pet.update");
+
+		uMaster.set("petId", 20);
+		uMaster.set("masterId", 16);
+		uPet.set("petId", 20);
+		uPet.set("masterId", 16);
+
+		dao.execute(uMaster, uPet);
 		}}}
+		看，每个 SQL 都需要为占位符 petId 和 masterId 设值，如果使用 ComboSql，代码为：
+		{{{<JAVA>
+		Sql<?> sql = dao.sqls().createComboSql("master.update", "pet.update");
+		sql.set("petId", 20);
+		sql.set("masterId", 16);
+		dao.execute(sql);
+		}}}
+		代码少了很多，不是吗？
+		
+		关于 ComboSql，你还需要知道的是：
+		 # ComboSql 也是一种 Sql它也实现了 org.nutz.dao.Sql 接口。
+		 # 函数 createComboSql 接受数目可变的字符串型参数，代表 SQL 的 key。
+		 # 一个 ComboSql 被执行的顺序同你给定的 key 的顺序相同。
+		 # 函数 createComboSql 如果没有接受到参数，那么将会返回一个大的包括所有你在文件中声明的 SQL 的 ComboSql。
 
-
-	Sql 的 Callback
 ----------------------------------------------------------------------------------------------------
-你可以定义自己的 SQL 文件格式
+更灵活的使用自定义 SQL
 	org.nutz.dao.SqlManager 接口
-	org.nutz.dao.Sql 接口
+		通过这个接口，Nutz.Dao 可以读入 SQL 文件，Nutz.Dao 提供了一个默认的实现 {#A00;*org.nutz.dao.impl.FileSqlManager}
+		
+		<hierarchy_sql_manager.png>
+
+		当然，你可以写作你自己的实现，通过你自己的实现，你可以重新规定 SQL 文件的格式，比如使用 XML 文件等。
+		甚至，你可以将 SQL 文件存在数据库中，网络上的某个服务器里以便集中管理。只要在初始化 Dao 的时候：
+		{{{<Java>
+		Dao dao = new NutDao(dataSource, 你的 SqlManager 实现);
+		}}}
+		或者
+		{{{<Java>
+		dao.setSqlManager(你的 SqlManager 实现);
+		}}}
+		均可。
+	------------------------------------------------------------------------------------------------
+	org.nutz.dao.Sql 接口，极其派生类
+		Nutz.Dao 提供了 Sql 接口以及其默认的实现类：
+
+		<hierarchy_sql.png>
+
+		虽然他们都是 {#00A;*public} 的，但是在设计之初，我并没有打算让你通过继承去扩展。相反，我只是希望你能直接使用它们。
+		通过上图我们可以看到，一共有四个 SQL 实现你可以直接使用：
+		 # ExecutableSql
+		 # FetchSql
+		 # QuerySql
+		 # ComboSql
+		由于 ComboSql 前面已有详细的说明，这里就集中讲一下前三个 SQL 实现的用法。
+	------------------------------------------------------------------------------------------------
+	执行 -- ExecutableSql
+		还记得 Nutz.Dao 定义的六种基本操作吗？ （请参见 [basic_operations.html {#00A;*Dao 接口的基本操作}] 的 {*概述}一节）。
+		这里的执行，就包括了：{*插入，删除，更新，清除} 这四中操作。这四种操作的共同特征有两点：
+		 # 导致数据改变
+		 # 无需返回值
+		为此，我定义了 ExecutableSql 来与此对应。从 SQL 文件中，你可以任意的写作 UPDATE/DELETE/INSERT 操作的 SQL 语句，从 
+		createSql 函数中获取的就是一个 ExcutableSql 对象。
+
+		当然，你可以直接调用 ExecutableSql 的构造函数：
+		{{{<JAVA>
+		ExecutableSql sql = new ExecutableSql("UPDATE t_pet SET name='XiaoBai' WHERE id=45");
+		}}}
+		当然我个人不太赞成你这样做，除非有特别的需求，否则还是避免硬编码比较好。
+
+		执行完了 Sql，某些时候（其实对于 ExecutableSql 比较少见）需要再马上执行一段自定义的 Java 代码。这是时候，Nutz.Dao 可以
+		允许为这个 SQL 设置一个回调:
+
+		<hierarchy_sqlcallback.png>
+
+		比如，在 JAVA 代码里这样调用:
+		{{{<JAVA>
+		ExecutableSql sql = new ExecutableSql("UPDATE t_pet SET name='XiaoBai' WHERE id=45");
+		sql.setCallback(new SqlCallback<Object, Connection>() {
+			public Object invoke(Connection conn) throws Exception {
+				// 在这里随便写点什么，实现你需要的功能
+				return "This is Result";
+			}
+		});
+		dao.execute(sql);
+		System.out.println(sql.getResult());
+		}}}
+		执行这段代码，控制台将输出：
+		{{{
+		This is Result
+		}}}
+	------------------------------------------------------------------------------------------------
+	获取 -- FetchSql
+		FetchSql 专门针对 {*获取} 这种操作而设计的。同 ExecutableSql 一样，它即能通过 dao.sqls().createSql 函数来创建，又能直接
+		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 ｛#00A;*fetch:｝ 开头。
+
+		FetchSql 可以设置回调，因为通常的它都需要设置一个回调，在这个回调中，你可以写作你自己的代码，将一个对象返回。当 SQL 执行
+		完毕，则可以通过 SQL 的 getResult() 来获取这个对象。
+
+		例如：
+		{{{<JAVA>
+		FetchSql<Pet> sql = new FetchSql<Pet>("SELECT * FROM t_pet WHERE id=${id}");
+		sql.set("id", 35);
+		sql.setCallback(new SqlCallback<Pet, ResultSet>() {
+			public Pet invoke(ResultSet rs) throws Exception {
+				return dao.getObject(Pet.class, rs, null);
+			}
+		});
+		dao.execute(sql);
+		Pet pet = sql.getResult();
+		System.out.println(pet.toString());
+		}}}
+		这个回调 SqlCallback 需要两个泛型参数 Pet（返回的对象类型）, 以及回调传入参数 ResultSet。 为此，我提供了另外一个简便一些的
+		回调 org.nutz.dao.callback.QueryCallback<T>
+		{{{<JAVA>
+		FetchSql<Pet> sql = new FetchSql<Pet>("SELECT * FROM t_pet WHERE id=${id}");
+		sql.set("id", 35);
+		sql.setCallback(new QueryCallback<Pet>() {
+			public Pet invoke(ResultSet rs) throws Exception {
+				return dao.getObject(Pet.class, rs, null);
+			}
+		});
+		dao.execute(sql);
+		Pet pet = sql.getResult();
+		System.out.println(pet.toString());
+		}}}
+		使用 QueryCallback 可以少输入一个泛型参数。
+	------------------------------------------------------------------------------------------------
+	查询 -- QuerySql
+		QuerySql 专门针对 {*查询} 这种操作而设计的。同 ExecutableSql 一样，它即能通过 dao.sqls().createSql 函数来创建，又能直接
+		通过构造函数来构建。不过，在 SQL 文件中，在 SQL 的 key 值请用 ｛#00A;*query:｝ 开头。
+		
+		QuerySql 可以设置回调，因为通常的它都需要设置一个回调，在这个回调中，你可以写作你自己的代码，将一个对象返回。当 SQL 执行
+		完毕，则可以通过 SQL 的 getResult() 获取一个 List，其中每一个元素都是在回调中生成的。
+
+		下面这段代码将输出所有 id 大于 35 的 Pet 对象：
+		{{{<JAVA>
+		QuerySql<Pet> sql = new QuerySql<Pet>("SELECT * FROM t_pet WHERE id>45");
+		sql.set("id", 35);
+		sql.setCallback(new QueryCallback<Pet>() {
+			public Pet invoke(ResultSet rs) throws Exception {
+				return dao.getObject(Pet.class, rs, null);
+			}
+		});
+		dao.execute(sql);
+		List<Pet> pets = sql.getResult();
+		for (Pet pet : pets)
+			System.out.println(pet.toString());
+		}}}
+		{#F00;*请注意:} QuerySql 的泛型参数是 Pet，但是 Result 却是 `List<Pet>`。
+	------------------------------------------------------------------------------------------------
+	条件占位符
+		上述这三种 SQL 均继承自 org.nutz.dao.ConditionSql， 均支持函数:
+		{{{<JAVA>
+		public ConditionSql<T, R, P> setCondition(Condition condition);
+		}}}
+		关于复杂的条件，请参看 [condition.html 复杂的SQL条件]
+		--------------------------------------------------------------------------------------------
+		特殊的占位符 -- {#00A;*${condition}}
+			唯一需要说明的是，在你写作的 SQL 中，需要声明一个特殊的占位符，比如下面的代码也能输出所有 id 大于 35 的 Pet 对象：
+			{{{<JAVA>
+			QuerySql<Pet> sql = new QuerySql<Pet>("SELECT * FROM t_pet ${condition}");
+			sql.setCondition(Cnd.where("id", ">", 35));
+			sql.setCallback(new QueryCallback<Pet>() {
+				public Pet invoke(ResultSet rs) throws Exception {
+					return dao.getObject(Pet.class, rs, null);
+				}
+			});
+			dao.execute(sql);
+			List<Pet> pets = sql.getResult();
+			for (Pet pet : pets)
+				System.out.println(pet.toString());
+			}}}
+			请主要看看这两行代码：
+			{{{<JAVA>
+			QuerySql<Pet> sql = new QuerySql<Pet>("SELECT * FROM t_pet ${condition}");
+			sql.setCondition(Cnd.where("id", ">", 35));
+			}}}
+			第一行的占位符 `${condition}` 已经被 Nutz.Dao 保留。声明了该占位符的 SQL 都可以使用 setCondition 函数。
+
+		同样的，针对 FetchSql 和 ExecutableSql 也是同样，例如：
+		--------------------------------------------------------------------------------------------
+		{*获取第一个 id 大于 35 的 Pet 对象}
+			{{{<JAVA>
+			FetchSql<Pet> sql = new FetchSql<Pet>("SELECT * FROM t_pet ${condition}");
+			sql.setCondition(Cnd.where("id", ">", 35).asc("id"));
+			sql.setCallback(new QueryCallback<Pet>() {
+				public Pet invoke(ResultSet rs) throws Exception {
+					return dao.getObject(Pet.class, rs, null);
+				}
+			});
+			dao.execute(sql);
+			Pet pet = sql.getResult();
+			System.out.println(pet.toString());
+			}}}
+		--------------------------------------------------------------------------------------------
+		{*将所有的 id 大于 35 的 Pet 对象的 masterId 设置为 45}
+			{{{<JAVA>
+			ExecutableSql sql = new ExecutableSql("UPDATE t_pet SET masterid=${masterId} ${condition}");
+			sql.set("masterId", 45);
+			sql.setCondition(Cnd.wrap("id>35"));
+			dao.execute(sql);
+			}}}
+
+
+

@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.nutz.dao.callback.Callback;
+import org.nutz.dao.callback.SqlCallback;
 
 public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 
@@ -49,7 +49,7 @@ public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 		return this.getResult();
 	}
 
-	protected List<T> execute(Connection conn, Callback<T, ResultSet> callback) throws SQLException {
+	protected List<T> execute(Connection conn, SqlCallback<T, ResultSet> callback) throws SQLException {
 		PreparedStatement stat = null;
 		try {
 			List<T> list = new LinkedList<T>();

@@ -1,0 +1,18 @@
+#title: 过滤字段
+#index:0,1
+
+为什么需要过滤字段
+	 某些时候
+
+如何过滤字段
+	如下代码，将只更新 Pet 的 id 和 name 字段
+	{{{<JAVA>
+	FieldFilter.create(Pet.class, "id|name").run(new Atom() {
+		public void run() {
+			Pet pet = dao.fetch(Pet.class, 24);
+			pet.setName("ABC");
+			pet.setNickname("XiaoBai");
+			dao.update(pet);
+		}
+	});
+	}}}
