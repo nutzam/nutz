@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import org.nutz.dao.callback.QueryCallback;
 import org.nutz.dao.entity.Entity;
 
-class FetchCallback<T> extends QueryCallback<T> {
+public class FetchCallback<T> extends QueryCallback<T> {
 
 	private Entity<T> entity;
 
