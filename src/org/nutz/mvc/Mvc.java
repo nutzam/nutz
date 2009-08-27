@@ -58,7 +58,7 @@ public class Mvc {
 			}
 		} catch (Throwable e) {
 			response.reset();
-			obj = Return.fail("%s", e.getMessage());
+			obj = Return.fail("%s:\n%s", e.getMessage(), Lang.getStackTrace(e));
 			renderFail(request, response, url, obj);
 		}
 	}
