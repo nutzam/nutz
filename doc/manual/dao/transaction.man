@@ -1,1 +1,75 @@
 #title:事务模板
+#index:0,1
+
+为什么只提供事务模板
+	截至到现在为止，除非你使用 `dao.execute(Sql<?> ...)` ，一次执行多个 SQL，是事务安全的，其他的情况
+	均是事务不安全的，比如如下代码：
+	{{{<JAVA>
+	Pet pet1 = dao.fetch(Pet.class,"XiaoBai");
+	Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
+	
+	pet1.setNickname("BaiBai");
+	pet2.setNickname("HeiHei");
+	
+	dao.update(pet1);
+	dao.update(pet2);
+	}}}
+	尤其是请关注最后两句:
+	{{{<JAVA>
+	dao.update(pet1);
+	dao.update(pet2);
+	}}}
+	当第二句话抛出异常的时候，第一句话不能被回滚。这两条调用就是不事务安全的。如果我想让 pet1 和 pet2
+	的更新操作是原子性的，它们必须一同成功，一同失败，怎么办呢？
+
+	Nutz.Dao 提供了简单的解决办法： {*事务模板}
+
+事务模板的例子
+	事务最核心的是原子的界定，在 Nutz.Dao中，界定原子的方法出奇的简单，借助匿名类，你可以随时将一段
+	代码用你的原子实现包裹住。
+	
+	{#00A;*被原子实现包裹住的代码就是事务安全的}，无论它同时操作了多少个 DataSource。
+	Nutz.Dao 提供的原子接口非常简单，实际上它就是 java.lang.Runnable 的一个别名，下面就是这个接口的
+	全部代码：
+	{{{<JAVA>
+	package com.zzh.trans;
+	public interface Atom extends Runnable {}
+	}}}
+	这几乎是我写过的最简单的 Java 类了，正是因为它简单，所以才有无限的威力。你如果查看过 Nutz 的源代
+	码包，在和数据库操作的地方，你总会和 Atom 不期而遇。很多朋友曾经很不适应匿名类的写法，是的，我在
+	早期写 Java 的时候也比较讨厌匿名类，但是熟悉了以后，你会真正喜欢上这个东西，就像你写 Javascript 的
+	一段时候以后，多数人都会喜欢上“{#00A;闭包}”一样。你可以把匿名类当作 Java 给你的{#00A;闭包}。
+
+	关于如何写出原子性的代码，一个例子就足够了。并且，我估计当你看完这个例子，你多半会“嘁”的一声，是
+	的，使用这种方式界定原子是我能想到的最直白，最简洁的方式了：
+
+	上一节的例子可以修改为:
+	{{{<JAVA>
+	final Pet pet1 = dao.fetch(Pet.class,"XiaoBai");
+	final Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
+	
+	pet1.setNickname("BaiBai");
+	pet2.setNickname("HeiHei");
+	// Begin transaction		
+	Trans.exec(new Atom(){
+		public void run() {
+			dao.update(pet1);
+			dao.update(pet2);
+		}
+	});
+	// End transaction
+	}}}
+	提供一个 org.nutz.trans.Atom 接口的匿名实现，在里面执行的所有的 Dao 操作都是原子性的，因为它们在
+	同一个 “{*原子} ({#080;Atom})” 里。 缺点就是，你有可能需要将一些相关的变量声明成 final 的。并且
+	在 run 函数中，你只能向外抛 RuntimeException 或其子类。
+
+扩展实现
+	com.zzh.trans.Trans 类的 exec()方法，接受数目可变的 Atom 实例，足够方便了吧。 但是它默认只能支
+	持在一台机器上保证事务性，就是在一个 JVM 里保证代码的事务性。如果跨越多个JVM一起组合的 Service，
+	如何保证事务性呢，很抱歉，Nutz.Dao 的第一版的实现里不包括跨越多个JVM依然保证事务性的功能，但是
+	你如果真的需要这个功能也没关系，你可以自己写一个 com.zzh.trans.Transaction 的实现，然后在你的应
+	用启动时，通过
+	{{{<JAVA>
+	com.zzh.trans.Trans.setup(你的实现类)
+	}}}
+	替换 Nutz.Dao 的默认实现。

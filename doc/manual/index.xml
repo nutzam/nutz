@@ -21,6 +21,7 @@
 		<doc path="transaction.man"/>
 		<doc path="services.man"/>
 		<doc path="services_tree.man"/>
+		<doc path="pojo_creating.man"/>
 	</doc>
 	<doc path="ioc"	title="Nutz.Ioc 开发者手册">
 		<doc path="ioc_get_start.man"/>

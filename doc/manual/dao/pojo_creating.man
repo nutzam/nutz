@@ -1,0 +1,128 @@
+#title: 关于构建POJO的高级话题
+#index:0,1
+
+为什么需要提供更多构建 POJO 的手段
+	当查询以及获取一个或者是多个 POJO 时，Nutz.Dao 采用反射来创建对象以及为对象的各个相关字段填充值。为了提高速度，
+	Nutz.Dao 对对象采取一些缓存的策略，所以，基本上不用去查询每个对象的构造函数以及getter，setter 或者公共字段。所有的
+	时间开销都集中在反射的 invoke 方法上。事实证明，这让 POJO 的构建速度提高了不少，但是对于哪些还想对速度进行优化的
+	应用，怎么办呢？ Nutz.Dao 还提供了更加极限的手段。
+
+将构建的过程掌握在你自己的手里
+	有些人说JDK1.5 以后，反射更快了。并且由于 Nutz.Dao 对于实体的反射做了缓存，所以它创建对象比一般
+	的反射更快，但是，还是有些人不满意，他们还需要更快。所以我提出了一个约定：
+
+	最优先 -- 带一个参数的静态工厂方法
+		如果你的实体对象有一个静态的函数，返回类型的是你的实体对象(有点类似于工厂方法)，输入参数
+		是 java.sql.ResultSet， 那么在创建实例的时候，会直接调用你这个方法。
+
+		例如:
+		{{{<JAVA>
+		public class Pet {
+	
+			public static Pet getInstance(ResultSet rs) throws SQLException{
+				Pet pet = new Pet();
+				pet.id = rs.getInt("id");
+				pet.name = rs.getString("name");
+				pet.nickname = rs.getString("nick");
+				return pet;
+			}
+
+			// ... 省略后面代码，包括字段声明以及 getter 和 setter
+		}}}
+		只要你声明了一个可访问的，带有一个参数其类型为ResultSet，且返回值为 Pet 的静态函数，名称无所谓， 那么 Nutz.Dao 在
+		构建 Pet 对象时，就会优先使用这个函数。 因为 Nutz.Dao 认为你打算亲自来做 ResultSet 到 POJO 字段的映射工作。你可以
+		将这个过程写的很快，因为如果交由 Nutz.Dao 来做的话，它不得不做一些字段类型的判断以及转换的工作。
+
+	
+	第二优先：带一个参数的构造函数
+		如果你的实体中有一个构造函数，参数是 java.sql.ResultSet，那么创建实例的时候会直接使用
+		这个构造函数。
+
+		例如:
+		{{{<JAVA>
+		public class Pet {
+			
+			public Pet(){}
+	
+			public Pet(ResultSet rs) throws SQLException{
+				id = rs.getInt("id");
+				name = rs.getString("name");
+				nickname = rs.getString("nick");
+			}
+			
+			// ... 省略后面代码，包括字段声明以及 getter 和 setter
+		}}}
+		只要你声明了构造函数 Pet(ResultSet rs)， 那么 Nutz.Dao 在构建的时候，就不会使用默认构造函数，无论你是否
+		声明它。
+	
+	第三优先：无参数静态工厂方法
+		如果你的实体对象有一个静态的函数，返回类型的是你的实体对象(有点类似于工厂方法)，不需要
+		输入参数， 那么在创建实例的时候，会直接调用你这个方法。再通过反射为各个字段填充值。
+		最不优先 最不优先： 直接使用默认构造函数构造你的对象，再通过反射为各个字段填充值。
+
+		例如:
+		{{{<JAVA>
+		public class Pet {
+	
+			public static Pet getInstance(){
+				return new Pet();
+			}
+			
+			private Pet(){}
+			
+			// ... 省略后面代码，包括字段声明以及 getter 和 setter
+		}}}
+
+		你的静态函数名称是无所谓的，只要它的返回类型是当前的类，并且无参数。 如果出现多个符合改条件的
+		函数，Nutz.Dao 会挑取任意一个。
+	
+	最不优先：默认构造函数
+		如果你的 POJO 仅仅有默认构造函数可用，那么，Nutz.Dao 就会采用JAVA反射机制来为你构建 POJO 对象。
+		但是你必须保证默认构造函数是可被访问的。
+
+		多数 POJO 都会采用这种形式，因为它最方便，比如：
+
+		编译器自己为你增加默认构造函数
+			{{{<JAVA>
+			public class Pet {
+
+				@Column
+				@Id
+				private int id;
+				
+				@Column
+				@Name
+				private String name;
+				
+				@Column
+				private String nickname;
+
+				// ... 这里是 getter 和 setter
+			}
+			}}}
+		自己定制的默认构造函数
+			{{{<JAVA>
+			public class Pet {
+				
+				public Pet(){
+					this.nickname = "Unknown";
+				}
+
+				@Column
+				@Id
+				private int id;
+				
+				@Column
+				@Name
+				private String name;
+				
+				@Column
+				private String nickname;
+
+				// ... 这里是 getter 和 setter
+			}
+			}}}
+
+	通过这个约定，你可以让你的数据库操作同直接调用 JDBC 接口一样快。别忘了，在数据库操作的时候，拼装
+	SQL 这点小开销几乎可以忽略不计。
+	
