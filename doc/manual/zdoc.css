@@ -12,7 +12,7 @@ body,font,td,form,.zdoc_body{
 	letter-spacing: 0px;
 }
 
-hr{
+hr, div.hr{
 	display:none;
 }
 
@@ -103,21 +103,43 @@ pre{
 
 	border-left:4px solid #CCC;
 	padding: 10px;
-	margin-left:54px;
+	margin-left:30px;
+}
+
+table{
+	margin-left:30px;
 }
 /*---------------------------------------------------------------------------
  * Index table
  */
-.zdoc_index_table{
+.zdoc_body ul, .zdoc_body ol{
+	padding-top:10px;
+	padding-bottom:10px;
+	margin-left:30px;
+	padding-left:30px;
+	margin-bottom:10px;
+	border-left:4px solid #BEA;
+}
+
+ul.zdoc_index_table{
 	border:1px dashed #ADF;
 	background-color:#EEE;
 	display:inline-block;
 	padding:20px;
 	min-width:300px;
-	padding-left:40px;
-	margin-left:20px;
+	margin:10px;
+	border:0px;
 }
 
-ul,ol{
-	margin-bottom:10px;
+ul.zdoc_index_table, .zdoc_index_table ul{
+	padding-left:40px;
+	border:0px;
+}
+
+.zdoc_body ul ul, .zdoc_body  ul ol, .zdoc_body  ol ol, .zdoc_body  ol ul{
+	padding-top:0px;
+	padding-bottom:0px;
+	padding-left:30px;
+	margin-left:14px;
+	border-left:3px dotted #E0E0E0;
 }
