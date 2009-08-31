@@ -16,9 +16,7 @@ public class GetDownloadFile implements Controllor {
 		this.home = file;
 	}
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		String qs = request.getQueryString();
 		qs = URLDecoder.decode(qs, "UTF-8");
 		return new File(home.getAbsolutePath() + qs);

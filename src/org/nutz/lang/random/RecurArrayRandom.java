@@ -11,7 +11,6 @@ public class RecurArrayRandom<T> implements Random<T> {
 		len = array.length;
 	}
 
-	@Override
 	public T next() {
 		if (len <= 0)
 			len = array.length;

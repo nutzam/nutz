@@ -18,9 +18,7 @@ public class Login<T extends Account> implements Controllor {
 
 	private String alias;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Class<T> type = service.getAccountType();
 		T acc = type.newInstance();
 		Params.getObjectAsNameValuePair(acc, request);

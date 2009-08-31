@@ -109,7 +109,6 @@ public class Cnd implements OrderBy, ExpGroup {
 		return orNot(Cnd.exp(name, op, value));
 	}
 
-	@Override
 	public String toString(Entity<?> entity) {
 		StringBuilder sb = new StringBuilder();
 		if (exps != null) {
@@ -130,7 +129,6 @@ public class Cnd implements OrderBy, ExpGroup {
 		return sb.toString();
 	}
 
-	@Override
 	public void render(StringBuilder sb, Entity<?> en) {
 		sb.append('(').append(toString(en)).append(')');
 	}
@@ -185,7 +183,6 @@ public class Cnd implements OrderBy, ExpGroup {
 		private String op;
 		private Object value;
 
-		@Override
 		public void render(StringBuilder sb, Entity<?> en) {
 			if (null != en) {
 				EntityField ef = en.getField(name);

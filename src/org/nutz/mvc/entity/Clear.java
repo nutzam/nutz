@@ -8,24 +8,21 @@ import org.nutz.service.EntityService;
 
 public class Clear extends ConditionControllor {
 
-	protected Clear(){
+	protected Clear() {
 		super();
 	}
-	
+
 	public Clear(EntityService<?> service) {
 		super(service);
 	}
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		try {
 			service.clear(getCondition(request));
 			return Return.OK();
 		} catch (Exception e) {
-			return Return.fail("Fail to clear '%s' by '%s', for the reason: %s", service
-					.getEntityClass().getName(), getCondition(request)
-					.toString(service.getEntity()), e.getMessage());
+			return Return.fail("Fail to clear '%s' by '%s', for the reason: %s", service.getEntityClass().getName(),
+					getCondition(request).toString(service.getEntity()), e.getMessage());
 		}
 	}
 

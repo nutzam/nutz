@@ -87,7 +87,7 @@ public class Map2ObjTest {
 		assertNull(objs[1]);
 		assertTrue(((Val) objs[2]).isJava());
 		assertEquals("org.nutz.ioc.meta.fake.Fake.id", ((Val) objs[2]).getValue());
-		assertEquals(59, (Integer) objs[3]);
+		assertEquals(59, ((Integer) objs[3]).intValue());
 		// for map
 		assertEquals("D", obj.getFields()[3].getName());
 		assertTrue(obj.getFields()[3].getVal().isMap());

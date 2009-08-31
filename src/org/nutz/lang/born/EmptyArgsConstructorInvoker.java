@@ -18,7 +18,6 @@ public class EmptyArgsConstructorInvoker<T> implements BorningInvoker<T> {
 		}
 	}
 
-	@Override
 	public T born(Object[] args) {
 		try {
 			return c.newInstance();

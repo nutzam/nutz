@@ -13,12 +13,10 @@ public class ServerAttributeMaker implements ValueMaker {
 		this.context = context;
 	}
 
-	@Override
 	public String forType() {
 		return Val.server;
 	}
 
-	@Override
 	public Object make(Val val) {
 		return context.getAttribute(val.getValue().toString());
 	}

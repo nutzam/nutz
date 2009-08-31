@@ -62,7 +62,6 @@ public class JavaField extends JavaElement {
 		return renderSource();
 	}
 
-	@Override
 	protected String renderSource() {
 		StringBuilder sb = new StringBuilder();
 		for (JavaAnnotation ann : this.getAnnotations()) {
@@ -73,16 +72,15 @@ public class JavaField extends JavaElement {
 	}
 
 	public String getGetterString() {
-		return format("\tpublic %s get%s(){\n\t\treturn this.%s;\n\t}", getType().getName(),
-				Strings.capitalize(getName()), getName());
+		return format("\tpublic %s get%s(){\n\t\treturn this.%s;\n\t}", getType().getName(), Strings
+				.capitalize(getName()), getName());
 	}
 
 	public String getSetterString() {
-		return format("\tpublic void set%s(%s %s){\n\t\tthis.%s=%s;\n\t}", Strings
-				.capitalize(getName()), getType().getName(), getName(), getName(), getName());
+		return format("\tpublic void set%s(%s %s){\n\t\tthis.%s=%s;\n\t}", Strings.capitalize(getName()), getType()
+				.getName(), getName(), getName(), getName());
 	}
 
-	@Override
 	public int compareTo(JavaLanguageObject o) {
 		if (o instanceof JavaField)
 			return name.compareTo(((JavaField) o).name);

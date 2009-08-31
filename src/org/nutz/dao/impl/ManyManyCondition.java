@@ -18,7 +18,6 @@ class ManyManyCondition implements Condition {
 		this.obj = obj;
 	}
 
-	@Override
 	public String toString(Entity<?> me) {
 		return String.format("%s IN (SELECT %s FROM %s WHERE %s=%s)", dao.getEntity(
 				link.getTargetClass()).getField(link.getTargetField().getName()).getColumnName(),

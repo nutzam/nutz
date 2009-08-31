@@ -8,7 +8,8 @@ import org.nutz.mvc.View;
 
 public class JspView implements View {
 
-	public JspView() {}
+	public JspView() {
+	}
 
 	public JspView(String name) {
 		this.name = name;
@@ -28,8 +29,7 @@ public class JspView implements View {
 
 	public String getPath() {
 		if (null == path) {
-			this.path = new StringBuilder("/WEB-INF/").append(name.replace('.', '/'))
-					.append(".jsp").toString();
+			this.path = new StringBuilder("/WEB-INF/").append(name.replace('.', '/')).append(".jsp").toString();
 		}
 		return path;
 	}
@@ -49,9 +49,7 @@ public class JspView implements View {
 		this.objectAttName = objectAttName;
 	}
 
-	@Override
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
-			throws Exception {
+	public void render(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
 		request.setAttribute(getObjectAttName(), obj);
 		String path = getPath();
 		RequestDispatcher rd = request.getRequestDispatcher(path);

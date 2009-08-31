@@ -9,9 +9,7 @@ public class ListLocalization implements Controllor {
 
 	private String[] list;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return list;
 	}
 

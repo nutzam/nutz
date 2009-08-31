@@ -14,7 +14,6 @@ public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 		super(sql);
 	}
 
-	@Override
 	public Object execute(Connection conn) throws Exception {
 		Statement stat = null;
 		try {
@@ -30,7 +29,8 @@ public class ExecutableSql extends ConditionSql<Object, Object, Connection> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {}
+				} catch (SQLException e1) {
+				}
 		}
 		if (null != callback) {
 			setResult(callback.invoke(conn));

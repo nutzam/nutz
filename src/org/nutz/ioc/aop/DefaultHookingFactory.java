@@ -9,7 +9,6 @@ import org.nutz.lang.Mirror;
 
 public class DefaultHookingFactory implements ObjectHookingFactory {
 
-	@Override
 	public ObjectHooking[] getHooking(AopItem ai) {
 		MethodListener ml = null;
 		if (ai.getArgs() == null)
@@ -47,7 +46,7 @@ public class DefaultHookingFactory implements ObjectHookingFactory {
 	protected MethodMatcher evalMethodMatcher(AopHookMethod hm) {
 		MethodMatcher mtdMatcher = null;
 		if (null == hm.getAccess() || AopHookMethod.ACCESS.ALL == hm.getAccess()) {
-			mtdMatcher = new MethodMatcher(hm.getRegex(),hm.getIgnore());
+			mtdMatcher = new MethodMatcher(hm.getRegex(), hm.getIgnore());
 		} else if (AopHookMethod.ACCESS.PUBLIC == hm.getAccess()) {
 			mtdMatcher = new MethodMatcher(hm.getRegex(), hm.getIgnore(), Modifier.PUBLIC);
 		} else if (AopHookMethod.ACCESS.PROTECTED == hm.getAccess()) {

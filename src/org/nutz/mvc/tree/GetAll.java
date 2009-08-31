@@ -24,9 +24,7 @@ public class GetAll<T> implements Controllor {
 
 	public boolean cache;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (null != cacheList)
 			return cacheList;
 		List<T> roots = service.query(new SimpleCondition(root), null);

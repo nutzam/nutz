@@ -24,7 +24,6 @@ public class Mirror<T> {
 
 	private static class DefaultTypeExtractor implements TypeExtractor {
 
-		@Override
 		public Class<?>[] extract(Mirror<?> mirror) {
 			ArrayList<Class<?>> re = new ArrayList<Class<?>>(5);
 			re.add(mirror.getType());
@@ -718,7 +717,7 @@ public class Mirror<T> {
 
 	public static Type[] getTypeParams(Class<?> klass) {
 		Type superclass = klass.getGenericSuperclass();
-		if (superclass instanceof Class) {
+		if (superclass instanceof Class<?>) {
 			throw new RuntimeException("Missing type parameter.");
 		}
 		return ((ParameterizedType) superclass).getActualTypeArguments();

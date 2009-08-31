@@ -124,7 +124,6 @@ public class Entity<T> {
 			this.c = c;
 		}
 
-		@Override
 		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
 			return c.newInstance(rs);
 		}
@@ -138,7 +137,6 @@ public class Entity<T> {
 			this.c = c;
 		}
 
-		@Override
 		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
 			return c.newInstance(rs, fm);
 		}

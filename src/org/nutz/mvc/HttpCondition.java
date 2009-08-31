@@ -22,7 +22,6 @@ public abstract class HttpCondition implements Condition {
 			super(request);
 		}
 
-		@Override
 		public String toString(Entity<?> entity) {
 			StringBuilder sb = new StringBuilder();
 			for (Enumeration<?> en = request.getParameterNames(); en.hasMoreElements();) {

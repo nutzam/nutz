@@ -22,7 +22,6 @@ public class CharSegment implements Segment, Cloneable {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Segment add(String key, Object v) {
 		List<Integer> indexes = pps.get(key);
 		if (null != indexes) {
@@ -41,31 +40,26 @@ public class CharSegment implements Segment, Cloneable {
 		return this;
 	}
 
-	@Override
 	public void clearAll() {
 		for (Iterator<List<Integer>> i = pps.values().iterator(); i.hasNext();)
 			for (Iterator<Integer> ii = i.next().iterator(); ii.hasNext();)
 				values.set(ii.next().intValue(), null);
 	}
 
-	@Override
 	public boolean contains(String key) {
 		return pps.containsKey(key);
 	}
 
-	@Override
 	public Segment born() {
 		return new CharSegment(this.toOrginalString());
 	}
 
 	private String orgString;
 
-	@Override
 	public String toOrginalString() {
 		return orgString;
 	}
 
-	@Override
 	public Segment clone() {
 		Segment cs = this.born();
 		for (Iterator<String> it = keys().iterator(); it.hasNext();) {
@@ -76,17 +70,14 @@ public class CharSegment implements Segment, Cloneable {
 		return cs;
 	}
 
-	@Override
 	public List<Integer> getIndex(String key) {
 		return this.ppIndexes.get(key);
 	}
 
-	@Override
 	public Set<String> keys() {
 		return this.pps.keySet();
 	}
 
-	@Override
 	public List<Object> values() {
 		return this.values;
 	}
@@ -99,49 +90,40 @@ public class CharSegment implements Segment, Cloneable {
 		return seg;
 	}
 
-	@Override
 	public Segment setAll(Object v) {
 		for (Iterator<String> it = keys().iterator(); it.hasNext();)
 			internalSetValue(this, it.next(), v);
 		return this;
 	}
 
-	@Override
 	public Segment set(String key, boolean v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, int v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, double v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, float v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, long v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, byte v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, short v) {
 		return internalSetValue(this, key, v);
 	}
 
-	@Override
 	public Segment set(String key, Object v) {
 		return internalSetValue(this, key, v);
 	}
@@ -150,7 +132,6 @@ public class CharSegment implements Segment, Cloneable {
 	private List<Object> values;
 	private Map<String, List<Integer>> ppIndexes;
 
-	@Override
 	public void parse(InputStream ins) {
 		pps = new HashMap<String, List<Integer>>();
 		values = new ArrayList<Object>();
@@ -221,20 +202,18 @@ public class CharSegment implements Segment, Cloneable {
 		}
 	}
 
-	@Override
 	public Segment valueOf(String str) {
 		parse(new StringInputStream(str));
 		return this;
 	}
 
-	@Override
 	public CharSequence render() {
 		StringBuilder sb = new StringBuilder();
 		for (Iterator<?> it = values.iterator(); it.hasNext();) {
 			Object o = it.next();
 			if (o == null)
 				continue;
-			if (o instanceof List) {
+			if (o instanceof List<?>) {
 				for (Iterator<?> ii = ((List<?>) o).iterator(); ii.hasNext();) {
 					sb.append(ii.next());
 				}
@@ -244,7 +223,6 @@ public class CharSegment implements Segment, Cloneable {
 		return sb;
 	}
 
-	@Override
 	public String toString() {
 		return render().toString();
 	}

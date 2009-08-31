@@ -57,7 +57,6 @@ public abstract class JavaMethod extends JavaElement {
 		return set;
 	}
 
-	@Override
 	public String toString() {
 		return null;
 	}
@@ -84,7 +83,6 @@ public abstract class JavaMethod extends JavaElement {
 		return sb;
 	}
 
-	@Override
 	public int compareTo(JavaLanguageObject o) {
 		if (o instanceof JavaMethod)
 			return name.compareTo(((JavaMethod) o).name);

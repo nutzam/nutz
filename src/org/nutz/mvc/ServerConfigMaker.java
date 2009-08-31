@@ -13,12 +13,10 @@ public class ServerConfigMaker implements ValueMaker {
 		this.config = config;
 	}
 
-	@Override
 	public String forType() {
 		return Val.config;
 	}
 
-	@Override
 	public Object make(Val val) {
 		String name = val.getValue().toString();
 		if ("@name".equals(name))

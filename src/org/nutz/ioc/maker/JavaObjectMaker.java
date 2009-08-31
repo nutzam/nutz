@@ -10,12 +10,10 @@ import org.nutz.lang.Strings;
 
 public class JavaObjectMaker implements ValueMaker {
 
-	@Override
 	public String forType() {
 		return Val.java;
 	}
 
-	@Override
 	public Object make(Val val) {
 		String callPath = val.getValue().toString();
 		int pos = callPath.lastIndexOf('.');
@@ -29,7 +27,8 @@ public class JavaObjectMaker implements ValueMaker {
 			} catch (Exception e) {
 				try {
 					method = mirror.getType().getMethod(fieldName);
-				} catch (Exception e1) {}
+				} catch (Exception e1) {
+				}
 			}
 			if (null != method)
 				return method.invoke(null);

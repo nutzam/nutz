@@ -20,10 +20,14 @@ public class ObjService extends Service {
 
 	public ObjService(Dao dao) {
 		super(dao);
-		objs = new IdNameEntityService<Obj>(dao) {};
-		flds = new IdNameEntityService<Fld>(dao) {};
-		vals = new IdEntityService<Val>(dao) {};
-		lifecycles = new IdEntityService<Lifecycle>(dao) {};
+		objs = new IdNameEntityService<Obj>(dao) {
+		};
+		flds = new IdNameEntityService<Fld>(dao) {
+		};
+		vals = new IdEntityService<Val>(dao) {
+		};
+		lifecycles = new IdEntityService<Lifecycle>(dao) {
+		};
 	}
 
 	private IdNameEntityService<Obj> objs;
@@ -51,8 +55,7 @@ public class ObjService extends Service {
 		} else if (val.isMap()) {
 			Map<?, ?> map = (Map<?, ?>) Json.fromJson(val.getValue().toString());
 			val.setValue(Map2Obj.parseMap(map));
-		} else if (val.isArray()
-				&& !(val.getValue() instanceof Collection || val.getValue().getClass().isArray())) {
+		} else if (val.isArray() && !(val.getValue() instanceof Collection<?> || val.getValue().getClass().isArray())) {
 			Collection<?> coll = (Collection<?>) Json.fromJson(val.getValue().toString());
 			val.setValue(Map2Obj.parseCollection(coll));
 		} else if (val.isInner() && !(val.getValue() instanceof Obj)) {
@@ -92,8 +95,7 @@ public class ObjService extends Service {
 			});
 			Arrays.sort(obj.getFields(), new Comparator<Fld>() {
 				public int compare(Fld o1, Fld o2) {
-					return o1.getValueId() == o2.getValueId() ? 0 : (o1.getValueId() < o2
-							.getValueId() ? -1 : 1);
+					return o1.getValueId() == o2.getValueId() ? 0 : (o1.getValueId() < o2.getValueId() ? -1 : 1);
 				}
 			});
 			evalObj(obj);

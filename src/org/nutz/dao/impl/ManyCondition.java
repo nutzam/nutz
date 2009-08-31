@@ -15,7 +15,6 @@ public class ManyCondition implements Condition {
 		this.value = value;
 	}
 
-	@Override
 	public String toString(Entity<?> entity) {
 		return String.format("%s=%s", entity.getField(link.getTargetField().getName())
 				.getColumnName(), Sqls.formatFieldValue(value));

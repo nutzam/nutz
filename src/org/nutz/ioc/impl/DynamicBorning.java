@@ -30,7 +30,6 @@ public class DynamicBorning<T> implements Borning<T> {
 		return invoker;
 	}
 
-	@Override
 	public T born() {
 		try {
 			return invoker.born(makeArray());

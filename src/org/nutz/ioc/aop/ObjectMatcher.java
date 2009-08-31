@@ -15,7 +15,6 @@ interface ObjectMatcher {
 			this.regex = regex;
 		}
 
-		@Override
 		public boolean match(Class<?> type, String name) {
 			if (Strings.isBlank(name))
 				return false;
@@ -32,7 +31,6 @@ interface ObjectMatcher {
 			this.regex = regex;
 		}
 
-		@Override
 		public boolean match(Class<?> type, String name) {
 			if (null == type)
 				return false;

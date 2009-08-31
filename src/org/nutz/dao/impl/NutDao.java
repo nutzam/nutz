@@ -60,7 +60,7 @@ public class NutDao implements Dao {
 	}
 
 	public static final QueryCallback<Integer> evalResultSetAsInt = new QueryCallback<Integer>() {
-		@Override
+
 		public Integer invoke(ResultSet rs) throws SQLException {
 			return rs.getInt(1);
 		}
@@ -128,12 +128,10 @@ public class NutDao implements Dao {
 		return database;
 	}
 
-	@Override
 	public Pager createPager(int pageNumber, int pageSize) {
 		return database().createPager(pageNumber, pageSize);
 	}
 
-	@Override
 	public Class<? extends Pager> getPagerType() {
 		return database().getPagerType();
 	}
@@ -150,12 +148,10 @@ public class NutDao implements Dao {
 		return sqls;
 	}
 
-	@Override
 	public SqlMaker maker() {
 		return maker;
 	}
 
-	@Override
 	public SqlManager sqls() {
 		return this.sqls;
 	}
@@ -181,7 +177,6 @@ public class NutDao implements Dao {
 		return ((Integer) sql.getResult()).intValue();
 	}
 
-	@Override
 	public void execute(final Sql<?>... sqls) {
 		run(new ConnCallback() {
 			public Object invoke(Connection conn) throws Exception {
@@ -194,7 +189,6 @@ public class NutDao implements Dao {
 		});
 	}
 
-	@Override
 	public void run(ConnCallback callback) {
 		ConnectionHolder ch = Sqls.getConnection(getDataSource());
 		try {
@@ -202,7 +196,8 @@ public class NutDao implements Dao {
 		} catch (Throwable e) {
 			try {
 				ch.rollback();
-			} catch (SQLException e1) {}
+			} catch (SQLException e1) {
+			}
 			if (e instanceof RuntimeException)
 				throw (RuntimeException) e;
 			else
@@ -213,7 +208,6 @@ public class NutDao implements Dao {
 
 	}
 
-	@Override
 	public void executeBySqlKey(String... keys) {
 		List<Sql<?>> sqlList = new ArrayList<Sql<?>>();
 		for (String key : keys) {
@@ -224,12 +218,10 @@ public class NutDao implements Dao {
 		this.execute(sqlList.toArray(sqls));
 	}
 
-	@Override
 	public int count(Class<?> classOfT) {
 		return count(classOfT, null);
 	}
 
-	@Override
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
 		FetchSql<Integer> sql = maker.makeCountSQL(entity, entity.getViewName());
@@ -237,29 +229,24 @@ public class NutDao implements Dao {
 		return evalInt(sql);
 	}
 
-	@Override
 	public int count(String tableName) {
 		return count(tableName, null);
 	}
 
-	@Override
 	public int count(String tableName, Condition condition) {
 		FetchSql<Integer> sql = maker.makeCountSQL(null, tableName);
 		sql.setCondition(condition);
 		return evalInt(sql);
 	}
 
-	@Override
 	public <T> void clear(Class<T> classOfT) {
 		this.clear(classOfT, null);
 	}
 
-	@Override
 	public void clear(String tableName) {
 		this.clear(tableName, null);
 	}
 
-	@Override
 	public <T> void clear(Class<T> classOfT, Condition condition) {
 		Entity<T> entity = getEntity(classOfT);
 		ExecutableSql sql;
@@ -272,7 +259,6 @@ public class NutDao implements Dao {
 		execute(sql);
 	}
 
-	@Override
 	public void clear(String tableName, Condition condition) {
 		Sql<?> sql;
 		if (null == condition) {
@@ -283,7 +269,6 @@ public class NutDao implements Dao {
 		execute(sql);
 	}
 
-	@Override
 	public <T> T clearLinks(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<? extends Object> entity = getEntity(obj.getClass());
@@ -325,7 +310,6 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> void delete(Class<T> classOfT, long id) {
 		Entity<T> entity = getEntity(classOfT);
 		EntityField idField = checkIdField(entity);
@@ -333,7 +317,6 @@ public class NutDao implements Dao {
 		execute(sql.set(idField.getField().getName(), id));
 	}
 
-	@Override
 	public <T> void delete(Class<T> classOfT, String name) {
 		Entity<T> entity = getEntity(classOfT);
 		EntityField nameField = checkNameField(entity);
@@ -359,7 +342,6 @@ public class NutDao implements Dao {
 		}
 	}
 
-	@Override
 	public void delete(Object obj) {
 		if (null != obj) {
 			Entity<?> entity = getEntity(obj.getClass());
@@ -405,7 +387,6 @@ public class NutDao implements Dao {
 			super(dao);
 		}
 
-		@Override
 		void invoke(final Link link, Object mm) {
 			Object first = Lang.first(mm);
 			if (null != first) {
@@ -432,7 +413,6 @@ public class NutDao implements Dao {
 			super(dao);
 		}
 
-		@Override
 		void invoke(Link link, Object one) {
 			dao.delete(one);
 		}
@@ -440,7 +420,7 @@ public class NutDao implements Dao {
 	}
 
 	/*--------------------------------------------------------------------*/
-	@Override
+
 	public <T> void deleteWith(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<? extends Object> entity = getEntity(obj.getClass());
@@ -457,7 +437,6 @@ public class NutDao implements Dao {
 		}
 	}
 
-	@Override
 	public <T> void deleteLinks(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<? extends Object> entity = getEntity(obj.getClass());
@@ -473,13 +452,11 @@ public class NutDao implements Dao {
 		}
 	}
 
-	@Override
 	public <T> T fetch(Class<T> classOfT, long id) {
 		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, id);
 	}
 
-	@Override
 	public <T> T fetch(Entity<T> entity, long id) {
 		EntityField idField = checkIdField(entity);
 		FetchSql<T> sql = maker.makeFetchSQL(entity, idField);
@@ -489,13 +466,11 @@ public class NutDao implements Dao {
 		return sql.getResult();
 	}
 
-	@Override
 	public <T> T fetch(Class<T> classOfT, String name) {
 		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, name);
 	}
 
-	@Override
 	public <T> T fetch(Entity<T> entity, String name) {
 		EntityField nameField = checkNameField(entity);
 		FetchSql<T> sql = maker.makeFetchSQL(entity, nameField);
@@ -505,13 +480,11 @@ public class NutDao implements Dao {
 		return sql.getResult();
 	}
 
-	@Override
 	public <T> T fetch(Class<T> classOfT, Condition condition) {
 		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, condition);
 	}
 
-	@Override
 	public <T> T fetch(Entity<T> entity, Condition condition) {
 		FetchSql<T> sql;
 		if (null == condition) {
@@ -525,13 +498,11 @@ public class NutDao implements Dao {
 		return sql.getResult();
 	}
 
-	@Override
 	public <T> T fetch(Class<T> classOfT) {
 		return fetch(classOfT, (Condition) null);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T> T fetch(T obj) {
 		if (null != obj) {
 			Entity<T> entity = (Entity<T>) getEntity(obj.getClass());
@@ -545,7 +516,6 @@ public class NutDao implements Dao {
 		return null;
 	}
 
-	@Override
 	public <T> T fetchLinks(final T obj, String regex) {
 		if (null != obj && null != regex) {
 			final Entity<?> entity = getEntity(obj.getClass());
@@ -594,18 +564,15 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> Entity<T> getEntity(Class<T> classOfT) {
 		return entities.getEntity(classOfT, database());
 	}
 
-	@Override
 	public int getMaxId(Class<?> classOfT) {
 		Entity<?> entity = getEntity(classOfT);
 		return evalInt(maker.makeFetchMaxSQL(entity, checkIdField(entity)));
 	}
 
-	@Override
 	public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm) {
 		return getEntity(classOfT).getObject(rs, fm);
 	}
@@ -635,7 +602,6 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> T insert(T obj) {
 		if (null != obj) {
 			Entity<?> entity = getEntity(obj.getClass());
@@ -735,7 +701,6 @@ public class NutDao implements Dao {
 
 	/*-------------------------------------------------------------------*/
 
-	@Override
 	public <T> T insertWith(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<?> entity = getEntity(obj.getClass());
@@ -754,7 +719,6 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> T insertLinks(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<?> entity = getEntity(obj.getClass());
@@ -772,7 +736,6 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> List<T> query(Class<T> classOfT, Condition condition, Pager pager) {
 		final Entity<T> entity = this.getEntity(classOfT);
 		QuerySql<T> sql = maker.makeQuerySQL(getEntity(classOfT), pager);
@@ -782,21 +745,18 @@ public class NutDao implements Dao {
 		return (List<T>) sql.getResult();
 	}
 
-	@Override
 	public <T> T update(T obj) {
 		Sql<?> sql = maker.makeUpdateSQL(getEntity(obj.getClass()), obj);
 		execute(sql.setValue(obj));
 		return obj;
 	}
 
-	@Override
 	public void update(Class<?> classOfT, Chain chain, Condition condition) {
 		Entity<?> en = getEntity(classOfT);
 		ExecutableSql sql = maker.makeBatchUpdateSQL(en, chain);
 		execute(sql.setCondition(condition));
 	}
 
-	@Override
 	public void updateRelation(Class<?> classOfT, String regex, final Chain chain,
 			final Condition condition) {
 		final Links lns = new Links(null, getEntity(classOfT), regex);
@@ -822,7 +782,6 @@ public class NutDao implements Dao {
 			this.dao = dao;
 		}
 
-		@Override
 		void invoke(Link link, Object objSet) {
 			Lang.each(objSet, new Each<Object>() {
 				public void invoke(int i, Object obj, int length) throws ExitLoop, LoopException {
@@ -833,8 +792,6 @@ public class NutDao implements Dao {
 	}
 
 	/*-------------------------------------------------------------------*/
-
-	@Override
 	public <T> T updateWith(final T obj, String regex) {
 		if (null != obj) {
 			final Entity<?> entity = getEntity(obj.getClass());
@@ -850,7 +807,6 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	@Override
 	public <T> T updateLinks(T obj, String regex) {
 		if (null != obj) {
 			final Entity<?> entity = getEntity(obj.getClass());

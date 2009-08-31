@@ -11,17 +11,16 @@ public class ArrayRandom<T> implements Random<T> {
 		len = array.length;
 	}
 
-	@Override
 	public T next() {
 		if (len <= 0)
 			return null;
 		if (len == 1)
 			return array[--len];
 		int index = r.nextInt(len);
-		if(index==len-1)
+		if (index == len - 1)
 			return array[--len];
 		T c = array[index];
-		array[index]=array[--len];
+		array[index] = array[--len];
 		return c;
 	}
 

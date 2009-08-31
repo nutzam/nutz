@@ -14,7 +14,6 @@ public class SimpleCondition implements Condition {
 		this.content = String.format(format, args);
 	}
 
-	@Override
 	public String toString(Entity<?> entity) {
 		return content;
 	}

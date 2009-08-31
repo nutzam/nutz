@@ -54,7 +54,6 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 		MethodListener listener;
 	}
 
-	@Override
 	public ClassAgent addListener(MethodMatcher matcher, MethodListener listener) {
 		if (null != listener)
 			pairs.add(new Pair(matcher, listener));
@@ -81,7 +80,6 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T> Class<T> define(Class<T> klass) {
 		Pair2[] pairs = findMatchedMethod(klass);
 		if (pairs.length == 0)

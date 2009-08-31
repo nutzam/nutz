@@ -17,21 +17,12 @@ public class FetchSql<T> extends ConditionSql<T, T, ResultSet> {
 		super(sql);
 	}
 
-	// private QueryCallback<T> callback;
-	//
-	// public FetchSql<T> setCallback(QueryCallback<T>
-	// callback) {
-	// this.callback = callback;
-	// return this;
-	// }
-
 	private FieldMatcher matcher;
 
 	void setMatcher(FieldMatcher fm) {
 		this.matcher = fm;
 	}
 
-	@Override
 	public T execute(Connection conn) throws Exception {
 		setResult(execute(conn, callback));
 		return getResult();
@@ -57,7 +48,8 @@ public class FetchSql<T> extends ConditionSql<T, T, ResultSet> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {}
+				} catch (SQLException e1) {
+				}
 		}
 	}
 

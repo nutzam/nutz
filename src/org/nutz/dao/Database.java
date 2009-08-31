@@ -18,7 +18,6 @@ public interface Database {
 			return "mysql";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.MySQL;
 		}
@@ -34,7 +33,6 @@ public interface Database {
 			return "psql";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.Postgresql;
 		}
@@ -50,7 +48,6 @@ public interface Database {
 			return "db2";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.DB2;
 		}
@@ -66,7 +63,6 @@ public interface Database {
 			return "oracle";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.Oracle;
 		}
@@ -82,7 +78,6 @@ public interface Database {
 			return "sqlserver";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.SQLServer;
 		}
@@ -98,7 +93,6 @@ public interface Database {
 			return "unknown";
 		}
 
-		@Override
 		public Class<? extends Pager> getPagerType() {
 			return Pager.class;
 		}

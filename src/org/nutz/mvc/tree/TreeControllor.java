@@ -20,13 +20,11 @@ public abstract class TreeControllor<T> implements Controllor {
 
 	public String charset;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		T obj;
 		try {
-			obj = Json.fromJson(service.getEntityClass(), new InputStreamReader(request
-					.getInputStream(), (charset == null ? "UTF-8" : charset)));
+			obj = Json.fromJson(service.getEntityClass(), new InputStreamReader(request.getInputStream(),
+					(charset == null ? "UTF-8" : charset)));
 		} catch (Exception e) {
 			try {
 				long id = Long.valueOf(request.getParameter("id"));

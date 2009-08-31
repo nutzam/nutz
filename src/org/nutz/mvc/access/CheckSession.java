@@ -12,9 +12,7 @@ public class CheckSession<T extends Account> implements Controllor {
 
 	private String redirect;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (!Session.me(request).hasAccount(accountType))
 			return new RedirectView(redirect);
 		return null;

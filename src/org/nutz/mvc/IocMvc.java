@@ -16,7 +16,6 @@ public class IocMvc implements MvcSupport {
 
 	private Ioc ioc;
 
-	@Override
 	public Url getUrl(String path) throws UrlNotFoundException {
 		return ioc.get(Url.class, path);
 	}

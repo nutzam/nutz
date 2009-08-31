@@ -12,12 +12,11 @@ public class ConstructorInvoker<T> implements BorningInvoker<T> {
 		this.args = args;
 	}
 
-	public T born(){
+	public T born() {
 		return born(args);
 	}
 
-	@Override
-	public T born(Object[] args){
+	public T born(Object[] args) {
 		try {
 			if (args == null)
 				return c.newInstance();

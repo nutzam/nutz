@@ -18,7 +18,7 @@ public abstract class EnumRandom<T extends Enum> implements Random<T> {
 			Field[] fields = type.getFields();
 			ArrayList list = new ArrayList(fields.length);
 			for (Field f : fields) {
-				if(f.getType()==type){
+				if (f.getType() == type) {
 					list.add(f.get(null));
 				}
 			}
@@ -30,7 +30,6 @@ public abstract class EnumRandom<T extends Enum> implements Random<T> {
 		}
 	}
 
-	@Override
 	public T next() {
 		return r.next();
 	}

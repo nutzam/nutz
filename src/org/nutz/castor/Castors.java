@@ -50,7 +50,6 @@ public class Castors {
 		File dir = Files.findFile(path);
 		int pos = dir.getAbsolutePath().length() - path.length();
 		File[] files = dir.listFiles(new FileFilter() {
-			@Override
 			public boolean accept(File pathname) {
 				return pathname.getName().endsWith(".class");
 			}

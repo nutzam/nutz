@@ -19,9 +19,7 @@ public class RedirectView implements View {
 		this.dest = new CharSegment(Strings.trim(dest));
 	}
 
-	@Override
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
-			throws Exception {
+	public void render(HttpServletRequest request, HttpServletResponse response, Object obj) throws Exception {
 		Mirror<?> me = null;
 		if (null != obj)
 			me = Mirror.me(obj.getClass());

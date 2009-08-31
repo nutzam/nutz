@@ -15,7 +15,8 @@ import org.nutz.service.EntityService;
 
 public class Query extends ConditionControllor {
 
-	protected Query() {}
+	protected Query() {
+	}
 
 	public Query(EntityService<?> service) {
 		super(service);
@@ -27,11 +28,8 @@ public class Query extends ConditionControllor {
 
 	private Class<? extends Pager> pagerType;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
-		Pager pager = Pager.valueOf(request, pagerType == null ? service.dao().getPagerType()
-				: pagerType);
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		Pager pager = Pager.valueOf(request, pagerType == null ? service.dao().getPagerType() : pagerType);
 		if (pagesize > 0)
 			pager.setPageSize(pagesize);
 		Condition cnd = null;

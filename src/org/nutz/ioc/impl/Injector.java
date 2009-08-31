@@ -23,7 +23,6 @@ public interface Injector {
 			this.paramType = setter.getParameterTypes()[0];
 		}
 
-		@Override
 		public void inject(Object obj) {
 			try {
 				Object v = value.get();
@@ -48,7 +47,6 @@ public interface Injector {
 			this.field = field;
 		}
 
-		@Override
 		public void inject(Object obj) {
 			try {
 				Object v = null == value ? null : value.get();

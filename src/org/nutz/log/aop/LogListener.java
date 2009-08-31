@@ -31,7 +31,6 @@ public class LogListener implements MethodListener {
 		this.showArgs = showArgs;
 	}
 
-	@Override
 	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
 		if (showReturn) {
 			String re;
@@ -49,7 +48,6 @@ public class LogListener implements MethodListener {
 		return returnObj;
 	}
 
-	@Override
 	public boolean beforeInvoke(Object obj, Method method, Object... args) {
 		int w = log.getFormat().getWidth();
 		StringBuilder sb = new StringBuilder();
@@ -79,8 +77,7 @@ public class LogListener implements MethodListener {
 		if (null == arg)
 			return "null";
 		if (arg.getClass().isArray()) {
-			StringBuilder sb = new StringBuilder("[L").append(arg.getClass().getComponentType()
-					.getName());
+			StringBuilder sb = new StringBuilder("[L").append(arg.getClass().getComponentType().getName());
 			int len = Array.getLength(arg);
 			for (int i = 0; i < len; i++) {
 				sb.append("\n\t[").append(i).append("] ");
@@ -103,12 +100,10 @@ public class LogListener implements MethodListener {
 		return Thread.currentThread().getStackTrace().length - deep;
 	}
 
-	@Override
 	public void whenError(Throwable e, Object obj, Method method, Object... args) {
 		log.printlnf("! " + Lang.getStackTrace(e));
 	}
 
-	@Override
 	public void whenException(Exception e, Object obj, Method method, Object... args) {
 		log.printlnf("@ " + Lang.getStackTrace(e));
 	}

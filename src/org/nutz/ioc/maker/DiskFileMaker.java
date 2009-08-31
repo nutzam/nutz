@@ -9,12 +9,10 @@ import org.nutz.lang.Files;
 
 public class DiskFileMaker implements ValueMaker {
 
-	@Override
 	public String forType() {
 		return Val.disk;
 	}
 
-	@Override
 	public Object make(Val val) {
 		String path = val.getValue().toString();
 		File re = Files.findFile(path);

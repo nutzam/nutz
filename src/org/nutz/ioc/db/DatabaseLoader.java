@@ -16,7 +16,6 @@ public class DatabaseLoader implements ObjLoader {
 
 	private ObjService service;
 
-	@Override
 	public String[] keys() {
 		List<Obj> objs = service.objs().query(null, null);
 		String[] re = new String[objs.size()];
@@ -27,12 +26,10 @@ public class DatabaseLoader implements ObjLoader {
 		return re;
 	}
 
-	@Override
 	public Obj load(String name) {
 		return service.fetchObject(name);
 	}
 
-	@Override
 	public boolean hasObj(String name) {
 		return service.objs().count(Cnd.where("name", "=", name)) > 0;
 	}

@@ -22,9 +22,7 @@ public class Update extends EntityControllor {
 	private String actived;
 	private String cascade;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		final Object obj = this.getObject(request);
 		if (!Strings.isBlank(actived) || !Strings.isBlank(ignored)) {
 			FieldFilter.create(service.getEntityClass(), actived, ignored).run(new Atom() {

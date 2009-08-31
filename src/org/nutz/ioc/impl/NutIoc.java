@@ -50,7 +50,6 @@ public class NutIoc implements Ioc {
 		return mirrors;
 	}
 
-	@Override
 	public void clear() {
 		if (null != cache) {
 			synchronized (this) {
@@ -63,7 +62,6 @@ public class NutIoc implements Ioc {
 		}
 	}
 
-	@Override
 	public void depose() {
 		clear();
 		cache = null;
@@ -71,14 +69,11 @@ public class NutIoc implements Ioc {
 		creators = null;
 	}
 
-	@Override
 	protected void finalize() throws Throwable {
 		depose();
 	}
 
-	@Override
-	public <T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException,
-			ObjectNotFoundException {
+	public <T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException, ObjectNotFoundException {
 		if (null == name)
 			return null;
 		ObjectHolder<T> oh = (ObjectHolder<T>) cache.get(name);
@@ -143,17 +138,14 @@ public class NutIoc implements Ioc {
 		return obj;
 	}
 
-	@Override
 	public boolean isSingleton(Class<?> classOfT, String name) {
 		return this.getCreator(classOfT, name).isSingleton();
 	}
 
-	@Override
 	public String[] keys() {
 		return loader.keys();
 	}
 
-	@Override
 	public boolean hasName(String name) {
 		if (cache.containsKey(name))
 			return true;
@@ -162,13 +154,11 @@ public class NutIoc implements Ioc {
 		return loader.hasObj(name);
 	}
 
-	@Override
 	public Ioc add(ValueMaker maker) {
 		makers.put(maker.forType(), maker);
 		return this;
 	}
 
-	@Override
 	public ValueMaker findValueMaker(Val val) {
 		return makers.get(val.getType());
 	}

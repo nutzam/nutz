@@ -69,8 +69,8 @@ public class CastorTest {
 	@Test
 	public void testLong2Float() throws FailToCastObjectException {
 		Long l = new Long(59);
-		float x = Castors.me().cast(l, Long.class, float.class);
-		assertEquals(59.0f, x);
+		Float x = Castors.me().cast(l, Long.class, float.class);
+		assertEquals(Float.valueOf(59.0f), x);
 	}
 
 	@Test
@@ -110,7 +110,7 @@ public class CastorTest {
 
 	@Test
 	public void testString2Float() throws FailToCastObjectException {
-		assertEquals(34.67f, Castors.me().castTo("34.67", float.class));
+		assertEquals(Float.valueOf(34.67f), Castors.me().castTo("34.67", float.class));
 		assertEquals(new Float(34.67), Castors.me().castTo("34.67", Float.class));
 	}
 

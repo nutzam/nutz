@@ -11,7 +11,6 @@ public class MvcMappingLoader implements ObjLoader {
 		this.loader = loader;
 	}
 
-	@Override
 	public Obj load(String name) {
 		Obj obj = loader.load(name);
 		if (null != obj.getType()) {
@@ -20,17 +19,16 @@ public class MvcMappingLoader implements ObjLoader {
 				if (Action.class.isAssignableFrom(type)) {
 					obj.setSingleton(false);
 				}
-			} catch (ClassNotFoundException e) {}
+			} catch (ClassNotFoundException e) {
+			}
 		}
 		return obj;
 	}
 
-	@Override
 	public String[] keys() {
 		return loader.keys();
 	}
 
-	@Override
 	public boolean hasObj(String name) {
 		return loader.hasObj(name);
 	}

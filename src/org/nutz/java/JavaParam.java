@@ -32,17 +32,14 @@ public class JavaParam extends JavaElement {
 		this.name = name;
 	}
 
-	@Override
 	protected String renderSource() {
 		return type.getName() + " " + name;
 	}
 
-	@Override
 	public Set<JavaType> getDependents() {
 		return type.getDependents();
 	}
 
-	@Override
 	public int compareTo(JavaLanguageObject o) {
 		if (o instanceof JavaParam)
 			return name.compareTo(((JavaParam) o).name);

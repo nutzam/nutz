@@ -12,7 +12,6 @@ public class MethodCallback implements ObjCallback<Object> {
 		this.method = method;
 	}
 
-	@Override
 	public void invoke(Object obj) {
 		try {
 			method.invoke(obj);

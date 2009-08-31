@@ -11,12 +11,10 @@ public class StringBuilderLogOutput implements LogOutput {
 		this.sb = sb;
 	}
 
-	@Override
 	public void output(String str) throws IOException {
 		sb.append(str);
 	}
 
-	@Override
 	public void setup(Map<String, Object> conf) {}
 
 }

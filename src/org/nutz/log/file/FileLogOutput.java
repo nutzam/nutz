@@ -27,13 +27,12 @@ public class FileLogOutput implements LogOutput {
 		}
 	}
 
-	@Override
 	public void output(String str) throws IOException {
 		writer.append(str);
 		writer.flush();
 	}
 
-	@Override
-	public void setup(Map<String, Object> conf) {}
+	public void setup(Map<String, Object> conf) {
+	}
 
 }

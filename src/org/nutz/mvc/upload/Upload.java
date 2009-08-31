@@ -34,9 +34,7 @@ public class Upload implements Controllor {
 	private FilePool tmpFiles;
 	private String charset;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		RequestParser parser = new RequestParser(request);
 		request.setAttribute(Upload.class.getName(), parser.params);
 		return parser.params;

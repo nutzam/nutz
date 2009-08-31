@@ -48,7 +48,6 @@ public abstract class ConditionSql<T, R, P> extends AbstractSql<T> {
 
 	private Condition condition;
 
-	@Override
 	public T getResult() {
 		return result;
 	}

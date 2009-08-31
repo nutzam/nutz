@@ -46,7 +46,8 @@ public class Map2Obj {
 		Obj obj = new Obj();
 		try {
 			obj.setId(Integer.parseInt(map.get("id").toString()));
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 		obj.setName((String) map.get("name"));
 		obj.setType((String) map.get("type"));
 		obj.setComment((String) map.get("comment"));
@@ -86,9 +87,9 @@ public class Map2Obj {
 	public static Val object2val(Object obj) {
 		if (null == obj) {
 			return Val.make(Val.Null, null);
-		} else if (obj instanceof Map) {
+		} else if (obj instanceof Map<?, ?>) {
 			return map2val((Map<?, ?>) obj);
-		} else if (obj instanceof Collection) {
+		} else if (obj instanceof Collection<?>) {
 			return Val.make(Val.array, parseCollection((Collection<?>) obj));
 		} else if (obj.getClass().isArray()) {
 			return Val.make(Val.array, parseArray((Object[]) obj));
@@ -117,7 +118,7 @@ public class Map2Obj {
 	private static Object deeply_check_object_and_return_self_when_normal(Object obj) {
 		if (null == obj)
 			return null;
-		if (obj instanceof Map) {
+		if (obj instanceof Map<?, ?>) {
 			Val val = map2val((Map<?, ?>) obj);
 			if (val.isMap())
 				return val.getValue();

@@ -25,7 +25,7 @@ import org.nutz.lang.stream.StringOutputStream;
 
 @SuppressWarnings("unchecked")
 public class JsonTest {
-	
+
 	@Test
 	public void field_name_with_colon() {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson("{'i\"d:':6};");
@@ -62,7 +62,7 @@ public class JsonTest {
 		ints[0] = 65;
 		assertEquals("[65]", Json.toJson(ints));
 		assertEquals(65, Json.fromJson(Lang.inr("65")));
-		assertEquals(Float.parseFloat("65"), Json.fromJson(float.class, Lang.inr("65")));
+		assertEquals(Float.valueOf("65"), Json.fromJson(float.class, Lang.inr("65")));
 		assertEquals(ints[0], Json.fromJson(int[].class, Lang.inr("[65]"))[0]);
 	}
 
@@ -76,9 +76,9 @@ public class JsonTest {
 
 	@Test
 	public void testFloat() {
-		assertEquals(2.3f, Json.fromJson(float.class, Lang.inr("2.3")));
-		assertEquals(2.3f, ((Double) Json.fromJson(Lang.inr("2.3"))).floatValue());
-		assertEquals(.3f, Json.fromJson(float.class, Lang.inr(".3")));
+		assertEquals(Float.valueOf(2.3f), Json.fromJson(float.class, Lang.inr("2.3")));
+		assertEquals(Double.valueOf(2.3f), ((Double) Json.fromJson(Lang.inr("2.3"))));
+		assertEquals(Float.valueOf(.3f), Json.fromJson(float.class, Lang.inr(".3")));
 	}
 
 	@Test

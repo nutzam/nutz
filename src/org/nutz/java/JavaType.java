@@ -134,7 +134,6 @@ public abstract class JavaType extends JavaElement {
 		return set;
 	}
 
-	@Override
 	public Set<JavaType> getDependents() {
 		Set<JavaType> set = new HashSet<JavaType>();
 		if (null != this.getParent())
@@ -148,26 +147,22 @@ public abstract class JavaType extends JavaElement {
 		return set;
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof JavaType)
 			return fullName.equals(((JavaType) obj).fullName);
 		return false;
 	}
 
-	@Override
 	public int hashCode() {
 		return fullName.hashCode();
 	}
 
-	@Override
 	public int compareTo(JavaLanguageObject o) {
 		if (o instanceof JavaType)
 			return fullName.compareTo(((JavaType) o).fullName);
 		throw new RuntimeException("Can not compare with " + o.toString());
 	}
 
-	@Override
 	public String toString() {
 		return getFullName();
 	}

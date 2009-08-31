@@ -30,8 +30,7 @@ public class JsonLoader implements ObjLoader {
 				load(reader);
 				reader.close();
 			} catch (Exception e) {
-				throw Lang.makeThrow("Fail to find json file '%s' because:\n%s", path, e
-						.getMessage());
+				throw Lang.makeThrow("Fail to find json file '%s' because:\n%s", path, e.getMessage());
 			}
 		}
 	}
@@ -66,17 +65,14 @@ public class JsonLoader implements ObjLoader {
 	private Map<String, Obj> map;
 	private String[] keys;
 
-	@Override
 	public String[] keys() {
 		return keys;
 	}
 
-	@Override
 	public Obj load(String name) {
 		return map.get(name);
 	}
 
-	@Override
 	public boolean hasObj(String name) {
 		return map.containsKey(name);
 	}

@@ -16,7 +16,8 @@ public class JsonView implements View {
 
 	private static JsonFormat defaultFormat = JsonFormat.compact();
 
-	public JsonView() {}
+	public JsonView() {
+	}
 
 	public JsonView(JsonFormat format) {
 		this.format = format;
@@ -25,11 +26,9 @@ public class JsonView implements View {
 	private JsonFormat format;
 	private String charset;
 
-	@Override
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
-			throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(),
-				null == charset ? "UTF-8" : charset));
+	public void render(HttpServletRequest request, HttpServletResponse response, Object obj) throws IOException {
+		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), null == charset ? "UTF-8"
+				: charset));
 		Json.toJson(writer, obj, null == format ? defaultFormat : format);
 		writer.close();
 	}

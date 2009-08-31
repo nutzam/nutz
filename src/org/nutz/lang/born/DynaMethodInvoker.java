@@ -24,7 +24,6 @@ public class DynaMethodInvoker<T> implements BorningInvoker<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public T born(Object[] args) {
 		try {
 			return (T) method.invoke(null, Mirror.evalArgToRealArray(args));

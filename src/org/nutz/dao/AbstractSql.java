@@ -41,7 +41,6 @@ public abstract class AbstractSql<T> implements Sql<T> {
 		return entity;
 	}
 
-	@Override
 	public Sql<T> setValue(Object obj) {
 		// for (Field field : mirror.getFields()) {
 		for (Iterator<EntityField> it = entity.fields().iterator(); it.hasNext();) {
@@ -70,78 +69,65 @@ public abstract class AbstractSql<T> implements Sql<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Sql<T> born() {
 		AbstractSql<T> sql = Mirror.me(this.getClass()).born();
 		sql.segment = this.segment.born();
 		return sql;
 	}
 
-	@Override
 	public Sql<T> clone() {
 		throw new RuntimeException("SQL can not be clone!!!");
 	}
 
-	@Override
 	public Sql<T> set(String key, boolean v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, byte v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, double v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, float v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, int v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, long v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, Object v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> set(String key, short v) {
 		this.values.put(key, v);
 		return this;
 	}
 
-	@Override
 	public Sql<T> valueOf(String s) {
 		this.segment.valueOf(s);
 		return this;
 	}
 
-	@Override
 	public String toOrginalString() {
 		return this.segment.toOrginalString();
 	}
 
-	@Override
 	public Object get(String key) {
 		return this.values.get(key);
 	}

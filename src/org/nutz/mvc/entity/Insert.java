@@ -17,9 +17,7 @@ public class Insert extends EntityControllor {
 
 	private String cascade;
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		Object obj = this.getObject(request);
 		service.dao().insertWith(obj, cascade);
 		return obj;

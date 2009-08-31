@@ -22,7 +22,6 @@ public class JavaPackage extends JavaLanguageObject implements Comparable<JavaLa
 		return i;
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if (null == obj)
 			return false;
@@ -35,12 +34,10 @@ public class JavaPackage extends JavaLanguageObject implements Comparable<JavaLa
 		return Strings.splitIgnoreBlank(name, "[.]");
 	}
 
-	@Override
 	protected String renderSource() {
 		return name;
 	}
 
-	@Override
 	public int compareTo(JavaLanguageObject o) {
 		if (o instanceof JavaPackage)
 			return name.compareTo(((JavaPackage) o).name);

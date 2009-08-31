@@ -58,14 +58,14 @@ public class SQLFileParsing {
 	public void check_Fetch_SQL() {
 		sqls = new FileSqlManager(PATH);
 		Sql<?> sql = sqls.createSql("abc.fetch");
-		assertTrue(sql instanceof FetchSql);
+		assertTrue(sql instanceof FetchSql<?>);
 	}
 
 	@Test
 	public void check_Query_SQL() {
 		sqls = new FileSqlManager(PATH);
 		Sql<?> sql = sqls.createSql("abc.query");
-		assertTrue(sql instanceof QuerySql);
+		assertTrue(sql instanceof QuerySql<?>);
 	}
 
 	@Test

@@ -9,9 +9,7 @@ import org.nutz.mvc.Controllor;
 
 public abstract class AfterUpload implements Controllor {
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		return execute(Upload.getParams(request), request, response);
 	}
 

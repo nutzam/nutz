@@ -16,7 +16,6 @@ public class TransactionTest extends DaoCase {
 	private IdEntityService<Company> comService;
 	private IdEntityService<Master> masterService;
 
-	@Override
 	protected void before() {
 		pojos.execFile("org/nutz/trans/trans.sqls");
 		catService = new IdEntityService<Cat>(dao) {};
@@ -24,7 +23,6 @@ public class TransactionTest extends DaoCase {
 		masterService = new IdEntityService<Master>(dao) {};
 	}
 
-	@Override
 	protected void after() {}
 
 	private Cat insert(final Cat cat, final Bomb bomb) {
@@ -127,7 +125,6 @@ public class TransactionTest extends DaoCase {
 			return standby;
 		}
 
-		@Override
 		public void run() {
 			// System.out.println("\nI am checker");
 			try {
@@ -158,10 +155,8 @@ public class TransactionTest extends DaoCase {
 		private Object tellor;
 		public Object waiter;
 
-		@Override
 		public void run() {
 			Trans.exec(new Atom() {
-				@Override
 				public void run() {
 					// System.out.println("\nI am another");
 					Company com = Company.create("dtri");

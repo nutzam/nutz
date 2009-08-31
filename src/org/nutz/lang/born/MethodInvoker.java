@@ -22,7 +22,6 @@ public class MethodInvoker<T> implements BorningInvoker<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public T born(Object[] args) {
 		try {
 			return (T) method.invoke(null, args);

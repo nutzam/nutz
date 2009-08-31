@@ -15,12 +15,10 @@ public class ServerFileMaker implements ValueMaker {
 		this.context = context;
 	}
 
-	@Override
 	public String forType() {
 		return Val.file;
 	}
 
-	@Override
 	public Object make(Val val) {
 		String path = context.getRealPath(val.getValue().toString());
 		return new File(path);

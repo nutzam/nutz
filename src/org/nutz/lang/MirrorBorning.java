@@ -31,7 +31,6 @@ public class MirrorBorning<T> implements Borning<T> {
 		}
 	}
 
-	@Override
 	public T born() {
 		try {
 			return borningInvoker.born();

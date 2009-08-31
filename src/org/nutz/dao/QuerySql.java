@@ -19,14 +19,6 @@ public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 		super(sql);
 	}
 
-	// private QueryCallback<T> queryCallback;
-	//
-	// public QuerySql<T> setCallback(QueryCallback<T>
-	// callback) {
-	// this.queryCallback = callback;
-	// return this;
-	// }
-
 	private Pager pager;
 
 	public Pager getPager() {
@@ -43,7 +35,6 @@ public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 		this.pager = pager;
 	}
 
-	@Override
 	public List<T> execute(Connection conn) throws Exception {
 		setResult(execute(conn, callback));
 		return this.getResult();
@@ -53,8 +44,8 @@ public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 		PreparedStatement stat = null;
 		try {
 			List<T> list = new LinkedList<T>();
-			stat = conn.prepareStatement(getPreparedStatementString(),
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+			stat = conn.prepareStatement(getPreparedStatementString(), ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_READ_ONLY);
 			super.setupStatement(stat);
 			ResultSet rs = stat.executeQuery();
 			callback.getContext().setFieldsMatcher(matcher);
@@ -84,7 +75,8 @@ public class QuerySql<T> extends ConditionSql<List<T>, T, ResultSet> {
 			if (null != stat)
 				try {
 					stat.close();
-				} catch (SQLException e1) {}
+				} catch (SQLException e1) {
+				}
 		}
 	}
 

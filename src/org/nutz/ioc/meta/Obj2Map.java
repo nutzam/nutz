@@ -53,9 +53,9 @@ public class Obj2Map {
 			return null;
 		if (obj instanceof Val) {
 			return renderVal((Val) obj);
-		} else if (obj instanceof Map) {
+		} else if (obj instanceof Map<?, ?>) {
 			return renderMap((Map<?, ?>) obj);
-		} else if (obj instanceof Collection) {
+		} else if (obj instanceof Collection<?>) {
 			return renderCollection((Collection<?>) obj);
 		} else if (obj.getClass().isArray()) {
 			return rednerArray((Object[]) obj);
@@ -69,7 +69,7 @@ public class Obj2Map {
 		else if (v.isInner()) {
 			return render((Obj) v.getValue());
 		} else if (v.isArray()) {
-			if (v.getValue() instanceof Collection)
+			if (v.getValue() instanceof Collection<?>)
 				return renderCollection((Collection<?>) v.getValue());
 			else
 				return rednerArray((Object[]) v.getValue());

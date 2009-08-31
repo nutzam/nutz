@@ -340,7 +340,7 @@ public class Lang {
 	}
 
 	public static <E> List<E> collection2list(Collection<E> coll, Class<List<E>> classOfList) {
-		if (coll instanceof List)
+		if (coll instanceof List<?>)
 			return (List<E>) coll;
 		List<E> list;
 		try {
@@ -458,9 +458,9 @@ public class Lang {
 			return 0;
 		if (obj.getClass().isArray()) {
 			return Array.getLength(obj);
-		} else if (obj instanceof Collection) {
+		} else if (obj instanceof Collection<?>) {
 			return ((Collection<?>) obj).size();
-		} else if (obj instanceof Map) {
+		} else if (obj instanceof Map<?,?>) {
 			return ((Map<?, ?>) obj).size();
 		}
 		return 1;

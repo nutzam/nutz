@@ -18,7 +18,6 @@ public class Localizations {
 
 	private Localizations(File dir, final String suffix) {
 		File[] list = dir.listFiles(new FileFilter() {
-			@Override
 			public boolean accept(File f) {
 				if (!f.isFile())
 					return false;
@@ -31,8 +30,7 @@ public class Localizations {
 		try {
 			for (File f : list) {
 				String lzName = f.getName().substring(0, f.getName().length() - suffix.length());
-				MultiLineProperties lz = new MultiLineProperties(new InputStreamReader(
-						new FileInputStream(f), "UTF-8"));
+				MultiLineProperties lz = new MultiLineProperties(new InputStreamReader(new FileInputStream(f), "UTF-8"));
 				lzs.put(lzName, lz);
 			}
 		} catch (Exception e) {

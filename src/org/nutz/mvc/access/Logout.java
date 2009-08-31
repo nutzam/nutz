@@ -14,9 +14,7 @@ public class Logout<T extends Account> implements Controllor {
 		this.accountType = accountType;
 	}
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Exception {
 		if (null != request.getSession().getAttribute(Session.class.getName())) {
 			Session session = Session.me(request);
 			session.removeAccount(accountType);

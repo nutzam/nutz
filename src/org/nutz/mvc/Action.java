@@ -13,9 +13,7 @@ public abstract class Action implements Controllor {
 		this.paramFields = Params.getParameterFields(this.getClass());
 	}
 
-	@Override
-	public Object execute(HttpServletRequest request, HttpServletResponse response)
-			throws Throwable {
+	public Object execute(HttpServletRequest request, HttpServletResponse response) throws Throwable {
 		Params.getObjectAsNameValuePair(this, request, paramFields);
 		return execute();
 	}

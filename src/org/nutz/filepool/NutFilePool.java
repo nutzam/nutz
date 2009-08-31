@@ -25,14 +25,13 @@ public class NutFilePool implements FilePool {
 			}
 		}
 		if (!home.isDirectory())
-			throw Lang.makeThrow(
-					"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
+			throw Lang.makeThrow("Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
 					homePath, this.getClass().getName());
 		File last = home;
 		String[] subs = null;
 		while (last.isDirectory()) {
-			subs = last.list(new FilenameFilter(){
-				@Override
+			subs = last.list(new FilenameFilter() {
+
 				public boolean accept(File dir, String name) {
 					return name.matches("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$");
 				}
@@ -53,14 +52,12 @@ public class NutFilePool implements FilePool {
 	private long cursor;
 	private int size;
 
-	@Override
 	public void empty() throws IOException {
 		Files.deleteDir(home);
 		Files.makeDir(home);
 		cursor = 0;
 	}
 
-	@Override
 	public File createFile(long id, String suffix) throws IOException {
 		if (size > 0 && id >= size)
 			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
@@ -70,19 +67,16 @@ public class NutFilePool implements FilePool {
 		return re;
 	}
 
-	@Override
 	public File createFile(String suffix) throws IOException {
 		if (size > 0 && cursor >= size)
 			cursor = -1;
 		return createFile(++cursor, suffix);
 	}
 
-	@Override
 	public long current() {
 		return cursor;
 	}
 
-	@Override
 	public File changeExtension(long id, String suffix, String newSuffix) {
 		File f = Utils.getFileById(home, id, suffix);
 		File newFile = Files.setSuffix(f, newSuffix);
@@ -90,7 +84,6 @@ public class NutFilePool implements FilePool {
 		return newFile;
 	}
 
-	@Override
 	public long getFileId(File f) {
 		try {
 			return Utils.getFileId(home, f);
@@ -99,20 +92,17 @@ public class NutFilePool implements FilePool {
 		}
 	}
 
-	@Override
 	public File removeFile(long id, String suffix) {
 		File f = Utils.getFileById(home, id, suffix);
 		Files.deleteFile(f);
 		return f;
 	}
 
-	@Override
 	public boolean hasFile(long id, String suffix) {
 		File f = Utils.getFileById(home, id, suffix);
 		return f.exists();
 	}
 
-	@Override
 	public File moveFile(long id, String suffix, File target) throws IOException {
 		File src = Utils.getFileById(home, id, suffix);
 		Files.moveTo(src, target);
