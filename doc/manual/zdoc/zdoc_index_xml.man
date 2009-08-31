@@ -40,14 +40,9 @@ index.xml 语法
 	</doc>
 	}}}
 	举一个更详细的例子，比如你有一个如下的目录结构
-	{{{
-	[+][/docroot]
-		    index.xml
-		    preface.zdoc
-		[+][part1]
-			   section1.zdoc
-			   overview.zdoc
-	}}}
+	
+	<ex01.png>
+
 	那么在 index.xml 的内容应该为
 	{{{<index.xml>
 	<?xml version="1.0"?>

@@ -1,1 +1,40 @@
 #title:内置的服务类
+#index:0,1
+
+什么是服务类，为什么需要它
+	[http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/dao/Dao.java Nutz.Dao 接口]可以针对任何 POJO 的进行操作。因为
+	是通用的 Dao 操作，所以多数接口函数都需要一个参数类说明 POJO 的类型，比如：
+	{{{<JAVA>
+	Pet pet = dao.fetch(Pet.class,"XiaoBai");
+	}}}
+	单独的调用一行接口，多传入一个参数到没什么，但是如果频繁的被使用，每次都要多写一个参数毕竟很是麻烦。为此我又提供一层非常简单的
+	针对 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/dao/Dao.java org.nutz.dao.Dao] 接口的封装。
+	譬如：
+	{{{<JAVA>
+	IdNameEntityService<Pet> pets = new IdNameEntityService<Pet>(dao);
+	Pet pet = pets.fetch("XiaoBai");
+	}}}
+	这样，调用的时候，就不用每次都传入参数了。
+
+	当然服务类并不是强制你使用的，只不过多数时候，采用 Nutz 提供的服务类会比较方便。你可以从 org.nutz.service.Service 继承自己的服务
+	类，或者你干脆重新建立自己的服务类（提供更多的数据操作方法，进行 Crud 操作），
+	因为 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/service/Service.java org.nutz.service.Service]并不复杂，所以
+	你是否从中继承你自己的类对你的代码影响不大。你可以参考它的源代码。
+
+Nutz 内置的服务类
+	在包 [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/service Service] 中，提供了一些实现：
+
+	<hierarchy_services.png>
+
+	请重新温习一下[services.html Nutz.Dao 实体注解(Entity Annotation)]中的注解 {#A64;*@Id} 和 {#A64;*@Name} 这两个注解，
+	这里我称一个 POJO 对象为一个 {#00A;*实体} （{#080;_Entity}）：
+
+	 * 如果 POJO 即声明了 {#A64;*@Id} 又声明了 {#A64;*@Name}，那么适合采用 IdNameEntityService
+	 * 如果 POJO 仅声明了 {#A64;*@Id}，那么适合采用 IdEntityService
+	 * 如果 POJO 仅声明了 {#A64;*@Name}，那么适合采用 NameEntityService
+	 * 如果 POJO 即没声明了 {#A64;*@Id} 又没声明了 {#A64;*@Name}，那么适合采用 EntityService
+	
+关于服务类的总结
+	 * 这四个内置的服务类，仅仅提供了一些基本的操作。
+	 * 这些服务类都是支持泛型。
+	 * 你可以直接使用，或者你可以从这四个服务类继承你自己的实现。
