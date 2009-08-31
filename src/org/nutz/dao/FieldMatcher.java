@@ -6,7 +6,7 @@ import org.nutz.lang.Strings;
 
 public class FieldMatcher {
 
-	static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
+	public static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
 		FieldMatcher fm = new FieldMatcher();
 		fm.ignoreNull = ignoreNull;
 		if (!Strings.isBlank(actived))
