@@ -1,1 +1,29 @@
 #title:映射概述
+#index:0,1
+
+Nutz.Dao 支持的映射
+	在结构化数据库设计中，很多应用都会用到数据与数据的关联。关联有三种形式
+
+	一对一映射
+		<links_one.png>
+
+		一个对象中有一个字段指向另外一个对象的主键。如上图， Pet 中就可以有一个字段 master，通过自身的 masterId 指向一个
+		Master 对象，那么我们说 Pet.master 就是 Pet 对 Master 的一对一映射。
+	
+	一对多映射
+		<links_many.png>
+
+		如上图，同理，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 `List<Pet>`） 就可以指向多个 Pet 对象，
+		那么我们说 Master.pets 就是 Master 对 Pet 的一对多映射。
+
+	多对多映射
+		<links_manymany.png>
+
+		如上图，通过一个中间数据表的两个字段，分别指向两个对象的主键，可以实现多对多映射。所以，Pet.foods（一个 `List<Food>`）
+		或者 Food.pets（一个`List<Pet>`）就是多对多映射。
+
+Nutz.Dao 如何支持映射
+	在 POJO 中设置
+	通过 Dao 接口
+
+一些另外的注意事项
