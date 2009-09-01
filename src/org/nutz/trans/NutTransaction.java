@@ -14,13 +14,17 @@ public class NutTransaction extends Transaction {
 	private List<Pair> list;
 
 	private static class Pair {
-		Pair(DataSource ds, Connection conn) {
+		Pair(DataSource ds, Connection conn, int level) throws SQLException {
 			this.ds = ds;
 			this.conn = conn;
+			oldLevel = conn.getTransactionIsolation();
+			if (oldLevel != level)
+				conn.setTransactionIsolation(level);
 		}
 
 		DataSource ds;
 		Connection conn;
+		int oldLevel;
 	}
 
 	public NutTransaction() {
@@ -38,6 +42,8 @@ public class NutTransaction extends Transaction {
 				p.conn.close();
 			}
 		}
+		resetTransactionLevel();
+		list.clear();
 	}
 
 	@Override
@@ -49,13 +55,22 @@ public class NutTransaction extends Transaction {
 		// System.out.printf("=> %s\n", conn.toString());
 		if (conn.getAutoCommit())
 			conn.setAutoCommit(false);
-		list.add(new Pair(dataSource, conn));
+		// Store conn, it will set the trans level
+		list.add(new Pair(dataSource, conn, getLevel()));
 		return conn;
 	}
 
 	@Override
 	public int getId() {
 		return ID++;
+	}
+
+	@Override
+	public void resetTransactionLevel() throws SQLException {
+		for (Pair p : list)
+			if (!p.conn.isClosed())
+				if (p.conn.getTransactionIsolation() != p.oldLevel)
+					p.conn.setTransactionIsolation(p.oldLevel);
 	}
 
 	@Override
