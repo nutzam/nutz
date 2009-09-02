@@ -24,6 +24,71 @@ Nutz.Dao 支持的映射
 
 Nutz.Dao 如何支持映射
 	在 POJO 中设置
-	通过 Dao 接口
+		{{{<JAVA>
+		public class Pet {
+			@Column
+			@Id
+			public int id;
 
+			@Column
+			@Name
+			public String name;
+
+			@Column
+			public int masterId;
+
+			@One(target = Master.class, field = "masterId")
+			public Master master;
+
+			@ManyMany(target = Food.class, relation = "t_pet_food", from = "petid", to = "foodid")
+			public List<Food> foods;
+		}
+		}}}
+
+		{{{<JAVA>
+		public class Master {
+			@Column
+			@Id
+			public int id;
+
+			@Column
+			@Name
+			public String name;
+			
+			@Many(target=Pet.class,field="masterId")
+			public List<Pet> pets;
+		}
+		}}}
+
+		{{{<JAVA>
+		public class Food {
+			@Column
+			@Id
+			public int id;
+
+			@Column
+			@Name
+			public String name;
+		}
+		}}}
+	通过 Dao 接口调用
+		{{{<JAVA>
+		Pet pet = dao.fetch(Pet.class, "XiaoBai");
+		dao.fetchLinks(pet, "master");
+		System.out.println(pet.master.name);
+		}}}
+
+		{{{<JAVA>
+		Master master = dao.fetch(Master.class, 23);
+		dao.fetchLinks(master, "pets");
+		for (Pet pet : master.pets)
+			System.out.println(pet.master.name);
+		}}}
+
+		{{{<JAVA>
+		Pet pet = dao.fetch(Pet.class, "XiaoBai");
+		dao.fetchLinks(pet, "foods");
+		for (Food food : pet.foods)
+			System.out.println(food.name);
+		}}}
 一些另外的注意事项
