@@ -1,61 +1,33 @@
-#title:一对一映射
-#author:amos
+#title:关于一对一映射
 #index:0,1
-概述
-	此映射表明了两个实体之间的一对一关系,本质上是一个 POJO 对象 A ， 通过自身的一个字段，指向另外一个 POJO B 对象的主键。
-	主键可以是字符型或者整数型,比如，一个文件只有一个MD5值，一个人只应该有有一套身份证信息等。
 -------------------------------------------------------------------------------------------------------------
-配置	
-	在这里我们以一个人和他的身份证信息为例子介绍Nutz中一对一的使用:
-	{{{<java>
-	@Table("tbl_person")
-	public class Person{
+关于一对一映射的概述
+	<links_one.png>
 
-		@Column("idcardnum")
-		private long idNum;
+	一个对象中有一个字段指向另外一个对象的主键。如上图， Pet 中就可以有一个字段 master，通过自身的 masterId 指向一个
+	Master 对象，那么我们说 Pet.master 就是 Pet 对 Master 的一对一映射。
+-------------------------------------------------------------------------------------------------------------
+关于在 POJO 的配置 : {#A00;@One}
+	在 POJO 类中字段中增加注解 {*@One}：
+	{{{<JAVA>
+	@Table("t_pet")
+	public class Pet extends Pojo {
 	
-		@One(target = IDCard.class, field = "idNum")
-		private IDCard idCard;
-	
-		// 其他fields
-		... ...
-	}	
-
-	@Table("tbl_idcard")
-	public class IDCard{
-		@Id
-		private long id;
-		private Date birthday;
-	
+		@Column
+		public int masterId;
+		
+		@One(target = Master.class, field = "masterId")
+		public Master master;
+		
 	}
 	}}}
-	# 这两个实体分别对应两张表 tbl_person 和 tbl_idcard.
-	# 表 tbl_person 中有一字段 "idcardnum"，存储的是表 tbl_idcard 的某一条记录的id,当然你可以在数据库中声明外键约束.
-	# @One(target = IDCard.class, field = "idNum"):
-		# @One:指明是一一映射;  
-		# target = IDCard.class:指明对应记录存储于表tbl_idcard中; 
-		# field = "idNum":指明通过字段 idNum 与 tbl_idcard 表对应.
------------------------------------------------------------------------------------------------------------------
-使用
-	# 获取	 
-		假设你有一个Person对象"per",你想得到他的IDCard信息，可以这么做:
-		{{{<JAVA>
-		NutDao dao=...
-		IDCard card=dao.fetchLinks(per,"idNum");
-		}}}
-		这样 Nutz就会自动的填充idCard字段。
-		
-		注意: per 对象的 idNum 的值必须是有效的，否则它的 idCard 对象即 card 仍旧为 null。
-	# 更新
-		现在你已经得到了想要的IDCard对象 card,加入你修改了birthday这个字段，然后更新到数据库中，你可以这么做:
-		{{{<JAVA>
-		Date date=...;
-		card.setBirthday(date);
-		dao.updateLinks(per,"idNum");
-		}}}
-		这样，card 对象就更新到数据库了。
-	# 删除
-		如果你想删除这个card对象，只需要这么做：
-		{{{<JAVA>
-		dao.deleteLinks(per,"idNum");
-		}}}
+	因此：
+	 * POJO 类中{*必须}存在一个字段，本 POJO 将通过该字段同目标 POJO 的主键关联
+	 * 该字段必须同目标 POJO （{#A00;Master}）的主键类型相同
+	 * Nutz.Dao 通过 @One.field 获得该字段的名称
+		 * {#F00;*注意}，这里是大小写敏感的。
+		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
+-------------------------------------------------------------------------------------------------------------
+你可能还需要参考
+	 * 关于注解 {*@One} 详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@One}这一节
+	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.html Nutz.Dao 为映射提供的操作]。

@@ -17,6 +17,7 @@
 		<doc path="links_one.man"/>
 		<doc path="links_many.man"/>
 		<doc path="links_many_many.man"/>
+		<doc path="links_dao_operations.man"/>
 		<doc path="customized_sql.man"/>
 		<doc path="transaction.man"/>
 		<doc path="services.man"/>

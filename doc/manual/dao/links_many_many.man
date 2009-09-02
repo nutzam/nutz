@@ -1,1 +1,95 @@
-#title:多对多映射
+#title:关于多对多映射
+#index:0,2
+-------------------------------------------------------------------------------------------------------------
+关于多对多映射的概述
+	<links_manymany.png>
+
+	如上图，通过一个中间数据表的两个字段，分别指向两个对象的主键，可以实现多对多映射。所以，Pet.foods（一个 `List<Food>`）
+	或者 Food.pets（一个`List<Pet>`）就是多对多映射。
+-------------------------------------------------------------------------------------------------------------
+关于在 POJO 的配置 : {#A00;@ManyMany}
+	在 POJO 类中字段中增加注解 {*@ManyMany}：
+	{{{<JAVA>
+	@Table("t_food")
+	public class Food extends Pojo {
+
+		@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+		private List<Pet> pets;
+
+		public List<Pet> getPets() {
+			return pets;
+		}
+
+		public void setPets(List<Pet> pets) {
+			this.pets = pets;
+		}
+
+	}
+	}}}
+	因此：
+	 * 数据库中{*必须}存在一个中间表 t_pet_food
+		 * 该表有一个字段 foodid 对应到 Food 对象的主键
+		 * 该表有一个字段 petid 对应到 Pet 对象的主键
+	 * Nutz.Dao 通过 @ManyMany 这四个属性了解到：
+		 * 目标的 POJO 类 ： Pet
+		 * 关联表（{#999;_或者说：中间表}）：t_pet_food
+		 * 关联表的 foodid 字段对应到是本 POJO （{#999;Food}）主键
+		 * 关联表的 petid 字段对应到是目标 POJO （{#999;Pet}） 主键
+	
+	---------------------------------------------------------------------------------------------------------
+	@ManyMany 映射字段的类型
+		同 [links_many.html 一对多映射] 一样，多对多映射也可以支持映射字段的如下类型：
+		-----------------------------------------------------------------------------------------------------
+		数组
+			例如：
+			{{{<JAVA>
+			@Table("t_food")
+			public class Food extends Pojo {
+
+				@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+				private Pet[] pets;
+				
+				// ... 省略其余代码
+			}}}
+			
+			当采用 fetchLinks 获取值的时候，会自动填充此数组
+		-----------------------------------------------------------------------------------------------------
+		Map
+			如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象
+			的哪一个字段来作为 Map　的键。
+			{{{<JAVA>
+			@Table("t_food")
+			public class Food extends Pojo {
+
+				@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid", key="name")
+				private Map<String,Pet> pets;
+				
+				// ... 省略其余代码
+			}}}
+			其中：
+			 * key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
+				 * 为目标 POJO 类的 JAVA 字段名
+				 * 大小写敏感
+			 * 请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。
+		-----------------------------------------------------------------------------------------------------
+		单独对象
+			例如：
+			{{{<JAVA>
+			@Table("t_food")
+			public class Food extends Pojo {
+
+				@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+				private Pet pet;
+				
+				// ... 省略其余代码
+			}}}
+			Nutz.Dao 则会执行如下 SQL 语句：
+			{{{<SQL>
+			SELECT * FROM t_pet WHERE id IN (SELECT petid FROM t_pet_food WHERE foodid=${foodId});
+			}}}
+			选出的结果集中的第一个记录。
+			其中，占位符 `${foodId}` 会被本 POJO 的主键值替换。
+-------------------------------------------------------------------------------------------------------------
+你可能还需要参考
+	 * 关于注解 {*@ManyMany} 详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@ManyMany}这一节
+	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.html Nutz.Dao 为映射提供的操作]。

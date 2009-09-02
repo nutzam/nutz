@@ -1,1 +1,88 @@
-#title:一对多映射
+#title:关于一对多映射
+#index:0,2
+-------------------------------------------------------------------------------------------------------------
+关于一对多映射的概述
+	<links_many.png>
+
+	如上图，同理，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 `List<Pet>`） 就可以指向多个 Pet 对象，
+	那么我们说 Master.pets 就是 Master 对 Pet 的一对多映射。
+-------------------------------------------------------------------------------------------------------------
+关于在 POJO 的配置 : {#A00;@Many}
+	在 POJO 类中字段中增加注解 {*@Many}：
+	{{{<JAVA>
+	@Table("t_master")
+	public class Master extends Pojo {
+
+		@Many(target = Pet.class, field = "masterId")
+		private List<Pet> pets;
+
+		public List<Pet> getPets() {
+			return pets;
+		}
+
+		public void setPets(List<Pet> pets) {
+			this.pets = pets;
+		}
+
+	}
+	}}}
+	因此：
+	 * 目标 POJO 类 （{#A00;Pet}）中{*必须}存在一个字段，本 POJO 将通过该字段同目标 [primary_key.html POJO 类的主键]关联
+	 * 该字段必须同本 [primary_key.html POJO 类的主键]类型相同
+	 * Nutz.Dao 通过 @Many.field 获得该字段的名称
+		 * {#F00;*注意}，这里是大小写敏感的。
+		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
+	---------------------------------------------------------------------------------------------------------
+	@Many 映射字段的类型
+		本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在如下类型里。
+		-----------------------------------------------------------------------------------------------------
+		数组
+			例如：
+			{{{<JAVA>
+			@Table("t_master")
+			public class Master extends Pojo {
+				@Many(target = Pet.class, field = "masterId")
+				private Pet[] pets;
+				
+				// ... 省略其余代码
+			}}}
+			
+			当采用 fetchLinks 获取值的时候，会自动填充此数组
+		-----------------------------------------------------------------------------------------------------
+		Map
+			如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象
+			的哪一个字段来作为 Map　的键。
+			{{{<JAVA>
+			@Table("t_master")
+			public class Master extends Pojo {
+				@Many(target = Pet.class, field = "masterId", key="name")
+				private Map<String,Pet> pets;
+				
+				// ... 省略其余代码
+			}}}
+			其中：
+			 * key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
+				 * 为目标 POJO 类的 JAVA 字段名
+				 * 大小写敏感
+			 * 请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。
+		-----------------------------------------------------------------------------------------------------
+		单独对象
+			例如：
+			{{{<JAVA>
+			@Table("t_master")
+			public class Master extends Pojo {
+				@Many(target = Pet.class, field = "masterId")
+				private Pet pet;
+				
+				// ... 省略其余代码
+			}}}
+			则会从 Pet 对象的数据表中，选取{*第一个} masterId 为当前对象主键值的 Pet 对象。至于什么是 “{*第一}”
+			不同的数据库有所不同。总之，就是 SQL 语句：
+			{{{<SQL>
+			SELECT * FROM t_pet;
+			}}}
+			选出的结果集中的第一个记录。
+-------------------------------------------------------------------------------------------------------------
+你可能还需要参考
+	 * 关于注解 {*@Many} 详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@Many}这一节
+	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.html Nutz.Dao 为映射提供的操作]。

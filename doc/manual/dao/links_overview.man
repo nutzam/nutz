@@ -1,6 +1,6 @@
 #title:映射概述
-#index:0,1
-
+#index:0,2
+--------------------------------------------------------------------------------------------------------
 Nutz.Dao 支持的映射
 	在结构化数据库设计中，很多应用都会用到数据与数据的关联。关联有三种形式
 
@@ -21,74 +21,191 @@ Nutz.Dao 支持的映射
 
 		如上图，通过一个中间数据表的两个字段，分别指向两个对象的主键，可以实现多对多映射。所以，Pet.foods（一个 `List<Food>`）
 		或者 Food.pets（一个`List<Pet>`）就是多对多映射。
-
+--------------------------------------------------------------------------------------------------------
 Nutz.Dao 如何支持映射
-	在 POJO 中设置
-		{{{<JAVA>
-		public class Pet {
-			@Column
-			@Id
-			public int id;
+	在 Nutz.Dao 中支持映射需要有如下两个步骤：
+	 # 在 POJO 对象中声明映射字段
+	 # 在你的调用代码中，通过 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/dao/Dao.java org.nutz.dao.Dao 接口] 获取映射字段的值
+	下面，我就通过一个简单的例子，为你详细讲解一下这两个步骤
+	----------------------------------------------------------------------------------------------------
+	步骤一：在 POJO 中设置
+		通过 Nutz.Dao 的提供的这三个 [entity_annotations.html 实体注解]
+		 * {*@One} : {#940;一对一映射}
+		 * {*@Many} : {#940;一对多映射}
+		 * {*@ManyMany} : {#940;多对多映射}
+		你可以为任意 POJO 对象设置映射。
+		------------------------------------------------------------------------------------------------
+		我将如何为你演示
+			按照前面的示例图，我将创建三个类
+			 * demo.dao.pojo.Pet
+			 * demo.dao.pojo.Master
+			 * demo.dao.pojo.Food
+			这三个对象，都有两个字段，一个是 id， 一个是 name，所以我为这三个类建立了一个父类 demo.dao.pojo.Pojo
+			{{{<JAVA>
+			public class Pojo {
 
-			@Column
-			@Name
-			public String name;
+				@Column
+				@Id
+				private int id;
 
-			@Column
-			public int masterId;
+				@Column
+				@Name
+				private String name;
 
-			@One(target = Master.class, field = "masterId")
-			public Master master;
+				public int getId() {
+					return id;
+				}
 
+				public void setId(int id) {
+					this.id = id;
+				}
+
+				public String getName() {
+					return name;
+				}
+
+				public void setName(String name) {
+					this.name = name;
+				}
+
+			}
+			}}}
+			接下来，我会通过这三个对象 ( {_Pet, Master, Food} ) 分别为你演示如何设置映射关系 ( {_@One, @Many, @ManyMany} ) 
+		------------------------------------------------------------------------------------------------
+		@One 的例子：{#666;demo.dao.pojo.Pet}
+			{{{<JAVA>
+			@Table("t_pet")
+			public class Pet extends Pojo {
+
+				@Column
+				public int masterId;
+
+				@One(target = Master.class, field = "masterId")
+				public Master master;
+				
+			}
+			}}}
+			其中：
+			 * {*target} 是目标 POJO 类 （{_ 通过此项，Nutz.Dao 能知道目标的表名}）
+			 * {*field} 是本 POJO 类的关联字段名，这个字段用来存储目标 [primary_key.html POJO 类的主键]值。
+			
+			{*更多详情请参考：}
+			 * 注解详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@One}这一节
+			 * 关于使用的详细描述请参看 > [links_one.html 关于一对一映射]
+		------------------------------------------------------------------------------------------------
+		@Many 的例子：{#666;demo.dao.pojo.Master}
+			{{{<JAVA>
+			@Table("t_master")
+			public class Master extends Pojo {
+
+				@Many(target = Pet.class, field = "masterId")
+				private List<Pet> pets;
+
+				public List<Pet> getPets() {
+					return pets;
+				}
+
+				public void setPets(List<Pet> pets) {
+					this.pets = pets;
+				}
+
+			}
+			}}}
+			其中：
+			 * {*target} 是目标 POJO 类 （{_ 通过此项，Nutz.Dao 能知道目标的表名}）
+			 * {*field} 是是映射目标 POJO 类的关联字段名，这个字段用来存储本 [primary_key.html POJO 类的主键]值。
+			
+			{*更多详情请参考：}
+			 * 注解详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@Many}这一节
+			 * 关于使用的详细描述请参看 > [links_many.html 关于一对多映射]
+		------------------------------------------------------------------------------------------------
+		@ManyMany 的例子：{#666;demo.dao.pojo.Food}
+			{{{<JAVA>
+			@Table("t_food")
+			public class Food extends Pojo {
+
+				@ManyMany(target = Pet.class, relation = "t_pet_food", from = "foodid", to = "petid")
+				private List<Pet> pets;
+
+				public List<Pet> getPets() {
+					return pets;
+				}
+
+				public void setPets(List<Pet> pets) {
+					this.pets = pets;
+				}
+
+			}
+			}}}
+			其中：
+			 * {*target} 是目标 POJO 类 （{_ 通过此项，Nutz.Dao 能知道目标的表名}）
+			 * {*relation} 关联表（{#999;_或者说：中间表}）的表名
+			 * {*from} 关联表（{#999;_或者说：中间表}）的表字段名，它用来映射本 [primary_key.html POJO 类的主键]值
+			 * {*to} 关联表（{#999;_或者说：中间表}）的表字段名，它用来映射目标 [primary_key.html POJO 类的主键]值
+			
+			{*更多详情请参考：}
+			 * 注解详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@ManyMany}这一节
+			 * 关于使用的详细描述请参看 > [links_many_many.html 关于多对多映射]
+	----------------------------------------------------------------------------------------------------
+	步骤二：通过 Dao 接口调用
+		设置完了 POJO 对象，下面我们就可以随意的使用它们啦。请看下面的例子：
+		
+		获取一对一映射
+			{{{<JAVA>
+			Pet pet = dao.fetch(Pet.class, "XiaoBai");
+			dao.fetchLinks(pet, "master");
+			System.out.println(pet.master.getName());
+			}}}
+			
+			
+		获取一对多映射
+			{{{<JAVA>
+			Master master = dao.fetch(Master.class, 23);
+			dao.fetchLinks(master, "pets");
+			for (Pet pet : master.getPets())
+				System.out.println(pet.master.getName());
+			}}}
+		获取多对多映射
+			{{{<JAVA>
+			Food food = dao.fetch(Food.class, "Fish");
+			dao.fetchLinks(food, "pets");
+			for (Pet pet : food.getPets())
+				System.out.println(pet.getName());
+			}}}
+		一次获取一对一，以及多对多映射字段
+			如果为 Pet 增加一个字段：
+			{{{<JAVA>
 			@ManyMany(target = Food.class, relation = "t_pet_food", from = "petid", to = "foodid")
 			public List<Food> foods;
-		}
-		}}}
-
-		{{{<JAVA>
-		public class Master {
-			@Column
-			@Id
-			public int id;
-
-			@Column
-			@Name
-			public String name;
+			}}}
+			那么可以一次就获取这两个映射字段
+			{{{<JAVA>
+			Pet pet = dao.fetch(Pet.class, "XiaoBai");
+		
+			dao.fetchLinks(pet, "master|foods");
 			
-			@Many(target=Pet.class,field="masterId")
-			public List<Pet> pets;
-		}
-		}}}
-
-		{{{<JAVA>
-		public class Food {
-			@Column
-			@Id
-			public int id;
-
-			@Column
-			@Name
-			public String name;
-		}
-		}}}
-	通过 Dao 接口调用
-		{{{<JAVA>
-		Pet pet = dao.fetch(Pet.class, "XiaoBai");
-		dao.fetchLinks(pet, "master");
-		System.out.println(pet.master.name);
-		}}}
-
-		{{{<JAVA>
-		Master master = dao.fetch(Master.class, 23);
-		dao.fetchLinks(master, "pets");
-		for (Pet pet : master.pets)
-			System.out.println(pet.master.name);
-		}}}
-
-		{{{<JAVA>
-		Pet pet = dao.fetch(Pet.class, "XiaoBai");
-		dao.fetchLinks(pet, "foods");
-		for (Food food : pet.foods)
-			System.out.println(food.name);
-		}}}
-一些另外的注意事项
+			System.out.println(pet.master.getName());
+			for(Food food : pet.foods)
+				System.out.println(food.getName());
+			}}}
+			上例中，正则表达式  “{#a00;master|foods}” 匹配了 Pet 对象两个字段 -- {#999;_master, foods}，因此
+			这两个字段会被 {*fetchLinks} 函数填充
+		Nut.Dao 对于 Dao 可允许的操作
+			更多详情，请参看 [links_dao_operations.html Nutz.Dao 为映射提供的操作]
+--------------------------------------------------------------------------------------------------------
+关于 Nutz.Dao 映射以及相关的一些总结
+	 * POJO 类可以继承，子类的 @Table 和 @View 优先级最高
+	 * POJO 类的字段可以是 public，或者通过 getter/setter
+	 * Dao 接口可以操作映射字段的方法有
+		 * insertLinks
+		 * insertWith
+		 * fetchLinks
+		 * clearLinks
+		 * updateWith
+		 * updateLinks
+		 * deleteLinks
+		 * deleteWith
+	* 每个方法的参数都有两个
+		 # {*T obj} : POJO 对象实例
+		 # {*String regex} : 一个正则表达式字符串，所有被该表达式匹配上的映射字段均会被该方法执行
+			 * 如果该字符串为 null，不会有字段被匹配上。
