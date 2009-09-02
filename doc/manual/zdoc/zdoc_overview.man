@@ -20,7 +20,7 @@
 	
 	所以，我必须构建自己的文档写作方式。我注意到两个事实：
 	 # 对于文档变动的管理，我想现在的版本控制系统已经做的足够好了（比如 SVN, Git, Mercurial）。
-	 # 市面上所有的操作系统都会对纯文本文件（尤其是 UTF-8）支持的很好。（比如 Windows的记事本，Editplus,Ultra-Edit 以及 Linux 下的 Vim）
+	 # 市面上所有的操作系统都会对纯文本文件（尤其是 UTF-8）支持的很好。（比如 Windows的Nodepad++，Editplus,Ultra-Edit 以及 Linux 下的 Vim 等）
 	所以，我打算将这两个事实充分利用起来。尤其幸运的是我本人就是一名程序员，于是我便是建立了一个小小的文本文件解析渲染器 -- zDoc。
 
 	
@@ -46,30 +46,41 @@ zDoc 要达到的目标
 	设置运行环境
 		zDoc 提供了命令行程序，使用它之前你需要做如下设定
 		# 在发布包里面找到 run 目录
-		# 打开 win 或者 linux (依你自己的操作系统而定)
-		# 修改脚本文件 -- 你需要修改三个变量
+		# 打开其中的 win 目录或者 linux 目录({_依你自己的操作系统而定})
+		# 修改脚本文件 zdoc ( {_Windows 下为 zdoc.bat} ) -- 你需要修改三个变量
 			# JAVA_HOME 指向你的 Java 安装的根目录（这个目录下有 lib 子目录，其内有 tools.jar, dt.jar 以及 rt.jar）
 			# NUTZ_HOME 指向 Nutz 的核心 jar 包: {_可从此处下载=>} [http://nutz.googlecode.com]
 			# ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包: {_可从此处下载=>} [http://nutzdoc.googlecode.com]
-		# 将 run 目录加入到你的系统环境变量中，在 Linux 系统中，可以将 zdoc 脚本文件链接至 ~/bin 目录
+		# 修改运行路径
+			* {*Windows} 用户可以将 run 目录加入到你的系统环境变量 {#00A;*%PATH%} 中去
+			* {*Linux} 用户，可以将 zdoc 脚本文件链接至 ~/bin 目录下。
+				* 请确保此脚本文件权限为可执行
+					{{{<bash>
+					chmod +x ./zdoc
+					}}}
 	转换单一文件
 		当你完成设定，便可打开一个控制台输入：
+
+		{*命令格式}
 		{{{
 		zdoc 你的zDoc文本文件全路径 你要输出的文件全路径
 		}}}
+		{*说明}
 		 * 执行完毕后，你就会获得你需要的文件
 		 * zDoc 会根据你的要输出的文件后缀名来觉得如何渲染你的 zdoc 文件
 			* 比如你给出个 /xxx/xx/xx.pdf， 它就会给你弄出个 PDF 来
 			* 支持 HTML 和 PDF
-		比如
+		{*比如}
 		{{{
 		zdoc /folder/abc.zdoc /output/abc.html
 		}}}
 		会将文档 abc.zdoc 转换成一个 HTML 文件
 	转换一个目录
+		{*命令格式}
 		{{{
 		zdoc 你的源目录 你的目标目录 文件扩展名
 		}}}
+		{*说明}
 		 * 这三个参数缺一不可
 		 * 源目录根下必须有 index.xml ，请看 [zdoc_index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
 		 * 你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感
@@ -78,7 +89,7 @@ zDoc 要达到的目标
 			* 如 .html 表示你要转换成 HTML 文件
 			* 如 .pdf 表示你要将所有的 ZDoc 文件转换成 pdf 文件
 		
-		比如
+		{*比如}
 		{{{
 		zdoc /folder/abc /output/abc .html
 		}}}
