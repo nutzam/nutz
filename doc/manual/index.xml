@@ -30,7 +30,6 @@
 		<doc path="ioc_in_db.man"/>
 		<doc path="aop.man"/>
 		<doc path="aop_logging.man"/>
-		<doc path="mapping_by_db.man"/>
 	</doc>
 	<doc path="mvc"	title="Nutz.Mvc 开发者手册">
 		<doc path="mvc_overview.man"/>

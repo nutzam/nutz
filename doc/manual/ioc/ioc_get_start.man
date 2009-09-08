@@ -1,269 +1,52 @@
 #title: Nutz.Ioc 入门
 #index:0,3
 
-概要介绍
-	Nutz.Ioc 不同于 Spring 和 Guice，它的注入信息是存放在 Json 文件或者是数据库中的。
+所谓 Ioc
+	在我个人看来，Ioc 的概念很是简单：将一部分关于对象的依赖关系单独存储在某中介质里，并且
+	提供一个接口以及实现帮助使用者获得这些对象。做到这点便是一个合格的 Ioc 框架了。
 
-通过 Json 文件装配对象
-	一个最简单的例子
-		比如你如果有一个对象
-		{{{<java>
-		package zzh.core.ioc;
+	但是将依赖关系存储在什么地方呢？ Spring 选的是 XML， Guice 选的 Java （硬编码）
 
-		import java.util.Calendar;
+	而我是这样看的：
+	 * 硬编码不好，因为在部署以后，我需要修改某个注入字段的值，是不可能的。
+		 * 通常我会建立一个常量类，存储系统运行的配置参数
+		 * 如果有了Ioc，我就可以建立一个普通的 JavaBean 替代我的这个常量类，并且它自然是 100% 可配置的
+		 * 如果硬编码，我的自己实现这些
+	 * XML 不好
+		 * 其实，到现在我还是没找到一个合适的编辑器
+			 * 太可视化了，我觉得失去控制感
+			 * 太不可视化，写起来很麻烦
+		 * 如果我有多个服务器，如果仅仅是我的核心配置 (XML) 更新，那么重新部署会比较麻烦，而且有可能出错
+	
+	如果将应用分作两类：
+		 * 小型应用场景 -- 仅有一个应用服务器
+			 * 将配置信息存放在文件中即可，但是
+				 * 在生产环境下，可能没有华丽的编辑器帮助你来编辑
+				 * 你的配置文件可能不太大
+			 * 所以 JSON 文件似乎是个很好的选择 -- 它写起来比 XML 更省事
+		 * 多个服务器负载均衡场景
+			 * 将配置信息存储在数据库中，会带来很多好处
+				 * 更新数据后，只要重新启动各个服务器即可
+				 * 这样的应用往往比较复杂，便于开发一些内部管理工具，动态该表配置信息，以及了解被依赖关系等
 
-		public class MyBean {
-			private int level;
-			private Calendar time;
-			private String name;
-			private boolean ok;
+	 
+Nutz.Ioc 的主要特点
+	同 Spring 和 Guice 一样，Nutz.Ioc 是一个轻便灵活的注入框架。它主要的特点是：
+	 * 它的核心代码并没有假定注入信息的存储形式
+		 * 默认提供 JSON 以及数据库两种加载形式
+		 * 不排除兼容 Spring 配置文件的可能
+		 * 不排除兼容 Guice 的可能
+	 * 为对象提供了完整的周期相关接口
+	 * 为你的扩展，提供灵活的扩展点
+	 * org.nutz.ioc.Ioc 是个接口
+	 * 通过实现自己的 org.nutz.ioc.ObjLoader 你可以将依赖关系存成任何形式
+		 * 支持 Spring 不过就是写一个 ObjLoader 的新实现而已
+		 * ObjLoader 的接口不复杂，只有三个函数需要实现
+		 * 如果你要写自己的实现，请了解 [ioc_obj_loader.html ObjLoader 接口说明]
 
-			public int getLevel() {
-				return level;
-			}
+	
+	 下面，我先以 JSON 文件为例，给大家一个 Hello World
 
-			public Calendar getTime() {
-				return time;
-			}
+一个简单的例子
 
-			public String getName() {
-				return name;
-			}
-
-			public boolean isOk() {
-				return ok;
-			}
-
-		}
-		}}}
-
-		你可以写一个如下的 Json 文件
-
-		{*_core/ioc/test.js}
-		{{{<json>
-		{
-		// -----------------------------------------------------
-		abc: {
-			type: "zzh.core.ioc.MyBean",
-			fields: {
-				level : 14,
-				time : "2009-9-21 12:15:23",
-				name : "abc",
-				ok : true
-			}
-		}
-		//-----------------------------------------------------
-		}
-		}}}
-
-		在 Java 程序里，这么调用
-		{{{<java>
-		package zzh.core.ioc;
-
-		import org.nutz.castor.Castors;
-		import org.nutz.ioc.Ioc;
-		import org.nutz.ioc.impl.NutIoc;
-		import org.nutz.ioc.json.JsonLoader;
-
-		public class TryMyBean {
-
-			public static void main(String[] args) {
-				Ioc ioc = new NutIoc(new JsonLoader("zzh/core/ioc/test.js"));
-				MyBean mb = ioc.get(MyBean.class, "abc");
-				System.out.printf("Level: %s\n", mb.getLevel());
-				System.out.printf("Name: %s\n", mb.getName());
-				System.out.printf("Time: %s\n", Castors.me().castToString(mb.getTime()));
-			}
-
-		}
-		}}}
-
-		在控制台则会输出
-		{{{<shell>
-		Level: 14
-		Level: abc
-		Level: 2009-09-21 12:15:23
-		}}}
-
-	添加拦截器
-		自定义拦截器
-			只要从 Nutz.Ioc 里面获得的对象，都可以呗添加方法拦截器。你添加的拦截器可以作用
-			在所有的 public 和 protected 的非静态方法上。
-			需要添加的拦截器必须实现 org.nutz.aop.MethodListener 接口，比如：
-			{{{<java>
-			package zzh.core.ioc;
-
-			import java.lang.reflect.Method;
-			import org.nutz.aop.MethodListener;
-
-			public class MyMethodListener implements MethodListener {
-
-				@Override
-				public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
-					System.out.println("I am after");
-					return returnObj;
-				}
-
-				@Override
-				public boolean beforeInvoke(Object obj, Method method, Object... args) {
-					System.out.println("I am before");
-					return true;
-				}
-
-				@Override
-				public void whenError(Throwable e, Object obj, Method method, Object... args) {}
-
-				@Override
-				public void whenException(Exception e, Object obj, Method method, Object... args) {}
-
-			}
-			}}}
-			在监听器的实现类中:
-			  * beforeInvoke 返回如果是 false，那么你监听的方法就不会被调用到。
-			  * afterInvoke 可以返回任意对象，这个返回会被真正传递给调用者。但是你返回的类型必须是可以被直接转型成你要监听的方法的返回值的，否则会报错
-			  * 如果 beforeInvoke 返回的是 false, 那么 afterInvoke 的 returnObj 参数，收到的将是 null
-			  * 如果你监听的参数返回值是 void 类型，那么你在 afterInvoke 返回的任何对象都会被忽略
-			在刚才的 Json 文件中添加一段
-
-			{*core/ioc/test.js}
-			{{{<json>
-			{
-			// -----------------------------------------------------
-			abc: {
-				type: "zzh.core.ioc.MyBean",
-				fields: {
-					level : 14,
-					time : "2009-9-21 12:15:23",
-					name : "abc",
-					ok : true
-				}
-			},
-			//-----------------------------------------------------
-			mylstn : {
-				type :"zzh.core.ioc.MyMethodListener"
-			},
-			//-----------------------------------------------------
-			$aop : {
-				byname : {
-					".*" : [ {
-						type :"org.nutz.ioc.impl.AopMethod",
-						fields : {
-							methods : {args : [ ".*" ]},
-							listeners : [ {refer :"mylstn"} ]
-						}
-					} ]
-				}
-			}
-			//-----------------------------------------------------
-			}
-			}}}
-
-			多添加了两个对象， {*mylstn} 你是自定义的监听器。  {*$aop} 是 Nutz.Ioc 保留的一个对象名称，它有两个属性 "byname" 和 "bytype"，这两个属性的值是一样的。 
-			* byname 的意思是，你打算拦截叫什么名字的对象。 
-			* bytype 的意思是你打算拦截为什么类型的对象。
-
-			以 byname 为例，它的值是由一组名值对构成的，上面的例子只有一个名值对。 {*".*"} 是个正则表达式，表示匹配任何对象。
-
-			值是个数组，数组里面每个元素都是一个 AopMethod，它声明两个信息：
-			# 要匹配哪些方法？ _在其值的构造方法中，传入正则表达式 {*".*"} 表示要匹配所有能监听的方法_
-			# 对匹配上的方法，要采用哪些监听器?  _上面的例子，只有一个监听器 -- 引用 $mylstn_
-
-			执行，在控制台上，会出现:
-			{{{<shell>
-			I am before
-			I am after
-			Level: 14
-			I am before
-			I am after
-			Name: abc
-			I am before
-			I am after
-			Time: 2009-09-21 12:15:23
-			}}}
-
-
-		内置的日志输出
-			Nutz 提供了一个内置的日志输出监听器，通过拦截器，可以很容易的将日志输出监听器绑定在你关心的方法上，比如
-			{*core/ioc/test.js}
-			{{{
-			{
-			// -----------------------------------------------------
-			abc: {
-				type: "zzh.core.ioc.MyBean",
-				fields: {
-					level : 14,
-					time : "2009-9-21 12:15:23",
-					name : "abc",
-					ok : true
-				}
-			},
-			// -----------------------------------------------------
-			mylstn : {
-				type :"zzh.core.ioc.MyMethodListener"
-			},
-			// ---------------------------------------------------------
-			loglstn : {
-				type :"org.nutz.log.aop.LogListener",
-				args : [ {
-					type :"org.nutz.log.Log",
-					fields : {
-						format : {
-							type : "org.nutz.log.LogFormat",
-							args: [true, "yy-MM-dd hh-mm-ss.SSS"]
-						},
-						output : {
-							type :"org.nutz.log.file.FileLogOutput",
-							args : ["e:/tmp/log.txt"]
-						}
-					}
-				}]
-			},
-			// -----------------------------------------------------
-			$aop : {
-				byname : {
-					".*" : [ {
-						type :"org.nutz.ioc.impl.AopMethod",
-						fields : {
-							methods : {args : [ ".*" ]},
-							listeners : [ {refer :"mylstn"}, {refer:"loglstn"} ]
-						}
-					} ]
-				}
-			}
-			// -----------------------------------------------------
-			}
-			}}}
-			在文件中多添加一个 {*loglstn} 对象，在 {*$aop} 里面，再添加一个拦截器
-
-			对于 {*loglstn} 对象
-			  * {*format} 属性，指明了每行日志信息的格式， 在其 {*args} 里声明了构造方法的两个属性:
-				* true 表示打印线程名称
-				* "yy-MM-dd hh-mm-ss.SSS" 是时间输出的格式 (其值可以参见 java.text.SimpleDateFormat 的构造方法)。
-			  * {*output} 属性指明了日志输出的方式。 
-				* Nutz 给你提供默认的文件输出 org.nutz.log.file.FileLogOutput
-				  * 构造方法需要一个文件的路径
-				  * Nutz 会考虑多个线程同时写入文件等问题
-				  * 如果这个文件不存在， 会自动创建这个文件
-				* 也提供给你默认的控制台输出 org.nutz.log.ConsoleOutput
-				* 你可以写你自己的输出， 只要实现 org.nutz.log.LogOutput 接口即可
-
-			执行，然后打开
-
-			{_*e:/tmp/log.txt}
-			{{{
-			09-06-24 12-54-11.345 [main] >MyBean.getLevel
-			09-06-24 12-54-11.346 [main] ~MyBean.getLevel:14
-			09-06-24 12-54-11.347 [main] >MyBean.getName
-			09-06-24 12-54-11.347 [main] ~MyBean.getName:abc
-			09-06-24 12-54-11.347 [main] >MyBean.getTime
-			09-06-24 12-54-11.347 [main] ~MyBean.getTime:java.util.GregorianCalendar[time=1253506523000,areFieldsSet=true,areAllFieldsSet=true,lenient=true,zone=sun.util.calendar.ZoneInfo[id="Asia/Shanghai",offset=28800000,dstSavings=0,useDaylight=false,transitions=19,lastRule=null],firstDayOfWeek=1,minimalDaysInFirstWeek=1,ERA=1,YEAR=2009,MONTH=8,WEEK_OF_YEAR=39,WEEK_OF_MONTH=4,DAY_OF_MONTH=21,DAY_OF_YEAR=264,DAY_OF_WEEK=2,DAY_OF_WEEK_IN_MONTH=3,AM_PM=1,HOUR=0,HOUR_OF_DAY=12,MINUTE=15,SECOND=23,MILLISECOND=0,ZONE_OFFSET=28800000,DST_OFFSET=0]
-			}}}
-
-			日志文件的格式说明：
-
-			  * 符号 {*>} 表示进入函数后调用堆栈的深度，如果进入多层会出现 {*>>>>}
-			  * 符号 {*~} 表示退出函数前调用堆栈的深度，如果进入多层会出现 {*{{{~~~~}}}}
-			  * 如果调用的函数有参数，将在 > 行打印每个参数的 toString()
-			  * 退出时，打印返回值的 toString()
-				* void 函数，打印 void
-				* 返回为 null，打印 null
+一点总结
