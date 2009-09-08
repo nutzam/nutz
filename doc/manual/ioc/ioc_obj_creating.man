@@ -1,0 +1,6 @@
+#title: 对象的创建过程
+#index:0,3
+
+注入信息的优先级
+	setter
+	field

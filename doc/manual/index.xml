@@ -26,6 +26,8 @@
 	</doc>
 	<doc path="ioc"	title="Nutz.Ioc 开发者手册">
 		<doc path="ioc_get_start.man"/>
+		<doc path="ioc_obj_creating.man"/>
+		<doc path="ioc_obj_loader.man"/>
 		<doc path="ioc_in_json.man"/>
 		<doc path="ioc_in_db.man"/>
 		<doc path="aop.man"/>
