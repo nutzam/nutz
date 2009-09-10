@@ -1,0 +1,23 @@
+# Pet Table
+ # some comment
+ 
+t_pet {
+	id INT +PK,
+	name VARCHAR(20),
+	masterId
+}
+
+t_master {
+	id INT +PK,
+	name VARCHAR(20)
+}
+
+t_food {
+	id INT +PK,
+	name VARCHAR(20) <'BANANA'>
+}
+
+t_pet_food {
+	petId INT,
+	foodId INT
+}
