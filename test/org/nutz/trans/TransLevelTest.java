@@ -36,7 +36,6 @@ public class TransLevelTest extends DaoCase {
 	public void testReadCommitted() {
 		final ExecutorService es = Executors.newCachedThreadPool();
 		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-			@Override
 			public void run() {
 				Company c = new Company();
 				c.setId(1);
@@ -58,12 +57,10 @@ public class TransLevelTest extends DaoCase {
 
 	static class QueryCompany_ReadCommitted extends DaoCase implements
 			Callable<String> {
-		@Override
 		public String call() throws Exception {
 			ResultAtom<String> ra = null;
 			Trans.exec(Connection.TRANSACTION_READ_COMMITTED,
 					ra = new ResultAtom<String>() {
-						@Override
 						public void run() {
 							setResult(comService.dao().fetch(Company.class, 1)
 									.getName());
@@ -78,7 +75,6 @@ public class TransLevelTest extends DaoCase {
 	public void testRepeatableRead() {
 		final ExecutorService es = Executors.newCachedThreadPool();
 		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-			@Override
 			public void run() {
 				Assert.assertEquals("com1", comService.fetch(1).getName());
 				es.submit(new RepeatableRead());
@@ -99,10 +95,8 @@ public class TransLevelTest extends DaoCase {
 	}
 
 	static class RepeatableRead extends DaoCase implements Runnable {
-		@Override
 		public void run() {
 			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-				@Override
 				public void run() {
 					Company c = new Company();
 					c.setId(1);
@@ -117,7 +111,6 @@ public class TransLevelTest extends DaoCase {
 	public void testSerializable() {
 		final ExecutorService es = Executors.newCachedThreadPool();
 		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom() {
-			@Override
 			public void run() {
 				Assert.assertEquals("com1", comService.fetch(1).getName());
 				es.submit(new RepeatableRead());
