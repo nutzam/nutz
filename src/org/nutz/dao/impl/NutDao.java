@@ -121,7 +121,7 @@ public class NutDao implements Dao {
 		database = holder[0];
 	}
 
-	private Database database() {
+	public Database database() {
 		if (null == database) {
 			checkDatabase();
 		}
