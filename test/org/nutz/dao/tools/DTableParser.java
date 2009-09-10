@@ -1,7 +1,9 @@
 package org.nutz.dao.tools;
 
+import java.util.List;
+
 public interface DTableParser {
 
-	DTable parse(String str);
+	List<DTable> parse(String str);
 
 }
