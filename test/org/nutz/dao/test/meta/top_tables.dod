@@ -1,0 +1,32 @@
+dao_country {
+	id INT +PK,
+	name VARCHAR(50)!UNIQUE
+}
+
+dao_platoon {
+  id  INT +PK,
+  name  VARCHAR(50) !UNIQUE,
+  base  VARCHAR(50) ,
+  leader  VARCHAR(50) 
+}
+
+dao_base {
+   name VARCHAR(50) PK,
+   cid INT ,
+   level INT 
+}
+
+dao_fighter {
+  id  INT +PK,
+  type  VARCHAR(20) 
+}
+
+dao_m_base_fighter {
+  bname VARCHAR(50),
+  fid INT
+}
+
+dao_waveband {
+   name VARCHAR(50) PK,
+   value FLOAT 
+}

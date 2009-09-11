@@ -2,13 +2,22 @@ package org.nutz.dao.test.meta;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.nutz.Main;
 import org.nutz.dao.ComboSql;
 import org.nutz.dao.Dao;
+import org.nutz.dao.Sql;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.tools.DTable;
+import org.nutz.dao.tools.DTableParser;
+import org.nutz.dao.tools.TableSqlMaker;
+import org.nutz.dao.tools.impl.NutDTableParser;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.service.*;
 import org.nutz.trans.Atom;
 
@@ -22,6 +31,9 @@ public class Pojos extends Service {
 	private ComboSql dropPlatoon;
 	private ComboSql createAll;
 	private ComboSql dropAll;
+	private String topTables;
+	private String platoonTables;
+	private DTableParser parser;
 	private Dao dao;
 
 	public Pojos(Dao dao) {
@@ -30,6 +42,11 @@ public class Pojos extends Service {
 		dropPlatoon = sqls("org/nutz/dao/test/meta/drop_platoon.sqls").createComboSql();
 		createAll = sqls("org/nutz/dao/test/meta/create.sqls").createComboSql();
 		dropAll = sqls("org/nutz/dao/test/meta/drop.sqls").createComboSql();
+
+		parser = new NutDTableParser();
+
+		String prefix = Pojos.class.getPackage().getName().replace('.', '/');
+		topTables = Lang.readAll(Streams.fileInr(prefix + "/top_tables.dod"));
 		this.dao = dao;
 	}
 
@@ -38,8 +55,15 @@ public class Pojos extends Service {
 	}
 
 	public void init() {
-		dao().execute(dropAll.clone());
-		dao().execute(createAll.clone());
+		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).database());
+		List<DTable> dts = parser.parse(topTables);
+		for (DTable dt : dts) {
+			Sql<?> c = maker.makeCreateSql(dt);
+			Sql<?> d = maker.makeDropSql(dt);
+			dao.execute(c, d);
+		}
+		// dao().execute(dropAll.clone());
+		// dao().execute(createAll.clone());
 	}
 
 	public void createAll() {

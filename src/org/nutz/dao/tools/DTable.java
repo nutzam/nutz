@@ -9,12 +9,18 @@ public class DTable {
 
 	private String name;
 
+	private List<DField> pks;
+
+	private List<DField> ais;
+
 	private List<DField> fields;
 
 	private Map<String, DField> maps;
 
 	public DTable() {
 		fields = new LinkedList<DField>();
+		pks = new LinkedList<DField>();
+		ais = new LinkedList<DField>();
 	}
 
 	public String getName() {
@@ -27,7 +33,19 @@ public class DTable {
 
 	public DTable addField(DField field) {
 		fields.add(field);
+		if (field.isAutoIncreament())
+			ais.add(field);
+		if (field.isPrimaryKey())
+			ais.add(field);
 		return this;
+	}
+
+	public List<DField> getPks() {
+		return pks;
+	}
+
+	public List<DField> getAutoIncreaments() {
+		return ais;
 	}
 
 	public List<DField> getFields() {

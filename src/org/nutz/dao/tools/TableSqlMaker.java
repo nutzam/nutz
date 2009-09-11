@@ -19,9 +19,9 @@ public abstract class TableSqlMaker {
 		}
 	}
 
-	public Sql<?> makeCreateSql(DTable td) {
-		StringBuilder sb = new StringBuilder("CREATE TABLE ").append(td.getName()).append('(');
-		addAllFields(td, sb);
+	public Sql<?> makeCreateSql(DTable dt) {
+		StringBuilder sb = new StringBuilder("CREATE TABLE ").append(dt.getName()).append('(');
+		addAllFields(dt, sb);
 		sb.append(')');
 		return new ExecutableSql(sb.toString());
 	}
@@ -37,17 +37,20 @@ public abstract class TableSqlMaker {
 
 	protected void appendField(StringBuilder sb, DField df) {
 		sb.append(df.getName());
-		sb.append(' ').append(df.getType());
 		addDecorator(sb, df.isUnsign(), " UNSIGNED");
-		addDecorator(sb, df.isAutoIncreament(), " SERIAL");
-		addDecorator(sb, df.isPrimaryKey(), " PRIMARY KEY");
-		addDecorator(sb, df.isUnique(), " UNIQUE");
-		addDecorator(sb, df.isNotNull(), " NOT NULL");
-		if (Strings.isBlank(df.getDefaultValue()))
-			sb.append(" DEFAULT ").append(df.getDefaultValue());
+		if (df.isAutoIncreament() && df.isPrimaryKey()) {
+			sb.append(" SERIAL PRIMARY KEY");
+		} else {
+			sb.append(' ').append(df.getType());
+			addDecorator(sb, df.isPrimaryKey(), " PRIMARY KEY");
+			addDecorator(sb, df.isUnique(), " UNIQUE");
+			addDecorator(sb, df.isNotNull(), " NOT NULL");
+			if (Strings.isBlank(df.getDefaultValue()))
+				sb.append(" DEFAULT ").append(df.getDefaultValue());
+		}
 	}
 
-	public Sql<?> makeDropSql(DTable td) {
-		return new ExecutableSql(String.format("DROP TABLE IF EXISTS %s", td.getName()));
+	public Sql<?> makeDropSql(DTable dt) {
+		return new ExecutableSql(String.format("DROP TABLE IF EXISTS %s", dt.getName()));
 	}
 }

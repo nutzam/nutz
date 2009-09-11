@@ -9,6 +9,7 @@ import org.nutz.dao.test.mapping.*;
 import org.nutz.dao.test.normal.AllNormal;
 import org.nutz.dao.test.sqls.AllSqls;
 import org.nutz.dao.texp.CndTest;
+import org.nutz.dao.tools.AllTools;
 
 /**
  * Prepare a database with URL: jdbc:mysql://localhost:3306/zzhtest support user
@@ -20,5 +21,5 @@ import org.nutz.dao.texp.CndTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { EntityParsing.class, DynamicEntityParsing.class, AllSqls.class,
-		AllMapping.class, AllNormal.class, CndTest.class })
+		AllMapping.class, AllNormal.class, CndTest.class, AllTools.class })
 public class AllDao {}
