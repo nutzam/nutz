@@ -31,7 +31,8 @@ public class SupportedFieldType extends DaoCase {
 		exp.sqlDT = tm;
 		dao.insert(exp);
 		exp = dao.fetch(EntityTypes.class, "T");
-		assertTrue(tm.equals(exp.sqlDT));
+		// MySql TIMESTAMP precision only to second
+		assertEquals(tm.getTime()/1000, exp.sqlDT.getTime()/1000);
 	}
 
 	@Table("dao_supported_type")
@@ -116,7 +117,7 @@ public class SupportedFieldType extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.execFile("org/nutz/dao/test/normal/types.sqls");
+		pojos.processSqlsByPath("org/nutz/dao/test/normal/types.dod");
 	}
 
 	@Override

@@ -18,6 +18,8 @@ import org.nutz.dao.tools.TableSqlMaker;
 import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.segment.Segment;
 import org.nutz.service.*;
 import org.nutz.trans.Atom;
 
@@ -27,10 +29,6 @@ public class Pojos extends Service {
 
 	}
 
-	private ComboSql createPlatoon;
-	private ComboSql dropPlatoon;
-	private ComboSql createAll;
-	private ComboSql dropAll;
 	private String topTables;
 	private String platoonTables;
 	private DTableParser parser;
@@ -38,15 +36,11 @@ public class Pojos extends Service {
 
 	public Pojos(Dao dao) {
 		super(dao);
-		createPlatoon = sqls("org/nutz/dao/test/meta/create_platoon.sqls").createComboSql();
-		dropPlatoon = sqls("org/nutz/dao/test/meta/drop_platoon.sqls").createComboSql();
-		createAll = sqls("org/nutz/dao/test/meta/create.sqls").createComboSql();
-		dropAll = sqls("org/nutz/dao/test/meta/drop.sqls").createComboSql();
-
 		parser = new NutDTableParser();
 
 		String prefix = Pojos.class.getPackage().getName().replace('.', '/');
 		topTables = Lang.readAll(Streams.fileInr(prefix + "/top_tables.dod"));
+		platoonTables = Lang.readAll(Streams.fileInr(prefix + "/platoon_tables.dod"));
 		this.dao = dao;
 	}
 
@@ -54,27 +48,34 @@ public class Pojos extends Service {
 		return new FileSqlManager(path);
 	}
 
-	public void init() {
+	public void processSqls(String sqls) {
 		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).database());
-		List<DTable> dts = parser.parse(topTables);
+		List<DTable> dts = parser.parse(sqls);
 		for (DTable dt : dts) {
 			Sql<?> c = maker.makeCreateSql(dt);
 			Sql<?> d = maker.makeDropSql(dt);
-			dao.execute(c, d);
+			int n = -1;
+			try {
+				n = dao.count(dt.getName());
+			} catch (Exception e) {}
+			if (n == -1)
+				dao.execute(c);
+			else
+				dao.execute(d, c);
+
 		}
-		// dao().execute(dropAll.clone());
-		// dao().execute(createAll.clone());
 	}
 
-	public void createAll() {
-		dao().execute(createAll.clone());
+	public void processSqlsByPath(String path) {
+		String sqls = Lang.readAll(Streams.fileInr(path));
+		processSqls(sqls);
 	}
 
-	public void dropAll() {
-		dao().execute(dropAll.clone());
+	public void init() {
+		processSqls(topTables);
 	}
 
-	public void execFile(String path) {
+	void execFile(String path) {
 		ComboSql combo = sqls(path).createComboSql();
 		combo.set(".engine", Main.getEngin());
 		dao().execute(combo);
@@ -131,8 +132,8 @@ public class Pojos extends Service {
 	}
 
 	public void initPlatoon(String s) {
-		dao().execute(dropPlatoon.clone().set(".id", s));
-		dao().execute(createPlatoon.clone().set(".id", s));
+		Segment seg = new CharSegment(this.platoonTables);
+		this.processSqls(seg.set("id", s).toString());
 	}
 
 	public void initData() {

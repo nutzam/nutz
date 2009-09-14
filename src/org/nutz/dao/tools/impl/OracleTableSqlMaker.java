@@ -22,8 +22,9 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	private static String CTRI = "create or replace trigger ${T}_${F}_seq_trigger"
 			+ " BEFORE INSERT ON ${T}" + " FOR EACH ROW" + " BEGIN "
 			+ " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;"
-			+ " END ${T}_${F}_seq_trigger";
-	private static String DTRI = "DROP trigger ${T}_${F}_seq_trigger";
+			+ " END ${T}_${F}_seq_trigger;";
+
+	// private static String DTRI = "DROP trigger ${T}_${F}_seq_trigger";
 
 	private static String gSQL(String ptn, String table, String field) {
 		CharSegment cs = new CharSegment(ptn);
@@ -36,7 +37,7 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 		ComboSql sql = new ComboSql();
 		// Make create table SQL
 		StringBuilder sb = new StringBuilder("CREATE TABLE ").append(td.getName()).append('(');
-		addAllFields(td, sb);
+		appendAllFields(td, sb);
 		// Append PK
 		Iterator<DField> dfIt = td.getPks().iterator();
 		if (dfIt.hasNext()) {
@@ -59,12 +60,18 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 
 	@Override
 	protected void appendField(StringBuilder sb, DField df) {
-		sb.append(df.getName());
+		appendFieldName(sb, df);
 		sb.append(' ').append(df.getType());
-		addDecorator(sb, df.isUnique(), " UNIQUE");
-		addDecorator(sb, df.isNotNull(), " NOT NULL");
-		if (Strings.isBlank(df.getDefaultValue()))
+		if (!df.isPrimaryKey()) {
+			addDecorator(sb, df.isUnique(), " UNIQUE");
+			addDecorator(sb, df.isNotNull(), " NOT NULL");
+		}
+		if (!Strings.isBlank(df.getDefaultValue()))
 			sb.append(" DEFAULT ").append(df.getDefaultValue());
+	}
+
+	protected void appendFieldName(StringBuilder sb, DField df) {
+		sb.append(df.getName());
 	}
 
 	@Override
@@ -73,7 +80,8 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 		sql.addSQL(new ExecutableSql("DROP TABLE " + td.getName()));
 		for (DField df : td.getAutoIncreaments()) {
 			sql.addSQL(new ExecutableSql(gSQL(DSEQ, td.getName(), df.getName())));
-			sql.addSQL(new ExecutableSql(gSQL(DTRI, td.getName(), df.getName())));
+			// sql.addSQL(new ExecutableSql(gSQL(DTRI, td.getName(),
+			// df.getName())));
 		}
 		return sql;
 	}

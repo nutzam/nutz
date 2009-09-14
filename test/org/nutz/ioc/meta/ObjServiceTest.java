@@ -11,8 +11,6 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import org.nutz.dao.SqlManager;
-import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.ioc.meta.fake.Faking;
 import org.nutz.lang.Lang;
@@ -26,8 +24,7 @@ public class ObjServiceTest extends DaoCase {
 	protected void before() {
 		this.faking = new Faking();
 		this.srv = new ObjService(dao);
-		SqlManager sqls = new FileSqlManager("org/nutz/ioc/dbtest.sqls");
-		dao.execute(sqls.createComboSql());
+		pojos.processSqlsByPath("org/nutz/ioc/ioc_db.dod");
 	}
 
 	private void prepareFixData1() {

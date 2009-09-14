@@ -48,7 +48,7 @@ public class CndTest extends TestCase {
 	
 	public void test04() {
 		Condition c = Cnd.where("ff", "=", true);
-		String exp = "ff='true'";
+		String exp = "ff=true";
 		assertEquals(exp, c.toString(en));
 	}
 

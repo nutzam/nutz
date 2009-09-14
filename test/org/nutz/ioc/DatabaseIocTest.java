@@ -23,14 +23,9 @@ public class DatabaseIocTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.execFile("org/nutz/ioc/dbtest.sqls");
 		ioc = new NutIoc(new DatabaseLoader(dao));
 		srv = new ObjService(dao);
-	}
-
-	@Override
-	protected void after() {
-		ioc.depose();
+		pojos.processSqlsByPath("org/nutz/ioc/ioc_db.dod");
 	}
 
 	@Test

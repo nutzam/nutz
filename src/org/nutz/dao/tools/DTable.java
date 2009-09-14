@@ -36,7 +36,7 @@ public class DTable {
 		if (field.isAutoIncreament())
 			ais.add(field);
 		if (field.isPrimaryKey())
-			ais.add(field);
+			pks.add(field);
 		return this;
 	}
 

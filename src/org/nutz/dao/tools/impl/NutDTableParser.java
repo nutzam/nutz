@@ -73,6 +73,7 @@ public class NutDTableParser implements DTableParser {
 			if (cs[index] == '}')
 				return null;
 			StringBuilder sb = new StringBuilder();
+			boolean isInBracket = false;
 			for (index++; index < cs.length; index++) {
 				char c = cs[index];
 				if (isNeedContinue(c))
@@ -80,8 +81,13 @@ public class NutDTableParser implements DTableParser {
 				// Read chars to '}' or ','
 				for (; index < cs.length; index++) {
 					c = cs[index];
-					if (c == '}' || c == ',')
-						return createFieldByString(Strings.trim(sb));
+					if (c == '(')
+						isInBracket = true;
+					if (!isInBracket) {
+						if (c == '}' || c == ',')
+							return createFieldByString(Strings.trim(sb));
+					} else if (')' == c)
+						isInBracket = false;
 					sb.append(c);
 				}
 			}

@@ -1,0 +1,14 @@
+trans_company {
+  id INT +PK,
+  name VARCHAR(20) !UNIQUE
+}
+trans_master {
+  id INT +PK,
+  name VARCHAR(20) !UNIQUE,
+  comId INT
+}
+trans_cat {
+  id INT +PK,
+  name VARCHAR(20) !UNIQUE,
+  masterId INT
+}

@@ -63,7 +63,7 @@ abstract class Next {
 	/*----------------------------------------------------------------*/
 	static class DefaultStatic extends Static {
 		DefaultStatic(String tableName, String idName) {
-			super(format("SELECT MAX(%s) FROM %s;", idName, tableName));
+			super(format("SELECT MAX(%s) FROM %s", idName, tableName));
 		}
 	}
 
@@ -86,7 +86,7 @@ abstract class Next {
 	static class DefaultDynamic extends Dynamic {
 
 		DefaultDynamic(String tableName, String idName) {
-			super(new CharSegment(format("SELECT MAX(%s) FROM %s;", idName, tableName)));
+			super(new CharSegment(format("SELECT MAX(%s) FROM %s", idName, tableName)));
 		}
 
 	}

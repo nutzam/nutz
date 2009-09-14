@@ -1,11 +1,6 @@
-/*------------------------------------------------------------------------*/
-/*.drop*/
-DROP TABLE IF EXISTS dao_supported_type;
-/*------------------------------------------------------------------------*/
-/*.create*/
-CREATE TABLE dao_supported_type (
-	id		SERIAL PRIMARY KEY,
-	name		VARCHAR(20) NOT NULL UNIQUE,
+dao_supported_type {
+	id	INT	+PK,
+	name		VARCHAR(20) !UNIQUE,
 	email		VARCHAR(20),
 	enum_s		VARCHAR(10),
 	enum_i		SMALLINT,
@@ -28,4 +23,4 @@ CREATE TABLE dao_supported_type (
 	sqlDate 	DATE,
 	sqlTime 	TIME,
 	sqlDT		TIMESTAMP
-)${.engine};
+}

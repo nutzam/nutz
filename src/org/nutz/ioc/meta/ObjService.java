@@ -8,6 +8,7 @@ import java.util.Map;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 import org.nutz.mvc.Return;
 import org.nutz.service.EntityService;
 import org.nutz.service.IdEntityService;
@@ -62,7 +63,7 @@ public class ObjService extends Service {
 			Map<?, ?> map = (Map<?, ?>) Json.fromJson(val.getValue().toString());
 			val.setValue(Map2Obj.parse(map));
 		} else if (val.isBoolean() && !(val.getValue() instanceof Boolean)) {
-			val.setValue(Boolean.parseBoolean(val.getValue().toString()));
+			val.setValue(Lang.parseBoolean(val.getValue().toString()));
 		}
 		return val;
 	}

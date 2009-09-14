@@ -23,7 +23,7 @@ public class Base {
 	@Column("cid")
 	private int countryId;
 
-	@Column
+	@Column("lvl")
 	private int level;
 
 	@One(target = Country.class, field = "countryId")

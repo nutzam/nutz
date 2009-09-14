@@ -1,0 +1,27 @@
+dao_d_soldier_${id}{
+	name VARCHAR(50) PK,
+	age INT
+}
+
+dao_d_tank_${id} {
+  id  INT +PK,
+  code  VARCHAR(50) !UNIQUE,
+  weight INT,
+  motorName  VARCHAR(50) 
+}
+
+dao_d_gun_${id} {
+  id  INT +PK,
+  sname  VARCHAR(50) ,
+  type  VARCHAR(20) 
+}
+
+dao_d_mission_${id} {
+  name  VARCHAR(50) PK,
+  dday  TIMESTAMP 
+}
+
+dao_d_m_soldier_tank_${id} {
+  sname VARCHAR(50),
+  tid INT
+}

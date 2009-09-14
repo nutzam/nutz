@@ -20,7 +20,7 @@ public class BatchTransTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.execFile("org/nutz/trans/trans.sqls");
+		pojos.processSqlsByPath("org/nutz/trans/trans.dod");
 	}
 
 	@Test

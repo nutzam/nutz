@@ -1,6 +1,6 @@
 dao_country {
 	id INT +PK,
-	name VARCHAR(50)!UNIQUE
+	name VARCHAR(50) !UNIQUE
 }
 
 dao_platoon {
@@ -13,7 +13,7 @@ dao_platoon {
 dao_base {
    name VARCHAR(50) PK,
    cid INT ,
-   level INT 
+   lvl INT 
 }
 
 dao_fighter {

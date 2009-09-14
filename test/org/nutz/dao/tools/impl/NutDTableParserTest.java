@@ -13,12 +13,29 @@ import org.nutz.lang.Streams;
 
 public class NutDTableParserTest {
 
+	private static DTable FT(String s) {
+		DTableParser parser = new NutDTableParser();
+		return parser.parse(s).get(0);
+	}
+
+	@Test
+	public void test_number() {
+		DTable dt = FT("pet{n NUMERIC(15,10) !+}");
+		assertEquals(1, dt.getFields().size());
+		DField df = dt.getFields().get(0);
+		assertEquals("n", df.getName());
+		assertEquals("NUMERIC(15,10)", df.getType());
+		assertTrue(df.isNotNull());
+		assertTrue(df.isAutoIncreament());
+		assertFalse(df.isPrimaryKey());
+		assertFalse(df.isUnique());
+		assertFalse(df.isUnsign());
+	}
+
 	@Test
 	public void test_simple_string() {
-		String s = "pet{id INT +PK, name VARCHAR(20) !UNIQUE , age INT <30> , color CHAR(10) ! <'red'>}";
-		DTableParser parser = new NutDTableParser();
-		List<DTable> dts = parser.parse(s);
-		DTable dt = dts.get(0);
+		DTable dt = FT("pet{id INT +PK, name VARCHAR(20) !UNIQUE ,"
+				+ " age INT <30> , color CHAR(10) ! <'red'>}");
 		List<DField> fields = dt.getFields();
 		assertEquals(4, fields.size());
 		// id

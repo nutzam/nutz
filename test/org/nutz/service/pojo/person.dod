@@ -1,0 +1,13 @@
+srv_person {
+	id INT +PK,
+	name VARCHAR(20) !UNIQUE,
+	email VARCHAR(64) !,
+	fid INT !,
+	mid INT !,
+	master varchar(32)
+}
+
+srv_profile {
+	id INT +PK,
+	city VARCHAR(20) !
+}

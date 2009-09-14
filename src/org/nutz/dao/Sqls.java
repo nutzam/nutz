@@ -59,7 +59,7 @@ public class Sqls {
 
 	public static boolean isNotNeedQuote(Class<?> type) {
 		Mirror<?> me = Mirror.me(type);
-		return !me.isBoolean() && me.isPrimitiveNumber();
+		return me.isBoolean() || me.isPrimitiveNumber();
 	}
 
 	public static ConnectionHolder getConnection(DataSource dataSource) {
