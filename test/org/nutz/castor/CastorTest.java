@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
 import org.nutz.lang.meta.Email;
 
 public class CastorTest {
@@ -194,9 +195,9 @@ public class CastorTest {
 	@Test
 	public void testArray2String() throws Exception {
 		Email[] mails = { new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn") };
-		String exp = "[{\"host\":\"263.net\",\"account\":\"zzh\"}, {\"host\":\"yahoo.com.cn\",\"account\":\"zozohtnt\"}]";
 		String done = Castors.me().castToString(mails);
-		assertEquals(exp, done);
+		Email[] mails2 = Castors.me().castTo(done, Email[].class);
+		assertTrue(Lang.equals(mails, mails2));
 	}
 
 	@Test

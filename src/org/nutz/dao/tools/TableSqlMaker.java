@@ -67,13 +67,17 @@ public abstract class TableSqlMaker {
 		if (df.isAutoIncreament() && df.isPrimaryKey()) {
 			sb.append(" SERIAL PRIMARY KEY");
 		} else {
-			sb.append(' ').append(df.getType());
+			sb.append(' ').append(getFieldType(df));
 			addDecorator(sb, df.isPrimaryKey(), " PRIMARY KEY");
 			addDecorator(sb, df.isUnique(), " UNIQUE");
 			addDecorator(sb, df.isNotNull(), " NOT NULL");
 			if (!Strings.isBlank(df.getDefaultValue()))
 				sb.append(" DEFAULT ").append(df.getDefaultValue());
 		}
+	}
+
+	protected String getFieldType(DField df) {
+		return df.getType();
 	}
 
 	protected abstract void appendFieldName(StringBuilder sb, DField df);

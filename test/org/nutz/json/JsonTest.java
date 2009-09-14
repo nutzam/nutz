@@ -77,7 +77,7 @@ public class JsonTest {
 	@Test
 	public void testFloat() {
 		assertEquals(Float.valueOf(2.3f), Json.fromJson(float.class, Lang.inr("2.3")));
-		assertEquals(Double.valueOf(2.3f), ((Double) Json.fromJson(Lang.inr("2.3"))));
+		assertEquals((Float) 2.3f, Json.fromJson(Float.class, Lang.inr("2.3")));
 		assertEquals(Float.valueOf(.3f), Json.fromJson(float.class, Lang.inr(".3")));
 	}
 
@@ -90,8 +90,7 @@ public class JsonTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testDatetime() {
-		java.util.Date date = Json.fromJson(java.util.Date.class, Lang
-				.inr("\"2008-05-16 14:35:43\""));
+		java.util.Date date = Json.fromJson(java.util.Date.class, Lang.inr("\"2008-05-16 14:35:43\""));
 		assertEquals(108, date.getYear());
 		assertEquals(4, date.getMonth());
 		assertEquals(16, date.getDate());
@@ -111,8 +110,7 @@ public class JsonTest {
 	@Test
 	public void testAllTypesInMap() throws FileNotFoundException {
 		File f = Files.findFile("org/nutz/json/types.txt");
-		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(
-				new FileInputStream(f)));
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(new FileInputStream(f)));
 		assertTrue((Boolean) map.get("true"));
 		assertFalse((Boolean) map.get("false"));
 		assertNull(map.get("null"));
@@ -175,8 +173,7 @@ public class JsonTest {
 	@Test
 	public void testMap() throws FileNotFoundException {
 		File f = Files.findFile("org/nutz/json/map.txt");
-		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(
-				new FileInputStream(f)));
+		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(new FileInputStream(f)));
 		assertEquals("value1", map.get("a1"));
 		assertEquals(35, map.get("a2"));
 		assertEquals((double) 4.7, map.get("a3"));
@@ -318,13 +315,10 @@ public class JsonTest {
 		assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
 		assertEquals(p.getCompany().getName(), p2.getCompany().getName());
 		assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
-		assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany().getCreator()
-				.getRealname());
+		assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany().getCreator().getRealname());
 		assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
-		assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany().getCreator()
-				.getFather());
-		assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany().getCreator()
-				.getBirthday());
+		assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany().getCreator().getFather());
+		assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany().getCreator().getBirthday());
 	}
 
 	@Test
@@ -357,16 +351,22 @@ public class JsonTest {
 		public int id;
 		public String name;
 		public String alias;
+
+		public boolean equals(Object obj) {
+			Project p = (Project) obj;
+			return id == p.id & name.equals(p.name) & alias.equals(p.alias);
+		}
+
 	}
 
 	@Test
 	public void testOutpuProjectsAsList() throws Exception {
-		String exp = "{\"id\":1,\"alias\":\"nutz\",\"name\":\"nutz\"}";
 		Project p = new Project();
 		p.id = 1;
 		p.name = "nutz";
-		p.alias = "nutz";
-		assertEquals(exp, Json.toJson(p, JsonFormat.compact()));
+		p.alias = "Nutz Framework";
+		Project p2 = Json.fromJson(Project.class, Json.toJson(p));
+		assertTrue(p.equals(p2));
 	}
 
 	@Test
@@ -392,7 +392,9 @@ public class JsonTest {
 		X x = new X();
 		x.id = 5;
 		x.type = XT.B;
-		assertEquals("{\"id\":5,\"type\":\"B\"}", Json.toJson(x, JsonFormat.compact()));
+		X x2 = Json.fromJson(X.class, Json.toJson(x));
+		assertEquals(x.id, x2.id);
+		assertEquals(x.type, x2.type);
 	}
 
 	@Test
@@ -414,8 +416,10 @@ public class JsonTest {
 	public void test_output_not_quote_name() {
 		Base b = Base.make("Red");
 		String json = Json.toJson(b, JsonFormat.compact().setQuoteName(false));
-		String exp = "{countryId:0,level:0,name:\"Red\"}";
-		assertEquals(exp, json);
+		Base b2 = Json.fromJson(Base.class, json);
+		assertEquals(b.getCountryId(), b2.getCountryId());
+		assertEquals(b.getLevel(), b2.getLevel());
+		assertEquals(b.getName(), b2.getName());
 	}
 
 	static class A {

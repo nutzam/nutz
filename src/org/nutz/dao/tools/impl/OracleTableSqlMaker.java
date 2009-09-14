@@ -19,10 +19,9 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 21 CACHE 20 NOORDER  NOCYCLE";
 	private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
-	private static String CTRI = "create or replace trigger ${T}_${F}_seq_trigger"
-			+ " BEFORE INSERT ON ${T}" + " FOR EACH ROW" + " BEGIN "
-			+ " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;"
-			+ " END ${T}_${F}_seq_trigger;";
+	private static String CTRI = "create or replace trigger ${T}_${F}_ST" + " BEFORE INSERT ON ${T}"
+			+ " FOR EACH ROW" + " BEGIN " + " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;"
+			+ " END ${T}_${F}_ST;";
 
 	// private static String DTRI = "DROP trigger ${T}_${F}_seq_trigger";
 
@@ -61,13 +60,25 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	@Override
 	protected void appendField(StringBuilder sb, DField df) {
 		appendFieldName(sb, df);
-		sb.append(' ').append(df.getType());
+		sb.append(' ').append(getFieldType(df));
 		if (!df.isPrimaryKey()) {
 			addDecorator(sb, df.isUnique(), " UNIQUE");
 			addDecorator(sb, df.isNotNull(), " NOT NULL");
 		}
 		if (!Strings.isBlank(df.getDefaultValue()))
 			sb.append(" DEFAULT ").append(df.getDefaultValue());
+	}
+
+	@Override
+	protected String getFieldType(DField df) {
+		String type = df.getType();
+		if ("boolean".equalsIgnoreCase(type))
+			return "char(1) check (" + df.getName() + " in(0,1))";
+		if ("time".equalsIgnoreCase(type))
+			return "VARCHAR(24)";
+		if ("bigint".equalsIgnoreCase(type))
+			return "NUMBER";
+		return type;
 	}
 
 	protected void appendFieldName(StringBuilder sb, DField df) {

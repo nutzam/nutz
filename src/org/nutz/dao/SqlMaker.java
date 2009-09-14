@@ -39,32 +39,32 @@ public class SqlMaker {
 	 */
 	public ExecutableSql makeClearOneManySql(Entity<?> ta, Link link, Object value) {
 		EntityField ef = ta.getField(link.getTargetField().getName());
-		String s = String.format("DELETE FROM %s WHERE %s=%s", ta.getTableName(), ef
-				.getColumnName(), Sqls.formatFieldValue(value));
+		String s = String.format("DELETE FROM %s WHERE %s=%s", ta.getTableName(), ef.getColumnName(), Sqls
+				.formatFieldValue(value));
 		ExecutableSql sql = new ExecutableSql();
 		sql.valueOf(s);
 		return sql;
 	}
 
 	public ExecutableSql makeClearManyManyRelationSql(Link link, Object value) {
-		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getFrom(),
-				Sqls.formatFieldValue(value));
+		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getFrom(), Sqls
+				.formatFieldValue(value));
 		ExecutableSql sql = new ExecutableSql();
 		sql.valueOf(s);
 		return sql;
 	}
 
 	public ExecutableSql makeDeleteManyManyRelationSql(Link link, Object value) {
-		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getTo(),
-				Sqls.formatFieldValue(value));
+		String s = String.format("DELETE FROM %s WHERE %s=%s", link.getRelation(), link.getTo(), Sqls
+				.formatFieldValue(value));
 		ExecutableSql sql = new ExecutableSql();
 		sql.valueOf(s);
 		return sql;
 	}
 
 	public ExecutableSql makeDeleteSQL(Entity<?> en, EntityField ef) {
-		return makeSQL(new ExecutableSql(), en, "DELETE FROM %s WHERE %s=${%s}", en.getTableName(),
-				ef.getColumnName(), ef.getField().getName());
+		return makeSQL(new ExecutableSql(), en, "DELETE FROM %s WHERE %s=${%s}", en.getTableName(), ef.getColumnName(),
+				ef.getField().getName());
 	}
 
 	public <T> FetchSql<T> makeFetchSQL(Entity<T> en, EntityField ef) {
@@ -72,11 +72,11 @@ public class SqlMaker {
 		String fields = evalActivedFields(fm, en, ef.getColumnName());
 		FetchSql<T> sql;
 		if (ef.isCaseInsensitive()) {
-			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE LOWER(%s)=LOWER(${%s})",
-					fields, en.getViewName(), ef.getColumnName(), ef.getField().getName());
-		} else {
-			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE %s=${%s}", fields, en
+			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE LOWER(%s)=LOWER(${%s})", fields, en
 					.getViewName(), ef.getColumnName(), ef.getField().getName());
+		} else {
+			sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s WHERE %s=${%s}", fields, en.getViewName(), ef
+					.getColumnName(), ef.getField().getName());
 		}
 		sql.setMatcher(fm);
 		return sql;
@@ -105,29 +105,27 @@ public class SqlMaker {
 	public <T> FetchSql<T> makeFetchByConditionSQL(Entity<T> en) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		String fields = evalActivedFields(fm, en, "*");
-		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s ${condition}", fields,
-				en.getViewName());
+		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s ${condition}", fields, en.getViewName());
 		sql.setMatcher(fm);
 		return sql;
 	}
 
-	public <T> FetchSql<T> makeFetchLuckyOneSQL(Entity<T> en) {
-		FieldMatcher fm = FieldFilter.get(en.getType());
-		String fields = evalActivedFields(fm, en, "*");
-		FetchSql<T> sql = makeSQL(new FetchSql<T>(), en, "SELECT %s FROM %s LIMIT 1", fields, en
-				.getViewName());
-		sql.setMatcher(fm);
-		return sql;
-	}
+	// public <T> FetchSql<T> makeFetchLuckyOneSQL(Entity<T> en) {
+	// FieldMatcher fm = FieldFilter.get(en.getType());
+	// String fields = evalActivedFields(fm, en, "*");
+	// FetchSql<T> sql = makeSQL(new FetchSql<T>(), en,
+	// "SELECT %s FROM %s LIMIT 1", fields, en
+	// .getViewName());
+	// sql.setMatcher(fm);
+	// return sql;
+	// }
 
 	public <T> FetchSql<Integer> makeCountSQL(Entity<T> en, String viewName) {
-		return makeSQL(new FetchSql<Integer>(), en, "SELECT COUNT(*) FROM %s ${condition}",
-				viewName);
+		return makeSQL(new FetchSql<Integer>(), en, "SELECT COUNT(*) FROM %s ${condition}", viewName);
 	}
 
 	public <T> FetchSql<Integer> makeFetchMaxSQL(Entity<T> en, EntityField ef) {
-		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s").set("field",
-				ef.getField().getName()).toString();
+		String ptn = new CharSegment("SELECT MAX(${field}) FROM %s").set("field", ef.getField().getName()).toString();
 		return makeSQL(new FetchSql<Integer>(), en, ptn, en.getViewName());
 	}
 
@@ -142,8 +140,8 @@ public class SqlMaker {
 			sql.setPager(pager);
 		} else {
 			String rsName = pager.getResultSetName(en);
-			String st = String.format("SELECT %s FROM %s ${condition}", fields, rsName == null ? en
-					.getViewName() : rsName);
+			String st = String.format("SELECT %s FROM %s ${condition}", fields, rsName == null ? en.getViewName()
+					: rsName);
 			sql.valueOf(String.format(lm, st));
 		}
 		sql.setMatcher(ptn);
@@ -173,15 +171,14 @@ public class SqlMaker {
 		}
 		fields.deleteCharAt(0);
 		values.deleteCharAt(0);
-		return makeSQL(new ExecutableSql(), en, "INSERT INTO %s(%s) VALUES(%s)", en.getTableName(),
-				fields.toString(), values.toString());
+		return makeSQL(new ExecutableSql(), en, "INSERT INTO %s(%s) VALUES(%s)", en.getTableName(), fields.toString(),
+				values.toString());
 	}
 
 	public ExecutableSql makeInsertManyManySql(Link link, Object fromValue, Object toValue) {
 		ExecutableSql sql = new ExecutableSql();
-		sql.valueOf(String.format("INSERT INTO %s (%s,%s) VALUES(%s,%s)", link.getRelation(), link
-				.getFrom(), link.getTo(), Sqls.formatFieldValue(fromValue), Sqls
-				.formatFieldValue(toValue)));
+		sql.valueOf(String.format("INSERT INTO %s (%s,%s) VALUES(%s,%s)", link.getRelation(), link.getFrom(), link
+				.getTo(), Sqls.formatFieldValue(fromValue), Sqls.formatFieldValue(toValue)));
 		return sql;
 	}
 
@@ -199,26 +196,23 @@ public class SqlMaker {
 				else if (!fm.match(fn))
 					continue;
 			}
-			sb.append(',').append(ef.getColumnName()).append('=').append("${").append(fn).append(
-					'}');
+			sb.append(',').append(ef.getColumnName()).append('=').append("${").append(fn).append('}');
 		}
 		sb.deleteCharAt(0);
 		EntityField idf = en.getIdentifiedField();
 		String condition = String.format("%s=${%s}", idf.getColumnName(), idf.getField().getName());
-		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s WHERE %s", en.getTableName(), sb
-				.toString(), condition);
+		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s WHERE %s", en.getTableName(), sb.toString(),
+				condition);
 
 	}
 
 	public ExecutableSql makeBatchUpdateSQL(Entity<?> en, Chain chain) {
-		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s ${condition}", en.getTableName(),
-				chain.toString(en));
+		return makeSQL(new ExecutableSql(), en, "UPDATE %s SET %s ${condition}", en.getTableName(), chain.toString(en));
 	}
 
 	public ExecutableSql makeBatchUpdateRelationSQL(Link link, Chain chain) {
 		ExecutableSql sql = new ExecutableSql();
-		sql.valueOf(format("UPDATE %s SET %s ${condition}", link.getRelation(), chain
-				.toString(null)));
+		sql.valueOf(format("UPDATE %s SET %s ${condition}", link.getRelation(), chain.toString(null)));
 		return sql;
 	}
 }
