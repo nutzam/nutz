@@ -1,96 +1,42 @@
 package org.nutz.dao.sql;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Set;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 import org.nutz.dao.Condition;
-import org.nutz.lang.segment.Segment;
+import org.nutz.dao.entity.Entity;
 
-public abstract class AbstractSql implements Sql {
+abstract class AbstractSql implements Sql {
 
-	private Segment seg;
-
-	public Segment add(String key, Object v) {
-		return seg.add(key, v);
+	AbstractSql(SqlLiteral sql) {
+		this.sql = sql;
 	}
 
-	public void clearAll() {
-		seg.clearAll();
+	protected SqlLiteral sql;
+	protected SqlContext context;
+	protected SqlCallback callback;
+	protected Condition condition;
+	protected Object result;
+
+	public void execute(Connection conn) throws SQLException {
+		if (null != condition)
+			sql.vars().set("condition", condition.toString((Entity<?>) context.getEntity()));
+		PreparedStatement stat = conn.prepareStatement(sql.toPrepareStatementString());
+		process(stat);
+		if (null != callback)
+			callback.invoke(conn);
 	}
 
-	public boolean contains(String key) {
-		return seg.contains(key);
+	public abstract void process(PreparedStatement stat) throws SQLException;
+
+	public VarSet holders() {
+		return sql.vars();
 	}
 
-	public List<Integer> getIndex(String key) {
-		return seg.getIndex(key);
+	public VarSet vars() {
+		return sql.holders();
 	}
-
-	public Set<String> keys() {
-		return seg.keys();
-	}
-
-	public void parse(InputStream ins) {
-		seg.parse(ins);
-	}
-
-	public CharSequence render() {
-		return seg.render();
-	}
-
-	public Segment set(String key, boolean v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, byte v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, double v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, float v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, int v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, long v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, Object v) {
-		return seg.set(key, v);
-	}
-
-	public Segment set(String key, short v) {
-		return seg.set(key, v);
-	}
-
-	public Segment setAll(Object v) {
-		return seg.setAll(v);
-	}
-
-	public String toOrginalString() {
-		return seg.toOrginalString();
-	}
-
-	public Segment valueOf(String str) {
-		return seg.valueOf(str);
-	}
-
-	public List<Object> values() {
-		return seg.values();
-	}
-
-	private SqlContext context;
-	private SqlCallback callback;
-	private Condition condition;
-	private Object result;
 
 	public SqlContext getContext() {
 		return context;
@@ -123,12 +69,8 @@ public abstract class AbstractSql implements Sql {
 		return result;
 	}
 
-	public void setResult(Object result) {
-		this.result = result;
-	}
-
 	public Sql clone() {
-		Sql sql = this.born();
-		return sql.setContext(context).setCallback(callback).setCondition(condition);
+		Sql newSql = SQLs.create(sql);
+		return newSql.setContext(context).setCallback(callback).setCondition(condition);
 	}
 }

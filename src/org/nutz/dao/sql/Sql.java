@@ -4,9 +4,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 import org.nutz.dao.Condition;
-import org.nutz.lang.segment.Segment;
 
-public interface Sql extends Segment {
+public interface Sql {
+
+	VarSet vars();
+
+	VarSet holders();
+
+	SqlContext getContext();
 
 	Sql setContext(SqlContext context);
 
@@ -15,9 +20,7 @@ public interface Sql extends Segment {
 	Sql setCondition(Condition condition);
 
 	void execute(Connection conn) throws SQLException;
-	
-	Sql born();
-	
+
 	Sql clone();
 
 	Object getResult();

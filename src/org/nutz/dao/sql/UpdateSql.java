@@ -1,18 +1,23 @@
 package org.nutz.dao.sql;
 
-import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class UpdateSql extends AbstractSql {
 
-	@Override
-	public Sql born() {
-		return null;
+	UpdateSql(SqlLiteral sql) {
+		super(sql);
+	}
+
+	private int updateCount;
+
+	public int getUpdateCount() {
+		return updateCount;
 	}
 
 	@Override
-	public void execute(Connection conn) throws SQLException {
-		
+	public void process(PreparedStatement stat) throws SQLException {
+		updateCount = stat.executeUpdate();
 	}
 
 }

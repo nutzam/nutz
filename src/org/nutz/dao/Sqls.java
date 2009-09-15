@@ -11,7 +11,7 @@ import org.nutz.trans.Trans;
 import org.nutz.trans.Transaction;
 
 public class Sqls {
-
+	
 	public static CharSequence formatFieldValue(Object v) {
 		if (null == v)
 			return "NULL";

@@ -1,15 +1,17 @@
 package org.nutz.dao.sql;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class FetchSql extends AbstractSql {
 
-	public Sql born() {
-		return new FetchSql();
+	FetchSql(SqlLiteral sql) {
+		super(sql);
 	}
 
-	public void execute(Connection conn) throws SQLException {
+	@Override
+	public void process(PreparedStatement stat) throws SQLException {
 		
 	}
 
