@@ -2,9 +2,9 @@ package org.nutz.dao.tools.impl;
 
 import java.util.Iterator;
 
-import org.nutz.dao.ComboSql;
-import org.nutz.dao.ExecutableSql;
-import org.nutz.dao.Sql;
+import org.nutz.dao.sql.ComboSql;
+import org.nutz.dao.sql.SQLs;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.tools.DField;
 import org.nutz.dao.tools.DTable;
 import org.nutz.dao.tools.TableSqlMaker;
@@ -19,9 +19,8 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 21 CACHE 20 NOORDER  NOCYCLE";
 	private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
-	private static String CTRI = "create or replace trigger ${T}_${F}_ST" + " BEFORE INSERT ON ${T}"
-			+ " FOR EACH ROW" + " BEGIN " + " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;"
-			+ " END ${T}_${F}_ST;";
+	private static String CTRI = "create or replace trigger ${T}_${F}_ST" + " BEFORE INSERT ON ${T}" + " FOR EACH ROW"
+			+ " BEGIN " + " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;" + " END ${T}_${F}_ST;";
 
 	// private static String DTRI = "DROP trigger ${T}_${F}_seq_trigger";
 
@@ -32,7 +31,7 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	}
 
 	@Override
-	public Sql<?> makeCreateSql(DTable td) {
+	public Sql makeCreateSql(DTable td) {
 		ComboSql sql = new ComboSql();
 		// Make create table SQL
 		StringBuilder sb = new StringBuilder("CREATE TABLE ").append(td.getName()).append('(');
@@ -46,13 +45,13 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 			sb.append(',').append(gSQL(CPK, td.getName(), names));
 		}
 		sb.append(')');
-		sql.addSQL(new ExecutableSql(sb.toString()));
+		sql.add(SQLs.create(sb.toString()));
 		// For all auto increaments fields, create the sequance and trigger
 		for (DField df : td.getAutoIncreaments()) {
 			// create sequance;
-			sql.addSQL(new ExecutableSql(gSQL(CSEQ, td.getName(), df.getName())));
+			sql.add(SQLs.create(gSQL(CSEQ, td.getName(), df.getName())));
 			// create trigger;
-			sql.addSQL(new ExecutableSql(gSQL(CTRI, td.getName(), df.getName())));
+			sql.add(SQLs.create(gSQL(CTRI, td.getName(), df.getName())));
 		}
 		return sql;
 	}
@@ -86,11 +85,11 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	}
 
 	@Override
-	public Sql<?> makeDropSql(DTable td) {
+	public Sql makeDropSql(DTable td) {
 		ComboSql sql = new ComboSql();
-		sql.addSQL(new ExecutableSql("DROP TABLE " + td.getName()));
+		sql.add(SQLs.create("DROP TABLE " + td.getName()));
 		for (DField df : td.getAutoIncreaments()) {
-			sql.addSQL(new ExecutableSql(gSQL(DSEQ, td.getName(), df.getName())));
+			sql.add(SQLs.create(gSQL(DSEQ, td.getName(), df.getName())));
 			// sql.addSQL(new ExecutableSql(gSQL(DTRI, td.getName(),
 			// df.getName())));
 		}

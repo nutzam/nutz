@@ -1,5 +1,6 @@
 package org.nutz.dao.entity;
 
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -7,7 +8,7 @@ import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Database;
-import org.nutz.dao.Sql;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -223,7 +224,7 @@ public class EntityField {
 		}
 	}
 
-	public Sql<Integer> getFetchSql() {
+	public Sql getFetchSql() {
 		return nextId.sql();
 	}
 

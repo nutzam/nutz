@@ -210,7 +210,7 @@ public class NutDao implements Dao {
 	public void executeBySqlKey(String... keys) {
 		List<Sql<?>> sqlList = new ArrayList<Sql<?>>();
 		for (String key : keys) {
-			Sql<?> sql = sqls().createSql(key);
+			Sql<?> sql = sqls().create(key);
 			sqlList.add(sql);
 		}
 		Sql<?> sqls[] = new Sql<?>[sqlList.size()];

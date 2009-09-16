@@ -114,4 +114,8 @@ public abstract class Pager {
 	public String getResultSetName(Entity<?> entity) {
 		return null;
 	}
+
+	public boolean isDefault() {
+		return true;
+	}
 }

@@ -1,5 +1,7 @@
 package org.nutz.dao;
 
+import org.nutz.dao.sql.Sql;
+
 @SuppressWarnings("serial")
 public class DaoException extends RuntimeException {
 
@@ -7,7 +9,7 @@ public class DaoException extends RuntimeException {
 		super(message);
 	}
 
-	public <T> DaoException(Sql<T> sql, Exception exception) {
+	public <T> DaoException(Sql sql, Exception exception) {
 		super(String.format("%s\n--SQL::%s", exception.toString(), sql.toString()));
 	}
 

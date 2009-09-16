@@ -2,10 +2,8 @@ package org.nutz.dao.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,9 +16,11 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.nutz.dao.*;
+import org.nutz.dao.sql.ComboSql;
+import org.nutz.dao.sql.SQLs;
+import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedCharArray;
@@ -41,7 +41,7 @@ public class FileSqlManager implements SqlManager {
 	}
 
 	private String[] paths;
-	private Map<String, Sql<?>> sqlMaps;
+	private Map<String, String> sqlMaps;
 	private List<String> keys;
 	private FilenameFilter sqkFileFilter;
 
@@ -78,9 +78,9 @@ public class FileSqlManager implements SqlManager {
 		Writer w = Streams.fileOutw(f);
 		for (String key : keys) {
 			w.append("/*").append(Strings.dup('-', 60)).append("*/\n");
-			Sql<?> sql = sqlMaps.get(key);
+			String sql = sqlMaps.get(key);
 			w.append(format("/*%s*/\n", key));
-			w.append(sql.toOrginalString()).append("\n");
+			w.append(sql).append("\n");
 		}
 		w.flush();
 		w.close();
@@ -89,12 +89,26 @@ public class FileSqlManager implements SqlManager {
 	public void refresh() {
 		this.buildSQLMaps();
 	}
-
-	public Sql<?> createSql(String key) {
-		Sql<?> sql = sqlMaps.get(key);
+	
+	public String get(String key) {
+		String sql = sqlMaps.get(key);
 		if (null == sql)
 			throw new SqlNotFoundException(key, paths);
-		return sql.born();
+		return sql;
+	}
+
+	public Sql create(String key) throws SqlNotFoundException {
+		return SQLs.create(get(key));
+	}
+	
+	
+
+	public Sql fetch(String key) throws SqlNotFoundException {
+		return SQLs.fetch(get(key));
+	}
+
+	public Sql query(String key) throws SqlNotFoundException {
+		return SQLs.query(get(key));
 	}
 
 	public ComboSql createComboSql(String... keys) {
@@ -102,19 +116,10 @@ public class FileSqlManager implements SqlManager {
 		if (null == keys || keys.length == 0)
 			keys = this.keys();
 		for (String key : keys) {
-			Sql<?> sql = createSql(key);
-			combo.addSQL(sql);
+			Sql sql = create(key);
+			combo.add(sql);
 		}
 		return combo;
-	}
-
-	public <S extends Sql<?>> S createSql(Class<S> classOfT, String key) {
-		Sql<?> sql = sqlMaps.get(key);
-		if (null == sql)
-			throw new SqlNotFoundException(key, paths);
-		S re = Mirror.me(classOfT).born();
-		re.valueOf(sql.toOrginalString());
-		return re;
 	}
 
 	public int count() {
@@ -126,7 +131,7 @@ public class FileSqlManager implements SqlManager {
 	}
 
 	private void buildSQLMaps() {
-		sqlMaps = new HashMap<String, Sql<?>>();
+		sqlMaps = new HashMap<String, String>();
 		if (null != paths)
 			for (String path : paths) {
 				if (null == path)
@@ -142,8 +147,7 @@ public class FileSqlManager implements SqlManager {
 					files = Lang.array(f);
 				try {
 					for (File file : files) {
-						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(
-								new InputStreamReader(new FileInputStream(file), "UTF-8")));
+						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams.fileInr(file)));
 						Iterator<String> it = p.keys().iterator();
 						keys = new ArrayList<String>(p.map.size());
 						while (it.hasNext()) {
@@ -162,19 +166,8 @@ public class FileSqlManager implements SqlManager {
 		if (sqlMaps.containsKey(key)) {
 			throw Lang.makeThrow("duplicate key '%s'", key);
 		}
-		Sql<?> sql = null;
-		if (key.startsWith("fetch:")) {
-			sql = new FetchSql<Object>();
-			key = key.substring("fetch:".length());
-		} else if (key.startsWith("query:")) {
-			sql = new QuerySql<Object>();
-			key = key.substring("query:".length());
-		} else {
-			sql = new ExecutableSql();
-		}
 		key = Strings.trim(key);
-		sql.valueOf(value);
-		sqlMaps.put(key, sql);
+		sqlMaps.put(key, value);
 		keys.add(key);
 	}
 

@@ -10,8 +10,8 @@ import org.nutz.lang.Strings;
 public class SqlLiteral {
 
 	private void reset() {
-		holders = new VarSet();
-		vars = new VarSet();
+		holders = new SimpleVarSet();
+		vars = new SimpleVarSet();
 		stack = new WorkingStack();
 		varIndexes = new VarIndexes();
 		holderIndexes = new VarIndexes();

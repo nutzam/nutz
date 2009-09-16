@@ -1,10 +1,9 @@
 package org.nutz.dao.impl;
 
-import org.nutz.dao.Pager;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 
-public class SQLServerPager extends Pager {
+public class SQLServerPager extends SpecialPager {
 
 	@Override
 	protected String getLimitString(Entity<?> entity) {

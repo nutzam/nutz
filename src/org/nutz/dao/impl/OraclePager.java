@@ -1,9 +1,8 @@
 package org.nutz.dao.impl;
 
-import org.nutz.dao.Pager;
 import org.nutz.dao.entity.Entity;
 
-public class OraclePager extends Pager {
+public class OraclePager extends SpecialPager {
 
 	private static String ptn = "SELECT * FROM ("
 			+ "SELECT T.*, ROWNUM RN FROM (%%s) T WHERE ROWNUM <= %d) WHERE RN > %d";

@@ -1,9 +1,8 @@
 package org.nutz.dao.impl;
 
-import org.nutz.dao.Pager;
 import org.nutz.dao.entity.Entity;
 
-public class MySQLPager extends Pager {
+public class MySQLPager extends SpecialPager {
 
 	@Override
 	protected String getLimitString(Entity<?> entity) {

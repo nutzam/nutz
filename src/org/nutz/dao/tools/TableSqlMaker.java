@@ -3,8 +3,8 @@ package org.nutz.dao.tools;
 import java.util.Iterator;
 
 import org.nutz.dao.Database;
-import org.nutz.dao.ExecutableSql;
-import org.nutz.dao.Sql;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.tools.impl.MysqlTableSqlMaker;
 import org.nutz.dao.tools.impl.OracleTableSqlMaker;
 import org.nutz.dao.tools.impl.PostgresqlTableSqlMaker;
@@ -36,12 +36,12 @@ public abstract class TableSqlMaker {
 		}
 	}
 
-	public Sql<?> makeCreateSql(DTable dt) {
+	public Sql makeCreateSql(DTable dt) {
 		StringBuilder sb = new StringBuilder();
 		appendBegin(dt, sb);
 		appendAllFields(dt, sb);
 		appendSqlEnd(sb);
-		return new ExecutableSql(sb.toString());
+		return SQLs.create(sb.toString());
 	}
 
 	protected void appendBegin(DTable dt, StringBuilder sb) {
@@ -82,7 +82,7 @@ public abstract class TableSqlMaker {
 
 	protected abstract void appendFieldName(StringBuilder sb, DField df);
 
-	public Sql<?> makeDropSql(DTable dt) {
-		return new ExecutableSql(String.format("DROP TABLE IF EXISTS %s", dt.getName()));
+	public Sql makeDropSql(DTable dt) {
+		return SQLs.create(String.format("DROP TABLE IF EXISTS %s", dt.getName()));
 	}
 }

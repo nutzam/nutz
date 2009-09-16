@@ -36,35 +36,35 @@ public class SQLFileParsing {
 	@Test
 	public void check_Create_SQL() {
 		sqls = new FileSqlManager(PATH);
-		Sql<?> sql = sqls.createSql(".abc.create");
+		Sql<?> sql = sqls.create(".abc.create");
 		assertTrue(sql instanceof ExecutableSql);
 	}
 
 	@Test
 	public void check_Insert_SQL() {
 		sqls = new FileSqlManager(PATH);
-		Sql<?> sql = sqls.createSql(".abc.insert");
+		Sql<?> sql = sqls.create(".abc.insert");
 		assertTrue(sql instanceof ExecutableSql);
 	}
 
 	@Test
 	public void check_Update_SQL() {
 		sqls = new FileSqlManager(PATH);
-		Sql<?> sql = sqls.createSql(".abc.update");
+		Sql<?> sql = sqls.create(".abc.update");
 		assertTrue(sql instanceof ExecutableSql);
 	}
 
 	@Test
 	public void check_Fetch_SQL() {
 		sqls = new FileSqlManager(PATH);
-		Sql<?> sql = sqls.createSql("abc.fetch");
+		Sql<?> sql = sqls.create("abc.fetch");
 		assertTrue(sql instanceof FetchSql<?>);
 	}
 
 	@Test
 	public void check_Query_SQL() {
 		sqls = new FileSqlManager(PATH);
-		Sql<?> sql = sqls.createSql("abc.query");
+		Sql<?> sql = sqls.create("abc.query");
 		assertTrue(sql instanceof QuerySql<?>);
 	}
 

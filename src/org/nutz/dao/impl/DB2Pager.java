@@ -1,17 +1,16 @@
 package org.nutz.dao.impl;
 
-import org.nutz.dao.Pager;
 import org.nutz.dao.entity.Entity;
 
-public class DB2Pager extends Pager {
+public class DB2Pager extends SpecialPager {
 
 	@Override
 	protected String getLimitString(Entity<?> entity) {
 		/*
-		 * SELECT FROM @tableName WHERE (@fieldName IN
-		 * (SELECT @fieldName FROM (SELECT @fieldName,
-		 * rownumber() OVER(ORDER BY @fieldName ASC) AS rn
+		 * SELECT FROM @tableName WHERE (@fieldName IN (SELECT @fieldName FROM
+		 * (SELECT @fieldName, rownumber() OVER(ORDER BY @fieldName ASC) AS rn
 		 * FROM @tableName) AS R WHERE R.rn BETWEEN
+		 * 
 		 * @startNumber AND
 		 * 
 		 * @endNumber))
@@ -23,8 +22,7 @@ public class DB2Pager extends Pager {
 		String ptn = "%%s WHERE (%s IN (SELECT %s FROM (SELECT %s,rownumber() OVER(ORDER BY %s ASC) AS rn FROM %s) AS R "
 				+ "WHERE R.rn BETWEEN %d AND %d))";
 
-		return String.format(ptn, fieldName, fieldName, fieldName, fieldName, tableName,
-				startIndex, endIndex);
+		return String.format(ptn, fieldName, fieldName, fieldName, fieldName, tableName, startIndex, endIndex);
 	}
 
 }

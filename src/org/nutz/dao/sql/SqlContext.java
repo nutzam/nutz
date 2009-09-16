@@ -1,24 +1,29 @@
 package org.nutz.dao.sql;
 
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.entity.Entity;
+import org.nutz.dao.Pager;
 
 public class SqlContext {
 
-	public SqlContext(Entity<?> entity, FieldMatcher matcher) {
-		this.entity = entity;
-		this.matcher = matcher;
-	}
-
-	private Entity<?> entity;
 	private FieldMatcher matcher;
+	private Pager pager;
 
-	public Entity<?> getEntity() {
-		return entity;
+	public Pager getPager() {
+		return pager;
 	}
 
-	public FieldMatcher getFieldsMatcher() {
+	public SqlContext setPager(Pager pager) {
+		this.pager = pager;
+		return this;
+	}
+
+	public FieldMatcher getMatcher() {
 		return matcher;
+	}
+
+	public SqlContext setMatcher(FieldMatcher matcher) {
+		this.matcher = matcher;
+		return this;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nutz.dao.callback.ConnCallback;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.sql.Sql;
 
 public interface Dao {
 
@@ -24,7 +25,7 @@ public interface Dao {
 	 * @param sqls
 	 *            the SQLs, which will be executed
 	 */
-	void execute(Sql<?>... sqls);
+	void execute(Sql... sqls);
 
 	/**
 	 * This method try to give client most flexibility. You can do anything in

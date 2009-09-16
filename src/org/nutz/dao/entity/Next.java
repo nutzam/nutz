@@ -1,10 +1,9 @@
 package org.nutz.dao.entity;
 
 import org.nutz.dao.Database;
-import org.nutz.dao.FetchSql;
-import org.nutz.dao.Sql;
 import org.nutz.dao.TableName;
-import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.sql.SQLs;
+import org.nutz.dao.sql.Sql;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 
@@ -22,8 +21,7 @@ abstract class Next {
 				if (i % 2 == 0 && db.name().equalsIgnoreCase(next[i]))
 					return customizedNext(next[i + 1]);
 		} else { // Syntax Error
-			throw new RuntimeException("Wrong entity @Id defination!"
-					+ " The 'next' property must be name/value pair,"
+			throw new RuntimeException("Wrong entity @Id defination!" + " The 'next' property must be name/value pair,"
 					+ " or single value indicate how to fetch Id sequence,"
 					+ " or empty as defaul to use 'SELECT MAX(@Id) FROM @Table'");
 		}
@@ -45,17 +43,18 @@ abstract class Next {
 			return new DefaultStatic(name.value(), columnName);
 	}
 
-	abstract Sql<Integer> sql();
+	abstract Sql sql();
 
 	/*----------------------------------------------------------------*/
 	static class Static extends Next {
+
+		Sql sql;
+
 		Static(String s) {
-			sql = new FetchSql<Integer>().setCallback(NutDao.evalResultSetAsInt).valueOf(s);
+			sql = SQLs.fetchInt(s);
 		}
 
-		Sql<Integer> sql;
-
-		Sql<Integer> sql() {
+		Sql sql() {
 			return sql;
 		}
 	}
@@ -69,15 +68,15 @@ abstract class Next {
 
 	/*----------------------------------------------------------------*/
 	static class Dynamic extends Next {
+
+		private Segment seg;
+
 		Dynamic(Segment seg) {
 			this.seg = seg;
 		}
 
-		private Segment seg;
-
-		Sql<Integer> sql() {
-			Sql<Integer> sql = new FetchSql<Integer>().setCallback(NutDao.evalResultSetAsInt);
-			sql.valueOf(TableName.render(seg));
+		Sql sql() {
+			Sql sql = SQLs.fetchInt((TableName.render(seg)));
 			return sql;
 		}
 	}

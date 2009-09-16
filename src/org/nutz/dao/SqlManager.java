@@ -1,31 +1,24 @@
 package org.nutz.dao;
 
+import org.nutz.dao.sql.ComboSql;
+import org.nutz.dao.sql.Sql;
+
 public interface SqlManager {
 
-	/**
-	 * This method should be thread saft. So each time it will generate a new
-	 * SQL instance
-	 * 
-	 * @param key
-	 *            : the sql key
-	 * @return SQL object
-	 */
-	Sql<?> createSql(String key);
+	String get(String key) throws SqlNotFoundException;
 
-	/**
-	 * @param classOfT
-	 * @param key
-	 * @param <T>
-	 * @return
-	 */
-	<S extends Sql<?>> S createSql(Class<S> classOfT, String key);
+	Sql create(String key) throws SqlNotFoundException;
+
+	Sql fetch(String key) throws SqlNotFoundException;
+
+	Sql query(String key) throws SqlNotFoundException;
 
 	/**
 	 * @param keys
 	 * @return
 	 */
 	ComboSql createComboSql(String... keys);
-	
+
 	/**
 	 * @return the SQL number
 	 */
@@ -41,9 +34,9 @@ public interface SqlManager {
 	void refresh();
 
 	void addSql(String key, String value);
-	
+
 	void remove(String key);
-	
+
 	void clear();
 
 }
