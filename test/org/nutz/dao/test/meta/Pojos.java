@@ -4,13 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.nutz.Main;
-import org.nutz.dao.ComboSql;
 import org.nutz.dao.Dao;
-import org.nutz.dao.Sql;
-import org.nutz.dao.SqlManager;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.TableName;
-import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.tools.DTable;
 import org.nutz.dao.tools.DTableParser;
@@ -44,16 +40,12 @@ public class Pojos extends Service {
 		this.dao = dao;
 	}
 
-	private SqlManager sqls(String path) {
-		return new FileSqlManager(path);
-	}
-
 	public void processSqls(String sqls) {
 		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).database());
 		List<DTable> dts = parser.parse(sqls);
 		for (DTable dt : dts) {
-			Sql<?> c = maker.makeCreateSql(dt);
-			Sql<?> d = maker.makeDropSql(dt);
+			Sql c = maker.makeCreateSql(dt);
+			Sql d = maker.makeDropSql(dt);
 			int n = -1;
 			try {
 				n = dao.count(dt.getName());
@@ -73,12 +65,6 @@ public class Pojos extends Service {
 
 	public void init() {
 		processSqls(topTables);
-	}
-
-	void execFile(String path) {
-		ComboSql combo = sqls(path).createComboSql();
-		combo.set(".engine", Main.getEngin());
-		dao().execute(combo);
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
