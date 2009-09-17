@@ -2,10 +2,10 @@ package org.nutz.dao.sql;
 
 public class SQLs {
 
-	private static DefaultFieldTypeAdapter ADAPTER = new DefaultFieldTypeAdapter();
+	private static DefaultStatementAdapter ADAPTER = new DefaultStatementAdapter();
 
 	public static Sql create(String sql) {
-		return create(sql);
+		return create(new SqlLiteral().valueOf(sql));
 	}
 
 	public static Sql create(SqlLiteral sql) {

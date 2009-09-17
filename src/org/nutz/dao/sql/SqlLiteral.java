@@ -10,26 +10,28 @@ import org.nutz.lang.Strings;
 public class SqlLiteral {
 
 	private void reset() {
-		holders = new SimpleVarSet();
+		params = new SimpleVarSet();
 		vars = new SimpleVarSet();
 		stack = new WorkingStack();
 		varIndexes = new VarIndexes();
-		holderIndexes = new VarIndexes();
+		paramIndexes = new VarIndexes();
+		statementIndexes = new VarIndexes();
 	}
 
-	private VarSet holders;
+	private VarSet params;
 	private VarSet vars;
 	private WorkingStack stack;
 	private VarIndexes varIndexes;
-	private VarIndexes holderIndexes;
+	private VarIndexes paramIndexes;
+	private VarIndexes statementIndexes;
 	private String source;
 
-	public VarSet getHolders() {
-		return holders;
+	public VarSet getParams() {
+		return params;
 	}
 
-	public void setHolders(VarSet holders) {
-		this.holders = holders;
+	public void setParams(VarSet holders) {
+		this.params = holders;
 	}
 
 	public VarSet getVars() {
@@ -57,6 +59,7 @@ public class SqlLiteral {
 	 */
 	public SqlLiteral valueOf(String str) {
 		reset();
+		int statementIndex = 1;
 		source = str;
 		if (null == source)
 			return this;
@@ -76,8 +79,11 @@ public class SqlLiteral {
 				// Fail to read token name
 				if (sb.length() == 0) {
 					stack.push(c);
-				} else
-					holderIndexes.add(sb.toString(), stack.markToken());
+				} else {
+					String name = sb.toString();
+					paramIndexes.add(name, stack.markToken());
+					statementIndexes.add(name, statementIndex++);
+				}
 				break;
 			case '$':
 				if (cs[i + 1] == '$') {
@@ -104,8 +110,7 @@ public class SqlLiteral {
 	private int readTokenName(char[] cs, int i, StringBuilder sb) {
 		for (++i; i < cs.length; i++) {
 			int b = (int) cs[i];
-			if (b == 95 || b == 45 || b == 46 || (b >= 48 && b <= 57) || (b >= 65 && b <= 90)
-					|| (b >= 97 && b <= 122))
+			if (b == 95 || b == 45 || b == 46 || (b >= 48 && b <= 57) || (b >= 65 && b <= 90) || (b >= 97 && b <= 122))
 				sb.append((char) b);
 			else
 				break;
@@ -128,18 +133,14 @@ public class SqlLiteral {
 			setValueByIndexes(ss, varIndexes, name, vars.get(name));
 
 		// for holders
-		for (String name : holders.keys())
-			setValueByIndexes(ss, holderIndexes, name, "?");
+		for (String name : params.keys())
+			setValueByIndexes(ss, paramIndexes, name, "?");
 
 		return Lang.concat(ss).toString();
 	}
 
-	public int[] getHolderIndexes(String name) {
-		int[] is = this.holderIndexes.get(name);
-		if (null != is)
-			for (int i = 0; i < is.length; i++)
-				is[i] += 1;
-		return is;
+	public int[] getParamIndexes(String name) {
+		return statementIndexes.get(name);
 	}
 
 	@Override
@@ -154,8 +155,8 @@ public class SqlLiteral {
 			setValueByIndexes(ss, varIndexes, name, vars.get(name));
 
 		// for holders
-		for (String name : holders.keys())
-			setValueByIndexes(ss, holderIndexes, name, holders.get(name));
+		for (String name : params.keys())
+			setValueByIndexes(ss, paramIndexes, name, params.get(name));
 
 		return Lang.concat(ss).toString();
 	}
@@ -176,4 +177,11 @@ public class SqlLiteral {
 		return stack.firstEquals("DELETE");
 	}
 
+	public boolean isCREATE() {
+		return stack.firstEquals("CREATE");
+	}
+
+	public boolean isDROP() {
+		return stack.firstEquals("DROP");
+	}
 }

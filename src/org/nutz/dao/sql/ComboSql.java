@@ -1,8 +1,8 @@
 package org.nutz.dao.sql;
 
 import java.sql.Connection;
+
 import java.sql.SQLException;
-import java.sql.Savepoint;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -23,10 +23,14 @@ public class ComboSql implements Sql {
 	private ComboVarSet varss;
 	private ComboVarSet holderss;
 
+	public int count() {
+		return sqls.size();
+	}
+
 	public ComboSql add(Sql sql) {
 		sqls.add(sql);
 		varss.add(sql.vars());
-		holderss.add(sql.holders());
+		holderss.add(sql.params());
 		return this;
 	}
 
@@ -48,14 +52,11 @@ public class ComboSql implements Sql {
 		if (sqls.isEmpty())
 			return;
 		boolean old = conn.getAutoCommit();
-		Savepoint savepoint = conn.setSavepoint();
 		try {
 			conn.setAutoCommit(false);
 			for (Sql sql : sqls)
-				sql.execute(conn);
-			conn.commit();
-		} catch (Exception e) {
-			conn.rollback(savepoint);
+				if (null != sql)
+					sql.execute(conn);
 		} finally {
 			conn.setAutoCommit(old);
 		}
@@ -86,11 +87,11 @@ public class ComboSql implements Sql {
 		return re;
 	}
 
-	public VarSet holders() {
+	public VarSet params() {
 		return holderss;
 	}
 
-	public Sql setAdapter(FieldTypeAdapter adapter) {
+	public Sql setAdapter(StatementAdapter adapter) {
 		for (Sql sql : sqls)
 			sql.setAdapter(adapter);
 		return this;
@@ -130,18 +131,16 @@ public class ComboSql implements Sql {
 		return this;
 	}
 
-	@Override
 	public int getInt() {
 		throw Lang.makeThrow("Not implement yet!");
 	}
 
-	@Override
 	public <T> List<T> getList(Class<T> classOfT) {
 		throw Lang.makeThrow("Not implement yet!");
 	}
 
-	@Override
 	public <T> T getObject(Class<T> classOfT) {
 		throw Lang.makeThrow("Not implement yet!");
 	}
+
 }

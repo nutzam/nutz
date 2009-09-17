@@ -25,7 +25,6 @@ class SimpleVarSet implements VarSet {
 		return map.keySet();
 	}
 
-	@Override
 	public VarSet putAll(Map<String, Object> map) {
 		this.map.putAll(map);
 		return this;

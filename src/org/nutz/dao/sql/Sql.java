@@ -11,7 +11,7 @@ public interface Sql {
 
 	VarSet vars();
 
-	VarSet holders();
+	VarSet params();
 
 	SqlContext getContext();
 
@@ -27,7 +27,7 @@ public interface Sql {
 
 	Entity<?> getEntity();
 
-	Sql setAdapter(FieldTypeAdapter adapter);
+	Sql setAdapter(StatementAdapter adapter);
 
 	Sql setEntity(Entity<?> entity);
 

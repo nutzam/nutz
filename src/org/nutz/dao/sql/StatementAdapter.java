@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 import org.nutz.dao.entity.Entity;
 
-public interface FieldTypeAdapter {
+public interface StatementAdapter {
 
 	void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException;
 

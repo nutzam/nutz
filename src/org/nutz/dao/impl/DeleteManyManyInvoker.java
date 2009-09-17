@@ -27,7 +27,7 @@ class DeleteManyManyInvoker extends DeleteInvoker {
 						Sql sql = dao.maker().create(dao.maker().ptn.CLEARS_LINKS,
 								link.getRelation());
 						sql.vars().set("field", link.getTo());
-						sql.holders().set("value", value);
+						sql.params().set("value", value);
 						dao.execute(sql);
 					}
 				}

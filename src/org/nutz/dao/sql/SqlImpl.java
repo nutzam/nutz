@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,12 +14,13 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.lang.Strings;
 
-class SqlImpl implements Sql {
+public class SqlImpl implements Sql {
 
-	SqlImpl(SqlLiteral sql, FieldTypeAdapter adapter) {
+	SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
 		this.sql = sql;
 		this.adapter = adapter;
 		this.context = new SqlContext();
+		updateCount = -1;
 	}
 
 	private SqlLiteral sql;
@@ -26,7 +28,7 @@ class SqlImpl implements Sql {
 	private SqlCallback callback;
 	private Condition condition;
 	private Object result;
-	private FieldTypeAdapter adapter;
+	private StatementAdapter adapter;
 	private Entity<?> entity;
 	private int updateCount;
 
@@ -37,18 +39,40 @@ class SqlImpl implements Sql {
 
 	public void execute(Connection conn) throws SQLException {
 		mergeCondition();
-		PreparedStatement stat = conn.prepareStatement(sql.toPrepareStatementString());
-		adapter.process(stat, sql, entity);
-		stat.execute();
-		if (null != callback) {
-			callback.invoke(conn, stat, this);
-			updateCount = stat.getUpdateCount();
-			ResultSet rs = stat.getResultSet();
-			if (null != rs && !rs.isClosed())
+		updateCount = -1;
+		String str = sql.toPrepareStatementString();
+		// SELECT ...
+		if (sql.isSELECT()) {
+			if (null != callback) {
+				PreparedStatement stat = conn.prepareStatement(str, ResultSet.TYPE_SCROLL_INSENSITIVE,
+						ResultSet.CONCUR_READ_ONLY);
+				adapter.process(stat, sql, entity);
+				ResultSet rs = stat.executeQuery();
+				setResult(callback.invoke(conn, rs, this));
 				rs.close();
+				stat.close();
+			}
 		}
-		if (!stat.isClosed())
+		// DELETE | CREATE | DROP ...
+		else if (sql.isDELETE() || sql.isCREATE() || sql.isDROP()) {
+			Statement stat = conn.createStatement();
+			stat.execute(sql.toString());
 			stat.close();
+			if (null != callback)
+				callback.invoke(conn, null, this);
+		}
+		// UPDATE | INSERT ...
+		else if (sql.isUPDATE() || sql.isINSERT()) {
+			PreparedStatement stat = conn.prepareStatement(str, ResultSet.TYPE_SCROLL_INSENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			adapter.process(stat, sql, entity);
+			stat.execute();
+			updateCount = stat.getUpdateCount();
+			stat.close();
+			if (null != callback)
+				callback.invoke(conn, null, this);
+		}
+
 	}
 
 	private void mergeCondition() {
@@ -67,7 +91,7 @@ class SqlImpl implements Sql {
 		return updateCount;
 	}
 
-	public Sql setAdapter(FieldTypeAdapter adapter) {
+	public Sql setAdapter(StatementAdapter adapter) {
 		this.adapter = adapter;
 		return this;
 	}
@@ -77,8 +101,8 @@ class SqlImpl implements Sql {
 		return this;
 	}
 
-	public VarSet holders() {
-		return sql.getHolders();
+	public VarSet params() {
+		return sql.getParams();
 	}
 
 	public VarSet vars() {
@@ -135,13 +159,11 @@ class SqlImpl implements Sql {
 		return duplicate();
 	}
 
-	@Override
 	public int getInt() {
 		return Castors.me().castTo(result, int.class);
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public <T> List<T> getList(Class<T> classOfT) {
 		if (null == result)
 			return null;
@@ -161,7 +183,6 @@ class SqlImpl implements Sql {
 		return Castors.me().cast(result, result.getClass(), List.class, classOfT.getName());
 	}
 
-	@Override
 	public <T> T getObject(Class<T> classOfT) {
 		return Castors.me().castTo(result, classOfT);
 	}

@@ -45,7 +45,6 @@ public class ComboVarSet implements VarSet {
 		return this;
 	}
 
-	@Override
 	public VarSet putAll(Map<String, Object> map) {
 		for (VarSet vs : vss)
 			vs.putAll(map);

@@ -1,6 +1,5 @@
 package org.nutz.dao.entity;
 
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -8,6 +7,7 @@ import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Database;
+import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Lang;
@@ -26,10 +26,11 @@ public class EntityField {
 	private String columnName;
 	private Segment defaultValue;
 	private String _defv;
-	private Type.ENUM type;
+	private FieldType.ENUM fieldType;
 	private Method getter;
 	private Method setter;
 	private Next nextId;
+	private FieldAdapter statementSetter;
 
 	private Field field;
 	private Entity<?> entity;
@@ -46,8 +47,8 @@ public class EntityField {
 		return name != null;
 	}
 
-	public boolean isCaseInsensitive() {
-		return isName() && !name.casesensitive();
+	public boolean isCaseUnsensitive() {
+		return !name.casesensitive();
 	}
 
 	public boolean isAutoIncrement() {
@@ -121,8 +122,8 @@ public class EntityField {
 		 * Load misc attributes
 		 */
 		readonly = (field.getAnnotation(Readonly.class) != null);
-		Type t = field.getAnnotation(Type.class);
-		type = null == t ? Type.ENUM.AUTO : t.value();
+		FieldType t = field.getAnnotation(FieldType.class);
+		fieldType = null == t ? FieldType.ENUM.AUTO : t.value();
 		/*
 		 * Check default value
 		 */
@@ -135,10 +136,8 @@ public class EntityField {
 		// field
 		if (isAutoIncrement()) {
 			if (!field.isAccessible() && null == setter)
-				Lang.makeThrow(
-						"Entity field [%s]->[%s], so must be accessible or has a setter, %s",
-						entity.mirror.getType().getName(), field.getName(),
-						"for the reason it is auto-increament @Id.");
+				Lang.makeThrow("Entity field [%s]->[%s], so must be accessible or has a setter, %s", entity.mirror
+						.getType().getName(), field.getName(), "for the reason it is auto-increament @Id.");
 		}
 		/*
 		 * Evaluate the fetch next Id SQL
@@ -151,12 +150,14 @@ public class EntityField {
 		name = field.getAnnotation(Name.class);
 		if (isName()) {
 			if (!Mirror.me(field.getType()).isStringLike())
-				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.",
-						entity.mirror.getType().getName(), field.getName());
+				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.", entity.mirror.getType()
+						.getName(), field.getName());
 			notNull = true;
 		} else {
 			notNull = (field.getAnnotation(NotNull.class) != null);
 		}
+		/* Eval the FieldStatementSetter */
+		this.statementSetter = FieldAdapter.create(Mirror.me(field.getType()), fieldType);
 		/*
 		 * Finish parsing, return true. If current field is a Link (Return Link
 		 * object) or not @Column (return null) at the begining of this method.
@@ -192,8 +193,8 @@ public class EntityField {
 				return;
 			this.setValue(obj, v);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass()
-					.getName(), this.getField().getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass().getName(), this
+					.getField().getName(), e.getMessage());
 		}
 	}
 
@@ -203,8 +204,8 @@ public class EntityField {
 				return this.field.get(obj);
 			return getter.invoke(obj);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'",
-					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'", this.entity.mirror.getType()
+					.getName(), field.getName(), e.getMessage());
 		}
 	}
 
@@ -219,9 +220,13 @@ public class EntityField {
 			else
 				setter.invoke(obj, value);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'",
-					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'", this.entity.mirror.getType()
+					.getName(), field.getName(), e.getMessage());
 		}
+	}
+
+	public FieldAdapter getStatementSetter() {
+		return statementSetter;
 	}
 
 	public Sql getFetchSql() {
@@ -229,14 +234,19 @@ public class EntityField {
 	}
 
 	public boolean isInt() {
-		return Type.ENUM.INT == type;
+		return FieldType.ENUM.INT == fieldType;
 	}
 
 	public boolean isChar() {
-		return Type.ENUM.CHAR == type;
+		return FieldType.ENUM.CHAR == fieldType;
 	}
 
 	public boolean isAuto() {
-		return Type.ENUM.AUTO == type;
+		return FieldType.ENUM.AUTO == fieldType;
 	}
+
+	public FieldType.ENUM getFieldType() {
+		return fieldType;
+	}
+
 }

@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
-public @interface Type {
+public @interface FieldType {
 	public static enum ENUM {
 		AUTO, INT, CHAR
 	}

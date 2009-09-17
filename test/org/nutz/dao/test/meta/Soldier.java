@@ -56,4 +56,9 @@ public class Soldier {
 		this.tank = tank;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("%s (%d)", name, age);
+	}
+
 }

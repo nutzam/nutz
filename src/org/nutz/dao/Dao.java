@@ -41,9 +41,11 @@ public interface Dao {
 
 	<T> T insertLinks(T obj, String regex);
 
-	<T> T update(T obj);
+	int update(Object obj);
 
-	void update(Class<?> classOfT, Chain chain, Condition condition);
+	int update(String tableName, Chain chain, Condition condition);
+
+	int update(Class<?> classOfT, Chain chain, Condition condition);
 
 	<T> T updateWith(T obj, String regex);
 

@@ -1,7 +1,6 @@
 package org.nutz.dao.sql;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -10,12 +9,11 @@ import org.nutz.lang.Lang;
 
 public abstract class EntityCallback implements SqlCallback {
 
-	public void invoke(Connection conn, PreparedStatement stat, Sql sql) throws SQLException {
+	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
 		Entity<?> entity = sql.getEntity();
 		if (null == entity)
 			Lang.makeThrow("SQL without entity : %s", sql.toString());
-		Object re = process(stat.getResultSet(), entity, sql.getContext());
-		sql.setResult(re);
+		return process(rs, entity, sql.getContext());
 	}
 
 	protected abstract Object process(ResultSet rs, Entity<?> entity, SqlContext context) throws SQLException;

@@ -2,11 +2,11 @@ package org.nutz.dao.sql;
 
 import java.sql.Connection;
 
-import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public interface SqlCallback {
 
-	void invoke(Connection conn, PreparedStatement stat, Sql sql) throws SQLException;
+	Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException;
 
 }

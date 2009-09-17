@@ -34,8 +34,17 @@ class WorkingStack {
 	void finish() {
 		if (sb.length() > 0)
 			chain.add(sb.toString());
-		if (chain.size() > 0)
-			first = Strings.trim(chain.get(0)).toUpperCase();
+		if (chain.size() > 0) {
+			first = chain.get(0);
+			char[] cs = Strings.trim(first).toCharArray();
+			int i = 0;
+			for (; i < cs.length; i++) {
+				char c = cs[i];
+				if (c > 0 && c <= 32)
+					break;
+			}
+			first = String.valueOf(cs, 0, i).toUpperCase();
+		}
 	}
 
 	int markToken() {

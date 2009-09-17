@@ -3,6 +3,7 @@ package org.nutz.dao;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import org.nutz.dao.sql.SqlLiteralTest;
 import org.nutz.dao.test.entity.DynamicEntityParsing;
 import org.nutz.dao.test.entity.EntityParsing;
 import org.nutz.dao.test.mapping.*;
@@ -20,6 +21,6 @@ import org.nutz.dao.tools.AllTools;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { EntityParsing.class, DynamicEntityParsing.class, AllSqls.class,
-		AllMapping.class, AllNormal.class, CndTest.class, AllTools.class })
+@Suite.SuiteClasses( { EntityParsing.class, DynamicEntityParsing.class, AllSqls.class, AllMapping.class,
+		AllNormal.class, CndTest.class, AllTools.class, SqlLiteralTest.class })
 public class AllDao {}

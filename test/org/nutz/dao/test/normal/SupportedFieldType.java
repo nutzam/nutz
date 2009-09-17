@@ -53,7 +53,7 @@ public class SupportedFieldType extends DaoCase {
 		public TT enum_s;
 
 		@Column
-		@Type(Type.ENUM.INT)
+		@FieldType(FieldType.ENUM.INT)
 		public TT enum_i;
 
 		@Column

@@ -35,13 +35,14 @@ public class SqlMaker {
 		public String CLEAR = L2("DELETE FROM %s %s");
 		public String RESET = L("TRUNCATE TABLE %s");
 		public String CLEARS_LINKS = L("DELETE FROM %s WHERE $field=@value");
-		public String DELETE = L("DELETE FROM %s WHERE $field=@value");
-		public String FETCH = L("SELECT * FROM %s WHERE $field=@value");
-		public String FETCH_LOWER = L("SELECT * FROM %s WHERE LOWER($field)=LOWER(@value)");
+		public String DELETE = L("DELETE FROM $%s WHERE $pk=@pk");
+		public String FETCH = L("SELECT * FROM $%s WHERE $pk=@pk");
+		public String FETCH_LOWER = L("SELECT $* FROM %s WHERE LOWER($pk)=LOWER(@pk)");
 		public String QUERY = L2("SELECT * FROM %s %s");
-		public String UPDATE = L("UPDATE %s SET $fields WHERE $pk=@pk");
+		public String UPDATE = L("UPDATE $%s SET $fields WHERE $pk=@pk");
 		public String UPDATE_BATCH = L2("UPDATE %s SET $fields %s");
 		public String INSERT = L("INSERT INTO %s ($fields) VALUES($values)");
+		public String INSERT_MANYMANY = L("INSERT INTO %s ($from,$to) VALUES(@from,@to)");
 	}
 
 	public Sql updateBatch(String tableName, Chain chain) {
@@ -49,7 +50,7 @@ public class SqlMaker {
 		sql.vars().set(TN, tableName).set(CND, CNDV);
 		Chain c = chain.head();
 		while (c != null) {
-			sql.holders().set(c.name(), "@" + c.name());
+			sql.params().set(c.name(), "@" + c.name());
 			c = c.next();
 		}
 		return SQLs.create(sql.toString());
@@ -78,9 +79,11 @@ public class SqlMaker {
 		EntityField idf = en.getIdentifiedField();
 		sql.vars().set("fields", sb);
 		sql.vars().set("pk", idf.getColumnName());
-		sql.holders().set("pk", "@" + idf.getField().getName());
+		String fn = idf.getField().getName();
+		sql.params().set("pk", "@" + fn);
 		SqlImpl re = (SqlImpl) SQLs.create(sql.toString()).setEntity(en);
-		re.holders().putAll(map);
+		re.params().set(fn, idf.getValue(obj)).putAll(map);
+		re.vars().set(TN, en.getTableName());
 		return re;
 	}
 
@@ -90,12 +93,20 @@ public class SqlMaker {
 		return re;
 	}
 
-	public Sql fetch(String sql, String tableName) {
-		return create(sql, tableName).setCallback(SQLs.callback.fetch());
+	public Sql fetch(Entity<?> entity,EntityField ef) {
+		Sql sql;
+		if (ef.isName() && ef.isCaseUnsensitive()) {
+			sql = create(ptn.FETCH_LOWER, entity.getTableName());
+		} else {
+			sql = create(ptn.FETCH, entity.getTableName());
+		}
+		sql.vars().set("pk", ef.getColumnName());
+		sql.params().set("pk", "@" + ef.getField().getName());
+		return SQLs.create(sql.toString()).setEntity(entity).setCallback(SQLs.callback.fetch());
 	}
 
-	public Sql query(String sql, String tableName) {
-		return create(sql, tableName).setCallback(SQLs.callback.query());
+	public Sql query(String tableName) {
+		return create(ptn.QUERY, tableName).setCallback(SQLs.callback.query());
 	}
 
 	public Sql insert(Entity<?> en, Object obj) {
@@ -127,7 +138,7 @@ public class SqlMaker {
 		values.deleteCharAt(0);
 		sql.vars().set("fields", fields).set("values", values);
 		SqlImpl re = (SqlImpl) SQLs.create(sql.toString()).setEntity(en);
-		re.holders().putAll(map);
+		re.params().putAll(map);
 		return re;
 	}
 
