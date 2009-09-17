@@ -16,7 +16,8 @@ import static org.nutz.dao.sql.FieldTypes.*;
 
 public class DefaultFieldTypeAdapter implements FieldTypeAdapter {
 
-	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException {
+	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
+			throws SQLException {
 		if (null == entity)
 			processWithoutEntity(stat, sql);
 		else
@@ -24,8 +25,8 @@ public class DefaultFieldTypeAdapter implements FieldTypeAdapter {
 	}
 
 	private void processWithoutEntity(PreparedStatement stat, SqlLiteral sql) throws SQLException {
-		for (String name : sql.holders().keys()) {
-			Object obj = sql.holders().get(name);
+		for (String name : sql.getHolders().keys()) {
+			Object obj = sql.getHolders().get(name);
 			int[] is = sql.getHolderIndexes(name);
 			if (null == is || is.length == 0)
 				continue;
@@ -100,17 +101,21 @@ public class DefaultFieldTypeAdapter implements FieldTypeAdapter {
 		}
 	}
 
-	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException {
-		for (String name : sql.holders().keys()) {
-			Object obj = sql.holders().get(name);
+	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
+			throws SQLException {
+		for (EntityField ef : entity.fields()) {
+			String name = ef.getField().getName();
+			Object obj = sql.getHolders().get(name);
 			int[] is = sql.getHolderIndexes(name);
-			EntityField ef = entity.getField(name);
+			if (ef == null)
+				continue;
 			// NULL
 			if (null == obj) {
 				if (null != ef)
 					if (ef.isNotNull())
-						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity.getType().getName(), entity
-								.getTableName(), ef.getField().getName(), ef.getColumnName());
+						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
+								.getType().getName(), entity.getTableName(), ef.getField()
+								.getName(), ef.getColumnName());
 				asNull(stat, is);
 			}
 			// String

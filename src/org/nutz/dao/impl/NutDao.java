@@ -11,19 +11,16 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.AbstractSql;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnectionHolder;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.Database;
-import org.nutz.dao.ExecutableSql;
-import org.nutz.dao.FetchSql;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Pager;
-import org.nutz.dao.QuerySql;
-import org.nutz.dao.Sql;
-import org.nutz.dao.SqlMaker;
+import org.nutz.dao.sql.SQLs;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlMaker;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.Chain;
@@ -171,13 +168,7 @@ public class NutDao implements Dao {
 		this.setSqlManager(sqlManager);
 	}
 
-	private int evalInt(FetchSql<Integer> sql) {
-		sql.setCallback(evalResultSetAsInt);
-		this.execute(sql);
-		return ((Integer) sql.getResult()).intValue();
-	}
-
-	public void execute(final Sql<?>... sqls) {
+	public void execute(final Sql... sqls) {
 		run(new ConnCallback() {
 			public Object invoke(Connection conn) throws Exception {
 				for (int i = 0; i < sqls.length; i++) {
@@ -207,25 +198,16 @@ public class NutDao implements Dao {
 
 	}
 
-	public void executeBySqlKey(String... keys) {
-		List<Sql<?>> sqlList = new ArrayList<Sql<?>>();
-		for (String key : keys) {
-			Sql<?> sql = sqls().create(key);
-			sqlList.add(sql);
-		}
-		Sql<?> sqls[] = new Sql<?>[sqlList.size()];
-		this.execute(sqlList.toArray(sqls));
-	}
-
 	public int count(Class<?> classOfT) {
 		return count(classOfT, null);
 	}
 
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
-		FetchSql<Integer> sql = maker.makeCountSQL(entity, entity.getViewName());
-		sql.setCondition(condition);
-		return evalInt(sql);
+		Sql sql = maker.create(maker.ptn.COUNT, entity.getTableName()).setEntity(entity);
+		sql.setCallback(SQLs.callback.integer()).setCondition(condition);
+		execute(sql);
+		return (Integer) sql.getResult();
 	}
 
 	public int count(String tableName) {
@@ -233,9 +215,10 @@ public class NutDao implements Dao {
 	}
 
 	public int count(String tableName, Condition condition) {
-		FetchSql<Integer> sql = maker.makeCountSQL(null, tableName);
-		sql.setCondition(condition);
-		return evalInt(sql);
+		Sql sql = maker.create(maker.ptn.COUNT, tableName);
+		sql.setCallback(SQLs.callback.integer()).setCondition(condition);
+		execute(sql);
+		return (Integer) sql.getResult();
 	}
 
 	public <T> void clear(Class<T> classOfT) {
@@ -248,22 +231,23 @@ public class NutDao implements Dao {
 
 	public <T> void clear(Class<T> classOfT, Condition condition) {
 		Entity<T> entity = getEntity(classOfT);
-		ExecutableSql sql;
+		Sql sql;
 		if (null == condition) {
-			sql = maker.makeResetSQL(entity.getTableName());
+			sql = maker.create(maker.ptn.RESET, entity.getTableName());
 		} else {
-			sql = maker.makeClearSQL(entity.getTableName());
+			sql = maker.create(maker.ptn.CLEAR, entity.getTableName());
 			sql.setCondition(condition).setEntity(entity);
 		}
 		execute(sql);
 	}
 
 	public void clear(String tableName, Condition condition) {
-		Sql<?> sql;
+		Sql sql;
 		if (null == condition) {
-			sql = maker.makeResetSQL(tableName);
+			sql = maker.create(maker.ptn.RESET, tableName);
 		} else {
-			sql = maker.makeClearSQL(tableName).setCondition(condition);
+			sql = maker.create(maker.ptn.CLEAR, tableName);
+			sql.setCondition(condition);
 		}
 		execute(sql);
 	}
@@ -280,9 +264,14 @@ public class NutDao implements Dao {
 							if (link.getReferField() == null) {
 								dao.clear(link.getTargetClass(), null);
 							} else {
-								Object value = entity.getMirror().getValue(obj, link.getReferField());
+								Object value = entity.getMirror().getValue(obj,
+										link.getReferField());
 								Entity<?> ta = dao.getEntity(link.getTargetClass());
-								Sql<?> sql = dao.maker().makeClearOneManySql(ta, link, value);
+								Sql sql = dao.maker().create(dao.maker().ptn.CLEARS_LINKS,
+										ta.getTableName());
+								sql.vars().set("field",
+										ta.getField(link.getTargetField().getName()));
+								sql.holders().set("value", value);
 								dao.execute(sql);
 							}
 						}
@@ -290,7 +279,10 @@ public class NutDao implements Dao {
 					lns.walkManyManys(new LinkWalker() {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
-							Sql<?> sql = dao.maker().makeClearManyManyRelationSql(link, value);
+							Sql sql = dao.maker().create(dao.maker().ptn.CLEARS_LINKS,
+									link.getRelation());
+							sql.vars().set("field", link.getFrom());
+							sql.holders().set("value", value);
 							dao.execute(sql);
 						}
 					});
@@ -298,7 +290,10 @@ public class NutDao implements Dao {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
 							Entity<?> ta = dao.getEntity(link.getTargetClass());
-							Sql<?> sql = dao.maker().makeClearOneManySql(ta, link, value);
+							Sql sql = dao.maker().create(dao.maker().ptn.CLEARS_LINKS,
+									ta.getTableName());
+							sql.vars().set("field", ta.getField(link.getTargetField().getName()));
+							sql.holders().set("value", value);
 							dao.execute(sql);
 						}
 					});
@@ -310,19 +305,23 @@ public class NutDao implements Dao {
 
 	public <T> void delete(Class<T> classOfT, long id) {
 		Entity<T> entity = getEntity(classOfT);
-		EntityField idField = checkIdField(entity);
-		ExecutableSql sql = maker.makeDeleteSQL(entity, idField);
-		execute(sql.set(idField.getField().getName(), id));
+		EntityField ef = checkIdField(entity);
+		Sql sql = maker.create(maker.ptn.DELETE, entity.getTableName());
+		sql.vars().set("field", ef.getColumnName());
+		sql.holders().set("value", id);
+		execute(sql);
 	}
 
 	public <T> void delete(Class<T> classOfT, String name) {
 		Entity<T> entity = getEntity(classOfT);
-		EntityField nameField = checkNameField(entity);
-		AbstractSql<?> sql = maker.makeDeleteSQL(entity, nameField);
-		execute(sql.set(nameField.getField().getName(), name));
+		EntityField ef = checkNameField(entity);
+		Sql sql = maker.create(maker.ptn.DELETE, entity.getTableName());
+		sql.vars().set("field", ef.getColumnName());
+		sql.holders().set("value", name);
+		execute(sql);
 	}
 
-	private void _deleteSelf(Entity<?> entity, Object obj) {
+	void _deleteSelf(Entity<?> entity, Object obj) {
 		if (null != obj) {
 			EntityField idnf = entity.getIdentifiedField();
 			if (null == idnf)
@@ -334,8 +333,8 @@ public class NutDao implements Dao {
 				String name = idnf.getValue(obj).toString();
 				delete(obj.getClass(), name);
 			} else {
-				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)", new Exception(
-						"Wrong identified field"));
+				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)",
+						new Exception("Wrong identified field"));
 			}
 		}
 	}
@@ -346,76 +345,6 @@ public class NutDao implements Dao {
 			_deleteSelf(entity, obj);
 		}
 	}
-
-	/*--------------------------------------------------------------------*/
-	static abstract class DeleteInvoker extends LinkInvoker {
-
-		protected NutDao dao;
-
-		DeleteInvoker(NutDao dao) {
-			this.dao = dao;
-		}
-
-	}
-
-	/*--------------------------------------------------------------------*/
-	static class DeleteManyInvoker extends DeleteInvoker {
-		DeleteManyInvoker(NutDao dao) {
-			super(dao);
-		}
-
-		void invoke(Link link, Object many) {
-			Object first = Lang.first(many);
-			if (null != first) {
-				final Entity<?> entity = dao.getEntity(first.getClass());
-				Lang.each(many, new Each<Object>() {
-					public void invoke(int i, Object obj, int length) throws ExitLoop, LoopException {
-						dao._deleteSelf(entity, obj);
-					}
-				});
-			}
-		}
-	}
-
-	/*--------------------------------------------------------------------*/
-	static class DeleteManyManyInvoker extends DeleteInvoker {
-
-		DeleteManyManyInvoker(NutDao dao) {
-			super(dao);
-		}
-
-		void invoke(final Link link, Object mm) {
-			Object first = Lang.first(mm);
-			if (null != first) {
-				final Entity<?> entity = dao.getEntity(first.getClass());
-				Lang.each(mm, new Each<Object>() {
-					public void invoke(int i, Object ta, int length) throws ExitLoop, LoopException {
-						if (null != ta) {
-							dao._deleteSelf(entity, ta);
-							Object value = Mirror.me(ta.getClass()).getValue(ta, link.getTargetField());
-							dao.execute(dao.maker().makeDeleteManyManyRelationSql(link, value));
-						}
-					}
-				});
-			}
-		}
-
-	}
-
-	/*--------------------------------------------------------------------*/
-	static class DeleteOneInvoker extends DeleteInvoker {
-
-		DeleteOneInvoker(NutDao dao) {
-			super(dao);
-		}
-
-		void invoke(Link link, Object one) {
-			dao.delete(one);
-		}
-
-	}
-
-	/*--------------------------------------------------------------------*/
 
 	public <T> void deleteWith(final T obj, String regex) {
 		if (null != obj) {
@@ -521,8 +450,8 @@ public class NutDao implements Dao {
 						c = new ManyCondition(link, value);
 					}
 					List<?> list = query(link.getTargetClass(), c, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list, list.getClass(),
-							link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
+							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
 				}
 			});
 			// ManyMany
@@ -530,8 +459,8 @@ public class NutDao implements Dao {
 				void walk(Link link) {
 					ManyManyCondition mmc = new ManyManyCondition(dao, link, obj);
 					List<?> list = query(link.getTargetClass(), mmc, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list, list.getClass(),
-							link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
+							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
 				}
 			});
 			// one
@@ -576,7 +505,8 @@ public class NutDao implements Dao {
 		if (null != entity.getIdField() && entity.getIdField().isAutoIncrement()) {
 			fetchIdSql = entity.getIdField().getFetchSql();
 			if (null == fetchIdSql)
-				fetchIdSql = maker.makeFetchMaxSQL(entity, checkIdField(entity)).setCallback(evalResultSetAsInt);
+				fetchIdSql = maker.makeFetchMaxSQL(entity, checkIdField(entity)).setCallback(
+						evalResultSetAsInt);
 		}
 		// Execute SQL
 		execute(insertSql, fetchIdSql);
@@ -749,7 +679,8 @@ public class NutDao implements Dao {
 		execute(sql.setCondition(condition));
 	}
 
-	public void updateRelation(Class<?> classOfT, String regex, final Chain chain, final Condition condition) {
+	public void updateRelation(Class<?> classOfT, String regex, final Chain chain,
+			final Condition condition) {
 		final Links lns = new Links(null, getEntity(classOfT), regex);
 		Trans.exec(new Atom() {
 			public void run() {

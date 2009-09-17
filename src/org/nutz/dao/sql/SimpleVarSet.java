@@ -1,21 +1,18 @@
 package org.nutz.dao.sql;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 class SimpleVarSet implements VarSet {
+
 	private HashMap<String, Object> map;
-	private List<String> keys;
 
 	SimpleVarSet() {
 		this.map = new HashMap<String, Object>();
-		this.keys = new ArrayList<String>();
 	}
 
 	public VarSet set(String name, Object value) {
-		if (!map.containsKey(name))
-			keys.add(name);
 		map.put(name, value);
 		return this;
 	}
@@ -24,7 +21,14 @@ class SimpleVarSet implements VarSet {
 		return map.get(name);
 	}
 
-	public List<String> keys() {
-		return keys;
+	public Set<String> keys() {
+		return map.keySet();
 	}
+
+	@Override
+	public VarSet putAll(Map<String, Object> map) {
+		this.map.putAll(map);
+		return this;
+	}
+
 }

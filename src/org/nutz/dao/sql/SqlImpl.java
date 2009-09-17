@@ -4,9 +4,14 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
+import org.nutz.lang.Strings;
 
 class SqlImpl implements Sql {
 
@@ -25,9 +30,13 @@ class SqlImpl implements Sql {
 	private Entity<?> entity;
 	private int updateCount;
 
+	public String toString() {
+		mergeCondition();
+		return sql.toString();
+	}
+
 	public void execute(Connection conn) throws SQLException {
-		if (null != condition)
-			sql.vars().set("condition", condition.toString(entity));
+		mergeCondition();
 		PreparedStatement stat = conn.prepareStatement(sql.toPrepareStatementString());
 		adapter.process(stat, sql, entity);
 		stat.execute();
@@ -40,6 +49,18 @@ class SqlImpl implements Sql {
 		}
 		if (!stat.isClosed())
 			stat.close();
+	}
+
+	private void mergeCondition() {
+		if (null != condition) {
+			String cnd = Strings.trim(condition.toString(entity));
+			if (cnd != null) {
+				String cndu = cnd.toUpperCase();
+				if (!cndu.startsWith("WHERE") && !cndu.startsWith("ORDER BY"))
+					cnd += " WHERE ";
+				sql.getVars().set("condition", cnd);
+			}
+		}
 	}
 
 	public int getUpdateCount() {
@@ -57,11 +78,11 @@ class SqlImpl implements Sql {
 	}
 
 	public VarSet holders() {
-		return sql.vars();
+		return sql.getHolders();
 	}
 
 	public VarSet vars() {
-		return sql.holders();
+		return sql.getVars();
 	}
 
 	public SqlContext getContext() {
@@ -99,6 +120,10 @@ class SqlImpl implements Sql {
 		return entity;
 	}
 
+	public SqlLiteral getSqlLiteral() {
+		return sql;
+	}
+
 	public Sql duplicate() {
 		Sql newSql = SQLs.create(sql).setCallback(callback).setCondition(condition);
 		newSql.getContext().setMatcher(context.getMatcher()).setPager(context.getPager());
@@ -108,6 +133,37 @@ class SqlImpl implements Sql {
 	@Override
 	public Object clone() {
 		return duplicate();
+	}
+
+	@Override
+	public int getInt() {
+		return Castors.me().castTo(result, int.class);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T> List<T> getList(Class<T> classOfT) {
+		if (null == result)
+			return null;
+		if (result instanceof List) {
+			if (((List<T>) result).isEmpty())
+				return (List<T>) result;
+			if (((List) result).get(0).getClass().isAssignableFrom(classOfT))
+				return (List<T>) result;
+			ArrayList list = new ArrayList(((List) result).size());
+			int i = 0;
+			Iterator it = ((List) result).iterator();
+			while (it.hasNext()) {
+				list.set(i++, Castors.me().castTo(it.next(), classOfT));
+			}
+			return list;
+		}
+		return Castors.me().cast(result, result.getClass(), List.class, classOfT.getName());
+	}
+
+	@Override
+	public <T> T getObject(Class<T> classOfT) {
+		return Castors.me().castTo(result, classOfT);
 	}
 
 }

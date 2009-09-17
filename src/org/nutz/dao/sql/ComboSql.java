@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
+import org.nutz.lang.Lang;
 
 public class ComboSql implements Sql {
 
@@ -127,5 +128,20 @@ public class ComboSql implements Sql {
 		for (Sql sql : sqls)
 			sql.setResult(result);
 		return this;
+	}
+
+	@Override
+	public int getInt() {
+		throw Lang.makeThrow("Not implement yet!");
+	}
+
+	@Override
+	public <T> List<T> getList(Class<T> classOfT) {
+		throw Lang.makeThrow("Not implement yet!");
+	}
+
+	@Override
+	public <T> T getObject(Class<T> classOfT) {
+		throw Lang.makeThrow("Not implement yet!");
 	}
 }

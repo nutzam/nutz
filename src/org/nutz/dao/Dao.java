@@ -15,11 +15,6 @@ public interface Dao {
 	SqlManager sqls();
 
 	/**
-	 * @return SQLMaker interface
-	 */
-	SqlMaker maker();
-
-	/**
 	 * Batch excute a group SQL
 	 * 
 	 * @param sqls
@@ -37,15 +32,6 @@ public interface Dao {
 	 *            A ConnCallback Object
 	 */
 	void run(ConnCallback callback);
-
-	/**
-	 * For your convenience to customized your SQL. This method will execute
-	 * those sql stored in your SQLs file under the order of keys you given.
-	 * 
-	 * @param keys
-	 *            The key of each SQL in your SQL file
-	 */
-	void executeBySqlKey(String... keys);
 
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
 

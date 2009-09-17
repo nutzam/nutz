@@ -78,7 +78,7 @@ public class FieldFilter {
 		return this;
 	}
 
-	static FieldMatcher get(Class<?> type) {
+	public static FieldMatcher get(Class<?> type) {
 		FieldFilter ff = FF.get();
 		if (null == ff)
 			return null;

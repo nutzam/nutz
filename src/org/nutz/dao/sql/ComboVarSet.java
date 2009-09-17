@@ -1,9 +1,11 @@
 package org.nutz.dao.sql;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class ComboVarSet implements VarSet {
 
@@ -30,19 +32,23 @@ public class ComboVarSet implements VarSet {
 		return list;
 	}
 
-	public List<String> keys() {
-		HashMap<String, Object> map = new HashMap<String, Object>();
+	public Set<String> keys() {
+		Set<String> keys = new LinkedHashSet<String>();
 		for (VarSet vs : vss)
-			for (String key : vs.keys())
-				map.put(key, null);
-		List<String> keys = new ArrayList<String>(map.size());
-		keys.addAll(map.keySet());
+			keys.addAll(vs.keys());
 		return keys;
 	}
 
 	public VarSet set(String name, Object value) {
 		for (VarSet vs : vss)
 			vs.set(name, value);
+		return this;
+	}
+
+	@Override
+	public VarSet putAll(Map<String, Object> map) {
+		for (VarSet vs : vss)
+			vs.putAll(map);
 		return this;
 	}
 
