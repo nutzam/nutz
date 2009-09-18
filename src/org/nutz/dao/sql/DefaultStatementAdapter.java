@@ -10,7 +10,8 @@ import org.nutz.lang.Mirror;
 
 public class DefaultStatementAdapter implements StatementAdapter {
 
-	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException {
+	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
+			throws SQLException {
 		if (null == entity)
 			processWithoutEntity(stat, sql);
 		else
@@ -28,7 +29,8 @@ public class DefaultStatementAdapter implements StatementAdapter {
 		}
 	}
 
-	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException {
+	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
+			throws SQLException {
 		for (EntityField ef : entity.fields()) {
 			String name = ef.getField().getName();
 			Object obj = sql.getParams().get(name);
@@ -40,8 +42,11 @@ public class DefaultStatementAdapter implements StatementAdapter {
 			if (null == obj) {
 				if (null != ef)
 					if (ef.isNotNull())
-						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity.getType().getName(), entity
-								.getTableName(), ef.getField().getName(), ef.getColumnName());
+						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
+								.getType().getName(), entity.getTableName(), ef.getField()
+								.getName(), ef.getColumnName());
+				FieldAdapter.AS_NULL.set(stat, null, is);
+				continue;
 			}
 			ef.getStatementSetter().set(stat, obj, is);
 		}

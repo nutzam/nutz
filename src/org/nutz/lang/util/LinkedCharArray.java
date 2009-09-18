@@ -56,8 +56,6 @@ public class LinkedCharArray {
 	}
 
 	public char popFirst() {
-		if (size() == 0)
-			return (char) 0;
 		return innerGet(offset++);
 	}
 
@@ -69,8 +67,6 @@ public class LinkedCharArray {
 	}
 
 	public char popLast() {
-		if (size() == 0)
-			return (char) 0;
 		return innerGet(--cursor);
 	}
 

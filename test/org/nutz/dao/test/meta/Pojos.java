@@ -41,7 +41,7 @@ public class Pojos extends Service {
 	}
 
 	public void processSqls(String sqls) {
-		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).database());
+		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
 		List<DTable> dts = parser.parse(sqls);
 		for (DTable dt : dts) {
 			Sql c = maker.makeCreateSql(dt);

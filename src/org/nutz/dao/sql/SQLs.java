@@ -12,22 +12,22 @@ public class SQLs {
 		return new SqlImpl(sql, ADAPTER);
 	}
 
-	public static Sql fetch(String sql) {
-		return create(sql).setCallback(callback.fetch());
+	public static Sql fetchEntity(String sql) {
+		return create(sql).setCallback(callback.fetchEntity());
 	}
 
 	public static Sql fetchInt(String sql) {
 		return create(sql).setCallback(callback.integer());
 	}
 
-	public static Sql query(String sql) {
-		return create(sql).setCallback(callback.query());
+	public static Sql queryEntity(String sql) {
+		return create(sql).setCallback(callback.queryEntity());
 	}
 
 	public static __ callback = new __();
 
 	public static class __ {
-		public SqlCallback fetch() {
+		public SqlCallback fetchEntity() {
 			return new FetchEntityCallback();
 		}
 
@@ -35,7 +35,7 @@ public class SQLs {
 			return new FetchIntegerCallback();
 		}
 
-		public SqlCallback query() {
+		public SqlCallback queryEntity() {
 			return new QueryEntityCallback();
 		}
 	}

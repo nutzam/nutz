@@ -12,7 +12,7 @@ public abstract class EntityCallback implements SqlCallback {
 	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
 		Entity<?> entity = sql.getEntity();
 		if (null == entity)
-			Lang.makeThrow("SQL without entity : %s", sql.toString());
+			throw Lang.makeThrow("SQL without entity : %s", sql.toString());
 		return process(rs, entity, sql.getContext());
 	}
 

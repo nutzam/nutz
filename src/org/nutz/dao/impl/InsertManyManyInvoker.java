@@ -27,11 +27,9 @@ class InsertManyManyInvoker extends InsertInvoker {
 						ta = dao.fetch(ta);
 					}
 					Object toValue = mta.getValue(ta, link.getTargetField());
-					//Sql<?> sql = dao.maker().makeInsertManyManySql(link, fromValue, toValue);
-					SqlMaker maker = ((NutDao)dao).maker();
-					Sql sql = maker.create(maker.ptn.INSERT_MANYMANY, link.getRelation());
-					sql.vars().set("from", link.getFrom()).set("to", link.getTo());
-					sql.params().set("from",fromValue).set("to", toValue);
+					SqlMaker maker = ((NutDao) dao).maker();
+					Sql sql = maker.insert_manymany(link);
+					sql.params().set(link.getFrom(), fromValue).set(link.getTo(), toValue);
 					dao.execute(sql);
 				}
 			});

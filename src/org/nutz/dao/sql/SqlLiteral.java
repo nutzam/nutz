@@ -2,6 +2,7 @@ package org.nutz.dao.sql;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.LinkedIntArray;
 
 /**
  * @author zozoh
@@ -110,7 +111,8 @@ public class SqlLiteral {
 	private int readTokenName(char[] cs, int i, StringBuilder sb) {
 		for (++i; i < cs.length; i++) {
 			int b = (int) cs[i];
-			if (b == 95 || b == 45 || b == 46 || (b >= 48 && b <= 57) || (b >= 65 && b <= 90) || (b >= 97 && b <= 122))
+			if (b == 95 || b == 45 || b == 46 || (b >= 48 && b <= 57) || (b >= 65 && b <= 90)
+					|| (b >= 97 && b <= 122))
 				sb.append((char) b);
 			else
 				break;
@@ -118,25 +120,29 @@ public class SqlLiteral {
 		return i - 1;
 	}
 
-	private void setValueByIndexes(String[] ss, VarIndexes indexes, String name, Object value) {
-		String vs = null == value ? "" : value.toString();
-		int[] is = indexes.get(name);
-		if (null != is)
-			for (int i : is)
-				ss[stack.getIndex(i)] = vs;
+	public String toPreparedStatementString() {
+		String[] ss = stack.cloneChain();
+		autoFill(vars, varIndexes, ss);
+		fillParams(ss, "?");
+		return Lang.concat(ss).toString();
 	}
 
-	public String toPrepareStatementString() {
-		String[] ss = stack.cloneChain();
-		// for vars
-		for (String name : vars.keys())
-			setValueByIndexes(ss, varIndexes, name, vars.get(name));
+	private void autoFill(VarSet set, VarIndexes indexes, String[] ss) {
+		for (String name : set.keys()) {
+			Object value = set.get(name);
+			String vs = null == value ? "" : value.toString();
+			int[] is = indexes.get(name);
+			if (null != is)
+				for (int i : is)
+					ss[stack.getIndex(i)] = vs;
+		}
+	}
 
-		// for holders
-		for (String name : params.keys())
-			setValueByIndexes(ss, paramIndexes, name, "?");
-
-		return Lang.concat(ss).toString();
+	private void fillParams(String[] ss, String v) {
+		for (LinkedIntArray lia : paramIndexes.values()) {
+			for (int i : lia.toArray())
+				ss[stack.getIndex(i)] = v;
+		}
 	}
 
 	public int[] getParamIndexes(String name) {
@@ -148,16 +154,15 @@ public class SqlLiteral {
 		return new SqlLiteral().valueOf(source);
 	}
 
+	public String getSource() {
+		return source;
+	}
+
 	public String toString() {
 		String[] ss = stack.cloneChain();
-		// for vars
-		for (String name : vars.keys())
-			setValueByIndexes(ss, varIndexes, name, vars.get(name));
-
-		// for holders
-		for (String name : params.keys())
-			setValueByIndexes(ss, paramIndexes, name, params.get(name));
-
+		autoFill(vars, varIndexes, ss);
+		fillParams(ss, "?");
+		autoFill(params, paramIndexes, ss);
 		return Lang.concat(ss).toString();
 	}
 
@@ -183,5 +188,9 @@ public class SqlLiteral {
 
 	public boolean isDROP() {
 		return stack.firstEquals("DROP");
+	}
+	
+	public boolean isTRUNCATE() {
+		return stack.firstEquals("TRUNCATE");
 	}
 }

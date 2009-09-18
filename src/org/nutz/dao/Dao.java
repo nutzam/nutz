@@ -9,6 +9,8 @@ import org.nutz.dao.sql.Sql;
 
 public interface Dao {
 
+	DatabaseMeta meta();
+	
 	/**
 	 * @return SQLManager interface
 	 */
@@ -36,6 +38,10 @@ public interface Dao {
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
 
 	<T> T insert(T obj);
+
+	void insert(String tableName, Chain chain);
+
+	void insert(Class<?> classOfT, Chain chain);
 
 	<T> T insertWith(T obj, String regex);
 

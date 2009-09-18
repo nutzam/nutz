@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Lang;
@@ -187,7 +187,7 @@ public class Entity<T> {
 	 * @param classOfT
 	 * @return TODO
 	 */
-	public boolean parse(Class<T> classOfT, Database db) {
+	public boolean parse(Class<T> classOfT, DatabaseMeta db) {
 		this.mirror = Mirror.me(classOfT);
 		Table table = evalTable(classOfT);
 		if (null == table)

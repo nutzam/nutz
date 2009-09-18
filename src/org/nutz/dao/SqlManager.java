@@ -9,10 +9,6 @@ public interface SqlManager {
 
 	Sql create(String key) throws SqlNotFoundException;
 
-	Sql fetch(String key) throws SqlNotFoundException;
-
-	Sql query(String key) throws SqlNotFoundException;
-
 	/**
 	 * @param keys
 	 * @return

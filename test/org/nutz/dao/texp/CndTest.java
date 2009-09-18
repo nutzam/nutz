@@ -2,7 +2,7 @@ package org.nutz.dao.texp;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.Expression;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityHolder;
@@ -17,7 +17,7 @@ public class CndTest extends TestCase {
 
 	@Override
 	protected void setUp() throws Exception {
-		en = holder.getEntity(Worker.class, new Database.Unknwon());
+		en = holder.getEntity(Worker.class, new DatabaseMeta());
 	}
 
 	public void test00() {

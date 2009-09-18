@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
 import org.nutz.dao.test.meta.Base;
@@ -17,7 +17,7 @@ public class EntityParsing {
 	@Before
 	public void setUp() {
 		en = new Entity<Base>();
-		en.parse(Base.class,new Database.Unknwon());
+		en.parse(Base.class, new DatabaseMeta());
 	}
 
 	@Test
@@ -44,6 +44,5 @@ public class EntityParsing {
 		Link link = en.getManyManys().get("fighters");
 		assertEquals("dao_m_base_fighter", link.getRelation());
 	}
-	
 
 }

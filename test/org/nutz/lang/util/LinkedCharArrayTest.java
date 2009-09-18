@@ -31,8 +31,6 @@ public class LinkedCharArrayTest {
 		assertEquals('E', lia.popFirst());
 		assertEquals('F', lia.popFirst());
 		assertEquals('G', lia.popFirst());
-		assertEquals(0, lia.popFirst());
-		assertEquals(0, lia.popFirst());
 		assertEquals(0, lia.size());
 	}
 
@@ -45,8 +43,6 @@ public class LinkedCharArrayTest {
 		assertEquals('C', lia.popLast());
 		assertEquals('B', lia.popLast());
 		assertEquals('A', lia.popLast());
-		assertEquals(0, lia.popLast());
-		assertEquals(0, lia.popLast());
 		assertEquals(0, lia.size());
 	}
 

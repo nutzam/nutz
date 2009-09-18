@@ -89,7 +89,7 @@ public class FileSqlManager implements SqlManager {
 	public void refresh() {
 		this.buildSQLMaps();
 	}
-	
+
 	public String get(String key) {
 		String sql = sqlMaps.get(key);
 		if (null == sql)
@@ -99,16 +99,6 @@ public class FileSqlManager implements SqlManager {
 
 	public Sql create(String key) throws SqlNotFoundException {
 		return SQLs.create(get(key));
-	}
-	
-	
-
-	public Sql fetch(String key) throws SqlNotFoundException {
-		return SQLs.fetch(get(key));
-	}
-
-	public Sql query(String key) throws SqlNotFoundException {
-		return SQLs.query(get(key));
 	}
 
 	public ComboSql createComboSql(String... keys) {
@@ -147,7 +137,8 @@ public class FileSqlManager implements SqlManager {
 					files = Lang.array(f);
 				try {
 					for (File file : files) {
-						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams.fileInr(file)));
+						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams
+								.fileInr(file)));
 						Iterator<String> it = p.keys().iterator();
 						keys = new ArrayList<String>(p.map.size());
 						while (it.hasNext()) {

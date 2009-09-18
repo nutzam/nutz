@@ -1,6 +1,6 @@
 package org.nutz.dao.entity;
 
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.TableName;
 import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.sql.Sql;
@@ -11,14 +11,14 @@ import static java.lang.String.*;
 
 abstract class Next {
 
-	static Next create(Database db, EntityName entityName, String[] next, String columnName) {
+	static Next create(DatabaseMeta db, EntityName entityName, String[] next, String columnName) {
 		if (next.length == 0) { // Default
 			return defaultNext(entityName, columnName);
 		} else if (next.length == 1) { // Single value
 			return customizedNext(next[0]);
 		} else if (next.length % 2 == 0) { // Name/Value
 			for (int i = 0; i < next.length; i++)
-				if (i % 2 == 0 && db.name().equalsIgnoreCase(next[i]))
+				if (i % 2 == 0 && db.getProductName().equalsIgnoreCase(next[i]))
 					return customizedNext(next[i + 1]);
 		} else { // Syntax Error
 			throw new RuntimeException("Wrong entity @Id defination!" + " The 'next' property must be name/value pair,"

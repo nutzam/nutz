@@ -2,7 +2,7 @@ package org.nutz.dao.tools;
 
 import java.util.Iterator;
 
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.tools.impl.MysqlTableSqlMaker;
@@ -12,12 +12,12 @@ import org.nutz.lang.Strings;
 
 public abstract class TableSqlMaker {
 
-	public static TableSqlMaker newInstance(Database db) {
-		if ("oracle".equalsIgnoreCase(db.name())) {
+	public static TableSqlMaker newInstance(DatabaseMeta db) {
+		if (db.isOracle()) {
 			return new OracleTableSqlMaker();
-		} else if ("mysql".equalsIgnoreCase(db.name())) {
+		} else if (db.isMySql()) {
 			return new MysqlTableSqlMaker();
-		} else if ("psql".equalsIgnoreCase(db.name())) {
+		} else if (db.isPostgresql()) {
 			return new PostgresqlTableSqlMaker();
 		}
 		return new TableSqlMaker() {

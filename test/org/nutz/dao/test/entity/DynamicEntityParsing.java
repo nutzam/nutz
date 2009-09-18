@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
@@ -15,7 +15,7 @@ public class DynamicEntityParsing {
 	@Test
 	public void tank_many_many_link_test() {
 		Entity<Tank> en = new Entity<Tank>();
-		assertTrue(en.parse(Tank.class, new Database.Unknwon()));
+		assertTrue(en.parse(Tank.class, new DatabaseMeta()));
 
 		Link link = en.getManyManys().get("members");
 		TableName.set(1);

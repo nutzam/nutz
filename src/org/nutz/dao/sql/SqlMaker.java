@@ -11,135 +11,190 @@ import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
+import org.nutz.dao.entity.Link;
 
 public class SqlMaker {
 
-	private static String TN = "tableName";
-	private static String TNV = "$" + TN;
-	private static String CND = "condition";
-	private static String CNDV = "$" + CND;
-
-	public Patterns ptn = new Patterns();
-
-	private String L(String sql) {
-		return format(sql, TNV);
+	public Sql insert_manymany(Link link) {
+		return SQLs.create(format("INSERT INTO %s (%s,%s) VALUES(@%s,@%s)", link.getRelation(),
+				link.getFrom(), link.getTo(), link.getFrom(), link.getTo()));
 	}
 
-	private String L2(String sql) {
-		return format(sql, TNV, CNDV);
-	}
-
-	public class Patterns {
-		public String COUNT = L2("SELECT COUNT(*) FROM %s %s");
-		public String MAX = L("SELECT MAX($field) FROM %s");
-		public String CLEAR = L2("DELETE FROM %s %s");
-		public String RESET = L("TRUNCATE TABLE %s");
-		public String CLEARS_LINKS = L("DELETE FROM %s WHERE $field=@value");
-		public String DELETE = L("DELETE FROM $%s WHERE $pk=@pk");
-		public String FETCH = L("SELECT * FROM $%s WHERE $pk=@pk");
-		public String FETCH_LOWER = L("SELECT $* FROM %s WHERE LOWER($pk)=LOWER(@pk)");
-		public String QUERY = L2("SELECT * FROM %s %s");
-		public String UPDATE = L("UPDATE $%s SET $fields WHERE $pk=@pk");
-		public String UPDATE_BATCH = L2("UPDATE %s SET $fields %s");
-		public String INSERT = L("INSERT INTO %s ($fields) VALUES($values)");
-		public String INSERT_MANYMANY = L("INSERT INTO %s ($from,$to) VALUES(@from,@to)");
-	}
-
-	public Sql updateBatch(String tableName, Chain chain) {
-		Sql sql = SQLs.create(ptn.UPDATE_BATCH);
-		sql.vars().set(TN, tableName).set(CND, CNDV);
-		Chain c = chain.head();
-		while (c != null) {
-			sql.params().set(c.name(), "@" + c.name());
-			c = c.next();
-		}
-		return SQLs.create(sql.toString());
-	}
-
-	public Sql update(Entity<?> en, Object obj) {
-		SqlImpl sql = (SqlImpl) SQLs.create(ptn.UPDATE);
-		StringBuilder sb = new StringBuilder();
+	private static String evalActivedFields(Entity<?> en) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
-		Map<String, Object> map = new HashMap<String, Object>();
-		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
-			EntityField ef = it.next();
-			String fn = ef.getField().getName();
-			if (ef.isId() || ef.isReadonly())
-				continue;
-			if (null != fm) {
-				if (fm.isIgnoreNull() && null == ef.getValue(obj))
-					continue;
-				else if (!fm.match(fn))
-					continue;
+		if (null != fm) {
+			StringBuilder sb = new StringBuilder();
+			for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
+				EntityField enf = it.next();
+				if (fm.match(enf.getField().getName())) {
+					sb.append(enf.getColumnName()).append(',');
+				}
 			}
-			sb.append(',').append(ef.getColumnName()).append('=').append("@").append(fn);
-			map.put(fn, ef.getValue(obj));
+			if (sb.length() > 0) {
+				sb.deleteCharAt(sb.length() - 1);
+				return sb.toString();
+			}
 		}
-		sb.deleteCharAt(0);
-		EntityField idf = en.getIdentifiedField();
-		sql.vars().set("fields", sb);
-		sql.vars().set("pk", idf.getColumnName());
-		String fn = idf.getField().getName();
-		sql.params().set("pk", "@" + fn);
-		SqlImpl re = (SqlImpl) SQLs.create(sql.toString()).setEntity(en);
-		re.params().set(fn, idf.getValue(obj)).putAll(map);
-		re.vars().set(TN, en.getTableName());
-		return re;
-	}
-
-	public Sql create(String sql, String tableName) {
-		Sql re = SQLs.create(sql);
-		re.vars().set(TN, tableName);
-		return re;
-	}
-
-	public Sql fetch(Entity<?> entity,EntityField ef) {
-		Sql sql;
-		if (ef.isName() && ef.isCaseUnsensitive()) {
-			sql = create(ptn.FETCH_LOWER, entity.getTableName());
-		} else {
-			sql = create(ptn.FETCH, entity.getTableName());
-		}
-		sql.vars().set("pk", ef.getColumnName());
-		sql.params().set("pk", "@" + ef.getField().getName());
-		return SQLs.create(sql.toString()).setEntity(entity).setCallback(SQLs.callback.fetch());
-	}
-
-	public Sql query(String tableName) {
-		return create(ptn.QUERY, tableName).setCallback(SQLs.callback.query());
+		return "*";
 	}
 
 	public Sql insert(Entity<?> en, Object obj) {
-		SqlImpl sql = (SqlImpl) SQLs.create(ptn.INSERT);
-		sql.vars().set(TN, en.getTableName());
 		StringBuilder fields = new StringBuilder();
 		StringBuilder values = new StringBuilder();
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			String fn = ef.getField().getName();
+			String fn = ef.getFieldName();
 			if (ef.isAutoIncrement() || ef.isReadonly())
 				continue;
+			Object value = ef.getValue(obj);
 			if (null != fm) {
-				if (fm.isIgnoreNull() && null == ef.getValue(obj))
+				if (fm.isIgnoreNull() && null == value)
+					continue;
+				else if (!fm.match(fn))
+					continue;
+			} else if (null == value) {
+				if (ef.hasDefaultValue())
+					value = ef.getDefaultValue(obj);
+				else
+					continue;
+			}
+			fields.append(',').append(ef.getColumnName());
+			values.append(", @").append(fn);
+			map.put(fn, value);
+		}
+		fields.deleteCharAt(0);
+		values.deleteCharAt(0);
+		Sql sql = SQLs.create(
+				format("INSERT INTO %s(%s) VALUES(%s)", en.getTableName(), fields, values))
+				.setEntity(en);
+		sql.params().putAll(map);
+		return sql;
+	}
+
+	private static void storeChainToSql(Chain chain, Sql sql) {
+		Chain c;
+		c = chain.head();
+		while (c != null) {
+			sql.params().set(c.name(), c.value());
+			c = c.next();
+		}
+	}
+
+	public Sql insertChain(String table, Chain chain) {
+		StringBuilder flds = new StringBuilder();
+		StringBuilder vals = new StringBuilder();
+		Chain c = chain.head();
+		while (c != null) {
+			flds.append(",").append(c.name());
+			vals.append(",@").append(c.name());
+			c = c.next();
+		}
+		flds.deleteCharAt(0);
+		vals.deleteCharAt(0);
+		Sql sql = SQLs.create(format("INSERT INTO %s(%s) VALUES(%s)", table, flds, vals));
+		storeChainToSql(chain, sql);
+		return sql;
+	}
+
+	public Sql updateBatch(String table, Chain chain) {
+		StringBuilder sb = new StringBuilder();
+		Chain c = chain.head();
+		while (c != null) {
+			sb.append(',').append(c.name()).append("=@").append(c.name());
+			c = c.next();
+		}
+		sb.deleteCharAt(0);
+		Sql sql = SQLs.create(format("UPDATE %s SET %s $condition", table, sb));
+		storeChainToSql(chain, sql);
+		return sql;
+	}
+
+	public Sql update(Entity<?> en, Object obj) {
+		StringBuilder sb = new StringBuilder();
+		FieldMatcher fm = FieldFilter.get(en.getType());
+		Map<String, Object> map = new HashMap<String, Object>();
+		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
+			EntityField ef = it.next();
+			String fn = ef.getFieldName();
+			if (ef.isId() || ef.isReadonly())
+				continue;
+			Object value = ef.getValue(obj);
+			if (null != fm) {
+				if (fm.isIgnoreNull() && null == value)
 					continue;
 				else if (!fm.match(fn))
 					continue;
 			}
-			if (null != obj && !ef.hasDefaultValue() && null == ef.getValue(obj))
-				continue;
-			// fields.append(SQLUtils.formatName(ef.getColumnName()));
-			fields.append(',').append(ef.getColumnName());
-			values.append(", @").append(fn);
-			map.put(fn, ef.getValue(obj));
+			sb.append(',').append(ef.getColumnName()).append('=').append("@").append(fn);
+			map.put(fn, value);
 		}
-		fields.deleteCharAt(0);
-		values.deleteCharAt(0);
-		sql.vars().set("fields", fields).set("values", values);
-		SqlImpl re = (SqlImpl) SQLs.create(sql.toString()).setEntity(en);
-		re.params().putAll(map);
-		return re;
+		sb.deleteCharAt(0);
+		EntityField idf = en.getIdentifiedField();
+		String fmt = format("UPDATE %s SET %s WHERE %s=@%s", en.getTableName(), sb, idf
+				.getColumnName(), idf.getFieldName());
+		Sql sql = SQLs.create(fmt).setEntity(en);
+		sql.params().putAll(map).set(idf.getFieldName(), idf.getValue(obj));
+		return sql;
+	}
+
+	public Sql delete(Entity<?> entity, EntityField ef) {
+		return SQLs.create(
+				format("DELETE FROM %s WHERE %s=@%s", entity.getTableName(), ef.getColumnName(), ef
+						.getFieldName())).setEntity(entity);
+	}
+
+	public Sql clear_links(Entity<?> ta, Link link, Object value) {
+		EntityField tafld = ta.getField(link.getTargetField().getName());
+		String fldnm = tafld.getFieldName();
+		Sql sql = clear_links(ta.getTableName(), tafld.getColumnName(), fldnm).setEntity(ta);
+		sql.params().set(fldnm, value);
+		return sql;
+	}
+
+	public Sql clear_links(String table, String dbfld, String javafld) {
+		return SQLs.create(format("DELETE FROM %s WHERE %s=@%s", table, dbfld, javafld));
+	}
+
+	public Sql clear(Entity<?> entity) {
+		return clear(entity.getTableName()).setEntity(entity);
+	}
+
+	public Sql clear(String table) {
+		return SQLs.create(format("DELETE FROM %s $condition", table));
+	}
+
+	public Sql truncate(String table) {
+		return SQLs.create("TRUNCATE TABLE " + table);
+	}
+
+	public Sql func(Entity<?> entity, String type, String field) {
+		return func(entity.getTableName(), type, field).setEntity(entity);
+	}
+
+	public Sql func(String table, String type, String field) {
+		String fmt = format("SELECT %s(%s) FROM %s $condition", type, field, table);
+		return SQLs.fetchInt(fmt);
+	}
+
+	public Sql fetch(Entity<?> entity, EntityField ef) {
+		String fields = evalActivedFields(entity);
+		String fmt;
+		if (ef.isName() && ef.isCaseUnsensitive()) {
+			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity
+					.getTableName(), ef.getColumnName(), ef.getFieldName());
+		} else {
+			fmt = format("SELECT %s FROM %s WHERE %s=@%s", fields, entity.getTableName(), ef
+					.getColumnName(), ef.getFieldName());
+		}
+		return SQLs.fetchEntity(fmt).setEntity(entity);
+	}
+
+	public Sql query(Entity<?> entity) {
+		String fields = evalActivedFields(entity);
+		String fmt = format("SELECT %s FROM %s $condition", fields, entity.getTableName());
+		return SQLs.queryEntity(fmt).setEntity(entity);
 	}
 
 }

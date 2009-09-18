@@ -11,6 +11,7 @@ import org.junit.Test;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.dao.Chain;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
@@ -24,6 +25,26 @@ public class SupportedFieldType extends DaoCase {
 	}
 
 	@Test
+	public void insert_char_field() {
+		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj",
+				Character.valueOf('O')).add("name", "ABC"));
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		assertEquals('t', et.char_p);
+		assertEquals('O', et.char_obj.charValue());
+	}
+
+	@Test
+	public void insert_timestamp_field() {
+		Timestamp tm = new Timestamp(System.currentTimeMillis());
+		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqldt", tm));
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		if (dao.meta().isPostgresql())
+			assertEquals(tm.getTime(), et.sqlDT.getTime());
+		else
+			assertEquals(tm.getTime() / 1000, et.sqlDT.getTime() / 1000);
+	}
+
+	@Test
 	public void check_update_sqlTimestamp() {
 		EntityTypes exp = new EntityTypes();
 		exp.name = "T";
@@ -32,7 +53,7 @@ public class SupportedFieldType extends DaoCase {
 		dao.insert(exp);
 		exp = dao.fetch(EntityTypes.class, "T");
 		// MySql TIMESTAMP precision only to second
-		assertEquals(tm.getTime()/1000, exp.sqlDT.getTime()/1000);
+		assertEquals(tm.getTime() / 1000, exp.sqlDT.getTime() / 1000);
 	}
 
 	@Table("dao_supported_type")

@@ -40,12 +40,11 @@ public class SqlImpl implements Sql {
 	public void execute(Connection conn) throws SQLException {
 		mergeCondition();
 		updateCount = -1;
-		String str = sql.toPrepareStatementString();
 		// SELECT ...
 		if (sql.isSELECT()) {
 			if (null != callback) {
-				PreparedStatement stat = conn.prepareStatement(str, ResultSet.TYPE_SCROLL_INSENSITIVE,
-						ResultSet.CONCUR_READ_ONLY);
+				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
+						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
 				adapter.process(stat, sql, entity);
 				ResultSet rs = stat.executeQuery();
 				setResult(callback.invoke(conn, rs, this));
@@ -53,21 +52,21 @@ public class SqlImpl implements Sql {
 				stat.close();
 			}
 		}
-		// DELETE | CREATE | DROP ...
-		else if (sql.isDELETE() || sql.isCREATE() || sql.isDROP()) {
-			Statement stat = conn.createStatement();
-			stat.execute(sql.toString());
+		// UPDATE | INSERT | DELETE | TRUNCATE ...
+		else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
+			PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
+					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			adapter.process(stat, sql, entity);
+			stat.execute();
+			updateCount = stat.getUpdateCount();
 			stat.close();
 			if (null != callback)
 				callback.invoke(conn, null, this);
 		}
-		// UPDATE | INSERT ...
-		else if (sql.isUPDATE() || sql.isINSERT()) {
-			PreparedStatement stat = conn.prepareStatement(str, ResultSet.TYPE_SCROLL_INSENSITIVE,
-					ResultSet.CONCUR_UPDATABLE);
-			adapter.process(stat, sql, entity);
-			stat.execute();
-			updateCount = stat.getUpdateCount();
+		// CREATE | DROP
+		else {
+			Statement stat = conn.createStatement();
+			stat.execute(sql.toString());
 			stat.close();
 			if (null != callback)
 				callback.invoke(conn, null, this);
@@ -81,7 +80,7 @@ public class SqlImpl implements Sql {
 			if (cnd != null) {
 				String cndu = cnd.toUpperCase();
 				if (!cndu.startsWith("WHERE") && !cndu.startsWith("ORDER BY"))
-					cnd += " WHERE ";
+					cnd = " WHERE " + cnd;
 				sql.getVars().set("condition", cnd);
 			}
 		}

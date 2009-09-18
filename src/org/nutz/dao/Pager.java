@@ -18,7 +18,7 @@ public abstract class Pager {
 	/*----------------------------------------------------------------*/
 	public static <T extends Pager> Pager create(Class<T> type, int pageNumber, int pageSize) {
 		Pager p;
-		if (null == type) {
+		if (null == type || type == Pager.class) {
 			p = new Pager() {
 				protected String getLimitString(Entity<?> entity) {
 					return null;

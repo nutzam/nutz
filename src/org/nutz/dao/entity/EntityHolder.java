@@ -3,7 +3,7 @@ package org.nutz.dao.entity;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 
 public class EntityHolder {
 
@@ -21,7 +21,7 @@ public class EntityHolder {
 	 *         existed
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> Entity<T> getEntity(Class<T> klass, Database db) {
+	public <T> Entity<T> getEntity(Class<T> klass, DatabaseMeta db) {
 		Entity<T> m = (Entity<T>) mappings.get(klass);
 		if (null == m) {
 			synchronized (this) {

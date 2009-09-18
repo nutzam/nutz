@@ -1,7 +1,9 @@
 package org.nutz.dao.sql;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.lang.util.LinkedIntArray;
 
@@ -27,6 +29,14 @@ class VarIndexes {
 		if (null == lia)
 			return null;
 		return lia.toArray();
+	}
+
+	Set<String> names() {
+		return map.keySet();
+	}
+
+	Collection<LinkedIntArray> values() {
+		return map.values();
 	}
 
 }

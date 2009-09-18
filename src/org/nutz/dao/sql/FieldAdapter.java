@@ -7,13 +7,15 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
 
+import org.nutz.castor.Castors;
 import org.nutz.dao.entity.annotation.FieldType;
 import org.nutz.lang.Mirror;
 
 public abstract class FieldAdapter {
 
-	private static FieldAdapter AS_NULL = new AsNull();
+	public static FieldAdapter AS_NULL = new AsNull();
 	private static FieldAdapter AS_STRING = new AsString();
+	private static FieldAdapter AS_CHAR = new AsChar();
 	private static FieldAdapter AS_INTEGER = new AsInteger();
 	private static FieldAdapter AS_BIGDECIMAL = new AsBigDecimal();
 	private static FieldAdapter AS_BOOLEAN = new AsBoolean();
@@ -32,16 +34,22 @@ public abstract class FieldAdapter {
 	private static FieldAdapter AS_OBJECT = new AsObject();
 
 	public static FieldAdapter create(Mirror<?> mirror, FieldType.ENUM type) {
+		// NULL
 		if (null == mirror)
 			return AS_NULL;
+		// String and char
 		if (mirror.isStringLike())
 			return AS_STRING;
+		// Int
 		if (mirror.isInt())
 			return AS_INTEGER;
+		// Boolean
 		if (mirror.isBoolean())
 			return AS_BOOLEAN;
+		// Long
 		if (mirror.isLong())
 			return AS_LONG;
+		// Enum
 		if (mirror.isEnum()) {
 			if (null != type) {
 				if (type == FieldType.ENUM.INT)
@@ -49,27 +57,39 @@ public abstract class FieldAdapter {
 			}
 			return AS_ENUM_CHAR;
 		}
-		if (mirror.isByte())
-			return AS_BYTE;
-		if (mirror.isShort())
-			return AS_SHORT;
-		if (mirror.isFloat())
-			return AS_FLOAT;
-		if (mirror.isDouble())
-			return AS_DOUBLE;
-		if (mirror.isOf(BigDecimal.class))
-			return AS_BIGDECIMAL;
-		if (mirror.isOf(Calendar.class))
-			return AS_CALENDAR;
+		// Char
+		if (mirror.isChar())
+			return AS_CHAR;
+		// Timestamp
 		if (mirror.isOf(Timestamp.class))
 			return AS_TIMESTAMP;
+		// Byte
+		if (mirror.isByte())
+			return AS_BYTE;
+		// Short
+		if (mirror.isShort())
+			return AS_SHORT;
+		// Float
+		if (mirror.isFloat())
+			return AS_FLOAT;
+		// Double
+		if (mirror.isDouble())
+			return AS_DOUBLE;
+		// BigDecimal
+		if (mirror.isOf(BigDecimal.class))
+			return AS_BIGDECIMAL;
+		// Calendar
+		if (mirror.isOf(Calendar.class))
+			return AS_CALENDAR;
+		// java.util.Date
 		if (mirror.isOf(java.util.Date.class))
 			return AS_DATE;
+		// java.sql.Date
 		if (mirror.isOf(java.sql.Date.class))
 			return AS_SQLDATE;
+		// java.sql.Time
 		if (mirror.isOf(java.sql.Time.class))
 			return AS_SQLTIME;
-
 		return AS_OBJECT;
 	}
 
@@ -85,7 +105,11 @@ public abstract class FieldAdapter {
 
 	static class AsEnumInt extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			int v = ((Enum<?>) obj).ordinal();
+			int v;
+			if (obj instanceof Enum<?>)
+				v = ((Enum<?>) obj).ordinal();
+			else
+				v = Castors.me().castTo(obj, int.class);
 			for (int i : is)
 				stat.setInt(i, v);
 		}
@@ -93,7 +117,7 @@ public abstract class FieldAdapter {
 
 	static class AsEnumChar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			String v = ((Enum<?>) obj).name();
+			String v = obj.toString();
 			for (int i : is)
 				stat.setString(i, v);
 		}
@@ -101,8 +125,9 @@ public abstract class FieldAdapter {
 
 	static class AsObject extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			String v = Castors.me().castToString(obj);
 			for (int i : is)
-				stat.setObject(i, obj);
+				stat.setString(i, v);
 		}
 
 	}
@@ -114,96 +139,182 @@ public abstract class FieldAdapter {
 		}
 	}
 
+	static class AsChar extends FieldAdapter {
+		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			String s;
+			if (obj instanceof Character) {
+				int c = ((Character) obj).charValue();
+				if (c >= 0 && c <= 32)
+					s = " ";
+				else
+					s = String.valueOf((char) c);
+			} else
+				s = obj.toString();
+			for (int i : is)
+				stat.setString(i, s);
+		}
+	}
+
 	static class AsInteger extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			int v;
+			if (obj instanceof Number)
+				v = ((Number) obj).intValue();
+			else
+				v = Castors.me().castTo(obj.toString(), int.class);
 			for (int i : is)
-				stat.setInt(i, ((Integer) obj).intValue());
+				stat.setInt(i, v);
 		}
 	}
 
 	static class AsBigDecimal extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			BigDecimal v;
+			if (obj instanceof BigDecimal)
+				v = (BigDecimal) obj;
+			else if (obj instanceof Number)
+				v = BigDecimal.valueOf(((Number) obj).longValue());
+			else
+				v = new BigDecimal(obj.toString());
 			for (int i : is)
-				stat.setBigDecimal(i, (BigDecimal) obj);
+				stat.setBigDecimal(i, v);
 		}
 	}
 
 	static class AsBoolean extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			boolean v;
+			if (obj instanceof Boolean)
+				v = (Boolean) obj;
+			else if (obj instanceof Number)
+				v = ((Number) obj).intValue() > 0;
+			else if (obj instanceof Character)
+				v = Character.toUpperCase((Character) obj) == 'T';
+			else
+				v = Boolean.valueOf(obj.toString());
 			for (int i : is)
-				stat.setBoolean(i, ((Boolean) obj).booleanValue());
+				stat.setBoolean(i, v);
 		}
 	}
 
 	static class AsLong extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			long v;
+			if (obj instanceof Number)
+				v = ((Number) obj).longValue();
+			else
+				v = Castors.me().castTo(obj.toString(), long.class);
 			for (int i : is)
-				stat.setLong(i, ((Long) obj).longValue());
+				stat.setLong(i, v);
 		}
 	}
 
 	static class AsByte extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			byte v;
+			if (obj instanceof Number)
+				v = ((Number) obj).byteValue();
+			else
+				v = Castors.me().castTo(obj.toString(), byte.class);
 			for (int i : is)
-				stat.setByte(i, ((Byte) obj).byteValue());
+				stat.setByte(i, v);
 		}
 	}
 
 	static class AsShort extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			short v;
+			if (obj instanceof Number)
+				v = ((Number) obj).shortValue();
+			else
+				v = Castors.me().castTo(obj.toString(), short.class);
 			for (int i : is)
-				stat.setShort(i, ((Short) obj).shortValue());
+				stat.setShort(i, v);
 		}
 	}
 
 	static class AsFloat extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			float v;
+			if (obj instanceof Number)
+				v = ((Number) obj).floatValue();
+			else
+				v = Castors.me().castTo(obj.toString(), float.class);
 			for (int i : is)
-				stat.setFloat(i, ((Float) obj).floatValue());
+				stat.setFloat(i, v);
 		}
 	}
 
 	static class AsDouble extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			double v;
+			if (obj instanceof Number)
+				v = ((Number) obj).doubleValue();
+			else
+				v = Castors.me().castTo(obj.toString(), double.class);
 			for (int i : is)
-				stat.setDouble(i, ((Double) obj).doubleValue());
+				stat.setDouble(i, v);
 		}
 	}
 
 	static class AsCalendar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			Timestamp ts = new Timestamp(((Calendar) obj).getTimeInMillis());
+			Timestamp v;
+			if (obj instanceof Calendar)
+				v = new Timestamp(((Calendar) obj).getTimeInMillis());
+			else
+				v = Castors.me().castTo(obj, Timestamp.class);
 			for (int i : is)
-				stat.setTimestamp(i, ts);
+				stat.setTimestamp(i, v);
 		}
 	}
 
 	static class AsTimestamp extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			Timestamp v;
+			if (obj instanceof Timestamp)
+				v = (Timestamp) obj;
+			else
+				v = Castors.me().castTo(obj, Timestamp.class);
 			for (int i : is)
-				stat.setTimestamp(i, (Timestamp) obj);
+				stat.setTimestamp(i, v);
 		}
 	}
 
 	static class AsDate extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			Timestamp ts = new Timestamp(((java.util.Date) obj).getTime());
+			Timestamp v;
+			if (obj instanceof java.util.Date)
+				v = new Timestamp(((java.util.Date) obj).getTime());
+			else
+				v = Castors.me().castTo(obj, Timestamp.class);
 			for (int i : is)
-				stat.setTimestamp(i, ts);
+				stat.setTimestamp(i, v);
 		}
 	}
 
 	static class AsSqlDate extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			java.sql.Date v;
+			if (obj instanceof java.sql.Date)
+				v = (java.sql.Date) obj;
+			else
+				v = Castors.me().castTo(obj, java.sql.Date.class);
 			for (int i : is)
-				stat.setDate(i, ((java.sql.Date) obj));
+				stat.setDate(i, v);
 		}
 	}
 
 	static class AsSqlTime extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
+			java.sql.Time v;
+			if (obj instanceof java.sql.Time)
+				v = (java.sql.Time) obj;
+			else
+				v = Castors.me().castTo(obj, java.sql.Time.class);
 			for (int i : is)
-				stat.setTime(i, ((java.sql.Time) obj));
+				stat.setTime(i, v);
 		}
 	}
+
 }

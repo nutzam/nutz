@@ -57,6 +57,8 @@ public class ComboSql implements Sql {
 			for (Sql sql : sqls)
 				if (null != sql)
 					sql.execute(conn);
+			if (old)
+				conn.commit();
 		} finally {
 			conn.setAutoCommit(old);
 		}

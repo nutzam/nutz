@@ -6,7 +6,7 @@ import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.Database;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.entity.annotation.*;
@@ -95,7 +95,7 @@ public class EntityField {
 		return CharSequence.class.isAssignableFrom(field.getType());
 	}
 
-	Object valueOf(Database db, EntityName entityName, Mirror<?> mirror, Field field) {
+	Object valueOf(DatabaseMeta db, EntityName entityName, Mirror<?> mirror, Field field) {
 		/*
 		 * Evaluate @One|@Many|@ManyMany
 		 */
@@ -136,8 +136,10 @@ public class EntityField {
 		// field
 		if (isAutoIncrement()) {
 			if (!field.isAccessible() && null == setter)
-				Lang.makeThrow("Entity field [%s]->[%s], so must be accessible or has a setter, %s", entity.mirror
-						.getType().getName(), field.getName(), "for the reason it is auto-increament @Id.");
+				Lang.makeThrow(
+						"Entity field [%s]->[%s], so must be accessible or has a setter, %s",
+						entity.mirror.getType().getName(), field.getName(),
+						"for the reason it is auto-increament @Id.");
 		}
 		/*
 		 * Evaluate the fetch next Id SQL
@@ -150,8 +152,8 @@ public class EntityField {
 		name = field.getAnnotation(Name.class);
 		if (isName()) {
 			if (!Mirror.me(field.getType()).isStringLike())
-				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.", entity.mirror.getType()
-						.getName(), field.getName());
+				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.",
+						entity.mirror.getType().getName(), field.getName());
 			notNull = true;
 		} else {
 			notNull = (field.getAnnotation(NotNull.class) != null);
@@ -193,8 +195,8 @@ public class EntityField {
 				return;
 			this.setValue(obj, v);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass().getName(), this
-					.getField().getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass()
+					.getName(), this.getField().getName(), e.getMessage());
 		}
 	}
 
@@ -204,8 +206,8 @@ public class EntityField {
 				return this.field.get(obj);
 			return getter.invoke(obj);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'", this.entity.mirror.getType()
-					.getName(), field.getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'",
+					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
 		}
 	}
 
@@ -220,8 +222,8 @@ public class EntityField {
 			else
 				setter.invoke(obj, value);
 		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'", this.entity.mirror.getType()
-					.getName(), field.getName(), e.getMessage());
+			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'",
+					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
 		}
 	}
 
@@ -247,6 +249,10 @@ public class EntityField {
 
 	public FieldType.ENUM getFieldType() {
 		return fieldType;
+	}
+
+	public String getFieldName() {
+		return getField().getName();
 	}
 
 }
