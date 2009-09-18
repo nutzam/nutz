@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
-import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
@@ -63,7 +63,7 @@ public class CustomizedSqlsTest extends DaoCase {
 		Platoon p = pojos.create4Platoon(Base.make("xyz"), "GG");
 		Sql sql = dao.sqls().create("tank.query").setEntity(dao.getEntity(Tank.class));
 		sql.vars().set("id", p.getId());
-		sql.setCallback(SQLs.callback.queryEntity());
+		sql.setCallback(Sqls.callback.queryEntity());
 		dao.execute(sql);
 		assertEquals(2, sql.getList(Tank.class).size());
 	}

@@ -29,9 +29,12 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void batch_update_partly() {
-		dao.update(Fighter.class, Chain.make("type", "F15"), Cnd.where("type", "=", "SU_35"));
-		dao.update(Fighter.class, Chain.make("type", "SU_35"), Cnd.where("id", "<", 5));
-		assertEquals(4, dao.count(Fighter.class, Cnd.where("type", "=", "SU_35")));
+		int re = dao.update(Fighter.class, Chain.make("type", "F15"), Cnd.where("type", "=", "SU_35"));
+		assertEquals(1,re);
+		int maxId = dao.getMaxId(Fighter.class);
+		re = dao.update(Fighter.class, Chain.make("type", "UFO"), Cnd.where("id", ">", maxId-5));
+		assertEquals(5,re);
+		assertEquals(re, dao.count(Fighter.class, Cnd.where("type", "=", "UFO")));
 	}
 
 	@Test

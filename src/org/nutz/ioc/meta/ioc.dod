@@ -8,7 +8,7 @@ nut_object {
 }
 
 nut_lifecycle {
-  id INT +PK,
+  id INT PK,
   born VARCHAR(100),
   depose VARCHAR(100),
   fetch VARCHAR(100)

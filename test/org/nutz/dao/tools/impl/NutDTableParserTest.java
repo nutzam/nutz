@@ -34,8 +34,7 @@ public class NutDTableParserTest {
 
 	@Test
 	public void test_simple_string() {
-		DTable dt = FT("pet{id INT +PK, name VARCHAR(20) !UNIQUE ,"
-				+ " age INT <30> , color CHAR(10) ! <'red'>}");
+		DTable dt = FT("pet{id INT +PK, name VARCHAR(20) !UNIQUE ," + " age INT <30> , color CHAR(10) ! <'red'>}");
 		List<DField> fields = dt.getFields();
 		assertEquals(4, fields.size());
 		// id
@@ -95,6 +94,19 @@ public class NutDTableParserTest {
 		// t_pet_food
 		dt = dts.get(3);
 		assertEquals("INT", dt.getField("petId").getType());
+	}
+
+	@Test
+	public void test_one_static_field() {
+		DTable dt = FT("nut_lifecycle {id INT PK,  born VARCHAR(100),  depose VARCHAR(100),  fetch VARCHAR(100)}");
+		DField df = dt.getField("id");
+		assertEquals(0, dt.getAutoIncreaments().size());
+		assertEquals(1, dt.getPks().size());
+		assertTrue(df.isPrimaryKey());
+		assertFalse(df.isAutoIncreament());
+		assertFalse(df.isUnsign());
+		assertTrue(df.isNotNull());
+		assertTrue(df.isUnique());
 	}
 
 }

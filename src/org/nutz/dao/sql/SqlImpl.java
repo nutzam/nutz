@@ -11,12 +11,13 @@ import java.util.List;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.lang.Strings;
 
 public class SqlImpl implements Sql {
 
-	SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
+	public SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
 		this.sql = sql;
 		this.adapter = adapter;
 		this.context = new SqlContext();
@@ -54,8 +55,9 @@ public class SqlImpl implements Sql {
 		}
 		// UPDATE | INSERT | DELETE | TRUNCATE ...
 		else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
-			PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
-					ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString()
+			// ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
+					);
 			adapter.process(stat, sql, entity);
 			stat.execute();
 			updateCount = stat.getUpdateCount();
@@ -148,7 +150,7 @@ public class SqlImpl implements Sql {
 	}
 
 	public Sql duplicate() {
-		Sql newSql = SQLs.create(sql).setCallback(callback).setCondition(condition);
+		Sql newSql = Sqls.create(sql).setCallback(callback).setCondition(condition);
 		newSql.getContext().setMatcher(context.getMatcher()).setPager(context.getPager());
 		return newSql;
 	}

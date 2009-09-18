@@ -8,6 +8,7 @@ import java.util.List;
 import org.junit.Test;
 
 import org.nutz.service.pojo.Person;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
 
@@ -17,7 +18,7 @@ public class TreeServiceTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.processSqlsByPath("org/nutz/service/pojo/person.dod");
+		Sqls.executeFile(dao, "org/nutz/service/pojo/person.dod");
 		tree = new NameTreeService<Person>(dao) {};
 		try {
 			tree.setChildrenField("children");

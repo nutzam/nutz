@@ -1,86 +1,80 @@
 package org.nutz.dao;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+import java.util.List;
 
-import javax.sql.DataSource;
-
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.sql.DefaultStatementAdapter;
+import org.nutz.dao.sql.FetchEntityCallback;
+import org.nutz.dao.sql.FetchIntegerCallback;
+import org.nutz.dao.sql.QueryEntityCallback;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlCallback;
+import org.nutz.dao.sql.SqlImpl;
+import org.nutz.dao.sql.SqlLiteral;
+import org.nutz.dao.tools.DTable;
+import org.nutz.dao.tools.DTableParser;
+import org.nutz.dao.tools.TableSqlMaker;
+import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.trans.Trans;
-import org.nutz.trans.Transaction;
+import org.nutz.lang.Streams;
 
 public class Sqls {
-	
-	public static CharSequence formatFieldValue(Object v) {
-		if (null == v)
-			return "NULL";
-		else if (isNotNeedQuote(v.getClass()))
-			return escapeFieldValue(v.toString());
-		else
-			return new StringBuilder("'").append(escapeFieldValue(v.toString())).append('\'');
+
+	private static DefaultStatementAdapter ADAPTER = new DefaultStatementAdapter();
+
+	public static Sql create(String sql) {
+		return create(new SqlLiteral().valueOf(sql));
 	}
 
-	public static CharSequence escapeFieldValue(CharSequence s) {
-		if (null == s)
-			return null;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if (c == '\'')
-				sb.append('\'').append('\'');
-			else if (c == '\\')
-				sb.append('\\').append('\\');
+	public static Sql create(SqlLiteral sql) {
+		return new SqlImpl(sql, ADAPTER);
+	}
+
+	public static Sql fetchEntity(String sql) {
+		return create(sql).setCallback(callback.fetchEntity());
+	}
+
+	public static Sql fetchInt(String sql) {
+		return create(sql).setCallback(callback.integer());
+	}
+
+	public static Sql queryEntity(String sql) {
+		return create(sql).setCallback(callback.queryEntity());
+	}
+
+	public static __ callback = new __();
+
+	public static class __ {
+		public SqlCallback fetchEntity() {
+			return new FetchEntityCallback();
+		}
+
+		public SqlCallback integer() {
+			return new FetchIntegerCallback();
+		}
+
+		public SqlCallback queryEntity() {
+			return new QueryEntityCallback();
+		}
+	}
+
+	public static void execute(Dao dao, String sqls) {
+		DTableParser parser = new NutDTableParser();
+		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
+		List<DTable> dts = parser.parse(sqls);
+		for (DTable dt : dts) {
+			Sql c = maker.makeCreateSql(dt);
+			Sql d = maker.makeDropSql(dt);
+			if (dao.exists(dt.getName()))
+				dao.execute(d, c);
 			else
-				sb.append(c);
-		}
-		return sb;
-	}
-
-	public static CharSequence escapteConditionValue(CharSequence s) {
-		if (null == s)
-			return null;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if (c == '\'')
-				sb.append('\'').append('\'');
-			else if (c == '\\')
-				sb.append('\\').append('\\');
-			else if (c == '_')
-				sb.append('\\').append(c);
-			else if (c == '%')
-				sb.append('\\').append(c);
-			else
-				sb.append(c);
-		}
-		return sb;
-	}
-
-	public static boolean isNotNeedQuote(Class<?> type) {
-		Mirror<?> me = Mirror.me(type);
-		return me.isBoolean() || me.isPrimitiveNumber();
-	}
-
-	public static ConnectionHolder getConnection(DataSource dataSource) {
-		try {
-			Transaction trans = Trans.get();
-			Connection conn = null;
-			if (trans != null)
-				conn = trans.getConnection(dataSource);
-			else
-				conn = dataSource.getConnection();
-			return ConnectionHolder.make(trans, conn);
-		} catch (SQLException e) {
-			throw Lang.makeThrow("Could not get JDBC Connection : %s", e.getMessage());
+				dao.execute(c);
 		}
 	}
 
-	public static void releaseConnection(ConnectionHolder ch) {
-		try {
-			ch.close();
-		} catch (Throwable e) {
-			throw Lang.wrapThrow(e);
-		}
+	public static void executeFile(Dao dao, String path) {
+		String sqls = Lang.readAll(Streams.fileInr(path));
+		Sqls.execute(dao, sqls);
 	}
+
 }

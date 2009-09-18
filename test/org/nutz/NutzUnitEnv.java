@@ -11,7 +11,7 @@ import org.nutz.ioc.json.JsonLoader;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 
-public class Main {
+public class NutzUnitEnv {
 
 	private static Properties pp = null;
 
@@ -55,7 +55,7 @@ public class Main {
 	public static Ioc getIoc(String key) {
 		Ioc nut = nuts.get(key);
 		if (null == nut) {
-			synchronized (Main.class) {
+			synchronized (NutzUnitEnv.class) {
 				nut = nuts.get(key);
 				try {
 					if (null == nut) {

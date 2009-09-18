@@ -2,16 +2,10 @@ package org.nutz.dao.test.meta;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 import org.nutz.dao.Dao;
-import org.nutz.dao.sql.Sql;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
-import org.nutz.dao.impl.NutDao;
-import org.nutz.dao.tools.DTable;
-import org.nutz.dao.tools.DTableParser;
-import org.nutz.dao.tools.TableSqlMaker;
-import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.segment.CharSegment;
@@ -27,44 +21,18 @@ public class Pojos extends Service {
 
 	private String topTables;
 	private String platoonTables;
-	private DTableParser parser;
 	private Dao dao;
 
 	public Pojos(Dao dao) {
 		super(dao);
-		parser = new NutDTableParser();
-
 		String prefix = Pojos.class.getPackage().getName().replace('.', '/');
 		topTables = Lang.readAll(Streams.fileInr(prefix + "/top_tables.dod"));
 		platoonTables = Lang.readAll(Streams.fileInr(prefix + "/platoon_tables.dod"));
 		this.dao = dao;
 	}
 
-	public void processSqls(String sqls) {
-		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
-		List<DTable> dts = parser.parse(sqls);
-		for (DTable dt : dts) {
-			Sql c = maker.makeCreateSql(dt);
-			Sql d = maker.makeDropSql(dt);
-			int n = -1;
-			try {
-				n = dao.count(dt.getName());
-			} catch (Exception e) {}
-			if (n == -1)
-				dao.execute(c);
-			else
-				dao.execute(d, c);
-
-		}
-	}
-
-	public void processSqlsByPath(String path) {
-		String sqls = Lang.readAll(Streams.fileInr(path));
-		processSqls(sqls);
-	}
-
 	public void init() {
-		processSqls(topTables);
+		Sqls.execute(dao, topTables);
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
@@ -119,7 +87,7 @@ public class Pojos extends Service {
 
 	public void initPlatoon(String s) {
 		Segment seg = new CharSegment(this.platoonTables);
-		this.processSqls(seg.set("id", s).toString());
+		Sqls.execute(dao, seg.set("id", s).toString());
 	}
 
 	public void initData() {

@@ -1,8 +1,8 @@
 package org.nutz.dao.entity;
 
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
-import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
@@ -51,7 +51,7 @@ abstract class Next {
 		Sql sql;
 
 		Static(String s) {
-			sql = SQLs.fetchInt(s);
+			sql = Sqls.fetchInt(s);
 		}
 
 		Sql sql() {
@@ -76,7 +76,7 @@ abstract class Next {
 		}
 
 		Sql sql() {
-			Sql sql = SQLs.fetchInt((TableName.render(seg)));
+			Sql sql = Sqls.fetchInt((TableName.render(seg)));
 			return sql;
 		}
 	}

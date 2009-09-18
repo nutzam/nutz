@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.dao.Condition;
-import org.nutz.dao.Sqls;
+import org.nutz.dao.DaoUtils;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.lang.Strings;
@@ -32,7 +32,7 @@ public abstract class HttpCondition implements Condition {
 				String value = request.getParameter(name);
 				if (null == value) {
 					sb.append(String.format("%s IS NULL", ef.getColumnName()));
-				} else if (Sqls.isNotNeedQuote(ef.getField().getType())) {
+				} else if (DaoUtils.isNotNeedQuote(ef.getField().getType())) {
 					sb.append(String.format("%s=%s", ef.getColumnName(), value));
 				} else {
 					sb.append(String.format("%s='%s'", ef.getColumnName(), value));

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
@@ -20,7 +21,7 @@ public class BatchTransTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.processSqlsByPath("org/nutz/trans/trans.dod");
+		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
 	}
 
 	@Test

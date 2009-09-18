@@ -8,6 +8,7 @@ import java.util.concurrent.Executors;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.service.IdEntityService;
 
@@ -17,7 +18,7 @@ public class TransLevelTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		pojos.processSqlsByPath("org/nutz/trans/trans.dod");
+		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
 		comService = new IdEntityService<Company>(dao) {};
 		Company c = Company.create("com1");
 		comService.dao().insert(c);
@@ -42,8 +43,7 @@ public class TransLevelTest extends DaoCase {
 				c.setName("update");
 				comService.dao().update(c);
 				try {
-					Assert.assertEquals("com1", es.submit(
-							new QueryCompany_ReadCommitted()).get());
+					Assert.assertEquals("com1", es.submit(new QueryCompany_ReadCommitted()).get());
 				} catch (Exception e) {
 					Assert.assertTrue(false);
 				}
@@ -55,17 +55,14 @@ public class TransLevelTest extends DaoCase {
 		Assert.assertEquals("com1", comService.fetch(1).getName());
 	}
 
-	static class QueryCompany_ReadCommitted extends DaoCase implements
-			Callable<String> {
+	static class QueryCompany_ReadCommitted extends DaoCase implements Callable<String> {
 		public String call() throws Exception {
 			ResultAtom<String> ra = null;
-			Trans.exec(Connection.TRANSACTION_READ_COMMITTED,
-					ra = new ResultAtom<String>() {
-						public void run() {
-							setResult(comService.dao().fetch(Company.class, 1)
-									.getName());
-						}
-					});
+			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, ra = new ResultAtom<String>() {
+				public void run() {
+					setResult(comService.dao().fetch(Company.class, 1).getName());
+				}
+			});
 			String i = ra.getResult();
 			return i;
 		}

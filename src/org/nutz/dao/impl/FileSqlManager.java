@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 
 import org.nutz.dao.*;
 import org.nutz.dao.sql.ComboSql;
-import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -98,7 +97,7 @@ public class FileSqlManager implements SqlManager {
 	}
 
 	public Sql create(String key) throws SqlNotFoundException {
-		return SQLs.create(get(key));
+		return Sqls.create(get(key));
 	}
 
 	public ComboSql createComboSql(String... keys) {

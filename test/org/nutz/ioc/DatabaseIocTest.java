@@ -6,6 +6,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
@@ -23,9 +24,9 @@ public class DatabaseIocTest extends DaoCase {
 
 	@Override
 	protected void before() {
+		Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
 		ioc = new NutIoc(new DatabaseLoader(dao));
 		srv = new ObjService(dao);
-		pojos.processSqlsByPath("org/nutz/ioc/ioc_db.dod");
 	}
 
 	@Test

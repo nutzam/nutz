@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
@@ -20,40 +21,13 @@ import org.nutz.lang.meta.Email;
 
 public class SupportedFieldType extends DaoCase {
 
+	@Override
+	protected void before() {
+		Sqls.executeFile(dao, "org/nutz/dao/test/normal/types.dod");
+	}
+
 	public static enum TT {
 		A, B
-	}
-
-	@Test
-	public void insert_char_field() {
-		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj",
-				Character.valueOf('O')).add("name", "ABC"));
-		EntityTypes et = dao.fetch(EntityTypes.class);
-		assertEquals('t', et.char_p);
-		assertEquals('O', et.char_obj.charValue());
-	}
-
-	@Test
-	public void insert_timestamp_field() {
-		Timestamp tm = new Timestamp(System.currentTimeMillis());
-		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqldt", tm));
-		EntityTypes et = dao.fetch(EntityTypes.class);
-		if (dao.meta().isPostgresql())
-			assertEquals(tm.getTime(), et.sqlDT.getTime());
-		else
-			assertEquals(tm.getTime() / 1000, et.sqlDT.getTime() / 1000);
-	}
-
-	@Test
-	public void check_update_sqlTimestamp() {
-		EntityTypes exp = new EntityTypes();
-		exp.name = "T";
-		Timestamp tm = new Timestamp(System.currentTimeMillis());
-		exp.sqlDT = tm;
-		dao.insert(exp);
-		exp = dao.fetch(EntityTypes.class, "T");
-		// MySql TIMESTAMP precision only to second
-		assertEquals(tm.getTime() / 1000, exp.sqlDT.getTime() / 1000);
 	}
 
 	@Table("dao_supported_type")
@@ -136,13 +110,45 @@ public class SupportedFieldType extends DaoCase {
 
 	}
 
-	@Override
-	protected void before() {
-		pojos.processSqlsByPath("org/nutz/dao/test/normal/types.dod");
+	@Test
+	public void insert_char_field() {
+		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj", Character.valueOf('O')).add("name",
+				"ABC"));
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		assertEquals('t', et.char_p);
+		assertEquals('O', et.char_obj.charValue());
 	}
 
-	@Override
-	protected void after() {}
+	@Test
+	public void insert_timestamp_field() {
+		Timestamp tm = new Timestamp(System.currentTimeMillis());
+		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqldt", tm));
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		if (dao.meta().isPostgresql())
+			assertEquals(tm.getTime(), et.sqlDT.getTime());
+		else
+			assertEquals(tm.getTime() / 1000, et.sqlDT.getTime() / 1000);
+	}
+
+	@Test
+	public void check_for_sqlTime() {
+		Time time = Castors.me().castTo("07:09:12", Time.class);
+		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqlTime", time));
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		assertEquals(time.toString(), et.sqlTime.toString());
+	}
+
+	@Test
+	public void check_update_sqlTimestamp() {
+		EntityTypes exp = new EntityTypes();
+		exp.name = "T";
+		Timestamp tm = new Timestamp(System.currentTimeMillis());
+		exp.sqlDT = tm;
+		dao.insert(exp);
+		exp = dao.fetch(EntityTypes.class, "T");
+		// MySql TIMESTAMP precision only to second
+		assertEquals(tm.getTime() / 1000, exp.sqlDT.getTime() / 1000);
+	}
 
 	@Test
 	public void check_if_support_all_normal_types() throws FailToCastObjectException {
@@ -174,8 +180,8 @@ public class SupportedFieldType extends DaoCase {
 		exp.sqlTime = time;
 		exp.sqlDT = ts;
 		dao.insert(exp);
-		EntityTypes et = dao.fetch(EntityTypes.class, 1);
-		assertEquals(1, et.id);
+		EntityTypes et = dao.fetch(EntityTypes.class);
+		assertEquals(exp.id, et.id);
 		Mirror<EntityTypes> me = Mirror.me(EntityTypes.class);
 		for (Field f : me.getFields()) {
 			Object expValue = me.getValue(exp, f);
@@ -183,8 +189,7 @@ public class SupportedFieldType extends DaoCase {
 			if (null == expValue)
 				continue;
 			if (!expValue.equals(ttValue))
-				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
-						ttValue);
+				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue, ttValue);
 		}
 		assertTrue(true);
 	}

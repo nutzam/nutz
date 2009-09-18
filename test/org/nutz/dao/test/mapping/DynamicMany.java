@@ -89,7 +89,7 @@ public class DynamicMany extends DaoCase {
 				assertEquals(1, dao.count(Platoon.class));
 				assertEquals(1, dao.count(Soldier.class));
 				assertEquals(1, dao.count(Tank.class));
-				assertEquals(6, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(6, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}

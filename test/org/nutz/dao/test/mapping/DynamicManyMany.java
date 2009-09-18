@@ -33,7 +33,7 @@ public class DynamicManyMany extends DaoCase {
 				assertEquals(3, t.getMembers().size());
 				dao.deleteLinks(t, "members");
 				assertEquals(2, dao.count(Soldier.class));
-				assertEquals(2, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(2, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}
@@ -47,7 +47,7 @@ public class DynamicManyMany extends DaoCase {
 				dao.deleteLinks(t, "members");
 				assertEquals(2, dao.count(Tank.class));
 				assertEquals(3, dao.count(Soldier.class));
-				assertEquals(3, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(3, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}
@@ -60,7 +60,7 @@ public class DynamicManyMany extends DaoCase {
 				dao.deleteWith(t, "members");
 				assertEquals(1, dao.count(Tank.class));
 				assertEquals(2, dao.count(Soldier.class));
-				assertEquals(2, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(2, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}
@@ -74,7 +74,7 @@ public class DynamicManyMany extends DaoCase {
 				dao.deleteWith(t, "members");
 				assertEquals(1, dao.count(Tank.class));
 				assertEquals(3, dao.count(Soldier.class));
-				assertEquals(3, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(3, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}
@@ -86,7 +86,7 @@ public class DynamicManyMany extends DaoCase {
 				Tank t = dao.fetchLinks(dao.fetch(Tank.class, "T92"), "members");
 				dao.clearLinks(t, "members");
 				assertEquals(5, dao.count(Soldier.class));
-				assertEquals(3, dao.count("dao_d_m_soldier_tank_1"));
+				assertEquals(3, dao.count("dao_d_m_soldier_tank_" + platoon.getId()));
 			}
 		});
 	}

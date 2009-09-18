@@ -44,7 +44,7 @@ public class Streams {
 	}
 
 	public static InputStream fileIn(String path) {
-		return fileIn(Files.findFile(path));
+		return Files.findFileAsStream(path);
 	}
 
 	public static InputStream fileIn(File file) {
@@ -64,7 +64,11 @@ public class Streams {
 	}
 
 	public static Reader fileInr(String path) {
-		return fileInr(Files.findFile(path));
+		try {
+			return new InputStreamReader(fileIn(path), "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 
 	public static OutputStream fileOut(String path) {

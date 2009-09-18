@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
 import org.nutz.service.IdEntityService;
@@ -17,7 +18,7 @@ public class TransactionTest extends DaoCase {
 	private IdEntityService<Master> masterService;
 
 	protected void before() {
-		pojos.processSqlsByPath("org/nutz/trans/trans.dod");
+		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
 		catService = new IdEntityService<Cat>(dao) {};
 		comService = new IdEntityService<Company>(dao) {};
 		masterService = new IdEntityService<Master>(dao) {};

@@ -10,7 +10,7 @@ import org.nutz.dao.sql.Sql;
 public interface Dao {
 
 	DatabaseMeta meta();
-	
+
 	/**
 	 * @return SQLManager interface
 	 */
@@ -129,7 +129,15 @@ public interface Dao {
 
 	int getMaxId(Class<?> classOfT);
 
+	int func(Class<?> classOfT, String funcName, String fieldName);
+	
+	int func(String tableName, String funcName, String fieldName);
+
 	Pager createPager(int pageNumber, int pageSize);
+
+	boolean exists(Class<?> classOfT);
+
+	boolean exists(String tableName);
 
 	Class<? extends Pager> getPagerType();
 }

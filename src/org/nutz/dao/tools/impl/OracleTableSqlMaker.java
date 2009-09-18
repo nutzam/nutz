@@ -2,8 +2,8 @@ package org.nutz.dao.tools.impl;
 
 import java.util.Iterator;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.ComboSql;
-import org.nutz.dao.sql.SQLs;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.tools.DField;
 import org.nutz.dao.tools.DTable;
@@ -16,7 +16,7 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	private static String CPK = "CONSTRAINT ${T}_PK PRIMARY KEY (${F}) ENABLE";
 
 	private static String CSEQ = "CREATE SEQUENCE ${T}_${F}_SEQ  MINVALUE 1"
-			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 21 CACHE 20 NOORDER  NOCYCLE";
+			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 1 CACHE 20 NOORDER  NOCYCLE";
 	private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
 	private static String CTRI = "create or replace trigger ${T}_${F}_ST" + " BEFORE INSERT ON ${T}" + " FOR EACH ROW"
@@ -45,13 +45,13 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 			sb.append(',').append(gSQL(CPK, td.getName(), names));
 		}
 		sb.append(')');
-		sql.add(SQLs.create(sb.toString()));
+		sql.add(Sqls.create(sb.toString()));
 		// For all auto increaments fields, create the sequance and trigger
 		for (DField df : td.getAutoIncreaments()) {
 			// create sequance;
-			sql.add(SQLs.create(gSQL(CSEQ, td.getName(), df.getName())));
+			sql.add(Sqls.create(gSQL(CSEQ, td.getName(), df.getName())));
 			// create trigger;
-			sql.add(SQLs.create(gSQL(CTRI, td.getName(), df.getName())));
+			sql.add(Sqls.create(gSQL(CTRI, td.getName(), df.getName())));
 		}
 		return sql;
 	}
@@ -74,7 +74,9 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 		if ("boolean".equalsIgnoreCase(type))
 			return "char(1) check (" + df.getName() + " in(0,1))";
 		if ("time".equalsIgnoreCase(type))
-			return "VARCHAR(24)";
+			return "TIMESTAMP";
+		if ("text".equalsIgnoreCase(type))
+			return "VARCHAR(4000)";
 		if ("bigint".equalsIgnoreCase(type))
 			return "NUMBER";
 		return type;
@@ -87,9 +89,9 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 	@Override
 	public Sql makeDropSql(DTable td) {
 		ComboSql sql = new ComboSql();
-		sql.add(SQLs.create("DROP TABLE " + td.getName()));
+		sql.add(Sqls.create("DROP TABLE " + td.getName()));
 		for (DField df : td.getAutoIncreaments()) {
-			sql.add(SQLs.create(gSQL(DSEQ, td.getName(), df.getName())));
+			sql.add(Sqls.create(gSQL(DSEQ, td.getName(), df.getName())));
 			// sql.addSQL(new ExecutableSql(gSQL(DTRI, td.getName(),
 			// df.getName())));
 		}

@@ -8,16 +8,16 @@ var ioc = {
 		},
 		fields : {
 			driverClassName : {
-				java :"org.nutz.Main.driver"
+				java :"org.nutz.NutzUnitEnv.driver"
 			},
 			url : {
-				java :"org.nutz.Main.url"
+				java :"org.nutz.NutzUnitEnv.url"
 			},
 			username : {
-				java :"org.nutz.Main.userName"
+				java :"org.nutz.NutzUnitEnv.userName"
 			},
 			password : {
-				java :"org.nutz.Main.password"
+				java :"org.nutz.NutzUnitEnv.password"
 			}
 		}
 	},

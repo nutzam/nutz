@@ -11,6 +11,7 @@ import java.util.Map;
 
 import org.junit.Test;
 
+import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.ioc.meta.fake.Faking;
 import org.nutz.lang.Lang;
@@ -24,7 +25,7 @@ public class ObjServiceTest extends DaoCase {
 	protected void before() {
 		this.faking = new Faking();
 		this.srv = new ObjService(dao);
-		pojos.processSqlsByPath("org/nutz/ioc/ioc_db.dod");
+		Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
 	}
 
 	private void prepareFixData1() {

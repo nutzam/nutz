@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
+import org.nutz.dao.Sqls;
 import org.nutz.ioc.ObjLoader;
 import org.nutz.ioc.meta.Obj;
 import org.nutz.ioc.meta.ObjService;
@@ -12,6 +13,12 @@ public class DatabaseLoader implements ObjLoader {
 
 	public DatabaseLoader(Dao dao) {
 		service = new ObjService(dao);
+		if (!dao.exists(Obj.class))
+			synchronized (dao) {
+				if (!dao.exists(Obj.class)) {
+					Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
+				}
+			}
 	}
 
 	private ObjService service;

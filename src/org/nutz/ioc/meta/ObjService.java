@@ -21,14 +21,10 @@ public class ObjService extends Service {
 
 	public ObjService(Dao dao) {
 		super(dao);
-		objs = new IdNameEntityService<Obj>(dao) {
-		};
-		flds = new IdNameEntityService<Fld>(dao) {
-		};
-		vals = new IdEntityService<Val>(dao) {
-		};
-		lifecycles = new IdEntityService<Lifecycle>(dao) {
-		};
+		objs = new IdNameEntityService<Obj>(dao) {};
+		flds = new IdNameEntityService<Fld>(dao) {};
+		vals = new IdEntityService<Val>(dao) {};
+		lifecycles = new IdEntityService<Lifecycle>(dao) {};
 	}
 
 	private IdNameEntityService<Obj> objs;
@@ -107,9 +103,10 @@ public class ObjService extends Service {
 	public Obj insertObj(final Obj obj) {
 		Trans.exec(new Atom() {
 			public void run() {
+				dao().insert(obj);
 				if (null != obj.getLifecycle())
 					obj.getLifecycle().setId(obj.getId());
-				dao().insertWith(obj, "args|lifecycle");
+				dao().insertLinks(obj, "args|lifecycle");
 				if (null != obj.getFields())
 					for (Fld f : obj.getFields()) {
 						f.setObjectId(obj.getId());
