@@ -1,6 +1,10 @@
 @echo off
-REM IF EXIST temp del /F /S /Q temp
-REM IF EXIST temp rmdir temp
-REM ant -buildfile build.xml -propertyfile build.properties
-ant -f %1
+SET TOMCAT_HOME=C:\Program Files\Apache Software Foundation\Tomcat 6.0
+SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_16
+SET DEPS=D:\home\nutz\deps
+SET OUTPUT=D:\home\nutz\jars
+SET PROJECT_HOME=D:\home\zozoh\workspace\svn\google.nutz\trunk
+
+cd %PROJECT_HOME%\build
+ant
 @echo on

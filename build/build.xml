@@ -8,16 +8,14 @@
 
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
-	<property name="DEPHOME" value="${env.NUTZ_DEPHOME}" />
-	<property name="OP" value="${env.NUTZ_TARGET_DIR}" />
-
-	<property name="PROJECT_HOME" value="../" />
-	<property name="TOMCAT-LIB" value="${TOMCAT_HOME}/lib" />
-
+	<property name="DEPHOME" value="${env.DEPS}" />
+	<property name="OP" value="${env.OUTPUT}" />
+	<property name="PROJECT_HOME" value="${env.PROJECT_HOME}" />
+	
 	<property name="SRC" location="${PROJECT_HOME}/src" />
 	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
 
-	<property name="v" value="-1.a.14b" />
+	<property name="v" value="-1.a.15" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
 	<property name="zjson" value="org/nutz/json/**" />
 	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />
@@ -26,7 +24,7 @@
 	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
 
 	<path id="CLASSPATH">
-		<fileset dir="${TOMCAT-LIB}" casesensitive="no">
+		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
 			<include name="*.jar" />
 		</fileset>
 		<fileset dir="${DEPHOME}" casesensitive="no">
