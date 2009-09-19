@@ -100,7 +100,7 @@ public class FileSqlManager implements SqlManager {
 		return Sqls.create(get(key));
 	}
 
-	public ComboSql createComboSql(String... keys) {
+	public ComboSql createCombo(String... keys) {
 		ComboSql combo = new ComboSql();
 		if (null == keys || keys.length == 0)
 			keys = this.keys();

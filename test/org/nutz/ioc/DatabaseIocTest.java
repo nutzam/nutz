@@ -24,7 +24,7 @@ public class DatabaseIocTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/ioc/meta/ioc.dod");
 		ioc = new NutIoc(new DatabaseLoader(dao));
 		srv = new ObjService(dao);
 	}

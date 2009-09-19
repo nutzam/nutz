@@ -13,7 +13,7 @@ public interface SqlManager {
 	 * @param keys
 	 * @return
 	 */
-	ComboSql createComboSql(String... keys);
+	ComboSql createCombo(String... keys);
 
 	/**
 	 * @return the SQL number

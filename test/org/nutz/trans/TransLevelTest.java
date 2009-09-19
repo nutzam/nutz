@@ -18,7 +18,7 @@ public class TransLevelTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
 		comService = new IdEntityService<Company>(dao) {};
 		Company c = Company.create("com1");
 		comService.dao().insert(c);

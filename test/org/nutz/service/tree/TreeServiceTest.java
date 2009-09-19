@@ -18,7 +18,7 @@ public class TreeServiceTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeFile(dao, "org/nutz/service/pojo/person.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/service/pojo/person.dod");
 		tree = new NameTreeService<Person>(dao) {};
 		try {
 			tree.setChildrenField("children");

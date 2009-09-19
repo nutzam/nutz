@@ -16,7 +16,7 @@ public class DatabaseLoader implements ObjLoader {
 		if (!dao.exists(Obj.class))
 			synchronized (dao) {
 				if (!dao.exists(Obj.class)) {
-					Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
+					Sqls.executeDefinitionFile(dao, "org/nutz/ioc/meta/ioc.dod");
 				}
 			}
 	}

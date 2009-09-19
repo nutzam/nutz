@@ -25,7 +25,7 @@ public class ObjServiceTest extends DaoCase {
 	protected void before() {
 		this.faking = new Faking();
 		this.srv = new ObjService(dao);
-		Sqls.executeFile(dao, "org/nutz/ioc/meta/ioc.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/ioc/meta/ioc.dod");
 	}
 
 	private void prepareFixData1() {

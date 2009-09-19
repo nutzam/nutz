@@ -32,7 +32,7 @@ public abstract class DBCase{
 		// create dao
 		dao = new NutDao(dataSource, new FileSqlManager(sqlFile));
 		// create table;
-		dao.execute(dao.sqls().createComboSql());
+		dao.execute(dao.sqls().createCombo());
 		// prepare data
 		for (int i = 0; i < 20; i++) {
 			dao.insert(DBObject.make(i));

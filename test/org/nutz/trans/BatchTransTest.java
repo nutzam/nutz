@@ -21,7 +21,7 @@ public class BatchTransTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
 	}
 
 	@Test

@@ -32,7 +32,7 @@ public class Pojos extends Service {
 	}
 
 	public void init() {
-		Sqls.execute(dao, topTables);
+		Sqls.executeDefinition(dao, topTables);
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
@@ -87,7 +87,7 @@ public class Pojos extends Service {
 
 	public void initPlatoon(String s) {
 		Segment seg = new CharSegment(this.platoonTables);
-		Sqls.execute(dao, seg.set("id", s).toString());
+		Sqls.executeDefinition(dao, seg.set("id", s).toString());
 	}
 
 	public void initData() {

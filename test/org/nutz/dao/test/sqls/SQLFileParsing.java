@@ -78,7 +78,7 @@ public class SQLFileParsing {
 	@Test
 	public void check_parse_comboSqls() {
 		sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls");
-		ComboSql sql = sqls.createComboSql();
+		ComboSql sql = sqls.createCombo();
 		assertEquals(10, sql.count());
 	}
 

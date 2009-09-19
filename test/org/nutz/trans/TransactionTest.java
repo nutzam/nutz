@@ -18,7 +18,7 @@ public class TransactionTest extends DaoCase {
 	private IdEntityService<Master> masterService;
 
 	protected void before() {
-		Sqls.executeFile(dao, "org/nutz/trans/trans.dod");
+		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
 		catService = new IdEntityService<Cat>(dao) {};
 		comService = new IdEntityService<Company>(dao) {};
 		masterService = new IdEntityService<Master>(dao) {};

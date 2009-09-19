@@ -53,7 +53,13 @@ p{
 	color: #66A;
 	display: inline-block;
 	margin-left:10px;
-	margin-right:10px;
+	margin-right:2px;
+}
+
+.zdoc_footer em, .zdoc_author em{
+	margin-left:10px;
+	font-weight:bold;
+	color:#999;
 }
 
 /*---------------------------------------------------------------------------

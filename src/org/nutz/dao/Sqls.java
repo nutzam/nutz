@@ -42,9 +42,9 @@ public class Sqls {
 		return create(sql).setCallback(callback.queryEntity());
 	}
 
-	public static __ callback = new __();
+	public static CallbackFactory callback = new CallbackFactory();
 
-	public static class __ {
+	public static class CallbackFactory {
 		public SqlCallback fetchEntity() {
 			return new FetchEntityCallback();
 		}
@@ -58,7 +58,7 @@ public class Sqls {
 		}
 	}
 
-	public static void execute(Dao dao, String sqls) {
+	public static void executeDefinition(Dao dao, String sqls) {
 		DTableParser parser = new NutDTableParser();
 		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
 		List<DTable> dts = parser.parse(sqls);
@@ -72,9 +72,9 @@ public class Sqls {
 		}
 	}
 
-	public static void executeFile(Dao dao, String path) {
+	public static void executeDefinitionFile(Dao dao, String path) {
 		String sqls = Lang.readAll(Streams.fileInr(path));
-		Sqls.execute(dao, sqls);
+		Sqls.executeDefinition(dao, sqls);
 	}
 
 }
