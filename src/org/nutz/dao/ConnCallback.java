@@ -1,4 +1,4 @@
-package org.nutz.dao.callback;
+package org.nutz.dao;
 
 import java.sql.Connection;
 

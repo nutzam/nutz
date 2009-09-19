@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.ConnectionHolder;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
@@ -22,8 +23,6 @@ import org.nutz.dao.sql.SqlMaker;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.DaoUtils;
 import org.nutz.dao.Chain;
-import org.nutz.dao.callback.ConnCallback;
-import org.nutz.dao.callback.QueryCallback;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityHolder;
@@ -50,13 +49,6 @@ public class NutDao implements Dao {
 		}
 		return nameField;
 	}
-
-	public static final QueryCallback<Integer> evalResultSetAsInt = new QueryCallback<Integer>() {
-
-		public Integer invoke(ResultSet rs) throws SQLException {
-			return rs.getInt(1);
-		}
-	};
 
 	private DataSource dataSource;
 	private SqlMaker maker;

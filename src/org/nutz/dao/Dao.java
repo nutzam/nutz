@@ -3,7 +3,6 @@ package org.nutz.dao;
 import java.sql.ResultSet;
 import java.util.List;
 
-import org.nutz.dao.callback.ConnCallback;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 

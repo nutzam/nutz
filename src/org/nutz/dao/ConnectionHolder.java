@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Savepoint;
 
-import org.nutz.dao.callback.ConnCallback;
 import org.nutz.trans.Transaction;
 
 public class ConnectionHolder {
