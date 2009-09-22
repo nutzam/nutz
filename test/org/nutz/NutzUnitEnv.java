@@ -45,11 +45,6 @@ public class NutzUnitEnv {
 		return pp.getProperty("username");
 	}
 
-	public static String getEngin() {
-		checkProperties();
-		return pp.getProperty("engin");
-	}
-
 	private static Map<String, Ioc> nuts = new HashMap<String, Ioc>();
 
 	public static Ioc getIoc(String key) {
