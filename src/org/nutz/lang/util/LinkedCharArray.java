@@ -169,4 +169,10 @@ public class LinkedCharArray {
 	public String toString() {
 		return new String(toArray());
 	}
+
+	public String popAll() {
+		String re = new String(toArray());
+		clear();
+		return re;
+	}
 }
