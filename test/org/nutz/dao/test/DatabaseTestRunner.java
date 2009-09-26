@@ -4,8 +4,6 @@ import org.junit.runner.Description;
 import org.junit.runner.Runner;
 import org.junit.runner.notification.RunNotifier;
 
-import static org.nutz.lang.Printer.*;
-
 public class DatabaseTestRunner extends Runner {
 
 	public DatabaseTestRunner(Class<?> testClass) {
@@ -19,9 +17,9 @@ public class DatabaseTestRunner extends Runner {
 
 	@Override
 	public void run(RunNotifier rn) {
-		println("before");
-		
-		println("end");
+		System.out.println("before");
+
+		System.out.println("end");
 	}
 
 }

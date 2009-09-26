@@ -38,12 +38,13 @@
 	zDoc 支持如下字体样式，暂时不支持下划线，以及字体颜色
 	|| {*名称}		|| {*zDoc 语法}			|| {*文本}				||
 	|| 粗体			|| `{*some text}`		|| {*some text}			||
-	|| 斜体			|| `{_some text}`		|| {_some text}			||
+	|| 斜体			|| `{/some text}`		|| {/some text}			||
+	|| 下划线		|| `{_some text}`		|| {_some text}			||
 	|| 穿越线		|| `{~some text}`		|| {~some text}			||
 	|| 红色斜体		|| `{#F00;_some text}`	|| {#F00;_some text}	||
-	|| 穿越线斜体	|| `{*_~some text}`		|| {*_~some text}		||
+	|| 穿越线斜体	|| `{*/~some text}`		|| {*/~some text}		||
 	|| 标注			|| `txt{^sup}`			|| txt{^sup}			||
-	|| 底注			|| `txt{,sup}`			|| txt{,sup}			||
+	|| 底注			|| `txt{,sub}`			|| txt{,sub}			||
 	{_#080;各个格式的组合，顺序没有限制}
 
 图片

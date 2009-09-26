@@ -76,4 +76,7 @@ public class IntRange {
 		this.right = right;
 	}
 
+	public String toString() {
+		return String.format("%d,%d", left, right);
+	}
 }

@@ -132,7 +132,12 @@ public class LinkedCharArray {
 			return false;
 		if (s.length() > this.size())
 			return false;
-		char[] cs = s.toCharArray();
+		return startsWith(s.toCharArray());
+	}
+
+	public boolean startsWith(char[] cs) {
+		if (null == cs)
+			return false;
 		for (int i = 0; i < cs.length; i++)
 			if (cs[i] != get(i))
 				return false;
@@ -144,7 +149,14 @@ public class LinkedCharArray {
 			return false;
 		if (s.length() > this.size())
 			return false;
-		char[] cs = s.toCharArray();
+		return endsWith(s.toCharArray());
+	}
+
+	public boolean endsWith(char[] cs) {
+		if (null == cs)
+			return false;
+		if (size() < cs.length)
+			return false;
 		int of = size() - cs.length;
 		for (int i = 0; i < cs.length; i++)
 			if (cs[i] != get(of + i))

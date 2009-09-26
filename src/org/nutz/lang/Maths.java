@@ -2,6 +2,10 @@ package org.nutz.lang;
 
 public class Maths {
 
+	public static int bit(String s) {
+		return Integer.valueOf(s, 2);
+	}
+
 	/**
 	 * Test current bit is match the given mask at least one bit or not.
 	 * 
@@ -14,6 +18,10 @@ public class Maths {
 	 */
 	public static boolean isMask(int bs, int mask) {
 		return 0 != (mask & bs);
+	}
+
+	public static boolean isNoMask(int bs, int mask) {
+		return 0 == (bs & mask);
 	}
 
 	/**

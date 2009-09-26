@@ -98,4 +98,14 @@ public class LinkedCharArrayTest {
 		assertTrue(lia.isEmpty());
 		assertEquals(0, lia.size());
 	}
+
+	public void testEndWith() {
+		assertTrue(lia.endsWith("FG"));
+		assertFalse(lia.endsWith((String) null));
+		assertFalse(lia.endsWith("M"));
+
+		assertTrue(lia.endsWith(new char[] { 'F', 'G' }));
+		assertFalse(lia.endsWith((char[]) null));
+		assertFalse(lia.endsWith(new char[] { 'M' }));
+	}
 }
