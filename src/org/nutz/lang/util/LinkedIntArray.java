@@ -27,7 +27,7 @@ public class LinkedIntArray {
 		int[] array;
 		int row = cursor / width;
 		int i = cursor % width;
-		if (i == 0) {
+		if (cache.size() == 0 || (cursor != offset && i == 0)) {
 			array = new int[width];
 			cache.add(array);
 		} else {

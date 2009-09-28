@@ -17,7 +17,7 @@ public interface FilePool {
 
 	File createFile(String suffix) throws IOException;
 
-	File changeExtension(long id, String suffix, String newSuffix);
+	File renameSuffix(long id, String suffix, String newSuffix);
 
 	long getFileId(File f);
 

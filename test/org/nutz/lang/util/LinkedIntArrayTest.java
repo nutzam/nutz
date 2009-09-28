@@ -12,6 +12,17 @@ public class LinkedIntArrayTest {
 			lia.push(e);
 		return lia;
 	}
+	
+	@Test
+	public void test_re_push(){
+		LinkedIntArray lia = new LinkedIntArray();
+		lia.push(5);
+		lia.popLast();
+		lia.push(9);
+		assertEquals(9,lia.last());
+		assertEquals(1,lia.size());
+		
+	}
 
 	@Test
 	public void testPush() {

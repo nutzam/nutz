@@ -16,6 +16,15 @@ public class LinkedCharArrayTest {
 	}
 
 	@Test
+	public void test_re_push() {
+		lia = new LinkedCharArray();
+		lia.push('A').popLast();
+		lia.push('F');
+		assertEquals('F', lia.last());
+		assertEquals(1, lia.size());
+	}
+
+	@Test
 	public void testNormal() {
 		assertEquals(7, lia.size());
 		assertEquals('A', lia.first());

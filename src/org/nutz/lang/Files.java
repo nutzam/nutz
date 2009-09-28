@@ -44,14 +44,29 @@ public class Files {
 		return sb.toString();
 	}
 
-	public static File setSuffix(File f, String suffix) {
+	/**
+	 * 
+	 * 
+	 * @param f
+	 * @param suffix
+	 * @return
+	 */
+	public static File renameSuffix(File f, String suffix) {
 		if (null == f)
 			return null;
 		if (null == suffix || suffix.length() == 0)
 			return f;
 		String path = f.getName();
-		int pos = path.lastIndexOf('.');
-		if (-1 == pos)
+		int pos = path.length();
+		for (--pos; pos > 0; pos--) {
+			if (path.charAt(pos) == '.')
+				break;
+			if (path.charAt(pos) == '/' || path.charAt(pos) == '\\') {
+				pos = -1;
+				break;
+			}
+		}
+		if (0 >= pos)
 			return new File(path + suffix);
 		return new File(path.substring(0, pos) + suffix);
 	}

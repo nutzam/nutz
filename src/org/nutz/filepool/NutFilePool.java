@@ -77,9 +77,9 @@ public class NutFilePool implements FilePool {
 		return cursor;
 	}
 
-	public File changeExtension(long id, String suffix, String newSuffix) {
+	public File renameSuffix(long id, String suffix, String newSuffix) {
 		File f = Utils.getFileById(home, id, suffix);
-		File newFile = Files.setSuffix(f, newSuffix);
+		File newFile = Files.renameSuffix(f, newSuffix);
 		f.renameTo(newFile);
 		return newFile;
 	}

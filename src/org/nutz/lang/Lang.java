@@ -17,6 +17,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
@@ -33,7 +37,8 @@ public class Lang {
 		return new RuntimeException(String.format(format, args));
 	}
 
-	public static <T extends Throwable> T makeThrow(Class<T> classOfT, String format, Object... args) {
+	public static <T extends Throwable> T makeThrow(Class<T> classOfT, String format,
+			Object... args) {
 		return Mirror.me(classOfT).born(String.format(format, args));
 	}
 
@@ -319,8 +324,8 @@ public class Lang {
 		return coll;
 	}
 
-	public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass, Collection<?> coll,
-			String keyFieldName) {
+	public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
+			Collection<?> coll, String keyFieldName) {
 		if (null == coll)
 			return null;
 		Map<Object, Object> map = createMap(mapClass);
@@ -377,8 +382,8 @@ public class Lang {
 		return re;
 	}
 
-	public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass, Object array,
-			String keyFieldName) {
+	public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
+			Object array, String keyFieldName) {
 		if (null == array)
 			return null;
 		Map<Object, Object> map = createMap(mapClass);
@@ -409,7 +414,8 @@ public class Lang {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T[] array2array(Object array, Class<T[]> arrayType) throws FailToCastObjectException {
+	public static <T> T[] array2array(Object array, Class<T[]> arrayType)
+			throws FailToCastObjectException {
 		if (null == array)
 			return null;
 		Class<T> ct = (Class<T>) arrayType.getComponentType();
@@ -420,7 +426,8 @@ public class Lang {
 		return re;
 	}
 
-	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts) throws FailToCastObjectException {
+	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
+			throws FailToCastObjectException {
 		Object[] newArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
 			newArgs[i] = Castors.me().castTo(args[i], pts[i]);
@@ -568,4 +575,7 @@ public class Lang {
 		return Boolean.parseBoolean(s);
 	}
 
+	public static DocumentBuilder xmls() throws ParserConfigurationException {
+		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	}
 }
