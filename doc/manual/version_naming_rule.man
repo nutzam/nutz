@@ -1,5 +1,7 @@
 #title: Nutz 的版本命名规范
 
+#verifier:Xiaofeng.Fu(hilliate@gmail.com)
+
 Nutz 每个版本 jar 包的命名遵照如下格式
 {{{
 nutz[.模块名]-主版本号.质量级别.jar

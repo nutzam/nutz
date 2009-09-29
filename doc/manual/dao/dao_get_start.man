@@ -1,7 +1,7 @@
 #title:Nutz.Dao 入门
 #index:1
 #verifier:Peter.Tung(mastung@gmail.com)
-#verifier:Abc(hh@263.com)
+#verifier:Xiaofeng.Fu(hilliate@gmail.com)
 -----------------------------------------------------------------------------------------------------------------
 检查运行环境
 	# 首先，你必须安装 JDK1.5 或者以上版本：

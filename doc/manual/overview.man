@@ -1,5 +1,7 @@
 #title: 写在前面的话
 
+#verifier:Xiaofeng.Fu(hilliate@gmail.com)
+
 提高程序员的生产力是 Nutz 框架的唯一使命
  <30x30:logo.png>
 	
