@@ -4,20 +4,21 @@
 #verifier:Abc(hh@263.com)
 -----------------------------------------------------------------------------------------------------------------
 检查运行环境
-	# 首先，你必须安装 JDK1.5 或者以上版本。
+	# 首先，你必须安装 JDK1.5 或者以上版本：
 		# 如果你直接使用编译好的 jar 包，请保证你的 JDK是1.6 的，因为 Nutz 的jar包是在  1.6.0_11 上编译的。
 		# JDK1.5 的需要重新从源码编译。
-		# Nutz 的源码依赖 [http://www.csg.is.titech.ac.jp/~chiba/javassist/ Javassist]
-	# 其次，为了运行 Nutz.Dao，你必须要有一个数据库软件。
-		# Mysql,Postgresql, SQLServer, Oracle, DB2 都可以
-		# 如果是其他的数据库，在大数据量分页查询的时候，为了效率可能你需要实现一个 Pager
+		# Nutz 的源码依赖 [http://www.csg.is.titech.ac.jp/~chiba/javassist/ Javassist]。
+	# 其次，为了运行 Nutz.Dao，你必须要有一个数据库软件：
+		# Mysql,Postgresql, SQLServer, Oracle, DB2 都可以。
+		# 如果是其他的数据库，在大数据量分页查询的时候，为了效率可能你需要实现一个 Pager。
 		# 关于如何建立 Pager，在 Nutz.Dao 分类中会有详细说明。
-	# 建立一个普通的 Java 项目
-		# 你可以采用任何自己觉得舒适的 IDE 环境，或者编辑器
-		# 你要将数据库的 JDBC Driver 和你喜欢的连接池加入项目的 classpath
-	# 在数据库里建立一张你自己的数据表， 这里我们用 t_person 来举例:
+	# 建立一个普通的 Java 项目：
+		# 你可以采用任何自己觉得舒适的 IDE 环境，或者编辑器。
+		# 你要将数据库的 JDBC Driver 和你喜欢的连接池加入项目的 classpath。
+	# 在数据库里建立一张你自己的数据表， 这里我们用 t_person 来举例：
 -----------------------------------------------------------------------------------------------------------------
 创建数据库
+	此处代码适用于PostgreSQL，如果你使用了不同的数据库，请自行修改相应建库语句：
 	{{{<sql>
 	CREATE TABLE t_person (
 	  id  SERIAL PRIMARY KEY,
@@ -29,7 +30,7 @@
 创建 POJO
 	在 Java 项目中建立一个POJO，比如 com.zzh.demo.Person :
 	{{{<java>
-	import com.zzh.dao.entity.annotation.*;
+	import org.nutz.dao.entity.annotation.*;
 
 	@Table("t_person")   // 声明了Person对象的数据表
 	public class Person {
@@ -84,8 +85,8 @@
 -----------------------------------------------------------------------------------------------------------------
 最后一点说明
 	* 请注意， dataSource 变量应该是你预先设置好的，只要是一个 javax.sql.DataSource 对象就成。
-	* 像比较常用的连接池都提供了 DataSource 的实现，你可以随便选一个你喜欢的连接池
-	* 上面这段代码会向数据库里插入一条记录
+	* 各种较常用的连接池都提供了 DataSource 的实现，你可以随便选一个你喜欢的连接池。
+	* 上面这段代码会向数据库里插入一条记录。
 	* 至于如何获取，如何删除，如何查询， 你可以通过 IDE 的自动提示工具看一看Dao的接口。
 	* 不用 IDE 的朋友，可以看看 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/dao/Dao.java Nutz.Dao 接口的源代码]，接口函数很容易理解。
 	* 这个例子足够作为 Hello World 了， 祝你玩的开心  :) 
