@@ -3,7 +3,7 @@ package org.nutz.lang.util;
 import java.io.File;
 import java.io.FilenameFilter;
 
-public class Disk {
+public class Disks {
 
 	public static int visitFile(File f, FileVisitor fv, FilenameFilter filter) {
 		int re = 0;

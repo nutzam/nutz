@@ -1,5 +1,6 @@
 package org.nutz.lang.util;
 
+import java.util.Iterator;
 import java.util.List;
 
 public interface Node<T> {
@@ -64,8 +65,9 @@ public interface Node<T> {
 
 	boolean hasChild();
 
-	Node<T> getFirstChild();
+	Node<T> firstChild();
 
-	Node<T> getLastChild();
+	Node<T> lastChild();
 
+	Iterator<Node<T>> iterator();
 }

@@ -101,12 +101,11 @@ public class LinkedCharArray {
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
 	}
 
-	public String clear() {
-		String re = this.toString();
+	public LinkedCharArray clear() {
 		cache.clear();
 		cursor = 0;
 		offset = 0;
-		return re;
+		return this;
 	}
 
 	private char innerGet(int index) {

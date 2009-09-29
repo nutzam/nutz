@@ -193,7 +193,7 @@ public class FileSqlManager implements SqlManager {
 					}
 				} else {
 					if (list.push(c).endsWith("*/")) {
-						Matcher matcher = ptn.matcher(list.clear());
+						Matcher matcher = ptn.matcher(list.popAll());
 						if (matcher.find()) {
 							key = Strings.trim(matcher.group());
 						}
@@ -203,7 +203,7 @@ public class FileSqlManager implements SqlManager {
 		}
 
 		void addOne() {
-			String value = Strings.trim(list.clear());
+			String value = Strings.trim(list.popAll());
 			if (!Strings.isBlank(value))
 				map.put(key, value);
 			key = null;

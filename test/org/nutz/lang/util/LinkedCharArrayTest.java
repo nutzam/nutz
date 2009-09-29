@@ -108,6 +108,7 @@ public class LinkedCharArrayTest {
 		assertEquals(0, lia.size());
 	}
 
+	@Test
 	public void testEndWith() {
 		assertTrue(lia.endsWith("FG"));
 		assertFalse(lia.endsWith((String) null));

@@ -1,8 +1,10 @@
 package org.nutz.lang.util;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class SimpleNode<T> implements Node<T> {
@@ -126,11 +128,11 @@ public class SimpleNode<T> implements Node<T> {
 		return null != firstChild;
 	}
 
-	public Node<T> getFirstChild() {
+	public Node<T> firstChild() {
 		return firstChild;
 	}
 
-	public Node<T> getLastChild() {
+	public Node<T> lastChild() {
 		return lastChild;
 	}
 
@@ -204,7 +206,7 @@ public class SimpleNode<T> implements Node<T> {
 		for (int i : indexes) {
 			if (!me.hasChild())
 				return null;
-			me = me.getFirstChild().next(i);
+			me = me.firstChild().next(i);
 		}
 		return me;
 	}
@@ -294,12 +296,57 @@ public class SimpleNode<T> implements Node<T> {
 	static void appendTo(Node<?> node, StringBuilder sb, int depth) {
 		sb.append(Strings.dup("    ", depth)).append(
 				node.get() == null ? "NULL" : node.get().toString());
-		Node<?> chd = node.getFirstChild();
+		Node<?> chd = node.firstChild();
 		while (chd != null) {
 			sb.append('\n');
 			appendTo(chd, sb, depth + 1);
 			chd = chd.next();
 		}
+	}
+
+	static class InnerIterator<T> implements Iterator<Node<T>> {
+
+		private Node<T> root;
+		private Node<T> node;
+
+		InnerIterator(Node<T> node) {
+			this.root = node;
+			if (root.hasChild())
+				this.node = root.child(0);
+			else
+				this.node = root;
+		}
+
+		public boolean hasNext() {
+			return node != root;
+		}
+
+		public Node<T> next() {
+			if (node == root)
+				return null;
+			Node<T> re = node;
+			if (node.hasChild()) {
+				node = node.firstChild();
+			} else if (!node.isLast()) {
+				node = node.next();
+			} else {
+				while (node.isLast() && !node.isRoot()) {
+					node = node.parent();
+				}
+				if (!node.isRoot())
+					node = node.next();
+			}
+			return re;
+		}
+
+		public void remove() {
+			throw Lang.makeThrow("No implement yet!");
+		}
+
+	}
+
+	public Iterator<Node<T>> iterator() {
+		return new InnerIterator<T>(this);
 	}
 
 }

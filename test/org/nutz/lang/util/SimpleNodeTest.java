@@ -2,6 +2,7 @@ package org.nutz.lang.util;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.junit.Before;
@@ -228,4 +229,21 @@ public class SimpleNodeTest {
 		assertTrue(root.isEmpty());
 	}
 
+	@Test
+	public void test_iteratoring_1() {
+		root.add(A, C, D);
+		A.add(B);
+		D.add(E, F);
+		Iterator<Node<String>> it = root.iterator();
+		assertTrue(it.hasNext());
+		assertEquals(A, it.next());
+		assertEquals(B, it.next());
+		assertEquals(C, it.next());
+		assertEquals(D, it.next());
+		assertEquals(E, it.next());
+		assertEquals(F, it.next());
+		assertFalse(it.hasNext());
+		assertNull(it.next());
+		assertNull(it.next());
+	}
 }
