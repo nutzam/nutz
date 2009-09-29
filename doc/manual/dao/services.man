@@ -11,7 +11,7 @@
 	针对 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/dao/Dao.java org.nutz.dao.Dao] 接口的封装。
 	譬如：
 	{{{<JAVA>
-	IdNameEntityService<Pet> pets = new IdNameEntityService<Pet>(dao);
+	IdNameEntityService<Pet> pets = new IdNameEntityService<Pet>(dao){};
 	Pet pet = pets.fetch("XiaoBai");
 	}}}
 	这样，调用的时候，就不用每次都传入参数了。
