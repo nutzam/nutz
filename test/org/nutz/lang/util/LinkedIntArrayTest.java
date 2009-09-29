@@ -13,6 +13,7 @@ public class LinkedIntArrayTest {
 		return lia;
 	}
 	
+
 	@Test
 	public void test_re_push(){
 		LinkedIntArray lia = new LinkedIntArray();
@@ -23,7 +24,7 @@ public class LinkedIntArrayTest {
 		assertEquals(1,lia.size());
 		
 	}
-
+	
 	@Test
 	public void testPush() {
 		LinkedIntArray lia = new LinkedIntArray();

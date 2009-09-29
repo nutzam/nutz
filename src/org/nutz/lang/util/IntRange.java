@@ -5,10 +5,7 @@ import org.nutz.lang.Strings;
 public class IntRange {
 
 	public static IntRange make(String s) {
-		return make(Strings.trim(s).toCharArray());
-	}
-
-	public static IntRange make(char[] cs) {
+		char[] cs = Strings.trim(s).toCharArray();
 		int i = 0;
 		for (; i < cs.length; i++) {
 			char c = cs[i];
@@ -17,11 +14,10 @@ public class IntRange {
 		}
 		if (i == 0)
 			return make(Integer.parseInt(new String(cs)));
-		int l = Integer.parseInt(String.valueOf(cs, 0, i));
+		int left = Integer.parseInt(String.valueOf(cs, 0, i));
 		if (i == cs.length)
-			return make(l, l);
-		return make(l, Integer.parseInt(String.valueOf(cs, ++i, cs.length - i)));
-
+			return make(left, left);
+		return make(left, Integer.parseInt(String.valueOf(cs, ++i, cs.length - i)));
 	}
 
 	public static IntRange make(int right) {
