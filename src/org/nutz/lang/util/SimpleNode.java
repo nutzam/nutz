@@ -31,6 +31,12 @@ public class SimpleNode<T> implements Node<T> {
 		return parent;
 	}
 
+	public Node<T> top() {
+		if (null == parent)
+			return this;
+		return parent.top();
+	}
+
 	public Node<T> prev() {
 		return prev;
 	}
@@ -59,10 +65,6 @@ public class SimpleNode<T> implements Node<T> {
 
 	public boolean isFirst() {
 		return null == prev;
-	}
-
-	public boolean isEmpty() {
-		return firstChild == null;
 	}
 
 	public List<Node<T>> getAncestors() {

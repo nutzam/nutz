@@ -12,6 +12,8 @@ public interface Node<T> {
 	Node<T> parent(Node<T> node);
 
 	Node<T> parent();
+	
+	Node<T> top();
 
 	Node<T> prev();
 
@@ -43,8 +45,6 @@ public interface Node<T> {
 
 	boolean isFirst();
 	
-	boolean isEmpty();
-
 	List<Node<T>> getAncestors();
 
 	int depth();

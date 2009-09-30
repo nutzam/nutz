@@ -15,7 +15,7 @@ public class Stopwatch {
 	public static void printTest(Atom atom) {
 		System.out.println(test(atom).toString());
 	}
-
+	
 	private long from;
 	private long to;
 

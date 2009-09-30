@@ -135,11 +135,20 @@ ul.zdoc_index_table{
 	min-width:300px;
 	margin:10px;
 	border:0px;
+	padding-left:30px;
 }
 
-ul.zdoc_index_table, .zdoc_index_table ul{
-	padding-left:40px;
+ul.zdoc_index_table .num{
+	color:#B66;
+	display:inline-block;
+	font-weight:normal;
+	margin-right:10px;
+}
+
+ul.zdoc_index_table, ul.zdoc_index_table ul{
 	border:0px;
+	list-style:none;
+
 }
 
 .zdoc_body ul ul, .zdoc_body  ul ol, .zdoc_body  ol ol, .zdoc_body  ol ul{
@@ -148,4 +157,10 @@ ul.zdoc_index_table, .zdoc_index_table ul{
 	padding-left:30px;
 	margin-left:14px;
 	border-left:3px dotted #E0E0E0;
+}
+
+ul.zdoc_index_table ul{
+	margin-left:27px;
+	padding-left:10px;
+	border-left-color:#CCC;
 }

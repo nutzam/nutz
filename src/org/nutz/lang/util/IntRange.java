@@ -12,8 +12,9 @@ public class IntRange {
 			if (c == ',' || c == ':')
 				break;
 		}
-		if (i == 0)
+		if(i==cs.length)
 			return make(Integer.parseInt(new String(cs)));
+		
 		int left = Integer.parseInt(String.valueOf(cs, 0, i));
 		if (i == cs.length)
 			return make(left, left);

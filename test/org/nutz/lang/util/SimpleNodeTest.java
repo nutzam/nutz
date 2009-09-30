@@ -226,7 +226,7 @@ public class SimpleNodeTest {
 		assertEquals(B, root.remove(0));
 		assertEquals(D, root.remove(0));
 
-		assertTrue(root.isEmpty());
+		assertTrue(!root.hasChild());
 	}
 
 	@Test

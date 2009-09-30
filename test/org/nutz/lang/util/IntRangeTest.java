@@ -17,9 +17,15 @@ public class IntRangeTest {
 		assertTrue(r.inon(5));
 		assertTrue(r.gt(2));
 		assertTrue(r.lt(6));
-		
+
 		assertFalse(r.inon(2));
 		assertFalse(r.inon(6));
 	}
 
+	@Test
+	public void testMakeSimple() {
+		IntRange r = IntRange.make("3");
+		assertEquals(0, r.getLeft());
+		assertEquals(3, r.getRight());
+	}
 }
