@@ -1,3 +1,92 @@
 #title:Nutz.Mvc 概述
 
-coming soon
+如何映射 URL
+	用最直接的方法将一个 URL 映射到某一个 Java 函数上
+	比如：
+	{{{
+	@Ioc("userActions")
+	public class UserActions{
+		@Url("/user/update")
+		@Params(type="json")
+		@View(
+			type = "jsp"
+			ok = "abc.bbc.cbc"
+			error = "xx.bb.qq
+		)
+		public void updateUser(User user){
+		}
+		
+		@Url("/user/add")
+		@Params(type="pair")
+		public void addUser(User user){
+		}
+		
+		@Url("/user/delete")
+		@Params(names = ["name"])		// if define names, type will be "pair"
+		public void deleteUser(String name){
+		}
+	}
+	}}}
+	 * @Ioc 注解不是必须的
+		 * 如果声明了这个注解，将会调用 Ioc.get() 方法，获取该类实例
+		 * 否则，将直接调用默认构造函数获取该类实例，该类的实例将不被缓存
+	 * @Url 注解声明了本函数具体对应哪个 URL，后面有详细解释
+	 * @Params 注解用来声明参数的映射规则，遵守如下约定
+		 # 如果类型为 ServletRequest 或 ServletResponse 及其子类, 在函数被调用时，相关参数会被正确设置
+			 * 无所谓参数的位置
+			 * 无所谓参数的个数，即使你声明了 2个以上的 ServletRequest，它们也都会被正确设置
+		 # 其他参数会按顺序供给
+			 * 如果 type = "pair"，则按 names 的顺序，依次为参数设置值。
+				 * 如果没有声明 names，则每个参数都会被试图从 Request 的提交数据中加载
+			 * 如果 type = "json"，则将 Request 全部读入，对每个参数依次 fromJson
+			 * 如果 type = "binary"，则不做任何事情，实际上用户需要手动的设置一个 ServletRequest 参数
+	 * 任何函数可以有返回值，也可以没有返回值
+		 * 有返回值，这个返回值会传递给 View
+		 * 无返回值，View 的对应参数则为 Null
+	 * @View 注解将声明本函数会用何种方式渲染 HTTP 响应的内容
+		 * type 属性可以有 jsp | json 或者其他类型，大小写不敏感
+			 * 框架将试图通过这个属性名，去生成一个视图的实例
+				 * 如果声明了 ok 或者 error，则试图将其值作为该视图实例的构造函数的第一参数传入，否则，将调用默认构造函数
+			 * 如果你想增加新的视图类型，需要为 NutzServlet 增加配置信息，views 属性是个 Json 字符串，格式类似：
+				{{{
+				{
+					freemarker : "com.you.FreeMakerView",
+					velocity : "com.you.VelocityView",
+					webmacro : "com.you.WebmacroView"
+				}
+				}}}
+				注，同样， key 值就是类型名，大小写不敏感。 Nutz.Mvc 默认提供了两种视图：
+				{{{
+				{
+					jsp : "org.nutz.mvc.view.JspView",
+					json : "org.nutz.mvc.view.JsonView"
+				}
+				}}}
+				这两个视图你不用声明，自然就有。但是如果你想替换它们的实现，你可以再 views 属性的 Json 字符串里面重写它们的值
+		 * ok & error 属性表示函数顺利的执行以后，应该采用什么样的视图来渲染。
+			 * 因为每一次渲染，都会构建一个新的视图实例，构建时，会将 ok 或者 error 的值作为该视图的构造函数传入
+			 * 如果没有声明该值，则用调用默认构造函数来创建视图
+			 * NutzServlet 提供参数来设置默认 ok 视图，以及默认 error 视图
+			 * 你可以将 @View 声明在类上，则作为整个类的默认 ok | error 视图
+
+如何让框架找到这些函数
+	将这个类配置在 NutzServlet 的参数中，用逗号分隔。NutzServlet 在启动的时候会初始化这些类
+	{{{
+	<init-param>
+		<name>modules</name>
+		<value>
+			com.you.UserActions,
+			com.you.CompanyActions
+		</value>
+	</init-param>
+	}}}
+
+URL 的匹配方式
+	实际上，在 servlet 的 service() 方法中，框架会将拿到的 path 去掉后缀，然后进行一次树匹配
+		 * 逐个字符匹配 URL
+		 * 将所有的 URL 组成一课树
+		 
+	
+	
+	
+	
