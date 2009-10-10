@@ -23,7 +23,6 @@ public class ActionInvokerImpl implements ActionInvoker {
 		this.method = method;
 	}
 
-	@Override
 	public void invoke(HttpServletRequest request, HttpServletResponse response) {
 		Object args = null;
 		Object re;

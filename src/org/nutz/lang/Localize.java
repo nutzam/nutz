@@ -100,10 +100,10 @@ public class Localize {
 			w.write((char) c);
 		} else if (c > 256) {
 			w.write("\\u");
-			w.write(Strings.fillHex(c, 4).toString());
+			w.write(Strings.fillHex(c, 4));
 		} else {
 			w.write("-\\u");
-			w.write(Strings.fillHex(c, 4).toString());
+			w.write(Strings.fillHex(c, 4));
 		}
 	}
 

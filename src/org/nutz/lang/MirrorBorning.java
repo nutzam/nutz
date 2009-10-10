@@ -20,14 +20,13 @@ public class MirrorBorning<T> implements Borning<T> {
 		this.type = mirror.getType();
 		this.args = null == args ? new Object[0] : args;
 		dynaArg = Mirror.evalArgToRealArray(args);
-		if (args.length == 0) {
+		if (null == args || args.length == 0) {
 			evalNullArgs();
 		} else {
 			evalWithArgs();
 		}
 		if (null == borningInvoker) {
-			throw new BorningException(new RuntimeException("Don't know how to born it!"), type,
-					args);
+			throw new BorningException(new RuntimeException("Don't know how to born it!"), type, args);
 		}
 	}
 
@@ -76,8 +75,7 @@ public class MirrorBorning<T> implements Borning<T> {
 			// static
 			for (Method m : sms) {
 				Class<?>[] pts = m.getParameterTypes();
-				if (m.getReturnType() == type && m.getParameterTypes().length == 1
-						&& pts[0].isArray()) {
+				if (m.getReturnType() == type && m.getParameterTypes().length == 1 && pts[0].isArray()) {
 					args = new Object[1];
 					args[0] = Mirror.blankArrayArg(pts);
 					borningInvoker = new MethodInvoker(m, args);
