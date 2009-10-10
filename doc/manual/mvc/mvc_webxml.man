@@ -1,0 +1,60 @@
+#title: 在 web.xml 的配置
+#index:0,1
+
+声明 Servlet
+	例子代码:
+	{{{<XML>
+	<servlet>
+		<servlet-name>NutzMvc</servlet-name>
+		<servlet-class>org.nutz.mvc2.NutzServlet</servlet-class>
+		<!--==============================================================================================
+		声明 Ioc
+		-->
+		<init-param>
+			<!--
+			参数的值为逗号分隔字符串，每个字符串表示一个 Json 配置文件的全路径。框架会在 CLASSPATH 上寻找
+			这些文件。文件路径如果为本地绝对路径也可以。
+			-->
+			<param-name>ioc-by-json</param-name>
+			<param-value>
+				objects/dao.js,
+				objects/mymodule.js
+			</param-value>
+			<!--
+			或者，你可以采用数据库方式来建立 Ioc， 你需要提供接口 org.nutz.mvc2.DaoProvider 的一个实现
+			这个实现必须有一个 public 的默认构造函数以备框架调用
+
+			<param-name>ioc-by-db</param-name>
+			<param-value>com.my.app.MyDaoProvider</param-value>
+			-->
+		</init-param>
+		<!--==============================================================================================
+		声明 Mvc 的映射
+		映射关系全部存放在 POJO 类内，一个 POJO 类，就相当于一个模块，里面可以含有多个函数。
+		这个参数以逗号分隔，声明所有相关 POJO 的类全名
+		-->
+		<init-param>
+			<param-name>modules</param-name>
+			<param-value>
+				com.my.RedModule,
+				com.my.BlueModule
+			</param-value>
+		</init-param>
+		<!--==============================================================================================
+		服务器生命周期
+		需要你提供一个 org.nutz.mvc2.Setup 接口的实现
+		-->
+		<init-param>
+			<param-name>setup</param-name>
+			<param-value>com.my.MyServerSetup</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	}}}
+声明 Servlet Mapping
+	{{{<XML>
+	<servlet-mapping>
+		<servlet-name>NutzMvc</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	}}}

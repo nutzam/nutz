@@ -36,4 +36,38 @@ public class MathsTest {
 		assertFalse(isNoMask(bit("111011"), bit("1100")));
 	}
 
+	@Test
+	public void test_find_in_cs_0() {
+		char[] cs = "".toCharArray();
+		assertEquals(-1, Maths.find(cs, 'c'));
+
+		cs = "A".toCharArray();
+		assertEquals(-1, Maths.find(cs, 'c'));
+
+		cs = "AB".toCharArray();
+		assertEquals(-1, Maths.find(cs, 'c'));
+	}
+
+	@Test
+	public void test_find_in_cs_1() {
+		char[] cs = "ABCDE".toCharArray();
+		assertEquals(0, Maths.find(cs, 'A'));
+		assertEquals(1, Maths.find(cs, 'B'));
+		assertEquals(2, Maths.find(cs, 'C'));
+		assertEquals(3, Maths.find(cs, 'D'));
+		assertEquals(4, Maths.find(cs, 'E'));
+		assertEquals(-1, Maths.find(cs, 'F'));
+	}
+
+	@Test
+	public void test_find_in_cs_2() {
+		char[] cs = "ABCDEF".toCharArray();
+		assertEquals(0, Maths.find(cs, 'A'));
+		assertEquals(1, Maths.find(cs, 'B'));
+		assertEquals(2, Maths.find(cs, 'C'));
+		assertEquals(3, Maths.find(cs, 'D'));
+		assertEquals(4, Maths.find(cs, 'E'));
+		assertEquals(5, Maths.find(cs, 'F'));
+		assertEquals(-1, Maths.find(cs, '*'));
+	}
 }

@@ -2,8 +2,8 @@ package org.nutz.mvc2;
 
 public interface UrlMap {
 
-	public UrlMap add(Class<?> module);
+	public void add(Class<?> module);
 
-	public MethodInvoker get(String url);
+	public ActionInvoker get(String path);
 
 }

@@ -9,7 +9,7 @@ import org.nutz.lang.Lang;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD, ElementType.TYPE })
-public @interface View {
+public @interface Views {
 
 	/**
 	 * It built in two type "jsp" and "json" If you want to add new type, update

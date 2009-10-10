@@ -8,12 +8,15 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.NUT;
 import org.nutz.dao.Dao;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.db.DatabaseLoader;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.JsonLoader;
 import org.nutz.lang.Strings;
+import org.nutz.mvc.Mvc;
+import org.nutz.mvc.Setup;
 import org.nutz.mvc2.url.UrlMapImpl;
 
 @SuppressWarnings("serial")
@@ -50,6 +53,14 @@ public class NutzServlet extends HttpServlet {
 					urls.add(Class.forName(name));
 			// Save urls object to contect
 			getServletContext().setAttribute(UrlMap.class.getName(), urls);
+			
+			// Setup server
+			String setupClass = config.getInitParameter(NUT.SETUP);
+			if (null != setupClass) {
+				Setup setup = (Setup) Class.forName(setupClass).newInstance();
+				getServletContext().setAttribute(Setup.class.getName(), setup);
+				setup.init(config);
+			}
 		} catch (ClassNotFoundException e) {
 			throw new ServletException(e);
 		} catch (InstantiationException e) {
@@ -57,6 +68,17 @@ public class NutzServlet extends HttpServlet {
 		} catch (IllegalAccessException e) {
 			throw new ServletException(e);
 		}
+	}
+	
+	public void destroy() {
+		urls = null;
+		Setup setup = (Setup) getServletContext().getAttribute(Setup.class.getName());
+		if (null != setup)
+			setup.destroy(getServletConfig());
+		Ioc ioc = Mvc.ioc(getServletContext());
+		if (null != ioc)
+			ioc.depose();
+		super.destroy();
 	}
 
 	@Override
@@ -69,7 +91,7 @@ public class NutzServlet extends HttpServlet {
 			path = path.substring(0, lio);
 
 		// get Url and invoke it
-		MethodInvoker invoker = urls.get(path);
+		ActionInvoker invoker = urls.get(path);
 		invoker.invoke(req, resp);
 	}
 

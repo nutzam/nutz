@@ -35,8 +35,13 @@
 	</doc>
 	<doc path="mvc"	title="Nutz.Mvc 开发者手册">
 		<doc path="mvc_overview.man"/>
-		<doc path="mvc_controllor.man"/>
-		<doc path="mvc_view.man"/>
+		<doc path="mvc__helloworld.man"/>
+		<doc path="mvc_webxml.man"/>
+		<doc path="mvc_c.man"/>
+		<doc path="mvc_v.man"/>
+		<doc path="mvc_m.man"/>
+		<doc path="mvc__entity_support.man"/>
+		<doc path="mvc__file_upload.man"/>
 	</doc>
 	<doc path="json" title="Nutz.Json 使用手册">
 		<doc path="nutz_json.man"/>

@@ -1,14 +1,26 @@
 #title:Nutz.Mvc 概述
 
+核心概念
+	从 Nutz.Mvc 的观点来看，所谓 Mvc：
+	 * M 是处理数据的方式
+	 * V 是显示数据处理结果的方式
+	 * C 是将 HTTP 请求适配到 M 的一个中间层
+	其中各个部分的本质上就是：
+	 * M 是通过 Ioc 接口获得的业务逻辑处理类 -- 即一个Java对象的实例
+	 * V 是 View 接口的实现 -- 即一个 Java 对象的实例
+	 * C 是某一个 POJO 对象的函数 -- 即一个Java函数
+	
+	Nutz.Mvc 的核心就是通过注解的方式，将这三者联系起来，完成中间流程的跳转以及必要的数据处理
+
 如何映射 URL
 	用最直接的方法将一个 URL 映射到某一个 Java 函数上
 	比如：
 	{{{
-	@Ioc("userActions")
+	@IocBy("userActions")
 	public class UserActions{
 		@Url("/user/update")
 		@Params(type="json")
-		@View(
+		@Views(
 			type = "jsp"
 			ok = "abc.bbc.cbc"
 			error = "xx.bb.qq
@@ -81,12 +93,4 @@
 	</init-param>
 	}}}
 
-URL 的匹配方式
-	实际上，在 servlet 的 service() 方法中，框架会将拿到的 path 去掉后缀，然后进行一次树匹配
-		 * 逐个字符匹配 URL
-		 * 将所有的 URL 组成一课树
-		 
-	
-	
-	
 	
