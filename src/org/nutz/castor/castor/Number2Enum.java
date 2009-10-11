@@ -10,8 +10,7 @@ import org.nutz.lang.Lang;
 public class Number2Enum extends Castor<Number, Enum> {
 
 	@Override
-	protected Enum cast(Number src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Enum cast(Number src, Class<?> toType, String... args) throws FailToCastObjectException {
 		try {
 			for (Field field : toType.getFields()) {
 				if (field.getType() == toType) {
@@ -20,9 +19,8 @@ public class Number2Enum extends Castor<Number, Enum> {
 						return em;
 				}
 			}
-			throw Lang.makeThrow(FailToCastObjectException.class,
-					"Can NO find enum value in [%s] by int value '%d'", toType.getName(), src
-							.intValue());
+			throw Lang.makeThrow(FailToCastObjectException.class, "Can NO find enum value in [%s] by int value '%d'",
+					toType.getName(), src.intValue());
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e, FailToCastObjectException.class);
 		}

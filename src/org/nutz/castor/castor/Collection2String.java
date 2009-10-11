@@ -11,8 +11,7 @@ import org.nutz.json.JsonFormat;
 public class Collection2String extends Castor<Collection, String> {
 
 	@Override
-	protected String cast(Collection src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected String cast(Collection src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Json.toJson(src, JsonFormat.compact());
 	}
 

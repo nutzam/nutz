@@ -1,5 +1,6 @@
 package org.nutz.lang;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -37,8 +38,7 @@ public class Lang {
 		return new RuntimeException(String.format(format, args));
 	}
 
-	public static <T extends Throwable> T makeThrow(Class<T> classOfT, String format,
-			Object... args) {
+	public static <T extends Throwable> T makeThrow(Class<T> classOfT, String format, Object... args) {
 		return Mirror.me(classOfT).born(String.format(format, args));
 	}
 
@@ -144,6 +144,12 @@ public class Lang {
 		} finally {
 			Streams.safeClose(reader);
 		}
+	}
+
+	public static String bufferAll(Reader reader) {
+		if (reader instanceof BufferedReader)
+			return readAll(reader);
+		return readAll(new BufferedReader(reader));
 	}
 
 	public static void writeAll(Writer writer, String str) {
@@ -324,8 +330,8 @@ public class Lang {
 		return coll;
 	}
 
-	public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
-			Collection<?> coll, String keyFieldName) {
+	public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass, Collection<?> coll,
+			String keyFieldName) {
 		if (null == coll)
 			return null;
 		Map<Object, Object> map = createMap(mapClass);
@@ -382,8 +388,8 @@ public class Lang {
 		return re;
 	}
 
-	public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
-			Object array, String keyFieldName) {
+	public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass, Object array,
+			String keyFieldName) {
 		if (null == array)
 			return null;
 		Map<Object, Object> map = createMap(mapClass);
@@ -414,20 +420,17 @@ public class Lang {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <T> T[] array2array(Object array, Class<T[]> arrayType)
-			throws FailToCastObjectException {
+	public static <T> T[] array2array(Object array, Class<T> eleType) throws FailToCastObjectException {
 		if (null == array)
 			return null;
-		Class<T> ct = (Class<T>) arrayType.getComponentType();
-		T[] re = (T[]) Array.newInstance(ct, Array.getLength(array));
+		T[] re = (T[]) Array.newInstance(eleType, Array.getLength(array));
 		for (int i = 0; i < re.length; i++) {
-			Array.set(re, i, Castors.me().castTo(Array.get(array, i), ct));
+			Array.set(re, i, Castors.me().castTo(Array.get(array, i), eleType));
 		}
 		return re;
 	}
 
-	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
-			throws FailToCastObjectException {
+	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts) throws FailToCastObjectException {
 		Object[] newArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
 			newArgs[i] = Castors.me().castTo(args[i], pts[i]);

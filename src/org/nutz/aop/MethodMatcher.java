@@ -8,7 +8,7 @@ import java.lang.reflect.Modifier;
 import org.nutz.lang.Maths;
 
 public class MethodMatcher {
-	
+
 	private String active;
 	private String ignore;
 	private int mods;
@@ -35,14 +35,13 @@ public class MethodMatcher {
 		if (null != active)
 			if (!method.getName().matches(active))
 				return false;
-		if (mods < 0)
+		if (mods <= 0)
 			return true;
-		if (mods == 0)
-			return true;
-		if (mod == 0) {
+
+		if (mod == 0)
 			mod |= TRANSIENT;
-		}
+
 		return Maths.isMask(mod, mods);
 	}
-	
+
 }

@@ -1,6 +1,7 @@
 package org.nutz.mvc2;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -18,6 +19,7 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvc;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc2.url.UrlMapImpl;
+import org.nutz.mvc2.view.BuiltinViewMaker;
 
 @SuppressWarnings("serial")
 public class NutzServlet extends HttpServlet {
@@ -45,15 +47,22 @@ public class NutzServlet extends HttpServlet {
 			// Save ioc object to context
 			if (null != ioc)
 				getServletContext().setAttribute(Ioc.class.getName(), ioc);
-			// Load modules
-			urls = new UrlMapImpl(ioc);
-			String[] names = Strings.splitIgnoreBlank(config.getInitParameter("modules"));
+			// Prepare view makers
+			ArrayList<ViewMaker> makers = new ArrayList<ViewMaker>();
+			makers.add(new BuiltinViewMaker());
+			String[] names = Strings.splitIgnoreBlank(config.getInitParameter("views"));
 			if (null != names)
 				for (String name : names)
-					urls.add(Class.forName(name));
+					makers.add((ViewMaker) Class.forName(name).newInstance());
+			// Load modules
+			urls = new UrlMapImpl(ioc);
+			names = Strings.splitIgnoreBlank(config.getInitParameter("modules"));
+			if (null != names)
+				for (String name : names)
+					urls.add(makers, Class.forName(name));
 			// Save urls object to contect
 			getServletContext().setAttribute(UrlMap.class.getName(), urls);
-			
+
 			// Setup server
 			String setupClass = config.getInitParameter(NUT.SETUP);
 			if (null != setupClass) {
@@ -69,7 +78,7 @@ public class NutzServlet extends HttpServlet {
 			throw new ServletException(e);
 		}
 	}
-	
+
 	public void destroy() {
 		urls = null;
 		Setup setup = (Setup) getServletContext().getAttribute(Setup.class.getName());
@@ -82,8 +91,7 @@ public class NutzServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// format path
 		String path = req.getServletPath();
 		int lio = path.lastIndexOf('.');

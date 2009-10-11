@@ -27,8 +27,7 @@ public class AopSetting {
 			matchers = new AopMatcher[map.size()];
 			int i = 0;
 			for (String key : map.keySet())
-				matchers[i++] = new AopMatcher(key, Lang.array2array(map.get(key),
-						AopMethod[].class));
+				matchers[i++] = new AopMatcher(key, Lang.array2array(map.get(key), AopMethod.class));
 		} else {
 			matchers = new AopMatcher[0];
 		}

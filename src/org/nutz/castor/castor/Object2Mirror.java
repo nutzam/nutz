@@ -8,8 +8,7 @@ import org.nutz.lang.Mirror;
 public class Object2Mirror extends Castor<Object, Mirror> {
 
 	@Override
-	protected Mirror cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Mirror cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Mirror.me(src.getClass());
 	}
 

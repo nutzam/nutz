@@ -5,21 +5,21 @@ import java.io.IOException;
 
 public interface FilePool {
 
-	boolean hasFile(long fId, String suffix);
+	boolean hasFile(int fId, String suffix);
 
-	long current();
+	int current();
 
-	File removeFile(long fId, String suffix);
+	File removeFile(int fId, String suffix);
 
-	File moveFile(long id, String suffix, File target) throws IOException;
+	File moveFile(int id, String suffix, File target) throws IOException;
 
-	File createFile(long id, String suffix) throws IOException;
+	File createFile(int id, String suffix) throws IOException;
 
 	File createFile(String suffix) throws IOException;
 
-	File renameSuffix(long id, String suffix, String newSuffix);
+	File renameSuffix(int id, String suffix, String newSuffix);
 
-	long getFileId(File f);
+	int getFileId(File f);
 
 	void empty() throws IOException;
 

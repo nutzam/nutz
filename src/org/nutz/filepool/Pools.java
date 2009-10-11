@@ -2,13 +2,13 @@ package org.nutz.filepool;
 
 import java.io.File;
 
-public class Utils {
+public class Pools {
 
-	public static File getFileById(File home, long id, String suffix) {
+	public static File getFileById(File home, int id, String suffix) {
 		return new File(getFilePathById(home, id, suffix));
 	}
 
-	public static String getFilePathById(File home, long id, String suffix) {
+	public static String getFilePathById(File home, int id, String suffix) {
 		StringBuilder sb = new StringBuilder(home.getAbsolutePath());
 		sb.append(String.format("%016X", id).replaceAll("\\p{XDigit}{2}", "/$0"));
 		if (null != suffix)
@@ -16,10 +16,10 @@ public class Utils {
 		return sb.toString();
 	}
 
-	public static long getFileId(File home, File f) {
+	public static int getFileId(File home, File f) {
 		String path = f.getAbsolutePath();
 		String s = path.substring(home.getAbsolutePath().length(), path.lastIndexOf('.'));
-		return Long.valueOf(s.replaceAll("[\\\\/]", ""), 16).longValue();
+		return Integer.parseInt(s.replaceAll("[\\\\/]", ""), 16);
 	}
 
 }

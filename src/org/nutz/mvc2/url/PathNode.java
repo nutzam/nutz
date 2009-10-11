@@ -17,8 +17,15 @@ class PathNode<T> {
 	private PathNode<T>[] children;
 	private T obj;
 
+	/**
+	 * 这是一个效率很低的实现，幸运的是，这个函数并不需要效率
+	 * 
+	 * @param c
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private PathNode<T> push(char c) {
+		// for empty PathNode
 		if (null == chars) {
 			chars = new char[1];
 			chars[0] = c;
@@ -34,6 +41,7 @@ class PathNode<T> {
 			if (chars[i] > c)
 				break;
 		}
+		// add new char
 		char[] newcs = new char[chars.length + 1];
 		PathNode<T>[] nodes = new PathNode[chars.length + 1];
 		int j = 0;

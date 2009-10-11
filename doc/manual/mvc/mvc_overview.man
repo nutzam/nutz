@@ -19,23 +19,18 @@
 	@IocBy("userActions")
 	public class UserActions{
 		@Url("/user/update")
-		@Params(type="json")
-		@Views(
-			type = "jsp"
-			ok = "abc.bbc.cbc"
-			error = "xx.bb.qq
-		)
+		@AdaptBy(JsonHttpAdaptor.class)
+		@Ok("jsp:abc.bbc.cbc")
+		@Error("jsp:abc.bbc.cbc")
 		public void updateUser(User user){
 		}
 		
 		@Url("/user/add")
-		@Params(type="pair")
-		public void addUser(User user){
+		public void addUser(@Param("usr") User user){
 		}
 		
 		@Url("/user/delete")
-		@Params(names = ["name"])		// if define names, type will be "pair"
-		public void deleteUser(String name){
+		public void deleteUser(@Param("nm") String name){
 		}
 	}
 	}}}

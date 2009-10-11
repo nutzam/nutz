@@ -15,8 +15,7 @@ public class Array2Collection extends Castor<Object, Collection> {
 	}
 
 	@Override
-	protected Collection cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Collection cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		Collection coll = createCollection(src, toType);
 		for (int i = 0; i < Array.getLength(src); i++)
 			coll.add(Array.get(src, i));

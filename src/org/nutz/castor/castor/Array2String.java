@@ -15,8 +15,7 @@ public class Array2String extends Castor<Object, String> {
 	}
 
 	@Override
-	protected String cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected String cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Json.toJson(src, JsonFormat.compact());
 	}
 

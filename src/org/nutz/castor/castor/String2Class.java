@@ -38,8 +38,7 @@ public class String2Class extends Castor<String, Class> {
 		try {
 			return Class.forName(src);
 		} catch (ClassNotFoundException e) {
-			throw new FailToCastObjectException(
-					format("String '%s' can not cast to Class<?>!", src));
+			throw new FailToCastObjectException(format("String '%s' can not cast to Class<?>!", src));
 		}
 	}
 

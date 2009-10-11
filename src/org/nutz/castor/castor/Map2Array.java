@@ -16,8 +16,7 @@ public class Map2Array extends Castor<Map, Object> {
 	}
 
 	@Override
-	protected Object cast(Map src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Object cast(Map src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Lang.collection2array(src.values(), toType.getComponentType());
 	}
 

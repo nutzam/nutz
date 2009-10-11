@@ -10,5 +10,5 @@ import org.nutz.lang.util.AllUtil;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { MirrorTest.class, LangTest.class, MathsTest.class, ArrayRandomTest.class, CharSegmentTest.class,
-		CastorTest.class, AllUtil.class })
+		CastorTest.class, AllUtil.class, StringsTest.class })
 public class AllLang {}

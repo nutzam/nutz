@@ -39,7 +39,7 @@ public class NutFilePool implements FilePool {
 			if (null != subs && subs.length > 0) {
 				last = new File(last.getAbsolutePath() + "/" + subs[subs.length - 1]);
 				if (last.isFile()) {
-					cursor = Utils.getFileId(home, last);
+					cursor = Pools.getFileId(home, last);
 					break;
 				}
 			} else {
@@ -49,7 +49,7 @@ public class NutFilePool implements FilePool {
 	}
 
 	private File home;
-	private long cursor;
+	private int cursor;
 	private int size;
 
 	public void empty() throws IOException {
@@ -58,10 +58,10 @@ public class NutFilePool implements FilePool {
 		cursor = 0;
 	}
 
-	public File createFile(long id, String suffix) throws IOException {
+	public File createFile(int id, String suffix) throws IOException {
 		if (size > 0 && id >= size)
 			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
-		File re = Utils.getFileById(home, id, suffix);
+		File re = Pools.getFileById(home, id, suffix);
 		if (!re.exists())
 			Files.createNewFile(re);
 		return re;
@@ -73,38 +73,38 @@ public class NutFilePool implements FilePool {
 		return createFile(++cursor, suffix);
 	}
 
-	public long current() {
+	public int current() {
 		return cursor;
 	}
 
-	public File renameSuffix(long id, String suffix, String newSuffix) {
-		File f = Utils.getFileById(home, id, suffix);
+	public File renameSuffix(int id, String suffix, String newSuffix) {
+		File f = Pools.getFileById(home, id, suffix);
 		File newFile = Files.renameSuffix(f, newSuffix);
 		f.renameTo(newFile);
 		return newFile;
 	}
 
-	public long getFileId(File f) {
+	public int getFileId(File f) {
 		try {
-			return Utils.getFileId(home, f);
+			return Pools.getFileId(home, f);
 		} catch (Exception e) {
 			return -1;
 		}
 	}
 
-	public File removeFile(long id, String suffix) {
-		File f = Utils.getFileById(home, id, suffix);
+	public File removeFile(int id, String suffix) {
+		File f = Pools.getFileById(home, id, suffix);
 		Files.deleteFile(f);
 		return f;
 	}
 
-	public boolean hasFile(long id, String suffix) {
-		File f = Utils.getFileById(home, id, suffix);
+	public boolean hasFile(int id, String suffix) {
+		File f = Pools.getFileById(home, id, suffix);
 		return f.exists();
 	}
 
-	public File moveFile(long id, String suffix, File target) throws IOException {
-		File src = Utils.getFileById(home, id, suffix);
+	public File moveFile(int id, String suffix, File target) throws IOException {
+		File src = Pools.getFileById(home, id, suffix);
 		Files.moveTo(src, target);
 		return target;
 	}

@@ -6,8 +6,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class String2Character extends Castor<String, Character> {
 
 	@Override
-	protected Character cast(String src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Character cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return src.charAt(0);
 	}
 

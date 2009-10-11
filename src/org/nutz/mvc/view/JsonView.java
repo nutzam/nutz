@@ -1,6 +1,7 @@
 package org.nutz.mvc.view;
 
-import java.io.BufferedWriter;
+import java.io.BufferedWriter
+;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;

@@ -12,16 +12,16 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.mvc2.View;
 
-public class UTF8CompactJsonView implements View {
+public class UTF8JsonView implements View {
 
-	private static JsonFormat format = JsonFormat.compact();
+	private JsonFormat format;
 
-	public UTF8CompactJsonView() {}
+	public UTF8JsonView(JsonFormat format) {
+		this.format = format;
+	}
 
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
-			throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(),
-				"UTF-8"));
+	public void render(HttpServletRequest request, HttpServletResponse response, Object obj) throws IOException {
+		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "UTF-8"));
 		Json.toJson(writer, obj, format);
 		writer.close();
 	}

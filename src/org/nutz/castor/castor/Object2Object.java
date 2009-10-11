@@ -7,8 +7,7 @@ import org.nutz.lang.Mirror;
 public class Object2Object extends Castor<Object, Object> {
 
 	@Override
-	protected Object cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected Object cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Mirror.me(toType).born(src);
 	}
 

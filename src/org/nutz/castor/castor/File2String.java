@@ -8,8 +8,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class File2String extends Castor<File, String> {
 
 	@Override
-	protected String cast(File src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
+	protected String cast(File src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return src.getAbsolutePath();
 	}
 
