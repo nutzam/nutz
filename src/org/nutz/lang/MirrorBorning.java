@@ -20,7 +20,7 @@ public class MirrorBorning<T> implements Borning<T> {
 		this.type = mirror.getType();
 		this.args = null == args ? new Object[0] : args;
 		dynaArg = Mirror.evalArgToRealArray(args);
-		if (null == args || args.length == 0) {
+		if (this.args.length == 0) {
 			evalNullArgs();
 		} else {
 			evalWithArgs();
