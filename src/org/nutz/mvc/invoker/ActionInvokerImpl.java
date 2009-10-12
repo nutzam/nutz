@@ -62,7 +62,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		if (ann == null)
 			return new UTF8JsonView(JsonFormat.compact());
 
-		String str = (String) Mirror.me(ann.getClass()).invoke(ann, "values");
+		String str = (String) Mirror.me(ann.getClass()).invoke(ann, "value");
 		str = Strings.trim(str.toLowerCase());
 		int pos = str.indexOf(':');
 		String type, value;

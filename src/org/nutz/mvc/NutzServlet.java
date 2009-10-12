@@ -32,8 +32,8 @@ public class NutzServlet extends HttpServlet {
 			la.launch(Class.forName(name));
 			msgs = la.getMsgs();
 			urls = la.getUrls();
-			getServletContext().setAttribute(UrlMap.class.getName(), urls);
-			getServletContext().setAttribute(Ioc.class.getName(), la.getIoc());
+			config.getServletContext().setAttribute(UrlMap.class.getName(), urls);
+			config.getServletContext().setAttribute(Ioc.class.getName(), la.getIoc());
 		} catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -41,10 +41,10 @@ public class NutzServlet extends HttpServlet {
 
 	public void destroy() {
 		urls = null;
-		Setup setup = (Setup) getServletContext().getAttribute(Setup.class.getName());
+		Setup setup = (Setup) this.getServletContext().getAttribute(Setup.class.getName());
 		if (null != setup)
 			setup.destroy(getServletConfig());
-		Ioc ioc = Mvcs.getIoc(getServletContext());
+		Ioc ioc = Mvcs.getIoc(this.getServletContext());
 		if (null != ioc)
 			ioc.depose();
 		super.destroy();
@@ -57,14 +57,19 @@ public class NutzServlet extends HttpServlet {
 		if (null != msgs)
 			req.setAttribute("msgs", msgs);
 		// format path
-		String path = req.getServletPath();
+		// System.out.println(Printer.dumpObject(req));
+		String path = req.getPathInfo();
 		int lio = path.lastIndexOf('.');
 		if (lio > 0)
 			path = path.substring(0, lio);
 
 		// get Url and invoke it
 		ActionInvoker invoker = urls.get(path);
-		invoker.invoke(req, resp);
+		if (null == invoker) {
+			resp.setStatus(404);
+			resp.flushBuffer();
+		} else
+			invoker.invoke(req, resp);
 	}
 
 }
