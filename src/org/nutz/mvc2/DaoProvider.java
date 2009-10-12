@@ -6,6 +6,6 @@ import org.nutz.dao.Dao;
 
 public interface DaoProvider {
 
-	Dao getDataSource(ServletConfig config);
+	Dao create(ServletConfig config);
 
 }

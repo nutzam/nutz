@@ -1,7 +1,7 @@
 package org.nutz.mvc2;
 
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Map;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -9,73 +9,34 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.NUT;
-import org.nutz.dao.Dao;
 import org.nutz.ioc.Ioc;
-import org.nutz.ioc.db.DatabaseLoader;
-import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.json.JsonLoader;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvc;
-import org.nutz.mvc.Setup;
-import org.nutz.mvc2.url.UrlMapImpl;
-import org.nutz.mvc2.view.BuiltinViewMaker;
+import org.nutz.mvc2.init.Launching;
 
 @SuppressWarnings("serial")
 public class NutzServlet extends HttpServlet {
 
 	private UrlMap urls;
+	private Map<String, String> msgs;
 
 	@Override
 	public void init(ServletConfig config) throws ServletException {
-		// Load Ioc
-		// check the params
-		Ioc ioc = null;
 		try {
-			String[] paths = Strings.splitIgnoreBlank(config.getInitParameter("ioc-by-json"));
-			if (null != paths) {
-				ioc = new NutIoc(new JsonLoader(paths));
-			} else {
-				String className = config.getInitParameter("ioc-by-db");
-				if (null != className) {
-					Class<?> providerClass = Class.forName(className);
-					DaoProvider provider = (DaoProvider) providerClass.newInstance();
-					Dao dao = provider.getDataSource(config);
-					ioc = new NutIoc(new DatabaseLoader(dao));
-				}
+			String name = Strings.trim(config.getInitParameter("modules"));
+			if (Strings.isEmpty(name)) {
+				throw Lang.makeThrow(ServletException.class,
+						"You need declare modules parameter in '%'", this.getClass().getName());
 			}
-			// Save ioc object to context
-			if (null != ioc)
-				getServletContext().setAttribute(Ioc.class.getName(), ioc);
-			// Prepare view makers
-			ArrayList<ViewMaker> makers = new ArrayList<ViewMaker>();
-			makers.add(new BuiltinViewMaker());
-			String[] names = Strings.splitIgnoreBlank(config.getInitParameter("views"));
-			if (null != names)
-				for (String name : names)
-					makers.add((ViewMaker) Class.forName(name).newInstance());
-			// Load modules
-			urls = new UrlMapImpl(ioc);
-			names = Strings.splitIgnoreBlank(config.getInitParameter("modules"));
-			if (null != names)
-				for (String name : names)
-					urls.add(makers, Class.forName(name));
-			// Save urls object to contect
+			Launching la = new Launching(config);
+			la.launch(Class.forName(name));
+			msgs = la.getMsgs();
+			urls = la.getUrls();
 			getServletContext().setAttribute(UrlMap.class.getName(), urls);
-
-			// Setup server
-			String setupClass = config.getInitParameter(NUT.SETUP);
-			if (null != setupClass) {
-				Setup setup = (Setup) Class.forName(setupClass).newInstance();
-				getServletContext().setAttribute(Setup.class.getName(), setup);
-				setup.init(config);
-			}
+			getServletContext().setAttribute(Ioc.class.getName(), la.getIoc());
 		} catch (ClassNotFoundException e) {
-			throw new ServletException(e);
-		} catch (InstantiationException e) {
-			throw new ServletException(e);
-		} catch (IllegalAccessException e) {
-			throw new ServletException(e);
+			throw Lang.wrapThrow(e);
 		}
 	}
 
@@ -91,7 +52,11 @@ public class NutzServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	protected void service(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
+		// Add Localization Message
+		if (null != msgs)
+			req.setAttribute("msgs", msgs);
 		// format path
 		String path = req.getServletPath();
 		int lio = path.lastIndexOf('.');

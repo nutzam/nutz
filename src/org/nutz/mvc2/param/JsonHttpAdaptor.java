@@ -5,8 +5,8 @@ import java.io.InputStreamReader;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
+import org.nutz.mvc2.param.injector.JsonInjector;
 
 public class JsonHttpAdaptor extends AbstractHttpAdaptor {
 
@@ -19,14 +19,16 @@ public class JsonHttpAdaptor extends AbstractHttpAdaptor {
 			throw Lang.wrapThrow(e);
 		}
 		// Try to make the args
-		Object[] args = new Object[params.length];
-		for (int i = 0; i < params.length; i++) {
-			ParamBean p = params[i];
-			if(isNeedSkip(request, response, args, i, p))
-				continue;
-			args[i] = Json.fromJson(p.getType(), str);
+		Object[] args = new Object[injs.length];
+		for (int i = 0; i < injs.length; i++) {
+			args[i] = injs[i].get(request, response, str);
 		}
 		return args;
+	}
+
+	@Override
+	protected ParamInjector evalInjector(Class<?> type, String name) {
+		return new JsonInjector(type);
 	}
 
 }

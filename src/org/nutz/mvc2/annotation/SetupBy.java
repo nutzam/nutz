@@ -5,14 +5,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.nutz.mvc2.IocProvider;
+import org.nutz.mvc2.Setup;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })
-public @interface IocBy {
+public @interface SetupBy {
 
-	Class<? extends IocProvider> provider();
-
-	String[] args();
+	Class<? extends Setup> value();
 
 }

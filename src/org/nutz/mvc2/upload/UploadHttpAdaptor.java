@@ -7,12 +7,14 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.castor.Castors;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
 import org.nutz.mvc2.param.AbstractHttpAdaptor;
-import org.nutz.mvc2.param.ParamBean;
+import org.nutz.mvc2.param.ParamInjector;
+import org.nutz.mvc2.upload.injector.FileInjector;
+import org.nutz.mvc2.upload.injector.FileMetaInjector;
+import org.nutz.mvc2.upload.injector.TempFileInjector;
 
 public class UploadHttpAdaptor extends AbstractHttpAdaptor {
 
@@ -32,6 +34,20 @@ public class UploadHttpAdaptor extends AbstractHttpAdaptor {
 		this.pool = new NutFilePool(path, Integer.parseInt(size));
 	}
 
+	protected ParamInjector evalInjector(Class<?> type, String name) {
+		// File
+		if (type.isAssignableFrom(File.class))
+			return new FileInjector(name);
+		// FileMeta
+		if (type.isAssignableFrom(FieldMeta.class))
+			return new FileMetaInjector(name);
+		// TempFile
+		if (type.isAssignableFrom(TempFile.class))
+			return new TempFileInjector(name);
+
+		return null;
+	}
+
 	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {
 		Map<String, Object> map;
 		try {
@@ -39,27 +55,10 @@ public class UploadHttpAdaptor extends AbstractHttpAdaptor {
 		} catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
-		Object[] args = new Object[params.length];
-		for (int i = 0; i < params.length; i++) {
-			ParamBean p = params[i];
-			if(isNeedSkip(request, response, args, i, p))
-				continue;
-			Object value = map.get(p.getName());
-			if (value instanceof TempFile) {
-				TempFile tf = (TempFile) value;
-				if (p.getType().isAssignableFrom(File.class)) {
-					args[i] = tf.getFile();
-				} else if (p.getType().isAssignableFrom(FieldMeta.class)) {
-					args[i] = tf.getMeta();
-				} else if (p.getType().isAssignableFrom(TempFile.class)) {
-					args[i] = tf;
-				} else {
-					throw Lang.makeThrow("Unexpect type '%s' for binary form field [%d]'%s'", p.getType().getName(), i,
-							p.getName());
-				}
-			} else {
-				args[i] = Castors.me().castTo(value, p.getType());
-			}
+		// Try to make the args
+		Object[] args = new Object[injs.length];
+		for (int i = 0; i < injs.length; i++) {
+			args[i] = injs[i].get(request, response, map);
 		}
 		return args;
 	}
