@@ -31,8 +31,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 	private View fail;
 	private HttpAdaptor adaptor;
 
-	public ActionInvokerImpl(List<ViewMaker> makers, Object obj, Method method, Ok dftOk, Fail dftFail,
-			AdaptBy dftAb) {
+	public ActionInvokerImpl(List<ViewMaker> makers, Object obj, Method method, Ok dftOk,
+			Fail dftFail, AdaptBy dftAb) {
 		this.obj = obj;
 		this.method = method;
 		this.ok = evalView(makers, method.getAnnotation(Ok.class), dftOk);
@@ -63,11 +63,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 			return new UTF8JsonView(JsonFormat.compact());
 
 		String str = (String) Mirror.me(ann.getClass()).invoke(ann, "value");
-		str = Strings.trim(str.toLowerCase());
 		int pos = str.indexOf(':');
 		String type, value;
 		if (pos > 0) {
-			type = Strings.trim(str.substring(0, pos));
+			type = Strings.trim(str.substring(0, pos).toLowerCase());
 			value = Strings.trim(pos >= (str.length() - 1) ? null : str.substring(pos + 1));
 		} else {
 			type = str;

@@ -21,4 +21,18 @@ public class PathNodeTest {
 		assertNull(node.get("FFF"));
 	}
 	
+	@Test
+	public void try_not_found(){
+		PathNode<String> node = new PathNode<String>();
+		node.add("ab", "A");
+		
+		assertEquals("A",node.get("ab"));
+		assertNull(node.get("abc"));
+		
+		node = new PathNode<String>();
+		node.add("a", "A");
+		
+		assertEquals("A",node.get("a"));
+		assertNull(node.get("abc"));
+	}
 }

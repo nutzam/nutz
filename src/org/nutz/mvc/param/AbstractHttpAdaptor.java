@@ -46,23 +46,23 @@ public abstract class AbstractHttpAdaptor implements HttpAdaptor {
 
 	private static ParamInjector evalDefaultInjector(Class<?> type, String name) {
 		// Request
-		if (type.isAssignableFrom(ServletRequest.class)) {
+		if (ServletRequest.class.isAssignableFrom(type)) {
 			return new RequestInjector();
 		}
 		// Response
-		else if (type.isAssignableFrom(ServletResponse.class)) {
+		else if (ServletResponse.class.isAssignableFrom(type)) {
 			return new ResponseInjector();
 		}
 		// Session
-		else if (type.isAssignableFrom(HttpSession.class)) {
+		else if (HttpSession.class.isAssignableFrom(type)) {
 			return new SessionInjector();
 		}
 		// ServletContext
-		else if (type.isAssignableFrom(ServletContext.class)) {
+		else if (ServletContext.class.isAssignableFrom(type)) {
 			return new ServletContextInjector();
 		}
 		// Ioc
-		else if (type.isAssignableFrom(Ioc.class)) {
+		else if (Ioc.class.isAssignableFrom(type)) {
 			return new IocInjector();
 		}
 		return null;

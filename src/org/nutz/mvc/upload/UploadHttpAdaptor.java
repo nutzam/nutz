@@ -36,15 +36,14 @@ public class UploadHttpAdaptor extends AbstractHttpAdaptor {
 
 	protected ParamInjector evalInjector(Class<?> type, String name) {
 		// File
-		if (type.isAssignableFrom(File.class))
+		if (File.class.isAssignableFrom(type))
 			return new FileInjector(name);
 		// FileMeta
-		if (type.isAssignableFrom(FieldMeta.class))
+		if (FieldMeta.class.isAssignableFrom(type))
 			return new FileMetaInjector(name);
 		// TempFile
-		if (type.isAssignableFrom(TempFile.class))
+		if (TempFile.class.isAssignableFrom(type))
 			return new TempFileInjector(name);
-
 		return null;
 	}
 

@@ -1,7 +1,6 @@
 package org.nutz.mvc.init;
 
 import org.nutz.lang.Maths;
-import org.nutz.lang.util.LinkedArray;
 
 /**
  * 所有的路径将被转换成小写。
@@ -16,6 +15,7 @@ class PathNode<T> {
 	private char[] chars;
 	private PathNode<T>[] children;
 	private T obj;
+	private boolean isStar;
 
 	/**
 	 * 这是一个效率很低的实现，幸运的是，这个函数并不需要效率
@@ -64,21 +64,28 @@ class PathNode<T> {
 	void add(String path, T obj) {
 		char[] cs = path.toLowerCase().toCharArray();
 		PathNode<T> node = this;
-		for (char c : cs) {
-			if (c == '*')
+		int i = 0;
+		for (; i < cs.length; i++) {
+			char c = cs[i];
+			if (c == '*') {
+				node.isStar = true;
+				node.obj = obj;
 				break;
+			}
 			node = node.push(c);
 		}
-		node.obj = obj;
+		if (i == cs.length)
+			node.obj = obj;
 	}
 
 	T get(String path) {
-		LinkedArray<T> stack = new LinkedArray<T>(3);
 		char[] cs = path.toLowerCase().toCharArray();
 		PathNode<T> node = this;
-		for (char c : cs) {
-			if (null != node.obj)
-				stack.push(node.obj);
+		int i = 0;
+		for (; i < cs.length; i++) {
+			if (node.isStar)
+				break;
+			char c = cs[i];
 			if (null == node.chars)
 				break;
 			int index = Maths.find(node.chars, c);
@@ -86,9 +93,9 @@ class PathNode<T> {
 				break;
 			node = node.children[index];
 		}
-		if (null != node.obj)
+		if (i == cs.length || node.isStar)
 			return node.obj;
-		return stack.last();
+		return null;
 	}
 
 }
