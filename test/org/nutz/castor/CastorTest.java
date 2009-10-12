@@ -107,7 +107,7 @@ public class CastorTest {
 		assertTrue(Castors.me().castTo("1", boolean.class));
 		assertTrue(Castors.me().castTo("-1", boolean.class));
 		assertTrue(Castors.me().castTo("15", boolean.class));
-		
+
 		assertFalse(Castors.me().castTo("0", boolean.class));
 		assertFalse(Castors.me().castTo("", boolean.class));
 		assertFalse(Castors.me().castTo("oFf", boolean.class));
@@ -214,7 +214,7 @@ public class CastorTest {
 
 	@Test
 	public void testString2Array() throws Exception {
-		String orgs = "\"zzh@263.net\",\"zozohtnt@yahoo.com.cn\"";
+		String orgs = "zzh@263.net,zozohtnt@yahoo.com.cn";
 		Email[] exp = { new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn") };
 		Email[] done = Castors.me().castTo(orgs, Email[].class);
 		assertTrue(Arrays.equals(exp, done));

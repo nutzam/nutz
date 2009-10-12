@@ -1,4 +1,4 @@
-package org.nutz.mvc2.url;
+package org.nutz.mvc.init;
 
 import static org.junit.Assert.*;
 

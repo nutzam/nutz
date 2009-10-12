@@ -11,9 +11,11 @@
 	<property name="DEPHOME" value="${env.DEPS}" />
 	<property name="OP" value="${env.OUTPUT}" />
 	<property name="PROJECT_HOME" value="${env.PROJECT_HOME}" />
-	
+
 	<property name="SRC" location="${PROJECT_HOME}/src" />
 	<property name="TMP" value="${PROJECT_HOME}/build/temp" />
+
+	<property name="JDK_VERSION" value="1.6" />
 
 	<property name="v" value="-1.a.15" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
@@ -41,7 +43,7 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" deprecation="true" nowarn="false" source="1.6" target="1.6">
+		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" deprecation="true" nowarn="false" source="${JDK_VERSION}" target="${JDK_VERSION}">
 			<classpath refid="CLASSPATH" />
 		</javac>
 	</target>
