@@ -20,6 +20,8 @@ public class BuiltinViewMaker implements ViewMaker {
 			}
 		} else if (type.equals("redirect")) {
 			return new ServerRedirectView(value);
+		} else if (type.equals("void")) {
+			return new VoidView();
 		}
 		return null;
 	}
