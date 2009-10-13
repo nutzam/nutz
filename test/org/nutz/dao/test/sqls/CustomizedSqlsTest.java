@@ -11,6 +11,7 @@ import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.Country;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.Tank;
 import org.nutz.trans.Atom;
@@ -66,5 +67,20 @@ public class CustomizedSqlsTest extends DaoCase {
 		sql.setCallback(Sqls.callback.queryEntity());
 		dao.execute(sql);
 		assertEquals(2, sql.getList(Tank.class).size());
+	}
+
+	@Test
+	public void test_statice_null_field() {
+		pojos.init();
+		Sql sql = Sqls.create("INSERT INTO dao_country (name,detail) VALUES(@name,@detail)");
+		sql.params().set("name", "ABC").set("detail", "haha");
+		dao.execute(sql);
+		assertEquals(1, dao.count("dao_country"));
+
+		sql = Sqls.create("UPDATE dao_country SET detail=@detail WHERE name=@name");
+		sql.params().set("name", "ABC").set("detail", null);
+		dao.execute(sql);
+		Country c = dao.fetch(Country.class, "ABC");
+		assertNull(c.getDetail());
 	}
 }

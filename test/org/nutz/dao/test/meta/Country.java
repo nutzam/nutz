@@ -5,7 +5,7 @@ import org.nutz.dao.entity.annotation.*;
 @Table("dao_country")
 public class Country {
 
-	public static Country make(String name){
+	public static Country make(String name) {
 		Country c = new Country();
 		c.setName(name);
 		return c;
@@ -18,6 +18,17 @@ public class Country {
 	@Column
 	@Name
 	private String name;
+
+	@Column
+	private String detail;
+
+	public String getDetail() {
+		return detail;
+	}
+
+	public void setDetail(String detail) {
+		this.detail = detail;
+	}
 
 	public int getId() {
 		return id;

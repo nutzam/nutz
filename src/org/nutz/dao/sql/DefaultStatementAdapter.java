@@ -24,7 +24,8 @@ public class DefaultStatementAdapter implements StatementAdapter {
 			int[] is = sql.getParamIndexes(name);
 			if (null == is || is.length == 0)
 				continue;
-			FieldAdapter fss = FieldAdapter.create(Mirror.me(obj.getClass()), null);
+			FieldAdapter fss = FieldAdapter.create(null == obj ? null : Mirror.me(obj.getClass()),
+					null);
 			fss.set(stat, obj, is);
 		}
 	}

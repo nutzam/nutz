@@ -1,6 +1,7 @@
 dao_country {
 	id INT +PK,
-	name VARCHAR(50) !UNIQUE
+	name VARCHAR(50) !UNIQUE,
+	detail VARCHAR(100)
 }
 
 dao_platoon {
