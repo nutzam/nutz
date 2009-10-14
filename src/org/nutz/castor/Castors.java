@@ -107,13 +107,17 @@ public class Castors {
 	}
 
 	public static Castors me() {
-		if (null == one){
-			one = new Castors(new CastorSetting());
-		}
+		if (null == one)
+			synchronized (Castors.class) {
+				if (null == one)
+					one = new Castors(castorSetting);
+			}
 		return one;
 	}
 
 	private Castors(Object setting) {
+		if (null == setting)
+			setting = new CastorSetting();
 		// make setting map
 		HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
 		for (Method m1 : setting.getClass().getMethods()) {
