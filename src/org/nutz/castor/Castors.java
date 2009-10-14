@@ -2,8 +2,10 @@ package org.nutz.castor;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,6 +14,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -20,16 +23,16 @@ import org.nutz.lang.TypeExtractor;
 public class Castors {
 
 	// find the jar file where contains Castors
-	private static String[] findCastorsInJar(String path) {
+	private static String[] findCastorsInJar(Class<?> baseClass) {
+		String fpath = getBasePath(baseClass);
+		if(fpath == null) return null;
 		String[] classNames = null;
-		File f = Files.findFile(path);
-		String fpath = f.getAbsolutePath();
 		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');
 		if (posBegin > 0 && posEnd > 0) {
 			String jarPath = fpath.substring(posBegin + 5, posEnd);
 			try {
-				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), path.toLowerCase()
+				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage().getName().replace('.', '/')
 						+ "/\\w*.class");
 				if (null != entrys) {
 					classNames = new String[entrys.length];
@@ -46,20 +49,32 @@ public class Castors {
 		return classNames;
 	}
 
-	private static String[] findCastorsInClassPath(String path) {
-		File dir = Files.findFile(path);
-		int pos = dir.getAbsolutePath().length() - path.length();
-		File[] files = dir.listFiles(new FileFilter() {
-			public boolean accept(File pathname) {
-				return pathname.getName().endsWith(".class");
-			}
-		});
+	private static String[] findCastorsInClassPath(Class<?> classZ) {
+		String basePath = getBasePath(classZ);
+		if(basePath == null) return null;
+		File dir = Files.findFile(basePath);
+		File[] files = null;
+		try{
+			files = dir.listFiles(new FileFilter() {
+				public boolean accept(File pathname) {
+					return pathname.getName().endsWith(".class");
+				}
+			});
+		}catch (SecurityException e) {
+			//In GAE, it will case SecurityException, because you can't use listFiles()
+			return null;
+		}catch (NullPointerException e) {
+			//if this class store in a jar, it will throw this Exception
+			return null;
+		}
 		String[] classNames = null;
 		if (null != files) {
 			classNames = new String[files.length];
+			Package packageA = classZ.getPackage();
 			for (int i = 0; i < files.length; i++) {
-				String ph = files[i].getAbsolutePath();
-				classNames[i] = ph.substring(pos, ph.lastIndexOf('.')).replaceAll("[\\\\|/]", ".");
+				String fileName = files[i].getName();
+				String classShortName = fileName.substring(0, fileName.length() - ".class".length());
+				classNames[i] = packageA.getName() +"." + classShortName;
 			}
 		}
 		return classNames;
@@ -67,7 +82,7 @@ public class Castors {
 
 	private static Castors one;
 	private static TypeExtractor typeExtractor = null;
-	private static List<String> castorPaths = null;
+	private static List<Class<?>> castorPaths = null;
 	private static Object castorSetting;
 
 	public static synchronized Castors resetSetting(Object setting) {
@@ -82,20 +97,20 @@ public class Castors {
 		return me();
 	}
 
-	public static synchronized Castors setCastorPaths(List<String> paths) {
+	public static synchronized Castors setCastorPaths(List<Class<?>> paths) {
 		castorPaths = paths;
 		return setSetting(castorSetting);
 	}
 
 	public static synchronized Castors resetCastorPaths() {
-		List<String> list = new ArrayList<String>();
-		list.add(Castor.class.getName().toLowerCase().replace('.', '/'));
+		List<Class<?>> list = new ArrayList<Class<?>>();
+		list.add(Array2Array.class);
 		return setCastorPaths(list);
 	}
 
-	public static synchronized Castors addCastorPaths(String... paths) {
+	public static synchronized Castors addCastorPaths(Class<?>... paths) {
 		if (null != paths) {
-			for (String path : paths)
+			for (Class<?> path : paths)
 				castorPaths.add(path);
 		}
 		return setSetting(castorSetting);
@@ -129,14 +144,14 @@ public class Castors {
 		// build castors
 		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
 		if (null == castorPaths) {
-			castorPaths = new ArrayList<String>();
-			castorPaths.add(Castor.class.getName().toLowerCase().replace('.', '/'));
+			castorPaths = new ArrayList<Class<?>>();
+			castorPaths.add(Array2Array.class);
 		}
-		for (Iterator<String> it = castorPaths.iterator(); it.hasNext();) {
-			String path = it.next();
-			String[] classNames = findCastorsInClassPath(path);
+		for (Iterator<Class<?>> it = castorPaths.iterator(); it.hasNext();) {
+			Class<?> baseClass = it.next();
+			String[] classNames = findCastorsInClassPath(baseClass);
 			if (null == classNames) {
-				classNames = findCastorsInJar(path);
+				classNames = findCastorsInJar(baseClass);
 			}
 			if (null == classNames)
 				continue;
@@ -238,6 +253,18 @@ public class Castors {
 			return castTo(src, String.class);
 		} catch (FailToCastObjectException e) {
 			return String.valueOf(src);
+		}
+	}
+	
+	private static String getBasePath(Class<?> classZ){
+		try {
+			URL url = ClassLoader.getSystemClassLoader().getResources(Array2Array.class.getName().replace('.', '/')+".class").nextElement();
+			if(url != null){
+				return new File(url.getFile()).getParentFile().getAbsolutePath();
+			}
+			return null;
+		} catch (IOException e) {
+			return null;
 		}
 	}
 }
