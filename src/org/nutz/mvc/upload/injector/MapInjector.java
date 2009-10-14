@@ -17,7 +17,7 @@ public class MapInjector extends NameInjector {
 	@Override
 	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
 		if (null != refer)
-			if (refer instanceof Map) {
+			if (refer instanceof Map<?, ?>) {
 				Object value = ((Map<?, ?>) refer).get(name);
 				return Castors.me().castTo(value, type);
 			}
