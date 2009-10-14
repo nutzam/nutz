@@ -11,7 +11,7 @@ import org.nutz.mvc.IocProvider;
 @Target( { ElementType.TYPE })
 public @interface IocBy {
 
-	Class<? extends IocProvider> provider();
+	Class<? extends IocProvider> type();
 
 	String[] args();
 

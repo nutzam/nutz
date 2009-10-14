@@ -58,10 +58,10 @@ public class Sqls {
 		}
 	}
 
-	public static void executeDefinition(Dao dao, String sqls) {
+	public static void executeDefinition(Dao dao, String dods) {
 		DTableParser parser = new NutDTableParser();
 		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
-		List<DTable> dts = parser.parse(sqls);
+		List<DTable> dts = parser.parse(dods);
 		for (DTable dt : dts) {
 			Sql c = maker.makeCreateSql(dt);
 			Sql d = maker.makeDropSql(dt);
@@ -72,8 +72,8 @@ public class Sqls {
 		}
 	}
 
-	public static void executeDefinitionFile(Dao dao, String path) {
-		String sqls = Lang.readAll(Streams.fileInr(path));
+	public static void executeDefinitionFile(Dao dao, String dodPath) {
+		String sqls = Lang.readAll(Streams.fileInr(dodPath));
 		Sqls.executeDefinition(dao, sqls);
 	}
 

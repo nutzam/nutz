@@ -20,6 +20,16 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
 
+/**
+ * 一个创建 Castor 的工厂类。它的使用方式是：
+ * <pre>
+ * Castors.me().cast(obj,fromType,toType);
+ * </pre> 
+ * 
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author Wendal(wendal1985@gmail.com)
+ */
 public class Castors {
 
 	// find the jar file where contains Castors

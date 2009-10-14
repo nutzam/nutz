@@ -50,7 +50,7 @@ public class Launching {
 
 			// Load Ioc
 			if (null != ib) {
-				ioc = ib.provider().newInstance().create(config, ib.args());
+				ioc = ib.type().newInstance().create(config, ib.args());
 				config.getServletContext().setAttribute(Ioc.class.getName(), ioc);
 			}
 			// Prepare view makers

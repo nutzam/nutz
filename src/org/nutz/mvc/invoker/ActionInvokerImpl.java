@@ -45,9 +45,9 @@ public class ActionInvokerImpl implements ActionInvoker {
 		AdaptBy ab = method.getAnnotation(AdaptBy.class);
 		try {
 			if (null != ab) {
-				adaptor = evalHttpAdaptor2(ioc, ab.value(), ab.args());
+				adaptor = evalHttpAdaptor2(ioc, ab.type(), ab.args());
 			} else if (null != dftAb) {
-				adaptor = evalHttpAdaptor2(ioc, dftAb.value(), dftAb.args());
+				adaptor = evalHttpAdaptor2(ioc, dftAb.type(), dftAb.args());
 			} else { 
 				adaptor = new PairHttpAdaptor();
 			}
