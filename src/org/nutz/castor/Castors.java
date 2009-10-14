@@ -65,7 +65,7 @@ public class Castors {
 		return classNames;
 	}
 
-	private static Castors one = new Castors(new CastorSetting());
+	private static Castors one;
 	private static TypeExtractor typeExtractor = null;
 	private static List<String> castorPaths = null;
 	private static Object castorSetting;
@@ -79,7 +79,7 @@ public class Castors {
 			castorSetting = setting;
 			one = new Castors(setting);
 		}
-		return one;
+		return me();
 	}
 
 	public static synchronized Castors setCastorPaths(List<String> paths) {
@@ -103,10 +103,13 @@ public class Castors {
 
 	public static synchronized Castors setTypeExtractor(TypeExtractor te) {
 		typeExtractor = te;
-		return one;
+		return me();
 	}
 
 	public static Castors me() {
+		if (null == one){
+			one = new Castors(new CastorSetting());
+		}
 		return one;
 	}
 
@@ -230,7 +233,7 @@ public class Castors {
 		try {
 			return castTo(src, String.class);
 		} catch (FailToCastObjectException e) {
-			return src.toString();
+			return String.valueOf(src);
 		}
 	}
 }
