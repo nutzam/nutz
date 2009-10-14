@@ -38,12 +38,12 @@ public class Castors {
 		if(fpath == null) return null;
 		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');
-		if (posBegin > 0 && posEnd > 0) {
+		if (posBegin > 0 && (posEnd - posBegin - 5) > 0) {
 			String jarPath = fpath.substring(posBegin + 5, posEnd);
 			try {
 				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage().getName().replace('.', '/')
 						+ "/\\w*.class");
-				if (null != entrys) {
+				if (null != entrys && entrys.length > 0) {
 					String[] classNames = new String[entrys.length];
 					for (int i = 0; i < entrys.length; i++) {
 						String ph = entrys[i].getName();
@@ -68,7 +68,7 @@ public class Castors {
 					return pathname.getName().endsWith(".class");
 				}
 			});
-			if (null != files) {
+			if (null != files && files.length > 0 ) {
 				String[] classNames = new String[files.length];
 				Package packageA = classZ.getPackage();
 				for (int i = 0; i < files.length; i++) {
