@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.nutz.castor.Castors.MyClassLoader;
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
