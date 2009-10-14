@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.castor.Castors.MyClassLoader;
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -258,7 +259,7 @@ public class Castors {
 	
 	private static String getBasePath(Class<?> classZ){
 		try {
-			URL url = ClassLoader.getSystemClassLoader().getResources(Array2Array.class.getName().replace('.', '/')+".class").nextElement();
+			URL url = new MyClassLoader().getResources(Array2Array.class.getName().replace('.', '/')+".class").nextElement();
 			if(url != null){
 				return new File(url.getFile()).getParentFile().getAbsolutePath();
 			}
@@ -267,4 +268,5 @@ public class Castors {
 			return null;
 		}
 	}
+	static class MyClassLoader extends ClassLoader{}
 }
