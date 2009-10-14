@@ -24,10 +24,10 @@ public class Castors {
 		String[] classNames = null;
 		File f = Files.findFile(path);
 		String fpath = f.getAbsolutePath();
-		int posBegin = fpath.indexOf("file:") + 4;
+		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');
 		if (posBegin > 0 && posEnd > 0) {
-			String jarPath = fpath.substring(posBegin + 1, posEnd);
+			String jarPath = fpath.substring(posBegin + 5, posEnd);
 			try {
 				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), path.toLowerCase()
 						+ "/\\w*.class");
