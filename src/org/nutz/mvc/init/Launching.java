@@ -21,6 +21,7 @@ import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.Fail;
+import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.Modules;
@@ -65,6 +66,7 @@ public class Launching {
 			urls.OK = klass.getAnnotation(Ok.class);
 			urls.FAIL = klass.getAnnotation(Fail.class);
 			urls.AB = klass.getAnnotation(AdaptBy.class);
+			urls.FLTS = klass.getAnnotation(Filters.class);
 			if (null != modules)
 				for (Class<?> module : modules.value())
 					urls.add(makers, module);
