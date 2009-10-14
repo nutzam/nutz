@@ -26,7 +26,6 @@ public class Castors {
 	private static String[] findCastorsInJar(Class<?> baseClass) {
 		String fpath = getBasePath(baseClass);
 		if(fpath == null) return null;
-		String[] classNames = null;
 		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');
 		if (posBegin > 0 && posEnd > 0) {
@@ -35,49 +34,46 @@ public class Castors {
 				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage().getName().replace('.', '/')
 						+ "/\\w*.class");
 				if (null != entrys) {
-					classNames = new String[entrys.length];
+					String[] classNames = new String[entrys.length];
 					for (int i = 0; i < entrys.length; i++) {
 						String ph = entrys[i].getName();
 						classNames[i] = ph.substring(0, ph.lastIndexOf('.')).replaceAll("[\\\\|/]",
 								".");
 					}
+					return classNames;
 				}
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
-		return classNames;
+		return null;
 	}
 
 	private static String[] findCastorsInClassPath(Class<?> classZ) {
 		String basePath = getBasePath(classZ);
 		if(basePath == null) return null;
-		File dir = Files.findFile(basePath);
-		File[] files = null;
 		try{
-			files = dir.listFiles(new FileFilter() {
+			File[] files = Files.findFile(basePath).listFiles(new FileFilter() {
 				public boolean accept(File pathname) {
 					return pathname.getName().endsWith(".class");
 				}
 			});
+			if (null != files) {
+				String[] classNames = new String[files.length];
+				Package packageA = classZ.getPackage();
+				for (int i = 0; i < files.length; i++) {
+					String fileName = files[i].getName();
+					String classShortName = fileName.substring(0, fileName.length() - ".class".length());
+					classNames[i] = packageA.getName() +"." + classShortName;
+				}
+				return classNames;
+			}
 		}catch (SecurityException e) {
 			//In GAE, it will case SecurityException, because you can't use listFiles()
-			return null;
 		}catch (NullPointerException e) {
-			//if this class store in a jar, it will throw this Exception
-			return null;
+			//if this class store in a jar, it will throw this Exception, because Files.findFile(basePath) will return null
 		}
-		String[] classNames = null;
-		if (null != files) {
-			classNames = new String[files.length];
-			Package packageA = classZ.getPackage();
-			for (int i = 0; i < files.length; i++) {
-				String fileName = files[i].getName();
-				String classShortName = fileName.substring(0, fileName.length() - ".class".length());
-				classNames[i] = packageA.getName() +"." + classShortName;
-			}
-		}
-		return classNames;
+		return null;
 	}
 
 	private static Castors one;
@@ -149,6 +145,7 @@ public class Castors {
 		}
 		for (Iterator<Class<?>> it = castorPaths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
+			if(baseClass == null) continue;
 			String[] classNames = findCastorsInClassPath(baseClass);
 			if (null == classNames) {
 				classNames = findCastorsInJar(baseClass);
