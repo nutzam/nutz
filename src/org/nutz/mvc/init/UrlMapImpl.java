@@ -26,6 +26,7 @@ public class UrlMapImpl implements UrlMap {
 	Ok OK;
 	Fail FAIL;
 	AdaptBy AB;
+	Filters FLTS;
 
 	public void add(List<ViewMaker> makers, Class<?> module) {
 		// create object
@@ -54,6 +55,10 @@ public class UrlMapImpl implements UrlMap {
 		AdaptBy myAb = module.getAnnotation(AdaptBy.class);
 		if (null == myAb)
 			myAb = AB;
+		// get default ActionFilter
+		Filters myFlts = module.getAnnotation(Filters.class);
+		if (null == myFlts)
+			myFlts = FLTS;
 
 		// get base url
 		At baseUrl = module.getAnnotation(At.class);
@@ -75,7 +80,8 @@ public class UrlMapImpl implements UrlMap {
 				path = basePath + "/" + method.getName().toLowerCase();
 			else
 				path = basePath + url.value();
-			root.add(path, new ActionInvokerImpl(ioc, makers, obj, method, myOk, myFail, myAb));
+			root.add(path, new ActionInvokerImpl(ioc, makers, obj, method, myOk, myFail, myAb,
+					myFlts));
 		}
 	}
 

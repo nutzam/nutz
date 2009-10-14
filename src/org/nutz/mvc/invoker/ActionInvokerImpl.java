@@ -14,12 +14,15 @@ import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.Fail;
+import org.nutz.mvc.annotation.By;
+import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.param.PairHttpAdaptor;
 import org.nutz.mvc.view.UTF8JsonView;
@@ -31,24 +34,45 @@ public class ActionInvokerImpl implements ActionInvoker {
 	private View ok;
 	private View fail;
 	private HttpAdaptor adaptor;
+	private ActionFilter[] filters;
 
-	public ActionInvokerImpl(Ioc ioc, List<ViewMaker> makers, Object obj, Method method, Ok dftOk,
-			Fail dftFail, AdaptBy dftAb) {
+	public ActionInvokerImpl(	Ioc ioc,
+								List<ViewMaker> makers,
+								Object obj,
+								Method method,
+								Ok dftOk,
+								Fail dftFail,
+								AdaptBy dftAb,
+								Filters dftflts) {
 		this.obj = obj;
 		this.method = method;
 		this.ok = evalView(ioc, makers, method.getAnnotation(Ok.class), dftOk);
 		this.fail = evalView(ioc, makers, method.getAnnotation(Fail.class), dftFail);
-		evalHttpAdaptor(ioc, method, dftAb);
+		this.evalHttpAdaptor(ioc, method, dftAb);
+		this.evalFilters(ioc, method, dftflts);
+	}
+
+	private void evalFilters(Ioc ioc, Method method, Filters dftflts) {
+		Filters flts = method.getAnnotation(Filters.class);
+		if (null == flts)
+			flts = dftflts;
+		if (null != flts) {
+			filters = new ActionFilter[flts.value().length];
+			for (int i = 0; i < this.filters.length; i++) {
+				By by = flts.value()[i];
+				filters[i] = evalObject(ioc, by.type(), by.args());
+			}
+		}
 	}
 
 	private void evalHttpAdaptor(Ioc ioc, Method method, AdaptBy dftAb) {
 		AdaptBy ab = method.getAnnotation(AdaptBy.class);
 		try {
 			if (null != ab) {
-				adaptor = evalHttpAdaptor2(ioc, ab.type(), ab.args());
+				adaptor = evalObject(ioc, ab.type(), ab.args());
 			} else if (null != dftAb) {
-				adaptor = evalHttpAdaptor2(ioc, dftAb.type(), dftAb.args());
-			} else { 
+				adaptor = evalObject(ioc, dftAb.type(), dftAb.args());
+			} else {
 				adaptor = new PairHttpAdaptor();
 			}
 		} catch (Exception e) {
@@ -57,7 +81,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		adaptor.init(method);
 	}
 
-	private HttpAdaptor evalHttpAdaptor2(Ioc ioc, Class<? extends HttpAdaptor> type, String[] args) {
+	private static <T> T evalObject(Ioc ioc, Class<T> type, String[] args) {
 		/*
 		 * 如果参数的形式为: {"ioc:xxx"}，则用 ioc.get(type,"xxx") 获取这个适配器
 		 */
@@ -97,6 +121,20 @@ public class ActionInvokerImpl implements ActionInvoker {
 	}
 
 	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+		// Before adapt, run filter
+		if (null != filters)
+			for (ActionFilter filter : filters) {
+				View view = filter.match(request);
+				if (null != view) {
+					try {
+						view.render(request, response, null);
+					} catch (Throwable e) {
+						throw Lang.wrapThrow(e);
+					}
+					return;
+				}
+			}
+		// If all filter return null, then going on...
 		Object[] args = adaptor.adapt(request, response);
 		Object re;
 		try {
