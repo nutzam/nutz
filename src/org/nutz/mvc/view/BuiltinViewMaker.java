@@ -1,5 +1,6 @@
 package org.nutz.mvc.view;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
@@ -8,7 +9,7 @@ import org.nutz.mvc.ViewMaker;
 
 public class BuiltinViewMaker implements ViewMaker {
 
-	public View make(String type, String value) {
+	public View make(Ioc ioc, String type, String value) {
 		if (type.equals("jsp")) {
 			return new NamePathJspView(value);
 		} else if (type.equals("json")) {
@@ -22,6 +23,8 @@ public class BuiltinViewMaker implements ViewMaker {
 			return new ServerRedirectView(value);
 		} else if (type.equals("void")) {
 			return new VoidView();
+		} else if (type.equals("ioc")) {
+			return ioc.get(View.class, value);
 		}
 		return null;
 	}

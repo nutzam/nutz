@@ -75,7 +75,7 @@ public class UrlMapImpl implements UrlMap {
 				path = basePath + "/" + method.getName().toLowerCase();
 			else
 				path = basePath + url.value();
-			root.add(path, new ActionInvokerImpl(makers, obj, method, myOk, myFail, myAb));
+			root.add(path, new ActionInvokerImpl(ioc, makers, obj, method, myOk, myFail, myAb));
 		}
 	}
 
