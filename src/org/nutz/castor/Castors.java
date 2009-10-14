@@ -256,9 +256,21 @@ public class Castors {
 		}
 	}
 	
+	/**
+	 * use ClassLoader.getResources(String) to search resources in classpath
+	 * <p/><b>Using new ClassLoader(){} , not classZ.getClassLoader()</b>
+	 * <p/>In GAE , it will fail if you call getClassLoader()
+	 * 
+	 * @author Wendal Chen
+	 * @param classZ
+	 * @return path or null if nothing found
+	 * 
+	 * @see java.lang.ClassLoader
+	 * @see java.io.File
+	 */
 	private static String getBasePath(Class<?> classZ){
 		try {
-			URL url = new MyClassLoader().getResources(Array2Array.class.getName().replace('.', '/')+".class").nextElement();
+			URL url = new ClassLoader(){}.getResources(classZ.getName().replace('.', '/')+".class").nextElement();
 			if(url != null){
 				return new File(url.getFile()).getParentFile().getAbsolutePath();
 			}
@@ -267,5 +279,4 @@ public class Castors {
 			return null;
 		}
 	}
-	static class MyClassLoader extends ClassLoader{}
 }
