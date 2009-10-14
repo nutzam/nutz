@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Lang;
+import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.injector.JsonInjector;
 
 public class JsonHttpAdaptor extends AbstractHttpAdaptor {
@@ -27,7 +28,7 @@ public class JsonHttpAdaptor extends AbstractHttpAdaptor {
 	}
 
 	@Override
-	protected ParamInjector evalInjector(Class<?> type, String name) {
+	protected ParamInjector evalInjector(Class<?> type, Param param) {
 		return new JsonInjector(type);
 	}
 

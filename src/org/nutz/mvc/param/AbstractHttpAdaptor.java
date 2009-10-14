@@ -27,24 +27,24 @@ public abstract class AbstractHttpAdaptor implements HttpAdaptor {
 		Annotation[][] annss = method.getParameterAnnotations();
 		for (int i = 0; i < annss.length; i++) {
 			Annotation[] anns = annss[i];
-			String name = null;
+			Param param = null;
 			// find @Param in current annotations
 			for (int x = 0; x < anns.length; x++)
 				if (anns[x] instanceof Param) {
-					name = ((Param) anns[x]).value();
+					param = (Param) anns[x];
 					break;
 				}
 			// Store
-			injs[i] = evalDefaultInjector(argTypes[i], name);
+			injs[i] = evalDefaultInjector(argTypes[i]);
 			if (null == injs[i])
-				injs[i] = evalInjector(argTypes[i], name);
+				injs[i] = evalInjector(argTypes[i], param);
 			if (null == injs[i])
 				throw Lang.makeThrow("Don't know how to inject %s.%s(...[%d]%s %s...),", method
-						.getDeclaringClass(), method.getName(), i, argTypes[i].getName(), name);
+						.getDeclaringClass(), method.getName(), i, argTypes[i].getName(), param);
 		}
 	}
 
-	private static ParamInjector evalDefaultInjector(Class<?> type, String name) {
+	private static ParamInjector evalDefaultInjector(Class<?> type) {
 		// Request
 		if (ServletRequest.class.isAssignableFrom(type)) {
 			return new RequestInjector();
@@ -68,7 +68,7 @@ public abstract class AbstractHttpAdaptor implements HttpAdaptor {
 		return null;
 	}
 
-	protected abstract ParamInjector evalInjector(Class<?> type, String name);
+	protected abstract ParamInjector evalInjector(Class<?> type, Param param);
 
 	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {
 		Object[] args = new Object[injs.length];

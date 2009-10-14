@@ -10,10 +10,12 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
+import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.AbstractHttpAdaptor;
 import org.nutz.mvc.param.ParamInjector;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
+import org.nutz.mvc.upload.injector.MapInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
 public class UploadHttpAdaptor extends AbstractHttpAdaptor {
@@ -34,17 +36,19 @@ public class UploadHttpAdaptor extends AbstractHttpAdaptor {
 		this.pool = new NutFilePool(path, Integer.parseInt(size));
 	}
 
-	protected ParamInjector evalInjector(Class<?> type, String name) {
+	protected ParamInjector evalInjector(Class<?> type, Param param) {
+		if (null == param)
+			return null;
 		// File
 		if (File.class.isAssignableFrom(type))
-			return new FileInjector(name);
+			return new FileInjector(param.value());
 		// FileMeta
 		if (FieldMeta.class.isAssignableFrom(type))
-			return new FileMetaInjector(name);
+			return new FileMetaInjector(param.value());
 		// TempFile
 		if (TempFile.class.isAssignableFrom(type))
-			return new TempFileInjector(name);
-		return null;
+			return new TempFileInjector(param.value());
+		return new MapInjector(param.value(), type);
 	}
 
 	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {

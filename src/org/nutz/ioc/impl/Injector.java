@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 
-public interface Injector {
+interface Injector {
 
 	void inject(Object obj);
 

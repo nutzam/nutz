@@ -10,7 +10,7 @@ import org.nutz.mvc.param.ParamInjector;
 public class NameInjector implements ParamInjector {
 
 	protected String name;
-	private Class<?> type;
+	protected Class<?> type;
 
 	protected NameInjector(String name) {
 		if (null == name)
