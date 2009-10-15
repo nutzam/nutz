@@ -14,6 +14,6 @@ public @interface Localization {
 
 	Class<? extends MessageLoader> type() default DefaultMessageLoader.class;
 
-	String[] args() default {};
+	String value();
 
 }

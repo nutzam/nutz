@@ -67,7 +67,7 @@ public class DefaultLoading implements Loading {
 
 			// Load localization
 			if (null != lc)
-				msgss = Mirror.me(lc.type()).born((Object[]) lc.args()).load();
+				msgss = Mirror.me(lc.type()).born(lc.value()).load();
 
 			// Setup server
 			if (null != sb) {
