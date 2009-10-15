@@ -9,6 +9,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
+import org.nutz.lang.segment.Segments;
 import org.nutz.mvc.View;
 
 public class ServerRedirectView implements View {
@@ -25,28 +26,37 @@ public class ServerRedirectView implements View {
 		if (null != obj)
 			me = Mirror.me(obj.getClass());
 
-		for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
-			String key = it.next();
-			Object value = null;
-			if (null != me && key.startsWith("obj.")) {
-				value = me.getValue(obj, key.substring(4));
-			} else {
-				value = request.getParameter(key);
+		// Prepare the dest path ...
+		// If object is not null, fill the dest by it
+		if (null != obj)
+			Segments.fillByKeys(dest, obj);
+		else
+			// else fill by request params
+			for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
+				String key = it.next();
+				Object value = null;
+				if (null != me && key.startsWith("obj.")) {
+					value = me.getValue(obj, key.substring(4));
+				} else {
+					value = request.getParameter(key);
+				}
+				dest.set(key, value);
 			}
-			dest.set(key, value);
-		}
+		// Format the path ...
 		String path = dest.toString();
-		if (path.startsWith("/"))
+		// Absolute path, add the context path for it
+		if (path.startsWith("/")) {
 			path = request.getContextPath() + path;
-		else {
-			String myPath = request.getServletPath();
-			int pos = myPath.lastIndexOf('/');
-			path = myPath.substring(1, pos) + "/" + path;
 		}
-		// String url = String.format(
-		// "<HTML><HEAD><META HTTP-EQUIV=Refresh CONTENT=\"0; URL=%s\"></HEAD></HTML>",
-		// path);
-		// response.getWriter().write(url);
+		// Relative path, add current URL path for it
+		else {
+			String myPath = request.getPathInfo();
+			int pos = myPath.lastIndexOf('/');
+			if (pos > 0)
+				path = myPath.substring(0, pos) + "/" + path;
+			else
+				path = "/" + path;
+		}
 		response.sendRedirect(path);
 		response.flushBuffer();
 	}

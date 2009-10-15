@@ -7,21 +7,27 @@ import java.util.Map;
 import org.nutz.lang.Mirror;
 
 public class Segments {
-	public static Segment fillSegmentByFields(Segment seg, Object obj) {
+	public static Segment fillByFields(Segment seg, Object obj) {
 		if (null == obj || null == seg)
 			return seg;
-		Mirror<?> me = Mirror.me(obj.getClass());
-		if (me.isOf(Map.class)) {
+		Mirror<?> mirror = Mirror.me(obj.getClass());
+		// Primitive Type: set it to all PlugPoints
+		if (mirror.isStringLike() || mirror.isBoolean() || mirror.isNumber() || mirror.isChar()) {
+			for (Field f : mirror.getFields())
+				seg.set(f.getName(), obj.toString());
+		}
+		// Map: set by key
+		else if (mirror.isOf(Map.class)) {
 			Map<?, ?> map = (Map<?, ?>) obj;
-			for(Iterator<?> it = map.keySet().iterator();it.hasNext();){
+			for (Iterator<?> it = map.keySet().iterator(); it.hasNext();) {
 				Object key = it.next();
 				seg.set(key.toString(), map.get(key));
 			}
-		} else {
-			Field[] fs = me.getFields();
-			for (int i = 0; i < fs.length; i++) {
-				Field f = fs[i];
-				Object v = me.getValue(obj, f);
+		}
+		// POJO: set by field
+		else {
+			for (Field f : mirror.getFields()) {
+				Object v = mirror.getValue(obj, f);
 				if (v != null)
 					seg.set(f.getName(), v);
 				else
@@ -31,13 +37,18 @@ public class Segments {
 		return seg;
 	}
 
-	public static Segment fillSegmentByKeys(Segment seg, Object obj) {
+	public static Segment fillByKeys(Segment seg, Object obj) {
 		if (null == obj || null == seg)
 			return seg;
 		Iterator<String> it = seg.keys().iterator();
 		Class<?> klass = obj.getClass();
-		Mirror<?> me = Mirror.me(klass);
-		if (me.isOf(Map.class)) {
+		Mirror<?> mirror = Mirror.me(klass);
+		// Primitive Type: set it to all PlugPoints
+		if (mirror.isStringLike() || mirror.isBoolean() || mirror.isNumber() || mirror.isChar()) {
+			seg.setAll(obj);
+		}
+		// Map: set by key
+		else if (mirror.isOf(Map.class)) {
 			Map<?, ?> map = (Map<?, ?>) obj;
 			while (it.hasNext()) {
 				String key = it.next();
@@ -47,11 +58,13 @@ public class Segments {
 					seg.set(key, "");
 				}
 			}
-		} else {
+		}
+		// POJO: set by field
+		else {
 			while (it.hasNext()) {
 				String key = it.next();
 				try {
-					seg.set(key, me.getValue(obj, key));
+					seg.set(key, mirror.getValue(obj, key));
 				} catch (Exception e) {
 					seg.set(key, "");
 				}

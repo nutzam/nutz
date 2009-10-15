@@ -53,7 +53,7 @@ public class TableName {
 				seg.set(it.next(), obj);
 			}
 		} else {
-			Segments.fillSegmentByKeys(seg, obj);
+			Segments.fillByKeys(seg, obj);
 		}
 		return seg.toString();
 	}

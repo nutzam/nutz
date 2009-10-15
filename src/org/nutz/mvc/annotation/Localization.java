@@ -5,10 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.nutz.mvc.MessageLoader;
+import org.nutz.mvc.init.DefaultMessageLoader;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE })
 public @interface Localization {
 
-	String value();
+	Class<? extends MessageLoader> type() default DefaultMessageLoader.class;
+
+	String[] args() default {};
 
 }

@@ -84,7 +84,7 @@ public class EntityField {
 		}
 		if (null == obj)
 			return defaultValue.render().toString();
-		return Segments.fillSegmentByKeys(defaultValue, obj).toString();
+		return Segments.fillByKeys(defaultValue, obj).toString();
 	}
 
 	public boolean hasDefaultValue() {
