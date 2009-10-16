@@ -34,13 +34,12 @@ public class DefaultLoading implements Loading {
 		this.config = config;
 	}
 
-	public void load(Class<?> klass) {
+	public void load(Class<?> mainModule) {
 		try {
-			Modules modules = klass.getAnnotation(Modules.class);
-			IocBy ib = klass.getAnnotation(IocBy.class);
-			SetupBy sb = klass.getAnnotation(SetupBy.class);
-			Views vms = klass.getAnnotation(Views.class);
-			Localization lc = klass.getAnnotation(Localization.class);
+			IocBy ib = mainModule.getAnnotation(IocBy.class);
+			SetupBy sb = mainModule.getAnnotation(SetupBy.class);
+			Views vms = mainModule.getAnnotation(Views.class);
+			Localization lc = mainModule.getAnnotation(Localization.class);
 
 			// Load Ioc
 			if (null != ib) {
@@ -56,10 +55,15 @@ public class DefaultLoading implements Loading {
 
 			// Load modules
 			urls = new UrlMapImpl(ioc);
-			urls.OK = klass.getAnnotation(Ok.class);
-			urls.FAIL = klass.getAnnotation(Fail.class);
-			urls.AB = klass.getAnnotation(AdaptBy.class);
-			urls.FLTS = klass.getAnnotation(Filters.class);
+			urls.setOk(mainModule.getAnnotation(Ok.class));
+			urls.setFail(mainModule.getAnnotation(Fail.class));
+			urls.setAdaptBy(mainModule.getAnnotation(AdaptBy.class));
+			urls.setFilters(mainModule.getAnnotation(Filters.class));
+			// Add default module
+			urls.add(makers, mainModule);
+
+			// Add sub modules
+			Modules modules = mainModule.getAnnotation(Modules.class);
 			if (null != modules)
 				for (Class<?> module : modules.value())
 					urls.add(makers, module);

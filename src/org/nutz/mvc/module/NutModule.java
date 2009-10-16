@@ -2,42 +2,51 @@ package org.nutz.mvc.module;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.born.Borning;
 import org.nutz.mvc.View;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.view.CachedMIMEView;
 import org.nutz.mvc.view.MIMEView;
 
+/**
+ * 抽象的 Nutz.Mvc 默认模块。
+ * <p>
+ * 你可以从这个模块继承你的默认模块，它提供了默认 url 处理，默认处理各种 MIME 类型
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class NutModule {
 
-	private Map<String, Borning<? extends MIMEView>> mimes;
+	protected Map<String, View> cache;
+	protected Set<String> mimes;
+	protected View defaultView;
 
 	protected NutModule() {
-		mimes = new HashMap<String, Borning<? extends MIMEView>>();
-		addMime("txt", "html", "gif", "jpg", "jpeg", "png", "avi", "wma", "rm", "swf", "fla");
+		mimes = new HashSet<String>();
+		cache = new HashMap<String, View>();
+		defaultView = new MIMEView();
+		init();
 	}
 
-	private void addMime(String... types) {
+	protected void init() {
+		putCachedMimes("txt", "html", "gif", "jpg", "jpeg", "png", "avi", "wma", "rm", "swf", "fla");
+	}
+
+	protected void putCachedMimes(String... types) {
 		for (String type : types)
-			addMime(type, MIMEView.class, new File(""));
+			mimes.add(type);
 	}
 
-	protected NutModule clearMime() {
-		mimes.clear();
-		return this;
-	}
-
-	protected NutModule addMime(String mime, Class<? extends MIMEView> type, Object... args) {
-		Borning<? extends MIMEView> borning = Mirror.me(type).getBorning(args);
-		mimes.put(mime.toLowerCase(), borning);
+	protected NutModule clearMimeTypes() {
+		cache.clear();
 		return this;
 	}
 
@@ -62,14 +71,20 @@ public abstract class NutModule {
 		}
 		File f = new File(context.getRealPath(path));
 		if (f.exists()) {
-			Borning<? extends MIMEView> borning = findView(mime.toLowerCase());
-			return borning.born(Lang.array(path));
+			req.setAttribute("mime", f);
+			return findView(mime.toLowerCase(), path);
 		}
 		return null;
 	}
 
-	protected Borning<? extends MIMEView> findView(String mime) {
-		return mimes.get(mime);
+	protected View findView(String mime, String path) {
+		View re = cache.get(path);
+		if (null == re)
+			if (mimes.contains(mime)) {
+				re = new CachedMIMEView();
+				cache.put(path, re);
+			}
+		return re == null ? this.defaultView : re;
 	}
 
 }

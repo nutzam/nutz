@@ -53,8 +53,6 @@ public class NutServlet extends HttpServlet {
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
-			// Store some necessry informat
-			this.getServletContext().setAttribute("base", getServletContext().getContextPath());
 		} catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -87,6 +85,8 @@ public class NutServlet extends HttpServlet {
 				Mvcs.setLocale(session, Mvcs.getLocaleName(session));
 		}
 		String path = NutServlet.getRequestPath(req);
+		// Store context path as "/XXXX", you can use it in JSP page
+		req.setAttribute("base", req.getContextPath());
 		// get Url and invoke it
 		ActionInvoker invoker = urls.get(path);
 		if (null == invoker) {

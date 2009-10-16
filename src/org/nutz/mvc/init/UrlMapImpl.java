@@ -23,10 +23,26 @@ public class UrlMapImpl implements UrlMap {
 		root = new PathNode<ActionInvoker>();
 	}
 
-	Ok OK;
-	Fail FAIL;
-	AdaptBy AB;
-	Filters FLTS;
+	private Ok ok;
+	private Fail fail;
+	private AdaptBy adaptBy;
+	private Filters filters;
+
+	void setOk(Ok ok) {
+		this.ok = ok;
+	}
+
+	void setFail(Fail fail) {
+		this.fail = fail;
+	}
+
+	void setAdaptBy(AdaptBy adaptBy) {
+		this.adaptBy = adaptBy;
+	}
+
+	void setFilters(Filters filters) {
+		this.filters = filters;
+	}
 
 	public void add(List<ViewMaker> makers, Class<?> module) {
 		// create object
@@ -46,19 +62,19 @@ public class UrlMapImpl implements UrlMap {
 		// View: OK
 		Ok myOk = module.getAnnotation(Ok.class);
 		if (null == myOk)
-			myOk = OK;
+			myOk = ok;
 		// View: Defeat
 		Fail myFail = module.getAnnotation(Fail.class);
 		if (null == myFail)
-			myFail = FAIL;
+			myFail = fail;
 		// get default HttpAdaptor
 		AdaptBy myAb = module.getAnnotation(AdaptBy.class);
 		if (null == myAb)
-			myAb = AB;
+			myAb = adaptBy;
 		// get default ActionFilter
 		Filters myFlts = module.getAnnotation(Filters.class);
 		if (null == myFlts)
-			myFlts = FLTS;
+			myFlts = filters;
 
 		// get base url
 		At baseUrl = module.getAnnotation(At.class);
