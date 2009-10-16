@@ -1,7 +1,7 @@
 package org.nutz.lang.born;
 
-public interface BorningInvoker<T>  extends Borning<T> {
+public interface BorningInvoker<T> {
 
 	T born(Object[] args);
-	
+
 }

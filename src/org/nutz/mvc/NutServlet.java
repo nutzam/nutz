@@ -18,7 +18,7 @@ import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.init.DefaultLoading;
 
 @SuppressWarnings("serial")
-public class NutzServlet extends HttpServlet {
+public class NutServlet extends HttpServlet {
 
 	private UrlMap urls;
 	private Map<String, Map<String, String>> msgss;
@@ -53,6 +53,8 @@ public class NutzServlet extends HttpServlet {
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
+			// Store some necessry informat
+			this.getServletContext().setAttribute("base", getServletContext().getContextPath());
 		} catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -84,7 +86,7 @@ public class NutzServlet extends HttpServlet {
 			if (!Mvcs.hasLocale(session))
 				Mvcs.setLocale(session, Mvcs.getLocaleName(session));
 		}
-		String path = NutzServlet.getRequestPath(req);
+		String path = NutServlet.getRequestPath(req);
 		// get Url and invoke it
 		ActionInvoker invoker = urls.get(path);
 		if (null == invoker) {

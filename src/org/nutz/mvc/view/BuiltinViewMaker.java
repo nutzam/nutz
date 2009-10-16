@@ -25,6 +25,9 @@ public class BuiltinViewMaker implements ViewMaker {
 			return new VoidView();
 		} else if (type.equals("ioc")) {
 			return ioc.get(View.class, value);
+		} else if (type.equals("http")) {
+			int sc = Integer.parseInt(value);
+			return new HttpStatusView(sc);
 		}
 		return null;
 	}

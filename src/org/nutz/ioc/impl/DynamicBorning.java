@@ -5,6 +5,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.MirrorBorning;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningInvoker;
+import org.nutz.lang.born.SimpleBorning;
 
 public class DynamicBorning<T> implements Borning<T> {
 
@@ -15,7 +16,7 @@ public class DynamicBorning<T> implements Borning<T> {
 	DynamicBorning(Mirror<T> mirror, ValueDelegate[] vds) {
 		this.vds = vds;
 		MirrorBorning<T> borning = mirror.getBorning(makeArray());
-		invoker = borning.getBorningInvoker();
+		invoker = borning.getInvoker();
 	}
 
 	private Object[] makeArray() {
@@ -26,13 +27,17 @@ public class DynamicBorning<T> implements Borning<T> {
 		return objs;
 	}
 
-	public Borning<T> getBorning() {
-		return invoker;
+	Borning<T> toStatic() {
+		return new SimpleBorning<T>(invoker, makeArray());
 	}
 
 	public T born() {
+		return born(makeArray());
+	}
+
+	public T born(Object[] args) {
 		try {
-			return invoker.born(makeArray());
+			return invoker.born(args);
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}

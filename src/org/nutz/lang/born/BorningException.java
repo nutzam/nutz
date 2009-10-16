@@ -9,13 +9,14 @@ public class BorningException extends RuntimeException {
 		super(String.format("Fail to born because: '%s'", getExceptionMessage(e)));
 	}
 
-	public BorningException(Throwable e, Class<?> klass, Object[] args) {
-		super(makeMessage(e, klass, args));
+	public BorningException(Throwable e, Class<?> type, Object[] args) {
+		super(makeMessage(e, type, args));
 	}
 
-	private static String makeMessage(Throwable e, Class<?> klass, Object[] args) {
+	private static String makeMessage(Throwable e, Class<?> type, Object[] args) {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Fail to born '").append(klass.getName()).append('\'');
+		String name = null == type ? "unknown" : type.getName();
+		sb.append("Fail to born '").append(name).append('\'');
 		if (null != args && args.length > 0) {
 			sb.append("\n by args: [");
 			for (Object arg : args)

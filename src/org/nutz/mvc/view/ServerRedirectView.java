@@ -20,7 +20,7 @@ public class ServerRedirectView implements View {
 		this.dest = new CharSegment(Strings.trim(dest));
 	}
 
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
+	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
 		Mirror<?> me = null;
 		if (null != obj)
@@ -38,7 +38,7 @@ public class ServerRedirectView implements View {
 				if (null != me && key.startsWith("obj.")) {
 					value = me.getValue(obj, key.substring(4));
 				} else {
-					value = request.getParameter(key);
+					value = req.getParameter(key);
 				}
 				dest.set(key, value);
 			}
@@ -46,19 +46,19 @@ public class ServerRedirectView implements View {
 		String path = dest.toString();
 		// Absolute path, add the context path for it
 		if (path.startsWith("/")) {
-			path = request.getContextPath() + path;
+			path = req.getContextPath() + path;
 		}
 		// Relative path, add current URL path for it
 		else {
-			String myPath = request.getPathInfo();
+			String myPath = req.getPathInfo();
 			int pos = myPath.lastIndexOf('/');
 			if (pos > 0)
 				path = myPath.substring(0, pos) + "/" + path;
 			else
 				path = "/" + path;
 		}
-		response.sendRedirect(path);
-		response.flushBuffer();
+		resp.sendRedirect(path);
+		resp.flushBuffer();
 	}
 
 }

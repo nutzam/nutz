@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface View {
 
-	void render(HttpServletRequest request, HttpServletResponse response, Object obj)
+	void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Throwable;
 	
 }

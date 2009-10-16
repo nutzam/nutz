@@ -20,8 +20,8 @@ public class UTF8JsonView implements View {
 		this.format = format;
 	}
 
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj) throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), "UTF-8"));
+	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws IOException {
+		Writer writer = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), "UTF-8"));
 		Json.toJson(writer, obj, format);
 		writer.close();
 	}

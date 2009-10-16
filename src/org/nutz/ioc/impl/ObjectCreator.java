@@ -90,7 +90,7 @@ public class ObjectCreator<T> {
 		singleton &= !argumentsIsDynamice;
 		borning = new DynamicBorning<T>(mirror, vds);
 		if (!argumentsIsDynamice)
-			borning = ((DynamicBorning<T>) borning).getBorning();
+			borning = ((DynamicBorning<T>) borning).toStatic();
 	}
 
 	/*-----------------------------------------------------------------------------*/

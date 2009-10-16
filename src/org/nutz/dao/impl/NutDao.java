@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -249,7 +250,8 @@ public class NutDao implements Dao {
 							if (link.getReferField() == null) {
 								dao.clear(link.getTargetClass(), null);
 							} else {
-								Object value = entity.getMirror().getValue(obj, link.getReferField());
+								Object value = entity.getMirror().getValue(obj,
+										link.getReferField());
 								Entity<?> ta = dao.getEntity(link.getTargetClass());
 								Sql sql = dao.maker().clear_links(ta, link, value);
 								dao.execute(sql);
@@ -259,7 +261,8 @@ public class NutDao implements Dao {
 					lns.walkManyManys(new LinkWalker() {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
-							Sql sql = dao.maker().clear_links(link.getRelation(), link.getFrom(), link.getFrom());
+							Sql sql = dao.maker().clear_links(link.getRelation(), link.getFrom(),
+									link.getFrom());
 							sql.params().set(link.getFrom(), value);
 							dao.execute(sql);
 						}
@@ -306,8 +309,8 @@ public class NutDao implements Dao {
 				String name = idnf.getValue(obj).toString();
 				delete(obj.getClass(), name);
 			} else {
-				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)", new Exception(
-						"Wrong identified field"));
+				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)",
+						new Exception("Wrong identified field"));
 			}
 		}
 	}
@@ -420,8 +423,8 @@ public class NutDao implements Dao {
 						c = new ManyCondition(link, value);
 					}
 					List<?> list = query(link.getTargetClass(), c, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list, list.getClass(),
-							link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
+							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
 				}
 			});
 			// ManyMany
@@ -429,8 +432,8 @@ public class NutDao implements Dao {
 				void walk(Link link) {
 					ManyManyCondition mmc = new ManyManyCondition(dao, link, obj);
 					List<?> list = query(link.getTargetClass(), mmc, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list, list.getClass(),
-							link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
+							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
 				}
 			});
 			// one
@@ -478,7 +481,8 @@ public class NutDao implements Dao {
 		if (null != entity.getIdField() && entity.getIdField().isAutoIncrement()) {
 			fetchIdSql = entity.getIdField().getFetchSql();
 			if (null == fetchIdSql)
-				throw Lang.makeThrow("Nutz.Dao: fail to find 'nextId' SQL in entity <%s>", entity.getType().getName());
+				throw Lang.makeThrow("Nutz.Dao: fail to find 'nextId' SQL in entity <%s>", entity
+						.getType().getName());
 		}
 		// Execute SQL
 		execute(sql, fetchIdSql);
@@ -580,13 +584,17 @@ public class NutDao implements Dao {
 		return sql.getUpdateCount();
 	}
 
-	public void updateRelation(Class<?> classOfT, String regex, final Chain chain, final Condition condition) {
+	public void updateRelation(	Class<?> classOfT,
+								String regex,
+								final Chain chain,
+								final Condition condition) {
 		final Links lns = new Links(null, (Entity<?>) getEntity(classOfT), regex);
 		Trans.exec(new Atom() {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
 					void walk(Link link) {
-						Sql sql = maker.updateBatch(link.getRelation(), chain).setCondition(condition);
+						Sql sql = maker.updateBatch(link.getRelation(), chain).setCondition(
+								condition);
 						execute(sql);
 					}
 				});
@@ -624,19 +632,34 @@ public class NutDao implements Dao {
 	}
 
 	public boolean exists(Class<?> classOfT) {
-		int re = -1;
-		try {
-			re = count(classOfT);
-		} catch (Throwable e) {}
-		return re != -1;
+		return exists(getEntity(classOfT).getTableName());
 	}
 
-	public boolean exists(String tableName) {
-		int re = -1;
-		try {
-			re = count(tableName);
-		} catch (Throwable e) {}
-		return re != -1;
+	public boolean exists(final String tableName) {
+		final boolean[] ee = { false };
+		this.run(new ConnCallback() {
+			public void invoke(Connection conn) {
+				Statement stat = null;
+				ResultSet rs = null;
+				try {
+					stat = conn.createStatement();
+					String sql = "SELECT COUNT(*) FROM " + tableName;
+					rs = stat.executeQuery(sql);
+					if (rs.next())
+						ee[0] = true;
+				} catch (SQLException e) {} finally {
+					try {
+						if (null != rs)
+							rs.close();
+					} catch (SQLException e) {}
+					try {
+						if (null != stat)
+							stat.close();
+					} catch (SQLException e) {}
+				}
+			}
+		});
+		return ee[0];
 	}
 
 	public int func(Class<?> classOfT, String funcName, String fieldName) {

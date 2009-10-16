@@ -17,15 +17,15 @@ public class NamePathJspView implements View {
 
 	private String path;
 
-	public void render(HttpServletRequest request, HttpServletResponse response, Object obj)
+	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
 		if (null != obj)
-			request.setAttribute(OBJ_ATTR_NAME, obj);
-		RequestDispatcher rd = request.getRequestDispatcher(path);
+			req.setAttribute(OBJ_ATTR_NAME, obj);
+		RequestDispatcher rd = req.getRequestDispatcher(path);
 		if (rd == null)
 			throw new Exception("Could not get RequestDispatcher for [" + path
 					+ "]: check up the file existed in your application please!");
-		rd.forward(request, response);
+		rd.forward(req, resp);
 	}
 
 }

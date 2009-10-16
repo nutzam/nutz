@@ -1,7 +1,6 @@
 package org.nutz.ioc.json;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +11,7 @@ import org.nutz.ioc.meta.Obj;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 
 public class JsonLoader implements ObjLoader {
 
@@ -26,11 +26,12 @@ public class JsonLoader implements ObjLoader {
 			if (null == f)
 				throw Lang.makeThrow("Fail to find json file '%s'", path);
 			try {
-				Reader reader = new FileReader(f);
+				Reader reader = Streams.fileInr(f);
 				load(reader);
 				reader.close();
 			} catch (Exception e) {
-				throw Lang.makeThrow("Fail to find json file '%s' because:\n%s", path, e.getMessage());
+				throw Lang.makeThrow("Fail to load json file '%s' because: '%s : %s'", path, e
+						.getClass().getSimpleName(), e.getMessage());
 			}
 		}
 	}
