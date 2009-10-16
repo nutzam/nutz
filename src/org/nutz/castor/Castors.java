@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -22,9 +23,10 @@ import org.nutz.lang.TypeExtractor;
 
 /**
  * 一个创建 Castor 的工厂类。它的使用方式是：
+ * 
  * <pre>
- * Castors.me().cast(obj,fromType,toType);
- * </pre> 
+ * Castors.me().cast(obj, fromType, toType);
+ * </pre>
  * 
  * 
  * @author zozoh(zozohtnt@gmail.com)
@@ -35,13 +37,15 @@ public class Castors {
 	// find the jar file where contains Castors
 	private static String[] findCastorsInJar(Class<?> baseClass) {
 		String fpath = getBasePath(baseClass);
-		if(fpath == null) return null;
+		if (fpath == null)
+			return null;
 		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');
 		if (posBegin > 0 && (posEnd - posBegin - 5) > 0) {
 			String jarPath = fpath.substring(posBegin + 5, posEnd);
 			try {
-				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage().getName().replace('.', '/')
+				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass
+						.getPackage().getName().replace('.', '/')
 						+ "/\\w*.class");
 				if (null != entrys && entrys.length > 0) {
 					String[] classNames = new String[entrys.length];
@@ -61,27 +65,31 @@ public class Castors {
 
 	private static String[] findCastorsInClassPath(Class<?> classZ) {
 		String basePath = getBasePath(classZ);
-		if(basePath == null) return null;
-		try{
+		if (basePath == null)
+			return null;
+		try {
 			File[] files = Files.findFile(basePath).listFiles(new FileFilter() {
 				public boolean accept(File pathname) {
 					return pathname.getName().endsWith(".class");
 				}
 			});
-			if (null != files && files.length > 0 ) {
+			if (null != files && files.length > 0) {
 				String[] classNames = new String[files.length];
 				Package packageA = classZ.getPackage();
 				for (int i = 0; i < files.length; i++) {
 					String fileName = files[i].getName();
-					String classShortName = fileName.substring(0, fileName.length() - ".class".length());
-					classNames[i] = packageA.getName() +"." + classShortName;
+					String classShortName = fileName.substring(0, fileName.length()
+							- ".class".length());
+					classNames[i] = packageA.getName() + "." + classShortName;
 				}
 				return classNames;
 			}
-		}catch (SecurityException e) {
-			//In GAE, it will case SecurityException, because you can't use listFiles()
-		}catch (NullPointerException e) {
-			//if this class store in a jar, it will throw this Exception, because Files.findFile(basePath) will return null
+		} catch (SecurityException e) {
+			// In GAE, it will case SecurityException, because you can't use
+			// listFiles()
+		} catch (NullPointerException e) {
+			// if this class store in a jar, it will throw this Exception,
+			// because Files.findFile(basePath) will return null
 		}
 		return null;
 	}
@@ -155,7 +163,8 @@ public class Castors {
 		}
 		for (Iterator<Class<?>> it = castorPaths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
-			if(baseClass == null) continue;
+			if (baseClass == null)
+				continue;
 			String[] classNames = findCastorsInClassPath(baseClass);
 			if (null == classNames) {
 				classNames = findCastorsInJar(baseClass);
@@ -262,28 +271,43 @@ public class Castors {
 			return String.valueOf(src);
 		}
 	}
-	
+
 	/**
+	 * The function try to return the file path of one class. If it exists in
+	 * regular directory, it will return as "D:/folder/folder/name.class" in
+	 * windows, and "/folder/folder/name.class" in unix like system. <br>
+	 * If the class file exists in one jar file, it will return the path like:
+	 * "XXXXXXfile:\XXXXXX\XXX.jar!\XX\XX\XX"
+	 * <p>
 	 * use ClassLoader.getResources(String) to search resources in classpath
-	 * <p/><b>Using new ClassLoader(){} , not classZ.getClassLoader()</b>
-	 * <p/>In GAE , it will fail if you call getClassLoader()
+	 * <p>
+	 * <b>Using new ClassLoader(){} , not classZ.getClassLoader()</b>
+	 * <p>
+	 * In GAE , it will fail if you call getClassLoader()
 	 * 
 	 * @author Wendal Chen
+	 * @author zozoh
 	 * @param classZ
 	 * @return path or null if nothing found
 	 * 
 	 * @see java.lang.ClassLoader
 	 * @see java.io.File
 	 */
-	private static String getBasePath(Class<?> classZ){
+	private static String getBasePath(Class<?> classZ) {
 		try {
-			URL url = new ClassLoader(){}.getResources(classZ.getName().replace('.', '/')+".class").nextElement();
-			if(url != null){
-				return new File(url.getFile()).getParentFile().getAbsolutePath();
+			String path = classZ.getName().replace('.', '/') + ".class";
+			Enumeration<URL> urls = new ClassLoader() {}.getResources(path);
+			// zozoh: In eclipse tomcat debug env, the urls is always empty
+			if (null != urls && urls.hasMoreElements()) {
+				URL url = urls.nextElement();
+				if (url != null)
+					return new File(url.getFile()).getParentFile().getAbsolutePath();
 			}
-			return null;
-		} catch (IOException e) {
-			return null;
-		}
+			// Then I will find the class in classpath
+			File f = Files.findFile(path);
+			if (null != f)
+				return f.getParentFile().getAbsolutePath();
+		} catch (IOException e) {}
+		return null;
 	}
 }
