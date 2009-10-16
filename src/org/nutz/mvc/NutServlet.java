@@ -7,7 +7,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -21,7 +20,6 @@ import org.nutz.mvc.init.DefaultLoading;
 public class NutServlet extends HttpServlet {
 
 	private UrlMap urls;
-	private Map<String, Map<String, String>> msgss;
 
 	@Override
 	public void init() throws ServletException {
@@ -49,7 +47,7 @@ public class NutServlet extends HttpServlet {
 			ing.load(modules);
 			// Then, we store the loading result like this
 			urls = ing.getUrls();
-			msgss = ing.getMessageMap();
+			Map<String, Map<String, String>> msgss = ing.getMessageMap();
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
@@ -79,29 +77,14 @@ public class NutServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (null != msgss) {
-			HttpSession session = req.getSession();
-			if (!Mvcs.hasLocale(session))
-				Mvcs.setLocale(session, Mvcs.getLocaleName(session));
-		}
-		String path = NutServlet.getRequestPath(req);
-		// Store context path as "/XXXX", you can use it in JSP page
-		req.setAttribute("base", req.getContextPath());
+		Mvcs.updateRequestAttributes(req);
+		String path = Mvcs.getRequestPath(req);
 		// get Url and invoke it
 		ActionInvoker invoker = urls.get(path);
 		if (null == invoker) {
 			resp.setStatus(404);
-			resp.flushBuffer();
 		} else
 			invoker.invoke(req, resp);
-	}
-
-	private static String getRequestPath(HttpServletRequest req) {
-		String path = req.getPathInfo();
-		int lio = path.lastIndexOf('.');
-		if (lio > 0)
-			path = path.substring(0, lio);
-		return path;
 	}
 
 }

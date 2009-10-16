@@ -17,6 +17,7 @@ import org.nutz.mvc.Mvcs;
 
 public class DefaultMessageLoader implements MessageLoader {
 
+	private static final String MSG_SUFFIX = ".properties";
 	private File dir;
 
 	public DefaultMessageLoader(String path) {
@@ -58,7 +59,7 @@ public class DefaultMessageLoader implements MessageLoader {
 		File[] files = dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				if (f.isFile())
-					if (f.getName().endsWith(".msg"))
+					if (f.getName().endsWith(MSG_SUFFIX))
 						return true;
 				return false;
 			}

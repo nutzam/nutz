@@ -14,6 +14,7 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.view.CachedMIMEView;
+import org.nutz.mvc.view.JspView;
 import org.nutz.mvc.view.MIMEView;
 
 /**
@@ -78,6 +79,9 @@ public abstract class NutModule {
 	}
 
 	protected View findView(String mime, String path) {
+		if ("jsp".equals(mime)) {
+			return new JspView();
+		}
 		View re = cache.get(path);
 		if (null == re)
 			if (mimes.contains(mime)) {

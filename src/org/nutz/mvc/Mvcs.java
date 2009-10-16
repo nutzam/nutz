@@ -14,7 +14,7 @@ import org.nutz.mvc.annotation.Localization;
 public class Mvcs {
 
 	public static final String DEFAULT_MSGS = "$default";
-	public static final String MSGS = "msgs";
+	public static final String MSG = "msg";
 	public static final String LOCALE_NAME = "nutz.mvc.locale";
 
 	public static Ioc getIoc(HttpServletRequest request) {
@@ -54,7 +54,7 @@ public class Mvcs {
 	 * 判断当前会话是否已经设置了本地字符串表
 	 */
 	public static boolean hasLocale(HttpSession session) {
-		return null != session.getAttribute(MSGS);
+		return null != session.getAttribute(MSG);
 	}
 
 	/**
@@ -78,7 +78,7 @@ public class Mvcs {
 	@SuppressWarnings("unchecked")
 	public static void setLocale(HttpSession session, String localeName) {
 		Map<String, Map<String, String>> msgss = (Map<String, Map<String, String>>) session
-				.getAttribute(Localization.class.getName());
+				.getServletContext().getAttribute(Localization.class.getName());
 		if (null != msgss) {
 			Map<String, String> msgs = null;
 			if (null != localeName)
@@ -87,7 +87,27 @@ public class Mvcs {
 				msgs = msgss.get(DEFAULT_MSGS);
 
 			if (null != msgs)
-				session.setAttribute(MSGS, msgs);
+				session.setAttribute(MSG, msgs);
 		}
+	}
+
+	static void updateRequestAttributes(HttpServletRequest req) {
+		if (null != req.getSession().getServletContext().getAttribute(Localization.class.getName())) {
+			HttpSession session = req.getSession();
+			if (!hasLocale(session))
+				setLocale(session, getLocaleName(session));
+		}
+		// Store context path as "/XXXX", you can use it in JSP page
+		req.setAttribute("base", req.getContextPath());
+	}
+
+	static String getRequestPath(HttpServletRequest req) {
+		String path = req.getPathInfo();
+		if (null == path)
+			path = req.getServletPath();
+		int lio = path.lastIndexOf('.');
+		if (lio > 0)
+			path = path.substring(0, lio);
+		return path;
 	}
 }

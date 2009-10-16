@@ -44,7 +44,15 @@ public class Streams {
 	}
 
 	public static InputStream fileIn(String path) {
-		return Files.findFileAsStream(path);
+		InputStream ins = Files.findFileAsStream(path);
+		if (null == ins) {
+			File f = Files.findFile(path);
+			if (null != f)
+				try {
+					return new FileInputStream(f);
+				} catch (FileNotFoundException e) {}
+		}
+		return ins;
 	}
 
 	public static InputStream fileIn(File file) {
