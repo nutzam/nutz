@@ -1,6 +1,7 @@
 package org.nutz.mvc.invoker;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
@@ -20,6 +21,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
+import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Filters;
@@ -35,6 +37,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 	private View fail;
 	private HttpAdaptor adaptor;
 	private ActionFilter[] filters;
+	private String inputCharset;
+	private String outputCharset;
 
 	public ActionInvokerImpl(	Ioc ioc,
 								List<ViewMaker> makers,
@@ -43,13 +47,28 @@ public class ActionInvokerImpl implements ActionInvoker {
 								Ok dftOk,
 								Fail dftFail,
 								AdaptBy dftAb,
-								Filters dftflts) {
+								Filters dftflts,
+								Encoding dftEncoding) {
 		this.obj = obj;
 		this.method = method;
 		this.ok = evalView(ioc, makers, method.getAnnotation(Ok.class), dftOk);
 		this.fail = evalView(ioc, makers, method.getAnnotation(Fail.class), dftFail);
 		this.evalHttpAdaptor(ioc, method, dftAb);
 		this.evalFilters(ioc, method, dftflts);
+		this.evalEncoding(method, dftEncoding);
+	}
+
+	private void evalEncoding(Method method, Encoding dftEncoding) {
+		Encoding encoding = method.getAnnotation(Encoding.class);
+		if (null == encoding)
+			encoding = dftEncoding;
+		if (null == encoding) {
+			inputCharset = "UTF-8";
+			outputCharset = "UTF-8";
+		} else {
+			inputCharset = encoding.input();
+			outputCharset = encoding.output();
+		}
 	}
 
 	private void evalFilters(Ioc ioc, Method method, Filters dftflts) {
@@ -120,14 +139,22 @@ public class ActionInvokerImpl implements ActionInvoker {
 		return null;
 	}
 
-	public void invoke(HttpServletRequest request, HttpServletResponse response) {
+	public void invoke(HttpServletRequest req, HttpServletResponse resp) {
+		// setup the charset
+		try {
+			req.setCharacterEncoding(inputCharset);
+		} catch (UnsupportedEncodingException e3) {
+			throw Lang.wrapThrow(e3);
+		}
+		resp.setCharacterEncoding(outputCharset);
+
 		// Before adapt, run filter
 		if (null != filters)
 			for (ActionFilter filter : filters) {
-				View view = filter.match(request);
+				View view = filter.match(req);
 				if (null != view) {
 					try {
-						view.render(request, response, null);
+						view.render(req, resp, null);
 					} catch (Throwable e) {
 						throw Lang.wrapThrow(e);
 					}
@@ -135,22 +162,22 @@ public class ActionInvokerImpl implements ActionInvoker {
 				}
 			}
 		// If all filter return null, then going on...
-		Object[] args = adaptor.adapt(request, response);
+		Object[] args = adaptor.adapt(req, resp);
 		Object re;
 		try {
 			re = method.invoke(obj, args);
 			if (re instanceof View)
-				((View) re).render(request, response, re);
+				((View) re).render(req, resp, re);
 			else
-				ok.render(request, response, re);
+				ok.render(req, resp, re);
 		} catch (Throwable e) {
 			try {
-				fail.render(request, response, e);
+				fail.render(req, resp, e);
 			} catch (Throwable e1) {
-				response.reset();
+				resp.reset();
 				try {
-					response.getWriter().write(e1.getMessage());
-					response.flushBuffer();
+					resp.getWriter().write(e1.getMessage());
+					resp.flushBuffer();
 				} catch (IOException e2) {
 					throw Lang.wrapThrow(e2);
 				}

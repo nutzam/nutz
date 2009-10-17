@@ -27,6 +27,11 @@ public class UrlMapImpl implements UrlMap {
 	private Fail fail;
 	private AdaptBy adaptBy;
 	private Filters filters;
+	private Encoding encoding;
+
+	void setEncoding(Encoding encoding) {
+		this.encoding = encoding;
+	}
 
 	void setOk(Ok ok) {
 		this.ok = ok;
@@ -75,6 +80,10 @@ public class UrlMapImpl implements UrlMap {
 		Filters myFlts = module.getAnnotation(Filters.class);
 		if (null == myFlts)
 			myFlts = filters;
+		// get encoding
+		Encoding myEncoding = module.getAnnotation(Encoding.class);
+		if (null == myEncoding)
+			myEncoding = encoding;
 
 		// get base url
 		At baseUrl = module.getAnnotation(At.class);
@@ -97,7 +106,7 @@ public class UrlMapImpl implements UrlMap {
 			else
 				path = basePath + url.value();
 			root.add(path, new ActionInvokerImpl(ioc, makers, obj, method, myOk, myFail, myAb,
-					myFlts));
+					myFlts, myEncoding));
 		}
 	}
 

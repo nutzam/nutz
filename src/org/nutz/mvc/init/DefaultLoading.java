@@ -13,6 +13,7 @@ import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
+import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.IocBy;
@@ -59,6 +60,7 @@ public class DefaultLoading implements Loading {
 			urls.setFail(mainModule.getAnnotation(Fail.class));
 			urls.setAdaptBy(mainModule.getAnnotation(AdaptBy.class));
 			urls.setFilters(mainModule.getAnnotation(Filters.class));
+			urls.setEncoding(mainModule.getAnnotation(Encoding.class));
 			// Add default module
 			urls.add(makers, mainModule);
 
