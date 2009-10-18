@@ -12,7 +12,7 @@ import org.nutz.mvc.annotation.Param;
  * @author zozoh
  * 
  */
-public class VoidHttpAdaptor extends AbstractHttpAdaptor {
+public class VoidAdaptor extends AbstractAdaptor {
 
 	@Override
 	protected ParamInjector evalInjector(Class<?> type, Param param) {

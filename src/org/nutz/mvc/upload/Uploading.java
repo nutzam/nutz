@@ -78,7 +78,7 @@ class Uploading {
 				ots.close();
 				params.put(meta.getName(), new TempFile(meta, tmp));
 			}
-			// if the field is a post value stop to the map
+			// if the field is a post value store to the map
 			else {
 				sb = new StreamBuffer();
 				while (c != -1 && cursor < endValue.length) {

@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.LinkedIntArray;
 
-public class CachedMIMEView extends MIMEView {
+public class CachedDownloadView extends DownloadView {
 
 	private byte[] bytes;
 	private long lastModified;

@@ -9,7 +9,7 @@ import org.nutz.lang.Lang;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.injector.JsonInjector;
 
-public class JsonHttpAdaptor extends AbstractHttpAdaptor {
+public class JsonAdaptor extends AbstractAdaptor {
 
 	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {
 		// Read all as String

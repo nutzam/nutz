@@ -4,7 +4,7 @@ import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.injector.NameInjector;
 import org.nutz.mvc.param.injector.ObjectPairInjector;
 
-public class PairHttpAdaptor extends AbstractHttpAdaptor {
+public class PairAdaptor extends AbstractAdaptor {
 
 	@Override
 	protected ParamInjector evalInjector(Class<?> type, Param param) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.param.PairHttpAdaptor;
+import org.nutz.mvc.param.PairAdaptor;
 import org.nutz.mvc.view.UTF8JsonView;
 
 public class ActionInvokerImpl implements ActionInvoker {
@@ -92,7 +93,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			} else if (null != dftAb) {
 				adaptor = evalObject(ioc, dftAb.type(), dftAb.args());
 			} else {
-				adaptor = new PairHttpAdaptor();
+				adaptor = new PairAdaptor();
 			}
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
@@ -171,6 +172,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 			else
 				ok.render(req, resp, re);
 		} catch (Throwable e) {
+			if (e instanceof InvocationTargetException)
+				e = e.getCause();
 			try {
 				fail.render(req, resp, e);
 			} catch (Throwable e1) {

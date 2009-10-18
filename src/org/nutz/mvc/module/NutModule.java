@@ -13,14 +13,14 @@ import org.nutz.mvc.View;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
-import org.nutz.mvc.view.CachedMIMEView;
-import org.nutz.mvc.view.JspView;
-import org.nutz.mvc.view.MIMEView;
+import org.nutz.mvc.view.CachedDownloadView;
+import org.nutz.mvc.view.DownloadView;
 
 /**
  * 抽象的 Nutz.Mvc 默认模块。
  * <p>
- * 你可以从这个模块继承你的默认模块，它提供了默认 url 处理，默认处理各种 MIME 类型
+ * 你可以从这个模块继承你的默认模块，它提供了默认 url 处理，默认处理各种 MIME 类型。
+ * 不过大多数情况，你的默认模块并不需要从这个模块继承。这个类的代码可以作为你的一个参考
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -33,7 +33,7 @@ public abstract class NutModule {
 	protected NutModule() {
 		mimes = new HashSet<String>();
 		cache = new HashMap<String, View>();
-		defaultView = new MIMEView();
+		defaultView = new DownloadView();
 		init();
 	}
 
@@ -79,13 +79,10 @@ public abstract class NutModule {
 	}
 
 	protected View findView(String mime, String path) {
-		if ("jsp".equals(mime)) {
-			return new JspView();
-		}
 		View re = cache.get(path);
 		if (null == re)
 			if (mimes.contains(mime)) {
-				re = new CachedMIMEView();
+				re = new CachedDownloadView();
 				cache.put(path, re);
 			}
 		return re == null ? this.defaultView : re;

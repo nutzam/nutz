@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.View;
 
-public class MIMEView implements View {
+public class DownloadView implements View {
 
 	protected File prepareFile(HttpServletRequest req, HttpServletResponse resp) {
 		File f = (File) req.getAttribute("mime");

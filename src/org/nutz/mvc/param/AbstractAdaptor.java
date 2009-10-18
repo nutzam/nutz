@@ -17,7 +17,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.injector.*;
 
-public abstract class AbstractHttpAdaptor implements HttpAdaptor {
+public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	protected ParamInjector[] injs;
 
