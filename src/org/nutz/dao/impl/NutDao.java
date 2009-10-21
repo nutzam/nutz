@@ -558,8 +558,7 @@ public class NutDao implements Dao {
 
 	public <T> List<T> query(Entity<T> entity, Condition condition, Pager pager) {
 		// QuerySql<T> sql = maker.makeQuerySQL(entity, pager);
-		Sql sql = maker.query(entity);
-		sql.getContext().setPager(pager);
+		Sql sql = maker.query(entity,pager);
 		sql.setCondition(condition);
 		execute(sql);
 		return sql.getList(entity.getType());

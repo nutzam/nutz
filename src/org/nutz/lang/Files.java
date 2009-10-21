@@ -30,7 +30,8 @@ public class Files {
 		if (null == f || !f.exists())
 			throw new RuntimeException(new FileNotFoundException(path));
 		try {
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f), "UTF-8"));
+			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),
+					"UTF-8"));
 			int c;
 			while (-1 != (c = reader.read())) {
 				sb.append((char) c);
@@ -55,9 +56,7 @@ public class Files {
 			return null;
 		if (null == suffix || suffix.length() == 0)
 			return f;
-		String path = f.getName();
-		String newPath = renameSuffix(path, suffix);
-		return new File(newPath);
+		return new File(renameSuffix(f.getName(), suffix));
 	}
 
 	public static String renameSuffix(String path, String suffix) {
@@ -73,6 +72,25 @@ public class Files {
 		if (0 >= pos)
 			return path + suffix;
 		return path.substring(0, pos) + suffix;
+	}
+
+	public static String getMajorName(String path) {
+		int l = 0;
+		int r = path.length();
+		for (int i = r - 1; i > 0; i--) {
+			if (path.charAt(i) == '.') {
+				r = i;
+			}
+			if (path.charAt(i) == '/' || path.charAt(i) == '\\') {
+				l = i + 1;
+				break;
+			}
+		}
+		return path.substring(l, r);
+	}
+
+	public static String getMajorName(File f) {
+		return getMajorName(f.getAbsolutePath());
 	}
 
 	public static String getExtension(File f) {

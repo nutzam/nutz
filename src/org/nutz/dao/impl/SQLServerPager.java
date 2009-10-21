@@ -6,7 +6,7 @@ import org.nutz.dao.entity.EntityField;
 public class SQLServerPager extends SpecialPager {
 
 	@Override
-	protected String getLimitString(Entity<?> entity) {
+	public String getSqlPattern(Entity<?> entity) {
 		return "%s";
 	}
 

@@ -9,6 +9,7 @@ import java.util.Map;
 import org.nutz.dao.Chain;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.Pager;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
@@ -17,8 +18,8 @@ import org.nutz.dao.entity.Link;
 public class SqlMaker {
 
 	public Sql insert_manymany(Link link) {
-		return Sqls.create(format("INSERT INTO %s (%s,%s) VALUES(@%s,@%s)", link.getRelation(), link.getFrom(), link
-				.getTo(), link.getFrom(), link.getTo()));
+		return Sqls.create(format("INSERT INTO %s (%s,%s) VALUES(@%s,@%s)", link.getRelation(),
+				link.getFrom(), link.getTo(), link.getFrom(), link.getTo()));
 	}
 
 	private static String evalActivedFields(Entity<?> en) {
@@ -67,7 +68,9 @@ public class SqlMaker {
 		}
 		fields.deleteCharAt(0);
 		values.deleteCharAt(0);
-		Sql sql = Sqls.create(format("INSERT INTO %s(%s) VALUES(%s)", en.getTableName(), fields, values)).setEntity(en);
+		Sql sql = Sqls.create(
+				format("INSERT INTO %s(%s) VALUES(%s)", en.getTableName(), fields, values))
+				.setEntity(en);
 		sql.params().putAll(map);
 		return sql;
 	}
@@ -131,8 +134,8 @@ public class SqlMaker {
 		}
 		sb.deleteCharAt(0);
 		EntityField idf = en.getIdentifiedField();
-		String fmt = format("UPDATE %s SET %s WHERE %s=@%s", en.getTableName(), sb, idf.getColumnName(), idf
-				.getFieldName());
+		String fmt = format("UPDATE %s SET %s WHERE %s=@%s", en.getTableName(), sb, idf
+				.getColumnName(), idf.getFieldName());
 		Sql sql = Sqls.create(fmt).setEntity(en);
 		sql.params().putAll(map).set(idf.getFieldName(), idf.getValue(obj));
 		return sql;
@@ -140,8 +143,8 @@ public class SqlMaker {
 
 	public Sql delete(Entity<?> entity, EntityField ef) {
 		return Sqls.create(
-				format("DELETE FROM %s WHERE %s=@%s", entity.getTableName(), ef.getColumnName(), ef.getFieldName()))
-				.setEntity(entity);
+				format("DELETE FROM %s WHERE %s=@%s", entity.getTableName(), ef.getColumnName(), ef
+						.getFieldName())).setEntity(entity);
 	}
 
 	public Sql clear_links(Entity<?> ta, Link link, Object value) {
@@ -177,19 +180,27 @@ public class SqlMaker {
 		String fields = evalActivedFields(entity);
 		String fmt;
 		if (ef.isName() && ef.isCaseUnsensitive()) {
-			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity.getTableName(), ef
-					.getColumnName(), ef.getFieldName());
+			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity
+					.getTableName(), ef.getColumnName(), ef.getFieldName());
 		} else {
-			fmt = format("SELECT %s FROM %s WHERE %s=@%s", fields, entity.getTableName(), ef.getColumnName(), ef
-					.getFieldName());
+			fmt = format("SELECT %s FROM %s WHERE %s=@%s", fields, entity.getTableName(), ef
+					.getColumnName(), ef.getFieldName());
 		}
 		return Sqls.fetchEntity(fmt).setEntity(entity);
 	}
 
-	public Sql query(Entity<?> entity) {
+	public Sql query(Entity<?> entity, Pager pager) {
+		String s;
 		String fields = evalActivedFields(entity);
-		String fmt = format("SELECT %s FROM %s $condition", fields, entity.getTableName());
-		return Sqls.queryEntity(fmt).setEntity(entity);
+		if (null == pager || pager.isDefault()) {
+			s = format("SELECT %s FROM %s $condition", fields, entity.getViewName());
+		} else {
+			s = format("SELECT %s FROM %s $condition", fields, pager.getResultSetName(entity));
+			s = format(pager.getSqlPattern(entity), s);
+		}
+		Sql sql = Sqls.queryEntity(s).setEntity(entity);
+		sql.getContext().setPager(pager);
+		return sql;
 	}
 
 }

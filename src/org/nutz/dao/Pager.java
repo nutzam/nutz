@@ -20,9 +20,19 @@ public abstract class Pager {
 		Pager p;
 		if (null == type || type == Pager.class) {
 			p = new Pager() {
-				protected String getLimitString(Entity<?> entity) {
-					return null;
+
+				public String getSqlPattern(Entity<?> entity) {
+					return "%s";
 				}
+
+				public String getResultSetName(Entity<?> entity) {
+					return entity.getViewName();
+				}
+
+				public boolean isDefault() {
+					return true;
+				}
+
 			};
 		} else {
 			try {
@@ -109,13 +119,9 @@ public abstract class Pager {
 		return pageSize * (pageNumber - 1);
 	}
 
-	protected abstract String getLimitString(Entity<?> entity);
+	public abstract String getSqlPattern(Entity<?> entity);
 
-	public String getResultSetName(Entity<?> entity) {
-		return null;
-	}
+	public abstract String getResultSetName(Entity<?> entity);
 
-	public boolean isDefault() {
-		return true;
-	}
+	public abstract boolean isDefault();
 }

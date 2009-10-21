@@ -18,7 +18,8 @@ public class Response {
 		String[] codes = reHeader.get(null).split(" ");
 		protocal = codes[0];
 		status = Integer.parseInt(codes[1]);
-		detail = codes[2];
+		if (codes.length >= 3)
+			detail = codes[2];
 		this.header = Header.create(reHeader);
 		String s = header.get("Set-Cookie");
 		if (null != s)
@@ -101,7 +102,7 @@ public class Response {
 		}
 
 	}
-	
+
 	public String getContent() {
 		StringBuilder sb = new StringBuilder();
 		Writer w = Lang.opw(sb);
