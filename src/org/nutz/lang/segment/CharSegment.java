@@ -51,12 +51,12 @@ public class CharSegment implements Segment, Cloneable {
 	}
 
 	public Segment born() {
-		return new CharSegment(this.toOrginalString());
+		return new CharSegment(this.getOrginalString());
 	}
 
 	private String orgString;
 
-	public String toOrginalString() {
+	public String getOrginalString() {
 		return orgString;
 	}
 

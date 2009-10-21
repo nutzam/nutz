@@ -167,7 +167,7 @@ public class Link {
 		}
 
 		public String getOrginalString() {
-			return cs.toOrginalString();
+			return cs.getOrginalString();
 		}
 
 	}

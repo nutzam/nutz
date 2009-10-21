@@ -27,7 +27,7 @@ abstract class EntityName {
 
 		@Override
 		String orignalString() {
-			return segment.toOrginalString();
+			return segment.getOrginalString();
 		}
 
 	}

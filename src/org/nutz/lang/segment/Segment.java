@@ -46,6 +46,6 @@ public interface Segment {
 
 	CharSequence render();
 
-	String toOrginalString();
+	String getOrginalString();
 
 }

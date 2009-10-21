@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -338,4 +339,34 @@ public class Files {
 		return name;
 	}
 
+	public static File getFile(File dir, String path) {
+		if (dir.exists()) {
+			if (dir.isDirectory())
+				return new File(dir.getAbsolutePath() + "/" + path);
+			return new File(dir.getParent() + "/" + path);
+		}
+		return new File(path);
+	}
+
+	public static File[] dirs(File dir) {
+		return dir.listFiles(new FileFilter() {
+			public boolean accept(File f) {
+				if (f.isDirectory())
+					if (!f.getName().startsWith("."))
+						return true;
+				return false;
+			}
+		});
+	}
+
+	public static File[] files(File dir, final String suffix) {
+		return dir.listFiles(new FileFilter() {
+			public boolean accept(File f) {
+				if (f.isFile())
+					if (f.getName().endsWith(suffix))
+						return true;
+				return false;
+			}
+		});
+	}
 }
