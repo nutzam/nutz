@@ -76,12 +76,14 @@ public class Files {
 	}
 
 	public static String getMajorName(String path) {
+		int len = path.length();
 		int l = 0;
-		int r = path.length();
+		int r = len;
 		for (int i = r - 1; i > 0; i--) {
-			if (path.charAt(i) == '.') {
-				r = i;
-			}
+			if (r == len)
+				if (path.charAt(i) == '.') {
+					r = i;
+				}
 			if (path.charAt(i) == '/' || path.charAt(i) == '\\') {
 				l = i + 1;
 				break;
@@ -277,7 +279,7 @@ public class Files {
 		return true;
 	}
 
-	public static boolean copyFolder(File src, File target) throws IOException {
+	public static boolean copyDir(File src, File target) throws IOException {
 		if (!src.exists())
 			return false;
 		if (!src.isDirectory())
@@ -292,7 +294,7 @@ public class Files {
 			if (f.isFile())
 				re &= copyFile(files[i], new File(target.getAbsolutePath() + "/" + f.getName()));
 			else
-				re &= copyFolder(files[i], new File(target.getAbsolutePath() + "/" + f.getName()));
+				re &= copyDir(files[i], new File(target.getAbsolutePath() + "/" + f.getName()));
 		}
 		return re;
 	}

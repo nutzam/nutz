@@ -9,6 +9,7 @@ public class FilesTest {
 
 	@Test
 	public void test_get_major_name(){
+		assertEquals("a.b.c",Files.getMajorName("a.b.c.txt"));
 		assertEquals("abc",Files.getMajorName("abc.txt"));
 		assertEquals("abc",Files.getMajorName("/a/b/c/abc.txt"));
 		assertEquals("abc",Files.getMajorName("/a/b/c/abc"));
