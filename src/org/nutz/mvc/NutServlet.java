@@ -29,7 +29,7 @@ public class NutServlet extends HttpServlet {
 			String name = Strings.trim(this.getServletConfig().getInitParameter("modules"));
 			if (Strings.isEmpty(name)) {
 				throw Lang.makeThrow(ServletException.class,
-						"You need declare modules parameter in '%'", this.getClass().getName());
+						"You need declare modules parameter in '%s'", this.getClass().getName());
 			}
 			Class<?> modules = Class.forName(name);
 

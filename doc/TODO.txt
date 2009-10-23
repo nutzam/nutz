@@ -1,0 +1,5 @@
+[OK] 1. create @GenerateBy
+2. EntityMaker interface
+3. drop EntityHolder
+4. support @GenerateBy -- include dynamice
+

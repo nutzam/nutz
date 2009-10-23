@@ -1,8 +1,6 @@
 package org.nutz.dao.entity;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,12 +14,14 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.annotation.*;
+import org.nutz.dao.entity.born.Borns;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-public class Entity<T> {
+public class Entity {
 
 	public Entity() {
+		fieldMapping = new HashMap<String, EntityField>();
 		ones = new HashMap<String, Link>();
 		manys = new HashMap<String, Link>();
 		manyManys = new HashMap<String, Link>();
@@ -30,119 +30,7 @@ public class Entity<T> {
 	}
 
 	private Map<String, EntityField> fieldMapping;
-	Mirror<T> mirror;
-
-	/*---------------------------------------------------------------------------*/
-	private static interface Borning<T> {
-		T born(ResultSet rs, FieldMatcher fm) throws Exception;
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static abstract class ReflectBorning<T> implements Borning<T> {
-		Entity<T> entity;
-
-		ReflectBorning(Entity<T> entity) {
-			this.entity = entity;
-		}
-
-		abstract T create() throws Exception;
-
-		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
-			T obj = create();
-			Iterator<EntityField> it = entity.fields().iterator();
-			while (it.hasNext()) {
-				EntityField ef = it.next();
-				if (null == fm || fm.match(ef.getField().getName()))
-					ef.fillFieldValueFromResultSet(obj, rs);
-			}
-			return obj;
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class DefaultConstructorBorning<T> extends ReflectBorning<T> {
-		Constructor<T> c;
-
-		public DefaultConstructorBorning(Entity<T> entity, Constructor<T> c) {
-			super(entity);
-			this.c = c;
-		}
-
-		public T create() throws Exception {
-			return c.newInstance();
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class DefaultStaticMethodBorning<T> extends ReflectBorning<T> {
-		Method method;
-
-		public DefaultStaticMethodBorning(Entity<T> entity, Method defMethod) {
-			super(entity);
-			this.method = defMethod;
-		}
-
-		@SuppressWarnings("unchecked")
-		public T create() throws Exception {
-			return (T) method.invoke(null);
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class StaticResultSetMethodBorning<T> implements Borning<T> {
-		Method method;
-
-		StaticResultSetMethodBorning(Method rsMethod) {
-			this.method = rsMethod;
-		}
-
-		@SuppressWarnings("unchecked")
-		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
-			return (T) method.invoke(null, rs);
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class FMStaticResultSetMethodBorning<T> implements Borning<T> {
-		Method method;
-
-		FMStaticResultSetMethodBorning(Method rsMethod) {
-			this.method = rsMethod;
-		}
-
-		@SuppressWarnings("unchecked")
-		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
-			return (T) method.invoke(null, rs, fm);
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class ResultSetConstructorBorning<T> implements Borning<T> {
-		Constructor<T> c;
-
-		public ResultSetConstructorBorning(Constructor<T> c) {
-			this.c = c;
-		}
-
-		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
-			return c.newInstance(rs);
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
-	static class FMResultSetConstructorBorning<T> implements Borning<T> {
-		Constructor<T> c;
-
-		public FMResultSetConstructorBorning(Constructor<T> c) {
-			this.c = c;
-		}
-
-		public T born(ResultSet rs, FieldMatcher fm) throws Exception {
-			return c.newInstance(rs, fm);
-		}
-	}
-
-	/*---------------------------------------------------------------------------*/
+	public Mirror<?> mirror;
 
 	private EntityName tableName;
 	private EntityName viewName;
@@ -152,7 +40,7 @@ public class Entity<T> {
 	private Map<String, Link> manyManys;
 	private List<Link> links;
 	private EntityField nameField;
-	private Borning<T> borning;
+	private Borning borning;
 
 	public EntityField getIdField() {
 		return idField;
@@ -181,13 +69,13 @@ public class Entity<T> {
 	}
 
 	/**
-	 * Analyze one entity's setting. !!! This function
-	 * must be invoked before another method.
+	 * Analyze one entity's setting. !!! This function must be invoked before
+	 * another method.
 	 * 
 	 * @param classOfT
 	 * @return TODO
 	 */
-	public boolean parse(Class<T> classOfT, DatabaseMeta db) {
+	public boolean parse(Class<?> classOfT, DatabaseMeta db) {
 		this.mirror = Mirror.me(classOfT);
 		Table table = evalTable(classOfT);
 		if (null == table)
@@ -206,8 +94,7 @@ public class Entity<T> {
 		}
 
 		// evalu fields
-		this.fieldMapping = new HashMap<String, EntityField>();
-		evalBorning(this);
+		Borns.evalBorning(this);
 
 		/* parse all children fields */
 		for (Field f : mirror.getFields()) {
@@ -255,6 +142,10 @@ public class Entity<T> {
 		return true;
 	}
 
+	public void addField(EntityField ef){
+		fieldMapping.put(ef.getName(), ef);
+	}
+	
 	private Table evalTable(Class<?> type) {
 		Table table = null;
 		Class<?> theClass = type;
@@ -267,63 +158,6 @@ public class Entity<T> {
 		return table;
 	}
 
-	private static <T> void evalBorning(Entity<T> entity) {
-		Class<T> type = entity.mirror.getType();
-		Method rsMethod = null;
-		Method rsFmMethod = null;
-		Method defMethod = null;
-		for (Method method : entity.mirror.getStaticMethods()) {
-			if (entity.mirror.is(method.getReturnType())) {
-				Class<?>[] pts = method.getParameterTypes();
-				if (pts.length == 0)
-					defMethod = method;
-				else if (pts.length == 2 && pts[0] == ResultSet.class && pts[1] == Pattern.class)
-					rsFmMethod = method;
-				else if (pts.length == 1 && pts[0] == ResultSet.class)
-					rsMethod = method;
-			}
-		}
-		// static POJO getInstance(ResultSet);
-		if (null != rsFmMethod) {
-			entity.borning = new FMStaticResultSetMethodBorning<T>(rsMethod);
-		} else if (null != rsMethod) {
-			entity.borning = new StaticResultSetMethodBorning<T>(rsMethod);
-		} else {
-			try { // new POJO(ResultSet)
-				try {
-					entity.borning = new FMResultSetConstructorBorning<T>(type.getConstructor(
-							ResultSet.class, Pattern.class));
-				} catch (Throwable e) {
-					entity.borning = new ResultSetConstructorBorning<T>(type
-							.getConstructor(ResultSet.class));
-				}
-			} catch (Throwable e) {
-				if (null != defMethod) // static POJO
-					// getInstance();
-					entity.borning = new DefaultStaticMethodBorning<T>(entity, defMethod);
-				else
-					try {
-						// new POJO()
-						entity.borning = new DefaultConstructorBorning<T>(entity, type
-								.getConstructor());
-					} catch (Exception e1) {
-						throw Lang
-								.makeThrow(
-										"Entity [%s] is invailid, it should has at least one of:"
-												+ " \n1. %s \n2.%s \n3. %s \n4. %s, \n(%s)",
-										type.getName(),
-										"Accessable constructor with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional)",
-										"Accessable static method with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional) and return type is ["
-												+ type.getName() + "]",
-										"Accessable static method without parameter and return type is ["
-												+ type.getName() + "]",
-										"Accessable default constructor",
-										"I will try to invoke those borning methods following the order above.");
-					}
-			}
-		}
-	}
-
 	public Collection<EntityField> fields() {
 		return fieldMapping.values();
 	}
@@ -332,15 +166,35 @@ public class Entity<T> {
 		return this.fieldMapping.get(name);
 	}
 
-	public Mirror<T> getMirror() {
+	public Borning getBorning() {
+		return borning;
+	}
+
+	public void setBorning(Borning borning) {
+		this.borning = borning;
+	}
+
+	public Mirror<?> getMirror() {
 		return mirror;
 	}
 
-	public Class<T> getType() {
+	public void setMirror(Mirror<?> mirror) {
+		this.mirror = mirror;
+	}
+
+	public void setTableName(EntityName tableName) {
+		this.tableName = tableName;
+	}
+
+	public void setViewName(EntityName viewName) {
+		this.viewName = viewName;
+	}
+
+	public Class<?> getType() {
 		return mirror.getType();
 	}
 
-	public T getObject(final ResultSet rs, FieldMatcher actived) {
+	public Object getObject(final ResultSet rs, FieldMatcher actived) {
 		try {
 			return borning.born(rs, actived);
 		} catch (Exception e) {

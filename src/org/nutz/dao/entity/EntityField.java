@@ -188,7 +188,7 @@ public class EntityField {
 		return true;
 	}
 
-	void fillFieldValueFromResultSet(Object obj, ResultSet rs) {
+	public void fillFieldValueFromResultSet(Object obj, ResultSet rs) {
 		try {
 			Object v = rs.getObject(columnName);
 			if (null == v)
@@ -253,6 +253,10 @@ public class EntityField {
 
 	public String getFieldName() {
 		return getField().getName();
+	}
+
+	public String getName() {
+		return field.getName();
 	}
 
 }

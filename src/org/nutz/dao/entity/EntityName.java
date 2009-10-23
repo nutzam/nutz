@@ -3,9 +3,9 @@ package org.nutz.dao.entity;
 import org.nutz.dao.TableName;
 import org.nutz.lang.segment.CharSegment;
 
-abstract class EntityName {
+public abstract class EntityName {
 
-	static EntityName create(String s) {
+	public static EntityName create(String s) {
 		CharSegment seg = new CharSegment(s);
 		if (seg.keys().size() > 0)
 			return new DynamicEntityName(seg);
@@ -20,12 +20,10 @@ abstract class EntityName {
 			this.segment = seg;
 		}
 
-		@Override
 		String value() {
 			return TableName.render(segment);
 		}
 
-		@Override
 		String orignalString() {
 			return segment.getOrginalString();
 		}
@@ -40,12 +38,10 @@ abstract class EntityName {
 			this.value = s;
 		}
 
-		@Override
 		String value() {
 			return value;
 		}
 
-		@Override
 		String orignalString() {
 			return value;
 		}
@@ -56,7 +52,6 @@ abstract class EntityName {
 
 	abstract String orignalString();
 
-	@Override
 	public String toString() {
 		return value();
 	}
