@@ -5,16 +5,11 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.nutz.dao.entity.FieldValueType;
+
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.FIELD })
-public @interface Id {
-	/**
-	 * true : auto increasement
-	 */
-	boolean auto() default true;
+public @interface ValueType {
 
-	/**
-	 * How to get the new auto increasement value.
-	 */
-	String[] value() default {};
+	FieldValueType value() default FieldValueType.AUTO;
 }

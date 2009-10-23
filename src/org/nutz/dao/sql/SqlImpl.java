@@ -1,6 +1,7 @@
 package org.nutz.dao.sql;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,8 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.lang.Strings;
+
+import static java.lang.String.*;
 
 public class SqlImpl implements Sql {
 
@@ -30,7 +33,7 @@ public class SqlImpl implements Sql {
 	private Condition condition;
 	private Object result;
 	private StatementAdapter adapter;
-	private Entity<?> entity;
+	private Entity entity;
 	private int updateCount;
 
 	public String toString() {
@@ -41,37 +44,41 @@ public class SqlImpl implements Sql {
 	public void execute(Connection conn) throws SQLException {
 		mergeCondition();
 		updateCount = -1;
-		// SELECT ...
-		if (sql.isSELECT()) {
-			if (null != callback) {
-				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
-						ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
-				adapter.process(stat, sql, entity);
-				ResultSet rs = stat.executeQuery();
-				setResult(callback.invoke(conn, rs, this));
-				rs.close();
-				stat.close();
+		try {
+			// SELECT ...
+			if (sql.isSELECT()) {
+				if (null != callback) {
+					PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
+							ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+					adapter.process(stat, sql, entity);
+					ResultSet rs = stat.executeQuery();
+					setResult(callback.invoke(conn, rs, this));
+					rs.close();
+					stat.close();
+				}
 			}
-		}
-		// UPDATE | INSERT | DELETE | TRUNCATE ...
-		else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
-			PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString()
-			// ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
-					);
-			adapter.process(stat, sql, entity);
-			stat.execute();
-			updateCount = stat.getUpdateCount();
-			stat.close();
-			if (null != callback)
-				callback.invoke(conn, null, this);
-		}
-		// CREATE | DROP
-		else {
-			Statement stat = conn.createStatement();
-			stat.execute(sql.toString());
-			stat.close();
-			if (null != callback)
-				callback.invoke(conn, null, this);
+			// UPDATE | INSERT | DELETE | TRUNCATE ...
+			else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
+				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString()
+				// ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
+						);
+				adapter.process(stat, sql, entity);
+				stat.execute();
+				updateCount = stat.getUpdateCount();
+				stat.close();
+				if (null != callback)
+					callback.invoke(conn, null, this);
+			}
+			// CREATE | DROP
+			else {
+				Statement stat = conn.createStatement();
+				stat.execute(sql.toString());
+				stat.close();
+				if (null != callback)
+					callback.invoke(conn, null, this);
+			}
+		} catch (SQLException e) {
+			throw new SQLException(format("!Nuz SQL Error: '%s'", sql.toString()), e);
 		}
 
 	}
@@ -97,7 +104,7 @@ public class SqlImpl implements Sql {
 		return this;
 	}
 
-	public Sql setEntity(Entity<?> entity) {
+	public Sql setEntity(Entity entity) {
 		this.entity = entity;
 		return this;
 	}
@@ -141,7 +148,7 @@ public class SqlImpl implements Sql {
 		return this;
 	}
 
-	public Entity<?> getEntity() {
+	public Entity getEntity() {
 		return entity;
 	}
 

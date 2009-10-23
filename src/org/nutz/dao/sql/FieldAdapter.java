@@ -8,7 +8,7 @@ import java.sql.Types;
 import java.util.Calendar;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.entity.annotation.FieldType;
+import org.nutz.dao.entity.FieldValueType;
 import org.nutz.lang.Mirror;
 
 public abstract class FieldAdapter {
@@ -33,7 +33,7 @@ public abstract class FieldAdapter {
 	private static FieldAdapter AS_ENUM_CHAR = new AsEnumChar();
 	private static FieldAdapter AS_OBJECT = new AsObject();
 
-	public static FieldAdapter create(Mirror<?> mirror, FieldType.ENUM type) {
+	public static FieldAdapter create(Mirror<?> mirror, FieldValueType type) {
 		// NULL
 		if (null == mirror)
 			return AS_NULL;
@@ -52,7 +52,7 @@ public abstract class FieldAdapter {
 		// Enum
 		if (mirror.isEnum()) {
 			if (null != type) {
-				if (type == FieldType.ENUM.INT)
+				if (type == FieldValueType.INT)
 					return AS_ENUM_INT;
 			}
 			return AS_ENUM_CHAR;

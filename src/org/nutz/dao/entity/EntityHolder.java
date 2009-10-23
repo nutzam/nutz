@@ -4,38 +4,39 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.lang.Lang;
 
 public class EntityHolder {
 
-	public EntityHolder() {
-		mappings = new HashMap<Class<?>, Entity<?>>();
+	public EntityHolder(Class<? extends EntityMaker> maker) {
+		this.maker = maker;
+		mappings = new HashMap<Class<?>, Entity>();
 	}
 
-	private Map<Class<?>, Entity<?>> mappings;
+	private Class<? extends EntityMaker> maker;
+	private Map<Class<?>, Entity> mappings;
 
 	/**
 	 * Get one EntityMapping
 	 * 
 	 * @param klass
-	 * @return EntityMapping class, create when it not
-	 *         existed
+	 * @return EntityMapping class, create when it not existed
 	 */
-	@SuppressWarnings("unchecked")
-	public <T> Entity<T> getEntity(Class<T> klass, DatabaseMeta db) {
-		Entity<T> m = (Entity<T>) mappings.get(klass);
-		if (null == m) {
+	public Entity getEntity(Class<?> klass, DatabaseMeta meta) {
+		Entity entity = (Entity) mappings.get(klass);
+		if (null == entity)
 			synchronized (this) {
-				m = (Entity<T>) mappings.get(klass);
-				if (null == m) {
-					m = new Entity<T>();
-					if (m.parse(klass, db))
-						mappings.put(klass, m);
-					else
-						throw new ErrorEntitySyntaxException(klass, "Not a entity!");
+				entity = (Entity) mappings.get(klass);
+				if (null == entity) {
+					try {
+						entity = maker.newInstance().make(meta, klass);
+						mappings.put(klass, entity);
+					} catch (Exception e) {
+						throw Lang.wrapThrow(e);
+					}
 				}
 			}
-		}
-		return m;
+		return entity;
 	}
 
 	public int count() {

@@ -63,12 +63,12 @@ public class Sqls {
 		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
 		List<DTable> dts = parser.parse(dods);
 		for (DTable dt : dts) {
-			Sql c = maker.makeCreateSql(dt);
-			Sql d = maker.makeDropSql(dt);
 			if (dao.exists(dt.getName()))
-				dao.execute(d, c);
-			else
+				dao.clear(dt.getName());
+			else {
+				Sql c = maker.makeCreateSql(dt);
 				dao.execute(c);
+			}
 		}
 	}
 

@@ -12,7 +12,7 @@ public abstract class EntityName {
 		return new StaticEntityName(s);
 	}
 
-	static class DynamicEntityName extends EntityName {
+	public static class DynamicEntityName extends EntityName {
 
 		private CharSegment segment;
 
@@ -20,17 +20,17 @@ public abstract class EntityName {
 			this.segment = seg;
 		}
 
-		String value() {
+		public String value() {
 			return TableName.render(segment);
 		}
 
-		String orignalString() {
+		public String getOrignalString() {
 			return segment.getOrginalString();
 		}
 
 	}
 
-	static class StaticEntityName extends EntityName {
+	public static class StaticEntityName extends EntityName {
 
 		private String value;
 
@@ -38,19 +38,19 @@ public abstract class EntityName {
 			this.value = s;
 		}
 
-		String value() {
+		public String value() {
 			return value;
 		}
 
-		String orignalString() {
+		public String getOrignalString() {
 			return value;
 		}
 
 	}
 
-	abstract String value();
+	public abstract String value();
 
-	abstract String orignalString();
+	public abstract String getOrignalString();
 
 	public String toString() {
 		return value();

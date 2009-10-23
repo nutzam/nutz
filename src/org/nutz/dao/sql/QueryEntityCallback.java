@@ -11,7 +11,7 @@ import org.nutz.dao.entity.Entity;
 public class QueryEntityCallback extends EntityCallback {
 
 	@Override
-	protected Object process(ResultSet rs, Entity<?> entity, SqlContext context) throws SQLException {
+	protected Object process(ResultSet rs, Entity entity, SqlContext context) throws SQLException {
 		Pager pager = context.getPager();
 		List<Object> list = new LinkedList<Object>();
 		if (null == pager || !pager.isDefault()) {

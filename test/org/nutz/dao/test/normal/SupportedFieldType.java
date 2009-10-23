@@ -13,6 +13,7 @@ import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.FieldValueType;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
@@ -48,7 +49,7 @@ public class SupportedFieldType extends DaoCase {
 		public TT enum_s;
 
 		@Column
-		@FieldType(FieldType.ENUM.INT)
+		@ValueType(FieldValueType.INT)
 		public TT enum_i;
 
 		@Column

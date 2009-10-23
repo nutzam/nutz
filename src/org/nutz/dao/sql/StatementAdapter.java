@@ -7,6 +7,6 @@ import org.nutz.dao.entity.Entity;
 
 public interface StatementAdapter {
 
-	void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity) throws SQLException;
+	void process(PreparedStatement stat, SqlLiteral sql, Entity entity) throws SQLException;
 
 }

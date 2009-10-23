@@ -21,10 +21,17 @@ class InsertManyManyInvoker extends InsertInvoker {
 			final Mirror<?> mta = Mirror.me(first.getClass());
 			Lang.each(mm, new Each<Object>() {
 				public void invoke(int i, Object ta, int length) {
+					Exception failInsert = null;
 					try {
 						dao.insert(ta);
 					} catch (Exception e) {
 						ta = dao.fetch(ta);
+						failInsert = e;
+					}
+					if (null == ta) {
+						if (null != failInsert)
+							throw new RuntimeException(failInsert);
+						throw new RuntimeException("You set null to param '@ta[2]'");
 					}
 					Object toValue = mta.getValue(ta, link.getTargetField());
 					SqlMaker maker = ((NutDao) dao).maker();

@@ -111,7 +111,7 @@ public class ComboSql implements Sql {
 		return this;
 	}
 
-	public Sql setEntity(Entity<?> entity) {
+	public Sql setEntity(Entity entity) {
 		for (Sql sql : sqls)
 			sql.setEntity(entity);
 		return this;
@@ -121,7 +121,7 @@ public class ComboSql implements Sql {
 		return null;
 	}
 
-	public Entity<?> getEntity() {
+	public Entity getEntity() {
 		if (sqls.isEmpty())
 			return null;
 		return sqls.get(0).getEntity();

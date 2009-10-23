@@ -85,4 +85,5 @@ public abstract class TableSqlMaker {
 	public Sql makeDropSql(DTable dt) {
 		return Sqls.create(String.format("DROP TABLE IF EXISTS %s", dt.getName()));
 	}
+	
 }

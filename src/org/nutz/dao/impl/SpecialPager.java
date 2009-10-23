@@ -5,7 +5,7 @@ import org.nutz.dao.entity.Entity;
 
 public abstract class SpecialPager extends Pager {
 
-	public String getResultSetName(Entity<?> entity) {
+	public String getResultSetName(Entity entity) {
 		return entity.getViewName();
 	}
 

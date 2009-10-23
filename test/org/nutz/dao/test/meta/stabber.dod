@@ -1,0 +1,10 @@
+t_stabber {
+	id INT +PK,
+	name VARCHAR(50) !UNIQUE,
+	cnum INT
+}
+
+t_stabber_seq {
+	id INT +PK,
+	v  INT
+}

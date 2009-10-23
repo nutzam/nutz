@@ -109,7 +109,7 @@ public class Cnd implements OrderBy, ExpGroup {
 		return orNot(Cnd.exp(name, op, value));
 	}
 
-	public String toString(Entity<?> entity) {
+	public String toString(Entity entity) {
 		StringBuilder sb = new StringBuilder();
 		if (exps != null) {
 			for (Iterator<Expression> it = exps.iterator(); it.hasNext();) {
@@ -129,7 +129,7 @@ public class Cnd implements OrderBy, ExpGroup {
 		return sb.toString();
 	}
 
-	public void render(StringBuilder sb, Entity<?> en) {
+	public void render(StringBuilder sb, Entity en) {
 		sb.append('(').append(toString(en)).append(')');
 	}
 
@@ -144,7 +144,7 @@ public class Cnd implements OrderBy, ExpGroup {
 		private String name;
 		private String by;
 
-		public void render(StringBuilder sb, Entity<?> entity) {
+		public void render(StringBuilder sb, Entity entity) {
 			EntityField ef = entity.getField(name);
 			if (null == ef)
 				throw Lang.makeThrow("Fail to find field '%s' in '%s'", name, entity.getType()
@@ -161,7 +161,7 @@ public class Cnd implements OrderBy, ExpGroup {
 			this.s = txt;
 		}
 
-		public void render(StringBuilder sb, Entity<?> en) {
+		public void render(StringBuilder sb, Entity en) {
 			sb.append(s);
 		}
 	}
@@ -183,7 +183,7 @@ public class Cnd implements OrderBy, ExpGroup {
 		private String op;
 		private Object value;
 
-		public void render(StringBuilder sb, Entity<?> en) {
+		public void render(StringBuilder sb, Entity en) {
 			if (null != en) {
 				EntityField ef = en.getField(name);
 				sb.append(null != ef ? ef.getColumnName() : name);

@@ -22,7 +22,7 @@ import org.nutz.dao.entity.annotation.*;
 public class Lifecycle {
 
 	@Column
-	@Id(IdType.STATIC)
+	@Id(auto = false)
 	private int id;
 
 	/**
@@ -80,6 +80,5 @@ public class Lifecycle {
 	public void setFetch(String fetch) {
 		this.fetch = fetch;
 	}
-
 
 }

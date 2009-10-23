@@ -2,40 +2,88 @@ package org.nutz.dao.entity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.dao.sql.Sql;
-import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
 
 public class EntityField {
 
-	private Id id;
-	private Name name;
+	private FieldType type;
 	private boolean notNull;
 	private boolean readonly;
 	private Link link;
 	private String columnName;
 	private Segment defaultValue;
 	private String _defv;
-	private FieldType.ENUM fieldType;
+	private FieldValueType fieldType;
 	private Method getter;
 	private Method setter;
-	private Next nextId;
-	private FieldAdapter statementSetter;
+	private IntQuery serialQuery;
+	private IntQuery nextIntQuery;
+	private FieldAdapter adapter;
 
 	private Field field;
-	private Entity<?> entity;
+	private Entity entity;
 
-	EntityField(Entity<?> entity) {
+	public EntityField(Entity entity, Field field) {
+		this.entity = entity;
+		this.field = field;
+		try {
+			getter = entity.mirror.getGetter(field);
+			getter.setAccessible(true);
+		} catch (NoSuchMethodException e) {}
+		try {
+			setter = entity.mirror.getSetter(field);
+			setter.setAccessible(true);
+		} catch (NoSuchMethodException e) {}
+	}
+
+	public void setType(FieldType type) {
+		this.type = type;
+	}
+
+	public void setNotNull(boolean notNull) {
+		this.notNull = notNull;
+	}
+
+	public void setReadonly(boolean readonly) {
+		this.readonly = readonly;
+	}
+
+	public void setLink(Link link) {
+		this.link = link;
+	}
+
+	public void setColumnName(String columnName) {
+		this.columnName = columnName;
+	}
+
+	public void setDefaultValue(Segment defaultValue) {
+		this.defaultValue = defaultValue;
+	}
+
+	public void setFieldType(FieldValueType fieldType) {
+		this.fieldType = fieldType;
+	}
+
+	public void setSerialQuery(IntQuery nextId) {
+		this.serialQuery = nextId;
+	}
+
+	public void setNextIntQuery(IntQuery nextIntQuery) {
+		this.nextIntQuery = nextIntQuery;
+	}
+
+	public void setAdapter(FieldAdapter adapter) {
+		this.adapter = adapter;
+	}
+
+	public void setEntity(Entity entity) {
 		this.entity = entity;
 	}
 
@@ -44,19 +92,19 @@ public class EntityField {
 	}
 
 	public boolean isName() {
-		return name != null;
+		return type == FieldType.NAME || type == FieldType.CASESENSITIVE_NAME;
 	}
 
-	public boolean isCaseUnsensitive() {
-		return !name.casesensitive();
+	public boolean isCasesensitive() {
+		return type == FieldType.CASESENSITIVE_NAME;
 	}
 
-	public boolean isAutoIncrement() {
-		return null != id && IdType.AUTO_INCREASE == id.value();
+	public boolean isSerial() {
+		return type == FieldType.SERIAL;
 	}
 
 	public boolean isId() {
-		return null != id;
+		return type == FieldType.ID || type == FieldType.SERIAL;
 	}
 
 	public boolean isNotNull() {
@@ -93,99 +141,6 @@ public class EntityField {
 
 	public boolean isString() {
 		return CharSequence.class.isAssignableFrom(field.getType());
-	}
-
-	Object valueOf(DatabaseMeta db, EntityName entityName, Mirror<?> mirror, Field field) {
-		/*
-		 * Evaluate @One|@Many|@ManyMany
-		 */
-		link = Link.eval(mirror, field);
-		if (null != link)
-			return link;
-		if (!evalColumnName(field))
-			return null;
-		// Save field object
-		this.field = field;
-		this.field.setAccessible(true);
-		/*
-		 * Init current field getter/setter to speeded up the reflection
-		 */
-		try {
-			getter = entity.mirror.getGetter(field);
-			getter.setAccessible(true);
-		} catch (NoSuchMethodException e) {}
-		try {
-			setter = entity.mirror.getSetter(field);
-			setter.setAccessible(true);
-		} catch (NoSuchMethodException e) {}
-		/*
-		 * Load misc attributes
-		 */
-		readonly = (field.getAnnotation(Readonly.class) != null);
-		FieldType t = field.getAnnotation(FieldType.class);
-		fieldType = null == t ? FieldType.ENUM.AUTO : t.value();
-		/*
-		 * Check default value
-		 */
-		evalDefaultValue(field);
-		/*
-		 * Check @Id
-		 */
-		id = field.getAnnotation(Id.class);
-		// If auto-increasment, require a setter or public
-		// field
-		if (isAutoIncrement()) {
-			if (!field.isAccessible() && null == setter)
-				Lang.makeThrow(
-						"Entity field [%s]->[%s], so must be accessible or has a setter, %s",
-						entity.mirror.getType().getName(), field.getName(),
-						"for the reason it is auto-increament @Id.");
-		}
-		/*
-		 * Evaluate the fetch next Id SQL
-		 */
-		if (isId())
-			nextId = Next.create(db, entityName, id.next(), columnName);
-		/*
-		 * Check @Name
-		 */
-		name = field.getAnnotation(Name.class);
-		if (isName()) {
-			if (!Mirror.me(field.getType()).isStringLike())
-				Lang.makeThrow("Entity field [%s]->[%s] is @Name, so it must be a String.",
-						entity.mirror.getType().getName(), field.getName());
-			notNull = true;
-		} else {
-			notNull = (field.getAnnotation(NotNull.class) != null);
-		}
-		/* Eval the FieldStatementSetter */
-		this.statementSetter = FieldAdapter.create(Mirror.me(field.getType()), fieldType);
-		/*
-		 * Finish parsing, return true. If current field is a Link (Return Link
-		 * object) or not @Column (return null) at the begining of this method.
-		 */
-		return true;
-	}
-
-	private void evalDefaultValue(Field field) {
-		Default def = field.getAnnotation(Default.class);
-		if (null != def)
-			defaultValue = new CharSegment(def.value());
-		else
-			defaultValue = null;
-	}
-
-	private boolean evalColumnName(Field field) {
-		if (Modifier.isTransient(field.getModifiers()))
-			return false;
-		Column column = field.getAnnotation(Column.class);
-		if (null == column)
-			return false;
-		if (Lang.NULL.equals(column.value()))
-			columnName = field.getName();
-		else
-			columnName = column.value();
-		return true;
 	}
 
 	public void fillFieldValueFromResultSet(Object obj, ResultSet rs) {
@@ -227,27 +182,33 @@ public class EntityField {
 		}
 	}
 
-	public FieldAdapter getStatementSetter() {
-		return statementSetter;
+	public FieldAdapter getAdapter() {
+		return adapter;
 	}
 
-	public Sql getFetchSql() {
-		return nextId.sql();
+	public Sql getSerialQuerySql() {
+		return serialQuery.sql();
+	}
+
+	public Sql getNextIntQuerySql() {
+		if (null == nextIntQuery)
+			return null;
+		return nextIntQuery.sql();
 	}
 
 	public boolean isInt() {
-		return FieldType.ENUM.INT == fieldType;
+		return FieldValueType.INT == fieldType;
 	}
 
 	public boolean isChar() {
-		return FieldType.ENUM.CHAR == fieldType;
+		return FieldValueType.CHAR == fieldType;
 	}
 
 	public boolean isAuto() {
-		return FieldType.ENUM.AUTO == fieldType;
+		return FieldValueType.AUTO == fieldType;
 	}
 
-	public FieldType.ENUM getFieldType() {
+	public FieldValueType getFieldType() {
 		return fieldType;
 	}
 

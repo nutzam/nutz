@@ -16,7 +16,7 @@ public class Fighter {
 	}
 
 	@Column
-	@Id(next = {"psql","SELECT currval('dao_fighter_id_seq');"})
+	@Id({"psql","SELECT currval('dao_fighter_id_seq');"})
 	private int id;
 
 	@Column

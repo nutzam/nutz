@@ -6,14 +6,15 @@ import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.Expression;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityHolder;
+import org.nutz.dao.entity.impl.DefaultEntityMaker;
 
 import junit.framework.TestCase;
 
 public class CndTest extends TestCase {
 
-	private static final EntityHolder holder = new EntityHolder();
+	private static final EntityHolder holder = new EntityHolder(DefaultEntityMaker.class);
 
-	private Entity<?> en;
+	private Entity en;
 
 	@Override
 	protected void setUp() throws Exception {
@@ -45,7 +46,7 @@ public class CndTest extends TestCase {
 		String exp = "wid=37 AND (age>35 AND wid<47) OR (wname LIKE '%t%' AND age IN '(4,7,9)' OR (age>35 AND wid<47)) ORDER BY age ASC, wid DESC";
 		assertEquals(exp, c.toString(en));
 	}
-	
+
 	public void test04() {
 		Condition c = Cnd.where("ff", "=", true);
 		String exp = "ff=true";

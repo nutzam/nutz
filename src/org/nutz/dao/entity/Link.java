@@ -10,7 +10,7 @@ import org.nutz.lang.segment.CharSegment;
 
 public class Link {
 
-	static Link eval(Mirror<?> mirror, Field field) {
+	public static Link eval(Mirror<?> mirror, Field field) {
 		try {
 			One one = field.getAnnotation(One.class);
 			if (null != one) { // One > refer own field
@@ -33,7 +33,7 @@ public class Link {
 		return null;
 	}
 
-	private Link(Mirror<?> mirror, Field field, One one) throws NoSuchFieldException {
+	public Link(Mirror<?> mirror, Field field, One one) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.One;
 		this.targetClass = one.target();
@@ -45,7 +45,7 @@ public class Link {
 		}
 	}
 
-	private Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
+	public Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.Many;
 		this.mapKeyField = Lang.NULL.equals(many.key()) ? null : many.key();
@@ -60,7 +60,7 @@ public class Link {
 		}
 	}
 
-	private Link(Mirror<?> mirror, Field field, ManyMany mm) {
+	public Link(Mirror<?> mirror, Field field, ManyMany mm) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
 		this.mapKeyField = Lang.NULL.equals(mm.key()) ? null : mm.key();

@@ -8,4 +8,10 @@ public class ErrorEntitySyntaxException extends RuntimeException {
 				message));
 	}
 
+	public ErrorEntitySyntaxException(String message) {
+		super(message);
+	}
+	
+	
+
 }

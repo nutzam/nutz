@@ -19,7 +19,7 @@ public class Profile {
 	}
 
 	@Column
-	@Id(IdType.STATIC)
+	@Id(auto = false)
 	public int id;
 
 	@Column

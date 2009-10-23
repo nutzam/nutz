@@ -22,7 +22,7 @@ public class SqlMaker {
 				link.getFrom(), link.getTo(), link.getFrom(), link.getTo()));
 	}
 
-	private static String evalActivedFields(Entity<?> en) {
+	private static String evalActivedFields(Entity en) {
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		if (null != fm) {
 			StringBuilder sb = new StringBuilder();
@@ -40,7 +40,7 @@ public class SqlMaker {
 		return "*";
 	}
 
-	public Sql insert(Entity<?> en, Object obj) {
+	public Sql insert(Entity en, Object obj) {
 		StringBuilder fields = new StringBuilder();
 		StringBuilder values = new StringBuilder();
 		FieldMatcher fm = FieldFilter.get(en.getType());
@@ -48,15 +48,24 @@ public class SqlMaker {
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
 			String fn = ef.getFieldName();
-			if (ef.isAutoIncrement() || ef.isReadonly())
+			if (ef.isSerial() || ef.isReadonly())
 				continue;
 			Object value = ef.getValue(obj);
+			// match FieldMatcher
 			if (null != fm) {
 				if (fm.isIgnoreNull() && null == value)
 					continue;
 				else if (!fm.match(fn))
 					continue;
-			} else if (null == value) {
+			}
+			// Auto generate value
+			else if (null != ef.getNextIntQuerySql()) {
+				fields.append(',').append(ef.getColumnName());
+				values.append(",(").append(ef.getNextIntQuerySql().toString()).append(')');
+				continue;
+			}
+			// for Null
+			else if (null == value) {
 				if (ef.hasDefaultValue())
 					value = ef.getDefaultValue(obj);
 				else
@@ -113,7 +122,7 @@ public class SqlMaker {
 		return sql;
 	}
 
-	public Sql update(Entity<?> en, Object obj) {
+	public Sql update(Entity en, Object obj) {
 		StringBuilder sb = new StringBuilder();
 		FieldMatcher fm = FieldFilter.get(en.getType());
 		Map<String, Object> map = new HashMap<String, Object>();
@@ -141,13 +150,13 @@ public class SqlMaker {
 		return sql;
 	}
 
-	public Sql delete(Entity<?> entity, EntityField ef) {
+	public Sql delete(Entity entity, EntityField ef) {
 		return Sqls.create(
 				format("DELETE FROM %s WHERE %s=@%s", entity.getTableName(), ef.getColumnName(), ef
 						.getFieldName())).setEntity(entity);
 	}
 
-	public Sql clear_links(Entity<?> ta, Link link, Object value) {
+	public Sql clear_links(Entity ta, Link link, Object value) {
 		EntityField tafld = ta.getField(link.getTargetField().getName());
 		String fldnm = tafld.getFieldName();
 		Sql sql = clear_links(ta.getTableName(), tafld.getColumnName(), fldnm).setEntity(ta);
@@ -159,7 +168,7 @@ public class SqlMaker {
 		return Sqls.create(format("DELETE FROM %s WHERE %s=@%s", table, dbfld, javafld));
 	}
 
-	public Sql clear(Entity<?> entity) {
+	public Sql clear(Entity entity) {
 		return clear(entity.getTableName()).setEntity(entity);
 	}
 
@@ -176,10 +185,10 @@ public class SqlMaker {
 		return Sqls.fetchInt(fmt);
 	}
 
-	public Sql fetch(Entity<?> entity, EntityField ef) {
+	public Sql fetch(Entity entity, EntityField ef) {
 		String fields = evalActivedFields(entity);
 		String fmt;
-		if (ef.isName() && ef.isCaseUnsensitive()) {
+		if (ef.isName() && !ef.isCasesensitive()) {
 			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity
 					.getTableName(), ef.getColumnName(), ef.getFieldName());
 		} else {
@@ -189,7 +198,7 @@ public class SqlMaker {
 		return Sqls.fetchEntity(fmt).setEntity(entity);
 	}
 
-	public Sql query(Entity<?> entity, Pager pager) {
+	public Sql query(Entity entity, Pager pager) {
 		String s;
 		String fields = evalActivedFields(entity);
 		if (null == pager || pager.isDefault()) {
