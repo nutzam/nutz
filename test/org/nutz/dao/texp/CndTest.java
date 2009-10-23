@@ -14,7 +14,7 @@ public class CndTest extends TestCase {
 
 	private static final EntityHolder holder = new EntityHolder(DefaultEntityMaker.class);
 
-	private Entity en;
+	private Entity<?> en;
 
 	@Override
 	protected void setUp() throws Exception {

@@ -8,7 +8,7 @@ public class OraclePager extends SpecialPager {
 			+ "SELECT T.*, ROWNUM RN FROM (%%s) T WHERE ROWNUM <= %d) WHERE RN > %d";
 
 	@Override
-	public String getSqlPattern(Entity entity) {
+	public String getSqlPattern(Entity<?> entity) {
 		int firstRn = this.getOffset();
 		int lastRn = firstRn + this.getPageSize();
 		return String.format(ptn, lastRn, firstRn);

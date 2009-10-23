@@ -5,7 +5,7 @@ import org.nutz.dao.entity.Entity;
 public class PostgresqlPager extends SpecialPager {
 
 	@Override
-	public String getSqlPattern(Entity entity) {
+	public String getSqlPattern(Entity<?> entity) {
 		return String.format("%%s LIMIT %d OFFSET %d", this.getPageSize(),this.getOffset());
 	}
 

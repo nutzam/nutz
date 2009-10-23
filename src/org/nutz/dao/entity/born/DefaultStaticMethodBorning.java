@@ -8,7 +8,7 @@ class DefaultStaticMethodBorning extends ReflectBorning {
 
 	Method method;
 
-	DefaultStaticMethodBorning(Entity entity, Method defMethod) {
+	DefaultStaticMethodBorning(Entity<?> entity, Method defMethod) {
 		super(entity);
 		this.method = defMethod;
 	}

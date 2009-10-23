@@ -4,6 +4,6 @@ import org.nutz.dao.DatabaseMeta;
 
 public interface EntityMaker {
 
-	Entity make(DatabaseMeta db, Class<?> type);
+	Entity<?> make(DatabaseMeta db, Class<?> type);
 
 }

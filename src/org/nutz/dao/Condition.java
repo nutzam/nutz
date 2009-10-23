@@ -4,5 +4,5 @@ import org.nutz.dao.entity.Entity;
 
 public interface Condition {
 
-	String toString(Entity entity);
+	String toString(Entity<?> entity);
 }

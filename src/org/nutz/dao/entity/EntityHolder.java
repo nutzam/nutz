@@ -10,11 +10,11 @@ public class EntityHolder {
 
 	public EntityHolder(Class<? extends EntityMaker> maker) {
 		this.maker = maker;
-		mappings = new HashMap<Class<?>, Entity>();
+		mappings = new HashMap<Class<?>, Entity<?>>();
 	}
 
 	private Class<? extends EntityMaker> maker;
-	private Map<Class<?>, Entity> mappings;
+	private Map<Class<?>, Entity<?>> mappings;
 
 	/**
 	 * Get one EntityMapping
@@ -22,11 +22,12 @@ public class EntityHolder {
 	 * @param klass
 	 * @return EntityMapping class, create when it not existed
 	 */
-	public Entity getEntity(Class<?> klass, DatabaseMeta meta) {
-		Entity entity = (Entity) mappings.get(klass);
+	@SuppressWarnings("unchecked")
+	public <T> Entity<T> getEntity(Class<T> klass, DatabaseMeta meta) {
+		Entity<?> entity = mappings.get(klass);
 		if (null == entity)
 			synchronized (this) {
-				entity = (Entity) mappings.get(klass);
+				entity = mappings.get(klass);
 				if (null == entity) {
 					try {
 						entity = maker.newInstance().make(meta, klass);
@@ -36,7 +37,7 @@ public class EntityHolder {
 					}
 				}
 			}
-		return entity;
+		return (Entity<T>) entity;
 	}
 
 	public int count() {

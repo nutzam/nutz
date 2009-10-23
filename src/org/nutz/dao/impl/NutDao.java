@@ -37,18 +37,19 @@ import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
 
-	private static <T> EntityField checkIdField(Entity en) {
+	private static <T> EntityField checkIdField(Entity<T> en) {
 		EntityField idField = en.getIdField();
 		if (idField == null) {
-			throw Lang.makeThrow("Entity [%] need @Id field", en.getMirror().getType().getName());
+			throw Lang.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
 		}
 		return idField;
 	}
 
-	private static <T> EntityField checkNameField(Entity en) {
+	private static <T> EntityField checkNameField(Entity<T> en) {
 		EntityField nameField = en.getNameField();
 		if (nameField == null) {
-			throw Lang.makeThrow("Entity [%s] need @Name field", en.getMirror().getType().getName());
+			throw Lang
+					.makeThrow("Entity<T> [%s] need @Name field", en.getMirror().getType().getName());
 		}
 		return nameField;
 	}
@@ -196,7 +197,7 @@ public class NutDao implements Dao {
 	}
 
 	public int count(Class<?> classOfT, Condition condition) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		Sql sql = maker.func(entity.getTableName(), "COUNT", "*").setCondition(condition);
 		execute(sql);
 		return sql.getInt();
@@ -221,7 +222,7 @@ public class NutDao implements Dao {
 	}
 
 	public <T> void clear(Class<T> classOfT, Condition condition) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		Sql sql;
 		if (null == condition) {
 			sql = maker.truncate(entity.getTableName());
@@ -243,7 +244,7 @@ public class NutDao implements Dao {
 
 	public <T> T clearLinks(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
 			Trans.exec(new Atom() {
@@ -255,7 +256,7 @@ public class NutDao implements Dao {
 							} else {
 								Object value = entity.getMirror().getValue(obj,
 										link.getReferField());
-								Entity ta = dao.getEntity(link.getTargetClass());
+								Entity<?> ta = dao.getEntity(link.getTargetClass());
 								Sql sql = dao.maker().clear_links(ta, link, value);
 								dao.execute(sql);
 							}
@@ -273,7 +274,7 @@ public class NutDao implements Dao {
 					lns.walkOnes(new LinkWalker() {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
-							Entity ta = dao.getEntity(link.getTargetClass());
+							Entity<?> ta = dao.getEntity(link.getTargetClass());
 							Sql sql = dao.maker().clear_links(ta, link, value);
 							dao.execute(sql);
 						}
@@ -285,7 +286,7 @@ public class NutDao implements Dao {
 	}
 
 	public <T> void delete(Class<T> classOfT, long id) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
 		Sql sql = maker.delete(entity, ef);
 		sql.params().set(ef.getFieldName(), id);
@@ -293,14 +294,14 @@ public class NutDao implements Dao {
 	}
 
 	public <T> void delete(Class<T> classOfT, String name) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkNameField(entity);
 		Sql sql = maker.delete(entity, ef);
 		sql.params().set(ef.getFieldName(), name);
 		execute(sql);
 	}
 
-	void _deleteSelf(Entity entity, Object obj) {
+	void _deleteSelf(Entity<?> entity, Object obj) {
 		if (null != obj) {
 			EntityField idnf = entity.getIdentifiedField();
 			if (null == idnf)
@@ -320,14 +321,14 @@ public class NutDao implements Dao {
 
 	public void delete(Object obj) {
 		if (null != obj) {
-			Entity entity = getEntity(obj.getClass());
+			Entity<?> entity = getEntity(obj.getClass());
 			_deleteSelf(entity, obj);
 		}
 	}
 
 	public <T> void deleteWith(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
 			Trans.exec(new Atom() {
@@ -343,7 +344,7 @@ public class NutDao implements Dao {
 
 	public <T> void deleteLinks(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
 			Trans.exec(new Atom() {
@@ -357,39 +358,37 @@ public class NutDao implements Dao {
 	}
 
 	public <T> T fetch(Class<T> classOfT, long id) {
-		Entity entity = getEntity(classOfT);
+		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, id);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T fetch(Entity entity, long id) {
+	public <T> T fetch(Entity<T> entity, long id) {
 		EntityField ef = checkIdField(entity);
 		Sql sql = maker.fetch(entity, ef);
 		sql.params().set(ef.getFieldName(), id);
 		execute(sql);
-		return sql.getObject((Class<T>) entity.getType());
+		return sql.getObject(entity.getType());
 	}
 
 	public <T> T fetch(Class<T> classOfT, String name) {
-		Entity entity = getEntity(classOfT);
+		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, name);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> T fetch(Entity entity, String name) {
+	public <T> T fetch(Entity<T> entity, String name) {
 		EntityField ef = checkNameField(entity);
 		Sql sql = maker.fetch(entity, ef);
 		sql.params().set(ef.getFieldName(), name);
 		execute(sql);
-		return sql.getObject((Class<T>) entity.getType());
+		return sql.getObject(entity.getType());
 	}
 
 	public <T> T fetch(Class<T> classOfT, Condition condition) {
-		Entity entity = getEntity(classOfT);
+		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, condition);
 	}
 
-	public <T> T fetch(Entity entity, Condition condition) {
+	public <T> T fetch(Entity<T> entity, Condition condition) {
 		List<T> list = this.query(entity, condition, this.createPager(1, 1));
 		if (list.size() == 0)
 			return null;
@@ -403,7 +402,7 @@ public class NutDao implements Dao {
 	@SuppressWarnings("unchecked")
 	public <T> T fetch(T obj) {
 		if (null != obj) {
-			Entity entity = (Entity) getEntity(obj.getClass());
+			Entity<?> entity = (Entity) getEntity(obj.getClass());
 			EntityField ef = entity.getIdentifiedField();
 			Sql sql = maker.fetch(entity, ef);
 			sql.params().set(ef.getFieldName(), ef.getValue(obj));
@@ -415,7 +414,7 @@ public class NutDao implements Dao {
 
 	public <T> T fetchLinks(final T obj, String regex) {
 		if (null != obj && null != regex) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
@@ -461,12 +460,12 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	public <T> Entity getEntity(Class<T> classOfT) {
+	public <T> Entity<T> getEntity(Class<T> classOfT) {
 		return entities.getEntity(classOfT, meta());
 	}
 
 	public int getMaxId(Class<?> classOfT) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
 		// Sql sql = maker.create(maker.ptn.MAX,
 		// entity.getTableName()).setEntity(entity);
@@ -480,7 +479,7 @@ public class NutDao implements Dao {
 		return (T) getEntity(classOfT).getObject(rs, fm);
 	}
 
-	private <T> T _insertSelf(Entity entity, T obj) {
+	private <T> T _insertSelf(Entity<?> entity, T obj) {
 		Sql sql = maker.insert(entity, obj);
 		// Evaluate fetchId SQL
 		Sql fetchIdSql = null;
@@ -501,7 +500,7 @@ public class NutDao implements Dao {
 
 	public <T> T insert(T obj) {
 		if (null != obj) {
-			Entity entity = getEntity(obj.getClass());
+			Entity<?> entity = getEntity(obj.getClass());
 			return _insertSelf(entity, obj);
 		}
 		return null;
@@ -515,13 +514,13 @@ public class NutDao implements Dao {
 	}
 
 	public void insert(Class<?> classOfT, Chain chain) {
-		Entity en = getEntity(classOfT);
+		Entity<?> en = getEntity(classOfT);
 		insert(en.getTableName(), chain);
 	}
 
 	public <T> T insertWith(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
@@ -539,7 +538,7 @@ public class NutDao implements Dao {
 
 	public <T> T insertLinks(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
@@ -559,7 +558,7 @@ public class NutDao implements Dao {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> List<T> query(Entity entity, Condition condition, Pager pager) {
+	public <T> List<T> query(Entity<?> entity, Condition condition, Pager pager) {
 		// QuerySql<T> sql = maker.makeQuerySQL(entity, pager);
 		Sql sql = maker.query(entity, pager);
 		sql.setCondition(condition);
@@ -577,7 +576,7 @@ public class NutDao implements Dao {
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition condition) {
-		Entity en = getEntity(classOfT);
+		Entity<?> en = getEntity(classOfT);
 		return update(en.getTableName(), chain, condition);
 	}
 
@@ -591,7 +590,7 @@ public class NutDao implements Dao {
 								String regex,
 								final Chain chain,
 								final Condition condition) {
-		final Links lns = new Links(null, (Entity) getEntity(classOfT), regex);
+		final Links lns = new Links(null, getEntity(classOfT), regex);
 		Trans.exec(new Atom() {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
@@ -607,7 +606,7 @@ public class NutDao implements Dao {
 
 	public <T> T updateWith(final T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Dao dao = this;
 			Trans.exec(new Atom() {
@@ -622,7 +621,7 @@ public class NutDao implements Dao {
 
 	public <T> T updateLinks(T obj, String regex) {
 		if (null != obj) {
-			final Entity entity = getEntity(obj.getClass());
+			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Dao dao = this;
 			Trans.exec(new Atom() {
@@ -666,7 +665,7 @@ public class NutDao implements Dao {
 	}
 
 	public int func(Class<?> classOfT, String funcName, String fieldName) {
-		Entity entity = getEntity(classOfT);
+		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = entity.getField(fieldName);
 		if (null == ef)
 			return func(entity.getTableName(), funcName, fieldName);

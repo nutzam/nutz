@@ -60,7 +60,7 @@ public class Chain {
 		return head;
 	}
 
-	public Chain updateBy(Entity entity) {
+	public Chain updateBy(Entity<?> entity) {
 		Chain c = head;
 		while (c != null) {
 			EntityField ef = entity.getField(c.name);

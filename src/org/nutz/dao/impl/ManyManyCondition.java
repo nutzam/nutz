@@ -18,13 +18,13 @@ class ManyManyCondition implements Condition {
 		this.obj = obj;
 	}
 
-	public String toString(Entity me) {
+	public String toString(Entity<?> me) {
 		return String.format("%s IN (SELECT %s FROM %s WHERE %s=%s)", dao.getEntity(
 				link.getTargetClass()).getField(link.getTargetField().getName()).getColumnName(),
 				link.getTo(), link.getRelation(), link.getFrom(), evalValue(me));
 	}
 
-	private Object evalValue(Entity me) {
+	private Object evalValue(Entity<?> me) {
 		return DaoUtils.formatFieldValue(me.getMirror().getValue(obj, link.getReferField()));
 	}
 

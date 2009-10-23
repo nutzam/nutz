@@ -8,7 +8,7 @@ class DefaultConstructorBorning extends ReflectBorning {
 	
 	Constructor<?> c;
 
-	DefaultConstructorBorning(Entity entity, Constructor<?> c) {
+	DefaultConstructorBorning(Entity<?> entity, Constructor<?> c) {
 		super(entity);
 		this.c = c;
 	}

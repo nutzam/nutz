@@ -33,7 +33,7 @@ public class SqlImpl implements Sql {
 	private Condition condition;
 	private Object result;
 	private StatementAdapter adapter;
-	private Entity entity;
+	private Entity<?> entity;
 	private int updateCount;
 
 	public String toString() {
@@ -104,7 +104,7 @@ public class SqlImpl implements Sql {
 		return this;
 	}
 
-	public Sql setEntity(Entity entity) {
+	public Sql setEntity(Entity<?> entity) {
 		this.entity = entity;
 		return this;
 	}
@@ -148,7 +148,7 @@ public class SqlImpl implements Sql {
 		return this;
 	}
 
-	public Entity getEntity() {
+	public Entity<?> getEntity() {
 		return entity;
 	}
 

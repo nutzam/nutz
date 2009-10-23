@@ -18,7 +18,7 @@ class DeleteManyManyInvoker extends DeleteInvoker {
 	void invoke(final Link link, Object mm) {
 		Object first = Lang.first(mm);
 		if (null != first) {
-			final Entity entity = dao.getEntity(first.getClass());
+			final Entity<?> entity = dao.getEntity(first.getClass());
 			Lang.each(mm, new Each<Object>() {
 				public void invoke(int i, Object ta, int length) throws ExitLoop, LoopException {
 					if (null != ta) {

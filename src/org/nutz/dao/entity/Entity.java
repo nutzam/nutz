@@ -14,7 +14,7 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-public class Entity {
+public class Entity<T> {
 
 	public Entity() {
 		fields = new HashMap<String, EntityField>();
@@ -26,7 +26,7 @@ public class Entity {
 	}
 
 	private Map<String, EntityField> fields;
-	public Mirror<?> mirror;
+	public Mirror<? extends T> mirror;
 
 	private EntityName tableName;
 	private EntityName viewName;
@@ -92,7 +92,7 @@ public class Entity {
 		return mirror;
 	}
 
-	public void setMirror(Mirror<?> mirror) {
+	public void setMirror(Mirror<? extends T> mirror) {
 		this.mirror = mirror;
 	}
 
@@ -108,7 +108,7 @@ public class Entity {
 		return this.viewName;
 	}
 
-	public Class<?> getType() {
+	public Class<? extends T> getType() {
 		return mirror.getType();
 	}
 

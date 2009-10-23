@@ -10,7 +10,7 @@ import org.nutz.lang.Lang;
 
 public class Borns {
 
-	public static Borning evalBorning(Entity entity) {
+	public static Borning evalBorning(Entity<?> entity) {
 		Class<?> type = entity.getType();
 		Method rsMethod = null;
 		Method rsFmMethod = null;

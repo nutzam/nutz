@@ -9,7 +9,7 @@ import org.nutz.dao.entity.Link;
 
 final class Links {
 
-	Links(Object obj, Entity en, String regex) {
+	Links(Object obj, Entity<?> en, String regex) {
 		this.obj = obj;
 		this.entity = en;
 		ones = new LinkedList<Link>();
@@ -34,7 +34,7 @@ final class Links {
 	private List<Link> mms;
 	private List<Link> all;
 	private Object obj;
-	private Entity entity;
+	private Entity<?> entity;
 
 	private void invoke(LinkInvoker walker, List<Link> list) {
 		if (null != list)

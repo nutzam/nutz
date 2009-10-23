@@ -15,7 +15,7 @@ public class DynamicEntityParsing {
 
 	@Test
 	public void tank_many_many_link_test() {
-		Entity en = new DefaultEntityMaker().make(new DatabaseMeta(),Tank.class);
+		Entity<?> en = new DefaultEntityMaker().make(new DatabaseMeta(),Tank.class);
 
 		Link link = en.getLinks("members").get(0);
 		TableName.set(1);

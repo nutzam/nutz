@@ -21,11 +21,11 @@ public abstract class Pager {
 		if (null == type || type == Pager.class) {
 			p = new Pager() {
 
-				public String getSqlPattern(Entity entity) {
+				public String getSqlPattern(Entity<?> entity) {
 					return "%s";
 				}
 
-				public String getResultSetName(Entity entity) {
+				public String getResultSetName(Entity<?> entity) {
 					return entity.getViewName();
 				}
 
@@ -119,9 +119,9 @@ public abstract class Pager {
 		return pageSize * (pageNumber - 1);
 	}
 
-	public abstract String getSqlPattern(Entity entity);
+	public abstract String getSqlPattern(Entity<?> entity);
 
-	public abstract String getResultSetName(Entity entity);
+	public abstract String getResultSetName(Entity<?> entity);
 
 	public abstract boolean isDefault();
 }

@@ -10,7 +10,7 @@ import org.nutz.lang.Mirror;
 
 public class DefaultStatementAdapter implements StatementAdapter {
 
-	public void process(PreparedStatement stat, SqlLiteral sql, Entity entity)
+	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
 			throws SQLException {
 		if (null == entity)
 			processWithoutEntity(stat, sql);
@@ -30,7 +30,7 @@ public class DefaultStatementAdapter implements StatementAdapter {
 		}
 	}
 
-	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity entity)
+	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
 			throws SQLException {
 		for (EntityField ef : entity.fields()) {
 			String name = ef.getField().getName();

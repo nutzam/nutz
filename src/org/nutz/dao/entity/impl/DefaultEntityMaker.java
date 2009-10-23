@@ -41,11 +41,11 @@ import org.nutz.lang.segment.CharSegment;
 public class DefaultEntityMaker implements EntityMaker {
 
 	private DatabaseMeta db;
-	private Entity entity;
+	private Entity<Object> entity;
 
-	public Entity make(DatabaseMeta db, Class<?> type) {
+	public Entity<?> make(DatabaseMeta db, Class<?> type) {
 		this.db = db;
-		entity = new Entity();
+		entity = new Entity<Object>();
 		Mirror<?> mirror = Mirror.me(type);
 		entity.setMirror(mirror);
 
@@ -83,7 +83,7 @@ public class DefaultEntityMaker implements EntityMaker {
 		return entity;
 	}
 
-	private ErrorEntitySyntaxException error(Entity entity, String fmt, Object... args) {
+	private ErrorEntitySyntaxException error(Entity<?> entity, String fmt, Object... args) {
 		return new ErrorEntitySyntaxException(String.format("[%s] : %s", null == entity ? "NULL"
 				: entity.getType().getName(), String.format(fmt, args)));
 	}

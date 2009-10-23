@@ -5,7 +5,7 @@ import org.nutz.dao.entity.Entity;
 public class DB2Pager extends SpecialPager {
 
 	@Override
-	public String getSqlPattern(Entity entity) {
+	public String getSqlPattern(Entity<?> entity) {
 		/*
 		 * SELECT FROM @tableName WHERE (@fieldName IN (SELECT @fieldName FROM
 		 * (SELECT @fieldName, rownumber() OVER(ORDER BY @fieldName ASC) AS rn

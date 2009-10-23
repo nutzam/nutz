@@ -25,11 +25,11 @@ public interface Sql {
 
 	Sql setResult(Object result);
 
-	Entity getEntity();
+	Entity<?> getEntity();
 
 	Sql setAdapter(StatementAdapter adapter);
 
-	Sql setEntity(Entity entity);
+	Sql setEntity(Entity<?> entity);
 
 	int getUpdateCount();
 

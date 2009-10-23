@@ -10,11 +10,11 @@ import org.nutz.lang.Lang;
 public abstract class EntityCallback implements SqlCallback {
 
 	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-		Entity entity = sql.getEntity();
+		Entity<?> entity = sql.getEntity();
 		if (null == entity)
 			throw Lang.makeThrow("SQL without entity : %s", sql.toString());
 		return process(rs, entity, sql.getContext());
 	}
 
-	protected abstract Object process(ResultSet rs, Entity entity, SqlContext context) throws SQLException;
+	protected abstract Object process(ResultSet rs, Entity<?> entity, SqlContext context) throws SQLException;
 }

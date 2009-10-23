@@ -86,11 +86,11 @@ public interface Dao {
 	 */
 	<T> T fetch(Class<T> classOfT);
 
-	<T> T fetch(Entity classOfT, long id);
+	<T> T fetch(Entity<T> classOfT, long id);
 
-	<T> T fetch(Entity classOfT, String name);
+	<T> T fetch(Entity<T> classOfT, String name);
 
-	<T> T fetch(Entity classOfT, Condition condition);
+	<T> T fetch(Entity<T> classOfT, Condition condition);
 
 	<T> T fetch(T obj);
 
@@ -116,7 +116,7 @@ public interface Dao {
 	 */
 	<T> T clearLinks(T obj, String regex);
 
-	<T> Entity getEntity(Class<T> classOfT);
+	<T> Entity<T> getEntity(Class<T> classOfT);
 
 	int count(Class<?> classOfT, Condition condition);
 

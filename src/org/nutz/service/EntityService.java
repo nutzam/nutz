@@ -34,7 +34,7 @@ public abstract class EntityService<T> extends Service {
 		mirror = (Mirror<T>) Mirror.me(classOfT);
 	}
 
-	public Entity getEntity() {
+	public Entity<T> getEntity() {
 		return dao().getEntity(mirror.getType());
 	}
 

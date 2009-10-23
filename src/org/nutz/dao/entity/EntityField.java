@@ -28,9 +28,9 @@ public class EntityField {
 	private FieldAdapter adapter;
 
 	private Field field;
-	private Entity entity;
+	private Entity<?> entity;
 
-	public EntityField(Entity entity, Field field) {
+	public EntityField(Entity<?> entity, Field field) {
 		this.entity = entity;
 		this.field = field;
 		try {
@@ -83,7 +83,7 @@ public class EntityField {
 		this.adapter = adapter;
 	}
 
-	public void setEntity(Entity entity) {
+	public void setEntity(Entity<?> entity) {
 		this.entity = entity;
 	}
 

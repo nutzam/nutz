@@ -15,13 +15,13 @@ import org.nutz.ioc.meta.Obj;
 
 public class EntityParsing {
 
-	private static Entity en(Class<?> type) {
+	private static Entity<?> en(Class<?> type) {
 		return new DefaultEntityMaker().make(new DatabaseMeta(), type);
 	}
 
 	@Test
 	public void eval_manys() {
-		Entity en = en(Base.class);
+		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("platoons").get(0);
 		assertEquals("platoons", link.getOwnField().getName());
 		assertEquals("org.nutz.dao.test.meta.Platoon", link.getTargetClass().getName());
@@ -32,7 +32,7 @@ public class EntityParsing {
 
 	@Test
 	public void eval_manys_with_null_field() {
-		Entity en = en(Base.class);
+		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("wavebands").get(0);
 		assertEquals("wavebands", link.getOwnField().getName());
 		assertEquals("org.nutz.dao.test.meta.WaveBand", link.getTargetClass().getName());
@@ -42,28 +42,28 @@ public class EntityParsing {
 
 	@Test
 	public void eval_manymany() {
-		Entity en = en(Base.class);
+		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("fighters").get(0);
 		assertEquals("dao_m_base_fighter", link.getRelation());
 	}
 
 	@Test
 	public void eval_id_name() {
-		Entity en = en(Platoon.class);
+		Entity<?> en = en(Platoon.class);
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 	}
 
 	@Test
 	public void eval_obj_id_name() {
-		Entity en = en(Obj.class);
+		Entity<?> en = en(Obj.class);
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 	}
 
 	@Test
 	public void test_field_with_next_ann() {
-		Entity en = en(Stabber.class);
+		Entity<?> en = en(Stabber.class);
 		assertNotNull(en.getField("caseNumber").getNextIntQuerySql());
 	}
 }

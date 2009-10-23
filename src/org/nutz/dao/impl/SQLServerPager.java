@@ -6,12 +6,12 @@ import org.nutz.dao.entity.EntityField;
 public class SQLServerPager extends SpecialPager {
 
 	@Override
-	public String getSqlPattern(Entity entity) {
+	public String getSqlPattern(Entity<?> entity) {
 		return "%s";
 	}
 
 	@Override
-	public String getResultSetName(Entity entity) {
+	public String getResultSetName(Entity<?> entity) {
 		/*
 		 * SELECT TOP @pageSize FROM @tableName WHERE
 		 * @fieldName NOT IN (SELECT TOP
