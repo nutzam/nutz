@@ -2,7 +2,6 @@ package org.nutz.lang;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -10,9 +9,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -25,24 +22,29 @@ import java.util.zip.ZipFile;
 
 public class Files {
 
-	public String read(String path) {
-		StringBuilder sb = new StringBuilder();
-		File f = findFile(path);
-		if (null == f || !f.exists())
-			throw new RuntimeException(new FileNotFoundException(path));
+	public static String read(String path) {
+		File f = Files.findFile(path);
+		if (null == f)
+			throw Lang.makeThrow("Can not find file '%s'", path);
+		return read(f);
+	}
+
+	public static String read(File f) {
+		return Lang.readAll(Streams.fileInr(f));
+	}
+
+	public static void write(File f, Object content) {
+		if (null == f)
+			return;
+		if (f.isDirectory())
+			throw Lang.makeThrow("Directory '%s' can not be write as File", f);
 		try {
-			Reader reader = new BufferedReader(new InputStreamReader(new FileInputStream(f),
-					"UTF-8"));
-			int c;
-			while (-1 != (c = reader.read())) {
-				sb.append((char) c);
-			}
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
+			if (!f.exists())
+				Files.createNewFile(f);
+			Lang.writeAll(Streams.fileOutw(f), content.toString());
 		} catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
-		return sb.toString();
 	}
 
 	/**
@@ -299,9 +301,24 @@ public class Files {
 		return re;
 	}
 
-	public static boolean moveTo(File src, File target) throws IOException {
+	public static boolean move(File src, File target) throws IOException {
 		makeDir(target.getParentFile());
 		return src.renameTo(target);
+	}
+
+	public static boolean rename(File src, String newName) {
+		if (src.exists()) {
+			File newFile = new File(src.getParent() + "/" + newName);
+			if (newFile.exists())
+				return false;
+			try {
+				Files.makeDir(newFile.getParentFile());
+			} catch (IOException e) {
+				return false;
+			}
+			src.renameTo(newFile);
+		}
+		return false;
 	}
 
 	public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
@@ -353,6 +370,8 @@ public class Files {
 	public static File[] dirs(File dir) {
 		return dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
+				if (f.isHidden())
+					return false;
 				if (f.isDirectory())
 					if (!f.getName().startsWith("."))
 						return true;
@@ -364,6 +383,8 @@ public class Files {
 	public static File[] files(File dir, final String suffix) {
 		return dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
+				if (f.isHidden())
+					return false;
 				if (f.isFile())
 					if (f.getName().endsWith(suffix))
 						return true;

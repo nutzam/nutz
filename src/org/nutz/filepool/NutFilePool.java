@@ -105,7 +105,7 @@ public class NutFilePool implements FilePool {
 
 	public File moveFile(int id, String suffix, File target) throws IOException {
 		File src = Pools.getFileById(home, id, suffix);
-		Files.moveTo(src, target);
+		Files.move(src, target);
 		return target;
 	}
 
