@@ -29,5 +29,5 @@
 		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
 -------------------------------------------------------------------------------------------------------------
 你可能还需要参考
-	 * 关于注解 {*@One} 详细描述请参看 > [entity_annotations.html Nutz.Dao 实体注解] 关于{*@One}这一节
-	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.html Nutz.Dao 为映射提供的操作]。
+	 * 关于注解 {*@One} 详细描述请参看 > [entity_annotations.man Nutz.Dao 实体注解] 关于{*@One}这一节
+	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.man Nutz.Dao 为映射提供的操作]。
