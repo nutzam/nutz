@@ -7,6 +7,11 @@ import org.nutz.lang.meta.Pair;
 
 import static java.lang.String.*;
 
+/**
+ * 简便的 Tag 实现
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Tag extends SimpleNode<HtmlToken> {
 
 	public static Tag tag(String name) {

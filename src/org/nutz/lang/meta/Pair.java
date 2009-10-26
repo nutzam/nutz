@@ -2,6 +2,11 @@ package org.nutz.lang.meta;
 
 import org.nutz.lang.Strings;
 
+/**
+ * 简便的名值对实现
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Pair {
 
 	public Pair() {}
