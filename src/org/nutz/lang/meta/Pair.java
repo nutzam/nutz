@@ -77,7 +77,9 @@ public class Pair {
 
 	@Override
 	public String toString() {
-		return String.format(pattern, name, value);
+		String v = null == value ? "" : value;
+		v = v.replace("\"", "&quot;");
+		return String.format(pattern, name, v);
 	}
 
 }
