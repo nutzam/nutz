@@ -13,8 +13,12 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
+import java.nio.charset.Charset;
 
 public class Streams {
+	
+	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
+	
 	public static boolean equals(InputStream sA, InputStream sB) throws IOException {
 		int dA;
 		while ((dA = sA.read()) != -1) {
@@ -64,16 +68,26 @@ public class Streams {
 	}
 
 	public static Reader fileInr(File file) {
+		return fileInr(file, DEFAULT_ENCODING);
+	}
+
+	public static Reader fileInr(String path) {
+		return fileInr(path, DEFAULT_ENCODING);
+	}
+	
+	public static Reader fileInr(File file,String encoding) {
 		try {
-			return new InputStreamReader(fileIn(file), "UTF-8");
+			if(encoding == null ) encoding = DEFAULT_ENCODING;
+			return new InputStreamReader(fileIn(file), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
 
-	public static Reader fileInr(String path) {
+	public static Reader fileInr(String path,String encoding) {
 		try {
-			return new InputStreamReader(fileIn(path), "UTF-8");
+			if(encoding == null ) encoding = DEFAULT_ENCODING;
+			return new InputStreamReader(fileIn(path), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -96,11 +110,19 @@ public class Streams {
 	}
 
 	public static Writer fileOutw(File file) {
+		return fileOutw(file, DEFAULT_ENCODING);
+	}
+
+	public static Writer fileOutw(String path,String encoding) {
+		return fileOutw(Files.findFile(path),encoding);
+	}
+
+	public static Writer fileOutw(File file,String encoding) {
 		try {
-			return new OutputStreamWriter(fileOut(file), "UTF-8");
+			if(encoding == null) encoding = DEFAULT_ENCODING;
+			return new OutputStreamWriter(fileOut(file), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
-
 }
