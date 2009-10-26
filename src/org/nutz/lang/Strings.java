@@ -2,6 +2,11 @@ package org.nutz.lang;
 
 import java.util.LinkedList;
 
+/**
+ * 提供了一组方便字符串操作的便利函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Strings {
 
 	public static String dup(CharSequence cs, int num) {

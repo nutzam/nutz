@@ -15,6 +15,11 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.nio.charset.Charset;
 
+/**
+ * 提供了一组创建  Reader/Writer/InputStream/OutputStream 的便利函数 
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Streams {
 	
 	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
