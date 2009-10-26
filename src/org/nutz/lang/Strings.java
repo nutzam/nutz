@@ -32,12 +32,26 @@ public class Strings {
 		return sb.toString();
 	}
 
+	/**
+	 * 检查两个字符串的忽略大小写后是否相等.
+	 * <p/><b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * @param s1 字符串A
+	 * @param s2 字符串B
+	 * @return true 如果两个字符串忽略大小写后相等,且两个字符串均不为null
+	 */
 	public static boolean equalsIgnoreCase(String s1, String s2) {
 		if (s1 == null || s2 == null)
 			return false;
 		return s1.equalsIgnoreCase(s2);
 	}
 
+	/**
+	 * 检查两个字符串是否相等.
+	 * <p/><b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * @param s1 字符串A
+	 * @param s2 字符串B
+	 * @return true 如果两个字符串相等,且两个字符串均不为null
+	 */
 	public static boolean equals(String s1, String s2) {
 		if (s1 == null || s2 == null)
 			return false;
