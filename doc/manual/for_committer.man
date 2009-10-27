@@ -32,6 +32,9 @@
 				 * 返回 this，以便链式赋值
 				 * setXXX(String s) 可以用 xxx(String s) 替代 // 仅仅是建议
 			 * 上述两个原则灵活掌握，总之，你要考虑到，使用的的 IDE 在 100 字自动折行的情况下，你的函数不太可能会被折行
+		 * 代码的格式，需要使用 [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml  统一的 Eclipse 的代码格式]
+			 * 请从 svn 的 trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml 获得此文件
+			 * 非 Eclipse 用户，我就没有办法了，靠自觉吧
 	 
 	关于代码重写
 		 * 接口的实现可以随时被重写，没关系，我们有版本控制，可以回滚
