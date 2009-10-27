@@ -158,7 +158,7 @@ public class SqlImpl implements Sql {
 
 	public Sql duplicate() {
 		Sql newSql = Sqls.create(sql).setCallback(callback).setCondition(condition);
-		newSql.getContext().setMatcher(context.getMatcher()).setPager(context.getPager());
+		newSql.getContext().setPager(context.getPager());
 		return newSql;
 	}
 

@@ -1,0 +1,6 @@
+t_pet {
+	id INT +PK,
+	name VARCHAR(50) !UNIQUE,
+	alias VARCHAR(50),
+	age INT
+}

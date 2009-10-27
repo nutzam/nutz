@@ -26,8 +26,10 @@ public class FieldFilter {
 		return FieldFilter.create(type, actived, locked, false);
 	}
 
-	public static FieldFilter create(Class<?> type, String actived, String locked,
-			boolean ignoreNull) {
+	public static FieldFilter create(	Class<?> type,
+										String actived,
+										String locked,
+										boolean ignoreNull) {
 		return create(type, FieldMatcher.make(actived, locked, ignoreNull));
 	}
 
@@ -78,6 +80,13 @@ public class FieldFilter {
 		return this;
 	}
 
+	/**
+	 * 根据 POJO 的类型，从 ThreadLocal 中获取字段过滤器
+	 * 
+	 * @param type
+	 *            POJO 的类型
+	 * @return 字段过滤器
+	 */
 	public static FieldMatcher get(Class<?> type) {
 		FieldFilter ff = FF.get();
 		if (null == ff)
