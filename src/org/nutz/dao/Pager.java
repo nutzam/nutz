@@ -1,7 +1,5 @@
 package org.nutz.dao;
 
-import javax.servlet.ServletRequest;
-
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.*;
 import org.nutz.lang.Lang;
@@ -16,7 +14,8 @@ public abstract class Pager {
 	public static final Class<? extends Pager> SQLServer = SQLServerPager.class;
 
 	/*----------------------------------------------------------------*/
-	public static <T extends Pager> Pager create(Class<T> type, int pageNumber, int pageSize) {
+	public static <T extends Pager> Pager create(Class<T> type, int pageNumber,
+			int pageSize) {
 		Pager p;
 		if (null == type || type == Pager.class) {
 			p = new Pager() {
@@ -46,26 +45,11 @@ public abstract class Pager {
 		return p;
 	}
 
-	public static <T extends Pager> Pager valueOf(ServletRequest request, Class<T> type) {
-		try {
-			int pn = Integer.parseInt(request.getParameter("pn"));
-			if (pn > 0) {
-				int size;
-				try {
-					size = Integer.parseInt(request.getParameter("pagesize"));
-				} catch (Exception e) {
-					size = Pager.DEFAULT_PAGE_SIZE;
-				}
-				return create(type, pn, size);
-			}
-		} catch (Exception e) {}
-		return null;
+	public static final int DEFAULT_PAGE_SIZE = 20;
+	public static final int FIRST_PAGE_NUMBER = 1;
+
+	protected Pager() {
 	}
-
-	private static final int DEFAULT_PAGE_SIZE = 20;
-	private static final int FIRST_PAGE_NUMBER = 1;
-
-	protected Pager() {}
 
 	private int pageNumber;
 	private int pageSize;
@@ -95,7 +79,8 @@ public abstract class Pager {
 	}
 
 	public void setPageNumber(int pageNumber) {
-		this.pageNumber = (pageNumber > FIRST_PAGE_NUMBER ? pageNumber : FIRST_PAGE_NUMBER);
+		this.pageNumber = (pageNumber > FIRST_PAGE_NUMBER ? pageNumber
+				: FIRST_PAGE_NUMBER);
 	}
 
 	public int getPageSize() {
