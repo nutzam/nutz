@@ -11,6 +11,12 @@ import org.nutz.dao.tools.TableSqlMaker;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 
+/**
+ * Oracle 的实现，自动增加序列和触发器
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ */
 public class OracleTableSqlMaker extends TableSqlMaker {
 
 	private static String CPK = "CONSTRAINT ${T}_PK PRIMARY KEY (${F}) ENABLE";
@@ -19,8 +25,9 @@ public class OracleTableSqlMaker extends TableSqlMaker {
 			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 1 CACHE 20 NOORDER  NOCYCLE";
 	private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
-	private static String CTRI = "create or replace trigger ${T}_${F}_ST" + " BEFORE INSERT ON ${T}" + " FOR EACH ROW"
-			+ " BEGIN " + " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;" + " END ${T}_${F}_ST;";
+	private static String CTRI = "create or replace trigger ${T}_${F}_ST"
+			+ " BEFORE INSERT ON ${T}" + " FOR EACH ROW" + " BEGIN "
+			+ " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;" + " END ${T}_${F}_ST;";
 
 	// private static String DTRI = "DROP trigger ${T}_${F}_seq_trigger";
 

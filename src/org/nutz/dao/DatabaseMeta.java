@@ -47,7 +47,7 @@ public class DatabaseMeta {
 	}
 
 	public Pager createPager(int pageNumber, int pageSize) {
-		return Pager.create(null, pageNumber, pageSize);
+		return Pager.create(pagerType, pageNumber, pageSize);
 	}
 
 	public Class<? extends Pager> getPagerType() {

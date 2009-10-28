@@ -20,24 +20,32 @@ public class AutoGenerateValueTest extends DaoCase {
 
 	@Test
 	public void test_create_seq_value() {
-		StabberSeq seq = new StabberSeq();
-		seq.setValue(10);
-		dao.insert(seq);
+		/*
+		 * MS-SqlServer don't support Subqueries, so, skip the test for
+		 * MS-SqlServer
+		 */
+		if (dao.meta().isSqlServer()) {
+			assertTrue(true);
+		} else {
+			StabberSeq seq = new StabberSeq();
+			seq.setValue(10);
+			dao.insert(seq);
 
-		Stabber s = new Stabber();
-		s.setName("A");
+			Stabber s = new Stabber();
+			s.setName("A");
 
-		dao.insert(s);
-		s = dao.fetch(s);
-		assertEquals(10, s.getCaseNumber());
+			dao.insert(s);
+			s = dao.fetch(s);
+			assertEquals(10, s.getCaseNumber());
 
-		seq.setValue(200);
-		dao.update(seq);
+			seq.setValue(200);
+			dao.update(seq);
 
-		s.setName("B");
-		dao.insert(s);
-		s = dao.fetch(s);
-		assertEquals(200, s.getCaseNumber());
+			s.setName("B");
+			dao.insert(s);
+			s = dao.fetch(s);
+			assertEquals(200, s.getCaseNumber());
+		}
 	}
 
 }

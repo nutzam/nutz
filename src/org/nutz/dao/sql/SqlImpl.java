@@ -59,9 +59,7 @@ public class SqlImpl implements Sql {
 			}
 			// UPDATE | INSERT | DELETE | TRUNCATE ...
 			else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
-				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString()
-				// ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE
-						);
+				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString());
 				adapter.process(stat, sql, entity);
 				stat.execute();
 				updateCount = stat.getUpdateCount();

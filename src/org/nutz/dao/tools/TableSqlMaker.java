@@ -8,6 +8,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.tools.impl.MysqlTableSqlMaker;
 import org.nutz.dao.tools.impl.OracleTableSqlMaker;
 import org.nutz.dao.tools.impl.PostgresqlTableSqlMaker;
+import org.nutz.dao.tools.impl.SqlServerTableSqlMaker;
 import org.nutz.lang.Strings;
 
 public abstract class TableSqlMaker {
@@ -19,15 +20,10 @@ public abstract class TableSqlMaker {
 			return new MysqlTableSqlMaker();
 		} else if (db.isPostgresql()) {
 			return new PostgresqlTableSqlMaker();
+		} else if (db.isSqlServer()) {
+			return new SqlServerTableSqlMaker();
 		}
-		return new TableSqlMaker() {
-
-			@Override
-			protected void appendFieldName(StringBuilder sb, DField df) {
-				sb.append(df.getName());
-			}
-
-		};
+		return new TableSqlMaker() {};
 	}
 
 	protected static void addDecorator(StringBuilder sb, boolean flag, String word) {
@@ -62,28 +58,41 @@ public abstract class TableSqlMaker {
 	}
 
 	protected void appendField(StringBuilder sb, DField df) {
-		appendFieldName(sb, df);
-		addDecorator(sb, df.isUnsign(), " UNSIGNED");
 		if (df.isAutoIncreament() && df.isPrimaryKey()) {
-			sb.append(" SERIAL PRIMARY KEY");
+			appendAutoIncreamentPK(sb, df);
 		} else {
-			sb.append(' ').append(getFieldType(df));
+			appendFieldName(sb, df);
+			appendFieldType(sb, df);
+			addDecorator(sb, df.isUnsign(), " UNSIGNED");
 			addDecorator(sb, df.isPrimaryKey(), " PRIMARY KEY");
-			addDecorator(sb, df.isUnique(), " UNIQUE");
+			if (!df.isPrimaryKey())
+				addDecorator(sb, df.isUnique(), " UNIQUE");
 			addDecorator(sb, df.isNotNull(), " NOT NULL");
 			if (!Strings.isBlank(df.getDefaultValue()))
 				sb.append(" DEFAULT ").append(df.getDefaultValue());
 		}
 	}
 
+	protected void appendFieldType(StringBuilder sb, DField df) {
+		sb.append(' ').append(getFieldType(df));
+	}
+
+	protected void appendAutoIncreamentPK(StringBuilder sb, DField df) {
+		appendFieldName(sb, df);
+		addDecorator(sb, df.isUnsign(), " UNSIGNED");
+		sb.append(" SERIAL PRIMARY KEY");
+	}
+
 	protected String getFieldType(DField df) {
 		return df.getType();
 	}
 
-	protected abstract void appendFieldName(StringBuilder sb, DField df);
+	protected void appendFieldName(StringBuilder sb, DField df) {
+		sb.append(df.getName());
+	}
 
 	public Sql makeDropSql(DTable dt) {
 		return Sqls.create(String.format("DROP TABLE IF EXISTS %s", dt.getName()));
 	}
-	
+
 }
