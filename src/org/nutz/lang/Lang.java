@@ -30,7 +30,7 @@ import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
 
-public class Lang {
+public abstract class Lang {
 
 	public static final String NULL = "";
 

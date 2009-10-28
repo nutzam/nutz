@@ -1,6 +1,6 @@
 package org.nutz.lang;
 
-public class Maths {
+public abstract class Maths {
 
 	public static int bit(String s) {
 		return Integer.valueOf(s, 2);

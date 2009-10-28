@@ -7,7 +7,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.regex.Matcher;
 
-public class Printer {
+public abstract class Printer {
 
 	public static void dump(Matcher m) {
 		if (m.find())

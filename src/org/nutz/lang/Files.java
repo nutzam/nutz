@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public class Files {
+public abstract class Files {
 
 	public static String read(String path) {
 		File f = Files.findFile(path);

@@ -16,14 +16,14 @@ import java.io.Writer;
 import java.nio.charset.Charset;
 
 /**
- * 提供了一组创建  Reader/Writer/InputStream/OutputStream 的便利函数 
+ * 提供了一组创建 Reader/Writer/InputStream/OutputStream 的便利函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Streams {
-	
+public abstract class Streams {
+
 	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
-	
+
 	public static boolean equals(InputStream sA, InputStream sB) throws IOException {
 		int dA;
 		while ((dA = sA.read()) != -1) {
@@ -79,19 +79,21 @@ public class Streams {
 	public static Reader fileInr(String path) {
 		return fileInr(path, DEFAULT_ENCODING);
 	}
-	
-	public static Reader fileInr(File file,String encoding) {
+
+	public static Reader fileInr(File file, String encoding) {
 		try {
-			if(encoding == null ) encoding = DEFAULT_ENCODING;
+			if (encoding == null)
+				encoding = DEFAULT_ENCODING;
 			return new InputStreamReader(fileIn(file), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
 
-	public static Reader fileInr(String path,String encoding) {
+	public static Reader fileInr(String path, String encoding) {
 		try {
-			if(encoding == null ) encoding = DEFAULT_ENCODING;
+			if (encoding == null)
+				encoding = DEFAULT_ENCODING;
 			return new InputStreamReader(fileIn(path), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
@@ -118,13 +120,14 @@ public class Streams {
 		return fileOutw(file, DEFAULT_ENCODING);
 	}
 
-	public static Writer fileOutw(String path,String encoding) {
-		return fileOutw(Files.findFile(path),encoding);
+	public static Writer fileOutw(String path, String encoding) {
+		return fileOutw(Files.findFile(path), encoding);
 	}
 
-	public static Writer fileOutw(File file,String encoding) {
+	public static Writer fileOutw(File file, String encoding) {
 		try {
-			if(encoding == null) encoding = DEFAULT_ENCODING;
+			if (encoding == null)
+				encoding = DEFAULT_ENCODING;
 			return new OutputStreamWriter(fileOut(file), encoding);
 		} catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);

@@ -14,7 +14,8 @@ public abstract class Transaction {
 	}
 
 	public void setLevel(int level) {
-		this.level = level;
+		if (this.level <= 0)
+			this.level = level;
 	}
 
 	public abstract int getId();

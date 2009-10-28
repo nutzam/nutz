@@ -7,7 +7,7 @@ import java.util.LinkedList;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Strings {
+public abstract class Strings {
 
 	public static String dup(CharSequence cs, int num) {
 		if (cs == null || num <= 0)

@@ -6,7 +6,7 @@ import java.io.FilenameFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
-public class Disks {
+public abstract class Disks {
 
 	public static int visitFile(File f, FileVisitor fv, FilenameFilter filter) {
 		int re = 0;

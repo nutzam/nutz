@@ -1,5 +1,7 @@
 package org.nutz.trans;
 
+import static org.junit.Assert.*;
+
 import java.sql.Connection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -12,9 +14,76 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.service.IdEntityService;
 
+/**
+ * @author amosleaf(amosleaf@gmail.com)
+ */
 public class TransLevelTest extends DaoCase {
 
 	private static IdEntityService<Company> comService;
+
+	static class QueryCompany_ReadCommitted extends DaoCase implements Callable<String> {
+
+		private int id;
+
+		QueryCompany_ReadCommitted(int id) {
+			this.id = id;
+		}
+
+		public String call() throws Exception {
+			ResultAtom<String> ra = null;
+			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, ra = new ResultAtom<String>() {
+				public void run() {
+					setResult(comService.dao().fetch(Company.class, id).getName());
+				}
+			});
+			return ra.getResult();
+		}
+	}
+
+	/**
+	 * Add flag " finished ", we should not wait the thread by fix time, This
+	 * flat help to make each test function more faster.
+	 * 
+	 * @author zozoh(zozohtnt@gmail.com)
+	 * 
+	 */
+	static class RepeatableRead extends DaoCase implements Runnable {
+
+		RepeatableRead(int id) {
+			this.id = id;
+		}
+
+		private int id;
+		boolean finished;
+
+		public void run() {
+			try {
+				Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
+					public void run() {
+						Company c = new Company();
+						c.setId(id);
+						c.setName("update");
+						comService.dao().update(c);
+					}
+				});
+			} catch (Exception e) {} finally {
+				finished = true;
+			}
+		}
+	}
+
+	static abstract class ResultAtom<T> implements Atom {
+
+		private T result;
+
+		public T getResult() {
+			return result;
+		}
+
+		public void setResult(T result) {
+			this.result = result;
+		}
+	}
 
 	@Override
 	protected void before() {
@@ -33,106 +102,93 @@ public class TransLevelTest extends DaoCase {
 		super.after();
 	}
 
+	private static Company duplicate(Company old) {
+		Company c = new Company();
+		c.setId(old.getId());
+		c.setName(old.getName());
+		return c;
+	}
+
 	@Test
 	public void testReadCommitted() {
 		final ExecutorService es = Executors.newCachedThreadPool();
+		final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
 		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
 			public void run() {
-				Company c = new Company();
-				c.setId(1);
-				c.setName("update");
-				comService.dao().update(c);
+				Company c1 = duplicate(c);
+				c1.setName("update");
+				comService.dao().update(c1);
 				try {
-					Assert.assertEquals("com1", es.submit(new QueryCompany_ReadCommitted()).get());
+					assertEquals(c.getName(), es.submit(new QueryCompany_ReadCommitted(c.getId()))
+							.get());
 				} catch (Exception e) {
 					Assert.assertTrue(false);
 				}
-				c.setName("com1");
-				comService.dao().update(c);
+				c1.setName(c.getName());
+				comService.dao().update(c1);
 			}
 		});
 		es.shutdown();
-		Assert.assertEquals("com1", comService.fetch(1).getName());
-	}
-
-	static class QueryCompany_ReadCommitted extends DaoCase implements Callable<String> {
-		public String call() throws Exception {
-			ResultAtom<String> ra = null;
-			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, ra = new ResultAtom<String>() {
-				public void run() {
-					setResult(comService.dao().fetch(Company.class, 1).getName());
-				}
-			});
-			String i = ra.getResult();
-			return i;
-		}
+		assertEquals(c.getName(), comService.fetch(c.getId()).getName());
 	}
 
 	@Test
 	public void testRepeatableRead() {
 		final ExecutorService es = Executors.newCachedThreadPool();
+		final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
 		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
 			public void run() {
-				Assert.assertEquals("com1", comService.fetch(1).getName());
-				es.submit(new RepeatableRead());
-				// wait the thread to finish the update
-				synchronized (Thread.currentThread()) {
-					try {
-						Thread.currentThread().wait(3 * 1000);
-					} catch (InterruptedException e) {}
-				}
-				Assert.assertEquals("update", comService.fetch(1).getName());
+				assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+				RepeatableRead task = new RepeatableRead(c.getId());
+				es.submit(task);
+				// spinning to wait the task thread finish its job
+				while (!task.finished) {}
+				// Then test the result
+				assertEquals("update", comService.fetch(c.getId()).getName());
 			}
 		});
 		es.shutdown();
-		// Company c = new Company();
-		// c.setId(1);
-		// c.setName("com1");
-		// comService.dao().update(c);
-	}
-
-	static class RepeatableRead extends DaoCase implements Runnable {
-		public void run() {
-			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-				public void run() {
-					Company c = new Company();
-					c.setId(1);
-					c.setName("update");
-					comService.dao().update(c);
-				}
-			});
-		}
 	}
 
 	@Test
 	public void testSerializable() {
-		final ExecutorService es = Executors.newCachedThreadPool();
+		final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
 		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom() {
 			public void run() {
-				Assert.assertEquals("com1", comService.fetch(1).getName());
-				es.submit(new RepeatableRead());
-				// wait the thread to finish the update
-				synchronized (Thread.currentThread()) {
-					try {
-						Thread.currentThread().wait(3 * 1000);
-					} catch (InterruptedException e) {}
-				}
-				Assert.assertEquals("com1", comService.fetch(1).getName());
+				Company c1 = duplicate(c);
+				c1.setName("xyz");
+				dao.update(c1);
 			}
 		});
+		Company c2 = dao.fetch(Company.class, c.getId());
+		assertEquals("xyz", c2.getName());
 	}
 
-	static abstract class ResultAtom<T> implements Atom {
-
-		private T result;
-
-		public T getResult() {
-			return result;
+	@Test
+	public void test_serializable_in_2_thread() {
+		// MySql 会导致两个线程互相锁。估计是 InnoDB 只是到表级锁的原因
+		// 所以，这个测试不测试 MySql
+		if (dao.meta().isMySql()) {
+			assertTrue(true);
 		}
-
-		public void setResult(T result) {
-			this.result = result;
+		// 在 Postgresql 下，工作良好
+		else {
+			final ExecutorService es = Executors.newCachedThreadPool();
+			final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
+			Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom() {
+				public void run() {
+					assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+					RepeatableRead task = new RepeatableRead(c.getId());
+					es.submit(task);
+					// spinning to wait the task thread finish its job
+					while (!task.finished) {}
+					// Then test the result, The data didn't change
+					assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+				}
+			});
+			// Output of the trans, fetch again, the data changed
+			Company c2 = dao.fetch(Company.class, c.getId());
+			assertEquals("update", c2.getName());
 		}
 	}
-
 }
