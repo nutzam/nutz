@@ -5,13 +5,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.JsonLoader;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 
-public class NutzUnitEnv {
+import static java.lang.String.*;
+
+public class Nutzs {
 
 	private static Properties pp = null;
 
@@ -50,7 +53,7 @@ public class NutzUnitEnv {
 	public static Ioc getIoc(String key) {
 		Ioc nut = nuts.get(key);
 		if (null == nut) {
-			synchronized (NutzUnitEnv.class) {
+			synchronized (Nutzs.class) {
 				nut = nuts.get(key);
 				try {
 					if (null == nut) {
@@ -72,4 +75,11 @@ public class NutzUnitEnv {
 		nuts = null;
 	}
 
+	public static void notSupport(String message) {
+	// junit.framework.Assert.fail(message);
+	}
+
+	public static void notSupport(DatabaseMeta meta) {
+		notSupport(format("[%S] don't support this test", meta.getProductName()));
+	}
 }

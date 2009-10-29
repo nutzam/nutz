@@ -10,6 +10,7 @@ import java.util.concurrent.Executors;
 import junit.framework.Assert;
 
 import org.junit.Test;
+import org.nutz.Nutzs;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.service.IdEntityService;
@@ -111,43 +112,53 @@ public class TransLevelTest extends DaoCase {
 
 	@Test
 	public void testReadCommitted() {
-		final ExecutorService es = Executors.newCachedThreadPool();
-		final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
-		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-			public void run() {
-				Company c1 = duplicate(c);
-				c1.setName("update");
-				comService.dao().update(c1);
-				try {
-					assertEquals(c.getName(), es.submit(new QueryCompany_ReadCommitted(c.getId()))
-							.get());
-				} catch (Exception e) {
-					Assert.assertTrue(false);
+		// SqlServer 在这个测试中，两个线程会相互等待 ...
+		if (dao.meta().isSqlServer()) {
+			Nutzs.notSupport(dao.meta());
+		} else {
+			final ExecutorService es = Executors.newCachedThreadPool();
+			final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
+			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
+				public void run() {
+					Company c1 = duplicate(c);
+					c1.setName("update");
+					comService.dao().update(c1);
+					try {
+						String theName = es.submit(new QueryCompany_ReadCommitted(c.getId())).get();
+						assertEquals(c.getName(), theName);
+					} catch (Exception e) {
+						Assert.assertTrue(false);
+					}
+					c1.setName(c.getName());
+					comService.dao().update(c1);
 				}
-				c1.setName(c.getName());
-				comService.dao().update(c1);
-			}
-		});
-		es.shutdown();
-		assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+			});
+			es.shutdown();
+			assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+		}
 	}
 
 	@Test
 	public void testRepeatableRead() {
-		final ExecutorService es = Executors.newCachedThreadPool();
-		final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
-		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
-			public void run() {
-				assertEquals(c.getName(), comService.fetch(c.getId()).getName());
-				RepeatableRead task = new RepeatableRead(c.getId());
-				es.submit(task);
-				// spinning to wait the task thread finish its job
-				while (!task.finished) {}
-				// Then test the result
-				assertEquals("update", comService.fetch(c.getId()).getName());
-			}
-		});
-		es.shutdown();
+		// SqlServer 在这个测试中，两个线程会相互等待 ...
+		if (dao.meta().isSqlServer()) {
+			Nutzs.notSupport(dao.meta());
+		} else {
+			final ExecutorService es = Executors.newCachedThreadPool();
+			final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
+			Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
+				public void run() {
+					assertEquals(c.getName(), comService.fetch(c.getId()).getName());
+					RepeatableRead task = new RepeatableRead(c.getId());
+					es.submit(task);
+					// spinning to wait the task thread finish its job
+					while (!task.finished) {}
+					// Then test the result
+					assertEquals("update", comService.fetch(c.getId()).getName());
+				}
+			});
+			es.shutdown();
+		}
 	}
 
 	@Test
@@ -169,7 +180,11 @@ public class TransLevelTest extends DaoCase {
 		// MySql 会导致两个线程互相锁。估计是 InnoDB 只是到表级锁的原因
 		// 所以，这个测试不测试 MySql
 		if (dao.meta().isMySql()) {
-			assertTrue(true);
+			Nutzs.notSupport(dao.meta());
+		}
+		// SqlServer 在这个测试中，两个线程会相互等待 ...
+		else if (dao.meta().isSqlServer()) {
+			Nutzs.notSupport(dao.meta());
 		}
 		// 在 Postgresql 下，工作良好
 		else {

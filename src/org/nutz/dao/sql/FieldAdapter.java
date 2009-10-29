@@ -96,6 +96,7 @@ public abstract class FieldAdapter {
 	public abstract void set(PreparedStatement stat, Object obj, int[] is) throws SQLException;
 
 	static class AsNull extends FieldAdapter {
+
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			for (int i : is)
 				stat.setNull(i, Types.NULL);
@@ -105,179 +106,256 @@ public abstract class FieldAdapter {
 
 	static class AsEnumInt extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			int v;
-			if (obj instanceof Enum<?>)
-				v = ((Enum<?>) obj).ordinal();
-			else
-				v = Castors.me().castTo(obj, int.class);
-			for (int i : is)
-				stat.setInt(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.INTEGER);
+			} else {
+				int v;
+				if (obj instanceof Enum<?>)
+					v = ((Enum<?>) obj).ordinal();
+				else
+					v = Castors.me().castTo(obj, int.class);
+				for (int i : is)
+					stat.setInt(i, v);
+			}
 		}
 	}
 
 	static class AsEnumChar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			String v = obj.toString();
-			for (int i : is)
-				stat.setString(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setString(i, null);
+			} else {
+				String v = obj.toString();
+				for (int i : is)
+					stat.setString(i, v);
+			}
 		}
 	}
 
 	static class AsObject extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			String v = Castors.me().castToString(obj);
-			for (int i : is)
-				stat.setString(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setString(i, null);
+			} else {
+				String v = Castors.me().castToString(obj);
+				for (int i : is)
+					stat.setString(i, v);
+			}
 		}
 
 	}
 
 	static class AsString extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			for (int i : is)
-				stat.setString(i, obj.toString());
+			if (null == obj) {
+				for (int i : is)
+					stat.setString(i, null);
+			} else {
+				for (int i : is)
+					stat.setString(i, null == obj ? null : obj.toString());
+			}
 		}
 	}
 
 	static class AsChar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			String s;
-			if (obj instanceof Character) {
-				int c = ((Character) obj).charValue();
-				if (c >= 0 && c <= 32)
-					s = " ";
-				else
-					s = String.valueOf((char) c);
-			} else
-				s = obj.toString();
-			for (int i : is)
-				stat.setString(i, s);
+			if (null == obj) {
+				for (int i : is)
+					stat.setString(i, null);
+			} else {
+				String s;
+				if (obj == null)
+					s = null;
+				else if (obj instanceof Character) {
+					int c = ((Character) obj).charValue();
+					if (c >= 0 && c <= 32)
+						s = " ";
+					else
+						s = String.valueOf((char) c);
+				} else
+					s = obj.toString();
+				for (int i : is)
+					stat.setString(i, s);
+			}
 		}
 	}
 
 	static class AsInteger extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			int v;
-			if (obj instanceof Number)
-				v = ((Number) obj).intValue();
-			else
-				v = Castors.me().castTo(obj.toString(), int.class);
-			for (int i : is)
-				stat.setInt(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.INTEGER);
+			} else {
+				int v;
+				if (obj instanceof Number)
+					v = ((Number) obj).intValue();
+				else
+					v = Castors.me().castTo(obj.toString(), int.class);
+				for (int i : is)
+					stat.setInt(i, v);
+			}
 		}
 	}
 
 	static class AsBigDecimal extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			BigDecimal v;
-			if (obj instanceof BigDecimal)
-				v = (BigDecimal) obj;
-			else if (obj instanceof Number)
-				v = BigDecimal.valueOf(((Number) obj).longValue());
-			else
-				v = new BigDecimal(obj.toString());
-			for (int i : is)
-				stat.setBigDecimal(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.BIGINT);
+			} else {
+				BigDecimal v;
+				if (obj instanceof BigDecimal)
+					v = (BigDecimal) obj;
+				else if (obj instanceof Number)
+					v = BigDecimal.valueOf(((Number) obj).longValue());
+				else
+					v = new BigDecimal(obj.toString());
+				for (int i : is)
+					stat.setBigDecimal(i, v);
+			}
 		}
 	}
 
 	static class AsBoolean extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			boolean v;
-			if (obj instanceof Boolean)
-				v = (Boolean) obj;
-			else if (obj instanceof Number)
-				v = ((Number) obj).intValue() > 0;
-			else if (obj instanceof Character)
-				v = Character.toUpperCase((Character) obj) == 'T';
-			else
-				v = Boolean.valueOf(obj.toString());
-			for (int i : is)
-				stat.setBoolean(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.BOOLEAN);
+			} else {
+				boolean v;
+				if (obj instanceof Boolean)
+					v = (Boolean) obj;
+				else if (obj instanceof Number)
+					v = ((Number) obj).intValue() > 0;
+				else if (obj instanceof Character)
+					v = Character.toUpperCase((Character) obj) == 'T';
+				else
+					v = Boolean.valueOf(obj.toString());
+				for (int i : is)
+					stat.setBoolean(i, v);
+			}
 		}
 	}
 
 	static class AsLong extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			long v;
-			if (obj instanceof Number)
-				v = ((Number) obj).longValue();
-			else
-				v = Castors.me().castTo(obj.toString(), long.class);
-			for (int i : is)
-				stat.setLong(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.INTEGER);
+			} else {
+				long v;
+				if (obj instanceof Number)
+					v = ((Number) obj).longValue();
+				else
+					v = Castors.me().castTo(obj.toString(), long.class);
+				for (int i : is)
+					stat.setLong(i, v);
+			}
 		}
 	}
 
 	static class AsByte extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			byte v;
-			if (obj instanceof Number)
-				v = ((Number) obj).byteValue();
-			else
-				v = Castors.me().castTo(obj.toString(), byte.class);
-			for (int i : is)
-				stat.setByte(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.TINYINT);
+			} else {
+				byte v;
+				if (obj instanceof Number)
+					v = ((Number) obj).byteValue();
+				else
+					v = Castors.me().castTo(obj.toString(), byte.class);
+				for (int i : is)
+					stat.setByte(i, v);
+			}
 		}
 	}
 
 	static class AsShort extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			short v;
-			if (obj instanceof Number)
-				v = ((Number) obj).shortValue();
-			else
-				v = Castors.me().castTo(obj.toString(), short.class);
-			for (int i : is)
-				stat.setShort(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.SMALLINT);
+			} else {
+				short v;
+				if (obj instanceof Number)
+					v = ((Number) obj).shortValue();
+				else
+					v = Castors.me().castTo(obj.toString(), short.class);
+				for (int i : is)
+					stat.setShort(i, v);
+			}
 		}
 	}
 
 	static class AsFloat extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			float v;
-			if (obj instanceof Number)
-				v = ((Number) obj).floatValue();
-			else
-				v = Castors.me().castTo(obj.toString(), float.class);
-			for (int i : is)
-				stat.setFloat(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.FLOAT);
+			} else {
+				float v;
+				if (obj instanceof Number)
+					v = ((Number) obj).floatValue();
+				else
+					v = Castors.me().castTo(obj.toString(), float.class);
+				for (int i : is)
+					stat.setFloat(i, v);
+			}
 		}
 	}
 
 	static class AsDouble extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			double v;
-			if (obj instanceof Number)
-				v = ((Number) obj).doubleValue();
-			else
-				v = Castors.me().castTo(obj.toString(), double.class);
-			for (int i : is)
-				stat.setDouble(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.DOUBLE);
+			} else {
+				double v;
+				if (obj instanceof Number)
+					v = ((Number) obj).doubleValue();
+				else
+					v = Castors.me().castTo(obj.toString(), double.class);
+				for (int i : is)
+					stat.setDouble(i, v);
+			}
 		}
 	}
 
 	static class AsCalendar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			Timestamp v;
-			if (obj instanceof Calendar)
-				v = new Timestamp(((Calendar) obj).getTimeInMillis());
-			else
-				v = Castors.me().castTo(obj, Timestamp.class);
-			for (int i : is)
-				stat.setTimestamp(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.TIMESTAMP);
+			} else {
+				Timestamp v;
+				if (obj instanceof Calendar)
+					v = new Timestamp(((Calendar) obj).getTimeInMillis());
+				else
+					v = Castors.me().castTo(obj, Timestamp.class);
+				for (int i : is)
+					stat.setTimestamp(i, v);
+			}
 		}
 	}
 
 	static class AsTimestamp extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			Timestamp v;
-			if (obj instanceof Timestamp)
-				v = (Timestamp) obj;
-			else
-				v = Castors.me().castTo(obj, Timestamp.class);
-			for (int i : is)
-				stat.setTimestamp(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.TIMESTAMP);
+			} else {
+				Timestamp v;
+				if (obj instanceof Timestamp)
+					v = (Timestamp) obj;
+				else
+					v = Castors.me().castTo(obj, Timestamp.class);
+				for (int i : is)
+					stat.setTimestamp(i, v);
+			}
 		}
 	}
 
@@ -295,25 +373,35 @@ public abstract class FieldAdapter {
 
 	static class AsSqlDate extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
-			java.sql.Date v;
-			if (obj instanceof java.sql.Date)
-				v = (java.sql.Date) obj;
-			else
-				v = Castors.me().castTo(obj, java.sql.Date.class);
-			for (int i : is)
-				stat.setDate(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.DATE);
+			} else {
+				java.sql.Date v;
+				if (obj instanceof java.sql.Date)
+					v = (java.sql.Date) obj;
+				else
+					v = Castors.me().castTo(obj, java.sql.Date.class);
+				for (int i : is)
+					stat.setDate(i, v);
+			}
 		}
 	}
 
 	static class AsSqlTime extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			java.sql.Time v;
-			if (obj instanceof java.sql.Time)
-				v = (java.sql.Time) obj;
-			else
-				v = Castors.me().castTo(obj, java.sql.Time.class);
-			for (int i : is)
-				stat.setTime(i, v);
+			if (null == obj) {
+				for (int i : is)
+					stat.setNull(i, Types.TIME);
+			} else {
+				if (obj instanceof java.sql.Time)
+					v = (java.sql.Time) obj;
+				else
+					v = Castors.me().castTo(obj, java.sql.Time.class);
+				for (int i : is)
+					stat.setTime(i, v);
+			}
 		}
 	}
 

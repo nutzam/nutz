@@ -123,7 +123,7 @@ public class SupportedFieldType extends DaoCase {
 	@Test
 	public void insert_timestamp_field() {
 		Timestamp tm = new Timestamp(System.currentTimeMillis());
-		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqldt", tm));
+		dao.insert(EntityTypes.class, Chain.make("name", "ABC").add("sqlDT", tm));
 		EntityTypes et = dao.fetch(EntityTypes.class);
 		if (dao.meta().isPostgresql())
 			assertEquals(tm.getTime(), et.sqlDT.getTime());

@@ -40,7 +40,8 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkIdField(Entity<T> en) {
 		EntityField idField = en.getIdField();
 		if (idField == null) {
-			throw Lang.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
+			throw Lang
+					.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
 		}
 		return idField;
 	}
@@ -48,8 +49,8 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkNameField(Entity<T> en) {
 		EntityField nameField = en.getNameField();
 		if (nameField == null) {
-			throw Lang
-					.makeThrow("Entity<T> [%s] need @Name field", en.getMirror().getType().getName());
+			throw Lang.makeThrow("Entity<T> [%s] need @Name field", en.getMirror().getType()
+					.getName());
 		}
 		return nameField;
 	}
@@ -515,7 +516,11 @@ public class NutDao implements Dao {
 
 	public void insert(Class<?> classOfT, Chain chain) {
 		Entity<?> en = getEntity(classOfT);
-		insert(en.getTableName(), chain);
+		if (null != chain) {
+			Sql sql = maker.insertChain(en.getTableName(), chain);
+			sql.setEntity(en);
+			execute(sql);
+		}
 	}
 
 	public <T> T insertWith(final T obj, String regex) {
@@ -577,7 +582,10 @@ public class NutDao implements Dao {
 
 	public int update(Class<?> classOfT, Chain chain, Condition condition) {
 		Entity<?> en = getEntity(classOfT);
-		return update(en.getTableName(), chain, condition);
+		Sql sql = maker.updateBatch(en.getTableName(), chain).setCondition(condition);
+		sql.setEntity(en);
+		execute(sql);
+		return sql.getUpdateCount();
 	}
 
 	public int update(String tableName, Chain chain, Condition condition) {

@@ -46,8 +46,6 @@ public class DefaultStatementAdapter implements StatementAdapter {
 						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
 								.getType().getName(), entity.getTableName(), ef.getField()
 								.getName(), ef.getColumnName());
-				FieldAdapter.AS_NULL.set(stat, null, is);
-				continue;
 			}
 			ef.getAdapter().set(stat, obj, is);
 		}

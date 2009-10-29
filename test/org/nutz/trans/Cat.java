@@ -50,9 +50,14 @@ public class Cat {
 	}
 
 	public static Cat create(String name, Master m) {
+		Cat c = create(name);
+		c.setMaster(m);
+		return c;
+	}
+	
+	public static Cat create(String name) {
 		Cat c = new Cat();
 		c.setName(name);
-		c.setMaster(m);
 		return c;
 	}
 

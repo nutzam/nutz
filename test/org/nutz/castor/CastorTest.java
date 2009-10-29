@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import org.nutz.Nutz;
+import org.nutz.NutzEnum;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.Lang;
@@ -231,8 +231,8 @@ public class CastorTest {
 
 	@Test
 	public void testEnum() throws Exception {
-		assertEquals("Dao", Castors.me().castToString(Nutz.Dao));
-		assertEquals(Nutz.Lang, Castors.me().castTo("Lang", Nutz.class));
+		assertEquals("Dao", Castors.me().castToString(NutzEnum.Dao));
+		assertEquals(NutzEnum.Lang, Castors.me().castTo("Lang", NutzEnum.class));
 	}
 
 	static class FFF {

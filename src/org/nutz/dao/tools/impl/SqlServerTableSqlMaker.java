@@ -46,6 +46,10 @@ public class SqlServerTableSqlMaker extends TableSqlMaker {
 		else if ("time".equalsIgnoreCase(df.getType())) {
 			sb.append("DATETIME");
 		}
+		// Timestamp
+		else if ("timestamp".equalsIgnoreCase(df.getType())) {
+			sb.append("DATETIME");
+		}
 		// Others
 		else {
 			sb.append(df.getType());

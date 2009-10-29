@@ -1,5 +1,5 @@
 package org.nutz;
 
-public enum Nutz {
+public enum NutzEnum {
 	Dao, castors, Json, Ioc, Lang
 }

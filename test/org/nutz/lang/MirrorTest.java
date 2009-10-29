@@ -8,7 +8,7 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import org.nutz.Nutz;
+import org.nutz.NutzEnum;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.test.meta.Base;
@@ -121,8 +121,8 @@ public class MirrorTest {
 
 	@Test
 	public void testExtractEnum() {
-		assertEquals(Nutz.class, Mirror.me(Nutz.Dao.getClass()).extractTypes()[0]);
-		assertEquals(Enum.class, Mirror.me(Nutz.Dao.getClass()).extractTypes()[1]);
+		assertEquals(NutzEnum.class, Mirror.me(NutzEnum.Dao.getClass()).extractTypes()[0]);
+		assertEquals(Enum.class, Mirror.me(NutzEnum.Dao.getClass()).extractTypes()[1]);
 	}
 
 	@Test
