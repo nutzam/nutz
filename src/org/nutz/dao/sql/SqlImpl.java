@@ -150,7 +150,7 @@ public class SqlImpl implements Sql {
 		return entity;
 	}
 
-	public SqlLiteral getSqlLiteral() {
+	public SqlLiteral getLiteral() {
 		return sql;
 	}
 
