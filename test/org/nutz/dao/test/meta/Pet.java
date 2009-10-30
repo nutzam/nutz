@@ -5,6 +5,12 @@ import org.nutz.dao.entity.annotation.*;
 @Table("t_pet")
 public class Pet {
 
+	public static Pet create(String name) {
+		Pet pet = new Pet();
+		pet.setName(name);
+		return pet;
+	}
+
 	@Column
 	@Id
 	private int id;
