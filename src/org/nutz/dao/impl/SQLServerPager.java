@@ -12,12 +12,26 @@ public class SQLServerPager extends SpecialPager {
 
 	@Override
 	public String getResultSetName(Entity<?> entity) {
-		/*
+		/**
+		 * SQL Server 2000
+		 * 
+		 * <pre>
 		 * SELECT TOP @pageSize FROM @tableName WHERE
-		 * @fieldName NOT IN (SELECT TOP
-		 * @pageSize(@page-1) @fieldName FROM @tableName
-		 * ORDER BY @fieldName ASC ) ORDER BY @fieldName
-		 * ASC
+		 * &#064;fieldName NOT IN (SELECT TOP
+		 * &#064;pageSize(@page-1) @fieldName FROM @tableName
+		 * ORDER BY @fieldName ASC ) ORDER BY @fieldName ASC
+		 * </pre>
+		 * 
+		 * SQL Server 2005
+		 * 
+		 * <pre>
+		 * with tmp as (SELECT   id, name, alias, age, ROW_NUMBER()  OVER (order by id) AS rowid
+		 * FROM      t_pet
+		 * WHERE   (name LIKE 'pet%')
+		 * )
+		 * select * from tmp
+		 * where rowid between 1 and 3
+		 * </pre>
 		 */
 		EntityField field = entity.getIdentifiedField();
 		String viewName = entity.getViewName();
