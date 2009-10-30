@@ -12,5 +12,5 @@ import org.junit.runners.Suite;
  * 
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { AllWithDB.class, AllWithoutDB.class })
+@Suite.SuiteClasses({AllWithDB.class, AllWithoutDB.class})
 public class TestAll {}
