@@ -1,11 +1,16 @@
 package org.nutz.ioc.aop;
 
 import org.nutz.aop.ClassAgent;
-import org.nutz.aop.javassist.JavassistClassAgent;
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.impl.Utils;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
+/**
+ * @author zozohtnt
+ * @author Wendal(wendal1985@gmail.com)
+ *
+ */
 public class MirrorFactory {
 
 	private AopObject[] objs;
@@ -20,7 +25,7 @@ public class MirrorFactory {
 					objs = new AopObject[hookings.length];
 					for (int i = 0; i < hookings.length; i++) {
 						ObjectHooking oh = hookings[i];
-						ClassAgent ca = new JavassistClassAgent();
+						ClassAgent ca = Utils.newDefaultClassAgent();
 						for (ObjectMethodHooking omh : oh.getMethodHookings()) {
 							ca.addListener(omh.getMatcher(), omh.getListener());
 						}

@@ -3,12 +3,18 @@ package org.nutz.ioc.impl;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nutz.aop.ClassAgent;
 import org.nutz.ioc.meta.Fld;
 import org.nutz.ioc.meta.Lifecycle;
 import org.nutz.ioc.meta.Obj;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
+/**
+ * @author zozohtnt
+ * @author Wendal(wendal1985@gmail.com)
+ *
+ */
 public class Utils {
 
 	@SuppressWarnings("unchecked")
@@ -49,5 +55,16 @@ public class Utils {
 		if (Strings.isBlank(me.getFetch()))
 			me.setFetch(parent.getFetch());
 		return me;
+	}
+	
+	public static final String DEFAULT_CLASSAGENT = "org.nutz.aop.javassist.JavassistClassAgent";
+	
+	public static final ClassAgent newDefaultClassAgent(){
+		try {
+			return (ClassAgent) Class.forName(DEFAULT_CLASSAGENT).newInstance();
+		} catch (Throwable e) {
+			Lang.wrapThrow(e);
+		}
+		return null;
 	}
 }
