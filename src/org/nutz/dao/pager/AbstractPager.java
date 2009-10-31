@@ -1,5 +1,7 @@
 package org.nutz.dao.pager;
 
+import java.sql.ResultSet;
+
 import org.nutz.dao.pager.Pager;
 
 public abstract class AbstractPager implements Pager {
@@ -52,6 +54,10 @@ public abstract class AbstractPager implements Pager {
 
 	public int getOffset() {
 		return pageSize * (pageNumber - 1);
+	}
+
+	public int getResultSetType() {
+		return ResultSet.TYPE_FORWARD_ONLY;
 	}
 
 }

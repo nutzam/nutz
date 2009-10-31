@@ -12,9 +12,6 @@ import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.Map;
 
-import javax.servlet.ServletRequest;
-
-import org.nutz.dao.Pager;
 import org.nutz.lang.Lang;
 
 public class Http {
@@ -125,21 +122,4 @@ public class Http {
 		return URLEncoder.encode(s.toString(), "UTF-8");
 	}
 
-	public static <T extends Pager> Pager pager(ServletRequest request,
-			Class<T> type) {
-		try {
-			int pn = Integer.parseInt(request.getParameter("pn"));
-			if (pn > 0) {
-				int size;
-				try {
-					size = Integer.parseInt(request.getParameter("pagesize"));
-				} catch (Exception e) {
-					size = Pager.DEFAULT_PAGE_SIZE;
-				}
-				return Pager.create(type, pn, size);
-			}
-		} catch (Exception e) {
-		}
-		return null;
-	}
 }

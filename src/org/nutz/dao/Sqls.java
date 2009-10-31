@@ -1,7 +1,9 @@
 package org.nutz.dao;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
+import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.DefaultStatementAdapter;
 import org.nutz.dao.sql.FetchEntityCallback;
@@ -20,14 +22,8 @@ import org.nutz.lang.Streams;
 
 public class Sqls {
 
-	private static DefaultStatementAdapter ADAPTER = new DefaultStatementAdapter();
-
 	public static Sql create(String sql) {
-		return create(new SqlLiteral().valueOf(sql));
-	}
-
-	public static Sql create(SqlLiteral sql) {
-		return new SqlImpl(sql, ADAPTER);
+		return new SqlImpl(new SqlLiteral().valueOf(sql), DefaultStatementAdapter.ME);
 	}
 
 	public static Sql fetchEntity(String sql) {
@@ -77,4 +73,18 @@ public class Sqls {
 		Sqls.executeDefinition(dao, sqls);
 	}
 
+	private static final Pattern CND = Pattern.compile("^([ \t]*)(WHERE|ORDER BY)(.+)$",
+			Pattern.CASE_INSENSITIVE);
+
+	public static String getConditionString(Entity<?> en, Condition condition) {
+		if (null != condition) {
+			String cnd = condition.toSql(en);
+			if (cnd != null) {
+				if (!CND.matcher(cnd).find())
+					return " WHERE " + cnd;
+				return cnd;
+			}
+		}
+		return null;
+	}
 }

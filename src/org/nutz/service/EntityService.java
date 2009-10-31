@@ -7,7 +7,7 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.lang.Mirror;
-import org.nutz.dao.Pager;
+import org.nutz.dao.pager.Pager;
 
 public abstract class EntityService<T> extends Service {
 

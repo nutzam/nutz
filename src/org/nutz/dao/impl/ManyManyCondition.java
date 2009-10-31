@@ -18,7 +18,7 @@ class ManyManyCondition implements Condition {
 		this.obj = obj;
 	}
 
-	public String toString(Entity<?> me) {
+	public String toSql(Entity<?> me) {
 		return String.format("%s IN (SELECT %s FROM %s WHERE %s=%s)", dao.getEntity(
 				link.getTargetClass()).getField(link.getTargetField().getName()).getColumnName(),
 				link.getTo(), link.getRelation(), link.getFrom(), evalValue(me));

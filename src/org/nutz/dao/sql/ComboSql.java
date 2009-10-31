@@ -127,12 +127,6 @@ public class ComboSql implements Sql {
 		return sqls.get(0).getEntity();
 	}
 
-	public Sql setResult(Object result) {
-		for (Sql sql : sqls)
-			sql.setResult(result);
-		return this;
-	}
-
 	public int getInt() {
 		throw Lang.makeThrow("Not implement yet!");
 	}

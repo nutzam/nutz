@@ -10,6 +10,8 @@ import org.nutz.lang.Mirror;
 
 public class DefaultStatementAdapter implements StatementAdapter {
 
+	public static DefaultStatementAdapter ME = new DefaultStatementAdapter();
+
 	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
 			throws SQLException {
 		if (null == entity)
@@ -47,7 +49,7 @@ public class DefaultStatementAdapter implements StatementAdapter {
 								.getType().getName(), entity.getTableName(), ef.getField()
 								.getName(), ef.getColumnName());
 			}
-			ef.getAdapter().set(stat, obj, is);
+			ef.getFieldAdapter().set(stat, obj, is);
 		}
 
 	}

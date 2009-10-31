@@ -1,15 +1,25 @@
 package org.nutz.dao.pager;
 
+import org.nutz.dao.entity.Entity;
+
 public class OraclePager extends AbstractPager {
 
-	public String format(String sql) {
-		int firstRn = this.getOffset();
-		int lastRn = firstRn + this.getPageSize();
-		StringBuilder sb = new StringBuilder("SELECT * FROM (SELECT T.*, ROWNUM RN FROM (");
-		sb.append(sql);
-		sb.append(") T WHERE ROWNUM <=").append(lastRn);
-		sb.append(") WHERE RN >").append(firstRn);
-		return sb.toString();
+	private static String PTN =
+	// <min>
+	"SELECT * FROM ("
+	// <..max>
+			+ "SELECT T.*, ROWNUM RN FROM ("
+			// <...query>
+			+ "SELECT %s FROM %s %s"
+			// </...query>
+			+ ") T WHERE ROWNUM <= %d)"
+			// </..max>
+			+ " WHERE RN > %d"; // </min>
+
+	public String toSql(Entity<?> entity, String table, String fields, String cnd) {
+		int from = this.getOffset();
+		int to = from + this.getPageSize();
+		return String.format(PTN, fields, table, cnd, to, from);
 	}
 
 }

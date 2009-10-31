@@ -25,7 +25,8 @@ public class EntityField {
 	private Method setter;
 	private IntQuery serialQuery;
 	private IntQuery nextIntQuery;
-	private FieldAdapter adapter;
+	private FieldAdapter fieldAdapter;
+	private ValueAdapter valueAdapter;
 
 	private Field field;
 	private Entity<?> entity;
@@ -33,6 +34,7 @@ public class EntityField {
 	public EntityField(Entity<?> entity, Field field) {
 		this.entity = entity;
 		this.field = field;
+		// Evaluate the getter and setter
 		try {
 			getter = entity.mirror.getGetter(field);
 			getter.setAccessible(true);
@@ -79,12 +81,16 @@ public class EntityField {
 		this.nextIntQuery = nextIntQuery;
 	}
 
-	public void setAdapter(FieldAdapter adapter) {
-		this.adapter = adapter;
+	public void setFieldAdapter(FieldAdapter adapter) {
+		this.fieldAdapter = adapter;
 	}
 
 	public void setEntity(Entity<?> entity) {
 		this.entity = entity;
+	}
+
+	public void setValueAdapter(ValueAdapter valueAdapter) {
+		this.valueAdapter = valueAdapter;
 	}
 
 	public Field getField() {
@@ -143,11 +149,20 @@ public class EntityField {
 		return CharSequence.class.isAssignableFrom(field.getType());
 	}
 
-	public void fillFieldValueFromResultSet(Object obj, ResultSet rs) {
+	public void fillValue(Object obj, ResultSet rs) {
+		Object v;
 		try {
-			Object v = rs.getObject(columnName);
-			if (null == v)
-				return;
+			v = valueAdapter.get(rs, columnName);
+		}
+		/*
+		 * Oracle, it object field is null, it will rise NullPointerException
+		 */
+		catch (Exception e1) {
+			return;
+		}
+		if (null == v)
+			return;
+		try {
 			this.setValue(obj, v);
 		} catch (Exception e) {
 			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass()
@@ -182,8 +197,8 @@ public class EntityField {
 		}
 	}
 
-	public FieldAdapter getAdapter() {
-		return adapter;
+	public FieldAdapter getFieldAdapter() {
+		return fieldAdapter;
 	}
 
 	public Sql getSerialQuerySql() {

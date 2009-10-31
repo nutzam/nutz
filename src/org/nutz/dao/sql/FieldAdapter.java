@@ -11,6 +11,11 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.entity.FieldValueType;
 import org.nutz.lang.Mirror;
 
+/**
+ * 将值某一字段的值设置到 PreparedStatement 中
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class FieldAdapter {
 
 	public static FieldAdapter AS_NULL = new AsNull();
@@ -121,7 +126,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsEnumChar extends FieldAdapter {
+	private static class AsEnumChar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -134,7 +139,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsObject extends FieldAdapter {
+	private static class AsObject extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -148,7 +153,7 @@ public abstract class FieldAdapter {
 
 	}
 
-	static class AsString extends FieldAdapter {
+	private static class AsString extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -160,7 +165,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsChar extends FieldAdapter {
+	private static class AsChar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -183,7 +188,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsInteger extends FieldAdapter {
+	private static class AsInteger extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -200,7 +205,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsBigDecimal extends FieldAdapter {
+	private static class AsBigDecimal extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -219,11 +224,15 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsBoolean extends FieldAdapter {
+	private static class AsBoolean extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
+				/*
+				 * 对 Oracle，Types.BOOLEAN 对于 setNull 是不工作的
+				 * 其他的数据库都没有这个问题，所以，只好把类型设成 INTEGER了
+				 */
 				for (int i : is)
-					stat.setNull(i, Types.BOOLEAN);
+					stat.setNull(i, Types.INTEGER);
 			} else {
 				boolean v;
 				if (obj instanceof Boolean)
@@ -240,7 +249,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsLong extends FieldAdapter {
+	private static class AsLong extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -257,7 +266,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsByte extends FieldAdapter {
+	private static class AsByte extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -274,7 +283,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsShort extends FieldAdapter {
+	private static class AsShort extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -291,7 +300,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsFloat extends FieldAdapter {
+	private static class AsFloat extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -308,7 +317,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsDouble extends FieldAdapter {
+	private static class AsDouble extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -325,7 +334,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsCalendar extends FieldAdapter {
+	private static class AsCalendar extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -342,7 +351,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsTimestamp extends FieldAdapter {
+	private static class AsTimestamp extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -359,7 +368,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsDate extends FieldAdapter {
+	private static class AsDate extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			Timestamp v;
 			if (obj instanceof java.util.Date)
@@ -371,7 +380,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsSqlDate extends FieldAdapter {
+	private static class AsSqlDate extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			if (null == obj) {
 				for (int i : is)
@@ -388,7 +397,7 @@ public abstract class FieldAdapter {
 		}
 	}
 
-	static class AsSqlTime extends FieldAdapter {
+	private static class AsSqlTime extends FieldAdapter {
 		public void set(PreparedStatement stat, Object obj, int[] is) throws SQLException {
 			java.sql.Time v;
 			if (null == obj) {

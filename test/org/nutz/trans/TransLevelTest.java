@@ -182,6 +182,10 @@ public class TransLevelTest extends DaoCase {
 		if (dao.meta().isMySql()) {
 			Nutzs.notSupport(dao.meta());
 		}
+		// Oracle, 会导致 java.sql.SQLException: ORA-08177: 无法连续访问此事务处理
+		else if (dao.meta().isOracle()) {
+			Nutzs.notSupport(dao.meta());
+		}
 		// SqlServer 在这个测试中，两个线程会相互等待 ...
 		else if (dao.meta().isSqlServer()) {
 			Nutzs.notSupport(dao.meta());

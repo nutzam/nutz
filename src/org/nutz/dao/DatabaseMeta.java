@@ -9,26 +9,19 @@ public class DatabaseMeta {
 	public static final String MYSQL = "mysql";
 	public static final String UNKNOWN = "unknown";
 
-	public DatabaseMeta() {
-		productName = UNKNOWN;
-		pagerType = Pager.class;
+	private static enum TYPE {
+		DB2, PSQL, ORACLE, SQLSERVER, MYSQL, UNKNOWN
 	}
 
-	private String url;
+	public DatabaseMeta() {
+		type = TYPE.UNKNOWN;
+	}
 
-	private String userName;
+	private TYPE type;
 
-	private Class<? extends Pager> pagerType;
+	private String version;
 
 	private String productName;
-
-	public String getUrl() {
-		return url;
-	}
-
-	public void setUrl(String url) {
-		this.url = url;
-	}
 
 	public String getProductName() {
 		return productName;
@@ -36,50 +29,84 @@ public class DatabaseMeta {
 
 	public void setProductName(String productName) {
 		this.productName = productName;
+		String proName = productName.toLowerCase();
+		if (proName.startsWith("postgresql")) {
+			this.type = TYPE.PSQL;
+		} else if (proName.startsWith("mysql")) {
+			this.type = TYPE.MYSQL;
+		} else if (proName.startsWith("oracle")) {
+			this.type = TYPE.ORACLE;
+		} else if (proName.startsWith("db2")) {
+			this.type = TYPE.DB2;
+		} else if (proName.startsWith("microsoft sql")) {
+			this.type = TYPE.SQLSERVER;
+		} else {
+			this.type = TYPE.UNKNOWN;
+		}
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getVersion() {
+		return version;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
-	public Pager createPager(int pageNumber, int pageSize) {
-		return Pager.create(pagerType, pageNumber, pageSize);
+	public void setAsMysql() {
+		this.type = TYPE.MYSQL;
 	}
 
-	public Class<? extends Pager> getPagerType() {
-		return pagerType;
+	public void setAsPsql() {
+		this.type = TYPE.PSQL;
 	}
 
-	public void setPagerType(Class<? extends Pager> pagerType) {
-		this.pagerType = pagerType;
+	public void setAsOracle() {
+		this.type = TYPE.ORACLE;
+	}
+
+	public void setAsSqlServer() {
+		this.type = TYPE.SQLSERVER;
+	}
+
+	public void setAsDB2() {
+		this.type = TYPE.DB2;
+	}
+
+	public void setUnknown() {
+		this.type = TYPE.UNKNOWN;
+	}
+
+	public boolean is(String typeName) {
+		return type.name().equalsIgnoreCase(typeName);
+	}
+
+	public String getTypeName() {
+		return type.name();
 	}
 
 	public boolean isUnknown() {
-		return Pager.class == pagerType;
+		return TYPE.UNKNOWN == type;
 	}
 
 	public boolean isMySql() {
-		return Pager.MySQL == pagerType;
+		return TYPE.MYSQL == type;
 	}
 
 	public boolean isPostgresql() {
-		return Pager.Postgresql == pagerType;
+		return TYPE.PSQL == type;
 	}
 
 	public boolean isSqlServer() {
-		return Pager.SQLServer == pagerType;
+		return TYPE.SQLSERVER == type;
 	}
 
 	public boolean isOracle() {
-		return Pager.Oracle == pagerType;
+		return TYPE.ORACLE == type;
 	}
 
 	public boolean isDB2() {
-		return Pager.DB2 == pagerType;
+		return TYPE.DB2 == type;
 	}
 
 }

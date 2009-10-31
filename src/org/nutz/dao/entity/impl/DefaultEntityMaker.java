@@ -12,6 +12,7 @@ import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.EntityName;
 import org.nutz.dao.entity.ErrorEntitySyntaxException;
 import org.nutz.dao.entity.Link;
+import org.nutz.dao.entity.ValueAdapter;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Default;
 import org.nutz.dao.entity.annotation.Next;
@@ -153,9 +154,12 @@ public class DefaultEntityMaker implements EntityMaker {
 				ef.setType(FieldType.NAME);
 		}
 
-		// Prepare hao to adapte the field value
-		ef.setAdapter(FieldAdapter.create(fieldType, ef.getFieldType()));
+		// Prepare how to adapt the field value to PreparedStatement
+		ef.setFieldAdapter(FieldAdapter.create(fieldType, ef.getFieldType()));
 
+		// Prepare how to adapt the field value from ResultSet
+		ef.setValueAdapter(ValueAdapter.create(fieldType, ef.getFieldType()));
+		
 		return ef;
 	}
 

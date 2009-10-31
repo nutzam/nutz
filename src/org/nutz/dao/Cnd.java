@@ -109,7 +109,7 @@ public class Cnd implements OrderBy, ExpGroup {
 		return orNot(Cnd.exp(name, op, value));
 	}
 
-	public String toString(Entity<?> entity) {
+	public String toSql(Entity<?> entity) {
 		StringBuilder sb = new StringBuilder();
 		if (exps != null) {
 			for (Iterator<Expression> it = exps.iterator(); it.hasNext();) {
@@ -130,7 +130,7 @@ public class Cnd implements OrderBy, ExpGroup {
 	}
 
 	public void render(StringBuilder sb, Entity<?> en) {
-		sb.append('(').append(toString(en)).append(')');
+		sb.append('(').append(toSql(en)).append(')');
 	}
 
 	/*------------------------------------------------------------------*/

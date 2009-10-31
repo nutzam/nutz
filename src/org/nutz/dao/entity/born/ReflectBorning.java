@@ -23,7 +23,7 @@ abstract class ReflectBorning implements Borning {
 		while (it.hasNext()) {
 			EntityField ef = it.next();
 			if (null == fm || fm.match(ef.getField().getName()))
-				ef.fillFieldValueFromResultSet(obj, rs);
+				ef.fillValue(obj, rs);
 		}
 		return obj;
 	}

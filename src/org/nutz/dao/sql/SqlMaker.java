@@ -7,9 +7,10 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.nutz.dao.Chain;
+import org.nutz.dao.Condition;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.Pager;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
@@ -198,15 +199,30 @@ public class SqlMaker {
 		return Sqls.fetchEntity(fmt).setEntity(entity);
 	}
 
-	public Sql query(Entity<?> entity, Pager pager) {
+	public Sql query(Entity<?> entity, Condition condition, Pager pager) {
 		String s;
+		// 评估所有需要查询的字段
 		String fields = evalActivedFields(entity);
-		if (null == pager || pager.isDefault()) {
-			s = format("SELECT %s FROM %s $condition", fields, entity.getViewName());
-		} else {
-			s = format("SELECT %s FROM %s $condition", fields, pager.getResultSetName(entity));
-			s = format(pager.getSqlPattern(entity), s);
+
+		// 获得条件及排序字符串
+		String cnd = Sqls.getConditionString(entity, condition);
+
+		// 如果用户没有设置 Pager
+		if (null == pager) {
+			// 如果没有过滤条件
+			if (null == cnd) {
+				s = format("SELECT %s FROM %s", fields, entity.getViewName());
+			}
+			// 如果设置了过滤条件
+			else {
+				s = format("SELECT %s FROM %s %s", fields, entity.getViewName(), cnd);
+			}
 		}
+		// 如果用户设置了 Pager，用 Pager 生成 SQL
+		else {
+			s = pager.toSql(entity, entity.getViewName(), fields, null == cnd ? "" : cnd);
+		}
+		// 生成 Sql 对象并返回
 		Sql sql = Sqls.queryEntity(s).setEntity(entity);
 		sql.getContext().setPager(pager);
 		return sql;

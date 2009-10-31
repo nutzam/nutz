@@ -167,7 +167,7 @@ public class SqlLiteral {
 	}
 
 	public boolean isSELECT() {
-		return stack.firstEquals("SELECT");
+		return stack.firstEquals("SELECT") || stack.firstEquals("WITH");
 	}
 
 	public boolean isUPDATE() {
@@ -189,7 +189,7 @@ public class SqlLiteral {
 	public boolean isDROP() {
 		return stack.firstEquals("DROP");
 	}
-	
+
 	public boolean isTRUNCATE() {
 		return stack.firstEquals("TRUNCATE");
 	}

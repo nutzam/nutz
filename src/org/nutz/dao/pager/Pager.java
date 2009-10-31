@@ -1,5 +1,6 @@
 package org.nutz.dao.pager;
 
+import org.nutz.dao.entity.Entity;
 
 /**
  * 这个接口描述了一个完整的分页信息。各个实现类，需根据不同的数据库具体情况， 实现这些接口函数。
@@ -54,11 +55,32 @@ public interface Pager {
 	int getOffset();
 
 	/**
-	 * 将传入的 Sql 对象格式化成新的 Sql 对象，新的 Sql 對象支持 Sql 本地方言进行分页
-	 * <p>
-	 * 如果，你返回 Null，则表示当前数据库不支持分页，那么 Nutz.Dao 会采用 JDBC 移动游标
-	 * 的方式来替你分页。这个比较低效。但是基本可以正常工作
+	 * 根据这以下三个参数，生成查询的 SQL
+	 * 
+	 * @param entity
+	 *            实体对象。你的 Pager 将对这个实体生成查询的 SQL
+	 * @param table
+	 *            表|视图名
+	 * @param fields
+	 *            字段名 -- <i>已经用逗号替你分隔号了</i>
+	 * @param cnd
+	 *            条件 SQL  -- <i>包括 WHERE 或 ORDER BY 关键字，可能前后有空白
+	 * 
+	 * @return 当前数据库，分页查询语句
 	 */
-	String format(String sql);
+	String toSql(Entity<?> entity, String table, String fields, String cnd);
+
+	/**
+	 * 你希望查询的时候，建立什么类型的 ResultSet，可以允许的值为：
+	 * <ul>
+	 * <li>ResultSet.TYPE_FORWARD_ONLY
+	 * <li>ResultSet.TYPE_SCROLL_INSENSITIVE
+	 * <li>ResultSet.TYPE_SCROLL_SENSITIVE
+	 * </ul>
+	 * 一般的说，你为特殊的数据库建立的 Pager，都要返回 ResultSet.TYPE_FORWARD_ONLY
+	 * 
+	 * @see java.sql.ResultSet
+	 */
+	int getResultSetType();
 
 }

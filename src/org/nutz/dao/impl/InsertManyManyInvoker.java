@@ -34,7 +34,7 @@ class InsertManyManyInvoker extends InsertInvoker {
 						throw new RuntimeException("You set null to param '@ta[2]'");
 					}
 					Object toValue = mta.getValue(ta, link.getTargetField());
-					SqlMaker maker = ((NutDao) dao).maker();
+					SqlMaker maker = ((NutDao) dao).getSqlMaker();
 					Sql sql = maker.insert_manymany(link);
 					sql.params().set(link.getFrom(), fromValue).set(link.getTo(), toValue);
 					dao.execute(sql);

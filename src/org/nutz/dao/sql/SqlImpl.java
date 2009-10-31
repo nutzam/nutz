@@ -1,7 +1,8 @@
 package org.nutz.dao.sql;
 
-import java.sql.Connection;
+import static java.lang.String.format;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,9 +15,7 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
-import org.nutz.lang.Strings;
-
-import static java.lang.String.*;
+import org.nutz.dao.pager.Pager;
 
 public class SqlImpl implements Sql {
 
@@ -31,7 +30,6 @@ public class SqlImpl implements Sql {
 	private SqlContext context;
 	private SqlCallback callback;
 	private Condition condition;
-	private Object result;
 	private StatementAdapter adapter;
 	private Entity<?> entity;
 	private int updateCount;
@@ -47,12 +45,26 @@ public class SqlImpl implements Sql {
 		try {
 			// SELECT ...
 			if (sql.isSELECT()) {
+				// If without callback, the query do NOT make sense.
 				if (null != callback) {
+					// Create ResultSet type upon the page. default is
+					// TYPE_FORWARD_ONLY
+					Pager pager = context.getPager();
+					int rsType = null == pager ? ResultSet.TYPE_FORWARD_ONLY : pager
+							.getResultSetType();
+
+					// Prepare statment for query
 					PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
-							ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+							rsType, ResultSet.CONCUR_READ_ONLY);
+
+					// Put all parameters to PreparedStatement and get ResultSet
 					adapter.process(stat, sql, entity);
 					ResultSet rs = stat.executeQuery();
-					setResult(callback.invoke(conn, rs, this));
+
+					// Get result from ResultSet by callback
+					context.setResult(callback.invoke(conn, rs, this));
+
+					// Closing...
 					rs.close();
 					stat.close();
 				}
@@ -65,7 +77,7 @@ public class SqlImpl implements Sql {
 				updateCount = stat.getUpdateCount();
 				stat.close();
 				if (null != callback)
-					callback.invoke(conn, null, this);
+					context.setResult(callback.invoke(conn, null, this));
 			}
 			// CREATE | DROP
 			else {
@@ -73,9 +85,11 @@ public class SqlImpl implements Sql {
 				stat.execute(sql.toString());
 				stat.close();
 				if (null != callback)
-					callback.invoke(conn, null, this);
+					context.setResult(callback.invoke(conn, null, this));
 			}
-		} catch (SQLException e) {
+		}
+		// If any SQLException happend, throw out the SQL string
+		catch (SQLException e) {
 			throw new SQLException(format("!Nuz SQL Error: '%s'", sql.toString()), e);
 		}
 
@@ -83,13 +97,9 @@ public class SqlImpl implements Sql {
 
 	private void mergeCondition() {
 		if (null != condition) {
-			String cnd = Strings.trim(condition.toString(entity));
-			if (cnd != null) {
-				String cndu = cnd.toUpperCase();
-				if (!cndu.startsWith("WHERE") && !cndu.startsWith("ORDER BY"))
-					cnd = " WHERE " + cnd;
+			String cnd = Sqls.getConditionString(entity, condition);
+			if (null != cnd)
 				sql.getVars().set("condition", cnd);
-			}
 		}
 	}
 
@@ -138,12 +148,7 @@ public class SqlImpl implements Sql {
 	}
 
 	public Object getResult() {
-		return result;
-	}
-
-	public Sql setResult(Object result) {
-		this.result = result;
-		return this;
+		return context.getResult();
 	}
 
 	public Entity<?> getEntity() {
@@ -155,8 +160,9 @@ public class SqlImpl implements Sql {
 	}
 
 	public Sql duplicate() {
-		Sql newSql = Sqls.create(sql).setCallback(callback).setCondition(condition);
-		newSql.getContext().setPager(context.getPager());
+		Sql newSql = new SqlImpl(sql, DefaultStatementAdapter.ME);
+		newSql.setCallback(callback).setCondition(condition);
+		newSql.getContext().setPager(context.getPager()).setMatcher(context.getMatcher());
 		return newSql;
 	}
 
@@ -166,11 +172,12 @@ public class SqlImpl implements Sql {
 	}
 
 	public int getInt() {
-		return Castors.me().castTo(result, int.class);
+		return Castors.me().castTo(context.getResult(), int.class);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> classOfT) {
+		Object result = context.getResult();
 		if (null == result)
 			return null;
 		if (result instanceof List) {
@@ -190,7 +197,7 @@ public class SqlImpl implements Sql {
 	}
 
 	public <T> T getObject(Class<T> classOfT) {
-		return Castors.me().castTo(result, classOfT);
+		return Castors.me().castTo(context.getResult(), classOfT);
 	}
 
 }

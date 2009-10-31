@@ -49,7 +49,7 @@ public class IntQuerys {
 		// User input @XXX({"psql", "...sql...", "mysql", "...sql..."})
 		else if (strs.length % 2 == 0) {
 			for (int i = 0; i < strs.length; i++)
-				if (i % 2 == 0 && meta.getProductName().equalsIgnoreCase(strs[i])) {
+				if (i % 2 == 0 && meta.is(strs[i])) {
 					CharSegment seg = new CharSegment(strs[i + 1]);
 					if (seg.keys().size() == 0)
 						return new StaticIntQuery(strs[i + 1]);

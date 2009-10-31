@@ -80,6 +80,6 @@ public class Nutzs {
 	}
 
 	public static void notSupport(DatabaseMeta meta) {
-		notSupport(format("[%S] don't support this test", meta.getProductName()));
+		notSupport(format("[%S] don't support this test", meta.getTypeName()));
 	}
 }

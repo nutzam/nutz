@@ -18,7 +18,9 @@ import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.Pager;
+import org.nutz.dao.pager.DefaultPagerMaker;
+import org.nutz.dao.pager.Pager;
+import org.nutz.dao.pager.PagerMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlMaker;
 import org.nutz.dao.SqlManager;
@@ -37,6 +39,32 @@ import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
 
+	private DataSource dataSource;
+	private SqlMaker sqlMaker;
+	private PagerMaker pagerMaker;
+	private SqlManager sqls;
+	private EntityHolder entities;
+	private DatabaseMeta meta;
+	private Class<? extends EntityMaker> entityMaker;
+
+	/* ========================================================== */
+	public NutDao() {
+		this.sqlMaker = new SqlMaker();
+		this.pagerMaker = new DefaultPagerMaker();
+	}
+
+	public NutDao(DataSource dataSource) {
+		this();
+		this.setDataSource(dataSource);
+	}
+
+	public NutDao(DataSource dataSource, SqlManager sqlManager) {
+		this();
+		this.setDataSource(dataSource);
+		this.setSqlManager(sqlManager);
+	}
+
+	/* ========================================================== */
 	private static <T> EntityField checkIdField(Entity<T> en) {
 		EntityField idField = en.getIdField();
 		if (idField == null) {
@@ -55,19 +83,10 @@ public class NutDao implements Dao {
 		return nameField;
 	}
 
-	private DataSource dataSource;
-	private SqlMaker maker;
-	private SqlManager sqls;
-	private EntityHolder entities;
-	private DatabaseMeta meta;
-	private Class<? extends EntityMaker> entityMaker;
+	/* ========================================================== */
 
 	public DataSource getDataSource() {
 		return dataSource;
-	}
-
-	public void setMaker(SqlMaker sqlMaker) {
-		this.maker = sqlMaker;
 	}
 
 	/**
@@ -91,25 +110,8 @@ public class NutDao implements Dao {
 		this.run(new ConnCallback() {
 			public void invoke(Connection conn) throws Exception {
 				DatabaseMetaData dmd = conn.getMetaData();
-				String proName = dmd.getDatabaseProductName().toLowerCase();
-				if (proName.startsWith("postgresql")) {
-					meta.setPagerType(Pager.Postgresql);
-					meta.setProductName(DatabaseMeta.PSQL);
-				} else if (proName.startsWith("mysql")) {
-					meta.setPagerType(Pager.MySQL);
-					meta.setProductName(DatabaseMeta.MYSQL);
-				} else if (proName.startsWith("oracle")) {
-					meta.setPagerType(Pager.Oracle);
-					meta.setProductName(DatabaseMeta.ORACLE);
-				} else if (proName.startsWith("db2")) {
-					meta.setPagerType(Pager.DB2);
-					meta.setProductName(DatabaseMeta.DB2);
-				} else if (proName.startsWith("microsoft sql")) {
-					meta.setPagerType(Pager.SQLServer);
-					meta.setProductName(DatabaseMeta.SQLSERVER);
-				}
-				meta.setUrl(dmd.getURL());
-				meta.setUserName(dmd.getUserName());
+				meta.setProductName(dmd.getDatabaseProductName());
+				meta.setVersion(dmd.getDatabaseProductVersion());
 			}
 		});
 	}
@@ -122,46 +124,31 @@ public class NutDao implements Dao {
 	}
 
 	public Pager createPager(int pageNumber, int pageSize) {
-		return meta().createPager(pageNumber, pageSize);
+		return pagerMaker.make(meta, pageNumber, pageSize);
 	}
 
-	public Class<? extends Pager> getPagerType() {
-		return meta().getPagerType();
+	public PagerMaker getPagerMaker() {
+		return pagerMaker;
+	}
+
+	public void setPagerMaker(PagerMaker pagerMaker) {
+		this.pagerMaker = pagerMaker;
 	}
 
 	public void setSqlManager(SqlManager sqlManager) {
 		this.sqls = sqlManager;
 	}
 
-	public SqlMaker getMaker() {
-		return maker;
+	public SqlMaker getSqlMaker() {
+		return sqlMaker;
 	}
 
-	public SqlManager getSqls() {
-		return sqls;
-	}
-
-	public SqlMaker maker() {
-		return maker;
+	public void setSqlMaker(SqlMaker sqlMaker) {
+		this.sqlMaker = sqlMaker;
 	}
 
 	public SqlManager sqls() {
 		return this.sqls;
-	}
-
-	public NutDao() {
-		this.maker = new SqlMaker();
-	}
-
-	public NutDao(DataSource dataSource) {
-		this();
-		this.setDataSource(dataSource);
-	}
-
-	public NutDao(DataSource dataSource, SqlManager sqlManager) {
-		this();
-		this.setDataSource(dataSource);
-		this.setSqlManager(sqlManager);
 	}
 
 	public void execute(final Sql... sqls) {
@@ -199,7 +186,7 @@ public class NutDao implements Dao {
 
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
-		Sql sql = maker.func(entity.getTableName(), "COUNT", "*").setCondition(condition);
+		Sql sql = sqlMaker.func(entity.getTableName(), "COUNT", "*").setCondition(condition);
 		execute(sql);
 		return sql.getInt();
 	}
@@ -209,7 +196,7 @@ public class NutDao implements Dao {
 	}
 
 	public int count(String tableName, Condition condition) {
-		Sql sql = maker.func(tableName, "COUNT", "*").setCondition(condition);
+		Sql sql = sqlMaker.func(tableName, "COUNT", "*").setCondition(condition);
 		execute(sql);
 		return sql.getInt();
 	}
@@ -226,9 +213,9 @@ public class NutDao implements Dao {
 		Entity<?> entity = getEntity(classOfT);
 		Sql sql;
 		if (null == condition) {
-			sql = maker.truncate(entity.getTableName());
+			sql = sqlMaker.truncate(entity.getTableName());
 		} else {
-			sql = maker.clear(entity).setCondition(condition);
+			sql = sqlMaker.clear(entity).setCondition(condition);
 		}
 		execute(sql);
 	}
@@ -236,9 +223,9 @@ public class NutDao implements Dao {
 	public void clear(String tableName, Condition condition) {
 		Sql sql;
 		if (null == condition) {
-			sql = maker.truncate(tableName);
+			sql = sqlMaker.truncate(tableName);
 		} else {
-			sql = maker.clear(tableName).setCondition(condition);
+			sql = sqlMaker.clear(tableName).setCondition(condition);
 		}
 		execute(sql);
 	}
@@ -258,7 +245,7 @@ public class NutDao implements Dao {
 								Object value = entity.getMirror().getValue(obj,
 										link.getReferField());
 								Entity<?> ta = dao.getEntity(link.getTargetClass());
-								Sql sql = dao.maker().clear_links(ta, link, value);
+								Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
 								dao.execute(sql);
 							}
 						}
@@ -266,8 +253,8 @@ public class NutDao implements Dao {
 					lns.walkManyManys(new LinkWalker() {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
-							Sql sql = dao.maker().clear_links(link.getRelation(), link.getFrom(),
-									link.getFrom());
+							Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
+									link.getFrom(), link.getFrom());
 							sql.params().set(link.getFrom(), value);
 							dao.execute(sql);
 						}
@@ -276,7 +263,7 @@ public class NutDao implements Dao {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
 							Entity<?> ta = dao.getEntity(link.getTargetClass());
-							Sql sql = dao.maker().clear_links(ta, link, value);
+							Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
 							dao.execute(sql);
 						}
 					});
@@ -289,7 +276,7 @@ public class NutDao implements Dao {
 	public <T> void delete(Class<T> classOfT, long id) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
-		Sql sql = maker.delete(entity, ef);
+		Sql sql = sqlMaker.delete(entity, ef);
 		sql.params().set(ef.getFieldName(), id);
 		execute(sql);
 	}
@@ -297,7 +284,7 @@ public class NutDao implements Dao {
 	public <T> void delete(Class<T> classOfT, String name) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkNameField(entity);
-		Sql sql = maker.delete(entity, ef);
+		Sql sql = sqlMaker.delete(entity, ef);
 		sql.params().set(ef.getFieldName(), name);
 		execute(sql);
 	}
@@ -365,7 +352,7 @@ public class NutDao implements Dao {
 
 	public <T> T fetch(Entity<T> entity, long id) {
 		EntityField ef = checkIdField(entity);
-		Sql sql = maker.fetch(entity, ef);
+		Sql sql = sqlMaker.fetch(entity, ef);
 		sql.params().set(ef.getFieldName(), id);
 		execute(sql);
 		return sql.getObject(entity.getType());
@@ -378,7 +365,7 @@ public class NutDao implements Dao {
 
 	public <T> T fetch(Entity<T> entity, String name) {
 		EntityField ef = checkNameField(entity);
-		Sql sql = maker.fetch(entity, ef);
+		Sql sql = sqlMaker.fetch(entity, ef);
 		sql.params().set(ef.getFieldName(), name);
 		execute(sql);
 		return sql.getObject(entity.getType());
@@ -405,7 +392,7 @@ public class NutDao implements Dao {
 		if (null != obj) {
 			Entity<?> entity = (Entity) getEntity(obj.getClass());
 			EntityField ef = entity.getIdentifiedField();
-			Sql sql = maker.fetch(entity, ef);
+			Sql sql = sqlMaker.fetch(entity, ef);
 			sql.params().set(ef.getFieldName(), ef.getValue(obj));
 			execute(sql);
 			return sql.getObject((Class<T>) entity.getType());
@@ -470,7 +457,7 @@ public class NutDao implements Dao {
 		EntityField ef = checkIdField(entity);
 		// Sql sql = maker.create(maker.ptn.MAX,
 		// entity.getTableName()).setEntity(entity);
-		Sql sql = maker.func(entity.getTableName(), "MAX", ef.getColumnName());
+		Sql sql = sqlMaker.func(entity.getTableName(), "MAX", ef.getColumnName());
 		execute(sql);
 		return sql.getInt();
 	}
@@ -481,7 +468,7 @@ public class NutDao implements Dao {
 	}
 
 	private <T> T _insertSelf(Entity<?> entity, T obj) {
-		Sql sql = maker.insert(entity, obj);
+		Sql sql = sqlMaker.insert(entity, obj);
 		// Evaluate fetchId SQL
 		Sql fetchIdSql = null;
 		if (null != entity.getIdField() && entity.getIdField().isSerial())
@@ -509,7 +496,7 @@ public class NutDao implements Dao {
 
 	public void insert(String tableName, Chain chain) {
 		if (null != chain) {
-			Sql sql = maker.insertChain(tableName, chain);
+			Sql sql = sqlMaker.insertChain(tableName, chain);
 			execute(sql);
 		}
 	}
@@ -517,7 +504,7 @@ public class NutDao implements Dao {
 	public void insert(Class<?> classOfT, Chain chain) {
 		Entity<?> en = getEntity(classOfT);
 		if (null != chain) {
-			Sql sql = maker.insertChain(en.getTableName(), chain);
+			Sql sql = sqlMaker.insertChain(en.getTableName(), chain);
 			sql.setEntity(en);
 			execute(sql);
 		}
@@ -565,8 +552,7 @@ public class NutDao implements Dao {
 	@SuppressWarnings("unchecked")
 	public <T> List<T> query(Entity<?> entity, Condition condition, Pager pager) {
 		// QuerySql<T> sql = maker.makeQuerySQL(entity, pager);
-		Sql sql = maker.query(entity, pager);
-		sql.setCondition(condition);
+		Sql sql = sqlMaker.query(entity, condition, pager);
 		execute(sql);
 		return sql.getList((Class<T>) entity.getType());
 
@@ -575,21 +561,21 @@ public class NutDao implements Dao {
 	public int update(Object obj) {
 		if (null == obj)
 			return -1;
-		Sql sql = maker.update(getEntity(obj.getClass()), obj);
+		Sql sql = sqlMaker.update(getEntity(obj.getClass()), obj);
 		execute(sql);
 		return sql.getUpdateCount();
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition condition) {
 		Entity<?> en = getEntity(classOfT);
-		Sql sql = maker.updateBatch(en.getTableName(), chain).setCondition(condition);
+		Sql sql = sqlMaker.updateBatch(en.getTableName(), chain).setCondition(condition);
 		sql.setEntity(en);
 		execute(sql);
 		return sql.getUpdateCount();
 	}
 
 	public int update(String tableName, Chain chain, Condition condition) {
-		Sql sql = maker.updateBatch(tableName, chain).setCondition(condition);
+		Sql sql = sqlMaker.updateBatch(tableName, chain).setCondition(condition);
 		execute(sql);
 		return sql.getUpdateCount();
 	}
@@ -603,7 +589,7 @@ public class NutDao implements Dao {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
 					void walk(Link link) {
-						Sql sql = maker.updateBatch(link.getRelation(), chain).setCondition(
+						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain).setCondition(
 								condition);
 						execute(sql);
 					}
@@ -681,7 +667,7 @@ public class NutDao implements Dao {
 	}
 
 	public int func(String tableName, String funcName, String fieldName) {
-		Sql sql = maker.func(tableName, funcName, fieldName);
+		Sql sql = sqlMaker.func(tableName, funcName, fieldName);
 		execute(sql);
 		return sql.getInt();
 	}

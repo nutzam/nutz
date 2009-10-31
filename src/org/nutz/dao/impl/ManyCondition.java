@@ -15,7 +15,7 @@ public class ManyCondition implements Condition {
 		this.value = value;
 	}
 
-	public String toString(Entity<?> entity) {
+	public String toSql(Entity<?> entity) {
 		return String.format("%s=%s", entity.getField(link.getTargetField().getName())
 				.getColumnName(), DaoUtils.formatFieldValue(value));
 	}

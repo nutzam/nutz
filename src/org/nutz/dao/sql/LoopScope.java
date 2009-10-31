@@ -1,6 +1,6 @@
 package org.nutz.dao.sql;
 
-import org.nutz.dao.Pager;
+import org.nutz.dao.pager.Pager;
 
 class LoopScope {
 

@@ -2,6 +2,8 @@ package org.nutz.dao;
 
 import java.util.List;
 
+import org.nutz.dao.pager.Pager;
+
 public class QueryResult {
 
 	private List<?> list;

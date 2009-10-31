@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class FetchIntegerCallback implements SqlCallback {
 
 	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-		if (rs.first())
+		if (rs.next())
 			return rs.getInt(1);
 		return -1;
 	}
