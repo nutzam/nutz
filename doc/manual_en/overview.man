@@ -1,0 +1,52 @@
+#title: Before beginning everything
+
+<../manual/logo.png>
+
+To increase programming productivity is the core mission goal of Nutz
+	Java is a beautiful programming language, after 10 years of development, 
+	it has been applied to almost every place, in the powerful enterprise servers, hand set chips, 
+	the automotive equipment, intelligent appliances and even the mars rovers. 
+	In function, it involved a wide range of software applications to various fields, 
+	and now it begins to infiltrate desktop and graphic processing application. 
+	From historical views it is a mature language, now, it is the world's most widely used language, 
+	and for the future, it is the most promising language (it is still full of vitality and innovation). 
+
+	However, in the more and more popular area of Web development, Java seem to have exposed a weakness. Yes, the scripting languages roll up a boom.
+	It seems that a new "revolution" is begin. And Java, is laughed by "{_scripts}" frequently about {# F00; * low development efficiency}.
+
+	{#00A;*But, is that real?} 
+
+	In essence, Java language itself only provides two aspect helps for programmers, the first the grammar, and the second the built-in library. 
+	Currently programmers who work on Web development based on Java, are mostly using third-party libraries (or frameworks), such as the popular SSH. 
+	The so-called that Java is inefficient in the Web Development, it may be more appropriate to say: {#F80;*inefficient to use third-party libraries for development}.
+
+	To prove that, I create Nutz, which is a collections of lightweight frameworks, each of them can be used independently. 
+	And the mission of the Nutz is {#080;*to maximum increase in the productivity of Web developers}. 
+
+	Yes, to increase productivity is the core mission of this framework. Just like initial motivation of Java, 
+	the most concern is to balance the programmer's easy use and execution efficiency, so as Nutz.
+	Hopes that from Nutz, Java developers can get faster development speed, less codes, and without decrease the execution efficiency as a precondition. 
+
+
+Nutz objectives
+	To maximize the productivity of Web programmer, Nutz must have the following features:
+	# Provides most of the functions of SSH
+		# Database access layer -- {_Nutz.Dao}
+		# Reverse injection Support -- {_Nutz.Ioc}
+		# Mvc Framework -- {_Nutz.Mvc}
+		# Json parser -- {_Nutz.Json}
+		# More simplified Java syntax of functions and classes -- {_Nutz.Lang} and {_Nutz.Castors}
+	# Do not depend on any third-party Jar packages, to facilitate building the development environment, deploying, and even re-compiling the source codes of Nutz.
+		* Unfortunately, in the first edition, it still depends on the [http://www.csg.is.titech.ac.jp/~chiba/javassist/ Javassist]
+	# Can be well working with other famous frameworks
+		* You can use Nutz.Dao + Spring
+		* You can use Nutz.Ioc with Hibernate
+		* any modules of Nutz can be used separately
+	# Provide a lower and smoother learning curve
+		* I try to make the interface design of simple and direct
+		* The user manual, you can grasp all of the usage of Nutz
+		* I will try to pay attention to my feedback from any channel, any help to simplify the use of the idea of Nutz, I will be careful assessment of
+
+	Before explaining Nutz's various part features in detail, if you are interested, here is a complete [packages.html Nutz package list]
+
+	Read Nutz's [version_naming_rule.html rules of the naming convention], will help you download the correct Java packages 
