@@ -10,9 +10,9 @@ public class PostgresqlPager extends AbstractPager {
 		return sb.toString();
 	}
 
-	public String toSql(Entity<?> entity, String table, String fields, String cnd) {
-		return String.format("SELECT %s FROM %s %s LIMIT %d  OFFSET  %d", fields, table, cnd,
-				getPageSize(), getOffset());
+	public String toSql(Entity<?> entity, String fields, String cnd) {
+		return String.format("SELECT %s FROM %s %s LIMIT %d  OFFSET  %d", fields, entity
+				.getViewName(), cnd, getPageSize(), getOffset());
 	}
 
 }

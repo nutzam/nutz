@@ -13,8 +13,8 @@ public class UnknownPager extends AbstractPager {
 		return ResultSet.TYPE_SCROLL_INSENSITIVE;
 	}
 
-	public String toSql(Entity<?> entity, String table, String fields, String cnd) {
-		return format("SELECT %s FROM %s %s", table, fields, cnd);
+	public String toSql(Entity<?> entity, String fields, String cnd) {
+		return format("SELECT %s FROM %s %s", fields, entity.getViewName(), cnd);
 	}
 
 }

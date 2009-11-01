@@ -17,7 +17,7 @@ public class SqlServer2005Pager extends AbstractPager {
 			// </with>
 			+ " SELECT * FROM __tmp WHERE __rowid BETWEEN %d AND %d";
 
-	public String toSql(Entity<?> entity, String table, String fields, String cnd) {
+	public String toSql(Entity<?> entity, String fields, String cnd) {
 		if (null == entity) {
 			throw Lang.makeThrow("%s can not create query SQL with entity", this.getClass()
 					.getSimpleName());
@@ -47,7 +47,7 @@ public class SqlServer2005Pager extends AbstractPager {
 		int from = this.getOffset();
 		int to = from + this.getPageSize();
 		from++;
-		return String.format(PTN, fields, orderBy, table, where, from, to);
+		return String.format(PTN, fields, orderBy, entity.getViewName(), where, from, to);
 	}
 
 	private String evalOrderBy(Entity<?> entity) {

@@ -220,7 +220,7 @@ public class SqlMaker {
 		}
 		// 如果用户设置了 Pager，用 Pager 生成 SQL
 		else {
-			s = pager.toSql(entity, entity.getViewName(), fields, null == cnd ? "" : cnd);
+			s = pager.toSql(entity, fields, null == cnd ? "" : cnd);
 		}
 		// 生成 Sql 对象并返回
 		Sql sql = Sqls.queryEntity(s).setEntity(entity);
