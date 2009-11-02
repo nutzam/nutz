@@ -1,11 +1,11 @@
 package org.nutz.mvc.init;
 
 import java.lang.reflect.Method;
+
 import java.util.List;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
@@ -86,27 +86,33 @@ public class UrlMapImpl implements UrlMap {
 			myEncoding = encoding;
 
 		// get base url
-		At baseUrl = module.getAnnotation(At.class);
-		String basePath;
-		if (null == baseUrl)
-			basePath = "";
-		else if (Strings.isBlank(baseUrl.value()))
-			basePath = "/" + module.getSimpleName().toLowerCase();
+		At baseAt = module.getAnnotation(At.class);
+		String[] bases;
+		if (null == baseAt)
+			bases = Lang.array("");
+		else if (baseAt.value().length == 0)
+			bases = Lang.array("/" + module.getSimpleName().toLowerCase());
 		else
-			basePath = baseUrl.value();
+			bases = baseAt.value();
 		// looping methods
 		for (Method method : module.getMethods()) {
 			// get Url
-			At url = method.getAnnotation(At.class);
-			if (null == url)
+			At ats = method.getAnnotation(At.class);
+			if (null == ats)
 				continue;
-			String path;
-			if (Strings.isBlank(url.value()))
-				path = basePath + "/" + method.getName().toLowerCase();
-			else
-				path = basePath + url.value();
-			root.add(path, new ActionInvokerImpl(ioc, makers, obj, method, myOk, myFail, myAb,
-					myFlts, myEncoding));
+			// Create invoker
+			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, obj, method, myOk,
+					myFail, myAb, myFlts, myEncoding);
+
+			// Mapping invoker
+			for (String base : bases)
+				if (ats.value().length == 0) {
+					String path = base + "/" + method.getName().toLowerCase();
+					root.add(path, invoker);
+				} else {
+					for (String at : ats.value())
+						root.add(base + at, invoker);
+				}
 		}
 	}
 
