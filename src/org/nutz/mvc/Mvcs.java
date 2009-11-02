@@ -101,7 +101,7 @@ public class Mvcs {
 		req.setAttribute("base", req.getContextPath());
 	}
 
-	static String getRequestPath(HttpServletRequest req) {
+	public static String getRequestPath(HttpServletRequest req) {
 		String path = req.getPathInfo();
 		if (null == path)
 			path = req.getServletPath();

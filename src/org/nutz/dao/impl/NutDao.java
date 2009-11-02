@@ -124,7 +124,7 @@ public class NutDao implements Dao {
 	}
 
 	public Pager createPager(int pageNumber, int pageSize) {
-		return pagerMaker.make(meta, pageNumber, pageSize);
+		return pagerMaker.make(meta(), pageNumber, pageSize);
 	}
 
 	public PagerMaker getPagerMaker() {

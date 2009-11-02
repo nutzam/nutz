@@ -21,7 +21,7 @@ public class DefaultPagerMaker implements PagerMaker {
 		// SqlServer
 		else if (meta.isSqlServer()) {
 			// SqlServer 2000: version like "8.00.2039"
-			if (meta.getVersion().startsWith("8"))
+			if (meta.getVersion().contains("8.00"))
 				pager = new SqlServer2000Pager();
 			else
 				pager = new SqlServer2005Pager();
