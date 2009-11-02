@@ -29,7 +29,6 @@ public abstract class ValueAdapter {
 	private static ValueAdapter AS_DATE = new AsDate();
 	private static ValueAdapter AS_SQLDATE = new AsSqlDate();
 	private static ValueAdapter AS_SQLTIME = new AsSqlTime();
-	private static ValueAdapter AS_OBJECT = new AsObject();
 
 	public static ValueAdapter create(Mirror<?> mirror, FieldValueType type) {
 		// String and char
@@ -85,18 +84,12 @@ public abstract class ValueAdapter {
 		// java.sql.Time
 		if (mirror.isOf(java.sql.Time.class))
 			return AS_SQLTIME;
-		return AS_OBJECT;
+		return AS_STRING;
 	}
 
 	public abstract Object get(ResultSet rs, String colnm) throws SQLException;
 
-	private static class AsObject extends ValueAdapter {
-		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getObject(colnm);
-		}
-
-	}
-
+	/* ====================================================================== */
 	private static class AsString extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
 			return rs.getString(colnm);
