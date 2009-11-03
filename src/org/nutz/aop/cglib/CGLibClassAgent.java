@@ -62,9 +62,10 @@ class CgLibAdviceAdapter implements MethodInterceptor {
 		for (Pair pair : mList)
 			if (pair.matcher.match(method))
 				lst.add(pair.listener);
+		boolean flag = true;
 		for (MethodListener methodListener : lst)
-			if (!methodListener.beforeInvoke(obj, method, objects))
-				return null;
+			flag &= methodListener.beforeInvoke(obj, method, objects));
+		if(flag == false) return null;
 		Object result = null;
 		try {
 			result = proxy.invokeSuper(obj, objects);
