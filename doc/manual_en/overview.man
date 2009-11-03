@@ -1,7 +1,7 @@
 #title: Before beginning everything
 #author:Peter.Tung(mastung@gmail.com)
 
-<../manual/logo.png>
+<logo.png>
 
 To increase programming productivity is the core mission goal of Nutz
 	Java is a beautiful programming language, after 10 years of development, 
