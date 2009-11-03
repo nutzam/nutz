@@ -1,4 +1,5 @@
 #title: Before beginning everything
+#author:Peter.Tung(mastung@gmail.com)
 
 <../manual/logo.png>
 

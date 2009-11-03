@@ -1,4 +1,5 @@
 #title: Nutz version naming rules
+#author:Peter.Tung(mastung@gmail.com)
 
 Nutz's jar files follow the listed naming rules
 {{{

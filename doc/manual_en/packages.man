@@ -1,4 +1,5 @@
 #title:Nutz Packages
+#author:Peter.Tung(mastung@gmail.com)
 
 org.nutz.*
 	||{*Package}|| {*Description}												|| {*Dependence} ||
