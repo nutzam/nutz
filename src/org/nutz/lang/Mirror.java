@@ -441,7 +441,7 @@ public class Mirror<T> {
 	}
 
 	public T born(Object... args) {
-		return this.getBorning(args).born();
+		return this.getBorning(args).born(args);
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {

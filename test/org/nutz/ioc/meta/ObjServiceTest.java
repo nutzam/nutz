@@ -92,7 +92,6 @@ public class ObjServiceTest extends DaoCase {
 		assertEquals(2, ((Object[]) flds.get("array").getVal().getValue()).length);
 		assertEquals("A", ((Object[]) flds.get("array").getVal().getValue())[0]);
 		assertEquals("B", ((Object[]) flds.get("array").getVal().getValue())[1]);
-		assertTrue(flds.get("jspFile").getVal().isJsp());
 		assertEquals("jsp.main.show", flds.get("jspFile").getVal().getValue());
 		assertTrue(flds.get("callback").getVal().isJava());
 		assertEquals("org.nutz.Static.name", flds.get("callback").getVal().getValue());
@@ -127,7 +126,7 @@ public class ObjServiceTest extends DaoCase {
 		prepareFixData1();
 		Obj obj = srv.fetchObject("blues");
 		obj.setArgs(new Val[2]);
-		obj.getArgs()[0] = Val.make(Val.redirect, "/abc.z");
+		obj.getArgs()[0] = Val.make(Val.normal, "/abc.z");
 		obj.getArgs()[1] = Val.make(Val.bool, true);
 		obj.setFields(new Fld[0]);
 		srv.updateObj(obj);

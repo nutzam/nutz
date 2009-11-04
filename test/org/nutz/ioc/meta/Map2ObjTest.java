@@ -54,7 +54,6 @@ public class Map2ObjTest {
 		 * Arguments
 		 */
 		assertEquals("arg0", obj.getArgs()[0].getValue());
-		assertTrue(obj.getArgs()[1].isConfig());
 		assertEquals("someParam", obj.getArgs()[1].getValue());
 		// For inner
 		Obj inner = (Obj) obj.getArgs()[2].getValue();
@@ -93,7 +92,6 @@ public class Map2ObjTest {
 		assertTrue(obj.getFields()[3].getVal().isMap());
 		Map<?, ?> dm = (Map<?, ?>) obj.getFields()[3].getVal().getValue();
 		assertEquals(105, dm.get("M1"));
-		assertTrue(((Val) dm.get("M2")).isServer());
 		assertEquals("attName", ((Val) dm.get("M2")).getValue());
 	}
 

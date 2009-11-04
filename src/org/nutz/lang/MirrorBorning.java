@@ -31,6 +31,7 @@ public class MirrorBorning<T> implements Borning<T> {
 		}
 	}
 
+	@Deprecated
 	public T born() {
 		return born(args);
 	}

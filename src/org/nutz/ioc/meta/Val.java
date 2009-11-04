@@ -35,14 +35,10 @@ public class Val {
 	public static final String map = "map";
 	public static final String array = "array";
 	public static final String refer = "refer";
-	public static final String jsp = "jsp";
 	public static final String file = "file";
 	public static final String disk = "disk";
 	public static final String java = "java";
 	public static final String env = "env";
-	public static final String redirect = "redirect";
-	public static final String server = "server";
-	public static final String config = "config";
 
 	@Column
 	@Id
@@ -78,32 +74,6 @@ public class Val {
 		this.value = value;
 	}
 
-	// public Object eval(Map2Object m2o) {
-	// if (null == value || isNull())
-	// value = null;
-	// else if (isBoolean()) {
-	// if (!(value instanceof Boolean))
-	// value = Boolean.parseBoolean(value.toString());
-	// } else if (isInner()) {
-	// if (!(value instanceof Obj))
-	// value = m2o.parse((Map<?, ?>)
-	// Json.fromJson(value.toString()));
-	// } else if (isMap()) {
-	// if (!(value instanceof Map))
-	// value = m2o.parseMap((Map<?, ?>)
-	// Json.fromJson(value.toString()));
-	// } else if (isArray()) {
-	// return m2o.parseArray((Object[])
-	// Json.fromJson(value));
-	// } else if (isNormal()) {
-	// if (INT.matcher(value).find())
-	// return Long.parseLong(value);
-	// else if (FLOAT.matcher(value).find())
-	// return Double.parseDouble(value);
-	// }
-	// return value;
-	// }
-
 	public boolean isNormal() {
 		return null == type || normal.equals(type);
 	}
@@ -132,10 +102,6 @@ public class Val {
 		return refer.equals(type);
 	}
 
-	public boolean isJsp() {
-		return jsp.equals(type);
-	}
-
 	public boolean isFile() {
 		return file.equals(type);
 	}
@@ -150,18 +116,6 @@ public class Val {
 
 	public boolean isEnv() {
 		return env.equals(type);
-	}
-
-	public boolean isRedirect() {
-		return redirect.equals(type);
-	}
-
-	public boolean isServer() {
-		return server.equals(type);
-	}
-
-	public boolean isConfig() {
-		return config.equals(type);
 	}
 
 	public boolean isSpecial() {
