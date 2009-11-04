@@ -78,7 +78,7 @@ class PathNode<T> {
 			node.obj = obj;
 	}
 
-	T get(String path) {
+	PathInfo<T> get(String path) {
 		char[] cs = path.toLowerCase().toCharArray();
 		PathNode<T> node = this;
 		int i = 0;
@@ -93,9 +93,11 @@ class PathNode<T> {
 				break;
 			node = node.children[index];
 		}
-		if (i == cs.length || node.isStar)
-			return node.obj;
-		return null;
+		if (i == cs.length)
+			return new PathInfo<T>(i, null, node.obj);
+		else if (node.isStar)
+			return new PathInfo<T>(i, path.substring(i), node.obj);
+		return new PathInfo<T>(0, path, null);
 	}
 
 }

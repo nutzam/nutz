@@ -11,7 +11,9 @@ import org.nutz.mvc.param.injector.JsonInjector;
 
 public class JsonAdaptor extends AbstractAdaptor {
 
-	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {
+	public Object[] adapt(	HttpServletRequest request,
+							HttpServletResponse response,
+							String[] pathArgs) {
 		// Read all as String
 		String str;
 		try {

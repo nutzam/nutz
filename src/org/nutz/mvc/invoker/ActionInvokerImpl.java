@@ -140,7 +140,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		return null;
 	}
 
-	public void invoke(HttpServletRequest req, HttpServletResponse resp) {
+	public void invoke(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
 		// setup the charset
 		try {
 			req.setCharacterEncoding(inputCharset);
@@ -162,11 +162,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 					return;
 				}
 			}
-		// If all filter return null, then going on...
-		Object[] args = adaptor.adapt(req, resp);
-		Object re;
+		// If all filters return null, then going on...
 		try {
-			re = method.invoke(obj, args);
+			Object[] args = adaptor.adapt(req, resp, pathArgs);
+			Object re = method.invoke(obj, args);
 			if (re instanceof View)
 				((View) re).render(req, resp, re);
 			else

@@ -6,7 +6,9 @@ import java.util.List;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionInvoker;
+import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.*;
@@ -105,19 +107,23 @@ public class UrlMapImpl implements UrlMap {
 					myFail, myAb, myFlts, myEncoding);
 
 			// Mapping invoker
-			for (String base : bases)
-				if (ats.value().length == 0) {
+			for (String base : bases) {
+				String[] paths = ats.value();
+				if ((paths.length == 1 && Strings.isBlank(paths[0])) || paths.length == 0) {
 					String path = base + "/" + method.getName().toLowerCase();
 					root.add(path, invoker);
 				} else {
-					for (String at : ats.value())
+					for (String at : paths)
 						root.add(base + at, invoker);
 				}
+			}
 		}
 	}
 
-	public ActionInvoker get(String path) {
-		return root.get(path);
+	public ActionInvoking get(String path) {
+		PathInfo<ActionInvoker> info = root.get(path);
+		String[] args = Strings.splitIgnoreBlank(info.getRemain(), "[/]");
+		return new ActionInvoking(info.getObj(), args);
 	}
 
 }

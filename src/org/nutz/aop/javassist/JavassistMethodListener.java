@@ -23,7 +23,7 @@ class JavassistMethodListener implements MethodListener {
 	public boolean beforeInvoke(Object obj, Method method, Object... args) {
 		boolean re = true;
 		for (MethodListener ml : listeners)
-			re = ml.beforeInvoke(obj, method, args);
+			re &= ml.beforeInvoke(obj, method, args);
 		return re;
 	}
 

@@ -38,8 +38,9 @@ public interface HttpAdaptor {
 	 * 
 	 * @param request
 	 * @param response
+	 * @Param pathArg 字符串数组，路径参数。
 	 * @return 调用参数数组
 	 */
-	Object[] adapt(HttpServletRequest request, HttpServletResponse response);
+	Object[] adapt(HttpServletRequest request, HttpServletResponse response, String[] pathArgs);
 
 }

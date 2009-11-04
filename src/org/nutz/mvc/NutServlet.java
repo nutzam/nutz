@@ -80,11 +80,12 @@ public class NutServlet extends HttpServlet {
 		Mvcs.updateRequestAttributes(req);
 		String path = Mvcs.getRequestPath(req);
 		// get Url and invoke it
-		ActionInvoker invoker = urls.get(path);
-		if (null == invoker) {
+		ActionInvoking ing = urls.get(path);
+		if (null == ing.getInvoker() || null == ing) {
 			resp.setStatus(404);
-		} else
-			invoker.invoke(req, resp);
+		} else {
+			ing.invoke(req, resp);
+		}
 	}
 
 }

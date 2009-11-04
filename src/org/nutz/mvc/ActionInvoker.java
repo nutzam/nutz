@@ -5,6 +5,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface ActionInvoker {
 
-	void invoke(HttpServletRequest request, HttpServletResponse response);
+	void invoke(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs);
 
 }
