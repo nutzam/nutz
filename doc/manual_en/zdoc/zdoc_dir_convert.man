@@ -1,0 +1,14 @@
+#title:zDoc Folder Transfer Detail
+#index:0,1
+#author:Peter.Tung(mastung@gmail.com)
+
+To convert folder into other groups of HTMLs
+	 * Generate a group HTML elements based on index.xml
+	 * Insert these HTML elements into `${html}` in index.html file in the folder
+	 * If there is an zdoc.css file, insert the zdoc.css into every generated HTML files
+	 * If there are other css and js files, to copy all of other css and js files into the generated folders
+	
+To merge files into one
+	 * The process is the same between PDF and HTML.
+	 * It will generate chapters and the structure based on the index.xml
+	 * Each zDoc files will be the content of chapters.
