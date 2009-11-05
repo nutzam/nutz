@@ -1,0 +1,67 @@
+#title: Use index.xml as index file
+#index:0,1
+#author:Peter.Tung(mastung@gmail.com)
+
+About index.xml
+	Why we need index file
+		To suppose that, you would like to put many zDoc files in one folder or its subfolder. And then, you may:
+		 # To output everything to another folder
+			 * Normally, they may be transfered to HTMLs.
+		 # To merge zDoc files into another file.
+			* Could be a single HTML
+			* Or a PDF more possibly
+		To achieve the mission, we have to know:
+			* Which files should be involved?
+			* If the output is HTML, what is the index?
+			* If to merge into one file, what are the chapters in it, and what's the order?
+		
+		So from {*index.xml}, zDoc transformer could get every information it needs.
+	
+	Why XML format
+		 * zDoc users may not be programmers.
+		 * Not every programmer likes JSON. None programmer doesn't like JSON definitely, because of too many '{' and '}'.
+		 * XML is flexible and extensible
+		 * XML is structured
+		 * There is only one index file. XML can not bring too much boring.
+
+index.xml structure
+	It is as simple as what you think.
+	 * Only one element: `<doc>`,
+	 * `<doc>` only has 2 daily usage attributes and 2 uncommon attributes.
+	 * `<doc>` supports nesting
+	
+	index.xml sample:
+	{{{<index.xml>
+	<?xml version="1.0"?>
+	<doc title="your Doc name" author="author name" index="catalog level">
+		<doc path="doc name in the base folder.zdoc"	title="doc title"/>
+		<doc path="folder name" title="catalog name">
+			<doc path="doc name.zdoc"/>
+		</doc>
+	</doc>
+	}}}
+	More detail sample, suppose your folder structure is like this:
+	
+	<ex01.png>
+
+	We can see, the index.xml should be:
+	{{{<index.xml>
+	<?xml version="1.0"?>
+	<doc title="Doc Sample" author="zozoh(zozohtnt@gmail.com)" index="0,1">
+		<doc path="preface.zdoc" title="Preface"/>
+		<doc path="part1" title="Part 1">
+			<doc path="overview.zdoc"/>
+			<doc path="section1.zdoc"/>
+		</doc>
+	</doc>
+	}}}
+	 * Root element `<doc>` is linked to docroot, {*the folder contains index.xml}。
+	 * In root element, you can specify the default author for the document by using attribute @author. If there is no statement for #author in zDoc files, they will be considered to be issued by the default author. 
+	 * Value of attribute @index is matching the definition {#0AA;*CatalogIndex} in [zdoc_syntax.html zDoc grammar]
+	 * Attribute @path is used to specified the related folder or file.
+		 * For folder: If you do not specify the title ({#080;_ by attribute @title}), the value will be the folder name.
+		 * For file:，If you do not specify the title ({#080;_ by attribute @title}), the value will be one of #title in the file. See [zdoc_syntax.html zDoc grammar] chapter {#0AA;*Document Attribute}.
+
+
+
+
