@@ -43,4 +43,17 @@ public class LangTest {
 		assertEquals("AB", sb.toString());
 	}
 
+	@Test
+	public void test_map_equles() {
+		Map<?, ?> map1 = Lang.map("{a:1,b:2}");
+		Map<?, ?> map2 = Lang.map("{b:2,a:1}");
+
+		assertTrue(Lang.equals(map1, map2));
+
+		map1 = Lang.map("{a:'1',b:2}");
+		map2 = Lang.map("{b:2,a:1}");
+
+		assertFalse(Lang.equals(map1, map2));
+	}
+
 }

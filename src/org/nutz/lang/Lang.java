@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -538,6 +539,7 @@ public abstract class Lang {
 		if (null == obj || null == callback)
 			return;
 		try {
+			Class<T> eType = (Class<T>) Mirror.getTypeParams(callback.getClass())[0];
 			if (obj.getClass().isArray()) {
 				int len = Array.getLength(obj);
 				for (int i = 0; i < len; i++)
@@ -556,14 +558,25 @@ public abstract class Lang {
 						break;
 					}
 			} else if (obj instanceof Map) {
-				int len = ((Map) obj).size();
+				Map map = (Map) obj;
+				int len = map.size();
 				int i = 0;
-				for (Iterator<T> it = ((Map) obj).values().iterator(); it.hasNext();)
-					try {
-						callback.invoke(i++, it.next(), len);
-					} catch (ExitLoop e) {
-						break;
-					}
+				if (eType.isAssignableFrom(Entry.class)) {
+					for (Object v : map.entrySet())
+						try {
+							callback.invoke(i++, (T) v, len);
+						} catch (ExitLoop e) {
+							break;
+						}
+
+				} else {
+					for (Object v : map.entrySet())
+						try {
+							callback.invoke(i++, (T) ((Entry) v).getValue(), len);
+						} catch (ExitLoop e) {
+							break;
+						}
+				}
 			} else
 				try {
 					callback.invoke(0, (T) obj, 1);
