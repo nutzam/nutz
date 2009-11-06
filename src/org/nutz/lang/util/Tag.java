@@ -122,7 +122,7 @@ public class Tag extends SimpleNode<HtmlToken> {
 
 	private String attributes2String() {
 		StringBuilder sb = new StringBuilder();
-		for (Pair attr : get().getAttributes())
+		for (Pair<String> attr : get().getAttributes())
 			sb.append(' ').append(attr.toString());
 		return sb.toString();
 	}

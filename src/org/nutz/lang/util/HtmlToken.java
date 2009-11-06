@@ -19,12 +19,12 @@ public class HtmlToken {
 			Pattern.CASE_INSENSITIVE);
 
 	HtmlToken() {
-		attributes = new ArrayList<Pair>();
+		attributes = new ArrayList<Pair<String>>();
 	}
 
 	private String name;
 	private String value;
-	private List<Pair> attributes;
+	private List<Pair<String>> attributes;
 
 	public String getName() {
 		return name;
@@ -83,9 +83,9 @@ public class HtmlToken {
 	}
 
 	public HtmlToken attr(String name, String value) {
-		Pair attr = getAttr(name);
+		Pair<String> attr = getAttr(name);
 		if (null == attr) {
-			attr = new Pair(name, value);
+			attr = new Pair<String>(name, value);
 			attributes.add(attr);
 		} else {
 			attr.setValue(value);
@@ -97,19 +97,19 @@ public class HtmlToken {
 		return attr(name, String.valueOf(value));
 	}
 
-	public Pair getAttr(String name) {
-		for (Pair attr : attributes)
+	public Pair<String> getAttr(String name) {
+		for (Pair<String> attr : attributes)
 			if (attr.getName().equals(name))
 				return attr;
 		return null;
 	}
 
 	public String getAttrVal(String name) {
-		Pair p = getAttr(name);
-		return p == null ? null : p.getValue();
+		Pair<String> p = getAttr(name);
+		return p == null ? null : p.getString();
 	}
 
-	public List<Pair> getAttributes() {
+	public List<Pair<String>> getAttributes() {
 		return attributes;
 	}
 

@@ -1,5 +1,6 @@
 package org.nutz.lang.meta;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
@@ -7,22 +8,13 @@ import org.nutz.lang.Strings;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Pair {
+public class Pair<T> {
 
-	public Pair() {}
-
-	private static final String PTN_1 = "%s=%s";
-	private static final String PTN_2 = "%s='%s'";
-	private static final String PTN_3 = "%s=\"%s\"";
-
-	public Pair(String name, String value) {
-		this.name = name;
-		this.value = value;
-		pattern = PTN_3;
-	}
-
-	public Pair(String s) {
+	public static Pair<String> create(String s) {
 		String[] ss = Strings.splitIgnoreBlank(s, "=");
+		String name = null;
+		String value = null;
+		String pattern = PTN_3;
 		if (null != ss)
 			if (ss.length == 1) {
 				name = ss[0];
@@ -41,11 +33,26 @@ public class Pair {
 					}
 				}
 			}
+		Pair<String> re = new Pair<String>(name, value);
+		re.pattern = pattern;
+		return re;
+	}
+
+	public Pair() {}
+
+	private static final String PTN_1 = "%s=%s";
+	private static final String PTN_2 = "%s='%s'";
+	private static final String PTN_3 = "%s=\"%s\"";
+
+	public Pair(String name, T value) {
+		this.name = name;
+		this.value = value;
+		pattern = PTN_3;
 	}
 
 	private String name;
 
-	private String value;
+	private T value;
 
 	private String pattern;
 
@@ -57,11 +64,15 @@ public class Pair {
 		this.name = name;
 	}
 
-	public String getValue() {
+	public T getValue() {
 		return value;
 	}
 
-	public void setValue(String value) {
+	public String getString() {
+		return value == null ? null : value.toString();
+	}
+
+	public void setValue(T value) {
 		this.value = value;
 	}
 
@@ -69,9 +80,9 @@ public class Pair {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj instanceof Pair)
-			return Strings.equals(((Pair) obj).name, name)
-					&& Strings.equals(((Pair) obj).value, value);
+		if (obj instanceof Pair<?>)
+			if (Strings.equals(((Pair<?>) obj).name, name))
+				Lang.equals(((Pair<?>) obj).value, value);
 		return false;
 	}
 
@@ -82,7 +93,7 @@ public class Pair {
 
 	@Override
 	public String toString() {
-		String v = null == value ? "" : value;
+		String v = null == value ? "" : value.toString();
 		v = v.replace("\"", "&quot;");
 		return String.format(pattern, name, v);
 	}
