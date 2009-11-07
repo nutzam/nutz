@@ -309,8 +309,10 @@ public class Mirror<T> {
 		return list.toArray(new Method[list.size()]);
 	}
 
-	private static RuntimeException makeSetValueException(Class<?> type, String name, Object value,
-			Exception e) {
+	private static RuntimeException makeSetValueException(	Class<?> type,
+															String name,
+															Object value,
+															Exception e) {
 		return new FailToSetValueException(String.format(
 				"Fail to set value [%s] to [%s]->[%s] because '%s'", value, type.getName(), name, e
 						.getMessage()));
@@ -484,6 +486,17 @@ public class Mirror<T> {
 		throw new NoSuchMethodException(String.format(
 				"Fail to find Method %s->%s with params:\n%s", klass.getName(), name, Castors.me()
 						.castToString(paramTypes)));
+	}
+
+	public Method[] findMethods(String name, int argNumber) {
+		List<Method> methods = new LinkedList<Method>();
+		for (Method m : klass.getMethods())
+			if (m.getName().equals(name))
+				if (argNumber < 0)
+					methods.add(m);
+				else if (m.getParameterTypes().length == argNumber)
+					methods.add(m);
+		return methods.toArray(new Method[methods.size()]);
 	}
 
 	public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
@@ -709,6 +722,10 @@ public class Mirror<T> {
 				|| java.sql.Timestamp.class.isAssignableFrom(klass)
 				|| java.sql.Date.class.isAssignableFrom(klass)
 				|| java.sql.Time.class.isAssignableFrom(klass);
+	}
+
+	public String toString() {
+		return klass.getName();
 	}
 
 	static Object[] blankArrayArg(Class<?>[] pts) {

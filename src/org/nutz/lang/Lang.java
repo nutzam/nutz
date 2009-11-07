@@ -35,7 +35,7 @@ public abstract class Lang {
 
 	public static final String NULL = "";
 
-	public static RuntimeException makeNotImplement() {
+	public static RuntimeException noImplement() {
 		return new RuntimeException("Not implement yet!");
 	}
 
@@ -47,6 +47,10 @@ public abstract class Lang {
 													String format,
 													Object... args) {
 		return Mirror.me(classOfT).born(String.format(format, args));
+	}
+
+	public static RuntimeException wrapThrow(Throwable e, String fmt, Object... args) {
+		return new RuntimeException(String.format(fmt, args), e);
 	}
 
 	public static RuntimeException wrapThrow(Throwable e) {

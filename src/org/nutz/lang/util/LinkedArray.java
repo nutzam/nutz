@@ -13,12 +13,18 @@ public class LinkedArray<T> {
 	}
 
 	public LinkedArray(int size) {
+		this(null, size);
+	}
+
+	public LinkedArray(Class<T> eleType, int size) {
+		this.eleType = eleType;
 		if (size < 0)
 			Lang.makeThrow("width must >0!");
 		this.width = size;
 		cache = new ArrayList<T[]>();
 	}
 
+	private Class<T> eleType;
 	private int offset;
 	private int cursor;
 	private int width;
@@ -30,7 +36,10 @@ public class LinkedArray<T> {
 		int row = cursor / width;
 		int i = cursor % width;
 		if (cache.size() == 0 || (cursor != offset && i == 0)) {
-			array = (T[]) Array.newInstance(e.getClass(), width);
+			if (null == eleType)
+				array = (T[]) Array.newInstance(e.getClass(), width);
+			else
+				array = (T[]) Array.newInstance(eleType, width);
 			cache.add(array);
 		} else {
 			array = cache.get(row);
@@ -119,9 +128,17 @@ public class LinkedArray<T> {
 
 	@SuppressWarnings("unchecked")
 	public T[] toArray() {
-		if (size() == 0)
-			return (T[]) new Object[0];
-		T[] re = (T[]) Array.newInstance(first().getClass(), size());
+		if (size() == 0) {
+			if (null == eleType)
+				return (T[]) new Object[0];
+			return (T[]) Array.newInstance(eleType, 0);
+		}
+		T[] re;
+		if (null == eleType) {
+			re = (T[]) Array.newInstance(first().getClass(), size());
+		} else {
+			re = (T[]) Array.newInstance(eleType, size());
+		}
 		for (int i = 0; i < re.length; i++)
 			re[i] = this.get(i);
 		return re;
