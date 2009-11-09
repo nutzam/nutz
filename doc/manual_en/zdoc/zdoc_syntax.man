@@ -1,0 +1,139 @@
+#title: zDoc Grammar
+#index:0,1
+#author:Peter.Tung(mastung@gmail.com)
+--------------------------------------------------------------------------------------------
+What is zDoc
+	* zDoc is the plain text document.
+	* zDoc must be UTF-8 encoded.
+	* It's parsed by line to line.
+--------------------------------------------------------------------------------------------
+Title and Paragraph
+	{{{<zDoc>
+	This is the title
+		This is the content
+
+		This is the second level title
+			This is the content
+
+		The second level title
+		can be wrapped
+			and with the content at the following line with one more indent
+	}}}
+	* Indent line is the {*sub element} of its previous line
+	* It is the title, if it contains {*sub element} lines
+	* zDoc can be extended as many title and sub title as you want
+--------------------------------------------------------------------------------------------
+Hyperlink
+	* Hyperlink is wrapped by `[` and `]` in one line
+	* `[http://www.google.com]` will be displayed as [http://www.google.com]
+	* `[http://www.google.com Google]` will be displayed as [http://www.google.com Google]
+	* `[http://www.google.com text with whitespace]` will be displayed as [http://www.google.com text with whitespace]
+	* `[http://nutz.googlecode.com <http://code.google.com/p/nutz/logo?logo_id=1239077401>]` will be displayed as
+		[http://nutz.googlecode.com <http://code.google.com/p/nutz/logo?logo_id=1239077401>]
+--------------------------------------------------------------------------------------------
+Escape character
+	* The content is not encoded and decoded, which is wrapped by ``
+	* Two ```` together will be displayed as one ``
+--------------------------------------------------------------------------------------------
+Text Style
+	zDoc supports the following text styles, not supported underline and font color right now
+	|| {*Name}		|| {*zDoc Grammar}		|| {*Text}				||
+	|| Bold			|| `{*some text}`		|| {*some text}			||
+	|| Italic		|| `{/some text}`		|| {/some text}			||
+	|| Underline	|| `{_some text}`		|| {_some text}			||
+	|| Strikethrough|| `{~some text}`		|| {~some text}			||
+	|| Red Italic	|| `{#F00;_some text}`	|| {#F00;_some text}	||
+	|| Strikethrough Italic	|| `{*/~some text}`		|| {*/~some text}		||
+	|| Superscript	|| `txt{^sup}`			|| txt{^sup}			||
+	|| Subscript	|| `txt{,sub}`			|| txt{,sub}			||
+	{_#080;There is no restrict on the style order}
+--------------------------------------------------------------------------------------------
+Picture
+	Format is
+	{{{
+	<[Width x Height:]picture address>
+	}}}
+	* It will be presented as picture, while it is wrapped by `<` and `>`
+	* If the address is begin with http:// or https://, it will be treated as remote picture
+	* Otherwise it will be treated as local picture
+		* Local pictures must exist
+		* If the local picture exist, it will be {#900;*activated}
+		* {#900;*activated} means
+			* If the picture address is absolute address, there is no change
+			* If it is relative address, the picture will be copied to the destination to active the picture url
+	
+	For examples
+	{{{
+	Picture：<../logo.png>
+	}}}
+	will be displayed as:
+
+	Picture：<../logo.png>
+
+	Of cause, we can specify its size
+	{{{
+	Picture：<60x15:../logo.png>
+	}}}
+	will be displayed as:
+
+	Picture：<60x15:../logo.png>
+
+	{#F00;*attention}, you have to specify both the width and height meanwhile
+--------------------------------------------------------------------------------------------
+Horizontal line
+	* If the whole line content is filled by more than 5 `-`, the line will be treated as horizontal line
+	* For example, if one line is
+		{{{<zDoc>
+		-----
+		}}}
+		it will be transfered to the following HTML
+		{{{<HTML>
+		<div class="hr"></div>
+		}}}
+--------------------------------------------------------------------------------------------
+Code
+	* If the `{{{` is at the begin of one line, the following content will be treated as code, until the line started with the `}}}`
+	* `{{{<java>` means the code type is Java source code
+		* You can write any code as you want, like C#, Python, SQL, HTML, etc.
+	For example
+
+	`{{{<Javascript>`
+
+	`function abc(msg){`
+
+	 `alert(msg);`
+
+	`}`
+
+	`}}}`
+	
+	it will be displayed as:
+	{{{<Javascript>
+	function abc(msg){
+		alert(msg);
+	}
+	}}}
+--------------------------------------------------------------------------------------------
+Table
+	* The lines, begin with || and end with ||, will be treated as rows of table 
+	* Uninterrupted rows will be treated in one table
+	* The content between Character || will be treated as one table cell
+		For example
+		{{{<zDoc>
+		||A||{*B}||[http://www.google.com Google]||
+		||X||{*YYY}||[http://www.apache.org Apache]||
+		}}}
+		will be displayed as：
+		||A||{*B}||[http://www.google.com Google]||
+		||X||{*YYY}||[http://www.apache.org Apache]||
+--------------------------------------------------------------------------------------------
+Category index
+	* It will be generated as category, where you write the `#index:3`
+		* the 3 means the category is the third level
+	* {#A00;*level are begin with 0}
+	* To specify `#index:0,3` means the category level is from 0 to 3
+--------------------------------------------------------------------------------------------
+Document attributes
+	|| {*zDoc Grammar}			|| {*Description}															||
+	|| `#title:Document Title`	|| Specify the document title, like `#title:It's a beautiful life`														||
+	|| `#author:Author`	|| Specify the document author, format is：{#0AA;author name(email)}, the {#0AA;*(email)} is optional, like `#author:zozoh<zozoh@mail.com>`	||
