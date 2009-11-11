@@ -11,29 +11,24 @@ public class MirrorBorning<T> implements Borning<T> {
 
 	private Mirror<T> mirror;
 	private Class<T> type;
-	private Object[] args;
 	private Object dynaArg;
 	private BorningInvoker<T> invoker;
 
 	public MirrorBorning(Mirror<T> mirror, Object... args) {
 		this.mirror = mirror;
 		this.type = mirror.getType();
-		this.args = null == args ? new Object[0] : args;
+		if (null == args)
+			args = new Object[0];
 		dynaArg = Mirror.evalArgToRealArray(args);
-		if (this.args.length == 0) {
-			evalNullArgs();
+		if (args.length == 0) {
+			evalNullArgs(args);
 		} else {
-			evalWithArgs();
+			evalWithArgs(args);
 		}
 		if (null == invoker) {
 			throw new BorningException(new RuntimeException("Don't know how to born it!"), type,
 					args);
 		}
-	}
-
-	@Deprecated
-	public T born() {
-		return born(args);
 	}
 
 	public T born(Object[] args) {
@@ -57,7 +52,7 @@ public class MirrorBorning<T> implements Borning<T> {
 	 * <li>Static Method with one array arguments
 	 * </ol>
 	 */
-	private void evalNullArgs() {
+	private void evalNullArgs(Object[] args) {
 		try {
 			invoker = new EmptyArgsConstructorInvoker(type.getConstructor());
 		} catch (Exception e) {
@@ -106,7 +101,7 @@ public class MirrorBorning<T> implements Borning<T> {
 	 * </ol>
 	 */
 
-	private void evalWithArgs() {
+	private void evalWithArgs(Object[] args) {
 		Class<?>[] argTypes = Mirror.evalToTypes(args);
 		for (Constructor<?> cc : type.getConstructors()) {
 			Class<?>[] pts = cc.getParameterTypes();

@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.json.JsonLoader;
+import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 

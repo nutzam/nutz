@@ -6,7 +6,7 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Pojos;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.json.JsonLoader;
+import org.nutz.ioc.loader.json.JsonLoader;
 
 public class LogTest {
 

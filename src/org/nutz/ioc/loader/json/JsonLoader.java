@@ -1,5 +1,6 @@
 package org.nutz.ioc.loader.json;
 
+import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,9 +14,15 @@ import org.nutz.lang.Streams;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
+@SuppressWarnings("unchecked")
 public class JsonLoader extends MapLoader {
 
-	@SuppressWarnings("unchecked")
+	public JsonLoader(Reader reader) {
+		String s = Lang.readAll(reader);
+		Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(s);
+		this.setMap(map);
+	}
+
 	public JsonLoader(String... files) {
 		Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
 		for (String path : files) {

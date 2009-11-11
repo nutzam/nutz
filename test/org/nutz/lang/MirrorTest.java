@@ -12,7 +12,6 @@ import org.nutz.NutzEnum;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.test.meta.Base;
-import org.nutz.ioc.FailToMakeObjectException;
 
 public class MirrorTest {
 
@@ -85,8 +84,6 @@ public class MirrorTest {
 		assertFalse(Mirror.me(String.class).canCastToDirectly(StringBuilder.class));
 		assertFalse(Mirror.me(boolean.class).canCastToDirectly(float.class));
 		assertFalse(Mirror.me(boolean.class).canCastToDirectly(short.class));
-
-		assertTrue(Mirror.me(FailToMakeObjectException.class).canCastToDirectly(Throwable.class));
 
 		assertTrue(Mirror.me(Character.class).canCastToDirectly(char.class));
 		assertTrue(Mirror.me(Character.class).canCastToDirectly(Character.class));

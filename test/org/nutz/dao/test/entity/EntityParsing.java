@@ -11,7 +11,6 @@ import org.nutz.dao.entity.impl.DefaultEntityMaker;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.Stabber;
-import org.nutz.ioc.meta.Obj;
 
 public class EntityParsing {
 
@@ -50,13 +49,6 @@ public class EntityParsing {
 	@Test
 	public void eval_id_name() {
 		Entity<?> en = en(Platoon.class);
-		assertEquals("id", en.getIdField().getName());
-		assertEquals("name", en.getNameField().getName());
-	}
-
-	@Test
-	public void eval_obj_id_name() {
-		Entity<?> en = en(Obj.class);
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 	}

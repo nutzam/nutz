@@ -9,7 +9,7 @@ import org.nutz.aop.javassist.meta.Vegetarian;
 import org.nutz.aop.javassist.meta.Zebra;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.json.JsonLoader;
+import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.json.Json;
 
 public class NutIocAopTest {
