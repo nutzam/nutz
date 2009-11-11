@@ -265,6 +265,9 @@ public class Mirror<T> {
 		return false;
 	}
 
+	/**
+	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
+	 */
 	public Field[] getFields() {
 		Class<?> theClass = klass;
 		Map<String, Field> list = new HashMap<String, Field>();
@@ -280,6 +283,22 @@ public class Mirror<T> {
 			theClass = theClass.getSuperclass();
 		}
 		return list.values().toArray(new Field[list.size()]);
+	}
+
+	/**
+	 * 获取所有的方法，包括私有方法。不包括 Object 的方法
+	 */
+	public Method[] getMethods() {
+		Class<?> theClass = klass;
+		List<Method> list = new LinkedList<Method>();
+		while (null != theClass && !(theClass == Object.class)) {
+			Method[] ms = theClass.getDeclaredMethods();
+			for (int i = 0; i < ms.length; i++) {
+				list.add(ms[i]);
+			}
+			theClass = theClass.getSuperclass();
+		}
+		return list.toArray(new Method[list.size()]);
 	}
 
 	public Method[] getAllDeclaredMethods(Class<?> top) {
@@ -732,12 +751,14 @@ public class Mirror<T> {
 		return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
 	}
 
+	/**
+	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
+	 */
 	public static Type[] getTypeParams(Class<?> klass) {
 		Type superclass = klass.getGenericSuperclass();
-		if (superclass instanceof Class<?>) {
-			throw new RuntimeException("Missing type parameter.");
-		}
-		return ((ParameterizedType) superclass).getActualTypeArguments();
+		if (superclass instanceof ParameterizedType)
+			return ((ParameterizedType) superclass).getActualTypeArguments();
+		return null;
 	}
 
 	public static enum MatchType {

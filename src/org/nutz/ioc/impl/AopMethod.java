@@ -1,7 +1,7 @@
 package org.nutz.ioc.impl;
 
-import org.nutz.aop.MethodListener;
 import org.nutz.aop.MethodMatcher;
+import org.nutz.aop.MethodListener;
 
 public class AopMethod {
 

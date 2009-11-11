@@ -2,8 +2,9 @@ package org.nutz.ioc.aop;
 
 import java.lang.reflect.Modifier;
 
-import org.nutz.aop.MethodListener;
 import org.nutz.aop.MethodMatcher;
+import org.nutz.aop.MethodListener;
+import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -46,11 +47,11 @@ public class DefaultHookingFactory implements ObjectHookingFactory {
 	protected MethodMatcher evalMethodMatcher(AopHookMethod hm) {
 		MethodMatcher mtdMatcher = null;
 		if (null == hm.getAccess() || AopHookMethod.ACCESS.ALL == hm.getAccess()) {
-			mtdMatcher = new MethodMatcher(hm.getRegex(), hm.getIgnore());
+			mtdMatcher = new RegexMethodMatcher(hm.getRegex(), hm.getIgnore());
 		} else if (AopHookMethod.ACCESS.PUBLIC == hm.getAccess()) {
-			mtdMatcher = new MethodMatcher(hm.getRegex(), hm.getIgnore(), Modifier.PUBLIC);
+			mtdMatcher = new RegexMethodMatcher(hm.getRegex(), hm.getIgnore(), Modifier.PUBLIC);
 		} else if (AopHookMethod.ACCESS.PROTECTED == hm.getAccess()) {
-			mtdMatcher = new MethodMatcher(hm.getRegex(), hm.getIgnore(), Modifier.PROTECTED);
+			mtdMatcher = new RegexMethodMatcher(hm.getRegex(), hm.getIgnore(), Modifier.PROTECTED);
 		}
 		return mtdMatcher;
 	}

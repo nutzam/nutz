@@ -9,6 +9,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -538,12 +539,15 @@ public abstract class Lang {
 		throw new ExitLoop();
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked"})
 	public static <T> void each(Object obj, Each<T> callback) {
 		if (null == obj || null == callback)
 			return;
 		try {
-			Class<T> eType = (Class<T>) Mirror.getTypeParams(callback.getClass())[0];
+			Class<T>[] typeParams = (Class<T>[]) Mirror.getTypeParams(callback.getClass());
+			Class<T> eType = null;
+			if (typeParams != null && typeParams.length > 0)
+				eType = typeParams[0];
 			if (obj.getClass().isArray()) {
 				int len = Array.getLength(obj);
 				for (int i = 0; i < len; i++)
@@ -565,7 +569,7 @@ public abstract class Lang {
 				Map map = (Map) obj;
 				int len = map.size();
 				int i = 0;
-				if (eType.isAssignableFrom(Entry.class)) {
+				if (null != eType && eType.isAssignableFrom(Entry.class)) {
 					for (Object v : map.entrySet())
 						try {
 							callback.invoke(i++, (T) v, len);

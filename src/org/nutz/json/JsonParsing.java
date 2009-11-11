@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -164,6 +165,8 @@ class JsonParsing {
 			nextChar();
 			skipCommentsAndBlank();
 			// If Map
+			if(Map.class == type)
+				me = (Mirror<T>) Mirror.me(HashMap.class);
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
 						: (Map<String, Object>) me.born();

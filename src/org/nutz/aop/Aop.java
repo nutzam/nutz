@@ -39,6 +39,6 @@ public class Aop {
 	}
 
 	public static MethodMatcher matcher(String regex, String ignore, int mod) {
-		return new MethodMatcher(regex, ignore, mod);
+		return new RegexMethodMatcher(regex, ignore, mod);
 	}
 }
