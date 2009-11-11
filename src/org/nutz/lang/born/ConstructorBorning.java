@@ -2,18 +2,12 @@ package org.nutz.lang.born;
 
 import java.lang.reflect.Constructor;
 
-public class ConstructorInvoker<T> implements BorningInvoker<T> {
+public class ConstructorBorning<T> implements Borning<T> {
 
 	private Constructor<T> c;
-	private Object[] args;
 
-	public ConstructorInvoker(Constructor<T> c, Object[] args) {
+	public ConstructorBorning(Constructor<T> c) {
 		this.c = c;
-		this.args = args;
-	}
-
-	public T born() {
-		return born(args);
 	}
 
 	public T born(Object[] args) {

@@ -3,7 +3,7 @@ var ioc = {
 // Data source
 	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
-		lifecycle : {
+		events : {
 			depose :"close"
 		},
 		fields : {

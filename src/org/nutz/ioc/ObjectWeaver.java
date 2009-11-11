@@ -3,7 +3,11 @@ package org.nutz.ioc;
 public interface ObjectWeaver {
 
 	/**
-	 * 编织一个对象，如果你的实现缓存了对象，直接返回
+	 * 编织一个对象
+	 * 
+	 * @param ing
+	 *            对象注入时
+	 * @return 编织后对象
 	 */
 	Object weave(IocMaking ing);
 

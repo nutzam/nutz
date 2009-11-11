@@ -14,7 +14,7 @@
 		<doc path="use_view.man"/>
 		<doc path="field_filter.man"/>
 		<doc path="dynamic_table_name.man"/>
-			<doc path="links_overview.man">
+		<doc path="links_overview.man">
 			<doc path="links_one.man"/>
 			<doc path="links_many.man"/>
 			<doc path="links_many_many.man"/>

@@ -103,7 +103,7 @@ public class NutIoc implements Ioc2 {
 				}
 			}
 		}
-		return re.get(ing);
+		return (T) re.get(type, ing);
 	}
 
 	public <T> T get(Class<T> type, String name) {

@@ -7,4 +7,4 @@ import org.nutz.ioc.json.AllJsonIocTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ChainParsingTest.class, AllJsonIocTest.class})
-public class AllIocTest {}
+public class AllIoc {}

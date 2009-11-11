@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.born.Borning;
 
 public class Mirror<T> {
 
@@ -457,12 +458,12 @@ public class Mirror<T> {
 		}
 	}
 
-	public MirrorBorning<T> getBorning(Object... args) {
-		return new MirrorBorning<T>(this, args);
+	public Borning<T> getBorning(Object... args) {
+		return new MirrorBorning<T>(this, args).getBorning();
 	}
 
 	public T born(Object... args) {
-		return this.getBorning(args).born(args);
+		return new MirrorBorning<T>(this, args).born();
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {

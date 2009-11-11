@@ -16,12 +16,21 @@ public class UTF8JsonView implements View {
 
 	private JsonFormat format;
 
+	private Object data;
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
 	public UTF8JsonView(JsonFormat format) {
 		this.format = format;
 	}
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws IOException {
+	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+			throws IOException {
 		Writer writer = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), "UTF-8"));
+		if (null == obj)
+			obj = data;
 		Json.toJson(writer, obj, format);
 		writer.close();
 	}

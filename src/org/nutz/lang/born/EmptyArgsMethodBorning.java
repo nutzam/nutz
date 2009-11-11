@@ -2,21 +2,12 @@ package org.nutz.lang.born;
 
 import java.lang.reflect.Method;
 
-public class EmptyArgsMethodInvoker<T> implements BorningInvoker<T> {
+public class EmptyArgsMethodBorning<T> implements Borning<T> {
 
 	private Method method;
 
-	public EmptyArgsMethodInvoker(Method method) {
+	public EmptyArgsMethodBorning(Method method) {
 		this.method = method;
-	}
-
-	@SuppressWarnings("unchecked")
-	public T born() {
-		try {
-			return (T) method.invoke(null);
-		} catch (Exception e) {
-			throw new BorningException(e);
-		}
 	}
 
 	@SuppressWarnings("unchecked")

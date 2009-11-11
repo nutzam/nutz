@@ -33,7 +33,7 @@ public class ObjectProxy {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T get(IocMaking ing) {
+	public <T> T get(Class<T> classOfT, IocMaking ing) {
 		Object obj = weaver.weave(ing);
 		if (null != fetch)
 			fetch.trigger(obj);

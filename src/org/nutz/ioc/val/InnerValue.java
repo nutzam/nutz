@@ -16,7 +16,7 @@ public class InnerValue implements ValueProxy {
 	public Object get(IocMaking ing) {
 		IocMaking innering = ing.clone(null);
 		ObjectProxy op = ing.getObjectMaker().make(innering, iobj);
-		return op.get(innering);
+		return op.get(iobj.getType(), innering);
 	}
 
 }
