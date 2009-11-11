@@ -1,31 +1,47 @@
 package org.nutz.ioc;
 
-import org.nutz.ioc.meta.Val;
-
+/**
+ * Ioc 容器接口
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public interface Ioc {
 
-	<T> T get(Class<T> classOfT, String name) throws FailToMakeObjectException,
-			ObjectNotFoundException;
-	
-	boolean hasName(String name);
-
-	String[] keys();
-
 	/**
-	 * Just clear all cache, if some object need to be deposed, depose it.
+	 * 从容器中获取一个对象。同时会触发对象的 fetch 事件。如果第一次构建对象 则会先触发对象 create 事件
+	 * 
+	 * @param <T>
+	 * @param type
+	 *            对象的类型，如果为 null，在对象的注入配置中，比如声明对象的类型
+	 *            <br>如果不为null对象注入配置的类型优先
+	 * @param name
+	 *            对象的名称
+	 * @return 对象本身
 	 */
-	void clear();
+	<T> T get(Class<T> type, String name);
 
 	/**
-	 * Depose all resources, when the method is invoked, current ioc will not
-	 * availiable
+	 * 容器是否存在某一特定对象
+	 * 
+	 * @param name
+	 * @return
+	 */
+	boolean has(String name);
+	
+	
+	/**
+	 * @return 所有在容器中定义了的对象名称列表。
+	 */
+	String[] getName();
+
+	/**
+	 * 将容器恢复成初始创建状态，所有的缓存都将被清空
+	 */
+	void reset();
+
+	/**
+	 * 将容器注销，触发对象的 depose 事件
 	 */
 	void depose();
-
-	Ioc add(ValueMaker maker);
-
-	ValueMaker findValueMaker(Val val);
-
-	boolean isSingleton(Class<?> classOfT, String name);
 
 }
