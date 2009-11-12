@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doc title="Nutz 框架使用发者手册" author="zozoh(zozohtnt@gmail.com)">
-	<doc path="overview.man"/>
+	<doc path="preface.man"/>
 	<doc path="packages.man"/>
 	<doc path="version_naming_rule.man"/>
 	<doc path="for_committer.man"/>
