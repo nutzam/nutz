@@ -60,7 +60,7 @@ public class Sqls {
 		List<DTable> dts = parser.parse(dods);
 		for (DTable dt : dts) {
 			if (dao.exists(dt.getName()))
-				dao.clear(dt.getName());
+				dao.clear(dt.getName(),null);
 			else {
 				Sql c = maker.makeCreateSql(dt);
 				dao.execute(c);

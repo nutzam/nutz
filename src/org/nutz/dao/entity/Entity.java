@@ -14,6 +14,11 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
+/**
+ * 描述了一个 POJO 对象同数据表之间的映射关系。
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Entity<T> {
 
 	public Entity() {
@@ -124,7 +129,7 @@ public class Entity<T> {
 
 	public List<Link> getLinks(String regex) {
 		if (null == regex)
-			return null;
+			return links;
 		List<Link> re = _ln_cache.get(regex);
 		if (null == re) {
 			synchronized (this) {

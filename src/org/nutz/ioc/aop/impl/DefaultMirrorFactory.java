@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.aop.ClassAgent;
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
 import org.nutz.aop.SimpleMethodMatcher;
 import org.nutz.aop.javassist.JavassistClassAgent;
@@ -46,7 +46,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 					if (Modifier.isPublic(mod) || Modifier.isProtected(mod)) {
 						MethodMatcher mm = new SimpleMethodMatcher(m);
 						for (String nm : aop.value()) {
-							MethodListener ml = ioc.get(MethodListener.class, nm);
+							MethodInterceptor ml = ioc.get(MethodInterceptor.class, nm);
 							ca.addListener(mm, ml);
 						}
 					} else {

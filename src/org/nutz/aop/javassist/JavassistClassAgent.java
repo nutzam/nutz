@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.MethodMatcher;
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -35,26 +35,26 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 	private ArrayList<Pair> pairs;
 
 	private static class Pair {
-		Pair(MethodMatcher matcher, MethodListener listener) {
+		Pair(MethodMatcher matcher, MethodInterceptor listener) {
 			this.matcher = matcher;
 			this.listener = listener;
 		}
 
 		MethodMatcher matcher;
-		MethodListener listener;
+		MethodInterceptor listener;
 	}
 
 	private static class Pair2 {
-		Pair2(Method method, MethodListener listener) {
+		Pair2(Method method, MethodInterceptor listener) {
 			this.method = method;
 			this.listener = listener;
 		}
 
 		Method method;
-		MethodListener listener;
+		MethodInterceptor listener;
 	}
 
-	public ClassAgent addListener(MethodMatcher matcher, MethodListener listener) {
+	public ClassAgent addListener(MethodMatcher matcher, MethodInterceptor listener) {
 		if (null != listener)
 			pairs.add(new Pair(matcher, listener));
 		return this;
@@ -67,12 +67,12 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 			int mod = m.getModifiers();
 			if (mod == 0 || Modifier.isStatic(mod) || Modifier.isPrivate(mod))
 				continue;
-			ArrayList<MethodListener> mls = new ArrayList<MethodListener>();
+			ArrayList<MethodInterceptor> mls = new ArrayList<MethodInterceptor>();
 			for (Pair p : pairs)
 				if (p.matcher.match(m))
 					mls.add(p.listener);
 			if (mls.size() > 0) {
-				mmls.add(new Pair2(m, new JavassistMethodListener(mls)));
+				mmls.add(new Pair2(m, new JavassistMethodInterceptor(mls)));
 			}
 		}
 		Pair2[] list = mmls.toArray(new Pair2[mmls.size()]);
@@ -128,7 +128,7 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 			for (int i = 0; i < pairs.length; i++) {
 				Method method = pairs[i].method;
 				try {
-					Javassist.addStaticField(pool, newClass, MethodListener.class, "__lst_" + i);
+					Javassist.addStaticField(pool, newClass, MethodInterceptor.class, "__lst_" + i);
 					Javassist.addStaticField(pool, newClass, Method.class, "__m_" + i);
 					CtMethod cm = Javassist.makeOverrideMethod(pool, newClass, method, i);
 					newClass.addMethod(cm);
@@ -147,7 +147,7 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 		try {
 			for (int i = 0; i < pairs.length; i++) {
 				Field field = thisClass.getDeclaredField("__lst_" + i);
-				MethodListener ml = pairs[i].listener;
+				MethodInterceptor ml = pairs[i].listener;
 				field.setAccessible(true);
 				field.set(null, ml);
 				field.setAccessible(true);

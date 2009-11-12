@@ -1,13 +1,11 @@
 package org.nutz.dao;
 
+/**
+ * 描述了一个数据源的元数据
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class DatabaseMeta {
-
-	public static final String DB2 = "db2";
-	public static final String PSQL = "psql";
-	public static final String ORACLE = "oracle";
-	public static final String SQLSERVER = "sqlserver";
-	public static final String MYSQL = "mysql";
-	public static final String UNKNOWN = "unknown";
 
 	private static enum TYPE {
 		DB2, PSQL, ORACLE, SQLSERVER, MYSQL, UNKNOWN
@@ -17,10 +15,19 @@ public class DatabaseMeta {
 		type = TYPE.UNKNOWN;
 	}
 
+	/**
+	 * 现在所支持的数据库类型
+	 */
 	private TYPE type;
 
+	/**
+	 * 产品版本号
+	 */
 	private String version;
 
+	/**
+	 * 产品名称
+	 */
 	private String productName;
 
 	public String getProductName() {

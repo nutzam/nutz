@@ -36,6 +36,10 @@ final class Links {
 	private Object obj;
 	private Entity<?> entity;
 
+	boolean hasLinks() {
+		return all.size() > 0;
+	}
+
 	private void invoke(LinkInvoker walker, List<Link> list) {
 		if (null != list)
 			for (Iterator<Link> it = list.iterator(); it.hasNext();) {

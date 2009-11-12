@@ -8,8 +8,12 @@ import org.nutz.dao.entity.Entity;
  * 比较轻松的办法是从 'org.nutz.dao.pager.AbstractPager' 继承，因为它已经实现了除了 format 之外的所有 的方法。
  * <p>
  * 如果你想将你的 Pager 对象整合到 NutDao 实现中，请重新实现 PagerMaker 接口，从 DefaultPagerMaker 继承即可。
+ * <p>
+ * 通常，你可以通过 Dao 接口的 createPager() 方法，创建你需要的 Pager 实例。它会自动适配数据库类型
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.dao.Dao
  * 
  */
 public interface Pager {
@@ -20,7 +24,7 @@ public interface Pager {
 	int getPageCount();
 
 	/**
-	 * 当前是第几页
+	 * 当前是第几页， 从 1 开始
 	 */
 	int getPageNumber();
 

@@ -3,37 +3,37 @@ package org.nutz.aop.javassist;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.MethodInterceptor;
 
-class JavassistMethodListener implements MethodListener {
+class JavassistMethodInterceptor implements MethodInterceptor {
 
-	private List<MethodListener> listeners;
+	private List<MethodInterceptor> listeners;
 
-	public JavassistMethodListener(List<MethodListener> listeners) {
+	public JavassistMethodInterceptor(List<MethodInterceptor> listeners) {
 		this.listeners = listeners;
 	}
 
 	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
 		Object re = returnObj;
-		for (MethodListener ml : listeners)
+		for (MethodInterceptor ml : listeners)
 			re = ml.afterInvoke(obj, re, method, args);
 		return re;
 	}
 
 	public boolean beforeInvoke(Object obj, Method method, Object... args) {
 		boolean re = true;
-		for (MethodListener ml : listeners)
+		for (MethodInterceptor ml : listeners)
 			re &= ml.beforeInvoke(obj, method, args);
 		return re;
 	}
 
 	public void whenError(Throwable e, Object obj, Method method, Object... args) {
-		for (MethodListener ml : listeners)
+		for (MethodInterceptor ml : listeners)
 			ml.whenError(e, obj, method, args);
 	}
 
 	public void whenException(Exception e, Object obj, Method method, Object... args) {
-		for (MethodListener ml : listeners)
+		for (MethodInterceptor ml : listeners)
 			ml.whenException(e, obj, method, args);
 	}
 

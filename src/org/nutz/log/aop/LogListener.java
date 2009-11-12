@@ -3,12 +3,12 @@ package org.nutz.log.aop;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 
-public class LogListener implements MethodListener {
+public class LogListener implements MethodInterceptor {
 
 	public LogListener(Log log) {
 		this.log = log;

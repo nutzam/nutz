@@ -10,7 +10,44 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
+/**
+ * 是 Condition 的一个实现，这个类给你比较方便的方法来构建 Condition 接口的实例。
+ * 
+ * <h4>在 Dao 接口中使用</h4><br>
+ * 
+ * 比如一个通常的查询:
+ * <p>
+ * List<Pet> pets = dao.query(Pet.class,
+ * Cnd.where("name","LIKE","B%").asc("name"), null);
+ * 
+ * <h4>链式赋值示例</h4><br>
+ * Cnd.where("id", ">", 34).and("name","LIKE","T%").asc("name"); <br>
+ * 相当于<br>
+ * WHERE id>34 AND name LIKE 'T%' ORDER BY name ASC
+ * <p>
+ * Cnd.orderBy().desc("id"); <br>
+ * 相当于<br>
+ * ORDER BY id DESC
+ * 
+ * <h4 style=color:red>你还需要知道的是:</h4><br>
+ * <ul>
+ * <li>你设置的字段名，是 java 的字段名 -- 如果 Entity 里有，那么会被转换成数据库字段名
+ * <li>如果你设置的是 entity 中不存在的 java 字段名，则被认为是数据库字段名，将直接使用
+ * <li>你的值，如果是字符串，或者其他类字符串对象（某种 CharSequence），那么在转换成 SQL 时，会正确被单引号包裹
+ * <li>你的值如果是不可理解的自定义对象，会被转化成字符串处理
+ * </ul>
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.dao.Condition
+ */
 public class Cnd implements OrderBy, ExpGroup {
+
+	public void abc() {
+		Cnd.where("name", "LIKE", "B%").asc("name");
+		Cnd.where("id", ">", 34).and("name", "LIKE", "T%").asc("name");
+		Cnd.orderBy().desc("id");
+	}
 
 	/*------------------------------------------------------------------*/
 	public static Condition format(String format, Object... args) {

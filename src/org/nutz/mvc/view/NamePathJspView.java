@@ -13,8 +13,9 @@ public class NamePathJspView implements View {
 	private static final String OBJ_ATTR_NAME = "obj";
 
 	public NamePathJspView(String name) {
-		this.jspPath = new StringBuilder("/WEB-INF/").append(name.replace('.', '/')).append(".jsp")
-				.toString();
+		if (!Strings.isBlank(name))
+			this.jspPath = new StringBuilder("/WEB-INF/").append(name.replace('.', '/')).append(
+					".jsp").toString();
 	}
 
 	private String jspPath;

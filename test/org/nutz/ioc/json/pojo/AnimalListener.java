@@ -2,9 +2,9 @@ package org.nutz.ioc.json.pojo;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.MethodListener;
+import org.nutz.aop.MethodInterceptor;
 
-public class AnimalListener implements MethodListener {
+public class AnimalListener implements MethodInterceptor {
 
 	private StringBuilder sb;
 

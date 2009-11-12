@@ -401,9 +401,11 @@ public class NutDao implements Dao {
 	}
 
 	public <T> T fetchLinks(final T obj, String regex) {
-		if (null != obj && null != regex) {
+		if (null != obj) {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
+			if (!lns.hasLinks())
+				return obj;
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
 			// Many
@@ -580,11 +582,12 @@ public class NutDao implements Dao {
 		return sql.getUpdateCount();
 	}
 
-	public void updateRelation(	Class<?> classOfT,
+	public int updateRelation(	Class<?> classOfT,
 								String regex,
 								final Chain chain,
 								final Condition condition) {
 		final Links lns = new Links(null, getEntity(classOfT), regex);
+		final int[] re = {0};
 		Trans.exec(new Atom() {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
@@ -592,10 +595,12 @@ public class NutDao implements Dao {
 						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain).setCondition(
 								condition);
 						execute(sql);
+						re[0] += sql.getUpdateCount();
 					}
 				});
 			}
 		});
+		return re[0];
 	}
 
 	public <T> T updateWith(final T obj, String regex) {
@@ -666,8 +671,8 @@ public class NutDao implements Dao {
 		return func(entity.getTableName(), funcName, ef.getColumnName());
 	}
 
-	public int func(String tableName, String funcName, String fieldName) {
-		Sql sql = sqlMaker.func(tableName, funcName, fieldName);
+	public int func(String tableName, String funcName, String colName) {
+		Sql sql = sqlMaker.func(tableName, funcName, colName);
 		execute(sql);
 		return sql.getInt();
 	}

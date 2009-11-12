@@ -44,11 +44,6 @@ public class FileSqlManager implements SqlManager {
 	private List<String> keys;
 	private FilenameFilter sqkFileFilter;
 
-	public void setPaths(String... paths) {
-		this.paths = paths;
-		this.sqlMaps = null;
-	}
-
 	public boolean contains(String key) {
 		return sqlMaps.containsKey(key);
 	}
@@ -233,11 +228,6 @@ public class FileSqlManager implements SqlManager {
 		String get(String key) {
 			return map.get(key);
 		}
-	}
-
-	public void clear() {
-		this.keys.clear();
-		this.sqlMaps.clear();
 	}
 
 	public void remove(String key) {
