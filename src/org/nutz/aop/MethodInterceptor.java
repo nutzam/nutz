@@ -3,7 +3,7 @@ package org.nutz.aop;
 import java.lang.reflect.Method;
 
 /**
- * 方法拦截器接口。
+ * 方法拦截器
  * <p>
  * 你可以通过实现接口的四个方法，在一个方法调用之前，之后，发生异常，发生错误时加入自己的额外逻辑
  * 

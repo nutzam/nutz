@@ -63,18 +63,3 @@ Nutz 给你的快速实现
 		{{{<SQL>
 		WHERE (name LIKE 'P%' AND age>'20') OR (name LIKE 'S%' AND age<'30') ORDER BY name ASC
 		}}}
-------------------------------------------------------------------------------------------------------------
-HttpCondition 接口
-	* 在大多数部署在 JSP/Servlet 容器 {_(比如 Apache Tomcat)} 中的应用，SQL 的查询条件通常来自 HTTP 请求的参数。
-	* Nutz 在 mvc 的包中提供了 org.nutz.mvc.HttpCondition 接口
-		* 它本质上是个抽象类
-		* 它实现了 org.nutz.dao.Condition 接口
-	* 通过静态方法 HttpCondition.getInstance() 可以获得它的一个内部实现
-		* 这个实现将所有的 Http 参数假定成 SQL 的条件
-		* 所有的条件都是 " {*与(AND) } " 的关系
-		* 如果 HTTP 的参数为 {#A00;name=abc&age=15} 生成的 SQL 将为 {#00A;name='abc' AND age=15}
-	* 你可以通过继承 HttpCondition 实现自己的 HttpCondition
-		* 需要重载一个参数为 HttpServletRequest 的公共构造函数。
-		* 通过复写 setOrderBy 方法 以及实现 `toString(Entity<?>)` 来控制输出内容
-		* 你可以将你的 HttpCondition 配置在 Nutz.mvc 框架提供的 Query 控制器中
-			* 通过 Nutz.Ioc 框架，你可以很容易做到这一点

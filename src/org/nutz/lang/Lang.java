@@ -33,8 +33,6 @@ import org.nutz.lang.stream.StringWriter;
 
 public abstract class Lang {
 
-	public static final String NULL = "";
-
 	public static RuntimeException noImplement() {
 		return new RuntimeException("Not implement yet!");
 	}

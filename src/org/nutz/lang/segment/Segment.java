@@ -4,6 +4,11 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * 字符串片段。你可以通过这个接口的函数，为片段中的占位符设值。
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public interface Segment {
 
 	Segment setAll(Object v);

@@ -48,9 +48,9 @@ public class Link {
 	public Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.Many;
-		this.mapKeyField = Lang.NULL.equals(many.key()) ? null : many.key();
+		this.mapKeyField = "".equals(many.key()) ? null : many.key();
 		this.targetClass = many.target();
-		if (!Lang.NULL.equals(many.field())) {
+		if (!"".equals(many.field())) {
 			this.targetField = Mirror.me(this.targetClass).getField(many.field());
 			if (Mirror.me(this.targetField.getType()).isStringLike()) {
 				this.referField = mirror.getField(Name.class);
@@ -63,7 +63,7 @@ public class Link {
 	public Link(Mirror<?> mirror, Field field, ManyMany mm) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
-		this.mapKeyField = Lang.NULL.equals(mm.key()) ? null : mm.key();
+		this.mapKeyField = "".equals(mm.key()) ? null : mm.key();
 		this.targetClass = mm.target();
 		this.from = mm.from();
 		this.to = mm.to();

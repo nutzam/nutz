@@ -421,6 +421,22 @@ public interface Dao {
 	void clear(String tableName, Condition condition);
 
 	/**
+	 * 清除对象所有的记录
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 */
+	<T> void clear(Class<T> classOfT);
+
+	/**
+	 * 清除数据表所有记录
+	 * 
+	 * @param tableName
+	 *            表名
+	 */
+	void clear(String tableName);
+
+	/**
 	 * <pre>
 	 * It will delete @One @Many entity records
 	 * clear the @ManyMany relations

@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.dao.entity.annotation.*;
-import org.nutz.lang.Lang;
 
 @Table("dao_platoon")
 public class Platoon {
@@ -37,10 +36,10 @@ public class Platoon {
 	@One(target = Soldier.class, field = "leaderName")
 	private Soldier leader;
 
-	@Many(target = Soldier.class, field = Lang.NULL)
+	@Many(target = Soldier.class, field = "")
 	private List<Soldier> soliders;
 
-	@Many(target = Tank.class, field = Lang.NULL, key = "code")
+	@Many(target = Tank.class, field = "", key = "code")
 	private Map<String, Tank> tanks;
 
 	public Tank addTank(Tank tank) {

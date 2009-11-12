@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.dao.entity.annotation.*;
-import org.nutz.lang.Lang;
 
 @Table("dao_base")
 public class Base {
@@ -32,7 +31,7 @@ public class Base {
 	@ManyMany(target = Fighter.class, relation = "dao_m_base_fighter", from = "bname", to = "fid")
 	private List<Fighter> fighters;
 
-	@Many(target = WaveBand.class, field = Lang.NULL)
+	@Many(target = WaveBand.class, field = "")
 	private List<WaveBand> wavebands;
 
 	@Many(target = Platoon.class, field = "baseName", key = "name")

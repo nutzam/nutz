@@ -6,7 +6,6 @@
 	<doc path="for_committer.man"/>
 	<doc path="dao" title="Nutz.Dao 开发者手册">
 		<doc path="dao_get_start.man"/>
-		<doc path="entity_annotations.man"/>
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
 		<doc path="condition.man"/>
