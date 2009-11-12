@@ -1,0 +1,124 @@
+#title:zDoc Overview
+#index:0,2
+#author:Peter.Tung(mastung@gmail.com)
+
+Why do I want to create zDoc?
+	Documents are very important for open source projects(meanwhile, they are very insufficient usually). When I created the open source project [http://nutz.googlecode.com Nutz] , I have deeply realized that point.
+	I think if we can do the following two things well：
+	 # To let every document easy to write
+	 # To support cooperation for document writing
+	It will be very helpful for open source project document writing.
+	
+	Based on what I have suffered on document writing for years, I think：
+
+	* Word similar applications are not suitable for cooperation
+		* Unless you pay MS to ask them to build the SharePoint Server
+		* It's hard to track the changes
+		* Not really Multi-Platform support
+	* Online document applications are either not suitable for big documents
+		* Google Doc is very slow to edit, while the documents are big
+		* There are always surprise bugs, and they are annoying...
+	
+	That's why I have to build my own document writing system. I realized two facts：
+	 # For the change tracking system, I believe the famous tools are good enough（like: SVN, Git, Mercurial）.
+	 # Most Operation Systems support plain text files(especially UTF-8). (like: Nodepad++, Editplus, Ultra-Edit in Windows and Vim in Linux）
+	I try to take full advantage of the two facts. Luckily I am a programmer, so I create the tiny doc parsing and rendering tool -- zDoc.
+
+	
+zDoc goals
+	* I can use any {*plain text editor} to edit my zDoc
+		* So I can use SVN or other version control tools to manage zDoc versions
+	* zDoc contains contents with style information like B/I/S etc.
+	* Indentation based structure organization
+	* It can generate category index
+	* Support relative and absolute Hyperlink
+	* Support pictures
+		* most popular picture formats
+		* Support Icon
+		* Support resizing
+	* Support the following output format
+		* PDF
+		* HTML (browser from local)
+		* HTML (browser from web)
+		* Google Wikie
+	* zDoc can be included into other zDocs 
+
+How to use zDoc
+	Setup the environment
+		zDoc provides you the console command, you need to configure your environment to use it
+		# find the run folder in the publish package
+		# go in to the win or linux folder ({_denpending on your system})
+		# modify the shell file zdoc ( {_zdoc.bat in Windows} ) -- you need to modify three parameters
+			# JAVA_HOME is specified to your Java home folder（There is a lib folder in it, which contains tools.jar, dt.jar and rt.jar）
+			# NUTZ_HOME is specified to Nutz core jar packages: {_you can download it from=>} [http://nutz.googlecode.com]
+			# ZDOC_HOME is specified to Nutz.Doc runtime jar package: {_you can download it from=>} [http://nutzdoc.googlecode.com]
+		# modify the runtime path
+			* In {*Windows}, you can configure the run folder into the system parameter {#00A;*%PATH%}
+			* In {*Linux}, you can link the shell file zdoc into ~/bin
+				* Please make sure the shell file could be executed
+					{{{<bash>
+					chmod +x ./zdoc
+					}}}
+	Convert zDoc to HTML
+		{*Command format}
+		{{{
+		zdoc [source folder] [destination folder] [.html|.htm]
+		}}}
+		{*Description}
+		 * All the three parameters are mandatory
+		 * The 1st parameter specifies the source folder of zDoc
+			 * If there is the index.xml, it will generate the html catalog index based on that file.
+			 * Please refer [zdoc_index_xml.html zDoc index file--index.xml grammar]
+		 * Your zdoc must be ended with .man or .zdoc
+		 * For more detail, please refer to [zdoc_dir_convert.html folder converting rules]
+		 * Last parameter is the output files' extention name, it could be .html or .htm
+		
+		{*For example}
+		{{{
+		zdoc /folder/abc /output/abc .html
+		}}}
+		It will convert all the zdoc file in /folder/abc to HTML files, and generate them into /output/abc
+		
+	Convert zDoc to Goolge wiki
+		Google code is excellent platform for open source projects. It provides wiki features. If you create one wiki page, it will be managed by version control system. There will be a wiki folder in SVN folder, normally it should be /trunk/wiki.
+		
+		The wiki in Google code is very simple, and easy to understand. Google provides powerful page rendering engine for wiki. So it's quite useful to convert zDoc to Google wiki for google code projects. You can run the following command
+	
+		{*Command format}
+		{{{
+		zdoc [source folder] [destination folder] [index file name] [prefix address for pictures]
+		}}}
+		{*Description}
+		 * The first 3 parameters are mandatory
+		 * The 1st parameter specifies the source folder of zDoc
+			 * If there is the index.xml, it will generate the html catalog index based on that file.
+			 * Please refer [zdoc_index_xml.html zDoc index file--index.xml grammar]
+		 * The 2nd parameter specifies the folder of wiki, zDoc will converter all .wiki files in there
+		 * The 3rd parameter specifies the index name, please refer to [http://code.google.com/p/support/wiki/WikiSyntax#Navigation Google wiki's description for index]
+			 * zDoc can help you to generate the index file
+			 * If you write null，zDoc will not generate the index file
+		 * The 4th parameter is a little wildering, since Google wiki doesn't support local pictures. So if you want to insert pictures into your files, you have to put them somewhere,\
+		 where can be reached on the Internet
+			 * This parameter is optional
+			 * If you specify the parameter, all the local pictures
+				 * will be packaged into one zip file in destination folder, you can extract them and upload the pictures into the address which you specified
+				 * It will auto relocated the picture address in the wiki files to where you specified
+				 * If your picture name already exists, zDoc will auto change your picture name（append with increased number）
+		
+		{*For example}
+		{{{
+		zdoc /folder/abc /output/abc wiki_index_page http://www.my.com/wiki/img
+		}}}
+		It will convert all zdoc files in /folder/abc to Google wiki files, and generate them into /output/abc. And it will generate one index page based on index.xml （if index.xml doesn't exist, it will compute directly based on files）
+		. The name is wiki_index_page.wiki. All local pictures will be packaged into /output/abc/wiki_images.zip. And all local picture addresses will be replaced by 
+		http://www.my.com/wiki/img/xxxx.xxx
+
+Others
+	 * Please refer to [zdoc_syntax.html zDoc syntax] for zdoc grammar detail
+	 * Please refer to [zdoc_dir_convert.html Folder converting rules] and [zdoc_index_xml.html Using index.xml] for folder converting
+	 * zDoc is already introduced into my work, I use it to write UI design documents. And I will use zDoc to write my novels.
+	 
+	 We can say that, one text editor and one SVN system are enough for cooperation. It's wonderful to do like that.
+				
+			
+	
