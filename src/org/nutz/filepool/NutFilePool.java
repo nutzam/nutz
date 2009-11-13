@@ -25,7 +25,8 @@ public class NutFilePool implements FilePool {
 			}
 		}
 		if (!home.isDirectory())
-			throw Lang.makeThrow("Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
+			throw Lang.makeThrow(
+					"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
 					homePath, this.getClass().getName());
 		File last = home;
 		String[] subs = null;
@@ -52,36 +53,34 @@ public class NutFilePool implements FilePool {
 	private int cursor;
 	private int size;
 
-	public void empty() throws IOException {
-		Files.deleteDir(home);
-		Files.makeDir(home);
-		cursor = 0;
+	public void clear() {
+		try {
+			Files.deleteDir(home);
+			Files.makeDir(home);
+			cursor = 0;
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 
-	public File createFile(int id, String suffix) throws IOException {
+	public File createFile(String suffix) {
+		if (size > 0 && cursor >= size)
+			cursor = -1;
+		int id = ++cursor;
 		if (size > 0 && id >= size)
 			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
 		File re = Pools.getFileById(home, id, suffix);
 		if (!re.exists())
-			Files.createNewFile(re);
+			try {
+				Files.createNewFile(re);
+			} catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
 		return re;
-	}
-
-	public File createFile(String suffix) throws IOException {
-		if (size > 0 && cursor >= size)
-			cursor = -1;
-		return createFile(++cursor, suffix);
 	}
 
 	public int current() {
 		return cursor;
-	}
-
-	public File renameSuffix(int id, String suffix, String newSuffix) {
-		File f = Pools.getFileById(home, id, suffix);
-		File newFile = Files.renameSuffix(f, newSuffix);
-		f.renameTo(newFile);
-		return newFile;
 	}
 
 	public int getFileId(File f) {
@@ -101,12 +100,6 @@ public class NutFilePool implements FilePool {
 	public boolean hasFile(int id, String suffix) {
 		File f = Pools.getFileById(home, id, suffix);
 		return f.exists();
-	}
-
-	public File moveFile(int id, String suffix, File target) throws IOException {
-		File src = Pools.getFileById(home, id, suffix);
-		Files.move(src, target);
-		return target;
 	}
 
 }

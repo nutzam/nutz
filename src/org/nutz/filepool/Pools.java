@@ -2,6 +2,11 @@ package org.nutz.filepool;
 
 import java.io.File;
 
+/**
+ * 文件池的一些帮助函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Pools {
 
 	public static File getFileById(File home, int id, String suffix) {
