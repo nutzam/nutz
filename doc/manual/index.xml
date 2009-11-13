@@ -7,7 +7,7 @@
 		<doc path="version_naming_rule.man"/>
 		<doc path="for_committer.man"/>
 	</doc>
-	<doc path="dao" title="Nutz.Dao 手册">
+	<doc path="dao" title="Dao 手册">
 		<doc path="dao_get_start.man"/>
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
@@ -28,26 +28,20 @@
 		<!--doc path="services_tree.man"/-->
 		<doc path="pojo_creating.man"/>
 	</doc>
-	<doc path="ioc"	title="Nutz.Ioc 手册">
+	<doc path="ioc"	title="Ioc 手册">
 		<doc path="ioc_get_start.man"/>
-		<doc path="ioc_obj_creating.man"/>
-		<doc path="ioc_obj_loader.man"/>
-		<doc path="ioc_in_json.man"/>
-		<doc path="ioc_in_db.man"/>
+		<doc path="inner_object.man"/>
+		<doc path="events.man"/>
+		<doc path="what_to_inject.man"/>
+		<doc path="ioc_loader.man"/>
 		<doc path="aop.man"/>
-		<doc path="aop_logging.man"/>
+		<doc path="scope.man"/>
 	</doc>
-	<doc path="mvc"	title="Nutz.Mvc 手册">
+	<doc path="mvc"	title="Mvc">
 		<doc path="mvc_overview.man"/>
-		<doc path="mvc__helloworld.man"/>
-		<doc path="mvc_webxml.man"/>
-		<doc path="mvc_c.man"/>
-		<doc path="mvc_v.man"/>
-		<doc path="mvc_m.man"/>
-		<doc path="mvc__entity_support.man"/>
-		<doc path="mvc__file_upload.man"/>
+		<doc path="file_upload.man"/>
 	</doc>
-	<doc path="json" title="Nutz.Json 使用手册">
+	<doc path="json" title="Json 手册">
 		<doc path="nutz_json.man"/>
 		<doc path="json_format.man"/>
 		<doc path="json_with_castors.man"/>

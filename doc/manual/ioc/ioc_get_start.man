@@ -1,4 +1,4 @@
-#title: Nutz.Ioc 入门
+#title: Hello world
 #index:0,3
 
 所谓 Ioc
@@ -34,25 +34,157 @@
 Nutz.Ioc 的主要特点
 	同 Spring 和 Guice 一样，Nutz.Ioc 是一个轻便灵活的注入框架。它主要的特点是：
 	 * 它的核心代码并没有假定注入信息的存储形式
-		 * 默认提供 JSON 以及数据库两种加载形式
+		 * 默认提供 JSON 加载形式
+		 * 根据需要，我将来可能会添加一个 DatabaseLoader，
 		 * 不排除兼容 Spring 配置文件的可能
 		 * 不排除兼容 Guice 的可能
 	 * 为对象提供了完整的周期相关接口
 	 * 为你的扩展，提供灵活的扩展点
 	 * org.nutz.ioc.Ioc 是个接口
-	 * 通过实现自己的 org.nutz.ioc.ObjLoader 你可以将依赖关系存成任何形式
-		 * 支持 Spring 不过就是写一个 ObjLoader 的新实现而已
-		 * ObjLoader 的接口不复杂，只有三个函数需要实现
-		 * 如果你要写自己的实现，请了解 [ioc_obj_loader.html ObjLoader 接口说明]
+	 * 通过实现自己的 org.nutz.ioc.IocLoader 你可以将依赖关系存成任何形式
+		 * 支持 Spring 不过就是写一个 IocLoader 的新实现而已
+		 * IocLoader 的接口不复杂，只有三个函数需要实现
+		 * 如果你要写自己的实现，请了解 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/ioc/IocLoader.java IocLoader]
 
 	
 	 下面，我先以 JSON 文件为例，给大家一个 Hello World
 
 一个简单的例子
-	在这个例子中，你需要一个普通的 Java 对象（{#080;将被 Ioc 的对象}），以及一个 JSON 配置文件。
+	在这个例子中，你需要一 POJO，以及一个 JSON 配置文件。
+	例子的源代码，你可以访问 [http://nutzdemo.googlecode.com]  获取
 	
-	普通Java对象
-	Json 配置文件
-	调用代码
+	POJO 源代码
+		{{{
+		package nutz.demo.ioc.book;
+		
+		import java.util.Calendar;
 
-一点总结
+		public class Pet {
+
+			private String name;
+
+			private Calendar birthday;
+
+			private Pet friend;
+
+			public Pet() {}
+
+			public Pet(String name) {
+				this.name = name;
+			}
+
+			public String getName() {
+				return name;
+			}
+
+			public void setName(String name) {
+				this.name = name;
+			}
+
+			public Calendar getBirthday() {
+				return birthday;
+			}
+
+			public void setBirthday(Calendar birthday) {
+				this.birthday = birthday;
+			}
+
+			public Pet getFriend() {
+				return friend;
+			}
+
+			public void setFriend(Pet friend) {
+				this.friend = friend;
+			}
+		}
+		}}}
+		这个对象有两个构造函数
+	
+	Json 配置文件
+		与 POJO 在同一包路径下
+		{{{
+		/*
+		 * 开始写上 var ioc = { ， 是为了利用 eclipse 的  javascript 编辑器的自动格式化功能
+		 */
+		var ioc = {
+			/*
+			 * 默认的，你仅仅需要直接声明每个字段的值即可，Nutz.Ioc 会为你转型
+			 */
+			xiaobai : {
+				name : 'XiaoBai',
+				birthday : '2009-10-25 15:23:40'
+			},
+			/*
+			 * 你当然也可以做更细致的设置
+			 */
+			xiaohei : {
+				type : 'nutz.demo.ioc.book.Pet', // 类型
+				singleton : false, // 是否为单件
+				args : [ 'XiaoHei' ], // 构造函数参数
+				fields : {
+					birthday : '2009-11-3 08:02:14',
+					friend : {refer : 'xiaobai'}	// 指向容器里另外一个对象
+				}
+			}
+		}}
+		}}}
+		
+	调用代码
+		{{{
+		package nutz.demo.ioc.book;
+
+		import org.nutz.ioc.Ioc;
+		import org.nutz.ioc.impl.NutIoc;
+		import org.nutz.ioc.loader.json.JsonLoader;
+
+		public class HelloPet {
+
+			public static void main(String[] args) {
+				Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
+				Pet pet = ioc.get(Pet.class, "xiaobai");
+				System.out.printf("%s - [%s]\n", pet.getName(), pet.getBirthday().getTimeZone().getID());
+			}
+
+		}
+		}}}
+	控制台输出
+		{{{
+		XiaoBai - [Asia/Shanghai]
+		}}}
+	
+	如果配置文件中声明了类型，则可不传入类型
+		{{{
+		Pet xh = ioc.get(null, "xiaohei");
+		System.out.printf("%s's friend is %s\n", xh.getName(), xh.getFriend().getName());
+		}}}
+		控制台输出：
+		{{{
+		XiaoHei's friend is XiaoBai
+		}}}
+	
+	声明了 singleton: false，那么它每次获取，都会生成一个新的实例
+		{{{
+		Pet p1 = ioc.get(null, "xiaohei");
+		Pet p2 = ioc.get(null, "xiaohei");
+		System.out.println(p1==p2);
+		}}}
+		控制台输出：
+		{{{
+		false
+		}}}
+
+关于进阶
+	我可以负责任的告诉你：你已经掌握了 Nutz.Ioc 在你开发的时候 80% 情况下所需要的知识。
+	当然，它还提供了更多的功能，有些功能是其他 Ioc 容器所不具备的，你可以根据自己需要来阅读，他们包括：
+	
+	 * [inner_object.man 匿名对象]
+	 * [events.man 事件监听]
+	 * [what_to_inject.man 你都可以注入什么]
+	 * [events.man 事件的监听]
+	 * [ioc_loader.man 定义自己的配置文件格式]
+	 * [aop.man AOP] -- 声明式切片
+	 * [scope.man 对象生命范围] -- 级联的上下文环境
+	
+	
+	
+	
