@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <doc title="Nutz 框架使用发者手册" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="preface.man"/>
-	<doc path="packages.man"/>
-	<doc path="version_naming_rule.man"/>
-	<doc path="for_committer.man"/>
-	<doc path="dao" title="Nutz.Dao 开发者手册">
+	<doc path="make_developing_env.man"/>
+	<doc title="了解的更多一些">
+		<doc path="packages.man"/>
+		<doc path="version_naming_rule.man"/>
+		<doc path="for_committer.man"/>
+	</doc>
+	<doc path="dao" title="Nutz.Dao 手册">
 		<doc path="dao_get_start.man"/>
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
@@ -25,7 +28,7 @@
 		<!--doc path="services_tree.man"/-->
 		<doc path="pojo_creating.man"/>
 	</doc>
-	<doc path="ioc"	title="Nutz.Ioc 开发者手册">
+	<doc path="ioc"	title="Nutz.Ioc 手册">
 		<doc path="ioc_get_start.man"/>
 		<doc path="ioc_obj_creating.man"/>
 		<doc path="ioc_obj_loader.man"/>
@@ -34,7 +37,7 @@
 		<doc path="aop.man"/>
 		<doc path="aop_logging.man"/>
 	</doc>
-	<doc path="mvc"	title="Nutz.Mvc 开发者手册">
+	<doc path="mvc"	title="Nutz.Mvc 手册">
 		<doc path="mvc_overview.man"/>
 		<doc path="mvc__helloworld.man"/>
 		<doc path="mvc_webxml.man"/>
