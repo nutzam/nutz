@@ -31,26 +31,74 @@ import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
 
+/**
+ * 一些语言中比较常用的帮助函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Lang {
 
+	/**
+	 * @return 一个未实现的运行时异常
+	 */
 	public static RuntimeException noImplement() {
 		return new RuntimeException("Not implement yet!");
 	}
 
+	/**
+	 * 根据格式化字符串，生成运行时异常
+	 * 
+	 * @param format
+	 *            格式
+	 * @param args
+	 *            参数
+	 * @return 运行时异常
+	 */
 	public static RuntimeException makeThrow(String format, Object... args) {
 		return new RuntimeException(String.format(format, args));
 	}
 
+	/**
+	 * 根据格式化字符串，生成一个指定的异常。
+	 * 
+	 * @param classOfT
+	 *            异常类型， 需要有一个字符串为参数的构造函数
+	 * @param format
+	 *            格式
+	 * @param args
+	 *            参数
+	 * @return 异常对象
+	 */
 	public static <T extends Throwable> T makeThrow(Class<T> classOfT,
 													String format,
 													Object... args) {
 		return Mirror.me(classOfT).born(String.format(format, args));
 	}
 
+	/**
+	 * 将抛出对象包裹成运行时异常，并增加自己的描述
+	 * 
+	 * @param e
+	 *            抛出对象
+	 * @param fmt
+	 *            格式
+	 * @param args
+	 *            参数
+	 * @return 运行时异常
+	 */
 	public static RuntimeException wrapThrow(Throwable e, String fmt, Object... args) {
 		return new RuntimeException(String.format(fmt, args), e);
 	}
 
+	/**
+	 * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
+	 * <p>
+	 * 如果是 InvocationTargetException，那么将其剥离，只包裹其 TargetException
+	 * 
+	 * @param e
+	 *            抛出对象
+	 * @return 运行时异常
+	 */
 	public static RuntimeException wrapThrow(Throwable e) {
 		if (e instanceof RuntimeException)
 			return (RuntimeException) e;
@@ -59,6 +107,15 @@ public abstract class Lang {
 		return new RuntimeException(e);
 	}
 
+	/**
+	 * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
+	 * 
+	 * @param e
+	 *            抛出对象
+	 * @param wrapper
+	 *            包裹类型
+	 * @return 包裹后对象
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends Throwable> T wrapThrow(Throwable e, Class<T> wrapper) {
 		if (wrapper.isAssignableFrom(e.getClass()))
@@ -66,12 +123,29 @@ public abstract class Lang {
 		return Mirror.me(wrapper).born(e);
 	}
 
+	/**
+	 * 判断两个对象是否相等。 这个函数用处是:
+	 * <ul>
+	 * <li>可以容忍 null
+	 * <li>可以容忍不同类型的 Number
+	 * <li>对，数组，集合， Map 会深层比较
+	 * </ul>
+	 * 当然，如果你重写的 equals 方法会优先
+	 * 
+	 * @param a1
+	 *            比较对象1
+	 * @param a2
+	 *            比较对象2
+	 * @return 是否相等
+	 */
 	@SuppressWarnings("unchecked")
 	public static boolean equals(Object a1, Object a2) {
 		if (a1 == a2)
 			return true;
 		if (a1 == null || a2 == null)
 			return false;
+		if (a1.equals(a2))
+			return true;
 		if (a1 instanceof Number) {
 			if (!(a2 instanceof Number))
 				return false;
@@ -128,9 +202,20 @@ public abstract class Lang {
 				return false;
 			return c1.containsAll(c2) && c2.containsAll(c1);
 		}
-		return a1.equals(a2);
+		return false;
 	}
 
+	/**
+	 * 判断一个数组内是否包括某一个对象。 它的比较将通过 equals(Object,Object) 方法
+	 * 
+	 * @param array
+	 *            数组
+	 * @param ele
+	 *            对象
+	 * @return true 包含 false 不包含
+	 * 
+	 * @see equals(Object,Object)
+	 */
 	public static <T> boolean contains(T[] array, T ele) {
 		if (null == array)
 			return false;
@@ -141,7 +226,16 @@ public abstract class Lang {
 		return false;
 	}
 
+	/**
+	 * 从一个文本输入流读取所有内容，并将该流关闭
+	 * 
+	 * @param reader
+	 *            文本输入流
+	 * @return 输入流所有内容
+	 */
 	public static String readAll(Reader reader) {
+		if (!(reader instanceof BufferedReader))
+			reader = new BufferedReader(reader);
 		try {
 			StringBuilder sb = new StringBuilder();
 			int c;
@@ -155,12 +249,14 @@ public abstract class Lang {
 		}
 	}
 
-	public static String bufferAll(Reader reader) {
-		if (reader instanceof BufferedReader)
-			return readAll(reader);
-		return readAll(new BufferedReader(reader));
-	}
-
+	/**
+	 * 将一段字符串写入一个文本输出流，并将该流关闭
+	 * 
+	 * @param writer
+	 *            文本输出流
+	 * @param str
+	 *            字符串
+	 */
 	public static void writeAll(Writer writer, String str) {
 		try {
 			writer.write(str);
@@ -172,26 +268,72 @@ public abstract class Lang {
 		}
 	}
 
+	/**
+	 * 根据一段文本模拟出一个输入流对象
+	 * 
+	 * @param cs
+	 *            文本
+	 * @return 输出流对象
+	 */
 	public static InputStream ins(CharSequence cs) {
 		return new StringInputStream(cs);
 	}
 
+	/**
+	 * 根据一段文本模拟出一个文本输入流对象
+	 * 
+	 * @param cs
+	 *            文本
+	 * @return 文本输出流对象
+	 */
 	public static Reader inr(CharSequence cs) {
 		return new StringReader(cs);
 	}
 
+	/**
+	 * 根据一个 StringBuilder 模拟一个文本输出流对象
+	 * 
+	 * @param sb
+	 *            StringBuilder 对象
+	 * @return 文本输出流对象
+	 */
 	public static Writer opw(StringBuilder sb) {
 		return new StringWriter(sb);
 	}
 
+	/**
+	 * 根据一个 StringBuilder 模拟一个输出流对象
+	 * 
+	 * @param sb
+	 *            StringBuilder 对象
+	 * @return 输出流对象
+	 */
 	public static StringOutputStream ops(StringBuilder sb) {
 		return new StringOutputStream(sb);
 	}
 
+	/**
+	 * 较方便的创建一个数组，比如：
+	 * 
+	 * <pre>
+	 * Pet[] pets = Lang.array(pet1, pet2, pet3);
+	 * </pre>
+	 * 
+	 * @param eles
+	 *            可变参数
+	 * @return 数组对象
+	 */
 	public static <T> T[] array(T... eles) {
 		return eles;
 	}
 
+	/**
+	 * 将多个数组，合并成一个数组。如果这些数组为空，则返回 null
+	 * 
+	 * @param arys
+	 *            数组对象
+	 * @return 合并后的数组对象
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] merge(T[]... arys) {
 		Queue<T> list = new LinkedList<T>();
@@ -206,6 +348,15 @@ public abstract class Lang {
 		return list.toArray((T[]) Array.newInstance(type, list.size()));
 	}
 
+	/**
+	 * 将一个对象添加成为一个数组的第一个元素，从而生成一个新的数组
+	 * 
+	 * @param e
+	 *            对象
+	 * @param eles
+	 *            数组
+	 * @return 新数组
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] arrayFirst(T e, T[] eles) {
 		try {
@@ -225,6 +376,15 @@ public abstract class Lang {
 		}
 	}
 
+	/**
+	 * 将一个对象添加成为一个数组的最后一个元素，从而生成一个新的数组
+	 * 
+	 * @param e
+	 *            对象
+	 * @param eles
+	 *            数组
+	 * @return 新数组
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] arrayLast(T[] eles, T e) {
 		try {
@@ -244,47 +404,40 @@ public abstract class Lang {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public static <T> T[] flat(T[]... arrs) {
-		List<T> list = new LinkedList<T>();
-		Class<?> type = null;
-		for (T[] arr : arrs)
-			for (T e : arr) {
-				if (null == type)
-					type = e.getClass();
-				list.add(e);
-			}
-		T[] arr = (T[]) Array.newInstance(type, list.size());
-		return list.toArray(arr);
-	}
-
-	public static List<?> flat(Object obj) {
-		return flatTo(obj, LinkedList.class);
-	}
-
-	public static <T extends Collection<?>> T flatTo(Object obj, Class<T> type) {
-		try {
-			final List<Object> re = new LinkedList<Object>();
-			Lang.each(obj, new Each<Object>() {
-				public void invoke(int i, Object obj, int length) throws ExitLoop {
-					List<?> list = flat(obj);
-					re.addAll(list);
-				}
-			});
-			return Castors.me().castTo(re, type);
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
-
-	public static <T> StringBuilder concatBy(String ptn, T[] o) {
+	/**
+	 * 将一个数组转换成字符串
+	 * <p>
+	 * 所有的元素都被格式化字符串包裹。 这个格式话字符串只能有一个占位符， %s, %d 等，均可，请视你的数组内容而定
+	 * 
+	 * @param fmt
+	 *            格式
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static <T> StringBuilder concatBy(String fmt, T[] objs) {
 		StringBuilder sb = new StringBuilder();
-		for (T obj : o)
-			sb.append(String.format(ptn, obj));
+		for (T obj : objs)
+			sb.append(String.format(fmt, obj));
 		return sb;
 	}
 
-	public static <T> StringBuilder concatBy(String ptn, char c, T[] objs) {
+	/**
+	 * 将一个数组转换成字符串
+	 * <p>
+	 * 所有的元素都被格式化字符串包裹。 这个格式话字符串只能有一个占位符， %s, %d 等，均可，请视你的数组内容而定
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param ptn
+	 *            格式
+	 * @param c
+	 *            分隔符
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static <T> StringBuilder concatBy(String ptn, Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		for (T obj : objs)
 			sb.append(String.format(ptn, obj)).append(c);
@@ -293,7 +446,18 @@ public abstract class Lang {
 		return sb;
 	}
 
-	public static <T> StringBuilder concatBy(char c, T[] objs) {
+	/**
+	 * 将一个数组转换成字符串
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param c
+	 *            分隔符
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static <T> StringBuilder concatBy(Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		if (null == objs)
 			return sb;
@@ -304,7 +468,22 @@ public abstract class Lang {
 		return sb;
 	}
 
-	public static <T> StringBuilder concatBy(int offset, int len, char c, T[] objs) {
+	/**
+	 * 将一个数组的部分元素转换成字符串
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param offset
+	 *            开始元素的下标
+	 * @param len
+	 *            元素数量
+	 * @param c
+	 *            分隔符
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static <T> StringBuilder concatBy(int offset, int len, Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		if (null == objs)
 			return sb;
@@ -317,6 +496,13 @@ public abstract class Lang {
 		return sb;
 	}
 
+	/**
+	 * 将一个数组所有元素拼合成一个字符串
+	 * 
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
 	public static <T> StringBuilder concat(T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		for (T e : objs)
@@ -324,6 +510,17 @@ public abstract class Lang {
 		return sb;
 	}
 
+	/**
+	 * 将一个数组部分元素拼合成一个字符串
+	 * 
+	 * @param offset
+	 *            开始元素的下标
+	 * @param len
+	 *            元素数量
+	 * @param objs
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
 	public static <T> StringBuilder concat(int offset, int len, T[] array) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < len; i++) {
@@ -332,6 +529,19 @@ public abstract class Lang {
 		return sb;
 	}
 
+	/**
+	 * 将一个或者多个数组填入一个集合。
+	 * 
+	 * @param <C>
+	 *            集合类型
+	 * @param <T>
+	 *            数组元素类型
+	 * @param coll
+	 *            集合
+	 * @param objss
+	 *            数组 （数目可变）
+	 * @return 集合对象
+	 */
 	public static <C extends Collection<T>, T> C fill(C coll, T[]... objss) {
 		for (T[] objs : objss)
 			for (T obj : objs)
@@ -339,6 +549,17 @@ public abstract class Lang {
 		return coll;
 	}
 
+	/**
+	 * 将一个集合变成 Map。
+	 * 
+	 * @param mapClass
+	 *            Map 的类型
+	 * @param coll
+	 *            集合对象
+	 * @param keyFieldName
+	 *            采用集合中元素的哪个一个字段为键。
+	 * @return Map 对象
+	 */
 	public static <T extends Map<Object, Object>> Map<?, ?> collection2map(	Class<T> mapClass,
 																			Collection<?> coll,
 																			String keyFieldName) {
@@ -360,10 +581,26 @@ public abstract class Lang {
 		return map;
 	}
 
+	/**
+	 * 将集合变成 ArrayList
+	 * 
+	 * @param coll
+	 *            集合对象
+	 * @return 列表对象
+	 */
 	public static <E> List<E> collection2list(Collection<E> coll) {
 		return collection2list(coll, null);
 	}
 
+	/**
+	 * 将集合编程变成指定类型的列表
+	 * 
+	 * @param coll
+	 *            集合对象
+	 * @param classOfList
+	 *            列表类型
+	 * @return 列表对象
+	 */
 	public static <E> List<E> collection2list(Collection<E> coll, Class<List<E>> classOfList) {
 		if (coll instanceof List<?>)
 			return (List<E>) coll;
@@ -379,6 +616,13 @@ public abstract class Lang {
 		return list;
 	}
 
+	/**
+	 * 将集合变成数组，数组的类型为集合的第一个元素的类型。如果集合为空，则返回 null
+	 * 
+	 * @param coll
+	 *            集合对象
+	 * @return 数组
+	 */
 	@SuppressWarnings("unchecked")
 	public static <E> E[] collection2array(Collection<E> coll) {
 		if (null == coll || coll.size() == 0)
@@ -387,6 +631,15 @@ public abstract class Lang {
 		return collection2array(coll, eleType);
 	}
 
+	/**
+	 * 将集合变成指定类型的数组
+	 * 
+	 * @param coll
+	 *            集合对象
+	 * @param classOfE
+	 *            数组元素类型
+	 * @return 数组
+	 */
 	@SuppressWarnings("unchecked")
 	public static <E> E[] collection2array(Collection<E> coll, Class<E> classOfE) {
 		if (null == coll)
@@ -398,6 +651,17 @@ public abstract class Lang {
 		return re;
 	}
 
+	/**
+	 * 将一个数组变成 Map
+	 * 
+	 * @param mapClass
+	 *            Map 的类型
+	 * @param array
+	 *            数组
+	 * @param keyFieldName
+	 *            采用集合中元素的哪个一个字段为键。
+	 * @return Map 对象
+	 */
 	public static <T extends Map<Object, Object>> Map<?, ?> array2map(	Class<T> mapClass,
 																		Object array,
 																		String keyFieldName) {
@@ -430,6 +694,18 @@ public abstract class Lang {
 		return map;
 	}
 
+	/**
+	 * 将数组转换成另外一种类型的数组。将会采用 Castor 来深层转换数组元素
+	 * 
+	 * @param array
+	 *            原始数组
+	 * @param eleType
+	 *            新数组的元素类型
+	 * @return 新数组
+	 * @throws FailToCastObjectException
+	 * 
+	 * @see org.nutz.castor.Castors
+	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T[] array2array(Object array, Class<T> eleType)
 			throws FailToCastObjectException {
@@ -442,6 +718,18 @@ public abstract class Lang {
 		return re;
 	}
 
+	/**
+	 * 将数组转换成Object[] 数组。将会采用 Castor 来深层转换数组元素
+	 * 
+	 * @param args
+	 *            原始数组
+	 * @param pts
+	 *            新数组的元素类型
+	 * @return 新数组
+	 * @throws FailToCastObjectException
+	 * 
+	 * @see org.nutz.castor.Castors
+	 */
 	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
 			throws FailToCastObjectException {
 		Object[] newArgs = new Object[args.length];
@@ -451,6 +739,16 @@ public abstract class Lang {
 		return newArgs;
 	}
 
+	/**
+	 * 根据一个 Map，和给定的对象类型，创建一个新的 JAVA 对象
+	 * 
+	 * @param src
+	 *            Map 对象
+	 * @param toType
+	 *            JAVA 对象类型
+	 * @return JAVA 对象
+	 * @throws FailToCastObjectException
+	 */
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		Mirror<T> mirror = Mirror.me(toType);
 		T obj = mirror.born();
@@ -462,13 +760,29 @@ public abstract class Lang {
 		return obj;
 	}
 
+	/**
+	 * 根据一段字符串，生成一个 Map 对象。
+	 * 
+	 * @param str
+	 *            参照 JSON 标准的字符串，但是可以没有前后的大括号
+	 * @return Map 对象
+	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> map(String str) {
 		if (null == str)
 			return null;
-		return (Map<String, Object>) Json.fromJson(str);
+		if (str.startsWith("{") && str.endsWith("}"))
+			return (Map<String, Object>) Json.fromJson(str);
+		return (Map<String, Object>) Json.fromJson("{" + str + "}");
 	}
 
+	/**
+	 * 根据一段字符串，生成一个List 对象。
+	 * 
+	 * @param str
+	 *            参照 JSON 标准的字符串，但是可以没有前后的中括号
+	 * @return List 对象
+	 */
 	@SuppressWarnings("unchecked")
 	public static List<Object> list(String str) {
 		if (null == str)
@@ -478,6 +792,20 @@ public abstract class Lang {
 		return (List<Object>) Json.fromJson("[" + str + "]");
 	}
 
+	/**
+	 * 获得一个对象的长度。它可以接受:
+	 * <ul>
+	 * <li>null : 0
+	 * <li>数组
+	 * <li>集合
+	 * <li>Map
+	 * <li>一般 Java 对象。 返回 1
+	 * </ul>
+	 * 如果你想让你的 Java 对象返回不是 1 ， 请在对象中声明 length() 函数
+	 * 
+	 * @param obj
+	 * @return 对象长度
+	 */
 	public static int lenght(Object obj) {
 		if (null == obj)
 			return 0;
@@ -488,27 +816,19 @@ public abstract class Lang {
 		} else if (obj instanceof Map<?, ?>) {
 			return ((Map<?, ?>) obj).size();
 		}
+		try {
+			return (Integer) Mirror.me(obj.getClass()).invoke(obj, "length");
+		} catch (Exception e) {}
 		return 1;
 	}
 
-	public static int maxLength(Collection<? extends CharSequence> coll) {
-		int re = 0;
-		if (null != coll)
-			for (CharSequence s : coll)
-				if (null != s)
-					re = Math.max(re, s.length());
-		return re;
-	}
-
-	public static <T extends CharSequence> int maxLength(T[] array) {
-		int re = 0;
-		if (null != array)
-			for (CharSequence s : array)
-				if (null != s)
-					re = Math.max(re, s.length());
-		return re;
-	}
-
+	/**
+	 * 取得第一个对象，无论是 数组，集合还是 Map。如果是一个一般 JAVA 对象，则返回自身
+	 * 
+	 * @param obj
+	 *            任意对象
+	 * @return 第一个代表对象
+	 */
 	public static Object first(Object obj) {
 		final Object[] re = new Object[1];
 		each(obj, new Each<Object>() {

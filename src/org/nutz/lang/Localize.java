@@ -20,8 +20,13 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.stream.StringOutputStream;
 
-
-public class Localize {
+/**
+ * 本地化的帮助函数集合
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
+@Deprecated
+public abstract class Localize {
 	public static TimeZone getTimeZone(int off) {
 		if (off == 0)
 			return TimeZone.getTimeZone("GMT");

@@ -20,6 +20,11 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+/**
+ * 文件操作的帮助函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Files {
 
 	public static String read(String path) {

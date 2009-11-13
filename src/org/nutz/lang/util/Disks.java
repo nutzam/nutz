@@ -6,6 +6,11 @@ import java.io.FilenameFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
+/**
+ * 磁盘操作的帮助函数集合
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Disks {
 
 	public static int visitFile(File f, FileVisitor fv, FilenameFilter filter) {

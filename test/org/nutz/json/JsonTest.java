@@ -90,7 +90,8 @@ public class JsonTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testDatetime() {
-		java.util.Date date = Json.fromJson(java.util.Date.class, Lang.inr("\"2008-05-16 14:35:43\""));
+		java.util.Date date = Json.fromJson(java.util.Date.class, Lang
+				.inr("\"2008-05-16 14:35:43\""));
 		assertEquals(108, date.getYear());
 		assertEquals(4, date.getMonth());
 		assertEquals(16, date.getDate());
@@ -110,7 +111,8 @@ public class JsonTest {
 	@Test
 	public void testAllTypesInMap() throws FileNotFoundException {
 		File f = Files.findFile("org/nutz/json/types.txt");
-		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(new FileInputStream(f)));
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(
+				new FileInputStream(f)));
 		assertTrue((Boolean) map.get("true"));
 		assertFalse((Boolean) map.get("false"));
 		assertNull(map.get("null"));
@@ -173,7 +175,8 @@ public class JsonTest {
 	@Test
 	public void testMap() throws FileNotFoundException {
 		File f = Files.findFile("org/nutz/json/map.txt");
-		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(new FileInputStream(f)));
+		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(
+				new FileInputStream(f)));
 		assertEquals("value1", map.get("a1"));
 		assertEquals(35, map.get("a2"));
 		assertEquals((double) 4.7, map.get("a3"));
@@ -222,7 +225,7 @@ public class JsonTest {
 
 	@Test
 	public void testSimpleArray() throws Exception {
-		String[] expAry = { "abc", "bbc", "fff" };
+		String[] expAry = {"abc", "bbc", "fff"};
 		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
 		String[] reAry = Json.fromJson(String[].class, Lang.inr(s));
 		assertTrue(Arrays.equals(expAry, reAry));
@@ -315,10 +318,13 @@ public class JsonTest {
 		assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
 		assertEquals(p.getCompany().getName(), p2.getCompany().getName());
 		assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
-		assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany().getCreator().getRealname());
+		assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany().getCreator()
+				.getRealname());
 		assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
-		assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany().getCreator().getFather());
-		assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany().getCreator().getBirthday());
+		assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany().getCreator()
+				.getFather());
+		assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany().getCreator()
+				.getBirthday());
 	}
 
 	@Test

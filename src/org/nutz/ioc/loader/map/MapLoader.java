@@ -2,12 +2,12 @@ package org.nutz.ioc.loader.map;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
-import org.nutz.lang.Strings;
 
 /**
  * 从一个 Map 对象中读取配置信息，支持 Parent
@@ -43,7 +43,27 @@ public class MapLoader implements IocLoader {
 	}
 
 	public IocObject load(String name) throws ObjectLoadException {
-		return Iocs.map2iobj(getMap(name));
+		Map<String, Object> m = getMap(name);
+		if (null == m)
+			throw new ObjectLoadException("Object '" + name + "' without define!");
+		// If has parent
+		Object p = m.get("parent");
+		if (null != p) {
+			IocObject parent = load(p.toString());
+			// create new map without parent
+			Map<String, Object> newMap = new HashMap<String, Object>();
+			for (Entry<String, Object> en : m.entrySet()) {
+				if ("parent".equals(en.getKey()))
+					continue;
+				newMap.put(en.getKey(), en.getValue());
+			}
+			// Create self IocObject
+			IocObject self = Iocs.map2iobj(newMap);
+			
+			// Merge with parent
+			return Iocs.mergeWith(self, parent);
+		}
+		return Iocs.map2iobj(m);
 	}
 
 	/**
@@ -54,20 +74,7 @@ public class MapLoader implements IocLoader {
 	 * @return object Map
 	 */
 	private Map<String, Object> getMap(String name) {
-		Map<String, Object> m = map.get(name);
-		String pKey = (String) m.get("parent");
-		// If link to parent
-		if (!Strings.isBlank(pKey)) {
-			// Get the parent
-			Map<String, Object> parent = getMap(pKey);
-			// create new Map
-			Map<String, Object> newMap = new HashMap<String, Object>();
-			newMap.putAll(parent);
-			// merge with current map
-			newMap.putAll(m);
-			return newMap;
-		}
-		return m;
+		return map.get(name);
 	}
 
 }

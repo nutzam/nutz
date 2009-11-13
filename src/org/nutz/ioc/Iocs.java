@@ -198,4 +198,26 @@ public class Iocs {
 		}
 		return new Pair<Class<?>>(_name, type);
 	}
+
+	/**
+	 * 查看一下 me 中有没有缺少的属性，没有的话，从 it 补充
+	 */
+	public static IocObject mergeWith(IocObject me, IocObject it) {
+		// merge type
+		if (me.getType() == null)
+			me.setType(it.getType());
+
+		// don't need merge signleon
+
+		// merge arguments
+		if (!me.hasArgs())
+			me.copyArgys(it.getArgs());
+
+		// merge fields
+		for (IocField fld : it.getFields())
+			if (!me.hasField(fld.getName()))
+				me.addField(fld);
+
+		return me;
+	}
 }

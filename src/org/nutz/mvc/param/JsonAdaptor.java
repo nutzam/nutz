@@ -17,7 +17,7 @@ public class JsonAdaptor extends AbstractAdaptor {
 		// Read all as String
 		String str;
 		try {
-			str = Lang.bufferAll(new InputStreamReader(request.getInputStream(), "UTF-8"));
+			str = Lang.readAll(new InputStreamReader(request.getInputStream(), "UTF-8"));
 		} catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}

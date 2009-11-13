@@ -3,6 +3,11 @@ package org.nutz.lang;
 import java.util.Comparator;
 import java.util.Locale;
 
+/**
+ * 按名称比较两个 Locale
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class LocaleComparator implements Comparator<Locale> {
 	private static final LocaleComparator lc = new LocaleComparator();
 

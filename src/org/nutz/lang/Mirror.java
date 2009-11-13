@@ -21,6 +21,13 @@ import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.born.Borning;
 
+/**
+ * 包裹了 Class<?>， 提供了更多的反射方法
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @param <T>
+ */
 public class Mirror<T> {
 
 	private static class DefaultTypeExtractor implements TypeExtractor {

@@ -1,9 +1,10 @@
 package org.nutz.lang;
 
+import java.util.Collection;
 import java.util.LinkedList;
 
 /**
- * 提供了一组方便字符串操作的便利函数
+ * 字符串操作的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -39,9 +40,13 @@ public abstract class Strings {
 
 	/**
 	 * 检查两个字符串的忽略大小写后是否相等.
-	 * <p/><b>当s1 == null && s2 == null, 本方法返回false<b/>
-	 * @param s1 字符串A
-	 * @param s2 字符串B
+	 * <p/>
+	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 
+	 * @param s1
+	 *            字符串A
+	 * @param s2
+	 *            字符串B
 	 * @return true 如果两个字符串忽略大小写后相等,且两个字符串均不为null
 	 */
 	public static boolean equalsIgnoreCase(String s1, String s2) {
@@ -52,9 +57,13 @@ public abstract class Strings {
 
 	/**
 	 * 检查两个字符串是否相等.
-	 * <p/><b>当s1 == null && s2 == null, 本方法返回false<b/>
-	 * @param s1 字符串A
-	 * @param s2 字符串B
+	 * <p/>
+	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 
+	 * @param s1
+	 *            字符串A
+	 * @param s2
+	 *            字符串B
 	 * @return true 如果两个字符串相等,且两个字符串均不为null
 	 */
 	public static boolean equals(String s1, String s2) {
@@ -203,5 +212,37 @@ public abstract class Strings {
 		if (cs.charAt(cs.length() - 1) != r)
 			return false;
 		return true;
+	}
+
+	/**
+	 * 获得一个字符串集合中，最长串的长度
+	 * 
+	 * @param coll
+	 *            字符串集合
+	 * @return 最大长度
+	 */
+	public static int maxLength(Collection<? extends CharSequence> coll) {
+		int re = 0;
+		if (null != coll)
+			for (CharSequence s : coll)
+				if (null != s)
+					re = Math.max(re, s.length());
+		return re;
+	}
+
+	/**
+	 * 获得一个字符串数组中，最长串的长度
+	 * 
+	 * @param array
+	 *            字符串数组
+	 * @return 最大长度
+	 */
+	public static <T extends CharSequence> int maxLength(T[] array) {
+		int re = 0;
+		if (null != array)
+			for (CharSequence s : array)
+				if (null != s)
+					re = Math.max(re, s.length());
+		return re;
 	}
 }

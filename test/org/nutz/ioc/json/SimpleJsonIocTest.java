@@ -112,4 +112,15 @@ public class SimpleJsonIocTest {
 		assertEquals("__W", wolf.getName());
 	}
 
+	@Test
+	public void test_parent() {
+		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'fox',fields:{age:5}"));
+		Animal fox = ioc.get(Animal.class, "fox");
+		assertEquals("P", fox.getName());
+		assertEquals(10, fox.getAge());
+		Animal f2 = ioc.get(Animal.class, "f2");
+		assertEquals("P", f2.getName());
+		assertEquals(5, f2.getAge());
+	}
+
 }

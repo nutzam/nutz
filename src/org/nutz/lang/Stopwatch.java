@@ -2,6 +2,11 @@ package org.nutz.lang;
 
 import org.nutz.trans.Atom;
 
+/**
+ * 秒表
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Stopwatch {
 
 	public static Stopwatch test(Atom atom) {

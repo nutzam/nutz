@@ -3,6 +3,13 @@ package org.nutz.lang.util;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * 树节点。
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ *
+ * @param <T>
+ */
 public interface Node<T> {
 
 	T get();

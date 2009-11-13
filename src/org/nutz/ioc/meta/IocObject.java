@@ -84,8 +84,19 @@ public class IocObject {
 		return args.toArray(new IocValue[args.size()]);
 	}
 
+	public boolean hasArgs() {
+		return args.size() == 0;
+	}
+
 	public void addArg(IocValue arg) {
 		this.args.add(arg);
+	}
+
+	public void copyArgys(IocValue[] args) {
+		this.args.clear();
+		for (IocValue arg : args) {
+			addArg(arg);
+		}
 	}
 
 	public IocField[] getFields() {
@@ -94,6 +105,13 @@ public class IocObject {
 
 	public void addField(IocField field) {
 		this.fields.add(field);
+	}
+
+	public boolean hasField(String name) {
+		for (IocField fld : fields)
+			if (fld.getName().equals(name))
+				return true;
+		return false;
 	}
 
 }

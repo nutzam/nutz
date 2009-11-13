@@ -12,6 +12,11 @@ import java.util.Set;
 
 import org.nutz.lang.Strings;
 
+/**
+ * 可支持直接书写多行文本的 Properties 文件
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class MultiLineProperties implements Map<String, String> {
 
 	public MultiLineProperties(Reader reader) throws IOException {
