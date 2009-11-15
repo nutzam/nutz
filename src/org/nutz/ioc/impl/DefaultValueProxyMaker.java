@@ -36,6 +36,10 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 				return new CollectionValue(ing, (Collection<IocValue>) value,
 						(Class<? extends Collection<Object>>) value.getClass());
 			}
+			// Inner Object
+			else if (value instanceof IocObject) {
+				return new InnerValue((IocObject) value);
+			}
 			return new StaticValue(value);
 		}
 		// Refer

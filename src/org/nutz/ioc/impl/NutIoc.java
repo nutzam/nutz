@@ -20,29 +20,25 @@ import org.nutz.lang.Strings;
 
 public class NutIoc implements Ioc2 {
 
-	private static final String DEF_LEVEL = "app";
+	private static final String DEF_SCOPE = "app";
 
 	private IocLoader loader;
 	private IocContext context;
 	private ObjectMaker maker;
 	private List<ValueProxyMaker> vpms;
 	private MirrorFactory mirrors;
-	private String defaultLevel;
+	private String defaultScope;
 
 	public NutIoc(IocLoader loader) {
-		this(loader, new LevelContext(DEF_LEVEL) {
-			protected boolean accept(String level) {
-				return true;
-			}
-		}, DEF_LEVEL);
+		this(loader, new ScopeContext(DEF_SCOPE), DEF_SCOPE);
 	}
 
-	public NutIoc(IocLoader loader, IocContext context, String defaultLevel) {
-		this(new ObjectMakerImpl(), loader, context, defaultLevel);
+	public NutIoc(IocLoader loader, IocContext context, String defaultScope) {
+		this(new ObjectMakerImpl(), loader, context, defaultScope);
 	}
 
-	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultLevel) {
-		this.defaultLevel = defaultLevel;
+	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope) {
+		this.defaultScope = defaultScope;
 		this.loader = loader;
 		this.context = context;
 		this.maker = maker;
@@ -59,7 +55,7 @@ public class NutIoc implements Ioc2 {
 		if (null == context)
 			cntx = this.context;
 		else
-			cntx = new ComboContext(this, context, this.context);
+			cntx = new ComboContext(context, this.context);
 
 		// 创建对象创建时
 		IocMaking ing = new IocMaking(this, mirrors, cntx, maker, vpms, name);
@@ -90,8 +86,8 @@ public class NutIoc implements Ioc2 {
 								iobj.setType(type);
 
 						// 检查对象级别
-						if (Strings.isBlank(iobj.getLevel()))
-							iobj.setLevel(defaultLevel);
+						if (Strings.isBlank(iobj.getScope()))
+							iobj.setScope(defaultScope);
 
 						// 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
 						re = maker.make(ing, iobj);

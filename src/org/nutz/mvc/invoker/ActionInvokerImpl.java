@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.Ioc2;
+import org.nutz.ioc.IocContext;
+import org.nutz.ioc.impl.ComboContext;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -19,6 +22,7 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
@@ -26,13 +30,18 @@ import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Filters;
+import org.nutz.mvc.annotation.InjectName;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.ioc.RequestIocContext;
+import org.nutz.mvc.ioc.SessionIocContext;
 import org.nutz.mvc.param.PairAdaptor;
 import org.nutz.mvc.view.UTF8JsonView;
 
 public class ActionInvokerImpl implements ActionInvoker {
 
-	private Object obj;
+	private String moduleName;
+	private Class<?> moduleType;
+	private Object module;
 	private Method method;
 	private View ok;
 	private View fail;
@@ -43,20 +52,35 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 	public ActionInvokerImpl(	Ioc ioc,
 								List<ViewMaker> makers,
-								Object obj,
+								Class<?> moduleType,
 								Method method,
 								Ok dftOk,
 								Fail dftFail,
 								AdaptBy dftAb,
 								Filters dftflts,
 								Encoding dftEncoding) {
-		this.obj = obj;
+		evalModule(moduleType);
 		this.method = method;
 		this.ok = evalView(ioc, makers, method.getAnnotation(Ok.class), dftOk);
 		this.fail = evalView(ioc, makers, method.getAnnotation(Fail.class), dftFail);
 		this.evalHttpAdaptor(ioc, method, dftAb);
 		this.evalFilters(ioc, method, dftflts);
 		this.evalEncoding(method, dftEncoding);
+	}
+
+	private void evalModule(Class<?> moduleType) {
+		this.moduleType = moduleType;
+		InjectName name = moduleType.getAnnotation(InjectName.class);
+		if (null != name)
+			this.moduleName = name.value();
+		else
+			try {
+				module = moduleType.newInstance();
+			} catch (Exception e) {
+				throw Lang.makeThrow(
+						"Class '%s' should has a accessible default constructor : '%s'", moduleType
+								.getName(), e.getMessage());
+			}
 	}
 
 	private void evalEncoding(Method method, Encoding dftEncoding) {
@@ -163,8 +187,26 @@ public class ActionInvokerImpl implements ActionInvoker {
 				}
 			}
 		// If all filters return null, then going on...
+		RequestIocContext reqContext = null;
 		try {
 			Object[] args = adaptor.adapt(req, resp, pathArgs);
+			Object obj;
+			// 判断 moudle 是否存在在 Ioc 容器中
+			if (null != module) {
+				obj = module;
+			} else {
+				Ioc2 ioc = Mvcs.getIoc(req);
+				if (null == ioc)
+					throw Lang.makeThrow(
+							"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
+							module);
+				obj = ioc.get(moduleType, moduleName);
+				reqContext = new RequestIocContext(req);
+				SessionIocContext sessionContext = new SessionIocContext(req.getSession());
+				IocContext myContext = new ComboContext(reqContext, sessionContext);
+				obj = ioc.get(moduleType, moduleName, myContext);
+			}
+			// 调用 module 中的方法
 			Object re = method.invoke(obj, args);
 			if (re instanceof View)
 				((View) re).render(req, resp, re);
@@ -184,8 +226,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 					throw Lang.wrapThrow(e2);
 				}
 			}
+		} finally {
+			if (null != reqContext)
+				reqContext.depose();
 		}
 
 	}
-
 }

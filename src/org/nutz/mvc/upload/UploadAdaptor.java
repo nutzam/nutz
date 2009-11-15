@@ -37,8 +37,7 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * <li>org.nutz.mvc.upload.FieldMeta : 描述了一个上传参数的更多属性
  * <li>org.nutz.mvc.upload.TempFile : 组合了 File 和 FieldMeta
  * </ul>
- * 当然，这三种参数，都是需要你在入口函数的参数列表里声明 '@Param' 注解，用来告诉本适配器，你的参数
- * 具体取自请求中的哪一个参数。
+ * 当然，这三种参数，都是需要你在入口函数的参数列表里声明 '@Param' 注解，用来告诉本适配器，你的参数 具体取自请求中的哪一个参数。
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * 
@@ -77,7 +76,9 @@ public class UploadAdaptor extends AbstractAdaptor {
 		return new MapInjector(param.value(), type);
 	}
 
-	public Object[] adapt(HttpServletRequest request, HttpServletResponse response) {
+	public Object[] adapt(	HttpServletRequest request,
+							HttpServletResponse response,
+							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
 			map = new Uploading().parse(request, charset, pool).params;
@@ -86,7 +87,9 @@ public class UploadAdaptor extends AbstractAdaptor {
 		}
 		// Try to make the args
 		Object[] args = new Object[injs.length];
-		for (int i = 0; i < injs.length; i++) {
+		int i = fillPathArgs(request, response, pathArgs, args);
+		// Inject another params
+		for (; i < injs.length; i++) {
 			args[i] = injs[i].get(request, response, map);
 		}
 		return args;

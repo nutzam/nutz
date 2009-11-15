@@ -1,5 +1,12 @@
 package org.nutz.ioc.meta;
 
+/**
+ * 描述了一个对象的字段，两个属性分别表示字段名，和字段值
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.ioc.meta.IocValue
+ */
 public class IocField {
 
 	private String name;

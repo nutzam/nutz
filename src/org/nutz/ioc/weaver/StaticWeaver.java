@@ -9,7 +9,7 @@ public class StaticWeaver implements ObjectWeaver {
 	private IocEventTrigger<Object> depose;
 	private Object obj;
 
-	StaticWeaver(Object obj, IocEventTrigger<Object> depose) {
+	public StaticWeaver(Object obj, IocEventTrigger<Object> depose) {
 		this.depose = depose;
 		this.obj = obj;
 	}

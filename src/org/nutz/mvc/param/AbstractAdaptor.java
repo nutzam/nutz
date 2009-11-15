@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
-import org.nutz.lang.Lang;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.param.injector.*;
@@ -36,11 +35,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				}
 			// Store
 			injs[i] = evalDefaultInjector(argTypes[i]);
+			if (null != injs[i])
+				continue;
+			injs[i] = evalInjector(argTypes[i], param);
+			// 子类也不能确定，如何适配这个参数，那么做一个标记，如果
+			// 这个参数被 ParamInjector 适配到，就会抛错。
+			// 这个设计是因为了 "路径参数"
 			if (null == injs[i])
-				injs[i] = evalInjector(argTypes[i], param);
-			if (null == injs[i])
-				throw Lang.makeThrow("Don't know how to inject %s.%s(...[%d]%s %s...),", method
-						.getDeclaringClass(), method.getName(), i, argTypes[i].getName(), param);
+				injs[i] = new ErrorInjector(method, i);
 		}
 	}
 
@@ -74,6 +76,18 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 							HttpServletResponse response,
 							String[] pathArgs) {
 		Object[] args = new Object[injs.length];
+		int i = fillPathArgs(request, response, pathArgs, args);
+		// Inject another params
+		for (; i < injs.length; i++) {
+			args[i] = injs[i].get(request, response, null);
+		}
+		return args;
+	}
+
+	protected int fillPathArgs(	HttpServletRequest request,
+								HttpServletResponse response,
+								String[] pathArgs,
+								Object[] args) {
 		int i = 0;
 		// Loop path args
 		if (null != pathArgs) {
@@ -81,11 +95,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 			for (; i < len; i++)
 				args[i] = injs[i].get(request, response, pathArgs[i]);
 		}
-		// Inject another params
-		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(request, response, null);
-		}
-		return args;
+		return i;
 	}
 
 }

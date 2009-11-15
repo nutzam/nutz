@@ -13,19 +13,31 @@ import org.nutz.lang.Lang;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class LevelContext implements IocContext {
+public class ScopeContext implements IocContext {
 
-	private String level;
+	private String scope;
 	private Map<String, ObjectProxy> objs;
 
-	public LevelContext(String level) {
-		this.level = level;
+	public ScopeContext(String scope) {
+		this.scope = scope;
 		objs = new HashMap<String, ObjectProxy>();
 	}
 
 	private void checkBuffer() {
 		if (null == objs)
-			throw Lang.makeThrow("Context '%s' had been deposed!", level);
+			throw Lang.makeThrow("Context '%s' had been deposed!", scope);
+	}
+
+	public Map<String, ObjectProxy> getObjs() {
+		return objs;
+	}
+
+	public String getScope() {
+		return scope;
+	}
+
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 
 	public ObjectProxy fetch(String name) {
@@ -33,8 +45,8 @@ public class LevelContext implements IocContext {
 		return objs.get(name);
 	}
 
-	public boolean save(String level, String name, ObjectProxy obj) {
-		if (accept(level)) {
+	public boolean save(String scope, String name, ObjectProxy obj) {
+		if (accept(scope)) {
 			checkBuffer();
 			synchronized (this) {
 				if (!objs.containsKey(name)) {
@@ -45,12 +57,12 @@ public class LevelContext implements IocContext {
 		return false;
 	}
 
-	protected boolean accept(String level) {
-		return null != level && this.level.equals(level);
+	protected boolean accept(String scope) {
+		return null != scope && this.scope.equals(scope);
 	}
 
-	public boolean remove(String level, String name) {
-		if (accept(level)) {
+	public boolean remove(String scope, String name) {
+		if (accept(scope)) {
 			checkBuffer();
 			synchronized (this) {
 				if (!objs.containsKey(name)) {

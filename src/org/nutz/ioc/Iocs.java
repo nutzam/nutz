@@ -19,7 +19,7 @@ import org.nutz.lang.meta.Pair;
 
 public class Iocs {
 
-	private static final String OBJFIELDS = "^(type|singleton|fields|args|events)$";
+	private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events)$";
 
 	public static boolean isIocObject(Map<String, ?> map) {
 		for (Entry<String, ?> en : map.entrySet())
@@ -61,6 +61,10 @@ public class Iocs {
 			} catch (FailToCastObjectException e) {
 				throw E(e, "Wrong singleton: '%s'", v);
 			}
+			// scope
+			v = map.get("scope");
+			if (null != v)
+				iobj.setScope(v.toString());
 			// events
 			try {
 				v = map.get("events");

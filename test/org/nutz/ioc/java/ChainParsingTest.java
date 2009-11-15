@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.nutz.ioc.IocMaking;
-import org.nutz.ioc.impl.LevelContext;
+import org.nutz.ioc.impl.ScopeContext;
 
 public class ChainParsingTest {
 
@@ -67,7 +67,7 @@ public class ChainParsingTest {
 		String s = "@Context.save('xx', 'tt', null)";
 		ChainNode cn = N(s);
 		assertEquals(s, cn.toString());
-		IocMaking ing = new IocMaking(null, null, new LevelContext("app"), null, null, null);
+		IocMaking ing = new IocMaking(null, null, new ScopeContext("app"), null, null, null);
 		assertFalse((Boolean) cn.eval(ing));
 	}
 

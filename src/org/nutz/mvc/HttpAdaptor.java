@@ -17,11 +17,15 @@ import javax.servlet.http.HttpServletResponse;
  * <p>
  * 你还需要知道的是：你每一个入口函数，框架都会为你建立一个新的适配器的实例。
  * <p>
- * <b>注意：</b> 如果你要写自己的实现类，这个类必须有一个public 的默认构造函数，如果你的构造函数需要参数，则必须是 String
- * 类型的。参数的值由 注解 '@AdaptBy.args' 来填充，它的默认值为 长度为0的空字符串数组。
+ * <b>注意：</b>
+ * <ul>
+ * <li>如果你要写自己的实现类，这个类必须有一个public 的默认构造函数，如果你的构造函数需要参数，则必须是 String 类型的。参数的值由 注解
+ * '@AdaptBy.args' 来填充，它的默认值为 长度为0的空字符串数组。
+ * <li>适配器对于一个 URL只会有一份实例。
+ * <li>容器假定你的适配器不会占有什么不可释放的资源，必要的时候，它会允许垃圾回收器回收你的适配器实例
+ * </ul>
  * 
- * @author zozoh
- * 
+ * @author zozoh(zozohtnt@gmail.com)
  */
 public interface HttpAdaptor {
 

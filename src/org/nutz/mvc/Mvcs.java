@@ -8,8 +8,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.Ioc2;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Localization;
+import org.nutz.mvc.ioc.SessionIocContext;
 
 public class Mvcs {
 
@@ -17,12 +19,12 @@ public class Mvcs {
 	public static final String MSG = "msg";
 	public static final String LOCALE_NAME = "nutz.mvc.locale";
 
-	public static Ioc getIoc(HttpServletRequest request) {
+	public static Ioc2 getIoc(HttpServletRequest request) {
 		return getIoc(request.getSession().getServletContext());
 	}
 
-	public static Ioc getIoc(ServletContext context) {
-		return (Ioc) context.getAttribute(Ioc.class.getName());
+	public static Ioc2 getIoc(ServletContext context) {
+		return (Ioc2) context.getAttribute(Ioc.class.getName());
 	}
 
 	public static UrlMap getUrls(ServletContext context) {
@@ -91,6 +93,16 @@ public class Mvcs {
 		}
 	}
 
+	/**
+	 * 为当前的 HTTP 请求对象设置一些必要的属性。包括：
+	 * <ul>
+	 * <li>本地化子字符串 => ${msg}
+	 * <li>应用的路径名 => ${base}
+	 * </ul>
+	 * 
+	 * @param req
+	 *            HTTP 请求对象
+	 */
 	static void updateRequestAttributes(HttpServletRequest req) {
 		if (null != req.getSession().getServletContext().getAttribute(Localization.class.getName())) {
 			HttpSession session = req.getSession();
@@ -101,6 +113,9 @@ public class Mvcs {
 		req.setAttribute("base", req.getContextPath());
 	}
 
+	/**
+	 * 获取当前请求的路径，并去掉后缀
+	 */
 	public static String getRequestPath(HttpServletRequest req) {
 		String path = req.getPathInfo();
 		if (null == path)
@@ -109,5 +124,15 @@ public class Mvcs {
 		if (lio > 0)
 			path = path.substring(0, lio);
 		return path;
+	}
+
+	/**
+	 * 注销当前 HTTP 会话。所有 Ioc 容器存入的对象都会被注销
+	 * 
+	 * @param session
+	 *            HTTP 会话对象
+	 */
+	public static void deposeSession(HttpSession session) {
+		new SessionIocContext(session).depose();
 	}
 }

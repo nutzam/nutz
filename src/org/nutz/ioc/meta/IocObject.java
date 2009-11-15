@@ -7,6 +7,10 @@ import java.util.List;
  * 描述了对象的注入信息
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.ioc.meta.IocEventSet
+ * @see org.nutz.ioc.meta.IocValue
+ * @see org.nutz.ioc.meta.IocField
  */
 public class IocObject {
 
@@ -32,15 +36,15 @@ public class IocObject {
 	private List<IocValue> args;
 
 	/**
-	 * 对象的字段值
+	 * 对象的字段
 	 */
 	private List<IocField> fields;
 
 	/**
-	 * 对象基本，容器根据这个字段，来决定将这个对象保存在哪一个上下文级别中<br>
+	 * 对象基本，容器根据这个字段，来决定将这个对象保存在哪一个上下文范围中<br>
 	 * 默认的为 "app"
 	 */
-	private String level;
+	private String scope;
 
 	public IocObject() {
 		args = new ArrayList<IocValue>();
@@ -48,12 +52,12 @@ public class IocObject {
 		singleton = true;
 	}
 
-	public String getLevel() {
-		return level;
+	public String getScope() {
+		return scope;
 	}
 
-	public void setLevel(String level) {
-		this.level = level;
+	public void setScope(String scope) {
+		this.scope = scope;
 	}
 
 	public Class<?> getType() {

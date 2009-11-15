@@ -51,60 +51,46 @@ public class UrlMapImpl implements UrlMap {
 		this.filters = filters;
 	}
 
-	public void add(List<ViewMaker> makers, Class<?> module) {
-		// create object
-		InjectName name = module.getAnnotation(InjectName.class);
-		Object obj;
-		if (null == name) {
-			try {
-				obj = module.newInstance();
-			} catch (Exception e) {
-				throw Lang.makeThrow(
-						"Class '%s' should has a accessible default constructor : '%s'", module
-								.getName(), e.getMessage());
-			}
-		} else {
-			obj = ioc.get(module, name.value());
-		}
+	public void add(List<ViewMaker> makers, Class<?> moduleType) {
 		// View: OK
-		Ok myOk = module.getAnnotation(Ok.class);
+		Ok myOk = moduleType.getAnnotation(Ok.class);
 		if (null == myOk)
 			myOk = ok;
 		// View: Defeat
-		Fail myFail = module.getAnnotation(Fail.class);
+		Fail myFail = moduleType.getAnnotation(Fail.class);
 		if (null == myFail)
 			myFail = fail;
 		// get default HttpAdaptor
-		AdaptBy myAb = module.getAnnotation(AdaptBy.class);
+		AdaptBy myAb = moduleType.getAnnotation(AdaptBy.class);
 		if (null == myAb)
 			myAb = adaptBy;
 		// get default ActionFilter
-		Filters myFlts = module.getAnnotation(Filters.class);
+		Filters myFlts = moduleType.getAnnotation(Filters.class);
 		if (null == myFlts)
 			myFlts = filters;
 		// get encoding
-		Encoding myEncoding = module.getAnnotation(Encoding.class);
+		Encoding myEncoding = moduleType.getAnnotation(Encoding.class);
 		if (null == myEncoding)
 			myEncoding = encoding;
 
 		// get base url
-		At baseAt = module.getAnnotation(At.class);
+		At baseAt = moduleType.getAnnotation(At.class);
 		String[] bases;
 		if (null == baseAt)
 			bases = Lang.array("");
 		else if (baseAt.value().length == 0)
-			bases = Lang.array("/" + module.getSimpleName().toLowerCase());
+			bases = Lang.array("/" + moduleType.getSimpleName().toLowerCase());
 		else
 			bases = baseAt.value();
 		// looping methods
-		for (Method method : module.getMethods()) {
+		for (Method method : moduleType.getMethods()) {
 			// get Url
 			At ats = method.getAnnotation(At.class);
 			if (null == ats)
 				continue;
 			// Create invoker
-			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, obj, method, myOk,
-					myFail, myAb, myFlts, myEncoding);
+			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, moduleType, method,
+					myOk, myFail, myAb, myFlts, myEncoding);
 
 			// Mapping invoker
 			for (String base : bases) {

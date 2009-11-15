@@ -17,7 +17,7 @@
 
 	<property name="JDK_VERSION" value="1.6" />
 
-	<property name="v" value="-1.a.17" />
+	<property name="v" value="-1.a.18" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
 	<property name="zjson" value="org/nutz/json/**" />
 	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />
@@ -50,13 +50,13 @@
 
 	<target name="jar" depends="compile">
 		<echo message="TMP: ${TMP}" />
-		<jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}" />
-		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
+		<!--jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}" />
 		<jar destfile="${OP}/nutz.lang${v}.jar" basedir="${TMP}" includes="${zlang}" />
 		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
 		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
-		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" />
+		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
 		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
+		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
 	</target>
 
 	<target name="run" depends="jar">

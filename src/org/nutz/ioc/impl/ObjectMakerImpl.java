@@ -34,7 +34,7 @@ public class ObjectMakerImpl implements ObjectMaker {
 		 */
 		ObjectProxy op = new ObjectProxy();
 		if (iobj.isSingleton() && null != ing.getObjectName())
-			ing.getContext().save(iobj.getLevel(), ing.getObjectName(), op);
+			ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
 
 		// 解析对象的编织方式
 		DynamicWeaver dw = new DynamicWeaver();

@@ -51,6 +51,7 @@ public class NutServlet extends HttpServlet {
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
+			
 		} catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
