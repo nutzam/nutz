@@ -42,15 +42,13 @@ If you are already a committer
 		 * You can change any interface implementation. We have version control. It's safe.
 		 * Every commit, it must pass the combination.
 		 * Every commit, it's better to pass the JUnit test.
-		 * Unless some special cases-- like you are sharing the code snippet with others.
+		 	* Unless some special cases-- like you are sharing the code snippet with others.
 		 * It is not allowed the codes in the server can not pass JUnit test for 3 days after new commit.
 		 
 	About massive code refactoring
-		 * Nutz's version is Main Version.Build Level.[Publish Version]
-		 * Compatible in the same main version.
-		 * May not compatible between different main versions.
-		 * To change the implementation will increase the Publish Version.
-		 * To refactoring interfaces will increase the Main Version.
+		 * It is inevitable
+		 * I'd like to do it, if it's reasonable
+		 * I like what I write, but I can not promise how long I will
 		 * Frankly, we don't have enough source to maintain even two versions for a long time. Currently there is only trunk.
 	
 

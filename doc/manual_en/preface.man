@@ -2,8 +2,9 @@
 #author:Peter.Tung(mastung@gmail.com)
 
 <logo.png>
+--------------------------------------------------------------------------------------------------------
+Why can't java become agile?
 
-To increase programming productivity is the core mission goal of Nutz
 	Java is a beautiful programming language, after 10 years of development, 
 	it has been applied to almost every place, in the powerful enterprise servers, hand set chips, 
 	the automotive equipment, intelligent appliances and even the mars rovers. 
@@ -13,7 +14,7 @@ To increase programming productivity is the core mission goal of Nutz
 	and for the future, it is the most promising language (it is still full of vitality and innovation). 
 
 	However, in the more and more popular area of Web development, Java seem to have exposed a weakness. Yes, the scripting languages roll up a boom.
-	It seems that a new "revolution" is begin. And Java, is laughed by "{_scripts}" frequently about {# F00; * low development efficiency}.
+	It seems that a new "revolution" is begin. And Java, is laughed by "{_scripts}" frequently about {#F00;*low development efficiency}.
 
 	{#00A;*But, is that real?} 
 
@@ -22,32 +23,65 @@ To increase programming productivity is the core mission goal of Nutz
 	The so-called that Java is inefficient in the Web Development, it may be more appropriate to say: {#F80;*inefficient to use third-party libraries for development}.
 
 	To prove that, I create Nutz, which is a collections of lightweight frameworks, each of them can be used independently. 
-	And the mission of the Nutz is {#080;*to maximum increase in the productivity of Web developers}. 
+	And the mission of the Nutz is 
+	
+	{#080;*to maximum increase in the productivity of Web developers}. 
 
 	Yes, to increase productivity is the core mission of this framework. Just like initial motivation of Java, 
 	the most concern is to balance the programmer's easy use and execution efficiency, so as Nutz.
 	Hopes that from Nutz, Java developers can get faster development speed, less codes, and without decrease the execution efficiency as a precondition. 
 
+--------------------------------------------------------------------------------------------------------
+How can Nutz help me?
 
-Nutz objectives
-	To maximize the productivity of Web programmer, Nutz must have the following features:
-	# Provides most of the functions of SSH
-		# Database access layer -- {_Nutz.Dao}
-		# Reverse injection Support -- {_Nutz.Ioc}
-		# Mvc Framework -- {_Nutz.Mvc}
-		# Json parser -- {_Nutz.Json}
-		# More simplified Java syntax of functions and classes -- {_Nutz.Lang} and {_Nutz.Castors}
-	# Do not depend on any third-party Jar packages, to facilitate building the development environment, deploying, and even re-compiling the source codes of Nutz.
-		* Unfortunately, in the first edition, it still depends on the [http://www.csg.is.titech.ac.jp/~chiba/javassist/ Javassist]
-	# Can be well working with other famous frameworks
-		* You can use Nutz.Dao + Spring
-		* You can use Nutz.Ioc with Hibernate
-		* any modules of Nutz can be used separately
-	# Provide a lower and smoother learning curve
-		* I try to make the interface design of simple and direct
-		* The user manual, you can grasp all of the usage of Nutz
-		* I will try to pay attention to my feedback from any channel, any help to simplify the use of the idea of Nutz, I will be careful assessment of
+	 * Dao -- slight wrap {*JDBC}, no cache support, transaction template
+	 * Ioc -- JSON style configuration
+	 * Mvc -- Annotation based configuration, support multi-file uploading feature
+	 * Json -- Parsing and Rendering
+	 * Castors -- Java Object type converting
+	 * Lang -- More Java simple util functions, reflection support
 
-	Before explaining Nutz's various part features in detail, if you are interested, here is a complete [packages.html Nutz package list]
+	It only depends on [http://www.csg.is.titech.ac.jp/~chiba/javassist/ javassist] for IOC.
 
-	Read Nutz's [version_naming_rule.html rules of the naming convention], will help you download the correct Java packages 
+	It means：
+	  * For a web application, you only need to put nutz.jar and javassist.jar in your WEB-INF/lib.
+	  * Of cause, you may also need database connection drivers and pools, PDF supported jars for your application.
+
+--------------------------------------------------------------------------------------------------------
+Nutz is designed for？
+
+	 * If you feel Hibernate is complicated, iBatis is boring, {#00F;*Nutz.Dao} is designed for you
+	 * If you feel it's boring to deploying and maintaining Spring configurations on multiple servers, {#00F;*Nutz.Ioc} is designed for you
+	 * If you don't like to write XML configurations, {#00F;*Nutz.Mvc} is designed for you
+	 * If you try to find a tool to help you transfer JSON, {#00F;*Nutz.Json} is designed for you
+	 * If you want use java as Ruby, {#00F;*Nutz.Castor} and {#00F;*Nutz.Lang} is designed for you
+	 * If you don't know SSH, you can continue with JDBC, the whole {*Nutz} is designed for you
+--------------------------------------------------------------------------------------------------------
+Quality of Nutz
+	
+	So far, Nutz has passed 350 JUnit test cases.
+	
+	And I will continually add new test cases for Nutz, to crash down the code. And then I can make it stronger.
+	
+	I also really depends on you to help find out the weakness and issues.
+--------------------------------------------------------------------------------------------------------
+Future of Nutz
+	
+	Nutz is a new open source project
+	
+	{*There is only future without history}
+	
+	What I can promise is, in the future, Nutz will {#F00;never be explosion}. All features added are for the developers' own good.
+--------------------------------------------------------------------------------------------------------
+You can make Nutz better
+	 * [http://devlicio.us/blogs/krzysztof_kozmic/archive/2009/09/10/how-to-contribute-to-open-source-without-writing-a-single-line-of-code.aspx How to contribute to open source without writing a single line of code]
+	 * You can [http://code.google.com/p/nutz/issues/entry commit issues here]
+	 * Share your idea and experience with people at [http://groups.google.com/group/nutzam group] or anywhere
+	 * Always welcome comments and suggestions
+	 * If you want to be a Nutz Committer, please read [for_committer.man here]
+--------------------------------------------------------------------------------------------------------
+Where can I find the help？
+	
+	Send email to {*nutzam@googlegroups.com}, we will try to give you response ASAP.
+	
+	You can join [http://groups.google.com/group/nutzam Nutz group]. You can share your problems and solutions with users.
