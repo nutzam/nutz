@@ -1,20 +1,25 @@
 #title:Nutz.Mvc 概述
 #index:0,1
 
-图解 Nutz.Mvc
+几句话的介绍
+
+	Nutz.Mvc 是要和一个 Web 服务器 （比如 Tomcat）一起工作的，它存在的意义{*就是要把一个标准的 HTTP 请求，转发到某一个 Java 函数中}。
 	
-	因为 Mvc 是要和一个 Web 服务器一起工作的，它存在的意义就是要把一个标准的 HTTP 请求，转发到某一个 Java 函数中。
-	同时，它能够让你的程序天然的将 HTTP 请求的参数解析，业务处理，返回这三部分逻辑分开：
-	 * 参数解析 - {*C}
-	 * 业务处理 - {*M}
-	 * 返回	- {*V}
 	它的特点是：
-	 * 它帮你做参数的解析 （当然你自己可以随意扩展）
-	 * 如果你愿意，你可以不用 View 来渲染返回
+	 * 帮你做参数的解析 （{/当然你自己可以随意扩展}）
+	 * 如果你愿意，你可以不用 View 来渲染 HTTP 输出流
+	 * 提供几个基本的渲染方式 （比如 JSP, JSON）
+	 * 除此以外，不内置更多的功能
 
 	每一种 HTTP 请求，标识就是一个 URL，而每一个 Java 函数怎样和一个 URL 关联呢？ 最直接的办法就是在函数上声明一个
 	注解，这个注解，在 Nutz.Mvc 中，叫 @At
-		
+	
+	你如果想快速开始，来一个 Hellow World， 那么请访问 [http://nutzdemo.googlecode.com]，上面的 Hello Mvc 是完全可以运行的
+
+图解 Nutz.Mvc
+
+	为了能让你更快速直观的了解 Nutz.Mvc 的工作方式，我提供下面两张图：
+	
 	每一次请求，都经过如下流程
 		
 		<nutz_mvc_workflow_overview.png>
@@ -23,105 +28,97 @@
 		 * Nutz.Mvc 最基本的想法，就是通过注解 @At 将一个HTTP请求路径同一个 Java 函数关联起来。
 		 * 并且，@At 支持你写多个路径
 		
-	更详细的流程：
+	更详细的流程
 
 		<nutz_mvc_workflow_detail.png>
+		
+		 * 声明了 @At 的函数被称为 {*入口函数}
+		 * 任何一个请求，都会经过四道工序
+			 # {*A} - {*过滤}: 你通过 @Filters 注解可以为你的{*入口函数}定义任意多的过滤器
+			 # {*B} - {*适配}: 这个过程将 HTTP 输入流转换成{*入口函数}的参数数组
+				 * 默认的，它认为输入流是传统的名值对方式
+				 * 更多的适配方式请参看 [mvc_http_adaptor.man 关于适配器]
+				 * 文件上传也是一种适配方式，请参看 UploadAdptor
+			 # {*C} - {*调用}: 调用{*入口函数}，你在里面需要调用相关的业务层代码。
+				 * 如果你的业务比较复杂，为了解耦合，你可能需要 Ioc 容器的帮助，请参看 [mvc_ioc.man 同 Ioc 容器一起工作] 一节
+			 # {*D} - {*渲染}: 根据{*入口函数}的返回，渲染 HTTP Response。
+				 * 如果返回是个 View，则用这个 View 来渲染 null （null? 是的，你没看错，这种情况 View 接口第三个参数会是 null）
+					 * 你可以用 org.nutz.mvc.view.ViewWrapper 将你的返回对象以及要返回的视图组合在一起返回，ViewWrapper 也是一个 View
+				 * 否则用函数的 @Ok 注解声明的 View 来渲染{*入口函数}的返回对象
+				 * 如果你的函数处理过程中抛出了异常，用 @Error 注解声明的 View 来渲染异常对象
 	
-	
+
+你还需要知道	
+	关于 @At
+		 * 声明了这个注解的函数就是{*入口函数}
+		 * 可以一次声明多个 URL，比如：
+			{{{
+			@At({"/fetch","/get"})
+			public Pet fetch(int petId){
+				...
+			}}}
+		 * 它不仅可以声明在函数上，它也可以声明在模块类上
+			 * 如果声明在模块上，模块上所有的{*入口函数}的 URL 实际上都会被加上一个前缀
+			 * 如果不声明值，默认值为模块类名的小写形式
+
+	通过 web.xml 挂接在 Jsp/Servlet 容器中
+		同大多数单纯的 Mvc 框架一样， Nutz.Mvc 也提供了一个 Servlet 作为同 JSP/Servlet 容器的挂载点。
+		{{{<web.xml>
+		<web-app>
+			<servlet>
+				<servlet-name>nutz</servlet-name>
+				<servlet-class>org.nutz.mvc.NutServlet</servlet-class>
+				<init-param>
+					<param-name>modules</param-name>
+					<param-value>nutz.demo.mvc.MainModule</param-value>
+				</init-param>
+				<load-on-startup>1</load-on-startup>
+			</servlet>
+
+			<servlet-mapping>
+				<servlet-name>nutz</servlet-name>
+				<url-pattern>*.nut</url-pattern>
+			</servlet-mapping>
+		</web-app>
+		}}}
+		 * NutServlet 只需要一个参数 -- 一个类的全名。这个将被认为是{*主模块}
+		 * 在这个类上你可以声明注解
+			 * 通过 '@Modules' 注解声明整个应用有哪些{*子模块}
+				 * {*子模块}不能再嵌套{*子模块}
+			 * 通过 '@IocBy' 注解声明整个应用，应采用何种方式进行反转注入。如果没有声明，整个应用将不支持 Ioc 
+			 * 通过 '@Localization' 注解声明整个应用的本地地化字符串的目录
+			 * 通过 '@SetupBy' 注解声明应用启动的关闭时，应该进行的处理。
+			 * 通过 '@Views' 注解扩展整个应用支持的视图模板类型
+			 * 通过 '@Ok' 注解声明整个应用默认的成功视图
+			 * 通过 '@Fail' 注解声明整个应用默认的失败视图
+			 * 通过 '@AdaptBy' 注解声明整个应用默认的 HTTP 参数适配方式
+			 * 通过 '@Filters' 注解声明整个应用默认的过滤器数组
+			 * 通过 '@Encoding' 注解声明整个应用默认的输入输出字符编码
+
 	如何将函数参数和 HTTP 参数对应起来
-	
-	你可以在方法上声明什么注解
+		 * 这个过程被称为适配，执行这个过程的类需要实现 org.nutz.mvc.HttpAdaptor 接口
+		 * 通过 @AdaptBy 注解，可以为每个{*子模块}声明默认的适配方式
+			 * 这个注解也可是直接声明在{*入口函数}上
+		 * [mvc_http_adaptor.man 关于适配器] 一节有更多的描述
+		 * 默认的，Nutz.Mvc 将为你的{*入口函数}应用 org.nutz.mvc.adaptor.PairAdaptor
 
-	重复的注解声明在模块类上
+	你可以在入口函数上声明什么注解
+		 * @At : 函数对应的 URL
+		 * @Encoding : HTTP 请求的输入输出字符编码
+		 * @Filters ： 函数的过滤器数组
+		 * @AdaptBy ： 参数适配方式
+		 * @Ok ： 成功渲染方式  -- 请参看 [mvc_view.man 关于视图]
+		 * @Fail ： 异常渲染方式  -- 请参看 [mvc_view.man 关于视图]
 
-	模块重复的注解声明在主模块上
-
-	什么是主模块
-
-	注解的默认值
-	
-同 Ioc 容器一起工作
-
-使用过滤器
-
-自己的 Adaptor
-
-	
-
-如何映射 URL
-	用最直接的方法将一个 URL 映射到某一个 Java 函数上
-	比如：
-	{{{
-	@IocBy("userActions")
-	public class UserActions{
-		@Url("/user/update")
-		@AdaptBy(JsonHttpAdaptor.class)
-		@Ok("jsp:abc.bbc.cbc")
-		@Error("jsp:abc.bbc.cbc")
-		public void updateUser(User user){
-		}
-		
-		@Url("/user/add")
-		public void addUser(@Param("usr") User user){
-		}
-		
-		@Url("/user/delete")
-		public void deleteUser(@Param("nm") String name){
-		}
-	}
-	}}}
-	 * @Ioc 注解不是必须的
-		 * 如果声明了这个注解，将会调用 Ioc.get() 方法，获取该类实例
-		 * 否则，将直接调用默认构造函数获取该类实例，该类的实例将不被缓存
-	 * @Url 注解声明了本函数具体对应哪个 URL，后面有详细解释
-	 * @Params 注解用来声明参数的映射规则，遵守如下约定
-		 # 如果类型为 ServletRequest 或 ServletResponse 及其子类, 在函数被调用时，相关参数会被正确设置
-			 * 无所谓参数的位置
-			 * 无所谓参数的个数，即使你声明了 2个以上的 ServletRequest，它们也都会被正确设置
-		 # 其他参数会按顺序供给
-			 * 如果 type = "pair"，则按 names 的顺序，依次为参数设置值。
-				 * 如果没有声明 names，则每个参数都会被试图从 Request 的提交数据中加载
-			 * 如果 type = "json"，则将 Request 全部读入，对每个参数依次 fromJson
-			 * 如果 type = "binary"，则不做任何事情，实际上用户需要手动的设置一个 ServletRequest 参数
-	 * 任何函数可以有返回值，也可以没有返回值
-		 * 有返回值，这个返回值会传递给 View
-		 * 无返回值，View 的对应参数则为 Null
-	 * @View 注解将声明本函数会用何种方式渲染 HTTP 响应的内容
-		 * type 属性可以有 jsp | json 或者其他类型，大小写不敏感
-			 * 框架将试图通过这个属性名，去生成一个视图的实例
-				 * 如果声明了 ok 或者 error，则试图将其值作为该视图实例的构造函数的第一参数传入，否则，将调用默认构造函数
-			 * 如果你想增加新的视图类型，需要为 NutzServlet 增加配置信息，views 属性是个 Json 字符串，格式类似：
-				{{{
-				{
-					freemarker : "com.you.FreeMakerView",
-					velocity : "com.you.VelocityView",
-					webmacro : "com.you.WebmacroView"
-				}
-				}}}
-				注，同样， key 值就是类型名，大小写不敏感。 Nutz.Mvc 默认提供了两种视图：
-				{{{
-				{
-					jsp : "org.nutz.mvc.view.JspView",
-					json : "org.nutz.mvc.view.JsonView"
-				}
-				}}}
-				这两个视图你不用声明，自然就有。但是如果你想替换它们的实现，你可以再 views 属性的 Json 字符串里面重写它们的值
-		 * ok & error 属性表示函数顺利的执行以后，应该采用什么样的视图来渲染。
-			 * 因为每一次渲染，都会构建一个新的视图实例，构建时，会将 ok 或者 error 的值作为该视图的构造函数传入
-			 * 如果没有声明该值，则用调用默认构造函数来创建视图
-			 * NutzServlet 提供参数来设置默认 ok 视图，以及默认 error 视图
-			 * 你可以将 @View 声明在类上，则作为整个类的默认 ok | error 视图
-
-如何让框架找到这些函数
-	将这个类配置在 NutzServlet 的参数中，用逗号分隔。NutzServlet 在启动的时候会初始化这些类
-	{{{
-	<init-param>
-		<name>modules</name>
-		<value>
-			com.you.UserActions,
-			com.you.CompanyActions
-		</value>
-	</init-param>
-	}}}
+	在子模块可以声明什么注解
+		 * @InjectName ： Ioc 容器中，本模块对应的名称
+		 * @At : 模块所有{*入口函数}的 URL 前缀
+		 * @Encoding : 模块所有{*入口函数}默认的输入输出字符编码
+		 * @Filters ： 模块所有{*入口函数}默认的函数的过滤器数组
+		 * @AdaptBy ： 模块所有{*入口函数}默认的参数适配方式
+		 * @Ok ： 模块所有{*入口函数}默认的如果成功渲染方式
+		 * @Fail ： 模块所有{*入口函数}默认的异常渲染方式
 
 	
+
+

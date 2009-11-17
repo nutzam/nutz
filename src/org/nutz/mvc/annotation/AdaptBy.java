@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.nutz.mvc.HttpAdaptor;
-import org.nutz.mvc.param.PairAdaptor;
+import org.nutz.mvc.adaptor.PairAdaptor;
 
 /**
  * 声明适配 Http 请求的方式。通过这个注解直接声明，而没有使用类似 ViewMaker 一类的工厂模式。

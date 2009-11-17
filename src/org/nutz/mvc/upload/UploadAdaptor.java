@@ -1,7 +1,6 @@
 package org.nutz.mvc.upload;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -10,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
+import org.nutz.mvc.adaptor.AbstractAdaptor;
+import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.annotation.Param;
-import org.nutz.mvc.param.AbstractAdaptor;
-import org.nutz.mvc.param.ParamInjector;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
 import org.nutz.mvc.upload.injector.MapInjector;
@@ -81,8 +80,10 @@ public class UploadAdaptor extends AbstractAdaptor {
 							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
-			map = new Uploading().parse(request, charset, pool).params;
-		} catch (IOException e) {
+			Uploading ing = new Uploading();
+			ing.parse(request, charset, pool);
+			map = ing.getParams();
+		} catch (UploadFailException e) {
 			throw Lang.wrapThrow(e);
 		}
 		// Try to make the args

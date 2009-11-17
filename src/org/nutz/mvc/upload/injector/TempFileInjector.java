@@ -5,7 +5,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.mvc.param.ParamInjector;
+import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.upload.TempFile;
 
 public class TempFileInjector implements ParamInjector {

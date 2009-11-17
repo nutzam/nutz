@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
-import org.nutz.mvc.param.injector.NameInjector;
+import org.nutz.mvc.adaptor.injector.NameInjector;
 
 public class MapInjector extends NameInjector {
 

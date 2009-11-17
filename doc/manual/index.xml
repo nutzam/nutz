@@ -39,6 +39,11 @@
 	</doc>
 	<doc path="mvc"	title="Mvc">
 		<doc path="mvc_overview.man"/>
+		<doc path="mvc_http_adaptor.man"/>
+		<doc path="mvc_view.man"/>
+		<doc path="mvc_localization.man"/>
+		<doc path="mvc_ioc.man"/>
+		<doc path="mvc_action_filter.man"/>
 		<doc path="file_upload.man"/>
 	</doc>
 	<doc path="json" title="Json 手册">

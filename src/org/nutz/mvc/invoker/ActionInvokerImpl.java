@@ -25,6 +25,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
@@ -34,7 +35,6 @@ import org.nutz.mvc.annotation.InjectName;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
-import org.nutz.mvc.param.PairAdaptor;
 import org.nutz.mvc.view.UTF8JsonView;
 
 public class ActionInvokerImpl implements ActionInvoker {
