@@ -15,6 +15,10 @@ import javax.servlet.http.HttpSessionListener;
  * &lt;/listener&gt;
  * </pre>
  * 
+ * <h4 style=color:red>注意:</h4><br>
+ * 如果你的 IocProvider 返回是 Ioc 而不是 Ioc2，那么 这个监听器是没有意义的。因为Nutz.Mvc 不会为 Session 创建
+ * IocContext，因此也就不需要注销
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class NutSessionListener implements HttpSessionListener {

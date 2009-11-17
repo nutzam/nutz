@@ -19,11 +19,11 @@ public class Mvcs {
 	public static final String MSG = "msg";
 	public static final String LOCALE_NAME = "nutz.mvc.locale";
 
-	public static Ioc2 getIoc(HttpServletRequest request) {
+	public static Ioc getIoc(HttpServletRequest request) {
 		return getIoc(request.getSession().getServletContext());
 	}
 
-	public static Ioc2 getIoc(ServletContext context) {
+	public static Ioc getIoc(ServletContext context) {
 		return (Ioc2) context.getAttribute(Ioc.class.getName());
 	}
 

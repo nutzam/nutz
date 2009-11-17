@@ -195,16 +195,26 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (null != module) {
 				obj = module;
 			} else {
-				Ioc2 ioc = Mvcs.getIoc(req);
+				Ioc ioc = Mvcs.getIoc(req);
 				if (null == ioc)
 					throw Lang.makeThrow(
 							"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
 							module);
-				obj = ioc.get(moduleType, moduleName);
-				reqContext = new RequestIocContext(req);
-				SessionIocContext sessionContext = new SessionIocContext(req.getSession());
-				IocContext myContext = new ComboContext(reqContext, sessionContext);
-				obj = ioc.get(moduleType, moduleName, myContext);
+				/*
+				 * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
+				 */
+				if (ioc instanceof Ioc2) {
+					reqContext = new RequestIocContext(req);
+					SessionIocContext sessionContext = new SessionIocContext(req.getSession());
+					IocContext myContext = new ComboContext(reqContext, sessionContext);
+					obj = ((Ioc2) ioc).get(moduleType, moduleName, myContext);
+				}
+				/*
+				 * 否则，则仅仅简单的从容器获取
+				 */
+				else {
+					obj = ioc.get(moduleType, moduleName);
+				}
 			}
 			// 调用 module 中的方法
 			Object re = method.invoke(obj, args);
