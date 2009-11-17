@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
-import org.nutz.ioc.Ioc2;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.ioc.SessionIocContext;
@@ -24,7 +23,7 @@ public class Mvcs {
 	}
 
 	public static Ioc getIoc(ServletContext context) {
-		return (Ioc2) context.getAttribute(Ioc.class.getName());
+		return (Ioc) context.getAttribute(Ioc.class.getName());
 	}
 
 	public static UrlMap getUrls(ServletContext context) {

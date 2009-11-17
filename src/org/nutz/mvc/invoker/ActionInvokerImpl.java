@@ -192,6 +192,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			Object[] args = adaptor.adapt(req, resp, pathArgs);
 			Object obj;
 			// 判断 moudle 是否存在在 Ioc 容器中
+			// P.S. 这个分支可以考虑用一个 Flyweight 封装一下，代码可能会更干净点
 			if (null != module) {
 				obj = module;
 			} else {
@@ -218,25 +219,37 @@ public class ActionInvokerImpl implements ActionInvoker {
 			}
 			// 调用 module 中的方法
 			Object re = method.invoke(obj, args);
+			
+			// 渲染 HTTP 输出流
 			if (re instanceof View)
 				((View) re).render(req, resp, re);
 			else
 				ok.render(req, resp, re);
-		} catch (Throwable e) {
+		}
+		// 如果有错误，则转到失败渲染流程
+		catch (Throwable e) {
+			// 基本上， InvocationTargetException 一点意义也没有，需要拆包
 			if (e instanceof InvocationTargetException)
 				e = e.getCause();
+			
 			try {
 				fail.render(req, resp, e);
-			} catch (Throwable e1) {
+			}
+			// 失败渲染流程也失败的话，则试图直接渲染一下失败信息
+			catch (Throwable e1) {
 				resp.reset();
 				try {
 					resp.getWriter().write(e1.getMessage());
 					resp.flushBuffer();
-				} catch (IOException e2) {
+				}
+				// 仍然失败？ 没办法，抛出异常吧
+				catch (IOException e2) {
 					throw Lang.wrapThrow(e2);
 				}
 			}
-		} finally {
+		}
+		// 这里保证了，在 Request 级别的对象一定会被注销的
+		finally {
 			if (null != reqContext)
 				reqContext.depose();
 		}
