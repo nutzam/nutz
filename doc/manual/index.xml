@@ -37,7 +37,7 @@
 		<doc path="aop.man"/>
 		<doc path="scope.man"/>
 	</doc>
-	<doc path="mvc"	title="Mvc">
+	<doc path="mvc"	title="Mvc 手册">
 		<doc path="mvc_overview.man"/>
 		<doc path="mvc_http_adaptor.man"/>
 		<doc path="mvc_view.man"/>
