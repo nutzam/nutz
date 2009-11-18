@@ -1,23 +1,14 @@
 package org.nutz.castor;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.nutz.castor.castor.Array2Array;
-import org.nutz.lang.Files;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
 
@@ -33,66 +24,6 @@ import org.nutz.lang.TypeExtractor;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class Castors {
-
-	// find the jar file where contains Castors
-	private static String[] findCastorsInJar(Class<?> baseClass) {
-		String fpath = getBasePath(baseClass);
-		if (fpath == null)
-			return null;
-		int posBegin = fpath.indexOf("file:");
-		int posEnd = fpath.lastIndexOf('!');
-		if (posBegin > 0 && (posEnd - posBegin - 5) > 0) {
-			String jarPath = fpath.substring(posBegin + 5, posEnd);
-			try {
-				ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass
-						.getPackage().getName().replace('.', '/')
-						+ "/\\w*.class");
-				if (null != entrys && entrys.length > 0) {
-					String[] classNames = new String[entrys.length];
-					for (int i = 0; i < entrys.length; i++) {
-						String ph = entrys[i].getName();
-						classNames[i] = ph.substring(0, ph.lastIndexOf('.')).replaceAll("[\\\\|/]",
-								".");
-					}
-					return classNames;
-				}
-			} catch (Throwable e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-		return null;
-	}
-
-	private static String[] findCastorsInClassPath(Class<?> classZ) {
-		String basePath = getBasePath(classZ);
-		if (basePath == null)
-			return null;
-		try {
-			File[] files = Files.findFile(basePath).listFiles(new FileFilter() {
-				public boolean accept(File pathname) {
-					return pathname.getName().endsWith(".class");
-				}
-			});
-			if (null != files && files.length > 0) {
-				String[] classNames = new String[files.length];
-				Package packageA = classZ.getPackage();
-				for (int i = 0; i < files.length; i++) {
-					String fileName = files[i].getName();
-					String classShortName = fileName.substring(0, fileName.length()
-							- ".class".length());
-					classNames[i] = packageA.getName() + "." + classShortName;
-				}
-				return classNames;
-			}
-		} catch (SecurityException e) {
-			// In GAE, it will case SecurityException, because you can't use
-			// listFiles()
-		} catch (NullPointerException e) {
-			// if this class store in a jar, it will throw this Exception,
-			// because Files.findFile(basePath) will return null
-		}
-		return null;
-	}
 
 	private static Castors one;
 	private static TypeExtractor typeExtractor = null;
@@ -165,19 +96,14 @@ public class Castors {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
-			String[] classNames = findCastorsInClassPath(baseClass);
-			if (null == classNames) {
-				classNames = findCastorsInJar(baseClass);
-			}
-			if (null == classNames)
+			List<Class<?>> list  = Util.scanClass(baseClass);
+			if (null == list)
 				continue;
-			for (String className : classNames) {
+			for (Class<?> klass : list) {
 				try {
-					Castor<?, ?> castor = null;
-					Class<?> klass = Class.forName(className);
 					if (Modifier.isAbstract(klass.getModifiers()))
 						continue;
-					castor = (Castor<?, ?>) klass.newInstance();
+					Castor<?, ?> castor =  (Castor<?, ?>) klass.newInstance();
 					Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
 					if (null == map2) {
 						map2 = new HashMap<String, Castor<?, ?>>();
@@ -201,7 +127,7 @@ public class Castors {
 					}
 				} catch (Throwable e) {
 					System.err.println(String.format("Fail to create castor [%s] because: %s",
-							className, e.getMessage()));
+							klass, e.getMessage()));
 				}
 			}
 		}
@@ -270,44 +196,5 @@ public class Castors {
 		} catch (FailToCastObjectException e) {
 			return String.valueOf(src);
 		}
-	}
-
-	/**
-	 * The function try to return the file path of one class. If it exists in
-	 * regular directory, it will return as "D:/folder/folder/name.class" in
-	 * windows, and "/folder/folder/name.class" in unix like system. <br>
-	 * If the class file exists in one jar file, it will return the path like:
-	 * "XXXXXXfile:\XXXXXX\XXX.jar!\XX\XX\XX"
-	 * <p>
-	 * use ClassLoader.getResources(String) to search resources in classpath
-	 * <p>
-	 * <b>Using new ClassLoader(){} , not classZ.getClassLoader()</b>
-	 * <p>
-	 * In GAE , it will fail if you call getClassLoader()
-	 * 
-	 * @author Wendal Chen
-	 * @author zozoh
-	 * @param classZ
-	 * @return path or null if nothing found
-	 * 
-	 * @see java.lang.ClassLoader
-	 * @see java.io.File
-	 */
-	private static String getBasePath(Class<?> classZ) {
-		try {
-			String path = classZ.getName().replace('.', '/') + ".class";
-			Enumeration<URL> urls = new ClassLoader() {}.getResources(path);
-			// zozoh: In eclipse tomcat debug env, the urls is always empty
-			if (null != urls && urls.hasMoreElements()) {
-				URL url = urls.nextElement();
-				if (url != null)
-					return new File(url.getFile()).getParentFile().getAbsolutePath();
-			}
-			// Then I will find the class in classpath
-			File f = Files.findFile(path);
-			if (null != f)
-				return f.getParentFile().getAbsolutePath();
-		} catch (IOException e) {}
-		return null;
 	}
 }
