@@ -12,7 +12,7 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.ioc.SessionIocContext;
 
-public class Mvcs {
+public abstract class Mvcs {
 
 	public static final String DEFAULT_MSGS = "$default";
 	public static final String MSG = "msg";

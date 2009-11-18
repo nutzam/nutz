@@ -17,7 +17,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
 
-public class Iocs {
+public abstract class Iocs {
 
 	private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events)$";
 

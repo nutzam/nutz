@@ -13,6 +13,17 @@ import org.nutz.lang.Strings;
  */
 public abstract class Disks {
 
+	/**
+	 * 一个 Vistor 模式的目录深层遍历
+	 * 
+	 * @param f
+	 *            要遍历的目录或者文件，如果是目录，深层遍历，否则，只访问一次文件
+	 * @param fv
+	 *            对文件要进行的操作
+	 * @param filter
+	 *            遍历目录时，哪些文件应该被忽略
+	 * @return 遍历的文件个数
+	 */
 	public static int visitFile(File f, FileVisitor fv, FilenameFilter filter) {
 		int re = 0;
 		if (f.isFile()) {
@@ -26,6 +37,15 @@ public abstract class Disks {
 		return re;
 	}
 
+	/**
+	 * 将两个文件对象比较，得出相对路径
+	 * 
+	 * @param base
+	 *            基础文件对象
+	 * @param file
+	 *            相对文件对象
+	 * @return 相对于基础文件对象的相对路径
+	 */
 	public static String getRelativePath(File base, File file) {
 		if (base.isFile())
 			base = base.getParentFile();
