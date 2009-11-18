@@ -27,7 +27,7 @@ public class NamePathJspView implements View {
 		RequestDispatcher rd;
 		String path;
 		if (Strings.isBlank(jspPath))
-			path = Mvcs.getRequestPath(req) + ".jsp";
+			path = "/WEB-INF" + Mvcs.getRequestPath(req) + ".jsp";
 		else
 			path = jspPath;
 		rd = req.getRequestDispatcher(path);
