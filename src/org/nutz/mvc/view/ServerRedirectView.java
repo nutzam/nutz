@@ -40,6 +40,8 @@ public class ServerRedirectView implements View {
 				} else {
 					value = req.getParameter(key);
 				}
+				if (null == value)
+					value = obj;
 				dest.set(key, value);
 			}
 		// Format the path ...

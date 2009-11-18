@@ -22,7 +22,7 @@ import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.Views;
-import org.nutz.mvc.view.BuiltinViewMaker;
+import org.nutz.mvc.view.DefaultViewMaker;
 
 public class DefaultLoading implements Loading {
 
@@ -49,7 +49,7 @@ public class DefaultLoading implements Loading {
 			}
 			// Prepare view makers
 			ArrayList<ViewMaker> makers = new ArrayList<ViewMaker>();
-			makers.add(new BuiltinViewMaker());
+			makers.add(new DefaultViewMaker());
 			if (null != vms)
 				for (Class<? extends ViewMaker> type : vms.value())
 					makers.add(type.newInstance());

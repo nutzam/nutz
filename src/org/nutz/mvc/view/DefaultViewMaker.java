@@ -7,7 +7,7 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 
-public class BuiltinViewMaker implements ViewMaker {
+public class DefaultViewMaker implements ViewMaker {
 
 	public View make(Ioc ioc, String type, String value) {
 		if (type.equals("jsp")) {

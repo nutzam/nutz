@@ -1,1 +1,177 @@
 #title:关于视图
+#index:0,1
+
+什么是视图？
+	视图就是一种渲染 HTTP 输出流的一种方式。 Nutz.Mvc 提供了 org.nutz.mvc.View 接口，隔离了这个行为。
+
+怎样使用视图？
+	执行一个业务逻辑可能有两种结果
+	 # 成功
+	 # 失败
+	在每个入口函数上，你都可声明这两个注解
+	 # @Ok
+	 # @Fail
+	仔细观察，你会发现，这两个注解的值只能是一个字符串，那么怎么通过字符串，匹配到视图呢？
+
+	无论是 @Ok 还是 @Fail，他们的值的格式总是：
+	{{{
+	"视图类型:视图值"
+	}}}
+	 * 字符 ':' 将这个字符串隔断，左半部分是视图的类型，右半部分是视图的值。
+	 * 不同的视图类型，值的形式可能也是不一样的
+
+	通过 {*org.nutz.mvc.view.DefaultViewMaker}， Nutz.Mvc 提供了一些默认视图 ...
+
+内置的视图
+	
+	默认的， @Ok 和 @Fail 注解可以支持如下视图类型：
+
+	JSP 视图
+		视图的实现类为： {*org.nutz.mvc.view.NamePathJspView}
+
+		一般的使用形式：
+		{{{
+		@Ok("jsp:pet.detail")
+		}}}
+		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+
+		你可以不声明视图的值：
+		{{{
+		@Ok("jsp")
+		}}}
+		那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
+		{{{
+		/pet/detail.nut
+		}}}
+		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+
+	JSON 视图
+		视图的实现类为： {*org.nutz.mvc.view.UTF8JsonView}
+
+		一般的使用形式：
+		{{{
+		@Ok("json")
+		}}}
+		会将入口函数返回的对象转换成 JSON 字符串
+
+		你可以对这个 JSON 字符串的格式进行更多的控制：
+		{{{
+		@Ok("json:{quoteName:true, ignoreNull:true}")
+		}}}
+		视图的值就是： {*`"{quoteName:true, ignoreNull:true}"`}，这个字符串会被转换成 JsonFormat 对象。
+		如果你想了解更多的 Json 转换的介绍哦，请参看 [json_overview.man Json 手册]
+
+	重定向视图
+		视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
+
+		一般的使用形式：
+		{{{
+		@Ok("redirect:/pet/list.nut")
+		或者
+		@Ok("redirect:/article/2009/10465.html")
+		}}}
+		它将按照给定的视图值，发送 HTTP 重定向命令到客户端
+		
+		给定参数
+		{{{
+		@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+		或者
+		@Ok("redirect:/article/2009/${articleId}.html")
+		}}}
+		视图会填充占位符号。填充的规则是：
+		 # 如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
+		 # 否则，用 HTTP 参数表的值来填充，参数名称就是占位符的名称
+		 # 如果参数表没有值，则直接用返回的对象来填充。
+		
+		下面举几个例子：
+
+		用返回对象的字段填充：
+			{{{
+			@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+			入口函数返回： Pet 对象
+			则取 pet.getId() 填充 ${obj.id}
+			}}}
+
+		用 HTTP 参数填充
+			{{{
+			@Ok("redirect:/pet/detail.nut?pid=${id}")
+			从 HTTP 参数表取 "id"，填充
+			如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
+			如果入口函数是 void 或者返回 null，则用空串填充
+			}}}
+
+	HTTP 返回码视图
+		视图的实现类为： {*org.nutz.mvc.view.HttpStatusView}
+
+		使用形式
+		{{{
+		@Ok("http:404")
+		}}}
+		返回 HTTP 404 错误码
+
+	空白视图
+		视图的实现类为： {*org.nutz.mvc.view.VoidView}
+
+		使用形式
+		{{{
+		@Ok("void")
+		}}}
+		对 HTTP 输出流不做任何处理
+	
+	从 Ioc 容器中获取的视图
+		使用形式
+		
+		使用形式
+		{{{
+		@Ok("ioc:myView")
+		}}}
+		将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
+		通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。
+	
+
+定制自己的视图
+	
+	通过 @Ok("xxx:xxxx") 这种形式声明的视图非常简洁，易于理解。某些时候，你可能觉得 Nutz.Mvc 支持的视图
+	类型不够，你喜欢其他的视图模板引擎，比如 [http://freemarker.org/ FreeMarker]。因此你希望你的 @Ok 能
+	写成这样：
+	{{{
+	@Ok("freemaker:/pattern/pet/myTemplate")
+	}}}
+
+	又或者，你希望你的能想这样来输出 PDF 文件：
+	{{{
+	@Ok("pdf:/pdf/article")
+	}}}
+	
+	在视图层，总会有这样或者哪样的需求，对吗？ 那么你可以自己来定制自己的视图规则：
+
+	实现自己的视图
+		实现 org.nutz.mvc.View 接口，比如：
+		{{{
+		public class PdfView implements View{
+			public void render(HttpServletRequest req, HttpServletResponse resp, Object obj){
+			
+			....
+			
+		}}}
+		实现 Render 函数即可，第三个参数就是你的入口函数的返回
+
+	实现自己的视图工厂
+		实现 org.nutz.mvc.ViewMaker 接口，比如：
+		{{{
+		public class PdfViewMaker implements ViewMaker{
+			public View make(Ioc ioc, String type, String value){
+				if("pdf".equalsIgnoreCase(type)){
+					return new PdfView(value);
+				}
+				return null;
+			}
+		}	
+		}}}
+		函数 make 如果返回 null，则表示你的这个视图工厂不知道如何构建这种视图。 Nutz.Mvc 会看看其他的工厂
+		能不能创建这个视图。如果所有的工厂都不能创建这个视图，则会导致异常。
+
+	将视图工厂整合进应用中
+		在主模块上，通过注解 @Views 将你的工厂声明进整个应用即可。
+		 * 你可以声明多个 ViewMaker
+		 * 所有的视图工厂，必须有一个 public 的默认构造函数。

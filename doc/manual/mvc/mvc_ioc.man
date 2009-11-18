@@ -1,2 +1,57 @@
 #title: 同 Ioc 容器一起工作
 #index:0,1
+
+内置的 Ioc 容器
+	
+	一个 Mvc 框架可以通过 Ioc 接口同一个 Ioc 容器挂接，挂接的方法很简单： 在主模块上声明 @IocBy
+	{{{
+	@IocBy(type=JsonIocProvider.class, args={"/conf/core.js", "/conf/pet.js"})
+	}}}
+	Nutz.Mvc  内置了 JsonIocProvider 类，帮助你同标准 NutIoc 容器挂接。下面是这个类的全部源代码：
+	{{{
+	public class JsonIocProvider implements IocProvider {
+		public Ioc create(ServletConfig config, String[] args) {
+			return new NutIoc(new JsonLoader(args), new ScopeContext("app"), "app");
+		}
+	}
+	}}}
+	极其简单，对吗？ 其中，@IocBy 的 "args" 属性的值将会直接传入 IocProvider 的 create 函数。
+
+由 Ioc 容器管理子模块
+	
+	通过 @IocBy 为整个应用声明了 Ioc 容器，那么如何使用呢。 实际上，你的每一个模块都可以来自容器，只要
+	你在模块上声明 @InjectName。 当然，主模块声明这个注解是没有意义的。
+
+	{{{
+	@InjectName("petM")
+	public class PetModule {
+	   ...
+	}}}
+
+	如果你声明了这个注解， Nutz.Mvc 构造你的这个模块的时候，会通过 Ioc 容器获取，而不直接调用默认构造函数了。
+
+容器管理对象的生命周期范围
+	
+	如果你使用的是 Nutz.Ioc 标准容器，或者你的 Ioc 容器实现了 Ioc2 接口，那么你的模块类的生命周期是可以定制的。
+	以 Nutz 的 Json 配置语法为例，你可以为你的对象增加属性：
+	{{{
+	{
+		petModule : {
+			type : "com.my.PetModule",
+			scope : "session"
+		}
+	}
+	}}}
+	那么，你的 petModule 对象将只会存在 session里，当 session 停止后，会被 NutSessionListener 注销。当然，你需要在
+	web.xml 中声明这个会话监听器。
+
+	对于 Nutz.Mvc，它支持如下的生命周期范围
+	 * app
+	 * session
+	 * request
+
+自定 Ioc 容器
+	
+	你很喜欢 Spring，或者你很喜欢 Guice。不管怎么说，你不想用 Nutz.Ioc，那么没关系，你可以自己实现一个 IocProvider。
+	并用 @IocBy 声明到整个应用中即可。通过 Spring 或者 Guice 实习 Ioc 接口想必不是什么难事。
+	

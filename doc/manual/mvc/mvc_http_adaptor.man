@@ -1,1 +1,225 @@
 #title: 关于适配器
+#index:0,1
+----------------------------------------------------------------------------------------------
+什么是适配器？
+
+	将 HTTP 参数转换成一个函数参数的过程是一个典型适配过程，执行这个过程的对象被称为适配器了。
+	Nutz.Mvc 提供了 {*org.nutz.mvc.HttpAdaptor} 接口，隔离了这种行为。
+
+	在每一个入口函数上，你都可以通过注解 {#888;@AdaptBy} 来声明如何适配 HTTP 参数。当然，你
+	没必要在每一个入口函数上都声明，在子模块类上声明，或者在整个应用的主模块上声明均可。
+----------------------------------------------------------------------------------------------
+如何应用适配器？
+	
+	默认的，如果你什么也不写，Nutz.Mvc 会采用 {*org.nutz.mvc.adaptor.PairAdaptor} （{/也就是名值对的方式}）
+	来适配你的 HTTP 参数。
+
+	你可以可以通过 @AdaptBy 注解来改变任何一个入口函数的适配方式。比如
+	{{{
+	@AdaptBy(type=JsonAdaptor.class)
+	}}}
+
+	某些时候，你需要对一个适配器做一些复杂的设置，@AdaptBy 注解还支持一个属性 args，你可以通过这个属性
+	为你的适配器设置构造函数参数
+
+	更复杂的情况是，如果你希望你的适配器是交由 Ioc 容器管理的，你可以：
+	{{{
+	@AdaptBy(type=JsonAdaptor.class, args={"ioc:objName"})
+	}}}
+	即，如果你的参数数组长度为一，并且，由 "ioc:" 开始，那么这个适配器会交付 Ioc 容器管理，你可以在容器的
+	配置文件中详细规定这个适配器的各个属性。当然，你需要在整个应用启用 Ioc 容器，详情，请参看 [mvc_ioc.man 同 Ioc 容器一起工作]
+----------------------------------------------------------------------------------------------
+内置的适配器
+	
+	Nutz.Mvc 为你内置了 4 个最常用的适配器，可以让支持用如下四种方式适配 HTTP 参数：
+
+	名值对 `(默认)`
+		一般方式
+			{{{
+			@AdaptBy(type=PairAdaptor.class)
+			}}}
+			这种方式，是传统的 HTTP 参数方式。关键的问题是如何将 HTTP 的参数表同入口函数的参数对应起来。
+			为此，它支持一个新的注解 {*@Param}，你可以:
+			{{{
+			public String someFunc(	@Param("pid") int petId,
+									@Param("pnm") String petName){
+				...
+			}}}
+			通过这个注解，为每个参数声明 HTTP 参数名。
+
+		表单方式
+			有些时候，你需要入口函数接受一个对象，比如一个表单对象
+			{{{
+			public String someFunc(	@Param("..") Pet pet){
+				...
+			}}}
+			值 ".." 有特殊含义，表示当前的这个对象，需要对应整个的 HTTP 参数表。 所以， Nutz.Mvc 会将 HTTP 参数表中的
+			参数一个个的按照名字设置到 Pet 对象的字段里。 但是如果 Pet 对象的字段名同 HTTP 参数不符怎么办？ 你可以在
+			Pet 字段上声明 @Param。
+
+		混合方式
+			值得一说的是，按照这个约定，实际上，一个入口函数，是可以支持多个  POJO 的，也可以写成这样
+			{{{
+			public String someFunc(	@Param("pid") int petId,
+									@Param("..") Pet pet,
+									@Param("..") Food food){
+				...
+			}}}
+
+		JSON 的支持
+			你的 HTTP 参数也可以是一个 JSON 字符串
+			{{{
+			public String someFunc(	@Param("pid") int petId,
+									@Param("pet") Pet pet,
+									@Param("foods") Food[] food){
+				...
+			}}}
+			HTTP 参数的值都是字符串，比如上例的第二个参数，Nutz.Mvc 会看看 HTTP 参数表中的 "pet" 的值，如果它用 "{" 和 "}"
+			包裹，则会试图将其按照 JSON 的方式解析成 Pet 对象。当然，如果你传入的参数格式有问题，会解析失败，抛出异常。
+			
+			第三个参数，是一个数组，Nutz.Mvc 会看看 HTTP 参数表中的 "foods" 的值，如果用 "[" 和 "]" 包裹，则会视试图将其
+			转换成一个数组。 如果你 JSON 字符串的格式有问题，它也会抛出异常。
+
+			参数类型如果是列表（java.util.List），同数组的处理方式相同。但是它不知道列表元素的类型，所以转换出的元素只可能是
+			 * 布尔
+			 * 数字
+			 * 字符串
+			 * 列表
+			 * Map
+
+	JSON 输入流
+		如果你要通过 HTTP 传给服务器一个比较复杂的对象，通过名值对的方式可能有点不方便。因为它很难同时传两个对象。
+		并且一个对象如果还嵌入了另外一个对象，也很难传入，你必须要自己定义一些奇奇怪怪的格式，在 JS 里组织字符串，
+		在服务器端，手工解析这些字符串。
+
+		针对这个问题， JSON 流是一个比 XML 流更好的解决方案，它足够用，并且它更短小。
+
+		如果你的 HTTP 输入流就是一个 JSON 串，你可以这样：
+		{{{
+		@AdaptBy(type=JsonAdaptor.class)
+		public String someFunc( Pet pet ){
+			...
+		}}}
+
+		如果你的 JSON 流是一个数组
+		{{{
+		@AdaptBy(type=JsonAdaptor.class)
+		public String someFunc( Pet[] pet ){
+			...
+		}}}
+
+		如果你的 JSON 流类似：
+		{{{
+		{
+			fox : {
+				name : "Fox",
+				arg : 30
+			},
+			fox_food : {
+				type : "Fish" ,
+				price : 1.3
+			}
+		}
+		}}}
+
+		你希望有两个 POJO （Pet 和 Food） 分别表示这两个对象，你可以：
+		{{{
+		@AdaptBy(type=JsonAdaptor.class)
+		public String someFunc(	@Param("fox") Pet pet,
+								@Param("fox_food") Food food){
+			...
+		}}}
+		实际上，Nutz.Mvc 会将 HTTP 输入流解析成一个 Map，然后从 Map 里取出 "fox" 和 "fox_food" 这
+		两个子 Map，分别转换成 Pet 对象和 Food 对象。
+
+	什么都不干
+		某些特殊的情况，你需要彻底控制输入流的解析，同时你又不想使用任何适配器，你可以
+		{{{
+		@AdaptBy(type=VoidAdaptor.class)
+		public String someFunc(HttpServletRequest req){
+			...
+		}}}
+		VoidAdaptor 什么都不会干，不会碰 HTTP 请求对象的输入流。
+
+	上传文件
+		NutzMvc 内置了 org.nutz.mvc.upload.UploadAdaptor。关于文件上传详细的说明，请参看：
+		[file_upload.man 文件上传]
+
+----------------------------------------------------------------------------------------------
+特殊参数
+	某些时候，你可能需要得到 HttpSession，或者你需要得到 Ioc 容器的一个引用。因为你想做点更高级的
+	事情，你想出了一些奇技淫巧。Nutz.Mvc 完全支持你这样做。
+
+	你只要在你的入口函数里声明你希望得到的对象类型即可，比如：
+	{{{
+	public String someFunc(	@Param("pid") int petId,
+							Ioc ioc,
+							HttpServletRequest req){
+		...
+	}}}
+	第一个参数会从 HTTP 参数表中取出赋给入口函数，第二个参数，Nutz.Mvc 会把自身使用的 Ioc 容器赋给入口函数，
+	第三个参数，当前请求对象也会直接赋给入口函数。
+
+	那么 Nutz.Mvc 到底支持多少类似这样的特殊参数类型呢？
+
+
+	Nutz.Mvc 支持的特殊参数类型
+		* ServletRequest & HttpServletRequest
+		* ServletResponse * HttpServletResponse
+		* HttpSession
+		* ServletContext
+		* Ioc & Ioc2
+		
+		如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。
+
+	路径参数
+		某些时候，你可能觉得这样的 URL 很酷
+		{{{
+		/my/article/1056.nut
+		}}}
+		起码比
+		{{{
+		/my/article.nut?id=1056
+		}}}
+		看起来要顺眼一些。
+
+		Nutz.Mvc 支持将路径作为参数吗？ 是的，你完全可以这样声明你的入口函数：
+		{{{
+		@At("/article/*")
+		public String getArticle(int articleId){
+			...
+		}}}
+		关键就在于这个 ｛*@At("/article/*")｝。 Nutz.Mvc 在解析路径的时候，碰到了 `*`，
+		它就会将这个路径从此处截断，后面的字串按照字符 '/' 拆分成一个字符串数组。
+		为入口函数填充参数的时候，会优先将这个路径参数数组按照顺序填充成参数，之后，才应用
+		适配器的内部逻辑，填充其余的参数。
+
+		因此，对于所有 Nutz.Mvc 提供的内置适配器，{#F00;*路径参数是最优先的}。
+
+		最后，给出一个两个路径参数的例子：
+		{{{
+		@At("/article/*")
+		public String getArticle(String author, int articleId){
+			...
+		}}}
+		输入的 URL 是：
+		{{{
+		/article/zozoh/1352
+		}}}
+		那么入口函数的 author 就是 "zozoh"，而 articleId 就是 1352
+		
+----------------------------------------------------------------------------------------------
+定制自己的适配器
+	先来看看适配器的接口：
+	{{{
+	public interface HttpAdaptor {
+		void init(Method method);
+		Object[] adapt( HttpServletRequest request, HttpServletResponse response, String[] pathArgs);
+	}
+	}}}
+	你如果实现自己的适配器，你需要知道：
+	 * 你的适配器，对每个入口函数，只会有一份实例 -- Nutz.Mvc 只会创建一遍
+		 * 如果你的适配器是从 Ioc 容器中取得的，那么也只会被取出一次
+	 * init 函数是 Nutz.Mvc 在创建你的适配器以后，马上就要调用的一个方法，你可以在这个方法里初始化一些逻辑
+	 * adapt 方法的第三个参数，是 Nutz.Mvc 为你准备好的路径参数，它有可能为 null。 你的适配器 \
+	   将决定是不是应用这个路径参数
