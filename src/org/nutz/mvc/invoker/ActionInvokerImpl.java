@@ -127,7 +127,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 	private static <T> T evalObject(Ioc ioc, Class<T> type, String[] args) {
 		/*
-		 * 如果参数的形式为: {"ioc:xxx"}，则用 ioc.get(type,"xxx") 获取这个适配器
+		 * 如果参数的形式为: {"ioc:xxx"}，则用 ioc.get(type,"xxx") 获取这个对象
 		 */
 		if (null != ioc && null != args && args.length == 1 && !Strings.isBlank(args[0])) {
 			int pos = args[0].indexOf(':');

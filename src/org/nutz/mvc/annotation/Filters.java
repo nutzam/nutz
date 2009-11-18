@@ -5,6 +5,13 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * 声明一组过滤器
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.mvc.annotation.By
+ */
 @Retention(RetentionPolicy.RUNTIME)
 @Target( { ElementType.TYPE, ElementType.METHOD })
 public @interface Filters {

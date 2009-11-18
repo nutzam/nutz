@@ -1,4 +1,4 @@
-#title:关于视图
+#title:视图
 #index:0,1
 
 什么是视图？
@@ -44,6 +44,12 @@
 		/pet/detail.nut
 		}}}
 		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+		
+		如果你使用 JSTL，你还可以
+		 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [mvc_localization.man 本地化字符串更多的介绍]
+		 * 通过 `${base}` 输出当前应用的 ContextPath
+		 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
+		 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
 
 	JSON 视图
 		视图的实现类为： {*org.nutz.mvc.view.UTF8JsonView}

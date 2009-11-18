@@ -1,1 +1,49 @@
 #title: 文件上传
+#index:0,1
+
+关于文件上传
+	
+	大多数的 Web 应用都不可避免的，会涉及到文件上传。文件上传，不过是一种适配 HTTP 输入流的方式。
+	为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 {*org.nutz.mvc.upload.UploadAdaptor}
+	
+	这个适配器的工作细节是这样的：
+	 * 它一次将 HTTP 输入流中所有的文件读入，保存在临时文件目录里
+	 * 表单项目会保存在内存里
+	 * 在上传的过程中，它会向当前 Session 中设置一个对象： {*org.nutz.mvc.upload.UploadInfo}
+		 * 属性名为 "org.nutz.mvc.upload.UploadInfo"
+		 * 通过静态函数 Uploads.getInfo(HttpServletRequest req) 可以很方便的获取当前会话的 UploadInfo
+	 * 不断的读入输入流的过程，会记录在 UploadInfo 里面。
+		 * UploadInfo 字段 sum 是当前 HTTP 请求的 ContentLength，表示 HTTP 输入流总长度为多少字节
+		 * UploadInfo 字段 current 是当前会话已经上传了多少字节
+
+如何使用
+
+	如果你读过 [mvc_http_adaptor.man 适配器] 一节，我想你已经知道怎么使用文件上传了，这里还需要多一点说明
+	
+	通过 @AdaptBy 声明
+		{{{
+		...
+		@AdaptBy(type = UploadAdaptor.class, args = { "D:/tmp/demo/upload", "10" })
+		public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
+			...
+		}}}
+		这个适配器，有三个构造函数，其中一个，接受
+		 * 临时文件目录
+		 * 临时文件总个数
+		
+		如果你想进行更细腻的控制，请把这个适配器放到 Ioc 容器里。 [mvc_http_adaptor.man 适配器]一节有相关的描述
+	
+	这个适配器支持更多的参数类型
+		 * java.util.File 上传后的文件对象
+		 * org.nutz.mvc.upload.FieldMeta 上传文件的原始信息
+		 * org.nutz.mvc.upload.TempFile 组合了上传文件对象和原始信息
+		
+		当然
+		
+		 * 你还是需要通过 @Param 注解为每个参数注明，在表单里字段名
+		 * 路径参数更优先
+	
+	关于 Demo
+		在 [http://nutzdemo.googlecode.com] 的 {*Hello Mvc} 例子里，{*PetModule.java} 的函数 uploadPhoto 就是一个很
+		好的例子。
+		

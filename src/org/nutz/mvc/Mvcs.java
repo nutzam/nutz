@@ -61,10 +61,8 @@ public abstract class Mvcs {
 	/**
 	 * 获取整个应用可用的 Locale 名称集合
 	 */
-	@SuppressWarnings("unchecked")
 	public static Set<String> getLocaleNames(ServletContext context) {
-		Map<String, Map<String, String>> msgss = (Map<String, Map<String, String>>) context
-				.getAttribute(Localization.class.getName());
+		Map<String, Map<String, String>> msgss = getMessageSet(context);
 		if (null != msgss)
 			return msgss.keySet();
 		return null;
@@ -76,10 +74,8 @@ public abstract class Mvcs {
 	 * <p>
 	 * 在 jsp 中，你可以用 EL 表达式 ${msgs.xxx} 来直接获取字符串的值。
 	 */
-	@SuppressWarnings("unchecked")
 	public static void setLocale(HttpSession session, String localeName) {
-		Map<String, Map<String, String>> msgss = (Map<String, Map<String, String>>) session
-				.getServletContext().getAttribute(Localization.class.getName());
+		Map<String, Map<String, String>> msgss = getMessageSet(session.getServletContext());
 		if (null != msgss) {
 			Map<String, String> msgs = null;
 			if (null != localeName)
@@ -90,6 +86,26 @@ public abstract class Mvcs {
 			if (null != msgs)
 				session.setAttribute(MSG, msgs);
 		}
+	}
+
+	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
+		Map<String, Map<String, String>> msgss = getMessageSet(context);
+		if (null != msgss)
+			return msgss.get(localeName);
+		return null;
+	}
+
+	public static Map<String, String> getDefaultLocaleMessage(ServletContext context) {
+		Map<String, Map<String, String>> msgss = getMessageSet(context);
+		if (null != msgss)
+			return msgss.get(DEFAULT_MSGS);
+		return null;
+	}
+
+	@SuppressWarnings("unchecked")
+	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
+		return (Map<String, Map<String, String>>) context
+				.getAttribute(Localization.class.getName());
 	}
 
 	/**
