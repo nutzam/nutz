@@ -1,4 +1,4 @@
-package org.nutz.castor;
+package org.nutz.lang.util;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -13,23 +13,32 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.Files;
 
 /**
- * 
  * @author wendal Chen
- *
+ * 
  */
-public final class Util {
-	
-	public static List<Class<?>> scanClass(Class<?> baseClass){
+public final class Resources {
+
+	/**
+	 * It will list all Class object same package with the Class you give.
+	 * Whatever the class file you give existed in normal directory or jar file.
+	 * 
+	 * @param baseClass
+	 * @return a class List
+	 * 
+	 * @author Wendal Chen
+	 * @author zozoh
+	 */
+	public static List<Class<?>> scanClass(Class<?> baseClass) {
 		File dir = getBasePath(baseClass);
-		if(dir == null)
+		if (dir == null)
 			return null;
 		String[] classNames = null;
 		String jarPath = getJarPath(dir);
-		if(jarPath != null){
-			classNames = findInJar(jarPath,baseClass);
-		}else
-			classNames = findInClassPath(dir,baseClass);
-		if(classNames != null){
+		if (jarPath != null) {
+			classNames = findInJar(jarPath, baseClass);
+		} else
+			classNames = findInClassPath(dir, baseClass);
+		if (classNames != null) {
 			List<Class<?>> list = new ArrayList<Class<?>>(classNames.length);
 			for (String className : classNames)
 				try {
@@ -41,55 +50,82 @@ public final class Util {
 	}
 
 	/**
-	 * The function try to return the file path of one class. If it exists in
-	 * regular directory, it will return as "D:/folder/folder/name.class" in
-	 * windows, and "/folder/folder/name.class" in unix like system. <br>
+	 * Find a file base on one class Object.
+	 * <p>
+	 * please check File getBasePath(String base) for more detail
+	 * 
+	 * 
+	 * @param classZ
+	 * @return the class package directory.
+	 */
+	private static File getBasePath(Class<?> classZ) {
+		return getBasePath(classZ.getName().replace('.', '/') + ".class");
+	}
+
+	/**
+	 * The function try to return the file path of one class or package. If it
+	 * exists in regular directory, it will return as
+	 * "D:/folder/folder/name.class" in windows, and "/folder/folder/name.class"
+	 * in unix like system.
+	 * <p>
 	 * If the class file exists in one jar file, it will return the path like:
-	 * "XXXXXXfile:\XXXXXX\XXX.jar!\XX\XX\XX"
+	 * <b>'XXXXXXXfile:\XXXXXX\XXX.jar!\XX\XX\XX'</b>
 	 * <p>
 	 * use ClassLoader.getResources(String) to search resources in classpath
 	 * <p>
-	 * <b>Using new ClassLoader(){} , not classZ.getClassLoader()</b>
+	 * <b style=color:red>Note:</b>
 	 * <p>
-	 * In GAE , it will fail if you call getClassLoader()
+	 * We use new <i>ClassLoader(){}</i> to instead of
+	 * <i>classZ.getClassLoader()</i>, for the reason: in <b>GAE</b> , it will
+	 * fail if you call getClassLoader() <br>
+	 * <br>
+	 * 
+	 * @param base
+	 *            : the class file name or package dir name
+	 * @return path or null if nothing found
 	 * 
 	 * @author Wendal Chen
 	 * @author zozoh
-	 * @param classZ
-	 * @return path or null if nothing found
 	 * 
 	 * @see java.lang.ClassLoader
 	 * @see java.io.File
 	 */
-	private static File getBasePath(Class<?> classZ) {
+	private static File getBasePath(String base) {
 		try {
-			String path = classZ.getName().replace('.', '/') + ".class";
-			Enumeration<URL> urls = new ClassLoader() {}.getResources(path);
+			Enumeration<URL> urls = new ClassLoader() {}.getResources(base);
+			File file = null;
 			// zozoh: In eclipse tomcat debug env, the urls is always empty
 			if (null != urls && urls.hasMoreElements()) {
 				URL url = urls.nextElement();
 				if (url != null)
-					return new File(url.getFile()).getParentFile();
+					file = new File(url.getFile());
 			}
 			// Then I will find the class in classpath
-			File f = Files.findFile(path);
-			if (null != f)
-				return f.getParentFile();
+			if (null == file)
+				file = Files.findFile(base);
+
+			if (null == file)
+				return null;
+			// If the base is folder return it directly, else, return it's
+			// parent folder
+			if (file.isDirectory())
+				return file;
+			return file.getParentFile();
 		} catch (IOException e) {}
 		return null;
 	}
-	
-	private static String[] findInJar(String jarPath,Class<?> baseClass) {
+
+	private static String[] findInJar(String jarPath, Class<?> baseClass) {
 		try {
-			ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass
-					.getPackage().getName().replace('.', '/')
+			ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage()
+					.getName().replace('.', '/')
 					+ "/\\w*.class");
 			if (null != entrys && entrys.length > 0) {
 				String[] classNames = new String[entrys.length];
 				for (int i = 0; i < entrys.length; i++) {
 					String ph = entrys[i].getName();
-					classNames[i] = ph.substring(0, ph.lastIndexOf('.')).replaceAll("[\\\\|/]",
-								".");
+					classNames[i] = ph.substring(0, ph.lastIndexOf('.'))
+							.replaceAll("[\\\\|/]", ".");
 				}
 				return classNames;
 			}
@@ -97,7 +133,7 @@ public final class Util {
 		return null;
 	}
 
-	private static String[] findInClassPath(File dir,Class<?> classZ) {
+	private static String[] findInClassPath(File dir, Class<?> classZ) {
 		try {
 			File[] files = dir.listFiles(new FileFilter() {
 				public boolean accept(File pathname) {
@@ -117,11 +153,11 @@ public final class Util {
 			}
 		} catch (SecurityException e) {
 			// In GAE, it will case SecurityException when call listFiles()
-		} 
+		}
 		return null;
 	}
-	
-	private static String getJarPath(File dir){
+
+	private static String getJarPath(File dir) {
 		String fpath = dir.getAbsolutePath();
 		int posBegin = fpath.indexOf("file:");
 		int posEnd = fpath.lastIndexOf('!');

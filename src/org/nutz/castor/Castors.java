@@ -11,6 +11,7 @@ import java.util.Map;
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
+import org.nutz.lang.util.Resources;
 
 /**
  * 一个创建 Castor 的工厂类。它的使用方式是：
@@ -96,7 +97,7 @@ public class Castors {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
-			List<Class<?>> list  = Util.scanClass(baseClass);
+			List<Class<?>> list  = Resources.scanClass(baseClass);
 			if (null == list)
 				continue;
 			for (Class<?> klass : list) {
