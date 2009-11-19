@@ -2,6 +2,9 @@ package org.nutz.log.impl;
 
 import org.nutz.log.LogAdapter;
 
+/**
+ * @author Young(sunonfire@gmail.com)
+ */
 public abstract class AbstractLogAdapter implements LogAdapter {
 
 	protected static final SystemLog systemLog = new SystemLog();

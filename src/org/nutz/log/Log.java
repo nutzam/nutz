@@ -1,5 +1,10 @@
 package org.nutz.log;
 
+/**
+ * 日志接口
+ * 
+ * @author Young(sunonfire@gmail.com)
+ */
 public interface Log {
 	
 	boolean isFatalEnabled();

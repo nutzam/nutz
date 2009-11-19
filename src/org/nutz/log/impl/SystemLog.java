@@ -5,8 +5,8 @@ import org.nutz.log.Log;
 
 /**
  * 用来做在Log内部处理时的日志输出。到System.err.
+ * 
  * @author Young(sunonfire@gmail.com)
- *
  */
 public class SystemLog implements Log {
 

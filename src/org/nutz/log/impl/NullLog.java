@@ -4,6 +4,7 @@ import org.nutz.log.Log;
 
 /**
  * 没有Log可以用的时候的空Log
+ * 
  * @author Young(sunonfire@gmail.com)
  *
  */

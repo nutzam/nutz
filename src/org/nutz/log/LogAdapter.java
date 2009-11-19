@@ -1,5 +1,8 @@
 package org.nutz.log;
 
+/**
+ * @author Young(sunonfire@gmail.com)
+ */
 public interface LogAdapter {
 
 	public abstract boolean canWork();
