@@ -133,7 +133,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			int pos = args[0].indexOf(':');
 			if (pos == 3 && pos < (args[0].length() - 1)
 					&& "ioc".equalsIgnoreCase(args[0].substring(0, pos))) {
-				String name = args[0].substring(pos);
+				String name = args[0].substring(pos+1);
 				return ioc.get(type, name);
 			}
 		}
