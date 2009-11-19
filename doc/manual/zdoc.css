@@ -97,6 +97,11 @@ h3,h4,h5,h6{
 	padding:2px;
 	text-indent:16px;
 }
+
+table{
+	margin-top:10px;
+	margin-bottom:10px;
+}
 /*---------------------------------------------------------------------------
  * Code
  */
