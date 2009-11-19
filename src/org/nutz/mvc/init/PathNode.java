@@ -2,8 +2,6 @@ package org.nutz.mvc.init;
 
 import java.util.Arrays;
 
-import org.nutz.lang.Maths;
-
 /**
  * 所有的路径将被转换成小写。
  * 
