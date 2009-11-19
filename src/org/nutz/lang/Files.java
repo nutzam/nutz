@@ -129,7 +129,7 @@ public abstract class Files {
 		return list.toArray(new ZipEntry[list.size()]);
 	}
 
-	public static File findFile(String path, Class<Files> klass, String enc) {
+	public static File findFile(String path, Class<?> klass, String enc) {
 		if (null == path)
 			return null;
 		File f = new File(path);
@@ -158,7 +158,7 @@ public abstract class Files {
 		return findFile(path, Files.class, enc);
 	}
 
-	public static File findFile(String path, Class<Files> klass) {
+	public static File findFile(String path, Class<?> klass) {
 		return findFile(path, klass, Charset.defaultCharset().name());
 	}
 

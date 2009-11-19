@@ -1,5 +1,7 @@
 package org.nutz.mvc.init;
 
+import java.util.Arrays;
+
 import org.nutz.lang.Maths;
 
 /**
@@ -88,7 +90,7 @@ class PathNode<T> {
 			char c = cs[i];
 			if (null == node.chars)
 				break;
-			int index = Maths.find(node.chars, c);
+			int index = Arrays.binarySearch(node.chars, c);
 			if (index < 0)
 				break;
 			node = node.children[index];

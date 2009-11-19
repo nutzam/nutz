@@ -806,7 +806,7 @@ public abstract class Lang {
 	 * @param obj
 	 * @return 对象长度
 	 */
-	public static int lenght(Object obj) {
+	public static int length(Object obj) {
 		if (null == obj)
 			return 0;
 		if (obj.getClass().isArray()) {
