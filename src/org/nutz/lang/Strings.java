@@ -10,6 +10,15 @@ import java.util.LinkedList;
  */
 public abstract class Strings {
 
+	/**
+	 * 复制字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param num
+	 *            数量
+	 * @return 新字符串
+	 */
 	public static String dup(CharSequence cs, int num) {
 		if (cs == null || num <= 0)
 			return "";
@@ -19,6 +28,15 @@ public abstract class Strings {
 		return sb.toString();
 	}
 
+	/**
+	 * 复制字符
+	 * 
+	 * @param cs
+	 *            字符
+	 * @param num
+	 *            数量
+	 * @return 新字符串
+	 */
 	public static String dup(char c, int num) {
 		StringBuilder sb = new StringBuilder(c);
 		for (int i = 0; i < num; i++)
@@ -26,6 +44,13 @@ public abstract class Strings {
 		return sb.toString();
 	}
 
+	/**
+	 * 将字符串首字母大写
+	 * 
+	 * @param s
+	 *            字符串
+	 * @return 首字母大写后的新字符串
+	 */
 	public static String capitalize(CharSequence s) {
 		if (null == s)
 			return null;
@@ -72,23 +97,40 @@ public abstract class Strings {
 		return s1.equals(s2);
 	}
 
+	/**
+	 * @param cs
+	 *            字符串
+	 * @return 是不是为空字符串
+	 */
 	public static boolean isEmpty(CharSequence cs) {
 		if (null == cs)
 			return true;
 		return cs.length() == 0;
 	}
 
-	public static boolean isBlank(CharSequence s) {
-		if (null == s)
+	/**
+	 * @param cs
+	 *            字符串
+	 * @return 是不是为空白字符串
+	 */
+	public static boolean isBlank(CharSequence cs) {
+		if (null == cs)
 			return true;
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
+		for (int i = 0; i < cs.length(); i++) {
+			char c = cs.charAt(i);
 			if (c > 0x20 || c < 0)
 				return false;
 		}
 		return true;
 	}
 
+	/**
+	 * 去掉字符串前后空白
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @return 新字符串
+	 */
 	public static String trim(CharSequence cs) {
 		if (null == cs)
 			return null;
@@ -117,10 +159,26 @@ public abstract class Strings {
 		return cs.subSequence(l, r + 1).toString();
 	}
 
+	/**
+	 * 将字符串按半角逗号，拆分成数组，空元素将被忽略
+	 * 
+	 * @param s
+	 *            字符串
+	 * @return 字符串数组
+	 */
 	public static String[] splitIgnoreBlank(String s) {
 		return Strings.splitIgnoreBlank(s, ",");
 	}
 
+	/**
+	 * 根据一个正则式，将字符串拆分成数组，空元素将被忽略
+	 * 
+	 * @param s
+	 *            字符串
+	 * @param regex
+	 *            正则式
+	 * @return 字符串数组
+	 */
 	public static String[] splitIgnoreBlank(String s, String regex) {
 		if (null == s)
 			return null;
@@ -136,18 +194,56 @@ public abstract class Strings {
 		return re;
 	}
 
+	/**
+	 * 将一个整数转换成固定长度的十进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
 	public static String fillDigit(int d, int width) {
 		return Strings.alignRight(String.valueOf(d), width, '0');
 	}
 
+	/**
+	 * 将一个整数转换成固定长度的十六进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
 	public static String fillHex(int d, int width) {
 		return Strings.alignRight(Integer.toHexString(d), width, '0');
 	}
 
+	/**
+	 * 将一个整数转换成固定长度的二进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
 	public static String fillBinary(int d, int width) {
 		return Strings.alignRight(Integer.toBinaryString(d), width, '0');
 	}
 
+	/**
+	 * 在字符串左侧填充一定数量的特殊字符
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            字符数量
+	 * @param c
+	 *            字符
+	 * @return 新字符串
+	 */
 	public static String alignRight(CharSequence cs, int width, char c) {
 		if (null == cs)
 			return null;
@@ -161,6 +257,17 @@ public abstract class Strings {
 		return sb.toString();
 	}
 
+	/**
+	 * 在字符串右侧填充一定数量的特殊字符
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            字符数量
+	 * @param c
+	 *            字符
+	 * @return 新字符串
+	 */
 	public static String alignLeft(CharSequence cs, int width, char c) {
 		if (null == cs)
 			return null;
@@ -174,6 +281,15 @@ public abstract class Strings {
 		return sb.toString();
 	}
 
+	/**
+	 * @param cs
+	 *            字符串
+	 * @param lc
+	 *            左字符
+	 * @param rr
+	 *            右字符
+	 * @return 字符串是被左字符和右字符包裹 -- 忽略空白
+	 */
 	public static boolean isQuoteByIgnoreBlank(CharSequence cs, char lc, char rc) {
 		if (null == cs)
 			return false;
@@ -202,14 +318,23 @@ public abstract class Strings {
 		return true;
 	}
 
-	public static boolean isQuoteBy(CharSequence cs, char l, char r) {
+	/**
+	 * @param cs
+	 *            字符串
+	 * @param lc
+	 *            左字符
+	 * @param rc
+	 *            右字符
+	 * @return 字符串是被左字符和右字符包裹
+	 */
+	public static boolean isQuoteBy(CharSequence cs, char lc, char rc) {
 		if (null == cs)
 			return false;
 		if (cs.length() < 2)
 			return false;
-		if (cs.charAt(0) != l)
+		if (cs.charAt(0) != lc)
 			return false;
-		if (cs.charAt(cs.length() - 1) != r)
+		if (cs.charAt(cs.length() - 1) != rc)
 			return false;
 		return true;
 	}

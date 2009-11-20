@@ -1,5 +1,10 @@
 package org.nutz.lang;
 
+/**
+ * 一些计算方面的帮助函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Maths {
 
 	public static int bit(String s) {

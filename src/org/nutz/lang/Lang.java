@@ -32,7 +32,7 @@ import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
 
 /**
- * 一些语言中比较常用的帮助函数
+ * 这些帮助函数让 Java 的某些常用功能变得更简单
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -840,22 +840,53 @@ public abstract class Lang {
 		return re[0];
 	}
 
+	/**
+	 * 获取集合中的第一个元素，如果集合为空，返回 null
+	 * 
+	 * @param coll
+	 *            集合
+	 * @return 第一个元素
+	 */
 	public static <T> T first(Collection<T> coll) {
 		if (null == coll || coll.size() == 0)
 			return null;
 		return coll.iterator().next();
 	}
 
-	public static <T> T first(Map<?, T> map) {
+	/**
+	 * 获得表中的第一个名值对
+	 * 
+	 * @param map
+	 *            表
+	 * @return 第一个名值对
+	 */
+	public static <K, V> Entry<K, V> first(Map<K, V> map) {
 		if (null == map || map.size() == 0)
 			return null;
-		return map.values().iterator().next();
+		return map.entrySet().iterator().next();
 	}
 
+	/**
+	 * 打断 each 循环
+	 */
 	public static void Break() throws ExitLoop {
 		throw new ExitLoop();
 	}
 
+	/**
+	 * 用回调的方式，遍历一个对象，可以支持遍历
+	 * <ul>
+	 * <li>数组
+	 * <li>集合
+	 * <li>Map
+	 * <li>单一元素
+	 * </ul>
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param callback
+	 *            回调
+	 */
 	@SuppressWarnings({"unchecked"})
 	public static <T> void each(Object obj, Each<T> callback) {
 		if (null == obj || null == callback)
@@ -911,6 +942,13 @@ public abstract class Lang {
 		}
 	}
 
+	/**
+	 * 将一个抛出对象的异常堆栈，显示成一个字符串
+	 * 
+	 * @param e
+	 *            抛出对象
+	 * @return 异常堆栈文本
+	 */
 	public static String getStackTrace(Throwable e) {
 		StringBuilder sb = new StringBuilder();
 		StringOutputStream sbo = new StringOutputStream(sb);
@@ -920,12 +958,44 @@ public abstract class Lang {
 		return sbo.getStringBuilder().toString();
 	}
 
+	/**
+	 * 将字符串解析成 boolean 值，支持更多的字符串
+	 * <ul>
+	 * <li>1 | 0
+	 * <li>yes | no
+	 * <li>on | off
+	 * <li>ok | cancle
+	 * <li>true | false
+	 * </ul>
+	 * 
+	 * @param s
+	 * @return
+	 */
 	public static boolean parseBoolean(String s) {
+		if (null == s)
+			return false;
 		if (s.equals("1"))
 			return true;
-		return Boolean.parseBoolean(s);
+		if (s.length() > 4)
+			return false;
+		s = s.toLowerCase();
+		if (s.equals("true"))
+			return true;
+		if (s.equals("yes"))
+			return true;
+		if (s.equals("on"))
+			return true;
+		if (s.equals("ok"))
+			return true;
+		return false;
 	}
 
+	/**
+	 * 帮你快速获得一个 DocumentBuilder，方便 XML 解析。
+	 * 
+	 * @return 一个 DocumentBuilder 对象
+	 * @throws ParserConfigurationException
+	 */
 	public static DocumentBuilder xmls() throws ParserConfigurationException {
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	}

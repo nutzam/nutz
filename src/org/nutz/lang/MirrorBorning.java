@@ -7,7 +7,7 @@ import org.nutz.lang.Mirror.MatchType;
 import org.nutz.lang.born.*;
 
 @SuppressWarnings("unchecked")
-public class MirrorBorning<T> {
+class MirrorBorning<T> {
 
 	private Mirror<T> mirror;
 	private Class<T> type;

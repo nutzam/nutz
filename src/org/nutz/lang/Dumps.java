@@ -1,23 +1,42 @@
 package org.nutz.lang;
 
-import static java.lang.System.out;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.regex.Matcher;
 
-public abstract class Printer {
+/**
+ * 显示对象的信息，为日志以及调试提供帮助的函数集
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
+public abstract class Dumps {
 
-	public static void dump(Matcher m) {
+	/**
+	 * 显示 Matcher 的详细信息
+	 * 
+	 * @param m
+	 *            Matcher 对象
+	 * @return 信息
+	 */
+	public static String matcher(Matcher m) {
+		StringBuilder sb = new StringBuilder();
 		if (m.find())
 			for (int i = 0; i <= m.groupCount(); i++)
-				out.printf("%2d: %s\n", i, m.group(i));
+				sb.append(String.format("%2d: %s\n", i, m.group(i)));
 		else
-			out.println("No found!");
+			sb.append(String.format("No found!"));
+		return sb.toString();
 	}
 
-	public static String dumpObject(Object obj) {
+	/**
+	 * 显示一个对象所有个 getter 函数返回，以及 public 的 Field 的值
+	 * 
+	 * @param obj
+	 *            对象
+	 * @return 信息
+	 */
+	public static String obj(Object obj) {
 		if (null == obj)
 			return "null";
 		StringBuilder sb = new StringBuilder();

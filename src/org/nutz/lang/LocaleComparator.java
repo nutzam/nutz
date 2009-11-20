@@ -8,6 +8,7 @@ import java.util.Locale;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
+@Deprecated
 public class LocaleComparator implements Comparator<Locale> {
 	private static final LocaleComparator lc = new LocaleComparator();
 
