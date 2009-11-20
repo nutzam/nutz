@@ -92,11 +92,26 @@ public class Mirror<T> {
 
 	private final static DefaultTypeExtractor defaultTypeExtractor = new DefaultTypeExtractor();
 
+	/**
+	 * 包裹一个类
+	 * 
+	 * @param classOfT
+	 *            类
+	 * @return Mirror
+	 */
 	public static <T> Mirror<T> me(Class<T> classOfT) {
 		return null == classOfT ? null : new Mirror<T>(classOfT)
 				.setTypeExtractor(defaultTypeExtractor);
 	}
 
+	/**
+	 * 包裹一个类，并设置自定义的类型提炼逻辑
+	 * 
+	 * @param classOfT
+	 * @param typeExtractor
+	 * @return
+	 * @see org.nutz.lang.TypeExtractor
+	 */
 	public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
 		return null == classOfT ? null : new Mirror<T>(classOfT)
 				.setTypeExtractor(typeExtractor == null ? defaultTypeExtractor : typeExtractor);
@@ -106,6 +121,13 @@ public class Mirror<T> {
 
 	private TypeExtractor typeExtractor;
 
+	/**
+	 * 设置自己的类型提炼逻辑
+	 * 
+	 * @param typeExtractor
+	 * @return
+	 * @see org.nutz.lang.TypeExtractor
+	 */
 	public Mirror<T> setTypeExtractor(TypeExtractor typeExtractor) {
 		this.typeExtractor = typeExtractor;
 		return this;
@@ -115,6 +137,16 @@ public class Mirror<T> {
 		klass = classOfT;
 	}
 
+	/**
+	 * 根据名称获取一个 Getter。
+	 * <p>
+	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果 没有，则查找 abc()。
+	 * 
+	 * @param fieldName
+	 * @return
+	 * @throws NoSuchMethodException
+	 *             没有找到 Getter
+	 */
 	public Method getGetter(String fieldName) throws NoSuchMethodException {
 		try {
 			String fn = Strings.capitalize(fieldName);
@@ -136,6 +168,16 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * 根据字段获取一个 Getter。
+	 * <p>
+	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果 没有，则查找 abc()。
+	 * 
+	 * @param field
+	 * @return
+	 * @throws NoSuchMethodException
+	 *             没有找到 Getter
+	 */
 	public Method getGetter(Field field) throws NoSuchMethodException {
 		try {
 			try {
@@ -153,6 +195,17 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * 根据一个字段获取 Setter
+	 * <p>
+	 * 比如，你想获取 abc 的 setter ，那么优先查找 setAbc(T abc)，如果 没有，则查找 abc(T abc)。
+	 * 
+	 * @param field
+	 *            字段
+	 * @return
+	 * @throws NoSuchMethodException
+	 *             没找到 Setter
+	 */
 	public Method getSetter(Field field) throws NoSuchMethodException {
 		try {
 			try {
@@ -175,6 +228,17 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * 根据一个字段名了字段类型获取 Setter
+	 * 
+	 * @param fieldName
+	 *            字段名
+	 * @param paramType
+	 *            字段类型
+	 * @return
+	 * @throws NoSuchMethodException
+	 *             没找到 Setter
+	 */
 	public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
 		try {
 			String setterName = getSetterName(fieldName);
@@ -204,26 +268,52 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * @param fieldName
+	 *            字段名
+	 * @return Setter 的名字
+	 */
 	public static String getSetterName(String fieldName) {
 		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
 	}
 
+	/**
+	 * @param fieldName
+	 *            字段名
+	 * @return Bool 型的 Setter 的名字。如果字段名以 "is"开头，会被截去
+	 */
 	public static String getBooleanSetterName(String fieldName) {
 		if (fieldName.startsWith("is"))
 			fieldName = fieldName.substring(2);
 		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
 	}
 
+	/**
+	 * @param fieldName
+	 *            字段名
+	 * @return Getter 的名字
+	 */
 	public static String getGetterName(String fieldName) {
 		return new StringBuilder("get").append(Strings.capitalize(fieldName)).toString();
 	}
 
+	/**
+	 * @param fieldName
+	 *            字段名
+	 * @return Bool 型的 Getter 的名字。以 "is"开头
+	 */
 	public static String getBooleanGetterName(String fieldName) {
 		if (fieldName.startsWith("is"))
 			fieldName = fieldName.substring(2);
 		return new StringBuilder("is").append(Strings.capitalize(fieldName)).toString();
 	}
 
+	/**
+	 * 根据一个字段名，获取一组有可能成为 Setter 函数
+	 * 
+	 * @param fieldName
+	 * @return 函数数组
+	 */
 	public Method[] findSetters(String fieldName) {
 		String mName = "set" + Strings.capitalize(fieldName);
 		ArrayList<Method> ms = new ArrayList<Method>();
@@ -237,6 +327,14 @@ public class Mirror<T> {
 		return ms.toArray(new Method[ms.size()]);
 	}
 
+	/**
+	 * 获取一个字段。这个字段可以是当前类型或者其父类的私有字段。
+	 * 
+	 * @param name
+	 *            字段名
+	 * @return
+	 * @throws NoSuchFieldException
+	 */
 	public Field getField(String name) throws NoSuchFieldException {
 		Class<?> theClass = klass;
 		Field f;
@@ -253,6 +351,14 @@ public class Mirror<T> {
 						.getName()));
 	}
 
+	/**
+	 * 获取一个字段。这个字段必须声明特殊的注解
+	 * 
+	 * @param ann
+	 *            注解
+	 * @return
+	 * @throws NoSuchFieldException
+	 */
 	public <AT extends Annotation> Field getField(Class<AT> ann) throws NoSuchFieldException {
 		for (Field field : this.getFields()) {
 			if (null != field.getAnnotation(ann))
@@ -294,7 +400,7 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 获取所有的方法，包括私有方法。不包括 Object 的方法
+	 * 获取本类型所有的方法，包括私有方法。不包括 Object 的方法
 	 */
 	public Method[] getMethods() {
 		Class<?> theClass = klass;
@@ -309,6 +415,15 @@ public class Mirror<T> {
 		return list.toArray(new Method[list.size()]);
 	}
 
+	/**
+	 * 获取当前对象，所有的方法，包括私有方法。递归查找至自己某一个父类为止 。
+	 * <p>
+	 * 并且这个按照名称，消除重复的方法。子类方法优先
+	 * 
+	 * @param top
+	 *            截至的父类
+	 * @return 方法数组
+	 */
 	public Method[] getAllDeclaredMethods(Class<?> top) {
 		Class<?> cc = klass;
 		HashMap<String, Method> map = new HashMap<String, Method>();
@@ -316,13 +431,20 @@ public class Mirror<T> {
 			Method[] fs = cc.getDeclaredMethods();
 			for (int i = 0; i < fs.length; i++) {
 				String key = fs[i].getName() + Mirror.getParamDescriptor(fs[i].getParameterTypes());
-				map.put(key, fs[i]);
+				if (!map.containsKey(key))
+					map.put(key, fs[i]);
 			}
 			cc = cc.getSuperclass() == top ? null : cc.getSuperclass();
 		}
 		return map.values().toArray(new Method[map.size()]);
 	}
 
+	/**
+	 * 相当于 getAllDeclaredMethods(Object.class)
+	 * 
+	 * @return 方法数组
+	 * @see Method[] getAllDeclaredMethods(Class<?> top)
+	 */
 	public Method[] getAllDeclaredMethodsWithoutTop() {
 		return getAllDeclaredMethods(Object.class);
 	}
