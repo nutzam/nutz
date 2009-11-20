@@ -2,7 +2,9 @@ package org.nutz.ioc.json;
 
 import org.junit.Test;
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.pojo.Animal;
+import org.nutz.ioc.loader.json.JsonLoader;
 
 import static org.junit.Assert.*;
 import static org.nutz.ioc.json.Utils.*;
@@ -115,5 +117,19 @@ public class EvensJsonIocTest {
 		assertEquals(10, f.getCreateTime());
 		assertEquals(10, f.getFetchTime());
 		assertEquals(0, f.getDeposeTime());
+	}
+
+	@Test
+	public void test_event_from_parent() {
+		Ioc ioc = new NutIoc(new JsonLoader("org/nutz/ioc/json/events.js"));
+		Animal f = ioc.get(Animal.class, "fox");
+		assertEquals(1, f.getCreateTime());
+		assertEquals(1, f.getFetchTime());
+		assertEquals(0, f.getDeposeTime());
+
+		ioc.depose();
+		assertEquals(1, f.getCreateTime());
+		assertEquals(1, f.getFetchTime());
+		assertEquals(1, f.getDeposeTime());
 	}
 }

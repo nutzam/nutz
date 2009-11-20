@@ -213,6 +213,16 @@ public abstract class Iocs {
 
 		// don't need merge signleon
 
+		// merge events
+		if (me.getEvents() == null) {
+			me.setEvents(it.getEvents());
+		}
+
+		// merge scope
+		if (Strings.isBlank(me.getScope())) {
+			me.setScope(it.getScope());
+		}
+
 		// merge arguments
 		if (!me.hasArgs())
 			me.copyArgys(it.getArgs());

@@ -187,6 +187,7 @@ public class NutDao implements Dao {
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
 		Sql sql = sqlMaker.func(entity.getTableName(), "COUNT", "*").setCondition(condition);
+		sql.setEntity(entity);
 		execute(sql);
 		return sql.getInt();
 	}
