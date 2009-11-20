@@ -8,6 +8,12 @@ import org.nutz.lang.Strings;
 
 public class Animal {
 
+	public Animal() {}
+
+	public Animal(String name) {
+		this.name = name;
+	}
+
 	private int age;
 
 	private float attact;

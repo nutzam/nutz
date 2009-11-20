@@ -89,7 +89,7 @@ public class IocObject {
 	}
 
 	public boolean hasArgs() {
-		return args.size() == 0;
+		return args.size() > 0;
 	}
 
 	public void addArg(IocValue arg) {

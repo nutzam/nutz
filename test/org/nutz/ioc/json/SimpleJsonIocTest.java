@@ -123,4 +123,11 @@ public class SimpleJsonIocTest {
 		assertEquals(5, f2.getAge());
 	}
 
+	@Test
+	public void test_create_by_args() {
+		Ioc ioc = I(J("fox", "age:10"), J("xb", "parent:'fox',args:['XiaoBai']"));
+		Animal xb = ioc.get(Animal.class, "xb");
+		assertEquals("XiaoBai", xb.getName());
+	}
+
 }
