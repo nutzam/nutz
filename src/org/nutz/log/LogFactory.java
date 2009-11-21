@@ -6,7 +6,6 @@ import java.util.List;
 import org.nutz.log.impl.JdkLoggerAdapter;
 import org.nutz.log.impl.Log4jAdapter;
 import org.nutz.log.impl.NullAdaptor;
-import org.nutz.log.impl.NullLog;
 import org.nutz.log.impl.SystemLog;
 
 /**
