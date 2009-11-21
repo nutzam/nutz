@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.nutz.log.impl.JdkLoggerAdapter;
 import org.nutz.log.impl.Log4jAdapter;
+import org.nutz.log.impl.NullAdaptor;
 import org.nutz.log.impl.NullLog;
 import org.nutz.log.impl.SystemLog;
 
@@ -15,8 +16,6 @@ import org.nutz.log.impl.SystemLog;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class LogFactory {
-
-	private static Log nullLog = new NullLog();
 
 	private static Log systemLog = new SystemLog();
 
@@ -61,7 +60,7 @@ public class LogFactory {
 						systemLog.fatal("failed to create logger from logAdapter: "
 								+ workableAdapter.getClass().getName()
 								+ ", nullLog will be used instead of it.");
-					return nullLog;
+					workableAdapter = new NullAdaptor();
 				}
 			}
 		}
@@ -72,7 +71,7 @@ public class LogFactory {
 					+ workableAdapter.getClass().getName()
 					+ ", nullLog will be used instead of it.", e);
 
-			return nullLog;
+			return NullAdaptor.log;
 		}
 
 	}
