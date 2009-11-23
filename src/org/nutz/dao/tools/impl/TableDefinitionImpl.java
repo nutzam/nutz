@@ -47,6 +47,7 @@ public class TableDefinitionImpl implements TableDefinition {
 		}
 		// 生成 SQL
 		CharSegment seg = new CharSegment(expert.tellCreateSqlPattern());
+		seg.set("table", dt.getName());
 		seg.set("fields", sb);
 		setIndexes(seg, "pks", expert.tellPKs(dt));
 		Sql sql = Sqls.create(seg.toString());
@@ -55,7 +56,8 @@ public class TableDefinitionImpl implements TableDefinition {
 	}
 
 	public Sql makeDropSql(DTable dt) {
-		return Sqls.create(String.format("DROP TABLE %s", dt.getName()));
+		Sql drop = Sqls.create(String.format("DROP TABLE %s", dt.getName()));
+		return expert.evalDropSql(dt, drop);
 	}
 
 }

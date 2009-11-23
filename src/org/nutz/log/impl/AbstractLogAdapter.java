@@ -1,11 +1,12 @@
 package org.nutz.log.impl;
 
+import org.nutz.log.Log;
 import org.nutz.log.LogAdapter;
 
 /**
  * @author Young(sunonfire@gmail.com)
  */
-public abstract class AbstractLogAdapter implements LogAdapter {
+public abstract class AbstractLogAdapter implements LogAdapter, Log {
 
 	protected static final SystemLog systemLog = new SystemLog();
 	protected boolean isFatalEnabled = true;
@@ -41,6 +42,18 @@ public abstract class AbstractLogAdapter implements LogAdapter {
 
 	public boolean isWarnEnabled() {
 		return isWarnEnabled;
+	}
+
+	public void debugf(String fmt, Object... args) {
+		debug(String.format(fmt, args));
+	}
+
+	public void infof(String fmt, Object... args) {
+		info(String.format(fmt, args));
+	}
+
+	public void tracef(String fmt, Object... args) {
+		trace(String.format(fmt, args));
 	}
 
 }

@@ -3,6 +3,7 @@ package org.nutz.ioc.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocException;
@@ -17,8 +18,12 @@ import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 
 public class NutIoc implements Ioc2 {
+
+	private static Log log = LogFactory.getLog(Ioc.class);
 
 	private static final String DEF_SCOPE = "app";
 
@@ -50,12 +55,18 @@ public class NutIoc implements Ioc2 {
 	}
 
 	public <T> T get(Class<T> type, String name, IocContext context) {
+		if (log.isDebugEnabled())
+			log.debugf("Get [%s]:%s", name, type);
+
 		// 连接上下文
 		IocContext cntx;
 		if (null == context)
 			cntx = this.context;
-		else
+		else {
+			if (log.isDebugEnabled())
+				log.debug("Link contexts");
 			cntx = new ComboContext(context, this.context);
+		}
 
 		// 创建对象创建时
 		IocMaking ing = new IocMaking(this, mirrors, cntx, maker, vpms, name);
@@ -73,6 +84,9 @@ public class NutIoc implements Ioc2 {
 				// 如果未发现对象
 				if (null == re) {
 					try {
+						if (log.isDebugEnabled())
+							log.debug("Load definition");
+
 						// 读取对象定义
 						IocObject iobj = loader.load(name);
 						if (null == iobj)

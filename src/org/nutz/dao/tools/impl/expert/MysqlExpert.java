@@ -31,7 +31,7 @@ public class MysqlExpert implements SqlExpert {
 		// Type
 		appendFieldType(sb, df);
 		// Decorator
-		if (df.isUnique())
+		if (Experts.isInteger(df.getType()) && df.isUnsign())
 			sb.append(" UNSIGNED");
 		if (!df.isPrimaryKey() && df.isUnique())
 			sb.append(" UNIQUE");

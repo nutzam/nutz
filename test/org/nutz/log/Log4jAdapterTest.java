@@ -144,17 +144,17 @@ public class Log4jAdapterTest {
 		String message = "test err message";
 		log.error(message);
 
-		Assert.assertEquals(Priority.ERROR, TestAppender.lastEvent.level);
+		Assert.assertEquals(Priority.ERROR, TestAppender.getLastEvent().level);
 
-		Assert.assertEquals(message, TestAppender.lastEvent.getMessage());
+		Assert.assertEquals(message, TestAppender.getLastEvent().getMessage());
 
 		message = "warn message";
 		Exception e = new Exception();
 
 		log.warn(message, e);
 
-		Assert.assertEquals(Priority.WARN, TestAppender.lastEvent.level);
-		Assert.assertEquals(message, TestAppender.lastEvent.getMessage());
-		Assert.assertEquals(e, TestAppender.lastEvent.getThrowableInformation().getThrowable());
+		Assert.assertEquals(Priority.WARN, TestAppender.getLastEvent().level);
+		Assert.assertEquals(message, TestAppender.getLastEvent().getMessage());
+		Assert.assertEquals(e, TestAppender.getLastEvent().getThrowableInformation().getThrowable());
 	}
 }

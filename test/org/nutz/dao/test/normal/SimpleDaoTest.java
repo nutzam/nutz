@@ -5,16 +5,16 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Condition;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.tools.Tables;
 
 public class SimpleDaoTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/meta/pet.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
 		// Insert 8 records
 		for (int i = 0; i < 8; i++) {
 			Pet pet = Pet.create("pet" + i);

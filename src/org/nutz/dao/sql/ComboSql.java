@@ -139,4 +139,10 @@ public class ComboSql implements Sql {
 		throw Lang.makeThrow("Not implement yet!");
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Sql sql : sqls)
+			sb.append(sql.toString()).append('\n');
+		return sb.toString();
+	}
 }

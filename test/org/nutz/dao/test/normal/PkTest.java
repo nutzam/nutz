@@ -1,15 +1,15 @@
 package org.nutz.dao.test.normal;
 
 import org.junit.Before;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.tools.Tables;
 
 public class PkTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/meta/pet.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
 		// Insert 8 records
 		for (int i = 0; i < 8; i++) {
 			Pet pet = Pet.create("pet" + i);
@@ -17,5 +17,5 @@ public class PkTest extends DaoCase {
 			dao.insert(pet);
 		}
 	}
-	
+
 }

@@ -4,8 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 import org.nutz.service.IdEntityService;
 import org.nutz.trans.Atom;
@@ -18,13 +18,14 @@ public class TransactionTest extends DaoCase {
 	private IdEntityService<Master> masterService;
 
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
+		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
 		catService = new IdEntityService<Cat>(dao) {};
 		comService = new IdEntityService<Company>(dao) {};
 		masterService = new IdEntityService<Master>(dao) {};
 	}
 
-	protected void after() {}
+	protected void after() {
+	}
 
 	private Cat insert(final Cat cat, final Bomb bomb) {
 		// //System.out.printf("\n>> insert cat: %d\n",

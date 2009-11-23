@@ -26,7 +26,7 @@ public class SqlLiteralTest {
 		sql.getVars().set("a", "V");
 		sql.getParams().set("a", "H");
 		assertEquals("@@$T$%V?;", sql.toPreparedStatementString());
-		assertEquals("@@$T$%VH;", sql.toString());
+		assertEquals("@@$T$%V'H';", sql.toString());
 	}
 
 	@Test

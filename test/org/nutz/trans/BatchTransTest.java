@@ -6,22 +6,23 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Mission;
+import org.nutz.dao.tools.Tables;
 
 public class BatchTransTest extends DaoCase {
 
 	@Override
-	protected void after() {}
+	protected void after() {
+	}
 
 	@Override
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
+		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
 	}
 
 	@Test
@@ -49,23 +50,26 @@ public class BatchTransTest extends DaoCase {
 
 	@Test
 	public void try_insert_multiple_dynamic_objects() {
-		pojos.initPlatoon(1);
-		TableName.run(1, new Atom() {
-			public void run() {
-				Trans.exec(new Atom() {
-					public void run() {
-						dao.insert(Mission.make("D1", "2008-12-21 20:15:26"));
-						try {
-							dao.insert(Mission.make("D1", "2008-9-21 17:12:23"));
-						} catch (Exception e) {}
-						dao.insert(Mission.make("D2", "2008-10-21 18:13:24"));
-						dao.insert(Mission.make("D3", "2008-11-21 19:14:25"));
-					}
-				});
-				assertEquals(3, dao.count(Mission.class));
-			}
-		});
-		pojos.dropPlatoon(1);
+		try {
+			pojos.initPlatoon(1);
+			TableName.run(1, new Atom() {
+				public void run() {
+					Trans.exec(new Atom() {
+						public void run() {
+							dao.insert(Mission.make("D1", "2008-12-21 20:15:26"));
+							try {
+								dao.insert(Mission.make("D1", "2008-9-21 17:12:23"));
+							} catch (Exception e) {}
+							dao.insert(Mission.make("D2", "2008-10-21 18:13:24"));
+							dao.insert(Mission.make("D3", "2008-11-21 19:14:25"));
+						}
+					});
+					assertEquals(3, dao.count(Mission.class));
+				}
+			});
+		} catch (Exception e) {} finally {
+			pojos.dropPlatoon(1);
+		}
 	}
 
 	@Test

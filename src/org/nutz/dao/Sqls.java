@@ -1,10 +1,8 @@
 package org.nutz.dao;
 
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.DefaultStatementAdapter;
 import org.nutz.dao.sql.FetchEntityCallback;
 import org.nutz.dao.sql.FetchIntegerCallback;
@@ -13,13 +11,6 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.SqlImpl;
 import org.nutz.dao.sql.SqlLiteral;
-import org.nutz.dao.tools.DTable;
-import org.nutz.dao.tools.DTableParser;
-import org.nutz.dao.tools.TableDefinition;
-import org.nutz.dao.tools.Tables;
-import org.nutz.dao.tools.impl.NutDTableParser;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Streams;
 
 public class Sqls {
 
@@ -53,30 +44,6 @@ public class Sqls {
 		public SqlCallback queryEntity() {
 			return new QueryEntityCallback();
 		}
-	}
-
-	public static void executeDefinition(Dao dao, String dods) {
-		List<DTable> dts = parseDefinition(dods);
-		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
-		for (DTable dt : dts) {
-			if (dao.exists(dt.getName()))
-				dao.clear(dt.getName(), null);
-			else {
-				Sql c = maker.makeCreateSql(dt);
-				dao.execute(c);
-			}
-		}
-	}
-
-	public static List<DTable> parseDefinition(String dods) {
-		DTableParser parser = new NutDTableParser();
-		List<DTable> dts = parser.parse(dods);
-		return dts;
-	}
-
-	public static void executeDefinitionFile(Dao dao, String dodPath) {
-		String sqls = Lang.readAll(Streams.fileInr(dodPath));
-		Sqls.executeDefinition(dao, sqls);
 	}
 
 	private static final Pattern CND = Pattern.compile("^([ \t]*)(WHERE|ORDER BY)(.+)$",

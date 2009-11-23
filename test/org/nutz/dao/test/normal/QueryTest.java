@@ -7,15 +7,15 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.tools.Tables;
 
 public class QueryTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/meta/pet.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));

@@ -5,7 +5,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.dao.Dao;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.tools.DTable;
@@ -37,7 +36,7 @@ public class Pojos extends Service {
 	}
 
 	public void init() {
-		Sqls.executeDefinition(dao, topTables);
+		Tables.run(dao, Tables.defineBy(topTables));
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
@@ -88,15 +87,16 @@ public class Pojos extends Service {
 
 	public void initPlatoon(int id) {
 		Segment seg = new CharSegment(this.platoonTables);
-		Sqls.executeDefinition(dao, seg.set("id", id).toString());
+		Tables.run(dao, Tables.defineBy(seg.set("id", id).toString()));
 	}
 
 	public void dropPlatoon(int id) {
 		Segment seg = new CharSegment(this.platoonTables);
-		List<DTable> dts = Sqls.parseDefinition(seg.set("id", id).toString());
+		List<DTable> dts = Tables.defineBy(seg.set("id", id).toString());
 		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
-		for(DTable dt : dts){
-			dao.execute(maker.makeDropSql(dt));
+		for (DTable dt : dts) {
+			if (dao.exists(dt.getName()))
+				dao.execute(maker.makeDropSql(dt));
 		}
 	}
 

@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
@@ -19,7 +20,8 @@ import org.nutz.trans.Atom;
 public class CustomizedSqlsTest extends DaoCase {
 
 	@Override
-	protected void after() {}
+	protected void after() {
+	}
 
 	@Override
 	protected void before() {
@@ -30,34 +32,36 @@ public class CustomizedSqlsTest extends DaoCase {
 	public void test_dynamic_insert() {
 		pojos.init();
 		int platoonId = 23;
-		pojos.initPlatoon(platoonId);
-		Sql sql = dao.sqls().create("tank.insert");
-		sql.vars().set("id", platoonId);
-		sql.params().set("code", "T1").set("weight", 12);
-		dao.execute(sql);
+		try {
+			pojos.initPlatoon(platoonId);
+			Sql sql = dao.sqls().create("tank.insert");
+			sql.vars().set("id", platoonId);
+			sql.params().set("code", "T1").set("weight", 12);
+			dao.execute(sql);
 
-		sql = dao.sqls().create("tank.insert");
-		sql.vars().set("id", platoonId);
-		sql.params().set("code", "T2").set("weight", 13);
-		dao.execute(sql);
+			sql = dao.sqls().create("tank.insert");
+			sql.vars().set("id", platoonId);
+			sql.params().set("code", "T2").set("weight", 13);
+			dao.execute(sql);
 
-		sql = dao.sqls().create("tank.insert");
-		sql.vars().set("id", platoonId);
-		sql.params().set("code", "T3").set("weight", 14);
-		dao.execute(sql);
+			sql = dao.sqls().create("tank.insert");
+			sql.vars().set("id", platoonId);
+			sql.params().set("code", "T3").set("weight", 14);
+			dao.execute(sql);
 
-		sql = dao.sqls().create("tank.insert");
-		sql.vars().set("id", platoonId);
-		sql.params().set("code", "T4").set("weight", 15);
-		dao.execute(sql);
+			sql = dao.sqls().create("tank.insert");
+			sql.vars().set("id", platoonId);
+			sql.params().set("code", "T4").set("weight", 15);
+			dao.execute(sql);
 
-		TableName.run(platoonId, new Atom() {
-			public void run() {
-				assertEquals(4, dao.count(Tank.class));
-			}
-		});
-		
-		pojos.dropPlatoon(platoonId);
+			TableName.run(platoonId, new Atom() {
+				public void run() {
+					assertEquals(4, dao.count(Tank.class));
+				}
+			});
+		} catch (SqlNotFoundException e) {} finally {
+			pojos.dropPlatoon(platoonId);
+		}
 	}
 
 	@Test
@@ -69,7 +73,7 @@ public class CustomizedSqlsTest extends DaoCase {
 		sql.setCallback(Sqls.callback.queryEntity());
 		dao.execute(sql);
 		assertEquals(2, sql.getList(Tank.class).size());
-		
+
 		pojos.dropPlatoon(p.getId());
 	}
 

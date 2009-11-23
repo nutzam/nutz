@@ -84,4 +84,16 @@ public class SystemLog implements Log {
 		throw Lang.noImplement();
 	}
 
+	public void debugf(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
+	public void infof(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
+	public void tracef(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
 }

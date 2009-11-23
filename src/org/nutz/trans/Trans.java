@@ -45,7 +45,7 @@ public abstract class Trans {
 		count.set(count.get() + 1);
 	}
 
-	private static void commit() throws SQLException {
+	private static void commit() throws Exception {
 		count.set(count.get() - 1);
 		if (count.get() == 0)
 			trans.get().commit();
@@ -54,7 +54,7 @@ public abstract class Trans {
 	private static void depose() {
 		if (count.get() == 0)
 			try {
-				trans.get().resetTransactionLevel();
+				trans.get().close();
 			} catch (SQLException e) {
 				throw Lang.wrapThrow(e);
 			} finally {

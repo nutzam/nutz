@@ -3,20 +3,23 @@ package org.nutz.dao.test.normal;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.nutz.dao.Sqls;
+import org.nutz.Nutzs;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Stabber;
 import org.nutz.dao.test.meta.StabberSeq;
+import org.nutz.dao.tools.Tables;
 
 public class AutoGenerateValueTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/meta/stabber.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/stabber.dod"));
 	}
 
 	@Override
-	protected void after() {}
+	protected void after() {
+
+	}
 
 	@Test
 	public void test_create_seq_value() {
@@ -25,7 +28,7 @@ public class AutoGenerateValueTest extends DaoCase {
 		 * MS-SqlServer
 		 */
 		if (dao.meta().isSqlServer()) {
-			assertTrue(true);
+			Nutzs.notSupport(dao.meta());
 		} else {
 			StabberSeq seq = new StabberSeq();
 			seq.setValue(10);

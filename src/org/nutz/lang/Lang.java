@@ -38,6 +38,13 @@ import org.nutz.lang.stream.StringWriter;
  */
 public abstract class Lang {
 
+	public static ComboException comboThrow(Throwable... es) {
+		ComboException ce = new ComboException();
+		for (Throwable e : es)
+			ce.add(e);
+		return ce;
+	}
+
 	/**
 	 * @return 一个未实现的运行时异常
 	 */

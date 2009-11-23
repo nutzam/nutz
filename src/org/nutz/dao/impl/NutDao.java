@@ -41,7 +41,7 @@ import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
 
-	private static Log log = LogFactory.getLog(NutDao.class);
+	private static Log log = LogFactory.getLog(Dao.class);
 
 	private DataSource dataSource;
 	private SqlMaker sqlMaker;
@@ -193,7 +193,6 @@ public class NutDao implements Dao {
 		} finally {
 			DaoUtils.releaseConnection(ch);
 		}
-
 	}
 
 	public int count(Class<?> classOfT) {

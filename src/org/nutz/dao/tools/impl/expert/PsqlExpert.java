@@ -11,7 +11,7 @@ public class PsqlExpert implements SqlExpert {
 	public Sql evalCreateSql(DTable dt, Sql createTable) {
 		return createTable;
 	}
-	
+
 	public Sql evalDropSql(DTable dt, Sql dropTable) {
 		return dropTable;
 	}
@@ -19,7 +19,7 @@ public class PsqlExpert implements SqlExpert {
 	public String tellCreateSqlPattern() {
 		return Experts.CREATE_PSQL;
 	}
-	
+
 	private void appendFieldType(StringBuilder sb, DField df) {
 		sb.append(df.getType());
 	}
@@ -27,18 +27,22 @@ public class PsqlExpert implements SqlExpert {
 	public String tellField(int pkNum, DField df) {
 		StringBuilder sb = new StringBuilder();
 		// Name
-		sb.append('"').append(df.getName()).append('"').append(' ');
-		// Type
-		appendFieldType(sb, df);
-		// Decorator
-		if (df.isUnique())
-			sb.append(" UNSIGNED");
-		if (!df.isPrimaryKey() && df.isUnique())
-			sb.append(" UNIQUE");
-		if (df.isNotNull())
-			sb.append(" NOT NULL");
-		if (df.isAutoIncreament())
+		sb.append(df.getName()).append(' ');
+		// Auto increase
+		if (df.isAutoIncreament()) {
 			sb.append(" SERIAL");
+		}
+		// Decorator
+		else {
+			// Type
+			appendFieldType(sb, df);
+			if (Experts.isInteger(df.getType()) && df.isUnsign())
+				sb.append(" UNSIGNED");
+			if (!df.isPrimaryKey() && df.isUnique())
+				sb.append(" UNIQUE");
+			if (df.isNotNull())
+				sb.append(" NOT NULL");
+		}
 		// Default Value
 		if (!Strings.isBlank(df.getDefaultValue()))
 			sb.append(" DEFAULT ").append(df.getDefaultValue());
@@ -46,9 +50,7 @@ public class PsqlExpert implements SqlExpert {
 	}
 
 	public String tellPKs(DTable dt) {
-		return Experts.gPkNames(dt, Experts.PK_PSQL,'"');
+		return Experts.gPkNames(dt, Experts.PK_PSQL, '"');
 	}
-
-	
 
 }

@@ -4,15 +4,15 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 
 public class SimpleTransTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
+		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
 		dao.insert(Cat.create("xb"));
 
 	}

@@ -10,7 +10,7 @@ import org.nutz.lang.Strings;
 
 public class SqlServerExpert implements SqlExpert {
 
-	private static final String ALTER_PK = "ALTER TABLE ${T} WITH NOCHECK ADD CONSTRAINT PK_${T} PRIMARY KEY  NONCLUSTERED ($F)";
+	private static final String ALTER_PK = "ALTER TABLE ${T} WITH NOCHECK ADD CONSTRAINT PK_${T} PRIMARY KEY  NONCLUSTERED (${F})";
 
 	public Sql evalCreateSql(DTable dt, Sql createTable) {
 		if (dt.getPks().isEmpty())
@@ -63,14 +63,17 @@ public class SqlServerExpert implements SqlExpert {
 		// Type
 		appendFieldType(sb, df);
 		// Decorator
-		if (df.isUnique())
+		if (Experts.isInteger(df.getType()) && df.isUnsign())
 			sb.append(" UNSIGNED");
 		if (!df.isPrimaryKey() && df.isUnique())
 			sb.append(" UNIQUE");
 		if (df.isNotNull())
 			sb.append(" NOT NULL");
+		if (df.isAutoIncreament()) {
+			sb.append(" IDENTITY");
+		}
 		// Default Value
-		if (!Strings.isBlank(df.getDefaultValue()))
+		else if (!Strings.isBlank(df.getDefaultValue()))
 			sb.append(" DEFAULT ").append(df.getDefaultValue());
 		return sb.toString();
 	}

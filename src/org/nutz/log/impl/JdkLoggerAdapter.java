@@ -111,4 +111,5 @@ public class JdkLoggerAdapter extends AbstractLogAdapter implements Log {
 		return jdkLogger;
 	}
 
+	
 }

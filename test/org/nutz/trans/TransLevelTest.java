@@ -11,8 +11,9 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.nutz.Nutzs;
-import org.nutz.dao.Sqls;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.tools.Tables;
 import org.nutz.service.IdEntityService;
 
 /**
@@ -88,7 +89,7 @@ public class TransLevelTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/trans/trans.dod");
+		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
 		comService = new IdEntityService<Company>(dao) {};
 		Company c = Company.create("com1");
 		comService.dao().insert(c);
@@ -108,6 +109,27 @@ public class TransLevelTest extends DaoCase {
 		c.setId(old.getId());
 		c.setName(old.getName());
 		return c;
+	}
+
+	@Test
+	public void testTransLevel() {
+		final int[] ls = new int[2];
+		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom() {
+			public void run() {
+				dao.run(new ConnCallback() {
+					public void invoke(Connection conn) throws Exception {
+						ls[0] = conn.getTransactionIsolation();
+					}
+				});
+			}
+		});
+		dao.run(new ConnCallback() {
+			public void invoke(Connection conn) throws Exception {
+				ls[1] = conn.getTransactionIsolation();
+			}
+		});
+		assertEquals(8, ls[0]);
+		assertEquals(2, ls[1]);
 	}
 
 	@Test

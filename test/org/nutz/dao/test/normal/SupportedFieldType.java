@@ -12,10 +12,10 @@ import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.FieldValueType;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.meta.Email;
@@ -24,7 +24,7 @@ public class SupportedFieldType extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/normal/types.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/types.dod"));
 	}
 
 	public static enum TT {
@@ -113,8 +113,8 @@ public class SupportedFieldType extends DaoCase {
 
 	@Test
 	public void insert_char_field() {
-		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj", Character.valueOf('O')).add("name",
-				"ABC"));
+		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj",
+				Character.valueOf('O')).add("name", "ABC"));
 		EntityTypes et = dao.fetch(EntityTypes.class);
 		assertEquals('t', et.char_p);
 		assertEquals('O', et.char_obj.charValue());
@@ -190,7 +190,8 @@ public class SupportedFieldType extends DaoCase {
 			if (null == expValue)
 				continue;
 			if (!expValue.equals(ttValue))
-				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue, ttValue);
+				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
+						ttValue);
 		}
 		assertTrue(true);
 	}

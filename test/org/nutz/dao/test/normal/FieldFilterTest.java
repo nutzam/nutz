@@ -7,9 +7,9 @@ import java.util.List;
 
 import org.junit.Test;
 import org.nutz.dao.FieldFilter;
-import org.nutz.dao.Sqls;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.tools.Tables;
 import org.nutz.trans.Atom;
 
 public class FieldFilterTest extends DaoCase {
@@ -22,7 +22,7 @@ public class FieldFilterTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Sqls.executeDefinitionFile(dao, "org/nutz/dao/test/meta/pet.dod");
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
 		dao.insert(pet("xb"));
 	}
 

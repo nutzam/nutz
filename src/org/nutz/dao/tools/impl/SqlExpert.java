@@ -30,10 +30,9 @@ public interface SqlExpert {
 	/**
 	 * @return 一个字符串模板，包括占位符：
 	 *         <ul>
-	 *         <li>${fields} 字段
 	 *         <li>${table} 表名
+	 *         <li>${fields} 字段
 	 *         <li>${pks} 主键约束
-	 *         <li>${uks} 唯一性约束
 	 *         </ul>
 	 */
 	String tellCreateSqlPattern();

@@ -7,6 +7,8 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.nutz.lang.ComboException;
+
 public class NutTransaction extends Transaction {
 
 	private static int ID = 0;
@@ -32,18 +34,26 @@ public class NutTransaction extends Transaction {
 	}
 
 	@Override
-	protected void commit() throws SQLException {
+	protected void commit() throws Exception {
+		ComboException ce = new ComboException();
 		for (Pair p : list) {
 			try {
+				// 提交事务
 				p.conn.commit();
+				// 恢复旧的事务级别
+				if (p.conn.getTransactionIsolation() != p.oldLevel)
+					p.conn.setTransactionIsolation(p.oldLevel);
 			} catch (SQLException e) {
-				throw e;
+				ce.add(e);
 			} finally {
 				p.conn.close();
 			}
 		}
-		resetTransactionLevel();
 		list.clear();
+		// 如果有一个数据源提交时发生异常，抛出
+		if (null != ce.getCause()) {
+			throw ce;
+		}
 	}
 
 	@Override
@@ -66,11 +76,15 @@ public class NutTransaction extends Transaction {
 	}
 
 	@Override
-	public void resetTransactionLevel() throws SQLException {
+	public void close() throws SQLException {
 		for (Pair p : list)
-			if (!p.conn.isClosed())
-				if (p.conn.getTransactionIsolation() != p.oldLevel)
-					p.conn.setTransactionIsolation(p.oldLevel);
+			if (!p.conn.isClosed()) {
+				try {
+					if (p.conn.getTransactionIsolation() != p.oldLevel)
+						p.conn.setTransactionIsolation(p.oldLevel);
+				} catch (Exception e) {}
+				p.conn.close();
+			}
 	}
 
 	@Override
