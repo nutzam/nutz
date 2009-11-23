@@ -38,15 +38,14 @@ public final class Resources {
 			classNames = findInJar(jarPath, baseClass);
 		} else
 			classNames = findInClassPath(dir, baseClass);
-		if (classNames != null) {
-			List<Class<?>> list = new ArrayList<Class<?>>(classNames.length);
-			for (String className : classNames)
-				try {
-					list.add(Class.forName(className));
-				} catch (Throwable e) {}
-			return list;
-		}
-		return null;
+		if (classNames == null) 
+			return null;
+		List<Class<?>> list = new ArrayList<Class<?>>(classNames.length);
+		for (String className : classNames)
+			try {
+				list.add(Class.forName(className));
+			} catch (Throwable e) {}
+		return list;
 	}
 
 	/**
@@ -159,11 +158,10 @@ public final class Resources {
 
 	private static String getJarPath(File dir) {
 		String fpath = dir.getAbsolutePath();
-		int posBegin = fpath.indexOf("file:");
+		int posBegin = fpath.indexOf("file:") + 5;
 		int posEnd = fpath.lastIndexOf('!');
-		if (posBegin > 0 && (posEnd - posBegin - 5) > 0) {
-			return fpath.substring(posBegin + 5, posEnd);
-		}
+		if (posBegin > 0 && (posEnd - posBegin) > 0)
+			return fpath.substring(posBegin, posEnd);
 		return null;
 	}
 }
