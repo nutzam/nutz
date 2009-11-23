@@ -1,6 +1,7 @@
 package org.nutz.dao.tools;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +43,29 @@ public class DTable {
 
 	public List<DField> getPks() {
 		return pks;
+	}
+
+	public String getPkNames() {
+		if (pks.isEmpty())
+			return null;
+		Iterator<DField> it = pks.iterator();
+		String names = it.next().getName();
+		while (it.hasNext())
+			names += "," + it.next();
+		return names;
+	}
+
+	public String getPkNames(char wrapper) {
+		if (pks.isEmpty())
+			return null;
+		if (wrapper < 32)
+			return getPkNames();
+		
+		Iterator<DField> it = pks.iterator();
+		String names = it.next().getName();
+		while (it.hasNext())
+			names += "," + wrapper + it.next() + wrapper;
+		return names;
 	}
 
 	public List<DField> getAutoIncreaments() {

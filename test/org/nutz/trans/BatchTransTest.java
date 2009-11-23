@@ -65,6 +65,7 @@ public class BatchTransTest extends DaoCase {
 				assertEquals(3, dao.count(Mission.class));
 			}
 		});
+		pojos.dropPlatoon(1);
 	}
 
 	@Test

@@ -56,6 +56,8 @@ public class CustomizedSqlsTest extends DaoCase {
 				assertEquals(4, dao.count(Tank.class));
 			}
 		});
+		
+		pojos.dropPlatoon(platoonId);
 	}
 
 	@Test
@@ -67,6 +69,8 @@ public class CustomizedSqlsTest extends DaoCase {
 		sql.setCallback(Sqls.callback.queryEntity());
 		dao.execute(sql);
 		assertEquals(2, sql.getList(Tank.class).size());
+		
+		pojos.dropPlatoon(p.getId());
 	}
 
 	@Test

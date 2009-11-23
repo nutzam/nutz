@@ -34,6 +34,10 @@ public class DatabaseMeta {
 		return productName;
 	}
 
+	public String toString() {
+		return String.format("%s:[%s - %s]", type.name(), productName, version);
+	}
+
 	public void setProductName(String productName) {
 		this.productName = productName;
 		String proName = productName.toLowerCase();

@@ -262,11 +262,21 @@ public interface Dao {
 	<T> void delete(Class<T> classOfT, String name);
 
 	/**
+	 * 根据复合主键，删除一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
+	 * 
+	 * @param classOfT
+	 * @param pks
+	 *            复合主键需要的参数，必须同 '@PK'中声明的顺序一致
+	 */
+	<T> void deletex(Class<T> classOfT, Object... pks);
+
+	/**
 	 * 自动判断如何删除一个对象。
 	 * <p>
 	 * 如果声明了 '@Id' 则相当于 delete(Class<T>,long)<br>
 	 * 如果声明了 '@Name'，则相当于 delete(Class<T>,String)<br>
-	 * 如果没声明这两个注解，则会抛出一个运行时异常
+	 * 如果声明了 '@PK'，则 deletex(Class<T>,Object ...)<br>
+	 * 如果没声明任何上面三个注解，则会抛出一个运行时异常
 	 * 
 	 * @param obj
 	 *            要被删除的对象
@@ -341,6 +351,15 @@ public interface Dao {
 	 * @see org.nutz.dao.entity.annotation.Name
 	 */
 	<T> T fetch(Class<T> classOfT, String name);
+	
+	/**
+	 * 根据复合主键，获取一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
+	 * 
+	 * @param classOfT
+	 * @param pks
+	 *            复合主键需要的参数，必须同 '@PK'中声明的顺序一致
+	 */
+	<T> void fetchx(Class<T> classOfT, Object... pks);
 
 	/**
 	 * 根据 WHERE 条件获取一个对象。如果有多个对象符合条件，将只获取 ResultSet 第一个记录
@@ -376,9 +395,10 @@ public interface Dao {
 	/**
 	 * 根据一个参考对象自动判断如何获取一个对象。
 	 * <p>
-	 * 如果声明了 '@Id' 则相当于 delete(Class<T>,long)<br>
-	 * 如果声明了 '@Name'，则相当于 delete(Class<T>,String)<br>
-	 * 如果没声明这两个注解，则会抛出一个运行时异常
+	 * 如果声明了 '@Id' 则相当于 fetch(Class<T>,long)<br>
+	 * 如果声明了 '@Name'，则相当于 fetch(Class<T>,String)<br>
+	 * 如果声明了 '@PK'，则 fetchx(Class<T>,Object ...)<br>
+	 * 如果没声明任何上面三个注解，则会抛出一个运行时异常
 	 * 
 	 * @param obj
 	 *            参考对象

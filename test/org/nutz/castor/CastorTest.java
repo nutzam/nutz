@@ -113,7 +113,6 @@ public class CastorTest {
 		assertFalse(Castors.me().castTo("oFf", boolean.class));
 		assertFalse(Castors.me().castTo("No", boolean.class));
 		assertFalse(Castors.me().castTo("faLsE", boolean.class));
-		assertFalse(Castors.me().castTo("F", boolean.class));
 	}
 
 	@Test

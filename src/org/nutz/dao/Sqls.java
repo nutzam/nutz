@@ -15,7 +15,8 @@ import org.nutz.dao.sql.SqlImpl;
 import org.nutz.dao.sql.SqlLiteral;
 import org.nutz.dao.tools.DTable;
 import org.nutz.dao.tools.DTableParser;
-import org.nutz.dao.tools.TableSqlMaker;
+import org.nutz.dao.tools.TableDefinition;
+import org.nutz.dao.tools.Tables;
 import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -55,17 +56,22 @@ public class Sqls {
 	}
 
 	public static void executeDefinition(Dao dao, String dods) {
-		DTableParser parser = new NutDTableParser();
-		TableSqlMaker maker = TableSqlMaker.newInstance(((NutDao) dao).meta());
-		List<DTable> dts = parser.parse(dods);
+		List<DTable> dts = parseDefinition(dods);
+		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
 		for (DTable dt : dts) {
 			if (dao.exists(dt.getName()))
-				dao.clear(dt.getName(),null);
+				dao.clear(dt.getName(), null);
 			else {
 				Sql c = maker.makeCreateSql(dt);
 				dao.execute(c);
 			}
 		}
+	}
+
+	public static List<DTable> parseDefinition(String dods) {
+		DTableParser parser = new NutDTableParser();
+		List<DTable> dts = parser.parse(dods);
+		return dts;
 	}
 
 	public static void executeDefinitionFile(Dao dao, String dodPath) {

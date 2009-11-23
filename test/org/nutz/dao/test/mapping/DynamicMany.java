@@ -24,7 +24,10 @@ public class DynamicMany extends DaoCase {
 	}
 
 	@Override
-	protected void after() {}
+	protected void after() {
+		Platoon p = dao.fetch(Platoon.class,"seals");
+		pojos.dropPlatoon(p.getId());
+	}
 
 	@Test
 	public void fetch_null_field_links() {

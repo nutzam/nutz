@@ -964,7 +964,6 @@ public abstract class Lang {
 	 * <li>1 | 0
 	 * <li>yes | no
 	 * <li>on | off
-	 * <li>ok | cancle
 	 * <li>true | false
 	 * </ul>
 	 * 
@@ -974,20 +973,22 @@ public abstract class Lang {
 	public static boolean parseBoolean(String s) {
 		if (null == s)
 			return false;
-		if (s.equals("1"))
+		if (s.length() == 0)
+			return false;
+		if (s.length() > 5)
 			return true;
-		if (s.length() > 4)
+		if ("0".equals(s))
 			return false;
 		s = s.toLowerCase();
 		if (s.equals("true"))
 			return true;
-		if (s.equals("yes"))
-			return true;
-		if (s.equals("on"))
-			return true;
-		if (s.equals("ok"))
-			return true;
-		return false;
+		if ("false".equals(s))
+			return false;
+		if ("off".equals(s))
+			return false;
+		if ("no".equals(s))
+			return false;
+		return true;
 	}
 
 	/**

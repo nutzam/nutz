@@ -161,8 +161,24 @@ public class SqlLiteral {
 	public String toString() {
 		String[] ss = stack.cloneChain();
 		autoFill(vars, varIndexes, ss);
-		fillParams(ss, "?");
+		// Fill params, considering the type
 		autoFill(params, paramIndexes, ss);
+		for (String name : params.keys()) {
+			Object value = params.get(name);
+			String vs;
+			if (null == value) {
+				vs = "";
+			} else if (value instanceof String) {
+				vs = "'" + value.toString() + "'";
+			} else {
+				vs = value.toString();
+			}
+			int[] is = paramIndexes.get(name);
+			if (null != is)
+				for (int i : is)
+					ss[stack.getIndex(i)] = vs;
+		}
+		// Done
 		return Lang.concat(ss).toString();
 	}
 

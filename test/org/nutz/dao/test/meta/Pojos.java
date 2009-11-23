@@ -2,10 +2,15 @@ package org.nutz.dao.test.meta;
 
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.tools.DTable;
+import org.nutz.dao.tools.TableDefinition;
+import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.segment.CharSegment;
@@ -82,12 +87,17 @@ public class Pojos extends Service {
 	}
 
 	public void initPlatoon(int id) {
-		initPlatoon(String.valueOf(id));
+		Segment seg = new CharSegment(this.platoonTables);
+		Sqls.executeDefinition(dao, seg.set("id", id).toString());
 	}
 
-	public void initPlatoon(String s) {
+	public void dropPlatoon(int id) {
 		Segment seg = new CharSegment(this.platoonTables);
-		Sqls.executeDefinition(dao, seg.set("id", s).toString());
+		List<DTable> dts = Sqls.parseDefinition(seg.set("id", id).toString());
+		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
+		for(DTable dt : dts){
+			dao.execute(maker.makeDropSql(dt));
+		}
 	}
 
 	public void initData() {

@@ -34,10 +34,14 @@ import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
+
+	private static Log log = LogFactory.getLog(NutDao.class);
 
 	private DataSource dataSource;
 	private SqlMaker sqlMaker;
@@ -154,9 +158,21 @@ public class NutDao implements Dao {
 	public void execute(final Sql... sqls) {
 		run(new ConnCallback() {
 			public void invoke(Connection conn) throws Exception {
-				for (int i = 0; i < sqls.length; i++) {
-					if (null != sqls[i])
-						sqls[i].execute(conn);
+				// 打印 LOG
+				if (log.isDebugEnabled()) {
+					for (int i = 0; i < sqls.length; i++) {
+						if (null != sqls[i]) {
+							log.debug(sqls[i].toString());
+							sqls[i].execute(conn);
+						}
+					}
+				}
+				// 不打印
+				else {
+					for (int i = 0; i < sqls.length; i++) {
+						if (null != sqls[i])
+							sqls[i].execute(conn);
+					}
 				}
 			}
 		});
@@ -290,6 +306,10 @@ public class NutDao implements Dao {
 		execute(sql);
 	}
 
+	public <T> void deletex(Class<T> classOfT, Object... pks) {
+		throw Lang.noImplement();
+	}
+
 	void _deleteSelf(Entity<?> entity, Object obj) {
 		if (null != obj) {
 			EntityField idnf = entity.getIdentifiedField();
@@ -362,6 +382,10 @@ public class NutDao implements Dao {
 	public <T> T fetch(Class<T> classOfT, String name) {
 		Entity<T> entity = getEntity(classOfT);
 		return fetch(entity, name);
+	}
+
+	public <T> void fetchx(Class<T> classOfT, Object... pks) {
+		throw Lang.noImplement();
 	}
 
 	public <T> T fetch(Entity<T> entity, String name) {
