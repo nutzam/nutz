@@ -227,7 +227,7 @@ public class Cnd implements OrderBy, ExpGroup {
 			} else
 				sb.append(name);
 			sb.append(op);
-			sb.append(DaoUtils.formatFieldValue(value));
+			sb.append(Sqls.formatFieldValue(value));
 		}
 	}
 

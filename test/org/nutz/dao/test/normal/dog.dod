@@ -1,0 +1,6 @@
+t_dog {
+	mid INT PK,
+	id INT PK,
+	name VARCHAR(50),
+	age INT
+}

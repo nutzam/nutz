@@ -359,7 +359,7 @@ public interface Dao {
 	 * @param pks
 	 *            复合主键需要的参数，必须同 '@PK'中声明的顺序一致
 	 */
-	<T> void fetchx(Class<T> classOfT, Object... pks);
+	<T> T fetchx(Class<T> classOfT, Object... pks);
 
 	/**
 	 * 根据 WHERE 条件获取一个对象。如果有多个对象符合条件，将只获取 ResultSet 第一个记录

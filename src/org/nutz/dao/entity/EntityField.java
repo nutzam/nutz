@@ -113,6 +113,10 @@ public class EntityField {
 		return type == FieldType.ID || type == FieldType.SERIAL;
 	}
 
+	public boolean isPk() {
+		return type == FieldType.PK;
+	}
+
 	public boolean isNotNull() {
 		return notNull;
 	}

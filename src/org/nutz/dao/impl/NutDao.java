@@ -24,7 +24,7 @@ import org.nutz.dao.pager.PagerMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlMaker;
 import org.nutz.dao.SqlManager;
-import org.nutz.dao.DaoUtils;
+import org.nutz.dao.Daos;
 import org.nutz.dao.Chain;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
@@ -85,6 +85,16 @@ public class NutDao implements Dao {
 					.getName());
 		}
 		return nameField;
+	}
+
+	private void checkPKs(Entity<?> entity, Object[] values) {
+		if (null == values)
+			throw Lang.makeThrow("fetchx<%s> can not accept null value array", entity.getType());
+		if (null == entity.getPkFields())
+			throw Lang.makeThrow("Entity<%s> need @PK", entity.getType());
+		if (entity.getPkFields().length != values.length)
+			throw Lang.makeThrow("fetchx(%s), expect %d values, but you give %d", entity.getType(),
+					entity.getPkFields().length, values.length);
 	}
 
 	/* ========================================================== */
@@ -179,7 +189,7 @@ public class NutDao implements Dao {
 	}
 
 	public void run(ConnCallback callback) {
-		ConnectionHolder ch = DaoUtils.getConnection(getDataSource());
+		ConnectionHolder ch = Daos.getConnection(getDataSource());
 		try {
 			ch.invoke(callback);
 		} catch (Throwable e) {
@@ -191,7 +201,7 @@ public class NutDao implements Dao {
 			else
 				throw new RuntimeException(e);
 		} finally {
-			DaoUtils.releaseConnection(ch);
+			Daos.releaseConnection(ch);
 		}
 	}
 
@@ -306,7 +316,10 @@ public class NutDao implements Dao {
 	}
 
 	public <T> void deletex(Class<T> classOfT, Object... pks) {
-		throw Lang.noImplement();
+		Entity<T> entity = getEntity(classOfT);
+		checkPKs(entity, pks);
+		Sql sql = sqlMaker.deletex(entity, pks);
+		execute(sql);
 	}
 
 	void _deleteSelf(Entity<?> entity, Object obj) {
@@ -383,8 +396,12 @@ public class NutDao implements Dao {
 		return fetch(entity, name);
 	}
 
-	public <T> void fetchx(Class<T> classOfT, Object... pks) {
-		throw Lang.noImplement();
+	public <T> T fetchx(Class<T> classOfT, Object... pks) {
+		Entity<T> entity = getEntity(classOfT);
+		checkPKs(entity, pks);
+		Sql sql = sqlMaker.fetchx(entity, pks);
+		execute(sql);
+		return sql.getObject(entity.getType());
 	}
 
 	public <T> T fetch(Entity<T> entity, String name) {

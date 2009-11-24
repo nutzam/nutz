@@ -1,7 +1,7 @@
 package org.nutz.dao.impl;
 
 import org.nutz.dao.Condition;
-import org.nutz.dao.DaoUtils;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
 
@@ -17,7 +17,7 @@ public class ManyCondition implements Condition {
 
 	public String toSql(Entity<?> entity) {
 		return String.format("%s=%s", entity.getField(link.getTargetField().getName())
-				.getColumnName(), DaoUtils.formatFieldValue(value));
+				.getColumnName(), Sqls.formatFieldValue(value));
 	}
 
 }

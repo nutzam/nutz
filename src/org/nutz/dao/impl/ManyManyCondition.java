@@ -2,7 +2,7 @@ package org.nutz.dao.impl;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
-import org.nutz.dao.DaoUtils;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
 
@@ -25,7 +25,7 @@ class ManyManyCondition implements Condition {
 	}
 
 	private Object evalValue(Entity<?> me) {
-		return DaoUtils.formatFieldValue(me.getMirror().getValue(obj, link.getReferField()));
+		return Sqls.formatFieldValue(me.getMirror().getValue(obj, link.getReferField()));
 	}
 
 }

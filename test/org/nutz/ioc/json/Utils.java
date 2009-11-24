@@ -1,25 +1,19 @@
 package org.nutz.ioc.json;
 
-import java.util.Map;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.loader.map.MapLoader;
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 
 class Utils {
 
-	@SuppressWarnings("unchecked")
 	static Ioc2 I(String... ss) {
 		String json = "{";
 		json += Lang.concatBy(',', ss);
 		json += "}";
-		Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json
-				.fromJson(json);
-		return new NutIoc(new MapLoader(map));
+		return new NutIoc(new MapLoader(json));
 	}
 
 	static String J(String name, String s) {

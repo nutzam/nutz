@@ -3,6 +3,7 @@ package org.nutz.dao.test.normal;
 import org.nutz.dao.entity.annotation.*;
 
 @Table("t_dog")
+@PK({"masterId", "id"})
 public class Dog {
 
 	@Column("mid")

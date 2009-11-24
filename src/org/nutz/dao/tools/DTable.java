@@ -51,7 +51,7 @@ public class DTable {
 		Iterator<DField> it = pks.iterator();
 		String names = it.next().getName();
 		while (it.hasNext())
-			names += "," + it.next();
+			names += "," + it.next().getName();
 		return names;
 	}
 
@@ -64,7 +64,7 @@ public class DTable {
 		Iterator<DField> it = pks.iterator();
 		String names = it.next().getName();
 		while (it.hasNext())
-			names += "," + wrapper + it.next() + wrapper;
+			names += "," + wrapper + it.next().getName() + wrapper;
 		return names;
 	}
 

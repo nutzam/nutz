@@ -50,7 +50,7 @@ public class PsqlExpert implements SqlExpert {
 	}
 
 	public String tellPKs(DTable dt) {
-		return Experts.gPkNames(dt, Experts.PK_PSQL, '"');
+		return Experts.gPkNames(dt, Experts.PK_PSQL, 0);
 	}
 
 }

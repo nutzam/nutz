@@ -58,4 +58,56 @@ public class EntityParsing {
 		Entity<?> en = en(Stabber.class);
 		assertNotNull(en.getField("caseNumber").getNextIntQuerySql());
 	}
+
+	@Test
+	public void test_pk_multiple() {
+		Entity<?> en = en(TO0.class);
+		assertEquals(2, en.getPkFields().length);
+		assertEquals("to0", en.getViewName());
+		assertEquals("id", en.getPkFields()[0].getName());
+		assertEquals("name", en.getPkFields()[1].getName());
+		assertNull(en.getIdField());
+		assertNull(en.getNameField());
+
+		assertTrue(en.getField("id").isPk());
+		assertTrue(en.getField("name").isPk());
+	}
+
+	@Test
+	public void test_pk_id() {
+		Entity<?> en = en(TO1.class);
+		assertNull(en.getPkFields());
+		assertEquals("to1", en.getViewName());
+		assertEquals("id", en.getIdField().getName());
+		assertEquals("name", en.getNameField().getName());
+		
+		assertTrue(en.getField("id").isPk());
+		assertFalse(en.getField("name").isPk());
+	}
+
+	@Test
+	public void test_pk_name() {
+		Entity<?> en = en(TO2.class);
+		assertNull(en.getPkFields());
+		assertEquals("to2", en.getViewName());
+		assertEquals("id", en.getIdField().getName());
+		assertEquals("name", en.getNameField().getName());
+		
+		assertFalse(en.getField("id").isPk());
+		assertTrue(en.getField("name").isPk());
+	}
+
+	@Test
+	public void test_pk_order() {
+		Entity<?> en = en(TO4.class);
+		assertEquals(2, en.getPkFields().length);
+		assertEquals("to4", en.getViewName());
+		assertEquals("masterId", en.getPkFields()[0].getName());
+		assertEquals("id", en.getPkFields()[1].getName());
+		assertNull(en.getIdField());
+		assertNull(en.getNameField());
+		
+		assertTrue(en.getField("masterId").isPk());
+		assertTrue(en.getField("id").isPk());
+	}
 }

@@ -35,13 +35,30 @@ public class Entity<T> {
 
 	private EntityName tableName;
 	private EntityName viewName;
-	private EntityField idField;
-	// private Map<String, Link> manys;
-	// private Map<String, Link> ones;
-	// private Map<String, Link> manyManys;
 	private List<Link> links;
+	private EntityField idField;
 	private EntityField nameField;
+	private EntityField[] pkFields;
 	private Borning borning;
+
+	public EntityField[] getPkFields() {
+		return pkFields;
+	}
+
+	public void setPkFields(EntityField[] pkFields) {
+		if (null != pkFields && pkFields.length == 1) {
+			Mirror<?> mr = Mirror.me(pkFields[0].getField().getType());
+			if (null == idField && mr.isInteger()) {
+				idField = pkFields[0];
+			} else if (null == nameField && mr.isStringLike()) {
+				nameField = pkFields[0];
+			} else {
+				throw Lang.makeThrow("Can not support '%s' as PK of '%s'", mr, mirror);
+			}
+		} else {
+			this.pkFields = pkFields;
+		}
+	}
 
 	public EntityField getIdField() {
 		return idField;

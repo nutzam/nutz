@@ -2,6 +2,7 @@ package org.nutz.dao.entity.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.HashMap;
 
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.entity.FieldValueType;
@@ -16,6 +17,7 @@ import org.nutz.dao.entity.ValueAdapter;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Default;
 import org.nutz.dao.entity.annotation.Next;
+import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.ValueType;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Many;
@@ -60,6 +62,14 @@ public class DefaultEntityMaker implements EntityMaker {
 		// Check if the POJO has @Column fields
 		boolean existsColumnAnnField = isPojoExistsColumnAnnField(mirror);
 
+		// Eval PKs
+		HashMap<String, EntityField> pkmap = new HashMap<String, EntityField>();
+		PK pk = type.getAnnotation(PK.class);
+		if (null != pk) {
+			for (String pknm : pk.value())
+				pkmap.put(pknm, null);
+		}
+
 		// For each fields ...
 		for (Field f : mirror.getFields()) {
 			// When the field declared @Many, @One, @ManyMany
@@ -67,19 +77,36 @@ public class DefaultEntityMaker implements EntityMaker {
 			if (null != link) {
 				entity.addLinks(link);
 			}
-			/*
-			 * Then try to eval the field
-			 */
+			// Then try to eval the field
 			else {
 				// Current POJO has @Column field, but current not, ignore it
 				if (existsColumnAnnField && null == f.getAnnotation(Column.class))
 					continue;
+				// Create EntityField
 				EntityField ef = evalField(f);
+
+				// Is it a PK?
+				if (pkmap.containsKey(ef.getName())) {
+					pkmap.put(ef.getName(), ef);
+					if (!(ef.isId() || ef.isName()))
+						ef.setType(FieldType.PK);
+				}
+
+				// Append to Entity
 				if (null != ef) {
 					entity.addField(ef);
 				}
 			}
 		} // Done for all fields
+
+		// Then let's check the pks
+		if (pkmap.size() > 0) {
+			EntityField[] pks = new EntityField[pkmap.size()];
+			for (int i = 0; i < pk.value().length; i++)
+				pks[i] = pkmap.get(pk.value()[i]);
+
+			entity.setPkFields(pks);
+		}
 
 		return entity;
 	}
@@ -159,7 +186,7 @@ public class DefaultEntityMaker implements EntityMaker {
 
 		// Prepare how to adapt the field value from ResultSet
 		ef.setValueAdapter(ValueAdapter.create(fieldType, ef.getFieldType()));
-		
+
 		return ef;
 	}
 

@@ -8,6 +8,7 @@ import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.json.Json;
 
 /**
  * 从一个 Map 对象中读取配置信息，支持 Parent
@@ -20,6 +21,11 @@ public class MapLoader implements IocLoader {
 
 	protected MapLoader() {
 		map = new HashMap<String, Map<String, Object>>();
+	}
+
+	@SuppressWarnings("unchecked")
+	public MapLoader(String json) {
+		this((Map<String, Map<String, Object>>) Json.fromJson(json));
 	}
 
 	public MapLoader(Map<String, Map<String, Object>> map) {
@@ -59,7 +65,7 @@ public class MapLoader implements IocLoader {
 			}
 			// Create self IocObject
 			IocObject self = Iocs.map2iobj(newMap);
-			
+
 			// Merge with parent
 			return Iocs.mergeWith(self, parent);
 		}
