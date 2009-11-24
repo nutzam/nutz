@@ -1,5 +1,7 @@
 package org.nutz.dao.test.normal;
 
+import java.sql.Timestamp;
+
 import org.nutz.dao.entity.annotation.*;
 
 @Table("t_dog")
@@ -17,6 +19,17 @@ public class Dog {
 
 	@Column
 	private int age;
+
+	@Column
+	private Timestamp dead;
+
+	public Timestamp getDead() {
+		return dead;
+	}
+
+	public void setDead(Timestamp dead) {
+		this.dead = dead;
+	}
 
 	public int getMasterId() {
 		return masterId;

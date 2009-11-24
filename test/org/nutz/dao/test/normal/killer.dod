@@ -1,0 +1,11 @@
+t_killer {
+	id INT +PK,
+	name VARCHAR(50) !UNIQUE,
+	killed INT,
+	last VARCHAR(50)
+}
+
+t_killer_re {
+	killer VARCHAR(50),
+	rid  INT
+}

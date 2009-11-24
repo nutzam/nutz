@@ -1,4 +1,4 @@
-package org.nutz.dao.test.meta;
+package org.nutz.dao.test.normal;
 
 import org.nutz.dao.entity.annotation.*;
 

@@ -123,6 +123,20 @@ public interface Dao {
 	<T> T insertLinks(T obj, String regex);
 
 	/**
+	 * 将对象的一个或者多个，多对多的关联信息，插入数据表
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param regex
+	 *            正则表达式，描述了那种多对多关联字段将被执行该操作
+	 * 
+	 * @return 对象自身
+	 * 
+	 * @see org.nutz.dao.entity.annotation.ManyMany
+	 */
+	<T> T insertRelation(T obj, String regex);
+
+	/**
 	 * 更新一个对象。对象必须有 '@Id' 或者 '@Name' 声明。
 	 * <p>
 	 * 并且调用这个函数前， 主键的值必须保证是有效，否则会更新失败
@@ -351,7 +365,7 @@ public interface Dao {
 	 * @see org.nutz.dao.entity.annotation.Name
 	 */
 	<T> T fetch(Class<T> classOfT, String name);
-	
+
 	/**
 	 * 根据复合主键，获取一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
 	 * 

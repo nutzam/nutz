@@ -60,12 +60,6 @@ public class SqlMaker {
 				else if (!fm.match(fn))
 					continue;
 			}
-			// Auto generate value
-			else if (null != ef.getNextIntQuerySql()) {
-				fields.append(',').append(ef.getColumnName());
-				values.append(",(").append(ef.getNextIntQuerySql().toString()).append(')');
-				continue;
-			}
 			// for Null
 			else if (null == value) {
 				if (ef.hasDefaultValue())

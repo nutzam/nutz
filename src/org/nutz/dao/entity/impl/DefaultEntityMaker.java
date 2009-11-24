@@ -2,7 +2,9 @@ package org.nutz.dao.entity.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.entity.FieldValueType;
@@ -16,7 +18,6 @@ import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.ValueAdapter;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Default;
-import org.nutz.dao.entity.annotation.Next;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.ValueType;
 import org.nutz.dao.entity.annotation.Id;
@@ -28,6 +29,8 @@ import org.nutz.dao.entity.annotation.Readonly;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.entity.annotation.View;
 import org.nutz.dao.entity.born.Borns;
+import org.nutz.dao.entity.next.NextQuery;
+import org.nutz.dao.entity.next.Nexts;
 import org.nutz.dao.entity.query.IntQuerys;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
@@ -70,6 +73,8 @@ public class DefaultEntityMaker implements EntityMaker {
 				pkmap.put(pknm, null);
 		}
 
+		List<NextQuery> befores = new ArrayList<NextQuery>(5);
+		List<NextQuery> afters = new ArrayList<NextQuery>(5);
 		// For each fields ...
 		for (Field f : mirror.getFields()) {
 			// When the field declared @Many, @One, @ManyMany
@@ -92,6 +97,12 @@ public class DefaultEntityMaker implements EntityMaker {
 						ef.setType(FieldType.PK);
 				}
 
+				// Is befores? or afters?
+				if (null != ef.getBeforeInsert())
+					befores.add(ef.getBeforeInsert());
+				else if (null != ef.getAfterInsert())
+					afters.add(ef.getAfterInsert());
+
 				// Append to Entity
 				if (null != ef) {
 					entity.addField(ef);
@@ -107,6 +118,10 @@ public class DefaultEntityMaker implements EntityMaker {
 
 			entity.setPkFields(pks);
 		}
+
+		// Eval beforeInsert fields and afterInsert fields
+		entity.setBefores(befores.toArray(new NextQuery[befores.size()]));
+		entity.setAfters(afters.toArray(new NextQuery[afters.size()]));
 
 		return entity;
 	}
@@ -140,13 +155,7 @@ public class DefaultEntityMaker implements EntityMaker {
 			ef.setDefaultValue(new CharSegment(dft.value()));
 
 		// @Next
-		Next next = field.getAnnotation(Next.class);
-		if (null != next) {
-			if (!fieldType.isInteger())
-				throw error(entity, "@Id field [%s] must be a Integer!", field.getName());
-			ef.setNextIntQuery(IntQuerys.create(db, entity.getViewNameObject(), next.value(), ef
-					.getColumnName()));
-		}
+		Nexts.eval(db, ef);
 
 		// @Id
 		Id id = field.getAnnotation(Id.class);

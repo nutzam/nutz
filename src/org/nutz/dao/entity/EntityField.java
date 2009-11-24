@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
+import org.nutz.dao.entity.next.NextQuery;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
@@ -24,7 +25,8 @@ public class EntityField {
 	private Method getter;
 	private Method setter;
 	private IntQuery serialQuery;
-	private IntQuery nextIntQuery;
+	private NextQuery beforeInsert;
+	private NextQuery afterInsert;
 	private FieldAdapter fieldAdapter;
 	private ValueAdapter valueAdapter;
 
@@ -75,10 +77,6 @@ public class EntityField {
 
 	public void setSerialQuery(IntQuery nextId) {
 		this.serialQuery = nextId;
-	}
-
-	public void setNextIntQuery(IntQuery nextIntQuery) {
-		this.nextIntQuery = nextIntQuery;
 	}
 
 	public void setFieldAdapter(FieldAdapter adapter) {
@@ -209,12 +207,6 @@ public class EntityField {
 		return serialQuery.sql();
 	}
 
-	public Sql getNextIntQuerySql() {
-		if (null == nextIntQuery)
-			return null;
-		return nextIntQuery.sql();
-	}
-
 	public boolean isInt() {
 		return FieldValueType.INT == fieldType;
 	}
@@ -237,6 +229,22 @@ public class EntityField {
 
 	public String getName() {
 		return field.getName();
+	}
+
+	public NextQuery getBeforeInsert() {
+		return beforeInsert;
+	}
+
+	public void setBeforeInsert(NextQuery beforeInsert) {
+		this.beforeInsert = beforeInsert;
+	}
+
+	public NextQuery getAfterInsert() {
+		return afterInsert;
+	}
+
+	public void setAfterInsert(NextQuery afterInsert) {
+		this.afterInsert = afterInsert;
 	}
 
 }

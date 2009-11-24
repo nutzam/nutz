@@ -32,6 +32,7 @@ import org.nutz.dao.entity.EntityHolder;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
+import org.nutz.dao.entity.next.NextQuery;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
@@ -511,6 +512,11 @@ public class NutDao implements Dao {
 	}
 
 	private <T> T _insertSelf(Entity<?> entity, T obj) {
+		// Before insert
+		if (null != entity.getBefores())
+			for (NextQuery nq : entity.getBefores())
+				nq.update(this, obj);
+
 		Sql sql = sqlMaker.insert(entity, obj);
 		// Evaluate fetchId SQL
 		Sql fetchIdSql = null;
@@ -526,6 +532,11 @@ public class NutDao implements Dao {
 			} catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
+
+		// After insert
+		if (null != entity.getAfters())
+			for (NextQuery nq : entity.getAfters())
+				nq.update(this, obj);
 		return obj;
 	}
 
@@ -582,6 +593,21 @@ public class NutDao implements Dao {
 					lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
 					lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
 					lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
+				}
+			});
+		}
+		return obj;
+	}
+
+	public <T> T insertRelation(final T obj, String regex) {
+		if (null != obj) {
+			final Entity<?> entity = getEntity(obj.getClass());
+			final Links lns = new Links(obj, entity, regex);
+			final Mirror<?> mirror = Mirror.me(obj.getClass());
+			final Dao dao = this;
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeManyManys(new InsertManyManyRelationInvoker(dao, obj, mirror));
 				}
 			});
 		}
