@@ -30,9 +30,9 @@ public class DefaultPagerMaker implements PagerMaker {
 		else if (meta.isDB2()) {
 			pager = new DB2Pager();
 		}
-		// Unknown
+		// Other
 		else {
-			pager = new UnknownPager();
+			pager = new OtherPager();
 		}
 		pager.setPageNumber(pageNumber);
 		pager.setPageSize(pageSize);

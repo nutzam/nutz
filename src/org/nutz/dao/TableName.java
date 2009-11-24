@@ -76,7 +76,7 @@ public class TableName {
 		if (null == obj)
 			return tableName.toString();
 		Segment seg = tableName.born();
-		if (obj instanceof CharSequence || obj instanceof Number || obj.getClass().isPrimitive()) {
+		if (isPrimitive(obj)) {
 			for (Iterator<String> it = seg.keys().iterator(); it.hasNext();) {
 				seg.set(it.next(), obj);
 			}
@@ -84,5 +84,9 @@ public class TableName {
 			Segments.fillByKeys(seg, obj);
 		}
 		return seg.toString();
+	}
+
+	public static boolean isPrimitive(Object obj) {
+		return obj instanceof CharSequence || obj instanceof Number || obj.getClass().isPrimitive();
 	}
 }

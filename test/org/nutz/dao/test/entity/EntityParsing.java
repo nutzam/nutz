@@ -10,7 +10,6 @@ import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
-import org.nutz.dao.test.normal.Killer;
 
 public class EntityParsing {
 
@@ -51,12 +50,6 @@ public class EntityParsing {
 		Entity<?> en = en(Platoon.class);
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
-	}
-
-	@Test
-	public void test_field_with_next_ann() {
-		Entity<?> en = en(Killer.class);
-		assertNotNull(en.getField("caseNumber").getNextIntQuerySql());
 	}
 
 	@Test

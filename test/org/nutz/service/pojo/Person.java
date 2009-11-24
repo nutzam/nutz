@@ -34,7 +34,7 @@ public class Person {
 	private String name;
 
 	@Column
-	@Default("${name}@gmail.com")
+	@Default(as = "${name}@gmail.com")
 	private Email email;
 
 	@Column("fid")

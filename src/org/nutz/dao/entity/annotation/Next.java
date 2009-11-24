@@ -16,12 +16,12 @@ import java.lang.annotation.Target;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * 
- * @see org.nutz.dao.entity.annotation.Q
+ * @see org.nutz.dao.entity.annotation.SQL
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD})
 public @interface Next {
 
-	Q[] value();
+	SQL[] value();
 
 }

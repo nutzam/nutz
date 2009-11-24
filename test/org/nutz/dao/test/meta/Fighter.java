@@ -1,5 +1,6 @@
 package org.nutz.dao.test.meta;
 
+import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.*;
 
 @Table("dao_fighter")
@@ -16,7 +17,9 @@ public class Fighter {
 	}
 
 	@Column
-	@Id({"psql","SELECT currval('dao_fighter_id_seq');"})
+	@Id
+	@Next({@SQL(db = DB.PSQL, value = "SELECT currval('dao_fighter_id_seq')"),
+			@SQL(db = DB.OTHER, value = "SELECT MAX(id) FROM dao_fighter")})
 	private int id;
 
 	@Column

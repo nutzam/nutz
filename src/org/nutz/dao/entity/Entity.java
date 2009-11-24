@@ -51,7 +51,7 @@ public class Entity<T> {
 	public void setPkFields(EntityField[] pkFields) {
 		if (null != pkFields && pkFields.length == 1) {
 			Mirror<?> mr = Mirror.me(pkFields[0].getField().getType());
-			if (null == idField && mr.isInteger()) {
+			if (null == idField && mr.isIntLike()) {
 				idField = pkFields[0];
 			} else if (null == nameField && mr.isStringLike()) {
 				nameField = pkFields[0];

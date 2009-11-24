@@ -68,8 +68,4 @@ public @interface Id {
 	 */
 	boolean auto() default true;
 
-	/**
-	 * How to get the new auto increasement value.
-	 */
-	String[] value() default {};
 }

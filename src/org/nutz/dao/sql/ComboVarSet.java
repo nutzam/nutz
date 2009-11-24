@@ -51,4 +51,11 @@ public class ComboVarSet implements VarSet {
 		return this;
 	}
 
+	public int size() {
+		int re = 0;
+		for (VarSet vs : vss)
+			re += vs.size();
+		return re;
+	}
+
 }

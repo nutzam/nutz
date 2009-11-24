@@ -70,7 +70,7 @@ public class CustomizedSqlsTest extends DaoCase {
 		Platoon p = pojos.create4Platoon(Base.make("xyz"), "GG");
 		Sql sql = dao.sqls().create("tank.query").setEntity(dao.getEntity(Tank.class));
 		sql.vars().set("id", p.getId());
-		sql.setCallback(Sqls.callback.queryEntity());
+		sql.setCallback(Sqls.callback.entities());
 		dao.execute(sql);
 		assertEquals(2, sql.getList(Tank.class).size());
 

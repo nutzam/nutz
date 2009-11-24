@@ -42,7 +42,7 @@ public class SupportedFieldType extends DaoCase {
 		public String name;
 
 		@Column
-		@Default("${name}@gmail.com")
+		@Default(as = "${name}@gmail.com")
 		public Email email;
 
 		@Column

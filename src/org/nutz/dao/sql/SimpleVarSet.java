@@ -30,4 +30,8 @@ class SimpleVarSet implements VarSet {
 		return this;
 	}
 
+	public int size() {
+		return map.size();
+	}
+
 }

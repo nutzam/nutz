@@ -8,13 +8,13 @@ package org.nutz.dao;
 public class DatabaseMeta {
 
 	public DatabaseMeta() {
-		type = DatabaseType.UNKNOWN;
+		type = DB.OTHER;
 	}
 
 	/**
 	 * 现在所支持的数据库类型
 	 */
-	private DatabaseType type;
+	private DB type;
 
 	/**
 	 * 产品版本号
@@ -38,17 +38,17 @@ public class DatabaseMeta {
 		this.productName = productName;
 		String proName = productName.toLowerCase();
 		if (proName.startsWith("postgresql")) {
-			this.type = DatabaseType.PSQL;
+			this.type = DB.PSQL;
 		} else if (proName.startsWith("mysql")) {
-			this.type = DatabaseType.MYSQL;
+			this.type = DB.MYSQL;
 		} else if (proName.startsWith("oracle")) {
-			this.type = DatabaseType.ORACLE;
+			this.type = DB.ORACLE;
 		} else if (proName.startsWith("db2")) {
-			this.type = DatabaseType.DB2;
+			this.type = DB.DB2;
 		} else if (proName.startsWith("microsoft sql")) {
-			this.type = DatabaseType.SQLSERVER;
+			this.type = DB.SQLSERVER;
 		} else {
-			this.type = DatabaseType.UNKNOWN;
+			this.type = DB.OTHER;
 		}
 	}
 
@@ -61,59 +61,63 @@ public class DatabaseMeta {
 	}
 
 	public void setAsMysql() {
-		this.type = DatabaseType.MYSQL;
+		this.type = DB.MYSQL;
 	}
 
 	public void setAsPsql() {
-		this.type = DatabaseType.PSQL;
+		this.type = DB.PSQL;
 	}
 
 	public void setAsOracle() {
-		this.type = DatabaseType.ORACLE;
+		this.type = DB.ORACLE;
 	}
 
 	public void setAsSqlServer() {
-		this.type = DatabaseType.SQLSERVER;
+		this.type = DB.SQLSERVER;
 	}
 
 	public void setAsDB2() {
-		this.type = DatabaseType.DB2;
+		this.type = DB.DB2;
 	}
 
-	public void setUnknown() {
-		this.type = DatabaseType.UNKNOWN;
+	public void setAsOther() {
+		this.type = DB.OTHER;
 	}
 
 	public boolean is(String typeName) {
 		return type.name().equalsIgnoreCase(typeName);
 	}
 
+	public DB getType() {
+		return type;
+	}
+
 	public String getTypeName() {
 		return type.name();
 	}
 
-	public boolean isUnknown() {
-		return DatabaseType.UNKNOWN == type;
+	public boolean isOther() {
+		return DB.OTHER == type;
 	}
 
 	public boolean isMySql() {
-		return DatabaseType.MYSQL == type;
+		return DB.MYSQL == type;
 	}
 
 	public boolean isPostgresql() {
-		return DatabaseType.PSQL == type;
+		return DB.PSQL == type;
 	}
 
 	public boolean isSqlServer() {
-		return DatabaseType.SQLSERVER == type;
+		return DB.SQLSERVER == type;
 	}
 
 	public boolean isOracle() {
-		return DatabaseType.ORACLE == type;
+		return DB.ORACLE == type;
 	}
 
 	public boolean isDB2() {
-		return DatabaseType.DB2 == type;
+		return DB.DB2 == type;
 	}
 
 }

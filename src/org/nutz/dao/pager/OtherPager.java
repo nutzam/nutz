@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 
 import org.nutz.dao.entity.Entity;
 
-public class UnknownPager extends AbstractPager {
+public class OtherPager extends AbstractPager {
 
 	@Override
 	public int getResultSetType() {

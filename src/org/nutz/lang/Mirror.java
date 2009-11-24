@@ -20,6 +20,9 @@ import java.util.Map;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.inject.InjectByField;
+import org.nutz.lang.inject.InjectBySetter;
 
 /**
  * 包裹了 Class<?>， 提供了更多的反射方法
@@ -618,6 +621,24 @@ public class Mirror<T> {
 		return new Invoking(klass, methodName, args);
 	}
 
+	public Injecting getInjecting(String fieldName) {
+		Method[] sss = this.findSetters(fieldName);
+		if (sss.length == 1)
+			return new InjectBySetter(sss[0]);
+		else
+			try {
+				Field field = this.getField(fieldName);
+				try {
+					Method setter = this.getSetter(field);
+					return new InjectBySetter(setter);
+				} catch (NoSuchMethodException e) {
+					return new InjectByField(field);
+				}
+			} catch (NoSuchFieldException e) {
+				throw Lang.wrapThrow(e);
+			}
+	}
+
 	public Object invoke(Object obj, String methodName, Object... args) {
 		return getInvoking(methodName, args).invoke(obj);
 	}
@@ -814,7 +835,7 @@ public class Mirror<T> {
 		return is(int.class) || is(Integer.class);
 	}
 
-	public boolean isInteger() {
+	public boolean isIntLike() {
 		return isInt() || isLong() || isShort() || isByte();
 	}
 

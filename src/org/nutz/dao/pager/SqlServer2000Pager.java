@@ -7,4 +7,4 @@ package org.nutz.dao.pager;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class SqlServer2000Pager extends UnknownPager {}
+public class SqlServer2000Pager extends OtherPager {}

@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import org.nutz.castor.Castors;
 import org.nutz.dao.entity.next.NextQuery;
 import org.nutz.dao.sql.FieldAdapter;
-import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
@@ -24,7 +23,6 @@ public class EntityField {
 	private FieldValueType fieldType;
 	private Method getter;
 	private Method setter;
-	private IntQuery serialQuery;
 	private NextQuery beforeInsert;
 	private NextQuery afterInsert;
 	private FieldAdapter fieldAdapter;
@@ -45,6 +43,10 @@ public class EntityField {
 			setter = entity.mirror.getSetter(field);
 			setter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
+	}
+
+	public Entity<?> getEntity() {
+		return entity;
 	}
 
 	public void setType(FieldType type) {
@@ -73,10 +75,6 @@ public class EntityField {
 
 	public void setFieldType(FieldValueType fieldType) {
 		this.fieldType = fieldType;
-	}
-
-	public void setSerialQuery(IntQuery nextId) {
-		this.serialQuery = nextId;
 	}
 
 	public void setFieldAdapter(FieldAdapter adapter) {
@@ -201,10 +199,6 @@ public class EntityField {
 
 	public FieldAdapter getFieldAdapter() {
 		return fieldAdapter;
-	}
-
-	public Sql getSerialQuerySql() {
-		return serialQuery.sql();
 	}
 
 	public boolean isInt() {

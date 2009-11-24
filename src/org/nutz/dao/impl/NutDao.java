@@ -517,26 +517,16 @@ public class NutDao implements Dao {
 			for (NextQuery nq : entity.getBefores())
 				nq.update(this, obj);
 
+		// Execute insert SQL
 		Sql sql = sqlMaker.insert(entity, obj);
-		// Evaluate fetchId SQL
-		Sql fetchIdSql = null;
-		if (null != entity.getIdField() && entity.getIdField().isSerial())
-			fetchIdSql = entity.getIdField().getSerialQuerySql();
-
-		// Execute SQL
-		execute(sql, fetchIdSql);
-		// Update Id field if need
-		if (null != fetchIdSql)
-			try {
-				entity.getIdField().setValue(obj, fetchIdSql.getResult());
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e);
-			}
+		execute(sql);
 
 		// After insert
 		if (null != entity.getAfters())
 			for (NextQuery nq : entity.getAfters())
 				nq.update(this, obj);
+		
+		// Return object
 		return obj;
 	}
 

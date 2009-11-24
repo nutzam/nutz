@@ -18,6 +18,7 @@ import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.ValueAdapter;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Default;
+import org.nutz.dao.entity.annotation.Next;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.ValueType;
 import org.nutz.dao.entity.annotation.Id;
@@ -31,7 +32,6 @@ import org.nutz.dao.entity.annotation.View;
 import org.nutz.dao.entity.born.Borns;
 import org.nutz.dao.entity.next.NextQuery;
 import org.nutz.dao.entity.next.Nexts;
-import org.nutz.dao.entity.query.IntQuerys;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -151,28 +151,36 @@ public class DefaultEntityMaker implements EntityMaker {
 
 		// @Default
 		Default dft = field.getAnnotation(Default.class);
-		if (null != dft)
-			ef.setDefaultValue(new CharSegment(dft.value()));
+		if (null != dft) {
+			if (dft.value().length > 0)
+				ef.setBeforeInsert(Nexts.eval(db, dft.value(), field));
+			else if (!Strings.isBlank(dft.as()))
+				ef.setDefaultValue(new CharSegment(dft.as()));
+		}
 
 		// @Next
-		Nexts.eval(db, ef);
+		Next next = field.getAnnotation(Next.class);
+		if (null != next) {
+			ef.setAfterInsert(Nexts.eval(db, next.value(), field));
+		}
 
 		// @Id
 		Id id = field.getAnnotation(Id.class);
 		if (null != id) {
 			// Check
-			if (!fieldType.isInteger())
+			if (!fieldType.isIntLike())
 				throw error(entity, "@Id field [%s] must be a Integer!", field.getName());
-			if (id.auto())
+			if (id.auto()) {
 				ef.setType(FieldType.SERIAL);
-			else
+				// 如果是自增字段，并且没有声明 '@Next' ，为其增加 SELECT MAX(id) ...
+				if (null == field.getAnnotation(Next.class)) {
+					String sql = String.format("SELECT MAX(%s) FROM %s", ef.getColumnName(), entity
+							.getViewName());
+					ef.setAfterInsert(Nexts.create(sql, field));
+				}
+			} else {
 				ef.setType(FieldType.ID);
-			/*
-			 * How to query next ID Just prepare the IntQuery object here,
-			 * invoke it or not, upload the client programe
-			 */
-			ef.setSerialQuery(IntQuerys.serial(db, entity.getViewNameObject(), id.value(), ef
-					.getColumnName()));
+			}
 		}
 
 		// @Name

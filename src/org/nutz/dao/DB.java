@@ -5,8 +5,8 @@ package org.nutz.dao;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public enum DatabaseType {
+public enum DB {
 
-	DB2, PSQL, ORACLE, SQLSERVER, MYSQL, UNKNOWN
+	DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
 
 }
