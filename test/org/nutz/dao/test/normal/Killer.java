@@ -26,11 +26,11 @@ public class Killer {
 	private String name;
 
 	@Column("killed")
-	@Default(@SQL("SELECT COUNT(*) FROM t_killer_re WHERE killer=@name"))
+	@Prev(@SQL("SELECT COUNT(*) FROM t_killer_re WHERE killer=@name"))
 	private int killedCount;
 
 	@Column("last")
-	@Default(@SQL("SELECT name FROM t_resident WHERE id IN (SELECT rid FROM t_killer_re WHERE killer=@name) ORDER BY name DESC"))
+	@Prev(@SQL("SELECT name FROM t_resident WHERE id IN (SELECT rid FROM t_killer_re WHERE killer=@name) ORDER BY name DESC"))
 	private String lastKillName;
 
 	@ManyMany(target = Resident.class, relation = "t_killer_re", from = "killer", to = "rid")
