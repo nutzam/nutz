@@ -10,14 +10,14 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-class NextQueryImpl implements NextQuery {
+class FieldQueryImpl implements FieldQuery {
 
 	private String[] vars;
 	private Field[] params;
 	private Sql sql;
 	private EntityField ef;
 
-	protected NextQueryImpl(Sql sql, EntityField ef) {
+	protected FieldQueryImpl(Sql sql, EntityField ef) {
 		this.ef = ef;
 		Mirror<?> mirror = ef.getEntity().getMirror();
 		// Dynamic Variables

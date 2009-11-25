@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 
 import org.nutz.castor.Castors;
-import org.nutz.dao.entity.next.NextQuery;
+import org.nutz.dao.entity.next.FieldQuery;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -24,8 +24,8 @@ public class EntityField {
 	private String _defv;
 	private Method getter;
 	private Method setter;
-	private NextQuery beforeInsert;
-	private NextQuery afterInsert;
+	private FieldQuery beforeInsert;
+	private FieldQuery afterInsert;
 	private FieldAdapter fieldAdapter;
 	private ValueAdapter valueAdapter;
 
@@ -215,19 +215,19 @@ public class EntityField {
 		return field.getName();
 	}
 
-	public NextQuery getBeforeInsert() {
+	public FieldQuery getBeforeInsert() {
 		return beforeInsert;
 	}
 
-	public void setBeforeInsert(NextQuery beforeInsert) {
+	public void setBeforeInsert(FieldQuery beforeInsert) {
 		this.beforeInsert = beforeInsert;
 	}
 
-	public NextQuery getAfterInsert() {
+	public FieldQuery getAfterInsert() {
 		return afterInsert;
 	}
 
-	public void setAfterInsert(NextQuery afterInsert) {
+	public void setAfterInsert(FieldQuery afterInsert) {
 		this.afterInsert = afterInsert;
 	}
 

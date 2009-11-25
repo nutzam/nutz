@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.entity.next.NextQuery;
+import org.nutz.dao.entity.next.FieldQuery;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -41,8 +41,8 @@ public class Entity<T> {
 	private EntityField nameField;
 	private EntityField[] pkFields;
 	private Borning borning;
-	private NextQuery[] befores;
-	private NextQuery[] afters;
+	private FieldQuery[] befores;
+	private FieldQuery[] afters;
 
 	public EntityField[] getPkFields() {
 		return pkFields;
@@ -186,19 +186,19 @@ public class Entity<T> {
 		return Castors.me().castToString(nameField.getValue(obj));
 	}
 
-	public NextQuery[] getBefores() {
+	public FieldQuery[] getBefores() {
 		return befores;
 	}
 
-	public void setBefores(NextQuery[] befores) {
+	public void setBefores(FieldQuery[] befores) {
 		this.befores = befores;
 	}
 
-	public NextQuery[] getAfters() {
+	public FieldQuery[] getAfters() {
 		return afters;
 	}
 
-	public void setAfters(NextQuery[] afters) {
+	public void setAfters(FieldQuery[] afters) {
 		this.afters = afters;
 	}
 

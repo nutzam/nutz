@@ -15,7 +15,7 @@ import org.nutz.lang.Mirror;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public abstract class Nexts {
+public abstract class FieldQuerys {
 
 	/**
 	 * 根据 '@SQL' 注解，实体字段以及数据库类型，为一个字段创建插入前后的二次查询。
@@ -28,7 +28,7 @@ public abstract class Nexts {
 	 *            实体字段
 	 * @return 二次查询对象
 	 */
-	public static NextQuery eval(DatabaseMeta meta, SQL[] sqls, EntityField ef) {
+	public static FieldQuery eval(DatabaseMeta meta, SQL[] sqls, EntityField ef) {
 		if (null != sqls) {
 			SQL query = null;
 			for (SQL q : sqls) {
@@ -54,7 +54,7 @@ public abstract class Nexts {
 	 *            实体字段
 	 * @return 二次查询对象
 	 */
-	public static NextQuery create(String sql, EntityField ef) {
+	public static FieldQuery create(String sql, EntityField ef) {
 		Sql oSql = Sqls.create(sql);
 		Mirror<?> mirror = ef.getEntity().getMirror();
 		if (mirror.isIntLike()) {
@@ -62,7 +62,7 @@ public abstract class Nexts {
 		} else {
 			oSql.setCallback(Sqls.callback.str());
 		}
-		return new NextQueryImpl(oSql, ef);
+		return new FieldQueryImpl(oSql, ef);
 	}
 
 }

@@ -33,7 +33,7 @@ import org.nutz.dao.entity.EntityHolder;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
-import org.nutz.dao.entity.next.NextQuery;
+import org.nutz.dao.entity.next.FieldQuery;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -545,7 +545,7 @@ public class NutDao implements Dao {
 	private void _insertSelf(Entity<?> entity, Object obj) {
 		// Before insert
 		if (null != entity.getBefores())
-			for (NextQuery nq : entity.getBefores())
+			for (FieldQuery nq : entity.getBefores())
 				nq.update(this, obj);
 
 		// Execute insert SQL
@@ -554,7 +554,7 @@ public class NutDao implements Dao {
 
 		// After insert
 		if (null != entity.getAfters())
-			for (NextQuery nq : entity.getAfters())
+			for (FieldQuery nq : entity.getAfters())
 				nq.update(this, obj);
 	}
 

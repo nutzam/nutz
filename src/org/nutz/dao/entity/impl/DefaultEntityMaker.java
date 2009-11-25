@@ -32,12 +32,13 @@ import org.nutz.dao.entity.annotation.Many;
 import org.nutz.dao.entity.annotation.ManyMany;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.One;
+import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.entity.annotation.View;
 import org.nutz.dao.entity.born.Borns;
-import org.nutz.dao.entity.next.NextQuery;
-import org.nutz.dao.entity.next.Nexts;
+import org.nutz.dao.entity.next.FieldQuery;
+import org.nutz.dao.entity.next.FieldQuerys;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -84,8 +85,8 @@ public class DefaultEntityMaker implements EntityMaker {
 		Statement stat = null;
 		ResultSet rs = null;
 		ResultSetMetaData rsmd = null;
-		List<NextQuery> befores;
-		List<NextQuery> afters;
+		List<FieldQuery> befores;
+		List<FieldQuery> afters;
 		try {
 			try {
 				stat = conn.createStatement();
@@ -96,8 +97,8 @@ public class DefaultEntityMaker implements EntityMaker {
 					log.warn("Table '" + entity.getViewName() + "' didn't existed");
 			}
 
-			befores = new ArrayList<NextQuery>(5);
-			afters = new ArrayList<NextQuery>(5);
+			befores = new ArrayList<FieldQuery>(5);
+			afters = new ArrayList<FieldQuery>(5);
 			// For each fields ...
 			for (Field f : mirror.getFields()) {
 				// When the field declared @Many, @One, @ManyMany
@@ -153,8 +154,8 @@ public class DefaultEntityMaker implements EntityMaker {
 		}
 
 		// Eval beforeInsert fields and afterInsert fields
-		entity.setBefores(befores.toArray(new NextQuery[befores.size()]));
-		entity.setAfters(afters.toArray(new NextQuery[afters.size()]));
+		entity.setBefores(befores.toArray(new FieldQuery[befores.size()]));
+		entity.setAfters(afters.toArray(new FieldQuery[afters.size()]));
 
 		return entity;
 	}
@@ -199,16 +200,19 @@ public class DefaultEntityMaker implements EntityMaker {
 		// @Default
 		Default dft = field.getAnnotation(Default.class);
 		if (null != dft) {
-			if (dft.value().length > 0)
-				ef.setBeforeInsert(Nexts.eval(db, dft.value(), ef));
-			else if (!Strings.isBlank(dft.as()))
-				ef.setDefaultValue(new CharSegment(dft.as()));
+			ef.setDefaultValue(new CharSegment(dft.value()));
+		}
+
+		// @Prev
+		Prev prev = field.getAnnotation(Prev.class);
+		if (null != prev) {
+			ef.setBeforeInsert(FieldQuerys.eval(db, prev.value(), ef));
 		}
 
 		// @Next
 		Next next = field.getAnnotation(Next.class);
 		if (null != next) {
-			ef.setAfterInsert(Nexts.eval(db, next.value(), ef));
+			ef.setAfterInsert(FieldQuerys.eval(db, next.value(), ef));
 		}
 
 		// @Id
@@ -221,7 +225,7 @@ public class DefaultEntityMaker implements EntityMaker {
 				ef.setType(FieldType.SERIAL);
 				// 如果是自增字段，并且没有声明 '@Next' ，为其增加 SELECT MAX(id) ...
 				if (null == field.getAnnotation(Next.class)) {
-					ef.setAfterInsert(Nexts.create("SELECT MAX($field) FROM $view", ef));
+					ef.setAfterInsert(FieldQuerys.create("SELECT MAX($field) FROM $view", ef));
 				}
 			} else {
 				ef.setType(FieldType.ID);
