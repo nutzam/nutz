@@ -125,6 +125,14 @@ public class SqlImpl implements Sql {
 		return sql.getVars();
 	}
 
+	public VarIndex paramIndex() {
+		return sql.getParamIndexes();
+	}
+
+	public VarIndex varIndex() {
+		return sql.getVarIndexes();
+	}
+
 	public SqlContext getContext() {
 		return context;
 	}

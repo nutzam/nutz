@@ -1,7 +1,7 @@
 package org.nutz.dao;
 
 /**
- * 描述了一个数据源的元数据
+ * 数据库的元数据
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -50,6 +50,15 @@ public class DatabaseMeta {
 		} else {
 			this.type = DB.OTHER;
 		}
+	}
+
+	public String getResultSetMetaSql(String tableName) {
+		if (this.isMySql() || this.isPostgresql()) {
+			return "SELECT * FROM " + tableName + " LIMIT 1";
+		} else if (this.isSqlServer()) {
+			return "SELECT TOP 1 * FROM " + tableName;
+		}
+		return "SELECT * FROM " + tableName;
 	}
 
 	public String getVersion() {

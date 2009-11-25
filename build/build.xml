@@ -17,7 +17,7 @@
 
 	<property name="JDK_VERSION" value="1.6" />
 
-	<property name="v" value="-1.a.20" />
+	<property name="v" value="-1.a.21" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
 	<property name="zjson" value="org/nutz/json/**" />
 	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />

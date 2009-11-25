@@ -1,10 +1,9 @@
 package org.nutz.dao.entity.next;
 
-import java.lang.reflect.Field;
-
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.DB;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.annotation.SQL;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Mirror;
@@ -25,11 +24,11 @@ public abstract class Nexts {
 	 *            数据库元数据
 	 * @param sqls
 	 *            SQL 语句
-	 * @param field
+	 * @param ef
 	 *            实体字段
 	 * @return 二次查询对象
 	 */
-	public static NextQuery eval(DatabaseMeta meta, SQL[] sqls, Field field) {
+	public static NextQuery eval(DatabaseMeta meta, SQL[] sqls, EntityField ef) {
 		if (null != sqls) {
 			SQL query = null;
 			for (SQL q : sqls) {
@@ -41,7 +40,7 @@ public abstract class Nexts {
 					query = q;
 			}
 			if (null != query)
-				return create(query.value(), field);
+				return create(query.value(), ef);
 		}
 		return null;
 	}
@@ -51,19 +50,19 @@ public abstract class Nexts {
 	 * 
 	 * @param sqls
 	 *            SQL 语句
-	 * @param field
+	 * @param ef
 	 *            实体字段
 	 * @return 二次查询对象
 	 */
-	public static NextQuery create(String sql, Field field) {
+	public static NextQuery create(String sql, EntityField ef) {
 		Sql oSql = Sqls.create(sql);
-		Mirror<?> mirror = Mirror.me(field.getDeclaringClass());
+		Mirror<?> mirror = ef.getEntity().getMirror();
 		if (mirror.isIntLike()) {
 			oSql.setCallback(Sqls.callback.integer());
 		} else {
 			oSql.setCallback(Sqls.callback.str());
 		}
-		return new NextQueryImpl(oSql, field);
+		return new NextQueryImpl(oSql, ef);
 	}
 
 }

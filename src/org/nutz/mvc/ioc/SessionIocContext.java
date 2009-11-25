@@ -1,6 +1,8 @@
 package org.nutz.mvc.ioc;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,18 +19,24 @@ public class SessionIocContext implements IocContext {
 	}
 
 	public void clear() {
-		Enumeration<?> ems = session.getAttributeNames();
-		while (ems.hasMoreElements()) {
-			Object key = ems.nextElement();
-			if (null == key)
-				continue;
-			Object value = session.getAttribute((String) key);
-			if (null != value)
-				if (value instanceof ObjectProxy)
-					((ObjectProxy) value).depose();
-			session.removeAttribute((String) key);
-		}
-
+		synchronized (session) {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> ems = session.getAttributeNames();
+            List<String> keys = new ArrayList<String>();
+            while (ems.hasMoreElements()) {
+                String key = ems.nextElement();
+                if (null == key)
+                    continue;
+                Object value = session.getAttribute(key);
+                if (value instanceof ObjectProxy) {
+                    keys.add(key);
+                    ((ObjectProxy) value).depose();
+                }
+            }
+            for (String key : keys) {
+            	session.removeAttribute(key);
+            }
+        }
 	}
 
 	public void depose() {

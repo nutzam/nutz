@@ -30,7 +30,7 @@ public abstract class ValueAdapter {
 	private static ValueAdapter AS_SQLDATE = new AsSqlDate();
 	private static ValueAdapter AS_SQLTIME = new AsSqlTime();
 
-	public static ValueAdapter create(Mirror<?> mirror, FieldValueType type) {
+	public static ValueAdapter create(Mirror<?> mirror, boolean isEnumInt) {
 		// String and char
 		if (mirror.isStringLike())
 			return AS_STRING;
@@ -45,10 +45,8 @@ public abstract class ValueAdapter {
 			return AS_LONG;
 		// Enum
 		if (mirror.isEnum()) {
-			if (null != type) {
-				if (type == FieldValueType.INT)
-					return AS_INTEGER;
-			}
+			if (isEnumInt)
+				return AS_INTEGER;
 			return AS_STRING;
 		}
 		// Char

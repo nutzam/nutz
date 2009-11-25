@@ -4,17 +4,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
-import org.nutz.dao.entity.impl.DefaultEntityMaker;
+import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
 
-public class EntityParsing {
+public class EntityParsing extends DaoCase {
 
-	private static Entity<?> en(Class<?> type) {
-		return new DefaultEntityMaker().make(new DatabaseMeta(), type);
+	private Entity<?> en(Class<?> type) {
+		return dao.getEntity(type);
 	}
 
 	@Test
@@ -73,7 +72,7 @@ public class EntityParsing {
 		assertEquals("to1", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
-		
+
 		assertTrue(en.getField("id").isPk());
 		assertFalse(en.getField("name").isPk());
 	}
@@ -85,7 +84,7 @@ public class EntityParsing {
 		assertEquals("to2", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
-		
+
 		assertFalse(en.getField("id").isPk());
 		assertTrue(en.getField("name").isPk());
 	}
@@ -99,7 +98,7 @@ public class EntityParsing {
 		assertEquals("id", en.getPkFields()[1].getName());
 		assertNull(en.getIdField());
 		assertNull(en.getNameField());
-		
+
 		assertTrue(en.getField("masterId").isPk());
 		assertTrue(en.getField("id").isPk());
 	}

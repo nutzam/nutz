@@ -1,7 +1,11 @@
 package org.nutz.dao;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 
 import javax.sql.DataSource;
 
@@ -19,7 +23,8 @@ public class Daos {
 	/**
 	 * 获取连接
 	 * 
-	 * @param dataSource 数据源
+	 * @param dataSource
+	 *            数据源
 	 * @return 连接持有者
 	 */
 	public static ConnectionHolder getConnection(DataSource dataSource) {
@@ -39,7 +44,8 @@ public class Daos {
 	/**
 	 * 释放连接
 	 * 
-	 * @param ch 连接持有者
+	 * @param ch
+	 *            连接持有者
 	 */
 	public static void releaseConnection(ConnectionHolder ch) {
 		try {
@@ -47,5 +53,49 @@ public class Daos {
 		} catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}
+	}
+
+	public static int getColumnIndex(ResultSetMetaData meta, String colName) throws SQLException {
+		int ci = 0;
+		if (null != meta) {
+			for (int i = 1; i <= meta.getColumnCount(); i++)
+				if (meta.getColumnName(i).equalsIgnoreCase(colName)) {
+					ci = i;
+					break;
+				}
+			if (ci == 0)
+				throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+		}
+		return ci;
+	}
+
+	public static boolean isIntLikeColumn(ResultSetMetaData meta, String colName)
+			throws SQLException {
+		return isIntLikeColumn(meta, getColumnIndex(meta, colName));
+	}
+
+	public static boolean isIntLikeColumn(ResultSetMetaData meta, int index) throws SQLException {
+		boolean isIntLike = false;
+		int colType = meta.getColumnType(index);
+		switch (colType) {
+		case Types.BIGINT:
+		case Types.INTEGER:
+		case Types.SMALLINT:
+		case Types.TINYINT:
+			isIntLike = true;
+		}
+		return isIntLike;
+	}
+
+	public static void safeClose(Statement stat, ResultSet rs) {
+		if (null != rs)
+			try {
+				rs.close();
+			} catch (Throwable e) {}
+	
+		if (null != stat)
+			try {
+				stat.close();
+			} catch (Throwable e) {}
 	}
 }

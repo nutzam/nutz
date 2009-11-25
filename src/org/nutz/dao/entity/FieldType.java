@@ -2,6 +2,6 @@ package org.nutz.dao.entity;
 
 public enum FieldType {
 
-	ID, SERIAL, NAME, CASESENSITIVE_NAME, PK
+	ID, SERIAL, NAME, CASESENSITIVE_NAME, PK, ENUM_INT
 
 }

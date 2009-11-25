@@ -4,18 +4,17 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
-import org.nutz.dao.entity.impl.DefaultEntityMaker;
+import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Tank;
 
-public class DynamicEntityParsing {
+public class DynamicEntityParsing extends DaoCase {
 
 	@Test
 	public void tank_many_many_link_test() {
-		Entity<?> en = new DefaultEntityMaker().make(new DatabaseMeta(),Tank.class);
+		Entity<?> en = dao.getEntity(Tank.class);
 
 		Link link = en.getLinks("members").get(0);
 		TableName.set(1);

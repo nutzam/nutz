@@ -10,29 +10,6 @@ import org.nutz.lang.segment.CharSegment;
 
 public class Link {
 
-	public static Link eval(Mirror<?> mirror, Field field) {
-		try {
-			One one = field.getAnnotation(One.class);
-			if (null != one) { // One > refer own field
-				return new Link(mirror, field, one);
-			} else { // Many > refer target field
-				Many many = field.getAnnotation(Many.class);
-				if (null != many) {
-					return new Link(mirror, field, many);
-				} else {
-					ManyMany mm = field.getAnnotation(ManyMany.class);
-					if (null != mm) {
-						return new Link(mirror, field, mm);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to eval linked field '%s' of class[%s] for the reason '%s'",
-					field.getName(), mirror.getType().getName(), e.getMessage());
-		}
-		return null;
-	}
-
 	public Link(Mirror<?> mirror, Field field, One one) throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.One;
@@ -60,7 +37,7 @@ public class Link {
 		}
 	}
 
-	public Link(Mirror<?> mirror, Field field, ManyMany mm) {
+	public Link(Mirror<?> mirror, Field field, ManyMany mm, boolean fromName, boolean toName) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
 		this.mapKeyField = "".equals(mm.key()) ? null : mm.key();
@@ -68,8 +45,8 @@ public class Link {
 		this.from = mm.from();
 		this.to = mm.to();
 		this.relation = Relation.make(mm.relation());
-		this.referField = lookupKeyField(mirror);
-		this.targetField = lookupKeyField(Mirror.me(targetClass));
+		this.referField = lookupKeyField(mirror, fromName);
+		this.targetField = lookupKeyField(Mirror.me(targetClass), toName);
 		if (null == this.referField || null == this.targetField) {
 			throw Lang.makeThrow("Fail to make ManyMany link for [%s].[%s], target: [%s]."
 					+ "\n referField: [%s]" + "\n targetField: [%s]", mirror.getType().getName(),
@@ -78,16 +55,17 @@ public class Link {
 
 	}
 
-	private static Field lookupKeyField(Mirror<?> mirror) {
-		Field re = null;
+	private static Field lookupKeyField(Mirror<?> mirror, boolean forName) {
+		if (forName)
+			for (Field f : mirror.getFields()) {
+				if (null != f.getAnnotation(Name.class))
+					return f;
+			}
 		for (Field f : mirror.getFields()) {
 			if (null != f.getAnnotation(Id.class))
 				return f;
-			if (null != f.getAnnotation(Name.class)) {
-				re = f;
-			}
 		}
-		return re;
+		return null;
 	}
 
 	// private void evalMore(String dynamicBy) {
@@ -149,8 +127,6 @@ public class Link {
 	public static class Relation {
 
 		static Object make(String s) {
-			if (null == s)
-				throw Lang.makeThrow("In @ManyMany, relation is required!");
 			CharSegment cs = new CharSegment(s);
 			if (cs.keys().size() == 0)
 				return s;

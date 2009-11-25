@@ -17,8 +17,8 @@ class UpdateInvokder extends LinkInvoker {
 
 	void invoke(Link link, Object objSet) {
 		Lang.each(objSet, new Each<Object>() {
-			public void invoke(int i, Object obj, int length) throws ExitLoop, LoopException {
-				dao.update(obj);
+			public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+				dao.update(ele);
 			}
 		});
 	}

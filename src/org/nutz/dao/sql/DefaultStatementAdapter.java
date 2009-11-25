@@ -27,7 +27,7 @@ public class DefaultStatementAdapter implements StatementAdapter {
 			if (null == is || is.length == 0)
 				continue;
 			FieldAdapter fss = FieldAdapter.create(null == obj ? null : Mirror.me(obj.getClass()),
-					null);
+					false);
 			fss.set(stat, obj, is);
 		}
 	}

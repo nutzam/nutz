@@ -80,8 +80,8 @@ public abstract class Iocs {
 				v = map.get("args");
 				if (null != v) {
 					Lang.each(v, new Each<Object>() {
-						public void invoke(int i, Object obj, int length) {
-							iobj.addArg(object2value(obj));
+						public void invoke(int i, Object ele, int length) {
+							iobj.addArg(object2value(ele));
 						}
 					});
 				}

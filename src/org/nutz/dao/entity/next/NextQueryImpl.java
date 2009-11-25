@@ -1,38 +1,39 @@
 package org.nutz.dao.entity.next;
 
 import java.lang.reflect.Field;
+import java.util.Set;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
+import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.inject.Injecting;
 
 class NextQueryImpl implements NextQuery {
 
-	private Injecting inj;
 	private String[] vars;
 	private Field[] params;
 	private Sql sql;
+	private EntityField ef;
 
-	protected NextQueryImpl(Sql sql, Field field) {
-		Mirror<?> mirror = Mirror.me(field.getDeclaringClass());
-		// Injecting
-		this.inj = mirror.getInjecting(field.getName());
-
+	protected NextQueryImpl(Sql sql, EntityField ef) {
+		this.ef = ef;
+		Mirror<?> mirror = ef.getEntity().getMirror();
 		// Dynamic Variables
-		vars = sql.vars().keys().toArray(new String[sql.vars().size()]);
+		Set<String> set = sql.varIndex().names();
+		vars = set.toArray(new String[set.size()]);
 
 		// Params
-		params = new Field[sql.params().size()];
+		set = sql.paramIndex().names();
+		params = new Field[set.size()];
 		int i = 0;
-		for (String nm : sql.params().keys()) {
+		for (String nm : set) {
 			try {
 				params[i] = mirror.getField(nm);
 			} catch (NoSuchFieldException e) {
 				throw Lang.makeThrow("'@%s' didn't exists, please check @Next on '%s'.'%s'", nm,
-						mirror.getType().getName(), field.getName());
+						mirror.getType().getName(), ef.getName());
 			}
 		}
 
@@ -48,16 +49,25 @@ class NextQueryImpl implements NextQuery {
 
 		// Set Dynamic Variables
 		if (vars.length > 0) {
+			sql.vars().set("view", ef.getEntity().getViewName());
+			sql.vars().set("field", ef.getName());
 			Object refer = TableName.get();
 			if (null != refer) {
 				if (TableName.isPrimitive(refer))
 					for (String var : vars)
-						sql.vars().set(var, refer);
+						if (var.equals("view") || var.equals("field"))
+							continue;
+						else
+							sql.vars().set(var, refer);
 				else {
 					Mirror<?> me = Mirror.me(refer.getClass());
 					for (String var : vars) {
-						Object v = me.getValue(refer, var);
-						sql.vars().set(var, v);
+						if (var.equals("view") || var.equals("field"))
+							continue;
+						else {
+							Object v = me.getValue(refer, var);
+							sql.vars().set(var, v);
+						}
 					}
 				}
 			}
@@ -75,6 +85,6 @@ class NextQueryImpl implements NextQuery {
 		dao.execute(sql);
 
 		// Inject
-		inj.inject(obj, sql.getResult());
+		ef.setValue(obj, sql.getResult());
 	}
 }

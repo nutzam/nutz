@@ -117,8 +117,9 @@ public class Entity<T> {
 		return mirror;
 	}
 
-	public void setMirror(Mirror<? extends T> mirror) {
-		this.mirror = mirror;
+	@SuppressWarnings("unchecked")
+	public void setMirror(Mirror<?> mirror) {
+		this.mirror = (Mirror<? extends T>) mirror;
 	}
 
 	public void setTableName(EntityName tableName) {

@@ -7,9 +7,9 @@ import java.util.Set;
 
 import org.nutz.lang.util.LinkedIntArray;
 
-class VarIndexes {
+class VarIndexImpl implements VarIndex {
 
-	VarIndexes() {
+	VarIndexImpl() {
 		map = new HashMap<String, LinkedIntArray>();
 	}
 
@@ -31,7 +31,7 @@ class VarIndexes {
 		return lia.toArray();
 	}
 
-	Set<String> names() {
+	public Set<String> names() {
 		return map.keySet();
 	}
 
@@ -39,4 +39,7 @@ class VarIndexes {
 		return map.values();
 	}
 
+	public int size() {
+		return map.size();
+	}
 }

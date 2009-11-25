@@ -15,7 +15,9 @@ import org.nutz.dao.entity.Entity;
 public interface Sql {
 
 	/**
-	 * 所谓"变量"，就是当 Sql 对象转换成 Statement 对象前，预先被填充的占位符
+	 * 所谓"变量"，就是当 Sql 对象转换成 Statement 对象前，预先被填充的占位符。
+	 * <p>
+	 * 这个集合允许你为 SQL 的变量占位符设值
 	 * 
 	 * @return 变量集合
 	 */
@@ -30,6 +32,16 @@ public interface Sql {
 	 * @return 参数集合
 	 */
 	VarSet params();
+
+	/**
+	 * @return 整个 SQL 的变量索引，你可以获得变量的个数和名称
+	 */
+	VarIndex varIndex();
+
+	/**
+	 * @return 整个 SQL 的参数索引，你可以获得参数的个数和名称
+	 */
+	VarIndex paramIndex();
 
 	/**
 	 * 上下文对象，随着 Sql 对象的创建而创建，随着其消亡而消亡。

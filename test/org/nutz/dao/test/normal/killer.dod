@@ -9,3 +9,8 @@ t_killer_re {
 	killer VARCHAR(50),
 	rid  INT
 }
+
+t_resident{
+	id INT +PK,
+	name VARCHAR(50) !UNIQUE,
+}

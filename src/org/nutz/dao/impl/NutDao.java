@@ -6,6 +6,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
 import org.nutz.dao.entity.next.NextQuery;
+import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
@@ -160,6 +162,14 @@ public class NutDao implements Dao {
 
 	public void setSqlMaker(SqlMaker sqlMaker) {
 		this.sqlMaker = sqlMaker;
+	}
+
+	public Class<? extends EntityMaker> getEntityMaker() {
+		return entityMaker;
+	}
+
+	public void setEntityMaker(Class<? extends EntityMaker> entityMaker) {
+		this.entityMaker = entityMaker;
 	}
 
 	public SqlManager sqls() {
@@ -492,8 +502,29 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	public <T> Entity<T> getEntity(Class<T> classOfT) {
-		return entities.getEntity(classOfT, meta());
+	public <T> Entity<T> getEntity(final Class<T> classOfT) {
+		Entity<T> en = entities.getEntity(classOfT);
+		// 如果未发现实体，创建实体
+		if (null == en) {
+			synchronized (entities) {
+				en = entities.getEntity(classOfT);
+				if (null == en) {
+					final List<Entity<T>> re = new ArrayList<Entity<T>>(1);
+					try {
+						this.run(new ConnCallback() {
+							public void invoke(Connection conn) {
+								re.add(entities.reloadEntity(classOfT, conn, meta));
+							}
+						});
+						en = re.get(0);
+					} catch (Exception e) {
+						throw Lang.wrapThrow(e, "Fail to make entity '%s'!", classOfT);
+					}
+
+				}
+			}
+		}
+		return en;
 	}
 
 	public int getMaxId(Class<?> classOfT) {
@@ -511,7 +542,7 @@ public class NutDao implements Dao {
 		return (T) getEntity(classOfT).getObject(rs, fm);
 	}
 
-	private <T> T _insertSelf(Entity<?> entity, T obj) {
+	private void _insertSelf(Entity<?> entity, Object obj) {
 		// Before insert
 		if (null != entity.getBefores())
 			for (NextQuery nq : entity.getBefores())
@@ -525,17 +556,32 @@ public class NutDao implements Dao {
 		if (null != entity.getAfters())
 			for (NextQuery nq : entity.getAfters())
 				nq.update(this, obj);
-		
-		// Return object
+	}
+
+	public <T> T fastInsert(T obj) {
+		if (Lang.length(obj) > 0) {
+			Object first = Lang.first(obj);
+			final Entity<?> entity = this.getEntity(first.getClass());
+			Lang.each(obj, new Each<Object>() {
+				public void invoke(int i, Object ele, int length) {
+					execute(sqlMaker.insert(entity, ele));
+				}
+			});
+		}
 		return obj;
 	}
 
 	public <T> T insert(T obj) {
-		if (null != obj) {
-			Entity<?> entity = getEntity(obj.getClass());
-			return _insertSelf(entity, obj);
+		if (Lang.length(obj) > 0) {
+			Object first = Lang.first(obj);
+			final Entity<?> entity = getEntity(first.getClass());
+			Lang.each(obj, new Each<Object>() {
+				public void invoke(int i, Object ele, int length) {
+					_insertSelf(entity, ele);
+				}
+			});
 		}
-		return null;
+		return obj;
 	}
 
 	public void insert(String tableName, Chain chain) {
@@ -620,9 +666,19 @@ public class NutDao implements Dao {
 	public int update(Object obj) {
 		if (null == obj)
 			return -1;
-		Sql sql = sqlMaker.update(getEntity(obj.getClass()), obj);
-		execute(sql);
-		return sql.getUpdateCount();
+		final int[] re = new int[1];
+		if (Lang.length(obj) > 0) {
+			Object first = Lang.first(obj);
+			final Entity<?> entity = getEntity(first.getClass());
+			Lang.each(obj, new Each<Object>() {
+				public void invoke(int i, Object ele, int length) {
+					Sql sql = sqlMaker.update(entity, ele);
+					execute(sql);
+					re[0] = re[0] + sql.getUpdateCount();
+				}
+			});
+		}
+		return re[0];
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition condition) {

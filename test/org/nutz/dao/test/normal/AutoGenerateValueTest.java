@@ -11,7 +11,6 @@ public class AutoGenerateValueTest extends DaoCase {
 	@Override
 	protected void before() {
 		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/killer.dod"));
-		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/dog.dod"));
 	}
 
 	@Override

@@ -13,6 +13,7 @@ import org.nutz.dao.test.meta.Country;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Mission;
 import org.nutz.dao.tools.Tables;
+import org.nutz.lang.Lang;
 
 public class BatchTransTest extends DaoCase {
 
@@ -67,7 +68,9 @@ public class BatchTransTest extends DaoCase {
 					assertEquals(3, dao.count(Mission.class));
 				}
 			});
-		} catch (Exception e) {} finally {
+		} catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		} finally {
 			pojos.dropPlatoon(1);
 		}
 	}

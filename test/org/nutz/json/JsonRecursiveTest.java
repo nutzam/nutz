@@ -64,15 +64,15 @@ public class JsonRecursiveTest {
 		assertEquals(root.id, nd.id);
 		assertEquals(root.children.length, nd.children.length);
 		Lang.each(root.children, new Each<Node>() {
-			public void invoke(int index, Node obj, int size) throws ExitLoop {
+			public void invoke(int index, Node ele, int size) throws ExitLoop {
 				assertNull(nd.children[index].parent);
-				assertEquals(obj.id, nd.children[index].id);
+				assertEquals(ele.id, nd.children[index].id);
 			}
 		});
 		Lang.each(root.children[0].children, new Each<Node>() {
-			public void invoke(int index, Node obj, int size) throws ExitLoop {
+			public void invoke(int index, Node ele, int size) throws ExitLoop {
 				assertNull(nd.children[index].parent);
-				assertEquals(obj.id, nd.children[0].children[index].id);
+				assertEquals(ele.id, nd.children[0].children[index].id);
 			}
 		});
 	}

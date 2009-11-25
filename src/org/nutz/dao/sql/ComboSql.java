@@ -34,6 +34,14 @@ public class ComboSql implements Sql {
 		return this;
 	}
 
+	public VarIndex paramIndex() {
+		throw Lang.noImplement();
+	}
+
+	public VarIndex varIndex() {
+		throw Lang.noImplement();
+	}
+
 	public ComboSql clear() {
 		sqls.clear();
 		varss.clear();

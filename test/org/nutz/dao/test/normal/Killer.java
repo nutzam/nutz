@@ -33,7 +33,7 @@ public class Killer {
 	@Default(@SQL("SELECT name FROM t_resident WHERE id IN (SELECT rid FROM t_killer_re WHERE killer=@name) ORDER BY name DESC"))
 	private String lastKillName;
 
-	@ManyMany(target = Dog.class, relation = "t_killer_re", from = "killer", to = "rid")
+	@ManyMany(target = Resident.class, relation = "t_killer_re", from = "killer", to = "rid")
 	private List<Resident> killeds;
 
 	public int getId() {

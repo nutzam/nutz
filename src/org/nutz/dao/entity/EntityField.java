@@ -8,11 +8,13 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.entity.next.NextQuery;
 import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
 
 public class EntityField {
 
+	private Mirror<?> mirror;
 	private FieldType type;
 	private boolean notNull;
 	private boolean readonly;
@@ -20,7 +22,6 @@ public class EntityField {
 	private String columnName;
 	private Segment defaultValue;
 	private String _defv;
-	private FieldValueType fieldType;
 	private Method getter;
 	private Method setter;
 	private NextQuery beforeInsert;
@@ -32,6 +33,7 @@ public class EntityField {
 	private Entity<?> entity;
 
 	public EntityField(Entity<?> entity, Field field) {
+		this.mirror = Mirror.me(field.getType());
 		this.entity = entity;
 		this.field = field;
 		// Evaluate the getter and setter
@@ -43,6 +45,10 @@ public class EntityField {
 			setter = entity.mirror.getSetter(field);
 			setter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
+	}
+
+	public Mirror<?> getMirror() {
+		return mirror;
 	}
 
 	public Entity<?> getEntity() {
@@ -71,10 +77,6 @@ public class EntityField {
 
 	public void setDefaultValue(Segment defaultValue) {
 		this.defaultValue = defaultValue;
-	}
-
-	public void setFieldType(FieldValueType fieldType) {
-		this.fieldType = fieldType;
 	}
 
 	public void setFieldAdapter(FieldAdapter adapter) {
@@ -119,6 +121,10 @@ public class EntityField {
 
 	public boolean isReadonly() {
 		return readonly;
+	}
+
+	public boolean isEnumInt() {
+		return type == FieldType.ENUM_INT;
 	}
 
 	public Link getLink() {
@@ -199,22 +205,6 @@ public class EntityField {
 
 	public FieldAdapter getFieldAdapter() {
 		return fieldAdapter;
-	}
-
-	public boolean isInt() {
-		return FieldValueType.INT == fieldType;
-	}
-
-	public boolean isChar() {
-		return FieldValueType.CHAR == fieldType;
-	}
-
-	public boolean isAuto() {
-		return FieldValueType.AUTO == fieldType;
-	}
-
-	public FieldValueType getFieldType() {
-		return fieldType;
 	}
 
 	public String getFieldName() {

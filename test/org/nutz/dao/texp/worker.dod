@@ -1,0 +1,7 @@
+t_worker {
+	wid INT +PK,
+	wname VARCHAR(50) !UNIQUE,
+	age INT,
+	days INT,
+	ct VARCHAR(50)
+}

@@ -57,13 +57,36 @@ public interface Dao {
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
 
 	/**
-	 * 将一个对象插入到一个数据源。 如果你的对象声明了 '@Id'，会根据设定来决定是否自动更新主键键值
+	 * 将一个对象插入到一个数据源。
+	 * <p>
+	 * 声明了 '@Id'，的字段会在插入数据库时被忽略，因为数据库会自动为其设值。如果想手动 设置，请设置 '@Id(auto=false)'
+	 * <p>
+	 * <b>插入之前</b>，会检查声明了 '@Default(@SQL("SELECT ..."))' 的字段，预先执行 SQL 为字段设置。
+	 * <p>
+	 * <b>插入之后</b>，会检查声明了 '@Next(@SQL("SELECT ..."))' 的字段，通过执行 SQL 将值取回
+	 * <p>
+	 * 如果你的字段仅仅声明了 '@Id(auto=true)'，没有声明 '@Next'，则认为你还是想取回插入后最新的 ID 值，因为
+	 * 自动为你添加类似 @Next(@SQL("SELECT MAX(id) FROM tableName")) 的设置
+	 * 
+	 * 
 	 * 
 	 * @param obj
-	 *            目标对象
+	 *            要被插入的对象
+	 *            <p>
+	 *            它可以是：
+	 *            <ul>
+	 *            <li>普通 POJO
+	 *            <li>集合
+	 *            <li>数组
+	 *            <li>Map
+	 *            </ul>
+	 *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
+	 * 
 	 * @return 插入后的对象
 	 * 
 	 * @see org.nutz.dao.entity.annotation.Id
+	 * @see org.nutz.dao.entity.annotation.Default
+	 * @see org.nutz.dao.entity.annotation.Next
 	 */
 	<T> T insert(T obj);
 
@@ -89,6 +112,26 @@ public interface Dao {
 	 * @see org.nutz.dao.entity.annotation.Table
 	 */
 	void insert(Class<?> classOfT, Chain chain);
+
+	/**
+	 * 快速插入一个对象。 对象的 '@Default' 以及 '@Next' 在这个函数里不起作用。
+	 * <p>
+	 * 即，它不会为你预先获取值，也不会为你在插入后获得自增的主键值。
+	 * 
+	 * @param obj
+	 *            要被插入的对象
+	 *            <p>
+	 *            它可以是：
+	 *            <ul>
+	 *            <li>普通 POJO
+	 *            <li>集合
+	 *            <li>数组
+	 *            <li>Map
+	 *            </ul>
+	 *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
+	 * 
+	 */
+	<T> T fastInsert(T obj);
 
 	/**
 	 * 将对象插入数据库同时，也将符合一个正则表达式的所有关联字段关联的对象统统插入相应的数据库
@@ -143,6 +186,16 @@ public interface Dao {
 	 * 
 	 * @param obj
 	 *            要被更新的对象
+	 *            <p>
+	 *            它可以是：
+	 *            <ul>
+	 *            <li>普通 POJO
+	 *            <li>集合
+	 *            <li>数组
+	 *            <li>Map
+	 *            </ul>
+	 *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
+	 * 
 	 * @return 如果更新成功，返回 1，否则，返回 0
 	 */
 	int update(Object obj);

@@ -2,12 +2,19 @@ package org.nutz.dao.entity.impl;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.nutz.dao.Dao;
+import org.nutz.dao.Daos;
 import org.nutz.dao.DatabaseMeta;
-import org.nutz.dao.entity.FieldValueType;
+import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.FieldType;
@@ -20,7 +27,6 @@ import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Default;
 import org.nutz.dao.entity.annotation.Next;
 import org.nutz.dao.entity.annotation.PK;
-import org.nutz.dao.entity.annotation.ValueType;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Many;
 import org.nutz.dao.entity.annotation.ManyMany;
@@ -37,6 +43,9 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.segment.Segment;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 
 /**
  * This class must be drop after make() be dropped
@@ -46,12 +55,10 @@ import org.nutz.lang.segment.CharSegment;
  */
 public class DefaultEntityMaker implements EntityMaker {
 
-	private DatabaseMeta db;
-	private Entity<Object> entity;
+	private static final Log log = LogFactory.getLog(Dao.class);
 
-	public Entity<?> make(DatabaseMeta db, Class<?> type) {
-		this.db = db;
-		entity = new Entity<Object>();
+	public Entity<?> make(DatabaseMeta db, Connection conn, Class<?> type) {
+		Entity<?> entity = new Entity<Object>();
 		Mirror<?> mirror = Mirror.me(type);
 		entity.setMirror(mirror);
 
@@ -73,42 +80,68 @@ public class DefaultEntityMaker implements EntityMaker {
 				pkmap.put(pknm, null);
 		}
 
-		List<NextQuery> befores = new ArrayList<NextQuery>(5);
-		List<NextQuery> afters = new ArrayList<NextQuery>(5);
-		// For each fields ...
-		for (Field f : mirror.getFields()) {
-			// When the field declared @Many, @One, @ManyMany
-			Link link = evalLink(mirror, f);
-			if (null != link) {
-				entity.addLinks(link);
+		// Get relative meta data from DB
+		Statement stat = null;
+		ResultSet rs = null;
+		ResultSetMetaData rsmd = null;
+		List<NextQuery> befores;
+		List<NextQuery> afters;
+		try {
+			try {
+				stat = conn.createStatement();
+				rs = stat.executeQuery(db.getResultSetMetaSql(entity.getViewName()));
+				rsmd = rs.getMetaData();
+			} catch (Exception e) {
+				if (log.isWarnEnabled())
+					log.warn("Table '" + entity.getViewName() + "' didn't existed");
 			}
-			// Then try to eval the field
-			else {
-				// Current POJO has @Column field, but current not, ignore it
-				if (existsColumnAnnField && null == f.getAnnotation(Column.class))
-					continue;
-				// Create EntityField
-				EntityField ef = evalField(f);
 
-				// Is it a PK?
-				if (pkmap.containsKey(ef.getName())) {
-					pkmap.put(ef.getName(), ef);
-					if (!(ef.isId() || ef.isName()))
-						ef.setType(FieldType.PK);
+			befores = new ArrayList<NextQuery>(5);
+			afters = new ArrayList<NextQuery>(5);
+			// For each fields ...
+			for (Field f : mirror.getFields()) {
+				// When the field declared @Many, @One, @ManyMany
+				Link link = evalLink(db, conn, mirror, f);
+				if (null != link) {
+					entity.addLinks(link);
 				}
+				// Then try to eval the field
+				else {
+					// Current POJO has @Column field, but current not, ignore
+					// it
+					if (existsColumnAnnField && null == f.getAnnotation(Column.class))
+						continue;
+					// Create EntityField
+					EntityField ef = evalField(db, rsmd, entity, f);
 
-				// Is befores? or afters?
-				if (null != ef.getBeforeInsert())
-					befores.add(ef.getBeforeInsert());
-				else if (null != ef.getAfterInsert())
-					afters.add(ef.getAfterInsert());
+					// Is it a PK?
+					if (pkmap.containsKey(ef.getName())) {
+						pkmap.put(ef.getName(), ef);
+						if (!(ef.isId() || ef.isName()))
+							ef.setType(FieldType.PK);
+					}
 
-				// Append to Entity
-				if (null != ef) {
-					entity.addField(ef);
+					// Is befores? or afters?
+					if (null != ef.getBeforeInsert())
+						befores.add(ef.getBeforeInsert());
+					else if (null != ef.getAfterInsert())
+						afters.add(ef.getAfterInsert());
+
+					// Append to Entity
+					if (null != ef) {
+						entity.addField(ef);
+					}
 				}
-			}
-		} // Done for all fields
+			} // Done for all fields
+		}
+		// For exception...
+		catch (SQLException e) {
+			throw Lang.wrapThrow(e, "Fail to make POJO '%s'", type);
+		}
+		// Close ResultSet and Statement
+		finally {
+			Daos.safeClose(stat, rs);
+		}
 
 		// Then let's check the pks
 		if (pkmap.size() > 0) {
@@ -131,10 +164,15 @@ public class DefaultEntityMaker implements EntityMaker {
 				: entity.getType().getName(), String.format(fmt, args)));
 	}
 
-	private EntityField evalField(Field field) {
-		Mirror<?> fieldType = Mirror.me(field.getType());
+	private EntityField evalField(	DatabaseMeta db,
+									ResultSetMetaData rsmd,
+									Entity<?> entity,
+									Field field) throws SQLException {
+		// Change accessiable
 		field.setAccessible(true);
+		// Create ...
 		EntityField ef = new EntityField(entity, field);
+
 		// Eval field column name
 		Column column = field.getAnnotation(Column.class);
 		if (null == column || Strings.isBlank(column.value()))
@@ -142,18 +180,27 @@ public class DefaultEntityMaker implements EntityMaker {
 		else
 			ef.setColumnName(column.value());
 
+		int ci = Daos.getColumnIndex(rsmd, ef.getColumnName());
+
 		// @Readonly
 		ef.setReadonly((field.getAnnotation(Readonly.class) != null));
 
-		// @FieldType
-		ValueType t = field.getAnnotation(ValueType.class);
-		ef.setFieldType(null == t ? FieldValueType.AUTO : t.value());
+		// Not Null
+		if (null != rsmd)
+			ef.setNotNull(ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci));
+
+		// For Enum field
+		if (null != rsmd)
+			if (ef.getMirror().isEnum()) {
+				if (Daos.isIntLikeColumn(rsmd, ci))
+					ef.setType(FieldType.ENUM_INT);
+			}
 
 		// @Default
 		Default dft = field.getAnnotation(Default.class);
 		if (null != dft) {
 			if (dft.value().length > 0)
-				ef.setBeforeInsert(Nexts.eval(db, dft.value(), field));
+				ef.setBeforeInsert(Nexts.eval(db, dft.value(), ef));
 			else if (!Strings.isBlank(dft.as()))
 				ef.setDefaultValue(new CharSegment(dft.as()));
 		}
@@ -161,22 +208,20 @@ public class DefaultEntityMaker implements EntityMaker {
 		// @Next
 		Next next = field.getAnnotation(Next.class);
 		if (null != next) {
-			ef.setAfterInsert(Nexts.eval(db, next.value(), field));
+			ef.setAfterInsert(Nexts.eval(db, next.value(), ef));
 		}
 
 		// @Id
 		Id id = field.getAnnotation(Id.class);
 		if (null != id) {
 			// Check
-			if (!fieldType.isIntLike())
+			if (!ef.getMirror().isIntLike())
 				throw error(entity, "@Id field [%s] must be a Integer!", field.getName());
 			if (id.auto()) {
 				ef.setType(FieldType.SERIAL);
 				// 如果是自增字段，并且没有声明 '@Next' ，为其增加 SELECT MAX(id) ...
 				if (null == field.getAnnotation(Next.class)) {
-					String sql = String.format("SELECT MAX(%s) FROM %s", ef.getColumnName(), entity
-							.getViewName());
-					ef.setAfterInsert(Nexts.create(sql, field));
+					ef.setAfterInsert(Nexts.create("SELECT MAX($field) FROM $view", ef));
 				}
 			} else {
 				ef.setType(FieldType.ID);
@@ -187,7 +232,7 @@ public class DefaultEntityMaker implements EntityMaker {
 		Name name = field.getAnnotation(Name.class);
 		if (null != name) {
 			// Check
-			if (!fieldType.isStringLike())
+			if (!ef.getMirror().isStringLike())
 				throw error(entity, "@Name field [%s] must be a String!", field.getName());
 			// Not null
 			ef.setNotNull(true);
@@ -199,27 +244,49 @@ public class DefaultEntityMaker implements EntityMaker {
 		}
 
 		// Prepare how to adapt the field value to PreparedStatement
-		ef.setFieldAdapter(FieldAdapter.create(fieldType, ef.getFieldType()));
+		ef.setFieldAdapter(FieldAdapter.create(ef.getMirror(), ef.isEnumInt()));
 
 		// Prepare how to adapt the field value from ResultSet
-		ef.setValueAdapter(ValueAdapter.create(fieldType, ef.getFieldType()));
+		ef.setValueAdapter(ValueAdapter.create(ef.getMirror(), ef.isEnumInt()));
 
 		return ef;
 	}
 
-	private Link evalLink(Mirror<?> mirror, Field field) {
+	private Link evalLink(DatabaseMeta db, Connection conn, Mirror<?> mirror, Field field) {
 		try {
+			// @One
 			One one = field.getAnnotation(One.class);
 			if (null != one) { // One > refer own field
 				return new Link(mirror, field, one);
-			} else { // Many > refer target field
+			}
+			// @Many
+			else { // Many > refer target field
 				Many many = field.getAnnotation(Many.class);
 				if (null != many) {
 					return new Link(mirror, field, many);
-				} else {
+				}
+				// @ManyMany
+				else {
 					ManyMany mm = field.getAnnotation(ManyMany.class);
 					if (null != mm) {
-						return new Link(mirror, field, mm);
+						// Read relation
+						Statement stat = null;
+						ResultSet rs = null;
+						ResultSetMetaData rsmd = null;
+						try {
+							stat = conn.createStatement();
+							Segment tableName = new CharSegment(mm.relation());
+							rs = stat.executeQuery(db.getResultSetMetaSql(TableName
+									.render(tableName)));
+							rsmd = rs.getMetaData();
+							boolean fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
+							boolean toName = !Daos.isIntLikeColumn(rsmd, mm.to());
+							return new Link(mirror, field, mm, fromName, toName);
+						} catch (Exception e) {
+							throw Lang.wrapThrow(e);
+						} finally {
+							Daos.safeClose(stat, rs);
+						}
 					}
 				}
 			}

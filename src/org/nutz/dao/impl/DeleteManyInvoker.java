@@ -18,8 +18,8 @@ class DeleteManyInvoker extends DeleteInvoker {
 		if (null != first) {
 			final Entity<?> entity = dao.getEntity(first.getClass());
 			Lang.each(many, new Each<Object>() {
-				public void invoke(int i, Object obj, int length) throws ExitLoop, LoopException {
-					dao._deleteSelf(entity, obj);
+				public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+					dao._deleteSelf(entity, ele);
 				}
 			});
 		}

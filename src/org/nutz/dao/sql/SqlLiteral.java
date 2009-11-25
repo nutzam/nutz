@@ -14,17 +14,17 @@ public class SqlLiteral {
 		params = new SimpleVarSet();
 		vars = new SimpleVarSet();
 		stack = new WorkingStack();
-		varIndexes = new VarIndexes();
-		paramIndexes = new VarIndexes();
-		statementIndexes = new VarIndexes();
+		varIndexes = new VarIndexImpl();
+		paramIndexes = new VarIndexImpl();
+		statementIndexes = new VarIndexImpl();
 	}
 
 	private VarSet params;
 	private VarSet vars;
 	private WorkingStack stack;
-	private VarIndexes varIndexes;
-	private VarIndexes paramIndexes;
-	private VarIndexes statementIndexes;
+	private VarIndexImpl varIndexes;
+	private VarIndexImpl paramIndexes;
+	private VarIndexImpl statementIndexes;
 	private String source;
 
 	public VarSet getParams() {
@@ -41,6 +41,14 @@ public class SqlLiteral {
 
 	public void setVars(VarSet vars) {
 		this.vars = vars;
+	}
+
+	VarIndex getVarIndexes() {
+		return varIndexes;
+	}
+
+	VarIndex getParamIndexes() {
+		return paramIndexes;
 	}
 
 	/**
@@ -127,7 +135,7 @@ public class SqlLiteral {
 		return Lang.concat(ss).toString();
 	}
 
-	private void autoFill(VarSet set, VarIndexes indexes, String[] ss) {
+	private void autoFill(VarSet set, VarIndexImpl indexes, String[] ss) {
 		for (String name : set.keys()) {
 			Object value = set.get(name);
 			String vs = null == value ? "" : value.toString();

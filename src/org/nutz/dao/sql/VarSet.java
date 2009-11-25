@@ -12,7 +12,5 @@ public interface VarSet {
 	Object get(String name);
 
 	Set<String> keys();
-	
-	int size();
 
 }

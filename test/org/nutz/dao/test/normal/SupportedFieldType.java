@@ -12,7 +12,6 @@ import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
-import org.nutz.dao.entity.FieldValueType;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.tools.Tables;
@@ -48,8 +47,8 @@ public class SupportedFieldType extends DaoCase {
 		@Column
 		public TT enum_s;
 
+		// It will auto detect db, and use INT
 		@Column
-		@ValueType(FieldValueType.INT)
 		public TT enum_i;
 
 		@Column
