@@ -1,6 +1,5 @@
 package org.nutz.lang;
 
-
 /**
  * 秒表
  * 
@@ -10,6 +9,19 @@ public class Stopwatch {
 
 	private long from;
 	private long to;
+
+	public static Stopwatch create() {
+		Stopwatch sw = new Stopwatch();
+		sw.start();
+		return sw;
+	}
+	
+	public static Stopwatch run(Runnable atom) {
+		Stopwatch sw = create();
+		atom.run();
+		sw.stop();
+		return sw;
+	}
 
 	public long start() {
 		from = System.currentTimeMillis();

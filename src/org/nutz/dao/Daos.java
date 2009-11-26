@@ -82,6 +82,7 @@ public class Daos {
 		case Types.INTEGER:
 		case Types.SMALLINT:
 		case Types.TINYINT:
+		case Types.NUMERIC:
 			isIntLike = true;
 		}
 		return isIntLike;
@@ -92,7 +93,7 @@ public class Daos {
 			try {
 				rs.close();
 			} catch (Throwable e) {}
-	
+
 		if (null != stat)
 			try {
 				stat.close();
