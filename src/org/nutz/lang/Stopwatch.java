@@ -1,6 +1,5 @@
 package org.nutz.lang;
 
-import org.nutz.trans.Atom;
 
 /**
  * 秒表
@@ -9,18 +8,6 @@ import org.nutz.trans.Atom;
  */
 public class Stopwatch {
 
-	public static Stopwatch test(Atom atom) {
-		Stopwatch sw = new Stopwatch();
-		sw.start();
-		atom.run();
-		sw.stop();
-		return sw;
-	}
-
-	public static void printTest(Atom atom) {
-		System.out.println(test(atom).toString());
-	}
-	
 	private long from;
 	private long to;
 
