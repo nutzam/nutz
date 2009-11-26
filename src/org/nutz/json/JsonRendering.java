@@ -19,6 +19,11 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 class JsonRendering {
 	private static String NL = "\n";
 
@@ -26,6 +31,12 @@ class JsonRendering {
 
 	private Writer writer;
 
+	/**
+	 * 
+	 * @param writer
+	 * @param format 
+	 * @throws NullPointerException if writer or format is null
+	 */
 	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
@@ -37,8 +48,6 @@ class JsonRendering {
 	private JsonFormat format;
 
 	private static boolean isCompact(JsonRendering render) {
-		if (null == render.format)
-			return true;
 		return render.format.isCompact();
 	}
 
@@ -68,14 +77,9 @@ class JsonRendering {
 	}
 
 	private boolean isIgnore(String name, Object value) {
-		if (null == value)
-			if (null == format)
-				return true;
-			else if (format.isIgnoreNull())
-				return true;
-		if (null != format && format.ignore(name))
+		if (null == value && format.isIgnoreNull())
 			return true;
-		return false;
+		return format.ignore(name);
 	}
 
 	private void appendPairEnd() throws IOException {

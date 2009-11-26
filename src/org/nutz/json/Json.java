@@ -10,6 +10,7 @@ import org.nutz.lang.Lang;
  * JSON 转换工具
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class Json {
 
@@ -85,10 +86,7 @@ public class Json {
 	 * @return JSON 字符串
 	 */
 	public static String toJson(Object obj) {
-		StringBuilder sb = new StringBuilder();
-		Writer w = Lang.opw(sb);
-		toJson(w, obj);
-		return sb.toString();
+		return toJson(obj, null);
 	}
 
 	/**
@@ -102,8 +100,7 @@ public class Json {
 	 */
 	public static String toJson(Object obj, JsonFormat format) {
 		StringBuilder sb = new StringBuilder();
-		Writer w = Lang.opw(sb);
-		toJson(w, obj, format);
+		toJson(Lang.opw(sb), obj, format);
 		return sb.toString();
 	}
 
@@ -116,7 +113,7 @@ public class Json {
 	 *            JAVA 对象
 	 */
 	public static void toJson(Writer writer, Object obj) {
-		toJson(writer, obj, JsonFormat.nice());
+		toJson(writer, obj, null);
 	}
 
 	/**
@@ -127,11 +124,13 @@ public class Json {
 	 * @param obj
 	 *            JAVA 对象
 	 * @param format
-	 *            JSON 字符串格式化
+	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
 		try {
-			(new JsonRendering(writer, format)).render(obj);
+			if(format == null)
+				format = JsonFormat.nice();
+			new JsonRendering(writer, format).render(obj);
 			writer.flush();
 		} catch (IOException e) {
 			throw Lang.wrapThrow(e, JsonException.class);
