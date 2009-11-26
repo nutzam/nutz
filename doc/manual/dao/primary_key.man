@@ -1,67 +1,125 @@
-#title:主键生成策略
+#title:关于主键
 #index:0,3
-
-关于 POJO 主键的说明
-	关于 POJO 的主键，有下面几点说明：
-	 * 主键可以是整型，也可以是字符型。
-	 * 如果声明了 @Id，则主键为整型
-	 * 如果未声明 @Id 但是声明了 @Name，则主键为字符型
-	 * 如果既未声明 @Id 也未声明 @Name，则无主键
-
-主键生成策略概述
-	由于大部分数据表会将主键设计成自增长的序列，对于多数的数据库插入操作，往往下一步操作是要获得新生成记录主键
-	的键值。因此，大多数的持久化框架都会通过这样或者那样的形式让调用者很方便的做到这一点，Nutz.Dao 也不例外。
-
-	不仅如此，Nutz.Dao 主键生成策略还考虑了如下几点
-	# 不同的数据库生成主键序列不一样
-	# 调用者的程序可能跑在不同的数据库上 
-	# 调用者有时希望自己指定主键的值，而不是由数据库自动生成
-
-	针对这些假设， Nutz.Dao 通过注解 @Id 很好的完成了如下的功能
 -----------------------------------------------------------------------------------------------------------------
-自动生成的主键
-	默认获取主键
-		当 POJO 的字段被加上注解 {*@Id} ，Nutz.Dao 便认为这个字段是个主键，并且是个自增长式的主键。如果你的 POJO
-		对应的 Java 字段不是整数类型(int 或者 long)时，Nutz.Dao 会抛出异常。
+简要介绍
+	为使用 Dao 接口的 `fetch(Class<?>, long)` 以及 `fetch(Class<?>, String)`，需要为一个 POJO 指明它的主键。
+	主键可以是整数型的，也可以是字符型的。同时它也可以支持复合主键。
 
-		每当你执行 insert 接口时， Nutz.Dao 还会自动执行 SELECT MAX(...) FROM ... 来获取最新的 ID 值，并赋给POJO。
+	|| 整数型主键	|| 注解 @Id		|| 声明在字段上 ||
+	|| 字符型主键	|| 注解 @Name	|| 声明在字段上 ||
+	|| 复合主键		|| 注解 @PK		|| 声明在类上 ||
 
-	使用数据库的方言获取主键
-		当然，SELECT MAX() 在某些数据库中是不安全的。为此，你可以在 {*@Id} 声明获取主键的数据库方言。
-
-		仅支持一种数据库
-			例如： 
-			{{{<JAVA>
-			@Column
-			@Id("SELECT currval('dao_fighter_id_seq');")
-			private int id;
-			}}}
-			Nutz.Dao 会用你声明的 SQL 来获取最大的主键键值。
-		
-		让一个 POJO 支持多种数据库
-			这个需求在生产环境基本上没有意义，但是在开发环境上或许有需要。起码对于 Nutz 来说，它的自动测试就需要
-			跑在不同的数据库上。
-			{{{<JAVA>
-			@Column
-			@Id({"psql","SELECT currval('dao_fighter_id_seq');","mysql","SELECT MAX(id) FROM dao_fighter"})
-			private int id;
-			}}}
-			Next 数组为偶数时，0或者偶数下标的元素为数据库的类型，奇数位下标元素为获取主键值的 SQL 语句。
-			数据库类型为字符串，不区分大小写，详细声明在接口 org.nutz.dao.Database 中有声明，这些值为
-			  * mysql
-			  * psql
-			  * db2
-			  * oracle
-			  * sqlserver
-			  * unknown
+	{#F00;*注意：} 对于一个 POJO，你可以同时为其声明 @Id 和 @Name，它们都能正常工作。你只需要保证 @Name 对应的字段
+	在数据库里有唯一性约束即可。 但是通常， Nutz.Dao 并没有假设你同时在一个 POJO 里应用 @Id, @Name 和 @PK，如果你
+	这么做了，可能会引发一些奇怪的问题。事实上，你也不可能这么做，不是吗？
 -----------------------------------------------------------------------------------------------------------------
-手动生成的主键
-	有些时候调用者并不希望数据库自动为自己生成主键。可以通过如下方式声明 POJO
-	{{{<JAVA>
-	@Column
-	@Id(auto=false)
-	public int id;
+整数型主键
+	{{{
+	@Table("t_pet")
+	public class Pet{
+		@Column
+		@Id
+		private int id;
+	...
 	}}}
-	那么，在插入前，你需要手工为你的 POJO 设置主键键值。
+	通过 @Id 声明了一个整数型主键后，你可以：
+	{{{
+	Pet pet = dao.fetch(Pet.class,23);
+	}}}
 
-	如果你的主键是字符型的，需要用 {*@Name} 注解来声明POJO对应字段。
+	默认自增
+		默认的，Nutz.Dao 认为一个整数型主键默认就是自增的。所以他会在：
+		{{{
+		dao.insert(pet);
+		}}}
+		之后，为你插入的对象执行
+		{{{
+		SELECT MAX(id) FROM t_pet;
+		}}}
+		并设置到 pet 对象中。当然，不同的数据库，获得自增值的方式是不一样的，请参看 [dao_next_prev.man 在插入前后的为字段设值]
+		里面描述了，通过 @Next 注解，声明数据库本地方言，来获取自增值。
+
+	手工设值
+		由于默认的，@Id 字段被认为是自增的，所以在插入时，Nutz.Dao 会忽略这个字段。但是，有些时候，你的整数主键不是自增的，
+		你希望手工为其设值，怎么办呢？ 你可以给 @Id 设一个属性: auto=false
+		{{{
+		@Table("t_pet")
+		public class Pet{
+			@Column
+			@Id(auto=false)
+			private int id;
+		...
+		}}}
+		Nutz.Dao 在插入对象是，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。
+
+	快速插入
+		无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)
+		{{{
+		dao.fastInsert(pet)
+		}}}
+		它只会单纯的拼出一条 INSERT XXX，然后执行。 在一个循环里，一次插入多个对象时，很适合使用。
+-----------------------------------------------------------------------------------------------------------------
+字符型主键
+	{{{
+	@Table("t_pet")
+	public class Pet{
+		@Column
+		@Name
+		private int name;
+	...
+	}}}
+	通过 @Name 声明了一个字符型主键后，你可以：
+	{{{
+	Pet pet = dao.fetch(Pet.class,"XiaoBai");
+	}}}
+
+	忽略大小写
+		{{{
+		@Table("t_pet")
+			public class Pet{
+				@Column
+				@Name(casesensitive=false)
+				private int name;
+			...
+		}}}
+		因此
+		{{{
+		Pet pet = dao.fetch(Pet.class,"XiaoBai");
+		同
+		Pet pet = dao.fetch(Pet.class,"xiaobai");
+		运行的结果就会没有区别
+		}}}
+-----------------------------------------------------------------------------------------------------------------
+复合主键
+	{{{
+	@Table("t_pet")
+	@PK( {"masterId", "petId"} )
+	public class Pet{
+		@Column
+		private int masterId
+
+		@Column
+		private int petId;
+	...
+	}}}
+	通过 @PK 声明了复合主键，你就可以:
+
+	通过变参获取和删除
+		{*获取}
+		{{{
+		Pet pet = dao.fetchx(Pet.class, 23, 12);
+		}}}
+		{*删除}
+		{{{
+		Pet pet = dao.deletex(Pet.class, 23, 12);
+		}}}
+		{#F00;* 注意}
+		 * 这里你给的变参的顺序必须按照你 @PK 里声明的顺序。
+		 * 是 fetch{*X} 和 delete{*X}
+	
+	其他操作
+		至于 update, clear, insert 则和平常的对象一样。 不过 Update 的时候，你的 POJO 所有的复合主键字段需要被设上值，
+		才能正确被更新。
+	
+
+

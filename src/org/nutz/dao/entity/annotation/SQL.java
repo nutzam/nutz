@@ -14,7 +14,7 @@ import org.nutz.dao.DB;
  * <b>value</b><br>
  * 声明了一条 SQL 语句，支持动态占位符。
  * <ul>
- * <li>变量: $XXX ，由 TableName 来设置，以支持动态表名
+ * <li>变量: $XXX ，由 org.nutz.dao.TableName 来设置，以支持动态表名
  * <ul>
  * <li>特殊占位符: $view: 表示当前实体对象的视图名称
  * <li>特殊占位符: $field: 表示注解所在字段数据库名称
