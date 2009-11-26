@@ -13,7 +13,7 @@ import org.nutz.log.Log;
  * 
  * 
  * @author Young(sunonfire@gmail.com)
- *
+ * @author Wendal(wendal1985@gmail.com)
  */
 public class JdkLoggerAdapter extends AbstractLogAdapter implements Log {
 
@@ -46,52 +46,51 @@ public class JdkLoggerAdapter extends AbstractLogAdapter implements Log {
 	public JdkLoggerAdapter() {}
 
 	public void debug(Object message) {
-		jdkLogger.log(DEBUG_LEVEL, message.toString());
+		log(DEBUG_LEVEL, message);
 	}
 
 	public void debug(Object message, Throwable t) {
-		jdkLogger.log(DEBUG_LEVEL, message.toString(), t);
+		log(DEBUG_LEVEL, message, t);
 	}
 
 	public void error(Object message) {
-		jdkLogger.log(ERROR_LEVEL, message.toString());
+		log(ERROR_LEVEL, message);
 	}
 
 	public void error(Object message, Throwable t) {
-		jdkLogger.log(ERROR_LEVEL, message.toString(), t);
+		log(ERROR_LEVEL, message, t);
 	}
 
 	public void fatal(Object message) {
-		jdkLogger.log(FATAL_LEVEL, message.toString());
+		log(FATAL_LEVEL, message);
 	}
 
 	public void fatal(Object message, Throwable t) {
-		
-		jdkLogger.log(FATAL_LEVEL, message.toString(), t);
+		log(FATAL_LEVEL, message, t);
 	}
 
 	public void info(Object message) {
-		jdkLogger.log(INFO_LEVEL, message.toString());
+		log(INFO_LEVEL, message);
 	}
 
 	public void info(Object message, Throwable t) {
-		jdkLogger.log(INFO_LEVEL, message.toString(), t);
+		log(INFO_LEVEL, message, t);
 	}
 
 	public void trace(Object message) {
-		jdkLogger.log(TRACE_LEVEL, message.toString());
+		log(TRACE_LEVEL, message);
 	}
 
 	public void trace(Object message, Throwable t) {
-		jdkLogger.log(TRACE_LEVEL, message.toString(), t);
+		log(TRACE_LEVEL, message, t);
 	}
 
 	public void warn(Object message) {
-		jdkLogger.log(WARN_LEVEL, message.toString());
+		log(WARN_LEVEL, message);
 	}
 
 	public void warn(Object message, Throwable t) {
-		jdkLogger.log(WARN_LEVEL, message.toString(), t);
+		log(WARN_LEVEL, message, t);
 	}
 
 	public boolean canWork() {
@@ -111,5 +110,11 @@ public class JdkLoggerAdapter extends AbstractLogAdapter implements Log {
 		return jdkLogger;
 	}
 
+	private void log(Level level ,Object message){
+		jdkLogger.log(level, String.valueOf(message));
+	}
 	
+	private void log(Level level ,Object message, Throwable t){
+		jdkLogger.log(level, String.valueOf(message),t);
+	}
 }

@@ -25,8 +25,11 @@ import org.nutz.log.Log;
  * 4. 根据log4j的判断逻辑去找log4j.xml或log4j.properties是否存在，如果存在就认为log4j可用。
  * 
  * @author Young(sunonfire@gmail.com)
+ * @author wendal(wendal11985@gmail.com)
  */
 public class Log4jAdapter extends AbstractLogAdapter implements Log {
+
+	private static final String GET_EXCEPTION = "get exception";
 
 	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
 
@@ -212,186 +215,63 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	}
 
 	public void debug(Object message) {
-		if (isDebugEnabled) {
-			try {
-				debugObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isDebugEnabled)
+			log(debugObjectMethod, message);
 	}
 
 	public void debug(Object message, Throwable t) {
-		if (isDebugEnabled) {
-			try {
-				debugObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isDebugEnabled)
+			log(debugObjectThrowableMethod, message, t);
 	}
 
 	public void error(Object message) {
-		if (isErrorEnabled) {
-			try {
-				errorObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isErrorEnabled)
+			log(errorObjectMethod, message);
 	}
 
 	public void error(Object message, Throwable t) {
-
-		if (isErrorEnabled) {
-			try {
-				errorObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isErrorEnabled)
+			log(errorObjectThrowableMethod, message, t);
 	}
 
 	public void fatal(Object message) {
-		if (isFatalEnabled) {
-			try {
-				fatalObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isFatalEnabled)
+			log(fatalObjectMethod, message);
 	}
 
 	public void fatal(Object message, Throwable t) {
-		if (isFatalEnabled) {
-			try {
-				fatalObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isFatalEnabled)
+			log(fatalObjectThrowableMethod, message, t);
 	}
 
 	public void info(Object message) {
-		if (isInfoEnabled) {
-			try {
-				infoObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
+		if (isInfoEnabled) 
+			log(infoObjectMethod, message);
 	}
 
 	public void info(Object message, Throwable t) {
-		if (isInfoEnabled) {
-			try {
-				infoObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
+		if (isInfoEnabled) 
+			log(infoObjectThrowableMethod, message, t);
 	}
 
 	public void trace(Object message) {
-
-		if (isTraceEnabled) {
-			try {
-				traceObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isTraceEnabled)
+			log(traceObjectMethod, message);
 	}
 
 	public void trace(Object message, Throwable t) {
-
-		if (isTraceEnabled) {
-			try {
-				traceObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isTraceEnabled) 
+			log(traceObjectThrowableMethod, message, t);
 	}
 
 	public void warn(Object message) {
-
-		if (isWarnEnabled) {
-			try {
-				warnObjectMethod.invoke(log4jImpl, message);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isWarnEnabled) 
+			log(warnObjectMethod, message);
 	}
 
 	public void warn(Object message, Throwable t) {
-
-		if (isWarnEnabled) {
-			try {
-				warnObjectThrowableMethod.invoke(log4jImpl, message, t);
-			} catch (IllegalArgumentException e) {
-				systemLog.fatal("get exception", e);
-			} catch (IllegalAccessException e) {
-				systemLog.fatal("get exception", e);
-			} catch (InvocationTargetException e) {
-				systemLog.fatal("get exception", e);
-			}
-		}
-
+		if (isWarnEnabled)
+			log(warnObjectThrowableMethod, message, t);
 	}
 
 	public Log getLogger(String className) throws ClassNotFoundException, NoSuchMethodException,
@@ -399,4 +279,28 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		return new Log4jAdapter(className);
 	}
 
+
+	private void log(Method method,Object message, Throwable t){
+		try {
+			method.invoke(log4jImpl, message, t);
+		} catch (IllegalArgumentException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		} catch (IllegalAccessException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		} catch (InvocationTargetException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		}
+	}
+	
+	private void log(Method method,Object message){
+		try {
+			method.invoke(log4jImpl, message);
+		} catch (IllegalArgumentException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		} catch (IllegalAccessException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		} catch (InvocationTargetException e) {
+			systemLog.fatal(GET_EXCEPTION, e);
+		}
+	}
 }
