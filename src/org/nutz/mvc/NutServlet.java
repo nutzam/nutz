@@ -11,19 +11,33 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.init.DefaultLoading;
 
+/**
+ * 挂接到 JSP/Servlet 容器的入口
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 @SuppressWarnings("serial")
 public class NutServlet extends HttpServlet {
+
+	private static final Log log = LogFactory.getLog(NutServlet.class);
 
 	private UrlMap urls;
 
 	@Override
 	public void init() throws ServletException {
 		try {
+			if (log.isInfoEnabled())
+				log.infof("Nutz.Mvc[%s] is initializing ...", this.getServletName());
+			Stopwatch sw = Stopwatch.begin();
+
 			// Nutz.Mvc need a class name as the default Module
 			// it will load some Annotation from it.
 			String name = Strings.trim(this.getServletConfig().getInitParameter("modules"));
@@ -51,13 +65,22 @@ public class NutServlet extends HttpServlet {
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
-			
+
+			// Done, print info
+			sw.stop();
+			if (log.isInfoEnabled())
+				log.infof("Nutz.Mvc[%s] is up in %sms", this.getServletName(), sw.getDuration());
+
 		} catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
 
 	public void destroy() {
+		if (log.isInfoEnabled())
+			log.infof("Nutz.Mvc[%s] is deposing ...", this.getServletName());
+		Stopwatch sw = Stopwatch.begin();
+
 		// Firstly, upload the user customized desctroy
 		try {
 			urls = null;
@@ -73,6 +96,11 @@ public class NutServlet extends HttpServlet {
 		Ioc ioc = Mvcs.getIoc(this.getServletContext());
 		if (null != ioc)
 			ioc.depose();
+
+		// Done, print info
+		sw.stop();
+		if (log.isInfoEnabled())
+			log.infof("Nutz.Mvc[%s] is down in %sms", this.getServletName(), sw.getDuration());
 	}
 
 	@Override
@@ -80,6 +108,10 @@ public class NutServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Mvcs.updateRequestAttributes(req);
 		String path = Mvcs.getRequestPath(req);
+		
+		if (log.isInfoEnabled())
+			log.info(path);
+		
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);
 		if (null == ing.getInvoker() || null == ing) {

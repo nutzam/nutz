@@ -41,7 +41,7 @@ public class ObjectProxy {
 	}
 
 	public void depose() {
-		weaver.deose();
+		weaver.depose();
 	}
 
 }

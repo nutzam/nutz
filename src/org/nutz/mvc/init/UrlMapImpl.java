@@ -7,14 +7,18 @@ import java.util.List;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.*;
-import org.nutz.mvc.invoker.ActionInvokerImpl;
+import org.nutz.mvc.invoker.JspServletInvoker;
 
 public class UrlMapImpl implements UrlMap {
+
+	private static final Log log = LogFactory.getLog(UrlMapImpl.class);
 
 	private Ioc ioc;
 
@@ -89,8 +93,11 @@ public class UrlMapImpl implements UrlMap {
 			if (null == ats)
 				continue;
 			// Create invoker
-			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, moduleType, method,
+			JspServletInvoker invoker = new JspServletInvoker(ioc, makers, moduleType, method,
 					myOk, myFail, myAb, myFlts, myEncoding);
+
+			if (log.isDebugEnabled())
+				log.debugf("  %20s() @(%s)", method.getName(), Lang.concat(ats.value()));
 
 			// Mapping invoker
 			for (String base : bases) {

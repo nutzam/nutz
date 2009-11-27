@@ -34,7 +34,7 @@ public class DynamicWeaver implements ObjectWeaver {
 		this.fields = fields;
 	}
 
-	public void deose() {}
+	public void depose() {}
 
 	public Object weave(IocMaking ing) {
 		// 准备构造函数参数

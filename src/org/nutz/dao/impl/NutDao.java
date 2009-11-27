@@ -44,7 +44,7 @@ import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
 
-	private static Log log = LogFactory.getLog(Dao.class);
+	private static Log log = LogFactory.getLog(NutDao.class);
 
 	private DataSource dataSource;
 	private SqlMaker sqlMaker;
@@ -52,7 +52,7 @@ public class NutDao implements Dao {
 	private SqlManager sqls;
 	private EntityHolder entities;
 	private DatabaseMeta meta;
-	private Class<? extends EntityMaker> entityMaker;
+	private EntityMaker entityMaker;
 
 	/* ========================================================== */
 	public NutDao() {
@@ -118,7 +118,7 @@ public class NutDao implements Dao {
 	 * </pre>
 	 */
 	public void setDataSource(DataSource dataSource) {
-		entities = new EntityHolder(null == entityMaker ? DefaultEntityMaker.class : entityMaker);
+		entities = new EntityHolder(null == entityMaker ? new DefaultEntityMaker() : entityMaker);
 		this.dataSource = dataSource;
 	}
 
@@ -164,11 +164,11 @@ public class NutDao implements Dao {
 		this.sqlMaker = sqlMaker;
 	}
 
-	public Class<? extends EntityMaker> getEntityMaker() {
+	public EntityMaker getEntityMaker() {
 		return entityMaker;
 	}
 
-	public void setEntityMaker(Class<? extends EntityMaker> entityMaker) {
+	public void setEntityMaker(EntityMaker entityMaker) {
 		this.entityMaker = entityMaker;
 	}
 
@@ -503,6 +503,7 @@ public class NutDao implements Dao {
 	}
 
 	public <T> Entity<T> getEntity(final Class<T> classOfT) {
+		checkDatabase();
 		Entity<T> en = entities.getEntity(classOfT);
 		// 如果未发现实体，创建实体
 		if (null == en) {

@@ -46,7 +46,6 @@ public class LogFactory {
 	}
 
 	public static Log getLog(String className) {
-		
 		if (workableAdapter == null) {
 			synchronized (LogFactory.class) {
 				if (workableAdapter == null) {
@@ -56,18 +55,16 @@ public class LogFactory {
 							break;
 						}
 					}
-					
+
 					if (showNullLogWarning && workableAdapter == null) {
-						systemLog.fatal("failed to create logger from logAdapter: "
-								+ workableAdapter.getClass().getName()
-								+ ", nullLog will be used instead of it.");
-						
+						systemLog
+								.fatal("Failed to create logger (log4j or java.util.logging), nullLog will be used!");
 						workableAdapter = new NullAdaptor();
 					}
 				}
 			}
 		}
-		
+
 		try {
 			return workableAdapter.getLogger(className);
 		} catch (Exception e) {

@@ -7,6 +7,8 @@ import java.util.Map.Entry;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 
 /**
  * 自定义级别上下文对象
@@ -14,6 +16,8 @@ import org.nutz.lang.Lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class ScopeContext implements IocContext {
+
+	private static final Log log = LogFactory.getLog(ScopeContext.class);
 
 	private String scope;
 	private Map<String, ObjectProxy> objs;
@@ -46,6 +50,9 @@ public class ScopeContext implements IocContext {
 	}
 
 	public boolean save(String scope, String name, ObjectProxy obj) {
+		if (log.isDebugEnabled())
+			log.debugf("Save object '%s' to [%s] ", name, scope);
+
 		if (accept(scope)) {
 			checkBuffer();
 			synchronized (this) {
@@ -64,6 +71,9 @@ public class ScopeContext implements IocContext {
 	public boolean remove(String scope, String name) {
 		if (accept(scope)) {
 			checkBuffer();
+			if (log.isDebugEnabled())
+				log.debugf("Remove object '%s' from [%s] ", name, scope);
+
 			synchronized (this) {
 				if (!objs.containsKey(name)) {
 					return null != objs.remove(name);
@@ -76,6 +86,9 @@ public class ScopeContext implements IocContext {
 	public void clear() {
 		checkBuffer();
 		for (Entry<String, ObjectProxy> en : objs.entrySet()) {
+			if (log.isDebugEnabled())
+				log.debugf("Depose object '%s' ...", en.getKey());
+
 			en.getValue().depose();
 		}
 		objs.clear();

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.nutz.dao.Dao;
 import org.nutz.dao.Daos;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.TableName;
@@ -56,12 +55,15 @@ import org.nutz.log.LogFactory;
  */
 public class DefaultEntityMaker implements EntityMaker {
 
-	private static final Log log = LogFactory.getLog(Dao.class);
+	private static final Log log = LogFactory.getLog(DefaultEntityMaker.class);
 
 	public Entity<?> make(DatabaseMeta db, Connection conn, Class<?> type) {
 		Entity<?> entity = new Entity<Object>();
 		Mirror<?> mirror = Mirror.me(type);
 		entity.setMirror(mirror);
+
+		if (log.isDebugEnabled())
+			log.debugf("Parse POJO <%s> for DB[%s]", type.getName(), db.getTypeName());
 
 		// Get @Table & @View
 		entity.setTableName(evalEntityName(type, Table.class, null));

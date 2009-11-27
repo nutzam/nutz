@@ -10,14 +10,14 @@ public class Stopwatch {
 	private long from;
 	private long to;
 
-	public static Stopwatch create() {
+	public static Stopwatch begin() {
 		Stopwatch sw = new Stopwatch();
 		sw.start();
 		return sw;
 	}
-	
+
 	public static Stopwatch run(Runnable atom) {
-		Stopwatch sw = create();
+		Stopwatch sw = begin();
 		atom.run();
 		sw.stop();
 		return sw;

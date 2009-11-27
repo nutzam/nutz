@@ -5,16 +5,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nutz.dao.DatabaseMeta;
-import org.nutz.lang.Lang;
 
 public class EntityHolder {
 
-	public EntityHolder(Class<? extends EntityMaker> maker) {
+	public EntityHolder(EntityMaker maker) {
 		this.maker = maker;
 		mappings = new HashMap<Class<?>, Entity<?>>();
 	}
 
-	private Class<? extends EntityMaker> maker;
+	private EntityMaker maker;
 	private Map<Class<?>, Entity<?>> mappings;
 
 	@SuppressWarnings("unchecked")
@@ -25,12 +24,8 @@ public class EntityHolder {
 	@SuppressWarnings("unchecked")
 	public <T> Entity<T> reloadEntity(Class<T> classOfT, Connection conn, DatabaseMeta meta) {
 		Entity<?> entity = null;
-		try {
-			entity = maker.newInstance().make(meta, conn, classOfT);
-			mappings.put(classOfT, entity);
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
+		entity = maker.make(meta, conn, classOfT);
+		mappings.put(classOfT, entity);
 		return (Entity<T>) entity;
 	}
 

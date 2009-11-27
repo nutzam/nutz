@@ -3,7 +3,6 @@ package org.nutz.ioc.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocException;
@@ -23,7 +22,7 @@ import org.nutz.log.LogFactory;
 
 public class NutIoc implements Ioc2 {
 
-	private static Log log = LogFactory.getLog(Ioc.class);
+	private static Log log = LogFactory.getLog(NutIoc.class);
 
 	private static final String DEF_SCOPE = "app";
 
@@ -56,7 +55,7 @@ public class NutIoc implements Ioc2 {
 
 	public <T> T get(Class<T> type, String name, IocContext context) {
 		if (log.isDebugEnabled())
-			log.debugf("Get [%s]:%s", name, type);
+			log.debugf("Get '%s'<%s>", name, type);
 
 		// 连接上下文
 		IocContext cntx;
@@ -85,7 +84,7 @@ public class NutIoc implements Ioc2 {
 				if (null == re) {
 					try {
 						if (log.isDebugEnabled())
-							log.debug("Load definition");
+							log.debug("\t >> Load definition");
 
 						// 读取对象定义
 						IocObject iobj = loader.load(name);
@@ -104,6 +103,8 @@ public class NutIoc implements Ioc2 {
 							iobj.setScope(defaultScope);
 
 						// 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
+						if (log.isDebugEnabled())
+							log.debug("\t >> Make...");
 						re = maker.make(ing, iobj);
 					}
 					// 处理异常
@@ -126,6 +127,8 @@ public class NutIoc implements Ioc2 {
 
 	public void depose() {
 		context.depose();
+		if (log.isDebugEnabled())
+			log.debug("!!!Ioc is deposed, you can't use it anymore");
 	}
 
 	public void reset() {
