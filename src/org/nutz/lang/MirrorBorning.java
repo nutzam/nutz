@@ -3,7 +3,7 @@ package org.nutz.lang;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
-import org.nutz.lang.Mirror.MatchType;
+import org.nutz.lang.MatchType;
 import org.nutz.lang.born.*;
 
 @SuppressWarnings("unchecked")

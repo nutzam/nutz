@@ -1,5 +1,5 @@
 t_killer {
-	id INT +PK,
+	killerid INT +PK,
 	name VARCHAR(50) !UNIQUE,
 	killed INT,
 	last VARCHAR(50)

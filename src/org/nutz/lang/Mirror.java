@@ -452,6 +452,9 @@ public class Mirror<T> {
 		return getAllDeclaredMethods(Object.class);
 	}
 
+	/**
+	 * @return 所有静态方法
+	 */
 	public Method[] getStaticMethods() {
 		List<Method> list = new LinkedList<Method>();
 		for (Method m : klass.getMethods()) {
@@ -470,6 +473,17 @@ public class Mirror<T> {
 						.getMessage()));
 	}
 
+	/**
+	 * 为对象的一个字段设值。 不会调用对象的 setter，直接设置字段的值
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param field
+	 *            字段
+	 * @param value
+	 *            值。如果为 null，字符和数字字段，都会设成 0
+	 * @throws FailToSetValueException
+	 */
 	public void setValue(Object obj, Field field, Object value) throws FailToSetValueException {
 		if (!field.isAccessible())
 			field.setAccessible(true);
@@ -494,6 +508,17 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * 为对象的一个字段设置。优先调用 setter 方法。
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param fieldName
+	 *            字段名
+	 * @param value
+	 *            值
+	 * @throws FailToSetValueException
+	 */
 	public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
 		try {
 			this.getSetter(fieldName, value.getClass()).invoke(obj, value);
@@ -512,6 +537,16 @@ public class Mirror<T> {
 				.getName(), name));
 	}
 
+	/**
+	 * 不调用 getter，直接获得字段的值
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param f
+	 *            字段
+	 * @return 字段的值。
+	 * @throws FailToGetValueException
+	 */
 	public Object getValue(Object obj, Field f) throws FailToGetValueException {
 		try {
 			if (!f.isAccessible())
@@ -535,14 +570,26 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * @return 对象类型
+	 */
 	public Class<T> getType() {
 		return klass;
 	}
 
+	/**
+	 * @return 对象提炼类型数组。从对象自身的类型到 Object，中间的继承关系中最有特点的几个类型
+	 */
 	public Class<?>[] extractTypes() {
 		return typeExtractor.extract(this);
 	}
 
+	/**
+	 * @return 获得外覆类
+	 * 
+	 * @throws RuntimeException
+	 *             如果当前类型不是原生类型，则抛出
+	 */
 	public Class<?> getWrapperClass() {
 		if (!klass.isPrimitive()) {
 			if (this.isPrimitiveNumber() || this.is(Boolean.class) || this.is(Character.class))
@@ -569,12 +616,18 @@ public class Mirror<T> {
 		throw Lang.makeThrow("Class [%s] has no wrapper class!", klass.getName());
 	}
 
+	/**
+	 * @return 获得外覆类，如果没有外覆类，则返回自身的类型
+	 */
 	public Class<?> getWrapper() {
 		if (klass.isPrimitive())
 			return getWrapperClass();
 		return klass;
 	}
 
+	/**
+	 * @return 如果当前类为内部类，则返回其外部类。否则返回 null
+	 */
 	public Class<?> getOuterClass() {
 		if (Modifier.isStatic(klass.getModifiers()))
 			return null;
@@ -590,10 +643,24 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * @param args
+	 *            构造函数参数
+	 * @return 当前对象的构建方式。
+	 * 
+	 * @see org.nutz.lang.born.Borning
+	 */
 	public Borning<T> getBorning(Object... args) {
 		return new MirrorBorning<T>(this, args).getBorning();
 	}
 
+	/**
+	 * 根据构造函数参数，创建一个对象。
+	 * 
+	 * @param args
+	 *            构造函数参数
+	 * @return 新对象
+	 */
 	public T born(Object... args) {
 		return new MirrorBorning<T>(this, args).born();
 	}
@@ -617,10 +684,26 @@ public class Mirror<T> {
 		return false;
 	}
 
+	/**
+	 * 根据函数名称和参数，返回一个函数调用方式
+	 * 
+	 * @param methodName
+	 *            函数名
+	 * @param args
+	 *            参数
+	 * @return 函数调用方式
+	 */
 	public Invoking getInvoking(String methodName, Object... args) {
 		return new Invoking(klass, methodName, args);
 	}
 
+	/**
+	 * 根据字段名，得出一个字段注入方式。优先用 Setter
+	 * 
+	 * @param fieldName
+	 *            字段名
+	 * @return 注入方式。
+	 */
 	public Injecting getInjecting(String fieldName) {
 		Method[] sss = this.findSetters(fieldName);
 		if (sss.length == 1)
@@ -639,10 +722,31 @@ public class Mirror<T> {
 			}
 	}
 
+	/**
+	 * 调用对象的一个方法
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param methodName
+	 *            方法名
+	 * @param args
+	 *            参数
+	 * @return 调用结果
+	 */
 	public Object invoke(Object obj, String methodName, Object... args) {
 		return getInvoking(methodName, args).invoke(obj);
 	}
 
+	/**
+	 * 查找一个方法。匹配的很宽泛
+	 * 
+	 * @param name
+	 *            方法名
+	 * @param paramTypes
+	 *            参数类型列表
+	 * @return 方法
+	 * @throws NoSuchMethodException
+	 */
 	public Method findMethod(String name, Class<?>... paramTypes) throws NoSuchMethodException {
 		try {
 			return klass.getMethod(name, paramTypes);
@@ -658,6 +762,15 @@ public class Mirror<T> {
 						.castToString(paramTypes)));
 	}
 
+	/**
+	 * 根据名称和参数个数，查找一组方法
+	 * 
+	 * @param name
+	 *            方法名
+	 * @param argNumber
+	 *            参数个数
+	 * @return 方法数组
+	 */
 	public Method[] findMethods(String name, int argNumber) {
 		List<Method> methods = new LinkedList<Method>();
 		for (Method m : klass.getMethods())
@@ -669,6 +782,16 @@ public class Mirror<T> {
 		return methods.toArray(new Method[methods.size()]);
 	}
 
+	/**
+	 * 根据返回值类型，以及参数类型，查找第一个匹配的方法
+	 * 
+	 * @param returnType
+	 *            返回值类型
+	 * @param paramTypes
+	 *            参数个数
+	 * @return 方法
+	 * @throws NoSuchMethodException
+	 */
 	public Method findMethod(Class<?> returnType, Class<?>... paramTypes)
 			throws NoSuchMethodException {
 		for (Method m : klass.getMethods()) {
@@ -691,10 +814,28 @@ public class Mirror<T> {
 
 	}
 
+	/**
+	 * 一个方法的参数类型同一个给定的参数数组是否可以匹配
+	 * 
+	 * @param methodParamTypes
+	 *            参数类型列表
+	 * @param args
+	 *            参数
+	 * @return 匹配类型
+	 * 
+	 * @see org.nutz.lang.MatchType
+	 */
 	public static MatchType matchParamTypes(Class<?>[] methodParamTypes, Object... args) {
 		return matchParamTypes(methodParamTypes, evalToTypes(args));
 	}
 
+	/**
+	 * 将一组对象，变成一组类型
+	 * 
+	 * @param args
+	 *            对象数组
+	 * @return 类型数组
+	 */
 	public static Class<?>[] evalToTypes(Object... args) {
 		Class<?>[] types = new Class[args.length];
 		int i = 0;
@@ -703,11 +844,18 @@ public class Mirror<T> {
 		return types;
 	}
 
-	public static Object evalArgToSameTypeRealArray(Object... args) {
+	static Object evalArgToSameTypeRealArray(Object... args) {
 		Object array = evalArgToRealArray(args);
 		return array == args ? null : array;
 	}
 
+	/**
+	 * 将一个 Object[] 数组，变成一个真正的数组 T[]
+	 * 
+	 * @param args
+	 *            数组
+	 * @return 新数组
+	 */
 	public static Object evalArgToRealArray(Object... args) {
 		if (null == args || args.length == 0)
 			return null;
@@ -910,10 +1058,6 @@ public class Mirror<T> {
 		if (superclass instanceof ParameterizedType)
 			return ((ParameterizedType) superclass).getActualTypeArguments();
 		return null;
-	}
-
-	public static enum MatchType {
-		YES, LACK, NO
 	}
 
 	public static String getPath(Class<?> klass) {

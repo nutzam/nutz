@@ -17,7 +17,7 @@ public class Killer {
 		this.name = name;
 	}
 
-	@Column
+	@Column("killerid")
 	@Id
 	private int id;
 

@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.nutz.lang.Mirror.MatchType;
+import org.nutz.lang.MatchType;
 
 import static java.lang.String.*;
 
+/**
+ * 函数调用方式
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Invoking {
 	/*------------------------------------------------------------------------*/
 	private static abstract class Invoker {

@@ -50,7 +50,7 @@ class FieldQueryImpl implements FieldQuery {
 		// Set Dynamic Variables
 		if (vars.length > 0) {
 			sql.vars().set("view", ef.getEntity().getViewName());
-			sql.vars().set("field", ef.getName());
+			sql.vars().set("field", ef.getColumnName());
 			Object refer = TableName.get();
 			if (null != refer) {
 				if (TableName.isPrimitive(refer))
