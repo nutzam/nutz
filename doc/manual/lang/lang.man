@@ -74,12 +74,43 @@
 			}}}
 		
 	容器转换
-		 * Lang.array2map
-		 * Lang.array2array
-		 * Lang.collection2array
-		 * Lang.collection2list
-		 * Lang.collection2map
-		 * Lang.map2Object
+		 * 数组 to Map
+			{{{
+			Pet[] pets = new Pet[3];
+			... // 为数组赋值
+			
+			Map<String,Pet> petMap = Lang.array2map(HashMap.class, pets, "name");
+			}}}
+			将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+		 * 数组 to 数组
+			{{{
+			Pet[] pets = new Pet[3];
+			
+			String[] ss = Lang.array2array(pets, String.class);
+			}}}
+		 * 集合 to 数组
+			{{{
+			List<Pet> pets = new ArrayList<Pet>();
+			... // 为列表赋值
+			
+			Pet[] petArray = Lang.collection2array(pets);
+			}}}
+		 * 集合 to 列表
+			{{{
+			Queue<Pet> pets = new ArrayDeque<Pet>();
+			... // 为队列赋值
+			
+			List<Pet> list = Lang.collection2list(pets);
+			}}}
+		 * 集合 to Map
+			{{{
+			Queue<Pet> pets = new ArrayDeque<Pet>();
+			... // 为队列赋值
+			
+			Map<String,Pet> petMap = Lang.collection2map(HashMap.class, pets, "name");
+			}}}
+			将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+		 * Map to 对象
 			{{{
 			return Lang.map2Object(map,Pet.class);
 			}}}
