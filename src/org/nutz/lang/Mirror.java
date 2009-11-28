@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -893,6 +894,17 @@ public class Mirror<T> {
 
 	}
 
+	/**
+	 * 匹配一个函数声明的参数类型数组和一个调用参数数组
+	 * 
+	 * @param paramTypes
+	 *            函数声明参数数组
+	 * @param argTypes
+	 *            调用参数数组
+	 * @return 匹配类型
+	 * 
+	 * @see org.nutz.lang.MatchType
+	 */
 	public static MatchType matchParamTypes(Class<?>[] paramTypes, Class<?>[] argTypes) {
 		int len = argTypes == null ? 0 : argTypes.length;
 		if (len == 0 && paramTypes.length == 0)
@@ -913,28 +925,13 @@ public class Mirror<T> {
 		return MatchType.NO;
 	}
 
-	// @SuppressWarnings("unchecked")
-	// public T duplicate(T src) {
-	// Method m;
-	// try {
-	// m = klass.getMethod("clone");
-	// return (T) m.invoke(src);
-	// } catch (Exception failToClone) {
-	// try {
-	// T obj = born();
-	// Field[] fields = getFields();
-	// for (Field field : fields) {
-	// Object value = getValue(src, field);
-	// setValue(obj, field, value);
-	// }
-	// return obj;
-	//
-	// } catch (Exception e) {
-	// throw Lang.wrapThrow(e);
-	// }
-	// }
-	// }
-
+	/**
+	 * 判断当前对象是否为一个类型。精确匹配，即使是父类和接口，也不相等
+	 * 
+	 * @param type
+	 *            类型
+	 * @return 是否相等
+	 */
 	public boolean is(Class<?> type) {
 		if (null == type)
 			return false;
@@ -943,66 +940,122 @@ public class Mirror<T> {
 		return false;
 	}
 
+	/**
+	 * 判断当前对象是否为一个类型。精确匹配，即使是父类和接口，也不相等
+	 * 
+	 * @param className
+	 *            类型名称
+	 * @return 是否相等
+	 */
 	public boolean is(String className) {
 		return klass.getName().equals(className);
 	}
 
+	/**
+	 * @param type
+	 *            类型或接口名
+	 * @return 当前对象是否为一个类型的子类，或者一个接口的实现类
+	 */
 	public boolean isOf(Class<?> type) {
 		return type.isAssignableFrom(klass);
 	}
 
+	/**
+	 * @return 当前对象是否为字符串
+	 */
 	public boolean isString() {
 		return is(String.class);
 	}
 
+	/**
+	 * @return 当前对象是否为CharSequence的子类
+	 */
 	public boolean isStringLike() {
 		return CharSequence.class.isAssignableFrom(klass);
 	}
 
+	/**
+	 * @return 当前对象是否为字符
+	 */
 	public boolean isChar() {
 		return is(char.class) || is(Character.class);
 	}
 
+	/**
+	 * @return 当前对象是否为枚举
+	 */
 	public boolean isEnum() {
 		return klass.isEnum();
 	}
 
+	/**
+	 * @return 当前对象是否为布尔
+	 */
 	public boolean isBoolean() {
 		return is(boolean.class) || is(Boolean.class);
 	}
 
+	/**
+	 * @return 当前对象是否为浮点
+	 */
 	public boolean isFloat() {
 		return is(float.class) || is(Float.class);
 	}
 
+	/**
+	 * @return 当前对象是否为双精度浮点
+	 */
 	public boolean isDouble() {
 		return is(double.class) || is(Double.class);
 	}
 
+	/**
+	 * @return 当前对象是否为整型
+	 */
 	public boolean isInt() {
 		return is(int.class) || is(Integer.class);
 	}
 
+	/**
+	 * @return 当前对象是否为整数（包括 int, long, short, byte）
+	 */
 	public boolean isIntLike() {
-		return isInt() || isLong() || isShort() || isByte();
+		return isInt() || isLong() || isShort() || isByte() || is(BigDecimal.class);
 	}
 
+	/**
+	 * @return 当前对象是否为小数 (float, dobule)
+	 */
 	public boolean isDecimal() {
 		return isFloat() || isDouble();
 	}
 
+	/**
+	 * @return 当前对象是否为长整型
+	 */
 	public boolean isLong() {
 		return is(long.class) || is(Long.class);
 	}
 
+	/**
+	 * @return 当前对象是否为短整型
+	 */
 	public boolean isShort() {
 		return is(short.class) || is(Short.class);
 	}
 
+	/**
+	 * @return 当前对象是否为字节型
+	 */
 	public boolean isByte() {
 		return is(byte.class) || is(Byte.class);
 	}
 
+	/**
+	 * @param type
+	 *            当前对象是否为一个对象的外覆类
+	 * @return
+	 */
 	public boolean isWrpperOf(Class<?> type) {
 		try {
 			return Mirror.me(type).getWrapperClass() == klass;
@@ -1010,6 +1063,11 @@ public class Mirror<T> {
 		return false;
 	}
 
+	/**
+	 * @param type
+	 *            目标类型
+	 * @return 判断当前对象是否能直接转换到目标类型，而不产生异常
+	 */
 	public boolean canCastToDirectly(Class<?> type) {
 		if (klass == type)
 			return true;
@@ -1025,15 +1083,24 @@ public class Mirror<T> {
 		return false;
 	}
 
+	/**
+	 * @return 当前对象是否为原生的数字类型 （即不包括 boolean 和 char）
+	 */
 	public boolean isPrimitiveNumber() {
 		return isInt() || isLong() || isFloat() || isDouble() || isByte() || isShort();
 	}
 
+	/**
+	 * @return 当前对象是否为数字
+	 */
 	public boolean isNumber() {
 		return Number.class.isAssignableFrom(klass) || klass.isPrimitive() && !is(boolean.class)
 				&& !is(char.class);
 	}
 
+	/**
+	 * @return 当前对象是否在表示日期或时间
+	 */
 	public boolean isDateTimeLike() {
 		return Calendar.class.isAssignableFrom(klass)
 				|| java.util.Date.class.isAssignableFrom(klass)
@@ -1060,10 +1127,20 @@ public class Mirror<T> {
 		return null;
 	}
 
+	/**
+	 * @param klass
+	 *            类型
+	 * @return 一个类型的包路径
+	 */
 	public static String getPath(Class<?> klass) {
 		return klass.getName().replace('.', '/');
 	}
 
+	/**
+	 * @param parameterTypes
+	 *            函数的参数类型数组
+	 * @return 参数的描述符
+	 */
 	public static String getParamDescriptor(Class<?>[] parameterTypes) {
 		StringBuilder sb = new StringBuilder();
 		sb.append('(');
@@ -1074,15 +1151,30 @@ public class Mirror<T> {
 		return s;
 	}
 
+	/**
+	 * @param method
+	 *            方法
+	 * @return 这个方法的描述符
+	 */
 	public static String getMethodDescriptor(Method method) {
 		return getParamDescriptor(method.getParameterTypes())
 				+ getTypeDescriptor(method.getReturnType());
 	}
 
+	/**
+	 * @param c
+	 *            构造函数
+	 * @return 构造函数的描述符
+	 */
 	public static String getConstructorDescriptor(Constructor<?> c) {
 		return getParamDescriptor(c.getParameterTypes()) + "V";
 	}
 
+	/**
+	 * @param klass
+	 *            类型
+	 * @return 获得一个类型的描述符
+	 */
 	public static String getTypeDescriptor(Class<?> klass) {
 		if (klass.isPrimitive()) {
 			if (klass == void.class)

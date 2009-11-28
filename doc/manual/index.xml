@@ -70,4 +70,7 @@
 		<doc path="zdoc_index_xml.man"/>
 		<doc path="zdoc_dir_convert.man"/>
 	</doc>
+	<doc path="appendix" title="附录">
+		<doc path="create_datasource.man"/>
+	</doc>
 </doc>
