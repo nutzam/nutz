@@ -60,7 +60,7 @@ public abstract class Maths {
 		for (int i = 0; i < (high - low); i++) {
 			mask += 1 << i;
 		}
-		return bs &= mask;
+		return bs & mask;
 	}
 
 }
