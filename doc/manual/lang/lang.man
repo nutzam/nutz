@@ -167,17 +167,15 @@
 		 * 是否被特定字符包裹
 			{{{
 			assertTrue(Strings.isQuoteBy("[ABC]", '[', ']'));
-			}}}
-			忽略空白
-			{{{
+			
+			// 忽略空白
 			assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
 			}}}
 		 * 集合中的最长串
 			{{{
 			assertEquals(3, Strings.maxLength((String[]){"A","ABC","BC"}));
-			}}}
-			集合
-			{{{
+			
+			// 集合
 			assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 			}}}
 	修改
