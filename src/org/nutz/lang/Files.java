@@ -24,6 +24,7 @@ import java.util.zip.ZipFile;
  * 文件操作的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Files {
 
@@ -596,7 +597,7 @@ public abstract class Files {
 			} catch (IOException e) {
 				return false;
 			}
-			src.renameTo(newFile);
+			return src.renameTo(newFile);
 		}
 		return false;
 	}
