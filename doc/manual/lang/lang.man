@@ -210,15 +210,14 @@
 			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,");
 			}}}
 		 
-	创建
-		 * 重复
-			{{{
-			// 重复字符
-			assertEquals("---", Strings.dup('-', 3));
-			
-			// 重复字串
-			assertEquals("ABCABCABC", Strings.dup("ABC", 3));
-			}}}
+	创建重复
+		{{{
+		// 重复字符
+		assertEquals("---", Strings.dup('-', 3));
+		
+		// 重复字串
+		assertEquals("ABCABCABC", Strings.dup("ABC", 3));
+		}}}
 -----------------------------------------------------------------------------------------
 文件操作
 	查找
