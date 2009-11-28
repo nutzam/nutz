@@ -5,7 +5,7 @@ import org.nutz.log.LogAdapter;
 
 public class NullAdaptor implements LogAdapter {
 
-	public static NullLog log = new NullLog();
+	public static final NullLog log = new NullLog();
 
 	public boolean canWork() {
 		return false;
