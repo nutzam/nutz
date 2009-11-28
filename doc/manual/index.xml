@@ -55,7 +55,8 @@
 	<doc path="lang" title="甜 Java">
 		<doc path="lang.man"/>
 		<doc path="castors.man"/>
-		<doc path="lang_mirror.man"/>
+		<doc path="mirror.man"/>
+		<doc path="segment.man"/>
 	</doc>
 	<doc path="zmole" title="zMole - 快速代码生成工具">
 		<doc path="zmole_get_start.man"/>

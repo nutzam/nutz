@@ -55,13 +55,36 @@ public abstract class Files {
 	/**
 	 * 将内容写入 UTF-8 文件，如文件不存在，创建这个文件
 	 * 
+	 * @param path
+	 *            文件路径
+	 * @param content
+	 *            内容
+	 */
+	public static void write(String path, Object content) {
+		if (null == path || null == content)
+			return;
+		File f = Files.findFile(path);
+		if (null == f) {
+			f = new File(path);
+			try {
+				Files.createNewFile(f);
+			} catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
+		}
+		Lang.writeAll(Streams.fileOutw(f), content.toString());
+	}
+
+	/**
+	 * 将内容写入 UTF-8 文件，如文件不存在，创建这个文件
+	 * 
 	 * @param f
 	 *            文件
 	 * @param content
 	 *            内容
 	 */
 	public static void write(File f, Object content) {
-		if (null == f)
+		if (null == f || null == content)
 			return;
 		if (f.isDirectory())
 			throw Lang.makeThrow("Directory '%s' can not be write as File", f);

@@ -1,3 +1,351 @@
-#title:一些有用的类
+#title: Java 的函数糖
+#index:0,1
+-----------------------------------------------------------------------------------------
+什么是函数糖？
+	
+	Nutz 还提供一系列有用的静态函数和类。它们帮助你更轻松的使用 Java。 你可以查看
+	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 下
+	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
+	
+	本篇文档主要列出的，全是一些帮助函数，在 80% 以上的情况下，这些函数能让你有效的缩短你
+	代码的体积，并且增加代码的可读性。
+-----------------------------------------------------------------------------------------
+语言的扩展
+	Java 的语法比 C/C++ 友好很多， 因为它设计之初，就是为了考虑到程序员的使用是否舒适。
+	当然很多事情愿望是美好的，现实是残酷的。Java 语言本身的语法仍然不可避免的带有着 10年前那种
+	的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全
+	可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。
+	
+	
+	异常
+		创建异常
+			 * 根据格式化字符串，生成运行时异常
+				{{{
+				throw Lang.makeThrow("Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+			 * 根据格式化字符串，生成一个指定的异常。
+				{{{
+				throw Lang.makeThrow(SQLException.class, "Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+			 * 未实现的运行时异常
+				{{{
+				throw Lang.noImplement();
+				}}}
+			 
+		包裹异常
+			 * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
+				{{{
+				throw Lang.wrapThrow(e);
+				}}}
+			 * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
+				{{{
+				throw Lang.wrapThrow(e, SQLException.class);
+				}}}
+			 * 将一个或者多个异常组合抛出
+				{{{
+				throw Lang.comboThrow(e1,e2,e3);
+				}}}
+			 * 将抛出对象包裹成运行时异常，并增加自己的描述
+				{{{
+				throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+		
+	对象
+		 * 比较对象: 支持数组，集合，和容器
+			{{{
+			return Lang.equals(map1, map2);
+			}}}
+		 * 显示对象
+			{{{
+			return Dumps.obj(pojo);
+			}}}
+		 * 是否包括
+			{{{
+			return Lang.contains(myArray, ele);
+			}}}
+		 * 遍历
+			{{{
+			Lang.each(obj, new Each<Object>(){
+				public void invoke(int i, T ele, int length){
+					obj 可以是集合，数组，Map，普通对象.
+					普通对象的话，则会传给本匿名类的 ele
+				}
+			});
+			}}}
+		
+	容器转换
+		 * Lang.array2map
+		 * Lang.array2array
+		 * Lang.collection2array
+		 * Lang.collection2list
+		 * Lang.collection2map
+		 * Lang.map2Object
+			{{{
+			return Lang.map2Object(map,Pet.class);
+			}}}
+			
+	对象模拟
+		 * 生成数组
+			{{{
+			String[] ss = Lang.array("A","B","C");
+			}}}
+		 * 从字符串生成 Reader
+			{{{
+			Reader reader = Lang.inr("ABCDEF");
+			}}}
+		 * 从字符串生成 InputStream
+			{{{
+			InputStream ins = Lang.ins("ABCDEF");
+			}}}
+		 * 从字符串生成 Map
+			{{{
+			Map<String,Object> map = Lang.map("{a:10, b:'ABC', c:true}");
+			}}}
+			
+		 * 从字符串生成 List
+			{{{
+			List<Object> list =  Lang.list("[true, 23, 'ABC']");
+			}}}
+	XML
+		 * 创建 DocumentBuilder
+			{{{
+			return Lang.xmls();
+			}}}
+	其他
+		 * 打印 java.util.regex.Matcher 的详细信息
+			{{{
+			return Dumps.matcher(matcher);
+			}}}
+		 * 解析 Boolean
+			{{{
+			assertTrue(Lang.parseBoolean("on"));
+			assertTrue(Lang.parseBoolean("1"));
+			assertTrue(Lang.parseBoolean("yes"));
+			}}}
+-----------------------------------------------------------------------------------------
+字符串操作
+	判断
+		 * 是否为空串
+			{{{
+			assertTrue(Strings.isEmpty(""));
+			}}}
+		 * 是否为空白
+			{{{
+			assertTrue(Strings.isEmpty("\t \r\n"));
+			}}}
+		 * 是否被特定字符包裹
+			{{{
+			assertTrue(Strings.isQuoteBy("[ABC]", '[', ']'));
+			}}}
+			忽略空白
+			{{{
+			assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
+			}}}
+		 * 集合中的最长串
+			{{{
+			assertEquals(3, Strings.maxLength((String[]){"A","ABC","BC"}));
+			}}}
+			集合
+			{{{
+			assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
+			}}}
+	修改
+		 * 首字母大写
+			{{{
+			assertEquals("Abc", Strings.capitalize("abc"));
+			}}}
+		 * 切除首位空白
+			{{{
+			assertEquals("ABC", Strings.trim("\t   ABC \r\n   ");
+			}}}
+		 * 左填充 (居右)
+			{{{
+			assertEquals("00FE", Strings.alignRight("FE", 4, '0');
+			}}}
+		 * 右填充 (居左)
+			{{{
+			assertEquals("FE00", Strings.alignLeft("FE", 4, '0');
+			}}}
+	转换
+		 * 二进制形式字符串
+			{{{
+			assertEquals("0110", Strings.fillBinary(6, 4);
+			}}}
+		 * 十六进制形式字符串
+			{{{
+			assertEquals("00FF", Strings.fillBinary(255, 4);
+			}}}
+		 * 拆分数组 （忽略空白元素）
+			{{{
+			assertEquals(3, Strings.splitIgnoreBlank("A,B,C");
+			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,");
+			}}}
+		 
+	创建
+		 * 重复
+			{{{
+			assertEquals("---", Strings.dup('-', 3));
+			}}}
+			重复字串
+			{{{
+			assertEquals("ABCABCABC", Strings.dup("ABC", 3));
+			}}}
+-----------------------------------------------------------------------------------------
+文件操作
+	查找
+		 * 从 CLASSPATH 下寻找一个文件
+			{{{
+			return Files.findFile("org/nutz/lang/Lang.class");
+			}}}
+		 * 根据正则式，从压缩文件中获取文件
+			{{{
+			return Files.findEntryInZip(new ZipFile("D:/nutz.jar"), "org/nutz/lang/Lang.class");
+			}}}
+		 * 搜索一个类同一包下面的所有类
+			{{{
+			return Resources.scanClass(Lang.class);
+			}}}
+		 
+	创建-删除-拷贝
+		 * 创建新文件，如果父目录不存在，也一并创建
+			{{{
+			Files.createNewFile(new File("D:/demo/abc.txt"));
+			}}}
+		 * 创建新目录，如果父目录不存在
+			{{{
+			Files.makeDir(new File("D:/demo/abc"));
+			}}}
+		 * 强行删除一个目录，保括这个目录下所有的子目录和文件
+			{{{
+			Files.deleteDir(new File("D:/demo/abc"));
+			}}}
+		 * 清除一个目录里所有的内容
+			{{{
+			Files.clearDir(new File("D:/demo/abc"));
+			}}}
+		 * 将一个目录下的特殊名称的目录彻底删除，比如 '.svn' 或者 '.cvs'
+			{{{
+			Files.cleanAllFolderInSubFolderes(new File("D:/demo"), ".svn");
+			}}}
+	读取-写入
+		 * 读取文件全部内容 - UTF-8
+			{{{
+			String txt = Files.read("D:/abc.txt");
+			}}}
+			或者
+			{{{
+			String txt = Lang.readAll(Streams.fileInr("D:/abc.txt"));
+			}}}
+		 * 重写文件全部内容 - UTF-8
+			{{{
+			// 如果 D:/abc.txt 不存在，则创建它
+			String txt = Files.write("D:/abc.txt", "some text");
+			}}}
+			或者
+			{{{
+			// 如果 D:/abc.txt 不存在，则什么都不做
+			String txt = Lang.writeAll(Streams.fileOutw("D:/abc.txt"), content.toString());
+			}}}
+		 * 获取 Reader - UTF-8
+			{{{
+			Reander reader =  Streams.fileInr("D:/abc.txt");
+			}}}
+			或者
+			{{{
+			Reander reader =  Streams.fileInr(new File("D:/abc.txt"));
+			}}}
+		 * 获取 Writer - UTF-8
+			{{{
+			Writer writer = Streams.fileOutw("D:/abc.txt");
+			}}}
+			或者
+			{{{
+			Writer writer = Streams.fileOutw(new File("D:/abc.txt"));
+			}}}
+		 * 获取 InputStream
+			{{{
+			InputStream ins =  Streams.fileIn("D:/abc.txt");
+			}}}
+			或者
+			{{{
+			InputStream ins =  Streams.fileIn(new File("D:/abc.txt"));
+			}}}
+		 * 获取 OutputStream
+			{{{
+			OutputStream ops =  Streams.fileOut("D:/abc.txt");
+			}}}
+			或者
+			{{{
+			OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
+			}}}
+	直接在磁盘修改文件属性
+		 * 将文件移动到新的位置
+			{{{
+			Files.move(new File("D:/demo/abc.txt"), new File("D:/demo/def.txt"));
+			}}}
+		 * 将文件改名
+			{{{
+			Files.rename(new File("D:/demo/abc.txt"), "def.txt");
+			}}}
+		 * 将文件改名
+			{{{
+			Files.rename(new File("D:/demo/abc.txt"), "def.txt");
+			}}}
+	创建文件对象
+		 * 将文件后缀改名，从而生成一个新的文件对象。但是并不在磁盘上创建它
+			{{{
+			return Files.renameSuffix(new File("D:/demo/abc.txt"), ".java");
+			}}}
+		 * 获取文件主名
+			{{{
+			assertEquals("abc", Files.getMajorName(new File("D:/demo/abc.txt")));
+			}}}
+		 * 获取文件后缀名
+			{{{
+			assertEquals("txt", Files.getSuffixName(new File("D:/demo/abc.txt")));
+			}}} 
 
-coming soon
+-----------------------------------------------------------------------------------------
+秒表
+	{{{
+	Stopwatch sw = Stopwatch.begin();
+	...
+	这里是你的运行代码
+	...
+	sw.stop();
+	System.out.println(sw.getDuration());
+	}}}
+-----------------------------------------------------------------------------------------
+随机数据
+	 * 随机字符串
+		{{{
+		// 生成 100 个长度不超过20的字符串
+		StringGenerator sg = new StringGenerator(20);
+		for(int i=0;i<100;i++)
+			System.out.println(sg.next());
+		}}}
+	 * 闭区间随机数
+		{{{
+		return  GM.random(3,5)
+		}}}
+	 * 随机枚举值
+		随机生成一个枚举值
+		{{{
+		return (new EnumRandom<MyEnums>(){}).next();
+		}}}
+	 * 数组不重复随机对象
+		{{{
+		Random<String> r = new ArrayRandom<String>(Lang.array("A", "B", "C"));
+		int i = 0;
+		while (null != r.next()) {
+			i++;
+		}
+		assertEquals(3, i);
+		}}}
+	 * 数组无穷随机对象
+		{{{
+		Random<String> r = new RecurArrayRandom<String>(Lang.array("A", "B", "C"));
+		for(int i=0; i<100; i++)
+			System.out.println(r.next());
+		}}}
+	
