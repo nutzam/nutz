@@ -1,3 +1,4 @@
 #title:Nutz.Json 简要说明
+#author:Peter.Tung ( mastung@gmail.com )
 
-coming soon
+请参看： [http://code.google.com/p/nutz/downloads/detail?name=Nutz_Json_Book.pdf]
