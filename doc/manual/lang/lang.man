@@ -262,51 +262,39 @@
 		 * 读取文件全部内容 - UTF-8
 			{{{
 			String txt = Files.read("D:/abc.txt");
-			}}}
 			或者
-			{{{
 			String txt = Lang.readAll(Streams.fileInr("D:/abc.txt"));
 			}}}
 		 * 重写文件全部内容 - UTF-8
 			{{{
 			// 如果 D:/abc.txt 不存在，则创建它
 			String txt = Files.write("D:/abc.txt", "some text");
-			}}}
 			或者
-			{{{
 			// 如果 D:/abc.txt 不存在，则什么都不做
 			String txt = Lang.writeAll(Streams.fileOutw("D:/abc.txt"), content.toString());
 			}}}
 		 * 获取 Reader - UTF-8
 			{{{
 			Reander reader =  Streams.fileInr("D:/abc.txt");
-			}}}
 			或者
-			{{{
 			Reander reader =  Streams.fileInr(new File("D:/abc.txt"));
 			}}}
 		 * 获取 Writer - UTF-8
 			{{{
 			Writer writer = Streams.fileOutw("D:/abc.txt");
-			}}}
 			或者
-			{{{
 			Writer writer = Streams.fileOutw(new File("D:/abc.txt"));
 			}}}
 		 * 获取 InputStream
 			{{{
 			InputStream ins =  Streams.fileIn("D:/abc.txt");
-			}}}
 			或者
-			{{{
 			InputStream ins =  Streams.fileIn(new File("D:/abc.txt"));
 			}}}
 		 * 获取 OutputStream
 			{{{
 			OutputStream ops =  Streams.fileOut("D:/abc.txt");
-			}}}
 			或者
-			{{{
 			OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
 			}}}
 	直接在磁盘修改文件属性
@@ -360,7 +348,6 @@
 		return  GM.random(3,5)
 		}}}
 	 * 随机枚举值
-		随机生成一个枚举值
 		{{{
 		return (new EnumRandom<MyEnums>(){}).next();
 		}}}
