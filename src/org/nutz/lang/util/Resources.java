@@ -107,8 +107,12 @@ public final class Resources {
 				return null;
 			// If the base is folder return it directly, else, return it's
 			// parent folder
-			if (file.isDirectory())
+			try{
+				if (file.isDirectory())
 				return file;
+			}catch (SecurityException e) {
+				// In GAE , it will happen.
+			}
 			return file.getParentFile();
 		} catch (IOException e) {}
 		return null;
