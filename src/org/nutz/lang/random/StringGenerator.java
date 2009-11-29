@@ -3,7 +3,6 @@ package org.nutz.lang.random;
 /**
  * @author zozohtnt
  * @author wendal(wendal1985@gmail.com)
- * @version $Revision$
  */
 public class StringGenerator {
 
