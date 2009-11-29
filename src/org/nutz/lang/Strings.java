@@ -39,7 +39,12 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String dup(char c, int num) {
-		return dup(""+c,num);
+		if (c == 0)
+			return "";
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < num; i++)
+			sb.append(c);
+		return sb.toString();
 	}
 
 	/**
@@ -248,7 +253,7 @@ public abstract class Strings {
 		if (cs.length() >= width)
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
-		sb.append(dup(c,width - cs.length()));
+		sb.append(dup(c, width - cs.length()));
 		sb.append(cs);
 		return sb.toString();
 	}
@@ -271,7 +276,7 @@ public abstract class Strings {
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
 		sb.append(cs);
-		sb.append(dup(c,width - cs.length()));
+		sb.append(dup(c, width - cs.length()));
 		return sb.toString();
 	}
 
