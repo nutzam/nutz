@@ -7,6 +7,7 @@ import java.util.LinkedList;
  * 字符串操作的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Strings {
 
@@ -20,7 +21,7 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String dup(CharSequence cs, int num) {
-		if (cs == null || num <= 0)
+		if (isEmpty(cs))
 			return "";
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < num; i++)
@@ -38,10 +39,7 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String dup(char c, int num) {
-		StringBuilder sb = new StringBuilder(c);
-		for (int i = 0; i < num; i++)
-			sb.append(c);
-		return sb.toString();
+		return dup(""+c,num);
 	}
 
 	/**
@@ -250,9 +248,7 @@ public abstract class Strings {
 		if (cs.length() >= width)
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
-		int max = width - cs.length();
-		for (int i = 0; i < max; i++)
-			sb.append(c);
+		sb.append(dup(c,width - cs.length()));
 		sb.append(cs);
 		return sb.toString();
 	}
@@ -275,9 +271,7 @@ public abstract class Strings {
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
 		sb.append(cs);
-		int max = width - cs.length();
-		for (int i = 0; i < max; i++)
-			sb.append(c);
+		sb.append(dup(c,width - cs.length()));
 		return sb.toString();
 	}
 

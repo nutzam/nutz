@@ -109,7 +109,7 @@ public final class Resources {
 			// parent folder
 			try{
 				if (file.isDirectory())
-				return file;
+					return file;
 			}catch (SecurityException e) {
 				// In GAE , it will happen.
 			}
