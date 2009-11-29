@@ -1,7 +1,6 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +22,7 @@ import org.nutz.mvc.init.DefaultLoading;
  * 挂接到 JSP/Servlet 容器的入口
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 @SuppressWarnings("serial")
 public class NutServlet extends HttpServlet {
@@ -61,10 +61,9 @@ public class NutServlet extends HttpServlet {
 			ing.load(modules);
 			// Then, we store the loading result like this
 			urls = ing.getUrls();
-			Map<String, Map<String, String>> msgss = ing.getMessageMap();
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
-			this.getServletContext().setAttribute(Localization.class.getName(), msgss);
+			this.getServletContext().setAttribute(Localization.class.getName(), ing.getMessageMap());
 
 			// Done, print info
 			sw.stop();
@@ -114,11 +113,9 @@ public class NutServlet extends HttpServlet {
 		
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);
-		if (null == ing.getInvoker() || null == ing) {
+		if (null == ing || null == ing.getInvoker())
 			resp.setStatus(404);
-		} else {
+		else
 			ing.invoke(req, resp);
-		}
 	}
-
 }
