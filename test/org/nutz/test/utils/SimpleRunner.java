@@ -51,8 +51,6 @@ public class SimpleRunner {
 
 			runClassTest(className, methodNames);
 		}
-		
-		System.out.println("ConsoleRunner exits...");
 	}
 
 	protected static void runClassTest(String className, Set<String> methodNames)

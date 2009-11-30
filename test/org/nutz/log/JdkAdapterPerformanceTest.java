@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.random.StringGenerator;
 import org.nutz.log.impl.JdkLoggerAdapter;
 import org.nutz.trans.Atom;
 
@@ -27,11 +28,13 @@ public class JdkAdapterPerformanceTest {
 		
 		oldValue = System.setProperty("java.util.logging.config.file", url.getFile());
 		
-		for (int i = 0; i < times; i++)
-			randomStrings1.add(Integer.toString((new Object()).hashCode()));
+		StringGenerator sg = new StringGenerator(40);
 		
 		for (int i = 0; i < times; i++)
-			randomStrings2.add(Integer.toString((new Object()).hashCode()));
+			randomStrings1.add(sg.next());
+		
+		for (int i = 0; i < times; i++)
+			randomStrings2.add(sg.next());
 
 	}
 
@@ -44,7 +47,7 @@ public class JdkAdapterPerformanceTest {
 	}
 	
 	@Test
-	public void testCreation() {
+	public void testJdkCreation() {
 		
 		System.out.print("JDK Lgger\t 创建" + times + "次:");
 		Stopwatch standardWatch = Stopwatch.run(new Atom(){
@@ -56,7 +59,11 @@ public class JdkAdapterPerformanceTest {
 			
 		});
 		System.out.println(standardWatch);
+	}
 
+	@Test
+	public void testNutzCreation() {
+		
 		System.out.print("Nutz Lgger\t 创建" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
 
@@ -66,15 +73,10 @@ public class JdkAdapterPerformanceTest {
 			}
 		});
 		System.out.println(nutzWatch);
-		
-		System.out.println("nutz和jdklog工作时间比(nutz/jdklog):" + 
-				(int)(((float)nutzWatch.getDuration())/((float)standardWatch.getDuration())*100) + "%.");
 	}
 
-	@Test public void testOutput() {
+	@Test public void testJdkOutput() {
 	
-		final Log nutzLog = LogFactory.getLog("nutz-jdk.performance1.test");
-		
 		final Logger jdkLogger = Logger.getLogger("raw-jdk.performance2.test");
 		
 		System.out.print("JDK Lgger\t 输出" + times + "次:");
@@ -88,6 +90,12 @@ public class JdkAdapterPerformanceTest {
 		});
 		System.out.println(standardWatch);
 
+	}
+
+	@Test public void testNutzOutput() {
+		
+		final Log nutzLog = LogFactory.getLog("nutz-jdk.performance1.test");
+		
 		System.out.print("Nutz Lgger\t 输出" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
 
@@ -98,8 +106,5 @@ public class JdkAdapterPerformanceTest {
 			
 		});
 		System.out.println(nutzWatch);
-		
-		System.out.println("nutz和jdklog工作时间比(nutz/jdklog):" + 
-				(int)(((float)nutzWatch.getDuration())/((float)standardWatch.getDuration())*100) + "%.");
 	}
 }
