@@ -16,7 +16,7 @@ public class OracleExpert implements SqlExpert {
 
 	private static String CTRI = "create or replace trigger ${T}_${F}_ST"
 			+ " BEFORE INSERT ON ${T}" + " FOR EACH ROW" + " BEGIN "
-			+ " SELECT ${T}_${F}_seq.nextval into :new.id FROM dual;" + " END ${T}_${F}_ST;";
+			+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;" + " END ${T}_${F}_ST;";
 
 	public Sql evalCreateSql(DTable dt, Sql createTable) {
 		ComboSql sql = new ComboSql();
