@@ -20,7 +20,7 @@ import javassist.CtMethod;
 import javassist.LoaderClassPath;
 import javassist.NotFoundException;
 
-public class JavassistClassAgent extends ClassLoader implements ClassAgent {
+public class JavassistClassAgent implements ClassAgent {
 
 	private static ClassPool pool = new ClassPool(true);
 
@@ -85,14 +85,15 @@ public class JavassistClassAgent extends ClassLoader implements ClassAgent {
 		if (pairs.length == 0)
 			return klass;
 		AgentClass ac = new AgentClass(klass);
+		ClassLoader classLoader = getClass().getClassLoader();
 		try {
-			return (Class<T>) Class.forName(ac.getNewName(), false, this);
+			return (Class<T>) Class.forName(ac.getNewName(), false, classLoader);
 		} catch (ClassNotFoundException e2) {
 			try {
 				return (Class<T>) Class.forName(ac.getNewName());
 			} catch (ClassNotFoundException e1) {
 				try {
-					return (Class<T>) getClass().getClassLoader().loadClass(ac.getNewName());
+					return (Class<T>) classLoader.loadClass(ac.getNewName());
 				} catch (ClassNotFoundException e) {}
 			}
 		}
