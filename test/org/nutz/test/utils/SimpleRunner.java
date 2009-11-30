@@ -15,7 +15,9 @@ import org.junit.Test;
 import org.nutz.lang.Mirror;
 
 /**
- * org.nutz.log.JdkAdapterPerformanceTest:testCreation
+ * 可以传入多个test case作为参数。例如：
+ * java org.nutz.test.utils.SimpleRunner org.nutz.log.JdkAdapterPerformanceTest:testCreation 
+ * org.nutz.log.JdkAdapterPerformanceTest:*
  * 
  * @author Young(sunonfire@gmail.com)
  * 
