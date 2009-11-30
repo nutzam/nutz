@@ -59,6 +59,15 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 
 	static Method traceObjectThrowableMethod = null;
 
+	static Object levelFatal ;
+	static Object levelError;
+	static Object levelWarn;
+	static Object levelInfo;
+	static Object levelDebug;
+	static Object levelTrace;
+	
+	static Method isEnabledFor;
+	
 	protected static Class<?> logClass = null;
 
 	private static Mirror<?> log4jMirror = null;
@@ -75,38 +84,12 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 			IllegalArgumentException, IllegalAccessException,
 			InvocationTargetException {
 
-		if (logClass == null)
-			logClass = Class.forName(LOG4J_CLASS_NAME, true, Thread
-					.currentThread().getContextClassLoader());
-
-		if (log4jMirror == null)
-			log4jMirror = Mirror.me(logClass);
-
-		if (getLogger == null)
-			getLogger = log4jMirror.findMethod("getLogger", String.class);
-
+		if( false == isInited){
+			initLevelStuff();
+			isInited = true;
+		}
+		
 		log4jImpl = getLogger.invoke(null, className);
-		
-		initLevelStuff();
-	}
-
-	private void initLevelStuff() throws ClassNotFoundException,
-			NoSuchFieldException, NoSuchMethodException,
-			IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
-
-		Mirror<?> levelMirror = Mirror.me(Thread.currentThread().getContextClassLoader()
-				.loadClass("org.apache.log4j.Level"));
-
-		Object levelFatal = levelMirror.getField("FATAL").get(log4jImpl);
-		Object levelError = levelMirror.getField("ERROR").get(log4jImpl);
-		Object levelWarn  = levelMirror.getField("WARN").get(log4jImpl);
-		Object levelInfo  = levelMirror.getField("INFO").get(log4jImpl);
-		Object levelDebug = levelMirror.getField("DEBUG").get(log4jImpl);
-		Object levelTrace = levelMirror.getField("TRACE").get(log4jImpl);
-		
-		Method isEnabledFor = log4jMirror.findMethod("isEnabledFor", levelMirror
-				.getType());
 
 		isFatalEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelFatal);
 		isErrorEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelError);
@@ -114,8 +97,32 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		isInfoEnabled =  (Boolean) isEnabledFor.invoke(log4jImpl, levelInfo);
 		isDebugEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelDebug);
 		isTraceEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelTrace);
+	}
+
+	private void initLevelStuff() throws ClassNotFoundException,
+			NoSuchFieldException, NoSuchMethodException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 		
-		if(isInited) return;
+		logClass = Class.forName(LOG4J_CLASS_NAME, true, Thread
+					.currentThread().getContextClassLoader());
+
+		log4jMirror = Mirror.me(logClass);
+
+		getLogger = log4jMirror.findMethod("getLogger", String.class);
+		
+		Mirror<?> levelMirror = Mirror.me(Thread.currentThread().getContextClassLoader()
+				.loadClass("org.apache.log4j.Level"));
+
+		levelFatal = levelMirror.getField("FATAL").get(log4jImpl);
+		levelError = levelMirror.getField("ERROR").get(log4jImpl);
+		levelWarn  = levelMirror.getField("WARN").get(log4jImpl);
+		levelInfo  = levelMirror.getField("INFO").get(log4jImpl);
+		levelDebug = levelMirror.getField("DEBUG").get(log4jImpl);
+		levelTrace = levelMirror.getField("TRACE").get(log4jImpl);
+		
+		isEnabledFor = log4jMirror.findMethod("isEnabledFor", levelMirror
+				.getType());
 		
 		// fatal related...
 		fatalObjectMethod = findMethod("fatal");
@@ -140,8 +147,6 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		// trace related...
 		traceObjectMethod = findMethod("trace");
 		traceObjectThrowableMethod = findMethod_Throw("trace");
-		
-		isInited = true;
 	}
 
 	
