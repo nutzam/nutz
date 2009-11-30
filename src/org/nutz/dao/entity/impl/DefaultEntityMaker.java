@@ -96,7 +96,7 @@ public class DefaultEntityMaker implements EntityMaker {
 				rsmd = rs.getMetaData();
 			} catch (Exception e) {
 				if (log.isWarnEnabled())
-					log.warn("Table '" + entity.getViewName() + "' didn't existed");
+					log.warn("Table '" + entity.getViewName() + "' doesn't exist.");
 			}
 
 			befores = new ArrayList<FieldQuery>(5);

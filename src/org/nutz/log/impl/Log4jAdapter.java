@@ -35,118 +35,170 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 
 	Object log4jImpl = null;
 
-	Method fatalObjectMethod = null;
+	static Method fatalObjectMethod = null;
 
-	Method fatalObjectThrowableMethod = null;
+	static Method fatalObjectThrowableMethod = null;
 
-	Method errorObjectMethod = null;
+	static Method errorObjectMethod = null;
 
-	Method errorObjectThrowableMethod = null;
+	static Method errorObjectThrowableMethod = null;
 
-	Method warnObjectMethod = null;
+	static Method warnObjectMethod = null;
 
-	Method warnObjectThrowableMethod = null;
+	static Method warnObjectThrowableMethod = null;
 
-	Method infoObjectMethod = null;
+	static Method infoObjectMethod = null;
 
-	Method infoObjectThrowableMethod = null;
+	static Method infoObjectThrowableMethod = null;
 
-	Method debugObjectMethod = null;
+	static Method debugObjectMethod = null;
 
-	Method debugObjectThrowableMethod = null;
+	static Method debugObjectThrowableMethod = null;
 
-	Method traceObjectMethod = null;
+	static Method traceObjectMethod = null;
 
-	Method traceObjectThrowableMethod = null;
+	static Method traceObjectThrowableMethod = null;
+
+	protected static Class<?> logClass = null;
+
+	private static Mirror<?> log4jMirror = null;
+
+	protected static Mirror<?> priorityMirror = null;
+
+	private static Object priorityFatal = null;
+
+	private static Object priorityError = null;
+
+	private static Object priorityWarn = null;
+
+	private static Object priorityInfo = null;
+
+	private static Object priorityDebug = null;
+
+	private static Method getLogger = null;
+	
+	private static Method isEnabledFor = null;
+
+	private static Method isTraceEnabledMethod = null;
 
 	public Log4jAdapter() {
-
 	}
 
 	private Log4jAdapter(String className) throws ClassNotFoundException, NoSuchMethodException,
-			NoSuchFieldException {
+			NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		if (logClass == null)
+			logClass = Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread().getContextClassLoader());
 
-		Class<?> logClass = Class.forName(LOG4J_CLASS_NAME, true, classLoader);
+		if (log4jMirror == null)
+			log4jMirror = Mirror.me(logClass);
 
-		Mirror<?> log4jMirror = Mirror.me(logClass);
+		if (getLogger == null)
+			getLogger = log4jMirror.findMethod("getLogger", String.class);
+		
+		log4jImpl = getLogger.invoke(null, className);
 
-		log4jImpl = log4jMirror.invoke(null, "getLogger", new Object[]{className});
-
-		initLevelStuff(classLoader, log4jMirror);
+		initLevelStuff();
 	}
 
-	private void initLevelStuff(ClassLoader classLoader, Mirror<?> log4jMirror)
-			throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException {
+	private void initLevelStuff()
+			throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		
-		Mirror<?> priorityMirror = Mirror.me(classLoader.loadClass("org.apache.log4j.Priority"));
+		if (priorityMirror == null)
+			priorityMirror = Mirror.me(Thread.currentThread().getContextClassLoader().loadClass("org.apache.log4j.Priority"));
 
-		// fatal related...
-		isFatalEnabled = ((Boolean) log4jMirror.invoke(log4jImpl, "isEnabledFor", priorityMirror
-				.getField("FATAL"))).booleanValue();
+		if (priorityFatal == null)
+			priorityFatal = priorityMirror.getField("FATAL").get(log4jImpl);
+		
+		if (priorityError == null)
+			priorityError = priorityMirror.getField("ERROR").get(log4jImpl);
+		
+		if (priorityWarn == null)
+			priorityWarn = priorityMirror.getField("WARN").get(log4jImpl);
+
+		if (priorityInfo == null)
+			priorityInfo = priorityMirror.getField("INFO").get(log4jImpl);
+
+		if (priorityDebug == null)
+			priorityDebug = priorityMirror.getField("DEBUG").get(log4jImpl);
+		
+		if (isEnabledFor == null)
+			isEnabledFor = log4jMirror.findMethod("isEnabledFor", priorityMirror.getType());
+		
+		isFatalEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityFatal)).booleanValue();
 
 		if (isFatalEnabled) {
-			fatalObjectMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class});
+			if (fatalObjectMethod == null)
+				fatalObjectMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class});
 
-			fatalObjectThrowableMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class,
+			if (fatalObjectThrowableMethod == null)
+				fatalObjectThrowableMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class,
 					Throwable.class});
 		}
 
 		// error related...
-		isErrorEnabled = ((Boolean) log4jMirror.invoke(log4jImpl, "isEnabledFor", priorityMirror
-				.getField("ERROR"))).booleanValue();
+		isErrorEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityError)).booleanValue();
 
 		if (isErrorEnabled) {
-			errorObjectMethod = log4jMirror.findMethod("error", new Class[]{Object.class});
+			if (errorObjectMethod == null)
+				errorObjectMethod = log4jMirror.findMethod("error", new Class[]{Object.class});
 
-			errorObjectThrowableMethod = log4jMirror.findMethod("error", new Class[]{Object.class,
+			if (errorObjectThrowableMethod == null)
+				errorObjectThrowableMethod = log4jMirror.findMethod("error", new Class[]{Object.class,
 					Throwable.class});
 		}
 
 		// warn related...
-		isWarnEnabled = ((Boolean) log4jMirror.invoke(log4jImpl, "isEnabledFor", priorityMirror
-				.getField("WARN"))).booleanValue();
+		isWarnEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityWarn)).booleanValue();
 
 		if (isWarnEnabled) {
-			warnObjectMethod = log4jMirror.findMethod("warn", Object.class);
+			if (warnObjectMethod == null)
+				warnObjectMethod = log4jMirror.findMethod("warn", Object.class);
 
-			warnObjectThrowableMethod = log4jMirror.findMethod("warn", Object.class,
+			if (warnObjectThrowableMethod == null)
+				warnObjectThrowableMethod = log4jMirror.findMethod("warn", Object.class,
 					Throwable.class);
 		}
 
 		// info related...
-		isInfoEnabled = ((Boolean) log4jMirror.invoke(log4jImpl, "isEnabledFor", priorityMirror
-				.getField("INFO"))).booleanValue();
+		isInfoEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityInfo)).booleanValue();
 
 		if (isInfoEnabled) {
-			infoObjectMethod = log4jMirror.findMethod("info", new Class[]{Object.class});
+			if (infoObjectMethod == null)
+				infoObjectMethod = log4jMirror.findMethod("info", new Class[]{Object.class});
 
-			infoObjectThrowableMethod = log4jMirror.findMethod("info", new Class[]{Object.class,
+			if (infoObjectThrowableMethod == null)
+				infoObjectThrowableMethod = log4jMirror.findMethod("info", new Class[]{Object.class,
 					Throwable.class});
 		}
 
 		// debug related...
-		isDebugEnabled = ((Boolean) log4jMirror.invoke(log4jImpl, "isEnabledFor", priorityMirror
-				.getField("DEBUG"))).booleanValue();
+		isDebugEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityDebug)).booleanValue();
 
 		if (isDebugEnabled) {
 
-			debugObjectMethod = log4jMirror.findMethod("debug", Object.class);
+			if (debugObjectMethod == null)
+				debugObjectMethod = log4jMirror.findMethod("debug", Object.class);
 
-			debugObjectThrowableMethod = log4jMirror.findMethod("debug", Object.class,
+			if (debugObjectThrowableMethod == null)
+				debugObjectThrowableMethod = log4jMirror.findMethod("debug", Object.class,
 					Throwable.class);
 		}
 
 		// trace related...
-		isTraceEnabled = ((Boolean) log4jMirror
-				.invoke(log4jImpl, "isTraceEnabled", (Object[]) null)).booleanValue();
+		if (isTraceEnabledMethod == null)
+			isTraceEnabledMethod = log4jMirror.findMethod("isTraceEnabled");
+			
+		isTraceEnabled = ((Boolean) isTraceEnabledMethod
+				.invoke(log4jImpl)).booleanValue();
 
 		if (isTraceEnabled) {
 
-			traceObjectMethod = log4jMirror.findMethod("trace", Object.class);
+			if (traceObjectMethod == null)
+				traceObjectMethod = log4jMirror.findMethod("trace", Object.class);
 
-			traceObjectThrowableMethod = log4jMirror.findMethod("trace", Object.class,
+			if (traceObjectThrowableMethod == null)
+				traceObjectThrowableMethod = log4jMirror.findMethod("trace", Object.class,
 					Throwable.class);
 		}
 	}
@@ -275,7 +327,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	}
 
 	public Log getLogger(String className) throws ClassNotFoundException, NoSuchMethodException,
-			NoSuchFieldException {
+			NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		return new Log4jAdapter(className);
 	}
 

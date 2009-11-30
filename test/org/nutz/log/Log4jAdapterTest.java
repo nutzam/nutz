@@ -157,4 +157,42 @@ public class Log4jAdapterTest {
 		Assert.assertEquals(message, TestAppender.getLastEvent().getMessage());
 		Assert.assertEquals(e, TestAppender.getLastEvent().getThrowableInformation().getThrowable());
 	}
+	
+	@Test
+	public void testLevel() {
+		
+		Log log = LogFactory.getLog("org.nutz.log.level.fatal");
+		
+		Assert.assertTrue(log.isFatalEnabled());
+		Assert.assertFalse(log.isErrorEnabled());
+		
+		log = LogFactory.getLog("org.nutz.log.level.error");
+		
+		Assert.assertTrue(log.isFatalEnabled());
+		Assert.assertTrue(log.isErrorEnabled());
+		Assert.assertFalse(log.isWarnEnabled());
+		
+		log = LogFactory.getLog("org.nutz.log.level.warn");
+		
+		Assert.assertTrue(log.isFatalEnabled());
+		Assert.assertTrue(log.isErrorEnabled());
+		Assert.assertTrue(log.isWarnEnabled());
+		
+		log = LogFactory.getLog("org.nutz.log.level.info");
+		
+		Assert.assertTrue(log.isWarnEnabled());
+		Assert.assertTrue(log.isInfoEnabled());
+		Assert.assertFalse(log.isDebugEnabled());
+		
+		log = LogFactory.getLog("org.nutz.log.level.debug");
+		
+		Assert.assertTrue(log.isInfoEnabled());
+		Assert.assertTrue(log.isDebugEnabled());
+		Assert.assertFalse(log.isTraceEnabled());
+		
+		log = LogFactory.getLog("org.nutz.log.level.trace");
+		
+		Assert.assertTrue(log.isDebugEnabled());
+		Assert.assertTrue(log.isTraceEnabled());
+	}
 }
