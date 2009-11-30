@@ -63,154 +63,100 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 
 	private static Mirror<?> log4jMirror = null;
 
-	protected static Mirror<?> levelMirror = null;
-
-	private static Object levelFatal = null;
-
-	private static Object levelError = null;
-
-	private static Object levelWarn = null;
-
-	private static Object levelInfo = null;
-
-	private static Object levelDebug = null;
-
 	private static Method getLogger = null;
 	
-	private static Method isEnabledFor = null;
-
-	private static Method isTraceEnabledMethod = null;
+	private static boolean isInited = false;
 
 	public Log4jAdapter() {
 	}
 
-	private Log4jAdapter(String className) throws ClassNotFoundException, NoSuchMethodException,
-			NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	private Log4jAdapter(String className) throws ClassNotFoundException,
+			NoSuchMethodException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 
 		if (logClass == null)
-			logClass = Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread().getContextClassLoader());
+			logClass = Class.forName(LOG4J_CLASS_NAME, true, Thread
+					.currentThread().getContextClassLoader());
 
 		if (log4jMirror == null)
 			log4jMirror = Mirror.me(logClass);
 
 		if (getLogger == null)
 			getLogger = log4jMirror.findMethod("getLogger", String.class);
-		
-		log4jImpl = getLogger.invoke(null, className);
 
+		log4jImpl = getLogger.invoke(null, className);
+		
 		initLevelStuff();
 	}
 
-	private void initLevelStuff()
-			throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
-		
-		if (levelMirror == null)
-			levelMirror = Mirror.me(Thread.currentThread().getContextClassLoader().loadClass("org.apache.log4j.Level"));
+	private void initLevelStuff() throws ClassNotFoundException,
+			NoSuchFieldException, NoSuchMethodException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 
-		if (levelFatal == null)
-			levelFatal = levelMirror.getField("FATAL").get(log4jImpl);
-		
-		if (levelError == null)
-			levelError = levelMirror.getField("ERROR").get(log4jImpl);
-		
-		if (levelWarn == null)
-			levelWarn = levelMirror.getField("WARN").get(log4jImpl);
+		Mirror<?> levelMirror = Mirror.me(Thread.currentThread().getContextClassLoader()
+				.loadClass("org.apache.log4j.Level"));
 
-		if (levelInfo == null)
-			levelInfo = levelMirror.getField("INFO").get(log4jImpl);
-
-		if (levelDebug == null)
-			levelDebug = levelMirror.getField("DEBUG").get(log4jImpl);
+		Object levelFatal = levelMirror.getField("FATAL").get(log4jImpl);
+		Object levelError = levelMirror.getField("ERROR").get(log4jImpl);
+		Object levelWarn  = levelMirror.getField("WARN").get(log4jImpl);
+		Object levelInfo  = levelMirror.getField("INFO").get(log4jImpl);
+		Object levelDebug = levelMirror.getField("DEBUG").get(log4jImpl);
+		Object levelTrace = levelMirror.getField("TRACE").get(log4jImpl);
 		
-		if (isEnabledFor == null)
-			isEnabledFor = log4jMirror.findMethod("isEnabledFor", levelMirror.getType());
+		Method isEnabledFor = log4jMirror.findMethod("isEnabledFor", levelMirror
+				.getType());
+
+		isFatalEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelFatal);
+		isErrorEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelError);
+		isWarnEnabled =  (Boolean) isEnabledFor.invoke(log4jImpl, levelWarn);
+		isInfoEnabled =  (Boolean) isEnabledFor.invoke(log4jImpl, levelInfo);
+		isDebugEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelDebug);
+		isTraceEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelTrace);
 		
-		isFatalEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelFatal)).booleanValue();
-
-		if (isFatalEnabled) {
-			if (fatalObjectMethod == null)
-				fatalObjectMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class});
-
-			if (fatalObjectThrowableMethod == null)
-				fatalObjectThrowableMethod = log4jMirror.findMethod("fatal", new Class[]{Object.class,
-					Throwable.class});
-		}
+		if(isInited) return;
+		
+		// fatal related...
+		fatalObjectMethod = findMethod("fatal");
+		fatalObjectThrowableMethod = findMethod_Throw("fatal");
 
 		// error related...
-		isErrorEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelError)).booleanValue();
-
-		if (isErrorEnabled) {
-			if (errorObjectMethod == null)
-				errorObjectMethod = log4jMirror.findMethod("error", new Class[]{Object.class});
-
-			if (errorObjectThrowableMethod == null)
-				errorObjectThrowableMethod = log4jMirror.findMethod("error", new Class[]{Object.class,
-					Throwable.class});
-		}
+		errorObjectMethod = findMethod("error");
+		errorObjectThrowableMethod = findMethod_Throw("error");
 
 		// warn related...
-		isWarnEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelWarn)).booleanValue();
-
-		if (isWarnEnabled) {
-			if (warnObjectMethod == null)
-				warnObjectMethod = log4jMirror.findMethod("warn", Object.class);
-
-			if (warnObjectThrowableMethod == null)
-				warnObjectThrowableMethod = log4jMirror.findMethod("warn", Object.class,
-					Throwable.class);
-		}
+		warnObjectMethod = findMethod("warn");
+		warnObjectThrowableMethod = findMethod_Throw("warn");
 
 		// info related...
-		isInfoEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelInfo)).booleanValue();
-
-		if (isInfoEnabled) {
-			if (infoObjectMethod == null)
-				infoObjectMethod = log4jMirror.findMethod("info", new Class[]{Object.class});
-
-			if (infoObjectThrowableMethod == null)
-				infoObjectThrowableMethod = log4jMirror.findMethod("info", new Class[]{Object.class,
-					Throwable.class});
-		}
+		infoObjectMethod = findMethod("info");
+		infoObjectThrowableMethod = findMethod_Throw("info");
 
 		// debug related...
-		isDebugEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelDebug)).booleanValue();
-
-		if (isDebugEnabled) {
-
-			if (debugObjectMethod == null)
-				debugObjectMethod = log4jMirror.findMethod("debug", Object.class);
-
-			if (debugObjectThrowableMethod == null)
-				debugObjectThrowableMethod = log4jMirror.findMethod("debug", Object.class,
-					Throwable.class);
-		}
+		debugObjectMethod = findMethod("debug");
+		debugObjectThrowableMethod = findMethod_Throw("debug");
 
 		// trace related...
-		if (isTraceEnabledMethod == null)
-			isTraceEnabledMethod = log4jMirror.findMethod("isTraceEnabled");
-			
-		isTraceEnabled = ((Boolean) isTraceEnabledMethod
-				.invoke(log4jImpl)).booleanValue();
-
-		if (isTraceEnabled) {
-
-			if (traceObjectMethod == null)
-				traceObjectMethod = log4jMirror.findMethod("trace", Object.class);
-
-			if (traceObjectThrowableMethod == null)
-				traceObjectThrowableMethod = log4jMirror.findMethod("trace", Object.class,
-					Throwable.class);
-		}
+		traceObjectMethod = findMethod("trace");
+		traceObjectThrowableMethod = findMethod_Throw("trace");
+		
+		isInited = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.nutz.log.LogAdapter#canWork()
-	 */
+	
+	private static Method findMethod(String name) throws NoSuchMethodException{
+		return log4jMirror.findMethod(name, Object.class);
+	}
+	
+	private static Method findMethod_Throw(String name) throws NoSuchMethodException{
+		return log4jMirror.findMethod(name, Object.class,Throwable.class);
+	}
+	
 	public boolean canWork() {
 		try {
-			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread().getContextClassLoader());
+			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread()
+					.getContextClassLoader());
 		} catch (ClassNotFoundException e) {
 			return false;
 		}
@@ -253,7 +199,8 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	 */
 	final private boolean canFindInLog4jManner(String resourceName) {
 
-		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+		ClassLoader classLoader = Thread.currentThread()
+				.getContextClassLoader();
 
 		if (classLoader.getResource(resourceName) != null)
 			return true;
@@ -297,12 +244,12 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	}
 
 	public void info(Object message) {
-		if (isInfoEnabled) 
+		if (isInfoEnabled)
 			log(infoObjectMethod, message);
 	}
 
 	public void info(Object message, Throwable t) {
-		if (isInfoEnabled) 
+		if (isInfoEnabled)
 			log(infoObjectThrowableMethod, message, t);
 	}
 
@@ -312,12 +259,12 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	}
 
 	public void trace(Object message, Throwable t) {
-		if (isTraceEnabled) 
+		if (isTraceEnabled)
 			log(traceObjectThrowableMethod, message, t);
 	}
 
 	public void warn(Object message) {
-		if (isWarnEnabled) 
+		if (isWarnEnabled)
 			log(warnObjectMethod, message);
 	}
 
@@ -326,13 +273,14 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 			log(warnObjectThrowableMethod, message, t);
 	}
 
-	public Log getLogger(String className) throws ClassNotFoundException, NoSuchMethodException,
-			NoSuchFieldException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public Log getLogger(String className) throws ClassNotFoundException,
+			NoSuchMethodException, NoSuchFieldException,
+			IllegalArgumentException, IllegalAccessException,
+			InvocationTargetException {
 		return new Log4jAdapter(className);
 	}
 
-
-	private void log(Method method,Object message, Throwable t){
+	private void log(Method method, Object message, Throwable t) {
 		try {
 			method.invoke(log4jImpl, message, t);
 		} catch (IllegalArgumentException e) {
@@ -343,8 +291,8 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 			systemLog.fatal(GET_EXCEPTION, e);
 		}
 	}
-	
-	private void log(Method method,Object message){
+
+	private void log(Method method, Object message) {
 		try {
 			method.invoke(log4jImpl, message);
 		} catch (IllegalArgumentException e) {
