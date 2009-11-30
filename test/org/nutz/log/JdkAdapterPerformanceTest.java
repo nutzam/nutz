@@ -49,7 +49,6 @@ public class JdkAdapterPerformanceTest {
 		System.out.print("JDK Lgger\t 创建" + times + "次:");
 		Stopwatch standardWatch = Stopwatch.run(new Atom(){
 
-			@Override
 			public void run() {
 				for (int i = 0; i < times; i++)
 					Logger.getLogger(randomStrings2.get(i));
@@ -61,7 +60,6 @@ public class JdkAdapterPerformanceTest {
 		System.out.print("Nutz Lgger\t 创建" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
 
-			@Override
 			public void run() {
 				for (int i = 0; i < times; i++)
 					LogFactory.getLog(randomStrings1.get(i));
@@ -82,7 +80,6 @@ public class JdkAdapterPerformanceTest {
 		System.out.print("JDK Lgger\t 输出" + times + "次:");
 		Stopwatch standardWatch = Stopwatch.run(new Atom(){
 
-			@Override
 			public void run() {
 				for (int i = 0; i < times; i++)
 					jdkLogger.log(JdkLoggerAdapter.INFO_LEVEL, randomStrings1.get(i));
@@ -94,7 +91,6 @@ public class JdkAdapterPerformanceTest {
 		System.out.print("Nutz Lgger\t 输出" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
 
-			@Override
 			public void run() {
 				for (int i = 0; i < times; i++)
 					nutzLog.info(randomStrings1.get(i));

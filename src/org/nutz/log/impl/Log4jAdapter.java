@@ -63,17 +63,17 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 
 	private static Mirror<?> log4jMirror = null;
 
-	protected static Mirror<?> priorityMirror = null;
+	protected static Mirror<?> levelMirror = null;
 
-	private static Object priorityFatal = null;
+	private static Object levelFatal = null;
 
-	private static Object priorityError = null;
+	private static Object levelError = null;
 
-	private static Object priorityWarn = null;
+	private static Object levelWarn = null;
 
-	private static Object priorityInfo = null;
+	private static Object levelInfo = null;
 
-	private static Object priorityDebug = null;
+	private static Object levelDebug = null;
 
 	private static Method getLogger = null;
 	
@@ -104,28 +104,28 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 	private void initLevelStuff()
 			throws ClassNotFoundException, NoSuchFieldException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
 		
-		if (priorityMirror == null)
-			priorityMirror = Mirror.me(Thread.currentThread().getContextClassLoader().loadClass("org.apache.log4j.Priority"));
+		if (levelMirror == null)
+			levelMirror = Mirror.me(Thread.currentThread().getContextClassLoader().loadClass("org.apache.log4j.Level"));
 
-		if (priorityFatal == null)
-			priorityFatal = priorityMirror.getField("FATAL").get(log4jImpl);
+		if (levelFatal == null)
+			levelFatal = levelMirror.getField("FATAL").get(log4jImpl);
 		
-		if (priorityError == null)
-			priorityError = priorityMirror.getField("ERROR").get(log4jImpl);
+		if (levelError == null)
+			levelError = levelMirror.getField("ERROR").get(log4jImpl);
 		
-		if (priorityWarn == null)
-			priorityWarn = priorityMirror.getField("WARN").get(log4jImpl);
+		if (levelWarn == null)
+			levelWarn = levelMirror.getField("WARN").get(log4jImpl);
 
-		if (priorityInfo == null)
-			priorityInfo = priorityMirror.getField("INFO").get(log4jImpl);
+		if (levelInfo == null)
+			levelInfo = levelMirror.getField("INFO").get(log4jImpl);
 
-		if (priorityDebug == null)
-			priorityDebug = priorityMirror.getField("DEBUG").get(log4jImpl);
+		if (levelDebug == null)
+			levelDebug = levelMirror.getField("DEBUG").get(log4jImpl);
 		
 		if (isEnabledFor == null)
-			isEnabledFor = log4jMirror.findMethod("isEnabledFor", priorityMirror.getType());
+			isEnabledFor = log4jMirror.findMethod("isEnabledFor", levelMirror.getType());
 		
-		isFatalEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityFatal)).booleanValue();
+		isFatalEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelFatal)).booleanValue();
 
 		if (isFatalEnabled) {
 			if (fatalObjectMethod == null)
@@ -137,7 +137,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		}
 
 		// error related...
-		isErrorEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityError)).booleanValue();
+		isErrorEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelError)).booleanValue();
 
 		if (isErrorEnabled) {
 			if (errorObjectMethod == null)
@@ -149,7 +149,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		}
 
 		// warn related...
-		isWarnEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityWarn)).booleanValue();
+		isWarnEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelWarn)).booleanValue();
 
 		if (isWarnEnabled) {
 			if (warnObjectMethod == null)
@@ -161,7 +161,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		}
 
 		// info related...
-		isInfoEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityInfo)).booleanValue();
+		isInfoEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelInfo)).booleanValue();
 
 		if (isInfoEnabled) {
 			if (infoObjectMethod == null)
@@ -173,7 +173,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		}
 
 		// debug related...
-		isDebugEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, priorityDebug)).booleanValue();
+		isDebugEnabled = ((Boolean) isEnabledFor.invoke(log4jImpl, levelDebug)).booleanValue();
 
 		if (isDebugEnabled) {
 
