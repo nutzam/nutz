@@ -17,16 +17,26 @@ import org.nutz.log.impl.JdkLoggerAdapter;
 public class JDKloggerAdapterTest {
 
 	private String oldValue;
+	private String oldProperty;
 
 	@Before
 	public void init() {
 		URL url = getClass().getClassLoader().getResource("myLogging.properties");
 
 		oldValue = System.setProperty("java.util.logging.config.file", url.getFile());
+
+		oldProperty = System.getProperty("log4j.defaultInitOverride");
+		System.setProperty("log4j.defaultInitOverride", "true");
+
 	}
 
 	@After
 	public void finishup() {
+		if (null != oldProperty)
+			System.setProperty("log4j.defaultInitOverride", oldProperty);
+		else
+			System.clearProperty("log4j.defaultInitOverride");
+		
 		if (oldValue != null)
 			System.setProperty("java.util.logging.config.file", oldValue);
 		else
