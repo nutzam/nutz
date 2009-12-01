@@ -31,42 +31,81 @@ public class Castors {
 	private static List<Class<?>> castorPaths = null;
 	private static Object castorSetting;
 
-	public static synchronized Castors resetSetting(Object setting) {
-		return setSetting(new CastorSetting());
+	/**
+	 * 恢复成默认的 Castors 设置
+	 */
+	public static synchronized void resetSetting() {
+		setSetting(new CastorSetting());
 	}
 
-	public static synchronized Castors setSetting(Object setting) {
+	/**
+	 * 设置转换的配置
+	 * <p>
+	 * 配置对象所有的共有方法都会被遍历。只要这个方法有一个且只有一个参数，并且该参数 是一个 org.nutz.castor.Castor
+	 * 接口的实现类。那么就会被认为是对该种 Castor 的一个 配置。
+	 * <p>
+	 * 当初始化这个 Castor 之前，会用这个方法来设置一下你的 Castor （如果你的 Castor 需要配置的话）
+	 * 
+	 * @param setting
+	 *            配置对象。可以是任意的 Java 对象。
+	 */
+	public static synchronized void setSetting(Object setting) {
 		if (setting != null) {
 			castorSetting = setting;
 			one = new Castors(setting);
 		}
-		return me();
 	}
 
-	public static synchronized Castors setCastorPaths(List<Class<?>> paths) {
+	/**
+	 * 你的的 Castor 可能存在在不同包下，你可以把每个包下的随便一个 Castor 作为例子放到一个列表里。 这样， Nutz.Castor
+	 * 就能找到同一包下其他的 Castor 了。
+	 * <p>
+	 * 你的 Castor 存放在 CLASSPAH 下或者 Jar 包里都是没有问题的
+	 * 
+	 * @param paths
+	 *            Castor 例子列表
+	 */
+	public static synchronized void setCastorPaths(List<Class<?>> paths) {
 		castorPaths = paths;
-		return setSetting(castorSetting);
+		setSetting(castorSetting);
 	}
 
-	public static synchronized Castors resetCastorPaths() {
+	/**
+	 * 将 Castor 的寻找路径恢复成默认值。
+	 */
+	public static synchronized void resetCastorPaths() {
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		list.add(Array2Array.class);
-		return setCastorPaths(list);
+		setCastorPaths(list);
 	}
 
-	public static synchronized Castors addCastorPaths(Class<?>... paths) {
+	/**
+	 * 增加 Castor 的寻找路径。
+	 * 
+	 * @param paths
+	 *            示例 Castor
+	 */
+	public static synchronized void addCastorPaths(Class<?>... paths) {
 		if (null != paths) {
 			for (Class<?> path : paths)
 				castorPaths.add(path);
 		}
-		return setSetting(castorSetting);
+		setSetting(castorSetting);
 	}
 
-	public static synchronized Castors setTypeExtractor(TypeExtractor te) {
+	/**
+	 * 设置自定义的对象类型提取器逻辑
+	 * 
+	 * @param te
+	 *            类型提取器
+	 */
+	public static synchronized void setTypeExtractor(TypeExtractor te) {
 		typeExtractor = te;
-		return me();
 	}
 
+	/**
+	 * @return 单例
+	 */
 	public static Castors me() {
 		if (null == one)
 			synchronized (Castors.class) {
@@ -97,14 +136,14 @@ public class Castors {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
-			List<Class<?>> list  = Resources.scanClass(baseClass);
+			List<Class<?>> list = Resources.scanClass(baseClass);
 			if (null == list)
 				continue;
 			for (Class<?> klass : list) {
 				try {
 					if (Modifier.isAbstract(klass.getModifiers()))
 						continue;
-					Castor<?, ?> castor =  (Castor<?, ?>) klass.newInstance();
+					Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
 					Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
 					if (null == map2) {
 						map2 = new HashMap<String, Castor<?, ?>>();
@@ -139,6 +178,21 @@ public class Castors {
 	 */
 	private Map<String, Map<String, Castor<?, ?>>> map;
 
+	/**
+	 * 转换一个 POJO 从一个指定的类型到另外的类型
+	 * 
+	 * @param src
+	 *            源对象
+	 * @param fromType
+	 *            源对象类型
+	 * @param toType
+	 *            目标类型
+	 * @param args
+	 *            转换时参数。有些 Castor 可能需要这个参数，比如 Array2Map
+	 * @return 目标对象
+	 * @throws FailToCastObjectException
+	 *             如果没有找到转换器，或者转换失败
+	 */
 	@SuppressWarnings("unchecked")
 	public <F, T> T cast(Object src, Class<F> fromType, Class<T> toType, String... args)
 			throws FailToCastObjectException {
@@ -187,10 +241,28 @@ public class Castors {
 		}
 	}
 
+	/**
+	 * 转换一个 POJO 到另外的类型
+	 * 
+	 * @param src
+	 *            源对象
+	 * @param toType
+	 *            目标类型
+	 * @return 目标对象
+	 * @throws FailToCastObjectException
+	 *             如果没有找到转换器，或者转换失败
+	 */
 	public <T> T castTo(Object src, Class<T> toType) throws FailToCastObjectException {
 		return cast(src, null == src ? null : src.getClass(), toType);
 	}
 
+	/**
+	 * 将一个 POJO 转换成字符串
+	 * 
+	 * @param src
+	 *            源对象
+	 * @return 字符串
+	 */
 	public String castToString(Object src) {
 		try {
 			return castTo(src, String.class);
