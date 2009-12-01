@@ -96,4 +96,16 @@ public class SystemLog implements Log {
 		throw Lang.noImplement();
 	}
 
+	public void errorf(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
+	public void fatalf(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
+	public void warnf(String fmt, Object... args) {
+		throw Lang.noImplement();
+	}
+
 }

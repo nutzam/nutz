@@ -79,4 +79,10 @@ public class NullLog implements Log {
 	public void tracef(String fmt, Object... args) {
 	}
 
+	public void errorf(String fmt, Object... args) {}
+
+	public void fatalf(String fmt, Object... args) {}
+
+	public void warnf(String fmt, Object... args) {}
+
 }
