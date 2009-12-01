@@ -73,9 +73,6 @@ public class Log4jAdapterPerformanceTest {
 		
 		final Logger log4jLogger = LogManager.getLogger("raw-log4j.performance2.test");
 		
-		for (int i = 0; i < times; i++)
-			log4jLogger.info(randomStrings2.get(i));
-
 		System.out.print("Log4j Lgger\t 输出" + times + "次:");
 		Stopwatch standardWatch = Stopwatch.run(new Atom(){
 
@@ -91,9 +88,6 @@ public class Log4jAdapterPerformanceTest {
 	@Test public void testNutzOutput() {
 		
 		final Log nutzLog = LogFactory.getLog("nutz-log4j.performance1.test");
-
-		for (int i = 0; i < times; i++)
-			nutzLog.info(randomStrings1.get(i));
 
 		System.out.print("Nutz Lgger\t 输出" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
