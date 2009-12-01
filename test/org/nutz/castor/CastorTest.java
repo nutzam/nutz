@@ -117,7 +117,12 @@ public class CastorTest {
 
 	@Test
 	public void testString2int() throws FailToCastObjectException {
-		assertTrue(45 == Castors.me().castTo("45", int.class));
+		assertEquals(45, (int) Castors.me().castTo("45", int.class));
+	}
+
+	public void testString2Email() throws FailToCastObjectException {
+		Email em = new Email("zozoh@263.net");
+		assertEquals(em, "zozoh@263.net");
 	}
 
 	@Test
@@ -168,7 +173,7 @@ public class CastorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testStringArray2List() throws Exception {
-		String[] inAry = { "e1", "e2" };
+		String[] inAry = {"e1", "e2"};
 		List<String> list = Castors.me().castTo(inAry, List.class);
 		assertEquals(2, list.size());
 		assertEquals("e1", list.get(0).toString());
@@ -178,7 +183,7 @@ public class CastorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testIntArray2List() throws Exception {
-		int[] inAry = { 34, 78 };
+		int[] inAry = {34, 78};
 		List list = Castors.me().castTo(inAry, List.class);
 		assertEquals(2, list.size());
 		assertEquals(34, list.get(0));
@@ -188,7 +193,7 @@ public class CastorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testStringList2Arry() throws Exception {
-		String[] inAry = { "e1", "e2" };
+		String[] inAry = {"e1", "e2"};
 		List list = Castors.me().cast(inAry, String[].class, List.class);
 		String[] reAry = Castors.me().castTo(list, String[].class);
 		assertTrue(Arrays.equals(inAry, reAry));
@@ -197,7 +202,7 @@ public class CastorTest {
 	@SuppressWarnings("unchecked")
 	@Test
 	public void testIntList2Array() throws Exception {
-		int[] inAry = { 34, 78 };
+		int[] inAry = {34, 78};
 		List list = Castors.me().castTo(inAry, List.class);
 		int[] reAry = Castors.me().castTo(list, int[].class);
 		assertTrue(Arrays.equals(inAry, reAry));
@@ -205,7 +210,7 @@ public class CastorTest {
 
 	@Test
 	public void testArray2String() throws Exception {
-		Email[] mails = { new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn") };
+		Email[] mails = {new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn")};
 		String done = Castors.me().castToString(mails);
 		Email[] mails2 = Castors.me().castTo(done, Email[].class);
 		assertTrue(Lang.equals(mails, mails2));
@@ -214,14 +219,14 @@ public class CastorTest {
 	@Test
 	public void testString2Array() throws Exception {
 		String orgs = "zzh@263.net,zozohtnt@yahoo.com.cn";
-		Email[] exp = { new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn") };
+		Email[] exp = {new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn")};
 		Email[] done = Castors.me().castTo(orgs, Email[].class);
 		assertTrue(Arrays.equals(exp, done));
 	}
 
 	@Test
 	public void testArray2Array() throws Exception {
-		String[] orgs = { "zzh@263.net", "zozoh@163.com" };
+		String[] orgs = {"zzh@263.net", "zozoh@163.com"};
 		Email[] emails = Castors.me().castTo(orgs, Email[].class);
 		assertEquals(2, emails.length);
 		assertEquals("zzh", emails[0].getAccount());
