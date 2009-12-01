@@ -89,12 +89,13 @@ public class SqlMaker {
 		}
 	}
 
-	public Sql insertChain(String table, Chain chain) {
+	public Sql insertChain(String table, Chain chain, Entity<?> en) {
 		StringBuilder flds = new StringBuilder();
 		StringBuilder vals = new StringBuilder();
 		Chain c = chain.head();
 		while (c != null) {
-			flds.append(",").append(c.name());
+			String colName = getColumnNameOfChain(en, c);
+			flds.append(",").append(colName);
 			vals.append(",@").append(c.name());
 			c = c.next();
 		}
@@ -105,11 +106,21 @@ public class SqlMaker {
 		return sql;
 	}
 
-	public Sql updateBatch(String table, Chain chain) {
+	private static String getColumnNameOfChain(Entity<?> en, Chain c) {
+		if (null != en) {
+			EntityField ef = en.getField(c.name());
+			if (null != ef)
+				return ef.getColumnName();
+		}
+		return c.name();
+	}
+
+	public Sql updateBatch(String table, Chain chain, Entity<?> en) {
 		StringBuilder sb = new StringBuilder();
 		Chain c = chain.head();
 		while (c != null) {
-			sb.append(',').append(c.name()).append("=@").append(c.name());
+			String colName = getColumnNameOfChain(en, c);
+			sb.append(',').append(colName).append("=@").append(c.name());
 			c = c.next();
 		}
 		sb.deleteCharAt(0);

@@ -587,7 +587,7 @@ public class NutDao implements Dao {
 
 	public void insert(String tableName, Chain chain) {
 		if (null != chain) {
-			Sql sql = sqlMaker.insertChain(tableName, chain);
+			Sql sql = sqlMaker.insertChain(tableName, chain, null);
 			execute(sql);
 		}
 	}
@@ -595,7 +595,7 @@ public class NutDao implements Dao {
 	public void insert(Class<?> classOfT, Chain chain) {
 		Entity<?> en = getEntity(classOfT);
 		if (null != chain) {
-			Sql sql = sqlMaker.insertChain(en.getTableName(), chain);
+			Sql sql = sqlMaker.insertChain(en.getTableName(), chain, en);
 			sql.setEntity(en);
 			execute(sql);
 		}
@@ -684,14 +684,14 @@ public class NutDao implements Dao {
 
 	public int update(Class<?> classOfT, Chain chain, Condition condition) {
 		Entity<?> en = getEntity(classOfT);
-		Sql sql = sqlMaker.updateBatch(en.getTableName(), chain).setCondition(condition);
+		Sql sql = sqlMaker.updateBatch(en.getTableName(), chain, en).setCondition(condition);
 		sql.setEntity(en);
 		execute(sql);
 		return sql.getUpdateCount();
 	}
 
 	public int update(String tableName, Chain chain, Condition condition) {
-		Sql sql = sqlMaker.updateBatch(tableName, chain).setCondition(condition);
+		Sql sql = sqlMaker.updateBatch(tableName, chain, null).setCondition(condition);
 		execute(sql);
 		return sql.getUpdateCount();
 	}
@@ -706,8 +706,8 @@ public class NutDao implements Dao {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
 					void walk(Link link) {
-						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain).setCondition(
-								condition);
+						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain, null)
+								.setCondition(condition);
 						execute(sql);
 						re[0] += sql.getUpdateCount();
 					}

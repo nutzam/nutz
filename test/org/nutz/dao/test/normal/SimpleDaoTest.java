@@ -42,4 +42,5 @@ public class SimpleDaoTest extends DaoCase {
 	public void test_table_exists() {
 		assertTrue(dao.exists(Pet.class));
 	}
+	
 }
