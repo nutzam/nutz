@@ -130,7 +130,7 @@ public class SimpleRunner {
 											Object caze) throws IllegalAccessException,
 			InvocationTargetException {
 
-		System.out.println("Before run test case " + caze.getClass().getName());
+		//System.out.println("Before run test case " + caze.getClass().getName());
 
 		if (beforeClass != null) {
 			beforeClass.invoke(null);
@@ -142,7 +142,7 @@ public class SimpleRunner {
 
 		for (Method test : testMethods) {
 
-			System.out.println("\tbefore run test " + test.getName());
+			//System.out.println("\tbefore run test " + test.getName());
 
 			if (before != null) {
 				before.invoke(caze);
@@ -152,10 +152,6 @@ public class SimpleRunner {
 
 			if (after != null)
 				after.invoke(caze);
-			
-			System.out.println("");
 		}
-		
-		System.out.println("");
 	}
 }
