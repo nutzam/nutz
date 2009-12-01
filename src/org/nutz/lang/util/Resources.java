@@ -99,8 +99,14 @@ public final class Resources {
 			// zozoh: In eclipse tomcat debug env, the urls is always empty
 			if (null != urls && urls.hasMoreElements()) {
 				URL url = urls.nextElement();
-				if (url != null)
-					file = new File(url.getFile());
+				if (url != null) {
+					String path = url.getFile();
+					// If there is some whitespace in path, should decode it.
+					try {
+						path = URLDecoder.decode(path, Charset.defaultCharset().name());
+					} catch (Exception e) {}
+					file = new File(path);
+				}
 			}
 			// Then I will find the class in classpath
 			if (null == file)
