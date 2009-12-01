@@ -79,6 +79,9 @@ public class JdkAdapterPerformanceTest {
 	
 		final Logger jdkLogger = Logger.getLogger("raw-jdk.performance2.test");
 		
+		for (int i = 0; i < times; i++)
+			jdkLogger.log(JdkLoggerAdapter.INFO_LEVEL, randomStrings1.get(i));
+
 		System.out.print("JDK Lgger\t 输出" + times + "次:");
 		Stopwatch standardWatch = Stopwatch.run(new Atom(){
 
@@ -96,6 +99,9 @@ public class JdkAdapterPerformanceTest {
 		
 		final Log nutzLog = LogFactory.getLog("nutz-jdk.performance1.test");
 		
+		for (int i = 0; i < times; i++)
+			nutzLog.info(randomStrings1.get(i));
+
 		System.out.print("Nutz Lgger\t 输出" + times + "次:");
 		Stopwatch nutzWatch = Stopwatch.run(new Atom(){
 
