@@ -15,10 +15,160 @@
 	`Mirror<T>` 类，通过它，你可以更方便的使用反射的特性
 
 ---------------------------------------------------------------------------------------------------------
-更方便的获取
+创建 Mirror
+	Mirror 就是 Class 的一个包裹：
+	{{{
+	Mirror<Pet> mirror = Mirror.me(Pet.class);
+	}}}
+	更多时候，Mirror 用不到类型：
+	{{{
+	Mirror<?> mirror = Mirror.me(Pet.class);
+	}}}
 	
-	Getter / Setter
-
+	一旦你获得了 Mirror 对象，你就可以做如下操作:
+---------------------------------------------------------------------------------------------------------
+更方便的构造
+	反射的 Class.newInstance() 是个很方便的函数。但是它只能调用默认构造函数。如果你想调用类的某个带参数的
+	构造函数，是很麻烦的。通过 Mirror 你可以
+	
+	自动判断构造函数
+		比如类：
+		{{{
+		public class Pet{
+			private String name;
+			
+			public Pet(String name){
+				this.name = name;
+			}
+		}
+		}}}
+		通过如下调用：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai");
+		}}}
+		Mirror 会自动根据你的参数寻找到相应的构造函数的。
+	
+	自动判断工厂方法
+		比如类：
+		{{{
+		public class Pet{
+			private String name;
+			
+			public static Pet create(String name){
+				return new Pet("Pet:" + name);
+			}
+			
+			private Pet(String name){
+				this.name = name;
+			}
+		}
+		}}}
+		通过如下调用：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai");
+		}}}
+		Mirror 会自动根据你的参数寻找到相应的工厂方法。
+		
+		构造函数最优先，如果找不到构造函数会寻找静态工厂方法
+	
+	自动转换类型
+		{{{
+		public class Pet{
+			private String name;
+			private Calendar birthday;
+			
+			private Pet(String name,Calendar birthday){
+				this.name = name;
+				this.birthday = birthday;
+			}
+		}
+		}}}
+		通过如下调用：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai", "2008-10-12 12:23:24");
+		}}}
+		Mirror 会尝试寻找接受两个字符串的构造函数。如果找不到，它发现构造函数 Pet(String, Calendar) 起码
+		参数的数量是一致的，于是就尝试通过 [castors.man Castors] 将 "2008-10-12 12:23:24" 转换成一个 Calendar
+	
+	更快的构建 - 缓存构造方法
+		就像你知道的一样， Mirror 根据参数自动判断一个类型的构造函数，过程比较费时。一旦它找到了一个构造
+		函数，或者一个静态工厂方法，我们就希望把它记下来，所以你可以：
+		{{{
+		Mirror<Pet> mirror = Mirror.me(Pet.class);
+		Borning<Pet> borning = mirror.getBorning("XiaoBai");
+		Pet xb = borning.born("XiaoBai");
+		Pet xh = borning.born("XiaoHei");
+		}}}
+	
+---------------------------------------------------------------------------------------------------------
+更方便的调用
+---------------------------------------------------------------------------------------------------------
+更方便的获取和设置
+	获取泛型参数
+		 * 如果没有泛型参数，返回 null
+			{{{
+			Type[] types = Mirror.getTypeParams(MyClass.class);
+			}}}
+	
+	获取 getter
+		{{{
+		// 获取 getName() 方法
+		Method getter = mirror.getGetter("name");
+		}}}
+	获取 setter
+		{{{
+		// 获取 setName(String) 方法
+		Method setter = mirror.getSetter("name", String.class);
+		}}}
+	获取全部属性
+		获得所有的属性，包括私有属性。不包括 Object 的属性
+		{{{
+		Field[] fields = mirror.getFields();
+		}}}
+	获取全部方法
+		获取所有的方法，包括私有方法。不包括 Object 的方法
+		{{{
+		Method[] methods = mirror.getMethods();
+		}}}
+	获取全部静态方法
+		{{{
+		Method[] methods = mirror.getStaticMethods();
+		}}}
+	
+	获取字段
+		 * 获取一个字段。这个字段可以是当前类型或者其父类的私有字段。
+			{{{
+			Field f = mirror.getField("name");
+			}}}
+		 * 获取一组声明了特殊注解的字段
+			{{{
+			Field[] fields = mirror.getFields(MyAnnotation.class);
+			}}}
+		 * 获取第一个声明了特殊注解的字段
+			{{{
+			Field f = mirror.getField(MyAnnotation.class);
+			}}}
+	
+	获取字段值
+		 * 不调用 getter，直接获得字段的值
+			{{{
+			Object v = mirror.getValue(obj, mirror.getField("name"));
+			}}}
+		 * 优先通过 getter 获取字段值，如果没有，则直接获取字段值
+			{{{
+			Object v = mirror.getValue(obj, "name");
+			}}}
+	
+	设置字段值
+		 * 为对象的一个字段设值。 不会调用对象的 setter，直接设置字段的值
+			{{{
+			mirror.setValue(obj, mirror.getField("name"), "XiaoBai");
+			}}}
+		 * 为对象的一个字段设置。优先调用 setter 方法。
+			{{{
+			mirror.setValue(obj, "name", "XiaoBai");
+			}}}
 
 ---------------------------------------------------------------------------------------------------------
 更快的反射
+	反射很慢，但是最慢的就是

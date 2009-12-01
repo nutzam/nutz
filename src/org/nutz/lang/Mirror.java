@@ -356,7 +356,7 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 获取一个字段。这个字段必须声明特殊的注解
+	 * 获取一个字段。这个字段必须声明特殊的注解，第一遇到的对象会被返回
 	 * 
 	 * @param ann
 	 *            注解
@@ -371,6 +371,22 @@ public class Mirror<T> {
 		throw new NoSuchFieldException(String.format(
 				"Can NOT find field [@%s] in class [%s] and it's parents classes", ann.getName(),
 				klass.getName()));
+	}
+
+	/**
+	 * 获取一组声明了特殊注解的字段
+	 * 
+	 * @param ann
+	 *            注解类型
+	 * @return 字段数组
+	 */
+	public <AT extends Annotation> Field[] getFields(Class<AT> ann) {
+		List<Field> fields = new LinkedList<Field>();
+		for (Field f : this.getFields()) {
+			if (null != f.getAnnotation(ann))
+				fields.add(f);
+		}
+		return fields.toArray(new Field[fields.size()]);
 	}
 
 	private static boolean isIgnoredField(Field f) {
@@ -510,7 +526,7 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 为对象的一个字段设置。优先调用 setter 方法。
+	 * 为对象的一个字段设值。优先调用 setter 方法。
 	 * 
 	 * @param obj
 	 *            对象
@@ -558,6 +574,17 @@ public class Mirror<T> {
 		}
 	}
 
+	/**
+	 * 优先通过 getter 获取字段值，如果没有，则直接获取字段值
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param name
+	 *            字段名
+	 * @return 字段值
+	 * @throws FailToGetValueException
+	 *             既没发现 getter，又没有字段
+	 */
 	public Object getValue(Object obj, String name) throws FailToGetValueException {
 		try {
 			return this.getGetter(name).invoke(obj);
