@@ -1,5 +1,5 @@
 SET JAVA_HOME=%JAVA_HOME%
-SET JAVA_OPT=-server -Xms512m -Xms512m
+SET JAVA_OPT=-server -Xms512m -Xmx512m
 SET NUTZ_HOME=.
 
 SET JAVAASSIST_PATH=..\deps\javassist.jar
