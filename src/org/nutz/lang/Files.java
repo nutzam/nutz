@@ -23,6 +23,7 @@ import java.util.zip.ZipFile;
 /**
  * 文件操作的帮助函数
  * 
+ * @author amos(amosleaf@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
@@ -238,6 +239,9 @@ public abstract class Files {
 	public static File findFile(String path, Class<?> klass, String enc) {
 		if (null == path)
 			return null;
+		try {
+			path = URLDecoder.decode(path, Charset.defaultCharset().name());
+		} catch (UnsupportedEncodingException e) {}
 		File f = new File(path);
 		if (!f.exists()) {
 			f = null;

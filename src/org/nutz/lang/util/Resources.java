@@ -3,7 +3,10 @@ package org.nutz.lang.util;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -38,7 +41,7 @@ public final class Resources {
 			classNames = findInJar(jarPath, baseClass);
 		} else
 			classNames = findInClassPath(dir, baseClass);
-		if (classNames == null) 
+		if (classNames == null)
 			return null;
 		List<Class<?>> list = new ArrayList<Class<?>>(classNames.length);
 		for (String className : classNames)
@@ -107,10 +110,10 @@ public final class Resources {
 				return null;
 			// If the base is folder return it directly, else, return it's
 			// parent folder
-			try{
+			try {
 				if (file.isDirectory())
 					return file;
-			}catch (SecurityException e) {
+			} catch (SecurityException e) {
 				// In GAE , it will happen.
 			}
 			return file.getParentFile();
@@ -120,6 +123,9 @@ public final class Resources {
 
 	private static String[] findInJar(String jarPath, Class<?> baseClass) {
 		try {
+			try {
+				jarPath = URLDecoder.decode(jarPath, Charset.defaultCharset().name());
+			} catch (UnsupportedEncodingException e) {}
 			ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage()
 					.getName().replace('.', '/')
 					+ "/\\w*.class");
