@@ -11,18 +11,24 @@ public interface Log {
 
 	void fatal(Object message);
 
+	void fatalf(String fmt, Object...args);
+	
 	void fatal(Object message, Throwable t);
 
 	boolean isErrorEnabled();
 
 	void error(Object message);
 
+	void errorf(String fmt, Object...args);
+	
 	void error(Object message, Throwable t);
 
 	boolean isWarnEnabled();
 
 	void warn(Object message);
 
+	void warnf(String fmt, Object...args);
+	
 	void warn(Object message, Throwable t);
 
 	boolean isInfoEnabled();

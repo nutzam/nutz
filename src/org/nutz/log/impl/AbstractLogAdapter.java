@@ -44,16 +44,36 @@ public abstract class AbstractLogAdapter implements LogAdapter, Log {
 		return isWarnEnabled;
 	}
 
+	public void fatalf(String fmt, Object...args) {
+		if (isFatalEnabled)
+			fatal(String.format(fmt, args));
+	}
+	
+	public void errorf(String fmt, Object...args) {
+		if (isErrorEnabled)
+			error(String.format(fmt, args));
+	}
+	
+	public void warnf(String fmt, Object... args) {
+		if (isWarnEnabled)
+			warn(String.format(fmt, args));
+	}
+	
 	public void debugf(String fmt, Object... args) {
-		debug(String.format(fmt, args));
+		if (isDebugEnabled)
+			debug(String.format(fmt, args));
 	}
 
 	public void infof(String fmt, Object... args) {
-		info(String.format(fmt, args));
+		if (isInfoEnabled)
+			info(String.format(fmt, args));
 	}
 
 	public void tracef(String fmt, Object... args) {
-		trace(String.format(fmt, args));
+		if (isTraceEnabled)
+			trace(String.format(fmt, args));
 	}
+	
+	
 
 }
