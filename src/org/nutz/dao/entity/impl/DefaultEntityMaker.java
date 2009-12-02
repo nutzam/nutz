@@ -279,20 +279,25 @@ public class DefaultEntityMaker implements EntityMaker {
 						Statement stat = null;
 						ResultSet rs = null;
 						ResultSetMetaData rsmd = null;
+						boolean fromName = false;
+						boolean toName = false;
 						try {
 							stat = conn.createStatement();
 							Segment tableName = new CharSegment(mm.relation());
 							rs = stat.executeQuery(db.getResultSetMetaSql(TableName
 									.render(tableName)));
 							rsmd = rs.getMetaData();
-							boolean fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
-							boolean toName = !Daos.isIntLikeColumn(rsmd, mm.to());
-							return new Link(mirror, field, mm, fromName, toName);
+							fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
+							toName = !Daos.isIntLikeColumn(rsmd, mm.to());
 						} catch (Exception e) {
-							throw Lang.wrapThrow(e);
+							if (log.isWarnEnabled())
+								log.warnf("Fail to get table '%s', '%s' and '%s' "
+										+ "will be taken as @Id ", mm.relation(), mm.from(), mm
+										.to());
 						} finally {
 							Daos.safeClose(stat, rs);
 						}
+						return new Link(mirror, field, mm, fromName, toName);
 					}
 				}
 			}

@@ -102,4 +102,10 @@ public class EntityParsing extends DaoCase {
 		assertTrue(en.getField("masterId").isPk());
 		assertTrue(en.getField("id").isPk());
 	}
+
+	@Test
+	public void test_complex_pojo_without_db() {
+		Entity<?> en = en(TO5.class);
+		assertEquals("toid", en.getField("id").getColumnName());
+	}
 }

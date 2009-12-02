@@ -5,6 +5,8 @@ import java.util.Iterator;
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
+import org.nutz.log.Log;
+import org.nutz.log.LogFactory;
 
 /**
  * 将一个参考对象存入 ThreadLocal
@@ -14,6 +16,8 @@ import org.nutz.lang.segment.Segments;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class TableName {
+
+	private static final Log log = LogFactory.getLog(TableName.class);
 
 	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
 
@@ -26,14 +30,21 @@ public class TableName {
 	 *            你的业务逻辑
 	 */
 	public static void run(Object refer, Runnable atom) {
-		Object old = get();
-		set(refer);
-		try {
-			atom.run();
-		} catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		} finally {
-			set(old);
+		if (null != atom) {
+			if (log.isTraceEnabled())
+				log.tracef("TableName.run: [%s]->[%s]", object, object.get());
+
+			Object old = get();
+			set(refer);
+			try {
+				atom.run();
+			} catch (Exception e) {
+				throw Lang.wrapThrow(e);
+			} finally {
+				set(old);
+				if (log.isTraceEnabled())
+					log.tracef("TableName.finally: [%s]->[%s]", object, object.get());
+			}
 		}
 	}
 
