@@ -2,3 +2,42 @@
 #index:0,1
 -----------------------------------------------------------------------------
 什么是代码模板
+	通过 Java 提供的 String.format() 方法，可以很方便的声明字符串模板，以及占位符。
+	但是，它不方便的是，如果我的字符串模板两个占位符希望的是同一个值：
+	{{{
+	XXXXXXXX $A  XXXXXX $B  XXXXXX $A XXXXX
+	}}}
+	通过 String.format() 需要这么写：
+	{{{
+	String.format("XXXXXXXX %s  XXXXXX %s  XXXXXX %s XXXXX", "TxtA","TxtB","TxtA");
+	}}}
+	并且你不设值，会被无情抛错。
+-----------------------------------------------------------------------------
+Nutz 的代码模板
+	
+	接上例，你可以这么写：
+	{{{
+	Segment seg = new CharSegment("XXXXXXXX ${A}  XXXXXX ${B}  XXXXXX ${A} XXXXX");
+	seg.set("A", "TxtA").set("B", "TxtB");
+	System.out.println(seg.toString());
+	}}}
+
+	 * 无需重复设置占位符
+	 * 自动通过 [castors.man Castors] 将你的对象转成字符串
+	 * 不设值的占位符，输出时会被空串 （{#F0F;`""`}）填充
+-----------------------------------------------------------------------------
+什么时候使用 Nutz 的代码模板
+	* 如果你的代码模板比较简单，还是推荐使用 String.format
+	* 如果你的代码模板比较复杂，有重复的占位符，或者可能有重复的占位符，推荐使用 CharSegment
+	* 你需要知道
+		 * 如果多线程共享一个 CharSegment，那么最好使用前复制一份：
+			{{{
+			Segment newSeg = seg.born();
+			newSeg.set("A",XXX").set("B",XXX") ....
+			}}}
+			* 否则通常会有多线程内存共享的问题。
+		 * CharSegment 解析的速度很快
+		 * Clone 方法对多线程是不安全的，因为每个占位符的值不会被深层 clone
+			{{{
+			Segment newSeg = seg.clone();
+			}}}

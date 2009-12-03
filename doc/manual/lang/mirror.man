@@ -102,6 +102,39 @@
 	
 ---------------------------------------------------------------------------------------------------------
 更方便的调用
+	
+	Java 的反射允许你在运行时决定调用一个类的某一个成员方法。 通过 Mirror 调用的过程将会变得更加简单。
+
+	调用一个函数
+		比如你有一个类:
+		{{{
+		public class MyClass {
+			public String getInfo(String s) {
+				return "Get " + s + " @ " + System.currentTimeMillis();
+			}
+		}
+		}}}
+		你可以这么调用 getInfo 方法：
+		{{{
+		Mirror<MyClass> mirror = Mirror.me(MyClass.class);
+		MyClass mc = mirror.born();
+		System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
+		}}}
+		控制台输出：
+		{{{
+		Get Hello~~~ @ 1259836169165
+		}}}
+
+	参数自动转型
+		{{{
+		System.out.println(mirror.invoke(mc, "getInfo", new Email("zozoh", "263.net")));
+		}}}
+		控制台输出：
+		{{{
+		Get zozoh@263.net @ 1259836289830
+		}}}
+		当然， Email 类的 toString() 需要正常工作。 实际上，它是利用 [castors.man Castors] 来做对象的转型的。
+	
 ---------------------------------------------------------------------------------------------------------
 更方便的获取和设置
 	获取泛型参数
@@ -169,6 +202,3 @@
 			mirror.setValue(obj, "name", "XiaoBai");
 			}}}
 
----------------------------------------------------------------------------------------------------------
-更快的反射
-	反射很慢，yo是最慢的就是

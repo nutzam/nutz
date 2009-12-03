@@ -44,6 +44,7 @@ public class Invoking {
 	}
 
 	/*------------------------------------------------------------------------*/
+	// zozoh: 这个实现有问题，需要检查一下
 	private static class DynamicArgsInvoker extends Invoker {
 
 		private Object args;

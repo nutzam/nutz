@@ -202,7 +202,7 @@
 			}}}
 		 * 十六进制形式字符串
 			{{{
-			assertEquals("00FF", Strings.fillBinary(255, 4);
+			assertEquals("00FF", Strings.fillHex(255, 4);
 			}}}
 		 * 拆分数组 （忽略空白元素）
 			{{{
