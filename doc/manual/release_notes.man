@@ -11,7 +11,7 @@
 		 
 	
 	代码缺陷
-		 # 修改正测试用例 JsonCharsetTest.test_zh_CN_from_file
+		 # 修改了测试用例 JsonCharsetTest.test_zh_CN_from_file
 	
 	文档
 		 # 添加了 Nutz.Lang （Wiki 《甜Java》）下全部文档
