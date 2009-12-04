@@ -56,7 +56,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 	如何创建 Sql 对象
 		通过 org.nutz.dao.Sqls 类提供的静态方法 create，你可以很方便的构建你的 Sql 对象
 		{{{<JAVA>
-		Sql sql = Sqls.create("INSERT INTO t_abc (name,age) VALUES('Peter',18);
+		Sql sql = Sqls.create("INSERT INTO t_abc (name,age) VALUES('Peter',18)");
 		}}}
 		Sqls 提供的 fetchEntity, fetchInt, fetchString, 以及 queryEntity 方法来帮助你构建 Sql 对象。
 		它们之间的区别在稍后会详细说明
