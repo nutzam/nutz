@@ -19,15 +19,16 @@ public class StaticWeaver implements ObjectWeaver {
 	}
 
 	public void depose() {
-		if (log.isDebugEnabled())
-			if (null != depose) {
-				log.debugf("\t >> ...");
-				depose.trigger(obj);
-				log.debugf("\t >> Done!");
+		if (null != depose) {
+			if (log.isDebugEnabled())
+				log.debugf("\t >> do depose ...");
 
-			} else {
-				log.debug("\t >> Nothing need to do");
-			}
+			depose.trigger(obj);
+
+			if (log.isDebugEnabled())
+				log.debugf("\t >> Done!");
+		} else if (log.isDebugEnabled())
+			log.debug("\t >> Nothing need to do");
 	}
 
 	public Object weave(IocMaking ing) {
