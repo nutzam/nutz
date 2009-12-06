@@ -70,5 +70,6 @@
 	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="create_datasource.man"/>
+		<doc path="resources.man"/>
 	</doc>
 </doc>

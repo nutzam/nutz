@@ -1,0 +1,9 @@
+#title:推荐文章
+#index:0
+-----------------------------------------------------------------------------------
+Nutz 的设计哲学
+	 * [http://zozoh.javaeye.com/blog/526494 《Nutz 的设计以及提高程序员生产力》] \
+	     by [http://zozoh.javaeye.com zozoh]
+Mvc 的文章
+	 * [http://axhack.javaeye.com/blog/542441 《给 nutz 添加 freemarker 视图》] \
+	     by [http://axhack.javaeye.com axhack]
