@@ -124,8 +124,6 @@ public abstract class Mvcs {
 			if (!hasLocale(session))
 				setLocale(session, getLocaleName(session));
 		}
-		// Store context path as "/XXXX", you can use it in JSP page
-		req.setAttribute("base", req.getContextPath());
 	}
 
 	/**

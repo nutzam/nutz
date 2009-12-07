@@ -62,8 +62,8 @@ public class NutIoc implements Ioc2 {
 		if (null == context)
 			cntx = this.context;
 		else {
-			if (log.isDebugEnabled())
-				log.debug("Link contexts");
+			if (log.isTraceEnabled())
+				log.trace("Link contexts");
 			cntx = new ComboContext(context, this.context);
 		}
 
