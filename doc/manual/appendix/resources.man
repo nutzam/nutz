@@ -7,5 +7,5 @@ Nutz 的设计哲学
 Mvc 的文章
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
 	     by [http://axhack.javaeye.com axhack]
-	 * 《[http://wendal.javaeye.com/blog/543681 基于ASM的Nut.Aop实现]》
+	 * 《[http://wendal.javaeye.com/blog/543681 基于ASM的Nut.Aop实现]》\
 		 by [http://wendal.javaeye.com wendal]
