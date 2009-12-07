@@ -124,6 +124,9 @@ public abstract class Mvcs {
 			if (!hasLocale(session))
 				setLocale(session, getLocaleName(session));
 		}
+		// Update context path each time, Servlet 2.4 and early don't support
+		// ServletContext.getContextPath()
+		req.setAttribute("base", req.getContextPath());
 	}
 
 	/**

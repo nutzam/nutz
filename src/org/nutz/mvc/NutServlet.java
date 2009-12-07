@@ -64,7 +64,6 @@ public class NutServlet extends HttpServlet {
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
 			this.getServletContext().setAttribute(Localization.class.getName(), ing.getMessageMap());
-			this.getServletContext().setAttribute("base", this.getServletContext().getContextPath());
 
 			// Done, print info
 			sw.stop();
