@@ -6,4 +6,5 @@ public interface ClassAgent {
 
 	ClassAgent addListener(MethodMatcher matcher, MethodInterceptor listener);
 
+	String CLASSNAME_SUFFIX = "$$NATZAOP";
 }
