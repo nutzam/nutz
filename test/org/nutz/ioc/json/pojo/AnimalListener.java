@@ -22,12 +22,14 @@ public class AnimalListener implements MethodInterceptor {
 		return returnObj;
 	}
 
-	public void whenError(Throwable e, Object obj, Method method, Object... args) {
+	public boolean whenError(Throwable e, Object obj, Method method, Object... args) {
 		sb.append("E:").append(method.getName()).append(';');
+		return false;
 	}
 
-	public void whenException(Exception e, Object obj, Method method, Object... args) {
+	public boolean whenException(Exception e, Object obj, Method method, Object... args) {
 		sb.append("E:").append(method.getName()).append(';');
+		return false;
 	}
 
 }

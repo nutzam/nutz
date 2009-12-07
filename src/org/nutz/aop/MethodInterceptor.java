@@ -52,8 +52,10 @@ public interface MethodInterceptor {
 	 *            被调用方法
 	 * @param args
 	 *            被调用方法所需参数
+	 * 
+	 * @return 是否继续抛出异常
 	 */
-	void whenException(Exception e, Object obj, Method method, Object... args);
+	boolean whenException(Exception e, Object obj, Method method, Object... args);
 
 	/**
 	 * 当被拦截方法发生错误(Error)，这个方法会被调用。
@@ -66,7 +68,9 @@ public interface MethodInterceptor {
 	 *            被调用方法
 	 * @param args
 	 *            被调用方法所需参数
+	 * 
+	 * @return 是否继续抛出错误
 	 */
-	void whenError(Throwable e, Object obj, Method method, Object... args);
+	boolean whenError(Throwable e, Object obj, Method method, Object... args);
 
 }

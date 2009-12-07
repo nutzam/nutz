@@ -22,12 +22,14 @@ public class MethodCounter implements MethodInterceptor {
 		return true;
 	}
 
-	public void whenError(Throwable e, Object obj, Method method, Object... args) {
+	public boolean whenError(Throwable e, Object obj, Method method, Object... args) {
 		cc[2] += 1;
+		return false;
 	}
 
-	public void whenException(Exception e, Object obj, Method method, Object... args) {
+	public boolean whenException(Exception e, Object obj, Method method, Object... args) {
 		cc[3] += 1;
+		return false;
 	}
 
 }

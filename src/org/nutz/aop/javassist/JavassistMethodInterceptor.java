@@ -27,14 +27,18 @@ class JavassistMethodInterceptor implements MethodInterceptor {
 		return re;
 	}
 
-	public void whenError(Throwable e, Object obj, Method method, Object... args) {
+	public boolean whenError(Throwable e, Object obj, Method method, Object... args) {
+		boolean re = true;
 		for (MethodInterceptor ml : listeners)
-			ml.whenError(e, obj, method, args);
+			re &= ml.whenError(e, obj, method, args);
+		return re;
 	}
 
-	public void whenException(Exception e, Object obj, Method method, Object... args) {
+	public boolean whenException(Exception e, Object obj, Method method, Object... args) {
+		boolean re = true;
 		for (MethodInterceptor ml : listeners)
-			ml.whenException(e, obj, method, args);
+			re &= ml.whenException(e, obj, method, args);
+		return re;
 	}
 
 }
