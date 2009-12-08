@@ -6,6 +6,7 @@ import java.util.Arrays;
 import org.junit.Test;
 
 import org.nutz.aop.Aop;
+import org.nutz.aop.ClassAgent;
 import org.nutz.aop.javassist.lstn.MethodCounter;
 import org.nutz.aop.javassist.lstn.RhinocerosListener;
 import org.nutz.aop.javassist.meta.Vegetarians;
@@ -27,9 +28,9 @@ public class JavassistClassAgentTest {
 	@Test
 	public void test_duplicate_class_exception() throws Exception {
 		int[] cc = new int[4];
-		JavassistClassAgent ca = new JavassistClassAgent();
+		ClassAgent ca = getNewClassAgent();
 		ca.addListener(Aop.matcher(".*"), new MethodCounter(cc));
-		JavassistClassAgent ca2 = new JavassistClassAgent();
+		ClassAgent ca2 = getNewClassAgent();
 		ca2.addListener(Aop.matcher(".*"), new MethodCounter(cc));
 
 		Class<? extends Moose> c = ca.define(Moose.class);
@@ -48,7 +49,7 @@ public class JavassistClassAgentTest {
 	public void test_return_array_method() {
 		int[] cc = new int[4];
 		Arrays.fill(cc, 0);
-		JavassistClassAgent aca = new JavassistClassAgent();
+		ClassAgent aca = getNewClassAgent();
 		aca.addListener(Aop.matcher("returnArrayMethod"), new MethodCounter(cc));
 		Class<? extends Buffalo> c = aca.define(Buffalo.class);// RA.class;
 		Buffalo r = Mirror.me(c).born();
@@ -100,7 +101,7 @@ public class JavassistClassAgentTest {
 		int[] crun = new int[4];
 		Arrays.fill(cc, 0);
 		Arrays.fill(crun, 0);
-		JavassistClassAgent aca = new JavassistClassAgent();
+		ClassAgent aca = getNewClassAgent();
 		aca.addListener(Aop.matcher(".*"), new MethodCounter(cc));
 		aca.addListener(Aop.matcher("run"), new MethodCounter(crun));
 		aca.addListener(Aop.matcher("doSomething"), new RhinocerosListener());
@@ -126,7 +127,7 @@ public class JavassistClassAgentTest {
 		int[] cpro = new int[4];
 		Arrays.fill(cpub, 0);
 		Arrays.fill(cpro, 0);
-		JavassistClassAgent aca = new JavassistClassAgent();
+		ClassAgent aca = getNewClassAgent();
 		aca.addListener(Aop.matcher(PUBLIC), new MethodCounter(cpub));
 		aca.addListener(Aop.matcher(PROTECTED), new MethodCounter(cpro));
 		Class<? extends Hippo> c = aca.define(Hippo.class);// RA.class;
@@ -145,4 +146,8 @@ public class JavassistClassAgentTest {
 		assertEquals("[2, 2, 0, 0]", Json.toJson(cpro));
 	}
 
+	
+	public ClassAgent getNewClassAgent(){
+		return new JavassistClassAgent();
+	}
 }
