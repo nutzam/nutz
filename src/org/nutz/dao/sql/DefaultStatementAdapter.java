@@ -21,35 +21,39 @@ public class DefaultStatementAdapter implements StatementAdapter {
 	}
 
 	private void processWithoutEntity(PreparedStatement stat, SqlLiteral sql) throws SQLException {
-		for (String name : sql.getParams().keys()) {
+		for (String name : sql.getParamIndexes().names()) {
 			Object obj = sql.getParams().get(name);
 			int[] is = sql.getParamIndexes(name);
 			if (null == is || is.length == 0)
 				continue;
-			FieldAdapter fss = FieldAdapter.create(null == obj ? null : Mirror.me(obj.getClass()),
-					false);
-			fss.set(stat, obj, is);
+			FieldAdapter.create(Mirror.me(obj), false).set(stat, obj, is);
 		}
 	}
 
 	private void processWithEntity(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
 			throws SQLException {
-		for (EntityField ef : entity.fields()) {
-			String name = ef.getField().getName();
-			Object obj = sql.getParams().get(name);
+		// for (EntityField ef : entity.fields()) {
+		for (String name : sql.getParamIndexes().names()) {
 			int[] is = sql.getParamIndexes(name);
 			if (null == is || is.length == 0)
 				continue;
-			if (ef == null)
-				continue;
-			if (null == obj) {
-				if (null != ef)
-					if (ef.isNotNull())
-						throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
-								.getType().getName(), entity.getTableName(), ef.getField()
-								.getName(), ef.getColumnName());
+			EntityField ef = entity.getField(name);
+			Object obj = sql.getParams().get(name);
+			// Find one entity field match with the param
+			if (null != ef) {
+				if (null == obj) {
+					if (null != ef)
+						if (ef.isNotNull())
+							throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
+									.getType().getName(), entity.getTableName(), ef.getField()
+									.getName(), ef.getColumnName());
+				}
+				ef.getFieldAdapter().set(stat, obj, is);
 			}
-			ef.getFieldAdapter().set(stat, obj, is);
+			// Try to get from params
+			else {
+				FieldAdapter.create(Mirror.me(obj), false).set(stat, obj, is);
+			}
 		}
 
 	}

@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
@@ -181,12 +180,14 @@ public class Cnd implements OrderBy, ExpGroup {
 		private String name;
 		private String by;
 
-		public void render(StringBuilder sb, Entity<?> entity) {
-			EntityField ef = entity.getField(name);
-			if (null == ef)
-				throw Lang.makeThrow("Fail to find field '%s' in '%s'", name, entity.getType()
-						.getName());
-			sb.append(' ').append(ef.getColumnName()).append(' ').append(by);
+		public void render(StringBuilder sb, Entity<?> en) {
+			String colName = name;
+			if (null != en) {
+				EntityField ef = en.getField(name);
+				if (null != ef)
+					colName = ef.getColumnName();
+			}
+			sb.append(' ').append(colName).append(' ').append(by);
 		}
 	}
 

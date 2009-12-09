@@ -1,5 +1,4 @@
 package org.nutz.lang;
 
 @SuppressWarnings("serial")
-public class ExitLoop extends Throwable {
-}
+public class ExitLoop extends RuntimeException {}

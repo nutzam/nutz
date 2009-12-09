@@ -35,6 +35,10 @@ public class Pojos extends Service {
 		this.dao = dao;
 	}
 
+	public void initPet() {
+		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
+	}
+
 	public void init() {
 		Tables.run(dao, Tables.defineBy(topTables));
 	}

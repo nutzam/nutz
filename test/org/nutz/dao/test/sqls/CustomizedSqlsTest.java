@@ -2,35 +2,82 @@ package org.nutz.dao.test.sqls;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 
+import org.nutz.Nutzs;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.Tank;
 import org.nutz.trans.Atom;
 
 public class CustomizedSqlsTest extends DaoCase {
 
-	@Override
-	protected void after() {
+	@Test
+	public void test_query_by_limit() {
+		// For mysql only
+		if (dao.meta().isMySql()) {
+			pojos.initPet();
+			dao.insert(Pet.create(8));
+			assertEquals(8, dao.count(Pet.class));
+			Sql sql = Sqls.queryEntity("SELECT * FROM t_pet $condition LIMIT @off,@size ");
+			sql.setEntity(dao.getEntity(Pet.class));
+			sql.params().set("off", 2).set("size", 2);
+			sql.setCondition(Cnd.orderBy().asc("name"));
+			dao.execute(sql);
+			List<Pet> pets = sql.getList(Pet.class);
+			assertEquals(2, pets.size());
+			assertEquals("pet_02", pets.get(0).getName());
+			assertEquals("pet_03", pets.get(1).getName());
+
+		} else {
+			Nutzs.notSupport(dao.meta());
+		}
 	}
 
-	@Override
-	protected void before() {
-		((NutDao) dao).setSqlManager(new FileSqlManager("org/nutz/dao/test/sqls/exec.sqls"));
+	@Test
+	public void test_query_without_entity() {
+		pojos.initPet();
+		dao.insert(Pet.create(4));
+		Sql sql = Sqls.create("SELECT * FROM t_pet $condition");
+		sql.setCondition(Cnd.where("name", "like", "pet_%").asc("name"));
+		sql.setCallback(new SqlCallback() {
+			public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
+				List<Pet> pets = new ArrayList<Pet>(4);
+				while (rs.next())
+					pets.add(dao.getObject(Pet.class, rs, null));
+				return pets;
+			}
+		});
+		dao.execute(sql);
+		List<Pet> pets = sql.getList(Pet.class);
+		assertEquals(4, pets.size());
+		assertEquals("pet_00", pets.get(0).getName());
+		assertEquals("pet_01", pets.get(1).getName());
+		assertEquals("pet_02", pets.get(2).getName());
+		assertEquals("pet_03", pets.get(3).getName());
 	}
 
 	@Test
 	public void test_dynamic_insert() {
 		pojos.init();
+		((NutDao) dao).setSqlManager(new FileSqlManager("org/nutz/dao/test/sqls/exec.sqls"));
 		int platoonId = 23;
 		try {
 			pojos.initPlatoon(platoonId);

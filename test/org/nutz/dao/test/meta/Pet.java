@@ -1,6 +1,7 @@
 package org.nutz.dao.test.meta;
 
 import org.nutz.dao.entity.annotation.*;
+import org.nutz.lang.Strings;
 
 @Table("t_pet")
 public class Pet {
@@ -9,6 +10,13 @@ public class Pet {
 		Pet pet = new Pet();
 		pet.setName(name);
 		return pet;
+	}
+
+	public static Pet[] create(int num) {
+		Pet[] pets = new Pet[num];
+		for (int i = 0; i < num; i++)
+			pets[i] = create("pet_" + Strings.fillHex(i, 2));
+		return pets;
 	}
 
 	@Column

@@ -198,7 +198,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 将一个整数转换成固定长度的十进制形式字符串
+	 * 将一个整数转换成最小长度为某一固定数值的十进制形式字符串
 	 * 
 	 * @param cs
 	 *            字符串
@@ -211,7 +211,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 将一个整数转换成固定长度的十六进制形式字符串
+	 * 将一个整数转换成最小长度为某一固定数值的十六进制形式字符串
 	 * 
 	 * @param cs
 	 *            字符串
@@ -224,7 +224,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 将一个整数转换成固定长度的二进制形式字符串
+	 * 将一个整数转换成最小长度为某一固定数值的二进制形式字符串
 	 * 
 	 * @param cs
 	 *            字符串
@@ -234,6 +234,64 @@ public abstract class Strings {
 	 */
 	public static String fillBinary(int d, int width) {
 		return Strings.alignRight(Integer.toBinaryString(d), width, '0');
+	}
+	
+	/**
+	 * 将一个整数转换成固定长度的十进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
+	public static String toDigit(int d, int width) {
+		return Strings.cutRight(String.valueOf(d), width, '0');
+	}
+
+	/**
+	 * 将一个整数转换成固定长度的十六进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
+	public static String toHex(int d, int width) {
+		return Strings.cutRight(Integer.toHexString(d), width, '0');
+	}
+
+	/**
+	 * 将一个整数转换成固定长度的二进制形式字符串
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            宽度
+	 * @return 新字符串
+	 */
+	public static String toBinary(int d, int width) {
+		return Strings.cutRight(Integer.toBinaryString(d), width, '0');
+	}
+
+	/**
+	 * 保证字符串为一固定长度。超过长度，切除，否则补字符。
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param width
+	 *            长度
+	 * @param c
+	 *            补字符
+	 * @return 修饰后的字符串
+	 */
+	public static String cutRight(String s, int width, char c) {
+		if (s.length() == width)
+			return s;
+		if (s.length() < width)
+			return Strings.dup(c, width - s.length()) + s;
+		return s.substring(s.length()-width, s.length());
 	}
 
 	/**

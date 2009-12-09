@@ -109,6 +109,20 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 生成一个对象的 Mirror
+	 * 
+	 * @param obj
+	 *            对象。
+	 * @return Mirror， 如果 对象 null，则返回 null
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Mirror<T> me(T obj) {
+		if (null == obj)
+			return null;
+		return (Mirror<T>) me(obj.getClass());
+	}
+
+	/**
 	 * 包裹一个类，并设置自定义的类型提炼逻辑
 	 * 
 	 * @param classOfT
