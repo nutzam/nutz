@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 /**
  * 方法拦截器的空实现
+ * <p>本实现不会改变被拦截方法的行为.
  * @author wendal(wendal1985@gmail.com)
  * @see org.nutz.aop.MethodInterceptor
  */
