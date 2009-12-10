@@ -96,8 +96,11 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 		isWarnEnabled =  (Boolean) isEnabledFor.invoke(log4jImpl, levelWarn);
 		isInfoEnabled =  (Boolean) isEnabledFor.invoke(log4jImpl, levelInfo);
 		isDebugEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelDebug);
-		isTraceEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelTrace);
-		System.out.println("I am here");
+		// Issue 77
+		if(levelTrace != null)
+			isTraceEnabled = (Boolean) isEnabledFor.invoke(log4jImpl, levelTrace);
+		else
+			isTraceEnabled = false;
 	}
 
 	private void initLevelStuff() throws ClassNotFoundException,
@@ -150,7 +153,7 @@ public class Log4jAdapter extends AbstractLogAdapter implements Log {
 			traceObjectMethod = findMethod("trace");
 			traceObjectThrowableMethod = findMethod_Throw("trace");
 		}catch (Throwable e) {
-			// org.apache.log4j.Level#TRACE字段,是1.2.12版才引入的.
+			// Issue 77 : org.apache.log4j.Level#TRACE字段,是1.2.12版才引入的.
 		}
 		
 	}
