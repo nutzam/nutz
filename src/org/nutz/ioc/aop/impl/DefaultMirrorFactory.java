@@ -9,7 +9,7 @@ import org.nutz.aop.ClassAgent;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
 import org.nutz.aop.SimpleMethodMatcher;
-import org.nutz.aop.javassist.JavassistClassAgent;
+import org.nutz.aop.asm.AsmClassAgent;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.aop.MirrorFactory;
@@ -38,7 +38,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 		Mirror<T> mirror = Mirror.me(type);
 		List<Method> aops = this.getAopMethod(mirror);
 		if (aops.size() > 0) {
-			ClassAgent ca = new JavassistClassAgent();
+			ClassAgent ca = new AsmClassAgent();
 			for (Method m : aops) {
 				Aop aop = m.getAnnotation(Aop.class);
 				if (null != aop) {

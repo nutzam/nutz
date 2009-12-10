@@ -8,7 +8,7 @@
 	功能改进
 		 # Issue 12: Should support one config file can import other config files function. (未完成)
 		 # Issue 66: 扩展接口能否通过配置文件添加. (未完成)
-		 # Issue 71: aop: 修改拦截器接口
+		 # Issue 71: aop: 修改拦截器接口,改为使用asm实现
 		 
 	
 	代码缺陷
