@@ -23,12 +23,13 @@ public final class ClassX<T> implements Opcodes{
 	
 	private Constructor<T> [] constructors;
 	
+	
 	protected ClassX(Class<T> kclass,String myName,Method[] methodArray,Constructor<T> [] constructors){
 		this.klass = kclass;
 		this.myName = myName.replace('.', '/');
 		this.enhancedSuperName = klass.getName().replace('.', '/');
 		this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-		cw.visit(V1_6, ACC_PUBLIC, this.myName, "", enhancedSuperName, new String[]{});
+		cw.visit(AsmClassAgent.CLASS_LEVEL, ACC_PUBLIC, this.myName, "", enhancedSuperName, new String[]{});
 		this.methodArray = methodArray;
 		this.constructors = constructors;
 	}
