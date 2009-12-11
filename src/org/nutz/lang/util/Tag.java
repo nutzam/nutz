@@ -30,19 +30,6 @@ public class Tag extends SimpleNode<HtmlToken> {
 		return tag;
 	}
 
-	public static void main(String[] args) {
-		Tag tag = tag("html");
-		tag.add(tag("head").add(tag("title").add(text("Test web Page"))));
-		Tag body = tag("body");
-		body.attr("bgcolor", "#FFC").attr("margin", "4");
-		body.add(tag("h3").add(text("headhead!!!")));
-		body.add(tag("ul").add(tag("li").add(text("A"))).add(tag("li").add(text("B"))));
-		body.add(tag("hr"));
-		body.add(tag("div").add(tag("b").add(text("I am bold"))));
-		tag.add(body);
-		System.out.println(tag);
-	}
-
 	public boolean isBlock() {
 		return get().isBlock();
 	}
