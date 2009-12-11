@@ -1,7 +1,7 @@
 package org.nutz.aop.asm;
 
-import org.objectweb.asm.MethodVisitor;
-import static org.objectweb.asm.Opcodes.*;
+import org.nutz.aop.asm.org.asm.MethodVisitor;
+import static org.nutz.aop.asm.org.asm.Opcodes.*;
 
 class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
 

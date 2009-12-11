@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.MethodInterceptor;
-import org.objectweb.asm.Opcodes;
+import org.nutz.aop.asm.org.asm.Opcodes;
 
 /**
  * <b>本实现基于ASM 3.2</b>

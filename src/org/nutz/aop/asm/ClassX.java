@@ -4,10 +4,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.nutz.aop.asm.org.asm.ClassWriter;
+import org.nutz.aop.asm.org.asm.MethodVisitor;
+import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.aop.asm.org.asm.Type;
 
 public final class ClassX<T> implements Opcodes{
 	

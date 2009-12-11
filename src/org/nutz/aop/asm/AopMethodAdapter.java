@@ -1,11 +1,11 @@
 package org.nutz.aop.asm;
 
-import static org.objectweb.asm.Opcodes.*;
+import org.nutz.aop.asm.org.asm.Label;
+import org.nutz.aop.asm.org.asm.MethodVisitor;
+import org.nutz.aop.asm.org.asm.Opcodes;
 
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import static org.nutz.aop.asm.org.asm.Opcodes.*;
+import org.nutz.aop.asm.org.asm.Type;
 
 final class AopMethodAdapter extends NullMethodAdapter {
 	private int methodIndex;

@@ -1,8 +1,8 @@
 package org.nutz.aop.asm;
 
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.nutz.aop.asm.org.asm.MethodVisitor;
+import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.aop.asm.org.asm.Type;
 
 public abstract class NullMethodAdapter{
 	

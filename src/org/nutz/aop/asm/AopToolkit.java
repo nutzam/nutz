@@ -5,11 +5,11 @@ import java.util.List;
 
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Mirror;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.FieldVisitor;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.nutz.aop.asm.org.asm.ClassVisitor;
+import org.nutz.aop.asm.org.asm.FieldVisitor;
+import org.nutz.aop.asm.org.asm.Label;
+import org.nutz.aop.asm.org.asm.MethodVisitor;
+import org.nutz.aop.asm.org.asm.Opcodes;
 
 final class AopToolkit implements Opcodes{
 
