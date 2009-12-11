@@ -6,12 +6,12 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.segment.MultiLineProperties;
 import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 
@@ -65,7 +65,7 @@ public class DefaultMessageLoader implements MessageLoader {
 			}
 		});
 		for (File f : files) {
-			Properties p = new Properties();
+			MultiLineProperties p = new MultiLineProperties();
 			Reader reader = Streams.fileInr(f);
 			try {
 				p.load(reader);
