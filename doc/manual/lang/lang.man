@@ -243,7 +243,7 @@
 			{{{
 			Files.makeDir(new File("D:/demo/abc"));
 			}}}
-		 * 强行删除一个目录，保括这个目录下所有的子目录和文件
+		 * 强行删除一个目录，包括这个目录下所有的子目录和文件
 			{{{
 			Files.deleteDir(new File("D:/demo/abc"));
 			}}}
@@ -298,10 +298,6 @@
 		 * 将文件移动到新的位置
 			{{{
 			Files.move(new File("D:/demo/abc.txt"), new File("D:/demo/def.txt"));
-			}}}
-		 * 将文件改名
-			{{{
-			Files.rename(new File("D:/demo/abc.txt"), "def.txt");
 			}}}
 		 * 将文件改名
 			{{{
