@@ -9,7 +9,6 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
-import org.nutz.lang.segment.Segments;
 import org.nutz.mvc.View;
 
 public class ServerRedirectView implements View {
@@ -22,28 +21,22 @@ public class ServerRedirectView implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
-		Mirror<?> me = null;
-		if (null != obj)
-			me = Mirror.me(obj.getClass());
+		Mirror<?> mirror = Mirror.me(obj);
 
-		// Prepare the dest path ...
-		// If object is not null, fill the dest by it
-		if (null != obj)
-			Segments.fillByKeys(dest, obj);
-		else
-			// else fill by request params
-			for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
-				String key = it.next();
-				Object value = null;
-				if (null != me && key.startsWith("obj.")) {
-					value = me.getValue(obj, key.substring(4));
-				} else {
-					value = req.getParameter(key);
-				}
-				if (null == value)
-					value = obj;
-				dest.set(key, value);
+		// Fill path
+		for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
+			String key = it.next();
+			Object value = null;
+			if (null != mirror && key.startsWith("obj.") && key.length()>4) {
+				value = mirror.getValue(obj, key.substring(4));
+			} else {
+				value = req.getParameter(key);
 			}
+			if (null == value)
+				value = obj;
+			dest.set(key, value);
+		}
+
 		// Format the path ...
 		String path = dest.toString();
 		// Absolute path, add the context path for it
