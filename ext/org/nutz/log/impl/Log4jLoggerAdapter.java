@@ -106,7 +106,7 @@ public class Log4jLoggerAdapter extends AbstractLogAdapter{
 	
 	private Log4JLogger log4JLogger;
 	
-	class Log4JLogger extends AbstractLog{
+	static class Log4JLogger extends AbstractLog{
 		
 		private Logger logger;
 		
