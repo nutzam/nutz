@@ -37,8 +37,8 @@ class Uploading {
 			// Analyze the request data
 			InputStream ins = request.getInputStream();
 			// Buffer the stream
-//			if (!(ins instanceof BufferedInputStream))
-			ins = new BufferedInputStream(ins);
+			if (!(ins instanceof BufferedInputStream))
+				ins = new BufferedInputStream(ins);
 			// Check content type
 			String contentType = request.getContentType();
 			String s = "\r\n--" + Http.multipart.getBoundary(contentType);
