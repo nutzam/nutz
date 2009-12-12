@@ -18,12 +18,16 @@
 	<property name="JDK_VERSION" value="1.6" />
 
 	<property name="v" value="-1.a.24" />
+	<property name="dftplug" value="nutz-default-plugin.json"/>
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
+	<property name="zplugin" value="org/nutz/plugin/**" />
+	<property name="zlog" value="org/nutz/log/**" />
 	<property name="zjson" value="org/nutz/json/**" />
 	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />
-	<property name="zaop" value="org/nutz/aop/**,org/nutz/log/**" />
-	<property name="zioc" value="org/nutz/ioc/**,${zaop}" />
+	<property name="zioc" value="org/nutz/ioc/**,org/nutz/aop/**" />
 	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
+	
+	<property name="zall" value="${dftplug},${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}"/>
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
@@ -46,6 +50,7 @@
 		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" deprecation="true" nowarn="false" source="${JDK_VERSION}" target="${JDK_VERSION}">
 			<classpath refid="CLASSPATH" />
 		</javac>
+		<copyfile dest="${TMP}/${dftplug}" src="${SRC}/${dftplug}"/>
 	</target>
 
 	<target name="jar" depends="compile">
@@ -55,8 +60,8 @@
 		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
 		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
 		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
-		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
-		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zlang},${zjson},${zioc},${zdao},${zmvc}" />
+		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zall}" />
+		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zall}" />
 	</target>
 
 	<target name="run" depends="jar">
