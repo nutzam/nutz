@@ -42,6 +42,7 @@ public abstract class Mvcs {
 	 */
 	public static void setLocaleName(HttpSession session, String name) {
 		session.setAttribute(LOCALE_NAME, name);
+		session.removeAttribute(MSG);
 	}
 
 	/**

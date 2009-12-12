@@ -5,6 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.mvc.View;
 
+/**
+ * 组合一个视图以及其渲染对象
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class ViewWrapper implements View {
 
 	public ViewWrapper(View view, Object data) {
@@ -18,7 +23,7 @@ public class ViewWrapper implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Throwable {
-		view.render(req, resp, obj == null ? data : obj);
+		view.render(req, resp, data);
 	}
 
 }
