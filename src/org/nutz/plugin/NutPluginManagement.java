@@ -33,18 +33,17 @@ public final class NutPluginManagement {
 	}
 	
 	public static void reset(){
-		try{
-			for (List<NutPlugin> pluginList : plugins.values()) {
-				for (NutPlugin nutPlugin : pluginList) {
+		for (List<NutPlugin> pluginList : plugins.values()) {
+			for (NutPlugin nutPlugin : pluginList) {
+				try{
 					nutPlugin.depose(nutPluginConfig);
+				}catch (Throwable e) {
 				}
 			}
-		}catch (Throwable e) {
-		}finally{
-			plugins.clear();
-			loadPluginInfo(EXT_PLUGIN_FILENAME);
-			loadPluginInfo(DEFAULT_PLUGIN_FILENAME);
 		}
+		plugins.clear();
+		loadPluginInfo(EXT_PLUGIN_FILENAME);
+		loadPluginInfo(DEFAULT_PLUGIN_FILENAME);
 	}
 
 	static{
