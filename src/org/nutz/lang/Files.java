@@ -466,7 +466,8 @@ public abstract class Files {
 			else
 				re |= deleteFile(f);
 		}
-		return dir.delete();
+		re |= dir.delete();
+		return re;
 	}
 
 	/**

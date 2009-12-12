@@ -15,6 +15,14 @@ public class FilesTest {
 		assertEquals("abc",Files.getMajorName("/a/b/c/abc"));
 		assertEquals("",Files.getMajorName(""));
 		assertEquals("abc",Files.getMajorName("abc"));
+		assertEquals(".abc",Files.getMajorName(".abc"));
+		assertEquals(".abc",Files.getMajorName(".abc.txt"));
+	}
+	
+	@Test
+	public void test_rename_suffix(){
+		assertEquals("/home/zzh/abc.zdoc",Files.renameSuffix("/home/zzh/abc.txt", ".zdoc"));
+		assertEquals("/home/zzh/.zdoc",Files.renameSuffix("/home/zzh/.txt", ".zdoc"));
 	}
 	
 }

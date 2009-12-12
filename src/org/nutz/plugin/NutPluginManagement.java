@@ -58,7 +58,7 @@ public final class NutPluginManagement {
 			if(is == null)
 				return;
 			Object obj = Json.fromJson(new InputStreamReader(is));
-			if(obj instanceof List){
+			if(obj instanceof List<?>){
 				List<?> classNameList = (List<?>)obj;
 				for (Object object : classNameList) {
 					loadPlugin(String.valueOf(object));

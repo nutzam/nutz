@@ -987,13 +987,7 @@ public abstract class Lang {
 		if ("0".equals(s))
 			return false;
 		s = s.toLowerCase();
-		if (s.equals("true"))
-			return true;
-		if ("false".equals(s))
-			return false;
-		if ("off".equals(s))
-			return false;
-		if ("no".equals(s))
+		if ("false".equals(s) || "off".equals(s) || "no".equals(s))
 			return false;
 		return true;
 	}
