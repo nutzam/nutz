@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.log.LogFactory;
 
 /**
@@ -25,10 +26,10 @@ public final class NutPluginManagement {
 	
 	private static NutPluginConfig nutPluginConfig;
 
-	public static Object [] getPlugins(Class<?> interfaceClass){
+	public static <T> T [] getPlugins(Class<T> interfaceClass){
 		List<NutPlugin> ps = plugins.get(interfaceClass);
 		if(ps != null)
-			return ps.toArray();
+			return Lang.array2array(ps.toArray(), interfaceClass);
 		return null;
 	}
 	

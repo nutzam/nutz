@@ -20,9 +20,9 @@ public class LogFactory {
 	private static LogAdapter workableAdapter;
 
 	static {
-		Object [] adapterArray = NutPluginManagement.getPlugins(LogAdapter.class);
+		LogAdapter [] adapterArray = NutPluginManagement.getPlugins(LogAdapter.class);
 		if(adapterArray != null && adapterArray.length > 0)
-			workableAdapter = (LogAdapter) adapterArray[0];
+			workableAdapter = adapterArray[0];
 	}
 
 	public static void setLogAdapter(AbstractLogAdapter adapter) {
