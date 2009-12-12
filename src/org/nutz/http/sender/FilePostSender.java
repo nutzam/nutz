@@ -13,7 +13,7 @@ import org.nutz.http.Response;
 
 public class FilePostSender extends PostSender {
 
-	public static String SEPARATOR = "\r\n";
+	public static final String SEPARATOR = "\r\n";
 	
 	public FilePostSender(Request request) {
 		super(request);

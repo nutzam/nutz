@@ -102,9 +102,7 @@ public final class Resources {
 				if (url != null) {
 					String path = url.getFile();
 					// If there is some whitespace in path, should decode it.
-					try {
-						path = URLDecoder.decode(path, Charset.defaultCharset().name());
-					} catch (Exception e) {}
+					path = decodePath(path);
 					file = new File(path);
 				}
 			}
@@ -129,9 +127,7 @@ public final class Resources {
 
 	private static String[] findInJar(String jarPath, Class<?> baseClass) {
 		try {
-			try {
-				jarPath = URLDecoder.decode(jarPath, Charset.defaultCharset().name());
-			} catch (UnsupportedEncodingException e) {}
+			jarPath = decodePath(jarPath);
 			ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage()
 					.getName().replace('.', '/')
 					+ "/\\w*.class");
@@ -179,5 +175,12 @@ public final class Resources {
 		if (posBegin > 0 && (posEnd - posBegin) > 0)
 			return fpath.substring(posBegin, posEnd);
 		return null;
+	}
+	
+	private static String decodePath(String path){
+		try {
+			return URLDecoder.decode(path, Charset.defaultCharset().name());
+		} catch (UnsupportedEncodingException e) {}
+		return path;
 	}
 }

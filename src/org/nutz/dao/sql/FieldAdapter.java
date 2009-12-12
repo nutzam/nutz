@@ -17,7 +17,7 @@ import org.nutz.lang.Mirror;
  */
 public abstract class FieldAdapter {
 
-	public static FieldAdapter AS_NULL = new AsNull();
+	public final static FieldAdapter AS_NULL = new AsNull();
 	private static FieldAdapter AS_STRING = new AsString();
 	private static FieldAdapter AS_CHAR = new AsChar();
 	private static FieldAdapter AS_INTEGER = new AsInteger();
@@ -157,7 +157,7 @@ public abstract class FieldAdapter {
 					stat.setString(i, null);
 			} else {
 				for (int i : is)
-					stat.setString(i, null == obj ? null : obj.toString());
+					stat.setString(i, obj.toString());
 			}
 		}
 	}
@@ -169,9 +169,7 @@ public abstract class FieldAdapter {
 					stat.setString(i, null);
 			} else {
 				String s;
-				if (obj == null)
-					s = null;
-				else if (obj instanceof Character) {
+				if (obj instanceof Character) {
 					int c = ((Character) obj).charValue();
 					if (c >= 0 && c <= 32)
 						s = " ";

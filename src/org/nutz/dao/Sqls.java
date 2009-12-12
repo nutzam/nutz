@@ -115,7 +115,7 @@ public class Sqls {
 	/**
 	 * 一些内置的回调对象
 	 */
-	public static CallbackFactory callback = new CallbackFactory();
+	public final static CallbackFactory callback = new CallbackFactory();
 
 	public static class CallbackFactory {
 		/**

@@ -10,7 +10,7 @@ import org.nutz.lang.Mirror;
 
 public class DefaultStatementAdapter implements StatementAdapter {
 
-	public static DefaultStatementAdapter ME = new DefaultStatementAdapter();
+	public final static DefaultStatementAdapter ME = new DefaultStatementAdapter();
 
 	public void process(PreparedStatement stat, SqlLiteral sql, Entity<?> entity)
 			throws SQLException {

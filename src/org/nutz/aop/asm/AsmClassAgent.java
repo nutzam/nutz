@@ -22,7 +22,7 @@ import org.nutz.aop.asm.org.asm.Opcodes;
  */
 public class AsmClassAgent extends AbstractClassAgent {
 	
-	protected static GeneratorClassLoader generatorClassLoader = new GeneratorClassLoader();
+	protected static final GeneratorClassLoader generatorClassLoader = new GeneratorClassLoader();
 	
 	public static final int CLASS_LEVEL = Opcodes.V1_6;
 

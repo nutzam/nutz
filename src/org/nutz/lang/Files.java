@@ -528,8 +528,7 @@ public abstract class Files {
 
 		ins.close();
 		ops.close();
-		target.setLastModified(src.lastModified());
-		return true;
+		return target.setLastModified(src.lastModified());
 	}
 
 	/**
