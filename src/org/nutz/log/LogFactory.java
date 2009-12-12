@@ -1,12 +1,9 @@
 package org.nutz.log;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import org.nutz.log.impl.JdkLoggerAdapter;
-import org.nutz.log.impl.Log4jAdapter;
-import org.nutz.log.impl.NullAdaptor;
+import org.nutz.log.impl.AbstractLogAdapter;
+import org.nutz.log.impl.NullLog;
 import org.nutz.log.impl.SystemLog;
+import org.nutz.plugin.NutPluginManagement;
 
 /**
  * 获取 Log 的静态工厂方法
@@ -17,63 +14,49 @@ import org.nutz.log.impl.SystemLog;
 public class LogFactory {
 
 	private static Log systemLog = new SystemLog();
+	
+	private static Log nullLog = new NullLog();
 
-	private static LogAdapter workableAdapter = null;
-
-	private static List<LogAdapter> adapters = new LinkedList<LogAdapter>();
-
-	private static boolean showNullLogWarning = true;
+	private static LogAdapter workableAdapter;
 
 	static {
-		registerLogAdapter(new Log4jAdapter());
-		registerLogAdapter(new JdkLoggerAdapter());
+		Object [] adapterArray = NutPluginManagement.getPlugins(LogAdapter.class);
+		if(adapterArray != null && adapterArray.length > 0)
+			workableAdapter = (LogAdapter) adapterArray[0];
 	}
 
-	public static void turnOnNullLogWarning() {
-		showNullLogWarning = true;
-	}
-
-	public static void turnOffNullLogWarning() {
-		showNullLogWarning = false;
-	}
-
-	public static void registerLogAdapter(LogAdapter adapter) {
-		adapters.add(adapter);
+	public static void setLogAdapter(AbstractLogAdapter adapter) {
+		if(adapter.canWork(null))
+			workableAdapter = adapter;
 	}
 
 	public static Log getLog(Class<?> clazz) {
+		if(clazz == null)
+			return getRootLog();
 		return getLog(clazz.getName());
 	}
 
 	public static Log getLog(String className) {
-		if (workableAdapter == null) {
-			synchronized (LogFactory.class) {
-				if (workableAdapter == null) {
-					for (LogAdapter adapter : adapters) {
-						if (adapter.canWork()) {
-							workableAdapter = adapter;
-							break;
-						}
-					}
-
-					if (showNullLogWarning && workableAdapter == null) {
-						systemLog
-								.fatal("Failed to create logger (log4j or java.util.logging), nullLog will be used!");
-						workableAdapter = new NullAdaptor();
-					}
-				}
-			}
-		}
-
-		try {
+		if(className == null)
+			return getRootLog();
+		if (workableAdapter != null) 
 			return workableAdapter.getLogger(className);
-		} catch (Exception e) {
-			systemLog.fatal("failed to create logger from logAdapter: "
-					+ workableAdapter.getClass().getName()
-					+ ", nullLog will be used instead of it.", e);
-
-			return NullAdaptor.log;
-		}
-
+		if(useNullLog)
+			return nullLog;
+		return systemLog;
 	}
+	
+	public static Log getRootLog(){
+		if (workableAdapter != null) 
+			return workableAdapter.getRootLogger();
+		if(useNullLog)
+			return nullLog;
+		return systemLog;
+	}
+	
+	public void useNullLog(boolean flag){
+		useNullLog = flag;
+	}
+	
+	private static boolean useNullLog = false;
 }

@@ -2,10 +2,11 @@ package org.nutz.log;
 
 /**
  * @author Young(sunonfire@gmail.com)
+ * @author Wendal(wendal1985@gmail.com)
  */
 public interface LogAdapter {
 
-	boolean canWork();
-
-	Log getLogger(String className) throws Exception;
+	Log getLogger(String className);
+	
+	Log getRootLogger();
 }

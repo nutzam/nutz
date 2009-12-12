@@ -1,0 +1,6 @@
+[
+"org.nutz.log.impl.JdkLoggerAdapter",
+"org.nutz.log.impl.Log4jLoggerAdapter",
+"org.nutz.log.impl.JclLoggerAdapter",
+"org.nutz.log.impl.Slf4jLoggerAdapter"
+]

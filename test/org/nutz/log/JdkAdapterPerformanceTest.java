@@ -1,9 +1,9 @@
 package org.nutz.log;
 
 import java.net.URL;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.junit.After;
@@ -11,7 +11,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.random.StringGenerator;
-import org.nutz.log.impl.JdkLoggerAdapter;
 import org.nutz.trans.Atom;
 
 public class JdkAdapterPerformanceTest {
@@ -77,7 +76,7 @@ public class JdkAdapterPerformanceTest {
 		info(Stopwatch.run(new Atom() {
 			public void run() {
 				for (int i = 0; i < times; i++)
-					jdkLogger.log(JdkLoggerAdapter.INFO_LEVEL, randomStrings1.get(i));
+					jdkLogger.log(Level.INFO, randomStrings1.get(i));
 			}
 		}), "JDK", "output");
 	}
