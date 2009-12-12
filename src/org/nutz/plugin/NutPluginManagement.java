@@ -10,7 +10,6 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
-import org.nutz.log.LogFactory;
 
 /**
  * 
@@ -85,7 +84,7 @@ public final class NutPluginManagement {
 				list.add(nutPlugin);
 			}
 		}catch (Throwable e) {
-			LogFactory.getLog(NutPluginManagement.class).warnf("Fail to load plugin: %s",pluginClassName);
+			// Do nothing
 		}
 	}
 }

@@ -27,7 +27,7 @@ public class Slf4jLoggerAdapter extends AbstractLogAdapter {
 
 	public boolean canWork(NutPluginConfig config) {
 		try{
-			LoggerFactory.getILoggerFactory();
+			Class.forName("org.slf4j.impl.StaticLoggerBinder");
 			return true;
 		}catch (Throwable e) {
 		}
