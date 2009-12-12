@@ -5,7 +5,6 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.nutz.log.Log;
-import org.nutz.plugin.NutPluginConfig;
 
 /**
  * apache log4j 适配器。 判断log4j是否可用的逻辑是依据log4j自身判断逻辑设计的，简单来说：
@@ -34,7 +33,7 @@ public class Log4jLoggerAdapter extends AbstractLogAdapter{
 
 	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
 	
-	public boolean canWork(NutPluginConfig config) {
+	public boolean canWork() {
 		try {
 			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread()
 					.getContextClassLoader());
@@ -95,7 +94,7 @@ public class Log4jLoggerAdapter extends AbstractLogAdapter{
 	}
 	
 	public Log getLogger(String className){
-		return new Log4JLogger();
+		return new Log4JLogger(className);
 	}
 	
 	public Log getRootLogger() {

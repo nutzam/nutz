@@ -2,7 +2,7 @@ package org.nutz.log;
 
 import org.nutz.log.impl.AbstractLogAdapter;
 import org.nutz.log.impl.SystemLog;
-import org.nutz.plugin.NutPluginManagement;
+import org.nutz.plugin.PluginManager;
 
 /**
  * 获取 Log 的静态工厂方法
@@ -17,13 +17,13 @@ public class LogFactory {
 	private static LogAdapter workableAdapter;
 
 	static {
-		LogAdapter [] adapterArray = NutPluginManagement.me().getPlugins(LogAdapter.class);
+		LogAdapter [] adapterArray = PluginManager.get(LogAdapter.class);
 		if(adapterArray != null && adapterArray.length > 0)
 			workableAdapter = adapterArray[0];
 	}
 
 	public static void setLogAdapter(AbstractLogAdapter adapter) {
-		if(adapter.canWork(null))
+		if(adapter.canWork())
 			workableAdapter = adapter;
 	}
 

@@ -5,11 +5,11 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.nutz.log.LogAdapter;
 
-public class NutPluginManagementTest {
+public class PlugsTest {
 
 	@Test
 	public void testGetPlugins() {
-		Object [] objs = NutPluginManagement.me().getPlugins(LogAdapter.class);
+		Object [] objs = PluginManager.get(LogAdapter.class);
 		assertNotNull(objs);
 		assertTrue(objs.length > 0);
 	}
