@@ -7,6 +7,45 @@ package org.nutz.log.impl;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class SystemLog extends AbstractLog{
+	
+	private boolean output = true;
+	
+	private static SystemLog systemLog = new SystemLog();
+	
+	public static SystemLog me(){
+		return systemLog;
+	}
+	
+	private SystemLog() {
+	}
+	
+	public void needOutput(boolean flag) {
+		output = flag;
+	}
+	
+	public boolean isDebugEnabled() {
+		return output && super.isDebugEnabled();
+	}
+
+	public boolean isErrorEnabled() {
+		return output && super.isErrorEnabled();
+	}
+
+	public boolean isFatalEnabled() {
+		return output && super.isFatalEnabled();
+	}
+
+	public boolean isInfoEnabled() {
+		return output && super.isInfoEnabled();
+	}
+
+	public boolean isTraceEnabled() {
+		return output && super.isTraceEnabled();
+	}
+
+	public boolean isWarnEnabled() {
+		return output && super.isWarnEnabled();
+	}
 
 	public void debug(Object message, Throwable t) {
 		if(isDebugEnabled())

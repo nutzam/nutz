@@ -1,7 +1,6 @@
 package org.nutz.log;
 
 import org.nutz.log.impl.AbstractLogAdapter;
-import org.nutz.log.impl.NullLog;
 import org.nutz.log.impl.SystemLog;
 import org.nutz.plugin.NutPluginManagement;
 
@@ -13,9 +12,7 @@ import org.nutz.plugin.NutPluginManagement;
  */
 public class LogFactory {
 
-	private static Log systemLog = new SystemLog();
-	
-	private static Log nullLog = new NullLog();
+	private static SystemLog systemLog = SystemLog.me();
 
 	private static LogAdapter workableAdapter;
 
@@ -41,22 +38,16 @@ public class LogFactory {
 			return getRootLog();
 		if (workableAdapter != null) 
 			return workableAdapter.getLogger(className);
-		if(useNullLog)
-			return nullLog;
 		return systemLog;
 	}
 	
 	public static Log getRootLog(){
 		if (workableAdapter != null) 
 			return workableAdapter.getRootLogger();
-		if(useNullLog)
-			return nullLog;
 		return systemLog;
 	}
 	
-	public void useNullLog(boolean flag){
-		useNullLog = flag;
+	public void needOutput(boolean flag){
+		systemLog.needOutput(flag);
 	}
-	
-	private static boolean useNullLog = false;
 }
