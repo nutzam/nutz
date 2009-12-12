@@ -39,6 +39,8 @@ public class JdkAdapterPerformanceTest {
 		for (int i = 0; i < times; i++)
 			randomStrings2.add(sg.next());
 
+		LogFactory.getRootLog();
+		Logger.getAnonymousLogger();
 	}
 
 	@After

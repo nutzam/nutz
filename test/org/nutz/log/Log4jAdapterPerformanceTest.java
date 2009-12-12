@@ -32,6 +32,8 @@ public class Log4jAdapterPerformanceTest {
 
 		for (int i = 0; i < times; i++)
 			randomStrings2.add(Integer.toString((new Object()).hashCode()));
+		LogFactory.getRootLog();
+		Logger.getRootLogger();
 
 	}
 
