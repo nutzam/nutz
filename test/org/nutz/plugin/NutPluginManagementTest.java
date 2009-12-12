@@ -9,7 +9,7 @@ public class NutPluginManagementTest {
 
 	@Test
 	public void testGetPlugins() {
-		Object [] objs = NutPluginManagement.getPlugins(LogAdapter.class);
+		Object [] objs = NutPluginManagement.me().getPlugins(LogAdapter.class);
 		assertNotNull(objs);
 		assertTrue(objs.length > 0);
 	}
