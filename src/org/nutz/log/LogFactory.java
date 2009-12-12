@@ -17,7 +17,7 @@ public class LogFactory {
 	private static LogAdapter workableAdapter;
 
 	static {
-		LogAdapter [] adapterArray = NutPluginManagement.getPlugins(LogAdapter.class);
+		LogAdapter [] adapterArray = NutPluginManagement.me().getPlugins(LogAdapter.class);
 		if(adapterArray != null && adapterArray.length > 0)
 			workableAdapter = adapterArray[0];
 	}
