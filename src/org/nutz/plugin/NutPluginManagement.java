@@ -73,13 +73,15 @@ public final class NutPluginManagement {
 			Class<?> pluginClass = Class.forName(pluginClassName);
 			NutPlugin nutPlugin = (NutPlugin) pluginClass.newInstance();
 			if(nutPlugin.canWork(nutPluginConfig)){
-				nutPlugin.init(nutPluginConfig);
 				Class<?> workForClass = nutPlugin.workFor();
+				if(workForClass == null)
+					return;
 				List<NutPlugin> list = plugins.get(workForClass);
 				if(list == null){
 					list = new ArrayList<NutPlugin>();
 					plugins.put(workForClass, list);
 				}
+				nutPlugin.init(nutPluginConfig);
 				list.add(nutPlugin);
 			}
 		}catch (Throwable e) {
