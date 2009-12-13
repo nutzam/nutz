@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.junit.Test;
-import org.nutz.aop.Aop;
+import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.javassist.lstn.MethodCounter;
 import org.nutz.aop.javassist.lstn.RhinocerosListener;
@@ -33,9 +33,9 @@ public class AsmClassAgentTest {
 	public void test_duplicate_class_exception() throws Exception {
 		int[] cc = new int[4];
 		ClassAgent ca = getNewClassAgent();
-		ca.addListener(Aop.matcher(".*"), new MethodCounter(cc));
+		ca.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 		ClassAgent ca2 = getNewClassAgent();
-		ca2.addListener(Aop.matcher(".*"), new MethodCounter(cc));
+		ca2.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 
 		Class<? extends Moose> c = ca.define(Moose.class);
 		Moose m = c.newInstance();
@@ -54,7 +54,7 @@ public class AsmClassAgentTest {
 		int[] cc = new int[4];
 		Arrays.fill(cc, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(Aop.matcher("returnArrayMethod"), new MethodCounter(cc));
+		aca.addListener(MethodMatcherFactory.matcher("returnArrayMethod"), new MethodCounter(cc));
 		Class<? extends Buffalo> c = aca.define(Buffalo.class);// RA.class;
 		Buffalo r = Mirror.me(c).born();
 		String[] ss = r.returnArrayMethod();
@@ -65,38 +65,38 @@ public class AsmClassAgentTest {
 	@Test
 	public void test_basice_matcher() throws Exception {
 		Method method = Vegetarian.class.getDeclaredMethod("doSomething", BEH.class);
-		assertTrue(Aop.matcher().match(method));
-		assertTrue(Aop.matcher(PUBLIC).match(method));
-		assertFalse(Aop.matcher(PROTECTED).match(method));
-		assertFalse(Aop.matcher(TRANSIENT).match(method));
-		assertFalse(Aop.matcher(PRIVATE).match(method));
+		assertTrue(MethodMatcherFactory.matcher().match(method));
+		assertTrue(MethodMatcherFactory.matcher(PUBLIC).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PROTECTED).match(method));
+		assertFalse(MethodMatcherFactory.matcher(TRANSIENT).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PRIVATE).match(method));
 
 		method = Vegetarian.class.getDeclaredMethod("run", int.class);
-		assertTrue(Aop.matcher().match(method));
-		assertFalse(Aop.matcher(PUBLIC).match(method));
-		assertTrue(Aop.matcher(PROTECTED).match(method));
-		assertFalse(Aop.matcher(TRANSIENT).match(method));
-		assertFalse(Aop.matcher(PRIVATE).match(method));
+		assertTrue(MethodMatcherFactory.matcher().match(method));
+		assertFalse(MethodMatcherFactory.matcher(PUBLIC).match(method));
+		assertTrue(MethodMatcherFactory.matcher(PROTECTED).match(method));
+		assertFalse(MethodMatcherFactory.matcher(TRANSIENT).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PRIVATE).match(method));
 
 		method = Vegetarian.class.getDeclaredMethod("defaultMethod");
-		assertTrue(Aop.matcher().match(method));
-		assertFalse(Aop.matcher(PUBLIC).match(method));
-		assertFalse(Aop.matcher(PROTECTED).match(method));
-		assertTrue(Aop.matcher(TRANSIENT).match(method));
-		assertFalse(Aop.matcher(PRIVATE).match(method));
+		assertTrue(MethodMatcherFactory.matcher().match(method));
+		assertFalse(MethodMatcherFactory.matcher(PUBLIC).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PROTECTED).match(method));
+		assertTrue(MethodMatcherFactory.matcher(TRANSIENT).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PRIVATE).match(method));
 
 		method = Vegetarian.class.getDeclaredMethod("privateMethod");
-		assertTrue(Aop.matcher().match(method));
-		assertFalse(Aop.matcher(PUBLIC).match(method));
-		assertFalse(Aop.matcher(PROTECTED).match(method));
-		assertFalse(Aop.matcher(TRANSIENT).match(method));
-		assertTrue(Aop.matcher(PRIVATE).match(method));
+		assertTrue(MethodMatcherFactory.matcher().match(method));
+		assertFalse(MethodMatcherFactory.matcher(PUBLIC).match(method));
+		assertFalse(MethodMatcherFactory.matcher(PROTECTED).match(method));
+		assertFalse(MethodMatcherFactory.matcher(TRANSIENT).match(method));
+		assertTrue(MethodMatcherFactory.matcher(PRIVATE).match(method));
 	}
 
 	@Test
 	public void test_basice_matcher_by_name() throws Exception {
 		Method method = Vegetarian.class.getDeclaredMethod("doSomething", BEH.class);
-		assertTrue(Aop.matcher("doSomething").match(method));
+		assertTrue(MethodMatcherFactory.matcher("doSomething").match(method));
 	}
 
 	@Test
@@ -106,9 +106,9 @@ public class AsmClassAgentTest {
 		Arrays.fill(cc, 0);
 		Arrays.fill(crun, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(Aop.matcher(".*"), new MethodCounter(cc));
-		aca.addListener(Aop.matcher("run"), new MethodCounter(crun));
-		aca.addListener(Aop.matcher("doSomething"), new RhinocerosListener());
+		aca.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
+		aca.addListener(MethodMatcherFactory.matcher("run"), new MethodCounter(crun));
+		aca.addListener(MethodMatcherFactory.matcher("doSomething"), new RhinocerosListener());
 		Class<? extends Rhinoceros> c = aca.define(Rhinoceros.class);// RA.class;
 		Rhinoceros r = Mirror.me(c).born();
 		r.doSomething(BEH.run);
@@ -132,8 +132,8 @@ public class AsmClassAgentTest {
 		Arrays.fill(cpub, 0);
 		Arrays.fill(cpro, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(Aop.matcher(PUBLIC), new MethodCounter(cpub));
-		aca.addListener(Aop.matcher(PROTECTED), new MethodCounter(cpro));
+		aca.addListener(MethodMatcherFactory.matcher(PUBLIC), new MethodCounter(cpub));
+		aca.addListener(MethodMatcherFactory.matcher(PROTECTED), new MethodCounter(cpro));
 		Class<? extends Hippo> c = aca.define(Hippo.class);// RA.class;
 		Hippo r = Mirror.me(c).born();
 		Vegetarians.run(r, 78);

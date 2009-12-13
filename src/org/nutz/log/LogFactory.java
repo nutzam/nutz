@@ -9,6 +9,7 @@ import org.nutz.plugin.PluginManager;
  * 
  * @author Young(sunonfire@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
+ * @author Wendal(wendal1985@gmail.com)
  */
 public class LogFactory {
 

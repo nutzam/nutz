@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.nutz.aop.Aop;
+import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.asm.test.Aop1;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
@@ -16,7 +16,7 @@ public class Main2 {
 	public static void main(String[] args) throws Throwable {
 
 		ClassAgent agent = new AsmClassAgent();
-		agent.addListener(Aop.matcher(".*"), new MyMethodInterceptor());
+		agent.addListener(MethodMatcherFactory.matcher(".*"), new MyMethodInterceptor());
 		Class<Aop1> classZ = agent.define(Aop1.class);
 		System.out.println(classZ);
 		Field[] fields = classZ.getDeclaredFields();
