@@ -53,7 +53,7 @@ public class NutIoc implements Ioc2 {
 		mirrors = new DefaultMirrorFactory(this);
 	}
 
-	public <T> T get(Class<T> type, String name, IocContext context) {
+	public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
 		if (log.isDebugEnabled())
 			log.debugf("Get '%s'<%s>", name, type);
 

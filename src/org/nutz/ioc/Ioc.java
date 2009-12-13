@@ -18,7 +18,7 @@ public interface Ioc {
 	 *            对象的名称
 	 * @return 对象本身
 	 */
-	<T> T get(Class<T> type, String name);
+	<T> T get(Class<T> type, String name) throws IocException;
 
 	/**
 	 * 容器是否存在某一特定对象
@@ -26,7 +26,7 @@ public interface Ioc {
 	 * @param name
 	 * @return
 	 */
-	boolean has(String name);
+	boolean has(String name) throws IocException;
 	
 	
 	/**
