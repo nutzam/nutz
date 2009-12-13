@@ -497,8 +497,13 @@ public abstract class Files {
 			return false;
 		if (!dir.exists())
 			return false;
-		if (deleteDir(dir))
-			return makeDir(dir);
+		File[] fs = dir.listFiles();
+		for (File f : fs) {
+			if (f.isFile())
+				Files.deleteFile(f);
+			else if (f.isDirectory())
+				Files.deleteDir(f);
+		}
 		return false;
 	}
 

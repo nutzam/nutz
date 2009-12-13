@@ -1,9 +1,11 @@
 package org.nutz.lang.segment;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.Mirror;
 
 public class Segments {
@@ -71,5 +73,10 @@ public class Segments {
 			}
 		}
 		return seg;
+	}
+
+	public static Segment read(File f) {
+		String txt = Files.read(f);
+		return new CharSegment(txt);
 	}
 }
