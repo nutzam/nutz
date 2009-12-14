@@ -1,0 +1,111 @@
+#title: To let Java typing be not so strong
+#index:0,1
+----------------------------------------------------------------------------------------------------------------
+Which one is better, strong typing or weak typing?
+	
+	Strong typing is good, especially for the compiler. And IDE can support it easily. Weak typing is good, because developers could not think about the typing anymore, and they can focus on the logic.
+	
+	But the truth is, even Javascript, kind of weak typing programming languages, can not handle type wrapping very well.
+
+	I prefer strong typing in most times. I feel safe. But sometimes, while I want to weak the types, I hope there is a tool, which could help me to 
+	convert any types to other ones. Of cause, I am acceptable to write a special convert process for my own class. But I don't want to do it twice.
+
+	So, this is Nutz.Castors
+----------------------------------------------------------------------------------------------------------------
+Hello Castors
+	
+	For a very simple example:
+	{{{
+	System.out.println(Castors.me().castTo("563", int.class));
+	}}}
+	Or
+	{{{
+	System.out.println(Castors.me().castTo("zozohtnt@gmail.com", org.nutz.lang.meta.Email.class));
+	}}}
+
+	You also can do like this：
+	{{{
+	Calendar c = Castors.me().castTo("2009-11-12 15:23:12", Calendar.class)
+	}}}
+	You can even do like this：
+	{{{
+	Timestamp t = Castors.me().castTo(Calendar.getInstance(), Timestamp.class);
+	}}}
+
+	You can do it with containers：
+	{{{
+	List<Pet> petList = ...;
+	Pet[] pets = Castors.me().castTo(petList, Pet[].class);
+	}}}
+
+----------------------------------------------------------------------------------------------------------------
+The Principle of Castors
+
+	Please refer [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/castor/castor org.nutz.castor.castor  Package],
+	The implemented classes are the building typing castors.
+
+	Every time, while you want to convert a class, Nutz.castors will check if it can be converted directly. If not, it will search in the package to check if there is suitable castor.
+	Object2Object castor is the final castor. It tries to find the constructor or static factory methods in the target class. 
+	If it can find one method which includes only one parameter, and the parameter is original class, it will build the target object successfully. otherwise, it will through exceptions.
+
+----------------------------------------------------------------------------------------------------------------
+Configuration for castors
+
+	For example, such as date and time, you need to specify your own date type, please refer the default CastorSetting source code：
+	{{{
+	public class CastorSetting {
+		public static void setup(DateTimeCastor<?, ?> c) {
+			c.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+			c.setTimeFormat(new SimpleDateFormat("HH:mm:ss"));
+			c.setDateTimeFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		}
+	}
+	}}}
+	There is a method, which is used to set configurations for DataTimeCastor. While Nutz.Castor buildups the castor, it will call the method. This method will initialize one
+	instance of DataTimeCastor.
+
+	You can replace the default implementation through：
+	{{{
+	Object yourSetting = ...;
+	Castors.setSetting(yourSetting);
+	}}}
+
+	You can reset the settings to default：
+	{{{
+	Castors.resetSetting();
+	}}}
+
+----------------------------------------------------------------------------------------------------------------
+Add your own Castor
+
+	There could be many POJO defined in your projects. If you want to convert between each others, you need write a group of A2B and B2A castors.
+	You can put these castors into different packages. To let Nutz.Castors find your castors, you need add them while project start：
+	{{{
+	Castors.addCastorPaths(A2B.class, E2D.class);
+	}}}
+
+	For more detail, suppose you have two group of castors：
+	{{{
+	com.you.red
+		A2B
+		B2A
+		A2C
+		C2A
+		B2C
+		C2B
+	
+	com.you.blue
+		X2Y
+		Y2X
+		X2Z
+		Z2X
+		Y2Z
+		Z2Y
+	}}}
+	To let Nutz.Castors find these tow group of castors, you need add the following while your project start：
+	{{{
+	Castors.addCastorPaths(A2B.class, X2Y.class);
+	}}}
+	After this, all castors in the tow packages will be automatically loaded. The latter loaded castors own the higher priority than the previous loaded ones.
+	Of cause, the default castors in Nutz, owns the lowest priority.
+	
