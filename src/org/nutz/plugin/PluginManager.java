@@ -2,6 +2,6 @@ package org.nutz.plugin;
 
 public interface PluginManager<T> {
 
-	T get();
+	T get() throws NoPluginCanWorkException;
 	
 }

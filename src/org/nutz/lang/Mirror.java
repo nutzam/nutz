@@ -1169,6 +1169,28 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 获取一个类的某个一个泛型参数
+	 * 
+	 * @param klass
+	 *            类
+	 * @param index
+	 *            参数下标 （从 0 开始）
+	 * @return 泛型参数类型
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> getTypeParam(Class<?> klass, int index) {
+		Type[] types = getTypeParams(klass);
+		if (index >= 0 && index < types.length) {
+			Type t = types[index];
+			if (t instanceof Class<?>) {
+				return (Class<T>) t;
+			}
+			throw Lang.makeThrow("Type '%s' is not a Class", t.toString());
+		}
+		throw Lang.makeThrow("Class type param out of range %d/%d", index, types.length);
+	}
+
+	/**
 	 * @param klass
 	 *            类型
 	 * @return 一个类型的包路径

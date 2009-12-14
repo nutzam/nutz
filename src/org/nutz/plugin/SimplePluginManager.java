@@ -25,11 +25,11 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public T get() {
+	public T get() throws NoPluginCanWorkException {
 		for (Plugin plugin : list)
 			if (plugin.canWork())
 				return (T) plugin;
-		return null;
+		throw new NoPluginCanWorkException();
 	}
 
 	protected void loadPlugin(Class<? extends T> pluginClass) throws InstantiationException,
