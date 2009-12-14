@@ -8,7 +8,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.UrlMap;
@@ -18,7 +18,7 @@ import org.nutz.mvc.invoker.JspServletInvoker;
 
 public class UrlMapImpl implements UrlMap {
 
-	private static final Log log = LogFactory.getLog(UrlMapImpl.class);
+	private static final Log log = Logs.getLog(UrlMapImpl.class);
 
 	private Ioc ioc;
 

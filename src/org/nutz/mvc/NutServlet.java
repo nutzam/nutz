@@ -13,7 +13,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.init.DefaultLoading;
@@ -27,7 +27,7 @@ import org.nutz.mvc.init.DefaultLoading;
 @SuppressWarnings("serial")
 public class NutServlet extends HttpServlet {
 
-	private static final Log log = LogFactory.getLog(NutServlet.class);
+	private static final Log log = Logs.getLog(NutServlet.class);
 
 	private UrlMap urls;
 

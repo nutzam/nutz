@@ -29,7 +29,7 @@ import org.nutz.log.Log;
  * @author Young(sunonfire@gmail.com)
  * @author wendal(wendal11985@gmail.com)
  */
-public class Log4jLoggerAdapter extends AbstractLogAdapter{
+public class Log4jLogAdapter extends AbstractLogAdapter{
 
 	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
 	

@@ -9,7 +9,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMap;
@@ -28,7 +28,7 @@ import org.nutz.mvc.view.DefaultViewMaker;
 
 public class DefaultLoading implements Loading {
 
-	private static final Log log = LogFactory.getLog(DefaultLoading.class);
+	private static final Log log = Logs.getLog(DefaultLoading.class);
 
 	private ServletConfig config;
 	private UrlMapImpl urls;

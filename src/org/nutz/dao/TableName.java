@@ -6,7 +6,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 
 /**
  * 将一个参考对象存入 ThreadLocal
@@ -17,7 +17,7 @@ import org.nutz.log.LogFactory;
  */
 public class TableName {
 
-	private static final Log log = LogFactory.getLog(TableName.class);
+	private static final Log log = Logs.getLog(TableName.class);
 
 	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
 

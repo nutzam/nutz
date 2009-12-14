@@ -45,7 +45,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 
 /**
  * This class must be drop after make() be dropped
@@ -55,7 +55,7 @@ import org.nutz.log.LogFactory;
  */
 public class DefaultEntityMaker implements EntityMaker {
 
-	private static final Log log = LogFactory.getLog(DefaultEntityMaker.class);
+	private static final Log log = Logs.getLog(DefaultEntityMaker.class);
 
 	public Entity<?> make(DatabaseMeta db, Connection conn, Class<?> type) {
 		Entity<?> entity = new Entity<Object>();

@@ -18,11 +18,11 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 
 public class NutIoc implements Ioc2 {
 
-	private static Log log = LogFactory.getLog(NutIoc.class);
+	private static Log log = Logs.getLog(NutIoc.class);
 
 	private static final String DEF_SCOPE = "app";
 

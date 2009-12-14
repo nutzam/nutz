@@ -38,13 +38,13 @@ import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
 
 public class NutDao implements Dao {
 
-	private static Log log = LogFactory.getLog(NutDao.class);
+	private static Log log = Logs.getLog(NutDao.class);
 
 	private DataSource dataSource;
 	private SqlMaker sqlMaker;

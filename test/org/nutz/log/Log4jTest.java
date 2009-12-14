@@ -11,7 +11,7 @@ public class Log4jTest {
 
 	@Test
 	public void test_normal_debug() {
-		Log log4nut = LogFactory.getLog(Dao.class);
+		Log log4nut = Logs.getLog(Dao.class);
 		Logger log4j = LogManager.getLogger(Dao.class);
 
 		assertEquals(log4nut.isInfoEnabled(),log4j.isInfoEnabled());

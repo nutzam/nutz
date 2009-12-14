@@ -8,5 +8,4 @@ public interface LogAdapter {
 
 	Log getLogger(String className);
 	
-	Log getRootLogger();
 }

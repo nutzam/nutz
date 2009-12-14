@@ -4,11 +4,11 @@ import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectWeaver;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 
 public class StaticWeaver implements ObjectWeaver {
 
-	private static final Log log = LogFactory.getLog(StaticWeaver.class);
+	private static final Log log = Logs.getLog(StaticWeaver.class);
 
 	private IocEventTrigger<Object> depose;
 	private Object obj;

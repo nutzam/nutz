@@ -8,7 +8,7 @@ import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
-import org.nutz.log.LogFactory;
+import org.nutz.log.Logs;
 
 /**
  * 自定义级别上下文对象
@@ -17,7 +17,7 @@ import org.nutz.log.LogFactory;
  */
 public class ScopeContext implements IocContext {
 
-	private static final Log log = LogFactory.getLog(ScopeContext.class);
+	private static final Log log = Logs.getLog(ScopeContext.class);
 
 	private String scope;
 	private Map<String, ObjectProxy> objs;

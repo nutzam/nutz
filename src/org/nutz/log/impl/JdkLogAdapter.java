@@ -18,7 +18,7 @@ import org.nutz.log.Log;
  * @author Young(sunonfire@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
-public class JdkLoggerAdapter extends AbstractLogAdapter{
+public class JdkLogAdapter extends AbstractLogAdapter{
 	
 	private static JdkLogger rootLog;
 
