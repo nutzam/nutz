@@ -4,21 +4,39 @@
 1.a.24 (Hatching...)
 
 	{#F00;*这是个里程碑式的版本}，从这个版本开始， Nutz 将不在依赖 Javassist，而依赖 ASM(内嵌Asm 3.2,无需额外找jar)
+	所以，编译时，你将不用依赖 Javassist。
 
-	本版本小幅的修正了 1.a.23 的部分错误。
+	同时，为了更好的输出日志，Nutz 在编译时依赖了 Log4j， 但是运行时，没有 Log4j 是可以的。
+
+	Issue 修复：
+		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*oeqe.com}
+		 # Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {/report by} {*oeqe.com}
 	
 	功能改进
 		 # Issue 12: Should support one config file can import other config files function. (未完成)
 		 # Issue 66: 扩展接口能否通过配置文件添加. (未完成)
 		 # Issue 71: aop: 修改拦截器接口,改为使用asm实现
-		 # 重新实现Log模块
-		 # 新增NutPlugin,初步支持Nut插件.
+		 # 重新实现Log模块，支持 Log4j, Jdk Log
+		 # 新增Plugin模块， 支持“部署时决定插件的实现”
 	
 	代码缺陷
 		 # 修改了测试用例 JsonCharsetTest.test_zh_CN_from_file
+		 # Castors 去掉了大多数静态方法
+		 # JsonFormat 支持设置自定义 Castors
+		 # Log 部分的结构和实现修改的更加简洁
 	
 	文档
 		 # 添加了 Nutz.Lang （Wiki 《甜Java》）下全部文档
 		 # 完成了 Mirror 类的所有 Java Doc
+	
+	Blog
+		 # 《[http://wendal.javaeye.com/blog/543936 Nutz:重新发明轮子:自己动手,用字节码工具做一个Aop拦截器]》\
+				by [http://wendal.javaeye.com Wendal]
+		 # 《[http://wendal.javaeye.com/blog/543681 Nutz:基于ASM的Nut.Aop实现]》\
+				by [http://wendal.javaeye.com Wendal]
+		 # 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图》 \
+				by [http://axhack.javaeye.com Axhack]
+		 # 《[http://zozoh.javaeye.com/blog/526494 回复fireflyc：Nutz 的设计以及提高程序员生产力》 \
+				by [http://zozoh.javaeye.com zozoh]
 
 --------------------------------------------------------------------------------------------------------
