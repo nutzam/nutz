@@ -22,7 +22,7 @@ import org.nutz.lang.Strings;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 class JsonRendering {
 	private static String NL = "\n";
@@ -34,8 +34,9 @@ class JsonRendering {
 	/**
 	 * 
 	 * @param writer
-	 * @param format 
-	 * @throws NullPointerException if writer or format is null
+	 * @param format
+	 * @throws NullPointerException
+	 *             if writer or format is null
 	 */
 	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
@@ -227,7 +228,7 @@ class JsonRendering {
 			} else if (mr.isStringLike()) {
 				string2Json(obj.toString());
 			} else if (mr.isDateTimeLike()) {
-				string2Json(Castors.me().castToString(obj));
+				string2Json(format.getCastors().castToString(obj));
 			} else if (memo.containsKey(obj)) {
 				writer.append("null");
 			} else {

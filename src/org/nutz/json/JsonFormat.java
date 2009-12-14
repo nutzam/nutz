@@ -2,6 +2,8 @@ package org.nutz.json;
 
 import java.util.regex.Pattern;
 
+import org.nutz.castor.Castors;
+
 public class JsonFormat {
 
 	public static JsonFormat compact() {
@@ -33,6 +35,7 @@ public class JsonFormat {
 	private boolean ignoreNull;
 	private Pattern actived;
 	private Pattern locked;
+	private Castors castors;
 
 	public boolean ignore(String name) {
 		if (null != actived)
@@ -105,6 +108,14 @@ public class JsonFormat {
 	public JsonFormat setLocked(String regex) {
 		this.locked = Pattern.compile(regex);
 		return this;
+	}
+
+	Castors getCastors() {
+		return castors;
+	}
+
+	public void setCastors(Castors castors) {
+		this.castors = castors;
 	}
 
 }
