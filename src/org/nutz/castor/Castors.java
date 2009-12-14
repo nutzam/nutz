@@ -26,7 +26,7 @@ import org.nutz.lang.util.Resources;
  */
 public class Castors {
 
-	private static Castors one = new Castors().setSetting(new DefaultCastorSetting());
+	private static Castors one = new Castors();
 	
 	/**
 	 * @return 单例
@@ -120,6 +120,7 @@ public class Castors {
 
 	private Castors() {
 		setting = new DefaultCastorSetting();
+		reload();
 	}
 
 	private void reload() {
