@@ -38,11 +38,11 @@ public class Castors {
 	/**
 	 * 如何抽取对象的类型级别
 	 */
-	private TypeExtractor extractor = null;
+	private TypeExtractor extractor;
 	/**
 	 * Castor 的搜索路径
 	 */
-	private List<Class<?>> paths = null;
+	private List<Class<?>> paths;
 	/**
 	 * Castor 的配置
 	 */
@@ -77,8 +77,10 @@ public class Castors {
 	 *            Castor 例子列表
 	 */
 	public synchronized Castors setPaths(List<Class<?>> paths) {
-		this.paths = paths;
-		reload();
+		if(paths != null){
+			this.paths = paths;
+			reload();
+		}
 		return this;
 	}
 
@@ -86,9 +88,9 @@ public class Castors {
 	 * 将 Castor 的寻找路径恢复成默认值。
 	 */
 	public synchronized Castors resetPaths() {
-		List<Class<?>> list = new ArrayList<Class<?>>();
-		list.add(Array2Array.class);
-		setPaths(list);
+		paths = new ArrayList<Class<?>>();
+		paths.add(Array2Array.class);
+		reload();
 		return this;
 	}
 
@@ -99,11 +101,12 @@ public class Castors {
 	 *            示例 Castor
 	 */
 	public synchronized Castors addPaths(Class<?>... paths) {
-		if (null != paths) {
+		if (null != paths){
 			for (Class<?> path : paths)
-				this.paths.add(path);
+				if(path != null)
+					this.paths.add(path);
+			reload();
 		}
-		setSetting(setting);
 		return this;
 	}
 
@@ -120,25 +123,18 @@ public class Castors {
 
 	private Castors() {
 		setting = new DefaultCastorSetting();
-		reload();
+		resetPaths();
 	}
 
 	private void reload() {
 		HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
-		if (null != setting) {
-			for (Method m1 : setting.getClass().getMethods()) {
-				Class<?>[] pts = m1.getParameterTypes();
-				if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0])) {
-					settingMap.put(pts[0], m1);
-				}
-			}
+		for (Method m1 : setting.getClass().getMethods()) {
+			Class<?>[] pts = m1.getParameterTypes();
+			if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0]))
+				settingMap.put(pts[0], m1);
 		}
 		// build castors
 		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
-		if (null == paths) {
-			paths = new ArrayList<Class<?>>();
-			paths.add(Array2Array.class);
-		}
 		for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
