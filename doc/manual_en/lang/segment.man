@@ -1,0 +1,43 @@
+#title:Segment
+#index:0,1
+-----------------------------------------------------------------------------
+What is Segment
+	Java provides String.format() method to declare string templates and placeholders easily.
+	But, it's not convenient if we want to specify the placeholder in tow places：
+	{{{
+	XXXXXXXX $A  XXXXXX $B  XXXXXX $A XXXXX
+	}}}
+	Through String.format() we need to write like this：
+	{{{
+	String.format("XXXXXXXX %s  XXXXXX %s  XXXXXX %s XXXXX", "TxtA","TxtB","TxtA");
+	}}}
+	If you don't set values, it will through exceptions.
+-----------------------------------------------------------------------------
+Nutz Segment
+	
+	For the previous case, through Nutz Segment you can write like this：
+	{{{
+	Segment seg = new CharSegment("XXXXXXXX ${A}  XXXXXX ${B}  XXXXXX ${A} XXXXX");
+	seg.set("A", "TxtA").set("B", "TxtB");
+	System.out.println(seg.toString());
+	}}}
+
+	 * No duplicated setting placeholders
+	 * Automatically convert your objects to string by [castors.man Castors]
+	 * Non value setting placeholder will be filled with blank string({#F0F;`""`})
+-----------------------------------------------------------------------------
+When to use Nutz Segment
+	* If your templates are simple, you could use String.format
+	* If they are complicated, with duplicated placeholders, it's your better choice to use CharSegment
+	* You need to know
+		 * You'd better to born one CharSegment for each threads：
+			{{{
+			Segment newSeg = seg.born();
+			newSeg.set("A",XXX").set("B",XXX") ....
+			}}}
+			* Since it's not thread safe object.
+		 * CharSegment parses quite quickly
+		 * Clone is not safe enough for multiple threads, since each value of placeholders will not be clone deeply
+			{{{
+			Segment newSeg = seg.clone();
+			}}}
