@@ -9,6 +9,12 @@ import org.nutz.aop.asm.org.asm.MethodVisitor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.aop.asm.org.asm.Type;
 
+/**
+ * 通过Asm生成字节码
+ * @author Wendal(wendal1985@gmail.com)
+ *
+ * @param <T>
+ */
 public final class ClassX<T> implements Opcodes{
 	
 	private Class<T> klass;
@@ -22,7 +28,6 @@ public final class ClassX<T> implements Opcodes{
 	private Method[] methodArray ;
 	
 	private Constructor<T> [] constructors;
-	
 	
 	protected ClassX(Class<T> kclass,String myName,Method[] methodArray,Constructor<T> [] constructors){
 		this.klass = kclass;
@@ -42,7 +47,7 @@ public final class ClassX<T> implements Opcodes{
 		for (Constructor<T> constructor : constructors) {
 			String [] expClasses = convertExp(constructor.getExceptionTypes());
 			String desc = Type.getConstructorDescriptor(constructor);
-			int access = getAccess(constructor);
+			int access = getAccess(constructor.getModifiers());
 			MethodVisitor mv = cw.visitMethod(access, "<init>", desc,null, expClasses);
 			new ChangeToChildConstructorMethodAdapter(mv,desc,access,enhancedSuperName).visitCode();
 		}
@@ -51,9 +56,8 @@ public final class ClassX<T> implements Opcodes{
 	private String [] convertExp(Class<?> [] expClasses){
 		if(expClasses.length == 0) return null;
 		String [] results = new String[expClasses.length];
-		for (int i = 0; i < results.length; i++) {
+		for (int i = 0; i < results.length; i++)
 			results[i] = expClasses[i].getName().replace('.', '/');
-		}
 		return results;
 	}
 	
@@ -65,7 +69,7 @@ public final class ClassX<T> implements Opcodes{
 		for (Method method : methodArray) {
 			String methodName = method.getName();
 			String methodDesc = Type.getMethodDescriptor(method);
-			int methodAccess = getAccess(method);
+			int methodAccess = getAccess(method.getModifiers());
 			MethodVisitor mv = cw.visitMethod(methodAccess, methodName, 
 					methodDesc,null, convertExp(method.getExceptionTypes()));
 			int methodIndex = findMethodIndex(methodName, methodDesc, methodArray);
@@ -75,18 +79,10 @@ public final class ClassX<T> implements Opcodes{
 		}
 	}
 	
-	protected int getAccess(Method method) {
-		if(Modifier.isProtected(method.getModifiers()))
+	protected int getAccess(int modify) {
+		if(Modifier.isProtected(modify))
 			return ACC_PROTECTED;
-		if(Modifier.isPublic(method.getModifiers()))
-			return ACC_PUBLIC;
-		return 0x00;
-	}
-	
-	protected int getAccess(Constructor<?> constructor) {
-		if(Modifier.isProtected(constructor.getModifiers()))
-			return ACC_PROTECTED;
-		if(Modifier.isPublic(constructor.getModifiers()))
+		if(Modifier.isPublic(modify))
 			return ACC_PUBLIC;
 		return 0x00;
 	}
@@ -97,7 +93,7 @@ public final class ClassX<T> implements Opcodes{
 			if (Type.getMethodDescriptor(method).equals(desc) && method.getName().equals(name))
 				return i;
 		}
-		return -1;
+		return -1;//是否应该抛出异常呢?应该不可能发生的
 	}
 
 	protected byte[] toByteArray(){
