@@ -26,17 +26,27 @@ import org.nutz.lang.util.Resources;
  */
 public class Castors {
 
-	private static Castors one;
-	private static TypeExtractor typeExtractor = null;
-	private static List<Class<?>> castorPaths = null;
-	private static Object castorSetting;
+	private static Castors one = new Castors().setSetting(new CastorSetting());
+	
+	/**
+	 * @return 单例
+	 */
+	public static Castors me() {
+		return one;
+	}
 
 	/**
-	 * 恢复成默认的 Castors 设置
+	 * 如何抽取对象的类型级别
 	 */
-	public static synchronized void resetSetting() {
-		setSetting(new CastorSetting());
-	}
+	private TypeExtractor extractor = null;
+	/**
+	 * Castor 的搜索路径
+	 */
+	private List<Class<?>> paths = null;
+	/**
+	 * Castor 的配置
+	 */
+	private Object setting;
 
 	/**
 	 * 设置转换的配置
@@ -46,14 +56,15 @@ public class Castors {
 	 * <p>
 	 * 当初始化这个 Castor 之前，会用这个方法来设置一下你的 Castor （如果你的 Castor 需要配置的话）
 	 * 
-	 * @param setting
+	 * @param obj
 	 *            配置对象。可以是任意的 Java 对象。
 	 */
-	public static synchronized void setSetting(Object setting) {
-		if (setting != null) {
-			castorSetting = setting;
-			one = new Castors(setting);
+	public synchronized Castors setSetting(Object obj) {
+		if (obj != null) {
+			setting = obj;
+			this.reload();
 		}
+		return this;
 	}
 
 	/**
@@ -65,18 +76,20 @@ public class Castors {
 	 * @param paths
 	 *            Castor 例子列表
 	 */
-	public static synchronized void setCastorPaths(List<Class<?>> paths) {
-		castorPaths = paths;
-		setSetting(castorSetting);
+	public synchronized Castors setPaths(List<Class<?>> paths) {
+		this.paths = paths;
+		reload();
+		return this;
 	}
 
 	/**
 	 * 将 Castor 的寻找路径恢复成默认值。
 	 */
-	public static synchronized void resetCastorPaths() {
+	public synchronized Castors resetPaths() {
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		list.add(Array2Array.class);
-		setCastorPaths(list);
+		setPaths(list);
+		return this;
 	}
 
 	/**
@@ -85,12 +98,13 @@ public class Castors {
 	 * @param paths
 	 *            示例 Castor
 	 */
-	public static synchronized void addCastorPaths(Class<?>... paths) {
+	public synchronized Castors addPaths(Class<?>... paths) {
 		if (null != paths) {
 			for (Class<?> path : paths)
-				castorPaths.add(path);
+				this.paths.add(path);
 		}
-		setSetting(castorSetting);
+		setSetting(setting);
+		return this;
 	}
 
 	/**
@@ -99,40 +113,32 @@ public class Castors {
 	 * @param te
 	 *            类型提取器
 	 */
-	public static synchronized void setTypeExtractor(TypeExtractor te) {
-		typeExtractor = te;
+	public synchronized Castors setTypeExtractor(TypeExtractor te) {
+		extractor = te;
+		return this;
 	}
 
-	/**
-	 * @return 单例
-	 */
-	public static Castors me() {
-		if (null == one)
-			synchronized (Castors.class) {
-				if (null == one)
-					one = new Castors(castorSetting);
-			}
-		return one;
+	private Castors() {
+		setting = new CastorSetting();
 	}
 
-	private Castors(Object setting) {
-		if (null == setting)
-			setting = new CastorSetting();
-		// make setting map
+	private void reload() {
 		HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
-		for (Method m1 : setting.getClass().getMethods()) {
-			Class<?>[] pts = m1.getParameterTypes();
-			if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0])) {
-				settingMap.put(pts[0], m1);
+		if (null != setting) {
+			for (Method m1 : setting.getClass().getMethods()) {
+				Class<?>[] pts = m1.getParameterTypes();
+				if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0])) {
+					settingMap.put(pts[0], m1);
+				}
 			}
 		}
 		// build castors
 		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
-		if (null == castorPaths) {
-			castorPaths = new ArrayList<Class<?>>();
-			castorPaths.add(Array2Array.class);
+		if (null == paths) {
+			paths = new ArrayList<Class<?>>();
+			paths.add(Array2Array.class);
 		}
-		for (Iterator<Class<?>> it = castorPaths.iterator(); it.hasNext();) {
+		for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
@@ -162,7 +168,7 @@ public class Castors {
 							}
 						}
 						if (null != m)
-							m.invoke(castorSetting, castor);
+							m.invoke(setting, castor);
 						map2.put(castor.getToClass().getName(), castor);
 					}
 				} catch (Throwable e) {
@@ -207,10 +213,10 @@ public class Castors {
 			return (T) src;
 		if (toType.isAssignableFrom(fromType))
 			return (T) src;
-		Mirror<?> from = Mirror.me(fromType, typeExtractor);
+		Mirror<?> from = Mirror.me(fromType, extractor);
 		if (from.canCastToDirectly(toType)) // Use language built-in cases
 			return (T) src;
-		Mirror<T> to = Mirror.me(toType, typeExtractor);
+		Mirror<T> to = Mirror.me(toType, extractor);
 
 		Castor c = null;
 		Class<?>[] fets = from.extractTypes();
