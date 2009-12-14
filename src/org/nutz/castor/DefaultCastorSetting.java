@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 
 import org.nutz.castor.castor.DateTimeCastor;
 
-public class CastorSetting {
+class DefaultCastorSetting {
 
 	public static void setup(DateTimeCastor<?, ?> c) {
 		c.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
