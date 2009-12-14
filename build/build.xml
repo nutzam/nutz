@@ -18,7 +18,6 @@
 	<property name="JDK_VERSION" value="1.6" />
 
 	<property name="v" value="-1.a.24" />
-	<property name="dftplug" value="nutz-default-plugin.json"/>
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -27,7 +26,7 @@
 	<property name="zioc" value="org/nutz/ioc/**,org/nutz/aop/**" />
 	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
 	
-	<property name="zall" value="${dftplug},${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}"/>
+	<property name="zall" value="${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}"/>
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
@@ -50,7 +49,6 @@
 		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" deprecation="true" nowarn="false" source="${JDK_VERSION}" target="${JDK_VERSION}">
 			<classpath refid="CLASSPATH" />
 		</javac>
-		<copyfile dest="${TMP}/${dftplug}" src="${SRC}/${dftplug}"/>
 	</target>
 
 	<target name="jar" depends="compile">
