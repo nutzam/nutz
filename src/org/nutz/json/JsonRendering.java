@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.nutz.castor.Castors;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;

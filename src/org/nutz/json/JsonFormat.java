@@ -26,6 +26,7 @@ public class JsonFormat {
 		this.compact = compact;
 		this.indentBy = "   ";
 		this.quoteName = true;
+		this.castors = Castors.me();
 	}
 
 	private int indent;
@@ -114,8 +115,9 @@ public class JsonFormat {
 		return castors;
 	}
 
-	public void setCastors(Castors castors) {
+	public JsonFormat setCastors(Castors castors) {
 		this.castors = castors;
+		return this;
 	}
 
 }
