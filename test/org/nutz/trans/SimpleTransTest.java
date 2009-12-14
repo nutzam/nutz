@@ -47,7 +47,6 @@ public class SimpleTransTest extends DaoCase {
 		assertTrue(dao.fetch(Cat.class, "xb2").getName().equals("xb2"));
 		try {
 			Trans.exec(new Atom() {
-				@Override
 				public void run() {
 					cat1.setName("p1");
 					dao.update(cat1);

@@ -25,7 +25,8 @@ public class ConnectionHolder {
 		if (conn.getAutoCommit()) {
 			callback.invoke(conn);
 		} else {
-			sp = conn.setSavepoint();
+			if (null == sp)
+				sp = conn.setSavepoint();
 			callback.invoke(conn);
 			if (null == trans)
 				conn.commit();
