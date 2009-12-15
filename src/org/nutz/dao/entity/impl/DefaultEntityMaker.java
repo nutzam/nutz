@@ -112,8 +112,12 @@ public class DefaultEntityMaker implements EntityMaker {
 				else {
 					// Current POJO has @Column field, but current not, ignore
 					// it
-					if (existsColumnAnnField && null == f.getAnnotation(Column.class))
-						continue;
+					if (existsColumnAnnField)
+						if (!pkmap.containsKey(f.getName()))
+							if (null == f.getAnnotation(Column.class))
+								if (null == f.getAnnotation(Id.class))
+									if (null == f.getAnnotation(Name.class))
+										continue;
 					// Create EntityField
 					EntityField ef = evalField(db, rsmd, entity, f);
 
@@ -311,6 +315,10 @@ public class DefaultEntityMaker implements EntityMaker {
 	private boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
 		for (Field f : mirror.getFields())
 			if (null != f.getAnnotation(Column.class))
+				return true;
+			else if (null != f.getAnnotation(Id.class))
+				return true;
+			else if (null != f.getAnnotation(Name.class))
 				return true;
 		return false;
 	}
