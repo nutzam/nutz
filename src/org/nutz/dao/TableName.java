@@ -1,10 +1,7 @@
 package org.nutz.dao;
 
-import java.util.Iterator;
-
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
-import org.nutz.lang.segment.Segments;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -88,11 +85,9 @@ public class TableName {
 			return tableName.toString();
 		Segment seg = tableName.born();
 		if (isPrimitive(obj)) {
-			for (Iterator<String> it = seg.keys().iterator(); it.hasNext();) {
-				seg.set(it.next(), obj);
-			}
+			seg.setAll(obj);
 		} else {
-			Segments.fillByKeys(seg, obj);
+			seg.setBy(obj);
 		}
 		return seg.toString();
 	}

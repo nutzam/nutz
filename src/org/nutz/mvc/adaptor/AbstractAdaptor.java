@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 import org.nutz.ioc.Ioc;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.adaptor.injector.*;
+import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.Param;
 
 public abstract class AbstractAdaptor implements HttpAdaptor {
@@ -27,16 +28,26 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		for (int i = 0; i < annss.length; i++) {
 			Annotation[] anns = annss[i];
 			Param param = null;
-			// find @Param in current annotations
+			Attr attr = null;
+			// find @Param & @Attr in current annotations
 			for (int x = 0; x < anns.length; x++)
 				if (anns[x] instanceof Param) {
 					param = (Param) anns[x];
 					break;
+				}else if(anns[x] instanceof Attr){
+					attr = (Attr) anns[x];
+					break;
 				}
-			// Store
+			// If has @Attr
+			if(null!=attr){
+				continue;
+			}
+			
+			// And eval as default suport types
 			injs[i] = evalDefaultInjector(argTypes[i]);
 			if (null != injs[i])
 				continue;
+			// Eval by sub-classes
 			injs[i] = evalInjector(argTypes[i], param);
 			// 子类也不能确定，如何适配这个参数，那么做一个标记，如果
 			// 这个参数被 ParamInjector 适配到，就会抛错。

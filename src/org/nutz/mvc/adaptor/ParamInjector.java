@@ -6,6 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface ParamInjector {
 
-	Object get(HttpServletRequest request, HttpServletResponse response, Object refer);
+	Object get(HttpServletRequest req, HttpServletResponse resp, Object refer);
 
 }

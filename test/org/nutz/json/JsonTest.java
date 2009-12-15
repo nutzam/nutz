@@ -461,4 +461,12 @@ public class JsonTest {
 		assertEquals("{a:\"123\"}", re);
 	}
 
+	@Test
+	public void test_dollar_as_name() {
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson("{$a:-23,b:-2.7}");
+		Integer i = (Integer) map.get("$a");
+		assertEquals(-23, i.intValue());
+		Double d = (Double) map.get("b");
+		assertEquals(-2.7, d.floatValue(), 3);
+	}
 }

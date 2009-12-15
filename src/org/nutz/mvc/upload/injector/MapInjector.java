@@ -15,7 +15,7 @@ public class MapInjector extends NameInjector {
 	}
 
 	@Override
-	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
+	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null != refer)
 			if (refer instanceof Map<?, ?>) {
 				Object value = ((Map<?, ?>) refer).get(name);

@@ -33,11 +33,11 @@ public class ObjectPairInjector implements ParamInjector {
 		}
 	}
 
-	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
+	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		Object obj = mirror.born();
 		for (int i = 0; i < injs.length; i++) {
 			Injecting inj = injs[i];
-			String s = request.getParameter(names[i]);
+			String s = req.getParameter(names[i]);
 			inj.inject(obj, s);
 		}
 		return obj;

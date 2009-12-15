@@ -18,7 +18,7 @@ public class ErrorInjector implements ParamInjector {
 		this.index = index;
 	}
 
-	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
+	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		throw Lang.makeThrow("Don't know how to inject %s.%s(...[%d]%s...),", method
 				.getDeclaringClass(), method.getName(), index, method.getParameterTypes()[index]);
 	}

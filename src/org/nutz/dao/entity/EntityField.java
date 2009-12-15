@@ -10,7 +10,6 @@ import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.Segment;
-import org.nutz.lang.segment.Segments;
 
 public class EntityField {
 
@@ -144,7 +143,7 @@ public class EntityField {
 		}
 		if (null == obj)
 			return defaultValue.render().toString();
-		return Segments.fillByKeys(defaultValue, obj).toString();
+		return defaultValue.born().setBy(obj).toString();
 	}
 
 	public boolean hasDefaultValue() {

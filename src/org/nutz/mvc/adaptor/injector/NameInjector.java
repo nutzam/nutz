@@ -22,12 +22,12 @@ public class NameInjector implements ParamInjector {
 	/**
 	 * @Param refer 这个参考字段，如果有值，表示是路径参数的值，那么它比 request 里的参数优先
 	 */
-	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
+	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		String value;
 		if (null != refer)
 			value = refer.toString();
 		else
-			value = request.getParameter(name);
+			value = req.getParameter(name);
 		return Castors.me().castTo(value, type);
 	}
 

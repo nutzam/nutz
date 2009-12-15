@@ -165,7 +165,7 @@ class JsonParsing {
 			nextChar();
 			skipCommentsAndBlank();
 			// If Map
-			if(Map.class == type)
+			if (Map.class == type)
 				me = (Mirror<T>) Mirror.me(HashMap.class);
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
@@ -229,6 +229,7 @@ class JsonParsing {
 			nextChar();
 			return (T) Boolean.valueOf(false);
 		case '.': // For number
+		case '-':
 		case '0':
 		case '1':
 		case '2':

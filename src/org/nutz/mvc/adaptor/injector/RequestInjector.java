@@ -8,9 +8,9 @@ import org.nutz.mvc.adaptor.ParamInjector;
 
 public class RequestInjector implements ParamInjector {
 
-	public Object get(HttpServletRequest request, HttpServletResponse response,
+	public Object get(HttpServletRequest req, HttpServletResponse resp,
 			Object refer) {
-		return request;
+		return req;
 	}
 
 }

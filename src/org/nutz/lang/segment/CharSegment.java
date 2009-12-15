@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.stream.StringInputStream;
 
 public class CharSegment implements Segment, Cloneable {
@@ -93,6 +94,40 @@ public class CharSegment implements Segment, Cloneable {
 	public Segment setAll(Object v) {
 		for (Iterator<String> it = keys().iterator(); it.hasNext();)
 			internalSetValue(this, it.next(), v);
+		return this;
+	}
+
+	public Segment setBy(Object obj) {
+		Iterator<String> it = keys().iterator();
+		Class<?> klass = obj.getClass();
+		Mirror<?> mirror = Mirror.me(klass);
+		// Primitive Type: set it to all PlugPoints
+		if (mirror.isStringLike() || mirror.isBoolean() || mirror.isNumber() || mirror.isChar()) {
+			this.setAll(obj);
+		}
+		// Map: set by key
+		else if (mirror.isOf(Map.class)) {
+			Map<?, ?> map = (Map<?, ?>) obj;
+			while (it.hasNext()) {
+				String key = it.next();
+				try {
+					this.set(key, map.get(key));
+				} catch (Exception e) {
+					this.set(key, "");
+				}
+			}
+		}
+		// POJO: set by field
+		else {
+			while (it.hasNext()) {
+				String key = it.next();
+				try {
+					this.set(key, mirror.getValue(obj, key));
+				} catch (Exception e) {
+					this.set(key, "");
+				}
+			}
+		}
 		return this;
 	}
 

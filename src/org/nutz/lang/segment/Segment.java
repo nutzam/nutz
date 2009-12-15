@@ -13,6 +13,15 @@ public interface Segment {
 
 	Segment setAll(Object v);
 
+	/**
+	 * 根据对象设置每个插入点的值。
+	 * 
+	 * @param obj
+	 *            可以是 POJO 或者 Map
+	 * @return Segment
+	 */
+	Segment setBy(Object obj);
+
 	Segment set(String key, boolean v);
 
 	Segment set(String key, int v);

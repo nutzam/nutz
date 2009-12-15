@@ -6,11 +6,14 @@
 	{#F00;*这是个里程碑式的版本}，从这个版本开始， Nutz 将不在依赖 Javassist，而依赖 ASM(内嵌Asm 3.2,无需额外找jar)
 	所以，编译时，你将不用依赖 Javassist。
 
+	本版本可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
+
 	同时，为了更好的输出日志，Nutz 在编译时依赖了 Log4j， 但是运行时，没有 Log4j 是可以的。
 
 	Issue 修复：
-		 # Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {/report by} {*oeqe.com}
-		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*oeqe.com}
+		 # Issue 12: Should support one config file can import other config files function. {/report by} {*satellite168}
+		 # Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {/report by} {*sj}
+		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*sj}
 		 # Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性
 	
 	功能改进
@@ -41,13 +44,14 @@
 				by [http://zozoh.javaeye.com zozoh]
 	
 	参与改进的人员名单：
-		 * amosleaf - Issues
+		 * amosleaf - Issues | Blog | Test
 		 * AxHack - Blog
 		 * BigCaiBird - Issues | Demo
 		 * blue_rain - Issues
 		 * bonyfish - Issues
 		 * ming300 - Issues
 		 * mastung - Document & Test
+		 * satellite168 - Issues
 		 * sj - Issues
 		 * sunonfire - Document & Code & Test
 		 * Wendal - Issues & Code & Test & Blog

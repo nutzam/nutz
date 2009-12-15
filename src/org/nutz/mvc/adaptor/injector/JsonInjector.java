@@ -25,7 +25,7 @@ public class JsonInjector implements ParamInjector {
 		this.name = name;
 	}
 
-	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
+	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null == name)
 			return Lang.map2Object((Map<?, ?>) refer, type);
 		Object map = ((Map<?, ?>) refer).get(name);
