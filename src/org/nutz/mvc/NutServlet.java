@@ -51,10 +51,12 @@ public class NutServlet extends HttpServlet {
 			// "org.nutz.mvc.Loading"
 			// And it must has one constructor, with one param type as
 			// ServletConfig
-			Class<? extends Loading> loadingType = DefaultLoading.class;
+			Class<? extends Loading> loadingType;
 			LoadingBy lb = modules.getAnnotation(LoadingBy.class);
 			if (null != lb)
 				loadingType = lb.value();
+			else
+				loadingType = DefaultLoading.class;
 
 			// Here, we load all Nutz.Mvc configuration
 			Loading ing = Mirror.me(loadingType).born(this.getServletConfig());
