@@ -152,8 +152,6 @@ ul.zdoc_index_table .num{
 
 ul.zdoc_index_table, ul.zdoc_index_table ul{
 	border:0px;
-	list-style:none;
-
 }
 
 .zdoc_body ul ul, .zdoc_body  ul ol, .zdoc_body  ol ol, .zdoc_body  ol ul{

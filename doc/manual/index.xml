@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc title="Nutz 框架使用发者手册" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="preface.man"/>
-	<doc path="release_note.man"/>
+	<doc path="release_notes.man"/>
 	<doc title="成为代码提交者">
 		<doc path="make_developing_env.man"/>
 		<doc path="packages.man"/>

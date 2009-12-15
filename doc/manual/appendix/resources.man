@@ -1,20 +1,20 @@
 #title:推荐文章
 #index:0
 -----------------------------------------------------------------------------------
-Nutz 的设计哲学
+概要介绍
 	 * 《[http://zozoh.javaeye.com/blog/526494 Nutz 的设计以及提高程序员生产力]》 \
-	     by [http://zozoh.javaeye.com zozoh]
+	     @[http://zozoh.javaeye.com zozoh]
 -----------------------------------------------------------------------------------
 Dao 的文章
 	 * 《[http://amosleaf.javaeye.com/blog/548337 Nutz的 数据库事务]》\
-		 by [http://amosleaf.javaeye.com amosleaf]
+		 @[http://amosleaf.javaeye.com amosleaf]
 -----------------------------------------------------------------------------------
 Mvc 的文章
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
-	     by [http://axhack.javaeye.com axhack]
+	     @[http://axhack.javaeye.com axhack]
 -----------------------------------------------------------------------------------
 Aop 的文章
 	 * 《[http://wendal.javaeye.com/blog/543681 基于ASM的Nut.Aop实现]》\
-		 by [http://wendal.javaeye.com wendal]
+		 @[http://wendal.javaeye.com wendal]
 	 * 《[http://wendal.javaeye.com/blog/543936 自己动手,用字节码工具做一个Aop拦截器]》\
-		 by [http://wendal.javaeye.com wendal]
+		 @[http://wendal.javaeye.com wendal]
