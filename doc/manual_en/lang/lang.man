@@ -1,0 +1,361 @@
+#title: Java Function Candy
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+-----------------------------------------------------------------------------------------
+What is Function Candy?
+	
+	Nutz provides bundles of static functions and classes, which could improve your Java experience. You can refer the source code in 
+	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 
+	I list here the most common usage parts for you.
+	
+	All of these in this chapter are utility functions. In most cases, these functions can help you shorten your codes, 
+	and make it more clear.
+-----------------------------------------------------------------------------------------
+Extension of languages
+	Java grammar is more user friendly than C/C++. Because it is designed for this.
+	But the actuality is always not the same as vision. Java itself is more than 10 years old, with preciseness and stiff.
+	You may find that in most situations, many things could be handled in one line through these functions, just like sweet Ruby.
+	
+	
+	Exception
+		Create Exceptions
+			 * Create runtime exceptions through template strings
+				{{{
+				throw Lang.makeThrow("Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+			 * Create specified exceptions through template strings
+				{{{
+				throw Lang.makeThrow(SQLException.class, "Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+			 * Non implement exception
+				{{{
+				throw Lang.noImplement();
+				}}}
+			 
+		Wrap Exceptions
+			 * Wrap exceptions with runtime exception, if original exceptions are runtime exceptions, return directly.
+				{{{
+				throw Lang.wrapThrow(e);
+				}}}
+			 * Wrap exceptions with specified exception. The target exception should include one constructor with Throwable type parameter.
+				{{{
+				throw Lang.wrapThrow(e, SQLException.class);
+				}}}
+			 * Combine multiple exceptions
+				{{{
+				throw Lang.comboThrow(e1,e2,e3);
+				}}}
+			 * Wrap exceptions with extra information
+				{{{
+				throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
+				}}}
+		
+	Object
+		 * Compare objects: support array, collection, and container
+			{{{
+			return Lang.equals(map1, map2);
+			}}}
+		 * Dump objects
+			{{{
+			return Dumps.obj(pojo);
+			}}}
+		 * Check containing
+			{{{
+			return Lang.contains(myArray, ele);
+			}}}
+		 * Traversal
+			{{{
+			Lang.each(obj, new Each<Object>(){
+				public void invoke(int i, T ele, int length){
+					obj could be array, list, map, or POJO.
+					If it is POJO, the ele will be POJO itself.
+				}
+			});
+			}}}
+		
+	Converting
+		 * Array to Map
+			{{{
+			Pet[] pets = new Pet[3];
+			... // set values
+			
+			// Use Pet objects' name attribute as Key to create a Map
+			Map<String,Pet> petMap = Lang.array2map(HashMap.class, pets, "name");
+			}}}
+		 * Array to Array
+			{{{
+			Pet[] pets = new Pet[3];
+			
+			String[] ss = Lang.array2array(pets, String.class);
+			}}}
+		 * List to Array
+			{{{
+			List<Pet> pets = new ArrayList<Pet>();
+			... // set values
+			
+			Pet[] petArray = Lang.collection2array(pets);
+			}}}
+		 * Collection to List
+			{{{
+			Queue<Pet> pets = new ArrayDeque<Pet>();
+			... // set values
+			
+			List<Pet> list = Lang.collection2list(pets);
+			}}}
+		 * Collection to Map
+			{{{
+			Queue<Pet> pets = new ArrayDeque<Pet>();
+			... // set values
+			
+			// Use Pet objects' name attribute as Key to create a Map
+			Map<String,Pet> petMap = Lang.collection2map(HashMap.class, pets, "name");
+			}}}
+		 * Map to Object
+			{{{
+			return Lang.map2Object(map,Pet.class);
+			}}}
+			
+	Simulate objects
+		 * Generate Array
+			{{{
+			String[] ss = Lang.array("A","B","C");
+			}}}
+		 * Generate Reader from String
+			{{{
+			Reader reader = Lang.inr("ABCDEF");
+			}}}
+		 * Generate InputStream from String
+			{{{
+			InputStream ins = Lang.ins("ABCDEF");
+			}}}
+		 * Generate Map from String
+			{{{
+			Map<String,Object> map = Lang.map("{a:10, b:'ABC', c:true}");
+			}}}
+			
+		 * Generate List from String
+			{{{
+			List<Object> list =  Lang.list("[true, 23, 'ABC']");
+			}}}
+	XML
+		 * Create DocumentBuilder
+			{{{
+			return Lang.xmls();
+			}}}
+	Others
+		 * Print java.util.regex.Matcher detail information
+			{{{
+			return Dumps.matcher(matcher);
+			}}}
+		 * Parse Boolean
+			{{{
+			assertTrue(Lang.parseBoolean("on"));
+			assertTrue(Lang.parseBoolean("1"));
+			assertTrue(Lang.parseBoolean("yes"));
+			}}}
+-----------------------------------------------------------------------------------------
+Operate String
+	Judge
+		 * Check it's a empty string
+			{{{
+			assertTrue(Strings.isEmpty(""));
+			}}}
+		 * Check it's a string with only blank chars.
+			{{{
+			assertTrue(Strings.isEmpty("\t \r\n"));
+			}}}
+		 * Check it's wrapped with specified chars.
+			{{{
+			assertTrue(Strings.isQuoteBy("[ABC]", '[', ']'));
+			
+			// ignore blanks
+			assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
+			}}}
+		 * Get max length of Strings
+			{{{
+			assertEquals(3, Strings.maxLength((String[]){"A","ABC","BC"}));
+			
+			// List
+			assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
+			}}}
+	Modify
+		 * Capitalize
+			{{{
+			assertEquals("Abc", Strings.capitalize("abc"));
+			}}}
+		 * Trim
+			{{{
+			assertEquals("ABC", Strings.trim("\t   ABC \r\n   ");
+			}}}
+		 * Right align
+			{{{
+			assertEquals("00FE", Strings.alignRight("FE", 4, '0');
+			}}}
+		 * Left align
+			{{{
+			assertEquals("FE00", Strings.alignLeft("FE", 4, '0');
+			}}}
+	Convert
+		 * To binary format string
+			{{{
+			assertEquals("0110", Strings.fillBinary(6, 4);
+			}}}
+		 * To hex format string
+			{{{
+			assertEquals("00FF", Strings.fillHex(255, 4);
+			}}}
+		 * Split String(ignore empty element)
+			{{{
+			assertEquals(3, Strings.splitIgnoreBlank("A,B,C");
+			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,");
+			}}}
+		 
+	Duplicate
+		{{{
+		// duplicate char
+		assertEquals("---", Strings.dup('-', 3));
+		
+		// duplicate string
+		assertEquals("ABCABCABC", Strings.dup("ABC", 3));
+		}}}
+-----------------------------------------------------------------------------------------
+Operate files
+	Search
+		 * From CLASSPATH
+			{{{
+			return Files.findFile("org/nutz/lang/Lang.class");
+			}}}
+		 * Based on regex from zipped file
+			{{{
+			return Files.findEntryInZip(new ZipFile("D:/nutz.jar"), "org/nutz/lang/Lang.class");
+			}}}
+		 * Scan all classes which are in the same package with the specified class
+			{{{
+			return Resources.scanClass(Lang.class);
+			}}}
+		 
+	Create-Delete-Copy
+		 * Create new file with auto creating parent folders
+			{{{
+			Files.createNewFile(new File("D:/demo/abc.txt"));
+			}}}
+		 * Create new folder with auto creating parent folders
+			{{{
+			Files.makeDir(new File("D:/demo/abc"));
+			}}}
+		 * Delete a folder with subfolders and files
+			{{{
+			Files.deleteDir(new File("D:/demo/abc"));
+			}}}
+		 * Clear everything in the folder
+			{{{
+			Files.clearDir(new File("D:/demo/abc"));
+			}}}
+		 * Delete subfolders with specified name
+			{{{
+			Files.cleanAllFolderInSubFolderes(new File("D:/demo"), ".svn");
+			}}}
+	Read-Write
+		 * Read all content of one file - UTF-8
+			{{{
+			String txt = Files.read("D:/abc.txt");
+			//or
+			String txt = Lang.readAll(Streams.fileInr("D:/abc.txt"));
+			}}}
+		 * Write files - UTF-8
+			{{{
+			// if D:/abc.txt is not exist, it will be created
+			String txt = Files.write("D:/abc.txt", "some text");
+			// or if D:/abc.txt is not exist, nothing will be written.
+			String txt = Lang.writeAll(Streams.fileOutw("D:/abc.txt"), content.toString());
+			}}}
+		 * Get Reader - UTF-8
+			{{{
+			Reander reader =  Streams.fileInr("D:/abc.txt");
+			//or
+			Reander reader =  Streams.fileInr(new File("D:/abc.txt"));
+			}}}
+		 * Get Writer - UTF-8
+			{{{
+			Writer writer = Streams.fileOutw("D:/abc.txt");
+			//or
+			Writer writer = Streams.fileOutw(new File("D:/abc.txt"));
+			}}}
+		 * Get InputStream
+			{{{
+			InputStream ins =  Streams.fileIn("D:/abc.txt");
+			//or
+			InputStream ins =  Streams.fileIn(new File("D:/abc.txt"));
+			}}}
+		 * Get OutputStream
+			{{{
+			OutputStream ops =  Streams.fileOut("D:/abc.txt");
+			//or
+			OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
+			}}}
+	Change file attributes
+		 * Move files
+			{{{
+			Files.move(new File("D:/demo/abc.txt"), new File("D:/demo/def.txt"));
+			}}}
+		 * Change file names
+			{{{
+			Files.rename(new File("D:/demo/abc.txt"), "def.txt");
+			}}}
+	Create file objects
+		 * Create a new file object with changing the file suffix name, but not create new file in disk
+			{{{
+			return Files.renameSuffix(new File("D:/demo/abc.txt"), ".java");
+			}}}
+		 * Get file's major name
+			{{{
+			assertEquals("abc", Files.getMajorName(new File("D:/demo/abc.txt")));
+			}}}
+		 * Get file's suffix name
+			{{{
+			assertEquals("txt", Files.getSuffixName(new File("D:/demo/abc.txt")));
+			}}} 
+
+-----------------------------------------------------------------------------------------
+Stopwatch
+	{{{
+	Stopwatch sw = Stopwatch.begin();
+	...
+	here is your codes
+	...
+	sw.stop();
+	System.out.println(sw.getDuration());
+	}}}
+-----------------------------------------------------------------------------------------
+Random Data
+	 * Random String
+		{{{
+		// Generate 100 Strings with less than 20 length
+		StringGenerator sg = new StringGenerator(20);
+		for(int i=0;i<100;i++)
+			System.out.println(sg.next());
+		}}}
+	 * Random number with given area
+		{{{
+		return  GM.random(3,5)
+		}}}
+	 * Random enum value
+		{{{
+		return (new EnumRandom<MyEnums>(){}).next();
+		}}}
+	 * Random pick from array until it is empty
+		{{{
+		Random<String> r = new ArrayRandom<String>(Lang.array("A", "B", "C"));
+		int i = 0;
+		while (null != r.next()) {
+			i++;
+		}
+		assertEquals(3, i);
+		}}}
+	 * Random query from array, the data could be duplicated
+		{{{
+		Random<String> r = new RecurArrayRandom<String>(Lang.array("A", "B", "C"));
+		for(int i=0; i<100; i++)
+			System.out.println(r.next());
+		}}}
+	
