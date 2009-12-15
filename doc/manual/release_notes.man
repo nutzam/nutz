@@ -43,7 +43,7 @@
 	参与改进的人员名单：
 		 * amosleaf - Issues
 		 * AxHack - Blog
-		 * BigCaiBird - Issues
+		 * BigCaiBird - Issues | Demo
 		 * blue_rain - Issues
 		 * bonyfish - Issues
 		 * ming300 - Issues
