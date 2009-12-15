@@ -7,7 +7,7 @@ import org.nutz.lang.Mirror;
 public class Number2Number extends Castor<Number, Number> {
 
 	@Override
-	protected Number cast(Number src, Class<?> toType, String... args) {
+	public Number cast(Number src, Class<?> toType, String... args) {
 		try {
 			return (Number) Mirror.me(toType).getWrapperClass().getConstructor(String.class)
 					.newInstance(src.toString());

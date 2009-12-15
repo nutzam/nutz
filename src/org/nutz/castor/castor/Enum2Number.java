@@ -8,7 +8,7 @@ import org.nutz.lang.Mirror;
 public class Enum2Number extends Castor<Enum, Number> {
 
 	@Override
-	protected Number cast(Enum src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Number cast(Enum src, Class<?> toType, String... args) throws FailToCastObjectException {
 		Mirror<?> mirror = Mirror.me(Integer.class);
 		Integer re = src.ordinal();
 		if (mirror.canCastToDirectly(toType))

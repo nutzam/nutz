@@ -10,7 +10,7 @@ import org.nutz.json.Json;
 public class Map2String extends Castor<Map, String> {
 
 	@Override
-	protected String cast(Map src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public String cast(Map src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return Json.toJson(src);
 	}
 

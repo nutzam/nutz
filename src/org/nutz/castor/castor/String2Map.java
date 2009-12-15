@@ -11,7 +11,7 @@ import org.nutz.lang.Lang;
 public class String2Map extends Castor<String, Map> {
 
 	@Override
-	protected Map cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Map cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return (Map) Json.fromJson(Lang.inr(src));
 	}
 

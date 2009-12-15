@@ -9,7 +9,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class Timestamp2SqlTime extends Castor<Timestamp, Time> {
 
 	@Override
-	protected Time cast(Timestamp src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Time cast(Timestamp src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return new Time(src.getTime());
 	}
 

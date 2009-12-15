@@ -7,7 +7,7 @@ import org.nutz.lang.Lang;
 public class String2Boolean extends Castor<String, Boolean> {
 
 	@Override
-	protected Boolean cast(String src, Class<?> toType, String... args)
+	public Boolean cast(String src, Class<?> toType, String... args)
 			throws FailToCastObjectException {
 		if (src.length() == 0)
 			return false;

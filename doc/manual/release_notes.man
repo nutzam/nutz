@@ -9,8 +9,9 @@
 	同时，为了更好的输出日志，Nutz 在编译时依赖了 Log4j， 但是运行时，没有 Log4j 是可以的。
 
 	Issue 修复：
-		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*oeqe.com}
 		 # Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {/report by} {*oeqe.com}
+		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*oeqe.com}
+		 # Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性
 	
 	功能改进
 		 # Issue 12: Should support one config file can import other config files function. (未完成)
@@ -38,5 +39,19 @@
 				by [http://axhack.javaeye.com Axhack]
 		 # 《[http://zozoh.javaeye.com/blog/526494 回复fireflyc：Nutz 的设计以及提高程序员生产力》 \
 				by [http://zozoh.javaeye.com zozoh]
-
+	
+	参与改进的人员名单：
+		 * amosleaf - Issues
+		 * AxHack - Blog
+		 * BigCaiBird - Issues
+		 * blue_rain - Issues
+		 * bonyfish - Issues
+		 * ming300 - Issues
+		 * mastung - Document & Test
+		 * sj - Issues
+		 * sunonfire - Document & Code & Test
+		 * Wendal - Issues & Code & Test & Blog
+		 * zozoh - Issues & Code & Test & Blog
+		 * 密林仙踪 - Issues
+	
 --------------------------------------------------------------------------------------------------------

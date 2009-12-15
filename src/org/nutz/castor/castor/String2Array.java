@@ -16,7 +16,7 @@ public class String2Array extends Castor<String, Object> {
 	}
 
 	@Override
-	protected Object cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Object cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
 		if (Strings.isQuoteByIgnoreBlank(src, '[', ']')) {
 			return Json.fromJson(toType, src);
 		}

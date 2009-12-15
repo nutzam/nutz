@@ -29,7 +29,7 @@ public class String2Class extends Castor<String, Class> {
 	}
 
 	@Override
-	protected Class<?> cast(String src, Class toType, String... args) {
+	public Class<?> cast(String src, Class toType, String... args) {
 		if (null == src)
 			return null;
 		Class<?> c = map.get(src);

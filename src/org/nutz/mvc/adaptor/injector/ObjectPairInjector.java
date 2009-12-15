@@ -1,91 +1,45 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.castor.Castors;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
+import org.nutz.lang.inject.Injecting;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.annotation.Param;
 
 public class ObjectPairInjector implements ParamInjector {
 
-	private static interface Injector {
-		void inject(HttpServletRequest request, Object obj);
-	}
-
-	private static class FieldValueInjector implements Injector {
-
-		private Field field;
-		private String name;
-
-		FieldValueInjector(Field field, String name) {
-			this.field = field;
-			this.field.setAccessible(true);
-			this.name = name;
-		}
-
-		public void inject(HttpServletRequest request, Object obj) {
-			try {
-				field.set(obj, Castors.me().castTo(request.getParameter(name), field.getType()));
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-
-	}
-
-	private static class FieldSetterInjector implements Injector {
-
-		private String name;
-		private Method setter;
-
-		FieldSetterInjector(Method setter, String name) {
-			this.setter = setter;
-			this.name = name;
-		}
-
-		public void inject(HttpServletRequest request, Object obj) {
-			try {
-				setter.invoke(obj, Castors.me().castTo(request.getParameter(name),
-						setter.getParameterTypes()[0]));
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-
-	}
-
-	private Injector[] injectors;
+	private Injecting[] injs;
+	private String[] names;
 	private Mirror<?> mirror;
 
-	public ObjectPairInjector(Class<?> type) {
-		mirror = Mirror.me(type);
+	public ObjectPairInjector(String prefix, Class<?> type) {
+		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
+		this.mirror = Mirror.me(type);
 		Field[] fields = mirror.getFields();
-		injectors = new Injector[fields.length];
+		this.injs = new Injecting[fields.length];
+		this.names = new String[fields.length];
 		for (int i = 0; i < fields.length; i++) {
 			Field f = fields[i];
+			this.injs[i] = mirror.getInjecting(f.getName());
 			Param param = f.getAnnotation(Param.class);
-			try {
-				Method setter = mirror.getSetter(f);
-				injectors[i] = new FieldSetterInjector(setter, null == param ? f.getName() : param
-						.value());
-			} catch (NoSuchMethodException e) {
-				injectors[i] = new FieldValueInjector(f, null == param ? f.getName() : param
-						.value());
-			}
+			String nm = null == param ? f.getName() : param.value();
+			this.names[i] = prefix + nm;
+
 		}
 	}
 
 	public Object get(HttpServletRequest request, HttpServletResponse response, Object refer) {
 		Object obj = mirror.born();
-		for (Injector inj : injectors)
-			inj.inject(request, obj);
+		for (int i = 0; i < injs.length; i++) {
+			Injecting inj = injs[i];
+			String s = request.getParameter(names[i]);
+			inj.inject(obj, s);
+		}
 		return obj;
 	}
-
 }

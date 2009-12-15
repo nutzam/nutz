@@ -10,7 +10,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class Collection2Object extends Castor<Collection, Object> {
 
 	@Override
-	protected Object cast(Collection src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Object cast(Collection src, Class<?> toType, String... args) throws FailToCastObjectException {
 		if (src.size() == 0)
 			return null;
 		return Castors.me().castTo(src.iterator().next(), toType);

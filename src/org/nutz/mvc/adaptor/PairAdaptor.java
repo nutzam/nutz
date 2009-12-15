@@ -11,9 +11,13 @@ public class PairAdaptor extends AbstractAdaptor {
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
 		if (null == param)
 			return new PathArgInjector(type);
-		if ("..".equals(param.value()))
-			return new ObjectPairInjector(type);
-		return new NameInjector(param.value(), type);
+		String pm = param.value();
+		if ("..".equals(pm))
+			return new ObjectPairInjector(null, type);
+		else if (pm.startsWith("::") && pm.length() > 2)
+			return new ObjectPairInjector(pm.substring(2), type);
+
+		return new NameInjector(pm, type);
 	}
 
 }

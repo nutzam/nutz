@@ -26,7 +26,7 @@ public abstract class Castor<FROM, TO> {
 		return toClass;
 	}
 
-	protected abstract TO cast(FROM src, Class<?> toType, String... args)
+	public abstract TO cast(FROM src, Class<?> toType, String... args)
 			throws FailToCastObjectException;
 
 	@SuppressWarnings("unchecked")

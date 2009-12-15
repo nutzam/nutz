@@ -27,7 +27,7 @@ import org.nutz.lang.util.Resources;
 public class Castors {
 
 	private static Castors one = new Castors();
-	
+
 	/**
 	 * @return 单例
 	 */
@@ -77,7 +77,7 @@ public class Castors {
 	 *            Castor 例子列表
 	 */
 	public synchronized Castors setPaths(List<Class<?>> paths) {
-		if(paths != null){
+		if (paths != null) {
 			this.paths = paths;
 			reload();
 		}
@@ -101,9 +101,9 @@ public class Castors {
 	 *            示例 Castor
 	 */
 	public synchronized Castors addPaths(Class<?>... paths) {
-		if (null != paths){
+		if (null != paths) {
 			for (Class<?> path : paths)
-				if(path != null)
+				if (path != null)
 					this.paths.add(path);
 			reload();
 		}
@@ -213,22 +213,7 @@ public class Castors {
 		Mirror<?> from = Mirror.me(fromType, extractor);
 		if (from.canCastToDirectly(toType)) // Use language built-in cases
 			return (T) src;
-		Mirror<T> to = Mirror.me(toType, extractor);
-
-		Castor c = null;
-		Class<?>[] fets = from.extractTypes();
-		Class<?>[] tets = to.extractTypes();
-		for (Class<?> ft : fets) {
-			Map<String, Castor<?, ?>> m2 = map.get(ft.getName());
-			if (null != m2)
-				for (Class<?> tt : tets) {
-					c = m2.get(tt.getName());
-					if (null != c)
-						break;
-				}
-			if (null != c)
-				break;
-		}
+		Castor c = find(from, toType);
 		if (null == c)
 			throw new FailToCastObjectException(String.format(
 					"Can not find castor for '%s'=>'%s' because:\n%s", fromType.getName(), toType
@@ -242,6 +227,39 @@ public class Castors {
 					"Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s", fromType.getName(),
 					toType.getName(), src, e.getClass().getSimpleName(), e.getMessage()));
 		}
+	}
+
+	/**
+	 * 获取一个转换器
+	 * 
+	 * @param from
+	 *            源类型
+	 * @param to
+	 *            目标类型
+	 * @return 转换器
+	 */
+	public <F, T> Castor<F, T> find(Class<F> from, Class<T> to) {
+		return find(Mirror.me(from), to);
+	}
+
+	@SuppressWarnings("unchecked")
+	private <F, T> Castor<F, T> find(Mirror<F> from, Class<T> toType) {
+		Mirror<T> to = Mirror.me(toType, extractor);
+		Castor<F, T> c = null;
+		Class<?>[] fets = from.extractTypes();
+		Class<?>[] tets = to.extractTypes();
+		for (Class<?> ft : fets) {
+			Map<String, Castor<?, ?>> m2 = map.get(ft.getName());
+			if (null != m2)
+				for (Class<?> tt : tets) {
+					c = (Castor<F, T>) m2.get(tt.getName());
+					if (null != c)
+						break;
+				}
+			if (null != c)
+				break;
+		}
+		return c;
 	}
 
 	/**

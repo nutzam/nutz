@@ -14,6 +14,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 public @interface Param {
 
-	String value() default "..";
+	String value(); // 不能有默认值，因为本注解可以声明在字段上
 
 }

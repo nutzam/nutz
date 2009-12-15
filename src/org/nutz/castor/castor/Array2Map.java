@@ -16,7 +16,7 @@ public class Array2Map extends Castor<Object, Map> {
 	}
 
 	@Override
-	protected Map cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Map cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		if (null == args || args.length == 0)
 			throw Lang.makeThrow(FailToCastObjectException.class,
 					"For the elements in array %s[], castors don't know which one is the key field.", src.getClass()

@@ -6,7 +6,7 @@ import org.nutz.lang.meta.Email;
 public class String2Email extends Castor<String, Email> {
 
 	@Override
-	protected Email cast(String src, Class<?> toType, String... args) {
+	public Email cast(String src, Class<?> toType, String... args) {
 		return new Email(src);
 	}
 

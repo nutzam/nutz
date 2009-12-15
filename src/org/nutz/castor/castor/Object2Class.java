@@ -7,7 +7,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class Object2Class extends Castor<Object, Class> {
 
 	@Override
-	protected Class cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Class cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
 		return src.getClass();
 	}
 

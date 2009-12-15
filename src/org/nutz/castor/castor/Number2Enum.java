@@ -10,7 +10,7 @@ import org.nutz.lang.Lang;
 public class Number2Enum extends Castor<Number, Enum> {
 
 	@Override
-	protected Enum cast(Number src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Enum cast(Number src, Class<?> toType, String... args) throws FailToCastObjectException {
 		try {
 			for (Field field : toType.getFields()) {
 				if (field.getType() == toType) {

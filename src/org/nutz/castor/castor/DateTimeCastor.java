@@ -6,9 +6,9 @@ import org.nutz.castor.Castor;
 
 public abstract class DateTimeCastor<FROM, TO> extends Castor<FROM, TO> {
 
-	protected DateFormat dateTimeFormat;
-	protected DateFormat dateFormat;
-	protected DateFormat timeFormat;
+	public DateFormat dateTimeFormat;
+	public DateFormat dateFormat;
+	public DateFormat timeFormat;
 
 	public void setDateTimeFormat(DateFormat format) {
 		this.dateTimeFormat = format;
