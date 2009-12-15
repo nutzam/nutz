@@ -1,4 +1,0 @@
-[
-"org.nutz.log.impl.JdkLoggerAdapter",
-"org.nutz.log.impl.Log4jLoggerAdapter",
-]
