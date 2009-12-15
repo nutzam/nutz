@@ -14,11 +14,23 @@ import org.nutz.lang.segment.Segment;
 public class EntityField {
 
 	private Mirror<?> mirror;
+	/**
+	 * 字段类型
+	 */
 	private FieldType type;
 	private boolean notNull;
 	private boolean readonly;
+	/**
+	 * 关联字段
+	 */
 	private Link link;
+	/**
+	 * 数据库列名
+	 */
 	private String columnName;
+	/**
+	 * 默认值
+	 */
 	private Segment defaultValue;
 	private String _defv;
 	private Method getter;

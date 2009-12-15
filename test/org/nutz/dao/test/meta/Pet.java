@@ -19,11 +19,9 @@ public class Pet {
 		return pets;
 	}
 
-	@Column
 	@Id
 	private int id;
 
-	@Column
 	@Name
 	private String name;
 

@@ -13,7 +13,8 @@
 	Issue 修复：
 		 # Issue 12: Should support one config file can import other config files function. {/report by} {*satellite168}
 		 # Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {/report by} {*sj}
-		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/reportby} {*sj}
+		 # Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {/report by} {*sj}
+		 # Issue 78: 出现@Id或者@name时 还需要@column {/report by} {*amosleaf}
 		 # Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性
 	
 	功能改进
@@ -55,6 +56,7 @@
 		 * sj - Issues
 		 * sunonfire - Document & Code & Test
 		 * Wendal - Issues & Code & Test & Blog
+		 * wsc0918 - FAQ
 		 * zozoh - Issues & Code & Test & Blog
 		 * 密林仙踪 - Issues
 	
