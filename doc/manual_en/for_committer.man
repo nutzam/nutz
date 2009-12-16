@@ -5,13 +5,15 @@
 If you are already a committer
 	You should know
 		 * Nutz's codes are short（{#AAA;but to not harm the understanding as premise}）
+		 	* Whenever, for the same function, a shorter piece of codes is always better than the longer one.
 		 * It is massive contribution, if you point out one method or class is useless.
 		 * To reduce a piece of codes is the same contribution as to add one, even more.
 		 * If you can reduce one line of codes, without loosing performance and understanding, you are the hero.
-		 * The only focus point you should concern about, is the code quality.
+		 * I hope the code is beautiful. Simple is beautiful.
 		 * Community will decide what kinds of features involved.
 		 * It is up to you how to implement the features.
-		 * Whenever, for the same function, a shorter piece of codes is always better than the longer one.
+		 * Please provide Java Doc for public class and method.
+		 * Major methods should be tested through JUnit.
 	
 	That's why you have to follow the coding rules
 		 * class name
@@ -32,7 +34,7 @@ If you are already a committer
 			 * Must follow Java programming rules
 			 * If it is setter function, it may follow jQuery programming rules
 				 * return this, to accelerate setting values.
-				 * setXXX(String s) may be replaced with xxx(String s) // only recommendation
+				 * setXXX(String s) may be replaced with xxx(String s) {#080;// only recommendation} 
 			 * In a word, you have to concern how to keep the users' codes no auto wrapping in IDEs.
 		 * Code formatter, please use [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml  Code Formatter for Eclipse]
 			 * get it from svn's trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml
