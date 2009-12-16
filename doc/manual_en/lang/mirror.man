@@ -1,0 +1,202 @@
+#title: Enhanced Reflection -- Mirror
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+---------------------------------------------------------------------------------------------------------
+Purpose of Reflection
+	
+	Java is a static programming language. Strength for static programming languages is that IDE could provide many powerful features like advanced refactoring. But the weakness is that the code 
+	would be inflexible. In Java you can not change everything as what you have done in Javascript.
+	Fortunately, Java provides "Reflection". 
+	
+	You can change your implemented class or calling methods in runtime through reflection. Even it's not so convenient(you have to catch many exceptions) nor fast.
+
+	Is there a way to let it works better?
+	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] provides 
+	`Mirror<T>` Class. Through it, you will feel yourself full of enenge while using reflection.
+
+---------------------------------------------------------------------------------------------------------
+Create Mirror
+	Mirror is a wrapped one of regional Class：
+	{{{
+	Mirror<Pet> mirror = Mirror.me(Pet.class);
+	}}}
+	In most cases, You don't have specified Mirror types：
+	{{{
+	Mirror<?> mirror = Mirror.me(Pet.class);
+	}}}
+	
+	You can do the following operations with your Mirror object:
+---------------------------------------------------------------------------------------------------------
+Convenient Constructor
+	Class.newInstance() is a convenient method. But it only invokes the default constructors. Mirror help you invoke any constructors with any parameters.
+	
+	Automatically detective constructors
+		Class：
+		{{{
+		public class Pet{
+			private String name;
+			
+			public Pet(String name){
+				this.name = name;
+			}
+		}
+		}}}
+		Through the following invocation：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai");
+		}}}
+		Mirror will detect the suitable constructor based on the parameters.
+	
+	Automatically detect factory methods
+		Class：
+		{{{
+		public class Pet{
+			private String name;
+			
+			public static Pet create(String name){
+				return new Pet("Pet:" + name);
+			}
+			
+			private Pet(String name){
+				this.name = name;
+			}
+		}
+		}}}
+		Through the following invocation：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai");
+		}}}
+		Mirror Mirror will detect the suitable factory method based on the parameters.
+		
+		Constructors have the higher priorities than static factory methods.
+	
+	Automatically convert types
+		{{{
+		public class Pet{
+			private String name;
+			private Calendar birthday;
+			
+			private Pet(String name,Calendar birthday){
+				this.name = name;
+				this.birthday = birthday;
+			}
+		}
+		}}}
+		Through the following invocation：
+		{{{
+		Mirror.me(Pet.class).born("XiaoBai", "2008-10-12 12:23:24");
+		}}}
+		Mirror will try to search the constructor which includes tow string parameters. If it finds nothing, it can find the constructor Pet(String, Calendar) which
+		has two parameters. Then it try to convert "2008-10-12 12:23:24" to a Calendar object through [castors.man Castors]
+	
+	Fasten Creation - Cache Constructors
+		As you know, the detection process of Mirror is not so efficient. You can get the constructor or static factory method, and use it in the future:
+		{{{
+		Mirror<Pet> mirror = Mirror.me(Pet.class);
+		Borning<Pet> borning = mirror.getBorning("XiaoBai");
+		Pet xb = borning.born("XiaoBai");
+		Pet xh = borning.born("XiaoHei");
+		}}}
+	
+---------------------------------------------------------------------------------------------------------
+Convenient invocation
+	
+	Java reflection allows you to invoke a method in runtime. Mirror makes the process simple.
+
+	Invoke a method
+		Suppose you have a class:
+		{{{
+		public class MyClass {
+			public String getInfo(String s) {
+				return "Get " + s + " @ " + System.currentTimeMillis();
+			}
+		}
+		}}}
+		You can invoke getInfo by：
+		{{{
+		Mirror<MyClass> mirror = Mirror.me(MyClass.class);
+		MyClass mc = mirror.born();
+		System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
+		}}}
+		In console：
+		{{{
+		Get Hello~~~ @ 1259836169165
+		}}}
+
+	Automatically convert parameters
+		{{{
+		System.out.println(mirror.invoke(mc, "getInfo", new Email("zozoh", "263.net")));
+		}}}
+		In console：
+		{{{
+		Get zozoh@263.net @ 1259836289830
+		}}}
+		Of cause, Email.toString() should work correctly. It uses [castors.man Castors] to convert the parameters.
+	
+---------------------------------------------------------------------------------------------------------
+Convenient Get and Set
+	Get Generic Types
+		 * return null if there is no Generic Type
+			{{{
+			Type[] types = Mirror.getTypeParams(MyClass.class);
+			}}}
+	
+	Get getter
+		{{{
+		// Get getName() method
+		Method getter = mirror.getGetter("name");
+		}}}
+	Get setter
+		{{{
+		// get setName(String) method
+		Method setter = mirror.getSetter("name", String.class);
+		}}}
+	Get all attributes
+		Get all attributes includes private ones but excludes Object attributes
+		{{{
+		Field[] fields = mirror.getFields();
+		}}}
+	Get all methods
+		Get all methods includes private ones but excludes Object methods
+		{{{
+		Method[] methods = mirror.getMethods();
+		}}}
+	Get all static methods
+		{{{
+		Method[] methods = mirror.getStaticMethods();
+		}}}
+	
+	Get attributes
+		 * Get an attribute. The field could be a private one of current Type or parent Type.
+			{{{
+			Field f = mirror.getField("name");
+			}}}
+		 * Get a group of attributes with specified annotations
+			{{{
+			Field[] fields = mirror.getFields(MyAnnotation.class);
+			}}}
+		 * Get an attribute with specified annotations
+			{{{
+			Field f = mirror.getField(MyAnnotation.class);
+			}}}
+	
+	Get attribute value
+		 * Not through getter, directly get the attribute value
+			{{{
+			Object v = mirror.getValue(obj, mirror.getField("name"));
+			}}}
+		 * Through getter to get attribute value, if failed, directly get it
+			{{{
+			Object v = mirror.getValue(obj, "name");
+			}}}
+	
+	Set attribute value
+		 * Set one attribute value. Not through setter, directly set it.
+			{{{
+			mirror.setValue(obj, mirror.getField("name"), "XiaoBai");
+			}}}
+		 * Set one attribute value. Trying to use setter at first.
+			{{{
+			mirror.setValue(obj, "name", "XiaoBai");
+			}}}
+
