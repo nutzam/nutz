@@ -11,6 +11,18 @@ import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.mvc.View;
 
+/**
+ * 重定向视图
+ * <p>
+ * 在入口函数上声明：
+ * <p>
+ * '@Ok("redirect:/pet/list.nut")'
+ * <p>
+ * 实际上相当于：<br>
+ * new ServerRedirectView("/pet/list.nut");
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class ServerRedirectView implements View {
 
 	private Segment dest;
@@ -27,7 +39,7 @@ public class ServerRedirectView implements View {
 		for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
 			String key = it.next();
 			Object value = null;
-			if (null != mirror && key.startsWith("obj.") && key.length()>4) {
+			if (null != mirror && key.startsWith("obj.") && key.length() > 4) {
 				value = mirror.getValue(obj, key.substring(4));
 			} else {
 				value = req.getParameter(key);

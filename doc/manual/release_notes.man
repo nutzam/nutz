@@ -60,7 +60,7 @@
 	贡献者名单
 		|| 贡献者 									|| 问题 || 博客 || 测试 || 代码 || Demo || 文档 ||
 		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  X	||  -	||  X	||  -	||
-		|| [http://axhack.javaeye.com axhack]		||  -	||  X	||  -	||  -	||  -	||  -	||
+		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  -	||
 		|| bird.wyatt								||  X	||  -	||  X	||  -	||  X	||  -	||
 		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||

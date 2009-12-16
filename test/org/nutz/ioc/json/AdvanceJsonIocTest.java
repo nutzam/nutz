@@ -13,7 +13,7 @@ import org.nutz.ioc.loader.json.JsonLoader;
 public class AdvanceJsonIocTest {
 
 	/**
-	 * For issue 12
+	 * Issue 12
 	 */
 	@Test
 	public void test_import() {
@@ -36,6 +36,9 @@ public class AdvanceJsonIocTest {
 		assertEquals(957.0, blue.getAttact(), 2);
 	}
 	
+	/**
+	 * Issue 70
+	 */
 	@Test
 	public void test_vars(){
 		Ioc ioc = new NutIoc(new JsonLoader("org/nutz/ioc/json/vars.js"));
