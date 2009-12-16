@@ -1,7 +1,7 @@
 #title: 版本历史
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
-#author:wendal@gmail.com(wendal1985@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 1.a.24 (Hatching...)
 
