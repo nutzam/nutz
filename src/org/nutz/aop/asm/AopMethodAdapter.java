@@ -99,7 +99,7 @@ final class AopMethodAdapter extends NullMethodAdapter {
 	void loadArgsAsArray(){
 		visitX(argumentTypes.length);
 		mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-		int index = getArgIndex(0);
+		int index = 1;
 		for (int i = 0; i < argumentTypes.length; i++) {
 			mv.visitInsn(DUP);
 			visitX(i);
@@ -112,7 +112,7 @@ final class AopMethodAdapter extends NullMethodAdapter {
 	}
 	
 	int getLastIndex(){
-		int index = getArgIndex(0);
+		int index = 1;
 		for (int i = 0; i < argumentTypes.length; i++) {
 			Type t = argumentTypes[i];
 	        index += t.getSize();

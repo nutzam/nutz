@@ -34,7 +34,7 @@ public abstract class NullMethodAdapter{
     }
     
     void loadArgs(final int arg, final int count) {
-        int index = getArgIndex(arg);
+        int index = 1;
         for (int i = 0; i < count; ++i) {
             Type t = argumentTypes[arg + i];
             loadInsn(t, index);
@@ -42,13 +42,13 @@ public abstract class NullMethodAdapter{
         }
     }
     
-    protected int getArgIndex(final int arg) {
-        int index = 1;
-        for (int i = 0; i < arg; i++) {
-            index += argumentTypes[i].getSize();
-        }
-        return index;
-    }
+//    protected int getArgIndex(final int arg) {
+//        int index = 1;
+//        for (int i = 0; i < arg; i++) {
+//            index += argumentTypes[i].getSize();
+//        }
+//        return index;
+//    }
     
     /**
      * Generates the instruction to push a local variable on the stack.
