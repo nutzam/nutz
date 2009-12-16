@@ -54,6 +54,8 @@
 				@[http://zozoh.javaeye.com zozoh]
 		 * 《[http://amosleaf.javaeye.com/blog/548337 Nutz的 数据库事务]》\
 				@[http://amosleaf.javaeye.com amosleaf]
+		 * 《[http://xiaofeng.javaeye.com/blog/549410 不用写代码 你也能为开源作出贡献]》\
+				@[http://xiaofeng.javaeye.com hilliate]
 	
 	贡献者名单
 		|| 贡献者 									|| 问题 || 博客 || 测试 || 代码 || Demo || 文档 ||
@@ -62,6 +64,7 @@
 		|| bird.wyatt								||  X	||  -	||  X	||  -	||  X	||  -	||
 		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  -	||  X	||
 		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  X	||  -	||  -	||  X	||
 		|| ming300									||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
