@@ -7,6 +7,9 @@ import org.nutz.aop.asm.org.asm.Opcodes;
 import static org.nutz.aop.asm.org.asm.Opcodes.*;
 import org.nutz.aop.asm.org.asm.Type;
 
+/**
+ * @author wendal(wendal1985@gmail.com)
+ */
 final class AopMethodAdapter extends NullMethodAdapter {
 	private int methodIndex;
 

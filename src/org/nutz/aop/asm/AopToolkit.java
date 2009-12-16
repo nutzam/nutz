@@ -11,6 +11,9 @@ import org.nutz.aop.asm.org.asm.Label;
 import org.nutz.aop.asm.org.asm.MethodVisitor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 
+/**
+ * @author wendal(wendal1985@gmail.com)
+ */
 final class AopToolkit implements Opcodes{
 
 	public static final String MethodArray_FieldName = "_$$Nut_methodArray";

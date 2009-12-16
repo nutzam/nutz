@@ -12,8 +12,6 @@ import org.nutz.aop.asm.org.asm.Type;
 /**
  * 通过Asm生成字节码
  * @author Wendal(wendal1985@gmail.com)
- *
- * @param <T>
  */
 public final class ClassX<T> implements Opcodes{
 	

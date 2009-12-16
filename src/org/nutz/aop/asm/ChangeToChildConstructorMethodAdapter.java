@@ -3,6 +3,9 @@ package org.nutz.aop.asm;
 import org.nutz.aop.asm.org.asm.MethodVisitor;
 import static org.nutz.aop.asm.org.asm.Opcodes.*;
 
+/**
+ * @author wendal(wendal1985@gmail.com)
+ */
 class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
 
 	private String superClassName;

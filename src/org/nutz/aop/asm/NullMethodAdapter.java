@@ -4,6 +4,9 @@ import org.nutz.aop.asm.org.asm.MethodVisitor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.aop.asm.org.asm.Type;
 
+/**
+ * @author wendal(wendal1985@gmail.com)
+ */
 public abstract class NullMethodAdapter{
 	
 	protected final String desc;
