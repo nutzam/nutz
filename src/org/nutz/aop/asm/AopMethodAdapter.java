@@ -216,7 +216,7 @@ final class AopMethodAdapter extends NullMethodAdapter {
 		mv.visitEnd();
 	}
 	
-	private boolean unpackagePrivateData(Type type) {
+	private void unpackagePrivateData(Type type) {
 		if(type.equals(Type.BOOLEAN_TYPE)){
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
 		}else if(type.equals(Type.BYTE_TYPE)){
@@ -233,10 +233,7 @@ final class AopMethodAdapter extends NullMethodAdapter {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
 		}else if(type.equals(Type.DOUBLE_TYPE)){
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
-		}else{
-			return false;
 		}
-		return true;
 	}
 
 	private boolean isObject = true;
