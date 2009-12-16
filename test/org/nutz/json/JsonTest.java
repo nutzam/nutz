@@ -1,9 +1,10 @@
 package org.nutz.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -15,9 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-
 import org.nutz.dao.test.meta.Base;
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -110,9 +109,8 @@ public class JsonTest {
 
 	@Test
 	public void testAllTypesInMap() throws FileNotFoundException {
-		File f = Files.findFile("org/nutz/json/types.txt");
 		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(
-				new FileInputStream(f)));
+				getClass().getResourceAsStream("/org/nutz/json/types.txt")));
 		assertTrue((Boolean) map.get("true"));
 		assertFalse((Boolean) map.get("false"));
 		assertNull(map.get("null"));
@@ -174,9 +172,8 @@ public class JsonTest {
 
 	@Test
 	public void testMap() throws FileNotFoundException {
-		File f = Files.findFile("org/nutz/json/map.txt");
-		Map<String, Object> map = Json.fromJson(HashMap.class, new InputStreamReader(
-				new FileInputStream(f)));
+		Map<String, Object> map = Json.fromJson(HashMap.class, 
+				getFileAsInputStreamReader("org/nutz/json/map.txt"));
 		assertEquals("value1", map.get("a1"));
 		assertEquals(35, map.get("a2"));
 		assertEquals((double) 4.7, map.get("a3"));
@@ -194,8 +191,8 @@ public class JsonTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testSimplePersonObject() throws Exception {
-		File f = Files.findFile("org/nutz/json/simplePerson.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, 
+				getFileAsInputStreamReader("org/nutz/json/simplePerson.txt"));
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
@@ -206,8 +203,8 @@ public class JsonTest {
 
 	@Test
 	public void testPersonObject() throws Exception {
-		File f = Files.findFile("org/nutz/json/person.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, 
+				getFileAsInputStreamReader("org/nutz/json/person.txt"));
 		StringBuilder sb = new StringBuilder();
 		Writer w = new OutputStreamWriter(new StringOutputStream(sb));
 		w.write(p.dump());
@@ -218,9 +215,9 @@ public class JsonTest {
 		w.write("\n");
 		w.write(p.getCompany().getCreator().dump());
 		w.close();
-		f = Files.findFile("org/nutz/json/person.expect.txt");
 
-		assertTrue(Streams.equals(new StringInputStream(sb), new FileInputStream(f)));
+		assertTrue(Streams.equals(new StringInputStream(sb), 
+				getClass().getResourceAsStream("/org/nutz/json/person.expect.txt")));
 	}
 
 	@Test
@@ -292,8 +289,8 @@ public class JsonTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testParseNullFieldObject() throws Exception {
-		File f = Files.findFile("org/nutz/json/personNull.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, 
+						getFileAsInputStreamReader("org/nutz/json/personNull.txt"));
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
@@ -304,8 +301,8 @@ public class JsonTest {
 
 	@Test
 	public void testPrintJsonObject() throws Exception {
-		File f = Files.findFile("org/nutz/json/person.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, 
+				getFileAsInputStreamReader("org/nutz/json/person.txt"));
 		String json = Json.toJson(p, JsonFormat.nice());
 		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertEquals(p.getName(), p2.getName());
@@ -329,8 +326,7 @@ public class JsonTest {
 
 	@Test
 	public void testFilterField() throws Exception {
-		File f = Files.findFile("org/nutz/json/person.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, getFileAsInputStreamReader("org/nutz/json/person.txt"));
 		String json = Json.toJson(p, JsonFormat.nice().setActived("^name$"));
 		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertEquals(p.getName(), p2.getName());
@@ -343,8 +339,7 @@ public class JsonTest {
 
 	@Test
 	public void testFilterField2() throws Exception {
-		File f = Files.findFile("org/nutz/json/person.txt");
-		Person p = Json.fromJson(Person.class, new InputStreamReader(new FileInputStream(f)));
+		Person p = Json.fromJson(Person.class, getFileAsInputStreamReader("org/nutz/json/person.txt"));
 		String json = Json.toJson(p, JsonFormat.nice().setLocked("realname|father|company"));
 		Person p2 = Json.fromJson(Person.class, Lang.inr(json));
 		assertNull(p2.getRealname());
@@ -468,5 +463,11 @@ public class JsonTest {
 		assertEquals(-23, i.intValue());
 		Double d = (Double) map.get("b");
 		assertEquals(-2.7, d.floatValue(), 3);
+	}
+	
+	private InputStreamReader getFileAsInputStreamReader(String fileName){
+		if(! fileName.startsWith("/"))
+			fileName = "/" + fileName;
+		return new InputStreamReader(getClass().getResourceAsStream(fileName));
 	}
 }

@@ -1,9 +1,8 @@
 package org.nutz.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -11,8 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 
 public class JsonCommentTest {
@@ -58,8 +55,8 @@ public class JsonCommentTest {
 
 	@Test
 	public void testMap() throws FileNotFoundException {
-		File f = Files.findFile("org/nutz/json/cmt-map.txt");
-		Map<?, ?> map = Json.fromJson(HashMap.class, new InputStreamReader(new FileInputStream(f)));
+		Map<?, ?> map = Json.fromJson(HashMap.class, 
+				new InputStreamReader(getClass().getResourceAsStream("/org/nutz/json/cmt-map.txt")));
 		assertEquals(34, map.get("A"));
 		assertEquals("XYZ", map.get("B"));
 		List<?> arr = (List<?>) map.get("arr");
