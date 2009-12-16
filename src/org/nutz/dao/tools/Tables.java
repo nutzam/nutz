@@ -25,7 +25,8 @@ public abstract class Tables {
 		} else if (db.isSqlServer()) {
 			return new TableDefinitionImpl(new SqlServerExpert());
 		}
-		throw Lang.makeThrow("I don't now how to create table for '%s'", db.toString());
+		return new TableDefinitionImpl(new PsqlExpert());
+//		throw Lang.makeThrow("I don't now how to create table for '%s'", db.toString());
 	}
 
 	public static void run(Dao dao, List<DTable> dts) {
