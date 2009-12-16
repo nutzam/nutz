@@ -6,8 +6,8 @@ public class DefaultPagerMaker implements PagerMaker {
 
 	public Pager make(DatabaseMeta meta, int pageNumber, int pageSize) {
 		Pager pager;
-		// MySql
-		if (meta.isMySql()) {
+		// MySql & H2
+		if (meta.isMySql() || meta.isH2()) {
 			pager = new MysqlPager();
 		}
 		// Postgresql

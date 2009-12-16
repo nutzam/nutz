@@ -37,18 +37,20 @@ public class DatabaseMeta {
 	public void setProductName(String productName) {
 		this.productName = productName;
 		String proName = productName.toLowerCase();
-		if (proName.startsWith("postgresql")) {
-			this.type = DB.PSQL;
+		if (proName.equals("h2")) {
+			type = DB.H2;
+		} else if (proName.startsWith("postgresql")) {
+			type = DB.PSQL;
 		} else if (proName.startsWith("mysql")) {
-			this.type = DB.MYSQL;
+			type = DB.MYSQL;
 		} else if (proName.startsWith("oracle")) {
-			this.type = DB.ORACLE;
+			type = DB.ORACLE;
 		} else if (proName.startsWith("db2")) {
-			this.type = DB.DB2;
+			type = DB.DB2;
 		} else if (proName.startsWith("microsoft sql")) {
-			this.type = DB.SQLSERVER;
+			type = DB.SQLSERVER;
 		} else {
-			this.type = DB.OTHER;
+			type = DB.OTHER;
 		}
 	}
 
@@ -127,6 +129,10 @@ public class DatabaseMeta {
 
 	public boolean isDB2() {
 		return DB.DB2 == type;
+	}
+
+	public boolean isH2() {
+		return DB.H2 == type;
 	}
 
 }

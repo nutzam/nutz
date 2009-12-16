@@ -24,16 +24,17 @@ public abstract class Tables {
 			return new TableDefinitionImpl(new PsqlExpert());
 		} else if (db.isSqlServer()) {
 			return new TableDefinitionImpl(new SqlServerExpert());
+		} else if (db.isH2()) {
+			return new TableDefinitionImpl(new PsqlExpert());
 		}
-		return new TableDefinitionImpl(new PsqlExpert());
-//		throw Lang.makeThrow("I don't now how to create table for '%s'", db.toString());
+		throw Lang.makeThrow("I don't now how to create table for '%s'", db.toString());
 	}
 
 	public static void run(Dao dao, List<DTable> dts) {
 		TableDefinition maker = newInstance(((NutDao) dao).meta());
 		for (DTable dt : dts) {
 			Sql sql;
-			if (dao.exists(dt.getName())){
+			if (dao.exists(dt.getName())) {
 				sql = maker.makeDropSql(dt);
 				dao.execute(sql);
 			}

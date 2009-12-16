@@ -137,6 +137,10 @@ public class TransLevelTest extends DaoCase {
 		// SqlServer 在这个测试中，两个线程会相互等待 ...
 		if (dao.meta().isSqlServer()) {
 			Nutzs.notSupport(dao.meta());
+		}
+		// H2 会在抛异常：Timeout trying to lock table "TRANS_COMPANY";
+		else if (dao.meta().isH2()) {
+			Nutzs.notSupport(dao.meta());
 		} else {
 			final ExecutorService es = Executors.newCachedThreadPool();
 			final Company c = dao.fetch(Company.class, dao.getMaxId(Company.class));
@@ -202,6 +206,10 @@ public class TransLevelTest extends DaoCase {
 		// MySql 会导致两个线程互相锁。估计是 InnoDB 只是到表级锁的原因
 		// 所以，这个测试不测试 MySql
 		if (dao.meta().isMySql()) {
+			Nutzs.notSupport(dao.meta());
+		}
+		// H2 不支持这个事务级别
+		else if (dao.meta().isH2()) {
 			Nutzs.notSupport(dao.meta());
 		}
 		// Oracle, 会导致 java.sql.SQLException: ORA-08177: 无法连续访问此事务处理
