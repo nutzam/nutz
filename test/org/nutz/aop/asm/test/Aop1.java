@@ -121,7 +121,11 @@ public class Aop1 {
 	}
 
 	public void throwError() throws Throwable {
-		throw new RuntimeException("我是被主动抛出的异常!!!");
+		throw new Error("我是被主动抛出的异常!!!");
+	}
+	
+	public void throwException() throws Throwable {
+		throw new Exception("我是被主动抛出的异常!!!");
 	}
 	
 	public Object[] returnObjectArray(){

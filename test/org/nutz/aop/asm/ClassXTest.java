@@ -72,8 +72,8 @@ public class ClassXTest{
 	}
 
 	@Test
-	public void testReturnPrimitive(){
-		Aop1 a1 = getNewInstance(Aop1.class);
+	public void testReturnPrimitive() throws Throwable{
+		Aop1 a1 = classAgent.define(Aop1.class).getConstructor(String.class).newInstance("Nutz");
 		a1.returnLong();
 		a1.returnBoolean();
 		a1.returnByte();
@@ -86,6 +86,7 @@ public class ClassXTest{
 	@Test
 	public void testReturnPrimitiveArray(){
 		Aop1 a1 = getNewInstance(Aop1.class);
+		a1.returnIntArray();
 		a1.returnLongArray();
 		a1.returnBooleanArray();
 		a1.returnByteArray();
@@ -104,10 +105,16 @@ public class ClassXTest{
 		a1.getEnum();
 	}
 	
-	@Test(expected=RuntimeException.class)
+	@Test(expected=Error.class)
 	public void testThrowError() throws Throwable{
 		Aop1 a1 = getNewInstance(Aop1.class);
 		a1.throwError();
+	}
+	
+	@Test(expected=Exception.class)
+	public void testThrowException() throws Throwable{
+		Aop1 a1 = getNewInstance(Aop1.class);
+		a1.throwException();
 	}
 	
 	@Test
@@ -126,7 +133,9 @@ public class ClassXTest{
 	private <T> T getNewInstance(Class<T> klass){
 		Class<T> newClass = classAgent.define(klass);
 		Mirror<T> mirror = Mirror.me(newClass);
-		return  mirror.born("Nutz");
+		T obj = mirror.born("Nutz");
+		System.out.println(obj.getClass().getSuperclass());
+		return obj;
 	}
 
 	@Test(expected=RuntimeException.class)
