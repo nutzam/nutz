@@ -66,10 +66,10 @@
 		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  -	||  X	||
 		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  X	||  -	||  -	||  X	||
-		|| ming300									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| ming300									||  X	||  -	||  X	||  -	||  -	||  -	||
 		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| sj										||  X	||  -	||  X	||  -	||  -	||  -	||
-		|| sunonfire								||  -	||  -	||  X	||  X	||  -	||  -	||
+		|| sunonfire								||  -	||  -	||  X	||  X	||  -	||  X	||
 		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  X	||  -	||  -	||
 		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||

@@ -23,12 +23,12 @@ public class SystemLog extends AbstractLog {
 
 	public void error(Object message, Throwable t) {
 		if (isErrorEnabled())
-			printOut(message, t);
+			errorOut(message, t);
 	}
 
 	public void fatal(Object message, Throwable t) {
 		if (isFatalEnabled())
-			printOut(message, t);
+			errorOut(message, t);
 	}
 
 	public void info(Object message, Throwable t) {
@@ -43,10 +43,16 @@ public class SystemLog extends AbstractLog {
 
 	public void warn(Object message, Throwable t) {
 		if (isWarnEnabled())
-			printOut(message, t);
+			errorOut(message, t);
 	}
 
 	private void printOut(Object message, Throwable t) {
+		System.out.println(message);
+		if (t != null)
+			t.printStackTrace(System.out);
+	}
+
+	private void errorOut(Object message, Throwable t) {
 		System.err.println(message);
 		if (t != null)
 			t.printStackTrace(System.err);
