@@ -12,14 +12,12 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 
 	private List<Plugin> list = new ArrayList<Plugin>();
 
-	public SimplePluginManager(String... classNames) throws InstantiationException,
-			IllegalAccessException {
+	public SimplePluginManager(String... classNames) throws PluginException {
 		for (String className : classNames)
 			loadPlugin(className);
 	}
 
-	public SimplePluginManager(Class<? extends T>... classNames) throws InstantiationException,
-			IllegalAccessException {
+	public SimplePluginManager(Class<? extends T>... classNames) throws PluginException {
 		for (Class<? extends T> pluginClass : classNames)
 			loadPlugin(pluginClass);
 	}
@@ -32,15 +30,17 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 		throw new NoPluginCanWorkException();
 	}
 
-	protected void loadPlugin(Class<? extends T> pluginClass) throws InstantiationException,
-			IllegalAccessException {
+	protected void loadPlugin(Class<? extends T> pluginClass) throws PluginException {
 		if (pluginClass != null)
-			list.add((Plugin) pluginClass.newInstance());
+			try {
+				list.add((Plugin) pluginClass.newInstance());
+			} catch (Exception e) {
+				throw new PluginException(pluginClass.getName(), e);
+			}
 	}
 
 	@SuppressWarnings("unchecked")
-	private void loadPlugin(String pluginClassName) throws InstantiationException,
-			IllegalAccessException {
+	private void loadPlugin(String pluginClassName) throws PluginException {
 		try {
 			if (pluginClassName != null)
 				loadPlugin((Class<? extends T>) Class.forName(pluginClassName));
