@@ -19,8 +19,6 @@ import org.nutz.log.Log;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class JdkLogAdapter extends AbstractLogAdapter{
-	
-	private static JdkLogger rootLog;
 
 	public boolean canWork() {
 		return System.getProperty("java.util.logging.config.class") != null
@@ -28,18 +26,8 @@ public class JdkLogAdapter extends AbstractLogAdapter{
 	}
 	
 	public Log getLogger(String className){
-		if(className != null)
-			return new JdkLogger(className);
-		else
-			return getRootLogger();
+		return new JdkLogger(className);
 	}
-	
-	public Log getRootLogger() {
-		if(rootLog == null)
-			rootLog = new JdkLogger();
-		return rootLog;
-	}
-	
 	
 	static class JdkLogger extends AbstractLog {
 
@@ -62,10 +50,6 @@ public class JdkLogAdapter extends AbstractLogAdapter{
 			isInfoEnabled = jdkLogger.isLoggable(INFO_LEVEL);
 			isDebugEnabled = jdkLogger.isLoggable(DEBUG_LEVEL);
 			isTraceEnabled = jdkLogger.isLoggable(TRACE_LEVEL);
-		}
-		
-		private JdkLogger(){
-			jdkLogger = Logger.getAnonymousLogger();
 		}
 
 		public void fatal(Object message, Throwable t) {
@@ -96,14 +80,6 @@ public class JdkLogAdapter extends AbstractLogAdapter{
 		public void trace(Object message, Throwable t) {
 			if (isTraceEnabled())
 				log(TRACE_LEVEL, message, t);
-		}
-
-		/**
-		 * for testing purpose only
-		 */
-		@Deprecated
-		public Logger getJdkLogger() {
-			return jdkLogger;
 		}
 
 		public void log(Level level, Object message, Throwable t) {

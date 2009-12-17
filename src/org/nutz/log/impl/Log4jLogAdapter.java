@@ -97,13 +97,6 @@ public class Log4jLogAdapter extends AbstractLogAdapter{
 		return new Log4JLogger(className);
 	}
 	
-	public Log getRootLogger() {
-		if(log4JLogger == null)
-			log4JLogger = new Log4JLogger();
-		return log4JLogger;
-	}
-	
-	private Log4JLogger log4JLogger;
 	
 	static class Log4JLogger extends AbstractLog{
 		
