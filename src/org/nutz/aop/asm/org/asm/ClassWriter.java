@@ -232,10 +232,10 @@ public class ClassWriter implements ClassVisitor {
      */
     static final int TYPE_MERGED = 15;
 
-    /**
-     * The class reader from which this class writer was constructed, if any.
-     */
-    ClassReader cr;
+//    /**
+//     * The class reader from which this class writer was constructed, if any.
+//     */
+//    ClassReader cr;
 
     /**
      * Minor and major version numbers of the class to be generated.
@@ -544,35 +544,35 @@ public class ClassWriter implements ClassVisitor {
         this.computeFrames = (flags & COMPUTE_FRAMES) != 0;
     }
 
-    /**
-     * Constructs a new {@link ClassWriter} object and enables optimizations for
-     * "mostly add" bytecode transformations. These optimizations are the
-     * following:
-     *
-     * <ul> <li>The constant pool from the original class is copied as is in
-     * the new class, which saves time. New constant pool entries will be added
-     * at the end if necessary, but unused constant pool entries <i>won't be
-     * removed</i>.</li> <li>Methods that are not transformed are copied as
-     * is in the new class, directly from the original class bytecode (i.e.
-     * without emitting visit events for all the method instructions), which
-     * saves a <i>lot</i> of time. Untransformed methods are detected by the
-     * fact that the {@link ClassReader} receives {@link MethodVisitor} objects
-     * that come from a {@link ClassWriter} (and not from a custom
-     * {@link ClassAdapter} or any other {@link ClassVisitor} instance).</li>
-     * </ul>
-     *
-     * @param classReader the {@link ClassReader} used to read the original
-     *        class. It will be used to copy the entire constant pool from the
-     *        original class and also to copy other fragments of original
-     *        bytecode where applicable.
-     * @param flags option flags that can be used to modify the default behavior
-     *        of this class. See {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
-     */
-    public ClassWriter(final ClassReader classReader, final int flags) {
-        this(flags);
-        classReader.copyPool(this);
-        this.cr = classReader;
-    }
+//    /**
+//     * Constructs a new {@link ClassWriter} object and enables optimizations for
+//     * "mostly add" bytecode transformations. These optimizations are the
+//     * following:
+//     *
+//     * <ul> <li>The constant pool from the original class is copied as is in
+//     * the new class, which saves time. New constant pool entries will be added
+//     * at the end if necessary, but unused constant pool entries <i>won't be
+//     * removed</i>.</li> <li>Methods that are not transformed are copied as
+//     * is in the new class, directly from the original class bytecode (i.e.
+//     * without emitting visit events for all the method instructions), which
+//     * saves a <i>lot</i> of time. Untransformed methods are detected by the
+//     * fact that the {@link ClassReader} receives {@link MethodVisitor} objects
+//     * that come from a {@link ClassWriter} (and not from a custom
+//     * {@link ClassAdapter} or any other {@link ClassVisitor} instance).</li>
+//     * </ul>
+//     *
+//     * @param classReader the {@link ClassReader} used to read the original
+//     *        class. It will be used to copy the entire constant pool from the
+//     *        original class and also to copy other fragments of original
+//     *        bytecode where applicable.
+//     * @param flags option flags that can be used to modify the default behavior
+//     *        of this class. See {@link #COMPUTE_MAXS}, {@link #COMPUTE_FRAMES}.
+//     */
+//    public ClassWriter(final ClassReader classReader, final int flags) {
+//        this(flags);
+//        classReader.copyPool(this);
+//        this.cr = classReader;
+//    }
 
     // ------------------------------------------------------------------------
     // Implementation of the ClassVisitor interface
@@ -837,9 +837,10 @@ public class ClassWriter implements ClassVisitor {
             attrs.put(this, null, 0, -1, -1, out);
         }
         if (invalidFrames) {
-            ClassWriter cw = new ClassWriter(COMPUTE_FRAMES);
-            new ClassReader(out.data).accept(cw, ClassReader.SKIP_FRAMES);
-            return cw.toByteArray();
+        	throw new RuntimeException("Found invalidFrames!");
+//            ClassWriter cw = new ClassWriter(COMPUTE_FRAMES);
+//            new ClassReader(out.data).accept(cw, ClassReader.SKIP_FRAMES);
+//            return cw.toByteArray();
         }
         return out.data;
     }

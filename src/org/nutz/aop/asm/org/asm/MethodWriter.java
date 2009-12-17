@@ -1851,8 +1851,9 @@ class MethodWriter implements MethodVisitor {
     final void put(final ByteVector out) {
         out.putShort(access).putShort(name).putShort(desc);
         if (classReaderOffset != 0) {
-            out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
-            return;
+//            out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
+//            return;
+        	throw new RuntimeException("classReaderOffset must equal 0!");
         }
         int attributeCount = 0;
         if (code.length > 0) {
