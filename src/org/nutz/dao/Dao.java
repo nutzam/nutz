@@ -209,7 +209,8 @@ public interface Dao {
 	 *            数据名值链。
 	 * @param condition
 	 *            WHERE 条件
-	 * @return 本次操作所影响的行数
+	 * 
+	 * @return 有多少条记录被更新了
 	 */
 	int update(String tableName, Chain chain, Condition condition);
 
@@ -223,6 +224,8 @@ public interface Dao {
 	 *            数据名值链
 	 * @param condition
 	 *            WHERE 条件
+	 * 
+	 * @return 有多少条记录被更新了
 	 * 
 	 * @see org.nutz.dao.entity.annotation.Table
 	 */

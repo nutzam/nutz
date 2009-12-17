@@ -8,12 +8,12 @@ import org.nutz.ioc.IocException;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class IocPlugManager<T> implements PluginManager<T> {
+public class IocPluginManager<T> implements PluginManager<T> {
 
 	private Ioc ioc;
 	private String[] names;
 
-	public IocPlugManager(Ioc ioc, String... names) {
+	public IocPluginManager(Ioc ioc, String... names) {
 		this.ioc = ioc;
 		this.names = names;
 	}
