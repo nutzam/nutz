@@ -9,7 +9,7 @@ public class DaoException extends RuntimeException {
 		super(message);
 	}
 
-	public <T> DaoException(Sql sql, Exception exception) {
+	public DaoException(Sql sql, Exception exception) {
 		super(String.format("%s\n--SQL::%s", exception.toString(), sql.toString()));
 	}
 

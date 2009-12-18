@@ -9,6 +9,7 @@ import org.nutz.dao.entity.EntityField;
  * 通过 add 方法，建立一条名值对的链表
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author Wendal(wendal1985@gmail.com)
  */
 public class Chain {
 
@@ -22,14 +23,17 @@ public class Chain {
 	 * @return 链头
 	 */
 	public static Chain make(String name, Object value) {
-		Chain head = new Chain();
-		head.name = name;
-		head.value = value;
-		return head;
+		return new Chain(name,value,null,null);
 	}
 
-	private Chain() {
-		head = this;
+	private Chain(String name,Object value,Chain head,Chain next) {
+		this.name = name;
+		this.value = value;
+		if(head == null)
+			this.head = this;
+		else
+			this.head = head;
+		this.next = next;
 	}
 
 	private Chain head;
@@ -75,11 +79,7 @@ public class Chain {
 	 */
 	public Chain add(String name, Object value) {
 		Chain oldNext = next;
-		next = new Chain();
-		next.name = name;
-		next.value = value;
-		next.head = head;
-		next.next = oldNext;
+		next = new Chain(name,value,this.head,oldNext);
 		return next;
 	}
 
