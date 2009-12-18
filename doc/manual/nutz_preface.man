@@ -82,7 +82,7 @@ Nutz 的未来
 	 * 你可以随时 [http://code.google.com/p/nutz/issues/entry 提交你发现的问题]
 	 * 在 [http://groups.google.com/group/nutzam?hl=zh-CN 讨论组] 分享你的使用心得
 	 * 任何人 用 任何方式 => 指出 Nutz 的缺陷，都是被欢迎的
-	 * 如果你想成为 Nutz Committers 中的一员，请 [for_committer.man 阅读这里]
+	 * 如果你想成为 Nutz Committers 中的一员，请 [committer/coding.man 阅读这里]
 --------------------------------------------------------------------------------------------------------
 我使用的时候如果出现问题怎么办？
 	

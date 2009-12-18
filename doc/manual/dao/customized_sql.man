@@ -129,7 +129,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		 # 你的回调函数的返回值会存放在 Sql 对象中
 		 # 调用 sql.getResult() 可以直接返回这个对象
 		 # sql.getList() 以及 sql.getObject() 方法会泛型安全的替你转型
-			 * 如果你的对象类型符合要求，则直接返回，否则会通过 [../castors/customize_your_castors.html Nutz.Castors] 替你转换。
+			 * 如果你的对象类型符合要求，则直接返回，否则会通过 [../lang/castors.man Nutz.Castors] 替你转换。
 			 * 对于 getList()，泛型参数用来描述集合内部元素的类型
 		 # sql.getInt() 会安全的替你将结果转成 int，如果它可以被转成 int 的话，以下是我能想到的列表：
 			 * 字符串
@@ -232,7 +232,7 @@ ComboSql （组合SQL） 的用处
 ------------------------------------------------------------------------------------------------
 条件变量占位符
 	我认为 Nutz.Dao 比较吸引人的一个函数就是 Dao.query，它允许你用多种方法传入一个条件
-	关于复杂的条件，请参看 [condition.html 复杂的SQL条件]
+	关于复杂的条件，请参看 [condition.man 复杂的SQL条件]
 	
 	在 Sql 对象中，我在接口里也设计了一个方法 :
 	{{{<JAVA>
@@ -280,7 +280,7 @@ ComboSql （组合SQL） 的用处
 	---------------------------------------------------------------------------------------------------
 	使用 `Entity<?>`
 		Nutz.Dao 会将你的 POJO 预先处理，处理的结果就是 `Entity<?>`。你可以通过 Dao 接口的 getEntity() 方法
-		获取。你通过[entity_annotations.html 实体注解]配置的信息，尤其是 @Column 中配置的数据库字段的名字
+		获取。你通过[annotations.man 实体注解]配置的信息，尤其是 @Column 中配置的数据库字段的名字
 		（当数据库字段名同 Java 字段名不同时）尤其有用。Condition 接口的 `toString(Entity<?>)` 方法是你唯一
 		要实现的方法，如果你将一个 Condition 赋个了 Sql 对象，在生成真正 SQL 语句的时候，这个 `Entity<?>`
 		又要从那里来呢？答案是，(*你要预先设置}。
@@ -337,7 +337,7 @@ ComboSql （组合SQL） 的用处
 			}
 			}}}
 			上面的例子你不仅会发现我设置了一个查询实体的回调，还会发现我也设置了一个Pager对象，是的，直接使用自定义的 SQL 同
-			样可以支持[query_by_page.html 翻页查询]
+			样可以支持[pager.man 翻页查询]
 			
 			那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)
 
