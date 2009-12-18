@@ -7,6 +7,7 @@ import java.util.List;
 import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.plugin.Plugin;
 
 /**
  * <b>本实现基于ASM 3.2</b>
@@ -25,12 +26,16 @@ import org.nutz.aop.asm.org.asm.Opcodes;
  * @see org.nutz.aop.AbstractClassAgent
  * @see org.nutz.aop.AbstractMethodInterceptor
  */
-public class AsmClassAgent extends AbstractClassAgent {
+public class AsmClassAgent extends AbstractClassAgent implements Plugin{
 
 	private static GeneratorClassLoader generatorClassLoader = new GeneratorClassLoader();
 
 	public static void resetClassLoader() {
 		generatorClassLoader = new GeneratorClassLoader();
+	}
+	
+	public boolean canWork() {
+		return true;
 	}
 
 	public static final int CLASS_LEVEL = Opcodes.V1_6;
