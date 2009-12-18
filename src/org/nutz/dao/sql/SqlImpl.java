@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
+import org.nutz.dao.Daos;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
@@ -52,40 +53,57 @@ public class SqlImpl implements Sql {
 					Pager pager = context.getPager();
 					int rsType = null == pager ? ResultSet.TYPE_FORWARD_ONLY : pager
 							.getResultSetType();
+					PreparedStatement stat = null;
+					ResultSet rs = null;
+					try {
+						// Prepare statment for query
+						stat = conn.prepareStatement(sql.toPreparedStatementString(), rsType,
+								ResultSet.CONCUR_READ_ONLY);
 
-					// Prepare statment for query
-					PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString(),
-							rsType, ResultSet.CONCUR_READ_ONLY);
+						// Put all parameters to PreparedStatement and get
+						// ResultSet
+						adapter.process(stat, sql, entity);
+						rs = stat.executeQuery();
 
-					// Put all parameters to PreparedStatement and get ResultSet
-					adapter.process(stat, sql, entity);
-					ResultSet rs = stat.executeQuery();
-
-					// Get result from ResultSet by callback
-					context.setResult(callback.invoke(conn, rs, this));
-
+						// Get result from ResultSet by callback
+						context.setResult(callback.invoke(conn, rs, this));
+					}
 					// Closing...
-					rs.close();
-					stat.close();
+					finally {
+						Daos.safeClose(stat, rs);
+					}
 				}
 			}
 			// UPDATE | INSERT | DELETE | TRUNCATE ...
 			else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
-				PreparedStatement stat = conn.prepareStatement(sql.toPreparedStatementString());
-				adapter.process(stat, sql, entity);
-				stat.execute();
-				updateCount = stat.getUpdateCount();
-				stat.close();
-				if (null != callback)
-					context.setResult(callback.invoke(conn, null, this));
+				PreparedStatement stat = null;
+				try {
+					stat = conn.prepareStatement(sql.toPreparedStatementString());
+					adapter.process(stat, sql, entity);
+					stat.execute();
+					updateCount = stat.getUpdateCount();
+					stat.close();
+					if (null != callback)
+						context.setResult(callback.invoke(conn, null, this));
+				}
+				// Closing...
+				finally {
+					Daos.safeClose(stat, null);
+				}
 			}
 			// CREATE | DROP
 			else {
-				Statement stat = conn.createStatement();
-				stat.execute(sql.toString());
-				stat.close();
-				if (null != callback)
-					context.setResult(callback.invoke(conn, null, this));
+				Statement stat = null;
+				try {
+					stat = conn.createStatement();
+					stat.execute(sql.toString());
+					stat.close();
+					if (null != callback)
+						context.setResult(callback.invoke(conn, null, this));
+				}// Closing...
+				finally {
+					Daos.safeClose(stat, null);
+				}
 			}
 		}
 		// If any SQLException happend, throw out the SQL string
