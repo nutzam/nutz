@@ -89,14 +89,21 @@ public class Daos {
 	}
 
 	public static void safeClose(Statement stat, ResultSet rs) {
-		if (null != rs)
-			try {
-				rs.close();
-			} catch (Throwable e) {}
+		safeClose(rs);
+		safeClose(stat);
+	}
 
+	public static void safeClose(Statement stat) {
 		if (null != stat)
 			try {
 				stat.close();
+			} catch (Throwable e) {}
+	}
+
+	public static void safeClose(ResultSet rs) {
+		if (null != rs)
+			try {
+				rs.close();
 			} catch (Throwable e) {}
 	}
 

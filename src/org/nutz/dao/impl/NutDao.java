@@ -763,14 +763,7 @@ public class NutDao implements Dao {
 					if (rs.next())
 						ee[0] = true;
 				} catch (SQLException e) {} finally {
-					try {
-						if (null != rs)
-							rs.close();
-					} catch (SQLException e) {}
-					try {
-						if (null != stat)
-							stat.close();
-					} catch (SQLException e) {}
+					Daos.safeClose(stat, rs);
 				}
 			}
 		});
