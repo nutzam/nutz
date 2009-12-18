@@ -10,6 +10,7 @@
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="dao_get_start.man"/>
+		<doc path="annotations.man"/>
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
 		<doc path="condition.man"/>

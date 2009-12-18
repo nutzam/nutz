@@ -1,0 +1,25 @@
+#title: 注解列表
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+以下的列表，是 Nutz.Dao 支持的全部注解，如果你想深入了解每个注解的意义，你可以
+ * 请参看相关的 JDoc
+ * 直接浏览源代码: [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/dao/entity/annotation]
+ * 用 SVN 工具检出源代码: [http://code.google.com/p/nutz/source/checkout]
+ * 下载源代码: [http://code.google.com/p/nutz/downloads/list]
+
+|| {#888;@Column}	|| 字段			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Column} ||
+|| {#888;@Default}	|| 默认值		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Default} ||
+|| {#888;@Id}		|| 数字主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Id} ||
+|| {#888;@Name}		|| 字符主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Name} ||
+|| {#888;@PK}		|| 复合主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.PK} ||
+|| {#888;@Many}		|| 一对多映射	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Many} ||
+|| {#888;@ManyMany}	|| 多对多映射	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.ManyMany} ||
+|| {#888;@One}		|| 一对一映射	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.One} ||
+|| {#888;@Prev}		|| 自动设置		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Prev} ||
+|| {#888;@Next}		|| 自动获取		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Next} ||
+|| {#888;@Readonly}	|| 只读声明		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Readonly} ||
+|| {#888;@SQL}		|| 自定义SQL	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.SQL} ||
+|| {#888;@Table}	|| 表名			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Table} ||
+|| {#888;@View}		|| 视图名		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.View} ||

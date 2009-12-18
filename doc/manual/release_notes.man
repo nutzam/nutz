@@ -29,7 +29,13 @@
 	
 	质量
 		 # 可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
-		 # 在 MySql / Oracle / Postgresql / SqlServer2005 / SqlServer2000 工作正常
+		 # Nutz.Dao 经测试在如下数据库上可以工作正常
+			 * H2
+			 * MySql
+			 * Oracle
+			 * Postgresql
+			 * SqlServer2005
+			 * SqlServer2000
 	
 	改进
 		 # 重新实现Log模块，支持 Log4j, Jdk Log
@@ -58,22 +64,22 @@
 				@[http://xiaofeng.javaeye.com hilliate]
 	
 	贡献者名单
-		|| 贡献者 									|| 问题 || 博客 || 测试 || 代码 || Demo || 文档 ||
-		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  X	||  -	||  X	||  -	||
-		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  -	||
-		|| bird.wyatt								||  X	||  -	||  X	||  -	||  X	||  -	||
-		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  -	||  X	||
-		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  X	||  -	||  -	||  X	||
-		|| ming300									||  X	||  -	||  X	||  -	||  -	||  -	||
-		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| sj										||  X	||  -	||  X	||  -	||  -	||  -	||
-		|| sunonfire								||  -	||  -	||  X	||  X	||  -	||  X	||
-		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  X	||  -	||  -	||
-		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
-		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 ||
+		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||
+		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||
+		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||
+		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||
+		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||
+		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||
+		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||
+		|| ming300									||  X	||  -	||  -	||  -	||  -	||
+		|| satellite168								||  X	||  -	||  -	||  -	||  -	||
+		|| sj										||  X	||  -	||  -	||  -	||  -	||
+		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||
+		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||
+		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||
+		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||
+		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||
 		
 	下一版目标
 		将主要集中在
