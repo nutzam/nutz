@@ -32,7 +32,7 @@ public abstract class Strings {
 	/**
 	 * 复制字符
 	 * 
-	 * @param cs
+	 * @param c
 	 *            字符
 	 * @param num
 	 *            数量
@@ -200,8 +200,8 @@ public abstract class Strings {
 	/**
 	 * 将一个整数转换成最小长度为某一固定数值的十进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -213,8 +213,8 @@ public abstract class Strings {
 	/**
 	 * 将一个整数转换成最小长度为某一固定数值的十六进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -226,8 +226,8 @@ public abstract class Strings {
 	/**
 	 * 将一个整数转换成最小长度为某一固定数值的二进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -235,12 +235,12 @@ public abstract class Strings {
 	public static String fillBinary(int d, int width) {
 		return Strings.alignRight(Integer.toBinaryString(d), width, '0');
 	}
-	
+
 	/**
 	 * 将一个整数转换成固定长度的十进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -252,8 +252,8 @@ public abstract class Strings {
 	/**
 	 * 将一个整数转换成固定长度的十六进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -265,8 +265,8 @@ public abstract class Strings {
 	/**
 	 * 将一个整数转换成固定长度的二进制形式字符串
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param d
+	 *            整数
 	 * @param width
 	 *            宽度
 	 * @return 新字符串
@@ -278,7 +278,7 @@ public abstract class Strings {
 	/**
 	 * 保证字符串为一固定长度。超过长度，切除，否则补字符。
 	 * 
-	 * @param cs
+	 * @param s
 	 *            字符串
 	 * @param width
 	 *            长度
@@ -291,7 +291,7 @@ public abstract class Strings {
 			return s;
 		if (s.length() < width)
 			return Strings.dup(c, width - s.length()) + s;
-		return s.substring(s.length()-width, s.length());
+		return s.substring(s.length() - width, s.length());
 	}
 
 	/**
@@ -343,7 +343,7 @@ public abstract class Strings {
 	 *            字符串
 	 * @param lc
 	 *            左字符
-	 * @param rr
+	 * @param rc
 	 *            右字符
 	 * @return 字符串是被左字符和右字符包裹 -- 忽略空白
 	 */

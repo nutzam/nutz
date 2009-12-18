@@ -50,9 +50,9 @@ public abstract class Maths {
 	 *            original integer
 	 * @param low
 	 *            the low bit position (inclusive), 0 base
-	 * @param hight
+	 * @param high
 	 *            the hight bit position (exclusive), 0 base
-	 * @return
+	 * @return new integer
 	 */
 	public static int extract(int bs, int low, int high) {
 		bs = bs >> low;

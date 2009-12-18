@@ -220,8 +220,6 @@ public abstract class Lang {
 	 * @param ele
 	 *            对象
 	 * @return true 包含 false 不包含
-	 * 
-	 * @see equals(Object,Object)
 	 */
 	public static <T> boolean contains(T[] array, T ele) {
 		if (null == array)
@@ -524,7 +522,7 @@ public abstract class Lang {
 	 *            开始元素的下标
 	 * @param len
 	 *            元素数量
-	 * @param objs
+	 * @param array
 	 *            数组
 	 * @return 拼合后的字符串
 	 */
@@ -975,7 +973,7 @@ public abstract class Lang {
 	 * </ul>
 	 * 
 	 * @param s
-	 * @return
+	 * @return 布尔值
 	 */
 	public static boolean parseBoolean(String s) {
 		if (null == s)

@@ -16,8 +16,10 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.Files;
 
 /**
- * @author wendal Chen
+ * 提供了获取资源的一些高级方法
  * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author Wendal(wendal1985@gmail.com)
  */
 public final class Resources {
 
@@ -27,9 +29,6 @@ public final class Resources {
 	 * 
 	 * @param baseClass
 	 * @return a class List
-	 * 
-	 * @author Wendal Chen
-	 * @author zozoh
 	 */
 	public static List<Class<?>> scanClass(Class<?> baseClass) {
 		File dir = getBasePath(baseClass);
@@ -176,8 +175,8 @@ public final class Resources {
 			return fpath.substring(posBegin, posEnd);
 		return null;
 	}
-	
-	private static String decodePath(String path){
+
+	private static String decodePath(String path) {
 		try {
 			return URLDecoder.decode(path, Charset.defaultCharset().name());
 		} catch (UnsupportedEncodingException e) {}

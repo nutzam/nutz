@@ -52,7 +52,7 @@ public interface Dao {
 	 * @param classOfT
 	 * @param rs
 	 * @param fm
-	 * @return
+	 * @return 对象
 	 */
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
 
@@ -364,7 +364,6 @@ public interface Dao {
 	 *            数据对象
 	 * @param regex
 	 *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被删除
-	 * @return 数据对象本身
 	 * 
 	 * @see org.nutz.dao.entity.annotation.One
 	 * @see org.nutz.dao.entity.annotation.Many
@@ -385,7 +384,6 @@ public interface Dao {
 	 *            数据对象
 	 * @param regex
 	 *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被删除
-	 * @return 数据对象本身
 	 * 
 	 * @see org.nutz.dao.entity.annotation.One
 	 * @see org.nutz.dao.entity.annotation.Many

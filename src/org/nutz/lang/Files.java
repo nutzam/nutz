@@ -46,7 +46,7 @@ public abstract class Files {
 	/**
 	 * 读取 UTF-8 文件全部内容
 	 * 
-	 * @param path
+	 * @param f
 	 *            文件
 	 * @return 文件内容
 	 */
@@ -167,7 +167,7 @@ public abstract class Files {
 	/**
 	 * 获取文件主名。 即去掉后缀的名称
 	 * 
-	 * @param path
+	 * @param f
 	 *            文件
 	 * @return 文件主名
 	 */
@@ -178,7 +178,7 @@ public abstract class Files {
 	/**
 	 * 获取文件后缀名，不包括 '.'，如 'abc.gif','，则返回 'gif'
 	 * 
-	 * @param path
+	 * @param f
 	 *            文件
 	 * @return 文件后缀名
 	 */

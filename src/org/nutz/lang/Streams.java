@@ -152,7 +152,7 @@ public abstract class Streams {
 	/**
 	 * 根据一个文件路径，以及指定的编码方式，建立一个 文本输入流
 	 * 
-	 * @param file
+	 * @param path
 	 *            文件路径
 	 * @param encoding
 	 *            文本文件编码方式
@@ -235,7 +235,7 @@ public abstract class Streams {
 	/**
 	 * 根据一个文件，以及指定的编码方式，建立一个 文本输出流
 	 * 
-	 * @param path
+	 * @param file
 	 *            文件
 	 * @param encoding
 	 *            文本文件编码方式

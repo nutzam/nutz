@@ -40,11 +40,14 @@ public interface HttpAdaptor {
 	/**
 	 * 你的适配器需要根据传入的 request 和 response 生成函数的调用参数
 	 * 
-	 * @param request
-	 * @param response
-	 * @Param pathArg 字符串数组，路径参数。
+	 * @param req
+	 *            请求对象
+	 * @param resp
+	 *            响应对象
+	 * @param pathArgs
+	 *            字符串数组，路径参数。
 	 * @return 调用参数数组
 	 */
-	Object[] adapt(HttpServletRequest request, HttpServletResponse response, String[] pathArgs);
+	Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs);
 
 }

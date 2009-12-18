@@ -7,6 +7,33 @@ package org.nutz.dao;
  */
 public enum DB {
 
-	DB2, PSQL, ORACLE, SQLSERVER, MYSQL, H2, OTHER
+	/**
+	 * IBM DB2
+	 */
+	DB2,
+	/**
+	 * Postgresql
+	 */
+	PSQL,
+	/**
+	 * Oracle
+	 */
+	ORACLE,
+	/**
+	 * MS-SqlServer
+	 */
+	SQLSERVER,
+	/**
+	 * MySql
+	 */
+	MYSQL,
+	/**
+	 * H2Database
+	 */
+	H2,
+	/**
+	 * 其他数据库
+	 */
+	OTHER
 
 }

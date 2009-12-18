@@ -64,7 +64,7 @@ public class SqlLiteral {
 	 * </pre>
 	 * 
 	 * @param str
-	 * @return
+	 * @return SqlLiteral
 	 */
 	public SqlLiteral valueOf(String str) {
 		reset();

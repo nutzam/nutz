@@ -48,7 +48,7 @@ public abstract class FieldQuerys {
 	/**
 	 * 根据 SQL 语句，以及实体字段，为一个字段创建插入前后的二次查询。
 	 * 
-	 * @param sqls
+	 * @param sql
 	 *            SQL 语句
 	 * @param ef
 	 *            实体字段

@@ -42,12 +42,6 @@ import org.nutz.lang.Strings;
  */
 public class Cnd implements OrderBy, ExpGroup {
 
-	public void abc() {
-		Cnd.where("name", "LIKE", "B%").asc("name");
-		Cnd.where("id", ">", 34).and("name", "LIKE", "T%").asc("name");
-		Cnd.orderBy().desc("id");
-	}
-
 	/*------------------------------------------------------------------*/
 	public static Condition format(String format, Object... args) {
 		return new SimpleCondition(format, args);

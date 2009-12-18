@@ -20,7 +20,13 @@ public class NameInjector implements ParamInjector {
 	}
 
 	/**
-	 * @Param refer 这个参考字段，如果有值，表示是路径参数的值，那么它比 request 里的参数优先
+	 * @param req
+	 *            请求对象
+	 * @param resp
+	 *            响应对象
+	 * @param refer
+	 *            这个参考字段，如果有值，表示是路径参数的值，那么它比 request 里的参数优先
+	 * @return 注入值
 	 */
 	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null != refer)

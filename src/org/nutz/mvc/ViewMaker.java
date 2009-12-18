@@ -31,7 +31,8 @@ public interface ViewMaker {
 	 *            视图的类型
 	 * @param value
 	 *            视图的值
-	 * @return
+	 * 
+	 * @return 产生的视图对象
 	 */
 	View make(Ioc ioc, String type, String value);
 

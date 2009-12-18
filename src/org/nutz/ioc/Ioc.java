@@ -12,8 +12,8 @@ public interface Ioc {
 	 * 
 	 * @param <T>
 	 * @param type
-	 *            对象的类型，如果为 null，在对象的注入配置中，比如声明对象的类型
-	 *            <br>如果不为null对象注入配置的类型优先
+	 *            对象的类型，如果为 null，在对象的注入配置中，比如声明对象的类型 <br>
+	 *            如果不为null对象注入配置的类型优先
 	 * @param name
 	 *            对象的名称
 	 * @return 对象本身
@@ -21,14 +21,12 @@ public interface Ioc {
 	<T> T get(Class<T> type, String name) throws IocException;
 
 	/**
-	 * 容器是否存在某一特定对象
-	 * 
 	 * @param name
-	 * @return
+	 *            对象名
+	 * @return 是否存在某一特定对象
 	 */
 	boolean has(String name) throws IocException;
-	
-	
+
 	/**
 	 * @return 所有在容器中定义了的对象名称列表。
 	 */

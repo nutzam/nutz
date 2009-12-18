@@ -63,23 +63,32 @@
 		 * 《[http://xiaofeng.javaeye.com/blog/549410 不用写代码 你也能为开源作出贡献]》\
 				@[http://xiaofeng.javaeye.com hilliate]
 	
-	贡献者名单
-		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 ||
-		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||
-		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||
-		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||
-		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||
-		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||
-		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||
-		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||
-		|| ming300									||  X	||  -	||  -	||  -	||  -	||
-		|| satellite168								||  X	||  -	||  -	||  -	||  -	||
-		|| sj										||  X	||  -	||  -	||  -	||  -	||
-		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||
-		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||
-		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||
-		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||
-		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||
+	主要贡献者名单
+		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 || 白盒 ||
+		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||  X	||
+		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  X	||
+		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||  X	||
+		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  X	||
+		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||  -	||
+		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||  X	||
+		|| ming300									||  X	||  -	||  -	||  -	||  -	||  X	||
+		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  X	||
+		|| sj										||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||  X	||
+		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||  X	||
+		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
+		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||  -	||
+		
+		另外，非常感谢
+		[http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
+		以及
+		[https://groups.google.com/group/nutzam?hl=zh-CN Nutzam 讨论区]
+		的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 {*产生着潜移默化的影响}。
+		我们也正在不断的努力，希望每一个新版本都可以让大家获得更好的编码体验。
+		
+		另，由于众所周知的原因，建议大家通过[https://groups.google.com/group/nutzam?hl=zh-CN 通过 https 方式访问讨论区]
 		
 	下一版目标
 		将主要集中在

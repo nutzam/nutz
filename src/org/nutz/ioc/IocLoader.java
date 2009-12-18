@@ -13,7 +13,7 @@ public interface IocLoader {
 	 * 每次这个函数被调用，则要构造一个新的 IocObject
 	 * 
 	 * @param name
-	 * @return
+	 * @return IocObject
 	 * @throws ObjectLoadException
 	 */
 	IocObject load(String name) throws ObjectLoadException;

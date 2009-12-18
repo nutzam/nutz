@@ -127,7 +127,7 @@ public class Mirror<T> {
 	 * 
 	 * @param classOfT
 	 * @param typeExtractor
-	 * @return
+	 * @return Mirror
 	 * @see org.nutz.lang.TypeExtractor
 	 */
 	public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
@@ -143,7 +143,7 @@ public class Mirror<T> {
 	 * 设置自己的类型提炼逻辑
 	 * 
 	 * @param typeExtractor
-	 * @return
+	 * @return Mirror
 	 * @see org.nutz.lang.TypeExtractor
 	 */
 	public Mirror<T> setTypeExtractor(TypeExtractor typeExtractor) {
@@ -161,7 +161,7 @@ public class Mirror<T> {
 	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果 没有，则查找 abc()。
 	 * 
 	 * @param fieldName
-	 * @return
+	 * @return 方法
 	 * @throws NoSuchMethodException
 	 *             没有找到 Getter
 	 */
@@ -192,7 +192,7 @@ public class Mirror<T> {
 	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果 没有，则查找 abc()。
 	 * 
 	 * @param field
-	 * @return
+	 * @return 方法
 	 * @throws NoSuchMethodException
 	 *             没有找到 Getter
 	 */
@@ -220,7 +220,7 @@ public class Mirror<T> {
 	 * 
 	 * @param field
 	 *            字段
-	 * @return
+	 * @return 方法
 	 * @throws NoSuchMethodException
 	 *             没找到 Setter
 	 */
@@ -253,7 +253,7 @@ public class Mirror<T> {
 	 *            字段名
 	 * @param paramType
 	 *            字段类型
-	 * @return
+	 * @return 方法
 	 * @throws NoSuchMethodException
 	 *             没找到 Setter
 	 */
@@ -350,7 +350,7 @@ public class Mirror<T> {
 	 * 
 	 * @param name
 	 *            字段名
-	 * @return
+	 * @return 字段
 	 * @throws NoSuchFieldException
 	 */
 	public Field getField(String name) throws NoSuchFieldException {
@@ -374,7 +374,7 @@ public class Mirror<T> {
 	 * 
 	 * @param ann
 	 *            注解
-	 * @return
+	 * @return 字段
 	 * @throws NoSuchFieldException
 	 */
 	public <AT extends Annotation> Field getField(Class<AT> ann) throws NoSuchFieldException {
@@ -477,7 +477,6 @@ public class Mirror<T> {
 	 * 相当于 getAllDeclaredMethods(Object.class)
 	 * 
 	 * @return 方法数组
-	 * @see Method[] getAllDeclaredMethods(Class<?> top)
 	 */
 	public Method[] getAllDeclaredMethodsWithoutTop() {
 		return getAllDeclaredMethods(Object.class);
@@ -1094,8 +1093,8 @@ public class Mirror<T> {
 
 	/**
 	 * @param type
-	 *            当前对象是否为一个对象的外覆类
-	 * @return
+	 *            类型
+	 * @return 否为一个对象的外覆类
 	 */
 	public boolean isWrpperOf(Class<?> type) {
 		try {

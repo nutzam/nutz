@@ -80,8 +80,13 @@ public interface Sql {
 	void execute(Connection conn) throws SQLException;
 
 	/**
-	 * @return 执行结果。由你设置的 callback 生成
-	 * @see org.nutz.dao.Sql.setCallback
+	 * 你可以通过 setCallback 函数为本 Sql设置一个回调。 在回调中，你可以返回一个对象。这个对象会存储在本 Sql中。 当本 Sql
+	 * 执行完毕，你可以通过这个函数获得回调函数生成的返回。
+	 * <p>
+	 * 一般的情况，回调函数是用来从 ResultSet 生成对象的。即，如果 本 Sql 不是 SELECT XXXX， 一般不会被设置回调
+	 * 
+	 * @return 执行结果。
+	 * 
 	 * @see org.nutz.dao.sql.SqlCallback
 	 */
 	Object getResult();

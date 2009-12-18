@@ -8,7 +8,7 @@ import org.nutz.ioc.meta.IocValue;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * 
- * @see org.nuzt.ioc.Ioc2
+ * @see org.nutz.ioc.Ioc2
  */
 public interface ValueProxyMaker {
 

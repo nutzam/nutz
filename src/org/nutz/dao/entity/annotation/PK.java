@@ -8,6 +8,18 @@ import java.lang.annotation.Target;
 /**
  * 声明了一个 POJO 的主键。
  * <p>
+ * 本注解声明在某一个 POJO 类上，例如：
+ * 
+ * <pre>
+ * &#064;Table("t_abc")
+ * &#064;PK({"id", "type"})
+ * public class Abc{
+ * ...
+ * </pre>
+ * 
+ * 其中， "id" 和 "type" 必须是这个 POJO 的 Java 字段名
+ * 
+ * <p>
  * 这个注解主要应用在复合主键的情况，如果一个 POJO 是复合主键的话，你需要通过
  * <ul>
  * <li>fetchx(Class<?>,Object ...) 来获取一个对象

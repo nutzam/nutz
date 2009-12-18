@@ -12,5 +12,16 @@ package org.nutz.lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public enum MatchType {
-	YES, LACK, NO
+	/**
+	 * 匹配
+	 */
+	YES,
+	/**
+	 * 参数不足
+	 */
+	LACK,
+	/**
+	 * 不匹配
+	 */
+	NO
 }
