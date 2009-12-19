@@ -1,6 +1,8 @@
 package org.nutz.aop.asm;
 
-import static junit.framework.TestCase.*;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -8,8 +10,6 @@ import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
-import org.nutz.aop.asm.test.Aop4;
-import org.nutz.aop.asm.test.Aop5;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
 import org.nutz.lang.Mirror;
 
@@ -136,15 +136,5 @@ public class ClassXTest{
 		T obj = mirror.born("Nutz");
 		System.out.println(obj.getClass().getSuperclass());
 		return obj;
-	}
-
-	@Test(expected=RuntimeException.class)
-	public void testFinalClass(){
-		classAgent.define(Aop4.class);
-	}
-	
-	@Test(expected=RuntimeException.class)
-	public void testAbstractClass(){
-		classAgent.define(Aop5.class);
 	}
 }

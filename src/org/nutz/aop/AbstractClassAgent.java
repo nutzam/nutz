@@ -6,6 +6,8 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.ioc.Ioc;
+import org.nutz.ioc.aop.Aop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -34,7 +36,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		if (checkClass(klass) == false)
 			return klass;
 		Pair2[] pair2s = findMatchedMethod(klass);
-		if (pair2s.length == 0)
+		if (pair2s == null)
 			return klass;
 		String newName = klass.getName() + CLASSNAME_SUFFIX;
 		Class<T> newClass = try2Load(newName);
@@ -43,6 +45,12 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		Constructor<T> [] constructors = getEffectiveConstructors(klass);
 		newClass = generate(pair2s, newName, klass,constructors);
 		return newClass;
+	}
+	
+	protected Ioc ioc;
+	
+	public void setIoc(Ioc ioc) {
+		this.ioc = ioc;
 	}
 	
 	protected abstract <T> Class<T> generate(Pair2 [] pair2s,String newName,Class<T> klass,Constructor<T> [] constructors) ;
@@ -73,7 +81,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 				|| klass.isMemberClass())
 			throw Lang.makeThrow("需要拦截的%s不是一个顶层类!创建失败!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
-			throw Lang.makeThrow("需要拦截的类:%s是final或abstract的!创建失败!", klass_name);
+			return false;
 		return true;
 	}
 	
@@ -103,33 +111,45 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			if (mod == 0 || Modifier.isStatic(mod) || Modifier.isPrivate(mod))
 				continue;
 			ArrayList<MethodInterceptor> mls = new ArrayList<MethodInterceptor>();
-			for (Pair p : pairs)
-				if (p.matcher.match(m))
-					mls.add(p.listener);
-			if (mls.size() > 0) {
-				p2.add(new Pair2(m, mls));
+			Aop aop = m.getAnnotation(Aop.class);
+			if(ioc != null &&aop != null){
+				String [] values = aop.value();
+				if(values.length > 0){
+					for (String methodInterceptorName : values){
+						MethodInterceptor interceptor = ioc.get(MethodInterceptor.class, methodInterceptorName);
+						if(interceptor != null && ! mls.contains(interceptor))
+							mls.add(interceptor);
+					}
+				}
 			}
+			for (Pair pair : pairs)
+				if(pair.matcher.match(m) && ! mls.contains(pair.interceptor))
+					mls.add(pair.interceptor);
+			if(mls.size() > 0 )
+				p2.add(new Pair2(m,mls));
 		}
-		return p2.toArray(new Pair2[p2.size()]);
+		if(p2.size() > 0)
+			return p2.toArray(new Pair2[p2.size()]);
+		return null;
 	}
-
+	
 	protected static class Pair {
-		Pair(MethodMatcher matcher, MethodInterceptor listener) {
+		Pair(MethodMatcher matcher, MethodInterceptor interceptor) {
 			this.matcher = matcher;
-			this.listener = listener;
+			this.interceptor = interceptor;
 		}
 
 		MethodMatcher matcher;
-		MethodInterceptor listener;
+		MethodInterceptor interceptor;
 	}
 
 	protected static class Pair2 {
-		Pair2(Method method, ArrayList<MethodInterceptor> listeners) {
+		Pair2(Method method, ArrayList<MethodInterceptor> interceptors) {
 			this.method = method;
-			this.listeners = listeners;
+			this.interceptors = interceptors;
 		}
 
 		public Method method;
-		public ArrayList<MethodInterceptor> listeners;
+		public ArrayList<MethodInterceptor> interceptors;
 	}
 }

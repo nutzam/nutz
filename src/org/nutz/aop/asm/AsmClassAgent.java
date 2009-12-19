@@ -53,7 +53,7 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin{
 		for (int i = 0; i < pair2s.length; i++) {
 			Pair2 pair2 = pair2s[i];
 			methodArray[i] = pair2.method;
-			methodInterceptorList[i] = pair2.listeners;
+			methodInterceptorList[i] = pair2.interceptors;
 		}
 		Class<T> newClass = (Class<T>) generatorClassLoader.defineClassFromClassFile(newName,
 				ClassX.enhandClass(klass, newName, methodArray, constructors));
