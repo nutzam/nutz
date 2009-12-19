@@ -1,7 +1,11 @@
 package org.nutz.ioc.aop.impl;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+
 import org.nutz.aop.ClassAgent;
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Logs;
@@ -9,7 +13,7 @@ import org.nutz.plugin.NoPluginCanWorkException;
 import org.nutz.plugin.SimplePluginManager;
 
 /**
- * TODO: 这个类还需要吗??
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
@@ -27,8 +31,25 @@ public class DefaultMirrorFactory implements MirrorFactory {
 	}
 
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		if (agent != null)
+		if (agent != null && needAop(type))
 			return Mirror.me(agent.define(type));
 		return Mirror.me(type);
+	}
+	
+	private boolean needAop(Class<?> klass){
+		if (klass.isInterface() || klass.isArray() 
+				|| klass.isEnum() || klass.isPrimitive() 
+				|| klass.isMemberClass())
+			return false;
+		for (Method m : klass.getDeclaredMethods())
+			if(m.getAnnotation(Aop.class) != null ){
+				int modify = m.getModifiers();
+				if ( ! (Modifier.isPrivate(modify)
+						|| Modifier.isStatic(modify)
+						|| Modifier.isAbstract(modify)
+						|| Modifier.isFinal(modify)))
+					return true;
+			}
+		return false;
 	}
 }
