@@ -108,7 +108,8 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		List<Pair2> p2 = new ArrayList<Pair2>();
 		for (Method m : all) {
 			int mod = m.getModifiers();
-			if (mod == 0 || Modifier.isStatic(mod) || Modifier.isPrivate(mod))
+			if (Modifier.isStatic(mod) || Modifier.isPrivate(mod) || Modifier.isAbstract(mod) 
+					|| Modifier.isFinal(mod))
 				continue;
 			ArrayList<MethodInterceptor> mls = new ArrayList<MethodInterceptor>();
 			Aop aop = m.getAnnotation(Aop.class);
