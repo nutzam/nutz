@@ -2,7 +2,7 @@
 <doc title="Nutz 框架使用发者手册" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
 	<doc path="nutz_release_notes.man"/>
-	<doc path="committer"  title="成为代码提交者">
+	<doc path="committer"  title="关于源码">
 		<doc path="compile.man"/>
 		<doc path="packages.man"/>
 		<doc path="version_naming.man"/>
