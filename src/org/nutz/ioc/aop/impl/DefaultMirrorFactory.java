@@ -1,6 +1,7 @@
 package org.nutz.ioc.aop.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -40,8 +41,14 @@ public class DefaultMirrorFactory implements MirrorFactory {
 	private <T> List<Method> getAopMethod(Mirror<T> mirror) {
 		List<Method> aops = new LinkedList<Method>();
 		for (Method m : mirror.getMethods())
-			if (null != m.getAnnotation(Aop.class))
-				aops.add(m);
+			if (null != m.getAnnotation(Aop.class)){
+				int modify = m.getModifiers();
+				if(! Modifier.isAbstract(modify))
+					if(! Modifier.isFinal(modify))
+						if(! Modifier.isPrivate(modify))
+							if(! Modifier.isStatic(modify))
+								aops.add(m);
+			}
 		return aops;
 	}
 
@@ -54,7 +61,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 			MethodMatcher mm = new SimpleMethodMatcher(m);
 			for (String nm : m.getAnnotation(Aop.class).value())
 					agent.addListener(mm, ioc.get(MethodInterceptor.class, nm));
-			}
+		}
 		return Mirror.me(agent.define(type));
 	}
 }
