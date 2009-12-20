@@ -287,11 +287,14 @@ public abstract class Strings {
 	 * @return 修饰后的字符串
 	 */
 	public static String cutRight(String s, int width, char c) {
-		if (s.length() == width)
+		if(null==s)
+			return null;
+		int len = s.length();
+		if (len == width)
 			return s;
-		if (s.length() < width)
-			return Strings.dup(c, width - s.length()) + s;
-		return s.substring(s.length() - width, s.length());
+		if (len < width)
+			return Strings.dup(c, width - len) + s;
+		return s.substring(len - width, len);
 	}
 
 	/**
@@ -308,10 +311,11 @@ public abstract class Strings {
 	public static String alignRight(CharSequence cs, int width, char c) {
 		if (null == cs)
 			return null;
-		if (cs.length() >= width)
+		int len = cs.length();
+		if (len >= width)
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
-		sb.append(dup(c, width - cs.length()));
+		sb.append(dup(c, width - len));
 		sb.append(cs);
 		return sb.toString();
 	}
@@ -350,13 +354,14 @@ public abstract class Strings {
 	public static boolean isQuoteByIgnoreBlank(CharSequence cs, char lc, char rc) {
 		if (null == cs)
 			return false;
-		if (cs.length() < 2)
+		int len = cs.length();
+		if (len < 2)
 			return false;
 		// check left
 		int l = 0;
-		int last = cs.length() - 1;
+		int last = len - 1;
 		int r = last;
-		for (; l < cs.length(); l++) {
+		for (; l < len; l++) {
 			char c = cs.charAt(l);
 			if (c > 0x20 || c < 0)
 				break;
