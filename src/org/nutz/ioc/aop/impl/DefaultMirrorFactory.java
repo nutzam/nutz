@@ -1,9 +1,13 @@
 package org.nutz.ioc.aop.impl;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.nutz.aop.ClassAgent;
+import org.nutz.aop.MethodInterceptor;
+import org.nutz.aop.MethodMatcher;
+import org.nutz.aop.SimpleMethodMatcher;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.aop.MirrorFactory;
@@ -18,38 +22,43 @@ import org.nutz.plugin.SimplePluginManager;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultMirrorFactory implements MirrorFactory {
-	
-	private ClassAgent agent;
 
-	public DefaultMirrorFactory(Ioc ioc) {
+	private Ioc ioc;
+	
+	private static ClassAgent agent;
+	
+	static{
 		try{
-			this.agent = new SimplePluginManager<ClassAgent>("org.nutz.aop.asm.AsmClassAgent").get();
-			this.agent.setIoc(ioc);
+			agent = new SimplePluginManager<ClassAgent>("org.nutz.aop.asm.AsmClassAgent").get();
 		}catch (NoPluginCanWorkException e) {
-			Logs.getLog(getClass()).warn("No Aop plugin can work. Aop is disable now.",e);
+			Logs.getLog(DefaultMirrorFactory.class).warn("No ClassAgent can work." +
+					"Aop will be disable!");
 		}
 	}
 
-	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		if (agent != null && needAop(type))
-			return Mirror.me(agent.define(type));
-		return Mirror.me(type);
+	public DefaultMirrorFactory(Ioc ioc) {
+		this.ioc = ioc;
 	}
-	
-	private boolean needAop(Class<?> klass){
-		if (klass.isInterface() || klass.isArray() 
-				|| klass.isEnum() || klass.isPrimitive() 
-				|| klass.isMemberClass())
-			return false;
-		for (Method m : klass.getDeclaredMethods())
-			if(m.getAnnotation(Aop.class) != null ){
-				int modify = m.getModifiers();
-				if ( ! (Modifier.isPrivate(modify)
-						|| Modifier.isStatic(modify)
-						|| Modifier.isAbstract(modify)
-						|| Modifier.isFinal(modify)))
-					return true;
+
+	private <T> List<Method> getAopMethod(Mirror<T> mirror) {
+		List<Method> aops = new LinkedList<Method>();
+		for (Method m : mirror.getMethods())
+			if (null != m.getAnnotation(Aop.class))
+				aops.add(m);
+		return aops;
+	}
+
+	public <T> Mirror<T> getMirror(Class<T> type, String name) {
+		Mirror<T> mirror = Mirror.me(type);
+		List<Method> aops = this.getAopMethod(mirror);
+		if (aops.size() > 0 && agent != null) {
+			for (Method m : aops) {
+				MethodMatcher mm = new SimpleMethodMatcher(m);
+				for (String nm : m.getAnnotation(Aop.class).value())
+					agent.addListener(mm, ioc.get(MethodInterceptor.class, nm));
 			}
-		return false;
+			return Mirror.me(agent.define(type));
+		}
+		return mirror;
 	}
 }

@@ -6,8 +6,6 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.nutz.ioc.Ioc;
-import org.nutz.ioc.aop.Aop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -36,7 +34,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		if (checkClass(klass) == false)
 			return klass;
 		Pair2[] pair2s = findMatchedMethod(klass);
-		if (pair2s == null)
+		if (pair2s.length == 0)
 			return klass;
 		String newName = klass.getName() + CLASSNAME_SUFFIX;
 		Class<T> newClass = try2Load(newName);
@@ -45,12 +43,6 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		Constructor<T> [] constructors = getEffectiveConstructors(klass);
 		newClass = generate(pair2s, newName, klass,constructors);
 		return newClass;
-	}
-	
-	protected Ioc ioc;
-	
-	public void setIoc(Ioc ioc) {
-		this.ioc = ioc;
 	}
 	
 	protected abstract <T> Class<T> generate(Pair2 [] pair2s,String newName,Class<T> klass,Constructor<T> [] constructors) ;
@@ -81,7 +73,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 				|| klass.isMemberClass())
 			throw Lang.makeThrow("需要拦截的%s不是一个顶层类!创建失败!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
-			return false;
+			throw Lang.makeThrow("需要拦截的类:%s是final或abstract的!创建失败!", klass_name);
 		return true;
 	}
 	
@@ -108,49 +100,36 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		List<Pair2> p2 = new ArrayList<Pair2>();
 		for (Method m : all) {
 			int mod = m.getModifiers();
-			if (Modifier.isStatic(mod) || Modifier.isPrivate(mod) || Modifier.isAbstract(mod) 
-					|| Modifier.isFinal(mod))
+			if (mod == 0 || Modifier.isStatic(mod) || Modifier.isPrivate(mod))
 				continue;
 			ArrayList<MethodInterceptor> mls = new ArrayList<MethodInterceptor>();
-			Aop aop = m.getAnnotation(Aop.class);
-			if(ioc != null &&aop != null){
-				String [] values = aop.value();
-				if(values.length > 0){
-					for (String methodInterceptorName : values){
-						MethodInterceptor interceptor = ioc.get(MethodInterceptor.class, methodInterceptorName);
-						if(interceptor != null && ! mls.contains(interceptor))
-							mls.add(interceptor);
-					}
-				}
+			for (Pair p : pairs)
+				if (p.matcher.match(m))
+					mls.add(p.listener);
+			if (mls.size() > 0) {
+				p2.add(new Pair2(m, mls));
 			}
-			for (Pair pair : pairs)
-				if(pair.matcher.match(m) && ! mls.contains(pair.interceptor))
-					mls.add(pair.interceptor);
-			if(mls.size() > 0 )
-				p2.add(new Pair2(m,mls));
 		}
-		if(p2.size() > 0)
-			return p2.toArray(new Pair2[p2.size()]);
-		return null;
+		return p2.toArray(new Pair2[p2.size()]);
 	}
-	
+
 	protected static class Pair {
-		Pair(MethodMatcher matcher, MethodInterceptor interceptor) {
+		Pair(MethodMatcher matcher, MethodInterceptor listener) {
 			this.matcher = matcher;
-			this.interceptor = interceptor;
+			this.listener = listener;
 		}
 
 		MethodMatcher matcher;
-		MethodInterceptor interceptor;
+		MethodInterceptor listener;
 	}
 
 	protected static class Pair2 {
-		Pair2(Method method, ArrayList<MethodInterceptor> interceptors) {
+		Pair2(Method method, ArrayList<MethodInterceptor> listeners) {
 			this.method = method;
-			this.interceptors = interceptors;
+			this.listeners = listeners;
 		}
 
 		public Method method;
-		public ArrayList<MethodInterceptor> interceptors;
+		public ArrayList<MethodInterceptor> listeners;
 	}
 }
