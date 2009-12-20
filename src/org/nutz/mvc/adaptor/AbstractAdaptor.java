@@ -13,6 +13,7 @@ import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.*;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.Param;
@@ -34,17 +35,18 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				if (anns[x] instanceof Param) {
 					param = (Param) anns[x];
 					break;
-				}else if(anns[x] instanceof Attr){
+				} else if (anns[x] instanceof Attr) {
 					attr = (Attr) anns[x];
 					break;
 				}
 			// If has @Attr
-			if(null!=attr){
+			if (null != attr) {
+				injs[i] = evalInjectorByAttrScope(attr);
 				continue;
 			}
-			
+
 			// And eval as default suport types
-			injs[i] = evalDefaultInjector(argTypes[i]);
+			injs[i] = evalInjectorByParamType(argTypes[i]);
 			if (null != injs[i])
 				continue;
 			// Eval by sub-classes
@@ -57,7 +59,17 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		}
 	}
 
-	private static ParamInjector evalDefaultInjector(Class<?> type) {
+	private static ParamInjector evalInjectorByAttrScope(Attr attr) {
+		if (attr.scope() == Scope.APP)
+			return new AppAttrInjector(attr.value());
+		if (attr.scope() == Scope.SESSION)
+			return new SessionAttrInjector(attr.value());
+		if (attr.scope() == Scope.REQUEST)
+			return new RequestAttrInjector(attr.value());
+		return new AllAttrInjector(attr.value());
+	}
+
+	private static ParamInjector evalInjectorByParamType(Class<?> type) {
 		// Request
 		if (ServletRequest.class.isAssignableFrom(type)) {
 			return new RequestInjector();
@@ -83,9 +95,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	protected abstract ParamInjector evalInjector(Class<?> type, Param param);
 
-	public Object[] adapt(	HttpServletRequest req,
-							HttpServletResponse resp,
-							String[] pathArgs) {
+	public Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
 		Object[] args = new Object[injs.length];
 		int i = fillPathArgs(req, resp, pathArgs, args);
 		// Inject another params

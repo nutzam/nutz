@@ -37,7 +37,7 @@ import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
 import org.nutz.mvc.view.UTF8JsonView;
 
-public class JspServletInvoker implements ActionInvoker {
+public class ActionInvokerImpl implements ActionInvoker {
 
 	private String moduleName;
 	private Class<?> moduleType;
@@ -50,7 +50,7 @@ public class JspServletInvoker implements ActionInvoker {
 	private String inputCharset;
 	private String outputCharset;
 
-	public JspServletInvoker(	Ioc ioc,
+	public ActionInvokerImpl(	Ioc ioc,
 								List<ViewMaker> makers,
 								Class<?> moduleType,
 								Method method,

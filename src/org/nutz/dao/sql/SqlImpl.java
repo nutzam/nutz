@@ -212,10 +212,9 @@ public class SqlImpl implements Sql {
 			if (((List) result).get(0).getClass().isAssignableFrom(classOfT))
 				return (List<T>) result;
 			ArrayList list = new ArrayList(((List) result).size());
-			int i = 0;
 			Iterator it = ((List) result).iterator();
 			while (it.hasNext()) {
-				list.set(i++, Castors.me().castTo(it.next(), classOfT));
+				list.add(Castors.me().castTo(it.next(), classOfT));
 			}
 			return list;
 		}

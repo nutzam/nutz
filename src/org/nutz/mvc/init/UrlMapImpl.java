@@ -14,7 +14,7 @@ import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.*;
-import org.nutz.mvc.invoker.JspServletInvoker;
+import org.nutz.mvc.invoker.ActionInvokerImpl;
 
 public class UrlMapImpl implements UrlMap {
 
@@ -93,7 +93,7 @@ public class UrlMapImpl implements UrlMap {
 			if (null == ats)
 				continue;
 			// Create invoker
-			JspServletInvoker invoker = new JspServletInvoker(ioc, makers, moduleType, method,
+			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, moduleType, method,
 					myOk, myFail, myAb, myFlts, myEncoding);
 
 			if (log.isDebugEnabled())

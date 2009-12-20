@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class AllAttrInjector extends AttrInjector {
 
-	protected AllAttrInjector(String name) {
+	public AllAttrInjector(String name) {
 		super(name);
 	}
 

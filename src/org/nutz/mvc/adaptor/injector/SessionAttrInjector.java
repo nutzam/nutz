@@ -5,7 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public class SessionAttrInjector extends AttrInjector {
 
-	protected SessionAttrInjector(String name) {
+	public SessionAttrInjector(String name) {
 		super(name);
 	}
 

@@ -3,7 +3,7 @@
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.a.24 (Hatching...)
+1.a.24
 
 	{#F00;*这是个里程碑式的版本}，从这个版本开始， Nutz 将不再依赖 Javassist，而依赖 ASM(内嵌Asm 3.2 ,无需额外jar包)
 	所以，编译时，你将不再需要 Javassist.jar （在此，特地感谢	[http://wendal.javaeye.com 无敌的 Wendal]）。
@@ -14,18 +14,13 @@
 	没有重大理由和经过社区充分讨论，它将保持不变。
 
 	问题修复
-		 * [http://code.google.com/p/nutz/issues/detail?id=12 Issue 12: Should support one config file can import other config files function.] \
-			{#AAA;by} {*satellite168}
-		 * [http://code.google.com/p/nutz/issues/detail?id=70 Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？)] \
-			{#AAA;by} {*sj}
-		 * [http://code.google.com/p/nutz/issues/detail?id=71 Issue 71: aop: 修改拦截器接口,改为使用asm实现] \
-			{#AAA;by} {*wendal}
-		 * [http://code.google.com/p/nutz/issues/detail?id=72 Issue 72: 客户端提交表单服务器端自动绑定pojo的建议] \
-			{#AAA;by} {*sj}
-		 * [http://code.google.com/p/nutz/issues/detail?id=78 Issue 78: 出现@Id或者@name时 还需要@column] \
-			{#AAA;by} {*amosleaf}
-		 * [http://code.google.com/p/nutz/issues/detail?id=80 Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性] \
-			{#AAA;by} {*zozoh}
+		 * Issue 12: Should support one config file can import other config files function. {#AAA;by} {*satellite168}
+		 * Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {#AAA;by} {*sj}
+		 * Issue 71: aop: 修改拦截器接口,改为使用asm实现 {#AAA;by} {*wendal}
+		 * Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {#AAA;by} {*sj}
+		 * Issue 78: 出现@Id或者@name时 还需要@column {#AAA;by} {*amosleaf}
+		 * Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性 {#AAA;by} {*zozoh}
+		 * Issue 86: NameInjector不能处理一个name有多个值的情况 {#AAA;by} {*blue_rain}
 	
 	质量
 		 # 可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
@@ -78,6 +73,7 @@
 		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||  X	||
 		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||  X	||
 		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| yuansicau								||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
 		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||  -	||
 		
@@ -89,10 +85,14 @@
 		我们也正在不断的努力，希望每一个新版本都可以让大家获得更好的编码体验。
 		
 		另，由于众所周知的原因，建议大家通过[https://groups.google.com/group/nutzam?hl=zh-CN 通过 https 方式访问讨论区]
+		有时候是可以上的。但是能跳墙还是跳墙的比较好。
 		
 	下一版目标
 		将主要集中在
-		 * Issue 37, 68, 76, 83
+		 * Issue 37
+		 * Issue 68
+		 * Issue 76
+		 * Issue 83
 		 * 重新实现一个更友好的字节码工具
 	
 --------------------------------------------------------------------------------------------------------

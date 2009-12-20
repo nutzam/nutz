@@ -629,7 +629,7 @@ public abstract class Lang {
 	 * @return 数组
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E> E[] collection2array(Collection<E> coll) {
+	public static <E> Object collection2array(Collection<E> coll) {
 		if (null == coll || coll.size() == 0)
 			return null;
 		Class<E> eleType = (Class<E>) Lang.first(coll).getClass();
@@ -641,17 +641,16 @@ public abstract class Lang {
 	 * 
 	 * @param coll
 	 *            集合对象
-	 * @param classOfE
+	 * @param eleType
 	 *            数组元素类型
 	 * @return 数组
 	 */
-	@SuppressWarnings("unchecked")
-	public static <E> E[] collection2array(Collection<E> coll, Class<E> classOfE) {
+	public static Object collection2array(Collection<?> coll, Class<?> eleType) {
 		if (null == coll)
 			return null;
-		E[] re = (E[]) Array.newInstance(classOfE, coll.size());
+		Object re = Array.newInstance(eleType, coll.size());
 		int i = 0;
-		for (Iterator<E> it = coll.iterator(); it.hasNext();)
+		for (Iterator<?> it = coll.iterator(); it.hasNext();)
 			Array.set(re, i++, it.next());
 		return re;
 	}
@@ -711,13 +710,13 @@ public abstract class Lang {
 	 * 
 	 * @see org.nutz.castor.Castors
 	 */
-	@SuppressWarnings("unchecked")
-	public static <T> T[] array2array(Object array, Class<T> eleType)
+	public static Object array2array(Object array, Class<?> eleType)
 			throws FailToCastObjectException {
 		if (null == array)
 			return null;
-		T[] re = (T[]) Array.newInstance(eleType, Array.getLength(array));
-		for (int i = 0; i < re.length; i++) {
+		int len = Array.getLength(array);
+		Object re = Array.newInstance(eleType, len);
+		for (int i = 0; i < len; i++) {
 			Array.set(re, i, Castors.me().castTo(Array.get(array, i), eleType));
 		}
 		return re;

@@ -133,6 +133,7 @@ public class FileSqlManager implements SqlManager {
 					for (File file : files) {
 						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams
 								.fileInr(file)));
+						
 						Iterator<String> it = p.keys().iterator();
 						keys = new ArrayList<String>(p.map.size());
 						while (it.hasNext()) {
@@ -219,6 +220,7 @@ public class FileSqlManager implements SqlManager {
 			if (stack.key != null)
 				stack.addOne();
 			map = stack.map;
+			Streams.safeClose(reader);
 		}
 
 		Set<String> keys() {

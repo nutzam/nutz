@@ -6,8 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.ioc.IocException;
 import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.json.Json;
+import org.nutz.json.JsonException;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.CharSegment;
@@ -41,7 +43,12 @@ public class JsonLoader extends MapLoader {
 
 	private Map buildMap(File f, Map vars) {
 		String s = Files.read(f);
-		Map map = Json.fromJson(Map.class, s);
+		Map map;
+		try {
+			map = Json.fromJson(Map.class, s);
+		} catch (JsonException e) {
+			throw new IocException(e, "Json file '%s' Error!", f);
+		}
 		// Get Vars
 		Map theVars = evalVars(vars, map);
 		// Apply Vars

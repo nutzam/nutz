@@ -56,4 +56,10 @@ public class LangTest {
 		assertFalse(Lang.equals(map1, map2));
 	}
 
+	@Test
+	public void test_string_array_to_int_array() {
+		int[] is = (int[]) Lang.array2array(Lang.array("10", "20"), int.class);
+		assertEquals(10, is[0]);
+		assertEquals(20, is[1]);
+	}
 }
