@@ -80,12 +80,11 @@
 让 Nutz 输出日志
 	以 log4j 为例 （因为我就对这个熟），你需要：
 	
-	 * 在你的项目里部署某一个 Log4j 的 jar 包，推荐 1.2.15 或更新版本
-		 * 1.2.11及之前的版本不支持 Trace
+	 * 在你的项目里部署某一个 Log4j 的 jar 包，推荐 Log4j 1.2.15 或更新版本
+		 * Log4j 1.2.11及之前的版本不支持 Trace
 	 * 在项目的 CLASSPATH 根目录部署 log4j.properties
 	 * 将 log4j.category.org.nutz 基本设成 DEBUG，你就能看到 Nutz 框架详细的 Log
 		{{{
-		log4j.rootLogger=WARN, A1
 		log4j.category.org.nutz=DEBUG, A1
 		 
 		log4j.appender.A1=org.apache.log4j.ConsoleAppender
