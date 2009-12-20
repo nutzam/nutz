@@ -67,4 +67,7 @@ public class Pet {
 		return this;
 	}
 
+	public String toString() {
+		return name;
+	}
 }

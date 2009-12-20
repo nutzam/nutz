@@ -207,10 +207,15 @@ public class SqlImpl implements Sql {
 		if (null == result)
 			return null;
 		if (result instanceof List) {
+
+			// Empty list
 			if (((List<T>) result).isEmpty())
 				return (List<T>) result;
-			if (((List) result).get(0).getClass().isAssignableFrom(classOfT))
+			// The list item same type with classOfT
+			if (classOfT.isAssignableFrom(((List) result).get(0).getClass()))
 				return (List<T>) result;
+
+			// Convert each element in the list
 			ArrayList list = new ArrayList(((List) result).size());
 			Iterator it = ((List) result).iterator();
 			while (it.hasNext()) {
