@@ -316,10 +316,6 @@ public class DefaultEntityMaker implements EntityMaker {
 		for (Field f : mirror.getFields())
 			if (null != f.getAnnotation(Column.class))
 				return true;
-			else if (null != f.getAnnotation(Id.class))
-				return true;
-			else if (null != f.getAnnotation(Name.class))
-				return true;
 		return false;
 	}
 
