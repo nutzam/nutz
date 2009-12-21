@@ -23,7 +23,7 @@ public abstract class Strings {
 	public static String dup(CharSequence cs, int num) {
 		if (isEmpty(cs))
 			return "";
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(num);
 		for (int i = 0; i < num; i++)
 			sb.append(cs);
 		return sb.toString();
@@ -41,7 +41,7 @@ public abstract class Strings {
 	public static String dup(char c, int num) {
 		if (c == 0)
 			return "";
-		StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder(num);
 		for (int i = 0; i < num; i++)
 			sb.append(c);
 		return sb.toString();
@@ -57,12 +57,14 @@ public abstract class Strings {
 	public static String capitalize(CharSequence s) {
 		if (null == s)
 			return null;
-		if (s.length() == 0)
+		int len = s.length();
+		if (len == 0)
 			return "";
-		if (Character.isUpperCase(s.charAt(0)))
+		char char0 = s.charAt(0);
+		if (Character.isUpperCase(char0))
 			return s.toString();
-		StringBuilder sb = new StringBuilder();
-		sb.append(Character.toUpperCase(s.charAt(0))).append(s.subSequence(1, s.length()));
+		StringBuilder sb = new StringBuilder(len);
+		sb.append(Character.toUpperCase(char0)).append(s.subSequence(1, len));
 		return sb.toString();
 	}
 
@@ -119,7 +121,8 @@ public abstract class Strings {
 	public static boolean isBlank(CharSequence cs) {
 		if (null == cs)
 			return true;
-		for (int i = 0; i < cs.length(); i++) {
+		int length = cs.length();
+		for (int i = 0; i < length; i++) {
 			char c = cs.charAt(i);
 			if (c > 0x20 || c < 0)
 				return false;
@@ -137,12 +140,13 @@ public abstract class Strings {
 	public static String trim(CharSequence cs) {
 		if (null == cs)
 			return null;
-		if (cs.length() == 0)
+		int length = cs.length();
+		if (length == 0)
 			return cs.toString();
 		int l = 0;
-		int last = cs.length() - 1;
+		int last = length - 1;
 		int r = last;
-		for (; l < cs.length(); l++) {
+		for (; l < length; l++) {
 			char c = cs.charAt(l);
 			if (c > 0x20 || c < 0)
 				break;
@@ -334,11 +338,12 @@ public abstract class Strings {
 	public static String alignLeft(CharSequence cs, int width, char c) {
 		if (null == cs)
 			return null;
-		if (cs.length() >= width)
+		int length = cs.length();
+		if (length >= width)
 			return cs.toString();
 		StringBuilder sb = new StringBuilder();
 		sb.append(cs);
-		sb.append(dup(c, width - cs.length()));
+		sb.append(dup(c, width - length));
 		return sb.toString();
 	}
 
@@ -392,11 +397,12 @@ public abstract class Strings {
 	public static boolean isQuoteBy(CharSequence cs, char lc, char rc) {
 		if (null == cs)
 			return false;
-		if (cs.length() < 2)
+		int length = cs.length();
+		if (length < 2)
 			return false;
 		if (cs.charAt(0) != lc)
 			return false;
-		if (cs.charAt(cs.length() - 1) != rc)
+		if (cs.charAt(length - 1) != rc)
 			return false;
 		return true;
 	}
