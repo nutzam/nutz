@@ -1,9 +1,6 @@
 package org.nutz.mvc.view;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -12,6 +9,10 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.mvc.View;
 
+/**
+ * 将数据采用json方式输出的试图实现
+ * 
+ */
 public class UTF8JsonView implements View {
 
 	private JsonFormat format;
@@ -26,13 +27,21 @@ public class UTF8JsonView implements View {
 		this.format = format;
 	}
 
+	/**
+	 *
+	 */
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(resp.getOutputStream(), "UTF-8"));
+		// by mawm 改为直接采用resp.getWriter()的方式直接输出!
+		resp.setHeader("Cache-Control", "no-cache");
+		resp.setContentType("text/json;charset=UTF-8");
+
+		// Writer writer = new BufferedWriter(new
+		// OutputStreamWriter(resp.getOutputStream(), "UTF-8"));
 		if (null == obj)
 			obj = data;
-		Json.toJson(writer, obj, format);
-		writer.close();
+		Json.toJson(resp.getWriter(), obj, format);
+		// writer.close();
+		resp.flushBuffer();
 	}
-
 }
