@@ -20,3 +20,7 @@ Aop 的文章
 		 @[http://wendal.javaeye.com wendal]
 	 * 《[http://wendal.javaeye.com/blog/543936 自己动手,用字节码工具做一个Aop拦截器]》\
 		 @[http://wendal.javaeye.com wendal]
+-----------------------------------------------------------------------------------
+其他文章
+	 * 《[http://xiaofeng.javaeye.com/blog/552986 nutz项目读取properties文件时发现的两端空格问题]》\
+		 @[http://xiaofeng.javaeye.com hilliate]
