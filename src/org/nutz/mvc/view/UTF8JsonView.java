@@ -11,7 +11,9 @@ import org.nutz.mvc.View;
 
 /**
  * 将数据采用json方式输出的试图实现
- * @author ming300(ming300@gmail.com)
+ *
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author mawn(ming300@gmail.com)
  */
 public class UTF8JsonView implements View {
 
