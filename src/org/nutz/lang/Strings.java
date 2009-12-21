@@ -69,9 +69,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 检查两个字符串的忽略大小写后是否相等.
-	 * <p/>
-	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 检查两个字符串的忽略大小写后是否相等. <p/> <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -86,9 +84,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 检查两个字符串是否相等.
-	 * <p/>
-	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 检查两个字符串是否相等. <p/> <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -291,7 +287,7 @@ public abstract class Strings {
 	 * @return 修饰后的字符串
 	 */
 	public static String cutRight(String s, int width, char c) {
-		if(null==s)
+		if (null == s)
 			return null;
 		int len = s.length();
 		if (len == width)
@@ -438,4 +434,77 @@ public abstract class Strings {
 					re = Math.max(re, s.length());
 		return re;
 	}
+
+	/**
+	 * 对obj进行toString()操作,如果为null返回""
+	 * 
+	 * @param obj
+	 * @return obj.toString()
+	 * @author mawenming at 2009-7-19 下午12:52:32
+	 */
+	public static String sNull(Object obj) {
+		return sNull(obj, "");
+	}
+
+	/**
+	 * 对obj进行toString()操作,如果为null返回def中定义的值
+	 * 
+	 * @param obj
+	 * @param def
+	 *            如果obj==null返回的内容
+	 * @return obj的toString()操作
+	 * @author mawenming at 2009-7-19 下午12:52:30
+	 */
+	public static String sNull(Object obj, String def) {
+		return obj != null ? obj.toString() : def;
+	}
+
+	/**
+	 * 截去第一个字符<br>
+	 * 比如:<br>
+	 * removeFirst("12345")=2345<br>
+	 * removeFirst("啊中国")=中国<br>
+	 * 
+	 * @param txt
+	 * @return
+	 */
+	public static String removeFirst(String txt) {
+		if (txt == null)
+			return null;
+		String tmp = txt;
+		int length = txt.length();
+		if (length > 1) {
+			tmp = txt.substring(1, length);
+		}
+		return tmp;
+	}
+
+	/**
+	 * 如果txt中第一个支付和 firstChar一致,则删除,否则返回 txt
+	 * 比如:<br>
+	 * removeFirst("12345",1)=2345<br>
+	 * removeFirst("啊中国",'啊')=中国<br>
+	 * @param txt
+	 * @param firstChar
+	 * @return
+	 */
+	public static String removeFirst(String txt, char firstChar) {
+		if (txt == null)
+			return null;
+		String t = txt;
+
+		int length = txt.length();
+		if (length > 1) {
+
+			char char0 = txt.charAt(0);
+
+			// 如何和需要截去的字符一致,那么截去第一个支付
+			if (firstChar == char0) {
+				t = txt.substring(1, length);
+			}
+		}
+
+		return t;
+	}
+
 }
