@@ -11,6 +11,7 @@ import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 
 import static java.lang.String.*;
 
@@ -30,22 +31,22 @@ public class Nutzs {
 
 	public static String getDriver() {
 		checkProperties();
-		return pp.getProperty("driver");
+		return Strings.trim(pp.getProperty("driver"));
 	}
 
 	public static String getUrl() {
 		checkProperties();
-		return pp.getProperty("url");
+		return Strings.trim(pp.getProperty("url"));
 	}
 
 	public static String getPassword() {
 		checkProperties();
-		return pp.getProperty("password");
+		return Strings.trim(pp.getProperty("password"));
 	}
 
 	public static String getUserName() {
 		checkProperties();
-		return pp.getProperty("username");
+		return Strings.trim(pp.getProperty("username"));
 	}
 
 	private static Map<String, Ioc> nuts = new HashMap<String, Ioc>();
