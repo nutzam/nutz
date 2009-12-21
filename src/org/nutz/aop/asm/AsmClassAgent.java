@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.nutz.aop.AbstractClassAgent;
+import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.plugin.Plugin;
@@ -26,14 +27,8 @@ import org.nutz.plugin.Plugin;
  * @see org.nutz.aop.AbstractClassAgent
  * @see org.nutz.aop.AbstractMethodInterceptor
  */
-public class AsmClassAgent extends AbstractClassAgent implements Plugin{
+public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 
-	private static GeneratorClassLoader generatorClassLoader = new GeneratorClassLoader();
-
-	public static void resetClassLoader() {
-		generatorClassLoader = new GeneratorClassLoader();
-	}
-	
 	public boolean canWork() {
 		return true;
 	}
@@ -41,12 +36,13 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin{
 	public static final int CLASS_LEVEL = Opcodes.V1_6;
 
 	@SuppressWarnings("unchecked")
-	protected <T> Class<T> generate(Pair2[] pair2s,
+	protected <T> Class<T> generate(ClassDefiner cd,
+									Pair2[] pair2s,
 									String newName,
 									Class<T> klass,
 									Constructor<T>[] constructors) {
 		try {
-			return (Class<T>) generatorClassLoader.loadClass(newName);
+			return (Class<T>) cd.load(newName);
 		} catch (ClassNotFoundException e3) {}
 		Method[] methodArray = new Method[pair2s.length];
 		List<MethodInterceptor>[] methodInterceptorList = new List[pair2s.length];
@@ -55,8 +51,8 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin{
 			methodArray[i] = pair2.method;
 			methodInterceptorList[i] = pair2.listeners;
 		}
-		Class<T> newClass = (Class<T>) generatorClassLoader.defineClassFromClassFile(newName,
-				ClassX.enhandClass(klass, newName, methodArray, constructors));
+		byte[] bytes = ClassX.enhandClass(klass, newName, methodArray, constructors);
+		Class<T> newClass = (Class<T>) cd.define(newName, bytes);
 		AopToolkit.injectFieldValue(newClass, methodArray, methodInterceptorList);
 		return newClass;
 	}

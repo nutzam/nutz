@@ -11,14 +11,15 @@ import org.nutz.lang.Mirror;
 
 /**
  * 提供ClassAgent的基础实现,拦截不可能插入Aop代码的Class
- * <p/>传入的Class对象需要满足的条件
+ * <p/>
+ * 传入的Class对象需要满足的条件
  * <li>不能是final或者abstract的
  * <li>必须有非private的构造函数
- * </p>被拦截的方法需要满足的条件
- * <li>不能是final或者abstract的
- * <li>不是private的
+ * </p>
+ * 被拦截的方法需要满足的条件 <li>不能是final或者abstract的 <li>不是private的
+ * 
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public abstract class AbstractClassAgent implements ClassAgent {
 
@@ -30,7 +31,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		return this;
 	}
 
-	public <T> Class<T> define(Class<T> klass) {
+	public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
 		if (checkClass(klass) == false)
 			return klass;
 		Pair2[] pair2s = findMatchedMethod(klass);
@@ -38,45 +39,48 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			return klass;
 		String newName = klass.getName() + CLASSNAME_SUFFIX;
 		Class<T> newClass = try2Load(newName);
-		if(newClass != null)
+		if (newClass != null)
 			return newClass;
-		Constructor<T> [] constructors = getEffectiveConstructors(klass);
-		newClass = generate(pair2s, newName, klass,constructors);
+		Constructor<T>[] constructors = getEffectiveConstructors(klass);
+		newClass = generate(cd, pair2s, newName, klass, constructors);
 		return newClass;
 	}
-	
-	protected abstract <T> Class<T> generate(Pair2 [] pair2s,String newName,Class<T> klass,Constructor<T> [] constructors) ;
-	
+
+	protected abstract <T> Class<T> generate(	ClassDefiner cd,
+												Pair2[] pair2s,
+												String newName,
+												Class<T> klass,
+												Constructor<T>[] constructors);
+
 	@SuppressWarnings("unchecked")
-	protected <T> Constructor<T> [] getEffectiveConstructors(Class<T> klass) {
-		Constructor<T> [] constructors = (Constructor<T>[]) klass.getDeclaredConstructors();
+	protected <T> Constructor<T>[] getEffectiveConstructors(Class<T> klass) {
+		Constructor<T>[] constructors = (Constructor<T>[]) klass.getDeclaredConstructors();
 		List<Constructor<T>> cList = new ArrayList<Constructor<T>>();
 		for (int i = 0; i < constructors.length; i++) {
 			Constructor<T> constructor = constructors[i];
-			if(Modifier.isPrivate(constructor.getModifiers()))
+			if (Modifier.isPrivate(constructor.getModifiers()))
 				continue;
 			cList.add(constructor);
 		}
-		if(cList.size() == 0)
+		if (cList.size() == 0)
 			throw Lang.makeThrow("没有找到任何非private的构造方法,无法创建子类!");
 		return cList.toArray(new Constructor[cList.size()]);
 	}
-	
+
 	protected <T> boolean checkClass(Class<T> klass) {
 		if (klass == null)
 			return false;
 		String klass_name = klass.getName();
 		if (klass_name.endsWith(CLASSNAME_SUFFIX))
 			return false;
-		if (klass.isInterface() || klass.isArray() 
-				|| klass.isEnum() || klass.isPrimitive() 
+		if (klass.isInterface() || klass.isArray() || klass.isEnum() || klass.isPrimitive()
 				|| klass.isMemberClass())
 			throw Lang.makeThrow("需要拦截的%s不是一个顶层类!创建失败!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
 			throw Lang.makeThrow("需要拦截的类:%s是final或abstract的!创建失败!", klass_name);
 		return true;
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T> Class<T> try2Load(String newName) {
 		ClassLoader classLoader = getClass().getClassLoader();
@@ -88,13 +92,12 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			} catch (ClassNotFoundException e1) {
 				try {
 					return (Class<T>) classLoader.loadClass(newName);
-				} catch (ClassNotFoundException e) {
-				}
+				} catch (ClassNotFoundException e) {}
 			}
 		}
 		return null;
 	}
-	
+
 	private <T> Pair2[] findMatchedMethod(Class<T> klass) {
 		Method[] all = Mirror.me(klass).getAllDeclaredMethodsWithoutTop();
 		List<Pair2> p2 = new ArrayList<Pair2>();

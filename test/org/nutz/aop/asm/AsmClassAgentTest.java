@@ -13,6 +13,8 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 
 import org.junit.Test;
+import org.nutz.Nutzs;
+import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.javassist.lstn.MethodCounter;
@@ -37,13 +39,15 @@ public class AsmClassAgentTest {
 		ClassAgent ca2 = getNewClassAgent();
 		ca2.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 
-		Class<? extends Moose> c = ca.define(Moose.class);
+		ClassDefiner cd = Nutzs.cd();
+
+		Class<? extends Moose> c = ca.define(cd, Moose.class);
 		Moose m = c.newInstance();
 		m.doSomething(BEH.run);
 		assertEquals("[2, 2, 0, 0]", Json.toJson(cc));
-		
-		Class<? extends Moose> c2 = ca2.define(Moose.class);
-		assertEquals(c,c2);
+
+		Class<? extends Moose> c2 = ca2.define(cd, Moose.class);
+		assertEquals(c, c2);
 		m = c.newInstance();
 		m.doSomething(BEH.run);
 		assertEquals("[4, 4, 0, 0]", Json.toJson(cc));
@@ -55,7 +59,7 @@ public class AsmClassAgentTest {
 		Arrays.fill(cc, 0);
 		ClassAgent aca = getNewClassAgent();
 		aca.addListener(MethodMatcherFactory.matcher("returnArrayMethod"), new MethodCounter(cc));
-		Class<? extends Buffalo> c = aca.define(Buffalo.class);// RA.class;
+		Class<? extends Buffalo> c = aca.define(Nutzs.cd(), Buffalo.class);// RA.class;
 		Buffalo r = Mirror.me(c).born();
 		String[] ss = r.returnArrayMethod();
 		assertEquals("[1, 1, 0, 0]", Json.toJson(cc));
@@ -109,7 +113,7 @@ public class AsmClassAgentTest {
 		aca.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 		aca.addListener(MethodMatcherFactory.matcher("run"), new MethodCounter(crun));
 		aca.addListener(MethodMatcherFactory.matcher("doSomething"), new RhinocerosListener());
-		Class<? extends Rhinoceros> c = aca.define(Rhinoceros.class);// RA.class;
+		Class<? extends Rhinoceros> c = aca.define(Nutzs.cd(), Rhinoceros.class);// RA.class;
 		Rhinoceros r = Mirror.me(c).born();
 		r.doSomething(BEH.run);
 		r.doSomething(BEH.fight);
@@ -134,7 +138,7 @@ public class AsmClassAgentTest {
 		ClassAgent aca = getNewClassAgent();
 		aca.addListener(MethodMatcherFactory.matcher(PUBLIC), new MethodCounter(cpub));
 		aca.addListener(MethodMatcherFactory.matcher(PROTECTED), new MethodCounter(cpro));
-		Class<? extends Hippo> c = aca.define(Hippo.class);// RA.class;
+		Class<? extends Hippo> c = aca.define(Nutzs.cd(), Hippo.class);// RA.class;
 		Hippo r = Mirror.me(c).born();
 		Vegetarians.run(r, 78);
 		r.doSomething(BEH.run);
@@ -149,9 +153,8 @@ public class AsmClassAgentTest {
 		assertEquals("[3, 1, 1, 1]", Json.toJson(cpub));
 		assertEquals("[2, 2, 0, 0]", Json.toJson(cpro));
 	}
-	
-	
-	public ClassAgent getNewClassAgent(){
+
+	public ClassAgent getNewClassAgent() {
 		return new AsmClassAgent();
 	}
 }

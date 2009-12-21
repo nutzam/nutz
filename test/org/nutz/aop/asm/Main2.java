@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.nutz.Nutzs;
 import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.asm.test.Aop1;
@@ -17,7 +18,7 @@ public class Main2 {
 
 		ClassAgent agent = new AsmClassAgent();
 		agent.addListener(MethodMatcherFactory.matcher(".*"), new MyMethodInterceptor());
-		Class<Aop1> classZ = agent.define(Aop1.class);
+		Class<Aop1> classZ = agent.define(Nutzs.cd(), Aop1.class);
 		System.out.println(classZ);
 		Field[] fields = classZ.getDeclaredFields();
 		for (Field field : fields) {
@@ -69,9 +70,11 @@ public class Main2 {
 		a1.returnFloatArray();
 		a1.returnShortArray();
 		{
-			//带异常的构造函数
-			Constructor<?> constructor = a1.getClass().getConstructor(new Class<?>[]{Object.class,Object.class});
-			System.out.println("构造方法:"+constructor+" \n带有的异常:"+Castors.me().castToString(constructor.getExceptionTypes()));
+			// 带异常的构造函数
+			Constructor<?> constructor = a1.getClass().getConstructor(
+					new Class<?>[]{Object.class, Object.class});
+			System.out.println("构造方法:" + constructor + " \n带有的异常:"
+					+ Castors.me().castToString(constructor.getExceptionTypes()));
 		}
 		a1.getRunnable();
 		a1.getEnum();

@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+import org.nutz.aop.ClassDefiner;
+import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
@@ -82,5 +84,9 @@ public class Nutzs {
 
 	public static void notSupport(DatabaseMeta meta) {
 		notSupport(format("[%S] don't support this test", meta.getTypeName()));
+	}
+
+	public static ClassDefiner cd() {
+		return new DefaultClassDefiner();
 	}
 }
