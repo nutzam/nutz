@@ -80,7 +80,7 @@ Nutz 的未来
 你完全可以让这个项目变得更加美好
 	 * [http://xiaofeng.javaeye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情] @[http://xiaofeng.javaeye.com hilliate]
 	 * 你可以随时 [http://code.google.com/p/nutz/issues/entry 提交你发现的问题]
-	 * 在 [http://groups.google.com/group/nutzam?hl=zh-CN 讨论组] 分享你的使用心得
+	 * 在 [https://groups.google.com/group/nutzam?hl=zh-CN 讨论组] 分享你的使用心得
 	 * 任何人 用 任何方式 => 指出 Nutz 的缺陷，都是被欢迎的
 	 * 如果你想成为 Nutz Committers 中的一员，请 [committer/coding.man 阅读这里]
 --------------------------------------------------------------------------------------------------------
@@ -88,6 +88,6 @@ Nutz 的未来
 	
 	发信到 {*nutzam@googlegroups.com} ，我们会第一时间 ( 通常几小时以内，但也许是马上 ) 给你回应。
 	
-	建议你加入 [http://groups.google.com/group/nutzam?hl=zh-CN Nutz 的讨论组]，可以同 Nutz 的使用者们一起分享你遇到的问题，以及解决的过程
+	建议你加入 [https://groups.google.com/group/nutzam?hl=zh-CN Nutz 的讨论组]，可以同 Nutz 的使用者们一起分享你遇到的问题，以及解决的过程
 	 
 	 
