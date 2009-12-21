@@ -9,13 +9,11 @@ import org.nutz.aop.ClassAgent;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
 import org.nutz.aop.SimpleMethodMatcher;
+import org.nutz.aop.asm.AsmClassAgent;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.lang.Mirror;
-import org.nutz.log.Logs;
-import org.nutz.plugin.NoPluginCanWorkException;
-import org.nutz.plugin.SimplePluginManager;
 
 /**
  * 
@@ -25,19 +23,25 @@ import org.nutz.plugin.SimplePluginManager;
 public class DefaultMirrorFactory implements MirrorFactory {
 
 	private Ioc ioc;
-	
-	private ClassAgent agent;
 
 	public DefaultMirrorFactory(Ioc ioc) {
 		this.ioc = ioc;
-		try{
-			agent = new SimplePluginManager<ClassAgent>("org.nutz.aop.asm.AsmClassAgent").get();
-		}catch (NoPluginCanWorkException e) {
-			Logs.getLog(DefaultMirrorFactory.class).warn("No ClassAgent can work." +
-					"Aop will be disable!");
-		}
 	}
 
+	public <T> Mirror<T> getMirror(Class<T> type, String name) {
+		Mirror<T> mirror = Mirror.me(type);
+		List<Method> aops = this.getAopMethod(mirror);
+		if(aops.size() < 1)
+			return mirror;
+		ClassAgent agent = new AsmClassAgent();
+		for (Method m : aops) {
+			MethodMatcher mm = new SimpleMethodMatcher(m);
+			for (String nm : m.getAnnotation(Aop.class).value())
+					agent.addListener(mm, ioc.get(MethodInterceptor.class, nm));
+		}
+		return Mirror.me(agent.define(type));
+	}
+	
 	private <T> List<Method> getAopMethod(Mirror<T> mirror) {
 		List<Method> aops = new LinkedList<Method>();
 		for (Method m : mirror.getMethods())
@@ -50,18 +54,5 @@ public class DefaultMirrorFactory implements MirrorFactory {
 								aops.add(m);
 			}
 		return aops;
-	}
-
-	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		Mirror<T> mirror = Mirror.me(type);
-		List<Method> aops = this.getAopMethod(mirror);
-		if(agent == null || aops.size() < 1)
-		return mirror;
-		for (Method m : aops) {
-			MethodMatcher mm = new SimpleMethodMatcher(m);
-			for (String nm : m.getAnnotation(Aop.class).value())
-					agent.addListener(mm, ioc.get(MethodInterceptor.class, nm));
-		}
-		return Mirror.me(agent.define(type));
 	}
 }
