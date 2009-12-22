@@ -13,6 +13,7 @@ import java.util.List;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Daos;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
@@ -40,7 +41,7 @@ public class SqlImpl implements Sql {
 		return sql.toString();
 	}
 
-	public void execute(Connection conn) throws SQLException {
+	public void execute(Connection conn) throws DaoException {
 		mergeCondition();
 		updateCount = -1;
 		try {
@@ -108,7 +109,7 @@ public class SqlImpl implements Sql {
 		}
 		// If any SQLException happend, throw out the SQL string
 		catch (SQLException e) {
-			throw new SQLException(format("!Nuz SQL Error: '%s'", sql.toString()), e);
+			throw new DaoException(format("!Nuz SQL Error: '%s'", sql.toString()), e);
 		}
 
 	}

@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.lang.Lang;
 
@@ -56,19 +57,23 @@ public class ComboSql implements Sql {
 		return re;
 	}
 
-	public void execute(Connection conn) throws SQLException {
+	public void execute(Connection conn) {
 		if (sqls.isEmpty())
 			return;
-		boolean old = conn.getAutoCommit();
 		try {
-			conn.setAutoCommit(false);
-			for (Sql sql : sqls)
-				if (null != sql)
-					sql.execute(conn);
-			if (old)
-				conn.commit();
-		} finally {
-			conn.setAutoCommit(old);
+			boolean old = conn.getAutoCommit();
+			try {
+				conn.setAutoCommit(false);
+				for (Sql sql : sqls)
+					if (null != sql)
+						sql.execute(conn);
+				if (old)
+					conn.commit();
+			} finally {
+				conn.setAutoCommit(old);
+			}
+		} catch (SQLException e) {
+			throw new DaoException(e);
 		}
 	}
 

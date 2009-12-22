@@ -1,16 +1,18 @@
 package org.nutz.dao;
 
-import org.nutz.dao.sql.Sql;
-
 @SuppressWarnings("serial")
 public class DaoException extends RuntimeException {
 
-	public DaoException(String message) {
+	private DaoException(String message) {
 		super(message);
 	}
 
-	public DaoException(Sql sql, Exception exception) {
-		super(String.format("%s\n--SQL::%s", exception.toString(), sql.toString()));
+	public DaoException(Throwable cause) {
+		super(cause);
+	}
+
+	public DaoException(String message, Throwable cause) {
+		super(message, cause);
 	}
 
 	public static <T> DaoException create(T obj, String fieldName, String name, Exception e) {

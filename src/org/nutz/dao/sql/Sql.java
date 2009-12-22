@@ -1,10 +1,10 @@
 package org.nutz.dao.sql;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.List;
 
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 
 /**
@@ -75,9 +75,9 @@ public interface Sql {
 	 * 
 	 * @param conn
 	 *            数据库连接
-	 * @throws SQLException
+	 * @throws DaoException
 	 */
-	void execute(Connection conn) throws SQLException;
+	void execute(Connection conn) throws DaoException;
 
 	/**
 	 * 你可以通过 setCallback 函数为本 Sql设置一个回调。 在回调中，你可以返回一个对象。这个对象会存储在本 Sql中。 当本 Sql
