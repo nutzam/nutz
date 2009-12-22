@@ -39,26 +39,18 @@ public class StringsTest {
 
 	@Test
 	public void testRemoveFirst() {
-
-		assertEquals(Strings.removeFirst("12345"), "2345");
-		assertEquals(Strings.removeFirst(null), null);
-		assertEquals(Strings.removeFirst(""), "");
-
-		assertEquals(Strings.removeFirst("啊中国"), "中国");
-
+		assertNull(Strings.removeFirst(null));
+		assertEquals("2345", Strings.removeFirst("12345"));
+		assertEquals("", Strings.removeFirst(""));
+		assertEquals("", Strings.removeFirst("A"));
 	}
 
 	@Test
 	public void testRemoveFirst2() {
-
-		assertEquals(Strings.removeFirst("12345", '1'), "2345");
-		assertEquals(Strings.removeFirst("12345", ' '), "12345");
-		assertEquals(Strings.removeFirst("12345", '5'), "12345");
-
-		assertEquals(Strings.removeFirst(null, '1'), null);
-		assertEquals(Strings.removeFirst("", '1'), "");
-
-		assertEquals(Strings.removeFirst("啊中国", '啊'), "中国");
-
+		assertNull(Strings.removeFirst(null, 'A'));
+		assertEquals("BCD", Strings.removeFirst("ABCD", 'A'));
+		assertEquals("", Strings.removeFirst("", 'A'));
+		assertEquals("", Strings.removeFirst("A", 'A'));
+		assertEquals("ABCD", Strings.removeFirst("ABCD", 'B'));
 	}
 }

@@ -8,6 +8,7 @@ import java.util.LinkedList;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author mawm(ming300@gmail.com)
  */
 public abstract class Strings {
 
@@ -69,7 +70,9 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 检查两个字符串的忽略大小写后是否相等. <p/> <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 检查两个字符串的忽略大小写后是否相等.
+	 * <p/>
+	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -84,7 +87,9 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 检查两个字符串是否相等. <p/> <b>当s1 == null && s2 == null, 本方法返回false<b/>
+	 * 检查两个字符串是否相等.
+	 * <p/>
+	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -460,51 +465,51 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 截去第一个字符<br>
-	 * 比如:<br>
-	 * removeFirst("12345")=2345<br>
-	 * removeFirst("啊中国")=中国<br>
+	 * 截去第一个字符
+	 * <p>
+	 * 比如:
+	 * <ul>
+	 * <li>removeFirst("12345") => 2345
+	 * <li>removeFirst("A") => ""
+	 * </ul>
 	 * 
-	 * @param txt
-	 * @return
+	 * @param str
+	 *            字符串
+	 * @return 新字符串
 	 */
-	public static String removeFirst(String txt) {
-		if (txt == null)
+	public static String removeFirst(String str) {
+		if (str == null)
 			return null;
-		String tmp = txt;
-		int length = txt.length();
-		if (length > 1) {
-			tmp = txt.substring(1, length);
-		}
-		return tmp;
+		if (str.length() > 1)
+			return str.substring(1);
+		return "";
 	}
 
 	/**
 	 * 如果txt中第一个支付和 firstChar一致,则删除,否则返回 txt
-	 * 比如:<br>
-	 * removeFirst("12345",1)=2345<br>
-	 * removeFirst("啊中国",'啊')=中国<br>
-	 * @param txt
-	 * @param firstChar
-	 * @return
+	 * <p>
+	 * 比如:
+	 * <ul>
+	 * <li>removeFirst("12345",1) => "2345"
+	 * <li>removeFirst("ABC",'B') => "ABC"
+	 * <li>removeFirst("A",'B') => "A"
+	 * <li>removeFirst("A",'A') => ""
+	 * </ul>
+	 * 
+	 * @param str
+	 *            字符串
+	 * @param c
+	 *            第一个个要被截取的字符
+	 * @return 新字符串
 	 */
-	public static String removeFirst(String txt, char firstChar) {
-		if (txt == null)
+	public static String removeFirst(String str, char c) {
+		if (str == null)
 			return null;
-		String t = txt;
-
-		int length = txt.length();
-		if (length > 1) {
-
-			char char0 = txt.charAt(0);
-
-			// 如何和需要截去的字符一致,那么截去第一个支付
-			if (firstChar == char0) {
-				t = txt.substring(1, length);
-			}
-		}
-
-		return t;
+		if (str.length() == 0)
+			return "";
+		if (c == str.charAt(0))
+			return str.substring(1);
+		return str;
 	}
 
 }
