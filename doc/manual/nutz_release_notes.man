@@ -59,23 +59,24 @@
 				@[http://xiaofeng.javaeye.com hilliate]
 	
 	主要贡献者名单
-		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 ||
-		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||
-		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||
-		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||
-		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||
-		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||
-		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||
-		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||
-		|| ming300									||  X	||  -	||  -	||  -	||  -	||
-		|| satellite168								||  X	||  -	||  -	||  -	||  -	||
-		|| sj										||  X	||  -	||  -	||  -	||  -	||
-		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||
-		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||
-		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||
-		|| yuansicau								||  X	||  -	||  -	||  -	||  -	||
-		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||
-		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||
+		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 || 测试 ||
+		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||  X	||
+		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  -	||
+		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||  X	||
+		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||  X	||
+		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||  -	||
+		|| ming300									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| sj										||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||  -	||
+		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||  X	||
+		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| yuansicau								||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
+		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| 知足常乐									||  -	||  -	||  -	||  -	||  -	||  X	||
 		
 		另外，非常感谢
 		[http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
