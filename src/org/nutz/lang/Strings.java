@@ -505,7 +505,7 @@ public abstract class Strings {
 	public static String removeFirst(String str, char c) {
 		if (str == null)
 			return null;
-		if (str.length() == 0)
+ 		if (str.length() == 0)
 			return "";
 		if (c == str.charAt(0))
 			return str.substring(1);
