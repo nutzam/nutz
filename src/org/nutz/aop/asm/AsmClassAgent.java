@@ -1,5 +1,6 @@
 package org.nutz.aop.asm;
 
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -33,7 +34,32 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 		return true;
 	}
 
-	public static final int CLASS_LEVEL = Opcodes.V1_6;
+	public static int CLASS_LEVEL;
+	
+	static{
+		//判断编译等级
+		try{
+			String classFileName = AsmClassAgent.class.getName().replace('.', '/')+".class";
+			InputStream is = ClassLoader.getSystemResourceAsStream(classFileName);
+			if(is != null && is.available() > 8){
+				is.skip(7);
+				int major_version = is.read();
+				switch (major_version) {
+				case 49:
+					CLASS_LEVEL = Opcodes.V1_5;
+					break;
+				case 50:
+					CLASS_LEVEL = Opcodes.V1_6;
+					break;
+				default:
+					CLASS_LEVEL = Opcodes.V1_6;
+					break;
+				};
+			}
+		}catch (Throwable e) {}
+		if(CLASS_LEVEL == 0)
+			CLASS_LEVEL = Opcodes.V1_6;
+	}
 
 	@SuppressWarnings("unchecked")
 	protected <T> Class<T> generate(ClassDefiner cd,
