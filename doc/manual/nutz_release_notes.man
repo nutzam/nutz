@@ -3,7 +3,7 @@
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.a.24
+1.a.25
 
 	{#F00;*这是个里程碑式的版本}，从这个版本开始， Nutz 将不再依赖 Javassist，而依赖 ASM(内嵌Asm 3.2 ,无需额外jar包)
 	所以，编译时，你将不再需要 Javassist.jar （在此，特地感谢	[http://wendal.javaeye.com 无敌的 Wendal]）。
