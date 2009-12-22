@@ -35,7 +35,7 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 		return true;
 	}
 
-	public static int CLASS_LEVEL;
+	static int CLASS_LEVEL;
 
 	static {
 		// 判断编译等级
