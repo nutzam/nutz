@@ -57,7 +57,6 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 					CLASS_LEVEL = Opcodes.V1_6;
 					break;
 				}
-				;
 			}
 		} catch (Throwable e) {
 			CLASS_LEVEL = Opcodes.V1_6;
