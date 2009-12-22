@@ -9,6 +9,7 @@ import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.lang.Streams;
 import org.nutz.plugin.Plugin;
 
 /**
@@ -35,13 +36,14 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 	}
 
 	public static int CLASS_LEVEL;
-	
-	static{
-		//判断编译等级
-		try{
-			String classFileName = AsmClassAgent.class.getName().replace('.', '/')+".class";
-			InputStream is = ClassLoader.getSystemResourceAsStream(classFileName);
-			if(is != null && is.available() > 8){
+
+	static {
+		// 判断编译等级
+		InputStream is = null;
+		try {
+			String classFileName = AsmClassAgent.class.getName().replace('.', '/') + ".class";
+			is = ClassLoader.getSystemResourceAsStream(classFileName);
+			if (is != null && is.available() > 8) {
 				is.skip(7);
 				int major_version = is.read();
 				switch (major_version) {
@@ -54,11 +56,14 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 				default:
 					CLASS_LEVEL = Opcodes.V1_6;
 					break;
-				};
+				}
+				;
 			}
-		}catch (Throwable e) {}
-		if(CLASS_LEVEL == 0)
+		} catch (Throwable e) {
 			CLASS_LEVEL = Opcodes.V1_6;
+		} finally {
+			Streams.safeClose(is);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
