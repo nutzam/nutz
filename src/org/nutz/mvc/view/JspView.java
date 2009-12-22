@@ -1,5 +1,13 @@
 package org.nutz.mvc.view;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
+import org.nutz.mvc.View;
+
 /**
  * 指向/WebRoot/下面的jsp视图<br>
  * 通过 request.getRequestDispatcher(path).forward(request, response)方式来处理页面<br>
@@ -21,31 +29,49 @@ package org.nutz.mvc.view;
  * </code>
  * 
  */
-public class JspView extends NamePathJspView {
+/**
+ * 根据传入的视图名，决定视图的路径：
+ * <ul>
+ * <li>如果视图名以 '/' 开头， 则被认为是一个 JSP 的全路径
+ * <li>否则，将视图名中的 '.' 转换成 '/'，并加入前缀 "/WEB-INF/" 和后缀 ".jsp"
+ * </ul>
+ * 通过注解映射的例子：
+ * <ul>
+ * <li>'@Ok("jsp:abc.cbc")' => /WEB-INF/abc/cbc.jsp
+ * <li>'@Ok("jsp:/abc/cbc")' => /abc/cbc.jsp
+ * <li>'@Ok("jsp:/abc/cbc.jsp")' => /abc/cbc.jsp
+ * </ul>
+ * 
+ * @author mawm(ming300@gmail.com)
+ * @author zozoh(zozohtnt@gmail.com)
+ */
+public class JspView implements View {
 
-	/**
-	 * @param name
-	 * @param needGeneratePath
-	 */
-	public JspView(String name, boolean needGeneratePath) {
-		super(name, needGeneratePath);
+	private String path;
 
-	}
-
-	/**
-	 * @param name
-	 */
 	public JspView(String name) {
-		super(name);
-
+		if (Strings.isBlank(name))
+			throw Lang.makeThrow("!Blank JspView name!");
+		name = name.replace('\\', '/');
+		// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
+		if (name.charAt(0) == '/') {
+			if (name.toLowerCase().endsWith(".jsp"))
+				path = name;
+			else
+				path = name + ".jsp";
+		}
+		// For: @Ok("jsp:abc.cbc")
+		else {
+			path = "/WEB-INF/" + name.replace('.', '/') + ".jsp";
+		}
 	}
 
-	/**
-	 * 指向/WebRoot/下面的jsp视图
-	 */
-	@Override
-	protected String getJspDir() {
-		return "/";
+	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+			throws Exception {
+		RequestDispatcher rd = req.getRequestDispatcher(path);
+		if (rd == null)
+			throw Lang.makeThrow("Fail to find JSP file '%s'", path);
+		rd.forward(req, resp);
 	}
 
 }

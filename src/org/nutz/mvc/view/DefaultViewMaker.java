@@ -11,7 +11,7 @@ public class DefaultViewMaker implements ViewMaker {
 
 	public View make(Ioc ioc, String type, String value) {
 		if (type.equals("jsp")) {
-			return new NamePathJspView(value);
+			return new JspView(value);
 		} else if (type.equals("json")) {
 			if (Strings.isBlank(value)) {
 				return new UTF8JsonView(JsonFormat.compact());
