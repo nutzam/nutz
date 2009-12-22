@@ -4,8 +4,10 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
 
 /**
@@ -50,27 +52,37 @@ public class JspView implements View {
 	private String path;
 
 	public JspView(String name) {
-		if (Strings.isBlank(name))
-			throw Lang.makeThrow("!Blank JspView name!");
-		name = name.replace('\\', '/');
-		// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
-		if (name.charAt(0) == '/') {
-			if (name.toLowerCase().endsWith(".jsp"))
-				path = name;
-			else
-				path = name + ".jsp";
-		}
-		// For: @Ok("jsp:abc.cbc")
-		else {
-			path = "/WEB-INF/" + name.replace('.', '/') + ".jsp";
+		if (!Strings.isBlank(name)) {
+			name = name.replace('\\', '/');
+			// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
+			if (name.charAt(0) == '/') {
+				if (name.toLowerCase().endsWith(".jsp"))
+					path = name;
+				else
+					path = name + ".jsp";
+			}
+			// For: @Ok("jsp:abc.cbc")
+			else {
+				path = "/WEB-INF/" + name.replace('.', '/') + ".jsp";
+			}
 		}
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
-		RequestDispatcher rd = req.getRequestDispatcher(path);
+		// Store object to request
+		if (null != obj)
+			req.setAttribute("obj", obj);
+		// Check path
+		String thePath = path;
+		if (Strings.isBlank(thePath)) {
+			thePath = Mvcs.getRequestPath(req);
+			thePath = "/WEB-INF/" + Files.renameSuffix(thePath, ".jsp");
+		}
+		RequestDispatcher rd = req.getRequestDispatcher(thePath);
 		if (rd == null)
-			throw Lang.makeThrow("Fail to find JSP file '%s'", path);
+			throw Lang.makeThrow("Fail to find JSP file '%s'", thePath);
+		// Do rendering
 		rd.forward(req, resp);
 	}
 
