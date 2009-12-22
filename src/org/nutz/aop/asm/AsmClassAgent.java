@@ -10,7 +10,6 @@ import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Streams;
-import org.nutz.plugin.Plugin;
 
 /**
  * <b>本实现基于ASM 3.2</b>
@@ -21,19 +20,18 @@ import org.nutz.plugin.Plugin;
  * <p/>
  * 若使用空的拦截器,如new AbstractMethodInterceptor(){},则子类的行为不变.
  * <p/>
- * <b>提醒:生成的Class默认为Java 1.6的类</b>
- * <p/>
- * <b>如果需要运行在Java 1.5上,请修好CLASS_LEVEL后编译. 该行为未被验证!</b>
+ * <b>提醒:如果本类的二进制代码为Java 1.5则,生成的Class为Java 1.5,相应的,如果是1.6,则生成1.6的Class数据</b>
+ * <p/> 差异(一些流程相关的字节码): 
+ * <li>org.asm.MethodVisitor.visitFrame 的调用
+ * <li>StackMapTable or StackMap
+ * 
+ * <p/>在基本测试中,1.5和1.6均全部Pass.
  * 
  * @author wendal(wendal1985@gmail.com)
  * @see org.nutz.aop.AbstractClassAgent
  * @see org.nutz.aop.AbstractMethodInterceptor
  */
-public class AsmClassAgent extends AbstractClassAgent implements Plugin {
-
-	public boolean canWork() {
-		return true;
-	}
+public class AsmClassAgent extends AbstractClassAgent {
 
 	static int CLASS_LEVEL;
 
@@ -47,12 +45,10 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 				is.skip(7);
 				int major_version = is.read();
 				switch (major_version) {
-				case 49:
+				case 49: // Java 1.5
 					CLASS_LEVEL = Opcodes.V1_5;
 					break;
-				case 50:
-					CLASS_LEVEL = Opcodes.V1_6;
-					break;
+				case 50: // Java 1.6
 				default:
 					CLASS_LEVEL = Opcodes.V1_6;
 					break;
@@ -73,7 +69,7 @@ public class AsmClassAgent extends AbstractClassAgent implements Plugin {
 									Constructor<T>[] constructors) {
 		try {
 			return (Class<T>) cd.load(newName);
-		} catch (ClassNotFoundException e3) {}
+		} catch (ClassNotFoundException e) {}
 		Method[] methodArray = new Method[pair2s.length];
 		List<MethodInterceptor>[] methodInterceptorList = new List[pair2s.length];
 		for (int i = 0; i < pair2s.length; i++) {
