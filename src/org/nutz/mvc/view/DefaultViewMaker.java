@@ -7,6 +7,11 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 
+/**
+ * 默认的的视图工厂类
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class DefaultViewMaker implements ViewMaker {
 
 	public View make(Ioc ioc, String type, String value) {
