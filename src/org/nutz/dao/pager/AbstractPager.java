@@ -60,4 +60,10 @@ public abstract class AbstractPager implements Pager {
 		return ResultSet.TYPE_FORWARD_ONLY;
 	}
 
+	@Override
+	public String toString() {
+		return String.format("size: %d, total: %d, page: %d/%d", pageSize, recordCount, pageNumber,
+				this.getPageCount());
+	}
+
 }

@@ -1,7 +1,7 @@
 package org.nutz.aop.javassist.meta;
 
 import org.nutz.lang.Lang;
-import org.nutz.lang.random.GM;
+import org.nutz.lang.random.R;
 
 public class Vegetarian {
 
@@ -12,7 +12,7 @@ public class Vegetarian {
 	private String name;
 
 	protected int run(int distance) {
-		return (int) ((double) distance / (double) GM.random(300, 500) * 1000);
+		return (int) ((double) distance / (double) R.random(300, 500) * 1000);
 	}
 
 	protected void setName(String name) {

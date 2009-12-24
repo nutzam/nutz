@@ -2,7 +2,7 @@ package org.nutz.lang.random;
 
 import java.util.Random;
 
-public class GM // GeneratorManager
+public class R
 {
 	static Random r = new Random();
 

@@ -11,6 +11,6 @@ public class CharGenerator {
 			.toCharArray();
 
 	public static char next() {
-		return src[Math.abs(GM.r.nextInt(src.length))];
+		return src[Math.abs(R.r.nextInt(src.length))];
 	}
 }
