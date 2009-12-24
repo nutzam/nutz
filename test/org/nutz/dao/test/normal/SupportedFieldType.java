@@ -184,10 +184,20 @@ public class SupportedFieldType extends DaoCase {
 		assertEquals(exp.id, et.id);
 		Mirror<EntityTypes> me = Mirror.me(EntityTypes.class);
 		for (Field f : me.getFields()) {
-			Object expValue = me.getValue(exp, f);
-			Object ttValue = me.getValue(et, f);
-			if (null == expValue)
-				continue;
+			Object expValue;
+			Object ttValue;
+			// Mysql 5.0.18， 会去掉毫秒数
+			if (f.getName().equals("sqlTime") && dao.meta().isMySql()) {
+				expValue = me.getValue(exp, f).toString();
+				ttValue = me.getValue(et, f).toString();
+			}
+			// 其他的数据库无所谓
+			else {
+				expValue = me.getValue(exp, f);
+				ttValue = me.getValue(et, f);
+				if (null == expValue)
+					continue;
+			}
 			if (!expValue.equals(ttValue))
 				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
 						ttValue);
