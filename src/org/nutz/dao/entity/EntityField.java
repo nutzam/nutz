@@ -49,11 +49,11 @@ public class EntityField {
 		this.field = field;
 		// Evaluate the getter and setter
 		try {
-			getter = entity.mirror.getGetter(field);
+			getter = entity.getMirror().getGetter(field);
 			getter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
 		try {
-			setter = entity.mirror.getSetter(field);
+			setter = entity.getMirror().getSetter(field);
 			setter.setAccessible(true);
 		} catch (NoSuchMethodException e) {}
 	}
@@ -194,7 +194,7 @@ public class EntityField {
 			return getter.invoke(obj);
 		} catch (Exception e) {
 			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'",
-					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
+					this.entity.getType().getName(), field.getName(), e.getMessage());
 		}
 	}
 
@@ -210,7 +210,7 @@ public class EntityField {
 				setter.invoke(obj, value);
 		} catch (Exception e) {
 			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'",
-					this.entity.mirror.getType().getName(), field.getName(), e.getMessage());
+					this.entity.getType().getName(), field.getName(), e.getMessage());
 		}
 	}
 

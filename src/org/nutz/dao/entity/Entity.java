@@ -32,7 +32,7 @@ public class Entity<T> {
 	}
 
 	private Map<String, EntityField> fields;
-	public Mirror<? extends T> mirror;
+	private Mirror<? extends T> mirror;
 
 	private EntityName tableName;
 	private EntityName viewName;

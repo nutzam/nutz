@@ -3,7 +3,7 @@ package org.nutz.dao;
 @SuppressWarnings("serial")
 public class DaoException extends RuntimeException {
 
-	private DaoException(String message) {
+	public DaoException(String message) {
 		super(message);
 	}
 

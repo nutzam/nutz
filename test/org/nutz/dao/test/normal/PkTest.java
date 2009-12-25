@@ -37,6 +37,21 @@ public class PkTest extends DaoCase {
 	}
 
 	@Test
+	public void test_delete_by_object() {
+		assertEquals(8, dao.count(Dog.class));
+		Dog dog = dao.fetch(Dog.class);
+		dao.delete(dog);
+		assertEquals(7, dao.count(Dog.class));
+	}
+
+	@Test
+	public void test_fetch_by_object() {
+		Dog dog = dao.fetch(Dog.class);
+		Dog dog2 = dao.fetch(dog);
+		assertEquals(dog.getAge(), dog2.getAge());
+	}
+
+	@Test
 	public void test_update() {
 		Dog dog = dao.fetchx(Dog.class, 32, 3);
 		dog.setName("XiaoBai");

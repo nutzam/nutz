@@ -1,6 +1,7 @@
 package org.nutz.dao.impl;
 
 import java.lang.reflect.Field;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -41,6 +42,8 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+
+import static java.lang.String.*;
 
 public class NutDao implements Dao {
 
@@ -336,8 +339,14 @@ public class NutDao implements Dao {
 	void _deleteSelf(Entity<?> entity, Object obj) {
 		if (null != obj) {
 			EntityField idnf = entity.getIdentifiedField();
-			if (null == idnf)
+			if (null == idnf) {
+				Object[] args = evalArgsByPks(entity, obj);
+				if (null != args) {
+					execute(sqlMaker.deletex(entity, args));
+					return;
+				}
 				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)", null);
+			}
 			if (idnf.isId()) {
 				int id = Castors.me().castTo(idnf.getValue(obj), Integer.class);
 				delete(obj.getClass(), id);
@@ -349,6 +358,17 @@ public class NutDao implements Dao {
 						new Exception("Wrong identified field"));
 			}
 		}
+	}
+
+	private static Object[] evalArgsByPks(Entity<?> entity, Object obj) {
+		Object[] args = null;
+		EntityField[] pks = entity.getPkFields();
+		if (null != pks && pks.length > 0) {
+			args = new Object[pks.length];
+			for (int i = 0; i < pks.length; i++)
+				args[i] = pks[i].getValue(obj);
+		}
+		return args;
 	}
 
 	public void delete(Object obj) {
@@ -443,9 +463,21 @@ public class NutDao implements Dao {
 	public <T> T fetch(T obj) {
 		if (null != obj) {
 			Entity<?> entity = (Entity) getEntity(obj.getClass());
-			EntityField ef = entity.getIdentifiedField();
-			Sql sql = sqlMaker.fetch(entity, ef);
-			sql.params().set(ef.getFieldName(), ef.getValue(obj));
+			EntityField idnf = entity.getIdentifiedField();
+			Sql sql;
+			if (idnf == null) {
+				Object[] args = evalArgsByPks(entity, obj);
+				if (null != args) {
+					sql = sqlMaker.fetchx(entity, args);
+				} else {
+					throw new DaoException(format(
+							"Entity <%s> need @Id or @Name or @PK to identify fetch operation!",
+							entity.getType().getName()));
+				}
+			} else {
+				sql = sqlMaker.fetch(entity, idnf);
+				sql.params().set(idnf.getFieldName(), idnf.getValue(obj));
+			}
 			execute(sql);
 			return sql.getObject((Class<T>) entity.getType());
 		}
