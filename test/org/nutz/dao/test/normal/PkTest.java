@@ -36,6 +36,9 @@ public class PkTest extends DaoCase {
 		assertEquals(7, dao.count(Dog.class));
 	}
 
+	/**
+	 * Issue 91
+	 */
 	@Test
 	public void test_delete_by_object() {
 		assertEquals(8, dao.count(Dog.class));
@@ -44,6 +47,9 @@ public class PkTest extends DaoCase {
 		assertEquals(7, dao.count(Dog.class));
 	}
 
+	/**
+	 * Issue 91
+	 */
 	@Test
 	public void test_fetch_by_object() {
 		Dog dog = dao.fetch(Dog.class);
