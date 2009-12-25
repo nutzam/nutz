@@ -4,6 +4,11 @@ import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
 
+/**
+ * 字段过滤器
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class FieldMatcher {
 
 	public static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
@@ -16,8 +21,17 @@ public class FieldMatcher {
 		return fm;
 	}
 
+	/**
+	 * 哪些字段可用
+	 */
 	private Pattern actived;
+	/**
+	 * 哪些字段不可用
+	 */
 	private Pattern locked;
+	/**
+	 * 是否忽略空值
+	 */
 	private boolean ignoreNull;
 
 	public boolean isIgnoreNull() {

@@ -8,6 +8,7 @@ import org.nutz.dao.test.entity.AllEntity;
 import org.nutz.dao.test.mapping.*;
 import org.nutz.dao.test.normal.AllNormal;
 import org.nutz.dao.test.sqls.AllSqls;
+import org.nutz.dao.texp.ChainTest;
 import org.nutz.dao.texp.CndTest;
 import org.nutz.dao.tools.AllTools;
 
@@ -21,5 +22,5 @@ import org.nutz.dao.tools.AllTools;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AllEntity.class, AllSqls.class, AllMapping.class, AllNormal.class,
-		CndTest.class, AllTools.class, SqlLiteralTest.class})
+		CndTest.class, ChainTest.class, AllTools.class, SqlLiteralTest.class})
 public class AllDao {}

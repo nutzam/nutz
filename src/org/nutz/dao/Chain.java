@@ -1,7 +1,14 @@
 package org.nutz.dao;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
+import org.nutz.json.Json;
+import org.nutz.lang.Mirror;
 
 /**
  * 名值链。
@@ -23,13 +30,13 @@ public class Chain {
 	 * @return 链头
 	 */
 	public static Chain make(String name, Object value) {
-		return new Chain(name,value,null,null);
+		return new Chain(name, value, null, null);
 	}
 
-	private Chain(String name,Object value,Chain head,Chain next) {
+	private Chain(String name, Object value, Chain head, Chain next) {
 		this.name = name;
 		this.value = value;
-		if(head == null)
+		if (head == null)
 			this.head = this;
 		else
 			this.head = head;
@@ -79,7 +86,7 @@ public class Chain {
 	 */
 	public Chain add(String name, Object value) {
 		Chain oldNext = next;
-		next = new Chain(name,value,this.head,oldNext);
+		next = new Chain(name, value, this.head, oldNext);
 		return next;
 	}
 
@@ -130,6 +137,120 @@ public class Chain {
 			c = c.next;
 		}
 		return head;
+	}
+
+	/**
+	 * 由当前的名值链，生成一个对象
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @return 对象实例
+	 */
+	public <T> T toObject(Class<T> classOfT) {
+		Mirror<T> mirror = Mirror.me(classOfT);
+		T re = mirror.born();
+		Chain c = head;
+		while (c != null) {
+			mirror.setValue(re, c.name(), c.value());
+			c = c.next;
+		}
+		return re;
+	}
+
+	/**
+	 * 由当前名值链，生成一个 Map
+	 * 
+	 * @return Map
+	 */
+	public Map<String, Object> toMap() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		Chain c = head;
+		while (c != null) {
+			map.put(c.name(), c.value());
+			c = c.next;
+		}
+		return map;
+	}
+
+	/**
+	 * 生成一个 JSON 字符串
+	 */
+	public String toString() {
+		return Json.toJson(toMap());
+	}
+
+	/**
+	 * 根据一个对象的字段 生成一个 Chain 对象
+	 * <p>
+	 * 这个对象可以是一个 POJO 或者是一个 Map。
+	 * <p>
+	 * 支持 FieldMatcher，即你可以通过 FieldMatcher 来指定你需要哪些字段加入 Chain
+	 * 
+	 * @param obj
+	 *            对象，可以是一个 POJO 或者是一个 Map
+	 * @param fm
+	 *            指明可用字段，null 表示全部字段可用
+	 * @return Chain 对象，null 表示对象中没有可用字段
+	 * 
+	 * @see org.nutz.dao.FieldMatcher
+	 */
+	public static Chain from(Object obj, FieldMatcher fm) {
+		if (null == obj)
+			return null;
+		Chain c = null;
+		/*
+		 * Is Map
+		 */
+		if (obj instanceof Map<?, ?>) {
+			for (Entry<?, ?> en : ((Map<?, ?>) obj).entrySet()) {
+				Object key = en.getKey();
+				if (null == key)
+					continue;
+				String name = key.toString();
+				if (null != fm && !fm.match(name))
+					continue;
+				Object v = en.getValue();
+				if (null != fm && null == v && fm.isIgnoreNull())
+					continue;
+				if (c == null) {
+					c = Chain.make(name, v);
+				} else {
+					c = c.add(name, v);
+				}
+			}
+		}
+		/*
+		 * Is POJO
+		 */
+		else {
+			Mirror<?> mirror = Mirror.me(obj.getClass());
+			for (Field f : mirror.getFields()) {
+				if (null != fm && !fm.match(f.getName()))
+					continue;
+				Object v = mirror.getValue(obj, f.getName());
+				if (null != fm && null == v && fm.isIgnoreNull())
+					continue;
+				if (c == null) {
+					c = Chain.make(f.getName(), v);
+				} else {
+					c = c.add(f.getName(), v);
+				}
+			}
+		}
+		return c;
+	}
+
+	/**
+	 * 根据一个 POJO 对象的字段 生成一个 Chain 对象
+	 * <p>
+	 * 相当于 Chain.from(obj,null)
+	 * 
+	 * @param obj
+	 *            POJO 对象
+	 * @return Chain 对象
+	 */
+	public static Chain from(Object obj) {
+		return from(obj, null);
 	}
 
 }
