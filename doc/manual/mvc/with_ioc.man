@@ -53,5 +53,5 @@
 自定 Ioc 容器
 	
 	你很喜欢 Spring，或者你很喜欢 Guice。不管怎么说，你不想用 Nutz.Ioc，那么没关系，你可以自己实现一个 IocProvider。
-	并用 @IocBy 声明到整个应用中即可。通过 Spring 或者 Guice 实习 Ioc 接口想必不是什么难事。
+	并用 @IocBy 声明到整个应用中即可。通过 Spring 或者 Guice 实现 Ioc 接口想必不是什么难事。
 	
