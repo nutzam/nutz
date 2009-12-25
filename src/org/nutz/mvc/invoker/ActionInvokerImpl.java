@@ -19,6 +19,8 @@ import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.HttpAdaptor;
@@ -38,6 +40,8 @@ import org.nutz.mvc.ioc.SessionIocContext;
 import org.nutz.mvc.view.UTF8JsonView;
 
 public class ActionInvokerImpl implements ActionInvoker {
+
+	private static final Log log = Logs.getLog(ActionInvokerImpl.class);
 
 	private String moduleName;
 	private Class<?> moduleType;
@@ -133,7 +137,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			int pos = args[0].indexOf(':');
 			if (pos == 3 && pos < (args[0].length() - 1)
 					&& "ioc".equalsIgnoreCase(args[0].substring(0, pos))) {
-				String name = args[0].substring(pos+1);
+				String name = args[0].substring(pos + 1);
 				return ioc.get(type, name);
 			}
 		}
@@ -219,7 +223,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			}
 			// 调用 module 中的方法
 			Object re = method.invoke(obj, args);
-			
+
 			// 渲染 HTTP 输出流
 			if (re instanceof View)
 				((View) re).render(req, resp, re);
@@ -228,10 +232,12 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 		// 如果有错误，则转到失败渲染流程
 		catch (Throwable e) {
+			if (log.isWarnEnabled())
+				log.warn("Action Fail!", e);
 			// 基本上， InvocationTargetException 一点意义也没有，需要拆包
 			if (e instanceof InvocationTargetException)
 				e = e.getCause();
-			
+
 			try {
 				fail.render(req, resp, e);
 			}
