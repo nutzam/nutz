@@ -21,6 +21,8 @@
 		 * Issue 78: 出现@Id或者@name时 还需要@column {#AAA;by} {*amosleaf}
 		 * Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性 {#AAA;by} {*zozoh}
 		 * Issue 86: NameInjector不能处理一个name有多个值的情况 {#AAA;by} {*blue_rain}
+		 * Issue 91: delete(Object)操作无法删除@PK对象问题 {#AAA;by} {*harkoo}
+		 * Issue 93: dao update 接口建议 {#AAA;by} {*Bird.Wyatt}
 	
 	质量
 		 # 可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
@@ -62,7 +64,7 @@
 		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 || 测试 ||
 		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||  X	||
 		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  -	||
-		|| bird.wyatt								||  X	||  -	||  -	||  X	||  -	||  X	||
+		|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  -	||  -	||  X	||  -	||  X	||
 		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  X	||
 		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||  X	||
