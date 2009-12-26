@@ -5,6 +5,8 @@ import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.log4j.Priority;
 import org.nutz.log.Log;
+import org.nutz.log.LogAdapter;
+import org.nutz.plugin.Plugin;
 
 /**
  * apache log4j 适配器。 判断log4j是否可用的逻辑是依据log4j自身判断逻辑设计的，简单来说：
@@ -29,7 +31,7 @@ import org.nutz.log.Log;
  * @author Young(sunonfire@gmail.com)
  * @author wendal(wendal11985@gmail.com)
  */
-public class Log4jLogAdapter extends AbstractLogAdapter{
+public class Log4jLogAdapter implements LogAdapter, Plugin {
 
 	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
 	

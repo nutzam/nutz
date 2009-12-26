@@ -4,6 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.nutz.log.Log;
+import org.nutz.log.LogAdapter;
+import org.nutz.plugin.Plugin;
 
 /**
  * JDK Logger的适配器。
@@ -18,7 +20,7 @@ import org.nutz.log.Log;
  * @author Young(sunonfire@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
-public class JdkLogAdapter extends AbstractLogAdapter{
+public class JdkLogAdapter implements LogAdapter, Plugin {
 
 	public boolean canWork() {
 		return System.getProperty("java.util.logging.config.class") != null
