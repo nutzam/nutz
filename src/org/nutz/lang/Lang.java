@@ -753,7 +753,23 @@ public abstract class Lang {
 	 * @return JAVA 对象
 	 * @throws FailToCastObjectException
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
+		if (null == toType)
+			throw new FailToCastObjectException("target type is Null");
+		if (toType == Map.class)
+			return (T) src;
+		if (Map.class.isAssignableFrom(toType)) {
+			Map map;
+			try {
+				map = (Map) toType.newInstance();
+				map.putAll(src);
+				return (T) map;
+			} catch (Exception e) {
+				throw new FailToCastObjectException("target type fail to born!", e);
+			}
+
+		}
 		Mirror<T> mirror = Mirror.me(toType);
 		T obj = mirror.born();
 		for (Field field : mirror.getFields()) {

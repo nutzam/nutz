@@ -20,11 +20,18 @@ public class LangTest {
 	}
 
 	@Test
-	public void testMap2Object() throws FailToCastObjectException {
+	public void test_map_2_object() throws FailToCastObjectException {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
 		A a = Lang.map2Object(map, A.class);
 		assertEquals(23, a.id);
 		assertEquals("zzh", a.name);
+	}
+
+	@Test
+	public void test_map_2_map() {
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
+		Map<?,?> map2 = Lang.map2Object(map, Map.class);
+		assertTrue(Lang.equals(map, map2));
 	}
 
 	@Test
