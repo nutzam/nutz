@@ -15,9 +15,9 @@
 
 	问题修复
 		 * Issue 12: Should support one config file can import other config files function. {#AAA;by} {*satellite168}
-		 * Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {#AAA;by} {*sj}
+		 * Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {#AAA;by} {*lhasasky}
 		 * Issue 71: aop: 修改拦截器接口,改为使用asm实现 {#AAA;by} {*wendal}
-		 * Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {#AAA;by} {*sj}
+		 * Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {#AAA;by} {*lhasasky}
 		 * Issue 78: 出现@Id或者@name时 还需要@column {#AAA;by} {*amosleaf}
 		 * Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性 {#AAA;by} {*zozoh}
 		 * Issue 86: NameInjector不能处理一个name有多个值的情况 {#AAA;by} {*blue_rain}
@@ -72,7 +72,7 @@
 		|| ming300									||  X	||  -	||  X	||  -	||  -	||  -	||
 		|| Roy Tonhee								||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| sj										||  X	||  -	||  -	||  -	||  -	||  -	||
+		|| lhasasky									||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||  -	||
 		|| Tony										||  -	||  -	||  -	||  -	||  -	||  X	||
 		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||  X	||
@@ -81,6 +81,7 @@
 		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
 		|| 密林仙踪									||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| [http://yinxvxv.javaeye.com 农大天狼]	||  -	||  -	||  -	||  X	||  -	||  -	||
+		|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  -	||  -	||  -	||  -	||
 		|| 知足常乐									||  -	||  -	||  -	||  -	||  -	||  X	||
 		
 		另外，非常感谢
