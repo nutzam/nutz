@@ -49,13 +49,13 @@ public class NutDao implements Dao {
 
 	private static Log log = Logs.getLog(NutDao.class);
 
-	private DataSource dataSource;
-	private SqlMaker sqlMaker;
-	private PagerMaker pagerMaker;
-	private SqlManager sqls;
-	private EntityHolder entities;
-	private DatabaseMeta meta;
-	private EntityMaker entityMaker;
+	protected DataSource dataSource;
+	protected SqlMaker sqlMaker;
+	protected PagerMaker pagerMaker;
+	protected SqlManager sqls;
+	protected EntityHolder entities;
+	protected DatabaseMeta meta;
+	protected EntityMaker entityMaker;
 
 	/* ========================================================== */
 	public NutDao() {
@@ -790,7 +790,8 @@ public class NutDao implements Dao {
 				ResultSet rs = null;
 				try {
 					stat = conn.createStatement();
-					String sql = "SELECT COUNT(*) FROM " + tableName;
+					//增加不等式,减少sql执行时间
+					String sql = "SELECT COUNT(*) FROM " + tableName+" where 1!=1";
 					rs = stat.executeQuery(sql);
 					if (rs.next())
 						ee[0] = true;
