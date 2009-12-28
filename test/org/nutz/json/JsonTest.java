@@ -478,4 +478,9 @@ public class JsonTest {
 			fileName = "/" + fileName;
 		return new InputStreamReader(getClass().getResourceAsStream(fileName));
 	}
+
+	@Test
+	public void test_output_json_string() {
+		assertEquals("\"A:\\\"'\\\\\"", Json.toJson("A:\"'\\"));
+	}
 }

@@ -178,18 +178,17 @@ class JsonRendering {
 			format.increaseIndent();
 	}
 
-	private static final Pattern ESCAPING = Pattern.compile("\"|\\\\|\\x09|\\x0d|\\x0a");
-
 	private void string2Json(String s) throws IOException {
 		if (null == s)
 			writer.append("null");
 		else {
-			Matcher m = ESCAPING.matcher(s);
-			String[] ss = ESCAPING.split(s);
-			int i = 0;
-			writer.append('"').append(ss[i++]);
-			while (m.find()) {
-				switch (m.group().charAt(0)) {
+			char[] cs = s.toCharArray();
+			writer.append('"');
+			for (char c : cs) {
+				switch (c) {
+				case '"':
+					writer.append("\\\"");
+					break;
 				case '\n':
 					writer.append("\\n");
 					break;
@@ -202,9 +201,9 @@ class JsonRendering {
 				case '\\':
 					writer.append("\\\\");
 					break;
+				default:
+					writer.append(c);
 				}
-				if (i < ss.length)
-					writer.append(ss[i++]);
 			}
 			writer.append('"');
 		}
