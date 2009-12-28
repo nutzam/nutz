@@ -1,11 +1,19 @@
 package org.nutz.mvc.adaptor;
 
+import java.util.Map;
+
 import org.nutz.mvc.adaptor.injector.ArrayInjector;
+import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
 import org.nutz.mvc.annotation.Param;
 
+/**
+ * 将整个 HTTP 请求作为名值对来处理
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class PairAdaptor extends AbstractAdaptor {
 
 	@Override
@@ -15,6 +23,8 @@ public class PairAdaptor extends AbstractAdaptor {
 		String pm = param.value();
 		// POJO
 		if ("..".equals(pm)) {
+			if (type.isAssignableFrom(Map.class))
+				return new MapPairInjector();
 			return new ObjectPairInjector(null, type);
 		}
 		// POJO with prefix
