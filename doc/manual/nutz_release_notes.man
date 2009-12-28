@@ -26,6 +26,7 @@
 		 * Issue 96: 将HttpServletRequest所接收的参数转为Map {#AAA;by} {*会跑的蜗牛}
 	
 	质量
+		 # 共通过了 397 个单元测试用例
 		 # 可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
 		 # Nutz.Dao 经测试在如下数据库上可以工作正常
 			 * H2
@@ -62,28 +63,28 @@
 				@[http://xiaofeng.javaeye.com hilliate]
 	
 	主要贡献者名单
-		|| 贡献者 									|| 问题 || 博客 || 代码 || Demo || 文档 || 测试 ||
-		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  X	||  -	||  X	||
-		|| [http://www.ai-java.com axhack]			||  -	||  X	||  -	||  -	||  -	||  -	||
-		|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  -	||  -	||  X	||  -	||  X	||
-		|| blue_rain								||  X	||  -	||  -	||  -	||  -	||  X	||
-		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  -	||  -	||  X	||  X	||
-		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  X	||  X	||
-		|| mawm										||  X	||  -	||  X	||  -	||  -	||  -	||
-		|| Roy Tonhee								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| lhasasky									||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| sunonfire								||  -	||  -	||  X	||  -	||  X	||  -	||
-		|| Tony										||  -	||  -	||  -	||  -	||  -	||  X	||
-		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  -	||  -	||  X	||
-		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| yuansicau								||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||
-		|| [http://windir.javaeye.com 密林仙踪]		||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| [http://yinxvxv.javaeye.com 农大天狼]	||  -	||  -	||  -	||  X	||  -	||  -	||
-		|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  -	||  -	||  -	||  -	||
-		|| 知足常乐									||  -	||  -	||  -	||  -	||  -	||  X	||
+		|| 贡献者 									|| 问题 || 博客 || 讨论 || 代码 || Demo || 文档 || 测试 ||
+		|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  X	||  -	||  X	||  -	||  X	||
+		|| [http://www.ai-java.com axhack]			||  -	||  X	||  X	||  -	||  -	||  -	||  -	||
+		|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  -	||  X	||  -	||  X	||  -	||  X	||
+		|| blue_rain								||  X	||  -	||  X	|| -	||  -	||  -	||  X	||
+		|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  X	||  -	||  -	||  X	||  X	||
+		|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  X	||  -	||  -	||  X	||  X	||
+		|| mawm										||  X	||  -	||  X	||  X	||  -	||  -	||  -	||
+		|| Roy Tonhee								||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+		|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+		|| lhasasky									||  X	||  -	||  X	||  -	||  -	||  -	||  -	||
+		|| sunonfire								||  -	||  -	||  X	||  X	||  -	||  X	||  -	||
+		|| Tony										||  -	||  -	||  -	||  -	||  -	||  -	||  X	||
+		|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  X	||  -	||  -	||  X	||
+		|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+		|| yuansicau								||  X	||  -	||  X	||  -	||  -	||  -	||  -	||
+		|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||  X	||
+		|| [http://windir.javaeye.com 密林仙踪]		||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+		|| [http://yinxvxv.javaeye.com 农大天狼]	||  -	||  -	||  X	||  -	||  X	||  -	||  -	||
+		|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  X	||  -	||  -	||  -	||  X	||
+		|| 知足常乐									||  -	||  -	||  X	||  -	||  -	||  -	||  X	||
 		
 		另外，非常感谢
 		[http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]

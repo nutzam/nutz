@@ -227,7 +227,9 @@ public class SqlMaker {
 	public Sql fetch(Entity<?> entity, EntityField ef) {
 		String fields = evalActivedFields(entity);
 		String fmt;
-		if (ef.isName() && !ef.isCasesensitive()) {
+		if (ef == null) {
+			fmt = format("SELECT %s FROM %s $condition", fields, entity.getViewName());
+		} else if (ef.isName() && !ef.isCasesensitive()) {
 			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity
 					.getViewName(), ef.getColumnName(), ef.getFieldName());
 		} else {
