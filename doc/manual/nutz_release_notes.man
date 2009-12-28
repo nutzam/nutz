@@ -45,8 +45,8 @@
 		 # Log 部分的结构和实现修改的更加简洁
 	
 	文档
-		 # 添加了 Nutz.Lang （Wiki 《[http://code.google.com/p/nutz/wiki/lang 甜Java]》）下全部文档
-		 # 完成了 Mirror 类的所有 Java Doc
+		 # 添加了 Nutz.Lang （Wiki 《[lang/lang.man 甜Java]》）下全部文档
+		 # 完成了 [lang/mirror.man Mirror] 类的所有 Java Doc
 	
 	博客
 		 * 《[http://wendal.javaeye.com/blog/543936 Nutz:重新发明轮子:自己动手,用字节码工具做一个Aop拦截器]》\
@@ -91,7 +91,7 @@
 		以及
 		[https://groups.google.com/group/nutzam?hl=zh-CN Nutzam 讨论区]
 		的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 {*产生着潜移默化的影响}。
-		我们也正在不断的努力，希望每一个新版本都可以让大家获得更好的编码体验。
+		我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。
 		
 		另，由于众所周知的原因，建议大家通过[https://groups.google.com/group/nutzam?hl=zh-CN 通过 https 方式访问讨论区]
 		有时候是可以上的。但是能跳墙还是跳墙的比较好。
