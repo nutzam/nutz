@@ -17,7 +17,7 @@ public class Main2 {
 	public static void main(String[] args) throws Throwable {
 
 		ClassAgent agent = new AsmClassAgent();
-		agent.addListener(MethodMatcherFactory.matcher(".*"), new MyMethodInterceptor());
+		agent.addInterceptor(MethodMatcherFactory.matcher(".*"), new MyMethodInterceptor());
 		Class<Aop1> classZ = agent.define(Nutzs.cd(), Aop1.class);
 		System.out.println(classZ);
 		Field[] fields = classZ.getDeclaredFields();

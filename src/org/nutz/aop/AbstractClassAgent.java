@@ -25,7 +25,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
 
-	public ClassAgent addListener(MethodMatcher matcher, MethodInterceptor listener) {
+	public ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor listener) {
 		if (null != listener)
 			pairs.add(new Pair(matcher, listener));
 		return this;

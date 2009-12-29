@@ -22,10 +22,10 @@ public class ClassXTest {
 	@Before
 	public void setUp() {
 		classAgent = new AsmClassAgent();
-		classAgent.addListener(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
-		classAgent.addListener(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
-		classAgent.addListener(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
-		classAgent.addListener(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
+		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
+		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
+		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
+		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
 	}
 
 	@Test

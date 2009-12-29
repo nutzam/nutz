@@ -46,7 +46,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 		for (Method m : aops) {
 			MethodMatcher mm = new SimpleMethodMatcher(m);
 			for (String nm : m.getAnnotation(Aop.class).value())
-				agent.addListener(mm, ioc.get(MethodInterceptor.class, nm));
+				agent.addInterceptor(mm, ioc.get(MethodInterceptor.class, nm));
 		}
 		return Mirror.me(agent.define(cd, type));
 	}

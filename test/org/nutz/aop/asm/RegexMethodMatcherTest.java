@@ -18,7 +18,7 @@ public class RegexMethodMatcherTest {
 	public void testRegexMethodMatcherStringStringInt() throws Throwable {
 		AsmClassAgent agent = new AsmClassAgent();
 		MyL interceptor = new MyL();
-		agent.addListener(new RegexMethodMatcher(null, "nonArgsVoid", 0), interceptor);
+		agent.addInterceptor(new RegexMethodMatcher(null, "nonArgsVoid", 0), interceptor);
 		Mirror<Aop1> mirror = Mirror.me(agent.define(Nutzs.cd(), Aop1.class));
 		Aop1 aop1 = mirror.born("Nutz");
 		aop1.nonArgsVoid();

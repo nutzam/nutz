@@ -18,7 +18,7 @@ public class SimpleMethodMatcher implements MethodMatcher {
 		if (m.getParameterTypes().length != method.getParameterTypes().length)
 			return false;
 		for (int i = 0; i < m.getParameterTypes().length; i++) {
-			if (!m.getParameterTypes()[i].equals(m.getParameterTypes()[i]))
+			if (!m.getParameterTypes()[i].equals(method.getParameterTypes()[i]))
 				return false;
 		}
 		return true;

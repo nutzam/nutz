@@ -35,9 +35,9 @@ public class AsmClassAgentTest {
 	public void test_duplicate_class_exception() throws Exception {
 		int[] cc = new int[4];
 		ClassAgent ca = getNewClassAgent();
-		ca.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
+		ca.addInterceptor(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 		ClassAgent ca2 = getNewClassAgent();
-		ca2.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
+		ca2.addInterceptor(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
 
 		ClassDefiner cd = Nutzs.cd();
 
@@ -58,7 +58,7 @@ public class AsmClassAgentTest {
 		int[] cc = new int[4];
 		Arrays.fill(cc, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(MethodMatcherFactory.matcher("returnArrayMethod"), new MethodCounter(cc));
+		aca.addInterceptor(MethodMatcherFactory.matcher("returnArrayMethod"), new MethodCounter(cc));
 		Class<? extends Buffalo> c = aca.define(Nutzs.cd(), Buffalo.class);// RA.class;
 		Buffalo r = Mirror.me(c).born();
 		String[] ss = r.returnArrayMethod();
@@ -110,9 +110,9 @@ public class AsmClassAgentTest {
 		Arrays.fill(cc, 0);
 		Arrays.fill(crun, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
-		aca.addListener(MethodMatcherFactory.matcher("run"), new MethodCounter(crun));
-		aca.addListener(MethodMatcherFactory.matcher("doSomething"), new RhinocerosListener());
+		aca.addInterceptor(MethodMatcherFactory.matcher(".*"), new MethodCounter(cc));
+		aca.addInterceptor(MethodMatcherFactory.matcher("run"), new MethodCounter(crun));
+		aca.addInterceptor(MethodMatcherFactory.matcher("doSomething"), new RhinocerosListener());
 		Class<? extends Rhinoceros> c = aca.define(Nutzs.cd(), Rhinoceros.class);// RA.class;
 		Rhinoceros r = Mirror.me(c).born();
 		r.doSomething(BEH.run);
@@ -136,8 +136,8 @@ public class AsmClassAgentTest {
 		Arrays.fill(cpub, 0);
 		Arrays.fill(cpro, 0);
 		ClassAgent aca = getNewClassAgent();
-		aca.addListener(MethodMatcherFactory.matcher(PUBLIC), new MethodCounter(cpub));
-		aca.addListener(MethodMatcherFactory.matcher(PROTECTED), new MethodCounter(cpro));
+		aca.addInterceptor(MethodMatcherFactory.matcher(PUBLIC), new MethodCounter(cpub));
+		aca.addInterceptor(MethodMatcherFactory.matcher(PROTECTED), new MethodCounter(cpro));
 		Class<? extends Hippo> c = aca.define(Nutzs.cd(), Hippo.class);// RA.class;
 		Hippo r = Mirror.me(c).born();
 		Vegetarians.run(r, 78);
