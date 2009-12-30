@@ -8,7 +8,7 @@ import org.nutz.log.Logs;
 /**
  * 将一个参考对象存入 ThreadLocal
  * <p>
- * Nutz.Dao 将在构造 SQL 是，参考这个对象。如何参考，请参看 '@Table' 关于 “动态表名的赋值规则” 的描述
+ * Nutz.Dao 将在构造 SQL 时，参考这个对象。如何参考，请参看 '@Table' 关于 “动态表名的赋值规则” 的描述
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
