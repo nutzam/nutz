@@ -16,6 +16,10 @@ public class Stopwatch {
 		return sw;
 	}
 
+	public static Stopwatch create() {
+		return new Stopwatch();
+	}
+
 	public static Stopwatch run(Runnable atom) {
 		Stopwatch sw = begin();
 		atom.run();
