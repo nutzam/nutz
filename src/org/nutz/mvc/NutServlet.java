@@ -65,15 +65,20 @@ public class NutServlet extends HttpServlet {
 			urls = ing.getUrls();
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
-			this.getServletContext().setAttribute(Localization.class.getName(), ing.getMessageMap());
+			this.getServletContext()
+					.setAttribute(Localization.class.getName(), ing.getMessageMap());
 
 			// Done, print info
 			sw.stop();
 			if (log.isInfoEnabled())
 				log.infof("Nutz.Mvc[%s] is up in %sms", this.getServletName(), sw.getDuration());
 
-		} catch (ClassNotFoundException e) {
-			throw Lang.wrapThrow(e);
+		} catch (Throwable e) {
+			if (log.isErrorEnabled())
+				log.error("Error happend during start serivce!", e);
+			if (e instanceof ServletException)
+				throw (ServletException) e;
+			throw new ServletException(e);
 		}
 	}
 
@@ -109,10 +114,10 @@ public class NutServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Mvcs.updateRequestAttributes(req);
 		String path = Mvcs.getRequestPath(req);
-		
+
 		if (log.isInfoEnabled())
 			log.info(path);
-		
+
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);
 		if (null == ing || null == ing.getInvoker())
