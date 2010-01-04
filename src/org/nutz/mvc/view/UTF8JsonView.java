@@ -11,7 +11,7 @@ import org.nutz.mvc.View;
 
 /**
  * 将数据采用json方式输出的试图实现
- *
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author mawn(ming300@gmail.com)
  */
@@ -33,12 +33,12 @@ public class UTF8JsonView implements View {
 			throws IOException {
 		// by mawm 改为直接采用resp.getWriter()的方式直接输出!
 		resp.setHeader("Cache-Control", "no-cache");
-		resp.setContentType("text/json;charset=UTF-8");
-		
+		resp.setContentType("text/plain");
+
 		if (null == obj)
 			obj = data;
 		Json.toJson(resp.getWriter(), obj, format);
-		
+
 		resp.flushBuffer();
 	}
 }
