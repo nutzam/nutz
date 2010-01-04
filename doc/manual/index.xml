@@ -72,6 +72,9 @@
 		<doc path="index_xml.man"/>
 		<doc path="dir_convert.man"/>
 	</doc>
+	<doc path="history" title="版本历史">
+		<doc path="1.a.25.man"/>
+	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="create_datasource.man"/>
 		<doc path="resources.man"/>
