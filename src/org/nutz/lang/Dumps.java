@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
  * 显示对象的信息，为日志以及调试提供帮助的函数集
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Dumps {
 
@@ -18,6 +19,8 @@ public abstract class Dumps {
 	 * @param m
 	 *            Matcher 对象
 	 * @return 信息
+	 * 
+	 * @throws java.lang.NullPointerException when m is null
 	 */
 	public static String matcher(Matcher m) {
 		StringBuilder sb = new StringBuilder();
