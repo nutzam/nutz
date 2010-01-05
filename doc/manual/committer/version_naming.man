@@ -1,5 +1,6 @@
 #title: Nutz 的版本命名规范
 #author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #verifier:Xiaofeng.Fu(hilliate@gmail.com)
 
 Nutz 每个版本 jar 包的命名遵照如下格式
@@ -27,3 +28,19 @@ Nutz 每个版本 jar 包的命名遵照如下格式
 	 * 1.a.20 比较新，因为它的发布序号更新
 	 * 1.b.18 更稳定，它可以兼容之前所有的 beta 版本
 	 * 1.b.19 之后的 beta 版本，将兼容到 1.b.18 （不包括），因为期间的 alpha 版将兼容序列破坏了
+	 
+每月快照版的命名规则
+    {{{
+    nutz-主版本号.质量级别.[发布序号]-snapshot-r[SVN仓库版本]-jdk[编译等级].jar.jar
+    }}}
+     # {*主版本号.质量级别.[发布序号]} 仅代表可能的下一版本的信息.
+     # {*SVN仓库版本} : 对应的SVN仓库特定的版本
+     # {*编译等级} : JDK 1.5 或者 JDK 1.6 等
+    
+每月快照版的发布规则
+     # 每月1/15前后发布,必须通过全部测试用例
+     # 发布格式为zip文件,含jar和source
+     
+对于每月快照版的提示
+     # 不应使用于生产环境
+     # 任何快照版之间,任何标准版与快照版之间,不做任何兼容性方面的保证
