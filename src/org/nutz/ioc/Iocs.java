@@ -17,6 +17,11 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public abstract class Iocs {
 
 	private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events)$";
@@ -216,6 +221,15 @@ public abstract class Iocs {
 		// merge events
 		if (me.getEvents() == null) {
 			me.setEvents(it.getEvents());
+		} else if(it.getEvents() != null){
+			IocEventSet eventSet = it.getEvents();
+			IocEventSet myEventSet = me.getEvents();
+			if (Strings.isBlank(myEventSet.getCreate()))
+				myEventSet.setCreate(eventSet.getCreate());
+			if (Strings.isBlank(myEventSet.getDepose()))
+				myEventSet.setDepose(eventSet.getDepose());
+			if (Strings.isBlank(myEventSet.getFetch()))
+				myEventSet.setFetch(eventSet.getFetch());
 		}
 
 		// merge scope
