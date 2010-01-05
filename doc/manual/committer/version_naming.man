@@ -1,4 +1,5 @@
 #title: Nutz 的版本命名规范
+#author:zozoh(zozohtnt@gmail.com)
 #verifier:Xiaofeng.Fu(hilliate@gmail.com)
 
 Nutz 每个版本 jar 包的命名遵照如下格式
