@@ -1,16 +1,17 @@
 #title:Nutz 的包结构
 
 org.nutz.*
-	|| {*包名}	|| {*描述}														|| {*依赖} ||
-	||aop		|| 拦截器框架													|| {_*javassist.jar} {^(3.0以上版本均可，但未经验证)} ||
-	||castors	|| 对象类型转换框架												|| {*lang}, {*json} ||
-	||dao		|| 对象持久化框架												|| {*lang}, {*castors}, {*trans} ||
-	||filepool	|| 文件池接口以及默认实现										|| {*lang}, {*castors}   ||
-	||http		|| Http 的发送													|| {*lang}, {#00A;*_servlet-api.jar} ||
-	||ioc		|| 对象生命周期管理框架											||  {*lang}, {*castors}, {*json}, {*aop} ||
-	||json		|| JSON 的解析器和渲染器										||  {*lang}, {*castors} ||
+	|| {*包名}	|| {*描述}													|| {*依赖} ||
+	||aop		|| 拦截器框架												|| {*lang} ||
+	||castors	|| 对象类型转换框架											|| {*lang}, {*json} ||
+	||dao		|| 对象持久化框架											|| {*lang}, {*castors}, {*trans} ||
+	||filepool	|| 文件池接口以及默认实现										|| {*lang}, {*castors} ||
+	||http		|| Http 的发送												|| {*lang}, {#00A;*_servlet-api.jar} ||
+	||ioc		|| 对象生命周期管理框架										|| {*lang}, {*castors}, {*json}, {*aop} ||
+	||json		|| JSON 的解析器和渲染器										|| {*lang}, {*castors} ||
 	||lang		|| 在 JDK 的基础上，提供了一些便利方法							|| {#080;_不依赖任何第三方 jar 包} ||
-	||log		|| 轻便的 Log 打印的功能，并提供了监听器，可以和 Ioc 框架整合	|| {*aop} ||
-	||mvc		|| Web 框架，提供了 Servlet 用来嵌入到 web.xml 中				|| {*ioc} ||
+	||log		|| 轻便的 Log 打印的功能                                                                                          	|| {*plugin} ||
+	||mvc		|| Web 框架，提供了 Servlet 用来嵌入到 web.xml 中				|| {*ioc}, {#00A;*_servlet-api.jar} ||
 	||service	|| org.nutz.dao.Dao 接口的高级封装，提供了树形数据的操作能力	|| {*dao} ||
 	||trans		|| 用接口回调的方式，为 dao 提供事务性操作的支持。				|| {*lang} ||
+	||plugin	|| 轻便的插件机制。				                            || {*lang} ||
