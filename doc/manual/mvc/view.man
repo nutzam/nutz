@@ -5,51 +5,103 @@
 	视图就是一种渲染 HTTP 输出流的一种方式。 Nutz.Mvc 提供了 org.nutz.mvc.View 接口，隔离了这个行为。
 ------------------------------------------------------------------------------------------
 怎样使用视图？
-	执行一个业务逻辑可能有两种结果
-	 # 成功
-	 # 失败
-	在每个入口函数上，你都可声明这两个注解
-	 # @Ok
-	 # @Fail
-	仔细观察，你会发现，这两个注解的值只能是一个字符串，那么怎么通过字符串，匹配到视图呢？
+	通过注解 @Ok 和 @Fail 你可以为你的入口函数声明不同的渲染方式。当然，在你的逻辑非常复杂的情况下
+	你可以从你的入口函数直接返回一个 View 对象。
 
-	无论是 @Ok 还是 @Fail，他们的值的格式总是：
-	{{{
-	"视图类型:视图值"
-	}}}
-	 * 字符 ':' 将这个字符串隔断，左半部分是视图的类型，右半部分是视图的值。
-	 * 不同的视图类型，值的形式可能也是不一样的
+	通过注解 
+		执行一个业务逻辑可能有两种结果
+		 # 成功
+		 # 失败
+		在每个入口函数上，你都可声明这两个注解
+		 # @Ok
+		 # @Fail
+		仔细观察，你会发现，这两个注解的值只能是一个字符串，那么怎么通过字符串，匹配到视图呢？
 
-	通过 {*org.nutz.mvc.view.DefaultViewMaker}， Nutz.Mvc 提供了一些默认视图 ...
+		无论是 @Ok 还是 @Fail，他们的值的格式总是：
+		{{{
+		"视图类型:视图值"
+		}}}
+		 * 字符 ':' 将这个字符串隔断，左半部分是视图的类型，右半部分是视图的值。
+		 * 不同的视图类型，值的形式可能也是不一样的
+	
+	直接返回 View 对象
+		你可以在你入口函数根据不同的条件，决定返回何种视图。
+		如果你需要为你的视图声明要渲染的数据，请返回 org.nutz.mvc.view.ViewWrapper
+		
+		比如你可以这样写：
+		{{{
+		...
+		@At("/myurl")
+		public View myFunction(@Param("type") type){
+			if(type==0)
+				return new ViewWrapper(new UTF8JsonView(), "It is zero!");
+			
+			if(type<10)
+				return new ViewWrapper(new UTF8JsonView(), "It less than 10!");
+			
+			return new ViewWrapper(new JspView("mypage.showNumber"), type);
+		}
+		...
+		}}}
+		
+
 ------------------------------------------------------------------------------------------
 内置的视图
-	
-	默认的， @Ok 和 @Fail 注解可以支持如下视图类型：
+	通过 {*org.nutz.mvc.view.DefaultViewMaker}， Nutz.Mvc 提供了一些内置视图， 你可以通过
+	@Ok 和 @Fail 注解声明在你的入口函数上
 	--------------------------------------------------------------------------------------
 	JSP 视图
 		视图的实现类为： {*org.nutz.mvc.view.NamePathJspView}
 
 		一般的使用形式：
-		{{{
-		@Ok("jsp:pet.detail")
-		}}}
-		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+			{{{
+			@Ok("jsp:pet.detail")
+			}}}
+			将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
 
-		你可以不声明视图的值：
-		{{{
-		@Ok("jsp")
-		}}}
-		那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
-		{{{
-		/pet/detail.nut
-		}}}
-		将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
+			你可以不声明视图的值：
+			{{{
+			@Ok("jsp")
+			}}}
+			那么会根据这个请求的地址来寻找 JSP 文件，比如请求：
+			{{{
+			/pet/detail.nut
+			}}}
+			将会使用 {*/WEB-INF/pet/detail.jsp} 来渲染 HTTP 输出流
 		
-		如果你使用 JSTL，你还可以
-		 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [mvc_localization.man 本地化字符串更多的介绍]
-		 * 通过 `${base}` 输出当前应用的 ContextPath
-		 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
-		 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
+		使用 JSTL
+			如果你使用 JSTL，你还可以
+			 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [mvc_localization.man 本地化字符串更多的介绍]
+			 * 通过 `${base}` 输出当前应用的 ContextPath
+			 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
+			 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
+		
+		JSP 文件的位置
+			有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 
+			放在 WEB-INF 外面。
+			
+			这个将对应 /WEB-INF/abc/bbc.jsp
+			{{{
+			@Ok("jsp:abc.bbc")
+			}}}
+			
+			这个将对应 /abc/bbc.jsp
+			{{{
+			@Ok("jsp:/abc/bbc")
+			}}}
+			
+			这个也将对应 /abc/bbc.jsp
+			{{{
+			@Ok("jsp:/abc/bbc.jsp")
+			}}}
+		
+		本地化字符串
+			在 Nutz.Mvc 入口函数里使用的 JSP 文件可以使用 `${base}` 和 `${msg}` 来获取应用的 URL 前缀
+			以及本地字符串。
+			
+			如果你希望放在 WEB-INF 外面如果还希望使用本地化字符串，
+			那么你需要在 web.xml 额外声明一个 Fileter，
+			请参考 [localization.man 本地化字符串] {*使用过滤器}一节。
 	--------------------------------------------------------------------------------------
 	JSON 视图
 		视图的实现类为： {*org.nutz.mvc.view.UTF8JsonView}

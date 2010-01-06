@@ -36,50 +36,57 @@ public class ObjectMakerImpl implements ObjectMaker {
 		ObjectProxy op = new ObjectProxy();
 		if (iobj.isSingleton() && null != ing.getObjectName())
 			ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
+		try {
+			// 解析对象的编织方式
+			DynamicWeaver dw;
+			if (iobj.isSingleton())
+				dw = new StaticWeaver();
+			else
+				dw = new DynamicWeaver();
 
-		// 解析对象的编织方式
-		DynamicWeaver dw;
-		if(iobj.isSingleton())
-			dw = new StaticWeaver();
-		else
-			dw = new DynamicWeaver();
-
-		// 建立对象的事件触发器
-		if (null != iobj.getEvents()) {
-			IocEventSet iocEventSet = iobj.getEvents();
-			op.setFetch(createTrigger(mirror, iocEventSet.getFetch()));
-			dw.setCreate(createTrigger(mirror, iocEventSet.getCreate()));
-			dw.setDepose(createTrigger(mirror, iocEventSet.getDepose()));
-		}
-
-		// 构造函数参数
-		ValueProxy[] vps = new ValueProxy[Lang.length(iobj.getArgs())];
-		for (int i = 0; i < vps.length; i++)
-			vps[i] = ing.makeValue(iobj.getArgs()[i]);
-		dw.setArgs(vps);
-
-		// 先获取一遍，根据这个数组来获得构造函数
-		Object[] args = new Object[vps.length];
-		for (int i = 0; i < args.length; i++)
-			args[i] = vps[i].get(ing);
-
-		// 缓存构造函数
-		dw.setBorning((Borning<?>) mirror.getBorning(args));
-
-		// 获得每个字段的注入方式
-		FieldInjector[] fields = new FieldInjector[iobj.getFields().length];
-		for (int i = 0; i < fields.length; i++) {
-			IocField ifld = iobj.getFields()[i];
-			try {
-				ValueProxy vp = ing.makeValue(ifld.getValue());
-				fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
-			} catch (Exception e) {
-				throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+			// 建立对象的事件触发器
+			if (null != iobj.getEvents()) {
+				IocEventSet iocEventSet = iobj.getEvents();
+				op.setFetch(createTrigger(mirror, iocEventSet.getFetch()));
+				dw.setCreate(createTrigger(mirror, iocEventSet.getCreate()));
+				dw.setDepose(createTrigger(mirror, iocEventSet.getDepose()));
 			}
-		}
-		dw.setFields(fields);
 
-		op.setWeaver(dw);
+			// 构造函数参数
+			ValueProxy[] vps = new ValueProxy[Lang.length(iobj.getArgs())];
+			for (int i = 0; i < vps.length; i++)
+				vps[i] = ing.makeValue(iobj.getArgs()[i]);
+			dw.setArgs(vps);
+
+			// 先获取一遍，根据这个数组来获得构造函数
+			Object[] args = new Object[vps.length];
+			for (int i = 0; i < args.length; i++)
+				args[i] = vps[i].get(ing);
+
+			// 缓存构造函数
+			dw.setBorning((Borning<?>) mirror.getBorning(args));
+
+			// 获得每个字段的注入方式
+			FieldInjector[] fields = new FieldInjector[iobj.getFields().length];
+			for (int i = 0; i < fields.length; i++) {
+				IocField ifld = iobj.getFields()[i];
+				try {
+					ValueProxy vp = ing.makeValue(ifld.getValue());
+					fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
+				} catch (Exception e) {
+					throw Lang
+							.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+				}
+			}
+			dw.setFields(fields);
+
+			op.setWeaver(dw);
+		}
+		// 当异常发生，从 context 里移除 ObjectProxy
+		catch (Throwable e) {
+			ing.getContext().remove(iobj.getScope(), ing.getObjectName());
+			throw Lang.wrapThrow(e);
+		}
 
 		// 返回
 		return op;

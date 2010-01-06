@@ -26,6 +26,31 @@
 		 * 会话中的 Locale
 		 * 整个应用支持的语言列表: Mvcs.getLocaleNames(ServletContext context)
 ------------------------------------------------------------------------------------------
+使用过滤器
+	有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"{*本地化字符串}"
+	功能，那么你需要在 web.xml 这么配置:
+	{{{
+	<!--
+		Nutz.Mvc 还提供了一个过滤器，你可以用这个过滤器为所有的直接访问的 jsp 设置必要的 Request 属性。 比如 ${base}
+		以及 ${msg}
+	-->
+	<filter>
+		<filter-name>msgs</filter-name>
+		<filter-class>org.nutz.mvc.NutFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>msgs</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>msgs</filter-name>
+		<url-pattern>*.jspx</url-pattern>
+	</filter-mapping>
+	}}}
+	
+------------------------------------------------------------------------------------------
 定制自己的本地化字符串方式
 	很简单是吗？ 你想将 Message 字符串存在 XML 里，或者你想换一种 Message 字符串的存储方式。
 	那么实现一个新的 {*org.nutz.mvc.MessageLoader}，并在 @Localization 注解的 type 属性中注明就是了。
