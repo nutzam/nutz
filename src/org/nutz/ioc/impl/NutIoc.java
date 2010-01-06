@@ -20,6 +20,11 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ */
 public class NutIoc implements Ioc2 {
 
 	private static Log log = Logs.getLog(NutIoc.class);
@@ -71,17 +76,17 @@ public class NutIoc implements Ioc2 {
 		IocMaking ing = new IocMaking(this, mirrors, cntx, maker, vpms, name);
 
 		// 从上下文缓存中获取对象代理
-		ObjectProxy re = cntx.fetch(name);
+		ObjectProxy op = cntx.fetch(name);
 
 		// 如果未发现对象
-		if (null == re) {
+		if (null == op) {
 			// 线程同步
 			synchronized (this) {
 				// 再次读取
-				re = cntx.fetch(name);
+				op = cntx.fetch(name);
 
 				// 如果未发现对象
-				if (null == re) {
+				if (null == op) {
 					try {
 						if (log.isDebugEnabled())
 							log.debug("\t >> Load definition");
@@ -105,7 +110,7 @@ public class NutIoc implements Ioc2 {
 						// 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
 						if (log.isDebugEnabled())
 							log.debug("\t >> Make...");
-						re = maker.make(ing, iobj);
+						op = maker.make(ing, iobj);
 					}
 					// 处理异常
 					catch (ObjectLoadException e) {
@@ -114,7 +119,7 @@ public class NutIoc implements Ioc2 {
 				}
 			}
 		}
-		return (T) re.get(type, ing);
+		return (T) op.get(type, ing);
 	}
 
 	public <T> T get(Class<T> type, String name) {

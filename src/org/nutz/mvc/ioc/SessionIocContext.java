@@ -10,6 +10,11 @@ import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.weaver.StaticWeaver;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ */
 public class SessionIocContext implements IocContext {
 
 	private HttpSession session;
@@ -51,7 +56,9 @@ public class SessionIocContext implements IocContext {
 		if (re instanceof ObjectProxy)
 			return (ObjectProxy) re;
 		ObjectProxy op = new ObjectProxy();
-		op.setWeaver(new StaticWeaver(re, null));
+		StaticWeaver staticWeaver = new StaticWeaver();
+		staticWeaver.setObj(re);
+		op.setWeaver(staticWeaver);
 		return op;
 	}
 

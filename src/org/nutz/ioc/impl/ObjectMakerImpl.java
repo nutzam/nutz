@@ -1,17 +1,17 @@
 package org.nutz.ioc.impl;
 
-import java.lang.reflect.Method;
-
 import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxy;
+import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.trigger.MethodEventTrigger;
 import org.nutz.ioc.weaver.DynamicWeaver;
 import org.nutz.ioc.weaver.FieldInjector;
+import org.nutz.ioc.weaver.StaticWeaver;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -21,6 +21,7 @@ import org.nutz.lang.born.Borning;
  * 在这里，需要考虑 AOP
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class ObjectMakerImpl implements ObjectMaker {
 
@@ -37,13 +38,18 @@ public class ObjectMakerImpl implements ObjectMaker {
 			ing.getContext().save(iobj.getScope(), ing.getObjectName(), op);
 
 		// 解析对象的编织方式
-		DynamicWeaver dw = new DynamicWeaver();
+		DynamicWeaver dw;
+		if(iobj.isSingleton())
+			dw = new StaticWeaver();
+		else
+			dw = new DynamicWeaver();
 
 		// 建立对象的事件触发器
 		if (null != iobj.getEvents()) {
-			op.setFetch(createTrigger(mirror, iobj.getEvents().getFetch()));
-			dw.setCreate(createTrigger(mirror, iobj.getEvents().getCreate()));
-			dw.setDepose(createTrigger(mirror, iobj.getEvents().getDepose()));
+			IocEventSet iocEventSet = iobj.getEvents();
+			op.setFetch(createTrigger(mirror, iocEventSet.getFetch()));
+			dw.setCreate(createTrigger(mirror, iocEventSet.getCreate()));
+			dw.setDepose(createTrigger(mirror, iocEventSet.getDepose()));
 		}
 
 		// 构造函数参数
@@ -73,11 +79,7 @@ public class ObjectMakerImpl implements ObjectMaker {
 		}
 		dw.setFields(fields);
 
-		// 如果对象是 singleton, 那么转变成 static weaver
-		if (iobj.isSingleton())
-			op.setWeaver(dw.toStatic(ing));
-		else
-			op.setWeaver(dw);
+		op.setWeaver(dw);
 
 		// 返回
 		return op;
@@ -97,12 +99,10 @@ public class ObjectMakerImpl implements ObjectMaker {
 			}
 		}
 		try {
-			Method m = mirror.findMethod(str);
-			return new MethodEventTrigger(m);
+			return new MethodEventTrigger(mirror.findMethod(str));
 		} catch (NoSuchMethodException e) {
 			throw Lang.wrapThrow(e);
 		}
-
 	}
 
 }

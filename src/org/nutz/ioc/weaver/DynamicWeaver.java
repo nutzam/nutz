@@ -6,10 +6,15 @@ import org.nutz.ioc.ObjectWeaver;
 import org.nutz.ioc.ValueProxy;
 import org.nutz.lang.born.Borning;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ */
 public class DynamicWeaver implements ObjectWeaver {
 
-	private IocEventTrigger<Object> create;
-	private IocEventTrigger<Object> depose;
+	protected IocEventTrigger<Object> create;
+	protected IocEventTrigger<Object> depose;
 	private Borning<?> borning;
 	private ValueProxy[] args;
 	private FieldInjector[] fields;
@@ -36,6 +41,9 @@ public class DynamicWeaver implements ObjectWeaver {
 
 	public void depose() {}
 
+	/**
+	 * 生成对象
+	 */
 	public Object weave(IocMaking ing) {
 		// 准备构造函数参数
 		Object[] args = new Object[this.args.length];
@@ -44,7 +52,7 @@ public class DynamicWeaver implements ObjectWeaver {
 
 		// 创建实例
 		Object obj = borning.born(args);
-
+		
 		// 设置字段的值
 		for (FieldInjector fi : fields)
 			fi.inject(ing, obj);
@@ -52,13 +60,6 @@ public class DynamicWeaver implements ObjectWeaver {
 		// 触发创建事件
 		if (null != create)
 			create.trigger(obj);
-
-		// 返回
 		return obj;
-	}
-
-	public StaticWeaver toStatic(IocMaking ing) {
-		Object obj = weave(ing);
-		return new StaticWeaver(obj, depose);
 	}
 }
