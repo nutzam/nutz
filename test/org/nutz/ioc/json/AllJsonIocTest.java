@@ -5,5 +5,5 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({SimpleJsonIocTest.class, EvensJsonIocTest.class, AopJsonIocTest.class,
-		ScopeJsonIocTest.class, AdvanceJsonIocTest.class})
+		ScopeJsonIocTest.class})
 public class AllJsonIocTest {}
