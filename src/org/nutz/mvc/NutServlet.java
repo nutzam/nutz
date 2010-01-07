@@ -29,7 +29,19 @@ public class NutServlet extends HttpServlet {
 
 	private static final Log log = Logs.getLog(NutServlet.class);
 
-	protected UrlMap urls;
+	/**
+	 * Nutz.Mvc 的参数映射表
+	 */
+	private UrlMap urls;
+
+	/**
+	 * Nutz.Mvc 是否成功的被挂接在 JSP/Servlet 容器上。这个标志位可以为子类提供参考
+	 */
+	private boolean ok;
+
+	protected boolean isOk() {
+		return ok;
+	}
 
 	@Override
 	public void init() throws ServletException {
@@ -72,6 +84,9 @@ public class NutServlet extends HttpServlet {
 			sw.stop();
 			if (log.isInfoEnabled())
 				log.infof("Nutz.Mvc[%s] is up in %sms", this.getServletName(), sw.getDuration());
+
+			// 设置成功标志
+			ok = true;
 
 		} catch (Throwable e) {
 			if (log.isErrorEnabled())

@@ -495,13 +495,21 @@ public class JsonTest {
 		assertEquals("zzh", room.getPersons().get(0).getName());
 		assertEquals("wendal", room.getPersons().get(1).getName());
 	}
-	
+
 	@Test
-	public void test_generic_type_list2(){
+	public void test_ioc_value() {
+		String s = "{value:1,type:'normal}";
+		IocValue iv = Json.fromJson(IocValue.class, s);
+		assertEquals(1, ((Integer) iv.getValue()).intValue());
+		assertEquals("normal", iv.getType());
+	}
+
+	@Test
+	public void test_generic_type_list2() {
 		IocObject iocObject = new IocObject();
 		iocObject.setType(String.class);
-		
-		//Field1
+
+		// Field1
 		{
 			IocField f1 = new IocField();
 			f1.setName("xxx");
@@ -511,7 +519,7 @@ public class JsonTest {
 			f1.setValue(iocValue);
 			iocObject.addField(f1);
 		}
-		//Field2
+		// Field2
 		{
 			IocField f1 = new IocField();
 			f1.setName("xxx");
@@ -522,8 +530,8 @@ public class JsonTest {
 			iocObject.addField(f1);
 		}
 		String i1_json = Json.toJson(iocObject);
-		IocObject i2 = Json.fromJson(IocObject.class,i1_json);
-		
+		IocObject i2 = Json.fromJson(IocObject.class, i1_json);
+
 		assertEquals(i1_json, Json.toJson(i2));
 		assertTrue(i2.getFields().length > 0);
 		i2.getArgs();
