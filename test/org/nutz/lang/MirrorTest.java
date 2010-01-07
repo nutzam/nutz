@@ -360,11 +360,15 @@ public class MirrorTest {
 
 	class Abcc {
 
-		Map<String, Object> map;
+		Map<String, Mirror<?>> map;
 
-		List<Abcc> abccs;
+		List<Abcc> list;
 
 		String name;
+
+		Map<?, String> map2;
+
+		List<?> list2;
 
 	}
 
@@ -374,12 +378,23 @@ public class MirrorTest {
 		Class<?>[] types = Mirror.getGenericTypes(f);
 		assertEquals(2, types.length);
 		assertEquals(String.class, types[0]);
-		assertEquals(Object.class, types[1]);
+		assertEquals(Mirror.class, types[1]);
 
-		f = Abcc.class.getDeclaredField("abccs");
+		f = Abcc.class.getDeclaredField("map2");
+		types = Mirror.getGenericTypes(f);
+		assertEquals(2, types.length);
+		assertEquals(Object.class, types[0]);
+		assertEquals(String.class, types[1]);
+
+		f = Abcc.class.getDeclaredField("list");
 		types = Mirror.getGenericTypes(f);
 		assertEquals(1, types.length);
 		assertEquals(Abcc.class, types[0]);
+
+		f = Abcc.class.getDeclaredField("list2");
+		types = Mirror.getGenericTypes(f);
+		assertEquals(1, types.length);
+		assertEquals(Object.class, types[0]);
 
 		f = Abcc.class.getDeclaredField("name");
 		types = Mirror.getGenericTypes(f);

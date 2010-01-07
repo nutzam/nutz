@@ -1187,8 +1187,18 @@ public class Mirror<T> {
 			if (ss.length > 0) {
 				Class<?>[] re = new Class<?>[ss.length];
 				try {
-					for (int i = 0; i < ss.length; i++)
-						re[i] = Class.forName(ss[i]);
+					for (int i = 0; i < ss.length; i++) {
+						String className = ss[i];
+						if (className.startsWith("?"))
+							re[i] = Object.class;
+						else {
+							int pos = className.indexOf('<');
+							if (pos < 0)
+								re[i] = Class.forName(className);
+							else
+								re[i] = Class.forName(className.substring(0, pos));
+						}
+					}
 					return re;
 				} catch (ClassNotFoundException e) {
 					throw Lang.wrapThrow(e);

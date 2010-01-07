@@ -483,4 +483,13 @@ public class JsonTest {
 	public void test_output_json_string() {
 		assertEquals("\"A:\\\"'\\\\\"", Json.toJson("A:\"'\\"));
 	}
+
+	@Test
+	public void test_generic_type_list() {
+		String s = "{persons: [{name:'zzh'}, {name:'wendal'}]}";
+		Room room = Json.fromJson(Room.class, s);
+		assertEquals(2, room.getPersons().size());
+		assertEquals("zzh", room.getPersons().get(0).getName());
+		assertEquals("wendal", room.getPersons().get(1).getName());
+	}
 }

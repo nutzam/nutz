@@ -29,7 +29,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(null);
+		return new JsonParsing(reader).parseFromJson(null, null);
 	}
 
 	/**
@@ -43,7 +43,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(type);
+		return new JsonParsing(reader).parseFromJson(type, null);
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class Json {
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
 		try {
-			if(format == null)
+			if (format == null)
 				format = JsonFormat.nice();
 			new JsonRendering(writer, format).render(obj);
 			writer.flush();

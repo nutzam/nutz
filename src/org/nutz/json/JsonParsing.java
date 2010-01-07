@@ -92,11 +92,11 @@ class JsonParsing {
 		return true;
 	}
 
-	<T> T parseFromJson(Class<T> type) {
+	<T> T parseFromJson(Class<T> type, Class<?> componentType) {
 		try {
 			nextChar();
 			skipCommentsAndBlank();
-			return parseFromCurrentLocation(type);
+			return parseFromCurrentLocation(type, componentType);
 		} catch (JsonException e) {
 			throw e;
 		} catch (Exception e) {
@@ -111,13 +111,13 @@ class JsonParsing {
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
-	private <T> T parseFromCurrentLocation(Class<T> type) throws Exception {
+	private <T> T parseFromCurrentLocation(Class<T> type, Class<?> componentType) throws Exception {
 		Mirror<T> me = Mirror.me(type);
 		switch (cursor) {
 		case -1:
 			return null;
 		case '[':
-			Class<?> compType = null;
+			Class<?> compType = componentType;
 			boolean reurnAsList = true;
 			List list = null;
 			/*
@@ -142,7 +142,7 @@ class JsonParsing {
 			nextChar();
 			skipCommentsAndBlank();
 			while (cursor != -1 && cursor != ']') {
-				Object o = parseFromCurrentLocation(compType);
+				Object o = parseFromCurrentLocation(compType, null);
 				list.add(o);
 				skipCommentsAndBlank();
 				if (cursor == ']')
@@ -172,7 +172,7 @@ class JsonParsing {
 						: (Map<String, Object>) me.born();
 				while (cursor != -1 && cursor != '}') {
 					String name = readFieldName();
-					Object value = parseFromJson(null);
+					Object value = parseFromJson(null, componentType);
 					map.put(name, value);
 					if (!findNextNamePair())
 						break;
@@ -184,7 +184,22 @@ class JsonParsing {
 			T obj = me.born();
 			while (cursor != -1 && cursor != '}') {
 				Field f = me.getField(readFieldName());
-				Object value = parseFromJson(f.getType());
+				Class<?> ft = f.getType();
+				Class<?> eleType = null;
+				// List field
+				if (List.class.isAssignableFrom(ft)) {
+					Class<?>[] ts = Mirror.getGenericTypes(f);
+					if (ts.length > 0)
+						eleType = ts[0];
+				}
+				// Map Field
+				else if (Map.class.isAssignableFrom(ft)) {
+					Class<?>[] ts = Mirror.getGenericTypes(f);
+					if (ts.length > 1)
+						eleType = ts[1];
+				}
+				// Parsing...
+				Object value = parseFromJson(f.getType(), eleType);
 				me.setValue(obj, f, value);
 				if (!findNextNamePair())
 					break;
@@ -286,7 +301,7 @@ class JsonParsing {
 			if ('a' == nextChar() && 'r' == nextChar() && ' ' == nextChar() && 'i' == nextChar()
 					&& 'o' == nextChar() && 'c' == nextChar() && ' ' == nextChar()
 					&& '=' == nextChar() && ' ' == nextChar() && '{' == nextChar())
-				return parseFromCurrentLocation(type);
+				return parseFromCurrentLocation(type, componentType);
 		default:
 			throw makeError("Don't know how to handle this char");
 		}
