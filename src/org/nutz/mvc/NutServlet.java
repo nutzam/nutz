@@ -29,7 +29,7 @@ public class NutServlet extends HttpServlet {
 
 	private static final Log log = Logs.getLog(NutServlet.class);
 
-	private UrlMap urls;
+	protected UrlMap urls;
 
 	@Override
 	public void init() throws ServletException {
