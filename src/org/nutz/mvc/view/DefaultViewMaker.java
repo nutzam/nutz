@@ -24,7 +24,7 @@ public class DefaultViewMaker implements ViewMaker {
 				JsonFormat format = Json.fromJson(JsonFormat.class, value);
 				return new UTF8JsonView(format);
 			}
-		} else if (type.equals("redirect")) {
+		} else if (type.equals("redirect") || type.equals("=>")) {
 			return new ServerRedirectView(value);
 		} else if (type.equals("void")) {
 			return new VoidView();
