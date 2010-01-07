@@ -17,8 +17,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.test.meta.Base;
-import org.nutz.ioc.meta.IocField;
-import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -502,39 +500,5 @@ public class JsonTest {
 		IocValue iv = Json.fromJson(IocValue.class, s);
 		assertEquals(1, ((Integer) iv.getValue()).intValue());
 		assertEquals("normal", iv.getType());
-	}
-
-	@Test
-	public void test_generic_type_list2() {
-		IocObject iocObject = new IocObject();
-		iocObject.setType(String.class);
-
-		// Field1
-		{
-			IocField f1 = new IocField();
-			f1.setName("xxx");
-			IocValue iocValue = new IocValue();
-			iocValue.setType("normal");
-			iocValue.setValue(1);
-			f1.setValue(iocValue);
-			iocObject.addField(f1);
-		}
-		// Field2
-		{
-			IocField f1 = new IocField();
-			f1.setName("xxx");
-			IocValue iocValue = new IocValue();
-			iocValue.setType("normal");
-			iocValue.setValue("我是来找茬的");
-			f1.setValue(iocValue);
-			iocObject.addField(f1);
-		}
-		String i1_json = Json.toJson(iocObject);
-		IocObject i2 = Json.fromJson(IocObject.class, i1_json);
-
-		assertEquals(i1_json, Json.toJson(i2));
-		assertTrue(i2.getFields().length > 0);
-		i2.getArgs();
-		i2.getEvents();
 	}
 }
