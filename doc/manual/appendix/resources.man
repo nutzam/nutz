@@ -10,6 +10,8 @@
 关于 Dao
 	 * 《[http://amosleaf.javaeye.com/blog/548337 Nutz的 数据库事务]》\
 		 @[http://amosleaf.javaeye.com amosleaf]
+	 * 《[http://amosleaf.javaeye.com/blog/562141 Nutz的 使用注解做ORM]》\
+		 @[http://amosleaf.javaeye.com amosleaf]
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \

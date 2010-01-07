@@ -3,29 +3,17 @@
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-{#F00;*这是个里程碑式的版本}，从这个版本开始， Nutz 将不再依赖 Javassist，而依赖 ASM(内嵌Asm 3.2 ,无需额外jar包)
-所以，编译时，你将不再需要 Javassist.jar （在此，特地感谢	[http://wendal.javaeye.com 无敌的 Wendal]）。
+相对于 [../history/1_a_25.man 1.a.25] 来说，{#F00;*这是个小幅改进版本}，使用方式没有太大的变化
 
-同时，为了更好的输出日志，Nutz 在编译时依赖了 Log4j， 但是运行时，没有 Log4j 它会选用 Java 的 Logging 或者是控制台输出。
-
-由于已经有小部分人开始试验性的在自己的项目里应用 Nutz，从本版开始，所有的接口和使用方式{*变动会非常慎重}，
-没有重大理由和经过社区充分讨论，它将保持不变。
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 * Issue 12: Should support one config file can import other config files function. {#AAA;by} {*satellite168}
-	 * Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) {#AAA;by} {*lhasasky}
-	 * Issue 71: aop: 修改拦截器接口,改为使用asm实现 {#AAA;by} {*wendal}
-	 * Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 {#AAA;by} {*lhasasky}
-	 * Issue 78: 出现@Id或者@name时 还需要@column {#AAA;by} {*amosleaf}
-	 * Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性 {#AAA;by} {*zozoh}
-	 * Issue 86: NameInjector不能处理一个name有多个值的情况 {#AAA;by} {*blue_rain}
-	 * Issue 91: delete(Object)操作无法删除@PK对象问题 {#AAA;by} {*harkoo}
-	 * Issue 93: dao update 接口建议 {#AAA;by} {*Bird.Wyatt}
-	 * Issue 96: 将HttpServletRequest所接收的参数转为Map {#AAA;by} {*会跑的蜗牛}
+	 * Issue 100: MVC手册在jsp视图处描述有误 {#AAA;by} {*ToFishes}
+	 * Isseu 102: 在update时，如果http参数有Date类型为null，会出错   {#AAA;by} {*会跑的蜗牛}
+	 * Isseu 103: 移除JsonIocLoader中对$import,$vars的支持   {#AAA;by} {*Wendal}
+	 * Isseu 104: 当server启动后,死一次访问界面无法显示国际化的message   {#AAA;by} {*Bird.Wyatt}
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 397 个单元测试用例
-	 # 可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）
+	 # 共通过了 {#F0F;*399} 个单元测试用例
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
 		 * H2
 		 * MySql
@@ -35,54 +23,31 @@
 		 * SqlServer2000
 --------------------------------------------------------------------------------------------------------
 改进
-	 # 重新实现Log模块，支持 Log4j, Jdk Log
-	 # 新增Plugin模块， 支持“部署时决定插件的实现”
-	 # 修改了测试用例 JsonCharsetTest.test_zh_CN_from_file
-	 # Castors 去掉了大多数静态方法
-	 # JsonFormat 支持设置自定义 Castors
-	 # Log 部分的结构和实现修改的更加简洁
+	 # 小幅修正了一些 Bug 和文档错误
 --------------------------------------------------------------------------------------------------------
 文档
-	 # 添加了 Nutz.Lang （Wiki 《[lang/lang.man 甜Java]》）下全部文档
-	 # 完成了 [lang/mirror.man Mirror] 类的所有 Java Doc
+	 # 修改了 [../mvc/view.man Mvc 视图部分]
 --------------------------------------------------------------------------------------------------------
 博客
-	 * 《[http://wendal.javaeye.com/blog/543936 Nutz:重新发明轮子:自己动手,用字节码工具做一个Aop拦截器]》\
-			@[http://wendal.javaeye.com Wendal]
-	 * 《[http://wendal.javaeye.com/blog/543681 Nutz:基于ASM的Nut.Aop实现]》\
-			@[http://wendal.javaeye.com Wendal]
-	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
-			@[http://axhack.javaeye.com Axhack]
-	 * 《[http://zozoh.javaeye.com/blog/526494 回复fireflyc：Nutz 的设计以及提高程序员生产力]》 \
-			@[http://zozoh.javaeye.com zozoh]
-	 * 《[http://amosleaf.javaeye.com/blog/548337 Nutz的 数据库事务]》\
+	 * 《[http://amosleaf.javaeye.com/blog/562141 Nutz的 使用注解做ORM]》\
 			@[http://amosleaf.javaeye.com amosleaf]
-	 * 《[http://xiaofeng.javaeye.com/blog/549410 不用写代码 你也能为开源作出贡献]》\
-			@[http://xiaofeng.javaeye.com hilliate]
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
 	|| 贡献者 									|| 问题 || 博客 || 讨论 || 代码 || Demo || 文档 || 测试 ||
-	|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  X	||  -	||  X	||  -	||  X	||
-	|| [http://www.ai-java.com axhack]			||  -	||  X	||  X	||  -	||  -	||  -	||  -	||
-	|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  -	||  X	||  -	||  X	||  -	||  X	||
-	|| blue_rain								||  X	||  -	||  X	|| -	||  -	||  -	||  X	||
-	|| [http://bonyfish.cn bonyfish]			||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
-	|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  X	||  X	||  -	||  -	||  X	||  X	||
-	|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  X	||  -	||  -	||  X	||  X	||
-	|| mawm										||  X	||  -	||  X	||  X	||  -	||  -	||  -	||
-	|| Roy Tonhee								||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
-	|| satellite168								||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
-	|| lhasasky									||  X	||  -	||  X	||  -	||  -	||  -	||  -	||
-	|| sunonfire								||  -	||  -	||  X	||  X	||  -	||  X	||  -	||
-	|| Tony										||  -	||  -	||  -	||  -	||  -	||  -	||  X	||
-	|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  X	||  -	||  -	||  X	||
-	|| wsc0918									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
-	|| yuansicau								||  X	||  -	||  X	||  -	||  -	||  -	||  -	||
-	|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  X	||  X	||  X	||
-	|| [http://windir.javaeye.com 密林仙踪]		||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
-	|| [http://yinxvxv.javaeye.com 农大天狼]	||  -	||  -	||  X	||  -	||  X	||  -	||  -	||
-	|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  X	||  -	||  -	||  -	||  X	||
-	|| 知足常乐									||  -	||  -	||  X	||  -	||  -	||  -	||  X	||
+	|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://www.ai-java.com axhack]			||  -	||  -	||  X	||  -	||  -	||  -	||  -	||
+	|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  -	||  X	||  -	||  X	||  -	||  -	||
+	|| blue_rain								||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://bonyfish.cn bonyfish]			||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://xiaofeng.javaeye.com hilliate]	||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| mawm										||  -	||  -	||  -	||  X	||  -	||  -	||  -	||
+	|| ToFishes									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://wendal.javaeye.com wendal]		||  -	||  -	||  -	||  X	||  -	||  -	||  -	||
+	|| wsc0918									||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| yuansicau								||  -	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://zozoh.javaeye.com zozoh]			||  -	||  -	||  X	||  X	||  -	||  -	||  -	||
+	|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
 	
 	另外，非常感谢
 	[http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
@@ -95,9 +60,4 @@
 	有时候是可以上的。但是能跳墙还是跳墙的比较好。
 --------------------------------------------------------------------------------------------------------
 下一版目标
-	将主要集中在
-	 * Issue 37 ioc: 自动甄别对象的 Ioc 字段
-	 * Issue 68 通过配置文件添加AOP
-	 * Issue 76 Ioc中增加类似Spring的Autoweave的特性
-	 * Issue 83 castor: 用 Method 替换实现类 
-	 * Issue 87 重新实现一个更友好的字节码工具
+	...
