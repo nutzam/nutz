@@ -263,7 +263,22 @@ class JsonParsing {
 					&& cursor != '}' && cursor != '/');
 			String numValue = Strings.trim(sb);
 
-			if (null == me) { // guess the return type
+			// try actually return type
+			if (null != me) {
+				if (me.isInt()) {
+					return (T) Integer.valueOf(numValue);
+				} else if (me.isLong()) {
+					return (T) Long.valueOf(numValue);
+				} else if (me.isFloat()) {
+					return (T) Float.valueOf(numValue);
+				} else if (me.isDouble()) {
+					return (T) Double.valueOf(numValue);
+				} else if (me.isByte()) {
+					return (T) Byte.valueOf(numValue);
+				}
+			}
+			// guess the return type
+			if (null == me || me.isNumber() || me.is(Object.class)) {
 				char lastChar = Character.toUpperCase(numValue.charAt(numValue.length() - 1));
 				if (numValue.indexOf('.') >= 0) {
 					if (lastChar == 'F')
@@ -277,21 +292,8 @@ class JsonParsing {
 						return (T) Integer.valueOf(numValue);
 				}
 			}
-
-			// try actually return type
-			if (me.isInt()) {
-				return (T) Integer.valueOf(numValue);
-			} else if (me.isLong()) {
-				return (T) Long.valueOf(numValue);
-			} else if (me.isFloat()) {
-				return (T) Float.valueOf(numValue);
-			} else if (me.isDouble()) {
-				return (T) Double.valueOf(numValue);
-			} else if (me.isByte()) {
-				return (T) Byte.valueOf(numValue);
-			} else {
-				throw makeError("type must by one of int|long|float|dobule|byte");
-			}
+			// Unknown case...
+			throw makeError("type must by one of int|long|float|dobule|byte");
 		case 'v':
 			/*
 			 * If meet the "var ioc = {", try to treat it as "{". For the reason

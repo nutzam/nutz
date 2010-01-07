@@ -498,7 +498,7 @@ public class JsonTest {
 
 	@Test
 	public void test_ioc_value() {
-		String s = "{value:1,type:'normal}";
+		String s = "{value:1,type:'normal'}";
 		IocValue iv = Json.fromJson(IocValue.class, s);
 		assertEquals(1, ((Integer) iv.getValue()).intValue());
 		assertEquals("normal", iv.getType());
