@@ -35,6 +35,7 @@
 		 # 随便给这个 Folder 起个名字，比如 {*properties}
 		 # 将这个目录设置成为 Source Folder
 		 # 然后在里面创建一个文本文件 {*nutz-test.properties}
+			 * {#F00;*请注意}，一定要叫这个名字，否则运行测试一定是不过的，详细原因请看 /test/org/nutz/Nutzs.java 的源代码
 		
 		这个文件的正文为：
 		{{{
