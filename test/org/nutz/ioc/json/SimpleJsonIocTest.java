@@ -3,11 +3,20 @@ package org.nutz.ioc.json;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocMaking;
+import org.nutz.ioc.Iocs;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.json.pojo.AnimalRace;
+import org.nutz.ioc.loader.map.MapLoader;
+import org.nutz.ioc.meta.IocField;
+import org.nutz.ioc.meta.IocObject;
+import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.Json;
 
 import static org.nutz.ioc.json.Utils.*;
 
@@ -122,6 +131,13 @@ public class SimpleJsonIocTest {
 		assertEquals("P", f2.getName());
 		assertEquals(5, f2.getAge());
 	}
+	
+	@Test
+	public void test_muilt_parent() {
+		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'fox'"),J("f3","parent:'f2'"));
+		Animal f3 = ioc.get(Animal.class, "f3");
+		assertEquals(10, f3.getAge());
+	}
 
 	@Test
 	public void test_create_by_args() {
@@ -129,5 +145,24 @@ public class SimpleJsonIocTest {
 		Animal xb = ioc.get(Animal.class, "xb");
 		assertEquals("XiaoBai", xb.getName());
 	}
-
+	
+	@Test
+	public void xxxx() throws Throwable{
+		IocObject iocObject = new IocObject();
+		iocObject.setType(Animal.class);
+		IocField field = new IocField();
+		field.setName("Xpppp");
+		IocValue iocValue = new IocValue();
+		iocValue.setType("normal");
+		iocValue.setValue("XXXX");
+		field.setValue(iocValue);
+		iocObject.addField(field);
+		
+		IocObject object = Iocs.map2iobj((Map<String, Object>)Json.fromJson(Json.toJson(iocObject)));
+		System.out.println(Json.toJson(object.getFields()));
+		assertTrue(object.getFields().length == 1);
+		assertTrue(object.getFields()[0].getName().equals("name"));
+		assertTrue(object.getFields()[0].getValue().getType().equals("normal"));
+		assertTrue(object.getFields()[0].getValue().getValue().equals("XXXX"));
+	}
 }
