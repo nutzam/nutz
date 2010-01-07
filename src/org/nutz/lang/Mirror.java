@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
@@ -1165,6 +1167,35 @@ public class Mirror<T> {
 		if (superclass instanceof ParameterizedType)
 			return ((ParameterizedType) superclass).getActualTypeArguments();
 		return null;
+	}
+
+	private static final Pattern PTN = Pattern.compile("(<)(.+)(>)");
+
+	/**
+	 * 获取一个字段的泛型参数数组，如果这个字段没有泛型，返回空数组
+	 * 
+	 * @param f
+	 *            字段
+	 * @return 泛型参数数组
+	 */
+	public static Class<?>[] getGenericTypes(Field f) {
+		String gts = f.toGenericString();
+		Matcher m = PTN.matcher(gts);
+		if (m.find()) {
+			String s = m.group(2);
+			String[] ss = Strings.splitIgnoreBlank(s);
+			if (ss.length > 0) {
+				Class<?>[] re = new Class<?>[ss.length];
+				try {
+					for (int i = 0; i < ss.length; i++)
+						re[i] = Class.forName(ss[i]);
+					return re;
+				} catch (ClassNotFoundException e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		}
+		return new Class<?>[0];
 	}
 
 	/**

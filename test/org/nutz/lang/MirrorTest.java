@@ -5,6 +5,8 @@ import static org.junit.Assert.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 
@@ -186,7 +188,7 @@ public class MirrorTest {
 
 	@Test
 	public void testBornByStaticDynamiceArgs() {
-		DS ds = Mirror.me(DS.class).born(23, new String[] { "TT", "FF" });
+		DS ds = Mirror.me(DS.class).born(23, new String[]{"TT", "FF"});
 		assertEquals(23, ds.id);
 		assertEquals("FF", ds.values[1]);
 	}
@@ -210,7 +212,7 @@ public class MirrorTest {
 
 	@Test
 	public void testBornByInnerDynamiceArgs() {
-		DD ds = Mirror.me(DD.class).born(23, new String[] { "TT", "FF" });
+		DD ds = Mirror.me(DD.class).born(23, new String[]{"TT", "FF"});
 		assertEquals(23, ds.id);
 		assertEquals("FF", ds.values[1]);
 	}
@@ -356,4 +358,31 @@ public class MirrorTest {
 		} catch (Exception e) {}
 	}
 
+	class Abcc {
+
+		Map<String, Object> map;
+
+		List<Abcc> abccs;
+
+		String name;
+
+	}
+
+	@Test
+	public void test_getGenericTypes() throws Exception {
+		Field f = Abcc.class.getDeclaredField("map");
+		Class<?>[] types = Mirror.getGenericTypes(f);
+		assertEquals(2, types.length);
+		assertEquals(String.class, types[0]);
+		assertEquals(Object.class, types[1]);
+
+		f = Abcc.class.getDeclaredField("abccs");
+		types = Mirror.getGenericTypes(f);
+		assertEquals(1, types.length);
+		assertEquals(Abcc.class, types[0]);
+
+		f = Abcc.class.getDeclaredField("name");
+		types = Mirror.getGenericTypes(f);
+		assertEquals(0, types.length);
+	}
 }
