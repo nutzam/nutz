@@ -1,0 +1,59 @@
+﻿#title:请求范围的模块
+#author:zozoh(zozohtnt@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+为什么需要请求范围的模块
+	无论 Struts2 还是 Spring，都提供了一种控制器： 每次请求，创建实例，使用后即抛弃。
+	这样的控制器的好处就是可以放心的吧 request 和 response 对象放心的存成它的私有
+	属性，反正使用一次后就丢掉了。
+	
+	在 Nutz.Mvc，所谓控制器，实际上就是 Module，默认的，所有的模块都是整个应用程序唯一的，
+	除非你在 Ioc 配置文件里另有说明。
+	
+	那么 Nutz 可以做到每次请求即抛弃的控制器（{#080;/Module}）吗？ 答案是肯定的，稍微有点
+	麻烦，但是绝对不会繁琐的让你头疼，你需要自己动手做点事情，如果你对编写 JSP/Servlet 
+	应用程序有点基本的支持，这点事情对你不会构成负担。
+--------------------------------------------------------------------------------------
+怎样做？
+	我们这里给你举一个简单的例子，假设你有一个模块，通过 Nutz.Ioc 来配置：
+	
+	你的模块代码
+		{{{
+		@InjectName("myModule")
+		public class MyModule{
+
+			private HttpServletRequest request;
+			
+			@At("/abc")
+			public String tryIt(){
+				return request.getParameter("abc");
+			}
+		}
+		}}}
+	
+	修改 Ioc 配置文件
+		{{{
+		...
+		myModule : {
+			type : 'com.you.app.MyModule',
+			scope : 'request',
+			fields : {
+				request : {refer: '$request'}
+			}
+		}
+		...
+		}}}
+		 * 请注意 {#F00;* scope : 'request'} 以及 fields 里 request 字段的属性 {#F00;* {refer: '$request'}}
+		 * scope 指明了这个对象存在的上下文环境，如果你不指明，默认是 '{*app}'
+			 * 更多关于 scope，请参看 [../ioc/scope.man 对象生命范围】
+		 
+		 关键就是这个 {#F00;* {refer: '$request'}}，很抱歉，你得自己设置它的值
+	
+	添加 HttpFilter
+		web.xml 增加一个 HttpFilter，然后每次请求的时候都
+		{{{
+		req.setAttribute("$request", req);
+		}}}
+	
+	最后
+		这样，就可以做到 Request 级别的 Module 了，即，每次请求，都会重新创建你的 Module 实例

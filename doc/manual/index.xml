@@ -49,6 +49,7 @@
 		<doc path="localization.man"/>
 		<doc path="action_filter.man"/>
 		<doc path="file_upload.man"/>
+		<doc path="module_of_request.man"/>
 	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="hello.man"/>
