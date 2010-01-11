@@ -4,10 +4,10 @@ import org.nutz.ioc.IocLoader;
 
 /**
  * 带缓存的IocLoader
- *
+ * 
  */
-public interface CachedIocLoader extends IocLoader{
+public interface CachedIocLoader extends IocLoader {
 
 	void clear();
-	
+
 }
