@@ -14,6 +14,8 @@ import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
+import org.nutz.ioc.loader.cached.CachedIocLoader;
+import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -47,10 +49,13 @@ public class NutIoc implements Ioc2 {
 	}
 
 	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope) {
-		this.defaultScope = defaultScope;
-		this.loader = loader;
-		this.context = context;
 		this.maker = maker;
+		this.defaultScope = defaultScope;
+		this.context = context;
+		if (loader instanceof CachedIocLoader)
+			this.loader = loader;
+		else
+			this.loader = CachedIocLoaderImpl.createCachedIocLoaderImpl(loader);
 		vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
 		addValueProxyMaker(new DefaultValueProxyMaker());
 
