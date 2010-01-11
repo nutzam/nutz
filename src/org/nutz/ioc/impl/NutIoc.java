@@ -55,7 +55,7 @@ public class NutIoc implements Ioc2 {
 		if (loader instanceof CachedIocLoader)
 			this.loader = loader;
 		else
-			this.loader = CachedIocLoaderImpl.createCachedIocLoaderImpl(loader);
+			this.loader = CachedIocLoaderImpl.create(loader);
 		vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
 		addValueProxyMaker(new DefaultValueProxyMaker());
 

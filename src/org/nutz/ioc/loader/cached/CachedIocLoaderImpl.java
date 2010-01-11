@@ -15,7 +15,7 @@ import org.nutz.ioc.meta.IocObject;
  */
 public class CachedIocLoaderImpl implements CachedIocLoader {
 
-	public static CachedIocLoaderImpl createCachedIocLoaderImpl(IocLoader proxyIocLoader) {
+	public static CachedIocLoaderImpl create(IocLoader proxyIocLoader) {
 		return new CachedIocLoaderImpl(proxyIocLoader);
 	}
 
