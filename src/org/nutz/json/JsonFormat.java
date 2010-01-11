@@ -111,8 +111,8 @@ public class JsonFormat {
 		return this;
 	}
 
-	Castors getCastors() {
-		return castors;
+	public Castors getCastors() {
+		return castors == null ? Castors.me() : castors;
 	}
 
 	public JsonFormat setCastors(Castors castors) {

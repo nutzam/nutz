@@ -55,6 +55,7 @@
 		<doc path="hello.man"/>
 		<doc path="formater.man"/>
 		<doc path="with_castors.man"/>
+		<doc path="customize.man"/>
 	</doc>
 	<doc path="lang" title="甜 Java">
 		<doc path="lang.man"/>
