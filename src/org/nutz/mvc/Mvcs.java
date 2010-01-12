@@ -74,8 +74,10 @@ public abstract class Mvcs {
 	 * 中会有一个属性（名称请参见 Mvcs.MSGS 定义）
 	 * <p>
 	 * 在 jsp 中，你可以用 EL 表达式 ${msgs.xxx} 来直接获取字符串的值。
+	 * 
+	 * @return 设置的 本地化字符串表
 	 */
-	public static void setLocale(HttpSession session, String localeName) {
+	public static Map<String, String> setLocale(HttpSession session, String localeName) {
 		Map<String, Map<String, String>> msgss = getMessageSet(session.getServletContext());
 		if (null != msgss) {
 			Map<String, String> msgs = null;
@@ -86,7 +88,10 @@ public abstract class Mvcs {
 
 			if (null != msgs)
 				session.setAttribute(MSG, msgs);
+
+			return msgs;
 		}
+		return null;
 	}
 
 	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
@@ -119,11 +124,16 @@ public abstract class Mvcs {
 	 * @param req
 	 *            HTTP 请求对象
 	 */
+	@SuppressWarnings("unchecked")
 	static void updateRequestAttributes(HttpServletRequest req) {
 		if (null != req.getSession().getServletContext().getAttribute(Localization.class.getName())) {
 			HttpSession session = req.getSession();
+			Map<String, String> msgs = null;
 			if (!hasLocale(session))
-				setLocale(session, getLocaleName(session));
+				msgs = setLocale(session, getLocaleName(session));
+			else
+				msgs = (Map<String, String>) session.getAttribute(MSG);
+			req.setAttribute(MSG, msgs);
 		}
 		// Update context path each time, Servlet 2.4 and early don't support
 		// ServletContext.getContextPath()
