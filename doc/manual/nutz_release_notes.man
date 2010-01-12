@@ -7,13 +7,14 @@
 
 --------------------------------------------------------------------------------------------------------
 问题修复
+     * Issue 95 : Ioc - 没有检测循环依赖,且不支持多次继承
 	 * Issue 100: MVC手册在jsp视图处描述有误 {#AAA;by} {*ToFishes}
-	 * Isseu 102: 在update时，如果http参数有Date类型为null，会出错   {#AAA;by} {*会跑的蜗牛}
-	 * Isseu 103: 移除JsonIocLoader中对$import,$vars的支持   {#AAA;by} {*Wendal}
-	 * Isseu 104: 当server启动后,死一次访问界面无法显示国际化的message   {#AAA;by} {*Bird.Wyatt}
+	 * Issue 102: 在update时，如果http参数有Date类型为null，会出错   {#AAA;by} {*会跑的蜗牛}
+	 * Issue 103: 移除JsonIocLoader中对$import,$vars的支持   {#AAA;by} {*Wendal}
+	 * Issue 104: 当server启动后,死一次访问界面无法显示国际化的message   {#AAA;by} {*Bird.Wyatt}
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 {#F0F;*399} 个单元测试用例
+	 # 共通过了 {#F0F;*401} 个单元测试用例
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
 		 * H2
 		 * MySql
