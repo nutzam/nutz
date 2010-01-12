@@ -51,6 +51,9 @@ public class MapLoader implements IocLoader {
 		return map.containsKey(name);
 	}
 
+	/**
+	 * {@link ObjectLoadException}
+	 */
 	public IocObject load(String name) throws ObjectLoadException {
 		Map<String, Object> m = getMap(name);
 		if (null == m)
@@ -77,6 +80,11 @@ public class MapLoader implements IocLoader {
 		return Iocs.map2iobj(m);
 	}
 
+	/**
+	 * 检查继承关系,如果发现循环继承,或其他错误的继承关系,则抛出ObjectLoadException
+	 * @param name beanId
+	 * @throws ObjectLoadException if Inheritance errors or Inheritance cycle founded.
+	 */
 	@SuppressWarnings("unchecked")
 	private void checkParents(String name) throws ObjectLoadException {
 		ArrayList<String> list = new ArrayList<String>();
@@ -87,7 +95,7 @@ public class MapLoader implements IocLoader {
 				break;
 			if (list.contains(currentParent))
 				throw Lang.makeThrow(ObjectLoadException.class,
-						"发现循环依赖! id = %s", name);
+						"!!!Inheritance cycle! id = %s", name);
 			list.add(currentParent);
 			Object obj = map.get(currentParent);
 			if (obj != null && obj instanceof Map)
@@ -95,7 +103,7 @@ public class MapLoader implements IocLoader {
 						.get("parent");
 			else
 				throw Lang.makeThrow(ObjectLoadException.class,
-						"发现无效继承关系! id = %s", name);
+						"!!!Inheritance errors! id = %s", name);
 		}
 	}
 
