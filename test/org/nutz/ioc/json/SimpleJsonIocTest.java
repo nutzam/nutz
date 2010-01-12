@@ -1,15 +1,20 @@
 package org.nutz.ioc.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.nutz.ioc.json.Utils.A;
+import static org.nutz.ioc.json.Utils.I;
+import static org.nutz.ioc.json.Utils.J;
 
 import java.io.File;
 
 import org.junit.Test;
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.IocException;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.json.pojo.AnimalRace;
-
-import static org.nutz.ioc.json.Utils.*;
 
 public class SimpleJsonIocTest {
 
@@ -137,4 +142,15 @@ public class SimpleJsonIocTest {
 		assertEquals("XiaoBai", xb.getName());
 	}
 	
+	@Test(expected=IocException.class)
+	public void test_break_parent() {
+		Ioc ioc = I(J("f2", "parent:'f3'"),J("f3","parent:'f2'"));
+		ioc.get(Animal.class, "f3");
+	}
+	
+	@Test(expected=IocException.class)
+	public void test_break_parent2() {
+		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'x'"),J("f3","parent:'y'"));
+		ioc.get(Animal.class, "f3");
+	}
 }

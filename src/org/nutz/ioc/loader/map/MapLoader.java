@@ -1,5 +1,6 @@
 package org.nutz.ioc.loader.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -9,11 +10,13 @@ import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 
 /**
  * 从一个 Map 对象中读取配置信息，支持 Parent
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class MapLoader implements IocLoader {
 
@@ -51,10 +54,12 @@ public class MapLoader implements IocLoader {
 	public IocObject load(String name) throws ObjectLoadException {
 		Map<String, Object> m = getMap(name);
 		if (null == m)
-			throw new ObjectLoadException("Object '" + name + "' without define!");
+			throw new ObjectLoadException("Object '" + name
+					+ "' without define!");
 		// If has parent
 		Object p = m.get("parent");
 		if (null != p) {
+			checkParents(name);
 			IocObject parent = load(p.toString());
 			// create new map without parent
 			Map<String, Object> newMap = new HashMap<String, Object>();
@@ -70,6 +75,28 @@ public class MapLoader implements IocLoader {
 			return Iocs.mergeWith(self, parent);
 		}
 		return Iocs.map2iobj(m);
+	}
+
+	@SuppressWarnings("unchecked")
+	private void checkParents(String name) throws ObjectLoadException {
+		ArrayList<String> list = new ArrayList<String>();
+		list.add(name);
+		String currentParent = map.get(name).get("parent").toString();
+		while (true) {
+			if (currentParent == null)
+				break;
+			if (list.contains(currentParent))
+				throw Lang.makeThrow(ObjectLoadException.class,
+						"发现循环依赖! id = %s", name);
+			list.add(currentParent);
+			Object obj = map.get(currentParent);
+			if (obj != null && obj instanceof Map)
+				currentParent = (String) ((Map<String, Object>) obj)
+						.get("parent");
+			else
+				throw Lang.makeThrow(ObjectLoadException.class,
+						"发现无效继承关系! id = %s", name);
+		}
 	}
 
 	/**
