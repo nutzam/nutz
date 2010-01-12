@@ -19,6 +19,7 @@ import org.nutz.dao.ConnectionHolder;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.pager.DefaultPagerMaker;
 import org.nutz.dao.pager.Pager;
@@ -711,6 +712,16 @@ public class NutDao implements Dao {
 				}
 			});
 		}
+		return re[0];
+	}
+
+	public int updateIgnoreNull(final Object obj) {
+		final int[] re = new int[0];
+		FieldFilter.create(obj.getClass(), true).run(new Atom() {
+			public void run() {
+				re[0] = update(obj);
+			}
+		});
 		return re[0];
 	}
 

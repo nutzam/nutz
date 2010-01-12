@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 import org.nutz.lang.Strings;
 
 /**
- * 字段过滤器
+ * 字段匹配器
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */

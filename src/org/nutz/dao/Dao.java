@@ -183,6 +183,11 @@ public interface Dao {
 	 * 更新一个对象。对象必须有 '@Id' 或者 '@Name' 声明。
 	 * <p>
 	 * 并且调用这个函数前， 主键的值必须保证是有效，否则会更新失败
+	 * <p>
+	 * 这个对象所有的字段都会被更新，即，所有的没有被设值的字段，都会被置成 NULL，如果遇到 NOT NULL 约束，则会引发异常。
+	 * 如果想有选择的更新个别字段，请使用 org.nutz.dao.FieldFilter
+	 * <p>
+	 * 如果仅仅想忽略所有的 null 字段，请使用 updateIgnoreNull 方法更新对象
 	 * 
 	 * @param obj
 	 *            要被更新的对象
@@ -196,9 +201,30 @@ public interface Dao {
 	 *            </ul>
 	 *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
 	 * 
-	 * @return 如果更新成功，返回 1，否则，返回 0
+	 * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
+	 * 
+	 * @see org.nutz.dao.FieldFilter
 	 */
 	int update(Object obj);
+
+	/**
+	 * 更新一个对象，并且忽略所有非 null 字段。
+	 * 
+	 * @param obj
+	 *            要被更新的对象
+	 *            <p>
+	 *            它可以是：
+	 *            <ul>
+	 *            <li>普通 POJO
+	 *            <li>集合
+	 *            <li>数组
+	 *            <li>Map
+	 *            </ul>
+	 *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
+	 * 
+	 * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
+	 */
+	int updateIgnoreNull(Object obj);
 
 	/**
 	 * 自由的更新多条数据

@@ -6,26 +6,77 @@ import java.util.Map;
 import org.nutz.lang.Lang;
 import org.nutz.trans.Atom;
 
+/**
+ * 定制 POJO 的字段过滤配置。
+ * <p>
+ * 通过这类，可以指明当前线程的 DAO 操作，哪些对象，的哪些字段会被忽略
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class FieldFilter {
 
 	private static ThreadLocal<FieldFilter> FF = new ThreadLocal<FieldFilter>();
 
+	/**
+	 * 创建一个过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 字段过滤器
+	 */
 	public static FieldFilter create(Class<?> type, boolean ignoreNull) {
 		return create(type, null, null, ignoreNull);
 	}
 
+	/**
+	 * 创建一个默认不忽略 NULL 值字段的过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @return 字段过滤器
+	 * 
+	 * @see java.util.regex.Pattern
+	 */
 	public static FieldFilter create(Class<?> type, String actived) {
 		return create(type, actived, null, false);
 	}
 
+	/**
+	 * 创建一个过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 字段过滤器
+	 * 
+	 * @see java.util.regex.Pattern
+	 */
 	public static FieldFilter create(Class<?> type, String actived, boolean ignoreNull) {
 		return create(type, actived, null, ignoreNull);
 	}
 
-	public static FieldFilter create(Class<?> type, String actived, String locked) {
-		return FieldFilter.create(type, actived, locked, false);
-	}
-
+	/**
+	 * 创建一个过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @param locked
+	 *            正则表达式，哪些字段会被忽略，语法请参看 Pattern 类的 JavaDoc
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 字段过滤器
+	 * 
+	 * @see java.util.regex.Pattern
+	 */
 	public static FieldFilter create(	Class<?> type,
 										String actived,
 										String locked,
@@ -33,6 +84,15 @@ public class FieldFilter {
 		return create(type, FieldMatcher.make(actived, locked, ignoreNull));
 	}
 
+	/**
+	 * 创建一个过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param mathcer
+	 *            字段匹配器
+	 * @return 字段过滤器
+	 */
 	public static FieldFilter create(Class<?> type, FieldMatcher mathcer) {
 		FieldFilter ff = new FieldFilter();
 		ff.set(type, mathcer);
@@ -45,36 +105,89 @@ public class FieldFilter {
 
 	private Map<Class<?>, FieldMatcher> map;
 
+	/**
+	 * 为自身增加一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 自身
+	 */
 	public FieldFilter set(Class<?> type, boolean ignoreNull) {
 		map.put(type, FieldMatcher.make(null, null, ignoreNull));
 		return this;
 	}
 
+	/**
+	 * 为自身增加一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @return 自身
+	 */
 	public FieldFilter set(Class<?> type, String actived) {
 		map.put(type, FieldMatcher.make(actived, null, false));
 		return this;
 	}
 
+	/**
+	 * 为自身增加一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 自身
+	 */
 	public FieldFilter set(Class<?> type, String actived, boolean ignoreNull) {
 		map.put(type, FieldMatcher.make(actived, null, ignoreNull));
 		return this;
 	}
 
-	public FieldFilter set(Class<?> type, String actived, String locked) {
-		map.put(type, FieldMatcher.make(actived, locked, false));
-		return this;
-	}
-
+	/**
+	 * 为自身增加一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param actived
+	 *            正则表达式，哪些字段会被操作，语法请参看 Pattern 类的 JavaDoc
+	 * @param locked
+	 *            正则表达式，哪些字段会被忽略，语法请参看 Pattern 类的 JavaDoc
+	 * @param ignoreNull
+	 *            是否忽略 NULL 值字段
+	 * @return 自身
+	 */
 	public FieldFilter set(Class<?> type, String actived, String locked, boolean ignoreNull) {
 		map.put(type, FieldMatcher.make(actived, locked, ignoreNull));
 		return this;
 	}
 
+	/**
+	 * 为自身增加一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @param matcher
+	 *            字段匹配器
+	 * @return 自身
+	 */
 	public FieldFilter set(Class<?> type, FieldMatcher matcher) {
 		map.put(type, matcher);
 		return this;
 	}
 
+	/**
+	 * 移除一个 POJO 的字段过滤设置
+	 * 
+	 * @param type
+	 *            POJO 类型
+	 * @return 自身
+	 */
 	public FieldFilter remove(Class<?> type) {
 		map.remove(type);
 		return this;
@@ -94,6 +207,12 @@ public class FieldFilter {
 		return ff.map.get(type);
 	}
 
+	/**
+	 * 运行模板函数
+	 * 
+	 * @param atom
+	 *            运行原子
+	 */
 	public void run(Atom atom) {
 		FF.set(this);
 		try {
