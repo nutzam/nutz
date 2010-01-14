@@ -15,8 +15,6 @@ import org.nutz.aop.asm.org.asm.Type;
  */
 public final class ClassX<T> implements Opcodes{
 	
-	private Class<T> klass;
-	
 	private ClassWriter cw;
 	
 	private String myName;
@@ -27,12 +25,11 @@ public final class ClassX<T> implements Opcodes{
 	
 	private Constructor<T> [] constructors;
 	
-	protected ClassX(Class<T> kclass,String myName,Method[] methodArray,Constructor<T> [] constructors){
-		this.klass = kclass;
+	protected ClassX(Class<T> klass,String myName,Method[] methodArray,Constructor<T> [] constructors){
 		this.myName = myName.replace('.', '/');
 		this.enhancedSuperName = klass.getName().replace('.', '/');
 		this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-		cw.visit(AsmClassAgent.CLASS_LEVEL, ACC_PUBLIC, this.myName, "", enhancedSuperName, getParentInterfaces(kclass));
+		cw.visit(AsmClassAgent.CLASS_LEVEL, ACC_PUBLIC, this.myName, "", enhancedSuperName, getParentInterfaces(klass));
 		this.methodArray = methodArray;
 		this.constructors = constructors;
 	}
