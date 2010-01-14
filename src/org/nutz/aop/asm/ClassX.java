@@ -32,9 +32,21 @@ public final class ClassX<T> implements Opcodes{
 		this.myName = myName.replace('.', '/');
 		this.enhancedSuperName = klass.getName().replace('.', '/');
 		this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-		cw.visit(AsmClassAgent.CLASS_LEVEL, ACC_PUBLIC, this.myName, "", enhancedSuperName, new String[]{});
+		cw.visit(AsmClassAgent.CLASS_LEVEL, ACC_PUBLIC, this.myName, "", enhancedSuperName, getParentInterfaces(kclass));
 		this.methodArray = methodArray;
 		this.constructors = constructors;
+	}
+	
+	protected static String[] getParentInterfaces(Class<?> xClass) {
+		Class<?> its [] = xClass.getInterfaces();
+		if (its == null || its.length == 0)
+			return new String[]{};
+		else {
+			String[] iii = new String[its.length];
+			for (int i = 0; i < iii.length; i++)
+				iii[i] = its[i].getName().replace('.', '/');
+			return iii;
+		}
 	}
 	
 	protected void addField() {
