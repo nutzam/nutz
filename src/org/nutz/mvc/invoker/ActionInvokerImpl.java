@@ -2,7 +2,6 @@ package org.nutz.mvc.invoker;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,7 +14,6 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.impl.ComboContext;
-import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -29,15 +27,15 @@ import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.annotation.AdaptBy;
+import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
-import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.InjectName;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
-import org.nutz.mvc.view.UTF8JsonView;
+import org.nutz.mvc.view.VoidView;
 
 public class ActionInvokerImpl implements ActionInvoker {
 
@@ -148,7 +146,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		if (ann == null)
 			ann = dft;
 		if (ann == null)
-			return new UTF8JsonView(JsonFormat.compact());
+			return new VoidView();
 
 		String str = (String) Mirror.me(ann.getClass()).invoke(ann, "value");
 		int pos = str.indexOf(':');
