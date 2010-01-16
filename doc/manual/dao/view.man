@@ -43,4 +43,4 @@
 	* 通过 @View， Nutz.Dao 知道了当查询数据时候，应该从哪里获取数据
 	* 通过 @Readonly 注解 Nutz.Dao 知道，当修改或者删除数据的时候，那些字段应该忽略。
 
-	接下来，你就可以通过 org.nutz.dao.Dao 接口随意这个 POJO 了。
+	接下来，你就可以通过 org.nutz.dao.Dao 接口随意操作这个 POJO 了。
