@@ -53,19 +53,21 @@ public class JspView implements View {
 
 	public JspView(String name) {
 		if (!Strings.isBlank(name)) {
-			name = name.replace('\\', '/');
-			// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
-			if (name.charAt(0) == '/') {
-				if (name.toLowerCase().endsWith(".jsp"))
-					path = name;
-				else
-					path = name + ".jsp";
-			}
-			// For: @Ok("jsp:abc.cbc")
-			else {
-				path = "/WEB-INF/" + name.replace('.', '/') + ".jsp";
-			}
+			path = normalizePath(name, ".jsp");
 		}
+	}
+
+	public static String normalizePath(String name, String ext) {
+		name = name.replace('\\', '/');
+		// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
+		if (name.charAt(0) == '/') {
+			if (name.toLowerCase().endsWith(ext))
+				return name;
+			else
+				return name + ext;
+		}
+		// For: @Ok("jsp:abc.cbc")
+		return "/WEB-INF/" + name.replace('.', '/') + ext;
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
