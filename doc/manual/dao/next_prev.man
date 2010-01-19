@@ -35,7 +35,7 @@
 -----------------------------------------------------------------------------------------------------------------
 数据库方言
 	无论是 @Prev 还是 @Next，你都是通过 @SQL 声明的数据库方言。但是，假设你并不确定你的 POJO 将会工作在哪一个数据
-	库上，比如你的项目有两个数据源，一个是 Oracle 一个是 Postgresql，那么你的 POJO 改如何写方言呢？
+	库上，比如你的项目有两个数据源，一个是 Oracle 一个是 Postgresql，那么你的 POJO 该如何写方言呢？
 	{{{
 	@Table("t_pet")
 	public class Pet{
@@ -52,6 +52,6 @@
 	现在 Nutz.Dao 支持这些数据库:
 	{{{
 	public enum DB {
-		DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
+		H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
 	}
 	}}}
