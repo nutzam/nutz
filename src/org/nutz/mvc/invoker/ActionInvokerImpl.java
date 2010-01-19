@@ -63,8 +63,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 								Encoding dftEncoding) {
 		evalModule(moduleType);
 		this.method = method;
-		this.ok = evalView(ioc, makers, method.getAnnotation(Ok.class), dftOk);
-		this.fail = evalView(ioc, makers, method.getAnnotation(Fail.class), dftFail);
+		this.ok = evalView(ioc, makers, "@Ok", method.getAnnotation(Ok.class), dftOk);
+		this.fail = evalView(ioc, makers, "@Fail", method.getAnnotation(Fail.class), dftFail);
 		this.evalHttpAdaptor(ioc, method, dftAb);
 		this.evalFilters(ioc, method, dftflts);
 		this.evalEncoding(method, dftEncoding);
@@ -142,7 +142,11 @@ public class ActionInvokerImpl implements ActionInvoker {
 		return Mirror.me(type).born((Object[]) args);
 	}
 
-	private <T extends Annotation> View evalView(Ioc ioc, List<ViewMaker> makers, T ann, T dft) {
+	private <T extends Annotation> View evalView(	Ioc ioc,
+													List<ViewMaker> makers,
+													String viewType,
+													T ann,
+													T dft) {
 		if (ann == null)
 			ann = dft;
 		if (ann == null)
@@ -163,7 +167,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (null != view)
 				return view;
 		}
-		return null;
+		throw Lang.makeThrow("Can not eval %s View for %s", viewType, this.method);
 	}
 
 	public void invoke(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {

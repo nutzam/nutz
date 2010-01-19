@@ -62,15 +62,40 @@ public class PathNodeTest {
 		assertEquals("Y", info.getObj());
 		assertEquals(2, info.getCursor());
 		assertNull(info.getRemain());
-		
+
 		info = node.get("/c/d/123");
 		assertEquals("Z", info.getObj());
 		assertEquals(4, info.getCursor());
 		assertEquals("/123", info.getRemain());
-		
+
 		info = node.get("/c/d");
 		assertEquals("Z", info.getObj());
 		assertEquals(4, info.getCursor());
-		assertEquals(null, info.getRemain());
+		assertNull(info.getRemain());
+	}
+
+	@Test
+	public void test_long_path_and_start() {
+		PathNode<String> node = new PathNode<String>();
+		node.add("/*", "X");
+		node.add("/abc", "Y");
+		node.add("/cc", "M");
+
+		System.out.println(node.toString());
+
+		PathInfo<String> info = node.get("/abc");
+		assertEquals("Y", info.getObj());
+		assertEquals(4, info.getCursor());
+		assertNull(info.getRemain());
+
+		info = node.get("/haha");
+		assertEquals("X", info.getObj());
+		assertEquals(1, info.getCursor());
+		assertEquals("haha", info.getRemain());
+
+		info = node.get("/cc");
+		assertEquals("M", info.getObj());
+		assertEquals(3, info.getCursor());
+		assertNull(info.getRemain());
 	}
 }
