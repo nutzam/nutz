@@ -323,22 +323,12 @@ public abstract class Files {
 			} catch (FileNotFoundException e1) {
 				return null;
 			}
-		URL url = null;
 		if (null != klass) {
-			InputStream ins = klass.getResourceAsStream(path);
+			InputStream ins = klass.getClassLoader().getResourceAsStream(path);
 			if (null != ins)
 				return ins;
 		}
-		if (null == url)
-			url = ClassLoader.getSystemResource(path);
-		if (null != url) {
-			try {
-				return url.openStream();
-			} catch (IOException e) {
-				return null;
-			}
-		}
-		return null;
+		return ClassLoader.getSystemResourceAsStream(path);
 	}
 
 	/**

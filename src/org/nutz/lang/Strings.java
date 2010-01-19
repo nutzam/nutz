@@ -505,11 +505,30 @@ public abstract class Strings {
 	public static String removeFirst(String str, char c) {
 		if (str == null)
 			return null;
- 		if (str.length() == 0)
+		if (str.length() == 0)
 			return "";
 		if (c == str.charAt(0))
 			return str.substring(1);
 		return str;
 	}
 
+	/**
+	 * 判断一个字符串数组是否包括某一字符串
+	 * 
+	 * @param ss
+	 *            字符串数组
+	 * @param s
+	 *            字符串
+	 * @return 是否包含
+	 */
+	public static boolean isin(String[] ss, String s) {
+		if (null == ss || ss.length == 0)
+			return false;
+		if (Strings.isBlank(s))
+			return false;
+		for (String w : ss)
+			if (s.equals(w))
+				return true;
+		return false;
+	}
 }
