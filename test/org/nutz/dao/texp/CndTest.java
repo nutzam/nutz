@@ -15,7 +15,7 @@ public class CndTest extends DaoCase {
 	private Entity<?> en;
 
 	protected void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/texp/worker.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/texp/worker.dod"));
 		en = dao.getEntity(Worker.class);
 	}
 

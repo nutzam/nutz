@@ -23,7 +23,7 @@ public class SupportedFieldType extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/types.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/types.dod"));
 	}
 
 	public static enum TT {

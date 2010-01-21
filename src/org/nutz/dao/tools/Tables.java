@@ -1,6 +1,7 @@
 package org.nutz.dao.tools;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.dao.Dao;
@@ -30,7 +31,35 @@ public abstract class Tables {
 		throw Lang.makeThrow("I don't now how to create table for '%s'", db.toString());
 	}
 
-	public static void run(Dao dao, List<DTable> dts) {
+	public static List<DTable> load(String dods) {
+		DTableParser parser = new NutDTableParser();
+		List<DTable> dts = parser.parse(dods);
+		return dts;
+	}
+
+	public static List<DTable> loadFrom(String dodPath) {
+		String dods = Lang.readAll(Streams.fileInr(dodPath));
+		return load(dods);
+	}
+
+	public static List<DTable> load(File dodFile) {
+		String dods = Lang.readAll(Streams.fileInr(dodFile));
+		return load(dods);
+	}
+
+	public static void define(Dao dao, File dodFile) {
+		List<DTable> dts = load(dodFile);
+		define(dao, dts);
+	}
+
+	public static void define(Dao dao, DTable... dts) {
+		List<DTable> dtList = new ArrayList<DTable>(dts.length);
+		for (DTable dt : dts)
+			dtList.add(dt);
+		define(dao, dtList);
+	}
+
+	public static void define(Dao dao, List<DTable> dts) {
 		TableDefinition maker = newInstance(((NutDao) dao).meta());
 		for (DTable dt : dts) {
 			Sql sql;
@@ -41,27 +70,6 @@ public abstract class Tables {
 			sql = maker.makeCreateSql(dt);
 			dao.execute(sql);
 		}
-	}
-
-	public static List<DTable> defineBy(String dods) {
-		DTableParser parser = new NutDTableParser();
-		List<DTable> dts = parser.parse(dods);
-		return dts;
-	}
-
-	public static List<DTable> define(String dodPath) {
-		String dods = Lang.readAll(Streams.fileInr(dodPath));
-		return defineBy(dods);
-	}
-
-	public static List<DTable> define(File dodFile) {
-		String dods = Lang.readAll(Streams.fileInr(dodFile));
-		return defineBy(dods);
-	}
-
-	public static void run(Dao dao, File dodFile) {
-		List<DTable> dts = define(dodFile);
-		run(dao, dts);
 	}
 
 }

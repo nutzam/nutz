@@ -12,7 +12,7 @@ public class CustomizedFieldNameTest extends DaoCase {
 
 	@Test
 	public void test_insert_update_chain_with_another_column_name() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/killer.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/killer.dod"));
 
 		dao.insert(Killer.class, Chain.make("name", "Peter Zhang").add("lastKillName", "xh").add(
 				"killedCount", 1));

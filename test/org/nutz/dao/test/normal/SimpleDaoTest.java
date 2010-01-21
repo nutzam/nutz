@@ -14,7 +14,7 @@ public class SimpleDaoTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
 	}
 
 	private void insert8Records() {

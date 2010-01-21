@@ -11,7 +11,7 @@ public class PkTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/normal/dog.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/dog.dod"));
 		// Insert 8 records
 		for (int i = 0; i < 8; i++) {
 			Dog dog = new Dog();

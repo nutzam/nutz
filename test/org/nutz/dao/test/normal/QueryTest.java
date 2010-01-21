@@ -15,7 +15,7 @@ public class QueryTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));

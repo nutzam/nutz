@@ -36,11 +36,11 @@ public class Pojos extends Service {
 	}
 
 	public void initPet() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
 	}
 
 	public void init() {
-		Tables.run(dao, Tables.defineBy(topTables));
+		Tables.define(dao, Tables.load(topTables));
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
@@ -91,12 +91,12 @@ public class Pojos extends Service {
 
 	public void initPlatoon(int id) {
 		Segment seg = new CharSegment(this.platoonTables);
-		Tables.run(dao, Tables.defineBy(seg.set("id", id).toString()));
+		Tables.define(dao, Tables.load(seg.set("id", id).toString()));
 	}
 
 	public void dropPlatoon(int id) {
 		Segment seg = new CharSegment(this.platoonTables);
-		List<DTable> dts = Tables.defineBy(seg.set("id", id).toString());
+		List<DTable> dts = Tables.load(seg.set("id", id).toString());
 		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
 		for (DTable dt : dts) {
 			if (dao.exists(dt.getName()))

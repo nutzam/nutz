@@ -22,7 +22,7 @@ public class FieldFilterTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.run(dao, Tables.define("org/nutz/dao/test/meta/pet.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
 		dao.insert(pet("xb"));
 	}
 

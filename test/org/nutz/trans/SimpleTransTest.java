@@ -12,7 +12,7 @@ public class SimpleTransTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/trans/trans.dod"));
 		dao.insert(Cat.create("xb"));
 
 	}

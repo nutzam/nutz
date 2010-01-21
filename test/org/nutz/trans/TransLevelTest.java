@@ -89,7 +89,7 @@ public class TransLevelTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.run(dao, Tables.define("org/nutz/trans/trans.dod"));
+		Tables.define(dao, Tables.loadFrom("org/nutz/trans/trans.dod"));
 		comService = new IdEntityService<Company>(dao) {};
 		Company c = Company.create("com1");
 		comService.dao().insert(c);
