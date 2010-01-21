@@ -1,13 +1,18 @@
 package org.nutz.mvc;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.ioc.SessionIocContext;
@@ -94,6 +99,18 @@ public abstract class Mvcs {
 		return null;
 	}
 
+	/**
+	 * 获取某一个本地字符串表
+	 * 
+	 * @param context
+	 *            上下文
+	 * @param localeName
+	 *            本地名
+	 * @return 字符串表
+	 * 
+	 * @see org.nutz.mvc.annotation.Localization
+	 * @see org.nutz.mvc.MessageLoader
+	 */
 	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
 		Map<String, Map<String, String>> msgss = getMessageSet(context);
 		if (null != msgss)
@@ -101,6 +118,13 @@ public abstract class Mvcs {
 		return null;
 	}
 
+	/**
+	 * 获取整个应用的默认字符串表
+	 * 
+	 * @param context
+	 *            上下文
+	 * @return 字符串表
+	 */
 	public static Map<String, String> getDefaultLocaleMessage(ServletContext context) {
 		Map<String, Map<String, String>> msgss = getMessageSet(context);
 		if (null != msgss)
@@ -108,10 +132,45 @@ public abstract class Mvcs {
 		return null;
 	}
 
+	/**
+	 * 获取整个应用的字符串表集合
+	 * 
+	 * @param context
+	 *            上下文
+	 * @return 字符串表集合
+	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
 		return (Map<String, Map<String, String>>) context
 				.getAttribute(Localization.class.getName());
+	}
+
+	/**
+	 * 获取当前请求对象的字符串表
+	 * 
+	 * @param req
+	 *            请求对象
+	 * @return 字符串表
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, String> getMessages(ServletRequest req) {
+		return (Map<String, String>) req.getAttribute(MSG);
+	}
+
+	/**
+	 * 获取当前请求对象的字符串表中的某一个字符串
+	 * 
+	 * @param req
+	 *            请求对象
+	 * @param key
+	 *            字符串键值
+	 * @return 字符串内容
+	 */
+	public static String getMessage(ServletRequest req, String key) {
+		Map<String, String> map = getMessages(req);
+		if (null != map)
+			return map.get(key);
+		return null;
 	}
 
 	/**
@@ -161,5 +220,28 @@ public abstract class Mvcs {
 	 */
 	public static void deposeSession(HttpSession session) {
 		new SessionIocContext(session).depose();
+	}
+
+	/**
+	 * 它将对象序列化成 JSON 字符串，并写入 HTTP 响应
+	 * 
+	 * @param resp
+	 *            响应对象
+	 * @param obj
+	 *            数据对象
+	 * @param format
+	 *            JSON 的格式化方式
+	 * @throws IOException
+	 *             写入失败
+	 */
+	public static void write(HttpServletResponse resp, Object obj, JsonFormat format)
+			throws IOException {
+		resp.setHeader("Cache-Control", "no-cache");
+		resp.setContentType("text/plain");
+
+		// by mawm 改为直接采用resp.getWriter()的方式直接输出!
+		Json.toJson(resp.getWriter(), obj, format);
+
+		resp.flushBuffer();
 	}
 }

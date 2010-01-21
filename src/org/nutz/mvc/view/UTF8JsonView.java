@@ -5,8 +5,8 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
 
 /**
@@ -31,14 +31,6 @@ public class UTF8JsonView implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws IOException {
-		// by mawm 改为直接采用resp.getWriter()的方式直接输出!
-		resp.setHeader("Cache-Control", "no-cache");
-		resp.setContentType("text/plain");
-
-		if (null == obj)
-			obj = data;
-		Json.toJson(resp.getWriter(), obj, format);
-
-		resp.flushBuffer();
+		Mvcs.write(resp, null == obj ? data : obj, format);
 	}
 }
