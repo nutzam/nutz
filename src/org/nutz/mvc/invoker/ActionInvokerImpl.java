@@ -234,12 +234,13 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 		// 如果有错误，则转到失败渲染流程
 		catch (Throwable e) {
-			if (log.isWarnEnabled())
-				log.warn(e.getMessage());
 			// 基本上， InvocationTargetException 一点意义也没有，需要拆包
 			if (e instanceof InvocationTargetException)
 				e = e.getCause();
-
+			// 打印 Log
+			if (log.isWarnEnabled())
+				log.warn(e.getMessage());
+			
 			try {
 				fail.render(req, resp, e);
 			}
