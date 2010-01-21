@@ -154,7 +154,7 @@ class MirrorBorning<T> {
 					Class<?>[] pts = cc.getParameterTypes();
 					if (pts.length == args.length) {
 						args = Lang.array2ObjectArray(args, pts);
-						borning = new ConstructorBorning(cc);
+						borning = new ConstructorCastingBorning(cc);
 						realArgs = args;
 						return;
 					}
@@ -167,7 +167,7 @@ class MirrorBorning<T> {
 					Class<?>[] pts = m.getParameterTypes();
 					if (pts.length == args.length) {
 						args = Lang.array2ObjectArray(args, pts);
-						borning = new MethodBorning(m);
+						borning = new MethodCastingBorning(m);
 						realArgs = args;
 						return;
 					}

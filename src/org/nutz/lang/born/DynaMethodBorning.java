@@ -17,7 +17,7 @@ public class DynaMethodBorning<T> implements Borning<T> {
 		try {
 			return (T) method.invoke(null, Mirror.evalArgToRealArray(args));
 		} catch (Exception e) {
-			throw new BorningException(e);
+			throw new BorningException(e, method.getDeclaringClass(), args);
 		}
 	}
 

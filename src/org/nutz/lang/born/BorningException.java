@@ -5,10 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 @SuppressWarnings("serial")
 public class BorningException extends RuntimeException {
 
-	public BorningException(Throwable e) {
-		super(String.format("Fail to born because: '%s'", getExceptionMessage(e)));
-	}
-
 	public BorningException(Throwable e, Class<?> type, Object[] args) {
 		super(makeMessage(e, type, args));
 	}

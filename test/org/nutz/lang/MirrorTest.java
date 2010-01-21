@@ -11,9 +11,11 @@ import java.util.Map;
 import org.junit.Test;
 
 import org.nutz.NutzEnum;
+import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.lang.born.Borning;
 
 public class MirrorTest {
 
@@ -399,5 +401,37 @@ public class MirrorTest {
 		f = Abcc.class.getDeclaredField("name");
 		types = Mirror.getGenericTypes(f);
 		assertEquals(0, types.length);
+	}
+
+	public static class TBOC {
+		DB db;
+
+		public TBOC(DB db) {
+			this.db = db;
+		}
+	}
+
+	@Test
+	public void test_borning_of_constractor() {
+		Borning<TBOC> b = Mirror.me(TBOC.class).getBorning("H2");
+		TBOC tb = b.born(Lang.array("H2"));
+		assertEquals(DB.H2, tb.db);
+	}
+
+	public static class TBOM {
+		DB db;
+
+		public static TBOM create(DB db) {
+			TBOM re = new TBOM();
+			re.db = db;
+			return re;
+		}
+	}
+
+	@Test
+	public void test_borning_of_method() {
+		Borning<TBOM> b = Mirror.me(TBOM.class).getBorning("H2");
+		TBOM tb = b.born(Lang.array("H2"));
+		assertEquals(DB.H2, tb.db);
 	}
 }

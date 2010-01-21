@@ -14,7 +14,7 @@ public class EmptyArgsConstructorBorning<T> implements Borning<T> {
 		try {
 			return c.newInstance();
 		} catch (Exception e) {
-			throw new BorningException(e);
+			throw new BorningException(e, c.getDeclaringClass(), null);
 		}
 	}
 
