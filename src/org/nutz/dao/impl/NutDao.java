@@ -21,6 +21,7 @@ import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.pager.DefaultPagerMaker;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.pager.PagerMaker;
@@ -34,6 +35,7 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityHolder;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.Link;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.entity.impl.DefaultEntityMaker;
 import org.nutz.dao.entity.next.FieldQuery;
 import org.nutz.lang.Each;
@@ -456,6 +458,13 @@ public class NutDao implements Dao {
 		return sql.getObject(entity.getType());
 	}
 
+	public Record fetch(String tableName, Condition condition) {
+		Sql sql = sqlMaker.query(tableName, condition, null);
+		sql.setCallback(Sqls.callback.record());
+		execute(sql);
+		return sql.getObject(Record.class);
+	}
+
 	public <T> T fetch(Class<T> classOfT) {
 		return fetch(classOfT, (Condition) null);
 	}
@@ -695,6 +704,12 @@ public class NutDao implements Dao {
 		execute(sql);
 		return sql.getList((Class<T>) entity.getType());
 
+	}
+
+	public List<Record> query(String tableName, Condition condition, Pager pager) {
+		Sql sql = sqlMaker.query(tableName, condition, pager);
+		execute(sql);
+		return sql.getList(Record.class);
 	}
 
 	public int update(Object obj) {

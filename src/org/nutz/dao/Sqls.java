@@ -6,8 +6,10 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.DefaultStatementAdapter;
 import org.nutz.dao.sql.FetchEntityCallback;
 import org.nutz.dao.sql.FetchIntegerCallback;
+import org.nutz.dao.sql.FetchRecordCallback;
 import org.nutz.dao.sql.FetchStringCallback;
 import org.nutz.dao.sql.QueryEntityCallback;
+import org.nutz.dao.sql.QueryRecordCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.SqlImpl;
@@ -57,6 +59,22 @@ public class Sqls {
 	 */
 	public static Sql fetchEntity(String sql) {
 		return create(sql).setCallback(callback.entity());
+	}
+
+	/**
+	 * 创建一个获取单个 Record 对象的 Sql。
+	 * <p>
+	 * 这个函数除了执行 create(String)外，还会为这个 Sql 语句设置回调，用来获取实体对象。
+	 * 
+	 * @param sql
+	 *            Sql 语句
+	 * @return Sql 对象
+	 * 
+	 * @see org.nutz.dao.sql.Sql
+	 * @see org.nutz.dao.entity.Entity
+	 */
+	public static Sql fetchRecord(String sql) {
+		return create(sql).setCallback(callback.record());
 	}
 
 	/**
@@ -113,6 +131,19 @@ public class Sqls {
 	}
 
 	/**
+	 * 创建一个获取一组 Record 实体对象的 Sql。
+	 * <p>
+	 * 这个函数除了执行 create(String)外，还会为这个 Sql 语句设置回调，用来获取一组实体对象。
+	 * 
+	 * @param sql
+	 *            Sql 语句
+	 * @return Sql 对象
+	 */
+	public static Sql queryRecord(String sql) {
+		return create(sql).setCallback(callback.records());
+	}
+
+	/**
 	 * 一些内置的回调对象
 	 */
 	public final static CallbackFactory callback = new CallbackFactory();
@@ -123,6 +154,13 @@ public class Sqls {
 		 */
 		public SqlCallback entity() {
 			return new FetchEntityCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获取一个 Record 的回调对象
+		 */
+		public SqlCallback record() {
+			return new FetchRecordCallback();
 		}
 
 		/**
@@ -144,6 +182,13 @@ public class Sqls {
 		 */
 		public SqlCallback entities() {
 			return new QueryEntityCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获取一组 Record 的回调对象
+		 */
+		public SqlCallback records() {
+			return new QueryRecordCallback();
 		}
 	}
 

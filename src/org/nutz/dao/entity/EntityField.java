@@ -44,18 +44,20 @@ public class EntityField {
 	private Entity<?> entity;
 
 	public EntityField(Entity<?> entity, Field field) {
-		this.mirror = Mirror.me(field.getType());
-		this.entity = entity;
-		this.field = field;
-		// Evaluate the getter and setter
-		try {
-			getter = entity.getMirror().getGetter(field);
-			getter.setAccessible(true);
-		} catch (NoSuchMethodException e) {}
-		try {
-			setter = entity.getMirror().getSetter(field);
-			setter.setAccessible(true);
-		} catch (NoSuchMethodException e) {}
+		if (null != entity && null != field) {
+			this.mirror = Mirror.me(field.getType());
+			this.entity = entity;
+			this.field = field;
+			// Evaluate the getter and setter
+			try {
+				getter = entity.getMirror().getGetter(field);
+				getter.setAccessible(true);
+			} catch (NoSuchMethodException e) {}
+			try {
+				setter = entity.getMirror().getSetter(field);
+				setter.setAccessible(true);
+			} catch (NoSuchMethodException e) {}
+		}
 	}
 
 	public Mirror<?> getMirror() {

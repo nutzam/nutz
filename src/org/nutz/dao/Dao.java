@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.util.List;
 
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 
@@ -325,6 +326,24 @@ public interface Dao {
 	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
 
 	/**
+	 * 查询出一组记录。
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param condition
+	 *            条件 - <b style=color:red>请注意：</b> 你传入的 Condition 实现必须考虑到 没有
+	 *            'Entity<?>' 传入。即 toSql 函数的参数永远为 null。
+	 * @param pager
+	 *            翻页信息
+	 * @return Record 对象。实际上是一个 Map 的包裹类
+	 * 
+	 * @see org.nutz.dao.Condition
+	 */
+	List<Record> query(String tableName, Condition condition, Pager pager);
+
+	/**
 	 * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。
 	 * <p>
 	 * 你的对象必须在某个字段声明了注解 '@Id'，否则本操作会抛出一个运行时异常
@@ -468,6 +487,17 @@ public interface Dao {
 	 * @see org.nutz.dao.entity.annotation.Name
 	 */
 	<T> T fetch(Class<T> classOfT, Condition condition);
+
+	/**
+	 * 根据条件获取一个 Record 对象
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @param condition
+	 *            条件
+	 * @return Record 对象
+	 */
+	Record fetch(String tableName, Condition condition);
 
 	/**
 	 * Fetch one object from DB, it is upon the insert sequence and DB

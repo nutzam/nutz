@@ -202,4 +202,12 @@ public class Entity<T> {
 		this.afters = afters;
 	}
 
+	public static String normalizeName(String name, Entity<?> en) {
+		if (null == en || null == name)
+			return name;
+		EntityField ef = en.getField(name);
+		if (null == ef)
+			return name;
+		return ef.getColumnName();
+	}
 }

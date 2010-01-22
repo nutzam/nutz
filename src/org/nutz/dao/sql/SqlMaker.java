@@ -15,6 +15,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.Link;
+import org.nutz.dao.entity.Record;
 import org.nutz.lang.Lang;
 
 public class SqlMaker {
@@ -275,4 +276,59 @@ public class SqlMaker {
 		return sql;
 	}
 
+	public Sql query(String tableName, Condition condition, Pager pager) {
+		String s;
+		// 获得条件及排序字符串
+		String cnd = Sqls.getConditionString(null, condition);
+
+		/*
+		 * Eval the table name: tableName[:idName]
+		 */
+		int pos = tableName.indexOf(':');
+		final String name, idf;
+		if (pos < 0) {
+			name = tableName;
+			idf = null;
+		} else {
+			name = tableName.substring(0, pos);
+			idf = tableName.substring(pos + 1);
+		}
+
+		// 如果用户没有设置 Pager
+		if (null == pager) {
+			// 如果没有过滤条件
+			if (null == cnd) {
+				s = format("SELECT * FROM %s", name);
+			}
+			// 如果设置了过滤条件
+			else {
+				s = format("SELECT * FROM %s %s", name, cnd);
+			}
+		}
+		// 如果用户设置了 Pager，用 Pager 生成 SQL
+		else {
+			s = pager.toSql(new Entity<Record>() {
+				public EntityField getIdentifiedField() {
+					return new EntityField(null, null) {
+						public String getColumnName() {
+							return idf;
+						}
+					};
+				}
+
+				public String getTableName() {
+					return name;
+				}
+
+				public String getViewName() {
+					return name;
+				}
+
+			}, "*", null == cnd ? "" : cnd);
+		}
+		// 生成 Sql 对象并返回
+		Sql sql = Sqls.queryRecord(s);
+		sql.getContext().setPager(pager);
+		return sql;
+	}
 }
