@@ -14,12 +14,16 @@ Apache DBCP
 		ds.setUsername("demo");
 		ds.setPassword("123456");
 		...
+		ds.close();  // 关闭池内所有连接
 		}}}
 	通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
 				type : "org.apache.commons.dbcp.BasicDataSource",
+				events : {
+					depose : 'close'
+				},
 				fields : {
 					driverClassName : 'org.postgresql.Driver',
 					url : 'jdbc:postgresql://localhost:5432/mydatabase',
@@ -29,6 +33,8 @@ Apache DBCP
 			}
 		}
 		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 --------------------------------------------------------------------------------------
 C3P0
 	直接书写 Java 代码
@@ -43,12 +49,16 @@ C3P0
 		ds.setUser("demo");
 		ds.setPassword("123456");
 		...
+		ds.close();  // 关闭池内所有连接
 		}}}
 	通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
 				type : "com.mchange.v2.c3p0.ComboPooledDataSource",
+				events : {
+					depose : 'close'
+				},
 				fields : {
 					driverClass : 'org.postgresql.Driver',
 					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
@@ -58,6 +68,7 @@ C3P0
 			}
 		}
 		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
 Proxool
 	直接书写 Java 代码
@@ -87,3 +98,5 @@ Proxool
 			}
 		}
 		}}}
+		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
+		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
