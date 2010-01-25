@@ -55,7 +55,7 @@ public class DefaultMessageLoader implements MessageLoader {
 	private static Map<String, String> _load(File dir) {
 		if (null == dir || !dir.isDirectory())
 			return null;
-		Map<String, String> msgs = new HashMap<String, String>();
+		Map<String, String> msgs = new MessageMap();
 		File[] files = dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				if (f.isFile())
