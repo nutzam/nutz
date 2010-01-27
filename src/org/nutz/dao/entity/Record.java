@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.json.ToJson;
 import org.nutz.lang.Lang;
 
@@ -27,7 +28,7 @@ public class Record {
 			int count = meta.getColumnCount();
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
-				re.set(name, rs.getObject(i));
+				re.set(name.toUpperCase(), rs.getObject(i));
 			}
 			return re;
 		} catch (SQLException e) {
@@ -79,7 +80,9 @@ public class Record {
 	 * @return 字段值对象
 	 */
 	public Object get(String name) {
-		return map.get(name);
+		if (null == name)
+			return null;
+		return map.get(name.toUpperCase());
 	}
 
 	public int getInt(String name) {
@@ -94,8 +97,8 @@ public class Record {
 		return Castors.me().castTo(get(name), Timestamp.class);
 	}
 
-	public String toJson() {
-		return Json.toJson(map);
+	public String toJson(JsonFormat format) {
+		return Json.toJson(map, format);
 	}
 
 	public String toString() {
