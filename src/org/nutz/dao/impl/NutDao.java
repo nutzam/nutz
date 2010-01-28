@@ -228,7 +228,8 @@ public class NutDao implements Dao {
 
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
-		Sql sql = sqlMaker.func(entity.getTableName(), "COUNT", "*").setCondition(condition);
+		String where = null == condition ? null : condition.toSql(entity);
+		Sql sql = sqlMaker.func(entity.getTableName(), "COUNT", "*", where);
 		sql.setEntity(entity);
 		execute(sql);
 		return sql.getInt();
@@ -239,7 +240,8 @@ public class NutDao implements Dao {
 	}
 
 	public int count(String tableName, Condition condition) {
-		Sql sql = sqlMaker.func(tableName, "COUNT", "*").setCondition(condition);
+		String where = null == condition ? null : condition.toSql(null);
+		Sql sql = sqlMaker.func(tableName, "COUNT", "*", where);
 		execute(sql);
 		return sql.getInt();
 	}
@@ -573,9 +575,7 @@ public class NutDao implements Dao {
 	public int getMaxId(Class<?> classOfT) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
-		// Sql sql = maker.create(maker.ptn.MAX,
-		// entity.getTableName()).setEntity(entity);
-		Sql sql = sqlMaker.func(entity.getTableName(), "MAX", ef.getColumnName());
+		Sql sql = sqlMaker.func(entity.getTableName(), "MAX", ef.getColumnName(), null);
 		execute(sql);
 		return sql.getInt();
 	}
@@ -838,7 +838,7 @@ public class NutDao implements Dao {
 	}
 
 	public int func(String tableName, String funcName, String colName) {
-		Sql sql = sqlMaker.func(tableName, funcName, colName);
+		Sql sql = sqlMaker.func(tableName, funcName, colName, null);
 		execute(sql);
 		return sql.getInt();
 	}

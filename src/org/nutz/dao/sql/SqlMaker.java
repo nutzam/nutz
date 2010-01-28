@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.nutz.dao.Chain;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
@@ -17,6 +18,7 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.Link;
 import org.nutz.dao.entity.Record;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 
 public class SqlMaker {
 
@@ -220,9 +222,20 @@ public class SqlMaker {
 		return Sqls.create("TRUNCATE TABLE " + table);
 	}
 
-	public Sql func(String table, String type, String field) {
-		String fmt = format("SELECT %s(%s) FROM %s $condition", type, field, table);
-		return Sqls.fetchInt(fmt);
+	public Sql func(String table, String type, String field, String where) {
+		/*
+		 * Format the condition string
+		 */
+		if (Strings.isBlank(where)) {
+			where = "";
+		} else {
+			int pos = where.indexOf("ORDER BY");
+			if (pos > 0)
+				where = where.substring(0, pos);
+		}
+		// Create SQL object
+		String sql = format("SELECT %s(%s) FROM %s $condition", type, field, table);
+		return Sqls.fetchInt(sql).setCondition(Cnd.wrap(where));
 	}
 
 	public Sql fetch(Entity<?> entity, EntityField ef) {

@@ -58,8 +58,8 @@ public class SqlImpl implements Sql {
 					ResultSet rs = null;
 					try {
 						// Prepare statment for query
-						stat = conn.prepareStatement(sql.toPreparedStatementString(), rsType,
-								ResultSet.CONCUR_READ_ONLY);
+						String sqlStr = sql.toPreparedStatementString();
+						stat = conn.prepareStatement(sqlStr, rsType, ResultSet.CONCUR_READ_ONLY);
 
 						// Put all parameters to PreparedStatement and get
 						// ResultSet
@@ -79,7 +79,8 @@ public class SqlImpl implements Sql {
 			else if (sql.isUPDATE() || sql.isINSERT() || sql.isDELETE() || sql.isTRUNCATE()) {
 				PreparedStatement stat = null;
 				try {
-					stat = conn.prepareStatement(sql.toPreparedStatementString());
+					String sqlStr = sql.toPreparedStatementString();
+					stat = conn.prepareStatement(sqlStr);
 					adapter.process(stat, sql, entity);
 					stat.execute();
 					updateCount = stat.getUpdateCount();

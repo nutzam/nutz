@@ -15,6 +15,7 @@ import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.SqlImpl;
 import org.nutz.dao.sql.SqlLiteral;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 
 /**
  * 提供了 Sql 相关的帮助函数
@@ -205,7 +206,7 @@ public class Sqls {
 	public static String getConditionString(Entity<?> en, Condition condition) {
 		if (null != condition) {
 			String cnd = condition.toSql(en);
-			if (cnd != null) {
+			if (!Strings.isBlank(cnd)) {
 				if (!CND.matcher(cnd).find())
 					return " WHERE " + cnd;
 				return cnd;
