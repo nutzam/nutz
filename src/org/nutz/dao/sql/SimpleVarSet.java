@@ -6,7 +6,7 @@ import java.util.Set;
 
 class SimpleVarSet implements VarSet {
 
-	private HashMap<String, Object> map;
+	private HashMap<String, Object>	map;
 
 	SimpleVarSet() {
 		this.map = new HashMap<String, Object>();
@@ -26,7 +26,9 @@ class SimpleVarSet implements VarSet {
 	}
 
 	public VarSet putAll(Map<String, Object> map) {
-		this.map.putAll(map);
+		if (map != null) {
+			this.map.putAll(map);
+		}
 		return this;
 	}
 
