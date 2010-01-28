@@ -138,9 +138,9 @@ public class Invoking {
 		}
 		if (null == invoker)
 			throw new InvokingException("Don't know how to invoke [%s].%s() by args:\n %s", type
-					.getName(), methodName, Lang.concatBy('\n', args));
+					.getName(), methodName, Lang.concat('\n', args));
 		msg = format("Fail to invoke [%s].%s() by args:\n %s", type.getName(), methodName, Lang
-				.concatBy('\n', args))
+				.concat('\n', args))
 				+ "\nFor the reason: %s";
 	}
 

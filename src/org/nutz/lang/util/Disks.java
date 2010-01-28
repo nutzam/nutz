@@ -56,7 +56,7 @@ public abstract class Disks {
 			if (!bb[pos].equals(ff[pos]))
 				break;
 		String path = Strings.dup("../", bb.length - pos);
-		path += Lang.concatBy(pos, ff.length - pos, '/', ff);
+		path += Lang.concat(pos, ff.length - pos, '/', ff);
 		return path;
 	}
 }

@@ -11,7 +11,7 @@ class Utils {
 
 	static Ioc2 I(String... ss) {
 		String json = "{";
-		json += Lang.concatBy(',', ss);
+		json += Lang.concat(',', ss);
 		json += "}";
 		return new NutIoc(new MapLoader(json));
 	}

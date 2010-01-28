@@ -462,7 +462,7 @@ public abstract class Lang {
 	 *            数组
 	 * @return 拼合后的字符串
 	 */
-	public static <T> StringBuilder concatBy(Object c, T[] objs) {
+	public static <T> StringBuilder concat(Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		if (null == objs)
 			return sb;
@@ -488,7 +488,7 @@ public abstract class Lang {
 	 *            数组
 	 * @return 拼合后的字符串
 	 */
-	public static <T> StringBuilder concatBy(int offset, int len, Object c, T[] objs) {
+	public static <T> StringBuilder concat(int offset, int len, Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
 		if (null == objs)
 			return sb;

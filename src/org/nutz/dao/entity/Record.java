@@ -28,7 +28,7 @@ public class Record {
 			int count = meta.getColumnCount();
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
-				re.set(name.toUpperCase(), rs.getObject(i));
+				re.set(name.toLowerCase(), rs.getObject(i));
 			}
 			return re;
 		} catch (SQLException e) {
@@ -82,7 +82,7 @@ public class Record {
 	public Object get(String name) {
 		if (null == name)
 			return null;
-		return map.get(name.toUpperCase());
+		return map.get(name.toLowerCase());
 	}
 
 	public int getInt(String name) {
