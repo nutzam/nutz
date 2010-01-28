@@ -58,7 +58,8 @@ public class Daos {
 	public static int getColumnIndex(ResultSetMetaData meta, String colName) throws SQLException {
 		int ci = 0;
 		if (null != meta) {
-			for (int i = 1; i <= meta.getColumnCount(); i++)
+			int columnCount = meta.getColumnCount();
+			for (int i = 1; i <= columnCount; i++)
 				if (meta.getColumnName(i).equalsIgnoreCase(colName)) {
 					ci = i;
 					break;
