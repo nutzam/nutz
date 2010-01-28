@@ -49,7 +49,8 @@ public abstract class AbstractPager implements Pager {
 
 	public Pager setRecordCount(int recordCount) {
 		this.recordCount = recordCount > 0 ? recordCount : 0;
-		return resetPageCount();
+		this.pageCount = (int) Math.ceil((double) recordCount / pageSize);
+		return this;
 	}
 
 	public int getOffset() {
