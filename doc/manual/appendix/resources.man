@@ -12,12 +12,14 @@
 		 @[http://amosleaf.javaeye.com amosleaf]
 	 * 《[http://amosleaf.javaeye.com/blog/562141 Nutz的 使用注解做ORM]》\
 		 @[http://amosleaf.javaeye.com amosleaf]
+	 * 《[http://www.3km.com.cn/?p=96 借于Nutz快速实现对表的增删改操作]》\
+		 @[http://www.3km.com.cn 会跑的蜗牛]
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
 	     @[http://axhack.javaeye.com axhack]
-	 * 《[http://www.3km.com.cn/?p=96 借于Nutz快速实现对表的增删改操作]》\
-		 @[http://www.3km.com.cn 会跑的蜗牛]
+	 * 《[http://birdwindy.javaeye.com/blog/582200 我的第一个Nutz程序]》 \
+	     @[http://birdwindy.javaeye.com Bird.Wyatt]
 -----------------------------------------------------------------------------------
 关于 Aop
 	 * 《[http://wendal.javaeye.com/blog/543681 基于ASM的Nut.Aop实现]》\
