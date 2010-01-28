@@ -464,12 +464,13 @@ public abstract class Lang {
 	 */
 	public static <T> StringBuilder concat(Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
-		if (null == objs)
+		if (null == objs || 0 == objs.length)
 			return sb;
-		for (T obj : objs)
-			sb.append(null == obj ? null : obj.toString()).append(c);
-		if (sb.length() > 0)
-			sb.deleteCharAt(sb.length() - 1);
+
+		sb.append(objs[0]);
+		for (int i = 1; i < objs.length; i++)
+			sb.append(c).append(objs[i]);
+
 		return sb;
 	}
 

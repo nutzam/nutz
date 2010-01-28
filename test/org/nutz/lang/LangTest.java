@@ -30,7 +30,7 @@ public class LangTest {
 	@Test
 	public void test_map_2_map() {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
-		Map<?,?> map2 = Lang.map2Object(map, Map.class);
+		Map<?, ?> map2 = Lang.map2Object(map, Map.class);
 		assertTrue(Lang.equals(map, map2));
 	}
 
@@ -68,5 +68,11 @@ public class LangTest {
 		int[] is = (int[]) Lang.array2array(Lang.array("10", "20"), int.class);
 		assertEquals(10, is[0]);
 		assertEquals(20, is[1]);
+	}
+
+	@Test
+	public void test_concat() {
+		String[] ss = Lang.array("A", "B");
+		assertEquals("A--B", Lang.concat("--", ss).toString());
 	}
 }
