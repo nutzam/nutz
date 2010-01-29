@@ -92,5 +92,5 @@
 	还有：
 
 	 * 在 build 目录下，有 build.xml， 你可以用 Ant 编译
-	 * 如果你建立一个基于 Nutz 的项目，将 Nutz 的 jar 包以及 Javassist 的jar包 加入到项目的build path 即可
+	 * 如果你建立一个基于 Nutz 的项目，将 Nutz 的 jar 包 加入到项目的build path 即可
 
