@@ -1,0 +1,161 @@
+#title: To Compile from SVN - Eclipse
+#index:0,1
+#author:Peter.Tung(mastung@gmail.com)
+--------------------------------------------------------------------------------------------------------------------------
+Preparing the folders
+	<../imgs/build/01.png>
+--------------------------------------------------------------------------------------------------------------------------
+Using SVN tools
+	  * Windows users： You can use [http://tortoisesvn.net tortoise SVN]
+	  * Linux users： You know how to use that :p
+	 
+	 <../imgs/build/02.png>
+
+	 to connect http://nutz.googlecode.com/svn
+--------------------------------------------------------------------------------------------------------------------------
+Check out
+	
+	Connect
+		SVN is slow to connect through http, it may takes about tens seconds to minutes. After connecting successfully, to choose trunk folder, and to checkout.
+		
+		<../imgs/build/03.png>
+
+	Choose Folder
+		To choose Checkout destination folder, and click ok
+		
+		<../imgs/build/04.png>
+
+		supposing our destination is D:\nutz\svn\trunk
+
+	Checkout
+		After you click OK, it will start to download all Nutz files
+		
+		<../imgs/build/05.png>
+
+		Nutz files are not too many, through ADSL, it may takes about half minute to download them：
+
+		<imgs/build/05_2.png>
+
+		After you download successfully, your folder structure should be：
+	
+	Check the result:
+		<../imgs/build/05_3.png>
+
+--------------------------------------------------------------------------------------------------------------------------
+To prepare the dependency jar files
+		
+	<../imgs/build/06.png>
+
+	Nutz depends on other jars? Yes, but it depends on Log4j while compiling. If Log4j is not added while running, it will use java.util.logging
+	more detail please refer [../lang/log.man Nutz log module]
+
+	Nutz.Dao test case is runing on Mysql/Psql/Oracle/SqlServer2000/SqlServer2005, so we need one of their JDBC drivers.
+	You can choose your favorite ones. I prefer PSQL, of cause, most people like MySQL.
+
+	To run JUnit test cases, you also need Apache database connection pools and one JDBC client.
+	Apache provides two connection pool jar files. We can simply to create DataSource, you can choose your favorite connection pool implementations: c3p0, proxool, 
+	At least, you have to prepare the jar file.
+
+	We put the jar files into D:/nutz/deps, we will need them later
+--------------------------------------------------------------------------------------------------------------------------
+Prepare Eclipse Workspace
+	Open Eclipse, Set workspace D:/nutz/workspace
+		
+	<../imgs/build/07.png>
+
+	It's clear at all
+		
+	<../imgs/build/08.png>
+
+	of cause, you can do the operation in exist workspaces.
+--------------------------------------------------------------------------------------------------------------------------
+Setup Tomcat Environment
+	To add Tomcat Server (You have to install Tomcat at first)
+
+	We needs Servlet relative jars to compile
+	 {*Window > Preferences > Server > Runtime Environment > Add} to select
+	 {*Apache > Apache Tomcat v6.0} （{/Since I installed Tomcat6.0}）
+	Click next, fill Tomcat install path
+	
+	<../imgs/build/09.png>
+
+	then click finish or OK, to confirm all dialogs.
+--------------------------------------------------------------------------------------------------------------------------
+Create Java Project
+	Select File > New, in the dialog, select create normal Java project（Java Project）, then click Next
+	
+	<../imgs/build/10.png>
+
+	 * input the project name： nutz@google   (in fact, you can input whatever you want)
+	 * click Finish.
+	 * You can choose or not the Java perspective
+
+	<../imgs/build/10_2.png>
+
+	Change project default encoding as UTF-8. Otherwise you may not see the correct characters in eclipse.
+--------------------------------------------------------------------------------------------------------------------------
+Link source folder
+	In the new project, there is a src folder, and default JRE System Library. To select src, press delete button to delete it, we don't need it.
+		
+	<../imgs/build/11.png>
+
+	After clearing the project, we can link the Nutz SVN folders：
+		
+	<../imgs/build/12.png>
+
+	right click project name, and select New > Folder
+
+	In the dialog, select link the folder in the system
+	
+	<../imgs/build/13.png>
+
+	Click Finish, the folder is added into the project
+	
+	<../imgs/build/14.png>
+
+	You can follow the same process to add other folders like test folder
+
+	<../imgs/build/14_2.png>
+--------------------------------------------------------------------------------------------------------------------------
+Configure build path
+	To configure build path
+		
+	<../imgs/build/15.png>
+
+	In Configure Build Path dialog, add src and test folder as source folders
+	
+	<../imgs/build/16.png>
+
+	Notes: Don't forget to add filter pattern:
+
+	<../imgs/build/16_2.png>
+
+	Or, there will be compiling warnings. Because svn cache folders are also treated as sources. To add src and test folders filter pattern to let Eclipse 
+	ignore all .svn folders
+	
+	Filter pattern is：  {#00A;* `**/.svn/**` }
+--------------------------------------------------------------------------------------------------------------------------
+Check
+	To check, if the result is like this, pay attention the red areas：
+		
+	<../imgs/build/17.png>
+--------------------------------------------------------------------------------------------------------------------------
+Set jar dependence
+	At last, we need to set the dependence packages
+	
+	<../imgs/build/18.png>
+
+	After confirm, to click Add Library ..., in the dialog to select Server Runtime. And then, to select the Apache Tomcat 6.0
+
+	<../imgs/build/18_2.png>
+
+	To run the JUnit test, you need to add JUnit 4 jar files: Add Library... > JUnit > JUnit 4 > OK
+
+	then, all the dependences should be like this
+
+	<../imgs/build/18_3.png>
+--------------------------------------------------------------------------------------------------------------------------
+Done
+	Fininally, You setup your Nutz environment, and Eclipse should automatically compile successfully.
+		
+	<../imgs/build/19.png>
