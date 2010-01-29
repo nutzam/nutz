@@ -1,0 +1,94 @@
+#title: To Run JUnit Test - Eclipse
+#index:0
+#author:Peter.Tung(mastung@gmail.com)
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+To build Eclipse compiling environment
+	
+	Please refer [svn_project.man Compile from SVN]. Then please follow the steps:
+	
+	 #to check out SVN, refer http://code.google.com/p/nutz/source/checkout for your own information
+		 * To read, check out from：http://nutz.googlecode.com/svn/trunk
+		 * To commit, check out from： https://nutz.googlecode.com/svn/trunk （you needs the commit right）
+	 # Project compiling dependences
+		 * log4j is used to compile Nutz.log, while in runtime, it is not necessary. For more detail about Nutz.log please [../lang/log.man refer here]
+		 * commons-dbcp and commons-pool are necessary to run Junit test. And you also need one JDBC driver.
+		 * Servlet API Support
+		 * JUnit 4
+	 # Make sure you use UTF-8 encoding for your project. All the source code is encoded based on UTF-8
+
+	You can refer our recommended way [svn_project.man Compile from SVN ].
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+How to run JUnit test
+
+	1. Create test database
+		
+		At first, you need create a test database, like, zzhtest.
+		{{{
+		mysql:> create database zzhtest;
+		}}}
+
+	2. Create connection configuration file 
+		in Eclipse project, add a source folder ：right click project > New > Source Folder
+		 # Input a name for the Folder, like {*properties}
+		 # Set the folder as Source Folder
+		 # create a txt file {*nutz-test.properties} in it
+		
+		The file content is：
+		{{{
+		driver=com.mysql.jdbc.Driver
+		url=jdbc:mysql://127.0.0.1:3306/zzhtest
+		username=root
+		password=123456
+		}}}
+
+		You need modify it based your configuration. The project structure should be：
+
+		{#F00;*attention, no blank spaces around =}
+		
+		I don't put the nutz-test.properties in the SVN, since its properties are not the same in different environments.
+
+	3. Add log4j.properties
+		This can let you print the Nutz running information in the console：
+
+		In the Source Folder just created, add new log4j.properties ：
+		{{{
+		log4j.category.org.nutz=debug, NUTZ
+
+		log4j.additivity.org.nutz=false
+
+		#Appenders ...
+		log4j.appender.NUTZ=org.apache.log4j.ConsoleAppender
+		log4j.appender.NUTZ.layout=org.apache.log4j.PatternLayout
+		log4j.appender.NUTZ.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+		}}}
+
+	4. Check
+		You should get the following result like：
+
+		<../imgs/build/21.png>
+
+	5. Run
+		Open test/org/nutz/TestAll.java, then use JUnit to run
+		
+		<../imgs/build/22.png>
+
+	6. See the result
+		normally, you would see the right result：
+		
+		<../imgs/build/23.png>
+--------------------------------------------------------------------------------------------------------------------------------------------
+At last ...
+	
+	 * Nutz is an open source project, you can modify the source code, and then run JUnit test to verify your modifications
+	 * You can add more JUnit test, to check Nutz's quality
+	 * If you find bugs or correct some issues, please send mails to nutzam@googlegroups.com with your codes.
+	 * We will be very happy for your contribution. If you suggest more than 5 corrections, you will be invited as Nutz Committer
+	 * About how to be a Nutz Committer, please refer [coding.man here]
+	
+	And：
+
+	 * In build folder, there is build.xml, you can use ant to compile it
+	 * If you want to use Nutz in your project, just add Nutz jar files into your build path
+
