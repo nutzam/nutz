@@ -80,15 +80,15 @@
 			有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 
 			放在 WEB-INF 外面。
 			
-			 * 这个将对应 /WEB-INF/abc/bbc.jsp
+			 * 这个将对应 {#00A;*/WEB-INF/abc/bbc.jsp}
 				{{{
 				@Ok("jsp:abc.bbc")
 				}}}
-			 * 这个将对应 /abc/bbc.jsp
+			 * 这个将对应 {#00A;*/abc/bbc.jsp}
 				{{{
 				@Ok("jsp:/abc/bbc")
 				}}}
-			 * 这个也将对应 /abc/bbc.jsp
+			 * 这个也将对应 {#00A;*/abc/bbc.jsp}
 				{{{
 				@Ok("jsp:/abc/bbc.jsp")
 				}}}
