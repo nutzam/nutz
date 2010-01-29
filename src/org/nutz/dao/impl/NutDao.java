@@ -183,26 +183,33 @@ public class NutDao implements Dao {
 	}
 
 	public void execute(final Sql... sqls) {
-		run(new ConnCallback() {
-			public void invoke(Connection conn) throws Exception {
-				// 打印 LOG
-				if (log.isDebugEnabled()) {
-					for (int i = 0; i < sqls.length; i++) {
-						if (null != sqls[i]) {
-							log.debug(sqls[i].toString());
-							sqls[i].execute(conn);
+		if (null != sqls) {
+			run(new ConnCallback() {
+				public void invoke(Connection conn) throws Exception {
+					// Store the old auto commit setting
+					boolean isAuto = conn.getAutoCommit();
+					// If multiple SQL, change the auto commit
+					if (isAuto && sqls.length > 1)
+						conn.setAutoCommit(false);
+
+					// 打印 LOG
+					if (log.isDebugEnabled()) {
+						for (int i = 0; i < sqls.length; i++) {
+							if (null != sqls[i]) {
+								log.debug(sqls[i].toString());
+								sqls[i].execute(conn);
+							}
 						}
 					}
-				}
-				// 不打印
-				else {
-					for (int i = 0; i < sqls.length; i++) {
-						if (null != sqls[i])
-							sqls[i].execute(conn);
+					// 不打印
+					else {
+						for (int i = 0; i < sqls.length; i++)
+							if (null != sqls[i])
+								sqls[i].execute(conn);
 					}
 				}
-			}
-		});
+			});
+		}
 	}
 
 	public void run(ConnCallback callback) {

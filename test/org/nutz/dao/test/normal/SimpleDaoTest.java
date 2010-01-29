@@ -6,7 +6,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.tools.Tables;
@@ -45,9 +47,20 @@ public class SimpleDaoTest extends DaoCase {
 	@Test
 	public void test_count_by_condition() {
 		insertRecords(4);
-		assertEquals(4,dao.count(Pet.class));
-		assertEquals(2, dao.count(Pet.class, Cnd
-				.wrap("name IN ('pet2','pet3') ORDER BY name ASC)")));
+		assertEquals(4, dao.count(Pet.class));
+		assertEquals(2, dao
+				.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC)")));
 	}
 
+	@Test
+	public void run_2_sqls_with_error() {
+		assertEquals(0, dao.count(Pet.class));
+		Sql sql1 = Sqls.create("INSERT INTO t_pet (name) VALUES ('A')");
+		Sql sql2 = Sqls.create("INSERT INTO t_pet (nocol) VALUES ('B')");
+		try {
+			dao.execute(sql1, sql2);
+			fail();
+		} catch (Exception e) {}
+		assertEquals(0, dao.count(Pet.class));
+	}
 }
