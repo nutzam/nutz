@@ -1,0 +1,69 @@
+#title: Become a committer
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+
+If you are already a committer
+	Pay more attention
+		 * Submit your name with your modification in JDoc. ex."@author zozoh(zozohtnt@gmail.com)"
+			 * Otherwise, it is not efficient to locate the author if there are some issues.
+		 * Using the code formatter, to import /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml, to let everyone know what you changed.
+		 * Directly remove the code instead of comment it. We can find the different by comparing tools.
+
+	You should know
+		 * Nutz's codes are short（{#AAA;but to not harm the understanding as premise}）
+		 	* Whenever, for the same function, a shorter piece of codes is always better than the longer one.
+		 * It is massive contribution, if you point out one method or class is useless.
+		 * To reduce a piece of codes is the same contribution as to add one, even more.
+		 * If you can reduce one line of codes, without loosing performance and understanding, you are the hero.
+		 * I hope the code is beautiful. Simple is beautiful.
+		 * Community will decide what kinds of features involved.
+		 * It is up to you how to implement the features.
+		 * Please provide Java Doc for public class and method.
+		 * Major methods should be tested through JUnit.
+	
+	That's why you have to follow the coding rules
+		 * class name
+			 * A noun is enough if it is possible
+			 * Ending the class with ing, if it is only run one time. like {*Rendering}
+			 * Keep class name as short as possible. But it is better not include the abbreviation. If you really want the abbreviation, it should be very common usage class. like org.nutz.dao.Cnd
+				 * Because if it's too long, the users' IDE will help them auto wrap it as several lines. It's rubbish.
+			 * Do not use the same name with the ones in Java standard libs. like Class, Object, String
+				 * If you do so, it means you are scoffing at the existing ones.
+				 * You force the user to distinguish the two Harry Potter.
+		 * variable name
+			 * Better to use singular nouns
+			 * To restrict the scope as possible as you can.
+			 * If it is collection or array, name it with plural nouns. No needs to add xxxMap or xxxList, it is too long.
+			 * Don't use one chararactor，especially i. You can use index or cursor.
+		 * Local variable name is better used 1-2 chararactor, like StringBuilder sb
+		 * function name （no matter static or not）
+			 * Must follow Java programming rules
+			 * If it is setter function, it may follow jQuery programming rules
+				 * return this, to accelerate setting values.
+				 * setXXX(String s) may be replaced with xxx(String s) {#080;// only recommendation} 
+			 * In a word, you have to concern how to keep the users' codes no auto wrapping in IDEs.
+		 * Code formatter, please use [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml  Code Formatter for Eclipse]
+			 * get it from svn's trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml
+			 * No official formatter provided yet, waiting for contributers.
+	 
+	About code refactoring
+		 * You can change any interface implementation. We have version control. It's safe.
+		 * Every commit, it must pass the combination.
+		 * Every commit, it's better to pass the JUnit test.
+		 	* Unless some special cases-- like you are sharing the code snippet with others.
+		 * It is not allowed the codes in the server can not pass JUnit test for 3 days after new commit.
+		 
+	About massive code refactoring
+		 * It is inevitable
+		 * I'd like to do it, if it's reasonable
+		 * I like what I write, but I can not promise how long I will
+		 * Frankly, we don't have enough source to maintain even two versions for a long time. Currently there is only trunk.
+	
+
+
+If you are willing to be a committer
+	 * You needs to join the community, send email to： nutzam@googlegroups.com
+	 * Let's know you in the community. If you are shine, we'd like to invite you.
+	 * Or you can directly send email to any other committers, to point out the weakness of Nutz and provides the solution.
+		 * If your suggestions are accepted more than 5 times. We'd like to invite you. -- Of cause you can reject.
+	 * Other else ways? No.
