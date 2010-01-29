@@ -1,0 +1,18 @@
+#title:Nutz Packages
+#author:Peter.Tung(mastung@gmail.com)
+
+org.nutz.*
+	||{*Package}|| {*Description}												|| {*Dependence} ||
+	||aop		|| AOP Framework												|| {*lang} ||
+	||castors	|| Object Caster Framework 										|| {*lang}, {*json} ||
+	||dao		|| DAO Framework												|| {*lang}, {*castors}, {*trans} ||
+	||filepool	|| File pool interface and default implementation				|| {*lang}, {*castors}   ||
+	||http		|| Http request utilities										|| {*lang}, {#00A;*_servlet-api.jar} ||
+	||ioc		|| Object Lifecycle Management Framework						||  {*lang}, {*castors}, {*json}, {*aop} ||
+	||json		|| JSON Parser and Render										||  {*lang}, {*castors} ||
+	||lang		|| Higher level utilities to easy Java development				|| {#080;_No 3rd Package Dependence} ||
+	||log		|| Lightweight Log Framework									|| {*plugin} ||
+	||mvc		|| Web Framework, Provides special Servlet injected in web.xml	|| {*ioc}, {#00A;*_servlet-api.jar} ||
+	||service	|| Higher level features for org.nutz.dao.Dao, Provides capabilities to operate tree data structures	|| {*dao} ||
+	||trans		|| Transaction Framework for dao								|| {*lang} ||
+	||plugin	|| Lightweight plugin Framework					                || {*lang} ||
