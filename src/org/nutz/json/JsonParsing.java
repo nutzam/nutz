@@ -296,14 +296,11 @@ class JsonParsing {
 			throw makeError("type must by one of int|long|float|dobule|byte");
 		case 'v':
 			/*
-			 * If meet the "var ioc = {", try to treat it as "{". For the reason
-			 * I have to use some JS editor to write JSON file. If without
-			 * "var ioc = ", JS editor "auto format" function will not work.
+			 * Meet the var ioc ={ maybe, try to find the '{' and break
 			 */
-			if ('a' == nextChar() && 'r' == nextChar() && ' ' == nextChar() && 'i' == nextChar()
-					&& 'o' == nextChar() && 'c' == nextChar() && ' ' == nextChar()
-					&& '=' == nextChar() && ' ' == nextChar() && '{' == nextChar())
-				return parseFromCurrentLocation(type, componentType);
+			while (-1 != nextChar())
+				if ('{' == cursor)
+					return parseFromCurrentLocation(type, componentType);
 		default:
 			throw makeError("Don't know how to handle this char");
 		}

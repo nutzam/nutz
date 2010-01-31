@@ -36,6 +36,9 @@ public class JsonTest {
 	public void with_var_ioc_as_prefix() {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson("var ioc = {id:6};");
 		assertEquals(6, map.get("id"));
+
+		map = (Map<?, ?>) Json.fromJson("\t\n\r   var ioc= {id:6};");
+		assertEquals(6, map.get("id"));
 	}
 
 	@Test
