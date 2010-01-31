@@ -11,11 +11,11 @@ public class JsonFormat {
 	}
 
 	public static JsonFormat full() {
-		return new JsonFormat(false).setQuoteName(false).setIgnoreNull(false);
+		return new JsonFormat(false).setIgnoreNull(false);
 	}
 
 	public static JsonFormat nice() {
-		return new JsonFormat(false).setQuoteName(false).setIgnoreNull(true);
+		return new JsonFormat(false).setIgnoreNull(true);
 	}
 
 	public JsonFormat() {
