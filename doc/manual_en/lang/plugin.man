@@ -1,0 +1,184 @@
+#title: Plugin
+#index:0,1
+#author:Peter.Tung(mastung@gmail.com)
+--------------------------------------------------------------------------------------------------------
+What is plugin in nutz?
+	<plugin_motivation.png>
+
+	Suppose one project depends on some interfaces, but it's hard to specify the implementations while developing.
+
+	For example [log.man Nutz's Log]. While running, nutz will check if log4j is available(log4j classes and configuration file 
+	are exist). If it's not available, nutz will check if java.util.logging is available(configuration file 
+	is exist). If it's not available either, nutz will print the log on console. This is implemented based on plugin mechanism.
+
+	But, it's different with OSGI. Plugin is only used to dynamically specify the implementations. It will not change the implementation while running.
+	In this way, Nutz depends on Log4j for compiling. But it does not depends Log4j for running.
+
+	The plugin is too simple to implement. You can refer：
+	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/plugin org.nutz.plugin] the source code. It may only take you few minutes.
+--------------------------------------------------------------------------------------------------------
+Try to use plugin
+	Suppose there is an interface：
+	{{{<Java>
+	public interface Said{
+		String say();
+	}
+	}}}
+	You have two implemented classes：
+	 * Class TomSaid
+		{{{<Java>
+		public class TomSaid implements Said{
+			public String say(){
+				return "I am Tom";
+			}
+		}
+		}}}
+	 * Class PeterSaid	
+		{{{<Java>
+		public class PeterSaid implements Said{
+			public String say(){
+				return "I am Peter";
+			}
+		}
+		}}}
+	These two implemented classed are wrapped into two different jar files separately. While deployment, you may expect that：
+	 * put tom.jar into the project, the project will use TomSaid
+	 * put peter.jar into the project, the project will use PeterSaid
+	 * put both into the project, PeterSaid should have higher priority
+	
+	{#A31;*How to do like that?}
+
+	At first, you need implement Plugin interface for your class TomSaid：
+	{{{<Java>
+	public class TomSaidPlugin implements Plugin, Said{
+		private Said said;
+		public boolean canWork(){
+			try {
+				said = (Said)(Class.forName("com.you.app.TomSaid").newInstance());
+				return true;
+			} catch (Exception e) {}
+			return false;
+		}
+		public String say(){
+			return said.say();
+		}
+	}
+	}}}
+
+	and also for PeterSaid：
+	{{{<Java>
+	public class PeterSaidPlugin implements Plugin, Said{
+		private Said said;
+		public boolean canWork(){
+			try {
+				said = (Said)(Class.forName("com.you.app.PeterSaid").newInstance());
+				return true;
+			} catch (Exception e) {}
+			return false;
+		}
+		public String say(){
+			return said.say();
+		}
+	}
+	}}}
+
+	To use like this：
+	{{{<Java>
+	PluginManager<Said> plugins = new SimplePluginManager<Said>(
+			"com.you.app.PeterSaidPlugin",
+		    "com.you.app.TomSaidPlugin");
+	Said said = plugins.get();
+	System.out.println(said.say());
+	}}}
+	The previous sample just meet the request, and it doesn't depends on PeterSaid or TomSaid.
+
+	Notes for SimplePluginManager：
+	 * plugins must have one default constructor
+	 * plugins must implements the object interface, like Said
+	 * plugins are proxies for adapted targets
+	 * The sequence of constructor arguments is the priority of plugins. The first is the highest.
+	
+--------------------------------------------------------------------------------------------------------
+Work with Ioc
+	Sometime, your Plugin may needs some configuration info. We can combine [../ioc/ioc_get_start.man Ioc container]
+	with it(through `IocPlugManager<T>`).
+	
+	For example, let's modify previous two plugins, to let them support one configurable property:
+	{{{<Java>
+	public class PeterSaidPlugin implements Plugin, Said {
+		private String prefix;
+		
+		private Said said;
+
+		public boolean canWork() {
+			try {
+				said = (Said) (Class.forName("com.you.app.PeterSaid").newInstance());
+				return true;
+			} catch (Exception e) {}
+			return false;
+		}
+
+		public String say() {
+			return prefix + said.say();
+		}
+	}
+	}}}
+	These two plugins both need "prefix" property	
+	{{{<Java>
+	public class TomSaidPlugin implements Plugin, Said {
+		private String prefix;
+
+		private Said said;
+
+		public boolean canWork() {
+			try {
+				said = (Said) (Class.forName("com.you.app.TomSaid").newInstance());
+				return true;
+			} catch (Exception e) {}
+			return false;
+		}
+
+		public String say() {
+			return prefix + said.say();
+		}
+	}
+	}}}
+	
+	In [../ioc/ioc_get_start.man Ioc container] Json configuration file:
+	{{{<Json>
+	// plugins.js
+	{
+		peter : {
+			type	: 'com.you.app.PeterSaidPlugin',
+			fields	: {
+				prefix : 'Peter: '
+			}
+		},
+		tom : {
+			type	: 'com.you.app.TomSaidPlugin',
+			fields	: {
+				prefix : 'Tom: '
+			}
+		}
+	}
+	}}}
+	To call like this：
+	{{{
+	Ioc ioc = new NutIoc(new JsonLoader("conf/plugins.js"));
+	PluginManager<Said> plugins = new IocPluginManager<Said>(ioc, "peter", "tom");
+	Said said = plugins.get();
+	System.out.println(said.say());
+	}}}
+--------------------------------------------------------------------------------------------------------
+final statement
+	I doubt the plugin feature once, since it's quite simple.
+	But it may help you more simply.
+	It helps you to：
+	
+	{#F00;*specify the implementation while deployment}
+	
+	You can get two benefits while to implement one interface：
+	 * Easy to {#00F;*modularize} your projects
+	 * Almost {#00F;*Non-invasive}
+	It worths, right? That's why we put it in Nutz core：
+	({/It can be in Nutz core only if it deserve})
