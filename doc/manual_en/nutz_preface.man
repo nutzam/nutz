@@ -1,0 +1,96 @@
+#title: Before beginning everything
+#author:Peter.Tung(mastung@gmail.com)
+
+<logo.png>
+--------------------------------------------------------------------------------------------------------
+Why can't java become agile?
+
+	Java is a beautiful programming language, after 10 years of development, 
+	it has been applied to almost every place, in the powerful enterprise servers, hand set chips, 
+	the automotive equipment, intelligent appliances and even the mars rovers. 
+	In function, it involved a wide range of software applications to various fields, 
+	and now it begins to infiltrate desktop and graphic processing application. 
+	From historical views it is a mature language, now, it is the world's most widely used language, 
+	and for the future, it is the most promising language (it is still full of vitality and innovation). 
+
+	However, in the more and more popular area of Web development, Java seem to have exposed a weakness. Yes, the scripting languages roll up a boom.
+	It seems that a new "revolution" is begin. And Java, is laughed by "{_scripts}" frequently about {#F00;*low development efficiency}.
+	
+	For example:
+	
+	<imgs/diff_lang.jpg>
+
+	{#00A;*But, is that real?} 
+
+	In essence, Java language itself only provides two aspect helps for programmers, the first the grammar, and the second the built-in library. 
+	Currently programmers who work on Web development based on Java, are mostly using third-party libraries (or frameworks), such as the popular SSH. 
+	The so-called that Java is inefficient in the Web Development, it may be more appropriate to say: {#F80;*inefficient to use third-party libraries for development}.
+
+	To prove that, I create Nutz, which is a collections of lightweight frameworks, each of them can be used independently. 
+	And the mission of the Nutz is 
+	
+	{#080;*to maximum increase in the productivity of Web developers}. 
+
+	Yes, to increase productivity is the core mission of this framework. Just like initial motivation of Java, 
+	the most concern is to balance the programmer's easy use and execution efficiency, so as Nutz.
+	Hopes that from Nutz, Java developers can get faster development speed, less codes, and without decrease the execution efficiency as a precondition. 
+
+--------------------------------------------------------------------------------------------------------
+How can Nutz help me?
+
+	 * Dao -- slight wrap {*JDBC}, no cache support, transaction template
+	 * Ioc -- JSON style configuration
+	 * Mvc -- Annotation based configuration, support multi-file uploading feature
+	 * Json -- Parsing and Rendering
+	 * Castors -- Java Object type converting
+	 * Lang -- More Java simple util functions, reflection support
+
+	It doesn't depends on any third part jar files.
+
+	It means：
+	  * For a web application, you only need to put nutz.jar in your WEB-INF/lib.
+	  * Of cause, you may also need database connection drivers and pools, PDF supported jars for your application.
+
+--------------------------------------------------------------------------------------------------------
+Nutz is designed for？
+
+	 * If you feel Hibernate is complicated, iBatis is boring, {#00F;*Nutz.Dao} is designed for you
+	 * If you feel it's boring to deploying and maintaining Spring configurations on multiple servers, {#00F;*Nutz.Ioc} is designed for you
+	 * If you don't like to write XML configurations, {#00F;*Nutz.Mvc} is designed for you
+	 * If you try to find a tool to help you transfer JSON, {#00F;*Nutz.Json} is designed for you
+	 * If you want use java as Ruby, {#00F;*Nutz.Castor} and {#00F;*Nutz.Lang} is designed for you
+	 * If you don't know SSH, you can continue with JDBC, the whole {*Nutz} is designed for you
+--------------------------------------------------------------------------------------------------------
+Quality of Nutz
+	
+	So far, JUnit test covers:
+	
+	<emma.png>
+	
+	and, we will enhance the test constantly. 
+	
+	And I will continually add new test cases for Nutz, to crash down the code. And then I can make it stronger.
+	
+	I also really depends on you to help find out the weakness and issues.
+--------------------------------------------------------------------------------------------------------
+Future of Nutz
+	
+	Nutz is a new open source project
+	
+	{*There is only future without history}
+	
+	What I can promise is, in the future, Nutz will {#F00;never be explosion}. All features added are for the developers' own good.
+--------------------------------------------------------------------------------------------------------
+You can make Nutz better
+
+	 * [http://devlicio.us/blogs/krzysztof_kozmic/archive/2009/09/10/how-to-contribute-to-open-source-without-writing-a-single-line-of-code.aspx How to contribute to open source without writing a single line of code]
+	 * You can [http://code.google.com/p/nutz/issues/entry commit issues here]
+	 * Always welcome comments and suggestions
+	 * If you want to be a Nutz Committer, please read [committer/coding.man here]
+--------------------------------------------------------------------------------------------------------
+Where can I find the help？
+	
+	 # Join [https://groups.google.com/group/nutzam the group], your question may get response quickly.
+	 # Or join QQ group
+		 # [http://qun.qq.com/air/#75818186 Nutz交流（75818186）]({#F00;/Full}) -- Thank {*枫} and {*夜之靓} 
+		 # [http://qun.qq.com/air/#68315571 Nutz交流（68315571）] -- thank [http://zpap.javaeye.com zpap] 
