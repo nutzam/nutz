@@ -1,0 +1,16 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>nutz</groupId>
+  <artifactId>nutz</artifactId>
+  <name>Nutz</name>
+  <version>1.2.26-SNAPSHOT</version>
+  <url>http://nutz.googlecode.com</url>
+  <issueManagement>
+  	<system>Google Code Issue</system>
+  	<url>http://code.google.com/p/nutz/issues/list</url>
+  </issueManagement>
+  <scm>
+  	<connection>SVN</connection>
+  	<url>http://nutz.googlecode.com/svn/trunk/</url>
+  </scm>
+</project>
