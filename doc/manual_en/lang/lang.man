@@ -337,7 +337,7 @@ Random Data
 		}}}
 	 * Random number with given area
 		{{{
-		return  GM.random(3,5)
+		return  R.random(3,5)
 		}}}
 	 * Random enum value
 		{{{
