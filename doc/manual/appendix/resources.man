@@ -14,6 +14,8 @@
 		 @[http://amosleaf.javaeye.com amosleaf]
 	 * 《[http://www.3km.com.cn/?p=96 借于Nutz快速实现对表的增删改操作]》\
 		 @[http://www.3km.com.cn 会跑的蜗牛]
+	 * 《[http://bobby1222.javaeye.com/blog/585483 NUTZ与SQL SERVER2000兼容性问题]》\
+		 @[http://user.qzone.qq.com/104791117 Ge.PH /hl]
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
