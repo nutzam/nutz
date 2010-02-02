@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
  * </ul>
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.mvc.annotation.AdaptBy
  */
 public interface HttpAdaptor {
 
@@ -45,8 +47,11 @@ public interface HttpAdaptor {
 	 * @param resp
 	 *            响应对象
 	 * @param pathArgs
-	 *            字符串数组，路径参数。
+	 *            字符串数组，路径参数。详情请参看 <a
+	 *            href="http://code.google.com/p/nutz/wiki/mvc_http_adaptor#路径参数"
+	 *            >路径参数</a>
 	 * @return 调用参数数组
+	 * 
 	 */
 	Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs);
 
