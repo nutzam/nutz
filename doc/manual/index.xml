@@ -15,7 +15,7 @@
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
 		<doc path="condition.man"/>
-		<doc path="page.man"/>
+		<doc path="pager.man"/>
 		<doc path="next_prev.man"/>
 		<doc path="view.man"/>
 		<doc path="field_filter.man"/>
