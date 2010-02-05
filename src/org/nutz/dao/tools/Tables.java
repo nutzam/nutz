@@ -59,6 +59,13 @@ public abstract class Tables {
 		define(dao, dtList);
 	}
 
+	public static void define(Dao dao, String... paths) {
+		for (String path : paths) {
+			List<DTable> dts = Tables.loadFrom(path);
+			Tables.define(dao, dts);
+		}
+	}
+
 	public static void define(Dao dao, List<DTable> dts) {
 		TableDefinition maker = newInstance(((NutDao) dao).meta());
 		for (DTable dt : dts) {
