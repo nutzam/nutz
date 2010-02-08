@@ -238,9 +238,11 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (e instanceof InvocationTargetException)
 				e = e.getCause();
 			// 打印 Log
-			if (log.isWarnEnabled())
-				log.warn(e.getMessage());
-			
+			if (log.isWarnEnabled()) {
+				log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName() : e
+						.getMessage());
+			}
+
 			try {
 				fail.render(req, resp, e);
 			}
