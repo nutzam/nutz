@@ -1146,7 +1146,6 @@ public class Mirror<T> {
 	public boolean isDateTimeLike() {
 		return Calendar.class.isAssignableFrom(klass)
 				|| java.util.Date.class.isAssignableFrom(klass)
-				|| java.sql.Timestamp.class.isAssignableFrom(klass)
 				|| java.sql.Date.class.isAssignableFrom(klass)
 				|| java.sql.Time.class.isAssignableFrom(klass);
 	}
