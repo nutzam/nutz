@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -28,7 +29,11 @@ public class Record {
 			int count = meta.getColumnCount();
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
-				re.set(name.toLowerCase(), rs.getObject(i));
+				if (meta.getColumnType(i) == Types.CLOB) {
+					re.set(name.toLowerCase(), rs.getString(i));
+				} else {
+					re.set(name.toLowerCase(), rs.getObject(i));
+				}
 			}
 			return re;
 		} catch (SQLException e) {
