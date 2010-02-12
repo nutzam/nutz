@@ -1,7 +1,9 @@
 package org.nutz.lang.util;
 
 import java.io.File;
+
 import java.io.FilenameFilter;
+import java.util.LinkedList;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -49,14 +51,54 @@ public abstract class Disks {
 	public static String getRelativePath(File base, File file) {
 		if (base.isFile())
 			base = base.getParentFile();
-		String[] bb = Strings.splitIgnoreBlank(base.getAbsolutePath(), "[\\\\/]");
-		String[] ff = Strings.splitIgnoreBlank(file.getAbsolutePath(), "[\\\\/]");
+		return getRelativePath(base.getAbsolutePath(), file.getAbsolutePath());
+	}
+
+	/**
+	 * 将两个路径比较，得出相对路径
+	 * 
+	 * @param base
+	 *            基础路径
+	 * @param path
+	 *            相对文件路径
+	 * @return 相对于基础路径对象的相对路径
+	 */
+	public static String getRelativePath(String base, String path) {
+		String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base), "[\\\\/]");
+		String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path), "[\\\\/]");
+		int len = Math.min(bb.length, ff.length);
 		int pos = 0;
-		for (; pos < Math.min(bb.length, ff.length); pos++)
+		for (; pos < len; pos++)
 			if (!bb[pos].equals(ff[pos]))
 				break;
-		String path = Strings.dup("../", bb.length - pos);
-		path += Lang.concat(pos, ff.length - pos, '/', ff);
-		return path;
+		String re = Strings.dup("..", bb.length - pos);
+		re += Lang.concat(pos, ff.length - pos, '/', ff);
+		return re;
+	}
+
+	/**
+	 * 整理路径。 将会合并路径中的 ".."
+	 * 
+	 * @param path
+	 *            路径
+	 * @return 整理后的路径
+	 */
+	public static String getCanonicalPath(String path) {
+		String[] pa = Strings.splitIgnoreBlank(path, "[\\\\/]");
+		LinkedList<String> paths = new LinkedList<String>();
+		for (String s : pa) {
+			if ("..".equals(s)) {
+				if (paths.size() > 0)
+					paths.removeLast();
+				continue;
+			} else {
+				paths.add(s);
+			}
+		}
+		StringBuilder sb = new StringBuilder();
+		for (String s : paths) {
+			sb.append("/").append(s);
+		}
+		return sb.deleteCharAt(0).toString();
 	}
 }
