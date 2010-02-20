@@ -13,6 +13,7 @@ import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
+import org.nutz.aop.asm.test.ZZZ;
 import org.nutz.lang.Mirror;
 
 public class ClassXTest {
@@ -142,4 +143,11 @@ public class ClassXTest {
 		System.out.println(obj.getClass().getSuperclass());
 		return obj;
 	}
+	
+	@Test
+	public void test_annotation(){
+		ZZZ z = getNewInstance(ZZZ.class);
+		z.p(null);
+	}
 }
+
