@@ -6,9 +6,9 @@ import org.nutz.lang.util.LinkedIntArray;
 
 /**
  * @author zozoh
- * 
+ * @author wendal(wendal1985@gmail.com)
  */
-public class SqlLiteral {
+public class SqlLiteral implements Cloneable{
 
 	private void reset() {
 		params = new SimpleVarSet();

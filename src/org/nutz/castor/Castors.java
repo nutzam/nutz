@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Mirror;
@@ -162,9 +163,8 @@ public class Castors {
 					if (!map2.containsKey(castor.getToClass().getName())) {
 						Method m = settingMap.get(castor.getClass());
 						if (null == m) {
-							for (Iterator<Class<?>> mit = settingMap.keySet().iterator(); mit
-									.hasNext();) {
-								Class<?> cc = mit.next();
+							for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
+								Class<?> cc = entry.getKey();
 								if (cc.isAssignableFrom(klass)) {
 									m = settingMap.get(cc);
 									break;

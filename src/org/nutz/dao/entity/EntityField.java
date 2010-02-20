@@ -3,6 +3,7 @@ package org.nutz.dao.entity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.entity.next.FieldQuery;
@@ -11,6 +12,10 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.Segment;
 
+/**
+ * @author zozoh
+ * @author wendal(wendal1985@gmail.com)
+ */
 public class EntityField {
 
 	private Mirror<?> mirror;
@@ -176,7 +181,9 @@ public class EntityField {
 		/*
 		 * Oracle, it object field is null, it will rise NullPointerException
 		 */
-		catch (Exception e1) {
+		catch (SQLException e1) {
+			return;
+		}catch (NullPointerException e) {
 			return;
 		}
 		if (null == v)
