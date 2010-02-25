@@ -64,6 +64,19 @@ public class SqlLiteralTest {
 		String exp = "UPDATE dao_platoon SET name=?,base=?,leader=? WHERE id=?";
 		String actural = sql.toPreparedStatementString();
 		assertEquals(exp, actural);
+	}
 
+	@Test
+	public void test_dot_with_var() {
+		SqlLiteral sql = L("$x.y");
+		sql.getVars().set("x", "T");
+		assertEquals("T.y", sql.toString());
+	}
+
+	@Test
+	public void test_dot_with_param() {
+		SqlLiteral sql = L("@x.y");
+		sql.getParams().set("x", "T");
+		assertEquals("'T'.y", sql.toString());
 	}
 }
