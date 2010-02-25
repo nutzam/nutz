@@ -12,10 +12,10 @@
 		你的 JSON 配置文件会是这样
 		{{{
 		{
-		xb : {
-			type : 'nutz.demo.ioc.book.Pet',
-			args : ['XiaoBai']
-		}
+			xb : {
+				type : 'nutz.demo.ioc.book.Pet',
+				args : ['XiaoBai']
+			}
 		}
 		}}}
 		args 的值时一个数组，里面每一个元素都将对应构造函数的一个参数。当然，你
@@ -25,12 +25,12 @@
 		你的 JSON 配置文件会是这样
 		{{{
 		{
-		xb : {
-			type : 'nutz.demo.ioc.book.Pet',
-			fields : {
-				name : 'XiaoBai'
+			xb : {
+				type : 'nutz.demo.ioc.book.Pet',
+				fields : {
+					name : 'XiaoBai'
+				}
 			}
-		}
 		}
 		}}}
 		如果你不需要写 type，那么你可以用简写模式:
