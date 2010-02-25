@@ -110,8 +110,8 @@ public class DefaultEntityMaker implements EntityMaker {
 				}
 				// Then try to eval the field
 				else {
-					// Current POJO has @Column field, but current not, ignore
-					// it
+					// This POJO has @Column field, but this field not, so
+					// ignore it
 					if (existsColumnAnnField)
 						if (!pkmap.containsKey(f.getName()))
 							if (null == f.getAnnotation(Column.class))
