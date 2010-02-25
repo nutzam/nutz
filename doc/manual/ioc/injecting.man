@@ -60,10 +60,12 @@
 	内部对象
 		{{{
 		{
-			xb : { friend: {
-				type : 'nutz.demo.ioc.book.Pet',
-				fields : {name : 'XiaoHei'}
-			} }
+			xb : {
+				friend: {
+					type : 'nutz.demo.ioc.book.Pet',
+					fields : {name : 'XiaoHei'}
+				}
+			}
 		}
 		}}}
 		关于内部对象 [inner_object.man 请看这里]
