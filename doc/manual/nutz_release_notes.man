@@ -1,4 +1,4 @@
-#title: 1.a.26 (Hatching...)
+#title: 1.a.26
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
@@ -25,7 +25,7 @@
 改进
 	 # 小幅修正了一些 Bug 和文档错误
 	 * Issue 103: 移除JsonIocLoader中对$import,$vars的支持   {#AAA;by} {*Wendal}
-	 * Issue 106: Ioc: 在 NutIoc 中缓存 IocObject
+	 * Issue 106: Ioc: 在 NutIoc 中缓存 IocObject   {#AAA;by} {*Wendal}
 --------------------------------------------------------------------------------------------------------
 文档
 	 # 修改了 [../mvc/view.man Mvc 视图部分]
