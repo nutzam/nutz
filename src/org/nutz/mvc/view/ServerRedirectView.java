@@ -39,9 +39,10 @@ public class ServerRedirectView implements View {
 		for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
 			String key = it.next();
 			Object value = null;
-			if (null != mirror && key.startsWith("obj.") && key.length() > 4) {
+			int length = key.length();
+			if (null != mirror && key.startsWith("obj.") && length > 4) {
 				value = mirror.getValue(obj, key.substring(4));
-			} else if (null != mirror && key.startsWith("p.") && key.length() > 2) {
+			} else if (null != mirror && key.startsWith("p.") && length > 2) {
 				value = req.getParameter(key.substring(2));
 			} else {
 				value = obj;
