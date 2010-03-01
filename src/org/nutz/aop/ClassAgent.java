@@ -21,7 +21,7 @@ public interface ClassAgent {
 	 * 
 	 * @param matcher 方法匹配器
 	 * @param inte 拦截器
-	 * @return
+	 * @return 添加完成后的ClassAgent
 	 */
 	ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor inte);
 

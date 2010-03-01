@@ -9,6 +9,7 @@ import java.util.LinkedList;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author mawm(ming300@gmail.com)
+ * @author mawenming at 2009-7-19 下午12:52:32
  */
 public abstract class Strings {
 
@@ -445,7 +446,6 @@ public abstract class Strings {
 	 * 
 	 * @param obj
 	 * @return obj.toString()
-	 * @author mawenming at 2009-7-19 下午12:52:32
 	 */
 	public static String sNull(Object obj) {
 		return sNull(obj, "");
@@ -458,7 +458,6 @@ public abstract class Strings {
 	 * @param def
 	 *            如果obj==null返回的内容
 	 * @return obj的toString()操作
-	 * @author mawenming at 2009-7-19 下午12:52:30
 	 */
 	public static String sNull(Object obj, String def) {
 		return obj != null ? obj.toString() : def;
