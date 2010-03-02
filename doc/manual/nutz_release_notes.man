@@ -1,6 +1,7 @@
 #title: 1.a.26
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 概述
 	这个版本是在 1.a.25 基础上修复了一些 BUG，并让 Dao 支持 ActiveRecord
