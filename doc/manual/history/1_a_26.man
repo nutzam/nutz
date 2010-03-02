@@ -1,0 +1,77 @@
+#title: 1.a.26
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+概述
+	这个版本是在 1.a.25 基础上修复了一些 BUG，并让 Dao 支持 ActiveRecord
+--------------------------------------------------------------------------------------------------------
+问题修复
+	 * Issue 97: 从 Dao 里查出来的对象是一个 Map，或者是List<Map<String, Object>> {#AAA;by} {*Gdunser}
+	 * Issue 101: Dumps.matcher NullpointerException {#AAA;by} {*for5million}
+	 * Issue 102: 在update时，如果http参数有Date类型为null，会出错 {#AAA;by} {*Gdunser}
+	 * Issue 103: 移除JsonIocLoader中对$import,$vars的支持 {#AAA;by} {*Wendal}
+	 * Issue 104: 当server启动后,死一次访问界面无法显示国际化的message {#AAA;by} {*Bird.Wyatt}
+	 * Issue 106: 在 NutIoc 中缓存 IocObject {#AAA;by} {*Wendal}
+	 * Issue 108: 添加Maven支持文件-- pom.xml {#AAA;by} {*Wendal}
+	 * Issue 109: 继承Module类，如果是@OK("json")，会出错 {#AAA;by} {*Gdunser}
+	 * Issue 111: IoC配置能扫描Package内的Class的注解直接获取到 {#AAA;by} {*nwangwei}
+	 * Issue 114: context.js的正確格式是? {#AAA;by} {*wsc0918}
+	 * Issue 115: JSON格式不标准 {#AAA;by} {*deadeye2k}
+	 * Issue 120: dao: @Next 和 @Prev 变量 $view.NEXTVAL 解析失败 {#AAA;by} {*hzzdong}
+--------------------------------------------------------------------------------------------------------
+质量
+	 # 共通过了 414 个单元测试用例
+	 # Nutz.Dao 经测试在如下数据库上可以工作正常
+		 * H2
+		 * MySql
+		 * Oracle
+		 * Postgresql
+		 * SqlServer2005
+		 * SqlServer2000
+--------------------------------------------------------------------------------------------------------
+改进
+	 # Dao : 提供了新的接口函数： `List<Record> query(String tableName, Condition condition, Pager pager)`
+	 # Ioc : 引入 IocObject 的缓存，提升了非 Singleton 对象构建速度
+--------------------------------------------------------------------------------------------------------
+文档
+	 # 修复了一些文档的书写错误
+	 # 增加了 [http://code.google.com/p/nutz/wiki/mvc_with_ioc#需要注意的问题 Mvc.同 Ioc 容器一起工作.需要注意的问题]
+--------------------------------------------------------------------------------------------------------
+博客
+	 * 《[http://birdwindy.javaeye.com/blog/582200 我的第一个Nutz程序]》\
+			@[http://birdwindy.javaeye.com Bird.Wyatt]
+	 * 《[http://bobby1222.javaeye.com/blog/585483 NUTZ与SQL SERVER2000兼容性问题]》\
+			@[http://wendal.javaeye.com Ge.PH /hl]
+	 * 《[http://www.3km.com.cn/?p=96 借于Nutz快速实现对表的增删改操作]》 \
+			@[http://www.3km.com.cn 会跑的蜗牛]
+	 * 《[http://amosleaf.javaeye.com/blog/562141 使用注解做ORM]》\
+			@[http://amosleaf.javaeye.com amosleaf]
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	|| 贡献者 									|| 问题 || 博客 || 讨论 || 代码 || Demo || 文档 || 测试 ||
+	|| [http://amosleaf.javaeye.com amosleaf]	||  X	||  X	||  -	||  -	||  -	||  -	||  X	||
+	|| [http://birdwindy.javaeye.com bird.wyatt]||  X	||  X	||  X	||  -	||  X	||  -	||  -	||
+	|| deadeye2k								||  X	||  -	||  -	|| -	||  -	||  -	||  -	||
+	|| E-Hunter									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| for5million								||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  -	||  X	||  -	||
+	|| mawm										||  -	||  X	||  -	||  X	||  -	||  -	||  -	||
+	|| rocy03									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| Sega										||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| ToFishes									||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| yangchunhai2005							||  -	||  -	||  X	||  -	||  -	||  -	||  -	||
+	|| [http://wendal.javaeye.com wendal]		||  X	||  X	||  X	||  X	||  -	||  -	||  X	||
+	|| [http://zozoh.javaeye.com zozoh]			||  X	||  X	||  X	||  X	||  -	||  X	||  X	||
+	|| [http://www.3km.com.cn 会跑的蜗牛]		||  X	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://www.ecplive.cn 知足常乐]			||  X	||  -	||  -	||  -	||  -	||  -	||  X	||
+	
+	另外，非常感谢
+	[http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
+	以及
+	[https://groups.google.com/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 {*产生着潜移默化的影响}。
+	我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。
+	
+	另，由于众所周知的原因，建议大家通过[http://groups.google.de/group/nutzam?hl=zh-CN 别的服务访问讨论区]
+	因为非中文版的 Google Group 是没有被 QIAng 的。
+
