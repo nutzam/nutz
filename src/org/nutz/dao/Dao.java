@@ -39,7 +39,11 @@ public interface Dao {
 	 * 这个方法试图给你最大的灵活性，因为你的 ConnCallback 实现类将得到一个 Connection 接口
 	 * 的实例。请注意，你不需要关闭这个连接，这个函数在退出时会替你关闭连接。
 	 * <p>
-	 * 但是如果你创建了 ResultSet 或者 Statement， 你最好自己关闭。
+	 * 如果你从当前连接对象中创建了ResultSet对象或者 Statement对象，请自行关闭。Nutz.Dao 的原则是：
+	 * <ul>
+	 * <li>Nutz.Dao 创建维护的东西 Nutz.Dao 来维护其生命周期
+	 * <li>你创建的东西 （比如 ResultSet） 你来维护其生命周期
+	 * </ul>
 	 * 
 	 * @param callback
 	 */
