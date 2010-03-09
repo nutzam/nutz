@@ -35,6 +35,7 @@ import org.nutz.lang.stream.StringWriter;
  * 这些帮助函数让 Java 的某些常用功能变得更简单
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Lang {
 
@@ -1014,5 +1015,16 @@ public abstract class Lang {
 	 */
 	public static DocumentBuilder xmls() throws ParserConfigurationException {
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+	}
+	
+	/**
+	 * 对Thread.sleep(long)的简单封装,不抛出任何异常
+	 * @param millisecond 休眠时间
+	 */
+	public void quiteSleep(long millisecond){
+		try {
+			if (millisecond > 0)
+				Thread.sleep(millisecond);
+		} catch (Throwable e) {}
 	}
 }
