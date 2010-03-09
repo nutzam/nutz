@@ -43,7 +43,12 @@
 	 * 测试: 发布前，参与测试周，发布人给出的任务
 
 	|| 贡献者 									|| 问题 || 博客 || 支持 || 代码 || Demo || 文档 || 测试 ||
-	|| [http://zozoh.javaeye.com zozoh]			||  -	||  -	||  X	||  X	||  -	||  X	||  -	||
+	|| E-Hunter									||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| VVV										||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://wendal.javaeye.com wendal]		||  O	||  -	||  O	||  O	||  -	||  O	||  -	||
+	|| [http://zozoh.javaeye.com zozoh]			||  O	||  -	||  O	||  O	||  -	||  O	||  -	||
+	|| [http://leon-a.javaeye.com 宝]			||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://nwangwei.javaeye.com 水蓝]		||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
 	
 	另外，非常感谢
 	 * [http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
