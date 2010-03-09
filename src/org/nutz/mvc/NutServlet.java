@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -46,8 +47,10 @@ public class NutServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		try {
-			if (log.isInfoEnabled())
+			if (log.isInfoEnabled()){
+				log.infof("Nutz Version : %s", Nutz.version());
 				log.infof("Nutz.Mvc[%s] is initializing ...", this.getServletName());
+			}
 			Stopwatch sw = Stopwatch.begin();
 
 			// Nutz.Mvc need a class name as the default Module
