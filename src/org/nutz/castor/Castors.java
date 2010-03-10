@@ -223,8 +223,8 @@ public class Castors {
 		Castor c = find(from, toType);
 		if (null == c)
 			throw new FailToCastObjectException(String.format(
-					"Can not find castor for '%s'=>'%s' because:\n%s", fromType.getName(), toType
-							.getName(), "Fail to find matched castor"));
+					"Can not find castor for '%s'=>'%s' in (%d) because:\n%s", fromType.getName(),
+					toType.getName(), map.size(), "Fail to find matched castor"));
 		try {
 			return (T) c.cast(src, toType, args);
 		} catch (FailToCastObjectException e) {
