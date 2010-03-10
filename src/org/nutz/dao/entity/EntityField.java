@@ -209,10 +209,9 @@ public class EntityField {
 
 	public void setValue(Object obj, Object value) {
 		try {
-			if (null != value) {
-				if (field.getType() != value.getClass())
+			if (null != value )
+				if ( ! field.getType().isAssignableFrom(value.getClass()))
 					value = Castors.me().castTo(value, field.getType());
-			}
 			if (null == setter)
 				this.field.set(obj, value);
 			else
