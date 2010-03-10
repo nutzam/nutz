@@ -1,7 +1,6 @@
 package org.nutz.trans;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import org.nutz.lang.Lang;
 
@@ -55,7 +54,7 @@ public abstract class Trans {
 		if (count.get() == 0)
 			try {
 				trans.get().close();
-			} catch (SQLException e) {
+			} catch (Throwable e) {
 				throw Lang.wrapThrow(e);
 			} finally {
 				trans.set(null);

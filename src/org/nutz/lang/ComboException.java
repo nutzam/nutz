@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @SuppressWarnings("serial")
-public class ComboException extends Exception {
+public class ComboException extends RuntimeException {
 
 	public ComboException() {
 		list = new LinkedList<Throwable>();

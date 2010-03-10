@@ -20,12 +20,12 @@ public abstract class Transaction {
 
 	public abstract int getId();
 
-	protected abstract void commit() throws Exception;
+	protected abstract void commit();
 
 	protected abstract void rollback();
 
 	public abstract Connection getConnection(DataSource dataSource) throws SQLException;
 
-	public abstract void close() throws SQLException;
+	public abstract void close();
 
 }

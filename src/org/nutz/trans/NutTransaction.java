@@ -34,7 +34,7 @@ public class NutTransaction extends Transaction {
 	}
 
 	@Override
-	protected void commit() throws Exception {
+	protected void commit() {
 		ComboException ce = new ComboException();
 		for (Pair p : list) {
 			try {
@@ -45,11 +45,8 @@ public class NutTransaction extends Transaction {
 					p.conn.setTransactionIsolation(p.oldLevel);
 			} catch (SQLException e) {
 				ce.add(e);
-			} finally {
-				p.conn.close();
 			}
 		}
-		list.clear();
 		// 如果有一个数据源提交时发生异常，抛出
 		if (null != ce.getCause()) {
 			throw ce;
@@ -76,35 +73,33 @@ public class NutTransaction extends Transaction {
 	}
 
 	@Override
-	public void close() throws SQLException {
-		for (Pair p : list)
-			if (!p.conn.isClosed()) {
-				try {
+	public void close() {
+		ComboException ce = new ComboException();
+		for (Pair p : list) {
+			try {
+				// 试图恢复旧的事务级别
+				if (!p.conn.isClosed())
 					if (p.conn.getTransactionIsolation() != p.oldLevel)
 						p.conn.setTransactionIsolation(p.oldLevel);
-				} catch (Exception e) {}
-				p.conn.close();
+			} catch (Throwable e) {} finally {
+				try {
+					p.conn.close();
+				} catch (Exception e) {
+					ce.add(e);
+				}
 			}
+		}
+		// 清除数据源记录
+		list.clear();
 	}
 
 	@Override
 	protected void rollback() {
-		StringBuilder es = new StringBuilder();
 		for (Pair p : list) {
 			try {
 				p.conn.rollback();
-			} catch (Throwable e) {
-				es.append(e.getMessage()).append("\n");
-			} finally {
-				try {
-					p.conn.close();
-				} catch (SQLException e) {
-					es.append(e.getMessage()).append("\n");
-				}
-			}
+			} catch (Throwable e) {}
 		}
-		if (es.length() > 0)
-			throw new RuntimeException(es.toString());
 	}
 
 }
