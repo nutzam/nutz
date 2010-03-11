@@ -66,6 +66,28 @@ public abstract class EntityService<T> extends Service {
 		return dao().fetch(getEntityClass(), condition);
 	}
 
+	/**
+	 * 复合主键专用
+	 * 
+	 * @param pks
+	 *            键值
+	 * @return 对象 T
+	 */
+	public T fetchx(Object... pks) {
+		return dao().fetchx(getEntityClass(), pks);
+	}
+
+	/**
+	 * 复合主键专用
+	 * 
+	 * @param pks
+	 *            键值
+	 * @return 对象 T
+	 */
+	public boolean exists(Object... pks) {
+		return null != fetchx(pks);
+	}
+
 	public void update(Chain chain, Condition condition) {
 		dao().update(getEntityClass(), chain, condition);
 	}
