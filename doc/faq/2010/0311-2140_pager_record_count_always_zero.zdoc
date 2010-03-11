@@ -1,0 +1,11 @@
+#title: pager.getRecordCount() 总是返回 0
+#author:zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*东方雄}
+
+考虑到效率，Nutz.Dao 不会为你计算 Pager 中的 pageCount 和 recordCount， 你需要手工的通过 Dao 接口
+的 count() 方法计算结果，然后使用 Pager 里面的 setRecordCount() 方法将计算的结果传入。 
+Pager 会自动为你计算 pageCount
+
+参见 wiki: [http://code.google.com/p/nutz/wiki/dao_pager#自动判断类型_Pager 自动判断类型的Pager]
+
