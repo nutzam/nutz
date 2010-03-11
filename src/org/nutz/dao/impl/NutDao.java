@@ -108,6 +108,34 @@ public class NutDao implements Dao {
 
 	/* ========================================================== */
 
+	public PagerMaker getPagerMaker() {
+		return pagerMaker;
+	}
+
+	public void setPagerMaker(PagerMaker pagerMaker) {
+		this.pagerMaker = pagerMaker;
+	}
+
+	public void setSqlManager(SqlManager sqlManager) {
+		this.sqls = sqlManager;
+	}
+
+	public SqlMaker getSqlMaker() {
+		return sqlMaker;
+	}
+
+	public void setSqlMaker(SqlMaker sqlMaker) {
+		this.sqlMaker = sqlMaker;
+	}
+
+	public EntityMaker getEntityMaker() {
+		return entityMaker;
+	}
+
+	public void setEntityMaker(EntityMaker entityMaker) {
+		this.entityMaker = entityMaker;
+	}
+
 	public DataSource getDataSource() {
 		return dataSource;
 	}
@@ -148,34 +176,6 @@ public class NutDao implements Dao {
 
 	public Pager createPager(int pageNumber, int pageSize) {
 		return pagerMaker.make(meta(), pageNumber, pageSize);
-	}
-
-	public PagerMaker getPagerMaker() {
-		return pagerMaker;
-	}
-
-	public void setPagerMaker(PagerMaker pagerMaker) {
-		this.pagerMaker = pagerMaker;
-	}
-
-	public void setSqlManager(SqlManager sqlManager) {
-		this.sqls = sqlManager;
-	}
-
-	public SqlMaker getSqlMaker() {
-		return sqlMaker;
-	}
-
-	public void setSqlMaker(SqlMaker sqlMaker) {
-		this.sqlMaker = sqlMaker;
-	}
-
-	public EntityMaker getEntityMaker() {
-		return entityMaker;
-	}
-
-	public void setEntityMaker(EntityMaker entityMaker) {
-		this.entityMaker = entityMaker;
 	}
 
 	public SqlManager sqls() {
