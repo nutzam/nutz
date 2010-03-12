@@ -102,6 +102,8 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 	
 	static class Log4JLogger extends AbstractLog{
 		
+		public static final String FQCN = Log4JLogger.class.getName();
+		
 		private Logger logger;
 		
 		private boolean noTrace = false;
@@ -155,7 +157,7 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 			if(isTraceEnabled())
 				logMessage(Level.TRACE, message, t);
 			else if(noTrace)
-				error(message, t);
+				debug(message, t);
 		}
 
 		public void warn(Object message, Throwable t) {
@@ -164,10 +166,7 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 		}
 		
 		private void logMessage(Priority priority,Object message, Throwable t){
-			if(t != null)
-				logger.log(priority, message, t);
-			else
-				logger.log(priority, message);
+			logger.log(FQCN,priority, message, null);
 		}
 	}
 }
