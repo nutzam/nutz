@@ -85,10 +85,20 @@ public class JdkLogAdapter implements LogAdapter, Plugin {
 		}
 
 		public void log(Level level, Object message, Throwable t) {
-			if(t != null)
-				jdkLogger.log(level, String.valueOf(message), t);
-			else
-				jdkLogger.log(level, String.valueOf(message));
+			//From Apache Common Logging 1.1.1
+			Throwable dummyException = new Throwable();
+            StackTraceElement locations[] = dummyException.getStackTrace();
+            String cname = "unknown";
+            String method = "unknown";
+            if( locations != null && locations.length > 2 ) {
+                StackTraceElement caller = locations[2];
+                cname = caller.getClassName();
+                method = caller.getMethodName();
+            }
+            if( t == null )
+            	jdkLogger.logp( level, cname, method, String.valueOf(message) );
+            else 
+            	jdkLogger.logp( level, cname, method, String.valueOf(message), t );
 		}
 	}
 }
