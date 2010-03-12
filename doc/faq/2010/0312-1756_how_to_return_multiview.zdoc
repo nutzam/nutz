@@ -1,0 +1,8 @@
+#title: 如何根据不同的情况，返回不同的jsp页面 ?
+#author:zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*东方雄}
+
+
+参看 wiki: [http://code.google.com/p/nutz/wiki/mvc_view#直接返回_View_对象 直接返回_View_对象]
+
