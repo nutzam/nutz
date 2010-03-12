@@ -106,11 +106,15 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 		
 		private Logger logger;
 		
-		private boolean noTrace = false;
+		private static boolean hasTrace;
 		
-		Log4JLogger(){
-			logger = LogManager.getRootLogger();
-			loadLevel();
+		static{
+			try{
+				Level.class.getDeclaredField("TRACE").get(null);
+				hasTrace = true;
+			}catch (Throwable e) {
+				hasTrace = false;
+			}
 		}
 		
 		Log4JLogger(String className) {
@@ -124,12 +128,8 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 			isWarnEnabled = logger.isEnabledFor(Level.WARN);
 			isInfoEnabled = logger.isEnabledFor(Level.INFO);
 			isDebugEnabled = logger.isEnabledFor(Level.DEBUG);
-			try{
+			if (hasTrace)
 				isTraceEnabled = logger.isEnabledFor(Level.TRACE);
-			}catch (Throwable e) {
-				isTraceEnabled = false;
-				noTrace = true;
-			}
 		}
 
 		public void debug(Object message, Throwable t) {
@@ -156,7 +156,7 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 		public void trace(Object message, Throwable t) {
 			if(isTraceEnabled())
 				logMessage(Level.TRACE, message, t);
-			else if(noTrace)
+			else if( ! hasTrace)
 				debug(message, t);
 		}
 
