@@ -110,10 +110,9 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 		
 		static{
 			try{
-				Level.class.getDeclaredField("TRACE").get(null);
+				Level.class.getDeclaredField("TRACE");
 				hasTrace = true;
 			}catch (Throwable e) {
-				hasTrace = false;
 			}
 		}
 		
