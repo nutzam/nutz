@@ -1,0 +1,19 @@
+#title: 有办法把outputstream转化为inputstream不? 
+#author:zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*Tony}
+
+用 org.nutz.lang.stream.StreamBuffer
+{{{<Java>
+StreamBuffer sb = new StreamBuffer();
+OutputStream ops = sb.getBuffer();
+// ...
+// write to outputsteram
+// ...
+InputStream ins = (InputStream)sb
+// ...
+// Read from inputstream
+// ...
+}}}
+
+
