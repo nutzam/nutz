@@ -47,7 +47,7 @@ public class NutServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		try {
-			if (log.isInfoEnabled()){
+			if (log.isInfoEnabled()) {
 				log.infof("Nutz Version : %s", Nutz.version());
 				log.infof("Nutz.Mvc[%s] is initializing ...", this.getServletName());
 			}
@@ -79,9 +79,9 @@ public class NutServlet extends HttpServlet {
 			// Then, we store the loading result like this
 			urls = ing.getUrls();
 			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
-			this.getServletContext().setAttribute(Ioc.class.getName(), ing.getIoc());
-			this.getServletContext()
-					.setAttribute(Localization.class.getName(), ing.getMessageMap());
+
+			saveToContext(Ioc.class.getName(), ing.getIoc());
+			saveToContext(Localization.class.getName(), ing.getMessageMap());
 
 			// Done, print info
 			sw.stop();
@@ -98,6 +98,11 @@ public class NutServlet extends HttpServlet {
 				throw (ServletException) e;
 			throw new ServletException(e);
 		}
+	}
+
+	private void saveToContext(String key, Object obj) {
+		if (null != obj)
+			this.getServletContext().setAttribute(key, obj);
 	}
 
 	public void destroy() {
