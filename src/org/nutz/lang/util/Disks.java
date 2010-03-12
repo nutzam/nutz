@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.LinkedList;
 
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
@@ -49,8 +48,6 @@ public abstract class Disks {
 	 * @return 相对于基础文件对象的相对路径
 	 */
 	public static String getRelativePath(File base, File file) {
-		if (base.isFile())
-			base = base.getParentFile();
 		return getRelativePath(base.getAbsolutePath(), file.getAbsolutePath());
 	}
 
@@ -71,9 +68,12 @@ public abstract class Disks {
 		for (; pos < len; pos++)
 			if (!bb[pos].equals(ff[pos]))
 				break;
-		String re = Strings.dup("..", bb.length - pos);
-		re += Lang.concat(pos, ff.length - pos, '/', ff);
-		return re;
+		StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - 1 - pos));
+		for (; pos < ff.length; pos++)
+			sb.append(ff[pos]).append('/');
+		if (sb.length() > 0)
+			sb.deleteCharAt(sb.length() - 1);
+		return sb.toString();
 	}
 
 	/**

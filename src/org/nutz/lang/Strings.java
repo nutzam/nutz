@@ -24,7 +24,7 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String dup(CharSequence cs, int num) {
-		if (isEmpty(cs))
+		if (isEmpty(cs) || num <= 0)
 			return "";
 		StringBuilder sb = new StringBuilder(num);
 		for (int i = 0; i < num; i++)
@@ -531,16 +531,19 @@ public abstract class Strings {
 				return true;
 		return false;
 	}
-	
-	private static Pattern email_Pattern = Pattern.compile("^([\\w-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
-	
+
+	private static Pattern email_Pattern = Pattern
+			.compile("^([\\w-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
+
 	/**
 	 * 检查一个字符串是否为合法的电子邮件地址
-	 * @param input 需要检查的字符串
+	 * 
+	 * @param input
+	 *            需要检查的字符串
 	 * @return true 如果是有效的邮箱地址
 	 */
-	public static synchronized final boolean isEMail(CharSequence input){
+	public static synchronized final boolean isEMail(CharSequence input) {
 		return email_Pattern.matcher(input).matches();
 	}
-	
+
 }

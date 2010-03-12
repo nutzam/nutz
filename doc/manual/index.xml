@@ -8,6 +8,7 @@
 		<doc path="packages.man"/>
 		<doc path="version_naming.man"/>
 		<doc path="coding.man"/>
+		<doc path="be_committer.man"/>
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
