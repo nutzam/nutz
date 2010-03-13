@@ -48,6 +48,11 @@ import org.nutz.trans.Trans;
 
 import static java.lang.String.*;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class NutDao implements Dao {
 
 	private static Log log = Logs.getLog(NutDao.class);
@@ -133,7 +138,12 @@ public class NutDao implements Dao {
 	}
 
 	public void setEntityMaker(EntityMaker entityMaker) {
+		if (null == entityMaker){
+			log.error("!! Can't set entityMaker as NULL !");
+			return;
+		}
 		this.entityMaker = entityMaker;
+		entities = new EntityHolder(this.entityMaker);
 	}
 
 	public DataSource getDataSource() {
@@ -152,7 +162,8 @@ public class NutDao implements Dao {
 	 * </pre>
 	 */
 	public void setDataSource(DataSource dataSource) {
-		entities = new EntityHolder(null == entityMaker ? new DefaultEntityMaker() : entityMaker);
+		if (null == entityMaker)
+			entities = new EntityHolder(new DefaultEntityMaker());
 		this.dataSource = dataSource;
 	}
 
