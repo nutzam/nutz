@@ -60,16 +60,16 @@ public class SystemLog extends AbstractLog {
 	}
 	
 	@Override
-	public void log(int level, Object message, Throwable tx) {
+	protected void log(int level, Object message, Throwable tx) {
 		switch (level) {
 		case LEVEL_FATAL:
-			printOut( message, null);
+			errorOut( message, null);
 			break;
 		case LEVEL_ERROR:
-			printOut( message, null);
+			errorOut( message, null);
 			break;
 		case LEVEL_WARN:
-			printOut( message, null);
+			errorOut( message, null);
 			break;
 		case LEVEL_INFO:
 			printOut( message, null);

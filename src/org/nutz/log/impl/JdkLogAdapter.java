@@ -106,7 +106,7 @@ public class JdkLogAdapter implements LogAdapter, Plugin {
             StackTraceElement locations[] = dummyException.getStackTrace();
             String cname = "unknown";
             String method = "unknown";
-            if( locations != null && locations.length > 1 ) {
+            if( locations != null && locations.length > 2 ) {
                 StackTraceElement caller = locations[2];
                 cname = caller.getClassName();
                 method = caller.getMethodName();
