@@ -8,9 +8,88 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.CharSegment;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author Bird.Wyatt(bird.wyatt@gmail.com)
+ * 
+ */
 public class Link {
 
-	public Link(Mirror<?> mirror, Field field, One one) throws NoSuchFieldException {
+	public static Link getLinkForOne(Mirror<?> mirror, Field field,
+			Class<?> targetClass, String fieldName) throws NoSuchFieldException {
+		return new Link(mirror, field, targetClass, fieldName);
+
+	}
+
+	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
+			String fieldName) throws NoSuchFieldException {
+		this.ownField = field;
+		this.type = LinkType.One;
+		this.targetClass = targetClass;
+		this.referField = mirror.getField(fieldName);
+		if (Mirror.me(this.referField.getType()).isStringLike()) {
+			this.targetField = Mirror.me(this.targetClass).getField(Name.class);
+		} else {
+			this.targetField = Mirror.me(this.targetClass).getField(Id.class);
+		}
+	}
+
+	public static Link getLinkForMany(Mirror<?> mirror, Field field,
+			Class<?> targetClass, String fieldName, String key)
+			throws NoSuchFieldException {
+		return new Link(mirror, field, targetClass, fieldName, key);
+
+	}
+
+	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
+			String fieldName, String key) throws NoSuchFieldException {
+		this.ownField = field;
+		this.type = LinkType.Many;
+		this.mapKeyField = "".equals(key) ? null : key;
+		this.targetClass = targetClass;
+		if (!"".equals(fieldName)) {
+			this.targetField = Mirror.me(this.targetClass).getField(fieldName);
+			if (Mirror.me(this.targetField.getType()).isStringLike()) {
+				this.referField = mirror.getField(Name.class);
+			} else {
+				this.referField = mirror.getField(Id.class);
+			}
+		}
+	}
+
+	public static Link getLinkForManyMany(Mirror<?> mirror, Field field,
+			Class<?> targetClass, String key, String from, String to,
+			String relation, boolean fromName, boolean toName)
+			throws NoSuchFieldException {
+		return new Link(mirror, field, targetClass, key, from, to, relation,
+				fromName, toName);
+
+	}
+
+	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
+			String key, String from, String to, String relation,
+			boolean fromName, boolean toName) {
+		this.ownField = field;
+		this.type = LinkType.ManyMany;
+		this.mapKeyField = "".equals(key) ? null : key;
+		this.targetClass = targetClass;
+		this.from = from;
+		this.to = to;
+		this.relation = Relation.make(relation);
+		this.referField = lookupKeyField(mirror, fromName);
+		this.targetField = lookupKeyField(Mirror.me(targetClass), toName);
+		if (null == this.referField || null == this.targetField) {
+			throw Lang.makeThrow(
+					"Fail to make ManyMany link for [%s].[%s], target: [%s]."
+							+ "\n referField: [%s]" + "\n targetField: [%s]",
+					mirror.getType().getName(), field.getName(), targetClass
+							.getName(), referField, targetField);
+		}
+
+	}
+	@Deprecated
+	public Link(Mirror<?> mirror, Field field, One one)
+			throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.One;
 		this.targetClass = one.target();
@@ -21,14 +100,16 @@ public class Link {
 			this.targetField = Mirror.me(this.targetClass).getField(Id.class);
 		}
 	}
-
-	public Link(Mirror<?> mirror, Field field, Many many) throws NoSuchFieldException {
+	@Deprecated
+	public Link(Mirror<?> mirror, Field field, Many many)
+			throws NoSuchFieldException {
 		this.ownField = field;
 		this.type = LinkType.Many;
 		this.mapKeyField = "".equals(many.key()) ? null : many.key();
 		this.targetClass = many.target();
 		if (!"".equals(many.field())) {
-			this.targetField = Mirror.me(this.targetClass).getField(many.field());
+			this.targetField = Mirror.me(this.targetClass).getField(
+					many.field());
 			if (Mirror.me(this.targetField.getType()).isStringLike()) {
 				this.referField = mirror.getField(Name.class);
 			} else {
@@ -36,8 +117,9 @@ public class Link {
 			}
 		}
 	}
-
-	public Link(Mirror<?> mirror, Field field, ManyMany mm, boolean fromName, boolean toName) {
+	@Deprecated
+	public Link(Mirror<?> mirror, Field field, ManyMany mm, boolean fromName,
+			boolean toName) {
 		this.ownField = field;
 		this.type = LinkType.ManyMany;
 		this.mapKeyField = "".equals(mm.key()) ? null : mm.key();
@@ -48,9 +130,11 @@ public class Link {
 		this.referField = lookupKeyField(mirror, fromName);
 		this.targetField = lookupKeyField(Mirror.me(targetClass), toName);
 		if (null == this.referField || null == this.targetField) {
-			throw Lang.makeThrow("Fail to make ManyMany link for [%s].[%s], target: [%s]."
-					+ "\n referField: [%s]" + "\n targetField: [%s]", mirror.getType().getName(),
-					field.getName(), targetClass.getName(), referField, targetField);
+			throw Lang.makeThrow(
+					"Fail to make ManyMany link for [%s].[%s], target: [%s]."
+							+ "\n referField: [%s]" + "\n targetField: [%s]",
+					mirror.getType().getName(), field.getName(), targetClass
+							.getName(), referField, targetField);
 		}
 
 	}

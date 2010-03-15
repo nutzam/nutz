@@ -51,6 +51,7 @@ import org.nutz.log.Logs;
  * This class must be drop after make() be dropped
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author Bird.Wyatt(bird.wyatt@gmail.com)
  * 
  */
 public class DefaultEntityMaker implements EntityMaker {
@@ -267,13 +268,15 @@ public class DefaultEntityMaker implements EntityMaker {
 			// @One
 			One one = field.getAnnotation(One.class);
 			if (null != one) { // One > refer own field
-				return new Link(mirror, field, one);
+				return Link.getLinkForOne(mirror, field, one.target(), one
+						.field());
 			}
 			// @Many
 			else { // Many > refer target field
 				Many many = field.getAnnotation(Many.class);
 				if (null != many) {
-					return new Link(mirror, field, many);
+					return Link.getLinkForMany(mirror, field, many.target(),
+							many.field(), many.key());
 				}
 				// @ManyMany
 				else {
@@ -301,7 +304,9 @@ public class DefaultEntityMaker implements EntityMaker {
 						} finally {
 							Daos.safeClose(stat, rs);
 						}
-						return new Link(mirror, field, mm, fromName, toName);
+						return Link.getLinkForManyMany(mirror, field, mm
+								.target(), mm.key(), mm.from(), mm.to(), mm
+								.relation(), fromName, toName);
 					}
 				}
 			}
