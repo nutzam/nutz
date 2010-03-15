@@ -49,10 +49,10 @@ public class DTable {
 		if (pks.isEmpty())
 			return null;
 		Iterator<DField> it = pks.iterator();
-		String names = it.next().getName();
+		StringBuilder sb = new StringBuilder(it.next().getName());
 		while (it.hasNext())
-			names += "," + it.next().getName();
-		return names;
+			sb.append(",").append(it.next().getName());
+		return sb.toString();
 	}
 
 	public String getPkNames(char wrapper) {
@@ -62,10 +62,10 @@ public class DTable {
 			return getPkNames();
 		
 		Iterator<DField> it = pks.iterator();
-		String names = it.next().getName();
+		StringBuilder sb = new StringBuilder(it.next().getName());
 		while (it.hasNext())
-			names += "," + wrapper + it.next().getName() + wrapper;
-		return names;
+			sb.append(",").append(wrapper).append(it.next().getName()).append(wrapper);
+		return sb.toString();
 	}
 
 	public List<DField> getAutoIncreaments() {
