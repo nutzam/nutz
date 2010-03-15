@@ -3,6 +3,7 @@ package org.nutz.http;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
@@ -41,8 +42,8 @@ public class Header {
 
 	public Header addAll(Map<String, String> map) {
 		if (null != map)
-			for (String key : map.keySet())
-				set(key, map.get(key));
+			for (Entry<String, String> entry : map.entrySet())
+				set(entry.getKey(), entry.getValue());
 		return this;
 	}
 
