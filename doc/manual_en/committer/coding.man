@@ -1,69 +1,143 @@
-#title: Become a committer
+#title: Nutz Java code rules (V1.0)
 #author:Peter.Tung(mastung@gmail.com)
 #index:0,1
+------------------------------------------------------------------------------------------
+0. Rules of rules
 
-If you are already a committer
-	Pay more attention
-		 * Submit your name with your modification in JDoc. ex."@author zozoh(zozohtnt@gmail.com)"
-			 * Otherwise, it is not efficient to locate the author if there are some issues.
-		 * Using the code formatter, to import /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml, to let everyone know what you changed.
-		 * Directly remove the code instead of comment it. We can find the different by comparing tools.
+	 # Each items should not be ambiguous, and could be executed.
+	 # Two levels for items:
+		 * rule - {#F00;*R}
+		 * suggest - {#080;*S}
+	 # All "Rule" items must be observed
 
-	You should know
-		 * Nutz's codes are short（{#AAA;but to not harm the understanding as premise}）
-		 	* Whenever, for the same function, a shorter piece of codes is always better than the longer one.
-		 * It is massive contribution, if you point out one method or class is useless.
-		 * To reduce a piece of codes is the same contribution as to add one, even more.
-		 * If you can reduce one line of codes, without loosing performance and understanding, you are the hero.
-		 * I hope the code is beautiful. Simple is beautiful.
-		 * Community will decide what kinds of features involved.
-		 * It is up to you how to implement the features.
-		 * Please provide Java Doc for public class and method.
-		 * Major methods should be tested through JUnit.
+------------------------------------------------------------------------------------------
+1. Code format
+	 # {#F00;*R}-Please use Eclipse code formatter: [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml]
+		 * get it from svn trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml
+	 # {#080;*S}-Non Eclipse users, please read above XML
+		 * {/No official formatter provided for Non Eclipse users yet, waiting for contributers.}
+------------------------------------------------------------------------------------------
+2. Naming
+	--------------------------------------------------------------------------------------
+	2.1 Package
+		 # {#F00;*R}-all are lowercase, 2 or less words.
+			 # {#080;*S}-better to be 1 singular noun
+		 # {#F00;*R}-all packages should be start as "org.nutz"
+	--------------------------------------------------------------------------------------
+	2.2 Class and Interface
+		 # {#080;*S}-Noun
+		 # {#F00;*R}-Title case all class and interface names.
+		 # {#F00;*R}-Interface shouldn't be start or end with "I" or "IF". For example: IBookDao, BookDaoIF.
+		 # {#F00;*R}-Abstract class name should start with "Abstract", Interface name should end with "Interface".
+		 # {#F00;*R}-Exception class name should end with "Exception".
+		 # {#F00;*R}-If the class instance is used only once, the name should end with "ing", like: Rendering
+		 # {#F00;*R}-Class name should be as short as possible. But it's better not abbreviate name. Abbreviation could be only used for regular classes, like: org.nutz.dao.Cnd
+			 * If your class name is too long, the IDE may wrap the content to new line automatically, it's not friendly.
+		 # {#F00;*R}-Not to conflict with Java standard class name, like: Class, Object, String
+			 * If you do so, it means you are scoffing at the existing ones.
+			 * You force the user to distinguish the two Harry Potter.
+		 # {#080;*S}-You can use weird names in the following cases -- {^But you have be sure that users could understand the names' meaning after they use them}
+			 * Very useful classes
+			 * Very special classes
+			 * Private classes or inner classes
+			 * Non recommended public, protected, default classes
+				 * not to attract people's attention.
+		 # {#F00;*R}-Default interface implementation should start with "Default". like: DefaultEntityMaker.
+			 * Or end with "Impl"
+	--------------------------------------------------------------------------------------
+	2.3 Variable name
+		 # {#080;*S}-Better to use singular nouns
+		 # {#F00;*R}-To restrict the scope as possible as you can.
+		 # {#F00;*R}-If it is collection or array, name it with plural nouns.
+			 * Map pets is better than Map petMap
+		 # {#F00;*R}-Don't use one chararactor，especially i. You can use index or cursor.
+	--------------------------------------------------------------------------------------
+	2.4 Constant name
+		 # {#F00;*R}-Constant（with final） name should be all UPPERCASE and with "_", like： public final int MAX_VALUE = 30.
+	--------------------------------------------------------------------------------------
+	2.5 Local variable name
+		 # {#F00;*R}-Local variable name is better used 1-2 chararactor, like StringBuilder sb
+	--------------------------------------------------------------------------------------
+	2.6 Function
+		 # {#F00;*R}-except setter / getter, all other functions' names should use verbs
+		 # {#080;*S}-You can use weird names in the following cases -- {^But you have be sure that users could understand the names' meaning after they use them}
+			 # Very useful functions
+			 # Very special functions
+			 # private or default functions
+		 # {#080;*S}-Support chain setter, and getter could be the same name as setter
+			{{{<JAVA>
+			// Setter
+			public Pet name(String name){
+				this.name = name;
+				return this;
+			}
+			
+			// Getter
+			public String name(){
+				return this.name;
+			}
+			}}}
+------------------------------------------------------------------------------------------
+3. Comment
+	 # {#F00;*R}-Comment must be synchronized with code.
+	 # {#F00;*R}-End first sentence with ".", "?" or "!". It will be added into index.
+	 # {#F00;*R}-Use "<P>" to separate paragraphs.
+	 # {#F00;*R}-Use "<H2>" to label each chapter titles.
+	 # {#F00;*R}-Use "<BR>" to change new lines.
+	 # {#F00;*R}-Use "<PRE></PRE>" to wrap sample codes.
+
+	--------------------------------------------------------------------------------------
+	3.1  Class Java Doc 
+		 # {#F00;*R}-Add author like: @Author XiaoMing(xm@gmail.com)
+		 # {#F00;*R}-extended classes could be with no comments.
+	--------------------------------------------------------------------------------------
+	3.2  Function Java Doc 
+		 # {#F00;*R}-Simple get/set functions could be with no comments.
+		 # {#F00;*R}-extended functions could be with no comments.
+	--------------------------------------------------------------------------------------
+	3.3  Variable Java Doc 
+		 * {#F00;*R}-see above
+	--------------------------------------------------------------------------------------
+	3.4  Comments in functions
+		 * {#F00;*R}-accept comments or block comments
+		 * {#F00;*R}-Not to write java doc
+		 * {#F00;*R}-Make as "//TODO:" to where you want to continue
+		 * {#F00;*R}-Comments for if ... else .. should be：
+			{{{
+			// comments for case A
+			if(xxxx){
+				//TODO you code here
+			}
+			/*
+			 * Multipline comments for case B
+			 */
+			else if(xxxxx){
+				//TODO you code here
+			}
+			// comments for default case
+			else{
+				//TODO you code here
+			}
+			}}}
+------------------------------------------------------------------------------------------
+4. Coding
+	 # {#F00;*R}-Each commits, should be compile passed
+	 # {#F00;*R}-Each commits, should be JUnit passed
+		 * Except special reasons -- like you want to share with others
+	 # {#F00;*R}-Shorter code is always better than longer one
+		 * The shorter means shorter in logic.
+	 # {#F00;*R}-To short the code is huge contribute for Nutz
+	 # {#F00;*R}-Avoid over design
+		 * To make it work is always most important than others.
+		 * While interfaces are extracted from classes, it means the features are fixed.
+		 * Please follow《[http://blog.sina.com.cn/s/blog_4b19fa3701000720.html]》to design code
+------------------------------------------------------------------------------------------
+5. JUnit test
+	 # {#F00;*R}-Usecase name "{#00F;*long name}" - use "_" to replace space
+		 * easy to understand the purpose from the names
+	 # {#F00;*R}-To cover interfaces and classes as much as possible by usecases.
+
+
+
 	
-	That's why you have to follow the coding rules
-		 * class name
-			 * A noun is enough if it is possible
-			 * Ending the class with ing, if it is only run one time. like {*Rendering}
-			 * Keep class name as short as possible. But it is better not include the abbreviation. If you really want the abbreviation, it should be very common usage class. like org.nutz.dao.Cnd
-				 * Because if it's too long, the users' IDE will help them auto wrap it as several lines. It's rubbish.
-			 * Do not use the same name with the ones in Java standard libs. like Class, Object, String
-				 * If you do so, it means you are scoffing at the existing ones.
-				 * You force the user to distinguish the two Harry Potter.
-		 * variable name
-			 * Better to use singular nouns
-			 * To restrict the scope as possible as you can.
-			 * If it is collection or array, name it with plural nouns. No needs to add xxxMap or xxxList, it is too long.
-			 * Don't use one chararactor，especially i. You can use index or cursor.
-		 * Local variable name is better used 1-2 chararactor, like StringBuilder sb
-		 * function name （no matter static or not）
-			 * Must follow Java programming rules
-			 * If it is setter function, it may follow jQuery programming rules
-				 * return this, to accelerate setting values.
-				 * setXXX(String s) may be replaced with xxx(String s) {#080;// only recommendation} 
-			 * In a word, you have to concern how to keep the users' codes no auto wrapping in IDEs.
-		 * Code formatter, please use [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml  Code Formatter for Eclipse]
-			 * get it from svn's trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml
-			 * No official formatter provided yet, waiting for contributers.
 	 
-	About code refactoring
-		 * You can change any interface implementation. We have version control. It's safe.
-		 * Every commit, it must pass the combination.
-		 * Every commit, it's better to pass the JUnit test.
-		 	* Unless some special cases-- like you are sharing the code snippet with others.
-		 * It is not allowed the codes in the server can not pass JUnit test for 3 days after new commit.
-		 
-	About massive code refactoring
-		 * It is inevitable
-		 * I'd like to do it, if it's reasonable
-		 * I like what I write, but I can not promise how long I will
-		 * Frankly, we don't have enough source to maintain even two versions for a long time. Currently there is only trunk.
-	
-
-
-If you are willing to be a committer
-	 * You needs to join the community, send email to： nutzam@googlegroups.com
-	 * Let's know you in the community. If you are shine, we'd like to invite you.
-	 * Or you can directly send email to any other committers, to point out the weakness of Nutz and provides the solution.
-		 * If your suggestions are accepted more than 5 times. We'd like to invite you. -- Of cause you can reject.
-	 * Other else ways? No.
