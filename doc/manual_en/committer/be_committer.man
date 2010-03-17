@@ -1,0 +1,45 @@
+#title: Become a committer
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+
+If you are already a committer
+	Pay more attention
+		 * Submit your name with your modification in JDoc. ex."@author zozoh(zozohtnt@gmail.com)"
+			 * Otherwise, it is not efficient to locate the author if there are some issues.
+		 * Using the code formatter, to import /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml, to let everyone know what you changed.
+		 * Directly remove the code instead of comment it. We can find the different by comparing tools.
+
+	You should know
+		 * Nutz's codes are short（{#AAA;but to not harm the understanding as premise}）
+		 	* Whenever, for the same function, a shorter piece of codes is always better than the longer one.
+		 * It is massive contribution, if you point out one method or class is useless.
+		 * To reduce a piece of codes is the same contribution as to add one, even more.
+		 * If you can reduce one line of codes, without loosing performance and understanding, you are the hero.
+		 * I hope the code is beautiful. Simple is beautiful.
+		 * Community will decide what kinds of features involved.
+		 * It is up to you how to implement the features.
+		 * Please provide Java Doc for public class and method.
+		 * Major methods should be tested through JUnit.
+		 * That's why you have to follow the coding rules. Please refer [coding.man Nutz Java coding rules]
+	 
+	About code refactoring
+		 * You can change any interface implementation. We have version control. It's safe.
+		 * Every commit, it must pass the combination.
+		 * Every commit, it's better to pass the JUnit test.
+		 	* Unless some special cases-- like you are sharing the code snippet with others.
+		 * It is not allowed the codes in the server can not pass JUnit test for 3 days after new commit.
+		 
+	About massive code refactoring
+		 * It is inevitable
+		 * I'd like to do it, if it's reasonable
+		 * I like what I write, but I can not promise how long I will
+		 * Frankly, we don't have enough source to maintain even two versions for a long time. Currently there is only trunk.
+	
+
+
+If you are willing to be a committer
+	 * You needs to join the community, send email to： nutzam@googlegroups.com
+	 * Let's know you in the community. If you are shine, we'd like to invite you.
+	 * Or you can directly send email to any other committers, to point out the weakness of Nutz and provides the solution.
+		 * If your suggestions are accepted more than 5 times. We'd like to invite you. -- Of cause you can reject.
+	 * Other else ways? No.
