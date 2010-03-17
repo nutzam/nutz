@@ -268,15 +268,32 @@ public class DefaultEntityMaker implements EntityMaker {
 			// @One
 			One one = field.getAnnotation(One.class);
 			if (null != one) { // One > refer own field
-				return Link.getLinkForOne(mirror, field, one.target(), one
+				Field referField = mirror.getField(one
 						.field());
+				Field targetField = null;
+				if (Mirror.me(referField.getType()).isStringLike()) {
+					targetField = Mirror.me(one.target()).getField(Name.class);
+				} else {
+					targetField = Mirror.me(one.target()).getField(Id.class);
+				}
+				return Link.getLinkForOne(field, one.target(), referField, targetField);
 			}
 			// @Many
 			else { // Many > refer target field
 				Many many = field.getAnnotation(Many.class);
 				if (null != many) {
-					return Link.getLinkForMany(mirror, field, many.target(),
-							many.field(), many.key());
+					Field targetField = null;
+					Field referField = null;
+					if (!"".equals(many.field())) {
+						targetField = Mirror.me(many.target()).getField(many.field());
+						if (Mirror.me(targetField.getType()).isStringLike()) {
+							referField = mirror.getField(Name.class);
+						} else {
+							referField = mirror.getField(Id.class);
+						}
+					}
+					return Link.getLinkForMany(field, many.target(),
+							referField, targetField, many.key());
 				}
 				// @ManyMany
 				else {
@@ -304,9 +321,12 @@ public class DefaultEntityMaker implements EntityMaker {
 						} finally {
 							Daos.safeClose(stat, rs);
 						}
+						Field referField = lookupKeyField(mirror, fromName);
+						Field targetField = lookupKeyField(Mirror.me(mm
+								.target()), toName);
 						return Link.getLinkForManyMany(mirror, field, mm
 								.target(), mm.key(), mm.from(), mm.to(), mm
-								.relation(), fromName, toName);
+								.relation(), referField, targetField);
 					}
 				}
 			}
@@ -316,7 +336,19 @@ public class DefaultEntityMaker implements EntityMaker {
 		}
 		return null;
 	}
-
+	
+	private Field lookupKeyField(Mirror<?> mirror, boolean forName) {
+		if (forName)
+			for (Field f : mirror.getFields()) {
+				if (null != f.getAnnotation(Name.class))
+					return f;
+			}
+		for (Field f : mirror.getFields()) {
+			if (null != f.getAnnotation(Id.class))
+				return f;
+		}
+		return null;
+	}
 	private boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
 		for (Field f : mirror.getFields())
 			if (null != f.getAnnotation(Column.class))

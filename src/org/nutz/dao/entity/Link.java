@@ -3,7 +3,6 @@ package org.nutz.dao.entity;
 import java.lang.reflect.Field;
 
 import org.nutz.dao.TableName;
-import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.CharSegment;
@@ -15,54 +14,43 @@ import org.nutz.lang.segment.CharSegment;
  */
 public class Link {
 
-	public static Link getLinkForOne(Mirror<?> mirror, Field field,
-			Class<?> targetClass, String fieldName) throws NoSuchFieldException {
-		Link link = new Link(field, targetClass); 
-		link.type = LinkType.One;
-		link.referField = mirror.getField(fieldName);
-		if (Mirror.me(link.referField.getType()).isStringLike()) {
-			link.targetField = Mirror.me(link.targetClass).getField(Name.class);
-		} else {
-			link.targetField = Mirror.me(link.targetClass).getField(Id.class);
-		}
+	public static Link getLinkForOne(Field field, Class<?> targetClass,
+			Field referField, Field targetField) throws NoSuchFieldException {
+		Link link = new Link(field, targetClass, LinkType.One, referField,
+				targetField);
 		return link;
-
 	}
-	private Link(Field field, Class<?> targetClass) throws NoSuchFieldException {
+
+	private Link(Field field, Class<?> targetClass, LinkType type,
+			Field referField, Field targetField) throws NoSuchFieldException {
 		this.ownField = field;
 		this.targetClass = targetClass;
+		this.type = type;
+		this.referField = referField;
+		this.targetField = targetField;
 	}
 
-	public static Link getLinkForMany(Mirror<?> mirror, Field field,
-			Class<?> targetClass, String fieldName, String key)
+	public static Link getLinkForMany(Field field, Class<?> targetClass,
+			Field referField, Field targetField, String key)
 			throws NoSuchFieldException {
-		Link link = new Link(field, targetClass);
-		link.type = LinkType.Many;
+		Link link = new Link(field, targetClass, LinkType.Many, referField,
+				targetField);
 		link.mapKeyField = "".equals(key) ? null : key;
-		if (!"".equals(fieldName)) {
-			link.targetField = Mirror.me(link.targetClass).getField(fieldName);
-			if (Mirror.me(link.targetField.getType()).isStringLike()) {
-				link.referField = mirror.getField(Name.class);
-			} else {
-				link.referField = mirror.getField(Id.class);
-			}
-		}
 		return link;
 
 	}
 
 	public static Link getLinkForManyMany(Mirror<?> mirror, Field field,
 			Class<?> targetClass, String key, String from, String to,
-			String relation, boolean fromName, boolean toName)
+			String relation, Field referField, Field targetField)
 			throws NoSuchFieldException {
-		Link link = new Link(field, targetClass);
-		link.type = LinkType.ManyMany;
+		Link link = new Link(field, targetClass, LinkType.ManyMany, referField,
+				targetField);
 		link.mapKeyField = "".equals(key) ? null : key;
 		link.from = from;
 		link.to = to;
 		link.relation = Relation.make(relation);
-		link.referField = lookupKeyField(mirror, fromName);
-		link.targetField = lookupKeyField(Mirror.me(targetClass), toName);
+
 		if (null == link.referField || null == link.targetField) {
 			throw Lang.makeThrow(
 					"Fail to make ManyMany link for [%s].[%s], target: [%s]."
@@ -72,19 +60,6 @@ public class Link {
 		}
 		return link;
 
-	}
-
-	private static Field lookupKeyField(Mirror<?> mirror, boolean forName) {
-		if (forName)
-			for (Field f : mirror.getFields()) {
-				if (null != f.getAnnotation(Name.class))
-					return f;
-			}
-		for (Field f : mirror.getFields()) {
-			if (null != f.getAnnotation(Id.class))
-				return f;
-		}
-		return null;
 	}
 
 	// private void evalMore(String dynamicBy) {
