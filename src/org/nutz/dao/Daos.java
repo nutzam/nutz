@@ -97,8 +97,7 @@ public class Daos {
 	public static void safeClose(Statement stat) {
 		if (null != stat )
 			try {
-				if (! stat.isClosed())
-					stat.close();
+				stat.close();
 			} catch (Throwable e) {}
 	}
 
