@@ -17,125 +17,60 @@ public class Link {
 
 	public static Link getLinkForOne(Mirror<?> mirror, Field field,
 			Class<?> targetClass, String fieldName) throws NoSuchFieldException {
-		return new Link(mirror, field, targetClass, fieldName);
+		Link link = new Link(field, targetClass); 
+		link.type = LinkType.One;
+		link.referField = mirror.getField(fieldName);
+		if (Mirror.me(link.referField.getType()).isStringLike()) {
+			link.targetField = Mirror.me(link.targetClass).getField(Name.class);
+		} else {
+			link.targetField = Mirror.me(link.targetClass).getField(Id.class);
+		}
+		return link;
 
 	}
-
-	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
-			String fieldName) throws NoSuchFieldException {
+	private Link(Field field, Class<?> targetClass) throws NoSuchFieldException {
 		this.ownField = field;
-		this.type = LinkType.One;
 		this.targetClass = targetClass;
-		this.referField = mirror.getField(fieldName);
-		if (Mirror.me(this.referField.getType()).isStringLike()) {
-			this.targetField = Mirror.me(this.targetClass).getField(Name.class);
-		} else {
-			this.targetField = Mirror.me(this.targetClass).getField(Id.class);
-		}
 	}
 
 	public static Link getLinkForMany(Mirror<?> mirror, Field field,
 			Class<?> targetClass, String fieldName, String key)
 			throws NoSuchFieldException {
-		return new Link(mirror, field, targetClass, fieldName, key);
-
-	}
-
-	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
-			String fieldName, String key) throws NoSuchFieldException {
-		this.ownField = field;
-		this.type = LinkType.Many;
-		this.mapKeyField = "".equals(key) ? null : key;
-		this.targetClass = targetClass;
+		Link link = new Link(field, targetClass);
+		link.type = LinkType.Many;
+		link.mapKeyField = "".equals(key) ? null : key;
 		if (!"".equals(fieldName)) {
-			this.targetField = Mirror.me(this.targetClass).getField(fieldName);
-			if (Mirror.me(this.targetField.getType()).isStringLike()) {
-				this.referField = mirror.getField(Name.class);
+			link.targetField = Mirror.me(link.targetClass).getField(fieldName);
+			if (Mirror.me(link.targetField.getType()).isStringLike()) {
+				link.referField = mirror.getField(Name.class);
 			} else {
-				this.referField = mirror.getField(Id.class);
+				link.referField = mirror.getField(Id.class);
 			}
 		}
+		return link;
+
 	}
 
 	public static Link getLinkForManyMany(Mirror<?> mirror, Field field,
 			Class<?> targetClass, String key, String from, String to,
 			String relation, boolean fromName, boolean toName)
 			throws NoSuchFieldException {
-		return new Link(mirror, field, targetClass, key, from, to, relation,
-				fromName, toName);
-
-	}
-
-	private Link(Mirror<?> mirror, Field field, Class<?> targetClass,
-			String key, String from, String to, String relation,
-			boolean fromName, boolean toName) {
-		this.ownField = field;
-		this.type = LinkType.ManyMany;
-		this.mapKeyField = "".equals(key) ? null : key;
-		this.targetClass = targetClass;
-		this.from = from;
-		this.to = to;
-		this.relation = Relation.make(relation);
-		this.referField = lookupKeyField(mirror, fromName);
-		this.targetField = lookupKeyField(Mirror.me(targetClass), toName);
-		if (null == this.referField || null == this.targetField) {
+		Link link = new Link(field, targetClass);
+		link.type = LinkType.ManyMany;
+		link.mapKeyField = "".equals(key) ? null : key;
+		link.from = from;
+		link.to = to;
+		link.relation = Relation.make(relation);
+		link.referField = lookupKeyField(mirror, fromName);
+		link.targetField = lookupKeyField(Mirror.me(targetClass), toName);
+		if (null == link.referField || null == link.targetField) {
 			throw Lang.makeThrow(
 					"Fail to make ManyMany link for [%s].[%s], target: [%s]."
 							+ "\n referField: [%s]" + "\n targetField: [%s]",
 					mirror.getType().getName(), field.getName(), targetClass
-							.getName(), referField, targetField);
+							.getName(), link.referField, link.targetField);
 		}
-
-	}
-	@Deprecated
-	public Link(Mirror<?> mirror, Field field, One one)
-			throws NoSuchFieldException {
-		this.ownField = field;
-		this.type = LinkType.One;
-		this.targetClass = one.target();
-		this.referField = mirror.getField(one.field());
-		if (Mirror.me(this.referField.getType()).isStringLike()) {
-			this.targetField = Mirror.me(this.targetClass).getField(Name.class);
-		} else {
-			this.targetField = Mirror.me(this.targetClass).getField(Id.class);
-		}
-	}
-	@Deprecated
-	public Link(Mirror<?> mirror, Field field, Many many)
-			throws NoSuchFieldException {
-		this.ownField = field;
-		this.type = LinkType.Many;
-		this.mapKeyField = "".equals(many.key()) ? null : many.key();
-		this.targetClass = many.target();
-		if (!"".equals(many.field())) {
-			this.targetField = Mirror.me(this.targetClass).getField(
-					many.field());
-			if (Mirror.me(this.targetField.getType()).isStringLike()) {
-				this.referField = mirror.getField(Name.class);
-			} else {
-				this.referField = mirror.getField(Id.class);
-			}
-		}
-	}
-	@Deprecated
-	public Link(Mirror<?> mirror, Field field, ManyMany mm, boolean fromName,
-			boolean toName) {
-		this.ownField = field;
-		this.type = LinkType.ManyMany;
-		this.mapKeyField = "".equals(mm.key()) ? null : mm.key();
-		this.targetClass = mm.target();
-		this.from = mm.from();
-		this.to = mm.to();
-		this.relation = Relation.make(mm.relation());
-		this.referField = lookupKeyField(mirror, fromName);
-		this.targetField = lookupKeyField(Mirror.me(targetClass), toName);
-		if (null == this.referField || null == this.targetField) {
-			throw Lang.makeThrow(
-					"Fail to make ManyMany link for [%s].[%s], target: [%s]."
-							+ "\n referField: [%s]" + "\n targetField: [%s]",
-					mirror.getType().getName(), field.getName(), targetClass
-							.getName(), referField, targetField);
-		}
+		return link;
 
 	}
 
