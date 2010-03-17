@@ -1305,4 +1305,21 @@ public class Mirror<T> {
 		}
 		return sb.append('L').append(Mirror.getPath(klass)).append(';').toString();
 	}
+
+	/**
+	 * 查找包含某一个特殊注解的字段
+	 * 
+	 * @param type
+	 *            类型
+	 * @param annType
+	 *            注解类型
+	 * @return 字段，null 表示没有找到
+	 */
+	public static Field findField(Class<?> type, Class<? extends Annotation> annType) {
+		Mirror<?> mirror = Mirror.me(type);
+		for (Field f : mirror.getFields())
+			if (null != f.getAnnotation(annType))
+				return f;
+		return null;
+	}
 }

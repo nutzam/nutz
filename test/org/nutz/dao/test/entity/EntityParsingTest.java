@@ -10,7 +10,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
 
-public class EntityParsing extends DaoCase {
+public class EntityParsingTest extends DaoCase {
 
 	private Entity<?> en(Class<?> type) {
 		return dao.getEntity(type);

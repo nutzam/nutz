@@ -268,67 +268,57 @@ public class DefaultEntityMaker implements EntityMaker {
 			// @One
 			One one = field.getAnnotation(One.class);
 			if (null != one) { // One > refer own field
-				Field referField = mirror.getField(one
-						.field());
-				Field targetField = null;
-				if (Mirror.me(referField.getType()).isStringLike()) {
-					targetField = Mirror.me(one.target()).getField(Name.class);
-				} else {
-					targetField = Mirror.me(one.target()).getField(Id.class);
-				}
-				return Link.getLinkForOne(field, one.target(), referField, targetField);
+				Mirror<?> ta = Mirror.me(one.target());
+				Field referFld = mirror.getField(one.field());
+				Field targetPkFld = lookupPkByReferField(ta, referFld);
+				return Link.getLinkForOne(mirror, field, ta.getType(), referFld, targetPkFld);
 			}
-			// @Many
-			else { // Many > refer target field
-				Many many = field.getAnnotation(Many.class);
-				if (null != many) {
-					Field targetField = null;
-					Field referField = null;
-					if (!"".equals(many.field())) {
-						targetField = Mirror.me(many.target()).getField(many.field());
-						if (Mirror.me(targetField.getType()).isStringLike()) {
-							referField = mirror.getField(Name.class);
-						} else {
-							referField = mirror.getField(Id.class);
-						}
-					}
-					return Link.getLinkForMany(field, many.target(),
-							referField, targetField, many.key());
+			Many many = field.getAnnotation(Many.class);
+			if (null != many) {
+				Mirror<?> ta = Mirror.me(many.target());
+				Field pkFld;
+				Field targetReferFld;
+				if (Strings.isBlank(many.field())) {
+					pkFld = null;
+					targetReferFld = null;
+				} else {
+					targetReferFld = ta.getField(many.field());
+					pkFld = lookupPkByReferField(mirror, targetReferFld);
 				}
-				// @ManyMany
-				else {
-					ManyMany mm = field.getAnnotation(ManyMany.class);
-					if (null != mm) {
-						// Read relation
-						Statement stat = null;
-						ResultSet rs = null;
-						ResultSetMetaData rsmd = null;
-						boolean fromName = false;
-						boolean toName = false;
-						try {
-							stat = conn.createStatement();
-							Segment tableName = new CharSegment(mm.relation());
-							rs = stat.executeQuery(db.getResultSetMetaSql(TableName
-									.render(tableName)));
-							rsmd = rs.getMetaData();
-							fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
-							toName = !Daos.isIntLikeColumn(rsmd, mm.to());
-						} catch (Exception e) {
-							if (log.isWarnEnabled())
-								log.warnf("Fail to get table '%s', '%s' and '%s' "
-										+ "will be taken as @Id ", mm.relation(), mm.from(), mm
-										.to());
-						} finally {
-							Daos.safeClose(stat, rs);
-						}
-						Field referField = lookupKeyField(mirror, fromName);
-						Field targetField = lookupKeyField(Mirror.me(mm
-								.target()), toName);
-						return Link.getLinkForManyMany(mirror, field, mm
-								.target(), mm.key(), mm.from(), mm.to(), mm
-								.relation(), referField, targetField);
-					}
+
+				return Link.getLinkForMany(mirror, field, ta.getType(), targetReferFld, pkFld, many
+						.key());
+			}
+			ManyMany mm = field.getAnnotation(ManyMany.class);
+			if (null != mm) {
+				// Read relation
+				Statement stat = null;
+				ResultSet rs = null;
+				ResultSetMetaData rsmd = null;
+				boolean fromName = false;
+				boolean toName = false;
+				try {
+					stat = conn.createStatement();
+					Segment tableName = new CharSegment(mm.relation());
+					rs = stat.executeQuery(db.getResultSetMetaSql(TableName.render(tableName)));
+					rsmd = rs.getMetaData();
+					fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
+					toName = !Daos.isIntLikeColumn(rsmd, mm.to());
+				} catch (Exception e) {
+					if (log.isWarnEnabled())
+						log.warnf("Fail to get table '%s', '%s' and '%s' "
+								+ "will be taken as @Id ", mm.relation(), mm.from(), mm.to());
+				} finally {
+					Daos.safeClose(stat, rs);
 				}
+				Mirror<?> ta = Mirror.me(mm.target());
+				Field selfPk = mirror.getField(fromName ? Name.class : Id.class);
+				Field targetPk = ta.getField(toName ? Name.class : Id.class);
+				return Link.getLinkForManyMany(mirror, field, ta.getType(), selfPk, targetPk, mm
+						.key(), mm.relation(), mm.from(), mm.to());
+				// return Link.getLinkForManyMany(mirror, field, mm.target(),
+				// mm.key(), mm.from(), mm
+				// .to(), mm.relation(), fromName, toName);
 			}
 		} catch (Exception e) {
 			throw Lang.makeThrow("Fail to eval linked field '%s' of class[%s] for the reason '%s'",
@@ -336,19 +326,20 @@ public class DefaultEntityMaker implements EntityMaker {
 		}
 		return null;
 	}
-	
-	private Field lookupKeyField(Mirror<?> mirror, boolean forName) {
-		if (forName)
-			for (Field f : mirror.getFields()) {
-				if (null != f.getAnnotation(Name.class))
-					return f;
-			}
-		for (Field f : mirror.getFields()) {
-			if (null != f.getAnnotation(Id.class))
-				return f;
+
+	private static Field lookupPkByReferField(Mirror<?> mirror, Field fld)
+			throws NoSuchFieldException {
+		Mirror<?> fldType = Mirror.me(fld.getType());
+
+		if (fldType.isStringLike()) {
+			return mirror.getField(Name.class);
+		} else if (fldType.isIntLike()) {
+			return mirror.getField(Id.class);
 		}
-		return null;
+		throw Lang.makeThrow("'%s'.'%s' can only be CharSequence or Integer", fld
+				.getDeclaringClass().getName(), fld.getName());
 	}
+
 	private boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
 		for (Field f : mirror.getFields())
 			if (null != f.getAnnotation(Column.class))
