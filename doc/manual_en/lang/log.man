@@ -1,0 +1,69 @@
+#title: Log
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:sunonfire(sunonfire@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+#author:Peter.Tung(mastung@gmail.com)
+--------------------------------------------------------------------------------------------------------
+Why another Log?
+	I can not explain quite clear... If you can understand Chinese, you can find answers in Chinese manual. I think you can have you own judgment.
+
+--------------------------------------------------------------------------------------------------------
+How to use Log?
+	Nutz Log is similar with log4j, JDK Logger, etc. For example：
+	{{{
+	public class MyClass {
+		private static final Log log = Logs.getLog(MyClass.class);
+
+		public void myFuncion() {
+			if (log.isDebugEnabled())
+				log.debug("I am debug message");
+		}
+	}
+	}}}
+	
+	Nutz.Log uses [plugin.man plugin framework], the priority is：
+	 # Log4j
+	 # java.util.logging
+	 # System.out | System.err
+	
+	To active specified Log：
+	 * Log4j
+		# try to load {*org.apache.log4j.Logger}, if load failed, skip to next candidate;
+		# if System.getProperty("log4j.defaultInitOverride") is null or equals "false", skip to next candidate;
+		# if System.getProperty("log4j.configuration") != null, use Log4j as log implement \
+		（Exception case: log4j.coniguration doesn't specify to exist configuration file. In this case, Log4j will through exceptions. User should fix it by theirselves）.
+		# log4j.properties exists, Log4j loads success
+		# log4j.xml exists, Log4j loads success
+		
+	 * Jdk Logger：
+		 * if System.getProperty("java.util.logging.config.class") != null, use Jdk Logger as log implement;
+		 * if System.getProperty("java.util.logging.config.file") != null, use Jdk Logger as log implement;
+		 * otherwise skip to next candidate
+
+--------------------------------------------------------------------------------------------------------	
+How to output logs from Nutz
+	to use log4j for example：
+	
+	 * set Log4j's jar file into your project's classpath, we recommend Log4j 1.2.12 or later
+		 * Log4j 1.2.11 and previous versions does not support Trace level, all Trace level will be changed to Debug level.
+	 * set log4j.properties into your project's classpath
+	 * set log4j.category.org.nutz as DEBUG, then you can see detail logs of Nutz
+		{{{
+		log4j.category.org.nutz=DEBUG, A1
+		 
+		log4j.appender.A1=org.apache.log4j.ConsoleAppender
+		log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+		log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+		}}}
+	 * You can separately control Dao, Ioc and Mvc:
+		 * category.org.nutz.dao=DEBUG
+		 * category.org.nutz.ioc=DEBUG
+		 * category.org.nutz.mvc=DEBUG
+		 
+--------------------------------------------------------------------------------------------------------
+If you configure nothing, what will be happen?
+   Nutz will work well also, the default behavior is:
+   
+    * output from System.err/out
+    * default log level is INFO
