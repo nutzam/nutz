@@ -14,8 +14,7 @@ public class AutoGenerateValueTest extends DaoCase {
 	}
 
 	@Override
-	protected void after() {
-	}
+	protected void after() {}
 
 	@Test
 	public void test_simple() {
@@ -48,6 +47,24 @@ public class AutoGenerateValueTest extends DaoCase {
 		cnm = dao.fetch(Killer.class, cnm.getId());
 		assertEquals(2, cnm.getKilledCount());
 		assertEquals("GFW", cnm.getLastKillName());
+	}
+
+	@Test
+	public void test_insert_prev_by_fastInsert() {
+		Resident xh = new Resident("XH");
+		Resident xw = new Resident("XW");
+		dao.insert(xh);
+		dao.insert(xw);
+
+		Killer zzh = new Killer("zzh");
+		zzh.kill(xh);
+		zzh.kill(xw);
+		dao.insertRelation(zzh, "killeds");
+		dao.fastInsert(zzh);
+
+		zzh = dao.fetch(Killer.class, "zzh");
+		assertEquals(2, zzh.getKilledCount());
+		assertEquals("XW", zzh.getLastKillName());
 	}
 
 }
