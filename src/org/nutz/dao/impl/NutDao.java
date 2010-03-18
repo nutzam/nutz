@@ -51,7 +51,7 @@ import static java.lang.String.*;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public class NutDao implements Dao {
 
@@ -138,7 +138,7 @@ public class NutDao implements Dao {
 	}
 
 	public void setEntityMaker(EntityMaker entityMaker) {
-		if (null == entityMaker){
+		if (null == entityMaker) {
 			log.error("!! Can't set entityMaker as NULL !");
 			return;
 		}
@@ -603,20 +603,19 @@ public class NutDao implements Dao {
 		return (T) getEntity(classOfT).getObject(rs, fm);
 	}
 
+	private void runFieldQuery(FieldQuery[] qs, Object obj) {
+		if (null != qs)
+			for (FieldQuery nq : qs)
+				nq.update(this, obj);
+	}
+
 	private void _insertSelf(Entity<?> entity, Object obj) {
 		// Before insert
-		if (null != entity.getBefores())
-			for (FieldQuery nq : entity.getBefores())
-				nq.update(this, obj);
-
-		// Execute insert SQL
-		Sql sql = sqlMaker.insert(entity, obj);
-		execute(sql);
-
+		runFieldQuery(entity.getBefores(), obj);
+		// Do Insert
+		execute(sqlMaker.insert(entity, obj));
 		// After insert
-		if (null != entity.getAfters())
-			for (FieldQuery nq : entity.getAfters())
-				nq.update(this, obj);
+		runFieldQuery(entity.getAfters(), obj);
 	}
 
 	public <T> T fastInsert(T obj) {
@@ -625,6 +624,7 @@ public class NutDao implements Dao {
 			final Entity<?> entity = this.getEntity(first.getClass());
 			Lang.each(obj, new Each<Object>() {
 				public void invoke(int i, Object ele, int length) {
+					runFieldQuery(entity.getBefores(), ele);
 					execute(sqlMaker.insert(entity, ele));
 				}
 			});
