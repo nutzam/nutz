@@ -44,6 +44,7 @@ public class SqlImpl implements Sql {
 	public void execute(Connection conn) throws DaoException {
 		mergeCondition();
 		updateCount = -1;
+		boolean statIsClosed = false;
 		try {
 			// SELECT ...
 			if (sql.isSELECT()) {
@@ -85,12 +86,14 @@ public class SqlImpl implements Sql {
 					stat.execute();
 					updateCount = stat.getUpdateCount();
 					stat.close();
+					statIsClosed = true;
 					if (null != callback)
 						context.setResult(callback.invoke(conn, null, this));
 				}
 				// Closing...
 				finally {
-					Daos.safeClose(stat, null);
+					if (!statIsClosed)
+						Daos.safeClose(stat);
 				}
 			}
 			// CREATE | DROP
@@ -104,7 +107,8 @@ public class SqlImpl implements Sql {
 						context.setResult(callback.invoke(conn, null, this));
 				}// Closing...
 				finally {
-					Daos.safeClose(stat, null);
+					if (!statIsClosed)
+						Daos.safeClose(stat);
 				}
 			}
 		}
