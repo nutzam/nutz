@@ -44,6 +44,7 @@
 
 	|| 贡献者 									|| 问题 || 博客 || 支持 || 代码 || Demo || 文档 || 测试 ||
 	|| E-Hunter									||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
+	|| [http://hi.baidu.com/lifecube mastung]	||  -	||  -	||  -	||  -	||  -	||  O	||  -	||
 	|| VVV										||  O	||  -	||  -	||  -	||  -	||  -	||  -	||
 	|| [http://wendal.javaeye.com wendal]		||  O	||  -	||  O	||  O	||  -	||  O	||  -	||
 	|| [http://zozoh.javaeye.com zozoh]			||  O	||  -	||  O	||  O	||  -	||  O	||  -	||
