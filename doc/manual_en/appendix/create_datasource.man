@@ -1,0 +1,103 @@
+#title: How to create DataSource
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+Apache DBCP
+	Using Java
+		{{{<Java>
+		import org.apache.commons.dbcp.BasicDataSource;
+		
+		...
+		
+		BasicDataSource ds = new BasicDataSource();
+		ds.setDriverClassName("org.postgresql.Driver");
+		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUsername("demo");
+		ds.setPassword("123456");
+		...
+		ds.close();  // close all connections
+		}}}
+	Through JSON configuration of Nutz.Ioc
+		{{{<IOC-JSON Configuration>
+		{
+			dataSource : {
+				type : "org.apache.commons.dbcp.BasicDataSource",
+				events : {
+					depose : 'close'
+				},
+				fields : {
+					driverClassName : 'org.postgresql.Driver',
+					url : 'jdbc:postgresql://localhost:5432/mydatabase',
+					username : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+		 * Register depose event. While ioc container deposes, it will close all connections {*really}
+		 * About depose event, please refer [../ioc/events.man Events]
+--------------------------------------------------------------------------------------
+C3P0
+	Using Java
+		{{{<Java>
+		import com.mchange.v2.c3p0.ComboPooledDataSource;
+		
+		...
+		
+		ComboPooledDataSource ds = new ComboPooledDataSource();
+		ds.setDriverClass("org.postgresql.Driver");
+		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUser("demo");
+		ds.setPassword("123456");
+		...
+		ds.close();  // close all connections
+		}}}
+	Through JSON configuration of Nutz.Ioc
+		{{{<IOC-JSON Configuration>
+		{
+			dataSource : {
+				type : "com.mchange.v2.c3p0.ComboPooledDataSource",
+				events : {
+					depose : 'close'
+				},
+				fields : {
+					driverClass : 'org.postgresql.Driver',
+					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					user : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+		 * Register depose event. While ioc container deposes, it will close all connections {*really}
+--------------------------------------------------------------------------------------
+Proxool
+	Using Java
+		{{{<Java>
+		import org.logicalcobwebs.proxool.ProxoolDataSource;
+		
+		...
+		
+		ProxoolDataSource ds = new ProxoolDataSource();
+		ds.setDriver("org.postgresql.Driver");
+		ds.setDriverUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUser("demo");
+		ds.setPassword("123456");
+		...
+		}}}
+	Through JSON configuration of Nutz.Ioc
+		{{{<IOC-JSON Configuration>
+		{
+			dataSource : {
+				type : "org.logicalcobwebs.proxool.ProxoolDataSource",
+				fields : {
+					driver : 'org.postgresql.Driver',
+					driverUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					user : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+		 * Proxool doesn't provide functions to close all connections. But you can implement one by yourself, and configure it into Ioc depose event.
+		 * About depose event, please refer [../ioc/events.man Events] - {*Through implementing a trigger}
