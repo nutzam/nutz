@@ -23,7 +23,7 @@ public class Aop1 {
 	/**
 	 * 无参数,无返回
 	 */
-	public void nonArgsVoid() throws Throwable{
+	public void nonArgsVoid() throws Throwable {
 		System.out.println("My - " + name + " >> nonArgsVoid");
 	}
 
@@ -47,8 +47,11 @@ public class Aop1 {
 	 * 有多个参数,无返回
 	 */
 	public void mixArgsVoid(String x, Object obj, int yy, char xp, long... z) {
-		System.out.println("My - " + name + " >> mixArgsVoid" + " 我的参数"
-				+ Castors.me().castToString(new Object[]{x, obj, yy, xp, z}));
+		System.out.println("My - "
+							+ name
+							+ " >> mixArgsVoid"
+							+ " 我的参数"
+							+ Castors.me().castToString(new Object[]{x, obj, yy, xp, z}));
 	}
 
 	/**
@@ -64,7 +67,7 @@ public class Aop1 {
 								String ppp,
 								StringBuffer sb,
 								Log log,
-								long... z) throws Throwable{
+								long... z) throws Throwable {
 		System.out.println("My - " + name + " >> mixArgsVoid2");
 	}
 
@@ -76,11 +79,11 @@ public class Aop1 {
 	// return mixArgsVoid4(x);
 	// }
 	//	
-	public Object mixArgsVoid4(String x) throws Throwable{
+	public Object mixArgsVoid4(String x) throws Throwable {
 		return x;
 	}
 
-	public String returnString() throws Throwable{
+	public String returnString() throws Throwable {
 		return "Wendal-X";
 	}
 
@@ -123,61 +126,60 @@ public class Aop1 {
 	public void throwError() throws Throwable {
 		throw new Error("我是被主动抛出的异常!!!");
 	}
-	
+
 	public void throwException() throws Throwable {
 		throw new Exception("我是被主动抛出的异常!!!");
 	}
-	
-	public Object[] returnObjectArray(){
-		return null;
-	}
-	
-	public long [] returnLongArray() {
+
+	public Object[] returnObjectArray() {
 		return null;
 	}
 
-	public int [] returnIntArray() {
+	public long[] returnLongArray() {
 		return null;
 	}
 
-	public short [] returnShortArray() {
+	public int[] returnIntArray() {
 		return null;
 	}
 
-	public char [] returnCharArray() {
+	public short[] returnShortArray() {
 		return null;
 	}
 
-	public byte [] returnByteArray() {
+	public char[] returnCharArray() {
 		return null;
 	}
 
-	public boolean [] returnBooleanArray() {
+	public byte[] returnByteArray() {
 		return null;
 	}
 
-	public float [] returnFloatArray() {
+	public boolean[] returnBooleanArray() {
 		return null;
 	}
 
-	public double [] returnDoubleArray() {
+	public float[] returnFloatArray() {
 		return null;
 	}
-	
 
-	public Aop1(Object x, Object y) throws IOException{
-		
+	public double[] returnDoubleArray() {
+		return null;
 	}
-	
-	public Runnable getRunnable(){
+
+	public Aop1(Object x, Object y) throws IOException {
+
+	}
+
+	public Runnable getRunnable() {
 		return new Thread();
 	}
-	
-	public Enum<?> getEnum(){
+
+	public Enum<?> getEnum() {
 		return null;
 	}
-	
-	public void getXXX(Enum<?> enumZ){
-		
+
+	public void getXXX(Enum<?> enumZ) {
+
 	}
 }

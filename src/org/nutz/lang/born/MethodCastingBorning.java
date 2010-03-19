@@ -19,7 +19,8 @@ public class MethodCastingBorning<T> implements Borning<T> {
 		try {
 			args = Lang.array2ObjectArray(args, pts);
 			return (T) method.invoke(null, args);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, method.getDeclaringClass(), args);
 		}
 	}

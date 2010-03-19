@@ -30,7 +30,8 @@ public class SimpleTransTest extends DaoCase {
 				}
 			});
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		Cat xb = dao.fetch(Cat.class, "xb");
 		assertTrue(xb.getId() > 0);
 	}
@@ -55,7 +56,8 @@ public class SimpleTransTest extends DaoCase {
 					throw Lang.makeThrow("Quite!!!");
 				}
 			});
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		assertTrue(dao.fetch(Cat.class, "xb").getName().equals("xb"));
 		assertTrue(dao.fetch(Cat.class, "xb2").getName().equals("xb2"));
 		dao.delete(cat2);

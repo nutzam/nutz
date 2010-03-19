@@ -23,8 +23,14 @@ public class SQLFileParsing {
 	public void check_Count_SQL() {
 		sqls = new FileSqlManager(PATH);
 		assertEquals(10, sqls.count());
-		String[] keys = { ".abc.drop", ".abc.create", ".abc.insert", ".abc.update", "abc.fetch", "abc.query",
-				".student.drop", ".student.create" };
+		String[] keys = {	".abc.drop",
+							".abc.create",
+							".abc.insert",
+							".abc.update",
+							"abc.fetch",
+							"abc.query",
+							".student.drop",
+							".student.create"};
 		for (int i = 0; i < keys.length; i++) {
 			assertEquals(keys[i], sqls.keys()[i]);
 		}
@@ -68,8 +74,16 @@ public class SQLFileParsing {
 	@Test
 	public void check_PersonTestSQLs() {
 		sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls");
-		String[] keys = { ".abc.drop", ".abc.create", ".abc.insert", ".abc.update", "abc.fetch", "abc.query",
-				".student.drop", ".student.create", ".student2.drop", ".student2.create" };
+		String[] keys = {	".abc.drop",
+							".abc.create",
+							".abc.insert",
+							".abc.update",
+							"abc.fetch",
+							"abc.query",
+							".student.drop",
+							".student.create",
+							".student2.drop",
+							".student2.create"};
 		for (int i = 0; i < keys.length; i++) {
 			assertEquals(keys[i], sqls.keys()[i]);
 		}

@@ -73,9 +73,9 @@ public class ObjectMakerImpl implements ObjectMaker {
 				try {
 					ValueProxy vp = ing.makeValue(ifld.getValue());
 					fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
-				} catch (Exception e) {
-					throw Lang
-							.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
 				}
 			}
 			dw.setFields(fields);
@@ -98,16 +98,17 @@ public class ObjectMakerImpl implements ObjectMaker {
 			return null;
 		if (str.contains(".")) {
 			try {
-				Class<? extends IocEventTrigger> triggerType = (Class<? extends IocEventTrigger>) Class
-						.forName(str);
+				Class<? extends IocEventTrigger> triggerType = (Class<? extends IocEventTrigger>) Class.forName(str);
 				return triggerType.newInstance();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
 		try {
 			return new MethodEventTrigger(mirror.findMethod(str));
-		} catch (NoSuchMethodException e) {
+		}
+		catch (NoSuchMethodException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

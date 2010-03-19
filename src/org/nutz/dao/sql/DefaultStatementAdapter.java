@@ -44,9 +44,11 @@ public class DefaultStatementAdapter implements StatementAdapter {
 				if (null == obj) {
 					if (null != ef)
 						if (ef.isNotNull())
-							throw Lang.makeThrow("Field %s(%s).%s(%s) can not be NULL.", entity
-									.getType().getName(), entity.getTableName(), ef.getField()
-									.getName(), ef.getColumnName());
+							throw Lang.makeThrow(	"Field %s(%s).%s(%s) can not be NULL.",
+													entity.getType().getName(),
+													entity.getTableName(),
+													ef.getField().getName(),
+													ef.getColumnName());
 				}
 				ef.getFieldAdapter().set(stat, obj, is);
 			}

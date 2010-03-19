@@ -217,9 +217,11 @@ public class FieldFilter {
 		FF.set(this);
 		try {
 			atom.run();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			FF.remove();
 		}
 	}

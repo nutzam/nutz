@@ -33,9 +33,9 @@ public class TableDefinitionImpl implements TableDefinition {
 		if (dt.getPks().size() > 1)
 			for (DField pk : dt.getPks()) {
 				if (pk.isAutoIncreament())
-					throw Lang.makeThrow(
-							"Table '%s'.'%s' should be auto-increase, because, it is multi-PK", dt
-									.getName(), pk.getName());
+					throw Lang.makeThrow(	"Table '%s'.'%s' should be auto-increase, because, it is multi-PK",
+											dt.getName(),
+											pk.getName());
 			}
 
 		// 生成字段定义

@@ -31,7 +31,8 @@ public class CollectionValue implements ValueProxy {
 			for (ValueProxy vp : values)
 				re.add(vp.get(ing));
 			return re;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

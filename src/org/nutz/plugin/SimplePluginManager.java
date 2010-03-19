@@ -34,7 +34,8 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 		if (pluginClass != null)
 			try {
 				list.add((Plugin) pluginClass.newInstance());
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw new PluginException(pluginClass.getName(), e);
 			}
 	}
@@ -44,6 +45,7 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 		try {
 			if (pluginClassName != null)
 				loadPlugin((Class<? extends T>) Class.forName(pluginClassName));
-		} catch (ClassNotFoundException e) {}
+		}
+		catch (ClassNotFoundException e) {}
 	}
 }

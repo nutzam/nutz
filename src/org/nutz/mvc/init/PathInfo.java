@@ -20,7 +20,6 @@ public class PathInfo<T> {
 		return remain;
 	}
 
-
 	public T getObj() {
 		return obj;
 	}

@@ -13,7 +13,8 @@ public class ConstructorBorning<T> implements Borning<T> {
 	public T born(Object[] args) {
 		try {
 			return c.newInstance(args);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, c.getDeclaringClass(), args);
 		}
 	}

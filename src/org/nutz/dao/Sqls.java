@@ -193,8 +193,8 @@ public class Sqls {
 		}
 	}
 
-	private static final Pattern CND = Pattern.compile("^([ \t]*)(WHERE|ORDER BY)(.+)$",
-			Pattern.CASE_INSENSITIVE);
+	private static final Pattern CND = Pattern.compile(	"^([ \t]*)(WHERE|ORDER BY)(.+)$",
+														Pattern.CASE_INSENSITIVE);
 
 	/**
 	 * @param en

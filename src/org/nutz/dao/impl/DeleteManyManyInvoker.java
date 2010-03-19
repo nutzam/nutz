@@ -24,8 +24,9 @@ class DeleteManyManyInvoker extends DeleteInvoker {
 					if (null != ta) {
 						dao._deleteSelf(entity, ta);
 						Object value = Mirror.me(ta.getClass()).getValue(ta, link.getTargetField());
-						Sql sql = dao.getSqlMaker().clear_links(link.getRelation(), link.getTo(),
-								link.getTo());
+						Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
+																link.getTo(),
+																link.getTo());
 						sql.params().set(link.getTo(), value);
 						dao.execute(sql);
 					}

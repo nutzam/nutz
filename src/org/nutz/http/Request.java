@@ -65,7 +65,8 @@ public class Request {
 				}
 			}
 			return new URL(sb.toString());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new HttpException(sb.toString(), e);
 		}
 	}

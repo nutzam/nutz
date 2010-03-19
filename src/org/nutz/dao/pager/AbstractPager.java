@@ -63,8 +63,11 @@ public abstract class AbstractPager implements Pager {
 
 	@Override
 	public String toString() {
-		return String.format("size: %d, total: %d, page: %d/%d", pageSize, recordCount, pageNumber,
-				this.getPageCount());
+		return String.format(	"size: %d, total: %d, page: %d/%d",
+								pageSize,
+								recordCount,
+								pageNumber,
+								this.getPageCount());
 	}
 
 }

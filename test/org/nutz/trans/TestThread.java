@@ -22,10 +22,11 @@ public abstract class TestThread extends Thread {
 	@Override
 	public void run() {
 		doTest();
-		synchronized(this){
+		synchronized (this) {
 			try {
 				this.wait(1000);
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				throw Lang.wrapThrow(e);
 			}
 		}

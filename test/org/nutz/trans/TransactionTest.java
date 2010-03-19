@@ -24,8 +24,7 @@ public class TransactionTest extends DaoCase {
 		masterService = new IdEntityService<Master>(dao) {};
 	}
 
-	protected void after() {
-	}
+	protected void after() {}
 
 	private Cat insert(final Cat cat, final Bomb bomb) {
 		// //System.out.printf("\n>> insert cat: %d\n",
@@ -109,7 +108,8 @@ public class TransactionTest extends DaoCase {
 		try {
 			insert(cat, new Bomb(2));
 			fail();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			assertEquals(0, dao.count(Company.class));
 			assertEquals(0, dao.count(Master.class));
 			assertEquals(0, dao.count(Cat.class));
@@ -136,13 +136,16 @@ public class TransactionTest extends DaoCase {
 					lock.wait();
 					// System.out.println("\nchecker: I will do some check");
 				}
-				if (0 != dao.count(Company.class, null) || 0 != dao.count(Master.class, null)
-						|| 0 != dao.count(Cat.class, null)) {
+				if (0 != dao.count(Company.class, null)
+					|| 0 != dao.count(Master.class, null)
+					|| 0 != dao.count(Cat.class, null)) {
 					throw new RuntimeException("Find change in another thread");
 				}
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e) {
 				throw Lang.wrapThrow(e);
-			} finally {
+			}
+			finally {
 				synchronized (tellor) {
 					// System.out.println("\nchecker: I will notify tellor!");
 					tellor.notifyAll();
@@ -187,7 +190,8 @@ public class TransactionTest extends DaoCase {
 							tellor.wait(100);
 							// System.out.println("\nanother: I am wake up");
 						}
-					} catch (InterruptedException e) {
+					}
+					catch (InterruptedException e) {
 						throw Lang.wrapThrow(e);
 					}
 				}
@@ -226,7 +230,8 @@ public class TransactionTest extends DaoCase {
 				}
 			});
 			fail();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			assertEquals(0, dao.count(Company.class, null));
 			assertEquals(0, dao.count(Master.class, null));
 			assertEquals(0, dao.count(Cat.class, null));

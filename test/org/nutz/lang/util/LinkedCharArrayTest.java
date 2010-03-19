@@ -84,19 +84,23 @@ public class LinkedCharArrayTest {
 		try {
 			lia.get(-1);
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			lia.get(lia.size());
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			lia.set(-1, '#');
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			lia.set(lia.size(), '#');
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 
 	}
 
@@ -114,8 +118,8 @@ public class LinkedCharArrayTest {
 		assertFalse(lia.endsWith((String) null));
 		assertFalse(lia.endsWith("M"));
 
-		assertTrue(lia.endsWith(new char[] { 'F', 'G' }));
+		assertTrue(lia.endsWith(new char[]{'F', 'G'}));
 		assertFalse(lia.endsWith((char[]) null));
-		assertFalse(lia.endsWith(new char[] { 'M' }));
+		assertFalse(lia.endsWith(new char[]{'M'}));
 	}
 }

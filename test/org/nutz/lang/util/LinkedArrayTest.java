@@ -87,19 +87,23 @@ public class LinkedArrayTest {
 		try {
 			la.get(-1);
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			la.get(la.size());
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			la.set(-1, "#");
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		try {
 			la.set(la.size(), "#");
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 
 	}
 

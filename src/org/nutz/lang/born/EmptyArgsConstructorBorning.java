@@ -13,7 +13,8 @@ public class EmptyArgsConstructorBorning<T> implements Borning<T> {
 	public T born(Object[] args) {
 		try {
 			return c.newInstance();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, c.getDeclaringClass(), null);
 		}
 	}

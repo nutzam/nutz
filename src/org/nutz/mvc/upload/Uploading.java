@@ -123,9 +123,11 @@ class Uploading {
 					}
 				}
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw new UploadFailException(e);
-		} finally {
+		}
+		finally {
 			request.getSession().removeAttribute(UploadInfo.class.getName());
 		}
 	}

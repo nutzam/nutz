@@ -57,8 +57,9 @@ public class NutServlet extends HttpServlet {
 			// it will load some Annotation from it.
 			String name = Strings.trim(this.getServletConfig().getInitParameter("modules"));
 			if (Strings.isEmpty(name)) {
-				throw Lang.makeThrow(ServletException.class,
-						"You need declare modules parameter in '%s'", this.getClass().getName());
+				throw Lang.makeThrow(	ServletException.class,
+										"You need declare modules parameter in '%s'",
+										this.getClass().getName());
 			}
 			Class<?> modules = Class.forName(name);
 
@@ -91,7 +92,8 @@ public class NutServlet extends HttpServlet {
 			// 设置成功标志
 			ok = true;
 
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			if (log.isErrorEnabled())
 				log.error("Error happend during start serivce!", e);
 			if (e instanceof ServletException)
@@ -116,9 +118,11 @@ public class NutServlet extends HttpServlet {
 			Setup setup = (Setup) this.getServletContext().getAttribute(Setup.class.getName());
 			if (null != setup)
 				setup.destroy(getServletConfig());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			super.destroy();
 		}
 		// If the application has Ioc, depose it

@@ -41,8 +41,8 @@ public class SimpleJsonIocTest {
 
 	@Test
 	public void test_refer() {
-		Ioc ioc = I(J("fox", "type:'org.nutz.ioc.json.pojo.Animal',fields:{name:'Fox'}"), J(
-				"rabit", "name:'Rabit',enemies:[{refer:'fox'},{refer:'fox'}]"));
+		Ioc ioc = I(J("fox", "type:'org.nutz.ioc.json.pojo.Animal',fields:{name:'Fox'}"),
+					J("rabit", "name:'Rabit',enemies:[{refer:'fox'},{refer:'fox'}]"));
 		Animal r = ioc.get(Animal.class, "rabit");
 		Animal f = ioc.get(Animal.class, "fox");
 		assertEquals(2, r.getEnemies().length);
@@ -54,8 +54,9 @@ public class SimpleJsonIocTest {
 
 	@Test
 	public void test_array_and_refer() {
-		Ioc ioc = I(J("fox", "name:'Fox'"), J("rabit",
-				"name:'Rabit',enemies:[{refer:'fox:org.nutz.ioc.json.pojo.Animal'},null]"));
+		Ioc ioc = I(J("fox", "name:'Fox'"),
+					J(	"rabit",
+						"name:'Rabit',enemies:[{refer:'fox:org.nutz.ioc.json.pojo.Animal'},null]"));
 
 		Animal r = ioc.get(Animal.class, "rabit");
 		Animal f = ioc.get(Animal.class, "fox");
@@ -108,8 +109,8 @@ public class SimpleJsonIocTest {
 
 	@Test
 	public void test_java_with_arguments() {
-		Ioc ioc = I(J("fox", "name:'Fox',age:10"), J("wolf",
-				"name:{java:'$fox.showName(\"_\", 2, \"W\")'},age:{java:'$fox.age'}"));
+		Ioc ioc = I(J("fox", "name:'Fox',age:10"),
+					J("wolf", "name:{java:'$fox.showName(\"_\", 2, \"W\")'},age:{java:'$fox.age'}"));
 		Animal fox = ioc.get(Animal.class, "fox");
 		Animal wolf = ioc.get(Animal.class, "wolf");
 		assertEquals("Fox", fox.getName());
@@ -127,10 +128,10 @@ public class SimpleJsonIocTest {
 		assertEquals("P", f2.getName());
 		assertEquals(5, f2.getAge());
 	}
-	
+
 	@Test
 	public void test_muilt_parent() {
-		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'fox'"),J("f3","parent:'f2'"));
+		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'fox'"), J("f3", "parent:'f2'"));
 		Animal f3 = ioc.get(Animal.class, "f3");
 		assertEquals(10, f3.getAge());
 	}
@@ -141,16 +142,16 @@ public class SimpleJsonIocTest {
 		Animal xb = ioc.get(Animal.class, "xb");
 		assertEquals("XiaoBai", xb.getName());
 	}
-	
-	@Test(expected=IocException.class)
+
+	@Test(expected = IocException.class)
 	public void test_break_parent() {
-		Ioc ioc = I(J("f2", "parent:'f3'"),J("f3","parent:'f2'"));
+		Ioc ioc = I(J("f2", "parent:'f3'"), J("f3", "parent:'f2'"));
 		ioc.get(Animal.class, "f3");
 	}
-	
-	@Test(expected=IocException.class)
+
+	@Test(expected = IocException.class)
 	public void test_break_parent2() {
-		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'x'"),J("f3","parent:'y'"));
+		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'x'"), J("f3", "parent:'y'"));
 		ioc.get(Animal.class, "f3");
 	}
 }

@@ -4,13 +4,13 @@ import org.nutz.dao.entity.annotation.*;
 
 @Table("trans_company")
 public class Company {
-	
-	public static Company make(String name){
+
+	public static Company make(String name) {
 		Company c = new Company();
 		c.name = name;
 		return c;
-	} 
-	
+	}
+
 	@Column
 	@Id
 	private int id;

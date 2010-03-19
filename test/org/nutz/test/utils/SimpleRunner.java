@@ -15,8 +15,8 @@ import org.junit.Test;
 import org.nutz.lang.Mirror;
 
 /**
- * 可以传入多个test case作为参数。例如：
- * java org.nutz.test.utils.SimpleRunner org.nutz.log.JdkAdapterPerformanceTest:testCreation 
+ * 可以传入多个test case作为参数。例如： java org.nutz.test.utils.SimpleRunner
+ * org.nutz.log.JdkAdapterPerformanceTest:testCreation
  * org.nutz.log.JdkAdapterPerformanceTest:*
  * 
  * @author Young(sunonfire@gmail.com)
@@ -46,7 +46,7 @@ public class SimpleRunner {
 
 					for (String m : methodNameArray) {
 						if (m.trim().length() != 0)
-						methodNames.add(m);
+							methodNames.add(m);
 					}
 				}
 			}
@@ -70,13 +70,13 @@ public class SimpleRunner {
 		Method[] methods = mi.getMethods();
 
 		final boolean methodNamesIsEmptyAtBeginning = methodNames.isEmpty();
-		
+
 		for (Method m : methods) {
 
 			if (m.getName().indexOf("access$") != -1) {
 				continue;
 			}
-			
+
 			if (m.isAnnotationPresent(BeforeClass.class)) {
 				beforeClass = m;
 				continue;
@@ -110,7 +110,7 @@ public class SimpleRunner {
 		if (!methodNames.isEmpty()) {
 
 			System.out.println("Warning!!!: The following methods cannot find in class "
-					+ className);
+								+ className);
 
 			for (String name : methodNames) {
 				System.out.println(name);
@@ -130,7 +130,8 @@ public class SimpleRunner {
 											Object caze) throws IllegalAccessException,
 			InvocationTargetException {
 
-		//System.out.println("Before run test case " + caze.getClass().getName());
+		// System.out.println("Before run test case " +
+		// caze.getClass().getName());
 
 		if (beforeClass != null) {
 			beforeClass.invoke(null);
@@ -142,7 +143,7 @@ public class SimpleRunner {
 
 		for (Method test : testMethods) {
 
-			//System.out.println("\tbefore run test " + test.getName());
+			// System.out.println("\tbefore run test " + test.getName());
 
 			if (before != null) {
 				before.invoke(caze);

@@ -35,9 +35,11 @@ public class TableName {
 			set(refer);
 			try {
 				atom.run();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw Lang.wrapThrow(e);
-			} finally {
+			}
+			finally {
 				set(old);
 				if (log.isTraceEnabled())
 					log.tracef("TableName.finally: [%s]->[%s]", object, object.get());

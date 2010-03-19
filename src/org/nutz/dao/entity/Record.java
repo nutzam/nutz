@@ -36,7 +36,8 @@ public class Record {
 				}
 			}
 			return re;
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

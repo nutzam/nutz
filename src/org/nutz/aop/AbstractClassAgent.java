@@ -73,8 +73,11 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		String klass_name = klass.getName();
 		if (klass_name.endsWith(CLASSNAME_SUFFIX))
 			return false;
-		if (klass.isInterface() || klass.isArray() || klass.isEnum() || klass.isPrimitive()
-				|| klass.isMemberClass())
+		if (klass.isInterface()
+			|| klass.isArray()
+			|| klass.isEnum()
+			|| klass.isPrimitive()
+			|| klass.isMemberClass())
 			throw Lang.makeThrow("需要拦截的%s不是一个顶层类!创建失败!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
 			throw Lang.makeThrow("需要拦截的类:%s是final或abstract的!创建失败!", klass_name);
@@ -86,13 +89,16 @@ public abstract class AbstractClassAgent implements ClassAgent {
 		ClassLoader classLoader = getClass().getClassLoader();
 		try {
 			return (Class<T>) Class.forName(newName, false, classLoader);
-		} catch (ClassNotFoundException e2) {
+		}
+		catch (ClassNotFoundException e2) {
 			try {
 				return (Class<T>) Class.forName(newName);
-			} catch (ClassNotFoundException e1) {
+			}
+			catch (ClassNotFoundException e1) {
 				try {
 					return (Class<T>) classLoader.loadClass(newName);
-				} catch (ClassNotFoundException e) {}
+				}
+				catch (ClassNotFoundException e) {}
 			}
 		}
 		return null;

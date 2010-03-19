@@ -57,11 +57,13 @@ public class EntityField {
 			try {
 				getter = entity.getMirror().getGetter(field);
 				getter.setAccessible(true);
-			} catch (NoSuchMethodException e) {}
+			}
+			catch (NoSuchMethodException e) {}
 			try {
 				setter = entity.getMirror().getSetter(field);
 				setter.setAccessible(true);
-			} catch (NoSuchMethodException e) {}
+			}
+			catch (NoSuchMethodException e) {}
 		}
 	}
 
@@ -183,16 +185,20 @@ public class EntityField {
 		 */
 		catch (SQLException e1) {
 			return;
-		}catch (NullPointerException e) {
+		}
+		catch (NullPointerException e) {
 			return;
 		}
 		if (null == v)
 			return;
 		try {
 			this.setValue(obj, v);
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value [%s]->%s for the reason: '%s'", obj.getClass()
-					.getName(), this.getField().getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to set value [%s]->%s for the reason: '%s'",
+									obj.getClass().getName(),
+									this.getField().getName(),
+									e.getMessage());
 		}
 	}
 
@@ -201,24 +207,30 @@ public class EntityField {
 			if (null == getter)
 				return this.field.get(obj);
 			return getter.invoke(obj);
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to get value for object [%s]->[%s], because: '%s'",
-					this.entity.getType().getName(), field.getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to get value for object [%s]->[%s], because: '%s'",
+									this.entity.getType().getName(),
+									field.getName(),
+									e.getMessage());
 		}
 	}
 
 	public void setValue(Object obj, Object value) {
 		try {
-			if (null != value )
-				if ( ! field.getType().isAssignableFrom(value.getClass()))
+			if (null != value)
+				if (!field.getType().isAssignableFrom(value.getClass()))
 					value = Castors.me().castTo(value, field.getType());
 			if (null == setter)
 				this.field.set(obj, value);
 			else
 				setter.invoke(obj, value);
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set value for object [%s]->[%s], because: '%s'",
-					this.entity.getType().getName(), field.getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to set value for object [%s]->[%s], because: '%s'",
+									this.entity.getType().getName(),
+									field.getName(),
+									e.getMessage());
 		}
 	}
 

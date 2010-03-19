@@ -20,7 +20,8 @@ public abstract class Dumps {
 	 *            Matcher 对象
 	 * @return 信息
 	 * 
-	 * @throws java.lang.NullPointerException when m is null
+	 * @throws java.lang.NullPointerException
+	 *             when m is null
 	 */
 	public static String matcher(Matcher m) {
 		StringBuilder sb = new StringBuilder();
@@ -51,7 +52,8 @@ public abstract class Dumps {
 			if (Modifier.isPublic(f.getModifiers()))
 				try {
 					sb.append(String.format("\n\t%10s : %s", f.getName(), f.get(obj)));
-				} catch (Exception e1) {
+				}
+				catch (Exception e1) {
 					sb.append(String.format("\n\t%10s : %s", f.getName(), e1.getMessage()));
 				}
 		sb.append("\n\n[Methods:]");
@@ -61,7 +63,8 @@ public abstract class Dumps {
 					if (m.getParameterTypes().length == 0)
 						try {
 							sb.append(String.format("\n\t%10s : %s", m.getName(), m.invoke(obj)));
-						} catch (Exception e) {
+						}
+						catch (Exception e) {
 							sb.append(String.format("\n\t%10s : %s", m.getName(), e.getMessage()));
 						}
 		return sb.toString();

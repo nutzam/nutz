@@ -24,13 +24,13 @@ public class JdkLogAdapter implements LogAdapter, Plugin {
 
 	public boolean canWork() {
 		return System.getProperty("java.util.logging.config.class") != null
-        		|| System.getProperty("java.util.logging.config.file") != null;
+				|| System.getProperty("java.util.logging.config.file") != null;
 	}
-	
-	public Log getLogger(String className){
+
+	public Log getLogger(String className) {
 		return new JdkLogger(className);
 	}
-	
+
 	static class JdkLogger extends AbstractLog {
 
 		private Logger jdkLogger = null;
@@ -101,20 +101,20 @@ public class JdkLogAdapter implements LogAdapter, Plugin {
 			default:
 				return;
 			}
-			//From Apache Common Logging 1.1.1
+			// From Apache Common Logging 1.1.1
 			Throwable dummyException = new Throwable();
-            StackTraceElement locations[] = dummyException.getStackTrace();
-            String cname = "unknown";
-            String method = "unknown";
-            if( locations != null && locations.length > 2 ) {
-                StackTraceElement caller = locations[2];
-                cname = caller.getClassName();
-                method = caller.getMethodName();
-            }
-            if( t == null )
-            	jdkLogger.logp( level, cname, method, String.valueOf(message) );
-            else 
-            	jdkLogger.logp( level, cname, method, String.valueOf(message), t );
+			StackTraceElement locations[] = dummyException.getStackTrace();
+			String cname = "unknown";
+			String method = "unknown";
+			if (locations != null && locations.length > 2) {
+				StackTraceElement caller = locations[2];
+				cname = caller.getClassName();
+				method = caller.getMethodName();
+			}
+			if (t == null)
+				jdkLogger.logp(level, cname, method, String.valueOf(message));
+			else
+				jdkLogger.logp(level, cname, method, String.valueOf(message), t);
 		}
 	}
 

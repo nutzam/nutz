@@ -14,7 +14,8 @@ public class MethodBorning<T> implements Borning<T> {
 	public T born(Object[] args) {
 		try {
 			return (T) method.invoke(null, args);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, method.getDeclaringClass(), args);
 		}
 	}

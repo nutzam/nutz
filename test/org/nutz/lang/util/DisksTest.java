@@ -15,6 +15,5 @@ public class DisksTest {
 	public void test_get_relative_path() {
 		assertEquals("../abc.gif", Disks.getRelativePath("D:/dir/sub/uu.txt", "D:/dir/abc.gif"));
 	}
-	
 
 }

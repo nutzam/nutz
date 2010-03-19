@@ -20,9 +20,13 @@ public class InjectBySetter implements Injecting {
 		try {
 			v = Castors.me().castTo(value, valueType);
 			setter.invoke(obj, v);
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set '%s' by setter %s.'%s()' because: %s", v, setter
-					.getDeclaringClass().getName(), setter.getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to set '%s' by setter %s.'%s()' because: %s",
+									v,
+									setter.getDeclaringClass().getName(),
+									setter.getName(),
+									e.getMessage());
 		}
 	}
 

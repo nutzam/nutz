@@ -248,9 +248,11 @@ public abstract class Lang {
 			while (-1 != (c = reader.read()))
 				sb.append((char) c);
 			return sb.toString();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			Streams.safeClose(reader);
 		}
 	}
@@ -267,9 +269,11 @@ public abstract class Lang {
 		try {
 			writer.write(str);
 			writer.flush();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			Streams.safeClose(writer);
 		}
 	}
@@ -377,7 +381,8 @@ public abstract class Lang {
 				arr[i + 1] = eles[i];
 			}
 			return arr;
-		} catch (NegativeArraySizeException e1) {
+		}
+		catch (NegativeArraySizeException e1) {
 			throw Lang.wrapThrow(e1);
 		}
 	}
@@ -405,7 +410,8 @@ public abstract class Lang {
 			}
 			arr[eles.length] = e;
 			return arr;
-		} catch (NegativeArraySizeException e1) {
+		}
+		catch (NegativeArraySizeException e1) {
 			throw Lang.wrapThrow(e1);
 		}
 	}
@@ -614,7 +620,8 @@ public abstract class Lang {
 		List<E> list;
 		try {
 			list = (null == classOfList ? new ArrayList<E>(coll.size()) : classOfList.newInstance());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 		for (Iterator<E> it = coll.iterator(); it.hasNext();) {
@@ -691,7 +698,8 @@ public abstract class Lang {
 		Map<Object, Object> map;
 		try {
 			map = mapClass.newInstance();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			map = new HashMap<Object, Object>();
 		}
 		if (!mapClass.isAssignableFrom(map.getClass())) {
@@ -767,7 +775,8 @@ public abstract class Lang {
 				map = (Map) toType.newInstance();
 				map.putAll(src);
 				return (T) map;
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw new FailToCastObjectException("target type fail to born!", e);
 			}
 
@@ -840,7 +849,8 @@ public abstract class Lang {
 		}
 		try {
 			return (Integer) Mirror.me(obj.getClass()).invoke(obj, "length");
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		return 1;
 	}
 
@@ -923,7 +933,8 @@ public abstract class Lang {
 				for (int i = 0; i < len; i++)
 					try {
 						callback.invoke(i, (T) Array.get(obj, i), len);
-					} catch (ExitLoop e) {
+					}
+					catch (ExitLoop e) {
 						break;
 					}
 			} else if (obj instanceof Collection) {
@@ -932,7 +943,8 @@ public abstract class Lang {
 				for (Iterator<T> it = ((Collection) obj).iterator(); it.hasNext();)
 					try {
 						callback.invoke(i++, it.next(), len);
-					} catch (ExitLoop e) {
+					}
+					catch (ExitLoop e) {
 						break;
 					}
 			} else if (obj instanceof Map) {
@@ -943,7 +955,8 @@ public abstract class Lang {
 					for (Object v : map.entrySet())
 						try {
 							callback.invoke(i++, (T) v, len);
-						} catch (ExitLoop e) {
+						}
+						catch (ExitLoop e) {
 							break;
 						}
 
@@ -951,15 +964,18 @@ public abstract class Lang {
 					for (Object v : map.entrySet())
 						try {
 							callback.invoke(i++, (T) ((Entry) v).getValue(), len);
-						} catch (ExitLoop e) {
+						}
+						catch (ExitLoop e) {
 							break;
 						}
 				}
 			} else
 				try {
 					callback.invoke(0, (T) obj, 1);
-				} catch (ExitLoop e) {}
-		} catch (LoopException e) {
+				}
+				catch (ExitLoop e) {}
+		}
+		catch (LoopException e) {
 			throw Lang.wrapThrow(e.getCause());
 		}
 	}
@@ -1016,15 +1032,18 @@ public abstract class Lang {
 	public static DocumentBuilder xmls() throws ParserConfigurationException {
 		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
 	}
-	
+
 	/**
 	 * 对Thread.sleep(long)的简单封装,不抛出任何异常
-	 * @param millisecond 休眠时间
+	 * 
+	 * @param millisecond
+	 *            休眠时间
 	 */
-	public void quiteSleep(long millisecond){
+	public void quiteSleep(long millisecond) {
 		try {
 			if (millisecond > 0)
 				Thread.sleep(millisecond);
-		} catch (Throwable e) {}
+		}
+		catch (Throwable e) {}
 	}
 }

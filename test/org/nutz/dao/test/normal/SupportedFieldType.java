@@ -112,8 +112,9 @@ public class SupportedFieldType extends DaoCase {
 
 	@Test
 	public void insert_char_field() {
-		dao.insert(EntityTypes.class, Chain.make("char_p", 't').add("char_obj",
-				Character.valueOf('O')).add("name", "ABC"));
+		dao.insert(EntityTypes.class, Chain	.make("char_p", 't')
+											.add("char_obj", Character.valueOf('O'))
+											.add("name", "ABC"));
 		EntityTypes et = dao.fetch(EntityTypes.class);
 		assertEquals('t', et.char_p);
 		assertEquals('O', et.char_obj.charValue());
@@ -199,8 +200,10 @@ public class SupportedFieldType extends DaoCase {
 					continue;
 			}
 			if (!expValue.equals(ttValue))
-				throw Lang.makeThrow("'%s' expect [%s] but it was [%s]", f.getName(), expValue,
-						ttValue);
+				throw Lang.makeThrow(	"'%s' expect [%s] but it was [%s]",
+										f.getName(),
+										expValue,
+										ttValue);
 		}
 		assertTrue(true);
 	}

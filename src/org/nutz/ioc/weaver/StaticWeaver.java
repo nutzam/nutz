@@ -12,16 +12,16 @@ import org.nutz.log.Logs;
 public class StaticWeaver extends DynamicWeaver {
 
 	private static final Log log = Logs.getLog(StaticWeaver.class);
-	
+
 	private Object obj;
-	
+
 	private boolean inited = false;
-	
+
 	public void setObj(Object obj) {
 		this.obj = obj;
 		inited = true;
 	}
-	
+
 	public void depose() {
 		if (null != depose) {
 			if (log.isDebugEnabled())
@@ -34,9 +34,9 @@ public class StaticWeaver extends DynamicWeaver {
 		} else if (log.isDebugEnabled())
 			log.debug("\t >> Nothing need to do");
 	}
-	
+
 	public Object weave(IocMaking ing) {
-		if(inited == false)
+		if (inited == false)
 			setObj(super.weave(ing));
 		return obj;
 	}

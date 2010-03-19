@@ -23,8 +23,8 @@ public class JsonCharsetTest {
 	@Test
 	public void test_zh_CN_from_file() throws Exception {
 		Reader reader = Streams.fileInr("org/nutz/json/zh_CN.txt");
-		Map<String,String> map = (Map<String,String>)Json.fromJson(reader);
-		assertEquals("张",map.get("name"));
+		Map<String, String> map = (Map<String, String>) Json.fromJson(reader);
+		assertEquals("张", map.get("name"));
 	}
 
 }

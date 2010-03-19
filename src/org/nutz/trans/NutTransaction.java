@@ -43,7 +43,8 @@ public class NutTransaction extends Transaction {
 				// 恢复旧的事务级别
 				if (p.conn.getTransactionIsolation() != p.oldLevel)
 					p.conn.setTransactionIsolation(p.oldLevel);
-			} catch (SQLException e) {
+			}
+			catch (SQLException e) {
 				ce.add(e);
 			}
 		}
@@ -81,10 +82,13 @@ public class NutTransaction extends Transaction {
 				if (!p.conn.isClosed())
 					if (p.conn.getTransactionIsolation() != p.oldLevel)
 						p.conn.setTransactionIsolation(p.oldLevel);
-			} catch (Throwable e) {} finally {
+			}
+			catch (Throwable e) {}
+			finally {
 				try {
 					p.conn.close();
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					ce.add(e);
 				}
 			}
@@ -98,7 +102,8 @@ public class NutTransaction extends Transaction {
 		for (Pair p : list) {
 			try {
 				p.conn.rollback();
-			} catch (Throwable e) {}
+			}
+			catch (Throwable e) {}
 		}
 	}
 

@@ -14,15 +14,17 @@ public class CustomizedFieldNameTest extends DaoCase {
 	public void test_insert_update_chain_with_another_column_name() {
 		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/killer.dod"));
 
-		dao.insert(Killer.class, Chain.make("name", "Peter Zhang").add("lastKillName", "xh").add(
-				"killedCount", 1));
+		dao.insert(Killer.class, Chain	.make("name", "Peter Zhang")
+										.add("lastKillName", "xh")
+										.add("killedCount", 1));
 		Killer zzh = dao.fetch(Killer.class);
 		assertEquals("Peter Zhang", zzh.getName());
 		assertEquals("xh", zzh.getLastKillName());
 		assertEquals(1, zzh.getKilledCount());
 
-		dao.update(Killer.class, Chain.make("lastKillName", "lw").add("killedCount", 2), Cnd.where(
-				"id", "=", zzh.getId()));
+		dao.update(	Killer.class,
+					Chain.make("lastKillName", "lw").add("killedCount", 2),
+					Cnd.where("id", "=", zzh.getId()));
 		zzh = dao.fetch(Killer.class);
 		assertEquals("Peter Zhang", zzh.getName());
 		assertEquals("lw", zzh.getLastKillName());

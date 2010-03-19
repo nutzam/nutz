@@ -18,7 +18,8 @@ public class StaticFunctionNode extends ChainNode {
 			if (null == args || args.length == 0) {
 				try {
 					method = mirror.getGetter(name);
-				} catch (NoSuchMethodException e) {
+				}
+				catch (NoSuchMethodException e) {
 					throw Lang.makeThrow("Method '%s' don't find in '%s'", name, mirror);
 				}
 			} else {
@@ -30,7 +31,8 @@ public class StaticFunctionNode extends ChainNode {
 				if (!Modifier.isStatic(method.getModifiers()))
 					throw Lang.makeThrow("Method '%s' of '%s' must be static", name, mirror);
 			}
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -52,7 +54,10 @@ public class StaticFunctionNode extends ChainNode {
 			for (int i = 1; i < args.length; i++)
 				sb.append(", ").append(args[i].toString());
 		}
-		return String.format("%s.%s(%s)", method.getDeclaringClass().getName(), method.getName(), sb);
+		return String.format(	"%s.%s(%s)",
+								method.getDeclaringClass().getName(),
+								method.getName(),
+								sb);
 	}
 
 }

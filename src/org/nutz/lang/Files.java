@@ -70,7 +70,8 @@ public abstract class Files {
 			f = new File(path);
 			try {
 				Files.createNewFile(f);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
@@ -94,7 +95,8 @@ public abstract class Files {
 			if (!f.exists())
 				Files.createNewFile(f);
 			Lang.writeAll(Streams.fileOutw(f), content.toString());
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -241,7 +243,8 @@ public abstract class Files {
 			return null;
 		try {
 			path = URLDecoder.decode(path, Charset.defaultCharset().name());
-		} catch (UnsupportedEncodingException e) {}
+		}
+		catch (UnsupportedEncodingException e) {}
 		File f = new File(path);
 		if (!f.exists()) {
 			f = null;
@@ -256,7 +259,8 @@ public abstract class Files {
 			if (null != url) {
 				try {
 					f = new File(URLDecoder.decode(url.getPath(), enc));
-				} catch (UnsupportedEncodingException e) {
+				}
+				catch (UnsupportedEncodingException e) {
 					f = null;
 				}
 			}
@@ -320,7 +324,8 @@ public abstract class Files {
 		if (f.exists())
 			try {
 				return new FileInputStream(f);
-			} catch (FileNotFoundException e1) {
+			}
+			catch (FileNotFoundException e1) {
 				return null;
 			}
 		if (null != klass) {
@@ -593,7 +598,8 @@ public abstract class Files {
 				return false;
 			try {
 				Files.makeDir(newFile.getParentFile());
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				return false;
 			}
 			return src.renameTo(newFile);
@@ -640,9 +646,11 @@ public abstract class Files {
 			ins1 = new BufferedInputStream(new FileInputStream(f1));
 			ins2 = new BufferedInputStream(new FileInputStream(f2));
 			return Streams.equals(ins1, ins2);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return false;
-		} finally {
+		}
+		finally {
 			Streams.safeClose(ins1);
 			Streams.safeClose(ins2);
 		}

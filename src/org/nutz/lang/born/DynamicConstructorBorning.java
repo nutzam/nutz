@@ -15,7 +15,8 @@ public class DynamicConstructorBorning<T> implements Borning<T> {
 	public T born(Object[] args) {
 		try {
 			return c.newInstance(Mirror.evalArgToRealArray(args));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, c.getDeclaringClass(), args);
 		}
 	}

@@ -11,7 +11,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Tank;
 
 public class DynamicEntityParsing extends DaoCase {
-	
+
 	@Test
 	public void tank_many_many_link_test() {
 		pojos.initPlatoon(1);

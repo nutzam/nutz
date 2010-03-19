@@ -106,8 +106,8 @@ public class Invoking {
 						invoker = new DefaultInvoker(m, args);
 						break;
 					} else if (MatchType.LACK == mr) {
-						invoker = new DefaultInvoker(m, Lang.arrayLast(args, Mirror
-								.blankArrayArg(pts)));
+						invoker = new DefaultInvoker(m, Lang.arrayLast(	args,
+																		Mirror.blankArrayArg(pts)));
 						break;
 					} else if (null != dynaArg && pts.length == 1 && pts[0] == dynaArg.getClass()) {
 						invoker = new DynamicArgsInvoker(m, dynaArg);
@@ -129,18 +129,24 @@ public class Invoking {
 								invoker = new DefaultInvoker(m, Lang.array2ObjectArray(args, pts));
 							}
 						}
-					} catch (Exception e) {}
+					}
+					catch (Exception e) {}
 				// to same length + last is dynamic
 				// argument method
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 		if (null == invoker)
-			throw new InvokingException("Don't know how to invoke [%s].%s() by args:\n %s", type
-					.getName(), methodName, Lang.concat('\n', args));
-		msg = format("Fail to invoke [%s].%s() by args:\n %s", type.getName(), methodName, Lang
-				.concat('\n', args))
+			throw new InvokingException("Don't know how to invoke [%s].%s() by args:\n %s",
+										type.getName(),
+										methodName,
+										Lang.concat('\n', args));
+		msg = format(	"Fail to invoke [%s].%s() by args:\n %s",
+						type.getName(),
+						methodName,
+						Lang.concat('\n', args))
 				+ "\nFor the reason: %s";
 	}
 
@@ -150,7 +156,8 @@ public class Invoking {
 	public Object invoke(Object obj) {
 		try {
 			return invoker.invoke(obj);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new InvokingException(msg, e.getMessage());
 		}
 	}

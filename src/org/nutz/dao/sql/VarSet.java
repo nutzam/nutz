@@ -6,8 +6,8 @@ import java.util.Set;
 public interface VarSet {
 
 	VarSet set(String name, Object value);
-	
-	VarSet putAll(Map<String,Object> map);
+
+	VarSet putAll(Map<String, Object> map);
 
 	Object get(String name);
 

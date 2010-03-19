@@ -23,24 +23,28 @@ public class UpdateTest extends DaoCase {
 	@Test
 	public void batch_update_all() {
 		dao.update(Fighter.class, Chain.make("type", Fighter.TYPE.SU_35.name()), null);
-		assertEquals(13, dao
-				.count(Fighter.class, Cnd.where("type", "=", Fighter.TYPE.SU_35.name())));
+		assertEquals(	13,
+						dao.count(Fighter.class, Cnd.where("type", "=", Fighter.TYPE.SU_35.name())));
 	}
 
 	@Test
 	public void batch_update_partly() {
-		int re = dao.update(Fighter.class, Chain.make("type", "F15"), Cnd.where("type", "=", "SU_35"));
-		assertEquals(1,re);
+		int re = dao.update(Fighter.class, Chain.make("type", "F15"), Cnd.where("type",
+																				"=",
+																				"SU_35"));
+		assertEquals(1, re);
 		int maxId = dao.getMaxId(Fighter.class);
-		re = dao.update(Fighter.class, Chain.make("type", "UFO"), Cnd.where("id", ">", maxId-5));
-		assertEquals(5,re);
+		re = dao.update(Fighter.class, Chain.make("type", "UFO"), Cnd.where("id", ">", maxId - 5));
+		assertEquals(5, re);
 		assertEquals(re, dao.count(Fighter.class, Cnd.where("type", "=", "UFO")));
 	}
 
 	@Test
 	public void batch_update_relation() {
-		dao.updateRelation(Fighter.class, "base", Chain.make("bname", "blue"), Cnd.where("bname",
-				"=", "red"));
+		dao.updateRelation(	Fighter.class,
+							"base",
+							Chain.make("bname", "blue"),
+							Cnd.where("bname", "=", "red"));
 		assertEquals(13, dao.count("dao_m_base_fighter", Cnd.where("bname", "=", "blue")));
 	}
 

@@ -296,8 +296,8 @@ public class SimpleNode<T> implements Node<T> {
 	}
 
 	static void appendTo(Node<?> node, StringBuilder sb, int depth) {
-		sb.append(Strings.dup("    ", depth)).append(
-				node.get() == null ? "NULL" : node.get().toString());
+		sb	.append(Strings.dup("    ", depth))
+			.append(node.get() == null ? "NULL" : node.get().toString());
 		Node<?> chd = node.firstChild();
 		while (chd != null) {
 			sb.append('\n');

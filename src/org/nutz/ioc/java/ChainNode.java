@@ -25,7 +25,8 @@ public abstract class ChainNode {
 			if (null == next)
 				return v;
 			return next.eval(ing, v);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

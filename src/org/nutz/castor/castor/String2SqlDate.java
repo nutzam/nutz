@@ -10,7 +10,8 @@ public class String2SqlDate extends DateTimeCastor<String, java.sql.Date> {
 	public java.sql.Date cast(String src, Class<?> toType, String... args) {
 		try {
 			return new java.sql.Date(dateFormat.parse(src).getTime());
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

@@ -30,8 +30,9 @@ public class JsonInjector implements ParamInjector {
 			return Lang.map2Object((Map<?, ?>) refer, type);
 		Object map = ((Map<?, ?>) refer).get(name);
 		if (!(map instanceof Map<?, ?>))
-			throw Lang.makeThrow("Wrong JSON string,  '%s' should be another map!: \n %s", name,
-					Json.toJson(refer, JsonFormat.nice()));
+			throw Lang.makeThrow(	"Wrong JSON string,  '%s' should be another map!: \n %s",
+									name,
+									Json.toJson(refer, JsonFormat.nice()));
 		return Lang.map2Object((Map<?, ?>) map, type);
 	}
 

@@ -19,9 +19,13 @@ public class InjectByField implements Injecting {
 		try {
 			v = Castors.me().castTo(value, field.getType());
 			field.set(obj, v);
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to set '%s' to field %s.'%s' because: %s", v, field
-					.getDeclaringClass().getName(), field.getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to set '%s' to field %s.'%s' because: %s",
+									v,
+									field.getDeclaringClass().getName(),
+									field.getName(),
+									e.getMessage());
 		}
 	}
 }

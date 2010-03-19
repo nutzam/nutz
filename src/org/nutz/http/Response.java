@@ -72,7 +72,8 @@ public class Response {
 	public Reader getReader() {
 		try {
 			return new InputStreamReader(getStream(), "UTF-8");
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -84,7 +85,8 @@ public class Response {
 	public void printHeader(Writer writer) {
 		try {
 			writer.write(header.toString());
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -97,7 +99,8 @@ public class Response {
 			while (-1 != (c = reader.read())) {
 				writer.write(c);
 			}
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 

@@ -19,9 +19,12 @@ public class Number2Enum extends Castor<Number, Enum> {
 						return em;
 				}
 			}
-			throw Lang.makeThrow(FailToCastObjectException.class, "Can NO find enum value in [%s] by int value '%d'",
-					toType.getName(), src.intValue());
-		} catch (Exception e) {
+			throw Lang.makeThrow(	FailToCastObjectException.class,
+									"Can NO find enum value in [%s] by int value '%d'",
+									toType.getName(),
+									src.intValue());
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e, FailToCastObjectException.class);
 		}
 	}

@@ -8,7 +8,7 @@ public class InvokingException extends RuntimeException {
 	public InvokingException(Exception e, Class<?> klass, String methodName, Object[] args) {
 		super(makeMessage(e, klass, methodName, args));
 	}
-	
+
 	public InvokingException(String format, Object... args) {
 		super(format(format, args));
 	}

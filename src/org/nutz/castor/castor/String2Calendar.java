@@ -12,7 +12,8 @@ public class String2Calendar extends DateTimeCastor<String, Calendar> {
 		Calendar c = Calendar.getInstance();
 		try {
 			c.setTime(dateTimeFormat.parse(src));
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw Lang.wrapThrow(e);
 		}
 		return c;

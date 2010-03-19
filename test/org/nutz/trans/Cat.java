@@ -54,7 +54,7 @@ public class Cat {
 		c.setMaster(m);
 		return c;
 	}
-	
+
 	public static Cat create(String name) {
 		Cat c = new Cat();
 		c.setName(name);

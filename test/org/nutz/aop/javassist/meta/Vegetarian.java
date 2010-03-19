@@ -41,8 +41,8 @@ public class Vegetarian {
 	}
 
 	private void privateMethod() {}
-	
-	public String[] returnArrayMethod(){
-		return Lang.array("A","B","C");
+
+	public String[] returnArrayMethod() {
+		return Lang.array("A", "B", "C");
 	}
 }

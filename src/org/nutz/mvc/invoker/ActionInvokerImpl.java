@@ -78,10 +78,11 @@ public class ActionInvokerImpl implements ActionInvoker {
 		else
 			try {
 				module = moduleType.newInstance();
-			} catch (Exception e) {
-				throw Lang.makeThrow(
-						"Class '%s' should has a accessible default constructor : '%s'", moduleType
-								.getName(), e.getMessage());
+			}
+			catch (Exception e) {
+				throw Lang.makeThrow(	"Class '%s' should has a accessible default constructor : '%s'",
+										moduleType.getName(),
+										e.getMessage());
 			}
 	}
 
@@ -121,7 +122,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 			} else {
 				adaptor = new PairAdaptor();
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 		adaptor.init(method);
@@ -133,8 +135,9 @@ public class ActionInvokerImpl implements ActionInvoker {
 		 */
 		if (null != ioc && null != args && args.length == 1 && !Strings.isBlank(args[0])) {
 			int pos = args[0].indexOf(':');
-			if (pos == 3 && pos < (args[0].length() - 1)
-					&& "ioc".equalsIgnoreCase(args[0].substring(0, pos))) {
+			if (pos == 3
+				&& pos < (args[0].length() - 1)
+				&& "ioc".equalsIgnoreCase(args[0].substring(0, pos))) {
 				String name = args[0].substring(pos + 1);
 				return ioc.get(type, name);
 			}
@@ -174,7 +177,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 		// setup the charset
 		try {
 			req.setCharacterEncoding(inputCharset);
-		} catch (UnsupportedEncodingException e3) {
+		}
+		catch (UnsupportedEncodingException e3) {
 			throw Lang.wrapThrow(e3);
 		}
 		resp.setCharacterEncoding(outputCharset);
@@ -186,7 +190,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 				if (null != view) {
 					try {
 						view.render(req, resp, null);
-					} catch (Throwable e) {
+					}
+					catch (Throwable e) {
 						throw Lang.wrapThrow(e);
 					}
 					return;
@@ -204,9 +209,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 			} else {
 				Ioc ioc = Mvcs.getIoc(req);
 				if (null == ioc)
-					throw Lang.makeThrow(
-							"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
-							module);
+					throw Lang.makeThrow(	"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
+											module);
 				/*
 				 * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
 				 */
@@ -239,8 +243,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 				e = e.getCause();
 			// 打印 Log
 			if (log.isWarnEnabled()) {
-				log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName() : e
-						.getMessage());
+				log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName()
+														: e.getMessage());
 			}
 
 			try {

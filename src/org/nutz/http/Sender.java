@@ -41,7 +41,7 @@ public abstract class Sender {
 
 	protected Response createResponse(Map<String, String> reHeaders) throws IOException {
 		Response rep = null;
-		if(reHeaders != null && reHeaders.get(null) != null){
+		if (reHeaders != null && reHeaders.get(null) != null) {
 			rep = new Response(reHeaders);
 			if (rep.isOK()) {
 				InputStream ins = new BufferedInputStream(conn.getInputStream());

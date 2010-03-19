@@ -19,10 +19,10 @@ public class GetSender extends Sender {
 			setupDoInputOutputFlag();
 			return createResponse(getResponseHeader());
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new HttpException(request.getUrl().toString(), e);
 		}
 	}
-
 
 }

@@ -24,7 +24,7 @@ public class DynamicOne extends DaoCase {
 
 	@Override
 	protected void after() {
-		Platoon p = dao.fetch(Platoon.class,"seals");
+		Platoon p = dao.fetch(Platoon.class, "seals");
 		pojos.dropPlatoon(p.getId());
 	}
 

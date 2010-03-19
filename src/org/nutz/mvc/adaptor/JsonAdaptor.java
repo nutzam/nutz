@@ -24,7 +24,8 @@ public class JsonAdaptor extends AbstractAdaptor {
 		String str;
 		try {
 			str = Lang.readAll(new InputStreamReader(request.getInputStream(), "UTF-8"));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 		Map<String, Object> map = Lang.map(str);

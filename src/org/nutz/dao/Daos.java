@@ -36,7 +36,8 @@ public class Daos {
 			else
 				conn = dataSource.getConnection();
 			return ConnectionHolder.make(trans, conn);
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			throw Lang.makeThrow("Could not get JDBC Connection : %s", e.getMessage());
 		}
 	}
@@ -50,7 +51,8 @@ public class Daos {
 	public static void releaseConnection(ConnectionHolder ch) {
 		try {
 			ch.close();
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -98,14 +100,16 @@ public class Daos {
 		if (null != stat)
 			try {
 				stat.close();
-			} catch (Throwable e) {}
+			}
+			catch (Throwable e) {}
 	}
 
 	public static void safeClose(ResultSet rs) {
 		if (null != rs)
 			try {
 				rs.close();
-			} catch (Throwable e) {}
+			}
+			catch (Throwable e) {}
 	}
 
 }

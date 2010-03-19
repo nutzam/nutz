@@ -140,5 +140,4 @@ public class MultiLineProperties implements Map<String, String> {
 		return maps.get(key);
 	}
 
-
 }

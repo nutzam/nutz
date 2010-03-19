@@ -26,7 +26,8 @@ public class Nutzs {
 			try {
 				pp = new Properties();
 				pp.load(new FileInputStream(Files.findFile("nutz-test.properties")));
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
 	}
@@ -63,7 +64,8 @@ public class Nutzs {
 						nut = new NutIoc(new JsonLoader(key));
 						nuts.put(key, nut);
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					throw Lang.wrapThrow(e);
 				}
 			}

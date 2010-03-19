@@ -22,7 +22,8 @@ class InsertManyManyInvoker extends InsertInvoker {
 					Exception failInsert = null;
 					try {
 						dao.insert(ta);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						ta = dao.fetch(ta);
 						failInsert = e;
 					}

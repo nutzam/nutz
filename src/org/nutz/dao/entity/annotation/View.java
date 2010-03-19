@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
  * @see org.nutz.dao.entity.annotation.Table
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface View {
 	String value();
 }

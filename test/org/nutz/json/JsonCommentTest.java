@@ -55,8 +55,8 @@ public class JsonCommentTest {
 
 	@Test
 	public void testMap() throws FileNotFoundException {
-		Map<?, ?> map = Json.fromJson(HashMap.class, 
-				new InputStreamReader(getClass().getResourceAsStream("/org/nutz/json/cmt-map.txt")));
+		Map<?, ?> map = Json.fromJson(	HashMap.class,
+										new InputStreamReader(getClass().getResourceAsStream("/org/nutz/json/cmt-map.txt")));
 		assertEquals(34, map.get("A"));
 		assertEquals("XYZ", map.get("B"));
 		List<?> arr = (List<?>) map.get("arr");

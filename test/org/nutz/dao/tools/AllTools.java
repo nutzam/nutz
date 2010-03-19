@@ -6,5 +6,5 @@ import org.nutz.dao.tools.impl.DTableProcessingTest;
 import org.nutz.dao.tools.impl.NutDTableParserTest;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( { NutDTableParserTest.class ,DTableProcessingTest.class})
+@Suite.SuiteClasses({NutDTableParserTest.class, DTableProcessingTest.class})
 public class AllTools {}

@@ -34,7 +34,8 @@ public class NutDTableParserTest {
 
 	@Test
 	public void test_simple_string() {
-		DTable dt = FT("pet{id INT +PK, name VARCHAR(20) !UNIQUE ," + " age INT <30> , color CHAR(10) ! <'red'>}");
+		DTable dt = FT("pet{id INT +PK, name VARCHAR(20) !UNIQUE ,"
+						+ " age INT <30> , color CHAR(10) ! <'red'>}");
 		List<DField> fields = dt.getFields();
 		assertEquals(4, fields.size());
 		// id

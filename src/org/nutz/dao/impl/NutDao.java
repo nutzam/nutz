@@ -86,8 +86,7 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkIdField(Entity<T> en) {
 		EntityField idField = en.getIdField();
 		if (idField == null) {
-			throw Lang
-					.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
+			throw Lang.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
 		}
 		return idField;
 	}
@@ -95,8 +94,9 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkNameField(Entity<T> en) {
 		EntityField nameField = en.getNameField();
 		if (nameField == null) {
-			throw Lang.makeThrow("Entity<T> [%s] need @Name field", en.getMirror().getType()
-					.getName());
+			throw Lang.makeThrow("Entity<T> [%s] need @Name field", en	.getMirror()
+																		.getType()
+																		.getName());
 		}
 		return nameField;
 	}
@@ -107,8 +107,10 @@ public class NutDao implements Dao {
 		if (null == entity.getPkFields())
 			throw Lang.makeThrow("Entity<%s> need @PK", entity.getType());
 		if (entity.getPkFields().length != values.length)
-			throw Lang.makeThrow("fetchx(%s), expect %d values, but you give %d", entity.getType(),
-					entity.getPkFields().length, values.length);
+			throw Lang.makeThrow(	"fetchx(%s), expect %d values, but you give %d",
+									entity.getType(),
+									entity.getPkFields().length,
+									values.length);
 	}
 
 	/* ========================================================== */
@@ -227,15 +229,18 @@ public class NutDao implements Dao {
 		ConnectionHolder ch = Daos.getConnection(getDataSource());
 		try {
 			ch.invoke(callback);
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			try {
 				ch.rollback();
-			} catch (SQLException e1) {}
+			}
+			catch (SQLException e1) {}
 			if (e instanceof RuntimeException)
 				throw (RuntimeException) e;
 			else
 				throw new RuntimeException(e);
-		} finally {
+		}
+		finally {
 			Daos.releaseConnection(ch);
 		}
 	}
@@ -305,8 +310,8 @@ public class NutDao implements Dao {
 							if (link.getReferField() == null) {
 								dao.clear(link.getTargetClass(), null);
 							} else {
-								Object value = entity.getMirror().getValue(obj,
-										link.getReferField());
+								Object value = entity.getMirror().getValue(	obj,
+																			link.getReferField());
 								Entity<?> ta = dao.getEntity(link.getTargetClass());
 								Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
 								dao.execute(sql);
@@ -317,7 +322,8 @@ public class NutDao implements Dao {
 						void walk(Link link) {
 							Object value = entity.getMirror().getValue(obj, link.getReferField());
 							Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
-									link.getFrom(), link.getFrom());
+																	link.getFrom(),
+																	link.getFrom());
 							sql.params().set(link.getFrom(), value);
 							dao.execute(sql);
 						}
@@ -377,8 +383,10 @@ public class NutDao implements Dao {
 				String name = idnf.getValue(obj).toString();
 				delete(obj.getClass(), name);
 			} else {
-				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)",
-						new Exception("Wrong identified field"));
+				throw DaoException.create(	obj,
+											"$IdentifiedField",
+											"delete(Object obj)",
+											new Exception("Wrong identified field"));
 			}
 		}
 	}
@@ -500,9 +508,8 @@ public class NutDao implements Dao {
 				if (null != args) {
 					sql = sqlMaker.fetchx(entity, args);
 				} else {
-					throw new DaoException(format(
-							"Entity <%s> need @Id or @Name or @PK to identify fetch operation!",
-							entity.getType().getName()));
+					throw new DaoException(format(	"Entity <%s> need @Id or @Name or @PK to identify fetch operation!",
+													entity.getType().getName()));
 				}
 			} else {
 				sql = sqlMaker.fetch(entity, idnf);
@@ -531,8 +538,12 @@ public class NutDao implements Dao {
 						c = new ManyCondition(link, value);
 					}
 					List<?> list = query(link.getTargetClass(), c, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
-							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me()
+																	.cast(	list,
+																			list.getClass(),
+																			link.getOwnField()
+																				.getType(),
+																			link.getMapKeyField()));
 				}
 			});
 			// ManyMany
@@ -540,8 +551,12 @@ public class NutDao implements Dao {
 				void walk(Link link) {
 					ManyManyCondition mmc = new ManyManyCondition(dao, link, obj);
 					List<?> list = query(link.getTargetClass(), mmc, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me().cast(list,
-							list.getClass(), link.getOwnField().getType(), link.getMapKeyField()));
+					mirror.setValue(obj, link.getOwnField(), Castors.me()
+																	.cast(	list,
+																			list.getClass(),
+																			link.getOwnField()
+																				.getType(),
+																			link.getMapKeyField()));
 				}
 			});
 			// one
@@ -580,7 +595,8 @@ public class NutDao implements Dao {
 							}
 						});
 						en = re.get(0);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						throw Lang.wrapThrow(e, "Fail to make entity '%s'!", classOfT);
 					}
 
@@ -782,8 +798,8 @@ public class NutDao implements Dao {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
 					void walk(Link link) {
-						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain, null)
-								.setCondition(condition);
+						Sql sql = sqlMaker	.updateBatch(link.getRelation(), chain, null)
+											.setCondition(condition);
 						execute(sql);
 						re[0] += sql.getUpdateCount();
 					}
@@ -839,7 +855,9 @@ public class NutDao implements Dao {
 					rs = stat.executeQuery(sql);
 					if (rs.next())
 						ee[0] = true;
-				} catch (SQLException e) {} finally {
+				}
+				catch (SQLException e) {}
+				finally {
 					Daos.safeClose(stat, rs);
 				}
 			}

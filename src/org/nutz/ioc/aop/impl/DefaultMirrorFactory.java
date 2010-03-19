@@ -37,7 +37,8 @@ public class DefaultMirrorFactory implements MirrorFactory {
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
 		try {
 			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
-		} catch (ClassNotFoundException e) {}
+		}
+		catch (ClassNotFoundException e) {}
 		Mirror<T> mirror = Mirror.me(type);
 		List<Method> aops = this.getAopMethod(mirror);
 		if (aops.size() < 1)

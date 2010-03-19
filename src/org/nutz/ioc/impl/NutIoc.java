@@ -138,7 +138,7 @@ public class NutIoc implements Ioc2 {
 	public void depose() {
 		context.depose();
 		if (loader instanceof CachedIocLoader)
-			((CachedIocLoader)loader).clear();
+			((CachedIocLoader) loader).clear();
 		if (log.isDebugEnabled())
 			log.debug("!!!Ioc is deposed, you can't use it anymore");
 	}
@@ -146,7 +146,7 @@ public class NutIoc implements Ioc2 {
 	public void reset() {
 		context.clear();
 		if (loader instanceof CachedIocLoader)
-			((CachedIocLoader)loader).clear();
+			((CachedIocLoader) loader).clear();
 	}
 
 	public String[] getName() {

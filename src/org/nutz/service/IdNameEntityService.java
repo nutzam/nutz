@@ -26,7 +26,8 @@ public abstract class IdNameEntityService<T> extends IdEntityService<T> {
 		try {
 			long id = Long.parseLong(str);
 			return fetch(id);
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		return fetch(str);
 	}
 

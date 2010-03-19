@@ -106,7 +106,9 @@ public class CustomizedSqlsTest extends DaoCase {
 					assertEquals(4, dao.count(Tank.class));
 				}
 			});
-		} catch (SqlNotFoundException e) {} finally {
+		}
+		catch (SqlNotFoundException e) {}
+		finally {
 			pojos.dropPlatoon(platoonId);
 		}
 	}

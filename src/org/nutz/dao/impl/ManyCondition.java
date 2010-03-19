@@ -17,7 +17,7 @@ public class ManyCondition implements Condition {
 
 	public String toSql(Entity<?> entity) {
 		return String.format("%s=%s", entity.getField(link.getTargetField().getName())
-				.getColumnName(), Sqls.formatFieldValue(value));
+											.getColumnName(), Sqls.formatFieldValue(value));
 	}
 
 }

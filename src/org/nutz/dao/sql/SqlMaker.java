@@ -23,8 +23,12 @@ import org.nutz.lang.Strings;
 public class SqlMaker {
 
 	public Sql insert_manymany(Link link) {
-		return Sqls.create(format("INSERT INTO %s (%s,%s) VALUES(@%s,@%s)", link.getRelation(),
-				link.getFrom(), link.getTo(), link.getFrom(), link.getTo()));
+		return Sqls.create(format(	"INSERT INTO %s (%s,%s) VALUES(@%s,@%s)",
+									link.getRelation(),
+									link.getFrom(),
+									link.getTo(),
+									link.getFrom(),
+									link.getTo()));
 	}
 
 	private static String evalActivedFields(Entity<?> en) {
@@ -76,9 +80,10 @@ public class SqlMaker {
 		}
 		fields.deleteCharAt(0);
 		values.deleteCharAt(0);
-		Sql sql = Sqls.create(
-				format("INSERT INTO %s(%s) VALUES(%s)", en.getTableName(), fields, values))
-				.setEntity(en);
+		Sql sql = Sqls.create(format(	"INSERT INTO %s(%s) VALUES(%s)",
+										en.getTableName(),
+										fields,
+										values)).setEntity(en);
 		sql.params().putAll(map);
 		return sql;
 	}
@@ -159,8 +164,11 @@ public class SqlMaker {
 		EntityField idf = en.getIdentifiedField();
 		// 这个 POJO 用的是单一主键
 		if (null != idf) {
-			String fmt = format("UPDATE %s SET %s WHERE %s=@%s", en.getTableName(), sb, idf
-					.getColumnName(), idf.getFieldName());
+			String fmt = format("UPDATE %s SET %s WHERE %s=@%s",
+								en.getTableName(),
+								sb,
+								idf.getColumnName(),
+								idf.getFieldName());
 			Sql sql = Sqls.create(fmt).setEntity(en);
 			sql.params().putAll(map).set(idf.getFieldName(), idf.getValue(obj));
 			return sql;
@@ -170,8 +178,8 @@ public class SqlMaker {
 		EntityField[] pks = en.getPkFields();
 		// 错误检查
 		if (null == pks || pks.length <= 1) {
-			throw Lang.makeThrow("You should define @Id or @Name or @PK for POJO '%s'", en
-					.getType());
+			throw Lang.makeThrow(	"You should define @Id or @Name or @PK for POJO '%s'",
+									en.getType());
 		}
 		// 从 POJO 中获取复合主键的值
 		Object[] args = new Object[pks.length];
@@ -187,9 +195,10 @@ public class SqlMaker {
 	}
 
 	public Sql delete(Entity<?> entity, EntityField ef) {
-		return Sqls.create(
-				format("DELETE FROM %s WHERE %s=@%s", entity.getTableName(), ef.getColumnName(), ef
-						.getFieldName())).setEntity(entity);
+		return Sqls.create(format(	"DELETE FROM %s WHERE %s=@%s",
+									entity.getTableName(),
+									ef.getColumnName(),
+									ef.getFieldName())).setEntity(entity);
 	}
 
 	public Sql deletex(Entity<?> entity, Object[] pks) {
@@ -244,11 +253,17 @@ public class SqlMaker {
 		if (ef == null) {
 			fmt = format("SELECT %s FROM %s $condition", fields, entity.getViewName());
 		} else if (ef.isName() && !ef.isCasesensitive()) {
-			fmt = format("SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)", fields, entity
-					.getViewName(), ef.getColumnName(), ef.getFieldName());
+			fmt = format(	"SELECT %s FROM %s WHERE LOWER(%s)=LOWER(@%s)",
+							fields,
+							entity.getViewName(),
+							ef.getColumnName(),
+							ef.getFieldName());
 		} else {
-			fmt = format("SELECT %s FROM %s WHERE %s=@%s", fields, entity.getViewName(), ef
-					.getColumnName(), ef.getFieldName());
+			fmt = format(	"SELECT %s FROM %s WHERE %s=@%s",
+							fields,
+							entity.getViewName(),
+							ef.getColumnName(),
+							ef.getFieldName());
 		}
 		return Sqls.fetchEntity(fmt).setEntity(entity);
 	}

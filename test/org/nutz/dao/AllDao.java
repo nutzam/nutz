@@ -21,6 +21,12 @@ import org.nutz.dao.tools.AllTools;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AllEntity.class, AllSqls.class, AllMapping.class, AllNormal.class,
-		CndTest.class, ChainTest.class, AllTools.class, SqlLiteralTest.class})
+@Suite.SuiteClasses({	AllEntity.class,
+						AllSqls.class,
+						AllMapping.class,
+						AllNormal.class,
+						CndTest.class,
+						ChainTest.class,
+						AllTools.class,
+						SqlLiteralTest.class})
 public class AllDao {}

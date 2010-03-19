@@ -357,7 +357,8 @@ public class MirrorTest {
 		try {
 			mirror.invoke(base, "setName", (Object[]) null);
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 	}
 
 	class Abcc {

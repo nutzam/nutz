@@ -33,12 +33,12 @@ import org.nutz.plugin.Plugin;
 public class Log4jLogAdapter implements LogAdapter, Plugin {
 
 	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
-	
+
 	public boolean canWork() {
 		try {
-			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread()
-					.getContextClassLoader());
-		} catch (ClassNotFoundException e) {
+			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread().getContextClassLoader());
+		}
+		catch (ClassNotFoundException e) {
 			return false;
 		}
 
@@ -80,8 +80,7 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 	 */
 	final private boolean canFindInLog4jManner(String resourceName) {
 
-		ClassLoader classLoader = Thread.currentThread()
-				.getContextClassLoader();
+		ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
 		if (classLoader.getResource(resourceName) != null)
 			return true;
@@ -93,29 +92,28 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 
 		return (ClassLoader.getSystemResource(resourceName) != null);
 	}
-	
-	public Log getLogger(String className){
+
+	public Log getLogger(String className) {
 		return new Log4JLogger(className);
 	}
-	
-	
-	static class Log4JLogger extends AbstractLog{
+
+	static class Log4JLogger extends AbstractLog {
 
 		public static final String SUPER_FQCN = AbstractLog.class.getName();
 		public static final String SELF_FQCN = Log4JLogger.class.getName();
-		
+
 		private Logger logger;
-		
+
 		private static boolean hasTrace;
-		
-		static{
-			try{
+
+		static {
+			try {
 				Level.class.getDeclaredField("TRACE");
 				hasTrace = true;
-			}catch (Throwable e) {
 			}
+			catch (Throwable e) {}
 		}
-		
+
 		Log4JLogger(String className) {
 			logger = LogManager.getLogger(className);
 			isFatalEnabled = logger.isEnabledFor(Level.FATAL);
@@ -128,59 +126,59 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 		}
 
 		public void debug(Object message, Throwable t) {
-			if(isDebugEnabled())
-				logger.log(SELF_FQCN,Level.DEBUG, message, t);
+			if (isDebugEnabled())
+				logger.log(SELF_FQCN, Level.DEBUG, message, t);
 		}
 
 		public void error(Object message, Throwable t) {
-			if(isErrorEnabled())
-				logger.log(SELF_FQCN,Level.ERROR, message, t);
-			
+			if (isErrorEnabled())
+				logger.log(SELF_FQCN, Level.ERROR, message, t);
+
 		}
 
 		public void fatal(Object message, Throwable t) {
-			if(isFatalEnabled())
-				logger.log(SELF_FQCN,Level.FATAL, message, t);
+			if (isFatalEnabled())
+				logger.log(SELF_FQCN, Level.FATAL, message, t);
 		}
 
 		public void info(Object message, Throwable t) {
-			if(isInfoEnabled())
-				logger.log(SELF_FQCN,Level.INFO, message, t);
+			if (isInfoEnabled())
+				logger.log(SELF_FQCN, Level.INFO, message, t);
 		}
 
 		public void trace(Object message, Throwable t) {
-			if(isTraceEnabled())
-				logger.log(SELF_FQCN,Level.TRACE, message, t);
-			else if( (! hasTrace) && isDebugEnabled())
-				logger.log(SELF_FQCN,Level.DEBUG,message, t);
+			if (isTraceEnabled())
+				logger.log(SELF_FQCN, Level.TRACE, message, t);
+			else if ((!hasTrace) && isDebugEnabled())
+				logger.log(SELF_FQCN, Level.DEBUG, message, t);
 		}
 
 		public void warn(Object message, Throwable t) {
-			if(isWarnEnabled())
-				logger.log(SELF_FQCN,Level.WARN, message, t);
+			if (isWarnEnabled())
+				logger.log(SELF_FQCN, Level.WARN, message, t);
 		}
-		
+
 		@Override
 		protected void log(int level, Object message, Throwable tx) {
 			switch (level) {
 			case LEVEL_FATAL:
-				logger.log(SUPER_FQCN,Level.FATAL, message, tx);
+				logger.log(SUPER_FQCN, Level.FATAL, message, tx);
 				break;
 			case LEVEL_ERROR:
-				logger.log(SUPER_FQCN,Level.ERROR, message, tx);
+				logger.log(SUPER_FQCN, Level.ERROR, message, tx);
 				break;
 			case LEVEL_WARN:
-				logger.log(SUPER_FQCN,Level.WARN, message, tx);
+				logger.log(SUPER_FQCN, Level.WARN, message, tx);
 				break;
 			case LEVEL_INFO:
-				logger.log(SUPER_FQCN,Level.INFO, message, tx);
+				logger.log(SUPER_FQCN, Level.INFO, message, tx);
 				break;
 			case LEVEL_DEBUG:
-				logger.log(SUPER_FQCN,Level.DEBUG, message, tx);
+				logger.log(SUPER_FQCN, Level.DEBUG, message, tx);
 				break;
 			case LEVEL_TRACE:
 				if (hasTrace)
-					logger.log(SUPER_FQCN,Level.TRACE, message, tx);
+					logger.log(SUPER_FQCN, Level.TRACE, message, tx);
 				break;
 			default:
 				break;

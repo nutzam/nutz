@@ -35,14 +35,15 @@ public abstract class Castor<FROM, TO> {
 		Collection coll = null;
 		try {
 			coll = (Collection<Object>) toType.newInstance();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			if (Modifier.isAbstract(toType.getModifiers())
-					&& toType.isAssignableFrom(ArrayList.class)) {
+				&& toType.isAssignableFrom(ArrayList.class)) {
 				coll = new ArrayList<Object>(Array.getLength(src));
 			}
 			if (null == coll)
-				throw new FailToCastObjectException(String.format(
-						"Castors don't know how to implement '%s'", toType.getName()));
+				throw new FailToCastObjectException(String.format(	"Castors don't know how to implement '%s'",
+																	toType.getName()));
 		}
 		return coll;
 	}

@@ -32,8 +32,10 @@ public class ManyMany extends DaoCase {
 		Base b = dao.fetchLinks(dao.fetch(Base.class, "red"), "fighters");
 		dao.deleteLinks(b, "fighters");
 		assertEquals(7, dao.count(Fighter.class));
-		assertEquals(7, dao.count(dao.getEntity(Base.class).getLinks("fighters").get(0)
-				.getRelation()));
+		assertEquals(7, dao.count(dao	.getEntity(Base.class)
+										.getLinks("fighters")
+										.get(0)
+										.getRelation()));
 	}
 
 	@Test
@@ -68,8 +70,10 @@ public class ManyMany extends DaoCase {
 		Base b = dao.fetch(Base.class, "red");
 		dao.clearLinks(b, "fighters");
 		assertEquals(13, dao.count(Fighter.class));
-		assertEquals(7, dao.count(dao.getEntity(Base.class).getLinks("fighters").get(0)
-				.getRelation()));
+		assertEquals(7, dao.count(dao	.getEntity(Base.class)
+										.getLinks("fighters")
+										.get(0)
+										.getRelation()));
 	}
 
 	@Test

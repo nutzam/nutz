@@ -21,11 +21,13 @@ import org.nutz.lang.Streams;
  * 若使用空的拦截器,如new AbstractMethodInterceptor(){},则子类的行为不变.
  * <p/>
  * <b>提醒:如果本类的二进制代码为Java 1.5则,生成的Class为Java 1.5,相应的,如果是1.6,则生成1.6的Class数据</b>
- * <p/> 差异(一些流程相关的字节码): 
+ * <p/>
+ * 差异(一些流程相关的字节码):
  * <li>org.asm.MethodVisitor.visitFrame 的调用
  * <li>StackMapTable or StackMap
  * 
- * <p/>在基本测试中,1.5和1.6均全部Pass.
+ * <p/>
+ * 在基本测试中,1.5和1.6均全部Pass.
  * 
  * @author wendal(wendal1985@gmail.com)
  * @see org.nutz.aop.AbstractClassAgent
@@ -54,9 +56,11 @@ public class AsmClassAgent extends AbstractClassAgent {
 					break;
 				}
 			}
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			CLASS_LEVEL = Opcodes.V1_6;
-		} finally {
+		}
+		finally {
 			Streams.safeClose(is);
 		}
 	}
@@ -69,7 +73,8 @@ public class AsmClassAgent extends AbstractClassAgent {
 									Constructor<T>[] constructors) {
 		try {
 			return (Class<T>) cd.load(newName);
-		} catch (ClassNotFoundException e) {}
+		}
+		catch (ClassNotFoundException e) {}
 		Method[] methodArray = new Method[pair2s.length];
 		List<MethodInterceptor>[] methodInterceptorList = new List[pair2s.length];
 		for (int i = 0; i < pair2s.length; i++) {

@@ -18,7 +18,8 @@ public class ConstructorCastingBorning<T> implements Borning<T> {
 		try {
 			args = Lang.array2ObjectArray(args, pts);
 			return c.newInstance(args);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new BorningException(e, c.getDeclaringClass(), args);
 		}
 	}

@@ -15,8 +15,8 @@ public class ScopeJsonIocTest {
 
 	@Test
 	public void test_simple_scope() {
-		Ioc2 ioc = I(J("f1", "scope:'app',fields:{name:'F1'}"), J("f2",
-				"scope:'MyScope',fields:{name:'F2'}"));
+		Ioc2 ioc = I(	J("f1", "scope:'app',fields:{name:'F1'}"),
+						J("f2", "scope:'MyScope',fields:{name:'F2'}"));
 
 		Animal f1 = ioc.get(Animal.class, "f1");
 		assertEquals("F1", f1.getName());

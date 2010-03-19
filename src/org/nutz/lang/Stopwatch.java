@@ -51,8 +51,10 @@ public class Stopwatch {
 
 	@Override
 	public String toString() {
-		return String.format("Total: %dms : [%s]=>[%s]", this.getDuration(),
-				new java.sql.Timestamp(from).toString(), new java.sql.Timestamp(to).toString());
+		return String.format(	"Total: %dms : [%s]=>[%s]",
+								this.getDuration(),
+								new java.sql.Timestamp(from).toString(),
+								new java.sql.Timestamp(to).toString());
 	}
 
 }

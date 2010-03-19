@@ -37,13 +37,25 @@ public class Main2 {
 		a1.argsVoid("Wendal is the best!");
 		a1.mixObjectsVoid("Arg1", new Object(), 1, null);
 		a1.mixArgsVoid("XX", "WendalXXX", 0, 'c', 1L, 9090L);
-		a1.mixArgsVoid2("Aop1", Boolean.TRUE, 8888, 'p', 34L, false, 'b', "Gp", null, null, 23L,
-				90L, 78L);
+		a1.mixArgsVoid2("Aop1",
+						Boolean.TRUE,
+						8888,
+						'p',
+						34L,
+						false,
+						'b',
+						"Gp",
+						null,
+						null,
+						23L,
+						90L,
+						78L);
 		String result = (String) a1.mixArgsVoid4("WendalXXX");
 		System.out.println("返回值: " + result);
 		try {
 			a1.x();
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			// TODO: handle exception
 		}
 		a1.returnString();
@@ -58,7 +70,8 @@ public class Main2 {
 		a1.getLog(new StringBuilder("I am OK"));
 		try {
 			a1.throwError();
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			System.out.println("抓住你：");
 			e.printStackTrace(System.out);
 		}
@@ -71,10 +84,13 @@ public class Main2 {
 		a1.returnShortArray();
 		{
 			// 带异常的构造函数
-			Constructor<?> constructor = a1.getClass().getConstructor(
-					new Class<?>[]{Object.class, Object.class});
-			System.out.println("构造方法:" + constructor + " \n带有的异常:"
-					+ Castors.me().castToString(constructor.getExceptionTypes()));
+			Constructor<?> constructor = a1	.getClass()
+											.getConstructor(new Class<?>[]{	Object.class,
+																			Object.class});
+			System.out.println("构造方法:"
+								+ constructor
+								+ " \n带有的异常:"
+								+ Castors.me().castToString(constructor.getExceptionTypes()));
 		}
 		a1.getRunnable();
 		a1.getEnum();

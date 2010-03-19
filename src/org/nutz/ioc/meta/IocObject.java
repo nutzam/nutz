@@ -15,7 +15,7 @@ import org.nutz.json.Json;
  * @see org.nutz.ioc.meta.IocValue
  * @see org.nutz.ioc.meta.IocField
  */
-public class IocObject implements Cloneable{
+public class IocObject implements Cloneable {
 
 	/**
 	 * 对象类型，如果为 null，则使用 Ioc 接口函数的第一个参数作为本次获取的类型。

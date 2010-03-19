@@ -29,7 +29,8 @@ public class LinksGeneral extends DaoCase {
 			b.setCountry(Country.make(Strings.dup('C', 52)));
 			dao.insertLinks(b, "country");
 			fail();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			assertTrue(true);
 		}
 	}

@@ -53,8 +53,8 @@ public class SqlImpl implements Sql {
 					// Create ResultSet type upon the page. default is
 					// TYPE_FORWARD_ONLY
 					Pager pager = context.getPager();
-					int rsType = null == pager ? ResultSet.TYPE_FORWARD_ONLY : pager
-							.getResultSetType();
+					int rsType = null == pager	? ResultSet.TYPE_FORWARD_ONLY
+												: pager.getResultSetType();
 					PreparedStatement stat = null;
 					ResultSet rs = null;
 					try {

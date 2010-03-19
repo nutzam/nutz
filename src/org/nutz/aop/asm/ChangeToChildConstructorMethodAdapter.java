@@ -10,9 +10,11 @@ class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
 
 	private String superClassName;
 
-	public ChangeToChildConstructorMethodAdapter(MethodVisitor mv,String desc,int access,
-			String superClassName) {
-		super(mv,desc,access);
+	public ChangeToChildConstructorMethodAdapter(	MethodVisitor mv,
+													String desc,
+													int access,
+													String superClassName) {
+		super(mv, desc, access);
 		this.superClassName = superClassName;
 	}
 

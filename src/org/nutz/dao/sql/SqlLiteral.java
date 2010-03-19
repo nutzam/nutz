@@ -8,7 +8,7 @@ import org.nutz.lang.util.LinkedIntArray;
  * @author zozoh
  * @author wendal(wendal1985@gmail.com)
  */
-public class SqlLiteral implements Cloneable{
+public class SqlLiteral implements Cloneable {
 
 	private void reset() {
 		params = new SimpleVarSet();
@@ -119,8 +119,11 @@ public class SqlLiteral implements Cloneable{
 	private int readTokenName(char[] cs, int i, StringBuilder sb) {
 		for (++i; i < cs.length; i++) {
 			int b = (int) cs[i];
-			if (b == '_' || b == '-' || (b >= 48 && b <= 57) || (b >= 65 && b <= 90)
-					|| (b >= 97 && b <= 122))
+			if (b == '_'
+				|| b == '-'
+				|| (b >= 48 && b <= 57)
+				|| (b >= 65 && b <= 90)
+				|| (b >= 97 && b <= 122))
 				sb.append((char) b);
 			else
 				break;

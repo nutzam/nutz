@@ -112,7 +112,8 @@ public class CharSegment implements Segment, Cloneable {
 				String key = it.next();
 				try {
 					this.set(key, map.get(key));
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					this.set(key, "");
 				}
 			}
@@ -123,7 +124,8 @@ public class CharSegment implements Segment, Cloneable {
 				String key = it.next();
 				try {
 					this.set(key, mirror.getValue(obj, key));
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					this.set(key, "");
 				}
 			}
@@ -232,7 +234,8 @@ public class CharSegment implements Segment, Cloneable {
 					values.add(sb);
 			}
 			orgString = org.toString();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

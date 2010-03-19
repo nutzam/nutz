@@ -4,8 +4,7 @@ import org.nutz.dao.Dao;
 
 public abstract class Service {
 
-	public Service() {
-	}
+	public Service() {}
 
 	public Service(Dao dao) {
 		this.dao = dao;

@@ -8,7 +8,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 
 class DeleteManyInvoker extends DeleteInvoker {
-	
+
 	DeleteManyInvoker(NutDao dao) {
 		super(dao);
 	}

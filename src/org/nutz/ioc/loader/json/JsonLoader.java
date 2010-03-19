@@ -68,7 +68,8 @@ public class JsonLoader extends MapLoader {
 	private Map<String, Map<String, Object>> buildMap(File f) {
 		try {
 			return Json.fromJson(Map.class, Files.read(f));
-		} catch (JsonException e) {
+		}
+		catch (JsonException e) {
 			throw new IocException(e, "Json file '%s' Error!", f);
 		}
 	}

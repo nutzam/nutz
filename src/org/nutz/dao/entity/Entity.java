@@ -141,7 +141,8 @@ public class Entity<T> {
 	public Object getObject(final ResultSet rs, FieldMatcher actived) {
 		try {
 			return borning.born(rs, actived);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

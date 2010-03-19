@@ -17,7 +17,8 @@ public abstract class EntityService<T> extends Service {
 	protected EntityService() {
 		try {
 			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 	}
 
 	protected EntityService(Dao dao) {

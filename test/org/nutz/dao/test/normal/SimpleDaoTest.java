@@ -48,8 +48,8 @@ public class SimpleDaoTest extends DaoCase {
 	public void test_count_by_condition() {
 		insertRecords(4);
 		assertEquals(4, dao.count(Pet.class));
-		assertEquals(2, dao
-				.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC)")));
+		assertEquals(	2,
+						dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC)")));
 	}
 
 	@Test
@@ -60,7 +60,8 @@ public class SimpleDaoTest extends DaoCase {
 		try {
 			dao.execute(sql1, sql2);
 			fail();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		assertEquals(0, dao.count(Pet.class));
 	}
 }

@@ -57,8 +57,7 @@ public class MapLoader implements IocLoader {
 	public IocObject load(String name) throws ObjectLoadException {
 		Map<String, Object> m = getMap(name);
 		if (null == m)
-			throw new ObjectLoadException("Object '" + name
-					+ "' without define!");
+			throw new ObjectLoadException("Object '" + name + "' without define!");
 		// If has parent
 		Object p = m.get("parent");
 		if (null != p) {
@@ -82,8 +81,11 @@ public class MapLoader implements IocLoader {
 
 	/**
 	 * 检查继承关系,如果发现循环继承,或其他错误的继承关系,则抛出ObjectLoadException
-	 * @param name beanId
-	 * @throws ObjectLoadException if Inheritance errors or Inheritance cycle founded.
+	 * 
+	 * @param name
+	 *            beanId
+	 * @throws ObjectLoadException
+	 *             if Inheritance errors or Inheritance cycle founded.
 	 */
 	@SuppressWarnings("unchecked")
 	private void checkParents(String name) throws ObjectLoadException {
@@ -94,16 +96,17 @@ public class MapLoader implements IocLoader {
 			if (currentParent == null)
 				break;
 			if (list.contains(currentParent))
-				throw Lang.makeThrow(ObjectLoadException.class,
-						"!!!Inheritance cycle! id = %s", name);
+				throw Lang.makeThrow(	ObjectLoadException.class,
+										"!!!Inheritance cycle! id = %s",
+										name);
 			list.add(currentParent);
 			Object obj = map.get(currentParent);
 			if (obj != null && obj instanceof Map)
-				currentParent = (String) ((Map<String, Object>) obj)
-						.get("parent");
+				currentParent = (String) ((Map<String, Object>) obj).get("parent");
 			else
-				throw Lang.makeThrow(ObjectLoadException.class,
-						"!!!Inheritance errors! id = %s", name);
+				throw Lang.makeThrow(	ObjectLoadException.class,
+										"!!!Inheritance errors! id = %s",
+										name);
 		}
 	}
 

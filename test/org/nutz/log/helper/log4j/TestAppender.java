@@ -9,11 +9,11 @@ import org.apache.log4j.spi.LoggingEvent;
 public class TestAppender implements Appender {
 
 	public static LoggingEvent lastEvent;
-	
-	protected String name; 
-	
+
+	protected String name;
+
 	public void addFilter(Filter arg0) {
-		
+
 	}
 
 	public void clearFilters() {}
@@ -21,7 +21,7 @@ public class TestAppender implements Appender {
 	public void close() {}
 
 	public void doAppend(LoggingEvent event) {
-		lastEvent  = event;
+		lastEvent = event;
 	}
 
 	public ErrorHandler getErrorHandler() {
@@ -45,11 +45,11 @@ public class TestAppender implements Appender {
 	}
 
 	public void setErrorHandler(ErrorHandler arg0) {
-		
+
 	}
 
 	public void setLayout(Layout arg0) {
-		
+
 	}
 
 	public void setName(String arg0) {

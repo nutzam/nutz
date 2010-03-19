@@ -69,10 +69,12 @@ public class ComboSql implements Sql {
 						sql.execute(conn);
 				if (old)
 					conn.commit();
-			} finally {
+			}
+			finally {
 				conn.setAutoCommit(old);
 			}
-		} catch (SQLException e) {
+		}
+		catch (SQLException e) {
 			throw new DaoException(e);
 		}
 	}

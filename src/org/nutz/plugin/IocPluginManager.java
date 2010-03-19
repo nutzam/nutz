@@ -23,9 +23,10 @@ public class IocPluginManager<T> implements PluginManager<T> {
 		for (String name : names) {
 			try {
 				Plugin plugin = ioc.get(Plugin.class, name);
-				if (plugin.canWork()) 
+				if (plugin.canWork())
 					return (T) plugin;
-			} catch (IocException e) {}
+			}
+			catch (IocException e) {}
 		}
 		throw new NoPluginCanWorkException();
 	}

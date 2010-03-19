@@ -1,6 +1,5 @@
 package org.nutz.log.impl;
 
-
 /**
  * 默认的Log,输出到System.err.
  * 
@@ -58,27 +57,27 @@ public class SystemLog extends AbstractLog {
 		if (t != null)
 			t.printStackTrace(System.err);
 	}
-	
+
 	@Override
 	protected void log(int level, Object message, Throwable tx) {
 		switch (level) {
 		case LEVEL_FATAL:
-			errorOut( message, null);
+			errorOut(message, null);
 			break;
 		case LEVEL_ERROR:
-			errorOut( message, null);
+			errorOut(message, null);
 			break;
 		case LEVEL_WARN:
-			errorOut( message, null);
+			errorOut(message, null);
 			break;
 		case LEVEL_INFO:
-			printOut( message, null);
+			printOut(message, null);
 			break;
 		case LEVEL_DEBUG:
-			printOut( message, null);
+			printOut(message, null);
 			break;
 		case LEVEL_TRACE:
-			printOut( message, null);
+			printOut(message, null);
 			break;
 		default:
 			break;

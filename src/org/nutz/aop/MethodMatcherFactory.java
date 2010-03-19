@@ -9,7 +9,7 @@ package org.nutz.aop;
  * @author Wendal(wendal1985@gmail.com)
  */
 public final class MethodMatcherFactory {
-	
+
 	private MethodMatcherFactory() {}
 
 	public static MethodMatcher matcher() {

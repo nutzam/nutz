@@ -14,7 +14,8 @@ public class Email implements Cloneable {
 			int pos = str.indexOf('@');
 			this.account = str.substring(0, pos);
 			this.host = str.substring(pos + 1, str.length());
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.makeThrow("Error email format [%s]", str);
 		}
 	}

@@ -175,9 +175,11 @@ public class Castors {
 							m.invoke(setting, castor);
 						map2.put(castor.getToClass().getName(), castor);
 					}
-				} catch (Throwable e) {
-					System.err.println(String.format("Fail to create castor [%s] because: %s",
-							klass, e.getMessage()));
+				}
+				catch (Throwable e) {
+					System.err.println(String.format(	"Fail to create castor [%s] because: %s",
+														klass,
+														e.getMessage()));
 				}
 			}
 		}
@@ -222,17 +224,24 @@ public class Castors {
 			return (T) src;
 		Castor c = find(from, toType);
 		if (null == c)
-			throw new FailToCastObjectException(String.format(
-					"Can not find castor for '%s'=>'%s' in (%d) because:\n%s", fromType.getName(),
-					toType.getName(), map.size(), "Fail to find matched castor"));
+			throw new FailToCastObjectException(String.format(	"Can not find castor for '%s'=>'%s' in (%d) because:\n%s",
+																fromType.getName(),
+																toType.getName(),
+																map.size(),
+																"Fail to find matched castor"));
 		try {
 			return (T) c.cast(src, toType, args);
-		} catch (FailToCastObjectException e) {
+		}
+		catch (FailToCastObjectException e) {
 			throw e;
-		} catch (Exception e) {
-			throw new FailToCastObjectException(String.format(
-					"Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s", fromType.getName(),
-					toType.getName(), src, e.getClass().getSimpleName(), e.getMessage()));
+		}
+		catch (Exception e) {
+			throw new FailToCastObjectException(String.format(	"Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s",
+																fromType.getName(),
+																toType.getName(),
+																src,
+																e.getClass().getSimpleName(),
+																e.getMessage()));
 		}
 	}
 
@@ -294,7 +303,8 @@ public class Castors {
 	public String castToString(Object src) {
 		try {
 			return castTo(src, String.class);
-		} catch (FailToCastObjectException e) {
+		}
+		catch (FailToCastObjectException e) {
 			return String.valueOf(src);
 		}
 	}

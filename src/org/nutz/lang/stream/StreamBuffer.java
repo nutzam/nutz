@@ -76,7 +76,8 @@ public class StreamBuffer extends InputStream {
 	public String toString() {
 		try {
 			return toString("UTF-8");
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

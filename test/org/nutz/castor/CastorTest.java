@@ -33,8 +33,9 @@ public class CastorTest {
 		Calendar c = Calendar.getInstance();
 		c.set(2008, 5, 20, 5, 46, 26);
 
-		Calendar c2 = (Calendar) Castors.me().cast("2008-06-20 05:46:26", String.class,
-				Calendar.class);
+		Calendar c2 = (Calendar) Castors.me().cast(	"2008-06-20 05:46:26",
+													String.class,
+													Calendar.class);
 
 		assertEquals(c.getTimeInMillis() / 1000, c2.getTimeInMillis() / 1000);
 	}
@@ -142,8 +143,9 @@ public class CastorTest {
 	@SuppressWarnings("deprecation")
 	@Test
 	public void testString2JavaDate() throws FailToCastObjectException {
-		java.util.Date date = Castors.me().cast("2008-6-12 15:28:35", String.class,
-				java.util.Date.class);
+		java.util.Date date = Castors.me().cast("2008-6-12 15:28:35",
+												String.class,
+												java.util.Date.class);
 		assertEquals(108, date.getYear());
 		assertEquals(5, date.getMonth());
 		assertEquals(12, date.getDate());

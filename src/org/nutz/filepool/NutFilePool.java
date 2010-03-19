@@ -20,14 +20,15 @@ public class NutFilePool implements FilePool {
 			home = new File(homePath);
 			try {
 				Files.makeDir(home);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
 		if (!home.isDirectory())
-			throw Lang.makeThrow(
-					"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
-					homePath, this.getClass().getName());
+			throw Lang.makeThrow(	"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
+									homePath,
+									this.getClass().getName());
 		File last = home;
 		String[] subs = null;
 		while (last.isDirectory()) {
@@ -58,7 +59,8 @@ public class NutFilePool implements FilePool {
 			Files.deleteDir(home);
 			Files.makeDir(home);
 			cursor = 0;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -73,7 +75,8 @@ public class NutFilePool implements FilePool {
 		if (!re.exists())
 			try {
 				Files.createNewFile(re);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				throw Lang.wrapThrow(e);
 			}
 		return re;
@@ -86,7 +89,8 @@ public class NutFilePool implements FilePool {
 	public int getFileId(File f) {
 		try {
 			return Pools.getFileId(home, f);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return -1;
 		}
 	}

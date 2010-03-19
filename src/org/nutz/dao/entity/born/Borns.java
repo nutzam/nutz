@@ -36,13 +36,15 @@ public class Borns {
 			try {
 				// new POJO(ResultSet,FieldMatcher)
 				try {
-					return new FMResultSetConstructorBorning(type.getConstructor(ResultSet.class,
-							Pattern.class));
-				} catch (Throwable e) {
+					return new FMResultSetConstructorBorning(type.getConstructor(	ResultSet.class,
+																					Pattern.class));
+				}
+				catch (Throwable e) {
 					// new POJO(ResultSet)
 					return new ResultSetConstructorBorning(type.getConstructor(ResultSet.class));
 				}
-			} catch (Throwable e) {
+			}
+			catch (Throwable e) {
 				if (null != defMethod) // static POJO
 					// POJO.getInstance();
 					return new DefaultStaticMethodBorning(entity, defMethod);
@@ -50,19 +52,20 @@ public class Borns {
 					try {
 						// new POJO()
 						return new DefaultConstructorBorning(entity, type.getConstructor());
-					} catch (Exception e1) {
-						throw Lang
-								.makeThrow(
-										"Entity [%s] is invailid, it should has at least one of:"
-												+ " \n1. %s \n2.%s \n3. %s \n4. %s, \n(%s)",
-										type.getName(),
-										"Accessable constructor with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional)",
-										"Accessable static method with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional) and return type is ["
-												+ type.getName() + "]",
-										"Accessable static method without parameter and return type is ["
-												+ type.getName() + "]",
-										"Accessable default constructor",
-										"I will try to invoke those borning methods following the order above.");
+					}
+					catch (Exception e1) {
+						throw Lang.makeThrow(	"Entity [%s] is invailid, it should has at least one of:"
+														+ " \n1. %s \n2.%s \n3. %s \n4. %s, \n(%s)",
+												type.getName(),
+												"Accessable constructor with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional)",
+												"Accessable static method with one parameter type as java.sql.ResultSet, another parameter type is org.nutz.dao.FiledMatcher(optional) and return type is ["
+														+ type.getName()
+														+ "]",
+												"Accessable static method without parameter and return type is ["
+														+ type.getName()
+														+ "]",
+												"Accessable default constructor",
+												"I will try to invoke those borning methods following the order above.");
 					}
 			}
 		}

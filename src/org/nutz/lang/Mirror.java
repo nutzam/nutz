@@ -106,8 +106,8 @@ public class Mirror<T> {
 	 * @return Mirror
 	 */
 	public static <T> Mirror<T> me(Class<T> classOfT) {
-		return null == classOfT ? null : new Mirror<T>(classOfT)
-				.setTypeExtractor(defaultTypeExtractor);
+		return null == classOfT	? null
+								: new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
 	}
 
 	/**
@@ -133,8 +133,9 @@ public class Mirror<T> {
 	 * @see org.nutz.lang.TypeExtractor
 	 */
 	public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
-		return null == classOfT ? null : new Mirror<T>(classOfT)
-				.setTypeExtractor(typeExtractor == null ? defaultTypeExtractor : typeExtractor);
+		return null == classOfT	? null
+								: new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
+																								: typeExtractor);
 	}
 
 	private Class<T> klass;
@@ -173,18 +174,23 @@ public class Mirror<T> {
 			try {
 				try {
 					return klass.getMethod("get" + fn);
-				} catch (NoSuchMethodException e) {
+				}
+				catch (NoSuchMethodException e) {
 					Method m = klass.getMethod("is" + fn);
 					if (!Mirror.me(m.getReturnType()).isBoolean())
 						throw new NoSuchMethodException();
 					return m;
 				}
-			} catch (NoSuchMethodException e) {
+			}
+			catch (NoSuchMethodException e) {
 				return klass.getMethod(fieldName);
 			}
-		} catch (Exception e) {
-			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find getter for [%s]->[%s]",
-					klass.getName(), fieldName);
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	NoSuchMethodException.class,
+									"Fail to find getter for [%s]->[%s]",
+									klass.getName(),
+									fieldName);
 		}
 	}
 
@@ -206,12 +212,16 @@ public class Mirror<T> {
 					return klass.getMethod("is" + fn);
 				else
 					return klass.getMethod("get" + fn);
-			} catch (NoSuchMethodException e) {
+			}
+			catch (NoSuchMethodException e) {
 				return klass.getMethod(field.getName());
 			}
-		} catch (Exception e) {
-			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find getter for [%s]->[%s]",
-					klass.getName(), field.getName());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	NoSuchMethodException.class,
+									"Fail to find getter for [%s]->[%s]",
+									klass.getName(),
+									field.getName());
 		}
 	}
 
@@ -229,22 +239,26 @@ public class Mirror<T> {
 	public Method getSetter(Field field) throws NoSuchMethodException {
 		try {
 			try {
-				return klass
-						.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
-			} catch (Exception e) {
+				return klass.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
+			}
+			catch (Exception e) {
 				try {
 					if (field.getName().startsWith("is")
-							&& Mirror.me(field.getType()).is(boolean.class))
-						return klass.getMethod("set" + field.getName().substring(2), field
-								.getType());
+						&& Mirror.me(field.getType()).is(boolean.class))
+						return klass.getMethod(	"set" + field.getName().substring(2),
+												field.getType());
 					return klass.getMethod(field.getName(), field.getType());
-				} catch (Exception e1) {
+				}
+				catch (Exception e1) {
 					return klass.getMethod(field.getName(), field.getType());
 				}
 			}
-		} catch (Exception e) {
-			throw Lang.makeThrow(NoSuchMethodException.class, "Fail to find setter for [%s]->[%s]",
-					klass.getName(), field.getName());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	NoSuchMethodException.class,
+									"Fail to find setter for [%s]->[%s]",
+									klass.getName(),
+									field.getName());
 		}
 	}
 
@@ -264,27 +278,32 @@ public class Mirror<T> {
 			String setterName = getSetterName(fieldName);
 			try {
 				return klass.getMethod(setterName, paramType);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				try {
 					return klass.getMethod(fieldName, paramType);
-				} catch (Exception e1) {
+				}
+				catch (Exception e1) {
 					Mirror<?> type = Mirror.me(paramType);
 					for (Method method : klass.getMethods()) {
 						if (method.getParameterTypes().length == 1)
 							if (method.getName().equals(setterName)
-									|| method.getName().equals(fieldName)) {
+								|| method.getName().equals(fieldName)) {
 								if (null == paramType
-										|| type.canCastToDirectly(method.getParameterTypes()[0]))
+									|| type.canCastToDirectly(method.getParameterTypes()[0]))
 									return method;
 							}
 					}
 					throw new Exception();
 				}
 			}
-		} catch (Exception e) {
-			throw Lang.makeThrow(NoSuchMethodException.class,
-					"Fail to find setter for [%s]->[%s(%s)]", klass.getName(), fieldName, paramType
-							.getName());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	NoSuchMethodException.class,
+									"Fail to find setter for [%s]->[%s(%s)]",
+									klass.getName(),
+									fieldName,
+									paramType.getName());
 		}
 	}
 
@@ -362,13 +381,14 @@ public class Mirror<T> {
 			try {
 				f = theClass.getDeclaredField(name);
 				return f;
-			} catch (NoSuchFieldException e) {
+			}
+			catch (NoSuchFieldException e) {
 				theClass = theClass.getSuperclass();
 			}
 		}
-		throw new NoSuchFieldException(String.format(
-				"Can NOT find field [%s] in class [%s] and it's parents classes", name, klass
-						.getName()));
+		throw new NoSuchFieldException(String.format(	"Can NOT find field [%s] in class [%s] and it's parents classes",
+														name,
+														klass.getName()));
 	}
 
 	/**
@@ -384,9 +404,9 @@ public class Mirror<T> {
 			if (null != field.getAnnotation(ann))
 				return field;
 		}
-		throw new NoSuchFieldException(String.format(
-				"Can NOT find field [@%s] in class [%s] and it's parents classes", ann.getName(),
-				klass.getName()));
+		throw new NoSuchFieldException(String.format(	"Can NOT find field [@%s] in class [%s] and it's parents classes",
+														ann.getName(),
+														klass.getName()));
 	}
 
 	/**
@@ -500,9 +520,11 @@ public class Mirror<T> {
 															String name,
 															Object value,
 															Exception e) {
-		return new FailToSetValueException(String.format(
-				"Fail to set value [%s] to [%s]->[%s] because '%s'", value, type.getName(), name, e
-						.getMessage()));
+		return new FailToSetValueException(String.format(	"Fail to set value [%s] to [%s]->[%s] because '%s'",
+															value,
+															type.getName(),
+															name,
+															e.getMessage()));
 	}
 
 	/**
@@ -524,7 +546,8 @@ public class Mirror<T> {
 			try {
 				if (!Mirror.me(value.getClass()).canCastToDirectly(me.getType()))
 					value = Castors.me().castTo(value, field.getType());
-			} catch (FailToCastObjectException e) {
+			}
+			catch (FailToCastObjectException e) {
 				throw makeSetValueException(obj.getClass(), field.getName(), value, e);
 			}
 		else {
@@ -535,7 +558,8 @@ public class Mirror<T> {
 		}
 		try {
 			field.set(obj, value);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw makeSetValueException(obj.getClass(), field.getName(), value, e);
 		}
 	}
@@ -554,19 +578,22 @@ public class Mirror<T> {
 	public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
 		try {
 			this.getSetter(fieldName, value.getClass()).invoke(obj, value);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			try {
 				Field field = this.getField(fieldName);
 				setValue(obj, field, value);
-			} catch (Exception e1) {
+			}
+			catch (Exception e1) {
 				throw makeSetValueException(obj.getClass(), fieldName, value, e1);
 			}
 		}
 	}
 
 	private static RuntimeException makeGetValueException(Class<?> type, String name) {
-		return new FailToGetValueException(String.format("Fail to get value for [%s]->[%s]", type
-				.getName(), name));
+		return new FailToGetValueException(String.format(	"Fail to get value for [%s]->[%s]",
+															type.getName(),
+															name));
 	}
 
 	/**
@@ -584,7 +611,8 @@ public class Mirror<T> {
 			if (!f.isAccessible())
 				f.setAccessible(true);
 			return f.get(obj);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw makeGetValueException(obj.getClass(), f.getName());
 		}
 	}
@@ -603,11 +631,13 @@ public class Mirror<T> {
 	public Object getValue(Object obj, String name) throws FailToGetValueException {
 		try {
 			return this.getGetter(name).invoke(obj);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			try {
 				Field f = getField(name);
 				return getValue(obj, f);
-			} catch (NoSuchFieldException e1) {
+			}
+			catch (NoSuchFieldException e1) {
 				throw makeGetValueException(obj.getClass(), name);
 			}
 		}
@@ -681,7 +711,8 @@ public class Mirror<T> {
 		name = name.substring(0, pos);
 		try {
 			return Class.forName(name);
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e) {
 			return null;
 		}
 	}
@@ -757,10 +788,12 @@ public class Mirror<T> {
 				try {
 					Method setter = this.getSetter(field);
 					return new InjectBySetter(setter);
-				} catch (NoSuchMethodException e) {
+				}
+				catch (NoSuchMethodException e) {
 					return new InjectByField(field);
 				}
-			} catch (NoSuchFieldException e) {
+			}
+			catch (NoSuchFieldException e) {
 				throw Lang.wrapThrow(e);
 			}
 	}
@@ -793,16 +826,18 @@ public class Mirror<T> {
 	public Method findMethod(String name, Class<?>... paramTypes) throws NoSuchMethodException {
 		try {
 			return klass.getMethod(name, paramTypes);
-		} catch (NoSuchMethodException e) {
+		}
+		catch (NoSuchMethodException e) {
 			for (Method m : klass.getMethods()) {
 				if (m.getName().equals(name))
 					if (doMatchMethodParamsType(paramTypes, m.getParameterTypes()))
 						return m;
 			}
 		}
-		throw new NoSuchMethodException(String.format(
-				"Fail to find Method %s->%s with params:\n%s", klass.getName(), name, Castors.me()
-						.castToString(paramTypes)));
+		throw new NoSuchMethodException(String.format(	"Fail to find Method %s->%s with params:\n%s",
+														klass.getName(),
+														name,
+														Castors.me().castToString(paramTypes)));
 	}
 
 	/**
@@ -851,9 +886,10 @@ public class Mirror<T> {
 						return m;
 				}
 		}
-		throw new NoSuchMethodException(String.format(
-				"Can not find method in [%s] with return type '%s' and arguemtns \n'%s'!", klass
-						.getName(), returnType.getName(), Castors.me().castToString(paramTypes)));
+		throw new NoSuchMethodException(String.format(	"Can not find method in [%s] with return type '%s' and arguemtns \n'%s'!",
+														klass.getName(),
+														returnType.getName(),
+														Castors.me().castToString(paramTypes)));
 
 	}
 
@@ -1101,7 +1137,8 @@ public class Mirror<T> {
 	public boolean isWrpperOf(Class<?> type) {
 		try {
 			return Mirror.me(type).getWrapperClass() == klass;
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		return false;
 	}
 
@@ -1121,7 +1158,8 @@ public class Mirror<T> {
 		}
 		try {
 			return Mirror.me(type).getWrapperClass() == this.getWrapperClass();
-		} catch (Exception e) {}
+		}
+		catch (Exception e) {}
 		return false;
 	}
 
@@ -1136,7 +1174,9 @@ public class Mirror<T> {
 	 * @return 当前对象是否为数字
 	 */
 	public boolean isNumber() {
-		return Number.class.isAssignableFrom(klass) || klass.isPrimitive() && !is(boolean.class)
+		return Number.class.isAssignableFrom(klass)
+				|| klass.isPrimitive()
+				&& !is(boolean.class)
 				&& !is(char.class);
 	}
 
@@ -1199,7 +1239,8 @@ public class Mirror<T> {
 						}
 					}
 					return re;
-				} catch (ClassNotFoundException e) {
+				}
+				catch (ClassNotFoundException e) {
 					throw Lang.wrapThrow(e);
 				}
 			}

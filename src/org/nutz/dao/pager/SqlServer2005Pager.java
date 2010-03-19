@@ -20,7 +20,7 @@ public class SqlServer2005Pager extends AbstractPager {
 	public String toSql(Entity<?> entity, String fields, String cnd) {
 		if (null == entity) {
 			throw Lang.makeThrow("%s can not create query SQL with entity", this.getClass()
-					.getSimpleName());
+																				.getSimpleName());
 		}
 		String where;
 		String orderBy;
@@ -53,9 +53,10 @@ public class SqlServer2005Pager extends AbstractPager {
 	private String evalOrderBy(Entity<?> entity) {
 		EntityField ef = entity.getIdentifiedField();
 		if (null == ef) {
-			throw Lang.makeThrow("%s can not create query SQL for '%s':"
-					+ " you have to define @Id or @Name for this entity", this.getClass()
-					.getSimpleName(), entity.getType().getName());
+			throw Lang.makeThrow(	"%s can not create query SQL for '%s':"
+											+ " you have to define @Id or @Name for this entity",
+									this.getClass().getSimpleName(),
+									entity.getType().getName());
 		}
 		return "ORDER BY " + ef.getColumnName();
 	}

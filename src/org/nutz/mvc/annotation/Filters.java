@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
  * @see org.nutz.mvc.annotation.By
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE, ElementType.METHOD })
+@Target({ElementType.TYPE, ElementType.METHOD})
 public @interface Filters {
 
 	By[] value() default {};

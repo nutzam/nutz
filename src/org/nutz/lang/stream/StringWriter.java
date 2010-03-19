@@ -23,7 +23,7 @@ public class StringWriter extends Writer {
 			sb.append(cbuf[i]);
 		}
 	}
-	
+
 	public StringBuilder getStringBuilder() {
 		return sb;
 	}

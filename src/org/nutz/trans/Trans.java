@@ -54,9 +54,11 @@ public abstract class Trans {
 		if (count.get() == 0)
 			try {
 				trans.get().close();
-			} catch (Throwable e) {
+			}
+			catch (Throwable e) {
 				throw Lang.wrapThrow(e);
-			} finally {
+			}
+			finally {
 				trans.set(null);
 			}
 	}
@@ -119,10 +121,12 @@ public abstract class Trans {
 			for (Atom atom : atoms)
 				atom.run();
 			commit();
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			rollback(num);
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			depose();
 		}
 	}

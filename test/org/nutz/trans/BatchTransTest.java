@@ -18,8 +18,7 @@ import org.nutz.lang.Lang;
 public class BatchTransTest extends DaoCase {
 
 	@Override
-	protected void after() {
-	}
+	protected void after() {}
 
 	@Override
 	protected void before() {
@@ -38,7 +37,8 @@ public class BatchTransTest extends DaoCase {
 						dao.insert(Country.make("A"));
 						try {
 							dao.insert(Country.make("A"));
-						} catch (Exception e) {}
+						}
+						catch (Exception e) {}
 						dao.insert(Country.make("C"));
 						dao.insert(Country.make("D"));
 					}
@@ -60,7 +60,8 @@ public class BatchTransTest extends DaoCase {
 							dao.insert(Mission.make("D1", "2008-12-21 20:15:26"));
 							try {
 								dao.insert(Mission.make("D1", "2008-9-21 17:12:23"));
-							} catch (Exception e) {}
+							}
+							catch (Exception e) {}
 							dao.insert(Mission.make("D2", "2008-10-21 18:13:24"));
 							dao.insert(Mission.make("D3", "2008-11-21 19:14:25"));
 						}
@@ -68,9 +69,11 @@ public class BatchTransTest extends DaoCase {
 					assertEquals(3, dao.count(Mission.class));
 				}
 			});
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
-		} finally {
+		}
+		finally {
 			pojos.dropPlatoon(1);
 		}
 	}
@@ -83,7 +86,8 @@ public class BatchTransTest extends DaoCase {
 				dao.insert(Company.make("Yahoo"));
 				try {
 					dao.insert(Company.make("Yahoo"));
-				} catch (Exception e) {}
+				}
+				catch (Exception e) {}
 				dao.insert(Company.make("Microsoft"));
 				dao.insert(Company.make("Sun"));
 				dao.insert(Company.make("IBM"));

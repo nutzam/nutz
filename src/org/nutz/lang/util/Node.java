@@ -7,7 +7,7 @@ import java.util.List;
  * 树节点。
  * 
  * @author zozoh(zozohtnt@gmail.com)
- *
+ * 
  * @param <T>
  */
 public interface Node<T> {
@@ -19,7 +19,7 @@ public interface Node<T> {
 	Node<T> parent(Node<T> node);
 
 	Node<T> parent();
-	
+
 	Node<T> top();
 
 	Node<T> prev();
@@ -51,7 +51,7 @@ public interface Node<T> {
 	boolean isLast();
 
 	boolean isFirst();
-	
+
 	List<Node<T>> getAncestors();
 
 	int depth();
@@ -65,7 +65,7 @@ public interface Node<T> {
 	List<Node<T>> getChildren();
 
 	Node<T> child(int index);
-	
+
 	Node<T> desc(int... indexes);
 
 	int countChildren();

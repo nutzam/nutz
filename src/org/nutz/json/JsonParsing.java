@@ -38,7 +38,8 @@ class JsonParsing {
 				col = 0;
 			} else
 				col++;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			cursor = -1;
 		}
 		return cursor;
@@ -97,9 +98,11 @@ class JsonParsing {
 			nextChar();
 			skipCommentsAndBlank();
 			return parseFromCurrentLocation(type, componentType);
-		} catch (JsonException e) {
+		}
+		catch (JsonException e) {
 			throw e;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw makeError(e.getMessage());
 		}
 	}
@@ -136,8 +139,8 @@ class JsonParsing {
 				else
 					list = (List) me.born();
 			} else {
-				throw makeError(String.format("type can NO '%s', it should be a Array or List!!!",
-						type.getName()));
+				throw makeError(String.format(	"type can NO '%s', it should be a Array or List!!!",
+												type.getName()));
 			}
 			nextChar();
 			skipCommentsAndBlank();
@@ -169,7 +172,7 @@ class JsonParsing {
 				me = (Mirror<T>) Mirror.me(HashMap.class);
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
-						: (Map<String, Object>) me.born();
+													: (Map<String, Object>) me.born();
 				while (cursor != -1 && cursor != '}') {
 					String name = readFieldName();
 					Object value = parseFromJson(null, componentType);
@@ -208,10 +211,14 @@ class JsonParsing {
 			return obj;
 		case 'u':
 			// For undefined
-			if ('n' != (char) nextChar() & 'd' != (char) nextChar() & 'e' != (char) nextChar()
-					& 'f' != (char) nextChar() & 'i' != (char) nextChar()
-					& 'n' != (char) nextChar() & 'e' != (char) nextChar()
-					& 'd' != (char) nextChar())
+			if ('n' != (char) nextChar()
+				& 'd' != (char) nextChar()
+				& 'e' != (char) nextChar()
+				& 'f' != (char) nextChar()
+				& 'i' != (char) nextChar()
+				& 'n' != (char) nextChar()
+				& 'e' != (char) nextChar()
+				& 'd' != (char) nextChar())
 				throw makeError("String must in quote or it must be <null>");
 			nextChar();
 			return null;
@@ -236,8 +243,10 @@ class JsonParsing {
 			nextChar();
 			return (T) Boolean.valueOf(true);
 		case 'f': // false
-			if ('a' != (char) nextChar() & 'l' != (char) nextChar() & 's' != (char) nextChar()
-					& 'e' != (char) nextChar())
+			if ('a' != (char) nextChar()
+				& 'l' != (char) nextChar()
+				& 's' != (char) nextChar()
+				& 'e' != (char) nextChar())
 				throw makeError("Expect boolean as input!");
 			if (null != type && !Mirror.me(type).isBoolean())
 				throw makeError("Expect boolean|Boolean as type!");
@@ -259,8 +268,12 @@ class JsonParsing {
 			do {
 				sb.append((char) cursor);
 				nextChar();
-			} while (cursor != ' ' && cursor != -1 && cursor != ',' && cursor != ']'
-					&& cursor != '}' && cursor != '/');
+			} while (cursor != ' '
+						&& cursor != -1
+						&& cursor != ','
+						&& cursor != ']'
+						&& cursor != '}'
+						&& cursor != '/');
 			String numValue = Strings.trim(sb);
 
 			// try actually return type

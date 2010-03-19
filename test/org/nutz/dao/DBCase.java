@@ -13,7 +13,7 @@ import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.lang.Files;
 
-public abstract class DBCase{
+public abstract class DBCase {
 
 	protected String dsFile;
 	protected String sqlFile;

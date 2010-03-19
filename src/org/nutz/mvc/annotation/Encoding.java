@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  * @see java.nio.charset.Charset
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.METHOD, ElementType.TYPE })
+@Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Encoding {
 
 	String input();

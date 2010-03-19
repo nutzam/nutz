@@ -31,9 +31,12 @@ class FieldQueryImpl implements FieldQuery {
 		for (String nm : set) {
 			try {
 				params[i] = mirror.getField(nm);
-			} catch (NoSuchFieldException e) {
-				throw Lang.makeThrow("'@%s' didn't exists, please check @Next on '%s'.'%s'", nm,
-						mirror.getType().getName(), ef.getName());
+			}
+			catch (NoSuchFieldException e) {
+				throw Lang.makeThrow(	"'@%s' didn't exists, please check @Next on '%s'.'%s'",
+										nm,
+										mirror.getType().getName(),
+										ef.getName());
 			}
 		}
 

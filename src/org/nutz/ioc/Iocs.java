@@ -20,7 +20,7 @@ import org.nutz.lang.meta.Pair;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public abstract class Iocs {
 
@@ -55,7 +55,8 @@ public abstract class Iocs {
 				if (!Strings.isBlank(typeName)) {
 					iobj.setType(Class.forName(typeName));
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw E(e, "Wrong type name: '%s'", v);
 			}
 			// singleton
@@ -63,7 +64,8 @@ public abstract class Iocs {
 				v = map.get("singleton");
 				if (null != v)
 					iobj.setSingleton(Castors.me().castTo(v, boolean.class));
-			} catch (FailToCastObjectException e) {
+			}
+			catch (FailToCastObjectException e) {
 				throw E(e, "Wrong singleton: '%s'", v);
 			}
 			// scope
@@ -77,7 +79,8 @@ public abstract class Iocs {
 					IocEventSet ies = Lang.map2Object((Map<?, ?>) v, IocEventSet.class);
 					iobj.setEvents(ies);
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw E(e, "Wrong events: '%s'", v);
 			}
 			// args
@@ -90,7 +93,8 @@ public abstract class Iocs {
 						}
 					});
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw E(e, "Wrong args: '%s'", v);
 			}
 			// fields
@@ -105,7 +109,8 @@ public abstract class Iocs {
 						iobj.addField(ifld);
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw E(e, "Wrong args: '%s'", v);
 			}
 		}
@@ -142,7 +147,8 @@ public abstract class Iocs {
 				iv.setType("inner");
 				try {
 					iv.setValue(map2iobj(map));
-				} catch (ObjectLoadException e) {
+				}
+				catch (ObjectLoadException e) {
 					throw Lang.wrapThrow(e);
 				}
 				return iv;
@@ -180,7 +186,8 @@ public abstract class Iocs {
 				iv.setType("normal");
 				iv.setValue(values);
 				return iv;
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
@@ -201,7 +208,8 @@ public abstract class Iocs {
 			try {
 				String typeName = Strings.trim(name.substring(pos + 1));
 				type = Class.forName(typeName);
-			} catch (ClassNotFoundException e) {
+			}
+			catch (ClassNotFoundException e) {
 				throw Lang.wrapThrow(e);
 			}
 		}
@@ -221,7 +229,7 @@ public abstract class Iocs {
 		// merge events
 		if (me.getEvents() == null) {
 			me.setEvents(it.getEvents());
-		} else if(it.getEvents() != null){
+		} else if (it.getEvents() != null) {
 			IocEventSet eventSet = it.getEvents();
 			IocEventSet myEventSet = me.getEvents();
 			if (Strings.isBlank(myEventSet.getCreate()))

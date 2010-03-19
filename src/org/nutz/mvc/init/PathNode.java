@@ -121,8 +121,11 @@ class PathNode<T> {
 	public void appendChildrenTo(StringBuilder sb, int depth) {
 		if (null != chars)
 			for (int i = 0; i < this.chars.length; i++) {
-				sb.append(String.format("%s%s'%c':[%s]\n", Strings.dup("   ", depth), isStar ? "*"
-						: " ", chars[i], children[i].obj));
+				sb.append(String.format("%s%s'%c':[%s]\n",
+										Strings.dup("   ", depth),
+										isStar ? "*" : " ",
+										chars[i],
+										children[i].obj));
 				children[i].appendChildrenTo(sb, depth + 1);
 			}
 	}

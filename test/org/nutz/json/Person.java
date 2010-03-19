@@ -60,7 +60,10 @@ public class Person {
 	}
 
 	public String dump() {
-		return String.format("name\t:%s\nage\t:%d\nrealname:%s\nbirthday:%s", name, age, realname,
-				birthday);
+		return String.format(	"name\t:%s\nage\t:%d\nrealname:%s\nbirthday:%s",
+								name,
+								age,
+								realname,
+								birthday);
 	}
 }

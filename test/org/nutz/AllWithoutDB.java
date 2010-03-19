@@ -10,6 +10,10 @@ import org.nutz.log.AllLog;
 import org.nutz.mvc.AllMvc;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({AllLog.class, AllLang.class, AllJson.class, AllIoc.class, AllMvc.class,
-		AllAop.class})
+@Suite.SuiteClasses({	AllLog.class,
+						AllLang.class,
+						AllJson.class,
+						AllIoc.class,
+						AllMvc.class,
+						AllAop.class})
 public class AllWithoutDB {}

@@ -2,8 +2,7 @@ package org.nutz.lang.random;
 
 import java.util.Random;
 
-public class R
-{
+public class R {
 	static Random r = new Random();
 
 	/**

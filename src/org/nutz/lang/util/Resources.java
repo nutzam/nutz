@@ -46,7 +46,8 @@ public final class Resources {
 		for (String className : classNames)
 			try {
 				list.add(Class.forName(className));
-			} catch (Throwable e) {}
+			}
+			catch (Throwable e) {}
 		return list;
 	}
 
@@ -116,30 +117,35 @@ public final class Resources {
 			try {
 				if (file.isDirectory())
 					return file;
-			} catch (SecurityException e) {
+			}
+			catch (SecurityException e) {
 				// In GAE , it will happen.
 			}
 			return file.getParentFile();
-		} catch (IOException e) {}
+		}
+		catch (IOException e) {}
 		return null;
 	}
 
 	private static String[] findInJar(String jarPath, Class<?> baseClass) {
 		try {
 			jarPath = decodePath(jarPath);
-			ZipEntry[] entrys = Files.findEntryInZip(new ZipFile(jarPath), baseClass.getPackage()
-					.getName().replace('.', '/')
-					+ "/\\w*.class");
+			ZipEntry[] entrys = Files.findEntryInZip(	new ZipFile(jarPath),
+														baseClass	.getPackage()
+																	.getName()
+																	.replace('.', '/')
+																+ "/\\w*.class");
 			if (null != entrys && entrys.length > 0) {
 				String[] classNames = new String[entrys.length];
 				for (int i = 0; i < entrys.length; i++) {
 					String ph = entrys[i].getName();
-					classNames[i] = ph.substring(0, ph.lastIndexOf('.'))
-							.replaceAll("[\\\\|/]", ".");
+					classNames[i] = ph	.substring(0, ph.lastIndexOf('.'))
+										.replaceAll("[\\\\|/]", ".");
 				}
 				return classNames;
 			}
-		} catch (IOException e) {}
+		}
+		catch (IOException e) {}
 		return null;
 	}
 
@@ -156,12 +162,13 @@ public final class Resources {
 				for (int i = 0; i < files.length; i++) {
 					String fileName = files[i].getName();
 					String classShortName = fileName.substring(0, fileName.length()
-							- ".class".length());
+																	- ".class".length());
 					classNames[i] = packageA.getName() + "." + classShortName;
 				}
 				return classNames;
 			}
-		} catch (SecurityException e) {
+		}
+		catch (SecurityException e) {
 			// In GAE, it will case SecurityException when call listFiles()
 		}
 		return null;
@@ -179,7 +186,8 @@ public final class Resources {
 	private static String decodePath(String path) {
 		try {
 			return URLDecoder.decode(path, Charset.defaultCharset().name());
-		} catch (UnsupportedEncodingException e) {}
+		}
+		catch (UnsupportedEncodingException e) {}
 		return path;
 	}
 }

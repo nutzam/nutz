@@ -27,13 +27,14 @@ public class HttpDumper {
 		sb.append("<POSTDATA>");
 		sb.append('\n');
 		try {
-			InputStreamReader in = new InputStreamReader(request.getInputStream(),"UTF-8");
+			InputStreamReader in = new InputStreamReader(request.getInputStream(), "UTF-8");
 			int c;
 			while ((c = in.read()) != -1) {
 				sb.append((char) c);
 			}
 			in.close();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 		}
 		sb.append('\n');
@@ -165,11 +166,13 @@ public class HttpDumper {
 			if (en.hasMoreElements())
 				sb.append("&");
 		}
-		return String.format("%5s:%15s[%5s]%s", new Object[] {
-				request.getLocale().toString(),
-				request.getRemoteAddr(),
-				((HttpServletRequest) request).getMethod(),
-				((HttpServletRequest) request).getRequestURL().toString()
-						+ (sb.length() > 0 ? "?" + sb.toString() : "") });
+		return String.format(	"%5s:%15s[%5s]%s",
+								new Object[]{	request.getLocale().toString(),
+												request.getRemoteAddr(),
+												((HttpServletRequest) request).getMethod(),
+												((HttpServletRequest) request)	.getRequestURL()
+																				.toString()
+														+ (sb.length() > 0	? "?" + sb.toString()
+																			: "")});
 	}
 }

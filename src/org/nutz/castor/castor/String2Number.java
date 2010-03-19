@@ -10,9 +10,12 @@ public class String2Number extends Castor<String, Number> {
 	@Override
 	public Number cast(String src, Class<?> toType, String... args) {
 		try {
-			return (Number) Mirror.me(toType).getWrapperClass().getConstructor(String.class).newInstance(
-					Strings.isBlank(src) ? "0" : src);
-		} catch (Exception e) {
+			return (Number) Mirror	.me(toType)
+									.getWrapperClass()
+									.getConstructor(String.class)
+									.newInstance(Strings.isBlank(src) ? "0" : src);
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

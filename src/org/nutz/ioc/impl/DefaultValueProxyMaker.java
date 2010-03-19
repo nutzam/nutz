@@ -28,13 +28,15 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 			}
 			// Map
 			else if (value instanceof Map<?, ?>) {
-				return new MapValue(ing, (Map<String, IocValue>) value,
-						(Class<? extends Map<String, Object>>) value.getClass());
+				return new MapValue(ing,
+									(Map<String, IocValue>) value,
+									(Class<? extends Map<String, Object>>) value.getClass());
 			}
 			// Collection
 			else if (value instanceof Collection<?>) {
-				return new CollectionValue(ing, (Collection<IocValue>) value,
-						(Class<? extends Collection<Object>>) value.getClass());
+				return new CollectionValue(	ing,
+											(Collection<IocValue>) value,
+											(Class<? extends Collection<Object>>) value.getClass());
 			}
 			// Inner Object
 			else if (value instanceof IocObject) {

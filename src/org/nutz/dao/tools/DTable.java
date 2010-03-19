@@ -60,7 +60,7 @@ public class DTable {
 			return null;
 		if (wrapper < 32)
 			return getPkNames();
-		
+
 		Iterator<DField> it = pks.iterator();
 		StringBuilder sb = new StringBuilder(it.next().getName());
 		while (it.hasNext())

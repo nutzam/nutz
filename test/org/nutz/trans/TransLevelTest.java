@@ -68,7 +68,9 @@ public class TransLevelTest extends DaoCase {
 						comService.dao().update(c);
 					}
 				});
-			} catch (Exception e) {} finally {
+			}
+			catch (Exception e) {}
+			finally {
 				finished = true;
 			}
 		}
@@ -152,7 +154,8 @@ public class TransLevelTest extends DaoCase {
 					try {
 						String theName = es.submit(new QueryCompany_ReadCommitted(c.getId())).get();
 						assertEquals(c.getName(), theName);
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						Assert.assertTrue(false);
 					}
 					c1.setName(c.getName());

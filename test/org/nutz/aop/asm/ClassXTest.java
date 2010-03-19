@@ -78,8 +78,9 @@ public class ClassXTest {
 
 	@Test
 	public void testReturnPrimitive() throws Throwable {
-		Aop1 a1 = classAgent.define(Nutzs.cd(), Aop1.class).getConstructor(String.class)
-				.newInstance("Nutz");
+		Aop1 a1 = classAgent.define(Nutzs.cd(), Aop1.class)
+							.getConstructor(String.class)
+							.newInstance("Nutz");
 		a1.returnLong();
 		a1.returnBoolean();
 		a1.returnByte();
@@ -130,8 +131,19 @@ public class ClassXTest {
 		a1.argsVoid("Wendal is the best!");
 		a1.mixObjectsVoid("Arg1", new Object(), 1, null);
 		a1.mixArgsVoid("XX", "WendalXXX", 0, 'c', 1L, 9090L);
-		a1.mixArgsVoid2("Aop1", Boolean.TRUE, 8888, 'p', 34L, false, 'b', "Gp", null, null, 23L,
-				90L, 78L);
+		a1.mixArgsVoid2("Aop1",
+						Boolean.TRUE,
+						8888,
+						'p',
+						34L,
+						false,
+						'b',
+						"Gp",
+						null,
+						null,
+						23L,
+						90L,
+						78L);
 		String result = String.valueOf(a1.mixArgsVoid4("WendalXXX"));
 		assertEquals("WendalXXX", result);
 	}
@@ -143,11 +155,10 @@ public class ClassXTest {
 		System.out.println(obj.getClass().getSuperclass());
 		return obj;
 	}
-	
+
 	@Test
-	public void test_annotation(){
+	public void test_annotation() {
 		ZZZ z = getNewInstance(ZZZ.class);
 		z.p(null);
 	}
 }
-

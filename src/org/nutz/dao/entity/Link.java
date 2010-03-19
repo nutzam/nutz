@@ -159,9 +159,14 @@ public class Link {
 		link.referField = selfPk;
 		link.targetField = targetPk;
 		if (null == link.referField || null == link.targetField) {
-			throw Lang.makeThrow("Fail to make ManyMany link for [%s].[%s], target: [%s]."
-					+ "\n referField: [%s]" + "\n targetField: [%s]", mirror.getType().getName(),
-					field.getName(), targetClass.getName(), link.referField, link.targetField);
+			throw Lang.makeThrow(	"Fail to make ManyMany link for [%s].[%s], target: [%s]."
+											+ "\n referField: [%s]"
+											+ "\n targetField: [%s]",
+									mirror.getType().getName(),
+									field.getName(),
+									targetClass.getName(),
+									link.referField,
+									link.targetField);
 		}
 		return link;
 

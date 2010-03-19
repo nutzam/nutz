@@ -108,9 +108,11 @@ public class DefaultLoading implements Loading {
 				config.getServletContext().setAttribute(Setup.class.getName(), setup);
 				setup.init(config);
 			}
-		} catch (InstantiationException e) {
+		}
+		catch (InstantiationException e) {
 			throw Lang.wrapThrow(e);
-		} catch (IllegalAccessException e) {
+		}
+		catch (IllegalAccessException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

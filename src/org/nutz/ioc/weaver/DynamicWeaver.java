@@ -52,7 +52,7 @@ public class DynamicWeaver implements ObjectWeaver {
 
 		// 创建实例
 		Object obj = borning.born(args);
-		
+
 		// 设置字段的值
 		for (FieldInjector fi : fields)
 			fi.inject(ing, obj);

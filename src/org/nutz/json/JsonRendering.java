@@ -139,7 +139,8 @@ class JsonRendering {
 				Method m = type.getMethod(tj.value(), JsonFormat.class);
 				Object re = m.invoke(obj, format);
 				writer.append(re.toString());
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw Lang.wrapThrow(e);
 			}
 		} else {
@@ -154,7 +155,8 @@ class JsonRendering {
 					Object value = me.getValue(obj, f);
 					if (!this.isIgnore(name, value))
 						list.add(new Pair(name, value));
-				} catch (FailToGetValueException e) {}
+				}
+				catch (FailToGetValueException e) {}
 			}
 			for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
 				Pair p = it.next();

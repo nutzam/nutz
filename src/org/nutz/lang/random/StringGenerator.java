@@ -8,7 +8,8 @@ public class StringGenerator {
 
 	/**
 	 * 
-	 * @param max 必须大于0
+	 * @param max
+	 *            必须大于0
 	 */
 	public StringGenerator(int max) {
 		maxLen = max;
@@ -17,8 +18,10 @@ public class StringGenerator {
 
 	/**
 	 * 
-	 * @param min 必须大于0
-	 * @param max 必须不小于min
+	 * @param min
+	 *            必须大于0
+	 * @param max
+	 *            必须不小于min
 	 */
 	public StringGenerator(int min, int max) {
 		maxLen = max;
@@ -34,11 +37,13 @@ public class StringGenerator {
 	 * max length of the string
 	 */
 	private int minLen;
-	
+
 	/**
 	 * 
-	 * @param min 必须大于0
-	 * @param max 必须不小于min
+	 * @param min
+	 *            必须大于0
+	 * @param max
+	 *            必须不小于min
 	 */
 	public void setup(int max, int min) {
 		maxLen = max;
@@ -47,7 +52,9 @@ public class StringGenerator {
 
 	/**
 	 * 根据设置的max和min的长度,生成随机字符串.
-	 * <p/>若max或min小于0,则返回null
+	 * <p/>
+	 * 若max或min小于0,则返回null
+	 * 
 	 * @return 生成的字符串
 	 */
 	public String next() {

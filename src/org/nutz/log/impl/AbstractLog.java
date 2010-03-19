@@ -3,11 +3,11 @@ package org.nutz.log.impl;
 import org.nutz.log.Log;
 
 public abstract class AbstractLog implements Log {
-	
+
 	protected boolean isFatalEnabled = true;
 	protected boolean isErrorEnabled = true;
-	protected boolean isWarnEnabled  = true;
-	protected boolean isInfoEnabled  = false;
+	protected boolean isWarnEnabled = true;
+	protected boolean isInfoEnabled = false;
 	protected boolean isDebugEnabled = false;
 	protected boolean isTraceEnabled = false;
 
@@ -18,7 +18,6 @@ public abstract class AbstractLog implements Log {
 	protected static final int LEVEL_DEBUG = 1;
 	protected static final int LEVEL_TRACE = 0;
 
-
 	public void debug(Object message) {
 		if (isDebugEnabled())
 			log(LEVEL_DEBUG, message, null);
@@ -26,7 +25,7 @@ public abstract class AbstractLog implements Log {
 
 	public void debugf(String fmt, Object... args) {
 		if (isDebugEnabled())
-			log(LEVEL_DEBUG,String.format(fmt, args),null);
+			log(LEVEL_DEBUG, String.format(fmt, args), null);
 	}
 
 	public void error(Object message) {
@@ -36,48 +35,47 @@ public abstract class AbstractLog implements Log {
 
 	public void errorf(String fmt, Object... args) {
 		if (isErrorEnabled())
-			log(LEVEL_ERROR,String.format(fmt, args),null);
+			log(LEVEL_ERROR, String.format(fmt, args), null);
 	}
 
 	public void fatal(Object message) {
 		if (isFatalEnabled())
-			log(LEVEL_FATAL,message, null);
+			log(LEVEL_FATAL, message, null);
 	}
 
 	public void fatalf(String fmt, Object... args) {
 		if (isFatalEnabled())
-			log(LEVEL_FATAL,String.format(fmt, args),null);
+			log(LEVEL_FATAL, String.format(fmt, args), null);
 	}
 
 	public void info(Object message) {
 		if (isInfoEnabled())
-			log(LEVEL_INFO,message, null);
+			log(LEVEL_INFO, message, null);
 	}
 
 	public void infof(String fmt, Object... args) {
 		if (isInfoEnabled())
-			log(LEVEL_INFO,String.format(fmt, args),null);
+			log(LEVEL_INFO, String.format(fmt, args), null);
 	}
-	
 
 	public void trace(Object message) {
 		if (isTraceEnabled())
-			log(LEVEL_TRACE,message, null);
+			log(LEVEL_TRACE, message, null);
 	}
 
 	public void tracef(String fmt, Object... args) {
 		if (isTraceEnabled())
-			log(LEVEL_TRACE,String.format(fmt, args),null);
+			log(LEVEL_TRACE, String.format(fmt, args), null);
 	}
 
 	public void warn(Object message) {
 		if (isWarnEnabled())
-			log(LEVEL_WARN,message, null);
+			log(LEVEL_WARN, message, null);
 	}
 
 	public void warnf(String fmt, Object... args) {
 		if (isWarnEnabled())
-			log(LEVEL_WARN,String.format(fmt, args),null);
+			log(LEVEL_WARN, String.format(fmt, args), null);
 	}
 
 	public boolean isDebugEnabled() {
@@ -103,6 +101,6 @@ public abstract class AbstractLog implements Log {
 	public boolean isWarnEnabled() {
 		return isWarnEnabled;
 	}
-	
-	protected abstract void log(int level, Object message,Throwable tx);
+
+	protected abstract void log(int level, Object message, Throwable tx);
 }

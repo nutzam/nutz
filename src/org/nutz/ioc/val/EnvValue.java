@@ -4,7 +4,7 @@ import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 
 public class EnvValue implements ValueProxy {
-	
+
 	private String name;
 
 	public EnvValue(String name) {

@@ -66,7 +66,8 @@ public abstract class Streams {
 		if (null != cb)
 			try {
 				cb.close();
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				return false;
 			}
 		return true;
@@ -86,7 +87,8 @@ public abstract class Streams {
 			if (null != f)
 				try {
 					return new FileInputStream(f);
-				} catch (FileNotFoundException e) {}
+				}
+				catch (FileNotFoundException e) {}
 		}
 		return ins;
 	}
@@ -101,7 +103,8 @@ public abstract class Streams {
 	public static InputStream fileIn(File file) {
 		try {
 			return new FileInputStream(file);
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -144,7 +147,8 @@ public abstract class Streams {
 			if (encoding == null)
 				encoding = DEFAULT_ENCODING;
 			return new InputStreamReader(fileIn(file), encoding);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -165,7 +169,8 @@ public abstract class Streams {
 			if (encoding == null)
 				encoding = DEFAULT_ENCODING;
 			return new InputStreamReader(fileIn(path), encoding);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -191,7 +196,8 @@ public abstract class Streams {
 	public static OutputStream fileOut(File file) {
 		try {
 			return new FileOutputStream(file);
-		} catch (FileNotFoundException e) {
+		}
+		catch (FileNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -247,7 +253,8 @@ public abstract class Streams {
 			if (encoding == null)
 				encoding = DEFAULT_ENCODING;
 			return new OutputStreamWriter(fileOut(file), encoding);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

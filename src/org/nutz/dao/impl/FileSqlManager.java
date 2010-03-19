@@ -125,15 +125,14 @@ public class FileSqlManager implements SqlManager {
 					throw Lang.makeThrow("Can not find file [%s]", Strings.trim(path));
 				File[] files;
 				if (f.isDirectory()) {
-					files = f.listFiles(sqkFileFilter == null ? defaultSqkFileFilter
-							: sqkFileFilter);
+					files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
+																: sqkFileFilter);
 				} else
 					files = Lang.array(f);
 				try {
 					for (File file : files) {
-						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams
-								.fileInr(file)));
-						
+						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams.fileInr(file)));
+
 						Iterator<String> it = p.keys().iterator();
 						keys = new ArrayList<String>(p.map.size());
 						while (it.hasNext()) {
@@ -142,7 +141,8 @@ public class FileSqlManager implements SqlManager {
 							addSql(key, value);
 						}
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					throw Lang.wrapThrow(e);
 				}
 			}

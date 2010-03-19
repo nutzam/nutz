@@ -22,7 +22,7 @@ public class IocMaking {
 	private MirrorFactory mirrors;
 
 	public IocMaking(	Ioc ioc,
-	                 	MirrorFactory mirrors,
+						MirrorFactory mirrors,
 						IocContext context,
 						ObjectMaker maker,
 						List<ValueProxyMaker> vpms,
@@ -65,8 +65,10 @@ public class IocMaking {
 			if (null != vp)
 				return vp;
 		}
-		throw Lang.makeThrow("Unknown value {'%s':%s} for object [%s]", iv.getType(), Json
-				.toJson(iv.getValue()), objectName);
+		throw Lang.makeThrow(	"Unknown value {'%s':%s} for object [%s]",
+								iv.getType(),
+								Json.toJson(iv.getValue()),
+								objectName);
 	}
 
 }

@@ -141,8 +141,7 @@ public abstract class Mvcs {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
-		return (Map<String, Map<String, String>>) context
-				.getAttribute(Localization.class.getName());
+		return (Map<String, Map<String, String>>) context.getAttribute(Localization.class.getName());
 	}
 
 	/**

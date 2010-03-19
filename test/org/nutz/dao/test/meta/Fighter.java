@@ -18,7 +18,7 @@ public class Fighter {
 
 	@Column
 	@Id
-	@Next({@SQL(db = DB.PSQL, value = "SELECT currval('dao_fighter_id_seq')"),
+	@Next({	@SQL(db = DB.PSQL, value = "SELECT currval('dao_fighter_id_seq')"),
 			@SQL(db = DB.OTHER, value = "SELECT MAX(id) FROM dao_fighter")})
 	private int id;
 

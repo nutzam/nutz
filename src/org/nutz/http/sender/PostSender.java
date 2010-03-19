@@ -41,7 +41,8 @@ public class PostSender extends Sender {
 			}
 			return createResponse(getResponseHeader());
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new HttpException(request.getUrl().toString(), e);
 		}
 	}

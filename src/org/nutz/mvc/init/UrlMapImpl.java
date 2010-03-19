@@ -93,8 +93,15 @@ public class UrlMapImpl implements UrlMap {
 			if (null == ats)
 				continue;
 			// Create invoker
-			ActionInvokerImpl invoker = new ActionInvokerImpl(ioc, makers, moduleType, method,
-					myOk, myFail, myAb, myFlts, myEncoding);
+			ActionInvokerImpl invoker = new ActionInvokerImpl(	ioc,
+																makers,
+																moduleType,
+																method,
+																myOk,
+																myFail,
+																myAb,
+																myFlts,
+																myEncoding);
 
 			if (log.isDebugEnabled())
 				log.debugf("  %20s() @(%s)", method.getName(), Lang.concat(ats.value()));

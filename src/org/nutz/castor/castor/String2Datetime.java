@@ -10,7 +10,8 @@ public class String2Datetime extends DateTimeCastor<String, java.util.Date> {
 	public java.util.Date cast(String src, Class<?> toType, String... args) {
 		try {
 			return dateTimeFormat.parse(src);
-		} catch (ParseException e) {
+		}
+		catch (ParseException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

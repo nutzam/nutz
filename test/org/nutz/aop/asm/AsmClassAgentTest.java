@@ -120,11 +120,13 @@ public class AsmClassAgentTest {
 		try {
 			r.doSomething(BEH.lecture);
 			fail();
-		} catch (Throwable e) {}
+		}
+		catch (Throwable e) {}
 		try {
 			r.doSomething(BEH.fly);
 			fail();
-		} catch (Throwable e) {}
+		}
+		catch (Throwable e) {}
 		assertEquals("[5, 3, 1, 1]", Json.toJson(cc));
 		assertEquals("[1, 1, 0, 0]", Json.toJson(crun));
 	}
@@ -145,11 +147,13 @@ public class AsmClassAgentTest {
 		try {
 			r.doSomething(BEH.lecture);
 			fail();
-		} catch (Throwable e) {}
+		}
+		catch (Throwable e) {}
 		try {
 			r.doSomething(BEH.fly);
 			fail();
-		} catch (Throwable e) {}
+		}
+		catch (Throwable e) {}
 		assertEquals("[3, 1, 1, 1]", Json.toJson(cpub));
 		assertEquals("[2, 2, 0, 0]", Json.toJson(cpro));
 	}

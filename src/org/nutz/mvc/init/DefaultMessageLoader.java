@@ -69,12 +69,15 @@ public class DefaultMessageLoader implements MessageLoader {
 			Reader reader = Streams.fileInr(f);
 			try {
 				p.load(reader);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				throw Lang.wrapThrow(e);
-			} finally {
+			}
+			finally {
 				try {
 					reader.close();
-				} catch (IOException e) {
+				}
+				catch (IOException e) {
 					throw Lang.wrapThrow(e);
 				}
 			}

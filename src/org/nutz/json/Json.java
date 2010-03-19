@@ -132,7 +132,8 @@ public class Json {
 				format = JsonFormat.nice();
 			new JsonRendering(writer, format).render(obj);
 			writer.flush();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e, JsonException.class);
 		}
 	}

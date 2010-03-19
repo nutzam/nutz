@@ -17,8 +17,7 @@ public class FieldInjector {
 	private ValueProxy valueProxy;
 	private Injecting inj;
 
-	private FieldInjector() {
-	}
+	private FieldInjector() {}
 
 	void inject(IocMaking ing, Object obj) {
 		Object value = valueProxy.get(ing);

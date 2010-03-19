@@ -37,7 +37,8 @@ public class MapValue implements ValueProxy {
 			for (Pair<ValueProxy> p : list)
 				map.put(p.getName(), p.getValue().get(ing));
 			return map;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

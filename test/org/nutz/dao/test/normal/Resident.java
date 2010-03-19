@@ -5,8 +5,7 @@ import org.nutz.dao.entity.annotation.*;
 @Table("t_resident")
 public class Resident {
 
-	public Resident() {
-	}
+	public Resident() {}
 
 	public Resident(String name) {
 		this.name = name;

@@ -27,15 +27,17 @@ class MirrorBorning<T> {
 			evalWithArgs(args);
 		}
 		if (null == borning) {
-			throw new BorningException(new RuntimeException("Don't know how to born it!"), type,
-					args);
+			throw new BorningException(	new RuntimeException("Don't know how to born it!"),
+										type,
+										args);
 		}
 	}
 
 	public T born() {
 		try {
 			return borning.born(realArgs);
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			throw new BorningException(e, type, realArgs);
 		}
 	}
@@ -57,7 +59,8 @@ class MirrorBorning<T> {
 		try {
 			borning = new EmptyArgsConstructorBorning(type.getConstructor());
 			realArgs = new Object[0];
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			Method[] sms = mirror.getStaticMethods();
 			for (Method m : sms) {
 				if (m.getReturnType() == type && m.getParameterTypes().length == 0) {
@@ -80,8 +83,9 @@ class MirrorBorning<T> {
 			// static
 			for (Method m : sms) {
 				Class<?>[] pts = m.getParameterTypes();
-				if (m.getReturnType() == type && m.getParameterTypes().length == 1
-						&& pts[0].isArray()) {
+				if (m.getReturnType() == type
+					&& m.getParameterTypes().length == 1
+					&& pts[0].isArray()) {
 					args = new Object[1];
 					args[0] = Mirror.blankArrayArg(pts);
 					borning = new MethodBorning(m);
@@ -159,7 +163,8 @@ class MirrorBorning<T> {
 						return;
 					}
 				}
-			} catch (Exception e) {}
+			}
+			catch (Exception e) {}
 		// casting static methods
 		if (null == borning)
 			try {
@@ -172,7 +177,8 @@ class MirrorBorning<T> {
 						return;
 					}
 				}
-			} catch (Exception e) {}
+			}
+			catch (Exception e) {}
 	}
 
 }

@@ -25,7 +25,8 @@ public abstract class EnumRandom<T extends Enum> implements Random<T> {
 			T[] ens = (T[]) Array.newInstance(type, list.size());
 			list.toArray(ens);
 			this.r = new RecurArrayRandom<T>(ens);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}

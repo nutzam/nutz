@@ -7,5 +7,5 @@ package org.nutz.log;
 public interface LogAdapter {
 
 	Log getLogger(String className);
-	
+
 }

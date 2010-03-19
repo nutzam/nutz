@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 import org.nutz.mvc.Setup;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target( { ElementType.TYPE })
+@Target({ElementType.TYPE})
 public @interface SetupBy {
 
 	Class<? extends Setup> value();

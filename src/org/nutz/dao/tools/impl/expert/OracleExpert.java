@@ -11,12 +11,16 @@ import org.nutz.lang.Strings;
 public class OracleExpert implements SqlExpert {
 
 	private static String CSEQ = "CREATE SEQUENCE ${T}_${F}_SEQ  MINVALUE 1"
-			+ " MAXVALUE 999999999999 INCREMENT BY 1 START" + " WITH 1 CACHE 20 NOORDER  NOCYCLE";
+									+ " MAXVALUE 999999999999 INCREMENT BY 1 START"
+									+ " WITH 1 CACHE 20 NOORDER  NOCYCLE";
 	private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
 	private static String CTRI = "create or replace trigger ${T}_${F}_ST"
-			+ " BEFORE INSERT ON ${T}" + " FOR EACH ROW" + " BEGIN "
-			+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;" + " END ${T}_${F}_ST;";
+									+ " BEFORE INSERT ON ${T}"
+									+ " FOR EACH ROW"
+									+ " BEGIN "
+									+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
+									+ " END ${T}_${F}_ST;";
 
 	public Sql evalCreateSql(DTable dt, Sql createTable) {
 		ComboSql sql = new ComboSql();
