@@ -1047,6 +1047,46 @@ public abstract class Lang {
 		catch (Throwable e) {}
 	}
 
+	@SuppressWarnings("unchecked")
+	private static <T extends Map<String, Object>> void obj2map(Object obj,
+																T map,
+																Map<Object, Object> memo) {
+		if (null == obj)
+			return;
+		if (memo.containsKey(obj))
+			return;
+		memo.put(obj, "");
+
+		Mirror<?> mirror = Mirror.me(obj.getClass());
+		Field[] flds = mirror.getFields();
+		for (Field fld : flds) {
+			Object v = mirror.getValue(obj, fld);
+			if (null == v) {
+				map.put(fld.getName(), null);
+			}
+			Mirror<?> mr = Mirror.me(fld.getType());
+			if (mr.isNumber()
+				|| mr.isBoolean()
+				|| mr.isChar()
+				|| mr.isStringLike()
+				|| mr.isDateTimeLike()) {
+				map.put(fld.getName(), v);
+			} else if (memo.containsKey(v)) {
+				map.put(fld.getName(), null);
+			} else {
+				T sub;
+				try {
+					sub = (T) map.getClass().newInstance();
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+				obj2map(v, sub, memo);
+				map.put(fld.getName(), sub);
+			}
+		}
+	}
+
 	/**
 	 * 将对象转换成 Map
 	 * 
@@ -1056,7 +1096,7 @@ public abstract class Lang {
 	 */
 	@SuppressWarnings("unchecked")
 	public static Map<String, Object> obj2map(Object obj) {
-		return obj2map(obj,HashMap.class);
+		return obj2map(obj, HashMap.class);
 	}
 
 	/**
@@ -1070,8 +1110,14 @@ public abstract class Lang {
 	 * @return Map 对象
 	 */
 	public static <T extends Map<String, Object>> T obj2map(Object obj, Class<T> mapType) {
-		StringBuilder sb = new StringBuilder(Json.toJson(obj));
-		T map = Json.fromJson(mapType, Lang.inr(sb));
-		return map;
+		try {
+			T map = mapType.newInstance();
+			Lang.obj2map(obj, map, new HashMap<Object, Object>());
+			return map;
+		}
+		catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
+
 }

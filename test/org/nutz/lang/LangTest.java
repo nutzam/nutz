@@ -75,4 +75,29 @@ public class LangTest {
 		String[] ss = Lang.array("A", "B");
 		assertEquals("A--B", Lang.concat("--", ss).toString());
 	}
+
+	public static class BC {
+		String name;
+		CB cb;
+	}
+
+	public static class CB {
+		String code;
+		BC bc;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void test_obj2map() {
+		BC bc = new BC();
+		bc.name = "B";
+		CB cb = new CB();
+		cb.code = "C";
+		bc.cb = cb;
+		cb.bc = bc;
+		Map<String, Object> map = Lang.obj2map(bc);
+		assertEquals("B", map.get("name"));
+		assertEquals("C", ((Map) map.get("cb")).get("code"));
+		assertNull(((Map) map.get("cb")).get("bc"));
+	}
 }
