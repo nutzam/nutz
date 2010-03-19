@@ -95,7 +95,8 @@ public class DefaultEntityMaker implements EntityMaker {
 				stat = conn.createStatement();
 				rs = stat.executeQuery(db.getResultSetMetaSql(entity.getViewName()));
 				rsmd = rs.getMetaData();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				if (log.isWarnEnabled())
 					log.warn("Table '" + entity.getViewName() + "' doesn't exist.");
 			}
@@ -121,22 +122,21 @@ public class DefaultEntityMaker implements EntityMaker {
 										continue;
 					// Create EntityField
 					EntityField ef = evalField(db, rsmd, entity, f);
-
-					// Is it a PK?
-					if (pkmap.containsKey(ef.getName())) {
-						pkmap.put(ef.getName(), ef);
-						if (!(ef.isId() || ef.isName()))
-							ef.setType(FieldType.PK);
-					}
-
-					// Is befores? or afters?
-					if (null != ef.getBeforeInsert())
-						befores.add(ef.getBeforeInsert());
-					else if (null != ef.getAfterInsert())
-						afters.add(ef.getAfterInsert());
-
-					// Append to Entity
 					if (null != ef) {
+						// Is it a PK?
+						if (pkmap.containsKey(ef.getName())) {
+							pkmap.put(ef.getName(), ef);
+							if (!(ef.isId() || ef.isName()))
+								ef.setType(FieldType.PK);
+						}
+
+						// Is befores? or afters?
+						if (null != ef.getBeforeInsert())
+							befores.add(ef.getBeforeInsert());
+						else if (null != ef.getAfterInsert())
+							afters.add(ef.getAfterInsert());
+
+						// Append to Entity
 						entity.addField(ef);
 					}
 				}
@@ -168,8 +168,11 @@ public class DefaultEntityMaker implements EntityMaker {
 	}
 
 	private ErrorEntitySyntaxException error(Entity<?> entity, String fmt, Object... args) {
-		return new ErrorEntitySyntaxException(String.format("[%s] : %s", null == entity ? "NULL"
-				: entity.getType().getName(), String.format(fmt, args)));
+		return new ErrorEntitySyntaxException(String.format("[%s] : %s",
+															null == entity	? "NULL"
+																			: entity.getType()
+																					.getName(),
+															String.format(fmt, args)));
 	}
 
 	private EntityField evalField(	DatabaseMeta db,
@@ -286,8 +289,12 @@ public class DefaultEntityMaker implements EntityMaker {
 					pkFld = lookupPkByReferField(mirror, targetReferFld);
 				}
 
-				return Link.getLinkForMany(mirror, field, ta.getType(), targetReferFld, pkFld, many
-						.key());
+				return Link.getLinkForMany(	mirror,
+											field,
+											ta.getType(),
+											targetReferFld,
+											pkFld,
+											many.key());
 			}
 			ManyMany mm = field.getAnnotation(ManyMany.class);
 			if (null != mm) {
@@ -304,25 +311,37 @@ public class DefaultEntityMaker implements EntityMaker {
 					rsmd = rs.getMetaData();
 					fromName = !Daos.isIntLikeColumn(rsmd, mm.from());
 					toName = !Daos.isIntLikeColumn(rsmd, mm.to());
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					if (log.isWarnEnabled())
 						log.warnf("Fail to get table '%s', '%s' and '%s' "
-								+ "will be taken as @Id ", mm.relation(), mm.from(), mm.to());
-				} finally {
+									+ "will be taken as @Id ", mm.relation(), mm.from(), mm.to());
+				}
+				finally {
 					Daos.safeClose(stat, rs);
 				}
 				Mirror<?> ta = Mirror.me(mm.target());
 				Field selfPk = mirror.getField(fromName ? Name.class : Id.class);
 				Field targetPk = ta.getField(toName ? Name.class : Id.class);
-				return Link.getLinkForManyMany(mirror, field, ta.getType(), selfPk, targetPk, mm
-						.key(), mm.relation(), mm.from(), mm.to());
+				return Link.getLinkForManyMany(	mirror,
+												field,
+												ta.getType(),
+												selfPk,
+												targetPk,
+												mm.key(),
+												mm.relation(),
+												mm.from(),
+												mm.to());
 				// return Link.getLinkForManyMany(mirror, field, mm.target(),
 				// mm.key(), mm.from(), mm
 				// .to(), mm.relation(), fromName, toName);
 			}
-		} catch (Exception e) {
-			throw Lang.makeThrow("Fail to eval linked field '%s' of class[%s] for the reason '%s'",
-					field.getName(), mirror.getType().getName(), e.getMessage());
+		}
+		catch (Exception e) {
+			throw Lang.makeThrow(	"Fail to eval linked field '%s' of class[%s] for the reason '%s'",
+									field.getName(),
+									mirror.getType().getName(),
+									e.getMessage());
 		}
 		return null;
 	}
@@ -336,8 +355,9 @@ public class DefaultEntityMaker implements EntityMaker {
 		} else if (fldType.isIntLike()) {
 			return mirror.getField(Id.class);
 		}
-		throw Lang.makeThrow("'%s'.'%s' can only be CharSequence or Integer", fld
-				.getDeclaringClass().getName(), fld.getName());
+		throw Lang.makeThrow(	"'%s'.'%s' can only be CharSequence or Integer",
+								fld.getDeclaringClass().getName(),
+								fld.getName());
 	}
 
 	private boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
