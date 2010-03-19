@@ -1,0 +1,105 @@
+#title:Customize
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------------------
+Purpose
+	Json is more natural to work with Javascript. It's the most efficient way to communicate between server and browser through JSON.
+	Meanwhile, it's a fact: {*Server is more powerful than browser}. So we can implement more complicated logic in server side.
+
+	Sometimes, developer wants the JSON be like this：
+	{{{
+	{
+		text : 'click me',
+		handle : function(){
+			alert('a function');
+		}
+	}
+	}}}
+	It's not a legal JSON, but it's legal for JavaScript. By default, Nutz.Json doesn't support this kind of output.
+	But it supports customization to achieve that:
+
+	In one sentence, through @ToJson, you can control the output string of JSON from your classes.
+--------------------------------------------------------------------------------------------------------
+POJO Source Code
+	
+	Button Class 
+		{{{<Java>
+		public class Button {
+			private String text;
+
+			private Function handler;
+
+			public String getText() {
+				return text;
+			}
+
+			public void setText(String text) {
+				this.text = text;
+			}
+
+			public Function getHandler() {
+				return handler;
+			}
+
+			public void setHandler(Function handler) {
+				this.handler = handler;
+			}
+		}
+		}}}
+
+	Function Class
+		{{{<Java>
+		@ToJson
+		public class Function {
+			private String body;
+
+			public Function(String body) {
+				this.body = body;
+			}
+
+			public String getBody() {
+				return body;
+			}
+
+			public void setBody(String body) {
+				this.body = body;
+			}
+
+			public String toJson(JsonFormat format) {
+				StringBuilder sb = new StringBuilder("function(){");
+				sb.append(body);
+				sb.append('}');
+				return sb.toString();
+			}
+		}
+		}}}
+
+	Notes
+		I want to clarify the followings about above example：
+		 * It will call toJson function, while it serializes Function instances to JSON.
+			 * this function must includes one parameter(JsonFormat)
+		 * @ToJson default value is "toJson"
+			 * If you don't like "toJson", you can define your prefer one. @ToJson("Anyone you like") 
+			 * the function you defined, must also includes the parameter(JsonFormat)
+
+--------------------------------------------------------------------------------------------------------
+Invoke
+	{{{<Java>
+	Button btn = new Button();
+	Function func = new Function("alert('I am button');");
+
+	btn.setText("Click me!");
+	btn.setHandler(func);
+
+	System.out.println(Json.toJson(btn));
+	}}}
+--------------------------------------------------------------------------------------------------------
+In the console
+	{{{<Json>
+	{
+	   text :"Click me!",
+	   handler :function(){alert('I am button');}
+	}
+	}}}
+--------------------------------------------------------------------------------------------------------
+You can output anything as what you want through @ToJson.
