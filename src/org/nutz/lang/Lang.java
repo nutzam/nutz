@@ -1046,4 +1046,32 @@ public abstract class Lang {
 		}
 		catch (Throwable e) {}
 	}
+
+	/**
+	 * 将对象转换成 Map
+	 * 
+	 * @param obj
+	 *            POJO 对象
+	 * @return Map 对象
+	 */
+	@SuppressWarnings("unchecked")
+	public static Map<String, Object> obj2map(Object obj) {
+		return obj2map(obj,HashMap.class);
+	}
+
+	/**
+	 * 将对象转换成 Map
+	 * 
+	 * @param <T>
+	 * @param obj
+	 *            POJO 对象
+	 * @param mapType
+	 *            Map 的类型
+	 * @return Map 对象
+	 */
+	public static <T extends Map<String, Object>> T obj2map(Object obj, Class<T> mapType) {
+		StringBuilder sb = new StringBuilder(Json.toJson(obj));
+		T map = Json.fromJson(mapType, Lang.inr(sb));
+		return map;
+	}
 }
