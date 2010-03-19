@@ -1,0 +1,127 @@
+#title:Nutz.Mvc Overview
+#author:Peter.Tung(mastung@gmail.com)
+#index:0,1
+-------------------------------------------------------------------------------------------------
+Introduce
+
+	Nutz.Mvc works with Web servers(like Tomcat). Its job is {*to transfer HTTP requests into Java functions}.
+	
+	features：
+	 * wrap parameters ({/extendible})
+	 * It's not mandatory to use views to render HTTP output.
+	 * It provides several rendering modes(JSP, JSON...)
+	 * No more extra features
+
+	Each HTTP requests is a URL. How to bind URLs with java functions? The simplest way is to add a annotation at the functions.
+	In Nutz.Mvc, the annotation is @At
+	
+	If you want a "hello world" of Nutz MVC, please refer [http://nutzdemo.googlecode.com].
+-------------------------------------------------------------------------------------------------
+Charts of Nutz.Mvc
+
+	The following two charts will help you understand how Nutz.Mvc works：
+	
+	Each requests will always be treated as the following process
+		
+		<nutz_mvc_workflow_overview.png>
+		
+		Through @At, Nutz.Mvc maps HTTP requests into functions, functions must have one parameter, such parameter will be used to transfer http request parameters(1045).
+		
+	More detail process
+
+		<nutz_mvc_workflow_detail.png>
+		
+		 * Functions with @At are called {*Entrance Function}
+		 * Any requests will be treated by 4 steps
+			 # {*A} - {*Filter}: Through @Filters, you can define as many as possible filters for your {*Entrance Function}
+			 # {*B} - {*Adaptor}: In this step, it will transfer HTTP input parameters into {*Entrance Function}'s parameter
+				 * By default, HTTP input parameters are Name-value pairs
+				 * For more adaptors, please refer [mvc_http_adaptor.man adaptors]
+				 * File uploading is also an adaptor mode, please refer UploadAdptor
+			 # {*C} - {*Invoke}: Invoke {*Entrance Function}, implement your logic in it.
+				 * You may need Ioc container to help you decouple your implementation. Please refer [mvc_ioc.man work with Ioc]
+			 # {*D} - {*Render}: Render HTTP Response based on the return of {*Entrance Function}.
+				 * If return is a view, it will use the view to render null(null? yes. The third parameter would be null in this case.)
+					 * You can use org.nutz.mvc.view.ViewWrapper to wrap your return object with view. ViewWrapper is also a View
+				 * Or it will use the view annotated by @Ok to render return object of {*Entrance Function}
+				 * If there is an exception thrown, it will use the view annotated by @Error to render exception object
+-------------------------------------------------------------------------------------------------
+You also need to know	
+	About @At
+		 * Functions with that are {*Entrance Function}
+		 * You can specify many URLs：
+			{{{
+			@At({"/fetch","/get"})
+			public Pet fetch(int petId){
+				...
+			}}}
+		 * It could also be specified with classes
+			 * All URLs of {*Entrance Function} in the classes will be added by a prefix
+			 * By default, the value is the lowercase name of the classes
+		 * The full URL is:  {*Class@At + Function@At}
+			 * Specify @At with classes without values, by default, the value is the lowercase name of the classes
+			 * Specify @At with functions without values, by default, the value is the lowercase name of the functions
+	---------------------------------------------------------------------------------------------
+	Inject into Jsp/Servlet container through web.xml
+		Like most Mvc framework, Nutz.Mvc also provides a Servlet as entrance from JSP/Servlet container.
+		{{{<web.xml>
+		<web-app>
+			<servlet>
+				<servlet-name>nutz</servlet-name>
+				<servlet-class>org.nutz.mvc.NutServlet</servlet-class>
+				<init-param>
+					<param-name>modules</param-name>
+					<param-value>nutz.demo.mvc.MainModule</param-value>
+				</init-param>
+				<load-on-startup>1</load-on-startup>
+			</servlet>
+
+			<servlet-mapping>
+				<servlet-name>nutz</servlet-name>
+				<url-pattern>*.nut</url-pattern>
+			</servlet-mapping>
+		</web-app>
+		}}}
+		NutServlet only needs one parameter -- {/the full name of the class}. This class bill be treated as {*Main Module}.
+		All configuration will be specified through the following annotations.
+		|| {#080;@Modules}		|| All {*Sub Modules} of the whole application. {#F00;/Sub modules can not be extended from sub modules} ||
+		|| {#080;@IocBy}		|| Ioc mode used for the application. If it's not specified, the application couldn't support Ioc. ||
+		|| {#080;@Localization}	|| The folder path for the localization ||
+		|| {#080;@SetupBy}		|| How to setup the application while it starting. ||
+		|| {#080;@Views}		|| Extend view types for the application. ||
+		|| {#888;@Ok}			|| The default success view for the application ||
+		|| {#888;@Fail}			|| The default fail view for the application ||
+		|| {#888;@AdaptBy}		|| The default http parameter adaptor for the application ||
+		|| {#888;@Filters}		|| The default filter list for the application ||
+		|| {#888;@Encoding}		|| The default encoding of input and output for the application ||
+
+		 * Green ones can only be used in main module.
+		 * Grey ones can be used in {*Sub Module} and {*Entrance Function} also
+	---------------------------------------------------------------------------------------------
+	How to convert HTTP parameters into function's parameter?
+		 * This process is called adaptor. All classes implemented org.nutz.mvc.HttpAdaptor could be used to handle the task.
+		 * Through @AdaptBy, we could specify default adaptor for each {*Sub Module}
+			 * It can also be specified on {*Entrance Function}
+		 * [mvc_http_adaptor.man adaptors] for more detail
+		 * By default, Nutz.Mvc will use org.nutz.mvc.adaptor.PairAdaptor for your {*Entrance Function}
+	---------------------------------------------------------------------------------------------
+	You can specify on {*Entrance Function} the following annotations.
+		|| {#888;@At}			|| URL of functions ||
+		|| {#888;@Ok}			|| Success view ||
+		|| {#888;@Fail}			|| Fail view ||
+		|| {#888;@AdaptBy}		|| HTTP parameter adaptor mode ||
+		|| {#888;@Filters}		|| function filter list ||
+		|| {#888;@Encoding}		|| HTTP input and output encoding ||
+
+	---------------------------------------------------------------------------------------------
+	You can specify on {*Sub Module} the following annotations.
+		|| {#080;@InjectName}	|| The name of this module in Ioc container. If it is not specified, it means the module is created by default constructor. ||
+		|| {#888;@At}			|| The URL prefix for all {*Entrance Function} of this module ||
+		|| {#888;@Ok}			|| The default success view ||
+		|| {#888;@Fail}			|| The default fail view ||
+		|| {#888;@AdaptBy}		|| The default http parameter adaptor ||
+		|| {#888;@Filters}		|| The default filter list ||
+		|| {#888;@Encoding}		|| The default encoding of input and output ||
+		
+		 * Green ones can only be used in sub module.
+		 * Grey ones can be used in {*Sub Module} and {*Entrance Function} also
