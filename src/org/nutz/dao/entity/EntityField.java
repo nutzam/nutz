@@ -11,12 +11,13 @@ import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.Segment;
+import org.nutz.lang.util.Context;
 
 /**
  * @author zozoh
  * @author wendal(wendal1985@gmail.com)
  */
-public class EntityField {
+public class EntityField extends Context{
 
 	private Mirror<?> mirror;
 	/**
@@ -49,6 +50,7 @@ public class EntityField {
 	private Entity<?> entity;
 
 	public EntityField(Entity<?> entity, Field field) {
+		super();
 		if (null != entity && null != field) {
 			this.mirror = Mirror.me(field.getType());
 			this.entity = entity;
