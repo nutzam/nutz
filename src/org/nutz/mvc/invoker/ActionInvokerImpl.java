@@ -17,6 +17,8 @@ import org.nutz.ioc.impl.ComboContext;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.segment.Segments;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
@@ -51,8 +53,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 	private ActionFilter[] filters;
 	private String inputCharset;
 	private String outputCharset;
+	private Context context;
 
-	public ActionInvokerImpl(	Ioc ioc,
+	public ActionInvokerImpl(	Context context,
+								Ioc ioc,
 								List<ViewMaker> makers,
 								Class<?> moduleType,
 								Method method,
@@ -61,6 +65,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 								AdaptBy dftAb,
 								Filters dftflts,
 								Encoding dftEncoding) {
+		this.context = context;
 		evalModule(moduleType);
 		this.method = method;
 		this.ok = evalView(ioc, makers, "@Ok", method.getAnnotation(Ok.class), dftOk);
@@ -129,7 +134,12 @@ public class ActionInvokerImpl implements ActionInvoker {
 		adaptor.init(method);
 	}
 
-	private static <T> T evalObject(Ioc ioc, Class<T> type, String[] args) {
+	private <T> T evalObject(Ioc ioc, Class<T> type, String[] args) {
+		// Replace the vars
+		if (null != args && args.length > 0)
+			for (int i = 0; i < args.length; i++) {
+				args[i] = Segments.replace(args[i], context);
+			}
 		/*
 		 * 如果参数的形式为: {"ioc:xxx"}，则用 ioc.get(type,"xxx") 获取这个对象
 		 */
@@ -156,6 +166,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			return new VoidView();
 
 		String str = (String) Mirror.me(ann.getClass()).invoke(ann, "value");
+		str = Segments.replace(str, context);
 		int pos = str.indexOf(':');
 		String type, value;
 		if (pos > 0) {

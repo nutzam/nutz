@@ -6,8 +6,11 @@ import java.util.Map;
 import javax.servlet.ServletConfig;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Loading;
@@ -34,9 +37,21 @@ public class DefaultLoading implements Loading {
 	private UrlMapImpl urls;
 	private Ioc ioc;
 	private Map<String, Map<String, String>> msgss;
+	private Context context;
 
 	public DefaultLoading(ServletConfig config) {
 		this.config = config;
+		context = new Context();
+		saveRootPathToContext(config);
+		if (log.isDebugEnabled()) {
+			log.debugf(">> CONTEXT %s", Json.toJson(context, JsonFormat.nice()));
+		}
+	}
+
+	private void saveRootPathToContext(ServletConfig config) {
+		String root = config.getServletContext().getRealPath("/").replace('\\', '/');
+		root = root.substring(0, root.length() - 1);
+		context.set("app.root", root);
 	}
 
 	public void load(Class<?> mainModule) {
@@ -70,7 +85,7 @@ public class DefaultLoading implements Loading {
 			if (log.isDebugEnabled())
 				log.debugf("MainModule: <%s>", mainModule.getName());
 
-			urls = new UrlMapImpl(ioc);
+			urls = new UrlMapImpl(ioc, context);
 			urls.setOk(mainModule.getAnnotation(Ok.class));
 			urls.setFail(mainModule.getAnnotation(Fail.class));
 			urls.setAdaptBy(mainModule.getAnnotation(AdaptBy.class));

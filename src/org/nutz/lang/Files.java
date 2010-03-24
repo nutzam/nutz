@@ -10,15 +10,14 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.nutz.lang.util.Disks;
 
 /**
  * 文件操作的帮助函数
@@ -227,45 +226,42 @@ public abstract class Files {
 	}
 
 	/**
+	 * 试图生成一个文件对象，如果文件不存在则创建它。 如果给出的 PATH 是相对路径 则会在 CLASSPATH
+	 * 中寻找，如果未找到，则会在用户主目录中创建这个文件
+	 * 
+	 * @param path
+	 *            文件路径，可以以 ~ 开头，也可以是 CLASSPATH 下面的路径
+	 * @return 文件对象
+	 * @throws IOException
+	 *             创建失败
+	 */
+	public static File createIfNoExists(String path) throws IOException {
+		path = Disks.absolute(path);
+		if (null == path)
+			path = Disks.home(path);
+		File f = new File(path);
+		if (!f.exists())
+			Files.createNewFile(f);
+		return f;
+	}
+
+	/**
 	 * 从 CLASSPATH 下寻找一个文件
 	 * 
 	 * @param path
 	 *            文件路径
-	 * @param klass
-	 *            参考的类， -- 会用这个类的 ClassLoader
+	 * @param klassLoader
+	 *            参考 ClassLoader
 	 * @param enc
 	 *            文件路径编码
 	 * 
 	 * @return 文件对象，如果不存在，则为 null
 	 */
-	public static File findFile(String path, Class<?> klass, String enc) {
+	public static File findFile(String path, ClassLoader klassLoader, String enc) {
+		path = Disks.absolute(path, klassLoader, enc);
 		if (null == path)
 			return null;
-		try {
-			path = URLDecoder.decode(path, Charset.defaultCharset().name());
-		}
-		catch (UnsupportedEncodingException e) {}
-		File f = new File(path);
-		if (!f.exists()) {
-			f = null;
-			URL url = null;
-			if (null != klass) {
-				url = klass.getResource(path);
-				if (null == url)
-					url = klass.getClassLoader().getResource(path);
-			}
-			if (null == url)
-				url = ClassLoader.getSystemResource(path);
-			if (null != url) {
-				try {
-					f = new File(URLDecoder.decode(url.getPath(), enc));
-				}
-				catch (UnsupportedEncodingException e) {
-					f = null;
-				}
-			}
-		}
-		return f;
+		return new File(path);
 	}
 
 	/**
@@ -278,7 +274,7 @@ public abstract class Files {
 	 * @return 文件对象，如果不存在，则为 null
 	 */
 	public static File findFile(String path, String enc) {
-		return findFile(path, Files.class, enc);
+		return findFile(path, Files.class.getClassLoader(), enc);
 	}
 
 	/**
@@ -291,8 +287,8 @@ public abstract class Files {
 	 * 
 	 * @return 文件对象，如果不存在，则为 null
 	 */
-	public static File findFile(String path, Class<?> klass) {
-		return findFile(path, klass, Charset.defaultCharset().name());
+	public static File findFile(String path, ClassLoader klassLoader) {
+		return findFile(path, klassLoader, Charset.defaultCharset().name());
 	}
 
 	/**
@@ -304,7 +300,7 @@ public abstract class Files {
 	 * @return 文件对象，如果不存在，则为 null
 	 */
 	public static File findFile(String path) {
-		return findFile(path, Files.class, Charset.defaultCharset().name());
+		return findFile(path, Files.class.getClassLoader(), Charset.defaultCharset().name());
 	}
 
 	/**
@@ -427,7 +423,7 @@ public abstract class Files {
 	 * @return false，如果目录已存在。 true 创建成功
 	 * @throws IOException
 	 */
-	public static boolean makeDir(File dir) throws IOException {
+	public static boolean makeDir(File dir){
 		if (null == dir)
 			return false;
 		if (dir.exists())
@@ -596,12 +592,7 @@ public abstract class Files {
 			File newFile = new File(src.getParent() + "/" + newName);
 			if (newFile.exists())
 				return false;
-			try {
-				Files.makeDir(newFile.getParentFile());
-			}
-			catch (IOException e) {
-				return false;
-			}
+			Files.makeDir(newFile.getParentFile());
 			return src.renameTo(newFile);
 		}
 		return false;

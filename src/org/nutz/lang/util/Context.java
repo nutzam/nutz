@@ -13,10 +13,14 @@ import org.nutz.castor.Castors;
  */
 public class Context {
 
-	private HashMap<String, Object> map;
+	private Map<String, Object> map;
 
 	public Context() {
 		this.map = new HashMap<String, Object>();
+	}
+
+	public Context(Map<String, Object> map) {
+		this.map = map;
 	}
 
 	public Context set(String name, Object value) {

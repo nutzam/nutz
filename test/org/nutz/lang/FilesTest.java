@@ -2,6 +2,8 @@ package org.nutz.lang;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+
 import org.junit.Test;
 
 public class FilesTest {
@@ -22,6 +24,12 @@ public class FilesTest {
 	public void test_rename_suffix() {
 		assertEquals("/home/zzh/abc.zdoc", Files.renameSuffix("/home/zzh/abc.txt", ".zdoc"));
 		assertEquals("/home/zzh/.zdoc", Files.renameSuffix("/home/zzh/.txt", ".zdoc"));
+	}
+
+	@Test
+	public void test_find_file_from_home() {
+		File f = Files.findFile("~/");
+		assertNotNull(f);
 	}
 
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionInvoker;
@@ -24,9 +25,12 @@ public class UrlMapImpl implements UrlMap {
 
 	private PathNode<ActionInvoker> root;
 
-	public UrlMapImpl(Ioc ioc) {
+	private Context context;
+
+	public UrlMapImpl(Ioc ioc, Context context) {
 		this.ioc = ioc;
-		root = new PathNode<ActionInvoker>();
+		this.root = new PathNode<ActionInvoker>();
+		this.context = context;
 	}
 
 	private Ok ok;
@@ -93,7 +97,8 @@ public class UrlMapImpl implements UrlMap {
 			if (null == ats)
 				continue;
 			// Create invoker
-			ActionInvokerImpl invoker = new ActionInvokerImpl(	ioc,
+			ActionInvokerImpl invoker = new ActionInvokerImpl(	context,
+																ioc,
 																makers,
 																moduleType,
 																method,

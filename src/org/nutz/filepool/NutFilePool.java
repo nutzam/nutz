@@ -15,15 +15,15 @@ public class NutFilePool implements FilePool {
 
 	public NutFilePool(String homePath, int size) {
 		this.size = size;
-		home = Files.findFile(homePath);
+		try {
+			home = Files.createIfNoExists(homePath);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
 		if (null == home) {
 			home = new File(homePath);
-			try {
-				Files.makeDir(home);
-			}
-			catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
+			Files.makeDir(home);
 		}
 		if (!home.isDirectory())
 			throw Lang.makeThrow(	"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
