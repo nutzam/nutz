@@ -33,7 +33,7 @@ public class TableDefinitionImpl implements TableDefinition {
 		if (dt.getPks().size() > 1)
 			for (DField pk : dt.getPks()) {
 				if (pk.isAutoIncreament())
-					throw Lang.makeThrow(	"Table '%s'.'%s' should be auto-increase, because, it is multi-PK",
+					throw Lang.makeThrow(	"Table '%s'.'%s' should NOT be auto-increase, because, it is multi-PK",
 											dt.getName(),
 											pk.getName());
 			}
