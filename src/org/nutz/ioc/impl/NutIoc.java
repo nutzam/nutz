@@ -49,10 +49,14 @@ public class NutIoc implements Ioc2 {
 	}
 
 	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope) {
-		this(maker,loader,context,defaultScope,null);
+		this(maker, loader, context, defaultScope, null);
 	}
-	
-	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope,MirrorFactory mirrors) {
+
+	protected NutIoc(	ObjectMaker maker,
+						IocLoader loader,
+						IocContext context,
+						String defaultScope,
+						MirrorFactory mirrors) {
 		this.maker = maker;
 		this.defaultScope = defaultScope;
 		this.context = context;
@@ -166,6 +170,14 @@ public class NutIoc implements Ioc2 {
 
 	public void setMaker(ObjectMaker maker) {
 		this.maker = maker;
+	}
+
+	public void setMirrorFactory(MirrorFactory mirrors) {
+		this.mirrors = mirrors;
+	}
+
+	public void setDefaultScope(String defaultScope) {
+		this.defaultScope = defaultScope;
 	}
 
 }
