@@ -18,7 +18,7 @@ import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.lang.Mirror;
 
 /**
- * 
+ * 通过Aop注解来识别需要拦截的方法
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */

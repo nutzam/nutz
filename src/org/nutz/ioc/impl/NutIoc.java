@@ -49,6 +49,10 @@ public class NutIoc implements Ioc2 {
 	}
 
 	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope) {
+		this(maker,loader,context,defaultScope,null);
+	}
+	
+	protected NutIoc(ObjectMaker maker, IocLoader loader, IocContext context, String defaultScope,MirrorFactory mirrors) {
 		this.maker = maker;
 		this.defaultScope = defaultScope;
 		this.context = context;
@@ -60,7 +64,10 @@ public class NutIoc implements Ioc2 {
 		addValueProxyMaker(new DefaultValueProxyMaker());
 
 		// 初始化类工厂， 这是同 AOP 的连接点
-		mirrors = new DefaultMirrorFactory(this);
+		if (mirrors == null)
+			this.mirrors = new DefaultMirrorFactory(this);
+		else
+			this.mirrors = mirrors;
 	}
 
 	public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
