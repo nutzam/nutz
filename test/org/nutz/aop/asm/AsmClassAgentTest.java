@@ -17,6 +17,7 @@ import org.nutz.Nutzs;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.ClassAgent;
+import org.nutz.aop.interceptor.LoggingMethodOnterceptor;
 import org.nutz.aop.javassist.lstn.MethodCounter;
 import org.nutz.aop.javassist.lstn.RhinocerosListener;
 import org.nutz.aop.javassist.meta.Buffalo;
@@ -159,6 +160,8 @@ public class AsmClassAgentTest {
 	}
 
 	public ClassAgent getNewClassAgent() {
-		return new AsmClassAgent();
+		ClassAgent classAgent = new AsmClassAgent();
+		classAgent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodOnterceptor());
+		return classAgent;
 	}
 }

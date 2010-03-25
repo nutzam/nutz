@@ -10,10 +10,12 @@ import org.nutz.Nutzs;
 import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
+import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
 import org.nutz.aop.asm.test.ZZZ;
+import org.nutz.aop.interceptor.LoggingMethodOnterceptor;
 import org.nutz.lang.Mirror;
 
 public class ClassXTest {
@@ -27,6 +29,7 @@ public class ClassXTest {
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
+		classAgent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodOnterceptor());
 	}
 
 	@Test
