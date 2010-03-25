@@ -155,8 +155,8 @@ public abstract class Disks {
 			URL url = klassLoader.getResource(path);
 			if (null == url)
 				url = ClassLoader.getSystemResource(path);
-			if (null != url) 
-				return normalize(url.getPath(),enc);
+			if (null != url)
+				return normalize(url.getPath(), enc);
 			return null;
 		}
 		return path;

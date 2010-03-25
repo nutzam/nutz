@@ -32,4 +32,10 @@ public class FilesTest {
 		assertNotNull(f);
 	}
 
+	@Test
+	public void test_find_file_in_chinese_path() {
+		File f = Files.findFile("哈哈/abc.txt");
+		assertTrue(f.exists());
+	}
+
 }
