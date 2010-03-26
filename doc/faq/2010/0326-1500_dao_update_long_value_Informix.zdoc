@@ -1,0 +1,72 @@
+#title: 为什么更新 Long 型数值时，会自动改变
+#author:zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*清风徐来}
+
+参看 Issue 145
+
+数据库为： Informix Dynamic Server 2000 Version 9.21.UC2 
+
+------------------------------------------------------------------------
+问题产生的条件：
+	一个对象如果有Long型的属性 在update该对象的时候 该属性值被改变了，但并没有对该属性重新设置
+------------------------------------------------------------------------
+发生问题的调用代码：
+	{{{<JAVA>
+	public static void main(String[] args) {
+			try {
+				Trans.exec(new Atom() {
+					public void run() {
+						Dao dao;
+						try {
+							//获取一个DAO
+							dao = 
+								RecordDBUtil.getNutDao();
+														//sql语句
+														String  wheresql 
+								= "isprecordid = 50000000000000015 and state = 0";
+														//查询出Zticprecord
+														List<Zticprecord> 
+								zticprecords = dao.query(Zticprecord.class, Cnd.wrap(wheresql), null);
+														if (zticprecords!=null && 
+								zticprecords.size() > 0) {
+															Zticprecord 
+								zticprecord = zticprecords.get(0);
+															//此处打印出来是一个
+								正常的值-》50000000000000015
+															System.out.println
+								(zticprecord.getIsprecordid());
+															//更新库表-》更新后在
+								数据里发现 Isprecordid 这个值与打印出来的值不相同 数据库中的值是50000000000000016
+															dao.update
+								(zticprecord);
+							}	
+						} catch (Exception e) {
+							e.printStackTrace();
+							throw Lang.wrapThrow(e);
+						}
+					}
+				});
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}}}
+------------------------------------------------------------------------
+类Zticprecord：
+	{{{
+	@Column
+	protected long isprecordid;
+	}}}
+------------------------------------------------------------------------
+数据库Zticprecord：
+	{{{
+	Column name          Type                                    Nulls
+	isprecordid          decimal(20,0)                           no
+	}}}
+
+----------------------------------------------------------------------------------------
+解答
+
+	将属性的类型由LONG改为decimal 类型就不会出现以上情况。应该是 数据库的驱动程序的问题
+
