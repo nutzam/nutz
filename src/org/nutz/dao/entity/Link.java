@@ -7,6 +7,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.util.Context;
 
 /**
  * 描述了一条映射，它可以是：
@@ -20,7 +21,7 @@ import org.nutz.lang.segment.CharSegment;
  * @author Bird.Wyatt(bird.wyatt@gmail.com)
  * 
  */
-public class Link {
+public class Link extends Context {
 
 	/**
 	 * 创建一条一对一的映射，将<b>本 POJO</b> 的一个字段通过本身的一个参考字段指向<b>目标POJO</b>的主键。
@@ -173,6 +174,7 @@ public class Link {
 	}
 
 	private Link(Field field, Class<?> targetClass) {
+		super();
 		this.ownField = field;
 		this.targetClass = targetClass;
 	}
