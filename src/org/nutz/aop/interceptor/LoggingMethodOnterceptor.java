@@ -58,16 +58,12 @@ public class LoggingMethodOnterceptor extends AbstractMethodInterceptor {
 		return super.whenError(e, obj, method, args);
 	}
 
-
 	protected Log getLog(Object obj,Method method) {
 		if (obj == null){
 			if (method != null){
-				Class<?> klass = method.getClass();
-				if (klass != null){
-					Class<?> classZ = method.getDeclaringClass();
-					if (classZ != null)
-						return Logs.getLog(classZ);
-				}
+				Class<?> klass = method.getDeclaringClass();
+				if (klass != null)
+					return Logs.getLog(klass);
 			}
 			return Logs.getLog(LoggingMethodOnterceptor.class);
 		}	
