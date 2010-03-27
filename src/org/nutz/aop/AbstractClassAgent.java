@@ -32,15 +32,17 @@ public abstract class AbstractClassAgent implements ClassAgent {
 	}
 
 	public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
+		if (klass.getName().endsWith(CLASSNAME_SUFFIX))
+			return klass;
+		String newName = klass.getName() + CLASSNAME_SUFFIX;
+		Class<T> newClass = try2Load(newName, cd);
+		if (newClass != null)
+			return newClass;
 		if (checkClass(klass) == false)
 			return klass;
 		Pair2[] pair2s = findMatchedMethod(klass);
 		if (pair2s.length == 0)
 			return klass;
-		String newName = klass.getName() + CLASSNAME_SUFFIX;
-		Class<T> newClass = try2Load(newName);
-		if (newClass != null)
-			return newClass;
 		Constructor<T>[] constructors = getEffectiveConstructors(klass);
 		newClass = generate(cd, pair2s, newName, klass, constructors);
 		return newClass;
@@ -85,20 +87,25 @@ public abstract class AbstractClassAgent implements ClassAgent {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <T> Class<T> try2Load(String newName) {
-		ClassLoader classLoader = getClass().getClassLoader();
+	protected <T> Class<T> try2Load(String newName, ClassDefiner cd) {
 		try {
-			return (Class<T>) Class.forName(newName, false, classLoader);
+			return (Class<T>) cd.load(newName);
 		}
-		catch (ClassNotFoundException e2) {
+		catch (ClassNotFoundException e) {
+			ClassLoader classLoader = getClass().getClassLoader();
 			try {
-				return (Class<T>) Class.forName(newName);
+				return (Class<T>) Class.forName(newName, false, classLoader);
 			}
-			catch (ClassNotFoundException e1) {
+			catch (ClassNotFoundException e2) {
 				try {
-					return (Class<T>) classLoader.loadClass(newName);
+					return (Class<T>) Class.forName(newName);
 				}
-				catch (ClassNotFoundException e) {}
+				catch (ClassNotFoundException e1) {
+					try {
+						return (Class<T>) classLoader.loadClass(newName);
+					}
+					catch (ClassNotFoundException e3) {}
+				}
 			}
 		}
 		return null;
@@ -115,9 +122,8 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			for (Pair p : pairs)
 				if (p.matcher.match(m))
 					mls.add(p.listener);
-			if (mls.size() > 0) {
+			if (mls.size() > 0)
 				p2.add(new Pair2(m, mls));
-			}
 		}
 		return p2.toArray(new Pair2[p2.size()]);
 	}
