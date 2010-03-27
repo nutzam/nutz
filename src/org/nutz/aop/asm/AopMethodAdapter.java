@@ -257,21 +257,21 @@ final class AopMethodAdapter extends NullMethodAdapter {
 
 	private void unpackagePrivateData(Type type) {
 		if (type.equals(Type.BOOLEAN_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Boolean", "booleanValue", "()Z");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Boolean;)Z");
 		} else if (type.equals(Type.BYTE_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Byte", "byteValue", "()B");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Byte;)B");
 		} else if (type.equals(Type.CHAR_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Character", "charValue", "()C");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Character;)C");
 		} else if (type.equals(Type.SHORT_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Short", "shortValue", "()S");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Short;)S");
 		} else if (type.equals(Type.INT_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Integer", "intValue", "()I");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Integer;)I");
 		} else if (type.equals(Type.LONG_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue", "()J");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Long;)J");
 		} else if (type.equals(Type.FLOAT_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Float", "floatValue", "()F");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Float;)F");
 		} else if (type.equals(Type.DOUBLE_TYPE)) {
-			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double", "doubleValue", "()D");
+			mv.visitMethodInsn(INVOKESTATIC, "org/nutz/aop/asm/Helper", "valueOf", "(Ljava/lang/Double;)D");
 		}
 	}
 
