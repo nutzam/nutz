@@ -6,6 +6,11 @@ import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+/**
+ * 用于Log进出拦截器的Aop调用,这个拦截器不会改变原有方法的行为
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class LoggingMethodOnterceptor extends AbstractMethodInterceptor {
 
 	protected boolean logBeforeInvoke = true;
