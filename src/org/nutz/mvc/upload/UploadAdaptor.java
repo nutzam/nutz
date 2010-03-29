@@ -14,7 +14,8 @@ import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
-import org.nutz.mvc.upload.injector.MapInjector;
+import org.nutz.mvc.upload.injector.MapItemInjector;
+import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
 /**
@@ -61,8 +62,6 @@ public class UploadAdaptor extends AbstractAdaptor {
 	}
 
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
-		if (null == param)
-			return null;
 		// File
 		if (File.class.isAssignableFrom(type))
 			return new FileInjector(param.value());
@@ -72,7 +71,13 @@ public class UploadAdaptor extends AbstractAdaptor {
 		// TempFile
 		if (TempFile.class.isAssignableFrom(type))
 			return new TempFileInjector(param.value());
-		return new MapInjector(param.value(), type);
+		// Map
+		if (Map.class.isAssignableFrom(type))
+			return new MapSelfInjector();
+		
+		if (null == param)
+			return null;
+		return new MapItemInjector(param.value(), type);
 	}
 
 	public Object[] adapt(	HttpServletRequest request,

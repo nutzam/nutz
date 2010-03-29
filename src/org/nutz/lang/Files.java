@@ -235,13 +235,15 @@ public abstract class Files {
 	 * @throws IOException
 	 *             创建失败
 	 */
-	public static File createIfNoExists(String path) throws IOException {
-		path = Disks.absolute(path);
-		if (null == path)
-			path = Disks.home(path);
-		File f = new File(path);
+	public static File createDirIfNoExists(String path) throws IOException {
+		String thePath = Disks.absolute(path);
+		if (null == thePath)
+			thePath = Disks.normalize(path);
+		File f = new File(thePath);
 		if (!f.exists())
-			Files.createNewFile(f);
+			Files.makeDir(f);
+		if (!f.isDirectory())
+			throw Lang.makeThrow("'%s' should be a directory!", path);
 		return f;
 	}
 
@@ -423,7 +425,7 @@ public abstract class Files {
 	 * @return false，如果目录已存在。 true 创建成功
 	 * @throws IOException
 	 */
-	public static boolean makeDir(File dir){
+	public static boolean makeDir(File dir) {
 		if (null == dir)
 			return false;
 		if (dir.exists())

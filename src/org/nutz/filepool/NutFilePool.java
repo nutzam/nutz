@@ -16,7 +16,7 @@ public class NutFilePool implements FilePool {
 	public NutFilePool(String homePath, int size) {
 		this.size = size;
 		try {
-			home = Files.createIfNoExists(homePath);
+			home = Files.createDirIfNoExists(homePath);
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);

@@ -8,9 +8,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.castor.Castors;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 
-public class MapInjector extends NameInjector {
+public class MapItemInjector extends NameInjector {
 
-	public MapInjector(String name, Class<?> type) {
+	public MapItemInjector(String name, Class<?> type) {
 		super(name, type);
 	}
 

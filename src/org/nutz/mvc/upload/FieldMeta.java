@@ -46,7 +46,9 @@ public class FieldMeta {
 	public String getFileExtension() {
 		String name = getFileLocalPath();
 		int pos = name.lastIndexOf('.');
-		return name.substring(pos);
+		if (pos >= 0)
+			return name.substring(pos);
+		return "";
 	}
 
 	public String getContentDisposition() {

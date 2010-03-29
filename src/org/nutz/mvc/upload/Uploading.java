@@ -16,6 +16,7 @@ import org.nutz.filepool.FilePool;
 import org.nutz.http.Http;
 import org.nutz.lang.Strings;
 import org.nutz.lang.stream.StreamBuffer;
+import org.nutz.lang.stream.StringOutputStream;
 
 class Uploading {
 
@@ -74,8 +75,14 @@ class Uploading {
 				cursor = 0;
 				// if the field is file store to a tmp file
 				if (meta.isFile()) {
-					File tmp = tmpFiles.createFile(meta.getFileExtension());
-					OutputStream ots = new BufferedOutputStream(new FileOutputStream(tmp));
+					File tmp = null;
+					OutputStream ots;
+					if (Strings.isBlank(meta.getFileLocalPath())) {
+						ots = new StringOutputStream(new StringBuilder());
+					} else {
+						tmp = tmpFiles.createFile(meta.getFileExtension());
+						ots = new BufferedOutputStream(new FileOutputStream(tmp));
+					}
 					while (c != -1 && cursor < endValue.length) {
 						c = info.read(ins);
 						if (c == endValue[cursor]) {
@@ -90,7 +97,8 @@ class Uploading {
 						}
 					}
 					ots.close();
-					params.put(meta.getName(), new TempFile(meta, tmp));
+					if (null != tmp)
+						params.put(meta.getName(), new TempFile(meta, tmp));
 				}
 				// if the field is a post value store to the map
 				else {
