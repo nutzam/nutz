@@ -197,7 +197,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		// Before adapt, run filter
 		if (null != filters)
 			for (ActionFilter filter : filters) {
-				View view = filter.match(req);
+				View view = filter.match(req, method);
 				if (null != view) {
 					try {
 						view.render(req, resp, null);

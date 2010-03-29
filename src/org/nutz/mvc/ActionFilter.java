@@ -1,5 +1,7 @@
 package org.nutz.mvc;
 
+import java.lang.reflect.Method;
+
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -14,6 +16,6 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface ActionFilter {
 
-	View match(HttpServletRequest request);
+	View match(HttpServletRequest request, Method method);
 
 }
