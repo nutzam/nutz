@@ -221,7 +221,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 				Ioc ioc = Mvcs.getIoc(req);
 				if (null == ioc)
 					throw Lang.makeThrow(	"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
-											module);
+											moduleName);
 				/*
 				 * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
 				 */
