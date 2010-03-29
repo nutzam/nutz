@@ -160,7 +160,7 @@ public class NutIoc implements Ioc2 {
 			((CachedIocLoader) loader).clear();
 	}
 
-	public String[] getName() {
+	public String[] getNames() {
 		return loader.getName();
 	}
 

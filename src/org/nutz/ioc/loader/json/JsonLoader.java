@@ -49,7 +49,9 @@ public class JsonLoader extends MapLoader {
 			}
 			// 如果是文件，加载其内容
 			else if (f.isFile()) {
-				map.putAll(buildMap(f));
+				Map<String, Map<String, Object>> fileMap = buildMap(f);
+				if (null != fileMap && fileMap.size() > 0)
+					map.putAll(fileMap);
 			}
 		}
 	}

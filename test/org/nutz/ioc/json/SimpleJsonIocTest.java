@@ -13,10 +13,20 @@ import java.io.File;
 import org.junit.Test;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocException;
+import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.json.pojo.AnimalRace;
+import org.nutz.ioc.loader.json.JsonLoader;
 
 public class SimpleJsonIocTest {
+
+	@Test
+	public void test_null_json_file() {
+		IocLoader loader = new JsonLoader("org/nutz/ioc/json/empty.js");
+		Ioc ioc = new NutIoc(loader);
+		assertEquals(0, ioc.getNames().length);
+	}
 
 	@Test
 	public void test_normal() {
