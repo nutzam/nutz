@@ -16,6 +16,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface ActionFilter {
 
+	/**
+	 * 执行过滤
+	 * 
+	 * @param request
+	 *            当前的请求对象
+	 * @param method
+	 *            即将调用的入口函数
+	 * @return <ul>
+	 *         <li>null - 过滤去通过，可以继续执行后续操作
+	 *         <li>View 对象实例 - 过滤器认为应该终止操作，用这个视图对象来直接渲染 HTTP响应
+	 *         </ul>
+	 */
 	View match(HttpServletRequest request, Method method);
 
 }
