@@ -38,7 +38,6 @@ public class MultiPlainContent implements MultiReadable {
 		}
 	}
 
-	@Override
 	public int read() throws Exception {
 		prepareCache();
 		if (cursor <= cache.length - 1)
@@ -46,7 +45,6 @@ public class MultiPlainContent implements MultiReadable {
 		return -1;
 	}
 
-	@Override
 	public long length() {
 		prepareCache();
 		return cache.length;
@@ -60,7 +58,6 @@ public class MultiPlainContent implements MultiReadable {
 		return value;
 	}
 
-	@Override
 	public void close() throws IOException {
 		// do nothing
 	}

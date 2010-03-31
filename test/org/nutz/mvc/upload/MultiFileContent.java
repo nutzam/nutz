@@ -22,12 +22,10 @@ public class MultiFileContent implements MultiReadable {
 		}
 	}
 
-	@Override
 	public int read() throws Exception {
 		return ins.read();
 	}
 
-	@Override
 	public long length() {
 		return file.length();
 	}
@@ -48,7 +46,6 @@ public class MultiFileContent implements MultiReadable {
 		this.file = file;
 	}
 
-	@Override
 	public void close() throws IOException {
 		ins.close();
 	}

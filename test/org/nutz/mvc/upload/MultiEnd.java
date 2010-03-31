@@ -22,19 +22,16 @@ public class MultiEnd implements MultiReadable {
 		}
 	}
 
-	@Override
 	public int read() throws Exception {
 		if (cursor <= cache.length - 1)
 			return cache[cursor++];
 		return -1;
 	}
 
-	@Override
 	public long length() {
 		return cache.length;
 	}
 
-	@Override
 	public void close() throws IOException {
 		// do nothing
 	}
