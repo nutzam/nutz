@@ -1,10 +1,11 @@
 package org.nutz.mvc.upload;
 
+import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.nutz.lang.Streams;
 
 public class MultiFileContent implements MultiReadable {
 
@@ -15,11 +16,7 @@ public class MultiFileContent implements MultiReadable {
 	public MultiFileContent(String name, File file) {
 		this.name = name;
 		this.file = file;
-		try {
-			ins = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
+		ins = new BufferedInputStream(Streams.fileIn(file));
 	}
 
 	public int read() throws Exception {
