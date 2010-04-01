@@ -36,7 +36,7 @@ class Uploading {
 			throws UploadFailException {
 		// Store upload info to sessioin
 		info = new UploadInfo();
-		request.getSession().setAttribute(UploadInfo.class.getName(), info);
+		request.getSession().setAttribute(UploadInfo.SESSION_NAME, info);
 		info.setSum(request.getContentLength());
 
 		try {

@@ -5,6 +5,8 @@ import java.io.InputStream;
 
 public class UploadInfo {
 
+	public static final String SESSION_NAME = "UPLOAD_INFO";
+
 	private int sum;
 
 	private int current;
