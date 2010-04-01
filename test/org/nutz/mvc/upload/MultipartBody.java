@@ -4,6 +4,11 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nutz.lang.Lang;
+
+/**
+ * before call method "read()", please call "prepareForRead()" first just once
+ */
 public class MultipartBody {
 
 	private String contentType;
@@ -14,10 +19,21 @@ public class MultipartBody {
 	// for read
 	private int cursor = 0;
 	private ArrayList<MultiReadable> mrs = null;
+	private int mrsSize = 0;
+	private MultiReadable currentMR = null;
 
 	public MultipartBody(String contentType, String boundry) {
 		this.contentType = contentType;
 		this.boundry = boundry;
+	}
+
+	public boolean prepareForRead() {
+		this.getMultiReadables();
+		mrsSize = mrs.size();
+		if (mrsSize <= 0)
+			Lang.makeThrow("Need not test, because the request is empty.");
+		currentMR = mrs.get(cursor);
+		return true;
 	}
 
 	public long getContentLength() {
@@ -32,29 +48,19 @@ public class MultipartBody {
 	}
 
 	public int read() throws Exception {
-		if (mrs == null) {
-			mrs = this.getMultiReadables();
-		}
-		int size = mrs.size();
-		if (size > 0) {
+		int re = currentMR.read();
+		if (re == -1) {
+			currentMR = mrs.get(cursor++);
 			// 全都遍历完，返回-1,结束。
-			if (cursor >= mrs.size())
+			if (cursor >= mrsSize)
 				return -1;
-
-			MultiReadable mr = mrs.get(cursor);
-
-			int re = mr.read();
-			if (re == -1) {
-				cursor++;
-				return this.read();
-			} else
-				return re;
-		}
-		return -1;
+			return this.read();
+		} else
+			return re;
 	}
 
 	public ArrayList<MultiReadable> getMultiReadables() {
-		ArrayList<MultiReadable> mrs = new ArrayList<MultiReadable>();
+		mrs = new ArrayList<MultiReadable>();
 		int index = 0;
 		for (MultiPlainContent mpc : plainContents) {
 			mrs.add(index++, new MultiSeparator());

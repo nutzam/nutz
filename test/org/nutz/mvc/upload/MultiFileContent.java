@@ -13,10 +13,13 @@ public class MultiFileContent implements MultiReadable {
 	private File file;
 	private InputStream ins;
 
-	public MultiFileContent(String name, File file) {
+	public MultiFileContent(String name, File file, int buffer) {
 		this.name = name;
 		this.file = file;
-		ins = new BufferedInputStream(Streams.fileIn(file));
+		if (buffer > 0)
+			ins = new BufferedInputStream(Streams.fileIn(file), buffer);
+		else
+			ins = new BufferedInputStream(Streams.fileIn(file));
 	}
 
 	public int read() throws Exception {
