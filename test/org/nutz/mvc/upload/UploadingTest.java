@@ -19,8 +19,7 @@ import org.nutz.lang.Streams;
 
 public class UploadingTest {
 
-	public static void main(String[] args) throws IOException,
-			UploadFailException {
+	public static void main(String[] args) throws IOException, UploadFailException {
 
 		if (args.length != 1) {
 			err.println("You need give a path for mock.properties");
@@ -77,8 +76,8 @@ public class UploadingTest {
 	public void testMultiSeparator() throws Exception {
 		MultiSeparator ms = new MultiSeparator();
 		String except = "\r\n--"
-				+ MockProperties.getMockProperties().getProperty("boundary")
-				+ "\r\n";
+						+ MockProperties.getMockProperties().getProperty("boundary")
+						+ "\r\n";
 		String real = this.readMultiReadable(ms);
 		assertEquals(except, real);
 	}
@@ -87,8 +86,8 @@ public class UploadingTest {
 	public void testMultiEnd() throws Exception {
 		MultiEnd me = new MultiEnd();
 		String except = "\r\n--"
-				+ MockProperties.getMockProperties().getProperty("boundary")
-				+ "--\r\n";
+						+ MockProperties.getMockProperties().getProperty("boundary")
+						+ "--\r\n";
 		String real = this.readMultiReadable(me);
 		assertEquals(except, real);
 	}
@@ -105,10 +104,11 @@ public class UploadingTest {
 	@Test
 	public void testMultipartBody() throws Exception {
 		Properties pros = MockProperties.getMockProperties();
-		String contentType = " " + pros.getProperty("Content-Type")
-				+ " boundary=" + pros.getProperty("boundary");
-		MultipartBody mb = new MultipartBody(contentType, pros
-				.getProperty("boundary"));
+		String contentType = " "
+								+ pros.getProperty("Content-Type")
+								+ " boundary="
+								+ pros.getProperty("boundary");
+		MultipartBody mb = new MultipartBody(contentType, pros.getProperty("boundary"));
 		File file = Files.findFile("org/nutz/mvc/upload/upload.txt");
 		MultiFileContent mfc = new MultiFileContent("fileData", file, -1);
 		mb.addMultiFileContent(mfc);
@@ -119,10 +119,11 @@ public class UploadingTest {
 	@Test
 	public void testMockServletInputStream_Read() throws IOException {
 		Properties pros = MockProperties.getMockProperties();
-		String contentType = " " + pros.getProperty("Content-Type")
-				+ " boundary=" + pros.getProperty("boundary");
-		MultipartBody mb = new MultipartBody(contentType, pros
-				.getProperty("boundary"));
+		String contentType = " "
+								+ pros.getProperty("Content-Type")
+								+ " boundary="
+								+ pros.getProperty("boundary");
+		MultipartBody mb = new MultipartBody(contentType, pros.getProperty("boundary"));
 		File file = Files.findFile("org/nutz/mvc/upload/upload.txt");
 		MultiFileContent mfc = new MultiFileContent("fileData", file, -1);
 		mb.addMultiFileContent(mfc);
@@ -138,10 +139,11 @@ public class UploadingTest {
 	@Test
 	public void testMockServletInputStream_ReadByte() throws IOException {
 		Properties pros = MockProperties.getMockProperties();
-		String contentType = " " + pros.getProperty("Content-Type")
-				+ " boundary=" + pros.getProperty("boundary");
-		MultipartBody mb = new MultipartBody(contentType, pros
-				.getProperty("boundary"));
+		String contentType = " "
+								+ pros.getProperty("Content-Type")
+								+ " boundary="
+								+ pros.getProperty("boundary");
+		MultipartBody mb = new MultipartBody(contentType, pros.getProperty("boundary"));
 		File file = Files.findFile("org/nutz/mvc/upload/upload.txt");
 		MultiFileContent mfc = new MultiFileContent("fileData", file, -1);
 		mb.addMultiFileContent(mfc);
@@ -161,10 +163,10 @@ public class UploadingTest {
 
 	public static void testParsepeed() throws UploadFailException, IOException {
 		Properties pros = MockProperties.getMockProperties();
-		String contentType = pros.getProperty("Content-Type") + " boundary="
-				+ pros.getProperty("boundary");
-		MultipartBody mb = new MultipartBody(contentType, pros
-				.getProperty("boundary"));
+		String contentType = pros.getProperty("Content-Type")
+								+ " boundary="
+								+ pros.getProperty("boundary");
+		MultipartBody mb = new MultipartBody(contentType, pros.getProperty("boundary"));
 		String str = pros.getProperty("files");
 		String[] files = str.split(",");
 		int i = 0;
@@ -175,28 +177,36 @@ public class UploadingTest {
 		// System.out.println(readMultipartBody(mb));
 		MockHttpRequest request = new MockHttpRequest(mb);
 		String charset = pros.getProperty("charset");
-		String poolPath = "org/nutz/mvc/upload/NutFilePool";
+		String poolPath = pros.getProperty("tmp");
 		File pool = new File(poolPath);
 		pool.delete();
 		pool.mkdirs();
 
 		Stopwatch sw = Stopwatch.begin();
+		out.println("Check temp file pool");
 		FilePool tmpFiles = new NutFilePool(pool.getAbsolutePath(), 500);
-		Uploading up = new Uploading();
+
+		int buffer = 0;
+		try {
+			buffer = Integer.parseInt(pros.getProperty("buffer.upload"));
+		}
+		catch (NumberFormatException e) {}
+		out.println("buffer.upload: " + buffer);
+
+		Uploading up = new Uploading(buffer);
 		up.parse(request, charset, tmpFiles);
-		Files.deleteDir(pool);
 		sw.stop();
-		System.out.println(String
-				.format("Copy file use %sms", sw.getDuration()));
+		out.println(sw.toString());
 	}
 
 	private static void addFiles(MultipartBody mb, File file, int index) {
 		if (file.isFile()) {
-			MultiFileContent mfc = new MultiFileContent("fileData"
-					+ String.valueOf(index++), file, Integer
-					.valueOf(MockProperties.getMockProperties().getProperty(
-							"buffer")));
+			Integer buffer = MockProperties.getBufferIn();
+			MultiFileContent mfc = new MultiFileContent("fileData" + String.valueOf(index++),
+														file,
+														buffer);
 			mb.addMultiFileContent(mfc);
+			out.printf("\t[buffer.in:%d] - %s\n", buffer, file.getName());
 			return;
 		} else if (file.isDirectory()) {
 			File[] files = file.listFiles();

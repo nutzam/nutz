@@ -29,4 +29,18 @@ public class MockProperties {
 		return p;
 	}
 
+	private static Integer bufferIn;
+
+	public static int getBufferIn() {
+		if (null == bufferIn) {
+			int bin = 0;
+			try {
+				bin = Integer.valueOf(getMockProperties().getProperty("buffer.in"));
+			}
+			catch (NumberFormatException e) {}
+			bufferIn = Integer.valueOf(bin);
+		}
+		return bufferIn.intValue();
+	}
+
 }

@@ -47,18 +47,24 @@ public class UploadAdaptor extends AbstractAdaptor {
 
 	private String charset;
 	private FilePool pool;
+	private int buffer;
 
 	public UploadAdaptor(String path) {
-		this(path, "2000");
+		this(path, 0, "UTF-8", 2000);
 	}
 
-	public UploadAdaptor(String path, String size) {
-		this(path, size, "UTF-8");
+	public UploadAdaptor(String path, int buffer) {
+		this(path, buffer, "UTF-8", 2000);
 	}
 
-	public UploadAdaptor(String path, String size, String charset) {
+	public UploadAdaptor(String path, int buffer, String charset) {
+		this(path, buffer, charset, 2000);
+	}
+
+	public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
 		this.charset = charset;
-		this.pool = new NutFilePool(path, Integer.parseInt(size));
+		this.pool = new NutFilePool(path, poolSize);
+		this.buffer = buffer;
 	}
 
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
@@ -74,7 +80,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 		// Map
 		if (Map.class.isAssignableFrom(type))
 			return new MapSelfInjector();
-		
+
 		if (null == param)
 			return null;
 		return new MapItemInjector(param.value(), type);
@@ -85,7 +91,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
-			Uploading ing = new Uploading();
+			Uploading ing = new Uploading(buffer);
 			ing.parse(request, charset, pool);
 			map = ing.getParams();
 		}

@@ -22,6 +22,12 @@ class Uploading {
 
 	private static final char[] endName = {0x0D, 0x0A, 0x0D, 0x0A};
 
+	public Uploading(int bufferSize) {
+		this.bufferSize = bufferSize;
+	}
+
+	private int bufferSize;
+
 	private Map<String, Object> params;
 
 	private UploadInfo info;
@@ -38,8 +44,12 @@ class Uploading {
 			// Analyze the request data
 			InputStream ins = request.getInputStream();
 			// Buffer the stream
-			if (!(ins instanceof BufferedInputStream))
-				ins = new BufferedInputStream(ins);
+			if (!(ins instanceof BufferedInputStream)) {
+				if (bufferSize > 0)
+					ins = new BufferedInputStream(ins, bufferSize);
+				else
+					ins = new BufferedInputStream(ins);
+			}
 			// Check content type
 			String contentType = request.getContentType();
 			String s = "\r\n--" + Http.multipart.getBoundary(contentType);
