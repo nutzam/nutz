@@ -17,6 +17,11 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Streams;
 
+/**
+ * test uploading's performance
+ * 
+ * @author amosleaf
+ */
 public class UploadingTest {
 
 	public static void main(String[] args) throws IOException, UploadFailException {
