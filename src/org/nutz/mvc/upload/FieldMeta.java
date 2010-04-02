@@ -20,7 +20,7 @@ public class FieldMeta {
 
 	private static String formatValue(String s) {
 		s = Strings.trim(s);
-		if (s.charAt(0) == '"')
+		if (null != s && s.length() > 2 && s.charAt(0) == '"')
 			return s.substring(1, s.length() - 1);
 		return s;
 	}

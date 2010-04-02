@@ -107,7 +107,9 @@ class Uploading {
 						}
 					}
 					ots.close();
-					if (null != tmp)
+					if (null != tmp
+						&& !Strings.isBlank(meta.getFileLocalPath())
+						&& tmp.length() > 0)
 						params.put(meta.getName(), new TempFile(meta, tmp));
 				}
 				// if the field is a post value store to the map
