@@ -61,7 +61,8 @@ public class AsmClassAgent extends AbstractClassAgent {
 			CLASS_LEVEL = Opcodes.V1_6;
 		}
 		finally {
-			Streams.safeClose(is);
+			if (is != null)
+				Streams.safeClose(is);
 		}
 	}
 
