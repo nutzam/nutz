@@ -50,7 +50,8 @@ public class DefaultLoading implements Loading {
 
 	private void saveRootPathToContext(ServletConfig config) {
 		String root = config.getServletContext().getRealPath("/").replace('\\', '/');
-		root = root.substring(0, root.length() - 1);
+		if (root.endsWith("/"))
+			root = root.substring(0, root.length() - 1);
 		context.set("app.root", root);
 	}
 
