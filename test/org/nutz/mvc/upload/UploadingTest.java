@@ -38,7 +38,7 @@ public class UploadingTest {
 		}
 
 		Properties p = new Properties();
-		p.load(Streams.fileInr(f));
+		p.load(Streams.fileIn(f));
 		MockProperties.setMockProperties(p);
 
 		out.println("Begin ...");
