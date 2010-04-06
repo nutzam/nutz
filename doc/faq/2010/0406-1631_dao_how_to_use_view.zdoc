@@ -1,0 +1,51 @@
+#title: 用一个实体类对应一个视图,??解应该是@table还是@view?
+#author:zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*Van}
+
+一般一个entity对应数据库的一张table,做法是在entity上注解@table
+现在我有一个entity要对应数据库的一个view,How? `@View`?
+
+我要用一个实体类对应一个视图,??解应该是@table还是@view?
+
+------------------------------------------------------------------------
+解答
+
+	参见： http://code.google.com/p/nutz/wiki/dao_view
+	
+	实际上你写
+	{{{<JAVA>
+	@Table("t_pet")
+	public class Pet {
+		...
+	}}}
+	相当于你写了
+	{{{<JAVA>
+	@Table("t_pet")
+	@View("t_pet")
+	public class Pet {
+		...
+	}}}
+	在某些通过视图计算出来的字段上加上 @Readonly，那么在插入和更新的时候，将会忽略这些字段
+------------------------------------------------------------------------
+相关聊天记录
+	{{{
+	Van  : 假如我再注解@view的话就覆盖了?
+	zozoh: 对
+	Van  : t_pet可以是数据库的一个view么?
+	zozoh: 可以
+	Van  : 噢..那这里的@view跟数据库里的view其实不是一个概念来的咯
+	zozoh: 实际上 @Table 里也可以写成一个视图，在查询的时候不会有问题
+	zozoh: 但是插入，更新和删除时，就会出错
+	zozoh: 这里的 @View 表示 对应视图的意思
+	zozoh: 这里的 @Table 表示 对应数据表的意思
+	zozoh: Nutz.Dao 根据你提供的信息为你拼装 SQL
+	Van  : 噢..了解
+	Van  : 3Q~
+	zozoh: 不客气
+	Van  : ^_^
+	}}}
+
+
+
+
