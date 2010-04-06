@@ -32,7 +32,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getContextPath() {
-		throw Lang.noImplement();
+		return null;
 	}
 
 	public Cookie[] getCookies() {
