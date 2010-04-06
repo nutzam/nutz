@@ -2,12 +2,12 @@ package org.nutz.mvc.init;
 
 import org.junit.After;
 import org.junit.Before;
+import org.nutz.mock.servlet.MockHttpServletRequest;
+import org.nutz.mock.servlet.MockHttpServletResponse;
+import org.nutz.mock.servlet.MockHttpSession;
+import org.nutz.mock.servlet.MockServletConfig;
+import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mvc.NutServlet;
-import org.springframework.mock.web.MockHttpServletRequest;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.mock.web.MockServletConfig;
-import org.springframework.mock.web.MockServletContext;
 
 public abstract class NutServletTest {
 	
@@ -33,6 +33,7 @@ public abstract class NutServletTest {
 
 		session = new MockHttpSession(servletContext);
 		request = new MockHttpServletRequest(servletContext);
+		request.setSession(session);
 		response = new MockHttpServletResponse();
 	}
 	
