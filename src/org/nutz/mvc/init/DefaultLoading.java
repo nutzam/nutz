@@ -42,12 +42,12 @@ public class DefaultLoading implements Loading {
 	public DefaultLoading(ServletConfig config) {
 		this.config = config;
 		context = new Context();
-		saveRootPathToContext(config);
+		saveRootPathToContext();
 		if (log.isDebugEnabled())
 			log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
 	}
 
-	private void saveRootPathToContext(ServletConfig config) {
+	private void saveRootPathToContext() {
 		String root = config.getServletContext().getRealPath("/").replace('\\', '/');
 		if (root.endsWith("/"))
 			root = root.substring(0, root.length() - 1);
