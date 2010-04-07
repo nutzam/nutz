@@ -86,7 +86,6 @@ public class MockHttpSession implements HttpSession {
 		throw Lang.noImplement();
 	}
 
-	@Override
 	public Enumeration<String> getAttributeNames() {
 		return new Vector<String>(attributeMap.keySet()).elements();
 	}

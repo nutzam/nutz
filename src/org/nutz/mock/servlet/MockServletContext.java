@@ -65,7 +65,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
 			return hashSet;
 		}
 		catch (IOException e) {
-			log.info("IOException",e);
+			log.info("IOException", e);
 			return null;
 		}
 	}
@@ -77,13 +77,13 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	public Servlet getServlet(String name) throws ServletException {
 		throw Lang.noImplement();
 	}
-	
+
 	private String servletContextName;
 
 	public String getServletContextName() {
 		return servletContextName;
 	}
-	
+
 	public void setServletContextName(String servletContextName) {
 		this.servletContextName = servletContextName;
 	}
@@ -101,13 +101,13 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	}
 
 	public void log(Exception arg0, String arg1) {
-		log.info(arg1,arg0);
+		log.info(arg1, arg0);
 	}
 
 	public void log(String arg0, Throwable arg1) {
-		log.info(arg0,arg1);
+		log.info(arg0, arg1);
 	}
-	
+
 	protected Map<String, Object> attributeMap = new HashMap<String, Object>();
 
 	public void removeAttribute(String key) {
@@ -127,6 +127,10 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	}
 
 	public ServletContext getContext(String arg0) {
+		throw Lang.noImplement();
+	}
+
+	public String getContextPath() {
 		throw Lang.noImplement();
 	}
 
