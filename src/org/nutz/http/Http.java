@@ -1,18 +1,10 @@
 package org.nutz.http;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.io.Writer;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.Iterator;
 import java.util.Map;
 
-import org.nutz.lang.Lang;
+import org.nutz.http.Request.METHOD;
 
 public class Http {
 
@@ -64,48 +56,7 @@ public class Http {
 	}
 
 	public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
-		StringBuilder sb = new StringBuilder();
-		try {
-			URL oUrl = new URL(url);
-			URLConnection conn = oUrl.openConnection();
-			if (null != params && params.size() > 0) {
-				conn.setDoOutput(true);
-				Writer w = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
-				Iterator<String> it = params.keySet().iterator();
-				String key = it.next();
-				Object v = params.get(key);
-				w.write(URLEncoder.encode(key, inenc));
-				w.write('=');
-				if (null != v)
-					w.write(URLEncoder.encode(params.get(key).toString(), inenc));
-				while (it.hasNext()) {
-					key = it.next();
-					w.write('&');
-					w.write(URLEncoder.encode(key, inenc));
-					w.write('=');
-					v = params.get(key);
-					if (null != v)
-						w.write(URLEncoder.encode(params.get(key).toString(), inenc));
-				}
-				w.flush();
-				w.close();
-				w = null;
-			}
-			// Get the response
-			BufferedReader br = new BufferedReader(null == reenc ? new InputStreamReader(conn.getInputStream())
-																: new InputStreamReader(conn.getInputStream(),
-																						reenc));
-			String line;
-			while ((line = br.readLine()) != null) {
-				sb.append(line).append('\n');
-			}
-			br.close();
-			br = null;
-		}
-		catch (Throwable e) {
-			throw Lang.wrapThrow(e);
-		}
-		return sb.toString();
+		return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
 	}
 
 	public static String encode(Object s) throws UnsupportedEncodingException {

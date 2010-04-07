@@ -42,7 +42,7 @@ public class UploadingTest {
 		MockProperties.setMockProperties(p);
 
 		out.println("Begin ...");
-		UploadingTest.testParsepeed();
+		new UploadingTest().testParsepeed();
 		out.println("... Done!");
 	}
 
@@ -57,8 +57,9 @@ public class UploadingTest {
 
 	@Test
 	public void testMultiFileHead() throws Exception {
-		MultiFileHead mfh = new MultiFileHead("fileData", "D:\\a.txt");
-		String except = "Content-Disposition: form-data; name=\"fileData\"; filename=\"D:\\a.txt\"\r\nContent-Type: text/plain\r\n\r\n";
+		File file = Files.findFile("哈哈\\abc.txt");
+		MultiFileHead mfh = new MultiFileHead("fileData", file.getPath());
+		String except = "Content-Disposition: form-data; name=\"fileData\"; filename=\""+file.getPath()+"\"\r\nContent-Type: text/plain\r\n\r\n";
 		String tr = this.readMultiReadable(mfh);
 		assertEquals(except, tr);
 	}
@@ -166,7 +167,8 @@ public class UploadingTest {
 		sb.toString();
 	}
 
-	public static void testParsepeed() throws UploadFailException, IOException {
+	@Test
+	public void testParsepeed() throws UploadFailException, IOException {
 		Properties pros = MockProperties.getMockProperties();
 		String contentType = pros.getProperty("Content-Type")
 								+ " boundary="
@@ -176,7 +178,7 @@ public class UploadingTest {
 		String[] files = str.split(",");
 		int i = 0;
 		for (String f : files) {
-			addFiles(mb, new File(f), i);
+			addFiles(mb, Files.findFile(f), i);
 		}
 		mb.prepareForRead();
 		// System.out.println(readMultipartBody(mb));

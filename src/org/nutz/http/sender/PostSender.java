@@ -37,10 +37,8 @@ public class PostSender extends Sender {
 				}
 				w.flush();
 				w.close();
-				w = null;
 			}
 			return createResponse(getResponseHeader());
-
 		}
 		catch (Exception e) {
 			throw new HttpException(request.getUrl().toString(), e);
