@@ -144,7 +144,7 @@
 			<test name="org.nutz.TestAll" outfile="${tmp-junitreport-dir}" >
 				<formatter type="xml" />
 			</test>
-			<jvmarg value="-Demma.coverage.out.file=${basedir}/${classes-dir-emma}/metadata.emma" />
+			<jvmarg value="-Demma.coverage.out.file=${basedir}/${classes-dir-emma}/session.emma" />
 			<jvmarg value="-Demma.coverage.out.merge=true" />
 		</junit>
 		<junitreport todir="${pub-junitreport-dir}">
