@@ -12,16 +12,18 @@
 			* JDK1.5 版本 jar
 			* JDK1.6 版本 jar
 			* JUnit 测试结果
+			* Emma 代码覆盖率报告
 			* 用户手册
 		
 		环境变量 ${DEPS} 声明了所有依赖 jar 的位置，它们应该包括：
 			1. log4j 以及 log4j.properties
-			2. JUnit
+			2. JUnit 4
 			3. Nutzdoc
 			4. Servlet-API
 			5. nutz-test.properties 以及其相应的数据库驱动
 			6. commons-dbcp
 			7. commons-pool
+			8. emma 用于生成代码覆盖率报告
 		
 		环境变量 ${OUTPUT} 声明了 zip 文件包的输出位置
 		
@@ -43,6 +45,7 @@
 	<property name="classes-dir-jdk5" value="${tmp-dir}/jdk5"></property>
 	<property name="classes-dir-jdk6" value="${tmp-dir}/jdk6"></property>
 	<property name="classes-dir-test" value="${tmp-dir}/test"></property>
+	<property name="classes-dir-emma" value="${tmp-dir}/emma"></property>
 	<property name="javadoc-dir" value="${pub-dir}/api"></property>
 	<property name="tmp-junitreport-dir" value="${tmp-dir}/junit-report"></property>
 	<property name="pub-junitreport-dir" value="${pub-dir}/junit-report"></property>
@@ -56,6 +59,10 @@
 	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.jar.pre}-jdk6.jar"></property>
 	<property name="nutz.pub.zip" value="${pub-dir}/${nutz.jar.pre}.zip"></property>
 	
+	<!-- 允许emma -->
+	<property name="emma.enabled" value="true" />
+
+	
 	<path id="nutz-classpath">
 		<fileset dir="${DEPS}" includes="*.jar"></fileset>
 		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />
@@ -63,6 +70,8 @@
 		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />
 		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
 	</path>
+	
+	<taskdef resource="emma_ant.properties" classpathref="nutz-classpath" />
 	
 	<target name="clean">
 		<delete dir="${tmp-dir}"></delete>
@@ -74,6 +83,7 @@
 		<mkdir dir="${classes-dir-jdk5}"/>
 		<mkdir dir="${classes-dir-jdk6}"/>
 		<mkdir dir="${classes-dir-test}"/>
+		<mkdir dir="${classes-dir-emma}"/>
 		<mkdir dir="${pub-dir}"/>
 		<mkdir dir="${pub-junitreport-dir}"/>
 		<mkdir dir="${tmp-junitreport-dir}"/>
@@ -106,9 +116,14 @@
 		<jar destfile="${nutz.jar.jdk6}" basedir="${classes-dir-jdk6}"></jar>
 	</target>
 	
-	
-	
 	<target name="test">
+		<emma enabled="${emma.enabled}">
+			<instr instrpath="${classes-dir-jdk6}" 
+				destdir="${classes-dir-emma}" 
+				metadatafile="${classes-dir-emma}/metadata.emma" 
+				merge="true">
+			</instr>
+		</emma>
 		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8"
 			includeantruntime="false">
 			<classpath>
@@ -122,17 +137,29 @@
 		<junit fork="true" showoutput="false" printsummary="yes" filtertrace="true">
 			<classpath>
 				<path path="${classes-dir-test}"></path>
+				<path path="${classes-dir-emma}"></path>
 				<path path="${classes-dir-jdk6}"></path>
 				<path refid="nutz-classpath"/>
 			</classpath>
 			<test name="org.nutz.TestAll" outfile="${tmp-junitreport-dir}" >
 				<formatter type="xml" />
 			</test>
+			<jvmarg value="-Demma.coverage.out.file=${basedir}/${classes-dir-emma}/metadata.emma" />
+			<jvmarg value="-Demma.coverage.out.merge=true" />
 		</junit>
 		<junitreport todir="${pub-junitreport-dir}">
 			<report format="frames" todir="${pub-junitreport-dir}"/>
 			<fileset dir="${tmp-dir}" includes="*.xml"></fileset>
 		</junitreport>
+		<mkdir dir="${pub-dir}/emma"/>
+	    <emma enabled="${emma.enabled}" >
+	      <report sourcepath="src" >
+	        <fileset dir="${classes-dir-emma}" >
+	          <include name="*.emma" />
+	        </fileset>
+	        <html outfile="../${pub-dir}/emma/coverage.html" />
+	      </report>
+	    </emma>
 	</target>
 	
 	<target name="jdoc">
