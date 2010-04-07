@@ -156,7 +156,7 @@ public abstract class Disks {
 			if (null == url)
 				url = ClassLoader.getSystemResource(path);
 			if (null != url)
-				return normalize(url.getPath(), enc);
+				return normalize(url.getPath(), "UTF-8");//通过URL获取String,一律使用UTF-8编码进行解码
 			return null;
 		}
 		return path;

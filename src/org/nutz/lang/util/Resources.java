@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -185,7 +184,7 @@ public final class Resources {
 
 	private static String decodePath(String path) {
 		try {
-			return URLDecoder.decode(path, Charset.defaultCharset().name());
+			return URLDecoder.decode(path, "UTF-8");
 		}
 		catch (UnsupportedEncodingException e) {}
 		return path;
