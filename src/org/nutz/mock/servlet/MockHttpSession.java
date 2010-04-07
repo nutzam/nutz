@@ -54,10 +54,6 @@ public class MockHttpSession implements HttpSession {
 		return servletContext;
 	}
 
-	public HttpSessionContext getSessionContext() {
-		throw Lang.noImplement();
-	}
-
 	public Object getValue(String arg0) {
 		throw Lang.noImplement();
 	}
@@ -88,6 +84,13 @@ public class MockHttpSession implements HttpSession {
 
 	public Enumeration<String> getAttributeNames() {
 		return new Vector<String>(attributeMap.keySet()).elements();
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public HttpSessionContext getSessionContext() {
+		return null;
 	}
 
 }

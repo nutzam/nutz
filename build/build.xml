@@ -46,7 +46,8 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debug="true" debuglevel="lines,vars,source" encoding="UTF-8" deprecation="true" nowarn="false" source="${JDK_VERSION}" target="${JDK_VERSION}">
+		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
+		source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="utf-8">
 			<classpath refid="CLASSPATH" />
 		</javac>
 	</target>

@@ -10,16 +10,16 @@ import org.junit.Test;
 import org.nutz.lang.Files;
 
 public class NutFilePoolTest {
-	
+
 	private FilePool filePool;
-	
+
 	@Before
 	public void init() {
 		filePool = new NutFilePool("tmp-pool");
 	}
-	
+
 	@After
-	public void close() throws Throwable{
+	public void close() throws Throwable {
 		filePool.clear();
 		Files.deleteDir(new File("tmp-pool"));
 	}
@@ -52,7 +52,7 @@ public class NutFilePoolTest {
 	@Test
 	public void testGetFileId() {
 		File tmp = filePool.createFile("tmp");
-		assertFalse(-1 == filePool.getFileId(tmp));
+		assertEquals(-1, filePool.getFileId(tmp));
 	}
 
 	@Test

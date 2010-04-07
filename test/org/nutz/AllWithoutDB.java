@@ -14,6 +14,7 @@ import org.nutz.mvc.AllMvc;
 @Suite.SuiteClasses({	AllLog.class,
 						AllLang.class,
 						AllJson.class,
+						AllFilePool.class,
 						AllIoc.class,
 						AllMvc.class,
 						AllAop.class,
