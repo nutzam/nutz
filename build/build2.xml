@@ -57,7 +57,7 @@
 	<property name="nutz.jar.source" value="${pub-dir}/${nutz.jar.pre}-source.jar"></property>
 	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.jar.pre}-jdk5.jar"></property>
 	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.jar.pre}-jdk6.jar"></property>
-	<property name="nutz.pub.zip" value="${pub-dir}/${nutz.jar.pre}.zip"></property>
+	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.jar.pre}.zip"></property>
 	
 	<!-- 允许emma -->
 	<property name="emma.enabled" value="true" />
@@ -65,6 +65,7 @@
 	
 	<path id="nutz-classpath">
 		<fileset dir="${DEPS}" includes="*.jar"></fileset>
+		<pathelement location="build/deps" />
 		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />
 		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
 		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />
@@ -193,6 +194,6 @@
 		<antcall target="jdoc"></antcall>
 		<antcall target="manual"></antcall>
 		<antcall target="create-zip"></antcall>
-		<!--antcall target="clean"></antcall-->
+		<antcall target="clean"></antcall>
 	</target>
 </project>
