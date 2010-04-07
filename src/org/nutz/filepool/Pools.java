@@ -2,10 +2,13 @@ package org.nutz.filepool;
 
 import java.io.File;
 
+import org.nutz.lang.Files;
+
 /**
  * 文件池的一些帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class Pools {
 
@@ -17,14 +20,14 @@ public class Pools {
 		StringBuilder sb = new StringBuilder(home.getAbsolutePath());
 		sb.append(String.format("%016X", id).replaceAll("\\p{XDigit}{2}", "/$0"));
 		if (null != suffix)
-			sb.append(suffix);
+			sb.append(".").append(suffix);
 		return sb.toString();
 	}
 
 	public static int getFileId(File home, File f) {
-		String path = f.getAbsolutePath();
-		String s = path.substring(home.getAbsolutePath().length(), path.lastIndexOf('.'));
-		return Integer.parseInt(s.replaceAll("[\\\\/]", ""), 16);
+		if (f !=null && f.exists())
+			return Integer.parseInt(Files.getMajorName(f), 16);
+		return -1;
 	}
 
 }
