@@ -140,7 +140,8 @@
 	</target>
 	
 	<target name="manual">
-		<java classname="org.nutz.doc.Doc">
+		<java classname="org.nutz.doc.Doc" fork="true">
+			<sysproperty key="jaxp.debug" value="true"/>
 			<classpath>
 				<path refid="nutz-classpath"></path>
 				<path path="${classes-dir-jdk6}"></path>
