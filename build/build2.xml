@@ -5,10 +5,33 @@
 		By wendal (wendal1985@gmail.com)
 		
 		说明:
-		1. 需要依赖deps里面的jar,为了生成manual,需要加入nutzdoc.jar
-		2. 用于构建正式版时,修改nutz.jar.pre
-		3. 共生成: 源文件jar/jdk5-jar/jdk6-jar/javadoc/zDoc(manual)
+			1. 用于构建正式版时,修改nutz.jar.pre
+		
+		本构建用来生成一个 zip 包，其中包括
+			* API 文档
+			* JDK1.5 版本 jar
+			* JDK1.6 版本 jar
+			* JUnit 测试结果
+			* 用户手册
+		
+		环境变量 ${DEPS} 声明了所有依赖 jar 的位置，它们应该包括：
+			1. log4j 以及 log4j.properties
+			2. JUnit
+			3. Nutzdoc
+			4. Servlet-API
+			5. nutz-test.properties 以及其相应的数据库驱动
+			6. commons-dbcp
+			7. commons-pool
+		
+		环境变量 ${OUTPUT} 声明了 zip 文件包的输出位置
+		
+		构建结束后，会删除所有临时文件
     </description>
+	
+	<property environment="env" />
+	
+	<property name="DEPS" value="${env.DEPS}" />
+	<property name="OUTPUT" value="${env.OUTPUT}" />
 	
 	<property name="svn-version" value="r1015"></property>
 	<property name="nutz-version" value="1.a.27"></property>
@@ -34,7 +57,11 @@
 	<property name="nutz.pub.zip" value="${pub-dir}/${nutz.jar.pre}.zip"></property>
 	
 	<path id="nutz-classpath">
-		<fileset dir="build/deps" includes="*.jar"></fileset>
+		<fileset dir="${DEPS}" includes="*.jar"></fileset>
+		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />
+		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
+		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />
+		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
 	</path>
 	
 	<target name="clean">
@@ -138,5 +165,6 @@
 		<antcall target="jdoc"></antcall>
 		<antcall target="manual"></antcall>
 		<antcall target="create-zip"></antcall>
+		<!--antcall target="clean"></antcall-->
 	</target>
 </project>
