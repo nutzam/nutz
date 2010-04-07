@@ -80,7 +80,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void setStatus(int arg0) {
-		throw Lang.noImplement();
+//		throw Lang.noImplement();
 	}
 
 	public void setStatus(int arg0, String arg1) {

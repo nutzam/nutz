@@ -1,6 +1,7 @@
 package org.nutz.mvc.init;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletConfig;
@@ -11,6 +12,7 @@ import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.Resources;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Loading;
@@ -96,13 +98,26 @@ public class DefaultLoading implements Loading {
 
 			// Add sub modules
 			Modules modules = mainModule.getAnnotation(Modules.class);
-			if (null != modules)
+			if (null != modules){
 				for (Class<?> module : modules.value()) {
 					if (log.isDebugEnabled())
 						log.debugf("Module: <%s>", module.getName());
 
 					urls.add(makers, module);
 				}
+				for (String packageZ : modules.packages()) {
+					if (log.isDebugEnabled())
+						log.debugf("Scan Module in package : <%s>", packageZ);
+					List<Class<?>> list = Resources.scanClass(null,Package.getPackage(packageZ));
+					if (list != null)
+						for (Class<?> module : list) {
+							if (log.isDebugEnabled())
+								log.debugf("Module: <%s>", module.getName());
+							
+							urls.add(makers, module);
+						}
+				}
+			}
 			config.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 
 			// Load localization

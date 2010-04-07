@@ -31,14 +31,25 @@ public final class Resources {
 	 */
 	public static List<Class<?>> scanClass(Class<?> baseClass) {
 		File dir = getBasePath(baseClass);
+		return scanClass(dir,baseClass.getPackage());
+	}
+	
+	/**
+	 * It will list all Class object in the package you give.
+	 * <p/>Whatever the class file you give existed in normal directory or jar file.
+	 * <p/><b>Not working in GAE</b>
+	 * @return a class List
+	 * @throws NullPointerException when packageZ is null
+	 */
+	public static List<Class<?>> scanClass(File dir,Package packageZ){
 		if (dir == null)
-			return null;
+			dir = Files.findFile(packageZ.getName().replaceAll("\\.", "/"));
 		String[] classNames = null;
 		String jarPath = getJarPath(dir);
 		if (jarPath != null) {
-			classNames = findInJar(jarPath, baseClass);
+			classNames = findInJar(jarPath, packageZ);
 		} else
-			classNames = findInClassPath(dir, baseClass);
+			classNames = findInClassPath(dir, packageZ);
 		if (classNames == null)
 			return null;
 		List<Class<?>> list = new ArrayList<Class<?>>(classNames.length);
@@ -126,12 +137,11 @@ public final class Resources {
 		return null;
 	}
 
-	private static String[] findInJar(String jarPath, Class<?> baseClass) {
+	private static String[] findInJar(String jarPath, Package packageA) {
 		try {
 			jarPath = decodePath(jarPath);
 			ZipEntry[] entrys = Files.findEntryInZip(	new ZipFile(jarPath),
-														baseClass	.getPackage()
-																	.getName()
+															packageA.getName()
 																	.replace('.', '/')
 																+ "/\\w*.class");
 			if (null != entrys && entrys.length > 0) {
@@ -148,7 +158,7 @@ public final class Resources {
 		return null;
 	}
 
-	private static String[] findInClassPath(File dir, Class<?> classZ) {
+	private static String[] findInClassPath(File dir, Package packageA) {
 		try {
 			File[] files = dir.listFiles(new FileFilter() {
 				public boolean accept(File pathname) {
@@ -157,7 +167,6 @@ public final class Resources {
 			});
 			if (null != files && files.length > 0) {
 				String[] classNames = new String[files.length];
-				Package packageA = classZ.getPackage();
 				for (int i = 0; i < files.length; i++) {
 					String fileName = files[i].getName();
 					String classShortName = fileName.substring(0, fileName.length()

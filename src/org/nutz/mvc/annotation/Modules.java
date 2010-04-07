@@ -8,5 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface Modules {
-	Class<?>[] value();
+	Class<?>[] value() default {};
+	String[] packages() default {};
 }
