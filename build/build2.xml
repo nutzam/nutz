@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="nutz" default="run" basedir="../">
+	<description>
+        用于构建快照版,稍作修改也可用于正式版的构建
+		By wendal (wendal1985@gmail.com)
+		
+		说明:
+		1. 需要依赖deps里面的jar,为了生成manual,需要加入nutzdoc.jar
+		2. 用于构建正式版时,修改nutz.jar.pre
+		3. 共生成: 源文件jar/jdk5-jar/jdk6-jar/javadoc/zDoc(manual)
+    </description>
+	
+	<property name="svn-version" value="r1015"></property>
+	<property name="nutz-version" value="1.a.27"></property>
+	<tstamp>
+		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
+	</tstamp>
+	<property name="tmp-dir" value="build/tmp"></property>
+	<property name="pub-dir" value="build/pub"></property>
+	<property name="classes-dir-jdk5" value="${tmp-dir}/jdk5"></property>
+	<property name="classes-dir-jdk6" value="${tmp-dir}/jdk6"></property>
+	<property name="classes-dir-test" value="${tmp-dir}/test"></property>
+	<property name="javadoc-dir" value="${pub-dir}/api"></property>
+	<property name="tmp-junitreport-dir" value="${tmp-dir}/junit-report"></property>
+	<property name="pub-junitreport-dir" value="${pub-dir}/junit-report"></property>
+	<property name="zdoc-dir" value="${pub-dir}/manual"></property>
+
+	<property name="nutz.jar.pre" value="nutz-${nutz-version}-snapshot-${svn-version}-${now-date}"></property>
+	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> --> <!-- 用于正式版 -->
+
+	<property name="nutz.jar.source" value="${pub-dir}/${nutz.jar.pre}-source.jar"></property>
+	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.jar.pre}-jdk5.jar"></property>
+	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.jar.pre}-jdk6.jar"></property>
+	<property name="nutz.pub.zip" value="${pub-dir}/${nutz.jar.pre}.zip"></property>
+	
+	<path id="nutz-classpath">
+		<fileset dir="build/deps" includes="*.jar"></fileset>
+	</path>
+	
+	<target name="clean">
+		<delete dir="${tmp-dir}"></delete>
+		<delete dir="${pub-dir}"></delete>
+	</target>
+	
+	<target name="init">
+		<mkdir dir="${tmp-dir}"/>
+		<mkdir dir="${classes-dir-jdk5}"/>
+		<mkdir dir="${classes-dir-jdk6}"/>
+		<mkdir dir="${classes-dir-test}"/>
+		<mkdir dir="${pub-dir}"/>
+		<mkdir dir="${pub-junitreport-dir}"/>
+		<mkdir dir="${tmp-junitreport-dir}"/>
+		<mkdir dir="${javadoc-dir}"/>
+		<mkdir dir="${zdoc-dir}"/>
+	</target>
+	
+	<target name="create-jar">
+		<jar destfile="${nutz.jar.source}" basedir="src" encoding="utf-8" ></jar>
+		
+		<javac destdir="${classes-dir-jdk5}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.5" target="1.5" encoding="utf-8"
+			classpathref="nutz-classpath" includeantruntime="false">
+		</javac>
+		<copy todir="${classes-dir-jdk5}/META-INF">
+			<fileset dir="META-INF" includes="**/*.xml"></fileset>
+		</copy>
+		<copy todir="${classes-dir-jdk5}">
+			<fileset file="License.txt"></fileset>
+		</copy>
+		<jar destfile="${nutz.jar.jdk5}" basedir="${classes-dir-jdk5}"></jar>
+		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8"
+			classpathref="nutz-classpath" includeantruntime="false">
+		</javac>
+		<copy todir="${classes-dir-jdk6}/META-INF">
+			<fileset dir="META-INF" includes="**/*.xml"></fileset>
+		</copy>
+		<copy todir="${classes-dir-jdk6}">
+			<fileset file="License.txt"></fileset>
+		</copy>
+		<jar destfile="${nutz.jar.jdk6}" basedir="${classes-dir-jdk6}"></jar>
+	</target>
+	
+	
+	
+	<target name="test">
+		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8"
+			includeantruntime="false">
+			<classpath>
+				<path refid="nutz-classpath"></path>
+				<path path="${classes-dir-jdk6}"></path>
+			</classpath>
+		</javac>
+		<copy todir="${classes-dir-test}">
+			<fileset excludes="**/*.java" dir="test"></fileset>
+		</copy>
+		<junit fork="true" showoutput="false" printsummary="yes" filtertrace="true">
+			<classpath>
+				<path path="${classes-dir-test}"></path>
+				<path path="${classes-dir-jdk6}"></path>
+				<path refid="nutz-classpath"/>
+			</classpath>
+			<test name="org.nutz.TestAll" outfile="${tmp-junitreport-dir}" >
+				<formatter type="xml" />
+			</test>
+		</junit>
+		<junitreport todir="${pub-junitreport-dir}">
+			<report format="frames" todir="${pub-junitreport-dir}"/>
+			<fileset dir="${tmp-dir}" includes="*.xml"></fileset>
+		</junitreport>
+	</target>
+	
+	<target name="jdoc">
+		<javadoc sourcepath="src" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
+	</target>
+	
+	<target name="manual">
+		<java classname="org.nutz.doc.Doc">
+			<classpath>
+				<path refid="nutz-classpath"></path>
+				<path path="${classes-dir-jdk6}"></path>
+			</classpath>
+			<arg value="${basedir}/doc/manual"/>
+			<arg value="${basedir}/${zdoc-dir}"/>
+			<arg value=".html"/>
+		</java>
+	</target>
+	
+	<target name="create-zip">
+		<zip destfile="${nutz.pub.zip}">
+			<fileset dir="${pub-dir}"></fileset>
+		</zip>
+	</target>
+	
+	<target name="run">
+		<antcall target="clean"></antcall>
+		<antcall target="init"></antcall>
+		<antcall target="create-jar"></antcall>
+		<antcall target="test"></antcall>
+		<antcall target="jdoc"></antcall>
+		<antcall target="manual"></antcall>
+		<antcall target="create-zip"></antcall>
+	</target>
+</project>
