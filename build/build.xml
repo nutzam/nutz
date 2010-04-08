@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="nutz" default="run" basedir=".">
 	<description>
-       Content Publish Server aumatic build
+       Nutz Framework build file
     </description>
 	<!-- set global properties for this build -->
 	<property environment="env" />
