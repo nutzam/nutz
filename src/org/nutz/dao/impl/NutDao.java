@@ -765,7 +765,7 @@ public class NutDao implements Dao {
 	}
 
 	public int updateIgnoreNull(final Object obj) {
-		final int[] re = new int[0];
+		final int[] re = {0};
 		FieldFilter.create(obj.getClass(), true).run(new Atom() {
 			public void run() {
 				re[0] = update(obj);
