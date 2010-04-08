@@ -62,4 +62,15 @@ public class UpdateTest extends DaoCase {
 		p = dao.fetch(Platoon.class, "sF");
 		assertEquals("xyz", p.getLeaderName());
 	}
+	
+	@Test
+	public void updateIgnoreNull() {
+		Platoon p = dao.fetch(Platoon.class, "sF");
+		String name = p.getLeaderName(); // xyz
+		p.setLeaderName(null);
+		int re = dao.updateIgnoreNull(p);
+		assertEquals(1, re);
+		p = dao.fetch(Platoon.class, "sF");
+		assertEquals(name, p.getLeaderName());
+	}
 }
