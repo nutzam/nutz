@@ -18,8 +18,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class MockServletContext extends MockServletObject implements ServletContext {
+	
+	private static Log log = Logs.getLog(MockServletContext.class);
 
 	public int getMajorVersion() {
 		throw Lang.noImplement();

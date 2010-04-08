@@ -7,9 +7,7 @@ import java.util.Vector;
 
 import javax.servlet.ServletContext;
 
-import org.nutz.mock.MockObject;
-
-public class MockServletObject extends MockObject{
+public class MockServletObject{
 	
 	private Map<String, String> initParameterMap = new HashMap<String, String>();
 	
