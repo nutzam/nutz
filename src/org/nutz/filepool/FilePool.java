@@ -17,12 +17,12 @@ public interface FilePool {
 	 *            文件后缀名
 	 * @return 是否存在这个文件
 	 */
-	boolean hasFile(int fId, String suffix);
+	boolean hasFile(long fId, String suffix);
 
 	/**
 	 * @return 当前池中最大的文件 ID 号
 	 */
-	int current();
+	long current();
 
 	/**
 	 * 从池中删除一个文件
@@ -33,7 +33,7 @@ public interface FilePool {
 	 *            文件后缀名
 	 * @return 被删除的文件
 	 */
-	File removeFile(int fId, String suffix);
+	File removeFile(long fId, String suffix);
 
 	/**
 	 * 在池中创建一个文件
@@ -52,7 +52,18 @@ public interface FilePool {
 	 *            文件
 	 * @return 文件在池中的 ID，如果不在池中，返回 -1
 	 */
-	int getFileId(File f);
+	long getFileId(File f);
+
+	/**
+	 * 获取一个文件
+	 * 
+	 * @param fId
+	 *            文件ID
+	 * @param suffix
+	 *            文件后缀名
+	 * @return 文件对象
+	 */
+	File getFile(long fId, String suffix);
 
 	/**
 	 * 清空文件池

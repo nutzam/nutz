@@ -13,7 +13,7 @@ public class NutFilePool implements FilePool {
 		this(homePath, 0);
 	}
 
-	public NutFilePool(String homePath, int size) {
+	public NutFilePool(String homePath, long size) {
 		this.size = size;
 		try {
 			home = Files.createDirIfNoExists(homePath);
@@ -51,8 +51,8 @@ public class NutFilePool implements FilePool {
 	}
 
 	private File home;
-	private int cursor;
-	private int size;
+	private long cursor;
+	private long size;
 
 	public void clear() {
 		try {
@@ -68,7 +68,7 @@ public class NutFilePool implements FilePool {
 	public File createFile(String suffix) {
 		if (size > 0 && cursor >= size)
 			cursor = -1;
-		int id = ++cursor;
+		long id = ++cursor;
 		if (size > 0 && id >= size)
 			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
 		File re = Pools.getFileById(home, id, suffix);
@@ -82,11 +82,11 @@ public class NutFilePool implements FilePool {
 		return re;
 	}
 
-	public int current() {
+	public long current() {
 		return cursor;
 	}
 
-	public int getFileId(File f) {
+	public long getFileId(File f) {
 		try {
 			return Pools.getFileId(home, f);
 		}
@@ -95,15 +95,19 @@ public class NutFilePool implements FilePool {
 		}
 	}
 
-	public File removeFile(int id, String suffix) {
-		File f = Pools.getFileById(home, id, suffix);
+	public File removeFile(long fId, String suffix) {
+		File f = Pools.getFileById(home, fId, suffix);
 		Files.deleteFile(f);
 		return f;
 	}
 
-	public boolean hasFile(int id, String suffix) {
-		File f = Pools.getFileById(home, id, suffix);
+	public boolean hasFile(long fId, String suffix) {
+		File f = Pools.getFileById(home, fId, suffix);
 		return f.exists();
+	}
+
+	public File getFile(long fId, String suffix) {
+		return Pools.getFileById(home, fId, suffix);
 	}
 
 }
