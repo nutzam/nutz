@@ -35,7 +35,7 @@
 	<property name="DEPS" value="${env.DEPS}" />
 	<property name="OUTPUT" value="${env.OUTPUT}" />
 	
-	<property name="svn-version" value="r1015"></property>
+	<property name="svn-version" value="r1037"></property>
 	<property name="nutz-version" value="1.a.27"></property>
 	<tstamp>
 		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
@@ -85,9 +85,10 @@
 		<mkdir dir="${classes-dir-jdk6}"/>
 		<mkdir dir="${classes-dir-test}"/>
 		<mkdir dir="${classes-dir-emma}"/>
+		<mkdir dir="${tmp-junitreport-dir}"/>
 		<mkdir dir="${pub-dir}"/>
 		<mkdir dir="${pub-junitreport-dir}"/>
-		<mkdir dir="${tmp-junitreport-dir}"/>
+		<mkdir dir="${pub-dir}/emma"/>
 		<mkdir dir="${javadoc-dir}"/>
 		<mkdir dir="${zdoc-dir}"/>
 	</target>
@@ -152,19 +153,19 @@
 			<report format="frames" todir="${pub-junitreport-dir}"/>
 			<fileset dir="${tmp-dir}" includes="*.xml"></fileset>
 		</junitreport>
-		<mkdir dir="${pub-dir}/emma"/>
 	    <emma enabled="${emma.enabled}" >
-	      <report sourcepath="src" >
+	      <report sourcepath="src" encoding="utf-8">
 	        <fileset dir="${classes-dir-emma}" >
 	          <include name="*.emma" />
 	        </fileset>
 	        <html outfile="../${pub-dir}/emma/coverage.html" />
+	      	<txt outfile="../${pub-dir}/emma/coverage.txt" />
 	      </report>
 	    </emma>
 	</target>
 	
 	<target name="jdoc">
-		<javadoc sourcepath="src" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
+		<javadoc sourcepath="src" classpathref="nutz-classpath" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
 	</target>
 	
 	<target name="manual">

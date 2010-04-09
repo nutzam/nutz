@@ -284,8 +284,8 @@ public abstract class Files {
 	 * 
 	 * @param path
 	 *            文件路径
-	 * @param klass
-	 *            参考的类， -- 会用这个类的 ClassLoader
+	 * @param klassLoader
+	 *            使用该 ClassLoader进行查找
 	 * 
 	 * @return 文件对象，如果不存在，则为 null
 	 */
