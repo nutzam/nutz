@@ -107,7 +107,22 @@ public class NutFilePool implements FilePool {
 	}
 
 	public File getFile(long fId, String suffix) {
-		return Pools.getFileById(home, fId, suffix);
+		File f = Pools.getFileById(home, fId, suffix);
+		if (!f.exists())
+			return null;
+		return f;
+	}
+
+	public File returnFile(long fId, String suffix) {
+		File f = Pools.getFileById(home, fId, suffix);
+		if (!f.exists())
+			try {
+				Files.createNewFile(f);
+			}
+			catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
+		return f;
 	}
 
 }

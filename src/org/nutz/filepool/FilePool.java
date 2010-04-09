@@ -55,7 +55,7 @@ public interface FilePool {
 	long getFileId(File f);
 
 	/**
-	 * 获取一个文件
+	 * 获取一个文件，如果文件不存在，返回null
 	 * 
 	 * @param fId
 	 *            文件ID
@@ -64,6 +64,15 @@ public interface FilePool {
 	 * @return 文件对象
 	 */
 	File getFile(long fId, String suffix);
+
+	/**
+	 * 获取一个文件，如果文件不存在，创建它
+	 * 
+	 * @param fId
+	 * @param suffix
+	 * @return 文件对象
+	 */
+	File returnFile(long fId, String suffix);
 
 	/**
 	 * 清空文件池

@@ -53,4 +53,12 @@ public class StringsTest {
 		assertEquals("", Strings.removeFirst("A", 'A'));
 		assertEquals("ABCD", Strings.removeFirst("ABCD", 'B'));
 	}
+
+	@Test
+	public void testUpperWord() {
+		assertEquals("", Strings.upperWord("-", '-'));
+		assertEquals("", Strings.upperWord("---", '-'));
+		assertEquals("aBCD", Strings.upperWord("a-b-c-d", '-'));
+		assertEquals("helloWorld", Strings.upperWord("hello-world", '-'));
+	}
 }

@@ -545,4 +545,37 @@ public abstract class Strings {
 		return email_Pattern.matcher(input).matches();
 	}
 
+	/**
+	 * 将一个字符串某一个字符后面的字母变成大写，比如
+	 * 
+	 * <pre>
+	 *  upperWord("hello-world", '-') => "helloWorld"
+	 * </pre>
+	 * 
+	 * @param s
+	 *            字符串
+	 * @param c
+	 *            字符
+	 * 
+	 * @return 转换后字符串
+	 */
+	public static String upperWord(CharSequence s, char c) {
+		StringBuilder sb = new StringBuilder();
+		int len = s.length();
+		for (int i = 0; i < len; i++) {
+			char ch = s.charAt(i);
+			if (ch == c) {
+				do {
+					i++;
+					if (i >= len)
+						return sb.toString();
+					ch = s.charAt(i);
+				} while (ch == c);
+				sb.append(Character.toUpperCase(ch));
+			} else {
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
 }
