@@ -47,7 +47,6 @@ public class Log4jLogAdapter implements LogAdapter, Plugin {
 
 	final private boolean isPropertyFileConfigured() {
 		String configureValue = System.getProperty("log4j.defaultInitOverride");
-
 		if (configureValue != null && !"false".equalsIgnoreCase(configureValue))
 			return false;
 
