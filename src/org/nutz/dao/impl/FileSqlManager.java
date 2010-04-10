@@ -4,13 +4,11 @@ import static java.lang.String.format;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,20 +24,14 @@ import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
-import org.nutz.lang.ClassLoaderUtil;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedCharArray;
+import org.nutz.log.Logs;
 
 public class FileSqlManager implements SqlManager {
-
-	private final static FilenameFilter defaultSqkFileFilter = new FilenameFilter() {
-		public boolean accept(File dir, String name) {
-			return name.endsWith(".sqls");
-		}
-	};
 
 	public FileSqlManager(String... paths) {
 		this.paths = paths;
@@ -49,7 +41,6 @@ public class FileSqlManager implements SqlManager {
 	private String[] paths;
 	private Map<String, String> sqlMaps;
 	private List<String> keys;
-	private FilenameFilter sqkFileFilter;
 
 	public boolean contains(String key) {
 		return sqlMaps.containsKey(key);
@@ -127,51 +118,25 @@ public class FileSqlManager implements SqlManager {
 		return keys.toArray(new String[keys.size()]);
 	}
 
-	private void buildSQLMaps() throws MalformedURLException, IOException {
+	private void buildSQLMaps() {
 		sqlMaps = new HashMap<String, String>();
 		if (null != paths)
 			for (String path : paths) {
 				if (null == path)
 					continue;
-				File f = Files.findFile(Strings.trim(path));
-				/*
-				 * 这里重点解决 sql文件打在jar包中的时候出现的错误问题 Caused by:
-				 * java.io.FileNotFoundException:
-				 * file:\E:\workspaceWork\paihao\WebRoot\WEB-INF\lib\jax_00_platform.jar!\com\jax\pf\fr\app\authority\dao\sql\exec.sqls
-				 * (文件名、目录名或卷标语法不正确。)
-				 * 
-				 */
-				// 如果文件不存在就从loader中查找
-				if (f == null || (!f.exists())) {
-
-					InputStream stream = ClassLoaderUtil.getStream(path);
-					if (stream != null) {
-						InputStreamReader reader = null;
-						try {
-							reader = new InputStreamReader(stream, "UTF-8");
-							loadSQL(reader);
-						}
-						finally {
-							Streams.safeClose(reader);
-							Streams.safeClose(stream);
-						}
-					}
-				} else {
-					File[] files;
-					if (f.isDirectory()) {
-						files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
-																	: sqkFileFilter);
-					} else
-						files = Lang.array(f);
+				InputStream stream = Files.findFileAsStream(path);
+				if (stream != null) {
+					Reader reader = null;
 					try {
-						for (File file : files) {
-
-							Reader stream = Streams.fileInr(file);
-							loadSQL(stream);
-						}
+						reader = new InputStreamReader(stream);
+						loadSQL(reader);
 					}
-					catch (Exception e) {
-						throw Lang.wrapThrow(e);
+					catch (IOException e) {
+						Logs.getLog(getClass()).warnf("Fail to load sqls from %s",e);
+					}
+					finally {
+						Streams.safeClose(reader);
+						Streams.safeClose(stream);
 					}
 				}
 			}
