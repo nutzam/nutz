@@ -145,15 +145,16 @@ public class FileSqlManager implements SqlManager {
 				if (f == null || (!f.exists())) {
 
 					InputStream stream = ClassLoaderUtil.getStream(path);
-
-					InputStreamReader reader = null;
-					try {
-						reader = new InputStreamReader(stream, "UTF-8");
-						loadSQL(reader);
-					}
-					finally {
-						Streams.safeClose(reader);
-						Streams.safeClose(stream);
+					if (stream != null) {
+						InputStreamReader reader = null;
+						try {
+							reader = new InputStreamReader(stream, "UTF-8");
+							loadSQL(reader);
+						}
+						finally {
+							Streams.safeClose(reader);
+							Streams.safeClose(stream);
+						}
 					}
 				} else {
 					File[] files;
