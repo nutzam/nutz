@@ -1,30 +1,37 @@
 package org.nutz.dao.impl;
 
+import static java.lang.String.format;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.nutz.dao.*;
+import org.nutz.dao.SqlManager;
+import org.nutz.dao.SqlNotFoundException;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
+import org.nutz.lang.ClassLoaderUtil;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedCharArray;
-
-import static java.lang.String.*;
 
 public class FileSqlManager implements SqlManager {
 
@@ -81,7 +88,13 @@ public class FileSqlManager implements SqlManager {
 	}
 
 	public void refresh() {
-		this.buildSQLMaps();
+		try {
+			this.buildSQLMaps();
+		}
+		catch (Exception ex) {
+			throw Lang.wrapThrow(ex);
+		}
+
 	}
 
 	public String get(String key) {
@@ -114,36 +127,51 @@ public class FileSqlManager implements SqlManager {
 		return keys.toArray(new String[keys.size()]);
 	}
 
-	private void buildSQLMaps() {
+	private void buildSQLMaps() throws MalformedURLException, IOException {
 		sqlMaps = new HashMap<String, String>();
 		if (null != paths)
 			for (String path : paths) {
 				if (null == path)
 					continue;
 				File f = Files.findFile(Strings.trim(path));
-				if (f == null)
-					throw Lang.makeThrow("Can not find file [%s]", Strings.trim(path));
-				File[] files;
-				if (f.isDirectory()) {
-					files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
-																: sqkFileFilter);
-				} else
-					files = Lang.array(f);
-				try {
-					for (File file : files) {
-						SqlFileBuilder p = new SqlFileBuilder(new BufferedReader(Streams.fileInr(file)));
+				/*
+				 * 这里重点解决 sql文件打在jar包中的时候出现的错误问题 Caused by:
+				 * java.io.FileNotFoundException:
+				 * file:\E:\workspaceWork\paihao\WebRoot\WEB-INF\lib\jax_00_platform.jar!\com\jax\pf\fr\app\authority\dao\sql\exec.sqls
+				 * (文件名、目录名或卷标语法不正确。)
+				 * 
+				 */
+				// 如果文件不存在就从loader中查找
+				if (f == null || (!f.exists())) {
 
-						Iterator<String> it = p.keys().iterator();
-						keys = new ArrayList<String>(p.map.size());
-						while (it.hasNext()) {
-							String key = it.next();
-							String value = Strings.trim(p.get(key));
-							addSql(key, value);
+					InputStream stream = ClassLoaderUtil.getStream(path);
+
+					InputStreamReader reader = null;
+					try {
+						reader = new InputStreamReader(stream, "UTF-8");
+						loadSQL(reader);
+					}
+					finally {
+						Streams.safeClose(reader);
+						Streams.safeClose(stream);
+					}
+				} else {
+					File[] files;
+					if (f.isDirectory()) {
+						files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
+																	: sqkFileFilter);
+					} else
+						files = Lang.array(f);
+					try {
+						for (File file : files) {
+
+							Reader stream = Streams.fileInr(file);
+							loadSQL(stream);
 						}
 					}
-				}
-				catch (Exception e) {
-					throw Lang.wrapThrow(e);
+					catch (Exception e) {
+						throw Lang.wrapThrow(e);
+					}
 				}
 			}
 	}
@@ -235,6 +263,34 @@ public class FileSqlManager implements SqlManager {
 	public void remove(String key) {
 		this.keys.remove(key);
 		this.sqlMaps.remove(key);
+	}
+
+	/**
+	 * 执行根据流来加载sql内容的操作
+	 * 
+	 * @param stream
+	 * @throws IOException
+	 * @author mawenming at 2010-4-10 上午10:04:17
+	 */
+	private void loadSQL(Reader stream) throws IOException {
+		BufferedReader bufferedReader = null;
+		try {
+			bufferedReader = new BufferedReader(stream);
+			SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
+
+			Iterator<String> it = p.keys().iterator();
+			keys = new ArrayList<String>(p.map.size());
+			while (it.hasNext()) {
+				String key = it.next();
+				String value = Strings.trim(p.get(key));
+				addSql(key, value);
+			}
+		}
+		finally {
+			Streams.safeClose(bufferedReader);
+			Streams.safeClose(stream);
+		}
+
 	}
 
 }
