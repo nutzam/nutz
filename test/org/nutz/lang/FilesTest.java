@@ -3,6 +3,10 @@ package org.nutz.lang;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 import org.junit.Test;
 
@@ -38,4 +42,13 @@ public class FilesTest {
 		assertTrue(f.exists());
 	}
 
+	@Test
+	public void test_find_file_in_jar() throws ClassNotFoundException, IOException{
+		URL url = getClass().getResource("/org/nutz/lang/one.jar");
+		assertNotNull(url);
+		ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{url});
+		InputStream is = Files.findFileAsStream("org/nutz/plugin/Plugin.w", classLoader.loadClass("org.nutz.lang.XXXX"));
+		assertNotNull(is);
+		assertEquals(is.available(), 133);
+	}
 }
