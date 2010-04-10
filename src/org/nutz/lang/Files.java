@@ -317,7 +317,7 @@ public abstract class Files {
 	 * 
 	 * @return 输出流
 	 */
-	public static InputStream findFileAsStream(String path, Class<Files> klass, String enc) {
+	public static InputStream findFileAsStream(String path, Class<?> klass, String enc) {
 		File f = new File(path);
 		if (f.exists())
 			try {
@@ -358,7 +358,7 @@ public abstract class Files {
 	 * 
 	 * @return 输出流
 	 */
-	public static InputStream findFileAsStream(String path, Class<Files> klass) {
+	public static InputStream findFileAsStream(String path, Class<?> klass) {
 		return findFileAsStream(path, klass, Charset.defaultCharset().name());
 	}
 
