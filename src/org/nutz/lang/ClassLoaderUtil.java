@@ -18,7 +18,7 @@ import org.nutz.log.Logs;
 public class ClassLoaderUtil {
 	private static final Log log = Logs.getLog(ClassLoaderUtil.class);
 
-	private static URL getResource1(String resourceName, Class callingClass) {
+	private static URL getResource1(String resourceName, Class<?> callingClass) {
 		if (null == resourceName || "".equals(resourceName)) {
 			return null;
 		}
@@ -59,7 +59,7 @@ public class ClassLoaderUtil {
 
 	}
 
-	public static URL getResource(String resourceName, Class callingClass) {
+	public static URL getResource(String resourceName, Class<?> callingClass) {
 		URL url = getResource1(resourceName, callingClass);
 
 		// StringBuffer txt1 = new StringBuffer();
@@ -69,7 +69,7 @@ public class ClassLoaderUtil {
 		return url;
 	}
 
-	public static InputStream getResourceAsStream(String resourceName, Class callingClass) {
+	public static InputStream getResourceAsStream(String resourceName, Class<?> callingClass) {
 		URL url = getResource(resourceName, callingClass);
 		try {
 			return url != null ? url.openStream() : null;
@@ -80,7 +80,7 @@ public class ClassLoaderUtil {
 		return null;
 	}
 
-	public static Class loadClass(String className, Class callingClass)
+	public static Class<?> loadClass(String className, Class<?> callingClass)
 			throws ClassNotFoundException {
 		try {
 			return Thread.currentThread().getContextClassLoader().loadClass(className);
@@ -98,14 +98,13 @@ public class ClassLoaderUtil {
 		}
 	}
 
- 
 	/**
 	 * 加载Java类。 使用全限定类名
 	 * 
 	 * @param className
 	 * @return
 	 */
-	public static Class loadClass(String className) {
+	public static Class<?> loadClass(String className) {
 		try {
 			return getClassLoader().loadClass(className);
 		}
@@ -126,8 +125,8 @@ public class ClassLoaderUtil {
 	/**
 	 * *提供相对于classpath的资源路径，返回文件的输入流
 	 * 
-	 * @param relativePath 必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用
-	 *            ../来查找
+	 * @param relativePath
+	 *            必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用 ../来查找
 	 * @return 文件输入流
 	 * @throws IOException
 	 * @throws MalformedURLException
@@ -159,7 +158,8 @@ public class ClassLoaderUtil {
 	/**
 	 * *
 	 * 
-	 * @paramr elativePath必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用 ../来查找
+	 * @paramr elativePath必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用
+	 *         ../来查找
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws IOException
