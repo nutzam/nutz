@@ -78,7 +78,7 @@ public class SimpleJsonIocTest {
 
 	@Test
 	public void test_env() {
-		Animal f = A("name:{env:'path'},misc:[{env:'path'}]");
+		Animal f = A("name:{env:'PATH'},misc:[{env:'PATH'}]");
 		assertTrue(f.getName().length() > 0);
 		assertEquals(f.getName(), f.getMisc().get(0).toString());
 	}

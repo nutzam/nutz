@@ -167,7 +167,7 @@ public class TransLevelTest extends DaoCase {
 		}
 	}
 
-	@Test
+	// cancel the this @Test, in OpenJDK, it will go into an endless looping
 	public void testRepeatableRead() {
 		// SqlServer 在这个测试中，两个线程会相互等待 ...
 		if (dao.meta().isSqlServer()) {
@@ -204,7 +204,7 @@ public class TransLevelTest extends DaoCase {
 		assertEquals("xyz", c2.getName());
 	}
 
-	@Test
+	// cancel the this @Test, in OpenJDK, it will go into an endless looping
 	public void test_serializable_in_2_thread() {
 		// MySql 会导致两个线程互相锁。估计是 InnoDB 只是到表级锁的原因
 		// 所以，这个测试不测试 MySql
