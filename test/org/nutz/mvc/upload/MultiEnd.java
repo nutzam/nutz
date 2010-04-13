@@ -35,4 +35,12 @@ public class MultiEnd implements MultiReadable {
 	public void close() throws IOException {
 		// do nothing
 	}
+
+	public void reset() {
+		cursor = 0;
+		String str = "\r\n--"
+				+ MockProperties.getMockProperties().getProperty("boundary")
+				+ "--\r\n";
+		cache = str.getBytes();
+	}
 }
