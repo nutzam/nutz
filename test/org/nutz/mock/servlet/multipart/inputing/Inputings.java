@@ -27,8 +27,12 @@ public abstract class Inputings {
 		return new StringInputing("\r\n");
 	}
 
+	public static Inputing boundary(String boundary) {
+		return new StringInputing(boundary);
+	}
+
 	public static Inputing data(String str) {
-		return wrap(str);
+		return new StringInputing(str);
 	}
 
 	public static Inputing file(File f) {

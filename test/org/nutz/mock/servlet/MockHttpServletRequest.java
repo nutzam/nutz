@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.lang.Lang;
+import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
 public class MockHttpServletRequest implements HttpServletRequest {
 
@@ -25,6 +26,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	public MockHttpServletRequest(MockServletContext servletContext) {
 		this.servletContext = servletContext;
+		this.headers = new HashMap<String, String>();
 	}
 
 	public String getAuthType() {
@@ -43,15 +45,21 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw Lang.noImplement();
 	}
 
-	public String getHeader(String arg0) {
-		throw Lang.noImplement();
+	protected Map<String, String> headers;
+
+	public String getHeader(String name) {
+		return headers.get(name);
+	}
+
+	public void setHeader(String name, Object value) {
+		headers.put(name, value.toString());
 	}
 
 	public Enumeration<String> getHeaderNames() {
-		throw Lang.noImplement();
+		return Lang.enumeration(headers.keySet());
 	}
 
-	public Enumeration<?> getHeaders(String arg0) {
+	public Enumeration<?> getHeaders(String name) {
 		throw Lang.noImplement();
 	}
 
@@ -221,6 +229,21 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	public void setInputStream(ServletInputStream ins) {
 		this.inputStream = ins;
+	}
+
+	public void init() {
+		if (null != inputStream)
+			if (inputStream instanceof MultipartInputStream) {
+				((MultipartInputStream) inputStream).init();
+				try {
+					this.setHeader("content-length", inputStream.available());
+					this.setHeader(	"content-type",
+									((MultipartInputStream) inputStream).getContentType());
+				}
+				catch (IOException e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
 	}
 
 	public String getLocalAddr() {

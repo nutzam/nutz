@@ -34,6 +34,7 @@
 	
 	<property name="DEPS" value="${env.DEPS}" />
 	<property name="OUTPUT" value="${env.OUTPUT}" />
+	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	
 	<property name="svn-version" value="r1037"></property>
 	<property name="nutz-version" value="1.a.27"></property>
@@ -64,6 +65,9 @@
 
 	
 	<path id="nutz-classpath">
+		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
+			<include name="*.jar" />
+		</fileset>
 		<fileset dir="${DEPS}" includes="*.jar"></fileset>
 		<pathelement location="build/deps" />
 		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />

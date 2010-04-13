@@ -11,6 +11,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -1120,4 +1121,23 @@ public abstract class Lang {
 		}
 	}
 
+	/**
+	 * 返回一个集合对象的枚举对象。实际上就是对 Iterator 接口的一个封装
+	 * 
+	 * @param col
+	 *            集合对象
+	 * @return 枚举对象
+	 */
+	public static <T> Enumeration<T> enumeration(Collection<T> col) {
+		final Iterator<T> it = col.iterator();
+		return new Enumeration<T>() {
+			public boolean hasMoreElements() {
+				return it.hasNext();
+			}
+
+			public T nextElement() {
+				return it.next();
+			}
+		};
+	}
 }

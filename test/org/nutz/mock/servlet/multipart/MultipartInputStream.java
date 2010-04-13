@@ -26,12 +26,13 @@ public class MultipartInputStream extends MockInputStream {
 
 	private String boundary;
 
-	public MultipartInputStream() {
-		boundary = "---------------------------" + Long.toHexString(System.currentTimeMillis());
+	public MultipartInputStream(String boundary) {
+		this.boundary = boundary;
 		mimes = new HashMap<String, String>();
 		addMime("png", "image/png");
 		addMime("jpg", "image/jpg");
 		addMime("gif", "image/gif");
+		addMime("txt", "text/plain");
 		items = new LinkedList<MultipartItem>();
 		items.add(new EndlMultipartItem(boundary));
 	}
@@ -39,7 +40,7 @@ public class MultipartInputStream extends MockInputStream {
 	private String getContentType(String suffixName) {
 		String ct = mimes.get(suffixName);
 		if (null == ct)
-			return "text/plain";
+			return "application/octet-stream";
 		return ct;
 	}
 
@@ -49,7 +50,11 @@ public class MultipartInputStream extends MockInputStream {
 
 	@Override
 	public int available() throws IOException {
-		return super.available();
+		int re = 0;
+		Iterator<MultipartItem> it = items.iterator();
+		while (it.hasNext())
+			re += it.next().size();
+		return re;
 	}
 
 	public MultipartInputStream addMime(String suffix, String contentType) {
@@ -70,7 +75,6 @@ public class MultipartInputStream extends MockInputStream {
 		items.add(items.size() - 1, item);
 	}
 
-	@Override
 	public int read() throws IOException {
 		int d = current.read();
 		while (-1 == d) {
@@ -82,7 +86,6 @@ public class MultipartInputStream extends MockInputStream {
 		return d;
 	}
 
-	@Override
 	public void init() {
 		try {
 			for (MultipartItem item : items)

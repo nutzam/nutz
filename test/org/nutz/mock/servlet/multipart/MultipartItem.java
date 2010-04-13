@@ -3,13 +3,16 @@ package org.nutz.mock.servlet.multipart;
 import java.io.IOException;
 
 import org.nutz.mock.servlet.multipart.inputing.Inputing;
+import org.nutz.mock.servlet.multipart.inputing.Inputings;
+import org.nutz.mock.servlet.multipart.inputing.VoidInputing;
 
 public abstract class MultipartItem {
 
 	public MultipartItem(String boundary) {
-		inputs = new Inputing[5];
+		inputs = new Inputing[7];
 		last = 0;
 		index = 0;
+		addInputing(Inputings.boundary(boundary));
 	}
 
 	private Inputing[] inputs;
@@ -32,7 +35,7 @@ public abstract class MultipartItem {
 	public int read() throws IOException {
 		int d = current.read();
 		while (d == -1) {
-			if (index >= last)
+			if (index >= (last - 1))
 				return d;
 			current = inputs[++index];
 			d = current.read();
@@ -41,15 +44,17 @@ public abstract class MultipartItem {
 	}
 
 	public void init() throws IOException {
-		for (int i = 0; i < last; i++) {
+		for (int i = 0; i < last; i++)
 			inputs[i].init();
-		}
+
+		current = inputs.length > 0 ? inputs[0] : new VoidInputing();
 	}
 
 	public void close() throws IOException {
-		for (int i = 0; i < last; i++) {
+		for (int i = 0; i < last; i++)
 			inputs[i].close();
-		}
+
+		current = null;
 	}
 
 }

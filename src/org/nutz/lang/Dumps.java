@@ -1,9 +1,17 @@
 package org.nutz.lang;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Enumeration;
 import java.util.regex.Matcher;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.nutz.lang.stream.StringOutputStream;
 
 /**
  * 显示对象的信息，为日志以及调试提供帮助的函数集
@@ -68,6 +76,101 @@ public abstract class Dumps {
 							sb.append(String.format("\n\t%10s : %s", m.getName(), e.getMessage()));
 						}
 		return sb.toString();
+	}
+
+	/**
+	 * 显示 HTTP 内容的名称空间
+	 */
+	public static class HTTP {
+
+		public static enum MODE {
+			ALL, HEADER_ONLY, BODY_ONLY
+		}
+
+		/**
+		 * 详细显示一个 HTTP 请求的全部内容
+		 * 
+		 * @param req
+		 *            请求对象
+		 * @param ops
+		 *            内容的输出流
+		 * @param ignoreHeader
+		 *            是否显示 HTTP 头信息
+		 */
+		public static void http(HttpServletRequest req, OutputStream ops, MODE mode) {
+			InputStream ins;
+			int b;
+			try {
+				/*
+				 * Header
+				 */
+				if (MODE.ALL == mode || MODE.HEADER_ONLY == mode) {
+					StringBuilder sb = new StringBuilder();
+					Enumeration<?> ens = req.getHeaderNames();
+					while (ens.hasMoreElements()) {
+						String name = ens.nextElement().toString();
+						sb.append(name).append(": ").append(req.getHeader(name)).append("\r\n");
+					}
+					sb.append("\r\n");
+					ins = Lang.ins(sb);
+					while (-1 != (b = ins.read()))
+						ops.write(b);
+				}
+				/*
+				 * Body
+				 */
+				if (MODE.ALL == mode || MODE.BODY_ONLY == mode) {
+					ins = req.getInputStream();
+					while (-1 != (b = ins.read()))
+						ops.write(b);
+					ins.close();
+				}
+				ops.close();
+			}
+			catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
+		}
+
+		/**
+		 * 详细显示一个 HTTP 请求的全部内容
+		 * 
+		 * @param req
+		 *            请求对象
+		 * @param ignoreHeader
+		 *            是否显示 HTTP 头信息
+		 * @return 一个文本字符串表示 HTTP 的全部内容
+		 */
+		public static String http(HttpServletRequest req, MODE mode) {
+			StringBuilder sb = new StringBuilder();
+			OutputStream ops = new StringOutputStream(sb);
+			http(req, ops, mode);
+			return sb.toString();
+		}
+
+		public static void body(HttpServletRequest req, OutputStream ops) {
+			http(req, ops, MODE.BODY_ONLY);
+		}
+
+		public static String body(HttpServletRequest req) {
+			return http(req, MODE.BODY_ONLY);
+		}
+
+		public static void header(HttpServletRequest req, OutputStream ops) {
+			http(req, ops, MODE.HEADER_ONLY);
+		}
+
+		public static String header(HttpServletRequest req) {
+			return http(req, MODE.HEADER_ONLY);
+		}
+
+		public static void all(HttpServletRequest req, OutputStream ops) {
+			http(req, ops, MODE.ALL);
+		}
+
+		public static String all(HttpServletRequest req) {
+			return http(req, MODE.ALL);
+		}
 	}
 
 }
