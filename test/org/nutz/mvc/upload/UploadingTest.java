@@ -213,7 +213,7 @@ public class UploadingTest {
 														file,
 														buffer);
 			mb.addMultiFileContent(mfc);
-			out.printf("\t[buffer.in:%d] - %s\n", buffer, file.getName());
+			out.printf("\t[buffer.in:%d] - %s - %s\n", buffer, file.getName(),file.length());
 			return;
 		} else if (file.isDirectory()) {
 			File[] files = file.listFiles();

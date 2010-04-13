@@ -2,28 +2,41 @@ package org.nutz.mvc.upload;
 
 import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 
-import org.nutz.lang.Streams;
+import org.nutz.lang.Lang;
 
 public class MultiFileContent implements MultiReadable {
 
 	private String name;
 	private File file;
-	private InputStream ins;
+	
+	private int [] data;
+	
+	private int size;
+	
+	private int index = 0;
 
 	public MultiFileContent(String name, File file, int buffer) {
 		this.name = name;
 		this.file = file;
-		if (buffer > 0)
-			ins = new BufferedInputStream(Streams.fileIn(file), buffer);
-		else
-			ins = new BufferedInputStream(Streams.fileIn(file));
+		size = (int)file.length();
+		data = new int [size];
+		try {
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+			for (int i = 0; i < data.length; i++) {
+			data [i] = bis.read();
+			}
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 
 	public int read() throws Exception {
-		return ins.read();
+		if (index == size)
+			return -1;
+		return data[index++];
 	}
 
 	public long length() {
@@ -47,7 +60,7 @@ public class MultiFileContent implements MultiReadable {
 	}
 
 	public void close() throws IOException {
-		ins.close();
+		data = null;
 	}
 
 }
