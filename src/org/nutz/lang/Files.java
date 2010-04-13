@@ -235,6 +235,28 @@ public abstract class Files {
 	 * @throws IOException
 	 *             创建失败
 	 */
+	public static File createFileIfNoExists(String path) throws IOException {
+		String thePath = Disks.absolute(path);
+		if (null == thePath)
+			thePath = Disks.normalize(path);
+		File f = new File(thePath);
+		if (!f.exists())
+			Files.createNewFile(f);
+		if (!f.isFile())
+			throw Lang.makeThrow("'%s' should be a file!", path);
+		return f;
+	}
+
+	/**
+	 * 试图生成一个目录对象，如果文件不存在则创建它。 如果给出的 PATH 是相对路径 则会在 CLASSPATH
+	 * 中寻找，如果未找到，则会在用户主目录中创建这个目录
+	 * 
+	 * @param path
+	 *            文件路径，可以以 ~ 开头，也可以是 CLASSPATH 下面的路径
+	 * @return 文件对象
+	 * @throws IOException
+	 *             创建失败
+	 */
 	public static File createDirIfNoExists(String path) throws IOException {
 		String thePath = Disks.absolute(path);
 		if (null == thePath)

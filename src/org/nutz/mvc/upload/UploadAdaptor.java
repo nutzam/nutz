@@ -91,9 +91,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
-			Uploading ing = new Uploading(buffer);
-			ing.parse(request, charset, pool);
-			map = ing.getParams();
+			Uploading ing = new SimpleUploading(buffer);
+			map = ing.parse(request, charset, pool);
 		}
 		catch (UploadFailException e) {
 			throw Lang.wrapThrow(e);

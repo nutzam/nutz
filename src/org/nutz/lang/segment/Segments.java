@@ -36,4 +36,8 @@ public class Segments {
 			return pattern;
 		return replace(new CharSegment(pattern), context);
 	}
+
+	public static Segment create(String str) {
+		return new CharSegment(str);
+	}
 }

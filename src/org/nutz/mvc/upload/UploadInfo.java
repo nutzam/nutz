@@ -7,25 +7,9 @@ public class UploadInfo {
 
 	public static final String SESSION_NAME = "UPLOAD_INFO";
 
-	private int sum;
+	public int sum;
 
-	private int current;
-
-	public int getSum() {
-		return sum;
-	}
-
-	public void setSum(int sum) {
-		this.sum = sum;
-	}
-
-	public int getCurrent() {
-		return current;
-	}
-
-	public void setCurrent(int current) {
-		this.current = current;
-	}
+	public int current;
 
 	public int read(InputStream ins) throws IOException {
 		current++;

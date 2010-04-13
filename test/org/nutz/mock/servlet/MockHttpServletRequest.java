@@ -20,7 +20,7 @@ import javax.servlet.http.HttpSession;
 import org.nutz.lang.Lang;
 
 public class MockHttpServletRequest implements HttpServletRequest {
-	
+
 	protected ServletContext servletContext;
 
 	public MockHttpServletRequest(MockServletContext servletContext) {
@@ -58,7 +58,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public int getIntHeader(String arg0) {
 		throw Lang.noImplement();
 	}
-	
+
 	protected String method;
 
 	public String getMethod() {
@@ -68,63 +68,63 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public void setMethod(String method) {
 		this.method = method;
 	}
-	
+
 	protected String pathInfo;
-	
+
 	public String getPathInfo() {
 		return pathInfo;
 	}
-	
+
 	public void setPathInfo(String pathInfo) {
 		this.pathInfo = pathInfo;
 	}
 
 	protected String pathTranslated;
-	
+
 	public String getPathTranslated() {
 		return pathTranslated;
 	}
-	
+
 	public void setPathTranslated(String pathTranslated) {
 		this.pathTranslated = pathTranslated;
 	}
-	
+
 	protected String queryString;
 
 	public String getQueryString() {
 		return queryString;
 	}
-	
+
 	public void setQueryString(String queryString) {
 		this.queryString = queryString;
 	}
-	
+
 	public String remoteUser;
 
 	public String getRemoteUser() {
 		return remoteUser;
 	}
-	
+
 	public void setRemoteUser(String remoteUser) {
 		this.remoteUser = remoteUser;
 	}
-	
+
 	protected String requestURI;
 
 	public String getRequestURI() {
 		return requestURI;
 	}
-	
+
 	public void setRequestURI(String requestURI) {
 		this.requestURI = requestURI;
 	}
-	
+
 	protected StringBuffer requestURL;
 
 	public StringBuffer getRequestURL() {
 		return requestURL;
 	}
-	
+
 	public void setRequestURL(StringBuffer requestURL) {
 		this.requestURL = requestURL;
 	}
@@ -134,19 +134,19 @@ public class MockHttpServletRequest implements HttpServletRequest {
 			return httpSession.getId();
 		return null;
 	}
-	
+
 	protected String servletPath;
 
 	public String getServletPath() {
 		return null;
 	}
-	
+
 	public void setServletPath(String servletPath) {
 		this.servletPath = servletPath;
 	}
 
 	protected HttpSession httpSession;
-	
+
 	public HttpSession getSession() {
 		return getSession(true);
 	}
@@ -154,21 +154,21 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public HttpSession getSession(boolean flag) {
 		return httpSession;
 	}
-	
+
 	public void setSession(HttpSession httpSession) {
 		this.httpSession = httpSession;
 	}
-	
+
 	protected Principal userPrincipal;
 
 	public Principal getUserPrincipal() {
 		return userPrincipal;
 	}
-	
+
 	public void setUserPrincipal(Principal userPrincipal) {
 		this.userPrincipal = userPrincipal;
 	}
-	
+
 	public boolean isRequestedSessionIdFromCookie() {
 		throw Lang.noImplement();
 	}
@@ -188,7 +188,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public boolean isUserInRole(String arg0) {
 		throw Lang.noImplement();
 	}
-	
+
 	protected Map<String, Object> attributeMap = new HashMap<String, Object>();
 
 	public Object getAttribute(String key) {
@@ -200,7 +200,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	protected String characterEncoding;
-	
+
 	public String getCharacterEncoding() {
 		return characterEncoding;
 	}
@@ -213,8 +213,14 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw Lang.noImplement();
 	}
 
+	protected ServletInputStream inputStream;
+
 	public ServletInputStream getInputStream() throws IOException {
-		throw Lang.noImplement();
+		return inputStream;
+	}
+
+	public void setInputStream(ServletInputStream ins) {
+		this.inputStream = ins;
 	}
 
 	public String getLocalAddr() {
@@ -238,12 +244,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	protected Map<String, String> parameterMap = new HashMap<String, String>();
-	
+
 	public String getParameter(String key) {
 		return parameterMap.get(key);
 	}
 
-	public Map<String,String> getParameterMap() {
+	public Map<String, String> getParameterMap() {
 		return parameterMap;
 	}
 
@@ -256,11 +262,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	protected String protocol;
-	
+
 	public String getProtocol() {
 		return protocol;
 	}
-	
+
 	public void setProtocol(String protocol) {
 		this.protocol = protocol;
 	}
