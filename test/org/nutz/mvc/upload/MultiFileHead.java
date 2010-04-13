@@ -38,4 +38,8 @@ public class MultiFileHead implements MultiReadable {
 		// do nothing
 	}
 
+	public void reset() {
+		this.cursor = 0;
+	}
+
 }

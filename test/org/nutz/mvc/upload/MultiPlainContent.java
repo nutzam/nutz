@@ -62,4 +62,8 @@ public class MultiPlainContent implements MultiReadable {
 		// do nothing
 	}
 
+	public void reset() {
+		this.cursor = 0;
+	}
+
 }

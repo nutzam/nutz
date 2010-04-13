@@ -2,41 +2,31 @@ package org.nutz.mvc.upload;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 
 public class MultiFileContent implements MultiReadable {
 
 	private String name;
 	private File file;
-	
-	private int [] data;
-	
-	private int size;
-	
-	private int index = 0;
+	private int buffer;
+	private InputStream ins;
 
 	public MultiFileContent(String name, File file, int buffer) {
 		this.name = name;
 		this.file = file;
-		size = (int)file.length();
-		data = new int [size];
-		try {
-			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
-			for (int i = 0; i < data.length; i++) {
-			data [i] = bis.read();
-			}
-		} catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
+		this.buffer = buffer;
+		if (buffer > 0)
+			ins = new BufferedInputStream(Streams.fileIn(file), buffer);
+		else
+			ins = new BufferedInputStream(Streams.fileIn(file));
 	}
 
 	public int read() throws Exception {
-		if (index == size)
-			return -1;
-		return data[index++];
+		return ins.read();
 	}
 
 	public long length() {
@@ -60,7 +50,19 @@ public class MultiFileContent implements MultiReadable {
 	}
 
 	public void close() throws IOException {
-		data = null;
+		ins.close();
+	}
+
+	public void reset() {
+		try {
+			this.close();
+			if (buffer > 0)
+				ins = new BufferedInputStream(Streams.fileIn(file), buffer);
+			else
+				ins = new BufferedInputStream(Streams.fileIn(file));
+		} catch (IOException e) {
+			Lang.makeThrow("Ca not reset MultiFileContent.");
+		}
 	}
 
 }

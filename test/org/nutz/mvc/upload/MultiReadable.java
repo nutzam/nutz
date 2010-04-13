@@ -9,4 +9,6 @@ public interface MultiReadable {
 	public long length();
 
 	public void close() throws IOException;
+
+	public void reset();
 }

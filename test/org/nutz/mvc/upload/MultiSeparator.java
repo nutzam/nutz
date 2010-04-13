@@ -31,6 +31,13 @@ public class MultiSeparator implements MultiReadable {
 		return cache.length;
 	}
 
+	public void reset() {
+		cursor = 0;
+		cache = ("\r\n--"
+				+ MockProperties.getMockProperties().getProperty("boundary") + "\r\n")
+				.getBytes();
+	}
+
 	public void close() throws IOException {
 		// do nothing
 	}

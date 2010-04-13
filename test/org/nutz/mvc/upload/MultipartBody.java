@@ -1,5 +1,6 @@
 package org.nutz.mvc.upload;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,9 +51,9 @@ public class MultipartBody {
 	public int read() throws Exception {
 		int re = currentMR.read();
 		if (re == -1) {
-			currentMR = mrs.get(cursor++);
+			currentMR = mrs.get(++cursor);
 			// 全都遍历完，返回-1,结束。
-			if (cursor >= mrsSize)
+			if (cursor >= mrsSize-1)
 				return -1;
 			return this.read();
 		} else
@@ -74,6 +75,16 @@ public class MultipartBody {
 		}
 		mrs.add(index++, new MultiEnd());
 		return mrs;
+	}
+
+	public void reset() throws IOException {
+		this.cursor = 0;
+		for (MultiPlainContent mpc : plainContents) {
+			mpc.reset();
+		}
+		for (MultiFileContent mfc : fileContents) {
+			mfc.reset();
+		}
 	}
 
 	public void addMultiContent(MultiPlainContent content) {
