@@ -5,6 +5,11 @@ import org.nutz.mock.servlet.MockServletConfig;
 import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
+/**
+ * 一些方面的静态你函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Mock {
 
 	public static class servlet {
