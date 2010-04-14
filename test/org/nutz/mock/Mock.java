@@ -9,7 +9,7 @@ import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
 /**
- * 一些方面的静态你函数
+ * 一些方面的静态方法
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -43,8 +43,10 @@ public abstract class Mock {
 
 		public static MultipartInputStream insmulti(File... files) {
 			MultipartInputStream ins = insmulti();
-			for (int i = 0; i < files.length; i++)
-				ins.append("F" + i, files[i]);
+			for (int i = 0; i < files.length; i++){
+				if (files[i].isFile())
+					ins.append("F" + i, files[i]);
+			}
 			return ins;
 		}
 	}
