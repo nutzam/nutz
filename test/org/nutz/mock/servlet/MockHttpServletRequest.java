@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -22,10 +21,9 @@ import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
 public class MockHttpServletRequest implements HttpServletRequest {
 
-	protected ServletContext servletContext;
+	protected HttpSession session;
 
-	public MockHttpServletRequest(MockServletContext servletContext) {
-		this.servletContext = servletContext;
+	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
 	}
 
@@ -138,8 +136,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getRequestedSessionId() {
-		if (httpSession != null)
-			return httpSession.getId();
+		if (session != null)
+			return session.getId();
 		return null;
 	}
 
@@ -153,18 +151,18 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		this.servletPath = servletPath;
 	}
 
-	protected HttpSession httpSession;
 
 	public HttpSession getSession() {
 		return getSession(true);
 	}
 
 	public HttpSession getSession(boolean flag) {
-		return httpSession;
+		return session;
 	}
 
-	public void setSession(HttpSession httpSession) {
-		this.httpSession = httpSession;
+	public MockHttpServletRequest setSession(HttpSession session) {
+		this.session = session;
+		return this;
 	}
 
 	protected Principal userPrincipal;
@@ -214,11 +212,17 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public int getContentLength() {
-		throw Lang.noImplement();
+		String cl = this.getHeader("content-length");
+		try {
+			return Integer.parseInt(cl);
+		}
+		catch (NumberFormatException e) {
+			return 0;
+		}
 	}
 
 	public String getContentType() {
-		throw Lang.noImplement();
+		return this.getHeader("content-type");
 	}
 
 	protected ServletInputStream inputStream;
@@ -227,11 +231,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return inputStream;
 	}
 
-	public void setInputStream(ServletInputStream ins) {
+	public MockHttpServletRequest setInputStream(ServletInputStream ins) {
 		this.inputStream = ins;
+		return this;
 	}
 
-	public void init() {
+	public MockHttpServletRequest init() {
 		if (null != inputStream)
 			if (inputStream instanceof MultipartInputStream) {
 				((MultipartInputStream) inputStream).init();
@@ -244,6 +249,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 					throw Lang.wrapThrow(e);
 				}
 			}
+		return this;
 	}
 
 	public String getLocalAddr() {

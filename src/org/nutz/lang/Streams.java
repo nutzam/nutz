@@ -1,5 +1,6 @@
 package org.nutz.lang;
 
+import java.io.BufferedInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,8 @@ import java.nio.charset.Charset;
  * @author Wendal(wendal1985@gmail.com)
  */
 public abstract class Streams {
+
+	private static final int DEF_BUFSIZE = 8192;
 
 	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
 
@@ -94,6 +97,33 @@ public abstract class Streams {
 	}
 
 	/**
+	 * 根据一个文件路径，建立一个缓冲输入流。默认的缓冲大小为 Streams.DEF_BUFSIZE (8192)
+	 * 
+	 * @param path
+	 *            文件路径
+	 * @return 缓冲输入流
+	 */
+	public static BufferedInputStream fileBin(String path) {
+		return fileBin(path, DEF_BUFSIZE);
+	}
+
+	/**
+	 * 根据一个文件路径，建立一个缓冲输入流
+	 * 
+	 * @param path
+	 *            文件路径
+	 * @param bufferSize
+	 *            缓冲大小
+	 * @return 缓冲输入流
+	 */
+	public static BufferedInputStream fileBin(String path, int bufferSize) {
+		InputStream ins = fileIn(path);
+		if (null == ins)
+			return null;
+		return new BufferedInputStream(ins, bufferSize);
+	}
+
+	/**
 	 * 根据一个文件路径建立一个输入流
 	 * 
 	 * @param file
@@ -107,6 +137,33 @@ public abstract class Streams {
 		catch (FileNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
+	}
+
+	/**
+	 * 根据一个文件，建立一个缓冲输入流。默认的缓冲大小为 Streams.DEF_BUFSIZE (8192)
+	 * 
+	 * @param file
+	 *            文件
+	 * @return 缓冲输入流
+	 */
+	public static BufferedInputStream fileBin(File file) {
+		return fileBin(file, DEF_BUFSIZE);
+	}
+
+	/**
+	 * 根据一个文件，建立一个缓冲输入流
+	 * 
+	 * @param file
+	 *            文件
+	 * @param bufferSize
+	 *            缓冲大小
+	 * @return 缓冲输入流
+	 */
+	public static BufferedInputStream fileBin(File file, int bufferSize) {
+		InputStream ins = fileIn(file);
+		if (null == ins)
+			return null;
+		return new BufferedInputStream(ins, bufferSize);
 	}
 
 	/**

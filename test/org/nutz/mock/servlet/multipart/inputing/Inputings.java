@@ -28,7 +28,7 @@ public abstract class Inputings {
 	}
 
 	public static Inputing boundary(String boundary) {
-		return new StringInputing(boundary);
+		return new StringInputing("--" + boundary);
 	}
 
 	public static Inputing data(String str) {

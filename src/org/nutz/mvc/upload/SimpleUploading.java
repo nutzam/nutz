@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.nutz.filepool.FilePool;
 import org.nutz.http.Http;
@@ -34,7 +35,10 @@ public class SimpleUploading implements Uploading {
 			throws UploadFailException {
 		// Store upload info to sessioin
 		info = new UploadInfo();
-		request.getSession().setAttribute(UploadInfo.SESSION_NAME, info);
+		HttpSession sess = request.getSession();
+		if (null != sess) {
+			sess.setAttribute(UploadInfo.SESSION_NAME, info);
+		}
 		info.sum = request.getContentLength();
 
 		try {
@@ -147,7 +151,8 @@ public class SimpleUploading implements Uploading {
 			throw new UploadFailException(e);
 		}
 		finally {
-			request.getSession().removeAttribute(UploadInfo.class.getName());
+			if (null != sess)
+				sess.removeAttribute(UploadInfo.class.getName());
 		}
 	}
 

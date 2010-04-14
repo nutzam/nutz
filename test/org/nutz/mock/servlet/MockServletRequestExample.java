@@ -1,4 +1,4 @@
-package org.nutz.mvc.upload;
+package org.nutz.mock.servlet;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -9,10 +9,9 @@ import java.io.OutputStream;
 import org.nutz.lang.Dumps;
 import org.nutz.lang.Files;
 import org.nutz.mock.Mock;
-import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
-public class UploadingUnitTest {
+public class MockServletRequestExample {
 
 	public static void main(String[] args) throws IOException {
 		File dir = Files.findFile(args[0]);
@@ -27,7 +26,7 @@ public class UploadingUnitTest {
 		 * Prepare HTTP Request
 		 */
 		MockHttpServletRequest req = Mock.servlet.request();
-		MultipartInputStream ins = Mock.servlet.ins("------WebKitFormBoundaryJ1QzxGryuaxBZPTq");
+		MultipartInputStream ins = Mock.servlet.insmulti("------WebKitFormBoundaryJ1QzxGryuaxBZPTq");
 		// Init params
 		ins.append("pa", "abc");
 		// load files
