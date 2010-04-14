@@ -37,7 +37,7 @@ public class LinkedIntArray {
 		cursor++;
 		return this;
 	}
-
+	
 	public int popFirst() {
 		return innerGet(offset++);
 	}

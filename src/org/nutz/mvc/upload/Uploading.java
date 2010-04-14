@@ -16,11 +16,11 @@ public interface Uploading {
 	/**
 	 * 对流的解析
 	 * 
-	 * @param request
+	 * @param req
 	 * @param charset
-	 * @param tmpFiles
+	 * @param tmps
 	 * @throws UploadFailException
 	 */
-	Map<String, Object> parse(HttpServletRequest request, String charset, FilePool tmpFiles)
+	Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
 			throws UploadFailException;
 }

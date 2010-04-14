@@ -31,20 +31,20 @@ public class SimpleUploading implements Uploading {
 
 	private UploadInfo info;
 
-	public Map<String, Object> parse(HttpServletRequest request, String charset, FilePool tmpFiles)
+	public Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
 			throws UploadFailException {
 		// Store upload info to sessioin
 		info = new UploadInfo();
-		HttpSession sess = request.getSession();
+		HttpSession sess = req.getSession();
 		if (null != sess) {
 			sess.setAttribute(UploadInfo.SESSION_NAME, info);
 		}
-		info.sum = request.getContentLength();
+		info.sum = req.getContentLength();
 
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();
 			// Analyze the request data
-			InputStream ins = request.getInputStream();
+			InputStream ins = req.getInputStream();
 			// Buffer the stream
 			if (!(ins instanceof BufferedInputStream)) {
 				if (bufferSize > 0)
@@ -53,24 +53,37 @@ public class SimpleUploading implements Uploading {
 					ins = new BufferedInputStream(ins);
 			}
 			// Check content type
-			String contentType = request.getContentType();
+			String contentType = req.getContentType();
 			String s = "\r\n--" + Http.multipart.getBoundary(contentType);
 			char[] endValue = s.toCharArray(); // expect boundary
 			int[] right = new int[endValue.length]; // runtime cache
 			int cursor;
 			int c = 0;
 			// skip first endField
-			for (int i = 0; i < s.length(); i++)
-				c = info.read(ins);
+			for (int i = 0; i < s.length(); i++) {
+				c = ins.read();
+				info.current++;
+			}
 			while (c != -1) {
 				cursor = 0;
-				right[cursor++] = info.read(ins);
-				right[cursor++] = right[0] == -1 ? -1 : info.read(ins);
+				right[cursor++] = ins.read();
+				info.current++;
+				if (right[0] == -1) {
+					right[cursor++] = -1;
+				} else {
+					right[cursor++] = ins.read();
+					info.current++;
+				}
 				if (right[1] == -1 || (right[0] == '-' && right[1] == '-'))
 					break;
 				// read field title
 				StreamBuffer sb = new StreamBuffer();
-				while (cursor < endName.length && (c = info.read(ins)) != -1) {
+				while (cursor < endName.length) {
+					c = ins.read();
+					if (c == -1)
+						break;
+					info.current++;
+
 					if (c == endName[cursor]) {
 						right[cursor++] = c;
 					} else {
@@ -92,11 +105,12 @@ public class SimpleUploading implements Uploading {
 					if (Strings.isBlank(meta.getFileLocalPath())) {
 						ots = new StringOutputStream(new StringBuilder());
 					} else {
-						tmp = tmpFiles.createFile(meta.getFileExtension());
+						tmp = tmps.createFile(meta.getFileExtension());
 						ots = new BufferedOutputStream(new FileOutputStream(tmp));
 					}
 					while (c != -1 && cursor < endValue.length) {
-						c = info.read(ins);
+						c = ins.read();
+						info.current++;
 						if (c == endValue[cursor]) {
 							right[cursor++] = c;
 						} else {
@@ -118,7 +132,8 @@ public class SimpleUploading implements Uploading {
 				else {
 					sb = new StreamBuffer();
 					while (c != -1 && cursor < endValue.length) {
-						c = info.read(ins);
+						c = ins.read();
+						info.current++;
 						if (c == endValue[cursor]) {
 							right[cursor++] = c;
 						} else {
@@ -133,7 +148,7 @@ public class SimpleUploading implements Uploading {
 					params.put(meta.getName(), sb.toString(charset));
 				}
 				// parse query strings
-				s = request.getQueryString();
+				s = req.getQueryString();
 				if (null != s) {
 					String[] pairs = Strings.splitIgnoreBlank(s, "&");
 					for (String pair : pairs) {

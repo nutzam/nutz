@@ -42,7 +42,7 @@ public class UploadMonitor implements Atom {
 					}
 					continue;
 				}
-				out.printf(	"\n > %6s%% :: %d / %d",
+				out.printf(	"\n > %6s%% : %10d / %d",
 							(info.current / (info.sum / 100)),
 							info.current,
 							info.sum);
