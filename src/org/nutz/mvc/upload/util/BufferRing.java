@@ -44,29 +44,27 @@ public class BufferRing {
 		}
 	}
 
-	public MarkMode mark(byte[] cs) throws IOException {
-		int re = item.mark(cs, 0);
-		while (re > 0) {
-			if (re == -1)
+	/**
+	 * 根据给定的字节数组，在环中作标记，以便 dump
+	 * 
+	 * @param bs
+	 *            数组
+	 * @return 标记模式
+	 * @throws IOException
+	 */
+	public MarkMode mark(byte[] bs) throws IOException {
+		RingItem ri = item;
+		int re;
+		while ((re = ri.mark(bs)) >= 0 && ri.isDone4Mark()) {
+			if (re > 0 && ri.next.matchHeadingWithRemain(bs, re))
 				return MarkMode.FOUND;
-			if (re == 0)
-				return MarkMode.NOT_FOUND;
-
-			// Partly found
-			if (!item.next.isLoaded)
-				item.next.load(ins);
-			// Mark next Item
-			re = item.mark(cs, re);
-			// re-decide current one's right
-			
-			
-			// TODO if next item still return >0, it will case error
+			ri = ri.next;
+			if (ri == item)
+				break;
 		}
-
 		if (re == -1)
 			return MarkMode.FOUND;
-		// re ==0
-		return MarkMode.NOT_FOUND;
+		return ri.isStreamEnd ? MarkMode.STREAM_END : MarkMode.NOT_FOUND;
 	}
 
 	/**
@@ -94,9 +92,11 @@ public class BufferRing {
 	 * @throws IOException
 	 */
 	public void load() throws IOException {
-		RingItem ri = item.next;
-		while (!ri.isLoaded)
+		RingItem ri = item;
+		while (!ri.isLoaded) {
 			ri.load(ins);
+			ri = ri.next;
+		}
 	}
 
 }

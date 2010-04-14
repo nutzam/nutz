@@ -1140,4 +1140,32 @@ public abstract class Lang {
 			}
 		};
 	}
+
+	/**
+	 * 将字符数组强制转换成字节数组。如果字符为双字节编码，则会丢失信息
+	 * 
+	 * @param cs
+	 *            字符数组
+	 * @return 字节数组
+	 */
+	public static byte[] toBytes(char[] cs) {
+		byte[] bs = new byte[cs.length];
+		for (int i = 0; i < cs.length; i++)
+			bs[i] = (byte) cs[i];
+		return bs;
+	}
+
+	/**
+	 * 将整数数组强制转换成字节数组。整数的高位将会被丢失
+	 * 
+	 * @param is
+	 *            整数数组
+	 * @return 字节数组
+	 */
+	public static byte[] toBytes(int[] is) {
+		byte[] bs = new byte[is.length];
+		for (int i = 0; i < is.length; i++)
+			bs[i] = (byte) is[i];
+		return bs;
+	}
 }

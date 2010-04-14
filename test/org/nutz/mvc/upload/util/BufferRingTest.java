@@ -20,8 +20,8 @@ public class BufferRingTest {
 
 	@Test
 	public void test_normal_read() throws IOException {
-		byte[] boundary = (byte[]) Lang.array2array("---".toCharArray(),byte.class);
-		
+		byte[] boundary = Lang.toBytes("---".toCharArray());
+
 		String str = "1234567890ABCDEfgh---A---B------ENDL--";
 		InputStream ins = Lang.ins(str);
 		String s;

@@ -48,24 +48,46 @@ class RingItem {
 		r = 0;
 		nextmark = 0;
 		isLoaded = true;
-		if (max < buffer.length || max == -1)
+		if (max == -1)
 			isStreamEnd = true;
-	}
-
-	boolean canDump() {
-		return isLoaded && r > l;
 	}
 
 	void dump(OutputStream ops) throws IOException {
 		if (l < r) {
 			ops.write(buffer, l, r - l);
 			l = nextmark;
-			// If had dumped all bytes, set the 'isLoaded' to true to accept new
-			// bytes
-			if (l >= max) {
-				isLoaded = false;
+		}
+		isLoaded = (l < max);
+	}
+
+	/**
+	 * 试图从缓冲开头匹配，如果匹配失败，移动 'r' 并返回 false<br>
+	 * 如果匹配成功，则移动 'l'（匹配的内容不需要读取） 并返回 true
+	 * <p>
+	 * 这个函数，在 BufferRing 发现当前的环节点返回 '>0' 时，需要调用 next 的这个函数，看看是不是可以完整被匹配
+	 * 
+	 * @param bs
+	 *            数组
+	 * @param offs
+	 *            偏移量
+	 * @return 本节点开头是否匹配剩余的部分
+	 */
+	boolean matchHeadingWithRemain(byte[] bs, int offs) {
+		int i = 0;
+		for (; offs < bs.length; offs++) {
+			if (buffer[i++] != bs[offs]) {
+				r = i;
+				return false;
 			}
 		}
+		// Matched, skip it
+		l = i;
+		r = i;
+		return true;
+	}
+
+	boolean isDone4Mark() {
+		return nextmark == max;
 	}
 
 	/**
@@ -76,47 +98,47 @@ class RingItem {
 	 * <p>
 	 * 返回值
 	 * <ul>
-	 * <li>-1 - 全部被匹配
-	 * <li>0 - 未发现匹配
-	 * <li>大于 0 - 在缓冲的末尾发现匹配，但是没有匹配全，希望下一个节点继续从这个位置匹配
+	 * <li><b>-1</b> - 全部被匹配
+	 * <li><b>0</b> - 未发现匹配
+	 * <li><b>大于 0</b> - 在缓冲的末尾发现匹配，但是没有匹配全，希望下一个节点继续从这个位置匹配
 	 * </ul>
 	 * 
-	 * @param cs
+	 * @param bs
 	 *            数组
-	 * @param offs
-	 *            数组起始点
 	 * @return -1, 0 或者 +n
 	 */
-	int mark(byte[] cs, int offs) {
+	int mark(byte[] bs) {
 		if (!isLoaded)
 			throw new MarkUnloadedRingItemException();
 
-		byte start = cs[offs];
+		byte start = bs[0];
 
 		for (; r < max; r++) {
 			if (buffer[r] == start) {
-				int re = offs;
+				int re = 0;
 				int j = r;
-				for (; re < cs.length; re++) {
-					if (cs[re] != buffer[j])
+				while (re < bs.length) {
+					if (bs[re++] != buffer[j++])
 						break;
-					j++;
+					if (j >= max)
+						break;
 				}
 				// Found
-				if (re == cs.length) {
+				if (re == bs.length) {
 					nextmark = j;
 					return -1;
 				}
 				// Found partly at the end buffer
-				else if ((j + 1) == max) {
+				else if (j == max) {
 					nextmark = max;
-					return re;
+					return isStreamEnd ? 0 : re;
 				}
 				// make 'r' jump to 'j'
 				r = j;
 			}
 		}
 		// Fail to found
+		nextmark = max;
 		return 0;
 	}
 }
