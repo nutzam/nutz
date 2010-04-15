@@ -18,6 +18,7 @@ public class FileInjector implements ParamInjector {
 
 	@SuppressWarnings("unchecked")
 	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return ((TempFile) ((Map<String, Object>) refer).get(name)).getFile();
+		TempFile temp = (TempFile) ((Map<String, Object>) refer).get(name);
+		return temp == null ? null : temp.getFile();
 	}
 }
