@@ -44,20 +44,35 @@ class RingItem {
 			throw new ReloadLoadedRingItemException();
 		}
 		max = ins.read(buffer, 0, buffer.length);
+
+		// 流里不在有内容了
+		if (max < 0) {
+			max = 0;
+			isStreamEnd = true;
+		}
+		// 没有读全，再读一次，看看是不是 -1
+		else {
+			while (max >= 0 && max < buffer.length) {
+				int re = ins.read(buffer, max, buffer.length - max);
+				if (re == -1) {
+					isStreamEnd = true;
+					break;
+				}
+			}
+		}
+
 		l = 0;
 		r = 0;
 		nextmark = 0;
 		isLoaded = true;
-		if (max == -1)
-			isStreamEnd = true;
 	}
 
 	void dump(OutputStream ops) throws IOException {
 		if (l < r) {
 			ops.write(buffer, l, r - l);
-			l = nextmark;
-			r = l;
 		}
+		l = nextmark;
+		r = l;
 		isLoaded = (l < max);
 	}
 
@@ -84,6 +99,7 @@ class RingItem {
 		// Matched, skip it
 		l = i;
 		r = i;
+		nextmark = i;
 		return true;
 	}
 
@@ -134,7 +150,11 @@ class RingItem {
 				// Found partly at the end buffer
 				else if (j == max) {
 					nextmark = max;
-					return isStreamEnd ? 0 : re;
+					if (isStreamEnd) {
+						r = max;
+						return 0;
+					}
+					return re;
 				}
 				// make 'r' jump to 'j'
 				r = j;

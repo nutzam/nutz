@@ -65,15 +65,35 @@ public class BufferRing {
 		RingItem ri = item;
 		int re;
 		while ((re = ri.mark(bs)) >= 0 && ri.isDone4Mark()) {
+			if (ri.isStreamEnd)
+				break;
+
+			// 结尾匹配 bs 的开始，看不出这是否是一个结束，所以暂时当作
+			// 结束标记，并看看下一个节点。如果不是结束，则需要将 r 置到 max
 			if (re > 0) {
+				// 下一个节点没有加载，加载一下
 				if (!ri.next.isLoaded) {
 					ri.next.load(ins);
 					readed += ri.next.max;
 				}
-				if (ri.next.matchHeadingWithRemain(bs, re))
+				// 匹配头部
+				if (ri.next.matchHeadingWithRemain(bs, re)) {
 					return MarkMode.FOUND;
+				}
+				// 没有匹配上，重置当前节点
+				else {
+					ri.r = ri.max;
+					ri.nextmark = ri.max;
+				}
 			}
+			// 指向下一个节点
 			ri = ri.next;
+			// 保证该节点已经加载了
+			if (!ri.isLoaded) {
+				ri.load(ins);
+				readed += ri.max;
+			}
+			// 如果已经循环了一圈，退出
 			if (ri == item)
 				break;
 		}
@@ -102,6 +122,26 @@ public class BufferRing {
 	}
 
 	/**
+	 * 不输出，直接跳过 Mark，相当于将当前的 Mark dump 到一个空的输出流
+	 * 
+	 * @throws IOException
+	 */
+	public void skipMark() throws IOException {
+		dump(new OutputStream() {
+			public void write(int b) throws IOException {}
+
+			public void close() throws IOException {}
+
+			public void flush() throws IOException {}
+
+			public void write(byte[] b, int off, int len) throws IOException {}
+
+			public void write(byte[] b) throws IOException {}
+
+		});
+	}
+
+	/**
 	 * 从当前节点的 next 开始，依次将所有可用的节点全部加载满
 	 * 
 	 * @throws IOException
@@ -114,6 +154,13 @@ public class BufferRing {
 				readed += ri.max;
 			ri = ri.next;
 		}
+	}
+
+	/**
+	 * @return 已经读了多少字节
+	 */
+	public int readed() {
+		return readed;
 	}
 
 }

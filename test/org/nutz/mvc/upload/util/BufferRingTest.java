@@ -21,14 +21,13 @@ public class BufferRingTest {
 	@Test
 	public void test_normal_read() throws IOException {
 		byte[] boundary = Lang.toBytes("---".toCharArray());
-
 		String str = "1234567890ABCDEfgh---A---B------ENDL--";
 		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
 		String s;
 		MarkMode mode;
 		RingItem ri;
 
-		BufferRing br = new BufferRing(ins, 3, 5);
 		/**
 		 * =================================================<br>
 		 * 12345 67890 ABCDE
@@ -63,7 +62,7 @@ public class BufferRingTest {
 		assertTrue(ri.isLoaded);
 		assertEquals(1, ri.l);
 		assertEquals(1, ri.r);
-		assertEquals(0, ri.nextmark);
+		assertEquals(1, ri.nextmark);
 		assertFalse(ri.isDone4Mark());
 		// ITEM.NEXT.NEXT
 		ri = br.item.next.next;
@@ -149,7 +148,7 @@ public class BufferRingTest {
 		ri = br.item;
 		assertTrue(ri.isLoaded);
 		assertEquals(4, ri.l);
-		assertEquals(5, ri.r);
+		assertEquals(4, ri.r);
 		assertEquals(5, ri.nextmark);
 		assertTrue(ri.isDone4Mark());
 		// ITEM.NEXT
@@ -157,19 +156,122 @@ public class BufferRingTest {
 		assertTrue(ri.isLoaded);
 		assertEquals(2, ri.l);
 		assertEquals(2, ri.r);
-		assertEquals(0, ri.nextmark);
+		assertEquals(2, ri.nextmark);
 		assertFalse(ri.isDone4Mark());
 		// ITEM.NEXT.NEXT
 		ri = br.item.next.next;
 		assertFalse(ri.isLoaded);
-		
+
 		s = read(br);
+		assertEquals('-', (char) br.item.buffer[0]);
 		assertEquals("", s);
+
+		/**
+		 * =================================================<br>
+		 * --END L--
+		 */
+		br.load();
+		assertEquals(35, br.readed);
+		mode = br.mark(boundary);
+		assertEquals(38, br.readed);
+		assertTrue(br.item.next.isStreamEnd);
+		// ITEM
+		ri = br.item;
+		assertTrue(ri.isLoaded);
+		assertEquals(2, ri.l);
+		assertEquals(5, ri.r);
+		assertEquals(5, ri.nextmark);
+		assertTrue(ri.isDone4Mark());
+		// ITEM.NEXT
+		ri = br.item.next;
+		assertTrue(ri.isLoaded);
+		assertEquals(0, ri.l);
+		assertEquals(3, ri.r);
+		assertEquals(3, ri.nextmark);
+		assertTrue(ri.isDone4Mark());
+
+		assertEquals(MarkMode.STREAM_END, mode);
+		s = read(br);
+		assertEquals("ENDL--", s);
+
+	}
+
+	@Test
+	public void test_by_buffer() throws IOException {
+		byte[] boundary = Lang.toBytes("-----".toCharArray());
+		String str = "-----";
+		str += "ABCDE";
+		str += "-----";
+		str += "12345";
+		str += "-----";
+		str += "RR";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		br.skipMark();
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = read(br);
+		assertEquals("ABCDE", s);
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = read(br);
+		assertEquals("12345", s);
 
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.STREAM_END, mode);
 		s = read(br);
-		assertEquals("ENDL--", s);
+		assertEquals("RR", s);
+
+		assertEquals(27, br.readed);
+	}
+
+	@Test
+	public void test_by_buffer2() throws IOException {
+		byte[] boundary = Lang.toBytes("-----".toCharArray());
+		String str = "-----";
+		str += "ABCDE";
+		str += "-----";
+		str += "12345";
+		str += "-----";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		br.skipMark();
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = read(br);
+		assertEquals("ABCDE", s);
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = read(br);
+		assertEquals("12345", s);
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.STREAM_END, mode);
+		s = read(br);
+		assertEquals("", s);
+
+		assertEquals(25, br.readed);
 	}
 }
