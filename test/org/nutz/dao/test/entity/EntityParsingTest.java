@@ -18,6 +18,7 @@ public class EntityParsingTest extends DaoCase {
 
 	@Test
 	public void eval_manys() {
+		pojos.init();
 		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("platoons").get(0);
 		assertEquals("platoons", link.getOwnField().getName());
@@ -29,6 +30,7 @@ public class EntityParsingTest extends DaoCase {
 
 	@Test
 	public void eval_manys_with_null_field() {
+		pojos.init();
 		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("wavebands").get(0);
 		assertEquals("wavebands", link.getOwnField().getName());
@@ -39,6 +41,7 @@ public class EntityParsingTest extends DaoCase {
 
 	@Test
 	public void eval_manymany() {
+		pojos.init();
 		Entity<?> en = en(Base.class);
 		Link link = en.getLinks("fighters").get(0);
 		assertEquals("dao_m_base_fighter", link.getRelation());
