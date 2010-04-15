@@ -205,6 +205,8 @@ public abstract class Mvcs {
 		String path = req.getPathInfo();
 		if (null == path)
 			path = req.getServletPath();
+		if (null == path)
+			return "";
 		int lio = path.lastIndexOf('.');
 		if (lio > 0)
 			path = path.substring(0, lio);

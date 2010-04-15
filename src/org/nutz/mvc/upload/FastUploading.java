@@ -23,6 +23,11 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.upload.util.BufferRing;
 import org.nutz.mvc.upload.util.MarkMode;
 
+/**
+ * 采用成块写入的方式，这个逻辑比 SimpleUploading 大约快了 1 倍
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class FastUploading implements Uploading {
 
 	private static Log log = Logs.getLog(FastUploading.class);
@@ -104,8 +109,13 @@ public class FastUploading implements Uploading {
 				info.current = br.load();
 				// 标记项目头
 				mm = br.mark(nameEndlBytes);
+				// 找到头的结束标志
 				if (MarkMode.FOUND == mm) {
 					meta = new FieldMeta(br.dumpAsString());
+				}
+				// 这会是整个流的结束吗？
+				else if (MarkMode.STREAM_END == mm && "--\r\n".equals(br.dumpAsString())) {
+					break;
 				}
 				// 这是不可能的，抛错
 				else {

@@ -8,9 +8,7 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.mock.servlet.MockHttpServletRequest;
-import org.nutz.mvc.upload.SimpleUploading;
-import org.nutz.mvc.upload.UploadException;
-import org.nutz.mvc.upload.Uploading;
+import org.nutz.mvc.upload.*;
 import org.nutz.trans.Atom;
 
 import static org.nutz.mock.Mock.servlet.*;

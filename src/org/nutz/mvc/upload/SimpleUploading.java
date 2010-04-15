@@ -17,6 +17,11 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.stream.StreamBuffer;
 import org.nutz.lang.stream.StringOutputStream;
 
+/**
+ * 一个很简单的 HTTP Multipart 流的解析类
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class SimpleUploading implements Uploading {
 
 	private static final char[] endName = {0x0D, 0x0A, 0x0D, 0x0A};

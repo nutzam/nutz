@@ -13,6 +13,7 @@ import org.nutz.lang.Files;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
+import org.nutz.mvc.upload.FastUploading;
 import org.nutz.mvc.upload.SimpleUploading;
 import org.nutz.mvc.upload.TempFile;
 import org.nutz.mvc.upload.UploadException;
@@ -23,6 +24,7 @@ public class UploadingUnitTest {
 	@Test
 	public void test_upload_1txt_3img() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
+		req.setPathInfo("/nutz/junit/uploading");
 		File txt = Files.findFile("org/nutz/mvc/upload/files/quick/abc.zdoc");
 		File red = Files.findFile("org/nutz/mvc/upload/files/quick/red.png");
 		File blue = Files.findFile("org/nutz/mvc/upload/files/quick/blue.png");
@@ -38,7 +40,7 @@ public class UploadingUnitTest {
 
 		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 
-		Uploading up = new SimpleUploading(8192);
+		Uploading up = new FastUploading(8192);
 		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
 		assertEquals(4, map.size());
 		TempFile txt2 = (TempFile) map.get("abc");
