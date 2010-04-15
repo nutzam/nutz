@@ -43,21 +43,23 @@ class RingItem {
 		if (isLoaded) {
 			throw new ReloadLoadedRingItemException();
 		}
-		max = ins.read(buffer, 0, buffer.length);
+		int bufferSize = buffer.length;
+		max = ins.read(buffer, 0, bufferSize);
 
 		// 流里不在有内容了
-		if (max < 0) {
+		if (max <= 0) {
 			max = 0;
 			isStreamEnd = true;
 		}
-		// 没有读全，再读一次，看看是不是 -1
+		// 没有读全，继续读，直至read方法返回 -1, 或者读满.
 		else {
-			while (max >= 0 && max < buffer.length) {
-				int re = ins.read(buffer, max, buffer.length - max);
+			while (max < bufferSize) {
+				int re = ins.read(buffer, max, bufferSize - max);
 				if (re == -1) {
 					isStreamEnd = true;
 					break;
 				}
+				max += re;
 			}
 		}
 
