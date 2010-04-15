@@ -36,7 +36,7 @@
 	<property name="OUTPUT" value="${env.OUTPUT}" />
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	
-	<property name="svn-version" value="r1037"></property>
+	<property name="svn-version" value="r1077"></property>
 	<property name="nutz-version" value="1.a.27"></property>
 	<tstamp>
 		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
@@ -147,15 +147,18 @@
 				<path path="${classes-dir-jdk6}"></path>
 				<path refid="nutz-classpath"/>
 			</classpath>
-			<test name="org.nutz.TestAll" outfile="${tmp-junitreport-dir}" >
-				<formatter type="xml" />
-			</test>
+			<batchtest todir="${tmp-junitreport-dir}">
+				<fileset dir="test">
+					<include name="**/*Test.java"/>
+				</fileset>
+				<formatter type="xml"/>
+			</batchtest>
 			<jvmarg value="-Demma.coverage.out.file=${basedir}/${classes-dir-emma}/session.emma" />
 			<jvmarg value="-Demma.coverage.out.merge=true" />
 		</junit>
 		<junitreport todir="${pub-junitreport-dir}">
 			<report format="frames" todir="${pub-junitreport-dir}"/>
-			<fileset dir="${tmp-dir}" includes="*.xml"></fileset>
+			<fileset dir="${tmp-junitreport-dir}" includes="*.xml"></fileset>
 		</junitreport>
 	    <emma enabled="${emma.enabled}" >
 	      <report sourcepath="src" encoding="utf-8">

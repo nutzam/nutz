@@ -2,6 +2,7 @@ package org.nutz.mvc.upload.speed;
 
 import java.io.File;
 
+import org.junit.Ignore;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Files;
@@ -14,6 +15,7 @@ import org.nutz.trans.Atom;
 import static org.nutz.mock.Mock.servlet.*;
 import static java.lang.System.*;
 
+@Ignore
 public class UploadingSpeedTest {
 
 	public static void main(String[] args) {

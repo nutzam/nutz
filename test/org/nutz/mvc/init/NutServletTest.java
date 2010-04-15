@@ -2,6 +2,7 @@ package org.nutz.mvc.init;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.MockHttpServletResponse;
@@ -10,6 +11,7 @@ import org.nutz.mock.servlet.MockServletConfig;
 import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mvc.NutServlet;
 
+@Ignore
 public abstract class NutServletTest {
 
 	protected NutServlet nutServlet;
