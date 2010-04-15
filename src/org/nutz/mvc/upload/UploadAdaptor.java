@@ -91,7 +91,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
-			Uploading ing = new SimpleUploading(buffer);
+			Uploading ing = new FastUploading(buffer);
 			map = ing.parse(request, charset, pool);
 		}
 		catch (UploadException e) {
