@@ -55,9 +55,11 @@ public class StreamBuffer extends InputStream {
 		}
 		if (index > buffer.index)
 			return -1;
-		int[] cs = buffer.bytes.get(index);
-		if (cursor < buffer.cursor)
-			return cs[cursor++];
+		if (index < buffer.bytes.size()) {
+			int[] cs = buffer.bytes.get(index);
+			if (cursor < buffer.cursor)
+				return cs[cursor++];
+		}
 		return -1;
 	}
 

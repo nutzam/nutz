@@ -1,6 +1,7 @@
 package org.nutz.mvc.upload.unit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Map;
@@ -57,6 +58,38 @@ public class UploadingUnitTest {
 		assertEquals("green.png", green2.getMeta().getFileLocalName());
 		assertTrue(Files.equals(green, green2.getFile()));
 
+	}
+
+	@Test
+	public void test_upload_queryString() throws UploadFailException {
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setQueryString("id=1&name=nutz");
+		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+		Uploading up = new SimpleUploading(8192);
+		MultipartInputStream ins = Mock.servlet.insmulti();
+		ins.append("age", "1");
+		req.setInputStream(ins);
+		req.init();
+		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
+		assertEquals("1", map.get("id"));
+		assertEquals("nutz", map.get("name"));
+		assertEquals("1", map.get("age"));
+		assertEquals(null, map.get("null"));
+	}
+
+	@Test
+	public void test_upload_onlyQueryString() throws UploadFailException {
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setQueryString("id=1&name=nutz");
+		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+		Uploading up = new SimpleUploading(8192);
+		MultipartInputStream ins = Mock.servlet.insmulti();
+		req.setInputStream(ins);
+		req.init();
+		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
+		assertEquals("1", map.get("id"));
+		assertEquals("nutz", map.get("name"));
+		assertEquals(null, map.get("null"));
 	}
 
 }
