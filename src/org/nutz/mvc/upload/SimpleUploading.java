@@ -30,8 +30,8 @@ public class SimpleUploading implements Uploading {
 
 	public Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
 			throws UploadFailException {
-		UploadInfo info = Uploads.createInfo(req);
 
+		UploadInfo info = Uploads.createInfo(req);
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();
 			// parse query strings
