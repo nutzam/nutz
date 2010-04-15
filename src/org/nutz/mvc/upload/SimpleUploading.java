@@ -7,7 +7,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -29,23 +28,11 @@ public class SimpleUploading implements Uploading {
 	private int bufferSize;
 
 	public Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
-			throws UploadFailException {
+			throws UploadException {
 
 		UploadInfo info = Uploads.createInfo(req);
 		try {
-			Map<String, Object> params = new HashMap<String, Object>();
-			// parse query strings
-			String qs = req.getQueryString();
-			if (null != qs) {
-				String[] pairs = Strings.splitIgnoreBlank(qs, "&");
-				for (String pair : pairs) {
-					String[] pp = pair.split("=");
-					if (pp.length > 1)
-						params.put(pp[0], pp[1]);
-					else
-						params.put(pp[0], null);
-				}
-			}
+			Map<String, Object> params = Uploads.createParamsMap(req);
 			// Analyze the request data
 			InputStream ins = req.getInputStream();
 			// Buffer the stream
@@ -154,7 +141,7 @@ public class SimpleUploading implements Uploading {
 			return params;
 		}
 		catch (IOException e) {
-			throw new UploadFailException(e);
+			throw new UploadException(e);
 		}
 		finally {
 			if (null != req.getSession())

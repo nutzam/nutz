@@ -122,6 +122,20 @@ public class BufferRing {
 	}
 
 	/**
+	 * 将标记的内容 Dump 成一个字符串
+	 * 
+	 * @return 字符串
+	 * 
+	 * @throws IOException
+	 */
+	public String dumpAsString() throws IOException {
+		StringBuilder sb = new StringBuilder();
+		OutputStream ops = Lang.ops(sb);
+		dump(ops);
+		return sb.toString();
+	}
+
+	/**
 	 * 不输出，直接跳过 Mark，相当于将当前的 Mark dump 到一个空的输出流
 	 * 
 	 * @throws IOException
@@ -144,9 +158,11 @@ public class BufferRing {
 	/**
 	 * 从当前节点的 next 开始，依次将所有可用的节点全部加载满
 	 * 
+	 * @return 一共读去的字节数
+	 * 
 	 * @throws IOException
 	 */
-	public void load() throws IOException {
+	public int load() throws IOException {
 		RingItem ri = item;
 		while (!ri.isLoaded) {
 			ri.load(ins);
@@ -154,6 +170,7 @@ public class BufferRing {
 				readed += ri.max;
 			ri = ri.next;
 		}
+		return readed;
 	}
 
 	/**

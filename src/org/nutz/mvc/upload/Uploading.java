@@ -19,8 +19,8 @@ public interface Uploading {
 	 * @param req
 	 * @param charset
 	 * @param tmps
-	 * @throws UploadFailException
+	 * @throws UploadException
 	 */
 	Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
-			throws UploadFailException;
+			throws UploadException;
 }

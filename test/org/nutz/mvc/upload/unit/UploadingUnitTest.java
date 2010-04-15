@@ -15,13 +15,13 @@ import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 import org.nutz.mvc.upload.SimpleUploading;
 import org.nutz.mvc.upload.TempFile;
-import org.nutz.mvc.upload.UploadFailException;
+import org.nutz.mvc.upload.UploadException;
 import org.nutz.mvc.upload.Uploading;
 
 public class UploadingUnitTest {
 
 	@Test
-	public void test_upload_1txt_3img() throws UploadFailException {
+	public void test_upload_1txt_3img() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
 		File txt = Files.findFile("org/nutz/mvc/upload/files/quick/abc.zdoc");
 		File red = Files.findFile("org/nutz/mvc/upload/files/quick/red.png");
@@ -61,7 +61,7 @@ public class UploadingUnitTest {
 	}
 
 	@Test
-	public void test_upload_queryString() throws UploadFailException {
+	public void test_upload_queryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
 		req.setQueryString("id=1&name=nutz");
 		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
@@ -78,7 +78,7 @@ public class UploadingUnitTest {
 	}
 
 	@Test
-	public void test_upload_onlyQueryString() throws UploadFailException {
+	public void test_upload_onlyQueryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
 		req.setQueryString("id=1&name=nutz");
 		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");

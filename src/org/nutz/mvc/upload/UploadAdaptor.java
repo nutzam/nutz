@@ -94,7 +94,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 			Uploading ing = new SimpleUploading(buffer);
 			map = ing.parse(request, charset, pool);
 		}
-		catch (UploadFailException e) {
+		catch (UploadException e) {
 			throw Lang.wrapThrow(e);
 		}
 		// Try to make the args

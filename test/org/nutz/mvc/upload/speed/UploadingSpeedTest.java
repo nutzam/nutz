@@ -9,7 +9,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mvc.upload.SimpleUploading;
-import org.nutz.mvc.upload.UploadFailException;
+import org.nutz.mvc.upload.UploadException;
 import org.nutz.mvc.upload.Uploading;
 import org.nutz.trans.Atom;
 
@@ -51,7 +51,7 @@ public class UploadingSpeedTest {
 				try {
 					up.parse(req, charset, tmps);
 				}
-				catch (UploadFailException e) {
+				catch (UploadException e) {
 					throw Lang.wrapThrow(e);
 				}
 			}

@@ -4,19 +4,11 @@ import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 import org.junit.Test;
 import org.nutz.lang.Lang;
 
 public class BufferRingTest {
-
-	private static String read(BufferRing br) throws IOException {
-		StringBuilder sb = new StringBuilder();
-		OutputStream ops = Lang.ops(sb);
-		br.dump(ops);
-		return sb.toString();
-	}
 
 	@Test
 	public void test_normal_read() throws IOException {
@@ -36,7 +28,7 @@ public class BufferRingTest {
 		assertEquals(15, br.readed);
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.NOT_FOUND, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals('1', (char) br.item.buffer[0]);
 		assertTrue(br.item.isDone4Mark());
 		assertFalse(br.item.isLoaded);
@@ -72,7 +64,7 @@ public class BufferRingTest {
 		assertEquals(0, ri.nextmark);
 		assertFalse(ri.isDone4Mark());
 
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("fgh", s);
 
 		/**
@@ -101,7 +93,7 @@ public class BufferRingTest {
 		ri = br.item.next.next;
 		assertFalse(ri.isLoaded);
 
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("A", s);
 
 		/**
@@ -126,7 +118,7 @@ public class BufferRingTest {
 		ri = br.item.next.next;
 		assertFalse(ri.isLoaded);
 
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("B", s);
 		ri = br.item;
 		assertTrue(ri.isLoaded);
@@ -162,7 +154,7 @@ public class BufferRingTest {
 		ri = br.item.next.next;
 		assertFalse(ri.isLoaded);
 
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals('-', (char) br.item.buffer[0]);
 		assertEquals("", s);
 
@@ -191,7 +183,7 @@ public class BufferRingTest {
 		assertTrue(ri.isDone4Mark());
 
 		assertEquals(MarkMode.STREAM_END, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("ENDL--", s);
 
 	}
@@ -218,19 +210,19 @@ public class BufferRingTest {
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.FOUND, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("ABCDE", s);
 
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.FOUND, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("12345", s);
 
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.STREAM_END, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("RR", s);
 
 		assertEquals(27, br.readed);
@@ -257,19 +249,19 @@ public class BufferRingTest {
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.FOUND, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("ABCDE", s);
 
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.FOUND, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("12345", s);
 
 		br.load();
 		mode = br.mark(boundary);
 		assertEquals(MarkMode.STREAM_END, mode);
-		s = read(br);
+		s = br.dumpAsString();
 		assertEquals("", s);
 
 		assertEquals(25, br.readed);
