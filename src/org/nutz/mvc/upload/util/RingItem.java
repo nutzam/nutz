@@ -6,9 +6,9 @@ import java.io.OutputStream;
 
 class RingItem {
 
-	private byte[] buffer;
+	byte[] buffer;
 
-	private int max;
+	int max;
 	/**
 	 * 左标记，DUMP 时包含
 	 */
@@ -16,11 +16,11 @@ class RingItem {
 	/**
 	 * 右标记，DUMP 时不包含
 	 */
-	private int r;
+	int r;
 	/**
 	 * 下一次 Mark 是开始的位置
 	 */
-	private int nextmark;
+	int nextmark;
 
 	RingItem next;
 
@@ -56,6 +56,7 @@ class RingItem {
 		if (l < r) {
 			ops.write(buffer, l, r - l);
 			l = nextmark;
+			r = l;
 		}
 		isLoaded = (l < max);
 	}
@@ -117,10 +118,12 @@ class RingItem {
 			if (buffer[r] == start) {
 				int re = 0;
 				int j = r;
-				while (re < bs.length) {
-					if (bs[re++] != buffer[j++])
+				while (true) {
+					re++;
+					j++;
+					if (re >= bs.length || j >= max)
 						break;
-					if (j >= max)
+					if (bs[re] != buffer[j])
 						break;
 				}
 				// Found

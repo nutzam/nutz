@@ -43,6 +43,18 @@ public class SimpleUploading implements Uploading {
 
 		try {
 			Map<String, Object> params = new HashMap<String, Object>();
+			// parse query strings
+			String qs = req.getQueryString();
+			if (null != qs) {
+				String[] pairs = Strings.splitIgnoreBlank(qs, "&");
+				for (String pair : pairs) {
+					String[] pp = pair.split("=");
+					if (pp.length > 1)
+						params.put(pp[0], pp[1]);
+					else
+						params.put(pp[0], null);
+				}
+			}
 			// Analyze the request data
 			InputStream ins = req.getInputStream();
 			// Buffer the stream
@@ -146,18 +158,6 @@ public class SimpleUploading implements Uploading {
 						}
 					}
 					params.put(meta.getName(), sb.toString(charset));
-				}
-				// parse query strings
-				s = req.getQueryString();
-				if (null != s) {
-					String[] pairs = Strings.splitIgnoreBlank(s, "&");
-					for (String pair : pairs) {
-						String[] pp = pair.split("=");
-						if (pp.length > 1)
-							params.put(pp[0], pp[1]);
-						else
-							params.put(pp[0], null);
-					}
 				}
 			}
 			return params;

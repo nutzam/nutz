@@ -18,6 +18,15 @@ import org.nutz.lang.Lang;
  * 支持一个便利的标记方法（不支持回溯，标记的开始和结束只能在一个节点内不能跨节点）<br>
  * 支持成块写到输出流<br>
  * 
+ * <p>
+ * <b style=color:red>考虑到效率问题，BufferRing 有一些基本假设：</b>
+ * </p>
+ * <ul>
+ * <li>环节点最少为 3 个
+ * <li>每个节点的长度，至少要比即将给定的 boundary 要长
+ * </ul>
+ * 如果违背了上述假设， BufferRing 将发生不可预知的异常
+ * 
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
@@ -29,8 +38,8 @@ public class BufferRing {
 	}
 
 	private InputStream ins;
-	private RingItem item;
-	public int readed;
+	RingItem item;
+	int readed;
 
 	public BufferRing(InputStream ins, int len, int width) {
 		assertRingLength(len);
@@ -56,8 +65,14 @@ public class BufferRing {
 		RingItem ri = item;
 		int re;
 		while ((re = ri.mark(bs)) >= 0 && ri.isDone4Mark()) {
-			if (re > 0 && ri.next.matchHeadingWithRemain(bs, re))
-				return MarkMode.FOUND;
+			if (re > 0) {
+				if (!ri.next.isLoaded) {
+					ri.next.load(ins);
+					readed += ri.next.max;
+				}
+				if (ri.next.matchHeadingWithRemain(bs, re))
+					return MarkMode.FOUND;
+			}
 			ri = ri.next;
 			if (ri == item)
 				break;
@@ -95,6 +110,8 @@ public class BufferRing {
 		RingItem ri = item;
 		while (!ri.isLoaded) {
 			ri.load(ins);
+			if (ri.max > 0)
+				readed += ri.max;
 			ri = ri.next;
 		}
 	}
