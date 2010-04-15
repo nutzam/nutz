@@ -47,7 +47,7 @@ class RingItem {
 		max = ins.read(buffer, 0, bufferSize);
 
 		// 流里不在有内容了
-		if (max <= 0) {
+		if (max < 0) {
 			max = 0;
 			isStreamEnd = true;
 		}
