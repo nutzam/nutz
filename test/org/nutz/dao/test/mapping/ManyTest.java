@@ -11,7 +11,7 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.WaveBand;
 
-public class Many extends DaoCase {
+public class ManyTest extends DaoCase {
 
 	@Override
 	protected void before() {

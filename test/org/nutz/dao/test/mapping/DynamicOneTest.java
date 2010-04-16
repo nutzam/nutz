@@ -12,7 +12,7 @@ import org.nutz.dao.test.meta.Soldier;
 import org.nutz.dao.test.meta.Tank;
 import org.nutz.trans.Atom;
 
-public class DynamicOne extends DaoCase {
+public class DynamicOneTest extends DaoCase {
 
 	private Platoon platoon;
 

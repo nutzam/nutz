@@ -8,7 +8,7 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
 import org.nutz.lang.Strings;
 
-public class LinksGeneral extends DaoCase {
+public class LinksGeneralTest extends DaoCase {
 
 	@Test
 	public void fetch_all_links() {

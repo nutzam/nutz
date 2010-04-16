@@ -10,7 +10,7 @@ import org.nutz.dao.entity.Link;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Tank;
 
-public class DynamicEntityParsing extends DaoCase {
+public class DynamicEntityParsingTest extends DaoCase {
 
 	@Test
 	public void tank_many_many_link_test() {

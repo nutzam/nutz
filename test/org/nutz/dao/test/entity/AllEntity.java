@@ -4,7 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({EntityParsingTest.class, DynamicEntityParsing.class})
+@Suite.SuiteClasses({EntityParsingTest.class, DynamicEntityParsingTest.class})
 public class AllEntity {
 
 }

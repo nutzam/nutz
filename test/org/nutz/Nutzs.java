@@ -19,17 +19,22 @@ import static java.lang.String.*;
 
 public class Nutzs {
 
-	private static Properties pp = null;
+	private static Properties pp;
 
 	private static void checkProperties() {
 		if (null == pp)
-			try {
-				pp = new Properties();
-				pp.load(new FileInputStream(Files.findFile("nutz-test.properties")));
-			}
-			catch (Exception e) {
-				throw Lang.wrapThrow(e);
-			}
+			loadProperties("nutz-test.properties");
+	}
+	
+	public static void loadProperties(String fileName){
+		try {
+			pp = new Properties();
+			pp.load(new FileInputStream(Files.findFile(fileName)));
+			pp.list(System.out);
+		}
+		catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 
 	public static String getDriver() {

@@ -19,7 +19,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.meta.Email;
 
-public class SupportedFieldType extends DaoCase {
+public class SupportedFieldTypeTest extends DaoCase {
 
 	@Override
 	protected void before() {

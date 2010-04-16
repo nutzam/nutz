@@ -10,7 +10,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Fighter;
 
-public class ManyMany extends DaoCase {
+public class ManyManyTest extends DaoCase {
 
 	@Override
 	protected void before() {

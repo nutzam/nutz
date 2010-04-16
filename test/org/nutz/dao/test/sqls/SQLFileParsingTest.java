@@ -13,7 +13,7 @@ import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Files;
 
-public class SQLFileParsing {
+public class SQLFileParsingTest {
 
 	private static final String PATH = "org/nutz/dao/test/sqls/sqls.sqls";
 

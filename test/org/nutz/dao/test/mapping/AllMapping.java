@@ -4,11 +4,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	LinksGeneral.class,
-						One.class,
-						Many.class,
-						ManyMany.class,
-						DynamicOne.class,
-						DynamicMany.class,
-						DynamicManyMany.class})
+@Suite.SuiteClasses({	LinksGeneralTest.class,
+						OneTest.class,
+						ManyTest.class,
+						ManyManyTest.class,
+						DynamicOneTest.class,
+						DynamicManyTest.class,
+						DynamicManyManyTest.class})
 public class AllMapping {}

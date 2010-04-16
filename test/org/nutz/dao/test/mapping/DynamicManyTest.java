@@ -13,7 +13,7 @@ import org.nutz.dao.test.meta.Soldier;
 import org.nutz.dao.test.meta.Tank;
 import org.nutz.trans.Atom;
 
-public class DynamicMany extends DaoCase {
+public class DynamicManyTest extends DaoCase {
 
 	private Platoon platoon;
 

@@ -8,7 +8,7 @@ import org.nutz.dao.test.meta.Country;
 
 import static org.junit.Assert.*;
 
-public class One extends DaoCase {
+public class OneTest extends DaoCase {
 
 	@Override
 	protected void before() {

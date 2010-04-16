@@ -8,7 +8,7 @@ import org.junit.runners.Suite;
 						SimpleDaoTest.class,
 						QueryTest.class,
 						UpdateTest.class,
-						SupportedFieldType.class,
+						SupportedFieldTypeTest.class,
 						AutoGenerateValueTest.class,
 						PkTest.class})
 public class AllNormal {}
