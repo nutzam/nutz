@@ -13,7 +13,6 @@ public class SysPropValue implements ValueProxy{
 		this.name = name;
 	}
 
-	@Override
 	public Object get(IocMaking ing) {
 		Properties properties = System.getProperties();
 		if (properties != null)
