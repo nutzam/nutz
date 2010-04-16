@@ -115,23 +115,44 @@ public class TransLevelTest extends DaoCase {
 
 	@Test
 	public void testTransLevel() {
-		final int[] ls = new int[2];
+		final int[] ls = new int[5];
+		dao.run(new ConnCallback() {
+			public void invoke(Connection conn) throws Exception {
+				ls[0] = conn.getTransactionIsolation();
+			}
+		});
 		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom() {
 			public void run() {
 				dao.run(new ConnCallback() {
 					public void invoke(Connection conn) throws Exception {
-						ls[0] = conn.getTransactionIsolation();
+						ls[1] = conn.getTransactionIsolation();
 					}
 				});
 			}
 		});
 		dao.run(new ConnCallback() {
 			public void invoke(Connection conn) throws Exception {
-				ls[1] = conn.getTransactionIsolation();
+				ls[2] = conn.getTransactionIsolation();
 			}
 		});
-		assertEquals(8, ls[0]);
-		assertEquals(2, ls[1]);
+		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom() {
+			public void run() {
+				dao.run(new ConnCallback() {
+					public void invoke(Connection conn) throws Exception {
+						ls[3] = conn.getTransactionIsolation();
+					}
+				});
+			}
+		});
+		dao.run(new ConnCallback() {
+			public void invoke(Connection conn) throws Exception {
+				ls[4] = conn.getTransactionIsolation();
+			}
+		});
+		assertEquals(8, ls[1]);
+		assertEquals(ls[0], ls[2]);
+		assertEquals(2, ls[3]);
+		assertEquals(ls[0], ls[4]);
 	}
 
 	@Test
