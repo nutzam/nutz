@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
-import java.io.InputStream;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -13,12 +12,9 @@ import org.junit.Test;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Files;
-import org.nutz.lang.Streams;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
-import org.nutz.mvc.upload.FastUploading;
-import org.nutz.mvc.upload.SimpleUploading;
 import org.nutz.mvc.upload.TempFile;
 import org.nutz.mvc.upload.UploadException;
 import org.nutz.mvc.upload.UploadUnit;
