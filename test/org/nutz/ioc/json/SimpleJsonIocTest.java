@@ -6,6 +6,7 @@ import static org.nutz.ioc.json.Utils.I;
 import static org.nutz.ioc.json.Utils.J;
 
 import java.io.File;
+import java.util.Properties;
 
 import org.junit.Test;
 import org.nutz.ioc.Ioc;
@@ -81,6 +82,16 @@ public class SimpleJsonIocTest {
 		Animal f = A("name:{env:'PATH'},misc:[{env:'PATH'}]");
 		assertTrue(f.getName().length() > 0);
 		assertEquals(f.getName(), f.getMisc().get(0).toString());
+	}
+	
+	@Test
+	public void test_sys() {
+		Properties properties = System.getProperties();
+		properties.put("sysA", "XX");
+		properties.put("sysP", "ZZZ");
+		Animal f = A("name:{sys:'sysA'},misc:[{sys:'sysP'}]");
+		assertEquals("XX", f.getName());
+		assertEquals("ZZZ",f.getMisc().get(0).toString());
 	}
 
 	@Test

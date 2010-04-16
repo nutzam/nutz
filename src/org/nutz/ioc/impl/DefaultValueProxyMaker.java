@@ -69,6 +69,10 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		else if ("env".equals(type)) {
 			return new EnvValue(value.toString());
 		}
+		// System Properties
+		else if ("sys".equals(type)) {
+			return new SysPropValue(value.toString());
+		}
 		// Inner
 		else if ("inner".equals(type)) {
 			return new InnerValue((IocObject) value);

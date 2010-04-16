@@ -136,7 +136,7 @@ public abstract class Iocs {
 				Entry<String, ?> en = map.entrySet().iterator().next();
 				String key = en.getKey();
 				// Refer | Java | Env | File
-				if (key.matches("^(refer|java|env|file)$")) {
+				if (key.matches("^(refer|java|env|file|sys)$")) {
 					iv.setType(key);
 					iv.setValue(en.getValue());
 					return iv;
