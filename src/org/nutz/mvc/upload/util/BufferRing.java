@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 
 /**
  * 分页缓冲 - 专为高效的成块的解析 HTTP Multipart 输入流而设计
@@ -180,4 +181,10 @@ public class BufferRing {
 		return readed;
 	}
 
+	/**
+	 * 安全关闭输入流
+	 */
+	public void close() {
+		Streams.safeClose(ins);
+	}
 }

@@ -30,7 +30,7 @@ public class UploadingSpeedTest {
 			System.exit(0);
 		}
 
-		final Uploading up = new SimpleUploading(8192);
+		final Uploading up = UploadUnit.TYPE.born(8192);
 		final FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		final String charset = "UTF-8";
 

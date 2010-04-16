@@ -109,13 +109,15 @@ public class FastUploading implements Uploading {
 				info.current = br.load();
 				// 标记项目头
 				mm = br.mark(nameEndlBytes);
-				// 找到头的结束标志
-				if (MarkMode.FOUND == mm) {
-					meta = new FieldMeta(br.dumpAsString());
-				}
-				// 这会是整个流的结束吗？
-				else if (MarkMode.STREAM_END == mm && "--\r\n".equals(br.dumpAsString())) {
+				String s = br.dumpAsString();
+
+				// 肯定碰到了 "--\r\n"， 这标志着整个流结束了
+				if ("--".equals(s) || MarkMode.STREAM_END == mm) {
 					break;
+				}
+				// 找到头的结束标志
+				else if (MarkMode.FOUND == mm) {
+					meta = new FieldMeta(s);
 				}
 				// 这是不可能的，抛错
 				else {
@@ -167,8 +169,13 @@ public class FastUploading implements Uploading {
 
 			} while (mm != MarkMode.STREAM_END);
 		}
+		// 处理异常
 		catch (Exception e) {
 			throw Lang.wrapThrow(e, UploadException.class);
+		}
+		// 安全关闭输入流
+		finally {
+			br.close();
 		}
 		if (log.isDebugEnabled())
 			log.debugf("...Done %dbyted readed", br.readed());
