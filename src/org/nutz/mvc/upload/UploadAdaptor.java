@@ -50,7 +50,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private int buffer;
 
 	public UploadAdaptor(String path) {
-		this(path, 0, "UTF-8", 2000);
+		this(path, 8192, "UTF-8", 2000);
 	}
 
 	public UploadAdaptor(String path, int buffer) {
