@@ -149,9 +149,9 @@ public class TransLevelTest extends DaoCase {
 				ls[4] = conn.getTransactionIsolation();
 			}
 		});
-		assertEquals(8, ls[1]);
+		assertEquals(Connection.TRANSACTION_SERIALIZABLE, ls[1]);
 		assertEquals(ls[0], ls[2]);
-		assertEquals(2, ls[3]);
+		assertEquals(Connection.TRANSACTION_READ_COMMITTED, ls[3]);
 		assertEquals(ls[0], ls[4]);
 	}
 
