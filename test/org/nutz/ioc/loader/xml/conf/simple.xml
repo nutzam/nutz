@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nutzconfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+	<obj name="queen" type="org.nutz.ioc.loader.xml.meta.Bee">
+		<args>
+			<str>TheQueen</str>
+		</args>
+	</obj>
+
+	<obj name="A" type="org.nutz.ioc.loader.xml.meta.Bee">
+		<args>
+			<refer>queen</refer>
+			<str>TheA</str>
+		</args>
+	</obj>
+
+	<obj name="B" type="org.nutz.ioc.loader.xml.meta.Bee">
+		<args>
+			<refer>queen</refer>
+			<str>TheB</str>
+		</args>
+	</obj>
+
+	<obj name="C" type="org.nutz.ioc.loader.xml.meta.Bee">
+		<args>
+			<refer>queen</refer>
+			<str>TheC</str>
+		</args>
+		<events>
+			<create>onBorn</create>
+			<fetch>work</fetch>
+			<depose>onDead</depose>
+		</events>
+		<field name="age">
+			<int>15</int>
+		</field>
+		<field name="friends">
+			<array>
+				<refer>A</refer>
+				<refer>B</refer>
+			</array>
+		</field>
+	</obj>
+</nutzconfig>

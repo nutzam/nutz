@@ -24,7 +24,11 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		else if ("normal".equals(type) || null == type) {
 			// Array
 			if (value.getClass().isArray()) {
-				return new ArrayValue(ing, (IocValue[]) value);
+				Object [] vs = (Object[])value;
+				IocValue [] tmp = new IocValue[vs.length];
+				for (int i = 0; i < tmp.length; i++) 
+					tmp[i] = (IocValue) vs[i];
+				return new ArrayValue(ing, tmp);
 			}
 			// Map
 			else if (value instanceof Map<?, ?>) {

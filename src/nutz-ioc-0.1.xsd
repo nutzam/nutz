@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:attribute name="name">
+		<xs:simpleType>
+			<xs:restriction base="xs:string">
+				<xs:minLength value="1"></xs:minLength>
+				<xs:whiteSpace value="collapse"></xs:whiteSpace>
+			</xs:restriction>
+		</xs:simpleType>
+	</xs:attribute>
+	<xs:attribute name="parent" type="xs:string"></xs:attribute>
+	<xs:attribute name="key" type="xs:string"></xs:attribute>
+	<xs:attribute name="scope" type="xs:string"></xs:attribute>
+	<xs:attribute name="type" type="xs:string"></xs:attribute>
+	<xs:attribute name="singleton" type="xs:boolean"></xs:attribute>
+	<xs:complexType name="t_ioc">
+		<xs:sequence>
+			<xs:element name="obj" type="t_obj" maxOccurs="unbounded" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_obj">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="args" type="t_args" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="field" type="t_field" maxOccurs="unbounded" minOccurs="0"></xs:element>
+			<xs:element name="events" type="t_events" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:choice>
+		<xs:attribute ref="name" use="required"></xs:attribute>
+		<xs:attribute ref="type"></xs:attribute>
+		<xs:attribute ref="singleton"></xs:attribute>
+		<xs:attribute ref="scope"></xs:attribute>
+		<xs:attribute ref="parent"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="t_args">
+		<xs:choice maxOccurs="unbounded" minOccurs="1">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="t_events">
+		<xs:sequence>
+			<xs:element name="create" type="t_create" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="depose" type="t_depose" maxOccurs="1" minOccurs="0"></xs:element>
+			<xs:element name="fetch" type="t_fetch" maxOccurs="1" minOccurs="0"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="t_create">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_depose">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_fetch">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_field">
+		<xs:choice maxOccurs="1" minOccurs="1">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="1" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="1" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="1" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="1" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="1" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="1" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="1" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="1" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="1" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="1" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="1" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="1" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="1" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		<xs:attribute ref="name" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="t_tag_int">
+		<xs:simpleContent>
+			<xs:extension base="xs:int"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_short">
+		<xs:simpleContent>
+			<xs:extension base="xs:short"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_long">
+		<xs:simpleContent>
+			<xs:extension base="xs:long"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_double">
+		<xs:simpleContent>
+			<xs:extension base="xs:double"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_float">
+		<xs:simpleContent>
+			<xs:extension base="xs:float"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_boolean">
+		<xs:simpleContent>
+			<xs:extension base="xs:boolean"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_map">
+		<xs:sequence>
+			<xs:element name="item" type="t_tag_item" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="t_tag_list">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="t_tag_array">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="t_tag_set">
+		<xs:choice maxOccurs="unbounded" minOccurs="0">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="t_tag_str">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_java">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_refer">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_env">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="t_tag_file">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	
+	<xs:complexType name="t_tag_item">
+		<xs:choice maxOccurs="1" minOccurs="0">
+			<xs:element name="int" type="t_tag_int" minOccurs="0" maxOccurs="1" />
+			<xs:element name="long" type="t_tag_long" minOccurs="0" maxOccurs="1" />
+			<xs:element name="short" type="t_tag_short" minOccurs="0" maxOccurs="1" />
+			<xs:element name="double" type="t_tag_double" minOccurs="0" maxOccurs="1" />
+			<xs:element name="float" type="t_tag_float" minOccurs="0" maxOccurs="1" />
+			<xs:element name="bool" type="t_tag_boolean" minOccurs="0" maxOccurs="1" />
+			<xs:element name="str" type="t_tag_str" minOccurs="0" maxOccurs="1" />
+			<xs:element name="java" type="t_tag_java" minOccurs="0" maxOccurs="1" />
+			<xs:element name="refer" type="t_tag_refer" minOccurs="0" maxOccurs="1" />
+			<xs:element name="file" type="t_tag_file" minOccurs="0" maxOccurs="1" />
+			<xs:element name="env" type="t_tag_env" minOccurs="0" maxOccurs="1" />
+			<xs:element name="obj" type="t_obj" minOccurs="0" maxOccurs="1" />
+			<xs:element name="array" type="t_tag_array" minOccurs="0" maxOccurs="1" />
+			<xs:element name="list" type="t_tag_list" minOccurs="0" maxOccurs="1" />
+			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="1" />
+			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
+		</xs:choice>
+		<xs:attribute ref="key" use="required"></xs:attribute>
+	</xs:complexType>
+	<xs:element name="ioc" type="t_ioc"></xs:element>
+</xs:schema>
+
+

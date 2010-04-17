@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+	<obj name="obj" singleton="true" scope="app" parent="XXX"
+		type="java.lang.String">
+		<args>
+			<str>Tasdfadf</str>
+			<int>23</int>
+			<float>78.34</float>
+			<bool>true</bool>
+			<refer>abc</refer>
+			<refer>$Ioc</refer>
+			<java>$abc.find('YYY')</java>
+			<env>TOMCAT_HOME</env>
+			<file>/home/zozoh/tmp/name.txt</file>
+			<obj type="java.lang.StringBuilder" name="xx">
+				<args>
+					<str>tttt</str>
+				</args>
+			</obj>
+			<array>
+				<str>XXXX</str>
+				<str>XXXX</str>
+			</array>
+			<list>
+				<int>34</int>
+				<float>78.34</float>
+			</list>
+			<map>
+				<item key="a">
+					<str>XXXX</str>
+				</item>
+				<item key="B">
+					<int>11</int>
+				</item>
+			</map>
+		</args>
+		<field name="field1">
+			<env>JAVA_HOME</env>
+		</field>
+		<events>
+			<create>onCreate</create>
+			<depose>depose</depose>
+			<fetch>com.you.app.OnFetchObject</fetch>
+		</events>
+	</obj>
+	<obj name="XXX">
+		<events>
+			<create>xxxx</create>
+			<depose></depose>
+		</events>
+	</obj>
+</ioc>
