@@ -41,6 +41,7 @@
 		<doc path="ioc_loader.man"/>
 		<doc path="aop.man"/>
 		<doc path="scope.man"/>
+		<doc path="xml_ioc_loader.man"/>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
@@ -82,5 +83,6 @@
 	<doc path="appendix" title="附录">
 		<doc path="create_datasource.man"/>
 		<doc path="resources.man"/>
+		<doc path="plugins.man"/>
 	</doc>
 </doc>

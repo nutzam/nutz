@@ -3,7 +3,7 @@
 #author:zozoh(zozohtnt@gmail.com)
 --------------------------------------------------------------------------------------------------------
 概述
-	这个版本是在 1.a.26 基础上的小幅修正
+	这个版本是在 1.a.27 基础上的重要改进
 	 * 为 IdEntityService 和 IdNameEntityService 增加了 exists 函数，根据主键判断一条记录是否存在将更加轻松
 		{{{
 		IdNameEntityService<Pet> pets = new IdNameEntityService<Pet>(dao){};
@@ -11,19 +11,50 @@
 		pets.exists("XiaoBai);
 		}}}
 	 * 为 IdNameEntityService 增加了 smartFetch 函数，可以自动判断是根据 @Id 还是 @Name 来获取对象
+	 * mvc: Uploading速度提高一倍
+	 * ioc: 注入支持新的 Value 类型： sys
+	 * ioc: 支持使用XML作为配置文件
+	 * ioc: 通过配置文件添加AOP 
+	 * mvc: 通过直接声明一个包来声明包中所有的类为Module
 --------------------------------------------------------------------------------------------------------
 问题修复
+	 [http://code.google.com/p/nutz/issues/detail?id=68 68]	通过配置文件添加AOP	Chen.Bao.Yi
+	 [http://code.google.com/p/nutz/issues/detail?id=112 112]	通过直接声明一个包来声明包中所有的类为Module	Toni.xutao
+	 [http://code.google.com/p/nutz/issues/detail?id=119 119]	对@Id字段是否能在没有设置@Next的情况下，insert后自动把数据库中的id值回填到Entity中？	zozohtnt
+	 [http://code.google.com/p/nutz/issues/detail?id=122 122]	不支持设置单PK	jiongs753
+	 [http://code.google.com/p/nutz/issues/detail?id=126 126]	Dao: 执行 Trans.exec for informix 出现 Castors 错误	jiongs753
+	 [http://code.google.com/p/nutz/issues/detail?id=127 127]	dao: NutTransaction 的实现代码有错误，在 commit 的时候 clear list 以及 close conn	jiongs753
+	 [http://code.google.com/p/nutz/issues/detail?id=128 128]	无法将自定义的EntityMaker注入到NutDao中	caiceclb
+	 [http://code.google.com/p/nutz/issues/detail?id=129 129]	Link的构造函数不方便自己实现的JPAEntityMaker	jiongs753
+	 [http://code.google.com/p/nutz/issues/detail?id=131 131]	dao: Nutz实体引用的映射问题（以One为例）	hzzdong
+	 [http://code.google.com/p/nutz/issues/detail?id=132 132]	DAO使用proxool做数据源会出警告	happyday0517
+	 [http://code.google.com/p/nutz/issues/detail?id=134 134]	log: 使用Nutz的log工具在eclipse控制台打印的日志无法通过点击链接后跟踪到调用的代码行	zozohtnt
+	 [http://code.google.com/p/nutz/issues/detail?id=135 135]	Daos.java在jdk5编译通不过，因为其中使用了java.sql.Statement.isClosed()方法。 造成Nutz不兼容JDK5。	jiongs753
+	 [http://code.google.com/p/nutz/issues/detail?id=136 136]	fastInsert 支持多一个参数，是否执行 @prev 	0
+	 [http://code.google.com/p/nutz/issues/detail?id=137 137]	数据库操作是否可以增加对Blob类型的支持	wendal1985
+	 [http://code.google.com/p/nutz/issues/detail?id=139 139]	dao: DefaultEntityMaker代码逻辑错误	wendal1985
+	 [http://code.google.com/p/nutz/issues/detail?id=140 140]	DAO: 关于Entity和EntityField get\set Attribute	zozohtnt
+	 [http://code.google.com/p/nutz/issues/detail?id=142 142]	Disk.absolute(String, ClassLoader, String),当上层文件夹中包含非英文字符时,返回的path可能不正确	wendal1985
+	 [http://code.google.com/p/nutz/issues/detail?id=143 143]	org.nutz.ioc.impl.NutIoc无法设置MirrorFactory	wendal1985
+	 [http://code.google.com/p/nutz/issues/detail?id=144 144]	ioc: 注入应该支持新的 Value 类型： property	happyday0517
+	 [http://code.google.com/p/nutz/issues/detail?id=147 147]	Nut.Aop没有提供示例	happyday0517
+	 [http://code.google.com/p/nutz/issues/detail?id=148 148]	Nut.Aop 当方法的返回值为基本数据类型,而拦截器的beforeInvoke返回false时,会出现NPE	amosleaf
+	 [http://code.google.com/p/nutz/issues/detail?id=149 149]	空json配置文件启动时会报错	wendal1985
+	 [http://code.google.com/p/nutz/issues/detail?id=150 150]	ActionFilter中能否多增加一个方法或在现有方法上加个参数，使实现类可以获得@At所注解的方法名	hzzdong
+	 [http://code.google.com/p/nutz/issues/detail?id=151 151]	关于upload File时候的性能问题
+	 [http://code.google.com/p/nutz/issues/detail?id=153 153]	当类文件在中文路径下,org.nutz.lang.util.Resources.scanClasses()无法得到任何class
+	 [http://code.google.com/p/nutz/issues/detail?id=154 154]	新的代码在JDK5，mysql下测试发现一个单元测试没有通过
 	 
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 414 个单元测试用例
+	 # 共通过了 502 个单元测试用例,代码覆盖率达到62%(按line计算)
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
-		 * H2
-		 * MySql
-		 * Oracle
-		 * Postgresql
-		 * SqlServer2005
-		 * SqlServer2000
+          * [http://www.h2database.com H2]
+          * [http://www.mysql.com MySql]
+          * [http://www.oracle.com Oracle]
+          * [http://www.postgresql.org Postgresql]
+          * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+          * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
 --------------------------------------------------------------------------------------------------------
 文档
 	 

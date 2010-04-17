@@ -5,9 +5,21 @@
 	 * 你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。
 	 * 将这个对象声明在你的配置文件里，就像一个普通的对象一样
 	
-在对象的函数中声明切片
+在对象的方法中声明切片
 	 * 在你要拦截的方法上，声明 @Aop 注解
 	 * 方法所在的对象必须是容器中的对象
 	 * @Aop 注解接受数目可变的字符串，每个字符串都是一个拦截器的名称
 
-
+最简单的一个拦截器
+     {{{
+         public class MyMethodOnterceptor extends AbstractMethodInterceptor { //建议继承这个抽象类
+                
+                public boolean beforeInvoke(Object obj, Method method, Object... args) {
+                		System.out.println("咦?这个方法执行了!");
+                		return true;// 返回true时,调用真正的方法,否则就跳过真正的方法
+                }
+         }
+     }}}
+     
+已经为你准备好的拦截器
+    org.nutz.aop.interceptor.LoggingMethodOnterceptor 为Aop方法添加日志记录

@@ -152,6 +152,7 @@
 	 * [ioc_loader.man 定义自己的配置文件格式]
 	 * [aop.man AOP] -- 声明式切片
 	 * [scope.man 对象生命范围] -- 级联的上下文环境
+	 * [xml_ioc_loader.man 使用XML作为配置文件格式] -- 使用XML作为配置文件格式
 	
 	
 	
