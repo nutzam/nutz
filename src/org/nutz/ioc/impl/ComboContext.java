@@ -1,5 +1,7 @@
 package org.nutz.ioc.impl;
 
+import java.util.ArrayList;
+
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
 
@@ -20,7 +22,22 @@ public class ComboContext implements IocContext {
 	 * @param contexts
 	 */
 	public ComboContext(IocContext... contexts) {
-		this.contexts = contexts;
+		ArrayList<IocContext> tmp = new ArrayList<IocContext>(contexts.length);
+		for (IocContext iocContext : contexts) {
+			if (tmp.contains(iocContext))
+				continue;
+			if (iocContext instanceof ComboContext){
+				ComboContext comboContext = (ComboContext)iocContext;
+				for (IocContext iocContext2 : comboContext.contexts) {
+					if (tmp.contains(iocContext2))
+						continue;
+					tmp.add(iocContext2);
+				}
+			}
+			else
+				tmp.add(iocContext);
+		}
+		this.contexts = tmp.toArray(new IocContext[tmp.size()]);
 	}
 
 	public ObjectProxy fetch(String key) {

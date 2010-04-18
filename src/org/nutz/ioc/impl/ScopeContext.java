@@ -50,13 +50,12 @@ public class ScopeContext implements IocContext {
 	}
 
 	public boolean save(String scope, String name, ObjectProxy obj) {
-		if (log.isDebugEnabled())
-			log.debugf("Save object '%s' to [%s] ", name, scope);
-
 		if (accept(scope)) {
 			checkBuffer();
 			synchronized (this) {
 				if (!objs.containsKey(name)) {
+					if (log.isDebugEnabled())
+						log.debugf("Save object '%s' to [%s] ", name, scope);
 					return null != objs.put(name, obj);
 				}
 			}
@@ -71,11 +70,11 @@ public class ScopeContext implements IocContext {
 	public boolean remove(String scope, String name) {
 		if (accept(scope)) {
 			checkBuffer();
-			if (log.isDebugEnabled())
-				log.debugf("Remove object '%s' from [%s] ", name, scope);
 
 			synchronized (this) {
 				if (!objs.containsKey(name)) {
+					if (log.isDebugEnabled())
+						log.debugf("Remove object '%s' from [%s] ", name, scope);
 					return null != objs.remove(name);
 				}
 			}

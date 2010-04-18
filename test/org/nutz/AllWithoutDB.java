@@ -12,13 +12,13 @@ import org.nutz.log.AllLog;
 import org.nutz.mvc.AllMvc;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	AllLog.class,
-						AllLang.class,
+@Suite.SuiteClasses({	AllLang.class,
 						AllJson.class,
 						AllFilePool.class,
 						AllIoc.class,
 						AllMvc.class,
 						AllAop.class,
 						AllFilePool.class,
-						AllHttp.class})
+						AllHttp.class,
+						AllLog.class})
 public class AllWithoutDB {}
