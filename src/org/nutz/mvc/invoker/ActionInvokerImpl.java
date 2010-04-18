@@ -85,6 +85,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 				module = moduleType.newInstance();
 			}
 			catch (Exception e) {
+				logException(e);
 				throw Lang.makeThrow(	"Class '%s' should has a accessible default constructor : '%s'",
 										moduleType.getName(),
 										e.getMessage());
@@ -129,6 +130,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			}
 		}
 		catch (Exception e) {
+			logException(e);
 			throw Lang.wrapThrow(e);
 		}
 		adaptor.init(method);
@@ -189,8 +191,9 @@ public class ActionInvokerImpl implements ActionInvoker {
 		try {
 			req.setCharacterEncoding(inputCharset);
 		}
-		catch (UnsupportedEncodingException e3) {
-			throw Lang.wrapThrow(e3);
+		catch (UnsupportedEncodingException e) {
+			logException(e);
+			throw Lang.wrapThrow(e);
 		}
 		resp.setCharacterEncoding(outputCharset);
 
@@ -203,6 +206,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 						view.render(req, resp, null);
 					}
 					catch (Throwable e) {
+						logException(e);
 						throw Lang.wrapThrow(e);
 					}
 					return;
@@ -253,16 +257,16 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (e instanceof InvocationTargetException && e.getCause() != null)
 				e = e.getCause();
 			// 打印 Log
-			if (log.isWarnEnabled()) {
-				log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName()
-														: e.getMessage());
-			}
+			logException(e);
 
 			try {
 				fail.render(req, resp, e);
 			}
 			// 失败渲染流程也失败的话，则试图直接渲染一下失败信息
 			catch (Throwable e1) {
+				// 打印 Log
+				logException(e1);
+				
 				resp.reset();
 				try {
 					resp.getWriter().write(e1.getMessage());
@@ -270,6 +274,9 @@ public class ActionInvokerImpl implements ActionInvoker {
 				}
 				// 仍然失败？ 没办法，抛出异常吧
 				catch (IOException e2) {
+					// 打印 Log
+					logException(e2);
+					
 					throw Lang.wrapThrow(e2);
 				}
 			}
@@ -280,5 +287,11 @@ public class ActionInvokerImpl implements ActionInvoker {
 				reqContext.depose();
 		}
 
+	}
+	
+	private static void logException(Throwable e){
+		if (log.isWarnEnabled())
+			log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName()
+																: e.getMessage() , e);
 	}
 }
