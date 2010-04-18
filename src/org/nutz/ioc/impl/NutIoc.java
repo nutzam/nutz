@@ -80,7 +80,7 @@ public class NutIoc implements Ioc2 {
 
 		// 连接上下文
 		IocContext cntx;
-		if (null == context)
+		if (null == context || context == this.context)
 			cntx = this.context;
 		else {
 			if (log.isTraceEnabled())

@@ -190,7 +190,7 @@ public class SimpleJsonIocTest {
 	
 	@Test
 	public void test_get_ioc_self() {
-		Ioc ioc = I(J("iocV", "type:'org.nutz.ioc.json.pojo.IocSelf',fields:{ioc:{refer : '$ioc'}}"));
+		Ioc ioc = I(J("iocV", "type:'org.nutz.ioc.json.pojo.IocSelf',fields:{ioc:{refer : '$iOc'}}"));
 		assertEquals(ioc, ioc.get(IocSelf.class, "iocV").getIoc());
 	}
 }

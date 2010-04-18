@@ -369,7 +369,7 @@ public class JsonTest {
 
 		public boolean equals(Object obj) {
 			Project p = (Project) obj;
-			return id == p.id & name.equals(p.name) & alias.equals(p.alias);
+			return id == p.id && name.equals(p.name) && alias.equals(p.alias);
 		}
 
 	}

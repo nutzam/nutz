@@ -1,5 +1,7 @@
 package org.nutz.ioc.val;
 
+import org.nutz.ioc.Ioc;
+import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ValueProxy;
@@ -17,7 +19,10 @@ public class ReferValue implements ValueProxy {
 	}
 
 	public Object get(IocMaking ing) {
-		return ing.getIoc().get(type, name);
+		Ioc ioc = ing.getIoc();
+		if (ioc instanceof Ioc2)
+			return ((Ioc2)ioc).get(type, name,ing.getContext());
+		return ioc.get(type, name);
 	}
 
 }

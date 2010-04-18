@@ -41,5 +41,13 @@ public class ScopeJsonIocTest {
 		assertEquals(1, map.size());
 
 	}
+	
+	@Test
+	public void test_refer_from_diffenent_scope(){
+		Ioc2 ioc = I(	J("f1", "type : 'org.nutz.ioc.json.pojo.Animal' , scope:'app',fields:{name:'F1'}"),
+						J("f2", "type : 'org.nutz.ioc.json.pojo.Animal' , scope:'MyScope',fields:{name:{refer : 'f3'}}"),
+						J("f3", "type : 'org.nutz.ioc.json.pojo.Animal' , scope:'MyScope'}"));
+		ioc.get(null, "f2");
+	}
 
 }
