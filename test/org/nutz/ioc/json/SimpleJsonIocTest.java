@@ -16,6 +16,7 @@ import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.json.pojo.AnimalRace;
+import org.nutz.ioc.json.pojo.IocSelf;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.lang.Streams;
 
@@ -185,5 +186,11 @@ public class SimpleJsonIocTest {
 	public void test_load_from_reader() throws ObjectLoadException {
 		IocLoader loader = new JsonLoader(Streams.fileInr("org/nutz/ioc/json/main.js"));
 		assertTrue(loader.getName().length > 0);
+	}
+	
+	@Test
+	public void test_get_ioc_self() {
+		Ioc ioc = I(J("iocV", "type:'org.nutz.ioc.json.pojo.IocSelf',fields:{ioc:{refer : '$ioc'}}"));
+		assertEquals(ioc, ioc.get(IocSelf.class, "iocV").getIoc());
 	}
 }
