@@ -8,4 +8,4 @@ import org.junit.runners.Suite;
 						EvensJsonIocTest.class,
 						AopJsonIocTest.class,
 						ScopeJsonIocTest.class})
-public class AllJsonIocTest {}
+public class AllJsonIoc {}
