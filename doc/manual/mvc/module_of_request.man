@@ -60,6 +60,7 @@
 			public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 					throws IOException, ServletException {
 				req.setAttribute("$request", req);
+				chain.doFilter(req, resp);
 			}
 		}
 		}}}
