@@ -33,8 +33,9 @@ import org.w3c.dom.NodeList;
 
 /**
  * 使用XML做为Ioc配置文件 <br/>
- * 限制: <li>必须是良构的XML文件 <li>
- * 
+ * 限制: <br/>
+ * <li>必须是良构的XML文件 <li>
+ * <li>obj必须定义type,当前实现中IocObject是共享的 <li>
  * @author wendal(wendal1985@gmail.com)
  * @version 2.0
  */
@@ -61,7 +62,7 @@ public class XmlIocLoader implements IocLoader {
 			DocumentBuilder builder = Lang.xmls();
 			Document document;
 			for (String fileName : fileNames) {
-				document = builder.parse(Files.findFile(fileName));
+				document = builder.parse(Files.findFileAsStream(fileName));
 				document.normalizeDocument();
 				NodeList nodeListZ = ((Element) document.getDocumentElement()).getChildNodes();
 				for (int i = 0; i < nodeListZ.getLength(); i++) {
@@ -310,9 +311,8 @@ public class XmlIocLoader implements IocLoader {
 		if (parentList.contains(currentBeanId))
 			return false;
 		String parentBeanId = parentMap.get(currentBeanId);
-		if (parentBeanId == null) {
+		if (parentBeanId == null)
 			return true;
-		}
 		parentList.add(currentBeanId);
 		return check(parentList, parentBeanId);
 	}
