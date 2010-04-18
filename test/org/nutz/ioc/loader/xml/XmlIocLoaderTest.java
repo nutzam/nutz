@@ -43,7 +43,6 @@ public class XmlIocLoaderTest {
 					if (iocField.getValue() != null) {
 						IocValue iocValue = iocField.getValue();
 						checkValue(iocValue);
-						System.out.println("here");
 					}
 				}
 			}
@@ -56,7 +55,7 @@ public class XmlIocLoaderTest {
 		if (iocValue.getValue() != null && iocValue.getValue() instanceof Collection<?>) {
 			Collection<?> collection = (Collection<?>) iocValue.getValue();
 			for (Object object : collection) {
-				System.out.println(object);
+				assertNotNull(object);
 			}
 		}
 	}

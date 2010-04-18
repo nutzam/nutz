@@ -123,7 +123,7 @@ public class XmlIocLoader implements IocLoader {
 
 		iocMap.put(beanId, iocObject);
 		if (LOG.isDebugEnabled())
-			LOG.debug("Resolved bean define, name = %s" + beanId);
+			LOG.debugf("Resolved bean define, name = %s" , beanId);
 		return iocObject;
 	}
 
