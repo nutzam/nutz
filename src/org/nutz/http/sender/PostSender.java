@@ -3,8 +3,8 @@ package org.nutz.http.sender;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.http.Http;
 import org.nutz.http.HttpException;
@@ -27,13 +27,11 @@ public class PostSender extends Sender {
 			Writer w = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
 			Map<String, ?> params = request.getParams();
 			if (null != params && params.size() > 0) {
-				for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-					String key = it.next();
-					w.write(Http.encode(key));
+				for (Entry<String,?> entry : params.entrySet()) {
+					w.write(Http.encode(entry.getKey()));
 					w.write('=');
-					w.write(Http.encode(params.get(key)));
-					if (it.hasNext())
-						w.write('&');
+					w.write(Http.encode(entry.getValue()));
+					w.write('&');
 				}
 				w.flush();
 				w.close();

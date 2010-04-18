@@ -4,8 +4,8 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.http.HttpException;
 import org.nutz.http.Request;
@@ -30,15 +30,15 @@ public class FilePostSender extends PostSender {
 			Map<String, ?> params = request.getParams();
 			DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
 			if (null != params && params.size() > 0) {
-				for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
+				for (Entry<String,?> entry : params.entrySet()) {
 					outs.writeBytes("--" + boundary + SEPARATOR);
-					String key = it.next();
-					File f = new File(params.get(key).toString());
+					String key = entry.getKey();
+					File f = new File(entry.getKey());
 					if (f.exists()) {
 						outs.writeBytes("Content-Disposition:	form-data;	name=\""
 										+ key
 										+ "\";	filename=\""
-										+ params.get(key)
+										+ entry.getValue()
 										+ "\"\r\n");
 						outs.writeBytes("Content-Type:   application/octet-stream\r\n\r\n");
 						InputStream is = new FileInputStream(f);
@@ -59,7 +59,7 @@ public class FilePostSender extends PostSender {
 						outs.writeBytes("content-disposition:	form-data;	name=\""
 										+ key
 										+ "\"\r\n\r\n");
-						outs.writeBytes(params.get(key) + "\r\n");
+						outs.writeBytes(entry.getValue() + "\r\n");
 					}
 				}
 				outs.writeBytes("--" + boundary + "--" + SEPARATOR);

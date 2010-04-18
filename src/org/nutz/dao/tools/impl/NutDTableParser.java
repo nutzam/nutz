@@ -19,7 +19,7 @@ public class NutDTableParser implements DTableParser {
 		return ip.process();
 	}
 
-	class InnerParser {
+	static class InnerParser {
 
 		private char[] cs;
 		private int index;

@@ -20,6 +20,7 @@ public class JdkLogAdapterTest {
 	@After
 	public void clean(){
 		System.getProperties().remove("java.util.logging.config.file");
+		Logs.init();
 	}
 
 	@Test
