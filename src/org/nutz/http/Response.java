@@ -94,7 +94,6 @@ public class Response {
 	public void print(Writer writer) {
 		try {
 			Reader reader = this.getReader();
-			writer.write("\r\n");
 			int c;
 			while (-1 != (c = reader.read())) {
 				writer.write(c);
