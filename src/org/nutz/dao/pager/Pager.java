@@ -1,6 +1,7 @@
 package org.nutz.dao.pager;
 
 import org.nutz.dao.entity.Entity;
+import org.nutz.lang.util.PageInfo;
 
 /**
  * 这个接口描述了一个完整的分页信息。各个实现类，需根据不同的数据库具体情况， 实现这些接口函数。
@@ -16,47 +17,7 @@ import org.nutz.dao.entity.Entity;
  * @see org.nutz.dao.Dao
  * 
  */
-public interface Pager {
-
-	/**
-	 * 一共有多少页
-	 */
-	int getPageCount();
-
-	/**
-	 * 当前是第几页， 从 1 开始
-	 */
-	int getPageNumber();
-
-	/**
-	 * 设置页码
-	 */
-	Pager setPageNumber(int pageNumber);
-
-	/**
-	 * 一页可以有多少条记录
-	 */
-	int getPageSize();
-
-	/**
-	 * 设置一页可以有多少条记录
-	 */
-	Pager setPageSize(int pageSize);
-
-	/**
-	 * 整个查询，一共有多少条记录
-	 */
-	int getRecordCount();
-
-	/**
-	 * 设置整个查询一共有多少条记录
-	 */
-	Pager setRecordCount(int recordCount);
-
-	/**
-	 * 当前页之前，还应该有多少条记录
-	 */
-	int getOffset();
+public interface Pager extends PageInfo {
 
 	/**
 	 * 根据这以下三个参数，生成查询的 SQL
