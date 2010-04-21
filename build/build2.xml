@@ -13,7 +13,7 @@
 			* JDK1.6 版本 jar
 			* JUnit 测试结果
 			* Emma 代码覆盖率报告
-			* 用户手册
+			* 用户手册(中英文)
 		
 		环境变量 ${DEPS} 声明了所有依赖 jar 的位置，它们应该包括：
 			1. log4j 以及 log4j.properties
@@ -110,6 +110,7 @@
 		</copy>
 		<copy todir="${classes-dir-jdk5}">
 			<fileset file="License.txt"></fileset>
+			<fileset dir="src" excludes="**/*.java"></fileset>
 		</copy>
 		<jar destfile="${nutz.jar.jdk5}" basedir="${classes-dir-jdk5}"></jar>
 		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8"
@@ -120,6 +121,7 @@
 		</copy>
 		<copy todir="${classes-dir-jdk6}">
 			<fileset file="License.txt"></fileset>
+			<fileset dir="src" excludes="**/*.java"></fileset>
 		</copy>
 		<jar destfile="${nutz.jar.jdk6}" basedir="${classes-dir-jdk6}"></jar>
 	</target>
@@ -142,7 +144,8 @@
 		<copy todir="${classes-dir-test}">
 			<fileset excludes="**/*.java" dir="test"></fileset>
 		</copy>
-		<junit fork="true" showoutput="false" printsummary="yes" filtertrace="true">
+		<junit fork="true" showoutput="false" printsummary="yes" filtertrace="true" maxmemory="256M" 
+			haltonerror="true" haltonfailure="true">
 			<classpath>
 				<path path="${classes-dir-test}"></path>
 				<path path="${classes-dir-emma}"></path>
@@ -167,8 +170,8 @@
 	        <fileset dir="${classes-dir-emma}" >
 	          <include name="*.emma" />
 	        </fileset>
-	        <html outfile="../${pub-dir}/emma/coverage.html" />
-	      	<txt outfile="../${pub-dir}/emma/coverage.txt" />
+	        <html outfile="${basedir}/${pub-dir}/emma/coverage.html" />
+	      	<txt outfile="${basedir}/${pub-dir}/emma/coverage.txt" />
 	      </report>
 	    </emma>
 	</target>
