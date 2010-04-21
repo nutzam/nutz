@@ -1,5 +1,8 @@
 package org.nutz.dao.tools;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -91,6 +94,59 @@ public class DTable {
 
 	public boolean hasField(String name) {
 		return null != getField(name);
+	}
+
+	public String toString() {
+		StringBuilder sb = new StringBuilder(name);
+		sb.append(" {");
+		/*
+		 * PK
+		 */
+		List<DField> list = new ArrayList<DField>(fields.size());
+		for (DField df : fields) {
+			if (df.isPrimaryKey())
+				list.add(df);
+		}
+		sortFields(list);
+		appendFieldToSb(sb, list);
+		/*
+		 * Uniques
+		 */
+		list = new ArrayList<DField>(fields.size());
+		for (DField df : fields) {
+			if (df.isUnique() && !df.isPrimaryKey())
+				list.add(df);
+		}
+		sortFields(list);
+		appendFieldToSb(sb, list);
+		/*
+		 * Others
+		 */
+		list = new ArrayList<DField>(fields.size());
+		for (DField df : fields) {
+			if (!df.isUnique() && !df.isPrimaryKey())
+				list.add(df);
+		}
+		sortFields(list);
+		appendFieldToSb(sb, list);
+
+		sb.deleteCharAt(sb.length() - 1);
+		sb.append("\n}");
+		return sb.toString();
+	}
+
+	private static void appendFieldToSb(StringBuilder sb, List<DField> list) {
+		for (DField df : list) {
+			sb.append("\n\t").append(df.toString()).append(",");
+		}
+	}
+
+	private static void sortFields(List<DField> list) {
+		Collections.sort(list, new Comparator<DField>() {
+			public int compare(DField o1, DField o2) {
+				return o1.getName().compareTo(o2.getName());
+			}
+		});
 	}
 
 }

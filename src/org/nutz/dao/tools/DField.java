@@ -1,5 +1,7 @@
 package org.nutz.dao.tools;
 
+import org.nutz.lang.Strings;
+
 public class DField {
 
 	private String name;
@@ -75,4 +77,20 @@ public class DField {
 		this.defaultValue = defaultValue;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder(name);
+		sb.append(" ").append(type).append(" ");
+		appendByFlag(sb, autoIncreament, "+");
+		appendByFlag(sb, notNull, "!");
+		appendByFlag(sb, unsign, "~");
+		appendByFlag(sb, primaryKey, "PK");
+		appendByFlag(sb, unique, "UNIQUE");
+		appendByFlag(sb, !Strings.isBlank(defaultValue), String.format(" <%s>", defaultValue));
+		return sb.toString();
+	}
+
+	private void appendByFlag(StringBuilder sb, boolean flag, String str) {
+		if (flag)
+			sb.append(str);
+	}
 }

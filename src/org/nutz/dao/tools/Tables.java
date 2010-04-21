@@ -1,18 +1,31 @@
 package org.nutz.dao.tools;
 
 import java.io.File;
+
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.dao.Dao;
 import org.nutz.dao.DatabaseMeta;
+import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Default;
+import org.nutz.dao.entity.annotation.Id;
+import org.nutz.dao.entity.annotation.Name;
+import org.nutz.dao.entity.annotation.PK;
+import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.tools.annotation.ColType;
+import org.nutz.dao.tools.annotation.NotNull;
 import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.dao.tools.impl.TableDefinitionImpl;
 import org.nutz.dao.tools.impl.expert.*;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 
 public abstract class Tables {
 
@@ -79,4 +92,109 @@ public abstract class Tables {
 		}
 	}
 
+	public static DTable parse(Class<?> type) {
+		DTable dt = new DTable();
+		Table table = type.getAnnotation(Table.class);
+		dt.setName(null == table ? type.getSimpleName() : table.value());
+		Mirror<?> me = Mirror.me(type);
+		Field[] fields = me.getFields();
+		// Found ID
+		for (Field f : fields) {
+			Id id = f.getAnnotation(Id.class);
+			if (null != id) {
+				DField df = new DField();
+				df.setPrimaryKey(true);
+				if (id.auto())
+					df.setAutoIncreament(true);
+				setupFieldAttribute(f, df);
+				dt.addField(df);
+				break;
+			}
+		}
+		// Found Name
+		for (Field f : fields) {
+			Name id = f.getAnnotation(Name.class);
+			if (null != id) {
+				DField df = new DField();
+				if (dt.getPks().isEmpty())
+					df.setPrimaryKey(true);
+				else {
+					df.setNotNull(true);
+					df.setUnique(true);
+				}
+				setupFieldAttribute(f, df);
+				dt.addField(df);
+				break;
+			}
+		}
+		// Found combo PKs
+		NutMap pkMap = new NutMap();
+		if (dt.getPks().isEmpty()) {
+			PK pkanns = type.getAnnotation(PK.class);
+			if (null != pkanns) {
+				try {
+					for (String name : pkanns.value()) {
+						Field f = me.getField(name);
+						pkMap.put(name, f);
+						DField df = new DField();
+						df.setPrimaryKey(true);
+						df.setNotNull(true);
+						setupFieldAttribute(f, df);
+						dt.addField(df);
+					}
+				}
+				catch (NoSuchFieldException e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		}
+		// For all fields
+		for (Field f : fields) {
+			if (null != f.getAnnotation(Id.class)
+				|| null != f.getAnnotation(Name.class)
+				|| pkMap.containsKey(f.getName()))
+				continue;
+			if (null == f.getAnnotation(Column.class))
+				continue;
+			DField df = new DField();
+			setupFieldAttribute(f, df);
+			dt.addField(df);
+		}
+		return dt;
+	}
+
+	private static void setupFieldAttribute(Field f, DField df) {
+		Column col = f.getAnnotation(Column.class);
+		if (null == col || Strings.isBlank(col.value()))
+			df.setName(f.getName());
+		else
+			df.setName(col.value());
+
+		if (null != f.getAnnotation(NotNull.class))
+			df.setNotNull(true);
+
+		Default def = f.getAnnotation(Default.class);
+		if (null != def)
+			df.setDefaultValue(def.value());
+
+		ColType colType = f.getAnnotation(ColType.class);
+		if (null != colType) {
+			df.setType(colType.value());
+		} else {
+			Mirror<?> ft = Mirror.me(f.getType());
+			if (ft.isStringLike()) {
+				df.setType("VARCHAR(50)");
+			} else if (ft.isIntLike()) {
+				df.setType("INT");
+			} else if (ft.isDateTimeLike()) {
+				df.setType("TIMESTAMP");
+			} else if (ft.isBoolean()) {
+				df.setType("BOOLEAN");
+			} else if (ft.isEnum()) {
+				df.setType("VARCHAR(20)");
+			} else {
+				df.setType("???");
+			}
+		}
+	}
 }
