@@ -19,7 +19,32 @@ public class CustomizedJsonTest {
 		String exp = "{t1:\"Trout[RED](8.78)\"}";
 		String json = Json.toJson(m, JsonFormat.compact().setQuoteName(false));
 		assertEquals(exp, json);
+	}
 
+	public static class CJT01 {
+		public String toJson(JsonFormat fmt) {
+			return "01";
+		}
+	}
+
+	@Test
+	public void test_without_to_json_ann() {
+		CJT01 obj = new CJT01();
+		String s = Json.toJson(obj);
+		assertEquals("01", s);
+	}
+
+	public static class CJT02 {
+		public String toJson() {
+			return "02";
+		}
+	}
+
+	@Test
+	public void test_without_to_json_ann_and_without_parameter() {
+		CJT02 obj = new CJT02();
+		String s = Json.toJson(obj);
+		assertEquals("02", s);
 	}
 
 }

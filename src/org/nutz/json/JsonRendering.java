@@ -13,7 +13,6 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.FailToGetValueException;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
@@ -134,39 +133,54 @@ class JsonRendering {
 			return;
 		Class<? extends Object> type = obj.getClass();
 		ToJson tj = type.getAnnotation(ToJson.class);
-		if (null != tj) {
-			try {
-				Method m = type.getMethod(tj.value(), JsonFormat.class);
-				Object re = m.invoke(obj, format);
-				writer.append(re.toString());
-			}
-			catch (Exception e) {
-				throw Lang.wrapThrow(e);
-			}
-		} else {
-			Mirror<?> me = Mirror.me(type);
-			Field[] fields = me.getFields();
-			appendBraceBegin();
-			increaseFormatIndent();
-			ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
-			for (Field f : fields) {
-				String name = f.getName();
-				try {
-					Object value = me.getValue(obj, f);
-					if (!this.isIgnore(name, value))
-						list.add(new Pair(name, value));
-				}
-				catch (FailToGetValueException e) {}
-			}
-			for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
-				Pair p = it.next();
-				this.appendPair(p.name, p.value);
-				if (it.hasNext())
-					this.appendPairEnd();
-			}
-			decreaseFormatIndent();
-			appendBraceEnd();
+		String myMethodName = Strings.sNull(null == tj ? null : tj.value(), "toJson");
+		Method myMethod;
+		/*
+		 * toJson()
+		 */
+		try {
+			myMethod = type.getMethod(myMethodName);
+			Object re = myMethod.invoke(obj);
+			writer.append(re.toString());
+			return;
 		}
+		/*
+		 * toJson(JsonFormat fmt)
+		 */
+		catch (Exception e1) {
+			try {
+				myMethod = type.getMethod(myMethodName, JsonFormat.class);
+				Object re = myMethod.invoke(obj, format);
+				writer.append(re.toString());
+				return;
+			}
+			catch (Exception e) {}
+		}
+		/*
+		 * Default
+		 */
+		Mirror<?> me = Mirror.me(type);
+		Field[] fields = me.getFields();
+		appendBraceBegin();
+		increaseFormatIndent();
+		ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
+		for (Field f : fields) {
+			String name = f.getName();
+			try {
+				Object value = me.getValue(obj, f);
+				if (!this.isIgnore(name, value))
+					list.add(new Pair(name, value));
+			}
+			catch (FailToGetValueException e) {}
+		}
+		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
+			Pair p = it.next();
+			this.appendPair(p.name, p.value);
+			if (it.hasNext())
+				this.appendPairEnd();
+		}
+		decreaseFormatIndent();
+		appendBraceEnd();
 	}
 
 	private void decreaseFormatIndent() {
