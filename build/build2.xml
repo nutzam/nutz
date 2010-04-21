@@ -36,7 +36,7 @@
 	<property name="OUTPUT" value="${env.OUTPUT}" />
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	
-	<property name="svn-version" value="r1077"></property>
+	<property name="svn-version" value="r1102"></property>
 	<property name="nutz-version" value="1.a.27"></property>
 	<tstamp>
 		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
@@ -51,6 +51,7 @@
 	<property name="tmp-junitreport-dir" value="${tmp-dir}/junit-report"></property>
 	<property name="pub-junitreport-dir" value="${pub-dir}/junit-report"></property>
 	<property name="zdoc-dir" value="${pub-dir}/manual"></property>
+	<property name="zdoc-en-dir" value="${pub-dir}/manual_en"></property>
 
 	<property name="nutz.jar.pre" value="nutz-${nutz-version}-snapshot-${svn-version}-${now-date}"></property>
 	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> --> <!-- 用于正式版 -->
@@ -95,6 +96,7 @@
 		<mkdir dir="${pub-dir}/emma"/>
 		<mkdir dir="${javadoc-dir}"/>
 		<mkdir dir="${zdoc-dir}"/>
+		<mkdir dir="${zdoc-en-dir}"/>
 	</target>
 	
 	<target name="create-jar">
@@ -188,6 +190,19 @@
 		</java>
 	</target>
 	
+	<target name="manual_en">
+			<java classname="org.nutz.doc.Doc" fork="true">
+				<sysproperty key="jaxp.debug" value="true"/>
+				<classpath>
+					<path refid="nutz-classpath"></path>
+					<path path="${classes-dir-jdk6}"></path>
+				</classpath>
+				<arg value="${basedir}/doc/manual_en"/>
+				<arg value="${basedir}/${zdoc-en-dir}"/>
+				<arg value=".html"/>
+			</java>
+		</target>
+	
 	<target name="create-zip">
 		<zip destfile="${nutz.pub.zip}">
 			<fileset dir="${pub-dir}"></fileset>
@@ -201,6 +216,7 @@
 		<antcall target="test"></antcall>
 		<antcall target="jdoc"></antcall>
 		<antcall target="manual"></antcall>
+		<antcall target="manual_en"></antcall>
 		<antcall target="create-zip"></antcall>
 		<antcall target="clean"></antcall>
 	</target>
