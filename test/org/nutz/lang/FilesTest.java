@@ -43,12 +43,35 @@ public class FilesTest {
 	}
 
 	@Test
-	public void test_find_file_in_jar() throws ClassNotFoundException, IOException{
+	public void test_find_file_in_jar() throws ClassNotFoundException, IOException {
 		URL url = getClass().getResource("/org/nutz/lang/one.jar");
 		assertNotNull(url);
 		ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{url});
-		InputStream is = Files.findFileAsStream("org/nutz/plugin/Plugin.w", classLoader.loadClass("org.nutz.lang.XXXX"));
+		InputStream is = Files.findFileAsStream("org/nutz/plugin/Plugin.w",
+												classLoader.loadClass("org.nutz.lang.XXXX"));
 		assertNotNull(is);
 		assertEquals(is.available(), 133);
+	}
+
+	@Test
+	public void test_getParent() {
+		assertEquals("/a/b/c", Files.getParent("/a/b/c/d"));
+		assertEquals("/", Files.getParent("/"));
+		assertEquals("", Files.getParent(""));
+		assertNull(Files.getParent(null));
+		assertEquals("\\a\\b", Files.getParent("\\a\\b\\c"));
+	}
+
+	@Test
+	public void test_renamePath() {
+		assertEquals("/a/b/c", Files.renamePath("/a/b/fff", "c"));
+		assertEquals("\\a\\b/c.txt", Files.renamePath("\\a\\b\\fff", "c.txt"));
+		assertEquals("a", Files.renamePath("", "a"));
+		assertEquals("a", Files.renamePath(null, "a"));
+	}
+
+	@Test
+	public void test_get_suffix_name() {
+		assertEquals("txt", Files.getSuffixName("abc.txt"));
 	}
 }

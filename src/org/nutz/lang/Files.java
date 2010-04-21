@@ -623,6 +623,38 @@ public abstract class Files {
 	}
 
 	/**
+	 * 修改路径
+	 * 
+	 * @param path
+	 *            路径
+	 * @param newName
+	 *            新名称
+	 * @return 新路径
+	 */
+	public static String renamePath(String path, String newName) {
+		if (!Strings.isBlank(path)) {
+			int pos = path.replace('\\', '/').lastIndexOf('/');
+			if (pos > 0)
+				return path.substring(0, pos) + "/" + newName;
+		}
+		return newName;
+	}
+
+	/**
+	 * @param path
+	 *            路径
+	 * @return 父路径
+	 */
+	public static String getParent(String path) {
+		if (Strings.isBlank(path))
+			return path;
+		int pos = path.replace('\\', '/').lastIndexOf('/');
+		if (pos > 0)
+			return path.substring(0, pos);
+		return "/";
+	}
+
+	/**
 	 * 将一个目录下的特殊名称的目录彻底删除，比如 '.svn' 或者 '.cvs'
 	 * 
 	 * @param dir
