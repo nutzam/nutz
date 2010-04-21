@@ -25,8 +25,8 @@
 	<property name="zdao" value="org/nutz/dao/**,org/nutz/service/**,org/nutz/trans/**" />
 	<property name="zioc" value="org/nutz/ioc/**,org/nutz/aop/**" />
 	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
-	
-	<property name="zall" value="${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}"/>
+
+	<property name="zall" value="${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}" />
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
@@ -46,8 +46,7 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
-		source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="utf-8">
+		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="utf-8">
 			<classpath refid="CLASSPATH" />
 		</javac>
 	</target>
