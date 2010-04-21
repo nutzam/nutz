@@ -655,6 +655,20 @@ public abstract class Files {
 	}
 
 	/**
+	 * @param path
+	 *            全路径
+	 * @return 文件或者目录名
+	 */
+	public static String getName(String path) {
+		if (!Strings.isBlank(path)) {
+			int pos = path.replace('\\', '/').lastIndexOf('/');
+			if (pos > 0)
+				return path.substring(pos);
+		}
+		return path;
+	}
+
+	/**
 	 * 将一个目录下的特殊名称的目录彻底删除，比如 '.svn' 或者 '.cvs'
 	 * 
 	 * @param dir
