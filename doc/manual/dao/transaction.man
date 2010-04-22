@@ -107,7 +107,7 @@
 
 		下面我给出两个例子:
 
-		{*最外层模板决定了整个事务的级别)
+		{*最外层模板决定了整个事务的级别:}
 		{{{
 		Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom(){
 			public void run(){
@@ -127,7 +127,7 @@
 		}}}
 
 
-		{*让整个函数都是事务的}
+		{*让整个函数都是事务的:}
 		{{{
 		public void updatePet(final Pet pet){
 			Trans.exec(new Atom(){
