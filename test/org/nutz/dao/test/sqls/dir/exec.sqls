@@ -1,0 +1,5 @@
+/*tank.insert*/
+INSERT INTO dao_d_tank_$id (code,weight) VALUES(@code,@weight)
+/*-------------------------------------------------------------------------*/
+/*tank.query*/
+SELECT * FROM dao_d_tank_$id
