@@ -26,11 +26,11 @@ import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
-import org.nutz.lang.ClassLoaderUtil;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.ClassLoaderUtil;
 import org.nutz.lang.util.LinkedCharArray;
 
 public class FileSqlManager implements SqlManager {
