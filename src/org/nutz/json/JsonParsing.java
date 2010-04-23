@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.HashMap;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -169,13 +168,13 @@ class JsonParsing {
 			skipCommentsAndBlank();
 			// If Map
 			if (Map.class == type)
-				me = (Mirror<T>) Mirror.me(HashMap.class);
+				me = (Mirror<T>) Mirror.me(TreeMap.class);
 			if (null == me || Map.class.isAssignableFrom(type)) {
 				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
 													: (Map<String, Object>) me.born();
 				while (cursor != -1 && cursor != '}') {
 					String name = readFieldName();
-					Object value = parseFromJson(null, componentType);
+					Object value = parseFromJson(componentType, null);
 					map.put(name, value);
 					if (!findNextNamePair())
 						break;

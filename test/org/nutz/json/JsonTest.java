@@ -506,4 +506,16 @@ public class JsonTest {
 		assertEquals(1, ((Integer) iv.getValue()).intValue());
 		assertEquals("normal", iv.getType());
 	}
+
+	public static class TFAMWLV {
+		Map<String, List<String>> map;
+	}
+
+	@Test
+	public void test_field_as_map_with_list_value() {
+		String str = "{map:{a:['A1','A2'],b:['B1','B2']}}";
+		TFAMWLV obj = Json.fromJson(TFAMWLV.class, str);
+		assertEquals("B2", obj.map.get("b").get(1));
+	}
+
 }
