@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------------------
 关于这个项目
 	 * 《[http://xiaofeng.javaeye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情]》 \
-	     @[http://xiaofeng.javaeye.com hilliate] {#008800;*`[推荐]`}
+	     @[http://xiaofeng.javaeye.com hilliate] {#008800;*推荐}
 	 * 《[http://zozoh.javaeye.com/blog/526494 Nutz 的设计以及提高程序员生产力]》 \
 	     @[http://zozoh.javaeye.com zozoh]
 -----------------------------------------------------------------------------------
@@ -17,11 +17,11 @@
 	 * 《[http://bobby1222.javaeye.com/blog/585483 NUTZ与SQL SERVER2000兼容性问题]》\
 		 @[http://user.qzone.qq.com/104791117 Ge.PH /hl]
 	 * 《[http://yongshan-ji.javaeye.com/blog/651119 Nutz DAO懒加载实体关联对象]》 \
-		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*`[推荐]`}
+		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*推荐}
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
-	     @[http://axhack.javaeye.com axhack] {#008800;*`[推荐]`}
+	     @[http://axhack.javaeye.com axhack] {#008800;*推荐}
 	 * 《[http://birdwindy.javaeye.com/blog/582200 我的第一个Nutz程序]》 \
 	     @[http://birdwindy.javaeye.com Bird.Wyatt]
 -----------------------------------------------------------------------------------
