@@ -167,7 +167,7 @@ class JsonRendering {
 		for (Field f : fields) {
 			String name = f.getName();
 			try {
-				Object value = me.getValue(obj, f);
+				Object value = me.getValue(obj, name);
 				if (!this.isIgnore(name, value))
 					list.add(new Pair(name, value));
 			}

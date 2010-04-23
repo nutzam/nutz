@@ -47,4 +47,20 @@ public class CustomizedJsonTest {
 		assertEquals("02", s);
 	}
 
+	public static class CJT03 {
+		String abc;
+
+		public String getAbc() {
+			return abc.toUpperCase();
+		}
+
+	}
+
+	@Test
+	public void test_to_json_by_getter() {
+		CJT03 obj = new CJT03();
+		obj.abc = "xxx";
+		assertEquals("{\"abc\":\"XXX\"}", Json.toJson(obj, JsonFormat.compact()));
+	}
+
 }
