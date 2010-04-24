@@ -27,13 +27,13 @@ p{
 	font-size: 28px;
 	font-weight: bold;
 	padding: 16px;
-	background-color: #DDF;
+	background-color: #DDDDFF;
 	border:1px dashed #33A;
 }
 
 .zdoc_footer{
-	border-top:1px solid #AAA;
-	background-color: #DDD;
+	border-top:1px solid #AAAAAA;
+	background-color: #DDDDDD;
 	padding: 5px;
 	padding-right:15px;
 	margin: 0px;
@@ -88,11 +88,11 @@ h2{
 }
 
 h3,h4,h5,h6{
-	color: #00D;
+	color: #0000DD;
 	font-size:14px;
 	font-weight:bold;
 	border-bottom:1px dotted #555;
-	background-color:#DDD;
+	background-color:#DDDDDD;
 	margin:2px;
 	padding:2px;
 	text-indent:16px;
@@ -112,7 +112,7 @@ pre{
 	line-height: 18px;
 	letter-spacing: 0px;
 
-	border-left:4px solid #CCC;
+	border-left:4px solid #CCCCCC;
 	padding: 10px;
 	margin-left:30px;
 }
@@ -165,5 +165,5 @@ ul.zdoc_index_table, ul.zdoc_index_table ul{
 ul.zdoc_index_table ul{
 	margin-left:27px;
 	padding-left:10px;
-	border-left-color:#CCC;
+	border-left-color:#CCCCCC;
 }

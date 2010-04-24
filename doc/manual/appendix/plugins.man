@@ -1,5 +1,5 @@
 #title: 可用的插件
-#index:0
+#index:0,1
 --------------------------------------------------------------------------------------
 IocProvider
     [http://code.google.com/p/nutzlab/source/browse/trunk/Nutz-IoC-Spring/src/org/nutz/ioc/impl/spring/SpringIocProvider.java Spring桥]
@@ -7,6 +7,7 @@ IocProvider
 IocLoader
 --------------------------------------------------------------------------------------
 View
+    [http://axhack.javaeye.com/blog/542441 FreeMaker_View]
 --------------------------------------------------------------------------------------
 Dao
 --------------------------------------------------------------------------------------
