@@ -71,7 +71,7 @@
 		
 		使用 JSTL
 			如果你使用 JSTL，你还可以
-			 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [mvc_localization.man 本地化字符串更多的介绍]
+			 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [localization.man 本地化字符串更多的介绍]
 			 * 通过 `${base}` 输出当前应用的 ContextPath
 			 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
 			 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
@@ -115,7 +115,7 @@
 		@Ok("json:{quoteName:true, ignoreNull:true}")
 		}}}
 		视图的值就是： {*`"{quoteName:true, ignoreNull:true}"`}，这个字符串会被转换成 JsonFormat 对象。
-		如果你想了解更多的 Json 转换的介绍哦，请参看 [json_overview.man Json 手册]
+		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
 	--------------------------------------------------------------------------------------
 	重定向视图
 		视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}

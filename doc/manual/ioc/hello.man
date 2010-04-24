@@ -147,7 +147,7 @@
 	
 	 * [inner_object.man 匿名对象]
 	 * [events.man 事件监听]
-	 * [what_to_inject.man 你都可以注入什么]
+	 * [injecting.man 你都可以注入什么]
 	 * [events.man 事件的监听]
 	 * [ioc_loader.man 定义自己的配置文件格式]
 	 * [aop.man AOP] -- 声明式切片

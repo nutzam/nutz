@@ -90,7 +90,7 @@ Nutz 的未来
 	 * [http://xiaofeng.javaeye.com/blog/549410 不编写代码，你可以能为这个项目做很多事情] @[http://xiaofeng.javaeye.com hilliate]
 	 * 你可以随时 [http://code.google.com/p/nutz/issues/entry 提交你发现的问题]
 	 * 任何人 用 任何方式 => 指出 Nutz 的缺陷，都是被欢迎的
-	 * 如果你想成为 Nutz Committers 中的一员，请 [committer/be_commiter.man 阅读这里]
+	 * 如果你想成为 Nutz Committers 中的一员，请 [committer/be_committer.man 阅读这里]
 --------------------------------------------------------------------------------------------------------
 我使用的时候如果出现问题怎么办？
 

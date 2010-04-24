@@ -67,9 +67,9 @@ zDoc 要达到的目标
 		 * 这三个参数缺一不可
 		 * 第一个参数声明了zDoc源目录
 			 * 该目录下如果有 index.xml，将能更为精确的控制生成的 html 目录索引
-			 * 请看 [zdoc_index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
+			 * 请看 [index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
 		 * 你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感
-		 * 更多的关于目录转换的细节请参看 [zdoc_dir_convert.html 目录转换细则]
+		 * 更多的关于目录转换的细节请参看 [dir_convert.html 目录转换细则]
 		 * 最后一个参数为文件扩展名，.html 或者 .htm 都是合法的
 		
 		{*比如}
@@ -93,7 +93,7 @@ zDoc 要达到的目标
 		 * 这前三个参数缺一不可
 		 * 第一个参数声明了zDoc源目录
 			 * 该目录下如果有 index.xml，将能更为精确的控制生成的目录索引
-			 * 请看 [zdoc_index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
+			 * 请看 [index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
 		 * 第二个参数指明 wiki 目录， zDoc 将会在这个目录下生成所有的 .wiki 文件
 		 * 第三个参数为索引文件名，请参看 [http://code.google.com/p/support/wiki/WikiSyntax#Navigation Google wiki 关于目录索引的描述]
 			 * zDoc 会替你生成这个索引文件
@@ -115,8 +115,8 @@ zDoc 要达到的目标
 		地址都将变成 http://www.my.com/wiki/img/xxxx.xxx
 
 其他
-	 * 关于 zdoc 文件详细的语法，请参看 [zdoc_syntax.html zDoc 的语法说明]
-	 * 关于目录转换的细则，请参看 [zdoc_dir_convert.html 目录转换细则] 以及 [zdoc_index_xml.html 使用 index.xml 作为索引文件]
+	 * 关于 zdoc 文件详细的语法，请参看 [syntax.html zDoc 的语法说明]
+	 * 关于目录转换的细则，请参看 [dir_convert.html 目录转换细则] 以及 [index_xml.html 使用 index.xml 作为索引文件]
 	 * zDoc 已经被我应用到具体的工作中，比如写作界面设计文档，以后如果我打算写小说，也会使用 zDoc。
 	 
 	 总之，一个文本编辑器，一个 SVN 服务器就可以多人协作，写出漂亮的文档，这种感觉会很美妙的。

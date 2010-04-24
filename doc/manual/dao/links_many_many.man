@@ -91,5 +91,5 @@
 			其中，占位符 `${foodId}` 会被本 POJO 的主键值替换。
 -------------------------------------------------------------------------------------------------------------
 你可能还需要参考
-	 * 关于注解 {*@ManyMany} 详细描述请参看 > [entity_annotations.man Nutz.Dao 实体注解] 关于{*@ManyMany}这一节
+	 * 关于注解 {*@ManyMany} 详细描述请参看 > [annotations.man Nutz.Dao 实体注解] 关于{*@ManyMany}这一节
 	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.man Nutz.Dao 为映射提供的操作]。

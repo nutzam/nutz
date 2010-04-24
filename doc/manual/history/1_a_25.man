@@ -45,8 +45,8 @@
 		 # Log 部分的结构和实现修改的更加简洁
 	
 	文档
-		 # 添加了 Nutz.Lang （Wiki 《[lang/lang.man 甜Java]》）下全部文档
-		 # 完成了 [lang/mirror.man Mirror] 类的所有 Java Doc
+		 # 添加了 Nutz.Lang （Wiki 《[../lang/lang.man 甜Java]》）下全部文档
+		 # 完成了 [../lang/mirror.man Mirror] 类的所有 Java Doc
 	
 	博客
 		 * 《[http://wendal.javaeye.com/blog/543936 Nutz:重新发明轮子:自己动手,用字节码工具做一个Aop拦截器]》\

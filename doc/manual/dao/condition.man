@@ -31,7 +31,7 @@ Nutz 给你的快速实现
 		{{{<JAVA>
 		List<Person> crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age>20"), null);
 		}}}
-		这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 [dao_get_start.html Nutz.Dao 入门]
+		这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 [hello.man Nutz.Dao 入门]
 		针对 Person 对象的描述，实际上，上面那句话执行的 SQL 代码为：
 		{{{<SQL>
 		SELECT * FROM t_person WHERE name LIKE 'J%' AND age>20;
