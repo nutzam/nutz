@@ -18,6 +18,8 @@
 		 @[http://user.qzone.qq.com/104791117 Ge.PH /hl]
 	 * 《[http://yongshan-ji.javaeye.com/blog/651119 Nutz DAO懒加载实体关联对象]》 \
 		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*推荐}
+	 * 《[http://bonyfish.cn/logs/20100415-nutz-todo-mini-task.html 用Nutz做点小任务]》\
+		 @[http://bonyfish.cn 小毛] 
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
