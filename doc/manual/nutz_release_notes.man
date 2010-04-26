@@ -3,11 +3,30 @@
 #author:zozoh(zozohtnt@gmail.com,wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 前言
-	今天, Nutz社区自豪地宣布,Nutz 1.a.27版正式发布了! 
-	1.a.27版有很多新功能,并修复了近30个issue,拥有改进的文档和更丰富的Demo.
-	我们强烈推荐更新到这个版本.
-	[http://code.google.com/p/nutz/downloads/list 马上下载]
-
+	今天, Nutz社区自豪地宣布,Nutz 1.a.27版正式发布了! 本版有很多新功能,并修复了近30个issue,拥有改进的文档
+	和更丰富的Demo.
+	
+	 * 由于更多人试图通过更多的方法定制和使用 Nutz，所以遇到了更多的问题
+	 * 这些问题都是对 Nutz 小幅的修正和调整
+	 * 本次发布修复了其中绝大多数问题
+	 * 所以我们强烈推荐你更新到这个版本.	[http://code.google.com/p/nutz/downloads/list 马上下载]
+	
+	曾有朋友建议将 Nutz 的级别调至 {*b} ({/beta}，因为现有的功能已经很稳定了。经过半年的不断修正，它在生产
+	环境中的表现无论是开发效率还是灵活性上，完全不比很多 RC 框架差，甚至更好。 
+	
+	但是我们还是坚持它是 alpha。
+	
+	 * 因为我们并不认为把一个发布包的名字由 alpha 改为 beta，它就是 beta 品质的了。
+	 * 我们认为只有它达到了我们心中	的 beta 品质，即，我们实在不认为有调整接口的必要了，我们才会将其升级成 beta。
+	 * 起码一段时间内，我们还会继续保留修改 Nutz 主要接口和使用方法的权利。 
+	
+	1.a.27 从另外一个角度来说，也是一个里程碑。从 09 年初的个人框架，到现在社区已经成为这个框架发展不可或缺的
+	力量。
+	 * 新人可以很容易的加入到社区，并得到帮助
+	 * 使用者提出的问题会得到及时的响应
+	 * 每一个意见和建议都会得到讨论
+	 * 被关注的问题很快可以得到修复。
+	因此我们可以说，从这个版开始，它已经成为一个真正的开源框架了。
 
 概述
 	这个版本是在 1.a.26 基础上的重要改进
@@ -25,36 +44,33 @@
 	 * mvc: 通过直接声明一个包来声明包中所有的类为Module
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 [http://code.google.com/p/nutz/issues/detail?id=68 68]	通过配置文件添加AOP	{#AAA;by} {*Chen.Bao.Yi}
-	 [http://code.google.com/p/nutz/issues/detail?id=112 112]	通过直接声明一个包来声明包中所有的类为Module	{#AAA;by} {*Toni.xutao}
-	 [http://code.google.com/p/nutz/issues/detail?id=119 119]	对@Id字段是否能在没有设置@Next的情况下，insert后自动把数据库中的id值回填到Entity中？	{#AAA;by} {*zozohtnt}
-	 [http://code.google.com/p/nutz/issues/detail?id=122 122]	不支持设置单PK	{#AAA;by} {*jiongs753}
-	 [http://code.google.com/p/nutz/issues/detail?id=126 126]	Dao: 执行 Trans.exec for informix 出现 Castors 错误	{#AAA;by} {*jiongs753}
-	 [http://code.google.com/p/nutz/issues/detail?id=127 127]	dao: NutTransaction 的实现代码有错误，在 commit 的时候 clear list 以及 close conn	{#AAA;by} {*jiongs753}
-	 [http://code.google.com/p/nutz/issues/detail?id=128 128]	无法将自定义的EntityMaker注入到NutDao中	{#AAA;by} {*caiceclb}
-	 [http://code.google.com/p/nutz/issues/detail?id=129 129]	Link的构造函数不方便自己实现的JPAEntityMaker	{#AAA;by} {*jiongs753}
-	 [http://code.google.com/p/nutz/issues/detail?id=131 131]	dao: Nutz实体引用的映射问题（以One为例）	{#AAA;by} {*hzzdong}
-	 [http://code.google.com/p/nutz/issues/detail?id=132 132]	DAO使用proxool做数据源会出警告	{#AAA;by} {*happyday0517}
-	 [http://code.google.com/p/nutz/issues/detail?id=134 134]	log: 使用Nutz的log工具在eclipse控制台打印的日志无法通过点击链接后跟踪到调用的代码行	{#AAA;by} {*zozohtnt}
-	 [http://code.google.com/p/nutz/issues/detail?id=135 135]	Daos.java在jdk5编译通不过，因为其中使用了java.sql.Statement.isClosed()方法。 造成Nutz不兼容JDK5。	{#AAA;by} {*jiongs753}
-	 [http://code.google.com/p/nutz/issues/detail?id=136 136]	fastInsert 支持多一个参数，是否执行 @prev 		 {#AAA;by} {*happyday0517}
-	 [http://code.google.com/p/nutz/issues/detail?id=137 137]	数据库操作是否可以增加对Blob类型的支持	 {#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=139 139]	dao: DefaultEntityMaker代码逻辑错误	{#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=140 140]	DAO: 关于Entity和EntityField get\set Attribute	{#AAA;by} {*zozohtnt}
-	 [http://code.google.com/p/nutz/issues/detail?id=142 142]	Disk.absolute(String, ClassLoader, String),当上层文件夹中包含非英文字符时,返回的path可能不正确	{#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=143 143]	org.nutz.ioc.impl.NutIoc无法设置MirrorFactory	{#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=144 144]	ioc: 注入应该支持新的 Value 类型： property	{#AAA;by} {*happyday0517}
-	 [http://code.google.com/p/nutz/issues/detail?id=147 147]	Nut.Aop没有提供示例	{#AAA;by} {*happyday0517}
-	 [http://code.google.com/p/nutz/issues/detail?id=148 148]	Nut.Aop 当方法的返回值为基本数据类型,而拦截器的beforeInvoke返回false时,会出现NPE	{#AAA;by} {*amosleaf}
-	 [http://code.google.com/p/nutz/issues/detail?id=149 149]	空json配置文件启动时会报错	{#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=150 150]	ActionFilter中能否多增加一个方法或在现有方法上加个参数，使实现类可以获得@At所注解的方法名	{#AAA;by} {*hzzdong}
-	 [http://code.google.com/p/nutz/issues/detail?id=151 151]	关于upload File时候的性能问题
-	 [http://code.google.com/p/nutz/issues/detail?id=153 153]	当类文件在中文路径下,org.nutz.lang.util.Resources.scanClasses()无法得到任何class {#AAA;by} {*wendal1985}
-	 [http://code.google.com/p/nutz/issues/detail?id=154 154]	新的代码在JDK5，mysql下测试发现一个单元测试没有通过 {#AAA;by} {*hzzdong}
-	 [http://code.google.com/p/nutz/issues/detail?id=157 157]   MVC部分《请求范围模块》request 注入类型为空   {#AAA;by} {*axhack}
-	 [http://code.google.com/p/nutz/issues/detail?id=160 160]   换1.a.27后找不到自定义sql   {#AAA;by} {*happyday0517}
-	 [http://code.google.com/p/nutz/issues/detail?id=163 163]   json: 获取属性值时，应该调用 getter   {#AAA;by} {*zozohtnt}
-	 [http://code.google.com/p/nutz/issues/detail?id=160 160]   json: 字段类型为 Map<String, List<String>> 会抛错   {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=68 68]	通过配置文件添加AOP	{#AAA;by} {*Chen.Bao.Yi}
+	 * [http://code.google.com/p/nutz/issues/detail?id=112 112]	通过直接声明一个包来声明包中所有的类为Module	{#AAA;by} {*Toni.xutao}
+	 * [http://code.google.com/p/nutz/issues/detail?id=119 119]	对@Id字段是否能在没有设置@Next的情况下，insert后自动把数据库中的id值回填到Entity中？	{#AAA;by} {*hzzdong}
+	 * [http://code.google.com/p/nutz/issues/detail?id=126 126]	Dao: 执行 Trans.exec for informix 出现 Castors 错误	{#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=127 127]	dao: NutTransaction 的实现代码有错误，在 commit 的时候 clear list 以及 close conn	{#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=128 128]	无法将自定义的EntityMaker注入到NutDao中	{#AAA;by} {*caiceclb}
+	 * [http://code.google.com/p/nutz/issues/detail?id=129 129]	Link的构造函数不方便自己实现的JPAEntityMaker	{#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=132 132]	DAO使用proxool做数据源会出警告	{#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=134 134]	log: 使用Nutz的log工具在eclipse控制台打印的日志无法通过点击链接后跟踪到调用的代码行	{#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=135 135]	Daos.java在jdk5编译通不过，因为其中使用了java.sql.Statement.isClosed()方法。 造成Nutz不兼容JDK5。	{#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=136 136]	fastInsert 支持多一个参数，是否执行 @prev 		 {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=139 139]	dao: DefaultEntityMaker代码逻辑错误	{#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=140 140]	DAO: 关于Entity和EntityField get\set Attribute	{#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=142 142]	Disk.absolute(String, ClassLoader, String),当上层文件夹中包含非英文字符时,返回的path可能不正确	{#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=143 143]	org.nutz.ioc.impl.NutIoc无法设置MirrorFactory	{#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=144 144]	ioc: 注入应该支持新的 Value 类型： property	{#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=147 147]	Nut.Aop没有提供示例	{#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=148 148]	Nut.Aop 当方法的返回值为基本数据类型,而拦截器的beforeInvoke返回false时,会出现NPE	{#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=149 149]	空json配置文件启动时会报错	{#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=150 150]	ActionFilter中能否多增加一个方法或在现有方法上加个参数，使实现类可以获得@At所注解的方法名	{#AAA;by} {*hzzdong}
+	 * [http://code.google.com/p/nutz/issues/detail?id=151 151]	关于upload File时候的性能问题
+	 * [http://code.google.com/p/nutz/issues/detail?id=153 153]	当类文件在中文路径下,org.nutz.lang.util.Resources.scanClasses()无法得到任何class {#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=154 154]	新的代码在JDK5，mysql下测试发现一个单元测试没有通过 {#AAA;by} {*hzzdong}
+	 * [http://code.google.com/p/nutz/issues/detail?id=157 157] MVC部分《请求范围模块》request 注入类型为空   {#AAA;by} {*axhack}
+	 * [http://code.google.com/p/nutz/issues/detail?id=160 160] 换1.a.27后找不到自定义sql   {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=163 163] json: 获取属性值时，应该调用 getter   {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=160 160] json: 字段类型为 `Map<String, List<String>>` 会抛错   {#AAA;by} {*zozohtnt}
 	 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -69,7 +85,8 @@
 --------------------------------------------------------------------------------------------------------
 文档
 	 * 更新英文文档  {#AAA;by} {*mutang}
-	 * 添加Nutz插件页
+	 * 添加Nutz插件页 {#AAA;by} {*wendal}
+	 * 整理 FAQ 文档
 	 
 --------------------------------------------------------------------------------------------------------
 博客
@@ -93,29 +110,30 @@
 	 
 	http://docs.google.com/View?id=dc5jpf24_160gshjh436
 
-	|| 贡献者 									|| 问题 || 博客 || 支持 || 代码 || Demo || 文档 || 测试 ||
-	|| E-Hunter									||  O  ||  -  ||  -  ||  -	||  -	||  -	||  -	||
-	|| amosleaf									||  X  ||  -  ||  -  ||  X  ||  -  ||  -	||  -	||
-	|| axhack									||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| BirdWyatt								||  -  ||  -  ||  -  ||  X  ||  -  ||  -	||  -	||
-	|| caiceclb									||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -   ||
-	|| Chen.Bao.Yi								||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| deadeye2k								||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  - 	||
-	|| E-Hunter									||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  - 	||
-	|| hzzdong									||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| happyday0517								||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| mastung									||  -  ||  -  ||  -  ||  -  ||  -  ||  X	||  -	||
-	|| ming300									||  -  ||  -  ||  -  ||  X  ||  -  ||  -	||  -	||
-	|| jiongs753								||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| Toni.xutao								||  X  ||  -  ||  -  ||  -  ||  -  ||  -	||  -	||
-	|| wendal									||  X  ||  -  ||  X  ||  X  ||  X  ||  X	||  X 	||
-	|| zozoh									||  X  ||  -  ||  X  ||  X  ||  -  ||  X	||  X 	||
-	|| 天行健									||  X  ||  X  ||  -  ||  -  ||  -  ||  -	||  -	||
+	|| 贡献者 									|| 问题|| 博客|| 支持|| 代码|| Demo|| 文档|| 测试||
+	|| E-Hunter									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| amosleaf									||  X  ||  -  ||  -  ||  X  ||  -  ||  -  ||  -  ||
+	|| axhack									||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| BirdWyatt								||  -  ||  -  ||  -  ||  X  ||  -  ||  -  ||  -	 ||
+	|| caiceclb									||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| Chen.Bao.Yi								||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| deadeye2k								||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| E-Hunter									||  X  ||  -  ||  X  ||  -  ||  -  ||  -  ||  -  ||
+	|| hzzdong									||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| happyday0517								||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| mastung									||  -  ||  -  ||  -  ||  -  ||  -  ||  X  ||  -	 ||
+	|| ming300									||  -  ||  -  ||  -  ||  X  ||  -  ||  -  ||  -	 ||
+	|| jiongs753								||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| Toni.xutao								||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| wendal									||  X  ||  -  ||  X  ||  X  ||  X  ||  X  ||  X  ||
+	|| zozoh									||  X  ||  -  ||  X  ||  X  ||  -  ||  X  ||  X  ||
+	|| 天行健									||  X  ||  X  ||  -  ||  -  ||  -  ||  -  ||  -  ||
 	
 	另外，非常感谢
+	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
 	 * [http://qun.qq.com/air/#75818186 Nutz QQ 群(75818186)]
 	 * [http://qun.qq.com/air/#68315571 Nutz QQ 2群(68315571)]
-	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
 	的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 {*产生着潜移默化的影响}。
 	我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。
 
