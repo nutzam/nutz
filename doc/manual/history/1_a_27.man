@@ -1,6 +1,6 @@
 #title: 1.a.27 发行注记
 #index:0,1
-#author:zozoh(zozohtnt@gmail.com,wendal1985@gmail.com)
+#author:zozoh(zozohtnt@gmail.com),wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 前言
 	今天, Nutz社区自豪地宣布,Nutz 1.a.27版正式发布了! 本版有很多新功能,并修复了近30个issue,拥有改进的文档
@@ -70,7 +70,7 @@
 	 * [http://code.google.com/p/nutz/issues/detail?id=157 157] MVC部分《请求范围模块》request 注入类型为空   {#AAA;by} {*axhack}
 	 * [http://code.google.com/p/nutz/issues/detail?id=160 160] 换1.a.27后找不到自定义sql   {#AAA;by} {*happyday0517}
 	 * [http://code.google.com/p/nutz/issues/detail?id=163 163] json: 获取属性值时，应该调用 getter   {#AAA;by} {*zozohtnt}
-	 * [http://code.google.com/p/nutz/issues/detail?id=160 160] json: 字段类型为 `Map<String, List<String>>` 会抛错   {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=164 164] json: 字段类型为 `Map<String, List<String>>` 会抛错   {#AAA;by} {*zozohtnt}
 	 
 --------------------------------------------------------------------------------------------------------
 质量
