@@ -1,6 +1,7 @@
 #title: 1.a.28 (Hatching...)
 #index:0,1
-#author:zozoh(zozohtnt@gmail.com,wendal1985@gmail.com)
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 前言
 	本版正在进行中
