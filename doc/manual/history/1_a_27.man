@@ -112,23 +112,21 @@
 	http://docs.google.com/View?id=dc5jpf24_160gshjh436
 
 	|| 贡献者 									|| 问题|| 博客|| 支持|| 代码|| Demo|| 文档|| 测试||
-	|| E-Hunter									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
-	|| amosleaf									||  O  ||  -  ||  -  ||  O  ||  -  ||  -  ||  -  ||
-	|| axhack									||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
-	|| BirdWyatt								||  -  ||  -  ||  -  ||  O  ||  -  ||  -  ||  -	 ||
-	|| caiceclb									||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
-	|| Chen.Bao.Yi								||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| [http://amosleaf.javaeye.com amosleaf]	||  O  ||  -  ||  -  ||  O  ||  -  ||  -  ||  -  ||
+	|| [http://axhack.javaeye.com axhack]		||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| [http://birdwindy.javaeye.com BirdWyatt]	||  -  ||  -  ||  -  ||  O  ||  -  ||  -  ||  -	 ||
+	|| [http://caiceclb.javaeye.com caiceclb]	||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| [http://leon-a.javaeye.com Chen.Bao.Yi]	||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
 	|| deadeye2k								||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
-	|| E-Hunter									||  O  ||  -  ||  O  ||  -  ||  -  ||  -  ||  -  ||
-	|| hzzdong									||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| [http://e-hunter.javaeye.com E-Hunter]	||  O  ||  -  ||  O  ||  -  ||  -  ||  -  ||  -  ||
+	|| [http://www.ecplive.cn hzzdong]			||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -  ||
 	|| happyday0517								||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
-	|| mastung									||  -  ||  -  ||  -  ||  -  ||  -  ||  O  ||  -	 ||
+	|| [http://hi.baidu.com/lifecube mastung]	||  -  ||  -  ||  -  ||  -  ||  -  ||  O  ||  -	 ||
 	|| ming300									||  -  ||  -  ||  -  ||  O  ||  -  ||  -  ||  -	 ||
-	|| jiongs753								||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
+	|| jiongs753(天行健)						||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
 	|| Toni.xutao								||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||  -	 ||
-	|| wendal									||  O  ||  -  ||  O  ||  O  ||  O  ||  O  ||  O  ||
-	|| zozoh									||  O  ||  -  ||  O  ||  O  ||  -  ||  O  ||  O  ||
-	|| 天行健									||  O  ||  O  ||  -  ||  -  ||  -  ||  -  ||  -  ||
+	|| [http://wendal.javaeye.com wendal]		||  O  ||  -  ||  O  ||  O  ||  O  ||  O  ||  O  ||
+	|| [http://zozoh.javaeye.com zozoh]			||  O  ||  -  ||  O  ||  O  ||  -  ||  O  ||  O  ||
 	
 	另外，非常感谢
 	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
