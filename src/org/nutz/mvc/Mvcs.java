@@ -220,7 +220,8 @@ public abstract class Mvcs {
 	 *            HTTP 会话对象
 	 */
 	public static void deposeSession(HttpSession session) {
-		new SessionIocContext(session).depose();
+		if (session != null)
+			new SessionIocContext(session).depose();
 	}
 
 	/**

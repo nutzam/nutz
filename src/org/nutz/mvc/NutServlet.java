@@ -79,8 +79,8 @@ public class NutServlet extends HttpServlet {
 			ing.load(modules);
 			// Then, we store the loading result like this
 			urls = ing.getUrls();
-			this.getServletContext().setAttribute(UrlMap.class.getName(), urls);
-
+			
+			saveToContext(UrlMap.class.getName(), urls);
 			saveToContext(Ioc.class.getName(), ing.getIoc());
 			saveToContext(Localization.class.getName(), ing.getMessageMap());
 

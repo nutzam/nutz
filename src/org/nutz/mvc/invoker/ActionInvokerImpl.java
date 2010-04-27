@@ -73,6 +73,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 		this.evalHttpAdaptor(ioc, method, dftAb);
 		this.evalFilters(ioc, method, dftflts);
 		this.evalEncoding(method, dftEncoding);
+		if (this.ok != null && this.ok instanceof VoidView && log.isInfoEnabled())
+			log.infof("Module[%s] method[%s] is using VoidView.",moduleType,method);
 	}
 
 	private void evalModule(Class<?> moduleType) {
@@ -238,9 +240,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 				/*
 				 * 否则，则仅仅简单的从容器获取
 				 */
-				else {
+				else
 					obj = ioc.get(moduleType, moduleName);
-				}
 			}
 			// 调用 module 中的方法
 			Object re = method.invoke(obj, args);
