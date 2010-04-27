@@ -240,10 +240,6 @@ public class EntityField extends Context{
 		return fieldAdapter;
 	}
 
-	public String getFieldName() {
-		return getField().getName();
-	}
-
 	public String getName() {
 		return field.getName();
 	}

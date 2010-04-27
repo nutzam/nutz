@@ -56,7 +56,7 @@ public class SqlMaker {
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			String fn = ef.getFieldName();
+			String fn = ef.getName();
 			if (ef.isSerial() || ef.isReadonly())
 				continue;
 			Object value = ef.getValue(obj);
@@ -145,7 +145,7 @@ public class SqlMaker {
 		Map<String, Object> map = new HashMap<String, Object>();
 		for (Iterator<EntityField> it = en.fields().iterator(); it.hasNext();) {
 			EntityField ef = it.next();
-			String fn = ef.getFieldName();
+			String fn = ef.getName();
 			if (ef == en.getIdentifiedField() || ef.isPk() || ef.isReadonly())
 				continue;
 			Object value = ef.getValue(obj);
@@ -168,9 +168,9 @@ public class SqlMaker {
 								en.getTableName(),
 								sb,
 								idf.getColumnName(),
-								idf.getFieldName());
+								idf.getName());
 			Sql sql = Sqls.create(fmt).setEntity(en);
-			sql.params().putAll(map).set(idf.getFieldName(), idf.getValue(obj));
+			sql.params().putAll(map).set(idf.getName(), idf.getValue(obj));
 			return sql;
 		}
 
@@ -198,7 +198,7 @@ public class SqlMaker {
 		return Sqls.create(format(	"DELETE FROM %s WHERE %s=@%s",
 									entity.getTableName(),
 									ef.getColumnName(),
-									ef.getFieldName())).setEntity(entity);
+									ef.getName())).setEntity(entity);
 	}
 
 	public Sql deletex(Entity<?> entity, Object[] pks) {
@@ -209,7 +209,7 @@ public class SqlMaker {
 
 	public Sql clear_links(Entity<?> ta, Link link, Object value) {
 		EntityField tafld = ta.getField(link.getTargetField().getName());
-		String fldnm = tafld.getFieldName();
+		String fldnm = tafld.getName();
 		Sql sql = clear_links(ta.getTableName(), tafld.getColumnName(), fldnm).setEntity(ta);
 		sql.params().set(fldnm, value);
 		return sql;
@@ -257,13 +257,13 @@ public class SqlMaker {
 							fields,
 							entity.getViewName(),
 							ef.getColumnName(),
-							ef.getFieldName());
+							ef.getName());
 		} else {
 			fmt = format(	"SELECT %s FROM %s WHERE %s=@%s",
 							fields,
 							entity.getViewName(),
 							ef.getColumnName(),
-							ef.getFieldName());
+							ef.getName());
 		}
 		return Sqls.fetchEntity(fmt).setEntity(entity);
 	}

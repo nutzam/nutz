@@ -35,6 +35,6 @@ public abstract class IdNameEntityService<T> extends IdEntityService<T> {
 		EntityField ef = getEntity().getNameField();
 		if (null == ef)
 			return false;
-		return dao().count(getEntityClass(), Cnd.where(ef.getFieldName(), "=", name)) > 0;
+		return dao().count(getEntityClass(), Cnd.where(ef.getName(), "=", name)) > 0;
 	}
 }

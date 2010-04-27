@@ -30,7 +30,7 @@ public abstract class IdEntityService<T> extends EntityService<T> {
 		EntityField ef = getEntity().getIdField();
 		if (null == ef)
 			return false;
-		return dao().count(getEntityClass(), Cnd.where(ef.getFieldName(), "=", id)) > 0;
+		return dao().count(getEntityClass(), Cnd.where(ef.getName(), "=", id)) > 0;
 	}
 
 }

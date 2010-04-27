@@ -346,7 +346,7 @@ public class NutDao implements Dao {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
 		Sql sql = sqlMaker.delete(entity, ef);
-		sql.params().set(ef.getFieldName(), id);
+		sql.params().set(ef.getName(), id);
 		execute(sql);
 	}
 
@@ -354,7 +354,7 @@ public class NutDao implements Dao {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkNameField(entity);
 		Sql sql = sqlMaker.delete(entity, ef);
-		sql.params().set(ef.getFieldName(), name);
+		sql.params().set(ef.getName(), name);
 		execute(sql);
 	}
 
@@ -448,7 +448,7 @@ public class NutDao implements Dao {
 	public <T> T fetch(Entity<T> entity, long id) {
 		EntityField ef = checkIdField(entity);
 		Sql sql = sqlMaker.fetch(entity, ef);
-		sql.params().set(ef.getFieldName(), id);
+		sql.params().set(ef.getName(), id);
 		execute(sql);
 		return sql.getObject(entity.getType());
 	}
@@ -469,7 +469,7 @@ public class NutDao implements Dao {
 	public <T> T fetch(Entity<T> entity, String name) {
 		EntityField ef = checkNameField(entity);
 		Sql sql = sqlMaker.fetch(entity, ef);
-		sql.params().set(ef.getFieldName(), name);
+		sql.params().set(ef.getName(), name);
 		execute(sql);
 		return sql.getObject(entity.getType());
 	}
@@ -513,7 +513,7 @@ public class NutDao implements Dao {
 				}
 			} else {
 				sql = sqlMaker.fetch(entity, idnf);
-				sql.params().set(idnf.getFieldName(), idnf.getValue(obj));
+				sql.params().set(idnf.getName(), idnf.getValue(obj));
 			}
 			execute(sql);
 			return sql.getObject((Class<T>) entity.getType());

@@ -26,7 +26,7 @@ public abstract class NameEntityService<T> extends EntityService<T> {
 		EntityField ef = getEntity().getNameField();
 		if (null == ef)
 			return false;
-		return dao().count(getEntityClass(), Cnd.where(ef.getFieldName(), "=", name)) > 0;
+		return dao().count(getEntityClass(), Cnd.where(ef.getName(), "=", name)) > 0;
 	}
 
 }
