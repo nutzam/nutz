@@ -1,6 +1,7 @@
 package org.nutz.mvc.init;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class UrlMapImpl implements UrlMap {
 		this.filters = filters;
 	}
 
-	public void add(List<ViewMaker> makers, Class<?> moduleType) {
+	public boolean add(List<ViewMaker> makers, Class<?> moduleType) {
 		// View: OK
 		Ok myOk = moduleType.getAnnotation(Ok.class);
 		if (null == myOk)
@@ -90,12 +91,19 @@ public class UrlMapImpl implements UrlMap {
 			bases = Lang.array("/" + moduleType.getSimpleName().toLowerCase());
 		else
 			bases = baseAt.value();
+
 		// looping methods
+		boolean isModule = false;
 		for (Method method : moduleType.getMethods()) {
+			// Is it public?
+			if (!Modifier.isPublic(method.getModifiers()))
+				continue;
 			// get Url
 			At ats = method.getAnnotation(At.class);
 			if (null == ats)
 				continue;
+
+			isModule = true;
 			// Create invoker
 			ActionInvokerImpl invoker = new ActionInvokerImpl(	context,
 																ioc,
@@ -123,6 +131,7 @@ public class UrlMapImpl implements UrlMap {
 				}
 			}
 		}
+		return isModule;
 	}
 
 	public ActionInvoking get(String path) {

@@ -15,12 +15,20 @@ public class MvcBaseTest extends NutServletTest {
 	}
 
 	@Test
-	public void testIsOK() throws Throwable{
+	public void testIsOK() throws Throwable {
 		Method method = NutServlet.class.getDeclaredMethod("isOk");
 		method.setAccessible(true);
-		assertTrue((Boolean)method.invoke(nutServlet));
+		assertTrue((Boolean) method.invoke(nutServlet));
+
 		request.setPathInfo("/base/login.nut");
 		nutServlet.service(request, response);
 		assertEquals("true", response.getContentAsString());
+	}
+
+	@Test
+	public void testAnotherModule() throws Throwable {
+		request.setPathInfo("/two/say");
+		nutServlet.service(request, response);
+		assertEquals("\"haha\"", response.getContentAsString());
 	}
 }

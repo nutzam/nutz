@@ -98,24 +98,27 @@ public class DefaultLoading implements Loading {
 
 			// Add sub modules
 			Modules modules = mainModule.getAnnotation(Modules.class);
-			if (null != modules){
-				for (Class<?> module : modules.value()) {
-					if (log.isDebugEnabled())
-						log.debugf("Module: <%s>", module.getName());
+			if (null != modules) {
+				if (!modules.scanPackage()) {
+					for (Class<?> module : modules.value()) {
+						if (log.isDebugEnabled())
+							log.debugf("Module: <%s>", module.getName());
 
-					urls.add(makers, module);
-				}
-				for (String packageZ : modules.packages()) {
-					if (log.isDebugEnabled())
-						log.debugf("Scan Module in package : <%s>", packageZ);
-					List<Class<?>> list = Resources.scanClass(null,Package.getPackage(packageZ));
-					if (list != null)
-						for (Class<?> module : list) {
-							if (log.isDebugEnabled())
-								log.debugf("Module: <%s>", module.getName());
-							
-							urls.add(makers, module);
-						}
+						urls.add(makers, module);
+					}
+				} else {
+					for (Class<?> module : modules.value()) {
+						Package packageZ = module.getPackage();
+						if (log.isDebugEnabled())
+							log.debugf("Scan Module in package : <%s>", packageZ.getName());
+						List<Class<?>> list = Resources.scanClass(null, packageZ);
+						if (list != null)
+							for (Class<?> md : list) {
+								if (urls.add(makers, md))
+									if (log.isDebugEnabled())
+										log.debugf("Module: <%s>", md.getName());
+							}
+					}
 				}
 			}
 			config.getServletContext().setAttribute(UrlMap.class.getName(), urls);
