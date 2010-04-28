@@ -154,7 +154,7 @@
 			</classpath>
 			<batchtest todir="${tmp-junitreport-dir}">
 				<fileset dir="test">
-					<include name="**/*Test.java"/>
+					<include name="org/nutz/TestAll.java"/>
 				</fileset>
 				<formatter type="xml"/>
 			</batchtest>
