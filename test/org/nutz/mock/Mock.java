@@ -78,7 +78,7 @@ public abstract class Mock {
 		}
 
 		public static ServletInputStream ins(String path) {
-			return ins(Streams.fileBin(path));
+			return ins(Streams.fileIn(path));
 		}
 
 		public static MultipartInputStream insmulti(String boundary) {

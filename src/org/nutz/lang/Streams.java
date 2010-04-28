@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +25,7 @@ import java.nio.charset.Charset;
  */
 public abstract class Streams {
 
-	private static final int DEF_BUFSIZE = 8192;
+	// private static final int DEF_BUFSIZE = 8192;
 
 	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
 
@@ -77,6 +78,32 @@ public abstract class Streams {
 	}
 
 	/**
+	 * 为一个输入流包裹一个缓冲流。如果这个输入流本身就是缓冲流，则直接返回
+	 * 
+	 * @param ins
+	 *            输入流。
+	 * @return 缓冲流
+	 */
+	public static BufferedInputStream buff(InputStream ins) {
+		if (ins instanceof BufferedInputStream)
+			return (BufferedInputStream) ins;
+		return new BufferedInputStream(ins);
+	}
+
+	/**
+	 * 为一个输出流包裹一个缓冲流。如果这个输出流本身就是缓冲流，则直接返回
+	 * 
+	 * @param ops
+	 *            输出流。
+	 * @return 缓冲流
+	 */
+	public static BufferedOutputStream buff(OutputStream ops) {
+		if (ops instanceof BufferedOutputStream)
+			return (BufferedOutputStream) ops;
+		return new BufferedOutputStream(ops);
+	}
+
+	/**
 	 * 根据一个文件路径建立一个输入流
 	 * 
 	 * @param path
@@ -89,38 +116,11 @@ public abstract class Streams {
 			File f = Files.findFile(path);
 			if (null != f)
 				try {
-					return new FileInputStream(f);
+					ins = new FileInputStream(f);
 				}
 				catch (FileNotFoundException e) {}
 		}
-		return ins;
-	}
-
-	/**
-	 * 根据一个文件路径，建立一个缓冲输入流。默认的缓冲大小为 Streams.DEF_BUFSIZE (8192)
-	 * 
-	 * @param path
-	 *            文件路径
-	 * @return 缓冲输入流
-	 */
-	public static BufferedInputStream fileBin(String path) {
-		return fileBin(path, DEF_BUFSIZE);
-	}
-
-	/**
-	 * 根据一个文件路径，建立一个缓冲输入流
-	 * 
-	 * @param path
-	 *            文件路径
-	 * @param bufferSize
-	 *            缓冲大小
-	 * @return 缓冲输入流
-	 */
-	public static BufferedInputStream fileBin(String path, int bufferSize) {
-		InputStream ins = fileIn(path);
-		if (null == ins)
-			return null;
-		return new BufferedInputStream(ins, bufferSize);
+		return buff(ins);
 	}
 
 	/**
@@ -132,49 +132,11 @@ public abstract class Streams {
 	 */
 	public static InputStream fileIn(File file) {
 		try {
-			return new FileInputStream(file);
+			return buff(new FileInputStream(file));
 		}
 		catch (FileNotFoundException e) {
 			throw Lang.wrapThrow(e);
 		}
-	}
-
-	/**
-	 * 根据一个文件，建立一个缓冲输入流。默认的缓冲大小为 Streams.DEF_BUFSIZE (8192)
-	 * 
-	 * @param file
-	 *            文件
-	 * @return 缓冲输入流
-	 */
-	public static BufferedInputStream fileBin(File file) {
-		return fileBin(file, DEF_BUFSIZE);
-	}
-
-	/**
-	 * 根据一个文件，建立一个缓冲输入流
-	 * 
-	 * @param file
-	 *            文件
-	 * @param bufferSize
-	 *            缓冲大小
-	 * @return 缓冲输入流
-	 */
-	public static BufferedInputStream fileBin(File file, int bufferSize) {
-		InputStream ins = fileIn(file);
-		if (null == ins)
-			return null;
-		return new BufferedInputStream(ins, bufferSize);
-	}
-
-	/**
-	 * 根据一个文件路径建立一个 UTF-8 文本输入流
-	 * 
-	 * @param file
-	 *            文件
-	 * @return 文本输入流
-	 */
-	public static Reader fileInr(File file) {
-		return fileInr(file, DEFAULT_ENCODING);
 	}
 
 	/**
@@ -185,25 +147,11 @@ public abstract class Streams {
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(String path) {
-		return fileInr(path, DEFAULT_ENCODING);
-	}
-
-	/**
-	 * 根据一个文件，以及指定的编码方式，建立一个 文本输入流
-	 * 
-	 * @param file
-	 *            文件
-	 * @param encoding
-	 *            文本文件编码方式
-	 * @return 文本输入流
-	 * 
-	 * @see java.nio.charset.Charset
-	 */
-	public static Reader fileInr(File file, String encoding) {
+		String encoding = DEFAULT_ENCODING;
 		try {
 			if (encoding == null)
 				encoding = DEFAULT_ENCODING;
-			return new InputStreamReader(fileIn(file), encoding);
+			return new InputStreamReader(fileIn(path), encoding);
 		}
 		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
@@ -211,21 +159,18 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 根据一个文件路径，以及指定的编码方式，建立一个 文本输入流
+	 * 根据一个文件路径建立一个 UTF-8 文本输入流
 	 * 
-	 * @param path
-	 *            文件路径
-	 * @param encoding
-	 *            文本文件编码方式
+	 * @param file
+	 *            文件
 	 * @return 文本输入流
-	 * 
-	 * @see java.nio.charset.Charset
 	 */
-	public static Reader fileInr(String path, String encoding) {
+	public static Reader fileInr(File file) {
+		String encoding = DEFAULT_ENCODING;
 		try {
 			if (encoding == null)
 				encoding = DEFAULT_ENCODING;
-			return new InputStreamReader(fileIn(path), encoding);
+			return new InputStreamReader(fileIn(file), encoding);
 		}
 		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
@@ -252,7 +197,7 @@ public abstract class Streams {
 	 */
 	public static OutputStream fileOut(File file) {
 		try {
-			return new FileOutputStream(file);
+			return buff(new FileOutputStream(file));
 		}
 		catch (FileNotFoundException e) {
 			throw Lang.wrapThrow(e);
@@ -264,7 +209,7 @@ public abstract class Streams {
 	 * 
 	 * @param path
 	 *            文件路径
-	 * @return 输出流
+	 * @return 文本输出流
 	 */
 	public static Writer fileOutw(String path) {
 		return fileOutw(Files.findFile(path));
@@ -278,38 +223,8 @@ public abstract class Streams {
 	 * @return 输出流
 	 */
 	public static Writer fileOutw(File file) {
-		return fileOutw(file, DEFAULT_ENCODING);
-	}
-
-	/**
-	 * 根据一个文件路径，以及指定的编码方式，建立一个 文本输出流
-	 * 
-	 * @param path
-	 *            文件路径
-	 * @param encoding
-	 *            文本文件编码方式
-	 * @return 输出流
-	 * @see java.nio.charset.Charset
-	 */
-	public static Writer fileOutw(String path, String encoding) {
-		return fileOutw(Files.findFile(path), encoding);
-	}
-
-	/**
-	 * 根据一个文件，以及指定的编码方式，建立一个 文本输出流
-	 * 
-	 * @param file
-	 *            文件
-	 * @param encoding
-	 *            文本文件编码方式
-	 * @return 输出流
-	 * @see java.nio.charset.Charset
-	 */
-	public static Writer fileOutw(File file, String encoding) {
 		try {
-			if (encoding == null)
-				encoding = DEFAULT_ENCODING;
-			return new OutputStreamWriter(fileOut(file), encoding);
+			return new OutputStreamWriter(fileOut(file), DEFAULT_ENCODING);
 		}
 		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);

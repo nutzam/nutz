@@ -796,8 +796,8 @@ public abstract class Files {
 		if (null == f1 || null == f2)
 			return false;
 		InputStream ins1, ins2;
-		ins1 = Streams.fileBin(f1);
-		ins2 = Streams.fileBin(f2);
+		ins1 = Streams.fileIn(f1);
+		ins2 = Streams.fileIn(f2);
 		if (null == ins1 || null == ins2) {
 			return false;
 		}
