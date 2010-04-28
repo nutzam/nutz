@@ -32,6 +32,7 @@
 		<doc path="services.man"/>
 		<!--doc path="services_tree.man"/-->
 		<doc path="pojo.man"/>
+		<doc path="record.man"/>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
