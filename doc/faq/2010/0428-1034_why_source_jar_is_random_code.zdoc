@@ -1,0 +1,10 @@
+#title: 为什么 Nutz_source.jar 用 Eclipse 查看是乱码
+#author: zozoh(zozohtnt@gmail.com)
+------------------------------------------------------------------------
+问题来自 {*332106123}
+
+nutz的源码包 在eclipse中打开是 乱码，工程和jar文档的 编码都是设置成 utf-8的
+------------------------------------------------------------------------
+解答
+
+	把 window > Preferences > General > Workspace > Text file encoding 设成 UTF-8 即可
