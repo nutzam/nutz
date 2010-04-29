@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.entity.Record;
@@ -14,7 +13,6 @@ import org.nutz.dao.tools.Tables;
 
 public class QueryTest extends DaoCase {
 
-	@Before
 	public void before() {
 		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
 		// Insert 8 records
