@@ -45,15 +45,27 @@ Check out
 		
 	<../imgs/build/06.png>
 
-	Nutz 不是不依赖其他 jar 吗？ 是的，但是在编译时它依赖 Log4j。在运行时如果 Log4j 的 jar 不存在，它会采用 java.util.logging
-	详情请参看 [../lang/log.man Nutz 的日志模块]
+	Nutz 不是不依赖其他 jar 吗？ 是的，但是在编译时它依赖 Log4j。
 	
-	Nutz.Dao 的测试时在 Mysql/Psql/Oracle/SqlServer2000/SqlServer2005 这几个个数据库上作的，所以我需要它们的 JDBC 实现。
+	在运行时如果 Log4j 的 jar 不存在，它会采用 java.util.logging 详情请参看 [../lang/log.man Nutz 的日志模块]
+	
+	Nutz.Dao 的测试时在
+	
+	 * Mysql
+	 * Postgresql
+	 * Oracle
+	 * H2
+	 * SqlServer2000
+	 * SqlServer2005
+	 
+	这几个个数据库上作的，所以我需要它们的 JDBC 实现。
 	你可以根据需要选择一个你喜欢的数据库。我最喜欢 PSQL，但是当然，大多数人都爱用 Mysql。
 	
 	要是运行测试用例，你还得需要 Apache 的连接池，以及某一个数据库的 JDBC 实现。
 	Apache 提供的连接池是两个 jar，有了它，我们就可以很简单的创建 DataSource，你可以选择你喜欢的连接池实现。c3p0，proxool ，
 	爱用什么都可以，但是得把 jar 包准备好。
+	
+	{#AA0000;*注意:} 如果你顺利的检出（Check out）了 SVN 文件，你会发现在 {#0000FF;* /trunk/build/deps} 目录下，有你需要的所有 jar 包
 
 	我们，先把 jar 文件在 D:/nutz/deps 里面放好，后面会用得到
 --------------------------------------------------------------------------------------------------------------------------
