@@ -8,6 +8,10 @@
 	     @[http://zozoh.javaeye.com zozoh]
 -----------------------------------------------------------------------------------
 关于 Dao
+	 * 《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》\
+		 @[http://hzzdong.javaeye.com 知足常乐] {#008800;*推荐}
+	 * 《[http://yongshan-ji.javaeye.com/blog/651119 Nutz DAO懒加载实体关联对象]》 \
+		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*推荐}
 	 * 《[http://amosleaf.javaeye.com/blog/548337 Nutz的 数据库事务]》\
 		 @[http://amosleaf.javaeye.com amosleaf]
 	 * 《[http://amosleaf.javaeye.com/blog/562141 Nutz的 使用注解做ORM]》\
@@ -16,12 +20,8 @@
 		 @[http://www.3km.com.cn 会跑的蜗牛]
 	 * 《[http://bobby1222.javaeye.com/blog/585483 NUTZ与SQL SERVER2000兼容性问题]》\
 		 @[http://user.qzone.qq.com/104791117 Ge.PH /hl]
-	 * 《[http://yongshan-ji.javaeye.com/blog/651119 Nutz DAO懒加载实体关联对象]》 \
-		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*推荐}
 	 * 《[http://bonyfish.cn/logs/20100415-nutz-todo-mini-task.html 用Nutz做点小任务]》\
 		 @[http://bonyfish.cn 小毛] 
-	 * 《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》\
-		 @[http://hzzdong.javaeye.com 知足常乐] 
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
