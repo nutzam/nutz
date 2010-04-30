@@ -5,7 +5,7 @@
 终极扩展点 - DaoRunner
 
 	如果你使用的是 Dao 接口的默认实现类 (org.nutz.dao.impl.NutDao)，你觉得任何事情都很满意，
-	但是就是单单事务这部分你很不喜欢。你不喜欢[transaction.man 事务模板]的写法：
+	但是就是单单事务这部分你很不喜欢。你很不喜欢[transaction.man 事务模板]的写法：
 
 	{{{<JAVA>
 	public void doSomething(final Pet pet){
@@ -18,7 +18,7 @@
 	}
 	}}}
 
-	因为，这样写代码太多了。你甚至开始怀念 Spring，它的声明式事务管理，可以让你的代码完全不用这么
+	看看，这样写代码太多了。因此，你甚至开始怀念 Spring，它的声明式事务管理，可以让你的代码完全不用这么
 	繁琐。怎么办呢？
 
 	我们提供了一个扩展点。通过修改这个接口，你可以为 Dao 的默认实现类 NutDao 彻底定制事务行为 
@@ -41,7 +41,7 @@
 	{{{<JAVA>
 	import org.springframework.jdbc.datasource.DataSourceUtils;
 
-	public class DefaultDaoRunner implements DaoRunner {
+	public class SpringDaoRunner implements DaoRunner {
 
 		public void run(DataSource dataSource, ConnCallback callback) {
 			Connection con = DataSourceUtils.getConnection(getDataSource());  
@@ -59,6 +59,12 @@
 		}
 	}
 	}}}
+
+	任何时候你可以通过:
+	{{{
+	dao.setRunner(new SpringDaoRunner());
+	}}}
+	修改 NutDao 的默认事务行为。 当然，如果你的 Dao 对像本身就是通过 Ioc 容器获得，我想你一定知道如何为
+	你的对象设置一个属性，对吧。
 	
-	并把它注入到 NutDao 中去，你就可以很好的使用 Spring 的事务。
 	
