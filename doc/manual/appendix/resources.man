@@ -20,6 +20,8 @@
 		 @[http://yongshan-ji.javaeye.com 天行健] {#008800;*推荐}
 	 * 《[http://bonyfish.cn/logs/20100415-nutz-todo-mini-task.html 用Nutz做点小任务]》\
 		 @[http://bonyfish.cn 小毛] 
+	 * 《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》\
+		 @[http://hzzdong.javaeye.com 知足常乐] 
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
