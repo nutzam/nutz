@@ -15,9 +15,9 @@ import javax.sql.DataSource;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
-import org.nutz.dao.ConnectionHolder;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
+import org.nutz.dao.DaoRunner;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
@@ -64,11 +64,13 @@ public class NutDao implements Dao {
 	private EntityHolder entities;
 	private DatabaseMeta meta;
 	private EntityMaker entityMaker;
+	private DaoRunner runner;
 
 	/* ========================================================== */
 	public NutDao() {
 		this.sqlMaker = new SqlMaker();
 		this.pagerMaker = new DefaultPagerMaker();
+		this.runner = new DefaultDaoRunner();
 	}
 
 	public NutDao(DataSource dataSource) {
@@ -146,6 +148,14 @@ public class NutDao implements Dao {
 		}
 		this.entityMaker = entityMaker;
 		entities = new EntityHolder(this.entityMaker);
+	}
+
+	public DaoRunner getRunner() {
+		return runner;
+	}
+
+	public void setRunner(DaoRunner runner) {
+		this.runner = runner;
 	}
 
 	public DataSource getDataSource() {
@@ -226,23 +236,12 @@ public class NutDao implements Dao {
 	}
 
 	public void run(ConnCallback callback) {
-		ConnectionHolder ch = Daos.getConnection(getDataSource());
-		try {
-			ch.invoke(callback);
+		if (null == runner) {
+			if (log.isWarnEnabled())
+				log.warn("NULL Runner!");
+			throw new NullPointerException("NULL Runner");
 		}
-		catch (Throwable e) {
-			try {
-				ch.rollback();
-			}
-			catch (SQLException e1) {}
-			if (e instanceof RuntimeException)
-				throw (RuntimeException) e;
-			else
-				throw new RuntimeException(e);
-		}
-		finally {
-			Daos.releaseConnection(ch);
-		}
+		runner.run(getDataSource(), callback);
 	}
 
 	public int count(Class<?> classOfT) {
