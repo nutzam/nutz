@@ -143,7 +143,7 @@ public class NutServlet extends HttpServlet {
 		String path = Mvcs.getRequestPath(req);
 
 		if (log.isInfoEnabled())
-			log.info(path);
+			log.infof("Request path = [%s]",path);
 
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);

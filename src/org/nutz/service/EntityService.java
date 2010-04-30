@@ -6,19 +6,26 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
-import org.nutz.lang.Mirror;
 import org.nutz.dao.pager.Pager;
+import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public abstract class EntityService<T> extends Service {
 
 	private Mirror<T> mirror;
+	
+	private Log log = Logs.getLog(getClass());
 
 	@SuppressWarnings("unchecked")
 	protected EntityService() {
 		try {
 			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
 		}
-		catch (Exception e) {}
+		catch (Throwable e) {
+			if (log.isWarnEnabled())
+				Logs.getLog(getClass()).warn("!!!Fail to get TypeParams for self!", e);
+		}
 	}
 
 	protected EntityService(Dao dao) {
