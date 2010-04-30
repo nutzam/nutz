@@ -1,11 +1,11 @@
-#title: ¶¨ÖÆ×Ô¼ºµÄÊÂÎñÄ£°å
+#title: å®šåˆ¶è‡ªå·±çš„äº‹åŠ¡æ¨¡æ¿
 #author:zozoh(zozohtnt@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------------------
-ÖÕ¼«À©Õ¹µã - DaoRunner
+ç»ˆæžæ‰©å±•ç‚¹ - DaoRunner
 
-	Èç¹ûÄãÊ¹ÓÃµÄÊÇ Dao ½Ó¿ÚµÄÄ¬ÈÏÊµÏÖÀà (org.nutz.dao.impl.NutDao)£¬Äã¾õµÃÈÎºÎÊÂÇé¶¼ºÜÂúÒâ£¬
-	µ«ÊÇ¾ÍÊÇµ¥µ¥ÊÂÎñÕâ²¿·ÖÄãºÜ²»Ï²»¶¡£Äã²»Ï²»¶[transaction.man ÊÂÎñÄ£°å]µÄÐ´·¨£º
+	å¦‚æžœä½ ä½¿ç”¨çš„æ˜¯ Dao æŽ¥å£çš„é»˜è®¤å®žçŽ°ç±» (org.nutz.dao.impl.NutDao)ï¼Œä½ è§‰å¾—ä»»ä½•äº‹æƒ…éƒ½å¾ˆæ»¡æ„ï¼Œ
+	ä½†æ˜¯å°±æ˜¯å•å•äº‹åŠ¡è¿™éƒ¨åˆ†ä½ å¾ˆä¸å–œæ¬¢ã€‚ä½ ä¸å–œæ¬¢[transaction.man äº‹åŠ¡æ¨¡æ¿]çš„å†™æ³•ï¼š
 
 	{{{<JAVA>
 	public void doSomething(final Pet pet){
@@ -18,11 +18,11 @@
 	}
 	}}}
 
-	ÒòÎª£¬ÕâÑùÐ´´úÂëÌ«¶àÁË¡£ÄãÉõÖÁ¿ªÊ¼»³Äî Spring£¬ËüµÄÉùÃ÷Ê½ÊÂÎñ¹ÜÀí£¬¿ÉÒÔÈÃÄãµÄ´úÂëÍêÈ«²»ÓÃÕâÃ´
-	·±Ëö¡£ÔõÃ´°ìÄØ£¿
+	å› ä¸ºï¼Œè¿™æ ·å†™ä»£ç å¤ªå¤šäº†ã€‚ä½ ç”šè‡³å¼€å§‹æ€€å¿µ Springï¼Œå®ƒçš„å£°æ˜Žå¼äº‹åŠ¡ç®¡ç†ï¼Œå¯ä»¥è®©ä½ çš„ä»£ç å®Œå…¨ä¸ç”¨è¿™ä¹ˆ
+	ç¹çã€‚æ€Žä¹ˆåŠžå‘¢ï¼Ÿ
 
-	ÎÒÃÇÌá¹©ÁËÒ»¸öÀ©Õ¹µã¡£Í¨¹ýÐÞ¸ÄÕâ¸ö½Ó¿Ú£¬Äã¿ÉÒÔÎª Dao µÄÄ¬ÈÏÊµÏÖÀà NutDao ³¹µ×¶¨ÖÆÊÂÎñÐÐÎª 
-	Ëü¾ÍÊÇ DaoRunner£¬ËüÖ»ÓÐÒ»¸ö·½·¨£º
+	æˆ‘ä»¬æä¾›äº†ä¸€ä¸ªæ‰©å±•ç‚¹ã€‚é€šè¿‡ä¿®æ”¹è¿™ä¸ªæŽ¥å£ï¼Œä½ å¯ä»¥ä¸º Dao çš„é»˜è®¤å®žçŽ°ç±» NutDao å½»åº•å®šåˆ¶äº‹åŠ¡è¡Œä¸º 
+	å®ƒå°±æ˜¯ DaoRunnerï¼Œå®ƒåªæœ‰ä¸€ä¸ªæ–¹æ³•ï¼š
 	{{{<JAVA>
 	public interface DaoRunner {
 
@@ -32,12 +32,12 @@
 	}}}
 
 --------------------------------------------------------------------------------------------------
-Í¬ Spring ÊÂÎñÕûºÏµÄÀý×Ó
+åŒ Spring äº‹åŠ¡æ•´åˆçš„ä¾‹å­
 
-	Õâ¸öÌØÐÔÊÇÔÚ 1.a.27 Ö®ºó£¬ÓÉ[http://hzzdong.javaeye.com Öª×ã³£ÀÖ(hzzdong)] ÔÚ²©¿Í
-	¡¶[http://hzzdong.javaeye.com/blog/656948 Nutz DAOÓëspring¼¯³ÉÌÖÂÛ]¡·Ìá³öµÄ£¬ÎÒÃÇÒò´ËµÃµ½ÁË Issue 162¡£
+	è¿™ä¸ªç‰¹æ€§æ˜¯åœ¨ 1.a.27 ä¹‹åŽï¼Œç”±[http://hzzdong.javaeye.com çŸ¥è¶³å¸¸ä¹(hzzdong)] åœ¨åšå®¢
+	ã€Š[http://hzzdong.javaeye.com/blog/656948 Nutz DAOä¸Žspringé›†æˆè®¨è®º]ã€‹æå‡ºçš„ï¼Œæˆ‘ä»¬å› æ­¤å¾—åˆ°äº† Issue 162ã€‚
 	
-	ÔÚ×öÁËÒ»µãÐÞ¸Äºó£¬ÏÖÔÚ(1.a.28)£¬Ö»ÒªÄãÌá¹©Ò»¸öÕâÑùµÄ DaoRunner
+	åœ¨åšäº†ä¸€ç‚¹ä¿®æ”¹åŽï¼ŒçŽ°åœ¨(1.a.28)ï¼Œåªè¦ä½ æä¾›ä¸€ä¸ªè¿™æ ·çš„ DaoRunner
 	{{{<JAVA>
 	import org.springframework.jdbc.datasource.DataSourceUtils;
 
@@ -60,5 +60,5 @@
 	}
 	}}}
 	
-	²¢°ÑËü×¢Èëµ½ NutDao ÖÐÈ¥£¬Äã¾Í¿ÉÒÔºÜºÃµÄÊ¹ÓÃ Spring µÄÊÂÎñ¡£
+	å¹¶æŠŠå®ƒæ³¨å…¥åˆ° NutDao ä¸­åŽ»ï¼Œä½ å°±å¯ä»¥å¾ˆå¥½çš„ä½¿ç”¨ Spring çš„äº‹åŠ¡ã€‚
 	
