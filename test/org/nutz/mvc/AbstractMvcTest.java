@@ -1,4 +1,6 @@
-package org.nutz.mvc.init;
+package org.nutz.mvc;
+
+import javax.servlet.Servlet;
 
 import org.junit.After;
 import org.junit.Before;
@@ -12,9 +14,9 @@ import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mvc.NutServlet;
 
 @Ignore
-public abstract class NutServletTest {
+public abstract class AbstractMvcTest {
 
-	protected NutServlet nutServlet;
+	protected Servlet servlet;
 
 	protected MockHttpServletRequest request;
 
@@ -31,8 +33,8 @@ public abstract class NutServletTest {
 		servletContext = new MockServletContext();
 		servletConfig = new MockServletConfig(servletContext, "nutz");
 		initServletConfig();
-		nutServlet = new NutServlet();
-		nutServlet.init(servletConfig);
+		servlet = new NutServlet();
+		servlet.init(servletConfig);
 
 		session = Mock.servlet.session(servletContext);
 		request = Mock.servlet.request().setSession(session);
@@ -44,8 +46,8 @@ public abstract class NutServletTest {
 
 	@After
 	public void destroy() {
-		if (nutServlet != null)
-			nutServlet.destroy();
+		if (servlet != null)
+			servlet.destroy();
 	}
 
 }

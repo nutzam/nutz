@@ -6,8 +6,9 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.nutz.mvc.NutServlet;
+import org.nutz.mvc.AbstractMvcTest;
 
-public class MvcBaseTest extends NutServletTest {
+public class MvcBaseTest extends AbstractMvcTest {
 
 	@Override
 	protected void initServletConfig() {
@@ -18,17 +19,17 @@ public class MvcBaseTest extends NutServletTest {
 	public void testIsOK() throws Throwable {
 		Method method = NutServlet.class.getDeclaredMethod("isOk");
 		method.setAccessible(true);
-		assertTrue((Boolean) method.invoke(nutServlet));
+		assertTrue((Boolean) method.invoke((NutServlet)servlet));
 
 		request.setPathInfo("/base/login.nut");
-		nutServlet.service(request, response);
+		((NutServlet)servlet).service(request, response);
 		assertEquals("true", response.getContentAsString());
 	}
 
 	@Test
 	public void testAnotherModule() throws Throwable {
 		request.setPathInfo("/two/say");
-		nutServlet.service(request, response);
+		((NutServlet)servlet).service(request, response);
 		assertEquals("\"haha\"", response.getContentAsString());
 	}
 }
