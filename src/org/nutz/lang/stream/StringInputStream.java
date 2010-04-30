@@ -37,7 +37,7 @@ public class StringInputStream extends InputStream {
 	public int read() throws IOException {
 		if (cursor >= chars.length)
 			return -1;
-		return chars[cursor++];
+		return chars[cursor++]; //转换为int,很有问题
 	}
 
 	@Override

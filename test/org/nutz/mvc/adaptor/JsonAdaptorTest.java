@@ -3,6 +3,7 @@ package org.nutz.mvc.adaptor;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import javax.servlet.ServletException;
 
@@ -21,6 +22,7 @@ public class JsonAdaptorTest extends AbstractMvcTest{
 		request.setInputStream(Mock.servlet.ins(Lang.ins("{pet : {name:'测试'}}")));
 		response.setCharacterEncoding("UTF-8");
 		((NutServlet)servlet).service(request, response);
+		System.out.println(Lang.readAll(new InputStreamReader(Lang.ins("{pet : {name:'测试'}}"))));
 		assertEquals("\"!!测试!!\"",response.getContentAsString());//报错? Why?
 	}
 

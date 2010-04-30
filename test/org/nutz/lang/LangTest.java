@@ -3,6 +3,7 @@ package org.nutz.lang;
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
@@ -99,5 +100,15 @@ public class LangTest {
 		assertEquals("B", map.get("name"));
 		assertEquals("C", ((Map) map.get("cb")).get("code"));
 		assertNull(((Map) map.get("cb")).get("bc"));
+	}
+	
+	@Test
+	public void test_readAll(){
+		String src = "!!我要测试-->密码";
+		String dest = Lang.readAll(new InputStreamReader(Lang.ins(src)));
+//		String dest = Lang.readAll(Lang.inr(src)); //这个会返回正确的结果. 
+		                                           //故,应该是StringInputStream.read()有问题
+		                                           //
+		assertEquals(src, dest);
 	}
 }

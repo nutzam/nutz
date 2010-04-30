@@ -245,9 +245,15 @@ public abstract class Lang {
 			reader = new BufferedReader(reader);
 		try {
 			StringBuilder sb = new StringBuilder();
-			int c;
-			while (-1 != (c = reader.read()))
-				sb.append((char) c);
+			
+			char [] data = new char[64];
+			int len;
+			while (true){
+				len = reader.read(data);
+				if (len == -1)
+					break;
+				sb.append(data, 0, len);
+			}
 			return sb.toString();
 		}
 		catch (IOException e) {
