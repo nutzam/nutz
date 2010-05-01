@@ -3,6 +3,13 @@ package org.nutz.lang.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * 该类无法正确处理双字节字符,主要是read方法
+ * <br/> 
+ * Mark @Deprecated by Wendal (wendal1985@gmail.com)
+ * @see java.io.StringBufferInputStream
+ */
+@Deprecated
 public class StringInputStream extends InputStream {
 
 	private char[] chars;
