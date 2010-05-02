@@ -3,24 +3,40 @@ package org.nutz.lang.stream;
 import java.io.IOException;
 import java.io.OutputStream;
 
-/**
- * 该类无法正确处理双字节字符,主要是write方法
- * <br/> 
- * Mark @Deprecated by Wendal (wendal1985@gmail.com)
- * @see java.io.StringBufferInputStream
- */
-@Deprecated
 public class StringOutputStream extends OutputStream {
 
 	private StringBuilder sb;
+	private byte [] data = new byte[12];
+	private short index = 0;
 
 	public StringOutputStream(StringBuilder sb) {
 		this.sb = sb;
 	}
 
+	/**
+	 * 完成本方法后,确认字符串已经完成写入后,务必调用flash方法!
+	 */
 	@Override
 	public void write(int b) throws IOException {
-		sb.append((char) b);
+		if (index < data.length)
+			data[index++] = (byte)b;//传入的其实是byte
+		else {
+			sb.append(new String(data));
+			index = 0;
+			data[index++] = (byte)b;
+		}
+	}
+	
+	/**
+	 * 使用StringBuilder前,务必调用
+	 */
+	@Override
+	public void flush() throws IOException {
+		super.flush();
+		if (index > 0){
+			sb.append(new String(data,0,index));
+			index = 0;
+		}
 	}
 
 	public StringBuilder getStringBuilder() {

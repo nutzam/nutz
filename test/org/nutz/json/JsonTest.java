@@ -223,6 +223,7 @@ public class JsonTest {
 		w.write(p.getCompany().getName());
 		w.write("\n");
 		w.write(p.getCompany().getCreator().dump());
+		w.flush();
 		w.close();
 
 		assertTrue(Streams.equals(	new StringInputStream(sb),

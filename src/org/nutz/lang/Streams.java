@@ -55,8 +55,7 @@ public abstract class Streams {
 	public static void write(OutputStream ops, CharSequence cs) throws IOException {
 		if (null == cs || null == ops)
 			return;
-		for (int i = 0; i < cs.length(); i++)
-			ops.write(cs.charAt(i));
+		ops.write(cs.toString().getBytes());
 	}
 
 	/**

@@ -120,6 +120,7 @@ public class BufferRing {
 			else
 				break;
 		}
+		ops.flush();
 	}
 
 	/**

@@ -2,10 +2,10 @@ package org.nutz.lang;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-
 import org.nutz.castor.CastorTest;
 import org.nutz.lang.random.ArrayRandomTest;
 import org.nutz.lang.segment.CharSegmentTest;
+import org.nutz.lang.stream.StringOutputStreamTest;
 import org.nutz.lang.util.AllUtil;
 
 @RunWith(Suite.class)
@@ -17,5 +17,6 @@ import org.nutz.lang.util.AllUtil;
 						CharSegmentTest.class,
 						CastorTest.class,
 						AllUtil.class,
-						StringsTest.class})
+						StringsTest.class,
+						StringOutputStreamTest.class})
 public class AllLang {}
