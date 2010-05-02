@@ -1,16 +1,17 @@
 package org.nutz.lang.stream;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
 public class StringOutputStream extends OutputStream {
 
 	private StringBuilder sb;
-	private byte [] data = new byte[12];
-	private short index = 0;
-
+	private ByteArrayOutputStream baos;
+	
 	public StringOutputStream(StringBuilder sb) {
 		this.sb = sb;
+		baos = new ByteArrayOutputStream();
 	}
 
 	/**
@@ -18,13 +19,7 @@ public class StringOutputStream extends OutputStream {
 	 */
 	@Override
 	public void write(int b) throws IOException {
-		if (index < data.length)
-			data[index++] = (byte)b;//传入的其实是byte
-		else {
-			sb.append(new String(data));
-			index = 0;
-			data[index++] = (byte)b;
-		}
+		baos.write(b);
 	}
 	
 	/**
@@ -33,9 +28,10 @@ public class StringOutputStream extends OutputStream {
 	@Override
 	public void flush() throws IOException {
 		super.flush();
-		if (index > 0){
-			sb.append(new String(data,0,index));
-			index = 0;
+		baos.flush();
+		if (baos.size() > 0){
+			sb.append(new String(baos.toByteArray()));
+			baos.reset();
 		}
 	}
 
