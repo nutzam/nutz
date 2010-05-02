@@ -99,8 +99,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 		if (null == encoding)
 			encoding = dftEncoding;
 		if (null == encoding) {
-			inputCharset = "UTF-8";
-			outputCharset = "UTF-8";
+			inputCharset = org.nutz.lang.Encoding.defaultEncoding();
+			outputCharset = org.nutz.lang.Encoding.defaultEncoding();
 		} else {
 			inputCharset = encoding.input();
 			outputCharset = encoding.output();

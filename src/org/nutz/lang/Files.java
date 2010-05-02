@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.charset.Charset;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -312,7 +311,7 @@ public abstract class Files {
 	 * @return 文件对象，如果不存在，则为 null
 	 */
 	public static File findFile(String path, ClassLoader klassLoader) {
-		return findFile(path, klassLoader, Charset.defaultCharset().name());
+		return findFile(path, klassLoader, Encoding.defaultEncoding());
 	}
 
 	/**
@@ -324,7 +323,7 @@ public abstract class Files {
 	 * @return 文件对象，如果不存在，则为 null
 	 */
 	public static File findFile(String path) {
-		return findFile(path, Files.class.getClassLoader(), Charset.defaultCharset().name());
+		return findFile(path, Files.class.getClassLoader(), Encoding.defaultEncoding());
 	}
 
 	/**
@@ -381,7 +380,7 @@ public abstract class Files {
 	 * @return 输出流
 	 */
 	public static InputStream findFileAsStream(String path, Class<?> klass) {
-		return findFileAsStream(path, klass, Charset.defaultCharset().name());
+		return findFileAsStream(path, klass, Encoding.defaultEncoding());
 	}
 
 	/**
@@ -393,7 +392,7 @@ public abstract class Files {
 	 * @return 输出流
 	 */
 	public static InputStream findFileAsStream(String path) {
-		return findFileAsStream(path, Files.class, Charset.defaultCharset().name());
+		return findFileAsStream(path, Files.class, Encoding.defaultEncoding());
 	}
 
 	/**

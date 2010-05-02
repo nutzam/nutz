@@ -13,9 +13,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.nio.charset.Charset;
 
 /**
  * 提供了一组创建 Reader/Writer/InputStream/OutputStream 的便利函数
@@ -24,10 +22,6 @@ import java.nio.charset.Charset;
  * @author Wendal(wendal1985@gmail.com)
  */
 public abstract class Streams {
-
-	// private static final int DEF_BUFSIZE = 8192;
-
-	public static final String DEFAULT_ENCODING = Charset.forName("UTF-8").displayName();
 
 	/**
 	 * 判断两个输入流是否严格相等
@@ -146,15 +140,7 @@ public abstract class Streams {
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(String path) {
-		String encoding = DEFAULT_ENCODING;
-		try {
-			if (encoding == null)
-				encoding = DEFAULT_ENCODING;
-			return new InputStreamReader(fileIn(path), encoding);
-		}
-		catch (UnsupportedEncodingException e) {
-			throw Lang.wrapThrow(e);
-		}
+		return new InputStreamReader(fileIn(path), Encoding.CHARSET_UTF8);
 	}
 
 	/**
@@ -165,15 +151,7 @@ public abstract class Streams {
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(File file) {
-		String encoding = DEFAULT_ENCODING;
-		try {
-			if (encoding == null)
-				encoding = DEFAULT_ENCODING;
-			return new InputStreamReader(fileIn(file), encoding);
-		}
-		catch (UnsupportedEncodingException e) {
-			throw Lang.wrapThrow(e);
-		}
+		return new InputStreamReader(fileIn(file), Encoding.CHARSET_UTF8);
 	}
 
 	/**
@@ -222,11 +200,6 @@ public abstract class Streams {
 	 * @return 输出流
 	 */
 	public static Writer fileOutw(File file) {
-		try {
-			return new OutputStreamWriter(fileOut(file), DEFAULT_ENCODING);
-		}
-		catch (UnsupportedEncodingException e) {
-			throw Lang.wrapThrow(e);
-		}
+		return new OutputStreamWriter(fileOut(file), Encoding.CHARSET_UTF8);
 	}
 }

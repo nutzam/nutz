@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Map;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 
 public class Response {
@@ -70,12 +70,7 @@ public class Response {
 	}
 
 	public Reader getReader() {
-		try {
-			return new InputStreamReader(getStream(), "UTF-8");
-		}
-		catch (UnsupportedEncodingException e) {
-			throw Lang.wrapThrow(e);
-		}
+		return new InputStreamReader(getStream(), Encoding.CHARSET_UTF8);
 	}
 
 	public Cookie getCookie() {

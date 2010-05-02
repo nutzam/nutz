@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 
 public class StreamBuffer extends InputStream {
@@ -77,7 +78,7 @@ public class StreamBuffer extends InputStream {
 	@Override
 	public String toString() {
 		try {
-			return toString("UTF-8");
+			return toString(Encoding.defaultEncoding());
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);

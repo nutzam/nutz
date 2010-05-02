@@ -5,12 +5,14 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 
 public class MockHttpServletResponse implements HttpServletResponse {
@@ -131,7 +133,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		throw Lang.noImplement();
 	}
 
-	protected String characterEncoding = "UTF-8";
+	protected String characterEncoding = Encoding.defaultEncoding();
 	
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;

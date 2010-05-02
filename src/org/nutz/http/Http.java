@@ -5,6 +5,7 @@ import java.net.URLEncoder;
 import java.util.Map;
 
 import org.nutz.http.Request.METHOD;
+import org.nutz.lang.Encoding;
 
 public class Http {
 
@@ -62,7 +63,7 @@ public class Http {
 	public static String encode(Object s) throws UnsupportedEncodingException {
 		if (null == s)
 			return "";
-		return URLEncoder.encode(s.toString(), "UTF-8");
+		return URLEncoder.encode(s.toString(), Encoding.UTF8);
 	}
 
 }

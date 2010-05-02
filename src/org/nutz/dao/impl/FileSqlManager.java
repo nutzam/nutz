@@ -148,7 +148,7 @@ public class FileSqlManager implements SqlManager {
 					if (stream != null) {
 						InputStreamReader reader = null;
 						try {
-							reader = new InputStreamReader(stream, "UTF-8");
+							reader = new InputStreamReader(stream);
 							loadSQL(reader);
 						}
 						finally {

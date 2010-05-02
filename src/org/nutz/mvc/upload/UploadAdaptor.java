@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.AbstractAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
@@ -50,11 +51,11 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private int buffer;
 
 	public UploadAdaptor(String path) {
-		this(path, 8192, "UTF-8", 2000);
+		this(path, 8192, Encoding.UTF8, 2000);
 	}
 
 	public UploadAdaptor(String path, int buffer) {
-		this(path, buffer, "UTF-8", 2000);
+		this(path, buffer, Encoding.UTF8, 2000);
 	}
 
 	public UploadAdaptor(String path, int buffer, String charset) {

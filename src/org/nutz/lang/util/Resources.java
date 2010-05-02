@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 
 /**
@@ -193,7 +194,7 @@ public final class Resources {
 
 	private static String decodePath(String path) {
 		try {
-			return URLDecoder.decode(path, "UTF-8");
+			return URLDecoder.decode(path, Encoding.UTF8);
 		}
 		catch (UnsupportedEncodingException e) {}
 		return path;

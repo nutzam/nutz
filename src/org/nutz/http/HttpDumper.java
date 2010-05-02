@@ -11,6 +11,8 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.nutz.lang.Encoding;
+
 public class HttpDumper {
 	public static void duplicateHttpHeaders(HttpServletRequest request, URLConnection conn) {
 		Enumeration<?> en = request.getHeaderNames();
@@ -27,7 +29,7 @@ public class HttpDumper {
 		sb.append("<POSTDATA>");
 		sb.append('\n');
 		try {
-			InputStreamReader in = new InputStreamReader(request.getInputStream(), "UTF-8");
+			InputStreamReader in = new InputStreamReader(request.getInputStream(), Encoding.CHARSET_UTF8);
 			int c;
 			while ((c = in.read()) != -1) {
 				sb.append((char) c);

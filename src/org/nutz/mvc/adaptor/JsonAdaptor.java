@@ -6,6 +6,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.injector.JsonInjector;
 import org.nutz.mvc.annotation.Param;
@@ -23,7 +24,7 @@ public class JsonAdaptor extends AbstractAdaptor {
 		// Read all as String
 		String str;
 		try {
-			str = Lang.readAll(new InputStreamReader(request.getInputStream(), "UTF-8"));
+			str = Lang.readAll(new InputStreamReader(request.getInputStream(), Encoding.CHARSET_UTF8));
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);

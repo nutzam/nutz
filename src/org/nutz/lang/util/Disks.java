@@ -9,6 +9,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.LinkedList;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
 
@@ -131,7 +132,7 @@ public abstract class Disks {
 	 * @return 绝对路径
 	 */
 	public static String absolute(String path) {
-		return absolute(path, Files.class.getClassLoader(), Charset.defaultCharset().name());
+		return absolute(path, Files.class.getClassLoader(), Encoding.defaultEncoding());
 	}
 
 	/**
@@ -156,7 +157,7 @@ public abstract class Disks {
 			if (null == url)
 				url = ClassLoader.getSystemResource(path);
 			if (null != url)
-				return normalize(url.getPath(), "UTF-8");//通过URL获取String,一律使用UTF-8编码进行解码
+				return normalize(url.getPath(), Encoding.UTF8);//通过URL获取String,一律使用UTF-8编码进行解码
 			return null;
 		}
 		return path;
