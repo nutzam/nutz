@@ -13,7 +13,7 @@ public class StringOutputStreamTest {
 		String src = "测试中文";
 		StringBuilder sb = new StringBuilder();
 		OutputStream stream = new StringOutputStream(sb);
-		stream.write(src.getBytes("UTF-8"));
+		stream.write(src.getBytes());
 		stream.flush();
 		String desc = sb.toString();
 		assertEquals(src, desc);
