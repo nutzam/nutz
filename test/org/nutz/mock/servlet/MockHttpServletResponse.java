@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.Locale;
 
 import javax.servlet.ServletOutputStream;
@@ -19,7 +18,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	
 	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	
-	protected PrintWriter writer = new PrintWriter(new OutputStreamWriter(stream));
+	protected PrintWriter writer;
 
 	public void addCookie(Cookie cookie) {
 		throw Lang.noImplement();
@@ -90,7 +89,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void flushBuffer() throws IOException {
-		writer.flush();
+		getWriter().flush();
 	}
 
 	public int getBufferSize() {
@@ -114,6 +113,9 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public PrintWriter getWriter() throws IOException {
+		if (writer == null){
+			writer = new PrintWriter(new OutputStreamWriter(stream, characterEncoding));
+		}
 		return writer;
 	}
 
@@ -155,9 +157,13 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	public String getContentAsString() {
 		try {
-			writer.flush();
+			getWriter().flush();
 			return stream.toString(characterEncoding);
-		} catch (UnsupportedEncodingException e) {
+		} 
+		catch (UnsupportedEncodingException e) {
+			throw Lang.wrapThrow(e);
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
