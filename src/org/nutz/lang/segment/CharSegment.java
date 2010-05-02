@@ -1,7 +1,8 @@
 package org.nutz.lang.segment;
 
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,7 +13,6 @@ import java.util.Set;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.stream.StringInputStream;
 
 public class CharSegment implements Segment, Cloneable {
 
@@ -169,19 +169,22 @@ public class CharSegment implements Segment, Cloneable {
 	private List<Object> values;
 	private Map<String, List<Integer>> ppIndexes;
 
-	public void parse(InputStream ins) {
+	public void parse(Reader reader) {
 		pps = new HashMap<String, List<Integer>>();
 		values = new ArrayList<Object>();
 		ppIndexes = new HashMap<String, List<Integer>>();
 		StringBuilder org = new StringBuilder();
 		int IID = 0;
 		try {
-			int c;
+//			Reader reader = new InputStreamReader(ins);
+			char c;
 			StringBuilder sb = new StringBuilder();
 			boolean isInPP = false;
 			boolean lastIsString = false;
-			while ((c = ins.read()) != -1) {
+			char [] data = new char[1];
+			while (readData(reader, data)) {
 				// store org
+				c = data[0];
 				org.append((char) c);
 				if (isInPP && c == '}') { // In PlugPoint, and find }
 					String key = sb.toString();
@@ -200,7 +203,9 @@ public class CharSegment implements Segment, Cloneable {
 					isInPP = false;
 					sb = new StringBuilder();
 				} else if (c == '$') { // Out of PlugPoint, and find $
-					int cc = ins.read();
+					if ( ! readData(reader, data))
+						 throw Lang.makeThrow(RuntimeException.class, "");
+					int cc = data[0];
 					org.append((char) cc);
 					switch (cc) {
 					case '$':
@@ -241,7 +246,7 @@ public class CharSegment implements Segment, Cloneable {
 	}
 
 	public Segment valueOf(String str) {
-		parse(new StringInputStream(str));
+		parse(new StringReader(str));
 		return this;
 	}
 
@@ -265,4 +270,9 @@ public class CharSegment implements Segment, Cloneable {
 		return render().toString();
 	}
 
+	private boolean readData(Reader reader , char [] tmp) throws IOException{
+		if (-1 != reader.read(tmp))
+			return true;
+		return false;
+	}
 }

@@ -2,71 +2,57 @@ package org.nutz.lang.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
-/**
- * 该类无法正确处理双字节字符,主要是read方法
- * <br/> 
- * Mark @Deprecated by Wendal (wendal1985@gmail.com)
- * @see java.io.StringBufferInputStream
- */
-@Deprecated
+import org.nutz.lang.Lang;
+
 public class StringInputStream extends InputStream {
 
-	private char[] chars;
 	private int cursor;
-	private int mark;
-
-	private StringInputStream() {
-		super();
-		cursor = 0;
-		mark = 0;
-	}
+	private byte [] data;
 
 	public StringInputStream(CharSequence s) {
-		this();
 		if (null != s)
-			chars = s.toString().toCharArray();
+			try {
+				data = s.toString().getBytes("UTF-8");
+			}
+			catch (UnsupportedEncodingException e) {
+				throw Lang.wrapThrow(e);
+			}
 		else
-			chars = new char[0];
-	}
-
-	@Override
-	public synchronized void mark(int readlimit) {
-		this.mark = readlimit;
+			data = new byte[0];
+		cursor = 0;
 	}
 
 	@Override
 	public boolean markSupported() {
-		return true;
+		return false;
 	}
 
 	@Override
 	public int read() throws IOException {
-		if (cursor >= chars.length)
-			return -1;
-		return chars[cursor++]; //转换为int,很有问题
+		if (cursor < data.length)
+			return data[cursor++];
+		return -1;
 	}
 
 	@Override
 	public int available() throws IOException {
-		return chars.length;
-	}
-
-	@Override
-	public synchronized void reset() throws IOException {
-		cursor = mark;
+		return data.length - cursor;
 	}
 
 	@Override
 	public long skip(long n) throws IOException {
-		int len = chars.length;
-		if (len > cursor + n) {
-			cursor += n;
-			return n;
-		}
-		int d = len - 1 - cursor;
-		cursor = len;
-		return d;
+		long len = 0;
+		if (n > 0 && cursor < data.length){
+			len = (cursor + n);
+			if (len > data.length){
+				len = data.length - cursor;
+				cursor = data.length;
+			}
+		}else
+			len = 0;
+		return len;
 	}
 
 }

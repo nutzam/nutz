@@ -3,13 +3,6 @@ package org.nutz.lang.stream;
 import java.io.IOException;
 import java.io.Reader;
 
-/**
- * java.io.StringReader 可以完成一样的功能
- * <br/>
- * Mark @Deprecated by Wendal (wendal1985@gmail.com)
- * @see java.io.StringReader
- */
-@Deprecated
 public class StringReader extends Reader {
 
 	private CharSequence cs;

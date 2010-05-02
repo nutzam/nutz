@@ -1,6 +1,6 @@
 package org.nutz.lang.segment;
 
-import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 
@@ -56,7 +56,7 @@ public interface Segment {
 
 	Segment valueOf(String str);
 
-	void parse(InputStream ins);
+	void parse(Reader reader);
 
 	CharSequence render();
 
