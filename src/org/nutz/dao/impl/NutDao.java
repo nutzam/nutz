@@ -44,6 +44,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 import static java.lang.String.*;
 
@@ -301,34 +302,39 @@ public class NutDao implements Dao {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
-			lns.walkManys(new LinkWalker() {
-				void walk(Link link) {
-					if (link.getReferField() == null) {
-						dao.clear(link.getTargetClass(), null);
-					} else {
-						Object value = entity.getMirror().getValue(obj, link.getReferField());
-						Entity<?> ta = dao.getEntity(link.getTargetClass());
-						Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
-						dao.execute(sql);
-					}
-				}
-			});
-			lns.walkManyManys(new LinkWalker() {
-				void walk(Link link) {
-					Object value = entity.getMirror().getValue(obj, link.getReferField());
-					Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
-															link.getFrom(),
-															link.getFrom());
-					sql.params().set(link.getFrom(), value);
-					dao.execute(sql);
-				}
-			});
-			lns.walkOnes(new LinkWalker() {
-				void walk(Link link) {
-					Object value = entity.getMirror().getValue(obj, link.getReferField());
-					Entity<?> ta = dao.getEntity(link.getTargetClass());
-					Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
-					dao.execute(sql);
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.walkManys(new LinkWalker() {
+						void walk(Link link) {
+							if (link.getReferField() == null) {
+								dao.clear(link.getTargetClass(), null);
+							} else {
+								Object value = entity.getMirror().getValue(	obj,
+																			link.getReferField());
+								Entity<?> ta = dao.getEntity(link.getTargetClass());
+								Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
+								dao.execute(sql);
+							}
+						}
+					});
+					lns.walkManyManys(new LinkWalker() {
+						void walk(Link link) {
+							Object value = entity.getMirror().getValue(obj, link.getReferField());
+							Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
+																	link.getFrom(),
+																	link.getFrom());
+							sql.params().set(link.getFrom(), value);
+							dao.execute(sql);
+						}
+					});
+					lns.walkOnes(new LinkWalker() {
+						void walk(Link link) {
+							Object value = entity.getMirror().getValue(obj, link.getReferField());
+							Entity<?> ta = dao.getEntity(link.getTargetClass());
+							Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
+							dao.execute(sql);
+						}
+					});
 				}
 			});
 		}
@@ -407,10 +413,14 @@ public class NutDao implements Dao {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
-			lns.invokeManys(new DeleteManyInvoker(dao));
-			lns.invokeManyManys(new DeleteManyManyInvoker(dao));
-			_deleteSelf(entity, obj);
-			lns.invokeOnes(new DeleteOneInvoker(dao));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeManys(new DeleteManyInvoker(dao));
+					lns.invokeManyManys(new DeleteManyManyInvoker(dao));
+					_deleteSelf(entity, obj);
+					lns.invokeOnes(new DeleteOneInvoker(dao));
+				}
+			});
 		}
 	}
 
@@ -419,9 +429,13 @@ public class NutDao implements Dao {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final NutDao dao = this;
-			lns.invokeManys(new DeleteManyInvoker(dao));
-			lns.invokeManyManys(new DeleteManyManyInvoker(dao));
-			lns.invokeOnes(new DeleteOneInvoker(dao));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeManys(new DeleteManyInvoker(dao));
+					lns.invokeManyManys(new DeleteManyManyInvoker(dao));
+					lns.invokeOnes(new DeleteOneInvoker(dao));
+				}
+			});
 		}
 	}
 
@@ -668,10 +682,14 @@ public class NutDao implements Dao {
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
-			lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
-			_insertSelf(entity, obj);
-			lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
-			lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
+					_insertSelf(entity, obj);
+					lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
+					lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
+				}
+			});
 		}
 		return obj;
 	}
@@ -682,9 +700,13 @@ public class NutDao implements Dao {
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
-			lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
-			lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
-			lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
+					lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
+					lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
+				}
+			});
 		}
 		return obj;
 	}
@@ -695,7 +717,11 @@ public class NutDao implements Dao {
 			final Links lns = new Links(obj, entity, regex);
 			final Mirror<?> mirror = Mirror.me(obj.getClass());
 			final Dao dao = this;
-			lns.invokeManyManys(new InsertManyManyRelationInvoker(dao, obj, mirror));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeManyManys(new InsertManyManyRelationInvoker(dao, obj, mirror));
+				}
+			});
 		}
 		return obj;
 	}
@@ -767,12 +793,16 @@ public class NutDao implements Dao {
 								final Condition condition) {
 		final Links lns = new Links(null, getEntity(classOfT), regex);
 		final int[] re = {0};
-		lns.walkManyManys(new LinkWalker() {
-			void walk(Link link) {
-				Sql sql = sqlMaker	.updateBatch(link.getRelation(), chain, null)
-									.setCondition(condition);
-				execute(sql);
-				re[0] += sql.getUpdateCount();
+		Trans.exec(new Atom() {
+			public void run() {
+				lns.walkManyManys(new LinkWalker() {
+					void walk(Link link) {
+						Sql sql = sqlMaker	.updateBatch(link.getRelation(), chain, null)
+											.setCondition(condition);
+						execute(sql);
+						re[0] += sql.getUpdateCount();
+					}
+				});
 			}
 		});
 		return re[0];
@@ -783,8 +813,12 @@ public class NutDao implements Dao {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Dao dao = this;
-			update(obj);
-			lns.invokeAll(new UpdateInvokder(dao));
+			Trans.exec(new Atom() {
+				public void run() {
+					update(obj);
+					lns.invokeAll(new UpdateInvokder(dao));
+				}
+			});
 		}
 		return obj;
 	}
@@ -794,7 +828,11 @@ public class NutDao implements Dao {
 			final Entity<?> entity = getEntity(obj.getClass());
 			final Links lns = new Links(obj, entity, regex);
 			final Dao dao = this;
-			lns.invokeAll(new UpdateInvokder(dao));
+			Trans.exec(new Atom() {
+				public void run() {
+					lns.invokeAll(new UpdateInvokder(dao));
+				}
+			});
 		}
 		return obj;
 	}
