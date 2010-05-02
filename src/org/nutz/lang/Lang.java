@@ -288,12 +288,10 @@ public abstract class Lang {
 	/**
 	 * 根据一段文本模拟出一个输入流对象
 	 * <br/>
-	 * Mark @Deprecated by Wendal (wendal1985@gmail.com)
 	 * @param cs
 	 *            文本
 	 * @return 输出流对象
 	 */
-	@Deprecated
 	public static InputStream ins(CharSequence cs) {
 		return new StringInputStream(cs);
 	}

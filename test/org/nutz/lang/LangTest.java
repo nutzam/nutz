@@ -106,9 +106,8 @@ public class LangTest {
 	public void test_readAll(){
 		String src = "!!我要测试-->密码";
 		String dest = Lang.readAll(new InputStreamReader(Lang.ins(src)));
-//		String dest = Lang.readAll(Lang.inr(src)); //这个会返回正确的结果. 
-		                                           //故,应该是StringInputStream.read()有问题
-		                                           //
+		String dest2 = Lang.readAll(Lang.inr(src)); 
 		assertEquals(src, dest);
+		assertEquals(src, dest2);
 	}
 }
