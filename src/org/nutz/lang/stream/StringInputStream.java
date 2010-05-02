@@ -10,11 +10,14 @@ public class StringInputStream extends InputStream {
 
 	private int cursor;
 	private byte [] data;
-
-	public StringInputStream(CharSequence s) {
+	
+	public StringInputStream(CharSequence s, String charset) {
 		if (null != s)
 			try {
-				data = s.toString().getBytes("UTF-8");
+				if (charset == null)
+					data = s.toString().getBytes();
+				else
+					data = s.toString().getBytes(charset);
 			}
 			catch (UnsupportedEncodingException e) {
 				throw Lang.wrapThrow(e);
@@ -22,6 +25,10 @@ public class StringInputStream extends InputStream {
 		else
 			data = new byte[0];
 		cursor = 0;
+	}
+
+	public StringInputStream(CharSequence s) {
+		this(s,null);
 	}
 
 	@Override

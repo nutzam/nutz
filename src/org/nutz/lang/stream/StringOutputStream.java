@@ -8,10 +8,16 @@ public class StringOutputStream extends OutputStream {
 
 	private StringBuilder sb;
 	private ByteArrayOutputStream baos;
+	private String charset;
 	
 	public StringOutputStream(StringBuilder sb) {
+		this(sb,null);
+	}
+	
+	public StringOutputStream(StringBuilder sb,String charset) {
 		this.sb = sb;
 		baos = new ByteArrayOutputStream();
+		this.charset = charset;
 	}
 
 	/**
@@ -30,7 +36,10 @@ public class StringOutputStream extends OutputStream {
 		super.flush();
 		baos.flush();
 		if (baos.size() > 0){
-			sb.append(new String(baos.toByteArray()));
+			if (charset == null)
+				sb.append(new String(baos.toByteArray()));
+			else
+				sb.append(new String(baos.toByteArray(),charset));
 			baos.reset();
 		}
 	}
