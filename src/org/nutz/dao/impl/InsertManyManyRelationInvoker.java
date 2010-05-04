@@ -12,8 +12,7 @@ public class InsertManyManyRelationInvoker extends InsertInvoker {
 		super(dao, mainObj, mirror);
 	}
 
-	@Override
-	void invoke(final Link link, Object mm) {
+	public void invoke(final Link link, Object mm) {
 		Object first = Lang.first(mm);
 		if (null != first) {
 			final Object fromValue = mirror.getValue(mainObj, link.getReferField());

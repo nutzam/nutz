@@ -6,13 +6,13 @@ import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-class InsertManyManyInvoker extends InsertInvoker {
+public class InsertManyManyInvoker extends InsertInvoker {
 
 	public InsertManyManyInvoker(Dao dao, Object mainObj, Mirror<?> mirror) {
 		super(dao, mainObj, mirror);
 	}
 
-	void invoke(final Link link, Object mm) {
+	public void invoke(final Link link, Object mm) {
 		Object first = Lang.first(mm);
 		if (null != first) {
 			final Object fromValue = mirror.getValue(mainObj, link.getReferField());

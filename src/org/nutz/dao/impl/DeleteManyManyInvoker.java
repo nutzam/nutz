@@ -9,13 +9,13 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Mirror;
 
-class DeleteManyManyInvoker extends DeleteInvoker {
+public class DeleteManyManyInvoker extends DeleteInvoker {
 
 	DeleteManyManyInvoker(NutDao dao) {
 		super(dao);
 	}
 
-	void invoke(final Link link, Object mm) {
+	public void invoke(final Link link, Object mm) {
 		Object first = Lang.first(mm);
 		if (null != first) {
 			final Entity<?> entity = dao.getEntity(first.getClass());

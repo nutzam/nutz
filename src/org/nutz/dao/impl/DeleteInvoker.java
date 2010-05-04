@@ -1,6 +1,6 @@
 package org.nutz.dao.impl;
 
-abstract class DeleteInvoker extends LinkInvoker {
+public abstract class DeleteInvoker implements LinkInvoker {
 
 	protected NutDao dao;
 

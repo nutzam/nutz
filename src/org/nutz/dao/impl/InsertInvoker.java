@@ -6,7 +6,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlMaker;
 import org.nutz.lang.Mirror;
 
-abstract class InsertInvoker extends LinkInvoker {
+public abstract class InsertInvoker implements LinkInvoker {
 
 	Dao dao;
 	Object mainObj;

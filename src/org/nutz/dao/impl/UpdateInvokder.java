@@ -7,7 +7,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 
-class UpdateInvokder extends LinkInvoker {
+public class UpdateInvokder implements LinkInvoker {
 
 	private Dao dao;
 
@@ -15,7 +15,7 @@ class UpdateInvokder extends LinkInvoker {
 		this.dao = dao;
 	}
 
-	void invoke(Link link, Object objSet) {
+	public void invoke(Link link, Object objSet) {
 		Lang.each(objSet, new Each<Object>() {
 			public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
 				dao.update(ele);

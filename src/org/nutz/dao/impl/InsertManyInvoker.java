@@ -9,13 +9,13 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-class InsertManyInvoker extends InsertInvoker {
+public class InsertManyInvoker extends InsertInvoker {
 
 	public InsertManyInvoker(Dao dao, Object mainObj, Mirror<?> mirror) {
 		super(dao, mainObj, mirror);
 	}
 
-	void invoke(final Link link, Object many) {
+	public void invoke(final Link link, Object many) {
 		Object first = Lang.first(many);
 		if (null != first) {
 			Field refer = link.getReferField();

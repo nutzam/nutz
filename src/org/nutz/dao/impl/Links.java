@@ -7,9 +7,9 @@ import java.util.List;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
 
-final class Links {
+public final class Links {
 
-	Links(Object obj, Entity<?> en, String regex) {
+	public Links(Object obj, Entity<?> en, String regex) {
 		this.obj = obj;
 		this.entity = en;
 		ones = new LinkedList<Link>();
@@ -36,11 +36,11 @@ final class Links {
 	private Object obj;
 	private Entity<?> entity;
 
-	boolean hasLinks() {
+	public boolean hasLinks() {
 		return all.size() > 0;
 	}
 
-	private void invoke(LinkInvoker walker, List<Link> list) {
+	public void invoke(LinkInvoker walker, List<Link> list) {
 		if (null != list)
 			for (Iterator<Link> it = list.iterator(); it.hasNext();) {
 				Link link = it.next();
@@ -50,42 +50,42 @@ final class Links {
 			}
 	}
 
-	void invokeOnes(LinkInvoker invoker) {
+	public void invokeOnes(LinkInvoker invoker) {
 		invoke(invoker, ones);
 	}
 
-	void invokeManys(LinkInvoker invoker) {
+	public void invokeManys(LinkInvoker invoker) {
 		invoke(invoker, manys);
 	}
 
-	void invokeManyManys(LinkInvoker invoker) {
+	public void invokeManyManys(LinkInvoker invoker) {
 		invoke(invoker, mms);
 	}
 
-	void invokeAll(LinkInvoker invoker) {
+	public void invokeAll(LinkInvoker invoker) {
 		invoke(invoker, all);
 	}
 
-	private void walk(LinkWalker walker, List<Link> list) {
+	public void walk(LinkWalker walker, List<Link> list) {
 		if (null != list)
 			for (Iterator<Link> it = list.iterator(); it.hasNext();) {
 				walker.walk(it.next());
 			}
 	}
 
-	void walkOnes(LinkWalker walker) {
+	public void walkOnes(LinkWalker walker) {
 		walk(walker, ones);
 	}
 
-	void walkManys(LinkWalker walker) {
+	public void walkManys(LinkWalker walker) {
 		walk(walker, manys);
 	}
 
-	void walkManyManys(LinkWalker walker) {
+	public void walkManyManys(LinkWalker walker) {
 		walk(walker, mms);
 	}
 
-	void walkAll(LinkWalker walker) {
+	public void walkAll(LinkWalker walker) {
 		walk(walker, all);
 	}
 
