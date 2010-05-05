@@ -268,15 +268,15 @@ public class NutDao implements Dao {
 		return sql.getInt();
 	}
 
-	public <T> void clear(Class<T> classOfT) {
-		this.clear(classOfT, null);
+	public int clear(Class<?> classOfT) {
+		return this.clear(classOfT, null);
 	}
 
-	public void clear(String tableName) {
-		this.clear(tableName, null);
+	public int clear(String tableName) {
+		return this.clear(tableName, null);
 	}
 
-	public <T> void clear(Class<T> classOfT, Condition condition) {
+	public int clear(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
 		Sql sql;
 		if (null == condition) {
@@ -285,9 +285,11 @@ public class NutDao implements Dao {
 			sql = sqlMaker.clear(entity).setCondition(condition);
 		}
 		execute(sql);
+
+		return sql.getUpdateCount();
 	}
 
-	public void clear(String tableName, Condition condition) {
+	public int clear(String tableName, Condition condition) {
 		Sql sql;
 		if (null == condition) {
 			sql = sqlMaker.truncate(tableName);
@@ -295,6 +297,8 @@ public class NutDao implements Dao {
 			sql = sqlMaker.clear(tableName).setCondition(condition);
 		}
 		execute(sql);
+
+		return sql.getUpdateCount();
 	}
 
 	public <T> T clearLinks(final T obj, String regex) {
@@ -341,20 +345,24 @@ public class NutDao implements Dao {
 		return obj;
 	}
 
-	public <T> void delete(Class<T> classOfT, long id) {
+	public int delete(Class<?> classOfT, long id) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
 		Sql sql = sqlMaker.delete(entity, ef);
 		sql.params().set(ef.getName(), id);
 		execute(sql);
+
+		return sql.getUpdateCount();
 	}
 
-	public <T> void delete(Class<T> classOfT, String name) {
+	public int delete(Class<?> classOfT, String name) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkNameField(entity);
 		Sql sql = sqlMaker.delete(entity, ef);
 		sql.params().set(ef.getName(), name);
 		execute(sql);
+
+		return sql.getUpdateCount();
 	}
 
 	public <T> void deletex(Class<T> classOfT, Object... pks) {

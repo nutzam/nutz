@@ -14,8 +14,8 @@ public abstract class IdNameEntityService<T> extends IdEntityService<T> {
 		super(dao);
 	}
 
-	public void delete(String name) {
-		dao().delete(getEntityClass(), name);
+	public int delete(String name) {
+		return dao().delete(getEntityClass(), name);
 	}
 
 	public T fetch(String name) {

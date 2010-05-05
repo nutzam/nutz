@@ -360,9 +360,11 @@ public interface Dao {
 	 * @param id
 	 *            对象 ID
 	 * 
+	 * @return 影响的行数
 	 * @see org.nutz.dao.entity.annotation.Id
+	 * 
 	 */
-	<T> void delete(Class<T> classOfT, long id);
+	int delete(Class<?> classOfT, long id);
 
 	/**
 	 * 根据对象 Name 删除一个对象。它只会删除这个对象，关联对象不会被删除。
@@ -376,9 +378,10 @@ public interface Dao {
 	 * @param name
 	 *            对象 Name
 	 * 
+	 * @return 影响的行数
 	 * @see org.nutz.dao.entity.annotation.Name
 	 */
-	<T> void delete(Class<T> classOfT, String name);
+	int delete(Class<?> classOfT, String name);
 
 	/**
 	 * 根据复合主键，删除一个对象。该对象必须声明 '@PK'，并且，给定的参数顺序 必须同 '@PK' 中声明的顺序一致，否则会产生不可预知的错误。
@@ -557,32 +560,36 @@ public interface Dao {
 	 *            对象类型
 	 * @param condition
 	 *            查询条件，如果为 null，则全部清除
+	 * @return 影响的行数
 	 */
-	<T> void clear(Class<T> classOfT, Condition condition);
+	int clear(Class<?> classOfT, Condition condition);
 
 	/**
 	 * 根据一个 WHERE 条件，清除一组记录
 	 * 
 	 * @param tableName
 	 * @param condition
+	 * @return 影响的行数
 	 */
-	void clear(String tableName, Condition condition);
+	int clear(String tableName, Condition condition);
 
 	/**
 	 * 清除对象所有的记录
 	 * 
 	 * @param classOfT
 	 *            对象类型
+	 * @return 影响的行数
 	 */
-	<T> void clear(Class<T> classOfT);
+	int clear(Class<?> classOfT);
 
 	/**
 	 * 清除数据表所有记录
 	 * 
 	 * @param tableName
 	 *            表名
+	 * @return 影响的行数
 	 */
-	void clear(String tableName);
+	int clear(String tableName);
 
 	/**
 	 * <pre>

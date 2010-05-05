@@ -14,7 +14,7 @@ import org.nutz.log.Logs;
 public abstract class EntityService<T> extends Service {
 
 	private Mirror<T> mirror;
-	
+
 	private Log log = Logs.getLog(getClass());
 
 	@SuppressWarnings("unchecked")
@@ -50,12 +50,12 @@ public abstract class EntityService<T> extends Service {
 		return mirror.getType();
 	}
 
-	public void clear(Condition condition) {
-		dao().clear(getEntityClass(), condition);
+	public int clear(Condition condition) {
+		return dao().clear(getEntityClass(), condition);
 	}
 
-	public void clear() {
-		dao().clear(getEntityClass(), null);
+	public int clear() {
+		return dao().clear(getEntityClass(), null);
 	}
 
 	public List<T> query(Condition condition, Pager pager) {

@@ -18,8 +18,8 @@ public abstract class IdEntityService<T> extends EntityService<T> {
 		return dao().fetch(getEntityClass(), id);
 	}
 
-	public void delete(long id) {
-		dao().delete(getEntityClass(), id);
+	public int delete(long id) {
+		return dao().delete(getEntityClass(), id);
 	}
 
 	public int getMaxId() {

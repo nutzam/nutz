@@ -64,4 +64,21 @@ public class SimpleDaoTest extends DaoCase {
 		catch (Exception e) {}
 		assertEquals(0, dao.count(Pet.class));
 	}
+
+	@Test
+	public void test_clear_two_records() {
+		dao.insert(Pet.create("A"));
+		dao.insert(Pet.create("B"));
+		assertEquals(2, dao.clear(Pet.class, Cnd.where("id", ">", 0)));
+		assertEquals(0, dao.clear(Pet.class, Cnd.where("id", ">", 0)));
+	}
+
+	@Test
+	public void test_delete_records() {
+		dao.insert(Pet.create("A"));
+		dao.insert(Pet.create("B"));
+		assertEquals(1, dao.delete(Pet.class, "A"));
+		assertEquals(1, dao.delete(Pet.class, "B"));
+		assertEquals(0, dao.delete(Pet.class, "A"));
+	}
 }
