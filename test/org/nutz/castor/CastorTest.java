@@ -4,16 +4,16 @@ import static org.junit.Assert.*;
 
 import java.io.File;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
-
 import org.nutz.NutzEnum;
-import org.nutz.castor.Castors;
-import org.nutz.castor.FailToCastObjectException;
+import org.nutz.castor.castor.DateTimeCastor;
 import org.nutz.lang.Lang;
 import org.nutz.lang.meta.Email;
 
@@ -375,4 +375,23 @@ public class CastorTest {
 		assertEquals(boolean.class, Castors.me().castTo("boolean", Class.class));
 
 	}
+	
+	@Test
+	public void test_self_setting() {
+		Castors.me().setSetting(new MyCastorSetting());
+		Date date = new Date();
+		Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+		assertEquals(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date),Castors.me().castToString(timestamp));
+		
+		Castors.me().setSetting(new DefaultCastorSetting());
+
+	}
+	
+	static class MyCastorSetting {
+       public static void setup(DateTimeCastor<Timestamp, String> c) {
+               c.setDateFormat(new SimpleDateFormat("yyyy/MM/dd"));
+               c.setTimeFormat(new SimpleDateFormat("HH:mm:ss"));
+               c.setDateTimeFormat(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"));
+       }
+}
 }
