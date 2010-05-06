@@ -245,10 +245,10 @@ public abstract class Lang {
 			reader = new BufferedReader(reader);
 		try {
 			StringBuilder sb = new StringBuilder();
-			
-			char [] data = new char[64];
+
+			char[] data = new char[64];
 			int len;
-			while (true){
+			while (true) {
 				len = reader.read(data);
 				if (len == -1)
 					break;
@@ -286,8 +286,8 @@ public abstract class Lang {
 	}
 
 	/**
-	 * 根据一段文本模拟出一个输入流对象
-	 * <br/>
+	 * 根据一段文本模拟出一个输入流对象 <br/>
+	 * 
 	 * @param cs
 	 *            文本
 	 * @return 输出流对象
@@ -484,6 +484,52 @@ public abstract class Lang {
 		sb.append(objs[0]);
 		for (int i = 1; i < objs.length; i++)
 			sb.append(c).append(objs[i]);
+
+		return sb;
+	}
+
+	/**
+	 * 将一个长整型数组转换成字符串
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param c
+	 *            分隔符
+	 * @param vals
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static StringBuilder concat(Object c, long[] vals) {
+		StringBuilder sb = new StringBuilder();
+		if (null == vals || 0 == vals.length)
+			return sb;
+
+		sb.append(vals[0]);
+		for (int i = 1; i < vals.length; i++)
+			sb.append(c).append(vals[i]);
+
+		return sb;
+	}
+
+	/**
+	 * 将一个整型数组转换成字符串
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param c
+	 *            分隔符
+	 * @param vals
+	 *            数组
+	 * @return 拼合后的字符串
+	 */
+	public static StringBuilder concat(Object c, int[] vals) {
+		StringBuilder sb = new StringBuilder();
+		if (null == vals || 0 == vals.length)
+			return sb;
+
+		sb.append(vals[0]);
+		for (int i = 1; i < vals.length; i++)
+			sb.append(c).append(vals[i]);
 
 		return sb;
 	}
