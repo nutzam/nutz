@@ -1220,4 +1220,17 @@ public abstract class Lang {
 			bs[i] = (byte) is[i];
 		return bs;
 	}
+	
+	/**
+	 * 判断当前系统是否为Windows
+	 * @return
+	 */
+	public static boolean isWin(){
+		try{
+			String os = System.getenv("OS");
+			return os != null && os.indexOf("Windows") > -1;
+		}catch (Throwable e) {
+			return false;
+		}
+	}
 }
