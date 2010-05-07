@@ -2,6 +2,7 @@ package org.nutz.ioc.loader.annotation;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.List;
 import java.util.zip.ZipFile;
@@ -83,7 +84,10 @@ public class AnnotationIocLoader implements IocLoader {
 
 	private void addClass(Class<?> classZ) {
 		if (classZ.isInterface() || classZ.isMemberClass() || classZ.isEnum()
-				|| classZ.isAnnotation())
+				|| classZ.isAnnotation() )
+			return;
+		int modify = classZ.getModifiers();
+		if (Modifier.isAbstract(modify) || (!Modifier.isPublic(modify)))
 			return;
 		IocBean iocBean = classZ.getAnnotation(IocBean.class);
 		if (iocBean != null) {
@@ -148,10 +152,5 @@ public class AnnotationIocLoader implements IocLoader {
 
 	public IocObject load(String name) throws ObjectLoadException {
 		return map.get(name);
-	}
-
-	public static void main(String[] args) throws Throwable {
-		IocLoader iocLoader = new AnnotationIocLoader("com.wendal.classes");
-		System.out.println(iocLoader.getName().length);
 	}
 }
