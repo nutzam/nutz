@@ -39,6 +39,15 @@ public class Context {
 		return this;
 	}
 
+	public boolean has(String key) {
+		return map.containsKey(key);
+	}
+
+	public Context clear() {
+		this.map.clear();
+		return this;
+	}
+
 	public Object get(String name) {
 		return map.get(name);
 	}
@@ -62,4 +71,12 @@ public class Context {
 	public float getFloat(String name) {
 		return getAs(float.class, name);
 	}
+
+	@Override
+	public Context clone() {
+		Context context = new Context();
+		context.map.putAll(this.map);
+		return context;
+	}
+
 }

@@ -13,4 +13,7 @@ public class R {
 		return r.nextInt(max - min + 1) + min;
 	}
 
+	public static StringGenerator sg(int min, int max) {
+		return new StringGenerator(min, max);
+	}
 }

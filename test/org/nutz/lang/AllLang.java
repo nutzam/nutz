@@ -5,6 +5,7 @@ import org.junit.runners.Suite;
 import org.nutz.castor.CastorTest;
 import org.nutz.lang.random.ArrayRandomTest;
 import org.nutz.lang.segment.CharSegmentTest;
+import org.nutz.lang.segment.SegmentsTest;
 import org.nutz.lang.stream.StringOutputStreamTest;
 import org.nutz.lang.util.AllUtil;
 
@@ -15,6 +16,7 @@ import org.nutz.lang.util.AllUtil;
 						MathsTest.class,
 						ArrayRandomTest.class,
 						CharSegmentTest.class,
+						SegmentsTest.class,
 						CastorTest.class,
 						AllUtil.class,
 						StringsTest.class,

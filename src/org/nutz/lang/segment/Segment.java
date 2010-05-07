@@ -4,6 +4,8 @@ import java.io.Reader;
 import java.util.List;
 import java.util.Set;
 
+import org.nutz.lang.util.Context;
+
 /**
  * 字符串片段。你可以通过这个接口的函数，为片段中的占位符设值。
  * 
@@ -22,20 +24,6 @@ public interface Segment {
 	 */
 	Segment setBy(Object obj);
 
-	Segment set(String key, boolean v);
-
-	Segment set(String key, int v);
-
-	Segment set(String key, double v);
-
-	Segment set(String key, float v);
-
-	Segment set(String key, long v);
-
-	Segment set(String key, byte v);
-
-	Segment set(String key, short v);
-
 	Segment set(String key, Object v);
 
 	Segment add(String key, Object v);
@@ -52,13 +40,17 @@ public interface Segment {
 
 	List<Object> values();
 
-	List<Integer> getIndex(String key);
-
 	Segment valueOf(String str);
 
 	void parse(Reader reader);
 
 	CharSequence render();
+
+	CharSequence render(Context context);
+
+	Context getContext();
+
+	void fillNulls(Context context);
 
 	String getOrginalString();
 

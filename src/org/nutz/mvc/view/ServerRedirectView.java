@@ -1,6 +1,7 @@
 package org.nutz.mvc.view;
 
 import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +37,9 @@ public class ServerRedirectView implements View {
 		Mirror<?> mirror = Mirror.me(obj);
 
 		// Fill path
-		for (Iterator<String> it = dest.keys().iterator(); it.hasNext();) {
+		Set<String> keySet = dest.keys();
+		Iterator<String> it = keySet.iterator();
+		while (it.hasNext()) {
 			String key = it.next();
 			Object value = null;
 			int length = key.length();

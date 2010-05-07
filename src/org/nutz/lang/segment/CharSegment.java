@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
 
 public class CharSegment implements Segment, Cloneable {
 
@@ -24,31 +26,30 @@ public class CharSegment implements Segment, Cloneable {
 
 	@SuppressWarnings("unchecked")
 	public Segment add(String key, Object v) {
-		List<Integer> indexes = pps.get(key);
-		if (null != indexes) {
-			for (Iterator<Integer> it = indexes.iterator(); it.hasNext();) {
-				int index = it.next().intValue();
-				Object vs = values.get(index);
-				if (vs instanceof List)
-					((List<Object>) vs).add(v);
-				else {
-					List<Object> vl = new LinkedList<Object>();
-					vl.add(v);
-					values.set(index, vl);
-				}
-			}
+		if (!context.has(key)) {
+			context.set(key, v);
+			return this;
+		}
+		Object val = context.get(key);
+		if (val == null) {
+			context.set(key, v);
+		} else if (val instanceof Collection<?>) {
+			((Collection<Object>) val).add(v);
+		} else {
+			List<Object> objSet = new LinkedList<Object>();
+			objSet.add(val);
+			objSet.add(v);
+			context.set(key, objSet);
 		}
 		return this;
 	}
 
 	public void clearAll() {
-		for (Iterator<List<Integer>> i = pps.values().iterator(); i.hasNext();)
-			for (Iterator<Integer> ii = i.next().iterator(); ii.hasNext();)
-				values.set(ii.next().intValue(), null);
+		context.clear();
 	}
 
 	public boolean contains(String key) {
-		return pps.containsKey(key);
+		return keys.containsKey(key);
 	}
 
 	public Segment born() {
@@ -62,38 +63,30 @@ public class CharSegment implements Segment, Cloneable {
 	}
 
 	public Segment clone() {
-		Segment cs = this.born();
-		for (Iterator<String> it = keys().iterator(); it.hasNext();) {
-			String key = it.next();
-			Object v = values.get(pps.get(key).get(0));
-			internalSetValue((CharSegment) cs, key, v);
-		}
+		CharSegment cs = new CharSegment();
+		cs.parse(Lang.inr(orgString));
+		cs.context = this.context.clone();
 		return cs;
 	}
 
-	public List<Integer> getIndex(String key) {
-		return this.ppIndexes.get(key);
-	}
-
 	public Set<String> keys() {
-		return this.pps.keySet();
+		return this.keys.keySet();
 	}
 
 	public List<Object> values() {
-		return this.values;
-	}
-
-	private static Segment internalSetValue(CharSegment seg, String key, Object v) {
-		List<Integer> indexes = seg.pps.get(key);
-		if (null != indexes)
-			for (Iterator<Integer> it = indexes.iterator(); it.hasNext();)
-				seg.values.set(it.next().intValue(), v);
-		return seg;
+		List<Object> re = new ArrayList<Object>(nodes.size());
+		for (Node node : nodes) {
+			if (node.isKey)
+				re.add(context.get(node.value));
+			else
+				re.add(node.value);
+		}
+		return re;
 	}
 
 	public Segment setAll(Object v) {
-		for (Iterator<String> it = keys().iterator(); it.hasNext();)
-			internalSetValue(this, it.next(), v);
+		for (String key : keys())
+			context.set(key, v);
 		return this;
 	}
 
@@ -133,111 +126,98 @@ public class CharSegment implements Segment, Cloneable {
 		return this;
 	}
 
-	public Segment set(String key, boolean v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, int v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, double v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, float v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, long v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, byte v) {
-		return internalSetValue(this, key, v);
-	}
-
-	public Segment set(String key, short v) {
-		return internalSetValue(this, key, v);
-	}
-
 	public Segment set(String key, Object v) {
-		return internalSetValue(this, key, v);
+		context.set(key, v);
+		return this;
 	}
 
-	private Map<String, List<Integer>> pps;
-	private List<Object> values;
-	private Map<String, List<Integer>> ppIndexes;
+	static class Node {
+
+		boolean isKey;
+
+		String value;
+
+		static Node key(String val) {
+			Node node = new Node();
+			node.isKey = true;
+			node.value = val;
+			return node;
+		}
+
+		static Node val(String val) {
+			Node node = new Node();
+			node.isKey = false;
+			node.value = val;
+			return node;
+		}
+
+		public Node clone() throws CloneNotSupportedException {
+			Node node = new Node();
+			node.isKey = this.isKey;
+			node.value = this.value;
+			return node;
+		}
+
+	}
+
+	private Context context;
+
+	private List<Node> nodes;
+
+	private NutMap keys;
 
 	public void parse(Reader reader) {
-		pps = new HashMap<String, List<Integer>>();
-		values = new ArrayList<Object>();
-		ppIndexes = new HashMap<String, List<Integer>>();
+		nodes = new LinkedList<Node>();
+		context = new Context();
+		keys = new NutMap();
 		StringBuilder org = new StringBuilder();
-		int IID = 0;
+		StringBuilder sb = new StringBuilder();
+		int b;
 		try {
-//			Reader reader = new InputStreamReader(ins);
-			char c;
-			StringBuilder sb = new StringBuilder();
-			boolean isInPP = false;
-			boolean lastIsString = false;
-			char [] data = new char[1];
-			while (readData(reader, data)) {
-				// store org
-				c = data[0];
-				org.append((char) c);
-				if (isInPP && c == '}') { // In PlugPoint, and find }
-					String key = sb.toString();
-					values.add(null);
-					lastIsString = false;
-					List<Integer> indx = pps.get(key);
-					List<Integer> ppIndx = ppIndexes.get(key);
-					if (null == indx) {
-						indx = new ArrayList<Integer>();
-						pps.put(key, indx);
-						ppIndx = new ArrayList<Integer>();
-						ppIndexes.put(key, ppIndx);
+			while (-1 != (b = reader.read())) {
+				org.append((char) b);
+				switch (b) {
+				case '$':
+					b = reader.read();
+					org.append((char) b);
+					// Escape
+					if (b == '$') {
+						sb.append((char) b);
 					}
-					indx.add(values.size() - 1);
-					ppIndx.add(IID++);
-					isInPP = false;
-					sb = new StringBuilder();
-				} else if (c == '$') { // Out of PlugPoint, and find $
-					if ( ! readData(reader, data))
-						 throw Lang.makeThrow(RuntimeException.class, "");
-					int cc = data[0];
-					org.append((char) cc);
-					switch (cc) {
-					case '$':
-						sb.append((char) c);
-						break;
-					case '{':
+					// In Plug Point
+					else if (b == '{') {
+						// Save before
 						if (sb.length() > 0) {
-							values.add(sb);
+							nodes.add(Node.val(sb.toString()));
 							sb = new StringBuilder();
-							lastIsString = true;
 						}
-						isInPP = true;
-						break;
-					case -1:
-						break;
-					default:
-						sb.append((char) c).append((char) cc);
+						// Search the end
+						while (-1 != (b = reader.read())) {
+							org.append((char) b);
+							if (b == '}')
+								break;
+							sb.append((char) b);
+						}
+						if (b != '}')
+							throw Lang.makeThrow("Error format around '%s'", sb);
+						// Create Key
+						String key = sb.toString();
+						nodes.add(Node.key(key));
+						keys.put(key, null);
+						sb = new StringBuilder();
 					}
-				} else { // Normal char, just append it
-					sb.append((char) c);
+					// Normal
+					else {
+						sb.append('$').append((char) b);
+					}
+					break;
+				default:
+					sb.append((char) b);
 				}
 			}
-			if (sb.length() > 0) {
-				if (isInPP) {
-					sb.insert(0, "${");
-					if ((pps.size() == 0 && values.size() > 0) || lastIsString)
-						((StringBuilder) values.get(0)).append(sb);
-					else
-						values.add(sb);
-				} else
-					values.add(sb);
-			}
+			if (sb.length() > 0)
+				nodes.add(Node.val(sb.toString()));
+			// Store the Oraginal Value
 			orgString = org.toString();
 		}
 		catch (IOException e) {
@@ -251,28 +231,40 @@ public class CharSegment implements Segment, Cloneable {
 	}
 
 	public CharSequence render() {
+		return render(context);
+	}
+
+	public CharSequence render(Context context) {
 		StringBuilder sb = new StringBuilder();
-		for (Iterator<?> it = values.iterator(); it.hasNext();) {
-			Object o = it.next();
-			if (o == null)
+		for (Node node : nodes) {
+			Object val = node.isKey ? context.get(node.value) : node.value;
+			if (null == val)
 				continue;
-			if (o instanceof List<?>) {
-				for (Iterator<?> ii = ((List<?>) o).iterator(); ii.hasNext();) {
-					sb.append(ii.next());
+			if (val instanceof Collection<?>) {
+				for (Object obj : (Collection<?>) val) {
+					sb.append(obj);
 				}
-			} else
-				sb.append(o);
+			} else {
+				sb.append(val);
+			}
 		}
 		return sb;
+	}
+
+	public Context getContext() {
+		return context;
+	}
+
+	public void fillNulls(Context context) {
+		for (String key : keys.keySet()) {
+			Object val = context.get(key);
+			if (null == val)
+				context.set(key, "${" + key + "}");
+		}
 	}
 
 	public String toString() {
 		return render().toString();
 	}
 
-	private boolean readData(Reader reader , char [] tmp) throws IOException{
-		if (-1 != reader.read(tmp))
-			return true;
-		return false;
-	}
 }
