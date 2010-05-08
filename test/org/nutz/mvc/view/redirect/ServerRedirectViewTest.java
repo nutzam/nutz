@@ -1,4 +1,4 @@
-package org.nutz.mvc.view;
+package org.nutz.mvc.view.redirect;
 
 import static org.junit.Assert.*;
 

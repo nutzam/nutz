@@ -5,11 +5,13 @@ import org.junit.runners.Suite;
 import org.nutz.ioc.aop.impl.XmlFileMirrorFactoryTest;
 import org.nutz.ioc.java.ChainParsingTest;
 import org.nutz.ioc.json.AllJsonIoc;
+import org.nutz.ioc.loader.annotation.AnnotationIocLoaderTest;
 import org.nutz.ioc.loader.xml.XmlIocLoaderTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ChainParsingTest.class, 
 	                 AllJsonIoc.class,
 	                 XmlIocLoaderTest.class,
-	                 XmlFileMirrorFactoryTest.class})
+	                 XmlFileMirrorFactoryTest.class,
+	                 AnnotationIocLoaderTest.class})
 public class AllIoc {}

@@ -53,6 +53,9 @@ public class DefaultLoading implements Loading {
 		String root = config.getServletContext().getRealPath("/").replace('\\', '/');
 		if (root.endsWith("/"))
 			root = root.substring(0, root.length() - 1);
+		else if (root.endsWith("/."))
+			root = root.substring(0, root.length() - 2);
+			
 		context.set("app.root", root);
 	}
 

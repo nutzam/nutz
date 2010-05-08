@@ -79,7 +79,9 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			|| klass.isArray()
 			|| klass.isEnum()
 			|| klass.isPrimitive()
-			|| klass.isMemberClass())
+			|| klass.isMemberClass()
+			|| klass.isAnnotation()
+			|| klass.isAnonymousClass())
 			throw Lang.makeThrow("需要拦截的%s不是一个顶层类!创建失败!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
 			throw Lang.makeThrow("需要拦截的类:%s是final或abstract的!创建失败!", klass_name);
