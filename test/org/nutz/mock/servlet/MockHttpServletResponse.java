@@ -1,6 +1,5 @@
 package org.nutz.mock.servlet;
 
-import java.awt.List;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
