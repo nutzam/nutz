@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -752,6 +753,39 @@ public abstract class Files {
 				return false;
 			}
 		});
+	}
+	
+	/**
+	 * 递归查找获取一个目录下所有子目录(及子目录的子目录)。子目录如果以 '.' 开头，将被忽略
+	 * <p/><b>包含传入的目录</b>
+	 * @param dir
+	 *            目录
+	 * @return 子目录数组
+	 */
+	public static File[] scanDirs(File dir) {
+		ArrayList<File> list = new ArrayList<File>();
+		list.add(dir);
+		scanDirs(dir, list);
+		return list.toArray(new File[list.size()]);
+	}
+	
+	private static void scanDirs(File rootDir,ArrayList<File> list){
+		File[] dirs = rootDir.listFiles(new FileFilter() {
+			public boolean accept(File f) {
+				if (f.isHidden())
+					return false;
+				if (f.isDirectory())
+					if (!f.getName().startsWith("."))
+						return true;
+				return false;
+			}
+		});
+		if (dirs != null){
+			for (File dir : dirs) {
+				scanDirs(dir, list);
+				list.add(dir);
+			}
+		}
 	}
 
 	/**
