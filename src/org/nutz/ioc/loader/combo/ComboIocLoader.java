@@ -23,7 +23,7 @@ public class ComboIocLoader implements IocLoader {
 	 * <p/>第二种,为具体的参数
 	 * <p/> 处理规律, 当遇到第一种参数(*),则认为接下来的一个或多个参数为这一个IocLoader的参数,直至遇到另外一个*开头的参数
 	 * <p/><p/> 例子:<p/>
-	 * <code>{"*org.nutz.ioc.loader.json.JsonLoader","dao.js","service.js","org.nutz.ioc.loader.xml.XmlIocLoader","config.xml"}</code>
+	 * <code>{"*org.nutz.ioc.loader.json.JsonLoader","dao.js","service.js","*org.nutz.ioc.loader.xml.XmlIocLoader","config.xml"}</code>
 	 * <p/>这样的参数, 会生成一个以{"dao.js","service.js"}作为参数的JsonLoader,一个以{"dao.xml"}作为参数的XmlIocLoader
 	 * @throws ClassNotFoundException 如果*开头的参数所指代的类不存在
 	 */
