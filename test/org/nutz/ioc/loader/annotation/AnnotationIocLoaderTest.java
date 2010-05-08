@@ -3,28 +3,31 @@ package org.nutz.ioc.loader.annotation;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
-import org.nutz.ioc.Ioc;
-import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.loader.annotation.meta.ClassA;
+import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.meta.IocObject;
 
 public class AnnotationIocLoaderTest {
 	
-	Ioc ioc = new NutIoc(new AnnotationIocLoader("org.nutz.ioc.loader.annotation"));
+	IocLoader iocLoader = new AnnotationIocLoader("org.nutz.ioc.loader.annotation");
 
 	@Test
 	public void testGetName() {
-		assertNotNull(ioc.getNames());
-		assertTrue(ioc.getNames().length > 0);
+		assertNotNull(iocLoader.getName());
+		assertTrue(iocLoader.getName().length > 0);
 	}
 
 	@Test
 	public void testHas() {
-		assertTrue(ioc.has("classA"));
+		assertTrue(iocLoader.has("classA"));
 	}
 
 	@Test
-	public void testLoad() {
-		assertTrue(ioc.get(null, "classA") instanceof ClassA);
+	public void testLoad() throws Throwable{
+		IocObject iocObject = iocLoader.load("classB");
+		assertNotNull(iocObject);
+		assertNotNull(iocObject.getFields());
+		assertTrue(iocObject.getFields().length == 1);
+		assertEquals("refer",iocObject.getFields()[0].getValue().getType());
 	}
 
 }
