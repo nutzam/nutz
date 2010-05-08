@@ -1,11 +1,16 @@
 package org.nutz.mock.servlet;
 
+import java.awt.List;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -19,25 +24,39 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
 	
 	protected PrintWriter writer;
+	
+	protected Map<String, String> headers;
+	
+	protected Set<Cookie> cookies;
+	
+	protected int status;
+	
+	protected Locale locale;
+	
+	public MockHttpServletResponse() {
+		headers = new HashMap<String, String>();
+		cookies = new HashSet<Cookie>();
+		status = 200;
+	}
 
 	public void addCookie(Cookie cookie) {
-		throw Lang.noImplement();
+		cookies.add(cookie);
 	}
 
-	public void addDateHeader(String arg0, long arg1) {
-		throw Lang.noImplement();
+	public void addDateHeader(String key, long value) {
+		headers.put(key, ""+value);
 	}
 
-	public void addHeader(String arg0, String arg1) {
-		throw Lang.noImplement();
+	public void addHeader(String key, String value) {
+		headers.put(key, value);
 	}
 
-	public void addIntHeader(String arg0, int arg1) {
-		throw Lang.noImplement();
+	public void addIntHeader(String key, int value) {
+		headers.put(key, ""+value);
 	}
 
-	public boolean containsHeader(String arg0) {
-		throw Lang.noImplement();
+	public boolean containsHeader(String key) {
+		return headers.containsKey(key);
 	}
 
 	public String encodeRedirectURL(String arg0) {
@@ -56,32 +75,32 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		throw Lang.noImplement();
 	}
 
-	public void sendError(int arg0) throws IOException {
-		throw Lang.noImplement();
+	public void sendError(int error) throws IOException {
+		status = error;
 	}
 
 	public void sendError(int arg0, String arg1) throws IOException {
 		throw Lang.noImplement();
 	}
 
-	public void sendRedirect(String arg0) throws IOException {
-		throw Lang.noImplement();
+	public void sendRedirect(String value) throws IOException {
+		headers.put("Location", ""+value);
 	}
 
-	public void setDateHeader(String arg0, long arg1) {
-		throw Lang.noImplement();
+	public void setDateHeader(String key, long value) {
+		headers.put(key, ""+value);
 	}
 
-	public void setHeader(String arg0, String arg1) {
-//		throw Lang.noImplement();
+	public void setHeader(String key, String value) {
+		headers.put(key, value);
 	}
 
-	public void setIntHeader(String arg0, int arg1) {
-		throw Lang.noImplement();
+	public void setIntHeader(String key, int value) {
+		headers.put(key, ""+value);
 	}
 
-	public void setStatus(int arg0) {
-//		throw Lang.noImplement();
+	public void setStatus(int status) {
+		this.status = status;
 	}
 
 	public void setStatus(int arg0, String arg1) {
@@ -105,7 +124,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public Locale getLocale() {
-		throw Lang.noImplement();
+		return locale;
 	}
 
 	public ServletOutputStream getOutputStream() throws IOException {
@@ -151,8 +170,8 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		this.contentType = contentType;
 	}
 
-	public void setLocale(Locale arg0) {
-		throw Lang.noImplement();
+	public void setLocale(Locale locale) {
+		this.locale = locale;
 	}
 
 	public String getContentAsString() {
@@ -168,4 +187,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		}
 	}
 
+	public String getHeader(String key){
+		return headers.get(key);
+	}
 }

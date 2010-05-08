@@ -22,6 +22,8 @@ import org.nutz.mock.servlet.multipart.MultipartInputStream;
 public class MockHttpServletRequest implements HttpServletRequest {
 
 	protected HttpSession session;
+	
+	protected String contextPath;
 
 	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
@@ -32,7 +34,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String getContextPath() {
-		return null;
+		return contextPath;
+	}
+	
+	public void setContextPath(String contextPath) {
+		this.contextPath = contextPath;
 	}
 
 	public Cookie[] getCookies() {
@@ -144,7 +150,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	protected String servletPath;
 
 	public String getServletPath() {
-		return null;
+		return servletPath;
 	}
 
 	public void setServletPath(String servletPath) {

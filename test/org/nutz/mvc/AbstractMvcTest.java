@@ -38,6 +38,7 @@ public abstract class AbstractMvcTest {
 
 		session = Mock.servlet.session(servletContext);
 		request = Mock.servlet.request().setSession(session);
+		request.setContextPath("");
 		request.setSession(session);
 		response = new MockHttpServletResponse();
 	}
