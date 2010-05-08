@@ -160,6 +160,7 @@ public class AnnotationIocLoader implements IocLoader {
 				iocField.setName(field.getName());
 
 				iocField.setValue(convert(inject.value()));
+				iocObject.addField(iocField);
 			}
 			if (LOG.isInfoEnabled())
 				LOG.infof("Processed Ioc Class : %s as [%s]", classZ, beanName);
