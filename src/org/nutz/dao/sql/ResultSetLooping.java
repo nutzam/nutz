@@ -7,6 +7,11 @@ import java.util.List;
 
 import org.nutz.dao.pager.Pager;
 
+/**
+ * 遍历 RersultSet
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class ResultSetLooping {
 
 	public List<Object> doLoop(ResultSet rs, SqlContext context) throws SQLException {

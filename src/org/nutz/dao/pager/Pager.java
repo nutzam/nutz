@@ -40,9 +40,11 @@ public interface Pager extends PageInfo {
 	 * <li>ResultSet.TYPE_SCROLL_INSENSITIVE
 	 * <li>ResultSet.TYPE_SCROLL_SENSITIVE
 	 * </ul>
-	 * 一般的说，你为特殊的数据库建立的 Pager，都要返回 ResultSet.TYPE_FORWARD_ONLY
+	 * 一般的说，你为特殊的数据库建立的 Pager，都要返回 ResultSet.TYPE_FORWARD_ONLY。 否则，会利用 ResultSet
+	 * 的游标来计算结果集的总数
 	 * 
 	 * @see java.sql.ResultSet
+	 * @see org.nutz.dao.sql.ResultSetLooping
 	 */
 	int getResultSetType();
 
