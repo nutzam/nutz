@@ -328,7 +328,7 @@ ComboSql （组合SQL） 的用处
 			{{{<JAVA>
 			List<Pet> demoEntityQuery(Dao dao) {
 				Sql sql = Sqls.create("SELECT * FROM t_pet $condition");
-				sql.setCallback(Sqls.callback.entitis());
+				sql.setCallback(Sqls.callback.entities());
 				Entity<Pet> entity = dao.getEntity(Pet.class);
 				sql.setEntity(entity).setCondition(Cnd.wrap("id=15"));
 				sql.getContext().setPager(dao.createPager(1, 10));
