@@ -6,10 +6,14 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.DefaultStatementAdapter;
 import org.nutz.dao.sql.FetchEntityCallback;
 import org.nutz.dao.sql.FetchIntegerCallback;
+import org.nutz.dao.sql.FetchLongCallback;
 import org.nutz.dao.sql.FetchRecordCallback;
 import org.nutz.dao.sql.FetchStringCallback;
 import org.nutz.dao.sql.QueryEntityCallback;
+import org.nutz.dao.sql.QueryIntCallback;
+import org.nutz.dao.sql.QueryLongCallback;
 import org.nutz.dao.sql.QueryRecordCallback;
+import org.nutz.dao.sql.QueryStringCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.SqlImpl;
@@ -41,6 +45,25 @@ public class Sqls {
 	 */
 	public static Sql create(String sql) {
 		return new SqlImpl(new SqlLiteral().valueOf(sql), DefaultStatementAdapter.ME);
+	}
+
+	/**
+	 * 创建了一个 Sql 对象。
+	 * <p>
+	 * 传入的 Sql 语句支持变量和参数占位符：
+	 * <ul>
+	 * <li>变量： 格式为 <b>$XXXX</b>，在执行前，会被预先替换
+	 * <li>参数： 格式为<b>@XXXX</b>，在执行前，会替换为 '?'，用以构建 PreparedStatement
+	 * </ul>
+	 * 
+	 * @param fmt
+	 *            格式字符，格式参看 String.format 函数
+	 * @param args
+	 *            格式字符串的参数
+	 * @return Sql 对象
+	 */
+	public static Sql createf(String fmt, Object... args) {
+		return create(String.format(fmt, args));
 	}
 
 	/**
@@ -172,10 +195,38 @@ public class Sqls {
 		}
 
 		/**
+		 * @return 从 ResultSet 获取一个长整型数的回调对象
+		 */
+		public SqlCallback longValue() {
+			return new FetchLongCallback();
+		}
+
+		/**
 		 * @return 从 ResultSet 获取一个字符串的回调对象
 		 */
 		public SqlCallback str() {
 			return new FetchStringCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获得一个整数数组的回调对象
+		 */
+		public SqlCallback ints() {
+			return new QueryIntCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获得一个长整型数组的回调对象
+		 */
+		public SqlCallback longs() {
+			return new QueryLongCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获得一个字符除数组的回调对象
+		 */
+		public SqlCallback strs() {
+			return new QueryStringCallback();
 		}
 
 		/**
