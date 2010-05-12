@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.Json;
@@ -78,6 +79,13 @@ public class Record {
 	 */
 	public int getColumnCount() {
 		return map.size();
+	}
+
+	/**
+	 * @return 记录的所有字段名
+	 */
+	public Set<String> getColumnNames() {
+		return map.keySet();
 	}
 
 	/**
