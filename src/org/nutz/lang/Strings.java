@@ -72,6 +72,27 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 将字符串首字母小写
+	 * 
+	 * @param s
+	 *            字符串
+	 * @return 首字母小写后的新字符串
+	 */
+	public static String lowerFirst(CharSequence s) {
+		if (null == s)
+			return null;
+		int len = s.length();
+		if (len == 0)
+			return "";
+		char char0 = s.charAt(0);
+		if (Character.isUpperCase(char0))
+			return s.toString();
+		StringBuilder sb = new StringBuilder(len);
+		sb.append(Character.toLowerCase(char0)).append(s.subSequence(1, len));
+		return sb.toString();
+	}
+
+	/**
 	 * 检查两个字符串的忽略大小写后是否相等.
 	 * <p/>
 	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>

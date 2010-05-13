@@ -5,6 +5,9 @@ import org.nutz.dao.DatabaseMeta;
 public class DefaultPagerMaker implements PagerMaker {
 
 	public Pager make(DatabaseMeta meta, int pageNumber, int pageSize) {
+		if (pageNumber < 1 || pageSize <= 0)
+			return null;
+
 		Pager pager;
 		// MySql & H2
 		if (meta.isMySql() || meta.isH2()) {

@@ -1,4 +1,4 @@
-package org.nutz.mvc.annotation;
+package org.nutz.ioc.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

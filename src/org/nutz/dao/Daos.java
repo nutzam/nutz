@@ -9,7 +9,9 @@ import java.sql.Types;
 
 import javax.sql.DataSource;
 
+import org.nutz.dao.pager.Pager;
 import org.nutz.lang.Lang;
+import org.nutz.service.EntityService;
 import org.nutz.trans.Trans;
 import org.nutz.trans.Transaction;
 
@@ -112,4 +114,23 @@ public class Daos {
 			catch (Throwable e) {}
 	}
 
+	public static Pager updatePagerCount(Pager pager, Dao dao, Class<?> entityType, Condition cnd) {
+		if (null != pager) {
+			pager.setRecordCount(dao.count(entityType, cnd));
+		}
+		return pager;
+	}
+
+	public static Pager updatePagerCount(Pager pager, Dao dao, String tableName, Condition cnd) {
+		if (null != pager) {
+			pager.setRecordCount(dao.count(tableName, cnd));
+		}
+		return pager;
+	}
+
+	public static Pager updatePagerCount(Pager pager, EntityService<?> srv, Condition cnd) {
+		if (null != pager)
+			pager.setRecordCount(srv.count(cnd));
+		return pager;
+	}
 }

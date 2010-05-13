@@ -12,6 +12,7 @@ import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
 import org.nutz.ioc.ValueProxyMaker;
+import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.cached.CachedIocLoader;
@@ -72,6 +73,13 @@ public class NutIoc implements Ioc2 {
 			this.mirrors = new DefaultMirrorFactory(this);
 		else
 			this.mirrors = mirrors;
+	}
+
+	public <T> T get(Class<T> type) throws IocException {
+		InjectName inm = type.getAnnotation(InjectName.class);
+		if (null != inm)
+			return get(type, inm.value());
+		return get(type, Strings.lowerFirst(type.getSimpleName()));
 	}
 
 	public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
