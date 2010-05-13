@@ -33,6 +33,8 @@ Apache DBCP
 			}
 		}
 		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+	通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="org.apache.commons.dbcp.BasicDataSource">
@@ -81,6 +83,8 @@ C3P0
 			}
 		}
 		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+	通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -124,6 +128,8 @@ Proxool
 			}
 		}
 		}}}
+		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
+	通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource">
@@ -169,6 +175,8 @@ BoneCP
 			}
 		}
 		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+	通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="com.jolbox.bonecp.BoneCPDataSource">
