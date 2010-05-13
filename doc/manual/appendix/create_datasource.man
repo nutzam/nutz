@@ -33,6 +33,19 @@ Apache DBCP
 			}
 		}
 		}}}
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="org.apache.commons.dbcp.BasicDataSource">
+					<events>
+						<depose>close</depose>
+					</events>
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
+		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 --------------------------------------------------------------------------------------
@@ -68,6 +81,19 @@ C3P0
 			}
 		}
 		}}}
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
+					<events>
+						<depose>close</depose>
+					</events>
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
+		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
 Proxool
@@ -97,6 +123,16 @@ Proxool
 				}
 			}
 		}
+		}}}
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource">
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
 		}}}
 		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
@@ -130,5 +166,18 @@ BoneCP
 				}
 			}
 		}
+		}}}
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="com.jolbox.bonecp.BoneCPDataSource">
+					<events>
+						<depose>close</depose>
+					</events>
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
 		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
