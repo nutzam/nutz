@@ -61,4 +61,14 @@ public class StringsTest {
 		assertEquals("aBCD", Strings.upperWord("a-b-c-d", '-'));
 		assertEquals("helloWorld", Strings.upperWord("hello-world", '-'));
 	}
+	
+	@Test
+	public void testLowerWord() {
+		assertEquals("", Strings.lowerFirst(""));
+		assertEquals("aCV", Strings.lowerFirst("aCV"));
+		assertEquals("eee", Strings.lowerFirst("eee"));
+		assertEquals("vCD", Strings.lowerFirst("VCD"));
+		assertEquals("vff", Strings.lowerFirst("Vff"));
+	}
 }
+

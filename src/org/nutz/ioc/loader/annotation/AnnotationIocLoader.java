@@ -1,12 +1,8 @@
 package org.nutz.ioc.loader.annotation;
 
-import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.IocLoader;
@@ -16,9 +12,8 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
-import org.nutz.lang.Files;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Resources;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -34,71 +29,9 @@ public class AnnotationIocLoader implements IocLoader {
 	private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 
 	public AnnotationIocLoader(String... packages) {
-		for (String packageZ : packages) {
-			File dir = Files.findFile(packageZ.replace('.', '/'));
-			if (dir != null) {
-				File[] dirs = Files.scanDirs(dir);
-				ArrayList<String> filePaths = new ArrayList<String>();
-				if (dirs != null)
-					for (File dir_sub : dirs) {
-						File[] files = Files.files(dir_sub, ".class");
-						if (files != null)
-							for (File file : files)
-								filePaths.add(file.getPath());
-					}
-				for (String string : filePaths) {
-					try {
-						String tmp = string	.substring(0, string.length() - 6)
-											.replace('/', '.')
-											.replace('\\', '.');
-						String className = tmp.substring(tmp.lastIndexOf(packageZ));
-						addClass(Class.forName(className));
-					}
-					catch (Throwable e) {
-						e.printStackTrace();
-					}
-				}
-			} else {
-				String CLASSPATH = System.getenv().get("CLASSPATH");
-				if (CLASSPATH != null) {
-					String[] paths = null;
-					if (Lang.isWin())
-						paths = CLASSPATH.split(";");
-					else
-						paths = CLASSPATH.split(":");
-					try {
-						String pathRegex = "/" + packageZ.replace('.', '/') + "/.+\\.class";
-						for (String path : paths) {
-							if (path.endsWith(".jar")) {
-								File file = new File(path);
-								if (Files.isFile(file)) {
-									ZipEntry[] entries = Files.findEntryInZip(	new ZipFile(file),
-																				pathRegex);
-									if (entries != null) {
-										for (ZipEntry zipEntry : entries) {
-											String entryName = zipEntry.getName();
-											// 去头去尾 /xxx/yyy/ZZ.class
-											String className = entryName.substring(	1,
-																					entryName.length() - 6)
-																		.replace('/', '.');
-											try {
-												addClass(Class.forName(className));
-											}
-											catch (Throwable e) {
-												e.printStackTrace();
-											}
-										}
-									}
-								}
-							}
-						}
-					}
-					catch (Throwable e) {
-						e.printStackTrace();
-					}
-				}
-			}
-		}
+		for (String packageZ : packages)
+			for (Class<?> classZ : Resources.scanClass(packageZ))
+				addClass(classZ);
 		if (LOG.isInfoEnabled())
 			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
 						map.size(),
@@ -121,13 +54,8 @@ public class AnnotationIocLoader implements IocLoader {
 			if (LOG.isInfoEnabled())
 				LOG.infof("Found a Class with Ioc-Annotation : %s", classZ);
 			String beanName = iocBean.name();
-			if (Strings.isBlank(beanName)) {
-				String className = classZ.getSimpleName();
-				if (className.length() > 1) {
-					beanName = ("" + className.charAt(0)).toLowerCase() + className.substring(1);
-				} else
-					beanName = className.toLowerCase();
-			}
+			if (Strings.isBlank(beanName))
+				beanName = Strings.lowerFirst(classZ.getSimpleName());
 			IocObject iocObject = new IocObject();
 			iocObject.setType(classZ);
 			map.put(beanName, iocObject);

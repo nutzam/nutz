@@ -1,6 +1,9 @@
 package org.nutz.lang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +12,6 @@ import java.io.Writer;
 import java.util.Map;
 
 import org.junit.Test;
-
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
 
@@ -109,5 +111,10 @@ public class LangTest {
 		String dest2 = Lang.readAll(Lang.inr(src)); 
 		assertEquals(src, dest);
 		assertEquals(src, dest2);
+	}
+	
+	@Test
+	public void test_isWin(){
+		assertTrue(Lang.isWin());
 	}
 }
