@@ -519,4 +519,10 @@ public class JsonTest {
 		assertEquals("B2", obj.map.get("b").get(1));
 	}
 
+	@Test
+	public void test_output_nostr_key_map() {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		map.put(22, "hello");
+		assertEquals("{\"22\":\"hello\"}", Json.toJson(map, JsonFormat.compact()));
+	}
 }

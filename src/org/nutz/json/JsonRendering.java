@@ -114,7 +114,7 @@ class JsonRendering {
 		ArrayList<Pair> list = new ArrayList<Pair>(map.size());
 		for (Object key : map.keySet()) {
 			String name = null == key ? "null" : key.toString();
-			Object value = map.get(name);
+			Object value = map.get(key);
 			if (!this.isIgnore(name, value))
 				list.add(new Pair(name, value));
 		}
