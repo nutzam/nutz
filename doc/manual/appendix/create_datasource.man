@@ -100,3 +100,35 @@ Proxool
 		}}}
 		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
+--------------------------------------------------------------------------------------
+BoneCP
+	直接书写 Java 代码
+		{{{<Java>
+		import com.jolbox.bonecp.BoneCPDataSource;
+		
+		...
+		
+		BoneCPDataSource ds = new BoneCPDataSource();
+		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUsername("demo");
+		ds.setPassword("123456");
+		...
+		
+		}}}
+	通过 Nutz.Ioc 的 JSON 配置文件
+		{{{<IOC-JSON 配置>
+		{
+			dataSource : {
+				type : "com.jolbox.bonecp.BoneCPDataSource",
+				events : {
+					depose : 'close'
+				},
+				fields : {
+					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					username : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
