@@ -87,9 +87,9 @@ C3P0
 					<events>
 						<depose>close</depose>
 					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
+					<field name="driverClass"><str>org.postgresql.Driver</str></field>
+					<field name="jdbcUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="user"><str>demo</str></field>
 					<field name="password"><str>123456</str></field>
 				</obj>
 			</ioc>
@@ -127,9 +127,9 @@ Proxool
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource">
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
+					<field name="driver"><str>org.postgresql.Driver</str></field>
+					<field name="driverUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="user"><str>demo</str></field>
 					<field name="password"><str>123456</str></field>
 				</obj>
 			</ioc>
@@ -145,6 +145,7 @@ BoneCP
 		...
 		
 		BoneCPDataSource ds = new BoneCPDataSource();
+		ds.setDriver("org.postgresql.Driver");
 		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
 		ds.setPassword("123456");
@@ -160,6 +161,7 @@ BoneCP
 					depose : 'close'
 				},
 				fields : {
+					driverClass : 'org.postgresql.Driver',
 					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
 					username : 'demo',
 					password : '123456'
@@ -173,7 +175,7 @@ BoneCP
 					<events>
 						<depose>close</depose>
 					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="driverClass"><str>org.postgresql.Driver</str></field>
 					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
 					<field name="username"><str>demo</str></field>
 					<field name="password"><str>123456</str></field>
