@@ -10,6 +10,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.FailToGetValueException;
@@ -112,9 +114,10 @@ class JsonRendering {
 		appendBraceBegin();
 		increaseFormatIndent();
 		ArrayList<Pair> list = new ArrayList<Pair>(map.size());
-		for (Object key : map.keySet()) {
-			String name = null == key ? "null" : key.toString();
-			Object value = map.get(key);
+		Set<Entry<?, ?>> entrySet = map.entrySet();
+		for (Entry entry : entrySet) {
+			String name = null == entry.getKey() ? "null" : entry.getKey().toString();
+			Object value = entry.getValue();
 			if (!this.isIgnore(name, value))
 				list.add(new Pair(name, value));
 		}

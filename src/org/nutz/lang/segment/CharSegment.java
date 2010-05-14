@@ -131,7 +131,7 @@ public class CharSegment implements Segment, Cloneable {
 		return this;
 	}
 
-	static class Node {
+	static class Node implements Cloneable {
 
 		boolean isKey;
 
