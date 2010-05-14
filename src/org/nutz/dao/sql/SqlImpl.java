@@ -19,7 +19,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
 
-public class SqlImpl implements Sql ,Cloneable {
+public class SqlImpl implements Sql, Cloneable {
 
 	public SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
 		this.sql = sql;
@@ -205,6 +205,10 @@ public class SqlImpl implements Sql ,Cloneable {
 
 	public int getInt() {
 		return Castors.me().castTo(context.getResult(), int.class);
+	}
+
+	public String getString() {
+		return Castors.me().castToString(context.getResult());
 	}
 
 	@SuppressWarnings("unchecked")

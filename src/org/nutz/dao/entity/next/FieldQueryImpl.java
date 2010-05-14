@@ -55,6 +55,8 @@ class FieldQueryImpl implements FieldQuery {
 			sql.vars().set("view", ef.getEntity().getViewName());
 			sql.vars().set("field", ef.getColumnName());
 			Object refer = TableName.get();
+			if (null == refer)
+				refer = obj;
 			if (null != refer) {
 				if (TableName.isPrimitive(refer))
 					for (String var : vars)

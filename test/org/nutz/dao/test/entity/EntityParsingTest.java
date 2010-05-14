@@ -5,15 +5,28 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.Link;
+import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Platoon;
+import org.nutz.dao.test.normal.Pet2;
 
 public class EntityParsingTest extends DaoCase {
 
 	private Entity<?> en(Class<?> type) {
 		return dao.getEntity(type);
+	}
+
+	@Test
+	public void test_override_field() {
+		pojos.initPet();
+		Entity<?> en = en(Pet2.class);
+		EntityField ef = en.getField("nickName");
+		assertEquals("alias", ef.getColumnName());
+		Prev prev = ef.getField().getAnnotation(Prev.class);
+		assertTrue(prev.value().length > 0);
 	}
 
 	@Test

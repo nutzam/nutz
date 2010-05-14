@@ -153,6 +153,12 @@ public class ComboSql implements Sql {
 	public <T> T getObject(Class<T> classOfT) {
 		throw Lang.makeThrow("Not implement yet!");
 	}
+	
+	
+
+	public String getString() {
+		throw Lang.makeThrow("Not implement yet!");
+	}
 
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

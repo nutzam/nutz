@@ -17,6 +17,17 @@ public class AutoGenerateValueTest extends DaoCase {
 	protected void after() {}
 
 	@Test
+	public void test_var_in_prev() {
+		pojos.initPet();
+		Pet2 pet = new Pet2();
+		pet.setName("xb").setAge(10);
+
+		dao.insert(pet);
+
+		assertEquals("dog.xb", pet.getNickName());
+	}
+
+	@Test
 	public void test_simple() {
 		Resident xh = new Resident("XH");
 		Resident xw = new Resident("XW");

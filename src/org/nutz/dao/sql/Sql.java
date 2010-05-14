@@ -154,4 +154,9 @@ public interface Sql {
 	 */
 	int getInt();
 
+	/**
+	 * @return 将结果对象作为 String 返回
+	 */
+	String getString();
+
 }
