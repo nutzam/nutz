@@ -11,6 +11,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
@@ -113,6 +114,7 @@ public class LangTest {
 		assertEquals(src, dest2);
 	}
 	
+	@Ignore("测试平台不一定为Windows")
 	@Test
 	public void test_isWin(){
 		assertTrue(Lang.isWin());
