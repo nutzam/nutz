@@ -118,6 +118,8 @@ public class AnnotationIocLoader implements IocLoader {
 	}
 
 	public IocObject load(String name) throws ObjectLoadException {
-		return map.get(name);
+		if (has(name))
+			return map.get(name);
+		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 }

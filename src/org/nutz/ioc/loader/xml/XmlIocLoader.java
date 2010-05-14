@@ -89,7 +89,9 @@ public class XmlIocLoader implements IocLoader {
 	}
 
 	public IocObject load(String name) throws ObjectLoadException {
-		return iocMap.get(name);
+		if (has(name))
+			return iocMap.get(name);
+		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
 	private IocObject paserBean(Element beanElement, boolean innerBean) throws Throwable {
