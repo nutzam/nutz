@@ -1,4 +1,6 @@
 #title: 可用的插件
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------
 IocProvider

@@ -1,4 +1,6 @@
 #title: Java 的函数糖
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 -----------------------------------------------------------------------------------------
 什么是函数糖？
@@ -182,6 +184,10 @@
 		 * 首字母大写
 			{{{
 			assertEquals("Abc", Strings.capitalize("abc"));
+			}}}
+		 * 首字母小写
+			{{{
+			assertEquals("aBC", Strings.lowerFirst("ABC"));
 			}}}
 		 * 切除首位空白
 			{{{

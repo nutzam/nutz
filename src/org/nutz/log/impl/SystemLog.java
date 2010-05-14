@@ -14,7 +14,9 @@ public class SystemLog extends AbstractLog {
 		return systemLog;
 	}
 
-	private SystemLog() {}
+	private SystemLog() {
+		isInfoEnabled = true;
+	}
 
 	public void debug(Object message, Throwable t) {
 		if (isDebugEnabled())

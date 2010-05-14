@@ -1,4 +1,5 @@
 #title: AOP -- 声明式切片
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 
 声明拦截器
@@ -22,4 +23,5 @@
      }}}
      
 已经为你准备好的拦截器
-    org.nutz.aop.interceptor.LoggingMethodOnterceptor 为Aop方法添加日志记录
+    org.nutz.aop.interceptor.LoggingMethodOnterceptor 添加日志记录
+    org.nutz.aop.interceptor.TransactionInterceptor 添加事务

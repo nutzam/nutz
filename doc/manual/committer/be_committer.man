@@ -1,9 +1,12 @@
 #title: 成为代码提交者
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 
 如果你已经是代码提交者
 	一定要注意
 		 * 请确保你修改的类上的 JDoc, 有你的大名，比如 "@author zozoh(zozohtnt@gmail.com)"
+			 * 首先，体现了你的贡献
 			 * 否则，出了问题，不知道由谁主要负责
 		 * 请尽量用统一的 code formatter， 导入 /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml，否则我们同步代码是很难比较
 		 * 去掉的代码不要注释掉，直接删掉。我们会用文件比较工具比较两个版本的不同

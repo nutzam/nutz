@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+	<obj name="dataSource" type="org.apache.commons.dbcp.BasicDataSource">
+		<events>
+			<depose>close</depose>
+		</events>
+		<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+		<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+		<field name="username"><str>demo</str></field>
+		<field name="password"><str>123456</str></field>
+	</obj>
+</ioc>

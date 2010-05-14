@@ -1,4 +1,6 @@
 #title: 定义自己的配置文件格式
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------------------------
 你如果不喜欢 JSON 怎么办？
@@ -144,3 +146,11 @@
 最后
 	没什么要说的了，充分发挥你的想象力吧，如果你愿意，将配置信息放在 PDF 里，放在 excel 表格里都是可以的 
 	如果你完成了一个IocLoader,不妨分享出来,我们将收录到 http://code.google.com/p/nutz-ioc-loaders/
+--------------------------------------------------------------------------------------------------------
+附:已经可用的IocLoader
+	* 使用Json作为配置文件 org.nutz.ioc.loader.json.JsonLoader
+	* 使用XML作为配置文件 org.nutz.ioc.loader.xml.XmlIocLoader
+	* 使用注解作为配置文件 org.nutz.ioc.loader.annotation.AnnotationIocLoader
+	* 使用Map作为配置文件 org.nutz.ioc.loader.map.MapLoader
+	* 混合使用多种配置?一样可以! org.nutz.ioc.loader.combo.ComboIocLoader
+	
