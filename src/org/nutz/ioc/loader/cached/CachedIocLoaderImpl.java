@@ -44,6 +44,8 @@ public class CachedIocLoaderImpl implements CachedIocLoader {
 		IocObject iocObject = map.get(name);
 		if (iocObject == null) {
 			iocObject = proxyIocLoader.load(name);
+			if (iocObject == null)
+				return null;
 			if (iocObject.isSingleton() && iocObject.getType() != null)
 				map.put(name, iocObject);
 		}
