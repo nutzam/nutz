@@ -1,4 +1,4 @@
-#title:如何在插入之前或之后为字段设值
+#title:插入前后的设置
 #index:0,1
 -----------------------------------------------------------------------------------------------------------------
 插入之前 - @Prev
@@ -6,21 +6,27 @@
 	{{{
 	@Table("t_pet")
 	public class Pet{
+		@Name
+		private String name;
+
 		@Column("photo")
-		@Prev( @SQL("SELECT txt FROM t_pet_photo WHERE id=@name") )
+		@Prev( @SQL("SELECT txt FROM t_pet_photo WHERE pname=@name") )
 		private String photoPath;
 	...
 	}}}
-	@Prev 注解接受一组 @SQL 作为参数，它支持如下特性：
+	@Prev 注解接受一组 @SQL 作为参数，它遵守如下约定：
 	 * @SQL 声明了一条 SQL 语句，支持动态占位符。
-		 * 变量 - {#999;形式如： $XXX} 
+		 * 变量 - {#008800;形式如： $变量名} 
 			 * 其值由 org.nutz.dao.TableName 来设置，具体使用方式请参看 [dynamic_table_name.man 动态表名]
 			 * 特殊占位符不需要手工设值，Nutz.Dao 自动为你设置，它们是：
 				 * {*$view} - 表示当前实体对象的视图名称
 				 * {*$field} - 表示注解所在字段数据库名称
-		 * 参数 - {#999;形式如：@XXX}
+			 * 其他特殊占位符，会被对象自身的同名属性值替换
+		 * 参数 - {#008800;形式如：@参数名}
 			 * 其值直接使用 POJO 自身的属性值
 			 * {*比如上例}，将会参考对象自身的 name  字段的值
+	 * 如果 SQL 执行没有结果，即结果集合为空，将不会为相应字段设置
+	 * 如果 SQL 执行的结果集包含多条记录，只有第一条记录的第一列的值会被使用
 	 * @SQL 更详细的语法规范请参看 [customized_sql.man 自定义 SQL]
 -----------------------------------------------------------------------------------------------------------------
 插入之后 - @Next
@@ -37,6 +43,36 @@
 	如上例，执行插入后，你的 Pet 对象的 id 会被数据库中新的值更新。
 	
 	@Next 的规则和 @Prev 是一样的
+-----------------------------------------------------------------------------------------------------------------
+以 @Prev 来举例
+
+	下面让我们举两个例子，详细说明一下 {*变量} 和 {*参数} 的异同点。
+	
+	使用变量的例子	
+		{{{
+		@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm='$ownerName'"))
+		private String name;
+		}}}
+		在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，变量 {* $ownerName} 会被对象本身的 ownerName 字段的值替
+		换，如果对象本身的 ownerName 字段的值恰好是 "zzh"，那么执行的 SQL 会变成：
+		{{{
+		SELECT pet_name FROM m_user_pet WHERE ownm='zzh';
+		}}}
+		这段 SQL 执行的结果会复制给对象的 name 字段。
+		
+	
+	使用参数的例子
+		{{{
+		@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm=@ownerName"))
+		private String name;
+		}}}
+		在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，参数 {* @ownerName} 会被 '?' 替换，并根据这段 SQL 生成 
+		PreparedStatement 对象：
+		{{{
+		SELECT pet_name FROM m_user_pet WHERE ownm=?;
+		}}}
+		然后，根据对象本身的 ownerName 字段的值，为这个 PreparedStatement 设置参数，执行之后，这段 SQL 执行的结果会复制给对象的 name 字段。
+
 -----------------------------------------------------------------------------------------------------------------
 数据库方言
 	无论是 @Prev 还是 @Next，你都是通过 @SQL 声明的数据库方言。但是，假设你并不确定你的 POJO 将会工作在哪一个数据
