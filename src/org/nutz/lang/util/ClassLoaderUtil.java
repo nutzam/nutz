@@ -101,9 +101,6 @@ public class ClassLoaderUtil {
 
 	/**
 	 * 加载Java类。 使用全限定类名
-	 * 
-	 * @param className
-	 * @return
 	 */
 	public static Class<?> loadClass(String className) {
 		try {
@@ -116,8 +113,6 @@ public class ClassLoaderUtil {
 
 	/**
 	 * *得到类加载器
-	 * 
-	 * @return
 	 */
 	public static ClassLoader getClassLoader() {
 		return ClassLoaderUtil.class.getClassLoader();
@@ -143,10 +138,6 @@ public class ClassLoaderUtil {
 
 	/**
 	 * openStream
-	 * 
-	 * @param url
-	 * @return openStream
-	 * @throws IOException
 	 */
 	public static InputStream getStream(URL url) throws IOException {
 		if (url != null) {
@@ -161,7 +152,6 @@ public class ClassLoaderUtil {
 	 * 
 	 * @paramr elativePath必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用
 	 *         ../来查找
-	 * @return
 	 * @throws MalformedURLException
 	 * @throws IOException
 	 */
@@ -173,8 +163,6 @@ public class ClassLoaderUtil {
 	/**
 	 * *提供相对于classpath的资源路径，返回属性对象，它是一个散列表
 	 * 
-	 * @param resource
-	 * @return
 	 */
 	public static Properties getProperties(String resource) {
 		Properties properties = new Properties();
@@ -190,7 +178,6 @@ public class ClassLoaderUtil {
 	/**
 	 * *得到本Class所在的ClassLoader的Classpat的绝对路径。 *URL形式的
 	 * 
-	 * @return
 	 */
 	public static String getAbsolutePathOfClassLoaderClassPath() {
 		if (log.isDebugEnabled()) {
@@ -244,10 +231,6 @@ public class ClassLoaderUtil {
 
 	/**
 	 * *
-	 * 
-	 * @param source
-	 * @param dest
-	 * @return
 	 */
 	private static int containSum(String source, String dest) {
 		int containSum = 0;
@@ -259,13 +242,6 @@ public class ClassLoaderUtil {
 		return containSum;
 	}
 
-	/**
-	 * @param source
-	 * @param dest
-	 * @param num
-	 * @return
-	 * @author mawenming at 2010-4-10 上午10:02:51
-	 */
 	private static String cutLastString(String source, String dest, int num) {
 		// String cutSource=null;
 		for (int i = 0; i < num; i++) {
@@ -274,12 +250,6 @@ public class ClassLoaderUtil {
 		return source;
 	}
 
-	/**
-	 * *
-	 * 
-	 * @param resource
-	 * @return
-	 */
 	public static URL getResource(String resource) {
 		if (log.isDebugEnabled()) {
 			log.debug("传入的相对于classpath的路径：" + resource);
@@ -324,21 +294,15 @@ public class ClassLoaderUtil {
 	/**
 	 * 服务器的WEB-ROOT目录地址
 	 * 
-	 * @author mawenming at 2010-4-10 上午10:01:54
 	 */
 	private static String WEB_ROOT = null;
 
 	/**
 	 * 服务器的WEB-INF目录地址
 	 * 
-	 * @author mawenming at 2010-4-10 上午10:02:24
 	 */
 	private static String WEB_INF_PATH = null;
 
-	/**
-	 * @return
-	 * @author mawenming at Apr 24, 2009 2:15:03 PM
-	 */
 	public static String getWEB_INFPath() {
 		if (WEB_INF_PATH == null) {
 			try {
@@ -358,10 +322,6 @@ public class ClassLoaderUtil {
 		}
 	}
 
-	/**
-	 * @return
-	 * @author mawenming at Apr 24, 2009 2:15:03 PM
-	 */
 	public static String getWebRoot() {
 		if (WEB_ROOT == null) {
 			try {
@@ -384,9 +344,6 @@ public class ClassLoaderUtil {
 	/**
 	 * 判断 类是否存在
 	 * 
-	 * @param className
-	 * @param classLoader
-	 * @return
 	 */
 	public static boolean isPresent(String className, ClassLoader classLoader) {
 		if (Strings.isEmpty(className))

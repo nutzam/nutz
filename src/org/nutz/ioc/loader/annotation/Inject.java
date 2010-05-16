@@ -21,7 +21,7 @@ public @interface Inject {
 	 * <p/> 如:   <code>env:OS</code> 获取环境变量OS,即操作系统的名字
 	 * <b>缺省情况下,为 "refer:fieldName", fieldName为字段的名字</b>
 	 * @see org.nutz.ioc.meta.IocValue
-	 * @return
+	 * @return 需要注入的值的表达式
 	 */
 	String value() default "";
 }
