@@ -94,8 +94,8 @@ public abstract class Dumps {
 		 *            请求对象
 		 * @param ops
 		 *            内容的输出流
-		 * @param ignoreHeader
-		 *            是否显示 HTTP 头信息
+		 * @param mode
+		 *            显示 HTTP 头信息的模式: MODE.ALL or MODE.HEADER_ONLY
 		 */
 		public static void http(HttpServletRequest req, OutputStream ops, MODE mode) {
 			InputStream ins;
@@ -137,8 +137,8 @@ public abstract class Dumps {
 		 * 
 		 * @param req
 		 *            请求对象
-		 * @param ignoreHeader
-		 *            是否显示 HTTP 头信息
+		 * @param mode
+		 *            显示 HTTP 头信息的模式: MODE.ALL or MODE.HEADER_ONLY
 		 * @return 一个文本字符串表示 HTTP 的全部内容
 		 */
 		public static String http(HttpServletRequest req, MODE mode) {

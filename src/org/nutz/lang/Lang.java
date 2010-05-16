@@ -1223,7 +1223,7 @@ public abstract class Lang {
 	
 	/**
 	 * 判断当前系统是否为Windows
-	 * @return
+	 * @return true 如果当前系统为Windows系统
 	 */
 	public static boolean isWin(){
 		try{
