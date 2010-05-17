@@ -10,6 +10,52 @@ import org.nutz.trans.Atom;
  * 定制 POJO 的字段过滤配置。
  * <p>
  * 通过这类，可以指明当前线程的 DAO 操作，哪些对象，的哪些字段会被忽略
+ * <p>
+ * 
+ * <pre>
+ * 调用例子:
+ * <code>
+ * &#064;Table(&quot;jax_pf_fold&quot;)
+ * public class JaxFold implements Serializable {
+ * 	private static final long serialVersionUID = 5990870005316924017L;
+ * 	&#064;Column
+ * 	&#064;Name
+ * 	//字符类型主键,用name来表示
+ * 	private String mldh;
+ * 	&#064;Column
+ * 	private String mlmc;
+ * 	&#064;Column
+ * 	private String sjmldh;
+ * 	&#064;Column
+ * 	private Integer sxh;
+ * 	&#064;Column
+ * 	private String bz;
+ * }
+ * </code>
+ * 例子1,一般表达式
+ * <code>
+ * FieldFilter.create(JaxFold.class, &quot;bz|mlmc|mldh&quot;).run(new Atom() {
+ * 	public void run() {
+ * 		nutDao.update(fold);
+ * 	}
+ * });
+ * </code>
+ *  执行的sql是:
+ *  UPDATE jax_pf_fold SET sjmldh='235',bz='备注',mlmc='信息打印' WHERE mldh='2353' 
+ *  由于 sjmldh 和 mldh 匹配因此,也会被认定为参与操作的字段.
+ * <br>
+ * 例子2,更严格的正则表达式
+ * <code>
+ * FieldFilter.create(JaxFold.class, &quot;&circ;(bz|mlmc|mldh)$&quot;).run(new Atom() {
+ * 	public void run() {
+ * 		nutDao.update(fold);
+ * 	}
+ * });
+ * </code>
+ *  执行的sql是:
+ *  UPDATE jax_pf_fold SET bz='备注',mlmc='信息打印',sxh=2343 WHERE mldh='2353'
+ * 
+ * </pre>
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
