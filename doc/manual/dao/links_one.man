@@ -1,13 +1,19 @@
-#title:关于一对一映射
+#title:一对一映射
 #index:0,1
 -------------------------------------------------------------------------------------------------------------
-关于一对一映射的概述
+什么是一对一映射
+	
+	一对一的映射有两张数据表，其中A表的某个字段的值指向B表的主键。因为A表的任何一条记录只能对应B表的一条且唯一一条记录，所以称这种
+	映射为A表与B表数据的一对一映射。({#999999; 当然，反过来，你也可是说，是B表对A表的}[links_many.man 一对多映射])。
+	
+	上述解构，如果用 POJO 来表示的话，可以参看下图：
+	
 	<links_one.png>
 
-	一个对象中有一个字段指向另外一个对象的主键。如上图， Pet 中就可以有一个字段 master，通过自身的 masterId 指向一个
-	Master 对象，那么我们说 Pet.master 就是 Pet 对 Master 的一对一映射。
+	如上图， Pet 中就可以有一个字段 master，通过自身的 masterId 指向一个	Master 对象，那么我们说 Pet.master 就是 Pet 对
+	Master 的一对一映射。
 -------------------------------------------------------------------------------------------------------------
-关于在 POJO 的配置 : {#A00;@One}
+在 POJO 中配置一对一映射
 	在 POJO 类中字段中增加注解 {*@One}：
 	{{{<JAVA>
 	@Table("t_pet")
@@ -21,6 +27,10 @@
 		
 	}
 	}}}
+	
+	在 Pet 对象中必须存在一个 Master 类型的字段，你的一对一映射就需要配置在这个字段上。通过 {*@One} 注解告诉 Nutz.Dao Pet 对象
+	和 Master 对象的关系。
+	
 	因此：
 	 * POJO 类中{*必须}存在一个字段，本 POJO 将通过该字段同目标 POJO 的主键关联
 	 * 该字段必须同目标 POJO （{#A00;Master}）的主键类型相同
@@ -28,6 +38,103 @@
 		 * {#F00;*注意}，这里是大小写敏感的。
 		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
 -------------------------------------------------------------------------------------------------------------
-你可能还需要参考
-	 * 关于注解 {*@One} 详细描述请参看 > [annotations.man Nutz.Dao 实体注解] 关于{*@One}这一节
-	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.man Nutz.Dao 为映射提供的操作]。
+插入操作
+
+	如果你已经实现准备好了这样的对象：
+	{{{<JAVA>
+	Pet pet = new Pet();
+	pet.setName("XiaoBai");
+	Master master = new Master();
+	master.setName("Peter");
+	pet.setMaster(master);
+	}}}
+	
+	那么你可以一次将 pet 以及它对应的 master 一起插入到数据表中
+	{{{<JAVA>
+	dao.insertWith(pet,"master");
+	}}}
+	Nutz.Dao 会根据正则表达式 "master" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）
+	并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：
+	{{{
+	执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
+	将该最大值 29 赋给 master 对象的主键 id
+	将该最大值 29 赋给 pet.masterId 字段
+	执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("Xiaobai",29)
+	}}}
+	这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你像修改这个默认做法，请参看 [primary_key.man 关于主键]一章。
+	
+	 * 这里因为是一对一映射，所以会首先插入 @One 声明的字段，以便用新的主键值更新 masterId 的值
+	 * 如果你的对象中包括多个 @One 字段，被你的正则式匹配上，那么这些字段对应的字段（如果不为null）都会被匹配，并首先被插入
+	
+	当然，你要想选择仅仅只插入映射字段的话，你可以：
+	{{{<JAVA>
+	dao.insertLinks(pet,"master");
+	}}}
+	那么上述操作实际上会执行：
+	{{{
+	执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
+	将该最大值 29 赋给 master 对象的主键 id
+	}}}
+	看，并不会插入 pet 对象。
+	
+-------------------------------------------------------------------------------------------------------------
+获取操作
+
+	仅仅获取映射对象：
+	{{{
+	Pet pet = dao.fetch(Pet.class, "XiaoBai");
+	dao.fetchLinks(pet, "master");
+	}}}
+	这会执行操作：
+	{{{
+	执行 SQL: SELECT * FROM t_pet WHERE name='XiaoBai';  // 如果 pet.masterId 是 29
+	执行 SQL: SELECT * FROM t_master WHERE id=29;
+	}}}
+	但是 Nutz.Dao 没有提供一次获取 pet 对象以及 master 对象的方法，因为，你完全可以把上面的两句话写在一行上：
+	{{{<JAVA>
+	dao.fetchLinks(dao.fetch(Pet.class, "XiaoBai"), "master");
+	}}}
+
+-------------------------------------------------------------------------------------------------------------
+更新操作
+
+	同时更新 pet 和 master
+	{{{<JAVA>
+	dao.updateWith(pet, "master");
+	}}}
+	这会执行
+	{{{
+	执行SQL: UPDATE t_master ....
+	执行SQL: UPDATE t_pet ...
+	}}}
+	
+	仅仅更新 master
+	{{{<JAVA>
+	dao.updateLinks(pet, "master");
+	}}}
+	这会执行
+	{{{
+	执行SQL: UPDATE t_master ....
+	}}}
+	
+
+-------------------------------------------------------------------------------------------------------------
+删除操作
+
+	同时删除 pet 	和 master
+	{{{<JAVA>
+	dao.deleteWith(pet, "master");
+	}}}
+	仅仅删除 master
+	{{{<JAVA>
+	dao.deleteLinks(pet, "master");
+	}}}
+	清除 master
+	{{{<JAVA>
+	dao.clearLinks(pet, "master");
+	}}}
+	对于一对一映射来说其实清除和删除是等价的操作，对于一对多和多对多映射来说，就又区别了，因为清除只会执行一条 SQL 删除一批，而且删除会
+	逐个调用 dao.delete 来删除对象
+	

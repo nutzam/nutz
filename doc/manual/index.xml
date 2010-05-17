@@ -21,12 +21,9 @@
 		<doc path="view.man"/>
 		<doc path="field_filter.man"/>
 		<doc path="dynamic_table_name.man"/>
-		<doc path="links_overview.man">
-			<doc path="links_one.man"/>
-			<doc path="links_many.man"/>
-			<doc path="links_many_many.man"/>
-			<doc path="links_dao_operations.man"/>
-		</doc>
+		<doc path="links_one.man"/>
+		<doc path="links_many.man"/>
+		<doc path="links_many_many.man"/>
 		<doc path="customized_sql.man"/>
 		<doc path="transaction.man"/>
 		<doc path="runner.man"/>
