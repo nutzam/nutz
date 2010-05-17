@@ -28,9 +28,9 @@ public class StaticFunctionNode extends ChainNode {
 					throw Lang.makeThrow("Method '%s' don't find in '%s'", name, mirror);
 				this.args = args;
 				this.method = ms[0];
-				if (!Modifier.isStatic(method.getModifiers()))
-					throw Lang.makeThrow("Method '%s' of '%s' must be static", name, mirror);
 			}
+			if (!Modifier.isStatic(method.getModifiers()))
+				throw Lang.makeThrow("Method '%s' of '%s' must be static", name, mirror);
 		}
 		catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);

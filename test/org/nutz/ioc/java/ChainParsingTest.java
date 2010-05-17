@@ -17,6 +17,24 @@ public class ChainParsingTest {
 	}
 
 	@Test
+	public void test_nostatic_function() {
+		try {
+			N(NAME("noStatic"));
+			fail();
+		}
+		catch (Exception e) {}
+	}
+
+	@Test
+	public void test_unexists_function() {
+		try {
+			N(NAME("unexists"));
+			fail();
+		}
+		catch (Exception e) {}
+	}
+
+	@Test
 	public void test_normal_static_call() {
 		String s = NAME("getAbc()");
 		ChainNode cn = N(s);

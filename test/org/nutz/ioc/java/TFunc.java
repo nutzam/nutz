@@ -1,5 +1,7 @@
 package org.nutz.ioc.java;
 
+import org.nutz.lang.random.R;
+
 public class TFunc {
 
 	public static String getAbc() {
@@ -12,6 +14,10 @@ public class TFunc {
 		if (flag)
 			return s.toUpperCase();
 		return s.toLowerCase();
+	}
+
+	public String noStatic() {
+		return R.sg(10, 20).next();
 	}
 
 }
