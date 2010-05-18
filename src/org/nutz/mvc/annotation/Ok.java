@@ -9,6 +9,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 public @interface Ok {
 
-	String value() default "";
+	String value();
 
 }
