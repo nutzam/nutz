@@ -1,13 +1,20 @@
-#title:关于一对多映射
+#title:一对多映射
 #index:0,2
 -------------------------------------------------------------------------------------------------------------
-关于一对多映射的概述
+什么是一对多映射
+
+	有两张数据表，其中A表的某个字段的值指向B表的主键。因为B表的任何一条记录理论上可以对应A表的多条记录，所以称这种
+	映射为B表对A表数据的一对多映射。({#999999; 当然，反过来，你也可是说，是A表对B表的}[links_one.man 一对一映射])。
+	
+	上述结构，如果用 POJO 来表示的话，可以参看下图：
+	
 	<links_many.png>
 
-	如上图，同理，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 `List<Pet>`） 就可以指向多个 Pet 对象，
+	如上图，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 `List<Pet>`） 就可以指向多个 Pet 对象，
 	那么我们说 Master.pets 就是 Master 对 Pet 的一对多映射。
 -------------------------------------------------------------------------------------------------------------
-关于在 POJO 的配置 : {#A00;@Many}
+在 POJO 中配置一对多映射
+
 	在 POJO 类中字段中增加注解 {*@Many}：
 	{{{<JAVA>
 	@Table("t_master")
@@ -26,63 +33,179 @@
 
 	}
 	}}}
+	
+	在 Master 对象中必须存在一个 `List<Pet>` 类型的字段，你的一对多映射就需要配置在这个字段上。通过 {*@Many} 注解告诉 Nutz.Dao 
+	对象 Pet 和 Master 对象的关系，其中：
+	 * target 表示你要映射的对象类型
+	 * field 表示你打算依靠{*目标对象}的哪一个字段来映射本对象的主键
+	
 	因此：
 	 * 目标 POJO 类 （{#A00;Pet}）中{*必须}存在一个字段，本 POJO 将通过该字段同目标 [primary_key.man POJO 类的主键]关联
 	 * 该字段必须同本 [primary_key.man POJO 类的主键]类型相同
 	 * Nutz.Dao 通过 @Many.field 获得该字段的名称
 		 * {#F00;*注意}，这里是大小写敏感的。
 		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
-	---------------------------------------------------------------------------------------------------------
-	@Many 映射字段的类型
-		本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在如下类型里。
-		-----------------------------------------------------------------------------------------------------
-		数组
-			例如：
-			{{{<JAVA>
-			@Table("t_master")
-			public class Master extends Pojo {
-				@Many(target = Pet.class, field = "masterId")
-				private Pet[] pets;
-				
-				// ... 省略其余代码
-			}}}
+---------------------------------------------------------------------------------------------------------
+你不仅可以在集合类型字段上声明一对多映射
+
+	本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在
+	 * 数组
+	 * Map
+	 * POJO
+
+	-----------------------------------------------------------------------------------------------------
+	数组
+		例如：
+		{{{<JAVA>
+		@Table("t_master")
+		public class Master extends Pojo {
+			@Many(target = Pet.class, field = "masterId")
+			private Pet[] pets;
 			
-			当采用 fetchLinks 获取值的时候，会自动填充此数组
-		-----------------------------------------------------------------------------------------------------
-		Map
-			如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象
-			的哪一个字段来作为 Map　的键。
-			{{{<JAVA>
-			@Table("t_master")
-			public class Master extends Pojo {
-				@Many(target = Pet.class, field = "masterId", key="name")
-				private Map<String,Pet> pets;
-				
-				// ... 省略其余代码
-			}}}
-			其中：
-			 * key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
-				 * 为目标 POJO 类的 JAVA 字段名
-				 * 大小写敏感
-			 * 请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。
-		-----------------------------------------------------------------------------------------------------
-		单独对象
-			例如：
-			{{{<JAVA>
-			@Table("t_master")
-			public class Master extends Pojo {
-				@Many(target = Pet.class, field = "masterId")
-				private Pet pet;
-				
-				// ... 省略其余代码
-			}}}
-			则会从 Pet 对象的数据表中，选取{*第一个} masterId 为当前对象主键值的 Pet 对象。至于什么是 “{*第一}”
-			不同的数据库有所不同。总之，就是 SQL 语句：
-			{{{<SQL>
-			SELECT * FROM t_pet;
-			}}}
-			选出的结果集中的第一个记录。
+			// ... 省略其余代码
+		}}}
+		
+		当采用 fetchLinks 获取值的时候，会自动填充此数组
+	-----------------------------------------------------------------------------------------------------
+	Map
+		如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象
+		的哪一个字段来作为 Map　的键。
+		{{{<JAVA>
+		@Table("t_master")
+		public class Master extends Pojo {
+			@Many(target = Pet.class, field = "masterId", key="name")
+			private Map<String,Pet> pets;
+			
+			// ... 省略其余代码
+		}}}
+		其中：
+		 * key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
+			 * 为目标 POJO 类的 JAVA 字段名
+			 * 大小写敏感
+		 * 请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。
+	-----------------------------------------------------------------------------------------------------
+	POJO
+		例如：
+		{{{<JAVA>
+		@Table("t_master")
+		public class Master extends Pojo {
+			@Many(target = Pet.class, field = "masterId")
+			private Pet pet;
+			
+			// ... 省略其余代码
+		}}}
+		则会从 Pet 对象的数据表中，选取{*第一个} masterId 为当前对象主键值的 Pet 对象。至于什么是 “{*第一}”
+		不同的数据库有所不同。总之，就是 SQL 语句：
+		{{{<SQL>
+		SELECT * FROM t_pet;
+		}}}
+		选出的结果集中的第一个记录。
 -------------------------------------------------------------------------------------------------------------
-你可能还需要参考
-	 * 关于注解 {*@Many} 详细描述请参看 > [annotations.man Nutz.Dao 实体注解] 关于{*@Many}这一节
-	 * 关于通过 Dao 接口调用，请参看 [links_dao_operations.man Nutz.Dao 为映射提供的操作]。
+插入操作
+
+	如果你已经实现准备好了这样的对象：
+	{{{<JAVA>
+	Master master = new Master();
+	master.setName("Peter");
+	
+	List<Pet> pets = new ArrayList<Pet>();
+	pets.add(new Pet("XiaoBai");
+	pets.add(new Pet("XiaoHei");
+	
+	master.setPets(pets);
+	}}}
+	
+	那么你可以一次将 master 以及它对应的 pets 一起插入到数据表中
+	{{{<JAVA>
+	dao.insertWith(master, "pets");
+	}}}
+	Nutz.Dao 会根据正则表达式 "pets" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）
+	并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：
+	{{{
+	执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
+	将该最大值 29 赋给 master 对象的主键 id
+	循环 master.pets，将该最大值 29 赋给每一个 pet 对象的 pet.masterId 字段
+	执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoBai",29)
+	执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoHei",29)
+	}}}
+	这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 [primary_key.man 关于主键]一章。
+	
+	 * 这里因为是一对多映射，所以会首先插入主对象，以便用新的主键值更新映射对象的映射字段
+	 * 如果你的对象中包括多个 @Many 字段，被你的正则式匹配上，那么这些字段对应的字段（如果不为null）都会被匹配，并首先被插入
+	
+	当然，你要想选择仅仅只插入映射字段的话，你可以：
+	{{{<JAVA>
+	dao.insertLinks(master,"pets");
+	}}}
+	那么上述操作实际上会执行：
+	{{{
+	循环 master.pets，将该master.id (主键) 赋给每一个 pet 对象的 pet.masterId 字段，我们假设该值为 29
+	执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoBai",29)
+	执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoHei",29)
+	}}}
+	看，并不会插入 master 对象。
+	
+-------------------------------------------------------------------------------------------------------------
+获取操作
+
+	仅仅获取映射对象：
+	{{{
+	Master master = dao.fetch(Master.class, "Peter");
+	dao.fetchLinks(pet, "pets");
+	}}}
+	这会执行操作：
+	{{{
+	执行 SQL: SELECT * FROM t_master WHERE name='Peter'; // 如果 master.id 是 12
+	执行 SQL: SELECT * FROM t_pet WHERE masterId=12;
+	}}}
+	
+	但是 Nutz.Dao 没有提供一次获取 master 对象以及 pets 对象的方法，因为，你完全可以把上面的两句话写在一行上：
+	{{{<JAVA>
+	Master master = dao.fetchLinks(dao.fetch(Master.class, "Peter"), "pets");
+	}}}
+	然后，你可以通过 master.getPets() 得到 Nutz.Dao 为 master.pets 字段设置的值。
+	
+-------------------------------------------------------------------------------------------------------------
+更新操作
+
+	同时更新 pet 和 master
+	{{{<JAVA>
+	dao.updateWith(master, "pets");
+	}}}
+	这会执行
+	{{{
+	执行SQL: UPDATE t_master ....
+	循环 master.pets 并依次执行SQL: UPDATE t_pet ...
+	}}}
+	
+	仅仅更新 pets
+	{{{<JAVA>
+	dao.updateLinks(master, "pets");
+	}}}
+	这会执行
+	{{{
+	循环 master.pets 并依次执行SQL: UPDATE t_pet ...
+	}}}
+	
+
+-------------------------------------------------------------------------------------------------------------
+删除操作
+
+	同时删除 master 和 pets
+	{{{<JAVA>
+	dao.deleteWith(master, "pets");
+	}}}
+	
+	仅仅删除 pets
+	{{{<JAVA>
+	dao.deleteLinks(master, "pets");
+	}}}
+	
+	清除 pets
+	{{{<JAVA>
+	dao.clearLinks(master, "pets");
+	}}}
+	
+	清除同删除的区别在于，清除只会执行一条 SQL 删除一批映射对象，而且删除会逐个调用 dao.delete 来删除对象
+	
