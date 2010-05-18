@@ -13,7 +13,7 @@
 
 最简单的一个拦截器
      {{{
-         public class MyMethodOnterceptor extends AbstractMethodInterceptor { //建议继承这个抽象类
+         public class MyMethodInterceptor extends AbstractMethodInterceptor { //建议继承这个抽象类
                 
                 public boolean beforeInvoke(Object obj, Method method, Object... args) {
                 		System.out.println("咦?这个方法执行了!");
@@ -22,6 +22,17 @@
          }
      }}}
      
+     {{{
+     public class MyClass {
+               
+               @Aop("myMethodInterceptor")
+               public void oneMethod(){
+                   //Do something
+               }
+     
+     }
+     }}}
+     
 已经为你准备好的拦截器
-    org.nutz.aop.interceptor.LoggingMethodOnterceptor 添加日志记录
-    org.nutz.aop.interceptor.TransactionInterceptor 添加事务
+    * org.nutz.aop.interceptor.LoggingMethodOnterceptor 添加日志记录
+    * org.nutz.aop.interceptor.TransactionInterceptor 添加事务

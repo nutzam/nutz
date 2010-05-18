@@ -9,20 +9,34 @@
 	 * [history/1_a_27.man 查看上一版发行注记]
 
 概述
-	这个版本是在 1.a.27 基础上的改进版， 进行较重大的改进是为 Ioc 接口增加了一个方法
+	这个版本是在 1.a.27 基础上的改进版， 进行较重大的改进
+	* 为 Ioc 接口增加了一个方法
 	{{{
 	<T> T get(Class<T> type) throws IocException;
 	}}}
+	* 移动一个重要的接口 @InjectName
+	* 新增注解式的Ioc配置方法
 	详细描述请参看 [http://groups.google.at/group/nutzam/browse_thread/thread/43513b29d1b07cf3?hl=zh-CN 关于 Ioc 做了一个稍微重要的修改]
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 * [http://code.google.com/p/nutz/issues/detail?id=166 Issue166]	dao: EntityField中的如下方法是不是有点重复啊？ {#AAA;by} {*zozohtnt}
-	 * [http://code.google.com/p/nutz/issues/detail?id=168 Issue168]	无法在Mvc中使用xml作为ioc的配置文件	{#AAA;by} {*Wendal}
-	 
+	 * [http://code.google.com/p/nutz/issues/detail?id=112 Issue112]	通过直接声明一个包来声明包中所有的类为Module {#AAA;by} {*xjf1986518}
+	 * [http://code.google.com/p/nutz/issues/detail?id=162 Issue162]	Nutz DAO的事物是否能参考Spring的声明式事物管理方式比较好，不知道是否有计划? {#AAA;by} {*hzzdong}
+	 * [http://code.google.com/p/nutz/issues/detail?id=166 Issue166]	dao: EntityField中的如下方法是不是有点重复啊?  {#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=168 Issue168]	无法在Mvc中使用xml作为ioc的配置文件 {#AAA;by} {*wendal1985}
+	 * [http://code.google.com/p/nutz/issues/detail?id=172 Issue172]	DAO: Dao.delete Dao.clear 等方法无返回值  {#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=176 Issue176]	考虑为Ioc提供注解式的配置 {#AAA;by} {*wendal}
+	 * [http://code.google.com/p/nutz/issues/detail?id=177 Issue177]	MVC默认适配器问题
+	 * [http://code.google.com/p/nutz/issues/detail?id=178 Issue178]	首页的字体太难看了 {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=182 Issue182]	mvc: @Ok 的默认值问题 {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=183 Issue183]	json:  当 Map 的 Key 为非字符串时，渲染不出结果 {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=186 Issue186]	@Prev出错 {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=187 Issue187]	demo hello Mvc中/demoredirect/byid和byobj，不能传递参数
+	 * [http://code.google.com/p/nutz/issues/detail?id=190 Issue190]	静态方法注入时,提示不够 {#AAA;by} {*zkgale}
+
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 476 个单元测试用例,代码覆盖率达到62%(按line计算)
+	 # 共通过了 484 个单元测试用例,代码覆盖率达到62%(按line计算)
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
           * [http://www.h2database.com H2]
           * [http://www.mysql.com MySql]
@@ -55,6 +69,15 @@
 
 	|| 贡献者 									|| 问题|| 博客|| 支持|| 代码|| Demo|| 文档|| 测试||
 	|| someone									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| someone									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| someone									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| Peter Tung								||  -  ||  -  ||  -  ||  -	||  -  ||  O  ||  -  ||
+	|| hzzdong									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| jiongs753								||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| zkgale									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| happyday0517								||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| wendal									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
+	|| zozohtnt									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
 	
 	
 	
