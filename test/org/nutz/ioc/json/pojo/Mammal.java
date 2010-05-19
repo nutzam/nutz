@@ -11,6 +11,7 @@ public class Mammal extends Animal {
 
 	@Aop("lst")
 	public String getName() {
+		new Throwable().printStackTrace();
 		return super.getName();
 	}
 

@@ -1,9 +1,9 @@
 package org.nutz.aop.interceptor;
 
-import java.lang.reflect.Method;
 import java.sql.Connection;
 
-import org.nutz.aop.AbstractMethodInterceptor;
+import org.nutz.aop.InterceptorChain;
+import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Lang;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
@@ -16,7 +16,7 @@ import org.nutz.trans.Trans;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-public class TransactionInterceptor extends AbstractMethodInterceptor {
+public class TransactionInterceptor implements MethodInterceptor {
 
 	private int level;
 
@@ -28,27 +28,17 @@ public class TransactionInterceptor extends AbstractMethodInterceptor {
 		this.level = level;
 	}
 
-	@Override
-	public boolean beforeInvoke(Object obj, Method method, Object... args) {
-		return false;
-	}
-
-	@Override
-	public Object afterInvoke(	final Object obj,
-								Object returnObj,
-								final Method method,
-								final Object... args) {
-		final Object[] returnValue = new Object[1];
+	public void filter(final InterceptorChain chain) {
 		Trans.exec(level, new Atom() {
 			public void run() {
 				try {
-					returnValue[0] = method.invoke(obj, args);
+					chain.doChain();
 				}
 				catch (Throwable e) {
 					throw Lang.wrapThrow(e);
 				}
 			}
 		});
-		return returnValue[0];
 	}
+
 }

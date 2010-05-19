@@ -1,12 +1,15 @@
 package org.nutz.aop.asm;
 
+import static org.nutz.aop.asm.org.asm.Opcodes.ALOAD;
+import static org.nutz.aop.asm.org.asm.Opcodes.INVOKESPECIAL;
+import static org.nutz.aop.asm.org.asm.Opcodes.RETURN;
+
 import org.nutz.aop.asm.org.asm.MethodVisitor;
-import static org.nutz.aop.asm.org.asm.Opcodes.*;
 
 /**
  * @author wendal(wendal1985@gmail.com)
  */
-class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
+public class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
 
 	private String superClassName;
 

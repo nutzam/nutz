@@ -2,15 +2,27 @@ package org.nutz.aop;
 
 import java.lang.reflect.Method;
 
-/**
- * 方法拦截器的空实现
- * <p>
- * 本实现不会改变被拦截方法的行为.
- * 
- * @author wendal(wendal1985@gmail.com)
- * @see org.nutz.aop.MethodInterceptor
- */
-public abstract class AbstractMethodInterceptor implements MethodInterceptor {
+import org.nutz.lang.Lang;
+
+public class AbstractMethodInterceptor implements MethodInterceptor {
+
+	public void filter(InterceptorChain chain) {
+		try {
+			if (beforeInvoke(chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
+				chain.doChain();
+			Object obj = afterInvoke(chain.getCallingObj(), chain.getReturn(), chain.getCallingMethod(), chain.getArgs());
+			chain.setReturnValue(obj);
+		}
+		catch (Exception e) {
+			if (whenException(e, chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
+				throw Lang.wrapThrow(e);
+		}
+		catch (Throwable e) {
+			if (whenError(e, chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
+				throw Lang.wrapThrow(e);
+		}
+
+	}
 
 	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
 		return returnObj;
@@ -27,5 +39,4 @@ public abstract class AbstractMethodInterceptor implements MethodInterceptor {
 	public boolean whenException(Exception e, Object obj, Method method, Object... args) {
 		return true;
 	}
-
 }

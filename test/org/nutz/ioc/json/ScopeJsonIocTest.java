@@ -36,7 +36,7 @@ public class ScopeJsonIocTest {
 		assertTrue(f2 == f22);
 		assertEquals(1, map.size());
 
-		f1 = ioc.get(Animal.class, "f1", ic);
+		ioc.get(Animal.class, "f1", ic);
 
 		assertEquals(1, map.size());
 

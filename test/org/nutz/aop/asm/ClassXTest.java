@@ -15,7 +15,7 @@ import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
 import org.nutz.aop.asm.test.ZZZ;
-import org.nutz.aop.interceptor.LoggingMethodOnterceptor;
+import org.nutz.aop.interceptor.LoggingMethodInterceptor;
 import org.nutz.lang.Mirror;
 
 public class ClassXTest {
@@ -29,7 +29,7 @@ public class ClassXTest {
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new MyMethodInterceptor());
 		classAgent.addInterceptor(new RegexMethodMatcher(".*"), new AbstractMethodInterceptor() {});
-		classAgent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodOnterceptor());
+		classAgent.addInterceptor(MethodMatcherFactory.matcher(".*"), new LoggingMethodInterceptor());
 	}
 
 	@Test
@@ -115,7 +115,7 @@ public class ClassXTest {
 		a1.getEnum();
 	}
 
-	@Test(expected = Error.class)
+	@Test(expected = RuntimeException.class)
 	public void testThrowError() throws Throwable {
 		Aop1 a1 = getNewInstance(Aop1.class);
 		a1.throwError();

@@ -2,11 +2,11 @@ package org.nutz.aop.javassist.lstn;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.MethodInterceptor;
+import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.aop.javassist.meta.Vegetarian;
 import org.nutz.castor.Castors;
 
-public class RhinocerosListener implements MethodInterceptor {
+public class RhinocerosListener extends AbstractMethodInterceptor {
 
 	public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
 		return null;

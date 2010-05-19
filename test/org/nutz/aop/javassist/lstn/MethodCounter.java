@@ -2,9 +2,9 @@ package org.nutz.aop.javassist.lstn;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.MethodInterceptor;
+import org.nutz.aop.AbstractMethodInterceptor;
 
-public class MethodCounter implements MethodInterceptor {
+public class MethodCounter extends AbstractMethodInterceptor {
 
 	private int[] cc;
 

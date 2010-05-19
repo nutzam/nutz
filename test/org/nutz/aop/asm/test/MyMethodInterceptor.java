@@ -2,10 +2,10 @@ package org.nutz.aop.asm.test;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.MethodInterceptor;
+import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.castor.Castors;
 
-public class MyMethodInterceptor implements MethodInterceptor {
+public class MyMethodInterceptor extends AbstractMethodInterceptor {
 
 	public Object afterInvoke(Object obj, Object result, Method arg2, Object... objs) {
 		System.out.println("After..... " + arg2.getName());

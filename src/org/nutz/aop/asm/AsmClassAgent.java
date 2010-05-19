@@ -11,29 +11,7 @@ import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Streams;
 
-/**
- * <b>本实现基于ASM 3.2</b>
- * <p/>
- * 相对父类的method,子类的method的方法签名会有所改变
- * <li>只有访问控制符public protected 和缺省
- * <li>native等标识符无法被继承.
- * <p/>
- * 若使用空的拦截器,如new AbstractMethodInterceptor(){},则子类的行为不变.
- * <p/>
- * <b>提醒:如果本类的二进制代码为Java 1.5则,生成的Class为Java 1.5,相应的,如果是1.6,则生成1.6的Class数据</b>
- * <p/>
- * 差异(一些流程相关的字节码):
- * <li>org.asm.MethodVisitor.visitFrame 的调用
- * <li>StackMapTable or StackMap
- * 
- * <p/>
- * 在基本测试中,1.5和1.6均全部Pass.
- * 
- * @author wendal(wendal1985@gmail.com)
- * @see org.nutz.aop.AbstractClassAgent
- * @see org.nutz.aop.AbstractMethodInterceptor
- */
-public class AsmClassAgent extends AbstractClassAgent {
+public class AsmClassAgent extends AbstractClassAgent{
 
 	static int CLASS_LEVEL;
 
@@ -64,7 +42,7 @@ public class AsmClassAgent extends AbstractClassAgent {
 			Streams.safeClose(is);
 		}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	protected <T> Class<T> generate(ClassDefiner cd,
 									Pair2[] pair2s,
@@ -82,10 +60,9 @@ public class AsmClassAgent extends AbstractClassAgent {
 			methodArray[i] = pair2.method;
 			methodInterceptorList[i] = pair2.listeners;
 		}
-		byte[] bytes = ClassX.enhandClass(klass, newName, methodArray, constructors);
+		byte[] bytes = ClassY.enhandClass(klass, newName, methodArray, constructors);
 		Class<T> newClass = (Class<T>) cd.define(newName, bytes);
-		AopToolkit.injectFieldValue(newClass, methodArray, methodInterceptorList);
+		AopToolKit.injectFieldValue(newClass, methodArray, methodInterceptorList);
 		return newClass;
 	}
-
 }
