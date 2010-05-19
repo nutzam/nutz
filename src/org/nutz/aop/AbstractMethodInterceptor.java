@@ -2,11 +2,9 @@ package org.nutz.aop;
 
 import java.lang.reflect.Method;
 
-import org.nutz.lang.Lang;
-
 public class AbstractMethodInterceptor implements MethodInterceptor {
 
-	public void filter(InterceptorChain chain) {
+	public void filter(InterceptorChain chain) throws Throwable{
 		try {
 			if (beforeInvoke(chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
 				chain.doChain();
@@ -15,11 +13,11 @@ public class AbstractMethodInterceptor implements MethodInterceptor {
 		}
 		catch (Exception e) {
 			if (whenException(e, chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
-				throw Lang.wrapThrow(e);
+				throw e;
 		}
 		catch (Throwable e) {
 			if (whenError(e, chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
-				throw Lang.wrapThrow(e);
+				throw e;
 		}
 
 	}
