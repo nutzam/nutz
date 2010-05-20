@@ -10,8 +10,8 @@ import org.nutz.aop.asm.org.asm.MethodVisitor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.aop.asm.org.asm.Type;
 
-public class ClassY implements Opcodes{
-	
+public class ClassY implements Opcodes {
+
 	protected ClassWriter cw;
 
 	protected String myName;
@@ -21,12 +21,8 @@ public class ClassY implements Opcodes{
 	protected Method[] methodArray;
 
 	protected Constructor<?>[] constructors;
-	
 
-	public ClassY(	Class<?> klass,
-					String myName,
-					Method[] methodArray,
-					Constructor<?>[] constructors) {
+	public ClassY(Class<?> klass, String myName, Method[] methodArray, Constructor<?>[] constructors) {
 		this.myName = myName.replace('.', '/');
 		this.enhancedSuperName = klass.getName().replace('.', '/');
 		this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -39,7 +35,7 @@ public class ClassY implements Opcodes{
 		this.methodArray = methodArray;
 		this.constructors = constructors;
 	}
-	
+
 	protected String[] getParentInterfaces(Class<?> xClass) {
 		Class<?> its[] = xClass.getInterfaces();
 		if (its == null || its.length == 0)
@@ -52,7 +48,7 @@ public class ClassY implements Opcodes{
 			return iii;
 		}
 	}
-	
+
 	protected String[] convertExp(Class<?>[] expClasses) {
 		if (expClasses.length == 0)
 			return null;
@@ -61,7 +57,7 @@ public class ClassY implements Opcodes{
 			results[i] = expClasses[i].getName().replace('.', '/');
 		return results;
 	}
-	
+
 	protected int getAccess(int modify) {
 		if (Modifier.isProtected(modify))
 			return ACC_PROTECTED;
@@ -78,7 +74,7 @@ public class ClassY implements Opcodes{
 		}
 		return -1;// 是否应该抛出异常呢?应该不可能发生的
 	}
-	
+
 	protected void addConstructors() {
 		for (Constructor<?> constructor : constructors) {
 			String[] expClasses = convertExp(constructor.getExceptionTypes());
@@ -97,7 +93,6 @@ public class ClassY implements Opcodes{
 		return cw.toByteArray();
 	}
 
-
 	private void enhandMethod() {
 		for (Method method : methodArray) {
 			String methodName = method.getName();
@@ -109,7 +104,7 @@ public class ClassY implements Opcodes{
 												null,
 												convertExp(method.getExceptionTypes()));
 			int methodIndex = findMethodIndex(methodName, methodDesc, methodArray);
-			new AopMethodAdapter(mv,
+			new AopMethodAdapter(	mv,
 									methodAccess,
 									methodName,
 									methodDesc,
@@ -120,10 +115,21 @@ public class ClassY implements Opcodes{
 	}
 
 	private void addAopMethods() {
-		new AopInvokeAdpter(methodArray,cw.visitMethod(ACC_PUBLIC, "_aop_invoke", "(I[Ljava/lang/Object;)Ljava/lang/Object;", null, null), ACC_PUBLIC, "invoke", "(I[Ljava/lang/Object;)Ljava/lang/Object;", 0, myName, enhancedSuperName).visitCode();
+		new AopInvokeAdpter(methodArray,
+							cw.visitMethod(	ACC_PUBLIC,
+											"_aop_invoke",
+											"(I[Ljava/lang/Object;)Ljava/lang/Object;",
+											null,
+											null),
+							ACC_PUBLIC,
+							"invoke",
+							"(I[Ljava/lang/Object;)Ljava/lang/Object;",
+							0,
+							myName,
+							enhancedSuperName).visitCode();
 	}
-	
-	protected void visitX(int i,MethodVisitor mv) {
+
+	protected void visitX(int i, MethodVisitor mv) {
 		if (i < 6) {
 			mv.visitInsn(i + ICONST_0);
 		} else {

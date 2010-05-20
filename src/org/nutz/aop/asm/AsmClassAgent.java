@@ -11,7 +11,7 @@ import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Streams;
 
-public class AsmClassAgent extends AbstractClassAgent{
+public class AsmClassAgent extends AbstractClassAgent {
 
 	static int CLASS_LEVEL;
 
@@ -42,7 +42,7 @@ public class AsmClassAgent extends AbstractClassAgent{
 			Streams.safeClose(is);
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	protected <T> Class<T> generate(ClassDefiner cd,
 									Pair2[] pair2s,
