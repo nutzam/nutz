@@ -4,11 +4,14 @@ import java.lang.reflect.Method;
 
 public class AbstractMethodInterceptor implements MethodInterceptor {
 
-	public void filter(InterceptorChain chain) throws Throwable{
+	public void filter(InterceptorChain chain) throws Throwable {
 		try {
 			if (beforeInvoke(chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
 				chain.doChain();
-			Object obj = afterInvoke(chain.getCallingObj(), chain.getReturn(), chain.getCallingMethod(), chain.getArgs());
+			Object obj = afterInvoke(	chain.getCallingObj(),
+										chain.getReturn(),
+										chain.getCallingMethod(),
+										chain.getArgs());
 			chain.setReturnValue(obj);
 		}
 		catch (Exception e) {

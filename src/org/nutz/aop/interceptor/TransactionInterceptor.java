@@ -10,8 +10,10 @@ import org.nutz.trans.Trans;
 
 /**
  * 可以插入事务的拦截器
- * <p/> 默认事务登记为 Connection.TRANSACTION_READ_COMMITTED
- * <p/> 可以在构建拦截器时设置
+ * <p/>
+ * 默认事务登记为 Connection.TRANSACTION_READ_COMMITTED
+ * <p/>
+ * 可以在构建拦截器时设置
  * 
  * @author wendal(wendal1985@gmail.com)
  * 

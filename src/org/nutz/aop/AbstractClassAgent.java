@@ -9,7 +9,18 @@ import java.util.List;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
-
+/**
+ * 提供ClassAgent的基础实现,拦截不可能插入Aop代码的Class
+ * <p/>
+ * 传入的Class对象需要满足的条件
+ * <li>不能是final或者abstract的
+ * <li>必须有非private的构造函数
+ * </p>
+ * 被拦截的方法需要满足的条件 <li>不能是final或者abstract的 <li>不是private的
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public abstract class AbstractClassAgent implements ClassAgent {
 
 	private ArrayList<Pair> pairs = new ArrayList<Pair>();
@@ -54,7 +65,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			cList.add(constructor);
 		}
 		if (cList.size() == 0)
-			throw Lang.makeThrow("没有找到任何非private的构造方�?无法创建子类!");
+			throw Lang.makeThrow("No non-private constructor founded,unable to create sub-class!");
 		return cList.toArray(new Constructor[cList.size()]);
 	}
 
@@ -71,9 +82,9 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			|| klass.isMemberClass()
 			|| klass.isAnnotation()
 			|| klass.isAnonymousClass())
-			throw Lang.makeThrow("�?��拦截�?s不是�?��顶层�?创建失败!", klass_name);
+			throw Lang.makeThrow("%s is NOT a Top-Class!Creation FAIL!", klass_name);
 		if (Modifier.isFinal(klass.getModifiers()) || Modifier.isAbstract(klass.getModifiers()))
-			throw Lang.makeThrow("�?��拦截的类:%s是final或abstract�?创建失败!", klass_name);
+			throw Lang.makeThrow("%s is final or abstract!Creation FAIL!", klass_name);
 		return true;
 	}
 
