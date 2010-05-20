@@ -10,13 +10,14 @@
 基本思路
 
 	原方法(没有返回值)
-    {{{
+	{{{
 	public void exe(){
-	    //Do something
+		//Do something
 	}
 	}}}
-    被改造后
-    {{{
+	
+	被改造后
+	{{{
     import org.nutz.aop.InterceptorChain;
     ....
     
@@ -27,11 +28,12 @@
             throw e;
         }
     }
-    }}}
-	其中使用到的InterceptorChain,可以理解为Servlet里面的FilterChain,它携带着执行原方法时可以获取的信息,如调用对象.调用方法,参数,返回值等
-	整个 InterceptorChain 不到100行,我相信你很快就能看完.时间的确不多,那只看doChain()/invoke(),你将会豁然开朗.
+	}}}
+	其中使用到的InterceptorChain,可以理解为Servlet里面的FilterChain,它携带着执行原方法时可以获取的信息,
+	如调用对象.调用方法,参数,返回值等整个 InterceptorChain 不到100行,我相信你很快就能看完.
+	懒人的话,只看doChain()/invoke(),你将会豁然开朗.
     
-	{*整个思路}
+	{*整体思路}
 	 * 将方法调用的信息,拦截器信息,全部封装到InterceptorChain
 	 * 调用InterceptorChain里面第一个拦截器,并由该拦截器决定是否进行,如果继续,则调用doChain()
 	 * 当InterceptorChain中最后一个拦截器也调用了doChain(),在开始调用原方法实现,然后返回.
@@ -40,7 +42,7 @@
 具体实现
 
 	如果在你的方法中打印堆栈,你将看到类似的信息
-    {{{
+	{{{
 	java.lang.Throwable
 		at org.nutz.aop.asm.test.Aop1.mixArgsVoid(Aop1.java:55)
 		at org.nutz.aop.asm.test.Aop1$$NUTZAOP._aop_invoke(Unknown Source)
@@ -51,7 +53,7 @@
 		at org.nutz.aop.AbstractMethodInterceptor.filter(AbstractMethodInterceptor.java:10) //拦截器A
 		at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
 		at org.nutz.aop.asm.test.Aop1$$NUTZAOP.mixArgsVoid(Unknown Source)
-    }}}
+	}}}
 	mixArgsVoid 就是你原本方法
 ------------------------------------------------------------------------------
 注意
