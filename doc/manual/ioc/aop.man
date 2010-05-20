@@ -15,9 +15,10 @@
      {{{
          public class MyMethodInterceptor extends AbstractMethodInterceptor { //建议继承这个抽象类
                 
-                public boolean beforeInvoke(Object obj, Method method, Object... args) {
+                public void filter(InterceptorChain chain) throws Throwable {
                 		System.out.println("咦?这个方法执行了!");
-                		return true;// 返回true时,调用真正的方法,否则就跳过真正的方法
+                		chain.doChain();// 继续执行其他拦截器
+                		System.out.println("这个方法执行完成了!");
                 }
          }
      }}}
@@ -28,10 +29,18 @@
                @Aop("myMethodInterceptor")
                public void oneMethod(){
                    //Do something
+                   System.out.println("没人知道我在干什么的!");
                }
      
      }
      }}}
+     将会打印
+     {{{
+     咦?这个方法执行了!
+     没人知道我在干什么的!
+     这个方法执行完成了!
+     }}}
+     很简洁,对吧? 这就是NutAop
      
 已经为你准备好的拦截器
     * org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录

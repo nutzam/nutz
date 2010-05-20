@@ -2,6 +2,11 @@ package org.nutz.aop;
 
 import java.lang.reflect.Method;
 
+/**
+ * 提供一个基础实现,这个实现,既可以简化用户的实现,又可以实现与以前的Aop拦截器的兼容
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class AbstractMethodInterceptor implements MethodInterceptor {
 
 	public void filter(InterceptorChain chain) throws Throwable {

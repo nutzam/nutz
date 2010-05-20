@@ -1,5 +1,10 @@
 package org.nutz.aop.asm;
 
+/**
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public final class Helper {
 
 	public static byte valueOf(Byte value) {

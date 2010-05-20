@@ -6,6 +6,11 @@ import org.nutz.aop.asm.org.asm.Label;
 import org.nutz.aop.asm.org.asm.MethodVisitor;
 import org.nutz.aop.asm.org.asm.Type;
 
+/**
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class AopInvokeAdpter extends AopMethodAdapter {
 
 	protected Method[] methodArray;

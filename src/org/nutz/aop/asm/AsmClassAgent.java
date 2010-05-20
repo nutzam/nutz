@@ -11,6 +11,11 @@ import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Streams;
 
+/**
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class AsmClassAgent extends AbstractClassAgent {
 
 	static int CLASS_LEVEL;
