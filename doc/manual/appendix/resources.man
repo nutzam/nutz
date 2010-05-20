@@ -24,12 +24,22 @@
 		 @[http://user.qzone.qq.com/104791117 Ge.PH /hl]
 	 * 《[http://bonyfish.cn/logs/20100415-nutz-todo-mini-task.html 用Nutz做点小任务]》\
 		 @[http://bonyfish.cn 小毛] 
+	 * 《[http://blog.163.com/qqabc20082006@126/blog/static/22928525201041945032239/ 使用Nutz进行简单的增删改查操作]》\
+		 @[http://blog.163.com/qqabc20082006@126/ CH] 
+	 * 《[http://blog.163.com/qqabc20082006@126/blog/static/2292852520104194516772/ 使用NutzDao进行复杂SQL条件查询]》\
+		 @[http://blog.163.com/qqabc20082006@126/ CH] 
+	 * 《[http://blog.163.com/qqabc20082006@126/blog/static/2292852520104194513669/ NutzDao-自定义SQL语句进行复杂查询]》\
+		 @[http://blog.163.com/qqabc20082006@126/ CH] 
 -----------------------------------------------------------------------------------
 关于 Mvc
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
 	     @[http://axhack.javaeye.com axhack] {#008800;*推荐}
 	 * 《[http://birdwindy.javaeye.com/blog/582200 我的第一个Nutz程序]》 \
 	     @[http://birdwindy.javaeye.com Bird.Wyatt]
+-----------------------------------------------------------------------------------
+关于 Ioc
+	 * 《[http://wendal.javaeye.com/blog/654658 Nutz 1.a.27 最新变化之一 -- XML配置ioc]》\
+		 @[http://wendal.javaeye.com wendal]
 -----------------------------------------------------------------------------------
 关于 Aop
 	 * 《[http://wendal.javaeye.com/blog/543681 基于ASM的Nut.Aop实现]》\
