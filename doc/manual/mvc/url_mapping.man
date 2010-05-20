@@ -1,0 +1,261 @@
+#title:URL 映射
+#index:0,1
+----------------------------------------------------------------------------------------------
+为什么需要详细描述 URL 映射
+
+	Nutz.Mvc 的核心任务就是将 HTTP 请求的 URL 映射到某一个入口函数，如果你看完了 [overview.man Nutz.Mvc 概述]
+	你大概应该知道，映射的配置信息是通过注解 @At 来设置的，@At 注解也非常简单，配置起来应该没有什么障碍。
+	
+	但是，依然在某些时候，你会在你的应用出现 404 错误，为了能让你在编写项目是，心里非常有底，这里将详细的解释一下
+	JSP/Servlet 以及 Nutz.Mvc 映射部分的工作原理，在你遇到讨厌的 404 时，只要通读本文，相信就能找到问题的症结。
+----------------------------------------------------------------------------------------------
+什么是 URL
+
+	任何 URL 都由如下部分组成
+	
+	{#FFAA00;*http://} {#008800;*www.myapp.com} {#FF0000;* /app} {#FF00FF;* /module} {#0000FF;* /action} {*.suffix}
+	
+	 * {#FFAA00;*http://} - 协议，也可以是 https://
+	 * {#008800;*www.myapp.com} - 域名或者 IP 地址，由 DNS 服务器负责转发
+	 * {#FF0000;* /app} - Context 的 path， 这个匹配到 server.xml 中每个 `<context>` 的 path 属性，由 HTTP \
+	   服务负责转发
+	 * {#FF00FF;* /module}{#0000FF;* /action}{*.suffix} - 从这里以后的匹配将交给相应的 Context 的 {*web.xml}，\
+	   由HTTP 服务器根据 {*web.xml} 来转发
+	 
+	 因此，我们主要研究的就是 {#FF00FF;* /module}{#0000FF;* /action}{*.suffix} 的部分是如何转发的。
+
+----------------------------------------------------------------------------------------------
+web.xml 中的映射 - url-pattern
+
+	通常，在 web.xml 中，我们可以声明各种 HttpServlet 子类， 为了能让某一个子类接受 URL， 就需要配置映射，众所周知
+	你可以通过 `<servlet-mapping>`，为你的 Servelet 增加一组至多组的配置：
+	{{{<web.xml>
+	<servlet-mapping>
+		<servlet-name>MyServletName</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+	}}}
+	同样，根据 Servlet 的规范，你的 `<url-pattern>` 可以有如下几种形式的值:
+	
+	{#008800/ 假设你的 Context 的 URL 为 : http://localhost:8080/testweb}
+	------------------------------------------------------------------------------------------
+	全匹配 - /*
+	
+		转发到本 Context 的任何请求都会调用这个 Servlet，比如：
+		
+		 * {#FF00FF;* /abc}
+		 * {#FF00FF;* /abc}{#0000FF;* /dosome}
+		 * {#FF00FF;* /abc}{#0000FF;* /dosome}{*.nut}
+		 * {#FF00FF;* /index}{*.jsp}
+		 * {#FF00FF;* /img}{#0000FF;* /logo}{*.png}
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		调用 request 对象不同方法将会返回的值：
+
+		|| req.getRequestURL()	|| "http://localhost:8080/testweb/abc/getlist.nut" ||
+		|| req.getRequestURI()	|| "/testweb/abc/getlist.nut" ||
+		|| req.getPathInfo()	|| "/abc/getlist.nut" ||
+		|| req.getServletPath()	|| "" ||
+		
+	------------------------------------------------------------------------------------------
+	目录匹配 - /abc/*
+		
+		转发到本 Context 的任何请求只要以 {* /abc/} 开头，都会调用这个 Servlet，比如：
+		
+		 * {#FF00FF;* /abc}{#0000FF;* /dosome}
+		 * {#FF00FF;* /abc}{#0000FF;* /dosome}{*.nut}
+		 * {#FF00FF;* /abc}{#0000FF;* /index}{*.jsp}
+		 * {#FF00FF;* /abc}{#0000FF;* /logo}{*.png}
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		调用 request 对象不同方法将会返回的值：
+
+		|| req.getRequestURL()	|| "http://localhost:8080/testweb/abc/getlist.nut" ||
+		|| req.getRequestURI()	|| "/testweb/abc/getlist.nut" ||
+		|| req.getPathInfo()	|| "/getlist.nut" ||
+		|| req.getServletPath()	|| "/abc" ||
+		
+		因此我们可以认为， req.getPathInfo() 的值是：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		---------------------------------^   匹配 /abc/*，从这个位置之后的字符串 
+		}}}
+		
+		
+	------------------------------------------------------------------------------------------
+	后缀匹配 - *.nut
+		
+		转发到本 Context 的任何请求只要以 {* .nut} 结尾，都会调用这个 Servlet，比如：
+		
+		 * {#FF00FF;* /abc}{#0000FF;* /dosome}{*.nut}
+		 * {#FF00FF;* /abc}{*.nut}
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		调用 request 对象不同方法将会返回的值：
+
+		|| req.getRequestURL()	|| "http://localhost:8080/testweb/abc/getlist.nut" ||
+		|| req.getRequestURI()	|| "/testweb/abc/getlist.nut" ||
+		|| req.getPathInfo()	|| null ||
+		|| req.getServletPath()	|| "/abc/getlist.nut" ||
+		
+	------------------------------------------------------------------------------------------
+	精确匹配 - /abc/getlist.nut
+	
+		转发到本 Context 的任何请求必须为 {* /abc/getlist.nut}，才会调用这个 Servlet
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		调用 request 对象不同方法将会返回的值：
+
+		|| req.getRequestURL()	|| "http://localhost:8080/testweb/abc/getlist.nut" ||
+		|| req.getRequestURI()	|| "/testweb/abc/getlist.nut" ||
+		|| req.getPathInfo()	|| null ||
+		|| req.getServletPath()	|| "/abc/getlist.nut" ||
+		
+
+----------------------------------------------------------------------------------------------
+在 Nutz.Mvc 中的映射
+	
+	Nutz.Mvc 通过 org.nutz.mvc.NutServlet 类将自己同一个 JSP/SERVLET 容器挂接， 在设计这个框架之初，我们有
+	一个基本的设计要求：
+	
+	{*如果用户修改了 web.xml 或者 server.xml，不需要用户重新修改 Nutz.Mvc 相关的配置}
+
+	对于任意一个请求:
+	
+	 * {#FFAA00;*http://} {#008800;*www.myapp.com} {#FF0000;* /app} {#FF00FF;* /module} {#0000FF;* /action} {*.suffix}
+	
+	Nutz.Mvc 匹配的时候，只会关心这个部分：
+	
+	 * {#FF00FF;* /module} {#0000FF;* /action}
+	
+	发现了吗？是的，它对 {*.suffix} 不敏感，匹配之前，它会把 {*.suffix} 切去。之后，它会通过注解 '@At' 寻找合适的入口函数，
+	------------------------------------------------------------------------------------------
+	如何通过 @At 寻找入口函数
+	
+		在[overview.man Nutz.Mvc 概述]里，我提到，@At 注解可以被声明在三个地方：
+		{{{
+		主模块 - @At("/a")
+		   子模块 - @At("/b")
+			   入口函数 - @At("/c")
+		}}}
+		最终确定了 URL {* /a/b/c} 要匹配的入口函数。
+	
+		所以要想匹配 {* /a/b/c} 下面几种形式都是可以的
+		{{{
+		@At("/a")
+		public class MainModule{
+		   ...
+	
+		@At("/b")
+		public class SubModule{
+		   ...
+		   @At("/c")
+		   public String helle(){
+			 ...
+		}}}
+		或者
+		{{{
+		public class MainModule{
+		   ...
+	
+		@At("/a")
+		public class SubModule{
+		   ...
+		   @At("/b/c")
+		   public String helle(){
+			 ...
+		}}}
+		或者
+		{{{
+		public class MainModule{
+		   ...
+	
+		public class SubModule{
+		   ...
+		   @At("/a/b/c")
+		   public String helle(){
+			 ...
+		}}}
+	
+	
+		当然，一般的说，很少有人在主模块上声明 @At
+	
+		通过上面的内容我们可以知道，只要有一个 URL，我们就知道如何设置注解 '@At'，但是你确定我们要匹配的 URL 就是 
+	
+		 * {#FF00FF;* /module} {#0000FF;* /action}
+	
+		吗？ 不，这同时也得参考 web.xml 的匹配方式：
+	
+		{#008800/ 假设你的 Context 的 URL 为 : http://localhost:8080/testweb}
+	------------------------------------------------------------------------------------------
+	全匹配 - /*
+	
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		对于 Nutz.Mvc 我们需要匹配的部分为：
+		 
+		 * /abc/getlist
+		
+	------------------------------------------------------------------------------------------
+	目录匹配 - /abc/*
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		对于 Nutz.Mvc 我们需要匹配的部分为：
+		 
+		 * /getlist
+		
+		这里需要说明的是，可能人们会怀疑，为什么目录匹配的时候，只匹配 { /getlist} 而不匹配 { /abc/getlist} 呢？
+		因为，你在你的 web.xml 声明了这样的 url-pattern:
+		{{{
+		...
+		<url-pattern>/abc/*</url-pattern>
+		...
+		}}}
+		显然，你希望在 web.xml 来决定你的 URL 前面那部分，所以后面一部分就交给 Nutz.Mvc 来匹配吧。否则，你修改了
+		web.xml 的时候，你还需要修改 Nutz.Mvc 的配置，这与显然我们设计的初衷不符，Nutz.Mvc 设计的基本要求就是：
+		
+		{*如果用户修改了 web.xml 或者 server.xml，不需要用户重新修改 Nutz.Mvc 相关的配置}
+		
+	------------------------------------------------------------------------------------------
+	后缀匹配 - *.nut
+		
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		对于 Nutz.Mvc 我们需要匹配的部分为：
+		 
+		 * /abc/getlist
+		
+	------------------------------------------------------------------------------------------
+	精确匹配 - /abc/getlist.nut
+	
+		如果请求为：
+		{{{
+		http://localhost:8080/testweb/abc/getlist.nut
+		}}}
+		对于 Nutz.Mvc 我们需要匹配的部分为：
+		 
+		 * /abc/getlist
+		
+		这种映射方式基本是不会发生的，因为你需要让 Nutz.Mvc 控制一批 URL 而不是单个 URL。所以，你如果选择了这种模式
+		我就没话讲了，在 Nutz.Mvc 中你就全部匹配吧，惩罚你，哼！
+
+

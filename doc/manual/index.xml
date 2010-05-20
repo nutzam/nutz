@@ -46,6 +46,7 @@
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
+		<doc path="url_mapping.man"/>
 		<doc path="http_adaptor.man"/>
 		<doc path="view.man"/>
 		<doc path="with_ioc.man"/>
