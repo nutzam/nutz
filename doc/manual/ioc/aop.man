@@ -34,5 +34,5 @@
      }}}
      
 已经为你准备好的拦截器
-    * org.nutz.aop.interceptor.LoggingMethodOnterceptor 添加日志记录
+    * org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录
     * org.nutz.aop.interceptor.TransactionInterceptor 添加事务

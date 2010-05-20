@@ -38,6 +38,7 @@
 		<doc path="events.man"/>
 		<doc path="injecting.man"/>
 		<doc path="ioc_loader.man"/>
+		<doc path="aop_solution.man"/>
 		<doc path="aop.man"/>
 		<doc path="scope.man"/>
 		<doc path="xml_ioc_loader.man"/>
