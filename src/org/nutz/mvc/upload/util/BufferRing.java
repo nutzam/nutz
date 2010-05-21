@@ -77,6 +77,13 @@ public class BufferRing {
 					ri.next.load(ins);
 					readed += ri.next.max;
 				}
+				// 如果当前的环节点的 next指向最初节点，说明整个当前的环已经被读满了，
+				// 因此所以不能判断这个位置是不是边界
+				// 因此做一下记录，下次加载时，本节点应该为头部
+				else if (ri.next == this.item) {
+					ri.nextmark = ri.r;
+					return MarkMode.NOT_FOUND;
+				}
 				// 匹配头部
 				if (ri.next.matchHeadingWithRemain(bs, re)) {
 					return MarkMode.FOUND;

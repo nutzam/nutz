@@ -11,9 +11,42 @@ import org.nutz.lang.Lang;
 public class BufferRingTest {
 
 	@Test
+	public void test_cross_ring_item() throws IOException {
+		byte[] boundary = Lang.toBytes("---".toCharArray());
+		String str = "ABCDE";
+		str += "abcde";
+		str += "1234-";
+		str += "-1234";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.NOT_FOUND, mode);
+		s = br.dumpAsString();
+		assertEquals("ABCDEabcde1234", s);
+
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.STREAM_END, mode);
+		s = br.dumpAsString();
+		assertEquals("--1234", s);
+
+	}
+
+	@Test
 	public void test_normal_read() throws IOException {
 		byte[] boundary = Lang.toBytes("---".toCharArray());
-		String str = "1234567890ABCDEfgh---A---B------ENDL--";
+		String str = "12345";
+		str += "67890";
+		str += "ABCDE";
+		str += "fgh--";
+		str += "-A---";
+		str += "B----";
+		str += "--ENDL";
+		str += "--";
 		InputStream ins = Lang.ins(str);
 		BufferRing br = new BufferRing(ins, 3, 5);
 		String s;

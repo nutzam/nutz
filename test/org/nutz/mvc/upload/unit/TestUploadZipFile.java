@@ -8,7 +8,6 @@ import static org.nutz.mock.Mock.servlet.session;
 import java.io.File;
 import java.io.FileNotFoundException;
 
-import org.junit.Test;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Files;
@@ -22,10 +21,9 @@ import org.nutz.trans.Atom;
 
 public class TestUploadZipFile {
 
-	@Test
-	public void testZip() throws FileNotFoundException {
+	public static void main(String[] args) throws FileNotFoundException {
 
-		final Uploading up = UploadUnit.TYPE.born(8100);
+		final Uploading up = UploadUnit.TYPE.born(8192);
 		final FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		final String charset = "UTF-8";
 
