@@ -1,6 +1,7 @@
 package org.nutz.mvc.upload;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * 当然，这三种参数，都是需要你在入口函数的参数列表里声明 '@Param' 注解，用来告诉本适配器，你的参数 具体取自请求中的哪一个参数。
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  * 
  * @see org.nutz.mvc.annotation.Param
  */
@@ -49,6 +51,10 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private String charset;
 	private FilePool pool;
 	private int buffer;
+	
+	public UploadAdaptor() throws IOException {
+		this(File.createTempFile("nutz", null).getParent());
+	}
 
 	public UploadAdaptor(String path) {
 		this(path, 8192, Encoding.UTF8, 2000);
