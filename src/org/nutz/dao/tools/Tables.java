@@ -1,7 +1,6 @@
 package org.nutz.dao.tools;
 
 import java.io.File;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,19 +13,26 @@ import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Table;
-import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.tools.annotation.ColType;
 import org.nutz.dao.tools.annotation.NotNull;
 import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.dao.tools.impl.TableDefinitionImpl;
-import org.nutz.dao.tools.impl.expert.*;
+import org.nutz.dao.tools.impl.expert.MysqlExpert;
+import org.nutz.dao.tools.impl.expert.OracleExpert;
+import org.nutz.dao.tools.impl.expert.PsqlExpert;
+import org.nutz.dao.tools.impl.expert.SqlServerExpert;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public abstract class Tables {
 
 	public static TableDefinition newInstance(DatabaseMeta db) {
@@ -80,7 +86,7 @@ public abstract class Tables {
 	}
 
 	public static void define(Dao dao, List<DTable> dts) {
-		TableDefinition maker = newInstance(((NutDao) dao).meta());
+		TableDefinition maker = newInstance(dao.meta());
 		for (DTable dt : dts) {
 			Sql sql;
 			if (dao.exists(dt.getName())) {

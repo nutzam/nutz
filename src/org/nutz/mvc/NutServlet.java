@@ -16,7 +16,6 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.annotation.LoadingBy;
-import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.init.DefaultLoading;
 
 /**
@@ -61,14 +60,14 @@ public class NutServlet extends HttpServlet {
 										"You need declare modules parameter in '%s'",
 										this.getClass().getName());
 			}
-			Class<?> modules = Class.forName(name);
+			Class<?> mainModule = Class.forName(name);
 
 			// servlet support you setup your loading class, it must implement
 			// "org.nutz.mvc.Loading"
 			// And it must has one constructor, with one param type as
 			// ServletConfig
 			Class<? extends Loading> loadingType;
-			LoadingBy lb = modules.getAnnotation(LoadingBy.class);
+			LoadingBy lb = mainModule.getAnnotation(LoadingBy.class);
 			if (null != lb)
 				loadingType = lb.value();
 			else
@@ -76,13 +75,9 @@ public class NutServlet extends HttpServlet {
 
 			// Here, we load all Nutz.Mvc configuration
 			Loading ing = Mirror.me(loadingType).born(this.getServletConfig());
-			ing.load(modules);
+			ing.load(mainModule);
 			// Then, we store the loading result like this
 			urls = ing.getUrls();
-			
-			saveToContext(UrlMap.class.getName(), urls);
-			saveToContext(Ioc.class.getName(), ing.getIoc());
-			saveToContext(Localization.class.getName(), ing.getMessageMap());
 
 			// Done, print info
 			sw.stop();
@@ -100,11 +95,6 @@ public class NutServlet extends HttpServlet {
 				throw (ServletException) e;
 			throw new ServletException(e);
 		}
-	}
-
-	private void saveToContext(String key, Object obj) {
-		if (null != obj)
-			this.getServletContext().setAttribute(key, obj);
 	}
 
 	public void destroy() {
@@ -139,6 +129,12 @@ public class NutServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		if (null == urls){
+			if (log.isErrorEnabled())
+				log.error("!!!This servlet is destroyed!!! Noting to do!!!");
+			return;
+		}
+			
 		Mvcs.updateRequestAttributes(req);
 		String path = Mvcs.getRequestPath(req);
 

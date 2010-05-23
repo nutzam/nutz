@@ -2,7 +2,6 @@ package org.nutz.mvc.init;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-
 import java.util.List;
 
 import org.nutz.ioc.Ioc;
@@ -15,7 +14,12 @@ import org.nutz.mvc.ActionInvoker;
 import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
-import org.nutz.mvc.annotation.*;
+import org.nutz.mvc.annotation.AdaptBy;
+import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.Encoding;
+import org.nutz.mvc.annotation.Fail;
+import org.nutz.mvc.annotation.Filters;
+import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.invoker.ActionInvokerImpl;
 
 public class UrlMapImpl implements UrlMap {
@@ -28,10 +32,15 @@ public class UrlMapImpl implements UrlMap {
 
 	private Context context;
 
-	public UrlMapImpl(Ioc ioc, Context context) {
+	public UrlMapImpl(Ioc ioc, Context context, Class<?> mainModule) {
 		this.ioc = ioc;
 		this.root = new PathNode<ActionInvoker>();
 		this.context = context;
+		this.ok = mainModule.getAnnotation(Ok.class);
+		this.fail = mainModule.getAnnotation(Fail.class);
+		this.adaptBy = mainModule.getAnnotation(AdaptBy.class);
+		this.filters = mainModule.getAnnotation(Filters.class);
+		this.encoding = mainModule.getAnnotation(Encoding.class);
 	}
 
 	private Ok ok;
@@ -39,26 +48,6 @@ public class UrlMapImpl implements UrlMap {
 	private AdaptBy adaptBy;
 	private Filters filters;
 	private Encoding encoding;
-
-	void setEncoding(Encoding encoding) {
-		this.encoding = encoding;
-	}
-
-	void setOk(Ok ok) {
-		this.ok = ok;
-	}
-
-	void setFail(Fail fail) {
-		this.fail = fail;
-	}
-
-	void setAdaptBy(AdaptBy adaptBy) {
-		this.adaptBy = adaptBy;
-	}
-
-	void setFilters(Filters filters) {
-		this.filters = filters;
-	}
 
 	public boolean add(List<ViewMaker> makers, Class<?> moduleType) {
 		// View: OK

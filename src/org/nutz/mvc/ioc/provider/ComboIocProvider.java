@@ -1,4 +1,4 @@
-package org.nutz.mvc.init;
+package org.nutz.mvc.ioc.provider;
 
 import javax.servlet.ServletConfig;
 
