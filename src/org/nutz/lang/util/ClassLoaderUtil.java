@@ -244,52 +244,17 @@ public class ClassLoaderUtil {
 
 	private static String cutLastString(String source, String dest, int num) {
 		// String cutSource=null;
-		for (int i = 0; i < num; i++) {
+		for (int i = 0; i < num; i++)
 			source = source.substring(0, source.lastIndexOf(dest, source.length() - 2) + 1);
-		}
 		return source;
 	}
 
 	public static URL getResource(String resource) {
-		if (log.isDebugEnabled()) {
+		if (log.isDebugEnabled())
 			log.debug("传入的相对于classpath的路径：" + resource);
-		}
 		return ClassLoaderUtil.getClassLoader().getResource(resource);
 	}
 
-	public static void main(String[] args) throws MalformedURLException {
-		// ClassLoaderUtil.getExtendResource("../spring/dao.xml");
-		// ClassLoaderUtil.getExtendResource("../../../src/log4j.properties");
-		ClassLoaderUtil.getExtendResource("log4j.properties");
-		URL rs = ClassLoaderUtil.getExtendResource("../");
-		;
-		log.debug("rs=" + rs.getPath());
-
-		ClassLoaderUtil.getExtendResource("../config/freemarkettemplate/a/example.ftl");
-		System.out.println(ClassLoaderUtil	.getClassLoader()
-											.getResource("log4j.properties")
-											.toString());
-
-		System.out.println("Thread.currentThread().getContextClassLoader()=\n"
-							+ Thread.currentThread().getContextClassLoader().getResource(""));
-		System.out.println("ClassLoaderUtil.class.getClassLoader().getResource=\n"
-							+ ClassLoaderUtil.class.getClassLoader().getResource(""));
-		System.out.println("ClassLoader.getSystemResource=\n" + ClassLoader.getSystemResource(""));
-		System.out.println("ClassLoaderUtil.class.getResource=\n"
-							+ ClassLoaderUtil.class.getResource(""));
-		System.out.println("ClassLoaderUtil.class.getResource(\"/\")=\n"
-							+ ClassLoaderUtil.class.getResource("/"));
-
-		System.out.println("new File(\"/\").getAbsolutePath()=\n" + new File("").getAbsolutePath());
-
-		System.out.println("new File(\"/\").getAbsolutePath()=\n" + new File("/").getAbsolutePath());
-		System.out.println("System.getProperty(\"user.dir\")=\n" + System.getProperty("user.dir"));
-
-		log.debug("qq ip =" + ClassLoaderUtil.getExtendResource("../ipdata/QQWry.Dat"));
-
-		log.debug("getWebRoot() =" + getWebRoot());
-
-	}
 
 	/**
 	 * 服务器的WEB-ROOT目录地址
