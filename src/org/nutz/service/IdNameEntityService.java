@@ -6,12 +6,16 @@ import org.nutz.dao.entity.EntityField;
 
 public abstract class IdNameEntityService<T> extends IdEntityService<T> {
 
-	protected IdNameEntityService() {
+	public IdNameEntityService() {
 		super();
 	}
 
-	protected IdNameEntityService(Dao dao) {
+	public IdNameEntityService(Dao dao) {
 		super(dao);
+	}
+
+	public IdNameEntityService(Dao dao, Class<T> entityType) {
+		super(dao, entityType);
 	}
 
 	public int delete(String name) {

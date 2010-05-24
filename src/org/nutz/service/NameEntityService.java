@@ -6,12 +6,16 @@ import org.nutz.dao.entity.EntityField;
 
 public abstract class NameEntityService<T> extends EntityService<T> {
 
-	protected NameEntityService() {
+	public NameEntityService() {
 		super();
 	}
 
-	protected NameEntityService(Dao dao) {
+	public NameEntityService(Dao dao) {
 		super(dao);
+	}
+
+	public NameEntityService(Dao dao, Class<T> entityType) {
+		super(dao, entityType);
 	}
 
 	public int delete(String name) {

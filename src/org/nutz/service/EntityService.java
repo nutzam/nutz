@@ -18,7 +18,7 @@ public abstract class EntityService<T> extends Service {
 	private Log log = Logs.getLog(getClass());
 
 	@SuppressWarnings("unchecked")
-	protected EntityService() {
+	public EntityService() {
 		try {
 			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
 		}
@@ -28,9 +28,14 @@ public abstract class EntityService<T> extends Service {
 		}
 	}
 
-	protected EntityService(Dao dao) {
+	public EntityService(Dao dao) {
 		this();
 		this.setDao(dao);
+	}
+
+	public EntityService(Dao dao, Class<T> entityType) {
+		setEntityType(entityType);
+		setDao(dao);
 	}
 
 	public Mirror<T> mirror() {

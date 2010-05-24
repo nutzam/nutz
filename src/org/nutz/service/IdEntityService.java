@@ -6,12 +6,16 @@ import org.nutz.dao.entity.EntityField;
 
 public abstract class IdEntityService<T> extends EntityService<T> {
 
-	protected IdEntityService() {
+	public IdEntityService() {
 		super();
 	}
 
-	protected IdEntityService(Dao dao) {
+	public IdEntityService(Dao dao) {
 		super(dao);
+	}
+
+	public IdEntityService(Dao dao, Class<T> entityType) {
+		super(dao, entityType);
 	}
 
 	public T fetch(long id) {
