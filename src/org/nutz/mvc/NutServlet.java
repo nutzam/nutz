@@ -129,17 +129,17 @@ public class NutServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (null == urls){
+		if (null == urls) {
 			if (log.isErrorEnabled())
 				log.error("!!!This servlet is destroyed!!! Noting to do!!!");
 			return;
 		}
-			
+
 		Mvcs.updateRequestAttributes(req);
 		String path = Mvcs.getRequestPath(req);
 
 		if (log.isInfoEnabled())
-			log.infof("Request path = [%s]",path);
+			log.info(path);
 
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);
