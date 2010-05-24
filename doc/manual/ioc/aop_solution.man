@@ -57,8 +57,8 @@
 	mixArgsVoid 就是你原本方法
 ------------------------------------------------------------------------------
 注意
-	 * 切勿自行实现org.nutz.aop.AopCallback接口,并不要使用该接口声明的方法签名
-	 * 虽然org.nutz.aop.MethodInterceptor接口允许你抛出任何异常,但*请不要抛出原方法未声明的受检异常*
+	* 切勿自行实现org.nutz.aop.AopCallback接口,并不要使用该接口声明的方法签名
+	* 虽然org.nutz.aop.MethodInterceptor接口允许你抛出任何异常,但*请不要抛出原方法未声明的受检异常*
 
 
 

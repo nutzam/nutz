@@ -150,7 +150,7 @@ public class ClassLoaderUtil {
 	/**
 	 * *
 	 * 
-	 * @param relativePath必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用
+	 * @param relativePath 必须传递资源的相对路径。是相对于classpath的路径。如果需要查找classpath外部的资源，需要使用
 	 *         ../来查找
 	 * @throws MalformedURLException
 	 * @throws IOException

@@ -4,36 +4,36 @@
 --------------------------------------------------------------------------------------------------------
 需要用到的注解
 
-    标注类 @IocBean
-      {{{
-      public @interface IocBean {
-			String name() default "";
-	        String [] param() default {};
-	        String scope() default "app";
-	        boolean singleton() default true;
-	        String create() default "";
-	        String depose() default "";
-	        String fetch() default ""; 
-	  }
-      }}}
+	标注类 @IocBean
+	{{{
+	public @interface IocBean {
+		String name() default "";
+		String [] param() default {};
+		String scope() default "app";
+		boolean singleton() default true;
+		String create() default "";
+		String depose() default "";
+		String fetch() default ""; 
+	}
+	}}}
     
-    标注方法 @Inject
-      {{{
-      public @interface Inject {
-      		String value() default "";
-      }
-      }}}
+	标注方法 @Inject
+	{{{
+	public @interface Inject {
+		String value() default "";
+	}
+	}}}
       
 加载
     
-    直接用代码加载
-    {{{
-    //现在只支持包扫描,包含sub-package
-    Ioc ioc = new NutzIoc(new AnnotationIocLoader("com.wendal.service"));
-    }}}
+	直接用代码加载
+	{{{
+	//现在只支持包扫描,包含sub-package
+	Ioc ioc = new NutzIoc(new AnnotationIocLoader("com.wendal.service"));
+	}}}
     
-    在MVC中加载
-    {{{
-    //现在只支持包扫描,包含sub-package
-    @IocBy(AnnotationIocProvider.class,{"com.wendal.service"})
-    }}}
+	在MVC中加载
+	{{{
+	//现在只支持包扫描,包含sub-package
+	@IocBy(AnnotationIocProvider.class,{"com.wendal.service"})
+	}}}
