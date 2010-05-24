@@ -109,6 +109,10 @@ public class LinkedLongArray {
 	}
 
 	public String toString() {
+		return Lang.concat(',', toArray()).toString();
+	}
+
+	public String toJson() {
 		return Json.toJson(toArray());
 	}
 }

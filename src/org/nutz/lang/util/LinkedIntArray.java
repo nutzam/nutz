@@ -37,7 +37,7 @@ public class LinkedIntArray {
 		cursor++;
 		return this;
 	}
-	
+
 	public int popFirst() {
 		return innerGet(offset++);
 	}
@@ -110,6 +110,10 @@ public class LinkedIntArray {
 	}
 
 	public String toString() {
+		return Lang.concat(',', toArray()).toString();
+	}
+
+	public String toJson() {
 		return Json.toJson(toArray());
 	}
 }
