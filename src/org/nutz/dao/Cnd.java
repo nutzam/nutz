@@ -1,5 +1,6 @@
 package org.nutz.dao;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -7,6 +8,10 @@ import java.util.regex.Pattern;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
+import org.nutz.lang.Each;
+import org.nutz.lang.ExitLoop;
+import org.nutz.lang.Lang;
+import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
 
 /**
@@ -207,7 +212,7 @@ public class Cnd implements OrderBy, ExpGroup {
 			this.name = name;
 			this.op = Strings.trim(op);
 			if (ptn.matcher(this.op).find())
-				this.op = " " + this.op + " ";
+				this.op = this.op.toUpperCase();
 			this.value = value;
 		}
 
@@ -215,14 +220,44 @@ public class Cnd implements OrderBy, ExpGroup {
 		private String op;
 		private Object value;
 
-		public void render(StringBuilder sb, Entity<?> en) {
+		public void render(final StringBuilder sb, Entity<?> en) {
 			if (null != en) {
 				EntityField ef = en.getField(name);
 				sb.append(null != ef ? ef.getColumnName() : name);
 			} else
 				sb.append(name);
-			sb.append(op);
-			sb.append(Sqls.formatFieldValue(value));
+			// IN
+			if ("IN".equals(op)) {
+				sb.append(" IN ");
+				if (null == value)
+					throw Lang.makeThrow("SQL 'IN' null : %s", sb);
+				// 如果是集合或者数组
+				if (value instanceof Collection<?> || value.getClass().isArray()) {
+					sb.append('(');
+					Lang.each(value, new Each<Object>() {
+						public void invoke(int i, Object ele, int length) throws ExitLoop,
+								LoopException {
+							sb.append(Sqls.formatFieldValue(ele)).append(',');
+						}
+					});
+					sb.setCharAt(sb.length() - 1, ')');
+				}
+				// 否则当作一般字符串处理
+				else
+					sb.append(Sqls.formatFieldValue(value));
+			}
+			// IS NULL
+			else if (null == value && "IS".equals(op)) {
+				sb.append(" IS NULL");
+			}
+			// LIKE || IS
+			else if ("LIKE".equals(op) || "IS".equals(op)) {
+				sb.append(' ').append(op).append(' ').append(Sqls.formatFieldValue(value));
+			}
+			// Others
+			else {
+				sb.append(op).append(Sqls.formatFieldValue(value));
+			}
 		}
 	}
 
