@@ -6,6 +6,11 @@ import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
+/**
+ * 为方法添加Log
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class LoggingMethodInterceptor implements MethodInterceptor {
 
 	private static final Log LOG = Logs.getLog(LoggingMethodInterceptor.class);
@@ -28,7 +33,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 	public void filter(InterceptorChain chain) {
 		try {
 			if (logBeforeInvoke && LOG.isDebugEnabled())
-				log("[beforeInvoke]Obj = %s , Method = %s , args = %s",
+				LOG.debugf("[beforeInvoke]Obj = %s , Method = %s , args = %s",
 					chain.getCallingObj(),
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
@@ -36,7 +41,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 		catch (Exception e) {
 			if (logWhenException && LOG.isDebugEnabled())
-				log("[whenException]Obj = %s , Throwable = %s , Method = %s , args = %s",
+				LOG.debugf("[whenException]Obj = %s , Throwable = %s , Method = %s , args = %s",
 					chain.getCallingObj(),
 					e,
 					chain.getCallingMethod(),
@@ -45,7 +50,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 		catch (Throwable e) {
 			if (logWhenError && LOG.isDebugEnabled())
-				log("[whenError]Obj = %s , Throwable = %s , Method = %s , args = %s",
+				LOG.debugf("[whenError]Obj = %s , Throwable = %s , Method = %s , args = %s",
 					chain.getCallingObj(),
 					e,
 					chain.getCallingMethod(),
@@ -54,17 +59,13 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 		finally {
 			if (logAfterInvoke && LOG.isDebugEnabled())
-				log("[afterInvoke]Obj = %s , Return = %s , Method = %s , args = %s",
+				LOG.debugf("[afterInvoke]Obj = %s , Return = %s , Method = %s , args = %s",
 					chain.getCallingObj(),
 					chain.getReturn(),
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
 		}
 
-	}
-
-	protected void log(String str, Object... args) {
-		LOG.debugf(str, args);
 	}
 
 	protected final String str(Object... args) {
