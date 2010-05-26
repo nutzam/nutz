@@ -133,7 +133,8 @@ public class DefaultLoading implements Loading {
 						for (Class<?> md : list) {
 							if (urls.add(makers, md))
 								if (log.isDebugEnabled())
-									log.debugf("Module: <%s>", md.getName());
+									log.debugf(	"--------------The end of Module: <%s>",
+												md.getName());
 						}
 				}
 			}
@@ -164,7 +165,7 @@ public class DefaultLoading implements Loading {
 			setup.init(config);
 		}
 	}
-	
+
 	protected void saveResult2Context() {
 		saveToContext(UrlMap.class.getName(), getUrls());
 		saveToContext(Ioc.class.getName(), getIoc());
@@ -174,7 +175,7 @@ public class DefaultLoading implements Loading {
 	protected UrlMap makeUrlMap(Ioc ioc, Context context, Class<?> mainModule) {
 		return new UrlMapImpl(ioc, context, mainModule);
 	}
-	
+
 	private void saveToContext(String key, Object obj) {
 		if (null != obj)
 			this.config.getServletContext().setAttribute(key, obj);
