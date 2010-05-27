@@ -257,8 +257,6 @@ public class ActionInvokerImpl implements ActionInvoker {
 			// 基本上， InvocationTargetException 一点意义也没有，需要拆包
 			if (e instanceof InvocationTargetException && e.getCause() != null)
 				e = e.getCause();
-			// 打印 Log
-			logException(e);
 
 			try {
 				fail.render(req, resp, e);
