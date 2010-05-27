@@ -2,8 +2,6 @@ package org.nutz.dao.pager;
 
 import java.sql.ResultSet;
 
-import org.nutz.dao.pager.Pager;
-
 public abstract class AbstractPager implements Pager {
 
 	static final int DEFAULT_PAGE_SIZE = 20;
@@ -68,6 +66,14 @@ public abstract class AbstractPager implements Pager {
 								recordCount,
 								pageNumber,
 								this.getPageCount());
+	}
+
+	public boolean isFirst() {
+		return pageNumber == 1;
+	}
+
+	public boolean isLast() {
+		return pageNumber == pageCount;
 	}
 
 }

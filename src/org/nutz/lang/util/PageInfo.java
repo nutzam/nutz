@@ -41,4 +41,15 @@ public interface PageInfo {
 	 */
 	int getOffset();
 
+	/**
+	 * @return 是否是第一页
+	 */
+	boolean isFirst();
+
+	/**
+	 * @return 是否是最后一页
+	 * @return
+	 */
+	boolean isLast();
+
 }
