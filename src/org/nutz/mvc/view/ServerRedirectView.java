@@ -57,8 +57,11 @@ public class ServerRedirectView implements View {
 
 		// Format the path ...
 		String path = dest.toString();
+		
+		// Another site
+		if (path.startsWith("http://") || path.startsWith("https://")) {}
 		// Absolute path, add the context path for it
-		if (path.startsWith("/")) {
+		else if (path.startsWith("/")) {
 			path = req.getContextPath() + path;
 		}
 		// Relative path, add current URL path for it
@@ -73,5 +76,4 @@ public class ServerRedirectView implements View {
 		resp.sendRedirect(path);
 		resp.flushBuffer();
 	}
-
 }

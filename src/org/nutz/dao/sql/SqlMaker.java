@@ -131,6 +131,8 @@ public class SqlMaker {
 			sb.append(',').append(colName).append("=@").append(c.name());
 			c = c.next();
 		}
+		if (sb.length() == 0)
+			throw Lang.makeThrow("No field will be update for '%s'", table);
 		sb.deleteCharAt(0);
 		Sql sql = Sqls.create(format("UPDATE %s SET %s $condition", table, sb));
 		storeChainToSql(chain, sql);
@@ -158,6 +160,8 @@ public class SqlMaker {
 			sb.append(',').append(ef.getColumnName()).append('=').append("@").append(fn);
 			map.put(fn, value);
 		}
+		if (sb.length() == 0)
+			throw Lang.makeThrow("No field will be update for '%s'", en.getType().getName());
 		sb.deleteCharAt(0);
 
 		// 评估 WHERE 子句
