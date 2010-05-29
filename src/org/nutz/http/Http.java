@@ -1,7 +1,5 @@
 package org.nutz.http;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Map;
 
 import org.nutz.http.Request.METHOD;
@@ -50,10 +48,9 @@ public class Http {
 		return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
 	}
 
-	public static String encode(Object s) throws UnsupportedEncodingException {
+	public static String encode(Object s) {
 		if (null == s)
 			return "";
-		return URLEncoder.encode(s.toString(), Encoding.UTF8);
+		return new String(Encoding.CHARSET_UTF8.encode(s.toString()).array(),Encoding.CHARSET_UTF8);
 	}
-
 }
