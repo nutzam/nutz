@@ -2,7 +2,9 @@ package org.nutz.ioc.loader.annotation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.IocLoader;
@@ -12,6 +14,7 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Resources;
 import org.nutz.log.Log;
@@ -78,7 +81,9 @@ public class AnnotationIocLoader implements IocLoader {
 				eventSet.setCreate(iocBean.depose().trim().intern());
 			if (!Strings.isBlank(iocBean.fetch()))
 				eventSet.setCreate(iocBean.fetch().trim().intern());
-
+			
+			//处理字段(以@Inject方式)
+			List<String> fieldList = new ArrayList<String>();
 			Field[] fields = classZ.getDeclaredFields();
 			for (Field field : fields) {
 				Inject inject = field.getAnnotation(Inject.class);
@@ -96,6 +101,21 @@ public class AnnotationIocLoader implements IocLoader {
 					iocValue = convert(inject.value());
 				iocField.setValue(iocValue);
 				iocObject.addField(iocField);
+				fieldList.add(iocField.getName());
+			}
+			//处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
+			if (iocBean.field() != null && iocBean.field().length > 0) {
+				for (String fieldInfo : iocBean.field()) {
+					if (fieldList.contains(fieldInfo))
+						throw Lang.makeThrow("Duplicate filed defined! Class=%s,FileName=%s", classZ,fieldInfo);
+					IocField iocField = new IocField();
+					iocField.setName(fieldInfo);
+					IocValue iocValue = new IocValue();
+					iocValue.setType("refer");
+					iocValue.setValue(fieldInfo);
+					iocField.setValue(iocValue);
+					fieldList.add(iocField.getName());
+				}
 			}
 			if (LOG.isInfoEnabled())
 				LOG.infof("Processed Ioc Class : %s as [%s]", classZ, beanName);

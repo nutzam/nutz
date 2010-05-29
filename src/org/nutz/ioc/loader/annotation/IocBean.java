@@ -30,14 +30,29 @@ public @interface IocBean {
 	
 	boolean singleton() default true;
 	
+	/**
+	 * 当对象被Ioc容器创建后调用的方法
+	 */
 	String create() default "";
 	
+	/**
+	 * 当对象被移出Ioc容器时调用的方法
+	 */
 	String depose() default "";
 	
+	/**
+	 * 当对象被调用者从Ioc容器调出时触发的方法
+	 */
 	String fetch() default "";
 	
+	/**
+	 * 你要注入的字段属于超类? 试试这个吧. 只有注入与字段同名的bean ,即 refer:fieldName
+	 * @return 需要注入的字段名
+	 */
+	String [] field() default {};
+	
 //	/**
-//	 * 还没设计
+//	 * 还没设计,是否真的需要呢?
 //	 */
 //	@Deprecated
 //	boolean auto() default false;
