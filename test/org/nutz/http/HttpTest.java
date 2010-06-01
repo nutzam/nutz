@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class HttpTest {
@@ -21,6 +22,7 @@ public class HttpTest {
 		assertNotNull(response.getStream());
 	}
 
+	@Ignore
 	@Test
 	public void testPost() {
 		Map<String, Object> parms = new HashMap<String, Object>();
