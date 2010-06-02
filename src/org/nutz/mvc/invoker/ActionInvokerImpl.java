@@ -74,7 +74,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		this.evalFilters(ioc, method, dftflts);
 		this.evalEncoding(method, dftEncoding);
 		if (this.ok != null && this.ok instanceof VoidView && log.isInfoEnabled())
-			log.infof("Module[%s] method[%s] is using VoidView.",moduleType,method);
+			log.infof("Module[%s] method[%s] is using VoidView.", moduleType, method);
 	}
 
 	private void evalModule(Class<?> moduleType) {
@@ -258,6 +258,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (e instanceof InvocationTargetException && e.getCause() != null)
 				e = e.getCause();
 
+			// 在 Debug 模式下，输出这个错误信息到日志里有助于调试
+			if (log.isDebugEnabled())
+				logException(e);
+
 			try {
 				fail.render(req, resp, e);
 			}
@@ -265,7 +269,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			catch (Throwable e1) {
 				// 打印 Log
 				logException(e1);
-				
+
 				resp.reset();
 				try {
 					resp.getWriter().write(e1.getMessage());
@@ -275,7 +279,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 				catch (IOException e2) {
 					// 打印 Log
 					logException(e2);
-					
+
 					throw Lang.wrapThrow(e2);
 				}
 			}
@@ -287,10 +291,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 
 	}
-	
-	private static void logException(Throwable e){
+
+	private static void logException(Throwable e) {
 		if (log.isWarnEnabled())
 			log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName()
-																: e.getMessage() , e);
+													: e.getMessage(), e);
 	}
 }
