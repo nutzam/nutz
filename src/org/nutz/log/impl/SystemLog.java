@@ -8,7 +8,7 @@ package org.nutz.log.impl;
  */
 public class SystemLog extends AbstractLog {
 
-	private static SystemLog systemLog = new SystemLog();
+	private final static SystemLog systemLog = new SystemLog();
 
 	static SystemLog me() {
 		return systemLog;
@@ -64,22 +64,22 @@ public class SystemLog extends AbstractLog {
 	protected void log(int level, Object message, Throwable tx) {
 		switch (level) {
 		case LEVEL_FATAL:
-			errorOut(message, null);
+			errorOut(message, tx);
 			break;
 		case LEVEL_ERROR:
-			errorOut(message, null);
+			errorOut(message, tx);
 			break;
 		case LEVEL_WARN:
-			errorOut(message, null);
+			errorOut(message, tx);
 			break;
 		case LEVEL_INFO:
-			printOut(message, null);
+			printOut(message, tx);
 			break;
 		case LEVEL_DEBUG:
-			printOut(message, null);
+			printOut(message, tx);
 			break;
 		case LEVEL_TRACE:
-			printOut(message, null);
+			printOut(message, tx);
 			break;
 		default:
 			break;
