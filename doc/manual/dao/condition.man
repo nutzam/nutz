@@ -27,6 +27,7 @@ Nutz 给你的快速实现
 	* 如果在开发期，你的数据库字段变化非常频繁，用 Cnd 工具类则是更好的选择
 
 	直接硬编码
+	
 		最简单直接的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象
 		{{{<JAVA>
 		List<Person> crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age>20"), null);
@@ -41,8 +42,10 @@ Nutz 给你的快速实现
 		Cnd.wrap("name LIKE 'J%' AND age>20 ORDER BY name ASC");
 		}}}
 		就会按照 name 字段排序。
+
 	一个友好一些的工具类 -- Cnd
-		有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column({#F0F;"数据库字段明"})
+	
+		有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column({#F0F;"数据库字段名"})
 		如果你通过 Cnd.wrap() 硬编码某个字段，那么当这个字段数据库字段名发生改变时，你就需要改动很多。
 		因此你希望仅仅将对于数据库的变动限制在 Java 对象的源文件里
 		所以 Nutz 提供了 Cnd.where() 方法
