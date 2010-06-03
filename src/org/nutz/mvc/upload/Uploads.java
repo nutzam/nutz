@@ -1,12 +1,10 @@
 package org.nutz.mvc.upload;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 关于上传的一些帮助函数
@@ -46,8 +44,8 @@ public abstract class Uploads {
 	 *            请求对象
 	 * @return 参数 MAP
 	 */
-	public static Map<String, Object> createParamsMap(HttpServletRequest req) {
-		Map<String, Object> params = new HashMap<String, Object>();
+	public static NutMap createParamsMap(HttpServletRequest req) {
+		NutMap params = new NutMap();
 		// parse query strings
 		String qs = req.getQueryString();
 		if (null != qs) {

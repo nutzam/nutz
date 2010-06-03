@@ -17,6 +17,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.stream.StreamBuffer;
+import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
@@ -54,7 +55,7 @@ public class FastUploading implements Uploading {
 		/*
 		 * 创建参数表
 		 */
-		Map<String, Object> params = Uploads.createParamsMap(req);
+		NutMap params = Uploads.createParamsMap(req);
 		if (log.isDebugEnabled())
 			log.debugf("Params map created - %d params", params.size());
 		/*
@@ -152,7 +153,7 @@ public class FastUploading implements Uploading {
 						finally {
 							Streams.safeClose(ops);
 						}
-						params.put(meta.getName(), new TempFile(meta, tmp));
+						params.add(meta.getName(), new TempFile(meta, tmp));
 					}
 				}
 				// 作为提交值读取
@@ -164,7 +165,7 @@ public class FastUploading implements Uploading {
 						assertStreamNotEnd(mm);
 						br.dump(sb.getBuffer());
 					} while (mm == MarkMode.NOT_FOUND);
-					params.put(meta.getName(), sb.toString(charset));
+					params.add(meta.getName(), sb.toString(charset));
 				}
 
 			} while (mm != MarkMode.STREAM_END);
