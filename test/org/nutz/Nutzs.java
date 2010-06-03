@@ -94,6 +94,6 @@ public class Nutzs {
 	}
 
 	public static ClassDefiner cd() {
-		return new DefaultClassDefiner();
+		return new DefaultClassDefiner(Nutzs.class.getClassLoader());
 	}
 }

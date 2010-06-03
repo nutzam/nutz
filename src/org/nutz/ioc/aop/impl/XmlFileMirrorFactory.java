@@ -45,7 +45,7 @@ public class XmlFileMirrorFactory implements MirrorFactory {
 	
 	public XmlFileMirrorFactory(Ioc ioc,String... fileNames) throws ParserConfigurationException, SAXException, IOException {
 		this.ioc = ioc;
-		this.cd = new DefaultClassDefiner();
+		this.cd = new DefaultClassDefiner(getClass().getClassLoader());
 		DocumentBuilder builder = Lang.xmls();
         Document document;
         for (String fileName : fileNames) {

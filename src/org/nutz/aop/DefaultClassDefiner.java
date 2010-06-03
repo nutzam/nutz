@@ -1,6 +1,11 @@
 package org.nutz.aop;
 
+
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
+	
+	public DefaultClassDefiner(ClassLoader parent) {
+		super(parent);
+	}
 
 	public Class<?> define(String className, byte[] bytes) throws ClassFormatError {
 		try {
@@ -22,9 +27,18 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 
 	public Class<?> load(String className) throws ClassNotFoundException {
 		try{
-			return getParent().loadClass(className);
+			return Thread.currentThread().getContextClassLoader().loadClass(className);
 		}
-		catch (ClassNotFoundException e) {}
+		catch (ClassNotFoundException e) {
+			try{
+				return ClassLoader.getSystemClassLoader().loadClass(className);
+			}catch (ClassNotFoundException e2) {
+				try{
+					return getParent().loadClass(className);
+				}catch (ClassNotFoundException e3) {
+				}
+			}
+		}
 		return loadClass(className);
 	}
 }

@@ -1,5 +1,4 @@
 package org.nutz.aop.asm;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
@@ -13,6 +12,7 @@ import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.log.Logs;
+import org.objectweb.asm.util.ASMifierClassVisitor;
 
 /**
  * 
@@ -58,12 +58,6 @@ public class AsmClassAgent extends AbstractClassAgent {
 			return (Class<T>) cd.load(newName);
 		}
 		catch (ClassNotFoundException e) {}
-		try {
-			cd.load("org.nutz.aop.AopCallback");
-		}
-		catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		}
 		Method[] methodArray = new Method[pair2s.length];
 		List<MethodInterceptor>[] methodInterceptorList = new List[pair2s.length];
 		for (int i = 0; i < pair2s.length; i++) {
@@ -77,6 +71,10 @@ public class AsmClassAgent extends AbstractClassAgent {
 		Class<T> newClass = (Class<T>) cd.define(newName, bytes);
 		AopToolKit.injectFieldValue(newClass, methodArray, methodInterceptorList);
 		return newClass;
+	}
+	
+	public static void main(String[] args) throws Throwable{
+		ASMifierClassVisitor.main(new String[]{"org.nutz.aop.AopCallback"});
 	}
 
 }

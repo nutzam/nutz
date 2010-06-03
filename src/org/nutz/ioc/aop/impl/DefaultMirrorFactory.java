@@ -30,7 +30,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 
 	public DefaultMirrorFactory(Ioc ioc) {
 		this.ioc = ioc;
-		this.cd = new DefaultClassDefiner();
+		this.cd = new DefaultClassDefiner(getClass().getClassLoader());
 	}
 
 	@SuppressWarnings("unchecked")
