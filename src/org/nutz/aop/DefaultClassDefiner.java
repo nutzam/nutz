@@ -4,7 +4,7 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 
 	public Class<?> define(String className, byte[] bytes) throws ClassFormatError {
 		try {
-			return this.loadClass(className);
+			return load(className);
 		}
 		catch (ClassNotFoundException e) {}
 		// If not found ...
@@ -21,6 +21,10 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 	}
 
 	public Class<?> load(String className) throws ClassNotFoundException {
-		return this.loadClass(className);
+		try{
+			return getParent().loadClass(className);
+		}
+		catch (ClassNotFoundException e) {}
+		return loadClass(className);
 	}
 }

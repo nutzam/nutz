@@ -847,4 +847,23 @@ public abstract class Files {
 		}
 
 	}
+	
+	/**
+	 * 将数据写入文件,成功就返回true,失败就返回false
+	 * @param file 需要写入的文件
+	 * @param data 需要写入的数据
+	 * @return true 如果写入成功
+	 */
+	public static boolean write(File file, byte data []){
+		try{
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(data);
+			fos.flush();
+			fos.close();
+		}catch (Throwable e) {
+			return false;
+		}
+		return true;
+	}
+
 }
