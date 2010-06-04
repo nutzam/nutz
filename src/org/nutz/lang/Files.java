@@ -101,6 +101,28 @@ public abstract class Files {
 	}
 
 	/**
+	 * 将数据写入文件,成功就返回true,失败就返回false
+	 * 
+	 * @param file
+	 *            需要写入的文件
+	 * @param data
+	 *            需要写入的数据
+	 * @return true 如果写入成功
+	 */
+	public static boolean write(File file, byte data[]) {
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			fos.write(data);
+			fos.flush();
+			fos.close();
+		}
+		catch (Throwable e) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
 	 * 将文件后缀改名，从而生成一个新的文件对象。但是并不在磁盘上创建它
 	 * 
 	 * @param f
@@ -754,10 +776,12 @@ public abstract class Files {
 			}
 		});
 	}
-	
+
 	/**
 	 * 递归查找获取一个目录下所有子目录(及子目录的子目录)。子目录如果以 '.' 开头，将被忽略
-	 * <p/><b>包含传入的目录</b>
+	 * <p/>
+	 * <b>包含传入的目录</b>
+	 * 
 	 * @param dir
 	 *            目录
 	 * @return 子目录数组
@@ -768,8 +792,8 @@ public abstract class Files {
 		scanDirs(dir, list);
 		return list.toArray(new File[list.size()]);
 	}
-	
-	private static void scanDirs(File rootDir,ArrayList<File> list){
+
+	private static void scanDirs(File rootDir, ArrayList<File> list) {
 		File[] dirs = rootDir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
 				if (f.isHidden())
@@ -780,7 +804,7 @@ public abstract class Files {
 				return false;
 			}
 		});
-		if (dirs != null){
+		if (dirs != null) {
 			for (File dir : dirs) {
 				scanDirs(dir, list);
 				list.add(dir);
@@ -846,24 +870,6 @@ public abstract class Files {
 			Streams.safeClose(ins2);
 		}
 
-	}
-	
-	/**
-	 * 将数据写入文件,成功就返回true,失败就返回false
-	 * @param file 需要写入的文件
-	 * @param data 需要写入的数据
-	 * @return true 如果写入成功
-	 */
-	public static boolean write(File file, byte data []){
-		try{
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(data);
-			fos.flush();
-			fos.close();
-		}catch (Throwable e) {
-			return false;
-		}
-		return true;
 	}
 
 }
