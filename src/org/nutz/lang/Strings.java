@@ -85,7 +85,7 @@ public abstract class Strings {
 		if (len == 0)
 			return "";
 		char char0 = s.charAt(0);
-		if ( ! Character.isUpperCase(char0))
+		if (!Character.isUpperCase(char0))
 			return s.toString();
 		StringBuilder sb = new StringBuilder(len);
 		sb.append(Character.toLowerCase(char0)).append(s.subSequence(1, len));
@@ -507,7 +507,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 如果txt中第一个支付和 firstChar一致,则删除,否则返回 txt
+	 * 如果txt中第一个字符和 firstChar一致,则删除,否则返回 txt
 	 * <p>
 	 * 比如:
 	 * <ul>
