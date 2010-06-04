@@ -248,6 +248,7 @@ class JsonRendering {
 			} else if (memo.containsKey(obj)) {
 				writer.append("null");
 			} else {
+				memo.put(obj, null);
 				if (obj instanceof Map)
 					map2Json((Map) obj);
 				else if (obj instanceof Collection)
@@ -255,10 +256,9 @@ class JsonRendering {
 				else if (obj.getClass().isArray())
 					array2Json(obj);
 				else {
-					memo.put(obj, null);
 					pojo2Json(obj);
-					memo.remove(obj);
 				}
+				memo.remove(obj);
 			}
 		}
 	}
