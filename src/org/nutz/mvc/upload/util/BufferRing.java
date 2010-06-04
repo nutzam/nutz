@@ -66,9 +66,6 @@ public class BufferRing {
 		RingItem ri = item;
 		int re;
 		while ((re = ri.mark(bs)) >= 0 && ri.isDone4Mark()) {
-			if (ri.isStreamEnd)
-				break;
-
 			// 结尾匹配 bs 的开始，看不出这是否是一个结束，所以暂时当作
 			// 结束标记，并看看下一个节点。如果不是结束，则需要将 r 置到 max
 			if (re > 0) {
@@ -94,6 +91,8 @@ public class BufferRing {
 					ri.nextmark = ri.max;
 				}
 			}
+			if (ri.isStreamEnd)
+				break;
 			// 指向下一个节点
 			ri = ri.next;
 			// 保证该节点已经加载了
@@ -107,6 +106,7 @@ public class BufferRing {
 		}
 		if (re == -1)
 			return MarkMode.FOUND;
+
 		return ri.isStreamEnd ? MarkMode.STREAM_END : MarkMode.NOT_FOUND;
 	}
 
@@ -172,6 +172,8 @@ public class BufferRing {
 	 * @throws IOException
 	 */
 	public int load() throws IOException {
+		if (item.isStreamEnd)
+			return 0;
 		RingItem ri = item;
 		while (!ri.isLoaded) {
 			ri.load(ins);

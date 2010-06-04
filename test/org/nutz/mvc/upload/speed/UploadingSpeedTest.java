@@ -46,19 +46,30 @@ public class UploadingSpeedTest {
 		monThread.start();
 
 		out.println("Begin...");
-		Stopwatch sw = Stopwatch.run(new Atom() {
-			public void run() {
-				try {
-					up.parse(req, charset, tmps);
+		Stopwatch sw = null;
+		try {
+			sw = Stopwatch.run(new Atom() {
+				public void run() {
+					try {
+						up.parse(req, charset, tmps);
+					}
+					catch (UploadException e) {
+						throw Lang.wrapThrow(e);
+					}
 				}
-				catch (UploadException e) {
-					throw Lang.wrapThrow(e);
-				}
-			}
-		});
-		mon.stop();
-		out.println("\n...Done!");
-		out.println(sw);
+			});
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		finally {
+			mon.stop();
+			out.println("\n...Done!");
+			if (null != sw)
+				out.println(sw);
+		}
+
 	}
 
 }

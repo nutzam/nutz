@@ -2,6 +2,10 @@ package org.nutz.mvc.upload.unit;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.nutz.mock.Mock.servlet.context;
+import static org.nutz.mock.Mock.servlet.ins;
+import static org.nutz.mock.Mock.servlet.request;
+import static org.nutz.mock.Mock.servlet.session;
 
 import java.io.File;
 import java.util.Map;
@@ -12,6 +16,7 @@ import org.junit.Test;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Files;
+import org.nutz.lang.Streams;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
@@ -108,5 +113,19 @@ public class UploadingUnitTest {
 		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
 		assertEquals(1, map.size());
 		assertEquals("Shapes100.jpg", ((TempFile) map.get("fileData")).getMeta().getFileLocalPath());
+	}
+
+	@Test
+	public void test_upload_text_with_newline_ending() throws UploadException {
+		MockHttpServletRequest req = request()	.setInputStream(ins(Streams.fileIn("org/nutz/mvc/upload/unit/plaint.s")));
+		req.setHeader(	"content-type",
+						"multipart/form-data; boundary=------NutzMockHTTPBoundary@129021a3e21");
+		req.setHeader("content-length", "200");
+		req.setSession(session(context()));
+		req.init();
+
+		Uploading up = UploadUnit.TYPE.born(8192);
+		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+		up.parse(req, "UTF-8", tmps);
 	}
 }

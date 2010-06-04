@@ -299,4 +299,35 @@ public class BufferRingTest {
 
 		assertEquals(25, br.readed);
 	}
+
+	@Test
+	public void test_mark_dangerous_char() throws IOException {
+		byte[] boundary = Lang.toBytes("**!".toCharArray());
+		String str = "-***!";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = br.dumpAsString();
+		assertEquals("-*", s);
+	}
+
+	@Test
+	public void test_mark_dangerous_char2() throws IOException {
+		byte[] boundary = Lang.toBytes("**!".toCharArray());
+		String str = "---**";
+		str += "!--";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+		br.load();
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = br.dumpAsString();
+		assertEquals("-*", s);
+	}
 }
