@@ -12,7 +12,6 @@ import org.nutz.aop.asm.org.asm.Opcodes;
 import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.log.Logs;
-import org.objectweb.asm.util.ASMifierClassVisitor;
 
 /**
  * 
@@ -30,9 +29,9 @@ public class AsmClassAgent extends AbstractClassAgent {
 		InputStream is = null;
 		try {
 			String classFileName = AsmClassAgent.class.getName().replace('.', '/') + ".class";
-			is = ClassLoader.getSystemResourceAsStream(classFileName);
+			is = AsmClassAgent.class.getResourceAsStream(classFileName);
 			if (is == null)
-				is = ClassLoader.getSystemResourceAsStream("/"+classFileName);
+				is = AsmClassAgent.class.getResourceAsStream("/"+classFileName);
 			if (is != null && is.available() > 8) {
 				is.skip(7);
 				switch (is.read()) {
@@ -71,10 +70,6 @@ public class AsmClassAgent extends AbstractClassAgent {
 		Class<T> newClass = (Class<T>) cd.define(newName, bytes);
 		AopToolKit.injectFieldValue(newClass, methodArray, methodInterceptorList);
 		return newClass;
-	}
-	
-	public static void main(String[] args) throws Throwable{
-		ASMifierClassVisitor.main(new String[]{"org.nutz.aop.AopCallback"});
 	}
 
 }
