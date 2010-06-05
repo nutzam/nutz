@@ -14,7 +14,13 @@ var ioc = {
 		fields : {
 			itemList : [
 				['.+','toString','ioc:log'],
-				['.+','.+','ioc:myMI']
+				['.+','.+','ioc:myMI'],
+				['com\\.service\\..+','.+','ioc:log'],
+				['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE'],
+				['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
+				['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+				['com\\.service\\.media\\..+','(get|set).+','ioc:txREAD_UNCOMMITTED'],
+				['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE']
 			]
 		}
 	}
