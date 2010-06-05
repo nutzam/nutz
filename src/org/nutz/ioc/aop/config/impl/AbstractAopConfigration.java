@@ -1,4 +1,4 @@
-package org.nutz.ioc.aop.config.imlp;
+package org.nutz.ioc.aop.config.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,6 @@ public abstract class AbstractAopConfigration implements AopConfigration {
 	protected MethodInterceptor getMethodInterceptor(	Ioc ioc,
 														String interceptorName,
 														boolean singleton) {
-		System.out.println(interceptorName);
 		if (interceptorName.startsWith("ioc:"))
 			return ioc.get(MethodInterceptor.class, interceptorName.substring(4));
 		try {

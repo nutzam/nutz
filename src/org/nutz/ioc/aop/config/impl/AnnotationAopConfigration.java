@@ -1,4 +1,4 @@
-package org.nutz.ioc.aop.config.imlp;
+package org.nutz.ioc.aop.config.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;

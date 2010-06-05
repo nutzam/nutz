@@ -5,12 +5,13 @@ import java.util.List;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
+import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.AsmClassAgent;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
-import org.nutz.ioc.aop.config.imlp.AnnotationAopConfigration;
+import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
 import org.nutz.lang.Mirror;
 
 /**
@@ -33,6 +34,12 @@ public class DefaultMirrorFactory implements MirrorFactory {
 
 	@SuppressWarnings("unchecked")
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
+		if (MethodInterceptor.class.isAssignableFrom(type))
+			return Mirror.me(type);
+		if (type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX))
+			return Mirror.me(type);
+		if (AopConfigration.IOCNAME.equals(name))
+			return Mirror.me(type);
 		try {
 			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
 		}

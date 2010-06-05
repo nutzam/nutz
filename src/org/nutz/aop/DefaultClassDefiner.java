@@ -39,6 +39,6 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 				}
 			}
 		}
-		return loadClass(className);
+		return super.loadClass(className);
 	}
 }
