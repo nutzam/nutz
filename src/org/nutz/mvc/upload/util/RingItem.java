@@ -126,37 +126,49 @@ class RingItem {
 	 *            数组
 	 * @return -1, 0 或者 +n
 	 */
-	int mark(byte[] bs) {
+	int mark(byte[] bs, int[] fails) {
 		if (!isLoaded)
 			throw new MarkUnloadedRingItemException();
 
 		byte start = bs[0];
 
 		for (; r < max; r++) {
+			// 可能是边界，开始匹配
 			if (buffer[r] == start) {
-				int re = 0;
-				int j = r;
+				int re = 0; // 已经匹配长度
+				int j = r; // 在内容值字节数组中的指针
 				while (true) {
 					re++;
 					j++;
-					if (re >= bs.length || j >= max)
-						break;
-					if (bs[re] != buffer[j])
-						break;
-				}
-				// Found
-				if (re == bs.length) {
-					nextmark = j;
-					return -1;
-				}
-				// Found partly at the end buffer
-				else if (j == max) {
-					nextmark = max;
-					if (isStreamEnd) {
-						r = max;
-						return 0;
+					// 全部匹配
+					if (re == bs.length) {
+						nextmark = j;
+						return -1;
 					}
-					return re;
+					// 到达本项目的结尾，但是并不确定是否是边界，因为还未匹配完
+					// 因此暂时假设这个不会被匹配
+					if (j == max) {
+						nextmark = max;
+						if (isStreamEnd) {
+							r = max;
+							return 0;
+						}
+						return re;
+					}
+					// 如果字符不相等，那么查看一下回退数组
+					// 如果回退到 0，则退出循环，因为这不是边界，否则继续循环匹配边界
+					if (bs[re] != buffer[j]) {
+						re = fails[re];
+						// 再次判断回退后位置
+						if (bs[re] != buffer[j]) {
+							break;
+						}
+						// 否则扩大边界，并继续循环
+						else {
+							r += re == 0 ? 1 : re;
+						}
+
+					}
 				}
 				// make 'r' jump to 'j'
 				r = j;

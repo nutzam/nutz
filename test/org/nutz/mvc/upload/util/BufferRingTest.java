@@ -12,7 +12,7 @@ public class BufferRingTest {
 
 	@Test
 	public void test_cross_ring_item() throws IOException {
-		byte[] boundary = Lang.toBytes("---".toCharArray());
+		RemountBytes boundary = RemountBytes.create("---");
 		String str = "ABCDE";
 		str += "abcde";
 		str += "1234-";
@@ -38,7 +38,7 @@ public class BufferRingTest {
 
 	@Test
 	public void test_normal_read() throws IOException {
-		byte[] boundary = Lang.toBytes("---".toCharArray());
+		RemountBytes boundary = RemountBytes.create("---");
 		String str = "12345";
 		str += "67890";
 		str += "ABCDE";
@@ -223,7 +223,7 @@ public class BufferRingTest {
 
 	@Test
 	public void test_by_buffer() throws IOException {
-		byte[] boundary = Lang.toBytes("-----".toCharArray());
+		RemountBytes boundary = RemountBytes.create("-----");
 		String str = "-----";
 		str += "ABCDE";
 		str += "-----";
@@ -263,7 +263,7 @@ public class BufferRingTest {
 
 	@Test
 	public void test_by_buffer2() throws IOException {
-		byte[] boundary = Lang.toBytes("-----".toCharArray());
+		RemountBytes boundary = RemountBytes.create("-----");
 		String str = "-----";
 		str += "ABCDE";
 		str += "-----";
@@ -302,7 +302,7 @@ public class BufferRingTest {
 
 	@Test
 	public void test_mark_dangerous_char() throws IOException {
-		byte[] boundary = Lang.toBytes("**!".toCharArray());
+		RemountBytes boundary = RemountBytes.create("**!");
 		String str = "-***!";
 		InputStream ins = Lang.ins(str);
 		BufferRing br = new BufferRing(ins, 3, 5);
@@ -314,14 +314,13 @@ public class BufferRingTest {
 		s = br.dumpAsString();
 		assertEquals("-*", s);
 	}
-
+	
 	@Test
 	public void test_mark_dangerous_char2() throws IOException {
-		byte[] boundary = Lang.toBytes("**!".toCharArray());
-		String str = "---**";
-		str += "!--";
+		RemountBytes boundary = RemountBytes.create("*!");
+		String str = "-**!ABC";
 		InputStream ins = Lang.ins(str);
-		BufferRing br = new BufferRing(ins, 3, 5);
+		BufferRing br = new BufferRing(ins, 3, 10);
 		String s;
 		MarkMode mode;
 		br.load();
@@ -329,5 +328,27 @@ public class BufferRingTest {
 		assertEquals(MarkMode.FOUND, mode);
 		s = br.dumpAsString();
 		assertEquals("-*", s);
+	}
+
+	@Test
+	public void test_mark_dangerous_char3() throws IOException {
+		RemountBytes boundary = RemountBytes.create("**!");
+		String str = "---**";
+		str += "!--";
+		InputStream ins = Lang.ins(str);
+		BufferRing br = new BufferRing(ins, 3, 5);
+		String s;
+		MarkMode mode;
+		br.load();
+		
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.FOUND, mode);
+		s = br.dumpAsString();
+		assertEquals("---", s);
+		
+		mode = br.mark(boundary);
+		assertEquals(MarkMode.STREAM_END, mode);
+		s = br.dumpAsString();
+		assertEquals("--", s);
 	}
 }

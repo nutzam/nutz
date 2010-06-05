@@ -23,6 +23,7 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.upload.util.BufferRing;
 import org.nutz.mvc.upload.util.MarkMode;
+import org.nutz.mvc.upload.util.RemountBytes;
 
 /**
  * 采用成块写入的方式，这个逻辑比 SimpleUploading 大约快了 1 倍
@@ -62,11 +63,10 @@ public class FastUploading implements Uploading {
 		 * 解析边界
 		 */
 		String firstBoundary = "--" + Http.multipart.getBoundary(req.getContentType());
-		byte[] firstBoundaryBytes = Lang.toBytes(firstBoundary.toCharArray());
-
+		RemountBytes firstBoundaryBytes = RemountBytes.create(firstBoundary);
 		String itemEndl = "\r\n--" + Http.multipart.getBoundary(req.getContentType());
-		byte[] itemEndlBytes = Lang.toBytes(itemEndl.toCharArray());
-		byte[] nameEndlBytes = Lang.toBytes("\r\n\r\n".toCharArray());
+		RemountBytes itemEndlBytes = RemountBytes.create(itemEndl);
+		RemountBytes nameEndlBytes = RemountBytes.create("\r\n\r\n");
 
 		if (log.isDebugEnabled())
 			log.debug("boundary: " + itemEndl);

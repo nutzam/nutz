@@ -54,6 +54,10 @@ public class BufferRing {
 		}
 	}
 
+	public MarkMode mark(RemountBytes rb) throws IOException {
+		return mark(rb.bytes, rb.fails);
+	}
+
 	/**
 	 * 根据给定的字节数组，在环中作标记，以便 dump
 	 * 
@@ -62,10 +66,10 @@ public class BufferRing {
 	 * @return 标记模式
 	 * @throws IOException
 	 */
-	public MarkMode mark(byte[] bs) throws IOException {
+	private MarkMode mark(byte[] bs, int[] fails) throws IOException {
 		RingItem ri = item;
 		int re;
-		while ((re = ri.mark(bs)) >= 0 && ri.isDone4Mark()) {
+		while ((re = ri.mark(bs, fails)) >= 0 && ri.isDone4Mark()) {
 			// 结尾匹配 bs 的开始，看不出这是否是一个结束，所以暂时当作
 			// 结束标记，并看看下一个节点。如果不是结束，则需要将 r 置到 max
 			if (re > 0) {
