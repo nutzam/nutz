@@ -26,7 +26,7 @@ public class AnnotationAopConfigration implements AopConfigration {
 		for (Method m : aops) {
 			MethodMatcher mm = new SimpleMethodMatcher(m);
 			for (String nm : m.getAnnotation(Aop.class).value())
-				ipList.add(new InterceptorPair(ioc.get(MethodInterceptor.class, nm),mm));
+				ipList.add(new InterceptorPair(ioc.get(MethodInterceptor.class, nm), mm));
 		}
 		return ipList;
 	}

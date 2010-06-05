@@ -15,19 +15,20 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class XmlAopConfigration extends AbstractAopConfigration {
-	
-	public XmlAopConfigration(String... fileNames) throws ParserConfigurationException, SAXException, IOException {
+
+	public XmlAopConfigration(String... fileNames) throws ParserConfigurationException,
+			SAXException, IOException {
 		DocumentBuilder builder = Lang.xmls();
-        Document document;
-        List<AopConfigrationItem> aopList = new ArrayList<AopConfigrationItem>();
-        for (String fileName : fileNames) {
-                document = builder.parse(Files.findFile(fileName));
-                document.normalizeDocument();
-                NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
-                for (int i = 0; i < nodeListZ.getLength(); i++)
-                	aopList.add(parse((Element)nodeListZ.item(i)));
-        }
-        setAopItemList(aopList);
+		Document document;
+		List<AopConfigrationItem> aopList = new ArrayList<AopConfigrationItem>();
+		for (String fileName : fileNames) {
+			document = builder.parse(Files.findFile(fileName));
+			document.normalizeDocument();
+			NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
+			for (int i = 0; i < nodeListZ.getLength(); i++)
+				aopList.add(parse((Element) nodeListZ.item(i)));
+		}
+		setAopItemList(aopList);
 	}
 
 	private AopConfigrationItem parse(Element item) {

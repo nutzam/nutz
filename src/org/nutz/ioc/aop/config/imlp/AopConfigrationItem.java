@@ -6,29 +6,28 @@ import org.nutz.aop.MethodMatcher;
 import org.nutz.aop.MethodMatcherFactory;
 
 public class AopConfigrationItem {
-	
+
 	private String className;
-	
+
 	private String methodName;
-	
+
 	private String interceptor;
-	
+
 	private boolean singleton;
-	
+
 	private MethodMatcher methodMatcher;
-	
+
 	private Pattern classnamePattern;
-	
+
 	public MethodMatcher getMethodMatcher() {
 		return methodMatcher;
 	}
-	
-	public boolean matchClassName(String className){
+
+	public boolean matchClassName(String className) {
 		return classnamePattern.matcher(className).find();
 	}
-	
-	public AopConfigrationItem() {
-	}
+
+	public AopConfigrationItem() {}
 
 	public AopConfigrationItem(	String className,
 								String methodName,
@@ -40,8 +39,6 @@ public class AopConfigrationItem {
 		this.interceptor = interceptor;
 		this.singleton = singleton;
 	}
-
-
 
 	public String getClassName() {
 		return className;
@@ -68,11 +65,11 @@ public class AopConfigrationItem {
 	public void setInterceptor(String interceptor) {
 		this.interceptor = interceptor;
 	}
-	
+
 	public boolean isSingleton() {
 		return singleton;
 	}
-	
+
 	public void setSingleton(boolean singleton) {
 		this.singleton = singleton;
 	}

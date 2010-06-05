@@ -4,11 +4,11 @@ import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
 
 public class InterceptorPair {
-	
+
 	private MethodInterceptor methodInterceptor;
-	
+
 	private MethodMatcher methodMatcher;
-	
+
 	public InterceptorPair(MethodInterceptor methodInterceptor, MethodMatcher methodMatcher) {
 		super();
 		this.methodInterceptor = methodInterceptor;
@@ -30,7 +30,5 @@ public class InterceptorPair {
 	public void setMethodMatcher(MethodMatcher methodMatcher) {
 		this.methodMatcher = methodMatcher;
 	}
-	
-	
 
 }
