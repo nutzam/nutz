@@ -52,6 +52,7 @@ public class Aop1 {
 							+ " >> mixArgsVoid"
 							+ " 我的参数"
 							+ Castors.me().castToString(new Object[]{x, obj, yy, xp, z}));
+		new Throwable().printStackTrace();
 	}
 
 	/**

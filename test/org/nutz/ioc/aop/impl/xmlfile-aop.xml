@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <aop>
-	<class name="org\\.apache\\..*" method=".*" interceptor="ioc:xxx"/>
+	<class name="(org.apache.).+" method=".*" interceptor="ioc:xxx"/>
 	<class name=".*" method=".*" interceptor="org.nutz.aop.interceptor.LoggingMethodInterceptor" singleton="true"/><!-- 为任何可以拦截的方法添加Log -->
 	
 	
