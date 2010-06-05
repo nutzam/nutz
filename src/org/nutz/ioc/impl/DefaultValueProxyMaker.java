@@ -81,6 +81,9 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		else if ("inner".equals(type)) {
 			return new InnerValue((IocObject) value);
 		}
+		else if ("jndi".equals(type)) {
+			return new JNDI_Value(value.toString());
+		}
 		return null;
 	}
 
