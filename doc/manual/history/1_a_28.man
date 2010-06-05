@@ -4,7 +4,7 @@
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 关于 1.a.28
-	[history/1_a_27.man Nutz 1.a.27] 发布之后的近两个月，社区发布了 {*1.a.28} 版。它进行了较重大的改进：
+	[1_a_27.man Nutz 1.a.27] 发布之后的近两个月，社区发布了 {*1.a.28} 版。它进行了较重大的改进：
 	 # 对 Ioc 接口[http://groups.google.at/group/nutzam/browse_thread/thread/43513b29d1b07cf3?hl=zh-CN 关于 Ioc 做了一个稍微重要的修改]--增加了一个方法
 		{{{
 		<T> T get(Class<T> type) throws IocException;

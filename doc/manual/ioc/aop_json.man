@@ -3,10 +3,12 @@
 #index:0,1
 --------------------------------------------------------------------------------------------------------
 需使用的类
+
 	* org.nutz.ioc.aop.config.impl.JsonAopConfigration
 
 --------------------------------------------------------------------------------------------------------
 看看一个示例的ioc配置文件
+
 	{{{
 	var ioc = {
 		log : {
@@ -61,8 +63,8 @@
 	
 --------------------------------------------------------------------------------------------------------
 拓展使用 -- 声明式事务
-	使用内置的事务拦截器 org.nutz.aop.interceptor.TransactionInterceptor
-	首先,声明5种事务等级对应的拦截器
+
+	首先,声明5种事务等级对应的拦截器(使用内置的事务拦截器 org.nutz.aop.interceptor.TransactionInterceptor)
 	{{{
 		txNONE : {
 			type : 'org.nutz.aop.interceptor.TransactionInterceptor',
@@ -108,7 +110,8 @@
 	按照上述声明:
 		* 对于com.service包下的类的全部方法,均应用log拦截器
 		* 对于com.service.auth包下的类的全部方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE
-		* 对于com.service.blog包下的类的全部方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED
-		* 对于com.service.news包下的类的全部方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED
+		* 对于com.service.blog包下的类的全部方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_REPEATABLE_READ
+		* 对于com.service.news包下的类的全部方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED
+		* 对于com.service.media包下的类的全部方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED
 		* 对于com.service.status包下的类的全部方法,均应用txNONE拦截器,事务级别 NONE
 	
