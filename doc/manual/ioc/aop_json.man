@@ -91,18 +91,18 @@
 			type :'org.nutz.aop.interceptor.LoggingMethodInterceptor'
 		}
 	}}}
-	然后,定义哪些类的什么方法需要进行声明,继续添加
+	然后,定义哪些类的什么方法需要进行声明,继续添加 (一般来说,应该把等级高的往后放)
 	{{{
 		$aop : {
 			type : 'org.nutz.ioc.aop.config.impl.JsonAopConfigration',
 			fields : {
 				itemList : [
 					['com\\.service\\..+','.+','ioc:log'],
-					['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE'],
-					['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
-					['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+					['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE'],
 					['com\\.service\\.media\\..+','(get|set).+','ioc:txREAD_UNCOMMITTED'],
-					['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE']
+					['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+					['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
+					['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE']
 				]
 			}
 		}

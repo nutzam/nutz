@@ -20,7 +20,10 @@ public abstract class EntityService<T> extends Service {
 	@SuppressWarnings("unchecked")
 	public EntityService() {
 		try {
-			mirror = Mirror.me((Class<T>) Mirror.getTypeParams(getClass())[0]);
+			Class<T> entryClass = (Class<T>) Mirror.getTypeParam(getClass(),0);
+			mirror = Mirror.me(entryClass);
+			if (log.isDebugEnabled())
+				Logs.getLog(getClass()).debugf("Get TypeParams for self : %s", entryClass.getName());
 		}
 		catch (Throwable e) {
 			if (log.isWarnEnabled())

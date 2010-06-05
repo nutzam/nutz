@@ -1202,10 +1202,14 @@ public class Mirror<T> {
 	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
 	 */
 	public static Type[] getTypeParams(Class<?> klass) {
+		if (klass == null)
+			return null;
 		Type superclass = klass.getGenericSuperclass();
+		if ("java.lang.Object".equals(superclass))
+			return null;
 		if (superclass instanceof ParameterizedType)
 			return ((ParameterizedType) superclass).getActualTypeArguments();
-		return null;
+		return getTypeParams(klass.getSuperclass());
 	}
 
 	private static final Pattern PTN = Pattern.compile("(<)(.+)(>)");

@@ -9,7 +9,6 @@ import org.nutz.repo.org.objectweb.asm.ClassWriter;
 import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.repo.org.objectweb.asm.Type;
-import org.nutz.lang.Mirror;
 
 /**
  * 
@@ -35,7 +34,7 @@ public class ClassY implements Opcodes {
 		cw.visit(	AsmClassAgent.CLASS_LEVEL,
 					ACC_PUBLIC,
 					this.myName,
-					getSignature(klass),
+					null,
 					enhancedSuperName,
 					getParentInterfaces(klass));
 		this.methodArray = methodArray;
@@ -107,7 +106,7 @@ public class ClassY implements Opcodes {
 			MethodVisitor mv = cw.visitMethod(	methodAccess,
 												methodName,
 												methodDesc,
-												getSignature(method.getReturnType()),
+												null,
 												convertExp(method.getExceptionTypes()));
 			int methodIndex = findMethodIndex(methodName, methodDesc, methodArray);
 			new AopMethodAdapter(	mv,
@@ -152,21 +151,5 @@ public class ClassY implements Opcodes {
 											Method[] methodArray,
 											Constructor<?>[] constructors) {
 		return new ClassY(kclass, myName, methodArray, constructors).toByteArray();
-	}
-	
-	/**
-	 * 获取泛型参数
-	 */
-	public String getSignature(Class<?> clazz){
-		java.lang.reflect.Type [] types = Mirror.getTypeParams(clazz);
-		if (types == null)
-			return null;
-		String signature = "";
-		for (java.lang.reflect.Type type : types) {
-			signature = signature + "L" + type.toString().replace('.', '/') + ";";
-		}
-		signature = "<T:"+signature+">L"+clazz.getName().replace('.', '/')+";";
-		System.out.println("signature --> " + signature);
-		return signature;
 	}
 }

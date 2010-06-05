@@ -13,6 +13,7 @@ import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
+import org.nutz.aop.asm.test.Aop7;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
 import org.nutz.aop.asm.test.ZZZ;
 import org.nutz.aop.interceptor.LoggingMethodInterceptor;
@@ -163,5 +164,12 @@ public class ClassXTest {
 	public void test_annotation() {
 		ZZZ z = getNewInstance(ZZZ.class);
 		z.p(null);
+	}
+	
+	@Test
+	public void test_signature() throws Throwable{
+		Class<?> clazz = classAgent.define(Nutzs.cd(), Aop7.class);
+		System.out.println(clazz.newInstance());
+		assertTrue(Aop1.class.equals(Mirror.getTypeParam(clazz, 0)));
 	}
 }
