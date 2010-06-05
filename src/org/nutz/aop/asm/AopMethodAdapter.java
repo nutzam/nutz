@@ -1,9 +1,9 @@
 package org.nutz.aop.asm;
 
-import org.nutz.aop.asm.org.asm.Label;
-import org.nutz.aop.asm.org.asm.MethodVisitor;
-import org.nutz.aop.asm.org.asm.Opcodes;
-import org.nutz.aop.asm.org.asm.Type;
+import org.nutz.repo.org.objectweb.asm.Label;
+import org.nutz.repo.org.objectweb.asm.MethodVisitor;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
+import org.nutz.repo.org.objectweb.asm.Type;
 
 /**
  * 

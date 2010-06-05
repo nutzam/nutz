@@ -1,5 +1,6 @@
 package org.nutz.aop.asm;
 
+
 /**
  * 
  * @author wendal(wendal1985@gmail.com)
@@ -54,4 +55,5 @@ public final class Helper {
 			return 0;
 		return value.charValue();
 	}
+	
 }

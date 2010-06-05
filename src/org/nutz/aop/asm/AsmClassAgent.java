@@ -8,7 +8,7 @@ import java.util.List;
 import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
-import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.log.Logs;
@@ -22,7 +22,7 @@ public class AsmClassAgent extends AbstractClassAgent {
 
 	static int CLASS_LEVEL = Opcodes.V1_5;
 	
-	private static final boolean debug = false;
+	private static final boolean debug = true;
 
 	static {
 		// 判断编译等级

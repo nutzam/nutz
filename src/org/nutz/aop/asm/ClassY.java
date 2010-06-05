@@ -5,10 +5,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.nutz.aop.AopCallback;
-import org.nutz.aop.asm.org.asm.ClassWriter;
-import org.nutz.aop.asm.org.asm.MethodVisitor;
-import org.nutz.aop.asm.org.asm.Opcodes;
-import org.nutz.aop.asm.org.asm.Type;
+import org.nutz.repo.org.objectweb.asm.ClassWriter;
+import org.nutz.repo.org.objectweb.asm.MethodVisitor;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
+import org.nutz.repo.org.objectweb.asm.Type;
+import org.nutz.lang.Mirror;
 
 /**
  * 
@@ -34,7 +35,7 @@ public class ClassY implements Opcodes {
 		cw.visit(	AsmClassAgent.CLASS_LEVEL,
 					ACC_PUBLIC,
 					this.myName,
-					"",
+					getSignature(klass),
 					enhancedSuperName,
 					getParentInterfaces(klass));
 		this.methodArray = methodArray;
@@ -106,7 +107,7 @@ public class ClassY implements Opcodes {
 			MethodVisitor mv = cw.visitMethod(	methodAccess,
 												methodName,
 												methodDesc,
-												null,
+												getSignature(method.getReturnType()),
 												convertExp(method.getExceptionTypes()));
 			int methodIndex = findMethodIndex(methodName, methodDesc, methodArray);
 			new AopMethodAdapter(	mv,
@@ -151,5 +152,21 @@ public class ClassY implements Opcodes {
 											Method[] methodArray,
 											Constructor<?>[] constructors) {
 		return new ClassY(kclass, myName, methodArray, constructors).toByteArray();
+	}
+	
+	/**
+	 * 获取泛型参数
+	 */
+	public String getSignature(Class<?> clazz){
+		java.lang.reflect.Type [] types = Mirror.getTypeParams(clazz);
+		if (types == null)
+			return null;
+		String signature = "";
+		for (java.lang.reflect.Type type : types) {
+			signature = signature + "L" + type.toString().replace('.', '/') + ";";
+		}
+		signature = "<T:"+signature+">L"+clazz.getName().replace('.', '/')+";";
+		System.out.println("signature --> " + signature);
+		return signature;
 	}
 }

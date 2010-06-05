@@ -1,10 +1,10 @@
 package org.nutz.aop.asm;
 
-import static org.nutz.aop.asm.org.asm.Opcodes.ALOAD;
-import static org.nutz.aop.asm.org.asm.Opcodes.INVOKESPECIAL;
-import static org.nutz.aop.asm.org.asm.Opcodes.RETURN;
+import static org.nutz.repo.org.objectweb.asm.Opcodes.ALOAD;
+import static org.nutz.repo.org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.nutz.repo.org.objectweb.asm.Opcodes.RETURN;
 
-import org.nutz.aop.asm.org.asm.MethodVisitor;
+import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 
 /**
  * @author wendal(wendal1985@gmail.com)

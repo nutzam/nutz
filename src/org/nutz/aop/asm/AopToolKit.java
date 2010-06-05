@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.List;
 
 import org.nutz.aop.MethodInterceptor;
-import org.nutz.aop.asm.org.asm.ClassVisitor;
-import org.nutz.aop.asm.org.asm.Opcodes;
+import org.nutz.repo.org.objectweb.asm.ClassVisitor;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.lang.Mirror;
 
 public class AopToolKit implements Opcodes {
