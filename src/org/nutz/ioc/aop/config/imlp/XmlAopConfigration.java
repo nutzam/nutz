@@ -14,6 +14,12 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+/**
+ * 
+ * 通过Xml配置文件判断需要拦截哪些方法
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public class XmlAopConfigration extends AbstractAopConfigration {
 
 	public XmlAopConfigration(String... fileNames) throws ParserConfigurationException,

@@ -15,6 +15,12 @@ import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.lang.Mirror;
 
+/**
+ * 通过扫描@Aop标注过的Method判断需要拦截哪些方法
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public class AnnotationAopConfigration implements AopConfigration {
 
 	public List<InterceptorPair> getInterceptorPairList(Ioc ioc, Class<?> clazz) {

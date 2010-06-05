@@ -3,6 +3,12 @@ package org.nutz.ioc.aop.config;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
 
+/**
+ * 
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public class InterceptorPair {
 
 	private MethodInterceptor methodInterceptor;

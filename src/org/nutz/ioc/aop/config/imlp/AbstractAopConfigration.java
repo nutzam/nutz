@@ -11,6 +11,12 @@ import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.lang.Lang;
 
+/**
+ * 
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public abstract class AbstractAopConfigration implements AopConfigration {
 
 	private List<AopConfigrationItem> aopItemList;

@@ -5,6 +5,12 @@ import java.util.regex.Pattern;
 import org.nutz.aop.MethodMatcher;
 import org.nutz.aop.MethodMatcherFactory;
 
+/**
+ * 
+ * 
+ * @author wendal(wendal1985@gmail.com)
+ * 
+ */
 public class AopConfigrationItem {
 
 	private String className;
