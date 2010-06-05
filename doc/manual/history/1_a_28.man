@@ -10,8 +10,8 @@
 		<T> T get(Class<T> type) throws IocException;
 		}}}
 		* 同时将注解 @InjectName 从 mvc 包移动到 ioc 包
-	 # Ioc 支持[ioc/annotation_ioc_loader.man 注解方式的配置]
-	 # 重写了 AOP [ioc/aop_solution.man 的字节码模型]
+	 # Ioc 支持[../ioc/annotation_ioc_loader.man 注解方式的配置]
+	 # 重写了 AOP [../ioc/aop_solution.man 的字节码模型]
 	 # 文件上传适配器默认采用新写的 [http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/mvc/upload/FastUploading.java FastUploading]，上传速度提高一倍
 	 
 --------------------------------------------------------------------------------------------------------
