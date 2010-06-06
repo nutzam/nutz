@@ -77,7 +77,7 @@ public class NutIoc implements Ioc2 {
 
 	public <T> T get(Class<T> type) throws IocException {
 		InjectName inm = type.getAnnotation(InjectName.class);
-		if (null != inm)
+		if (null != inm && (! Strings.isBlank(inm.value())))
 			return get(type, inm.value());
 		return get(type, Strings.lowerFirst(type.getSimpleName()));
 	}
