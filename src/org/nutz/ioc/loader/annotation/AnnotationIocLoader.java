@@ -114,6 +114,7 @@ public class AnnotationIocLoader implements IocLoader {
 					iocValue.setType("refer");
 					iocValue.setValue(fieldInfo);
 					iocField.setValue(iocValue);
+					iocObject.addField(iocField);
 					fieldList.add(iocField.getName());
 				}
 			}
