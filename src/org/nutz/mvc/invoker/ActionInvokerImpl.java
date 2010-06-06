@@ -81,7 +81,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 		this.moduleType = moduleType;
 		InjectName name = moduleType.getAnnotation(InjectName.class);
 		if (null != name)
-			this.moduleName = name.value();
+			if (Strings.isBlank(name.value()))
+				this.moduleName = Strings.lowerFirst(moduleType.getSimpleName());
+			else
+				this.moduleName = name.value();
 		else
 			try {
 				module = moduleType.newInstance();
