@@ -1860,10 +1860,10 @@ class MethodWriter implements MethodVisitor {
                 | ClassWriter.ACC_SYNTHETIC_ATTRIBUTE
                 | ((access & ClassWriter.ACC_SYNTHETIC_ATTRIBUTE) / (ClassWriter.ACC_SYNTHETIC_ATTRIBUTE / Opcodes.ACC_SYNTHETIC));
         out.putShort(access & ~mask).putShort(name).putShort(desc);
-        if (classReaderOffset != 0) {
-            out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
-            return;
-        }
+//        if (classReaderOffset != 0) {
+//            out.putByteArray(cw.cr.b, classReaderOffset, classReaderLength);
+//            return;
+//        }
         int attributeCount = 0;
         if (code.length > 0) {
             ++attributeCount;

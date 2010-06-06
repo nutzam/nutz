@@ -90,45 +90,45 @@ public class Attribute {
         return null;
     }
 
-    /**
-     * Reads a {@link #type type} attribute. This method must return a <i>new</i>
-     * {@link Attribute} object, of type {@link #type type}, corresponding to
-     * the <tt>len</tt> bytes starting at the given offset, in the given class
-     * reader.
-     * 
-     * @param cr the class that contains the attribute to be read.
-     * @param off index of the first byte of the attribute's content in {@link
-     *        ClassReader#b cr.b}. The 6 attribute header bytes, containing the
-     *        type and the length of the attribute, are not taken into account
-     *        here.
-     * @param len the length of the attribute's content.
-     * @param buf buffer to be used to call
-     *        {@link ClassReader#readUTF8 readUTF8},
-     *        {@link ClassReader#readClass(int,char[]) readClass} or
-     *        {@link ClassReader#readConst readConst}.
-     * @param codeOff index of the first byte of code's attribute content in
-     *        {@link ClassReader#b cr.b}, or -1 if the attribute to be read is
-     *        not a code attribute. The 6 attribute header bytes, containing the
-     *        type and the length of the attribute, are not taken into account
-     *        here.
-     * @param labels the labels of the method's code, or <tt>null</tt> if the
-     *        attribute to be read is not a code attribute.
-     * @return a <i>new</i> {@link Attribute} object corresponding to the given
-     *         bytes.
-     */
-    protected Attribute read(
-        final ClassReader cr,
-        final int off,
-        final int len,
-        final char[] buf,
-        final int codeOff,
-        final Label[] labels)
-    {
-        Attribute attr = new Attribute(type);
-        attr.value = new byte[len];
-        System.arraycopy(cr.b, off, attr.value, 0, len);
-        return attr;
-    }
+//    /**
+//     * Reads a {@link #type type} attribute. This method must return a <i>new</i>
+//     * {@link Attribute} object, of type {@link #type type}, corresponding to
+//     * the <tt>len</tt> bytes starting at the given offset, in the given class
+//     * reader.
+//     * 
+//     * @param cr the class that contains the attribute to be read.
+//     * @param off index of the first byte of the attribute's content in {@link
+//     *        ClassReader#b cr.b}. The 6 attribute header bytes, containing the
+//     *        type and the length of the attribute, are not taken into account
+//     *        here.
+//     * @param len the length of the attribute's content.
+//     * @param buf buffer to be used to call
+//     *        {@link ClassReader#readUTF8 readUTF8},
+//     *        {@link ClassReader#readClass(int,char[]) readClass} or
+//     *        {@link ClassReader#readConst readConst}.
+//     * @param codeOff index of the first byte of code's attribute content in
+//     *        {@link ClassReader#b cr.b}, or -1 if the attribute to be read is
+//     *        not a code attribute. The 6 attribute header bytes, containing the
+//     *        type and the length of the attribute, are not taken into account
+//     *        here.
+//     * @param labels the labels of the method's code, or <tt>null</tt> if the
+//     *        attribute to be read is not a code attribute.
+//     * @return a <i>new</i> {@link Attribute} object corresponding to the given
+//     *         bytes.
+//     */
+//    protected Attribute read(
+//        final ClassReader cr,
+//        final int off,
+//        final int len,
+//        final char[] buf,
+//        final int codeOff,
+//        final Label[] labels)
+//    {
+//        Attribute attr = new Attribute(type);
+//        attr.value = new byte[len];
+//        System.arraycopy(cr.b, off, attr.value, 0, len);
+//        return attr;
+//    }
 
     /**
      * Returns the byte array form of this attribute.
