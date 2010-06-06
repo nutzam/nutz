@@ -3,6 +3,7 @@ package org.nutz.lang.util;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -232,7 +233,6 @@ public final class Resources {
 			}
 		}
 		String CLASSPATH = System.getenv().get("CLASSPATH");
-		Logs.getLog(Resources.class).info(CLASSPATH);
 		if (CLASSPATH != null) {
 			String[] paths = null;
 			if (Lang.isWin())
@@ -241,10 +241,8 @@ public final class Resources {
 				paths = CLASSPATH.split(":");
 			try {
 				String pathRegex = packageZ.replace('.', '/') + "/.+\\.class";
-				Logs.getLog(Resources.class).info(pathRegex);
 				for (String path : paths) {
 					if (path.endsWith(".jar")) {
-						Logs.getLog(Resources.class).info(path);
 						File file = new File(path);
 						if (Files.isFile(file)) {
 							ZipEntry[] entries = Files.findEntryInZip(new ZipFile(file), pathRegex);
@@ -273,5 +271,43 @@ public final class Resources {
 			}
 		}
 		return list;
+	}
+	
+	public static final List<InputStream> findZipEntryInClassPath(String pathRegex){
+		List<InputStream> entriesList = new ArrayList<InputStream>();
+		String CLASSPATH = System.getenv().get("CLASSPATH");
+		if (CLASSPATH != null) {
+			String[] paths = null;
+			if (Lang.isWin())
+				paths = CLASSPATH.split(";");
+			else
+				paths = CLASSPATH.split(":");
+			try {
+				for (String path : paths) {
+					if (path.endsWith(".jar")) {
+						File file = new File(path);
+						ZipFile zipFile = new ZipFile(file);
+						if (Files.isFile(file)) {
+							ZipEntry[] entries = Files.findEntryInZip(zipFile, pathRegex);
+							Logs.getLog(Resources.class).info(entries.length);
+							if (entries != null) {
+								for (ZipEntry zipEntry : entries) {
+									try {
+										entriesList.add(zipFile.getInputStream(zipEntry));
+									}
+									catch (Throwable e) {
+										e.printStackTrace();
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+			catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+		return entriesList;
 	}
 }

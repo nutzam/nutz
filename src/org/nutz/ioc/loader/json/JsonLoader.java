@@ -2,8 +2,11 @@ package org.nutz.ioc.loader.json;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.ioc.IocException;
@@ -13,6 +16,7 @@ import org.nutz.json.JsonException;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.Resources;
 
 /**
  * 从 Json 文件中读取配置信息。 支持 Merge with parent ，利用 MapLoader
@@ -33,13 +37,24 @@ public class JsonLoader extends MapLoader {
 		// 解析路径
 		for (int i = 0; i < fs.length; i++) {
 			fs[i] = Files.findFile(paths[i]);
-			if (null == fs[i])
-				throw Lang.makeThrow("Fail to find file '%s'!", paths[i]);
+			if (null == fs[i]) 
+				continue;
 			// 如果是目录，读取内部所有 .json 和 .js 文件
 			if (fs[i].isDirectory())
 				loadFromDir(fs[i]);
 			else
 				loadFromReader(Streams.fileInr(paths[i]));
+		}
+		//在jar中查找
+		for (String path : paths) {
+				String pathRegex = path.replace('\\', '/').replace(".", "\\.");
+				if (pathRegex.endsWith("/"))
+					pathRegex += ".+\\.(js|json)$";
+				List<InputStream> entries = Resources.findZipEntryInClassPath(pathRegex);
+				if (entries.size() < 1)
+					continue;
+				for (InputStream inputStream : entries)
+					loadFromReader(new InputStreamReader(inputStream));
 		}
 	}
 	
