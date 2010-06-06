@@ -147,7 +147,7 @@ public interface MethodVisitor {
      * @param nStack the number of operand stack elements in the visited frame.
      * @param stack the operand stack types in this frame. This array must not
      *        be modified. Its content has the same format as the "local" array.
-     * @throw IllegalStateException if a frame is visited just after another
+     * @throws IllegalStateException if a frame is visited just after another
      *        one, without any instruction between the two (unless this frame
      *        is a Opcodes#F_SAME frame, in which case it is silently ignored).
      */
@@ -245,7 +245,7 @@ public interface MethodVisitor {
      *        INVOKEINTERFACE or INVOKEDYNAMIC.
      * @param owner the internal name of the method's owner class (see {@link
      *        Type#getInternalName() getInternalName})
-     *        or {@link org.objectweb.asm.Opcodes#INVOKEDYNAMIC_OWNER}.
+     *        or {@link org.nutz.repo.org.objectweb.asm.Opcodes#INVOKEDYNAMIC_OWNER}.
      * @param name the method's name.
      * @param desc the method's descriptor (see {@link Type Type}).
      */

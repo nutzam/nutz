@@ -48,7 +48,6 @@ public interface PageInfo {
 
 	/**
 	 * @return 是否是最后一页
-	 * @return
 	 */
 	boolean isLast();
 
