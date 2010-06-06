@@ -15,6 +15,7 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.log.Logs;
 
 /**
  * 提供了获取资源的一些高级方法
@@ -33,17 +34,21 @@ public final class Resources {
 	 */
 	public static List<Class<?>> scanClass(Class<?> baseClass) {
 		File dir = getBasePath(baseClass);
-		return scanClass(dir,baseClass.getPackage());
+		return scanClass(dir, baseClass.getPackage());
 	}
-	
+
 	/**
 	 * It will list all Class object in the package you give.
-	 * <p/>Whatever the class file you give existed in normal directory or jar file.
-	 * <p/><b>Not working in GAE</b>
+	 * <p/>
+	 * Whatever the class file you give existed in normal directory or jar file.
+	 * <p/>
+	 * <b>Not working in GAE</b>
+	 * 
 	 * @return a class List
-	 * @throws NullPointerException when packageZ is null
+	 * @throws NullPointerException
+	 *             when packageZ is null
 	 */
-	public static List<Class<?>> scanClass(File dir,Package packageZ){
+	public static List<Class<?>> scanClass(File dir, Package packageZ) {
 		if (dir == null)
 			dir = Files.findFile(packageZ.getName().replaceAll("\\.", "/"));
 		String[] classNames = null;
@@ -143,8 +148,7 @@ public final class Resources {
 		try {
 			jarPath = decodePath(jarPath);
 			ZipEntry[] entrys = Files.findEntryInZip(	new ZipFile(jarPath),
-															packageA.getName()
-																	.replace('.', '/')
+														packageA.getName().replace('.', '/')
 																+ "/\\w*.class");
 			if (null != entrys && entrys.length > 0) {
 				String[] classNames = new String[entrys.length];
@@ -200,8 +204,8 @@ public final class Resources {
 		catch (UnsupportedEncodingException e) {}
 		return path;
 	}
-	
-	public static List<Class<?>> scanClass(String packageZ){
+
+	public static List<Class<?>> scanClass(String packageZ) {
 		File dir = Files.findFile(packageZ.replace('.', '/'));
 		List<Class<?>> list = new ArrayList<Class<?>>();
 		if (dir != null) {
@@ -226,44 +230,46 @@ public final class Resources {
 					e.printStackTrace();
 				}
 			}
-		} else {
-			String CLASSPATH = System.getenv().get("CLASSPATH");
-			if (CLASSPATH != null) {
-				String[] paths = null;
-				if (Lang.isWin())
-					paths = CLASSPATH.split(";");
-				else
-					paths = CLASSPATH.split(":");
-				try {
-					String pathRegex = "/" + packageZ.replace('.', '/') + "/.+\\.class";
-					for (String path : paths) {
-						if (path.endsWith(".jar")) {
-							File file = new File(path);
-							if (Files.isFile(file)) {
-								ZipEntry[] entries = Files.findEntryInZip(	new ZipFile(file),
-																			pathRegex);
-								if (entries != null) {
-									for (ZipEntry zipEntry : entries) {
-										String entryName = zipEntry.getName();
-										// 去头去尾 /xxx/yyy/ZZ.class
-										String className = entryName.substring(	1,
-																				entryName.length() - 6)
-																	.replace('/', '.');
-										try {
-											list.add(Class.forName(className));
-										}
-										catch (Throwable e) {
-											e.printStackTrace();
-										}
+		}
+		String CLASSPATH = System.getenv().get("CLASSPATH");
+		Logs.getLog(Resources.class).info(CLASSPATH);
+		if (CLASSPATH != null) {
+			String[] paths = null;
+			if (Lang.isWin())
+				paths = CLASSPATH.split(";");
+			else
+				paths = CLASSPATH.split(":");
+			try {
+				String pathRegex = packageZ.replace('.', '/') + "/.+\\.class";
+				Logs.getLog(Resources.class).info(pathRegex);
+				for (String path : paths) {
+					if (path.endsWith(".jar")) {
+						Logs.getLog(Resources.class).info(path);
+						File file = new File(path);
+						if (Files.isFile(file)) {
+							ZipEntry[] entries = Files.findEntryInZip(new ZipFile(file), pathRegex);
+							Logs.getLog(Resources.class).info(entries.length);
+							if (entries != null) {
+								for (ZipEntry zipEntry : entries) {
+									String entryName = zipEntry.getName();
+									// 去头去尾 /xxx/yyy/ZZ.class
+									String className = entryName.substring(	0,
+																			entryName.length() - 6)
+																.replace('/', '.');
+									try {
+										list.add(Class.forName(className));
+									}
+									catch (Throwable e) {
+										e.printStackTrace();
 									}
 								}
 							}
 						}
 					}
 				}
-				catch (Throwable e) {
-					e.printStackTrace();
-				}
+			}
+			catch (Throwable e) {
+				e.printStackTrace();
 			}
 		}
 		return list;

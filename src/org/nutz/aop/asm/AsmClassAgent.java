@@ -22,7 +22,7 @@ public class AsmClassAgent extends AbstractClassAgent {
 
 	static int CLASS_LEVEL = Opcodes.V1_5;
 	
-	private static final boolean debug = true;
+	private static final boolean debug = false;
 
 	static {
 		// 判断编译等级
