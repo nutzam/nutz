@@ -54,8 +54,8 @@ public class AnnotationIocLoader implements IocLoader {
 			return;
 		IocBean iocBean = classZ.getAnnotation(IocBean.class);
 		if (iocBean != null) {
-			if (LOG.isInfoEnabled())
-				LOG.infof("Found a Class with Ioc-Annotation : %s", classZ);
+			if (LOG.isDebugEnabled())
+				LOG.debugf("Found a Class with Ioc-Annotation : %s", classZ);
 			String beanName = iocBean.name();
 			if (Strings.isBlank(beanName))
 				beanName = Strings.lowerFirst(classZ.getSimpleName());
@@ -118,8 +118,8 @@ public class AnnotationIocLoader implements IocLoader {
 					fieldList.add(iocField.getName());
 				}
 			}
-			if (LOG.isInfoEnabled())
-				LOG.infof("Processed Ioc Class : %s as [%s]", classZ, beanName);
+			if (LOG.isDebugEnabled())
+				LOG.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
 		}
 	}
 
