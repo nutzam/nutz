@@ -134,14 +134,6 @@ public class ClassY implements Opcodes {
 							enhancedSuperName).visitCode();
 	}
 
-	protected void visitX(int i, MethodVisitor mv) {
-		if (i < 6) {
-			mv.visitInsn(i + ICONST_0);
-		} else {
-			mv.visitIntInsn(BIPUSH, i);
-		}
-	}
-
 	private void addField() {
 		AopToolKit.addFields(cw);
 	}

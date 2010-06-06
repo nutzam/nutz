@@ -111,15 +111,6 @@ public class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 		}
 	}
 
-	protected int getLastIndex() {
-		int index = 1;
-		for (int i = 0; i < argumentTypes.length; i++) {
-			Type t = argumentTypes[i];
-			index += t.getSize();
-		}
-		return index;
-	}
-
 	protected void visitX(int i) {
 		if (i < 6) {
 			mv.visitInsn(i + ICONST_0);
@@ -248,27 +239,4 @@ public class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 		mv.visitInsn(returnType.getOpcode(IRETURN));
 	}
 
-	protected void useDefault() {
-		if (isObject) {
-			mv.visitInsn(ACONST_NULL);
-		} else {
-			if (returnType.equals(Type.BOOLEAN_TYPE)) {
-				mv.visitInsn(ICONST_0);
-			} else if (returnType.equals(Type.BYTE_TYPE)) {
-				mv.visitInsn(ICONST_0);
-			} else if (returnType.equals(Type.CHAR_TYPE)) {
-				mv.visitInsn(ICONST_0);
-			} else if (returnType.equals(Type.SHORT_TYPE)) {
-				mv.visitInsn(ICONST_0);
-			} else if (returnType.equals(Type.INT_TYPE)) {
-				mv.visitInsn(ICONST_0);
-			} else if (returnType.equals(Type.LONG_TYPE)) {
-				mv.visitInsn(LCONST_0);
-			} else if (returnType.equals(Type.FLOAT_TYPE)) {
-				mv.visitInsn(FCONST_0);
-			} else if (returnType.equals(Type.DOUBLE_TYPE)) {
-				mv.visitInsn(DCONST_0);
-			}
-		}
-	}
 }

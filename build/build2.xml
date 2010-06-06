@@ -36,7 +36,7 @@
 	<property name="OUTPUT" value="${env.OUTPUT}" />
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	
-	<property name="svn-version" value="r1282"></property>
+	<property name="svn-version" value="r1330"></property>
 	<property name="nutz-version" value="1.a.29"></property>
 	<tstamp>
 		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
@@ -132,6 +132,7 @@
 				destdir="${classes-dir-emma}" 
 				metadatafile="${classes-dir-emma}/metadata.emma" 
 				merge="true">
+				<filter excludes="org.nutz.repo.*" />
 			</instr>
 		</emma>
 		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8"
