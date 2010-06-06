@@ -246,7 +246,6 @@ public final class Resources {
 						File file = new File(path);
 						if (Files.isFile(file)) {
 							ZipEntry[] entries = Files.findEntryInZip(new ZipFile(file), pathRegex);
-							Logs.getLog(Resources.class).info(entries.length);
 							if (entries != null) {
 								for (ZipEntry zipEntry : entries) {
 									String entryName = zipEntry.getName();
