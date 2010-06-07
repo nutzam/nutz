@@ -1,5 +1,6 @@
 package org.nutz.mvc.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
@@ -13,6 +14,7 @@ import org.nutz.mvc.ActionFilter;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
+@Documented
 public @interface By {
 
 	Class<? extends ActionFilter> type();

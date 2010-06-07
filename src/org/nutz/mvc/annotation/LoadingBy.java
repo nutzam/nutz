@@ -1,5 +1,11 @@
 package org.nutz.mvc.annotation;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.init.DefaultLoading;
 
@@ -8,6 +14,9 @@ import org.nutz.mvc.init.DefaultLoading;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE})
+@Documented
 public @interface LoadingBy {
 
 	Class<? extends Loading> value() default DefaultLoading.class;

@@ -1,5 +1,6 @@
 package org.nutz.mvc.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -17,6 +18,7 @@ import org.nutz.mvc.init.DefaultMessageLoader;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
+@Documented
 public @interface Localization {
 
 	Class<? extends MessageLoader> type() default DefaultMessageLoader.class;

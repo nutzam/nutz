@@ -1,5 +1,6 @@
 package org.nutz.mvc.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -14,6 +15,7 @@ import org.nutz.mvc.Scope;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
+@Documented
 public @interface Attr {
 
 	/**

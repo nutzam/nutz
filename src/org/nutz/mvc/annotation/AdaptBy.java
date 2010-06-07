@@ -1,5 +1,6 @@
 package org.nutz.mvc.annotation;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -23,6 +24,7 @@ import org.nutz.mvc.adaptor.PairAdaptor;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})
+@Documented
 public @interface AdaptBy {
 
 	Class<? extends HttpAdaptor> type() default PairAdaptor.class;

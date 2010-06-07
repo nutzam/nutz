@@ -1,5 +1,11 @@
 package org.nutz.dao.entity.annotation;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.nutz.dao.DB;
 
 /**
@@ -27,6 +33,9 @@ import org.nutz.dao.DB;
  * @see org.nutz.dao.DB
  * @see org.nutz.dao.TableName
  */
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD})
+@Documented
 public @interface SQL {
 
 	DB db() default DB.OTHER;
