@@ -136,9 +136,9 @@ public abstract class Iocs {
 				Entry<String, ?> en = map.entrySet().iterator().next();
 				String key = en.getKey();
 				// Refer | Java | Env | File | sys | jndi
-				String str = IocValue.TYPE_REFER + "|" + IocValue.TYPE_JAVA
-										+ IocValue.TYPE_ENV + IocValue.TYPE_FILE
-										+ IocValue.TYPE_SYS + IocValue.TYPE_JNDI;
+				String str = IocValue.TYPE_REFER + "|" + IocValue.TYPE_JAVA + "|"
+										+ IocValue.TYPE_ENV + "|" + IocValue.TYPE_FILE + "|"
+										+ IocValue.TYPE_SYS + "|" + IocValue.TYPE_JNDI;
 				if (key.matches("^("+str+")$")) {
 					iv.setType(key);
 					iv.setValue(en.getValue());
