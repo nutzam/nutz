@@ -1,6 +1,7 @@
 package org.nutz.ioc.loader.annotation;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -82,7 +83,7 @@ public class AnnotationIocLoader implements IocLoader {
 			if (!Strings.isBlank(iocBean.fetch()))
 				eventSet.setCreate(iocBean.fetch().trim().intern());
 			
-			//处理字段(以@Inject方式)
+			//处理字段(以@Inject方式,位于字段)
 			List<String> fieldList = new ArrayList<String>();
 			Field[] fields = classZ.getDeclaredFields();
 			for (Field field : fields) {
@@ -103,6 +104,30 @@ public class AnnotationIocLoader implements IocLoader {
 				iocObject.addField(iocField);
 				fieldList.add(iocField.getName());
 			}
+			//处理字段(以@Inject方式,位于set方法)
+			Method[] methods = classZ.getMethods();
+			for (Method method : methods) {
+				Inject inject = method.getAnnotation(Inject.class);
+				if (inject == null)
+					continue;
+				if (method.getName().startsWith("set") 
+						&& method.getName().length() > 3
+						&& method.getParameterTypes().length == 1){
+					IocField iocField = new IocField();
+					iocField.setName(Strings.lowerFirst(method.getName().substring(3)));
+					IocValue iocValue;
+					if (Strings.isBlank(inject.value())){
+						iocValue = new IocValue();
+						iocValue.setType(IocValue.TYPE_REFER);
+						iocValue.setValue(method.getName().substring(3));
+					}
+					else
+						iocValue = convert(inject.value());
+					iocField.setValue(iocValue);
+					iocObject.addField(iocField);
+					fieldList.add(iocField.getName());
+				}
+			}
 			//处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
 			if (iocBean.field() != null && iocBean.field().length > 0) {
 				for (String fieldInfo : iocBean.field()) {
@@ -111,7 +136,7 @@ public class AnnotationIocLoader implements IocLoader {
 					IocField iocField = new IocField();
 					iocField.setName(fieldInfo);
 					IocValue iocValue = new IocValue();
-					iocValue.setType("refer");
+					iocValue.setType(IocValue.TYPE_REFER);
 					iocValue.setValue(fieldInfo);
 					iocField.setValue(iocValue);
 					iocObject.addField(iocField);

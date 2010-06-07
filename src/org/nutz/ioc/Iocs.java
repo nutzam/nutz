@@ -135,8 +135,11 @@ public abstract class Iocs {
 			if (map.size() == 1) {
 				Entry<String, ?> en = map.entrySet().iterator().next();
 				String key = en.getKey();
-				// Refer | Java | Env | File
-				if (key.matches("^(refer|java|env|file|sys)$")) {
+				// Refer | Java | Env | File | sys | jndi
+				String str = IocValue.TYPE_REFER + "|" + IocValue.TYPE_JAVA
+										+ IocValue.TYPE_ENV + IocValue.TYPE_FILE
+										+ IocValue.TYPE_SYS + IocValue.TYPE_JNDI;
+				if (key.matches("^("+str+")$")) {
 					iv.setType(key);
 					iv.setValue(en.getValue());
 					return iv;
@@ -144,7 +147,7 @@ public abstract class Iocs {
 			}
 			// Inner
 			if (isIocObject(map)) {
-				iv.setType("inner");
+				iv.setType(IocValue.TYPE_INNER);
 				try {
 					iv.setValue(map2iobj(map));
 				}
@@ -159,7 +162,7 @@ public abstract class Iocs {
 				IocValue v = object2value(en.getValue());
 				newmap.put(en.getKey(), v);
 			}
-			iv.setType("normal");
+			iv.setType(IocValue.TYPE_NORMAL);
 			iv.setValue(newmap);
 			return iv;
 		}
@@ -170,7 +173,7 @@ public abstract class Iocs {
 			for (int i = 0; i < ivs.length; i++) {
 				ivs[i] = object2value(ivs[i]);
 			}
-			iv.setType("normal");
+			iv.setType(IocValue.TYPE_NORMAL);
 			iv.setValue(ivs);
 		}
 		// Collection
@@ -183,7 +186,7 @@ public abstract class Iocs {
 					IocValue v = object2value(o);
 					values.add(v);
 				}
-				iv.setType("normal");
+				iv.setType(IocValue.TYPE_NORMAL);
 				iv.setValue(values);
 				return iv;
 			}
@@ -192,7 +195,7 @@ public abstract class Iocs {
 			}
 		}
 		// Normal
-		iv.setType("normal");
+		iv.setType(IocValue.TYPE_NORMAL);
 		iv.setValue(obj);
 		return iv;
 	}

@@ -177,15 +177,23 @@ public class XmlIocLoader implements IocLoader {
 	static final String DOUBLE_TAG = "double";
 	static final String BOOLEAN_TAG = "bool";
 	static final String REFER_TAG = "refer";
-	static final String JAVA_TAG = "java";
-	static final String FILE_TAG = "file";
-	static final String EVN_TAG = "env";
+	static final String JAVA_TAG = IocValue.TYPE_JAVA;
+	static final String FILE_TAG = IocValue.TYPE_FILE;
+	static final String EVN_TAG = IocValue.TYPE_ENV;
+	static final String JNDI_TAG = IocValue.TYPE_JNDI;
+	static final String SYS_TAG = IocValue.TYPE_SYS;
 
 	private IocValue parseX(Element element) throws Throwable {
 		IocValue iocValue = new IocValue();
 		String type = element.getNodeName();
 		if (EVN_TAG.equalsIgnoreCase(type)) {
 			iocValue.setType(EVN_TAG);
+			iocValue.setValue(element.getTextContent());
+		} else if (SYS_TAG.equalsIgnoreCase(type)) {
+			iocValue.setType(SYS_TAG);
+			iocValue.setValue(element.getTextContent());
+		} else if (JNDI_TAG.equalsIgnoreCase(type)) {
+			iocValue.setType(JNDI_TAG);
 			iocValue.setValue(element.getTextContent());
 		} else if (JAVA_TAG.equalsIgnoreCase(type)) {
 			iocValue.setType(JAVA_TAG);

@@ -30,6 +30,15 @@ import org.nutz.json.Json;
  */
 public class IocValue {
 
+	public static final String TYPE_NORMAL = "normal";
+	public static final String TYPE_INNER = "inner";
+	public static final String TYPE_REFER = "refer";
+	public static final String TYPE_ENV = "env";
+	public static final String TYPE_SYS = "sys";
+	public static final String TYPE_FILE = "file";
+	public static final String TYPE_JAVA = "java";
+	public static final String TYPE_JNDI = "jbdi";
+
 	private String type;
 
 	private Object value;
