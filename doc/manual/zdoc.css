@@ -133,6 +133,7 @@ table{
 }
 
 ul.zdoc_index_table{
+	list-style:none;
 	border:1px dashed #ADF;
 	background-color:#EEE;
 	display:inline-block;
@@ -152,6 +153,7 @@ ul.zdoc_index_table .num{
 
 ul.zdoc_index_table, ul.zdoc_index_table ul{
 	border:0px;
+	list-style:none;
 }
 
 .zdoc_body ul ul, .zdoc_body  ul ol, .zdoc_body  ol ol, .zdoc_body  ol ul{

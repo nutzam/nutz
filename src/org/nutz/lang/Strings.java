@@ -486,6 +486,31 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 对obj进行toString()操作,如果为空串返回""
+	 * 
+	 * @param obj
+	 * @return obj.toString()
+	 */
+	public static String sBlank(Object obj) {
+		return sBlank(obj, "");
+	}
+
+	/**
+	 * 对obj进行toString()操作,如果为空串返回def中定义的值
+	 * 
+	 * @param obj
+	 * @param def
+	 *            如果obj==null返回的内容
+	 * @return obj的toString()操作
+	 */
+	public static String sBlank(Object obj, String def) {
+		if (null == obj)
+			return def;
+		String s = obj.toString();
+		return Strings.isBlank(s) ? def : s;
+	}
+
+	/**
 	 * 截去第一个字符
 	 * <p>
 	 * 比如:

@@ -136,7 +136,7 @@ public abstract class Files {
 			return null;
 		if (null == suffix || suffix.length() == 0)
 			return f;
-		return new File(renameSuffix(f.getName(), suffix));
+		return new File(renameSuffix(f.getAbsolutePath(), suffix));
 	}
 
 	/**
