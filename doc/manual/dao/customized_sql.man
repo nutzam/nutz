@@ -331,13 +331,13 @@ ComboSql （组合SQL） 的用处
 				sql.setCallback(Sqls.callback.entities());
 				Entity<Pet> entity = dao.getEntity(Pet.class);
 				sql.setEntity(entity).setCondition(Cnd.wrap("id=15"));
-				sql.getContext().setPager(dao.createPager(1, 10));
 				dao.execute(sql);
 				return sql.getList(Pet.class);
 			}
 			}}}
-			上面的例子你不仅会发现我设置了一个查询实体的回调，还会发现我也设置了一个Pager对象，是的，直接使用自定义的 SQL 同
-			样可以支持[pager.man 翻页查询]
 			
 			那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)
+			
+			{#FF0000;注}，虽然通过接口 SqlContext，你可以为自定义的 SQL 设置 Pager，但是，它是不会起作用的。如果你没找到
+			如何给你自定义的 Sql 设置 Pager, 太好了，忘记它吧。
 
