@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
 
@@ -40,10 +41,10 @@ public class CachedIocLoaderImpl implements CachedIocLoader {
 		return proxyIocLoader.has(name);
 	}
 
-	public IocObject load(String name) throws ObjectLoadException {
+	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
 		IocObject iocObject = map.get(name);
 		if (iocObject == null) {
-			iocObject = proxyIocLoader.load(name);
+			iocObject = proxyIocLoader.load(loading, name);
 			if (iocObject == null)
 				return null;
 			if (iocObject.isSingleton() && iocObject.getType() != null)

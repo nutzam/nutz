@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.loader.xml.XmlIocLoader;
 import org.nutz.ioc.meta.IocEventSet;
@@ -82,8 +83,8 @@ public class AnnotationIocLoader implements IocLoader {
 				eventSet.setCreate(iocBean.depose().trim().intern());
 			if (!Strings.isBlank(iocBean.fetch()))
 				eventSet.setCreate(iocBean.fetch().trim().intern());
-			
-			//处理字段(以@Inject方式,位于字段)
+
+			// 处理字段(以@Inject方式,位于字段)
 			List<String> fieldList = new ArrayList<String>();
 			Field[] fields = classZ.getDeclaredFields();
 			for (Field field : fields) {
@@ -93,46 +94,46 @@ public class AnnotationIocLoader implements IocLoader {
 				IocField iocField = new IocField();
 				iocField.setName(field.getName());
 				IocValue iocValue;
-				if (Strings.isBlank(inject.value())){
+				if (Strings.isBlank(inject.value())) {
 					iocValue = new IocValue();
 					iocValue.setType("refer");
 					iocValue.setValue(field.getName());
-				}
-				else
+				} else
 					iocValue = convert(inject.value());
 				iocField.setValue(iocValue);
 				iocObject.addField(iocField);
 				fieldList.add(iocField.getName());
 			}
-			//处理字段(以@Inject方式,位于set方法)
+			// 处理字段(以@Inject方式,位于set方法)
 			Method[] methods = classZ.getMethods();
 			for (Method method : methods) {
 				Inject inject = method.getAnnotation(Inject.class);
 				if (inject == null)
 					continue;
-				if (method.getName().startsWith("set") 
-						&& method.getName().length() > 3
-						&& method.getParameterTypes().length == 1){
+				if (method.getName().startsWith("set")
+					&& method.getName().length() > 3
+					&& method.getParameterTypes().length == 1) {
 					IocField iocField = new IocField();
 					iocField.setName(Strings.lowerFirst(method.getName().substring(3)));
 					IocValue iocValue;
-					if (Strings.isBlank(inject.value())){
+					if (Strings.isBlank(inject.value())) {
 						iocValue = new IocValue();
 						iocValue.setType(IocValue.TYPE_REFER);
 						iocValue.setValue(method.getName().substring(3));
-					}
-					else
+					} else
 						iocValue = convert(inject.value());
 					iocField.setValue(iocValue);
 					iocObject.addField(iocField);
 					fieldList.add(iocField.getName());
 				}
 			}
-			//处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
+			// 处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
 			if (iocBean.field() != null && iocBean.field().length > 0) {
 				for (String fieldInfo : iocBean.field()) {
 					if (fieldList.contains(fieldInfo))
-						throw Lang.makeThrow("Duplicate filed defined! Class=%s,FileName=%s", classZ,fieldInfo);
+						throw Lang.makeThrow(	"Duplicate filed defined! Class=%s,FileName=%s",
+												classZ,
+												fieldInfo);
 					IocField iocField = new IocField();
 					iocField.setName(fieldInfo);
 					IocValue iocValue = new IocValue();
@@ -163,7 +164,7 @@ public class AnnotationIocLoader implements IocLoader {
 		return map.containsKey(name);
 	}
 
-	public IocObject load(String name) throws ObjectLoadException {
+	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
 		if (has(name))
 			return map.get(name);
 		throw new ObjectLoadException("Object '" + name + "' without define!");

@@ -14,6 +14,7 @@ import java.util.Map.Entry;
 import javax.xml.parsers.DocumentBuilder;
 
 import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocEventSet;
@@ -34,8 +35,8 @@ import org.w3c.dom.NodeList;
 /**
  * 使用XML做为Ioc配置文件 <br/>
  * 限制: <br/>
- * <li>必须是良构的XML文件 <li>
- * <li>obj必须定义type,当前实现中IocObject是共享的 <li>
+ * <li>必须是良构的XML文件 <li> <li>obj必须定义type,当前实现中IocObject是共享的 <li>
+ * 
  * @author wendal(wendal1985@gmail.com)
  * @version 2.0
  */
@@ -88,7 +89,7 @@ public class XmlIocLoader implements IocLoader {
 		return iocMap.containsKey(name);
 	}
 
-	public IocObject load(String name) throws ObjectLoadException {
+	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
 		if (has(name))
 			return iocMap.get(name);
 		throw new ObjectLoadException("Object '" + name + "' without define!");
@@ -125,7 +126,7 @@ public class XmlIocLoader implements IocLoader {
 
 		iocMap.put(beanId, iocObject);
 		if (LOG.isDebugEnabled())
-			LOG.debugf("Resolved bean define, name = %s" , beanId);
+			LOG.debugf("Resolved bean define, name = %s", beanId);
 		return iocObject;
 	}
 

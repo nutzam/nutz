@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
@@ -54,7 +55,7 @@ public class MapLoader implements IocLoader {
 	/**
 	 * {@link ObjectLoadException}
 	 */
-	public IocObject load(String name) throws ObjectLoadException {
+	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
 		Map<String, Object> m = getMap(name);
 		if (null == m)
 			throw new ObjectLoadException("Object '" + name + "' without define!");
@@ -62,7 +63,7 @@ public class MapLoader implements IocLoader {
 		Object p = m.get("parent");
 		if (null != p) {
 			checkParents(name);
-			IocObject parent = load(p.toString());
+			IocObject parent = load(loading, p.toString());
 			// create new map without parent
 			Map<String, Object> newMap = new HashMap<String, Object>();
 			for (Entry<String, Object> en : m.entrySet()) {
@@ -71,12 +72,12 @@ public class MapLoader implements IocLoader {
 				newMap.put(en.getKey(), en.getValue());
 			}
 			// Create self IocObject
-			IocObject self = Iocs.map2iobj(newMap);
+			IocObject self = loading.map2iobj(newMap);
 
 			// Merge with parent
 			return Iocs.mergeWith(self, parent);
 		}
-		return Iocs.map2iobj(m);
+		return loading.map2iobj(m);
 	}
 
 	/**

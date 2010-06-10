@@ -9,6 +9,7 @@ import org.nutz.ioc.ValueProxyMaker;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.ioc.val.*;
+import org.nutz.lang.Lang;
 
 public class DefaultValueProxyMaker implements ValueProxyMaker {
 
@@ -24,9 +25,9 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		else if ("normal".equals(type) || null == type) {
 			// Array
 			if (value.getClass().isArray()) {
-				Object [] vs = (Object[])value;
-				IocValue [] tmp = new IocValue[vs.length];
-				for (int i = 0; i < tmp.length; i++) 
+				Object[] vs = (Object[]) value;
+				IocValue[] tmp = new IocValue[vs.length];
+				for (int i = 0; i < tmp.length; i++)
 					tmp[i] = (IocValue) vs[i];
 				return new ArrayValue(ing, tmp);
 			}
@@ -80,11 +81,14 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		// Inner
 		else if ("inner".equals(type)) {
 			return new InnerValue((IocObject) value);
-		}
-		else if ("jndi".equals(type)) {
+		} else if ("jndi".equals(type)) {
 			return new JNDI_Value(value.toString());
 		}
 		return null;
+	}
+
+	public String[] supportedTypes() {
+		return Lang.array("refer", "java", "env", "file", "sys", "jndi");
 	}
 
 }

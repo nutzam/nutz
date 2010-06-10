@@ -1,12 +1,15 @@
 package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
+import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.ObjectMaker;
@@ -34,12 +37,38 @@ public class NutIoc implements Ioc2 {
 
 	private static final String DEF_SCOPE = "app";
 
+	/**
+	 * 读取配置文件的 Loader
+	 */
 	private IocLoader loader;
+	/**
+	 * 缓存对象上下文环境
+	 */
 	private IocContext context;
+	/**
+	 * 装配对象的逻辑
+	 */
 	private ObjectMaker maker;
+	/**
+	 * 可扩展的"字段值"生成器
+	 */
 	private List<ValueProxyMaker> vpms;
+	/**
+	 * 反射工厂，封装 AOP 的逻辑
+	 */
 	private MirrorFactory mirrors;
+	/**
+	 * 对象默认生命周期范围名
+	 */
 	private String defaultScope;
+	/**
+	 * <ul>
+	 * <li>缓存支持的对象值类型
+	 * <li>如果 addValueProxyMaker() 被调用，这个缓存会被清空
+	 * <li>createLoading() 将会检查这个缓存
+	 * </ul>
+	 */
+	private Set<String> supportedTypes;
 
 	public NutIoc(IocLoader loader) {
 		this(loader, new ScopeContext(DEF_SCOPE), DEF_SCOPE);
@@ -75,9 +104,29 @@ public class NutIoc implements Ioc2 {
 			this.mirrors = mirrors;
 	}
 
+	/**
+	 * @return 一个新创建的 IocLoading 对象
+	 */
+	private IocLoading createLoading() {
+		if (null == supportedTypes) {
+			synchronized (this) {
+				if (null == supportedTypes) {
+					// TODO 看看可不可以改成更快的 Set
+					supportedTypes = new HashSet<String>();
+					for (ValueProxyMaker maker : vpms) {
+						String[] ss = maker.supportedTypes();
+						for (String s : ss)
+							supportedTypes.add(s);
+					}
+				}
+			}
+		}
+		return new IocLoading(supportedTypes);
+	}
+
 	public <T> T get(Class<T> type) throws IocException {
 		InjectName inm = type.getAnnotation(InjectName.class);
-		if (null != inm && (! Strings.isBlank(inm.value())))
+		if (null != inm && (!Strings.isBlank(inm.value())))
 			return get(type, inm.value());
 		return get(type, Strings.lowerFirst(type.getSimpleName()));
 	}
@@ -116,7 +165,7 @@ public class NutIoc implements Ioc2 {
 							log.debug("\t >> Load definition");
 
 						// 读取对象定义
-						IocObject iobj = loader.load(name);
+						IocObject iobj = loader.load(createLoading(), name);
 						if (null == iobj)
 							throw Lang.makeThrow("Undefined object '%s'", name);
 
@@ -173,7 +222,7 @@ public class NutIoc implements Ioc2 {
 	}
 
 	public void addValueProxyMaker(ValueProxyMaker vpm) {
-		vpms.add(0,vpm);//优先使用最后加入的ValueProxyMaker
+		vpms.add(0, vpm);// 优先使用最后加入的ValueProxyMaker
 	}
 
 	public void setMaker(ObjectMaker maker) {

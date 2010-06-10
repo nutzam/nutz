@@ -7,7 +7,7 @@ import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.meta.IocObject;
 
 public class AnnotationIocLoaderTest {
-	
+
 	IocLoader iocLoader = new AnnotationIocLoader("org.nutz.ioc.loader.annotation");
 
 	@Test
@@ -22,12 +22,12 @@ public class AnnotationIocLoaderTest {
 	}
 
 	@Test
-	public void testLoad() throws Throwable{
-		IocObject iocObject = iocLoader.load("classB");
+	public void testLoad() throws Throwable {
+		IocObject iocObject = iocLoader.load(null, "classB");
 		assertNotNull(iocObject);
 		assertNotNull(iocObject.getFields());
 		assertTrue(iocObject.getFields().length == 1);
-		assertEquals("refer",iocObject.getFields()[0].getValue().getType());
+		assertEquals("refer", iocObject.getFields()[0].getValue().getType());
 	}
 
 }
