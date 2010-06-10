@@ -38,7 +38,7 @@ public class ServerRedirectView implements View {
 			throws Exception {
 		Mirror<?> mirror = Mirror.me(obj);
 		boolean isMap = null != obj && obj instanceof Map<?, ?>;
-		Map<?, ?> map = (Map<?, ?>) obj;
+		Map<?, ?> map = isMap ? null : (Map<?, ?>) obj;
 
 		// Fill path
 		Set<String> keySet = dest.keys();
