@@ -173,7 +173,7 @@ public class NutIoc implements Ioc2 {
 	}
 
 	public void addValueProxyMaker(ValueProxyMaker vpm) {
-		vpms.add(vpm);
+		vpms.add(0,vpm);//优先使用最后加入的ValueProxyMaker
 	}
 
 	public void setMaker(ObjectMaker maker) {
