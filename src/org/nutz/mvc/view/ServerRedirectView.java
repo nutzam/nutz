@@ -1,6 +1,7 @@
 package org.nutz.mvc.view;
 
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
@@ -32,9 +33,12 @@ public class ServerRedirectView implements View {
 		this.dest = new CharSegment(Strings.trim(dest));
 	}
 
+	// TODO 这个函数写的有点烂，有时间重构一下
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
 		Mirror<?> mirror = Mirror.me(obj);
+		boolean isMap = null != obj && obj instanceof Map<?, ?>;
+		Map<?, ?> map = (Map<?, ?>) obj;
 
 		// Fill path
 		Set<String> keySet = dest.keys();
@@ -43,11 +47,19 @@ public class ServerRedirectView implements View {
 			String key = it.next();
 			Object value = null;
 			int length = key.length();
-			if (null != mirror && key.startsWith("obj.") && length > 4) {
-				value = mirror.getValue(obj, key.substring(4));
-			} else if (key.startsWith("p.") && length > 2) {
+			if (key.startsWith("p.") && length > 2) {
 				value = req.getParameter(key.substring(2));
-			} else {
+			}
+			// Map
+			else if (isMap && key.startsWith("obj.") && length > 4) {
+				value = map.get(key);
+			}
+			// POJO
+			else if (null != mirror && key.startsWith("obj.") && length > 4) {
+				value = mirror.getValue(obj, key.substring(4));
+			}
+			// Normal value
+			else {
 				value = obj;
 			}
 			if (null == value)
@@ -57,7 +69,7 @@ public class ServerRedirectView implements View {
 
 		// Format the path ...
 		String path = dest.toString();
-		
+
 		// Another site
 		if (path.startsWith("http://") || path.startsWith("https://")) {}
 		// Absolute path, add the context path for it
