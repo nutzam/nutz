@@ -52,13 +52,20 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
 		// Refer
 		else if ("refer".equals(type)) {
 			String s = value.toString();
-			// $Ioc
-			if ("$ioc".equalsIgnoreCase(s)) {
-				return new IocSelfValue();
-			}
-			// $Name
-			else if ("$name".equalsIgnoreCase(s)) {
-				return new ObjectNameValue();
+			if (null != s) {
+				String renm = s.toLowerCase();
+				// $Ioc
+				if ("$ioc".equals(renm)) {
+					return new IocSelfValue();
+				}
+				// $Name
+				else if ("$name".equals(renm)) {
+					return new ObjectNameValue();
+				}
+				// $Context
+				else if ("$context".equals(renm)) {
+					return new IocContextObjectValue();
+				}
 			}
 			return new ReferValue(s);
 		}
