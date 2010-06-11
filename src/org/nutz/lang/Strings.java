@@ -172,6 +172,8 @@ public abstract class Strings {
 		int r = last;
 		for (; l < length; l++) {
 			char c = cs.charAt(l);
+			if (c == 65279)
+				continue;
 			if (c > 0x20 || c < 0)
 				break;
 		}
