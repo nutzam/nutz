@@ -1,10 +1,11 @@
-package org.nutz.aop;
+package org.nutz.aop.matcher;
 
 import static java.lang.reflect.Modifier.TRANSIENT;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import org.nutz.aop.MethodMatcher;
 import org.nutz.lang.Maths;
 
 public class RegexMethodMatcher implements MethodMatcher {

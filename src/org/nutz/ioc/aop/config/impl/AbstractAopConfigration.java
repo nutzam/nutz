@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.nutz.aop.MethodInterceptor;
-import org.nutz.aop.MethodMatcherFactory;
+import org.nutz.aop.matcher.MethodMatcherFactory;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;

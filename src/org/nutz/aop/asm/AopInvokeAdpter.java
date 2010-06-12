@@ -11,7 +11,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class AopInvokeAdpter extends AopMethodAdapter {
+class AopInvokeAdpter extends AopMethodAdapter {
 
 	protected Method[] methodArray;
 

@@ -1,6 +1,9 @@
-package org.nutz.aop;
+package org.nutz.aop.interceptor;
 
 import java.lang.reflect.Method;
+
+import org.nutz.aop.InterceptorChain;
+import org.nutz.aop.MethodInterceptor;
 
 /**
  * 提供一个基础实现,这个实现,既可以简化用户的实现,又可以实现与以前的Aop拦截器的兼容

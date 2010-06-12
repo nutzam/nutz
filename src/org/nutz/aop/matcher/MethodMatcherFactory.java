@@ -1,4 +1,6 @@
-package org.nutz.aop;
+package org.nutz.aop.matcher;
+
+import org.nutz.aop.MethodMatcher;
 
 /**
  * 创建MethodMatcher的工厂类

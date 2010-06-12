@@ -7,16 +7,16 @@ import static junit.framework.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.Nutzs;
-import org.nutz.aop.AbstractMethodInterceptor;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
-import org.nutz.aop.MethodMatcherFactory;
-import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
 import org.nutz.aop.asm.test.Aop7;
 import org.nutz.aop.asm.test.MyMethodInterceptor;
 import org.nutz.aop.asm.test.ZZZ;
+import org.nutz.aop.interceptor.AbstractMethodInterceptor;
 import org.nutz.aop.interceptor.LoggingMethodInterceptor;
+import org.nutz.aop.matcher.MethodMatcherFactory;
+import org.nutz.aop.matcher.RegexMethodMatcher;
 import org.nutz.lang.Mirror;
 
 public class ClassXTest {

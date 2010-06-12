@@ -2,7 +2,7 @@ package org.nutz.ioc.json.pojo;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.AbstractMethodInterceptor;
+import org.nutz.aop.interceptor.AbstractMethodInterceptor;
 
 public class AnimalListener extends AbstractMethodInterceptor {
 

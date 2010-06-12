@@ -2,7 +2,7 @@ package org.nutz.aop.javassist.lstn;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.AbstractMethodInterceptor;
+import org.nutz.aop.interceptor.AbstractMethodInterceptor;
 import org.nutz.aop.javassist.meta.Vegetarian;
 import org.nutz.castor.Castors;
 

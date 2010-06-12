@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.nutz.Nutzs;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
-import org.nutz.aop.MethodMatcherFactory;
 import org.nutz.aop.interceptor.LoggingMethodInterceptor;
 import org.nutz.aop.javassist.lstn.MethodCounter;
 import org.nutz.aop.javassist.lstn.RhinocerosListener;
@@ -27,6 +26,7 @@ import org.nutz.aop.javassist.meta.Rhinoceros;
 import org.nutz.aop.javassist.meta.Vegetarian;
 import org.nutz.aop.javassist.meta.Vegetarians;
 import org.nutz.aop.javassist.meta.Vegetarian.BEH;
+import org.nutz.aop.matcher.MethodMatcherFactory;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
 

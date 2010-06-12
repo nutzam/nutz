@@ -7,11 +7,11 @@ import java.lang.reflect.Method;
 
 import org.junit.Test;
 import org.nutz.Nutzs;
-import org.nutz.aop.AbstractMethodInterceptor;
-import org.nutz.aop.MethodMatcherFactory;
-import org.nutz.aop.RegexMethodMatcher;
 import org.nutz.aop.asm.test.Aop1;
+import org.nutz.aop.interceptor.AbstractMethodInterceptor;
 import org.nutz.aop.interceptor.LoggingMethodInterceptor;
+import org.nutz.aop.matcher.MethodMatcherFactory;
+import org.nutz.aop.matcher.RegexMethodMatcher;
 import org.nutz.lang.Mirror;
 
 public class RegexMethodMatcherTest {

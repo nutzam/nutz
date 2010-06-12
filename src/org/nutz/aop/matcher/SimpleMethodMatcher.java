@@ -1,6 +1,8 @@
-package org.nutz.aop;
+package org.nutz.aop.matcher;
 
 import java.lang.reflect.Method;
+
+import org.nutz.aop.MethodMatcher;
 
 public class SimpleMethodMatcher implements MethodMatcher {
 

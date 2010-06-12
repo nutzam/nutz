@@ -7,6 +7,8 @@ package org.nutz.aop.asm;
  *
  */
 public final class Helper {
+	
+	private Helper() {}
 
 	public static byte valueOf(Byte value) {
 		if (value == null)

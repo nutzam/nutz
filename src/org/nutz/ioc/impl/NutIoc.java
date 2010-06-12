@@ -115,8 +115,9 @@ public class NutIoc implements Ioc2 {
 					supportedTypes = new HashSet<String>();
 					for (ValueProxyMaker maker : vpms) {
 						String[] ss = maker.supportedTypes();
-						for (String s : ss)
-							supportedTypes.add(s);
+						if (ss != null)
+							for (String s : ss)
+								supportedTypes.add(s);
 					}
 				}
 			}

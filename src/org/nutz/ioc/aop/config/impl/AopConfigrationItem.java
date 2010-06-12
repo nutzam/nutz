@@ -3,7 +3,7 @@ package org.nutz.ioc.aop.config.impl;
 import java.util.regex.Pattern;
 
 import org.nutz.aop.MethodMatcher;
-import org.nutz.aop.MethodMatcherFactory;
+import org.nutz.aop.matcher.MethodMatcherFactory;
 
 /**
  * 

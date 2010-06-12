@@ -7,7 +7,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
 /**
  * @author wendal(wendal1985@gmail.com)
  */
-public abstract class NullMethodAdapter {
+abstract class NullMethodAdapter {
 
 	protected final String desc;
 

@@ -2,7 +2,7 @@ package org.nutz.aop.asm.test;
 
 import java.lang.reflect.Method;
 
-import org.nutz.aop.AbstractMethodInterceptor;
+import org.nutz.aop.interceptor.AbstractMethodInterceptor;
 import org.nutz.castor.Castors;
 
 public class MyMethodInterceptor extends AbstractMethodInterceptor {

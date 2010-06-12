@@ -15,7 +15,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class ClassY implements Opcodes {
+class ClassY implements Opcodes {
 
 	protected ClassWriter cw;
 

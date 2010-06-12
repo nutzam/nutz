@@ -8,7 +8,7 @@ import org.nutz.repo.org.objectweb.asm.ClassVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.lang.Mirror;
 
-public class AopToolKit implements Opcodes {
+class AopToolKit implements Opcodes {
 
 	public static final String MethodArray_FieldName = "_$$Nut_methodArray";
 	public static final String MethodInterceptorList_FieldName = "_$$Nut_methodInterceptorList";

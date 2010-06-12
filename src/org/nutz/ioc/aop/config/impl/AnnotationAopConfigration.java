@@ -8,7 +8,7 @@ import java.util.List;
 
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.MethodMatcher;
-import org.nutz.aop.SimpleMethodMatcher;
+import org.nutz.aop.matcher.SimpleMethodMatcher;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.aop.config.AopConfigration;

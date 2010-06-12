@@ -10,7 +10,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
+class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 
 	protected int methodIndex;
 
