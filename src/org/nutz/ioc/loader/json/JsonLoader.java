@@ -1,6 +1,7 @@
 package org.nutz.ioc.loader.json;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -31,31 +32,36 @@ public class JsonLoader extends MapLoader {
 		loadFromReader(reader);
 	}
 
-	public JsonLoader(String... paths) {
+	public JsonLoader(String... paths) throws FileNotFoundException {
 		this.setMap(new HashMap<String, Map<String,Object>>());
 		File[] fs = new File[paths.length];
 		// 解析路径
 		for (int i = 0; i < fs.length; i++) {
 			fs[i] = Files.findFile(paths[i]);
-			if (null == fs[i]) 
-				continue;
-			// 如果是目录，读取内部所有 .json 和 .js 文件
-			if (fs[i].isDirectory())
-				loadFromDir(fs[i]);
-			else
-				loadFromReader(Streams.fileInr(paths[i]));
-		}
-		//在jar中查找
-		for (String path : paths) {
-				String pathRegex = path.replace('\\', '/').replace(".", "\\.");
+			boolean flag = true;
+			if (null != fs[i]) {
+				// 如果是目录，读取内部所有 .json 和 .js 文件
+				if (fs[i].isDirectory())
+					loadFromDir(fs[i]);
+				else
+					loadFromReader(Streams.fileInr(paths[i]));
+				flag = false;
+			} else {//在jar中查找
+				String pathRegex = paths[i].replace('\\', '/').replace(".", "\\.");
 				if (pathRegex.endsWith("/"))
 					pathRegex += ".+\\.(js|json)$";
 				List<InputStream> entries = Resources.findZipEntryInClassPath(pathRegex);
-				if (entries.size() < 1)
-					continue;
-				for (InputStream inputStream : entries)
-					loadFromReader(new InputStreamReader(inputStream));
+				if (entries.size() > 0) {
+					for (InputStream inputStream : entries)
+						loadFromReader(new InputStreamReader(inputStream));
+					flag = false;
+				}
+			}
+			//如果找不到?
+			if (flag)
+				throw Lang.makeThrow(FileNotFoundException.class, "Js folder or file no found !! Path = %s", paths[i]);
 		}
+		
 	}
 	
 	private void loadFromReader(Reader reader){
