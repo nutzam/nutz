@@ -60,14 +60,14 @@ class FieldQueryImpl implements FieldQuery {
 			if (null != refer) {
 				if (TableName.isPrimitive(refer))
 					for (String var : vars)
-						if (var.equals("view") || var.equals("field"))
+						if ("view".equals(var) || "field".equals(var))
 							continue;
 						else
 							sql.vars().set(var, refer);
 				else {
 					Mirror<?> me = Mirror.me(refer.getClass());
 					for (String var : vars) {
-						if (var.equals("view") || var.equals("field"))
+						if ("view".equals(var) || "field".equals(var))
 							continue;
 						else {
 							Object v = me.getValue(refer, var);

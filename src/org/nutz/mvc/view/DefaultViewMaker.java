@@ -15,22 +15,22 @@ import org.nutz.mvc.ViewMaker;
 public class DefaultViewMaker implements ViewMaker {
 
 	public View make(Ioc ioc, String type, String value) {
-		if (type.equals("jsp")) {
+		if ("jsp".equals(type)) {
 			return new JspView(value);
-		} else if (type.equals("json")) {
+		} else if ("json".equals(type)) {
 			if (Strings.isBlank(value)) {
 				return new UTF8JsonView(JsonFormat.compact());
 			} else {
 				JsonFormat format = Json.fromJson(JsonFormat.class, value);
 				return new UTF8JsonView(format);
 			}
-		} else if (type.equals("redirect") || type.equals(">>")) {
+		} else if ("redirect".equals(type) || ">>".equals(type)) {
 			return new ServerRedirectView(value);
-		} else if (type.equals("void")) {
+		} else if ("void".equals(type)) {
 			return new VoidView();
-		} else if (type.equals("ioc")) {
+		} else if ("ioc".equals(type)) {
 			return ioc.get(View.class, value);
-		} else if (type.equals("http")) {
+		} else if ("http".equals(type)) {
 			int sc = Integer.parseInt(value);
 			return new HttpStatusView(sc);
 		}

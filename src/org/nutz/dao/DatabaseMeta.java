@@ -37,7 +37,7 @@ public class DatabaseMeta {
 	public void setProductName(String productName) {
 		this.productName = productName;
 		String proName = productName.toLowerCase();
-		if (proName.equals("h2")) {
+		if ("h2".equals(proName)) {
 			type = DB.H2;
 		} else if (proName.startsWith("postgresql")) {
 			type = DB.PSQL;
