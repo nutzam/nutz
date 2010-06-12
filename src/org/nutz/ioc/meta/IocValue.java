@@ -37,7 +37,7 @@ public class IocValue {
 	public static final String TYPE_SYS = "sys";
 	public static final String TYPE_FILE = "file";
 	public static final String TYPE_JAVA = "java";
-	public static final String TYPE_JNDI = "jbdi";
+	public static final String TYPE_JNDI = "jndi";
 
 	private String type;
 
