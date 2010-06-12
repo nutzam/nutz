@@ -32,7 +32,7 @@ public class JsonLoader extends MapLoader {
 		loadFromReader(reader);
 	}
 
-	public JsonLoader(String... paths) throws FileNotFoundException {
+	public JsonLoader(String... paths) {
 		this.setMap(new HashMap<String, Map<String,Object>>());
 		File[] fs = new File[paths.length];
 		// 解析路径
@@ -59,7 +59,7 @@ public class JsonLoader extends MapLoader {
 			}
 			//如果找不到?
 			if (flag)
-				throw Lang.makeThrow(FileNotFoundException.class, "Js folder or file no found !! Path = %s", paths[i]);
+				throw Lang.makeThrow(RuntimeException.class, "Js folder or file no found !! Path = %s", paths[i]);
 		}
 		
 	}
