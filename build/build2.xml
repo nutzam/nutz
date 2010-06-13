@@ -37,7 +37,7 @@
 	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	
 	<property name="svn-version" value="r1330"></property>
-	<property name="nutz-version" value="1.a.29"></property>
+	<property name="nutz-version" value="1.a.30"></property>
 	<tstamp>
 		<format property="now-date" locale="zh" pattern="yyyyMMdd"/>
 	</tstamp>
