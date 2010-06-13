@@ -6,14 +6,22 @@ import java.io.IOException;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class NutFilePool implements FilePool {
+
+	private static final Log log = Logs.getLog(NutFilePool.class);
 
 	public NutFilePool(String homePath) {
 		this(homePath, 0);
 	}
 
 	public NutFilePool(String homePath, long size) {
+		if (log.isInfoEnabled()) {
+			log.infof("Init file-pool by: %s [%d]", homePath, size);
+		}
+
 		this.size = size;
 		try {
 			home = Files.createDirIfNoExists(homePath);
@@ -29,11 +37,22 @@ public class NutFilePool implements FilePool {
 			throw Lang.makeThrow(	"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
 									homePath,
 									this.getClass().getName());
+
+		try {
+			home = new File(home.getCanonicalPath());
+		}
+		catch (IOException e1) {
+			throw Lang.wrapThrow(e1);
+		}
+
+		if (log.isDebugEnabled()) {
+			log.debugf("file-pool.home: '%s'", home.getAbsolutePath());
+		}
+
 		File last = home;
 		String[] subs = null;
 		while (last.isDirectory()) {
 			subs = last.list(new FilenameFilter() {
-
 				public boolean accept(File dir, String name) {
 					return name.matches("^([\\d|A-F]{2})([.][a-zA-Z]{1,})?$");
 				}
@@ -48,6 +67,9 @@ public class NutFilePool implements FilePool {
 				break;
 			}
 		}
+
+		if (log.isInfoEnabled())
+			log.infof("file-pool.cursor: %d", cursor);
 	}
 
 	private File home;
