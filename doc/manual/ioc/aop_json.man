@@ -109,9 +109,9 @@
 	}}}
 	按照上述声明:
 		* 对于com.service包下的类的全部方法,均应用log拦截器
-		* 对于com.service.auth包下的类的全部get/set方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE
-		* 对于com.service.blog包下的类的全部get/set方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_REPEATABLE_READ
-		* 对于com.service.news包下的类的全部get/set方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED
-		* 对于com.service.media包下的类的全部get/set方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED
 		* 对于com.service.status包下的类的全部get/set方法,均应用txNONE拦截器,事务级别 NONE
+		* 对于com.service.media包下的类的全部get/set方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED
+		* 对于com.service.news包下的类的全部get/set方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED
+		* 对于com.service.blog包下的类的全部get/set/update/delete方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_REPEATABLE_READ
+		* 对于com.service.auth包下的类的全部方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE
 	
