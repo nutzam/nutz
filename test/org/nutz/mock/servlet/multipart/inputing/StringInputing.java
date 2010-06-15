@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.stream.StringInputStream;
 
 public class StringInputing implements Inputing {
 
@@ -11,6 +12,10 @@ public class StringInputing implements Inputing {
 
 	public StringInputing(String str) {
 		ins = Lang.ins(str);
+	}
+	
+	public StringInputing(String str, String charset) {
+		ins = new StringInputStream(str, charset);
 	}
 
 	public int read() {

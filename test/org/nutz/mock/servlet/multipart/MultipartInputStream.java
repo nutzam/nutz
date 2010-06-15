@@ -25,6 +25,8 @@ public class MultipartInputStream extends MockInputStream {
 	private MultipartItem current;
 
 	private String boundary;
+	
+	private String charset;
 
 	public MultipartInputStream(String boundary) {
 		this.boundary = boundary;
@@ -64,7 +66,8 @@ public class MultipartInputStream extends MockInputStream {
 
 	public void append(String name, File f) {
 		String contentType = getContentType(Files.getSuffixName(f));
-		append(new FileMultipartItem(boundary, name, f, contentType));
+		FileMultipartItem fmi = new FileMultipartItem(boundary, name, f, contentType, charset);
+		append(fmi);
 	}
 
 	public void append(String name, String value) {
@@ -107,6 +110,10 @@ public class MultipartInputStream extends MockInputStream {
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
+	}
+	
+	public void setCharset(String charset) {
+		this.charset = charset;
 	}
 
 }

@@ -8,6 +8,9 @@ import static org.nutz.mock.Mock.servlet.request;
 import static org.nutz.mock.Mock.servlet.session;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import javax.servlet.ServletInputStream;
@@ -26,6 +29,33 @@ import org.nutz.mvc.upload.UploadUnit;
 import org.nutz.mvc.upload.Uploading;
 
 public class UploadingUnitTest {
+	
+	@Test
+	/**
+	 * @author lAndRaxeE(landraxee@gmail.com)
+	 */
+	public void test_upload_chinese_filename() throws UploadException {
+		
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setPathInfo("/nutz/junit/uploading");
+		File txt = Files.findFile("org/nutz/mvc/upload/files/quick/中文.txt");
+		MultipartInputStream ins = Mock.servlet.insmulti();
+		ins.setCharset("UTF-8"); //模拟上传时request使用UTF-8编码
+		ins.append("abc", txt);
+		req.setInputStream(ins);
+		req.init();
+
+		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+
+		Uploading up = UploadUnit.TYPE.born(8192);
+		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
+		TempFile txt2 = (TempFile) map.get("abc");
+
+		//测试本地的默认编码是否是GBK，即模拟中文环境，本人环境为中文Windows XP
+		//在JVM参数中增加-Dfile.encoding=GBK即可设置好
+		assertEquals("GBK", Charset.defaultCharset().name());
+		assertEquals("中文.txt", txt2.getMeta().getFileLocalName());
+	}
 
 	@Test
 	public void test_upload_1txt_3img() throws UploadException {
