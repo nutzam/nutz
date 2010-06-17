@@ -104,13 +104,13 @@ public class FastUploading implements Uploading {
 		 */
 		if (log.isDebugEnabled())
 			log.debug("Reading...");
-		FieldMeta meta;
 		try {
+			FieldMeta meta;
 			do {
 				info.current = br.load();
 				// 标记项目头
 				mm = br.mark(nameEndlBytes);
-				String s = br.dumpAsString();
+				String s = br.dumpAsString(charset);
 
 				// 肯定碰到了 "--\r\n"， 这标志着整个流结束了
 				if ("--".equals(s) || MarkMode.STREAM_END == mm) {

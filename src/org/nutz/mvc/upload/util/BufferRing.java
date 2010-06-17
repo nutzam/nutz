@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.stream.StringOutputStream;
 
 /**
  * 分页缓冲 - 专为高效的成块的解析 HTTP Multipart 输入流而设计
@@ -133,6 +135,20 @@ public class BufferRing {
 		}
 		ops.flush();
 	}
+	
+	/**
+	 * 将标记的内容 Dump 成一个字符串,使用默认字符集
+	 * 
+	 * @return 字符串
+	 * 
+	 * @throws IOException
+	 */
+	public String dumpAsString() throws IOException {
+		StringBuilder sb = new StringBuilder();
+		OutputStream ops = new StringOutputStream(sb, Encoding.defaultEncoding());
+		dump(ops);
+		return sb.toString();
+	}
 
 	/**
 	 * 将标记的内容 Dump 成一个字符串
@@ -141,9 +157,9 @@ public class BufferRing {
 	 * 
 	 * @throws IOException
 	 */
-	public String dumpAsString() throws IOException {
+	public String dumpAsString(String charset) throws IOException {
 		StringBuilder sb = new StringBuilder();
-		OutputStream ops = Lang.ops(sb);
+		OutputStream ops = new StringOutputStream(sb, charset);
 		dump(ops);
 		return sb.toString();
 	}
