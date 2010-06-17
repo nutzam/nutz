@@ -1,7 +1,6 @@
 package org.nutz.ioc.loader.json;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
