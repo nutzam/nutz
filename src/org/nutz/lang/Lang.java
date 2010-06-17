@@ -131,6 +131,19 @@ public abstract class Lang {
 			return (T) e;
 		return Mirror.me(wrapper).born(e);
 	}
+	
+	public static Throwable unwrapThrow(Throwable e) {
+		if (e == null)
+			return null;
+		if (e instanceof InvocationTargetException) {
+			InvocationTargetException itE = (InvocationTargetException)e;
+			if (itE.getTargetException() != null)
+				return unwrapThrow(itE.getTargetException());
+		}
+		if (e.getCause() != null)
+			return unwrapThrow(e.getCause());
+		return e;
+	}
 
 	/**
 	 * 判断两个对象是否相等。 这个函数用处是:
