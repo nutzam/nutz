@@ -81,17 +81,17 @@ public abstract class Mock {
 			return ins(Streams.fileIn(path));
 		}
 
-		public static MultipartInputStream insmulti(String boundary) {
-			return new MultipartInputStream(boundary);
+		public static MultipartInputStream insmulti(String charset, String boundary) {
+			return new MultipartInputStream(charset, boundary);
 		}
 
-		public static MultipartInputStream insmulti() {
-			return insmulti("------NutzMockHTTPBoundary@"
-							+ Long.toHexString(System.currentTimeMillis()));
+		public static MultipartInputStream insmulti(String charset) {
+			return insmulti(charset, "------NutzMockHTTPBoundary@"
+										+ Long.toHexString(System.currentTimeMillis()));
 		}
 
-		public static MultipartInputStream insmulti(File... files) {
-			MultipartInputStream ins = insmulti();
+		public static MultipartInputStream insmulti(String charset, File... files) {
+			MultipartInputStream ins = insmulti(charset);
 			for (int i = 0; i < files.length; i++) {
 				if (files[i].isFile())
 					ins.append("F" + i, files[i]);

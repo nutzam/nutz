@@ -3,16 +3,16 @@ package org.nutz.mock.servlet.multipart;
 import java.io.IOException;
 
 import org.nutz.mock.servlet.multipart.inputing.Inputing;
-import org.nutz.mock.servlet.multipart.inputing.Inputings;
+import org.nutz.mock.servlet.multipart.inputing.InputingHelper;
 import org.nutz.mock.servlet.multipart.inputing.VoidInputing;
 
 public abstract class MultipartItem {
 
-	public MultipartItem(String boundary) {
+	public MultipartItem(InputingHelper helper, String boundary) {
 		inputs = new Inputing[7];
 		last = 0;
 		index = 0;
-		addInputing(Inputings.boundary(boundary));
+		addInputing(helper.boundary(boundary));
 	}
 
 	private Inputing[] inputs;

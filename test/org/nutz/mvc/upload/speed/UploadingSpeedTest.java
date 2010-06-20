@@ -35,7 +35,7 @@ public class UploadingSpeedTest {
 		final String charset = "UTF-8";
 
 		File[] files = dir.listFiles();
-		final MockHttpServletRequest req = request().setInputStream(insmulti(files));
+		final MockHttpServletRequest req = request().setInputStream(insmulti(charset, files));
 		req.setSession(session(context()));
 		req.init();
 

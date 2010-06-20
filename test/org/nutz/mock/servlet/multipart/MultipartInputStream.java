@@ -10,6 +10,7 @@ import java.util.Map;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.mock.servlet.MockInputStream;
+import org.nutz.mock.servlet.multipart.inputing.InputingHelper;
 import org.nutz.mock.servlet.multipart.item.EndlMultipartItem;
 import org.nutz.mock.servlet.multipart.item.FileMultipartItem;
 import org.nutz.mock.servlet.multipart.item.ParamMultipartItem;
@@ -25,18 +26,19 @@ public class MultipartInputStream extends MockInputStream {
 	private MultipartItem current;
 
 	private String boundary;
-	
-	private String charset;
 
-	public MultipartInputStream(String boundary) {
+	private InputingHelper helper;
+
+	public MultipartInputStream(String charset, String boundary) {
 		this.boundary = boundary;
+		this.helper = new InputingHelper(charset);
 		mimes = new HashMap<String, String>();
 		addMime("png", "image/png");
 		addMime("jpg", "image/jpg");
 		addMime("gif", "image/gif");
 		addMime("txt", "text/plain");
 		items = new LinkedList<MultipartItem>();
-		items.add(new EndlMultipartItem(boundary));
+		items.add(new EndlMultipartItem(helper, boundary));
 	}
 
 	private String getContentType(String suffixName) {
@@ -66,12 +68,12 @@ public class MultipartInputStream extends MockInputStream {
 
 	public void append(String name, File f) {
 		String contentType = getContentType(Files.getSuffixName(f));
-		FileMultipartItem fmi = new FileMultipartItem(boundary, name, f, contentType, charset);
+		FileMultipartItem fmi = new FileMultipartItem(helper, boundary, name, f, contentType);
 		append(fmi);
 	}
 
 	public void append(String name, String value) {
-		append(new ParamMultipartItem(boundary, name, value));
+		append(new ParamMultipartItem(helper, boundary, name, value));
 	}
 
 	private void append(MultipartItem item) {
@@ -110,10 +112,6 @@ public class MultipartInputStream extends MockInputStream {
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
-	}
-	
-	public void setCharset(String charset) {
-		this.charset = charset;
 	}
 
 }

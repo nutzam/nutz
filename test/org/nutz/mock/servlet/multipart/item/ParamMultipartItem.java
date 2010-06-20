@@ -1,16 +1,16 @@
 package org.nutz.mock.servlet.multipart.item;
 
 import org.nutz.mock.servlet.multipart.MultipartItem;
-import org.nutz.mock.servlet.multipart.inputing.Inputings;
+import org.nutz.mock.servlet.multipart.inputing.InputingHelper;
 
 public class ParamMultipartItem extends MultipartItem {
 
-	public ParamMultipartItem(String boundary, String name, String value) {
-		super(boundary + "\r\n");
-		addInputing(Inputings.name(name));
-		addInputing(Inputings.blankLine());
-		addInputing(Inputings.data(value));
-		addInputing(Inputings.blankLine());
+	public ParamMultipartItem(InputingHelper helper, String boundary, String name, String value) {
+		super(helper, boundary + "\r\n");
+		addInputing(helper.name(name));
+		addInputing(helper.blankLine());
+		addInputing(helper.data(value));
+		addInputing(helper.blankLine());
 	}
 
 }

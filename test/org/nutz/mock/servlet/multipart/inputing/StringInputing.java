@@ -10,11 +10,11 @@ public class StringInputing implements Inputing {
 
 	private InputStream ins;
 
-	public StringInputing(String str) {
+	StringInputing(String str) {
 		ins = Lang.ins(str);
 	}
 	
-	public StringInputing(String str, String charset) {
+	StringInputing(String str, String charset) {
 		ins = new StringInputStream(str, charset);
 	}
 

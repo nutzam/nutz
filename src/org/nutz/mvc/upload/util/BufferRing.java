@@ -143,7 +143,7 @@ public class BufferRing {
 	 * 
 	 * @throws IOException
 	 */
-	public String dumpAsString() throws IOException {
+	String dumpAsString() throws IOException {
 		StringBuilder sb = new StringBuilder();
 		OutputStream ops = new StringOutputStream(sb, Encoding.defaultEncoding());
 		dump(ops);
