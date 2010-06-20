@@ -11,9 +11,11 @@ import java.util.Map;
 
 import javax.servlet.ServletInputStream;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
+import org.nutz.lang.Dumps;
 import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.mock.Mock;
@@ -28,16 +30,45 @@ public class UploadingUnitTest {
 
 	private static final String charset = "UTF-8";
 
+	private FilePool tmps;
+
+	@Before
+	public void before() {
+		/*
+		 * 准备临时文件池
+		 */
+		tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+	}
+
+	/**
+	 * 检查一下普通的非文件数据项是否能被正确解码
+	 */
+	@Test
+	public void test_upload_multi_item_in_GBK() throws UploadException {
+		/*
+		 * 准备请求对象
+		 */
+		MockHttpServletRequest req = Mock.servlet.request();
+		MultipartInputStream ins = Mock.servlet.insmulti("GBK");
+		ins.append("abc", "程序员s");
+		req.setInputStream(ins);
+		req.init();
+		/*
+		 * 执行上传
+		 */
+		Uploading up = UploadUnit.TYPE.born(8192);
+		Map<String, Object> map = up.parse(req, "GBK", tmps);
+		/*
+		 * 检查以下是不是 GBK 编码被解析成功
+		 */
+		assertEquals("程序员s", map.get("abc"));
+	}
+
 	/**
 	 * @author lAndRaxeE(landraxee@gmail.com)
 	 */
 	@Test
 	public void test_upload_chinese_filename() throws UploadException {
-		/*
-		 * 准备临时文件池
-		 */
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
-
 		/*
 		 * 准备模拟对象
 		 */
@@ -85,8 +116,6 @@ public class UploadingUnitTest {
 		req.setInputStream(ins);
 		req.init();
 
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
-
 		Uploading up = UploadUnit.TYPE.born(8192);
 		Map<String, Object> map = up.parse(req, "UTF-8", tmps);
 		assertEquals(4, map.size());
@@ -113,7 +142,6 @@ public class UploadingUnitTest {
 	public void test_upload_queryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
 		req.setQueryString("id=1&name=nutz");
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		Uploading up = UploadUnit.TYPE.born(8192);
 		MultipartInputStream ins = Mock.servlet.insmulti(charset);
 		ins.append("age", "1");
@@ -130,7 +158,6 @@ public class UploadingUnitTest {
 	public void test_upload_onlyQueryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
 		req.setQueryString("id=1&name=nutz");
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		Uploading up = UploadUnit.TYPE.born(8192);
 		MultipartInputStream ins = Mock.servlet.insmulti(charset);
 		req.setInputStream(ins);
@@ -146,7 +173,6 @@ public class UploadingUnitTest {
 		MockHttpServletRequest req = Mock.servlet.request();
 		req.setHeader(	"content-type",
 						"multipart/form-data; boundary=----ESDT-321271401654cc6d669eef664aac");
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		Uploading up = UploadUnit.TYPE.born(8192);
 		ServletInputStream ins = Mock.servlet.ins("org/nutz/mvc/upload/files/cast_dt01");
 		req.setInputStream(ins);
@@ -166,7 +192,6 @@ public class UploadingUnitTest {
 		req.init();
 
 		Uploading up = UploadUnit.TYPE.born(8192);
-		FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
 		up.parse(req, "UTF-8", tmps);
 	}
 }

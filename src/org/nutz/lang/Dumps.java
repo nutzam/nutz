@@ -143,7 +143,7 @@ public abstract class Dumps {
 		 */
 		public static String http(HttpServletRequest req, MODE mode) {
 			StringBuilder sb = new StringBuilder();
-			OutputStream ops = new StringOutputStream(sb);
+			OutputStream ops = new StringOutputStream(sb, req.getCharacterEncoding());
 			http(req, ops, mode);
 			return sb.toString();
 		}

@@ -13,6 +13,10 @@ public class InputingHelper {
 		this.charset = charset;
 	}
 
+	public String getCharset() {
+		return charset;
+	}
+
 	public Inputing wrap(String fmt, Object... args) {
 		return new StringInputing(String.format(fmt, args) + "\r\n", charset);
 	}
@@ -38,7 +42,7 @@ public class InputingHelper {
 	}
 
 	public Inputing data(String str) {
-		return new StringInputing(str,charset);
+		return new StringInputing(str, charset);
 	}
 
 	public Inputing file(File f) {

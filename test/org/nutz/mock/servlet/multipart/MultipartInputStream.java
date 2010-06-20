@@ -41,6 +41,10 @@ public class MultipartInputStream extends MockInputStream {
 		items.add(new EndlMultipartItem(helper, boundary));
 	}
 
+	public String getCharset() {
+		return helper.getCharset();
+	}
+
 	private String getContentType(String suffixName) {
 		String ct = mimes.get(suffixName);
 		if (null == ct)

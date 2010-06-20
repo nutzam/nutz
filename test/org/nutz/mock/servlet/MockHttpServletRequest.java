@@ -2,7 +2,6 @@ package org.nutz.mock.servlet;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ import org.nutz.mock.servlet.multipart.MultipartInputStream;
 public class MockHttpServletRequest implements HttpServletRequest {
 
 	protected HttpSession session;
-	
+
 	protected String contextPath;
 
 	public MockHttpServletRequest() {
@@ -36,7 +35,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public String getContextPath() {
 		return contextPath;
 	}
-	
+
 	public void setContextPath(String contextPath) {
 		this.contextPath = contextPath;
 	}
@@ -157,7 +156,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		this.servletPath = servletPath;
 	}
 
-
 	public HttpSession getSession() {
 		return getSession(true);
 	}
@@ -246,6 +244,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		if (null != inputStream)
 			if (inputStream instanceof MultipartInputStream) {
 				((MultipartInputStream) inputStream).init();
+				this.setCharacterEncoding(((MultipartInputStream) inputStream).getCharset());
 				try {
 					this.setHeader("content-length", inputStream.available());
 					this.setHeader(	"content-type",
@@ -354,7 +353,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		attributeMap.put(key, value);
 	}
 
-	public void setCharacterEncoding(String characterEncoding) throws UnsupportedEncodingException {
+	public void setCharacterEncoding(String characterEncoding){
 		this.characterEncoding = characterEncoding;
 	}
 
