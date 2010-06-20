@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
-import org.nutz.lang.Dumps;
 import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.mock.Mock;
