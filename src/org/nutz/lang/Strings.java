@@ -26,7 +26,7 @@ public abstract class Strings {
 	public static String dup(CharSequence cs, int num) {
 		if (isEmpty(cs) || num <= 0)
 			return "";
-		StringBuilder sb = new StringBuilder(num);
+		StringBuilder sb = new StringBuilder(cs.length() * num);
 		for (int i = 0; i < num; i++)
 			sb.append(cs);
 		return sb.toString();
@@ -42,7 +42,7 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String dup(char c, int num) {
-		if (c == 0)
+		if (c == 0 || num < 1)
 			return "";
 		StringBuilder sb = new StringBuilder(num);
 		for (int i = 0; i < num; i++)
@@ -85,7 +85,7 @@ public abstract class Strings {
 		if (len == 0)
 			return "";
 		char char0 = s.charAt(0);
-		if (!Character.isUpperCase(char0))
+		if (Character.isLowerCase(char0))
 			return s.toString();
 		StringBuilder sb = new StringBuilder(len);
 		sb.append(Character.toLowerCase(char0)).append(s.subSequence(1, len));
@@ -104,9 +104,7 @@ public abstract class Strings {
 	 * @return true 如果两个字符串忽略大小写后相等,且两个字符串均不为null
 	 */
 	public static boolean equalsIgnoreCase(String s1, String s2) {
-		if (s1 == null || s2 == null)
-			return false;
-		return s1.equalsIgnoreCase(s2);
+		return s1 == null ? s2 == null : s1.equalsIgnoreCase(s2);
 	}
 
 	/**
@@ -132,9 +130,7 @@ public abstract class Strings {
 	 * @return 是不是为空字符串
 	 */
 	public static boolean isEmpty(CharSequence cs) {
-		if (null == cs)
-			return true;
-		return cs.length() == 0;
+		return null == cs || cs.length() == 0;
 	}
 
 	/**
@@ -344,10 +340,7 @@ public abstract class Strings {
 		int len = cs.length();
 		if (len >= width)
 			return cs.toString();
-		StringBuilder sb = new StringBuilder();
-		sb.append(dup(c, width - len));
-		sb.append(cs);
-		return sb.toString();
+		return new StringBuilder().append(dup(c, width - len)).append(cs).toString();
 	}
 
 	/**
@@ -367,10 +360,7 @@ public abstract class Strings {
 		int length = cs.length();
 		if (length >= width)
 			return cs.toString();
-		StringBuilder sb = new StringBuilder();
-		sb.append(cs);
-		sb.append(dup(c, width - length));
-		return sb.toString();
+		return new StringBuilder().append(cs).append(dup(c, width - length)).toString();
 	}
 
 	/**
@@ -525,11 +515,11 @@ public abstract class Strings {
 	 *            字符串
 	 * @return 新字符串
 	 */
-	public static String removeFirst(String str) {
+	public static String removeFirst(CharSequence str) {
 		if (str == null)
 			return null;
 		if (str.length() > 1)
-			return str.substring(1);
+			return str.subSequence(1, str.length()).toString();
 		return "";
 	}
 
