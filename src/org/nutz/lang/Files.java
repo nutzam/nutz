@@ -25,6 +25,7 @@ import org.nutz.lang.util.Disks;
  * @author amos(amosleaf@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Files {
 
@@ -132,9 +133,7 @@ public abstract class Files {
 	 * @return 新文件对象
 	 */
 	public static File renameSuffix(File f, String suffix) {
-		if (null == f)
-			return null;
-		if (null == suffix || suffix.length() == 0)
+		if (null == f || null == suffix || suffix.length() == 0)
 			return f;
 		return new File(renameSuffix(f.getAbsolutePath(), suffix));
 	}
@@ -435,13 +434,7 @@ public abstract class Files {
 	 * 文件对象是否是文件，可接受 null
 	 */
 	public static boolean isFile(File f) {
-		if (null == f)
-			return false;
-		if (!f.exists())
-			return false;
-		if (!f.isFile())
-			return false;
-		return true;
+		return null != f && f.exists() && f.isFile(); 
 	}
 
 	/**
@@ -453,9 +446,7 @@ public abstract class Files {
 	 * @throws IOException
 	 */
 	public static boolean createNewFile(File f) throws IOException {
-		if (null == f)
-			return false;
-		if (f.exists())
+		if (null == f || f.exists())
 			return false;
 		makeDir(f.getParentFile());
 		return f.createNewFile();
@@ -470,9 +461,7 @@ public abstract class Files {
 	 * @throws IOException
 	 */
 	public static boolean makeDir(File dir) {
-		if (null == dir)
-			return false;
-		if (dir.exists())
+		if (null == dir || dir.exists())
 			return false;
 		return dir.mkdirs();
 	}
@@ -486,24 +475,23 @@ public abstract class Files {
 	 * @throws IOException
 	 */
 	public static boolean deleteDir(File dir) throws IOException {
-		if (null == dir)
-			return false;
-		if (!dir.exists())
+		if (null == dir || !dir.exists())
 			return false;
 		if (!dir.isDirectory())
 			throw new IOException("\"" + dir.getAbsolutePath() + "\" should be a directory!");
 		File[] files = dir.listFiles();
-		if (files.length == 0)
-			return dir.delete();
-
 		boolean re = false;
-		for (File f : files) {
-			if (f.isDirectory())
-				re |= deleteDir(f);
-			else
-				re |= deleteFile(f);
+		if (null != files) {
+			if (files.length == 0)
+				return dir.delete();
+			for (File f : files) {
+				if (f.isDirectory())
+					re |= deleteDir(f);
+				else
+					re |= deleteFile(f);
+			}
+			re |= dir.delete();
 		}
-		re |= dir.delete();
 		return re;
 	}
 
@@ -555,9 +543,7 @@ public abstract class Files {
 	 * @throws IOException
 	 */
 	public static boolean copyFile(File src, File target) throws IOException {
-		if (src == null || target == null)
-			return false;
-		if (!src.exists())
+		if (src == null || target == null || !src.exists())
 			return false;
 		if (!target.exists())
 			if (!createNewFile(target))
@@ -568,8 +554,8 @@ public abstract class Files {
 		while (-1 != (b = ins.read()))
 			ops.write(b);
 
-		ins.close();
-		ops.close();
+		Streams.safeClose(ins);
+		Streams.safeClose(ops);
 		return target.setLastModified(src.lastModified());
 	}
 
@@ -584,9 +570,7 @@ public abstract class Files {
 	 * @throws IOException
 	 */
 	public static boolean copyDir(File src, File target) throws IOException {
-		if (src == null || target == null)
-			return false;
-		if (!src.exists())
+		if (src == null || target == null || !src.exists())
 			return false;
 		if (!src.isDirectory())
 			throw new IOException(src.getAbsolutePath() + " should be a directory!");
@@ -595,12 +579,13 @@ public abstract class Files {
 				return false;
 		boolean re = true;
 		File[] files = src.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File f = files[i];
-			if (f.isFile())
-				re &= copyFile(files[i], new File(target.getAbsolutePath() + "/" + f.getName()));
-			else
-				re &= copyDir(files[i], new File(target.getAbsolutePath() + "/" + f.getName()));
+		if (null != files) {
+			for (File f : files) {
+				if (f.isFile())
+					re &= copyFile(f, new File(target.getAbsolutePath() + "/" + f.getName()));
+				else
+					re &= copyDir(f, new File(target.getAbsolutePath() + "/" + f.getName()));
+			}
 		}
 		return re;
 	}
@@ -701,8 +686,7 @@ public abstract class Files {
 	 */
 	public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
 		File[] files = dir.listFiles();
-		for (int i = 0; i < files.length; i++) {
-			File d = files[i];
+		for (File d : files) {
 			if (d.isDirectory())
 				if (d.getName().equalsIgnoreCase(name))
 					deleteDir(d);
@@ -767,12 +751,7 @@ public abstract class Files {
 	public static File[] dirs(File dir) {
 		return dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
-				if (f.isHidden())
-					return false;
-				if (f.isDirectory())
-					if (!f.getName().startsWith("."))
-						return true;
-				return false;
+				return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
 			}
 		});
 	}
@@ -793,15 +772,10 @@ public abstract class Files {
 		return list.toArray(new File[list.size()]);
 	}
 
-	private static void scanDirs(File rootDir, ArrayList<File> list) {
+	private static void scanDirs(File rootDir, List<File> list) {
 		File[] dirs = rootDir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
-				if (f.isHidden())
-					return false;
-				if (f.isDirectory())
-					if (!f.getName().startsWith("."))
-						return true;
-				return false;
+				return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
 			}
 		});
 		if (dirs != null) {
@@ -824,15 +798,9 @@ public abstract class Files {
 	public static File[] files(File dir, final String suffix) {
 		return dir.listFiles(new FileFilter() {
 			public boolean accept(File f) {
-				if (f.isHidden())
-					return false;
-				if (f.isFile()) {
-					if (null == suffix)
-						return true;
-					if (f.getName().endsWith(suffix))
-						return true;
-				}
-				return false;
+				return !f.isHidden()
+						&& f.isFile()
+						&& (null == suffix || f.getName().endsWith(suffix));
 			}
 		});
 	}

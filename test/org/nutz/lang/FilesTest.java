@@ -72,6 +72,10 @@ public class FilesTest {
 
 	@Test
 	public void test_get_suffix_name() {
-		assertEquals("txt", Files.getSuffixName("abc.txt"));
+        assertEquals(null, Files.getSuffixName((String)null));
+        assertEquals("", Files.getSuffixName(""));
+        assertEquals("", Files.getSuffixName("abc."));
+        assertEquals("txt", Files.getSuffixName("abc.txt"));
+        assertEquals("txt", Files.getSuffixName("abc.bcd.txt"));
 	}
 }

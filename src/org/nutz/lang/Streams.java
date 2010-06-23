@@ -20,6 +20,7 @@ import java.io.Writer;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Streams {
 
@@ -32,9 +33,7 @@ public abstract class Streams {
 			if (dA != sB.read())
 				return false;
 		}
-		if (sB.read() != -1)
-			return false;
-		return true;
+		return sB.read() == -1;
 	}
 
 	/**
@@ -47,9 +46,8 @@ public abstract class Streams {
 	 * @throws IOException
 	 */
 	public static void write(OutputStream ops, CharSequence cs) throws IOException {
-		if (null == cs || null == ops)
-			return;
-		ops.write(cs.toString().getBytes());
+		if (null != cs && null != ops)
+			ops.write(cs.toString().getBytes());
 	}
 
 	/**

@@ -61,7 +61,7 @@ public class StringsTest {
 		assertEquals("aBCD", Strings.upperWord("a-b-c-d", '-'));
 		assertEquals("helloWorld", Strings.upperWord("hello-world", '-'));
 	}
-	
+
 	@Test
 	public void testLowerWord() {
 		assertEquals("", Strings.lowerFirst(""));
@@ -70,5 +70,15 @@ public class StringsTest {
 		assertEquals("vCD", Strings.lowerFirst("VCD"));
 		assertEquals("vff", Strings.lowerFirst("Vff"));
 	}
-}
 
+	@Test
+	public void test_split_ignore_blank() {
+		assertArrayEquals(null, Strings.splitIgnoreBlank(null));
+		assertArrayEquals(new String[]{}, Strings.splitIgnoreBlank(" "));
+		assertArrayEquals(new String[]{"2", "3", "5"}, Strings.splitIgnoreBlank("2,3,, 5"));
+		assertArrayEquals(new String[]{"2", "3", "5", "6"}, Strings.splitIgnoreBlank("2,3,, 5,6,"));
+		assertArrayEquals(new String[]{"2,3,5,6,"}, Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
+		assertArrayEquals(new String[]{"2,3", "5", "6,"}, Strings.splitIgnoreBlank("2,3 ,,5,,6,", ",,"));
+		assertArrayEquals(new String[]{"2,3", "5", "6,"}, Strings.splitIgnoreBlank("2,3,,5 ,,,,6,", ",,"));
+	}
+}

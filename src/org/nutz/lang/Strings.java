@@ -2,6 +2,7 @@ package org.nutz.lang;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 /**
@@ -10,6 +11,7 @@ import java.util.regex.Pattern;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author mawm(ming300@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  * @author mawenming at 2009-7-19 下午12:52:32
  */
 public abstract class Strings {
@@ -94,8 +96,6 @@ public abstract class Strings {
 
 	/**
 	 * 检查两个字符串的忽略大小写后是否相等.
-	 * <p/>
-	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -109,8 +109,6 @@ public abstract class Strings {
 
 	/**
 	 * 检查两个字符串是否相等.
-	 * <p/>
-	 * <b>当s1 == null && s2 == null, 本方法返回false<b/>
 	 * 
 	 * @param s1
 	 *            字符串A
@@ -119,9 +117,7 @@ public abstract class Strings {
 	 * @return true 如果两个字符串相等,且两个字符串均不为null
 	 */
 	public static boolean equals(String s1, String s2) {
-		if (s1 == null || s2 == null)
-			return false;
-		return s1.equals(s2);
+		return s1 == null ? s2 == null : s1.equals(s2);
 	}
 
 	/**
@@ -212,11 +208,11 @@ public abstract class Strings {
 		if (null == s)
 			return null;
 		String[] ss = s.split(regex);
-		LinkedList<String> list = new LinkedList<String>();
-		for (int i = 0; i < ss.length; i++) {
-			if (isBlank(ss[i]))
+		List<String> list = new LinkedList<String>();
+		for (String st : ss) {
+			if (isBlank(st))
 				continue;
-			list.add(trim(ss[i]));
+			list.add(trim(st));
 		}
 		String[] re = new String[list.size()];
 		list.toArray(re);
@@ -524,7 +520,7 @@ public abstract class Strings {
 	}
 
 	/**
-	 * 如果txt中第一个字符和 firstChar一致,则删除,否则返回 txt
+	 * 如果str中第一个字符和 c一致,则删除,否则返回 str
 	 * <p>
 	 * 比如:
 	 * <ul>
@@ -541,13 +537,7 @@ public abstract class Strings {
 	 * @return 新字符串
 	 */
 	public static String removeFirst(String str, char c) {
-		if (str == null)
-			return null;
-		if (str.length() == 0)
-			return "";
-		if (c == str.charAt(0))
-			return str.substring(1);
-		return str;
+		return (Strings.isEmpty(str) || c != str.charAt(0)) ? str : str.substring(1);
 	}
 
 	/**
@@ -560,9 +550,7 @@ public abstract class Strings {
 	 * @return 是否包含
 	 */
 	public static boolean isin(String[] ss, String s) {
-		if (null == ss || ss.length == 0)
-			return false;
-		if (Strings.isBlank(s))
+		if (null == ss || ss.length == 0 || Strings.isBlank(s))
 			return false;
 		for (String w : ss)
 			if (s.equals(w))
