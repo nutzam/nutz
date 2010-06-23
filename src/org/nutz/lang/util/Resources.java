@@ -16,6 +16,7 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 /**
@@ -25,6 +26,8 @@ import org.nutz.log.Logs;
  * @author Wendal(wendal1985@gmail.com)
  */
 public final class Resources {
+
+	private static final Log log = Logs.getLog(Resources.class);
 
 	/**
 	 * It will list all Class object same package with the Class you give.
@@ -50,10 +53,17 @@ public final class Resources {
 	 *             when packageZ is null
 	 */
 	public static List<Class<?>> scanClass(File dir, Package packageZ) {
+		if (log.isDebugEnabled())
+			log.debugf("scan class in '%s' :: %s", dir, packageZ);
+
 		if (dir == null)
 			dir = Files.findFile(packageZ.getName().replaceAll("\\.", "/"));
 		String[] classNames = null;
-		String jarPath = getJarPath(dir);
+		String jarPath = getJarPath(dir.getAbsolutePath());
+
+		if (log.isDebugEnabled())
+			log.debugf("jar-path: %s", jarPath);
+
 		if (jarPath != null) {
 			classNames = findInJar(jarPath, packageZ);
 		} else
@@ -111,6 +121,9 @@ public final class Resources {
 	 * @see java.io.File
 	 */
 	private static File getBasePath(String base) {
+		if (log.isDebugEnabled())
+			log.debugf("getBasePath for: '%s'", base);
+
 		try {
 			Enumeration<URL> urls = new ClassLoader() {}.getResources(base);
 			File file = null;
@@ -124,9 +137,16 @@ public final class Resources {
 					file = new File(path);
 				}
 			}
+			if (log.isDebugEnabled())
+				log.debugf("file<new ClassLoader: '%s'", file);
+
 			// Then I will find the class in classpath
-			if (null == file)
+			if (null == file) {
 				file = Files.findFile(base);
+
+				if (log.isDebugEnabled())
+					log.debugf("file<Files.findFile: '%s'", file);
+			}
 
 			if (null == file)
 				return null;
@@ -139,6 +159,10 @@ public final class Resources {
 			catch (SecurityException e) {
 				// In GAE , it will happen.
 			}
+
+			if (log.isDebugEnabled())
+				log.debugf("it is file, use parent: '%s'", file.getParentFile());
+
 			return file.getParentFile();
 		}
 		catch (IOException e) {}
@@ -189,12 +213,21 @@ public final class Resources {
 		return null;
 	}
 
-	private static String getJarPath(File dir) {
-		String fpath = dir.getAbsolutePath();
-		int posBegin = fpath.indexOf("file:") + 5;
-		int posEnd = fpath.lastIndexOf('!');
-		if (posBegin > 0 && (posEnd - posBegin) > 0)
-			return fpath.substring(posBegin, posEnd);
+	static String getJarPath(String jarPath) {
+		int posBegin = jarPath.indexOf("file:");
+		if (posBegin == -1)
+			posBegin = 0;
+		else {
+			posBegin += 6;
+			if (jarPath.length() <= posBegin)
+				return null;
+			if (jarPath.charAt(posBegin - 1) != '\\')
+				posBegin--;
+		}
+
+		int posEnd = jarPath.lastIndexOf('!');
+		if (posBegin >= 0 && (posEnd - posBegin) > 0)
+			return jarPath.substring(posBegin, posEnd);
 		return null;
 	}
 
@@ -271,8 +304,8 @@ public final class Resources {
 		}
 		return list;
 	}
-	
-	public static final List<InputStream> findZipEntryInClassPath(String pathRegex){
+
+	public static final List<InputStream> findZipEntryInClassPath(String pathRegex) {
 		List<InputStream> entriesList = new ArrayList<InputStream>();
 		String CLASSPATH = System.getenv().get("CLASSPATH");
 		if (CLASSPATH != null) {
