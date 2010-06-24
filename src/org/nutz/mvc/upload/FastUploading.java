@@ -156,7 +156,6 @@ public class FastUploading implements Uploading {
 				}
 				// 作为提交值读取
 				else {
-					// StreamBuffer sb = new StreamBuffer();
 					StringBuilder sb = new StringBuilder();
 					do {
 						info.current = br.load();
