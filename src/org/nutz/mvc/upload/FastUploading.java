@@ -158,14 +158,15 @@ public class FastUploading implements Uploading {
 				}
 				// 作为提交值读取
 				else {
-					StreamBuffer sb = new StreamBuffer();
+					// StreamBuffer sb = new StreamBuffer();
+					StringBuilder sb = new StringBuilder();
 					do {
 						info.current = br.load();
 						mm = br.mark(itemEndlBytes);
 						assertStreamNotEnd(mm);
-						br.dump(sb.getBuffer());
+						sb.append(br.dumpAsString(charset));
 					} while (mm == MarkMode.NOT_FOUND);
-					params.add(meta.getName(), sb.toString(charset));
+					params.add(meta.getName(), sb.toString());
 				}
 
 			} while (mm != MarkMode.STREAM_END);
