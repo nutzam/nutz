@@ -1,9 +1,11 @@
 package org.nutz.mvc.upload;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -44,18 +46,20 @@ public abstract class Uploads {
 	 *            请求对象
 	 * @return 参数 MAP
 	 */
+	@SuppressWarnings("unchecked")
 	public static NutMap createParamsMap(HttpServletRequest req) {
 		NutMap params = new NutMap();
 		// parse query strings
-		String qs = req.getQueryString();
-		if (null != qs) {
-			String[] pairs = Strings.splitIgnoreBlank(qs, "&");
-			for (String pair : pairs) {
-				String[] pp = pair.split("=");
-				if (pp.length > 1)
-					params.put(pp[0], pp[1]);
-				else
-					params.put(pp[0], null);
+		Map<String, String []> paramsZ = req.getParameterMap();
+		if (null != paramsZ && paramsZ.size() >0  ){
+			for (Entry<String, String []> ppp : paramsZ.entrySet()) {
+				if (ppp.getValue() != null ) {
+					if (ppp.getValue().length > 0)
+						params.put(ppp.getKey(), ppp.getValue()[0]);
+					else
+						params.put(ppp.getKey(), "");
+				} else
+					params.put(ppp.getKey(), null);
 			}
 		}
 		return params;
