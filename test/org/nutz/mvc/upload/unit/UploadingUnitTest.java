@@ -40,6 +40,51 @@ public class UploadingUnitTest {
 	}
 
 	/**
+	 * 检查以下特殊字符作为参数
+	 */
+	@Test
+	public void test_upload_special_char() throws UploadException {
+		String val = "sfsafsa<> ' \" & -- / \\ | $@sdsdsdsaaaaaaaaaaaaaa";
+		/*
+		 * 准备请求对象
+		 */
+		MockHttpServletRequest req = Mock.servlet.request();
+		MultipartInputStream ins = Mock.servlet.insmulti("GBK");
+		ins.append("abc", val);
+		req.setInputStream(ins);
+		req.init();
+		/*
+		 * 执行上传
+		 */
+		Uploading up = UploadUnit.TYPE.born(8192);
+		Map<String, Object> map = up.parse(req, "GBK", tmps);
+		/*
+		 * 检查以下是不是 GBK 编码被解析成功
+		 */
+		assertEquals(val, map.get("abc"));
+		
+		/*
+		 * 另一段字符串
+		 */
+		val = "<p>$%&amp;&amp;*(^?jyjmy?876&amp;%4</p>";
+		/*
+		 * 准备请求对象
+		 */
+		ins = Mock.servlet.insmulti("GBK");
+		ins.append("abc", val);
+		req.setInputStream(ins);
+		req.init();
+		/*
+		 * 执行上传
+		 */
+		map = up.parse(req, "GBK", tmps);
+		/*
+		 * 检查以下是不是 GBK 编码被解析成功
+		 */
+		assertEquals(val, map.get("abc"));
+	}
+
+	/**
 	 * 检查一下普通的非文件数据项是否能被正确解码
 	 */
 	@Test
