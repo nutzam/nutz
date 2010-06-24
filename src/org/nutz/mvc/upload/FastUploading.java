@@ -1,7 +1,6 @@
 package org.nutz.mvc.upload;
 
 import java.io.BufferedOutputStream;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -16,7 +15,6 @@ import org.nutz.http.Http;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
-import org.nutz.lang.stream.StreamBuffer;
 import org.nutz.lang.util.NutMap;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -167,6 +165,8 @@ public class FastUploading implements Uploading {
 						sb.append(br.dumpAsString(charset));
 					} while (mm == MarkMode.NOT_FOUND);
 					params.add(meta.getName(), sb.toString());
+					if (log.isDebugEnabled())
+						log.debugf("Found a param, name=[%s] value=[%s]",meta.getName(),sb.toString());
 				}
 
 			} while (mm != MarkMode.STREAM_END);

@@ -2,7 +2,6 @@ package org.nutz.lang.stream;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
@@ -12,7 +11,7 @@ import org.nutz.lang.Lang;
 public class StreamBuffer extends InputStream {
 
 	private static class OutputStreamBuffer extends OutputStream {
-		private ArrayList<int[]> bytes = new ArrayList<int[]>();
+		private ArrayList<byte[]> bytes = new ArrayList<byte[]>();
 		private int width = 1024;
 		private int index = 0;
 		private int cursor = 0;
@@ -21,13 +20,13 @@ public class StreamBuffer extends InputStream {
 		public void write(int b) throws IOException {
 			if (cursor >= width)
 				index++;
-			int[] row = bytes.size() > index ? bytes.get(index) : null;
+			byte[] row = bytes.size() > index ? bytes.get(index) : null;
 			if (null == row) {
-				row = new int[width];
+				row = new byte[width];
 				bytes.add(row);
 				cursor = 0;
 			}
-			row[cursor++] = b;
+			row[cursor++] = (byte)b;
 		}
 
 		private int size() {
@@ -57,7 +56,7 @@ public class StreamBuffer extends InputStream {
 		if (index > buffer.index)
 			return -1;
 		if (index < buffer.bytes.size()) {
-			int[] cs = buffer.bytes.get(index);
+			byte[] cs = buffer.bytes.get(index);
 			if (cursor < buffer.cursor)
 				return cs[cursor++];
 		}
@@ -88,11 +87,12 @@ public class StreamBuffer extends InputStream {
 	public String toString(String charset) throws IOException {
 		index = 0;
 		cursor = 0;
-		InputStreamReader reader = new InputStreamReader(this, charset);
 		StringBuilder sb = new StringBuilder();
-		int c;
-		while ((c = reader.read()) != -1)
-			sb.append((char) c);
+		StringOutputStream sos = new StringOutputStream(sb, charset);
+		byte c;
+		while ((c = (byte) this.read()) != -1)
+			sos.write(c);
+		sos.flush();
 		return sb.toString();
 	}
 
