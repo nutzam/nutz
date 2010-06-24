@@ -3,11 +3,14 @@ package org.nutz.mock.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.Map.Entry;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletInputStream;
@@ -23,7 +26,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	protected HttpSession session;
 
 	protected String contextPath;
-
+	
 	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
 	}
@@ -100,15 +103,26 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		this.pathTranslated = pathTranslated;
 	}
 
-	protected String queryString;
+//	protected String queryString;
 
 	public String getQueryString() {
-		return queryString;
+		if (parameterMap.size() == 0)
+			return null;
+		StringBuilder sb = new StringBuilder();
+		for (Entry<String, String []> entry : parameterMap.entrySet()) {
+			if (entry.getValue() == null)
+				sb.append(entry.getKey()).append("=&");
+			else
+				for (String str : entry.getValue()) {
+					sb.append(entry.getKey()).append("=").append(str).append("&");
+				}
+		}
+		return sb.toString();
 	}
 
-	public void setQueryString(String queryString) {
-		this.queryString = queryString;
-	}
+//	public void setQueryString(String queryString) {
+//		this.queryString = queryString;
+//	}
 
 	public String remoteUser;
 
@@ -277,13 +291,24 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw Lang.noImplement();
 	}
 
-	protected Map<String, String> parameterMap = new HashMap<String, String>();
+	protected Map<String, String[]> parameterMap = new HashMap<String, String[]>();
 
 	public String getParameter(String key) {
-		return parameterMap.get(key);
+		if (parameterMap.containsKey(key)){
+			return parameterMap.get(key)[0];
+		}
+		return null;
+	}
+	
+	public void setParameter(String key, String value) {
+		parameterMap.put(key, new String[]{value});
+	}
+	
+	public void addParameter(String key, String value) {
+		throw Lang.noImplement();
 	}
 
-	public Map<String, String> getParameterMap() {
+	public Map<String, String [] > getParameterMap() {
 		return parameterMap;
 	}
 
@@ -292,7 +317,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public String[] getParameterValues(String arg0) {
-		return parameterMap.values().toArray(new String[0]);
+		List<String> pp = new ArrayList<String>(parameterMap.size());
+		for (Entry<String, String[]> strs : parameterMap.entrySet()) {
+			for (String str : strs.getValue()) {
+				pp.add(str);
+			}
+		}
+		return pp.toArray(new String[pp.size()]);
 	}
 
 	protected String protocol;

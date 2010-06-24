@@ -140,7 +140,8 @@ public class UploadingUnitTest {
 	@Test
 	public void test_upload_queryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setQueryString("id=1&name=nutz");
+		req.setParameter("id", "1");
+		req.setParameter("name", "nutz");
 		Uploading up = UploadUnit.TYPE.born(8192);
 		MultipartInputStream ins = Mock.servlet.insmulti(charset);
 		ins.append("age", "1");
@@ -156,7 +157,8 @@ public class UploadingUnitTest {
 	@Test
 	public void test_upload_onlyQueryString() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setQueryString("id=1&name=nutz");
+		req.setParameter("id", "1");
+		req.setParameter("name", "nutz");
 		Uploading up = UploadUnit.TYPE.born(8192);
 		MultipartInputStream ins = Mock.servlet.insmulti(charset);
 		req.setInputStream(ins);
