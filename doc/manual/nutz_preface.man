@@ -93,8 +93,7 @@ Nutz 的未来
 	 # 加入 [http://groups.google.at/group/nutzam 讨论区]，讨论组一般总是有人在线，你的问题会很快得到响应
 	 # 加入 {*GTalk 聊天群} -- 感谢 {*Van} {#999999;/ 添加帐号 nutzam@chatterous.com 为好友，然后发送 `@join` 指令}
 	 # 或者加入 QQ 群
-		 # [http://qun.qq.com/air/#75818186 Nutz交流（75818186）] -- 感谢 {*枫} 和 群主 {*夜之靓} 
-		 # [http://qun.qq.com/air/#68315571 Nutz交流（68315571）] -- 感谢 [http://zpap.javaeye.com zpap] 
+		 # [http://qun.qq.com/air/#58444676 Nutz交流超级群（58444676）] -- 感谢 {*E-Hunter} 
 	 
 	 考虑到，现在这个特殊时期，[https://groups.google.com/group/nutzam 讨论区] 即使用 https 也会不时被墙。
 	 所以你还可以给[http://code.google.com/p/nutz/people/list 项目成员]直接发信
