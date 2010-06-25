@@ -10,6 +10,7 @@ import org.nutz.json.AllJson;
 import org.nutz.lang.AllLang;
 import org.nutz.log.AllLog;
 import org.nutz.mvc.AllMvc;
+import org.nutz.resource.AllResourceScan;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({	AllLang.class,
@@ -20,5 +21,6 @@ import org.nutz.mvc.AllMvc;
 						AllAop.class,
 						AllFilePool.class,
 						AllHttp.class,
-						AllLog.class})
+						AllLog.class,
+						AllResourceScan.class})
 public class AllWithoutDB {}
