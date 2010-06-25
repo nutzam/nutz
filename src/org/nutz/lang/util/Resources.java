@@ -316,7 +316,7 @@ public final class Resources {
 				paths = CLASSPATH.split(":");
 			try {
 				for (String path : paths) {
-					if (path.endsWith(".jar")) {
+					if (path != null && path.length() > 0 && path.endsWith(".jar")) {
 						File file = new File(path);
 						ZipFile zipFile = new ZipFile(file);
 						if (Files.isFile(file)) {

@@ -1,5 +1,8 @@
 package org.nutz.plugin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocException;
 
@@ -31,4 +34,17 @@ public class IocPluginManager<T> implements PluginManager<T> {
 		throw new NoPluginCanWorkException();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<T> gets() {
+		List<T> aList = new ArrayList<T>(names.length);
+		for (String name : names) {
+			try {
+				Plugin plugin = ioc.get(Plugin.class, name);
+				if (plugin.canWork())
+					aList.add((T)plugin);
+			}
+			catch (IocException e) {}
+		}
+		return aList;
+	}
 }
