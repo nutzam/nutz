@@ -38,7 +38,7 @@ class MirrorBorning<T> {
 			return borning.born(realArgs);
 		}
 		catch (Throwable e) {
-			throw new BorningException(e, type, realArgs);
+			throw new BorningException(Lang.unwrapThrow(e), type, realArgs);
 		}
 	}
 
