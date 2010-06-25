@@ -37,6 +37,7 @@ import org.nutz.lang.stream.StringWriter;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Lang {
 
@@ -131,12 +132,12 @@ public abstract class Lang {
 			return (T) e;
 		return Mirror.me(wrapper).born(e);
 	}
-	
+
 	public static Throwable unwrapThrow(Throwable e) {
 		if (e == null)
 			return null;
 		if (e instanceof InvocationTargetException) {
-			InvocationTargetException itE = (InvocationTargetException)e;
+			InvocationTargetException itE = (InvocationTargetException) e;
 			if (itE.getTargetException() != null)
 				return unwrapThrow(itE.getTargetException());
 		}
@@ -150,7 +151,7 @@ public abstract class Lang {
 	 * <ul>
 	 * <li>可以容忍 null
 	 * <li>可以容忍不同类型的 Number
-	 * <li>对，数组，集合， Map 会深层比较
+	 * <li>对数组，集合， Map 会深层比较
 	 * </ul>
 	 * 当然，如果你重写的 equals 方法会优先
 	 * 
@@ -168,22 +169,16 @@ public abstract class Lang {
 			return false;
 		if (a1.equals(a2))
 			return true;
-		if (a1 instanceof Number) {
-			if (!(a2 instanceof Number))
-				return false;
-			return a1.toString().equals(a2.toString());
-		} else if (a1 instanceof Map && a2 instanceof Map) {
+		if (a1 instanceof Number)
+			return a2 instanceof Number && a1.toString().equals(a2.toString());
+		if (a1 instanceof Map && a2 instanceof Map) {
 			Map<?, ?> m1 = (Map<?, ?>) a1;
 			Map<?, ?> m2 = (Map<?, ?>) a2;
 			if (m1.size() != m2.size())
 				return false;
-			for (Iterator<?> it = m1.keySet().iterator(); it.hasNext();) {
-				Object key = it.next();
-				if (!m2.containsKey(key))
-					return false;
-				Object v1 = m1.get(key);
-				Object v2 = m2.get(key);
-				if (!equals(v1, v2))
+			for (Entry<?, ?> e : m1.entrySet()) {
+				Object key = e.getKey();
+				if (!m2.containsKey(key) || !equals(m1.get(key), m2.get(key)))
 					return false;
 			}
 			return true;
@@ -262,8 +257,7 @@ public abstract class Lang {
 			char[] data = new char[64];
 			int len;
 			while (true) {
-				len = reader.read(data);
-				if (len == -1)
+				if ((len = reader.read(data)) == -1)
 					break;
 				sb.append(data, 0, len);
 			}
@@ -372,7 +366,7 @@ public abstract class Lang {
 				for (T e : ary)
 					if (null != e)
 						list.add(e);
-		if (list.size() == 0)
+		if (list.isEmpty())
 			return null;
 		Class<T> type = (Class<T>) list.peek().getClass();
 		return list.toArray((T[]) Array.newInstance(type, list.size()));
@@ -564,14 +558,15 @@ public abstract class Lang {
 	 */
 	public static <T> StringBuilder concat(int offset, int len, Object c, T[] objs) {
 		StringBuilder sb = new StringBuilder();
-		if (null == objs)
+		if (null == objs || len < 0 || 0 == objs.length)
 			return sb;
-		for (int i = 0; i < len; i++) {
-			Object obj = objs[i + offset];
-			sb.append(null == obj ? null : obj.toString()).append(c);
+
+		if (offset < objs.length) {
+			sb.append(objs[offset]);
+			for (int i = 1; i < len && i + offset < objs.length; i++) {
+				sb.append(c).append(objs[i + offset]);
+			}
 		}
-		if (sb.length() > 0)
-			sb.deleteCharAt(sb.length() - 1);
 		return sb;
 	}
 
@@ -1233,16 +1228,18 @@ public abstract class Lang {
 			bs[i] = (byte) is[i];
 		return bs;
 	}
-	
+
 	/**
 	 * 判断当前系统是否为Windows
+	 * 
 	 * @return true 如果当前系统为Windows系统
 	 */
-	public static boolean isWin(){
-		try{
+	public static boolean isWin() {
+		try {
 			String os = System.getenv("OS");
 			return os != null && os.indexOf("Windows") > -1;
-		}catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			return false;
 		}
 	}

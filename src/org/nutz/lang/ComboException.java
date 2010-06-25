@@ -21,9 +21,7 @@ public class ComboException extends RuntimeException {
 
 	@Override
 	public Throwable getCause() {
-		if (list.isEmpty())
-			return null;
-		return list.get(0);
+		return list.isEmpty() ? null : list.get(0);
 	}
 
 	@Override
@@ -55,7 +53,6 @@ public class ComboException extends RuntimeException {
 	public void printStackTrace() {
 		for (Throwable e : list) {
 			e.printStackTrace();
-			System.err.println();
 		}
 	}
 

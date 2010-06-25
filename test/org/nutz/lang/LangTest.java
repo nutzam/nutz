@@ -1,9 +1,6 @@
 package org.nutz.lang;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -21,6 +18,14 @@ public class LangTest {
 	public static class A {
 		private int id;
 		private String name;
+	}
+
+	@Test
+	public void test_equals_simple() {
+		assertTrue(Lang.equals(null, null));
+		assertTrue(Lang.equals("abc", "abc"));
+		assertTrue(Lang.equals((short) 21, 21));
+		assertTrue(Lang.equals(21.0, 21.0f));
 	}
 
 	@Test
@@ -80,6 +85,17 @@ public class LangTest {
 		assertEquals("A--B", Lang.concat("--", ss).toString());
 	}
 
+	@Test
+	public void test_concat4_offset_len() {
+		assertEquals("", Lang.concat(0, 2, "-", null).toString());
+		assertEquals("", Lang.concat(0, 2, "-", new String[]{}).toString());
+		assertEquals("a-b", Lang.concat(0, 2, "-", new String[]{"a", "b"}).toString());
+		assertEquals("b", Lang.concat(1, 1, "-", new String[]{"a", "b"}).toString());
+		assertEquals("c", Lang.concat(2, 2, "-", new String[]{"a", "b", "c"}).toString());
+		assertEquals("", Lang.concat(2, 2, "-", new String[]{"a", "b"}).toString());
+		assertEquals("", Lang.concat(1, -1, "-", new String[]{"a", "b"}).toString());
+	}
+
 	public static class BC {
 		String name;
 		CB cb;
@@ -104,19 +120,44 @@ public class LangTest {
 		assertEquals("C", ((Map) map.get("cb")).get("code"));
 		assertNull(((Map) map.get("cb")).get("bc"));
 	}
-	
+
 	@Test
-	public void test_readAll(){
+	public void test_readAll() {
 		String src = "!!我要测试-->密码";
 		String dest = Lang.readAll(new InputStreamReader(Lang.ins(src)));
-		String dest2 = Lang.readAll(Lang.inr(src)); 
+		String dest2 = Lang.readAll(Lang.inr(src));
 		assertEquals(src, dest);
 		assertEquals(src, dest2);
 	}
-	
+
 	@Ignore("测试平台不一定为Windows")
 	@Test
-	public void test_isWin(){
+	public void test_isWin() {
 		assertTrue(Lang.isWin());
+	}
+
+	@Test
+	public void test_merge() {
+		String[] a1 = {};
+		String[] a2 = {"a", "b"};
+		String[] a3 = {"c"};
+		assertArrayEquals(new String[]{"a", "b", "c"}, Lang.merge(a1, a2, a3));
+		String[] b1 = new String[]{};
+		String[] b2 = null;
+		assertArrayEquals(null, Lang.merge(b1, b2));
+	}
+
+	@Test
+	public void test_array_first() {
+		assertArrayEquals(new String[]{"a"}, Lang.arrayFirst("a", null));
+		assertArrayEquals(new String[]{"a"}, Lang.arrayFirst("a", new String[]{}));
+		assertArrayEquals(new String[]{"a", "b"}, Lang.arrayFirst("a", new String[]{"b"}));
+	}
+
+	@Test
+	public void test_array_last() {
+		assertArrayEquals(new String[]{"a"}, Lang.arrayLast(null, "a"));
+		assertArrayEquals(new String[]{"a"}, Lang.arrayLast(new String[]{}, "a"));
+		assertArrayEquals(new String[]{"b", "a"}, Lang.arrayLast(new String[]{"b"}, "a"));
 	}
 }

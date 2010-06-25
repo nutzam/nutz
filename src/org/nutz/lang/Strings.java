@@ -68,9 +68,9 @@ public abstract class Strings {
 		char char0 = s.charAt(0);
 		if (Character.isUpperCase(char0))
 			return s.toString();
-		StringBuilder sb = new StringBuilder(len);
-		sb.append(Character.toUpperCase(char0)).append(s.subSequence(1, len));
-		return sb.toString();
+		return new StringBuilder(len).append(Character.toUpperCase(char0))
+										.append(s.subSequence(1, len))
+										.toString();
 	}
 
 	/**
@@ -86,12 +86,12 @@ public abstract class Strings {
 		int len = s.length();
 		if (len == 0)
 			return "";
-		char char0 = s.charAt(0);
-		if (Character.isLowerCase(char0))
+		char c = s.charAt(0);
+		if (Character.isLowerCase(c))
 			return s.toString();
-		StringBuilder sb = new StringBuilder(len);
-		sb.append(Character.toLowerCase(char0)).append(s.subSequence(1, len));
-		return sb.toString();
+		return new StringBuilder(len).append(Character.toLowerCase(c))
+										.append(s.subSequence(1, len))
+										.toString();
 	}
 
 	/**
@@ -139,8 +139,7 @@ public abstract class Strings {
 			return true;
 		int length = cs.length();
 		for (int i = 0; i < length; i++) {
-			char c = cs.charAt(i);
-			if (c > 0x20 || c < 0)
+			if (!(Character.isWhitespace(cs.charAt(i))))
 				return false;
 		}
 		return true;
@@ -156,6 +155,8 @@ public abstract class Strings {
 	public static String trim(CharSequence cs) {
 		if (null == cs)
 			return null;
+		if (cs instanceof String)
+			return ((String) cs).trim();
 		int length = cs.length();
 		if (length == 0)
 			return cs.toString();
@@ -163,24 +164,17 @@ public abstract class Strings {
 		int last = length - 1;
 		int r = last;
 		for (; l < length; l++) {
-			char c = cs.charAt(l);
-			if (c == 65279)
-				continue;
-			if (c > 0x20 || c < 0)
+			if (!Character.isWhitespace(cs.charAt(l)))
 				break;
 		}
-		for (; r > 0; r--) {
-			char c = cs.charAt(r);
-			if (c > 0x20 || c < 0)
+		for (; r > l; r--) {
+			if (!Character.isWhitespace(cs.charAt(r)))
 				break;
 		}
 		if (l > r)
 			return "";
 		else if (l == 0 && r == last)
 			return cs.toString();
-
-		if (cs instanceof String)
-			return ((String) cs).substring(l, r + 1);
 		return cs.subSequence(l, r + 1).toString();
 	}
 
@@ -214,9 +208,7 @@ public abstract class Strings {
 				continue;
 			list.add(trim(st));
 		}
-		String[] re = new String[list.size()];
-		list.toArray(re);
-		return re;
+		return list.toArray(new String[list.size()]);
 	}
 
 	/**
@@ -374,27 +366,20 @@ public abstract class Strings {
 		int len = cs.length();
 		if (len < 2)
 			return false;
-		// check left
 		int l = 0;
 		int last = len - 1;
 		int r = last;
 		for (; l < len; l++) {
-			char c = cs.charAt(l);
-			if (c > 0x20 || c < 0)
+			if (!Character.isWhitespace(cs.charAt(l)))
 				break;
 		}
-		for (; r > 0; r--) {
-			char c = cs.charAt(r);
-			if (c > 0x20 || c < 0)
+		if (cs.charAt(l) != lc)
+			return false;
+		for (; r > l; r--) {
+			if (!Character.isWhitespace(cs.charAt(r)))
 				break;
 		}
-		if (l >= r)
-			return false;
-		else if (cs.charAt(l) != lc)
-			return false;
-		else if (cs.charAt(r) != rc)
-			return false;
-		return true;
+		return l < r && cs.charAt(r) == rc;
 	}
 
 	/**
@@ -410,13 +395,7 @@ public abstract class Strings {
 		if (null == cs)
 			return false;
 		int length = cs.length();
-		if (length < 2)
-			return false;
-		if (cs.charAt(0) != lc)
-			return false;
-		if (cs.charAt(length - 1) != rc)
-			return false;
-		return true;
+		return length > 1 && cs.charAt(0) == lc && cs.charAt(length - 1) == rc;
 	}
 
 	/**

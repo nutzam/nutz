@@ -18,6 +18,7 @@ import org.nutz.lang.stream.StringOutputStream;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Dumps {
 
@@ -27,9 +28,6 @@ public abstract class Dumps {
 	 * @param m
 	 *            Matcher 对象
 	 * @return 信息
-	 * 
-	 * @throws java.lang.NullPointerException
-	 *             when m is null
 	 */
 	public static String matcher(Matcher m) {
 		StringBuilder sb = new StringBuilder();
@@ -51,11 +49,8 @@ public abstract class Dumps {
 	public static String obj(Object obj) {
 		if (null == obj)
 			return "null";
-		StringBuilder sb = new StringBuilder();
-		sb.append(obj.getClass().getName());
+		StringBuilder sb = new StringBuilder(obj.getClass().getName() + "\n\n[Fields:]");
 		Mirror<?> mirror = Mirror.me(obj.getClass());
-
-		sb.append("\n\n[Fields:]");
 		for (Field f : mirror.getType().getFields())
 			if (Modifier.isPublic(f.getModifiers()))
 				try {
