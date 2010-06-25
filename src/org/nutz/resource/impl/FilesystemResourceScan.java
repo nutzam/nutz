@@ -1,7 +1,10 @@
 package org.nutz.resource.impl;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +24,13 @@ public class FilesystemResourceScan extends AbstractResourceScan {
 	private static final Log LOG = Logs.getLog(FilesystemResourceScan.class);
 
 	public boolean canWork() {
-		return !System.getProperties().containsKey("com.google.appengine.runtime.version");
+		return null == System.getProperties().get("com.google.appengine.runtime.version");
 	}
 
 	/**
 	 * 示例:
 	 * <p/>
-	 * <code>list("org/nutz/",".js")</code>
+	 * <code>new FilesystemResourceScan().list("org/nutz/",".js")</code>
 	 * <p/>
 	 * 将返回org/nutz文件夹及子文件夹下全部js文件
 	 * 
@@ -48,9 +51,9 @@ public class FilesystemResourceScan extends AbstractResourceScan {
 			for (File dir : dirs) {
 				File[] files = Files.files(dir, filter);
 				for (File file : files) {
-					NutResource nutResource = new NutResource();
 					try {
-						nutResource.setUrl(file.toURI().toURL());
+						NutResource nutResource = new FileResource(file.toURI().toURL());
+						nutResource.setName(file.getPath());
 						list.add(nutResource);
 					}
 					catch (MalformedURLException e) {
@@ -63,6 +66,21 @@ public class FilesystemResourceScan extends AbstractResourceScan {
 		if (LOG.isInfoEnabled())
 			LOG.infof("Found %s resources in src = %s ,filter = %s", list.size(), src, filter);
 		return list;
+	}
+
+}
+
+class FileResource extends NutResource {
+
+	private URL url;
+
+	public FileResource(URL url) {
+		this.url = url;
+	}
+
+	@Override
+	public InputStream getInputStream() throws IOException {
+		return url.openStream();
 	}
 
 }

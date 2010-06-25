@@ -5,14 +5,10 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.plugin.Plugin;
 import org.nutz.resource.ResourceScan;
 
 public abstract class AbstractResourceScan implements ResourceScan, Plugin {
-	
-	private static final Log LOG = Logs.getLog(AbstractResourceScan.class);
 
 	protected String getClassPath() {
 		Properties properties = System.getProperties();
@@ -28,12 +24,10 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 					return entry.getValue();
 		return null;
 	}
-	
-	protected String [] splitClassPath() {
+
+	protected String[] splitedClassPath() {
 		String CLASSPATH = getClassPath();
 		if (CLASSPATH != null) {
-			if (LOG.isDebugEnabled())
-				LOG.debugf("Scan resource in ClassPath : %s", CLASSPATH);
 			Object pathSeparator = System.getProperties().get("path.separator");
 			if (pathSeparator == null) {
 				if (Lang.isWin())
