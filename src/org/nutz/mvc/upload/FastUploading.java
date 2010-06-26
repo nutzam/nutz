@@ -149,6 +149,7 @@ public class FastUploading implements Uploading {
 							} while (mm == MarkMode.NOT_FOUND);
 						}
 						finally {
+							Streams.safeFlush(ops);
 							Streams.safeClose(ops);
 						}
 						params.add(meta.getName(), new TempFile(meta, tmp));

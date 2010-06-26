@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -66,6 +67,14 @@ public abstract class Streams {
 				return false;
 			}
 		return true;
+	}
+	
+	public static void safeFlush(Flushable fa){
+		if (null != fa)
+			try {
+				fa.flush();
+			}catch (IOException e) {
+			}
 	}
 
 	/**
