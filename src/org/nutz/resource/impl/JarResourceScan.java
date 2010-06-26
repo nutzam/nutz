@@ -39,18 +39,24 @@ public class JarResourceScan extends AbstractResourceScan {
 	 * @param filter
 	 *            过滤器
 	 */
-	public List<NutResource> list(final String src, String filter) {
+	public List<NutResource> list(String src, String filter) {
 		if (filter == null)
 			filter = "";
-		List<NutResource> list = new ArrayList<NutResource>(100);
+		//抹除正则表达式
+		src = src.replace('\\', '/');
+		src = src.replace(".","\\.");
+		List<NutResource> list = new ArrayList<NutResource>();
+		if (src.startsWith("/") || src.indexOf(':') > -1)
+			return list;
 		String[] paths = splitedClassPath();
 
 		if (paths != null) {
 			if (LOG.isDebugEnabled())
-				LOG.debugf("Scan resource in ClassPath : %s",getClassPath());
-			try {
-				String pathRegex = src + ".+" + filter;
-				for (String path : paths) {
+				LOG.debugf("Scan resource in : %s", getClassPath());
+
+			String pathRegex = src + ".+" + filter;
+			for (String path : paths) {
+				try {
 					if (path.endsWith(".jar")) {
 						File file = new File(path);
 						if (Files.isFile(file)) {
@@ -71,11 +77,12 @@ public class JarResourceScan extends AbstractResourceScan {
 						}
 					}
 				}
+				catch (Throwable e) {
+					if (LOG.isWarnEnabled())
+						LOG.warn("!!Case error when scan resource !", e);
+				}
 			}
-			catch (Throwable e) {
-				if (LOG.isWarnEnabled())
-					LOG.warn("!!Case error when scan resource !", e);
-			}
+
 		}
 		if (LOG.isInfoEnabled())
 			LOG.infof("Found %s resources in src = %s ,filter = %s", list.size(), src, filter);
@@ -101,11 +108,6 @@ class ZipEntryResource extends NutResource {
 		ZipFile zipFile = new ZipFile(zipFileName);
 		ZipEntry zipEntry = zipFile.getEntry(zipEntryName);
 		return zipFile.getInputStream(zipEntry);
-	}
-
-	@Override
-	public void setName(String name) {
-		this.zipEntryName = name;
 	}
 
 	@Override

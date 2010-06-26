@@ -8,7 +8,7 @@ public class JarResourceScanTest {
 
 	@Test
 	public void testList() {
-		assertTrue(new JarResourceScan().list("org.junit", ".class").size() > 0);
+		assertTrue(new JarResourceScan().list("org/junit", ".class").size() > 0);
 	}
 
 	@Test

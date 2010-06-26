@@ -12,7 +12,8 @@ public final class ResourceScanHelper {
 	
 	private static final PluginManager<ResourceScan> scaners
 		= new SimplePluginManager<ResourceScan>("org.nutz.resource.impl.FilesystemResourceScan",
-				"org.nutz.resource.impl.JarResourceScan");
+				"org.nutz.resource.impl.JarResourceScan",
+				"org.nutz.resource.impl.ClasspathResourceScan");
 	
 	public static List<NutResource> scanFiles(String src, String filter){
 		List<NutResource> rList = new ArrayList<NutResource>();

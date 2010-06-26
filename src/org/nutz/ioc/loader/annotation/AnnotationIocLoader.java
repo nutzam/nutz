@@ -18,9 +18,9 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.Resources;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.impl.ResourceScanHelper;
 
 /**
  * 
@@ -35,7 +35,7 @@ public class AnnotationIocLoader implements IocLoader {
 
 	public AnnotationIocLoader(String... packages) {
 		for (String packageZ : packages)
-			for (Class<?> classZ : Resources.scanClass(packageZ))
+			for (Class<?> classZ : ResourceScanHelper.scanClasses(packageZ))
 				addClass(classZ);
 		if (LOG.isInfoEnabled())
 			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",

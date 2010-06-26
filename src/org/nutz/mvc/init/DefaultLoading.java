@@ -12,7 +12,6 @@ import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
-import org.nutz.lang.util.Resources;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.Loading;
@@ -25,6 +24,7 @@ import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.view.DefaultViewMaker;
+import org.nutz.resource.impl.ResourceScanHelper;
 
 public class DefaultLoading implements Loading {
 
@@ -128,7 +128,7 @@ public class DefaultLoading implements Loading {
 					Package packageZ = module.getPackage();
 					if (log.isDebugEnabled())
 						log.debugf("Scan Module in package : <%s>", packageZ.getName());
-					List<Class<?>> list = Resources.scanClass(null, packageZ);
+					List<Class<?>> list = ResourceScanHelper.scanClasses(packageZ.getName());
 					if (list != null)
 						for (Class<?> md : list) {
 							if (urls.add(makers, md))

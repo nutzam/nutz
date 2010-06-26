@@ -9,8 +9,7 @@ import org.junit.runners.Suite;
 						LinkedIntArrayTest.class,
 						IntRangeTest.class,
 						SimpleNodeTest.class,
-						DisksTest.class,
-						ResourcesTest.class})
+						DisksTest.class})
 public class AllUtil {
 
 }

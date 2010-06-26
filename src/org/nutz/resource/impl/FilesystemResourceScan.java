@@ -40,20 +40,21 @@ public class FilesystemResourceScan extends AbstractResourceScan {
 	 *            过滤器
 	 */
 	public List<NutResource> list(String src, String filter) {
-		if (filter == null)
-			filter = "";
-		List<NutResource> list = new ArrayList<NutResource>(100);
-		File srcFile = Files.findFile(src);
-		if (srcFile != null) {
+		List<NutResource> list = new ArrayList<NutResource>();
+		if (src != null) {
+			if (filter == null)
+				filter = "";
+			File srcFile = new File(src);
 			if (!srcFile.isDirectory())
 				srcFile = srcFile.getParentFile();
 			File[] dirs = Files.scanDirs(srcFile);
 			for (File dir : dirs) {
 				File[] files = Files.files(dir, filter);
+				if (files == null)
+					continue;
 				for (File file : files) {
 					try {
-						NutResource nutResource = new FileResource(file.toURI().toURL());
-						nutResource.setName(file.getPath());
+						NutResource nutResource = new FileResource(file.toURI().toURL(),file.getPath());
 						list.add(nutResource);
 					}
 					catch (MalformedURLException e) {
@@ -74,8 +75,9 @@ class FileResource extends NutResource {
 
 	private URL url;
 
-	public FileResource(URL url) {
+	public FileResource(URL url, String name) {
 		this.url = url;
+		this.name = name;
 	}
 
 	@Override

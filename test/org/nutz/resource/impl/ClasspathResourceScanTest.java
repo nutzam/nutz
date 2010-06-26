@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-public class FilesystemResourceScanTest {
+public class ClasspathResourceScanTest {
 
 	@Test
 	public void testCanWork() {
@@ -13,7 +13,7 @@ public class FilesystemResourceScanTest {
 
 	@Test
 	public void testList() {
-		assertTrue(new FilesystemResourceScan().list("src", ".java").size() > 0);
+		assertTrue(new ClasspathResourceScan().list("org/nutz", ".class").size() > 0);
 	}
 
 }
