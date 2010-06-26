@@ -1,8 +1,11 @@
 package org.nutz.mvc.init;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletConfig;
 
@@ -18,6 +21,7 @@ import org.nutz.mvc.Loading;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.Modules;
@@ -115,29 +119,43 @@ public class DefaultLoading implements Loading {
 
 		// Add sub modules
 		Modules modules = mainModule.getAnnotation(Modules.class);
+		Set<Class<?>> subModules = new HashSet<Class<?>>();
 		if (null != modules) {
-			if (!modules.scanPackage()) {
-				for (Class<?> module : modules.value()) {
-					if (log.isDebugEnabled())
-						log.debugf("Module: <%s>", module.getName());
-
-					urls.add(makers, module);
-				}
-			} else {
+			for (Class<?> module : modules.value()) {
+					subModules.add(module);
+			}
+			if (modules.scanPackage()) {
 				for (Class<?> module : modules.value()) {
 					Package packageZ = module.getPackage();
 					if (log.isDebugEnabled())
 						log.debugf("Scan Module in package : <%s>", packageZ.getName());
 					List<Class<?>> list = ResourceScanHelper.scanClasses(packageZ.getName());
 					if (list != null)
-						for (Class<?> md : list) {
-							if (urls.add(makers, md))
-								if (log.isDebugEnabled())
-									log.debugf(	"--------------The end of Module: <%s>",
-												md.getName());
-						}
+						for (Class<?> classZ : list)
+							if (classZ.getPackage().equals(mainModule.getPackage()))
+								subModules.add(classZ);
 				}
 			}
+		}
+		if (config.getInitParameter("scan") != null) {
+			String scanPackages = config.getInitParameter("scan").trim();
+			String[] packages = scanPackages.split(",");
+			for (int i = 0; i < packages.length; i++)
+				if (packages[i].trim().length() > 0) {
+					if (log.isDebugEnabled())
+						log.debugf("Scan Module in package : <%s>", packages[i].trim());
+					List<Class<?>> list = ResourceScanHelper.scanClasses(packages[i].trim());
+					for (Class<?> classZ : list)
+						if (isSubModule(classZ))
+							subModules.add(classZ);
+				}
+		}
+		subModules.remove(mainModule);
+		for (Class<?> module : subModules) {
+			if (log.isDebugEnabled())
+				log.debugf("Module: <%s>", module.getName());
+
+			urls.add(makers, module);
 		}
 		config.getServletContext().setAttribute(UrlMap.class.getName(), urls);
 	}
@@ -179,5 +197,14 @@ public class DefaultLoading implements Loading {
 	private void saveToContext(String key, Object obj) {
 		if (null != obj)
 			this.config.getServletContext().setAttribute(key, obj);
+	}
+	
+	private boolean isSubModule(Class<?> classZ){
+		if (classZ.getAnnotation(At.class) != null)
+			return true;
+		for (Method method : classZ.getMethods())
+			if (method.getAnnotation(At.class) != null)
+				return true;
+		return false;
 	}
 }
