@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.lang.Files;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
@@ -41,10 +42,12 @@ public class FilesystemResourceScan extends AbstractResourceScan {
 	 */
 	public List<NutResource> list(String src, String filter) {
 		List<NutResource> list = new ArrayList<NutResource>();
-		if (src != null) {
+		if (!Strings.isBlank(src)) {
 			if (filter == null)
 				filter = "";
 			File srcFile = new File(src);
+			if(!srcFile.exists())
+				return list;
 			if (!srcFile.isDirectory())
 				srcFile = srcFile.getParentFile();
 			File[] dirs = Files.scanDirs(srcFile);

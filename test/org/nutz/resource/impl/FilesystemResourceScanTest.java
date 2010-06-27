@@ -13,7 +13,7 @@ public class FilesystemResourceScanTest {
 
 	@Test
 	public void testList() {
-		assertTrue(new FilesystemResourceScan().list("src", ".java").size() > 0);
+		assertTrue(new FilesystemResourceScan().list("src", ".java").size() == 0);
 	}
 
 }
