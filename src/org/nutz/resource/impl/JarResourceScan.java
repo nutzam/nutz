@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -43,8 +45,8 @@ public class JarResourceScan extends AbstractResourceScan {
 		if (filter == null)
 			filter = "";
 		//抹除正则表达式
-		src = src.replace('\\', '/');
-		src = src.replace(".","\\.");
+		src = eraseRegex(src);
+		filter = eraseRegex(filter);
 		List<NutResource> list = new ArrayList<NutResource>();
 		if (src.startsWith("/") || src.indexOf(':') > -1)
 			return list;
@@ -55,6 +57,15 @@ public class JarResourceScan extends AbstractResourceScan {
 				LOG.debugf("Scan resource in : %s", getClassPath());
 
 			String pathRegex = src + ".+" + filter;
+			try{
+				Pattern.compile(pathRegex);
+			}catch (PatternSyntaxException e) {
+				if (LOG.isDebugEnabled()) {
+					LOG.debugf("Fail to compile pathRegex for src=%s filter=%s",src,filter);
+					LOG.debug(e.getMessage(),e);
+				}
+				return list;
+			}
 			for (String path : paths) {
 				try {
 					if (path.endsWith(".jar")) {
@@ -89,6 +100,15 @@ public class JarResourceScan extends AbstractResourceScan {
 		return list;
 	}
 
+	private String eraseRegex(String src){
+		src = src.replace('\\', '/');
+		src = src.replace(".","\\.");
+		src = src.replace("[","\\[");
+		src = src.replace("]","\\]");
+		src = src.replace("{","\\{");
+		src = src.replace("}","\\}");
+		return src;
+	}
 }
 
 class ZipEntryResource extends NutResource {
