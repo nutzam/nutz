@@ -1,9 +1,8 @@
 package org.nutz.lang.util;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.UnsupportedEncodingException;
-
-import java.io.FilenameFilter;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
@@ -31,7 +30,7 @@ public abstract class Disks {
 	 *            遍历目录时，哪些文件应该被忽略
 	 * @return 遍历的文件个数
 	 */
-	public static int visitFile(File f, FileVisitor fv, FilenameFilter filter) {
+	public static int visitFile(File f, FileVisitor fv, FileFilter filter) {
 		int re = 0;
 		if (f.isFile()) {
 			fv.visit(f);
