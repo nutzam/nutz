@@ -12,7 +12,6 @@ import java.util.regex.Pattern;
  * @author wendal(wendal1985@gmail.com)
  * @author mawm(ming300@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
- * @author mawenming at 2009-7-19 下午12:52:32
  */
 public abstract class Strings {
 

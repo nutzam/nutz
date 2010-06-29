@@ -106,7 +106,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	public List<NutResource> list(String src, String filter) {
 		final List<NutResource> list = new LinkedList<NutResource>();
-		final Pattern regex = Pattern.compile(filter);
+		final Pattern regex = null == filter ? null : Pattern.compile(filter);
 		// 查看资源是否存在在磁盘系统中
 		File f = new File(Disks.normalize(src));
 		// 如果存在，递归这个目录
@@ -140,7 +140,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 							if (name.startsWith(prefix)) {
 								int pos = name.replace('\\', '/').lastIndexOf('/');
 								String enName = name.substring(pos + 1);
-								if (regex.matcher(enName).find())
+								if (null == regex || regex.matcher(enName).find())
 									list.add(new JarEntryResource(jen));
 							}
 						}
@@ -174,7 +174,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 					return false;
 				if (theFile.isDirectory())
 					return true;
-				return regex.matcher(theFile.getName()).find();
+				return regex == null || regex.matcher(theFile.getName()).find();
 			}
 		});
 	}

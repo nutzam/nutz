@@ -39,6 +39,9 @@ public class LocalResourceScanTest {
 		Files.createFileIfNoExists(testPath + "/a/b/c/o.jpg");
 		list = scan.list(testPath, ".*");
 		assertEquals(4, list.size());
+		
+		list = scan.list(testPath, null);
+		assertEquals(4, list.size());
 
 		list = scan.list(testPath, ".+[.]jpg");
 		assertEquals(2, list.size());
