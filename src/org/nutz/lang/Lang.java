@@ -604,6 +604,28 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 将一个集合转换成字符串
+	 * <p>
+	 * 每个元素之间，都会用一个给定的字符分隔
+	 * 
+	 * @param c
+	 *            分隔符
+	 * @param coll
+	 *            集合
+	 * @return 拼合后的字符串
+	 */
+	public static <T> StringBuilder concat(Object c, Collection<T> coll) {
+		StringBuilder sb = new StringBuilder();
+		if (null == coll || coll.isEmpty())
+			return sb;
+		Iterator<T> it = coll.iterator();
+		sb.append(it.next());
+		while (it.hasNext())
+			sb.append(c).append(it.next());
+		return sb;
+	}
+
+	/**
 	 * 将一个或者多个数组填入一个集合。
 	 * 
 	 * @param <C>

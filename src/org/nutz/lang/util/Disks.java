@@ -5,17 +5,18 @@ import java.io.FileFilter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.LinkedList;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
  * 磁盘操作的帮助函数集合
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author bonyfish(mc02cxj@gmail.com)
  */
 public abstract class Disks {
 
@@ -74,11 +75,7 @@ public abstract class Disks {
 			if (!bb[pos].equals(ff[pos]))
 				break;
 		StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - 1 - pos));
-		for (; pos < ff.length; pos++)
-			sb.append(ff[pos]).append('/');
-		if (sb.length() > 0)
-			sb.deleteCharAt(sb.length() - 1);
-		return sb.toString();
+		return sb.append(Lang.concat(pos, ff.length - pos, '/', ff)).toString();
 	}
 
 	/**
@@ -100,11 +97,7 @@ public abstract class Disks {
 				paths.add(s);
 			}
 		}
-		StringBuilder sb = new StringBuilder();
-		for (String s : paths) {
-			sb.append("/").append(s);
-		}
-		return sb.deleteCharAt(0).toString();
+		return Lang.concat("/", paths).toString();
 	}
 
 	/**
@@ -147,7 +140,7 @@ public abstract class Disks {
 	 */
 	public static String absolute(String path, ClassLoader klassLoader, String enc) {
 		path = normalize(path, enc);
-		if (null == path || path.length() == 0)
+		if (Strings.isEmpty(path))
 			return null;
 
 		File f = new File(path);
@@ -156,7 +149,7 @@ public abstract class Disks {
 			if (null == url)
 				url = ClassLoader.getSystemResource(path);
 			if (null != url)
-				return normalize(url.getPath(), Encoding.UTF8);//通过URL获取String,一律使用UTF-8编码进行解码
+				return normalize(url.getPath(), Encoding.UTF8);// 通过URL获取String,一律使用UTF-8编码进行解码
 			return null;
 		}
 		return path;
@@ -170,7 +163,7 @@ public abstract class Disks {
 	 * @return 正常化后的路径
 	 */
 	public static String normalize(String path) {
-		return normalize(path, Charset.defaultCharset().name());
+		return normalize(path, Encoding.defaultEncoding());
 	}
 
 	/**
@@ -183,12 +176,10 @@ public abstract class Disks {
 	 * @return 正常化后的路径
 	 */
 	public static String normalize(String path, String enc) {
-		if (null == path || path.length() == 0)
+		if (Strings.isEmpty(path))
 			return null;
-		// if the path start with ~
 		if (path.charAt(0) == '~')
 			path = Disks.home() + path.substring(1);
-		// Encode path
 		try {
 			return URLDecoder.decode(path, enc);
 		}
