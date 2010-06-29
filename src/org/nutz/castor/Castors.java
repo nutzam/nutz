@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
-import org.nutz.resource.impl.ResourceScanHelper;
+import org.nutz.resource.Scans;
 
 /**
  * 一个创建 Castor 的工厂类。它的使用方式是：
@@ -147,8 +147,7 @@ public class Castors {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
-			List<Class<?>> list = ResourceScanHelper.scanClasses(baseClass.getPackage().getName());
-			
+			List<Class<?>> list = Scans.inLocal(baseClass);
 			if (null == list || list.size() == 0)
 				continue;
 			for (Class<?> klass : list) {

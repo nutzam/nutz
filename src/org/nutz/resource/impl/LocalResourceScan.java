@@ -95,6 +95,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 		public JarEntryResource(JarEntry jen) {
 			this.entry = jen;
+			this.name = jen.getName();
 		}
 
 		@Override

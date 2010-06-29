@@ -28,7 +28,7 @@ import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.view.DefaultViewMaker;
-import org.nutz.resource.impl.ResourceScanHelper;
+import org.nutz.resource.Scans;
 
 public class DefaultLoading implements Loading {
 
@@ -114,44 +114,66 @@ public class DefaultLoading implements Loading {
 			log.debugf("MainModule: <%s>", mainModule.getName());
 
 		urls = makeUrlMap(ioc, context, mainModule);
-		// Add default module
-		urls.add(makers, mainModule);
+		Set<Class<?>> moduleSet = new HashSet<Class<?>>();
 
-		// Add sub modules
+		// Add default module
+		moduleSet.add(mainModule);
+
+		// Then try to load sub-modules
 		Modules modules = mainModule.getAnnotation(Modules.class);
-		Set<Class<?>> subModules = new HashSet<Class<?>>();
-		if (null != modules) {
-			for (Class<?> module : modules.value()) {
-					subModules.add(module);
+		Class<?>[] moduleRefers;
+		if (null == modules || null == modules.value() || modules.value().length == 0) {
+			moduleRefers = new Class<?>[1];
+			moduleRefers[0] = mainModule;
+		} else {
+			moduleRefers = modules.value();
+		}
+
+		// 扫描所有的
+		boolean isNeedScanSubPackages = null == modules ? false : modules.scanPackage();
+		for (Class<?> module : moduleRefers) {
+			// 扫描这个类同包，以及所有子包的类
+			if (isNeedScanSubPackages) {
+				if (log.isDebugEnabled())
+					log.debugf(" > scan '%s'", module.getPackage().getName());
+				List<Class<?>> subs = Scans.inLocal(module);
+				for (Class<?> sub : subs) {
+					if (isModule(sub)) {
+						if (log.isDebugEnabled())
+							log.debugf("   >> add '%s'", sub.getName());
+						moduleSet.add(sub);
+					} else if (log.isTraceEnabled()) {
+						log.tracef("   >> ignore '%s'", sub.getName());
+					}
+				}
 			}
-			if (modules.scanPackage()) {
-				for (Class<?> module : modules.value()) {
-					Package packageZ = module.getPackage();
+			// 仅仅加载自己
+			else {
+				if (isModule(module)) {
 					if (log.isDebugEnabled())
-						log.debugf("Scan Module in package : <%s>", packageZ.getName());
-					List<Class<?>> list = ResourceScanHelper.scanClasses(packageZ.getName());
-					if (list != null)
-						for (Class<?> classZ : list)
-							if (classZ.getPackage().equals(mainModule.getPackage()))
-								subModules.add(classZ);
+						log.debugf(" > add '%s'", module.getName());
+					moduleSet.add(module);
+				} else if (log.isTraceEnabled()) {
+					log.tracef(" > ignore '%s'", module.getName());
 				}
 			}
 		}
-		if (config.getInitParameter("scan") != null) {
-			String scanPackages = config.getInitParameter("scan").trim();
-			String[] packages = scanPackages.split(",");
-			for (int i = 0; i < packages.length; i++)
-				if (packages[i].trim().length() > 0) {
-					if (log.isDebugEnabled())
-						log.debugf("Scan Module in package : <%s>", packages[i].trim());
-					List<Class<?>> list = ResourceScanHelper.scanClasses(packages[i].trim());
-					for (Class<?> classZ : list)
-						if (isSubModule(classZ))
-							subModules.add(classZ);
-				}
-		}
-		subModules.remove(mainModule);
-		for (Class<?> module : subModules) {
+
+		// TODO 清除下面被注释的代码
+		/*
+		 * zozoh: 不要从 servlet config 里读取参数，以便将来可以从 web.xml 分离
+		 * 
+		 * if (config.getInitParameter("scan") != null) { String scanPackages =
+		 * config.getInitParameter("scan").trim(); String[] packages =
+		 * scanPackages.split(","); for (int i = 0; i < packages.length; i++) if
+		 * (packages[i].trim().length() > 0) { if (log.isDebugEnabled())
+		 * log.debugf("Scan Module in package : <%s>", packages[i].trim());
+		 * List<Class<?>> list =
+		 * ResourceScanHelper.scanClasses(packages[i].trim()); for (Class<?>
+		 * classZ : list) if (isSubModule(classZ)) moduleSet.add(classZ); } }
+		 */
+
+		for (Class<?> module : moduleSet) {
 			if (log.isDebugEnabled())
 				log.debugf("Module: <%s>", module.getName());
 
@@ -198,10 +220,12 @@ public class DefaultLoading implements Loading {
 		if (null != obj)
 			this.config.getServletContext().setAttribute(key, obj);
 	}
-	
-	private boolean isSubModule(Class<?> classZ){
-		if (classZ.getAnnotation(At.class) != null)
-			return true;
+
+	private static boolean isModule(Class<?> classZ) {
+		// TODO 清除下面被注释的代码
+		// zozoh: 如果没有入口函数，即使有 '@At' 也不应该作为模块类，因为没有意义
+		// if (classZ.getAnnotation(At.class) != null)
+		// return true;
 		for (Method method : classZ.getMethods())
 			if (method.getAnnotation(At.class) != null)
 				return true;

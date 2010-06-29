@@ -26,7 +26,7 @@
 	<property name="zioc" value="org/nutz/ioc/**,org/nutz/aop/**" />
 	<property name="zmvc" value="org/nutz/mvc/**,org/nutz/filepool/**,org/nutz/http/**" />
 
-	<property name="zall" value="${zlang},${zplugin},${zlog},${zjson},${zioc},${zdao},${zmvc}" />
+	<property name="zall" value="**" />
 
 	<path id="CLASSPATH">
 		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
