@@ -55,7 +55,6 @@ class MirrorBorning<T> {
 	 * <li>Static Method with one array arguments
 	 * </ol>
 	 */
-	@SuppressWarnings("rawtypes")
 	private void evalNullArgs(Object[] args) {
 		try {
 			borning = new EmptyArgsConstructorBorning(type.getConstructor());
@@ -111,7 +110,6 @@ class MirrorBorning<T> {
 	 * </ol>
 	 */
 
-	@SuppressWarnings("rawtypes")
 	private void evalWithArgs(Object[] args) {
 		Class<?>[] argTypes = Mirror.evalToTypes(args);
 		for (Constructor<?> cc : type.getConstructors()) {

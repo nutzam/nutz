@@ -848,7 +848,7 @@ public abstract class Lang {
 	 * @return JAVA 对象
 	 * @throws FailToCastObjectException
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "unchecked"})
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		if (null == toType)
 			throw new FailToCastObjectException("target type is Null");
@@ -1004,7 +1004,7 @@ public abstract class Lang {
 	 * @param callback
 	 *            回调
 	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	public static <T> void each(Object obj, Each<T> callback) {
 		if (null == obj || null == callback)
 			return;
