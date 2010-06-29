@@ -6,6 +6,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Ignore;
@@ -18,6 +22,13 @@ public class LangTest {
 	public static class A {
 		private int id;
 		private String name;
+
+		public A() {}
+
+		public A(int id, String name) {
+			this.id = id;
+			this.name = name;
+		}
 	}
 
 	@Test
@@ -29,7 +40,25 @@ public class LangTest {
 	}
 
 	@Test
-	public void test_map_2_object() throws FailToCastObjectException {
+	@SuppressWarnings("unchecked")
+	public void test_array2map() {
+		A a = new A(1, "a");
+		A b = new A(2, "b");
+		Map<Integer, A> m1 = Lang.array2map(HashMap.class, new A[]{a, b}, "id");
+		assertEquals(a, m1.get(1));
+		assertEquals(b, m1.get(2));
+		Map<String, A> m2 = Lang.array2map(HashMap.class, new A[]{a, b}, "name");
+		assertEquals(a, m2.get("a"));
+		assertEquals(b, m2.get("b"));
+
+		Map<Integer, A> m3 = Lang.array2map(HashMap.class, null, "id");
+		assertNull(m3);
+		Map<Integer, A> m4 = Lang.array2map(HashMap.class, new A[]{}, "id");
+		assertTrue(m4.isEmpty());
+	}
+
+	@Test
+	public void test_map2object() throws FailToCastObjectException {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
 		A a = Lang.map2Object(map, A.class);
 		assertEquals(23, a.id);
@@ -37,7 +66,7 @@ public class LangTest {
 	}
 
 	@Test
-	public void test_map_2_map() {
+	public void test_map2map() {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
 		Map<?, ?> map2 = Lang.map2Object(map, Map.class);
 		assertTrue(Lang.equals(map, map2));
@@ -73,10 +102,28 @@ public class LangTest {
 	}
 
 	@Test
-	public void test_string_array_to_int_array() {
+	public void test_string_array2array() {
+		assertNull(Lang.array2array(null, int.class));
+		assertTrue(((int[]) Lang.array2array(new String[]{}, int.class)).length == 0);
 		int[] is = (int[]) Lang.array2array(Lang.array("10", "20"), int.class);
 		assertEquals(10, is[0]);
 		assertEquals(20, is[1]);
+	}
+
+	@Test
+	@SuppressWarnings("rawtypes")
+	public void test_array2_object_array() {
+		String[] s1 = {"a", "2", "2.0", null};
+		Class[] c1 = {String.class, int.class, float.class, Object.class};
+		Object[] objs = Lang.array2ObjectArray(s1, c1);
+		assertEquals("a", objs[0]);
+		assertEquals(2, objs[1]);
+		assertTrue(objs[2] instanceof Float);
+		assertEquals(2.0, objs[2]);
+		assertNull(objs[3]);
+
+		assertNull(Lang.array2ObjectArray(null, c1));
+		assertTrue(Lang.array2ObjectArray(new String[]{}, c1).length == 0);
 	}
 
 	@Test
@@ -106,8 +153,8 @@ public class LangTest {
 		BC bc;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
+	@SuppressWarnings("rawtypes")
 	public void test_obj2map() {
 		BC bc = new BC();
 		bc.name = "B";
@@ -159,5 +206,45 @@ public class LangTest {
 		assertArrayEquals(new String[]{"a"}, Lang.arrayLast(null, "a"));
 		assertArrayEquals(new String[]{"a"}, Lang.arrayLast(new String[]{}, "a"));
 		assertArrayEquals(new String[]{"b", "a"}, Lang.arrayLast(new String[]{"b"}, "a"));
+	}
+
+	@Test
+	public void test_parse_boolean() {
+		assertFalse(Lang.parseBoolean(null));
+		assertFalse(Lang.parseBoolean("false"));
+		assertTrue(Lang.parseBoolean("on"));
+		assertTrue(Lang.parseBoolean("1"));
+		assertTrue(Lang.parseBoolean("yes"));
+		assertTrue(Lang.parseBoolean("some str"));
+	}
+
+	@Test
+	public void test_first4_map_collection() {
+		assertNull(Lang.first(new HashMap<String, String>()));
+		Map<?, ?> map1 = Lang.map("{a:1,b:2}");
+		assertTrue(map1.entrySet().contains(Lang.first(map1)));
+
+		assertNull(Lang.first(new ArrayList<String>()));
+		List<Object> l = Lang.list("[1,2,3,4]");
+		assertEquals(1, Lang.first(l));
+	}
+
+	@Test
+	public void test_length() {
+		assertEquals(0, Lang.length(null));
+		assertEquals(1, Lang.length(12));
+		assertEquals(11, Lang.length("hello,world"));
+		String[] arr = Lang.array("a", "b");
+		assertEquals(2, Lang.length(Lang.map("1:'bb',5:'aa'")));
+		assertEquals(2, Lang.length(arr));
+		assertEquals(2, Lang.length(Arrays.asList(arr)));
+	}
+	
+	@Test
+	public void test_2bytes() {
+		char[] cs = {'a','b','c',150};
+		assertArrayEquals(new byte[] {97,98,99,-106}, Lang.toBytes(cs));
+		int[] is = {'a','b','c',150};
+		assertArrayEquals(new byte[] {97,98,99,-106}, Lang.toBytes(is));
 	}
 }

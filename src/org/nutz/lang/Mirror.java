@@ -39,57 +39,41 @@ public class Mirror<T> {
 	private static class DefaultTypeExtractor implements TypeExtractor {
 
 		public Class<?>[] extract(Mirror<?> mirror) {
-			ArrayList<Class<?>> re = new ArrayList<Class<?>>(5);
+			List<Class<?>> re = new ArrayList<Class<?>>(5);
 			re.add(mirror.getType());
 			if (mirror.klass.isEnum())
 				re.add(Enum.class);
-
 			else if (mirror.klass.isArray())
 				re.add(Array.class);
-
 			else if (mirror.isString())
 				re.add(String.class);
-
 			else if (mirror.is(Class.class))
 				re.add(Class.class);
-
 			else if (mirror.is(Mirror.class))
 				re.add(Mirror.class);
-
 			else if (mirror.isStringLike())
 				re.add(CharSequence.class);
-
 			else if (mirror.isNumber()) {
 				re.add(mirror.getType());
 				re.add(Number.class);
-
 			} else if (mirror.isBoolean())
 				re.add(Boolean.class);
-
 			else if (mirror.isChar())
 				re.add(Character.class);
-
 			else if (mirror.isOf(Map.class))
 				re.add(Map.class);
-
 			else if (mirror.isOf(Collection.class))
 				re.add(Collection.class);
-
 			else if (mirror.isOf(Calendar.class))
 				re.add(Calendar.class);
-
 			else if (mirror.isOf(Timestamp.class))
 				re.add(Timestamp.class);
-
 			else if (mirror.isOf(java.sql.Date.class))
 				re.add(java.sql.Date.class);
-
 			else if (mirror.isOf(java.sql.Time.class))
 				re.add(java.sql.Time.class);
-
 			else if (mirror.isOf(java.util.Date.class))
 				re.add(java.util.Date.class);
-
 			re.add(Object.class);
 			return re.toArray(new Class<?>[re.size()]);
 		}
@@ -119,9 +103,7 @@ public class Mirror<T> {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> Mirror<T> me(T obj) {
-		if (null == obj)
-			return null;
-		return (Mirror<T>) me(obj.getClass());
+		return null == obj ? null : (Mirror<T>) me(obj.getClass());
 	}
 
 	/**
@@ -161,7 +143,7 @@ public class Mirror<T> {
 	/**
 	 * 根据名称获取一个 Getter。
 	 * <p>
-	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果 没有，则查找 abc()。
+	 * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果没有则查找isAbc()，最后才是查找 abc()。
 	 * 
 	 * @param fieldName
 	 * @return 方法
@@ -208,7 +190,7 @@ public class Mirror<T> {
 		try {
 			try {
 				String fn = Strings.capitalize(field.getName());
-				if (Mirror.me(field.getType()).is(boolean.class))
+				if (Mirror.me(field.getType()).isBoolean())
 					return klass.getMethod("is" + fn);
 				else
 					return klass.getMethod("get" + fn);
@@ -243,15 +225,12 @@ public class Mirror<T> {
 			}
 			catch (Exception e) {
 				try {
-					if (field.getName().startsWith("is")
-						&& Mirror.me(field.getType()).is(boolean.class))
+					if (field.getName().startsWith("is") && Mirror.me(field.getType()).isBoolean())
 						return klass.getMethod(	"set" + field.getName().substring(2),
 												field.getType());
-					return klass.getMethod(field.getName(), field.getType());
 				}
-				catch (Exception e1) {
-					return klass.getMethod(field.getName(), field.getType());
-				}
+				catch (Exception e1) {}
+				return klass.getMethod(field.getName(), field.getType());
 			}
 		}
 		catch (Exception e) {
@@ -263,7 +242,7 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 根据一个字段名了字段类型获取 Setter
+	 * 根据一个字段名和字段类型获取 Setter
 	 * 
 	 * @param fieldName
 	 *            字段名
@@ -275,7 +254,7 @@ public class Mirror<T> {
 	 */
 	public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
 		try {
-			String setterName = getSetterName(fieldName);
+			String setterName = "set" + Strings.capitalize(fieldName);
 			try {
 				return klass.getMethod(setterName, paramType);
 			}
@@ -308,46 +287,6 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * @param fieldName
-	 *            字段名
-	 * @return Setter 的名字
-	 */
-	public static String getSetterName(String fieldName) {
-		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
-	}
-
-	/**
-	 * @param fieldName
-	 *            字段名
-	 * @return Bool 型的 Setter 的名字。如果字段名以 "is"开头，会被截去
-	 */
-	public static String getBooleanSetterName(String fieldName) {
-		if (fieldName.startsWith("is"))
-			fieldName = fieldName.substring(2);
-		return new StringBuilder("set").append(Strings.capitalize(fieldName)).toString();
-	}
-
-	/**
-	 * @param fieldName
-	 *            字段名
-	 * @return Getter 的名字
-	 */
-	public static String getGetterName(String fieldName) {
-		return new StringBuilder("get").append(Strings.capitalize(fieldName)).toString();
-	}
-
-	/**
-	 * @param fieldName
-	 *            字段名
-	 * @return Bool 型的 Getter 的名字。以 "is"开头
-	 */
-	public static String getBooleanGetterName(String fieldName) {
-		if (fieldName.startsWith("is"))
-			fieldName = fieldName.substring(2);
-		return new StringBuilder("is").append(Strings.capitalize(fieldName)).toString();
-	}
-
-	/**
 	 * 根据一个字段名，获取一组有可能成为 Setter 函数
 	 * 
 	 * @param fieldName
@@ -355,13 +294,12 @@ public class Mirror<T> {
 	 */
 	public Method[] findSetters(String fieldName) {
 		String mName = "set" + Strings.capitalize(fieldName);
-		ArrayList<Method> ms = new ArrayList<Method>();
+		List<Method> ms = new ArrayList<Method>();
 		for (Method m : this.klass.getMethods()) {
-			if (Modifier.isStatic(m.getModifiers()) || m.getParameterTypes().length != 1)
-				continue;
-			if (m.getName().equals(mName)) {
+			if (!Modifier.isStatic(m.getModifiers())
+				&& m.getParameterTypes().length == 1
+				&& m.getName().equals(mName))
 				ms.add(m);
-			}
 		}
 		return ms.toArray(new Method[ms.size()]);
 	}
@@ -375,15 +313,13 @@ public class Mirror<T> {
 	 * @throws NoSuchFieldException
 	 */
 	public Field getField(String name) throws NoSuchFieldException {
-		Class<?> theClass = klass;
-		Field f;
-		while (null != theClass && !(theClass == Object.class)) {
+		Class<?> cc = klass;
+		while (null != cc && cc != Object.class) {
 			try {
-				f = theClass.getDeclaredField(name);
-				return f;
+				return cc.getDeclaredField(name);
 			}
 			catch (NoSuchFieldException e) {
-				theClass = theClass.getSuperclass();
+				cc = cc.getSuperclass();
 			}
 		}
 		throw new NoSuchFieldException(String.format(	"Can NOT find field [%s] in class [%s] and it's parents classes",
@@ -401,7 +337,7 @@ public class Mirror<T> {
 	 */
 	public <AT extends Annotation> Field getField(Class<AT> ann) throws NoSuchFieldException {
 		for (Field field : this.getFields()) {
-			if (null != field.getAnnotation(ann))
+			if (field.isAnnotationPresent(ann))
 				return field;
 		}
 		throw new NoSuchFieldException(String.format(	"Can NOT find field [@%s] in class [%s] and it's parents classes",
@@ -419,54 +355,47 @@ public class Mirror<T> {
 	public <AT extends Annotation> Field[] getFields(Class<AT> ann) {
 		List<Field> fields = new LinkedList<Field>();
 		for (Field f : this.getFields()) {
-			if (null != f.getAnnotation(ann))
+			if (f.isAnnotationPresent(ann))
 				fields.add(f);
 		}
 		return fields.toArray(new Field[fields.size()]);
 	}
 
 	private static boolean isIgnoredField(Field f) {
-		if (Modifier.isStatic(f.getModifiers()))
-			return true;
-		if (Modifier.isFinal(f.getModifiers()))
-			return true;
-		if (f.getName().startsWith("this$"))
-			return true;
-		return false;
+		return Modifier.isStatic(f.getModifiers())
+				|| Modifier.isFinal(f.getModifiers())
+				|| f.getName().startsWith("this$");
 	}
 
 	/**
 	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
 	 */
 	public Field[] getFields() {
-		Class<?> theClass = klass;
-		Map<String, Field> list = new HashMap<String, Field>();
-		while (null != theClass && !(theClass == Object.class)) {
-			Field[] fs = theClass.getDeclaredFields();
+		Class<?> cc = klass;
+		Map<String, Field> map = new HashMap<String, Field>();
+		while (null != cc && cc != Object.class) {
+			Field[] fs = cc.getDeclaredFields();
 			for (int i = 0; i < fs.length; i++) {
-				if (isIgnoredField(fs[i]))
-					continue;
-				if (list.containsKey(fs[i].getName()))
-					continue;
-				list.put(fs[i].getName(), fs[i]);
+				if (!isIgnoredField(fs[i]) && !map.containsKey(fs[i].getName()))
+					map.put(fs[i].getName(), fs[i]);
 			}
-			theClass = theClass.getSuperclass();
+			cc = cc.getSuperclass();
 		}
-		return list.values().toArray(new Field[list.size()]);
+		return map.values().toArray(new Field[map.size()]);
 	}
 
 	/**
 	 * 获取本类型所有的方法，包括私有方法。不包括 Object 的方法
 	 */
 	public Method[] getMethods() {
-		Class<?> theClass = klass;
+		Class<?> cc = klass;
 		List<Method> list = new LinkedList<Method>();
-		while (null != theClass && !(theClass == Object.class)) {
-			Method[] ms = theClass.getDeclaredMethods();
+		while (null != cc && cc != Object.class) {
+			Method[] ms = cc.getDeclaredMethods();
 			for (int i = 0; i < ms.length; i++) {
 				list.add(ms[i]);
 			}
-			theClass = theClass.getSuperclass();
+			cc = cc.getSuperclass();
 		}
 		return list.toArray(new Method[list.size()]);
 	}
@@ -482,8 +411,8 @@ public class Mirror<T> {
 	 */
 	public Method[] getAllDeclaredMethods(Class<?> top) {
 		Class<?> cc = klass;
-		HashMap<String, Method> map = new HashMap<String, Method>();
-		while (null != cc && !(cc == Object.class)) {
+		Map<String, Method> map = new HashMap<String, Method>();
+		while (null != cc && cc != Object.class) {
 			Method[] fs = cc.getDeclaredMethods();
 			for (int i = 0; i < fs.length; i++) {
 				String key = fs[i].getName() + Mirror.getParamDescriptor(fs[i].getParameterTypes());
@@ -607,9 +536,9 @@ public class Mirror<T> {
 	 * @throws FailToGetValueException
 	 */
 	public Object getValue(Object obj, Field f) throws FailToGetValueException {
+		if (!f.isAccessible())
+			f.setAccessible(true);
 		try {
-			if (!f.isAccessible())
-				f.setAccessible(true);
 			return f.get(obj);
 		}
 		catch (Exception e) {
@@ -634,8 +563,7 @@ public class Mirror<T> {
 		}
 		catch (Exception e) {
 			try {
-				Field f = getField(name);
-				return getValue(obj, f);
+				return getValue(obj, getField(name));
 			}
 			catch (NoSuchFieldException e1) {
 				throw makeGetValueException(obj.getClass(), name);
@@ -936,9 +864,7 @@ public class Mirror<T> {
 	 * @return 新数组
 	 */
 	public static Object evalArgToRealArray(Object... args) {
-		if (null == args || args.length == 0)
-			return null;
-		if (null == args[0])
+		if (null == args || args.length == 0 || null == args[0])
 			return null;
 		Object re = null;
 		/*
@@ -1011,11 +937,7 @@ public class Mirror<T> {
 	 * @return 是否相等
 	 */
 	public boolean is(Class<?> type) {
-		if (null == type)
-			return false;
-		if (klass == type)
-			return true;
-		return false;
+		return null != type && klass == type;
 	}
 
 	/**
@@ -1148,9 +1070,7 @@ public class Mirror<T> {
 	 * @return 判断当前对象是否能直接转换到目标类型，而不产生异常
 	 */
 	public boolean canCastToDirectly(Class<?> type) {
-		if (klass == type)
-			return true;
-		if (type.isAssignableFrom(klass))
+		if (klass == type || type.isAssignableFrom(klass))
 			return true;
 		if (klass.isPrimitive() && type.isPrimitive()) {
 			if (this.isPrimitiveNumber() && Mirror.me(type).isPrimitiveNumber())
@@ -1356,14 +1276,14 @@ public class Mirror<T> {
 	 * 
 	 * @param type
 	 *            类型
-	 * @param annType
+	 * @param ann
 	 *            注解类型
 	 * @return 字段，null 表示没有找到
 	 */
-	public static Field findField(Class<?> type, Class<? extends Annotation> annType) {
+	public static Field findField(Class<?> type, Class<? extends Annotation> ann) {
 		Mirror<?> mirror = Mirror.me(type);
 		for (Field f : mirror.getFields())
-			if (null != f.getAnnotation(annType))
+			if (f.isAnnotationPresent(ann))
 				return f;
 		return null;
 	}

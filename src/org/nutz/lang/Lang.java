@@ -807,6 +807,8 @@ public abstract class Lang {
 	 */
 	public static <T> Object[] array2ObjectArray(T[] args, Class<?>[] pts)
 			throws FailToCastObjectException {
+		if (null == args)
+			return null;
 		Object[] newArgs = new Object[args.length];
 		for (int i = 0; i < args.length; i++) {
 			newArgs[i] = Castors.me().castTo(args[i], pts[i]);
@@ -824,7 +826,7 @@ public abstract class Lang {
 	 * @return JAVA 对象
 	 * @throws FailToCastObjectException
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		if (null == toType)
 			throw new FailToCastObjectException("target type is Null");
@@ -941,7 +943,7 @@ public abstract class Lang {
 	 * @return 第一个元素
 	 */
 	public static <T> T first(Collection<T> coll) {
-		if (null == coll || coll.size() == 0)
+		if (null == coll || coll.isEmpty())
 			return null;
 		return coll.iterator().next();
 	}
@@ -954,7 +956,7 @@ public abstract class Lang {
 	 * @return 第一个名值对
 	 */
 	public static <K, V> Entry<K, V> first(Map<K, V> map) {
-		if (null == map || map.size() == 0)
+		if (null == map || map.isEmpty())
 			return null;
 		return map.entrySet().iterator().next();
 	}
@@ -980,7 +982,7 @@ public abstract class Lang {
 	 * @param callback
 	 *            回调
 	 */
-	@SuppressWarnings({"unchecked"})
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <T> void each(Object obj, Each<T> callback) {
 		if (null == obj || null == callback)
 			return;
@@ -1070,18 +1072,14 @@ public abstract class Lang {
 	 * @return 布尔值
 	 */
 	public static boolean parseBoolean(String s) {
-		if (null == s)
-			return false;
-		if (s.length() == 0)
+		if (null == s || s.length() == 0)
 			return false;
 		if (s.length() > 5)
 			return true;
 		if ("0".equals(s))
 			return false;
 		s = s.toLowerCase();
-		if ("false".equals(s) || "off".equals(s) || "no".equals(s))
-			return false;
-		return true;
+		return !"false".equals(s) && !"off".equals(s) && !"no".equals(s);
 	}
 
 	/**
@@ -1112,9 +1110,7 @@ public abstract class Lang {
 	private static <T extends Map<String, Object>> void obj2map(Object obj,
 																T map,
 																Map<Object, Object> memo) {
-		if (null == obj)
-			return;
-		if (memo.containsKey(obj))
+		if (null == obj || memo.containsKey(obj))
 			return;
 		memo.put(obj, "");
 
