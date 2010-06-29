@@ -111,15 +111,14 @@ public class LangTest {
 	}
 
 	@Test
-	@SuppressWarnings("rawtypes")
 	public void test_array2_object_array() {
 		String[] s1 = {"a", "2", "2.0", null};
-		Class[] c1 = {String.class, int.class, float.class, Object.class};
+		Class<?>[] c1 = {String.class, int.class, float.class, Object.class};
 		Object[] objs = Lang.array2ObjectArray(s1, c1);
 		assertEquals("a", objs[0]);
 		assertEquals(2, objs[1]);
 		assertTrue(objs[2] instanceof Float);
-		assertEquals(2.0, objs[2]);
+		assertEquals(2.0f, objs[2]);
 		assertNull(objs[3]);
 
 		assertNull(Lang.array2ObjectArray(null, c1));
@@ -154,7 +153,6 @@ public class LangTest {
 	}
 
 	@Test
-	@SuppressWarnings("rawtypes")
 	public void test_obj2map() {
 		BC bc = new BC();
 		bc.name = "B";
@@ -164,8 +162,8 @@ public class LangTest {
 		cb.bc = bc;
 		Map<String, Object> map = Lang.obj2map(bc);
 		assertEquals("B", map.get("name"));
-		assertEquals("C", ((Map) map.get("cb")).get("code"));
-		assertNull(((Map) map.get("cb")).get("bc"));
+		assertEquals("C", ((Map<?, ?>) map.get("cb")).get("code"));
+		assertNull(((Map<?, ?>) map.get("cb")).get("bc"));
 	}
 
 	@Test
@@ -239,12 +237,12 @@ public class LangTest {
 		assertEquals(2, Lang.length(arr));
 		assertEquals(2, Lang.length(Arrays.asList(arr)));
 	}
-	
+
 	@Test
 	public void test_2bytes() {
-		char[] cs = {'a','b','c',150};
-		assertArrayEquals(new byte[] {97,98,99,-106}, Lang.toBytes(cs));
-		int[] is = {'a','b','c',150};
-		assertArrayEquals(new byte[] {97,98,99,-106}, Lang.toBytes(is));
+		char[] cs = {'a', 'b', 'c', 150};
+		assertArrayEquals(new byte[]{97, 98, 99, -106}, Lang.toBytes(cs));
+		int[] is = {'a', 'b', 'c', 150};
+		assertArrayEquals(new byte[]{97, 98, 99, -106}, Lang.toBytes(is));
 	}
 }
