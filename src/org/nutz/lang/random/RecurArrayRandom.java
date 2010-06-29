@@ -8,7 +8,7 @@ public class RecurArrayRandom<T> implements Random<T> {
 
 	public RecurArrayRandom(T[] array) {
 		this.array = array;
-		len = array.length;
+		this.len = array.length;
 	}
 
 	public T next() {
@@ -21,6 +21,7 @@ public class RecurArrayRandom<T> implements Random<T> {
 			return array[--len];
 		T c = array[index];
 		array[index] = array[--len];
+		array[len] = c;
 		return c;
 	}
 
