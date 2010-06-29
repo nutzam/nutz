@@ -58,6 +58,24 @@
 	2.5 局部变量
 		 # {#F00;*R}-局域变量名要尽量短，推荐用缩写，比如 `StringBuilder sb`
 		 # {#F00;*R}-总的来说局部变量请随意命名，越短越好
+		 
+		 比如这个就不好
+		 {{{<Java>
+		 public String abc(String str){
+			AbcObjectSet abcObjectSet = new AbcObjectSet();
+			abcObjectSet.setName(str);
+			return abcObjectSet.getBrief();
+		 }
+		 }}}
+		 而这个就很容易阅读了：
+		  {{{<Java>
+		 public String abc(String str){
+			AbcObjectSet aos = new AbcObjectSet();
+			aos.setName(str);
+			return aos.getBrief();
+		 }
+		 }}}
+		 
 	--------------------------------------------------------------------------------------
 	2.6 成员函数和静态函数
 		 # {#F00;*R}-除了 setter / getter，其他的函数采用动词或者动名短语
