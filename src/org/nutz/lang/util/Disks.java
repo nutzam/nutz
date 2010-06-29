@@ -147,6 +147,8 @@ public abstract class Disks {
 		if (!f.exists()) {
 			URL url = klassLoader.getResource(path);
 			if (null == url)
+				url = Thread.currentThread().getContextClassLoader().getResource(path);
+			if (null == url)
 				url = ClassLoader.getSystemResource(path);
 			if (null != url)
 				return normalize(url.getPath(), Encoding.UTF8);// 通过URL获取String,一律使用UTF-8编码进行解码

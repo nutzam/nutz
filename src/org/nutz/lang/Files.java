@@ -371,6 +371,8 @@ public abstract class Files {
 			}
 		if (null != klass) {
 			InputStream ins = klass.getClassLoader().getResourceAsStream(path);
+			if (null == ins)
+				Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 			if (null != ins)
 				return ins;
 		}
