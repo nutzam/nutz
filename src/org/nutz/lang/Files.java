@@ -372,7 +372,7 @@ public abstract class Files {
 		if (null != klass) {
 			InputStream ins = klass.getClassLoader().getResourceAsStream(path);
 			if (null == ins)
-				Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+				ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
 			if (null != ins)
 				return ins;
 		}
@@ -436,7 +436,7 @@ public abstract class Files {
 	 * 文件对象是否是文件，可接受 null
 	 */
 	public static boolean isFile(File f) {
-		return null != f && f.exists() && f.isFile(); 
+		return null != f && f.exists() && f.isFile();
 	}
 
 	/**

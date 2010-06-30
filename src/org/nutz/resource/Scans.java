@@ -3,9 +3,17 @@ package org.nutz.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.nutz.lang.Lang;
 import org.nutz.resource.impl.LocalResourceScan;
+import org.nutz.resource.impl.WebResourceScan;
 
+/**
+ * 资源扫描的帮助函数集
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class Scans {
 
 	private static final String FLT_CLASS = "^.+[.]class$";
@@ -108,5 +116,18 @@ public class Scans {
 			}
 		}
 		return re;
+	}
+
+	/**
+	 * 根据 ServletContext 创建一个 Web 应用的资源搜索器
+	 * 
+	 * @param context
+	 *            ServletContext 对象
+	 * @return Web 应用资源搜索器
+	 * 
+	 * @see org.nutz.resource.impl.WebResourceScan
+	 */
+	public static ResourceScan web(ServletContext context) {
+		return new WebResourceScan(context);
 	}
 }

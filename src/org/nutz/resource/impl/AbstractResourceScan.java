@@ -1,15 +1,14 @@
 package org.nutz.resource.impl;
 
-import java.util.Map;
-import java.util.Properties;
-import java.util.Map.Entry;
-
-import org.nutz.lang.Lang;
 import org.nutz.plugin.Plugin;
 import org.nutz.resource.ResourceScan;
 
 public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 
+	// TODO 删除下面的注释
+	/*
+	zzh: 下面的两个函数不再有用了
+	
 	protected String getClassPath() {
 		Properties properties = System.getProperties();
 		if (properties != null)
@@ -39,4 +38,5 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		}
 		return null;
 	}
+	*/
 }
