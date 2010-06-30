@@ -4,7 +4,7 @@
 #index:0,1
 --------------------------------------------------------------------------------------
 Apache DBCP
-	直接书写 Java 代码
+	dbcp: 直接书写 Java 代码
 		{{{<Java>
 		import org.apache.commons.dbcp.BasicDataSource;
 		
@@ -18,7 +18,7 @@ Apache DBCP
 		...
 		ds.close();  // 关闭池内所有连接
 		}}}
-	通过 Nutz.Ioc 的 JSON 配置文件
+	dbcp: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
@@ -35,7 +35,7 @@ Apache DBCP
 			}
 		}
 		}}}
-	通过 Nutz.Ioc 的 XML 配置文件
+	dbcp: 通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="org.apache.commons.dbcp.BasicDataSource">
@@ -53,7 +53,7 @@ Apache DBCP
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 --------------------------------------------------------------------------------------
 C3P0
-	直接书写 Java 代码
+	c3p0: 直接书写 Java 代码
 		{{{<Java>
 		import com.mchange.v2.c3p0.ComboPooledDataSource;
 		
@@ -67,7 +67,7 @@ C3P0
 		...
 		ds.close();  // 关闭池内所有连接
 		}}}
-	通过 Nutz.Ioc 的 JSON 配置文件
+	c3p0: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
@@ -84,7 +84,7 @@ C3P0
 			}
 		}
 		}}}
-	通过 Nutz.Ioc 的 XML 配置文件
+	c3p0: 通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="com.mchange.v2.c3p0.ComboPooledDataSource">
@@ -101,7 +101,7 @@ C3P0
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
 Proxool
-	直接书写 Java 代码
+	proxool: 直接书写 Java 代码
 		{{{<Java>
 		import org.logicalcobwebs.proxool.ProxoolDataSource;
 		
@@ -114,7 +114,7 @@ Proxool
 		ds.setPassword("123456");
 		...
 		}}}
-	通过 Nutz.Ioc 的 JSON 配置文件
+	proxool: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
@@ -128,7 +128,7 @@ Proxool
 			}
 		}
 		}}}
-	通过 Nutz.Ioc 的 XML 配置文件
+	proxool: 通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource">
@@ -143,7 +143,7 @@ Proxool
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
 --------------------------------------------------------------------------------------
 BoneCP
-	直接书写 Java 代码
+	bonecp: 直接书写 Java 代码
 		{{{<Java>
 		import com.jolbox.bonecp.BoneCPDataSource;
 		
@@ -157,7 +157,7 @@ BoneCP
 		...
 		
 		}}}
-	通过 Nutz.Ioc 的 JSON 配置文件
+	bonecp: 通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<IOC-JSON 配置>
 		{
 			dataSource : {
@@ -174,7 +174,7 @@ BoneCP
 			}
 		}
 		}}}
-	通过 Nutz.Ioc 的 XML 配置文件
+	bonecp: 通过 Nutz.Ioc 的 XML 配置文件
 		{{{<IOC-XML 配置>
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="com.jolbox.bonecp.BoneCPDataSource">
