@@ -251,7 +251,7 @@ public class NutDao implements Dao {
 	public int count(Class<?> classOfT, Condition condition) {
 		Entity<?> entity = getEntity(classOfT);
 		String where = null == condition ? null : condition.toSql(entity);
-		Sql sql = sqlMaker.func(entity.getTableName(), "COUNT", "*", where);
+		Sql sql = sqlMaker.func(entity.getViewName(), "COUNT", "*", where);
 		sql.setEntity(entity);
 		execute(sql);
 		return sql.getInt();
@@ -616,7 +616,7 @@ public class NutDao implements Dao {
 	public int getMaxId(Class<?> classOfT) {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = checkIdField(entity);
-		Sql sql = sqlMaker.func(entity.getTableName(), "MAX", ef.getColumnName(), null);
+		Sql sql = sqlMaker.func(entity.getViewName(), "MAX", ef.getColumnName(), null);
 		execute(sql);
 		return sql.getInt();
 	}
@@ -846,7 +846,7 @@ public class NutDao implements Dao {
 	}
 
 	public boolean exists(Class<?> classOfT) {
-		return exists(getEntity(classOfT).getTableName());
+		return exists(getEntity(classOfT).getViewName());
 	}
 
 	public boolean exists(final String tableName) {
@@ -876,8 +876,8 @@ public class NutDao implements Dao {
 		Entity<?> entity = getEntity(classOfT);
 		EntityField ef = entity.getField(fieldName);
 		if (null == ef)
-			return func(entity.getTableName(), funcName, fieldName);
-		return func(entity.getTableName(), funcName, ef.getColumnName());
+			return func(entity.getViewName(), funcName, fieldName);
+		return func(entity.getViewName(), funcName, ef.getColumnName());
 	}
 
 	public int func(String tableName, String funcName, String colName) {
