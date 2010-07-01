@@ -6,8 +6,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import java.net.MalformedURLException;
@@ -30,7 +28,6 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.ClassLoaderUtil;
 import org.nutz.lang.util.LinkedCharArray;
 
 public class FileSqlManager implements SqlManager {
@@ -134,44 +131,20 @@ public class FileSqlManager implements SqlManager {
 				if (null == path)
 					continue;
 				File f = Files.findFile(Strings.trim(path));
-				/*
-				 * 这里重点解决 sql文件打在jar包中的时候出现的错误问题 Caused by:
-				 * java.io.FileNotFoundException:
-				 * file:\E:\workspaceWork\paihao\WebRoot
-				 * \WEB-INF\lib\jax_00_platform
-				 * .jar!\com\jax\pf\fr\app\authority\dao\sql\exec.sqls
-				 * (文件名、目录名或卷标语法不正确。)
-				 */
-				// 如果文件不存在就从loader中查找
-				if (f == null || (!f.exists())) {
-					InputStream stream = ClassLoaderUtil.getStream(path);
-					if (stream != null) {
-						InputStreamReader reader = null;
-						try {
-							reader = new InputStreamReader(stream);
-							loadSQL(reader);
-						}
-						finally {
-							Streams.safeClose(reader);
-							Streams.safeClose(stream);
-						}
+				File[] files;
+				if (f.isDirectory()) {
+					files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
+																: sqkFileFilter);
+				} else
+					files = Lang.array(f);
+				try {
+					for (File file : files) {
+						Reader stream = Streams.fileInr(file);
+						loadSQL(stream);
 					}
-				} else {
-					File[] files;
-					if (f.isDirectory()) {
-						files = f.listFiles(sqkFileFilter == null	? defaultSqkFileFilter
-																	: sqkFileFilter);
-					} else
-						files = Lang.array(f);
-					try {
-						for (File file : files) {
-							Reader stream = Streams.fileInr(file);
-							loadSQL(stream);
-						}
-					}
-					catch (Exception e) {
-						throw Lang.wrapThrow(e);
-					}
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
 				}
 			}
 	}
