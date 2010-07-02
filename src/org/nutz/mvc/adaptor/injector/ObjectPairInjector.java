@@ -13,9 +13,9 @@ import org.nutz.mvc.annotation.Param;
 
 public class ObjectPairInjector implements ParamInjector {
 
-	private Injecting[] injs;
-	private String[] names;
-	private Mirror<?> mirror;
+	protected Injecting[] injs;
+	protected String[] names;
+	protected Mirror<?> mirror;
 
 	public ObjectPairInjector(String prefix, Class<?> type) {
 		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
