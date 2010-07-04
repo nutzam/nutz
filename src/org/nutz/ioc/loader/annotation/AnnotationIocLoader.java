@@ -20,6 +20,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.NutResource;
+import org.nutz.resource.ResourceScan;
 import org.nutz.resource.Scans;
 
 /**
@@ -37,6 +39,35 @@ public class AnnotationIocLoader implements IocLoader {
 		for (String packageZ : packages)
 			for (Class<?> classZ : Scans.inLocalPackage(packageZ))
 				addClass(classZ);
+		if (LOG.isInfoEnabled())
+			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
+						map.size(),
+						packages.length,
+						Castors.me().castToString(map.keySet()));
+	}
+
+	public AnnotationIocLoader(ResourceScan resourceScan, String... packages) {
+		for (String packageZ : packages) {
+			List<NutResource> list = resourceScan.list(packageZ.replace('.', '/'), ".class");
+			if (list.size() > 0) {
+				for (NutResource nutResource : list) {
+					try {
+						String name = nutResource	.getName()
+													.substring(	0,
+																nutResource.getName().length()
+																		- ".class".length())
+													.replace('/', '.');
+						addClass(Class.forName(name, false, Thread	.currentThread()
+																	.getContextClassLoader()));
+					}
+					catch (Throwable e) {
+						if (LOG.isTraceEnabled())
+							LOG.tracef(	"Fail to found class by ResourceName : %s",
+										nutResource.getName());
+					}
+				}
+			}
+		}
 		if (LOG.isInfoEnabled())
 			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
 						map.size(),

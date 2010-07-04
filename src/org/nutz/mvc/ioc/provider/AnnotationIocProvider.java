@@ -7,11 +7,14 @@ import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.impl.ScopeContext;
 import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
 import org.nutz.mvc.IocProvider;
+import org.nutz.resource.impl.WebResourceScan;
 
 public class AnnotationIocProvider implements IocProvider {
 
 	public Ioc create(ServletConfig config, String[] args) {
-		return new NutIoc(new AnnotationIocLoader(args), new ScopeContext("app"), "app");
+		return new NutIoc(	new AnnotationIocLoader(new WebResourceScan(config.getServletContext())),
+							new ScopeContext("app"),
+							"app");
 	}
 
 }
