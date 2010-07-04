@@ -21,6 +21,7 @@ public class MapReferInjector extends ObjectPairInjector {
 		super(prefix, type);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object get(HttpServletRequest req, HttpServletResponse resp,
 			Object refer) {
