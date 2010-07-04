@@ -11,20 +11,26 @@ public abstract class NutResource implements Comparable<NutResource> {
 		return name;
 	}
 
-	public void setName(String name) {
+	protected void setName(String name) {
 		this.name = name;
 	}
 
 	public abstract InputStream getInputStream() throws IOException;
 
 	public int compareTo(NutResource o) {
-		if (null == name || null == o || null == o.getName())
+		if (o == null)
 			return -1;
-		return name.compareTo(o.getName());
+		if (this == o || (this.name == null && o.name == null))
+			return 0;
+		if (this.name != null && o.name != null)
+			return name.compareTo(o.getName());
+		return this.name == null ? 1 : -1;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
 		if (obj instanceof NutResource)
 			return 0 == compareTo((NutResource) obj);
 		return false;
