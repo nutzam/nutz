@@ -11,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -96,17 +97,18 @@ public class JsonTest {
 		assertEquals(87L, ((Long) Json.fromJson(Lang.inr("87L"))).longValue());
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testDatetime() {
 		java.util.Date date = Json.fromJson(java.util.Date.class,
 											Lang.inr("\"2008-05-16 14:35:43\""));
-		assertEquals(108, date.getYear());
-		assertEquals(4, date.getMonth());
-		assertEquals(16, date.getDate());
-		assertEquals(14, date.getHours());
-		assertEquals(35, date.getMinutes());
-		assertEquals(43, date.getSeconds());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		assertEquals(2008, cal.get(Calendar.YEAR));
+		assertEquals(4, cal.get(Calendar.MONTH));
+		assertEquals(16, cal.get(Calendar.DAY_OF_MONTH));
+		assertEquals(14, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(35, cal.get(Calendar.MINUTE));
+		assertEquals(43, cal.get(Calendar.SECOND));
 	}
 
 	@Test
@@ -197,7 +199,6 @@ public class JsonTest {
 		assertEquals("nice", m2.get("tomy"));
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSimplePersonObject() throws Exception {
 		Person p = Json.fromJson(	Person.class,
@@ -205,9 +206,12 @@ public class JsonTest {
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
-		assertEquals(40, p.getBirthday().getYear());
-		assertEquals(7, p.getBirthday().getMonth());
-		assertEquals(15, p.getBirthday().getDate());
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(p.getBirthday());
+		assertEquals(1940, cal.get(Calendar.YEAR));
+		assertEquals(7, cal.get(Calendar.MONTH));
+		assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Test
@@ -252,15 +256,16 @@ public class JsonTest {
 		assertEquals(2, ary[0]);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testSimpleArraySingleDate() throws Exception {
 		String s = "[\"2008-8-1\"]";
 		java.sql.Date[] ary = Json.fromJson(java.sql.Date[].class, Lang.inr(s));
 		assertEquals(1, ary.length);
-		assertEquals(108, ary[0].getYear());
-		assertEquals(7, ary[0].getMonth());
-		assertEquals(1, ary[0].getDate());
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(ary[0]);
+		assertEquals(2008, cal.get(Calendar.YEAR));
+		assertEquals(7, cal.get(Calendar.MONTH));
+		assertEquals(1, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Test
@@ -296,7 +301,6 @@ public class JsonTest {
 		assertEquals("\"X\"", abc.name);
 	}
 
-	@SuppressWarnings("deprecation")
 	@Test
 	public void testParseNullFieldObject() throws Exception {
 		Person p = Json.fromJson(	Person.class,
@@ -304,9 +308,12 @@ public class JsonTest {
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
-		assertEquals(40, p.getBirthday().getYear());
-		assertEquals(7, p.getBirthday().getMonth());
-		assertEquals(15, p.getBirthday().getDate());
+		
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(p.getBirthday());
+		assertEquals(1940, cal.get(Calendar.YEAR));
+		assertEquals(7, cal.get(Calendar.MONTH));
+		assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
 	@Test
