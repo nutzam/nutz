@@ -33,7 +33,7 @@ public class CastorTest {
 		Calendar c = Calendar.getInstance();
 		c.set(2008, 5, 20, 5, 46, 26);
 
-		Calendar c2 = (Calendar) Castors.me().cast(	"2008-06-20 05:46:26",
+		Calendar c2 = Castors.me().cast(	"2008-06-20 05:46:26",
 													String.class,
 													Calendar.class);
 
@@ -182,30 +182,27 @@ public class CastorTest {
 		assertEquals("e2", list.get(1).toString());
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testIntArray2List() throws Exception {
 		int[] inAry = {34, 78};
-		List list = Castors.me().castTo(inAry, List.class);
+		List<?> list = Castors.me().castTo(inAry, List.class);
 		assertEquals(2, list.size());
 		assertEquals(34, list.get(0));
 		assertEquals(78, list.get(1));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testStringList2Arry() throws Exception {
 		String[] inAry = {"e1", "e2"};
-		List list = Castors.me().cast(inAry, String[].class, List.class);
+		List<?> list = Castors.me().cast(inAry, String[].class, List.class);
 		String[] reAry = Castors.me().castTo(list, String[].class);
 		assertTrue(Arrays.equals(inAry, reAry));
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testIntList2Array() throws Exception {
 		int[] inAry = {34, 78};
-		List list = Castors.me().castTo(inAry, List.class);
+		List<?> list = Castors.me().castTo(inAry, List.class);
 		int[] reAry = Castors.me().castTo(list, int[].class);
 		assertTrue(Arrays.equals(inAry, reAry));
 	}

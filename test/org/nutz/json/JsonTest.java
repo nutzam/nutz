@@ -43,20 +43,20 @@ public class JsonTest {
 
 	@Test
 	public void born_with_map() {
-		Map map = Json.fromJson(Map.class, "{a:'A'}");
+		Map<?, ?> map = Json.fromJson(Map.class, "{a:'A'}");
 		assertEquals("A", map.get("a"));
 	}
 
 	@Test
 	public void when_name_has_unsupport_char() {
-		Map map = new HashMap();
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("/tt", 123);
 		assertEquals("{\"/tt\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
 	}
 
 	@Test
 	public void when_name_has_number_char_at_first() {
-		Map map = new HashMap();
+		Map<String, Integer> map = new HashMap<String, Integer>();
 		map.put("3T", 123);
 		assertEquals("{\"3T\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
 	}
@@ -146,7 +146,7 @@ public class JsonTest {
 	@Test
 	public void testSimpleMap() {
 		String s = "{id:45,m:{x:1},name:'xyz'}";
-		Map map = (Map) Json.fromJson(Lang.inr(s));
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		assertEquals(45, map.get("id"));
 		assertEquals("xyz", map.get("name"));
 	}
@@ -154,7 +154,7 @@ public class JsonTest {
 	@Test
 	public void testSimpleMap2() {
 		String s = "{f:false,t:true,H:30}";
-		Map map = (Map) Json.fromJson(Lang.inr(s));
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		assertTrue((Boolean) map.get("t"));
 		assertFalse((Boolean) map.get("f"));
 		assertEquals(30, map.get("H"));
@@ -163,7 +163,7 @@ public class JsonTest {
 	@Test
 	public void testSimpleMap3() {
 		String s = "{ary:[1,2],t:true,H:30}";
-		Map map = (Map) Json.fromJson(Lang.inr(s));
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		List<?> list = (List<?>) map.get("ary");
 		assertEquals(2, list.size());
 		assertTrue((Boolean) map.get("t"));
@@ -173,7 +173,7 @@ public class JsonTest {
 	@Test
 	public void testSimpleMap4() {
 		String s = "{id:45,name:'',txt:\"\"}";
-		Map map = (Map) Json.fromJson(Lang.inr(s));
+		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		assertEquals(45, map.get("id"));
 		assertEquals("", map.get("name"));
 		assertEquals("", map.get("txt"));
@@ -186,13 +186,13 @@ public class JsonTest {
 		assertEquals("value1", map.get("a1"));
 		assertEquals(35, map.get("a2"));
 		assertEquals((double) 4.7, map.get("a3"));
-		Map m1 = (Map) map.get("m1");
+		Map<?, ?> m1 = (Map<?, ?>) map.get("m1");
 		assertEquals(12, m1.get("x"));
 		assertEquals(45, m1.get("y"));
-		Map m12 = (Map) m1.get("m12");
+		Map<?, ?> m12 = (Map<?, ?>) m1.get("m12");
 		assertEquals("haha", m12.get("w1"));
 		assertEquals("fuck", m12.get("w2"));
-		Map m2 = (Map) map.get("m2");
+		Map<?, ?> m2 = (Map<?, ?>) map.get("m2");
 		assertEquals("good", m2.get("today"));
 		assertEquals("nice", m2.get("tomy"));
 	}
