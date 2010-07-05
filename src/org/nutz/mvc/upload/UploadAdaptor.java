@@ -13,6 +13,9 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.AbstractAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
+import org.nutz.mvc.adaptor.injector.ArrayInjector;
+import org.nutz.mvc.adaptor.injector.MapPairInjector;
+import org.nutz.mvc.adaptor.injector.MapReferInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
@@ -51,7 +54,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private String charset;
 	private FilePool pool;
 	private int buffer;
-	
+
 	public UploadAdaptor() throws IOException {
 		this(File.createTempFile("nutz", null).getParent());
 	}
@@ -90,6 +93,22 @@ public class UploadAdaptor extends AbstractAdaptor {
 
 		if (null == param)
 			return null;
+
+		String pm = param.value();
+		// POJO
+		if ("..".equals(pm)) {
+			if (type.isAssignableFrom(Map.class))
+				return new MapPairInjector();
+			return new MapReferInjector(null, type);
+		}
+		// POJO with prefix
+		else if (pm.startsWith("::") && pm.length() > 2) {
+			return new MapReferInjector(pm.substring(2), type);
+		}
+		// POJO[]
+		else if (type.isArray())
+			return new ArrayInjector(pm, type);
+
 		return new MapItemInjector(param.value(), type);
 	}
 
