@@ -1,6 +1,7 @@
 package org.nutz.mvc.init;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -94,7 +95,7 @@ public class DefaultLoading implements Loading {
 				log.debugf("Create Ioc by '%s'", ib.type().getName());
 
 			ioc = ib.type().newInstance().create(config, ib.args());
-			config.getServletContext().setAttribute(Ioc.class.getName(), ioc);
+			saveToContext(Ioc.class.getName(), ioc);
 		} else if (log.isDebugEnabled())
 			log.debug("!!!Your application without @Ioc supporting");
 	}
@@ -103,7 +104,7 @@ public class DefaultLoading implements Loading {
 		Views vms = mainModule.getAnnotation(Views.class);
 
 		// Prepare view makers
-		ArrayList<ViewMaker> makers = new ArrayList<ViewMaker>();
+		List<ViewMaker> makers = new ArrayList<ViewMaker>();
 		if (null != vms)
 			for (Class<? extends ViewMaker> type : vms.value())
 				makers.add(type.newInstance());
@@ -122,12 +123,10 @@ public class DefaultLoading implements Loading {
 		// Then try to load sub-modules
 		Modules modules = mainModule.getAnnotation(Modules.class);
 		Class<?>[] moduleRefers;
-		if (null == modules || null == modules.value() || modules.value().length == 0) {
-			moduleRefers = new Class<?>[1];
-			moduleRefers[0] = mainModule;
-		} else {
+		if (null == modules || null == modules.value() || modules.value().length == 0)
+			moduleRefers = new Class<?>[]{mainModule};
+		else
 			moduleRefers = modules.value();
-		}
 
 		// 扫描所有的
 		boolean isNeedScanSubPackages = null == modules ? false : modules.scanPackage();
@@ -159,27 +158,13 @@ public class DefaultLoading implements Loading {
 			}
 		}
 
-		// TODO 清除下面被注释的代码
-		/*
-		 * zozoh: 不要从 servlet config 里读取参数，以便将来可以从 web.xml 分离
-		 * 
-		 * if (config.getInitParameter("scan") != null) { String scanPackages =
-		 * config.getInitParameter("scan").trim(); String[] packages =
-		 * scanPackages.split(","); for (int i = 0; i < packages.length; i++) if
-		 * (packages[i].trim().length() > 0) { if (log.isDebugEnabled())
-		 * log.debugf("Scan Module in package : <%s>", packages[i].trim());
-		 * List<Class<?>> list =
-		 * ResourceScanHelper.scanClasses(packages[i].trim()); for (Class<?>
-		 * classZ : list) if (isSubModule(classZ)) moduleSet.add(classZ); } }
-		 */
-
 		for (Class<?> module : moduleSet) {
 			if (log.isDebugEnabled())
 				log.debugf("Module: <%s>", module.getName());
 
 			urls.add(makers, module);
 		}
-		config.getServletContext().setAttribute(UrlMap.class.getName(), urls);
+		saveToContext(UrlMap.class.getName(), urls);
 	}
 
 	protected void loadLocalization() throws Throwable {
@@ -201,7 +186,7 @@ public class DefaultLoading implements Loading {
 				log.info("Setup application...");
 
 			Setup setup = sb.value().newInstance();
-			config.getServletContext().setAttribute(Setup.class.getName(), setup);
+			saveToContext(Setup.class.getName(), setup);
 			setup.init(config);
 		}
 	}
@@ -222,12 +207,8 @@ public class DefaultLoading implements Loading {
 	}
 
 	private static boolean isModule(Class<?> classZ) {
-		// TODO 清除下面被注释的代码
-		// zozoh: 如果没有入口函数，即使有 '@At' 也不应该作为模块类，因为没有意义
-		// if (classZ.getAnnotation(At.class) != null)
-		// return true;
 		for (Method method : classZ.getMethods())
-			if (method.getAnnotation(At.class) != null)
+			if (Modifier.isPublic(method.getModifiers()) && method.isAnnotationPresent(At.class))
 				return true;
 		return false;
 	}
