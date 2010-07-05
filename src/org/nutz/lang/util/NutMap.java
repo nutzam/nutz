@@ -42,7 +42,7 @@ public class NutMap extends HashMap<String, Object> {
 	 * @param key
 	 * @param value
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public NutMap add(String key, Object value) {
 		Object obj = get(key);
 		if (null == obj)

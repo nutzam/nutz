@@ -112,7 +112,7 @@ class JsonParsing {
 	 * @return
 	 * @throws Exception
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private <T> T parseFromCurrentLocation(Class<T> type, Class<?> componentType) throws Exception {
 		Mirror<T> me = Mirror.me(type);
 		switch (cursor) {

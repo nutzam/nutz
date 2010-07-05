@@ -92,7 +92,7 @@ public class ObjectMakerImpl implements ObjectMaker {
 		return op;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, String str) {
 		if (Strings.isBlank(str))
 			return null;

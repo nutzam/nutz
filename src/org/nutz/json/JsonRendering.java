@@ -107,7 +107,7 @@ class JsonRendering {
 		Object value;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private void map2Json(Map map) throws IOException {
 		if (null == map)
 			return;
@@ -227,7 +227,7 @@ class JsonRendering {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"rawtypes"})
 	void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");

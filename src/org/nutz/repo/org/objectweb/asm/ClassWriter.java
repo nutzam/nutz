@@ -1286,10 +1286,9 @@ public class ClassWriter implements ClassVisitor {
      * @return the internal name of the common super class of the two given
      *         classes.
      */
-    @SuppressWarnings("unchecked")
-	protected String getCommonSuperClass(final String type1, final String type2)
+    protected String getCommonSuperClass(final String type1, final String type2)
     {
-        Class c, d;
+        Class<?> c, d;
         try {
             c = Class.forName(type1.replace('/', '.'));
             d = Class.forName(type2.replace('/', '.'));

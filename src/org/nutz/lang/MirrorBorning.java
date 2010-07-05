@@ -6,7 +6,7 @@ import java.lang.reflect.Method;
 import org.nutz.lang.MatchType;
 import org.nutz.lang.born.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked","rawtypes"})
 class MirrorBorning<T> {
 
 	private Mirror<T> mirror;

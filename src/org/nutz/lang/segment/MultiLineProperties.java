@@ -119,7 +119,7 @@ public class MultiLineProperties implements Map<String, String> {
 		return maps.put(key, value);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public synchronized void putAll(Map t) {
 		maps.putAll(t);
 	}
