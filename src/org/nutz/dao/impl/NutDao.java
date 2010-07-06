@@ -504,7 +504,7 @@ public class NutDao implements Dao {
 		return fetch(classOfT, (Condition) null);
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked"})
 	public <T> T fetch(T obj) {
 		if (null != obj) {
 			Entity<?> entity = (Entity<?>) getEntity(obj.getClass());

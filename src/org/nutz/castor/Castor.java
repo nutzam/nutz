@@ -29,7 +29,7 @@ public abstract class Castor<FROM, TO> {
 	public abstract TO cast(FROM src, Class<?> toType, String... args)
 			throws FailToCastObjectException;
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked"})
 	protected static Collection<?> createCollection(Object src, Class<?> toType)
 			throws FailToCastObjectException {
 		Collection<?> coll = null;

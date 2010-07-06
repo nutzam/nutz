@@ -24,7 +24,7 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked"})
 public class JsonTest {
 
 	@Test
@@ -121,7 +121,7 @@ public class JsonTest {
 
 	@Test
 	public void testAllTypesInMap() throws FileNotFoundException {
-		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(getClass()	.getResourceAsStream("/org/nutz/json/types.txt")));
+		Map<String, Object> map = (Map<String, Object>) Json.fromJson(new InputStreamReader(getClass().getResourceAsStream("/org/nutz/json/types.txt")));
 		assertTrue((Boolean) map.get("true"));
 		assertFalse((Boolean) map.get("false"));
 		assertNull(map.get("null"));
@@ -231,7 +231,7 @@ public class JsonTest {
 		w.close();
 
 		assertTrue(Streams.equals(	new StringInputStream(sb),
-									getClass()	.getResourceAsStream("/org/nutz/json/person.expect.txt")));
+									getClass().getResourceAsStream("/org/nutz/json/person.expect.txt")));
 	}
 
 	@Test
@@ -332,14 +332,14 @@ public class JsonTest {
 		assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
 		assertEquals(p.getCompany().getName(), p2.getCompany().getName());
 		assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
-		assertEquals(p.getCompany().getCreator().getRealname(), p2	.getCompany()
+		assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany()
 																	.getCreator()
 																	.getRealname());
 		assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
 		assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany()
 																.getCreator()
 																.getFather());
-		assertEquals(p.getCompany().getCreator().getBirthday(), p2	.getCompany()
+		assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany()
 																	.getCreator()
 																	.getBirthday());
 	}
