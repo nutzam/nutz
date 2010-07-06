@@ -1,6 +1,5 @@
 package org.nutz.resource.impl;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -27,9 +26,9 @@ import org.nutz.resource.ResourceScan;
 @SuppressWarnings("unchecked")
 public class WebResourceScan implements ResourceScan {
 
-	private static final String WebClasses = "/WEB-INF/classes";
+	private static final String WebClasses = "/WEB-INF/classes/";
 
-	private static final String WebLib = "/WEB-INF/lib";
+	private static final String WebLib = "/WEB-INF/lib/";
 
 	private ServletContext servletContext;
 
@@ -62,9 +61,9 @@ public class WebResourceScan implements ResourceScan {
 		Set<String> set = lists(WebClasses);
 		for (String filePath : set) {
 			String simpleName = filePath.substring(filePath.lastIndexOf(WebClasses)
-													+ WebClasses.length());
+													+ WebClasses.length() + 1);
 			if (simpleName.startsWith(src) && simpleName.endsWith(filter)) {
-				FileResource resource = new FileResource(filePath, simpleName);
+				ClasspathResource resource = new ClasspathResource(simpleName);
 				list.add(resource);
 			}
 		}
@@ -107,18 +106,15 @@ public class WebResourceScan implements ResourceScan {
 
 	}
 
-	static class FileResource extends NutResource {
+	static class ClasspathResource extends NutResource {
 
-		private String filePath;
-
-		public FileResource(String filePath, String name) {
-			this.filePath = filePath;
+		public ClasspathResource(String name) {
 			this.name = name;
 		}
 
 		@Override
 		public InputStream getInputStream() throws IOException {
-			return new FileInputStream(filePath);
+			return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
 		}
 
 	}
