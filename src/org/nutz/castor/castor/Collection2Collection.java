@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Collection2Collection extends Castor<Collection, Collection> {
 
 	@Override

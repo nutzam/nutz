@@ -3,7 +3,7 @@ package org.nutz.castor.castor;
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Enum2String extends Castor<Enum, String> {
 
 	@Override

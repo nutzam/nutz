@@ -507,7 +507,7 @@ public class NutDao implements Dao {
 	@SuppressWarnings("unchecked")
 	public <T> T fetch(T obj) {
 		if (null != obj) {
-			Entity<?> entity = (Entity) getEntity(obj.getClass());
+			Entity<?> entity = (Entity<?>) getEntity(obj.getClass());
 			EntityField idnf = entity.getIdentifiedField();
 			Sql sql;
 			if (idnf == null) {

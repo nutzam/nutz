@@ -8,7 +8,7 @@ import org.nutz.castor.FailToCastObjectException;
 
 import static java.lang.String.*;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class String2Class extends Castor<String, Class> {
 
 	public String2Class() {

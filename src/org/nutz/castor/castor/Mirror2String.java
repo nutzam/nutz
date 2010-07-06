@@ -3,7 +3,7 @@ package org.nutz.castor.castor;
 import org.nutz.castor.Castor;
 import org.nutz.lang.Mirror;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Mirror2String extends Castor<Mirror, String> {
 
 	@Override

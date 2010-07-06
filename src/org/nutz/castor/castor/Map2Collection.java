@@ -6,7 +6,7 @@ import java.util.Map;
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Map2Collection extends Castor<Map, Collection> {
 
 	@Override

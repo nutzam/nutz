@@ -6,7 +6,7 @@ import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.Lang;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Number2Enum extends Castor<Number, Enum> {
 
 	@Override

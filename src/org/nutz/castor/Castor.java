@@ -30,9 +30,9 @@ public abstract class Castor<FROM, TO> {
 			throws FailToCastObjectException;
 
 	@SuppressWarnings("unchecked")
-	protected static Collection createCollection(Object src, Class<?> toType)
+	protected static Collection<?> createCollection(Object src, Class<?> toType)
 			throws FailToCastObjectException {
-		Collection coll = null;
+		Collection<?> coll = null;
 		try {
 			coll = (Collection<Object>) toType.newInstance();
 		}

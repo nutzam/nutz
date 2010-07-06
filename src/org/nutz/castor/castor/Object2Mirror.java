@@ -4,7 +4,7 @@ import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.Mirror;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Object2Mirror extends Castor<Object, Mirror> {
 
 	@Override

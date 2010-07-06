@@ -7,7 +7,7 @@ import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.lang.Lang;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class Array2Map extends Castor<Object, Map> {
 
 	public Array2Map() {

@@ -7,7 +7,7 @@ import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Collection2String extends Castor<Collection, String> {
 
 	@Override

@@ -2,7 +2,7 @@ package org.nutz.castor.castor;
 
 import org.nutz.castor.Castor;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Class2String extends Castor<Class, String> {
 
 	@Override

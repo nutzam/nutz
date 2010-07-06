@@ -211,7 +211,7 @@ public class SqlImpl implements Sql, Cloneable {
 		return Castors.me().castToString(context.getResult());
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <T> List<T> getList(Class<T> classOfT) {
 		Object result = context.getResult();
 		if (null == result)

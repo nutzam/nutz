@@ -205,7 +205,7 @@ public class Castors {
 	 * @throws FailToCastObjectException
 	 *             如果没有找到转换器，或者转换失败
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public <F, T> T cast(Object src, Class<F> fromType, Class<T> toType, String... args)
 			throws FailToCastObjectException {
 		if (null == src) {

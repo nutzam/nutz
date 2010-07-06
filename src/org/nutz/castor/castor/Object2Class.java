@@ -3,7 +3,7 @@ package org.nutz.castor.castor;
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"rawtypes"})
 public class Object2Class extends Castor<Object, Class> {
 
 	@Override
