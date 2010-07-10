@@ -119,7 +119,7 @@ public class TransactionTest extends DaoCase {
 
 	class CheckCheck extends Thread {
 
-		private Object lock;
+		private Object lock = new Object();
 		private Object tellor;
 		private boolean standby;
 

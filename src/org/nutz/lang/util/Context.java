@@ -11,7 +11,7 @@ import org.nutz.castor.Castors;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Context {
+public class Context implements Cloneable {
 
 	private Map<String, Object> map;
 

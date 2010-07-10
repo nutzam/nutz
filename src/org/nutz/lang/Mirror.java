@@ -1125,7 +1125,7 @@ public class Mirror<T> {
 		if (klass == null)
 			return null;
 		Type superclass = klass.getGenericSuperclass();
-		if ("java.lang.Object".equals(superclass))
+		if (superclass == null || "java.lang.Object".equals(superclass.toString()))
 			return null;
 		if (superclass instanceof ParameterizedType)
 			return ((ParameterizedType) superclass).getActualTypeArguments();
