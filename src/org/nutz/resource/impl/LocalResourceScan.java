@@ -12,6 +12,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.ByteInputStream;
 import org.nutz.lang.util.Disks;
@@ -117,7 +118,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
 			// 如果在其中，那么是在一个 JAR 中还是在一个本地目录里
-			String path = Disks.absolute(src);
+			String path = Disks.absolute(src, getClass().getClassLoader(), Encoding.defaultEncoding());
 			if (null != path) {
 				f = new File(path);
 				// 如果是本地目录，递归这个目录

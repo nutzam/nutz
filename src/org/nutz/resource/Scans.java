@@ -38,7 +38,6 @@ public class Scans {
 	 * 
 	 * @param pkg
 	 *            包名或者包路径
-	 * @return
 	 */
 	public static List<Class<?>> inLocalPackage(String pkg) {
 		return inLocalPackage(pkg, FLT_CLASS);
@@ -51,7 +50,6 @@ public class Scans {
 	 *            包名或者包路径
 	 * @param regex
 	 *            正则表达式，请注意你需要匹配的名称为 'xxxx.class' 而不仅仅是类名，从而保证选出的对象都是类文件
-	 * @return
 	 */
 	public static List<Class<?>> inLocalPackage(String pkg, String regex) {
 		String packagePath = pkg.replace('.', '/').replace('\\', '/');
