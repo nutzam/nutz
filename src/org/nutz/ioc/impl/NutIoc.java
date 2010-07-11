@@ -183,7 +183,7 @@ public class NutIoc implements Ioc2 {
 
 						// 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
 						if (log.isDebugEnabled())
-							log.debug("\t >> Make...");
+							log.debugf("\t >> Make...'%s'<%s>", name, type);
 						op = maker.make(ing, iobj);
 					}
 					// 处理异常
