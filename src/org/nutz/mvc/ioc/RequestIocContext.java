@@ -77,5 +77,9 @@ public class RequestIocContext implements IocContext {
 		}
 		return false;
 	}
+	
+	public ServletRequest getReq() {
+		return req;
+	}
 
 }

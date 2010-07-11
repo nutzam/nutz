@@ -78,4 +78,7 @@ public class SessionIocContext implements IocContext {
 		return false;
 	}
 
+	public HttpSession getSession() {
+		return session;
+	}
 }

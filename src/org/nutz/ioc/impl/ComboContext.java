@@ -73,4 +73,7 @@ public class ComboContext implements IocContext {
 			c.depose();
 	}
 
+	public IocContext[] getContexts() {
+		return contexts;
+	}
 }

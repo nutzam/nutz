@@ -11,6 +11,7 @@ import java.util.Set;
 import javax.servlet.ServletConfig;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.Ioc2;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
@@ -28,6 +29,7 @@ import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.Views;
+import org.nutz.mvc.ioc.MvcValueProxyMaker;
 import org.nutz.mvc.view.DefaultViewMaker;
 import org.nutz.resource.Scans;
 
@@ -95,6 +97,8 @@ public class DefaultLoading implements Loading {
 				log.debugf("Create Ioc by '%s'", ib.type().getName());
 
 			ioc = ib.type().newInstance().create(config, ib.args());
+			if (ioc instanceof Ioc2)
+				((Ioc2)ioc).addValueProxyMaker(new MvcValueProxyMaker());
 			saveToContext(Ioc.class.getName(), ioc);
 		} else if (log.isDebugEnabled())
 			log.debug("!!!Your application without @Ioc supporting");
