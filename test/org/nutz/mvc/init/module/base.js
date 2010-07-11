@@ -8,5 +8,12 @@ var ioc = {
 		fields:{
 		  nameX : "NutzX"
 		 }
+	},
+	requestModule : {
+		type : "org.nutz.mvc.init.module.RequestScopeModule",
+		scope : "request",
+		fields:{
+		  request : {mvc : "$request"}
+		 }
 	}
 }
