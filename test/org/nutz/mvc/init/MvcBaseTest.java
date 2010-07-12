@@ -32,11 +32,5 @@ public class MvcBaseTest extends AbstractMvcTest {
 		((NutServlet)servlet).service(request, response);
 		assertEquals("\"haha\"", response.getContentAsString());
 	}
-	
-	@Test
-	public void testGetRequst() throws Throwable {
-		request.setPathInfo("/request/check");
-		((NutServlet)servlet).service(request, response);
-		assertTrue(response.getContentAsString().indexOf(request.toString()) > -1);
-	}
+
 }
