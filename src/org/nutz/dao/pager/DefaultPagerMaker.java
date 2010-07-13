@@ -2,6 +2,11 @@ package org.nutz.dao.pager;
 
 import org.nutz.dao.DatabaseMeta;
 
+/**
+ * 默认的 Pager 工厂类
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class DefaultPagerMaker implements PagerMaker {
 
 	public Pager make(DatabaseMeta meta, int pageNumber, int pageSize) {
