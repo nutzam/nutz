@@ -68,6 +68,19 @@ public class FieldFilter {
 	 * 
 	 * @param type
 	 *            POJO 类型
+	 * @param locked
+	 *            正则表达式，哪些字段会被忽略，语法请参看 Pattern 类的 JavaDoc
+	 * @return 字段过滤器
+	 */
+	public static FieldFilter locked(Class<?> type, String locked) {
+		return create(type, null, locked, true);
+	}
+
+	/**
+	 * 创建一个过滤器
+	 * 
+	 * @param type
+	 *            POJO 类型
 	 * @param ignoreNull
 	 *            是否忽略 NULL 值字段
 	 * @return 字段过滤器

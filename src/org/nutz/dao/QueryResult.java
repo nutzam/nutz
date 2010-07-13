@@ -11,6 +11,8 @@ public class QueryResult {
 	private List<?> list;
 	private Pager pager;
 
+	public QueryResult() {}
+
 	public QueryResult(List<?> list, Pager pager) {
 		this.list = list;
 		this.pager = pager;
@@ -24,17 +26,17 @@ public class QueryResult {
 	public <T> List<T> getList(Class<T> eleType) {
 		return (List<T>) list;
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public <T> List<T> convertList(Class<T> eleType){
-		if(null==list || list.isEmpty())
-			return (List<T>)list;
-		
+	public <T> List<T> convertList(Class<T> eleType) {
+		if (null == list || list.isEmpty())
+			return (List<T>) list;
+
 		List<T> re = new ArrayList<T>(list.size());
 		Castors castors = Castors.me();
-		for(Object obj : list) 
+		for (Object obj : list)
 			re.add(castors.castTo(obj, eleType));
-	
+
 		return re;
 	}
 
