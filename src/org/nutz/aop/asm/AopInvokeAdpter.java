@@ -57,8 +57,6 @@ class AopInvokeAdpter extends AopMethodAdapter {
 					packagePrivateData(returnType);
 				mv.visitInsn(ARETURN);
 			}
-			mv.visitInsn(ACONST_NULL);
-			mv.visitInsn(ARETURN);
 			mv.visitLabel(l0);
 		}
 
