@@ -1,6 +1,6 @@
 package org.nutz.mvc;
 
-import javax.servlet.ServletConfig;
+import org.nutz.mvc.init.NutConfig;
 
 /**
  * 整个应用启动以及关闭的时候需要做的额外逻辑
@@ -14,13 +14,13 @@ public interface Setup {
 	 * 
 	 * @param config
 	 */
-	void init(ServletConfig config);
+	void init(NutConfig config);
 
 	/**
 	 * 关闭时，额外逻辑
 	 * 
 	 * @param config
 	 */
-	void destroy(ServletConfig config);
+	void destroy(NutConfig config);
 
 }

@@ -202,15 +202,31 @@ public abstract class Mvcs {
 	 * 获取当前请求的路径，并去掉后缀
 	 */
 	public static String getRequestPath(HttpServletRequest req) {
-		String path = req.getPathInfo();
-		if (null == path)
-			path = req.getServletPath();
-		if (null == path)
-			return "";
-		int lio = path.lastIndexOf('.');
-		if (lio > 0)
-			path = path.substring(0, lio);
-		return path;
+		return getRequestPathObject(req).getPath();
+	}
+
+	public static RequestPath getRequestPathObject(HttpServletRequest req) {
+		RequestPath rr = new RequestPath();
+
+		String url = req.getPathInfo();
+		if (null == url)
+			url = req.getServletPath();
+
+		rr.setUrl(url);
+		if (null != url) {
+			int lio = url.lastIndexOf('.');
+			if (lio > 0) {
+				rr.setPath(url.substring(0, lio));
+				rr.setSuffix(url.substring(lio + 1));
+			} else {
+				rr.setPath(url);
+				rr.setSuffix("");
+			}
+		} else {
+			rr.setPath("");
+			rr.setSuffix("");
+		}
+		return rr;
 	}
 
 	/**

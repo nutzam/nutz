@@ -7,16 +7,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.Nutz;
-import org.nutz.ioc.Ioc;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
-import org.nutz.lang.Stopwatch;
-import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.annotation.LoadingBy;
-import org.nutz.mvc.init.DefaultLoading;
+import org.nutz.mvc.init.Inits;
+import org.nutz.mvc.init.NutConfig;
+import org.nutz.mvc.init.config.ServletNutConfig;
 
 /**
  * 挂接到 JSP/Servlet 容器的入口
@@ -45,85 +40,15 @@ public class NutServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		try {
-			if (log.isInfoEnabled()) {
-				log.infof("Nutz Version : %s", Nutz.version());
-				log.infof("Nutz.Mvc[%s] is initializing ...", this.getServletName());
-			}
-			Stopwatch sw = Stopwatch.begin();
-
-			// Nutz.Mvc need a class name as the default Module
-			// it will load some Annotation from it.
-			String name = Strings.trim(this.getServletConfig().getInitParameter("modules"));
-			if (Strings.isEmpty(name)) {
-				throw Lang.makeThrow(	ServletException.class,
-										"You need declare modules parameter in '%s'",
-										this.getClass().getName());
-			}
-			Class<?> mainModule = Class.forName(name);
-
-			// servlet support you setup your loading class, it must implement
-			// "org.nutz.mvc.Loading"
-			// And it must has one constructor, with one param type as
-			// ServletConfig
-			Class<? extends Loading> loadingType;
-			LoadingBy lb = mainModule.getAnnotation(LoadingBy.class);
-			if (null != lb)
-				loadingType = lb.value();
-			else
-				loadingType = DefaultLoading.class;
-
-			// Here, we load all Nutz.Mvc configuration
-			Loading ing = Mirror.me(loadingType).born(this.getServletConfig());
-			ing.load(mainModule);
-			// Then, we store the loading result like this
-			urls = ing.getUrls();
-
-			// Done, print info
-			sw.stop();
-			if (log.isInfoEnabled())
-				log.infof("Nutz.Mvc[%s] is up in %sms", this.getServletName(), sw.getDuration());
-
-			// 设置成功标志
-			ok = true;
-
-		}
-		catch (Throwable e) {
-			if (log.isErrorEnabled())
-				log.error("Error happend during start serivce!", e);
-			if (e instanceof ServletException)
-				throw (ServletException) e;
-			throw new ServletException(e);
-		}
+		Loading ing = Inits.init(new ServletNutConfig(getServletConfig()), false);
+		urls = ing.getUrls();
+		ok = true;
 	}
 
 	public void destroy() {
-		if (log.isInfoEnabled())
-			log.infof("Nutz.Mvc[%s] is deposing ...", this.getServletName());
-		Stopwatch sw = Stopwatch.begin();
-
-		// Firstly, upload the user customized desctroy
-		try {
-			urls = null;
-			Setup setup = (Setup) this.getServletContext().getAttribute(Setup.class.getName());
-			if (null != setup)
-				setup.destroy(getServletConfig());
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		finally {
-			super.destroy();
-		}
-		// If the application has Ioc, depose it
-		Ioc ioc = Mvcs.getIoc(this.getServletContext());
-		if (null != ioc)
-			ioc.depose();
-
-		// Done, print info
-		sw.stop();
-		if (log.isInfoEnabled())
-			log.infof("Nutz.Mvc[%s] is down in %sms", this.getServletName(), sw.getDuration());
+		NutConfig config = new ServletNutConfig(getServletConfig());
+		if (config.getMainModule() != null)
+			Inits.destroy(config);
 	}
 
 	@Override

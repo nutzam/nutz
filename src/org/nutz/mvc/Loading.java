@@ -3,10 +3,11 @@ package org.nutz.mvc;
 import java.util.Map;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.mvc.init.NutConfig;
 
 public interface Loading {
 
-	void load(Class<?> klass);
+	void load(NutConfig config, Class<?> klass);
 
 	UrlMap getUrls();
 

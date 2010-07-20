@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.servlet.ServletConfig;
-
 import org.nutz.ioc.Ioc;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
@@ -35,41 +33,29 @@ public class DefaultLoading implements Loading {
 
 	private static final Log log = Logs.getLog(DefaultLoading.class);
 
-	protected ServletConfig config;
 	private UrlMap urls;
 	protected Ioc ioc;
 	private Map<String, Map<String, String>> msgss;
 	private Context context;
 	protected Class<?> mainModule;
 
-	public DefaultLoading(ServletConfig config) {
-		this.config = config;
-		context = new Context();
-		saveRootPathToContext();
-		if (log.isDebugEnabled())
-			log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
-	}
-
-	private void saveRootPathToContext() {
-		String root = config.getServletContext().getRealPath("/").replace('\\', '/');
-		if (root.endsWith("/"))
-			root = root.substring(0, root.length() - 1);
-		else if (root.endsWith("/."))
-			root = root.substring(0, root.length() - 2);
-
-		context.set("app.root", root);
-	}
-
-	public void load(Class<?> mainModule) {
+	public void load(NutConfig config, Class<?> mainModule) {
 		try {
+			if (log.isDebugEnabled())
+				log.debug("Init config ...");
+			context = new Context();
+			context.set("app.root", config.getAppRoot());
+			if (log.isDebugEnabled())
+				log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
+
 			if (log.isDebugEnabled())
 				log.debug("Loading configuration...");
 			this.mainModule = mainModule;
-			loadIoc();
-			loadSubModules();
+			loadIoc(config);
+			loadSubModules(config);
 			loadLocalization();
-			setupServer();
-			saveResult2Context();
+			setupServer(config);
+			saveResult2Context(config);
 		}
 		catch (Throwable e) {
 			throw Lang.wrapThrow(e);
@@ -88,19 +74,19 @@ public class DefaultLoading implements Loading {
 		return msgss;
 	}
 
-	protected void loadIoc() throws Throwable {
+	protected void loadIoc(NutConfig config) throws Throwable {
 		IocBy ib = mainModule.getAnnotation(IocBy.class);
 		if (null != ib) {
 			if (log.isDebugEnabled())
 				log.debugf("Create Ioc by '%s'", ib.type().getName());
 
 			ioc = ib.type().newInstance().create(config, ib.args());
-			saveToContext(Ioc.class.getName(), ioc);
+			config.setAttributeIgnoreNull(Ioc.class.getName(), ioc);
 		} else if (log.isDebugEnabled())
 			log.debug("!!!Your application without @Ioc supporting");
 	}
 
-	protected void loadSubModules() throws Throwable {
+	protected void loadSubModules(NutConfig config) throws Throwable {
 		Views vms = mainModule.getAnnotation(Views.class);
 
 		// Prepare view makers
@@ -164,7 +150,7 @@ public class DefaultLoading implements Loading {
 
 			urls.add(makers, module);
 		}
-		saveToContext(UrlMap.class.getName(), urls);
+		config.setAttributeIgnoreNull(UrlMap.class.getName(), urls);
 	}
 
 	protected void loadLocalization() throws Throwable {
@@ -178,7 +164,7 @@ public class DefaultLoading implements Loading {
 			log.debug("!!!Can not find localization message resource");
 	}
 
-	protected void setupServer() throws Throwable {
+	protected void setupServer(NutConfig config) throws Throwable {
 		SetupBy sb = mainModule.getAnnotation(SetupBy.class);
 
 		if (null != sb) {
@@ -186,24 +172,19 @@ public class DefaultLoading implements Loading {
 				log.info("Setup application...");
 
 			Setup setup = sb.value().newInstance();
-			saveToContext(Setup.class.getName(), setup);
+			config.setAttributeIgnoreNull(Setup.class.getName(), setup);
 			setup.init(config);
 		}
 	}
 
-	protected void saveResult2Context() {
-		saveToContext(UrlMap.class.getName(), getUrls());
-		saveToContext(Ioc.class.getName(), getIoc());
-		saveToContext(Localization.class.getName(), getMessageMap());
+	protected void saveResult2Context(NutConfig config) {
+		config.setAttributeIgnoreNull(UrlMap.class.getName(), getUrls());
+		config.setAttributeIgnoreNull(Ioc.class.getName(), getIoc());
+		config.setAttributeIgnoreNull(Localization.class.getName(), getMessageMap());
 	}
 
 	protected UrlMap makeUrlMap(Ioc ioc, Context context, Class<?> mainModule) {
 		return new UrlMapImpl(ioc, context, mainModule);
-	}
-
-	private void saveToContext(String key, Object obj) {
-		if (null != obj)
-			this.config.getServletContext().setAttribute(key, obj);
 	}
 
 	private static boolean isModule(Class<?> classZ) {

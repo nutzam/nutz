@@ -1,0 +1,26 @@
+package org.nutz.mvc.init.config;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+
+public class ServletNutConfig extends AbstractNutConfig {
+
+	private ServletConfig config;
+
+	public ServletNutConfig(ServletConfig config) {
+		this.config = config;
+	}
+
+	public ServletContext getServletContext() {
+		return config.getServletContext();
+	}
+
+	public String getInitParameter(String name) {
+		return config.getInitParameter(name);
+	}
+
+	public String getAppName() {
+		return config.getServletName();
+	}
+
+}
