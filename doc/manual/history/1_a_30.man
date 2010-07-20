@@ -1,0 +1,65 @@
+#title: 1.a.30 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+关于 1.a.30
+	这是一个Bug Fix版本
+	 
+--------------------------------------------------------------------------------------------------------
+问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=161 Issue 161]  	    	 ClassLoaderUtil 应该同 Resources 合并  {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=193 Issue 193]  	    	 mvc: DefaultLoading 和 UrlMap 的逻辑混乱  {#AAA;by} {*zkgale}
+	 * [http://code.google.com/p/nutz/issues/detail?id=229 Issue 229]  	    	 mvc: UploadAdaptor处理中文文件名、路径名乱码  {#AAA;by} {*landraxee}
+	 * [http://code.google.com/p/nutz/issues/detail?id=236 Issue 236]  	    	 mvc: Mock 的 CharsetInputings 应该作为一个可实例化的对象  {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=237 Issue 237]  	    	 默认字符集应该该回到 UTF-8  {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=238 Issue 238]  	    	 关于主模块的@Modules注解 {#AAA;by} {*conanca2006}
+	 * [http://code.google.com/p/nutz/issues/detail?id=240 Issue 240]  	    	 castors: 在 weblogic 下不工作  {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=244 Issue 244]  	    	 考虑放弃Resources.scanClass(Class)对GAE的支持 {#AAA;by} {*wendal}
+	 * [http://code.google.com/p/nutz/issues/detail?id=254 Issue 254]  	    	 从ioc里获取当前rquest对象 {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=255 Issue 255]  	    	 dao: 实现 DB2Pager {#AAA;by} {*zero args}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	 # 共通过了 527 个单元测试用例,代码覆盖率达到62%(按line计算)
+	 # Nutz.Dao 经测试在如下数据库上可以工作正常
+		 * [http://www.h2database.com H2]
+		 * [http://www.mysql.com MySql]
+		 * [http://www.oracle.com Oracle]
+		 * [http://www.postgresql.org Postgresql]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+--------------------------------------------------------------------------------------------------------
+文档
+	  * 修正部分文字错误
+	 
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 支持: 总结至少出 FAQ 文档
+		 * 关于 FAQ 文档的写作规范请先阅读： [http://groups.google.de/group/nutzam/browse_thread/thread/4caf8181456b7adc?hl=zh-CN Nutz 的虎年计划.5提供更好的社区支持]
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [http://code.google.com/p/nutzdemo Demo Site] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周，发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	|| 贡献者 									|| 问题|| 博客|| 支持|| 代码|| Demo|| 文档|| 测试||
+	|| zero args 	 							||  -  ||  -  ||  -  ||  O	||  -  ||  -  ||  -  ||
+	|| E-Hunter 	 							||  -  ||  -  ||  O  ||  -	||  -  ||  -  ||  -  ||
+	|| conanca2006  							||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| landraxee 								||  O  ||  -  ||  -  ||  O	||  -  ||  -  ||  -  ||
+	|| wendal									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
+	|| zkgale									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| zozohtnt									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
+	
+	
+	另外，很多朋友都在：
+	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz交流超级群(58444676)]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+	回答新手的问题，我们现在没法一一统计，我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^
+

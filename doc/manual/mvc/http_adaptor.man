@@ -1,5 +1,5 @@
 #title: 适配器
-#index:0,1
+#index:0,2
 ----------------------------------------------------------------------------------------------
 什么是适配器？
 
@@ -35,7 +35,7 @@
 	
 	Nutz.Mvc 为你内置了 4 个最常用的适配器，可以让支持用如下四种方式适配 HTTP 参数：
 
-	名值对 `(默认)`
+	名值对 `(默认)` - PairAdaptor
 		一般方式
 			{{{
 			@AdaptBy(type=PairAdaptor.class)
@@ -44,12 +44,12 @@
 			为此，它支持一个新的注解 {*@Param}，你可以:
 			{{{
 			public String someFunc(	@Param("pid") int petId,
-									@Param("pnm") String petName){
+	                                @Param("pnm") String petName){
 				...
 			}}}
 			通过这个注解，为每个参数声明 HTTP 参数名。
 
-		表单方式
+		表单方式 - Form Bean
 			有些时候，你需要入口函数接受一个对象，比如一个表单对象
 			{{{
 			public String someFunc(	@Param("..") Pet pet){
@@ -58,13 +58,44 @@
 			值 ".." 有特殊含义，表示当前的这个对象，需要对应整个的 HTTP 参数表。 所以， Nutz.Mvc 会将 HTTP 参数表中的
 			参数一个个的按照名字设置到 Pet 对象的字段里。 但是如果 Pet 对象的字段名同 HTTP 参数不符怎么办？ 你可以在
 			Pet 字段上声明 @Param。
+		
+		前缀表单方式
+			进行比较复杂的 HTTP 交互是，大家都比较偏爱名值对的方式提交数据，可能是因为数据组织比较方便 -- 通过`<form>` 即可。
+			但是如果在一个表单里混合上两个甚至多个表单项，那么 HTTP 的参数就会有点复杂，虽然这种情况下我更推荐采用
+			[#JSON_输入流_-_JsonAdaptor Json 输入流]，但是并不是所有人都那么喜欢它，对吗？
+			
+			比如有一个表单，它希望提交两个对象的数据， User 以及 Department，这HTTP 请求的参数格式可能是这样的：
+			{{{
+			user.id = 23
+			user.name = abc
+			user.age = 56
+			dep.id = 15
+			dep.name = QA
+			}}}
+			怎样在入口函数内声明这样的表单项呢？我们可以采用前缀方式：
+			{{{<Java>
+			public String someFunc( @Param("::user.") User user,
+			                        @Param("::dep.") Department dept){
+				...
+			}
+			}}}
+			关键就是这个 {*`@Param("::user.")`} 符号 '{#FF00FF;*::}' 表示这个参数是一个表单对象，并且它有统一的前缀
+			'{#FF00FF;*user.}' 表示前缀，Nutz.Mvc 会查看一下 User 类所有的字段：
+			{{{
+			public class User {
+				private int id;
+				private String name;
+				private int age;
+			}
+			}}}
+			那么， id 会对应到 HTTP 参数中的  'user.id'， 其他的字段同理
 
 		混合方式
 			值得一说的是，按照这个约定，实际上，一个入口函数，是可以支持多个  POJO 的，也可以写成这样
 			{{{
 			public String someFunc(	@Param("pid") int petId,
-									@Param("..") Pet pet,
-									@Param("..") Food food){
+			                        @Param("..") Pet pet,
+			                        @Param("..") Food food){
 				...
 			}}}
 
@@ -72,8 +103,8 @@
 			你的 HTTP 参数也可以是一个 JSON 字符串
 			{{{
 			public String someFunc(	@Param("pid") int petId,
-									@Param("pet") Pet pet,
-									@Param("foods") Food[] food){
+			                        @Param("pet") Pet pet,
+			                        @Param("foods") Food[] food){
 				...
 			}}}
 			HTTP 参数的值都是字符串，比如上例的第二个参数，Nutz.Mvc 会看看 HTTP 参数表中的 "pet" 的值，如果它用 "{" 和 "}"
@@ -89,7 +120,7 @@
 			 * 列表
 			 * Map
 	------------------------------------------------------------------------------------------
-	JSON 输入流
+	JSON 输入流 - JsonAdaptor
 		如果你要通过 HTTP 传给服务器一个比较复杂的对象，通过名值对的方式可能有点不方便。因为它很难同时传两个对象。
 		并且一个对象如果还嵌入了另外一个对象，也很难传入，你必须要自己定义一些奇奇怪怪的格式，在 JS 里组织字符串，
 		在服务器端，手工解析这些字符串。
@@ -128,13 +159,13 @@
 		{{{
 		@AdaptBy(type=JsonAdaptor.class)
 		public String someFunc(	@Param("fox") Pet pet,
-								@Param("fox_food") Food food){
+		                        @Param("fox_food") Food food){
 			...
 		}}}
 		实际上，Nutz.Mvc 会将 HTTP 输入流解析成一个 Map，然后从 Map 里取出 "fox" 和 "fox_food" 这
 		两个子 Map，分别转换成 Pet 对象和 Food 对象。
 	------------------------------------------------------------------------------------------
-	什么都不干
+	什么都不干 - VoidAdaptor
 		某些特殊的情况，你需要彻底控制输入流的解析，同时你又不想使用任何适配器，你可以
 		{{{
 		@AdaptBy(type=VoidAdaptor.class)
@@ -143,7 +174,7 @@
 		}}}
 		VoidAdaptor 什么都不会干，不会碰 HTTP 请求对象的输入流。
 	------------------------------------------------------------------------------------------
-	上传文件
+	上传文件 - UploadAdaptor
 		NutzMvc 内置了 org.nutz.mvc.upload.UploadAdaptor。关于文件上传详细的说明，请参看：
 		[file_upload.man 文件上传]
 
@@ -155,8 +186,8 @@
 	你只要在你的入口函数里声明你希望得到的对象类型即可，比如：
 	{{{
 	public String someFunc(	@Param("pid") int petId,
-							Ioc ioc,
-							HttpServletRequest req){
+	                        Ioc ioc,
+	                        HttpServletRequest req){
 		...
 	}}}
 	第一个参数会从 HTTP 参数表中取出赋给入口函数，第二个参数，Nutz.Mvc 会把自身使用的 Ioc 容器赋给入口函数，
