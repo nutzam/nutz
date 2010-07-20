@@ -6,13 +6,13 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Link;
 
-class ManyManyCondition implements Condition {
+public class ManyManyCondition implements Condition {
 
 	private Dao dao;
 	private Link link;
 	private Object obj;
 
-	ManyManyCondition(Dao dao, Link link, Object obj) {
+	public ManyManyCondition(Dao dao, Link link, Object obj) {
 		this.dao = dao;
 		this.link = link;
 		this.obj = obj;
