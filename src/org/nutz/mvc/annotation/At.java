@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * 又比如这个例子表示，整个模块各个入口函数的地址以 /uuu 或 /ddd 开头
  * 
  * <pre>
- * &#064;At(&quot;/uuu&quot;, &quot;/ddd&quot;)
+ * &#064;At({&quot;/uuu&quot;, &quot;/ddd&quot;})
  * public class Abc{}
  * </pre>
  * 

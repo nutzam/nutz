@@ -22,7 +22,7 @@ public @interface Modules {
 	Class<?>[] value() default {};
 
 	/**
-	 * 是否搜索模块类同包的其他类
+	 * 是否搜索模块类同包以及子包的其他类
 	 */
 	boolean scanPackage() default false;
 }

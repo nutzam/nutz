@@ -12,7 +12,6 @@
 	</doc>
 	<doc path="dao" title="Dao 手册">
 		<doc path="hello.man"/>
-		<doc path="annotations.man"/>
 		<doc path="basic_operations.man"/>
 		<doc path="primary_key.man"/>
 		<doc path="condition.man"/>
@@ -28,9 +27,9 @@
 		<doc path="transaction.man"/>
 		<doc path="runner.man"/>
 		<doc path="services.man"/>
-		<!--doc path="services_tree.man"/-->
 		<doc path="pojo.man"/>
 		<doc path="record.man"/>
+		<doc path="annotations.man"/>
 	</doc>
 	<doc path="ioc"	title="Ioc 手册">
 		<doc path="hello.man"/>
@@ -47,6 +46,9 @@
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
+		<doc path="hello.man"/>
+		<doc path="web_xml.man"/>
+		<doc path="modules.man"/>
 		<doc path="url_mapping.man"/>
 		<doc path="http_adaptor.man"/>
 		<doc path="view.man"/>
@@ -55,6 +57,7 @@
 		<doc path="action_filter.man"/>
 		<doc path="file_upload.man"/>
 		<doc path="module_of_request.man"/>
+		<doc path="annotations.man"/>
 	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="hello.man"/>
