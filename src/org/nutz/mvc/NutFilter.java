@@ -21,7 +21,7 @@ import org.nutz.mvc.init.config.FilterNutConfig;
 
 public class NutFilter implements Filter {
 
-	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg)$";
+	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
 
 	private static final Log log = Logs.getLog(NutFilter.class);
 
