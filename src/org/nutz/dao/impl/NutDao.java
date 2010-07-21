@@ -17,6 +17,7 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
+import org.nutz.dao.DaoExecutor;
 import org.nutz.dao.DaoRunner;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.FieldFilter;
@@ -65,12 +66,14 @@ public class NutDao implements Dao {
 	private DatabaseMeta meta;
 	private EntityMaker entityMaker;
 	private DaoRunner runner;
+	private DaoExecutor execurtor;
 
 	/* ========================================================== */
 	public NutDao() {
 		this.sqlMaker = new SqlMaker();
 		this.pagerMaker = new DefaultPagerMaker();
 		this.runner = new DefaultDaoRunner();
+		this.execurtor = new DefaultDaoExecutor();
 	}
 
 	public NutDao(DataSource dataSource) {
@@ -96,7 +99,7 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkNameField(Entity<T> en) {
 		EntityField nameField = en.getNameField();
 		if (nameField == null) {
-			throw Lang.makeThrow("Entity<T> [%s] need @Name field", en	.getMirror()
+			throw Lang.makeThrow("Entity<T> [%s] need @Name field", en.getMirror()
 																		.getType()
 																		.getName());
 		}
@@ -154,8 +157,18 @@ public class NutDao implements Dao {
 		return runner;
 	}
 
-	public void setRunner(DaoRunner runner) {
+	public NutDao setRunner(DaoRunner runner) {
 		this.runner = runner;
+		return this;
+	}
+
+	public DaoExecutor getExecurtor() {
+		return execurtor;
+	}
+
+	public NutDao setExecurtor(DaoExecutor execurtor) {
+		this.execurtor = execurtor;
+		return this;
 	}
 
 	public DataSource getDataSource() {
@@ -206,33 +219,12 @@ public class NutDao implements Dao {
 	}
 
 	public void execute(final Sql... sqls) {
-		if (null != sqls) {
-			run(new ConnCallback() {
-				public void invoke(Connection conn) throws Exception {
-					// Store the old auto commit setting
-					boolean isAuto = conn.getAutoCommit();
-					// If multiple SQL, change the auto commit
-					if (isAuto && sqls.length > 1)
-						conn.setAutoCommit(false);
-
-					// 打印 LOG
-					if (log.isDebugEnabled()) {
-						for (int i = 0; i < sqls.length; i++) {
-							if (null != sqls[i]) {
-								log.debug(sqls[i].toString());
-								sqls[i].execute(conn);
-							}
-						}
-					}
-					// 不打印
-					else {
-						for (int i = 0; i < sqls.length; i++)
-							if (null != sqls[i])
-								sqls[i].execute(conn);
-					}
-				}
-			});
+		if (null == this.execurtor) {
+			if (log.isWarnEnabled())
+				log.warn("NULL Execurtor!");
+			throw new NullPointerException("NULL Execurtor");
 		}
+		execurtor.execute(dataSource, runner, sqls);
 	}
 
 	public void run(ConnCallback callback) {
@@ -241,7 +233,7 @@ public class NutDao implements Dao {
 				log.warn("NULL Runner!");
 			throw new NullPointerException("NULL Runner");
 		}
-		runner.run(getDataSource(), callback);
+		runner.run(dataSource, callback);
 	}
 
 	public int count(Class<?> classOfT) {
@@ -545,12 +537,12 @@ public class NutDao implements Dao {
 						c = new ManyCondition(link, value);
 					}
 					List<?> list = query(link.getTargetClass(), c, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me()
-																	.cast(	list,
-																			list.getClass(),
-																			link.getOwnField()
-																				.getType(),
-																			link.getMapKeyField()));
+					mirror.setValue(obj,
+									link.getOwnField(),
+									Castors.me().cast(	list,
+														list.getClass(),
+														link.getOwnField().getType(),
+														link.getMapKeyField()));
 				}
 			});
 			// ManyMany
@@ -558,12 +550,12 @@ public class NutDao implements Dao {
 				void walk(Link link) {
 					ManyManyCondition mmc = new ManyManyCondition(dao, link, obj);
 					List<?> list = query(link.getTargetClass(), mmc, null);
-					mirror.setValue(obj, link.getOwnField(), Castors.me()
-																	.cast(	list,
-																			list.getClass(),
-																			link.getOwnField()
-																				.getType(),
-																			link.getMapKeyField()));
+					mirror.setValue(obj,
+									link.getOwnField(),
+									Castors.me().cast(	list,
+														list.getClass(),
+														link.getOwnField().getType(),
+														link.getMapKeyField()));
 				}
 			});
 			// one
@@ -805,7 +797,7 @@ public class NutDao implements Dao {
 			public void run() {
 				lns.walkManyManys(new LinkWalker() {
 					void walk(Link link) {
-						Sql sql = sqlMaker	.updateBatch(link.getRelation(), chain, null)
+						Sql sql = sqlMaker.updateBatch(link.getRelation(), chain, null)
 											.setCondition(condition);
 						execute(sql);
 						re[0] += sql.getUpdateCount();
