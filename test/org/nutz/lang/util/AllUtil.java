@@ -8,6 +8,9 @@ import org.junit.runners.Suite;
 						LinkedCharArrayTest.class,
 						LinkedIntArrayTest.class,
 						IntRangeTest.class,
+						FloatRangeTest.class,
+						IntSetTest.class,
+						FloatSetTest.class,
 						SimpleNodeTest.class,
 						DisksTest.class})
 public class AllUtil {

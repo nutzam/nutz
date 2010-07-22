@@ -2,9 +2,9 @@ package org.nutz.lang.util;
 
 import org.nutz.lang.Strings;
 
-public class IntRange {
+public class FloatRange {
 
-	public static IntRange make(String s) {
+	public static FloatRange make(String s) {
 		char[] cs = Strings.trim(s).toCharArray();
 		int i = 0;
 		for (; i < cs.length; i++) {
@@ -13,47 +13,47 @@ public class IntRange {
 				break;
 		}
 		if (i == cs.length)
-			return make(Integer.parseInt(new String(cs)));
+			return make(Float.parseFloat(new String(cs)));
 
-		int left = Integer.parseInt(String.valueOf(cs, 0, i));
+		float left = Float.parseFloat(String.valueOf(cs, 0, i));
 		if (i == cs.length)
 			return make(left, left);
-		return make(left, Integer.parseInt(String.valueOf(cs, ++i, cs.length - i)));
+		return make(left, Float.parseFloat(String.valueOf(cs, ++i, cs.length - i)));
 	}
 
-	public static IntRange make(int right) {
+	public static FloatRange make(float right) {
 		return make(0, right);
 	}
 
-	public static IntRange make(int left, int right) {
-		return new IntRange(left, right);
+	public static FloatRange make(float left, float right) {
+		return new FloatRange(left, right);
 	}
 
-	private int left;
-	private int right;
+	private float left;
+	private float right;
 
-	private IntRange(int left, int right) {
+	private FloatRange(float left, float right) {
 		this.left = left;
 		this.right = right;
 	}
 
-	public boolean in(int n) {
+	public boolean in(float n) {
 		return n > left && n < right;
 	}
 
-	public boolean on(int n) {
+	public boolean on(float n) {
 		return n == left || n == right;
 	}
 
-	public boolean inon(int n) {
+	public boolean inon(float n) {
 		return on(n) || in(n);
 	}
 
-	public boolean gt(int n) {
+	public boolean gt(float n) {
 		return n < left;
 	}
 
-	public boolean lt(int n) {
+	public boolean lt(float n) {
 		return n > right;
 	}
 
@@ -61,7 +61,7 @@ public class IntRange {
 	 * @param n
 	 * @return n >= left && n < right;
 	 */
-	public boolean linon(int n) {
+	public boolean linon(float n) {
 		return n >= left && n < right;
 	}
 
@@ -69,23 +69,23 @@ public class IntRange {
 	 * @param n
 	 * @return n > left && n <= right;
 	 */
-	public boolean rinon(int n) {
+	public boolean rinon(float n) {
 		return n > left && n <= right;
 	}
 
-	public int getLeft() {
+	public float getLeft() {
 		return left;
 	}
 
-	public void setLeft(int left) {
+	public void setLeft(float left) {
 		this.left = left;
 	}
 
-	public int getRight() {
+	public float getRight() {
 		return right;
 	}
 
-	public void setRight(int right) {
+	public void setRight(float right) {
 		this.right = right;
 	}
 
