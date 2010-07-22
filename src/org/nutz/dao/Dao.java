@@ -390,7 +390,7 @@ public interface Dao {
 	 * @param pks
 	 *            复合主键需要的参数，必须同 '@PK'中声明的顺序一致
 	 */
-	<T> void deletex(Class<T> classOfT, Object... pks);
+	<T> int deletex(Class<T> classOfT, Object... pks);
 
 	/**
 	 * 自动判断如何删除一个对象。
@@ -403,7 +403,7 @@ public interface Dao {
 	 * @param obj
 	 *            要被删除的对象
 	 */
-	void delete(Object obj);
+	int delete(Object obj);
 
 	/**
 	 * 将对象删除的同时，也将符合一个正则表达式的所有关联字段关联的对象统统删除 <b style=color:red>注意：</b>

@@ -357,30 +357,32 @@ public class NutDao implements Dao {
 		return sql.getUpdateCount();
 	}
 
-	public <T> void deletex(Class<T> classOfT, Object... pks) {
+	public <T> int deletex(Class<T> classOfT, Object... pks) {
 		Entity<T> entity = getEntity(classOfT);
 		checkPKs(entity, pks);
 		Sql sql = sqlMaker.deletex(entity, pks);
 		execute(sql);
+		return sql.getUpdateCount();
 	}
 
-	void _deleteSelf(Entity<?> entity, Object obj) {
+	int _deleteSelf(Entity<?> entity, Object obj) {
 		if (null != obj) {
 			EntityField idnf = entity.getIdentifiedField();
 			if (null == idnf) {
 				Object[] args = evalArgsByPks(entity, obj);
 				if (null != args) {
-					execute(sqlMaker.deletex(entity, args));
-					return;
+					Sql sql = sqlMaker.deletex(entity, args);
+					execute(sql);
+					return sql.getUpdateCount();
 				}
 				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)", null);
 			}
 			if (idnf.isId()) {
 				int id = Castors.me().castTo(idnf.getValue(obj), Integer.class);
-				delete(obj.getClass(), id);
+				return delete(obj.getClass(), id);
 			} else if (idnf.isName()) {
 				String name = idnf.getValue(obj).toString();
-				delete(obj.getClass(), name);
+				return delete(obj.getClass(), name);
 			} else {
 				throw DaoException.create(	obj,
 											"$IdentifiedField",
@@ -388,6 +390,7 @@ public class NutDao implements Dao {
 											new Exception("Wrong identified field"));
 			}
 		}
+		return 0;
 	}
 
 	private static Object[] evalArgsByPks(Entity<?> entity, Object obj) {
@@ -401,11 +404,12 @@ public class NutDao implements Dao {
 		return args;
 	}
 
-	public void delete(Object obj) {
+	public int delete(Object obj) {
 		if (null != obj) {
 			Entity<?> entity = getEntity(obj.getClass());
-			_deleteSelf(entity, obj);
+			return _deleteSelf(entity, obj);
 		}
+		return 0;
 	}
 
 	public <T> void deleteWith(final T obj, String regex) {

@@ -112,7 +112,7 @@ public abstract class EntityService<T> extends Service {
 		dao().updateRelation(getEntityClass(), regex, chain, condition);
 	}
 
-	public void deletex(Object... pks) {
-		dao().deletex(getEntityClass(), pks);
+	public int deletex(Object... pks) {
+		return dao().deletex(getEntityClass(), pks);
 	}
 }
