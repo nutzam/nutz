@@ -103,7 +103,7 @@ class PathNode<T> {
 		}
 		// 走完了全部路径
 		if (i == cs.length) {
-			return new PathInfo<T>(i, null, node.obj);
+			return new PathInfo<T>(-1, path, node.obj);
 		}
 		// 没走完路径，但是曾经碰到过一个 *
 		else if (null != wild && wild.isStar)

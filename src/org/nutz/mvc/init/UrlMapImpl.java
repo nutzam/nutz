@@ -115,6 +115,7 @@ public class UrlMapImpl implements UrlMap {
 	public ActionInvoking get(String path) {
 		PathInfo<ActionInvoker> info = root.get(path);
 		String[] args = Strings.splitIgnoreBlank(info.getRemain(), "[/]");
-		return new ActionInvoking(info.getObj(), args);
+		return new ActionInvoking(info, args);
 	}
+
 }

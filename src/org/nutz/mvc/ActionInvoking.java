@@ -3,27 +3,29 @@ package org.nutz.mvc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.init.PathInfo;
+
 public class ActionInvoking {
 
-	public ActionInvoking(ActionInvoker invoker, String[] pathArgs) {
-		this.invoker = invoker;
+	public ActionInvoking(PathInfo<ActionInvoker> pathInfo, String[] pathArgs) {
+		this.pathInfo = pathInfo;
 		this.pathArgs = pathArgs;
 	}
 
-	private ActionInvoker invoker;
+	private PathInfo<ActionInvoker> pathInfo;
 
 	private String[] pathArgs;
 
 	public ActionInvoker getInvoker() {
-		return invoker;
-	}
-
-	public void setInvoker(ActionInvoker invoker) {
-		this.invoker = invoker;
+		return pathInfo.getObj();
 	}
 
 	public String[] getPathArgs() {
 		return pathArgs;
+	}
+
+	public PathInfo<ActionInvoker> getPathInfo() {
+		return pathInfo;
 	}
 
 	public void setPathArgs(String[] pathArgs) {
@@ -31,7 +33,7 @@ public class ActionInvoking {
 	}
 
 	public void invoke(HttpServletRequest req, HttpServletResponse resp) {
-		invoker.invoke(req, resp, pathArgs);
+		getInvoker().invoke(req, resp, pathArgs);
 	}
 
 }

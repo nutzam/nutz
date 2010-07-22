@@ -14,6 +14,11 @@ public interface UrlMap {
 	 */
 	public boolean add(List<ViewMaker> makers, Class<?> module);
 
+	/**
+	 * @param path
+	 *            请求路径
+	 * @return 调用时
+	 */
 	public ActionInvoking get(String path);
 
 }
