@@ -532,4 +532,11 @@ public class JsonTest {
 		map.put(22, "hello");
 		assertEquals("{\"22\":\"hello\"}", Json.toJson(map, JsonFormat.compact()));
 	}
+	
+	@Test
+	public void test_separator() {
+		String str = "Nutz";
+		assertEquals("\"Nutz\"", Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
+		assertEquals("'Nutz'", Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
+	}
 }

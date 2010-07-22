@@ -201,7 +201,7 @@ class JsonRendering {
 			writer.append("null");
 		else {
 			char[] cs = s.toCharArray();
-			writer.append('"');
+			writer.append(format.getSeparator());
 			for (char c : cs) {
 				switch (c) {
 				case '"':
@@ -223,7 +223,7 @@ class JsonRendering {
 					writer.append(c);
 				}
 			}
-			writer.append('"');
+			writer.append(format.getSeparator());
 		}
 	}
 

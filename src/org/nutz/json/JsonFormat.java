@@ -27,6 +27,7 @@ public class JsonFormat {
 		this.indentBy = "   ";
 		this.quoteName = true;
 		this.castors = Castors.me();
+		this.separator = '\"';
 	}
 
 	private int indent;
@@ -37,6 +38,7 @@ public class JsonFormat {
 	private Pattern actived;
 	private Pattern locked;
 	private Castors castors;
+	private char separator;
 
 	public boolean ignore(String name) {
 		if (null != actived)
@@ -118,6 +120,15 @@ public class JsonFormat {
 	public JsonFormat setCastors(Castors castors) {
 		this.castors = castors;
 		return this;
+	}
+	
+	public JsonFormat setSeparator(char separator) {
+		this.separator = separator;
+		return this;
+	}
+	
+	public char getSeparator() {
+		return separator;
 	}
 
 }
