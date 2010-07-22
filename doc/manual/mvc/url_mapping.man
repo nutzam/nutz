@@ -127,8 +127,10 @@ web.xml 中的映射 - url-pattern
 ----------------------------------------------------------------------------------------------
 在 Nutz.Mvc 中的映射
 	
-	Nutz.Mvc 通过 org.nutz.mvc.NutServlet 类将自己同一个 JSP/SERVLET 容器挂接， 在设计这个框架之初，我们有
-	一个基本的设计要求：
+	Nutz.Mvc 通过 org.nutz.mvc.NutFilter 类将自己同一个 JSP/SERVLET 容器挂接
+	关于挂接的方法，详细请看 [web_xml.man 如何配置 web.xml]
+	
+	在设计这个框架之初，我们有一个基本的设计要求：
 	
 	{*如果用户修改了 web.xml 或者 server.xml，不需要用户重新修改 Nutz.Mvc 相关的配置}
 
