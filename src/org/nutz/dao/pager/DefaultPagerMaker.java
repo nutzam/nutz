@@ -15,7 +15,7 @@ public class DefaultPagerMaker implements PagerMaker {
 
 		Pager pager;
 		// MySql & H2
-		if (meta.isMySql() || meta.isH2()) {
+		if (meta.isMySql() || meta.isH2() || meta.isSQLite()) {
 			pager = new MysqlPager();
 		}
 		// Postgresql

@@ -32,6 +32,10 @@ public enum DB {
 	 */
 	H2,
 	/**
+	 * SQLITE
+	 */
+	SQLITE,
+	/**
 	 * 其他数据库
 	 */
 	OTHER

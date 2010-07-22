@@ -49,6 +49,8 @@ public class DatabaseMeta {
 			type = DB.DB2;
 		} else if (proName.startsWith("microsoft sql")) {
 			type = DB.SQLSERVER;
+		} else if (proName.startsWith("sqlite")) {
+			type = DB.SQLITE;
 		} else {
 			type = DB.OTHER;
 		}
@@ -91,6 +93,10 @@ public class DatabaseMeta {
 		this.type = DB.DB2;
 	}
 
+	public void setAsSQLite() {
+		this.type = DB.SQLITE;
+	}
+	
 	public void setAsOther() {
 		this.type = DB.OTHER;
 	}
@@ -135,4 +141,7 @@ public class DatabaseMeta {
 		return DB.H2 == type;
 	}
 
+	public boolean isSQLite() {
+		return DB.SQLITE == type;
+	}
 }
