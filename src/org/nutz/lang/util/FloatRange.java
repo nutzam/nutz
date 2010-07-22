@@ -90,6 +90,6 @@ public class FloatRange {
 	}
 
 	public String toString() {
-		return String.format("%d,%d", left, right);
+		return String.format("%s:%s", left, right);
 	}
 }

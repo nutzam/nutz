@@ -43,4 +43,11 @@ public class IntSet {
 		return ir.rinon(n);
 	}
 
+	@Override
+	public String toString() {
+		return new StringBuilder().append(l).append(ir.toString()).append(r).toString();
+	}
+	
+	
+
 }

@@ -13,8 +13,9 @@ public class IntSetTest {
 		assertTrue(irs.match(1));
 		assertTrue(irs.match(2));
 		assertFalse(irs.match(3));
+		assertEquals("[1:2]", irs.toString());
 	}
-	
+
 	@Test
 	public void test_in() {
 		IntSet irs = IntSet.make("(1,2)");
@@ -22,8 +23,9 @@ public class IntSetTest {
 		assertFalse(irs.match(1));
 		assertFalse(irs.match(2));
 		assertFalse(irs.match(3));
+		assertEquals("(1:2)", irs.toString());
 	}
-	
+
 	@Test
 	public void test_linfo() {
 		IntSet irs = IntSet.make("[1,2)");
@@ -31,8 +33,9 @@ public class IntSetTest {
 		assertTrue(irs.match(1));
 		assertFalse(irs.match(2));
 		assertFalse(irs.match(3));
+		assertEquals("[1:2)", irs.toString());
 	}
-	
+
 	@Test
 	public void test_rinon() {
 		IntSet irs = IntSet.make("(1,2]");
@@ -40,6 +43,7 @@ public class IntSetTest {
 		assertFalse(irs.match(1));
 		assertTrue(irs.match(2));
 		assertFalse(irs.match(3));
+		assertEquals("(1:2]", irs.toString());
 	}
 
 }

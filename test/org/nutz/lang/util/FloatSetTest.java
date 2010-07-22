@@ -1,5 +1,6 @@
 package org.nutz.lang.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -14,6 +15,7 @@ public class FloatSetTest {
 		assertTrue(irs.match(0.1f));
 		assertTrue(irs.match(0.2f));
 		assertFalse(irs.match(0.2001f));
+		assertEquals("[0.1:0.2]", irs.toString());
 	}
 
 	@Test
@@ -24,6 +26,7 @@ public class FloatSetTest {
 		assertFalse(irs.match(0.100000001f));
 		assertFalse(irs.match(0.2f));
 		assertFalse(irs.match(0.3f));
+		assertEquals("(0.1:0.2)", irs.toString());
 	}
 
 	@Test
@@ -33,6 +36,7 @@ public class FloatSetTest {
 		assertTrue(irs.match(0.1f));
 		assertFalse(irs.match(0.2f));
 		assertFalse(irs.match(0.3f));
+		assertEquals("[0.1:0.2)", irs.toString());
 	}
 
 	@Test
@@ -42,6 +46,7 @@ public class FloatSetTest {
 		assertFalse(irs.match(0.1f));
 		assertTrue(irs.match(0.2f));
 		assertFalse(irs.match(0.3f));
+		assertEquals("(0.1:0.2]", irs.toString());
 	}
 
 }

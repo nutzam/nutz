@@ -90,6 +90,6 @@ public class IntRange {
 	}
 
 	public String toString() {
-		return String.format("%d,%d", left, right);
+		return String.format("%d:%d", left, right);
 	}
 }
