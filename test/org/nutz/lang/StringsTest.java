@@ -23,6 +23,7 @@ public class StringsTest {
 	@Test
 	public void test_dup_char() {
 		assertEquals("", Strings.dup(null, 4));
+		assertEquals("", Strings.dup(' ', 0));
 		assertEquals("aaaa", Strings.dup('a', 4));
 		assertEquals("    ", Strings.dup(' ', 4));
 	}
@@ -33,6 +34,7 @@ public class StringsTest {
 		assertEquals("", Strings.capitalize(""));
 		assertEquals("A", Strings.capitalize("a"));
 		assertEquals("Aa", Strings.capitalize("aa"));
+		assertEquals("Aa", Strings.capitalize("Aa"));
 	}
 	
 	@Test
@@ -87,6 +89,7 @@ public class StringsTest {
 	public void test_trim() {
 		assertEquals(null, Strings.trim(null));
 		assertEquals("", Strings.trim(""));
+		assertEquals("", Strings.trim(new StringBuffer("")));
 		assertEquals("", Strings.trim(new StringBuffer(" ")));
 		assertEquals("left", Strings.trim("left   "));
 		assertEquals("right", Strings.trim("  right"));
