@@ -545,7 +545,7 @@ public abstract class Strings {
 	 *            需要检查的字符串
 	 * @return true 如果是有效的邮箱地址
 	 */
-	public static synchronized final boolean isEMail(CharSequence input) {
+	public static synchronized final boolean isEmail(CharSequence input) {
 		return email_Pattern.matcher(input).matches();
 	}
 
