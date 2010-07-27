@@ -60,7 +60,7 @@ public class PathNodeTest {
 
 		info = node.get("/b");
 		assertEquals("Y", info.getObj());
-		assertEquals(2, info.getCursor());
+		assertEquals(-1, info.getCursor());
 		assertNull(info.getRemain());
 
 		info = node.get("/c/d/123");
@@ -70,7 +70,7 @@ public class PathNodeTest {
 
 		info = node.get("/c/d");
 		assertEquals("Z", info.getObj());
-		assertEquals(4, info.getCursor());
+		assertEquals(-1, info.getCursor());
 		assertNull(info.getRemain());
 	}
 
@@ -85,7 +85,7 @@ public class PathNodeTest {
 
 		PathInfo<String> info = node.get("/abc");
 		assertEquals("Y", info.getObj());
-		assertEquals(4, info.getCursor());
+		assertEquals(-1, info.getCursor());
 		assertNull(info.getRemain());
 
 		info = node.get("/haha");
@@ -95,7 +95,7 @@ public class PathNodeTest {
 
 		info = node.get("/cc");
 		assertEquals("M", info.getObj());
-		assertEquals(3, info.getCursor());
+		assertEquals(-1, info.getCursor());
 		assertNull(info.getRemain());
 	}
 }

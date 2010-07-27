@@ -85,10 +85,12 @@ class PathNode<T> {
 		PathNode<T> wild = null;
 		PathNode<T> node = this;
 		int i = 0; // 向下走的步数，一步一个 char
+		int startI = 0; // 最后一个 * 所在步数
 		for (; i < cs.length; i++) {
 			// 碰到 * 记录之
 			if (node.isStar) {
 				wild = node;
+				startI = i;
 			}
 			// 继续查找是否有更精确的匹配
 			char c = cs[i];
@@ -107,27 +109,24 @@ class PathNode<T> {
 		}
 		// 没走完路径，但是曾经碰到过一个 *
 		else if (null != wild && wild.isStar)
-			return new PathInfo<T>(i, path.substring(i), wild.obj);
+			return new PathInfo<T>(startI, path, wild.obj);
 		// 没走完路径
 		return new PathInfo<T>(0, path, null);
 	}
 
 	public String toString() {
-		StringBuilder sb = new StringBuilder("<PathNode>\n");
-		appendChildrenTo(sb, 0);
+		StringBuilder sb = new StringBuilder("$ROOT:");
+		appendTo(sb, 1);
 		return sb.toString();
 	}
 
-	public void appendChildrenTo(StringBuilder sb, int depth) {
+	private void appendTo(StringBuilder sb, int depth) {
+		sb.append(isStar ? "*" : " ");
+		sb.append(obj == null ? "<null>" : "[" + obj + "]");
 		if (null != chars)
 			for (int i = 0; i < this.chars.length; i++) {
-				sb.append(String.format("%s%s'%c':[%s]\n",
-										Strings.dup("   ", depth),
-										isStar ? "*" : " ",
-										chars[i],
-										children[i].obj));
-				children[i].appendChildrenTo(sb, depth + 1);
+				sb.append(String.format("\n%s'%c': ", Strings.dup("   ", depth), chars[i]));
+				children[i].appendTo(sb, depth + 1);
 			}
 	}
-
 }
