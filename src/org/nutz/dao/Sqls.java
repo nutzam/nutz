@@ -28,6 +28,16 @@ import org.nutz.lang.Strings;
  */
 public class Sqls {
 
+	private static final ValueEscaper ES_FLD_VAL = new ValueEscaper();
+	private static final ValueEscaper ES_SQL_FLD = new ValueEscaper();
+	private static final ValueEscaper ES_CND_VAL = new ValueEscaper();
+
+	static {
+		ES_FLD_VAL.add('\'', "''").add('\\', "\\\\").ready();
+		ES_SQL_FLD.add('\'', "''").add('\\', "\\\\").add('$', "$$").add('@', "@@").ready();
+		ES_CND_VAL.add('\'', "''").add('\\', "\\\\").add('_', "\\_").add('%', "\\%").ready();
+	}
+
 	/**
 	 * 创建了一个 Sql 对象。
 	 * <p>
@@ -267,6 +277,8 @@ public class Sqls {
 	}
 
 	/**
+	 * 格式化值，根据值的类型，生成 SQL 字段值的部分，它会考虑 SQL 注入
+	 * 
 	 * @param v
 	 *            字段值
 	 * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
@@ -281,6 +293,23 @@ public class Sqls {
 	}
 
 	/**
+	 * 格式化值，根据值的类型，生成 SQL 字段值的部分，它会考虑 SQL 注入，以及 SQL 的 '$' 和 '@' 转义
+	 * 
+	 * @param v
+	 *            字段值
+	 * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
+	 */
+	public static CharSequence formatSqlFieldValue(Object v) {
+		if (null == v)
+			return "NULL";
+		else if (Sqls.isNotNeedQuote(v.getClass()))
+			return Sqls.escapeSqlFieldValue(v.toString());
+		else
+			return new StringBuilder("'").append(Sqls.escapeSqlFieldValue(v.toString()))
+											.append('\'');
+	}
+
+	/**
 	 * 将 SQL 的字段值进行转意，可以用来防止 SQL 注入攻击
 	 * 
 	 * @param s
@@ -290,17 +319,21 @@ public class Sqls {
 	public static CharSequence escapeFieldValue(CharSequence s) {
 		if (null == s)
 			return null;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if (c == '\'')
-				sb.append('\'').append('\'');
-			else if (c == '\\')
-				sb.append('\\').append('\\');
-			else
-				sb.append(c);
-		}
-		return sb;
+		return ES_FLD_VAL.escape(s);
+	}
+
+	/**
+	 * 将 SQL 的字段值进行转意，可以用来防止 SQL 注入攻击，<br>
+	 * 同时，它也会将 Sql 的特殊标记 '$' 和 '@' 进行转译
+	 * 
+	 * @param s
+	 *            字段值
+	 * @return 格式化后的 Sql 字段值，可以直接拼装在 SQL 里面
+	 */
+	public static CharSequence escapeSqlFieldValue(CharSequence s) {
+		if (null == s)
+			return null;
+		return ES_SQL_FLD.escape(s);
 	}
 
 	/**
@@ -313,21 +346,7 @@ public class Sqls {
 	public static CharSequence escapteConditionValue(CharSequence s) {
 		if (null == s)
 			return null;
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < s.length(); i++) {
-			char c = s.charAt(i);
-			if (c == '\'')
-				sb.append('\'').append('\'');
-			else if (c == '\\')
-				sb.append('\\').append('\\');
-			else if (c == '_')
-				sb.append('\\').append(c);
-			else if (c == '%')
-				sb.append('\\').append(c);
-			else
-				sb.append(c);
-		}
-		return sb;
+		return ES_CND_VAL.escape(s);
 	}
 
 	/**
@@ -341,4 +360,5 @@ public class Sqls {
 		Mirror<?> me = Mirror.me(type);
 		return me.isBoolean() || me.isPrimitiveNumber();
 	}
+
 }

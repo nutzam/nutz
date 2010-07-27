@@ -21,6 +21,20 @@ public class QueryTest extends DaoCase {
 	}
 
 	@Test
+	public void query_by_special_char() {
+		dao.update(dao.fetch(Pet.class).setName("a@b"));
+		List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a@b"), null);
+		assertEquals(1, pets.size());
+	}
+	
+	@Test
+	public void query_by_special_char2() {
+		dao.update(dao.fetch(Pet.class).setName("a$b"));
+		List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a$b"), null);
+		assertEquals(1, pets.size());
+	}
+
+	@Test
 	public void query_by_pager() {
 		List<Pet> pets = dao.query(Pet.class, Cnd.orderBy().asc("name"), dao.createPager(3, 2));
 		assertEquals(2, pets.size());

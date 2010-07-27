@@ -237,14 +237,14 @@ public class Cnd implements OrderBy, ExpGroup {
 					Lang.each(value, new Each<Object>() {
 						public void invoke(int i, Object ele, int length) throws ExitLoop,
 								LoopException {
-							sb.append(Sqls.formatFieldValue(ele)).append(',');
+							sb.append(Sqls.formatSqlFieldValue(ele)).append(',');
 						}
 					});
 					sb.setCharAt(sb.length() - 1, ')');
 				}
 				// 否则当作一般字符串处理
 				else
-					sb.append(Sqls.formatFieldValue(value));
+					sb.append(Sqls.formatSqlFieldValue(value));
 			}
 			// IS NULL
 			else if (null == value && "IS".equals(op)) {
@@ -252,11 +252,11 @@ public class Cnd implements OrderBy, ExpGroup {
 			}
 			// LIKE || IS
 			else if ("LIKE".equals(op) || "IS".equals(op)) {
-				sb.append(' ').append(op).append(' ').append(Sqls.formatFieldValue(value));
+				sb.append(' ').append(op).append(' ').append(Sqls.formatSqlFieldValue(value));
 			}
 			// Others
 			else {
-				sb.append(op).append(Sqls.formatFieldValue(value));
+				sb.append(op).append(Sqls.formatSqlFieldValue(value));
 			}
 		}
 	}

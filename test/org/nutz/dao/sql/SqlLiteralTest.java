@@ -9,7 +9,7 @@ public class SqlLiteralTest {
 	private static SqlLiteral L(String s) {
 		return new SqlLiteral().valueOf(s);
 	}
-
+	
 	@Test
 	public void test_simple() {
 		SqlLiteral sql = L("A$a B@a C@b D$condition");
