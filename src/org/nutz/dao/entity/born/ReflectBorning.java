@@ -9,6 +9,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 
 abstract class ReflectBorning implements Borning {
+	
 	Entity<?> entity;
 
 	ReflectBorning(Entity<?> entity) {
@@ -27,4 +28,5 @@ abstract class ReflectBorning implements Borning {
 		}
 		return obj;
 	}
+	
 }

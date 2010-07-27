@@ -96,49 +96,57 @@ public abstract class ValueAdapter {
 
 	private static class AsInteger extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getInt(colnm);
+			int re = rs.getInt(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsBigDecimal extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getBigDecimal(colnm);
+			Object re = rs.getBigDecimal(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsBoolean extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getBoolean(colnm);
+			boolean re = rs.getBoolean(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsLong extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getLong(colnm);
+			long re = rs.getLong(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsByte extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getByte(colnm);
+			byte re = rs.getByte(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsShort extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getShort(colnm);
+			short re = rs.getShort(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsFloat extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getFloat(colnm);
+			float re = rs.getFloat(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 
 	private static class AsDouble extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			return rs.getDouble(colnm);
+			double re = rs.getDouble(colnm);
+			return rs.wasNull() ? null : re;
 		}
 	}
 

@@ -11,6 +11,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.tools.Tables;
 
 public class SimpleDaoTest extends DaoCase {
@@ -80,5 +81,22 @@ public class SimpleDaoTest extends DaoCase {
 		assertEquals(1, dao.delete(Pet.class, "A"));
 		assertEquals(1, dao.delete(Pet.class, "B"));
 		assertEquals(0, dao.delete(Pet.class, "A"));
+	}
+
+	@Test
+	public void test_integer_object_column() {
+		dao.insert(PetObj.create("X"));
+		PetObj pet = dao.fetch(PetObj.class, "X");
+
+		assertEquals("X", pet.getName());
+		assertNull(pet.getAge());
+
+		dao.update(pet.setAge(20));
+		pet = dao.fetch(PetObj.class, "X");
+		assertEquals(20, pet.getAge().intValue());
+
+		dao.update(pet.setAge(null));
+		pet = dao.fetch(PetObj.class, "X");
+		assertNull(pet.getAge());
 	}
 }
