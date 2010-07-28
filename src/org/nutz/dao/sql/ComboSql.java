@@ -133,7 +133,7 @@ public class ComboSql implements Sql {
 	}
 
 	public VarSet vars() {
-		return null;
+		return varss;
 	}
 
 	public Entity<?> getEntity() {
@@ -153,8 +153,6 @@ public class ComboSql implements Sql {
 	public <T> T getObject(Class<T> classOfT) {
 		throw Lang.makeThrow("Not implement yet!");
 	}
-	
-	
 
 	public String getString() {
 		throw Lang.makeThrow("Not implement yet!");
