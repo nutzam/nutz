@@ -103,8 +103,7 @@ public abstract class ValueAdapter {
 
 	private static class AsBigDecimal extends ValueAdapter {
 		public Object get(ResultSet rs, String colnm) throws SQLException {
-			Object re = rs.getBigDecimal(colnm);
-			return rs.wasNull() ? null : re;
+			return rs.getBigDecimal(colnm);
 		}
 	}
 
