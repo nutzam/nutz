@@ -40,16 +40,18 @@ public class QueryResult {
 		return re;
 	}
 
-	public void setList(List<?> list) {
+	public QueryResult setList(List<?> list) {
 		this.list = list;
+		return this;
 	}
 
 	public Pager getPager() {
 		return pager;
 	}
 
-	public void setPager(Pager pager) {
+	public QueryResult setPager(Pager pager) {
 		this.pager = pager;
+		return this;
 	}
 
 }

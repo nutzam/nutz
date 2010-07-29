@@ -1,9 +1,11 @@
 package org.nutz.http;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import org.nutz.http.Request.METHOD;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Lang;
 
 public class Http {
 
@@ -51,6 +53,12 @@ public class Http {
 	public static String encode(Object s) {
 		if (null == s)
 			return "";
-		return new String(Encoding.CHARSET_UTF8.encode(s.toString()).array(),Encoding.CHARSET_UTF8);
+		try {
+			return new String(	Encoding.CHARSET_UTF8.encode(s.toString()).array(),
+								Encoding.CHARSET_UTF8.name());
+		}
+		catch (UnsupportedEncodingException e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 }
