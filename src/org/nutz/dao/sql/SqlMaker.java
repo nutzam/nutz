@@ -206,7 +206,7 @@ public class SqlMaker {
 	}
 
 	public Sql deletex(Entity<?> entity, Object[] pks) {
-		String sql = format("DELETE FROM %s $condition", entity.getViewName());
+		String sql = format("DELETE FROM %s $condition", entity.getTableName());
 		Condition condition = new PkCondition(pks);
 		return Sqls.fetchEntity(sql).setEntity(entity).setCondition(condition);
 	}
