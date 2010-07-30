@@ -183,7 +183,7 @@ public abstract class Mvcs {
 	 *            HTTP 请求对象
 	 */
 	@SuppressWarnings("unchecked")
-	static void updateRequestAttributes(HttpServletRequest req) {
+	public static void updateRequestAttributes(HttpServletRequest req) {
 		if (null != req.getSession().getServletContext().getAttribute(Localization.class.getName())) {
 			HttpSession session = req.getSession();
 			Map<String, String> msgs = null;
