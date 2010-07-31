@@ -76,13 +76,24 @@ public class UrlMapImpl implements UrlMap {
 		else
 			bases = baseAt.value();
 
-		// looping methods
+		/*
+		 * looping all methods in the class, if has one @At, this class will be
+		 * take as 'Module'
+		 */
 		boolean isModule = false;
 		for (Method method : moduleType.getMethods()) {
+			/*
+			 * Make sure the public method, which with @At can be take as the
+			 * enter method
+			 */
 			if (!Modifier.isPublic(method.getModifiers()) || !method.isAnnotationPresent(At.class))
 				continue;
+			/*
+			 * Then, check the @At
+			 */
 			At ats = method.getAnnotation(At.class);
 			isModule = true;
+
 			// Create invoker
 			ActionInvoker invoker = new ActionInvokerImpl(	context,
 															ioc,
@@ -95,17 +106,30 @@ public class UrlMapImpl implements UrlMap {
 															myFlts,
 															myEncoding);
 
-			if (log.isDebugEnabled())
-				log.debugf("  %20s() @(%s)", method.getName(), Lang.concat(ats.value()));
-
 			// Mapping invoker
 			for (String base : bases) {
 				String[] paths = ats.value();
+				// The @At without value
 				if ((paths.length == 1 && Strings.isBlank(paths[0])) || paths.length == 0) {
-					root.add(base + "/" + method.getName().toLowerCase(), invoker);
-				} else {
-					for (String at : paths)
-						root.add(base + at, invoker);
+					// Get the action path
+					String actionPath = base + "/" + method.getName().toLowerCase();
+					root.add(actionPath, invoker);
+
+					// Print log
+					if (log.isDebugEnabled())
+						log.debugf("  %20s() @(%s)", method.getName(), actionPath);
+				}
+				// More than one value in @At
+				else {
+					for (String at : paths) {
+						// Get Action
+						String actionPath = base + at;
+						root.add(actionPath, invoker);
+
+						// Print log
+						if (log.isDebugEnabled())
+							log.debugf("  %20s() @(%s)", method.getName(), actionPath);
+					}
 				}
 			}
 		}

@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 
 import org.junit.runners.Suite;
 import org.nutz.mvc.adaptor.JsonAdaptorTest;
+import org.nutz.mvc.adaptor.injector.AllInjector;
 import org.nutz.mvc.init.MvcBaseTest;
 import org.nutz.mvc.init.PathNodeTest;
 import org.nutz.mvc.upload.unit.UploadingUnitTest;
@@ -18,5 +19,6 @@ import org.nutz.mvc.view.AllView;
 						BufferRingTest.class,
 						UploadingUnitTest.class,
 						JsonAdaptorTest.class,
+						AllInjector.class,
 						AllView.class})
 public class AllMvc {}

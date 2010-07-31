@@ -37,12 +37,10 @@ public class ObjectPairInjector implements ParamInjector {
 		Object obj = mirror.born();
 		for (int i = 0; i < injs.length; i++) {
 			Injecting inj = injs[i];
-			String s = req.getParameter(names[i]);
-			if (null == s)
+			String[] ss = req.getParameterValues(names[i]);
+			if (null == ss)
 				continue;
-			if (Strings.isBlank(s))
-				s = null;
-			inj.inject(obj, s);
+			inj.inject(obj, ss);
 		}
 		return obj;
 	}

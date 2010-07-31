@@ -3,10 +3,8 @@ package org.nutz.mock.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
@@ -18,6 +16,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 
@@ -26,7 +25,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	protected HttpSession session;
 
 	protected String contextPath;
-	
+
 	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
 	}
@@ -103,13 +102,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		this.pathTranslated = pathTranslated;
 	}
 
-//	protected String queryString;
+	// protected String queryString;
 
 	public String getQueryString() {
-		if (parameterMap.size() == 0)
+		if (params.size() == 0)
 			return null;
 		StringBuilder sb = new StringBuilder();
-		for (Entry<String, String []> entry : parameterMap.entrySet()) {
+		for (Entry<String, String[]> entry : params.entrySet()) {
 			if (entry.getValue() == null)
 				sb.append(entry.getKey()).append("=&");
 			else
@@ -120,9 +119,9 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		return sb.toString();
 	}
 
-//	public void setQueryString(String queryString) {
-//		this.queryString = queryString;
-//	}
+	// public void setQueryString(String queryString) {
+	// this.queryString = queryString;
+	// }
 
 	public String remoteUser;
 
@@ -291,39 +290,42 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw Lang.noImplement();
 	}
 
-	protected Map<String, String[]> parameterMap = new HashMap<String, String[]>();
+	protected Map<String, String[]> params = new HashMap<String, String[]>();
 
 	public String getParameter(String key) {
-		if (parameterMap.containsKey(key)){
-			return parameterMap.get(key)[0];
+		if (params.containsKey(key)) {
+			return params.get(key)[0];
 		}
 		return null;
 	}
-	
+
 	public void setParameter(String key, String value) {
-		parameterMap.put(key, new String[]{value});
+		params.put(key, new String[]{value});
 	}
-	
+
+	public void setParameter(String key, Number num) {
+		setParameter(key, num.toString());
+	}
+
+	public void setParameterValues(String key, String[] values) {
+		params.put(key, values);
+	}
+
 	public void addParameter(String key, String value) {
 		throw Lang.noImplement();
 	}
 
-	public Map<String, String [] > getParameterMap() {
-		return parameterMap;
+	public Map<String, String[]> getParameterMap() {
+		return params;
 	}
 
 	public Enumeration<String> getParameterNames() {
-		return new Vector<String>(parameterMap.keySet()).elements();
+		return new Vector<String>(params.keySet()).elements();
 	}
 
-	public String[] getParameterValues(String arg0) {
-		List<String> pp = new ArrayList<String>(parameterMap.size());
-		for (Entry<String, String[]> strs : parameterMap.entrySet()) {
-			for (String str : strs.getValue()) {
-				pp.add(str);
-			}
-		}
-		return pp.toArray(new String[pp.size()]);
+	public String[] getParameterValues(String name) {
+		Object param = params.get(name);
+		return Castors.me().castTo(param, String[].class);
 	}
 
 	protected String protocol;
@@ -384,7 +386,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		attributeMap.put(key, value);
 	}
 
-	public void setCharacterEncoding(String characterEncoding){
+	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
 
