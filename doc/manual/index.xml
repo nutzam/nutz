@@ -5,6 +5,7 @@
 	<doc path="committer"  title="关于源码">
 		<doc path="svn_project.man"/>
 		<doc path="compile.man"/>
+		<doc path="ant.man"/>
 		<doc path="packages.man"/>
 		<doc path="version_naming.man"/>
 		<doc path="coding.man"/>

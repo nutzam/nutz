@@ -1,10 +1,8 @@
-@echo off
-SET TOMCAT_HOME=C:\Program Files\Apache Software Foundation\Tomcat 6.0
-SET JAVA_HOME=C:\Program Files\Java\jdk1.6.0_16
-SET DEPS=D:\home\nutz\deps
-SET OUTPUT=D:\home\nutz\jars
-SET PROJECT_HOME=D:\home\zozoh\workspace\svn\google.nutz\trunk
+#! /bin/sh
+export TOMCAT_HOME=/home/zozoh/opt/tomcat6
+export JAVA_HOME=/usr/lib/jvm/default-java
+export DEPS=/home/zozoh/nutz/deps/core
+export OUTPUT=/home/zozoh/nutz/output
+export PROJECT_HOME=/home/zozoh/workspace/svn/nutz/nutz.trunk
 
-cd %PROJECT_HOME%\build
-ant %PROJECT_HOME%\build\build.xml
-@echo on
+ant -f $PROJECT_HOME/build/build.xml
