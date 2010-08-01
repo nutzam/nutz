@@ -3,6 +3,8 @@ package org.nutz.lang.random;
 import java.util.Random;
 
 public class R {
+	private R() {}
+
 	static Random r = new Random();
 
 	/**

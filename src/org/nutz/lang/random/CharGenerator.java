@@ -7,6 +7,8 @@ package org.nutz.lang.random;
  * @author wendal(wendal1985@gmail.com)
  */
 public class CharGenerator {
+	private CharGenerator() {}
+	
 	private static final char[] src = "1234567890_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz".toCharArray();
 
 	public static char next() {

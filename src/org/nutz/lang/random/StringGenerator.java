@@ -45,9 +45,9 @@ public class StringGenerator {
 	 * @param max
 	 *            必须不小于min
 	 */
-	public void setup(int max, int min) {
-		maxLen = max;
+	public void setup(int min, int max) {
 		minLen = min;
+		maxLen = max;
 	}
 
 	/**
@@ -58,7 +58,7 @@ public class StringGenerator {
 	 * @return 生成的字符串
 	 */
 	public String next() {
-		if (maxLen <= 0 || minLen <= 0)
+		if (maxLen <= 0 || minLen <= 0 || minLen > maxLen)
 			return null;
 		char[] buf = new char[R.random(minLen, maxLen)];
 		for (int i = 0; i < buf.length; i++)
