@@ -185,7 +185,7 @@ public interface Dao {
 	<T> T insertRelation(T obj, String regex);
 
 	/**
-	 * 更新一个对象。对象必须有 '@Id' 或者 '@Name' 声明。
+	 * 更新一个对象。对象必须有 '@Id' 或者 '@Name' 或者 '@PK' 声明。
 	 * <p>
 	 * 并且调用这个函数前， 主键的值必须保证是有效，否则会更新失败
 	 * <p>
