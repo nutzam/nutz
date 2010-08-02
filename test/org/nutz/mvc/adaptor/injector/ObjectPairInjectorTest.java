@@ -38,4 +38,30 @@ public class ObjectPairInjectorTest {
 		assertEquals("C", pojo.names[2]);
 	}
 
+	@Test
+	public void test_array_to_string() {
+		// 准备数据
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setParameterValues("str", Lang.array("A", "B", "C"));
+
+		// 执行
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+
+		// 检测
+		assertEquals("A,B,C", pojo.str);
+	}
+
+	@Test
+	public void test_string_to_string() {
+		// 准备数据
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setParameterValues("str", Lang.array("A"));
+
+		// 执行
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+
+		// 检测
+		assertEquals("A", pojo.str);
+	}
+
 }
