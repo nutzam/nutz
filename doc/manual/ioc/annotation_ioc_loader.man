@@ -9,6 +9,7 @@
 	public @interface IocBean {
 		String name() default "";
 		String [] param() default {};
+		String [] field() default {};
 		String scope() default "app";
 		boolean singleton() default true;
 		String create() default "";
@@ -37,3 +38,103 @@
 	//现在只支持包扫描,包含sub-package
 	@IocBy(AnnotationIocProvider.class,{"com.wendal.service"})
 	}}}
+	
+代码示例
+	
+	Service 源代码
+		{{{
+		package nutz.demo.ioc.book;
+		
+		
+		@IocBean(name="petService",create="initMe",field={"dao"})
+		public class PetServiceImpl extends IdNameEntityService<Pet> implements PetService {
+
+			@Inject
+			private AuthService authService;
+			
+			@Inject("refer:$ioc")
+			private Ioc ioc;
+			
+			public void initMe(){
+			}
+
+			public Pet getPet(String name) {
+				return dao().get(name);
+			}
+
+			public void setAuthService(AuthService authService) {
+				this.authService = authService;
+			}
+			
+			public void setIoc(Ioc ioc) {
+				this.ioc = ioc;
+			}
+		}
+		}}}
+		
+	由于通过注解无法标记出一个NutDao,故还需要一个js配置文件pets.js
+		例如 : proxool
+		{{{
+		{
+			dataSource : {
+				type : "org.logicalcobwebs.proxool.ProxoolDataSource",
+				fields : {
+					driver : 'org.postgresql.Driver',
+					driverUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					user : 'demo',
+					password : '123456'
+				}
+			}
+			
+			dao : {
+				type : "org.nutz.dao.impl.NutDao"
+				args : [{refer : 'dao'}]
+			}
+		}
+		}}}
+		
+	调用代码
+		{{{
+		package nutz.demo.ioc.book;
+
+		import org.nutz.ioc.Ioc;
+		import org.nutz.ioc.impl.NutIoc;
+		import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
+		import org.nutz.ioc.loader.json.JsoLoader;
+
+		public class HelloPet {
+
+			public static void main(String[] args) {
+				Ioc ioc1 = new NutIoc(new AnnotationIocLoader("nutz.demo.ioc"));
+				Ioc ioc2 = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
+				Ioc ioc = new ComboIocLoader(ioc1,ioc2);
+				//或者写为
+				//Ioc ioc = new ComboIocLoader("*org.nutz.ioc.loader.json.JsoLoader","nutz/demo/ioc/pet/pets.js"
+				//                             "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","nutz.demo.ioc")
+				PetService petService = ioc.get(PetService.class, "petService");
+				System.out.printf("MyPet - [%s]\n", petService.getPet("Hop"));
+			}
+
+		}
+		}}}
+	控制台输出
+		{{{
+		MyPet - [Xppp]
+		}}}
+	
+	讲解
+		1. IocBean 的 name,如果不设置,则自动命名为首字母小写的类名,本例子主动赋予一个接口的名字
+		2. IocBean 的 field, 适用于超类的字段,只允许引用与字段同名的bean
+		3. Inject 的 value ,可以主动赋予需要注入的值,该注解也可以放在方法上
+		4. 由于无法通过注解直接生成NutDao之类的bean,故还需要创建一个js或在xml配置文件,然后通过ComboIocLoader整合起来.
+		5. IocBean 的create/fetch/depose事件分别对应js/xml里面的create/fetch/depose事件定义
+		6. IocBean 的scope的定义与js/xml中的定义一致,用于表示bean的范围
+	
+	
+	
+	
+	
+	
+	
+	
+	
