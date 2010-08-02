@@ -246,9 +246,11 @@ public class Cnd implements OrderBy, ExpGroup {
 				else
 					sb.append(Sqls.formatSqlFieldValue(value));
 			}
-			// IS NULL
-			else if (null == value && "IS".equals(op)) {
-				sb.append(" IS NULL");
+			// IS (NOT) NULL
+			// 根据 Jay(fjayblue@gmail.com) 的建议，此处应该考虑两种情况
+			// 即，IS NULL 和 IS NOT NULL
+			else if (null == value && op.startsWith("IS")) {
+				sb.append(' ').append(op).append(" NULL");
 			}
 			// LIKE || IS
 			else if ("LIKE".equals(op) || "IS".equals(op)) {

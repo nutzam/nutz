@@ -105,5 +105,12 @@ public class CndTest extends DaoCase {
 		String exp = "nm IS NULL";
 		assertEquals(exp, c.toSql(null));
 	}
+	
+	@Test
+	public void test_is_not_null(){
+		Condition c = Cnd.where("nm", " is nOT ", null);
+		String exp = "nm IS NOT NULL";
+		assertEquals(exp, c.toSql(null));
+	}
 
 }
