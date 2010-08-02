@@ -1,17 +1,24 @@
 package org.nutz.log.impl;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
- * 默认的Log,输出到System.err.
+ * 默认的Log,输出到System.out和System.err
  * 
  * @author Young(sunonfire@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
 public class SystemLog extends AbstractLog {
 
-	private final static SystemLog systemLog = new SystemLog();
+	private final static SystemLog me = new SystemLog();
+	
+	private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	static SystemLog me() {
-		return systemLog;
+		me.warn("!!You are using default SystemLog! Don't use it in Production environment!!");
+		return me;
 	}
 
 	private SystemLog() {
@@ -20,42 +27,42 @@ public class SystemLog extends AbstractLog {
 
 	public void debug(Object message, Throwable t) {
 		if (isDebugEnabled())
-			printOut(message, t);
+			printOut("DEBUG",message, t);
 	}
 
 	public void error(Object message, Throwable t) {
 		if (isErrorEnabled())
-			errorOut(message, t);
+			errorOut("ERROR",message, t);
 	}
 
 	public void fatal(Object message, Throwable t) {
 		if (isFatalEnabled())
-			errorOut(message, t);
+			errorOut("FATAL",message, t);
 	}
 
 	public void info(Object message, Throwable t) {
 		if (isInfoEnabled())
-			printOut(message, t);
+			printOut("INFO",message, t);
 	}
 
 	public void trace(Object message, Throwable t) {
 		if (isTraceEnabled())
-			printOut(message, t);
+			printOut("TRACE",message, t);
 	}
 
 	public void warn(Object message, Throwable t) {
 		if (isWarnEnabled())
-			errorOut(message, t);
+			errorOut("WARN",message, t);
 	}
 
-	private void printOut(Object message, Throwable t) {
-		System.out.println(message);
+	private void printOut(String level, Object message, Throwable t) {
+		System.out.printf("%s %s [%s] %s\n",DATE_FORMAT.format(new Date()), level, Thread.currentThread().getName(),message);
 		if (t != null)
 			t.printStackTrace(System.out);
 	}
 
-	private void errorOut(Object message, Throwable t) {
-		System.err.println(message);
+	private void errorOut(String level, Object message, Throwable t) {
+		System.err.printf("%s %s [%s] %s\n",DATE_FORMAT.format(new Date()), level, Thread.currentThread().getName(),message);
 		if (t != null)
 			t.printStackTrace(System.err);
 	}
@@ -64,24 +71,22 @@ public class SystemLog extends AbstractLog {
 	protected void log(int level, Object message, Throwable tx) {
 		switch (level) {
 		case LEVEL_FATAL:
-			errorOut(message, tx);
+			fatal(message, tx);
 			break;
 		case LEVEL_ERROR:
-			errorOut(message, tx);
+			error(message, tx);
 			break;
 		case LEVEL_WARN:
-			errorOut(message, tx);
+			warn(message, tx);
 			break;
 		case LEVEL_INFO:
-			printOut(message, tx);
+			info(message, tx);
 			break;
 		case LEVEL_DEBUG:
-			printOut(message, tx);
+			debug(message, tx);
 			break;
 		case LEVEL_TRACE:
-			printOut(message, tx);
-			break;
-		default:
+			trace(message, tx);
 			break;
 		}
 	}
