@@ -31,6 +31,7 @@ public class ObjectPairInjectorTest {
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
 
 		// 检测
+		assertNull(pojo.longValue);
 		assertEquals(23, pojo.num);
 		assertEquals(3, pojo.names.length);
 		assertEquals("A", pojo.names[0]);
