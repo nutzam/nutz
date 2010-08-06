@@ -18,6 +18,24 @@ public class ObjectPairInjectorTest {
 	}
 
 	/**
+	 * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
+	 */
+	@Test
+	public void test_balnk_param_to_number() {
+		// 准备数据
+		MockHttpServletRequest req = Mock.servlet.request();
+		req.setParameter("longValue", "  ");
+		req.setParameter("num", "  ");
+
+		// 执行
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+
+		// 检测
+		assertNull(pojo.longValue);
+		assertEquals(0, pojo.num);
+	}
+
+	/**
 	 * 这个测试将检验在 HTTP 请求中，如果存在多个参数同名的情况，本注入器能否正确处理
 	 */
 	@Test

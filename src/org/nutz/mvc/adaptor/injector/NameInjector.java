@@ -31,8 +31,8 @@ public class NameInjector implements ParamInjector {
 	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null != refer)
 			return Castors.me().castTo(refer, type);
-
-		return Castors.me().castTo(req.getParameter(name), type);
+		String[] params = req.getParameterValues(name);
+		return Castors.me().castTo(params, type);
 	}
 
 }

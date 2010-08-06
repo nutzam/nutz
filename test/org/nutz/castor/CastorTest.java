@@ -19,6 +19,15 @@ import org.nutz.lang.meta.Email;
 
 public class CastorTest {
 
+	/**
+	 * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
+	 */
+	@Test
+	public void test_cast_blank_to_Long() {
+		assertNull(Castors.me().castTo("", Integer.class));
+		assertEquals(0, (int) Castors.me().castTo("", int.class));
+	}
+
 	@Test
 	public void testCalendar() throws FailToCastObjectException {
 		Calendar c = Calendar.getInstance();
@@ -367,7 +376,7 @@ public class CastorTest {
 			c.setDateTimeFormat(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"));
 		}
 	}
-	
+
 	private void test_date_equal(java.util.Date d1, java.util.Date d2) {
 		Calendar c1 = Calendar.getInstance();
 		c1.setTime(d1);
