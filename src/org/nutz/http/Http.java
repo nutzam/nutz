@@ -54,8 +54,8 @@ public class Http {
 		if (null == s)
 			return "";
 		try {
-			return new String(	Encoding.CHARSET_UTF8.encode(s.toString()).array(),
-								Encoding.CHARSET_UTF8.name());
+			// Fix issue 270, 临时按照意见来修改
+			return new String(s.toString().getBytes(), Encoding.CHARSET_UTF8.name());
 		}
 		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
