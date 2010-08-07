@@ -91,7 +91,9 @@ public class NutDao implements Dao {
 	private static <T> EntityField checkIdField(Entity<T> en) {
 		EntityField idField = en.getIdField();
 		if (idField == null) {
-			throw Lang.makeThrow("Entity<T> [%] need @Id field", en.getMirror().getType().getName());
+			throw Lang.makeThrow("Entity<T> [%s] need @Id field", en.getMirror()
+																	.getType()
+																	.getName());
 		}
 		return idField;
 	}
