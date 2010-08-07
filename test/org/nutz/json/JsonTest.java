@@ -206,7 +206,7 @@ public class JsonTest {
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(p.getBirthday());
 		assertEquals(1940, cal.get(Calendar.YEAR));
@@ -308,7 +308,7 @@ public class JsonTest {
 		assertEquals("youoo", p.getName());
 		assertEquals("YouChunSheng", p.getRealname());
 		assertEquals(69, p.getAge());
-		
+
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(p.getBirthday());
 		assertEquals(1940, cal.get(Calendar.YEAR));
@@ -375,11 +375,24 @@ public class JsonTest {
 		public String name;
 		public String alias;
 
+		@Override
 		public boolean equals(Object obj) {
-			Project p = (Project) obj;
-			return id == p.id && name.equals(p.name) && alias.equals(p.alias);
+			if (obj instanceof Project) {
+				Project p = (Project) obj;
+				return id == p.id && name.equals(p.name) && alias.equals(p.alias);
+			}
+			return false;
 		}
 
+		@Override
+		public int hashCode() {
+			int id = this.id;
+			if(name != null)
+				id += name.hashCode();
+			if(alias != null)
+				id += alias.hashCode();
+			return id;
+		}
 	}
 
 	@Test
@@ -532,7 +545,7 @@ public class JsonTest {
 		map.put(22, "hello");
 		assertEquals("{\"22\":\"hello\"}", Json.toJson(map, JsonFormat.compact()));
 	}
-	
+
 	@Test
 	public void test_separator() {
 		String str = "Nutz";

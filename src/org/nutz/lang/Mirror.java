@@ -168,7 +168,7 @@ public class Mirror<T> {
 				return klass.getMethod(fieldName);
 			}
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			throw Lang.makeThrow(	NoSuchMethodException.class,
 									"Fail to find getter for [%s]->[%s]",
 									klass.getName(),
@@ -223,17 +223,17 @@ public class Mirror<T> {
 			try {
 				return klass.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
 			}
-			catch (Exception e) {
+			catch (RuntimeException e) {
 				try {
 					if (field.getName().startsWith("is") && Mirror.me(field.getType()).isBoolean())
 						return klass.getMethod(	"set" + field.getName().substring(2),
 												field.getType());
 				}
-				catch (Exception e1) {}
+				catch (RuntimeException e1) {}
 				return klass.getMethod(field.getName(), field.getType());
 			}
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			throw Lang.makeThrow(	NoSuchMethodException.class,
 									"Fail to find setter for [%s]->[%s]",
 									klass.getName(),
@@ -258,11 +258,11 @@ public class Mirror<T> {
 			try {
 				return klass.getMethod(setterName, paramType);
 			}
-			catch (Exception e) {
+			catch (RuntimeException e) {
 				try {
 					return klass.getMethod(fieldName, paramType);
 				}
-				catch (Exception e1) {
+				catch (RuntimeException e1) {
 					Mirror<?> type = Mirror.me(paramType);
 					for (Method method : klass.getMethods()) {
 						if (method.getParameterTypes().length == 1)
@@ -273,11 +273,11 @@ public class Mirror<T> {
 									return method;
 							}
 					}
-					throw new Exception();
+					throw new RuntimeException();
 				}
 			}
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
 			throw Lang.makeThrow(	NoSuchMethodException.class,
 									"Fail to find setter for [%s]->[%s(%s)]",
 									klass.getName(),

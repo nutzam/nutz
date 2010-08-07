@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 
 public class StreamBuffer extends InputStream {
 
@@ -92,7 +93,8 @@ public class StreamBuffer extends InputStream {
 		byte c;
 		while ((c = (byte) this.read()) != -1)
 			sos.write(c);
-		sos.flush();
+		Streams.safeFlush(sos);
+		Streams.safeClose(sos);
 		return sb.toString();
 	}
 

@@ -135,7 +135,10 @@ public class Invoking {
 				// argument method
 			}
 		}
-		catch (Exception e) {
+		catch (RuntimeException e) {
+			throw Lang.wrapThrow(e);
+		}
+		catch (NoSuchMethodException e) {
 			throw Lang.wrapThrow(e);
 		}
 		if (null == invoker)

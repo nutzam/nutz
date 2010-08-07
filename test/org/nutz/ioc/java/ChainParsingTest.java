@@ -16,22 +16,14 @@ public class ChainParsingTest {
 		return new ChainParsing(s).getNode();
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void test_nostatic_function() {
-		try {
-			N(NAME("noStatic"));
-			fail();
-		}
-		catch (Exception e) {}
+		N(NAME("noStatic"));
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void test_unexists_function() {
-		try {
-			N(NAME("unexists"));
-			fail();
-		}
-		catch (Exception e) {}
+		N(NAME("unexists"));
 	}
 
 	@Test

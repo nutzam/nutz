@@ -347,18 +347,14 @@ public class MirrorTest {
 		assertEquals(0, (int) sv.cc);
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void set_null_value_by_invoking() {
 		Base base = Base.make("Temp");
 		Mirror<Base> mirror = Mirror.me(Base.class);
 		mirror.invoke(base, "setName", (Object) null);
 		assertNull(base.getName());
 		base.setName("FYZ");
-		try {
-			mirror.invoke(base, "setName", (Object[]) null);
-			fail();
-		}
-		catch (Exception e) {}
+		mirror.invoke(base, "setName", (Object[]) null);
 	}
 
 	class Abcc {

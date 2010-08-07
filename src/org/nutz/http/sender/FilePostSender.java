@@ -3,6 +3,7 @@ package org.nutz.http.sender;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -10,6 +11,7 @@ import java.util.Map.Entry;
 import org.nutz.http.HttpException;
 import org.nutz.http.Request;
 import org.nutz.http.Response;
+import org.nutz.lang.Streams;
 
 public class FilePostSender extends PostSender {
 
@@ -53,7 +55,7 @@ public class FilePostSender extends PostSender {
 								outs.writeBytes("\r\n");
 							}
 						}
-						is.close();
+						Streams.safeClose(is);
 
 					} else {
 						outs.writeBytes("content-disposition:	form-data;	name=\""
@@ -63,16 +65,15 @@ public class FilePostSender extends PostSender {
 					}
 				}
 				outs.writeBytes("--" + boundary + "--" + SEPARATOR);
-				outs.flush();
-				outs.close();
+				Streams.safeFlush(outs);
+				Streams.safeClose(outs);
 			}
 
 			return createResponse(getResponseHeader());
 
 		}
-		catch (Exception e) {
+		catch(IOException e) {
 			throw new HttpException(request.getUrl().toString(), e);
 		}
 	}
-
 }

@@ -337,7 +337,7 @@ public class DefaultEntityMaker implements EntityMaker {
 				// .to(), mm.relation(), fromName, toName);
 			}
 		}
-		catch (Exception e) {
+		catch (NoSuchFieldException e) {
 			throw Lang.makeThrow(	"Fail to eval linked field '%s' of class[%s] for the reason '%s'",
 									field.getName(),
 									mirror.getType().getName(),

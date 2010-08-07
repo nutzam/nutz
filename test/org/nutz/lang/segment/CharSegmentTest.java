@@ -29,13 +29,9 @@ public class CharSegmentTest {
 		assertEquals(3, seg.values().size());
 	}
 
-	@Test
+	@Test(expected = RuntimeException.class)
 	public void testLackRightBracket() {
-		try {
-			Segments.create("H${4");
-			fail();
-		}
-		catch (Exception e) {}
+		Segments.create("H${4");
 	}
 
 	@Test

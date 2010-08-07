@@ -1,7 +1,10 @@
 package org.nutz;
 
 import java.io.FileInputStream;
+import java.io.InputStream;
+import java.security.AccessController;
 import java.util.HashMap;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Properties;
 
@@ -13,6 +16,7 @@ import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 
 import static java.lang.String.*;
@@ -25,15 +29,20 @@ public class Nutzs {
 		if (null == pp)
 			loadProperties("nutz-test.properties");
 	}
-	
-	public static void loadProperties(String fileName){
+
+	public static void loadProperties(String fileName) {
+		InputStream is = null;
 		try {
 			pp = new Properties();
-			pp.load(new FileInputStream(Files.findFile(fileName)));
+			is = new FileInputStream(Files.findFile(fileName));
+			pp.load(is);
 			pp.list(System.out);
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
+		}
+		finally {
+			Streams.safeClose(is);
 		}
 	}
 
@@ -86,7 +95,7 @@ public class Nutzs {
 	}
 
 	public static void notSupport(String message) {
-	// junit.framework.Assert.fail(message);
+		// junit.framework.Assert.fail(message);
 	}
 
 	public static void notSupport(DatabaseMeta meta) {
@@ -94,6 +103,10 @@ public class Nutzs {
 	}
 
 	public static ClassDefiner cd() {
-		return new DefaultClassDefiner(Nutzs.class.getClassLoader());
+		return AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
+			public DefaultClassDefiner run() {
+				return new DefaultClassDefiner(Nutzs.class.getClassLoader());
+			}
+		});
 	}
 }

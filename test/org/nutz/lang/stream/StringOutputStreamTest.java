@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.OutputStream;
 
 import org.junit.Test;
+import org.nutz.lang.Streams;
 
 public class StringOutputStreamTest {
 
@@ -14,9 +15,9 @@ public class StringOutputStreamTest {
 		StringBuilder sb = new StringBuilder();
 		OutputStream stream = new StringOutputStream(sb);
 		stream.write(src.getBytes());
-		stream.flush();
-		String desc = sb.toString();
-		assertEquals(src, desc);
+		Streams.safeFlush(stream);
+		Streams.safeClose(stream);
+		assertEquals(src, sb.toString());
 	}
 
 }

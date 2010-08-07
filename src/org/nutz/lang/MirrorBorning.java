@@ -164,7 +164,7 @@ class MirrorBorning<T> {
 					}
 				}
 			}
-			catch (Exception e) {}
+			catch (RuntimeException e) {}
 		// casting static methods
 		if (null == borning)
 			try {

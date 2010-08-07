@@ -716,7 +716,7 @@ public abstract class Files {
 			ins2 = new BufferedInputStream(new FileInputStream(f2));
 			return Streams.equals(ins1, ins2);
 		}
-		catch (Exception e) {
+		catch (IOException e) {
 			return false;
 		}
 		finally {

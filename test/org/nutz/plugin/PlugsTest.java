@@ -37,12 +37,4 @@ public class PlugsTest {
 		assertNotNull(manager.get());
 		assertTrue(manager.get() instanceof SystemLogAdapter);
 	}
-	
-	@Test
-	public void test_get_plugin_from_ioc_2(){
-		Ioc ioc = new NutIoc(new JsonLoader("org/nutz/plugin/plugin.js"));
-		PluginManager<Log> manager = new IocPluginManager<Log>(ioc, "pluA","pluB","pluC");
-		assertNotNull(manager.get());
-		assertFalse(manager.get() instanceof SystemLogAdapter);
-	}
 }

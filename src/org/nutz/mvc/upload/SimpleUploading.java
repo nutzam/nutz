@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.filepool.FilePool;
 import org.nutz.http.Http;
+import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.stream.StreamBuffer;
 import org.nutz.lang.stream.StringOutputStream;
@@ -36,10 +37,12 @@ public class SimpleUploading implements Uploading {
 			throws UploadException {
 
 		UploadInfo info = Uploads.createInfo(req);
+		StreamBuffer sb = null;
+		InputStream ins = null;
 		try {
 			Map<String, Object> params = Uploads.createParamsMap(req);
 			// Analyze the request data
-			InputStream ins = req.getInputStream();
+			ins = req.getInputStream();
 			// Buffer the stream
 			if (!(ins instanceof BufferedInputStream)) {
 				if (bufferSize > 0)
@@ -72,7 +75,7 @@ public class SimpleUploading implements Uploading {
 				if (right[1] == -1 || (right[0] == '-' && right[1] == '-'))
 					break;
 				// read field title
-				StreamBuffer sb = new StreamBuffer();
+				sb = new StreamBuffer();
 				while (cursor < endName.length) {
 					c = ins.read();
 					if (c == -1)
@@ -117,7 +120,7 @@ public class SimpleUploading implements Uploading {
 							cursor = 0;
 						}
 					}
-					ots.close();
+					Streams.safeClose(ots);
 					if (null != tmp
 						&& !Strings.isBlank(meta.getFileLocalPath())
 						&& tmp.length() > 0)
@@ -149,6 +152,8 @@ public class SimpleUploading implements Uploading {
 			throw new UploadException(e);
 		}
 		finally {
+			Streams.safeClose(ins);
+			Streams.safeClose(sb);
 			if (null != req.getSession())
 				req.getSession().removeAttribute(UploadInfo.class.getName());
 		}

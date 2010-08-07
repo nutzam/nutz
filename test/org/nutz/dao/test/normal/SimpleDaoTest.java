@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
@@ -62,7 +63,7 @@ public class SimpleDaoTest extends DaoCase {
 			dao.execute(sql1, sql2);
 			fail();
 		}
-		catch (Exception e) {}
+		catch (DaoException e) {}
 		assertEquals(0, dao.count(Pet.class));
 	}
 

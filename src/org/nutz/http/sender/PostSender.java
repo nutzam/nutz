@@ -11,6 +11,7 @@ import org.nutz.http.HttpException;
 import org.nutz.http.Request;
 import org.nutz.http.Response;
 import org.nutz.http.Sender;
+import org.nutz.lang.Streams;
 
 public class PostSender extends Sender {
 
@@ -33,8 +34,8 @@ public class PostSender extends Sender {
 					w.write(Http.encode(entry.getValue()));
 					w.write('&');
 				}
-				w.flush();
-				w.close();
+				Streams.safeFlush(w);
+				Streams.safeClose(w);
 			}
 			return createResponse(getResponseHeader());
 		}

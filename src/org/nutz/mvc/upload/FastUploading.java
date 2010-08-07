@@ -172,7 +172,7 @@ public class FastUploading implements Uploading {
 			} while (mm != MarkMode.STREAM_END);
 		}
 		// 处理异常
-		catch (Exception e) {
+		catch (IOException e) {
 			throw Lang.wrapThrow(e, UploadException.class);
 		}
 		// 安全关闭输入流

@@ -50,7 +50,7 @@ public class CastorTest {
 	@Test
 	public void testInteger2int() throws FailToCastObjectException {
 		int x = 23;
-		int n = Castors.me().cast(new Integer(x), Integer.class, int.class);
+		int n = Castors.me().cast(Integer.valueOf(x), Integer.class, int.class);
 		assertEquals(x, n);
 
 	}
@@ -70,14 +70,14 @@ public class CastorTest {
 
 	@Test
 	public void testLong2int() throws FailToCastObjectException {
-		Long l = new Long(59);
+		Long l = Long.valueOf(59);
 		int x = Castors.me().cast(l, Long.class, int.class);
 		assertEquals(59, x);
 	}
 
 	@Test
 	public void testLong2Float() throws FailToCastObjectException {
-		Long l = new Long(59);
+		Long l = Long.valueOf(59);
 		Float x = Castors.me().cast(l, Long.class, float.class);
 		assertEquals(Float.valueOf(59.0f), x);
 	}
@@ -96,14 +96,14 @@ public class CastorTest {
 	public void testString2Long() throws FailToCastObjectException {
 		long l = Castors.me().castTo("34", long.class);
 		assertEquals(34L, l);
-		assertEquals(new Long(89L), Castors.me().castTo("89", Long.class));
+		assertEquals(Long.valueOf(89L), Castors.me().castTo("89", Long.class));
 	}
 
 	@Test
 	public void testLong2String() throws FailToCastObjectException {
 		String s = Castors.me().castTo(34L, String.class);
 		assertEquals("34", s);
-		s = Castors.me().castTo(new Long(89L), String.class);
+		s = Castors.me().castTo(Long.valueOf(89L), String.class);
 		assertEquals("89", s);
 	}
 

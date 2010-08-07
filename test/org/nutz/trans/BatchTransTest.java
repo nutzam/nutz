@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import org.nutz.dao.DaoException;
 import org.nutz.dao.TableName;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
@@ -38,7 +39,7 @@ public class BatchTransTest extends DaoCase {
 						try {
 							dao.insert(Country.make("A"));
 						}
-						catch (Exception e) {}
+						catch (DaoException e) {}
 						dao.insert(Country.make("C"));
 						dao.insert(Country.make("D"));
 					}
@@ -61,7 +62,7 @@ public class BatchTransTest extends DaoCase {
 							try {
 								dao.insert(Mission.make("D1", "2008-9-21 17:12:23"));
 							}
-							catch (Exception e) {}
+							catch (DaoException e) {}
 							dao.insert(Mission.make("D2", "2008-10-21 18:13:24"));
 							dao.insert(Mission.make("D3", "2008-11-21 19:14:25"));
 						}
@@ -87,7 +88,7 @@ public class BatchTransTest extends DaoCase {
 				try {
 					dao.insert(Company.make("Yahoo"));
 				}
-				catch (Exception e) {}
+				catch (DaoException e) {}
 				dao.insert(Company.make("Microsoft"));
 				dao.insert(Company.make("Sun"));
 				dao.insert(Company.make("IBM"));
