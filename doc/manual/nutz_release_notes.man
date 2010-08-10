@@ -8,7 +8,21 @@
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 
+	 * [http://code.google.com/p/nutz/issues/detail?id=47 Issue 47]    支持 SQLite    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=118 Issue 118]    [JSON] 建议json -> 对象采用非严格的属性对应    {#AAA;by} {*rocy03}
+	 * [http://code.google.com/p/nutz/issues/detail?id=184 Issue 184]    json: JsonFormat 应该支持选项，输出的字符串，是用单引号还是双引号    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=251 Issue 251]    MVC: 改善NutServlet对静态文件处理的缺陷，使REST风格更完美
+	 * [http://code.google.com/p/nutz/issues/detail?id=256 Issue 256]    nutz dao 在读取int类型列时不能区分数据库到底是存放0, 还是为null    {#AAA;by} {*wenzhihong2003}
+	 * [http://code.google.com/p/nutz/issues/detail?id=259 Issue 259]    MVC: 不能从mvc框架中拿到完整的PathInfo
+	 * [http://code.google.com/p/nutz/issues/detail?id=260 Issue 260]    dao.query 出现 Number of input values does not match number of question marks 异常问题
+	 * [http://code.google.com/p/nutz/issues/detail?id=261 Issue 261]    @Many注解无法正常起作用
+	 * [http://code.google.com/p/nutz/issues/detail?id=262 Issue 262]    ComboSql的vars不能用, 出现 nullPoint
+	 * [http://code.google.com/p/nutz/issues/detail?id=264 Issue 264]    缺少 how to build with ant 的文档说明, 建议加入wiki中
+	 * [http://code.google.com/p/nutz/issues/detail?id=265 Issue 265]    @Param("".."")获取checkbox形式的内容时,只能取到第一个选中的checkbox值    {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=266 Issue 266]    通过注解方式使用Ioc文档太少,也没有Demo,建议尽快补充
+	 * [http://code.google.com/p/nutz/issues/detail?id=268 Issue 268]    NutDao类的错误信息格式化错误
+	 * [http://code.google.com/p/nutz/issues/detail?id=270 Issue 270]    Http#encode方法不对
+	 * [http://code.google.com/p/nutz/issues/detail?id=272 Issue 272]    String转Number问题    {#AAA;by} {*fjayblue}
 
 --------------------------------------------------------------------------------------------------------
 质量
