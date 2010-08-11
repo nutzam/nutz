@@ -23,11 +23,6 @@
 
 	其中 {*ToFishes} 报的问题 [http://code.google.com/p/nutz/issues/detail?id=251 Issue 251] 对我们很重要，特此感谢
 	 
-	还未修复的问题:
-
-	  * [http://code.google.com/p/nutz/issues/detail?id=118 Issue 118]   建议json -> 对象采用非严格的属性对应    {#AAA;by} {*rocy03}	 
-	  * [http://code.google.com/p/nutz/issues/detail?id=118 Issue 266]	 通过注解方式使用Ioc文档太少,也没有Demo,建议尽快补充    {#AAA;by} {*LQ10001}
-	  
 --------------------------------------------------------------------------------------------------------
 质量
 	 # 共通过了 573 个单元测试用例,代码覆盖率达到62%(按line计算)
