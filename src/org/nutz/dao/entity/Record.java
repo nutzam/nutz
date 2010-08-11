@@ -5,6 +5,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +22,7 @@ import org.nutz.lang.Lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @ToJson
-public class Record {
+public class Record implements Map<String, Object> {
 
 	public static Record create(ResultSet rs) {
 		try {
@@ -56,7 +57,7 @@ public class Record {
 	 *            字段名
 	 * @param value
 	 *            字段值
-	 * @return 记录对象
+	 * @return 记录本身
 	 */
 	public Record set(String name, Object value) {
 		map.put(name, value);
@@ -88,17 +89,6 @@ public class Record {
 		return map.keySet();
 	}
 
-	/**
-	 * @param name
-	 *            字段名
-	 * @return 字段值对象
-	 */
-	public Object get(String name) {
-		if (null == name)
-			return null;
-		return map.get(name.toLowerCase());
-	}
-
 	public int getInt(String name) {
 		return Castors.me().castTo(get(name), int.class);
 	}
@@ -122,4 +112,63 @@ public class Record {
 	public <T> T toPojo(Class<T> type) {
 		return Lang.map2Object(map, type);
 	}
+
+	public void clear() {
+		map.clear();
+	}
+
+	public boolean containsKey(Object arg0) {
+		return map.containsKey(arg0);
+	}
+
+	public boolean containsValue(Object arg0) {
+		return map.containsValue(arg0);
+	}
+
+	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+		return map.entrySet();
+	}
+
+	public boolean equals(Object arg0) {
+		return map.equals(arg0);
+	}
+
+	public Object get(Object name) {
+		if (null == name)
+			return null;
+		return map.get(name.toString().toLowerCase());
+	}
+
+	public int hashCode() {
+		return map.hashCode();
+	}
+
+	public boolean isEmpty() {
+		return map.isEmpty();
+	}
+
+	public Set<String> keySet() {
+		return map.keySet();
+	}
+
+	public Object put(String arg0, Object arg1) {
+		return map.put(arg0, arg1);
+	}
+
+	public void putAll(Map<? extends String, ? extends Object> arg0) {
+		map.putAll(arg0);
+	}
+
+	public Object remove(Object arg0) {
+		return map.remove(arg0);
+	}
+
+	public int size() {
+		return map.size();
+	}
+
+	public Collection<Object> values() {
+		return map.values();
+	}
+
 }
