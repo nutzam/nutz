@@ -40,6 +40,8 @@ public class DefaultMirrorFactory implements MirrorFactory {
 			return Mirror.me(type);
 		if (AopConfigration.IOCNAME.equals(name))
 			return Mirror.me(type);
+		if (AopConfigration.class.isAssignableFrom(type))
+			return Mirror.me(type);
 		try {
 			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
 		}
