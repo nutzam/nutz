@@ -16,6 +16,7 @@ import org.nutz.lang.Mirror;
 
 /**
  * 通过AopConfigration来识别需要拦截的方法,并根据需要生成新的类
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
  */
@@ -24,7 +25,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 	private Ioc ioc;
 
 	private ClassDefiner cd;
-	
+
 	private AopConfigration aopConfigration;
 
 	public DefaultMirrorFactory(Ioc ioc) {
@@ -34,13 +35,10 @@ public class DefaultMirrorFactory implements MirrorFactory {
 
 	@SuppressWarnings("unchecked")
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		if (MethodInterceptor.class.isAssignableFrom(type))
-			return Mirror.me(type);
-		if (type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX))
-			return Mirror.me(type);
-		if (AopConfigration.IOCNAME.equals(name))
-			return Mirror.me(type);
-		if (AopConfigration.class.isAssignableFrom(type))
+		if (MethodInterceptor.class.isAssignableFrom(type)
+			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
+			|| AopConfigration.IOCNAME.equals(name)
+			|| AopConfigration.class.isAssignableFrom(type))
 			return Mirror.me(type);
 		try {
 			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
@@ -56,10 +54,11 @@ public class DefaultMirrorFactory implements MirrorFactory {
 			return Mirror.me(type);
 		ClassAgent agent = new AsmClassAgent();
 		for (InterceptorPair interceptorPair : interceptorPairs)
-			agent.addInterceptor(interceptorPair.getMethodMatcher(), interceptorPair.getMethodInterceptor());
+			agent.addInterceptor(	interceptorPair.getMethodMatcher(),
+									interceptorPair.getMethodInterceptor());
 		return Mirror.me(agent.define(cd, type));
 	}
-	
+
 	public void setAopConfigration(AopConfigration aopConfigration) {
 		this.aopConfigration = aopConfigration;
 	}
