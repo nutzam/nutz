@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.nutz.dao.DaoException;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
