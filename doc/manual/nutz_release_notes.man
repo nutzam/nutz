@@ -4,8 +4,7 @@
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
 关于 1.a.31
-	这个版本中，Nutz.Mvc [http://code.google.com/p/nutz/wiki/mvc_web_xml 将 Filter 方式作为主要挂载方式]
-	新增对SQLite的支持
+	这个版本中，Nutz.Mvc [http://code.google.com/p/nutz/wiki/mvc_web_xml 将 Filter 方式作为主要挂载方式],新增对SQLite的支持
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
@@ -36,7 +35,7 @@
 		 * [http://www.postgresql.org Postgresql]
 		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
 		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
-		 * [www.ibm.com/software/data/db2/ DB2] (未详细测试)
+		 * [http://www.ibm.com/software/data/db2/ DB2] (未详细测试)
 --------------------------------------------------------------------------------------------------------
 文档
 	  * 修正部分文字错误

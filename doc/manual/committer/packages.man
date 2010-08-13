@@ -10,8 +10,8 @@ org.nutz.*
 	||ioc		|| 对象生命周期管理框架										|| {*lang}, {*castors}, {*json}, {*aop} ||
 	||json		|| JSON 的解析器和渲染器										|| {*lang}, {*castors} ||
 	||lang		|| 在 JDK 的基础上，提供了一些便利方法							|| {#080;_不依赖任何第三方 jar 包} ||
-	||log		|| 轻便的 Log 打印的功能                                                                                          	|| {*plugin} ||
+	||log		|| 轻便的 Log 打印的功能                                     || {*plugin} ||
 	||mvc		|| Web 框架，提供了 Servlet 用来嵌入到 web.xml 中				|| {*ioc}, {#00A;*_servlet-api.jar} ||
 	||service	|| org.nutz.dao.Dao 接口的高级封装，提供了树形数据的操作能力	|| {*dao} ||
-	||trans		|| 用接口回调的方式，为 dao 提供事务性操作的支持。				|| {*lang} ||
-	||plugin	|| 轻便的插件机制。				                            || {*lang} ||
+	||trans		|| 用接口回调的方式，为 dao 提供事务性操作的支持				|| {*lang} ||
+	||plugin	|| 轻便的插件机制 				                            || {*lang} ||

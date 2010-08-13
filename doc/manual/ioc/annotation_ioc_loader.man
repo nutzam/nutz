@@ -123,12 +123,12 @@
 		}}}
 	
 	讲解
-		1. IocBean 的 name,如果不设置,则自动命名为首字母小写的类名,本例子主动赋予一个接口的名字
-		2. IocBean 的 field, 适用于超类的字段,只允许引用与字段同名的bean
-		3. Inject 的 value ,可以主动赋予需要注入的值,该注解也可以放在方法上
-		4. 由于无法通过注解直接生成NutDao之类的bean,故还需要创建一个js或在xml配置文件,然后通过ComboIocLoader整合起来.
-		5. IocBean 的create/fetch/depose事件分别对应js/xml里面的create/fetch/depose事件定义
-		6. IocBean 的scope的定义与js/xml中的定义一致,用于表示bean的范围
+		* IocBean 的 name,如果不设置,则自动命名为首字母小写的类名,本例子主动赋予一个接口的名字
+		* IocBean 的 field, 适用于超类的字段,只允许引用与字段同名的bean
+		* Inject 的 value ,可以主动赋予需要注入的值,该注解也可以放在方法上
+		* 由于无法通过注解直接生成NutDao之类的bean,故还需要创建一个js或在xml配置文件,然后通过ComboIocLoader整合起来.
+		* IocBean 的create/fetch/depose事件分别对应js/xml里面的create/fetch/depose事件定义
+		* IocBean 的scope的定义与js/xml中的定义一致,用于表示bean的范围
 	
 	
 	

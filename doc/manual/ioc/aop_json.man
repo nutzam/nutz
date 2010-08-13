@@ -107,11 +107,40 @@
 			}
 		}
 	}}}
+	
 	按照上述声明:
+	
 		* 对于com.service包下的类的全部方法,均应用log拦截器
 		* 对于com.service.status包下的类的全部get/set方法,均应用txNONE拦截器,事务级别 NONE
 		* 对于com.service.media包下的类的全部get/set方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED
 		* 对于com.service.news包下的类的全部get/set方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED
 		* 对于com.service.blog包下的类的全部get/set/update/delete方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_REPEATABLE_READ
 		* 对于com.service.auth包下的类的全部方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE
-	
+		
+--------------------------------------------------------------------------------------------------------
+重要提醒 -- 与@Aop同时使用
+
+	如果你既使用了@Aop注解,又配置了上述的声明式Aop,你需要ComboAopConfigration来整合两种配置,示例:
+	{{{
+	$aop : {
+		type : 'org.nutz.ioc.aop.config.impl.ComboAopConfigration',
+		fields : {
+			aopConfigrations  : [
+				{	type : 'org.nutz.ioc.aop.config.impl.JsonAopConfigration',
+    				fields : {
+        				itemList : [
+	            			['com\\.service\\..+','.+','ioc:log'],
+							['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE'],
+							['com\\.service\\.media\\..+','(get|set).+','ioc:txREAD_UNCOMMITTED'],
+							['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+							['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
+							['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE']
+        				]
+    				}
+				},
+				{	type : 'org.nutz.ioc.aop.config.impl.AnnotationAopConfigration'}
+			]
+		}
+	}
+	}}}
+	同理,你也可以整合XML声明式Aop,不过,为避免不必要的问题,请勿在不同配置方式中对同一个方法添加同一个拦截器
