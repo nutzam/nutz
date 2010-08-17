@@ -251,7 +251,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 			// 渲染 HTTP 输出流
 			if (re instanceof View)
-				((View) re).render(req, resp, re);
+				((View) re).render(req, resp, null);
 			else
 				ok.render(req, resp, re);
 		}
@@ -297,7 +297,8 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 	private static void logException(Throwable e) {
 		if (log.isWarnEnabled())
-			log.warn(Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName()
-													: e.getMessage(), e);
+			log.warn(	Strings.isBlank(e.getMessage())	? e.getClass().getSimpleName()
+														: e.getMessage(),
+						e);
 	}
 }
