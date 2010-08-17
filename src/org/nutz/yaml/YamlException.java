@@ -1,5 +1,4 @@
 package org.nutz.yaml;
 
-public class YamlException extends Exception {
-
-}
+@SuppressWarnings("serial")
+public class YamlException extends Exception {}
