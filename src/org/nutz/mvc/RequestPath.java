@@ -1,5 +1,7 @@
 package org.nutz.mvc;
 
+import org.nutz.lang.Strings;
+
 public class RequestPath {
 
 	private String url;
@@ -34,7 +36,7 @@ public class RequestPath {
 
 	@Override
 	public String toString() {
-		return path + "." + suffix;
+		return Strings.isBlank(suffix) ? path : path + "." + suffix;
 	}
 
 }
