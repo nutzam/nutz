@@ -32,19 +32,18 @@ public class FastUploading implements Uploading {
 
 	private static Log log = Logs.getLog(FastUploading.class);
 
-	/**
-	 * 缓冲环的节点宽度，推荐 8192
-	 */
-	private int bufferSize;
-
-	public FastUploading(int bufferSize) {
-		this.bufferSize = bufferSize;
-	}
-
-	public Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
+	public Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
 			throws UploadException {
 		if (log.isDebugEnabled())
 			log.debug("FastUpload : " + Mvcs.getRequestPath(req));
+		/*
+		 * 初始化一些临时变量
+		 */
+		int bufferSize = context.getBufferSize();
+		String charset = context.getCharset();
+		FilePool tmps = context.getFilePool();
+		int maxFileSize = context.getMaxFileSize();
+
 		/*
 		 * 创建进度对象
 		 */
@@ -125,6 +124,15 @@ public class FastUploading implements Uploading {
 
 				// 作为文件读取
 				if (meta.isFile()) {
+					// 检查是否通过文件名过滤
+					if (!context.isNameAccepted(meta.getFileLocalName())) {
+						throw new UploadUnsupportedFileNameException(meta);
+					}
+					// 检查是否通过文件类型过滤
+					if (!context.isContentTypeAccepted(meta.getContentType())) {
+						throw new UploadUnsupportedFileTypeException(meta);
+					}
+
 					// 上传的是一个空文件
 					if (Strings.isBlank(meta.getFileLocalPath())) {
 						do {
@@ -141,18 +149,39 @@ public class FastUploading implements Uploading {
 						try {
 							ops = new BufferedOutputStream(	new FileOutputStream(tmp),
 															bufferSize * 2);
-							do {
-								info.current = br.load();
-								mm = br.mark(itemEndlBytes);
-								assertStreamNotEnd(mm);
-								br.dump(ops);
-							} while (mm == MarkMode.NOT_FOUND);
+							// 需要限制文件大小
+							if (maxFileSize > 0) {
+								long maxPos = info.current + maxFileSize;
+								do {
+									info.current = br.load();
+									mm = br.mark(itemEndlBytes);
+									assertStreamNotEnd(mm);
+									if (mm != MarkMode.FOUND && info.current > maxPos) {
+										throw new UploadOutOfSizeException(meta);
+									}
+									br.dump(ops);
+								} while (mm == MarkMode.NOT_FOUND);
+							}
+							// 不限制文件大小
+							else {
+								do {
+									info.current = br.load();
+									mm = br.mark(itemEndlBytes);
+									assertStreamNotEnd(mm);
+									br.dump(ops);
+								} while (mm == MarkMode.NOT_FOUND);
+							}
 						}
 						finally {
 							Streams.safeFlush(ops);
 							Streams.safeClose(ops);
 						}
-						params.add(meta.getName(), new TempFile(meta, tmp));
+						// 如果是空文件，不保存
+						if (context.isIgnoreNull() && tmp.length() == 0) {}
+						// 默认，空文件也保存
+						else {
+							params.add(meta.getName(), new TempFile(meta, tmp));
+						}
 					}
 				}
 				// 作为提交值读取
@@ -166,7 +195,9 @@ public class FastUploading implements Uploading {
 					} while (mm == MarkMode.NOT_FOUND);
 					params.add(meta.getName(), sb.toString());
 					if (log.isDebugEnabled())
-						log.debugf("Found a param, name=[%s] value=[%s]",meta.getName(),sb.toString());
+						log.debugf(	"Found a param, name=[%s] value=[%s]",
+									meta.getName(),
+									sb.toString());
 				}
 
 			} while (mm != MarkMode.STREAM_END);

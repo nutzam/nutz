@@ -42,7 +42,7 @@ public class BufferRing {
 
 	private InputStream ins;
 	RingItem item;
-	int readed;
+	long readed;
 
 	public BufferRing(InputStream ins, int len, int width) {
 		assertRingLength(len);
@@ -191,7 +191,7 @@ public class BufferRing {
 	 * 
 	 * @throws IOException
 	 */
-	public int load() throws IOException {
+	public long load() throws IOException {
 		if (item.isStreamEnd)
 			return 0;
 		RingItem ri = item;
@@ -207,7 +207,7 @@ public class BufferRing {
 	/**
 	 * @return 已经读了多少字节
 	 */
-	public int readed() {
+	public long readed() {
 		return readed;
 	}
 

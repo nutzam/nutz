@@ -3,8 +3,6 @@ package org.nutz.mvc.upload.speed;
 import java.io.File;
 
 import org.junit.Ignore;
-import org.nutz.filepool.FilePool;
-import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
@@ -30,12 +28,11 @@ public class UploadingSpeedTest {
 			System.exit(0);
 		}
 
-		final Uploading up = UploadUnit.TYPE.born(8192);
-		final FilePool tmps = new NutFilePool("~/nutz/junit/uploadtmp");
-		final String charset = "UTF-8";
+		final Uploading up = UploadUnit.TYPE.born();
+		final UploadingContext uc = UploadingContext.create("~/nutz/junit/uploadtmp");
 
 		File[] files = dir.listFiles();
-		final MockHttpServletRequest req = request().setInputStream(insmulti(charset, files));
+		final MockHttpServletRequest req = request().setInputStream(insmulti("UTF-8", files));
 		req.setSession(session(context()));
 		req.init();
 
@@ -51,7 +48,7 @@ public class UploadingSpeedTest {
 			sw = Stopwatch.run(new Atom() {
 				public void run() {
 					try {
-						up.parse(req, charset, tmps);
+						up.parse(req, uc);
 					}
 					catch (UploadException e) {
 						throw Lang.wrapThrow(e);

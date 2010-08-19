@@ -7,7 +7,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
@@ -51,9 +50,7 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  */
 public class UploadAdaptor extends AbstractAdaptor {
 
-	private String charset;
-	private FilePool pool;
-	private int buffer;
+	private UploadingContext context;
 
 	public UploadAdaptor() throws IOException {
 		this(File.createTempFile("nutz", null).getParent());
@@ -72,9 +69,14 @@ public class UploadAdaptor extends AbstractAdaptor {
 	}
 
 	public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
-		this.charset = charset;
-		this.pool = new NutFilePool(path, poolSize);
-		this.buffer = buffer;
+		context = new UploadingContext();
+		context.setBufferSize(buffer);
+		context.setCharset(charset);
+		context.setFilePool(new NutFilePool(path, poolSize));
+	}
+
+	public UploadingContext getContext() {
+		return context;
 	}
 
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
@@ -117,8 +119,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
-			Uploading ing = new FastUploading(buffer);
-			map = ing.parse(request, charset, pool);
+			Uploading ing = new FastUploading();
+			map = ing.parse(request, context);
 		}
 		catch (UploadException e) {
 			throw Lang.wrapThrow(e);

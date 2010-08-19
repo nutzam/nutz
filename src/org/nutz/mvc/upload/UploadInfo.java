@@ -8,8 +8,8 @@ public class UploadInfo implements Serializable {
 
 	public static final String SESSION_NAME = "UPLOAD_INFO";
 
-	public int sum;
+	public long sum;
 
-	public int current;
+	public long current;
 
 }

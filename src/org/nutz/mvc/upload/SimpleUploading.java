@@ -33,8 +33,11 @@ public class SimpleUploading implements Uploading {
 
 	private int bufferSize;
 
-	public Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
+	public Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
 			throws UploadException {
+
+		String charset = context.getCharset();
+		FilePool tmps = context.getFilePool();
 
 		UploadInfo info = Uploads.createInfo(req);
 		StreamBuffer sb = null;

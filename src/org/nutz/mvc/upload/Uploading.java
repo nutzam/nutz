@@ -4,8 +4,6 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.nutz.filepool.FilePool;
-
 /**
  * 封装了上传的读取逻辑
  * 
@@ -19,8 +17,13 @@ public interface Uploading {
 	 * @param req
 	 * @param charset
 	 * @param tmps
+	 * 
 	 * @throws UploadException
+	 * @throws UploadOutOfSizeException
+	 * @throws UploadUnsupportedFileNameException
+	 * @throws UploadUnsupportedFileTypeException
 	 */
-	Map<String, Object> parse(HttpServletRequest req, String charset, FilePool tmps)
-			throws UploadException;
+	Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
+			throws UploadException, UploadOutOfSizeException, UploadUnsupportedFileNameException,
+			UploadUnsupportedFileTypeException;
 }
