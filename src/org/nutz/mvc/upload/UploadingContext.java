@@ -17,11 +17,17 @@ public class UploadingContext {
 	}
 
 	public static UploadingContext create(FilePool pool) {
-		UploadingContext uc = new UploadingContext();
-		uc.setBufferSize(8192);
-		uc.setCharset("UTF-8");
-		uc.setFilePool(pool);
-		return uc;
+		return new UploadingContext(pool);
+	}
+
+	public UploadingContext(String poolPath) {
+		this(new NutFilePool(poolPath));
+	}
+
+	public UploadingContext(FilePool pool) {
+		charset = "UTF-8";
+		bufferSize = 8192;
+		this.filePool = pool;
 	}
 
 	/**

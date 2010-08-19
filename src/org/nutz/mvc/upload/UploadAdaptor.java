@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
-import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.AbstractAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
@@ -53,26 +52,28 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private UploadingContext context;
 
 	public UploadAdaptor() throws IOException {
-		this(File.createTempFile("nutz", null).getParent());
+		context = new UploadingContext(File.createTempFile("nutz", null).getParent());
 	}
 
 	public UploadAdaptor(String path) {
-		this(path, 8192, Encoding.UTF8, 2000);
+		context = new UploadingContext(path);
 	}
 
 	public UploadAdaptor(String path, int buffer) {
-		this(path, buffer, Encoding.UTF8, 2000);
+		this(path);
+		context.setBufferSize(buffer);
 	}
 
 	public UploadAdaptor(String path, int buffer, String charset) {
-		this(path, buffer, charset, 2000);
+		this(path);
+		context.setBufferSize(buffer);
+		context.setCharset(charset);
 	}
 
 	public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
-		context = new UploadingContext();
+		context = new UploadingContext(new NutFilePool(path, poolSize));
 		context.setBufferSize(buffer);
 		context.setCharset(charset);
-		context.setFilePool(new NutFilePool(path, poolSize));
 	}
 
 	public UploadingContext getContext() {
