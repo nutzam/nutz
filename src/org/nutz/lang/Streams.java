@@ -25,6 +25,8 @@ import java.io.Writer;
  */
 public abstract class Streams {
 
+	private static final int BUF_SIZE = 8192;
+
 	/**
 	 * 判断两个输入流是否严格相等
 	 */
@@ -38,7 +40,9 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 将一段文本全部写入一个输出流
+	 * 将一段文本全部写入一个输出流。
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输出流
 	 * 
 	 * @param ops
 	 *            输出流
@@ -46,9 +50,152 @@ public abstract class Streams {
 	 *            文本
 	 * @throws IOException
 	 */
-	public static void write(OutputStream ops, CharSequence cs) throws IOException {
-		if (null != cs && null != ops)
-			ops.write(cs.toString().getBytes());
+	public static void write(Writer writer, CharSequence cs) throws IOException {
+		if (null != cs && null != writer)
+			writer.write(cs.toString());
+	}
+
+	/**
+	 * 将一段文本全部写入一个输出流。
+	 * <p>
+	 * <b style=color:red>注意</b>，它会关闭输出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param cs
+	 *            文本
+	 * @throws IOException
+	 */
+	public static void writeAndClose(Writer writer, CharSequence cs) throws IOException {
+		try {
+			write(writer, cs);
+		}
+		finally {
+			safeClose(writer);
+		}
+	}
+
+	/**
+	 * 将输出流写入一个输出流。块大小为 8192
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输入/出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param ins
+	 *            输入流
+	 * @throws IOException
+	 */
+	public static void write(OutputStream ops, InputStream ins) throws IOException {
+		if (null == ops || null == ins)
+			return;
+
+		byte[] buf = new byte[BUF_SIZE];
+		int len;
+		while (-1 != (len = ins.read(buf))) {
+			ops.write(buf, 0, len);
+		}
+	}
+
+	/**
+	 * 将输出流写入一个输出流。块大小为 8192
+	 * <p>
+	 * <b style=color:red>注意</b>，它会关闭输入/出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param ins
+	 *            输入流
+	 * @throws IOException
+	 */
+	public static void writeAndClose(OutputStream ops, InputStream ins) throws IOException {
+		try {
+			write(ops, ins);
+		}
+		finally {
+			safeClose(ops);
+			safeClose(ins);
+		}
+	}
+
+	/**
+	 * 将文本输出流写入一个文本输出流。块大小为 8192
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输入/出流
+	 * 
+	 * @param writer
+	 *            输出流
+	 * @param reader
+	 *            输入流
+	 * @throws IOException
+	 */
+	public static void write(Writer writer, Reader reader) throws IOException {
+		if (null == writer || null == reader)
+			return;
+
+		char[] cbuf = new char[BUF_SIZE];
+		int len;
+		while (-1 != (len = reader.read(cbuf))) {
+			writer.write(cbuf, 0, len);
+		}
+	}
+
+	/**
+	 * 将文本输出流写入一个文本输出流。块大小为 8192
+	 * <p>
+	 * <b style=color:red>注意</b>，它会关闭输入/出流
+	 * 
+	 * @param writer
+	 *            输出流
+	 * @param reader
+	 *            输入流
+	 * @throws IOException
+	 */
+	public static void writeAndClose(Writer writer, Reader reader) throws IOException {
+		try {
+			write(writer, reader);
+		}
+		finally {
+			safeClose(writer);
+			safeClose(reader);
+		}
+	}
+
+	/**
+	 * 将一个字节数组写入一个输出流。
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param bytes
+	 *            字节数组
+	 * @throws IOException
+	 */
+	public static void write(OutputStream ops, byte[] bytes) throws IOException {
+		if (null == ops || null == bytes)
+			return;
+		ops.write(bytes);
+	}
+
+	/**
+	 * 将一个字节数组写入一个输出流。
+	 * <p>
+	 * <b style=color:red>注意</b>，它会关闭输出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param bytes
+	 *            字节数组
+	 * @throws IOException
+	 */
+	public static void writeAndClose(OutputStream ops, byte[] bytes) throws IOException {
+		try {
+			write(ops, bytes);
+		}
+		finally {
+			safeClose(ops);
+		}
 	}
 
 	/**
@@ -68,13 +215,13 @@ public abstract class Streams {
 			}
 		return true;
 	}
-	
-	public static void safeFlush(Flushable fa){
+
+	public static void safeFlush(Flushable fa) {
 		if (null != fa)
 			try {
 				fa.flush();
-			}catch (IOException e) {
 			}
+			catch (IOException e) {}
 	}
 
 	/**

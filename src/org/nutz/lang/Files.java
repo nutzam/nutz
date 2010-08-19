@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -55,46 +56,24 @@ public abstract class Files {
 	}
 
 	/**
-	 * 将内容写入 UTF-8 文件，如文件不存在，创建这个文件
+	 * 将内容写到一个文件内，内容对象可以是：
+	 * <ul>
+	 * <li>InputStream - 按二进制方式写入
+	 * <li>byte[] - 按二进制方式写入
+	 * <li>Reader - 按 UTF-8 方式写入
+	 * <li>其他对象被 toString() 后按照 UTF-8 方式写入
+	 * </ul>
 	 * 
 	 * @param path
-	 *            文件路径
-	 * @param content
-	 *            内容
+	 *            文件路径，如果不存在，则创建
+	 * @param obj
+	 *            内容对象
 	 */
-	public static void write(String path, Object content) {
-		if (null == path || null == content)
+	public static void write(String path, Object obj) {
+		if (null == path || null == obj)
 			return;
-		File f = Files.findFile(path);
-		if (null == f) {
-			f = new File(path);
-			try {
-				Files.createNewFile(f);
-			}
-			catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-		Lang.writeAll(Streams.fileOutw(f), content.toString());
-	}
-
-	/**
-	 * 将内容写入 UTF-8 文件，如文件不存在，创建这个文件
-	 * 
-	 * @param f
-	 *            文件
-	 * @param content
-	 *            内容
-	 */
-	public static void write(File f, Object content) {
-		if (null == f || null == content)
-			return;
-		if (f.isDirectory())
-			throw Lang.makeThrow("Directory '%s' can not be write as File", f);
 		try {
-			if (!f.exists())
-				Files.createNewFile(f);
-			Lang.writeAll(Streams.fileOutw(f), content.toString());
+			write(Files.createFileIfNoExists(path), obj);
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
@@ -102,25 +81,50 @@ public abstract class Files {
 	}
 
 	/**
-	 * 将数据写入文件,成功就返回true,失败就返回false
+	 * 将内容写到一个文件内，内容对象可以是：
 	 * 
-	 * @param file
-	 *            需要写入的文件
-	 * @param data
-	 *            需要写入的数据
-	 * @return true 如果写入成功
+	 * <ul>
+	 * <li>InputStream - 按二进制方式写入
+	 * <li>byte[] - 按二进制方式写入
+	 * <li>Reader - 按 UTF-8 方式写入
+	 * <li>其他对象被 toString() 后按照 UTF-8 方式写入
+	 * </ul>
+	 * 
+	 * @param f
+	 *            文件
+	 * @param obj
+	 *            内容
 	 */
-	public static boolean write(File file, byte data[]) {
+	public static void write(File f, Object obj) {
+		if (null == f || null == obj)
+			return;
+		if (f.isDirectory())
+			throw Lang.makeThrow("Directory '%s' can not be write as File", f);
+
 		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			fos.write(data);
-			fos.flush();
-			fos.close();
+			// 保证文件存在
+			if (!f.exists())
+				Files.createNewFile(f);
+			// 输入流
+			if (obj instanceof InputStream) {
+				Streams.writeAndClose(Streams.fileOut(f), (InputStream) obj);
+			}
+			// 字节数组
+			else if (obj instanceof byte[]) {
+				Streams.writeAndClose(Streams.fileOut(f), (byte[]) obj);
+			}
+			// 文本输入流
+			else if (obj instanceof Reader) {
+				Streams.writeAndClose(Streams.fileOutw(f), (Reader) obj);
+			}
+			// 其他对象
+			else {
+				Streams.writeAndClose(Streams.fileOutw(f), obj.toString());
+			}
 		}
-		catch (Throwable e) {
-			return false;
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
 		}
-		return true;
 	}
 
 	/**
