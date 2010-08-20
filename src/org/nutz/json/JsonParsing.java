@@ -138,7 +138,7 @@ class JsonParsing {
 				else
 					list = (List) me.born();
 			} else {
-				throw makeError(String.format(	"type can NO '%s', it should be a Array or List!!!",
+				throw makeError(String.format(	"Unexpect type '%s', it should be an Array or List!!!",
 												type.getName()));
 			}
 			nextChar();
