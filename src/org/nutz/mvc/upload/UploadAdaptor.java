@@ -125,6 +125,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 		}
 		catch (UploadException e) {
 			throw Lang.wrapThrow(e);
+		}finally{
+			Uploads.removeInfo(request);
 		}
 		// Try to make the args
 		Object[] args = new Object[injs.length];

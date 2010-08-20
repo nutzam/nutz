@@ -20,7 +20,7 @@ public abstract class Uploads {
 	 * @return 当前会话的上传进度对象，如果没有上传，则返回 null
 	 */
 	public static UploadInfo getInfo(HttpServletRequest req) {
-		return (UploadInfo) req.getSession().getAttribute(UploadInfo.class.getName());
+		return (UploadInfo) req.getSession().getAttribute(UploadInfo.SESSION_NAME);
 	}
 
 	/**
@@ -48,12 +48,22 @@ public abstract class Uploads {
 	public static NutMap createParamsMap(HttpServletRequest req) {
 		NutMap params = new NutMap();
 		// parse query strings
-		Enumeration<?> en=req.getParameterNames();
-		while(en.hasMoreElements()){
-			String key=en.nextElement().toString();
+		Enumeration<?> en = req.getParameterNames();
+		while (en.hasMoreElements()) {
+			String key = en.nextElement().toString();
 			params.put(key, req.getParameter(key));
 		}
 		return params;
+	}
+
+	/**
+	 * 从当前会话中移除进度对象
+	 * 
+	 * @param req
+	 *            请求对象
+	 */
+	public static void removeInfo(HttpServletRequest req) {
+		req.removeAttribute(UploadInfo.SESSION_NAME);
 	}
 
 }
