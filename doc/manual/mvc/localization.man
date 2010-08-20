@@ -51,7 +51,7 @@
 		 
 	我到底支持哪些语言
 		
-		请参看 {*org.nutz.mvc.Mvcs}* 的 JavaDoc，这里我列几个常用的方法:
+		请参看 {*org.nutz.mvc.Mvcs} 的 JavaDoc，这里我列几个常用的方法:
 		
 		|| getLocaleName		|| 获取当前会话的 Locale 名称 ||
 		|| setLocaleName		|| 为当前会话设置 Locale 的名称 ||
