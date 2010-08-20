@@ -1,0 +1,77 @@
+#title: 1.a.31 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+关于 1.a.31
+	这个版本中，Nutz.Mvc [http://code.google.com/p/nutz/wiki/mvc_web_xml 将 Filter 方式作为主要挂载方式],新增对SQLite的支持
+	 
+--------------------------------------------------------------------------------------------------------
+问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=47 Issue 47]    支持 SQLite    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=184 Issue 184]    json: JsonFormat 应该支持选项，输出的字符串，是用单引号还是双引号    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=251 Issue 251]    MVC: 改善NutServlet对静态文件处理的缺陷，使REST风格更完美  {#AAA;by} {*ToFishes}
+	 * [http://code.google.com/p/nutz/issues/detail?id=256 Issue 256]    nutz dao 在读取int类型列时不能区分数据库到底是存放0, 还是为null {#AAA;by} {*wenzhihong2003}
+	 * [http://code.google.com/p/nutz/issues/detail?id=259 Issue 259]    MVC: 不能从mvc框架中拿到完整的PathInfo  {#AAA;by} {*天行健}
+	 * [http://code.google.com/p/nutz/issues/detail?id=260 Issue 260]    dao.query 出现 Number of input values does not match number of question marks 异常问题  {#AAA;by} {*清风徐来}
+	 * [http://code.google.com/p/nutz/issues/detail?id=262 Issue 262]    ComboSql的vars不能用, 出现 nullPoint {#AAA;by} {*wenzhihong2003}
+	 * [http://code.google.com/p/nutz/issues/detail?id=264 Issue 264]    缺少 how to build with ant 的文档说明, 建议加入wiki中 {#AAA;by} {*wenzhihong2003}
+	 * [http://code.google.com/p/nutz/issues/detail?id=265 Issue 265]    @Param("".."")获取checkbox形式的内容时,只能取到第一个选中的checkbox值    {#AAA;by} {*幸福的旁边}
+	 * [http://code.google.com/p/nutz/issues/detail?id=268 Issue 268]    NutDao类的错误信息格式化错误 {#AAA;by} {*茶几} 
+	 * [http://code.google.com/p/nutz/issues/detail?id=270 Issue 270]    Http#encode方法不对 {#AAA;by} {*茶几} 
+	 * [http://code.google.com/p/nutz/issues/detail?id=272 Issue 272]    String转Number问题 {#AAA;by} {*Jay}
+	 * [http://code.google.com/p/nutz/issues/detail?id=273 Issue 273]    注解的aop拦截器和json配置的拦截器冲突 {#AAA;by} {*幸福的旁边}
+
+	其中 {*ToFishes} 报的问题 [http://code.google.com/p/nutz/issues/detail?id=251 Issue 251] 对我们很重要，特此感谢
+	 
+--------------------------------------------------------------------------------------------------------
+质量
+	 # 共通过了 573 个单元测试用例,代码覆盖率达到62%(按line计算)
+	 # Nutz.Dao 经测试在如下数据库上可以工作正常
+		 * [http://www.h2database.com H2]
+		 * [http://www.sqlite.org SQLite]
+		 * [http://www.mysql.com MySql]
+		 * [http://www.oracle.com Oracle]
+		 * [http://www.postgresql.org Postgresql]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+		 * [http://www.ibm.com/software/data/db2/ DB2] (未详细测试)
+--------------------------------------------------------------------------------------------------------
+文档
+	  * 修正部分文字错误
+	 
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [http://code.google.com/p/nutzdemo Demo Site] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	|| 贡献者 									|| 问题 || 博客|| 支持 || 代码 || Demo|| 文档 || 测试 ||
+	|| 9yong8yuan								||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| Bony Fish 	 							||  -  ||  O  ||  -  ||  O	||  -  ||  -  ||  -  ||
+	|| Jay										||  O  ||  -  ||  O  ||  -	||  -  ||  -  ||  -  ||
+	|| LQ10001									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| ToFishes									||  O  ||  -  ||  O  ||  -	||  -  ||  -  ||  -  ||
+	|| wenzhihong2003							||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| E-Hunter 	 							||  -  ||  -  ||  O  ||  -	||  -  ||  -  ||  -  ||
+	|| wendal									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
+	|| zozohtnt									||  O  ||  -  ||  O  ||  O	||  -  ||  O  ||  O  ||
+	|| 茶几										||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| 幸福的旁边								||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| 清风徐来									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||
+	|| 天行健									||  O  ||  -  ||  -  ||  -	||  -  ||  -  ||  -  ||	
+	
+	另外，很多朋友都在：
+	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz交流超级群(58444676)]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^
+	
+	欢迎访问[http://nutzam.com 官网],以获取最新的快照版和用户手册
+
