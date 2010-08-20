@@ -35,18 +35,19 @@
 		 * 比如 `@Locallization("mymsg")` 会指向 CLASSPATH 下的 {*mymsg} 目录
 	
 	在 JSP 里使用
-		直接 Scriptlet
-			{{{
-			...
-			<h1><%=((Map<String,String>)request.getObject("msg")).get("my.msg.key")%></h1>
-			...
-			}}}
-		如果采用 JSTL
-			{{{
-			...
-			<h1>${msg['my.msg.key']}</h1>
-			...
-			}}}
+		{*直接 Scriptlet}
+		{{{
+		...
+		<h1><%=((Map<String,String>)request.getObject("msg")).get("my.msg.key")%></h1>
+		...
+		}}}
+		
+		{*采用 JSTL}
+		{{{
+		...
+		<h1>${msg['my.msg.key']}</h1>
+		...
+		}}}
 		 
 	我到底支持哪些语言
 		
