@@ -36,7 +36,7 @@
 	     @[http://axhack.javaeye.com axhack] {#008800;*推荐}
 	 * 《[http://birdwindy.javaeye.com/blog/582200 我的第一个Nutz程序]》 \
 	     @[http://birdwindy.javaeye.com Bird.Wyatt]
-	 * 《[http://yunhaifeiwu.javaeye.com/blog/743368 nutz初使用之MVC HelloWorld (netbeans html,jquery版）]》
+	 * 《[http://yunhaifeiwu.javaeye.com/blog/743368 nutz初使用之MVC HelloWorld (netbeans html,jquery版)]》
 		 @[http://yunhaifeiwu.javaeye.com 云海飞舞]
 -----------------------------------------------------------------------------------
 关于 Ioc

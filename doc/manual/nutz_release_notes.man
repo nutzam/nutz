@@ -1,4 +1,4 @@
-#title: 1.a.31 发行注记
+#title: 1.a.32 (Hatching..)
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
@@ -49,6 +49,7 @@
 	|| wendal									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| 茶几										||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| 水蓝										||  O   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
 	|| 天行健									||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
 	|| 云海飞舞									||  -   ||  O  ||  O   ||  -	||  -  ||  -   ||  -   ||
 
