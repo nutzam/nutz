@@ -21,10 +21,44 @@
 		 * 如果当前会话没有被设置 Locale，则将 "msg" 设置成默认本地化字符串
 ------------------------------------------------------------------------------------------
 使用方式
-	 * 在JSP 的任何地方里，你可以用 ${msg.xxxx} 直接输出字符串的值
-	 * 在你的代码任何地方通过 org.nutz.mvc.Mvcs 提供的帮助方法，你可以很方便的修改
-		 * 会话中的 Locale
-		 * 整个应用支持的语言列表: Mvcs.getLocaleNames(ServletContext context)
+	在主模块上声明
+		比如：
+		{{{
+		...
+		@Localization("mymsg")
+		public class MyMainClass {
+			...
+		}}}
+		 * 在主模块上声明 `@Localization` 注解，指向一个目录
+		 * 在目录下建立文件夹，比如 {*zh_CN}，每个目录下所有 {* .properties} 文件都会被当作字符串文件
+		 * {* .properties} 文件 一定要是 UTF-8 编码的
+		 * 比如 `@Locallization("mymsg")` 会指向 CLASSPATH 下的 {*mymsg} 目录
+	
+	在 JSP 里使用
+		直接 Scriptlet
+			{{{
+			...
+			<h1><%=((Map<String,String>)request.getObject("msg")).get("my.msg.key")%></h1>
+			...
+			}}}
+		如果采用 JSTL
+			{{{
+			...
+			<h1>${msg['my.msg.key']}</h1>
+			...
+			}}}
+		 
+	我到底支持哪些语言
+		
+		请参看 {*org.nutz.mvc.Mvcs}* 的 JavaDoc，这里我列几个常用的方法:
+		
+		|| getLocaleName		|| 获取当前会话的 Locale 名称 ||
+		|| setLocaleName		|| 为当前会话设置 Locale 的名称 ||
+		|| getLocaleNames	 	|| 获取整个应用可用的 Locale 名称集合 ||
+		|| hasLocaleName		|| 判断当前会话是够设置了特殊的 Locale 的名称 ||
+		|| hasLocale			|| 判断当前会话是否已经设置了本地字符串表 ||
+		
+		
 ------------------------------------------------------------------------------------------
 使用过滤器
 	有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"{*本地化字符串}"
