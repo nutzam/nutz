@@ -64,11 +64,13 @@ public abstract class Streams {
 	 *            输出流
 	 * @param cs
 	 *            文本
-	 * @throws IOException
 	 */
-	public static void writeAndClose(Writer writer, CharSequence cs) throws IOException {
+	public static void writeAndClose(Writer writer, CharSequence cs) {
 		try {
 			write(writer, cs);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
 		}
 		finally {
 			safeClose(writer);
@@ -106,11 +108,13 @@ public abstract class Streams {
 	 *            输出流
 	 * @param ins
 	 *            输入流
-	 * @throws IOException
 	 */
-	public static void writeAndClose(OutputStream ops, InputStream ins) throws IOException {
+	public static void writeAndClose(OutputStream ops, InputStream ins) {
 		try {
 			write(ops, ins);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
 		}
 		finally {
 			safeClose(ops);
@@ -149,11 +153,13 @@ public abstract class Streams {
 	 *            输出流
 	 * @param reader
 	 *            输入流
-	 * @throws IOException
 	 */
-	public static void writeAndClose(Writer writer, Reader reader) throws IOException {
+	public static void writeAndClose(Writer writer, Reader reader) {
 		try {
 			write(writer, reader);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
 		}
 		finally {
 			safeClose(writer);
@@ -187,14 +193,58 @@ public abstract class Streams {
 	 *            输出流
 	 * @param bytes
 	 *            字节数组
-	 * @throws IOException
 	 */
-	public static void writeAndClose(OutputStream ops, byte[] bytes) throws IOException {
+	public static void writeAndClose(OutputStream ops, byte[] bytes) {
 		try {
 			write(ops, bytes);
 		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
 		finally {
 			safeClose(ops);
+		}
+	}
+
+	/**
+	 * 从一个文本流中读取全部内容并返回
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输出流
+	 * 
+	 * @param reader
+	 *            文本输出流
+	 * @return 文本内容
+	 * @throws IOException
+	 */
+	public static StringBuilder read(Reader reader) throws IOException {
+		StringBuilder sb = new StringBuilder();
+		char[] cbuf = new char[BUF_SIZE];
+		int len;
+		while (-1 != (len = reader.read(cbuf))) {
+			sb.append(cbuf, 0, len);
+		}
+		return sb;
+	}
+
+	/**
+	 * 从一个文本流中读取全部内容并返回
+	 * <p>
+	 * <b style=color:red>注意</b>，它会关闭输出流
+	 * 
+	 * @param reader
+	 *            文本输出流
+	 * @return 文本内容
+	 * @throws IOException
+	 */
+	public static String readAndClose(Reader reader) {
+		try {
+			return read(reader).toString();
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+		finally {
+			safeClose(reader);
 		}
 	}
 

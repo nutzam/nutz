@@ -16,6 +16,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.*;
 import org.nutz.mvc.annotation.Attr;
+import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
 
 public abstract class AbstractAdaptor implements HttpAdaptor {
@@ -30,7 +31,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 			Annotation[] anns = annss[i];
 			Param param = null;
 			Attr attr = null;
-			// find @Param & @Attr in current annotations
+			IocObj iocObj = null;
+
+			// find @Param & @Attr & @IocObj in current annotations
 			for (int x = 0; x < anns.length; x++)
 				if (anns[x] instanceof Param) {
 					param = (Param) anns[x];
@@ -38,10 +41,19 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				} else if (anns[x] instanceof Attr) {
 					attr = (Attr) anns[x];
 					break;
+				} else if (anns[x] instanceof IocObj) {
+					iocObj = (IocObj) anns[x];
+					break;
 				}
 			// If has @Attr
 			if (null != attr) {
 				injs[i] = evalInjectorByAttrScope(attr);
+				continue;
+			}
+
+			// If has @IocObj
+			if (null != iocObj) {
+				injs[i] = new IocObjInjector(method.getParameterTypes()[i], iocObj.value());
 				continue;
 			}
 
