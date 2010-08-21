@@ -160,7 +160,8 @@ public class Invoking {
 		try {
 			return invoker.invoke(obj);
 		}
-		catch (Exception e) {
+		catch (Throwable e) {
+			e = Lang.unwrapThrow(e);
 			throw new InvokingException(msg, e.getMessage());
 		}
 	}
