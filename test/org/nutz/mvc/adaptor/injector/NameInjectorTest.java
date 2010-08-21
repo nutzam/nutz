@@ -53,6 +53,6 @@ public class NameInjectorTest {
 		req.setParameter("abc", "1");
 
 		// 执行 & 检测
-		assertEquals(new Integer(1), inj("abc", int.class, req));
+		assertEquals(Integer.valueOf(1), inj("abc", int.class, req));
 	}
 }
