@@ -14,7 +14,8 @@ import org.junit.runners.Suite;
 						SimpleNodeTest.class,
 						DisksTest.class,
 						ByteInputStreamTest.class,
-						ContextTest.class})
+						ContextTest.class,
+						NutMapTest.class})
 public class AllUtil {
 
 }

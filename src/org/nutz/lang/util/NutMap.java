@@ -10,25 +10,26 @@ import org.nutz.castor.Castors;
 public class NutMap extends HashMap<String, Object> {
 
 	public int getInt(String key) {
-		return getInt(key, -1);
+		return getAs(int.class, key, -1);
 	}
 
 	public int getInt(String key, int dft) {
-		Object obj = get(key);
-		if (null == obj)
-			return dft;
-		return Castors.me().castTo(obj, int.class);
+		return getAs(int.class, key, dft);
 	}
 
 	public String getString(String key) {
-		return getString(key, null);
+		return getAs(String.class, key, null);
 	}
 
 	public String getString(String key, String dft) {
+		return getAs(String.class, key, dft);
+	}
+
+	private <T> T getAs(Class<T> toType, String key, T dft) {
 		Object obj = get(key);
 		if (null == obj)
 			return dft;
-		return Castors.me().castTo(obj, String.class);
+		return Castors.me().castTo(obj, toType);
 	}
 
 	/**
@@ -42,7 +43,7 @@ public class NutMap extends HashMap<String, Object> {
 	 * @param key
 	 * @param value
 	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings("unchecked")
 	public NutMap add(String key, Object value) {
 		Object obj = get(key);
 		if (null == obj)
@@ -56,7 +57,5 @@ public class NutMap extends HashMap<String, Object> {
 			put(key, list);
 		}
 		return this;
-
 	}
-
 }
