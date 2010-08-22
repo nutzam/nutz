@@ -162,7 +162,7 @@ public class Invoking {
 		}
 		catch (Throwable e) {
 			e = Lang.unwrapThrow(e);
-			throw new InvokingException(msg, e.getMessage());
+			throw new InvokingException(String.format(msg, ""), e);
 		}
 	}
 
