@@ -13,7 +13,7 @@ public class ContextTest {
 		context.set("a", "123").set("b", "10.2").set("c", "true").set("d", "string");
 
 		assertEquals(123, context.getInt("a"));
-		assertEquals(10.2f, context.getFloat("b"));
+		assertTrue(10.2f == context.getFloat("b"));
 		assertTrue(context.getBoolean("c"));
 		assertEquals("string", context.getString("d"));
 	}

@@ -49,7 +49,7 @@ public class NutMap extends HashMap<String, Object> {
 		if (null == obj)
 			put(key, value);
 		else if (obj instanceof List<?>)
-			((List) obj).add(value);
+			((List<Object>) obj).add(value);
 		else {
 			List<Object> list = new LinkedList<Object>();
 			list.add(obj);
