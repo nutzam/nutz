@@ -61,20 +61,21 @@ zDoc 要达到的目标
 	将 zDoc 转换成 HTML
 		{*命令格式}
 		{{{
-		zdoc [源目录] [目标目录] [.html|.htm]
+		 zdoc html [源目录] [目标目录]
 		}}}
 		{*说明}
 		 * 这三个参数缺一不可
-		 * 第一个参数声明了zDoc源目录
+		 * 第一个参数表示要转换成 HTML
+		 * 第二个参数声明了zDoc源目录
 			 * 该目录下如果有 index.xml，将能更为精确的控制生成的 html 目录索引
 			 * 请看 [index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
-		 * 你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感
-		 * 更多的关于目录转换的细节请参看 [dir_convert.html 目录转换细则]
-		 * 最后一个参数为文件扩展名，.html 或者 .htm 都是合法的
+			 * 你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感
+			 * 更多的关于目录转换的细节请参看 [dir_convert.html 目录转换细则]
+		 * 第三个参数为目标输出的目录
 		
 		{*比如}
 		{{{
-		zdoc /folder/abc /output/abc .html
+		zdoc html /folder/abc /output/abc
 		}}}
 		会将目录 /folder/abc 所有的 zdoc 文档转换成 HTML 文档，并输出到 /output/abc 目录下
 		
@@ -87,28 +88,28 @@ zDoc 要达到的目标
 	
 		{*命令格式}
 		{{{
-		zdoc [源目录] [目标目录] [索引文件名] [图片地址前缀]
+		zdoc gwiki [源目录] [目标目录] [索引文件名] [图片地址前缀]
 		}}}
 		{*说明}
-		 * 这前三个参数缺一不可
-		 * 第一个参数声明了zDoc源目录
+		 * 第一个参数表示要转换成 Goolge Wiki
+		 * 第二个参数声明了zDoc源目录
 			 * 该目录下如果有 index.xml，将能更为精确的控制生成的目录索引
 			 * 请看 [index_xml.html zDoc 目录转换中的索引文件--index.xml的语法]
-		 * 第二个参数指明 wiki 目录， zDoc 将会在这个目录下生成所有的 .wiki 文件
-		 * 第三个参数为索引文件名，请参看 [http://code.google.com/p/support/wiki/WikiSyntax#Navigation Google wiki 关于目录索引的描述]
+		 * 第三个参数指明 wiki 目录， zDoc 将会在这个目录下生成所有的 .wiki 文件
+		 * 第四个参数为索引文件名，请参看 [http://code.google.com/p/support/wiki/WikiSyntax#Navigation Google wiki 关于目录索引的描述]
 			 * zDoc 会替你生成这个索引文件
 			 * 如果你写 null，zDoc 将不会生成这个文件
-		 * 第四个参数有些奇怪，因为 Google wiki 并不支持图片存储，它只支持图片引用。所以你的文档中如果有图片，必须要存放在某一个可被\
+		 * 第五个参数有些奇怪，因为 Google wiki 并不支持图片存储，它只支持图片引用。所以你的文档中如果有图片，必须要存放在某一个可被\
 		   互联网访问到的地址上
 			 * 这个参数也不是必须的
 			 * 如果你声明了这个参数，所有的 zDoc 文档中引用的本地图片
-				 * 将会被打成一个 zip 包，存放在目标目录的根目录下，你可以用 ftp 工具，将图片上传至这个地址
+				 * 将会被目标目录根录下一个叫 {*wiki_imgs} 的目录下，你可以用 ftp 工具，将图片上传到你指定的地址
 				 * 生成后的 wiki 文件，图片地址将指向你声明的地址
 				 * 如果你的图片重名，zDoc 将自动为你改名（按顺序增加数字后缀）
 		
 		{*比如}
 		{{{
-		zdoc /folder/abc /output/abc wiki_index_page http://www.my.com/wiki/img
+		zdoc gwiki /folder/abc /output/abc wiki_index_page http://www.my.com/wiki/img
 		}}}
 		会将目录 /folder/abc 所有的 zdoc 文档转换成 Google wiki 文档，并输出到 /output/abc 目录下。并会根据 index.xml （如果没有，根据文件）
 		生成一个索引 wiki 页，文件名为 wiki_index_page.wiki。所有的本地图片都会被打入压缩包 /output/abc/wiki_images.zip，并且所有的本地图片
