@@ -38,6 +38,8 @@
 	     @[http://birdwindy.javaeye.com Bird.Wyatt]
 	 * 《[http://yunhaifeiwu.javaeye.com/blog/743368 nutz初使用之MVC HelloWorld (netbeans html,jquery版)]》 \
 	     @[http://yunhaifeiwu.javaeye.com 云海飞舞]
+	 * 《[http://yunhaifeiwu.javaeye.com/blog/746886 nutz初使用之MVC HelloWorld (netbeans jsp版）]》 \
+	     @[http://yunhaifeiwu.javaeye.com 云海飞舞]
 -----------------------------------------------------------------------------------
 关于 Ioc
 	 * 《[http://wendal.javaeye.com/blog/654658 Nutz 1.a.27 最新变化之一 -- XML配置ioc]》\
