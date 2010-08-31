@@ -188,7 +188,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			if (null != view)
 				return view;
 		}
-		throw Lang.makeThrow("Can not eval %s View for %s", viewType, this.method);
+		throw Lang.makeThrow("Can not eval %s(\"%s\") View for %s", viewType, str, this.method);
 	}
 
 	public void invoke(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
