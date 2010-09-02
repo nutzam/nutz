@@ -6,6 +6,8 @@
 	一个 Mvc 框架可以通过 Ioc 接口同一个 Ioc 容器挂接，挂接的方法很简单： 在主模块上声明 @IocBy
 	{{{
 	@IocBy(type=JsonIocProvider.class, args={"/conf/core.js", "/conf/pet.js"})
+	public class MainModule {
+		...
 	}}}
 	Nutz.Mvc  内置了 JsonIocProvider 类，帮助你同标准 NutIoc 容器挂接。下面是这个类的全部源代码：
 	{{{
@@ -16,6 +18,26 @@
 	}
 	}}}
 	极其简单，对吗？ 其中，@IocBy 的 "args" 属性的值将会直接传入 IocProvider 的 create 函数。
+-----------------------------------------------------------------------------------------------------------------------
+JSON 配置的自动扫描
+
+	通常你的应用会有不只一个 ioc 配置文件，如果一个一个的写出来非常麻烦。所以，如果你指定的是一个目录：
+	{{{
+	@IocBy(type=JsonIocProvider.class, args={"myioc"})
+	public class MainModule {
+		...
+	}}}
+	如上例，那么， Nutz 内置的 JsonLoader 会自动寻找 myioc 的目录（除了 CLASSPATH 下的目录，也可以是个绝对目录）
+	目录内的所有 *.js 或者 *.json 文件都会被自动加载
+	
+	并且，你也可以混合目录和文件，比如：
+	{{{
+	@IocBy(type=JsonIocProvider.class, args={"myioc", "abc/single.js"})
+	public class MainModule {
+		...
+	}}}
+	目录 "myioc" 下所有的 *.js 和 *.json 文件都会被加载，并且也会加载 "abc/single.js"
+
 -----------------------------------------------------------------------------------------------------------------------
 由 Ioc 容器管理子模块
 	
