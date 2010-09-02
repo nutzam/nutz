@@ -61,9 +61,13 @@ public class OracleExpert implements SqlExpert {
 		else if ("text".equalsIgnoreCase(df.getType())) {
 			sb.append("VARCHAR(4000)");
 		}
+		// Int
+		else if ("int".equalsIgnoreCase(df.getType())) {
+			sb.append("NUMBER(10)");
+		}
 		// Bigint
 		else if ("bigint".equalsIgnoreCase(df.getType())) {
-			sb.append("NUMBER");
+			sb.append("NUMBER(20)");
 		}
 		// Others
 		else {
@@ -77,14 +81,15 @@ public class OracleExpert implements SqlExpert {
 		sb.append(df.getName()).append(' ');
 		// Type
 		appendFieldType(sb, df);
-		// Decorator
+		// UNIQUE
 		if (!df.isPrimaryKey() && df.isUnique())
 			sb.append(" UNIQUE");
-		if (df.isNotNull())
-			sb.append(" NOT NULL");
 		// Default Value
 		if (!Strings.isBlank(df.getDefaultValue()))
 			sb.append(" DEFAULT ").append(df.getDefaultValue());
+		// NOT NULL
+		if (df.isNotNull())
+			sb.append(" NOT NULL");
 		return sb.toString();
 	}
 
