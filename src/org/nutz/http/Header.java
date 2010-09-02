@@ -3,6 +3,7 @@ package org.nutz.http;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.nutz.json.Json;
@@ -39,11 +40,14 @@ public class Header {
 		items.clear();
 		return this;
 	}
+	
+	public Set<Entry<String, String>> getAll(){
+		return items.entrySet();
+	}
 
 	public Header addAll(Map<String, String> map) {
 		if (null != map)
-			for (Entry<String, String> entry : map.entrySet())
-				set(entry.getKey(), entry.getValue());
+			items.putAll(map);
 		return this;
 	}
 
@@ -63,14 +67,14 @@ public class Header {
 
 	public static Header create() {
 		Header header = new Header();
-		header.set("user-agent", "Nutz.Robot");
-		header.set("accept-encoding", "gzip,deflate,bzip2,sdch");
-		header.set("accept", "text/xml,application/xml,application/xhtml+xml,text/html;"
+		header.set("User-Agent", "Nutz.Robot");
+		header.set("Accept-Encoding", "gzip,deflate");
+		header.set("Accept", "text/xml,application/xml,application/xhtml+xml,text/html;"
 								+ "q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5");
-		header.set("accept-language", "en-US,en,zh,zh-CN");
-		header.set("accept-charset", "ISO-8859-1,*,utf-8");
-		header.set("connection", "Keep-Alive");
-		header.set("cache-control", "max-age=0");
+		header.set("Accept-Language", "en-US,en,zh,zh-CN");
+		header.set("Accept-Charset", "ISO-8859-1,*,utf-8");
+		header.set("Connection", "keep-alive");
+		header.set("Cache-Control", "max-age=0");
 		return header;
 	}
 

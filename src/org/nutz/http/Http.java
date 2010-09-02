@@ -55,7 +55,6 @@ public class Http {
 		if (null == s)
 			return "";
 		try {
-			// Fix issue 270, 临时按照意见来修改
 			// Fix issue 283, 按照“茶几”的意见再次修改
 			return URLEncoder.encode(s.toString(), Encoding.CHARSET_UTF8.name());
 		}

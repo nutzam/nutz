@@ -2,17 +2,22 @@ package org.nutz.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
 import org.nutz.lang.Lang;
 
+/**
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public abstract class Sender {
 
 	public static Sender create(String url) {
@@ -43,12 +48,10 @@ public abstract class Sender {
 		Response rep = null;
 		if (reHeaders != null && reHeaders.get(null) != null) {
 			rep = new Response(reHeaders);
-			if (rep.isOK()) {
-				InputStream ins = new BufferedInputStream(conn.getInputStream());
-				rep.setStream(ins);
-			} else {
+			if (rep.isOK())
+				rep.setStream(new BufferedInputStream(conn.getInputStream()));
+			else
 				rep.setStream(Lang.ins(""));
-			}
 		}
 		return rep;
 	}
@@ -73,14 +76,15 @@ public abstract class Sender {
 	}
 
 	protected void setupRequestHeader() {
-		Header header = request.getHeader();
-		if (null != header) {
-			for (String key : header.keys()) {
-				conn.setRequestProperty(key, header.get(key));
-			}
-		}
 		URL url = request.getUrl();
-		conn.setRequestProperty("host", url.getHost() + ":" + url.getPort());
+		String host = url.getHost();
+		if (url.getPort() > 0 && url.getPort() != 80)
+			host += ":" + url.getPort();
+		conn.setRequestProperty("Host", host);
+		Header header = request.getHeader();
+		if (null != header) 
+			for (Entry<String, String> entry : header.getAll()) 
+				conn.addRequestProperty(entry.getKey(), entry.getKey());
 	}
 
 }

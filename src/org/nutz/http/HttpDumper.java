@@ -151,7 +151,7 @@ public class HttpDumper {
 	}
 
 	public static String getUserAgent(HttpServletRequest request) {
-		return request.getHeader("user-agent");
+		return request.getHeader("User-Agent");
 	}
 
 	public static String dumpBrief(HttpServletRequest request) {

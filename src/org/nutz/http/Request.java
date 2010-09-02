@@ -57,12 +57,7 @@ public class Request {
 		try {
 			if (this.isGet() && null != params && params.size() > 0) {
 				sb.append(url.indexOf('?') > 0 ? '&' : '?');
-				for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-					String key = it.next();
-					sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
-					if (it.hasNext())
-						sb.append('&');
-				}
+				sb.append(getURLEncodedParams());
 			}
 			return new URL(sb.toString());
 		}
@@ -73,6 +68,17 @@ public class Request {
 
 	public Map<String, ?> getParams() {
 		return params;
+	}
+	
+	public String getURLEncodedParams() {
+		StringBuilder sb = new StringBuilder("");
+		for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
+			String key = it.next();
+			sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
+			if (it.hasNext())
+				sb.append('&');
+		}
+		return sb.toString();
 	}
 
 	private Request setParams(Map<String, ?> params) {
@@ -116,12 +122,12 @@ public class Request {
 	}
 
 	public Request setCookie(Cookie cookie) {
-		header.set("cookie", cookie.toString());
+		header.set("Cookie", cookie.toString());
 		return this;
 	}
 
 	public Cookie getCookie() {
-		String s = header.get("cookie");
+		String s = header.get("Cookie");
 		if (null == s)
 			return new Cookie();
 		return new Cookie(s);

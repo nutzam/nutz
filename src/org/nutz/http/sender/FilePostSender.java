@@ -30,8 +30,8 @@ public class FilePostSender extends PostSender {
 			conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
 			setupDoInputOutputFlag();
 			Map<String, ?> params = request.getParams();
-			DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
 			if (null != params && params.size() > 0) {
+				DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
 				for (Entry<String,?> entry : params.entrySet()) {
 					outs.writeBytes("--" + boundary + SEPARATOR);
 					String key = entry.getKey();
@@ -58,7 +58,7 @@ public class FilePostSender extends PostSender {
 						Streams.safeClose(is);
 
 					} else {
-						outs.writeBytes("content-disposition:	form-data;	name=\""
+						outs.writeBytes("Content-Disposition:	form-data;	name=\""
 										+ key
 										+ "\"\r\n\r\n");
 						outs.writeBytes(entry.getValue() + "\r\n");
