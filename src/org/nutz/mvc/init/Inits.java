@@ -1,7 +1,10 @@
 package org.nutz.mvc.init;
 
+import java.io.File;
+
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.log.Log;
@@ -13,15 +16,6 @@ import org.nutz.mvc.annotation.LoadingBy;
 public abstract class Inits {
 
 	private static final Log log = Logs.getLog(Inits.class);
-
-	public static class LOG {
-		public static void printStart(String servletName) {
-			if (log.isInfoEnabled()) {
-				log.infof("Nutz Version : %s", Nutz.version());
-				log.infof("Nutz.Mvc[%s] is initializing ...", servletName);
-			}
-		}
-	}
 
 	/**
 	 * 根据一个配置获取加载后的信息
@@ -39,6 +33,7 @@ public abstract class Inits {
 				log.infof("Nutz Version : %s", Nutz.version());
 				log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
 			}
+			printContainerInfo();
 			Stopwatch sw = Stopwatch.begin();
 
 			// Nutz.Mvc need a class name as the default Module
@@ -104,4 +99,15 @@ public abstract class Inits {
 		if (log.isInfoEnabled())
 			log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
 	}
+	
+	private static void printContainerInfo() {
+		if (log.isInfoEnabled()) {
+			log.infof("Web Container info - Default charset --> %s\n",Encoding.defaultEncoding());
+			log.infof("Web Container info - current . path  --> %s\n",new File(".").getAbsolutePath());
+			log.infof("Web Container info - Java version    --> %s\n",System.getProperties().get("java.version"));
+			log.infof("Web Container info - File separator  --> %s\n",System.getProperties().get("file.separator"));
+			log.infof("Web Container info - User Timezone   --> %s\n",System.getProperties().get("user.timezone"));
+		}
+	}
+	
 }
