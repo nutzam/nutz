@@ -15,9 +15,14 @@ public class SystemLog extends AbstractLog {
 	private final static SystemLog me = new SystemLog();
 	
 	private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	
+	private static boolean warned;
 
 	static SystemLog me() {
-		me.warn("!!You are using default SystemLog! Don't use it in Production environment!!");
+		if (! warned) {
+			me.warn("!!You are using default SystemLog! Don't use it in Production environment!!");
+			warned = true;
+		}
 		return me;
 	}
 
