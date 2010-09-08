@@ -2,11 +2,11 @@
 #index:0,1
 
 为什么需要过滤字段
-	 某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。通过注解 [annotations.html Nutz.Dao 实体注解] {#A74;*@Readonly} 可以达到
+	 某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。通过注解 [annotations.man Nutz.Dao 实体注解] {#A74;*@Readonly} 可以达到
 	 这个目的。但是更多的时候，对于 POJO 对象，只有在运行时，用户的程序才能决定哪些字段更新，哪些不更新。{#A74;*@Readonly} 注解可就达不到这个
 	 目的了。
 
-	 怎么办呢？ Nutz.Dao 提供了类似于 [dynamic_table_name.html 动态表名] 的解决办法。
+	 怎么办呢？ Nutz.Dao 提供了类似于 [dynamic_table_name.man 动态表名] 的解决办法。
 
 如何过滤字段的例子
 	如下代码，将只更新 Pet 的 id 和 name 字段：

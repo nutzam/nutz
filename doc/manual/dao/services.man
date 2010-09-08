@@ -26,7 +26,7 @@ Nutz 内置的服务类
 
 	<hierarchy_services.png>
 
-	请重新温习一下[services.html Nutz.Dao 实体注解(Entity Annotation)]中的注解 {#A64;*@Id} 和 {#A64;*@Name} 这两个注解，
+	请重新温习一下[services.man Nutz.Dao 实体注解(Entity Annotation)]中的注解 {#A64;*@Id} 和 {#A64;*@Name} 这两个注解，
 	这里我称一个 POJO 对象为一个 {#00A;*实体} （{#080;_Entity}）：
 
 	 * 如果 POJO 即声明了 {#A64;*@Id} 又声明了 {#A64;*@Name}，那么适合采用 IdNameEntityService
