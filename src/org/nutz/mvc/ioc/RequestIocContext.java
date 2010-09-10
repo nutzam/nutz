@@ -8,7 +8,6 @@ import javax.servlet.ServletRequest;
 
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
-import org.nutz.ioc.weaver.StaticWeaver;
 
 /**
  * 
@@ -55,11 +54,7 @@ public class RequestIocContext implements IocContext {
 			return null;
 		if (re instanceof ObjectProxy)
 			return (ObjectProxy) re;
-		ObjectProxy op = new ObjectProxy();
-		StaticWeaver staticWeaver = new StaticWeaver();
-		staticWeaver.setObj(re);
-		op.setWeaver(staticWeaver);
-		return op;
+		return new ObjectProxy().setObj(re);
 	}
 
 	public boolean remove(String scope, String name) {

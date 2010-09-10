@@ -1,19 +1,30 @@
 package org.nutz.ioc;
 
+/**
+ * 对象编织器
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public interface ObjectWeaver {
 
 	/**
-	 * 编织一个对象
+	 * 根据容器构造时，为一个对象填充字段
 	 * 
 	 * @param ing
-	 *            对象注入时
-	 * @return 编织后对象
+	 *            容器构造时
+	 * @param obj
+	 *            对象，要被填充字段
+	 * 
+	 * @return 被填充后的字段
 	 */
-	Object weave(IocMaking ing);
+	public <T> T fill(IocMaking ing, T obj);
 
 	/**
-	 * 释放一个对象。如果你的实现没有缓存对象，什么都不用做
+	 * 根据自身内容创建一个对象，并触发创建事件
+	 * 
+	 * @param ing
+	 *            容器构造时
 	 */
-	void depose();
+	public Object born(IocMaking ing);
 
 }

@@ -1,5 +1,7 @@
 package org.nutz.ioc;
 
+import org.nutz.lang.Lang;
+
 /**
  * 每次获取对象时会触发 fetch 事件，销毁时触发 depose 事件。
  * <p>
@@ -13,17 +15,32 @@ package org.nutz.ioc;
 public class ObjectProxy {
 
 	/**
-	 *对象编织方式
+	 * 存储动态编织对象的方法
 	 */
 	private ObjectWeaver weaver;
 
 	/**
-	 *获取时触发器
+	 * 存储静态对象
+	 */
+	private Object obj;
+
+	/**
+	 * 获取时触发器
 	 */
 	private IocEventTrigger<Object> fetch;
 
+	/**
+	 * 销毁时触发器。如果有静态对象被销毁，触发
+	 */
+	private IocEventTrigger<Object> depose;
+
 	public ObjectProxy setWeaver(ObjectWeaver weaver) {
 		this.weaver = weaver;
+		return this;
+	}
+
+	public ObjectProxy setObj(Object obj) {
+		this.obj = obj;
 		return this;
 	}
 
@@ -32,16 +49,29 @@ public class ObjectProxy {
 		return this;
 	}
 
+	public ObjectProxy setDepose(IocEventTrigger<Object> depose) {
+		this.depose = depose;
+		return this;
+	}
+
 	@SuppressWarnings("unchecked")
 	public <T> T get(Class<T> classOfT, IocMaking ing) {
-		Object obj = weaver.weave(ing);
+		Object re;
+		if (null != obj)
+			re = obj;
+		else if (null != weaver)
+			re = weaver.fill(ing, weaver.born(ing));
+		else
+			throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
+
 		if (null != fetch)
-			fetch.trigger(obj);
-		return (T) obj;
+			fetch.trigger(re);
+		return (T) re;
 	}
 
 	public void depose() {
-		weaver.depose();
+		if (null != obj && null != depose)
+			depose.trigger(obj);
 	}
 
 }
