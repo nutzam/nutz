@@ -7,11 +7,12 @@
 	已发布的最新版本为：[history/1_a_31.man 1.a.31] 
 	
 	本版除了修复问题，主要增加如下特性
-	 # Yaml 支持
+	 # Ioc: 字段注入的循环依赖，不能正常工作
 	 # Mvc: 上传时，支持文件名过滤，以及大小限制
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=94 Issue 94]    	Ioc中有相互依赖时会出现空指针异常    {#AAA;by} {*Blue Rain}
 	 * [http://code.google.com/p/nutz/issues/detail?id=200 Issue 200]    MVC: UploadAdapter文件大小限额    {#AAA;by} {*天行健}
 	 * [http://code.google.com/p/nutz/issues/detail?id=249 Issue 249]    mvc: UploadAdaptor 应该支持一个选项，是否记录空文件（默认应该为 "不记录"）    {#AAA;by} {*zozohtnt}
 	 * [http://code.google.com/p/nutz/issues/detail?id=274 Issue 274]    lang: Files.write 应该支持 InputStream    {#AAA;by} {*zozohtnt}
@@ -46,6 +47,7 @@
 	 如有遗漏,请提醒我们 ^_^
 	 
 	|| 贡献者 									|| 问题 || 博客|| 支持 || 代码  || Demo|| 文档 || 测试 ||
+	|| Blue Rain								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
 	|| Jay										||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
 	|| wendal									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
