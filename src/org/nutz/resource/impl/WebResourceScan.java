@@ -1,19 +1,23 @@
 package org.nutz.resource.impl;
 
+import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
+import org.nutz.lang.util.Disks;
+import org.nutz.lang.util.FileVisitor;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.ResourceScan;
 
@@ -26,84 +30,90 @@ import org.nutz.resource.ResourceScan;
 @SuppressWarnings("unchecked")
 public class WebResourceScan implements ResourceScan {
 
-	private static final String WebClasses = "/WEB-INF/classes/";
+	private static final Log log = Logs.getLog(WebResourceScan.class);
 
-	private static final String WebLib = "/WEB-INF/lib/";
+	private static final String WEB_CLASSES = "/WEB-INF/classes/";
 
-	private ServletContext servletContext;
+	private static final String WEB_LIB = "/WEB-INF/lib/";
+
+	private ServletContext sc;
 
 	public WebResourceScan(ServletContext servletContext) {
-		this.servletContext = servletContext;
+		this.sc = servletContext;
 	}
 
 	public List<NutResource> list(String src, String filter) {
-		List<NutResource> list = new ArrayList<NutResource>();
+		final Pattern regex = Pattern.compile(filter);
+		final List<NutResource> list = new ArrayList<NutResource>();
 		// 获取全部jar
-		Set<String> jars = servletContext.getResourcePaths(WebLib);
+		Set<String> jars = sc.getResourcePaths(WEB_LIB);
 		for (String path : jars) {
 			try {
-				JarFile jarFile = new JarFile(path);
-				Enumeration<JarEntry> entries = jarFile.entries();
-				while (entries.hasMoreElements()) {
-					JarEntry jarEntry = entries.nextElement();
-					String name = jarEntry.getName();
-					if (name.startsWith(src) && name.endsWith(filter)) {
-						JarEntryResource resource = new JarEntryResource(path, name);
-						list.add(resource);
+				JarFile jar = new JarFile(sc.getRealPath(path));
+				Enumeration<JarEntry> ens = jar.entries();
+				while (ens.hasMoreElements()) {
+					JarEntry jen = ens.nextElement();
+					String name = jen.getName();
+					if (name.startsWith(src) && regex.matcher(name).find()) {
+						list.add(new JarEntryResource(jar, jen));
 					}
 				}
 			}
 			catch (Throwable e) {
-				e.printStackTrace();
+				if (log.isFatalEnabled())
+					log.fatal("Fail to scan path '" + path + "'!", e);
 			}
 		}
 		// 获取classes里面文件
-		Set<String> set = lists(WebClasses);
-		for (String filePath : set) {
-			String simpleName = filePath.substring(filePath.lastIndexOf(WebClasses)
-													+ WebClasses.length() + 1);
-			if (simpleName.startsWith(src) && simpleName.endsWith(filter)) {
-				ClasspathResource resource = new ClasspathResource(simpleName);
-				list.add(resource);
-			}
+		// 对 classes 文件夹作一个深层遍历
+		// 忽略隐藏文件，以不能被 filter 匹配的项目
+		// 返回的 NutResource 对象，都是以 classes 目录为根
+		File dir = new File(sc.getRealPath(WEB_CLASSES));
+		// 目录不存在
+		if (!dir.exists()) {
+			if (log.isWarnEnabled())
+				log.warnf(	"Fail to found '%s' in context [%s]",
+							WEB_CLASSES,
+							sc.getServletContextName());
 		}
+		// 不是一个目录
+		else if (!dir.isDirectory()) {
+			if (log.isWarnEnabled())
+				log.warnf(	"'%s' in context [%s] should be a directory!",
+							WEB_CLASSES,
+							sc.getServletContextName());
+		}
+		// 那么很好，深层递归一下吧
+		else {
+			final int pos = dir.getAbsolutePath().length() + 1;
+			Disks.visitFile(dir,
+			/*
+			 * 处理文件
+			 */
+			new FileVisitor() {
+				public void visit(File file) {
+					list.add(new ClasspathResource(file.getAbsolutePath().substring(pos)));
+				}
+			},
+			/*
+			 * 文件需要满足的条件
+			 */
+			new FileFilter() {
+				public boolean accept(File f) {
+					if (f.isHidden())
+						return false;
+					if (f.isDirectory())
+						return true;
+					return regex.matcher(f.getName()).find();
+				}
+			});
+		}
+
 		return list;
 	}
 
 	public boolean canWork() {
 		return false;
-	}
-
-	private Set<String> lists(String path) {
-		Set<String> set = new HashSet<String>();
-		if (path.endsWith("/"))
-			set.add(path);
-		else {
-			Set<String> pps = servletContext.getResourcePaths(path);
-			if (pps != null && pps.size() > 0)
-				for (String str : pps)
-					set.addAll(lists(str));
-		}
-		return set;
-	}
-
-	static class JarEntryResource extends NutResource {
-
-		private String jarFileName;
-
-		public JarEntryResource(String jarFileName, String jarEntryName) {
-			super();
-			this.jarFileName = jarFileName;
-			this.name = jarEntryName;
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			ZipFile zipFile = new ZipFile(jarFileName);
-			ZipEntry zipEntry = zipFile.getEntry(name);
-			return zipFile.getInputStream(zipEntry);
-		}
-
 	}
 
 	static class ClasspathResource extends NutResource {

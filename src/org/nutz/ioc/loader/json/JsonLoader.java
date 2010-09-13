@@ -40,9 +40,9 @@ public class JsonLoader extends MapLoader {
 		this(null, paths);
 	}
 
-	public JsonLoader(Class<? extends ResourceScan> scanType, String... paths) {
+	public JsonLoader(ResourceScan rsScan, String... paths) {
 		try {
-			scan = null == scanType ? new LocalResourceScan() : scanType.newInstance();
+			scan = null == rsScan ? new LocalResourceScan() : rsScan;
 		}
 		catch (Exception e1) {
 			throw Lang.wrapThrow(e1);
@@ -57,11 +57,11 @@ public class JsonLoader extends MapLoader {
 				// ".js");
 				File f = Files.findFile(path);
 				// 如果是文件，直接加载
-				if (f.isFile()) {
+				if (null != f && f.isFile()) {
 					loadFromInputStream(new FileInputStream(f));
 				}
 				// 如果是路径，进行扫描
-				else if (f.isDirectory()) {
+				else {
 					List<NutResource> rsList = scan.list(path, "^(.+[.])(js|json)$");
 					for (NutResource nr : rsList) {
 						loadFromInputStream(nr.getInputStream());

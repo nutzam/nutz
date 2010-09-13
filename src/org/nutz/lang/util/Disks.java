@@ -38,8 +38,8 @@ public abstract class Disks {
 			re++;
 		} else if (f.isDirectory()) {
 			File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
-			for (File ff : fs)
-				re += visitFile(ff, fv, filter);
+			for (File theFile : fs)
+				re += visitFile(theFile, fv, filter);
 		}
 		return re;
 	}

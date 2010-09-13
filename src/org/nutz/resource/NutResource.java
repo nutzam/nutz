@@ -43,7 +43,7 @@ public abstract class NutResource implements Comparable<NutResource> {
 
 	@Override
 	public String toString() {
-		return name;
+		return String.format("NutResource[%s]", name);
 	}
 
 }

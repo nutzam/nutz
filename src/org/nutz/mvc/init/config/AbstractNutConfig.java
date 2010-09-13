@@ -8,6 +8,8 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.NutConfigException;
+import org.nutz.resource.ResourceScan;
+import org.nutz.resource.Scans;
 
 public abstract class AbstractNutConfig implements NutConfig {
 
@@ -64,6 +66,10 @@ public abstract class AbstractNutConfig implements NutConfig {
 		catch (Exception e) {
 			throw new NutConfigException(e);
 		}
+	}
+
+	public ResourceScan scan() {
+		return Scans.web(getServletContext());
 	}
 
 }

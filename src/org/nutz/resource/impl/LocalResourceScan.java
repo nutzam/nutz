@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
-import org.nutz.lang.util.ByteInputStream;
 import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.resource.NutResource;
@@ -87,25 +86,6 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	}
 
-	/**
-	 * 封装了 jar 内的 Entity
-	 */
-	static class JarEntryResource extends NutResource {
-
-		private JarEntry entry;
-
-		public JarEntryResource(JarEntry jen) {
-			this.entry = jen;
-			this.name = jen.getName();
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return new ByteInputStream(entry.getExtra());
-		}
-
-	}
-
 	public List<NutResource> list(String src, String filter) {
 		final List<NutResource> list = new LinkedList<NutResource>();
 		final Pattern regex = null == filter ? null : Pattern.compile(filter);
@@ -118,7 +98,9 @@ public class LocalResourceScan extends AbstractResourceScan {
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
 			// 如果在其中，那么是在一个 JAR 中还是在一个本地目录里
-			String path = Disks.absolute(src, getClass().getClassLoader(), Encoding.defaultEncoding());
+			String path = Disks.absolute(	src,
+											getClass().getClassLoader(),
+											Encoding.defaultEncoding());
 			if (null != path) {
 				f = new File(path);
 				// 如果是本地目录，递归这个目录
@@ -143,7 +125,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 								int pos = name.replace('\\', '/').lastIndexOf('/');
 								String enName = name.substring(pos + 1);
 								if (null == regex || regex.matcher(enName).find())
-									list.add(new JarEntryResource(jen));
+									list.add(new JarEntryResource(jar, jen));
 							}
 						}
 					}
