@@ -25,14 +25,15 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * 本适配器专门处理 HTTP 文件上传。 它支持多文件，多参数上传。具体的做法是将 HTTP 上传的所有内容
  * 包括文件以及名值对都预先缓存下来。其中，文件缓存在磁盘上，名值对缓存在内存中。
  * <p>
- * 因此，本适配器构造的时候，需要三个参数：
+ * 因此，本适配器构造的时候，需要四个参数：
  * <ol>
  * <li>临时文件存放的目录
- * <li>临时文件的总数目，超过了这个数目，旧的临时文件就有可能被删除
+ * <li>数据缓冲区大小,建议设置为8192
  * <li>HTTP 请求的编码方式。
+ * <li>临时文件的最大数量
  * </ol>
- * 本适配器提供了三个构造函数，最简单的一个只有一个参数，需要你提供一个临时文件目录 临时文件数目默认的为 "2000"，HTTP 请求的编码方式为
- * "UTF-8"
+ * 本适配器提供了四个构造函数，最简单的一个只有一个参数，需要你提供一个临时文件目录,缓冲区大小默认为8192, 临时文件数目默认的为 "2000"，HTTP 请求的编码方式为
+ * "UTF-8",
  * <p>
  * 为了能让入口函数了解 HTTP 请求的更多信息，本适配器入口函数声明更多的参数类型：
  * <ul>
@@ -52,7 +53,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private UploadingContext context;
 
 	public UploadAdaptor() throws IOException {
-		context = new UploadingContext(File.createTempFile("nutz", null).getParent());
+		context = new UploadingContext(new NutFilePool(File.createTempFile("nutz", null).getParent(),2000));
 	}
 
 	public UploadAdaptor(String path) {

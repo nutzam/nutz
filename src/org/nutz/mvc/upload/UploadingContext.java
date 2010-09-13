@@ -4,6 +4,8 @@ import java.util.regex.Pattern;
 
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
+import org.nutz.lang.Encoding;
+import org.nutz.log.Logs;
 
 /**
  * 执行上传时一些必要的配置信息
@@ -25,7 +27,7 @@ public class UploadingContext {
 	}
 
 	public UploadingContext(FilePool pool) {
-		charset = "UTF-8";
+		charset = Encoding.UTF8;
 		bufferSize = 8192;
 		this.filePool = pool;
 	}
@@ -91,6 +93,8 @@ public class UploadingContext {
 
 	public UploadingContext setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
+		if (bufferSize < 1024)
+			Logs.getLog(getClass()).warn("Uploading buffer is less than 1024!!");
 		return this;
 	}
 
