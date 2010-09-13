@@ -561,6 +561,7 @@ public abstract class Files {
 			ops.write(b);
 
 		Streams.safeClose(ins);
+		Streams.safeFlush(ops);
 		Streams.safeClose(ops);
 		return target.setLastModified(src.lastModified());
 	}

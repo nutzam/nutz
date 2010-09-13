@@ -120,6 +120,7 @@ public abstract class Dumps {
 						ops.write(b);
 					ins.close();
 				}
+				ops.flush();
 				ops.close();
 			}
 			catch (IOException e) {

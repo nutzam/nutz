@@ -51,8 +51,10 @@ public abstract class Streams {
 	 * @throws IOException
 	 */
 	public static void write(Writer writer, CharSequence cs) throws IOException {
-		if (null != cs && null != writer)
+		if (null != cs && null != writer) {
 			writer.write(cs.toString());
+			writer.flush();
+		}
 	}
 
 	/**
