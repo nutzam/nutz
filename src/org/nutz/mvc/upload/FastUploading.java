@@ -65,7 +65,7 @@ public class FastUploading implements Uploading {
 		RemountBytes itemEndlBytes = RemountBytes.create(itemEndl);
 		RemountBytes nameEndlBytes = RemountBytes.create("\r\n\r\n");
 
-		if (itemEndlBytes == null) {
+		if (Http.multipart.getBoundary(req.getContentType()) == null) {
 			if (log.isInfoEnabled())
 				log.info("boundary no found!!");
 			return params;
