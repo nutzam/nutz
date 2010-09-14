@@ -19,7 +19,6 @@ import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
-import org.nutz.resource.ResourceScan;
 
 /**
  * 只适用于标准的Web结构的资源扫描
@@ -28,7 +27,7 @@ import org.nutz.resource.ResourceScan;
  * 
  */
 @SuppressWarnings("unchecked")
-public class WebResourceScan implements ResourceScan {
+public class WebResourceScan extends AbstractResourceScan {
 
 	private static final Log log = Logs.getLog(WebResourceScan.class);
 

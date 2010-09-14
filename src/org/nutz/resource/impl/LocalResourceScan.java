@@ -2,9 +2,7 @@ package org.nutz.resource.impl;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,30 +60,6 @@ public class LocalResourceScan extends AbstractResourceScan {
 		return true;
 	}
 
-	/**
-	 * 记录了一个磁盘文件资源
-	 */
-	static class FileResource extends NutResource {
-
-		private File file;
-
-		FileResource(File file) {
-			try {
-				this.name = file.getCanonicalPath();
-			}
-			catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
-			this.file = file;
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return new FileInputStream(file);
-		}
-
-	}
-
 	public List<NutResource> list(String src, String filter) {
 		final List<NutResource> list = new LinkedList<NutResource>();
 		final Pattern regex = null == filter ? null : Pattern.compile(filter);
@@ -93,7 +67,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 		File f = new File(Disks.normalize(src));
 		// 如果存在，递归这个目录
 		if (f.exists()) {
-			scanByFile(list, regex, f, ignoreHidden);
+			scanByFile(list, regex, f.getParent(), f, ignoreHidden);
 		}
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
@@ -105,7 +79,9 @@ public class LocalResourceScan extends AbstractResourceScan {
 				f = new File(path);
 				// 如果是本地目录，递归这个目录
 				if (!path.contains(".jar!")) {
-					scanByFile(list, regex, f, ignoreHidden);
+					// 首先查找以下， CLASSPATH 从哪里开始
+					int pos = path.lastIndexOf(src);
+					scanByFile(list, regex, path.substring(0, pos), f, ignoreHidden);
 				}
 				// 如果在 jar 中，则循环查找这个 jar 的每一个实体
 				else {
@@ -141,16 +117,18 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	private void scanByFile(final List<NutResource> list,
 							final Pattern regex,
+							final String base,
 							File f,
 							final boolean ignoreHidden) {
 		if (null == f || (ignoreHidden && f.isHidden()))
 			return;
+
 		if (!f.isDirectory())
 			f = f.getParentFile();
 
 		Disks.visitFile(f, new FileVisitor() {
 			public void visit(File file) {
-				list.add(new FileResource(file));
+				list.add(new FileResource(base, file));
 			}
 		}, new FileFilter() {
 			public boolean accept(File theFile) {

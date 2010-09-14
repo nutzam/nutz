@@ -93,4 +93,5 @@ public interface NutConfig {
 	 * @return 资源扫描器
 	 */
 	ResourceScan scan();
+
 }

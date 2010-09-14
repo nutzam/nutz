@@ -2,6 +2,8 @@ package org.nutz.mvc;
 
 import java.util.Map;
 
+import org.nutz.resource.ResourceScan;
+
 /**
  * 本地化字符串加载方式
  * <p>
@@ -11,6 +13,6 @@ import java.util.Map;
  */
 public interface MessageLoader {
 
-	Map<String, Map<String, String>> load();
+	Map<String, Map<String, String>> load(ResourceScan scan, String refer);
 
 }

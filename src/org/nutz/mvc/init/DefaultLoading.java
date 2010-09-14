@@ -53,7 +53,7 @@ public class DefaultLoading implements Loading {
 			this.mainModule = mainModule;
 			loadIoc(config);
 			loadSubModules(config);
-			loadLocalization();
+			loadLocalization(config);
 			setupServer(config);
 			saveResult2Context(config);
 		}
@@ -153,15 +153,16 @@ public class DefaultLoading implements Loading {
 		config.setAttributeIgnoreNull(UrlMap.class.getName(), urls);
 	}
 
-	protected void loadLocalization() throws Throwable {
+	protected void loadLocalization(NutConfig config) throws Throwable {
 		Localization lc = mainModule.getAnnotation(Localization.class);
 		if (null != lc) {
 			if (log.isDebugEnabled())
 				log.debugf("Localization message: '%s'", lc.value());
 
-			msgss = Mirror.me(lc.type()).born(lc.value()).load();
-		} else if (log.isDebugEnabled())
+			msgss = Mirror.me(lc.type()).born().load(config.scan(), lc.value());
+		} else if (log.isDebugEnabled()) {
 			log.debug("!!!Can not find localization message resource");
+		}
 	}
 
 	protected void setupServer(NutConfig config) throws Throwable {

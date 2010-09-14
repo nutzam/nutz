@@ -21,7 +21,10 @@ public class Scans {
 	private static final ResourceScan local = new LocalResourceScan();
 
 	/**
-	 * 在磁盘目录或者 CLASSPATH 中搜索资源
+	 * 在磁盘目录或者 CLASSPATH(包括 jar) 中搜索资源
+	 * <ul>
+	 * <li>由于 jar 文件不包括目录，所以给出的 src 必须是个文件
+	 * </ul>
 	 * 
 	 * @param src
 	 *            起始路径
@@ -101,7 +104,7 @@ public class Scans {
 			for (NutResource nr : list) {
 				int r = nr.getName().lastIndexOf(".class");
 				try {
-					String className = nr	.getName()
+					String className = nr.getName()
 											.substring(pos, r)
 											.replace('/', '.')
 											.replace('\\', '.');
