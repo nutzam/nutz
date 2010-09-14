@@ -10,7 +10,6 @@ import org.nutz.mvc.init.NutConfig;
 public class JsonIocProvider implements IocProvider {
 
 	public Ioc create(NutConfig config, String[] args) {
-
 		return new NutIoc(new JsonLoader(config.scan(), args), new ScopeContext("app"), "app");
 	}
 

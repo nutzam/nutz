@@ -99,15 +99,16 @@ public abstract class Inits {
 		if (log.isInfoEnabled())
 			log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
 	}
-	
+
 	private static void printContainerInfo() {
-		if (log.isInfoEnabled()) {
-			log.infof("Web Container info - Default charset --> %s\n",Encoding.defaultEncoding());
-			log.infof("Web Container info - current . path  --> %s\n",new File(".").getAbsolutePath());
-			log.infof("Web Container info - Java version    --> %s\n",System.getProperties().get("java.version"));
-			log.infof("Web Container info - File separator  --> %s\n",System.getProperties().get("file.separator"));
-			log.infof("Web Container info - User Timezone   --> %s\n",System.getProperties().get("user.timezone"));
+		if (log.isDebugEnabled()) {
+			log.debug("Web Container Information:");
+			log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
+			log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
+			log.debugf(" - Java Version    : %s", System.getProperties().get("java.version"));
+			log.debugf(" - File separator  : %s", System.getProperties().get("file.separator"));
+			log.debugf(" - Timezone        : %s", System.getProperties().get("user.timezone"));
 		}
 	}
-	
+
 }

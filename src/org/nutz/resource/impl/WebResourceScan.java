@@ -42,7 +42,7 @@ public class WebResourceScan implements ResourceScan {
 		this.sc = servletContext;
 	}
 
-	public List<NutResource> list(String src, String filter) {
+	public List<NutResource> list(final String src, String filter) {
 		final Pattern regex = Pattern.compile(filter);
 		final List<NutResource> list = new ArrayList<NutResource>();
 		// 获取全部jar
@@ -92,7 +92,9 @@ public class WebResourceScan implements ResourceScan {
 			 */
 			new FileVisitor() {
 				public void visit(File file) {
-					list.add(new ClasspathResource(file.getAbsolutePath().substring(pos)));
+					String name = file.getAbsolutePath().substring(pos);
+					if (name.startsWith(src))
+						list.add(new ClasspathResource(name));
 				}
 			},
 			/*
