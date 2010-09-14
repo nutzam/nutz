@@ -46,7 +46,7 @@
 
 	将 Nutz.jar 加入 lib 目录中
 	
-		本例子需要 Nutz-1.a.31 或者更高的版本，截止到本文写作之时， 1.a.31 还未发布，
+		本例子需要 Nutz-1.a.31 或者更高的版本，
 		不过你可以[../committer/svn_project.man 自己编译一个最新版本]
 		
 		在 WebContent > WEB-INF > lib 文件夹下右键选择 New > File
