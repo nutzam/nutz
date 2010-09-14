@@ -20,10 +20,26 @@ public class FileSqlManager extends AbstractSqlManager {
 	public FileSqlManager(String... paths) {
 		this.paths = paths;
 		this.autoscan = true;
-		refresh();
 	}
 
-	@Override
+	public String getRegex() {
+		return regex;
+	}
+
+	public FileSqlManager setRegex(String regex) {
+		this.regex = regex;
+		return this;
+	}
+
+	public boolean isAutoscan() {
+		return autoscan;
+	}
+
+	public FileSqlManager setAutoscan(boolean autoscan) {
+		this.autoscan = autoscan;
+		return this;
+	}
+
 	public void refresh() {
 		// 准备对象
 		List<NutResource> nrs = new LinkedList<NutResource>();
@@ -56,7 +72,6 @@ public class FileSqlManager extends AbstractSqlManager {
 					}
 			}
 		}
-
 		// 父类提供解析方法
 		buildSQLMaps(nrs);
 	}

@@ -77,7 +77,7 @@ public class CustomizedSqlsTest extends DaoCase {
 	@Test
 	public void test_dynamic_insert() {
 		pojos.init();
-		((NutDao) dao).setSqlManager(new FileSqlManager("org/nutz/dao/test/sqls/exec.sqls"));
+		((NutDao) dao).setSqlManager(new FileSqlManager("org/nutz/dao/test/sqls/exec.sqls").setAutoscan(false));
 		int platoonId = 23;
 		try {
 			pojos.initPlatoon(platoonId);

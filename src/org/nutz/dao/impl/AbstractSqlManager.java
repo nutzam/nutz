@@ -30,18 +30,30 @@ import org.nutz.resource.NutResource;
 
 public abstract class AbstractSqlManager implements SqlManager {
 
-	private Map<String, String> sqlMaps;
-	private List<String> keys;
+	private Map<String, String> _sql_map;
+	private List<String> _sql_keys;
+
+	private Map<String, String> map() {
+		if (null == _sql_map)
+			this.refresh();
+		return _sql_map;
+	}
+
+	private List<String> keylist() {
+		if (null == _sql_keys)
+			this.refresh();
+		return _sql_keys;
+	}
 
 	public boolean contains(String key) {
-		return sqlMaps.containsKey(key);
+		return map().containsKey(key);
 	}
 
 	public void saveAs(File f) throws IOException {
 		Writer w = Streams.fileOutw(f);
-		for (String key : keys) {
+		for (String key : keylist()) {
 			w.append("/*").append(Strings.dup('-', 60)).append("*/\n");
-			String sql = sqlMaps.get(key);
+			String sql = map().get(key);
 			w.append(format("/*%s*/\n", key));
 			w.append(sql).append("\n");
 		}
@@ -50,7 +62,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public String get(String key) {
-		String sql = sqlMaps.get(key);
+		String sql = map().get(key);
 		if (null == sql)
 			throw new SqlNotFoundException(key);
 		return sql;
@@ -72,15 +84,15 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public int count() {
-		return sqlMaps.size();
+		return map().size();
 	}
 
 	public String[] keys() {
-		return keys.toArray(new String[keys.size()]);
+		return keylist().toArray(new String[keylist().size()]);
 	}
 
 	protected void buildSQLMaps(List<NutResource> nrs) {
-		sqlMaps = new HashMap<String, String>();
+		_sql_map = new HashMap<String, String>();
 		try {
 			for (NutResource nr : nrs) {
 				Reader r = nr.getReader();
@@ -94,12 +106,12 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public void addSql(String key, String value) {
-		if (sqlMaps.containsKey(key)) {
+		if (map().containsKey(key)) {
 			throw Lang.makeThrow("duplicate key '%s'", key);
 		}
 		key = Strings.trim(key);
-		sqlMaps.put(key, value);
-		keys.add(key);
+		map().put(key, value);
+		keylist().add(key);
 	}
 
 	static final Pattern ptn = Pattern.compile("(?<=^\n/[*])(.*)(?=[*]/)");
@@ -178,8 +190,8 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public void remove(String key) {
-		this.keys.remove(key);
-		this.sqlMaps.remove(key);
+		this.keylist().remove(key);
+		this.map().remove(key);
 	}
 
 	/**
@@ -196,7 +208,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 			SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
 
 			Iterator<String> it = p.keys().iterator();
-			keys = new ArrayList<String>(p.map.size());
+			_sql_keys = new ArrayList<String>(p.map.size());
 			while (it.hasNext()) {
 				String key = it.next();
 				String value = Strings.trim(p.get(key));
