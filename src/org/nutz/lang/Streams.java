@@ -40,12 +40,12 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 将一段文本全部写入一个输出流。
+	 * 将一段文本全部写入一个writer。
 	 * <p>
 	 * <b style=color:red>注意</b>，它并不会关闭输出流
 	 * 
-	 * @param ops
-	 *            输出流
+	 * @param writer
+	 *            
 	 * @param cs
 	 *            文本
 	 * @throws IOException
@@ -58,11 +58,11 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 将一段文本全部写入一个输出流。
+	 * 将一段文本全部写入一个writer。
 	 * <p>
 	 * <b style=color:red>注意</b>，它会关闭输出流
 	 * 
-	 * @param ops
+	 * @param writer
 	 *            输出流
 	 * @param cs
 	 *            文本

@@ -15,8 +15,7 @@ public interface Uploading {
 	 * 对流的解析
 	 * 
 	 * @param req
-	 * @param charset
-	 * @param tmps
+	 * @param context
 	 * 
 	 * @throws UploadException
 	 * @throws UploadOutOfSizeException
