@@ -65,6 +65,12 @@ public class FastUploading implements Uploading {
 		RemountBytes itemEndlBytes = RemountBytes.create(itemEndl);
 		RemountBytes nameEndlBytes = RemountBytes.create("\r\n\r\n");
 
+		if (itemEndlBytes == null) {
+			if (log.isInfoEnabled())
+				log.info("boundary no found!!");
+			return params;
+		}
+		
 		if (log.isDebugEnabled())
 			log.debug("boundary: " + itemEndl);
 
