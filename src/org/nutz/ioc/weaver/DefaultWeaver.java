@@ -17,7 +17,7 @@ public class DefaultWeaver implements ObjectWeaver {
 	/**
 	 * 对象创建时的触发器
 	 */
-	protected IocEventTrigger<Object> create;
+	private IocEventTrigger<Object> create;
 
 	/**
 	 * 对象构造方法
@@ -50,16 +50,6 @@ public class DefaultWeaver implements ObjectWeaver {
 		this.fields = fields;
 	}
 
-	/**
-	 * 根据容器构造时，为一个对象填充字段
-	 * 
-	 * @param ing
-	 *            容器构造时
-	 * @param obj
-	 *            对象，要被填充字段
-	 * 
-	 * @return 被填充后的字段
-	 */
 	public <T> T fill(IocMaking ing, T obj) {
 		// 设置字段的值
 		for (FieldInjector fi : fields)
@@ -67,12 +57,6 @@ public class DefaultWeaver implements ObjectWeaver {
 		return obj;
 	}
 
-	/**
-	 * 根据自身内容创建一个对象，并触发创建事件
-	 * 
-	 * @param ing
-	 *            容器构造时
-	 */
 	public Object born(IocMaking ing) {
 		// 准备构造函数参数
 		Object[] args = new Object[this.args.length];
@@ -82,8 +66,11 @@ public class DefaultWeaver implements ObjectWeaver {
 		// 创建实例
 		Object obj = borning.born(args);
 
-		// 触发创建事件
-		if (null != create)
+		return obj;
+	}
+
+	public Object onCreate(Object obj) {
+		if (null != create && null != obj)
 			create.trigger(obj);
 		return obj;
 	}

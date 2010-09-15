@@ -60,7 +60,7 @@ public class ObjectProxy {
 		if (null != obj)
 			re = obj;
 		else if (null != weaver)
-			re = weaver.fill(ing, weaver.born(ing));
+			re = weaver.onCreate(weaver.fill(ing, weaver.born(ing)));
 		else
 			throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
 

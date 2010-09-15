@@ -12,6 +12,18 @@ import static org.nutz.ioc.json.Utils.*;
 public class EvensJsonIocTest {
 
 	@Test
+	public void test_init_with_field() {
+		String s = "fields: {name:'Fox'},";
+		s = s + "\nevents:{";
+		s = s + "\n	create: 'org.nutz.ioc.json.pojo.WhenCreateFox'";
+		s = s + "\n}";
+		Ioc ioc = I(J("fox", s));
+
+		Animal fox = ioc.get(Animal.class, "fox");
+		assertEquals("$Fox", fox.getName());
+	}
+
+	@Test
 	public void test_events_for_singleton() {
 		String s = "fields: {name:'Fox'},";
 		s = s + "\nevents:{";

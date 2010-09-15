@@ -94,6 +94,9 @@ public class ObjectMakerImpl implements ObjectMaker {
 			if (null != obj)
 				dw.fill(ing, obj);
 
+			// 对象创建完毕，如果有 create 事件，调用它
+			dw.onCreate(obj);
+
 		}
 		// 当异常发生，从 context 里移除 ObjectProxy
 		catch (Throwable e) {

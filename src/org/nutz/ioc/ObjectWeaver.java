@@ -26,5 +26,13 @@ public interface ObjectWeaver {
 	 *            容器构造时
 	 */
 	public Object born(IocMaking ing);
+	
+	/**
+	 * 为对象触发 CREATE 事件
+	 * 
+	 * @param obj
+	 *            对象
+	 */
+	public Object onCreate(Object obj);
 
 }
