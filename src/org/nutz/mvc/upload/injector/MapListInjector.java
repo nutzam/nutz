@@ -17,7 +17,6 @@ public class MapListInjector implements ParamInjector {
 
 	private String name;
 
-	@Override
 	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		Object obj = ((Map<?,?>) refer).get(name);
 		if (obj == null)
