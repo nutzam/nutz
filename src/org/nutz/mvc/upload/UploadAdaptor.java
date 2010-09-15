@@ -2,6 +2,7 @@ package org.nutz.mvc.upload;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,13 +12,14 @@ import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.adaptor.AbstractAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
-import org.nutz.mvc.adaptor.injector.ArrayInjector;
 import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.adaptor.injector.MapReferInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
+import org.nutz.mvc.upload.injector.MapArrayInjector;
 import org.nutz.mvc.upload.injector.MapItemInjector;
+import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
@@ -32,8 +34,8 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * <li>HTTP 请求的编码方式。
  * <li>临时文件的最大数量
  * </ol>
- * 本适配器提供了四个构造函数，最简单的一个只有一个参数，需要你提供一个临时文件目录,缓冲区大小默认为8192, 临时文件数目默认的为 "2000"，HTTP 请求的编码方式为
- * "UTF-8",
+ * 本适配器提供了四个构造函数，最简单的一个只有一个参数，需要你提供一个临时文件目录,缓冲区大小默认为8192, 临时文件数目默认的为 "2000"，HTTP
+ * 请求的编码方式为 "UTF-8",
  * <p>
  * 为了能让入口函数了解 HTTP 请求的更多信息，本适配器入口函数声明更多的参数类型：
  * <ul>
@@ -53,7 +55,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 	private UploadingContext context;
 
 	public UploadAdaptor() throws IOException {
-		context = new UploadingContext(new NutFilePool(File.createTempFile("nutz", null).getParent(),2000));
+		context = new UploadingContext(new NutFilePool(File.createTempFile("nutz", null)
+															.getParent(), 2000));
 	}
 
 	public UploadAdaptor(String path) {
@@ -82,15 +85,6 @@ public class UploadAdaptor extends AbstractAdaptor {
 	}
 
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
-		// File
-		if (File.class.isAssignableFrom(type))
-			return new FileInjector(param.value());
-		// FileMeta
-		if (FieldMeta.class.isAssignableFrom(type))
-			return new FileMetaInjector(param.value());
-		// TempFile
-		if (TempFile.class.isAssignableFrom(type))
-			return new TempFileInjector(param.value());
 		// Map
 		if (Map.class.isAssignableFrom(type))
 			return new MapSelfInjector();
@@ -98,22 +92,36 @@ public class UploadAdaptor extends AbstractAdaptor {
 		if (null == param)
 			return null;
 
-		String pm = param.value();
+		String paramName = param.value();
+
+		// File
+		if (File.class.isAssignableFrom(type))
+			return new FileInjector(paramName);
+		// FileMeta
+		if (FieldMeta.class.isAssignableFrom(type))
+			return new FileMetaInjector(paramName);
+		// TempFile
+		if (TempFile.class.isAssignableFrom(type))
+			return new TempFileInjector(paramName);
+		// List
+		if (List.class.isAssignableFrom(type))
+			return new MapListInjector(paramName);
+		// Array
+		if (type.isArray())
+			return new MapArrayInjector(type.getComponentType(), paramName);
 		// POJO
-		if ("..".equals(pm)) {
+		if ("..".equals(paramName)) {
 			if (type.isAssignableFrom(Map.class))
 				return new MapPairInjector();
 			return new MapReferInjector(null, type);
 		}
 		// POJO with prefix
-		else if (pm.startsWith("::") && pm.length() > 2) {
-			return new MapReferInjector(pm.substring(2), type);
+		else if (paramName.startsWith("::") && paramName.length() > 2) {
+			return new MapReferInjector(paramName.substring(2), type);
 		}
-		// POJO[]
-		else if (type.isArray())
-			return new ArrayInjector(pm, type);
 
-		return new MapItemInjector(param.value(), type);
+		// Default case
+		return new MapItemInjector(paramName, type);
 	}
 
 	public Object[] adapt(	HttpServletRequest request,
@@ -126,7 +134,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 		}
 		catch (UploadException e) {
 			throw Lang.wrapThrow(e);
-		}finally{
+		}
+		finally {
 			Uploads.removeInfo(request);
 		}
 		// Try to make the args
