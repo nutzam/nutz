@@ -15,6 +15,7 @@ import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.impl.ComboContext;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -30,6 +31,7 @@ import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.annotation.AdaptBy;
+import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
@@ -74,7 +76,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 		this.evalFilters(ioc, method, dftflts);
 		this.evalEncoding(method, dftEncoding);
 		if (this.ok != null && this.ok instanceof VoidView && log.isInfoEnabled())
-			log.infof("Module[%s] method[%s] is using VoidView.", moduleType, method);
+			log.infof(	"Module [%s].%s() @At(%s) is using VoidView!",
+						moduleType,
+						method.getName(),
+						Json.toJson(method.getAnnotation(At.class).value()));
 	}
 
 	private void evalModule(Class<?> moduleType) {
