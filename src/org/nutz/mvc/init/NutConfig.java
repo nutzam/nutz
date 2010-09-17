@@ -1,7 +1,6 @@
 package org.nutz.mvc.init;
 
 import org.nutz.ioc.Ioc;
-import org.nutz.resource.ResourceScan;
 
 /**
  * 这个接口是一个抽象封装
@@ -86,12 +85,5 @@ public interface NutConfig {
 	 * @return 配置的主模块，null - 如果没有定义这个参数
 	 */
 	Class<?> getMainModule();
-
-	/**
-	 * 根据当前的服务器配置，得到一个资源扫描接口
-	 * 
-	 * @return 资源扫描器
-	 */
-	ResourceScan scan();
 
 }

@@ -16,8 +16,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.resource.NutResource;
-import org.nutz.resource.ResourceScan;
-import org.nutz.resource.impl.LocalResourceScan;
+import org.nutz.resource.Scans;
 
 /**
  * 从 Json 文件中读取配置信息。 支持 Merge with parent ，利用 MapLoader
@@ -30,48 +29,31 @@ import org.nutz.resource.impl.LocalResourceScan;
 @SuppressWarnings("unchecked")
 public class JsonLoader extends MapLoader {
 
-	private ResourceScan scan;
-
 	public JsonLoader(Reader reader) {
 		loadFromReader(reader);
 	}
 
 	public JsonLoader(String... paths) {
-		this(null, paths);
-	}
-
-	public JsonLoader(ResourceScan rsScan, String... paths) {
-		try {
-			scan = null == rsScan ? new LocalResourceScan() : rsScan;
-		}
-		catch (Exception e1) {
-			throw Lang.wrapThrow(e1);
-		}
-
 		this.setMap(new HashMap<String, Map<String, Object>>());
 		try {
 			// 解析路径
 			for (String path : paths) {
-				// List<NutResource> nResources =
-				// ResourceScanHelper.scanFiles(path,
-				// ".js");
 				File f = Files.findFile(path);
+				System.out.println(f);
 				// 如果是文件，直接加载
 				if (null != f && f.isFile()) {
 					loadFromInputStream(new FileInputStream(f));
+					continue;
 				}
-				// 如果是路径，进行扫描
-				else {
-					List<NutResource> rsList = scan.list(path, "^(.+[.])(js|json)$");
-					for (NutResource nr : rsList) {
-						loadFromInputStream(nr.getInputStream());
-					}
-					// 如果找不到?
-					if (rsList.size() < 1)
-						throw Lang.makeThrow(	RuntimeException.class,
-												"Js folder or file no found !! Path = %s",
-												path);
+				List<NutResource> rsList = Scans.me().scan(path, "^(.+[.])(js|json)$");
+				for (NutResource nr : rsList) {
+					loadFromInputStream(nr.getInputStream());
 				}
+				// 如果找不到?
+				if (rsList.size() < 1)
+					throw Lang.makeThrow(	RuntimeException.class,
+											"Js folder or file no found !! Path = %s",
+											path);
 			}
 		}
 		catch (IOException e) {

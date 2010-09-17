@@ -121,7 +121,7 @@ public class DefaultLoading implements Loading {
 			if (isNeedScanSubPackages) {
 				if (log.isDebugEnabled())
 					log.debugf(" > scan '%s'", module.getPackage().getName());
-				List<Class<?>> subs = Scans.inLocal(module);
+				List<Class<?>> subs = Scans.me().scanPackage(module);
 				for (Class<?> sub : subs) {
 					if (isModule(sub)) {
 						if (log.isDebugEnabled())
@@ -159,7 +159,7 @@ public class DefaultLoading implements Loading {
 			if (log.isDebugEnabled())
 				log.debugf("Localization message: '%s'", lc.value());
 
-			msgss = Mirror.me(lc.type()).born().load(config.scan(), lc.value());
+			msgss = Mirror.me(lc.type()).born().load(lc.value());
 		} else if (log.isDebugEnabled()) {
 			log.debug("!!!Can not find localization message resource");
 		}

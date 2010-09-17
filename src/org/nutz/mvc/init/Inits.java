@@ -5,6 +5,7 @@ import java.io.File;
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.log.Log;
@@ -35,7 +36,6 @@ public abstract class Inits {
 			}
 			printContainerInfo();
 			Stopwatch sw = Stopwatch.begin();
-
 			// Nutz.Mvc need a class name as the default Module
 			// it will load some Annotation from it.
 			Class<?> mainModule = config.getMainModule();
@@ -71,7 +71,7 @@ public abstract class Inits {
 				log.error("Error happend during start serivce!", e);
 			if (e instanceof InitException)
 				throw (InitException) e;
-			throw new InitException(e);
+			throw new InitException(Lang.unwrapThrow(e));
 		}
 	}
 

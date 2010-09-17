@@ -147,7 +147,7 @@ public class Castors {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
-			List<Class<?>> list = Scans.inLocal(baseClass);
+			List<Class<?>> list = Scans.me().scanPackage(baseClass);
 			if (null == list || list.size() == 0)
 				continue;
 			for (Class<?> klass : list) {

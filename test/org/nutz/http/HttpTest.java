@@ -10,6 +10,7 @@ import org.junit.Test;
 
 public class HttpTest {
 
+	@Ignore
 	@Test
 	public void testGet() {
 		Response response = Http.get("http://nutz.googlecode.com");

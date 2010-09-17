@@ -47,6 +47,7 @@ public class WebResourceScan extends AbstractResourceScan {
 		// 获取全部jar
 		Set<String> jars = sc.getResourcePaths(WEB_LIB);
 		for (String path : jars) {
+			log.info("Scan file --> " + path);
 			try {
 				JarFile jar = new JarFile(sc.getRealPath(path));
 				Enumeration<JarEntry> ens = jar.entries();
@@ -84,14 +85,16 @@ public class WebResourceScan extends AbstractResourceScan {
 		}
 		// 那么很好，深层递归一下吧
 		else {
-			final int pos = dir.getAbsolutePath().length() + 1;
+			if (log.isDebugEnabled())
+				log.debugf("Scan in web classes : %s",dir);
+			final int pos = dir.getAbsoluteFile().getAbsolutePath().length() + 1;
 			Disks.visitFile(dir,
 			/*
 			 * 处理文件
 			 */
 			new FileVisitor() {
 				public void visit(File file) {
-					String name = file.getAbsolutePath().substring(pos);
+					String name = file.getAbsoluteFile().getAbsolutePath().substring(pos);
 					if (name.startsWith(src))
 						list.add(new ClasspathResource(name));
 				}

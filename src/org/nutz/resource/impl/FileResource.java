@@ -17,7 +17,7 @@ public class FileResource extends NutResource {
 
 	private File file;
 
-	FileResource(String base, File file) {
+	public FileResource(String base, File file) {
 		try {
 			this.name = file.getCanonicalPath();
 			if (this.name.startsWith(base))

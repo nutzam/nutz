@@ -6,18 +6,19 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.segment.MultiLineProperties;
 import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 import org.nutz.resource.NutResource;
-import org.nutz.resource.ResourceScan;
+import org.nutz.resource.Scans;
 
 public class DefaultMessageLoader implements MessageLoader {
 
-	public Map<String, Map<String, String>> load(ResourceScan scan, String refer) {
+	public Map<String, Map<String, String>> load(String refer) {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
-		List<NutResource> allnrs = scan.list(refer, "^.+[.]properties$");
+		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		// 求取路径的最大长度
 		int max = 0;
 		for (NutResource nr : allnrs) {

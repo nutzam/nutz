@@ -17,10 +17,10 @@ import org.nutz.resource.AllResourceScan;
 						AllJson.class,
 						AllFilePool.class,
 						AllIoc.class,
-						AllMvc.class,
 						AllAop.class,
 						AllFilePool.class,
 						AllHttp.class,
 						AllLog.class,
-						AllResourceScan.class})
+						AllResourceScan.class,
+						AllMvc.class})
 public class AllWithoutDB {}
