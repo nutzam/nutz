@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.nutz.lang.Lang;
+import org.nutz.lang.util.Disks;
 import org.nutz.resource.NutResource;
 
 /**
@@ -17,15 +17,15 @@ public class FileResource extends NutResource {
 
 	private File file;
 
+	public FileResource(File base, File file) {
+		this(base.getAbsolutePath(), file);
+	}
+
 	public FileResource(String base, File file) {
-		try {
-			this.name = file.getCanonicalPath();
-			if (this.name.startsWith(base))
-				this.name = this.name.substring(base.length());
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
+		base = Disks.getCanonicalPath(base);
+		this.name = Disks.getCanonicalPath(file.getAbsolutePath());
+		if (this.name.startsWith(base))
+			this.name = this.name.substring(base.length() + 1);
 		this.file = file;
 	}
 

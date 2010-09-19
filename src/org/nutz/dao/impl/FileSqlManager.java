@@ -51,7 +51,7 @@ public class FileSqlManager extends AbstractSqlManager {
 			if (null == f)
 				continue;
 			if (f.isFile()) {
-				nrs.add(new FileResource(f.getParentFile().getAbsolutePath(), f));
+				nrs.add(new FileResource(f.getParentFile(), f));
 				if (autoscan == false)
 					continue;
 			}

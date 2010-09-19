@@ -21,21 +21,21 @@ import org.nutz.resource.impl.WebResourceScan;
 public class Scans {
 
 	private static final Scans me = new Scans();
-	
+
 	private static final Log LOG = Logs.getLog(Scans.class);
-	
-	private Scans(){}
-	
+
+	private Scans() {}
+
 	public static final Scans me() {
 		return me;
 	}
-	
+
 	private static final String FLT_CLASS = "^.+[.]class$";
 
 	private final ResourceScan local = new LocalResourceScan();
-	
+
 	private WebResourceScan web;
-	
+
 	public Scans init(ServletContext servletContext) {
 		if (servletContext == null)
 			web = null;
@@ -43,7 +43,7 @@ public class Scans {
 			web = new WebResourceScan(servletContext);
 		return this;
 	}
-	
+
 	public ResourceScan getScaner() {
 		if (web != null)
 			return web;
@@ -69,7 +69,7 @@ public class Scans {
 			return list;
 		return getScaner().list(src, regex);
 	}
-	
+
 	public List<NutResource> scan(String src) {
 		List<NutResource> list = isFile(src);
 		if (list != null)
@@ -99,11 +99,11 @@ public class Scans {
 		String packagePath = pkg.replace('.', '/').replace('\\', '/');
 		return rs2class(packagePath, getScaner().list(packagePath, regex));
 	}
-	
+
 	public List<Class<?>> scanPackage(Class<?> classZ, String regex) {
 		return scanPackage(classZ.getPackage().getName(), regex);
 	}
-	
+
 	public List<Class<?>> scanPackage(Class<?> classZ) {
 		return scanPackage(classZ.getPackage().getName(), FLT_CLASS);
 	}
@@ -127,7 +127,7 @@ public class Scans {
 			for (NutResource nr : list) {
 				int r = nr.getName().lastIndexOf(".class");
 				if (r < 0) {
-					LOG.infof("Resource can't map to Class, Resource %s",nr );
+					LOG.infof("Resource can't map to Class, Resource %s", nr);
 					continue;
 				}
 				try {
@@ -139,19 +139,19 @@ public class Scans {
 					re.add(klass);
 				}
 				catch (ClassNotFoundException e) {
-					LOG.infof("Resource can't map to Class, Resource %s",nr );
+					LOG.infof("Resource can't map to Class, Resource %s", nr);
 				}
 			}
 		}
 		return re;
 	}
-	
-	public List<NutResource> isFile(String src){
+
+	private static List<NutResource> isFile(String src) {
 		File file = Files.findFile(src);
 		if (file == null || file.isDirectory())
 			return null;
 		List<NutResource> list = new ArrayList<NutResource>(1);
-		list.add(new FileResource(file.getParentFile().getAbsolutePath(), file));
+		list.add(new FileResource(file.getParentFile(), file));
 		return list;
 	}
 }

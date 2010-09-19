@@ -66,10 +66,10 @@ public class LocalResourceScan extends AbstractResourceScan {
 		// 查看资源是否存在在磁盘系统中
 		File f = new File(Disks.normalize(src));
 		if (f.isFile()) {
-			list.add(new FileResource(f.getParentFile().getPath(), f));
+			list.add(new FileResource(f.getParentFile(), f));
 			return list;
 		}
-			
+
 		// 如果存在，递归这个目录
 		if (f.exists()) {
 			scanByFile(list, regex, f.getParent(), f, ignoreHidden);

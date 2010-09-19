@@ -2,8 +2,6 @@ package org.nutz.resource.impl;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -14,6 +12,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
@@ -30,8 +29,6 @@ import org.nutz.resource.NutResource;
 public class WebResourceScan extends AbstractResourceScan {
 
 	private static final Log log = Logs.getLog(WebResourceScan.class);
-
-	private static final String WEB_CLASSES = "/WEB-INF/classes/";
 
 	private static final String WEB_LIB = "/WEB-INF/lib/";
 
@@ -68,35 +65,26 @@ public class WebResourceScan extends AbstractResourceScan {
 		// 对 classes 文件夹作一个深层遍历
 		// 忽略隐藏文件，以不能被 filter 匹配的项目
 		// 返回的 NutResource 对象，都是以 classes 目录为根
-		File dir = new File(sc.getRealPath(WEB_CLASSES));
-		// 目录不存在
-		if (!dir.exists()) {
-			if (log.isWarnEnabled())
-				log.warnf(	"Fail to found '%s' in context [%s]",
-							WEB_CLASSES,
-							sc.getServletContextName());
-		}
-		// 不是一个目录
-		else if (!dir.isDirectory()) {
-			if (log.isWarnEnabled())
-				log.warnf(	"'%s' in context [%s] should be a directory!",
-							WEB_CLASSES,
-							sc.getServletContextName());
-		}
-		// 那么很好，深层递归一下吧
-		else {
+		File dir = Files.findFile(src);
+		if (null != dir && dir.exists()) {
+
+			// 获取 CLASSPATH 的基目录
+			String src2 = Disks.getCanonicalPath(src);
+			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
+			int pos = dirPath.indexOf(src2);
+			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
+
+			// 那么很好，深层递归一下吧
 			if (log.isDebugEnabled())
-				log.debugf("Scan in web classes : %s",dir);
-			final int pos = dir.getAbsoluteFile().getAbsolutePath().length() + 1;
+				log.debugf("Scan in web classes : %s", dir);
+
 			Disks.visitFile(dir,
 			/*
 			 * 处理文件
 			 */
 			new FileVisitor() {
-				public void visit(File file) {
-					String name = file.getAbsoluteFile().getAbsolutePath().substring(pos);
-					if (name.startsWith(src))
-						list.add(new ClasspathResource(name));
+				public void visit(File f) {
+					list.add(new FileResource(base, f));
 				}
 			},
 			/*
@@ -112,6 +100,13 @@ public class WebResourceScan extends AbstractResourceScan {
 				}
 			});
 		}
+		// 目录不存在
+		else {
+			if (log.isWarnEnabled())
+				log.warnf(	"Fail to found '%s' in CLASSPATH of context [%s]",
+							src,
+							sc.getServletContextName());
+		}
 
 		return list;
 	}
@@ -120,16 +115,4 @@ public class WebResourceScan extends AbstractResourceScan {
 		return false;
 	}
 
-	static class ClasspathResource extends NutResource {
-
-		public ClasspathResource(String name) {
-			this.name = name;
-		}
-
-		@Override
-		public InputStream getInputStream() throws IOException {
-			return Thread.currentThread().getContextClassLoader().getResourceAsStream(name);
-		}
-
-	}
 }
