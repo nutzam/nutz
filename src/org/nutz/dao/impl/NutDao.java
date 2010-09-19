@@ -380,7 +380,7 @@ public class NutDao implements Dao {
 				throw DaoException.create(obj, "$IdentifiedField", "delete(Object obj)", null);
 			}
 			if (idnf.isId()) {
-				int id = Castors.me().castTo(idnf.getValue(obj), Integer.class);
+				long id = Castors.me().castTo(idnf.getValue(obj), Long.class);
 				return delete(obj.getClass(), id);
 			} else if (idnf.isName()) {
 				String name = idnf.getValue(obj).toString();
