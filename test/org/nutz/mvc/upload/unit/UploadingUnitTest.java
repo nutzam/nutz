@@ -103,7 +103,7 @@ public class UploadingUnitTest {
 		 * 文件超大，会限制
 		 */
 		Uploading up = UploadUnit.TYPE.born();
-		up.parse(req, UploadingContext.create(tmps).setBufferSize(128).setMaxFileSize(19152));
+		up.parse(req, UploadingContext.create(tmps).setBufferSize(1024).setMaxFileSize(19152));
 	}
 
 	/**
@@ -124,7 +124,9 @@ public class UploadingUnitTest {
 		 * 文件超大，会限制
 		 */
 		Uploading up = UploadUnit.TYPE.born();
-		up.parse(req, UploadingContext.create(tmps).setBufferSize(128).setMaxFileSize(18620));
+		//当设置为170,pass
+		//设置为171,fail 原因未明
+		up.parse(req, UploadingContext.create(tmps).setBufferSize(171).setMaxFileSize(18620));
 	}
 
 	/**
