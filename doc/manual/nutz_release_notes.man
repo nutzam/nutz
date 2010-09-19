@@ -17,6 +17,7 @@
 	 * [http://code.google.com/p/nutz/issues/detail?id=249 Issue 249]    mvc: UploadAdaptor 应该支持一个选项，是否记录空文件（默认应该为 "不记录"）    {#AAA;by} {*zozohtnt}
 	 * [http://code.google.com/p/nutz/issues/detail?id=274 Issue 274]    lang: Files.write 应该支持 InputStream    {#AAA;by} {*zozohtnt}
 	 * [http://code.google.com/p/nutz/issues/detail?id=278 Issue 278]    入口函数返回View时，ActionInvokerImpl处理不对    {#AAA;by} {*茶几}
+	 * [http://code.google.com/p/nutz/issues/detail?id=290 Issue 290]    NutDao主键类型转换错误    {#AAA;by} {*yonlist}
 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -50,6 +51,7 @@
 	|| O(∩_7∩)O									||  -   ||  -  ||  -   ||  -	||  O  ||  -   ||  -   ||
 	|| Blue Rain								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
 	|| Jay										||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
+	|| yonlist									||  O   ||  -  ||  -   ||  O	||  -  ||  -   ||  -   ||
 	|| wendal									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| 茶几										||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
