@@ -39,7 +39,6 @@ public class JsonLoader extends MapLoader {
 			// 解析路径
 			for (String path : paths) {
 				File f = Files.findFile(path);
-				System.out.println(f);
 				// 如果是文件，直接加载
 				if (null != f && f.isFile()) {
 					loadFromInputStream(new FileInputStream(f));

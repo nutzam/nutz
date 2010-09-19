@@ -12,7 +12,6 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.init.Inits;
 import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.config.ServletNutConfig;
-import org.nutz.resource.Scans;
 
 /**
  * 挂接到 JSP/Servlet 容器的入口
@@ -41,7 +40,6 @@ public class NutServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		Scans.me().init(getServletContext());
 		Loading ing = Inits.init(new ServletNutConfig(getServletConfig()), false);
 		urls = ing.getUrls();
 		ok = true;

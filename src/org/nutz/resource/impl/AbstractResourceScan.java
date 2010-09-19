@@ -25,9 +25,6 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
 			JarFile jar = new JarFile(jarPath);
-			JarEntry rootEntry = jar.getJarEntry(src);
-			if (rootEntry == null)
-				return list;
 			Enumeration<JarEntry> ens = jar.entries();
 			while (ens.hasMoreElements()) {
 				JarEntry jen = ens.nextElement();

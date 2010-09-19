@@ -3,12 +3,15 @@ package org.nutz.mvc.init.config;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
+import org.nutz.resource.Scans;
+
 public class FilterNutConfig extends AbstractNutConfig {
 
 	private FilterConfig config;
 
 	public FilterNutConfig(FilterConfig config) {
 		this.config = config;
+		Scans.me().init(config.getServletContext());
 	}
 
 	public ServletContext getServletContext() {
