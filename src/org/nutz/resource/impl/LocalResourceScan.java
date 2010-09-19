@@ -1,19 +1,12 @@
 package org.nutz.resource.impl;
 
 import java.io.File;
-import java.io.FileFilter;
-import java.io.IOException;
-import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Encoding;
-import org.nutz.lang.Lang;
 import org.nutz.lang.util.Disks;
-import org.nutz.lang.util.FileVisitor;
 import org.nutz.resource.NutResource;
 
 /**
@@ -72,7 +65,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 		// 如果存在，递归这个目录
 		if (f.exists()) {
-			scanByFile(list, regex, f.getParent(), f, ignoreHidden);
+			list.addAll(scanInDir(regex, src, f.getParentFile(), ignoreHidden));
 		}
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
@@ -86,7 +79,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 				if (!path.contains(".jar!")) {
 					// 首先查找以下， CLASSPATH 从哪里开始
 					int pos = path.lastIndexOf(src);
-					scanByFile(list, regex, path.substring(0, pos), f, ignoreHidden);
+					list.addAll(scanInDir(regex, path.substring(0, pos), f, ignoreHidden));
 				}
 				// 如果在 jar 中，则循环查找这个 jar 的每一个实体
 				else {
@@ -96,53 +89,11 @@ public class LocalResourceScan extends AbstractResourceScan {
 					int posE = path.replace('\\', '/').lastIndexOf('/');
 					String jarPath = path.substring(posL, posR - 1);
 					String prefix = path.substring(posR + 1, posE + 1);
-					try {
-						JarFile jar = new JarFile(jarPath);
-						Enumeration<JarEntry> ens = jar.entries();
-						while (ens.hasMoreElements()) {
-							JarEntry jen = ens.nextElement();
-							String name = jen.getName();
-							if (name.startsWith(prefix)) {
-								int pos = name.replace('\\', '/').lastIndexOf('/');
-								String enName = name.substring(pos + 1);
-								if (null == regex || regex.matcher(enName).find())
-									list.add(new JarEntryResource(jar, jen));
-							}
-						}
-					}
-					catch (IOException e) {
-						throw Lang.wrapThrow(e);
-					}
+					list.addAll(scanInJar(checkSrc(prefix), regex, jarPath));
 				}
 			}
 		}
 		// 返回资源列表
 		return list;
-	}
-
-	private void scanByFile(final List<NutResource> list,
-							final Pattern regex,
-							final String base,
-							File f,
-							final boolean ignoreHidden) {
-		if (null == f || (ignoreHidden && f.isHidden()))
-			return;
-
-		if (!f.isDirectory())
-			f = f.getParentFile();
-
-		Disks.visitFile(f, new FileVisitor() {
-			public void visit(File file) {
-				list.add(new FileResource(base, file));
-			}
-		}, new FileFilter() {
-			public boolean accept(File theFile) {
-				if (ignoreHidden && theFile.isHidden())
-					return false;
-				if (theFile.isDirectory())
-					return true;
-				return regex == null || regex.matcher(theFile.getName()).find();
-			}
-		});
 	}
 }

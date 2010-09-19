@@ -25,6 +25,9 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
 			JarFile jar = new JarFile(jarPath);
+			JarEntry rootEntry = jar.getJarEntry(src);
+			if (rootEntry == null)
+				return list;
 			Enumeration<JarEntry> ens = jar.entries();
 			while (ens.hasMoreElements()) {
 				JarEntry jen = ens.nextElement();
@@ -37,8 +40,8 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 			}
 		}
 		catch (Throwable e) {
-			if (log.isFatalEnabled())
-				log.fatal("Fail to scan path '" + jarPath + "'!", e);
+			if (log.isDebugEnabled())
+				log.debug("Fail to scan path '" + jarPath + "'!", e);
 		}
 		return list;
 	}
@@ -68,5 +71,14 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		});
 		
 		return list;
+	}
+	
+	protected static String checkSrc(String src){
+		if (src == null)
+			return null;
+		src = src.replace('\\', '/');
+		if (! src.endsWith("/"))
+			src += "/";
+		return src;
 	}
 }
