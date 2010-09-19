@@ -12,6 +12,8 @@ import java.util.Map.Entry;
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
 
 /**
@@ -26,6 +28,8 @@ import org.nutz.resource.Scans;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class Castors {
+
+	private static final Log log = Logs.getLog(Castors.class);
 
 	private static Castors one = new Castors();
 
@@ -154,6 +158,8 @@ public class Castors {
 				try {
 					if (Modifier.isAbstract(klass.getModifiers()))
 						continue;
+					if (!Castor.class.isAssignableFrom(klass))
+						continue;
 					Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
 					Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
 					if (null == map2) {
@@ -177,9 +183,8 @@ public class Castors {
 					}
 				}
 				catch (Throwable e) {
-					System.err.println(String.format(	"Fail to create castor [%s] because: %s",
-														klass,
-														e.getMessage()));
+					if (log.isWarnEnabled())
+						log.warnf("Fail to create castor [%s] because: %s", klass, e.getMessage());
 				}
 			}
 		}
