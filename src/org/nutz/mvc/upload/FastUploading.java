@@ -70,7 +70,7 @@ public class FastUploading implements Uploading {
 				log.info("boundary no found!!");
 			return params;
 		}
-		
+
 		if (log.isDebugEnabled())
 			log.debug("boundary: " + itemEndl);
 
@@ -162,7 +162,7 @@ public class FastUploading implements Uploading {
 									info.current = br.load();
 									mm = br.mark(itemEndlBytes);
 									assertStreamNotEnd(mm);
-									if (mm != MarkMode.FOUND && info.current > maxPos) {
+									if (info.current > maxPos) {
 										throw new UploadOutOfSizeException(meta);
 									}
 									br.dump(ops);
