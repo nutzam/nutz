@@ -9,7 +9,6 @@ import javax.servlet.ServletContext;
 import org.nutz.lang.Files;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.resource.impl.FileResource;
 import org.nutz.resource.impl.LocalResourceScan;
 import org.nutz.resource.impl.WebResourceScan;
 
@@ -64,17 +63,14 @@ public class Scans {
 	 * @return 资源列表
 	 */
 	public List<NutResource> scan(String src, String regex) {
-		List<NutResource> list = isFile(src);
-		if (list != null)
-			return list;
+		File file = Files.findFile(src);
+		if (file != null && file.isFile())
+			src = src.substring(0,src.lastIndexOf("/"));
 		return getScaner().list(src, regex);
 	}
 
 	public List<NutResource> scan(String src) {
-		List<NutResource> list = isFile(src);
-		if (list != null)
-			return list;
-		return getScaner().list(src, null);
+		return scan(src, null);
 	}
 
 	/**
@@ -127,7 +123,8 @@ public class Scans {
 			for (NutResource nr : list) {
 				int r = nr.getName().lastIndexOf(".class");
 				if (r < 0) {
-					LOG.infof("Resource can't map to Class, Resource %s", nr);
+					if (LOG.isInfoEnabled())
+						LOG.infof("Resource can't map to Class, Resource %s", nr);
 					continue;
 				}
 				try {
@@ -139,19 +136,12 @@ public class Scans {
 					re.add(klass);
 				}
 				catch (ClassNotFoundException e) {
-					LOG.infof("Resource can't map to Class, Resource %s", nr);
+					if (LOG.isInfoEnabled())
+						LOG.infof("Resource can't map to Class, Resource %s", nr);
 				}
 			}
 		}
 		return re;
 	}
-
-	private static List<NutResource> isFile(String src) {
-		File file = Files.findFile(src);
-		if (file == null || file.isDirectory())
-			return null;
-		List<NutResource> list = new ArrayList<NutResource>(1);
-		list.add(new FileResource(file.getParentFile(), file));
-		return list;
-	}
+	
 }
