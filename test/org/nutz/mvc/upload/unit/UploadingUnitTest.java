@@ -124,9 +124,12 @@ public class UploadingUnitTest {
 		 * 文件超大，会限制
 		 */
 		Uploading up = UploadUnit.TYPE.born();
-		//当设置为170,pass
-		//设置为171,fail 原因未明
-		up.parse(req, UploadingContext.create(tmps).setBufferSize(171).setMaxFileSize(18620));
+		// 当设置为170,pass
+		// 设置为171,fail 原因未明
+		// zzh: FastUploading 的限制不是特别精确
+		// 因为是按块读取的, 每次循环，要读1-3个块，所以尺寸的限制同 缓冲大小，也会有关系
+		// 如果缓冲是 171, 可能正好读完
+		up.parse(req, UploadingContext.create(tmps).setBufferSize(170).setMaxFileSize(18620));
 	}
 
 	/**
