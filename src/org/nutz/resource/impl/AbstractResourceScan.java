@@ -37,8 +37,8 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 			}
 		}
 		catch (Throwable e) {
-			if (log.isDebugEnabled())
-				log.debug("Fail to scan path '" + jarPath + "'!", e);
+			if (log.isWarnEnabled())
+				log.warn("Fail to scan path '" + jarPath + "'!", e);
 		}
 		return list;
 	}
