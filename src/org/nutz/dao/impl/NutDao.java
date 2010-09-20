@@ -485,10 +485,10 @@ public class NutDao implements Dao {
 	}
 
 	public <T> T fetch(Entity<T> entity, Condition condition) {
-		Sql sql = sqlMaker.fetch(entity, null);
-		sql.setCondition(condition);
-		execute(sql);
-		return sql.getObject(entity.getType());
+		List<T> list = this.query(entity, condition, this.createPager(1, 1));
+		if (list.isEmpty())
+			return null;
+		return list.get(0);
 	}
 
 	public Record fetch(String tableName, Condition condition) {

@@ -31,6 +31,17 @@ public class SimpleDaoTest extends DaoCase {
 	}
 
 	@Test
+	public void test_fetch_by_condition_in_special_char() {
+		if (dao.exists(Pet.class)) {
+			Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
+			dao.clear(Pet.class);
+			dao.insert(Pet.create("a@b"));
+		}
+		Pet pet = dao.fetch(Pet.class, Cnd.where("name", "=", "a@b"));
+		assertEquals("a@b", pet.getName());
+	}
+
+	@Test
 	public void test_count_with_entity() {
 		insertRecords(8);
 		int re = dao.count(Pet.class, new Condition() {

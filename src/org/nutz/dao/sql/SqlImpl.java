@@ -18,8 +18,12 @@ import org.nutz.dao.Daos;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class SqlImpl implements Sql, Cloneable {
+
+	private static final Log log = Logs.getLog(SqlImpl.class);
 
 	public SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
 		this.sql = sql;
@@ -60,6 +64,9 @@ public class SqlImpl implements Sql, Cloneable {
 					try {
 						// Prepare statment for query
 						String sqlStr = sql.toPreparedStatementString();
+						if (log.isDebugEnabled())
+							log.debug("Prepare: " + sqlStr);
+
 						stat = conn.prepareStatement(sqlStr, rsType, ResultSet.CONCUR_READ_ONLY);
 
 						// Put all parameters to PreparedStatement and get
@@ -81,6 +88,9 @@ public class SqlImpl implements Sql, Cloneable {
 				PreparedStatement stat = null;
 				try {
 					String sqlStr = sql.toPreparedStatementString();
+					if (log.isDebugEnabled())
+						log.debug("Prepare: " + sqlStr);
+					
 					stat = conn.prepareStatement(sqlStr);
 					adapter.process(stat, sql, entity);
 					stat.execute();
