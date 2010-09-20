@@ -1152,7 +1152,7 @@ public class Mirror<T> {
 				try {
 					for (int i = 0; i < ss.length; i++) {
 						String className = ss[i];
-						if (className.startsWith("?"))
+						if (className.length() > 0 && className.charAt(0) == '?')
 							re[i] = Object.class;
 						else {
 							int pos = className.indexOf('<');

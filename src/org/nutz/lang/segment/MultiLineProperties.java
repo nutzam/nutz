@@ -43,7 +43,7 @@ public class MultiLineProperties implements Map<String, String> {
 		while (null != (s = tr.readLine())) {
 			if (Strings.isBlank(s))
 				continue;
-			if (s.startsWith("#"))
+			if (s.length() > 0 && s.charAt(0) == '#')
 				continue;
 			int pos;
 			char c = '0';
@@ -62,7 +62,7 @@ public class MultiLineProperties implements Map<String, String> {
 				sb.append(s.substring(pos + 1));
 				String ss;
 				while (null != (ss = tr.readLine())) {
-					if (ss.startsWith("#"))
+					if (ss.length() > 0 && ss.charAt(0) == '#')
 						break;
 					sb.append("\r\n" + ss);
 				}

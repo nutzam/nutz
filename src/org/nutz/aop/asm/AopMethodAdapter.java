@@ -203,7 +203,6 @@ class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 			return;
 		}
 		if (returnType.equals(Type.getType(Object.class))) {
-			;
 		} else {
 			if (returnType.getOpcode(IRETURN) != ARETURN) {
 				checkCast2();

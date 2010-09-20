@@ -43,7 +43,7 @@ public class ComboIocLoader implements IocLoader {
 		ArrayList<String> argsList = null;
 		String currentClassName = null;
 		for (String str : args) {
-			if (str.startsWith("*")) {
+			if (str.length() > 0 && str.charAt(0) == '*') {
 				if (argsList != null)
 					createIocLoader(currentClassName, argsList);
 				currentClassName = str.substring(1);

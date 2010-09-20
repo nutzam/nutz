@@ -73,7 +73,7 @@ public class ServerRedirectView implements View {
 		// Another site
 		if (path.startsWith("http://") || path.startsWith("https://")) {}
 		// Absolute path, add the context path for it
-		else if (path.startsWith("/")) {
+		else if (path.length() > 0 && path.charAt(0) == '/') {
 			path = req.getContextPath() + path;
 		}
 		// Relative path, add current URL path for it

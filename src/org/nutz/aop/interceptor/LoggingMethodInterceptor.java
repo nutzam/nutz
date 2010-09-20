@@ -72,7 +72,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		if (args == null || args.length == 0)
 			return "[]";
 		StringBuilder sb = new StringBuilder();
-		sb.append("[");
+		sb.append('[');
 		for (Object object : args)
 			sb.append(String.valueOf(object)).append(",");
 		sb.replace(sb.length() - 1, sb.length(), "]");

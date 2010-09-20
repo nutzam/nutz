@@ -887,7 +887,7 @@ public abstract class Lang {
 	public static Map<String, Object> map(String str) {
 		if (null == str)
 			return null;
-		if (str.startsWith("{") && str.endsWith("}"))
+		if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
 			return (Map<String, Object>) Json.fromJson(str);
 		return (Map<String, Object>) Json.fromJson("{" + str + "}");
 	}
@@ -903,7 +903,7 @@ public abstract class Lang {
 	public static List<Object> list(String str) {
 		if (null == str)
 			return null;
-		if (str.startsWith("[") && str.endsWith("]"))
+		if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]"))
 			return (List<Object>) Json.fromJson(str);
 		return (List<Object>) Json.fromJson("[" + str + "]");
 	}
