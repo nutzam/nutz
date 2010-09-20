@@ -18,9 +18,9 @@ import org.nutz.resource.NutResource;
 import org.nutz.resource.ResourceScan;
 
 public abstract class AbstractResourceScan implements ResourceScan, Plugin {
-	
+
 	private static final Log log = Logs.getLog(AbstractResourceScan.class);
-	
+
 	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
@@ -31,7 +31,7 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 				if (jen.isDirectory())
 					continue;
 				String name = jen.getName();
-				if (name.startsWith(src) && regex.matcher(name).find()) {
+				if (name.startsWith(src) && (null != regex && regex.matcher(name).find())) {
 					list.add(new JarEntryResource(jar, jen));
 				}
 			}
@@ -42,10 +42,11 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		}
 		return list;
 	}
-	
-	protected List<NutResource> scanInDir(final Pattern regex,final String base,
-	          							File f,
-	        							final boolean ignoreHidden) {
+
+	protected List<NutResource> scanInDir(	final Pattern regex,
+											final String base,
+											File f,
+											final boolean ignoreHidden) {
 		final List<NutResource> list = new ArrayList<NutResource>();
 		if (null == f || (ignoreHidden && f.isHidden()))
 			return list;
@@ -66,15 +67,15 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 				return regex == null || regex.matcher(theFile.getName()).find();
 			}
 		});
-		
+
 		return list;
 	}
-	
-	protected static String checkSrc(String src){
+
+	protected static String checkSrc(String src) {
 		if (src == null)
 			return null;
 		src = src.replace('\\', '/');
-		if (! src.endsWith("/"))
+		if (!src.endsWith("/"))
 			src += "/";
 		return src;
 	}

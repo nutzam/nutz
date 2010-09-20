@@ -34,7 +34,7 @@ public class WebResourceScan extends AbstractResourceScan {
 	}
 
 	public List<NutResource> list(final String src, String filter) {
-		final Pattern regex = Pattern.compile(filter);
+		final Pattern regex = null == filter ? null : Pattern.compile(filter);
 		final List<NutResource> list = new ArrayList<NutResource>();
 		// 获取全部jar
 		Set<String> jars = sc.getResourcePaths(WEB_LIB);
@@ -59,7 +59,7 @@ public class WebResourceScan extends AbstractResourceScan {
 			// 那么很好，深层递归一下吧
 			if (log.isDebugEnabled())
 				log.debugf("Scan in web classes : %s", dir);
-			
+
 			list.addAll(scanInDir(regex, base, dir, true));
 		}
 		// 目录不存在
