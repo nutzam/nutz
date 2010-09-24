@@ -44,10 +44,10 @@ public class Scans {
 	}
 
 	public ResourceScan getScaner() {
-		if (web != null)
-			return web;
-		else
-			return local;
+		ResourceScan scaner = web == null ? local : web;
+		if (LOG.isDebugEnabled())
+			LOG.debugf("Scan Resource by %s",scaner);
+		return scaner;
 	}
 
 	/**
@@ -64,8 +64,10 @@ public class Scans {
 	 */
 	public List<NutResource> scan(String src, String regex) {
 		File file = Files.findFile(src);
-		if (file != null && file.isFile())
-			src = src.substring(0,src.lastIndexOf("/"));
+		if (file != null && file.isFile()) {
+			src = src.replace('\\', '/');
+			src = src.substring(0,src.lastIndexOf("/")+1);
+		}
 		return getScaner().list(src, regex);
 	}
 
@@ -93,6 +95,8 @@ public class Scans {
 	 */
 	public List<Class<?>> scanPackage(String pkg, String regex) {
 		String packagePath = pkg.replace('.', '/').replace('\\', '/');
+		if ( ! packagePath.endsWith("/"))
+			packagePath += "/";
 		return rs2class(packagePath, getScaner().list(packagePath, regex));
 	}
 
@@ -114,6 +118,8 @@ public class Scans {
 	 * @return 类对象列表
 	 */
 	private static List<Class<?>> rs2class(String packagePath, List<NutResource> list) {
+		if (packagePath.endsWith("/"))
+			packagePath = packagePath.substring(0,packagePath.length() - 1);
 		List<Class<?>> re = new ArrayList<Class<?>>(list.size());
 		if (!list.isEmpty()) {
 			String firstItemName = list.get(0).getName().replace('\\', '/');

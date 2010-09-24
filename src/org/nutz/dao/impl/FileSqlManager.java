@@ -57,9 +57,9 @@ public class FileSqlManager extends AbstractSqlManager {
 			}
 			List<NutResource> list = Scans.me().scan(path, regex);
 			String parent = path;
-			int pos = path.indexOf('/');
+			int pos = path.lastIndexOf('/');
 			if (pos == -1)
-				pos = path.indexOf('\\');
+				pos = path.lastIndexOf('\\');
 			if (pos > 0)
 				parent = path.substring(0, pos);
 

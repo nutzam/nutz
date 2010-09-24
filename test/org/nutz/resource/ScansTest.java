@@ -1,17 +1,19 @@
 package org.nutz.resource;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import junit.extensions.ActiveTestSuite;
+import junit.extensions.RepeatedTest;
+import junit.extensions.TestSetup;
 import junit.framework.Assert;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
@@ -57,31 +59,31 @@ public class ScansTest {
 		assertEquals(1, list.size());
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void test_in_jar() {
 		String testPath = Assert.class.getPackage().getName().replace('.', '/');
-		String testFilter = "^.*(Assert|Test)[.]class$";
+		String testFilter = "^.*(Assert|Test)\\.class$";
 		List<NutResource> list = Scans.me().scan(testPath, testFilter);
 		Collections.sort(list);
 		assertEquals(2, list.size());
-		assertTrue(list.get(0).getName().endsWith("String.class"));
-		assertTrue(list.get(1).getName().endsWith("System.class"));
+		assertTrue(list.get(0).getName().endsWith("Assert.class"));
+		assertTrue(list.get(1).getName().endsWith("Test.class"));
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void test_classes_in_jar() {
-		List<Class<?>> list = Scans.me().scanPackage(String.class, "^.+[.](Object|Array|Number)([.]class)$");
+		List<Class<?>> list = Scans.me().scanPackage(ActiveTestSuite.class, ".*(ActiveTestSuite|RepeatedTest|TestSetup)\\.class$");
 		assertEquals(3, list.size());
 		Collections.sort(list, new Comparator<Class<?>>() {
 			public int compare(Class<?> o1, Class<?> o2) {
 				return o1.getSimpleName().compareTo(o2.getSimpleName());
 			}
 		});
-		assertTrue(Array.class == list.get(0));
-		assertTrue(Number.class == list.get(1));
-		assertTrue(Object.class == list.get(2));
+		assertTrue(ActiveTestSuite.class == list.get(0));
+		assertTrue(RepeatedTest.class == list.get(1));
+		assertTrue(TestSetup.class == list.get(2));
 	}
 
 	@Test

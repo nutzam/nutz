@@ -24,6 +24,8 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
+			if (log.isDebugEnabled())
+				log.debugf("Scan resources in JarFile( %s ) by regex( %s ) base on src ( %s )", jarPath, regex, src);
 			JarFile jar = new JarFile(jarPath);
 			Enumeration<JarEntry> ens = jar.entries();
 			while (ens.hasMoreElements()) {

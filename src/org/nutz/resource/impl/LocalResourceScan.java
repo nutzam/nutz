@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Files;
 import org.nutz.lang.util.Disks;
 import org.nutz.resource.NutResource;
 
@@ -57,15 +58,14 @@ public class LocalResourceScan extends AbstractResourceScan {
 		final List<NutResource> list = new LinkedList<NutResource>();
 		final Pattern regex = null == filter ? null : Pattern.compile(filter);
 		// 查看资源是否存在在磁盘系统中
-		File f = new File(Disks.normalize(src));
-		if (f.isFile()) {
-			list.add(new FileResource(f.getParentFile(), f));
-			return list;
-		}
+		File f = Files.findFile(src);
 
 		// 如果存在，递归这个目录
-		if (f.exists()) {
-			list.addAll(scanInDir(regex, src, f.getParentFile(), ignoreHidden));
+		if (f != null && f.exists()) {
+			if (f.isFile())
+				list.addAll(scanInDir(regex, src, f.getParentFile(), ignoreHidden));
+			else
+				list.addAll(scanInDir(regex, src, f, ignoreHidden));
 		}
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
@@ -86,9 +86,8 @@ public class LocalResourceScan extends AbstractResourceScan {
 					int posL = path.indexOf("file:");
 					posL = posL < 0 ? 0 : posL + "file:".length();
 					int posR = path.indexOf(".jar!") + ".jar!".length();
-					int posE = path.replace('\\', '/').lastIndexOf('/');
 					String jarPath = path.substring(posL, posR - 1);
-					String prefix = path.substring(posR + 1, posE + 1);
+					String prefix = path.substring(posR + 1);
 					list.addAll(scanInJar(checkSrc(prefix), regex, jarPath));
 				}
 			}

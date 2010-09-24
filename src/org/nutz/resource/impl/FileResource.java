@@ -22,10 +22,9 @@ public class FileResource extends NutResource {
 	}
 
 	public FileResource(String base, File file) {
-		base = Disks.getCanonicalPath(base);
-		this.name = Disks.getCanonicalPath(file.getAbsolutePath());
-		if (this.name.startsWith(base))
-			this.name = this.name.substring(base.length() + 1);
+		base = Disks.normalize(Disks.getCanonicalPath(base)).replace('\\', '/');
+		this.name = Disks.normalize(Disks.getCanonicalPath(file.getAbsolutePath())).replace('\\', '/');
+		this.name = this.name.substring(this.name.indexOf(base));
 		this.file = file;
 	}
 
