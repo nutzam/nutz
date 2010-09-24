@@ -60,9 +60,14 @@ public class WebResourceScan extends AbstractResourceScan {
 
 			// 那么很好，深层递归一下吧
 			if (log.isDebugEnabled())
-				log.debugf("Scan in web classes : %s", dir);
+				log.debugf("Scan in web classes : %s , base = %s", dir, base);
 
-			list.addAll(scanInDir(regex, base, dir, true));
+			List<NutResource> list2 = scanInDir(regex, base, dir, true);
+			for (NutResource nutResource : list2) {
+				String name = nutResource.getName();
+				((FileResource)nutResource).setName(name.substring(base.length()));
+				list.add(nutResource);
+			}
 		}
 		// 目录不存在
 		else {

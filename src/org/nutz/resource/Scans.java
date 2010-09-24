@@ -69,7 +69,10 @@ public class Scans {
 			src = src.replace('\\', '/');
 			src = src.substring(0,src.lastIndexOf("/")+1);
 		}
-		return getScaner().list(src, regex);
+		List<NutResource> list = getScaner().list(src, regex);
+		if (LOG.isDebugEnabled())
+			LOG.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
+		return list;
 	}
 
 	public List<NutResource> scan(String src) {

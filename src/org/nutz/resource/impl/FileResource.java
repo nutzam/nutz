@@ -24,6 +24,7 @@ public class FileResource extends NutResource {
 	public FileResource(String base, File file) {
 		base = Disks.normalize(Disks.getCanonicalPath(base)).replace('\\', '/');
 		this.name = Disks.normalize(Disks.getCanonicalPath(file.getAbsolutePath())).replace('\\', '/');
+		System.out.println(name +"             " + base);
 		this.name = this.name.substring(this.name.indexOf(base));
 		this.file = file;
 	}
@@ -31,5 +32,10 @@ public class FileResource extends NutResource {
 	@Override
 	public InputStream getInputStream() throws IOException {
 		return new FileInputStream(file);
+	}
+	
+	@Override
+	public void setName(String name) {
+		this.name = name;
 	}
 }

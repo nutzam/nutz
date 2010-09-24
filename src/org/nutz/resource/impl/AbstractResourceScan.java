@@ -45,6 +45,7 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		return list;
 	}
 
+	/*存在两种调用,有的需要得出的Resouce包含原始的base,有些却不需要*/
 	protected List<NutResource> scanInDir(	final Pattern regex,
 											final String base,
 											File f,
