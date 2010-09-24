@@ -638,7 +638,7 @@ public class Mirror<T> {
 			return null;
 		name = name.substring(0, pos);
 		try {
-			return Class.forName(name);
+			return Lang.loadClass(name);
 		}
 		catch (ClassNotFoundException e) {
 			return null;
@@ -1157,9 +1157,9 @@ public class Mirror<T> {
 						else {
 							int pos = className.indexOf('<');
 							if (pos < 0)
-								re[i] = Class.forName(className);
+								re[i] = Lang.loadClass(className);
 							else
-								re[i] = Class.forName(className.substring(0, pos));
+								re[i] = Lang.loadClass(className.substring(0, pos));
 						}
 					}
 					return re;

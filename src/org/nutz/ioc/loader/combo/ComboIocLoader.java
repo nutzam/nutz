@@ -7,6 +7,7 @@ import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 /**
@@ -56,7 +57,7 @@ public class ComboIocLoader implements IocLoader {
 	}
 
 	private void createIocLoader(String className, List<String> args) throws ClassNotFoundException {
-		iocLoaders.add((IocLoader) Mirror	.me(Class.forName(className))
+		iocLoaders.add((IocLoader) Mirror	.me(Lang.loadClass(className))
 											.born(args.toArray(new Object[args.size()])));
 	}
 

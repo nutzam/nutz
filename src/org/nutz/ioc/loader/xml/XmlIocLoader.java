@@ -112,7 +112,7 @@ public class XmlIocLoader implements IocLoader {
 		IocObject iocObject = new IocObject();
 		String beanType = beanElement.getAttribute("type");
 		if (!Strings.isBlank(beanType))
-			iocObject.setType(Class.forName(beanType));
+			iocObject.setType(Lang.loadClass(beanType));
 		String beanScope = beanElement.getAttribute("scope");
 		if (!Strings.isBlank(beanScope))
 			iocObject.setScope(beanScope);

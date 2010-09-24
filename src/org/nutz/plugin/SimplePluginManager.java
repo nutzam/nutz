@@ -3,6 +3,8 @@ package org.nutz.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.lang.Lang;
+
 /**
  * 
  * @author Wendal(wendal1985@gmail.com)
@@ -53,7 +55,7 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 	private void loadPlugin(String pluginClassName) throws PluginException {
 		try {
 			if (pluginClassName != null)
-				loadPlugin((Class<? extends T>) Class.forName(pluginClassName));
+				loadPlugin((Class<? extends T>) Lang.loadClass(pluginClassName));
 		}
 		catch (ClassNotFoundException e) {}
 	}

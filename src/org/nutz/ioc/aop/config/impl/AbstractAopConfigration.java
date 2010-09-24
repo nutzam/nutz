@@ -44,7 +44,7 @@ public abstract class AbstractAopConfigration implements AopConfigration {
 			return ioc.get(MethodInterceptor.class, interceptorName.substring(4));
 		try {
 			if (singleton == false)
-				return (MethodInterceptor) Class.forName(interceptorName).newInstance();
+				return (MethodInterceptor) Lang.loadClass(interceptorName).newInstance();
 			MethodInterceptor methodInterceptor = cachedMethodInterceptor.get(interceptorName);
 			if (methodInterceptor == null) {
 				methodInterceptor = (MethodInterceptor) Class	.forName(interceptorName)

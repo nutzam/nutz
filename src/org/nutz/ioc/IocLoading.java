@@ -46,7 +46,7 @@ public class IocLoading {
 			try {
 				String typeName = (String) v;
 				if (!Strings.isBlank(typeName)) {
-					iobj.setType(Class.forName(typeName));
+					iobj.setType(Lang.loadClass(typeName));
 				}
 			}
 			catch (Exception e) {

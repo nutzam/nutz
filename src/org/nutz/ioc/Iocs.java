@@ -36,7 +36,7 @@ public abstract class Iocs {
 			_name = Strings.trim(name.substring(0, pos));
 			try {
 				String typeName = Strings.trim(name.substring(pos + 1));
-				type = Class.forName(typeName);
+				type = Lang.loadClass(typeName);
 			}
 			catch (ClassNotFoundException e) {
 				throw Lang.wrapThrow(e);

@@ -14,7 +14,7 @@ public class StaticFunctionNode extends ChainNode {
 
 	public StaticFunctionNode(String className, String name, ChainNode[] args) {
 		try {
-			Mirror<?> mirror = Mirror.me((Class<?>) Class.forName(className));
+			Mirror<?> mirror = Mirror.me((Class<?>) Lang.loadClass(className));
 			if (null == args || args.length == 0) {
 				try {
 					method = mirror.getGetter(name);

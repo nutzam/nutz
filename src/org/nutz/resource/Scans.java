@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.LocalResourceScan;
@@ -138,7 +139,7 @@ public class Scans {
 											.substring(pos, r)
 											.replace('/', '.')
 											.replace('\\', '.');
-					Class<?> klass = Class.forName(className);
+					Class<?> klass = Lang.loadClass(className);
 					re.add(klass);
 				}
 				catch (ClassNotFoundException e) {

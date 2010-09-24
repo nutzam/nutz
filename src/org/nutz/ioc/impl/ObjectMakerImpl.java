@@ -114,7 +114,7 @@ public class ObjectMakerImpl implements ObjectMaker {
 			return null;
 		if (str.contains(".")) {
 			try {
-				Class<? extends IocEventTrigger> triggerType = (Class<? extends IocEventTrigger>) Class.forName(str);
+				Class<? extends IocEventTrigger> triggerType = (Class<? extends IocEventTrigger>) Lang.loadClass(str);
 				return triggerType.newInstance();
 			}
 			catch (Exception e) {

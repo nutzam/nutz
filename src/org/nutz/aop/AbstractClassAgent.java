@@ -100,7 +100,7 @@ public abstract class AbstractClassAgent implements ClassAgent {
 			}
 			catch (ClassNotFoundException e2) {
 				try {
-					return (Class<T>) Class.forName(newName);
+					return (Class<T>) Lang.loadClass(newName);
 				}
 				catch (ClassNotFoundException e1) {
 					try {

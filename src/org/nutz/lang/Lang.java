@@ -1261,4 +1261,14 @@ public abstract class Lang {
 			return false;
 		}
 	}
+	
+	/**
+	 * 使用当前线程的ClassLoader加载给定的类
+	 * @param className 类的全称
+	 * @return 给定的类
+	 * @throws ClassNotFoundException 如果无法用当前线程的ClassLoader加载
+	 */
+	public static Class<?> loadClass(String className) throws ClassNotFoundException {
+		return Thread.currentThread().getContextClassLoader().loadClass(className);
+	}
 }
