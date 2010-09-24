@@ -25,7 +25,7 @@ public class DefaultMessageLoader implements MessageLoader {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		if (log.isDebugEnabled())
-			log.debugf("Load Messages in % resource : [%s]", allnrs.size(), allnrs);
+			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
 		// 求取路径的最大长度
 		int max = 0;
 		for (NutResource nr : allnrs) {
