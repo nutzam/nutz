@@ -16,6 +16,7 @@ import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
+import org.nutz.resource.impl.FileResource;
 
 public class DefaultMessageLoader implements MessageLoader {
 	
@@ -24,6 +25,9 @@ public class DefaultMessageLoader implements MessageLoader {
 	public Map<String, Map<String, String>> load(String refer) {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
+		for (NutResource nutResource : allnrs) {
+			((FileResource)nutResource).setName(nutResource.getName().substring(refer.length()+1));
+		}
 		if (log.isDebugEnabled())
 			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
 		// 求取路径的最大长度
@@ -36,9 +40,14 @@ public class DefaultMessageLoader implements MessageLoader {
 		// 根据第二级目录，编制列表
 		Map<String, List<NutResource>> map = new HashMap<String, List<NutResource>>();
 		for (NutResource nr : allnrs) {
-			String[] nms = nr.getName().split("[\\\\/]");
-			// 如果不是最大长度，则一定是默认字符串
-			String langType = nms.length < max ? Mvcs.DEFAULT_MSGS : nms[max - 2];
+			String langType;
+			String resName = nr.getName();
+			if (resName.contains("/"))
+				langType = resName.substring(0,resName.indexOf('/'));
+			else if (resName.contains("\\"))
+				langType = resName.substring(0, resName.indexOf('\\'));
+			else
+				langType = Mvcs.DEFAULT_MSGS;
 			// 按语言类型编制
 			List<NutResource> list = map.get(langType);
 			if (null == list) {
