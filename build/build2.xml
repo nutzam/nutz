@@ -63,7 +63,10 @@
 
 	
 	<path id="nutz-classpath">
-		<pathelement location="build/deps" />
+		<pathelement location="${basedir}/build/deps" />
+		<path >
+			<fileset dir="${basedir}/build/deps" includes="*.jar"></fileset>
+		</path>
 		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
 	</path>
 	
@@ -135,8 +138,8 @@
 		<copy todir="${classes-dir-test}">
 			<fileset excludes="**/*.java" dir="test"></fileset>
 		</copy>
-		<junit fork="true" showoutput="false" printsummary="yes" filtertrace="true" maxmemory="256M" 
-			haltonerror="true" haltonfailure="true">
+		<junit fork="true" showoutput="true" printsummary="yes" filtertrace="true" maxmemory="256M" 
+			haltonerror="false" haltonfailure="false">
 			<classpath>
 				<path path="${classes-dir-jdk6}"></path>
 				<path path="${classes-dir-test}"></path>
