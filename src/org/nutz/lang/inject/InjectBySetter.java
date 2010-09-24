@@ -22,7 +22,8 @@ public class InjectBySetter implements Injecting {
 			setter.invoke(obj, v);
 		}
 		catch (Exception e) {
-			throw Lang.makeThrow(	"Fail to set '%s' by setter %s.'%s()' because: %s",
+			throw Lang.makeThrow(	"Fail to set '%s'[ %s ] by setter %s.'%s()' because: %s",
+									value,
 									v,
 									setter.getDeclaringClass().getName(),
 									setter.getName(),

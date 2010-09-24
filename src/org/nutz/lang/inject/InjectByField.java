@@ -21,8 +21,9 @@ public class InjectByField implements Injecting {
 			field.set(obj, v);
 		}
 		catch (Exception e) {
-			throw Lang.makeThrow(	"Fail to set '%s' to field %s.'%s' because: %s",
-									v,
+			throw Lang.makeThrow(	"Fail to set '%s'[ %s ] to field %s.'%s' because: %s",
+									value,
+			                     	v,
 									field.getDeclaringClass().getName(),
 									field.getName(),
 									e.getMessage());
