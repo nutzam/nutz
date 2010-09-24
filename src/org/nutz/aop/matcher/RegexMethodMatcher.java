@@ -4,14 +4,15 @@ import static java.lang.reflect.Modifier.TRANSIENT;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.regex.Pattern;
 
 import org.nutz.aop.MethodMatcher;
 import org.nutz.lang.Maths;
 
 public class RegexMethodMatcher implements MethodMatcher {
 
-	private String active;
-	private String ignore;
+	private Pattern active;
+	private Pattern ignore;
 	private int mods;
 
 	public RegexMethodMatcher(String active) {
@@ -23,18 +24,21 @@ public class RegexMethodMatcher implements MethodMatcher {
 	}
 
 	public RegexMethodMatcher(String active, String ignore, int mods) {
-		this.active = active;
-		this.ignore = ignore;
+		if (active != null)
+		this.active = Pattern.compile(active);
+		if (ignore != null)
+			this.ignore = Pattern.compile(ignore);
 		this.mods = mods;
 	}
 
 	public boolean match(Method method) {
 		int mod = method.getModifiers();
+		String name = method.getName();
 		if (null != ignore)
-			if (method.getName().matches(ignore))
+			if (ignore.matcher(name).find())
 				return false;
 		if (null != active)
-			if (!method.getName().matches(active))
+			if (!active.matcher(name).find())
 				return false;
 		if (mods <= 0)
 			return true;

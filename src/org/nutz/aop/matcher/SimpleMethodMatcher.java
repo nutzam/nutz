@@ -17,12 +17,13 @@ public class SimpleMethodMatcher implements MethodMatcher {
 			return true;
 		if (!m.getName().equals(method.getName()))
 			return false;
-		if (m.getParameterTypes().length != method.getParameterTypes().length)
+		Class<?>[] parameterTypesMe = m.getParameterTypes();
+		Class<?>[] parameterTypesOut = method.getParameterTypes();
+		if (parameterTypesMe.length != parameterTypesOut.length)
 			return false;
-		for (int i = 0; i < m.getParameterTypes().length; i++) {
-			if (!m.getParameterTypes()[i].equals(method.getParameterTypes()[i]))
+		for (int i = 0; i < parameterTypesMe.length; i++)
+			if (!parameterTypesMe[i].isAssignableFrom(parameterTypesOut[i]))
 				return false;
-		}
 		return true;
 	}
 
