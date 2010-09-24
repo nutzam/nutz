@@ -41,8 +41,6 @@ public class WebResourceScan extends AbstractResourceScan {
 		for (String path : jars) {
 			if (!path.toLowerCase().endsWith(".jar"))
 				continue;
-			if (log.isInfoEnabled())
-				log.info("Scan Jar File : " + path);
 			list.addAll(scanInJar(checkSrc(src), regex, sc.getRealPath(path)));
 		}
 		// 获取classes里面文件

@@ -1,7 +1,6 @@
 package org.nutz.mvc.init;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -45,17 +44,18 @@ public class DefaultLoading implements Loading {
 				log.debug("Init config ...");
 			context = new Context();
 			context.set("app.root", config.getAppRoot());
-			if (log.isDebugEnabled())
+			if (log.isDebugEnabled()) {
 				log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
-
-			if (log.isDebugEnabled())
 				log.debug("Loading configuration...");
+			}
 			this.mainModule = mainModule;
 			loadIoc(config);
 			loadSubModules(config);
 			loadLocalization(config);
 			setupServer(config);
 			saveResult2Context(config);
+			if (log.isDebugEnabled())
+				log.debug("DefaultLoading complete.");
 		}
 		catch (Throwable e) {
 			throw Lang.wrapThrow(e);
@@ -190,7 +190,7 @@ public class DefaultLoading implements Loading {
 
 	private static boolean isModule(Class<?> classZ) {
 		for (Method method : classZ.getMethods())
-			if (Modifier.isPublic(method.getModifiers()) && method.isAnnotationPresent(At.class))
+			if (method.isAnnotationPresent(At.class))
 				return true;
 		return false;
 	}

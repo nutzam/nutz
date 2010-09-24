@@ -1,12 +1,14 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.net.URL;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.Nutz;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.init.Inits;
@@ -40,6 +42,10 @@ public class NutServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
+		if (log.isInfoEnabled()) {
+			URL me = Thread.currentThread().getContextClassLoader().getResource(NutServlet.class.getName().replace('.', '/')+".class");
+			log.infof("Nutz Version : %s in %s", Nutz.version(), me);
+		}
 		Loading ing = Inits.init(new ServletNutConfig(getServletConfig()), false);
 		urls = ing.getUrls();
 		ok = true;

@@ -2,7 +2,6 @@ package org.nutz.mvc.init;
 
 import java.io.File;
 
-import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
@@ -31,7 +30,6 @@ public abstract class Inits {
 	public static Loading init(NutConfig config, boolean ignoreNull) throws InitException {
 		try {
 			if (log.isInfoEnabled()) {
-				log.infof("Nutz Version : %s", Nutz.version());
 				log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
 			}
 			printContainerInfo();
@@ -55,7 +53,8 @@ public abstract class Inits {
 				loadingType = lb.value();
 			else
 				loadingType = DefaultLoading.class;
-
+			if (log.isDebugEnabled())
+				log.debug("Loading by " + loadingType);
 			// Here, we load all Nutz.Mvc configuration
 			Loading ing = Mirror.me(loadingType).born();
 			ing.load(config, mainModule);

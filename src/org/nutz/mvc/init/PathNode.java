@@ -121,7 +121,7 @@ class PathNode<T> {
 	}
 
 	private void appendTo(StringBuilder sb, int depth) {
-		sb.append(isStar ? "*" : " ");
+		sb.append(isStar ? '*' : ' ');
 		sb.append(obj == null ? "<null>" : "[" + obj + "]");
 		if (null != chars)
 			for (int i = 0; i < this.chars.length; i++) {
