@@ -49,7 +49,6 @@ public class WebResourceScan extends AbstractResourceScan {
 		// 返回的 NutResource 对象，都是以 classes 目录为根
 		File dir = Files.findFile(src);
 		if (null != dir && dir.exists()) {
-
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
