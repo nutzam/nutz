@@ -37,6 +37,8 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 					list.add(new JarEntryResource(jar, jen));
 				}
 			}
+			if (log.isDebugEnabled())
+				log.debugf("Found %s resources in JarFile( %s ) by regex( %s ) base on src ( %s )", list.size(), jarPath, regex, src);
 		}
 		catch (Throwable e) {
 			if (log.isWarnEnabled())
@@ -51,7 +53,7 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 											File f,
 											final boolean ignoreHidden) {
 		final List<NutResource> list = new ArrayList<NutResource>();
-		if (null == f || (ignoreHidden && f.isHidden()))
+		if (null == f || (ignoreHidden && f.isHidden()) || (! f.exists()))
 			return list;
 
 		if (!f.isDirectory())

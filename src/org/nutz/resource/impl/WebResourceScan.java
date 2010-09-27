@@ -68,8 +68,8 @@ public class WebResourceScan extends AbstractResourceScan {
 		}
 		// 目录不存在
 		else {
-			if (log.isWarnEnabled())
-				log.warnf(	"Fail to found '%s' in CLASSPATH of context [%s]",
+			if (log.isInfoEnabled())
+				log.infof(	"Fail to found '%s' in /WEB-INF/classes of context [%s]",
 							src,
 							sc.getServletContextName());
 		}

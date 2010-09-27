@@ -11,7 +11,6 @@ import org.nutz.castor.Castors;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
-import org.nutz.ioc.loader.xml.XmlIocLoader;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
@@ -29,7 +28,7 @@ import org.nutz.resource.Scans;
  */
 public class AnnotationIocLoader implements IocLoader {
 
-	protected static final Log LOG = Logs.getLog(XmlIocLoader.class);
+	protected static final Log LOG = Logs.getLog(AnnotationIocLoader.class);
 
 	private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 

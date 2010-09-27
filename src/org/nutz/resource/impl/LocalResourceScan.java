@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.util.Disks;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 
 /**
@@ -29,6 +31,8 @@ import org.nutz.resource.NutResource;
 public class LocalResourceScan extends AbstractResourceScan {
 
 	private boolean ignoreHidden;
+	
+	private static final Log LOG = Logs.getLog(LocalResourceScan.class);
 
 	/**
 	 * 是否忽略隐藏文件
@@ -89,6 +93,18 @@ public class LocalResourceScan extends AbstractResourceScan {
 					String jarPath = path.substring(posL, posR - 1);
 					String prefix = path.substring(posR + 1);
 					list.addAll(scanInJar(checkSrc(prefix), regex, jarPath));
+				}
+			} else {
+				String classpath = System.getProperties().getProperty("java.class.path");
+				if (LOG.isInfoEnabled())
+					LOG.info("Try to search in classpath : " + classpath);
+				String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
+				for (String pathZ : paths) {
+					if (pathZ.endsWith(".jar"))
+						list.addAll(scanInJar(checkSrc(src), regex, pathZ));
+					else
+						list.addAll(scanInDir(regex, pathZ, new File(pathZ+"/"+src), ignoreHidden));
+					System.out.println("path =" + path + " , site now = "+list.size());
 				}
 			}
 		}

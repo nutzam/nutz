@@ -20,7 +20,7 @@ import org.nutz.resource.AllResourceScan;
 						AllAop.class,
 						AllFilePool.class,
 						AllHttp.class,
-						AllLog.class,
 						AllResourceScan.class,
-						AllMvc.class})
+						AllMvc.class,
+						AllLog.class})
 public class AllWithoutDB {}

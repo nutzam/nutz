@@ -18,7 +18,7 @@
 		build/deps 包含了所有依赖 jar，它们应该包括：
 			1. log4j 1.2.12+ 以及 log4j.properties 
 			2. JUnit 4
-			3. Nutzdoc
+			3. Nutzdoc 1.7
 			4. Servlet-API 2.4+
 			5. nutz-test.properties 以及其相应的数据库驱动(默认是H2)
 			6. commons-dbcp
@@ -36,7 +36,7 @@
 	
 	<property name="nutz-version" value="1.a.32"></property>
 	<tstamp>
-		<format property="now-date" locale="zh" pattern="yyyyMMdd_hhmm" timezone=""/>
+		<format property="now-date" locale="zh" pattern="yyyyMMdd_hhmm" timezone="Asia/Shanghai" />
 	</tstamp>
 	<property name="tmp-dir" value="build/tmp"></property>
 	<property name="pub-dir" value="build/pub"></property>
@@ -131,8 +131,8 @@
 		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8"
 			includeantruntime="false">
 			<classpath>
-				<path refid="nutz-classpath"></path>
 				<path path="${classes-dir-jdk6}"></path>
+				<path refid="nutz-classpath"></path>
 			</classpath>
 		</javac>
 		<copy todir="${classes-dir-test}">
@@ -142,8 +142,8 @@
 			haltonerror="false" haltonfailure="false">
 			<classpath>
 				<path path="${classes-dir-jdk6}"></path>
-				<path path="${classes-dir-test}"></path>
 				<path path="${classes-dir-emma}"></path>
+				<path path="${classes-dir-test}"></path>
 				<path refid="nutz-classpath"/>
 			</classpath>
 			<batchtest todir="${tmp-junitreport-dir}">
