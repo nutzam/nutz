@@ -51,13 +51,26 @@ public class SqlServer2005Pager extends AbstractPager {
 	}
 
 	private String evalOrderBy(Entity<?> entity) {
+		// 单主键
 		EntityField ef = entity.getIdentifiedField();
-		if (null == ef) {
-			throw Lang.makeThrow(	"%s can not create query SQL for '%s':"
-											+ " you have to define @Id or @Name for this entity",
-									this.getClass().getSimpleName(),
-									entity.getType().getName());
+		if (null != ef)
+			return "ORDER BY " + ef.getColumnName();
+
+		// 复合主键
+		EntityField[] pks = entity.getPkFields();
+		if (null != pks && pks.length > 0) {
+			StringBuilder sb = new StringBuilder("ORDER BY ");
+			for (EntityField pk : pks)
+				sb.append(pk.getColumnName()).append(",");
+			sb.deleteCharAt(sb.length() - 1);
+			sb.append(" ASC");
+			return sb.toString();
 		}
-		return "ORDER BY " + ef.getColumnName();
+
+		// 老大，什么主键都没有，怎么分页啊！
+		throw Lang.makeThrow(	"%s can not create query SQL for '%s':"
+										+ " you have to define @Id or @Name or @PK for this entity",
+								this.getClass().getSimpleName(),
+								entity.getType().getName());
 	}
 }
