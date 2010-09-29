@@ -7,6 +7,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvcs;
+import org.nutz.mvc.init.AtMap;
 import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.NutConfigException;
 
@@ -65,6 +66,10 @@ public abstract class AbstractNutConfig implements NutConfig {
 		catch (Exception e) {
 			throw new NutConfigException(e);
 		}
+	}
+
+	public AtMap atMap() {
+		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
 	}
 
 }

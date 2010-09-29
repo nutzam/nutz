@@ -42,8 +42,11 @@ public class DefaultLoading implements Loading {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Init config ...");
+			// 构建一个上下文对象，方便子类获取更多的环境信息
+			// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
 			context = new Context();
 			context.set("app.root", config.getAppRoot());
+
 			if (log.isDebugEnabled()) {
 				log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
 				log.debug("Loading configuration...");
@@ -100,7 +103,7 @@ public class DefaultLoading implements Loading {
 		if (log.isDebugEnabled())
 			log.debugf("MainModule: <%s>", mainModule.getName());
 
-		urls = makeUrlMap(ioc, context, mainModule);
+		urls = makeUrlMap(config, context, mainModule);
 		Set<Class<?>> moduleSet = new HashSet<Class<?>>();
 
 		// Add default module
@@ -184,8 +187,8 @@ public class DefaultLoading implements Loading {
 		config.setAttributeIgnoreNull(Localization.class.getName(), getMessageMap());
 	}
 
-	protected UrlMap makeUrlMap(Ioc ioc, Context context, Class<?> mainModule) {
-		return new UrlMapImpl(ioc, context, mainModule);
+	protected UrlMap makeUrlMap(NutConfig config, Context context, Class<?> mainModule) {
+		return new UrlMapImpl(config, context, mainModule);
 	}
 
 	private static boolean isModule(Class<?> classZ) {

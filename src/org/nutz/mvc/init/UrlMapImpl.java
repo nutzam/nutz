@@ -26,14 +26,17 @@ public class UrlMapImpl implements UrlMap {
 
 	private static final Log log = Logs.getLog(UrlMapImpl.class);
 
+	private NutConfig config;
+
 	private Ioc ioc;
 
 	private PathNode<ActionInvoker> root;
 
 	private Context context;
 
-	public UrlMapImpl(Ioc ioc, Context context, Class<?> mainModule) {
-		this.ioc = ioc;
+	public UrlMapImpl(NutConfig config, Context context, Class<?> mainModule) {
+		this.config = config;
+		this.ioc = config.getIoc();
 		this.root = new PathNode<ActionInvoker>();
 		this.context = context;
 		this.ok = mainModule.getAnnotation(Ok.class);
@@ -91,7 +94,7 @@ public class UrlMapImpl implements UrlMap {
 			/*
 			 * Then, check the @At
 			 */
-			At ats = method.getAnnotation(At.class);
+			At atAnn = method.getAnnotation(At.class);
 			isModule = true;
 
 			// Create invoker
@@ -107,12 +110,13 @@ public class UrlMapImpl implements UrlMap {
 															myEncoding);
 
 			// Mapping invoker
+			String actionPath = null;
 			for (String base : bases) {
-				String[] paths = ats.value();
+				String[] paths = atAnn.value();
 				// The @At without value
 				if ((paths.length == 1 && Strings.isBlank(paths[0])) || paths.length == 0) {
 					// Get the action path
-					String actionPath = base + "/" + method.getName().toLowerCase();
+					actionPath = base + "/" + method.getName().toLowerCase();
 					root.add(actionPath, invoker);
 
 					// Print log
@@ -123,7 +127,7 @@ public class UrlMapImpl implements UrlMap {
 				else {
 					for (String at : paths) {
 						// Get Action
-						String actionPath = base + at;
+						actionPath = base + at;
 						root.add(actionPath, invoker);
 
 						// Print log
@@ -132,6 +136,9 @@ public class UrlMapImpl implements UrlMap {
 					}
 				}
 			}
+			// If @At has 'key', it will store the $actionPath to context
+			if (!Strings.isBlank(atAnn.key()) && !Strings.isBlank(actionPath))
+				config.atMap().add(atAnn.key(), actionPath);
 		}
 		return isModule;
 	}

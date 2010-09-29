@@ -86,4 +86,9 @@ public interface NutConfig {
 	 */
 	Class<?> getMainModule();
 
+	/**
+	 * 在你的模块中通过 '@At' 声明的入口函数，可以存储在 AtMap 中，这个函数提供一个 AtMap 的实例
+	 */
+	AtMap atMap();
+
 }

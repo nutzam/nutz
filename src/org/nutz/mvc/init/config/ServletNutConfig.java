@@ -3,6 +3,7 @@ package org.nutz.mvc.init.config;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.nutz.mvc.init.AtMap;
 import org.nutz.resource.Scans;
 
 public class ServletNutConfig extends AbstractNutConfig {
@@ -11,6 +12,7 @@ public class ServletNutConfig extends AbstractNutConfig {
 
 	public ServletNutConfig(ServletConfig config) {
 		this.config = config;
+		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
 		Scans.me().init(config.getServletContext());
 	}
 
