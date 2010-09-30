@@ -41,12 +41,19 @@ public class AtMap {
 		return this;
 	}
 
-	public List<Pair<String>> getList(Pattern regex) {
+	public List<Pair<String>> getList(String... regexs) {
 		List<Pair<String>> list = new ArrayList<Pair<String>>(ats.size());
 		Set<Entry<String, String>> ens = ats.entrySet();
 		for (Entry<String, String> en : ens) {
-			if (null == regex || regex.matcher(en.getKey()).find())
+			if (null == regexs || regexs.length == 0)
 				list.add(new Pair<String>(en.getKey(), en.getValue()));
+			else {
+				for (String regex : regexs)
+					if (Pattern.matches(regex, en.getKey())) {
+						list.add(new Pair<String>(en.getKey(), en.getValue()));
+						break;
+					}
+			}
 		}
 		return list;
 	}
