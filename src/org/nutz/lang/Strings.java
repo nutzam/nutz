@@ -120,6 +120,32 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 判断字符串是否以特殊字符开头
+	 * 
+	 * @param s
+	 *            字符串
+	 * @param c
+	 *            特殊字符
+	 * @return 是否以特殊字符开头
+	 */
+	public static boolean startsWithChar(String s, char c) {
+		return null != s ? (s.length() == 0 ? false : s.charAt(0) == c) : false;
+	}
+
+	/**
+	 * 判断字符串是否以特殊字符结尾
+	 * 
+	 * @param s
+	 *            字符串
+	 * @param c
+	 *            特殊字符
+	 * @return 是否以特殊字符结尾
+	 */
+	public static boolean endsWithChar(String s, char c) {
+		return null != s ? (s.length() == 0 ? false : s.charAt(s.length() - 1) == c) : false;
+	}
+
+	/**
 	 * @param cs
 	 *            字符串
 	 * @return 是不是为空字符串
