@@ -37,7 +37,7 @@ public class NutFilter implements Filter {
 		if (null != ing)
 			urls = ing.getUrls();
 
-		String regx = Strings.sNull(config.getAttribute("ignore"), IGNORE);
+		String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
 		if (!"null".equalsIgnoreCase(regx)) {
 			ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
 		}
