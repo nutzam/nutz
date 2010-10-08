@@ -1,4 +1,4 @@
-package org.nutz.lang.segment;
+package org.nutz.lang.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

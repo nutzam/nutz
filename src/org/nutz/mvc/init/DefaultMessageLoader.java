@@ -9,7 +9,7 @@ import java.util.Map.Entry;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
-import org.nutz.lang.segment.MultiLineProperties;
+import org.nutz.lang.util.MultiLineProperties;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.MessageLoader;
