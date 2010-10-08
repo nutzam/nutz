@@ -44,6 +44,8 @@ public interface Node<T> {
 
 	Node<T> remove(int index);
 
+	Node<T> clearChildren();
+
 	Node<T> insertBefore(int index, Node<T> node);
 
 	boolean isRoot();
