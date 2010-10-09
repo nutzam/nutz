@@ -11,29 +11,35 @@ import org.nutz.mvc.ViewMaker;
  * 默认的的视图工厂类
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class DefaultViewMaker implements ViewMaker {
 
+	public static final String VIEW_JSP = "jsp";
+	public static final String VIEW_JSON = "json";
+	public static final String VIEW_REDIRECT = "redirect";
+	public static final String VIEW_REDIRECT2 = ">>";
+	public static final String VIEW_VOID = "void";
+	public static final String VIEW_IOC = "ioc";
+	public static final String VIEW_HTTP = "http";
+
 	public View make(Ioc ioc, String type, String value) {
-		if ("jsp".equals(type)) {
+		type = type.toLowerCase();
+		if (VIEW_JSP.equals(type))
 			return new JspView(value);
-		} else if ("json".equals(type)) {
-			if (Strings.isBlank(value)) {
+		if (VIEW_JSON.equals(type))
+			if (Strings.isBlank(value)) 
 				return new UTF8JsonView(JsonFormat.compact());
-			} else {
-				JsonFormat format = Json.fromJson(JsonFormat.class, value);
-				return new UTF8JsonView(format);
-			}
-		} else if ("redirect".equals(type) || ">>".equals(type)) {
+			else
+				return new UTF8JsonView(Json.fromJson(JsonFormat.class, value));
+		if (VIEW_REDIRECT.equals(type) || VIEW_REDIRECT2.equals(type))
 			return new ServerRedirectView(value);
-		} else if ("void".equals(type)) {
+		if (VIEW_VOID.equals(type))
 			return new VoidView();
-		} else if ("ioc".equals(type)) {
+		if (VIEW_IOC.equals(type))
 			return ioc.get(View.class, value);
-		} else if ("http".equals(type)) {
-			int sc = Integer.parseInt(value);
-			return new HttpStatusView(sc);
-		}
+		if (VIEW_HTTP.equals(type))
+			return new HttpStatusView(Integer.parseInt(value));
 		return null;
 	}
 
