@@ -76,8 +76,7 @@ public class XmlIocLoader implements IocLoader {
 				LOG.debugf("Load complete :\n%s", Json.toJson(iocMap));
 		}
 		catch (Throwable e) {
-			e.printStackTrace();
-			throw Lang.makeThrow("Error");
+			throw Lang.wrapThrow(e);
 		}
 	}
 

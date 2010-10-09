@@ -217,7 +217,7 @@ public class FastUploading implements Uploading {
 			br.close();
 		}
 		if (log.isDebugEnabled())
-			log.debugf("...Done %dbyted readed", br.readed());
+			log.debugf("...Done %d bytes readed", br.readed());
 		/**
 		 * 全部结束<br>
 		 * ========================================================
