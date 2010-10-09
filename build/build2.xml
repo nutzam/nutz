@@ -141,14 +141,14 @@
 		<junit fork="true" showoutput="true" printsummary="yes" filtertrace="true" maxmemory="256M" 
 			haltonerror="false" haltonfailure="false">
 			<classpath>
-				<path path="${classes-dir-jdk6}"></path>
 				<path path="${classes-dir-emma}"></path>
+				<path path="${classes-dir-jdk6}"></path>
 				<path path="${classes-dir-test}"></path>
 				<path refid="nutz-classpath"/>
 			</classpath>
 			<batchtest todir="${tmp-junitreport-dir}">
 				<fileset dir="test">
-					<include name="org/nutz/TestAll.java"/>
+					<include name="**/*Test.java"/>
 				</fileset>
 				<formatter type="xml"/>
 			</batchtest>
