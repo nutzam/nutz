@@ -1,5 +1,7 @@
 package org.nutz.aop;
 
+import org.nutz.lang.Lang;
+
 
 
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
@@ -28,7 +30,7 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 
 	public Class<?> load(String className) throws ClassNotFoundException {
 		try{
-			return Thread.currentThread().getContextClassLoader().loadClass(className);
+			return Lang.loadClass(className);
 		}
 		catch (ClassNotFoundException e) {
 			try{
@@ -40,7 +42,7 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 				}catch (ClassNotFoundException e3) {
 				}
 			}
-			catch (SecurityException e2) {//Fix for GAE 1.3.7, Fix issue 
+			catch (SecurityException e2) {//Fix for GAE 1.3.7, Fix issue 296
 				try{
 					return getParent().loadClass(className);
 				}catch (ClassNotFoundException e3) {

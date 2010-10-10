@@ -48,6 +48,8 @@ import org.nutz.mvc.View;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class JspView implements View {
+	
+	public static final String DEFAULT_ATTRIBUTE = "obj";
 
 	private String path;
 
@@ -74,7 +76,7 @@ public class JspView implements View {
 			throws Exception {
 		// Store object to request
 		if (null != obj)
-			req.setAttribute("obj", obj);
+			req.setAttribute(DEFAULT_ATTRIBUTE, obj);
 		// Check path
 		String thePath = path;
 		if (Strings.isBlank(thePath)) {
