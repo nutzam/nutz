@@ -1,6 +1,7 @@
 package org.nutz.aop;
 
 
+
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 	
 	public DefaultClassDefiner(ClassLoader parent) {
@@ -32,7 +33,14 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 		catch (ClassNotFoundException e) {
 			try{
 				return ClassLoader.getSystemClassLoader().loadClass(className);
-			}catch (ClassNotFoundException e2) {
+			}
+			catch (ClassNotFoundException e2) {
+				try{
+					return getParent().loadClass(className);
+				}catch (ClassNotFoundException e3) {
+				}
+			}
+			catch (SecurityException e2) {//Fix for GAE 1.3.7, Fix issue 
 				try{
 					return getParent().loadClass(className);
 				}catch (ClassNotFoundException e3) {
