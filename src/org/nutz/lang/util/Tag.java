@@ -3,6 +3,8 @@ package org.nutz.lang.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
 
 import static java.lang.String.*;
@@ -13,6 +15,25 @@ import static java.lang.String.*;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class Tag extends SimpleNode<HtmlToken> {
+
+	public static Tag tag(String name, String... attrs) {
+		Tag tag = tag(name);
+		if (null != attrs)
+			for (String attr : attrs) {
+				if (null != attr && attr.length() > 1) {
+					char c = attr.charAt(0);
+					switch (c) {
+					case '.':
+						tag.addClass(attr.substring(1));
+						break;
+					case '#':
+						tag.id(attr.substring(1));
+						break;
+					}
+				}
+			}
+		return tag;
+	}
 
 	public static Tag tag(String name) {
 		Tag tag = new Tag();
@@ -70,6 +91,40 @@ public class Tag extends SimpleNode<HtmlToken> {
 
 	public Tag attr(String name, int value) {
 		return attr(name, String.valueOf(value));
+	}
+
+	public Tag addClass(String name) {
+		String cns = get().getAttrVal("class");
+		String[] nms = Strings.splitIgnoreBlank(cns, " ");
+		if (null == nms) {
+			get().attr("class", name);
+		} else {
+			if (!Lang.contains(nms, name)) {
+				get().attr("class", cns + " " + name);
+			}
+		}
+		return this;
+	}
+
+	public boolean hasClass(String name) {
+		String cns = get().getAttrVal("class");
+		if (null == cns || cns.length() < name.length())
+			return false;
+		return (" " + cns + " ").indexOf(" " + name + " ") != -1;
+	}
+
+	public Tag id(String id) {
+		get().attr("id", id);
+		return this;
+	}
+
+	public String id() {
+		return get().getAttrVal("id");
+	}
+
+	public Tag setText(String text) {
+		this.add(Tag.text(text));
+		return this;
 	}
 
 	public List<Tag> childrenTag() {
