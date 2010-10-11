@@ -17,7 +17,8 @@ import static java.lang.String.*;
 public class Tag extends SimpleNode<HtmlToken> {
 
 	public static Tag tag(String name, String... attrs) {
-		Tag tag = tag(name);
+		Tag tag = new Tag();
+		tag.set(new HtmlToken().setName(name));
 		if (null != attrs)
 			for (String attr : attrs) {
 				if (null != attr && attr.length() > 1) {
@@ -32,12 +33,6 @@ public class Tag extends SimpleNode<HtmlToken> {
 					}
 				}
 			}
-		return tag;
-	}
-
-	public static Tag tag(String name) {
-		Tag tag = new Tag();
-		tag.set(new HtmlToken().setName(name));
 		return tag;
 	}
 
