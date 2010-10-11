@@ -27,9 +27,9 @@ public abstract class AbstractLog implements Log {
 		}
 		catch (Throwable e) { //即使格式错误也继续log
 			if (isWarnEnabled())
-				warn("String format fail in log , fmt = "+ fmt + " , args = " +args);
+				warn("String format fail in log , fmt = "+ fmt + " , args = " +args,e);
+			return "!!!!Log Fail!!";
 		}
-		return fmt;
 	}
 
 	public void debug(Object message) {

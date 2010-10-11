@@ -1,5 +1,6 @@
 package org.nutz.aop.interceptor;
 
+import org.nutz.aop.AopCallback;
 import org.nutz.aop.InterceptorChain;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Lang;
@@ -32,17 +33,22 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 
 	public void filter(InterceptorChain chain) {
 		try {
+			if (LOG.isTraceEnabled())
+				LOG.trace("Start ...");
+		}
+		catch (Throwable e) {}
+		try {
 			if (logBeforeInvoke && LOG.isDebugEnabled())
-				LOG.debugf("[beforeInvoke]Obj = %s , Method = %s , args = %s",
-					chain.getCallingObj(),
+				LOG.debugf("[beforeInvoke] Obj = %s , Method = %s , args = %s",
+					toString(chain.getCallingObj()),
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
 			chain.doChain();
 		}
 		catch (Exception e) {
 			if (logWhenException && LOG.isDebugEnabled())
-				LOG.debugf("[whenException]Obj = %s , Throwable = %s , Method = %s , args = %s",
-					chain.getCallingObj(),
+				LOG.debugf("[whenException] Obj = %s , Throwable = %s , Method = %s , args = %s",
+					toString(chain.getCallingObj()),
 					e,
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
@@ -50,8 +56,8 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 		catch (Throwable e) {
 			if (logWhenError && LOG.isDebugEnabled())
-				LOG.debugf("[whenError]Obj = %s , Throwable = %s , Method = %s , args = %s",
-					chain.getCallingObj(),
+				LOG.debugf("[whenError] Obj = %s , Throwable = %s , Method = %s , args = %s",
+					toString(chain.getCallingObj()),
 					e,
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
@@ -59,22 +65,33 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 		finally {
 			if (logAfterInvoke && LOG.isDebugEnabled())
-				LOG.debugf("[afterInvoke]Obj = %s , Return = %s , Method = %s , args = %s",
-					chain.getCallingObj(),
+				LOG.debugf("[afterInvoke] Obj = %s , Return = %s , Method = %s , args = %s",
+					toString(chain.getCallingObj()),
 					chain.getReturn(),
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
 		}
-
+		try {
+			if (LOG.isTraceEnabled())
+				LOG.trace("... End");
+		}
+		catch (Throwable e) {}
 	}
 
-	protected final String str(Object... args) {
+	public static final String toString(Object object) {
+		if (object != null )
+			if (object instanceof AopCallback)
+				return "<Aop>[" + object.getClass() + "]";
+		return String.valueOf(object);
+	}
+	
+	protected static final String str(Object... args) {
 		if (args == null || args.length == 0)
 			return "[]";
 		StringBuilder sb = new StringBuilder();
 		sb.append('[');
 		for (Object object : args)
-			sb.append(String.valueOf(object)).append(",");
+			sb.append(toString(object)).append(",");
 		sb.replace(sb.length() - 1, sb.length(), "]");
 		return sb.toString();
 	}
