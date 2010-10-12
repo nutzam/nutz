@@ -2,6 +2,8 @@ package org.nutz.lang;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,7 +47,7 @@ public abstract class Streams {
 	 * <b style=color:red>注意</b>，它并不会关闭输出流
 	 * 
 	 * @param writer
-	 *            
+	 * 
 	 * @param cs
 	 *            文本
 	 * @throws IOException
@@ -281,7 +283,7 @@ public abstract class Streams {
 	 * 
 	 * @param ins
 	 *            输入流。
-	 * @return 缓冲流
+	 * @return 缓冲输入流
 	 */
 	public static BufferedInputStream buff(InputStream ins) {
 		if (ins instanceof BufferedInputStream)
@@ -294,12 +296,38 @@ public abstract class Streams {
 	 * 
 	 * @param ops
 	 *            输出流。
-	 * @return 缓冲流
+	 * @return 缓冲输出流
 	 */
 	public static BufferedOutputStream buff(OutputStream ops) {
 		if (ops instanceof BufferedOutputStream)
 			return (BufferedOutputStream) ops;
 		return new BufferedOutputStream(ops);
+	}
+
+	/**
+	 * 为一个文本输入流包裹一个缓冲流。如果这个输入流本身就是缓冲流，则直接返回
+	 * 
+	 * @param ins
+	 *            文本输入流。
+	 * @return 缓冲文本输入流
+	 */
+	public static BufferedReader buffr(Reader reader) {
+		if (reader instanceof BufferedReader)
+			return (BufferedReader) reader;
+		return new BufferedReader(reader);
+	}
+
+	/**
+	 * 为一个文本输出流包裹一个缓冲流。如果这个文本输出流本身就是缓冲流，则直接返回
+	 * 
+	 * @param ops
+	 *            文本输出流。
+	 * @return 缓冲文本输出流
+	 */
+	public static BufferedWriter buffw(Writer ops) {
+		if (ops instanceof BufferedWriter)
+			return (BufferedWriter) ops;
+		return new BufferedWriter(ops);
 	}
 
 	/**

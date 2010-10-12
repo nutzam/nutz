@@ -38,7 +38,7 @@ public class Cookie {
 		String[] ss = Strings.splitIgnoreBlank(str, ";");
 		for (String s : ss) {
 			Pair<String> p = Pair.create(Strings.trim(s));
-			map.put(p.getName(), p.getString());
+			map.put(p.getName(), p.getValueString());
 		}
 	}
 

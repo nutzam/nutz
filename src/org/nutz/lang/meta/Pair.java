@@ -68,7 +68,7 @@ public class Pair<T> {
 		return value;
 	}
 
-	public String getString() {
+	public String getValueString() {
 		return value == null ? null : value.toString();
 	}
 

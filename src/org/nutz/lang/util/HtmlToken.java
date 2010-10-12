@@ -105,7 +105,7 @@ public class HtmlToken {
 
 	public String getAttrVal(String name) {
 		Pair<String> p = getAttr(name);
-		return p == null ? null : p.getString();
+		return p == null ? null : p.getValueString();
 	}
 
 	public List<Pair<String>> getAttributes() {
