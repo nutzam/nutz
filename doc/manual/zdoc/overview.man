@@ -114,6 +114,40 @@ zDoc 要达到的目标
 		会将目录 /folder/abc 所有的 zdoc 文档转换成 Google wiki 文档，并输出到 /output/abc 目录下。并会根据 index.xml （如果没有，根据文件）
 		生成一个索引 wiki 页，文件名为 wiki_index_page.wiki。所有的本地图片都会被打入压缩包 /output/abc/wiki_images.zip，并且所有的本地图片
 		地址都将变成 http://www.my.com/wiki/img/xxxx.xxx
+	
+	将 zDoc 转换成 PDF 文件
+		PDF 是一个非常通用的文档格式。如果你通过 zDoc 建立一组文件，你就可以用如下命令生成 PDF 文件
+		{{{
+		zdoc pdf [source dir] [target pdf path]
+		}}}
+		{*说明}
+		 * 第一个参数表示要转换成 PDF 文档
+		 * 第二个参数声明了zDoc源目录
+			 * 该目录下如果有 index.xml，将能更为精确的控制生成的目录索引
+			 * 请看 [index_xml.man zDoc 目录转换中的索引文件--index.xml的语法]
+		 * 第三个参数指明一个 PDF 的文件，如果该文件不存在，会被自动创建，否则会被覆盖。
+		
+		这里还需要注意的是，因为 PDF 输出，zDoc 依赖的是 iText 项目，你需要
+		 # iText-2.X.X.jar
+		 # iTextAsian.jar - 用来支持中文
+		 # 在你的 CLASSPATH 内，放置一个字体文件，名字为 {*pdf_font.ttf} 或者 {*pdf_font.ttc}
+			 * 这个文件必须放置在 CLASSPATH 的根，即，同 Log4j.properties 同级，比如：
+			{{{
+			 [My Class Folder]
+			    [com]
+				   [my]
+				       Abc.class
+					   Main.class
+			    log4j.properties
+				pdf_font.ttf
+			}}}
+			 * {*.ttf} 字体文件更优先
+		
+		{*比如}
+		{{{
+		zdoc pdf /home/peter/myDoc /home/peter/myPdf.pdf
+		}}}
+		会将目录 /home/peter/myDoc 所有的 zDoc 文档转换成一个大的 PDF 文件 /home/peter/myPdf.pdf
 
 其他
 	 * 关于 zdoc 文件详细的语法，请参看 [syntax.man zDoc 的语法说明]
