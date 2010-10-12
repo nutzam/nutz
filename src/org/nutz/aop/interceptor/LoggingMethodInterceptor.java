@@ -81,7 +81,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 	public static final String toString(Object object) {
 		if (object != null )
 			if (object instanceof AopCallback)
-				return "<Aop>[" + object.getClass() + "]";
+				return "<Aop>[" + object.getClass().getName() + "]";
 		return String.valueOf(object);
 	}
 	
