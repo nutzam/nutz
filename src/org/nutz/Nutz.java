@@ -12,7 +12,7 @@ package org.nutz;
 public final class Nutz {
 
 	public static String version() {
-		return "1.a.32";
+		return "1.a.33";
 	}
 
 }
