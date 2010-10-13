@@ -3,7 +3,8 @@ package org.nutz.castor.castor;
 import org.nutz.castor.Castor;
 import org.nutz.lang.Mirror;
 
-public class String2Mirror extends Castor<String, Mirror<?>> {
+@SuppressWarnings({"rawtypes"})
+public class String2Mirror extends Castor<String, Mirror> {
 
 	private static final String2Class castor = new String2Class();
 

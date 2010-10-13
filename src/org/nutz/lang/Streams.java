@@ -307,7 +307,7 @@ public abstract class Streams {
 	/**
 	 * 为一个文本输入流包裹一个缓冲流。如果这个输入流本身就是缓冲流，则直接返回
 	 * 
-	 * @param ins
+	 * @param reader
 	 *            文本输入流。
 	 * @return 缓冲文本输入流
 	 */
