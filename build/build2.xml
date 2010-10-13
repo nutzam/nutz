@@ -36,7 +36,7 @@
 	
 	<property name="nutz-version" value="1.a.32"></property>
 	<tstamp>
-		<format property="now-date" locale="zh" pattern="yyyyMMdd_hhmm" timezone="Asia/Shanghai" />
+		<format property="now-date" locale="zh" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>
 	<property name="tmp-dir" value="build/tmp"></property>
 	<property name="pub-dir" value="build/pub"></property>
@@ -50,13 +50,15 @@
 	<property name="zdoc-dir" value="${pub-dir}/manual"></property>
 	<property name="zdoc-en-dir" value="${pub-dir}/manual_en"></property>
 
-	<property name="nutz.jar.pre" value="nutz-${nutz-version}-snapshot-${now-date}"></property>
+	<property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}"></property>
 	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> --> <!-- 用于正式版 -->
 
-	<property name="nutz.jar.source" value="${pub-dir}/${nutz.jar.pre}-source.jar"></property>
-	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.jar.pre}-jdk5.jar"></property>
-	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.jar.pre}-jdk6.jar"></property>
-	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.jar.pre}.zip"></property>
+	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-source.jar"></property>
+	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.dest.pre}-jdk5.jar"></property>
+	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}-jdk6.jar"></property>
+	<property name="nutz.manual.pdf" value="${pub-dir}/${nutz.dest.pre}-manual.pdf"></property>
+	<property name="nutz.manual_en.pdf" value="${pub-dir}/${nutz.dest.pre}-manual_en.pdf"></property>
+	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.dest.pre}.zip"></property>
 	
 	<!-- 允许emma -->
 	<property name="emma.enabled" value="true" />
@@ -176,27 +178,49 @@
 	
 	<target name="manual">
 		<java classname="org.nutz.doc.Doc" fork="true">
-			<sysproperty key="jaxp.debug" value="true"/>
 			<classpath>
 				<path refid="nutz-classpath"></path>
 				<path path="${classes-dir-jdk6}"></path>
 			</classpath>
+			<arg value="html"/>
 			<arg value="${basedir}/doc/manual"/>
 			<arg value="${basedir}/${zdoc-dir}"/>
-			<arg value=".html"/>
 		</java>
 	</target>
 	
 	<target name="manual_en">
 			<java classname="org.nutz.doc.Doc" fork="true">
-				<sysproperty key="jaxp.debug" value="true"/>
 				<classpath>
 					<path refid="nutz-classpath"></path>
 					<path path="${classes-dir-jdk6}"></path>
 				</classpath>
+				<arg value="html"/>
 				<arg value="${basedir}/doc/manual_en"/>
 				<arg value="${basedir}/${zdoc-en-dir}"/>
-				<arg value=".html"/>
+			</java>
+		</target>
+	
+	<target name="manual_pdf">
+		<java classname="org.nutz.doc.Doc" fork="true">
+			<classpath>
+				<path refid="nutz-classpath"></path>
+				<path path="${classes-dir-jdk6}"></path>
+			</classpath>
+			<arg value="pdf"/>
+			<arg value="${basedir}/doc/manual"/>
+			<arg value="${nutz.manual.pdf}"/>
+		</java>
+	</target>
+	
+	<target name="manual_en_pdf">
+			<java classname="org.nutz.doc.Doc" fork="true">
+				<classpath>
+					<path refid="nutz-classpath"></path>
+					<path path="${classes-dir-jdk6}"></path>
+				</classpath>
+				<arg value="pdf"/>
+				<arg value="${basedir}/doc/manual_en"/>
+				<arg value="${nutz.manual_en.pdf}"/>
 			</java>
 		</target>
 	
@@ -214,6 +238,8 @@
 		<antcall target="jdoc"></antcall>
 		<antcall target="manual"></antcall>
 		<antcall target="manual_en"></antcall>
+		<antcall target="manual_pdf"></antcall>
+		<antcall target="manual_en_pdf"></antcall>
 		<antcall target="create-zip"></antcall>
 		<antcall target="clean"></antcall>
 	</target>
