@@ -36,7 +36,7 @@
 	
 	<property name="nutz-version" value="1.a.32"></property>
 	<tstamp>
-		<format property="now-date" locale="zh" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
+		<format property="now-date" locale="en" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>
 	<property name="tmp-dir" value="build/tmp"></property>
 	<property name="pub-dir" value="build/pub"></property>
