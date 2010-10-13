@@ -86,6 +86,8 @@ public abstract class Disks {
 	 * @return 整理后的路径
 	 */
 	public static String getCanonicalPath(String path) {
+		if (Strings.isBlank(path))
+			return path;
 		String[] pa = Strings.splitIgnoreBlank(path, "[\\\\/]");
 		LinkedList<String> paths = new LinkedList<String>();
 		for (String s : pa) {
@@ -97,6 +99,8 @@ public abstract class Disks {
 				paths.add(s);
 			}
 		}
+		if (path.charAt(0) == '/')
+			return Lang.concat("/", paths).insert(0, '/').toString();
 		return Lang.concat("/", paths).toString();
 	}
 
