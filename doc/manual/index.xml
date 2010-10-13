@@ -26,6 +26,7 @@
 		<doc path="links_many_many.man"/>
 		<doc path="customized_sql.man"/>
 		<doc path="transaction.man"/>
+		<doc path="transaction_complex.man"/>
 		<doc path="runner.man"/>
 		<doc path="services.man"/>
 		<doc path="pojo.man"/>
