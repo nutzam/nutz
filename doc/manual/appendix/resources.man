@@ -44,6 +44,8 @@
 	     @[http://yunhaifeiwu.javaeye.com 云海飞舞]
 	 * 《[http://yunhaifeiwu.javaeye.com/blog/746886 nutz初使用之MVC HelloWorld (netbeans jsp版）]》 \
 	     @[http://yunhaifeiwu.javaeye.com 云海飞舞]
+	 * 《[http://myblog.sunfarms.net/94.html 为NutLab添加一个新项目-Nutz与OpenID集成]》 \
+	     @[http://myblog.sunfarms.net wendal]
 -----------------------------------------------------------------------------------
 关于 Ioc
 	 * 《[http://wendal.javaeye.com/blog/654658 Nutz 1.a.27 最新变化之一 -- XML配置ioc]》\

@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <doc title="Nutz 框架使用发者手册" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
-	<doc path="nutz_release_notes.man"/>
 	<doc path="committer"  title="About the source">
 		<doc path="svn_project.man"/>
 		<doc path="compile.man"/>
@@ -10,53 +9,10 @@
 		<doc path="coding.man"/>
 		<doc path="be_committer.man"/>
 	</doc>
-	<doc path="dao" title="Dao manual">
-		<doc path="hello.man"/>
-		<doc path="annotations.man"/>
-		<doc path="basic_operations.man"/>
-		<doc path="primary_key.man"/>
-		<doc path="condition.man"/>
-		<doc path="pager.man"/>
-		<doc path="next_prev.man"/>
-		<doc path="view.man"/>
-		<doc path="field_filter.man"/>
-		<doc path="dynamic_table_name.man"/>
-		<doc path="links_overview.man">
-			<doc path="links_one.man"/>
-			<doc path="links_many.man"/>
-			<doc path="links_many_many.man"/>
-			<doc path="links_dao_operations.man"/>
-		</doc>
-		<doc path="customized_sql.man"/>
-		<doc path="transaction.man"/>
-		<doc path="services.man"/>
-		<!--doc path="services_tree.man"/-->
-		<doc path="pojo.man"/>
-	</doc>
-	<doc path="ioc"	title="Ioc manual">
-		<doc path="hello.man"/>
-		<doc path="inner_object.man"/>
-		<doc path="events.man"/>
-		<doc path="injecting.man"/>
-		<doc path="ioc_loader.man"/>
-		<doc path="aop.man"/>
-		<doc path="scope.man"/>
-		<doc path="xml_ioc_loader.man"/>
-	</doc>
 	<doc path="mvc"	title="Mvc manual">
 		<doc path="overview.man"/>
-		<doc path="http_adaptor.man"/>
-		<doc path="view.man"/>
-		<doc path="with_ioc.man"/>
-		<doc path="localization.man"/>
-		<doc path="action_filter.man"/>
-		<doc path="file_upload.man"/>
-		<doc path="module_of_request.man"/>
 	</doc>
 	<doc path="json" title="Json manual">
-		<doc path="hello.man"/>
-		<doc path="formater.man"/>
-		<doc path="with_castors.man"/>
 		<doc path="customize.man"/>
 	</doc>
 	<doc path="lang" title="Sweet Java">
@@ -67,22 +23,14 @@
 		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
-	<doc path="zmole" title="zMole - Quick code generator">
-		<doc path="zmole_get_start.man"/>
-	</doc>
 	<doc path="zdoc" title="zDoc manual">
 		<doc path="overview.man"/>
 		<doc path="syntax.man"/>
 		<doc path="index_xml.man"/>
 		<doc path="dir_convert.man"/>
 	</doc>
-	<doc path="history" title="History">
-		<doc path="1_a_26.man"/>
-		<doc path="1_a_25.man"/>
-	</doc>
 	<doc path="appendix" title="Appendix">
 		<doc path="create_datasource.man"/>
-		<doc path="resources.man"/>
 		<doc path="plugins.man"/>
 	</doc>
 </doc>
