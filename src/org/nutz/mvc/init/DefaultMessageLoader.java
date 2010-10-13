@@ -9,6 +9,7 @@ import java.util.Map.Entry;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.MultiLineProperties;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -19,14 +20,15 @@ import org.nutz.resource.Scans;
 import org.nutz.resource.impl.FileResource;
 
 public class DefaultMessageLoader implements MessageLoader {
-	
+
 	private static final Log log = Logs.getLog(DefaultMessageLoader.class);
 
 	public Map<String, Map<String, String>> load(String refer) {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		for (NutResource nutResource : allnrs) {
-			((FileResource)nutResource).setName(nutResource.getName().substring(refer.length()+1));
+			((FileResource) nutResource).setName(nutResource.getName()
+															.substring(refer.length() + 1));
 		}
 		if (log.isDebugEnabled())
 			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
@@ -43,7 +45,7 @@ public class DefaultMessageLoader implements MessageLoader {
 			String langType;
 			String resName = nr.getName();
 			if (resName.contains("/"))
-				langType = resName.substring(0,resName.indexOf('/'));
+				langType = resName.substring(0, resName.indexOf('/'));
 			else if (resName.contains("\\"))
 				langType = resName.substring(0, resName.indexOf('\\'));
 			else
@@ -61,7 +63,11 @@ public class DefaultMessageLoader implements MessageLoader {
 			for (Entry<String, List<NutResource>> entry : map.entrySet()) {
 				List<NutResource> nrs = entry.getValue();
 				for (NutResource nr : nrs) {
-					MultiLineProperties p = new MultiLineProperties();
+					MultiLineProperties p = new MultiLineProperties() {
+						public String get(Object key) {
+							return Strings.sNull(super.get(key), (String) key);
+						}
+					};
 					Reader r = nr.getReader();
 					p.load(r);
 					r.close();
