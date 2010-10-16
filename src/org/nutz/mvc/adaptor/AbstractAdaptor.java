@@ -109,8 +109,13 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	public Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
 		Object[] args = new Object[injs.length];
-		int i = fillPathArgs(req, resp, pathArgs, args);
+		int i = 0;
+		int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
 		// Inject another params
+		for (; i < len; i++) {
+			args[i] = injs[i].get(req, resp, null == pathArgs ? null : pathArgs[i]);
+		}
+
 		for (; i < injs.length; i++) {
 			args[i] = injs[i].get(req, resp, null);
 		}
