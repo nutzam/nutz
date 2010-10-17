@@ -7,6 +7,7 @@ import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.List;
 
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
@@ -16,7 +17,7 @@ import org.nutz.lang.Lang;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public abstract class Sender {
 
@@ -58,8 +59,10 @@ public abstract class Sender {
 
 	protected Map<String, String> getResponseHeader() {
 		Map<String, String> reHeaders = new HashMap<String, String>();
-		for (String key : conn.getHeaderFields().keySet()) {
-			reHeaders.put(key, conn.getHeaderField(key));
+		for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
+			List<String> val = en.getValue();
+			if (null != val && val.size() > 0)
+				reHeaders.put(en.getKey(), en.getValue().get(0));
 		}
 		return reHeaders;
 	}
@@ -82,8 +85,8 @@ public abstract class Sender {
 			host += ":" + url.getPort();
 		conn.setRequestProperty("Host", host);
 		Header header = request.getHeader();
-		if (null != header) 
-			for (Entry<String, String> entry : header.getAll()) 
+		if (null != header)
+			for (Entry<String, String> entry : header.getAll())
 				conn.addRequestProperty(entry.getKey(), entry.getKey());
 	}
 

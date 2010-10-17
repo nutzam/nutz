@@ -1,0 +1,86 @@
+#title: 关于 1.a.32
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+关于 1.a.32
+	
+	本版除了修复问题，主要增加如下特性
+	 # Ioc: 字段注入的循环依赖，不能正常工作
+	 # Mvc: 上传时，支持文件名过滤，以及大小限制
+	 
+--------------------------------------------------------------------------------------------------------
+问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=94 Issue 94]    	Ioc中有相互依赖时会出现空指针异常    {#AAA;by} {*Blue Rain}
+	 * [http://code.google.com/p/nutz/issues/detail?id=200 Issue 200]    MVC: UploadAdapter文件大小限额    {#AAA;by} {*天行健}
+	 * [http://code.google.com/p/nutz/issues/detail?id=249 Issue 249]    mvc: UploadAdaptor 应该支持一个选项，是否记录空文件（默认应该为 "不记录"）    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=266 Issue 266]    通过注解方式使用Ioc文档太少,也没有Demo,建议尽快补充    {#AAA;by} {*LQ10001}
+	 * [http://code.google.com/p/nutz/issues/detail?id=274 Issue 274]    lang: Files.write 应该支持 InputStream    {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=278 Issue 278]    入口函数返回View时，ActionInvokerImpl处理不对    {#AAA;by} {*茶几}
+	 * [http://code.google.com/p/nutz/issues/detail?id=283 Issue 283]    Http#encode    {#AAA;by} {*caji.net}
+	 * [http://code.google.com/p/nutz/issues/detail?id=284 Issue 284]    关于项目打成JAR包,IOC,MSG,SQL目录无法找到.    {#AAA;by} {*shao0707@163.com}
+	 * [http://code.google.com/p/nutz/issues/detail?id=288 Issue 288]    希望多增加几个内置转换器    {#AAA;by} {*LQ10001}
+	 * [http://code.google.com/p/nutz/issues/detail?id=289 Issue 289]    更新20100916快照版的jar包后，JsonLoader无法找到js文件所在的文件夹.    {#AAA;by} {*qi.yang.cn}
+	 * [http://code.google.com/p/nutz/issues/detail?id=290 Issue 290]    NutDao主键类型转换错误    {#AAA;by} {*yonlist}
+	 * [http://code.google.com/p/nutz/issues/detail?id=291 Issue 291]    Castors 初始化错误    {#AAA;by} {*caji.net}
+	 * [http://code.google.com/p/nutz/issues/detail?id=293 Issue 293]    关于dao查询问题,查询email的一个bug     {#AAA;by} {*shao0707@163.com}
+	 * [http://code.google.com/p/nutz/issues/detail?id=296 Issue 296]    在gae上使用nutz ioc报错， nutz版本1.a.31及以后版本都报    {#AAA;by} {*yuansicau}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	 # 共通过了 XXX 个单元测试用例,代码覆盖率达到62%(按line计算)
+	 # Nutz.Dao 经测试在如下数据库上可以工作正常
+		 * [http://www.h2database.com H2]
+		 * [http://www.sqlite.org SQLite]
+		 * [http://www.mysql.com MySql]
+		 * [http://www.oracle.com Oracle]
+		 * [http://www.postgresql.org Postgresql]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+		 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+		 * [http://www.ibm.com/software/data/db2/ DB2]
+--------------------------------------------------------------------------------------------------------
+文档
+	  * [mvc/localization.man 本地化字符串] : 修改描述
+	  * [zdoc/overview.man zDoc 概述] : 添加生成PDF的描述
+	  * [appendix/plugins.man 可用插件] : 添加插件中心的描述
+	 
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [http://code.google.com/p/nutzdemo Demo Site] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	|| 贡献者 									|| 问题 || 博客|| 支持 || 代码  || Demo|| 文档 || 测试 ||
+	|| O(∩_7∩)O								||  -   ||  -  ||  -   ||  -	||  O  ||  -   ||  O   ||
+	|| Blue Rain								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| caji.net									||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| Jay										||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
+	|| LQ10001									||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| qi.yang.cn								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| shao0707									||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| yonlist									||  O   ||  -  ||  -   ||  O	||  -  ||  -   ||  -   ||
+	|| yuansicau								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| wendal									||  O   ||  O  ||  O   ||  O	||  O  ||  O   ||  O   ||
+	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
+	|| 茶几										||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| 老袁										||  -   ||  -  ||  -   ||  O	||  -  ||  -   ||  -   ||
+	|| 水蓝										||  O   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
+	|| 天行健									||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
+	|| 云海飞舞									||  -   ||  O  ||  O   ||  -	||  O  ||  -   ||  -   ||
+	|| 冬天温泉									||  -   ||  -  ||  -   ||  -	||  -  ||  -   ||  O   ||
+
+	
+	另外，很多朋友都在：
+	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz交流超级群(58444676)]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^
+	
+	欢迎访问[http://nutzam.com 官网],以获取最新的快照版和用户手册
+
