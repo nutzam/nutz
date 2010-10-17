@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
@@ -20,6 +19,8 @@ public class AtMap {
 	}
 
 	public AtMap add(String key, String actionPath) {
+		if (actionPath.endsWith("/*"))
+			actionPath = actionPath.substring(0, actionPath.length() - 2);
 		ats.put(Strings.trim(key), Strings.trim(actionPath));
 		return this;
 	}
@@ -41,16 +42,17 @@ public class AtMap {
 		return this;
 	}
 
-	public List<Pair<String>> getList(String... regexs) {
+	public List<Pair<String>> getList(String... prefixes) {
 		List<Pair<String>> list = new ArrayList<Pair<String>>(ats.size());
 		Set<Entry<String, String>> ens = ats.entrySet();
 		for (Entry<String, String> en : ens) {
-			if (null == regexs || regexs.length == 0)
-				list.add(new Pair<String>(en.getKey(), en.getValue()));
+			String key = en.getKey();
+			if (null == prefixes || prefixes.length == 0)
+				list.add(new Pair<String>(key, en.getValue()));
 			else {
-				for (String regex : regexs)
-					if (Pattern.matches(regex, en.getKey())) {
-						list.add(new Pair<String>(en.getKey(), en.getValue()));
+				for (String prefix : prefixes)
+					if (key.startsWith(prefix)) {
+						list.add(new Pair<String>(key, en.getValue()));
 						break;
 					}
 			}
