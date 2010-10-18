@@ -1,14 +1,5 @@
 package org.nutz.mvc.view;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.nutz.lang.Files;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
-import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.View;
 
 /**
  * 指向/WebRoot/下面的jsp视图<br>
@@ -47,47 +38,14 @@ import org.nutz.mvc.View;
  * @author mawm(ming300@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class JspView implements View {
+public class JspView extends ForwardView {
 	
-	public static final String DEFAULT_ATTRIBUTE = "obj";
-
-	private String path;
-
 	public JspView(String name) {
-		if (!Strings.isBlank(name)) {
-			path = normalizePath(name, ".jsp");
-		}
+		super(name);
 	}
 
-	public static String normalizePath(String name, String ext) {
-		name = name.replace('\\', '/');
-		// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
-		if (name.charAt(0) == '/') {
-			if (name.toLowerCase().endsWith(ext))
-				return name;
-			else
-				return name + ext;
-		}
-		// For: @Ok("jsp:abc.cbc")
-		return "/WEB-INF/" + name.replace('.', '/') + ext;
+	@Override
+	protected String getExt() {
+		return ".jsp";
 	}
-
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws Exception {
-		// Store object to request
-		if (null != obj)
-			req.setAttribute(DEFAULT_ATTRIBUTE, obj);
-		// Check path
-		String thePath = path;
-		if (Strings.isBlank(thePath)) {
-			thePath = Mvcs.getRequestPath(req);
-			thePath = "/WEB-INF/" + Files.renameSuffix(thePath, ".jsp");
-		}
-		RequestDispatcher rd = req.getRequestDispatcher(thePath);
-		if (rd == null)
-			throw Lang.makeThrow("Fail to find JSP file '%s'", thePath);
-		// Do rendering
-		rd.forward(req, resp);
-	}
-
 }
