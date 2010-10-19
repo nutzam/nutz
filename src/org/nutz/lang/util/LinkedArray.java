@@ -2,6 +2,7 @@ package org.nutz.lang.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
@@ -144,6 +145,34 @@ public class LinkedArray<T> {
 		return re;
 	}
 
+	class LinkedArrayIterator<E> implements Iterator<E> {
+
+		LinkedArray<E> stack;
+		int i;
+
+		LinkedArrayIterator(LinkedArray<E> stack) {
+			this.stack = stack;
+			i = 0;
+		}
+
+		public boolean hasNext() {
+			return (stack.cursor - i + stack.offset) > 0;
+		}
+
+		public E next() {
+			return stack.innerGet(i++);
+		}
+
+		public void remove() {
+			throw Lang.noImplement();
+		}
+
+	}
+
+	public Iterator<T> iterator() {
+		return new LinkedArrayIterator<T>(this);
+	}
+
 	public String toString() {
 		return Json.toJson(toArray());
 	}
@@ -153,7 +182,7 @@ public class LinkedArray<T> {
 		clear();
 		return re;
 	}
-	
+
 	public boolean contains(T obj) {
 		for (int i = 0; i < size(); i++)
 			if (get(i).equals(obj))
