@@ -11,7 +11,9 @@
 	那么，如何获取这个 taskCount 呢？ 每次都执行 SELECT COUNT(*) 吗？比较理想的一个解决方法就是使用视图。在视图的 SQL 语句中我
 	们可以利用数据库的方言，发挥数据库的效率。并且在程序代码里也会更加简洁。比如我们建立一个视图 v_employee
 	{{{<SQL>
+	CREATE VIEW v_employee AS (
 	SELECT * , taskcount = (SELECT COUNT(id) FROM t_task AS t WHERE t.eid = e.id) FROM t_employee AS e;
+	)
 	}}}
 	{#080;_这段代码仅仅是个示意，在不同的数据库上，有不同的写法}
 
