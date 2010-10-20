@@ -17,7 +17,6 @@ import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
-import org.nutz.resource.impl.FileResource;
 
 public class DefaultMessageLoader implements MessageLoader {
 
@@ -27,8 +26,8 @@ public class DefaultMessageLoader implements MessageLoader {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		for (NutResource nutResource : allnrs) {
-			((FileResource) nutResource).setName(nutResource.getName()
-															.substring(refer.length() + 1));
+			if (nutResource.getName().indexOf(refer) > -1)
+				nutResource.setName(nutResource.getName().substring(refer.length() + 1));
 		}
 		if (log.isDebugEnabled())
 			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);

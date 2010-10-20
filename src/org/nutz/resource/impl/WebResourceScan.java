@@ -62,7 +62,8 @@ public class WebResourceScan extends AbstractResourceScan {
 			List<NutResource> list2 = scanInDir(regex, base, dir, true);
 			for (NutResource nutResource : list2) {
 				String name = nutResource.getName();
-				((FileResource)nutResource).setName(name.substring(base.length()));
+				if (name.indexOf(base) > -1)
+					nutResource.setName(name.substring(base.length()));
 				list.add(nutResource);
 			}
 		}

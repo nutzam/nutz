@@ -15,7 +15,7 @@ public abstract class NutResource implements Comparable<NutResource> {
 		return name;
 	}
 
-	protected void setName(String name) {
+	public void setName(String name) {
 		this.name = name;
 	}
 
