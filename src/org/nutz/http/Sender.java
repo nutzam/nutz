@@ -87,7 +87,7 @@ public abstract class Sender {
 		Header header = request.getHeader();
 		if (null != header)
 			for (Entry<String, String> entry : header.getAll())
-				conn.addRequestProperty(entry.getKey(), entry.getKey());
+				conn.addRequestProperty(entry.getKey(), entry.getValue());
 	}
 
 }
