@@ -16,27 +16,29 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 
 	private static final Log LOG = Logs.getLog(LoggingMethodInterceptor.class);
 
-	protected boolean logBeforeInvoke = true;
-	protected boolean logAfterInvoke = true;
-	protected boolean logWhenException = true;
-	protected boolean logWhenError = true;
+	protected boolean logBeforeInvoke;
+	protected boolean logAfterInvoke;
+	protected boolean logWhenException;
+	protected boolean logWhenError;
+	
+	public LoggingMethodInterceptor() {
+		this.logBeforeInvoke = LOG.isDebugEnabled();
+		this.logAfterInvoke = LOG.isDebugEnabled();
+		this.logWhenException = LOG.isDebugEnabled();
+		this.logWhenError = LOG.isDebugEnabled();
+	}
 
 	public void setLogEvent(boolean logBeforeInvoke,
 							boolean logAfterInvoke,
 							boolean logWhenException,
 							boolean logWhenError) {
-		this.logBeforeInvoke = logBeforeInvoke;
-		this.logAfterInvoke = logAfterInvoke;
-		this.logWhenException = logWhenException;
-		this.logWhenError = logWhenError;
+		this.logBeforeInvoke = logBeforeInvoke && LOG.isDebugEnabled();
+		this.logAfterInvoke = logAfterInvoke && LOG.isDebugEnabled();
+		this.logWhenException = logWhenException && LOG.isDebugEnabled();
+		this.logWhenError = logWhenError && LOG.isDebugEnabled();
 	}
 
 	public void filter(InterceptorChain chain) {
-		try {
-			if (LOG.isTraceEnabled())
-				LOG.trace("Start ...");
-		}
-		catch (Throwable e) {}
 		try {
 			if (logBeforeInvoke && LOG.isDebugEnabled())
 				LOG.debugf("[beforeInvoke] Obj = %s , Method = %s , args = %s",
@@ -71,17 +73,12 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 					chain.getCallingMethod(),
 					str(chain.getArgs()));
 		}
-		try {
-			if (LOG.isTraceEnabled())
-				LOG.trace("... End");
-		}
-		catch (Throwable e) {}
 	}
 
 	public static final String toString(Object object) {
 		if (object != null )
 			if (object instanceof AopCallback)
-				return "<Aop>[" + object.getClass().getName() + "]";
+				return "[" + object.getClass().getName() + "]";
 		return String.valueOf(object);
 	}
 	

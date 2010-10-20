@@ -42,6 +42,7 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
 
 		private SystemLog() {
 			isInfoEnabled = true;
+			isDebugEnabled = true;//严重考虑中!!
 		}
 
 		public void debug(Object message, Throwable t) {
