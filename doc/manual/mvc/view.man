@@ -1,4 +1,6 @@
 #title:视图
+#author: zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 ------------------------------------------------------------------------------------------
 什么是视图？
@@ -157,6 +159,43 @@
 			如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
 			如果入口函数是 void 或者返回 null，则用空串填充
 			}}}
+		
+		另外一种写法
+			{{{
+			@Ok("redirect:/pet/detail.nut?pid=${id}")
+			//等价于
+			{{{
+			@Ok(">>:/pet/detail.nut?pid=${id}")
+			}}}
+	--------------------------------------------------------------------------------------
+	内部重定向视图
+		视图的实现类为： {*org.nutz.mvc.view.ForwardView}
+		
+		一般的使用形式：
+		{{{
+		@Ok("forward:/pet/list.nut")
+		//或者
+		@Ok("forward:/article/2009/10465.html")
+		同时也可以写成
+		@Ok("->:/article/2009/10465.html")
+		}}}
+		
+		当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 
+		其实Jsp视图只是Forward视图的子类而已
+			 * 这个将对应 {#00A;*/WEB-INF/abc/bbc}
+				{{{
+				@Ok("jsp:abc.bbc")
+				}}}
+			 * 这个将对应 {#00A;*/abc/bbc}
+				{{{
+				@Ok("jsp:/abc/bbc")
+				}}}
+			 * 这个将对应 {#00A;*/abc/bbc.jsp}
+				{{{
+				@Ok("jsp:/abc/bbc.jsp")
+				}}}
+		
+		它将按照给定的视图值，服务器内部重定向到指定的地址.
 	--------------------------------------------------------------------------------------
 	HTTP 返回码视图
 		视图的实现类为： {*org.nutz.mvc.view.HttpStatusView}
@@ -177,7 +216,6 @@
 		对 HTTP 输出流不做任何处理
 	--------------------------------------------------------------------------------------
 	从 Ioc 容器中获取的视图
-		使用形式
 		
 		使用形式
 		{{{
@@ -185,6 +223,40 @@
 		}}}
 		将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
 		通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。
+	--------------------------------------------------------------------------------------
+	String视图
+		视图的实现类为： {*org.nutz.mvc.view.StringView}
+		
+		使用形式
+		{{{
+		@Ok("str")
+		}}}
+		将方法的返回值直接写入流
+		
+		规则:
+		{{{
+		@Ok("str")
+		//1. 无返回值向流写入'null'字符串
+		//2. 返回值为byte[]或者char[], 调用OutputStream或在Writer写入resp
+		//3. 其他则调用String.valueOf(obj)得出字符串后,通过Writer写入resp
+		}}}
+		默认设置resp的ContentType为text/plain
+		当然,你可以设置ContentType的值
+		{{{
+		@Ok("str:application/rtf")
+		//设置ContentType为application/rtf
+		}}}
+		
+		内置的短ContentType
+		{{{
+		@Ok("str:xml")    //等价于@Ok("str:text/xml");
+		@Ok("str:html")   //等价于@Ok("str:text/html");
+		@Ok("str:htm")    //等价于@Ok("str:text/html");
+		@Ok("str:stream") //等价于@Ok("str:application/octet-stream");
+		@Ok("str:json")   //等价于@Ok("str:application/x-javascript");
+		@Ok("str:js")     //等价于@Ok("str:application/x-javascript");
+		}}}
+		
 ------------------------------------------------------------------------------------------
 定制自己的视图
 	
@@ -232,3 +304,7 @@
 		在主模块上，通过注解 @Views 将你的工厂声明进整个应用即可。
 		 * 你可以声明多个 ViewMaker
 		 * 所有的视图工厂，必须有一个 public 的默认构造函数。
+	--------------------------------------------------------------------------------------
+	已有的,经过检验的自定义视图
+		[http://axhack.javaeye.com/blog/542441 Freemarker] 
+		[http://myblog.sunfarms.net/100.html Freemarker] 可以拓展为Velocity

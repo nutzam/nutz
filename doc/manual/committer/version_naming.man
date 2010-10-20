@@ -31,3 +31,4 @@ Nutz 每个版本 jar 包的命名遵照如下格式
 	 
 持续集成
 	每当有代码提交,Nutz的构建服务器会在15分钟内构建一个快照版本
+	[http://build.sunfarms.net/nutz/]

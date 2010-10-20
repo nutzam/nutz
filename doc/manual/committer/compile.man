@@ -1,4 +1,6 @@
 #title: 运行 JUnit 测试 - Eclipse
+#author: zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0
 --------------------------------------------------------------------------------------------------------------------------------------------
 搭建 Eclipse 编译环境
@@ -25,7 +27,7 @@
 
 	1. 创建测试数据库
 		
-		首先你需要建立一个测试数据库，比如，我们叫 zzhtest.
+		首先你需要建立一个测试数据库，比如，我们叫 zzhtest. 建议不要使用test.
 		{{{
 		mysql:> create database zzhtest;
 		}}}

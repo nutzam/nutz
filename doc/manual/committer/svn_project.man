@@ -47,7 +47,7 @@ Check out
 		
 	<../imgs/build/06.png>
 
-	Nutz 不是不依赖其他 jar 吗？ 是的，但是在编译时它依赖 Log4j。
+	Nutz 不是不依赖其他 jar 吗? 是的，但是在编译时它依赖 Log4j。
 	
 	在运行时如果 Log4j 的 jar 不存在，它会采用 java.util.logging 详情请参看 [../lang/log.man Nutz 的日志模块]
 	
@@ -68,6 +68,7 @@ Check out
 	爱用什么都可以，但是得把 jar 包准备好。
 	
 	{#AA0000;*注意:} 如果你顺利的检出（Check out）了 SVN 文件，你会发现在 {#0000FF;* /trunk/build/deps} 目录下，有你需要的所有 jar 包
+	{#AA0000;*注意:} 如果你需要配置成其他数据源,请修改test\org\nutz\dao\test\meta\pojo.js , 参考[../appendix/create_datasource.man 如何创建DataSource]
 
 	我们，先把 jar 文件在 D:/nutz/deps 里面放好，后面会用得到
 --------------------------------------------------------------------------------------------------------------------------
@@ -100,7 +101,7 @@ Check out
 		
 	<../imgs/build/10.png>
 
-	 * 输入项目名称为： nutz@google   (其实，随便你起个什么名字)
+	 * 输入项目名称为： nutz@google   (其实，随便你起个什么名字, 不要有'.'就行)
 	 * 直接点击 Finish。 
 	 * 如果Eclipse 弹出对话框问你要不要转到 Java透视图，随你便，都行
 	

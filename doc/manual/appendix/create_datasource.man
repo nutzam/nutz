@@ -163,7 +163,7 @@ BoneCP
 			dataSource : {
 				type : "com.jolbox.bonecp.BoneCPDataSource",
 				events : {
-					depose : 'close'
+					depose : 'shutdown'
 				},
 				fields : {
 					driverClass : 'org.postgresql.Driver',
@@ -179,7 +179,7 @@ BoneCP
 			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
 				<obj name="dataSource" type="com.jolbox.bonecp.BoneCPDataSource">
 					<events>
-						<depose>close</depose>
+						<depose>shutdown</depose>
 					</events>
 					<field name="driverClass"><str>org.postgresql.Driver</str></field>
 					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
