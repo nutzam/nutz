@@ -224,18 +224,18 @@
 		将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。
 		通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。
 	--------------------------------------------------------------------------------------
-	String视图
-		视图的实现类为： {*org.nutz.mvc.view.StringView}
+	Raw视图
+		视图的实现类为： {*org.nutz.mvc.view.RawView}
 		
 		使用形式
 		{{{
-		@Ok("str")
+		@Ok("raw")
 		}}}
 		将方法的返回值直接写入流
 		
 		规则:
 		{{{
-		@Ok("str")
+		@Ok("raw")
 		//1. 无返回值或者返回值为null,则不写入流
 		//2. 返回值为byte[]或者char[], 调用OutputStream或Writer写入resp
 		//3. 其他则调用String.valueOf(obj)得出字符串后,通过Writer写入resp
@@ -243,18 +243,18 @@
 		默认设置resp的ContentType为text/plain
 		当然,你可以设置ContentType的值
 		{{{
-		@Ok("str:application/rtf")
+		@Ok("raw:application/rtf")
 		//设置ContentType为application/rtf
 		}}}
 		
 		内置的短ContentType
 		{{{
-		@Ok("str:xml")    //等价于@Ok("str:text/xml");
-		@Ok("str:html")   //等价于@Ok("str:text/html");
-		@Ok("str:htm")    //等价于@Ok("str:text/html");
-		@Ok("str:stream") //等价于@Ok("str:application/octet-stream");
-		@Ok("str:json")   //等价于@Ok("str:application/x-javascript");
-		@Ok("str:js")     //等价于@Ok("str:application/x-javascript");
+		@Ok("raw:xml")    //等价于@Ok("raw:text/xml");
+		@Ok("raw:html")   //等价于@Ok("raw:text/html");
+		@Ok("raw:htm")    //等价于@Ok("raw:text/html");
+		@Ok("raw:stream") //等价于@Ok("raw:application/octet-stream");
+		@Ok("raw:json")   //等价于@Ok("raw:application/x-javascript");
+		@Ok("raw:js")     //等价于@Ok("raw:application/x-javascript");
 		}}}
 		
 ------------------------------------------------------------------------------------------

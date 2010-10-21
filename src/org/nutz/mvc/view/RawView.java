@@ -12,12 +12,12 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
 
 /**
- * 直接返回String.valueOf(obj)<p/>
+ * 将返回值原样写入resp,通过String.valueOf(obj)<p/>
  * 例外:</p>
  * 1. 如果是byte[]的话,则直接写入流<p/>
  * 2. 如果是直接写入Writer<p/>
  * 3. 如果obj为null,或者方法无返回值,则啥都不写入流</p>
- * <code>@Ok("str")</code> 则 <code>ContentType=text/plain</code><p/>
+ * <code>@Ok("raw")</code> 则 <code>ContentType=text/plain</code><p/>
  * ContentType 支持几种缩写:<p/>
  * <code>xml</code>代表<code>text/xml</code><p/>
  * <code>html</code>代表<code>text/html</code><p/>
@@ -28,11 +28,11 @@ import org.nutz.mvc.View;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class StringView implements View {
+public class RawView implements View {
 	
 	private String contentType;
 	
-	public StringView(String contentType) {
+	public RawView(String contentType) {
 		if (Strings.isBlank(contentType))
 			contentType = "text/plain";
 		else if (contentTypeMap.containsKey(contentType.toLowerCase()))

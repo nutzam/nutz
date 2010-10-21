@@ -46,7 +46,7 @@ public class DefaultViewMaker implements ViewMaker {
 		if (VIEW_HTTP.equals(type))
 			return new HttpStatusView(Integer.parseInt(value));
 		if (VIEW_STRING.equals(type))
-			return new StringView(value);
+			return new RawView(value);
 		return null;
 	}
 
