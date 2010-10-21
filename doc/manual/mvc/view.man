@@ -236,8 +236,8 @@
 		规则:
 		{{{
 		@Ok("str")
-		//1. 无返回值向流写入'null'字符串
-		//2. 返回值为byte[]或者char[], 调用OutputStream或在Writer写入resp
+		//1. 无返回值或者返回值为null,则不写入流
+		//2. 返回值为byte[]或者char[], 调用OutputStream或Writer写入resp
 		//3. 其他则调用String.valueOf(obj)得出字符串后,通过Writer写入resp
 		}}}
 		默认设置resp的ContentType为text/plain

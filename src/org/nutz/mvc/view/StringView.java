@@ -12,7 +12,11 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
 
 /**
- * 直接返回String.valueOf(obj),如果是byte[]的话,则直接写入流,如果是直接写入Writer<p/>
+ * 直接返回String.valueOf(obj)<p/>
+ * 例外:</p>
+ * 1. 如果是byte[]的话,则直接写入流<p/>
+ * 2. 如果是直接写入Writer<p/>
+ * 3. 如果obj为null,或者方法无返回值,则啥都不写入流</p>
  * <code>@Ok("str")</code> 则 <code>ContentType=text/plain</code><p/>
  * ContentType 支持几种缩写:<p/>
  * <code>xml</code>代表<code>text/xml</code><p/>
@@ -40,11 +44,13 @@ public class StringView implements View {
 	public void render(HttpServletRequest req, HttpServletResponse resp,
 			Object obj) throws Throwable {
 		resp.setContentType(contentType);
-		if (obj != null && obj instanceof byte[]) {
+		if (obj == null)
+			return;
+		if (obj instanceof byte[]) {
 			OutputStream os = resp.getOutputStream();
 			os.write((byte[])obj);
 			os.flush();
-		}else if (obj != null && obj instanceof char[]) {
+		}else if (obj instanceof char[]) {
 			Writer writer = resp.getWriter();
 			writer.write((char[])obj);
 			writer.flush();
@@ -55,7 +61,7 @@ public class StringView implements View {
 		}
 	}
 
-	public static final Map<String, String> contentTypeMap = new HashMap<String, String>();
+	private static final Map<String, String> contentTypeMap = new HashMap<String, String>();
 	
 	static {
 		contentTypeMap.put("xml", "text/xml");
