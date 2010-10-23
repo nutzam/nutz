@@ -34,7 +34,7 @@ Check out
 
 		Nutz files are not too many, through ADSL, it may takes about half minute to download them：
 
-		<imgs/build/05_2.png>
+		<../imgs/build/05_2.png>
 
 		After you download successfully, your folder structure should be：
 	

@@ -95,6 +95,7 @@
 		<doc path="1_a_25.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
+		<doc path="case.man"></doc>
 		<doc path="create_datasource.man"/>
 		<doc path="resources.man"/>
 		<doc path="plugins.man"/>

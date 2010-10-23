@@ -68,9 +68,9 @@ How to use zDoc
 		 * All the three parameters are mandatory
 		 * The 1st parameter specifies the source folder of zDoc
 			 * If there is the index.xml, it will generate the html catalog index based on that file.
-			 * Please refer [zdoc_index_xml.html zDoc index file--index.xml grammar]
+			 * Please refer [index_xml.man zDoc index file--index.xml grammar]
 		 * Your zdoc must be ended with .man or .zdoc
-		 * For more detail, please refer to [zdoc_dir_convert.html folder converting rules]
+		 * For more detail, please refer to [dir_convert.man folder converting rules]
 		 * Last parameter is the output files' extention name, it could be .html or .htm
 		
 		{*For example}
@@ -92,7 +92,7 @@ How to use zDoc
 		 * The first 3 parameters are mandatory
 		 * The 1st parameter specifies the source folder of zDoc
 			 * If there is the index.xml, it will generate the html catalog index based on that file.
-			 * Please refer [zdoc_index_xml.html zDoc index file--index.xml grammar]
+			 * Please refer [index_xml.man zDoc index file--index.xml grammar]
 		 * The 2nd parameter specifies the folder of wiki, zDoc will converter all .wiki files in there
 		 * The 3rd parameter specifies the index name, please refer to [http://code.google.com/p/support/wiki/WikiSyntax#Navigation Google wiki's description for index]
 			 * zDoc can help you to generate the index file
@@ -114,8 +114,8 @@ How to use zDoc
 		http://www.my.com/wiki/img/xxxx.xxx
 
 Others
-	 * Please refer to [zdoc_syntax.html zDoc syntax] for zdoc grammar detail
-	 * Please refer to [zdoc_dir_convert.html Folder converting rules] and [zdoc_index_xml.html Using index.xml] for folder converting
+	 * Please refer to [syntax.man zDoc syntax] for zdoc grammar detail
+	 * Please refer to [dir_convert.man Folder converting rules] and [index_xml.man Using index.xml] for folder converting
 	 * zDoc is already introduced into my work, I use it to write UI design documents. And I will use zDoc to write my novels.
 	 
 	 We can say that, one text editor and one SVN system are enough for cooperation. It's wonderful to do like that.

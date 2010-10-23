@@ -26,21 +26,3 @@ You also need to know
 	 * 1.a.20 is newer, since its Publish Version is higher.
 	 * 1.b.18 is more stable, it is compatible with previous beta releases
 	 * The beta version after nutz-1.a.20.jar, will not be compatible 1.b.18, since the alpha release interrupt the continuity
-
-Naming rule for monthly snapshot version
-    {{{
-    nutz-Main Version.Build Level.[Publish Version]-snapshot-r[SVN repository version]-[Date]-[Compile Level].jar
-    }}}
-     # {*Main Version.Build Level.[Publish Version]} presents the infos about next publish build.
-     # {*SVN repository version} : presents specific SVN repository version
-     # {*Date} : compile date
-     # {*Compile Level} : jdk1.5 or jdk1.6
-    
-Publishing rule for monthly snapshot version
-     # publish around 1/15 every month, code must pass all test case
-     # Format is zip, include jdk1.5 and jdk1.6 compiling jar and source
-     # Published file name: nutz-Main Version.Build Level.[Publish Version]-snapshot-r[SVN repository version]-[Date].zip
-     
-Notes about monthly snapshot version
-     # Do not use in enterprise environment
-     # No compatible guaranty for monthly snapshot version

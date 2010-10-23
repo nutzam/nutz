@@ -58,6 +58,8 @@
 	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}-jdk6.jar"></property>
 	<property name="nutz.manual.pdf" value="${pub-dir}/${nutz.dest.pre}-manual.pdf"></property>
 	<property name="nutz.manual_en.pdf" value="${pub-dir}/${nutz.dest.pre}-manual_en.pdf"></property>
+	<property name="nutz.manual.rtf" value="${pub-dir}/${nutz.dest.pre}-manual.rtf"></property>
+	<property name="nutz.manual_en.rtf" value="${pub-dir}/${nutz.dest.pre}-manual_en.rtf"></property>
 	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.dest.pre}.zip"></property>
 	
 	<!-- 允许emma -->
@@ -176,54 +178,31 @@
 		<javadoc sourcepath="src" classpathref="nutz-classpath" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
 	</target>
 	
+	
 	<target name="manual">
-		<java classname="org.nutz.doc.Doc" fork="true">
-			<classpath>
+		<taskdef resource="zdoc_ant.properties">
+			<classpath path="${classes-dir-jdk6}"></classpath>
+			<classpath path="${classes-dir-emma}"></classpath>
+			<classpath path="${classes-dir-test}"></classpath>
+			<classpath >
 				<path refid="nutz-classpath"></path>
-				<path path="${classes-dir-jdk6}"></path>
 			</classpath>
-			<arg value="html"/>
-			<arg value="${basedir}/doc/manual"/>
-			<arg value="${basedir}/${zdoc-dir}"/>
-		</java>
+		</taskdef>
+		<echo>Build Html manual for CN</echo>
+		<zdoc suffix="html" src="${basedir}/doc/manual" dest="${basedir}/${zdoc-dir}"/>
+		<echo>Build Html manual for EN</echo>
+		<zdoc suffix="html" src="${basedir}/doc/manual_en" dest="${basedir}/${zdoc-en-dir}"/>
+		<echo>Build PDF manual for CN</echo>
+		<zdoc suffix="pdf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.pdf}"/>
+		<echo>Build PDF manual for EN</echo>
+		<zdoc suffix="pdf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.pdf}"/>
+		<echo>Build RTF manual for CN</echo>
+		<zdoc suffix="rtf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.rtf}"/>
+		<echo>Build RTF manual for EN</echo>
+		<zdoc suffix="rtf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.rtf}"/>
+		<echo>Build Html manual for CN</echo>
 	</target>
-	
-	<target name="manual_en">
-			<java classname="org.nutz.doc.Doc" fork="true">
-				<classpath>
-					<path refid="nutz-classpath"></path>
-					<path path="${classes-dir-jdk6}"></path>
-				</classpath>
-				<arg value="html"/>
-				<arg value="${basedir}/doc/manual_en"/>
-				<arg value="${basedir}/${zdoc-en-dir}"/>
-			</java>
-		</target>
-	
-	<target name="manual_pdf">
-		<java classname="org.nutz.doc.Doc" fork="true">
-			<classpath>
-				<path refid="nutz-classpath"></path>
-				<path path="${classes-dir-jdk6}"></path>
-			</classpath>
-			<arg value="pdf"/>
-			<arg value="${basedir}/doc/manual"/>
-			<arg value="${nutz.manual.pdf}"/>
-		</java>
-	</target>
-	
-	<target name="manual_en_pdf">
-			<java classname="org.nutz.doc.Doc" fork="true">
-				<classpath>
-					<path refid="nutz-classpath"></path>
-					<path path="${classes-dir-jdk6}"></path>
-				</classpath>
-				<arg value="pdf"/>
-				<arg value="${basedir}/doc/manual_en"/>
-				<arg value="${nutz.manual_en.pdf}"/>
-			</java>
-		</target>
-	
+
 	<target name="create-zip">
 		<zip destfile="${nutz.pub.zip}">
 			<fileset dir="${pub-dir}"></fileset>
@@ -237,9 +216,6 @@
 		<antcall target="test"></antcall>
 		<antcall target="jdoc"></antcall>
 		<antcall target="manual"></antcall>
-		<antcall target="manual_en"></antcall>
-		<antcall target="manual_pdf"></antcall>
-		<antcall target="manual_en_pdf"></antcall>
 		<antcall target="create-zip"></antcall>
 		<antcall target="clean"></antcall>
 	</target>

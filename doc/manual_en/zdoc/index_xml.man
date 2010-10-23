@@ -57,10 +57,10 @@ index.xml structure
 	}}}
 	 * Root element `<doc>` is linked to docroot, {*the folder contains index.xml}。
 	 * In root element, you can specify the default author for the document by using attribute @author. If there is no statement for #author in zDoc files, they will be considered to be issued by the default author. 
-	 * Value of attribute @index is matching the definition {#0AA;*CatalogIndex} in [zdoc_syntax.html zDoc grammar]
+	 * Value of attribute @index is matching the definition {#0AA;*CatalogIndex} in [syntax.man zDoc grammar]
 	 * Attribute @path is used to specified the related folder or file.
 		 * For folder: If you do not specify the title ({#080;_ by attribute @title}), the value will be the folder name.
-		 * For file:，If you do not specify the title ({#080;_ by attribute @title}), the value will be one of #title in the file. See [zdoc_syntax.html zDoc grammar] chapter {#0AA;*Document Attribute}.
+		 * For file:，If you do not specify the title ({#080;_ by attribute @title}), the value will be one of #title in the file. See [syntax.man zDoc grammar] chapter {#0AA;*Document Attribute}.
 
 
 
