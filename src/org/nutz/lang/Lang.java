@@ -1269,6 +1269,10 @@ public abstract class Lang {
 	 * @throws ClassNotFoundException 如果无法用当前线程的ClassLoader加载
 	 */
 	public static Class<?> loadClass(String className) throws ClassNotFoundException {
-		return Thread.currentThread().getContextClassLoader().loadClass(className);
+		try {
+			return Thread.currentThread().getContextClassLoader().loadClass(className);
+		} catch (ClassNotFoundException e) {
+			return Class.forName(className);
+		}
 	}
 }

@@ -57,10 +57,6 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 			if (pluginClassName != null)
 				loadPlugin((Class<? extends T>) Lang.loadClass(pluginClassName));
 		}
-		catch (ClassNotFoundException e) {
-			try {
-				loadPlugin((Class<? extends T>) Class.forName(pluginClassName));
-			} catch (ClassNotFoundException e1) {}
-		}
+		catch (ClassNotFoundException e) {}
 	}
 }
