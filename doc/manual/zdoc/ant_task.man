@@ -1,0 +1,31 @@
+#title: 在Ant中使用
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------
+配置Taskdef
+	使用Resource
+	{{{
+		<taskdef resource="zdoc_ant.properties">
+			<classpath path="nutz-1.a.32.jar"></classpath>
+			<classpath path="nutzdoc-1.13.jar"></classpath>
+		</taskdef>
+	}}}
+	直接指定类
+	{{{
+		<taskdef name="zdoc" classname="org.nutz.doc.ant.ZDocTask">
+			<classpath path="nutz-1.a.32.jar"></classpath>
+			<classpath path="nutzdoc-1.13.jar"></classpath>
+		</taskdef>
+	}}}
+	
+使用zdoc Task
+	通过定义不同的suffix,生成不同类型的文档
+	{{{
+		<zdoc suffix="html" src="doc/manual" dest="manual-dir"/>
+		<zdoc suffix="pdf" src="doc/manual" dest="nutz.manual.pdf"/>
+		<zdoc suffix="rtf" src="doc/manual" dest="nutz.manual.rtf"/>
+	}}}
+	
+	* html/htm 在目标文件夹生成网页
+	* pdf 生成PDF文件
+	* rtf 生成RTF文件

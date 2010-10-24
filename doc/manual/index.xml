@@ -83,6 +83,7 @@
 		<doc path="syntax.man"/>
 		<doc path="index_xml.man"/>
 		<doc path="dir_convert.man"/>
+		<doc path="ant_task.man"/>
 	</doc>
 	<doc path="history" title="版本历史">
 		<doc path="1_a_32.man"/>
@@ -95,7 +96,7 @@
 		<doc path="1_a_25.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
-		<doc path="case.man"></doc>
+		<doc path="case.man"/>
 		<doc path="create_datasource.man"/>
 		<doc path="resources.man"/>
 		<doc path="plugins.man"/>

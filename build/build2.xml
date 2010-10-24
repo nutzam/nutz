@@ -180,7 +180,7 @@
 	
 	
 	<target name="manual">
-		<taskdef resource="zdoc_ant.properties">
+		<taskdef resource="zdoc_ant.properties" >
 			<classpath path="${classes-dir-jdk6}"></classpath>
 			<classpath path="${classes-dir-emma}"></classpath>
 			<classpath path="${classes-dir-test}"></classpath>
@@ -200,7 +200,6 @@
 		<zdoc suffix="rtf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.rtf}"/>
 		<echo>Build RTF manual for EN</echo>
 		<zdoc suffix="rtf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.rtf}"/>
-		<echo>Build Html manual for CN</echo>
 	</target>
 
 	<target name="create-zip">
