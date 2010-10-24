@@ -9,7 +9,6 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -39,42 +38,57 @@ public class Mirror<T> {
 	private static class DefaultTypeExtractor implements TypeExtractor {
 
 		public Class<?>[] extract(Mirror<?> mirror) {
+			Class<?> theType = mirror.getType();
 			List<Class<?>> re = new ArrayList<Class<?>>(5);
-			re.add(mirror.getType());
-			if (mirror.klass.isEnum())
-				re.add(Enum.class);
-			else if (mirror.klass.isArray())
-				re.add(Array.class);
-			else if (mirror.isString())
-				re.add(String.class);
-			else if (mirror.is(Class.class))
-				re.add(Class.class);
-			else if (mirror.is(Mirror.class))
-				re.add(Mirror.class);
-			else if (mirror.isStringLike())
-				re.add(CharSequence.class);
-			else if (mirror.isNumber()) {
-				re.add(mirror.getType());
-				re.add(Number.class);
-			} else if (mirror.isBoolean())
-				re.add(Boolean.class);
-			else if (mirror.isChar())
-				re.add(Character.class);
-			else if (mirror.isOf(Map.class))
-				re.add(Map.class);
-			else if (mirror.isOf(Collection.class))
-				re.add(Collection.class);
-			else if (mirror.isOf(Calendar.class))
+
+			// 原生类型，增加其外覆类
+			if (theType.isPrimitive()) {
+				re.add(mirror.getWrapperClass());
+				// 数字
+				if (theType != boolean.class && theType != char.class) {
+					re.add(Number.class);
+				}
+			}
+			// 日历
+			else if (mirror.isOf(Calendar.class)) {
 				re.add(Calendar.class);
-			else if (mirror.isOf(Timestamp.class))
-				re.add(Timestamp.class);
-			else if (mirror.isOf(java.sql.Date.class))
-				re.add(java.sql.Date.class);
-			else if (mirror.isOf(java.sql.Time.class))
-				re.add(java.sql.Time.class);
-			else if (mirror.isOf(java.util.Date.class))
-				re.add(java.util.Date.class);
-			re.add(Object.class);
+			}
+			// 其他类型，直接增加，并试图判断其抽象类
+			else {
+				re.add(theType);
+				// 枚举
+				if (mirror.klass.isEnum()) {
+					re.add(Enum.class);
+				}
+				// 数组
+				else if (mirror.klass.isArray()) {
+					re.add(Array.class);
+				}
+				// 字符串
+				else if (mirror.isStringLike())
+					re.add(CharSequence.class);
+				// 数字
+				else if (mirror.isNumber()) {
+					re.add(Number.class);
+				}
+				// Map
+				else if (mirror.isOf(Map.class)) {
+					re.add(Map.class);
+				}
+				// 列表
+				else if (mirror.isOf(List.class)) {
+					re.add(List.class);
+					re.add(Collection.class);
+				}
+				// 集合
+				else if (mirror.isOf(Collection.class)) {
+					re.add(Collection.class);
+				}
+			}
+			// 最后确保 Object 一定被加上了
+			if (theType != Object.class)
+				re.add(Object.class);
+
 			return re.toArray(new Class<?>[re.size()]);
 		}
 

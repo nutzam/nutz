@@ -116,8 +116,7 @@ public class MirrorTest {
 
 	@Test
 	public void testExtractBoolean() {
-		assertEquals(boolean.class, Mirror.me(boolean.class).extractTypes()[0]);
-		assertEquals(Boolean.class, Mirror.me(boolean.class).extractTypes()[1]);
+		assertEquals(Boolean.class, Mirror.me(boolean.class).extractTypes()[0]);
 	}
 
 	@Test
@@ -129,9 +128,24 @@ public class MirrorTest {
 	@Test
 	public void testExtractChar() {
 		Class<?>[] types = Mirror.me(char.class).extractTypes();
+		assertEquals(2, types.length);
+		assertEquals(Character.class, types[0]);
+	}
+
+	@Test
+	public void testExtractInt() {
+		Class<?>[] types = Mirror.me(int.class).extractTypes();
 		assertEquals(3, types.length);
-		assertEquals(char.class, types[0]);
-		assertEquals(Character.class, types[1]);
+		assertEquals(Integer.class, types[0]);
+		assertEquals(Number.class, types[1]);
+	}
+
+	@Test
+	public void testExtractString() {
+		Class<?>[] types = Mirror.me(String.class).extractTypes();
+		assertEquals(3, types.length);
+		assertEquals(String.class, types[0]);
+		assertEquals(CharSequence.class, types[1]);
 	}
 
 	public static class F {

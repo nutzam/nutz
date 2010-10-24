@@ -185,8 +185,22 @@ public class LinkedArray<T> {
 
 	public boolean contains(T obj) {
 		for (int i = 0; i < size(); i++)
-			if (get(i).equals(obj))
+			if (innerGet(i).equals(obj))
 				return true;
 		return false;
+	}
+
+	public int indexOf(T obj) {
+		for (int i = 0; i < size(); i++)
+			if (innerGet(i).equals(obj))
+				return i;
+		return -1;
+	}
+
+	public int lastIndexOf(T obj) {
+		for (int i = size() - 1; i >= 0; i--)
+			if (innerGet(i).equals(obj))
+				return i;
+		return -1;
 	}
 }
