@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
@@ -444,5 +446,53 @@ public class MirrorTest {
 		Borning<TBOM> b = Mirror.me(TBOM.class).getBorning("H2");
 		TBOM tb = b.born(Lang.array("H2"));
 		assertEquals(DB.H2, tb.db);
+	}
+	
+	@Test
+	public void test_packageClass(){
+		PClass p = new PClass();
+		Mirror<PClass> mirror = Mirror.me(p);
+		mirror.setValue(p, "longField", null);
+		mirror.setValue(p, "doubleField", null);
+		mirror.setValue(p, "floatField", null);
+		mirror.setValue(p, "integerField", null);
+		mirror.setValue(p, "shortField", null);
+		mirror.setValue(p, "byteField", null);
+		mirror.setValue(p, "characterField", null);
+		mirror.setValue(p, "booleanField", null);
+		mirror.setValue(p, "bigDecimal", null);
+		mirror.setValue(p, "bigInteger", null);
+		
+		mirror.setValue(p, "longField2", null);
+		mirror.setValue(p, "doubleField2", null);
+		mirror.setValue(p, "floatField2", null);
+		mirror.setValue(p, "integerField2", null);
+		mirror.setValue(p, "shortField2", null);
+		mirror.setValue(p, "byteField2", null);
+		mirror.setValue(p, "characterField2", null);
+		mirror.setValue(p, "booleanField2", null);
+	}
+	
+	public static class PClass {
+		public Long longField;
+		public Double doubleField;
+		public Float floatField;
+		public Integer integerField;
+		public Short shortField;
+		public Byte byteField;
+		public Character characterField;
+		public Boolean booleanField;
+		public BigDecimal bigDecimal;
+		public BigInteger bigInteger;
+		
+		
+		public long longField2;
+		public double doubleField2;
+		public float floatField2;
+		public int integerField2;
+		public short shortField2;
+		public byte byteField2;
+		public char characterField2;
+		public boolean booleanField2;
 	}
 }

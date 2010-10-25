@@ -188,6 +188,10 @@ public class Castors {
 				}
 			}
 		}
+		if (log.isDebugEnabled())
+			log.debugf("Using %d castor for Castors",map.size());
+		if (map.size() == 0 && log.isErrorEnabled())
+			log.error("!!No castor found!!!!!!!!!");
 	}
 
 	/**

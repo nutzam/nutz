@@ -494,10 +494,16 @@ public class Mirror<T> {
 				throw makeSetValueException(obj.getClass(), field.getName(), value, e);
 			}
 		else {
-			if (me.isNumber())
-				value = 0;
+			if (me.isNumber()) {
+				if (me.getWrapper() == me.getType()) //如果是包装类型,直接赋值null
+					value = null;
+				else
+					value = (byte)0;
+			}
 			else if (me.isChar())
 				value = (char) 0;
+			else if (me.isBoolean())
+				value = false;
 		}
 		try {
 			field.set(obj, value);
