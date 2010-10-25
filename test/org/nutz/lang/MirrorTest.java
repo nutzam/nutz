@@ -352,6 +352,9 @@ public class MirrorTest {
 		private Boolean ok;
 
 		private Character cobj;
+		
+		private Integer intobj;
+		
 	}
 
 	@Test
@@ -372,11 +375,16 @@ public class MirrorTest {
 		SV sv = new SV();
 		sv.ok = true;
 		sv.cobj = Character.valueOf('F');
+		sv.intobj = 30;
 		Mirror.me(SV.class).setValue(sv, "ok", null);
 		Mirror.me(SV.class).setValue(sv, "cobj", null);
+		Mirror.me(SV.class).setValue(sv, "intobj", null);
 		assertNull(sv.ok);
 		assertNull(sv.cobj);
+		assertNull(sv.intobj);
 	}
+	
+	
 
 	@Test(expected = RuntimeException.class)
 	public void set_null_value_by_invoking() {

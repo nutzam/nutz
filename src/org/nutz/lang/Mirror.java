@@ -463,6 +463,9 @@ public class Mirror<T> {
 															String name,
 															Object value,
 															Exception e) {
+		if (e instanceof FailToSetValueException) {
+			return (FailToSetValueException) e;
+		}
 		return new FailToSetValueException(String.format(	"Fail to set value [%s] to [%s]->[%s] because '%s'",
 															value,
 															type.getName(),
@@ -484,26 +487,25 @@ public class Mirror<T> {
 	public void setValue(Object obj, Field field, Object value) throws FailToSetValueException {
 		if (!field.isAccessible())
 			field.setAccessible(true);
-		Mirror<?> me = Mirror.me(field.getType());
-		if (null != value)
+		Class<?> ft = field.getType();
+		// 非 null 值，进行转换
+		if (null != value) {
 			try {
-				if (!Mirror.me(value.getClass()).canCastToDirectly(me.getType()))
-					value = Castors.me().castTo(value, field.getType());
+				value = Castors.me().castTo(value, field.getType());
 			}
 			catch (FailToCastObjectException e) {
 				throw makeSetValueException(obj.getClass(), field.getName(), value, e);
 			}
-		else {
-			if (me.isNumber()) {
-				if (me.getWrapper() == me.getType()) //如果是包装类型,直接赋值null
-					value = null;
-				else
-					value = (byte)0;
-			}
-			else if (me.isChar())
-				value = (char) 0;
-			else if (me.isBoolean())
+		}
+		// 如果是原生类型，转换成默认值
+		else if (ft.isPrimitive()) {
+			if (boolean.class == ft) {
 				value = false;
+			} else if (char.class == ft) {
+				value = (char) 0;
+			} else {
+				value = (byte) 0;
+			}
 		}
 		try {
 			field.set(obj, value);
@@ -525,16 +527,24 @@ public class Mirror<T> {
 	 * @throws FailToSetValueException
 	 */
 	public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
-		try {
-			this.getSetter(fieldName, value.getClass()).invoke(obj, value);
-		}
-		catch (Exception e) {
+		if (null == value) {
 			try {
-				Field field = this.getField(fieldName);
-				setValue(obj, field, value);
+				setValue(obj, this.getField(fieldName), value);
 			}
 			catch (Exception e1) {
 				throw makeSetValueException(obj.getClass(), fieldName, value, e1);
+			}
+		} else {
+			try {
+				this.getSetter(fieldName, value.getClass()).invoke(obj, value);
+			}
+			catch (Exception e) {
+				try {
+					setValue(obj, this.getField(fieldName), value);
+				}
+				catch (Exception e1) {
+					throw makeSetValueException(obj.getClass(), fieldName, value, e1);
+				}
 			}
 		}
 	}
@@ -617,6 +627,7 @@ public class Mirror<T> {
 				return klass;
 			throw Lang.makeThrow("Class '%s' should be a primitive class", klass.getName());
 		}
+		// TODO 用散列能快一点
 		if (is(int.class))
 			return Integer.class;
 		if (is(char.class))
