@@ -348,10 +348,14 @@ public class MirrorTest {
 	public static class SV {
 		private int id;
 		private char cc;
+
+		private Boolean ok;
+
+		private Character cobj;
 	}
 
 	@Test
-	public void testSetValue() {
+	public void test_setValue() {
 		SV sv = new SV();
 		Mirror.me(SV.class).setValue(sv, "id", 200);
 		Mirror.me(SV.class).setValue(sv, "cc", 'T');
@@ -361,6 +365,17 @@ public class MirrorTest {
 		Mirror.me(SV.class).setValue(sv, "cc", null);
 		assertEquals(0, sv.id);
 		assertEquals(0, (int) sv.cc);
+	}
+
+	@Test
+	public void test_setValue_Boolean_and_Character() {
+		SV sv = new SV();
+		sv.ok = true;
+		sv.cobj = Character.valueOf('F');
+		Mirror.me(SV.class).setValue(sv, "ok", null);
+		Mirror.me(SV.class).setValue(sv, "cobj", null);
+		assertNull(sv.ok);
+		assertNull(sv.cobj);
 	}
 
 	@Test(expected = RuntimeException.class)
@@ -447,9 +462,9 @@ public class MirrorTest {
 		TBOM tb = b.born(Lang.array("H2"));
 		assertEquals(DB.H2, tb.db);
 	}
-	
+
 	@Test
-	public void test_packageClass(){
+	public void test_packageClass() {
 		PClass p = new PClass();
 		Mirror<PClass> mirror = Mirror.me(p);
 		mirror.setValue(p, "longField", null);
@@ -462,7 +477,7 @@ public class MirrorTest {
 		mirror.setValue(p, "booleanField", null);
 		mirror.setValue(p, "bigDecimal", null);
 		mirror.setValue(p, "bigInteger", null);
-		
+
 		mirror.setValue(p, "longField2", null);
 		mirror.setValue(p, "doubleField2", null);
 		mirror.setValue(p, "floatField2", null);
@@ -472,7 +487,7 @@ public class MirrorTest {
 		mirror.setValue(p, "characterField2", null);
 		mirror.setValue(p, "booleanField2", null);
 	}
-	
+
 	public static class PClass {
 		public Long longField;
 		public Double doubleField;
@@ -484,8 +499,7 @@ public class MirrorTest {
 		public Boolean booleanField;
 		public BigDecimal bigDecimal;
 		public BigInteger bigInteger;
-		
-		
+
 		public long longField2;
 		public double doubleField2;
 		public float floatField2;
