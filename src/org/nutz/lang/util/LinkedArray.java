@@ -3,6 +3,7 @@ package org.nutz.lang.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
@@ -141,8 +142,16 @@ public class LinkedArray<T> {
 			re = (T[]) Array.newInstance(eleType, size());
 		}
 		for (int i = 0; i < re.length; i++)
-			re[i] = this.get(i);
+			re[i] = this.innerGet(i);
 		return re;
+	}
+
+	public List<T> toList() {
+		int len = size();
+		ArrayList<T> list = new ArrayList<T>(len);
+		for (int i = 0; i < len; i++)
+			list.add(innerGet(i));
+		return list;
 	}
 
 	class LinkedArrayIterator<E> implements Iterator<E> {
