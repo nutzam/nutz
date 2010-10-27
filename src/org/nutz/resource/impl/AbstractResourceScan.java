@@ -25,7 +25,10 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
 			if (log.isDebugEnabled())
-				log.debugf("Scan resources in JarFile( %s ) by regex( %s ) base on src ( %s )", jarPath, regex, src);
+				log.debugf(	"Scan resources in JarFile( %s ) by regex( %s ) base on src ( %s )",
+							jarPath,
+							regex,
+							src);
 			JarFile jar = new JarFile(jarPath);
 			Enumeration<JarEntry> ens = jar.entries();
 			while (ens.hasMoreElements()) {
@@ -38,7 +41,11 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 				}
 			}
 			if (log.isDebugEnabled())
-				log.debugf("Found %s resources in JarFile( %s ) by regex( %s ) base on src ( %s )", list.size(), jarPath, regex, src);
+				log.debugf(	"Found %s resources in JarFile( %s ) by regex( %s ) base on src ( %s )",
+							list.size(),
+							jarPath,
+							regex,
+							src);
 		}
 		catch (Throwable e) {
 			if (log.isWarnEnabled())
@@ -47,13 +54,13 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 		return list;
 	}
 
-	/*存在两种调用,有的需要得出的Resouce包含原始的base,有些却不需要*/
+	/* 存在两种调用,有的需要得出的Resouce包含原始的base,有些却不需要 */
 	protected List<NutResource> scanInDir(	final Pattern regex,
 											final String base,
 											File f,
 											final boolean ignoreHidden) {
 		final List<NutResource> list = new ArrayList<NutResource>();
-		if (null == f || (ignoreHidden && f.isHidden()) || (! f.exists()))
+		if (null == f || (ignoreHidden && f.isHidden()) || (!f.exists()))
 			return list;
 
 		if (!f.isDirectory())
@@ -67,8 +74,13 @@ public abstract class AbstractResourceScan implements ResourceScan, Plugin {
 			public boolean accept(File theFile) {
 				if (ignoreHidden && theFile.isHidden())
 					return false;
-				if (theFile.isDirectory())
+				if (theFile.isDirectory()) {
+					String fnm = theFile.getName().toLowerCase();
+					// 忽略 SVN 和 CVS 文件
+					if (".svn".equals(fnm) || ".cvs".equals(fnm))
+						return false;
 					return true;
+				}
 				return regex == null || regex.matcher(theFile.getName()).find();
 			}
 		});

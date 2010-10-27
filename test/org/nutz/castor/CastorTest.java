@@ -149,17 +149,15 @@ public class CastorTest {
 
 	@Test
 	public void testString2JavaDate() throws FailToCastObjectException {
-		java.util.Date date = Castors.me().cast("2008-6-12 15:28:35",
-												String.class,
-												java.util.Date.class);
+		java.util.Date date = Castors.me().castTo("2008-6-12", java.util.Date.class);
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		assertEquals(2008, cal.get(Calendar.YEAR));
 		assertEquals(5, cal.get(Calendar.MONTH));
 		assertEquals(12, cal.get(Calendar.DAY_OF_MONTH));
-		assertEquals(15, cal.get(Calendar.HOUR_OF_DAY));
-		assertEquals(28, cal.get(Calendar.MINUTE));
-		assertEquals(35, cal.get(Calendar.SECOND));
+		assertEquals(0, cal.get(Calendar.HOUR_OF_DAY));
+		assertEquals(0, cal.get(Calendar.MINUTE));
+		assertEquals(0, cal.get(Calendar.SECOND));
 	}
 
 	@Test

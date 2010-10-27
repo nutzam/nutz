@@ -21,6 +21,7 @@ public class FileSqlManager extends AbstractSqlManager {
 	public FileSqlManager(String... paths) {
 		this.paths = paths;
 		this.autoscan = true;
+
 	}
 
 	public String getRegex() {
@@ -50,7 +51,7 @@ public class FileSqlManager extends AbstractSqlManager {
 			File f = Files.findFile(path);
 			if (null == f)
 				continue;
-			if (f.isFile()) {
+			if (!f.getAbsolutePath().contains(".jar!") && f.isFile()) {
 				nrs.add(new FileResource(f.getParentFile(), f));
 				if (autoscan == false)
 					continue;

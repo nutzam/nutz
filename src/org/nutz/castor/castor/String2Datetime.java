@@ -9,7 +9,7 @@ public class String2Datetime extends DateTimeCastor<String, java.util.Date> {
 	@Override
 	public java.util.Date cast(String src, Class<?> toType, String... args) {
 		try {
-			return dateTimeFormat.parse(src);
+			return dateFormat.parse(src);
 		}
 		catch (ParseException e) {
 			throw Lang.wrapThrow(e);
