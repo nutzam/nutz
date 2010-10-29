@@ -11,6 +11,16 @@ public class Person {
 	private Person father;
 	private Company company;
 
+	private int num;
+
+	public int getNum() {
+		return num;
+	}
+
+	public void setNum(int num) {
+		this.num = num + 1;
+	}
+
 	public Company getCompany() {
 		return company;
 	}

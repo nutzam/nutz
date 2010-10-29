@@ -387,9 +387,9 @@ public class JsonTest {
 		@Override
 		public int hashCode() {
 			int id = this.id;
-			if(name != null)
+			if (name != null)
 				id += name.hashCode();
-			if(alias != null)
+			if (alias != null)
 				id += alias.hashCode();
 			return id;
 		}
@@ -551,5 +551,11 @@ public class JsonTest {
 		String str = "Nutz";
 		assertEquals("\"Nutz\"", Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
 		assertEquals("'Nutz'", Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
+	}
+
+	@Test
+	public void test_setvalue_by_setter() {
+		Person p = Json.fromJson(Person.class, "{num:1}");
+		assertEquals(2, p.getNum());
 	}
 }
