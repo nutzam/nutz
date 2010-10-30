@@ -25,6 +25,13 @@ public interface Ioc2 extends Ioc {
 	<T> T get(Class<T> type, String name, IocContext context);
 
 	/**
+	 * 获取容器的上下文对象
+	 * 
+	 * @return 当前容器的上下文对象
+	 */
+	IocContext getIocContext();
+
+	/**
 	 * 增加 ValuePfoxyMaker
 	 * 
 	 * @see org.nutz.ioc.ValueProxy

@@ -18,16 +18,44 @@ import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.init.AtMap;
 import org.nutz.mvc.ioc.SessionIocContext;
 
+/**
+ * Mvc 相关帮助函数
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public abstract class Mvcs {
 
 	public static final String DEFAULT_MSGS = "$default";
 	public static final String MSG = "msg";
 	public static final String LOCALE_NAME = "nutz.mvc.locale";
 
+	/**
+	 * 从 Request 里获取一个 Ioc 容器
+	 * <p>
+	 * 1.a.33 之后不推荐采用
+	 * 
+	 * @param request
+	 *            请求对象
+	 * 
+	 * @return Ioc 容器
+	 * 
+	 * @see org.nutz.mvc.annotation.IocBy
+	 */
+	@Deprecated
 	public static Ioc getIoc(HttpServletRequest request) {
 		return getIoc(request.getSession().getServletContext());
 	}
 
+	/**
+	 * 从 ServletContext 里获取一个 Ioc 容器
+	 * 
+	 * @param context
+	 *            上下文环境
+	 * 
+	 * @return Ioc 容器
+	 * 
+	 * @see org.nutz.mvc.annotation.IocBy
+	 */
 	public static Ioc getIoc(ServletContext context) {
 		return (Ioc) context.getAttribute(Ioc.class.getName());
 	}

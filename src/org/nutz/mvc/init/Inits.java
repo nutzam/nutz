@@ -16,7 +16,7 @@ import org.nutz.mvc.annotation.LoadingBy;
 public abstract class Inits {
 
 	private static final Log log = Logs.getLog(Inits.class);
-
+	
 	/**
 	 * 根据一个配置获取加载后的信息
 	 * 

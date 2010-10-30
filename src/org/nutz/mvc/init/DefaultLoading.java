@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.Ioc2;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
@@ -84,6 +85,11 @@ public class DefaultLoading implements Loading {
 				log.debugf("Create Ioc by '%s'", ib.type().getName());
 
 			ioc = ib.type().newInstance().create(config, ib.args());
+			// 如果是 Ioc2 的实现，增加新的 ValueMaker
+			if (ioc instanceof Ioc2) {
+				((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));
+			}
+
 			config.setAttributeIgnoreNull(Ioc.class.getName(), ioc);
 		} else if (log.isDebugEnabled())
 			log.debug("!!!Your application without @Ioc supporting");

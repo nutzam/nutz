@@ -4,6 +4,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,7 +25,7 @@ import org.nutz.mvc.adaptor.ParamInjector;
 public class MapPairInjector implements ParamInjector {
 
 	@SuppressWarnings("unchecked")
-	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		Enumeration<String> enu = (Enumeration<String>) req.getParameterNames();
 		while (enu.hasMoreElements()) {

@@ -3,6 +3,7 @@ package org.nutz.mvc.adaptor;
 import java.io.InputStreamReader;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -18,9 +19,9 @@ import org.nutz.mvc.annotation.Param;
  */
 public class JsonAdaptor extends AbstractAdaptor {
 
-	public Object[] adapt(	HttpServletRequest request,
-							HttpServletResponse response,
-							String[] pathArgs) {
+	public Object[] adapt(	ServletContext sc,
+							HttpServletRequest request,
+							HttpServletResponse response, String[] pathArgs) {
 		// Read all as String
 		String str;
 		try {
@@ -35,7 +36,7 @@ public class JsonAdaptor extends AbstractAdaptor {
 		int i = fillPathArgs(request, response, pathArgs, args);
 		// Inject another params
 		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(request, response, map);
+			args[i] = injs[i].get(sc, request, response, map);
 		}
 		return args;
 	}

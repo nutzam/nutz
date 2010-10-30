@@ -1,5 +1,7 @@
 package org.nutz.mvc.init;
 
+import javax.servlet.ServletContext;
+
 import org.nutz.ioc.Ioc;
 
 /**
@@ -90,5 +92,12 @@ public interface NutConfig {
 	 * 在你的模块中通过 '@At' 声明的入口函数，可以存储在 AtMap 中，这个函数提供一个 AtMap 的实例
 	 */
 	AtMap atMap();
+
+	/**
+	 * 如果在非 JSP/SERVLET 容器内，这个函数不保证返回正确的结果
+	 * 
+	 * @return 当前应用的上下文对象
+	 */
+	public abstract ServletContext getServletContext();
 
 }

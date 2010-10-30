@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -124,9 +125,9 @@ public class UploadAdaptor extends AbstractAdaptor {
 		return new MapItemInjector(paramName, type);
 	}
 
-	public Object[] adapt(	HttpServletRequest request,
-							HttpServletResponse response,
-							String[] pathArgs) {
+	public Object[] adapt(	ServletContext sc,
+							HttpServletRequest request,
+							HttpServletResponse response, String[] pathArgs) {
 		Map<String, Object> map;
 		try {
 			Uploading ing = new FastUploading();
@@ -143,7 +144,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 		int i = fillPathArgs(request, response, pathArgs, args);
 		// Inject another params
 		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(request, response, map);
+			args[i] = injs[i].get(sc, request, response, map);
 		}
 		return args;
 	}

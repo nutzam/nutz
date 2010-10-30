@@ -12,7 +12,6 @@ import org.nutz.Nutz;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.init.Inits;
-import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.config.ServletNutConfig;
 
 /**
@@ -31,6 +30,8 @@ public class NutServlet extends HttpServlet {
 	 */
 	private UrlMap urls;
 
+	private ServletNutConfig config;
+
 	/**
 	 * Nutz.Mvc 是否成功的被挂接在 JSP/Servlet 容器上。这个标志位可以为子类提供参考
 	 */
@@ -43,16 +44,18 @@ public class NutServlet extends HttpServlet {
 	@Override
 	public void init() throws ServletException {
 		if (log.isInfoEnabled()) {
-			URL me = Thread.currentThread().getContextClassLoader().getResource(NutServlet.class.getName().replace('.', '/')+".class");
+			URL me = Thread.currentThread()
+							.getContextClassLoader()
+							.getResource(NutServlet.class.getName().replace('.', '/') + ".class");
 			log.infof("Nutz Version : %s in %s", Nutz.version(), me);
 		}
-		Loading ing = Inits.init(new ServletNutConfig(getServletConfig()), false);
+		config = new ServletNutConfig(getServletConfig());
+		Loading ing = Inits.init(config, false);
 		urls = ing.getUrls();
 		ok = true;
 	}
 
 	public void destroy() {
-		NutConfig config = new ServletNutConfig(getServletConfig());
 		if (config.getMainModule() != null)
 			Inits.destroy(config);
 	}
@@ -70,13 +73,13 @@ public class NutServlet extends HttpServlet {
 		String path = Mvcs.getRequestPath(req);
 
 		if (log.isInfoEnabled())
-			log.info("HttpServletRequest path = "+path);
+			log.info("HttpServletRequest path = " + path);
 
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);
 		if (null == ing || null == ing.getInvoker())
 			resp.setStatus(404);
 		else
-			ing.invoke(req, resp);
+			ing.invoke(config.getServletContext(), req, resp);
 	}
 }

@@ -226,6 +226,10 @@ public class NutIoc implements Ioc2 {
 		vpms.add(0, vpm);// 优先使用最后加入的ValueProxyMaker
 	}
 
+	public IocContext getIocContext() {
+		return context;
+	}
+
 	public void setMaker(ObjectMaker maker) {
 		this.maker = maker;
 	}

@@ -1,5 +1,6 @@
 package org.nutz.mvc.adaptor;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -11,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 public interface ParamInjector {
 
 	/**
+	 * @param sc
+	 *            TODO
 	 * @param req
 	 *            请求对象
 	 * @param resp
@@ -19,6 +22,6 @@ public interface ParamInjector {
 	 *            参考对象
 	 * @return 注入值
 	 */
-	Object get(HttpServletRequest req, HttpServletResponse resp, Object refer);
+	Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer);
 
 }

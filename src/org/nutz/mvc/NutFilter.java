@@ -16,7 +16,6 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.init.Inits;
-import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.config.FilterNutConfig;
 
 public class NutFilter implements Filter {
@@ -27,7 +26,7 @@ public class NutFilter implements Filter {
 
 	private UrlMap urls;
 
-	private NutConfig config;
+	private FilterNutConfig config;
 
 	private Pattern ignorePtn;
 
@@ -61,7 +60,9 @@ public class NutFilter implements Filter {
 				if (null != ing && null != ing.getInvoker()) {
 					if (log.isInfoEnabled())
 						log.info(path);
-					ing.invoke((HttpServletRequest) req, (HttpServletResponse) resp);
+					ing.invoke(	config.getServletContext(),
+								(HttpServletRequest) req,
+								(HttpServletResponse) resp);
 					return;
 				}
 			}

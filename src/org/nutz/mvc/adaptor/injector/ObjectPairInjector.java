@@ -2,6 +2,7 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Field;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,7 +34,7 @@ public class ObjectPairInjector implements ParamInjector {
 		}
 	}
 
-	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		Object obj = mirror.born();
 		for (int i = 0; i < injs.length; i++) {
 			String[] ss = req.getParameterValues(names[i]);

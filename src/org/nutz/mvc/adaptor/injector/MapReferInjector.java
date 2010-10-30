@@ -2,6 +2,7 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,8 +24,8 @@ public class MapReferInjector extends ObjectPairInjector {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object get(HttpServletRequest req, HttpServletResponse resp,
-			Object refer) {
+	public Object get(ServletContext sc, HttpServletRequest req,
+			HttpServletResponse resp, Object refer) {
 		Object obj = mirror.born();
 		Map<String, Object> map = null;
 		if (Map.class.isAssignableFrom(refer.getClass()))

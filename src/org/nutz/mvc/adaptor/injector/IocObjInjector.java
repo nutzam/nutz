@@ -1,5 +1,6 @@
 package org.nutz.mvc.adaptor.injector;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -29,8 +30,8 @@ public class IocObjInjector implements ParamInjector {
 		this.objName = objName;
 	}
 
-	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		Ioc ioc = Mvcs.getIoc(req);
+	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+		Ioc ioc = Mvcs.getIoc(sc);
 		if (null == ioc)
 			throw new RuntimeException("You need define @IocBy in main module!!!");
 		if (Strings.isBlank(objName))

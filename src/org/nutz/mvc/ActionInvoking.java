@@ -1,5 +1,6 @@
 package org.nutz.mvc;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,8 +33,8 @@ public class ActionInvoking {
 		this.pathArgs = pathArgs;
 	}
 
-	public void invoke(HttpServletRequest req, HttpServletResponse resp) {
-		getInvoker().invoke(req, resp, pathArgs);
+	public void invoke(ServletContext sc, HttpServletRequest req, HttpServletResponse resp) {
+		getInvoker().invoke(sc, req, resp, pathArgs);
 	}
 
 }

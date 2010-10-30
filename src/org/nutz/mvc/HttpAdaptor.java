@@ -2,6 +2,7 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -42,6 +43,8 @@ public interface HttpAdaptor {
 	/**
 	 * 你的适配器需要根据传入的 request 和 response 生成函数的调用参数
 	 * 
+	 * @param sc
+	 *            Servlet 上下文对象
 	 * @param req
 	 *            请求对象
 	 * @param resp
@@ -50,9 +53,13 @@ public interface HttpAdaptor {
 	 *            字符串数组，路径参数。详情请参看 <a
 	 *            href="http://code.google.com/p/nutz/wiki/mvc_http_adaptor#路径参数"
 	 *            >路径参数</a>
+	 * 
 	 * @return 调用参数数组
 	 * 
 	 */
-	Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs);
+	Object[] adapt(	ServletContext sc,
+					HttpServletRequest req,
+					HttpServletResponse resp,
+					String[] pathArgs);
 
 }

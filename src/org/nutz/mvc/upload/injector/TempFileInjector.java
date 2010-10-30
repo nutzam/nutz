@@ -2,6 +2,7 @@ package org.nutz.mvc.upload.injector;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,7 +18,7 @@ public class TempFileInjector implements ParamInjector {
 	private String name;
 
 	@SuppressWarnings("unchecked")
-	public TempFile get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public TempFile get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		return (TempFile) ((Map<String, Object>) refer).get(name);
 	}
 

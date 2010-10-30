@@ -55,6 +55,37 @@ JSON 配置的自动扫描
 	 	 * 比如上例，你直接声明 '@InjectName' 同 '@InjectName("petModule")' 是等效的
 	
 -----------------------------------------------------------------------------------------------------------------------
+在容器对象里获得 ServletContext
+
+	ServletContext! 是的，有些时候你需要它。比如你打算作一个 Freemarker 的工厂。总之 Java 世界的奇奇怪怪的框架和插件们
+	或多或少的都可能会依赖这个接口。如果你正在读这段文字，你说不定也正好需要这个接口。
+
+	在 Nutz.Mvc 中，你可以很容易在入口函数里拿到 ServletContext，是的，你只要直接在入口函数的参数里声明 ServletContext
+	类型的参数就是了，Nutz.Mvc 会老老实实的为你填充这个参数，同理你也能拿到 HttpSession, HttpServletRequest, 
+	HttpServletResponse。但是在 Ioc 容器里，你希望你的对象也能得到这个参数，这个要求很过分吗？不当然不过分，在 1.a.33
+	之后的版本，Nutz.Mvc 在启动的时候，会为你的 Ioc 容器增加一个新的自定义值，在容器里，你可以：
+	{{{<JSON>
+	...
+	fields : {
+	    servletContext : {app:'$servlet'}
+	}
+	...
+	}}}
+	你就能为你这个对象的 servletContext 字段注入 ServletContext 的实例。当然，如果你想获得 ServletContext 中的属性，你
+	完全可以：
+	{{{<JSON>
+	...
+	fields : {
+	    servletContext : {app:'myObjName'}
+	}
+	...
+	}}}
+	那么，你在 servletContext 里的属性也会被一并注入
+	
+	当然，你的 Ioc 容器，必须实现了 Ioc2 这个接口，默认的 NutIoc 就是实现这个接口的。
+
+
+-----------------------------------------------------------------------------------------------------------------------
 容器管理对象的生命周期范围
 	
 	如果你使用的是 Nutz.Ioc 标准容器，或者你的 Ioc 容器实现了 Ioc2 接口，那么你的模块类的生命周期是可以定制的。

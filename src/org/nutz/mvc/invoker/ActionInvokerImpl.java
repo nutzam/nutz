@@ -7,6 +7,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -196,7 +197,10 @@ public class ActionInvokerImpl implements ActionInvoker {
 		throw Lang.makeThrow("Can not eval %s(\"%s\") View for %s", viewType, str, this.method);
 	}
 
-	public void invoke(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
+	public void invoke(	ServletContext sc,
+						HttpServletRequest req,
+						HttpServletResponse resp,
+						String[] pathArgs) {
 		// setup the charset
 		try {
 			req.setCharacterEncoding(inputCharset);
@@ -225,14 +229,14 @@ public class ActionInvokerImpl implements ActionInvoker {
 		// If all filters return null, then going on...
 		RequestIocContext reqContext = null;
 		try {
-			Object[] args = adaptor.adapt(req, resp, pathArgs);
+			Object[] args = adaptor.adapt(sc, req, resp, pathArgs);
 			Object obj;
 			// 判断 moudle 是否存在在 Ioc 容器中
 			// P.S. 这个分支可以考虑用一个 Flyweight 封装一下，代码可能会更干净点
 			if (null != module) {
 				obj = module;
 			} else {
-				Ioc ioc = Mvcs.getIoc(req);
+				Ioc ioc = Mvcs.getIoc(sc);
 				if (null == ioc)
 					throw Lang.makeThrow(	"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
 											moduleName);

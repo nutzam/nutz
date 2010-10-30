@@ -2,6 +2,7 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,7 +26,7 @@ public class JsonInjector implements ParamInjector {
 		this.name = name;
 	}
 
-	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null == name)
 			return Lang.map2Object((Map<?, ?>) refer, type);
 		Object map = ((Map<?, ?>) refer).get(name);

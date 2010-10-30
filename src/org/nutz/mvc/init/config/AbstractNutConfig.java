@@ -1,7 +1,5 @@
 package org.nutz.mvc.init.config;
 
-import javax.servlet.ServletContext;
-
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -12,13 +10,6 @@ import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.NutConfigException;
 
 public abstract class AbstractNutConfig implements NutConfig {
-
-	/**
-	 * 如果在非 JSP/SERVLET 容器内，这个函数不保证返回正确的结果
-	 * 
-	 * @return 当前应用的上下文对象
-	 */
-	public abstract ServletContext getServletContext();
 
 	public String getAppRoot() {
 		String root = getServletContext().getRealPath("/").replace('\\', '/');

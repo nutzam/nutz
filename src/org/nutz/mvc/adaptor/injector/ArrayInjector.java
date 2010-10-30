@@ -2,6 +2,7 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Array;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -15,7 +16,7 @@ public class ArrayInjector extends NameInjector {
 	}
 
 	@Override
-	public Object get(HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		if (null != refer)
 			return Castors.me().castTo(refer, type);
 

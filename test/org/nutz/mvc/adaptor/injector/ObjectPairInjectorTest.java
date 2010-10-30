@@ -28,7 +28,7 @@ public class ObjectPairInjectorTest {
 		req.setParameter("num", "  ");
 
 		// 执行
-		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 
 		// 检测
 		assertNull(pojo.longValue);
@@ -46,7 +46,7 @@ public class ObjectPairInjectorTest {
 		req.setParameterValues("names", Lang.array("A", "B", "C"));
 
 		// 执行
-		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 
 		// 检测
 		assertNull(pojo.longValue);
@@ -64,7 +64,7 @@ public class ObjectPairInjectorTest {
 		req.setParameterValues("str", Lang.array("A", "B", "C"));
 
 		// 执行
-		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 
 		// 检测
 		assertEquals("A,B,C", pojo.str);
@@ -77,7 +77,7 @@ public class ObjectPairInjectorTest {
 		req.setParameterValues("str", Lang.array("A"));
 
 		// 执行
-		MvcTestPojo pojo = (MvcTestPojo) inj().get(req, null, null);
+		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 
 		// 检测
 		assertEquals("A", pojo.str);

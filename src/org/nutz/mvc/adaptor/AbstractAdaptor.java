@@ -107,17 +107,20 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	protected abstract ParamInjector evalInjector(Class<?> type, Param param);
 
-	public Object[] adapt(HttpServletRequest req, HttpServletResponse resp, String[] pathArgs) {
+	public Object[] adapt(	ServletContext sc,
+							HttpServletRequest req,
+							HttpServletResponse resp,
+							String[] pathArgs) {
 		Object[] args = new Object[injs.length];
 		int i = 0;
 		int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
 		// Inject another params
 		for (; i < len; i++) {
-			args[i] = injs[i].get(req, resp, null == pathArgs ? null : pathArgs[i]);
+			args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
 		}
 
 		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(req, resp, null);
+			args[i] = injs[i].get(sc, req, resp, null);
 		}
 		return args;
 	}
@@ -131,7 +134,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		if (null != pathArgs) {
 			int len = Math.min(args.length, pathArgs.length);
 			for (; i < len; i++)
-				args[i] = injs[i].get(req, resp, pathArgs[i]);
+				args[i] = injs[i].get(null, req, resp, pathArgs[i]);
 		}
 		return i;
 	}
