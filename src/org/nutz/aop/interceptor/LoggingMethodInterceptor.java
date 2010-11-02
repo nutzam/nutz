@@ -79,7 +79,10 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		if (object != null )
 			if (object instanceof AopCallback)
 				return "[" + object.getClass().getName() + "]";
-		return String.valueOf(object);
+		String str = String.valueOf(object);
+		if (str.length() > 100)
+			str = str.substring(0,97) + "...";
+		return str;
 	}
 	
 	protected static final String str(Object... args) {
