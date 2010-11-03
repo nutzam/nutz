@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.nutz.castor.Castors;
+import org.nutz.dao.Chain;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.ToJson;
@@ -32,9 +33,9 @@ public class Record implements Map<String, Object> {
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
 				if (meta.getColumnType(i) == Types.CLOB) {
-					re.set(name.toLowerCase(), rs.getString(i));
+					re.set(name, rs.getString(i));
 				} else {
-					re.set(name.toLowerCase(), rs.getObject(i));
+					re.set(name, rs.getObject(i));
 				}
 			}
 			return re;
@@ -60,7 +61,7 @@ public class Record implements Map<String, Object> {
 	 * @return 记录本身
 	 */
 	public Record set(String name, Object value) {
-		map.put(name, value);
+		map.put(name.toLowerCase(), value);
 		return this;
 	}
 
@@ -72,7 +73,7 @@ public class Record implements Map<String, Object> {
 	 * @return 移除的字段值
 	 */
 	public Object remove(String name) {
-		return map.remove(name);
+		return map.remove(name.toLowerCase());
 	}
 
 	/**
@@ -117,20 +118,20 @@ public class Record implements Map<String, Object> {
 		map.clear();
 	}
 
-	public boolean containsKey(Object arg0) {
-		return map.containsKey(arg0);
+	public boolean containsKey(Object key) {
+		return map.containsKey(key);
 	}
 
-	public boolean containsValue(Object arg0) {
-		return map.containsValue(arg0);
+	public boolean containsValue(Object value) {
+		return map.containsValue(value);
 	}
 
-	public Set<java.util.Map.Entry<String, Object>> entrySet() {
+	public Set<Entry<String, Object>> entrySet() {
 		return map.entrySet();
 	}
 
-	public boolean equals(Object arg0) {
-		return map.equals(arg0);
+	public boolean equals(Object out) {
+		return map.equals(out);
 	}
 
 	public Object get(Object name) {
@@ -151,16 +152,17 @@ public class Record implements Map<String, Object> {
 		return map.keySet();
 	}
 
-	public Object put(String arg0, Object arg1) {
-		return map.put(arg0, arg1);
+	public Object put(String name, Object value) {
+		return map.put(name.toLowerCase(), value);
 	}
 
-	public void putAll(Map<? extends String, ? extends Object> arg0) {
-		map.putAll(arg0);
+	public void putAll(Map<? extends String, ? extends Object> out) {
+		for (Entry<? extends String, ? extends Object> entry : out.entrySet())
+			map.put(entry.getKey().toLowerCase(), entry.getValue());
 	}
 
-	public Object remove(Object arg0) {
-		return map.remove(arg0);
+	public Object remove(Object key) {
+		return map.remove(key.toString().toLowerCase());
 	}
 
 	public int size() {
@@ -169,6 +171,10 @@ public class Record implements Map<String, Object> {
 
 	public Collection<Object> values() {
 		return map.values();
+	}
+
+	public Chain toChain() {
+		return Chain.from(map);
 	}
 
 }
