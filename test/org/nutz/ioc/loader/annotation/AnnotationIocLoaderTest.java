@@ -8,7 +8,7 @@ import org.nutz.ioc.meta.IocObject;
 
 public class AnnotationIocLoaderTest {
 
-	IocLoader iocLoader = new AnnotationIocLoader("org.nutz.ioc.loader.annotation");
+	IocLoader iocLoader = new AnnotationIocLoader("org.nutz.ioc.loader.annotation.meta");
 
 	@Test
 	public void testGetName() {

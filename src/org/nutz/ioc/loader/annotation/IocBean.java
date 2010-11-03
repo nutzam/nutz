@@ -48,7 +48,7 @@ public @interface IocBean {
 	String fetch() default "";
 	
 	/**
-	 * 你要注入的字段属于超类? 试试这个吧. 只有注入与字段同名的对象 !
+	 * 你要注入的字段属于超类? 试试这个吧. 只能注入与字段同名的对象 !
 	 * @return 需要注入的字段名
 	 */
 	String [] field() default {};

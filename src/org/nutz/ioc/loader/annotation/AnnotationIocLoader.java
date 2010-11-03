@@ -95,7 +95,7 @@ public class AnnotationIocLoader implements IocLoader {
 				IocValue iocValue;
 				if (Strings.isBlank(inject.value())) {
 					iocValue = new IocValue();
-					iocValue.setType("refer");
+					iocValue.setType(IocValue.TYPE_REFER);
 					iocValue.setValue(field.getName());
 				} else
 					iocValue = convert(inject.value());
