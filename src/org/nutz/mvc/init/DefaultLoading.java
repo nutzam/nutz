@@ -62,6 +62,12 @@ public class DefaultLoading implements Loading {
 				log.debug("DefaultLoading complete.");
 		}
 		catch (Throwable e) {
+			if (ioc != null)//加载失败? 马上注销ioc
+				try {
+					ioc.depose();
+				}
+				catch (Throwable e2) {
+				}
 			throw Lang.wrapThrow(e);
 		}
 	}
