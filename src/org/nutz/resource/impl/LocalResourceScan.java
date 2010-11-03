@@ -104,7 +104,6 @@ public class LocalResourceScan extends AbstractResourceScan {
 						list.addAll(scanInJar(checkSrc(src), regex, pathZ));
 					else
 						list.addAll(scanInDir(regex, pathZ, new File(pathZ+"/"+src), ignoreHidden));
-					System.out.println("path =" + path + " , site now = "+list.size());
 				}
 			}
 		}
