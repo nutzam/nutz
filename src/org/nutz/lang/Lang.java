@@ -848,7 +848,7 @@ public abstract class Lang {
 	 * @return JAVA 对象
 	 * @throws FailToCastObjectException
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		if (null == toType)
 			throw new FailToCastObjectException("target type is Null");
@@ -869,9 +869,11 @@ public abstract class Lang {
 		Mirror<T> mirror = Mirror.me(toType);
 		T obj = mirror.born();
 		for (Field field : mirror.getFields()) {
-			Object v = src.get(field.getName());
-			Object vv = Castors.me().castTo(v, field.getType());
-			mirror.setValue(obj, field, vv);
+			if (src.containsKey(field.getName())) {
+				Object v = src.get(field.getName());
+				Object vv = Castors.me().castTo(v, field.getType());
+				mirror.setValue(obj, field, vv);
+			}
 		}
 		return obj;
 	}
@@ -1261,17 +1263,21 @@ public abstract class Lang {
 			return false;
 		}
 	}
-	
+
 	/**
 	 * 使用当前线程的ClassLoader加载给定的类
-	 * @param className 类的全称
+	 * 
+	 * @param className
+	 *            类的全称
 	 * @return 给定的类
-	 * @throws ClassNotFoundException 如果无法用当前线程的ClassLoader加载
+	 * @throws ClassNotFoundException
+	 *             如果无法用当前线程的ClassLoader加载
 	 */
 	public static Class<?> loadClass(String className) throws ClassNotFoundException {
 		try {
 			return Thread.currentThread().getContextClassLoader().loadClass(className);
-		} catch (ClassNotFoundException e) {
+		}
+		catch (ClassNotFoundException e) {
 			return Class.forName(className);
 		}
 	}
