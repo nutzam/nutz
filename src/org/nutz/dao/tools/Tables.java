@@ -8,15 +8,15 @@ import java.util.List;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.entity.annotation.Column;
-import org.nutz.dao.entity.annotation.Default;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Table;
-import org.nutz.dao.tools.annotation.ColType;
-import org.nutz.dao.tools.annotation.NotNull;
 import org.nutz.dao.tools.impl.NutDTableParser;
 import org.nutz.dao.tools.impl.TableDefinitionImpl;
+import org.nutz.dao.tools.impl.convert.DefaultFieldTypeMapping;
+import org.nutz.dao.tools.impl.convert.FieldTypeMapping;
+import org.nutz.dao.tools.impl.convert.OracleFieldTypeMapping;
 import org.nutz.dao.tools.impl.expert.MysqlExpert;
 import org.nutz.dao.tools.impl.expert.OracleExpert;
 import org.nutz.dao.tools.impl.expert.PsqlExpert;
@@ -24,7 +24,6 @@ import org.nutz.dao.tools.impl.expert.SqlServerExpert;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
-import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -131,11 +130,27 @@ public abstract class Tables {
 			dao.execute(maker.makeCreateSql(dt));
 		}
 	}
-
+	
 	/**
 	 * 从类生成DTable定义
 	 */
 	public static DTable parse(Class<?> type) {
+		return parse(type, new DefaultFieldTypeMapping());
+	}
+	
+	/**
+	 * 从类生成DTable定义,根据数据库字段判断映射器
+	 */
+	public static DTable parse(Class<?> type, DatabaseMeta meta) {
+		if (meta.isOracle())
+			return parse(type, new OracleFieldTypeMapping());
+		return parse(type, new DefaultFieldTypeMapping());
+	}
+
+	/**
+	 * 从类生成DTable定义,通过自定义的字段类型映射器
+	 */
+	public static DTable parse(Class<?> type, FieldTypeMapping mapping) {
 		DTable dt = new DTable();
 		Table table = type.getAnnotation(Table.class);
 		dt.setName(null == table ? type.getSimpleName() : table.value());
@@ -149,7 +164,7 @@ public abstract class Tables {
 				df.setPrimaryKey(true);
 				if (id.auto())
 					df.setAutoIncreament(true);
-				setupFieldAttribute(f, df);
+				mapping.convert(f, df);
 				dt.addField(df);
 				break;
 			}
@@ -165,7 +180,7 @@ public abstract class Tables {
 					df.setNotNull(true);
 					df.setUnique(true);
 				}
-				setupFieldAttribute(f, df);
+				mapping.convert(f, df);
 				dt.addField(df);
 				break;
 			}
@@ -182,7 +197,7 @@ public abstract class Tables {
 						DField df = new DField();
 						df.setPrimaryKey(true);
 						df.setNotNull(true);
-						setupFieldAttribute(f, df);
+						mapping.convert(f, df);
 						dt.addField(df);
 					}
 				}
@@ -200,44 +215,10 @@ public abstract class Tables {
 			if (null == f.getAnnotation(Column.class))
 				continue;
 			DField df = new DField();
-			setupFieldAttribute(f, df);
+			mapping.convert(f, df);
 			dt.addField(df);
 		}
 		return dt;
 	}
-
-	private static void setupFieldAttribute(Field f, DField df) {
-		Column col = f.getAnnotation(Column.class);
-		if (null == col || Strings.isBlank(col.value()))
-			df.setName(f.getName());
-		else
-			df.setName(col.value());
-
-		if (null != f.getAnnotation(NotNull.class))
-			df.setNotNull(true);
-
-		Default def = f.getAnnotation(Default.class);
-		if (null != def)
-			df.setDefaultValue(def.value());
-
-		ColType colType = f.getAnnotation(ColType.class);
-		if (null != colType) {
-			df.setType(colType.value());
-		} else {
-			Mirror<?> ft = Mirror.me(f.getType());
-			if (ft.isStringLike()) {
-				df.setType("VARCHAR(50)");
-			} else if (ft.isIntLike()) {
-				df.setType("INT");
-			} else if (ft.isDateTimeLike()) {
-				df.setType("TIMESTAMP");
-			} else if (ft.isBoolean()) {
-				df.setType("BOOLEAN");
-			} else if (ft.isEnum()) {
-				df.setType("VARCHAR(20)");
-			} else {
-				df.setType("???");
-			}
-		}
-	}
+	
 }
