@@ -31,6 +31,12 @@ public class LangTest {
 		}
 	}
 
+	public static class B {
+		private List<A> as;
+		private A[] aa;
+		private Map<String, A> amap;
+	}
+
 	@Test
 	public void test_equals_simple() {
 		assertTrue(Lang.equals(null, null));
@@ -59,10 +65,26 @@ public class LangTest {
 
 	@Test
 	public void test_map2object() throws FailToCastObjectException {
-		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr("{id:23,name:'zzh'}"));
+		Map<String, Object> map = Lang.map("{id:23,name:'zzh'}");
 		A a = Lang.map2Object(map, A.class);
 		assertEquals(23, a.id);
 		assertEquals("zzh", a.name);
+
+		map = Lang.map("{aa:[{id:23,name:'zzh'},{id:5,name:'xyz'}]}");
+		B b = Lang.map2Object(map, B.class);
+		assertEquals(23, b.aa[0].id);
+		assertEquals("xyz", b.aa[1].name);
+
+		map = Lang.map("{as:[{id:23,name:'zzh'},{id:5,name:'xyz'}]}");
+		b = Lang.map2Object(map, B.class);
+		assertEquals(23, b.as.get(0).id);
+		assertEquals("xyz", b.as.get(1).name);
+
+		map = Lang.map("{amap:{z:{id:23,name:'zzh'},x:{id:5,name:'xyz'}}}");
+		b = Lang.map2Object(map, B.class);
+		assertEquals(23, b.amap.get("z").id);
+		assertEquals("xyz", b.amap.get("x").name);
+
 	}
 
 	@Test

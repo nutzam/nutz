@@ -1216,6 +1216,20 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 获取一个字段的某一个泛型参数，如果没有，返回 null
+	 * 
+	 * @param f
+	 *            字段
+	 * @return 泛型参数数
+	 */
+	public static Class<?> getGenericTypes(Field f, int index) {
+		Class<?>[] types = getGenericTypes(f);
+		if (null == types || types.length <= index)
+			return null;
+		return types[index];
+	}
+
+	/**
 	 * 获取一个类的某个一个泛型参数
 	 * 
 	 * @param klass

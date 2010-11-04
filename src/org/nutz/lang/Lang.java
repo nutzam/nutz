@@ -14,11 +14,13 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -742,8 +744,13 @@ public abstract class Lang {
 			return null;
 		Object re = Array.newInstance(eleType, coll.size());
 		int i = 0;
-		for (Iterator<?> it = coll.iterator(); it.hasNext();)
-			Array.set(re, i++, it.next());
+		for (Iterator<?> it = coll.iterator(); it.hasNext();) {
+			Object obj = it.next();
+			if (null == obj)
+				Array.set(re, i++, null);
+			else
+				Array.set(re, i++, Castors.me().castTo(obj, eleType));
+		}
 		return re;
 	}
 
@@ -871,7 +878,68 @@ public abstract class Lang {
 		for (Field field : mirror.getFields()) {
 			if (src.containsKey(field.getName())) {
 				Object v = src.get(field.getName());
-				Object vv = Castors.me().castTo(v, field.getType());
+				if (null == v)
+					continue;
+
+				Class<?> ft = field.getType();
+				Object vv = null;
+				// 集合
+				if (v instanceof Collection) {
+					Collection c = (Collection) v;
+					// 集合到数组
+					if (ft.isArray()) {
+						vv = Lang.collection2array(c, ft.getComponentType());
+					}
+					// 集合到集合
+					else {
+						// 创建
+						Collection newCol;
+						Class eleType = Mirror.getGenericTypes(field, 0);
+						if (ft == List.class) {
+							newCol = new ArrayList(c.size());
+						} else if (ft == Set.class) {
+							newCol = new LinkedHashSet();
+						} else {
+							try {
+								newCol = (Collection) ft.newInstance();
+							}
+							catch (Exception e) {
+								throw Lang.wrapThrow(e);
+							}
+						}
+						// 赋值
+						for (Object ele : c) {
+							newCol.add(Castors.me().castTo(ele, eleType));
+						}
+						vv = newCol;
+					}
+				}
+				// Map
+				else if (v instanceof Map) {
+					// 创建
+					final Map map;
+					if (ft == Map.class) {
+						map = new HashMap();
+					} else {
+						try {
+							map = (Map) ft.newInstance();
+						}
+						catch (Exception e) {
+							throw new FailToCastObjectException("target type fail to born!", e);
+						}
+					}
+					// 赋值
+					final Class<?> valType = Mirror.getGenericTypes(field, 1);
+					each(v, new Each<Entry>() {
+						public void invoke(int i, Entry en, int length) {
+							map.put(en.getKey(), Castors.me().castTo(en.getValue(), valType));
+						}
+					});
+
+					vv = map;
+				} else {
+					vv = Castors.me().castTo(v, ft);
+				}
 				mirror.setValue(obj, field, vv);
 			}
 		}
