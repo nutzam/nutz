@@ -1103,7 +1103,7 @@ public abstract class Lang {
 				Map map = (Map) obj;
 				int len = map.size();
 				int i = 0;
-				if (null != eType && eType.isAssignableFrom(Entry.class)) {
+				if (null != eType && eType != Object.class && eType.isAssignableFrom(Entry.class)) {
 					for (Object v : map.entrySet())
 						try {
 							callback.invoke(i++, (T) v, len);
