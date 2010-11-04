@@ -1011,10 +1011,7 @@ public abstract class Lang {
 		if (null == obj || null == callback)
 			return;
 		try {
-			Class<T>[] typeParams = (Class<T>[]) Mirror.getTypeParams(callback.getClass());
-			Class<T> eType = null;
-			if (typeParams != null && typeParams.length > 0)
-				eType = typeParams[0];
+			Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
 			if (obj.getClass().isArray()) {
 				int len = Array.getLength(obj);
 				for (int i = 0; i < len; i++)

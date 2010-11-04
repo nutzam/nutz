@@ -1158,13 +1158,20 @@ public class Mirror<T> {
 	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
 	 */
 	public static Type[] getTypeParams(Class<?> klass) {
-		if (klass == null)
+		if (klass == null || "java.lang.Object".equals(klass.getName()))
 			return null;
+		// 看看父类
 		Type superclass = klass.getGenericSuperclass();
-		if (superclass == null || "java.lang.Object".equals(superclass.toString()))
-			return null;
-		if (superclass instanceof ParameterizedType)
+		if (null != superclass && superclass instanceof ParameterizedType)
 			return ((ParameterizedType) superclass).getActualTypeArguments();
+
+		// 看看接口
+		Type[] interfaces = klass.getGenericInterfaces();
+		for (Type inf : interfaces) {
+			if (inf instanceof ParameterizedType) {
+				return ((ParameterizedType) inf).getActualTypeArguments();
+			}
+		}
 		return getTypeParams(klass.getSuperclass());
 	}
 
@@ -1223,6 +1230,9 @@ public class Mirror<T> {
 		if (index >= 0 && index < types.length) {
 			Type t = types[index];
 			if (t instanceof Class<?>) {
+				return (Class<T>) t;
+			} else if (t instanceof ParameterizedType) {
+				t = ((ParameterizedType) t).getRawType();
 				return (Class<T>) t;
 			}
 			throw Lang.makeThrow("Type '%s' is not a Class", t.toString());

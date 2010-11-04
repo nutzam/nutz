@@ -16,7 +16,7 @@ public class BorningException extends RuntimeException {
 		if (null != args && args.length > 0) {
 			sb.append("\n by args: [");
 			for (Object arg : args)
-				sb.append("\n  @(").append(arg.toString()).append(')');
+				sb.append("\n  @(").append(arg).append(')');
 			sb.append("]");
 		}
 		if (null != e) {
