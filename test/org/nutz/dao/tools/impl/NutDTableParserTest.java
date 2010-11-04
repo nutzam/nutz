@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.nutz.dao.tools.DField;
 import org.nutz.dao.tools.DTable;
 import org.nutz.dao.tools.DTableParser;
+import org.nutz.dao.tools.Tables;
+import org.nutz.dao.tools.impl.meta.OnePojo;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
@@ -110,4 +112,21 @@ public class NutDTableParserTest {
 		assertTrue(df.isUnique());
 	}
 
+	@Test
+	public void test_tablse_parse_class(){
+		DTable dTable = Tables.parse(OnePojo.class);
+		assertNotNull(dTable);
+		assertEquals("t_one_table", dTable.getName());
+		assertEquals(6, dTable.getFields().size());
+		assertTrue(dTable.hasField("id"));
+		assertTrue(dTable.hasField("xId"));
+		assertTrue(dTable.hasField("name"));
+		assertTrue(dTable.hasField("isNew"));
+		assertTrue(dTable.hasField("cversion"));
+		String dod = dTable.toString().toUpperCase();
+		assertTrue(dod.indexOf("VARCHAR") > 0);
+		assertTrue(dod.indexOf("BOOLEAN") > 0);
+		assertTrue(dod.indexOf("TIMESTAMP") > 0);
+		assertTrue(dod.indexOf("INT") > 0);
+	}
 }
