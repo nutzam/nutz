@@ -15,7 +15,7 @@
 	来适配你的 HTTP 参数。
 
 	通过构造函数获得适配器
-		你可以可以通过 @AdaptBy 注解来改变任何一个入口函数的适配方式。比如
+		你可以通过 @AdaptBy 注解来改变任何一个入口函数的适配方式。比如
 		{{{
 		@AdaptBy(type=JsonAdaptor.class)
 		}}}
