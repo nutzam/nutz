@@ -1,5 +1,6 @@
 package org.nutz.mvc.upload.injector;
 
+import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -19,7 +20,7 @@ public class FileInjector implements ParamInjector {
 	private String name;
 
 	@SuppressWarnings("unchecked")
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	protected File getFile(Object refer) {
 		Object obj = ((Map<String, Object>) refer).get(name);
 		if (obj == null)
 			return null;
@@ -38,4 +39,12 @@ public class FileInjector implements ParamInjector {
 				return ((TempFile) list.get(0)).getFile();
 		}
 	}
+
+	public Object get(	ServletContext sc,
+						HttpServletRequest req,
+						HttpServletResponse resp,
+						Object refer) {
+		return getFile(refer);
+	}
+
 }

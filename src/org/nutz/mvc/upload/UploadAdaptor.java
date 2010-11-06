@@ -2,6 +2,8 @@ package org.nutz.mvc.upload;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.util.List;
 import java.util.Map;
 
@@ -18,10 +20,12 @@ import org.nutz.mvc.adaptor.injector.MapReferInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
+import org.nutz.mvc.upload.injector.InputStreamInjector;
 import org.nutz.mvc.upload.injector.MapArrayInjector;
 import org.nutz.mvc.upload.injector.MapItemInjector;
 import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
+import org.nutz.mvc.upload.injector.ReaderInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
 /**
@@ -104,6 +108,12 @@ public class UploadAdaptor extends AbstractAdaptor {
 		// TempFile
 		if (TempFile.class.isAssignableFrom(type))
 			return new TempFileInjector(paramName);
+		// InputStream
+		if (InputStream.class.isAssignableFrom(type))
+			return new InputStreamInjector(paramName);
+		// Reader
+		if (Reader.class.isAssignableFrom(type))
+			return new ReaderInjector(paramName);
 		// List
 		if (List.class.isAssignableFrom(type))
 			return new MapListInjector(paramName);
@@ -127,7 +137,8 @@ public class UploadAdaptor extends AbstractAdaptor {
 
 	public Object[] adapt(	ServletContext sc,
 							HttpServletRequest request,
-							HttpServletResponse response, String[] pathArgs) {
+							HttpServletResponse response,
+							String[] pathArgs) {
 		Map<String, Object> map;
 		try {
 			Uploading ing = new FastUploading();

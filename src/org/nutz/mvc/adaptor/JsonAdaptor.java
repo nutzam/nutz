@@ -1,7 +1,6 @@
 package org.nutz.mvc.adaptor;
 
 import java.io.InputStreamReader;
-import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
