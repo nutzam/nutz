@@ -12,7 +12,6 @@ import org.nutz.lang.Strings;
 
 public class DefaultFieldTypeMapping implements FieldTypeMapping {
 	
-	@Override
 	public DField convert(Field f, DField df) {
 		Column col = f.getAnnotation(Column.class);
 		if (null == col || Strings.isBlank(col.value()))
