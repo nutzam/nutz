@@ -9,11 +9,18 @@
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 * [http://code.google.com/p/nutz/issues/detail?id=xx Issue xx]    	  {#AAA;by} {*xxxx}
+	 * [http://code.google.com/p/nutz/issues/detail?id=181 Issue 181] 问个弱弱的问题,怎么实现内部跳转?forward方式 {#AAA;by} {*zkgale}
+	 * [http://code.google.com/p/nutz/issues/detail?id=279 Issue 279] 希望能使用Record进行数据库操作 {#AAA;by} {*ywjno.dev}
+	 * [http://code.google.com/p/nutz/issues/detail?id=301 Issue 301] web.xml配置问题 {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=303 Issue 303] 实现ServletContext更优雅的绑定到ioc容器以便可以方便的访问它 {#AAA;by} {*nightmarelin}
+	 * [http://code.google.com/p/nutz/issues/detail?id=305 Issue 305] 在使用Mirror.setValue给bean的属性赋值的时候出错 {#AAA;by} {*ywjno.dev}
+	 * [http://code.google.com/p/nutz/issues/detail?id=308 Issue 308] castor: 日期转换成 java.util.Date 失败 {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=315 Issue 315] MVC文档编辑错误 {#AAA;by} {*sjbwylbs}
+	 * [http://code.google.com/p/nutz/issues/detail?id=316 Issue 316] 以json方式传递数组,入口函数无法正常接收转换为对象数组 {#AAA;by} {*goulin.home}
 
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 XXX 个单元测试用例,代码覆盖率达到{*xx%}(按line计算)
+	 # 共通过了 595 个单元测试用例,代码覆盖率达到{*65%}(按line计算)
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
 		 * [http://www.h2database.com H2]
 		 * [http://www.sqlite.org SQLite]
@@ -47,6 +54,7 @@
 	|| yankuncheng								||  -   ||  -  ||  -   ||  O	||  -  ||  -   ||  -   ||
 	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
 	|| 冬天温泉									||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
+	|| 花米										||  0   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
 	|| 云海飞舞									||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
 
 	

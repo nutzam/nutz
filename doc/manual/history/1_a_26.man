@@ -8,7 +8,7 @@
 --------------------------------------------------------------------------------------------------------
 问题修复
 	 * Issue 95 : Ioc - 没有检测循环依赖,且不支持多次继承
-	 * Issue 97: 从 Dao 里查出来的对象是一个 Map，或者是List<Map<String, Object>> {#AAA;by} {*Gdunser}
+	 * Issue 97: 从 Dao 里查出来的对象是一个 Map，或者是`List<Map<String, Object>>` {#AAA;by} {*Gdunser}
 	 * Issue 100: MVC手册在jsp视图处描述有误 {#AAA;by} {*ToFishes}
 	 * Issue 101: Dumps.matcher NullpointerException {#AAA;by} {*for5million}
 	 * Issue 102: 在update时，如果http参数有Date类型为null，会出错 {#AAA;by} {*Gdunser}
