@@ -30,7 +30,7 @@ public class FileSqlManager extends AbstractSqlManager {
 	}
 
 	public void refresh() {
-		List<InputStream> list = Scans.me().loadResource(null, paths);
+		List<InputStream> list = Scans.me().loadResource(regex, paths);
 		_sql_map = new HashMap<String, String>();
 		for (InputStream ins : list) {
 			Reader r = new InputStreamReader(ins);
