@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,11 +25,10 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedCharArray;
-import org.nutz.resource.NutResource;
 
 public abstract class AbstractSqlManager implements SqlManager {
 
-	private Map<String, String> _sql_map;
+	protected Map<String, String> _sql_map;
 	private List<String> _sql_keys;
 
 	private Map<String, String> map() {
@@ -89,20 +87,6 @@ public abstract class AbstractSqlManager implements SqlManager {
 
 	public String[] keys() {
 		return keylist().toArray(new String[keylist().size()]);
-	}
-
-	protected void buildSQLMaps(List<NutResource> nrs) {
-		_sql_map = new HashMap<String, String>();
-		try {
-			for (NutResource nr : nrs) {
-				Reader r = nr.getReader();
-				loadSQL(r);
-				r.close();
-			}
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
 	}
 
 	public void addSql(String key, String value) {
@@ -195,16 +179,16 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	/**
-	 * 执行根据流来加载sql内容的操作
+	 * 执行根据字符流来加载sql内容的操作
 	 * 
-	 * @param stream
+	 * @param reader
 	 * @throws IOException
 	 * @author mawenming at 2010-4-10 上午10:04:17
 	 */
-	private void loadSQL(Reader stream) throws IOException {
+	protected void loadSQL(Reader reader) throws IOException {
 		BufferedReader bufferedReader = null;
 		try {
-			bufferedReader = new BufferedReader(stream);
+			bufferedReader = new BufferedReader(reader);
 			SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
 
 			Iterator<String> it = p.keys().iterator();
@@ -217,7 +201,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 		}
 		finally {
 			Streams.safeClose(bufferedReader);
-			Streams.safeClose(stream);
+			Streams.safeClose(reader);
 		}
 
 	}

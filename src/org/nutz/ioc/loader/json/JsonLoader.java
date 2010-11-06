@@ -1,8 +1,5 @@
 package org.nutz.ioc.loader.json;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -13,9 +10,7 @@ import java.util.Map;
 import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.json.Json;
 import org.nutz.lang.Encoding;
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
-import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 /**
@@ -35,29 +30,9 @@ public class JsonLoader extends MapLoader {
 
 	public JsonLoader(String... paths) {
 		this.setMap(new HashMap<String, Map<String, Object>>());
-		try {
-			// 解析路径
-			for (String path : paths) {
-				File f = Files.findFile(path);
-				// 如果是文件，直接加载
-				if (null != f && f.isFile()) {
-					loadFromInputStream(new FileInputStream(f));
-					continue;
-				}
-				List<NutResource> rsList = Scans.me().scan(path, "^(.+[.])(js|json)$");
-				for (NutResource nr : rsList) {
-					loadFromInputStream(nr.getInputStream());
-				}
-				// 如果找不到?
-				if (rsList.size() < 1)
-					throw Lang.makeThrow(	RuntimeException.class,
-											"Js folder or file no found !! Path = %s",
-											path);
-			}
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
+		List<InputStream> list = Scans.me().loadResource("^(.+[.])(js|json)$", paths);
+		for (InputStream ins : list) 
+			loadFromInputStream(ins);
 	}
 
 	private void loadFromInputStream(InputStream ins) {

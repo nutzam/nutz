@@ -1,6 +1,9 @@
 package org.nutz.resource;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -154,4 +157,37 @@ public class Scans {
 		return re;
 	}
 	
+	public List<InputStream> loadResource(String regex,String...paths){
+		List<InputStream> list = new ArrayList<InputStream>();
+		// 解析路径
+		for (String path : paths) {
+			File f = Files.findFile(path);
+			// 如果是文件，直接加载
+			List<NutResource> rsList;
+			try {
+				if (null != f && f.isFile()) {
+					if (f.getAbsolutePath().contains(".jar!")) {
+						list.add(Scans.class.getResourceAsStream(path));
+						continue;
+					} else if (f.isFile()) {
+						list.add(new FileInputStream(f));
+						continue;
+					}
+				}
+				rsList = scan(path, regex);
+				for (NutResource nr : rsList) {
+					list.add(nr.getInputStream());
+				}
+			} 
+			catch (IOException e) {
+				throw Lang.wrapThrow(e);
+			}
+			// 如果找不到?
+			if (rsList.size() < 1)
+				throw Lang.makeThrow(	RuntimeException.class,
+										"folder or file no found !! Path = %s",
+										path);
+		}
+		return list;
+	}
 }

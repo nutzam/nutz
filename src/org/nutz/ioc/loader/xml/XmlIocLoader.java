@@ -1,5 +1,6 @@
 package org.nutz.ioc.loader.xml;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,9 +8,9 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.Map.Entry;
 
 import javax.xml.parsers.DocumentBuilder;
 
@@ -22,11 +23,12 @@ import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.Json;
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.Scans;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -62,14 +64,16 @@ public class XmlIocLoader implements IocLoader {
 		try {
 			DocumentBuilder builder = Lang.xmls();
 			Document document;
-			for (String fileName : fileNames) {
-				document = builder.parse(Files.findFileAsStream(fileName));
+			List<InputStream> list = Scans.me().loadResource(".+[.]xml$", fileNames);
+			for (InputStream ins : list) {
+				document = builder.parse(ins);
 				document.normalizeDocument();
 				NodeList nodeListZ = ((Element) document.getDocumentElement()).getChildNodes();
 				for (int i = 0; i < nodeListZ.getLength(); i++) {
 					if (nodeListZ.item(i) instanceof Element)
 						paserBean((Element) nodeListZ.item(i), false);
 				}
+				Streams.safeClose(ins);
 			}
 			handleParent();
 			if (LOG.isDebugEnabled())

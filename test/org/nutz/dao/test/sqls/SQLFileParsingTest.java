@@ -14,7 +14,7 @@ public class SQLFileParsingTest {
 	private static final String PATH = "org/nutz/dao/test/sqls/sqls.sqls";
 
 	private SqlManager createSqls() {
-		return new FileSqlManager(PATH).setAutoscan(false);
+		return new FileSqlManager(PATH);
 	}
 
 	@Test
@@ -71,7 +71,7 @@ public class SQLFileParsingTest {
 
 	@Test
 	public void check_PersonTestSQLs() {
-		SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls").setAutoscan(false);
+		SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls");
 		String[] keys = {	".abc.drop",
 							".abc.create",
 							".abc.insert",
@@ -89,7 +89,7 @@ public class SQLFileParsingTest {
 
 	@Test
 	public void check_parse_comboSqls() {
-		SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls").setAutoscan(false);
+		SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls");
 		ComboSql sql = sqls.createCombo();
 		assertEquals(10, sql.count());
 	}
