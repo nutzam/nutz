@@ -1,14 +1,12 @@
 package org.nutz.mvc.adaptor.injector;
 
-import java.util.Map;
-
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.castor.Castors;
 import org.nutz.json.Json;
-import org.nutz.json.JsonFormat;
-import org.nutz.lang.Lang;
+import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 /**
@@ -26,15 +24,18 @@ public class JsonInjector implements ParamInjector {
 		this.name = name;
 	}
 
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(	ServletContext sc,
+						HttpServletRequest req,
+						HttpServletResponse resp,
+						Object refer) {
 		if (null == name)
-			return Lang.map2Object((Map<?, ?>) refer, type);
-		Object map = ((Map<?, ?>) refer).get(name);
-		if (!(map instanceof Map<?, ?>))
-			throw Lang.makeThrow(	"Wrong JSON string,  '%s' should be another map!: \n %s",
-									name,
-									Json.toJson(refer, JsonFormat.nice()));
-		return Lang.map2Object((Map<?, ?>) map, type);
+			return Json.fromJson(type, refer.toString());
+
+		NutMap map = Json.fromJson(NutMap.class, refer.toString());
+		Object theObj = map.get(name);
+		if (null == theObj)
+			return null;
+		return Castors.me().castTo(theObj, type);
 	}
 
 }

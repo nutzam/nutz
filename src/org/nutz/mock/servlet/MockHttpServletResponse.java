@@ -15,23 +15,24 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 
 public class MockHttpServletResponse implements HttpServletResponse {
-	
+
 	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
-	
+
 	protected PrintWriter writer;
-	
+
 	protected Map<String, String> headers;
-	
+
 	protected Set<Cookie> cookies;
-	
+
 	protected int status;
-	
+
 	protected Locale locale;
-	
+
 	public MockHttpServletResponse() {
 		headers = new HashMap<String, String>();
 		cookies = new HashSet<Cookie>();
@@ -43,7 +44,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void addDateHeader(String key, long value) {
-		headers.put(key, ""+value);
+		headers.put(key, "" + value);
 	}
 
 	public void addHeader(String key, String value) {
@@ -51,7 +52,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void addIntHeader(String key, int value) {
-		headers.put(key, ""+value);
+		headers.put(key, "" + value);
 	}
 
 	public boolean containsHeader(String key) {
@@ -83,11 +84,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void sendRedirect(String value) throws IOException {
-		headers.put("Location", ""+value);
+		headers.put("Location", "" + value);
 	}
 
 	public void setDateHeader(String key, long value) {
-		headers.put(key, ""+value);
+		headers.put(key, "" + value);
 	}
 
 	public void setHeader(String key, String value) {
@@ -95,7 +96,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void setIntHeader(String key, int value) {
-		headers.put(key, ""+value);
+		headers.put(key, "" + value);
 	}
 
 	public void setStatus(int status) {
@@ -131,7 +132,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public PrintWriter getWriter() throws IOException {
-		if (writer == null){
+		if (writer == null) {
 			writer = new PrintWriter(new OutputStreamWriter(stream, characterEncoding));
 		}
 		return writer;
@@ -154,7 +155,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	protected String characterEncoding = Encoding.defaultEncoding();
-	
+
 	public void setCharacterEncoding(String characterEncoding) {
 		this.characterEncoding = characterEncoding;
 	}
@@ -164,7 +165,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	protected String contentType;
-	
+
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
@@ -173,11 +174,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		this.locale = locale;
 	}
 
-	public String getContentAsString() {
+	public String getAsString() {
 		try {
 			getWriter().flush();
 			return stream.toString(characterEncoding);
-		} 
+		}
 		catch (UnsupportedEncodingException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -186,7 +187,19 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		}
 	}
 
-	public String getHeader(String key){
+	public int getAsInt() {
+		return Integer.parseInt(getAsString());
+	}
+
+	public long getAsLong() {
+		return Long.parseLong(getAsString());
+	}
+
+	public <T> T getAs(Class<T> type) {
+		return Castors.me().castTo(getAsString(), type);
+	}
+
+	public String getHeader(String key) {
 		return headers.get(key);
 	}
 }

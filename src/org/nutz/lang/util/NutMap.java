@@ -1,10 +1,13 @@
 package org.nutz.lang.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.nutz.castor.Castors;
+import org.nutz.lang.Lang;
 
 @SuppressWarnings("serial")
 public class NutMap extends HashMap<String, Object> {
@@ -25,7 +28,26 @@ public class NutMap extends HashMap<String, Object> {
 		return getAs(String.class, key, dft);
 	}
 
-	private <T> T getAs(Class<T> toType, String key, T dft) {
+	public <T> List<T> getList(Class<T> eleType, String key) {
+		Object obj = this.get(key);
+		if (obj == null)
+			return null;
+		if (obj instanceof List<?>)
+			return Lang.collection2list((List<?>) obj, eleType);
+		if (obj.getClass().isArray())
+			return Lang.array2list(obj, eleType);
+		if (obj instanceof Map<?, ?>)
+			return Lang.collection2list(((Map<?, ?>) obj).values(), eleType);
+		List<T> list = new ArrayList<T>(1);
+		list.add(Castors.me().castTo(obj, eleType));
+		return list;
+	}
+
+	public <T> T getAs(Class<T> toType, String key) {
+		return getAs(toType, key, null);
+	}
+
+	public <T> T getAs(Class<T> toType, String key, T dft) {
 		Object obj = get(key);
 		if (null == obj)
 			return dft;

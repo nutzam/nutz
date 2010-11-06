@@ -30,13 +30,13 @@ public class JsonAdaptor extends AbstractAdaptor {
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
-		Map<String, Object> map = Lang.map(str);
+		//Map<String, Object> map = Lang.map(str);
 		// Try to make the args
 		Object[] args = new Object[injs.length];
 		int i = fillPathArgs(request, response, pathArgs, args);
 		// Inject another params
 		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(sc, request, response, map);
+			args[i] = injs[i].get(sc, request, response, str);
 		}
 		return args;
 	}

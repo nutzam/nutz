@@ -682,36 +682,35 @@ public abstract class Lang {
 	/**
 	 * 将集合变成 ArrayList
 	 * 
-	 * @param coll
+	 * @param col
 	 *            集合对象
 	 * @return 列表对象
 	 */
-	public static <E> List<E> collection2list(Collection<E> coll) {
-		return collection2list(coll, null);
+	@SuppressWarnings("unchecked")
+	public static <E> List<E> collection2list(Collection<E> col) {
+		if (null == col)
+			return null;
+		if (col.size() == 0)
+			return new ArrayList<E>(0);
+		Class<E> eleType = (Class<E>) col.iterator().next().getClass();
+		return collection2list(col, eleType);
 	}
 
 	/**
 	 * 将集合编程变成指定类型的列表
 	 * 
-	 * @param coll
+	 * @param col
 	 *            集合对象
 	 * @param classOfList
 	 *            列表类型
 	 * @return 列表对象
 	 */
-	public static <E> List<E> collection2list(Collection<E> coll, Class<List<E>> classOfList) {
-		if (coll instanceof List<?>)
-			return (List<E>) coll;
-		List<E> list;
-		try {
-			list = (null == classOfList ? new ArrayList<E>(coll.size()) : classOfList.newInstance());
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		for (Iterator<E> it = coll.iterator(); it.hasNext();) {
-			list.add(it.next());
-		}
+	public static <E> List<E> collection2list(Collection<?> col, Class<E> eleType) {
+		if (null == col)
+			return null;
+		List<E> list = new ArrayList<E>(col.size());
+		for (Object obj : col)
+			list.add(Castors.me().castTo(obj, eleType));
 		return list;
 	}
 
@@ -723,9 +722,12 @@ public abstract class Lang {
 	 * @return 数组
 	 */
 	@SuppressWarnings("unchecked")
-	public static <E> Object collection2array(Collection<E> coll) {
-		if (null == coll || coll.size() == 0)
+	public static <E> E[] collection2array(Collection<E> coll) {
+		if (null == coll)
 			return null;
+		if (coll.size() == 0)
+			return (E[]) new Object[0];
+
 		Class<E> eleType = (Class<E>) Lang.first(coll).getClass();
 		return collection2array(coll, eleType);
 	}
@@ -733,25 +735,26 @@ public abstract class Lang {
 	/**
 	 * 将集合变成指定类型的数组
 	 * 
-	 * @param coll
+	 * @param col
 	 *            集合对象
 	 * @param eleType
 	 *            数组元素类型
 	 * @return 数组
 	 */
-	public static Object collection2array(Collection<?> coll, Class<?> eleType) {
-		if (null == coll)
+	@SuppressWarnings("unchecked")
+	public static <E> E[] collection2array(Collection<?> col, Class<E> eleType) {
+		if (null == col)
 			return null;
-		Object re = Array.newInstance(eleType, coll.size());
+		Object re = Array.newInstance(eleType, col.size());
 		int i = 0;
-		for (Iterator<?> it = coll.iterator(); it.hasNext();) {
+		for (Iterator<?> it = col.iterator(); it.hasNext();) {
 			Object obj = it.next();
 			if (null == obj)
 				Array.set(re, i++, null);
 			else
 				Array.set(re, i++, Castors.me().castTo(obj, eleType));
 		}
-		return re;
+		return (E[]) re;
 	}
 
 	/**
@@ -796,6 +799,47 @@ public abstract class Lang {
 			throw Lang.makeThrow("Fail to create map [%s]", mapClass.getName());
 		}
 		return map;
+	}
+
+	/**
+	 * 将数组转换成一个列表。
+	 * 
+	 * @param array
+	 *            原始数组
+	 * @return 新列表
+	 * 
+	 * @see org.nutz.castor.Castors
+	 */
+	public static <T> List<T> array2list(T[] array) {
+		if (null == array)
+			return null;
+		List<T> re = new ArrayList<T>(array.length);
+		for (T obj : array)
+			re.add(obj);
+		return re;
+	}
+
+	/**
+	 * 将数组转换成一个列表。将会采用 Castor 来深层转换数组元素
+	 * 
+	 * @param array
+	 *            原始数组
+	 * @param eleType
+	 *            新列表的元素类型
+	 * @return 新列表
+	 * 
+	 * @see org.nutz.castor.Castors
+	 */
+	public static <T, E> List<E> array2list(Object array, Class<E> eleType) {
+		if (null == array)
+			return null;
+		int len = Array.getLength(array);
+		List<E> re = new ArrayList<E>(len);
+		for (int i = 0; i < len; i++) {
+			Object obj = Array.get(array, i);
+			re.add(Castors.me().castTo(obj, eleType));
+		}
+		return re;
 	}
 
 	/**
@@ -859,8 +903,10 @@ public abstract class Lang {
 	public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
 		if (null == toType)
 			throw new FailToCastObjectException("target type is Null");
+		// 类型相同
 		if (toType == Map.class)
 			return (T) src;
+		// 也是一种 Map
 		if (Map.class.isAssignableFrom(toType)) {
 			Map map;
 			try {
@@ -873,6 +919,15 @@ public abstract class Lang {
 			}
 
 		}
+		// 数组
+		if (toType.isArray())
+			return (T) Lang.collection2array(src.values(), toType.getComponentType());
+		// List
+		if (List.class == toType) {
+			return (T) Lang.collection2list(src.values());
+		}
+
+		// POJO
 		Mirror<T> mirror = Mirror.me(toType);
 		T obj = mirror.born();
 		for (Field field : mirror.getFields()) {

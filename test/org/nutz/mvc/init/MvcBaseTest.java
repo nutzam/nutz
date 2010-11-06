@@ -23,14 +23,14 @@ public class MvcBaseTest extends AbstractMvcTest {
 
 		request.setPathInfo("/base/login.nut");
 		((NutServlet)servlet).service(request, response);
-		assertEquals("true", response.getContentAsString());
+		assertEquals("true", response.getAsString());
 	}
 
 	@Test
 	public void testAnotherModule() throws Throwable {
 		request.setPathInfo("/two/say");
 		((NutServlet)servlet).service(request, response);
-		assertEquals("\"haha\"", response.getContentAsString());
+		assertEquals("\"haha\"", response.getAsString());
 	}
 
 }
