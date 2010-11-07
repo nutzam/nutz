@@ -85,6 +85,13 @@ public class UploadAdaptor extends AbstractAdaptor {
 		context.setCharset(charset);
 	}
 
+	public UploadAdaptor(String path, int buffer, String charset, int poolSize, int maxFileSize) {
+		context = new UploadingContext(new NutFilePool(path, poolSize));
+		context.setBufferSize(buffer);
+		context.setCharset(charset);
+		context.setMaxFileSize(maxFileSize);
+	}
+	
 	public UploadingContext getContext() {
 		return context;
 	}
