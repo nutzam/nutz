@@ -28,6 +28,13 @@ import org.nutz.lang.stream.StringOutputStream;
 public class JsonTest {
 
 	@Test
+	public void test_unknown_field_in_json_string() {
+		Abc abc = Json.fromJson(Abc.class, "{id:2,name:'zzh',uuab:'ttt'}");
+		assertEquals(2, abc.id);
+		assertEquals("zzh", abc.name);
+	}
+
+	@Test
 	public void field_name_with_colon() {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson("{'i\"d:':6};");
 		assertEquals(6, map.get("i\"d:"));

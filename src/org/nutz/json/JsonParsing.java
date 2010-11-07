@@ -185,24 +185,37 @@ class JsonParsing {
 			// If Object
 			T obj = me.born();
 			while (cursor != -1 && cursor != '}') {
-				Field f = me.getField(readFieldName());
-				Class<?> ft = f.getType();
+				Field f = null;
+				Class<?> ft = null;
 				Class<?> eleType = null;
-				// List field
-				if (List.class.isAssignableFrom(ft)) {
-					Class<?>[] ts = Mirror.getGenericTypes(f);
-					if (ts.length > 0)
-						eleType = ts[0];
+				try {
+					f = me.getField(readFieldName());
+					ft = f.getType();
 				}
-				// Map Field
-				else if (Map.class.isAssignableFrom(ft)) {
-					Class<?>[] ts = Mirror.getGenericTypes(f);
-					if (ts.length > 1)
-						eleType = ts[1];
+				catch (NoSuchFieldException e) {}
+
+				// Eval the eleType
+				if (null != ft) {
+					// List field
+					if (List.class.isAssignableFrom(ft)) {
+						Class<?>[] ts = Mirror.getGenericTypes(f);
+						if (ts.length > 0)
+							eleType = ts[0];
+					}
+					// Map Field
+					else if (Map.class.isAssignableFrom(ft)) {
+						Class<?>[] ts = Mirror.getGenericTypes(f);
+						if (ts.length > 1)
+							eleType = ts[1];
+					}
 				}
-				// Parsing...
-				Object value = parseFromJson(f.getType(), eleType);
-				me.setValue(obj, f, value);
+
+				// Parsing Value...
+				Object value = parseFromJson(ft, eleType);
+
+				if (null != f)
+					me.setValue(obj, f, value);
+
 				if (!findNextNamePair())
 					break;
 			}
