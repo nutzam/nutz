@@ -36,6 +36,11 @@ public final class Links {
 	private Object obj;
 	private Entity<?> entity;
 
+	public Links setObj(Object obj) {
+		this.obj = obj;
+		return this;
+	}
+
 	public boolean hasLinks() {
 		return all.size() > 0;
 	}

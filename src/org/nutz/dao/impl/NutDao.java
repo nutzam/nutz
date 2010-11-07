@@ -294,48 +294,41 @@ public class NutDao implements Dao {
 		return sql.getUpdateCount();
 	}
 
-	public <T> T clearLinks(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final NutDao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.walkManys(new LinkWalker() {
-						void walk(Link link) {
-							if (link.getReferField() == null) {
-								dao.clear(link.getTargetClass(), null);
-							} else {
-								Object value = entity.getMirror().getValue(	obj,
-																			link.getReferField());
-								Entity<?> ta = dao.getEntity(link.getTargetClass());
-								Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
-								dao.execute(sql);
-							}
-						}
-					});
-					lns.walkManyManys(new LinkWalker() {
-						void walk(Link link) {
-							Object value = entity.getMirror().getValue(obj, link.getReferField());
-							Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
-																	link.getFrom(),
-																	link.getFrom());
-							sql.params().set(link.getFrom(), value);
-							dao.execute(sql);
-						}
-					});
-					lns.walkOnes(new LinkWalker() {
-						void walk(Link link) {
-							Object value = entity.getMirror().getValue(obj, link.getReferField());
+	public <T> T clearLinks(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.walkManys(new LinkWalker() {
+					void walk(Link link) {
+						if (link.getReferField() == null) {
+							dao.clear(link.getTargetClass(), null);
+						} else {
+							Object value = entity.getMirror().getValue(ele, link.getReferField());
 							Entity<?> ta = dao.getEntity(link.getTargetClass());
 							Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
 							dao.execute(sql);
 						}
-					});
-				}
-			});
-		}
-		return obj;
+					}
+				});
+				lns.walkManyManys(new LinkWalker() {
+					void walk(Link link) {
+						Object value = entity.getMirror().getValue(ele, link.getReferField());
+						Sql sql = dao.getSqlMaker().clear_links(link.getRelation(),
+																link.getFrom(),
+																link.getFrom());
+						sql.params().set(link.getFrom(), value);
+						dao.execute(sql);
+					}
+				});
+				lns.walkOnes(new LinkWalker() {
+					void walk(Link link) {
+						Object value = entity.getMirror().getValue(ele, link.getReferField());
+						Entity<?> ta = dao.getEntity(link.getTargetClass());
+						Sql sql = dao.getSqlMaker().clear_links(ta, link, value);
+						dao.execute(sql);
+					}
+				});
+			}
+		}).run();
 	}
 
 	public int delete(Class<?> classOfT, long id) {
@@ -413,35 +406,25 @@ public class NutDao implements Dao {
 		return 0;
 	}
 
-	public <T> void deleteWith(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final NutDao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeManys(new DeleteManyInvoker(dao));
-					lns.invokeManyManys(new DeleteManyManyInvoker(dao));
-					_deleteSelf(entity, obj);
-					lns.invokeOnes(new DeleteOneInvoker(dao));
-				}
-			});
-		}
+	public <T> void deleteWith(T obj, String regex) {
+		new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeManys(new DeleteManyInvoker(dao));
+				lns.invokeManyManys(new DeleteManyManyInvoker(dao));
+				_deleteSelf(entity, ele);
+				lns.invokeOnes(new DeleteOneInvoker(dao));
+			}
+		}).run();
 	}
 
-	public <T> void deleteLinks(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final NutDao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeManys(new DeleteManyInvoker(dao));
-					lns.invokeManyManys(new DeleteManyManyInvoker(dao));
-					lns.invokeOnes(new DeleteOneInvoker(dao));
-				}
-			});
-		}
+	public <T> void deleteLinks(T obj, String regex) {
+		new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeManys(new DeleteManyInvoker(dao));
+				lns.invokeManyManys(new DeleteManyManyInvoker(dao));
+				lns.invokeOnes(new DeleteOneInvoker(dao));
+			}
+		}).run();
 	}
 
 	public <T> T fetch(Class<T> classOfT, long id) {
@@ -525,62 +508,57 @@ public class NutDao implements Dao {
 		return null;
 	}
 
-	public <T> T fetchLinks(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			if (!lns.hasLinks())
-				return obj;
-			final Mirror<?> mirror = Mirror.me(obj.getClass());
-			final Dao dao = this;
-			// Many
-			lns.walkManys(new LinkWalker() {
-				void walk(Link link) {
-					Condition c = null;
-					if (link.getReferField() != null) {
-						Object value = mirror.getValue(obj, link.getReferField());
-						c = new ManyCondition(link, value);
+	public <T> T fetchLinks(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				// Many
+				lns.walkManys(new LinkWalker() {
+					void walk(Link link) {
+						Condition c = null;
+						if (link.getReferField() != null) {
+							Object value = mirror.getValue(ele, link.getReferField());
+							c = new ManyCondition(link, value);
+						}
+						List<?> list = query(link.getTargetClass(), c, null);
+						mirror.setValue(ele,
+										link.getOwnField(),
+										Castors.me().cast(	list,
+															list.getClass(),
+															link.getOwnField().getType(),
+															link.getMapKeyField()));
 					}
-					List<?> list = query(link.getTargetClass(), c, null);
-					mirror.setValue(obj,
-									link.getOwnField(),
-									Castors.me().cast(	list,
-														list.getClass(),
-														link.getOwnField().getType(),
-														link.getMapKeyField()));
-				}
-			});
-			// ManyMany
-			lns.walkManyManys(new LinkWalker() {
-				void walk(Link link) {
-					ManyManyCondition mmc = new ManyManyCondition(dao, link, obj);
-					List<?> list = query(link.getTargetClass(), mmc, null);
-					mirror.setValue(obj,
-									link.getOwnField(),
-									Castors.me().cast(	list,
-														list.getClass(),
-														link.getOwnField().getType(),
-														link.getMapKeyField()));
-				}
-			});
-			// one
-			lns.walkOnes(new LinkWalker() {
-				void walk(Link link) {
-					Object one;
-					Field ownField = link.getReferField();
-					Mirror<?> ownType = Mirror.me(ownField.getType());
-					if (ownType.isStringLike()) {
-						String name = mirror.getValue(obj, ownField).toString();
-						one = fetch(link.getTargetClass(), name);
-					} else {
-						long id = ((Number) mirror.getValue(obj, ownField)).longValue();
-						one = fetch(link.getTargetClass(), id);
+				});
+				// ManyMany
+				lns.walkManyManys(new LinkWalker() {
+					void walk(Link link) {
+						ManyManyCondition mmc = new ManyManyCondition(dao, link, ele);
+						List<?> list = query(link.getTargetClass(), mmc, null);
+						mirror.setValue(ele,
+										link.getOwnField(),
+										Castors.me().cast(	list,
+															list.getClass(),
+															link.getOwnField().getType(),
+															link.getMapKeyField()));
 					}
-					mirror.setValue(obj, link.getOwnField(), one);
-				}
-			});
-		}
-		return obj;
+				});
+				// one
+				lns.walkOnes(new LinkWalker() {
+					void walk(Link link) {
+						Object one;
+						Field ownField = link.getReferField();
+						Mirror<?> ownType = Mirror.me(ownField.getType());
+						if (ownType.isStringLike()) {
+							String name = mirror.getValue(ele, ownField).toString();
+							one = fetch(link.getTargetClass(), name);
+						} else {
+							long id = ((Number) mirror.getValue(ele, ownField)).longValue();
+							one = fetch(link.getTargetClass(), id);
+						}
+						mirror.setValue(ele, link.getOwnField(), one);
+					}
+				});
+			}
+		}).setTransaction(false).run();
 	}
 
 	public <T> Entity<T> getEntity(final Class<T> classOfT) {
@@ -681,54 +659,33 @@ public class NutDao implements Dao {
 		}
 	}
 
-	public <T> T insertWith(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final Mirror<?> mirror = Mirror.me(obj.getClass());
-			final Dao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
-					_insertSelf(entity, obj);
-					lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
-					lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
-				}
-			});
-		}
-		return obj;
+	public <T> T insertWith(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeOnes(new InsertOneInvoker(dao, ele, mirror));
+				_insertSelf(entity, ele);
+				lns.invokeManys(new InsertManyInvoker(dao, ele, mirror));
+				lns.invokeManyManys(new InsertManyManyInvoker(dao, ele, mirror));
+			}
+		}).run();
 	}
 
-	public <T> T insertLinks(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final Mirror<?> mirror = Mirror.me(obj.getClass());
-			final Dao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeOnes(new InsertOneInvoker(dao, obj, mirror));
-					lns.invokeManys(new InsertManyInvoker(dao, obj, mirror));
-					lns.invokeManyManys(new InsertManyManyInvoker(dao, obj, mirror));
-				}
-			});
-		}
-		return obj;
+	public <T> T insertLinks(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeOnes(new InsertOneInvoker(dao, ele, mirror));
+				lns.invokeManys(new InsertManyInvoker(dao, ele, mirror));
+				lns.invokeManyManys(new InsertManyManyInvoker(dao, ele, mirror));
+			}
+		}).run();
 	}
 
-	public <T> T insertRelation(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final Mirror<?> mirror = Mirror.me(obj.getClass());
-			final Dao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeManyManys(new InsertManyManyRelationInvoker(dao, obj, mirror));
-				}
-			});
-		}
-		return obj;
+	public <T> T insertRelation(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeManyManys(new InsertManyManyRelationInvoker(dao, ele, mirror));
+			}
+		}).run();
 	}
 
 	public <T> List<T> query(Class<T> classOfT, Condition condition, Pager pager) {
@@ -813,33 +770,21 @@ public class NutDao implements Dao {
 		return re[0];
 	}
 
-	public <T> T updateWith(final T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final Dao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					update(obj);
-					lns.invokeAll(new UpdateInvokder(dao));
-				}
-			});
-		}
-		return obj;
+	public <T> T updateWith(T obj, String regex) {
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				update(ele);
+				lns.invokeAll(new UpdateInvokder(dao));
+			}
+		}).run();
 	}
 
 	public <T> T updateLinks(T obj, String regex) {
-		if (null != obj) {
-			final Entity<?> entity = getEntity(obj.getClass());
-			final Links lns = new Links(obj, entity, regex);
-			final Dao dao = this;
-			Trans.exec(new Atom() {
-				public void run() {
-					lns.invokeAll(new UpdateInvokder(dao));
-				}
-			});
-		}
-		return obj;
+		return new LinksRunner<T>(this, obj, regex, new LinksAtom() {
+			public void run() {
+				lns.invokeAll(new UpdateInvokder(dao));
+			}
+		}).run();
 	}
 
 	public boolean exists(Class<?> classOfT) {

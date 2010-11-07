@@ -11,7 +11,7 @@ public class AppAttrInjector extends AttrInjector {
 	}
 
 	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return req.getSession().getServletContext().getAttribute(name);
+		return sc.getAttribute(name);
 	}
 
 }
