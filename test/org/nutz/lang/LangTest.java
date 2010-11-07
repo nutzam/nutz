@@ -245,7 +245,7 @@ public class LangTest {
 		assertTrue(map1.entrySet().contains(Lang.first(map1)));
 
 		assertNull(Lang.first(new ArrayList<String>()));
-		List<Object> l = Lang.list("[1,2,3,4]");
+		List<Object> l = Lang.list4("[1,2,3,4]");
 		assertEquals(1, Lang.first(l));
 	}
 

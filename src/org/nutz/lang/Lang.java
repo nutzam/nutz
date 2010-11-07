@@ -354,6 +354,24 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 较方便的创建一个列表，比如：
+	 * 
+	 * <pre>
+	 * List《Pet》 pets = Lang.list(pet1, pet2, pet3);
+	 * </pre>
+	 * 
+	 * @param eles
+	 *            可变参数
+	 * @return 列表对象
+	 */
+	public static <T> List<T> list(T... eles) {
+		List<T> list = new ArrayList<T>(eles.length);
+		for (T ele : eles)
+			list.add(ele);
+		return list;
+	}
+
+	/**
 	 * 将多个数组，合并成一个数组。如果这些数组为空，则返回 null
 	 * 
 	 * @param arys
@@ -1025,7 +1043,7 @@ public abstract class Lang {
 	 * @return List 对象
 	 */
 	@SuppressWarnings("unchecked")
-	public static List<Object> list(String str) {
+	public static List<Object> list4(String str) {
 		if (null == str)
 			return null;
 		if ((str.length() > 0 && str.charAt(0) == '[') && str.endsWith("]"))

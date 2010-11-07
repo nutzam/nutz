@@ -9,6 +9,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Platoon;
+import org.nutz.lang.Lang;
 
 public class UpdateTest extends DaoCase {
 
@@ -29,9 +30,9 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void batch_update_partly() {
-		int re = dao.update(Fighter.class, Chain.make("type", "F15"), Cnd.where("type",
-																				"=",
-																				"SU_35"));
+		int re = dao.update(Fighter.class,
+							Chain.make("type", "F15"),
+							Cnd.where("type", "=", "SU_35"));
 		assertEquals(1, re);
 		int maxId = dao.getMaxId(Fighter.class);
 		re = dao.update(Fighter.class, Chain.make("type", "UFO"), Cnd.where("id", ">", maxId - 5));
@@ -62,15 +63,50 @@ public class UpdateTest extends DaoCase {
 		p = dao.fetch(Platoon.class, "sF");
 		assertEquals("xyz", p.getLeaderName());
 	}
-	
+
 	@Test
-	public void updateIgnoreNull() {
+	public void test_updateIgnoreNull() {
 		Platoon p = dao.fetch(Platoon.class, "sF");
+		p.setLeaderName("xyz");
+		dao.update(p);
+		
+		p = dao.fetch(Platoon.class, "sF");
 		String name = p.getLeaderName(); // xyz
+		assertNotNull(name);
+		
 		p.setLeaderName(null);
 		int re = dao.updateIgnoreNull(p);
 		assertEquals(1, re);
+		
 		p = dao.fetch(Platoon.class, "sF");
 		assertEquals(name, p.getLeaderName());
+
+		p.setLeaderName(null);
+		dao.update(p);
+		p = dao.fetch(Platoon.class, "sF");
+		assertNull(p.getLeaderName());
+	}
+
+	@Test
+	public void test_updateIgnoreNull_by_list() {
+		Platoon p = dao.fetch(Platoon.class, "sF");
+		p.setLeaderName("xyz");
+		dao.update(p);
+		
+		p = dao.fetch(Platoon.class, "sF");
+		String name = p.getLeaderName(); // xyz
+		assertNotNull(name);
+		
+		p.setLeaderName(null);
+		int re = dao.updateIgnoreNull(Lang.list(p));
+		assertEquals(1, re);
+		
+		p = dao.fetch(Platoon.class, "sF");
+		assertEquals(name, p.getLeaderName());
+
+		p.setLeaderName(null);
+		dao.update(p);
+		p = dao.fetch(Platoon.class, "sF");
+		assertNull(p.getLeaderName());
 	}
 }
