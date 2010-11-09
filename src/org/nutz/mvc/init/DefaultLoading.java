@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.nutz.ioc.Ioc;
@@ -43,16 +44,10 @@ public class DefaultLoading implements Loading {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Init config ...");
-			// 构建一个上下文对象，方便子类获取更多的环境信息
-			// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
-			context = new Context();
-			context.set("app.root", config.getAppRoot());
-
-			if (log.isDebugEnabled()) {
-				log.debugf(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
-				log.debug("Loading configuration...");
-			}
 			this.mainModule = mainModule;
+			createContent(config);
+			if (log.isDebugEnabled())
+				log.debug("Loading configuration...");
 			loadIoc(config);
 			loadSubModules(config);
 			loadLocalization(config);
@@ -82,6 +77,28 @@ public class DefaultLoading implements Loading {
 
 	public Map<String, Map<String, String>> getMessageMap() {
 		return msgss;
+	}
+	
+	protected void createContent(NutConfig config) {
+		// 构建一个上下文对象，方便子类获取更多的环境信息
+		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
+		context = new Context();
+		context.set("app.root", config.getAppRoot());
+		
+		if (log.isDebugEnabled()) {
+			log.debugf(">>\napp.root = %s", config.getAppRoot());
+		}
+		
+		//载入环境变量
+		for (Entry<String,String> entry : System.getenv().entrySet())
+			context.set("env."+entry.getKey(), entry.getValue());
+		//载入系统变量
+		for (Entry<Object,Object> entry : System.getProperties().entrySet())
+			context.set("sys."+entry.getKey(), entry.getValue());
+		
+		if (log.isTraceEnabled()) {
+			log.tracef(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
+		}
 	}
 
 	protected void loadIoc(NutConfig config) throws Throwable {
