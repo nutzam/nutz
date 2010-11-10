@@ -1,16 +1,51 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>nutz</groupId>
+  <groupId>org.nutz</groupId>
   <artifactId>nutz</artifactId>
+  <packaging>jar</packaging>
   <name>Nutz</name>
   <version>1.a.33</version>
+  <description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently</description>
+
   <url>http://nutz.googlecode.com</url>
   <issueManagement>
   	<system>Google Code Issue</system>
   	<url>http://code.google.com/p/nutz/issues/list</url>
   </issueManagement>
+  <licenses>
+   <license>
+     <name>The Apache Software License, Version 2.0</name>
+     <url>http://apache.org/licenses/LICENSE-2.0.txt</url>
+   </license>
+  </licenses>
+  <developers>
+  	<developer>
+  		<id>zozoh</id>
+  		<name>zozoh</name>
+  		<email>zozohtnt@gmail.com</email>
+  		<url>http://zozoh.javaeye.com/</url>
+  	</developer>
+  	<developer>
+  		<id>wendal</id>
+  		<name>Wendal Chen</name>
+  		<email>wendal1985@gmail.com</email>
+  		<url>http://myblog.sunfarms.net</url>
+  	</developer>
+  	<developer>
+  		<id>Birdwindy</id>
+  		<name>Birdwindy</name>
+  		<email>Bird.Wyatt@gmail.com</email>
+  		<url>http://birdwindy.javaeye.com/</url>
+  	</developer>
+  </developers>
   <scm>
-  	<connection>SVN</connection>
-  	<url>http://nutz.googlecode.com/svn/trunk/</url>
+    <connection>scm:svn:http://nutz.googlecode.com/svn/trunk/</connection>
+    <developerConnection>scm:svn:https://nutz.googlecode.com/svn/trunk/</developerConnection>
+    <url>http://nutz.googlecode.com/svn/trunk/</url>
   </scm>
+
+  <repositories>
+  </repositories>
+  <dependencies>
+  </dependencies>
 </project>

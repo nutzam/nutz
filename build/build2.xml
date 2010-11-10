@@ -53,9 +53,10 @@
 	<property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}"></property>
 	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> --> <!-- 用于正式版 -->
 
-	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-source.jar"></property>
+	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-sources.jar"></property>
+	<property name="nutz.jar.jdoc" value="${pub-dir}/${nutz.dest.pre}-javadoc.jar"></property>
 	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.dest.pre}-jdk5.jar"></property>
-	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}-jdk6.jar"></property>
+	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}.jar"></property>
 	<property name="nutz.manual.pdf" value="${pub-dir}/${nutz.dest.pre}-manual.pdf"></property>
 	<property name="nutz.manual_en.pdf" value="${pub-dir}/${nutz.dest.pre}-manual_en.pdf"></property>
 	<property name="nutz.manual.rtf" value="${pub-dir}/${nutz.dest.pre}-manual.rtf"></property>
@@ -102,9 +103,6 @@
 		<javac destdir="${classes-dir-jdk5}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.5" target="1.5" encoding="utf-8"
 			classpathref="nutz-classpath" includeantruntime="false">
 		</javac>
-		<copy todir="${classes-dir-jdk5}/META-INF">
-			<fileset dir="META-INF" includes="**/*.xml"></fileset>
-		</copy>
 		<copy todir="${classes-dir-jdk5}">
 			<fileset file="License.txt"></fileset>
 			<fileset dir="src" excludes="**/*.java"></fileset>
@@ -113,9 +111,6 @@
 		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8"
 			classpathref="nutz-classpath" includeantruntime="false">
 		</javac>
-		<copy todir="${classes-dir-jdk6}/META-INF">
-			<fileset dir="META-INF" includes="**/*.xml"></fileset>
-		</copy>
 		<copy todir="${classes-dir-jdk6}">
 			<fileset file="License.txt"></fileset>
 			<fileset dir="src" excludes="**/*.java"></fileset>
@@ -176,6 +171,9 @@
 	
 	<target name="jdoc">
 		<javadoc sourcepath="src" classpathref="nutz-classpath" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
+		<jar destfile="${nutz.jar.jdoc}">
+			<fileset dir="${javadoc-dir}"></fileset>
+		</jar>
 	</target>
 	
 	
