@@ -4,23 +4,74 @@
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-关于 1.a.33 (Hatching...)
+1.a.33 发行注记 (Hatching...)
+	
+	大家好，又到了一月一度的 Nutz 新版本发行的日子了 ^_^
+	
+	前几天 360 和腾讯刚干完架，特地记录一下。作为一名不明真相且兴致勃勃的围观群众，我表示："{*不过瘾，不给力，希望他们能早日再战}"。
+	
+	关于 [http://nutzam.com Nutz]，最大的新闻就是，从这个版起，无敌的[http://myblog.sunfarms.net/ Wendal]同学
+	[http://myblog.sunfarms.net/124.html 终于把 Nutz 提交给 Maven 库了]，
+	之后，[http://myblog.sunfarms.net/126.html 据说他要看亚运会]，让我们在这里祝福他。
+	
+	这个版我们修复了一些小问题，关闭了一些老问题。其中重点有两个
+	 * [http://code.google.com/p/nutz/issues/detail?id=233 Issue 233] - Dao 关于映射的操作可以接受集合，数组，以及 Map 了
+	 * [http://code.google.com/p/nutz/issues/detail?id=303 Issue 303] - Mvc 中，Ioc 容器内的对象可以支持注入 ServletContext 对象
+	     * 我想对于想自己用 Freemarker 或者其他视图模板引擎的同学来是，是个好消息
+
+    {*八卦}
+    
+    前几天一个朋友告诉我，他面试一个实习生，对方在介绍自己的编程经历时提到了 Nutz，说很是喜欢这个框架。我问他：此人水平如何？
+    他说挺好的。对此我表示很欣慰。同时我也深刻的意识到喜欢 Nutz 的人，水平都不会太菜，即使现在菜，以后也能迅速变得不菜。理由如下：
+     # 喜欢小众东东的多半是发烧友
+     # 发烧友通常很快都能成为该领域的专家
+     # Nutz 是个小众的东东
+     # Nutz 是个编程框架
+     # 因此，喜欢 Nutz 的同学多半都会很快成为编程专家
+    
+    另外，在这里也推荐一下另外一个小众框架 -- [http://guzz.googlecode.com/ Guzz]。这个项目的文档非常不错，作者这一年来
+    做了难以想象的工作，前段时间，Wendal 同学为 Guzz 贡献了一个 [http://qun.qq.com/air/#36429094 QQ 群(36429094)]。
+    我简单的浏览过 [http://code.google.com/p/guzz/source/browse/#svn/trunk Guzz 的代码]，写的很漂亮，我想在这个项目会帮助到不少人的，
+    希望喜欢 Guzz 的同学，踊跃加入 [http://qun.qq.com/air/#36429094 QQ 群(36429094)] ^_^
+    
+    同时也向其他战斗在开源第一线的的同学们致敬： {*不挣钱都这么认真? 你国外回来的？}
+
+    {*预告:}
+    
+    下个版，我们有可能会再做一次小小的膨胀:
+     * 增加功能更全面的 Condition 实现类
+     * 为 Mvc 再增加个默认视图实现
+     * 并打算内置一个文件比较工具类
+    
+    下面是这个版本的更多细节...
 	
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=29 Issue 29] Dao在执行SQL时应提供处理数组类型数据的功能。 {#AAA;by} {*satellite}
+	 * [http://code.google.com/p/nutz/issues/detail?id=122 Issue 122] 不支持设置单PK {#AAA;by} {*Chen.Bao.Yi}
 	 * [http://code.google.com/p/nutz/issues/detail?id=181 Issue 181] 问个弱弱的问题,怎么实现内部跳转?forward方式 {#AAA;by} {*zkgale}
+	 * [http://code.google.com/p/nutz/issues/detail?id=231 Issue 231] 关于dao多表查询 {#AAA;by} {*shao0707@163.com}
+	 * [http://code.google.com/p/nutz/issues/detail?id=233 Issue 233] Dao: 接口混乱问题-relation 相关操作支持了集合 {#AAA;by} {*jiongs753}
+	 * [http://code.google.com/p/nutz/issues/detail?id=241 Issue 241] PairAdaptor应支持POJO中的数组类型的变量注入 {#AAA;by} {*landraxee}
+	 * [http://code.google.com/p/nutz/issues/detail?id=252 Issue 252] mvc: HTTP 重名参数 {#AAA;by} {*zozohtnt}
 	 * [http://code.google.com/p/nutz/issues/detail?id=279 Issue 279] 希望能使用Record进行数据库操作 {#AAA;by} {*ywjno.dev}
+	 * [http://code.google.com/p/nutz/issues/detail?id=297 Issue 297] 文件上传增加种方式，直接在内存操作文件，不存入临时目录 {#AAA;by} {*conanca2006}
 	 * [http://code.google.com/p/nutz/issues/detail?id=301 Issue 301] web.xml配置问题 {#AAA;by} {*happyday0517}
 	 * [http://code.google.com/p/nutz/issues/detail?id=303 Issue 303] 实现ServletContext更优雅的绑定到ioc容器以便可以方便的访问它 {#AAA;by} {*nightmarelin}
 	 * [http://code.google.com/p/nutz/issues/detail?id=305 Issue 305] 在使用Mirror.setValue给bean的属性赋值的时候出错 {#AAA;by} {*ywjno.dev}
+	 * [http://code.google.com/p/nutz/issues/detail?id=306 Issue 306] @Views注入的viewmaker是直接new出来而不是ioc容器注入，这个设计是否有bug {#AAA;by} {*nightmarelin}
 	 * [http://code.google.com/p/nutz/issues/detail?id=308 Issue 308] castor: 日期转换成 java.util.Date 失败 {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=311 Issue 311] updateIgnoreNull在更新集合时，没有忽略null {#AAA;by} {*happyday0517}
+	 * [http://code.google.com/p/nutz/issues/detail?id=313 Issue 313] mvc: 文件上传应该支持 InputStream 和 Reader {#AAA;by} {*zozohtnt}
+	 * [http://code.google.com/p/nutz/issues/detail?id=314 Issue 314] JsonAdaptor不能将键值对转化为对象。 {#AAA;by} {*satellite}
 	 * [http://code.google.com/p/nutz/issues/detail?id=315 Issue 315] MVC文档编辑错误 {#AAA;by} {*sjbwylbs}
 	 * [http://code.google.com/p/nutz/issues/detail?id=316 Issue 316] 以json方式传递数组,入口函数无法正常接收转换为对象数组 {#AAA;by} {*goulin.home}
+	 * [http://code.google.com/p/nutz/issues/detail?id=317 Issue 317] FileSqlManager重复加载文件,导致获取sql时出错 {#AAA;by} {*wendal1985}
 
 --------------------------------------------------------------------------------------------------------
 质量
-	 # 共通过了 595 个单元测试用例,代码覆盖率达到{*65%}(按line计算)
+	 # 共通过了 597 个单元测试用例,代码覆盖率达到{*65%}(按line计算)
 	 # Nutz.Dao 经测试在如下数据库上可以工作正常
 		 * [http://www.h2database.com H2]
 		 * [http://www.sqlite.org SQLite]
@@ -36,6 +87,7 @@
 	 * 修正文档中的一些字眼
 	 * [zdoc/ant_task.man 在Ant中使用zDoc] : 演示如何在Ant中使用zDoc
 	 * [appendix/case.man 案例] : 展示使用Nutz构建的网站/应用
+	 * [mvc/with_ioc.man#在容器对象里获得_ServletContext 同Ioc一起工作] : 在容器对象里获得 ServletContext
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
 	贡献的种类:
@@ -48,21 +100,31 @@
 	 
 	 如有遗漏,请提醒我们 ^_^
 	 
-	|| 贡献者 									|| 问题 || 博客|| 支持 || 代码  || Demo|| 文档 || 测试 ||
-	|| nightmarelin								||  O   ||  -  ||  -   ||  -	||  -  ||  -   ||  -   ||
-	|| wendal									||  O   ||  O  ||  O   ||  O	||  O  ||  O   ||  O   ||
-	|| yankuncheng								||  -   ||  -  ||  -   ||  O	||  -  ||  -   ||  -   ||
-	|| zozohtnt									||  O   ||  -  ||  O   ||  O	||  -  ||  O   ||  O   ||
-	|| 冬天温泉									||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
-	|| 花米										||  0   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
-	|| 云海飞舞									||  -   ||  -  ||  O   ||  -	||  -  ||  -   ||  -   ||
+    || 贡献者        || 问题  || 博客  || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || Conanca  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Landraxee	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Nightmare	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Satellite	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Shao0707 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Wendal   	||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  O   ||
+    || YanKunCheng 	||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || Ywjno.dev	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Zkgale   	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Zozoh    	||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  O   ||
+    || 宝        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 冬天温泉      	||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
+    || 花米®        	||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||  -   ||
+    || 前冲       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 天行健      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 幸福的旁边    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 云海飞舞    	||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
 
-	
 	另外，很多朋友都在：
-	 * [https://groups.google.at/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
 	 * [http://qun.qq.com/air/#58444676 Nutz交流超级群(58444676)]
 	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
 	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^
 	
-	欢迎访问[http://nutzam.com 官网],以获取最新的快照版和用户手册
+	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[http://build.sunfarms.net/nutz/lastest/manual/ 用户手册]
 
