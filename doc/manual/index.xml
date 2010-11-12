@@ -98,6 +98,7 @@
 	<doc path="appendix" title="附录">
 		<doc path="case.man"/>
 		<doc path="create_datasource.man"/>
+		<doc path="work_with_maven.man"></doc>
 		<doc path="resources.man"/>
 		<doc path="plugins.man"/>
 	</doc>

@@ -26,6 +26,13 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedCharArray;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ * @author mawenming at 2010-4-10 上午10:04:17
+ *
+ */
 public abstract class AbstractSqlManager implements SqlManager {
 
 	protected Map<String, String> _sql_map;
@@ -183,7 +190,6 @@ public abstract class AbstractSqlManager implements SqlManager {
 	 * 
 	 * @param reader
 	 * @throws IOException
-	 * @author mawenming at 2010-4-10 上午10:04:17
 	 */
 	protected void loadSQL(Reader reader) throws IOException {
 		BufferedReader bufferedReader = null;

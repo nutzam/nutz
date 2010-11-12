@@ -1,0 +1,32 @@
+#title: 案例
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+Nutz的POM
+	当前的POM数据
+	{{{
+	<project>
+		<modelVersion>4.0.0</modelVersion>
+		<groupId>org.nutz</groupId>
+		<artifactId>nutz</artifactId>
+		<packaging>jar</packaging>
+		<name>Nutz</name>
+		<version>1.a.33</version>
+		<url>http://nutz.googlecode.com</url>
+		<!-- other info ...... -->
+	</project>
+	}}}
+	你可以在 [http://code.google.com/p/nutz/source/browse/trunk/META-INF/maven/org/nutz/pom.xml 这里找到]当前POM
+	
+如何使用
+	将Nutz加入你的POM
+	{{{
+	<dependency>org.nutz</groupId>
+		<artifactId>nutz</artifactId>
+		<version>1.a.33</version>
+	</dependency>
+	}}}
+	不要惊讶,我们已经将Nutz提交到maven中央仓库,你无需添加repository即可使用Nutz
+	
+Nutz使用Maven来构建的吗?
+	答案是否定的,我们现在仍在使用Ant进行构建.
