@@ -4,7 +4,7 @@
   <artifactId>nutz</artifactId>
   <packaging>jar</packaging>
   <name>Nutz</name>
-  <version>1.a.33</version>
+  <version>1.a.34-snapshot</version>
   <description>Nutz, which is a collections of lightweight frameworks, each of them can be used independently</description>
 
   <url>http://nutz.googlecode.com</url>
