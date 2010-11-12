@@ -21,7 +21,8 @@ Nutz的POM
 如何使用
 	将Nutz加入你的POM
 	{{{
-	<dependency>org.nutz</groupId>
+	<dependency>
+		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
 		<version>1.a.33</version>
 	</dependency>
