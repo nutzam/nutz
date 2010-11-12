@@ -719,7 +719,7 @@ public abstract class Lang {
 	 * 
 	 * @param col
 	 *            集合对象
-	 * @param classOfList
+	 * @param eleType
 	 *            列表类型
 	 * @return 列表对象
 	 */
