@@ -44,7 +44,7 @@
 	public class SpringDaoRunner implements DaoRunner {
 
 		public void run(DataSource dataSource, ConnCallback callback) {
-			Connection con = DataSourceUtils.getConnection(getDataSource());  
+			Connection con = DataSourceUtils.getConnection(dataSource);  
 			try {  
 				callback.invoke(con);  
 			}
@@ -54,7 +54,7 @@
 				else  
 					throw new RuntimeException(e);  
 			} finally {  
-				DataSourceUtils.releaseConnection(con, getDataSource());  
+				DataSourceUtils.releaseConnection(con, dataSource);
 			}  
 		}
 	}
