@@ -11,6 +11,7 @@ import org.nutz.mvc.upload.unit.UploadingUnitTest;
 import org.nutz.mvc.upload.util.BufferRingTest;
 import org.nutz.mvc.upload.util.RemountBytesTest;
 import org.nutz.mvc.view.AllView;
+import org.nutz.mvc.view.DefaultViewMakerTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({	PathNodeTest.class,
@@ -20,5 +21,6 @@ import org.nutz.mvc.view.AllView;
 						UploadingUnitTest.class,
 						JsonAdaptorTest.class,
 						AllInjector.class,
-						AllView.class})
+						AllView.class,
+						DefaultViewMakerTest.class})
 public class AllMvc {}

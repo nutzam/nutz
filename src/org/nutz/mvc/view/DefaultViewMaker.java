@@ -24,7 +24,7 @@ public class DefaultViewMaker implements ViewMaker {
 	public static final String VIEW_HTTP = "http";
 	public static final String VIEW_FORWARD = "forward";
 	public static final String VIEW_FORWARD2 = "->";
-	public static final String VIEW_STRING = "str";
+	public static final String VIEW_RAW = "raw";
 
 	public View make(Ioc ioc, String type, String value) {
 		type = type.toLowerCase();
@@ -45,7 +45,7 @@ public class DefaultViewMaker implements ViewMaker {
 			return ioc.get(View.class, value);
 		if (VIEW_HTTP.equals(type))
 			return new HttpStatusView(Integer.parseInt(value));
-		if (VIEW_STRING.equals(type))
+		if (VIEW_RAW.equals(type))
 			return new RawView(value);
 		return null;
 	}
