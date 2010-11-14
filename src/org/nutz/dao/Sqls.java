@@ -13,6 +13,7 @@ import org.nutz.dao.sql.QueryEntityCallback;
 import org.nutz.dao.sql.QueryIntCallback;
 import org.nutz.dao.sql.QueryLongCallback;
 import org.nutz.dao.sql.QueryRecordCallback;
+import org.nutz.dao.sql.QueryStringArrayCallback;
 import org.nutz.dao.sql.QueryStringCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
@@ -233,9 +234,16 @@ public class Sqls {
 		}
 
 		/**
-		 * @return 从 ResultSet 获得一个字符除数组的回调对象
+		 * @return 从 ResultSet 获得一个字符串数组的回调对象
 		 */
 		public SqlCallback strs() {
+			return new QueryStringArrayCallback();
+		}
+
+		/**
+		 * @return 从 ResultSet 获得一个字符串列表的回调对象
+		 */
+		public SqlCallback strList() {
 			return new QueryStringCallback();
 		}
 
