@@ -86,7 +86,7 @@ public class DefaultLoading implements Loading {
 		context.set("app.root", config.getAppRoot());
 		
 		if (log.isDebugEnabled()) {
-			log.debugf(">>\napp.root = %s", config.getAppRoot());
+			log.debugf(">> app.root = %s", config.getAppRoot());
 		}
 		
 		//载入环境变量

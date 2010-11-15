@@ -78,8 +78,4 @@ public class WebResourceScan extends AbstractResourceScan {
 		return list;
 	}
 
-	public boolean canWork() {
-		return false;
-	}
-
 }

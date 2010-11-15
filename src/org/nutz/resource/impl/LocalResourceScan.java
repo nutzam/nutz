@@ -54,10 +54,6 @@ public class LocalResourceScan extends AbstractResourceScan {
 		this.ignoreHidden = ignoreHidden;
 	}
 
-	public boolean canWork() {
-		return true;
-	}
-
 	public List<NutResource> list(String src, String filter) {
 		final List<NutResource> list = new LinkedList<NutResource>();
 		final Pattern regex = null == filter ? null : Pattern.compile(filter);

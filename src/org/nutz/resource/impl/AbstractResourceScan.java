@@ -13,11 +13,10 @@ import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.plugin.Plugin;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.ResourceScan;
 
-public abstract class AbstractResourceScan implements ResourceScan, Plugin {
+public abstract class AbstractResourceScan implements ResourceScan {
 
 	private static final Log log = Logs.getLog(AbstractResourceScan.class);
 
