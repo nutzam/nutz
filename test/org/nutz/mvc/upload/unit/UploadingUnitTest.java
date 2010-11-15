@@ -40,7 +40,7 @@ public class UploadingUnitTest {
 		/*
 		 * 准备临时文件池
 		 */
-		tmps = new NutFilePool("~/nutz/junit/uploadtmp");
+		tmps = new NutFilePool("~/nutz/unit/uploadtmp");
 	}
 
 	/**

@@ -29,7 +29,7 @@ public class UploadingSpeedTest {
 		}
 
 		final Uploading up = UploadUnit.TYPE.born();
-		final UploadingContext uc = UploadingContext.create("~/nutz/junit/uploadtmp");
+		final UploadingContext uc = UploadingContext.create("~/nutz/unit/uploadtmp");
 
 		File[] files = dir.listFiles();
 		final MockHttpServletRequest req = request().setInputStream(insmulti("UTF-8", files));

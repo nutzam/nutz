@@ -35,10 +35,7 @@
 		<fileset dir="${DEPHOME}" casesensitive="no">
 			<include name="*.jar" />
 		</fileset>
-		<pathelement location="${JAVA_HOME}/jre/javaws/javaws.jar" />
-		<pathelement location="${JAVA_HOME}/jre/lib/charsets.jar" />
-		<pathelement location="${JAVA_HOME}/jre/lib/rt.jar" />
-		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
+		<pathelement location="${JAVA_HOME}/lib/rt.jar" />
 	</path>
 
 	<target name="init">
