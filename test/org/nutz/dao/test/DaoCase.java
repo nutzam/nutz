@@ -2,7 +2,6 @@ package org.nutz.dao.test;
 
 import org.junit.After;
 import org.junit.Before;
-
 import org.nutz.Nutzs;
 import org.nutz.dao.Dao;
 import org.nutz.dao.test.meta.Pojos;
