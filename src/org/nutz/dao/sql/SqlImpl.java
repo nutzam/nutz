@@ -124,7 +124,7 @@ public class SqlImpl implements Sql, Cloneable {
 		}
 		// If any SQLException happend, throw out the SQL string
 		catch (SQLException e) {
-			throw new DaoException(format(	"!Nuz SQL Error: '%s'\nPreparedStatement: \n'%s'",
+			throw new DaoException(format(	"!Nutz SQL Error: '%s'\nPreparedStatement: \n'%s'",
 											sql.toString(),
 											sql.toPreparedStatementString()), e);
 		}

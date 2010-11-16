@@ -180,7 +180,7 @@ public class SqlLiteral implements Cloneable {
 			if (null == value) {
 				vs = "";
 			} else if (value instanceof String) {
-				vs = "'" + value.toString() + "'";
+				vs = "'" + value + "'";
 			} else {
 				vs = value.toString();
 			}
