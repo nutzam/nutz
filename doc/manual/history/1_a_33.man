@@ -82,12 +82,12 @@
 		 * [http://www.ibm.com/software/data/db2/ DB2]
 --------------------------------------------------------------------------------------------------------
 文档
-	 * [mvc/view.man 视图] : 添加两种新视图的描述(内部重定向视图/Raw视图)
+	 * [../mvc/view.man 视图] : 添加两种新视图的描述(内部重定向视图/Raw视图)
 	 * 修正文档中的一些字眼
-	 * [zdoc/ant_task.man 在Ant中使用zDoc] : 演示如何在Ant中使用zDoc
-	 * [appendix/case.man 案例] : 展示使用Nutz构建的网站/应用
-	 * [mvc/with_ioc.man#在容器对象里获得_ServletContext 同Ioc一起工作] : 在容器对象里获得 ServletContext
-	 * [appendix/work_with_maven.man] : 在Maven中使用Nutz
+	 * [../zdoc/ant_task.man 在Ant中使用zDoc] : 演示如何在Ant中使用zDoc
+	 * [../appendix/case.man 案例] : 展示使用Nutz构建的网站/应用
+	 * [../mvc/with_ioc.man#在容器对象里获得_ServletContext 同Ioc一起工作] : 在容器对象里获得 ServletContext
+	 * [../appendix/work_with_maven.man] : 在Maven中使用Nutz
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
 	贡献的种类:
