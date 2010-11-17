@@ -32,17 +32,13 @@ import org.nutz.plugin.Plugin;
  */
 public class Log4jLogAdapter implements LogAdapter, Plugin {
 
-	public static final String LOG4J_CLASS_NAME = "org.apache.log4j.Logger";
-
 	public boolean canWork() {
 		try {
-			Class.forName(LOG4J_CLASS_NAME, true, Thread.currentThread().getContextClassLoader());
+			Class.forName("org.apache.log4j.Logger", false, Thread.currentThread().getContextClassLoader());
+			return isPropertyFileConfigured();
 		}
-		catch (ClassNotFoundException e) {
-			return false;
-		}
-
-		return isPropertyFileConfigured();
+		catch (Throwable e) {}
+		return false;
 	}
 
 	final private boolean isPropertyFileConfigured() {

@@ -11,11 +11,11 @@ public abstract class AbstractLog implements Log {
 	protected boolean isDebugEnabled = false;
 	protected boolean isTraceEnabled = false;
 
-	protected static final int LEVEL_FATAL = 5;
-	protected static final int LEVEL_ERROR = 4;
-	protected static final int LEVEL_WARN = 3;
-	protected static final int LEVEL_INFO = 2;
-	protected static final int LEVEL_DEBUG = 1;
+	protected static final int LEVEL_FATAL = 50;
+	protected static final int LEVEL_ERROR = 40;
+	protected static final int LEVEL_WARN = 30;
+	protected static final int LEVEL_INFO = 20;
+	protected static final int LEVEL_DEBUG = 10;
 	protected static final int LEVEL_TRACE = 0;
 	
 

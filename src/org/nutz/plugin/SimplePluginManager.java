@@ -15,13 +15,15 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 	private List<Plugin> list = new ArrayList<Plugin>();
 
 	public SimplePluginManager(String... classNames) throws PluginException {
-		for (String className : classNames)
-			loadPlugin(className);
+		if (classNames != null)
+			for (String className : classNames)
+				loadPlugin(className);
 	}
 
 	public SimplePluginManager(Class<? extends T>... classNames) throws PluginException {
-		for (Class<? extends T> pluginClass : classNames)
-			loadPlugin(pluginClass);
+		if (classNames != null)
+			for (Class<? extends T> pluginClass : classNames)
+				loadPlugin(pluginClass);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -46,7 +48,7 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 			try {
 				list.add((Plugin) pluginClass.newInstance());
 			}
-			catch (Exception e) {
+			catch (Throwable e) {
 				throw new PluginException(pluginClass.getName(), e);
 			}
 	}
@@ -57,6 +59,6 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 			if (pluginClassName != null)
 				loadPlugin((Class<? extends T>) Lang.loadClass(pluginClassName));
 		}
-		catch (ClassNotFoundException e) {}
+		catch (Throwable e) {}
 	}
 }
