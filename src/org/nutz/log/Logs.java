@@ -54,8 +54,6 @@ public final class Logs {
 		try {
 			adapter = new SimplePluginManager<LogAdapter>(
 					"org.nutz.log.impl.Log4jLogAdapter",
-					"org.nutz.log.impl.JdkLogAdapter",
-					"org.nutz.log.impl.Slf4jLogAdapter",
 					"org.nutz.log.impl.SystemLogAdapter").get();
 		} catch (Throwable e) {
 			e.printStackTrace();

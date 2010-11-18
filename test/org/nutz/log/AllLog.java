@@ -5,6 +5,5 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(value = {Log4jTest.class,
-							 JdkLogAdapterTest.class,
 							 SystemLogAdapterTest.class})
 public class AllLog {}
