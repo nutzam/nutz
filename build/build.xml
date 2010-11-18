@@ -43,7 +43,9 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="utf-8">
+		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
+			source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="UTF-8" listfiles="on">  
+			<compilerarg value="-Xlint:all" /> 
 			<classpath refid="CLASSPATH" />
 		</javac>
 	</target>
