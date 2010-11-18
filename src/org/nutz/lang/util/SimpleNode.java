@@ -169,9 +169,16 @@ public class SimpleNode<T> implements Node<T> {
 				lastChild = node;
 			}
 		} else {
-			firstChild = (Node<T>) nodes[0];
-			firstChild.parent(this);
-			firstChild.next((Node<T>) nodes[1]);
+			Node<T> theNode = (Node<T>) nodes[0];
+			theNode.parent(this);
+			theNode.next((Node<T>) nodes[1]);
+			// 加入子节点链表
+			if (null == lastChild) {
+				firstChild = theNode;
+			} else {
+				lastChild.next(theNode);
+			}
+			// 循环添加
 			int i = 1;
 			for (; i < nodes.length - 1; i++) {
 				Node<T> node = (Node<T>) nodes[i];

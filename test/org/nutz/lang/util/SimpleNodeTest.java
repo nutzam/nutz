@@ -8,6 +8,12 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * SimpleNode 的测试类
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wei li(piziss.lw@gmail.com)
+ */
 public class SimpleNodeTest {
 
 	private static Node<String> n(String s) {
@@ -106,6 +112,32 @@ public class SimpleNodeTest {
 		assertEquals(C, children.get(2));
 		assertEquals(D, children.get(3));
 		assertEquals(E, children.get(4));
+	}
+
+	/**
+	 * By wei li <piziss.lw@gmail.com>
+	 * For issue 324 
+	 */
+	@Test
+	public void testAdd() {
+		root.add(B);
+		assertEquals(B, root.firstChild());
+		assertEquals(B, root.lastChild());
+		List<Node<String>> ans = root.getChildren();
+		assertEquals(B, ans.get(0));
+
+		root.clearChildren();
+		assertFalse(root.hasChild());
+
+		root.add(A, B).add(C, D).add(E);
+		assertEquals(A, root.firstChild());
+		assertEquals(E, root.lastChild());
+		ans = root.getChildren();
+		assertEquals(A, ans.get(0));
+		assertEquals(B, ans.get(1));
+		assertEquals(C, ans.get(2));
+		assertEquals(D, ans.get(3));
+		assertEquals(E, ans.get(4));
 	}
 
 	@Test
