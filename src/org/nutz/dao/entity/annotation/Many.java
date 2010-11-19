@@ -8,7 +8,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 声明一条多对多映射，这个声明需要你输入三个参数，其中一个是可选的:
+ * 声明一条一对多映射，这个声明需要你输入三个参数，其中一个是可选的:
  * <ul>
  * <li><b>target</b>: 你的这个字段对应的实体类。通常，这个类得是你的字段的一个子类或者实现类。或者它能够顺利的通过 Nutz.castor
  * 转换成 你的字段
