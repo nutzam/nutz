@@ -40,7 +40,7 @@
 	 * field 表示你打算依靠{*目标对象}的哪一个字段来映射本对象的主键
 	
 	因此：
-	 * 目标 POJO 类 （{#A00;Pet}）中{*必须}存在一个字段，本 POJO 将通过该字段同目标 [primary_key.man POJO 类的主键]关联
+	 * 目标 POJO 类 （{#A00;Pet}）中{*必须}存在一个字段，用来同本 POJO [primary_key.man POJO 类的主键]关联
 		 * {#F00;*还要注意}，这里的名称是 目标 POJO 的 {*JAVA} 字段的名称。
 		 * {#F00;*注意}，这里是大小写敏感的。
 	 * 该字段必须同本 [primary_key.man POJO 类的主键]类型相同
