@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 import org.nutz.dao.DB;
 
 /**
- * 为 '@Next' 以及 '@Default' 注解声明的可执行 SQL。
+ * 为 '@Next' 以及 '@Prev' 注解声明的可执行 SQL。
  * <p>
  * 支持两个属性：
  * <p>
