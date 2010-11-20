@@ -64,6 +64,10 @@ public class UploadAdaptor extends AbstractAdaptor {
 															.getParent(), 2000));
 	}
 
+	public UploadAdaptor(UploadingContext context) {
+		this.context = context;
+	}
+
 	public UploadAdaptor(String path) {
 		context = new UploadingContext(path);
 	}
@@ -91,7 +95,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 		context.setCharset(charset);
 		context.setMaxFileSize(maxFileSize);
 	}
-	
+
 	public UploadingContext getContext() {
 		return context;
 	}
