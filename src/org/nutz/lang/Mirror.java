@@ -272,11 +272,11 @@ public class Mirror<T> {
 			try {
 				return klass.getMethod(setterName, paramType);
 			}
-			catch (RuntimeException e) {
+			catch (Throwable e) {
 				try {
 					return klass.getMethod(fieldName, paramType);
 				}
-				catch (RuntimeException e1) {
+				catch (Throwable e1) {
 					Mirror<?> type = Mirror.me(paramType);
 					for (Method method : klass.getMethods()) {
 						if (method.getParameterTypes().length == 1)
@@ -287,11 +287,17 @@ public class Mirror<T> {
 									return method;
 							}
 					}
+					//还是没有? 会不会是包装类型啊?
+					if (!paramType.isPrimitive()) {
+						Class<?> p = unWrapper();
+						if (null != p)
+							return getSetter(fieldName, p);
+					}
 					throw new RuntimeException();
 				}
 			}
 		}
-		catch (RuntimeException e) {
+		catch (Throwable e) {
 			throw Lang.makeThrow(	NoSuchMethodException.class,
 									"Fail to find setter for [%s]->[%s(%s)]",
 									klass.getName(),
@@ -1092,7 +1098,7 @@ public class Mirror<T> {
 	 *            类型
 	 * @return 否为一个对象的外覆类
 	 */
-	public boolean isWrpperOf(Class<?> type) {
+	public boolean isWrapperOf(Class<?> type) {
 		try {
 			return Mirror.me(type).getWrapperClass() == klass;
 		}
@@ -1346,5 +1352,31 @@ public class Mirror<T> {
 			if (f.isAnnotationPresent(ann))
 				return f;
 		return null;
+	}
+	
+	public Class<?> unWrapper(){
+		return TypeMapping2.get(klass);
+	}
+
+//	private static final Map<Class<?>, Class<?>> TypeMapping = new HashMap<Class<?>, Class<?>>();
+	private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
+	static {
+//		TypeMapping.put(short.class, Short.class);
+//		TypeMapping.put(int.class, Integer.class);
+//		TypeMapping.put(long.class, Long.class);
+//		TypeMapping.put(double.class, Double.class);
+//		TypeMapping.put(float.class, Float.class);
+//		TypeMapping.put(byte.class, Byte.class);
+//		TypeMapping.put(char.class, Character.class);
+//		TypeMapping.put(boolean.class, Boolean.class);
+		
+		TypeMapping2.put(Short.class, short.class);
+		TypeMapping2.put(Integer.class, int.class);
+		TypeMapping2.put(Long.class, long.class);
+		TypeMapping2.put(Double.class, double.class);
+		TypeMapping2.put(Float.class, float.class);
+		TypeMapping2.put(Byte.class, byte.class);
+		TypeMapping2.put(Character.class, char.class);
+		TypeMapping2.put(Boolean.class, boolean.class);
 	}
 }

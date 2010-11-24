@@ -69,9 +69,9 @@ public class MirrorTest {
 
 	@Test
 	public void testWrapper() {
-		assertTrue(Mirror.me(Integer.class).isWrpperOf(int.class));
-		assertFalse(Mirror.me(Integer.class).isWrpperOf(float.class));
-		assertTrue(Mirror.me(Float.class).isWrpperOf(float.class));
+		assertTrue(Mirror.me(Integer.class).isWrapperOf(int.class));
+		assertFalse(Mirror.me(Integer.class).isWrapperOf(float.class));
+		assertTrue(Mirror.me(Float.class).isWrapperOf(float.class));
 	}
 
 	@Test
@@ -368,6 +368,23 @@ public class MirrorTest {
 		Mirror.me(SV.class).setValue(sv, "cc", null);
 		assertEquals(0, sv.id);
 		assertEquals(0, (int) sv.cc);
+		
+		ClassC c = new ClassC();
+		Mirror.me(ClassC.class).setValue(c, "id", 1);
+		assertEquals(1, c.getId());
+	}
+	
+	public static class ClassC {
+		
+		private int x;
+		
+		public void setId(int id) {
+			this.x = id;
+		}
+		
+		public int getId() {
+			return x;
+		}
 	}
 
 	@Test
