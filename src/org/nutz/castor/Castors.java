@@ -1,5 +1,7 @@
 package org.nutz.castor;
 
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -11,6 +13,7 @@ import java.util.Map.Entry;
 
 import org.nutz.castor.castor.Array2Array;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Streams;
 import org.nutz.lang.TypeExtractor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -147,51 +150,65 @@ public class Castors {
 		}
 		// build castors
 		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
+		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
 			if (baseClass == null)
 				continue;
 			List<Class<?>> list = Scans.me().scanPackage(baseClass);
-			if (null == list || list.size() == 0)
-				continue;
-			for (Class<?> klass : list) {
-				try {
-					if (Modifier.isAbstract(klass.getModifiers()))
-						continue;
-					if (!Castor.class.isAssignableFrom(klass))
-						continue;
-					Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-					Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
-					if (null == map2) {
-						map2 = new HashMap<String, Castor<?, ?>>();
-						this.map.put(castor.getFromClass().getName(), map2);
-					}
-					if (!map2.containsKey(castor.getToClass().getName())) {
-						Method m = settingMap.get(castor.getClass());
-						if (null == m) {
-							for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
-								Class<?> cc = entry.getKey();
-								if (cc.isAssignableFrom(klass)) {
-									m = settingMap.get(cc);
-									break;
-								}
+			if (null != list && list.size() > 0)
+				classes.addAll(list);
+		}
+		//一个类都找不到,好吧,加载默认的,从文件读取列表
+		if (classes.size() == 0) {
+			if (log.isWarnEnabled()) {
+				log.warn("!!No castor found!!!!!!!!! Load default castor list");
+			}
+			try {
+				InputStream is = getClass().getResourceAsStream("/org/nutz/castor/default-castors.txt");
+				String str = Streams.readAndClose(new InputStreamReader(is));
+				is.close();
+				String[] classNames = str.split("\\n");
+				for (String className : classNames) {
+					classes.add(Class.forName("org.nutz.castor.castor."+className.trim()));
+				}
+			} catch (Throwable e) {}
+		}
+		for (Class<?> klass : classes) {
+			try {
+				if (Modifier.isAbstract(klass.getModifiers()))
+					continue;
+				if (!Castor.class.isAssignableFrom(klass))
+					continue;
+				Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
+				Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
+				if (null == map2) {
+					map2 = new HashMap<String, Castor<?, ?>>();
+					this.map.put(castor.getFromClass().getName(), map2);
+				}
+				if (!map2.containsKey(castor.getToClass().getName())) {
+					Method m = settingMap.get(castor.getClass());
+					if (null == m) {
+						for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
+							Class<?> cc = entry.getKey();
+							if (cc.isAssignableFrom(klass)) {
+								m = settingMap.get(cc);
+								break;
 							}
 						}
-						if (null != m)
-							m.invoke(setting, castor);
-						map2.put(castor.getToClass().getName(), castor);
 					}
+					if (null != m)
+						m.invoke(setting, castor);
+					map2.put(castor.getToClass().getName(), castor);
 				}
-				catch (Throwable e) {
-					if (log.isWarnEnabled())
-						log.warnf("Fail to create castor [%s] because: %s", klass, e.getMessage());
-				}
+			}
+			catch (Throwable e) {
+				if (log.isWarnEnabled())
+					log.warnf("Fail to create castor [%s] because: %s", klass, e.getMessage());
 			}
 		}
 		if (log.isDebugEnabled())
 			log.debugf("Using %d castor for Castors",map.size());
-		if (map.size() == 0 && log.isErrorEnabled())
-			log.error("!!No castor found!!!!!!!!!");
 	}
 
 	/**

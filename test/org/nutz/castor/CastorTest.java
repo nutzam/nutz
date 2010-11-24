@@ -1,6 +1,9 @@
 package org.nutz.castor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -386,5 +389,12 @@ public class CastorTest {
 		assertEquals(c1.get(Calendar.HOUR_OF_DAY), c2.get(Calendar.HOUR_OF_DAY));
 		assertEquals(c1.get(Calendar.MINUTE), c2.get(Calendar.MINUTE));
 		assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
+	}
+	
+	
+	@Test
+	public void load_form_nowhere(){
+		Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
+		castors.castTo(1, Long.class);
 	}
 }
