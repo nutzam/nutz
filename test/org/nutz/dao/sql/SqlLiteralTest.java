@@ -2,6 +2,8 @@ package org.nutz.dao.sql;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
+
 import org.junit.Test;
 
 public class SqlLiteralTest {
@@ -9,7 +11,48 @@ public class SqlLiteralTest {
 	private static SqlLiteral L(String s) {
 		return new SqlLiteral().valueOf(s);
 	}
-	
+
+	@Test
+	public void test_chinese_var_name() {
+		SqlLiteral sql = L("INSERT INTO t_chin(名称,描述) VALUES($名,$述)");
+		assertEquals(2, sql.getVarIndexes().size());
+		Iterator<String> nms = sql.getVarIndexes().names().iterator();
+		assertEquals("名", nms.next());
+		assertEquals("述", nms.next());
+
+		String expect = "INSERT INTO t_chin(名称,描述) VALUES(,)";
+		assertEquals(expect, sql.toPreparedStatementString());
+		sql.getVars().set("名", "老张");
+		sql.getVars().set("述", "很棒");
+		expect = "INSERT INTO t_chin(名称,描述) VALUES(老张,很棒)";
+		assertEquals(expect, sql.toString());
+	}
+
+	@Test
+	public void test_chinese_param_name() {
+		SqlLiteral sql = L("INSERT INTO t_chin(名称,描述) VALUES(@名,@述)");
+		assertEquals(2, sql.getParamIndexes().size());
+		Iterator<String> nms = sql.getParamIndexes().names().iterator();
+		assertEquals("名", nms.next());
+		assertEquals("述", nms.next());
+
+		String expect = "INSERT INTO t_chin(名称,描述) VALUES(?,?)";
+		assertEquals(expect, sql.toPreparedStatementString());
+		sql.getParams().set("名", "老张");
+		sql.getParams().set("述", "很棒");
+		expect = "INSERT INTO t_chin(名称,描述) VALUES('老张','很棒')";
+		assertEquals(expect, sql.toString());
+	}
+
+	@Test
+	public void test_name_with_underline() {
+		SqlLiteral sql = L("@a_1:$a_1");
+		sql.getParams().set("a_1", "A");
+		sql.getVars().set("a_1", "B");
+		assertEquals("'A':B", sql.toString());
+		assertEquals("?:B", sql.toPreparedStatementString());
+	}
+
 	@Test
 	public void test_simple() {
 		SqlLiteral sql = L("A$a B@a C@b D$condition");

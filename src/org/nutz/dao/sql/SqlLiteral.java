@@ -119,14 +119,17 @@ public class SqlLiteral implements Cloneable {
 	private int readTokenName(char[] cs, int i, StringBuilder sb) {
 		for (++i; i < cs.length; i++) {
 			int b = (int) cs[i];
-			if (b == '_'
-				|| b == '-'
-				|| (b >= 48 && b <= 57)
-				|| (b >= 65 && b <= 90)
-				|| (b >= 97 && b <= 122))
+			// Special case for underline ('_')
+			if (b == 95) {
 				sb.append((char) b);
-			else
+			} else if ((b >= 0 && b <= 47)
+						|| (b >= 58 && b <= 64)
+						|| (b >= 91 && b <= 96)
+						|| (b >= 123 && b <= 160)) {
 				break;
+			} else {
+				sb.append((char) b);
+			}
 		}
 		return i - 1;
 	}
