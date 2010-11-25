@@ -26,6 +26,16 @@
  	* 你可以为 NutFilter 设置参数 "ignore"，来重新设置这个正则表达式
  	* 如果你的值是 "null" （不区分大小写），所有的请求都会转发到 Nutz.mvc 进行处理
  	* 如果 Nutz.mvc 没有找到合适入口函数处理,将会继续 chain.doFilter
+ 	
+ 	注意,如果你使用[view.man Forward视图],请这样写filter-mapping
+ 	{{{
+ 	<filter-mapping>
+    	<filter-name>nutz</filtername>
+    	<url-pattern>/*</url-pattern>
+    	<dispatcher>REQUEST</dispatcher>
+    	<dispatcher>FORWARD</dispatcher>
+	</filter-mapping>
+ 	}}}
 
 比较传统的方式
 	{{{<xml>
