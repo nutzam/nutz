@@ -56,6 +56,6 @@ public class FieldMeta {
 	}
 
 	public boolean isFile() {
-		return null != getContentType() && null != getFileLocalPath();
+		return null != getFileLocalPath();
 	}
 }
