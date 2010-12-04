@@ -72,7 +72,7 @@ class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 									"org/nutz/aop/InterceptorChain",
 									"getReturn",
 									"()Ljava/lang/Object;");
-				checkCast();
+				AsmHelper.checkCast(returnType,mv);
 				returnIt();
 			}
 		}
@@ -106,7 +106,7 @@ class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 			Type t = argumentTypes[i];
 			loadInsn(t, index);
 			index += t.getSize();
-			packagePrivateData(t);
+			AsmHelper.packagePrivateData(t,mv);
 			mv.visitInsn(AASTORE);
 		}
 	}
@@ -116,121 +116,6 @@ class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 			mv.visitInsn(i + ICONST_0);
 		} else {
 			mv.visitIntInsn(BIPUSH, i);
-		}
-	}
-
-	protected boolean packagePrivateData(Type type) {
-		if (type.equals(Type.BOOLEAN_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"java/lang/Boolean",
-								"valueOf",
-								"(Z)Ljava/lang/Boolean;");
-		} else if (type.equals(Type.BYTE_TYPE)) {
-			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
-		} else if (type.equals(Type.CHAR_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"java/lang/Character",
-								"valueOf",
-								"(C)Ljava/lang/Character;");
-		} else if (type.equals(Type.SHORT_TYPE)) {
-			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
-		} else if (type.equals(Type.INT_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"java/lang/Integer",
-								"valueOf",
-								"(I)Ljava/lang/Integer;");
-		} else if (type.equals(Type.LONG_TYPE)) {
-			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
-		} else if (type.equals(Type.FLOAT_TYPE)) {
-			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
-		} else if (type.equals(Type.DOUBLE_TYPE)) {
-			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
-		} else {
-			return false;
-		}
-		return true;
-	}
-
-	protected void unpackagePrivateData(Type type) {
-		if (type.equals(Type.BOOLEAN_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Boolean;)Z");
-		} else if (type.equals(Type.BYTE_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Byte;)B");
-		} else if (type.equals(Type.CHAR_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Character;)C");
-		} else if (type.equals(Type.SHORT_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Short;)S");
-		} else if (type.equals(Type.INT_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Integer;)I");
-		} else if (type.equals(Type.LONG_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Long;)J");
-		} else if (type.equals(Type.FLOAT_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Float;)F");
-		} else if (type.equals(Type.DOUBLE_TYPE)) {
-			mv.visitMethodInsn(	INVOKESTATIC,
-								"org/nutz/aop/asm/Helper",
-								"valueOf",
-								"(Ljava/lang/Double;)D");
-		}
-	}
-
-	protected boolean isObject = true;
-
-	protected void checkCast() {
-		if (returnType.getSort() == Type.ARRAY) {
-			mv.visitTypeInsn(CHECKCAST, returnType.getDescriptor());
-			return;
-		}
-		if (returnType.equals(Type.getType(Object.class))) {
-		} else {
-			if (returnType.getOpcode(IRETURN) != ARETURN) {
-				checkCast2();
-				unpackagePrivateData(returnType);
-				isObject = false;
-			} else {
-				mv.visitTypeInsn(CHECKCAST, returnType.getClassName().replace('.', '/'));
-			}
-		}
-	}
-
-	protected void checkCast2() {
-		if (returnType.equals(Type.BOOLEAN_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Boolean");
-		} else if (returnType.equals(Type.BYTE_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Byte");
-		} else if (returnType.equals(Type.CHAR_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Character");
-		} else if (returnType.equals(Type.SHORT_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Short");
-		} else if (returnType.equals(Type.INT_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Integer");
-		} else if (returnType.equals(Type.LONG_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Long");
-		} else if (returnType.equals(Type.FLOAT_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Float");
-		} else if (returnType.equals(Type.DOUBLE_TYPE)) {
-			mv.visitTypeInsn(CHECKCAST, "java/lang/Double");
 		}
 	}
 

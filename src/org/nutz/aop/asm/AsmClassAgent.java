@@ -1,6 +1,5 @@
 package org.nutz.aop.asm;
 import java.io.File;
-import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.List;
@@ -8,10 +7,10 @@ import java.util.List;
 import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
-import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.lang.Files;
-import org.nutz.lang.Streams;
+import org.nutz.lang.Lang;
 import org.nutz.log.Logs;
+import org.nutz.repo.org.objectweb.asm.Opcodes;
 
 /**
  * 
@@ -25,26 +24,9 @@ public class AsmClassAgent extends AbstractClassAgent {
 	private static final boolean debug = false;
 
 	static {
-		// 判断编译等级
-		InputStream is = null;
-		try {
-			String classFileName = AsmClassAgent.class.getName().replace('.', '/') + ".class";
-			is = AsmClassAgent.class.getResourceAsStream(classFileName);
-			if (is == null)
-				is = AsmClassAgent.class.getResourceAsStream("/"+classFileName);
-			if (is != null && is.available() > 8) {
-				is.skip(7);
-				switch (is.read()) {
-				case 50: // Java 1.6
-					CLASS_LEVEL = Opcodes.V1_6;
-				}
-			}
-		}
-		catch (Throwable e) {}
-		finally {
-			Streams.safeClose(is);
-			Logs.getLog(AsmClassAgent.class).debugf("AsmClassAgent will define class in Version %s",CLASS_LEVEL);
-		}
+		if (Lang.isJDK6())
+			CLASS_LEVEL = Opcodes.V1_6;
+		Logs.getLog(AsmClassAgent.class).debugf("AsmClassAgent will define class in Version %s",CLASS_LEVEL);
 	}
 
 	@SuppressWarnings("unchecked")

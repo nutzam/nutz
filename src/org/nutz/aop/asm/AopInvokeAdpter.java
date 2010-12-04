@@ -43,7 +43,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
 				visitX(j);
 				mv.visitInsn(AALOAD);
 				returnType = args[j];
-				checkCast();
+				AsmHelper.checkCast(returnType,mv);
 			}
 			mv.visitMethodInsn(	INVOKESPECIAL,
 								enhancedSuperName,
@@ -54,7 +54,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
 				if (returnType.equals(Type.VOID_TYPE))
 					mv.visitInsn(ACONST_NULL);
 				else if (returnType.getOpcode(IRETURN) != ARETURN)
-					packagePrivateData(returnType);
+					AsmHelper.packagePrivateData(returnType,mv);
 				mv.visitInsn(ARETURN);
 			}
 			mv.visitLabel(l0);

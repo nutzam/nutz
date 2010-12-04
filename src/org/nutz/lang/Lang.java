@@ -18,8 +18,8 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Set;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -1418,5 +1418,28 @@ public abstract class Lang {
 		catch (ClassNotFoundException e) {
 			return Class.forName(className);
 		}
+	}
+
+	// 判断编译等级
+	public static boolean isJDK6() {
+		InputStream is = null;
+		try {
+			String classFileName = Lang.class.getName().replace('.', '/') + ".class";
+			is = Lang.class.getResourceAsStream(classFileName);
+			if (is == null)
+				is = Lang.class.getResourceAsStream("/"+classFileName);
+			if (is != null && is.available() > 8) {
+				is.skip(7);
+				switch (is.read()) {
+				case 50: // Java 1.6
+					return true;
+				}
+			}
+		}
+		catch (Throwable e) {}
+		finally {
+			Streams.safeClose(is);
+		}
+		return false;
 	}
 }
