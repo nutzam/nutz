@@ -25,9 +25,8 @@ public class JNDI_Value implements ValueProxy{
 	public Object get(IocMaking ing) {
 		try {
 			if (cntxt == null)
-				cntxt = new InitialContext();
-			cntxt.lookup(jndiName);
-			return null;
+				cntxt = (Context)new InitialContext().lookup("java:/comp/env");
+			return cntxt.lookup(jndiName);
 		}
 		catch (NamingException e) {
 			throw Lang.wrapThrow(e);
