@@ -79,9 +79,9 @@ public class AnnotationIocLoader implements IocLoader {
 			if (!Strings.isBlank(iocBean.create()))
 				eventSet.setCreate(iocBean.create().trim().intern());
 			if (!Strings.isBlank(iocBean.depose()))
-				eventSet.setCreate(iocBean.depose().trim().intern());
+				eventSet.setDepose(iocBean.depose().trim().intern());
 			if (!Strings.isBlank(iocBean.fetch()))
-				eventSet.setCreate(iocBean.fetch().trim().intern());
+				eventSet.setFetch(iocBean.fetch().trim().intern());
 
 			// 处理字段(以@Inject方式,位于字段)
 			List<String> fieldList = new ArrayList<String>();
@@ -150,8 +150,11 @@ public class AnnotationIocLoader implements IocLoader {
 
 	protected IocValue convert(String value) {
 		IocValue iocValue = new IocValue();
-		iocValue.setType(value.substring(0, value.indexOf(":")));
-		iocValue.setValue(value.substring(value.indexOf(":") + 1));
+		if (value.indexOf(':') > -1) {
+			iocValue.setType(value.substring(0, value.indexOf(":")));
+			iocValue.setValue(value.substring(value.indexOf(":") + 1));
+		} else
+			iocValue.setValue(value);
 		return iocValue;
 	}
 
