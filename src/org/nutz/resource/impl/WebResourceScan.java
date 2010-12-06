@@ -48,11 +48,14 @@ public class WebResourceScan extends AbstractResourceScan {
 		// 忽略隐藏文件，以不能被 filter 匹配的项目
 		// 返回的 NutResource 对象，都是以 classes 目录为根
 		File dir = Files.findFile(src);
+		boolean flag = true;
 		if (null != dir && dir.exists()) {
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
-			int pos = dirPath.indexOf(src2);
+			System.out.println(src2);
+			System.out.println(dirPath);
+			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);
 			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
 
 			// 那么很好，深层递归一下吧
@@ -65,16 +68,33 @@ public class WebResourceScan extends AbstractResourceScan {
 				if (name.indexOf(base) > -1)
 					nutResource.setName(name.substring(base.length()));
 				list.add(nutResource);
+				flag = false;
 			}
 		}
-		// 目录不存在
-		else {
-			if (log.isInfoEnabled())
+		// 目录不存在,或者里面没有任何文件
+		if (flag) {
+			flag = true;
+			try{
+				if (!src.startsWith("/")) {
+					String base = sc.getRealPath("/WEB-INF/classes/");
+					String path = sc.getRealPath("/WEB-INF/classes/"+src);
+					if (path != null){
+						List<NutResource> list2 = scanInDir(regex, base, new File(path), true);
+						for (NutResource nutResource : list2) {
+							String name = nutResource.getName();
+							if (name.indexOf(base) > -1)
+								nutResource.setName(name.substring(base.length()));
+							list.add(nutResource);
+							flag = false;
+						}
+					}
+				}
+			}catch (Throwable e) {}
+		}
+		if (flag && log.isInfoEnabled())
 				log.infof(	"Fail to found '%s' in /WEB-INF/classes of context [%s]",
 							src,
 							sc.getServletContextName());
-		}
-
 		return list;
 	}
 
