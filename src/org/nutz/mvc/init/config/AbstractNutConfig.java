@@ -1,5 +1,9 @@
 package org.nutz.mvc.init.config;
 
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -26,6 +30,10 @@ public abstract class AbstractNutConfig implements NutConfig {
 
 	public Object getAttribute(String name) {
 		return this.getServletContext().getAttribute(name);
+	}
+
+	public List<String> getAttributeNames() {
+		return enum2list(this.getServletContext().getAttributeNames());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -61,6 +69,11 @@ public abstract class AbstractNutConfig implements NutConfig {
 
 	public AtMap atMap() {
 		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
+	}
+
+	@SuppressWarnings({"unchecked", "rawtypes"})
+	protected List<String> enum2list(Enumeration enums) {
+		return Lang.enum2collection(enums, new ArrayList<String>());
 	}
 
 }

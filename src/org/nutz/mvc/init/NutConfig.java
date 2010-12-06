@@ -1,5 +1,7 @@
 package org.nutz.mvc.init;
 
+import java.util.List;
+
 import javax.servlet.ServletContext;
 
 import org.nutz.ioc.Ioc;
@@ -39,6 +41,13 @@ public interface NutConfig {
 	String getInitParameter(String name);
 
 	/**
+	 * 获取配置参数的名称列表
+	 * 
+	 * @return 配置参数的名称列表
+	 */
+	List<String> getInitParameterNames();
+
+	/**
 	 * 获取上下文环境中的属性对象
 	 * 
 	 * @param name
@@ -47,6 +56,13 @@ public interface NutConfig {
 	 * @return 值
 	 */
 	Object getAttribute(String name);
+
+	/**
+	 * 获取上下文环境中属性名称的列表
+	 * 
+	 * @return 属性名称列表
+	 */
+	List<String> getAttributeNames();
 
 	/**
 	 * 获取上下文环境中的属性对象，并自动转成指定类型

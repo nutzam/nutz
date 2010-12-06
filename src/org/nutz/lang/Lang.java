@@ -1360,6 +1360,21 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 将枚举对象，变成集合
+	 * 
+	 * @param enums
+	 *            枚举对象
+	 * @param cols
+	 *            集合对象
+	 * @return 集合对象
+	 */
+	public static <T extends Collection<E>, E> T enum2collection(Enumeration<E> enums, T cols) {
+		while (enums.hasMoreElements())
+			cols.add(enums.nextElement());
+		return cols;
+	}
+
+	/**
 	 * 将字符数组强制转换成字节数组。如果字符为双字节编码，则会丢失信息
 	 * 
 	 * @param cs
@@ -1427,7 +1442,7 @@ public abstract class Lang {
 			String classFileName = Lang.class.getName().replace('.', '/') + ".class";
 			is = Lang.class.getResourceAsStream(classFileName);
 			if (is == null)
-				is = Lang.class.getResourceAsStream("/"+classFileName);
+				is = Lang.class.getResourceAsStream("/" + classFileName);
 			if (is != null && is.available() > 8) {
 				is.skip(7);
 				switch (is.read()) {

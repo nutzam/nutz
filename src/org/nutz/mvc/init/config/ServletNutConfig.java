@@ -1,5 +1,7 @@
 package org.nutz.mvc.init.config;
 
+import java.util.List;
+
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
@@ -22,6 +24,10 @@ public class ServletNutConfig extends AbstractNutConfig {
 
 	public String getInitParameter(String name) {
 		return config.getInitParameter(name);
+	}
+
+	public List<String> getInitParameterNames() {
+		return enum2list(config.getInitParameterNames());
 	}
 
 	public String getAppName() {
