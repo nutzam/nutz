@@ -188,8 +188,11 @@ public class NutDao implements Dao {
 	 * </pre>
 	 */
 	public void setDataSource(DataSource dataSource) {
-		if (dataSource == null)
-			throw Lang.makeThrow("!!dataSource is NULL!!!");
+		if (dataSource == null) {
+			if (log.isWarnEnabled())
+				log.warn("NULL DataSource!");
+			throw new NullPointerException("!!dataSource is NULL!!!");
+		}
 		if (null == entityMaker)
 			entities = new EntityHolder(new DefaultEntityMaker());
 		this.dataSource = dataSource;
@@ -809,7 +812,7 @@ public class NutDao implements Dao {
 				try {
 					stat = conn.createStatement();
 					// 增加不等式,减少sql执行时间
-					String sql = "SELECT count(*) FROM " + tableName + " where 1!=1";
+					String sql = "SELECT COUNT(1) FROM " + tableName + " where 1!=1";
 					rs = stat.executeQuery(sql);
 					if (rs.next())
 						ee[0] = true;
