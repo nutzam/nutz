@@ -279,10 +279,8 @@ public abstract class Files {
 	 * @param path
 	 *            文件路径，可以以 ~ 开头，也可以是 CLASSPATH 下面的路径
 	 * @return 文件对象
-	 * @throws IOException
-	 *             创建失败
 	 */
-	public static File createDirIfNoExists(String path) throws IOException {
+	public static File createDirIfNoExists(String path) {
 		String thePath = Disks.absolute(path);
 		if (null == thePath)
 			thePath = Disks.normalize(path);
