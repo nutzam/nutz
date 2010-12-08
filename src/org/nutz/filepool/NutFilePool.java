@@ -23,12 +23,8 @@ public class NutFilePool implements FilePool {
 		}
 
 		this.size = size;
-		try {
-			home = Files.createDirIfNoExists(homePath);
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
+		this.home = Files.createDirIfNoExists(homePath);
+
 		if (null == home) {
 			home = new File(homePath);
 			Files.makeDir(home);
