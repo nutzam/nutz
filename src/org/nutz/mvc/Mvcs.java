@@ -288,7 +288,7 @@ public abstract class Mvcs {
 	public static void write(HttpServletResponse resp, Object obj, JsonFormat format)
 			throws IOException {
 		resp.setHeader("Cache-Control", "no-cache");
-		resp.setContentType("application/x-javascript");
+		resp.setContentType("text/plain");
 
 		// by mawm 改为直接采用resp.getWriter()的方式直接输出!
 		Json.toJson(resp.getWriter(), obj, format);
