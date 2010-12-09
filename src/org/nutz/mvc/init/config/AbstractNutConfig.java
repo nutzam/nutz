@@ -1,7 +1,7 @@
 package org.nutz.mvc.init.config;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.castor.Castors;
@@ -71,9 +71,11 @@ public abstract class AbstractNutConfig implements NutConfig {
 		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	protected List<String> enum2list(Enumeration enums) {
-		return Lang.enum2collection(enums, new ArrayList<String>());
+	protected List<String> enum2list(Enumeration<?> enums) {
+		LinkedList<String> re = new LinkedList<String>();
+		while (enums.hasMoreElements())
+			re.add(enums.nextElement().toString());
+		return re;
 	}
 
 }

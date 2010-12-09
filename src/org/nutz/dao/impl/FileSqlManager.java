@@ -1,13 +1,12 @@
 package org.nutz.dao.impl;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
 
 import org.nutz.lang.Lang;
+import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 public class FileSqlManager extends AbstractSqlManager {
@@ -30,13 +29,13 @@ public class FileSqlManager extends AbstractSqlManager {
 	}
 
 	public void refresh() {
-		List<InputStream> list = Scans.me().loadResource(regex, paths);
+		List<NutResource> list = Scans.me().loadResource(regex, paths);
 		_sql_map = new HashMap<String, String>();
-		for (InputStream ins : list) {
-			Reader r = new InputStreamReader(ins);
+		for (NutResource ins : list) {
 			try {
-				loadSQL(r);
-			} catch (IOException e) {
+				loadSQL(new InputStreamReader(ins.getInputStream()));
+			}
+			catch (IOException e) {
 				throw Lang.wrapThrow(e);
 			}
 		}

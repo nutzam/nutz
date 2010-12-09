@@ -28,6 +28,7 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -64,8 +65,9 @@ public class XmlIocLoader implements IocLoader {
 		try {
 			DocumentBuilder builder = Lang.xmls();
 			Document document;
-			List<InputStream> list = Scans.me().loadResource(".+[.]xml$", fileNames);
-			for (InputStream ins : list) {
+			List<NutResource> list = Scans.me().loadResource(".+[.]xml$", fileNames);
+			for (NutResource nr : list) {
+				InputStream ins = nr.getInputStream();
 				document = builder.parse(ins);
 				document.normalizeDocument();
 				NodeList nodeListZ = ((Element) document.getDocumentElement()).getChildNodes();

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,6 +20,23 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
 
 public class ScansTest {
+
+	@Test
+	public void test_loadResource() throws IOException {
+		String RNAME = "junit/runner/Version.class";
+
+		List<NutResource> nrs = Scans.me().loadResource(".*.class", RNAME);
+		assertEquals(1, nrs.size());
+		NutResource nr = nrs.get(0);
+		assertTrue(nr.getName().indexOf(RNAME) >= 0);
+		InputStream ins = nr.getInputStream();
+		int len = 0;
+		while (-1 != ins.read()) {
+			len++;
+		}
+		ins.close();
+		assertTrue(len > 600);
+	}
 
 	@Test
 	public void test_in_normal_file() throws IOException {
@@ -59,7 +77,7 @@ public class ScansTest {
 		assertEquals(1, list.size());
 	}
 
-	//@Ignore
+	// @Ignore
 	@Test
 	public void test_in_jar() {
 		String testPath = Assert.class.getPackage().getName().replace('.', '/');
@@ -71,10 +89,12 @@ public class ScansTest {
 		assertTrue(list.get(1).getName().endsWith("Test.class"));
 	}
 
-	//@Ignore
+	// @Ignore
 	@Test
 	public void test_classes_in_jar() {
-		List<Class<?>> list = Scans.me().scanPackage(ActiveTestSuite.class, ".*(ActiveTestSuite|RepeatedTest|TestSetup)\\.class$");
+		List<Class<?>> list = Scans.me()
+									.scanPackage(	ActiveTestSuite.class,
+													".*(ActiveTestSuite|RepeatedTest|TestSetup)\\.class$");
 		assertEquals(3, list.size());
 		Collections.sort(list, new Comparator<Class<?>>() {
 			public int compare(Class<?> o1, Class<?> o2) {

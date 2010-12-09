@@ -10,6 +10,7 @@ import org.nutz.lang.Files;
 import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.JarEntryInfo;
 import org.nutz.resource.NutResource;
 
 /**
@@ -31,7 +32,7 @@ import org.nutz.resource.NutResource;
 public class LocalResourceScan extends AbstractResourceScan {
 
 	private boolean ignoreHidden;
-	
+
 	private static final Log LOG = Logs.getLog(LocalResourceScan.class);
 
 	/**
@@ -83,23 +84,25 @@ public class LocalResourceScan extends AbstractResourceScan {
 				}
 				// 如果在 jar 中，则循环查找这个 jar 的每一个实体
 				else {
-					int posL = path.indexOf("file:");
-					posL = posL < 0 ? 0 : posL + "file:".length();
-					int posR = path.indexOf(".jar!") + ".jar!".length();
-					String jarPath = path.substring(posL, posR - 1);
-					String prefix = path.substring(posR + 1);
-					list.addAll(scanInJar(checkSrc(prefix), regex, jarPath));
+					JarEntryInfo jeInfo = new JarEntryInfo(path);
+					list.addAll(scanInJar(	checkSrc(jeInfo.getEntryName()),
+											regex,
+											jeInfo.getJarPath()));
 				}
 			} else {
 				String classpath = System.getProperties().getProperty("java.class.path");
 				if (LOG.isInfoEnabled())
 					LOG.info("Try to search in classpath : " + classpath);
-				String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
+				String[] paths = classpath.split(System.getProperties()
+														.getProperty("path.separator"));
 				for (String pathZ : paths) {
 					if (pathZ.endsWith(".jar"))
 						list.addAll(scanInJar(checkSrc(src), regex, pathZ));
 					else
-						list.addAll(scanInDir(regex, pathZ, new File(pathZ+"/"+src), ignoreHidden));
+						list.addAll(scanInDir(	regex,
+												pathZ,
+												new File(pathZ + "/" + src),
+												ignoreHidden));
 				}
 			}
 		}

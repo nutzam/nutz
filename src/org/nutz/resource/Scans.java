@@ -1,18 +1,19 @@
 package org.nutz.resource;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
 
+import org.nutz.castor.Castors;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.impl.FileResource;
+import org.nutz.resource.impl.JarEntryResource;
 import org.nutz.resource.impl.LocalResourceScan;
 import org.nutz.resource.impl.WebResourceScan;
 
@@ -50,7 +51,7 @@ public class Scans {
 	public ResourceScan getScaner() {
 		ResourceScan scaner = web == null ? local : web;
 		if (LOG.isDebugEnabled())
-			LOG.debugf("Scan Resource by %s",scaner);
+			LOG.debugf("Scan Resource by %s", scaner);
 		return scaner;
 	}
 
@@ -70,7 +71,7 @@ public class Scans {
 		File file = Files.findFile(src);
 		if (file != null && file.isFile()) {
 			src = src.replace('\\', '/');
-			src = src.substring(0,src.lastIndexOf("/")+1);
+			src = src.substring(0, src.lastIndexOf("/") + 1);
 		}
 		List<NutResource> list = getScaner().list(src, regex);
 		if (LOG.isDebugEnabled())
@@ -102,7 +103,7 @@ public class Scans {
 	 */
 	public List<Class<?>> scanPackage(String pkg, String regex) {
 		String packagePath = pkg.replace('.', '/').replace('\\', '/');
-		if ( ! packagePath.endsWith("/"))
+		if (!packagePath.endsWith("/"))
 			packagePath += "/";
 		return rs2class(packagePath, getScaner().list(packagePath, regex));
 	}
@@ -126,7 +127,7 @@ public class Scans {
 	 */
 	private static List<Class<?>> rs2class(String packagePath, List<NutResource> list) {
 		if (packagePath.endsWith("/"))
-			packagePath = packagePath.substring(0,packagePath.length() - 1);
+			packagePath = packagePath.substring(0, packagePath.length() - 1);
 		List<Class<?>> re = new ArrayList<Class<?>>(list.size());
 		if (!list.isEmpty()) {
 			String firstItemName = list.get(0).getName().replace('\\', '/');
@@ -156,38 +157,39 @@ public class Scans {
 		}
 		return re;
 	}
-	
-	public List<InputStream> loadResource(String regex,String...paths){
-		List<InputStream> list = new ArrayList<InputStream>();
+
+	public List<NutResource> loadResource(String regex, String... paths) {
+		List<NutResource> list = new ArrayList<NutResource>();
 		// 解析路径
-		for (String path : paths) {
-			File f = Files.findFile(path);
-			// 如果是文件，直接加载
-			List<NutResource> rsList;
-			try {
-				if (null != f && f.isFile()) {
-					if (f.getAbsolutePath().contains(".jar!")) {
-						list.add(Scans.class.getResourceAsStream(path));
-						continue;
-					} else if (f.isFile()) {
-						list.add(new FileInputStream(f));
-						continue;
-					}
+		try {
+			for (String path : paths) {
+				File f = Files.findFile(path);
+
+				// 普通磁盘文件
+				if (f.isFile()) {
+					list.add(new FileResource(f));
 				}
-				rsList = scan(path, regex);
-				for (NutResource nr : rsList) {
-					list.add(nr.getInputStream());
+				// 存放在 jar 中的文件
+				else if (f.getAbsolutePath().contains(".jar!")) {
+					list.add(new JarEntryResource(new JarEntryInfo(f.getAbsolutePath())));
 				}
-			} 
-			catch (IOException e) {
-				throw Lang.wrapThrow(e);
+				// 如果是目录， scan 一下
+				else if (f.isDirectory()) {
+					list = scan(path, regex);
+				}
 			}
-			// 如果找不到?
-			if (rsList.size() < 1)
-				throw Lang.makeThrow(	RuntimeException.class,
-										"folder or file no found !! Path = %s",
-										path);
 		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+
+		// 如果找不到?
+		if (list.size() < 1)
+			throw Lang.makeThrow(	RuntimeException.class,
+									"folder or file like '%s' no found in %s",
+									regex,
+									Castors.me().castToString(paths));
 		return list;
 	}
+
 }

@@ -15,14 +15,15 @@ public abstract class NutResource implements Comparable<NutResource> {
 		return name;
 	}
 
-	public void setName(String name) {
+	public NutResource setName(String name) {
 		this.name = name;
+		return this;
 	}
 
 	public abstract InputStream getInputStream() throws IOException;
 
 	public Reader getReader() throws IOException {
-		return new InputStreamReader(getInputStream(),Encoding.UTF8);
+		return new InputStreamReader(getInputStream(), Encoding.UTF8);
 	}
 
 	public int compareTo(NutResource o) {
