@@ -10,7 +10,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
+class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 
 	protected int methodIndex;
 
@@ -48,10 +48,10 @@ class AopMethodAdapter extends NullMethodAdapter implements Opcodes {
 		mv.visitInsn(DUP);
 		visitX(methodIndex);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETSTATIC, myName, "_$$Nut_methodArray", "[Ljava/lang/reflect/Method;");
+		mv.visitFieldInsn(GETSTATIC, myName, AsmClassAgent.MethodArray_FieldName, "[Ljava/lang/reflect/Method;");
 		visitX(methodIndex);
 		mv.visitInsn(AALOAD);
-		mv.visitFieldInsn(GETSTATIC, myName, "_$$Nut_methodInterceptorList", "[Ljava/util/List;");
+		mv.visitFieldInsn(GETSTATIC, myName, AsmClassAgent.MethodInterceptorList_FieldName, "[Ljava/util/List;");
 		visitX(methodIndex);
 		mv.visitInsn(AALOAD);
 		loadArgsAsArray();

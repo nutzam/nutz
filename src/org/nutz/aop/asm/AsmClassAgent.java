@@ -9,6 +9,7 @@ import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.MethodInterceptor;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.log.Logs;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
 
@@ -22,6 +23,9 @@ public class AsmClassAgent extends AbstractClassAgent {
 	static int CLASS_LEVEL = Opcodes.V1_5;
 	
 	private static final boolean debug = false;
+	
+	public static final String MethodArray_FieldName = "_$$Nut_methodArray";
+	public static final String MethodInterceptorList_FieldName = "_$$Nut_methodInterceptorList";
 
 	static {
 		if (Lang.isJDK6())
@@ -50,7 +54,12 @@ public class AsmClassAgent extends AbstractClassAgent {
 		if (debug)
 			Files.write(new File(newName), bytes);
 		Class<T> newClass = (Class<T>) cd.define(newName, bytes);
-		AopToolKit.injectFieldValue(newClass, methodArray, methodInterceptorList);
+		try {
+			Mirror<T> mirror = Mirror.me(newClass);
+			mirror.setValue(null, MethodArray_FieldName, methodArray);
+			mirror.setValue(null, MethodInterceptorList_FieldName, methodInterceptorList);
+		}
+		catch (Throwable e) {}
 		return newClass;
 	}
 

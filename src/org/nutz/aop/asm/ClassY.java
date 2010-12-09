@@ -135,7 +135,16 @@ class ClassY implements Opcodes {
 	}
 
 	private void addField() {
-		AopToolKit.addFields(cw);
+		cw.visitField(	ACC_PRIVATE + ACC_STATIC,
+				AsmClassAgent.MethodArray_FieldName,
+				"[Ljava/lang/reflect/Method;",
+				null,
+				null).visitEnd();
+		cw.visitField(	ACC_PRIVATE + ACC_STATIC,
+				AsmClassAgent.MethodInterceptorList_FieldName,
+				"[Ljava/util/List;",
+				"[Ljava/util/List<Lorg/nutz/aop/MethodInterceptor;>;",
+				null).visitEnd();
 	}
 
 	public static <T> byte[] enhandClass(	Class<T> kclass,

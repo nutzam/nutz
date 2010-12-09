@@ -7,7 +7,7 @@ import org.nutz.repo.org.objectweb.asm.Type;
 /**
  * @author wendal(wendal1985@gmail.com)
  */
-abstract class NullMethodAdapter {
+abstract class NormalMethodAdapter {
 
 	protected final String desc;
 
@@ -20,7 +20,7 @@ abstract class NullMethodAdapter {
 	 */
 	protected final Type[] argumentTypes;
 
-	public NullMethodAdapter(MethodVisitor mv, String desc, int access) {
+	public NormalMethodAdapter(MethodVisitor mv, String desc, int access) {
 		this.mv = mv;
 		this.desc = desc;
 		this.access = access;
@@ -44,14 +44,6 @@ abstract class NullMethodAdapter {
 			index += t.getSize();
 		}
 	}
-
-	// protected int getArgIndex(final int arg) {
-	// int index = 1;
-	// for (int i = 0; i < arg; i++) {
-	// index += argumentTypes[i].getSize();
-	// }
-	// return index;
-	// }
 
 	/**
 	 * Generates the instruction to push a local variable on the stack.

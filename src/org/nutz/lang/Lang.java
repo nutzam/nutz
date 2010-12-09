@@ -1445,10 +1445,7 @@ public abstract class Lang {
 				is = Lang.class.getResourceAsStream("/" + classFileName);
 			if (is != null && is.available() > 8) {
 				is.skip(7);
-				switch (is.read()) {
-				case 50: // Java 1.6
-					return true;
-				}
+				return is.read() > 49;
 			}
 		}
 		catch (Throwable e) {}

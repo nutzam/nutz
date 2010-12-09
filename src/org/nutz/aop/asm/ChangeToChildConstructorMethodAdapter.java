@@ -9,7 +9,7 @@ import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 /**
  * @author wendal(wendal1985@gmail.com)
  */
-class ChangeToChildConstructorMethodAdapter extends NullMethodAdapter {
+class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
 
 	private String superClassName;
 

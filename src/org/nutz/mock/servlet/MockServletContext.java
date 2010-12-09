@@ -42,12 +42,12 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	}
 
 	public String getRealPath(String path) {
+		if (path.startsWith("/WEB-INF/lib/"))
+			return new File(path.substring("/WEB-INF/lib/".length())).getAbsolutePath();
+		if (path.startsWith("/WEB-INF/classes/"))
+			return new File(path.substring("/WEB-INF/classes/".length())).getAbsolutePath();
 		if (path.startsWith("/"))
 			return new File("."+path).getAbsolutePath();
-		if (path.startsWith("/WEB-INF/lib"))
-			path = path.substring("/WEB-INF/lib/".length());
-		if (path.startsWith("/WEB-INF/classes/"))
-			path = path.substring("/WEB-INF/classes/".length());
 		return new File(path).getAbsolutePath();
 	}
 
