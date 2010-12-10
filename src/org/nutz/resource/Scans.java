@@ -3,6 +3,7 @@ package org.nutz.resource;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -159,24 +160,25 @@ public class Scans {
 	}
 
 	public List<NutResource> loadResource(String regex, String... paths) {
-		List<NutResource> list = new ArrayList<NutResource>();
+		List<NutResource> list = new LinkedList<NutResource>();
 		// 解析路径
 		try {
 			for (String path : paths) {
 				File f = Files.findFile(path);
 
+				// 如果没找到， 或者是个目录 scan 一下
+				if(null==f || f.isDirectory()){
+					list.addAll(scan(path, regex));
+				}
 				// 普通磁盘文件
-				if (f.isFile()) {
+				else if (f.isFile()) {
 					list.add(new FileResource(f));
 				}
 				// 存放在 jar 中的文件
 				else if (f.getAbsolutePath().contains(".jar!")) {
 					list.add(new JarEntryResource(new JarEntryInfo(f.getAbsolutePath())));
 				}
-				// 如果是目录， scan 一下
-				else if (f.isDirectory()) {
-					list = scan(path, regex);
-				}
+				
 			}
 		}
 		catch (IOException e) {
