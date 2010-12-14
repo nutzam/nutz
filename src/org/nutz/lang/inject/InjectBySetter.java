@@ -4,9 +4,11 @@ import java.lang.reflect.Method;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class InjectBySetter implements Injecting {
-
+	private static final Log log = Logs.getLog(InjectBySetter.class);
 	private Method setter;
 	private Class<?> valueType;
 
@@ -22,12 +24,15 @@ public class InjectBySetter implements Injecting {
 			setter.invoke(obj, v);
 		}
 		catch (Exception e) {
-			throw Lang.makeThrow(	"Fail to set '%s'[ %s ] by setter %s.'%s()' because: %s",
+			if (log.isInfoEnabled())
+				log.info("Fail to value by setter", e);
+			throw Lang.makeThrow(	"Fail to set '%s'[ %s ] by setter %s.'%s()' because [%s]: %s",
 									value,
 									v,
 									setter.getDeclaringClass().getName(),
 									setter.getName(),
-									e.getMessage());
+									Lang.unwrapThrow(e),
+									Lang.unwrapThrow(e).getMessage());
 		}
 	}
 
