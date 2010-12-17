@@ -13,7 +13,7 @@ class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
 
 	private String superClassName;
 
-	public ChangeToChildConstructorMethodAdapter(	MethodVisitor mv,
+	ChangeToChildConstructorMethodAdapter(	MethodVisitor mv,
 													String desc,
 													int access,
 													String superClassName) {
@@ -21,7 +21,7 @@ class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
 		this.superClassName = superClassName;
 	}
 
-	public void visitCode() {
+	void visitCode() {
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
 		loadArgs();

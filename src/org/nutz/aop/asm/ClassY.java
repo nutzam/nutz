@@ -17,17 +17,17 @@ import org.nutz.repo.org.objectweb.asm.Type;
  */
 class ClassY implements Opcodes {
 
-	protected ClassWriter cw;
+	ClassWriter cw;
 
-	protected String myName;
+	String myName;
 
-	protected String enhancedSuperName;
+	String enhancedSuperName;
 
-	protected Method[] methodArray;
+	Method[] methodArray;
 
-	protected Constructor<?>[] constructors;
+	Constructor<?>[] constructors;
 
-	public ClassY(Class<?> klass, String myName, Method[] methodArray, Constructor<?>[] constructors) {
+	ClassY(Class<?> klass, String myName, Method[] methodArray, Constructor<?>[] constructors) {
 		this.myName = myName.replace('.', '/');
 		this.enhancedSuperName = klass.getName().replace('.', '/');
 		this.cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
@@ -41,8 +41,8 @@ class ClassY implements Opcodes {
 		this.constructors = constructors;
 	}
 
-	protected String[] getParentInterfaces(Class<?> xClass) {
-		Class<?> its[] = xClass.getInterfaces();
+	String[] getParentInterfaces(Class<?> xClass) {
+		Class<?>[] its = xClass.getInterfaces();
 		if (its == null || its.length == 0)
 			return new String[]{AopCallback.class.getName().replace('.', '/')};
 		else {
@@ -54,7 +54,7 @@ class ClassY implements Opcodes {
 		}
 	}
 
-	protected String[] convertExp(Class<?>[] expClasses) {
+	String[] convertExp(Class<?>[] expClasses) {
 		if (expClasses.length == 0)
 			return null;
 		String[] results = new String[expClasses.length];
@@ -63,7 +63,7 @@ class ClassY implements Opcodes {
 		return results;
 	}
 
-	protected int getAccess(int modify) {
+	int getAccess(int modify) {
 		if (Modifier.isProtected(modify))
 			return ACC_PROTECTED;
 		if (Modifier.isPublic(modify))
@@ -71,7 +71,7 @@ class ClassY implements Opcodes {
 		return 0x00;
 	}
 
-	protected static int findMethodIndex(String name, String desc, Method[] methods) {
+	static int findMethodIndex(String name, String desc, Method[] methods) {
 		for (int i = 0; i < methods.length; i++) {
 			Method method = methods[i];
 			if (Type.getMethodDescriptor(method).equals(desc) && method.getName().equals(name))
@@ -80,7 +80,7 @@ class ClassY implements Opcodes {
 		return -1;// 是否应该抛出异常呢?应该不可能发生的
 	}
 
-	protected void addConstructors() {
+	void addConstructors() {
 		for (Constructor<?> constructor : constructors) {
 			String[] expClasses = convertExp(constructor.getExceptionTypes());
 			String desc = Type.getConstructorDescriptor(constructor);
@@ -90,7 +90,7 @@ class ClassY implements Opcodes {
 		}
 	}
 
-	protected byte[] toByteArray() {
+	byte[] toByteArray() {
 		addField();
 		addConstructors();
 		addAopMethods();
@@ -147,7 +147,7 @@ class ClassY implements Opcodes {
 				null).visitEnd();
 	}
 
-	public static <T> byte[] enhandClass(	Class<T> kclass,
+	static <T> byte[] enhandClass(	Class<T> kclass,
 											String myName,
 											Method[] methodArray,
 											Constructor<?>[] constructors) {

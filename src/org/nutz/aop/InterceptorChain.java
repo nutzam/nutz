@@ -71,8 +71,9 @@ public class InterceptorChain {
 	public void invoke() throws Throwable {
 		if (invoked)
 			LOG.warnf("!! Calling Method more than once! Method --> %s", callingMethod.toString());
+		else
+			invoked = true;
 		this.returnValue = callingObj._aop_invoke(methodIndex, args);
-		invoked = true;
 	}
 
 	/**

@@ -4,9 +4,9 @@ import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.repo.org.objectweb.asm.Type;
 
-public final class AsmHelper implements Opcodes{
+final class AsmHelper implements Opcodes{
 
-	public static boolean packagePrivateData(Type type, MethodVisitor mv) {
+	static boolean packagePrivateData(Type type, MethodVisitor mv) {
 		if (type.equals(Type.BOOLEAN_TYPE)) {
 			mv.visitMethodInsn(	INVOKESTATIC,
 								"java/lang/Boolean",
@@ -38,7 +38,7 @@ public final class AsmHelper implements Opcodes{
 		return true;
 	}
 
-	public static void unpackagePrivateData(Type type, MethodVisitor mv) {
+	static void unpackagePrivateData(Type type, MethodVisitor mv) {
 		if (type.equals(Type.BOOLEAN_TYPE)) {
 			mv.visitMethodInsn(	INVOKESTATIC,
 								"org/nutz/aop/asm/Helper",
@@ -82,14 +82,12 @@ public final class AsmHelper implements Opcodes{
 		}
 	}
 
-	public static void checkCast(Type type, MethodVisitor mv) {
+	static void checkCast(Type type, MethodVisitor mv) {
 		if (type.getSort() == Type.ARRAY) {
 			mv.visitTypeInsn(CHECKCAST, type.getDescriptor());
 			return;
 		}
-		if (type.equals(Type.getType(Object.class))) {
-			;
-		} else {
+		if (!type.equals(Type.getType(Object.class))) {
 			if (type.getOpcode(IRETURN) != ARETURN) {
 				checkCast2(type,mv);
 				unpackagePrivateData(type,mv);
@@ -99,7 +97,7 @@ public final class AsmHelper implements Opcodes{
 		}
 	}
 
-	public static void checkCast2(Type type, MethodVisitor mv) {
+	static void checkCast2(Type type, MethodVisitor mv) {
 		if (type.equals(Type.BOOLEAN_TYPE)) {
 			mv.visitTypeInsn(CHECKCAST, "java/lang/Boolean");
 		} else if (type.equals(Type.BYTE_TYPE)) {

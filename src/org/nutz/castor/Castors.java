@@ -161,13 +161,11 @@ public class Castors {
 		}
 		//一个类都找不到,好吧,加载默认的,从文件读取列表
 		if (classes.size() == 0) {
-			if (log.isWarnEnabled()) {
+			if (log.isWarnEnabled())
 				log.warn("!!No castor found!!!!!!!!! Load default castor list");
-			}
 			try {
 				InputStream is = getClass().getResourceAsStream("/org/nutz/castor/default-castors.txt");
 				String str = Streams.readAndClose(new InputStreamReader(is));
-				is.close();
 				String[] classNames = str.split("\\n");
 				for (String className : classNames) {
 					classes.add(Class.forName("org.nutz.castor.castor."+className.trim()));
@@ -267,7 +265,7 @@ public class Castors {
 																toType.getName(),
 																src,
 																e.getClass().getSimpleName(),
-																e.getMessage()));
+																e.getMessage()),e);
 		}
 	}
 

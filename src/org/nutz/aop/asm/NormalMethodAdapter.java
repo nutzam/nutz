@@ -9,30 +9,30 @@ import org.nutz.repo.org.objectweb.asm.Type;
  */
 abstract class NormalMethodAdapter {
 
-	protected final String desc;
+	final String desc;
 
-	protected final int access;
+	final int access;
 
-	protected final MethodVisitor mv;
+	final MethodVisitor mv;
 
 	/**
 	 * Argument types of the method visited by this adapter.
 	 */
-	protected final Type[] argumentTypes;
+	final Type[] argumentTypes;
 
-	public NormalMethodAdapter(MethodVisitor mv, String desc, int access) {
+	NormalMethodAdapter(MethodVisitor mv, String desc, int access) {
 		this.mv = mv;
 		this.desc = desc;
 		this.access = access;
 		argumentTypes = Type.getArgumentTypes(this.desc);
 	}
 
-	public abstract void visitCode();
+	abstract void visitCode();
 
 	/**
 	 * Generates the instructions to load all the method arguments on the stack.
 	 */
-	public void loadArgs() {
+	void loadArgs() {
 		loadArgs(0, argumentTypes.length);
 	}
 
@@ -53,7 +53,7 @@ abstract class NormalMethodAdapter {
 	 * @param index
 	 *            an index in the frame's local variables array.
 	 */
-	protected void loadInsn(final Type type, final int index) {
+	void loadInsn(final Type type, final int index) {
 		mv.visitVarInsn(type.getOpcode(Opcodes.ILOAD), index);
 	}
 

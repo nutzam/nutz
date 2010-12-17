@@ -12,17 +12,17 @@ import org.nutz.repo.org.objectweb.asm.Type;
  */
 class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 
-	protected int methodIndex;
+	int methodIndex;
 
-	protected String myName;
+	String myName;
 
-	protected String enhancedSuperName;
+	String enhancedSuperName;
 
-	protected String methodName;
+	String methodName;
 
-	protected Type returnType;
+	Type returnType;
 
-	public AopMethodAdapter(MethodVisitor mv,
+	AopMethodAdapter(MethodVisitor mv,
 							int access,
 							String methodName,
 							String desc,
@@ -37,7 +37,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 		this.returnType = Type.getReturnType(desc);
 	}
 
-	protected void enhandMethod_Void() {
+	void enhandMethod_Void() {
 		mv.visitCode();
 		Label l0 = new Label();
 		Label l1 = new Label();
@@ -92,11 +92,11 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 		mv.visitEnd();
 	}
 
-	public void visitCode() {
+	void visitCode() {
 		enhandMethod_Void();
 	}
 
-	protected void loadArgsAsArray() {
+	void loadArgsAsArray() {
 		visitX(argumentTypes.length);
 		mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
 		int index = 1;
@@ -111,7 +111,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 		}
 	}
 
-	protected void visitX(int i) {
+	void visitX(int i) {
 		if (i < 6) {
 			mv.visitInsn(i + ICONST_0);
 		} else {
@@ -119,7 +119,7 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 		}
 	}
 
-	protected void returnIt() {
+	void returnIt() {
 		mv.visitInsn(returnType.getOpcode(IRETURN));
 	}
 

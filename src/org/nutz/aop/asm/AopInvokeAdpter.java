@@ -13,9 +13,9 @@ import org.nutz.repo.org.objectweb.asm.Type;
  */
 class AopInvokeAdpter extends AopMethodAdapter {
 
-	protected Method[] methodArray;
+	Method[] methodArray;
 
-	public AopInvokeAdpter(	Method[] methodArray,
+	AopInvokeAdpter(	Method[] methodArray,
 							MethodVisitor mv,
 							int access,
 							String methodName,
@@ -27,7 +27,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
 		this.methodArray = methodArray;
 	}
 
-	public void visitCode() {
+	void visitCode() {
 		mv.visitCode();
 
 		for (int i = 0; i < methodArray.length; i++) {
@@ -37,7 +37,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
 			Label l0 = new Label();
 			mv.visitJumpInsn(IF_ICMPNE, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			Type args[] = Type.getArgumentTypes(method);
+			Type[] args = Type.getArgumentTypes(method);
 			for (int j = 0; j < args.length; j++) {
 				mv.visitVarInsn(ALOAD, 2);
 				visitX(j);

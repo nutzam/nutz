@@ -43,7 +43,7 @@ public abstract class Castor<FROM, TO> {
 			}
 			if (null == coll)
 				throw new FailToCastObjectException(String.format(	"Castors don't know how to implement '%s'",
-																	toType.getName()));
+																	toType.getName()),e);
 		}
 		return coll;
 	}
