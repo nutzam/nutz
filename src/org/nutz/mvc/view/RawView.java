@@ -33,8 +33,6 @@ import org.nutz.mvc.View;
  * <li><b>html</b> - 表示 <b>text/html</b>
  * <li><b>htm</b> - 表示 <b>text/html</b>
  * <li><b>stream</b> - 表示 <b>application/octet-stream</b>
- * <li><b>json</b> - 表示 <b>application/x-javascript</b>
- * <li><b>js</b> - 表示 <b>application/x-javascript</b>
  * <li><b>默认的</b>(即 '@Ok("raw")' ) - 将采用 <b>ContentType=text/plain</b>
  * </ul>
  * 
@@ -120,7 +118,5 @@ public class RawView implements View {
 		contentTypeMap.put("html", "text/html");
 		contentTypeMap.put("htm", "text/html");
 		contentTypeMap.put("stream", "application/octet-stream");
-		contentTypeMap.put("json", "application/x-javascript");
-		contentTypeMap.put("js", "application/x-javascript");
 	}
 }

@@ -25,7 +25,6 @@ public class DefaultViewMaker implements ViewMaker {
 	public static final String VIEW_FORWARD = "forward";
 	public static final String VIEW_FORWARD2 = "->";
 	public static final String VIEW_RAW = "raw";
-	public static final String VIEW_MAP = "map";
 
 	public View make(Ioc ioc, String type, String value) {
 		type = type.toLowerCase();
@@ -48,8 +47,6 @@ public class DefaultViewMaker implements ViewMaker {
 			return new HttpStatusView(Integer.parseInt(value));
 		if (VIEW_RAW.equals(type))
 			return new RawView(value);
-		if (VIEW_MAP.equals(type))
-			return new MapView(value, this, ioc);
 		return null;
 	}
 
