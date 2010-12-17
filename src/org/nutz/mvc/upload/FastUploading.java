@@ -30,7 +30,7 @@ import org.nutz.mvc.upload.util.RemountBytes;
  */
 public class FastUploading implements Uploading {
 
-	private static Log log = Logs.getLog(FastUploading.class);
+	private static final Log log = Logs.getLog(FastUploading.class);
 
 	public Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
 			throws UploadException {

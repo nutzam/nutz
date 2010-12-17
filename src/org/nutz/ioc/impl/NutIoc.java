@@ -33,7 +33,7 @@ import org.nutz.log.Logs;
  */
 public class NutIoc implements Ioc2 {
 
-	private static Log log = Logs.getLog(NutIoc.class);
+	private static final Log log = Logs.getLog(NutIoc.class);
 
 	private static final String DEF_SCOPE = "app";
 

@@ -15,7 +15,7 @@ public abstract class EntityService<T> extends Service {
 
 	private Mirror<T> mirror;
 
-	private Log log = Logs.getLog(getClass());
+	private static final Log log = Logs.getLog(EntityService.class);
 
 	@SuppressWarnings("unchecked")
 	public EntityService() {
