@@ -97,7 +97,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			}
 			catch (Exception e) {
 				if (log.isWarnEnabled())
-					log.warn(getExceptionMessage(e),e);
+					log.warn(getExceptionMessage(e), e);
 				throw Lang.makeThrow(	"Class '%s' should has a accessible default constructor : '%s'",
 										moduleType.getName(),
 										e.getMessage());
@@ -143,7 +143,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 		catch (Exception e) {
 			if (log.isWarnEnabled())
-				log.warn(getExceptionMessage(e),e);
+				log.warn(getExceptionMessage(e), e);
 			throw Lang.wrapThrow(e);
 		}
 		adaptor.init(method);
@@ -209,7 +209,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 		catch (UnsupportedEncodingException e) {
 			if (log.isWarnEnabled())
-				log.warn(getExceptionMessage(e),e);
+				log.warn(getExceptionMessage(e), e);
 			throw Lang.wrapThrow(e);
 		}
 		resp.setCharacterEncoding(outputCharset);
@@ -217,14 +217,14 @@ public class ActionInvokerImpl implements ActionInvoker {
 		// Before adapt, run filter
 		if (null != filters)
 			for (ActionFilter filter : filters) {
-				View view = filter.match(req, method);
+				View view = filter.match(sc, req, method);
 				if (null != view) {
 					try {
 						view.render(req, resp, null);
 					}
 					catch (Throwable e) {
 						if (log.isWarnEnabled())
-							log.warn(getExceptionMessage(e),e);
+							log.warn(getExceptionMessage(e), e);
 						throw Lang.wrapThrow(e);
 					}
 					return;
@@ -276,7 +276,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 			// 在 Debug 模式下，输出这个错误信息到日志里有助于调试
 			if (log.isDebugEnabled())
-				log.debug(getExceptionMessage(e),e);
+				log.debug(getExceptionMessage(e), e);
 
 			try {
 				fail.render(req, resp, e);
@@ -285,7 +285,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 			catch (Throwable e1) {
 				// 打印 Log
 				if (log.isWarnEnabled())
-					log.warn(getExceptionMessage(e1),e1);
+					log.warn(getExceptionMessage(e1), e1);
 
 				resp.reset();
 				try {
@@ -296,7 +296,7 @@ public class ActionInvokerImpl implements ActionInvoker {
 				catch (IOException e2) {
 					// 打印 Log
 					if (log.isWarnEnabled())
-						log.warn(getExceptionMessage(e2),e2);
+						log.warn(getExceptionMessage(e2), e2);
 
 					throw Lang.wrapThrow(e2);
 				}
@@ -309,9 +309,9 @@ public class ActionInvokerImpl implements ActionInvoker {
 		}
 
 	}
-	
-	private static final String getExceptionMessage(Throwable e){
+
+	private static final String getExceptionMessage(Throwable e) {
 		e = Lang.unwrapThrow(e);
-		return Strings.isBlank(e.getMessage())	? e.getClass().getSimpleName() : e.getMessage();
+		return Strings.isBlank(e.getMessage()) ? e.getClass().getSimpleName() : e.getMessage();
 	}
 }

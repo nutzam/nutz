@@ -2,6 +2,7 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 /**
@@ -19,6 +20,8 @@ public interface ActionFilter {
 	/**
 	 * 执行过滤
 	 * 
+	 * @param sc
+	 *            Servlet 上下文对象
 	 * @param request
 	 *            当前的请求对象
 	 * @param method
@@ -28,6 +31,6 @@ public interface ActionFilter {
 	 *         <li>View 对象实例 - 过滤器认为应该终止操作，用这个视图对象来直接渲染 HTTP响应
 	 *         </ul>
 	 */
-	View match(HttpServletRequest request, Method method);
+	View match(ServletContext sc, HttpServletRequest request, Method method);
 
 }
