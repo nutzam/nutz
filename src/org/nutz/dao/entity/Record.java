@@ -110,6 +110,31 @@ public class Record implements Map<String, Object> {
 		return Json.toJson(map);
 	}
 
+	/**
+	 * 如果你想将这个记录转换成你的数据库实体类，请用这个方法
+	 * 
+	 * @param enType
+	 *            实体类型
+	 * @return 实体的一个实例
+	 * 
+	 * @see org.nutz.dao.Dao#getEntity(Class)
+	 */
+	public <T> T toPojo(Entity<T> enType) {
+		try {
+			T obj = enType.getType().newInstance();
+			for (EntityField ef : enType.fields()) {
+				Object v = map.get(ef.getColumnName());
+				if (null != v) {
+					ef.setValue(obj, v);
+				}
+			}
+			return obj;
+		}
+		catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
 	public <T> T toPojo(Class<T> type) {
 		return Lang.map2Object(map, type);
 	}
