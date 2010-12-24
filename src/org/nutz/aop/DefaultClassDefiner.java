@@ -2,10 +2,13 @@ package org.nutz.aop;
 
 import org.nutz.lang.Lang;
 
-
-
+/**
+ * 一个默认的类加载器
+ * 
+ * @author Wendal(wendal1985@gmail.com)
+ */
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
-	
+
 	public DefaultClassDefiner(ClassLoader parent) {
 		super(parent);
 	}
@@ -29,24 +32,24 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 	}
 
 	public Class<?> load(String className) throws ClassNotFoundException {
-		try{
+		try {
 			return Lang.loadClass(className);
 		}
 		catch (ClassNotFoundException e) {
-			try{
+			try {
 				return ClassLoader.getSystemClassLoader().loadClass(className);
 			}
 			catch (ClassNotFoundException e2) {
-				try{
+				try {
 					return getParent().loadClass(className);
-				}catch (ClassNotFoundException e3) {
 				}
+				catch (ClassNotFoundException e3) {}
 			}
-			catch (SecurityException e2) {//Fix for GAE 1.3.7, Fix issue 296
-				try{
+			catch (SecurityException e2) {// Fix for GAE 1.3.7, Fix issue 296
+				try {
 					return getParent().loadClass(className);
-				}catch (ClassNotFoundException e3) {
 				}
+				catch (ClassNotFoundException e3) {}
 			}
 		}
 		return super.loadClass(className);

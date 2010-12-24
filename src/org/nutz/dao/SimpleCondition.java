@@ -2,6 +2,11 @@ package org.nutz.dao;
 
 import org.nutz.dao.entity.Entity;
 
+/**
+ * 简单的包裹一下 SQL 字符串
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class SimpleCondition implements Condition {
 
 	private String content;

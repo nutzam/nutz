@@ -7,6 +7,15 @@ import java.util.Collection;
 
 import org.nutz.lang.Mirror;
 
+/**
+ * 抽象转换器，所有的转换器必须继承自它
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @param <FROM>
+ *            从什么类型
+ * @param <TO>
+ *            转到什么类型
+ */
 public abstract class Castor<FROM, TO> {
 
 	protected Castor() {
@@ -43,7 +52,8 @@ public abstract class Castor<FROM, TO> {
 			}
 			if (null == coll)
 				throw new FailToCastObjectException(String.format(	"Castors don't know how to implement '%s'",
-																	toType.getName()),e);
+																	toType.getName()),
+													e);
 		}
 		return coll;
 	}

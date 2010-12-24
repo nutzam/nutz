@@ -6,6 +6,13 @@ import java.util.List;
 import org.nutz.castor.Castors;
 import org.nutz.dao.pager.Pager;
 
+/**
+ * 封装了一个分页查询的结果集合，包括本页数据列表以及分页信息
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * 
+ * @see org.nutz.dao.pager.Pager
+ */
 public class QueryResult {
 
 	private List<?> list;
