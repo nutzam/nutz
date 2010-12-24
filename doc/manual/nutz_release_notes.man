@@ -1,9 +1,9 @@
-#title: 1.a.34 发行注记(Hatching...)
+#title: 1.b.34 发行注记
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.a.34 发行注记(Hatching...)
+1.b.34 发行注记
 
 	[http://nutzam.com <http://nutzam.com/img/doodle/2010_christmas.jpg>]
 	
@@ -67,10 +67,22 @@
 	 
 --------------------------------------------------------------------------------------------------------
 问题修复
+	 * [http://code.google.com/p/nutz/issues/detail?id=320 Issue 320] 使用@Ok("raw:XXXX")时,会产生异常  {#AAA;by} {*goulin.home}
+	 * [http://code.google.com/p/nutz/issues/detail?id=322 Issue 322] Nutz对LogBack的支持 {#AAA;by} {*yeahyf}
+	 * [http://code.google.com/p/nutz/issues/detail?id=324 Issue 324] lang: SimpleNode 添加节点的问题 {#AAA;by} {*wei li}
+	 * [http://code.google.com/p/nutz/issues/detail?id=325 Issue 325] Chain不能处理中文字段 {#AAA;by} {*sd6733531}
+	 * [http://code.google.com/p/nutz/issues/detail?id=326 Issue 326] 在某种情况下用Mirror给一个javabean赋值的时候出现org.nutz.lang.FailToSetValueException的问题 {#AAA;by} {*ywjno.dev}
+	 * [http://code.google.com/p/nutz/issues/detail?id=328 Issue 328] mvc: 文件上传时，在 Mac 系统上的 Chrome 总是不成功  {#AAA;by} {*zozoth}
+	 * [http://code.google.com/p/nutz/issues/detail?id=329 Issue 329] NutConfig接口应该给出定义getInitParameterNames() 方法  {#AAA;by} {*amosleaf}
+	 * [http://code.google.com/p/nutz/issues/detail?id=331 Issue 331] IocBean注解的fetch,depose事件没有执行 {#AAA;by} {*kinglong408}
+	 * [http://code.google.com/p/nutz/issues/detail?id=334 Issue 334] 1.a.33 使用@Ok("json")视图，AJAX提交，处理xhr时，浏览器报js错 {#AAA;by} {*conanca2006}
+	 * [http://code.google.com/p/nutz/issues/detail?id=336 Issue 336] 为顶级package补全package-info.java {#AAA;by} {*wendal}
+	 * [http://code.google.com/p/nutz/issues/detail?id=338 Issue 338] nutz过滤器中 得IOC容器不理想  {#AAA;by} {*yunhaifeiwu}
+	 * [http://code.google.com/p/nutz/issues/detail?id=339 Issue 339] Record的toPojo方法,不能为已有类型的某些属性赋值 {#AAA;by} {*goulin.home}
 
 --------------------------------------------------------------------------------------------------------
 质量
-	共通过了 {#FF00FF;*xxx}  个单元测试用例,代码覆盖率达到{#FF00FF*xx%}(按line计算)
+	共通过了 {#FF00FF;*610}  个单元测试用例,代码覆盖率达到{#FF00FF*66%}(按line计算)
 	 
 	Nutz.Dao 经测试在如下数据库上可以工作正常
 	 * [http://www.h2database.com H2]
