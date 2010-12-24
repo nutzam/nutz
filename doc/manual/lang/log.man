@@ -4,9 +4,9 @@
 #author:sunonfire(sunonfire@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-为什么要自己写一个 Log？
-	首先，我们没有从头实现一个日志，我们不过是 {*适配} 日志。我们适配了 log4j 和 java.util.logging。但是为什么呢？
-	为什么不直接依赖 slf4j 呢？
+为什么要自己写一个 Log?
+	首先，我们没有从头实现一个日志，我们不过是 {*适配} 日志。我们适配了 log4j 。但是为什么呢?
+	为什么不直接依赖 slf4j 呢?
 	
 	我必须要在这里重申一下 [../nutz_preface.man Nutz 框架的目标]：
 	
@@ -41,11 +41,11 @@
 	......
 	
 	{#CCC;/好吧，我承认，我上面说的统统是狡辩，根本原因不过是因为手痒痒。而且我揭发：实际上这个模块代码都是} \
-	[http://wendal.javaeye.com {#CCC;/wendal}] {#CCC;/和 Sunonfire 写的，我其实不过是出来打酱油的 ... }
+	[http://myblog.sunfarms.net {#CCC;/wendal}] {#CCC;/和 Sunonfire 写的，我其实不过是出来打酱油的 ... }
 
 --------------------------------------------------------------------------------------------------------
 如何使用日志
-	Nutz Log的基本用法和常见的log4j、JDK Logger等工具没什么不同。比如：
+	Nutz Log的基本用法和常见的log4j等工具没什么不同。比如：
 	{{{
 	public class MyClass {
 		private static final Log log = Logs.getLog(MyClass.class);
@@ -58,24 +58,15 @@
 	}}}
 	
 	Nutz.Log 使用了[plugin.man 插件技术]，其中优先级依次为：
-	 # Log4j
-	 # java.util.logging
+	 # Log4j --> 通过log4j-over-slf4j桥,你可以将其拓展到其他log框架,如logback
 	 # System.out | System.err
 	
 	它们可以使用的条件是：
 	 * Log4j
-		# 如果不能加载类 {*org.apache.log4j.Logger}，则不可用;
-		# System.getProperty("log4j.defaultInitOverride") 为 null 或为 "false"，则不可用
-		# System.getProperty("log4j.configuration") != null，则可用 \
-		（有一种情况是log4j.coniguration中指定的配置文件找不到。我们认为这是一个不应该被忽视的配置
-		 错误，所以这里将log4j设定为可用；这样在实际输出log时log4j就会抛出这个错误，由用户来修正配置）。
-		# log4j.properties 存在，则可用
-		# log4j.xml 存在，则可用
-		
-	 * Jdk Logger：
-		 * System.getProperty("java.util.logging.config.class") != null， 则可用
-		 * System.getProperty("java.util.logging.config.file") != null，则可用
-		 * 否则不可用
+		# 如果能够加载类 {*org.apache.log4j.Logger}，则认为可用;
+	
+	 * System.out | System.err
+	 	# 默认永远可用
 
 --------------------------------------------------------------------------------------------------------	
 让 Nutz 输出日志
