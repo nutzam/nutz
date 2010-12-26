@@ -36,7 +36,7 @@
 	在MVC中加载
 	{{{
 	//现在只支持包扫描,包含sub-package
-	@IocBy(AnnotationIocProvider.class,{"com.wendal.service"})
+	@IocBy(type = AnnotationIocProvider.class, args = {"com.wendal.service"})
 	}}}
 	
 代码示例
