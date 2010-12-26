@@ -11,6 +11,7 @@ import org.nutz.castor.Castors;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
+import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
@@ -43,6 +44,8 @@ public class AnnotationIocLoader implements IocLoader {
 						Castors.me().castToString(map.keySet()));
 	}
 
+	@SuppressWarnings("deprecation")
+	// TODO RC 前，移除这个警告
 	private void addClass(Class<?> classZ) {
 		if (classZ.isInterface()
 			|| classZ.isMemberClass()
@@ -57,9 +60,20 @@ public class AnnotationIocLoader implements IocLoader {
 		if (iocBean != null) {
 			if (LOG.isDebugEnabled())
 				LOG.debugf("Found a Class with Ioc-Annotation : %s", classZ);
+
+			// 采用 @IocBean->name
 			String beanName = iocBean.name();
-			if (Strings.isBlank(beanName))
-				beanName = Strings.lowerFirst(classZ.getSimpleName());
+			if (Strings.isBlank(beanName)) {
+				// 否则采用 @InjectName
+				InjectName innm = classZ.getAnnotation(InjectName.class);
+				if (null != innm && !Strings.isBlank(innm.value())) {
+					beanName = innm.value();
+				}
+				// 大哥（姐），您都不设啊!? 那就用 simpleName 吧
+				else {
+					beanName = Strings.lowerFirst(classZ.getSimpleName());
+				}
+			}
 			IocObject iocObject = new IocObject();
 			iocObject.setType(classZ);
 			map.put(beanName, iocObject);
@@ -68,9 +82,12 @@ public class AnnotationIocLoader implements IocLoader {
 			if (!Strings.isBlank(iocBean.scope()))
 				iocObject.setScope(iocBean.scope());
 
-			// 配置构造方法
-			if (iocBean.param().length > 0)
-				for (String value : iocBean.param())
+			// 看看构造函数都需要什么函数
+			String[] args = iocBean.args();
+			if (null == args || args.length == 0)
+				args = iocBean.param();
+			if (null != args && args.length > 0)
+				for (String value : args)
 					iocObject.addArg(convert(value));
 
 			// 设置Events
@@ -127,8 +144,12 @@ public class AnnotationIocLoader implements IocLoader {
 				}
 			}
 			// 处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
-			if (iocBean.field() != null && iocBean.field().length > 0) {
-				for (String fieldInfo : iocBean.field()) {
+			String[] flds = iocBean.fields();
+			if (null == flds || flds.length == 0) {
+				flds = iocBean.field();
+			}
+			if (flds != null && flds.length > 0) {
+				for (String fieldInfo : flds) {
 					if (fieldList.contains(fieldInfo))
 						throw Lang.makeThrow(	"Duplicate filed defined! Class=%s,FileName=%s",
 												classZ,

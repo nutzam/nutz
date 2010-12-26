@@ -476,13 +476,12 @@ public abstract class Files {
 	 * @param dir
 	 *            目录
 	 * @return 是否删除成功
-	 * @throws IOException
 	 */
-	public static boolean deleteDir(File dir) throws IOException {
+	public static boolean deleteDir(File dir) {
 		if (null == dir || !dir.exists())
 			return false;
 		if (!dir.isDirectory())
-			throw new IOException("\"" + dir.getAbsolutePath() + "\" should be a directory!");
+			throw new RuntimeException("\"" + dir.getAbsolutePath() + "\" should be a directory!");
 		File[] files = dir.listFiles();
 		boolean re = false;
 		if (null != files) {
@@ -519,9 +518,8 @@ public abstract class Files {
 	 * @param dir
 	 *            目录
 	 * @return 是否清除成功
-	 * @throws IOException
 	 */
-	public static boolean clearDir(File dir) throws IOException {
+	public static boolean clearDir(File dir) {
 		if (null == dir)
 			return false;
 		if (!dir.exists())

@@ -73,14 +73,9 @@ public class NutFilePool implements FilePool {
 	private long size;
 
 	public void clear() {
-		try {
-			Files.deleteDir(home);
-			Files.makeDir(home);
-			cursor = 0;
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
+		Files.deleteDir(home);
+		Files.makeDir(home);
+		cursor = 0;
 	}
 
 	public File createFile(String suffix) {
