@@ -17,7 +17,7 @@
 
 	<property name="JDK_VERSION" value="1.6" />
 
-	<property name="v" value="-1.b.34" />
+	<property name="v" value="-1.b.35" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
