@@ -7,14 +7,14 @@
 	标注类 @IocBean
 	{{{
 	public @interface IocBean {
-		String name() default "";
-		String [] param() default {};
-		String [] field() default {};
-		String scope() default "app";
-		boolean singleton() default true;
-		String create() default "";
-		String depose() default "";
-		String fetch() default ""; 
+		String name() default "";//名字id
+		String [] args() default {};//构造方法的参数
+		String [] fields() default {};//声明字段
+		String scope() default "app";//生存范围
+		boolean singleton() default true;//单例?
+		String create() default "";//被创建时触发的事件
+		String depose() default "";//被销毁时触发的事件
+		String fetch() default "";//被取出时触发的事件
 	}
 	}}}
     
@@ -37,6 +37,11 @@
 	{{{
 	//现在只支持包扫描,包含sub-package
 	@IocBy(type = AnnotationIocProvider.class, args = {"com.wendal.service"})
+	}}}
+	{{{
+	//同时使用多种IocLoader
+	@IocBy(type = ComboIocLoader.class, args = {"*org.nutz.ioc.loader.json.JsoLoader","nutz/demo/ioc/pet/pets.js"
+				                                "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","nutz.demo.ioc"})
 	}}}
 	
 代码示例
@@ -105,12 +110,12 @@
 		public class HelloPet {
 
 			public static void main(String[] args) {
-				Ioc ioc1 = new NutIoc(new AnnotationIocLoader("nutz.demo.ioc"));
-				Ioc ioc2 = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
-				Ioc ioc = new ComboIocLoader(ioc1,ioc2);
+				IocLoader iocLoader1 = new AnnotationIocLoader("nutz.demo.ioc");
+				IocLoader iocLoader2 = new JsonLoader("nutz/demo/ioc/pet/pets.js");
+				Ioc ioc = new NutIoc(new ComboIocLoader(iocLoader1,iocLoader2));
 				//或者写为
-				//Ioc ioc = new ComboIocLoader("*org.nutz.ioc.loader.json.JsoLoader","nutz/demo/ioc/pet/pets.js"
-				//                             "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","nutz.demo.ioc")
+				//Ioc ioc = new NutIoc(new ComboIocLoader("*org.nutz.ioc.loader.json.JsoLoader","nutz/demo/ioc/pet/pets.js"
+				//                             "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","nutz.demo.ioc"));
 				PetService petService = ioc.get(PetService.class, "petService");
 				System.out.printf("MyPet - [%s]\n", petService.getPet("Hop"));
 			}
