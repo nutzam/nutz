@@ -97,8 +97,8 @@ Nutz 的未来
 	 # 加入 {*GTalk 聊天群} -- 感谢 {*Van} {#999999;/ 添加帐号 nutzam@chatterous.com 为好友，然后发送 `@join` 指令}
 	 # 或者加入 QQ 群
 		 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）] -- 感谢 {*E-Hunter} 的支持  
-		 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群] -- 感谢 *milk cat!* 和 *yanick* 的支持  
-		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群] -- 感谢 *c.A* 的支持  
+		 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群] -- 感谢 {*milk cat!} 和 {*yanick} 的支持  
+		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群] -- 感谢 {*c.A} 的支持  
 	 # 还有新浪微群
 		 # [http://q.t.sina.com.cn/128323 Nutz 的微笑]
 	 
