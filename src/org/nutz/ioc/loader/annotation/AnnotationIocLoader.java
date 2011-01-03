@@ -17,13 +17,14 @@ import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
 
 /**
- * 
+ * 基于注解的Ioc配置
  * @author wendal(wendal1985@gmail.com)
  * 
  */
@@ -102,7 +103,8 @@ public class AnnotationIocLoader implements IocLoader {
 
 			// 处理字段(以@Inject方式,位于字段)
 			List<String> fieldList = new ArrayList<String>();
-			Field[] fields = classZ.getDeclaredFields();
+			Mirror<?> mirror = Mirror.me(classZ);
+			Field[] fields = mirror.getFields();
 			for (Field field : fields) {
 				Inject inject = field.getAnnotation(Inject.class);
 				if (inject == null)
@@ -121,7 +123,7 @@ public class AnnotationIocLoader implements IocLoader {
 				fieldList.add(iocField.getName());
 			}
 			// 处理字段(以@Inject方式,位于set方法)
-			Method[] methods = classZ.getMethods();
+			Method[] methods = mirror.getMethods();
 			for (Method method : methods) {
 				Inject inject = method.getAnnotation(Inject.class);
 				if (inject == null)
@@ -172,8 +174,8 @@ public class AnnotationIocLoader implements IocLoader {
 	protected IocValue convert(String value) {
 		IocValue iocValue = new IocValue();
 		if (value.indexOf(':') > -1) {
-			iocValue.setType(value.substring(0, value.indexOf(":")));
-			iocValue.setValue(value.substring(value.indexOf(":") + 1));
+			iocValue.setType(value.substring(0, value.indexOf(':')));
+			iocValue.setValue(value.substring(value.indexOf(':') + 1));
 		} else
 			iocValue.setValue(value);
 		return iocValue;

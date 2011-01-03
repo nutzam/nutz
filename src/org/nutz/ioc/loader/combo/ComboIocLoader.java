@@ -87,7 +87,7 @@ public class ComboIocLoader implements IocLoader {
 		for (IocLoader iocLoader : iocLoaders)
 			if (iocLoader.has(name))
 				return iocLoader.load(loading, name);
-		return null;
+		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
 }
