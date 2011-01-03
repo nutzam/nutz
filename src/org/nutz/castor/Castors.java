@@ -206,7 +206,7 @@ public class Castors {
 			}
 		}
 		if (log.isDebugEnabled())
-			log.debugf("Using %d castor for Castors",map.size());
+			log.debugf("Using %s castor for Castors",map.size());
 	}
 
 	/**

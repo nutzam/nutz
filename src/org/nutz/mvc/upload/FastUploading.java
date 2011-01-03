@@ -55,7 +55,7 @@ public class FastUploading implements Uploading {
 		 */
 		NutMap params = Uploads.createParamsMap(req);
 		if (log.isDebugEnabled())
-			log.debugf("Params map created - %d params", params.size());
+			log.debugf("Params map created - %s params", params.size());
 		/*
 		 * 解析边界
 		 */
@@ -217,7 +217,7 @@ public class FastUploading implements Uploading {
 			br.close();
 		}
 		if (log.isDebugEnabled())
-			log.debugf("...Done %d bytes readed", br.readed());
+			log.debugf("...Done %s bytes readed", br.readed());
 		/**
 		 * 全部结束<br>
 		 * ========================================================

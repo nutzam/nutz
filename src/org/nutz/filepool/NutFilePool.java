@@ -19,7 +19,7 @@ public class NutFilePool implements FilePool {
 
 	public NutFilePool(String homePath, long size) {
 		if (log.isInfoEnabled()) {
-			log.infof("Init file-pool by: %s [%d]", homePath, size);
+			log.infof("Init file-pool by: %s [%s]", homePath, size);
 		}
 
 		this.size = size;
@@ -65,7 +65,7 @@ public class NutFilePool implements FilePool {
 		}
 
 		if (log.isInfoEnabled())
-			log.infof("file-pool.cursor: %d", cursor);
+			log.infof("file-pool.cursor: %s", cursor);
 	}
 
 	private File home;
