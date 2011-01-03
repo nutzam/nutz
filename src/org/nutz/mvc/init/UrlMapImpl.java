@@ -121,7 +121,7 @@ public class UrlMapImpl implements UrlMap {
 
 					// Print log
 					if (log.isDebugEnabled())
-						log.debugf("  %20s() @(%s)", method.getName(), actionPath);
+						log.debug(String.format("  %20s() @(%s)", method.getName(), actionPath));
 				}
 				// More than one value in @At
 				else {
@@ -132,7 +132,7 @@ public class UrlMapImpl implements UrlMap {
 
 						// Print log
 						if (log.isDebugEnabled())
-							log.debugf("  %20s() @(%s)", method.getName(), actionPath);
+							log.debug(String.format("  %20s() @(%s)", method.getName(), actionPath));
 					}
 				}
 			}
