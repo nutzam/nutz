@@ -1,8 +1,6 @@
 package org.nutz.ioc.loader.json;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +8,6 @@ import java.util.Map;
 
 import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.json.Json;
-import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
@@ -35,22 +32,18 @@ public class JsonLoader extends MapLoader {
 		List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", paths);
 		try {
 			for (NutResource nr : list)
-				loadFromInputStream(nr.getInputStream());
+				loadFromReader(nr.getReader());
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
 
-	private void loadFromInputStream(InputStream ins) {
-		loadFromReader(new InputStreamReader(ins, Encoding.CHARSET_UTF8));
-	}
-
 	private void loadFromReader(Reader reader) {
 		String s = Lang.readAll(reader);
 		Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(s);
 		if (null != map && map.size() > 0)
-			this.getMap().putAll(map);
+			getMap().putAll(map);
 	}
 
 }
