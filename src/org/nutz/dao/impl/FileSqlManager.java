@@ -1,7 +1,6 @@
 package org.nutz.dao.impl;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 
@@ -33,7 +32,7 @@ public class FileSqlManager extends AbstractSqlManager {
 		_sql_map = new HashMap<String, String>();
 		for (NutResource ins : list) {
 			try {
-				loadSQL(new InputStreamReader(ins.getInputStream()));
+				loadSQL(ins.getReader());
 			}
 			catch (IOException e) {
 				throw Lang.wrapThrow(e);
