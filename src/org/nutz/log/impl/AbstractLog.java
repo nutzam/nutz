@@ -60,7 +60,6 @@ public abstract class AbstractLog implements Log {
 	}
 
 	private static final LogInfo buildLogInfo(Object... infos) {
-		LogInfo info = new LogInfo();
 		if (infos == null)
 			return LogInfo.NULL;
 		if (infos.length == 0)
@@ -69,6 +68,7 @@ public abstract class AbstractLog implements Log {
 			Object obj = infos[0];
 			if (obj == null)
 				return LogInfo.NULL;
+			LogInfo info = new LogInfo();
 			if (obj instanceof Throwable) {
 				info.tx = (Throwable) obj;
 				info.message = info.tx.getMessage();
@@ -77,6 +77,7 @@ public abstract class AbstractLog implements Log {
 			return info;
 		}
 		Object obj = infos[0];
+		LogInfo info = new LogInfo();
 		if (null == obj) {
 			info.message = "null";
 		} else {
