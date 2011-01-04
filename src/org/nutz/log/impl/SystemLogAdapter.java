@@ -42,7 +42,37 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
 
 		private SystemLog() {
 			isInfoEnabled = true;
-			isDebugEnabled = true;
+			isDebugEnabled = true;//严重考虑中!!
+		}
+
+		public void debug(Object message, Throwable t) {
+			if (isDebugEnabled())
+				printOut("DEBUG",message, t);
+		}
+
+		public void error(Object message, Throwable t) {
+			if (isErrorEnabled())
+				errorOut("ERROR",message, t);
+		}
+
+		public void fatal(Object message, Throwable t) {
+			if (isFatalEnabled())
+				errorOut("FATAL",message, t);
+		}
+
+		public void info(Object message, Throwable t) {
+			if (isInfoEnabled())
+				printOut("INFO",message, t);
+		}
+
+		public void trace(Object message, Throwable t) {
+			if (isTraceEnabled())
+				printOut("TRACE",message, t);
+		}
+
+		public void warn(Object message, Throwable t) {
+			if (isWarnEnabled())
+				errorOut("WARN",message, t);
 		}
 
 		private void printOut(String level, Object message, Throwable t) {
@@ -60,20 +90,23 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
 		@Override
 		protected void log(int level, Object message, Throwable tx) {
 			switch (level) {
+			case LEVEL_FATAL:
+				fatal(message, tx);
+				break;
 			case LEVEL_ERROR:
-				errorOut("ERROR",message, tx);
+				error(message, tx);
 				break;
 			case LEVEL_WARN:
-				printOut("WARN",message, tx);
+				warn(message, tx);
 				break;
 			case LEVEL_INFO:
-				printOut("INFO",message, tx);
+				info(message, tx);
 				break;
 			case LEVEL_DEBUG:
-				printOut("DEBUG",message, tx);
+				debug(message, tx);
 				break;
 			case LEVEL_TRACE:
-				printOut("TRACE",message, tx);
+				trace(message, tx);
 				break;
 			}
 		}
