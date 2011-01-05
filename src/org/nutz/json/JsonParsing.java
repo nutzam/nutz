@@ -102,7 +102,7 @@ class JsonParsing {
 			throw e;
 		}
 		catch (Exception e) {
-			throw makeError(e.getMessage());
+			throw makeError(e.getMessage(),e);
 		}
 	}
 
@@ -333,6 +333,10 @@ class JsonParsing {
 
 	private JsonException makeError(String message) {
 		return new JsonException(row, col, (char) cursor, message);
+	}
+	
+	private JsonException makeError(String message, Throwable tx) {
+		return new JsonException(row, col, (char) cursor, message, tx);
 	}
 
 	private String readFieldName() throws IOException {
