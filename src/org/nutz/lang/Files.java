@@ -133,7 +133,7 @@ public abstract class Files {
 	 * @param f
 	 *            文件
 	 * @param suffix
-	 *            新后缀
+	 *            新后缀， 比如 ".gif" 或者 ".jpg"
 	 * @return 新文件对象
 	 */
 	public static File renameSuffix(File f, String suffix) {
@@ -148,7 +148,7 @@ public abstract class Files {
 	 * @param path
 	 *            文件路径
 	 * @param suffix
-	 *            新后缀
+	 *            新后缀， 比如 ".gif" 或者 ".jpg"
 	 * @return 新文件后缀
 	 */
 	public static String renameSuffix(String path, String suffix) {
