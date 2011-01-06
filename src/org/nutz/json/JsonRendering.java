@@ -144,7 +144,7 @@ class JsonRendering {
 		try {
 			myMethod = type.getMethod(myMethodName);
 			Object re = myMethod.invoke(obj);
-			writer.append(re.toString());
+			writer.append(String.valueOf(re));
 			return;
 		}
 		/*
@@ -154,7 +154,7 @@ class JsonRendering {
 			try {
 				myMethod = type.getMethod(myMethodName, JsonFormat.class);
 				Object re = myMethod.invoke(obj, format);
-				writer.append(re.toString());
+				writer.append(String.valueOf(re));
 				return;
 			}
 			catch (Exception e) {}
