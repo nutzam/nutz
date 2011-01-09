@@ -19,6 +19,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -564,5 +565,11 @@ public class JsonTest {
 	public void test_setvalue_by_setter() {
 		Person p = Json.fromJson(Person.class, "{num:1}");
 		assertEquals(2, p.getNum());
+	}
+	
+	@Test
+	public void test_toJson(){
+		Object pc = OuterClass.make();
+		assertEquals("ItMe", Json.toJson(pc));
 	}
 }

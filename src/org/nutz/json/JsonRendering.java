@@ -137,12 +137,13 @@ class JsonRendering {
 		Class<? extends Object> type = obj.getClass();
 		ToJson tj = type.getAnnotation(ToJson.class);
 		String myMethodName = Strings.sNull(null == tj ? null : tj.value(), "toJson");
-		Method myMethod;
 		/*
 		 * toJson()
 		 */
 		try {
-			myMethod = type.getMethod(myMethodName);
+			Method myMethod = type.getMethod(myMethodName);
+			if (!myMethod.isAccessible())
+				myMethod.setAccessible(true);
 			Object re = myMethod.invoke(obj);
 			writer.append(String.valueOf(re));
 			return;
@@ -152,7 +153,9 @@ class JsonRendering {
 		 */
 		catch (Exception e1) {
 			try {
-				myMethod = type.getMethod(myMethodName, JsonFormat.class);
+				Method myMethod = type.getMethod(myMethodName, JsonFormat.class);
+				if (!myMethod.isAccessible())
+					myMethod.setAccessible(true);
 				Object re = myMethod.invoke(obj, format);
 				writer.append(String.valueOf(re));
 				return;
