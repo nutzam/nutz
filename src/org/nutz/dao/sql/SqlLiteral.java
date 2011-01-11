@@ -1,5 +1,7 @@
 package org.nutz.dao.sql;
 
+import java.util.Set;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.LinkedIntArray;
@@ -223,4 +225,42 @@ public class SqlLiteral implements Cloneable {
 	public boolean isTRUNCATE() {
 		return stack.firstEquals("TRUNCATE");
 	}
+	
+	/**
+	 * <code>
+	 * UPDATE dao_platoon SET name=@name1,base=@baseName2,leader=@leaderName3 WHERE id=@id4
+	 * 取得"leaderName3", "id4", "baseName2", "name1" 
+	 * </code>
+	 * @return 参数列表
+	 */
+	public String[] getParamNames() {
+		VarIndex paramIndexes2 = getParamIndexes();
+
+		return findNames(paramIndexes2);
+	}
+
+	/**<code>
+	 * InSeRT INTO $T ($id,$name) VALUES(@id1,@name2)
+	 * 取得"T", "name", "id"
+	 * </code>
+	 * @return 表名称等变量列表
+	 */
+	public String[] getVarNames() {
+		return findNames(getVarIndexes());
+	}
+
+	/**
+	 * @param var
+	 * @return
+	 */
+	private String[] findNames(VarIndex var) {
+		if (var == null)
+			return null;
+		Set<String> names = var.names();
+		String[] param = new String[names.size()];
+		names.toArray(param);
+
+		return param;
+	}
+
 }

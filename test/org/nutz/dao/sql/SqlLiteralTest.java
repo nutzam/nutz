@@ -2,9 +2,11 @@ package org.nutz.dao.sql;
 
 import static org.junit.Assert.*;
 
+import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.Test;
+import org.nutz.json.Json;
 
 public class SqlLiteralTest {
 
@@ -121,5 +123,27 @@ public class SqlLiteralTest {
 		SqlLiteral sql = L("@x.y");
 		sql.getParams().set("x", "T");
 		assertEquals("'T'.y", sql.toString());
+	}
+
+	@Test
+	public void test_param_names() {
+		SqlLiteral sql = L("UPDATE dao_platoon SET name=@name1,base=@baseName2,leader=@leaderName3 WHERE id=@id4");
+		String[] paramNames = sql.getParamNames();
+		String result[] = {"leaderName3", "id4", "baseName2", "name1"};
+		Arrays.sort(paramNames);
+		Arrays.sort(result);
+		assertArrayEquals(paramNames, result);
+	}
+
+	@Test
+	public void test_var_names() {
+		SqlLiteral sql = L("InSeRT INTO $T ($id,$name) VALUES(@id1,@name2)");
+		String[] varNames = sql.getVarNames();
+		String result[] = {"T", "name", "id"};
+		//System.out.println(Json.toJson(varNames));
+
+		Arrays.sort(varNames);
+		Arrays.sort(result);
+		assertArrayEquals(varNames, result);
 	}
 }
