@@ -30,6 +30,9 @@ public class Tag extends SimpleNode<HtmlToken> {
 					case '#':
 						tag.id(attr.substring(1));
 						break;
+					default:
+						Pair<String> p = Pair.create(attr);
+						tag.attr(p.getName(), p.getValue());
 					}
 				}
 			}
