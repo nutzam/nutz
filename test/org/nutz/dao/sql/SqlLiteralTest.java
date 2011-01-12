@@ -6,7 +6,6 @@ import java.util.Arrays;
 import java.util.Iterator;
 
 import org.junit.Test;
-import org.nutz.json.Json;
 
 public class SqlLiteralTest {
 
