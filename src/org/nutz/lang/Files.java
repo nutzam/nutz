@@ -673,7 +673,7 @@ public abstract class Files {
 		if (!Strings.isBlank(path)) {
 			int pos = path.replace('\\', '/').lastIndexOf('/');
 			if (pos > 0)
-				return path.substring(pos);
+				return path.substring(pos + 1);
 		}
 		return path;
 	}

@@ -1,9 +1,8 @@
 package org.nutz.lang.util;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
+
+import java.util.Iterator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +15,23 @@ public class LinkedArrayTest {
 	public void setUp() throws Exception {
 		la = new LinkedArray<String>(2);
 		la.pushAll("A", "B", "C", "D", "E", "F", "G");
+	}
+
+	@Test
+	public void test_iterator() {
+		la = new LinkedArray<String>(2);
+		la.pushAll("A", "B", "C", "D", "E", "F", "G");
+		la.popFirst();
+		la.popFirst();
+		la.popFirst();
+		Iterator<String> it = la.iterator();
+		assertEquals("D", it.next());
+		assertEquals("E", it.next());
+		assertEquals("F", it.next());
+		assertEquals("G", it.next());
+		assertFalse(it.hasNext());
+		assertNull(it.next());
+		assertNull(it.next());
 	}
 
 	@Test

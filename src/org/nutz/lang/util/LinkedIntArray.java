@@ -12,7 +12,7 @@ public class LinkedIntArray {
 	}
 
 	public LinkedIntArray(int size) {
-		if (size < 0)
+		if (size <= 0)
 			Lang.makeThrow("width must >0!");
 		this.width = size;
 		cache = new ArrayList<int[]>();

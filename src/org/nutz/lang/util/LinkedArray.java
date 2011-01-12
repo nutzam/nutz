@@ -20,7 +20,7 @@ public class LinkedArray<T> {
 
 	public LinkedArray(Class<T> eleType, int size) {
 		this.eleType = eleType;
-		if (size < 0)
+		if (size <= 0)
 			Lang.makeThrow("width must >0!");
 		this.width = size;
 		cache = new ArrayList<T[]>();
@@ -161,15 +161,17 @@ public class LinkedArray<T> {
 
 		LinkedArrayIterator(LinkedArray<E> stack) {
 			this.stack = stack;
-			i = 0;
+			i = stack.offset;
 		}
 
 		public boolean hasNext() {
-			return (stack.cursor - i + stack.offset) > 0;
+			return i < stack.cursor;
 		}
 
 		public E next() {
-			return stack.innerGet(i++);
+			if (i >= stack.offset && i < stack.cursor)
+				return stack.innerGet(i++);
+			return null;
 		}
 
 		public void remove() {

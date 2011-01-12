@@ -18,4 +18,8 @@ public class R {
 	public static StringGenerator sg(int min, int max) {
 		return new StringGenerator(min, max);
 	}
+
+	public static StringGenerator sg(int len) {
+		return new StringGenerator(len, len);
+	}
 }
