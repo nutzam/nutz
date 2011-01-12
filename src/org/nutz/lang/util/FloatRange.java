@@ -16,8 +16,7 @@ public class FloatRange {
 			return make(Float.parseFloat(new String(cs)));
 
 		float left = Float.parseFloat(String.valueOf(cs, 0, i));
-		if (i == cs.length)
-			return make(left, left);
+		
 		return make(left, Float.parseFloat(String.valueOf(cs, ++i, cs.length - i)));
 	}
 
