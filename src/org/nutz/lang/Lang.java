@@ -366,8 +366,8 @@ public abstract class Lang {
 	 *            可变参数
 	 * @return 列表对象
 	 */
-	public static <T> List<T> list(T... eles) {
-		List<T> list = new ArrayList<T>(eles.length);
+	public static <T> ArrayList<T> list(T... eles) {
+		ArrayList<T> list = new ArrayList<T>(eles.length);
 		for (T ele : eles)
 			list.add(ele);
 		return list;
