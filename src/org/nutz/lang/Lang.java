@@ -360,6 +360,8 @@ public abstract class Lang {
 	 * List《Pet》 pets = Lang.list(pet1, pet2, pet3);
 	 * </pre>
 	 * 
+	 * 注，这里的 List，是 ArrayList 的实例
+	 * 
 	 * @param eles
 	 *            可变参数
 	 * @return 列表对象
