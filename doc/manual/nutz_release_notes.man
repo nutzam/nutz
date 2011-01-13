@@ -1,88 +1,15 @@
-#title: 1.b.34 发行注记
+#title: 1.b.35 发行注记 (Hatching....)
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.34 发行注记
+1.b.34 发行注记 (Hatching....)
 
-	[http://nutzam.com <http://nutzam.com/img/doodle/2010_christmas.jpg>]
-	
-	从 {* 09} 年初至今， 将近 {#FF00FF;* 20} 个月的时间， 这个小项目前前后后发布了 {#0000FF;* 33} 个版本，今天我们可以负责任的说：
-	
-	{*“呃 ... 差不多可以 beta 了吧 ^_^”}
-	
-	请允许我带上[http://news.xinhuanet.com/ziliao/2003-01/21/content_699933.htm 三块高仿劳力士]，向近 2 年来不断试用这个项目的 {*“小白”} 们致敬:
-	{{{
-	如果没有你们
-	
-	这个项目将注定成为一片浮云
-	
-	有如一个 P
-	
-	淡淡滴消散在喧闹的苍穹
-	}}}
-	
-	Beta 意味着神马涅？
-	 * Beta 意味着，我们还会不断改进，但是你每次替换新的 jar 包， 你的代码不需要改动
-	 * 事实上，今年下半年的版本，即使出现新 jar 的编译错误，大家也是很容易修改的，基本上都是分分钟搞定
-	 * 以后，Nutz 的版本号都会是 1.b.xxx 
-	
-	今年的最大的憾事就是：{*我们还是没有完成官网的制作}， 
-	Wendal 同学耐不住寂寞，开了[http://myblog.sunfarms.net/ 自己的博客]，
-	我订阅了一下，发现他的文章还是灰常有营养的， 这里祝愿他坚持一年成名博  ^_^
-	
-	[http://qun.qq.com/air/#58444676 Nutz 的 QQ 群]，几乎成为了这个项目主要的交流方式，
-	但是，同学们请注意，我们的确还有以下的交流方式：
-	 * [http://groups.google.com/group/nutzam?hl=zh-CN Nutzam 讨论区] ({/需轻功})
-	 * {*GTalk 聊天群} - GTalk 添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令
-	 * [http://q.t.sina.com.cn/128323 Nutz 的新浪微群]
-	虽然他们很冷清，但是的确是有。 我们还有致力于提供更好的交流方式
-	
-	今年这个项目被指责的有：
-	 # Demo 不给力！
-	 # 文档还是不够细致！
-	 # 对于混外企的我，没有英文文档怎么推？
-	 # 没有快速生成工具！
-	 # 没有成功案例不敢用啊！
-	解决上面的问题，将成为 2011 年我们的目标
-	
-	另，虽然没有快速生成工具，但是我们也提供了一个  
-	[http://code.google.com/p/nutz/downloads/detail?name=NutzQuickStart_v3_For_1.a.33.zip Nutz快速启动模板]
-	可以暂时顶个先
-	
-	对于英文翻译，显然我们没有足够的人力物力，不过某天我一时兴起，用了下 Google 翻译，
-	 * 请看： [http://translate.google.com/translate?js=n&prev=_t&hl=en&ie=UTF-8&layout=2&eotf=1&sl=zh-CN&tl=en&u=http://nutz.googlecode.com]
-	效果虽然不如人工的翻译，但是，已经让我很惊艳了。 所以 2011 年，我们还是不会把精力放在英文文档翻译上。Google 很给力
-
-	成功案例的问题，我们提供了一个列表：
-	 * [http://code.google.com/p/nutz/wiki/appendix_case]
-	它现在还很短，据我所知，主要的原因是
-	 * 已经使用 Nutz 的同学没有动力告诉我们 TA 项目的情况。 
-	 * 而且在这个具备神奇小气候的国度里，很多企业级项目，都是粉低调的滴~~~ 
-	所以我们的策略是准备好了[http://code.google.com/p/nutz/wiki/appendix_case 这个列表]，然后等啊等，看看事情会不会起变化
-	
-	
-	最后，祝愿所有看到上面这段文字的同学们 ---- {#FF8800;* 圣诞快乐 ^_^}
-	
---------------------------------------------------------------------------------------------------------
-重大改动
-    
-    我们去掉了默认对 JDK Log 的支持，详细请参看 [lang/log.man 关于日志部分的文档] 
-    	 
+	ing...
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 * [http://code.google.com/p/nutz/issues/detail?id=320 Issue 320] 使用@Ok("raw:XXXX")时,会产生异常  {#AAA;by} {*goulin.home}
-	 * [http://code.google.com/p/nutz/issues/detail?id=322 Issue 322] Nutz对LogBack的支持 {#AAA;by} {*yeahyf}
-	 * [http://code.google.com/p/nutz/issues/detail?id=324 Issue 324] lang: SimpleNode 添加节点的问题 {#AAA;by} {*wei li}
-	 * [http://code.google.com/p/nutz/issues/detail?id=325 Issue 325] Chain不能处理中文字段 {#AAA;by} {*sd6733531}
-	 * [http://code.google.com/p/nutz/issues/detail?id=326 Issue 326] 在某种情况下用Mirror给一个javabean赋值的时候出现org.nutz.lang.FailToSetValueException的问题 {#AAA;by} {*ywjno.dev}
-	 * [http://code.google.com/p/nutz/issues/detail?id=328 Issue 328] mvc: 文件上传时，在 Mac 系统上的 Chrome 总是不成功  {#AAA;by} {*zozoth}
-	 * [http://code.google.com/p/nutz/issues/detail?id=329 Issue 329] NutConfig接口应该给出定义getInitParameterNames() 方法  {#AAA;by} {*amosleaf}
-	 * [http://code.google.com/p/nutz/issues/detail?id=331 Issue 331] IocBean注解的fetch,depose事件没有执行 {#AAA;by} {*kinglong408}
-	 * [http://code.google.com/p/nutz/issues/detail?id=334 Issue 334] 1.a.33 使用@Ok("json")视图，AJAX提交，处理xhr时，浏览器报js错 {#AAA;by} {*conanca2006}
-	 * [http://code.google.com/p/nutz/issues/detail?id=336 Issue 336] 为顶级package补全package-info.java {#AAA;by} {*wendal}
-	 * [http://code.google.com/p/nutz/issues/detail?id=338 Issue 338] nutz过滤器中 得IOC容器不理想  {#AAA;by} {*yunhaifeiwu}
-	 * [http://code.google.com/p/nutz/issues/detail?id=339 Issue 339] Record的toPojo方法,不能为已有类型的某些属性赋值 {#AAA;by} {*goulin.home}
+	 * [http://code.google.com/p/nutz/issues/detail?id=xxx Issue xxx] xxxxxx  {#AAA;by} {*xxxx}
+	 
 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -113,20 +40,11 @@
 	 如有遗漏,请提醒我们 ^_^
 	 
 	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}
-    || 贡献者                                                            || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
-    || Amosleaf                                                      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Conanca                                                       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Jay                                                          	||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
-    || Kinglong408                                                   	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Sd6733531                                                     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Wei li                                                        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Wendal                                                        	||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  -   ||
-    || Yeahyf                                                        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Ywjno.dev                                                     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || Zozoth                                                        	||  O   ||  -   ||  O   ||  O   ||  -   ||  O   ||  O   ||
-    || 前冲                                                            	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || 幸福的旁边                                                       	||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
-    || 云海飞舞                                                          	||  O   ||  O   ||  O   ||  -   ||  -   ||  -   ||  O   ||
+    || 贡献者                                                           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+
+	|| sluggard                                                      	||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || 天边的流星                                                       ||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+
 
 	另外，很多朋友都在：
 	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
