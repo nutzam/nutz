@@ -53,8 +53,6 @@ public class WebResourceScan extends AbstractResourceScan {
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
-			System.out.println(src2);
-			System.out.println(dirPath);
 			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);
 			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
 
