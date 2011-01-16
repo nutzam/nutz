@@ -19,5 +19,7 @@ public class TFunc {
 	public String noStatic() {
 		return R.sg(10, 20).next();
 	}
+	
+	public static final String XNAME = "Wendal";
 
 }

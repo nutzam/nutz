@@ -1,5 +1,6 @@
 package org.nutz.ioc.java;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -11,16 +12,25 @@ public class StaticFunctionNode extends ChainNode {
 
 	private Method method;
 	private ChainNode[] args;
+	
+	private Field field;
 
 	public StaticFunctionNode(String className, String name, ChainNode[] args) {
 		try {
-			Mirror<?> mirror = Mirror.me((Class<?>) Lang.loadClass(className));
+			Mirror<?> mirror = Mirror.me(Lang.loadClass(className));
 			if (null == args || args.length == 0) {
 				try {
 					method = mirror.getGetter(name);
 				}
 				catch (NoSuchMethodException e) {
-					throw Lang.makeThrow("Method '%s' don't find in '%s'", name, mirror);
+					try {
+						field = mirror.getField(name);
+						if (!Modifier.isStatic(field.getModifiers()))
+							throw Lang.makeThrow("Field '%s' of '%s' must be static", name, mirror);
+						return;
+					} catch (NoSuchFieldException e1) {
+						throw Lang.makeThrow("Method or field '%s' don't find in '%s'", name, mirror);
+					}
 				}
 			} else {
 				Method[] ms = mirror.findMethods(name, args.length);
@@ -38,13 +48,15 @@ public class StaticFunctionNode extends ChainNode {
 	}
 
 	protected Object getValue(IocMaking ing, Object obj) throws Exception {
-		if (null == args || args.length == 0) {
-			return method.invoke(obj);
+		if (method != null){
+			if (null == args || args.length == 0)
+				return method.invoke(obj);
+			Object[] fas = new Object[args.length];
+			for (int i = 0; i < args.length; i++)
+				fas[i] = args[i].getValue(ing, null);
+			return method.invoke(obj, fas);
 		}
-		Object[] fas = new Object[args.length];
-		for (int i = 0; i < args.length; i++)
-			fas[i] = args[i].getValue(ing, null);
-		return method.invoke(obj, fas);
+		return field.get(null);
 	}
 
 	protected String asString() {
@@ -54,10 +66,16 @@ public class StaticFunctionNode extends ChainNode {
 			for (int i = 1; i < args.length; i++)
 				sb.append(", ").append(args[i].toString());
 		}
-		return String.format(	"%s.%s(%s)",
+		if (method != null)
+			return String.format(	"%s.%s(%s)",
 								method.getDeclaringClass().getName(),
 								method.getName(),
 								sb);
+		else
+			return String.format(	"%s.%s(%s)",
+					field.getDeclaringClass().getName(),
+					field.getName(),
+					sb);
 	}
 
 }

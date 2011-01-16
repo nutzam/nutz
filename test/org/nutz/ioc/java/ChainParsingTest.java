@@ -95,4 +95,8 @@ public class ChainParsingTest {
 		assertEquals(s, cn.toString());
 	}
 
+	@Test
+	public void test_static_field() {
+		N(NAME("XNAME"));
+	}
 }
