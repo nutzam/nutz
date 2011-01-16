@@ -8,6 +8,12 @@ import org.nutz.ioc.IocMaking;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
+/**
+ * 静态方法或静态字段节点
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class StaticFunctionNode extends ChainNode {
 
 	private Method method;
@@ -21,6 +27,8 @@ public class StaticFunctionNode extends ChainNode {
 			if (null == args || args.length == 0) {
 				try {
 					method = mirror.getGetter(name);
+					if (!Modifier.isStatic(method.getModifiers()))
+						throw Lang.makeThrow("Method '%s' of '%s' must be static", name, mirror);
 				}
 				catch (NoSuchMethodException e) {
 					try {
@@ -34,13 +42,14 @@ public class StaticFunctionNode extends ChainNode {
 				}
 			} else {
 				Method[] ms = mirror.findMethods(name, args.length);
-				if (0 == ms.length)
-					throw Lang.makeThrow("Method '%s' don't find in '%s'", name, mirror);
+				if (0 != ms.length)
+					for (int i = 0; i < ms.length; i++)
+						if(Modifier.isStatic(ms[i].getModifiers()))
+								method = ms[i];
+				if (method == null)
+					throw Lang.makeThrow("Method '%s' don't find in '%s' or it is NOT static", name, mirror);
 				this.args = args;
-				this.method = ms[0];
 			}
-			if (!Modifier.isStatic(method.getModifiers()))
-				throw Lang.makeThrow("Method '%s' of '%s' must be static", name, mirror);
 		}
 		catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
