@@ -47,9 +47,9 @@ public class XmlIocLoader implements IocLoader {
 
 	private static final Log LOG = Logs.getLog(XmlIocLoader.class);
 
-	private Map<String, IocObject> iocMap = new LinkedHashMap<String, IocObject>();
+	protected Map<String, IocObject> iocMap = new LinkedHashMap<String, IocObject>();
 
-	private Map<String, String> parentMap = new TreeMap<String, String>();
+	protected Map<String, String> parentMap = new TreeMap<String, String>();
 
 	public static final String TAG_OBJ = "obj";
 	public static final String TAG_ARGS = "args";
@@ -65,7 +65,7 @@ public class XmlIocLoader implements IocLoader {
 		try {
 			DocumentBuilder builder = Lang.xmls();
 			Document document;
-			List<NutResource> list = Scans.me().loadResource(".+[.]xml$", fileNames);
+			List<NutResource> list = Scans.me().loadResource(getScanPatten(), fileNames);
 			for (NutResource nr : list) {
 				InputStream ins = nr.getInputStream();
 				document = builder.parse(ins);
@@ -100,7 +100,7 @@ public class XmlIocLoader implements IocLoader {
 		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
-	private IocObject paserBean(Element beanElement, boolean innerBean) throws Throwable {
+	protected IocObject paserBean(Element beanElement, boolean innerBean) throws Throwable {
 		String beanId;
 		if (innerBean) {
 			beanId = "inner$" + innerId;
@@ -135,7 +135,7 @@ public class XmlIocLoader implements IocLoader {
 		return iocObject;
 	}
 
-	private void parseArgs(Element beanElement, IocObject iocObject) throws Throwable {
+	protected void parseArgs(Element beanElement, IocObject iocObject) throws Throwable {
 		NodeList argsNodeList = beanElement.getElementsByTagName(TAG_ARGS);
 		if (argsNodeList.getLength() > 0) {
 			Element argsElement = (Element) argsNodeList.item(0);
@@ -147,7 +147,7 @@ public class XmlIocLoader implements IocLoader {
 		}
 	}
 
-	private void parseFields(Element beanElement, IocObject iocObject) throws Throwable {
+	protected void parseFields(Element beanElement, IocObject iocObject) throws Throwable {
 		NodeList fieldNodeList = beanElement.getElementsByTagName(TAG_FIELD);
 		if (fieldNodeList.getLength() > 0) {
 			int len = fieldNodeList.getLength();
@@ -169,27 +169,27 @@ public class XmlIocLoader implements IocLoader {
 		}
 	}
 
-	static final String STR_TAG = "str";
-	static final String ARRAY_TAG = "array";
-	static final String MAP_TAG = "map";
-	static final String ITEM_TAG = "item";
-	static final String LIST_TAG = "list";
-	static final String SET_TAG = "list";
-	static final String OBJ_TAG = "obj";
-	static final String INT_TAG = "int";
-	static final String SHORT_TAG = "short";
-	static final String LONG_TAG = "long";
-	static final String FLOAT_TAG = "float";
-	static final String DOUBLE_TAG = "double";
-	static final String BOOLEAN_TAG = "bool";
-	static final String REFER_TAG = "refer";
-	static final String JAVA_TAG = IocValue.TYPE_JAVA;
-	static final String FILE_TAG = IocValue.TYPE_FILE;
-	static final String EVN_TAG = IocValue.TYPE_ENV;
-	static final String JNDI_TAG = IocValue.TYPE_JNDI;
-	static final String SYS_TAG = IocValue.TYPE_SYS;
+	protected static final String STR_TAG = "str";
+	protected static final String ARRAY_TAG = "array";
+	protected static final String MAP_TAG = "map";
+	protected static final String ITEM_TAG = "item";
+	protected static final String LIST_TAG = "list";
+	protected static final String SET_TAG = "list";
+	protected static final String OBJ_TAG = "obj";
+	protected static final String INT_TAG = "int";
+	protected static final String SHORT_TAG = "short";
+	protected static final String LONG_TAG = "long";
+	protected static final String FLOAT_TAG = "float";
+	protected static final String DOUBLE_TAG = "double";
+	protected static final String BOOLEAN_TAG = "bool";
+	protected static final String REFER_TAG = "refer";
+	protected static final String JAVA_TAG = IocValue.TYPE_JAVA;
+	protected static final String FILE_TAG = IocValue.TYPE_FILE;
+	protected static final String EVN_TAG = IocValue.TYPE_ENV;
+	protected static final String JNDI_TAG = IocValue.TYPE_JNDI;
+	protected static final String SYS_TAG = IocValue.TYPE_SYS;
 
-	private IocValue parseX(Element element) throws Throwable {
+	protected IocValue parseX(Element element) throws Throwable {
 		IocValue iocValue = new IocValue();
 		String type = element.getNodeName();
 		if (EVN_TAG.equalsIgnoreCase(type)) {
@@ -234,7 +234,7 @@ public class XmlIocLoader implements IocLoader {
 		return iocValue;
 	}
 
-	private List<IocValue> paserCollection(Element element) throws Throwable {
+	protected List<IocValue> paserCollection(Element element) throws Throwable {
 		List<IocValue> list = new ArrayList<IocValue>();
 		if (element.hasChildNodes()) {
 			NodeList nodeList = element.getChildNodes();
@@ -248,7 +248,7 @@ public class XmlIocLoader implements IocLoader {
 		return list;
 	}
 
-	private Map<String, ?> paserMap(Element element) {
+	protected Map<String, ?> paserMap(Element element) {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (element.hasChildNodes()) {
 			NodeList nodeList = element.getElementsByTagName(ITEM_TAG);
@@ -273,7 +273,7 @@ public class XmlIocLoader implements IocLoader {
 		return map;
 	}
 
-	private void parseEvents(Element beanElement, IocObject iocObject) {
+	protected void parseEvents(Element beanElement, IocObject iocObject) {
 		NodeList eventsNodeList = beanElement.getElementsByTagName("events");
 		if (eventsNodeList.getLength() > 0) {
 			Element eventsElement = (Element) eventsNodeList.item(0);
@@ -295,7 +295,7 @@ public class XmlIocLoader implements IocLoader {
 		}
 	}
 
-	private void handleParent() {
+	protected void handleParent() {
 		// 检查parentId是否都存在.
 		for (String parentId : parentMap.values())
 			if (!iocMap.containsKey(parentId))
@@ -323,7 +323,7 @@ public class XmlIocLoader implements IocLoader {
 		}
 	}
 
-	private boolean check(List<String> parentList, String currentBeanId) {
+	protected boolean check(List<String> parentList, String currentBeanId) {
 		if (parentList.contains(currentBeanId))
 			return false;
 		String parentBeanId = parentMap.get(currentBeanId);
@@ -331,5 +331,9 @@ public class XmlIocLoader implements IocLoader {
 			return true;
 		parentList.add(currentBeanId);
 		return check(parentList, parentBeanId);
+	}
+	
+	protected String getScanPatten() {
+		return ".+[.]xml$";
 	}
 }
