@@ -248,7 +248,7 @@ class JsonParsing {
 				return (T) value;
 			return Castors.me().castTo(value, me.getType());
 		case 't': // true
-			if ('u' != (char) nextChar() & 'r' != (char) nextChar() & 'e' != (char) nextChar())
+			if ('r' != (char) nextChar() | 'u' != (char) nextChar() | 'e' != (char) nextChar())
 				throw makeError("Expect boolean as input!");
 			if (null != type && !Mirror.me(type).isBoolean())
 				throw makeError("Expect boolean|Boolean as type!");
@@ -256,9 +256,9 @@ class JsonParsing {
 			return (T) Boolean.valueOf(true);
 		case 'f': // false
 			if ('a' != (char) nextChar()
-				& 'l' != (char) nextChar()
-				& 's' != (char) nextChar()
-				& 'e' != (char) nextChar())
+				| 'l' != (char) nextChar()
+				| 's' != (char) nextChar()
+				| 'e' != (char) nextChar())
 				throw makeError("Expect boolean as input!");
 			if (null != type && !Mirror.me(type).isBoolean())
 				throw makeError("Expect boolean|Boolean as type!");

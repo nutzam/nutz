@@ -1,9 +1,6 @@
 package org.nutz.json;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -87,6 +84,11 @@ public class JsonTest {
 	@Test
 	public void testBoolean() {
 		assertTrue(Json.fromJson(boolean.class, Lang.inr("true")));
+		try {
+			Json.fromJson(boolean.class, Lang.inr("ture"));
+			fail();
+		}
+		catch (JsonException e) {}
 		assertFalse(Json.fromJson(boolean.class, Lang.inr("false")));
 		assertTrue(((Boolean) Json.fromJson(Lang.inr("true"))).booleanValue());
 		assertFalse(((Boolean) Json.fromJson(Lang.inr("false"))).booleanValue());
@@ -566,9 +568,9 @@ public class JsonTest {
 		Person p = Json.fromJson(Person.class, "{num:1}");
 		assertEquals(2, p.getNum());
 	}
-	
+
 	@Test
-	public void test_toJson(){
+	public void test_toJson() {
 		Object pc = OuterClass.make();
 		assertEquals("ItMe", Json.toJson(pc));
 	}
