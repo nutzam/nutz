@@ -1,0 +1,51 @@
+#title: Nutz.Aop能做什么,不能做什么?
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+Nutz.Aop能做什么?
+	为实例方法添加 前置(before)/后置(after)/一般异常处理(Exception)/错误(Throwable)
+
+--------------------------------------------------------------------------------------
+Nutz.Aop不能做什么?
+	对构造方法进行拦截,对静态方法进行拦截,对字段进行拦截,对final类/final方法进行拦截,对私有方法进行拦截
+
+--------------------------------------------------------------------------------------
+Nutz.Aop是如何做到拦截一个方法的
+	# 继承需要拦截的类. 这个类必须的非abstract非final的顶层类,不能是内部类和本地类(这个很少见)
+	# override需要拦截的方法. 这个方法必须是非abstract非final非static非native
+	# 嵌入拦截器逻辑到方法中. 看网页: [http://code.google.com/p/nutz/wiki/ioc_aop_solution Nutz.Aop模型]
+
+--------------------------------------------------------------------------------------
+Nutz.Aop实现的细节问题:
+	# 使用的是内嵌的精简过的[http://asm.ow2.org/ ASM]
+		# 虽然说是精简过,但实际代码使用率约50%,还有精简的余地
+		# 位于org.nutz.repo.org.objectweb.asm , 除非非常非常必要,请不要引用这里的类, 如果你要使用Asm,请使用官方原版
+	# 通过AbstractClassAgent过滤不可能被拦截的类和方法
+		# 这个类与具体实现无关
+		# 没有引用Asm的类
+		# 如果觉得我实现得太烂,我想继承这个类仍是不错的选择
+
+--------------------------------------------------------------------------------------
+Nutz.Aop能怎么用:
+	# 内置拦截器
+		# Log拦截器 为方法添加Log日志,记录方法进入/返回/异常等情况
+		# 事务拦截器 为方法添加事务
+	# 拦截器接口MethodInterceptor
+		# 仅需要实现一个方法void filter(InterceptorChain chain)
+		# InterceptorChain实例包含方法执行的全部信息--对象/参数/方法/返回值
+			# InterceptorChain对象最重要的方法doChain(),用于继续执行过滤链
+			# InterceptorChain对象的方法invoke()用于直接执行原方法,一般不直接调用
+		# 大部分情况下,继承AbstractMethodInterceptor是不错的选择,可以清晰处理方法执行的不同阶段
+	# 在Ioc中添加Aop支持
+		# [http://code.google.com/p/nutz/wiki/ioc_annotation_ioc_loader @Aop注解]
+		# 声明式Aop
+			# [http://code.google.com/p/nutz/wiki/ioc_aop_json json方式]
+			# xml方式,暂未资料
+
+--------------------------------------------------------------------------------------
+Nutz.Aop代码中的注释
+	# 在org.nutz.aop/org.nutz.aop.interceptor/org.nutz.aop.matcher下的类,基本上都是注释了的
+	# 在org.nutz.aop.asm下的类,基本上是无注释的,在可预见的将来我也不打算添加
+		# 基本上都是Asm操作字节码,苦涩难懂
+		# 即使添加注释,我相信对你的理解不会有太多帮助
+		# 如果你能看懂这部分的代码,那你也不需要注释

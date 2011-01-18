@@ -11,12 +11,12 @@ Nutz的POM
 		<artifactId>nutz</artifactId>
 		<packaging>jar</packaging>
 		<name>Nutz</name>
-		<version>1.a.33</version>
+		<version>1.b.34</version>
 		<url>http://nutz.googlecode.com</url>
 		<!-- other info ...... -->
 	</project>
 	}}}
-	你可以在 [http://code.google.com/p/nutz/source/browse/trunk/META-INF/maven/org/nutz/pom.xml 这里]找到当前POM
+	你可以在 [http://code.google.com/p/nutz/source/browse/trunk/pom.xml 这里]找到当前POM
 	
 如何使用
 	将Nutz加入你的POM
@@ -24,7 +24,7 @@ Nutz的POM
 	<dependency>
 		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
-		<version>1.a.33</version>
+		<version>1.b.34</version>
 	</dependency>
 	}}}
 	无需添加repository即可使用Nutz.不要惊讶,因为我们已经将Nutz提交到maven中央仓库!

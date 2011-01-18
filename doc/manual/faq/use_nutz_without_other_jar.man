@@ -1,0 +1,35 @@
+#title: Nutz需要依赖第三方jar吗?Log如何配置?
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+一个老生常谈的问题
+	# Nutz需要第三方jar包才能运行吗? 答案是,不需要.但如果有的话更好.
+	# 一般有几种疑问:
+		# 刚刚接触Nutz,直接把nutz.jar扔进工程,发现正常运行起来了
+		# 读源码,发现源码其实是依赖Log4j的几个类的,但为什么没有log4j的jar,Nutz也正常运行了呢?
+		# 想把日志输出到log4j,加上log4j的jar,发现nutz的日志就按log4j的设置输出了
+		# 不想使用log4j,想使用更高效的Logback或者传统的JDK Logging,不知道行不行?
+
+解答
+	# Nutz的源码中,依赖两个外部jar -- servlet-api.jar 和 log4j.jar
+		# 前者在任何标准J2EE Web应用中都有, Nutz仅支持Servlet 2.4或以上.
+		# 后者是极其常见的Log4j, 编译器依赖于1.2.14版,但在运行时仅要求是1.2.x. 不过,我推荐最新的log4j 1.2.16 .
+	# 我们使用Nutz.Plugin,通过检测是否存在Log4j的核心接口 org.apache.log4j.Log是否存在来判断是否将日志输出到Log4j
+		# 由于仅检测是否存在org.apache.log4j.Log接口,这样就导致两个情况:
+			# 仅仅把Log4j的jar放进classpath,而没有配置之,那么输出日志时,log4j会警告你. 我们认为这是你的失误.
+			# 这样也提供了一个自由度,因为slf4j的log4j-over-slf4j桥也提供这个接口.
+			  换句话说,如果你把log4j-over-slf4j.jar放进classpath,那么Nutz的日志也能通过Slf4j输出去.
+
+搭配组合
+	# 最精简搭配,适合尝试阶段的新手,默认输出的就是Debug信息,完全无鸭梨!!
+		* nutz.jar
+	# 经典搭配,适合大部分人的需要
+		* nutz.jar + log4j-1.2.14.jar
+	# 推荐搭配,搭配最新的log4j
+		* nutz.jar + log4j-1.2.16.jar
+	# 性能至上,使用Logback
+		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + logback.jar
+	# 传统选择,使用JDK Loggging
+		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jdk.jar
+	# 另类之选,使用Apache Common Logging
+		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jcl.jar

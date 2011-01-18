@@ -97,6 +97,11 @@
 		<doc path="1_a_26.man"/>
 		<doc path="1_a_25.man"/>
 	</doc>
+	<doc path="faq" title="FAQ">
+		<doc path="how_to_pronounce_nutz.man"/>
+		<doc path="use_nutz_without_other_jar.man"/>
+		<doc path="what_aop_can_do.man"/>
+	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="case.man"/>
 		<doc path="create_datasource.man"/>
