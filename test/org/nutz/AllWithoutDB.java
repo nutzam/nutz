@@ -22,5 +22,6 @@ import org.nutz.resource.AllResourceScan;
 						AllHttp.class,
 						AllResourceScan.class,
 						AllMvc.class,
-						AllLog.class})
+						AllLog.class,
+						})
 public class AllWithoutDB {}
