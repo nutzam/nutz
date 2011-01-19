@@ -44,8 +44,10 @@ public class StaticFunctionNode extends ChainNode {
 				Method[] ms = mirror.findMethods(name, args.length);
 				if (0 != ms.length)
 					for (int i = 0; i < ms.length; i++)
-						if(Modifier.isStatic(ms[i].getModifiers()))
+						if(Modifier.isStatic(ms[i].getModifiers())) {
 								method = ms[i];
+								break;
+						}
 				if (method == null)
 					throw Lang.makeThrow("Method '%s' don't find in '%s' or it is NOT static", name, mirror);
 				this.args = args;
