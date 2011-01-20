@@ -10,6 +10,7 @@ import org.nutz.json.AllJson;
 import org.nutz.lang.AllLang;
 import org.nutz.log.AllLog;
 import org.nutz.mvc.AllMvc;
+import org.nutz.plugin.AllPlugin;
 import org.nutz.resource.AllResourceScan;
 
 @RunWith(Suite.class)
@@ -23,5 +24,6 @@ import org.nutz.resource.AllResourceScan;
 						AllResourceScan.class,
 						AllMvc.class,
 						AllLog.class,
+						AllPlugin.class
 						})
 public class AllWithoutDB {}
