@@ -66,33 +66,31 @@ public class WebResourceScan extends AbstractResourceScan {
 				if (name.indexOf(base) > -1)
 					nutResource.setName(name.substring(base.length()));
 				list.add(nutResource);
-				flag = false;
 			}
+			flag = list2.isEmpty();
 		}
 		// 目录不存在,或者里面没有任何文件
-		if (flag) {
-			flag = true;
-			try{
-				if (!src.startsWith("/")) {
-					String base = sc.getRealPath("/WEB-INF/classes/");
-					String path = sc.getRealPath("/WEB-INF/classes/"+src);
-					if (path != null){
-						List<NutResource> list2 = scanInDir(regex, base, new File(path), true);
-						for (NutResource nutResource : list2) {
-							String name = nutResource.getName();
-							if (name.indexOf(base) > -1)
-								nutResource.setName(name.substring(base.length()));
-							list.add(nutResource);
-							flag = false;
-						}
+		if (flag && (!src.startsWith("/"))) {
+			try {
+				String base = sc.getRealPath("/WEB-INF/classes/");
+				String path = sc.getRealPath("/WEB-INF/classes/" + src);
+				if (path != null) {
+					List<NutResource> list2 = scanInDir(regex, base, new File(
+							path), true);
+					for (NutResource nutResource : list2) {
+						String name = nutResource.getName();
+						if (name.indexOf(base) > -1)
+							nutResource.setName(name.substring(base.length()));
+						list.add(nutResource);
 					}
+					flag = list2.isEmpty();
 				}
-			}catch (Throwable e) {}
+			} catch (Throwable e) {
+			}
 		}
 		if (flag && log.isInfoEnabled())
-				log.infof(	"Fail to found '%s' in /WEB-INF/classes of context [%s]",
-							src,
-							sc.getServletContextName());
+			log.infof("Fail to found '%s' in /WEB-INF/classes of context [%s]",
+					src, sc.getServletContextName());
 		return list;
 	}
 
