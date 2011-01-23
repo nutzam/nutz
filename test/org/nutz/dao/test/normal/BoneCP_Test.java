@@ -30,13 +30,9 @@ public class BoneCP_Test extends DaoCase {
 	@Test
 	public void clear_links() {
 		TableName.run(platoon, new Atom() {
-			public void run() {
-				Tank t = dao.fetchLinks(dao.fetch(Tank.class, "T92"), "members");
-				dao.clearLinks(t, "members");
-			}
+			public void run() {}
 		});
 		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
-		assertEquals(0, dao.count(Pet.class));
 		Sql sql1 = Sqls.create("INSERT INTO t_pet (name) VALUES ('A')");
 		Sql sql2 = Sqls.create("INSERT INTO t_pet (nocol) VALUES ('B')");
 		try {
