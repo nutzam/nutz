@@ -35,6 +35,8 @@
 			<init-param>
 				<param-name>modules</param-name>
 				<param-value>com.mine.app.MainModule</param-value>
+			</init-param>
+			<init-param>
 				<param-name>ignore</param-name>
 				<param-value>^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg|html)$</param-value>
 			</init-param>
