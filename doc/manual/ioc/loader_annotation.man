@@ -1,4 +1,4 @@
-#title: Ioc 注解加载器
+#title: Ioc - Annotation 加载器
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 #author:zozoh(zozohtnt@gmail.com)
@@ -14,7 +14,7 @@
 
 	我可以负责任的告诉你，完全是可以滴 ^_^
 
-	首先这篇文章，会详细讲解一下如果通过注解来配置你的容器对象，而 [loader_combo.man Ioc 组合加载器]一篇，
+	首先这篇文章，会详细讲解一下如果通过注解来配置你的容器对象，而 [loader_combo.man Ioc 复合加载器]一篇，
 	将会告诉你如何组合多个加载器，这样你就可以把你的对象依赖关系分别写到 xml,json,以及 Java 注解里，组合
 	使用了。
 
@@ -30,7 +30,7 @@
 	{{{<Java>
 	@IocBy(type = AnnotationIocProvider.class, 
 	       args = { "com.you.app.package0",
-					"com.you.app.package1"})
+	                "com.you.app.package1"})
 	public class MainModule {
 	    ....
 	}}}
@@ -77,12 +77,10 @@
 	
 	还有另外一种方法，你可以为你的对象声明一个单独注解：
 	{{{<Java>
-	{{{<Java>
 	@InjectName("myObjectName")
 	@IocBean
 	public class MyObject {
 		...
-	}}}
 	}}}
 	列位，看到这里，可能有人会问了，这不是脱裤子放屁吗？ @IocBean 可以有 name 属性，而你又搞了一个
 	@InjectName 注解专门声明名字，你到底打算让我们用哪一个？你逗我们玩哪？

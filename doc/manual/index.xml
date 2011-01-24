@@ -44,6 +44,7 @@
 		<doc path="scope.man"/>
 		<doc path="xml_ioc_loader.man"/>
 		<doc path="loader_annotation.man"/>
+		<doc path="loader_combo.man"/>
 		<doc path="aop_json.man"/>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
