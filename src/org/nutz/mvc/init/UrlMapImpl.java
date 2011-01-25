@@ -76,8 +76,12 @@ public class UrlMapImpl implements UrlMap {
 			bases = Lang.array("");
 		else if (null == baseAt.value() || baseAt.value().length == 0)
 			bases = Lang.array("/" + moduleType.getSimpleName().toLowerCase());
-		else
+		else {
 			bases = baseAt.value();
+			for (int i = 0; i < bases.length; i++)
+				if (bases[i] == null || "/".equals(bases[i]))
+						bases[i] = "";
+		}
 
 		/*
 		 * looping all methods in the class, if has one @At, this class will be
@@ -123,7 +127,7 @@ public class UrlMapImpl implements UrlMap {
 					if (log.isDebugEnabled())
 						log.debug(String.format("  %20s() @(%s)", method.getName(), actionPath));
 				}
-				// More than one value in @At
+				// Have value in @At
 				else {
 					for (String at : paths) {
 						// Get Action
