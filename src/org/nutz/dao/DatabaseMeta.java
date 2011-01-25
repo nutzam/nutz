@@ -101,10 +101,6 @@ public class DatabaseMeta {
 		this.type = DB.OTHER;
 	}
 
-	public boolean is(String typeName) {
-		return type.name().equalsIgnoreCase(typeName);
-	}
-
 	public DB getType() {
 		return type;
 	}
