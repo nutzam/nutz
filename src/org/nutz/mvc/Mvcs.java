@@ -247,7 +247,13 @@ public abstract class Mvcs {
 
 		rr.setUrl(url);
 		if (null != url) {
-			int lio = url.lastIndexOf('.');
+			int lio = 0;
+			if (!url.endsWith("/")) {
+				int ll = url.lastIndexOf('/');
+				lio = url.lastIndexOf('.');
+				if (lio < ll)
+					lio = -1;
+			}
 			if (lio > 0) {
 				rr.setPath(url.substring(0, lio));
 				rr.setSuffix(url.substring(lio + 1));

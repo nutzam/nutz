@@ -5,8 +5,10 @@ import static junit.framework.Assert.*;
 import java.lang.reflect.Method;
 
 import org.junit.Test;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutServlet;
 import org.nutz.mvc.AbstractMvcTest;
+import org.nutz.mvc.RequestPath;
 
 public class MvcBaseTest extends AbstractMvcTest {
 
@@ -33,4 +35,27 @@ public class MvcBaseTest extends AbstractMvcTest {
 		assertEquals("\"haha\"", response.getAsString());
 	}
 
+	@Test
+	public void testPointPath() throws Throwable {
+		request.setPathInfo("/1.2/say.nutz");
+		RequestPath path = Mvcs.getRequestPathObject(request);
+		assertNotNull(path);
+		assertEquals("/1.2/say", path.getPath());
+		assertEquals("nutz", path.getSuffix());
+		
+		request.setPathInfo("/1.2/say");
+		path = Mvcs.getRequestPathObject(request);
+		assertNotNull(path);
+		assertEquals("/1.2/say", path.getPath());
+		
+		request.setPathInfo("/1.2/say.po/");
+		path = Mvcs.getRequestPathObject(request);
+		assertNotNull(path);
+		assertEquals("/1.2/say.po/", path.getPath());
+		
+		request.setPathInfo("/1.2/say.po/.nut");
+		path = Mvcs.getRequestPathObject(request);
+		assertNotNull(path);
+		assertEquals("/1.2/say.po/", path.getPath());
+	}
 }
