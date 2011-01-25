@@ -38,3 +38,22 @@ Nutz 内置的服务类
 	 * 这四个内置的服务类，仅仅提供了一些基本的操作。
 	 * 这些服务类都是支持泛型。
 	 * 你可以直接使用，或者你可以从这四个服务类继承你自己的实现。
+	 * 如果你继承这些服务类,请务必声明泛型
+	 
+	正确的写法
+	{{{<JAVA>
+		public class RegisterService extends IdEntityService<UserBean> {
+			public RegisterService(Dao dao){
+				super(dao);
+			}
+		}
+	}}}
+	
+	错误的写法,你在log中会看到一条警告信息.
+	{{{<JAVA>
+	 	public class RegisterService extends IdEntityServiceIdEntityService {
+	 		public RegisterService(Dao dao){
+	 			super(dao);
+	 		}
+	 	}
+	 }}}
