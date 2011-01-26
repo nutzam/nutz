@@ -8,6 +8,7 @@ import org.junit.runners.Suite;
 						SimpleDaoTest.class,
 						QueryTest.class,
 						UpdateTest.class,
+						BoneCP_Test.class,
 						SupportedFieldTypeTest.class,
 						AutoGenerateValueTest.class,
 						PkTest.class})
