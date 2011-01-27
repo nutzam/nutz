@@ -39,9 +39,16 @@ var ioc = {
 // Dao
 	dao : {
 		type :"org.nutz.dao.impl.NutDao",
-		args : [ {
-			refer :"dataSource"
-		} ]
+		args : [ {refer :"dataSource"}, {refer :"sqls"} ]
+	},
+/*------------------------------------------------------------------*/
+// Sqls
+	sqls : {
+		type : 'org.nutz.dao.impl.FileSqlManager',
+		args : ['org/nutz/dao/test/sqls/dir'],
+		fields : {
+			regex : '^.*[.]sqls$'
+		}
 	},
 /*------------------------------------------------------------------*/
 // Meta service

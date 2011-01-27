@@ -11,6 +11,8 @@ import java.io.IOException;
 public interface FilePool {
 
 	/**
+	 * 判断文件池中是否存在一个文件
+	 * 
 	 * @param fId
 	 *            文件的 ID
 	 * @param suffix
@@ -25,7 +27,7 @@ public interface FilePool {
 	long current();
 
 	/**
-	 * 从池中删除一个文件
+	 * 从池中删除一个文件，如果文件不存在，返回null
 	 * 
 	 * @param fId
 	 *            文件ID

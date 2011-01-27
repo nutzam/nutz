@@ -29,6 +29,7 @@
 
 	 * 重写 [/ioc/loader_annotation.man Ioc - Annotation加载器 ]
 	 * 增加 [/ioc/loader_combo.man Ioc - 复合加载器 ]
+	 * 增加 [/lang/filepool.man Ioc - 文件池 ]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单

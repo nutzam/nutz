@@ -73,6 +73,7 @@
 		<doc path="castors.man"/>
 		<doc path="mirror.man"/>
 		<doc path="segment.man"/>
+		<doc path="filepool.man"/>
 		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
@@ -102,6 +103,7 @@
 		<doc path="how_to_pronounce_nutz.man"/>
 		<doc path="use_nutz_without_other_jar.man"/>
 		<doc path="what_aop_can_do.man"/>
+		<doc path="jar_encoding.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="case.man"/>
