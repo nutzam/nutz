@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.castor.castor.Array2Array;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.TypeExtractor;
@@ -142,6 +143,10 @@ public class Castors {
 	}
 
 	private void reload() {
+		if (paths == null || paths.size() == 0) {
+			resetPaths();
+			return;
+		}
 		HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
 		for (Method m1 : setting.getClass().getMethods()) {
 			Class<?>[] pts = m1.getParameterTypes();
@@ -163,14 +168,14 @@ public class Castors {
 		if (classes.size() == 0) {
 			if (log.isWarnEnabled())
 				log.warn("!!No castor found!!!!!!!!! Load default castor list");
-			try {
-				InputStream is = getClass().getResourceAsStream("/org/nutz/castor/default-castors.txt");
-				String str = Streams.readAndClose(new InputStreamReader(is));
-				String[] classNames = str.split("\\n");
-				for (String className : classNames) {
+			
+			InputStream is = getClass().getResourceAsStream("/org/nutz/castor/default-castors.txt");
+			String str = Streams.readAndClose(new InputStreamReader(is,Encoding.CHARSET_UTF8));
+			String[] classNames = str.split("\\n");
+			for (String className : classNames)
+				try {
 					classes.add(Class.forName("org.nutz.castor.castor."+className.trim()));
-				}
-			} catch (Throwable e) {}
+				} catch (Throwable e) {}
 		}
 		for (Class<?> klass : classes) {
 			try {
