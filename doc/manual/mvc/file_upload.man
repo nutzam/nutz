@@ -5,9 +5,17 @@
 	
 	大多数的 Web 应用都不可避免的，会涉及到文件上传。文件上传，不过是一种适配 HTTP 输入流的方式。
 	为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 {*org.nutz.mvc.upload.UploadAdaptor}
+
+    这个适配器专门解析形式为
+    {{{
+    <form target="hideWin" enctype="multipart/form-data">
+        <input type="file">
+        ...
+    }}}
+    的 HTML 提交表单
 	
 	这个适配器的工作细节是这样的：
-	 * 它一次将 HTTP 输入流中所有的文件读入，保存在临时文件目录里
+	 * 它一次将 HTTP 输入流中所有的文件读入，保存在[/lang/filepool.man 临时文件目录]里
 	 * 表单项目会保存在内存里
 	 * 在上传的过程中，它会向当前 Session 中设置一个对象： {*org.nutz.mvc.upload.UploadInfo}
 		 * 属性名为 "org.nutz.mvc.upload.UploadInfo"
@@ -23,29 +31,180 @@
 	通过 @AdaptBy 声明
 		{{{
 		...
-		@AdaptBy(type = UploadAdaptor.class, args = { "D:/tmp/demo/upload", "10" })
+		@AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/WEB-INF/tmp" })
 		public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
 			...
 		}}}
-		这个适配器，有四个构造函数，其中一个，接受
-		 * 临时文件目录 (相对路径和绝对路径都是可以的)
-		 * 缓存区大小,默认为8192
-		 * 字符集,默认为UTF-8
-		 * 临时文件总个数,默认2000
+        Nutz.Mvc 会为你的入口函数创建一个上传适配器，上传适配器的会将临时文件存放在
+         {*/WEB-INF/tmp} 目录下。
 		
-		如果你想进行更细腻的控制，请把这个适配器放到 Ioc 容器里。 [http_adaptor.man 适配器]一节有相关的描述
 	------------------------------------------------------------------------------------------
-	这个适配器支持更多的参数类型
-		 * java.util.File 上传后的文件对象
-		 * org.nutz.mvc.upload.FieldMeta 上传文件的原始信息
-		 * org.nutz.mvc.upload.TempFile 组合了上传文件对象和原始信息
-		
-		当然
-		
-		 * 你还是需要通过 @Param 注解为每个参数注明，在表单里字段名
-		 * 路径参数更优先
+    更细腻的控制
+        
+        更多的时候，你想控制
+         * 上传文件的临时文件数量
+         * 可以上传的单个文件最大尺寸
+         * 文件的类型
+         * 空文件跳过不保存
+        那么你需要把上传适配器交由 Ioc 容器来管理，首先你的入口函数需要这么写：
+        {{{
+		...
+		@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+		public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
+            ...
+        }}}
+        请注意这里的 "ioc:myUpload"，Nutz.Mvc 发现你的参数为此形式时，它会从 Ioc 容器里获取你的
+        上传适配器的实例（名字为{*myUpload}），而不是直接 new 出来。
+
+        然后你需要在你的 Ioc 配置文件里 （以 Json 配置为例子）配置你的 UploadAdaptor, 你需要增加
+        下面这三个对象：
+        {{{
+        ...
+        tmpFilePool : {
+            type : 'org.nutz.filepool.NutFilePool',
+            // 临时文件最大个数为 1000 个
+            args : [ "~/nutz/blog/upload/tmps", 1000 ]   
+        },
+        uploadFileContext : {
+            type : 'org.nutz.mvc.upload.UploadingContext',
+            singleton : false,
+            args : [ { refer : 'tmpFilePool' } ],
+            fields : {
+                // 是否忽略空文件, 默认为 false
+                ignoreNull : true,
+                // 单个文件最大尺寸(大约的值，单位为字节，即 1048576 为 1M)
+                maxFileSize : 1048576,
+                // 正则表达式匹配可以支持的文件名
+                nameFilter : '^(.+[.])(gif|jpg|png)$' 
+            } 
+        },
+        myUpload : {
+            type : 'org.nutz.mvc.upload.UploadAdaptor',
+            singleton : false,
+            args : [ { refer : 'uploadFileContext' } ] 
+        }
+        ...
+        }}}
+        这样，在配置文件中，你就可以随心所欲的进行控制了。而且这么写仅仅多写了不到 20 行的配置文件，
+        到也没有特别麻烦，对吗？（相关详细规则描述：[http_adaptor.man#通过_Ioc_容器获得适配器]）
+        
+        看到这里，有些同学会问了，为什么你用注解的方式可以这么写：
+        {{{
+		@AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/WEB-INF/tmp" })
+        }}}
+        '{*`{app.root}`}' 用起来多方便啊，那么在 Ioc 容器来，我的临时目录还想放在这里，有没有
+        什么办法啊？ 
+
+        办法有。但是因为 Ioc 容器原来设计的是同 Mvc 的 Web 容器环境不相干的，所以要想绕过了这点
+        限制，会稍微的有一点麻烦。
+
+        首先，因为 Ioc 容器设计的良好扩展性，所有实现了 '{*org.nutz.ioc.Ioc2}' 这个接口的 Ioc
+        容器（当然，Nutz 自带的 Ioc 容器 - NutzIoc，很好的实现了 Ioc2 这个接口）都可以被 Nutz.Mvc
+        注入一种新的获取值的方式（详情请参看 [with_ioc.man#在容器对象里获得_ServletContext]),
+        我想你只需要实现一个简单的 Java 对象即可:
+        {{{<Java>
+        package com.abc.myapp;
+
+        import javax.servlet.ServletContext;
+
+        public class MyUtils {
+
+            private ServletContext sc;
+
+            public String getPath(String path) {
+                return sc.getRealPath(path);
+            }
+        }
+
+        }}}
+        然后，你可以在 Ioc 容器的配置文件里，增一个对象，并修改 'tmpFilePool' 对象的配置信息：
+        {{{
+        utils : {
+            type : 'com.abc.myapp.MyUtils',
+            fields : {
+                sc : {app:'$servlet'}   // 将 ServletContext 对象注入 MyUtils
+            }
+        },
+
+        tmpFilePool : {
+            type : 'org.nutz.filepool.NutFilePool',
+            args : [ {java:'$utils.getPath("/WEB-INF/tmp")'}, 1000 ]   // 调用 MyUtils.getPath 函数
+        },
+        }}}
+
+
 	------------------------------------------------------------------------------------------
-	关于 Demo
-		在 [http://nutzdemo.googlecode.com] 的 {*Hello Mvc} 例子里，{*PetModule.java} 的函数 uploadPhoto 就是一个很
-		好的例子。
-		
+    在入口函数的参数里获得上传的文件
+
+        因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录
+        （你声明的那个目录，比如上例是 /WEB-INF/tmp），你在入口函数里可以直接获取：
+        {{{
+		@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+		public void uploadPhoto( @Param("photo") File f){
+            ...
+        }}}
+        你的参数 f 将获取到表单项中:
+        {{{
+        <form target="hideWin" enctype="multipart/form-data">
+            <input type="file" name="photo">
+            ...
+        }}}
+        中的文件内容。你直接打开一个 InputStream 就能从这个 File 中读取客户端上传的文件内容了。
+
+        但是，如果你也想知道这个文件在客户端原本的名字，怎么办呢？你可以：
+        {{{
+		@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+		public void uploadPhoto( @Param("photo") TempFile tf){
+            File f = tf.getFile();                       // 这个是保存的临时文件
+            FieldMeta meta = tf.getMeta();               // 这个原本的文件信息
+            String oldName = meta.getFileLocalName();    // 这个时原本的文件名称
+            // TODO do what you wanna to do here ...
+        }
+        }}}
+
+	------------------------------------------------------------------------------------------
+    一次上传多个同名文件
+
+        相信很多同学都会有这样的用法，就是，希望一次上传的表单为：
+        {{{
+        <form target="hideWin" enctype="multipart/form-data">
+            <input type="file" name="photo">
+            <input type="file" name="photo">
+            <input type="file" name="photo">
+            ...
+        }}}
+        看，一个上传表单中带有多个同名文件，那么怎么办呢？ 你在入口函数里可以这么声明：
+        {{{
+		@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+		public void uploadPhoto( @Param("photo") TempFile[] tfs){
+            ...
+        }
+        }}}
+        是的，它们会被变成一个数组。顺序同 `<form>` 中的顺序。
+
+        但是这里，有一点{#F00;*限制}
+         * {#F00;* 你只能用 `TempFile[]`}
+        也就是说，如果你用了 `File[]` 将会出错。原因不解释。
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
