@@ -68,7 +68,7 @@
 		}}}
 		都会直接输出字符串 {*"this is test"}
 		
-		[#JSP_视图 JSP 视图的更多介绍]
+		[view.man#JSP_视图 JSP 视图的更多介绍]
 
 	比如 Json 视图
 		
@@ -84,7 +84,7 @@
 		 * Reader
 		等，这时候你用 Json 视图来输出本身也是自找别扭，建议你使用 [#Raw视图]
 		
-		[#JSON_视图 Json 视图的更多介绍]
+		[view.man#JSON_视图 Json 视图的更多介绍]
 
 	
 	
