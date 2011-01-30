@@ -5,6 +5,7 @@ import java.util.Map;
 import org.nutz.mvc.adaptor.injector.ArrayInjector;
 import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
+import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
 import org.nutz.mvc.annotation.Param;
@@ -29,7 +30,7 @@ public class PairAdaptor extends AbstractAdaptor {
 		}
 		// POJO with prefix
 		else if (pm.startsWith("::") && pm.length() > 2) {
-			return new ObjectPairInjector(pm.substring(2), type);
+			return new ObjectNavlPairInjector(pm.substring(2), type);
 		}
 		// POJO[]
 		else if (type.isArray())
