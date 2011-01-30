@@ -27,13 +27,13 @@ class ObjcetNaviNode {
 	 */
 	public void put(String path, Object value) {
 		name = fetchName(path);
-		if (path.indexOf(separator) <= 0) {
+		String subPath = path.substring(path.indexOf(separator) + 1); 
+		if (path.indexOf(separator) <= 0 || "".equals(subPath)) {
 			this.value = value;
 			return;
 		}
 		leaf = false;
-		//TODO 如果最后一个字符为'.',会报错,是否应该处理?
-		addChild(path.substring(path.indexOf(separator) + 1), value);
+		addChild(subPath, value);
 	}
 
 	/**
