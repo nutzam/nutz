@@ -115,8 +115,10 @@ public abstract class Mvcs {
 	 * 
 	 * @return 设置的 本地化字符串表
 	 */
-	public static Map<String, String> setLocale(HttpSession session, String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet(session.getServletContext());
+	public static Map<String, String> setLocale(HttpSession session,
+			String localeName) {
+		Map<String, Map<String, String>> msgss = getMessageSet(session
+				.getServletContext());
 		if (null != msgss) {
 			Map<String, String> msgs = null;
 			if (null != localeName)
@@ -144,7 +146,8 @@ public abstract class Mvcs {
 	 * @see org.nutz.mvc.annotation.Localization
 	 * @see org.nutz.mvc.MessageLoader
 	 */
-	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
+	public static Map<String, String> getLocaleMessage(ServletContext context,
+			String localeName) {
 		Map<String, Map<String, String>> msgss = getMessageSet(context);
 		if (null != msgss)
 			return msgss.get(localeName);
@@ -158,7 +161,8 @@ public abstract class Mvcs {
 	 *            上下文
 	 * @return 字符串表
 	 */
-	public static Map<String, String> getDefaultLocaleMessage(ServletContext context) {
+	public static Map<String, String> getDefaultLocaleMessage(
+			ServletContext context) {
 		Map<String, Map<String, String>> msgss = getMessageSet(context);
 		if (null != msgss)
 			return msgss.get(DEFAULT_MSGS);
@@ -173,8 +177,10 @@ public abstract class Mvcs {
 	 * @return 字符串表集合
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
-		return (Map<String, Map<String, String>>) context.getAttribute(Localization.class.getName());
+	public static Map<String, Map<String, String>> getMessageSet(
+			ServletContext context) {
+		return (Map<String, Map<String, String>>) context
+				.getAttribute(Localization.class.getName());
 	}
 
 	/**
@@ -217,7 +223,8 @@ public abstract class Mvcs {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void updateRequestAttributes(HttpServletRequest req) {
-		if (null != req.getSession().getServletContext().getAttribute(Localization.class.getName())) {
+		if (null != req.getSession().getServletContext()
+				.getAttribute(Localization.class.getName())) {
 			HttpSession session = req.getSession();
 			Map<String, String> msgs = null;
 			if (!hasLocale(session))
@@ -237,6 +244,7 @@ public abstract class Mvcs {
 	public static String getRequestPath(HttpServletRequest req) {
 		return getRequestPathObject(req).getPath();
 	}
+
 	/**
 	 * 获取当前请求的路径，并去掉后缀
 	 */
@@ -246,14 +254,21 @@ public abstract class Mvcs {
 			url = req.getServletPath();
 		return getRequestPathObject(url);
 	}
+
 	/**
 	 * 获取当前请求的路径，并去掉后缀
 	 */
-	public static RequestPath getRequestPathObject(String url){
+	public static RequestPath getRequestPathObject(String url) {
 		RequestPath rr = new RequestPath();
 		rr.setUrl(url);
 		if (null != url) {
-			int lio = url.lastIndexOf('.');
+			int lio = 0;
+			if (!url.endsWith("/")) {
+				int ll = url.lastIndexOf('/');
+				lio = url.lastIndexOf('.');
+				if (lio < ll)
+					lio = -1;
+			}
 			if (lio > 0) {
 				rr.setPath(url.substring(0, lio));
 				rr.setSuffix(url.substring(lio + 1));
@@ -291,8 +306,8 @@ public abstract class Mvcs {
 	 * @throws IOException
 	 *             写入失败
 	 */
-	public static void write(HttpServletResponse resp, Object obj, JsonFormat format)
-			throws IOException {
+	public static void write(HttpServletResponse resp, Object obj,
+			JsonFormat format) throws IOException {
 		resp.setHeader("Cache-Control", "no-cache");
 		resp.setContentType("text/plain");
 
