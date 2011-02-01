@@ -237,23 +237,23 @@ public abstract class Mvcs {
 	public static String getRequestPath(HttpServletRequest req) {
 		return getRequestPathObject(req).getPath();
 	}
-
+	/**
+	 * 获取当前请求的路径，并去掉后缀
+	 */
 	public static RequestPath getRequestPathObject(HttpServletRequest req) {
-		RequestPath rr = new RequestPath();
-
 		String url = req.getPathInfo();
 		if (null == url)
 			url = req.getServletPath();
-
+		return getRequestPathObject(url);
+	}
+	/**
+	 * 获取当前请求的路径，并去掉后缀
+	 */
+	public static RequestPath getRequestPathObject(String url){
+		RequestPath rr = new RequestPath();
 		rr.setUrl(url);
 		if (null != url) {
-			int lio = 0;
-			if (!url.endsWith("/")) {
-				int ll = url.lastIndexOf('/');
-				lio = url.lastIndexOf('.');
-				if (lio < ll)
-					lio = -1;
-			}
+			int lio = url.lastIndexOf('.');
 			if (lio > 0) {
 				rr.setPath(url.substring(0, lio));
 				rr.setSuffix(url.substring(lio + 1));

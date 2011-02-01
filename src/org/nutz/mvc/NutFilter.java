@@ -13,38 +13,30 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
-import org.nutz.mvc.init.Inits;
+import org.nutz.mvc.init.InitException;
 import org.nutz.mvc.init.config.FilterNutConfig;
 
 /**
  * 同 JSP/Serlvet 容器的挂接点
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author juqkai(juqkai@gmail.com)
  */
 public class NutFilter implements Filter {
 
+	private NutMvc nutMvc = NutMvc.make();
+
 	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
-
-	private static final Log log = Logs.getLog(NutFilter.class);
-
-	private UrlMap urls;
-
-	private FilterNutConfig config;
 
 	private Pattern ignorePtn;
 
 	public void init(FilterConfig conf) throws ServletException {
-		config = new FilterNutConfig(conf);
+		FilterNutConfig config = new FilterNutConfig(conf);
 		// 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
 		// @see Issue 301
 		String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
 		if (!"true".equals(skipMode)) {
-			Loading ing = Inits.init(config, true);
-			if (null != ing)
-				urls = ing.getUrls();
-
+			nutMvc.init(config);
 			String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
 			if (!"null".equalsIgnoreCase(regx)) {
 				ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
@@ -53,29 +45,20 @@ public class NutFilter implements Filter {
 	}
 
 	public void destroy() {
-		if (null != urls)
-			Inits.destroy(config);
+		nutMvc.destroy();
 	}
 
-	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
-			throws IOException, ServletException {
-
+	public void doFilter(ServletRequest req, ServletResponse resp,
+			FilterChain chain) throws IOException, ServletException {
 		// 更新 Request 必要的属性
 		Mvcs.updateRequestAttributes((HttpServletRequest) req);
-
-		if (null != urls) {
-			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
-			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-				ActionInvoking ing = urls.get(path.getPath());
-				if (null != ing && null != ing.getInvoker()) {
-					if (log.isInfoEnabled())
-						log.info(path);
-					ing.invoke(	config.getServletContext(),
-								(HttpServletRequest) req,
-								(HttpServletResponse) resp);
+		RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
+		if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
+			try{
+				if(nutMvc.handle((HttpServletRequest)req, (HttpServletResponse)resp)){
 					return;
 				}
-			}
+			}catch (InitException e) {}
 		}
 
 		// 本过滤器没有找到入口函数，继续其他的过滤器
