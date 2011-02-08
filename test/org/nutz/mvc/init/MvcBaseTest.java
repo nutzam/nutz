@@ -21,17 +21,17 @@ public class MvcBaseTest extends AbstractMvcTest {
 	public void testIsOK() throws Throwable {
 		Method method = NutServlet.class.getDeclaredMethod("isOk");
 		method.setAccessible(true);
-		assertTrue((Boolean) method.invoke((NutServlet)servlet));
+		assertTrue((Boolean) method.invoke(servlet));
 
 		request.setPathInfo("/base/login.nut");
-		((NutServlet)servlet).service(request, response);
+		servlet.service(request, response);
 		assertEquals("true", response.getAsString());
 	}
 
 	@Test
 	public void testAnotherModule() throws Throwable {
 		request.setPathInfo("/two/say");
-		((NutServlet)servlet).service(request, response);
+		servlet.service(request, response);
 		assertEquals("\"haha\"", response.getAsString());
 	}
 
@@ -57,5 +57,25 @@ public class MvcBaseTest extends AbstractMvcTest {
 		path = Mvcs.getRequestPathObject(request);
 		assertNotNull(path);
 		assertEquals("/1.2/say.po/", path.getPath());
+	}
+	
+	@Test
+	public void testRequestParms_error() throws Throwable {
+		request.setPathInfo("/two/login.nutz");
+		request.addParameter("username", "wendal");
+		request.addParameter("password", "123456");
+		request.addParameter("authCode", "Nutz");
+		servlet.service(request, response);
+		assertTrue(response.getAsString().indexOf("NumberFormatException") > -1);
+	}
+	
+	@Test
+	public void testRequestParms() throws Throwable {
+		request.setPathInfo("/two/login.nutz");
+		request.addParameter("username", "wendal");
+		request.addParameter("password", "123456");
+		request.addParameter("authCode", "236475");
+		servlet.service(request, response);
+		assertEquals("true", response.getAsString());
 	}
 }

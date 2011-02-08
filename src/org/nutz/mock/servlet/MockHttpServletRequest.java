@@ -312,7 +312,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 
 	public void addParameter(String key, String value) {
-		throw Lang.noImplement();
+		params.put(key, new String[]{value});
 	}
 
 	public Map<String, String[]> getParameterMap() {

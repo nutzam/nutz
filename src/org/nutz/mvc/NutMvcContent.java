@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.Nutz;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.init.InitException;
 import org.nutz.mvc.init.Inits;
 import org.nutz.mvc.init.NutConfig;
 
@@ -20,33 +19,24 @@ import org.nutz.mvc.init.NutConfig;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class NutMvc {
-	private static final Log log = Logs.getLog(NutServlet.class);
+public class NutMvcContent {
+
+	private static final Log log = Logs.getLog(NutMvcContent.class);
 
 	/**
-	 * Nutz.Mvc 的参数映射表
+	 * Nutz.Mvc 的URL映射表
 	 */
 	private UrlMap urls;
+	
 	private NutConfig config;
-	private static NutMvc nutMvc;
-	private NutMvc(){}
-	public static NutMvc make(){
-		if(nutMvc == null){
-			nutMvc = new NutMvc();
-		}
-		return nutMvc;
-	}
 
 	/**
 	 * Nutz Mvc 初始化
 	 */
 	public void init(NutConfig config) throws ServletException {
 		if (log.isInfoEnabled()) {
-			URL me = Thread
-					.currentThread()
-					.getContextClassLoader()
-					.getResource(
-							NutServlet.class.getName().replace('.', '/')
+			URL me = NutMvcContent.class.getResource(
+						NutMvcContent.class.getName().replace('.', '/')
 									+ ".class");
 			log.infof("Nutz Version : %s in %s", Nutz.version(), me);
 		}
@@ -63,21 +53,6 @@ public class NutMvc {
 
 	/**
 	 * 处理函数
-	 * @return 
-	 * <ul>
-	 * <li>true
-	 * 		处理成功
-	 * <li>false
-	 * 		处理失败
-	 * @throws InitException
-	 * 		urls初始化失败,不能进行Mvc的行为
-	 */
-	public boolean handle(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		return handle(null, req, resp);
-	}
-	/**
-	 * 处理函数
 	 * @param path
 	 * 		需要处理的请求地址
 	 * <ul>
@@ -92,27 +67,19 @@ public class NutMvc {
 	 * 		处理成功
 	 * <li>false
 	 * 		处理失败
-	 * @throws InitException
-	 * 		urls初始化失败,不能进行Mvc的行为
 	 */
-	public boolean handle(String path, HttpServletRequest req, HttpServletResponse resp)
+	public boolean handle(HttpServletRequest req, HttpServletResponse resp)
 		throws ServletException, IOException {
 		if (null == urls) {
-			if (log.isErrorEnabled())
-				log.error("!!!This servlet is destroyed!!! Noting to do!!!");
-			//TODO 这里异常类型可能要斟酌一下.
-			throw new InitException("");
-		}
-		if(path == null || "".equals(path)){
-			path = Mvcs.getRequestPath(req);
-		} else {
-			path = Mvcs.getRequestPathObject(path).getPath();
+			throw new RuntimeException("!!URLMap is NULL !This servlet can't handle request!!!");
 		}
 
 		Mvcs.updateRequestAttributes(req);
 
+		String path = Mvcs.getRequestPath(req);
+		
 		if (log.isInfoEnabled())
-			log.info("HttpServletRequest path = " + path);
+			log.infof("HttpServletRequest path = %s   , FROM(%s)", path, req.getPathInfo());
 
 		// get Url and invoke it
 		ActionInvoking ing = urls.get(path);

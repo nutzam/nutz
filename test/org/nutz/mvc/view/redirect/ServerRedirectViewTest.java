@@ -16,7 +16,6 @@ public class ServerRedirectViewTest extends AbstractMvcTest{
 	public void testRender() throws Throwable{
 		request.setPathInfo("/register.nut");
 		servlet.service(request, response);
-		System.out.println(response.getHeader("Location"));
 		assertTrue(response.getHeader("Location").endsWith("/jsp/user/information.nut?id=373"));
 	}
 

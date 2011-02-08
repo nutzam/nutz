@@ -13,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
-import org.nutz.mvc.init.InitException;
 import org.nutz.mvc.init.config.FilterNutConfig;
 
 /**
@@ -21,10 +20,11 @@ import org.nutz.mvc.init.config.FilterNutConfig;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author juqkai(juqkai@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class NutFilter implements Filter {
-
-	private NutMvc nutMvc = NutMvc.make();
+	
+	private NutMvcContent mvcContent = new NutMvcContent();
 
 	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
 
@@ -36,7 +36,7 @@ public class NutFilter implements Filter {
 		// @see Issue 301
 		String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
 		if (!"true".equals(skipMode)) {
-			nutMvc.init(config);
+			mvcContent.init(config);
 			String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
 			if (!"null".equalsIgnoreCase(regx)) {
 				ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
@@ -45,7 +45,7 @@ public class NutFilter implements Filter {
 	}
 
 	public void destroy() {
-		nutMvc.destroy();
+		mvcContent.destroy();
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse resp,
@@ -54,11 +54,8 @@ public class NutFilter implements Filter {
 		Mvcs.updateRequestAttributes((HttpServletRequest) req);
 		RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
 		if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-			try{
-				if(nutMvc.handle((HttpServletRequest)req, (HttpServletResponse)resp)){
-					return;
-				}
-			}catch (InitException e) {}
+			if(mvcContent.handle((HttpServletRequest)req, (HttpServletResponse)resp))
+				return;
 		}
 
 		// 本过滤器没有找到入口函数，继续其他的过滤器
