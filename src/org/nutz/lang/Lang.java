@@ -1270,6 +1270,42 @@ public abstract class Lang {
 		catch (Throwable e) {}
 	}
 
+	/**
+	 * 将字符串，变成数字对象，现支持的格式为：
+	 * <ul>
+	 * <li>null - 整数 0</li>
+	 * <li>23.78 - 浮点 Float</li>
+	 * <li>0x45 - 16进制整数 Integer</li>
+	 * <li>78L - 长整数 Long</li>
+	 * <li>69 - 普通整数 Integer</li>
+	 * </ul>
+	 * 
+	 * @param s
+	 *            参数
+	 * @return 数字对象
+	 */
+	public static Number str2number(String s) {
+		// null 值
+		if (null == s) {
+			return 0;
+		}
+		s = s.toUpperCase();
+		// 浮点
+		if (s.indexOf('.') != -1) {
+			return Float.valueOf(s);
+		}
+		// 16进制整数
+		if (s.startsWith("0X")) {
+			return Integer.valueOf(s.substring(2), 16);
+		}
+		// 长整数
+		if (s.charAt(s.length() - 1) == 'L') {
+			return Long.valueOf(s.substring(0, s.length() - 1));
+		}
+		// 普通整数
+		return Integer.valueOf(s);
+	}
+
 	@SuppressWarnings("unchecked")
 	private static <T extends Map<String, Object>> void obj2map(Object obj,
 																T map,

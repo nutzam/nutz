@@ -10,7 +10,10 @@ public class ContextTest {
 	@Test
 	public void test_get_primitive_type() {
 		Context context = new Context();
-		context.set("a", "123").set("b", "10.2").set("c", "true").set("d", "string");
+		context.set("a", "123");
+		context.set("b", "10.2");
+		context.set("c", "true");
+		context.set("d", "string");
 
 		assertEquals(123, context.getInt("a"));
 		assertTrue(10.2f == context.getFloat("b"));
@@ -22,7 +25,8 @@ public class ContextTest {
 	public void test_normal_object() {
 		Date now = new Date();
 		Context context = new Context();
-		context.set("a", "123").set("b", now);
+		context.set("a", "123");
+		context.set("b", now);
 		assertEquals(now, context.get("b"));
 
 		context.clear();

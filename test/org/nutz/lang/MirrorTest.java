@@ -61,6 +61,13 @@ public class MirrorTest {
 	}
 
 	@Test
+	public void test_invoke_map() {
+		Map<?, ?> map = Lang.map("{x:10,y:50,txt:'Hello'}");
+		Integer v = (Integer) Mirror.me(map).invoke(map, "get", "x");
+		assertEquals(10, v.intValue());
+	}
+
+	@Test
 	public void testTwoParam() {
 		B<Integer, String> b = new B<Integer, String>() {};
 		assertEquals(Integer.class, Mirror.getTypeParams(b.getClass())[0]);
@@ -352,9 +359,9 @@ public class MirrorTest {
 		private Boolean ok;
 
 		private Character cobj;
-		
+
 		private Integer intobj;
-		
+
 	}
 
 	@Test
@@ -368,20 +375,20 @@ public class MirrorTest {
 		Mirror.me(SV.class).setValue(sv, "cc", null);
 		assertEquals(0, sv.id);
 		assertEquals(0, (int) sv.cc);
-		
+
 		ClassC c = new ClassC();
 		Mirror.me(ClassC.class).setValue(c, "id", 1);
 		assertEquals(1, c.getId());
 	}
-	
+
 	public static class ClassC {
-		
+
 		private int x;
-		
+
 		public void setId(int id) {
 			this.x = id;
 		}
-		
+
 		public int getId() {
 			return x;
 		}
@@ -400,8 +407,6 @@ public class MirrorTest {
 		assertNull(sv.cobj);
 		assertNull(sv.intobj);
 	}
-	
-	
 
 	@Test(expected = RuntimeException.class)
 	public void set_null_value_by_invoking() {

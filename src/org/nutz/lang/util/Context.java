@@ -1,6 +1,7 @@
 package org.nutz.lang.util;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -70,6 +71,16 @@ public class Context implements Cloneable {
 
 	public float getFloat(String name) {
 		return getAs(float.class, name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> getMap(String name) {
+		return getAs(Map.class, name);
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Object> getList(String name) {
+		return getAs(List.class, name);
 	}
 
 	@Override
