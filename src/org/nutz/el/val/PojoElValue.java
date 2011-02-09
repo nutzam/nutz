@@ -1,7 +1,5 @@
 package org.nutz.el.val;
 
-import java.util.Map;
-
 import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
@@ -52,7 +50,7 @@ public class PojoElValue<T> implements ElValue {
 		for (int i = 0; i < params.length; i++) {
 			params[i] = args[i + 1].get();
 		}
-		return El.wrap(Mirror.me(Map.class).invoke(obj, name, params));
+		return El.wrap(Mirror.me(obj).invoke(obj, name, params));
 	}
 
 	public ElValue getProperty(ElValue val) {

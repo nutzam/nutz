@@ -2,6 +2,9 @@ package org.nutz.el;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Test;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
@@ -28,6 +31,16 @@ public class ElTest {
 
 		assertEquals(Float.valueOf(.3f + .2f * .5f), El.eval(".3+.2*.5").getFloat());
 		assertEquals(Float.valueOf((.5f + .1f) * .9f), El.eval("(.5 + 0.1)*.9").getFloat());
+	}
+
+	@Test
+	public void test_invoke() {
+		Context context = new Context();
+		List<String> list = new ArrayList<String>();
+		context.set("b", list);
+		assertEquals(0,El.eval(context,"b.size()").getInteger().intValue());
+		list.add("");
+		assertEquals(1,El.eval(context,"b.size()").getInteger().intValue());
 	}
 
 }
