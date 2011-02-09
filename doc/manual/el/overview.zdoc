@@ -1,5 +1,6 @@
 #title: EL 表达式引擎
 #author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
 #index:0,1
 ------------------------------------------------------------------------
 为什么需要 EL 表达式引擎
@@ -47,5 +48,19 @@
     || 字符串   || 'abc' 或者 "Haha" ||
     || 布尔     || true 或 false     ||
 
-
-
+------------------------------------------------------------------------
+简单使用
+	
+	{{{<JAVA>
+	System.out.println(El.eval("3+2*5"));
+	//打印  13
+	}}}
+	
+	{{{<JAVA>
+	Context context = new Context();
+	Pet pet = new Pet();
+	pet.setName("GFW");
+	context.set("pet",pet);
+	System.out.println(El.eval(context,"pet.name"));
+	//打印  GFW
+	}}}
