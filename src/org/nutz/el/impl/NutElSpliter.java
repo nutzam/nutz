@@ -2,7 +2,6 @@ package org.nutz.el.impl;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -10,9 +9,7 @@ import java.util.List;
 import org.nutz.el.ElException;
 import org.nutz.el.ElSpliter;
 import org.nutz.el.ElSymbol;
-import org.nutz.el.impl.loader.AbstractSymbolLoader;
-import org.nutz.lang.Lang;
-import org.nutz.resource.Scans;
+import org.nutz.el.impl.loader.*;
 
 /**
  * 这个实现右比较强的扩展性，我很满意
@@ -25,19 +22,16 @@ public class NutElSpliter implements ElSpliter {
 
 	public NutElSpliter() {
 		loaders = new ArrayList<SymbolLoader>();
-		// 自动加载所有的加载器
-		List<Class<?>> loaderTypes = Scans.me().scanPackage(AbstractSymbolLoader.class);
-		for (Class<?> loaderType : loaderTypes) {
-			if (Modifier.isAbstract(loaderType.getModifiers()))
-				continue;
-			if (SymbolLoader.class.isAssignableFrom(loaderType))
-				try {
-					loaders.add((SymbolLoader) loaderType.newInstance());
-				}
-				catch (Exception e) {
-					throw Lang.wrapThrow(e);
-				}
-		}
+		
+		loaders.add(new CommaSymbolLoader());
+		loaders.add(new LeftBracketSymbolLoader());
+		loaders.add(new LeftPrenthesisSymbolLoader());
+		loaders.add(new NameSymbolLoader());
+		loaders.add(new NumberLoader());
+		loaders.add(new OptSymbolLoader());
+		loaders.add(new RightBracketSymbolLoader());
+		loaders.add(new RightPrenthesisSymbolLoader());
+		loaders.add(new StringSymbolLoader());
 	}
 
 	public List<ElSymbol> splite(Reader reader) {

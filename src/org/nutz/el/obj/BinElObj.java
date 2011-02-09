@@ -8,9 +8,9 @@ import org.nutz.el.opt.AccessOperator;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 
-public class BinObj implements ElObj {
+public class BinElObj implements ElObj {
 
-	private BinObj parent;
+	private BinElObj parent;
 
 	private ElObj left;
 
@@ -22,7 +22,19 @@ public class BinObj implements ElObj {
 		return null == parent;
 	}
 
-	public BinObj getParent() {
+	public boolean hasNoLeft() {
+		return null == left;
+	}
+
+	public boolean hasNoOperator() {
+		return null == operator;
+	}
+
+	public boolean hasNoRight() {
+		return null == right;
+	}
+
+	public BinElObj getParent() {
 		return parent;
 	}
 
@@ -38,21 +50,21 @@ public class BinObj implements ElObj {
 		return operator;
 	}
 
-	public BinObj setLeft(ElObj left) {
+	public BinElObj setLeft(ElObj left) {
 		this.left = left;
-		if (left instanceof BinObj)
-			((BinObj) left).parent = this;
+		if (left instanceof BinElObj)
+			((BinElObj) left).parent = this;
 		return this;
 	}
 
-	public BinObj setRight(ElObj right) {
+	public BinElObj setRight(ElObj right) {
 		this.right = right;
-		if (right instanceof BinObj)
-			((BinObj) right).parent = this;
+		if (right instanceof BinElObj)
+			((BinElObj) right).parent = this;
 		return this;
 	}
 
-	public BinObj setOperator(ElOperator opt) {
+	public BinElObj setOperator(ElOperator opt) {
 		this.operator = opt;
 		return this;
 	}
@@ -61,13 +73,13 @@ public class BinObj implements ElObj {
 		return null != operator && (operator instanceof AccessOperator);
 	}
 
-	public BinObj append(ElOperator opt, ElObj obj) {
-		BinObj nn = new BinObj();
+	public BinElObj append(ElOperator opt, ElObj obj) {
+		BinElObj nn = new BinElObj();
 		// 高权 － 新节点下沉
 		if (opt.isHigherThan(operator)) {
 			// 递归下沉
-			if (right instanceof BinObj) {
-				setRight(((BinObj) right).append(opt, obj));
+			if (right instanceof BinElObj) {
+				setRight(((BinElObj) right).append(opt, obj));
 			}
 			// 下沉一级
 			else {
@@ -78,7 +90,7 @@ public class BinObj implements ElObj {
 		// 同权或者低权 － 新节点上升
 		else {
 			// 寻找到一个权重不比新节点权重高的祖先节点
-			BinObj on = this;
+			BinElObj on = this;
 			while (on.parent != null) {
 				on = on.parent;
 				if (!on.getOperator().isHigherThan(opt))
@@ -92,11 +104,32 @@ public class BinObj implements ElObj {
 	}
 
 	public ElValue eval(Context context) {
+		if (null == operator) {
+			if (null != left)
+				return left.eval(context);
+			else if (null != right) {
+				return right.eval(context);
+			} else {
+				throw new ElException("Empty BinElObj");
+			}
+		}
 		return operator.execute(context, left, right);
 	}
 
 	public ElValue[] evalArray(Context context) {
 		throw new ElException("ElNode don't support this method!");
+	}
+
+	public ElObj unwrap() {
+		if (null == operator)
+			return null == left ? right : left;
+		return this;
+	}
+
+	public BinElObj unwrapToBin() {
+		if (null == operator && (left instanceof BinElObj))
+			return ((BinElObj) left).unwrapToBin();
+		return this;
 	}
 
 	public String toString() {
@@ -121,8 +154,8 @@ public class BinObj implements ElObj {
 	}
 
 	private void appendObj(StringBuilder sb, int indent, ElObj obj) {
-		if (obj instanceof BinObj) {
-			((BinObj) obj).appendString(sb, indent + 1);
+		if (obj instanceof BinElObj) {
+			((BinElObj) obj).appendString(sb, indent + 1);
 		} else {
 			appendIndent(sb, indent);
 			sb.append(null == obj ? "<null>" : obj.toString());

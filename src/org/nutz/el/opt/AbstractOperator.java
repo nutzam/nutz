@@ -20,6 +20,10 @@ public abstract class AbstractOperator implements ElOperator {
 		this.str = str;
 	}
 
+	public String getString() {
+		return this.str;
+	}
+
 	public boolean isHigherThan(ElOperator opt) {
 		return weight > opt.getWeight();
 	}

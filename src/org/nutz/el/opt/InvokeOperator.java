@@ -1,13 +1,24 @@
 package org.nutz.el.opt;
 
+import org.nutz.el.El;
 import org.nutz.el.ElObj;
 import org.nutz.el.ElValue;
+import org.nutz.el.ann.*;
 import org.nutz.lang.util.Context;
 
+@Opt("&invoke")
+@Weight(100)
+@OptHidden
 public class InvokeOperator extends AbstractOperator {
 
+	private static final InvokeOperator me = El.opt(InvokeOperator.class);
+
+	public static InvokeOperator me() {
+		return me;
+	}
+
 	public InvokeOperator() {
-		weight = 1000;
+		weight = 100;
 		str = "&invoke";
 	}
 

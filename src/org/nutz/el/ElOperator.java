@@ -27,6 +27,8 @@ public interface ElOperator {
 	void setString(String str);
 
 	int getWeight();
+	
+	String getString();
 
 	/**
 	 * 同另外一个操作符比较权重

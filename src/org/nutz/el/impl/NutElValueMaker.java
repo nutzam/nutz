@@ -31,6 +31,11 @@ public class NutElValueMaker implements ElValueMaker {
 		if (obj instanceof Collection<?>)
 			return new CollectionElValue((List<?>) obj);
 
+		// 数组
+		if (obj.getClass().isArray()) {
+			return new ArrayElValue(obj);
+		}
+
 		/*
 		 * 常用类型
 		 */

@@ -5,11 +5,11 @@ import org.nutz.el.ElValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
-public class ArrayObj implements ElObj {
+public class ArrayElObj implements ElObj {
 
 	private ElObj[] objs;
 
-	public ArrayObj(ElObj[] objs) {
+	public ArrayElObj(ElObj[] objs) {
 		this.objs = null == objs ? new ElObj[0] : objs;
 	}
 

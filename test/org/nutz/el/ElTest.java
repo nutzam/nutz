@@ -12,6 +12,22 @@ import org.nutz.lang.util.Context;
 public class ElTest {
 
 	@Test
+	public void test_array_access() {
+		Context context = new Context();
+		context.set("a", Lang.array(3, 5, 7));
+		assertEquals(3, El.eval(context, "a[0]").getInteger().intValue());
+		assertEquals(5, El.eval(context, "a[1]").getInteger().intValue());
+		assertEquals(7, El.eval(context, "a[2]").getInteger().intValue());
+		assertEquals(15, El.eval(context, "a[0]+a[1]+a[2]").getInteger().intValue());
+		assertEquals(56, El.eval(context, "(a[0]+a[1])*a[2]").getInteger().intValue());
+	}
+
+	@Test
+	public void test_global_invoke() {
+		assertEquals("abc", El.eval("trim(' abc  ')").getString());
+	}
+
+	@Test
 	public void test_simple_invoke() {
 		Context context = new Context();
 		context.set("a", Lang.map("{x:10,y:50,txt:'Hello'}"));
@@ -38,9 +54,9 @@ public class ElTest {
 		Context context = new Context();
 		List<String> list = new ArrayList<String>();
 		context.set("b", list);
-		assertEquals(0,El.eval(context,"b.size()").getInteger().intValue());
+		assertEquals(0, El.eval(context, "b.size()").getInteger().intValue());
 		list.add("");
-		assertEquals(1,El.eval(context,"b.size()").getInteger().intValue());
+		assertEquals(1, El.eval(context, "b.size()").getInteger().intValue());
 	}
 
 }
