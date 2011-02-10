@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc.init.config.ServletNutConfig;
 
 /**
@@ -21,6 +22,8 @@ public class NutServlet extends HttpServlet {
 	
 	private NutMvcContent mvcContent = new NutMvcContent();
 	
+	protected NutConfig config;
+	
 	/**
 	 * Nutz.Mvc 是否成功的被挂接在 JSP/Servlet 容器上。这个标志位可以为子类提供参考
 	 */
@@ -32,7 +35,8 @@ public class NutServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		mvcContent.init(new ServletNutConfig(getServletConfig()));
+		config = new ServletNutConfig(getServletConfig());
+		mvcContent.init(config);
 		ok = true;
 	}
 

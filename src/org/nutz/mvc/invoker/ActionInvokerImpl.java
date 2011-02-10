@@ -46,17 +46,17 @@ public class ActionInvokerImpl implements ActionInvoker {
 
 	private static final Log log = Logs.getLog(ActionInvokerImpl.class);
 
-	private String moduleName;
-	private Class<?> moduleType;
-	private Object module;
-	private Method method;
-	private View ok;
-	private View fail;
-	private HttpAdaptor adaptor;
-	private ActionFilter[] filters;
-	private String inputCharset;
-	private String outputCharset;
-	private Context context;
+	public String moduleName;
+	public Class<?> moduleType;
+	public Object module;
+	public Method method;
+	public View ok;
+	public View fail;
+	public HttpAdaptor adaptor;
+	public ActionFilter[] filters;
+	public String inputCharset;
+	public String outputCharset;
+	public Context context;
 
 	public ActionInvokerImpl(	Context context,
 								Ioc ioc,
