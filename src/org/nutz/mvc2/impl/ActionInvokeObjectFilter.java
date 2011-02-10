@@ -10,6 +10,11 @@ import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
 import org.nutz.mvc2.ActionFilterChain;
 
+/**
+ * 负责获取需要执行的具体方法所对应的对象
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class ActionInvokeObjectFilter extends AbstractActionFilter {
 
 	@Override

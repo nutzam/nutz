@@ -6,6 +6,11 @@ import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
 import org.nutz.mvc2.ActionFilterChain;
 
+/**
+ * 为了兼容之前的ActionFilter而实现
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class OldActionFilter extends AbstractActionFilter {
 
 	@Override

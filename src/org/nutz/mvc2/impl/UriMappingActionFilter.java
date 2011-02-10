@@ -12,7 +12,7 @@ import org.nutz.mvc2.ActionFilterChain;
 
 /**
  * 负责处理请求URI与具体方法的映射关系
- * @author wendal
+ * @author wendal(wendal1985@gmail.com)
  *
  */
 public class UriMappingActionFilter extends AbstractActionFilter {

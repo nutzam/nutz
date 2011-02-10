@@ -17,7 +17,7 @@ public class ActionFilters {
 		list.add(new UpdateRequestAttributesFilter());
 		list.add(new UriMappingActionFilter());
 		list.add(new EncodingFilter());
-		list.add(new ViewerActionFilter());
+		list.add(new ViewFilter());
 		list.add(new OldActionFilter());
 		list.add(new HttpAdaptorFilter());
 		list.add(new ActionInvokeObjectFilter());

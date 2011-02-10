@@ -2,6 +2,11 @@ package org.nutz.mvc2;
 
 import java.util.Map;
 
+/**
+ * Action过滤器执行链
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public interface ActionFilterChain {
 
 	Map<Object, Object> getContent();

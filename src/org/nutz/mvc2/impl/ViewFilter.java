@@ -15,12 +15,12 @@ import org.nutz.mvc2.ActionFilterChain;
 
 /**
  * 负责渲染视图
- * @author wendal
+ * @author wendal(wendal1985@gmail.com)
  *
  */
-public class ViewerActionFilter extends AbstractActionFilter {
+public class ViewFilter extends AbstractActionFilter {
 	
-	private static final Log log = Logs.getLog(ViewerActionFilter.class);
+	private static final Log log = Logs.getLog(ViewFilter.class);
 
 	@Override
 	public void filter(ActionFilterChain chain) throws Throwable {

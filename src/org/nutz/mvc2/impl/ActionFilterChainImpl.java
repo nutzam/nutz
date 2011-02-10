@@ -7,6 +7,11 @@ import java.util.Map;
 import org.nutz.mvc2.ActionFilter;
 import org.nutz.mvc2.ActionFilterChain;
 
+/**
+ * 执行链的具体实现
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class ActionFilterChainImpl implements ActionFilterChain {
 	
 	private List<ActionFilter> filters;

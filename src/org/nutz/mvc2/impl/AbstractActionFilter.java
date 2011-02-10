@@ -8,6 +8,11 @@ import org.nutz.mvc.init.NutConfig;
 import org.nutz.mvc2.ActionFilter;
 import org.nutz.mvc2.ActionFilterChain;
 
+/**
+ * 抽象的ActionFilter实现,方便用户实现自己的过滤器
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public abstract class AbstractActionFilter implements ActionFilter {
 
 	public void init(NutConfig config) throws Throwable {

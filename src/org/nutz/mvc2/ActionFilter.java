@@ -3,8 +3,8 @@ package org.nutz.mvc2;
 import org.nutz.mvc.init.NutConfig;
 
 /**
- * Action请求过滤器,负责处理请求的全过程
- * @author wendal
+ * Action请求过滤器
+ * @author wendal(wendal1985@gmail.com)
  *
  */
 public interface ActionFilter {

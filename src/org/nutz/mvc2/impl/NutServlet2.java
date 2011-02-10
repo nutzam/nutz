@@ -1,6 +1,7 @@
 package org.nutz.mvc2.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -54,7 +55,7 @@ public class NutServlet2 extends NutServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		ActionFilterChain chain = new ActionFilterChainImpl(ActionFilters.defaultFilters());
+		ActionFilterChain chain = new ActionFilterChainImpl(new ArrayList<ActionFilter>(filters));
 		chain.put(ActionFilters.request, req);
 		chain.put(ActionFilters.response, resp);
 		chain.put(ActionFilters.servletContent, getServletContext());
