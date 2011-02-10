@@ -57,6 +57,17 @@ public class ElTest {
 		assertEquals(0, El.eval(context, "b.size()").getInteger().intValue());
 		list.add("");
 		assertEquals(1, El.eval(context, "b.size()").getInteger().intValue());
+		
+		El.eval(context, "b.add('Q\nQ')");
+		assertEquals(2, El.eval(context, "b.size()").getInteger().intValue());
+		assertFalse(El.eval(context, "false").getBoolean());
+		
+		//TODO 一个个来,4个都报错,写法不对?
+
+		//El.eval(context, "b[0].toString()");
+		El.eval(context, "b.get(0).toString()");
+		//El.eval(context, "b[0].equals(b[0])");
+		//El.eval(context, "b[0].equals('')");
 	}
 
 }
