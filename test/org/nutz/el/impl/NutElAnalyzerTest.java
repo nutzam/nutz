@@ -9,6 +9,20 @@ import org.nutz.el.obj.BinElObj;
 public class NutElAnalyzerTest {
 
 	@Test
+	public void test_access_and_invoke() {
+		String exp = "a[0].xyz()";
+		BinElObj bin = El.compile(exp);
+
+		assertEquals("&invoke", bin.getOperator().toString());
+		assertEquals("[$xyz]", bin.getRight().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("$a", bin.getLeft());
+		assertEquals(".", bin.getOperator().toString());
+		assertEquals("0", bin.getRight().toString());
+	}
+
+	@Test
 	public void test_invoke_and_count() {
 		String exp = "a.get('x')*10";
 		BinElObj bin = El.compile(exp);

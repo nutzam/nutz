@@ -57,16 +57,27 @@ public class ElTest {
 		assertEquals(0, El.eval(context, "b.size()").getInteger().intValue());
 		list.add("");
 		assertEquals(1, El.eval(context, "b.size()").getInteger().intValue());
-		
+
 		El.eval(context, "b.add('Q\nQ')");
 		assertEquals(2, El.eval(context, "b.size()").getInteger().intValue());
-		assertFalse(El.eval(context, "false").getBoolean());
-		
-		//TODO 一个个来,4个都报错,写法不对?
 
+	}
+
+	@Test
+	public void test_boolean() {
+		assertFalse(El.eval("false").getBoolean());
+		assertTrue(El.eval("(10+6)==16").getBoolean());
+	}
+
+	@Test
+	public void test_invoke_method_of_string() {
+		Context context = new Context();
+		List<String> list = new ArrayList<String>();
+		list.add("");
+		context.set("b", list);
 		//El.eval(context, "b[0].toString()");
 		El.eval(context, "b.get(0).toString()");
-		//El.eval(context, "b[0].equals(b[0])");
+		El.eval(context, "b[0].equals(b[0])");
 		//El.eval(context, "b[0].equals('')");
 	}
 
