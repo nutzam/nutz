@@ -8,7 +8,7 @@ import org.nutz.mvc.annotation.Param;
 @At("/two")
 public class NemberTwoModule {
 
-	@At
+	@At({"/check",""})
 	public void check() {}
 
 	@At("/say")
