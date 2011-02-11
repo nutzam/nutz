@@ -39,7 +39,7 @@ public class ElTest {
 		assertEquals("Hello", El.eval(context, "a.get('txt')").getString());
 		assertEquals(3, El.eval(context, "a.size()").getInteger().intValue());
 	}
-	
+
 	@Test
 	public void test_simple_count() {
 		assertEquals((3 + 2 * 5), El.eval("3+2*5").getInteger().intValue());
@@ -70,32 +70,44 @@ public class ElTest {
 		assertTrue(El.eval("3>0").getBoolean());
 		assertTrue(El.eval("3 >= 3").getBoolean());
 		assertTrue(El.eval("3 >= 1+1").getBoolean());
-		
+
 		Context context = new Context();
 		assertTrue(El.eval(context, "a == null").getBoolean());
-		assertTrue(El.eval(context, "a.a").getBoolean());
-		assertTrue(El.eval("a.a.a").getBoolean());
-		
+		try {
+			assertTrue(El.eval(context, "a.a").getBoolean());
+			fail();
+		}
+		catch (ElException e) {}
+		catch (Exception e) {
+			fail();
+		}
+		try {
+			assertTrue(El.eval("a.a.a").getBoolean());
+		}
+		catch (ElException e) {}
+		catch (Exception e) {
+			fail();
+		}
 	}
-	
+
 	@Test
-	public void test_NEQ(){
+	public void test_NEQ() {
 		Context context = new Context();
 		context.set("a", 3);
 		assertTrue(El.eval(context, "a != null").getBoolean());
 		assertTrue(El.eval("3 != 1").getBoolean());
 	}
-	
+
 	@Test
 	public void test_invoke_method_of_string() {
 		Context context = new Context();
 		List<String> list = new ArrayList<String>();
 		list.add("");
 		context.set("b", list);
-		//El.eval(context, "b[0].toString()");
+		El.eval(context, "b[0].toString()");
 		El.eval(context, "b.get(0).toString()");
 		El.eval(context, "b[0].equals(b[0])");
-		//El.eval(context, "b[0].equals('')");
+		El.eval(context, "b[0].equals('')");
 	}
 
 }

@@ -28,6 +28,10 @@ public abstract class AbstractOperator implements ElOperator {
 		return weight > opt.getWeight();
 	}
 
+	public boolean is(String optStr) {
+		return null == str ? false : str.equals(optStr);
+	}
+
 	public String toString() {
 		return str;
 	}

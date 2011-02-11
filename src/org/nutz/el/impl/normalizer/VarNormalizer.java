@@ -2,6 +2,7 @@ package org.nutz.el.impl.normalizer;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedList;
 
 import org.nutz.el.El;
 import org.nutz.el.ElException;
@@ -21,139 +22,154 @@ import org.nutz.el.val.PojoElValue;
 public class VarNormalizer implements SymbolNormalizer {
 
 	public ElObj normalize(SymbolNormalizing ing) {
-		if (ing.hasNext()) {
-			// 一切根据下一个符号来决定
-			ElSymbol next = ing.symbols[ing.index];
+		/*
+		 * 首先将后续符号，扫描至一个列表中，生成一个 List<ArrayObj|VarElObj|BinElObj>
+		 */
+		LinkedList<ElObj> stack = new LinkedList<ElObj>();
+		BinElObj bin;
 
-			/*
-			 * 是访问操作符 - 那么会一直读取这个调用序列，直到碰到一个非 '.' 的操作符
-			 */
-			if (isAccessOperator(next)) {
-				// 那么本符号一定是个变量，下面的符号则不好说，所以需要循环看看
-				// 这个循环会生成一个 ElObj 组成的列表
-				// 当然，列表项目只可能是 ArrayObj | VarElObj | BinElObj
-				ArrayList<ElObj> list = new ArrayList<ElObj>();
-				list.add(El.Obj.var(ing.current().getString()));
-				// 跳过当前的 '.'
-				ing.index++;
-				// 开始循环
-				while (ing.hasNext()) {
-					next = ing.next();
-					// 忽略调用操作符
-					if (isAccessOperator(next))
-						continue;
-					// 变量名，表示属性，或者函数调用
-					else if (ElSymbolType.VAR == next.getType()) {
-						ElSymbol after = ing.symbols[ing.index];
-						// 函数调用
-						if (ElSymbolType.LEFT_PARENTHESIS == after.getType()) {
-							list.add(readArgs(ing));
-						}
-						// 下标访问
-						else if (ElSymbolType.LEFT_BRACKET == after.getType()) {
-							list.add(El.Obj.var(next.getString()));
-							// 移动到 '[' 处
-							ing.index++;
-							// 再次分析
-							SymbolNormalizing newIng = ing.born();
-							BinElObj obj = ing.analyzer.analyze(newIng);
-							ing.index = newIng.index;
-							// 确保遇到的是 ']'
-							if (ElSymbolType.RIGHT_BRACKET != ing.current().getType()) {
-								throw new ElException(	"'[' without close, nearby \"%s\"",
-														ing.dumpError());
-							}
-							// 增加一个静态节点
-							list.add(obj);
-						}
-						// 就是变量
-						else {
-							list.add(El.Obj.var(after.getString()));
-						}
-					}
-					// 这个调用链结束了，一定是碰到了其它的操作符，所以要回退一步
-					else {
-						ing.index--;
-						break;
-					}
-				}
-				// 整理数组，形成一个 BinElObj
-				Iterator<ElObj> it = list.iterator();
-				BinElObj re = new BinElObj();
-				re.setLeft(it.next());
-				while (it.hasNext()) {
-					ElObj obj = it.next();
-					// 变量
-					if (obj instanceof VarElObj) {
-						re.setOperator(AccessOperator.me());
-						re.setRight(obj);
-					}
-					// 数组
-					else if (obj instanceof ArrayElObj) {
-						re.setOperator(InvokeOperator.me());
-						re.setRight(obj);
-					}
-					// 表达式
-					else if (obj instanceof BinElObj) {
-						re.setOperator(AccessOperator.me());
-						re.setRight(((BinElObj) obj).unwrap());
-					}
-					// 灵异现象
-					else {
-						throw new ElException("Impossible!");
-					}
-					BinElObj nb = new BinElObj();
-					nb.setLeft(re);
-					re = nb;
-				}
-				return re.unwrap();
-			}
-			/*
-			 * 是全局函数调用
-			 */
-			else if (ElSymbolType.LEFT_PARENTHESIS == next.getType()) {
+		// 首先为堆栈增加第一个元素，有可能是一个 VAR 也有可能是一个函数调用
+		if (ing.hasNext() && ing.symbols[ing.index].getType() == ElSymbolType.LEFT_PARENTHESIS) {
+			// 生成一个节点
+			bin = new BinElObj();
+			bin.setLeft(new StaticElObj(new PojoElValue<Object>(El.global)));
+			bin.setOperator(InvokeOperator.me());
+			bin.setRight(readArgs(ing));
+			stack.add(bin);
+
+		} else {
+			stack.add(El.Obj.var(ing.current().getString()));
+		}
+
+		// 准备开始循环
+		boolean breakLoop = false;
+		ElObj obj;
+		while (ing.hasNext()) {
+			ElSymbol symbol = ing.next();
+			switch (symbol.getType()) {
+			// '[' 表示访问属性
+			case LEFT_BRACKET:
+				// 弹出前面的对象
+				obj = stack.removeLast();
 				// 生成一个节点
-				BinElObj re = new BinElObj();
-				re.setLeft(new StaticElObj(new PojoElValue<Object>(El.global)));
-				re.setOperator(InvokeOperator.me());
+				bin = new BinElObj();
+				bin.setLeft(obj);
+				bin.setOperator(AccessOperator.me());
 
-				// 读取参数表
-				ArrayElObj argsObj = readArgs(ing);
-
-				// 返回调用节点
-				re.setRight(argsObj);
-				return re;
-			}
-			/*
-			 * 是下标访问 - 生成一个 Access 操作符的 BinObj 给它
-			 */
-			else if (ElSymbolType.LEFT_BRACKET == next.getType()) {
-				// 生成一个节点
-				BinElObj re = new BinElObj();
-				re.setLeft(El.Obj.var(ing.current().getString()));
-				// 移动到 '[' 处
-				ing.index++;
-				// 再次分析
+				// 分析属性值计算式
 				SymbolNormalizing newIng = ing.born();
-				ElObj obj = ing.analyzer.analyze(newIng);
+				BinElObj rightBin = ing.analyzer.analyze(newIng);
 				ing.index = newIng.index;
 				// 确保遇到的是 ']'
 				if (ElSymbolType.RIGHT_BRACKET != ing.current().getType()) {
 					throw new ElException("'[' without close, nearby \"%s\"", ing.dumpError());
 				}
-				// 返回一个属性访问节点
+
+				// 确定右式，并存入堆栈
+				bin.setRight(rightBin.unwrap());
+				stack.add(bin);
+				break;
+			// 如果是变量，则压栈
+			case VAR:
+				// 如果后面是个调用 '(' 则将前面的对象弹出，当成调用的左式。
+				if (ing.hasNext()
+					&& ing.symbols[ing.index].getType() == ElSymbolType.LEFT_PARENTHESIS) {
+					// 弹出前面的对象
+					obj = stack.removeLast();
+					// 生成一个节点
+					bin = new BinElObj();
+					bin.setLeft(obj);
+					bin.setOperator(InvokeOperator.me());
+
+					// 读取参数表
+					obj = readArgs(ing);
+
+					// 确定右式，并存入堆栈
+					bin.setRight(obj);
+					stack.add(bin);
+
+					break;
+				}
+				// 否则同前面的 ElObj 构成访问节点
+				else {
+					obj = stack.removeLast();
+					bin = new BinElObj();
+					bin.setLeft(obj);
+					bin.setOperator(AccessOperator.me());
+					bin.setRight(El.Obj.var(symbol.getString()));
+				}
+				// 将调用表达式，压入堆栈保存
+				stack.add(bin);
+				break;
+			// 操作符，是继续还是应该退出循环呢？
+			case OPT:
+				// 如果是 '.' 继续循环，当然，后面的符号如果不是 VAR，则抛错
+				if (symbol.getOperator().is(".")) {
+					if (!ing.hasNext() || ing.symbols[ing.index].getType() != ElSymbolType.VAR) {
+						throw new ElException(ing.dumpError());
+					}
+					continue;
+				}
+				// 如果是其它操作符，则退出循环
+				else {
+					ing.index--; // 回退一下指针
+					breakLoop = true;
+				}
+				break;
+			// 遇到了 ')' 表示本调用链结束
+			case RIGHT_PARENTHESIS:
+				ing.index--; // 回退一下指针
+				breakLoop = true;
+				break;
+			// 默认认为遇到了不认识的符号，抛错
+			default:
+				throw new ElException(ing.dumpError());
+			}
+			if (breakLoop)
+				break;
+		}
+
+		/*
+		 * 分析列表，形成一个 BinElObj
+		 */
+		Iterator<ElObj> it = stack.iterator();
+		BinElObj re = new BinElObj();
+		re.setLeft(it.next());
+		while (it.hasNext()) {
+			obj = it.next();
+			// 变量
+			if (obj instanceof VarElObj) {
 				re.setOperator(AccessOperator.me());
 				re.setRight(obj);
-				return re;
 			}
+			// 数组
+			else if (obj instanceof ArrayElObj) {
+				re.setOperator(InvokeOperator.me());
+				re.setRight(obj);
+			}
+			// 表达式
+			else if (obj instanceof BinElObj) {
+				re.setOperator(AccessOperator.me());
+				re.setRight(((BinElObj) obj).unwrap());
+			}
+			// 灵异现象
+			else {
+				throw new ElException("Impossible!");
+			}
+			bin = new BinElObj();
+			bin.setLeft(bin);
+			re = bin;
 		}
-		// 就是一个变量
-		return El.Obj.var(ing.current().getString());
+
+		/*
+		 * 返回结果
+		 */
+		return re.unwrap();
 	}
 
 	public ArrayElObj readArgs(SymbolNormalizing ing) {
 		ArrayList<ElObj> args = new ArrayList<ElObj>(5); // 很少有超过5个参数的函数吧
-		// 先将右值当作字符串值压入堆栈
+		// 先将当前符号当作字符串值压入堆栈，它必定是一个 VAR
 		args.add(El.Obj.string(ing.current().getString()));
 
 		// 移动到 '('

@@ -7,6 +7,16 @@ import org.nutz.el.El;
 import org.nutz.el.obj.BinElObj;
 
 public class NutElAnalyzerTest {
+	
+	@Test
+	public void test_simple_index_access(){
+		String exp = "a[0]";
+		BinElObj bin = El.compile(exp);
+		
+		assertEquals("$a", bin.getLeft().toString());
+		assertEquals(".", bin.getOperator().toString());
+		assertEquals("0", bin.getRight().toString());
+	}
 
 	@Test
 	public void test_access_and_invoke() {
@@ -14,10 +24,10 @@ public class NutElAnalyzerTest {
 		BinElObj bin = El.compile(exp);
 
 		assertEquals("&invoke", bin.getOperator().toString());
-		assertEquals("[$xyz]", bin.getRight().toString());
+		assertEquals("['xyz']", bin.getRight().toString());
 
-		bin = (BinElObj) bin.getRight();
-		assertEquals("$a", bin.getLeft());
+		bin = (BinElObj) bin.getLeft();
+		assertEquals("$a", bin.getLeft().toString());
 		assertEquals(".", bin.getOperator().toString());
 		assertEquals("0", bin.getRight().toString());
 	}

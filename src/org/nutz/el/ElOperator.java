@@ -27,7 +27,7 @@ public interface ElOperator {
 	void setString(String str);
 
 	int getWeight();
-	
+
 	String getString();
 
 	/**
@@ -38,5 +38,14 @@ public interface ElOperator {
 	 * @return true － 本身权重更高, false - 同权或权重更低
 	 */
 	boolean isHigherThan(ElOperator opt);
+
+	/**
+	 * 判断操作符是不是某一字符串
+	 * 
+	 * @param optStr
+	 *            操作符字符串
+	 * @return 是否相等
+	 */
+	boolean is(String optStr);
 
 }
