@@ -16,6 +16,7 @@ import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
+import org.nutz.mvc.annotation.BlankAtException;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
@@ -80,7 +81,7 @@ public class UrlMapImpl implements UrlMap {
 			bases = baseAt.value();
 			for (int i = 0; i < bases.length; i++)
 				if (bases[i] == null || "/".equals(bases[i]))
-						bases[i] = "";
+					bases[i] = "";
 		}
 
 		/*
@@ -130,6 +131,9 @@ public class UrlMapImpl implements UrlMap {
 				// Have value in @At
 				else {
 					for (String at : paths) {
+						if (Strings.isBlank(at)) {
+							throw new BlankAtException(moduleType, method);
+						}
 						// Get Action
 						actionPath = base + at;
 						root.add(actionPath, invoker);

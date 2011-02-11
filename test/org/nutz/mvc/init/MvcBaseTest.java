@@ -2,10 +2,7 @@ package org.nutz.mvc.init;
 
 import static junit.framework.Assert.*;
 
-import java.io.IOException;
 import java.lang.reflect.Method;
-
-import javax.servlet.ServletException;
 
 import org.junit.Test;
 import org.nutz.mvc.Mvcs;
@@ -36,18 +33,6 @@ public class MvcBaseTest extends AbstractMvcTest {
 		request.setPathInfo("/two/say");
 		servlet.service(request, response);
 		assertEquals("\"haha\"", response.getAsString());
-	}
-	
-	@Test
-	public void testTwoNullAt() throws ServletException, IOException{
-		try{
-			request.setPathInfo("/two");
-			servlet.service(request, response);
-			response.getAsString();
-			fail();
-		}catch (Exception e) {
-			assertTrue(true);
-		}
 	}
 
 	@Test
