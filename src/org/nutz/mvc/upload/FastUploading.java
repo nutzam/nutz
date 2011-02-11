@@ -166,6 +166,8 @@ public class FastUploading implements Uploading {
 										throw new UploadOutOfSizeException(meta);
 									}
 									br.dump(ops);
+									if(info.stop)
+										throw new UploadStopException(info);
 								} while (mm == MarkMode.NOT_FOUND);
 							}
 							// 不限制文件大小
@@ -175,6 +177,8 @@ public class FastUploading implements Uploading {
 									mm = br.mark(itemEndlBytes);
 									assertStreamNotEnd(mm);
 									br.dump(ops);
+									if(info.stop)
+										throw new UploadStopException(info);
 								} while (mm == MarkMode.NOT_FOUND);
 							}
 						}

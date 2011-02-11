@@ -29,7 +29,8 @@ public class ActionFilterChainImpl implements ActionFilterChain {
 	public void doChain() throws Throwable {
 		if (filters.isEmpty())
 			return;
-		filters.remove(0).filter(this);
+		ActionFilter filter = filters.remove(0);
+		filter.filter(this);
 	}
 
 	public Object get(Object key) {
