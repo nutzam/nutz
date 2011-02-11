@@ -6,10 +6,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.nutz.el.obj.BinElObj;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
 public class ElTest {
+
+	@Test
+	public void test_simple_static_invoke() {
+		assertEquals("abc", El.eval("' abc '.trim()").getString());
+		assertEquals(3, El.eval("'123'.length()").getInteger().intValue());
+		assertEquals("cde", El.eval("'abcde'.substring(2)").getString());
+		assertEquals("bbbb", El.eval("'  abab  '.replace('a','b').trim()").getString());
+	}
+
+	@Test
+	public void test_simple_condition() {
+		String s = "a>5?'GT 5':'LTE 5'";
+		BinElObj exp = El.compile(s);
+
+		Context context = new Context();
+		context.set("a", 10);
+		assertEquals("GT 5", exp.eval(context).getString());
+
+		context.set("a", 5);
+		assertEquals("LTE 5", exp.eval(context).getString());
+
+	}
 
 	@Test
 	public void test_array_access() {

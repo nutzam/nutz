@@ -26,7 +26,7 @@ public class SymbolNormalizing {
 	}
 
 	public ElSymbol current() {
-		return symbols[index-1];
+		return symbols[index - 1];
 	}
 
 	public boolean hasNext() {
@@ -43,7 +43,7 @@ public class SymbolNormalizing {
 
 	public String dumpError() {
 		StringBuilder sb = new StringBuilder();
-		sb.append("Unexcept symbol '").append(symbols[index]).append("'");
+		sb.append("Unexcept symbol \"").append(symbols[index == 0 ? 0 : index - 1]).append('"');
 		sb.append(" nearby : ");
 		for (int i = 0; i < index; i++) {
 			sb.append(symbols[i]);

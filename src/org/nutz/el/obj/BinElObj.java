@@ -4,10 +4,14 @@ import org.nutz.el.ElException;
 import org.nutz.el.ElObj;
 import org.nutz.el.ElOperator;
 import org.nutz.el.ElValue;
-import org.nutz.el.opt.AccessOperator;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 
+/**
+ * 二叉树节点表达式对象
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class BinElObj implements ElObj {
 
 	private BinElObj parent;
@@ -69,11 +73,17 @@ public class BinElObj implements ElObj {
 		return this;
 	}
 
-	public boolean isAccessOperation() {
-		return null != operator && (operator instanceof AccessOperator);
+	public boolean isLeftOnly() {
+		return null != left && null == operator && null == right;
 	}
 
 	public BinElObj append(ElOperator opt, ElObj obj) {
+		// 没有操作符，直接添加
+		if (null == operator) {
+			return setOperator(opt).setRight(obj);
+		}
+
+		// 否则计算操作符优先级别
 		BinElObj nn = new BinElObj();
 		// 高权 － 新节点下沉
 		if (opt.isHigherThan(operator)) {
@@ -121,14 +131,21 @@ public class BinElObj implements ElObj {
 	}
 
 	public ElObj unwrap() {
-		if (null == operator)
-			return null == left ? right : left;
+		if (null == operator && left != null) {
+			if (null != right)
+				throw new ElException("BinElObj without operator, but it has right!");
+			return left;
+		}
 		return this;
 	}
 
 	public BinElObj unwrapToBin() {
-		if (null == operator && (left instanceof BinElObj))
-			return ((BinElObj) left).unwrapToBin();
+		if (null == operator && left != null) {
+			if (null != right)
+				throw new ElException("BinElObj without operator, but it has right!");
+			if (left instanceof BinElObj)
+				return (BinElObj) left;
+		}
 		return this;
 	}
 
@@ -139,17 +156,17 @@ public class BinElObj implements ElObj {
 	}
 
 	public void appendString(StringBuilder sb, int indent) {
-		sb.append("<").append(operator).append(">");
+		sb.append("OPT  : ").append(operator);
 
 		sb.append('\n');
 		appendIndent(sb, indent);
-		sb.append("LEFT:");
+		sb.append("LEFT : ");
 		appendObj(sb, indent, left);
 		appendIndent(sb, indent);
 
 		sb.append('\n');
 		appendIndent(sb, indent);
-		sb.append("RIGHT:");
+		sb.append("RIGHT: ");
 		appendObj(sb, indent, right);
 	}
 

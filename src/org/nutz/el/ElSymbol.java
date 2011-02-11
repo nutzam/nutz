@@ -44,6 +44,10 @@ public class ElSymbol {
 		return (ElOperator) obj;
 	}
 
+	public boolean is(String str) {
+		return toString().equals(str);
+	}
+
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
@@ -59,6 +63,12 @@ public class ElSymbol {
 			break;
 		case RIGHT_BRACKET:
 			sb.append("]");
+			break;
+		case CONDITIONAL_TEST:
+			sb.append("?");
+			break;
+		case CONDITIONAL_SEP:
+			sb.append(":");
 			break;
 		case COMMA:
 			sb.append(",");
@@ -83,7 +93,7 @@ public class ElSymbol {
 			sb.append("undefined");
 			break;
 		default:
-			throw new ElException("Unexpect symbol type '%s'", type.name());
+			sb.append(obj.toString());
 		}
 		return sb.toString();
 	}

@@ -5,6 +5,11 @@ import org.nutz.el.ElValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
+/**
+ * 数组表达式对象
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class ArrayElObj implements ElObj {
 
 	private ElObj[] objs;
@@ -23,6 +28,14 @@ public class ArrayElObj implements ElObj {
 			vals[i] = objs[i].eval(context);
 		}
 		return vals;
+	}
+
+	public ElObj[] getObjs() {
+		return objs;
+	}
+
+	public void setObjs(ElObj[] objs) {
+		this.objs = objs;
 	}
 
 	public String toString() {

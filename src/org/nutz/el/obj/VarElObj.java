@@ -6,6 +6,11 @@ import org.nutz.el.ElValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
+/**
+ * 变量表达式对象。负责从上下文中获取静态变量值
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 public class VarElObj implements ElObj {
 
 	private String name;
@@ -24,6 +29,10 @@ public class VarElObj implements ElObj {
 
 	public String getName() {
 		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String toString() {

@@ -116,8 +116,10 @@ public class VarNormalizer implements SymbolNormalizer {
 					breakLoop = true;
 				}
 				break;
-			// 遇到了 ')' 表示本调用链结束
+			// 遇到了 '?' 或者 ')' 或者 ':' 表示本调用链结束，需要回退指针，等待其它过程来处理
 			case RIGHT_PARENTHESIS:
+			case CONDITIONAL_SEP:
+			case CONDITIONAL_TEST:
 				ing.index--; // 回退一下指针
 				breakLoop = true;
 				break;
@@ -167,7 +169,7 @@ public class VarNormalizer implements SymbolNormalizer {
 		return re.unwrap();
 	}
 
-	public ArrayElObj readArgs(SymbolNormalizing ing) {
+	public static ArrayElObj readArgs(SymbolNormalizing ing) {
 		ArrayList<ElObj> args = new ArrayList<ElObj>(5); // 很少有超过5个参数的函数吧
 		// 先将当前符号当作字符串值压入堆栈，它必定是一个 VAR
 		args.add(El.Obj.string(ing.current().getString()));

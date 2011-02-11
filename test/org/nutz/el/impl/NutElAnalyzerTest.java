@@ -5,14 +5,63 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.nutz.el.El;
 import org.nutz.el.obj.BinElObj;
+import org.nutz.el.obj.ConditionalElObj;
+import org.nutz.el.obj.StaticElObj;
 
 public class NutElAnalyzerTest {
-	
+
 	@Test
-	public void test_simple_index_access(){
+	public void test_string_invoke() {
+		String exp = "'abc'.trim()";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("'abc'", root.getLeft().toString());
+		assertEquals("&invoke", root.getOperator().toString());
+		assertEquals("['trim']", root.getRight().toString());
+	}
+
+	@Test
+	public void test_cnd_invoke() {
+		String exp = "(a>=7?b:c).count(23)";
+		BinElObj root = El.compile(exp);
+
+		/*
+		 * a>=7 ? b : c
+		 */
+		ConditionalElObj cnd = (ConditionalElObj) root.getLeft();
+
+		BinElObj bin = (BinElObj) cnd.getTest();
+		assertEquals("$a", bin.getLeft().toString());
+		assertEquals(">=", bin.getOperator().toString());
+		assertEquals("7", bin.getRight().toString());
+
+		assertEquals("$b", cnd.getTrueObj().toString());
+		assertEquals("$c", cnd.getFalseObj().toString());
+
+		/*
+		 * .count(23)
+		 */
+		assertEquals("&invoke", root.getOperator().toString());
+		assertEquals("['count', 23]", root.getRight().toString());
+	}
+
+	@Test
+	public void test_simple_conditional() {
+		String exp = "a?3+4:true";
+		BinElObj bin = El.compile(exp);
+
+		ConditionalElObj obj = (ConditionalElObj) bin.unwrap();
+
+		assertEquals("$a", obj.getTest().toString());
+		assertEquals(7, obj.getTrueObj().eval(null).getInteger().intValue());
+		assertTrue(obj.getFalseObj() instanceof StaticElObj);
+	}
+
+	@Test
+	public void test_simple_index_access() {
 		String exp = "a[0]";
 		BinElObj bin = El.compile(exp);
-		
+
 		assertEquals("$a", bin.getLeft().toString());
 		assertEquals(".", bin.getOperator().toString());
 		assertEquals("0", bin.getRight().toString());

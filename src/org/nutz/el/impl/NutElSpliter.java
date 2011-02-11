@@ -24,14 +24,16 @@ public class NutElSpliter implements ElSpliter {
 		loaders = new ArrayList<SymbolLoader>();
 		
 		loaders.add(new CommaSymbolLoader());
+		loaders.add(new ConditionalSeperateSymbolLoader());
+		loaders.add(new ConditionalTestSymbolLoader());
 		loaders.add(new LeftBracketSymbolLoader());
 		loaders.add(new LeftPrenthesisSymbolLoader());
-		loaders.add(new NameSymbolLoader());
-		loaders.add(new NumberLoader());
-		loaders.add(new OptSymbolLoader());
 		loaders.add(new RightBracketSymbolLoader());
 		loaders.add(new RightPrenthesisSymbolLoader());
 		loaders.add(new StringSymbolLoader());
+		loaders.add(new NameSymbolLoader());
+		loaders.add(new NumberLoader());
+		loaders.add(new OptSymbolLoader());
 	}
 
 	public List<ElSymbol> splite(Reader reader) {

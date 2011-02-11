@@ -70,6 +70,16 @@ public enum ElSymbolType {
 	/**
 	 * 操作符
 	 */
-	OPT
+	OPT,
+
+	/**
+	 * 条件表达式判断符号
+	 */
+	CONDITIONAL_TEST,
+
+	/**
+	 * 条件表达式分隔符号
+	 */
+	CONDITIONAL_SEP
 
 }
