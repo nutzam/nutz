@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>
  * 你可以通过 '@Filters' 以及 '@By' 为任何一个入口函数，或者模块声明你的过滤器。
  * <p>
- * 你的过滤去，的构造函数的参数，要和你的 '@By' 的参数相匹配
+ * 你的过滤器的构造函数的参数，要和你的 '@By' 的参数相匹配
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
