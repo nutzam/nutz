@@ -66,6 +66,10 @@ public class FloatElValue implements ElValue {
 	public ElValue isEquals(ElValue ta) {
 		return new BooleanElValue(val.equals(ta.getFloat()));
 	}
+	
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!val.equals(ta.getFloat()));
+	}
 
 	public ElValue isGT(ElValue ta) {
 		return new BooleanElValue(val > ta.getFloat());

@@ -61,6 +61,10 @@ public class NullElValue implements ElValue {
 		return new BooleanElValue(ta instanceof NullElValue);
 	}
 
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!(ta instanceof NullElValue));
+	}
+
 	public ElValue isGT(ElValue ta) {
 		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isGT");
 	}

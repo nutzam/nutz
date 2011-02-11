@@ -60,6 +60,10 @@ public class UndefinedElValue implements ElValue {
 	public ElValue isEquals(ElValue ta) {
 		return new BooleanElValue(ta instanceof UndefinedElValue);
 	}
+	
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!(ta instanceof UndefinedElValue));
+	}
 
 	public ElValue isGT(ElValue ta) {
 		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isGT");

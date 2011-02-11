@@ -112,6 +112,15 @@ public interface ElValue {
 	 * @return true 或 false
 	 */
 	ElValue isEquals(ElValue ta);
+	
+	/**
+	 * 判断不相等
+	 * 
+	 * @param ta
+	 *            被操作项
+	 * @return true 或 false
+	 */
+	ElValue isNEQ(ElValue ta);
 
 	/**
 	 * 判断是否大于

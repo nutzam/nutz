@@ -76,6 +76,10 @@ public class PojoElValue<T> implements ElValue {
 	public ElValue isEquals(ElValue ta) {
 		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isEquals");
 	}
+	
+	public ElValue isNEQ(ElValue ta) {
+		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isNEQ");
+	}
 
 	public ElValue isGT(ElValue ta) {
 		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isGT");

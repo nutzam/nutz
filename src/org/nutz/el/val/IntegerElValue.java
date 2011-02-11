@@ -66,6 +66,10 @@ public class IntegerElValue implements ElValue {
 	public ElValue isEquals(ElValue ta) {
 		return new BooleanElValue(val.equals(ta.getInteger()));
 	}
+	
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!val.equals(ta.getInteger()));
+	}
 
 	public ElValue isGT(ElValue ta) {
 		return new BooleanElValue(val > ta.getInteger());

@@ -76,8 +76,14 @@ public class ElTest {
 		assertTrue(El.eval(context, "a.a").getBoolean());
 		assertTrue(El.eval("a.a.a").getBoolean());
 		
-//		取反还没实现
-//		assertTrue(El.eval("3 != 1").getBoolean());
+	}
+	
+	@Test
+	public void test_NEQ(){
+		Context context = new Context();
+		context.set("a", 3);
+		assertTrue(El.eval(context, "a != null").getBoolean());
+		assertTrue(El.eval("3 != 1").getBoolean());
 	}
 	
 	@Test

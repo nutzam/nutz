@@ -66,6 +66,10 @@ public class LongElValue implements ElValue {
 	public ElValue isEquals(ElValue ta) {
 		return new BooleanElValue(val.equals(ta.getLong()));
 	}
+	
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!val.equals(ta.getLong()));
+	}
 
 	public ElValue isGT(ElValue ta) {
 		return new BooleanElValue(val > ta.getLong());

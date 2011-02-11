@@ -69,6 +69,10 @@ public class BooleanElValue implements ElValue {
 		return new BooleanElValue(val.equals(ta.getBoolean()));
 	}
 
+	public ElValue isNEQ(ElValue ta) {
+		return new BooleanElValue(!val.equals(ta.getBoolean()));
+	}
+
 	public ElValue isGT(ElValue ta) {
 		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isGT");
 	}
