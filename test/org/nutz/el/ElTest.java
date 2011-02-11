@@ -39,7 +39,7 @@ public class ElTest {
 		assertEquals("Hello", El.eval(context, "a.get('txt')").getString());
 		assertEquals(3, El.eval(context, "a.size()").getInteger().intValue());
 	}
-
+	
 	@Test
 	public void test_simple_count() {
 		assertEquals((3 + 2 * 5), El.eval("3+2*5").getInteger().intValue());
@@ -67,8 +67,19 @@ public class ElTest {
 	public void test_boolean() {
 		assertFalse(El.eval("false").getBoolean());
 		assertTrue(El.eval("(10+6)==16").getBoolean());
+		assertTrue(El.eval("3>0").getBoolean());
+		assertTrue(El.eval("3 >= 3").getBoolean());
+		assertTrue(El.eval("3 >= 1+1").getBoolean());
+		
+		Context context = new Context();
+		assertTrue(El.eval(context, "a == null").getBoolean());
+		assertTrue(El.eval(context, "a.a").getBoolean());
+		assertTrue(El.eval("a.a.a").getBoolean());
+		
+//		取反还没实现
+//		assertTrue(El.eval("3 != 1").getBoolean());
 	}
-
+	
 	@Test
 	public void test_invoke_method_of_string() {
 		Context context = new Context();
