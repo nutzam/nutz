@@ -17,7 +17,7 @@ public interface ObjectWeaver {
 	 * 
 	 * @return 被填充后的字段
 	 */
-	public <T> T fill(IocMaking ing, T obj);
+	<T> T fill(IocMaking ing, T obj);
 
 	/**
 	 * 根据自身内容创建一个对象，并触发创建事件
@@ -25,7 +25,7 @@ public interface ObjectWeaver {
 	 * @param ing
 	 *            容器构造时
 	 */
-	public Object born(IocMaking ing);
+	Object born(IocMaking ing);
 	
 	/**
 	 * 为对象触发 CREATE 事件
@@ -33,6 +33,6 @@ public interface ObjectWeaver {
 	 * @param obj
 	 *            对象
 	 */
-	public Object onCreate(Object obj);
+	Object onCreate(Object obj);
 
 }

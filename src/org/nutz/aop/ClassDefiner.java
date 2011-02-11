@@ -20,14 +20,14 @@ public interface ClassDefiner {
 	 * @throws ClassFormatError
 	 *             字节码格式错误
 	 */
-	public Class<?> define(String className, byte[] bytes) throws ClassFormatError;
+	Class<?> define(String className, byte[] bytes) throws ClassFormatError;
 
 	/**
 	 * @param className
 	 *            一个类全名
 	 * @return 是否在缓存中存在这个类的定义
 	 */
-	public boolean has(String className);
+	boolean has(String className);
 
 	/**
 	 * @param className
@@ -36,5 +36,5 @@ public interface ClassDefiner {
 	 * @throws ClassNotFoundException
 	 *             如果缓存中没有这个类定义
 	 */
-	public Class<?> load(String className) throws ClassNotFoundException;
+	Class<?> load(String className) throws ClassNotFoundException;
 }

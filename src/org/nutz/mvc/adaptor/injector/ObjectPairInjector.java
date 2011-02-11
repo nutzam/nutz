@@ -30,7 +30,6 @@ public class ObjectPairInjector implements ParamInjector {
 			Param param = f.getAnnotation(Param.class);
 			String nm = null == param ? f.getName() : param.value();
 			this.names[i] = prefix + nm;
-
 		}
 	}
 

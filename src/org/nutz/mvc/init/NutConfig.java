@@ -114,6 +114,6 @@ public interface NutConfig {
 	 * 
 	 * @return 当前应用的上下文对象
 	 */
-	public abstract ServletContext getServletContext();
+	ServletContext getServletContext();
 
 }

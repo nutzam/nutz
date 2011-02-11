@@ -17,7 +17,7 @@ public class AllAttrInjector extends AttrInjector {
 		re = req.getSession().getAttribute(name);
 		if (null != re)
 			return re;
-		return req.getSession().getServletContext().getAttribute(name);
+		return sc.getAttribute(name);
 	}
 
 }

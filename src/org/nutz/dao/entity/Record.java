@@ -14,7 +14,6 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.json.ToJson;
 import org.nutz.lang.Lang;
 
 /**
@@ -22,7 +21,6 @@ import org.nutz.lang.Lang;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-@ToJson
 public class Record implements Map<String, Object>,java.io.Serializable {
 
 	/**

@@ -7,10 +7,8 @@ import java.util.Set;
 
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.json.ToJson;
 import org.nutz.lang.Strings;
 
-@ToJson
 public class MessageMap implements Map<String, String> {
 
 	private Map<String, String> map;

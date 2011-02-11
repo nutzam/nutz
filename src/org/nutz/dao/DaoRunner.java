@@ -21,6 +21,6 @@ import javax.sql.DataSource;
  */
 public interface DaoRunner {
 
-	public void run(DataSource dataSource, ConnCallback callback);
+	void run(DataSource dataSource, ConnCallback callback);
 
 }
