@@ -43,6 +43,7 @@ public class ElTest {
 		assertEquals(7, El.eval(context, "a[2]").getInteger().intValue());
 		assertEquals(15, El.eval(context, "a[0]+a[1]+a[2]").getInteger().intValue());
 		assertEquals(56, El.eval(context, "(a[0]+a[1])*a[2]").getInteger().intValue());
+		assertEquals(3, El.eval(context, "a.length").getInteger().intValue());
 	}
 
 	@Test
@@ -61,6 +62,10 @@ public class ElTest {
 									.getString());
 		assertEquals("Hello", El.eval(context, "a.get('txt')").getString());
 		assertEquals(3, El.eval(context, "a.size()").getInteger().intValue());
+
+		// 测试访问符号
+		assertEquals(100, El.eval(context, "a.x*10").getInteger().intValue());
+		assertEquals(100, El.eval(context, "a['x']*10").getInteger().intValue());
 	}
 
 	@Test

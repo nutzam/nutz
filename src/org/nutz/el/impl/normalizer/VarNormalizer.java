@@ -96,7 +96,7 @@ public class VarNormalizer implements SymbolNormalizer {
 					bin = new BinElObj();
 					bin.setLeft(obj);
 					bin.setOperator(AccessOperator.me());
-					bin.setRight(El.Obj.var(symbol.getString()));
+					bin.setRight(El.Obj.string(symbol.getString()));
 				}
 				// 将调用表达式，压入堆栈保存
 				stack.add(bin);
