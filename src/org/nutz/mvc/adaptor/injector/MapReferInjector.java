@@ -33,7 +33,7 @@ public class MapReferInjector extends ObjectPairInjector {
 		for (int i = 0; i < injs.length; i++) {
 			Injecting inj = injs[i];
 			Object s;
-			if (null != map)
+			if (null != map && map.containsKey(names[i]))
 				s = map.get(names[i]);
 			else
 				s = req.getParameter(names[i]);
