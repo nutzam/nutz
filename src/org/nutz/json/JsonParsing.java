@@ -102,7 +102,7 @@ class JsonParsing {
 			throw e;
 		}
 		catch (Exception e) {
-			throw makeError(e.getMessage(),e);
+			throw makeError(e.getMessage(), e);
 		}
 	}
 
@@ -231,7 +231,7 @@ class JsonParsing {
 				& 'n' != (char) nextChar()
 				& 'e' != (char) nextChar()
 				& 'd' != (char) nextChar())
-				throw makeError("String must in quote or it must be <null>");
+				throw makeError("String must in quote or it must be <undefined>");
 			nextChar();
 			return null;
 		case 'n':
@@ -334,7 +334,7 @@ class JsonParsing {
 	private JsonException makeError(String message) {
 		return new JsonException(row, col, (char) cursor, message);
 	}
-	
+
 	private JsonException makeError(String message, Throwable tx) {
 		return new JsonException(row, col, (char) cursor, message, tx);
 	}
