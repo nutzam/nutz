@@ -613,6 +613,7 @@ public class NutDao implements Dao {
 	}
 
 	private void _insertSelf(final Entity<?> entity, final Object obj) {
+		// TODO 考虑一下修改 FieldQuery 接口，这样就不需要使用事务模板了
 		Trans.exec(new Atom() {
 			public void run() {
 				// Before insert
