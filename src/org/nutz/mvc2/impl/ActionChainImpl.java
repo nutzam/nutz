@@ -4,21 +4,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.mvc2.ActionFilter;
-import org.nutz.mvc2.ActionFilterChain;
+import org.nutz.mvc2.ActionNode;
+import org.nutz.mvc2.ActionChain;
 
 /**
  * 执行链的具体实现
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class ActionFilterChainImpl implements ActionFilterChain {
+public class ActionChainImpl implements ActionChain {
 	
-	private List<ActionFilter> filters;
+	private List<ActionNode> filters;
 	
 	private Map<Object, Object> content = new HashMap<Object, Object>();
 	
-	public ActionFilterChainImpl(List<ActionFilter> filters) {
+	public ActionChainImpl(List<ActionNode> filters) {
 		this.filters = filters;
 	}
 
@@ -29,7 +29,7 @@ public class ActionFilterChainImpl implements ActionFilterChain {
 	public void doChain() throws Throwable {
 		if (filters.isEmpty())
 			return;
-		ActionFilter filter = filters.remove(0);
+		ActionNode filter = filters.remove(0);
 		filter.filter(this);
 	}
 

@@ -7,11 +7,11 @@ import org.nutz.mvc.init.NutConfig;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public interface ActionFilter {
+public interface ActionNode {
 
 	void init(NutConfig config) throws Throwable;
 	
 	void depose() throws Throwable;
 	
-	void filter(ActionFilterChain chain) throws Throwable;
+	void filter(ActionChain chain) throws Throwable;
 }

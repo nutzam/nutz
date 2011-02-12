@@ -8,19 +8,19 @@ import org.nutz.mvc.ActionInvoking;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.UrlMap;
 import org.nutz.mvc.invoker.ActionInvokerImpl;
-import org.nutz.mvc2.ActionFilterChain;
+import org.nutz.mvc2.ActionChain;
 
 /**
  * 负责处理请求URI与具体方法的映射关系
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class UriMappingActionFilter extends AbstractActionFilter {
+public class UriMappingNode extends AbstractActionNode {
 	
-	private static final Log log = Logs.getLog(UriMappingActionFilter.class);
+	private static final Log log = Logs.getLog(UriMappingNode.class);
 
 	@Override
-	public void filter(ActionFilterChain chain) throws Throwable {
+	public void filter(ActionChain chain) throws Throwable {
 		HttpServletRequest req = getRequest(chain);
 		UrlMap urls = Mvcs.getUrls(getServletContext(chain));
 		String path = Mvcs.getRequestPath(req);

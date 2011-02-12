@@ -4,17 +4,17 @@ import java.lang.reflect.Method;
 
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
-import org.nutz.mvc2.ActionFilterChain;
+import org.nutz.mvc2.ActionChain;
 
 /**
  * 为了兼容之前的ActionFilter而实现
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class OldActionFilter extends AbstractActionFilter {
+public class OldActionFilterNode extends AbstractActionNode {
 
 	@Override
-	public void filter(ActionFilterChain chain) throws Throwable {
+	public void filter(ActionChain chain) throws Throwable {
 		ActionFilter[] filters = (ActionFilter[]) chain.get(ActionFilters.oldActionFilters);
 		if (null != filters)
 			for (ActionFilter filter : filters) {

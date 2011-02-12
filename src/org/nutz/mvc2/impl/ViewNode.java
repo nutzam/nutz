@@ -11,19 +11,19 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.View;
-import org.nutz.mvc2.ActionFilterChain;
+import org.nutz.mvc2.ActionChain;
 
 /**
  * 负责渲染视图
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class ViewFilter extends AbstractActionFilter {
+public class ViewNode extends AbstractActionNode {
 	
-	private static final Log log = Logs.getLog(ViewFilter.class);
+	private static final Log log = Logs.getLog(ViewNode.class);
 
 	@Override
-	public void filter(ActionFilterChain chain) throws Throwable {
+	public void filter(ActionChain chain) throws Throwable {
 		HttpServletRequest req = getRequest(chain);
 		HttpServletResponse resp = getResponse(chain);
 		try {

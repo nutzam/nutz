@@ -7,7 +7,7 @@ import java.util.Map;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public interface ActionFilterChain {
+public interface ActionChain {
 
 	Map<Object, Object> getContent();
 	

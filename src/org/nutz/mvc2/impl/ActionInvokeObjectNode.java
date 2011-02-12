@@ -8,17 +8,17 @@ import org.nutz.lang.Lang;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
-import org.nutz.mvc2.ActionFilterChain;
+import org.nutz.mvc2.ActionChain;
 
 /**
  * 负责获取需要执行的具体方法所对应的对象
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class ActionInvokeObjectFilter extends AbstractActionFilter {
+public class ActionInvokeObjectNode extends AbstractActionNode {
 
 	@Override
-	public void filter(ActionFilterChain chain) throws Throwable {
+	public void filter(ActionChain chain) throws Throwable {
 		RequestIocContext reqContext = null;
 		try {
 			Object obj = chain.get(ActionFilters.moduleObject);
