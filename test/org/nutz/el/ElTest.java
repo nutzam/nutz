@@ -13,6 +13,13 @@ import org.nutz.lang.util.Context;
 public class ElTest {
 
 	@Test
+	public void test_multi_opt_01() {
+		ElValue val = El.eval("2*4+2*3+4*5");
+		int exp = 2 * 4 + 2 * 3 + 4 * 5;
+		assertEquals(exp, val.getInteger().intValue());
+	}
+
+	@Test
 	public void test_simple_static_invoke() {
 		assertEquals("abc", El.eval("' abc '.trim()").getString());
 		assertEquals(3, El.eval("'123'.length()").getInteger().intValue());
