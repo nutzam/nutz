@@ -10,9 +10,9 @@ import org.nutz.lang.Strings;
  * @author zozoh
  * 
  */
-class PathNode<T> {
+public class PathNode<T> {
 
-	PathNode() {}
+	public PathNode() {}
 
 	private char[] chars;
 	private PathNode<T>[] children;
@@ -63,7 +63,7 @@ class PathNode<T> {
 		return re;
 	}
 
-	void add(String path, T obj) {
+	public void add(String path, T obj) {
 		char[] cs = path.toLowerCase().toCharArray();
 		PathNode<T> node = this;
 		int i = 0;
@@ -80,7 +80,7 @@ class PathNode<T> {
 			node.obj = obj;
 	}
 
-	PathInfo<T> get(String path) {
+	public PathInfo<T> get(String path) {
 		char[] cs = path.toLowerCase().toCharArray();
 		PathNode<T> wild = null;
 		PathNode<T> node = this;
