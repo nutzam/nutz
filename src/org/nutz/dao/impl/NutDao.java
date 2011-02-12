@@ -612,13 +612,17 @@ public class NutDao implements Dao {
 				nq.update(this, obj);
 	}
 
-	private void _insertSelf(Entity<?> entity, Object obj) {
-		// Before insert
-		runFieldQuery(entity.getBefores(), obj);
-		// Do Insert
-		execute(sqlMaker.insert(entity, obj));
-		// After insert
-		runFieldQuery(entity.getAfters(), obj);
+	private void _insertSelf(final Entity<?> entity, final Object obj) {
+		Trans.exec(new Atom() {
+			public void run() {
+				// Before insert
+				runFieldQuery(entity.getBefores(), obj);
+				// Do Insert
+				execute(sqlMaker.insert(entity, obj));
+				// After insert
+				runFieldQuery(entity.getAfters(), obj);
+			}
+		});
 	}
 
 	public <T> T fastInsert(T obj) {
