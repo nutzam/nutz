@@ -1,93 +1,39 @@
 package org.nutz.lang.util;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.nutz.castor.Castors;
+public interface Context extends Cloneable {
 
-/**
- * 可以用来存储无序名值对
- * 
- * @author zozoh(zozohtnt@gmail.com)
- */
-public class Context implements Cloneable {
+	Context set(String name, Object value);
 
-	private Map<String, Object> map;
+	Set<String> keys();
 
-	public Context() {
-		this.map = new HashMap<String, Object>();
-	}
+	Context putAll(Map<String, Object> map);
 
-	public Context(Map<String, Object> map) {
-		this.map = map;
-	}
+	Context putAll(Context context);
 
-	public Context set(String name, Object value) {
-		map.put(name, value);
-		return this;
-	}
+	boolean has(String key);
 
-	public Set<String> keys() {
-		return map.keySet();
-	}
+	Context clear();
 
-	public Context putAll(Map<String, Object> map) {
-		if (map != null) {
-			this.map.putAll(map);
-		}
-		return this;
-	}
+	Object get(String name);
 
-	public boolean has(String key) {
-		return map.containsKey(key);
-	}
+	<T> T getAs(Class<T> type, String name);
 
-	public Context clear() {
-		this.map.clear();
-		return this;
-	}
+	int getInt(String name);
 
-	public Object get(String name) {
-		return map.get(name);
-	}
+	String getString(String name);
 
-	public <T> T getAs(Class<T> type, String name) {
-		return Castors.me().castTo(get(name), type);
-	}
+	boolean getBoolean(String name);
 
-	public int getInt(String name) {
-		return getAs(int.class, name);
-	}
+	float getFloat(String name);
 
-	public String getString(String name) {
-		return getAs(String.class, name);
-	}
+	Map<String, Object> getMap(String name);
 
-	public boolean getBoolean(String name) {
-		return getAs(boolean.class, name);
-	}
+	List<Object> getList(String name);
 
-	public float getFloat(String name) {
-		return getAs(float.class, name);
-	}
-
-	@SuppressWarnings("unchecked")
-	public Map<String, Object> getMap(String name) {
-		return getAs(Map.class, name);
-	}
-
-	@SuppressWarnings("unchecked")
-	public List<Object> getList(String name) {
-		return getAs(List.class, name);
-	}
-
-	@Override
-	public Context clone() {
-		Context context = new Context();
-		context.map.putAll(this.map);
-		return context;
-	}
+	Context clone();
 
 }

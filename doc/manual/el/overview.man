@@ -1,66 +1,199 @@
-#title: EL 表达式引擎
+#title: 表达式引擎简介
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 #index:0,1
 ------------------------------------------------------------------------
 为什么需要 EL 表达式引擎
 
-    总之我们是需要它的 ...
+    现在 Nutz 支持了一个可嵌入式的表达式引擎。在你的程序里，你可以通过这个表达式引擎
+    让你的配置文件更加动态。比如，你在处理你的配置文件信息，或者最终用户从界面提交上
+    来的信息的时候，你可以通过这个表达式引擎将字符串计算处结果。
+
+------------------------------------------------------------------------
+近一步介绍表达式引擎
+
+    那么它怎么使用呢？
     
-     * 一个表达式计算的结果会是某一种数据类型
-
-    表达式引擎的工作过程是：
-     # 将字符串拆解成一组有意义的符号
-     # 将符号组成一个 ELItem 的树，每个节点在运行时都共享一个上下文环境
-         * 永远都只有一个根节点
-         * 每个 ELGroup 都有一个子项目链表以及一个操作符链表 （后缀表达式）
+    是的，我想这可能会是你脑海里闪出的第一个问题。并且，我想你真正想问的是:“它好用吗？”
+    
+    而关于 {*"好用"}，还有下面这三层含义：
+    
+    它容易使用吗？
+        {{{<Java>
+        ElValue val = El.eval("3+4*5");
+        System.out.println( 23 == val.getInteger().intValue());  // 将打印 true
+        }}}
+        表达式接受的是字符串输入，输出是一个 ElValue 接口。 通过这个接口，你能拿到
+        表达式的计算结果的 Java 形式，以便你后面的程序使用。
+    
+    它功能强大吗？
+    
+        虽然在 [#一些表达式的例子] 这一节我有更详细的例子，但是这里我必须要先概括几点：
+        
+        {*它支持变量}，比如
+        {{{<Java>
+        Context context = Lang.context();
+        context.set("a", 10);
+        ElValue val = El.eval(context, "a*10");
+        System.out.println(val.getInteger().intValue());  // 将打印 100 
+        }}}
+        通过 Context 接口，你可以为你的表达式随意设置变量的值。它支持如下类型的 Java 数据
+         * 整型 - int 或  Integer
+         * 浮点 - float 或 Float
+         * 长整 - long 或 Long
+         * 布尔 - boolean 或 Boolean
+         * 字符串 - String
+         * 数组 - `T[]`
+         * 列表 - `List<T>`
+         * 集合 - `Collection<T>`
+         * Map - `Map<String,?>`
+         * 普通 Java 对象
+        基本上，有了这些，你可以为所欲为了吧。
+    
+    它速度怎么样？
+        
+        我觉得它速度不怎么样。它的工作的原理是这样的，每次解析都经过如果下三步
+         # 解析符号列表
+         # 将符号列表变成一颗二叉树，并返回根节点
+         # 从跟节点递归计算
+        没有将表达式解析成一个后缀表达式，主要是因为从计算来讲，二叉树效率也过得去，
+        加上个人有点犯懒，想先看看，如果效率实在不能接受再说。
+        
+        当然我也提供了一个提升效率的手段，因为如果每次计算都经过这三个步骤当然慢，所以我们可以对它先预编译：
+        {{{<Java>
+        BinElObj exp = El.compile("a*10");  // 预编译结果为一个 ElObj
+        
+        Context context = Lang.context();
+        context.set("a", 10);
+        
+        ElValue val = exp.eval(context);
+        System.out.println(val.getInteger().intValue());  // 将打印 100 
+        }}}
+        表达式的预编译结果是 BinElObj 对象，它就是是二叉树根节点。
+        它的 eval 函数是线程安全的，只要在多个线程内给它不同的 context 就是了。当然，你也
+        可以在多个线程间共享同一个 Context，那运行起来一定很有趣，不是吗？
 
 ------------------------------------------------------------------------
-支持的操作符
+支持什么样的操作符
+    
+    我想但凡有机会和兴趣独到这篇文字的同学，一定是编程老手，即使是自称{*小白}的的同学们，
+    你们对一个编程语言应该支持的操作符基本都差不多熟的不行，
+    所以，我就不在这里唠叨操作符的具体细节了，我只给一个列表，告诉你我现在支持什么操作符。
+    
+    另外，再加上一句：
+    
+    {*只要支持的操作符，我会让它的优先级以及行为会和 Java 的表达式一致。如果你发现不一致\
+    别犹豫，给我报 Issue 吧。}
 
-    || 符号  || 优先级 ||  解释         ||
-    || .     || 100    ||  对象访问符   ||
-    || `[n]` || 90     ||  集合或Map访问符 ||
-    || *     || 50     ||  乘           ||
-    || /     || 50     ||  整除         ||
-    || %     || 50     ||  取模         ||
-    || +     || 10     ||  加           ||
-    || -     || 10     ||  减           ||
-    || >=    || 5      ||  大于等于     ||
-    || <=    || 5      ||  小于等于     ||
-    || ==    || 5      ||  等于         ||
-    || >     || 5      ||  大于         ||
-    || <     || 5      ||  小于         ||
+    || 符号       ||   解释         ||
+    || `.`        || 访问对象的属性，或者Map的值，或者函数调用（需要结合后面是否有括号） ||
+    || `['abc']`  || Java 对象 Map按键值获得值        ||
+    || `[3]`      || 数字，列表，或者集合的下标访问符号  ||
+    || `*`        || 乘           ||
+    || `/`        || 整除         ||
+    || `%`        || 取模         ||
+    || `+`        || 加           ||
+    || `-`        || 减           ||
+    || `>=`       || 大于等于      ||
+    || `<=`       || 小于等于      ||
+    || `==`       || 等于         ||
+    || `!=`       || 不等于         ||
+    || `>`        || 大于         ||
+    || `<`        || 小于         ||
 
-
-     * 支持 `(` 以及 `)` 的分组
-     * 操作符后面的分组符表示分组
-     * 变量后面的分组符，表示函数调用
-     * 操作符是可以扩展的
-
-------------------------------------------------------------------------
-支持的数据类型
-
-    || 名称     || 例子              ||
-    || 变量     || a2                ||
-    || 整数     || 23                ||
-    || 浮点数   || 56.6              ||
-    || 字符串   || 'abc' 或者 "Haha" ||
-    || 布尔     || true 或 false     ||
+    当然，同任何编程语言一样，表达式也支持 左括号 {*#00A;`(`} 以及 右括号{*#00A;`)`}，
+    来控制表达式的的计算优先级别
 
 ------------------------------------------------------------------------
-简单使用
+一些表达式的例子
 	
-	{{{<JAVA>
-	System.out.println(El.eval("3+2*5"));
-	//打印  13
-	}}}
+	普通运算
+    	{{{<JAVA>
+    	System.out.println(El.eval("3+2*5"));
+    	// 输出为  13
+    	}}}
+
+    字符串操作
 	
-	{{{<JAVA>
-	Context context = new Context();
-	Pet pet = new Pet();
-	pet.setName("GFW");
-	context.set("pet",pet);
-	System.out.println(El.eval(context,"pet.name"));
-	//打印  GFW
-	}}}
+    	{{{<JAVA>
+    	System.out.println(El.eval("  abc  ".trim()));
+    	// 输出为  abc
+    	}}}
+	
+	Java 对象属性属性访问调用
+
+    	{{{<JAVA>
+    	Context context = new Context();
+    	Pet pet = new Pet();
+    	pet.setName("GFW");
+    	context.set("pet",pet);
+    	System.out.println(El.eval(context,"pet.name"));
+    	// 输出为  GFW
+    	}}}
+
+	函数调用	
+	
+    	{{{<JAVA>
+    	Context context = new Context();
+    	Pet pet = new Pet();
+        
+        El.eval(context, "pet.setName('XiaoBai')");
+    
+    	System.out.println(El.eval(context,"pet.getName()"));
+    	// 输出为  XiaoBai
+    	}}}
+    	
+	数组访问
+	   
+        {{{<JAVA>
+        Context context = new Context();
+        context.set("x",Lang.array("A", "B", "C"));
+        
+        System.out.println(El.eval(context,"x[0].toLowerCase()"));
+        // 输出为  a
+        }}}
+	
+	列表访问
+	
+        {{{<JAVA>
+        Context context = new Context();
+        context.set("x",Lang.list("A", "B", "C"));
+        
+        System.out.println(El.eval(context,"x[0].toLowerCase()"));
+        // 输出为  a
+        }}}
+	
+	Map 访问
+	
+        {{{<JAVA>
+        Context context = new Context();
+        context.set("map",Lang.map("{x:10, y:5}"));
+        
+        System.out.println(El.eval(context,"map['x'] * map['y']"));
+        // 输出为  50
+        }}}
+	
+	判断
+	
+        {{{<JAVA>
+        Context context = new Context();
+        context.set("a",5);
+        
+        System.out.println(El.eval(context,"a>10"));
+        // 输出为  false
+        
+        context.set("a",20);
+        System.out.println(El.eval(context,"a>10"));
+        // 输出为  true
+        }}}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

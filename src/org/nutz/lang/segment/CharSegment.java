@@ -168,7 +168,7 @@ public class CharSegment implements Segment, Cloneable {
 
 	public void parse(Reader reader) {
 		nodes = new LinkedList<Node>();
-		context = new Context();
+		context = Lang.context();
 		keys = new NutMap();
 		StringBuilder org = new StringBuilder();
 		StringBuilder sb = new StringBuilder();

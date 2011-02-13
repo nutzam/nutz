@@ -14,14 +14,14 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.next.FieldQuery;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.util.Context;
+import org.nutz.lang.util.SimpleContext;
 
 /**
  * 描述了一个 POJO 对象同数据表之间的映射关系。
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Entity<T> extends Context{
+public class Entity<T> extends SimpleContext{
 
 	public Entity() {
 		super();

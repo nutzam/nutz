@@ -98,7 +98,7 @@ public class El {
 	/**
 	 * 表达式计算
 	 * 
-	 * @param Context
+	 * @param SimpleContext
 	 *            上下文环境。 可以通过这个参数为表达式内的变量设值
 	 * @param cs
 	 *            输入文本
@@ -117,7 +117,7 @@ public class El {
 	 * @return 表达式的计算结果
 	 */
 	public static ElValue eval(CharSequence cs) {
-		return eval(new Context(), cs);
+		return eval(Lang.context(), cs);
 	}
 
 	/**

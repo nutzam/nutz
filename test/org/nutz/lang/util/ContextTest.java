@@ -9,7 +9,7 @@ import org.junit.Test;
 public class ContextTest {
 	@Test
 	public void test_get_primitive_type() {
-		Context context = new Context();
+		Context context = new SimpleContext();
 		context.set("a", "123");
 		context.set("b", "10.2");
 		context.set("c", "true");
@@ -24,7 +24,7 @@ public class ContextTest {
 	@Test
 	public void test_normal_object() {
 		Date now = new Date();
-		Context context = new Context();
+		Context context = new SimpleContext();
 		context.set("a", "123");
 		context.set("b", now);
 		assertEquals(now, context.get("b"));

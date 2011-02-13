@@ -32,7 +32,7 @@ public class ElTest {
 		String s = "a>5?'GT 5':'LTE 5'";
 		BinElObj exp = El.compile(s);
 
-		Context context = new Context();
+		Context context = Lang.context();
 		context.set("a", 10);
 		assertEquals("GT 5", exp.eval(context).getString());
 
@@ -43,7 +43,7 @@ public class ElTest {
 
 	@Test
 	public void test_array_access() {
-		Context context = new Context();
+		Context context = Lang.context();
 		context.set("a", Lang.array(3, 5, 7));
 		assertEquals(3, El.eval(context, "a[0]").getInteger().intValue());
 		assertEquals(5, El.eval(context, "a[1]").getInteger().intValue());
@@ -60,7 +60,7 @@ public class ElTest {
 
 	@Test
 	public void test_simple_invoke() {
-		Context context = new Context();
+		Context context = Lang.context();
 		context.set("a", Lang.map("{x:10,y:50,txt:'Hello'}"));
 
 		assertEquals(100, El.eval(context, "a.get('x')*10").getInteger().intValue());
@@ -86,7 +86,7 @@ public class ElTest {
 
 	@Test
 	public void test_invoke() {
-		Context context = new Context();
+		Context context = Lang.context();
 		List<String> list = new ArrayList<String>();
 		context.set("b", list);
 		assertEquals(0, El.eval(context, "b.size()").getInteger().intValue());
@@ -106,7 +106,7 @@ public class ElTest {
 		assertTrue(El.eval("3 >= 3").getBoolean());
 		assertTrue(El.eval("3 >= 1+1").getBoolean());
 
-		Context context = new Context();
+		Context context = Lang.context();
 		assertTrue(El.eval(context, "a == null").getBoolean());
 		try {
 			assertTrue(El.eval(context, "a.a").getBoolean());
@@ -127,7 +127,7 @@ public class ElTest {
 
 	@Test
 	public void test_NEQ() {
-		Context context = new Context();
+		Context context = Lang.context();
 		context.set("a", 3);
 		assertTrue(El.eval(context, "a != null").getBoolean());
 		assertTrue(El.eval("3 != 1").getBoolean());
@@ -135,7 +135,7 @@ public class ElTest {
 
 	@Test
 	public void test_invoke_method_of_string() {
-		Context context = new Context();
+		Context context = Lang.context();
 		List<String> list = new ArrayList<String>();
 		list.add("");
 		context.set("b", list);

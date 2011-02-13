@@ -33,6 +33,8 @@ import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
+import org.nutz.lang.util.Context;
+import org.nutz.lang.util.SimpleContext;
 
 /**
  * 这些帮助函数让 Java 的某些常用功能变得更简单
@@ -1035,6 +1037,22 @@ public abstract class Lang {
 		if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
 			return (Map<String, Object>) Json.fromJson(str);
 		return (Map<String, Object>) Json.fromJson("{" + str + "}");
+	}
+
+	/**
+	 * @return 一个新创建的上下文对象
+	 */
+	public static Context context() {
+		return new SimpleContext();
+	}
+
+	/**
+	 * 根据一段 JSON 字符串，生产一个新的上下文对象
+	 * 
+	 * @return 一个新创建的上下文对象
+	 */
+	public static Context context(String str) {
+		return context().putAll(map(str));
 	}
 
 	/**

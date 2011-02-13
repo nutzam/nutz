@@ -11,13 +11,13 @@ import org.nutz.dao.sql.FieldAdapter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.segment.Segment;
-import org.nutz.lang.util.Context;
+import org.nutz.lang.util.SimpleContext;
 
 /**
  * @author zozoh
  * @author wendal(wendal1985@gmail.com)
  */
-public class EntityField extends Context{
+public class EntityField extends SimpleContext{
 
 	private Mirror<?> mirror;
 	/**

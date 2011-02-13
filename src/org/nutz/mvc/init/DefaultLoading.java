@@ -82,7 +82,7 @@ public class DefaultLoading implements Loading {
 	protected void createContent(NutConfig config) {
 		// 构建一个上下文对象，方便子类获取更多的环境信息
 		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
-		context = new Context();
+		context = Lang.context();
 		context.set("app.root", config.getAppRoot());
 		
 		if (log.isDebugEnabled()) {
