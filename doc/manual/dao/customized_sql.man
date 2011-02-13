@@ -137,6 +137,19 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 			 * 字符
 			 * 布尔类型
 			 
+    获取一个列表的回调
+        
+        为了更加详细的说明一下回调的用处，我们再下面这个例子：
+        {{{<Java>
+        Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
+        sql.setCallback(Sql.callback.entities());
+        sql.setEntity(dao.getEntity(Master.class));
+        dao.execute(sql);
+        List<Master> list = sql.getList(Master.class);
+        }}}
+        只要你保证你的 Master 类声明了 `@Table` 并且每个字段上的 `@Column` 可以同你的 ResultSet 配置起来
+        那么，上面的代码可以很方便的帮你获取一个 `List<Master>`.
+
 ----------------------------------------------------------------------------------------------------
 Nutz.Dao SQL 文件的格式
 
