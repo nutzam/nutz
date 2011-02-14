@@ -5,30 +5,73 @@
 --------------------------------------------------------------------------------------------------------
 1.b.35 发行注记 (Hatching....)
 
-	ing...
+	对于春节，很多朋友的总结是 -- {*没劲}
+	
+	对于情人节，以前也有朋友反映 -- {*纠结}
+	
+	因此，基本上伴随着 {*没劲} 和 {*纠结}， Nutz 兔年发布了第一版 -- 1.b.35
+	
+	这个版本膨胀了 110K， 整个 Jar 文件达到了可观的 898K。 为什么呢？ 
+	因为我们在 Nutz 里内置了[/el/overview.man 表达式引擎]
+	我们简单的整理了一下文档，因为几个月以来，将某些在社区内比较集中的问题写成文档。
+	希望能让新手阅读文档时，少一些疑惑
+	
+	同时，这两周来让我也有点小感触：
+	{{{
+	元旦过后，人心惶惶是个常态。
+	我当时觉得可能一直到正月十五，这个项目是不会怎么活跃的。
+	但是竟然没想到，还是收获了很多提交和 Issue。
+	讨论区还是很多人在玩 "提问回答" 以及 "扯淡" 这两种游戏。
+	这让我觉得很意外：
+	
+	    原来嘴里说讨厌，但是很多人心里还是都在琢磨着编程哪?! 
+			
+	这也让我想起了我原来和别人吹牛时说的话：
+	
+	    世界上只有两种人：程序员，其他人
+	
+	于是突然心中冒出了一种迫切的想为同道中人抛头颅洒热血，肋扇上多插几把刀 的冲动。
+	
+	当然，我是个理智的人，能活到今天就证明了这一点
+	冲动是魔鬼
+	
+	头就不抛，刀也就不插了
+	
+	下个月多为项目修几个 Issue 吧  ^_^
+	}}}
+	
+	另外， {*juqkai} 同学这段时间为项目做了很多工作，提出了好意见，尤其是得到了提交权限后，更加一发不可收也。 
+	我们也期待着想下个月的版本会有他更多的贡献。
+	
+	下个版本我们会根据 [http://myblog.sunfarms.net/ Wendal] 以及 {*juqkai} 
+	[http://code.google.com/p/nutz/source/detail?r=1823 提出的方案]，重新修改 Mvc 的一段核心逻辑
+	
+	同时我们也会修复几个重要的 Issue 
+	
+	另，祝大家情人节快乐。 单身且不快乐的同学，祝你不那么不快乐一点 ^_^
+		
+	
 --------------------------------------------------------------------------------------------------------
 问题修复
-	* [http://code.google.com/p/nutz/issues/detail?id=343 Issue 343] @ToJson作用在非public 的类上就无效的问题  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=343 Issue 343] @ToJson作用在非public 的类上就无效的问题  {#AAA;by} {*lvjingjie}
 	* [http://code.google.com/p/nutz/issues/detail?id=349 Issue 349] Ioc:注入Java调用的静态属性未实现  {#AAA;by} {*landraxee}
-	* [http://code.google.com/p/nutz/issues/detail?id=350 Issue 350] 实现更优雅的URL  {#AAA;by} {*}
-	* [http://code.google.com/p/nutz/issues/detail?id=351 Issue 351] LinkedArrayIterator的hasNext方法判断的问题???  {#AAA;by} {*}
-	* [http://code.google.com/p/nutz/issues/detail?id=352 Issue 352] LinkedArray类的构造方法  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=351 Issue 351] LinkedArrayIterator的hasNext方法判断的问题???  {#AAA;by} {*天边的流星}
+	* [http://code.google.com/p/nutz/issues/detail?id=352 Issue 352] LinkedArray类的构造方法  {#AAA;by} {*weirhp}
 	* [http://code.google.com/p/nutz/issues/detail?id=353 Issue 353] Ioc:建议改进XmlIocLoader  {#AAA;by} {*landraxee}
 	* [http://code.google.com/p/nutz/issues/detail?id=354 Issue 354] Mvc:是否可以在执行ActionFilter之前进行参数适配，并将适配后的参数数组作为传入ActionFilter  {#AAA;by} {*landraxee}
-	* [http://code.google.com/p/nutz/issues/detail?id=357 Issue 357] JsonParsing类parseFromCurrentLocation方法中按位与和按位或的用法  {#AAA;by} {*	enum.l...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=357 Issue 357] JsonParsing类parseFromCurrentLocation方法中按位与和按位或的用法  {#AAA;by} {*天边的流星}
 	* [http://code.google.com/p/nutz/issues/detail?id=358 Issue 358] Maven配置文件的放置错误  {#AAA;by} {*sjbwylbs}
 	* [http://code.google.com/p/nutz/issues/detail?id=359 Issue 359] Maven编译的版本设置  {#AAA;by} {*sjbwylbs}
 	* [http://code.google.com/p/nutz/issues/detail?id=365 Issue 365] mvc:Mvcs.getRequestPathObject对参数中含有小数点的情况处理有误  {#AAA;by} {*landraxee}
 	* [http://code.google.com/p/nutz/issues/detail?id=366 Issue 366] MVC: @At处理有误,可能映射为//methodName  {#AAA;by} {*wendal1985}
 	* [http://code.google.com/p/nutz/issues/detail?id=369 Issue 369] mvc:PairAdaptor在处理REST风格的URL时对参数的解析不够智能  {#AAA;by} {*landraxee}
 	* [http://code.google.com/p/nutz/issues/detail?id=371 Issue 371] ObjectPairInjector 不能多层注入  {#AAA;by} {*juqkai}
-	* [http://code.google.com/p/nutz/issues/detail?id=373 Issue 373] 蛋疼的forward跳转  {#AAA;by} {*amosleaf }
-	* [http://code.google.com/p/nutz/issues/detail?id=375 Issue 375] upload Adapter加上cancel功能  {#AAA;by} {*amosl...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=373 Issue 373] 蛋疼的forward跳转  {#AAA;by} {*juqkai}
+	* [http://code.google.com/p/nutz/issues/detail?id=375 Issue 375] upload Adapter加上cancel功能  {#AAA;by} {*amosleaf}
 	* [http://code.google.com/p/nutz/issues/detail?id=376 Issue 376] at中使用多路径，如有“”，会导致URL截流  {#AAA;by} {*juqkai }
 	* [http://code.google.com/p/nutz/issues/detail?id=377 Issue 377] 注释上有错误算不算问题？  {#AAA;by} {*hisenseme}
-	* [http://code.google.com/p/nutz/issues/detail?id=378 Issue 378] DAO:当自定义复杂的关联查询SQL时,如何方便返回一个实体List  {#AAA;by} {*}
-	* [http://code.google.com/p/nutz/issues/detail?id=380 Issue 380] DAO:mysql通过select last_insert_id()无法获取到正确的值  {#AAA;by} {*}
-	 
+	* [http://code.google.com/p/nutz/issues/detail?id=378 Issue 378] DAO:当自定义复杂的关联查询SQL时,如何方便返回一个实体List  {#AAA;by} {*liuyxit}
+	* [http://code.google.com/p/nutz/issues/detail?id=380 Issue 380] DAO:mysql通过select last_insert_id()无法获取到正确的值  {#AAA;by} {*a357857613}
 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -67,12 +110,22 @@
 	 
 	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}
     || 贡献者                                                           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
-	|| juqkai                                                      	    ||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||  -   ||
+	|| a357857613                                                       ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+	|| amosleaf                                                         ||  O   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
+	|| E-Hunter                                                         ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
+	|| juqkai                                                      	    ||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||  O   ||
+	|| hisenseme                                                        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+	|| landraxee                                                        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+	|| liuyxit                                                          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+	|| lvjingjie                                                        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
 	|| sluggard                                                      	||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+	|| shìne                                                          	||  -   ||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||
+	|| Wendal                                                           ||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  O   ||
+	|| weirhp                                                           ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+	|| zozoh                                                            ||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  O   ||
 	|| 花米                                                             ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
     || 天边的流星                                                       ||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
 	|| 云海飞舞                                                         ||  -   ||  -   ||  O   ||  -   ||  O   ||  -   ||  -   ||
-
 
 	另外，很多朋友都在：
 	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
