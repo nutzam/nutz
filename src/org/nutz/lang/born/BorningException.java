@@ -1,6 +1,6 @@
 package org.nutz.lang.born;
 
-import java.lang.reflect.InvocationTargetException;
+import org.nutz.lang.Lang;
 
 @SuppressWarnings("serial")
 public class BorningException extends RuntimeException {
@@ -26,10 +26,7 @@ public class BorningException extends RuntimeException {
 	}
 
 	private static String getExceptionMessage(Throwable e) {
-		if (e instanceof InvocationTargetException) {
-			return getExceptionMessage(((InvocationTargetException) e).getTargetException());
-		}
-		return e.getMessage();
+		return Lang.unwrapThrow(e).getMessage();
 	}
 
 }

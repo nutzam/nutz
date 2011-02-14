@@ -25,8 +25,6 @@ public class WebResourceScan extends AbstractResourceScan {
 
 	private static final Log log = Logs.getLog(WebResourceScan.class);
 
-	private static final String WEB_LIB = "/WEB-INF/lib/";
-
 	private ServletContext sc;
 
 	public WebResourceScan(ServletContext servletContext) {
@@ -37,12 +35,13 @@ public class WebResourceScan extends AbstractResourceScan {
 		final Pattern regex = null == filter ? null : Pattern.compile(filter);
 		final List<NutResource> list = new ArrayList<NutResource>();
 		// 获取全部jar
-		Set<String> jars = sc.getResourcePaths(WEB_LIB);
-		for (String path : jars) {
-			if (!path.toLowerCase().endsWith(".jar"))
-				continue;
-			list.addAll(scanInJar(checkSrc(src), regex, sc.getRealPath(path)));
-		}
+		Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
+		if(jars != null) //这个文件夹不一定存在,尤其是Maven的WebApp项目
+			for (String path : jars) {
+				if (!path.toLowerCase().endsWith(".jar"))
+					continue;
+				list.addAll(scanInJar(checkSrc(src), regex, sc.getRealPath(path)));
+			}
 		// 获取classes里面文件
 		// 对 classes 文件夹作一个深层遍历
 		// 忽略隐藏文件，以不能被 filter 匹配的项目
