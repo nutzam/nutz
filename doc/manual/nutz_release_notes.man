@@ -8,7 +8,26 @@
 	ing...
 --------------------------------------------------------------------------------------------------------
 问题修复
-	 * [http://code.google.com/p/nutz/issues/detail?id=xxx Issue xxx] xxxxxx  {#AAA;by} {*xxxx}
+	* [http://code.google.com/p/nutz/issues/detail?id=343 Issue 343] @ToJson作用在非public 的类上就无效的问题  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=349 Issue 349] Ioc:注入Java调用的静态属性未实现  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=350 Issue 350] 实现更优雅的URL  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=351 Issue 351] LinkedArrayIterator的hasNext方法判断的问题???  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=352 Issue 352] LinkedArray类的构造方法  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=353 Issue 353] Ioc:建议改进XmlIocLoader  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=354 Issue 354] Mvc:是否可以在执行ActionFilter之前进行参数适配，并将适配后的参数数组作为传入ActionFilter  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=357 Issue 357] JsonParsing类parseFromCurrentLocation方法中按位与和按位或的用法  {#AAA;by} {*	enum.l...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=358 Issue 358] Maven配置文件的放置错误  {#AAA;by} {*sjbwylbs}
+	* [http://code.google.com/p/nutz/issues/detail?id=359 Issue 359] Maven编译的版本设置  {#AAA;by} {*sjbwylbs}
+	* [http://code.google.com/p/nutz/issues/detail?id=365 Issue 365] mvc:Mvcs.getRequestPathObject对参数中含有小数点的情况处理有误  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=366 Issue 366] MVC: @At处理有误,可能映射为//methodName  {#AAA;by} {*wendal1985}
+	* [http://code.google.com/p/nutz/issues/detail?id=369 Issue 369] mvc:PairAdaptor在处理REST风格的URL时对参数的解析不够智能  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=371 Issue 371] ObjectPairInjector 不能多层注入  {#AAA;by} {*juqkai}
+	* [http://code.google.com/p/nutz/issues/detail?id=373 Issue 373] 蛋疼的forward跳转  {#AAA;by} {*amosleaf }
+	* [http://code.google.com/p/nutz/issues/detail?id=375 Issue 375] upload Adapter加上cancel功能  {#AAA;by} {*amosl...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=376 Issue 376] at中使用多路径，如有“”，会导致URL截流  {#AAA;by} {*juqkai }
+	* [http://code.google.com/p/nutz/issues/detail?id=377 Issue 377] 注释上有错误算不算问题？  {#AAA;by} {*hisenseme}
+	* [http://code.google.com/p/nutz/issues/detail?id=378 Issue 378] DAO:当自定义复杂的关联查询SQL时,如何方便返回一个实体List  {#AAA;by} {*}
+	* [http://code.google.com/p/nutz/issues/detail?id=380 Issue 380] DAO:mysql通过select last_insert_id()无法获取到正确的值  {#AAA;by} {*}
 	 
 
 --------------------------------------------------------------------------------------------------------
