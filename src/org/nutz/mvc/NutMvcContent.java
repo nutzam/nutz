@@ -53,14 +53,6 @@ public class NutMvcContent {
 
 	/**
 	 * 处理函数
-	 * @param path
-	 * 		需要处理的请求地址
-	 * <ul>
-	 * <li>空 
-	 * 		从 req 中获取请求地址
-	 * <li>非空
-	 * 		需要进行处理的请求地址
-	 * </ul>
 	 * @return 
 	 * <ul>
 	 * <li>true

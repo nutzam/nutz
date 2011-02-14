@@ -78,7 +78,7 @@ public class El {
 	/**
 	 * 表达式预编译。会编译成一个二叉树，并返回根节点
 	 * 
-	 * @param cs
+	 * @param reader
 	 *            输入文本流
 	 * @return 表达式根节点
 	 */
@@ -98,7 +98,7 @@ public class El {
 	/**
 	 * 表达式计算
 	 * 
-	 * @param SimpleContext
+	 * @param context
 	 *            上下文环境。 可以通过这个参数为表达式内的变量设值
 	 * @param cs
 	 *            输入文本

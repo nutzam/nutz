@@ -85,8 +85,6 @@ public interface ElValue {
 	/**
 	 * 除
 	 * 
-	 * @param context
-	 *            上下文对象
 	 * @param ta
 	 *            被操作项
 	 * @return 计算结果
@@ -96,8 +94,6 @@ public interface ElValue {
 	/**
 	 * 取模
 	 * 
-	 * @param context
-	 *            上下文对象
 	 * @param ta
 	 *            被操作项
 	 * @return 计算结果
