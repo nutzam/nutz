@@ -32,7 +32,6 @@ public class NumberLoader extends AbstractSymbolLoader {
 		return true;
 	}
 
-	@Override
 	public int load(Reader reader) throws IOException {
 		int c;
 		// 确保

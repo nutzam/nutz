@@ -14,12 +14,10 @@ public abstract class SpecialCharSymbolLoader extends AbstractSymbolLoader {
 		this.symbol = symbol;
 	}
 
-	@Override
 	public boolean isMyTurn(ElSymbol prev, int c) {
 		return myChar == c;
 	}
 
-	@Override
 	public int load(Reader reader) throws IOException {
 		return reader.read();
 	}
