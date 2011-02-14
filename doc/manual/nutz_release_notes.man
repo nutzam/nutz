@@ -89,12 +89,12 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-	 * 重写 [/ioc/loader_annotation.man Ioc - Annotation加载器 ]
-	 * 增加 [/ioc/loader_combo.man Ioc - 复合加载器 ]
-	 * 增加 [/lang/filepool.man Ioc - 文件池 ]
-	 * 增加 [/el/overview.man 表达式引擎]
-     * 修改 [/mvc/file_upload.man 文件上传]
-	 * 修改 [/mvc/mvc_view.man 视图]
+	 * 重写 [ioc/loader_annotation.man Ioc - Annotation加载器 ]
+	 * 增加 [ioc/loader_combo.man Ioc - 复合加载器 ]
+	 * 增加 [lang/filepool.man Ioc - 文件池 ]
+	 * 增加 [el/overview.man 表达式引擎]
+     * 修改 [mvc/file_upload.man 文件上传]
+	 * 修改 [mvc/view.man 视图]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
