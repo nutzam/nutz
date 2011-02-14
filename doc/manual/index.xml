@@ -91,6 +91,7 @@
 		<doc path="ant_task.man"/>
 	</doc>
 	<doc path="history" title="版本历史">
+		<doc path="1_b_35.man"/>
 		<doc path="1_b_34.man"/>
 		<doc path="1_a_33.man"/>
 		<doc path="1_a_32.man"/>
