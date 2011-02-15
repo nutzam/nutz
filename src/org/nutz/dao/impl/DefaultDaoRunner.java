@@ -8,6 +8,7 @@ import org.nutz.dao.ConnCallback;
 import org.nutz.dao.ConnectionHolder;
 import org.nutz.dao.DaoRunner;
 import org.nutz.dao.Daos;
+import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -28,10 +29,7 @@ public class DefaultDaoRunner implements DaoRunner {
 				if (log.isWarnEnabled())
 					log.warn("Rollback SQLException !!!", e1);
 			}
-			if (e instanceof RuntimeException)
-				throw (RuntimeException) e;
-			else
-				throw new RuntimeException(e);
+			throw Lang.wrapThrow(e);
 		}
 		finally {
 			Daos.releaseConnection(ch);
