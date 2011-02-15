@@ -52,7 +52,7 @@ import org.nutz.log.Logs;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Bird.Wyatt(bird.wyatt@gmail.com)
- * 
+ * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultEntityMaker implements EntityMaker {
 
@@ -167,7 +167,7 @@ public class DefaultEntityMaker implements EntityMaker {
 		return entity;
 	}
 
-	private ErrorEntitySyntaxException error(Entity<?> entity, String fmt, Object... args) {
+	protected ErrorEntitySyntaxException error(Entity<?> entity, String fmt, Object... args) {
 		return new ErrorEntitySyntaxException(String.format("[%s] : %s",
 															null == entity	? "NULL"
 																			: entity.getType()
@@ -175,7 +175,7 @@ public class DefaultEntityMaker implements EntityMaker {
 															String.format(fmt, args)));
 	}
 
-	private EntityField evalField(	DatabaseMeta db,
+	protected EntityField evalField(	DatabaseMeta db,
 									ResultSetMetaData rsmd,
 									Entity<?> entity,
 									Field field) throws SQLException {
@@ -266,7 +266,7 @@ public class DefaultEntityMaker implements EntityMaker {
 		return ef;
 	}
 
-	private Link evalLink(DatabaseMeta db, Connection conn, Mirror<?> mirror, Field field) {
+	protected Link evalLink(DatabaseMeta db, Connection conn, Mirror<?> mirror, Field field) {
 		try {
 			// @One
 			One one = field.getAnnotation(One.class);
@@ -346,7 +346,7 @@ public class DefaultEntityMaker implements EntityMaker {
 		return null;
 	}
 
-	private static Field lookupPkByReferField(Mirror<?> mirror, Field fld)
+	protected static Field lookupPkByReferField(Mirror<?> mirror, Field fld)
 			throws NoSuchFieldException {
 		Mirror<?> fldType = Mirror.me(fld.getType());
 
@@ -360,14 +360,14 @@ public class DefaultEntityMaker implements EntityMaker {
 								fld.getName());
 	}
 
-	private boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
+	protected boolean isPojoExistsColumnAnnField(Mirror<?> mirror) {
 		for (Field f : mirror.getFields())
 			if (null != f.getAnnotation(Column.class))
 				return true;
 		return false;
 	}
 
-	private EntityName evalEntityName(	Class<?> type,
+	protected EntityName evalEntityName(	Class<?> type,
 										Class<? extends Annotation> annType,
 										Class<? extends Annotation> dftAnnType) {
 		Annotation ann = null;
