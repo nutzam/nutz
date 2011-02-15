@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author wendal(wendal1985@gmail.com)
  */
-public class NutFilter2 implements Filter {
+public class NutAttributeFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse resp,
 			FilterChain chain) throws IOException, ServletException {

@@ -50,7 +50,7 @@ public class NutFilter implements Filter {
 		}else {
 			this.skipMode = true;
 			if(log.isWarnEnabled())
-				log.warn("skip-mode of NutFilter is Deprecated! Please use NutFilter2!");
+				log.warn("skip-mode of NutFilter is Deprecated! Please use NutAttributeFilter!");
 		}
 	}
 
