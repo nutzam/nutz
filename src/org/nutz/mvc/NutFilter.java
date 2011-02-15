@@ -13,6 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.init.config.FilterNutConfig;
 
 /**
@@ -25,10 +27,14 @@ import org.nutz.mvc.init.config.FilterNutConfig;
 public class NutFilter implements Filter {
 	
 	private NutMvcContent mvcContent = new NutMvcContent();
+	
+	private static final Log log = Logs.getLog(NutFilter.class);
 
 	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
 
 	private Pattern ignorePtn;
+	
+	private boolean skipMode;
 
 	public void init(FilterConfig conf) throws ServletException {
 		FilterNutConfig config = new FilterNutConfig(conf);
@@ -41,6 +47,10 @@ public class NutFilter implements Filter {
 			if (!"null".equalsIgnoreCase(regx)) {
 				ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
 			}
+		}else {
+			this.skipMode = true;
+			if(log.isWarnEnabled())
+				log.warn("skip-mode of NutFilter is Deprecated! Please use NutFilter2!");
 		}
 	}
 
@@ -52,12 +62,12 @@ public class NutFilter implements Filter {
 			FilterChain chain) throws IOException, ServletException {
 		// 更新 Request 必要的属性
 		Mvcs.updateRequestAttributes((HttpServletRequest) req);
-		RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
-		if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-			if(mvcContent.handle((HttpServletRequest)req, (HttpServletResponse)resp))
-				return;
+		if (!skipMode) {
+			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
+			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find())
+				if(mvcContent.handle((HttpServletRequest)req, (HttpServletResponse)resp))
+					return;
 		}
-
 		// 本过滤器没有找到入口函数，继续其他的过滤器
 		chain.doFilter(req, resp);
 	}
