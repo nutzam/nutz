@@ -40,7 +40,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 
 	public void filter(InterceptorChain chain) {
 		try {
-			if (logBeforeInvoke && LOG.isDebugEnabled())
+			if (logBeforeInvoke)
 				LOG.debugf("[beforeInvoke] Obj = %s , Method = %s , args = %s",
 					toString(chain.getCallingObj()),
 					chain.getCallingMethod(),
@@ -48,7 +48,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 			chain.doChain();
 		}
 		catch (Exception e) {
-			if (logWhenException && LOG.isDebugEnabled())
+			if (logWhenException)
 				LOG.debugf("[whenException] Obj = %s , Throwable = %s , Method = %s , args = %s",
 					toString(chain.getCallingObj()),
 					e,
@@ -57,7 +57,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 			throw Lang.wrapThrow(e);
 		}
 		catch (Throwable e) {
-			if (logWhenError && LOG.isDebugEnabled())
+			if (logWhenError)
 				LOG.debugf("[whenError] Obj = %s , Throwable = %s , Method = %s , args = %s",
 					toString(chain.getCallingObj()),
 					e,
@@ -66,7 +66,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 			throw Lang.wrapThrow(e);
 		}
 		finally {
-			if (logAfterInvoke && LOG.isDebugEnabled())
+			if (logAfterInvoke)
 				LOG.debugf("[afterInvoke] Obj = %s , Return = %s , Method = %s , args = %s",
 					toString(chain.getCallingObj()),
 					chain.getReturn(),
@@ -75,7 +75,7 @@ public class LoggingMethodInterceptor implements MethodInterceptor {
 		}
 	}
 
-	public static final String toString(Object object) {
+	protected static final String toString(Object object) {
 		if (object != null )
 			if (object instanceof AopCallback)
 				return "[" + object.getClass().getName() + "]";
