@@ -223,7 +223,10 @@ class JsonRendering {
 					writer.append("\\\\");
 					break;
 				default:
-					writer.append(c);
+					if (c >= 256 && format.isAutoUnicode())
+						writer.append("\\u").append(Integer.toHexString(c).toUpperCase());
+					else 
+						writer.append(c);
 				}
 			}
 			writer.append(format.getSeparator());

@@ -39,6 +39,7 @@ public class JsonFormat {
 	private Pattern locked;
 	private Castors castors;
 	private char separator;
+	private boolean autoUnicode;
 
 	public boolean ignore(String name) {
 		if (null != actived)
@@ -131,4 +132,12 @@ public class JsonFormat {
 		return separator;
 	}
 
+	public JsonFormat setAutoUnicode(boolean autoUnicode) {
+		this.autoUnicode = autoUnicode;
+		return this;
+	}
+	
+	public boolean isAutoUnicode() {
+		return autoUnicode;
+	}
 }

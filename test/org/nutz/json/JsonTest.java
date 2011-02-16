@@ -574,4 +574,13 @@ public class JsonTest {
 		Object pc = OuterClass.make();
 		assertEquals("ItMe", Json.toJson(pc));
 	}
+	
+	@Test
+	public void test_X(){
+		Map<Object, Object> map = new HashMap<Object, Object>();
+		map.put("abc", "abc中文abc");
+		JsonFormat format = new JsonFormat(true);
+		format.setAutoUnicode(true);
+		assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}",Json.toJson(map,format));
+	}
 }
