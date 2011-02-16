@@ -1,6 +1,9 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -17,11 +20,12 @@ public class ObjectPairInjector implements ParamInjector {
 	protected Injecting[] injs;
 	protected String[] names;
 	protected Mirror<?> mirror;
+	protected Field[] fields;
 
 	public ObjectPairInjector(String prefix, Class<?> type) {
 		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
 		this.mirror = Mirror.me(type);
-		Field[] fields = mirror.getFields();
+		fields = mirror.getFields();
 		this.injs = new Injecting[fields.length];
 		this.names = new String[fields.length];
 		for (int i = 0; i < fields.length; i++) {
@@ -36,12 +40,35 @@ public class ObjectPairInjector implements ParamInjector {
 	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
 		Object obj = mirror.born();
 		for (int i = 0; i < injs.length; i++) {
-			String[] ss = req.getParameterValues(names[i]);
+			String[] ss = filterParam(req.getParameterValues(names[i]), i);
 			if (null == ss)
 				continue;
 			injs[i].inject(obj, ss);
 		}
 		return obj;
+	}
+	
+	/**
+	 * 过滤参数
+	 * @param ss
+	 * @param i
+	 * @return
+	 */
+	private String[] filterParam(String[] ss, int i){
+		if(null == ss){
+			return null;
+		}
+		if(fields[i].getType().isAssignableFrom(Date.class)){
+			List<String> ts = new ArrayList<String>();
+			for(String s : ss ){
+				if(s == null || "".equals(s) || "".equals(Strings.trim(s))){
+					continue;
+				}
+				ts.add(s);
+			}
+			return ts.toArray(new String[0]);
+		}
+		return ss;
 	}
 }
 
