@@ -65,7 +65,7 @@
 	public class Pet{
 		@Column
 		@Name
-		private int name;
+		private String name;
 	...
 	}}}
 	通过 @Name 声明了一个字符型主键后，你可以：
@@ -79,7 +79,7 @@
 			public class Pet{
 				@Column
 				@Name(casesensitive=false)
-				private int name;
+				private String name;
 			...
 		}}}
 		因此
