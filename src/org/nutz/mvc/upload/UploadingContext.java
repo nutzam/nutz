@@ -127,9 +127,7 @@ public class UploadingContext {
 	}
 
 	public boolean isNameAccepted(String name) {
-		if (null == nameFilter)
-			return true;
-		if (Strings.isBlank(name))
+		if (null == nameFilter || Strings.isBlank(name))
 			return true;
 		return Pattern.matches(nameFilter, name.toLowerCase());
 	}
@@ -144,9 +142,7 @@ public class UploadingContext {
 	}
 
 	public boolean isContentTypeAccepted(String contentType) {
-		if (null == contentTypeFilter)
-			return true;
-		if (Strings.isBlank(contentType))
+		if (null == contentTypeFilter || Strings.isBlank(contentType))
 			return true;
 		return Pattern.matches(contentTypeFilter, contentType.toLowerCase());
 	}
