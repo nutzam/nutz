@@ -1,5 +1,7 @@
 package org.nutz.mvc.adaptor.extractor;
 
+import java.util.Set;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.mvc.adaptor.ParamExtractor;
@@ -15,6 +17,10 @@ public class BaseParamExtractor implements ParamExtractor{
 	}
 	public String[] extractor(String name) {
 		return req.getParameterValues(name);
+	}
+	@SuppressWarnings("unchecked")
+	public Set<String> keys() {
+		return req.getParameterMap().keySet();
 	}
 
 }

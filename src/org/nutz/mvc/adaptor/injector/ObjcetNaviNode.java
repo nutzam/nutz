@@ -6,6 +6,8 @@ import java.util.Map.Entry;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.mvc.adaptor.ParamConvertor;
+import org.nutz.mvc.adaptor.Params;
 
 /**
  * request对象导航注入节点树
@@ -16,16 +18,20 @@ import org.nutz.lang.inject.Injecting;
  */
 class ObjcetNaviNode {
 	private static final char separator = '.';
+	//节点名
 	private String name;
-	private Object value;
+	//叶子节点的值
+	private String[] value;
+	//是否是叶子节点
 	private boolean leaf = true;
+	//子节点
 	private Map<String, ObjcetNaviNode> child = new HashMap<String, ObjcetNaviNode>();
 
 	/**
 	 * 初始化当前结点
 	 * 
 	 */
-	public void put(String path, Object value) {
+	public void put(String path, String[] value) {
 		name = fetchName(path);
 		String subPath = path.substring(path.indexOf(separator) + 1); 
 		if (path.indexOf(separator) <= 0 || "".equals(subPath)) {
@@ -40,7 +46,7 @@ class ObjcetNaviNode {
 	 * 添加子结点
 	 * 
 	 */
-	private void addChild(String path, Object value) {
+	private void addChild(String path, String[] value) {
 		String subname = fetchName(path);
 		ObjcetNaviNode onn = child.get(subname);
 		if (onn == null) {
@@ -73,7 +79,13 @@ class ObjcetNaviNode {
 			ObjcetNaviNode onn = entry.getValue();
 			Injecting in = mirror.getInjecting(entry.getKey());
 			if (onn.isLeaf()) {
-				in.inject(obj, onn.getValue());
+				try {
+					ParamConvertor pc = Params.makeParamConvertor(mirror.getField(entry.getKey()).getType());
+					in.inject(obj, pc.convert(onn.getValue()));
+	//				in.inject(obj, onn.getValue());
+				} catch (NoSuchFieldException e) {
+					continue;
+				}
 				continue;
 			}
 			// 不是叶子结点,不能直接注入
@@ -93,7 +105,7 @@ class ObjcetNaviNode {
 		return name;
 	}
 
-	public Object getValue() {
+	public String[] getValue() {
 		return value;
 	}
 

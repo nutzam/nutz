@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.ParamInjector;
+import org.nutz.mvc.adaptor.Params;
 
 /**
  * 对象导航注入器 默认情况下只有使用 @Param("::") 的情况下才调用这个注入器
@@ -35,10 +37,11 @@ public class ObjectNavlPairInjector implements ParamInjector {
 		String pre = "";
 		if ("".equals(prefix))
 			pre = "node.";
-		for (Object name : req.getParameterMap().keySet()) {
+		ParamExtractor pe = Params.makeParamExtractor(req, refer);
+		for (Object name : pe.keys()) {
 			String na = (String) name;
 			if (na.startsWith(prefix)) {
-				no.put(pre + na, req.getParameter(na));
+				no.put(pre + na, pe.extractor(na));
 			}
 		}
 		return no.inject(mirror);
