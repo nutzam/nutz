@@ -10,6 +10,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.mvc.adaptor.ParamConvertor;
+import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.adaptor.Params;
 import org.nutz.mvc.annotation.Param;
@@ -42,7 +43,7 @@ public class ObjectPairInjector implements ParamInjector {
 			Param param = f.getAnnotation(Param.class);
 			String nm = null == param ? f.getName() : param.value();
 			this.names[i] = prefix + nm;
-			this.converters[i] = Params.create(type);
+			this.converters[i] = Params.makeParamConvertor(f.getType());
 		}
 	}
 
@@ -50,9 +51,10 @@ public class ObjectPairInjector implements ParamInjector {
 						HttpServletRequest req,
 						HttpServletResponse resp,
 						Object refer) {
+		ParamExtractor pe = Params.makeParamExtractor(req, refer);
 		Object obj = mirror.born();
 		for (int i = 0; i < injs.length; i++) {
-			Object param = converters[i].convert(req.getParameterValues(names[i]));
+			Object param = converters[i].convert(pe.extractor(names[i]));
 			if (null != param)
 				injs[i].inject(obj, param);
 		}

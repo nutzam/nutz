@@ -17,6 +17,7 @@ import org.nutz.mvc.adaptor.AbstractAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.adaptor.injector.MapReferInjector;
+import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
@@ -135,11 +136,13 @@ public class UploadAdaptor extends AbstractAdaptor {
 		if ("..".equals(paramName)) {
 			if (type.isAssignableFrom(Map.class))
 				return new MapPairInjector();
-			return new MapReferInjector(null, type);
+			return new ObjectPairInjector(null, type);
+//			return new MapReferInjector(null, type);
 		}
 		// POJO with prefix
 		else if (paramName.startsWith("::") && paramName.length() > 2) {
-			return new MapReferInjector(paramName.substring(2), type);
+			return new ObjectPairInjector(null, type);
+//			return new MapReferInjector(paramName.substring(2), type);
 		}
 
 		// Default case
