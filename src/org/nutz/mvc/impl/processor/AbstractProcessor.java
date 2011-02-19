@@ -11,6 +11,10 @@ public abstract class AbstractProcessor implements Processor {
 		this.next = next;
 	}
 
+	public Processor getNext() {
+		return next;
+	}
+
 	public Processor process(ActionContext ac) throws Throwable {
 		doProcess(ac);
 		return next;
