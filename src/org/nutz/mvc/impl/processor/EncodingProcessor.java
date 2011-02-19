@@ -13,9 +13,10 @@ public class EncodingProcessor extends AbstractProcessor{
 		this.output = output;
 	}
 
-	public void doProcess(ActionContext ac) throws Exception {
+	public void process(ActionContext ac) throws Throwable {
 		ac.getRequest().setCharacterEncoding(input);
 		ac.getResponse().setCharacterEncoding(output);
+		doNext(ac);
 	}
 
 }

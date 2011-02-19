@@ -9,7 +9,7 @@ import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
 
-public class ActionFiltersProcessor extends AbstractProcessor{
+public class ActionFiltersProcessor extends AbstractProcessor {
 
 	private ActionFilter[] filters;
 
@@ -17,7 +17,7 @@ public class ActionFiltersProcessor extends AbstractProcessor{
 		this.filters = filters;
 	}
 
-	public void doProcess(ActionContext ac) throws Throwable {
+	public void process(ActionContext ac) throws Throwable {
 		ServletContext sc = ac.getServletContext();
 		HttpServletRequest req = ac.getRequest();
 		Method method = ac.getMethod();
@@ -31,6 +31,7 @@ public class ActionFiltersProcessor extends AbstractProcessor{
 				view.render(req, ac.getResponse(), obj);
 			}
 		}
+		doNext(ac);
 	}
 
 }

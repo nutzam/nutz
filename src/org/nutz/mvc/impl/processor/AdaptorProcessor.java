@@ -13,13 +13,14 @@ public class AdaptorProcessor extends AbstractProcessor {
 		this.adaptor = adaptor;
 	}
 
-	public void doProcess(ActionContext ac) throws Throwable {
+	public void process(ActionContext ac) throws Throwable {
 		List<String> phArgs = ac.getPathArgs();
 		Object[] args = adaptor.adapt(	ac.getServletContext(),
 										ac.getRequest(),
 										ac.getResponse(),
 										phArgs.toArray(new String[phArgs.size()]));
 		ac.setMethodArgs(args);
+		doNext(ac);
 	}
 
 }

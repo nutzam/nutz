@@ -18,10 +18,11 @@ public class DynamicModuleProcessor extends AbstractProcessor {
 		this.method = method;
 	}
 
-	public void doProcess(ActionContext ac) throws Throwable {
+	public void process(ActionContext ac) throws Throwable {
 		Object module = ac.getIoc().get(moduleType, moduleName);
 		ac.setModule(module);
 		ac.setMethod(method);
+		doNext(ac);
 	}
 
 }

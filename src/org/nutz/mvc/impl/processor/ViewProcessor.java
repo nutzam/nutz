@@ -11,7 +11,7 @@ public class ViewProcessor extends AbstractProcessor {
 		this.view = view;
 	}
 
-	public void doProcess(ActionContext ac) throws Throwable {
+	public void process(ActionContext ac) throws Throwable {
 		Object re = ac.getMethodReturn();
 		Object err = ac.getError();
 		if (re instanceof View) {
@@ -19,6 +19,7 @@ public class ViewProcessor extends AbstractProcessor {
 		} else {
 			view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
 		}
+		doNext(ac);
 	}
 
 }

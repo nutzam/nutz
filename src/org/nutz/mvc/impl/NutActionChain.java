@@ -31,9 +31,8 @@ public class NutActionChain implements ActionChain {
 
 	public void doChain(ActionContext ac) {
 		try {
-			Processor p = head;
-			if (null != p)
-				while (null != (p = p.process(ac))) {}
+			if (null != head)
+				head.process(ac);
 		}
 		catch (Throwable e) {
 			ac.setError(e);
