@@ -59,7 +59,7 @@ public class OracleExpert implements SqlExpert {
 		}
 		// Text
 		else if ("text".equalsIgnoreCase(df.getType())) {
-			sb.append("VARCHAR(4000)");
+			sb.append("VARCHAR2(4000)");
 		}
 		// Int
 		else if ("int".equalsIgnoreCase(df.getType())) {
