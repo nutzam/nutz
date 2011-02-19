@@ -2,6 +2,7 @@ package org.nutz.mvc.init;
 
 import org.junit.Test;
 import org.nutz.mvc.AbstractMvcTest;
+import org.nutz.mvc.LoadingException;
 import org.nutz.mvc.annotation.BlankAtException;
 import org.nutz.mvc.init.errmodule.ErrorCatchMainModule;
 
@@ -15,7 +16,7 @@ public class MvcErrorCatchTest {
 				}
 			}).init();
 		}
-		catch (InitException e) {
+		catch (LoadingException e) {
 			throw e.getCause();
 		}
 		catch (Exception e) {

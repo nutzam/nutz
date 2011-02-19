@@ -1,7 +1,6 @@
 package org.nutz.mvc;
 
 import org.nutz.ioc.Ioc;
-import org.nutz.mvc.init.NutConfig;
 
 /**
  * 为了更灵活的支持更多种类的反转注入容器，特创建此接口。

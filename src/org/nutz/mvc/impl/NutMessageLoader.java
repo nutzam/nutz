@@ -1,4 +1,4 @@
-package org.nutz.mvc.init;
+package org.nutz.mvc.impl;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import org.nutz.mvc.Mvcs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
-public class DefaultMessageLoader implements MessageLoader {
+public class NutMessageLoader implements MessageLoader {
 
-	private static final Log log = Logs.getLog(DefaultMessageLoader.class);
+	private static final Log log = Logs.getLog(NutMessageLoader.class);
 
 	public Map<String, Map<String, String>> load(String refer) {
 		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();

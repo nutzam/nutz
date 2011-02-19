@@ -7,7 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.nutz.mvc.MessageLoader;
-import org.nutz.mvc.init.DefaultMessageLoader;
+import org.nutz.mvc.impl.NutMessageLoader;
 
 /**
  * 指明本地化字符串加载方式。 value 属性会当做 MesssageLoader 的构造函数参数。
@@ -21,7 +21,7 @@ import org.nutz.mvc.init.DefaultMessageLoader;
 @Documented
 public @interface Localization {
 
-	Class<? extends MessageLoader> type() default DefaultMessageLoader.class;
+	Class<? extends MessageLoader> type() default NutMessageLoader.class;
 
 	String value();
 

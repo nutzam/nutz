@@ -1,6 +1,5 @@
 package org.nutz.mvc;
 
-import org.nutz.mvc.init.NutConfig;
 
 /**
  * 整个应用启动以及关闭的时候需要做的额外逻辑

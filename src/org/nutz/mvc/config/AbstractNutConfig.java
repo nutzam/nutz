@@ -1,4 +1,4 @@
-package org.nutz.mvc.init.config;
+package org.nutz.mvc.config;
 
 import java.util.Enumeration;
 import java.util.LinkedList;
@@ -8,12 +8,51 @@ import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.init.AtMap;
-import org.nutz.mvc.init.NutConfig;
-import org.nutz.mvc.init.NutConfigException;
+import org.nutz.mvc.NutConfig;
+import org.nutz.mvc.NutConfigException;
+import org.nutz.mvc.annotation.LoadingBy;
+import org.nutz.mvc.impl.NutLoading;
 
 public abstract class AbstractNutConfig implements NutConfig {
+
+	private static final Log log = Logs.getLog(AbstractNutConfig.class);
+
+	public Loading createLoading() {
+		/*
+		 * 确保用户声明了 MainModule
+		 */
+		Class<?> mainModule = getMainModule();
+		if (null == mainModule) {
+			throw new NutConfigException("You need declare modules parameter in your context configuration file!");
+		} else if (log.isDebugEnabled())
+			log.debugf("MainModule: <%s>", mainModule.getName());
+		/*
+		 * 获取 Loading
+		 */
+		LoadingBy by = mainModule.getAnnotation(LoadingBy.class);
+		if (null == by) {
+			if (log.isDebugEnabled())
+				log.debug("Loading by " + NutLoading.class);
+			return new NutLoading();
+		}
+		try {
+			if (log.isDebugEnabled())
+				log.debug("Loading by " + by.value());
+			return by.value().newInstance();
+		}
+		catch (Exception e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
+	public Context getLoadingContext() {
+		return (Context) this.getServletContext().getAttribute(Loading.CONTEXT_NAME);
+	}
 
 	public String getAppRoot() {
 		String root = getServletContext().getRealPath("/").replace('\\', '/');
@@ -67,7 +106,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 		}
 	}
 
-	public AtMap atMap() {
+	public AtMap getAtMap() {
 		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
 	}
 

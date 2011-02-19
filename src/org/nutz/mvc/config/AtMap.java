@@ -1,4 +1,4 @@
-package org.nutz.mvc.init;
+package org.nutz.mvc.config;
 
 import java.util.ArrayList;
 import java.util.HashMap;

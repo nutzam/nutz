@@ -38,9 +38,12 @@ public class SimpleContext implements Context {
 		return this;
 	}
 
+	public Map<String, Object> getInnerMap() {
+		return map;
+	}
+
 	public Context putAll(Context context) {
-		for (String key : context.keys())
-			set(key, context.get(key));
+		map.putAll(context.getInnerMap());
 		return this;
 	}
 

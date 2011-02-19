@@ -7,7 +7,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.nutz.mvc.Loading;
-import org.nutz.mvc.init.DefaultLoading;
 
 /**
  * 在主模块上声明加载逻辑加载逻辑
@@ -19,6 +18,6 @@ import org.nutz.mvc.init.DefaultLoading;
 @Documented
 public @interface LoadingBy {
 
-	Class<? extends Loading> value() default DefaultLoading.class;
+	Class<? extends Loading> value();
 
 }

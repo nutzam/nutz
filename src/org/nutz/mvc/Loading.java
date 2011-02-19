@@ -1,17 +1,12 @@
 package org.nutz.mvc;
 
-import java.util.Map;
-
-import org.nutz.ioc.Ioc;
-import org.nutz.mvc.init.NutConfig;
 
 public interface Loading {
 
-	void load(NutConfig config, Class<?> klass);
+	public static final String CONTEXT_NAME = "_NUTZ_LOADING_CONTEXT_";
 
-	UrlMap getUrls();
+	UrlMapping load(NutConfig config);
 
-	Ioc getIoc();
+	void depose(NutConfig config);
 
-	Map<String, Map<String, String>> getMessageMap();
 }

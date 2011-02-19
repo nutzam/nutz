@@ -9,6 +9,8 @@ public interface Context extends Cloneable {
 	Context set(String name, Object value);
 
 	Set<String> keys();
+	
+	Map<String,Object> getInnerMap();
 
 	Context putAll(Map<String, Object> map);
 

@@ -5,7 +5,7 @@ import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.impl.ScopeContext;
 import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.mvc.IocProvider;
-import org.nutz.mvc.init.NutConfig;
+import org.nutz.mvc.NutConfig;
 
 public class JsonIocProvider implements IocProvider {
 

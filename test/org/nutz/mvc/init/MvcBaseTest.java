@@ -2,11 +2,8 @@ package org.nutz.mvc.init;
 
 import static junit.framework.Assert.*;
 
-import java.lang.reflect.Method;
-
 import org.junit.Test;
 import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.NutServlet;
 import org.nutz.mvc.AbstractMvcTest;
 import org.nutz.mvc.RequestPath;
 
@@ -17,16 +14,18 @@ public class MvcBaseTest extends AbstractMvcTest {
 		servletConfig.addInitParameter("modules", "org.nutz.mvc.init.module.MainModule");
 	}
 
-	@Test
-	public void testIsOK() throws Throwable {
-		Method method = NutServlet.class.getDeclaredMethod("isOk");
-		method.setAccessible(true);
-		assertTrue((Boolean) method.invoke(servlet));
-
-		request.setPathInfo("/base/login.nut");
-		servlet.service(request, response);
-		assertEquals("true", response.getAsString());
-	}
+	// zzh: NutServlet.ok 属性被我删掉了，它似乎没啥用了
+	// TODO 发布前删掉下面的注释
+	// @Test
+	// public void testIsOK() throws Throwable {
+	// Method method = NutServlet.class.getDeclaredMethod("isOk");
+	// method.setAccessible(true);
+	// assertTrue((Boolean) method.invoke(servlet));
+	//
+	// request.setPathInfo("/base/login.nut");
+	// servlet.service(request, response);
+	// assertEquals("true", response.getAsString());
+	// }
 
 	@Test
 	public void testAnotherModule() throws Throwable {
@@ -42,23 +41,23 @@ public class MvcBaseTest extends AbstractMvcTest {
 		assertNotNull(path);
 		assertEquals("/1.2/say", path.getPath());
 		assertEquals("nutz", path.getSuffix());
-		
+
 		request.setPathInfo("/1.2/say");
 		path = Mvcs.getRequestPathObject(request);
 		assertNotNull(path);
 		assertEquals("/1.2/say", path.getPath());
-		
+
 		request.setPathInfo("/1.2/say.po/");
 		path = Mvcs.getRequestPathObject(request);
 		assertNotNull(path);
 		assertEquals("/1.2/say.po/", path.getPath());
-		
+
 		request.setPathInfo("/1.2/say.po/.nut");
 		path = Mvcs.getRequestPathObject(request);
 		assertNotNull(path);
 		assertEquals("/1.2/say.po/", path.getPath());
 	}
-	
+
 	@Test
 	public void testRequestParms_error() throws Throwable {
 		request.setPathInfo("/two/login.nutz");
@@ -68,7 +67,7 @@ public class MvcBaseTest extends AbstractMvcTest {
 		servlet.service(request, response);
 		assertTrue(response.getAsString().indexOf("NumberFormatException") > -1);
 	}
-	
+
 	@Test
 	public void testRequestParms() throws Throwable {
 		request.setPathInfo("/two/login.nutz");

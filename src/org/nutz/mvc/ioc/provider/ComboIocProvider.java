@@ -6,7 +6,7 @@ import org.nutz.ioc.impl.ScopeContext;
 import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.IocProvider;
-import org.nutz.mvc.init.NutConfig;
+import org.nutz.mvc.NutConfig;
 
 public class ComboIocProvider implements IocProvider {
 
