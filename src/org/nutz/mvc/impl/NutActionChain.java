@@ -1,5 +1,6 @@
 package org.nutz.mvc.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.nutz.lang.Lang;
@@ -8,21 +9,31 @@ import org.nutz.mvc.ActionContext;
 
 public class NutActionChain implements ActionChain {
 
-	private List<Processor> list;
+	private Processor head;
 
 	private Processor errorProcessor;
 
 	public NutActionChain(List<Processor> list, Processor errorProcessor) {
-		this.list = list;
+		if (null != list) {
+			Iterator<Processor> it = list.iterator();
+			if (it.hasNext()) {
+				head = it.next();
+				Processor p = head;
+				while (it.hasNext()) {
+					Processor next = it.next();
+					p.setNext(next);
+					p = next;
+				}
+			}
+		}
 		this.errorProcessor = errorProcessor;
 	}
 
 	public void doChain(ActionContext ac) {
 		try {
-			for (Processor p : list) {
-				if (!p.process(ac))
-					break;
-			}
+			Processor p = head;
+			if (null != p)
+				while (null != (p = p.process(ac))) {}
 		}
 		catch (Throwable e) {
 			ac.setError(e);

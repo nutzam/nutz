@@ -1,9 +1,8 @@
 package org.nutz.mvc.impl.processor;
 
 import org.nutz.mvc.ActionContext;
-import org.nutz.mvc.impl.Processor;
 
-public class EncodingProcessor implements Processor {
+public class EncodingProcessor extends AbstractProcessor{
 
 	private String input;
 
@@ -14,10 +13,9 @@ public class EncodingProcessor implements Processor {
 		this.output = output;
 	}
 
-	public boolean process(ActionContext ac) throws Exception {
+	public void doProcess(ActionContext ac) throws Exception {
 		ac.getRequest().setCharacterEncoding(input);
 		ac.getResponse().setCharacterEncoding(output);
-		return true;
 	}
 
 }

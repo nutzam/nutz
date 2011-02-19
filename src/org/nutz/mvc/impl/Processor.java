@@ -4,6 +4,8 @@ import org.nutz.mvc.ActionContext;
 
 public interface Processor {
 
-	boolean process(ActionContext ac) throws Throwable;
+	Processor process(ActionContext ac) throws Throwable;
+	
+	void setNext(Processor p);
 
 }

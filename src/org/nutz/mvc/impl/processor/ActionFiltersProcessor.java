@@ -8,9 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
-import org.nutz.mvc.impl.Processor;
 
-public class ActionFiltersProcessor implements Processor {
+public class ActionFiltersProcessor extends AbstractProcessor{
 
 	private ActionFilter[] filters;
 
@@ -18,7 +17,7 @@ public class ActionFiltersProcessor implements Processor {
 		this.filters = filters;
 	}
 
-	public boolean process(ActionContext ac) throws Throwable {
+	public void doProcess(ActionContext ac) throws Throwable {
 		ServletContext sc = ac.getServletContext();
 		HttpServletRequest req = ac.getRequest();
 		Method method = ac.getMethod();
@@ -30,10 +29,8 @@ public class ActionFiltersProcessor implements Processor {
 				if (null == obj)
 					obj = ac.getMethodReturn();
 				view.render(req, ac.getResponse(), obj);
-				return false;
 			}
 		}
-		return true;
 	}
 
 }

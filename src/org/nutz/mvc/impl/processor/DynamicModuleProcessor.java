@@ -3,9 +3,8 @@ package org.nutz.mvc.impl.processor;
 import java.lang.reflect.Method;
 
 import org.nutz.mvc.ActionContext;
-import org.nutz.mvc.impl.Processor;
 
-public class DynamicModuleProcessor implements Processor {
+public class DynamicModuleProcessor extends AbstractProcessor {
 
 	private Class<?> moduleType;
 
@@ -19,11 +18,10 @@ public class DynamicModuleProcessor implements Processor {
 		this.method = method;
 	}
 
-	public boolean process(ActionContext ac) throws Throwable {
+	public void doProcess(ActionContext ac) throws Throwable {
 		Object module = ac.getIoc().get(moduleType, moduleName);
 		ac.setModule(module);
 		ac.setMethod(method);
-		return true;
 	}
 
 }
