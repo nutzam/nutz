@@ -22,14 +22,11 @@ public class UrlMappingImpl implements UrlMapping {
 
 	private MappingNode<ActionChain> root;
 
-	private NutConfig config;
-
-	public UrlMappingImpl(NutConfig config) {
+	public UrlMappingImpl() {
 		this.root = new MappingNode<ActionChain>();
-		this.config = config;
 	}
 
-	public void add(ActionChainMaker maker, ActionInfo ai) {
+	public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
 		ActionChain chain = maker.eval(config, ai);
 		for (String path : ai.getPaths()) {
 			if (Strings.isBlank(path))

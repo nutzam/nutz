@@ -16,6 +16,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChainMaker;
@@ -100,23 +101,22 @@ public class NutLoading implements Loading {
 			UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
 			if (umb != null) {
 					String value = umb.value();
-					if(value.startsWith("ioc:"))
+					if(!Strings.isBlank(value) && value.startsWith("ioc:"))
 						mapping = config.getIoc().get(UrlMapping.class, value.substring(4));
 					else
 						try {
-							Class<?> klass = Lang.loadClass(umb.value());
-							mapping = (UrlMapping) Mirror.me(klass).born(config);
+							mapping = (UrlMapping) Lang.loadClass(umb.value()).newInstance();
 						} catch (ClassNotFoundException e) {
 							throw Lang.wrapThrow(e);
 						}
 			} else
-				mapping = new UrlMappingImpl(config);
-
+				mapping = new UrlMappingImpl();
+			
 			/*
 			 * 分析所有的子模块
 			 */
 			if (log.isInfoEnabled())
-				log.info("Build URL mapping ...");
+				log.infof("Build URL mapping by %s ...",mapping);
 			for (Class<?> module : modules) {
 				ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
 				for (Method method : module.getMethods()) {
@@ -129,7 +129,7 @@ public class NutLoading implements Loading {
 					// 增加到映射中
 					ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
 					info.setViewMakers(makers);
-					mapping.add(maker, info);
+					mapping.add(maker, info, config);
 				}
 			}
 

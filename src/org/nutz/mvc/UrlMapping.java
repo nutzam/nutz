@@ -17,7 +17,7 @@ public interface UrlMapping {
 	 * @param ai
 	 *            处理器配置
 	 */
-	void add(ActionChainMaker maker, ActionInfo ai);
+	void add(ActionChainMaker maker, ActionInfo ai, NutConfig config);
 
 	/**
 	 * 根据一个路径，获取一个处理器，并且，如果这个路径中包括统配符 '?' 或者 '*' <br>
