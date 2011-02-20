@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 
@@ -11,7 +12,7 @@ public class String2Calendar extends DateTimeCastor<String, Calendar> {
 	public Calendar cast(String src, Class<?> toType, String... args) {
 		Calendar c = Calendar.getInstance();
 		try {
-			c.setTime(dateTimeFormat.parse(src));
+			c.setTime(((DateFormat) dateTimeFormat.clone()).parse(src));
 		}
 		catch (ParseException e) {
 			throw Lang.wrapThrow(e);
