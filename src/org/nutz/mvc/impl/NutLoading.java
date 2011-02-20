@@ -101,7 +101,7 @@ public class NutLoading implements Loading {
 			UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
 			if (umb != null) {
 					String value = umb.value();
-					if(!Strings.isBlank(value) && value.startsWith("ioc:"))
+					if((!Strings.isBlank(value)) && value.startsWith("ioc:"))
 						mapping = config.getIoc().get(UrlMapping.class, value.substring(4));
 					else
 						try {

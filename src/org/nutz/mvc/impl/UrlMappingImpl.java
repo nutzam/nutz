@@ -2,15 +2,13 @@ package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionChain;
-import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.ActionChainMaker;
+import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.UrlMapping;
@@ -68,8 +66,8 @@ public class UrlMappingImpl implements UrlMapping {
 			config.getAtMap().add(ai.getPathKey(), ai.getPaths()[0]);
 	}
 
-	public ActionChain get(ActionContext ac, HttpServletRequest req) {
-		return root.get(ac, Mvcs.getRequestPath(req));
+	public ActionChain get(ActionContext ac) {
+		return root.get(ac, Mvcs.getRequestPath(ac.getRequest()));
 	}
 
 }

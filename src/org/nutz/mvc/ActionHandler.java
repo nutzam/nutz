@@ -21,7 +21,7 @@ public class ActionHandler {
 		ActionContext ac = new ActionContext();
 		ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
-		ActionChain chain = mapping.get(ac, req);
+		ActionChain chain = mapping.get(ac);
 		if (null == chain)
 			return false;
 
