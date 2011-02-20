@@ -32,6 +32,7 @@ import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
+import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.view.DefaultViewMaker;
@@ -57,7 +58,7 @@ public class NutLoading implements Loading {
 		/*
 		 * 准备返回值
 		 */
-		UrlMapping mapping = new UrlMappingImpl(config);
+		UrlMapping mapping;
 		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
 
 		/*
@@ -95,6 +96,21 @@ public class NutLoading implements Loading {
 			 * 准备要加载的模块列表
 			 */
 			Set<Class<?>> modules = scanModules(mainModule);
+			
+			UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
+			if (umb != null) {
+					String value = umb.value();
+					if(value.startsWith("ioc:"))
+						mapping = config.getIoc().get(UrlMapping.class, value.substring(4));
+					else
+						try {
+							Class<?> klass = Lang.loadClass(umb.value());
+							mapping = (UrlMapping) Mirror.me(klass).born(config);
+						} catch (ClassNotFoundException e) {
+							throw Lang.wrapThrow(e);
+						}
+			} else
+				mapping = new UrlMappingImpl(config);
 
 			/*
 			 * 分析所有的子模块

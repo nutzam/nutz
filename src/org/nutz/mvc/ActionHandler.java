@@ -18,13 +18,10 @@ public class ActionHandler {
 	}
 
 	public boolean handle(HttpServletRequest req, HttpServletResponse resp) {
-		String path = Mvcs.getRequestPath(req);
 		ActionContext ac = new ActionContext();
-		ac.setRequest(req);
-		ac.setResponse(resp);
-		ac.setServletContext(config.getServletContext());
+		ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
-		ActionChain chain = mapping.get(ac, path);
+		ActionChain chain = mapping.get(ac, req);
 		if (null == chain)
 			return false;
 

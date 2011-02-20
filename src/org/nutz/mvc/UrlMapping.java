@@ -1,5 +1,7 @@
 package org.nutz.mvc;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * 路径映射
  * 
@@ -27,6 +29,6 @@ public interface UrlMapping {
 	 *            路径
 	 * @return 处理器链表头节点
 	 */
-	ActionChain get(ActionContext ac, String path);
+	ActionChain get(ActionContext ac, HttpServletRequest req);
 
 }

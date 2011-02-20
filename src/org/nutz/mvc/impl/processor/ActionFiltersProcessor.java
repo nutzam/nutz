@@ -29,6 +29,7 @@ public class ActionFiltersProcessor extends AbstractProcessor {
 				if (null == obj)
 					obj = ac.getMethodReturn();
 				view.render(req, ac.getResponse(), obj);
+				return;
 			}
 		}
 		doNext(ac);
