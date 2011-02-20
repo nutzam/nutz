@@ -279,6 +279,10 @@ public class NutLoading implements Loading {
 	}
 
 	private static boolean isModule(Class<?> classZ) {
+		int classModify = classZ.getModifiers();
+		if(!Modifier.isPublic(classModify) || Modifier.isAbstract(classModify)
+				|| Modifier.isInterface(classModify))
+			return false;
 		for (Method method : classZ.getMethods())
 			if (method.isAnnotationPresent(At.class))
 				return true;

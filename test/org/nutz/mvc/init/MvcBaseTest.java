@@ -84,4 +84,11 @@ public class MvcBaseTest extends AbstractMvcTest {
 		servlet.service(request, response);
 		assertEquals("/two/abc", response.getHeader("Location"));
 	}
+	
+	@Test
+	public void test_NotPublicClass() throws Throwable {
+		request.setPathInfo("/here");
+		servlet.service(request, response);
+		assertEquals("", response.getAsString());
+	}
 }
