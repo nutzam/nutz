@@ -69,6 +69,11 @@ public class NutLoading implements Loading {
 
 		try {
 			/*
+			 * 准备 UrlMapping
+			 */
+			mapping = createUrlMapping(config);
+
+			/*
 			 * 检查主模块，调用本函数前，已经确保过有声明 MainModule 了
 			 */
 			Class<?> mainModule = config.getMainModule();
@@ -97,26 +102,12 @@ public class NutLoading implements Loading {
 			 * 准备要加载的模块列表
 			 */
 			Set<Class<?>> modules = scanModules(mainModule);
-			
-			UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
-			if (umb != null) {
-					String value = umb.value();
-					if((!Strings.isBlank(value)) && value.startsWith("ioc:"))
-						mapping = config.getIoc().get(UrlMapping.class, value.substring(4));
-					else
-						try {
-							mapping = (UrlMapping) Lang.loadClass(umb.value()).newInstance();
-						} catch (ClassNotFoundException e) {
-							throw Lang.wrapThrow(e);
-						}
-			} else
-				mapping = new UrlMappingImpl();
-			
+
 			/*
 			 * 分析所有的子模块
 			 */
 			if (log.isInfoEnabled())
-				log.infof("Build URL mapping by %s ...",mapping);
+				log.infof("Build URL mapping by %s ...", mapping);
 			for (Class<?> module : modules) {
 				ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
 				for (Method method : module.getMethods()) {
@@ -156,6 +147,18 @@ public class NutLoading implements Loading {
 
 		return mapping;
 
+	}
+
+	private UrlMapping createUrlMapping(NutConfig config) throws Exception {
+		UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
+		if (umb != null) {
+			String value = umb.value();
+			if ((!Strings.isBlank(value)) && value.startsWith("ioc:"))
+				return config.getIoc().get(UrlMapping.class, value.substring(4));
+			else
+				return (UrlMapping) Lang.loadClass(umb.value()).newInstance();
+		}
+		return new UrlMappingImpl();
 	}
 
 	private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
