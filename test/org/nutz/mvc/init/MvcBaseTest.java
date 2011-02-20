@@ -29,7 +29,7 @@ public class MvcBaseTest extends AbstractMvcTest {
 
 	@Test
 	public void testAnotherModule() throws Throwable {
-		request.setPathInfo("/two/say");
+		request.setPathInfo("/two/abc");
 		servlet.service(request, response);
 		assertEquals("\"haha\"", response.getAsString());
 	}
@@ -76,5 +76,12 @@ public class MvcBaseTest extends AbstractMvcTest {
 		request.addParameter("authCode", "236475");
 		servlet.service(request, response);
 		assertEquals("true", response.getAsString());
+	}
+	
+	@Test
+	public void test_CheckSession() throws Throwable {
+		request.setPathInfo("/two/need.nutz");
+		servlet.service(request, response);
+		assertEquals("/two/abc", response.getHeader("Location"));
 	}
 }

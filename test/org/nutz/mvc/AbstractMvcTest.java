@@ -11,7 +11,6 @@ import org.nutz.mock.servlet.MockHttpServletResponse;
 import org.nutz.mock.servlet.MockHttpSession;
 import org.nutz.mock.servlet.MockServletConfig;
 import org.nutz.mock.servlet.MockServletContext;
-import org.nutz.mvc.NutServlet;
 
 @Ignore
 public abstract class AbstractMvcTest {

@@ -4,7 +4,7 @@ import org.nutz.ioc.annotation.InjectName;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 
-@InjectName("baseModule")
+@InjectName
 @At("/base")
 @Ok("json")
 public class BaseModule {
