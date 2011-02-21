@@ -67,7 +67,11 @@ public class UrlMappingImpl implements UrlMapping {
 	}
 
 	public ActionChain get(ActionContext ac) {
-		return root.get(ac, Mvcs.getRequestPath(ac.getRequest()));
+		String path = Mvcs.getRequestPath(ac.getRequest());
+		ActionChain actionChain = root.get(ac, path);
+		if(log.isDebugEnabled())
+			log.debugf("find mapping [%s] for path [%s]", actionChain, path);
+		return actionChain;
 	}
 
 }
