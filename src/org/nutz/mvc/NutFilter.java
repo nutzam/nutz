@@ -48,16 +48,18 @@ public class NutFilter implements Filter {
 	}
 
 	public void destroy() {
-		handler.depose();
+		if(handler !=null)
+			handler.depose();
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		if (!skipMode) {
 			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
-			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {}
-			if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
-				return;
+			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
+				if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
+					return;
+			}
 		}
 		// 更新 Request 必要的属性
 		else {
