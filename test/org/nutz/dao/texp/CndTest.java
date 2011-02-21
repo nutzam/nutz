@@ -113,4 +113,10 @@ public class CndTest extends DaoCase {
 		assertEquals(exp, c.toSql(null));
 	}
 
+	@Test
+	public void test_not_in(){
+		Condition c = Cnd.where("nm", " Not iN ", new int[]{1,2,3});
+		String exp = "nm NOT IN (1,2,3)";
+		assertEquals(exp, c.toSql(null));
+	}
 }

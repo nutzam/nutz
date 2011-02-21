@@ -227,10 +227,10 @@ public class Cnd implements OrderBy, ExpGroup {
 			} else
 				sb.append(name);
 			// IN
-			if ("IN".equals(op)) {
-				sb.append(" IN ");
+			if ("IN".equals(op) || "NOT IN".equals(op)) {
+				sb.append(" ").append(op).append(" ");
 				if (null == value)
-					throw Lang.makeThrow("SQL 'IN' null : %s", sb);
+					throw Lang.makeThrow("SQL '%s' null : %s", op, sb);
 				// 如果是集合或者数组
 				if (value instanceof Collection<?> || value.getClass().isArray()) {
 					sb.append('(');
