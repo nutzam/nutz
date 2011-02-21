@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.mvc.config.FilterNutConfig;
 
 /**
@@ -27,8 +25,6 @@ import org.nutz.mvc.config.FilterNutConfig;
 public class NutFilter implements Filter {
 
 	private ActionHandler handler;
-
-	private static final Log log = Logs.getLog(NutFilter.class);
 
 	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
 
@@ -47,11 +43,8 @@ public class NutFilter implements Filter {
 			if (!"null".equalsIgnoreCase(regx)) {
 				ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
 			}
-		} else {
+		} else
 			this.skipMode = true;
-			if (log.isWarnEnabled())
-				log.warn("skip-mode of NutFilter is Deprecated! Please use NutAttributeFilter!");
-		}
 	}
 
 	public void destroy() {
