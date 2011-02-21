@@ -68,10 +68,6 @@ public class NutLoading implements Loading {
 		Stopwatch sw = Stopwatch.begin();
 
 		try {
-			/*
-			 * 准备 UrlMapping
-			 */
-			mapping = createUrlMapping(config);
 
 			/*
 			 * 检查主模块，调用本函数前，已经确保过有声明 MainModule 了
@@ -82,6 +78,11 @@ public class NutLoading implements Loading {
 			 * 检查 Ioc 容器并创建和保存它
 			 */
 			createIoc(config, mainModule);
+			
+			/*
+			 * 准备 UrlMapping
+			 */
+			mapping = createUrlMapping(config);
 
 			/*
 			 * 创建视图工厂
@@ -153,6 +154,7 @@ public class NutLoading implements Loading {
 		UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
 		if (umb != null) {
 			String value = umb.value();
+			System.out.println(config.getIoc());
 			if ((!Strings.isBlank(value)) && value.startsWith("ioc:"))
 				return config.getIoc().get(UrlMapping.class, value.substring(4));
 			else
