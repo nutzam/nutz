@@ -24,196 +24,209 @@
 			6. commons-dbcp
 			7. commons-pool
 			8. emma 用于生成代码覆盖率报告
+			9. JDiff 生成API差异报告,外加旧版本的源文件一份,解压到build/oldsrc
 		
 		环境变量 ${OUTPUT} 声明了 zip 文件包的输出位置
 		
 		构建结束后，会删除所有临时文件
     </description>
-	
+
+	<property name="jvmargs" value="-Dfile.encoding=UTF-8" />
+
 	<property environment="env" />
-	
+
 	<property name="OUTPUT" value="${env.OUTPUT}" />
-	
-	<property name="nutz-version" value="1.b.36"></property>
+
+	<property name="nutz-version" value="1.b.36" />
 	<tstamp>
 		<format property="now-date" locale="en" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>
-	<property name="tmp-dir" value="build/tmp"></property>
-	<property name="pub-dir" value="build/pub"></property>
-	<property name="classes-dir-jdk5" value="${tmp-dir}/jdk5"></property>
-	<property name="classes-dir-jdk6" value="${tmp-dir}/jdk6"></property>
-	<property name="classes-dir-test" value="${tmp-dir}/test"></property>
-	<property name="classes-dir-emma" value="${tmp-dir}/emma"></property>
-	<property name="javadoc-dir" value="${pub-dir}/api"></property>
-	<property name="tmp-junitreport-dir" value="${tmp-dir}/junit-report"></property>
-	<property name="pub-junitreport-dir" value="${pub-dir}/junit-report"></property>
-	<property name="zdoc-dir" value="${pub-dir}/manual"></property>
-	<property name="zdoc-en-dir" value="${pub-dir}/manual_en"></property>
+	<property name="tmp-dir" value="build/tmp" />
+	<property name="pub-dir" value="build/pub" />
+	<property name="classes-dir-jdk5" value="${tmp-dir}/jdk5" />
+	<property name="classes-dir-jdk6" value="${tmp-dir}/jdk6" />
+	<property name="classes-dir-test" value="${tmp-dir}/test" />
+	<property name="classes-dir-emma" value="${tmp-dir}/emma" />
+	<property name="javadoc-dir" value="${pub-dir}/api" />
+	<property name="tmp-junitreport-dir" value="${tmp-dir}/junit-report" />
+	<property name="pub-junitreport-dir" value="${pub-dir}/junit-report" />
+	<property name="zdoc-dir" value="${pub-dir}/manual" />
+	<property name="zdoc-en-dir" value="${pub-dir}/manual_en" />
 
-	<property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}"></property>
-	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> --> <!-- 用于正式版 -->
+	<property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}" />
+	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> -->
+	<!-- 用于正式版 -->
 
-	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-sources.jar"></property>
-	<property name="nutz.jar.jdoc" value="${pub-dir}/${nutz.dest.pre}-javadoc.jar"></property>
-	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.dest.pre}-jdk5.jar"></property>
-	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}.jar"></property>
-	<property name="nutz.manual.pdf" value="${pub-dir}/${nutz.dest.pre}-manual.pdf"></property>
-	<property name="nutz.manual_en.pdf" value="${pub-dir}/${nutz.dest.pre}-manual_en.pdf"></property>
-	<property name="nutz.manual.rtf" value="${pub-dir}/${nutz.dest.pre}-manual.rtf"></property>
-	<property name="nutz.manual_en.rtf" value="${pub-dir}/${nutz.dest.pre}-manual_en.rtf"></property>
-	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.dest.pre}.zip"></property>
-	
-	<!-- 允许emma -->
+	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-sources.jar" />
+	<property name="nutz.jar.jdoc" value="${pub-dir}/${nutz.dest.pre}-javadoc.jar" />
+	<property name="nutz.jar.jdk5" value="${pub-dir}/${nutz.dest.pre}-jdk5.jar" />
+	<property name="nutz.jar.jdk6" value="${pub-dir}/${nutz.dest.pre}.jar" />
+	<property name="nutz.manual.pdf" value="${pub-dir}/${nutz.dest.pre}-manual.pdf" />
+	<property name="nutz.manual_en.pdf" value="${pub-dir}/${nutz.dest.pre}-manual_en.pdf" />
+	<property name="nutz.manual.rtf" value="${pub-dir}/${nutz.dest.pre}-manual.rtf" />
+	<property name="nutz.manual_en.rtf" value="${pub-dir}/${nutz.dest.pre}-manual_en.rtf" />
+	<property name="nutz.pub.zip" value="${OUTPUT}/${nutz.dest.pre}.zip" />
+
+	<!-- 启用emma? -->
 	<property name="emma.enabled" value="true" />
 
-	
+
 	<path id="nutz-classpath">
 		<pathelement location="${basedir}/build/deps" />
-		<path >
-			<fileset dir="${basedir}/build/deps" includes="*.jar"></fileset>
+		<path>
+			<fileset dir="${basedir}/build/deps" includes="*.jar" />
 		</path>
 		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
 	</path>
-	
+
 	<taskdef resource="emma_ant.properties" classpathref="nutz-classpath" />
-	
+
 	<target name="clean">
-		<delete dir="${tmp-dir}"></delete>
-		<delete dir="${pub-dir}"></delete>
+		<delete dir="${tmp-dir}" />
+		<delete dir="${pub-dir}" />
 	</target>
-	
+
 	<target name="init">
-		<mkdir dir="${tmp-dir}"/>
-		<mkdir dir="${classes-dir-jdk5}"/>
-		<mkdir dir="${classes-dir-jdk6}"/>
-		<mkdir dir="${classes-dir-test}"/>
-		<mkdir dir="${classes-dir-emma}"/>
-		<mkdir dir="${tmp-junitreport-dir}"/>
-		<mkdir dir="${pub-dir}"/>
-		<mkdir dir="${pub-junitreport-dir}"/>
-		<mkdir dir="${pub-dir}/emma"/>
-		<mkdir dir="${javadoc-dir}"/>
-		<mkdir dir="${zdoc-dir}"/>
-		<mkdir dir="${zdoc-en-dir}"/>
+		<mkdir dir="${tmp-dir}" />
+		<mkdir dir="${classes-dir-jdk5}" />
+		<mkdir dir="${classes-dir-jdk6}" />
+		<mkdir dir="${classes-dir-test}" />
+		<mkdir dir="${classes-dir-emma}" />
+		<mkdir dir="${tmp-junitreport-dir}" />
+		<mkdir dir="${pub-dir}" />
+		<mkdir dir="${pub-junitreport-dir}" />
+		<mkdir dir="${pub-dir}/emma" />
+		<mkdir dir="${javadoc-dir}" />
+		<mkdir dir="${zdoc-dir}" />
+		<mkdir dir="${zdoc-en-dir}" />
 	</target>
-	
+
 	<target name="create-jar">
-		<jar destfile="${nutz.jar.source}" basedir="src" encoding="utf-8" ></jar>
-		
-		<javac destdir="${classes-dir-jdk5}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.5" target="1.5" encoding="utf-8"
-			classpathref="nutz-classpath" includeantruntime="false">
-		</javac>
+		<jar destfile="${nutz.jar.source}" basedir="src" encoding="utf-8" />
+
+		<javac destdir="${classes-dir-jdk5}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.5" target="1.5" encoding="utf-8" classpathref="nutz-classpath" includeantruntime="false" />
 		<copy todir="${classes-dir-jdk5}">
-			<fileset file="License.txt"></fileset>
-			<fileset dir="src" excludes="**/*.java"></fileset>
+			<fileset file="License.txt" />
+			<fileset dir="src" excludes="**/*.java" />
 		</copy>
-		<jar destfile="${nutz.jar.jdk5}" basedir="${classes-dir-jdk5}" index="true"></jar>
-		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8"
-			classpathref="nutz-classpath" includeantruntime="false">
-		</javac>
+		<jar destfile="${nutz.jar.jdk5}" basedir="${classes-dir-jdk5}" index="true" />
+		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8" classpathref="nutz-classpath" includeantruntime="false" />
 		<copy todir="${classes-dir-jdk6}">
-			<fileset file="License.txt"></fileset>
-			<fileset dir="src" excludes="**/*.java"></fileset>
+			<fileset file="License.txt" />
+			<fileset dir="src" excludes="**/*.java" />
 		</copy>
-		<jar destfile="${nutz.jar.jdk6}" basedir="${classes-dir-jdk6}" index="true"></jar>
+		<jar destfile="${nutz.jar.jdk6}" basedir="${classes-dir-jdk6}" index="true" />
 	</target>
-	
+
 	<target name="test">
 		<emma enabled="${emma.enabled}">
-			<instr instrpath="${classes-dir-jdk6}" 
-				destdir="${classes-dir-emma}" 
-				metadatafile="${classes-dir-emma}/metadata.emma" 
-				merge="true">
+			<instr instrpath="${classes-dir-jdk6}" destdir="${classes-dir-emma}" metadatafile="${classes-dir-emma}/metadata.emma" merge="true">
 				<filter excludes="org.nutz.repo.*" />
 			</instr>
 		</emma>
-		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8"
-			includeantruntime="false">
+		<javac destdir="${classes-dir-test}" debuglevel="lines,vars,source" debug="true" srcdir="test" target="1.6" encoding="utf-8" includeantruntime="false">
 			<classpath>
-				<path path="${classes-dir-jdk6}"></path>
-				<path refid="nutz-classpath"></path>
+				<path path="${classes-dir-jdk6}" />
+				<path refid="nutz-classpath" />
 			</classpath>
 		</javac>
 		<copy todir="${classes-dir-test}">
-			<fileset excludes="**/*.java" dir="test"></fileset>
+			<fileset excludes="**/*.java" dir="test" />
 		</copy>
-		<junit fork="true" showoutput="true" printsummary="yes" filtertrace="true" maxmemory="256M" 
-			haltonerror="false" haltonfailure="false">
+		<junit fork="true" showoutput="true" printsummary="yes" filtertrace="true" maxmemory="256M" haltonerror="false" haltonfailure="false">
 			<classpath>
-				<path path="${classes-dir-emma}"></path>
-				<path path="${classes-dir-jdk6}"></path>
-				<path path="${classes-dir-test}"></path>
-				<path refid="nutz-classpath"/>
+				<path path="${classes-dir-emma}" />
+				<path path="${classes-dir-jdk6}" />
+				<path path="${classes-dir-test}" />
+				<path refid="nutz-classpath" />
 			</classpath>
 			<batchtest todir="${tmp-junitreport-dir}">
 				<fileset dir="test">
-					<include name="**/*Test.java"/>
+					<include name="**/*Test.java" />
 				</fileset>
-				<formatter type="xml"/>
+				<formatter type="xml" />
 			</batchtest>
 			<jvmarg value="-Demma.coverage.out.file=${basedir}/${classes-dir-emma}/session.emma" />
 			<jvmarg value="-Demma.coverage.out.merge=true" />
 		</junit>
 		<junitreport todir="${pub-junitreport-dir}">
-			<report format="frames" todir="${pub-junitreport-dir}"/>
-			<fileset dir="${tmp-junitreport-dir}" includes="*.xml"></fileset>
+			<report format="frames" todir="${pub-junitreport-dir}" />
+			<fileset dir="${tmp-junitreport-dir}" includes="*.xml" />
 		</junitreport>
-	    <emma enabled="${emma.enabled}" >
-	      <report sourcepath="src" encoding="utf-8">
-	        <fileset dir="${classes-dir-emma}" >
-	          <include name="*.emma" />
-	        </fileset>
-	        <html outfile="${basedir}/${pub-dir}/emma/coverage.html" />
-	      	<txt outfile="${basedir}/${pub-dir}/emma/coverage.txt" />
-	      </report>
-	    </emma>
+		<emma enabled="${emma.enabled}">
+			<report sourcepath="src" encoding="utf-8">
+				<fileset dir="${classes-dir-emma}">
+					<include name="*.emma" />
+				</fileset>
+				<html outfile="${basedir}/${pub-dir}/emma/coverage.html" />
+				<txt outfile="${basedir}/${pub-dir}/emma/coverage.txt" />
+			</report>
+		</emma>
 	</target>
-	
+
 	<target name="jdoc">
-		<javadoc sourcepath="src" classpathref="nutz-classpath" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8"/>
+		<javadoc sourcepath="src" classpathref="nutz-classpath" encoding="UTF-8" destdir="${javadoc-dir}" charset="utf-8" docencoding="utf-8" />
 		<jar destfile="${nutz.jar.jdoc}">
-			<fileset dir="${javadoc-dir}"></fileset>
+			<fileset dir="${javadoc-dir}" />
 		</jar>
 	</target>
-	
-	
+
+
 	<target name="manual">
-		<taskdef resource="zdoc_ant.properties" >
-			<classpath path="${classes-dir-jdk6}"></classpath>
-			<classpath path="${classes-dir-emma}"></classpath>
-			<classpath path="${classes-dir-test}"></classpath>
-			<classpath >
-				<path refid="nutz-classpath"></path>
-			</classpath>
+		<taskdef resource="zdoc_ant.properties">
+			<classpath path="${classes-dir-jdk6}" />
+			<classpath path="${classes-dir-emma}" />
+			<classpath path="${classes-dir-test}" />
+			<classpath refid="nutz-classpath" />
 		</taskdef>
 		<echo>Build Html manual for CN</echo>
-		<zdoc suffix="html" src="${basedir}/doc/manual" dest="${basedir}/${zdoc-dir}"/>
+		<zdoc suffix="html" src="${basedir}/doc/manual" dest="${basedir}/${zdoc-dir}" />
 		<echo>Build Html manual for EN</echo>
-		<zdoc suffix="html" src="${basedir}/doc/manual_en" dest="${basedir}/${zdoc-en-dir}"/>
+		<zdoc suffix="html" src="${basedir}/doc/manual_en" dest="${basedir}/${zdoc-en-dir}" />
 		<echo>Build PDF manual for CN</echo>
-		<zdoc suffix="pdf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.pdf}"/>
+		<zdoc suffix="pdf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.pdf}" />
 		<echo>Build PDF manual for EN</echo>
-		<zdoc suffix="pdf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.pdf}"/>
+		<zdoc suffix="pdf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.pdf}" />
 		<echo>Build RTF manual for CN</echo>
-		<zdoc suffix="rtf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.rtf}"/>
+		<zdoc suffix="rtf" src="${basedir}/doc/manual" dest="${basedir}/${nutz.manual.rtf}" />
 		<echo>Build RTF manual for EN</echo>
-		<zdoc suffix="rtf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.rtf}"/>
+		<zdoc suffix="rtf" src="${basedir}/doc/manual_en" dest="${basedir}/${nutz.manual_en.rtf}" />
+	</target>
+
+	<!-- ================================= 
+          target: jdiff              
+         ================================= -->
+	<target name="jdiff">
+		<property name="JDIFF_HOME" value="${basedir}/build/deps" />
+		<taskdef name="jdiff" classname="jdiff.JDiffAntTask" classpathref="nutz-classpath" />
+		<mkdir dir="${tmp-dir}/jdiff" />
+		<jdiff destdir="${tmp-dir}/jdiff" verbose="on" stats="on" docchanges="off">
+			<new name="${nutz-version}">
+				<!-- This is the location of your new source files -->
+				<dirset dir="${basedir}/src" excludes="**/repo/org/**" />
+			</new>
+			<old name="1.b.35">
+				<!-- This is the location of your old source files -->
+				<dirset dir="${basedir}/build/oldsrc/" excludes="**/repo/org/**" />
+			</old>
+		</jdiff>
 	</target>
 
 	<target name="create-zip">
 		<zip destfile="${nutz.pub.zip}">
-			<fileset dir="${pub-dir}"></fileset>
+			<fileset dir="${pub-dir}" />
 		</zip>
 	</target>
-	
+
 	<target name="run">
-		<antcall target="clean"></antcall>
-		<antcall target="init"></antcall>
-		<antcall target="create-jar"></antcall>
-		<antcall target="test"></antcall>
-		<antcall target="jdoc"></antcall>
-		<antcall target="manual"></antcall>
-		<antcall target="create-zip"></antcall>
-		<antcall target="clean"></antcall>
+		<antcall target="clean" />
+		<antcall target="init" />
+		<antcall target="create-jar" />
+		<antcall target="test" />
+		<antcall target="jdoc" />
+		<antcall target="manual" />
+		<antcall target="jdiff" />
+		<antcall target="create-zip" />
+		<antcall target="clean" />
 	</target>
 </project>
