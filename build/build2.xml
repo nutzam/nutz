@@ -31,8 +31,6 @@
 		构建结束后，会删除所有临时文件
     </description>
 
-	<property name="jvmargs" value="-Dfile.encoding=UTF-8" />
-
 	<property environment="env" />
 
 	<property name="OUTPUT" value="${env.OUTPUT}" />
@@ -199,13 +197,13 @@
 	<target name="jdiff">
 		<property name="JDIFF_HOME" value="${basedir}/build/deps" />
 		<taskdef name="jdiff" classname="jdiff.JDiffAntTask" classpathref="nutz-classpath" />
-		<mkdir dir="${tmp-dir}/jdiff" />
-		<jdiff destdir="${tmp-dir}/jdiff" verbose="on" stats="on" docchanges="off">
-			<new name="${nutz-version}">
+		<mkdir dir="${pub-dir}/jdiff" />
+		<jdiff destdir="${pub-dir}/jdiff" verbose="on" stats="on" docchanges="off">
+			<new name="${nutz-version}" encoding="UTF-8">
 				<!-- This is the location of your new source files -->
 				<dirset dir="${basedir}/src" excludes="**/repo/org/**" />
 			</new>
-			<old name="1.b.35">
+			<old name="1.b.35" encoding="UTF-8">
 				<!-- This is the location of your old source files -->
 				<dirset dir="${basedir}/build/oldsrc/" excludes="**/repo/org/**" />
 			</old>
