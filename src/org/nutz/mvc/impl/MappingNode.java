@@ -27,7 +27,7 @@ public class MappingNode<T> {
 	private void add(Iterator<String> it, T obj) {
 		// 还有路径
 		if (it.hasNext()) {
-			String key = it.next();
+			String key = it.next().toLowerCase();
 			// '*'
 			if ("*".equals(key)) {
 				if (it.hasNext()) {
@@ -66,7 +66,7 @@ public class MappingNode<T> {
 
 		String key = it.next();
 		// 先在 map 里寻找，
-		MappingNode<T> node = map.get(key);
+		MappingNode<T> node = map.get(key.toLowerCase());
 		if (null != node)
 			return node.get(ac, it);
 
