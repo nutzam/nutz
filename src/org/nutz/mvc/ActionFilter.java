@@ -1,9 +1,5 @@
 package org.nutz.mvc;
 
-import java.lang.reflect.Method;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * 入口函数的过滤器，你的过滤器实现只需要实现一个函数 match。 这个函数如果你返回的是 null，表示你的过滤器认为，可以继续。 如果你的函数返回一个
@@ -17,20 +13,5 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface ActionFilter {
 
-	/**
-	 * 执行过滤
-	 * 
-	 * @param sc
-	 *            Servlet 上下文对象
-	 * @param request
-	 *            当前的请求对象
-	 * @param method
-	 *            即将调用的入口函数
-	 * @return <ul>
-	 *         <li>null - 过滤去通过，可以继续执行后续操作
-	 *         <li>View 对象实例 - 过滤器认为应该终止操作，用这个视图对象来直接渲染 HTTP响应
-	 *         </ul>
-	 */
-	View match(ServletContext sc, HttpServletRequest request, Method method);
-
+	View match(ActionContext actionContext);
 }

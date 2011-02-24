@@ -1,10 +1,6 @@
 package org.nutz.mvc.filter;
 
-import java.lang.reflect.Method;
-
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-
+import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
 import org.nutz.mvc.view.ServerRedirectView;
@@ -31,8 +27,8 @@ public class CheckSession implements ActionFilter {
 		this.path = path;
 	}
 
-	public View match(ServletContext sc, HttpServletRequest request, Method method) {
-		Object obj = request.getSession().getAttribute(name);
+	public View match(ActionContext context) {
+		Object obj = context.getRequest().getSession().getAttribute(name);
 		if (null == obj)
 			return new ServerRedirectView(path);
 		return null;
