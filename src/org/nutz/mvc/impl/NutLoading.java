@@ -7,16 +7,20 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChainMaker;
@@ -73,6 +77,11 @@ public class NutLoading implements Loading {
 			 * 检查主模块，调用本函数前，已经确保过有声明 MainModule 了
 			 */
 			Class<?> mainModule = config.getMainModule();
+			
+			/*
+			 * 创建上下文
+			 */
+			createContext(config);
 
 			/*
 			 * 检查 Ioc 容器并创建和保存它
@@ -83,6 +92,8 @@ public class NutLoading implements Loading {
 			 * 准备 UrlMapping
 			 */
 			mapping = createUrlMapping(config);
+			if (log.isInfoEnabled())
+				log.infof("Build URL mapping by %s ...", mapping);
 
 			/*
 			 * 创建视图工厂
@@ -107,8 +118,6 @@ public class NutLoading implements Loading {
 			/*
 			 * 分析所有的子模块
 			 */
-			if (log.isInfoEnabled())
-				log.infof("Build URL mapping by %s ...", mapping);
 			for (Class<?> module : modules) {
 				ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
 				for (Method method : module.getMethods()) {
@@ -148,6 +157,29 @@ public class NutLoading implements Loading {
 
 		return mapping;
 
+	}
+	
+	private static void createContext(NutConfig config) {
+		// 构建一个上下文对象，方便子类获取更多的环境信息
+		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
+		Context context = Lang.context();
+		context.set("app.root", config.getAppRoot());
+		
+		if (log.isDebugEnabled()) {
+			log.debugf(">> app.root = %s", config.getAppRoot());
+		}
+		
+		//载入环境变量
+		for (Entry<String,String> entry : System.getenv().entrySet())
+			context.set("env."+entry.getKey(), entry.getValue());
+		//载入系统变量
+		for (Entry<Object,Object> entry : System.getProperties().entrySet())
+			context.set("sys."+entry.getKey(), entry.getValue());
+		
+		if (log.isTraceEnabled()) {
+			log.tracef(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
+		}
+		config.getServletContext().setAttribute(Loading.CONTEXT_NAME, context);
 	}
 
 	private UrlMapping createUrlMapping(NutConfig config) throws Exception {
