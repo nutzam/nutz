@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -202,17 +201,5 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	public String getHeader(String key) {
 		return headers.get(key);
-	}
-
-	public Collection<String> getHeaderNames() {
-		throw Lang.noImplement();
-	}
-
-	public Collection<String> getHeaders(String arg0) {
-		throw Lang.noImplement();
-	}
-
-	public int getStatus() {
-		throw Lang.noImplement();
 	}
 }

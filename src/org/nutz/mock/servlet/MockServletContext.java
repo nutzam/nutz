@@ -6,24 +6,16 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
-import javax.servlet.FilterRegistration.Dynamic;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
 
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -149,143 +141,6 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	}
 
 	public String getContextPath() {
-		throw Lang.noImplement();
-	}
-
-	
-	public Dynamic addFilter(String arg0, String arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public Dynamic addFilter(String arg0, Filter arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public Dynamic addFilter(String arg0, Class<? extends Filter> arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public void addListener(Class<? extends EventListener> arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public void addListener(String arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public <T extends EventListener> void addListener(T arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-			String arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-			Servlet arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public javax.servlet.ServletRegistration.Dynamic addServlet(String arg0,
-			Class<? extends Servlet> arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public <T extends Filter> T createFilter(Class<T> arg0)
-			throws ServletException {
-		throw Lang.noImplement();
-	}
-
-	
-	public <T extends EventListener> T createListener(Class<T> arg0)
-			throws ServletException {
-		throw Lang.noImplement();
-	}
-
-	
-	public <T extends Servlet> T createServlet(Class<T> arg0)
-			throws ServletException {
-		throw Lang.noImplement();
-	}
-
-	
-	public void declareRoles(String... arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public ClassLoader getClassLoader() {
-		throw Lang.noImplement();
-	}
-
-	
-	public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
-		throw Lang.noImplement();
-	}
-
-	
-	public int getEffectiveMajorVersion() {
-		throw Lang.noImplement();
-	}
-
-	
-	public int getEffectiveMinorVersion() {
-		throw Lang.noImplement();
-	}
-
-	
-	public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
-		throw Lang.noImplement();
-	}
-
-	
-	public FilterRegistration getFilterRegistration(String arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
-		throw Lang.noImplement();
-	}
-
-	
-	public JspConfigDescriptor getJspConfigDescriptor() {
-		throw Lang.noImplement();
-	}
-
-	
-	public ServletRegistration getServletRegistration(String arg0) {
-		throw Lang.noImplement();
-	}
-
-	
-	public Map<String, ? extends ServletRegistration> getServletRegistrations() {
-		throw Lang.noImplement();
-	}
-
-	
-	public SessionCookieConfig getSessionCookieConfig() {
-		throw Lang.noImplement();
-	}
-
-	
-	public boolean setInitParameter(String arg0, String arg1) {
-		throw Lang.noImplement();
-	}
-
-	
-	public void setSessionTrackingModes(Set<SessionTrackingMode> arg0)
-			throws IllegalStateException, IllegalArgumentException {
 		throw Lang.noImplement();
 	}
 
