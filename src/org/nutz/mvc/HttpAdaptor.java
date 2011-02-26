@@ -9,9 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 这是一个处理 HTTP 请求的扩展点。通过它，你可以用任何你想要的方式来为你的入口函数准备参数。 默认的，框架为你提供了三个实现：
  * <ul>
- * <li>UploadHttpAdaptor // 处理多文件上传
- * <li>JsonHttpAdaptor // 处理 Json 字节流
- * <li>PairHttpAdaptor // 按传统的名值对方式处理
+ * <li>UploadAdaptor // 处理多文件上传
+ * <li>JsonAdaptor // 处理 Json 字节流
+ * <li>PairAdaptor // 按传统的名值对方式处理
  * </ul>
  * 你可以通过注解 '@AdaptBy' 来声明你的入口函数具体将采用哪个适配器，默认的 框架将采用 PairHttpAdaptor
  * 来适配参数。当然，你也可以声明你自己的适配方法

@@ -18,12 +18,19 @@ import org.nutz.mvc.adaptor.injector.*;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
-
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ */
 public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	protected ParamInjector[] injs;
+	
+	protected Method method;
 
 	public void init(Method method) {
+		this.method = method;
 		Class<?>[] argTypes = method.getParameterTypes();
 		injs = new ParamInjector[argTypes.length];
 		Annotation[][] annss = method.getParameterAnnotations();
@@ -112,15 +119,17 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 							HttpServletResponse resp,
 							String[] pathArgs) {
 		Object[] args = new Object[injs.length];
-		int i = 0;
 		int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
 		// Inject another params
-		for (; i < len; i++) {
+		for (int i = 0; i < len; i++) {
 			args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
 		}
-
-		for (; i < injs.length; i++) {
+		Class<?>[] argTypes = method.getParameterTypes();
+		for (int i = 0; i < injs.length; i++) {
 			args[i] = injs[i].get(sc, req, resp, null);
+			if(args[i] == null && argTypes[i].isPrimitive()) {
+				args[i] = getPrimitiveDefaultValue(argTypes[i]);
+			}
 		}
 		return args;
 	}
@@ -139,4 +148,23 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		return i;
 	}
 
+	protected Object getPrimitiveDefaultValue(Class<?> pClass){
+		if(int.class.equals(pClass))
+			return Integer.valueOf(0);
+		if(long.class.equals(pClass))
+			return Long.valueOf(0);
+		if(short.class.equals(pClass))
+			return Short.valueOf((short) 0);
+		if(float.class.equals(pClass))
+			return Float.valueOf(0f);
+		if(double.class.equals(pClass))
+			return Double.valueOf(0);
+		if(byte.class.equals(pClass))
+			return Byte.valueOf((byte) 0);
+		if(char.class.equals(pClass))
+			return Character.valueOf((char)0);
+		if(boolean.class.equals(pClass))
+			return Boolean.FALSE;
+		return null;
+	}
 }
