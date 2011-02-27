@@ -127,7 +127,8 @@ public class FastUploading implements Uploading {
 				else {
 					throw new UploadInvalidFormatException("Fail to found nameEnd!");
 				}
-
+				if(log.isDebugEnabled())
+					log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]",meta.getFileLocalPath(),meta.getName());
 				// 作为文件读取
 				if (meta.isFile()) {
 					// 检查是否通过文件名过滤

@@ -22,6 +22,8 @@ public class FieldMeta {
 		s = Strings.trim(s);
 		if (null != s && s.length() > 2 && s.charAt(0) == '"')
 			return s.substring(1, s.length() - 1);
+		if ("\"\"".equals(s))
+			return "";
 		return s;
 	}
 

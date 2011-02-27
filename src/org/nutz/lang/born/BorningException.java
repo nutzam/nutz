@@ -6,7 +6,7 @@ import org.nutz.lang.Lang;
 public class BorningException extends RuntimeException {
 
 	public BorningException(Throwable e, Class<?> type, Object[] args) {
-		super(makeMessage(e, type, args));
+		super(makeMessage(e, type, args),e);
 	}
 
 	private static String makeMessage(Throwable e, Class<?> type, Object[] args) {
