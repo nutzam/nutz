@@ -35,4 +35,11 @@ public class NemberTwoModule {
 		System.out.println("abc");
 		return "ABC";
 	}
+	
+	@At("/pathme/*")
+	@Ok("json")
+	@Fail("json")
+	public String pathme(int abc, long xyz){
+		return ""+abc;
+	}
 }

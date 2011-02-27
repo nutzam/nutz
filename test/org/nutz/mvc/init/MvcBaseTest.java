@@ -91,4 +91,11 @@ public class MvcBaseTest extends AbstractMvcTest {
 		servlet.service(request, response);
 		assertEquals("", response.getAsString());
 	}
+	
+	@Test
+	public void test_PathArgs() throws Throwable {
+		request.setPathInfo("/two/pathme/123.nutz");
+		servlet.service(request, response);
+		assertEquals("\"123\"", response.getAsString());
+	}
 }

@@ -120,12 +120,13 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 							String[] pathArgs) {
 		Object[] args = new Object[injs.length];
 		int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
+		int i = 0;//确保路径参数不会被覆盖
 		// Inject another params
-		for (int i = 0; i < len; i++) {
+		for (; i < len; i++) {
 			args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
 		}
 		Class<?>[] argTypes = method.getParameterTypes();
-		for (int i = 0; i < injs.length; i++) {
+		for (; i < injs.length; i++) {
 			args[i] = injs[i].get(sc, req, resp, null);
 			if(args[i] == null && argTypes[i].isPrimitive()) {
 				args[i] = getPrimitiveDefaultValue(argTypes[i]);
