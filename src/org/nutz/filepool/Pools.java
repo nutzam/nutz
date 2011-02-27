@@ -23,7 +23,9 @@ public class Pools {
 
 	public static long getFileId(File home, File f) {
 		String path = f.getAbsolutePath();
-		int pos = path.lastIndexOf('.');
+		int pos = -1;
+		if(f.getName().indexOf('.') > -1)
+			pos = path.lastIndexOf('.');
 		String s = pos > 0	? path.substring(home.getAbsolutePath().length(), pos)
 							: path.substring(home.getAbsolutePath().length());
 		return Long.parseLong(s.replaceAll("[\\\\/]", ""), 16);

@@ -62,4 +62,12 @@ public class NutFilePoolTest {
 		assertTrue(-1 == filePool.getFileId(tmp));
 	}
 
+	@Test public void test_blank_suffix(){
+		String home = "D:\\tomcat6.0\\Tomcat 6.0\\webapps\\ai-tuan\\WEB-INF\\tmp";
+		FilePool filePool = new NutFilePool(home);
+		filePool.createFile("");
+		
+		//在生成一次,报错
+		new NutFilePool(home);
+	}
 }
