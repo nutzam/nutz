@@ -11,6 +11,7 @@ import static java.lang.String.*;
  * 函数调用方式
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class Invoking {
 	/*------------------------------------------------------------------------*/
@@ -133,9 +134,6 @@ public class Invoking {
 				// argument method
 			}
 		}
-		catch (RuntimeException e) {
-			throw Lang.wrapThrow(e);
-		}
 		catch (NoSuchMethodException e) {
 			throw Lang.wrapThrow(e);
 		}
@@ -159,8 +157,7 @@ public class Invoking {
 			return invoker.invoke(obj);
 		}
 		catch (Throwable e) {
-			e = Lang.unwrapThrow(e);
-			throw new InvokingException(String.format(msg, ""), e);
+			throw new InvokingException(msg, Lang.unwrapThrow(e));
 		}
 	}
 

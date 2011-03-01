@@ -476,7 +476,7 @@ public class Mirror<T> {
 															value,
 															type.getName(),
 															name,
-															e.getMessage()));
+															e.getMessage()),e);
 	}
 
 	/**
@@ -560,10 +560,10 @@ public class Mirror<T> {
 		}
 	}
 
-	private static RuntimeException makeGetValueException(Class<?> type, String name) {
+	private static RuntimeException makeGetValueException(Class<?> type, String name, Throwable e) {
 		return new FailToGetValueException(String.format(	"Fail to get value for [%s]->[%s]",
 															type.getName(),
-															name));
+															name),e);
 	}
 
 	/**
@@ -583,7 +583,7 @@ public class Mirror<T> {
 			return f.get(obj);
 		}
 		catch (Exception e) {
-			throw makeGetValueException(obj.getClass(), f.getName());
+			throw makeGetValueException(obj.getClass(), f.getName(),e);
 		}
 	}
 
@@ -607,7 +607,7 @@ public class Mirror<T> {
 				return getValue(obj, getField(name));
 			}
 			catch (NoSuchFieldException e1) {
-				throw makeGetValueException(obj.getClass(), name);
+				throw makeGetValueException(obj.getClass(), name, e);
 			}
 		}
 	}
