@@ -84,31 +84,35 @@ public class BinElObj implements ElObj {
 		}
 
 		// 否则计算操作符优先级别
-		BinElObj nn = new BinElObj();
+		BinElObj nn;
 		// 高权 － 新节点下沉
 		if (opt.isHigherThan(operator)) {
 			// 递归下沉
 			if (right instanceof BinElObj) {
-				setRight(((BinElObj) right).append(opt, obj));
+				nn = ((BinElObj) right).append(opt, obj);
 			}
 			// 下沉一级
 			else {
+				nn = new BinElObj();
 				nn.setLeft(right).setOperator(opt).setRight(obj);
 				setRight(nn);
 			}
 		}
 		// 同权或者低权 － 新节点上升
 		else {
+			nn = new BinElObj();
 			// 寻找到一个权重不比新节点权重高的祖先节点
 			BinElObj on = this;
 			while (on.parent != null) {
-				on = on.parent;
 				if (!on.getOperator().isHigherThan(opt))
 					break;
+				on = on.parent;
 			}
+			nn.parent = on.parent;
 			nn.setLeft(on).setOperator(opt).setRight(obj);
+			if (null != nn.parent)
+				nn.parent.setRight(nn);
 		}
-
 		// 总是返回新创建的节点
 		return nn;
 	}

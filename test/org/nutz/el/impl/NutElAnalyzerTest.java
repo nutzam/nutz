@@ -11,6 +11,46 @@ import org.nutz.el.obj.StaticElObj;
 public class NutElAnalyzerTest {
 
 	@Test
+	public void test_simple_exp() {
+		String exp = "1+10*0/400";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("1", root.getLeft().toString());
+		assertEquals("+", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getRight();
+		assertEquals("400", bin.getRight().toString());
+		assertEquals("/", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getLeft();
+		assertEquals("10", bin.getLeft().toString());
+		assertEquals("*", bin.getOperator().toString());
+		assertEquals("0", bin.getRight().toString());
+	}
+
+	@Test
+	public void test_multi_bracket() {
+		String exp = "1+(10*(1400-1400))/400";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("1", root.getLeft().toString());
+		assertEquals("+", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getRight();
+		assertEquals("400", bin.getRight().toString());
+		assertEquals("/", bin.getOperator().toString());
+		
+		bin = (BinElObj) bin.getLeft();
+		assertEquals("10", bin.getLeft().toString());
+		assertEquals("*", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("1400", bin.getLeft().toString());
+		assertEquals("-", bin.getOperator().toString());
+		assertEquals("1400", bin.getRight().toString());
+	}
+
+	@Test
 	public void test_string_invoke() {
 		String exp = "'abc'.trim()";
 		BinElObj root = El.compile(exp);

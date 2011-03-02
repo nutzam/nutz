@@ -13,6 +13,27 @@ import org.nutz.lang.util.Context;
 public class ElTest {
 
 	@Test
+	public void test_issue_397_1() {
+		int expect = 1 / (1 + 10 * (1400 - 1400) / 400);
+		ElValue val = El.eval("1/(1+10*(1400-1400)/400)");
+		assertEquals(expect, val.getInteger().intValue());
+	}
+
+	@Test
+	public void test_issue_397_2() {
+		int expect = 1 / (1 + (10 * (1400 - 1400)) / 400);
+		ElValue val = El.eval("1/(1+(10*(1400-1400))/400)");
+		assertEquals(expect, val.getInteger().intValue());
+	}
+
+	@Test
+	public void test_issue_397_3() {
+		int expect = 1 / 1 + 10 * (1400 - 1400) / 400;
+		ElValue val = El.eval("1/1+10*(1400-1400)/400");
+		assertEquals(expect, val.getInteger().intValue());
+	}
+
+	@Test
 	public void test_multi_opt_01() {
 		ElValue val = El.eval("2*4+2*3+4*5");
 		int exp = 2 * 4 + 2 * 3 + 4 * 5;
