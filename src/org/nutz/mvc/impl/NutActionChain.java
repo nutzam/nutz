@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.ActionChain;
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.Processor;
 
 public class NutActionChain implements ActionChain {
 

@@ -1,8 +1,9 @@
-package org.nutz.mvc.impl;
+package org.nutz.mvc;
 
-import org.nutz.mvc.ActionContext;
 
 public interface Processor {
+	
+	void init(NutConfig config, ActionInfo ai) throws Throwable;
 
 	void process(ActionContext ac) throws Throwable;
 	

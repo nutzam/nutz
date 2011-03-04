@@ -24,7 +24,7 @@ import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.Ok;
 
-abstract class Loadings {
+public abstract class Loadings {
 
 	static ActionInfo createInfo(Class<?> type) {
 		ActionInfo ai = new ActionInfo();

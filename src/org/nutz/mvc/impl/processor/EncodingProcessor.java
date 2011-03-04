@@ -1,16 +1,19 @@
 package org.nutz.mvc.impl.processor;
 
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.NutConfig;
 
 public class EncodingProcessor extends AbstractProcessor{
 
 	private String input;
 
 	private String output;
-
-	public EncodingProcessor(String input, String output) {
-		this.input = input;
-		this.output = output;
+	
+	@Override
+	public void init(NutConfig config, ActionInfo ai) throws Throwable {
+		input = ai.getInputEncoding();
+		output = ai.getOutputEncoding();
 	}
 
 	public void process(ActionContext ac) throws Throwable {

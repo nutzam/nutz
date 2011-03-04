@@ -197,7 +197,7 @@ public class NutLoading implements Loading {
 
 	private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
 		ChainBy ann = mainModule.getAnnotation(ChainBy.class);
-		ActionChainMaker maker = null == ann ? new NutActionChainMaker()
+		ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
 											: Loadings.evalObj(config, ann.type(), ann.args());
 		if (log.isDebugEnabled())
 			log.debugf("@ChainBy(%s)", maker.getClass().getName());

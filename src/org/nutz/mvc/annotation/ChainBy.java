@@ -7,13 +7,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.nutz.mvc.ActionChainMaker;
+import org.nutz.mvc.impl.NutActionChainMaker;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 @Documented
 public @interface ChainBy {
 
-	Class<? extends ActionChainMaker> type();
+	Class<? extends ActionChainMaker> type() default NutActionChainMaker.class;
 
 	String[] args();
 
