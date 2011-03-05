@@ -54,7 +54,7 @@ public class ActionInfo {
 		filterInfos = null == filterInfos ? parent.filterInfos : filterInfos;
 		injectName = null == injectName ? parent.injectName : injectName;
 		moduleType = null == moduleType ? parent.moduleType : moduleType;
-
+		chainName = null == chainName ? parent.chainName : chainName;
 		return this;
 	}
 

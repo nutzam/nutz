@@ -21,7 +21,7 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
 		try {
 			map.putAll(Json.fromJson(Map.class,
 					new InputStreamReader(getClass().getClassLoader().
-							getResourceAsStream("org/nutz/mvc/impl/default-chains.js"))));
+							getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
 			for (NutResource nr : list)
 				map.putAll(Json.fromJson(Map.class,nr.getReader()));
 		}
