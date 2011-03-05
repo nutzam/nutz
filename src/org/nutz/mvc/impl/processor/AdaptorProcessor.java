@@ -33,7 +33,7 @@ public class AdaptorProcessor extends AbstractProcessor {
 		doNext(ac);
 	}
 
-	private HttpAdaptor evalHttpAdaptor(NutConfig config, ActionInfo ai) {
+	protected static HttpAdaptor evalHttpAdaptor(NutConfig config, ActionInfo ai) {
 		HttpAdaptor re = evalObj(config, ai.getAdaptorInfo());
 		if (null == re)
 			re = new PairAdaptor();

@@ -13,7 +13,6 @@ import org.nutz.mvc.NutConfig;
 public class EncodingProcessor extends AbstractProcessor{
 
 	private String input;
-
 	private String output;
 	
 	@Override

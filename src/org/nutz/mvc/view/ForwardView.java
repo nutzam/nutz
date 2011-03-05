@@ -30,8 +30,6 @@ import org.nutz.mvc.View;
  */
 public class ForwardView implements View {
 	
-	public static final String DEFAULT_ATTRIBUTE = "obj";
-
 	protected String path;
 
 	public ForwardView(String name) {
@@ -41,9 +39,6 @@ public class ForwardView implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
-		// Store object to request
-		if (null != obj)
-			req.setAttribute(DEFAULT_ATTRIBUTE, obj);
 		// Check path
 		String thePath = path;
 		if (Strings.isBlank(thePath)) {

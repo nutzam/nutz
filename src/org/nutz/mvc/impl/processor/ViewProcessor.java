@@ -13,6 +13,7 @@ import org.nutz.mvc.view.VoidView;
 public class ViewProcessor extends AbstractProcessor {
 
 	protected View view;
+	public static final String DEFAULT_ATTRIBUTE = "obj";
 	
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
@@ -21,8 +22,11 @@ public class ViewProcessor extends AbstractProcessor {
 
 	public void process(ActionContext ac) throws Throwable {
 		Object re = ac.getMethodReturn();
+		// Store object to request
+		if (null != re)
+			ac.getRequest().setAttribute(ViewProcessor.DEFAULT_ATTRIBUTE, re);
 		Object err = ac.getError();
-		if (re instanceof View) {
+		if (re != null && re instanceof View) {
 			((View) re).render(ac.getRequest(), ac.getResponse(), err);
 		} else {
 			view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);

@@ -25,7 +25,7 @@ public class ModuleProcessor extends AbstractProcessor {
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
 		method = ai.getMethod();
-		if (Strings.isBlank(ai.getInjectName())) {
+		if (!Strings.isBlank(ai.getInjectName())) {
 			moduleType = ai.getModuleType();
 			injectName = ai.getInjectName();
 		} else
