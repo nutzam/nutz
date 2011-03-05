@@ -186,7 +186,7 @@ public class Scans {
 		}
 
 		// 如果找不到?
-		if (list.size() < 1)
+		if (list.size() < 1 && paths.length > 0)
 			throw Lang.makeThrow(	RuntimeException.class,
 									"folder or file like '%s' no found in %s",
 									regex,

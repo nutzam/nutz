@@ -28,7 +28,8 @@ public class NutServlet extends HttpServlet {
 	}
 
 	public void destroy() {
-		handler.depose();
+		if(handler != null)
+			handler.depose();
 	}
 
 	@Override
