@@ -8,6 +8,12 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.adaptor.PairAdaptor;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class AdaptorProcessor extends AbstractProcessor {
 
 	private HttpAdaptor adaptor;

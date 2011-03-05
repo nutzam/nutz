@@ -7,6 +7,12 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.View;
 
+/**
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class ActionFiltersProcessor extends AbstractProcessor {
 
 	private ActionFilter[] filters = {};

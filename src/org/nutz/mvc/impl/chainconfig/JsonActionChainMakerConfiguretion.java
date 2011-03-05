@@ -11,6 +11,12 @@ import org.nutz.lang.Lang;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
+/**
+ * 通过json文件获取配置信息.
+ * <p/>默认配置会首先加载,用户文件可以覆盖之
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguretion {
 
 	protected Map<String,Map<String,Object>> map = new HashMap<String, Map<String,Object>>();

@@ -10,13 +10,16 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.util.SimpleContext;
 
+/**
+ * Action执行的上下文
+ * @author wendal(wendal1985@gmail.com)
+ * @author zozoh(zozohtnt@gmail.com)
+ *
+ */
 public class ActionContext extends SimpleContext {
 
 	private static final String PATH = "path";
 	private static final String PATH_ARGS = "pathArgs";
-
-	// private static final String INPUT_ENCODING = "encoding.input";
-	// private static final String OUTPUT_ENCODING = "encoding.output";
 
 	private static final String REQUEST = HttpServletRequest.class.getName();
 	private static final String RESPONSE = HttpServletResponse.class.getName();
@@ -26,38 +29,57 @@ public class ActionContext extends SimpleContext {
 	private static final String METHOD = "method";
 	private static final String METHOD_ARGS = "method.args";
 	private static final String METHOD_RETURN = "method.return";
-
-	// private static final String ADAPTOR = "adaptor";
-
-	// private static final String VIEW_OK = "view.ok";
-	// private static final String VIEW_FAIL = "view.fail";
-
-	// private static final String FILTERS = "filters";
-
+	
 	private static final String ERROR = "error";
 
+	/**
+	 * 获取全局的Ioc对象
+	 * @return 如果定义了IocBy注解,则肯定返回非空对象
+	 */
 	public Ioc getIoc() {
 		return Mvcs.getIoc(getServletContext());
 	}
 
+	/**
+	 * 获取异常对象
+	 * @return
+	 */
 	public Throwable getError() {
 		return this.getAs(Throwable.class, ERROR);
 	}
 
+	/**
+	 * 设置异常对象,一般由ActionChain捕捉到异常后调用
+	 * @param error 异常对象
+	 * @return 当前上下文,即被调用者本身
+	 */
 	public ActionContext setError(Throwable error) {
 		this.set(ERROR, error);
 		return this;
 	}
 
+	/**
+	 * 获取当前请求的path,经过去后缀处理
+	 * @return 当前请求的path,经过去后缀处理
+	 */
 	public String getPath() {
 		return this.getString(PATH);
 	}
 
+	/**
+	 * 设置当前请求的path,经过去后缀处理
+	 * @param ph 请求的path,,经过去后缀处理
+	 * @return 当前上下文,即被调用者本身
+	 */
 	public ActionContext setPath(String ph) {
 		this.set(PATH, ph);
 		return this;
 	}
 
+	/**
+	 * 获取路径参数
+	 * @return 路径参数
+	 */
 	@SuppressWarnings("unchecked")
 	public List<String> getPathArgs() {
 		return this.getAs(List.class, PATH_ARGS);
@@ -68,33 +90,28 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
-	// public String getOutputEncoding() {
-	// return this.getString(OUTPUT_ENCODING);
-	// }
-	//
-	// public ActionContext setOutputEncoding(String en) {
-	// this.set(OUTPUT_ENCODING, en);
-	// return this;
-	// }
-	//
-	// public String getInputEncoding() {
-	// return this.getString(INPUT_ENCODING);
-	// }
-	//
-	// public ActionContext setInputEncoding(String en) {
-	// this.set(INPUT_ENCODING, en);
-	// return this;
-	// }
-
+	/**
+	 * 获取这个Action对应的Method
+	 * @return
+	 */
 	public Method getMethod() {
 		return this.getAs(Method.class, METHOD);
 	}
 
+	/**
+	 * 设置这个Action对应的Method
+	 * @param m 这个Action对应的Method
+	 * @return 当前上下文,即被调用者本身
+	 */
 	public ActionContext setMethod(Method m) {
 		this.set(METHOD, m);
 		return this;
 	}
 
+	/**
+	 * 获取将要执行Method的对象
+	 * @return 执行对象,即模块类的实例
+	 */
 	public Object getModule() {
 		return this.get(MODULE);
 	}
@@ -104,6 +121,10 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
+	/**
+	 * 获取将要执行Method的参数
+	 * @return method的参数
+	 */
 	public Object[] getMethodArgs() {
 		return this.getAs(Object[].class, METHOD_ARGS);
 	}
@@ -113,6 +134,10 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
+	/**
+	 * 获取method返回值
+	 * @return
+	 */
 	public Object getMethodReturn() {
 		return this.get(METHOD_RETURN);
 	}
@@ -122,42 +147,10 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
-	// public HttpAdaptor getAdaptor() {
-	// return this.getAs(HttpAdaptor.class, ADAPTOR);
-	// }
-	//
-	// public ActionContext setAdaptor(HttpAdaptor ad) {
-	// this.set(ADAPTOR, ad);
-	// return this;
-	// }
-	//
-	// public View getOkView() {
-	// return this.getAs(View.class, VIEW_OK);
-	// }
-	//
-	// public ActionContext setOkView(View ok) {
-	// this.set(VIEW_OK, ok);
-	// return this;
-	// }
-	//
-	// public View getFailView() {
-	// return this.getAs(View.class, VIEW_FAIL);
-	// }
-	//
-	// public ActionContext setFailView(View fail) {
-	// this.set(VIEW_FAIL, fail);
-	// return this;
-	// }
-	//
-	// public ActionFilter[] getFilters() {
-	// return this.getAs(ActionFilter[].class, FILTERS);
-	// }
-	//
-	// public ActionContext setFilters(ActionFilter[] fs) {
-	// this.set(FILTERS, fs);
-	// return this;
-	// }
-
+	/**
+	 * 获取请求的HttpServletRequest
+	 * @return 请求的HttpServletRequest
+	 */
 	public HttpServletRequest getRequest() {
 		return this.getAs(HttpServletRequest.class, REQUEST);
 	}
@@ -167,6 +160,10 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
+	/**
+	 * 获取请求的HttpServletResponse
+	 * @return 请求的HttpServletResponse
+	 */
 	public HttpServletResponse getResponse() {
 		return this.getAs(HttpServletResponse.class, RESPONSE);
 	}
@@ -176,6 +173,10 @@ public class ActionContext extends SimpleContext {
 		return this;
 	}
 
+	/**
+	 * 获取ServletContext
+	 * @return ServletContext
+	 */
 	public ServletContext getServletContext() {
 		return this.getAs(ServletContext.class, SERVLET_CONTEXT);
 	}
@@ -184,11 +185,4 @@ public class ActionContext extends SimpleContext {
 		this.set(SERVLET_CONTEXT, sc);
 		return this;
 	}
-
-	public ActionContext clone() {
-		ActionContext re = new ActionContext();
-		re.putAll(this);
-		return re;
-	}
-
 }
