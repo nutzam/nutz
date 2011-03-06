@@ -11,6 +11,6 @@ import java.util.Map;
  */
 public interface MessageLoader {
 
-	Map<String, Map<String, String>> load(String refer);
+	Map<String, Map<String, Object>> load(String refer);
 
 }

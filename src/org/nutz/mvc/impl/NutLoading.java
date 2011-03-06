@@ -77,7 +77,7 @@ public class NutLoading implements Loading {
 			 * 检查主模块，调用本函数前，已经确保过有声明 MainModule 了
 			 */
 			Class<?> mainModule = config.getMainModule();
-			
+
 			/*
 			 * 创建上下文
 			 */
@@ -87,7 +87,7 @@ public class NutLoading implements Loading {
 			 * 检查 Ioc 容器并创建和保存它
 			 */
 			createIoc(config, mainModule);
-			
+
 			/*
 			 * 准备 UrlMapping
 			 */
@@ -158,24 +158,24 @@ public class NutLoading implements Loading {
 		return mapping;
 
 	}
-	
+
 	private static void createContext(NutConfig config) {
 		// 构建一个上下文对象，方便子类获取更多的环境信息
 		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
 		Context context = Lang.context();
 		context.set("app.root", config.getAppRoot());
-		
+
 		if (log.isDebugEnabled()) {
 			log.debugf(">> app.root = %s", config.getAppRoot());
 		}
-		
-		//载入环境变量
-		for (Entry<String,String> entry : System.getenv().entrySet())
-			context.set("env."+entry.getKey(), entry.getValue());
-		//载入系统变量
-		for (Entry<Object,Object> entry : System.getProperties().entrySet())
-			context.set("sys."+entry.getKey(), entry.getValue());
-		
+
+		// 载入环境变量
+		for (Entry<String, String> entry : System.getenv().entrySet())
+			context.set("env." + entry.getKey(), entry.getValue());
+		// 载入系统变量
+		for (Entry<Object, Object> entry : System.getProperties().entrySet())
+			context.set("sys." + entry.getKey(), entry.getValue());
+
 		if (log.isTraceEnabled()) {
 			log.tracef(">>\nCONTEXT %s", Json.toJson(context, JsonFormat.nice()));
 		}
@@ -221,7 +221,7 @@ public class NutLoading implements Loading {
 			if (log.isDebugEnabled())
 				log.debugf("Localization message: '%s'", lc.value());
 
-			Map<String, Map<String, String>> msgss = Mirror.me(lc.type()).born().load(lc.value());
+			Map<String, Map<String, Object>> msgss = Mirror.me(lc.type()).born().load(lc.value());
 			config.setAttributeIgnoreNull(Localization.class.getName(), msgss);
 		} else if (log.isDebugEnabled()) {
 			log.debug("!!!Can not find localization message resource");
@@ -317,8 +317,9 @@ public class NutLoading implements Loading {
 
 	private static boolean isModule(Class<?> classZ) {
 		int classModify = classZ.getModifiers();
-		if(!Modifier.isPublic(classModify) || Modifier.isAbstract(classModify)
-				|| Modifier.isInterface(classModify))
+		if (!Modifier.isPublic(classModify)
+			|| Modifier.isAbstract(classModify)
+			|| Modifier.isInterface(classModify))
 			return false;
 		for (Method method : classZ.getMethods())
 			if (method.isAnnotationPresent(At.class))

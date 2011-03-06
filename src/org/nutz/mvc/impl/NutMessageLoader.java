@@ -9,7 +9,8 @@ import java.util.Map.Entry;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
+import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.MultiLineProperties;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -22,8 +23,8 @@ public class NutMessageLoader implements MessageLoader {
 
 	private static final Log log = Logs.getLog(NutMessageLoader.class);
 
-	public Map<String, Map<String, String>> load(String refer) {
-		Map<String, Map<String, String>> re = new HashMap<String, Map<String, String>>();
+	public Map<String, Map<String, Object>> load(String refer) {
+		Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		for (NutResource nutResource : allnrs) {
 			if (nutResource.getName().indexOf(refer) > -1)
@@ -61,21 +62,33 @@ public class NutMessageLoader implements MessageLoader {
 		try {
 			for (Entry<String, List<NutResource>> entry : map.entrySet()) {
 				List<NutResource> nrs = entry.getValue();
+				String langType = entry.getKey();
+				// 循环读取该语言的文件夹
 				for (NutResource nr : nrs) {
-					MultiLineProperties p = new MultiLineProperties() {
-						public String get(Object key) {
-							return Strings.sNull(super.get(key), (String) key);
-						}
-					};
+					// 读取多行属性
+					MultiLineProperties p = new MultiLineProperties();
 					Reader r = nr.getReader();
 					p.load(r);
 					r.close();
-					Map<String, String> langs = re.get(entry.getKey());
-					if (null == langs)
-						re.put(entry.getKey(), p);
-					else
-						langs.putAll(p);
-				}
+
+					// 获取当前语言的 Map
+					Map<String, Object> msgs = re.get(langType);
+					if (null == msgs) {
+						msgs = new NutMessageMap();
+						re.put(langType, msgs);
+					}
+
+					// 将本地化字符串增加到当前语言
+					for (String key : p.keySet()) {
+						String str = p.get(key);
+						Segment seg = (new CharSegment()).valueOf(str);
+						if (seg.keys().isEmpty())
+							msgs.put(key, str);
+						else
+							msgs.put(key, seg);
+					}
+
+				} // ~ 内部循环结束
 			}
 		}
 		catch (Exception e) {

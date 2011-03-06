@@ -55,13 +55,8 @@ public class Segments {
 			return null;
 		if (null == context)
 			return seg.render().toString();
-
-		for (String key : seg.keys()) {
-			Object v = context.get(key);
-			seg.set(key, v);
-		}
-		seg.fillNulls(seg.getContext());		
-		return seg.render().toString();
+		
+		return seg.render(context).toString();
 	}
 
 	/**
