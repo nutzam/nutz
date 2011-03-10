@@ -11,6 +11,18 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
 public class ElTest {
+	
+	@Test
+	public void test_simple_and_or(){
+		ElValue val = El.eval("4 && 0 || 5");
+		assertTrue(val.getBoolean().booleanValue());
+	}
+
+	@Test
+	public void test_semicolon() {
+		ElValue val = El.eval("1+2;+99");
+		assertEquals(3, val.getInteger().intValue());
+	}
 
 	@Test
 	public void test_issue_397_1() {

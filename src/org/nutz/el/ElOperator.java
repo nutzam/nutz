@@ -27,6 +27,10 @@ public interface ElOperator {
 	void setString(String str);
 
 	int getWeight();
+	
+	boolean isHigherIfSame();
+
+	void setHigherIfSame(boolean higherIfSame);
 
 	String getString();
 
@@ -47,5 +51,14 @@ public interface ElOperator {
 	 * @return 是否相等
 	 */
 	boolean is(String optStr);
+
+	/**
+	 * 判断操作符是不是相同类型
+	 * 
+	 * @param opt
+	 *            操作符对象
+	 * @return 是否相同类型
+	 */
+	boolean isSameType(ElOperator opt);
 
 }

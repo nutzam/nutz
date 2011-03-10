@@ -157,6 +157,7 @@ public class NutElAnalyzer implements ElAnalyzer {
 		switch (sy.getType()) {
 		case RIGHT_PARENTHESIS:
 		case RIGHT_BRACKET:
+		case SEMICOLON:
 		case COMMA:
 		case CONDITIONAL_SEP:
 			return true;

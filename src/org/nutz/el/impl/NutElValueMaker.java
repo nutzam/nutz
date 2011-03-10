@@ -55,7 +55,7 @@ public class NutElValueMaker implements ElValueMaker {
 
 		// 布尔
 		if (mirror.isBoolean())
-			return new BooleanElValue((Boolean) obj);
+			return (Boolean) obj ? El.TRUE : El.FALSE;
 
 		// 浮点
 		if (mirror.isFloat())

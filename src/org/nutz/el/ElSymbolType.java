@@ -28,6 +28,11 @@ public enum ElSymbolType {
 	COMMA,
 
 	/**
+	 * 分号
+	 */
+	SEMICOLON,
+
+	/**
 	 * 字符串
 	 */
 	STRING,

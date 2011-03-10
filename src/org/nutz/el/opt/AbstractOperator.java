@@ -6,7 +6,17 @@ public abstract class AbstractOperator implements ElOperator {
 
 	protected int weight;
 
+	protected boolean higherIfSame;
+
 	protected String str;
+
+	public boolean isHigherIfSame() {
+		return higherIfSame;
+	}
+
+	public void setHigherIfSame(boolean higherIfSame) {
+		this.higherIfSame = higherIfSame;
+	}
 
 	public void setWeight(int weight) {
 		this.weight = weight;
@@ -25,7 +35,13 @@ public abstract class AbstractOperator implements ElOperator {
 	}
 
 	public boolean isHigherThan(ElOperator opt) {
+		if (isSameType(opt) && higherIfSame)
+			return weight >= opt.getWeight();
 		return weight > opt.getWeight();
+	}
+
+	public boolean isSameType(ElOperator opt) {
+		return str.equals(opt.getString());
 	}
 
 	public boolean is(String optStr) {

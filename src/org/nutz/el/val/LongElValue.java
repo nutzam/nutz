@@ -1,5 +1,6 @@
 package org.nutz.el.val;
 
+import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
 
@@ -64,27 +65,27 @@ public class LongElValue implements ElValue {
 	}
 
 	public ElValue isEquals(ElValue ta) {
-		return new BooleanElValue(val.equals(ta.getLong()));
+		return val.equals(ta.getLong()) ? El.TRUE : El.FALSE;
 	}
-	
+
 	public ElValue isNEQ(ElValue ta) {
-		return new BooleanElValue(!val.equals(ta.getLong()));
+		return !val.equals(ta.getLong()) ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGT(ElValue ta) {
-		return new BooleanElValue(val > ta.getLong());
+		return val > ta.getLong() ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isLT(ElValue ta) {
-		return new BooleanElValue(val < ta.getLong());
+		return val < ta.getLong() ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGTE(ElValue ta) {
-		return new BooleanElValue(val >= ta.getLong());
+		return val >= ta.getLong() ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isLTE(ElValue ta) {
-		return new BooleanElValue(val <= ta.getLong());
+		return val <= ta.getLong() ? El.TRUE : El.FALSE;
 	}
 
 	public String toString() {

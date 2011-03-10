@@ -1,5 +1,6 @@
 package org.nutz.el.val;
 
+import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
 import org.nutz.lang.Strings;
@@ -95,23 +96,23 @@ public class StringElValue extends PojoElValue<String> {
 	}
 
 	public ElValue isEquals(ElValue ta) {
-		return new BooleanElValue(obj.equals(ta.getString()));
+		return obj.equals(ta.getString()) ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGT(ElValue ta) {
-		return new BooleanElValue(obj.compareTo(ta.getString()) > 0);
+		return obj.compareTo(ta.getString()) > 0 ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isLT(ElValue ta) {
-		return new BooleanElValue(obj.compareTo(ta.getString()) < 0);
+		return obj.compareTo(ta.getString()) < 0 ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGTE(ElValue ta) {
-		return new BooleanElValue(obj.compareTo(ta.getString()) >= 0);
+		return obj.compareTo(ta.getString()) >= 0 ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isLTE(ElValue ta) {
-		return new BooleanElValue(obj.compareTo(ta.getString()) <= 0);
+		return obj.compareTo(ta.getString()) <= 0 ? El.TRUE : El.FALSE;
 	}
 
 	public String toString() {

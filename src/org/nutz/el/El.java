@@ -23,6 +23,16 @@ import org.nutz.lang.util.Context;
 public class El {
 
 	/**
+	 * 静态变量，一个表达式值包裹的 true
+	 */
+	public static final ElValue TRUE = new BooleanElValue(true);
+
+	/**
+	 * 静态变量，一个表达式值包裹的 false
+	 */
+	public static final ElValue FALSE = new BooleanElValue(false);
+
+	/**
 	 * 拆分器类型
 	 */
 	public static Class<? extends ElSpliter> spliterType;
@@ -159,7 +169,7 @@ public class El {
 		}
 
 		public static ElObj oBoolean(Boolean v) {
-			return new StaticElObj(new BooleanElValue(v));
+			return new StaticElObj(v ? El.TRUE : El.FALSE);
 		}
 
 		public static ElObj oNull() {
@@ -188,8 +198,10 @@ public class El {
 			if (null != optAnn)
 				opt.setString(optAnn.value());
 			Weight weight = optType.getAnnotation(Weight.class);
-			if (null != weight)
+			if (null != weight) {
 				opt.setWeight(weight.value());
+				opt.setHigherIfSame(weight.higherIfSame());
+			}
 			return opt;
 		}
 		catch (Exception e) {

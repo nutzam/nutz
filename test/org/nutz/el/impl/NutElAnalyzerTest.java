@@ -9,6 +9,78 @@ import org.nutz.el.obj.ConditionalElObj;
 import org.nutz.el.obj.StaticElObj;
 
 public class NutElAnalyzerTest {
+	
+	@Test
+	public void test_simple_or_and() {
+		String exp = "a || b && c || d";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("$d", root.getRight().toString());
+		assertEquals("||", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getLeft();
+		assertEquals("$a", bin.getLeft().toString());
+		assertEquals("||", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("$b", bin.getLeft().toString());
+		assertEquals("&&", bin.getOperator().toString());
+		assertEquals("$c", bin.getRight().toString());
+	}
+
+	@Test
+	public void test_simple_or_and_with_parenthesis() {
+		String exp = "a || (b && c) || d";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("$d", root.getRight().toString());
+		assertEquals("||", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getLeft();
+		assertEquals("$a", bin.getLeft().toString());
+		assertEquals("||", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("$b", bin.getLeft().toString());
+		assertEquals("&&", bin.getOperator().toString());
+		assertEquals("$c", bin.getRight().toString());
+	}
+
+	@Test
+	public void test_simple_or() {
+		String exp = "a || b || c || d";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("$a", root.getLeft().toString());
+		assertEquals("||", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getRight();
+		assertEquals("$b", bin.getLeft().toString());
+		assertEquals("||", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("$c", bin.getLeft().toString());
+		assertEquals("||", bin.getOperator().toString());
+		assertEquals("$d", bin.getRight().toString());
+	}
+
+	@Test
+	public void test_simple_and() {
+		String exp = "a && b && c && d";
+		BinElObj root = El.compile(exp);
+
+		assertEquals("$a", root.getLeft().toString());
+		assertEquals("&&", root.getOperator().toString());
+
+		BinElObj bin = (BinElObj) root.getRight();
+		assertEquals("$b", bin.getLeft().toString());
+		assertEquals("&&", bin.getOperator().toString());
+
+		bin = (BinElObj) bin.getRight();
+		assertEquals("$c", bin.getLeft().toString());
+		assertEquals("&&", bin.getOperator().toString());
+		assertEquals("$d", bin.getRight().toString());
+	}
 
 	@Test
 	public void test_simple_exp() {
@@ -39,7 +111,7 @@ public class NutElAnalyzerTest {
 		BinElObj bin = (BinElObj) root.getRight();
 		assertEquals("400", bin.getRight().toString());
 		assertEquals("/", bin.getOperator().toString());
-		
+
 		bin = (BinElObj) bin.getLeft();
 		assertEquals("10", bin.getLeft().toString());
 		assertEquals("*", bin.getOperator().toString());

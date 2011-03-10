@@ -18,4 +18,6 @@ public @interface Weight {
 
 	int value();
 
+	boolean higherIfSame() default false;
+
 }

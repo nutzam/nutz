@@ -1,5 +1,6 @@
 package org.nutz.el.val;
 
+import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
 
@@ -58,11 +59,11 @@ public class NullElValue implements ElValue {
 	}
 
 	public ElValue isEquals(ElValue ta) {
-		return new BooleanElValue(ta instanceof NullElValue);
+		return ta instanceof NullElValue ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isNEQ(ElValue ta) {
-		return new BooleanElValue(!(ta instanceof NullElValue));
+		return !(ta instanceof NullElValue) ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGT(ElValue ta) {

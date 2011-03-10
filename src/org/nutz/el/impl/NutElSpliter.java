@@ -22,7 +22,7 @@ public class NutElSpliter implements ElSpliter {
 
 	public NutElSpliter() {
 		loaders = new ArrayList<SymbolLoader>();
-		
+
 		loaders.add(new CommaSymbolLoader());
 		loaders.add(new ConditionalSeperateSymbolLoader());
 		loaders.add(new ConditionalTestSymbolLoader());
@@ -30,6 +30,7 @@ public class NutElSpliter implements ElSpliter {
 		loaders.add(new LeftPrenthesisSymbolLoader());
 		loaders.add(new RightBracketSymbolLoader());
 		loaders.add(new RightPrenthesisSymbolLoader());
+		loaders.add(new SemicolonSymbolLoader());
 		loaders.add(new StringSymbolLoader());
 		loaders.add(new NameSymbolLoader());
 		loaders.add(new NumberLoader());

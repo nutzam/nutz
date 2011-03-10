@@ -1,13 +1,14 @@
 package org.nutz.el.val;
 
+import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
 
 public class BooleanElValue implements ElValue {
 
-	private Boolean val;
+	private boolean val;
 
-	public BooleanElValue(Boolean val) {
+	public BooleanElValue(boolean val) {
 		this.val = val;
 	}
 
@@ -16,9 +17,7 @@ public class BooleanElValue implements ElValue {
 	}
 
 	public ElValue getProperty(ElValue val) {
-		throw new ElException(	"%s don't support [%s]!",
-								getClass().getSimpleName(),
-								"getProperty");
+		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "getProperty");
 	}
 
 	public Object get() {
@@ -30,19 +29,19 @@ public class BooleanElValue implements ElValue {
 	}
 
 	public Integer getInteger() {
-		return 1;
+		return val ? 1 : 0;
 	}
 
 	public Float getFloat() {
-		return 1f;
+		return val ? 1f : 0f;
 	}
 
-	public Long getLong(){
-		return 1L;
+	public Long getLong() {
+		return val ? 1L : 0L;
 	}
-	
+
 	public String getString() {
-		return val.toString();
+		return val ? "true" : "false";
 	}
 
 	public ElValue plus(ElValue ta) {
@@ -66,11 +65,11 @@ public class BooleanElValue implements ElValue {
 	}
 
 	public ElValue isEquals(ElValue ta) {
-		return new BooleanElValue(val.equals(ta.getBoolean()));
+		return val == ta.getBoolean().booleanValue() ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isNEQ(ElValue ta) {
-		return new BooleanElValue(!val.equals(ta.getBoolean()));
+		return val != ta.getBoolean().booleanValue() ? El.TRUE : El.FALSE;
 	}
 
 	public ElValue isGT(ElValue ta) {
@@ -90,7 +89,7 @@ public class BooleanElValue implements ElValue {
 	}
 
 	public String toString() {
-		return val.toString();
+		return val ? "true" : "false";
 	}
 
 }
