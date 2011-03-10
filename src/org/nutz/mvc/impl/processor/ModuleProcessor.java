@@ -30,16 +30,15 @@ public class ModuleProcessor extends AbstractProcessor {
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
 		method = ai.getMethod();
-		if (!Strings.isBlank(ai.getInjectName())) {
-			moduleType = ai.getModuleType();
+		moduleType = ai.getModuleType();
+		if (!Strings.isBlank(ai.getInjectName()))
 			injectName = ai.getInjectName();
-		}
 	}
 
 	public void process(ActionContext ac) throws Throwable {
 		RequestIocContext reqContext = null;
 		try {
-			if (Strings.isBlank(injectName)) {
+			if (null == injectName) {
 				ac.setModule(moduleType.newInstance());
 			} else {
 				Ioc ioc = ac.getIoc();
