@@ -80,7 +80,8 @@ public class LocalResourceScan extends AbstractResourceScan {
 				if (!path.contains(".jar!")) {
 					// 首先查找以下， CLASSPATH 从哪里开始
 					int pos = path.lastIndexOf(src);
-					list.addAll(scanInDir(regex, path.substring(0, pos), f, ignoreHidden));
+					if (pos > 0)
+						list.addAll(scanInDir(regex, path.substring(0, pos), f, ignoreHidden));
 				}
 				// 如果在 jar 中，则循环查找这个 jar 的每一个实体
 				else {
