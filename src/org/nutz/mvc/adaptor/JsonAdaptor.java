@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor;
 
 import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -42,6 +43,9 @@ public class JsonAdaptor extends AbstractAdaptor {
 
 	@Override
 	protected ParamInjector evalInjector(Class<?> type, Param param) {
+		return new JsonInjector(type, null == param ? null : param.value());
+	}
+	protected ParamInjector evalInjector(Type type, Param param){
 		return new JsonInjector(type, null == param ? null : param.value());
 	}
 

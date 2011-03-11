@@ -3,6 +3,7 @@ package org.nutz.json;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.lang.reflect.Type;
 
 import org.nutz.lang.Lang;
 
@@ -29,7 +30,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(null, null);
+		return new JsonParsing(reader).parseFromJson(null);
 	}
 
 	/**
@@ -43,7 +44,11 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(type, null);
+		return new JsonParsing(reader).parseFromJson(type);
+	}
+	
+	public static Object fromJson(Type type, Reader reader) throws JsonException {
+		return new JsonParsing(reader).parseFromJson(type);
 	}
 
 	/**
@@ -75,6 +80,9 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
+		return fromJson(type, Lang.inr(cs));
+	}
+	public static Object fromJson(Type type, CharSequence cs) throws JsonException {
 		return fromJson(type, Lang.inr(cs));
 	}
 

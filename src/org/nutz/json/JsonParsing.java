@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.TreeMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +16,7 @@ import org.nutz.castor.Castors;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
+@SuppressWarnings("unchecked")
 class JsonParsing {
 
 	JsonParsing(Reader reader) {
@@ -92,242 +95,17 @@ class JsonParsing {
 		return true;
 	}
 
-	<T> T parseFromJson(Class<T> type, Class<?> componentType) {
+	<T> T parseFromJson(Type type) {
 		try {
 			nextChar();
 			skipCommentsAndBlank();
-			return parseFromCurrentLocation(type, componentType);
+			return parseFromCurrentLocation(type);
 		}
 		catch (JsonException e) {
 			throw e;
 		}
 		catch (Exception e) {
 			throw makeError(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * @param <T>
-	 * @param type
-	 * @return
-	 * @throws Exception
-	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private <T> T parseFromCurrentLocation(Class<T> type, Class<?> componentType) throws Exception {
-		Mirror<T> me = Mirror.me(type);
-		switch (cursor) {
-		case -1:
-			return null;
-		case '[':
-			Class<?> compType = componentType;
-			boolean reurnAsList = true;
-			List list = null;
-			/*
-			 * The type must be null, T[] or subclass of List
-			 */
-			if (null == type) {
-				list = new LinkedList();
-			} else if (type.isArray()) {
-				list = new LinkedList();
-				reurnAsList = false;
-				compType = type.getComponentType();
-			} else if (List.class.isAssignableFrom(type)) {
-				reurnAsList = true;
-				if (me.is(List.class))
-					list = new LinkedList();
-				else
-					list = (List) me.born();
-			} else {
-				throw makeError(String.format(	"Unexpect type '%s', it should be an Array or List!!!",
-												type.getName()));
-			}
-			nextChar();
-			skipCommentsAndBlank();
-			while (cursor != -1 && cursor != ']') {
-				Object o = parseFromCurrentLocation(compType, null);
-				list.add(o);
-				skipCommentsAndBlank();
-				if (cursor == ']')
-					break;
-				if (cursor != ',')
-					throw makeError("Wrong char between elements!");
-				nextChar();
-				skipCommentsAndBlank();
-			}
-			nextChar();
-			if (reurnAsList)
-				return (T) list;
-			Object ary = Array.newInstance(compType, list.size());
-			int i = 0;
-			for (Iterator it = list.iterator(); it.hasNext();)
-				Array.set(ary, i++, Castors.me().castTo(it.next(), compType));
-			return (T) ary;
-		case '{':
-			// It must be Object or Map
-			nextChar();
-			skipCommentsAndBlank();
-			// If Map
-			if (Map.class == type)
-				me = (Mirror<T>) Mirror.me(TreeMap.class);
-			if (null == me || Map.class.isAssignableFrom(type)) {
-				Map<String, Object> map = null == me ? new TreeMap<String, Object>()
-													: (Map<String, Object>) me.born();
-				while (cursor != -1 && cursor != '}') {
-					String name = readFieldName();
-					Object value = parseFromJson(componentType, null);
-					map.put(name, value);
-					if (!findNextNamePair())
-						break;
-				}
-				nextChar();
-				return (T) map;
-			}
-			// If Object
-			T obj = me.born();
-			while (cursor != -1 && cursor != '}') {
-				Field f = null;
-				Class<?> ft = null;
-				Class<?> eleType = null;
-				try {
-					f = me.getField(readFieldName());
-					ft = f.getType();
-				}
-				catch (NoSuchFieldException e) {}
-
-				// Eval the eleType
-				if (null != ft) {
-					// List field
-					if (List.class.isAssignableFrom(ft)) {
-						Class<?>[] ts = Mirror.getGenericTypes(f);
-						if (ts.length > 0)
-							eleType = ts[0];
-					}
-					// Map Field
-					else if (Map.class.isAssignableFrom(ft)) {
-						Class<?>[] ts = Mirror.getGenericTypes(f);
-						if (ts.length > 1)
-							eleType = ts[1];
-					}
-				}
-
-				// Parsing Value...
-				Object value = parseFromJson(ft, eleType);
-
-				if (null != f)
-					me.setValue(obj, f, value);
-
-				if (!findNextNamePair())
-					break;
-			}
-			nextChar();
-			return obj;
-		case 'u':
-			// For undefined
-			if ('n' != (char) nextChar()
-				& 'd' != (char) nextChar()
-				& 'e' != (char) nextChar()
-				& 'f' != (char) nextChar()
-				& 'i' != (char) nextChar()
-				& 'n' != (char) nextChar()
-				& 'e' != (char) nextChar()
-				& 'd' != (char) nextChar())
-				throw makeError("String must in quote or it must be <undefined>");
-			nextChar();
-			return null;
-		case 'n':
-			// For NULL
-			if ('u' != (char) nextChar() & 'l' != (char) nextChar() & 'l' != (char) nextChar())
-				throw makeError("String must in quote or it must be <null>");
-			nextChar();
-			return null;
-		case '\'': // For String
-		case '"':
-			StringBuilder vs = readString();
-			String value = vs.toString();
-			if (null == me || me.is(String.class))
-				return (T) value;
-			return Castors.me().castTo(value, me.getType());
-		case 't': // true
-			if ('r' != (char) nextChar() | 'u' != (char) nextChar() | 'e' != (char) nextChar())
-				throw makeError("Expect boolean as input!");
-			if (null != type && !Mirror.me(type).isBoolean())
-				throw makeError("Expect boolean|Boolean as type!");
-			nextChar();
-			return (T) Boolean.valueOf(true);
-		case 'f': // false
-			if ('a' != (char) nextChar()
-				| 'l' != (char) nextChar()
-				| 's' != (char) nextChar()
-				| 'e' != (char) nextChar())
-				throw makeError("Expect boolean as input!");
-			if (null != type && !Mirror.me(type).isBoolean())
-				throw makeError("Expect boolean|Boolean as type!");
-			nextChar();
-			return (T) Boolean.valueOf(false);
-		case '.': // For number
-		case '-':
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-		case '6':
-		case '7':
-		case '8':
-		case '9':
-			StringBuilder sb = new StringBuilder();
-			do {
-				sb.append((char) cursor);
-				nextChar();
-			} while (cursor != ' '
-						&& cursor != -1
-						&& cursor != ','
-						&& cursor != ']'
-						&& cursor != '}'
-						&& cursor != '/');
-			String numValue = Strings.trim(sb);
-
-			// try actually return type
-			if (null != me) {
-				if (me.isInt()) {
-					return (T) Integer.valueOf(numValue);
-				} else if (me.isLong()) {
-					return (T) Long.valueOf(numValue);
-				} else if (me.isFloat()) {
-					return (T) Float.valueOf(numValue);
-				} else if (me.isDouble()) {
-					return (T) Double.valueOf(numValue);
-				} else if (me.isByte()) {
-					return (T) Byte.valueOf(numValue);
-				}
-			}
-			// guess the return type
-			if (null == me || me.isNumber() || me.is(Object.class)) {
-				char lastChar = Character.toUpperCase(numValue.charAt(numValue.length() - 1));
-				if (numValue.indexOf('.') >= 0) {
-					if (lastChar == 'F')
-						return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
-					else
-						return (T) Double.valueOf(numValue);
-				} else {
-					if (lastChar == 'L')
-						return (T) Long.valueOf(numValue.substring(0, numValue.length() - 1));
-					else
-						return (T) Integer.valueOf(numValue);
-				}
-			}
-			// Unknown case...
-			throw makeError("type must by one of int|long|float|dobule|byte");
-		case 'v':
-			/*
-			 * Meet the var ioc ={ maybe, try to find the '{' and break
-			 */
-			while (-1 != nextChar())
-				if ('{' == cursor)
-					return parseFromCurrentLocation(type, componentType);
-		default:
-			throw makeError("Don't know how to handle this char");
 		}
 	}
 
@@ -391,5 +169,250 @@ class JsonParsing {
 		nextChar();
 		return sb;
 	}
+	
+	
+	
+	/**
+	 * @param <T>
+	 * @param type
+	 * @return
+	 * @throws Exception
+	 */
+	private <T> T parseFromCurrentLocation(Type type) throws Exception {
+		Class<T> clazz = null; 
+		ParameterizedType pt = null;
+		if(type instanceof Class){
+			clazz = (Class<T>) type;
+		}
+		if(type instanceof ParameterizedType){
+			pt = (ParameterizedType) type;
+			clazz = (Class<T>) pt.getRawType();
+		}
+		Mirror<T> me = Mirror.me(clazz);
+		
+		switch (cursor) {
+		case -1:
+			return null;
+		case '[':
+			return parseArray(me, pt);
+		case '{':
+			return parseObj(me, pt);
+		case 'u':
+			return parseUndefined();
+		case 'n':
+			return parseNull();
+		case '\'': // For String
+		case '"':
+			return parseString(me);
+		case 't': // true
+			return parseTrue(me);
+		case 'f': // false
+			return parseFalse(me);
+		case '.': // For number
+		case '-':
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			return parseNumber(me);
+		case 'v':
+			/*
+			 * Meet the var ioc ={ maybe, try to find the '{' and break
+			 */
+			while (-1 != nextChar())
+				if ('{' == cursor)
+					return parseFromCurrentLocation(type);
+		default:
+			throw makeError("Don't know how to handle this char");
+		}
+	}
+	@SuppressWarnings("rawtypes")
+	private <T>T parseArray(Mirror<T> me, ParameterizedType type) throws Exception{
+		Type tt = null;
+		boolean reurnAsList = true;
+		List list = null;
+		/*
+		 * The type must be null, T[] or subclass of List
+		 */
+		if (null == me) {
+			list = new LinkedList();
+		} else if (me.getType().isArray()) {
+			list = new LinkedList();
+			reurnAsList = false;
+			tt = me.getType().getComponentType();
+			
+		} else if (List.class.isAssignableFrom(me.getType())) {
+			reurnAsList = true;
+			if (me.is(List.class))
+				list = new LinkedList();
+			else
+				list = (List) me.born();
+			tt =  type.getActualTypeArguments()[0];
+		} else {
+			throw makeError(String.format(	"Unexpect type '%s', it should be an Array or List!!!",
+											me.getType().getName()));
+		}
+		nextChar();
+		skipCommentsAndBlank();
+		while (cursor != -1 && cursor != ']') {
+			Object o = parseFromCurrentLocation(tt);
+			list.add(o);
+			skipCommentsAndBlank();
+			if (cursor == ']')
+				break;
+			if (cursor != ',')
+				throw makeError("Wrong char between elements!");
+			nextChar();
+			skipCommentsAndBlank();
+		}
+		nextChar();
+		if (reurnAsList)
+			return (T) list;
+		Object ary = Array.newInstance((Class<?>)tt, list.size());
+		int i = 0;
+		for (Iterator it = list.iterator(); it.hasNext();)
+			Array.set(ary, i++, Castors.me().castTo(it.next(), (Class<?>)tt));
+		return (T) ary;
+	}
+	private <T>T parseObj(Mirror<T> me, ParameterizedType type) throws IOException{
+		// It must be Object or Map
+		nextChar();
+		skipCommentsAndBlank();
+		// If Map
+		if (me != null && Map.class == me.getType())
+			me = (Mirror<T>) Mirror.me(TreeMap.class);
+		if (null == me || Map.class == me.getType() || Map.class.isAssignableFrom(me.getType())) {
+			Map<String, Object> map = null == me ? new TreeMap<String, Object>()
+												: (Map<String, Object>) me.born();
+			while (cursor != -1 && cursor != '}') {
+				String name = readFieldName();
+				Object value = parseFromJson(type == null ? null : type.getActualTypeArguments()[1]);
+				map.put(name, value);
+				if (!findNextNamePair())
+					break;
+			}
+			nextChar();
+			return (T) map;
+		}
+		// If Object
+		T obj = me.born();
+		while (cursor != -1 && cursor != '}') {
+			Field f = null;
+			Type ft = null;
+			try {
+				f = me.getField(readFieldName());
+				ft = f.getGenericType();
+			}
+			catch (NoSuchFieldException e) {}
+			Object val = parseFromJson(ft);
+			if(null != f){
+				me.setValue(obj, f, val);
+			}
+			if (!findNextNamePair())
+				break;
+		}
+		nextChar();
+		return obj;
+	}
+	private <T> T parseUndefined () throws IOException{
+		// For undefined
+		if ('n' != (char) nextChar()
+			& 'd' != (char) nextChar()
+			& 'e' != (char) nextChar()
+			& 'f' != (char) nextChar()
+			& 'i' != (char) nextChar()
+			& 'n' != (char) nextChar()
+			& 'e' != (char) nextChar()
+			& 'd' != (char) nextChar())
+			throw makeError("String must in quote or it must be <undefined>");
+		nextChar();
+		return null;
+	}
+	private <T> T parseNull() throws IOException{
+		// For NULL
+		if ('u' != (char) nextChar() & 'l' != (char) nextChar() & 'l' != (char) nextChar())
+			throw makeError("String must in quote or it must be <null>");
+		nextChar();
+		return null;
+	}
+	private <T> T parseString(Mirror<T> me) throws IOException{
+		StringBuilder vs = readString();
+		String value = vs.toString();
+		if (null == me || me.is(String.class))
+			return (T) value;
+		return Castors.me().castTo(value, me.getType());
+	}
+	
+	private <T> T parseTrue(Mirror<T> me) throws IOException{
+		if ('r' != (char) nextChar() | 'u' != (char) nextChar() | 'e' != (char) nextChar())
+			throw makeError("Expect boolean as input!");
+		if (null != me && !me.isBoolean())
+			throw makeError("Expect boolean|Boolean as type!");
+		nextChar();
+		return (T) Boolean.valueOf(true);
+	}
+	private <T> T parseFalse(Mirror<T> me) throws IOException{
+		if ('a' != (char) nextChar()
+				| 'l' != (char) nextChar()
+				| 's' != (char) nextChar()
+				| 'e' != (char) nextChar())
+				throw makeError("Expect boolean as input!");
+			if (null != me && !me.isBoolean())
+				throw makeError("Expect boolean|Boolean as type!");
+			nextChar();
+			return (T) Boolean.valueOf(false);
+	}
+	private<T> T parseNumber(Mirror<T> me) throws IOException{
+		StringBuilder sb = new StringBuilder();
+		do {
+			sb.append((char) cursor);
+			nextChar();
+		} while (cursor != ' '
+					&& cursor != -1
+					&& cursor != ','
+					&& cursor != ']'
+					&& cursor != '}'
+					&& cursor != '/');
+		String numValue = Strings.trim(sb);
+
+		// try actually return type
+		if (null != me) {
+			if (me.isInt()) {
+				return (T) Integer.valueOf(numValue);
+			} else if (me.isLong()) {
+				return (T) Long.valueOf(numValue);
+			} else if (me.isFloat()) {
+				return (T) Float.valueOf(numValue);
+			} else if (me.isDouble()) {
+				return (T) Double.valueOf(numValue);
+			} else if (me.isByte()) {
+				return (T) Byte.valueOf(numValue);
+			}
+		}
+		// guess the return type
+		if (null == me || me.isNumber() || me.is(Object.class)) {
+			char lastChar = Character.toUpperCase(numValue.charAt(numValue.length() - 1));
+			if (numValue.indexOf('.') >= 0) {
+				if (lastChar == 'F')
+					return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
+				else
+					return (T) Double.valueOf(numValue);
+			} else {
+				if (lastChar == 'L')
+					return (T) Long.valueOf(numValue.substring(0, numValue.length() - 1));
+				else
+					return (T) Integer.valueOf(numValue);
+			}
+		}
+		// Unknown case...
+		throw makeError("type must by one of int|long|float|dobule|byte");
+	}
+
 
 }

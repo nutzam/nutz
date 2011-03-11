@@ -3,6 +3,8 @@ package org.nutz.mvc.adaptor;
 import java.lang.annotation.Annotation;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
@@ -34,6 +36,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		Class<?>[] argTypes = method.getParameterTypes();
 		injs = new ParamInjector[argTypes.length];
 		Annotation[][] annss = method.getParameterAnnotations();
+		Type[] types = method.getGenericParameterTypes();
 		for (int i = 0; i < annss.length; i++) {
 			Annotation[] anns = annss[i];
 			Param param = null;
@@ -69,7 +72,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 			if (null != injs[i])
 				continue;
 			// Eval by sub-classes
-			injs[i] = evalInjector(argTypes[i], param);
+			injs[i] = evalInjector(types[i], param);
 			// 子类也不能确定，如何适配这个参数，那么做一个标记，如果
 			// 这个参数被 ParamInjector 适配到，就会抛错。
 			// 这个设计是因为了 "路径参数"
@@ -77,6 +80,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				injs[i] = new ErrorInjector(method, i);
 		}
 	}
+
+
 
 	private static ParamInjector evalInjectorByAttrScope(Attr attr) {
 		if (attr.scope() == Scope.APP)
@@ -112,6 +117,16 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		return null;
 	}
 
+	protected ParamInjector evalInjector(Type type, Param param) {
+		Class<?> clazz;
+		if(type instanceof ParameterizedType){
+			ParameterizedType pt = (ParameterizedType) type;
+			clazz = (Class<?>) pt.getRawType();
+		} else {
+			clazz = (Class<?>) type;
+		}
+		return evalInjector(clazz, param);
+	}
 	protected abstract ParamInjector evalInjector(Class<?> type, Param param);
 
 	public Object[] adapt(	ServletContext sc,
