@@ -29,6 +29,7 @@ public class UrlMappingImpl implements UrlMapping {
 		for (String path : ai.getPaths()) {
 			if (Strings.isBlank(path))
 				throw new BlankAtException(ai.getModuleType(), ai.getMethod());
+			//将 action 链头,做为一个处理器映射到path上
 			root.add(path, chain);
 			/*
 			 * 打印基本调试信息

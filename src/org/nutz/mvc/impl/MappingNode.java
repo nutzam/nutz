@@ -88,6 +88,9 @@ public class MappingNode<T> {
 		return null;
 	}
 
+	/**
+	 * 增加一个映射,将 obj 映射到 path 上,或 path 上的[?,*] 
+	 */
 	public void add(String path, T obj) {
 		try {
 			add(Lang.list(Strings.splitIgnoreBlank(path, "/")).iterator(), obj);

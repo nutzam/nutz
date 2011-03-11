@@ -1,8 +1,12 @@
 package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.lang.Lang;
@@ -10,6 +14,8 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.Segments;
 import org.nutz.lang.util.Context;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor;
@@ -22,9 +28,12 @@ import org.nutz.mvc.annotation.Chain;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
+import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.resource.Scans;
 
 public abstract class Loadings {
+	private static final Log log = Logs.getLog(Loadings.class);
 
 	static ActionInfo createInfo(Class<?> type) {
 		ActionInfo ai = new ActionInfo();
@@ -38,6 +47,7 @@ public abstract class Loadings {
 		evalModule(ai, type);
 		return ai;
 	}
+	
 
 	static ActionInfo createInfo(Method method) {
 		ActionInfo ai = new ActionInfo();
@@ -50,6 +60,50 @@ public abstract class Loadings {
 		evalActionChainMaker(ai, method.getAnnotation(Chain.class));
 		ai.setMethod(method);
 		return ai;
+	}
+	
+	static Set<Class<?>> scanModules(Class<?> mainModule) {
+		Modules ann = mainModule.getAnnotation(Modules.class);
+		boolean scan = null == ann ? false : ann.scanPackage();
+		// 准备扫描列表
+		List<Class<?>> list = new LinkedList<Class<?>>();
+		list.add(mainModule);
+		if (null != ann) {
+			for (Class<?> module : ann.value()) {
+				list.add(module);
+			}
+		}
+		// 执行扫描
+		Set<Class<?>> modules = new HashSet<Class<?>>();
+		for (Class<?> type : list) {
+			// 扫描子包
+			if (scan) {
+				if (log.isDebugEnabled())
+					log.debugf(" > scan '%s'", type.getPackage().getName());
+
+				List<Class<?>> subs = Scans.me().scanPackage(type);
+				for (Class<?> sub : subs) {
+					if (isModule(sub)) {
+						if (log.isDebugEnabled())
+							log.debugf("   >> add '%s'", sub.getName());
+						modules.add(sub);
+					} else if (log.isTraceEnabled()) {
+						log.tracef("   >> ignore '%s'", sub.getName());
+					}
+				}
+			}
+			// 仅仅加载自己
+			else {
+				if (isModule(type)) {
+					if (log.isDebugEnabled())
+						log.debugf(" > add '%s'", type.getName());
+					modules.add(type);
+				} else if (log.isTraceEnabled()) {
+					log.tracef(" > ignore '%s'", type.getName());
+				}
+			}
+		}
+		return modules;
 	}
 
 	private static void evalActionChainMaker(ActionInfo ai, Chain cb) {
@@ -133,5 +187,19 @@ public abstract class Loadings {
 		}
 		return Mirror.me(type).born((Object[]) args);
 	}
+	
+
+	private static boolean isModule(Class<?> classZ) {
+		int classModify = classZ.getModifiers();
+		if (!Modifier.isPublic(classModify)
+			|| Modifier.isAbstract(classModify)
+			|| Modifier.isInterface(classModify))
+			return false;
+		for (Method method : classZ.getMethods())
+			if (method.isAnnotationPresent(At.class))
+				return true;
+		return false;
+	}
+
 
 }

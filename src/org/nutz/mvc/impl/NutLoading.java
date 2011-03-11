@@ -3,9 +3,6 @@ package org.nutz.mvc.impl;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -35,13 +32,11 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
-import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.view.DefaultViewMaker;
-import org.nutz.resource.Scans;
 
 public class NutLoading implements Loading {
 
@@ -89,50 +84,9 @@ public class NutLoading implements Loading {
 			createIoc(config, mainModule);
 
 			/*
-			 * 准备 UrlMapping
+			 * 组装UrlMapping
 			 */
-			mapping = createUrlMapping(config);
-			if (log.isInfoEnabled())
-				log.infof("Build URL mapping by %s ...", mapping);
-
-			/*
-			 * 创建视图工厂
-			 */
-			ViewMaker[] makers = createViewMakers(mainModule);
-
-			/*
-			 * 创建动作链工厂
-			 */
-			ActionChainMaker maker = createChainMaker(config, mainModule);
-
-			/*
-			 * 创建主模块的配置信息
-			 */
-			ActionInfo mainInfo = Loadings.createInfo(mainModule);
-
-			/*
-			 * 准备要加载的模块列表
-			 */
-			Set<Class<?>> modules = scanModules(mainModule);
-
-			/*
-			 * 分析所有的子模块
-			 */
-			for (Class<?> module : modules) {
-				ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
-				for (Method method : module.getMethods()) {
-					/*
-					 * public 并且声明了 @At 的函数，才是入口函数
-					 */
-					if (!Modifier.isPublic(method.getModifiers())
-						|| !method.isAnnotationPresent(At.class))
-						continue;
-					// 增加到映射中
-					ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
-					info.setViewMakers(makers);
-					mapping.add(maker, info, config);
-				}
-			}
+			mapping = evalUrlMapping(config, mainModule);
 
 			/*
 			 * 分析本地化字符串
@@ -158,6 +112,62 @@ public class NutLoading implements Loading {
 		return mapping;
 
 	}
+	
+
+	private UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule) throws Exception{
+		/*
+		 * @ TODO 个人建议可以将这个方法所涉及的内容转换到Loadings类或相应的组装类中,
+		 * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
+		 */
+		
+		UrlMapping mapping;
+		/*
+		 * 准备 UrlMapping
+		 */
+		mapping = createUrlMapping(config);
+		if (log.isInfoEnabled())
+			log.infof("Build URL mapping by %s ...", mapping);
+
+		/*
+		 * 创建视图工厂
+		 */
+		ViewMaker[] makers = createViewMakers(mainModule);
+
+		/*
+		 * 创建动作链工厂
+		 */
+		ActionChainMaker maker = createChainMaker(config, mainModule);
+
+		/*
+		 * 创建主模块的配置信息
+		 */
+		ActionInfo mainInfo = Loadings.createInfo(mainModule);
+
+		/*
+		 * 准备要加载的模块列表
+		 */
+		Set<Class<?>> modules = Loadings.scanModules(mainModule);
+
+		/*
+		 * 分析所有的子模块
+		 */
+		for (Class<?> module : modules) {
+			ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
+			for (Method method : module.getMethods()) {
+				/*
+				 * public 并且声明了 @At 的函数，才是入口函数
+				 */
+				if (!Modifier.isPublic(method.getModifiers())
+					|| !method.isAnnotationPresent(At.class))
+					continue;
+				// 增加到映射中
+				ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
+				info.setViewMakers(makers);
+				mapping.add(maker, info, config);
+			}
+		}
+		return mapping;
+	}
 
 	private static void createContext(NutConfig config) {
 		// 构建一个上下文对象，方便子类获取更多的环境信息
@@ -181,6 +191,7 @@ public class NutLoading implements Loading {
 		}
 		config.getServletContext().setAttribute(Loading.CONTEXT_NAME, context);
 	}
+	
 
 	private UrlMapping createUrlMapping(NutConfig config) throws Exception {
 		UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
@@ -227,49 +238,6 @@ public class NutLoading implements Loading {
 		}
 	}
 
-	private Set<Class<?>> scanModules(Class<?> mainModule) {
-		Modules ann = mainModule.getAnnotation(Modules.class);
-		boolean scan = null == ann ? false : ann.scanPackage();
-		// 准备扫描列表
-		List<Class<?>> list = new LinkedList<Class<?>>();
-		list.add(mainModule);
-		if (null != ann) {
-			for (Class<?> module : ann.value()) {
-				list.add(module);
-			}
-		}
-		// 执行扫描
-		Set<Class<?>> modules = new HashSet<Class<?>>();
-		for (Class<?> type : list) {
-			// 扫描子包
-			if (scan) {
-				if (log.isDebugEnabled())
-					log.debugf(" > scan '%s'", type.getPackage().getName());
-
-				List<Class<?>> subs = Scans.me().scanPackage(type);
-				for (Class<?> sub : subs) {
-					if (isModule(sub)) {
-						if (log.isDebugEnabled())
-							log.debugf("   >> add '%s'", sub.getName());
-						modules.add(sub);
-					} else if (log.isTraceEnabled()) {
-						log.tracef("   >> ignore '%s'", sub.getName());
-					}
-				}
-			}
-			// 仅仅加载自己
-			else {
-				if (isModule(type)) {
-					if (log.isDebugEnabled())
-						log.debugf(" > add '%s'", type.getName());
-					modules.add(type);
-				} else if (log.isTraceEnabled()) {
-					log.tracef(" > ignore '%s'", type.getName());
-				}
-			}
-		}
-		return modules;
-	}
 
 	private ViewMaker[] createViewMakers(Class<?> mainModule) throws Exception {
 		Views vms = mainModule.getAnnotation(Views.class);
@@ -314,17 +282,6 @@ public class NutLoading implements Loading {
 			log.debug("!!!Your application without @IocBy supporting");
 	}
 
-	private static boolean isModule(Class<?> classZ) {
-		int classModify = classZ.getModifiers();
-		if (!Modifier.isPublic(classModify)
-			|| Modifier.isAbstract(classModify)
-			|| Modifier.isInterface(classModify))
-			return false;
-		for (Method method : classZ.getMethods())
-			if (method.isAnnotationPresent(At.class))
-				return true;
-		return false;
-	}
 
 	public void depose(NutConfig config) {
 		if (log.isInfoEnabled())

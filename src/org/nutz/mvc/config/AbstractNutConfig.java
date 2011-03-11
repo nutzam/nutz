@@ -27,10 +27,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 		 * 确保用户声明了 MainModule
 		 */
 		Class<?> mainModule = getMainModule();
-		if (null == mainModule) {
-			throw new NutConfigException("You need declare modules parameter in your context configuration file!");
-		} else if (log.isDebugEnabled())
-			log.debugf("MainModule: <%s>", mainModule.getName());
+		
 		/*
 		 * 获取 Loading
 		 */
@@ -96,10 +93,16 @@ public abstract class AbstractNutConfig implements NutConfig {
 
 	public Class<?> getMainModule() {
 		String name = Strings.trim(getInitParameter("modules"));
-		if (Strings.isBlank(name))
-			return null;
 		try {
-			return Lang.loadClass(name);
+			Class<?> mainModule = null;
+			if (!Strings.isBlank(name))
+				mainModule = Lang.loadClass(name);
+			
+			if (null == mainModule) {
+				throw new NutConfigException("You need declare modules parameter in your context configuration file!");
+			} else if (log.isDebugEnabled())
+				log.debugf("MainModule: <%s>", mainModule.getName());
+			return mainModule;
 		}
 		catch (Exception e) {
 			throw new NutConfigException(e);
