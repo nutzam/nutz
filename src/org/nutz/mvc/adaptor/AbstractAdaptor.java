@@ -127,7 +127,13 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		}
 		return evalInjector(clazz, param);
 	}
-	protected abstract ParamInjector evalInjector(Class<?> type, Param param);
+	
+	/**
+	 * 子类应该覆盖这个方法或者evalInjector(Type,Param)方法.
+	 */
+	protected ParamInjector evalInjector(Class<?> type, Param param) {
+		return null;
+	}
 
 	public Object[] adapt(	ServletContext sc,
 							HttpServletRequest req,
