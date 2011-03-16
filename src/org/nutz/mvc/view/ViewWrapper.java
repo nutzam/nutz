@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.mvc.View;
+import org.nutz.mvc.impl.processor.ViewProcessor;
 
 /**
  * 组合一个视图以及其渲染对象
@@ -23,6 +24,8 @@ public class ViewWrapper implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Throwable {
+		if (null != data)
+			req.setAttribute(ViewProcessor.DEFAULT_ATTRIBUTE, data);
 		view.render(req, resp, data);
 	}
 
