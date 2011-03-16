@@ -75,11 +75,11 @@ public class CharSegment implements Segment, Cloneable {
 
 	public List<Object> values() {
 		List<Object> re = new ArrayList<Object>(nodes.size());
-		for (Node node : nodes) {
-			if (node.isKey)
-				re.add(context.get(node.value));
+		for (SegmentNode node : nodes) {
+			if (node.isKey())
+				re.add(context.get(node.getValue()));
 			else
-				re.add(node.value);
+				re.add(node.getValue());
 		}
 		return re;
 	}
@@ -131,43 +131,18 @@ public class CharSegment implements Segment, Cloneable {
 		return this;
 	}
 
-	static class Node implements Cloneable {
-
-		boolean isKey;
-
-		String value;
-
-		static Node key(String val) {
-			Node node = new Node();
-			node.isKey = true;
-			node.value = val;
-			return node;
-		}
-
-		static Node val(String val) {
-			Node node = new Node();
-			node.isKey = false;
-			node.value = val;
-			return node;
-		}
-
-		public Node clone() throws CloneNotSupportedException {
-			Node node = new Node();
-			node.isKey = this.isKey;
-			node.value = this.value;
-			return node;
-		}
-
+	public List<SegmentNode> getNodes(){
+		return nodes;
 	}
 
 	private Context context;
 
-	private List<Node> nodes;
+	private List<SegmentNode> nodes;
 
 	private NutMap keys;
 
 	public void parse(Reader reader) {
-		nodes = new LinkedList<Node>();
+		nodes = new LinkedList<SegmentNode>();
 		context = Lang.context();
 		keys = new NutMap();
 		StringBuilder org = new StringBuilder();
@@ -188,7 +163,7 @@ public class CharSegment implements Segment, Cloneable {
 					else if (b == '{') {
 						// Save before
 						if (sb.length() > 0) {
-							nodes.add(Node.val(sb.toString()));
+							nodes.add(SegmentNode.val(sb.toString()));
 							sb = new StringBuilder();
 						}
 						// Search the end
@@ -202,7 +177,7 @@ public class CharSegment implements Segment, Cloneable {
 							throw Lang.makeThrow("Error format around '%s'", sb);
 						// Create Key
 						String key = sb.toString();
-						nodes.add(Node.key(key));
+						nodes.add(SegmentNode.key(key));
 						keys.put(key, null);
 						sb = new StringBuilder();
 					}
@@ -216,7 +191,7 @@ public class CharSegment implements Segment, Cloneable {
 				}
 			}
 			if (sb.length() > 0)
-				nodes.add(Node.val(sb.toString()));
+				nodes.add(SegmentNode.val(sb.toString()));
 			// Store the Oraginal Value
 			orgString = org.toString();
 		}
@@ -236,8 +211,8 @@ public class CharSegment implements Segment, Cloneable {
 
 	public CharSequence render(Context context) {
 		StringBuilder sb = new StringBuilder();
-		for (Node node : nodes) {
-			Object val = node.isKey ? context.get(node.value) : node.value;
+		for (SegmentNode node : nodes) {
+			Object val = node.isKey() ? context.get(node.getValue()) : node.getValue();
 			if (null == val)
 				continue;
 			if (val instanceof Collection<?>) {

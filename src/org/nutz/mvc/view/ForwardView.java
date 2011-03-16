@@ -39,8 +39,10 @@ public class ForwardView implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
+		DynamicViewPath dvp = new DynamicViewPath(req, obj);
+		String thePath = dvp.parsePath(path);
 		// Check path
-		String thePath = path;
+//		String thePath = path;
 		if (Strings.isBlank(thePath)) {
 			thePath = Mvcs.getRequestPath(req);
 			thePath = "/WEB-INF/" + Files.renameSuffix(thePath, getExt());

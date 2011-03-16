@@ -2,7 +2,6 @@ package org.nutz.mvc.impl.processor;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
-import org.nutz.lang.segment.Segments;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
@@ -38,7 +37,7 @@ public class ViewProcessor extends AbstractProcessor {
 		if (Strings.isBlank(viewType))
 			return new VoidView();
 
-		String str = Segments.replace(viewType, config.getLoadingContext());
+		String str = viewType;
 		int pos = str.indexOf(':');
 		String type, value;
 		if (pos > 0) {

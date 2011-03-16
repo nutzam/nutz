@@ -39,7 +39,7 @@ public interface Segment {
 	Set<String> keys();
 
 	List<Object> values();
-
+	
 	Segment valueOf(String str);
 
 	void parse(Reader reader);
@@ -54,4 +54,5 @@ public interface Segment {
 
 	String getOrginalString();
 
+	List<SegmentNode> getNodes();
 }

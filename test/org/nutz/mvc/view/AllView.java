@@ -5,7 +5,7 @@ import org.junit.runners.Suite;
 import org.nutz.mvc.view.redirect.ServerRedirectViewTest;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses(ServerRedirectViewTest.class)
+@Suite.SuiteClasses({ServerRedirectViewTest.class, DynamicViewPathTest.class})
 public class AllView {
 
 }
