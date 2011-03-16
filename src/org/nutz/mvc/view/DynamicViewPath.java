@@ -8,7 +8,6 @@ import org.nutz.el.El;
 import org.nutz.el.ElValue;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
-import org.nutz.lang.segment.SegmentNode;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.SimpleContext;
@@ -48,15 +47,10 @@ public class DynamicViewPath {
 		return parsePath(seg);
 	}
 	public String parsePath(Segment seg){
-		StringBuilder sb = new StringBuilder();
-		for(SegmentNode note : seg.getNodes()){
-			if(note.isKey()){
-				sb.append(parseEl(note.getValue()));
-			} else {
-				sb.append(note.getValue());
-			}
+		for(String key : seg.keys()){
+			seg.set(key, parseEl(key));
 		}
-		return sb.toString();
+		return seg.toString();
 	}
 //	public String parsePath(String path){
 //		int index = path.indexOf("${");
