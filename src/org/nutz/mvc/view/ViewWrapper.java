@@ -24,8 +24,7 @@ public class ViewWrapper implements View {
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Throwable {
-		if (null != data)
-			req.setAttribute(ViewProcessor.DEFAULT_ATTRIBUTE, data);
+		ViewProcessor.putRequestAttribute(req, data);
 		view.render(req, resp, data);
 	}
 

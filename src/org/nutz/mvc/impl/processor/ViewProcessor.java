@@ -1,7 +1,10 @@
 package org.nutz.mvc.impl.processor;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
@@ -25,11 +28,26 @@ public class ViewProcessor extends AbstractProcessor {
 		if (re != null && re instanceof View) {
 			((View) re).render(ac.getRequest(), ac.getResponse(), err);
 		} else {
-			if (null != re)
-				ac.getRequest().setAttribute(ViewProcessor.DEFAULT_ATTRIBUTE, re);
+			putRequestAttribute(ac.getRequest(), re);
 			view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
 		}
 		doNext(ac);
+	}
+	
+	/**
+	 * 保存对象到attribute
+	 */
+	public static void putRequestAttribute(HttpServletRequest req, Object re){
+		if (null != re){
+			if(re instanceof Context){
+				Context context = (Context) re;
+				for(String key : context.keys()){
+					req.setAttribute(key, context.get(key));
+				}
+			} else {
+				req.setAttribute(ViewProcessor.DEFAULT_ATTRIBUTE, re);
+			}
+		}
 	}
 
 	protected static View evalView(NutConfig config, ActionInfo ai, String viewType) {
