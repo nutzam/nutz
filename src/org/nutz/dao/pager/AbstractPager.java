@@ -69,10 +69,12 @@ public abstract class AbstractPager implements Pager {
 	}
 
 	public boolean isFirst() {
-		return pageNumber == 1;
+		return pageNumber == FIRST_PAGE_NUMBER;
 	}
 
 	public boolean isLast() {
+		if (pageCount == 0)
+			return true;
 		return pageNumber == pageCount;
 	}
 
