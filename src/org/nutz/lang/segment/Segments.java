@@ -53,9 +53,12 @@ public class Segments {
 	public static String replace(Segment seg, Context context) {
 		if (null == seg)
 			return null;
-		if (null == context)
-			return seg.render().toString();
-		
+
+		// 增加缺失的占位符号
+		for (String key : seg.keys())
+			if (!context.has(key))
+				context.set(key, "${" + key + "}");
+
 		return seg.render(context).toString();
 	}
 
