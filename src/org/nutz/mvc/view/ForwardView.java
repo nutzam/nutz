@@ -8,10 +8,10 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.View;
 
 /**
- * 内部重定向视图<p/>
+ * 内部重定向视图
+ * <p/>
  * 根据传入的视图名，决定视图的路径：
  * <ul>
  * <li>如果视图名以 '/' 开头， 则被认为是一个 全路径
@@ -28,28 +28,24 @@ import org.nutz.mvc.View;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class ForwardView implements View {
-	
-	protected String path;
+public class ForwardView extends ServerRedirectView {
 
-	public ForwardView(String name) {
-		if (!Strings.isBlank(name))
-			path = normalizePath(name, getExt());
+	public ForwardView(String dest) {
+		super(dest);
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
-		DynamicViewPath dvp = new DynamicViewPath(req, obj);
-		String thePath = dvp.parsePath(path);
+		String path = evalPath(req, obj);
 		// Check path
-//		String thePath = path;
-		if (Strings.isBlank(thePath)) {
-			thePath = Mvcs.getRequestPath(req);
-			thePath = "/WEB-INF/" + Files.renameSuffix(thePath, getExt());
+		// String thePath = path;
+		if (Strings.isBlank(path)) {
+			path = Mvcs.getRequestPath(req);
+			path = "/WEB-INF/" + Files.renameSuffix(path, getExt());
 		}
-		RequestDispatcher rd = req.getRequestDispatcher(thePath);
+		RequestDispatcher rd = req.getRequestDispatcher(path);
 		if (rd == null)
-			throw Lang.makeThrow("Fail to find Forward '%s'", thePath);
+			throw Lang.makeThrow("Fail to find Forward '%s'", path);
 		// Do rendering
 		rd.forward(req, resp);
 	}
