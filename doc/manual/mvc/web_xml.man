@@ -5,19 +5,19 @@
 在 web.xml 中，一个比较典型的例子：
 
 	{{{<xml>
-		<filter>
-			<filter-name>nutz</filter-name>
-			<filter-class>org.nutz.mvc.NutFilter</filter-class>
-			<init-param>
-				<param-name>modules</param-name>
-				<param-value>com.mine.app.MainModule</param-value>
-			</init-param>
-		</filter>
+    <filter>
+        <filter-name>nutz</filter-name>
+        <filter-class>org.nutz.mvc.NutFilter</filter-class>
+        <init-param>
+            <param-name>modules</param-name>
+            <param-value>com.mine.app.MainModule</param-value>
+        </init-param>
+    </filter>
 
-		<filter-mapping>
-			<filter-name>nutz</filter-name>
-			<url-pattern>/*</url-pattern>
-		</filter-mapping>
+    <filter-mapping>
+        <filter-name>nutz</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 	}}}
 
  	* 如果你没有声明 '{*modules}' 参数，这个过滤器将不会映射 URL，但是它并不会抛异常
@@ -55,31 +55,31 @@
 
 比较传统的方式
 	{{{<xml>
-		<filter>
-			<filter-name>msgs</filter-name>
-			<filter-class>org.nutz.mvc.NutFilter</filter-class>
-			<init-param>
-				<param-name>skip-mode</param-name>
-				<param-value>true</param-value>
-			</init-param>
-        </filter>
-		<filter-mapping>
-			<filter-name>msgs</filter-name>
-			<url-pattern>*.jsp</url-pattern>
-        </filter-mapping>
+	<filter>
+	    <filter-name>msgs</filter-name>
+	    <filter-class>org.nutz.mvc.NutFilter</filter-class>
+	    <init-param>
+	        <param-name>skip-mode</param-name>
+	        <param-value>true</param-value>
+	    </init-param>
+    </filter>
+	<filter-mapping>
+	    <filter-name>msgs</filter-name>
+	    <url-pattern>*.jsp</url-pattern>
+    </filter-mapping>
         
-        <servlet>
-			<servlet-name>nutz</servlet-name>
-			<servlet-class>org.nutz.mvc.NutServlet</servlet-class>
-				<init-param>
-					<param-name>modules</param-name>
-					<param-value>your.package.MainModule</param-value>
-                </init-param>
-                <load-on-startup>1</load-on-startup>
+    <servlet>
+	    <servlet-name>nutz</servlet-name>
+	        <servlet-class>org.nutz.mvc.NutServlet</servlet-class>
+	        <init-param>
+		        <param-name>modules</param-name>
+		        <param-value>your.package.MainModule</param-value>
+            </init-param>
+            <load-on-startup>1</load-on-startup>
         </servlet>
 		<servlet-mapping>
-			<servlet-name>nutz</servlet-name>
-			<url-pattern>*.nut</url-pattern>
+		    <servlet-name>nutz</servlet-name>
+		    <url-pattern>*.nut</url-pattern>
         </servlet-mapping>
 	}}}
 	

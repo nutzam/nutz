@@ -53,6 +53,7 @@
 		<doc path="web_xml.man"/>
 		<doc path="modules.man"/>
 		<doc path="url_mapping.man"/>
+		<doc path="action_chain.man"/>
 		<doc path="http_adaptor.man"/>
 		<doc path="view.man"/>
 		<doc path="with_ioc.man"/>
