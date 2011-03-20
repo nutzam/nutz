@@ -40,8 +40,7 @@ public class ServerRedirectView implements View {
 		this.exps = new HashMap<String, ElObj>();
 		// 预先将每个占位符解析成表达式
 		for (String key : this.dest.keys()) {
-			ElObj exp = El.compile(key);
-			this.exps.put(key, exp);
+			this.exps.put(key, El.compile(key));
 		}
 	}
 
@@ -79,7 +78,6 @@ public class ServerRedirectView implements View {
 		}
 
 		// 生成解析后的路径
-		String path = this.dest.render(context).toString();
-		return path;
+		return this.dest.render(context).toString();
 	}
 }
