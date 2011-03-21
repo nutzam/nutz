@@ -18,19 +18,19 @@ import org.nutz.lang.util.SimpleContext;
  */
 public class ActionContext extends SimpleContext {
 
-	private static final String PATH = "path";
-	private static final String PATH_ARGS = "pathArgs";
+	private static final String PATH = "nutz.mvc.path";
+	private static final String PATH_ARGS = "nutz.mvc.pathArgs";
 
 	private static final String REQUEST = HttpServletRequest.class.getName();
 	private static final String RESPONSE = HttpServletResponse.class.getName();
 	private static final String SERVLET_CONTEXT = ServletContext.class.getName();
 
-	private static final String MODULE = "module";
-	private static final String METHOD = "method";
-	private static final String METHOD_ARGS = "method.args";
-	private static final String METHOD_RETURN = "method.return";
+	private static final String MODULE = "nutz.mvc.module";
+	private static final String METHOD = "nutz.mvc.method";
+	private static final String METHOD_ARGS = "nutz.mvc.method.args";
+	private static final String METHOD_RETURN = "nutz.mvc.method.return";
 	
-	private static final String ERROR = "error";
+	private static final String ERROR = "nutz.mvc.error";
 
 	/**
 	 * 获取全局的Ioc对象

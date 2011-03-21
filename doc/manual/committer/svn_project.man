@@ -49,7 +49,7 @@ Check out
 
 	Nutz 不是不依赖其他 jar 吗? 是的，但是在编译时它依赖 Log4j。
 	
-	在运行时如果 Log4j 的 jar 不存在，它会采用 java.util.logging 详情请参看 [../lang/log.man Nutz 的日志模块]
+	在运行时如果 Log4j 的 jar 不存在，它会采用System.out/err 详情请参看 [../lang/log.man Nutz 的日志模块]
 	
 	Nutz.Dao 的测试时在
 	
