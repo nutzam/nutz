@@ -1,21 +1,7 @@
 package org.nutz.mvc.view;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.nutz.el.El;
-import org.nutz.el.ElObj;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
-import org.nutz.lang.segment.CharSegment;
-import org.nutz.lang.segment.Segment;
-import org.nutz.lang.util.Context;
-import org.nutz.mvc.Mvcs;
-import org.nutz.mvc.View;
 
 /**
  * 重定向视图
@@ -29,19 +15,10 @@ import org.nutz.mvc.View;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class ServerRedirectView implements View {
-
-	private Segment dest;
-
-	private Map<String, ElObj> exps;
+public class ServerRedirectView extends AbstractPathView {
 
 	public ServerRedirectView(String dest) {
-		this.dest = new CharSegment(Strings.trim(dest));
-		this.exps = new HashMap<String, ElObj>();
-		// 预先将每个占位符解析成表达式
-		for (String key : this.dest.keys()) {
-			this.exps.put(key, El.compile(key));
-		}
+		super(dest);
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
@@ -68,16 +45,4 @@ public class ServerRedirectView implements View {
 		resp.flushBuffer();
 	}
 
-	protected String evalPath(HttpServletRequest req, Object obj) {
-		Context context = Lang.context();
-
-		// 解析每个表达式
-		Context expContext = Mvcs.createContext(req, obj);
-		for (Entry<String, ElObj> en : exps.entrySet()) {
-			context.set(en.getKey(), en.getValue().eval(expContext).getString());
-		}
-
-		// 生成解析后的路径
-		return this.dest.render(context).toString();
-	}
 }

@@ -28,7 +28,7 @@ import org.nutz.mvc.Mvcs;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class ForwardView extends ServerRedirectView {
+public class ForwardView extends AbstractPathView {
 
 	public ForwardView(String dest) {
 		super(dest);

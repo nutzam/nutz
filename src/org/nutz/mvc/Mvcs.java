@@ -1,7 +1,6 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,12 +13,9 @@ import javax.servlet.http.HttpSession;
 import org.nutz.ioc.Ioc;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.Context;
 import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.config.AtMap;
-import org.nutz.mvc.impl.processor.ViewProcessor;
 import org.nutz.mvc.ioc.SessionIocContext;
 
 /**
@@ -310,38 +306,4 @@ public abstract class Mvcs {
 		resp.flushBuffer();
 	}
 
-	/**
-	 * 为一次 HTTP 请求，创建一个可以被表达式引擎接受的上下文对象
-	 * 
-	 * @param req
-	 *            HTTP 请求对象
-	 * @param obj
-	 *            入口函数的返回值
-	 * @return 上下文对象
-	 */
-	@SuppressWarnings("unchecked")
-	public static Context createContext(HttpServletRequest req, Object obj) {
-		Context context = Lang.context();
-		// 复制全局的上下文对象
-		Object servletContext = req.getSession()
-									.getServletContext()
-									.getAttribute(Loading.CONTEXT_NAME);
-		if (servletContext != null) {
-			context.putAll((Context) servletContext);
-		}
-		// 请求的参数表
-		for (Object o : req.getParameterMap().keySet()) {
-			String key = (String) o;
-			context.set(key, req.getParameter(key));
-		}
-		// 请求对象的属性列表
-		for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
-			String tem = en.nextElement();
-			context.set(tem, req.getAttribute(tem));
-		}
-		// 加入返回对象
-		if (null != obj)
-			context.set(ViewProcessor.DEFAULT_ATTRIBUTE, obj);
-		return context;
-	}
 }

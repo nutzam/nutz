@@ -10,6 +10,7 @@ import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.view.ViewWrapper;
 import org.nutz.mvc.view.VoidView;
 
 public class ViewProcessor extends AbstractProcessor {
@@ -26,6 +27,8 @@ public class ViewProcessor extends AbstractProcessor {
 		Object re = ac.getMethodReturn();
 		Object err = ac.getError();
 		if (re != null && re instanceof View) {
+			if (re instanceof ViewWrapper)
+				putRequestAttribute(ac.getRequest(), ((ViewWrapper)re).getData());
 			((View) re).render(ac.getRequest(), ac.getResponse(), err);
 		} else {
 			putRequestAttribute(ac.getRequest(), re);
