@@ -87,6 +87,23 @@ public class WebResourceScan extends AbstractResourceScan {
 			} catch (Throwable e) {
 			}
 		}
+		// 还是空? 查一下classpath变量吧, Fix Issue 411
+		if (flag) {
+			String classpath = System.getProperties().getProperty(
+					"java.class.path");
+			if (log.isInfoEnabled())
+				log.info("Try to search in classpath : " + classpath);
+			String[] paths = classpath.split(System.getProperties()
+					.getProperty("path.separator"));
+			for (String pathZ : paths) {
+				if (pathZ.endsWith(".jar"))
+					list.addAll(scanInJar(checkSrc(src), regex, pathZ));
+				else
+					list.addAll(scanInDir(regex, pathZ, new File(pathZ + "/"
+							+ src),true));
+			}
+			flag = list.isEmpty();
+		}
 		if (flag && log.isInfoEnabled())
 			log.infof("Fail to found '%s' in /WEB-INF/classes of context [%s]",
 					src, sc.getServletContextName());
