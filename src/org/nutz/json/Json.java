@@ -43,12 +43,37 @@ public class Json {
 	 * @return 特定类型的 JAVA 对象
 	 * @throws JsonException
 	 */
+	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(type);
+		return (T) new JsonParsing(reader).parseFromJson(type);
 	}
-	
+
+	/**
+	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
+	 * 
+	 * @param type
+	 *            对象类型，可以是范型
+	 * @param reader
+	 *            文本输入流
+	 * @return 特定类型的 JAVA 对象
+	 * @throws JsonException
+	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
 		return new JsonParsing(reader).parseFromJson(type);
+	}
+
+	/**
+	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
+	 * 
+	 * @param type
+	 *            对象类型，可以是范型
+	 * @param cs
+	 *            JSON 字符串
+	 * @return 特定类型的 JAVA 对象
+	 * @throws JsonException
+	 */
+	public static Object fromJson(Type type, CharSequence cs) throws JsonException {
+		return fromJson(type, Lang.inr(cs));
 	}
 
 	/**
@@ -80,9 +105,6 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
-		return fromJson(type, Lang.inr(cs));
-	}
-	public static Object fromJson(Type type, CharSequence cs) throws JsonException {
 		return fromJson(type, Lang.inr(cs));
 	}
 

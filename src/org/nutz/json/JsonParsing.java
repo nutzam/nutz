@@ -95,7 +95,7 @@ class JsonParsing {
 		return true;
 	}
 
-	<T> T parseFromJson(Type type) {
+	Object parseFromJson(Type type) {
 		try {
 			nextChar();
 			skipCommentsAndBlank();
@@ -169,27 +169,25 @@ class JsonParsing {
 		nextChar();
 		return sb;
 	}
-	
-	
-	
+
 	/**
 	 * @param <T>
 	 * @param type
 	 * @return
 	 * @throws Exception
 	 */
-	private <T> T parseFromCurrentLocation(Type type) throws Exception {
-		Class<T> clazz = null; 
+	private Object parseFromCurrentLocation(Type type) throws Exception {
+		Class<?> clazz = null;
 		ParameterizedType pt = null;
-		if(type instanceof Class){
-			clazz = (Class<T>) type;
+		if (type instanceof Class) {
+			clazz = (Class<?>) type;
 		}
-		if(type instanceof ParameterizedType){
+		if (type instanceof ParameterizedType) {
 			pt = (ParameterizedType) type;
-			clazz = (Class<T>) pt.getRawType();
+			clazz = (Class<?>) pt.getRawType();
 		}
-		Mirror<T> me = Mirror.me(clazz);
-		
+		Mirror<?> me = Mirror.me(clazz);
+
 		switch (cursor) {
 		case -1:
 			return null;
@@ -232,8 +230,9 @@ class JsonParsing {
 			throw makeError("Don't know how to handle this char");
 		}
 	}
+
 	@SuppressWarnings("rawtypes")
-	private <T>T parseArray(Mirror<T> me, ParameterizedType type) throws Exception{
+	private <T> T parseArray(Mirror<T> me, ParameterizedType type) throws Exception {
 		Type tt = null;
 		boolean reurnAsList = true;
 		List list = null;
@@ -246,14 +245,14 @@ class JsonParsing {
 			list = new LinkedList();
 			reurnAsList = false;
 			tt = me.getType().getComponentType();
-			
+
 		} else if (List.class.isAssignableFrom(me.getType())) {
 			reurnAsList = true;
 			if (me.is(List.class))
 				list = new LinkedList();
 			else
 				list = (List) me.born();
-			tt =  type.getActualTypeArguments()[0];
+			tt = type.getActualTypeArguments()[0];
 		} else {
 			throw makeError(String.format(	"Unexpect type '%s', it should be an Array or List!!!",
 											me.getType().getName()));
@@ -274,13 +273,14 @@ class JsonParsing {
 		nextChar();
 		if (reurnAsList)
 			return (T) list;
-		Object ary = Array.newInstance((Class<?>)tt, list.size());
+		Object ary = Array.newInstance((Class<?>) tt, list.size());
 		int i = 0;
 		for (Iterator it = list.iterator(); it.hasNext();)
-			Array.set(ary, i++, Castors.me().castTo(it.next(), (Class<?>)tt));
+			Array.set(ary, i++, Castors.me().castTo(it.next(), (Class<?>) tt));
 		return (T) ary;
 	}
-	private <T>T parseObj(Mirror<T> me, ParameterizedType type) throws IOException{
+
+	private <T> T parseObj(Mirror<T> me, ParameterizedType type) throws IOException {
 		// It must be Object or Map
 		nextChar();
 		skipCommentsAndBlank();
@@ -311,7 +311,7 @@ class JsonParsing {
 			}
 			catch (NoSuchFieldException e) {}
 			Object val = parseFromJson(ft);
-			if(null != f){
+			if (null != f) {
 				me.setValue(obj, f, val);
 			}
 			if (!findNextNamePair())
@@ -320,7 +320,8 @@ class JsonParsing {
 		nextChar();
 		return obj;
 	}
-	private <T> T parseUndefined () throws IOException{
+
+	private Object parseUndefined() throws IOException {
 		// For undefined
 		if ('n' != (char) nextChar()
 			& 'd' != (char) nextChar()
@@ -334,22 +335,24 @@ class JsonParsing {
 		nextChar();
 		return null;
 	}
-	private <T> T parseNull() throws IOException{
+
+	private <T> T parseNull() throws IOException {
 		// For NULL
 		if ('u' != (char) nextChar() & 'l' != (char) nextChar() & 'l' != (char) nextChar())
 			throw makeError("String must in quote or it must be <null>");
 		nextChar();
 		return null;
 	}
-	private <T> T parseString(Mirror<T> me) throws IOException{
+
+	private <T> T parseString(Mirror<T> me) throws IOException {
 		StringBuilder vs = readString();
 		String value = vs.toString();
 		if (null == me || me.is(String.class))
 			return (T) value;
 		return Castors.me().castTo(value, me.getType());
 	}
-	
-	private <T> T parseTrue(Mirror<T> me) throws IOException{
+
+	private <T> T parseTrue(Mirror<T> me) throws IOException {
 		if ('r' != (char) nextChar() | 'u' != (char) nextChar() | 'e' != (char) nextChar())
 			throw makeError("Expect boolean as input!");
 		if (null != me && !me.isBoolean())
@@ -357,18 +360,20 @@ class JsonParsing {
 		nextChar();
 		return (T) Boolean.valueOf(true);
 	}
-	private <T> T parseFalse(Mirror<T> me) throws IOException{
+
+	private <T> T parseFalse(Mirror<T> me) throws IOException {
 		if ('a' != (char) nextChar()
-				| 'l' != (char) nextChar()
-				| 's' != (char) nextChar()
-				| 'e' != (char) nextChar())
-				throw makeError("Expect boolean as input!");
-			if (null != me && !me.isBoolean())
-				throw makeError("Expect boolean|Boolean as type!");
-			nextChar();
-			return (T) Boolean.valueOf(false);
+			| 'l' != (char) nextChar()
+			| 's' != (char) nextChar()
+			| 'e' != (char) nextChar())
+			throw makeError("Expect boolean as input!");
+		if (null != me && !me.isBoolean())
+			throw makeError("Expect boolean|Boolean as type!");
+		nextChar();
+		return (T) Boolean.valueOf(false);
 	}
-	private<T> T parseNumber(Mirror<T> me) throws IOException{
+
+	private <T> T parseNumber(Mirror<T> me) throws IOException {
 		StringBuilder sb = new StringBuilder();
 		do {
 			sb.append((char) cursor);
@@ -413,6 +418,5 @@ class JsonParsing {
 		// Unknown case...
 		throw makeError("type must by one of int|long|float|dobule|byte");
 	}
-
 
 }
