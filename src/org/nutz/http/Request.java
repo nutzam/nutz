@@ -34,14 +34,14 @@ public class Request {
 
 	@SuppressWarnings("unchecked")
 	public static Request create(String url, METHOD method, String paramsAsJson) {
-		return create(url, method, (Map<String, ?>) Json.fromJson(paramsAsJson));
+		return create(url, method, (Map<String, Object>) Json.fromJson(paramsAsJson));
 	}
 
-	public static Request create(String url, METHOD method, Map<String, ?> params) {
+	public static Request create(String url, METHOD method, Map<String, Object> params) {
 		return Request.create(url, method, params, Header.create());
 	}
 
-	public static Request create(String url, METHOD method, Map<String, ?> params, Header header) {
+	public static Request create(String url, METHOD method, Map<String, Object> params, Header header) {
 		return new Request().setMethod(method).setParams(params).setUrl(url).setHeader(header);
 	}
 
@@ -50,7 +50,7 @@ public class Request {
 	private String url;
 	private METHOD method;
 	private Header header;
-	private Map<String, ?> params;
+	private Map<String, Object> params;
 
 	public URL getUrl() {
 		StringBuilder sb = new StringBuilder(url);
@@ -66,12 +66,12 @@ public class Request {
 		}
 	}
 
-	public Map<String, ?> getParams() {
+	public Map<String, Object> getParams() {
 		return params;
 	}
 	
 	public String getURLEncodedParams() {
-		StringBuilder sb = new StringBuilder("");
+		StringBuilder sb = new StringBuilder();
 		for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
 			String key = it.next();
 			sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
@@ -81,7 +81,7 @@ public class Request {
 		return sb.toString();
 	}
 
-	private Request setParams(Map<String, ?> params) {
+	private Request setParams(Map<String, Object> params) {
 		this.params = params;
 		return this;
 	}
