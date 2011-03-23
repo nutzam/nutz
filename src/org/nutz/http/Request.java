@@ -13,18 +13,16 @@ public class Request {
 		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, MULTIPART
 	}
 
-	private static HashMap<String, Object> EMPTY = new HashMap<String, Object>();
-
 	public static Request get(String url) {
 		return create(url, METHOD.GET, new HashMap<String, Object>());
 	}
 
 	public static Request get(String url, Header header) {
-		return Request.create(url, METHOD.GET, EMPTY, header);
+		return Request.create(url, METHOD.GET, new HashMap<String, Object>(), header);
 	}
 
 	public static Request create(String url, METHOD method) {
-		return create(url, method, EMPTY);
+		return create(url, method, new HashMap<String, Object>());
 	}
 
 	@SuppressWarnings("unchecked")

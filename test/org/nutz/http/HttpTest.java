@@ -5,15 +5,14 @@ import static org.junit.Assert.*;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.junit.Ignore;
 import org.junit.Test;
+import org.nutz.Nutz;
 
 public class HttpTest {
 
-	@Ignore
 	@Test
 	public void testGet() {
-		Response response = Http.get("http://nutz.googlecode.com");
+		Response response = Http.get("http://nutzam.com");
 		assertNotNull(response);
 		assertNotNull(response.getContent());
 		assertNotNull(response.getDetail());
@@ -23,16 +22,15 @@ public class HttpTest {
 		assertNotNull(response.getStream());
 	}
 
-	@Ignore
 	@Test
 	public void testPost() {
 		Map<String, Object> parms = new HashMap<String, Object>();
-		parms.put("q", "nutz");
-		parms.put("projectsearch", "Search+projects");
-		String response = Http.post("http://code.google.com/hosting/search",parms,"utf-8","utf-8");
+		parms.put("version", "NutzTest");
+		parms.put("website", Nutz.version());
+		String response = Http.post("http://p.sunfarms.net/muchang/ping.php",parms,"utf-8","utf-8");
 		assertNotNull(response);
 		assertTrue(response.length() > 0);
-		assertTrue(response.indexOf("google") > -1);
+		assertTrue(response.indexOf("OK") > -1);
 	}
 	
 }
