@@ -31,18 +31,32 @@ import org.nutz.mvc.Mvcs;
 public class ForwardView extends AbstractPathView {
 
 	public ForwardView(String dest) {
-		super(dest);
+		super(dest == null ? null : dest.replace('\\', '/'));
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Exception {
 		String path = evalPath(req, obj);
-		// Check path
-		// String thePath = path;
+
+		// 空路径，采用默认规则
 		if (Strings.isBlank(path)) {
 			path = Mvcs.getRequestPath(req);
-			path = "/WEB-INF/" + Files.renameSuffix(path, getExt());
+			path = "/WEB-INF"
+					+ (path.startsWith("/") ? "" : "/")
+					+ Files.renameSuffix(path, getExt());
 		}
+		// 绝对路径 : 以 '/' 开头的路径不增加 '/WEB-INF'
+		else if (path.charAt(0) == '/') {
+			String ext = getExt();
+			if (!path.toLowerCase().endsWith(ext))
+				path += ext;
+		}
+		// 包名形式的路径
+		else {
+			path = "/WEB-INF/" + path.replace('.', '/') + getExt();
+		}
+
+		// 执行 Forward
 		RequestDispatcher rd = req.getRequestDispatcher(path);
 		if (rd == null)
 			throw Lang.makeThrow("Fail to find Forward '%s'", path);
@@ -50,21 +64,13 @@ public class ForwardView extends AbstractPathView {
 		rd.forward(req, resp);
 	}
 
+	/**
+	 * 子类可以覆盖这个方法，给出自己特殊的后缀
+	 * 
+	 * @return 后缀
+	 */
 	protected String getExt() {
 		return "";
-	}
-
-	public static String normalizePath(String name, String ext) {
-		name = name.replace('\\', '/');
-		// For: @Ok("jsp:/abc/cbc") || @Ok("jsp:/abc/cbc.jsp")
-		if (name.charAt(0) == '/') {
-			if (name.toLowerCase().endsWith(ext))
-				return name;
-			else
-				return name + ext;
-		}
-		// For: @Ok("jsp:abc.cbc")
-		return "/WEB-INF/" + name.replace('.', '/') + ext;
 	}
 
 }

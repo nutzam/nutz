@@ -29,15 +29,20 @@ public abstract class AbstractPathView implements View {
 	private Map<String, ElObj> exps;
 
 	public AbstractPathView(String dest) {
-		this.dest = new CharSegment(Strings.trim(dest));
-		this.exps = new HashMap<String, ElObj>();
-		// 预先将每个占位符解析成表达式
-		for (String key : this.dest.keys()) {
-			this.exps.put(key, El.compile(key));
+		if (null != dest) {
+			this.dest = new CharSegment(Strings.trim(dest));
+			this.exps = new HashMap<String, ElObj>();
+			// 预先将每个占位符解析成表达式
+			for (String key : this.dest.keys()) {
+				this.exps.put(key, El.compile(key));
+			}
 		}
 	}
 
 	protected String evalPath(HttpServletRequest req, Object obj) {
+		if (null == dest)
+			return null;
+
 		Context context = Lang.context();
 
 		// 解析每个表达式
@@ -46,7 +51,7 @@ public abstract class AbstractPathView implements View {
 			context.set(en.getKey(), en.getValue().eval(expContext).getString());
 
 		// 生成解析后的路径
-		return this.dest.render(context).toString();
+		return Strings.trim(this.dest.render(context).toString());
 	}
 
 	/**

@@ -33,6 +33,12 @@ public abstract class Mock {
 			return new MockHttpServletRequest();
 		}
 
+		public static MockHttpServletRequest fullRequest() {
+			MockHttpServletRequest req = request();
+			req.setSession(session(context()));
+			return req;
+		}
+
 		public static MockHttpSession session(MockServletContext context) {
 			return new MockHttpSession(context);
 		}
@@ -86,8 +92,9 @@ public abstract class Mock {
 		}
 
 		public static MultipartInputStream insmulti(String charset) {
-			return insmulti(charset, "------NutzMockHTTPBoundary@"
-										+ Long.toHexString(System.currentTimeMillis()));
+			return insmulti(charset,
+							"------NutzMockHTTPBoundary@"
+									+ Long.toHexString(System.currentTimeMillis()));
 		}
 
 		public static MultipartInputStream insmulti(String charset, File... files) {

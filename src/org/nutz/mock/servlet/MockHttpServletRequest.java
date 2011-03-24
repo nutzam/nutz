@@ -26,8 +26,15 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
 	protected String contextPath;
 
+	protected String[] dispatcherTarget;
+
 	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
+		this.dispatcherTarget = new String[1];
+	}
+
+	public String getDispatcherTarget() {
+		return this.dispatcherTarget[0];
 	}
 
 	public String getAuthType() {
@@ -358,8 +365,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
 		throw Lang.noImplement();
 	}
 
-	public RequestDispatcher getRequestDispatcher(String arg0) {
-		throw Lang.noImplement();
+	public RequestDispatcher getRequestDispatcher(String dest) {
+		return new MockRequestDispatcher(dispatcherTarget, dest);
 	}
 
 	public String getScheme() {
