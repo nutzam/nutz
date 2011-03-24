@@ -12,7 +12,7 @@ package org.nutz;
 public final class Nutz {
 
 	public static String version() {
-		return "1.b.36-snapshot";
+		return "1.b.37";
 	}
 
 }
