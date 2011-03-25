@@ -1,6 +1,5 @@
 package org.nutz.mvc.adaptor.injector;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -9,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.Json;
+import org.nutz.lang.Lang;
 import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.adaptor.ParamInjector;
 
@@ -38,11 +38,7 @@ public class JsonInjector implements ParamInjector {
 		Object theObj = map.get(name);
 		if (null == theObj)
 			return null;
-		Class<?> clazz = null;
-		if(type instanceof ParameterizedType){
-			clazz = (Class<?>) ((ParameterizedType)type).getRawType();
-		}
-		clazz = (Class<?>) type;
+		Class<?> clazz = Lang.getTypeClass(type);
 		return Castors.me().castTo(theObj, clazz);
 	}
 

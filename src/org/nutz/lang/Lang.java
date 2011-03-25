@@ -8,7 +8,12 @@ import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -1509,5 +1514,60 @@ public abstract class Lang {
 			Streams.safeClose(is);
 		}
 		return false;
+	}
+	
+	/**
+	 * 获取基本类型的默认值
+	 * @param pClass
+	 * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
+	 */
+	public static Object getPrimitiveDefaultValue(Class<?> pClass){
+		if(int.class.equals(pClass))
+			return Integer.valueOf(0);
+		if(long.class.equals(pClass))
+			return Long.valueOf(0);
+		if(short.class.equals(pClass))
+			return Short.valueOf((short) 0);
+		if(float.class.equals(pClass))
+			return Float.valueOf(0f);
+		if(double.class.equals(pClass))
+			return Double.valueOf(0);
+		if(byte.class.equals(pClass))
+			return Byte.valueOf((byte) 0);
+		if(char.class.equals(pClass))
+			return Character.valueOf((char)0);
+		if(boolean.class.equals(pClass))
+			return Boolean.FALSE;
+		return null;
+	}
+
+	/**
+	 * 获取一个Type类型实际对应的Class
+	 */
+	@SuppressWarnings("rawtypes")
+	public static Class<?> getTypeClass(Type type) {
+		Class<?> clazz = null;
+		if(type instanceof ParameterizedType){
+			ParameterizedType pt = (ParameterizedType) type;
+			clazz = (Class<?>) pt.getRawType();
+		} else if (type instanceof Class<?>) {
+			clazz = (Class<?>) type;
+		} else if (type instanceof GenericArrayType) {
+			GenericArrayType gat = (GenericArrayType)type;
+			return getTypeClass(gat.getGenericComponentType());
+		} else if (type instanceof TypeVariable) {
+			TypeVariable tv = (TypeVariable)type;
+			Type[] ts = tv.getBounds();
+			if (ts != null && ts.length > 0)
+				return getTypeClass(ts[0]);
+		} else if (type instanceof WildcardType) {
+			WildcardType wt = (WildcardType)type;
+			Type[] t_low = wt.getLowerBounds();//取其下界
+			if (t_low.length > 0)
+				return getTypeClass(t_low[0]);
+			Type[] t_up = wt.getUpperBounds(); //没有下界?取其上界
+			return getTypeClass(t_up[0]);//最起码有Object作为上界
+		}
+		return clazz;
 	}
 }

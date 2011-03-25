@@ -1,9 +1,7 @@
 package org.nutz.mvc.adaptor;
 
 import java.lang.annotation.Annotation;
-
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -14,9 +12,22 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
-import org.nutz.mvc.adaptor.injector.*;
+import org.nutz.mvc.adaptor.injector.AllAttrInjector;
+import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.ErrorInjector;
+import org.nutz.mvc.adaptor.injector.IocInjector;
+import org.nutz.mvc.adaptor.injector.IocObjInjector;
+import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
+import org.nutz.mvc.adaptor.injector.RequestInjector;
+import org.nutz.mvc.adaptor.injector.ResponseInjector;
+import org.nutz.mvc.adaptor.injector.ServletContextInjector;
+import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
+import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
@@ -26,6 +37,8 @@ import org.nutz.mvc.annotation.Param;
  * @author wendal(wendal1985@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
+	
+	private static final Log log = Logs.getLog(AbstractAdaptor.class);
 
 	protected ParamInjector[] injs;
 	
@@ -118,12 +131,11 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 	}
 
 	protected ParamInjector evalInjector(Type type, Param param) {
-		Class<?> clazz;
-		if(type instanceof ParameterizedType){
-			ParameterizedType pt = (ParameterizedType) type;
-			clazz = (Class<?>) pt.getRawType();
-		} else {
-			clazz = (Class<?>) type;
+		Class<?> clazz = Lang.getTypeClass(type);
+		if( clazz == null) {
+			if(log.isWarnEnabled())
+				log.warnf("!!Fail to get Type Class : type=%s , param=%s",type,param);
+			return null;
 		}
 		return evalInjector(clazz, param);
 	}
@@ -150,7 +162,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		for (; i < injs.length; i++) {
 			args[i] = injs[i].get(sc, req, resp, null);
 			if(args[i] == null && argTypes[i].isPrimitive()) {
-				args[i] = getPrimitiveDefaultValue(argTypes[i]);
+				args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
 			}
 		}
 		return args;
@@ -168,25 +180,5 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				args[i] = injs[i].get(null, req, resp, pathArgs[i]);
 		}
 		return i;
-	}
-
-	protected Object getPrimitiveDefaultValue(Class<?> pClass){
-		if(int.class.equals(pClass))
-			return Integer.valueOf(0);
-		if(long.class.equals(pClass))
-			return Long.valueOf(0);
-		if(short.class.equals(pClass))
-			return Short.valueOf((short) 0);
-		if(float.class.equals(pClass))
-			return Float.valueOf(0f);
-		if(double.class.equals(pClass))
-			return Double.valueOf(0);
-		if(byte.class.equals(pClass))
-			return Byte.valueOf((byte) 0);
-		if(char.class.equals(pClass))
-			return Character.valueOf((char)0);
-		if(boolean.class.equals(pClass))
-			return Boolean.FALSE;
-		return null;
 	}
 }

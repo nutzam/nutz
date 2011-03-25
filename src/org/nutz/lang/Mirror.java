@@ -1249,13 +1249,10 @@ public class Mirror<T> {
 		Type[] types = getTypeParams(klass);
 		if (index >= 0 && index < types.length) {
 			Type t = types[index];
-			if (t instanceof Class<?>) {
-				return (Class<T>) t;
-			} else if (t instanceof ParameterizedType) {
-				t = ((ParameterizedType) t).getRawType();
-				return (Class<T>) t;
-			}
-			throw Lang.makeThrow("Type '%s' is not a Class", t.toString());
+			Class<T> clazz = (Class<T>) Lang.getTypeClass(t);
+			if (clazz == null)
+				throw Lang.makeThrow("Type '%s' is not a Class", t.toString());
+			return clazz;
 		}
 		throw Lang.makeThrow("Class type param out of range %d/%d", index, types.length);
 	}

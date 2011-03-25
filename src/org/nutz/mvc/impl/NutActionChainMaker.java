@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChain;
 import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.ActionInfo;
@@ -13,6 +15,8 @@ import org.nutz.mvc.impl.chainconfig.ActionChainMakerConfiguretion;
 import org.nutz.mvc.impl.chainconfig.JsonActionChainMakerConfiguretion;
 
 public class NutActionChainMaker implements ActionChainMaker {
+	
+	private static final Log logger = Logs.getLog(NutActionChainMaker.class);
 	
 	ActionChainMakerConfiguretion co;
 	
@@ -35,8 +39,11 @@ public class NutActionChainMaker implements ActionChainMaker {
 			/*
 			 * 返回动作链实例
 			 */
-			return new NutActionChain(list, errorProcessor);
+			ActionChain chain = new NutActionChain(list, errorProcessor);
+			return chain;
 		} catch (Throwable e) {
+			if (logger.isDebugEnabled())
+				logger.debugf("Eval FAIL!! : %s",ai.getMethod());
 			throw Lang.wrapThrow(e);
 		}
 	}

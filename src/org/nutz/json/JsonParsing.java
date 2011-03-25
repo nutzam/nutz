@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.castor.Castors;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
@@ -177,11 +178,8 @@ class JsonParsing {
 	 * @throws Exception
 	 */
 	private Object parseFromCurrentLocation(Type type) throws Exception {
-		Class<?> clazz = null;
+		Class<?> clazz = Lang.getTypeClass(type);
 		ParameterizedType pt = null;
-		if (type instanceof Class) {
-			clazz = (Class<?>) type;
-		}
 		if (type instanceof ParameterizedType) {
 			pt = (ParameterizedType) type;
 			clazz = (Class<?>) pt.getRawType();
