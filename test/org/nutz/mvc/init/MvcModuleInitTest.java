@@ -18,9 +18,9 @@ public class MvcModuleInitTest extends AbstractMvcTest {
 		request.setParameter("ids", "1,2,3");
 		servlet.service(request, response);
 		String re = response.getAsString();
-		assertEquals("[1, 2, 3]", re);
+		assertEquals("[\"[1, 2, 3]\"]", re);
 	}
-	
+
 	@Test
 	public void test_array_long_param2() throws Exception {
 		request.setPathInfo("/param/b");

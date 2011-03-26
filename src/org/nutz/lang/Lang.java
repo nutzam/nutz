@@ -1515,28 +1515,29 @@ public abstract class Lang {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * 获取基本类型的默认值
+	 * 
 	 * @param pClass
 	 * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
 	 */
-	public static Object getPrimitiveDefaultValue(Class<?> pClass){
-		if(int.class.equals(pClass))
+	public static Object getPrimitiveDefaultValue(Class<?> pClass) {
+		if (int.class.equals(pClass))
 			return Integer.valueOf(0);
-		if(long.class.equals(pClass))
+		if (long.class.equals(pClass))
 			return Long.valueOf(0);
-		if(short.class.equals(pClass))
+		if (short.class.equals(pClass))
 			return Short.valueOf((short) 0);
-		if(float.class.equals(pClass))
+		if (float.class.equals(pClass))
 			return Float.valueOf(0f);
-		if(double.class.equals(pClass))
+		if (double.class.equals(pClass))
 			return Double.valueOf(0);
-		if(byte.class.equals(pClass))
+		if (byte.class.equals(pClass))
 			return Byte.valueOf((byte) 0);
-		if(char.class.equals(pClass))
-			return Character.valueOf((char)0);
-		if(boolean.class.equals(pClass))
+		if (char.class.equals(pClass))
+			return Character.valueOf((char) 0);
+		if (boolean.class.equals(pClass))
 			return Boolean.FALSE;
 		return null;
 	}
@@ -1547,26 +1548,27 @@ public abstract class Lang {
 	@SuppressWarnings("rawtypes")
 	public static Class<?> getTypeClass(Type type) {
 		Class<?> clazz = null;
-		if(type instanceof ParameterizedType){
+		if (type instanceof ParameterizedType) {
 			ParameterizedType pt = (ParameterizedType) type;
 			clazz = (Class<?>) pt.getRawType();
 		} else if (type instanceof Class<?>) {
 			clazz = (Class<?>) type;
 		} else if (type instanceof GenericArrayType) {
-			GenericArrayType gat = (GenericArrayType)type;
-			return getTypeClass(gat.getGenericComponentType());
+			GenericArrayType gat = (GenericArrayType) type;
+			Class<?> typeClass = getTypeClass(gat.getGenericComponentType());
+			return Array.newInstance(typeClass, 0).getClass();
 		} else if (type instanceof TypeVariable) {
-			TypeVariable tv = (TypeVariable)type;
+			TypeVariable tv = (TypeVariable) type;
 			Type[] ts = tv.getBounds();
 			if (ts != null && ts.length > 0)
 				return getTypeClass(ts[0]);
 		} else if (type instanceof WildcardType) {
-			WildcardType wt = (WildcardType)type;
-			Type[] t_low = wt.getLowerBounds();//取其下界
+			WildcardType wt = (WildcardType) type;
+			Type[] t_low = wt.getLowerBounds();// 取其下界
 			if (t_low.length > 0)
 				return getTypeClass(t_low[0]);
-			Type[] t_up = wt.getUpperBounds(); //没有下界?取其上界
-			return getTypeClass(t_up[0]);//最起码有Object作为上界
+			Type[] t_up = wt.getUpperBounds(); // 没有下界?取其上界
+			return getTypeClass(t_up[0]);// 最起码有Object作为上界
 		}
 		return clazz;
 	}
