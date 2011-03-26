@@ -23,10 +23,12 @@ public abstract class AbstractLog implements Log {
 	protected void log(int level, LogInfo info){
 		log(level, info.message, info.e);
 	}
-	
-	private static final LogInfo LOG_ERROR = new LogInfo();
+
+	private static final LogInfo LOGINFO_ERROR = new LogInfo();
+	private static final LogInfo LOGINFO_NULL = new LogInfo();
 	static{
-		LOG_ERROR.message = "!!!!Log Fail!!";
+		LOGINFO_ERROR.message = "!!!!Log Fail!!";
+		LOGINFO_NULL.message = "null";
 	}
 	
 	/**
@@ -38,24 +40,33 @@ public abstract class AbstractLog implements Log {
 	 * @return
 	 */
 	private LogInfo makeInfo(Object obj, Object... args) {
+		if (obj == null)
+			return LOGINFO_NULL;
 		try {
 			LogInfo info = new LogInfo();
-			if (! (obj instanceof Throwable)) {
-				info.message = String.format(obj.toString(), args);
-				if (args != null && args.length > 0 && 
-						args[args.length - 1] instanceof Throwable)
-					info.e = (Throwable) args[args.length - 1];
-			}
-			else {
+			if (obj instanceof Throwable) {
 				info.e = (Throwable)obj;
 				info.message = info.e.getMessage();
+			}
+			else if (args == null || args.length == 0) {
+				info.message = obj.toString();
+			}
+//			//map to another mehtod
+//			else if (args.length == 1 && args[0] instanceof Throwable) {
+//				info.message = obj.toString();
+//				info.e = (Throwable)args[0];
+//			}
+			else {
+				info.message = String.format(obj.toString(), args);
+				if (args[args.length - 1] instanceof Throwable)
+					info.e = (Throwable) args[args.length - 1];
 			}
 			return info;
 		}
 		catch (Throwable e) { //即使格式错误也继续log
 			if (isWarnEnabled())
 				warn("String format fail in log , fmt = "+ obj + " , args = " +args,e);
-			return LOG_ERROR;
+			return LOGINFO_ERROR;
 		}
 	}
 
