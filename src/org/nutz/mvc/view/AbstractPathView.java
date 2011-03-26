@@ -74,10 +74,14 @@ public abstract class AbstractPathView implements View {
 			context.putAll((Context) servletContext);
 		}
 		// 请求的参数表
+		Map<String,String> p = new HashMap<String, String>();
 		for (Object o : req.getParameterMap().keySet()) {
 			String key = (String) o;
 			context.set(key, req.getParameter(key));
+			p.put(key, req.getParameter(key));
 		}
+		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
+		context.set("p", p);
 		// 请求对象的属性列表
 		for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
 			String tem = en.nextElement();

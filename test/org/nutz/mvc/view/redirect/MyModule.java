@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.Param;
 
 public class MyModule {
 
@@ -16,5 +17,12 @@ public class MyModule {
             User user = new User();
             user.setId(373);
             return user;
+    }
+    
+    @At("/login")
+    @Ok("redirect:/jsp/user/${p.name}")
+    public boolean login(@Param("name")String name, 
+    		@Param("password")String password) {
+    	return"wendal".equals(name) && "123456".equals(password);
     }
 }
