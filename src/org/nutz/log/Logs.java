@@ -26,7 +26,6 @@ public final class Logs {
 	 * @throws NullPointerException
 	 *             when clazz is null
 	 */
-	@Deprecated
 	public static Log getLog(Class<?> clazz) {
 		return getLog(clazz.getName());
 	}
@@ -40,12 +39,13 @@ public final class Logs {
 	 * @throws NullPointerException
 	 *             when className is null, maybe it will case NPE
 	 */
-	@Deprecated
 	public static Log getLog(String className) {
 		return adapter.getLogger(className);
 	}
+
 	/**
 	 * 返回以调用者的类命名的Log,是获取Log对象最简单的方法!
+	 * 
 	 * @return
 	 */
 	public static Log get() {
@@ -61,10 +61,10 @@ public final class Logs {
 	 */
 	public static void init() {
 		try {
-			adapter = new SimplePluginManager<LogAdapter>(
-					"org.nutz.log.impl.Log4jLogAdapter",
-					"org.nutz.log.impl.SystemLogAdapter").get();
-		} catch (Throwable e) {
+			adapter = new SimplePluginManager<LogAdapter>(	"org.nutz.log.impl.Log4jLogAdapter",
+															"org.nutz.log.impl.SystemLogAdapter").get();
+		}
+		catch (Throwable e) {
 			e.printStackTrace();
 		}
 	}
