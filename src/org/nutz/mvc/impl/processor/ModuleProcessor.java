@@ -19,40 +19,48 @@ import org.nutz.mvc.ioc.SessionIocContext;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public class ModuleProcessor extends AbstractProcessor {
-	
+
 	private String injectName;
-	
+
 	private Class<?> moduleType;
 	private Method method;
-	
+	private Object moduleObj;
+
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
 		method = ai.getMethod();
 		moduleType = ai.getModuleType();
-		if (!Strings.isBlank(ai.getInjectName()))
+		// 不使用 Ioc 容器管理模块
+		if (Strings.isBlank(ai.getInjectName())) {
+			moduleObj = Mirror.me(moduleType).born();
+		}
+		// 使用 Ioc 容器管理模块
+		else {
 			injectName = ai.getInjectName();
+		}
 	}
 
 	public void process(ActionContext ac) throws Throwable {
 		RequestIocContext reqContext = null;
 		try {
-			if (null == injectName) {
-				ac.setModule(Mirror.me(moduleType).born());
+			if (null != moduleObj) {
+				ac.setModule(moduleObj);
 			} else {
 				Ioc ioc = ac.getIoc();
 				if (null == ioc)
 					throw Lang.makeThrow(	"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
-							injectName);
+											injectName);
 				Object obj;
 				/*
 				 * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
 				 */
 				if (ioc instanceof Ioc2) {
 					reqContext = new RequestIocContext(ac.getRequest());
-					SessionIocContext sessionContext = new SessionIocContext(ac.getRequest().getSession());
+					SessionIocContext sessionContext = new SessionIocContext(ac.getRequest()
+																				.getSession());
 					IocContext myContext = new ComboContext(reqContext, sessionContext);
 					obj = ((Ioc2) ioc).get(moduleType, injectName, myContext);
 				}
@@ -66,14 +74,16 @@ public class ModuleProcessor extends AbstractProcessor {
 			}
 			ac.setMethod(method);
 			doNext(ac);
-		} finally {
+		}
+		finally {
 			if (reqContext != null)
 				try {
 					reqContext.depose();
-				} catch (Throwable e) {
+				}
+				catch (Throwable e) {
 					e.printStackTrace();
 				}
 		}
 	}
-	
+
 }
