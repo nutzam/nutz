@@ -18,7 +18,7 @@ import org.nutz.resource.ResourceScan;
 
 public abstract class AbstractResourceScan implements ResourceScan {
 
-	private static final Log log = Logs.getLog(AbstractResourceScan.class);
+	private static final Log log = Logs.get();
 
 	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();

@@ -23,7 +23,7 @@ import org.nutz.log.Logs;
 
 public class SqlImpl implements Sql, Cloneable {
 
-	private static final Log log = Logs.getLog(SqlImpl.class);
+	private static final Log log = Logs.get();
 
 	public SqlImpl(SqlLiteral sql, StatementAdapter adapter) {
 		this.sql = sql;

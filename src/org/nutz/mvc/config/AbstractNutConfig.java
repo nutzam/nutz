@@ -21,7 +21,7 @@ import org.nutz.mvc.impl.NutLoading;
 
 public abstract class AbstractNutConfig implements NutConfig {
 
-	private static final Log log = Logs.getLog(AbstractNutConfig.class);
+	private static final Log log = Logs.get();
 
 	public Loading createLoading() {
 		/*

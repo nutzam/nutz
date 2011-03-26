@@ -27,7 +27,7 @@ public class Scans {
 
 	private static final Scans me = new Scans();
 
-	private static final Log LOG = Logs.getLog(Scans.class);
+	private static final Log LOG = Logs.get();
 
 	private Scans() {}
 

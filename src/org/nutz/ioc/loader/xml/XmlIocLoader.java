@@ -45,7 +45,7 @@ import org.w3c.dom.NodeList;
  */
 public class XmlIocLoader implements IocLoader {
 
-	private static final Log LOG = Logs.getLog(XmlIocLoader.class);
+	private static final Log LOG = Logs.get();
 
 	protected Map<String, IocObject> iocMap = new LinkedHashMap<String, IocObject>();
 

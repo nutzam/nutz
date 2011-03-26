@@ -16,7 +16,7 @@ import org.nutz.mvc.annotation.BlankAtException;
 
 public class UrlMappingImpl implements UrlMapping {
 
-	private static final Log log = Logs.getLog(UrlMappingImpl.class);
+	private static final Log log = Logs.get();
 
 	private MappingNode<ActionChain> root;
 

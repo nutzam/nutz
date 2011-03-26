@@ -17,7 +17,7 @@ import org.nutz.mvc.impl.chainconfig.JsonActionChainMakerConfiguretion;
 
 public class NutActionChainMaker implements ActionChainMaker {
 	
-	private static final Log logger = Logs.getLog(NutActionChainMaker.class);
+	private static final Log logger = Logs.get();
 	
 	ActionChainMakerConfiguretion co;
 	

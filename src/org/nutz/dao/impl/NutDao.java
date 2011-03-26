@@ -55,7 +55,7 @@ import org.nutz.trans.Trans;
  */
 public class NutDao implements Dao {
 
-	private static final Log log = Logs.getLog(NutDao.class);
+	private static final Log log = Logs.get();
 
 	private DataSource dataSource;
 	private SqlMaker sqlMaker;

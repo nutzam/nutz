@@ -26,7 +26,7 @@ public class AsmClassAgent extends AbstractClassAgent {
 	static {
 		if (Lang.isJDK6())
 			CLASS_LEVEL = Opcodes.V1_6;
-		Logs.getLog(AsmClassAgent.class).debugf("AsmClassAgent will define class in Version %s",CLASS_LEVEL);
+		Logs.get().debugf("AsmClassAgent will define class in Version %s",CLASS_LEVEL);
 	}
 
 	@SuppressWarnings("unchecked")

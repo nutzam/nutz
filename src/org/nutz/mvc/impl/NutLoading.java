@@ -40,7 +40,7 @@ import org.nutz.mvc.view.DefaultViewMaker;
 
 public class NutLoading implements Loading {
 
-	private static final Log log = Logs.getLog(NutLoading.class);
+	private static final Log log = Logs.get();
 
 	public UrlMapping load(NutConfig config) {
 		if (log.isInfoEnabled()) {

@@ -14,7 +14,7 @@ import org.nutz.log.Logs;
  */
 public class TableName {
 
-	private static final Log log = Logs.getLog(TableName.class);
+	private static final Log log = Logs.get();
 
 	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
 

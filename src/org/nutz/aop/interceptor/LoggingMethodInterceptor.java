@@ -14,7 +14,7 @@ import org.nutz.log.Logs;
  */
 public class LoggingMethodInterceptor implements MethodInterceptor {
 
-	private static final Log LOG = Logs.getLog(LoggingMethodInterceptor.class);
+	private static final Log LOG = Logs.get();
 
 	protected boolean logBeforeInvoke;
 	protected boolean logAfterInvoke;

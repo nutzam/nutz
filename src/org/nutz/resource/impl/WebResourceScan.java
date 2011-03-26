@@ -23,7 +23,7 @@ import org.nutz.resource.NutResource;
 @SuppressWarnings("unchecked")
 public class WebResourceScan extends AbstractResourceScan {
 
-	private static final Log log = Logs.getLog(WebResourceScan.class);
+	private static final Log log = Logs.get();
 
 	private ServletContext sc;
 

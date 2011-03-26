@@ -23,7 +23,7 @@ import org.nutz.log.Logs;
 
 public class MockServletContext extends MockServletObject implements ServletContext {
 	
-	private static final Log log = Logs.getLog(MockServletContext.class);
+	private static final Log log = Logs.get();
 
 	public int getMajorVersion() {
 		throw Lang.noImplement();

@@ -17,7 +17,7 @@ import org.nutz.log.Logs;
  */
 public class ScopeContext implements IocContext {
 
-	private static final Log log = Logs.getLog(ScopeContext.class);
+	private static final Log log = Logs.get();
 
 	private String scope;
 	private Map<String, ObjectProxy> objs;

@@ -8,7 +8,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 public class InjectBySetter implements Injecting {
-	private static final Log log = Logs.getLog(InjectBySetter.class);
+	private static final Log log = Logs.get();
 	private Method setter;
 	private Class<?> valueType;
 

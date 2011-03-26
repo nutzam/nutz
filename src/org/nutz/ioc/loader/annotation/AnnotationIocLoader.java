@@ -30,7 +30,7 @@ import org.nutz.resource.Scans;
  */
 public class AnnotationIocLoader implements IocLoader {
 
-	private static final Log LOG = Logs.getLog(AnnotationIocLoader.class);
+	private static final Log LOG = Logs.get();
 
 	private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 

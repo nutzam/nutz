@@ -6,6 +6,7 @@ import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 /**
@@ -14,6 +15,8 @@ import org.nutz.log.Logs;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class UploadingContext {
+	
+	private static final Log log = Logs.get();
 
 	public static UploadingContext create(String poolPath) {
 		return create(new NutFilePool(poolPath));
@@ -94,8 +97,8 @@ public class UploadingContext {
 
 	public UploadingContext setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
-		if (bufferSize < 1024)
-			Logs.getLog(getClass()).warn("Uploading buffer is less than 1024!!");
+		if (bufferSize < 1024 && log.isWarnEnabled())
+			log.warn("Uploading buffer is less than 1024!!");
 		return this;
 	}
 

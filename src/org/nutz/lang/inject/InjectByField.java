@@ -9,7 +9,7 @@ import org.nutz.log.Logs;
 
 public class InjectByField implements Injecting {
 	
-	private static final Log log = Logs.getLog(InjectByField.class);
+	private static final Log log = Logs.get();
 
 	private Field field;
 

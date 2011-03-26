@@ -11,7 +11,7 @@ import org.nutz.log.Logs;
 
 public class NutFilePool implements FilePool {
 
-	private static final Log log = Logs.getLog(NutFilePool.class);
+	private static final Log log = Logs.get();
 
 	public NutFilePool(String homePath) {
 		this(homePath, 0);

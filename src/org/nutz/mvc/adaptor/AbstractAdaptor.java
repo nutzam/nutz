@@ -38,7 +38,7 @@ import org.nutz.mvc.annotation.Param;
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
 	
-	private static final Log log = Logs.getLog(AbstractAdaptor.class);
+	private static final Log log = Logs.get();
 
 	protected ParamInjector[] injs;
 	
@@ -137,6 +137,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 				log.warnf("!!Fail to get Type Class : type=%s , param=%s",type,param);
 			return null;
 		}
+		System.out.println(""+type + " ---> "+ clazz);
 		return evalInjector(clazz, param);
 	}
 	

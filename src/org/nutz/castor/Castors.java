@@ -33,7 +33,7 @@ import org.nutz.resource.Scans;
  */
 public class Castors {
 
-	private static final Log log = Logs.getLog(Castors.class);
+	private static final Log log = Logs.get();
 
 	private static Castors one = new Castors();
 

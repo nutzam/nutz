@@ -21,7 +21,7 @@ import org.nutz.resource.Scans;
 
 public class NutMessageLoader implements MessageLoader {
 
-	private static final Log log = Logs.getLog(NutMessageLoader.class);
+	private static final Log log = Logs.get();
 
 	public Map<String, Map<String, Object>> load(String refer) {
 		Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();

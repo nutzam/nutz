@@ -33,7 +33,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	private boolean ignoreHidden;
 
-	private static final Log LOG = Logs.getLog(LocalResourceScan.class);
+	private static final Log LOG = Logs.get();
 
 	/**
 	 * 是否忽略隐藏文件

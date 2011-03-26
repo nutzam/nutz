@@ -14,7 +14,7 @@ import org.nutz.log.Logs;
 
 public class DefaultDaoRunner implements DaoRunner {
 	
-	private static final Log log = Logs.getLog(DefaultDaoRunner.class);
+	private static final Log log = Logs.get();
 
 	public void run(DataSource dataSource, ConnCallback callback) {
 		ConnectionHolder ch = Daos.getConnection(dataSource);

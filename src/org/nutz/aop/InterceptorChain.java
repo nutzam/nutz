@@ -26,7 +26,7 @@ public class InterceptorChain {
 
 	protected List<MethodInterceptor> miList;
 
-	private static Log LOG = Logs.getLog(InterceptorChain.class);
+	private static Log LOG = Logs.get();
 
 	private boolean invoked = false;
 

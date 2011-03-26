@@ -33,7 +33,7 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
-	private static final Log log = Logs.getLog(Loadings.class);
+	private static final Log log = Logs.get();
 
 	static ActionInfo createInfo(Class<?> type) {
 		ActionInfo ai = new ActionInfo();

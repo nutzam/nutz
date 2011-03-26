@@ -13,7 +13,7 @@ import org.nutz.log.Logs;
 
 public class DefaultDaoExecutor implements DaoExecutor {
 
-	private static final Log log = Logs.getLog(DefaultDaoExecutor.class);
+	private static final Log log = Logs.get();
 
 	public void execute(DataSource dataSource, DaoRunner runner, final Sql... sqls) {
 		if (null != sqls) {

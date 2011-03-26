@@ -26,6 +26,7 @@ public final class Logs {
 	 * @throws NullPointerException
 	 *             when clazz is null
 	 */
+	@Deprecated
 	public static Log getLog(Class<?> clazz) {
 		return getLog(clazz.getName());
 	}
@@ -39,8 +40,16 @@ public final class Logs {
 	 * @throws NullPointerException
 	 *             when className is null, maybe it will case NPE
 	 */
+	@Deprecated
 	public static Log getLog(String className) {
 		return adapter.getLogger(className);
+	}
+	/**
+	 * 返回以调用者的类命名的Log,是获取Log对象最简单的方法!
+	 * @return
+	 */
+	public static Log get() {
+		return adapter.getLogger(new Throwable().getStackTrace()[1].getClassName());
 	}
 
 	/**

@@ -56,7 +56,7 @@ import org.nutz.log.Logs;
  */
 public class DefaultEntityMaker implements EntityMaker {
 
-	private static final Log log = Logs.getLog(DefaultEntityMaker.class);
+	private static final Log log = Logs.get();
 
 	public Entity<?> make(DatabaseMeta db, Connection conn, Class<?> type) {
 		Entity<?> entity = new Entity<Object>();

@@ -14,7 +14,7 @@ import org.nutz.mvc.NutConfig;
  */
 public class FailProcessor extends ViewProcessor {
 	
-	private static final Log log = Logs.getLog(FailProcessor.class);
+	private static final Log log = Logs.get();
 
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
