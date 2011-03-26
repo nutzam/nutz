@@ -7,6 +7,7 @@ import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.impl.ComboContext;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
@@ -39,7 +40,7 @@ public class ModuleProcessor extends AbstractProcessor {
 		RequestIocContext reqContext = null;
 		try {
 			if (null == injectName) {
-				ac.setModule(moduleType.newInstance());
+				ac.setModule(Mirror.me(moduleType).born());
 			} else {
 				Ioc ioc = ac.getIoc();
 				if (null == ioc)

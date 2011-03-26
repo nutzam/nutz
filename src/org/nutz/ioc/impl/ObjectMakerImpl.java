@@ -108,14 +108,13 @@ public class ObjectMakerImpl implements ObjectMaker {
 		return op;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, String str) {
 		if (Strings.isBlank(str))
 			return null;
 		if (str.contains(".")) {
 			try {
-				Class<? extends IocEventTrigger> triggerType = (Class<? extends IocEventTrigger>) Lang.loadClass(str);
-				return triggerType.newInstance();
+				return (IocEventTrigger<Object>) Mirror.me(Lang.loadClass(str)).born();
 			}
 			catch (Exception e) {
 				throw Lang.wrapThrow(e);

@@ -15,6 +15,7 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import static org.nutz.ioc.Iocs.*;
 
@@ -169,7 +170,7 @@ public class IocLoading {
 		// Collection
 		else if (obj instanceof Collection<?>) {
 			try {
-				Collection<IocValue> values = (Collection<IocValue>) obj.getClass().newInstance();
+				Collection<IocValue> values = (Collection<IocValue>) Mirror.me(obj).born();
 				Iterator<?> it = ((Collection<?>) obj).iterator();
 				while (it.hasNext()) {
 					Object o = it.next();

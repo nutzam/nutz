@@ -200,7 +200,7 @@ public class NutLoading implements Loading {
 			if ((!Strings.isBlank(value)) && value.startsWith("ioc:"))
 				return config.getIoc().get(UrlMapping.class, value.substring(4));
 			else
-				return (UrlMapping) Lang.loadClass(umb.value()).newInstance();
+				return (UrlMapping) Mirror.me(Lang.loadClass(umb.value())).born();
 		}
 		return new UrlMappingImpl();
 	}
@@ -219,7 +219,7 @@ public class NutLoading implements Loading {
 		if (null != sb) {
 			if (log.isInfoEnabled())
 				log.info("Setup application...");
-			Setup setup = sb.value().newInstance();
+			Setup setup = Mirror.me(sb.value()).born();
 			config.setAttributeIgnoreNull(Setup.class.getName(), setup);
 			setup.init(config);
 		}
@@ -246,7 +246,7 @@ public class NutLoading implements Loading {
 		if (null != vms) {
 			makers = new ViewMaker[vms.value().length + 1];
 			for (; i < vms.value().length; i++)
-				makers[i] = vms.value()[i].newInstance();
+				makers[i] = Mirror.me(vms.value()[i]).born();
 
 		} else {
 			makers = new ViewMaker[1];
@@ -270,7 +270,7 @@ public class NutLoading implements Loading {
 			if (log.isDebugEnabled())
 				log.debugf("@IocBy(%s)", ib.type().getName());
 
-			Ioc ioc = ib.type().newInstance().create(config, ib.args());
+			Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
 			// 如果是 Ioc2 的实现，增加新的 ValueMaker
 			if (ioc instanceof Ioc2) {
 				((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));

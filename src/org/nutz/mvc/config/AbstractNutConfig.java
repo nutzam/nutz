@@ -7,6 +7,7 @@ import java.util.List;
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
@@ -40,7 +41,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 		try {
 			if (log.isDebugEnabled())
 				log.debug("Loading by " + by.value());
-			return by.value().newInstance();
+			return Mirror.me(by.value()).born();
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);

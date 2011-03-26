@@ -10,6 +10,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 
 /**
  * 
@@ -44,11 +45,10 @@ public abstract class AbstractAopConfigration implements AopConfigration {
 			return ioc.get(MethodInterceptor.class, interceptorName.substring(4));
 		try {
 			if (singleton == false)
-				return (MethodInterceptor) Lang.loadClass(interceptorName).newInstance();
+				return (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
 			MethodInterceptor methodInterceptor = cachedMethodInterceptor.get(interceptorName);
 			if (methodInterceptor == null) {
-				methodInterceptor = (MethodInterceptor) Class	.forName(interceptorName)
-																.newInstance();
+				methodInterceptor = (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
 				cachedMethodInterceptor.put(interceptorName, methodInterceptor);
 			}
 			return methodInterceptor;

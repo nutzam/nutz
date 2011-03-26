@@ -3,6 +3,7 @@ package org.nutz.trans;
 import java.sql.Connection;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 
 /**
  * 用模板的方式操作事务
@@ -36,7 +37,7 @@ public abstract class Trans {
 
 	private static void begain(int level) throws Exception {
 		if (null == trans.get()) {
-			Transaction tn = null == implClass ? new NutTransaction() : implClass.newInstance();
+			Transaction tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
 			tn.setLevel(level);
 			trans.set(tn);
 			count.set(0);

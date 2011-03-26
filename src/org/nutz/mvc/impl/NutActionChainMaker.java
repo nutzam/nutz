@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChain;
@@ -52,6 +53,6 @@ public class NutActionChainMaker implements ActionChainMaker {
 		if (name.startsWith("ioc:") && name.length() > 4)
 			return config.getIoc().get(Processor.class, name.substring(4));
 		else
-			return (Processor) Lang.loadClass(name).newInstance();
+			return (Processor) Mirror.me(Lang.loadClass(name)).born();
 	}
 }

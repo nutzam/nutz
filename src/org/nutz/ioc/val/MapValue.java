@@ -10,6 +10,7 @@ import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.meta.Pair;
 
 public class MapValue implements ValueProxy {
@@ -33,7 +34,7 @@ public class MapValue implements ValueProxy {
 
 	public Object get(IocMaking ing) {
 		try {
-			Map<String, Object> map = type.newInstance();
+			Map<String, Object> map = Mirror.me(type).born();
 			for (Pair<ValueProxy> p : list)
 				map.put(p.getName(), p.getValue().get(ing));
 			return map;

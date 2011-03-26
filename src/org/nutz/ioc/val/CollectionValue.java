@@ -7,6 +7,7 @@ import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 
 public class CollectionValue implements ValueProxy {
 
@@ -27,7 +28,7 @@ public class CollectionValue implements ValueProxy {
 
 	public Object get(IocMaking ing) {
 		try {
-			Collection<Object> re = type.newInstance();
+			Collection<Object> re = Mirror.me(type).born();
 			for (ValueProxy vp : values)
 				re.add(vp.get(ing));
 			return re;
