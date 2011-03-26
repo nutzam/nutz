@@ -14,14 +14,14 @@ public class MainModuleA {
 
 	@At("/param/a")
 	@Ok("json")
-	public List<String> f_A(@Param("nm") String name, @Param("ids") long[] ids) {
+	public List<String> f_A(@Param("ids") long[] ids) {
 		return Lang.list(Json.toJson(ids));
 	}
 
 	@At("/param/b")
 	@Ok("raw")
-	public String f_B(@Param("nm") String name, @Param("ids") long[] ids) {
-		return name + Json.toJson(ids);
+	public String f_B(@Param("ids") long[] ids) {
+		return Json.toJson(ids);
 	}
 
 }
