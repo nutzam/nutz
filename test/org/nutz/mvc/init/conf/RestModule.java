@@ -37,4 +37,9 @@ public class RestModule {
 		return "get&post";
 	}
 
+	@At("/a/?/b/?/c/*")
+	public String pathArgs_01(int a, int b, String c) {
+		return c + "?a=" + a + "&b=" + b;
+	}
+
 }

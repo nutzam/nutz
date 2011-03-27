@@ -81,4 +81,12 @@ public class RestModuleTest extends AbstractMvcTest {
 		servlet.service(request, response);
 		assertEquals(404, response.getStatus());
 	}
+
+	@Test
+	public void test_pathArgs_01() throws Exception {
+		request.setPathInfo("/a/45/b/23/c/xyz");
+		servlet.service(request, response);
+		String re = response.getAsString();
+		assertEquals("xyz?a=45&b=23", re);
+	}
 }
