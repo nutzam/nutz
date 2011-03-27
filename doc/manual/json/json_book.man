@@ -1,0 +1,143 @@
+#title:Json Book
+#author:mastung(mastung@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------------------------
+目标
+
+	* 通过简单的toJson 和fromJson能完成绝大部分的互转工作, 不再需要额外的配置.
+	* 能够提供模板, 容易的更改Json的展现, 和反向的Java Object生成
+	* 适用于任何的Java对象, 包括基本类型
+	* 支持JDK1.5+
+--------------------------------------------------------------------------------------------------------
+简单开始
+
+	Java转换成Json:
+	{{{<JAVA>
+	Json.toJson(6.5); ===> 输出: 6.5
+	Json.toJson("json"); ===> 输出: "json"
+	Json.toJson(new int[0]); ===> 输出: []
+	}}}
+	
+	Json转换成Java:
+	{{{<JAVA>
+	int intValue = Json.fromJson(Lang.inr("65"));
+	float floatValue = Json.fromJson(float.class, Lang.inr("65"));
+	int[] intArray = Json.fromJson(int[].class, Lang.inr("[65]"));
+	}}}
+--------------------------------------------------------------------------------------------------------	
+对Map的操作
+	
+	Java转换成Json:
+	{{{<JAVA>
+	Map<String,Object> map = new HashMap<String, Object>();
+	map.put("name", "Peter");
+	map.put("age", 21);
+	map.put("friends", null);
+	System.out.println(Json.toJson(map));
+	}}}
+	这个时候会输出成:
+	{{{<JSON>
+	{
+		age :21,
+		name :"Peter"
+	}
+	}}}
+	会自动忽略掉值为空的字段.
+	
+	Json转换成Java:
+	{{{<JAVA>
+	String json = "{age :21,name :\"Peter\"}";
+	map = Json.fromJson(HashMap.class, Lang.inr(json));
+	}}}
+--------------------------------------------------------------------------------------------------------	
+对Bean的操作
+
+	设计这样的类:
+	{{{
+	public static class UserObject {
+		public static enum Sex {
+			Male, Female
+		};
+		private String name;
+		private int age;
+		private Sex sex;
+		private Date birthday;
+		private UserObject bestFriend;
+	//省略Getter/setter
+	}
+	}}}
+	Java转换成Json:
+	{{{<JAVA>
+	UserObject peter = new UserObject();
+	peter.setName("Peter");
+	peter.setAge(22);
+	peter.setSex(UserObject.Sex.Male);
+	System.out.println(Json.toJson(peter));
+	}}}
+	这个时候会输出成:
+	{{{<JSON>
+	{
+		name :"Peter",
+		age :22,
+		sex :"Male"
+	}
+	}}}
+	会自动忽略掉值没有赋值的字段birthday和bestFriend.
+
+	更进一步, 我们来看看关联的情况, 在以上代码的基础上面:
+	{{{<JAVA>
+	amy.setName("Amy");
+	amy.setAge(21);
+	amy.setSex(UserObject.Sex.Female);
+	amy.setBirthday(new Date());
+	amy.setBestFriend(peter);
+	System.out.println(Json.toJson(amy));
+	}}}
+	这个时候会输出成:
+	{{{<JSON>
+	{
+		name :"Amy",
+		age :21,
+		sex :"Female",
+		birthday :"2009-04-11 21:28:59",
+		bestFriend :{
+		name :"Peter",
+		age :22,
+		sex :"Male"
+		}
+	}
+	}}}
+	关联对象的关联会被自动探知.
+	
+	注意:如果关联里面存在循环关联,在内部对象的关联属性里面会被置空. 如:
+	{{{<JAVA>
+	peter.setBestFriend(amy);
+	System.out.println(Json.toJson(peter));
+	}}}
+	这个时候输出:
+	{{{
+	{
+	name :"Amy",
+	age :21,
+	sex :"Female",
+	birthday :"2009-04-11 21:28:59",
+	bestFriend :{
+		name :"Peter",
+		age :22,
+		sex :"Male",
+		bestFriend :null
+		}
+	}
+	}}}
+--------------------------------------------------------------------------------------------------------
+更进一步
+
+	还可以定制JsonFormat的属性来控制输出内容. 如是否忽略null字段, 是否压缩等等.
+	
+	JsonFormat默认提供了3种初始对象:
+		* compact() : 压缩并忽略null字段
+		* nice() : 不压缩;字段名不加引号;忽略null字段
+		* full() : 不压缩;字段名加引号;不忽略null字段
+		
+	

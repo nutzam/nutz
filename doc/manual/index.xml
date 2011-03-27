@@ -68,6 +68,7 @@
 		<doc path="formater.man"/>
 		<doc path="with_castors.man"/>
 		<doc path="customize.man"/>
+		<doc path="json_book.man"></doc>
 	</doc>
     <doc path="el" title="表达式引擎">
 		<doc path="overview.man"></doc>
