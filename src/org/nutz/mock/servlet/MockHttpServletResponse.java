@@ -31,12 +31,17 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
 	protected int status;
 
+	protected String statusMessage;
+
 	protected Locale locale;
+
+	protected String contentType;
 
 	public MockHttpServletResponse() {
 		headers = new HashMap<String, String>();
 		cookies = new HashSet<Cookie>();
 		status = 200;
+		statusMessage = "OK";
 	}
 
 	public void addCookie(Cookie cookie) {
@@ -76,7 +81,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void sendError(int error) throws IOException {
-		status = error;
+		throw Lang.noImplement();
 	}
 
 	public void sendError(int arg0, String arg1) throws IOException {
@@ -103,8 +108,9 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		this.status = status;
 	}
 
-	public void setStatus(int arg0, String arg1) {
-		throw Lang.noImplement();
+	public void setStatus(int status, String statusMessage) {
+		this.status = status;
+		this.statusMessage = statusMessage;
 	}
 
 	public void flushBuffer() throws IOException {
@@ -164,14 +170,20 @@ public class MockHttpServletResponse implements HttpServletResponse {
 		throw Lang.noImplement();
 	}
 
-	protected String contentType;
-
 	public void setContentType(String contentType) {
 		this.contentType = contentType;
 	}
 
 	public void setLocale(Locale locale) {
 		this.locale = locale;
+	}
+
+	public int getStatus() {
+		return status;
+	}
+
+	public String getStatusMessage() {
+		return statusMessage;
 	}
 
 	public String getAsString() {

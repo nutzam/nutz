@@ -1,0 +1,71 @@
+#title: REST 的支持
+#author: zozoh
+#index:0,1
+--------------------------------------------------------------------------------------
+为什么要支持 REST
+    
+    这个特性被喊了好几个版本了，并且先后被报了好几个 Issue:
+     * [http://code.google.com/p/nutz/issues/detail?id=323 Issue 323]
+     * [http://code.google.com/p/nutz/issues/detail?id=369 Issue 369]
+    
+    加上今天是个风和日丽的日子，Nutz.Mvc 重构完毕。架构这么灵活强大，
+    那么我就把这个特性加上吧，呵呵。
+
+--------------------------------------------------------------------------------------
+如何使用 REST
+    
+    暂时的，Nutz.Mvc 对于 REST 的支持，仅仅包括四个方法：
+     * GET
+     * POST
+     * PUT
+     * DELETE
+
+    比如，你有一个 User 对象，你想为其增加 "修改" 和 "删除" 的操作，在模块类里你可以定义如下两个方法
+    {{{
+    @At("/user/?")
+    @GET
+    public User getUser(int userId){
+        // TODO 这里是实现代码
+    }
+
+    @At("/user/?")
+    @POST
+    public User updateUser(int userId, @Param("..") User user){
+        // TODO 这里是实现代码
+    }
+
+    @At("/user/?")
+    @DELETE
+    public void deleteUser(int userId){
+        // TODO 这里是实现代码
+    }
+    }}}
+
+    看，很简单，不是吗？
+    你可以为你的请求设置路径参数，也可以为你的请求声明一个特殊的 HTTP 方法。路径参数的形式可以是：
+     # {#FF00FF; /user/?/topic/?}
+     # {#FF00FF; /user/?/topic/*}
+     # {#FF00FF; /*}
+    关于 "路径参数" 的具体的解释，请参看 [http_adaptor.man 适配器] > [http_adaptor.man#路径参数 路径参数]
+
+    在一个入口函数上，你可以标注一个或多个下面的注解:
+     * {#888888;* `@GET`}
+     * {#888888;* `@POST`}
+     * {#888888;* `@PUT`}
+     * {#888888;* `@DELETE`}
+    这几个注解描述了当前入口函数仅仅相应什么样的 HTTP 请求方法。在你的应用运行时，即使 Nut.Mvc 
+    匹配上了 URL，如果 HTTP 请求的方法和你声明的不符，它也当这个入口函数不存在。
+    
+    如果你不声明这四个注解中的任何一个，则表示你希望你的这个入口函数处理发送到这个 URL 的任何
+    HTTP 请求。
+
+    因此，你可以为一个入口函数声明 (@GET|@POST|@PUT|@DELETE) 中的一个或多个，处理其中一种或者多种
+    HTTP 请求，而另外一个入口函数不声明注解，用来处理余下的其他 HTTP 请求方法。当然，这两个入口
+    函数的 @At 应该是一致的。
+
+
+
+    
+
+
+

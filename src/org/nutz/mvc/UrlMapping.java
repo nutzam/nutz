@@ -1,5 +1,6 @@
 package org.nutz.mvc;
 
+import org.nutz.mvc.impl.ActionInvoker;
 
 /**
  * 路径映射
@@ -19,15 +20,15 @@ public interface UrlMapping {
 	void add(ActionChainMaker maker, ActionInfo ai, NutConfig config);
 
 	/**
-	 * 根据一个路径，获取一个处理器，并且，如果这个路径中包括统配符 '?' 或者 '*' <br>
+	 * 根据一个路径，获取一个动作链的调用者，并且，如果这个路径中包括统配符 '?' 或者 '*' <br>
 	 * 需要为上下文对象设置好路径参数
 	 * 
 	 * @param ac
 	 *            上下文对象
 	 * @param path
 	 *            路径
-	 * @return 处理器链表头节点
+	 * @return 动作链的调用者
 	 */
-	ActionChain get(ActionContext ac);
+	ActionInvoker get(ActionContext ac);
 
 }

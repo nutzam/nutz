@@ -3,6 +3,8 @@ package org.nutz.mvc;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.impl.ActionInvoker;
+
 public class ActionHandler {
 
 	private Loading loading;
@@ -21,12 +23,11 @@ public class ActionHandler {
 		ActionContext ac = new ActionContext();
 		ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
-		ActionChain chain = mapping.get(ac);
-		if (null == chain)
+		ActionInvoker invoker = mapping.get(ac);
+		if (null == invoker)
 			return false;
 
-		chain.doChain(ac);
-		return true;
+		return invoker.invoke(ac);
 	}
 
 	public void depose() {

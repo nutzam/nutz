@@ -25,11 +25,15 @@ import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.By;
 import org.nutz.mvc.annotation.Chain;
+import org.nutz.mvc.annotation.DELETE;
 import org.nutz.mvc.annotation.Encoding;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
+import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.POST;
+import org.nutz.mvc.annotation.PUT;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
@@ -47,7 +51,6 @@ public abstract class Loadings {
 		evalModule(ai, type);
 		return ai;
 	}
-	
 
 	static ActionInfo createInfo(Method method) {
 		ActionInfo ai = new ActionInfo();
@@ -58,10 +61,11 @@ public abstract class Loadings {
 		evalFail(ai, method.getAnnotation(Fail.class));
 		evalAt(ai, method.getAnnotation(At.class), method.getName());
 		evalActionChainMaker(ai, method.getAnnotation(Chain.class));
+		evalHttpMethod(ai, method);
 		ai.setMethod(method);
 		return ai;
 	}
-	
+
 	static Set<Class<?>> scanModules(Class<?> mainModule) {
 		Modules ann = mainModule.getAnnotation(Modules.class);
 		boolean scan = null == ann ? false : ann.scanPackage();
@@ -104,6 +108,17 @@ public abstract class Loadings {
 			}
 		}
 		return modules;
+	}
+
+	private static void evalHttpMethod(ActionInfo ai, Method method) {
+		if (method.getAnnotation(GET.class) != null)
+			ai.getHttpMethods().add("GET");
+		if (method.getAnnotation(POST.class) != null)
+			ai.getHttpMethods().add("POST");
+		if (method.getAnnotation(PUT.class) != null)
+			ai.getHttpMethods().add("PUT");
+		if (method.getAnnotation(DELETE.class) != null)
+			ai.getHttpMethods().add("DELETE");
 	}
 
 	private static void evalActionChainMaker(ActionInfo ai, Chain cb) {
@@ -187,7 +202,6 @@ public abstract class Loadings {
 		}
 		return Mirror.me(type).born((Object[]) args);
 	}
-	
 
 	private static boolean isModule(Class<?> classZ) {
 		int classModify = classZ.getModifiers();
@@ -200,6 +214,5 @@ public abstract class Loadings {
 				return true;
 		return false;
 	}
-
 
 }

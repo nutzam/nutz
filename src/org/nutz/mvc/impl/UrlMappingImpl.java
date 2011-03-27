@@ -1,6 +1,8 @@
 package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
@@ -18,10 +20,13 @@ public class UrlMappingImpl implements UrlMapping {
 
 	private static final Log log = Logs.get();
 
-	private MappingNode<ActionChain> root;
+	private Map<String, ActionInvoker> map;
+
+	private MappingNode<ActionInvoker> root;
 
 	public UrlMappingImpl() {
-		this.root = new MappingNode<ActionChain>();
+		this.map = new HashMap<String, ActionInvoker>();
+		this.root = new MappingNode<ActionInvoker>();
 	}
 
 	public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
@@ -29,8 +34,27 @@ public class UrlMappingImpl implements UrlMapping {
 		for (String path : ai.getPaths()) {
 			if (Strings.isBlank(path))
 				throw new BlankAtException(ai.getModuleType(), ai.getMethod());
-			//将 action 链头,做为一个处理器映射到path上
-			root.add(path, chain);
+
+			// 尝试获取，看看有没有创建过这个 URL 调用者
+			ActionInvoker invoker = map.get(path);
+
+			// 如果没有增加过这个 URL 的调用者，为其创建备忘记录，并加入索引
+			if (null == invoker) {
+				invoker = new ActionInvoker();
+				map.put(path, invoker);
+				root.add(path, invoker);
+			}
+
+			// 将动作链，根据特殊的 HTTP 方法，保存到调用者内部
+			if (ai.isForSpecialHttpMethod()) {
+				for(String httpMethod : ai.getHttpMethods())
+					invoker.addChain(httpMethod, chain);
+			}
+			// 否则，将其设置为默认动作链
+			else {
+				invoker.setDefaultChain(chain);
+			}
+
 			/*
 			 * 打印基本调试信息
 			 */
@@ -67,12 +91,12 @@ public class UrlMappingImpl implements UrlMapping {
 			config.getAtMap().add(ai.getPathKey(), ai.getPaths()[0]);
 	}
 
-	public ActionChain get(ActionContext ac) {
+	public ActionInvoker get(ActionContext ac) {
 		String path = Mvcs.getRequestPath(ac.getRequest());
-		ActionChain actionChain = root.get(ac, path);
-		if(log.isDebugEnabled())
-			log.debugf("find mapping [%s] for path [%s]", actionChain, path);
-		return actionChain;
+		ActionInvoker invoker = root.get(ac, path);
+		if (log.isDebugEnabled())
+			log.debugf("find mapping [%s] for path [%s]", invoker, path);
+		return invoker;
 	}
 
 }

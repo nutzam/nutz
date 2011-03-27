@@ -1,0 +1,110 @@
+#title: 1.b.36 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.36 发行注记
+
+	Hi, 大家好，又是我。
+	
+	接着本次发布的机会，我们要 highlight 一位开发者 -- {*juqkai}。
+	
+	在他和 [http://myblog.sunfarms.net/ Wendal同学]的[http://code.google.com/p/nutz/source/detail?r=1823 前后鼓动下]，
+	我们终于毅然的重写了[http://code.google.com/p/nutz/wiki/mvc_action_chain Mvc的核心加载逻辑]。
+	
+	现在的 Mvc 更加灵活，至于如何灵活，大家可以读读 [http://code.google.com/p/nutz/wiki/mvc_action_chain 这篇文档]。
+	
+	同时，我发现 {*juqkai} 同学也是一位对代码的品质有执着追求的同学，比如他
+	[http://code.google.com/p/nutz/source/detail?r=1901 毅然的重构了 Nutz 的 JsonParsing]，记得当时我写这个类时，
+	就是一个大函数，一个长长的 switch...case，因为我想:"JSON 这点简单的东东，还用弄个什么结构吗？"。 但是后来我发现代码越来越长，
+	也犹豫过："要不要重构一下，起码弄几个私有函数嘛。"。 但是后来想:"算了，反正长也不过 400行。我还要留点时间看火影的好 ^_^"
+	
+	但是，我这点懒散被目光如炬的 {*juqkai} 的同学发现了，他挺身而出，完成了我一直想做但可耻的没有做的事情。实话说，这种精神
+	已经感动我好几个礼拜了。 喂神马！喂神马！又出现一个执着于代码品质的提交者涅？ 
+	
+	这版 Nutz 经过这次重构，解决了很多 Mvc 方面潜在的问题。 这时，似乎大家又把目光投向了 Dao。 恩，是的，我们打算重构一下它。
+	彻底的重构。
+	
+	有些人可能会担心，你们这么乱搞，代码的正确性如何保证啊？ 我们基本不太担心，我们的代码质量现在基本由 600 多个 JUnit 来保证。
+	每当有人报 Issue，我们会尽可能添加 JUnit 来重现。 我记得在早些时候，我认为如果项目的 JUnit 到了 1000 个，那么代码的质量
+	应该是坚若磐石的。现在我们可以说，Nutz 差不多是一块 65% 的磐石。 即使我们肆无忌惮的重构，它的质量也不太会发生什么大的变化。
+	所以，很有可能在之后的1－2个版本，我们会重构 Dao.		
+	
+--------------------------------------------------------------------------------------------------------
+问题修复
+	* [http://code.google.com/p/nutz/issues/detail?id=204 Issue 204] Mirror表达式（嵌套属性的支持）  {#AAA;by} {*jiongs753}
+	* [http://code.google.com/p/nutz/issues/detail?id=350 Issue 350] 实现更优雅的URL  {#AAA;by} {*wesnow}
+	* [http://code.google.com/p/nutz/issues/detail?id=354 Issue 354] Mvc:是否可以在执行ActionFilter之前进行参数适配，并将适配后的参数数组作为传入ActionFilter  {#AAA;by} {*landraxee}
+	* [http://code.google.com/p/nutz/issues/detail?id=381 Issue 381] 关于上传文件正则表达式匹配可以支持的文件名报错的问题  {#AAA;by} {*axhack}
+	* [http://code.google.com/p/nutz/issues/detail?id=382 Issue 382] 能否考虑将DefaultEntityMaker中的哪些私有的方法改为protected的?  {#AAA;by} {*a357857613@qq.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=384 Issue 384] 换成 JSON 字符串时，\u转义有误  {#AAA;by} {*fjayblue}
+	* [http://code.google.com/p/nutz/issues/detail?id=388 Issue 388] Json: 多线程的时候，转换时间类型到字符串会出现错误  {#AAA;by} {*liaojiaohe}
+	* [http://code.google.com/p/nutz/issues/detail?id=389 Issue 389] Cnd拼条件时使用not in，生成的SQL文不正确  {#AAA;by} {*pangwu86}
+	* [http://code.google.com/p/nutz/issues/detail?id=392 Issue 392] 配置正确的url路径却进不到对应的Action  {#AAA;by} {*pangwu86}
+	* [http://code.google.com/p/nutz/issues/detail?id=393 Issue 393] Feature: Please support variant in the locale message  {#AAA;by} {*袁青云}
+	* [http://code.google.com/p/nutz/issues/detail?id=394 Issue 394] 路径参数最好定义成包装类型  {#AAA;by} {*wesnow}
+	* [http://code.google.com/p/nutz/issues/detail?id=396 Issue 396] 处理异常信息的时候出现异常  {#AAA;by} {*fjayblue}
+	* [http://code.google.com/p/nutz/issues/detail?id=397 Issue 397] El.eval在某些算式中出现的问题  {#AAA;by} {*ywjno.dev}
+	* [http://code.google.com/p/nutz/issues/detail?id=399 Issue 399] WebResourceScan.list NullPointerException  {#AAA;by} {*jiongs753}
+	* [http://code.google.com/p/nutz/issues/detail?id=404 Issue 404] FailProcessor 异常时不会在控制台打印信息  {#AAA;by} {*juqkai}
+	* [http://code.google.com/p/nutz/issues/detail?id=411 Issue 411] WebResourceScan 不能扫描 classpath 下面的 jar 包.  {#AAA;by} {*Json.Shen}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*664}  个单元测试用例,代码覆盖率达到{#FF00FF*66%}(按line计算)
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+--------------------------------------------------------------------------------------------------------
+文档
+
+	 * 增加 [http://code.google.com/p/nutz/wiki/mvc_action_chain 动作链]
+
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [http://code.google.com/p/nutzdemo Demo Site] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}
+    || 贡献者        || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || A357857613	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Axhack    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Fjayblue  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Json.Shen 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Juqkai    	||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  O   ||
+    || Landraxee 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Liaojiaohe	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Pangwu86  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Wendal    	||  O   ||  O   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || Wesnow    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Ywjno.dev 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || zozoh    	||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||  O   ||
+    || 天行健       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 袁青云       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[http://build.sunfarms.net/nutz/lastest/manual/ 用户手册]
+

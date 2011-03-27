@@ -24,6 +24,8 @@ public class ActionInfo {
 
 	private String failView;
 
+	private List<String> httpMethods;
+
 	private ObjectInfo<? extends ActionFilter>[] filterInfos;
 
 	private String injectName;
@@ -31,6 +33,10 @@ public class ActionInfo {
 	private Class<?> moduleType;
 
 	private Method method;
+
+	public ActionInfo() {
+		httpMethods = new ArrayList<String>(4);
+	}
 
 	public ActionInfo mergeWith(ActionInfo parent) {
 		// 组合路径 - 与父路径做一个笛卡尔积
@@ -56,6 +62,28 @@ public class ActionInfo {
 		moduleType = null == moduleType ? parent.moduleType : moduleType;
 		chainName = null == chainName ? parent.chainName : chainName;
 		return this;
+	}
+
+	/**
+	 * @return 这个入口函数是不是只匹配特殊的 http 方法。
+	 */
+	public boolean isForSpecialHttpMethod() {
+		return httpMethods.size() > 0;
+	}
+
+	/**
+	 * 只能接受如下字符串
+	 * <ul>
+	 * <li>GET
+	 * <li>PUT
+	 * <li>POST
+	 * <li>DELETE
+	 * </ul>
+	 * 
+	 * @return 特殊的 HTTP 方法列表
+	 */
+	public List<String> getHttpMethods() {
+		return httpMethods;
 	}
 
 	public String getPathKey() {

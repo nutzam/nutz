@@ -61,6 +61,7 @@
 		<doc path="action_filter.man"/>
 		<doc path="file_upload.man"/>
 		<doc path="module_of_request.man"/>
+    	<doc path="rest.man"/>
 		<doc path="annotations.man"/>
 	</doc>
 	<doc path="json" title="Json 手册">
