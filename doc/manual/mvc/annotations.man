@@ -35,10 +35,10 @@
 	|| {#888;@AdaptBy}		|| HTTP 参数适配方式 ||
 	|| {#888;@Filters}		|| 函数的过滤器数组 ||
 	|| {#888;@Encoding}		|| HTTP 请求的输入输出字符编码 ||
-	|| {#8899FF;@GET        || 限定函数接受 HTTP GET 请求 ||
-	|| {#8899FF;@POST       || 限定函数接受 HTTP POST 请求 ||
-	|| {#8899FF;@PUT        || 限定函数接受 HTTP PUT 请求 ||
-	|| {#8899FF;@DELETE     || 限定函数接受 HTTP DELETE 请求 ||
+	|| {#8899FF;@GET}       || 限定函数接受 HTTP GET 请求 ||
+	|| {#8899FF;@POST}      || 限定函数接受 HTTP POST 请求 ||
+	|| {#8899FF;@PUT}       || 限定函数接受 HTTP PUT 请求 ||
+	|| {#8899FF;@DELETE}    || 限定函数接受 HTTP DELETE 请求 ||
 
 	 * 灰色的注解表示还可以应用在{*子模块}以及{*入口函数}上
 	 * 蓝色的注解表示只能应用在{*入口函数}上
