@@ -35,7 +35,6 @@ import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
-import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.view.DefaultViewMaker;
 
 public class NutLoading implements Loading {
@@ -59,7 +58,6 @@ public class NutLoading implements Loading {
 		 * 准备返回值
 		 */
 		UrlMapping mapping;
-		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
 
 		/*
 		 * 准备计时
