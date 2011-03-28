@@ -1548,11 +1548,11 @@ public abstract class Lang {
 	@SuppressWarnings("rawtypes")
 	public static Class<?> getTypeClass(Type type) {
 		Class<?> clazz = null;
-		if (type instanceof ParameterizedType) {
+		if (type instanceof Class<?>) {
+			clazz = (Class<?>) type;
+		} else if (type instanceof ParameterizedType) {
 			ParameterizedType pt = (ParameterizedType) type;
 			clazz = (Class<?>) pt.getRawType();
-		} else if (type instanceof Class<?>) {
-			clazz = (Class<?>) type;
 		} else if (type instanceof GenericArrayType) {
 			GenericArrayType gat = (GenericArrayType) type;
 			Class<?> typeClass = getTypeClass(gat.getGenericComponentType());
