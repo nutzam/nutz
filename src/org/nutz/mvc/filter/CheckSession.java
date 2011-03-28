@@ -12,7 +12,7 @@ import org.nutz.mvc.view.ServerRedirectView;
  * 构造函数需要两个参数
  * <ul>
  * <li>第一个是， 需要检查的属性名称。如果 session 里存在这个属性，则表示通过检查
- * <li>第二个是，如果未通过检查，将当前请求转向何处。 一个类似 /youpaht/xxx.xx 的路径
+ * <li>第二个是，如果未通过检查，将当前请求转向何处。 一个类似 /yourpath/xxx.xx 的路径
  * </ul>
  * 
  * @author zozoh(zozohtnt@gmail.com)
