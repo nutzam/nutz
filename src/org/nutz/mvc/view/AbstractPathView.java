@@ -67,26 +67,28 @@ public abstract class AbstractPathView implements View {
 	public static Context createContext(HttpServletRequest req, Object obj) {
 		Context context = Lang.context();
 		// 复制全局的上下文对象
-		Object servletContext = req.getSession()
+		Object globalContext = req.getSession()
 									.getServletContext()
 									.getAttribute(Loading.CONTEXT_NAME);
-		if (servletContext != null) {
-			context.putAll((Context) servletContext);
+		if (globalContext != null) {
+			context.putAll((Context) globalContext);
 		}
-		// 请求的参数表
+
+		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
 		Map<String,String> p = new HashMap<String, String>();
 		for (Object o : req.getParameterMap().keySet()) {
 			String key = (String) o;
-			context.set(key, req.getParameter(key));
 			p.put(key, req.getParameter(key));
 		}
-		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
 		context.set("p", p);
+		
 		// 请求对象的属性列表
+		Map<String,Object> a = new HashMap<String, Object>();
 		for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
 			String tem = en.nextElement();
-			context.set(tem, req.getAttribute(tem));
+			a.put(tem, req.getAttribute(tem));
 		}
+		context.set("a", a);//TODO 是否应该用a呢? attr是不是更加好呢?
 		// 加入返回对象
 		if (null != obj)
 			context.set(ViewProcessor.DEFAULT_ATTRIBUTE, obj);
