@@ -48,7 +48,7 @@
 		你当然可以定制你自己的过滤器，请注意过滤器接口代码：
 		{{{
 		public interface ActionFilter {
-			View match(HttpServletRequest request);
+			View match(ActionContext context);
 		}
 		}}}
 		根据  HttpRequest 对象，你的过滤器需要决定返回值是：
