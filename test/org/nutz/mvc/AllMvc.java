@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 import org.nutz.mvc.adaptor.JsonAdaptorTest;
 import org.nutz.mvc.adaptor.injector.AllInjector;
 import org.nutz.mvc.impl.MappingNodeTest;
+import org.nutz.mvc.impl.ViewProcessorTest;
 import org.nutz.mvc.init.AllInit;
 import org.nutz.mvc.upload.unit.UploadingUnitTest;
 import org.nutz.mvc.upload.util.BufferRingTest;
@@ -22,5 +23,6 @@ import org.nutz.mvc.view.DefaultViewMakerTest;
 						AllInit.class,
 						AllInjector.class,
 						AllView.class,
-						DefaultViewMakerTest.class})
+						DefaultViewMakerTest.class,
+						ViewProcessorTest.class})
 public class AllMvc {}

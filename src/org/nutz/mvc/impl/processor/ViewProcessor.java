@@ -31,7 +31,7 @@ public class ViewProcessor extends AbstractProcessor {
 				putRequestAttribute(ac.getRequest(), ((ViewWrapper)re).getData());
 			((View) re).render(ac.getRequest(), ac.getResponse(), err);
 		} else {
-			putRequestAttribute(ac.getRequest(), re);
+			putRequestAttribute(ac.getRequest(), null == re ? err : re);
 			view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
 		}
 		doNext(ac);
