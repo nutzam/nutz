@@ -250,7 +250,8 @@ class JsonParsing {
 				list = new LinkedList();
 			else
 				list = (List) me.born();
-			tt = type.getActualTypeArguments()[0];
+			if (type != null && type.getActualTypeArguments() != null)
+				tt = type.getActualTypeArguments()[0];
 		} else {
 			throw makeError(String.format(	"Unexpect type '%s', it should be an Array or List!!!",
 											me.getType().getName()));

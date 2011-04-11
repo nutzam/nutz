@@ -583,4 +583,13 @@ public class JsonTest {
 		format.setAutoUnicode(true);
 		assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}",Json.toJson(map,format));
 	}
+	
+	@Test
+	public void test_toList(){
+		List<Map<String,Integer>> msgList = Json.fromJson(List.class, "[{'a':1}, {'b':2}]");
+		assertNotNull(msgList);
+		assertTrue(msgList.size() == 2);
+		assertEquals(1, msgList.get(0).get("a").intValue());
+		assertEquals(2, msgList.get(1).get("b").intValue());
+	}
 }
