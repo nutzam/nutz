@@ -9,6 +9,7 @@ import java.util.Map;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.pager.Pager;
@@ -78,6 +79,8 @@ public class SqlMaker {
 			values.append(", @").append(fn);
 			map.put(fn, value);
 		}
+		if (fields.length() == 0)
+			throw Lang.makeThrow(DaoException.class,"No field will be insert for '%s'", en.getTableName());
 		fields.deleteCharAt(0);
 		values.deleteCharAt(0);
 		Sql sql = Sqls.create(format(	"INSERT INTO %s(%s) VALUES(%s)",
