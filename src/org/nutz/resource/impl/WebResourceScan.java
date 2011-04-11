@@ -52,7 +52,7 @@ public class WebResourceScan extends AbstractResourceScan {
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
-			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);
+			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);//TODO 如果不含classes,一样找不到!!
 			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
 
 			// 那么很好，深层递归一下吧
@@ -62,8 +62,14 @@ public class WebResourceScan extends AbstractResourceScan {
 			List<NutResource> list2 = scanInDir(regex, base, dir, true);
 			for (NutResource nutResource : list2) {
 				String name = nutResource.getName();
-				if (name.indexOf(base) > -1)
-					nutResource.setName(name.substring(base.length()));
+				if (name.indexOf(base) > -1) {
+					String tmpName = name.substring(base.length());
+					if (tmpName.indexOf(src) < 0) {
+						tmpName = src + tmpName;
+						tmpName = tmpName.replaceAll("//", "/");
+					}
+					nutResource.setName(tmpName);
+				}
 				list.add(nutResource);
 			}
 			flag = list2.isEmpty();
