@@ -48,45 +48,45 @@ package org.nutz.repo.org.objectweb.asm;
  */
 public interface MethodVisitor {
 
-    // -------------------------------------------------------------------------
-    // Annotations and non standard attributes
-    // -------------------------------------------------------------------------
-
-    /**
-     * Visits the default value of this annotation interface method.
-     * 
-     * @return a visitor to the visit the actual default value of this
-     *         annotation interface method, or <tt>null</tt> if this visitor
-     *         is not interested in visiting this default value. The 'name'
-     *         parameters passed to the methods of this annotation visitor are
-     *         ignored. Moreover, exacly one visit method must be called on this
-     *         annotation visitor, followed by visitEnd.
-     */
-    AnnotationVisitor visitAnnotationDefault();
-
-    /**
-     * Visits an annotation of this method.
-     * 
-     * @param desc the class descriptor of the annotation class.
-     * @param visible <tt>true</tt> if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or <tt>null</tt> if
-     *         this visitor is not interested in visiting this annotation.
-     */
-    AnnotationVisitor visitAnnotation(String desc, boolean visible);
-
-    /**
-     * Visits an annotation of a parameter this method.
-     * 
-     * @param parameter the parameter index.
-     * @param desc the class descriptor of the annotation class.
-     * @param visible <tt>true</tt> if the annotation is visible at runtime.
-     * @return a visitor to visit the annotation values, or <tt>null</tt> if
-     *         this visitor is not interested in visiting this annotation.
-     */
-    AnnotationVisitor visitParameterAnnotation(
-        int parameter,
-        String desc,
-        boolean visible);
+//    // -------------------------------------------------------------------------
+//    // Annotations and non standard attributes
+//    // -------------------------------------------------------------------------
+//
+//    /**
+//     * Visits the default value of this annotation interface method.
+//     * 
+//     * @return a visitor to the visit the actual default value of this
+//     *         annotation interface method, or <tt>null</tt> if this visitor
+//     *         is not interested in visiting this default value. The 'name'
+//     *         parameters passed to the methods of this annotation visitor are
+//     *         ignored. Moreover, exacly one visit method must be called on this
+//     *         annotation visitor, followed by visitEnd.
+//     */
+//    AnnotationVisitor visitAnnotationDefault();
+//
+//    /**
+//     * Visits an annotation of this method.
+//     * 
+//     * @param desc the class descriptor of the annotation class.
+//     * @param visible <tt>true</tt> if the annotation is visible at runtime.
+//     * @return a visitor to visit the annotation values, or <tt>null</tt> if
+//     *         this visitor is not interested in visiting this annotation.
+//     */
+//    AnnotationVisitor visitAnnotation(String desc, boolean visible);
+//
+//    /**
+//     * Visits an annotation of a parameter this method.
+//     * 
+//     * @param parameter the parameter index.
+//     * @param desc the class descriptor of the annotation class.
+//     * @param visible <tt>true</tt> if the annotation is visible at runtime.
+//     * @return a visitor to visit the annotation values, or <tt>null</tt> if
+//     *         this visitor is not interested in visiting this annotation.
+//     */
+//    AnnotationVisitor visitParameterAnnotation(
+//        int parameter,
+//        String desc,
+//        boolean visible);
 
     /**
      * Visits a non standard attribute of this method.

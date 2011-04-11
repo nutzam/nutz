@@ -362,15 +362,15 @@ public class ClassWriter implements ClassVisitor {
      */
     private int enclosingMethod;
 
-    /**
-     * The runtime visible annotations of this class.
-     */
-    private AnnotationWriter anns;
+//    /**
+//     * The runtime visible annotations of this class.
+//     */
+//    private AnnotationWriter anns;
 
-    /**
-     * The runtime invisible annotations of this class.
-     */
-    private AnnotationWriter ianns;
+//    /**
+//     * The runtime invisible annotations of this class.
+//     */
+//    private AnnotationWriter ianns;
 
     /**
      * The non standard attributes of this class.
@@ -632,26 +632,26 @@ public class ClassWriter implements ClassVisitor {
         }
     }
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        if (!ClassReader.ANNOTATIONS) {
-            return null;
-        }
-        ByteVector bv = new ByteVector();
-        // write type, and reserve space for values count
-        bv.putShort(newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(this, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
-        } else {
-            aw.next = ianns;
-            ianns = aw;
-        }
-        return aw;
-    }
+//    public AnnotationVisitor visitAnnotation(
+//        final String desc,
+//        final boolean visible)
+//    {
+//        if (!ClassReader.ANNOTATIONS) {
+//            return null;
+//        }
+//        ByteVector bv = new ByteVector();
+//        // write type, and reserve space for values count
+//        bv.putShort(newUTF8(desc)).putShort(0);
+//        AnnotationWriter aw = new AnnotationWriter(this, true, bv, bv, 2);
+//        if (visible) {
+//            aw.next = anns;
+//            anns = aw;
+//        } else {
+//            aw.next = ianns;
+//            ianns = aw;
+//        }
+//        return aw;
+//    }
 
     public void visitAttribute(final Attribute attr) {
         attr.next = attrs;
@@ -768,16 +768,16 @@ public class ClassWriter implements ClassVisitor {
             size += 8 + innerClasses.length;
             newUTF8("InnerClasses");
         }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            ++attributeCount;
-            size += 8 + anns.getSize();
-            newUTF8("RuntimeVisibleAnnotations");
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            ++attributeCount;
-            size += 8 + ianns.getSize();
-            newUTF8("RuntimeInvisibleAnnotations");
-        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            ++attributeCount;
+//            size += 8 + anns.getSize();
+//            newUTF8("RuntimeVisibleAnnotations");
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            ++attributeCount;
+//            size += 8 + ianns.getSize();
+//            newUTF8("RuntimeInvisibleAnnotations");
+//        }
         if (attrs != null) {
             attributeCount += attrs.getCount();
             size += attrs.getSize(this, null, 0, -1, -1);
@@ -837,14 +837,14 @@ public class ClassWriter implements ClassVisitor {
             out.putInt(innerClasses.length + 2).putShort(innerClassesCount);
             out.putByteArray(innerClasses.data, 0, innerClasses.length);
         }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            out.putShort(newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            out.putShort(newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
-        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            out.putShort(newUTF8("RuntimeVisibleAnnotations"));
+//            anns.put(out);
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            out.putShort(newUTF8("RuntimeInvisibleAnnotations"));
+//            ianns.put(out);
+//        }
         if (attrs != null) {
             attrs.put(this, null, 0, -1, -1, out);
         }

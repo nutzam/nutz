@@ -181,37 +181,37 @@ class MethodWriter implements MethodVisitor {
      */
     int[] exceptions;
 
-    /**
-     * The annotation default attribute of this method. May be <tt>null</tt>.
-     */
-    private ByteVector annd;
+//    /**
+//     * The annotation default attribute of this method. May be <tt>null</tt>.
+//     */
+//    private ByteVector annd;
 
-    /**
-     * The runtime visible annotations of this method. May be <tt>null</tt>.
-     */
-    private AnnotationWriter anns;
+//    /**
+//     * The runtime visible annotations of this method. May be <tt>null</tt>.
+//     */
+//    private AnnotationWriter anns;
+//
+//    /**
+//     * The runtime invisible annotations of this method. May be <tt>null</tt>.
+//     */
+//    private AnnotationWriter ianns;
 
-    /**
-     * The runtime invisible annotations of this method. May be <tt>null</tt>.
-     */
-    private AnnotationWriter ianns;
+//    /**
+//     * The runtime visible parameter annotations of this method. May be
+//     * <tt>null</tt>.
+//     */
+//    private AnnotationWriter[] panns;
+//
+//    /**
+//     * The runtime invisible parameter annotations of this method. May be
+//     * <tt>null</tt>.
+//     */
+//    private AnnotationWriter[] ipanns;
 
-    /**
-     * The runtime visible parameter annotations of this method. May be
-     * <tt>null</tt>.
-     */
-    private AnnotationWriter[] panns;
-
-    /**
-     * The runtime invisible parameter annotations of this method. May be
-     * <tt>null</tt>.
-     */
-    private AnnotationWriter[] ipanns;
-
-    /**
-     * The number of synthetic parameters of this method.
-     */
-    private int synthetics;
+//    /**
+//     * The number of synthetic parameters of this method.
+//     */
+//    private int synthetics;
 
     /**
      * The non standard attributes of the method.
@@ -461,68 +461,68 @@ class MethodWriter implements MethodVisitor {
     // Implementation of the MethodVisitor interface
     // ------------------------------------------------------------------------
 
-    public AnnotationVisitor visitAnnotationDefault() {
-        if (!ClassReader.ANNOTATIONS) {
-            return null;
-        }
-        annd = new ByteVector();
-        return new AnnotationWriter(cw, false, annd, null, 0);
-    }
-
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        if (!ClassReader.ANNOTATIONS) {
-            return null;
-        }
-        ByteVector bv = new ByteVector();
-        // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
-        } else {
-            aw.next = ianns;
-            ianns = aw;
-        }
-        return aw;
-    }
-
-    public AnnotationVisitor visitParameterAnnotation(
-        final int parameter,
-        final String desc,
-        final boolean visible)
-    {
-        if (!ClassReader.ANNOTATIONS) {
-            return null;
-        }
-        ByteVector bv = new ByteVector();
-        if ("Ljava/lang/Synthetic;".equals(desc)) {
-            // workaround for a bug in javac with synthetic parameters
-            // see ClassReader.readParameterAnnotations
-            synthetics = Math.max(synthetics, parameter + 1);
-            return new AnnotationWriter(cw, false, bv, null, 0);
-        }
-        // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            if (panns == null) {
-                panns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
-            }
-            aw.next = panns[parameter];
-            panns[parameter] = aw;
-        } else {
-            if (ipanns == null) {
-                ipanns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
-            }
-            aw.next = ipanns[parameter];
-            ipanns[parameter] = aw;
-        }
-        return aw;
-    }
+//    public AnnotationVisitor visitAnnotationDefault() {
+//        if (!ClassReader.ANNOTATIONS) {
+//            return null;
+//        }
+//        annd = new ByteVector();
+//        return new AnnotationWriter(cw, false, annd, null, 0);
+//    }
+//
+//    public AnnotationVisitor visitAnnotation(
+//        final String desc,
+//        final boolean visible)
+//    {
+//        if (!ClassReader.ANNOTATIONS) {
+//            return null;
+//        }
+//        ByteVector bv = new ByteVector();
+//        // write type, and reserve space for values count
+//        bv.putShort(cw.newUTF8(desc)).putShort(0);
+//        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
+//        if (visible) {
+//            aw.next = anns;
+//            anns = aw;
+//        } else {
+//            aw.next = ianns;
+//            ianns = aw;
+//        }
+//        return aw;
+//    }
+//
+//    public AnnotationVisitor visitParameterAnnotation(
+//        final int parameter,
+//        final String desc,
+//        final boolean visible)
+//    {
+//        if (!ClassReader.ANNOTATIONS) {
+//            return null;
+//        }
+//        ByteVector bv = new ByteVector();
+//        if ("Ljava/lang/Synthetic;".equals(desc)) {
+//            // workaround for a bug in javac with synthetic parameters
+//            // see ClassReader.readParameterAnnotations
+//            synthetics = Math.max(synthetics, parameter + 1);
+//            return new AnnotationWriter(cw, false, bv, null, 0);
+//        }
+//        // write type, and reserve space for values count
+//        bv.putShort(cw.newUTF8(desc)).putShort(0);
+//        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
+//        if (visible) {
+//            if (panns == null) {
+//                panns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+//            }
+//            aw.next = panns[parameter];
+//            panns[parameter] = aw;
+//        } else {
+//            if (ipanns == null) {
+//                ipanns = new AnnotationWriter[Type.getArgumentTypes(descriptor).length];
+//            }
+//            aw.next = ipanns[parameter];
+//            ipanns[parameter] = aw;
+//        }
+//        return aw;
+//    }
 
     public void visitAttribute(final Attribute attr) {
         if (attr.isCodeAttribute()) {
@@ -1817,32 +1817,32 @@ class MethodWriter implements MethodVisitor {
             cw.newUTF8(signature);
             size += 8;
         }
-        if (ClassReader.ANNOTATIONS && annd != null) {
-            cw.newUTF8("AnnotationDefault");
-            size += 6 + annd.length;
-        }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            cw.newUTF8("RuntimeVisibleAnnotations");
-            size += 8 + anns.getSize();
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            cw.newUTF8("RuntimeInvisibleAnnotations");
-            size += 8 + ianns.getSize();
-        }
-        if (ClassReader.ANNOTATIONS && panns != null) {
-            cw.newUTF8("RuntimeVisibleParameterAnnotations");
-            size += 7 + 2 * (panns.length - synthetics);
-            for (int i = panns.length - 1; i >= synthetics; --i) {
-                size += panns[i] == null ? 0 : panns[i].getSize();
-            }
-        }
-        if (ClassReader.ANNOTATIONS && ipanns != null) {
-            cw.newUTF8("RuntimeInvisibleParameterAnnotations");
-            size += 7 + 2 * (ipanns.length - synthetics);
-            for (int i = ipanns.length - 1; i >= synthetics; --i) {
-                size += ipanns[i] == null ? 0 : ipanns[i].getSize();
-            }
-        }
+//        if (ClassReader.ANNOTATIONS && annd != null) {
+//            cw.newUTF8("AnnotationDefault");
+//            size += 6 + annd.length;
+//        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            cw.newUTF8("RuntimeVisibleAnnotations");
+//            size += 8 + anns.getSize();
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            cw.newUTF8("RuntimeInvisibleAnnotations");
+//            size += 8 + ianns.getSize();
+//        }
+//        if (ClassReader.ANNOTATIONS && panns != null) {
+//            cw.newUTF8("RuntimeVisibleParameterAnnotations");
+//            size += 7 + 2 * (panns.length - synthetics);
+//            for (int i = panns.length - 1; i >= synthetics; --i) {
+//                size += panns[i] == null ? 0 : panns[i].getSize();
+//            }
+//        }
+//        if (ClassReader.ANNOTATIONS && ipanns != null) {
+//            cw.newUTF8("RuntimeInvisibleParameterAnnotations");
+//            size += 7 + 2 * (ipanns.length - synthetics);
+//            for (int i = ipanns.length - 1; i >= synthetics; --i) {
+//                size += ipanns[i] == null ? 0 : ipanns[i].getSize();
+//            }
+//        }
         if (attrs != null) {
             size += attrs.getSize(cw, null, 0, -1, -1);
         }
@@ -1882,21 +1882,21 @@ class MethodWriter implements MethodVisitor {
         if (ClassReader.SIGNATURES && signature != null) {
             ++attributeCount;
         }
-        if (ClassReader.ANNOTATIONS && annd != null) {
-            ++attributeCount;
-        }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            ++attributeCount;
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            ++attributeCount;
-        }
-        if (ClassReader.ANNOTATIONS && panns != null) {
-            ++attributeCount;
-        }
-        if (ClassReader.ANNOTATIONS && ipanns != null) {
-            ++attributeCount;
-        }
+//        if (ClassReader.ANNOTATIONS && annd != null) {
+//            ++attributeCount;
+//        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            ++attributeCount;
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            ++attributeCount;
+//        }
+//        if (ClassReader.ANNOTATIONS && panns != null) {
+//            ++attributeCount;
+//        }
+//        if (ClassReader.ANNOTATIONS && ipanns != null) {
+//            ++attributeCount;
+//        }
         if (attrs != null) {
             attributeCount += attrs.getCount();
         }
@@ -1999,27 +1999,27 @@ class MethodWriter implements MethodVisitor {
                     .putInt(2)
                     .putShort(cw.newUTF8(signature));
         }
-        if (ClassReader.ANNOTATIONS && annd != null) {
-            out.putShort(cw.newUTF8("AnnotationDefault"));
-            out.putInt(annd.length);
-            out.putByteArray(annd.data, 0, annd.length);
-        }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
-        }
-        if (ClassReader.ANNOTATIONS && panns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleParameterAnnotations"));
-            AnnotationWriter.put(panns, synthetics, out);
-        }
-        if (ClassReader.ANNOTATIONS && ipanns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleParameterAnnotations"));
-            AnnotationWriter.put(ipanns, synthetics, out);
-        }
+//        if (ClassReader.ANNOTATIONS && annd != null) {
+//            out.putShort(cw.newUTF8("AnnotationDefault"));
+//            out.putInt(annd.length);
+//            out.putByteArray(annd.data, 0, annd.length);
+//        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
+//            anns.put(out);
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
+//            ianns.put(out);
+//        }
+//        if (ClassReader.ANNOTATIONS && panns != null) {
+//            out.putShort(cw.newUTF8("RuntimeVisibleParameterAnnotations"));
+//            AnnotationWriter.put(panns, synthetics, out);
+//        }
+//        if (ClassReader.ANNOTATIONS && ipanns != null) {
+//            out.putShort(cw.newUTF8("RuntimeInvisibleParameterAnnotations"));
+//            AnnotationWriter.put(ipanns, synthetics, out);
+//        }
         if (attrs != null) {
             attrs.put(cw, null, 0, -1, -1, out);
         }

@@ -75,15 +75,15 @@ final class FieldWriter implements FieldVisitor {
      */
     private int value;
 
-    /**
-     * The runtime visible annotations of this field. May be <tt>null</tt>.
-     */
-    private AnnotationWriter anns;
-
-    /**
-     * The runtime invisible annotations of this field. May be <tt>null</tt>.
-     */
-    private AnnotationWriter ianns;
+//    /**
+//     * The runtime visible annotations of this field. May be <tt>null</tt>.
+//     */
+//    private AnnotationWriter anns;
+//
+//    /**
+//     * The runtime invisible annotations of this field. May be <tt>null</tt>.
+//     */
+//    private AnnotationWriter ianns;
 
     /**
      * The non standard attributes of this field. May be <tt>null</tt>.
@@ -134,26 +134,26 @@ final class FieldWriter implements FieldVisitor {
     // Implementation of the FieldVisitor interface
     // ------------------------------------------------------------------------
 
-    public AnnotationVisitor visitAnnotation(
-        final String desc,
-        final boolean visible)
-    {
-        if (!ClassReader.ANNOTATIONS) {
-            return null;
-        }
-        ByteVector bv = new ByteVector();
-        // write type, and reserve space for values count
-        bv.putShort(cw.newUTF8(desc)).putShort(0);
-        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
-        if (visible) {
-            aw.next = anns;
-            anns = aw;
-        } else {
-            aw.next = ianns;
-            ianns = aw;
-        }
-        return aw;
-    }
+//    public AnnotationVisitor visitAnnotation(
+//        final String desc,
+//        final boolean visible)
+//    {
+//        if (!ClassReader.ANNOTATIONS) {
+//            return null;
+//        }
+//        ByteVector bv = new ByteVector();
+//        // write type, and reserve space for values count
+//        bv.putShort(cw.newUTF8(desc)).putShort(0);
+//        AnnotationWriter aw = new AnnotationWriter(cw, true, bv, bv, 2);
+//        if (visible) {
+//            aw.next = anns;
+//            anns = aw;
+//        } else {
+//            aw.next = ianns;
+//            ianns = aw;
+//        }
+//        return aw;
+//    }
 
     public void visitAttribute(final Attribute attr) {
         attr.next = attrs;
@@ -192,14 +192,14 @@ final class FieldWriter implements FieldVisitor {
             cw.newUTF8("Signature");
             size += 8;
         }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            cw.newUTF8("RuntimeVisibleAnnotations");
-            size += 8 + anns.getSize();
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            cw.newUTF8("RuntimeInvisibleAnnotations");
-            size += 8 + ianns.getSize();
-        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            cw.newUTF8("RuntimeVisibleAnnotations");
+//            size += 8 + anns.getSize();
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            cw.newUTF8("RuntimeInvisibleAnnotations");
+//            size += 8 + ianns.getSize();
+//        }
         if (attrs != null) {
             size += attrs.getSize(cw, null, 0, -1, -1);
         }
@@ -231,12 +231,12 @@ final class FieldWriter implements FieldVisitor {
         if (ClassReader.SIGNATURES && signature != 0) {
             ++attributeCount;
         }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            ++attributeCount;
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            ++attributeCount;
-        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            ++attributeCount;
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            ++attributeCount;
+//        }
         if (attrs != null) {
             attributeCount += attrs.getCount();
         }
@@ -257,14 +257,14 @@ final class FieldWriter implements FieldVisitor {
             out.putShort(cw.newUTF8("Signature"));
             out.putInt(2).putShort(signature);
         }
-        if (ClassReader.ANNOTATIONS && anns != null) {
-            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
-            anns.put(out);
-        }
-        if (ClassReader.ANNOTATIONS && ianns != null) {
-            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
-            ianns.put(out);
-        }
+//        if (ClassReader.ANNOTATIONS && anns != null) {
+//            out.putShort(cw.newUTF8("RuntimeVisibleAnnotations"));
+//            anns.put(out);
+//        }
+//        if (ClassReader.ANNOTATIONS && ianns != null) {
+//            out.putShort(cw.newUTF8("RuntimeInvisibleAnnotations"));
+//            ianns.put(out);
+//        }
         if (attrs != null) {
             attrs.put(cw, null, 0, -1, -1, out);
         }
