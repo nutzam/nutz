@@ -22,10 +22,10 @@ public class Pair<T> {
 				name = ss[0];
 				if (ss[1].length() > 0) {
 					if (ss[1].charAt(0) == '"') {
-						value = ss[1].substring(1, ss[1].length() - 2);
+						value = ss[1].substring(1, ss[1].length() - 1);
 						pattern = PTN_3;
 					} else if (ss[1].charAt(0) == '\'') {
-						value = ss[1].substring(1, ss[1].length() - 2);
+						value = ss[1].substring(1, ss[1].length() - 1);
 						pattern = PTN_2;
 					} else {
 						value = ss[1];
@@ -82,7 +82,7 @@ public class Pair<T> {
 			return true;
 		if (obj instanceof Pair<?>)
 			if (Strings.equals(((Pair<?>) obj).name, name))
-				Lang.equals(((Pair<?>) obj).value, value);
+				return Lang.equals(((Pair<?>) obj).value, value);
 		return false;
 	}
 
