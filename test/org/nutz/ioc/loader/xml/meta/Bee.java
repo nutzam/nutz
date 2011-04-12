@@ -2,6 +2,7 @@ package org.nutz.ioc.loader.xml.meta;
 
 import java.util.Calendar;
 import java.util.List;
+import java.util.Map;
 
 public class Bee {
 
@@ -29,6 +30,8 @@ public class Bee {
 	private int workCount;
 
 	private boolean dead;
+	
+	private Map<String,String> map;
 
 	public void work() {
 		workCount++;
@@ -98,4 +101,11 @@ public class Bee {
 		this.mother = mother;
 	}
 
+	public Map<String, String> getMap() {
+		return map;
+	}
+	
+	public void setMap(Map<String, String> map) {
+		this.map = map;
+	}
 }

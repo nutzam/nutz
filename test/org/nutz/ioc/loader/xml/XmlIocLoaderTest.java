@@ -67,8 +67,11 @@ public class XmlIocLoaderTest {
 		assertEquals("TheC", c.getName());
 		assertEquals(15, c.getAge());
 		assertEquals("TheQueen", c.getMother().getName());
-		assertEquals(2, c.getFriends().size());
+		assertEquals(3, c.getFriends().size());
 		assertEquals("TheA", c.getFriends().get(0).getName());
 		assertEquals("TheB", c.getFriends().get(1).getName());
+		assertEquals(1,c.getMap().size());
+		assertEquals("ABC",c.getMap().get("abc"));
 	}
+	
 }

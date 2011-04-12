@@ -336,7 +336,7 @@ public class XmlIocLoader implements IocLoader {
 		if(nList.getLength() > 0) {
 			for (int i = 0; i < nList.getLength(); i++) {
 				Node node = nList.item(i);
-				if(node.getParentNode().equals(element) && node instanceof Element)
+				if(node.getParentNode().isSameNode(element) && node instanceof Element)
 					list.add((Element) node);
 			}
 		}
