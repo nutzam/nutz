@@ -1,6 +1,6 @@
 package org.nutz.mvc.testapp;
 
-import java.net.URL;
+import java.io.File;
 import java.util.Map;
 
 import org.junit.After;
@@ -12,6 +12,7 @@ import org.nutz.http.Request;
 import org.nutz.http.Request.METHOD;
 import org.nutz.http.Response;
 import org.nutz.http.Sender;
+import org.nutz.lang.Files;
 
 /**
  * 需要Jetty 6.1.26 的jar包
@@ -21,13 +22,15 @@ import org.nutz.http.Sender;
 public abstract class BaseWebappTest {
 	
 	protected Server server;
+	
+	protected Response resp;
 
 	@Before
 	public void startServer() throws Throwable{
 		String WEBAPPDIR = "org/nutz/mvc/testapp/ROOT";
+		File root = Files.findFile(WEBAPPDIR);
 		server = new Server(8888);
-		URL warUrl = BaseWebappTest.class.getClassLoader().getResource(WEBAPPDIR);
-		String warUrlString = warUrl.toExternalForm();
+		String warUrlString = root.toURI().toURL().toExternalForm();
 		server.setHandler(new WebAppContext(warUrlString, getContextPath()));
 		server.start();
 	}
@@ -42,10 +45,12 @@ public abstract class BaseWebappTest {
 	}
 	
 	public Response get(String path){
-		return Http.get("http://localhost:8888"+getContextPath()+path);
+		resp = Http.get("http://localhost:8888"+getContextPath()+path);
+		return resp;
 	}
 	
 	public Response post(String path,Map<String, Object> params){
-		return Sender.create(Request.create("http://localhost:8888"+getContextPath()+path, METHOD.POST, params, null)).send();
+		resp = Sender.create(Request.create("http://localhost:8888"+getContextPath()+path, METHOD.POST, params, null)).send();
+		return resp;
 	}
 }
