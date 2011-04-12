@@ -15,6 +15,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
@@ -368,24 +369,45 @@ public abstract class Streams {
 
 	/**
 	 * 根据一个文件路径建立一个 UTF-8文本输入流
-	 * 
+	 * <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b><p/>
+	 * <b>警告!! 如果存在BOM头,则自动跳过</b><p/>
 	 * @param path
 	 *            文件路径
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(String path) {
-		return new InputStreamReader(fileIn(path), Encoding.CHARSET_UTF8);
+		return new InputStreamReader(utf8filte(fileIn(path)), Encoding.CHARSET_UTF8);
 	}
 
 	/**
 	 * 根据一个文件路径建立一个 UTF-8 文本输入流
-	 * 
+	 * <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b><p/>
+	 * <b>警告!! 如果存在BOM头,则自动跳过</b><p/>
 	 * @param file
 	 *            文件
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(File file) {
-		return new InputStreamReader(fileIn(file), Encoding.CHARSET_UTF8);
+		return new InputStreamReader(utf8filte(fileIn(file)), Encoding.CHARSET_UTF8);
+	}
+	
+	private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF,(byte) 0xBB,(byte) 0xBF};
+	
+	/**
+	 * 判断并移除UTF-8的BOM头
+	 */
+	public static InputStream utf8filte(InputStream in) {
+		try {
+			PushbackInputStream pis = new PushbackInputStream(in,3);
+			byte[] header = new byte[3];
+			pis.read(header,0,3);
+			if(header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
+				pis.unread(header,0,3);
+			}
+			return pis;
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
 	}
 
 	/**

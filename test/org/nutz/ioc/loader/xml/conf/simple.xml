@@ -38,7 +38,15 @@
 			<array>
 				<refer>A</refer>
 				<refer>B</refer>
+				<obj type="org.nutz.ioc.loader.xml.meta.Bee">
+					<field name="age"><int>123</int></field>
+				</obj>
 			</array>
+		</field>
+		<field name="map">
+			<map>
+				<item key="abc"><str>ABC</str></item>
+			</map>
 		</field>
 	</obj>
 </nutzconfig>
