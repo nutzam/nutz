@@ -51,9 +51,9 @@ public class XmlIocLoader implements IocLoader {
 
 	protected Map<String, String> parentMap = new TreeMap<String, String>();
 
-	public static final String TAG_OBJ = "obj";
-	public static final String TAG_ARGS = "args";
-	public static final String TAG_FIELD = "field";
+	protected static final String TAG_OBJ = "obj";
+	protected static final String TAG_ARGS = "args";
+	protected static final String TAG_FIELD = "field";
 
 	/**
 	 * 仅用于标示内部obj的id,内部obj声明的id将被忽略 <br/>
@@ -136,9 +136,9 @@ public class XmlIocLoader implements IocLoader {
 	}
 
 	protected void parseArgs(Element beanElement, IocObject iocObject) throws Throwable {
-		NodeList argsNodeList = beanElement.getElementsByTagName(TAG_ARGS);
-		if (argsNodeList.getLength() > 0) {
-			Element argsElement = (Element) argsNodeList.item(0);
+		List<Element> list = getChildNodesByTagName(beanElement, TAG_ARGS);
+		if (list.size() > 0) {
+			Element argsElement = list.get(0);
 			NodeList argNodeList = argsElement.getChildNodes();
 			for (int i = 0; i < argNodeList.getLength(); i++) {
 				if (argNodeList.item(i) instanceof Element)
@@ -148,11 +148,8 @@ public class XmlIocLoader implements IocLoader {
 	}
 
 	protected void parseFields(Element beanElement, IocObject iocObject) throws Throwable {
-		NodeList fieldNodeList = beanElement.getElementsByTagName(TAG_FIELD);
-		if (fieldNodeList.getLength() > 0) {
-			int len = fieldNodeList.getLength();
-			for (int i = 0; i < len; i++) {
-				Element fieldElement = (Element) fieldNodeList.item(i);
+		List<Element> list = getChildNodesByTagName(beanElement, TAG_FIELD);
+		for (Element fieldElement : list) {
 				IocField iocField = new IocField();
 				iocField.setName(fieldElement.getAttribute("name"));
 				if (fieldElement.hasChildNodes()) {
@@ -166,7 +163,6 @@ public class XmlIocLoader implements IocLoader {
 				}
 				iocObject.addField(iocField);
 			}
-		}
 	}
 
 	protected static final String STR_TAG = "str";
@@ -174,7 +170,7 @@ public class XmlIocLoader implements IocLoader {
 	protected static final String MAP_TAG = "map";
 	protected static final String ITEM_TAG = "item";
 	protected static final String LIST_TAG = "list";
-	protected static final String SET_TAG = "list";
+	protected static final String SET_TAG = "set";
 	protected static final String OBJ_TAG = "obj";
 	protected static final String INT_TAG = "int";
 	protected static final String SHORT_TAG = "short";
@@ -248,45 +244,42 @@ public class XmlIocLoader implements IocLoader {
 		return list;
 	}
 
-	protected Map<String, ?> paserMap(Element element) {
+	protected Map<String, ?> paserMap(Element element) throws Throwable {
 		Map<String, Object> map = new HashMap<String, Object>();
 		if (element.hasChildNodes()) {
-			NodeList nodeList = element.getElementsByTagName(ITEM_TAG);
-			for (int i = 0; i < nodeList.getLength(); i++) {
-				if (nodeList.item(i) instanceof Element) {
-					Element elementItem = (Element) nodeList.item(i);
-					String key = elementItem.getAttribute("key");
-					if (map.containsKey(key))
-						throw new IllegalArgumentException("key is not unique!");
-					NodeList list = elementItem.getChildNodes();
-					for (int j = 0; j < list.getLength(); j++) {
-						if (list.item(j) instanceof Element) {
-							map.put(key, list.item(j).getTextContent());
-							break;
-						}
+			List<Element> elist = getChildNodesByTagName(element, ITEM_TAG);
+			for (Element elementItem : elist) {
+				String key = elementItem.getAttribute("key");
+				if (map.containsKey(key))
+					throw new IllegalArgumentException("key is not unique!");
+				NodeList list = elementItem.getChildNodes();
+				for (int j = 0; j < list.getLength(); j++) {
+					if (list.item(j) instanceof Element) {
+						map.put(key, parseX((Element) list.item(j)));
+						break;
 					}
-					if (!map.containsKey(key))
-						map.put(key, null);
 				}
+				if (!map.containsKey(key))
+					map.put(key, null);
 			}
 		}
 		return map;
 	}
 
 	protected void parseEvents(Element beanElement, IocObject iocObject) {
-		NodeList eventsNodeList = beanElement.getElementsByTagName("events");
-		if (eventsNodeList.getLength() > 0) {
-			Element eventsElement = (Element) eventsNodeList.item(0);
+		List<Element> elist = getChildNodesByTagName(beanElement, "events");
+		if (elist.size() > 0) {
+			Element eventsElement = elist.get(0);
 			IocEventSet iocEventSet = new IocEventSet();
-			NodeList fetchNodeList = eventsElement.getElementsByTagName("fetch");
-			if (fetchNodeList.getLength() > 0)
-				iocEventSet.setFetch(((Element) fetchNodeList.item(0)).getTextContent());
-			NodeList createNodeList = eventsElement.getElementsByTagName("create");
-			if (createNodeList.getLength() > 0)
-				iocEventSet.setCreate(((Element) createNodeList.item(0)).getTextContent());
-			NodeList deposeNodeList = eventsElement.getElementsByTagName("depose");
-			if (deposeNodeList.getLength() > 0)
-				iocEventSet.setDepose(((Element) deposeNodeList.item(0)).getTextContent());
+			elist = getChildNodesByTagName(eventsElement, "fetch");
+			if (elist.size() > 0)
+				iocEventSet.setFetch(elist.get(0).getTextContent());
+			elist = getChildNodesByTagName(eventsElement, "create");
+			if (elist.size() > 0)
+				iocEventSet.setCreate(elist.get(0).getTextContent());
+			elist = getChildNodesByTagName(eventsElement, "depose");
+			if (elist.size() > 0)
+				iocEventSet.setDepose(elist.get(0).getTextContent());
 			if (iocEventSet.getCreate() == null)
 				if (iocEventSet.getDepose() == null)
 					if (iocEventSet.getFetch() == null)
@@ -335,5 +328,18 @@ public class XmlIocLoader implements IocLoader {
 	
 	protected String getScanPatten() {
 		return ".+[.]xml$";
+	}
+	
+	protected List<Element> getChildNodesByTagName(Element element, String tagName) {
+		List<Element> list = new ArrayList<Element>();
+		NodeList nList = element.getElementsByTagName(tagName);
+		if(nList.getLength() > 0) {
+			for (int i = 0; i < nList.getLength(); i++) {
+				Node node = nList.item(i);
+				if(node.getParentNode().equals(element) && node instanceof Element)
+					list.add((Element) node);
+			}
+		}
+		return list;
 	}
 }
