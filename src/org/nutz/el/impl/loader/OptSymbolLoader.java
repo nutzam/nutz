@@ -3,6 +3,7 @@ package org.nutz.el.impl.loader;
 import java.io.IOException;
 import java.io.Reader;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.el.El;
@@ -19,34 +20,43 @@ public class OptSymbolLoader extends AbstractSymbolLoader {
 	private OptNode root;
 
 	private OptNode cursor;
+	
+	private static List<Class<?>> optTypes = new ArrayList<Class<?>>();
 
 	@SuppressWarnings("unchecked")
 	public OptSymbolLoader() {
 		root = new OptNode();
 		// 自动加载操作符成为一棵排序过的树
-		List<Class<?>> optTypes = Scans.me().scanPackage(AbstractOperator.class);
-		for (Class<?> optType : optTypes) {
-			if (!Modifier.isAbstract(optType.getModifiers())
-				&& ElOperator.class.isAssignableFrom(optType)
-				&& null == optType.getAnnotation(OptHidden.class)) {
-
-				Class<? extends ElOperator> theType = (Class<? extends ElOperator>) optType;
-				ElOperator optObj = El.opt(theType);
-				char[] cs = optObj.getString().toCharArray();
-				OptNode on = root;
-				for (char c : cs) {
-					on = on.addNode(c);
+		if (optTypes.size() == 0) {
+			synchronized (optTypes) {
+				if (optTypes.size() == 0) {
+					List<Class<?>> optTypes = Scans.me().scanPackage(AbstractOperator.class);
+					for (Class<?> optType : optTypes) {
+						if (!Modifier.isAbstract(optType.getModifiers())
+							&& ElOperator.class.isAssignableFrom(optType)
+							&& null == optType.getAnnotation(OptHidden.class)) {
+							OptSymbolLoader.optTypes.add(optType);
+						}
+					}
 				}
-				// 检查节点是否是空节点
-				if (on.getOperator() != null) {
-					throw Lang.makeThrow(	"Operator '%s' and '%s' has duplicate '@Opt'",
+			}
+		}
+		for (Class<?> optType : optTypes) {
+			Class<? extends ElOperator> theType = (Class<? extends ElOperator>) optType;
+			ElOperator optObj = El.opt(theType);
+			char[] cs = optObj.getString().toCharArray();
+			OptNode on = root;
+			for (char c : cs) {
+				on = on.addNode(c);
+			}
+			// 检查节点是否是空节点
+			if (on.getOperator() != null) {
+				throw Lang.makeThrow(	"Operator '%s' and '%s' has duplicate '@Opt'",
 											on.getOperator().getClass().getName(),
 											optType.getName());
-				}
-				// 记录操作符对象
-				on.setOperator(optObj);
-
 			}
+			// 记录操作符对象
+			on.setOperator(optObj);
 		}
 
 	}
