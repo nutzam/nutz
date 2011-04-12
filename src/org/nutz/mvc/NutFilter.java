@@ -31,9 +31,6 @@ public class NutFilter implements Filter {
 	private Pattern ignorePtn;
 
 	private boolean skipMode;
-	
-	//请求有对应的Action,处理完成后,是否继续执行下一个Filter
-	private boolean doNextFilter;
 
 	public void init(FilterConfig conf) throws ServletException {
 		FilterNutConfig config = new FilterNutConfig(conf);
@@ -48,9 +45,6 @@ public class NutFilter implements Filter {
 			}
 		} else
 			this.skipMode = true;
-		
-		String doNextFilter = Strings.sNull(conf.getInitParameter("do-next"), "false").toLowerCase();
-		this.doNextFilter = "true".equals(doNextFilter);
 	}
 
 	public void destroy() {
@@ -64,8 +58,7 @@ public class NutFilter implements Filter {
 			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
 			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
 				if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
-					if (!doNextFilter)
-						return;
+					return;
 			}
 		}
 		// 如果已经找到对应的action,而且正确处理,并且不是donext模式,那么不会走到这里
