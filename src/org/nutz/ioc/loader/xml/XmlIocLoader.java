@@ -100,7 +100,7 @@ public class XmlIocLoader implements IocLoader {
 		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
-	protected IocObject paserBean(Element beanElement, boolean innerBean) throws Throwable {
+	protected String paserBean(Element beanElement, boolean innerBean) throws Throwable {
 		String beanId;
 		if (innerBean) {
 			beanId = "inner$" + innerId;
@@ -132,7 +132,7 @@ public class XmlIocLoader implements IocLoader {
 		iocMap.put(beanId, iocObject);
 		if (LOG.isDebugEnabled())
 			LOG.debugf("Resolved bean define, name = %s", beanId);
-		return iocObject;
+		return beanId;
 	}
 
 	protected void parseArgs(Element beanElement, IocObject iocObject) throws Throwable {
@@ -182,7 +182,7 @@ public class XmlIocLoader implements IocLoader {
 	protected static final String FLOAT_TAG = "float";
 	protected static final String DOUBLE_TAG = "double";
 	protected static final String BOOLEAN_TAG = "bool";
-	protected static final String REFER_TAG = "refer";
+	protected static final String REFER_TAG = IocValue.TYPE_REFER;
 	protected static final String JAVA_TAG = IocValue.TYPE_JAVA;
 	protected static final String FILE_TAG = IocValue.TYPE_FILE;
 	protected static final String EVN_TAG = IocValue.TYPE_ENV;
@@ -211,7 +211,7 @@ public class XmlIocLoader implements IocLoader {
 			iocValue.setType(FILE_TAG);
 			iocValue.setValue(element.getTextContent());
 		} else if (OBJ_TAG.equalsIgnoreCase(type)) {
-			iocValue.setType(null);
+			iocValue.setType(REFER_TAG);
 			iocValue.setValue(paserBean(element, true));
 		} else if (MAP_TAG.equalsIgnoreCase(type)) {
 			iocValue.setType(null);
