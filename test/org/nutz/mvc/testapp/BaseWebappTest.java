@@ -27,12 +27,18 @@ public abstract class BaseWebappTest {
 
 	@Before
 	public void startServer() throws Throwable{
-		String WEBAPPDIR = "org/nutz/mvc/testapp/ROOT";
-		File root = Files.findFile(WEBAPPDIR);
-		server = new Server(8888);
-		String warUrlString = root.toURI().toURL().toExternalForm();
-		server.setHandler(new WebAppContext(warUrlString, getContextPath()));
-		server.start();
+		
+		try {
+			String WEBAPPDIR = "org/nutz/mvc/testapp/ROOT";
+			File root = Files.findFile(WEBAPPDIR);
+			server = new Server(8888);
+			String warUrlString = root.toURI().toURL().toExternalForm();
+			server.setHandler(new WebAppContext(warUrlString, getContextPath()));
+			server.start();
+		} catch (Throwable e) {
+			if(server != null)
+				server.stop();
+		}
 	}
 	
 	@After
