@@ -3,10 +3,10 @@ package org.nutz.mvc.testapp;
 import java.io.File;
 import java.util.Map;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.webapp.WebAppContext;
 import org.junit.After;
 import org.junit.Before;
-import org.mortbay.jetty.Server;
-import org.mortbay.jetty.webapp.WebAppContext;
 import org.nutz.http.Http;
 import org.nutz.http.Request;
 import org.nutz.http.Request.METHOD;
@@ -15,7 +15,7 @@ import org.nutz.http.Sender;
 import org.nutz.lang.Files;
 
 /**
- * 需要Jetty 6.1.26 的jar包
+ * 需要Jetty 7.3.1 的jar包
  * @author wendal
  *
  */
