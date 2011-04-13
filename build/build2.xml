@@ -72,7 +72,7 @@
 	<path id="nutz-classpath">
 		<pathelement location="${basedir}/build/deps" />
 		<path>
-			<fileset dir="${basedir}/build/deps" includes="*.jar" />
+			<fileset dir="${basedir}/build/deps" includes="**/*.jar" />
 		</path>
 		<pathelement location="${JAVA_HOME}/lib/tools.jar" />
 	</path>
