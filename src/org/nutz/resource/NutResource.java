@@ -2,10 +2,9 @@ package org.nutz.resource;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 
-import org.nutz.lang.Encoding;
+import org.nutz.lang.Streams;
 
 public abstract class NutResource implements Comparable<NutResource> {
 
@@ -23,7 +22,7 @@ public abstract class NutResource implements Comparable<NutResource> {
 	public abstract InputStream getInputStream() throws IOException;
 
 	public Reader getReader() throws IOException {
-		return new InputStreamReader(getInputStream(), Encoding.CHARSET_UTF8);
+		return Streams.utf8r(getInputStream());
 	}
 
 	public int compareTo(NutResource o) {

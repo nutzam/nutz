@@ -234,10 +234,10 @@ public abstract class Streams {
 	/**
 	 * 从一个文本流中读取全部内容并返回
 	 * <p>
-	 * <b style=color:red>注意</b>，它会关闭输出流
+	 * <b style=color:red>注意</b>，它会关闭输入流
 	 * 
 	 * @param reader
-	 *            文本输出流
+	 *            文本输入流
 	 * @return 文本内容
 	 * @throws IOException
 	 */
@@ -376,7 +376,7 @@ public abstract class Streams {
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(String path) {
-		return new InputStreamReader(utf8filte(fileIn(path)), Encoding.CHARSET_UTF8);
+		return utf8r(fileIn(path));
 	}
 
 	/**
@@ -388,7 +388,7 @@ public abstract class Streams {
 	 * @return 文本输入流
 	 */
 	public static Reader fileInr(File file) {
-		return new InputStreamReader(utf8filte(fileIn(file)), Encoding.CHARSET_UTF8);
+		return utf8r(fileIn(file));
 	}
 	
 	private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF,(byte) 0xBB,(byte) 0xBF};
@@ -456,6 +456,14 @@ public abstract class Streams {
 	 * @return 输出流
 	 */
 	public static Writer fileOutw(File file) {
-		return new OutputStreamWriter(fileOut(file), Encoding.CHARSET_UTF8);
+		return utf8w(fileOut(file));
+	}
+	
+	public static Reader utf8r(InputStream is) {
+		return new InputStreamReader(utf8filte(is), Encoding.CHARSET_UTF8);
+	}
+	
+	public static Writer utf8w(OutputStream os) {
+		return new OutputStreamWriter(os, Encoding.CHARSET_UTF8);
 	}
 }

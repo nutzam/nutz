@@ -1,7 +1,5 @@
 package org.nutz.castor;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -12,7 +10,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.castor.castor.Array2Array;
-import org.nutz.lang.Encoding;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.TypeExtractor;
@@ -169,8 +166,7 @@ public class Castors {
 			if (log.isWarnEnabled())
 				log.warn("!!No castor found!!!!!!!!! Load default castor list");
 			
-			InputStream is = getClass().getResourceAsStream("/org/nutz/castor/default-castors.txt");
-			String str = Streams.readAndClose(new InputStreamReader(is,Encoding.CHARSET_UTF8));
+			String str = Streams.readAndClose(Streams.fileInr("/org/nutz/castor/default-castors.txt"));
 			String[] classNames = str.split("\\n");
 			for (String className : classNames)
 				try {

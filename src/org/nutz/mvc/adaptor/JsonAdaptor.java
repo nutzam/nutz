@@ -1,14 +1,13 @@
 package org.nutz.mvc.adaptor;
 
-import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.mvc.adaptor.injector.JsonInjector;
 import org.nutz.mvc.annotation.Param;
 
@@ -25,7 +24,7 @@ public class JsonAdaptor extends AbstractAdaptor {
 		// Read all as String
 		String str;
 		try {
-			str = Lang.readAll(new InputStreamReader(request.getInputStream(), Encoding.CHARSET_UTF8));
+			str = Streams.readAndClose(Streams.utf8r(request.getInputStream()));
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);

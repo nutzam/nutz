@@ -1,7 +1,6 @@
 package org.nutz.http.sender;
 
 import java.io.BufferedWriter;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.Map;
 
@@ -9,7 +8,6 @@ import org.nutz.http.HttpException;
 import org.nutz.http.Request;
 import org.nutz.http.Response;
 import org.nutz.http.Sender;
-import org.nutz.lang.Encoding;
 import org.nutz.lang.Streams;
 
 public class PostSender extends Sender {
@@ -30,7 +28,7 @@ public class PostSender extends Sender {
 			setupRequestHeader();
 			setupDoInputOutputFlag();
 			if (data != null) {
-				Writer w = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(),Encoding.CHARSET_UTF8));
+				Writer w = new BufferedWriter(Streams.utf8w(conn.getOutputStream()));
 				w.write(data);
 				Streams.safeFlush(w);
 				Streams.safeClose(w);
