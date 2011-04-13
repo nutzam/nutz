@@ -400,9 +400,11 @@ public abstract class Streams {
 		try {
 			PushbackInputStream pis = new PushbackInputStream(in,3);
 			byte[] header = new byte[3];
-			pis.read(header,0,3);
+			int len = pis.read(header,0,3);
+			if(len < 1)
+				return in;
 			if(header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
-				pis.unread(header,0,3);
+				pis.unread(header,0,len);
 			}
 			return pis;
 		} catch (IOException e) {

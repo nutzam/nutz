@@ -28,7 +28,10 @@ public class NutMessageLoader implements MessageLoader {
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
 		for (NutResource nutResource : allnrs) {
 			if (nutResource.getName().indexOf(refer) > -1)
-				nutResource.setName(nutResource.getName().substring(refer.length() + 1));
+				if (refer.endsWith("/"))
+					nutResource.setName(nutResource.getName().substring(refer.length()));
+				else
+					nutResource.setName(nutResource.getName().substring(refer.length() + 1));
 		}
 		if (log.isDebugEnabled())
 			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);

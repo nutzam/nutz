@@ -72,7 +72,7 @@ public class WebResourceScan extends AbstractResourceScan {
 				}
 				list.add(nutResource);
 			}
-			flag = list2.isEmpty();
+			flag = list.isEmpty();
 		}
 		// 目录不存在,或者里面没有任何文件
 		if (flag && (!src.startsWith("/"))) {
@@ -88,7 +88,7 @@ public class WebResourceScan extends AbstractResourceScan {
 							nutResource.setName(name.substring(base.length()));
 						list.add(nutResource);
 					}
-					flag = list2.isEmpty();
+					flag = list.isEmpty();
 				}
 			} catch (Throwable e) {
 			}
