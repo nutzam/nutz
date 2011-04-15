@@ -225,6 +225,7 @@ public abstract class Mvcs {
 		// Update context path each time, Servlet 2.4 and early don't support
 		// ServletContext.getContextPath()
 		req.setAttribute("base", req.getContextPath());
+		req.setAttribute("$request", req);
 	}
 
 	/**

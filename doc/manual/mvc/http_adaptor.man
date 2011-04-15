@@ -185,6 +185,7 @@
 
 	你只要在你的入口函数里声明你希望得到的对象类型即可，比如：
 	{{{
+    @At("/myfunc")
 	public String someFunc(	@Param("pid") int petId,
 	                        Ioc ioc,
 	                        HttpServletRequest req){
@@ -226,7 +227,8 @@
         {{{
 	    @At("/topic/?/comment/?")
 	    public String getComment(int topicId, int commentId){
-	        // 如果输入的 URL 是： /topic/35/comment/171            // 那么 topicId 就是 35
+	        // 如果输入的 URL 是： /topic/35/comment/171
+            // 那么 topicId 就是 35
             // 而 commentId 就是 171
 	    }
 	    }}}
@@ -236,8 +238,11 @@
 	   	{{{
     	@At("/article/*")
     	public String getArticle(String author, int articleId){
-            // 如果输入的 URL 是： /article/zozoh/1352            // 那么 author 就是 "zozoh"
-            // 而 articleId 就是 1352       	}}}
+            // 如果输入的 URL 是： /article/zozoh/1352
+            // 那么 author 就是 "zozoh"
+            // 而 articleId 就是 1352       	
+        }
+        }}}
         Nutz.Mvc 在一层一层解析路径的时候，碰到了 {#FF00FF;*'*'}，	它就会将这个路径从此处截断，
         后面的字串按照字符 '/' 拆分成一个字符串数组。
     	为入口函数填充参数的时候，会优先将这个路径参数数组按照顺序填充成参数。
@@ -247,7 +252,7 @@
         {{{
         @At("/user/?/topic/?/comment/*")
         public String getComment(String author, int topicId, int commentId){
-            // 如果输入的 URL 是： /user/zozoh/topic/35/comment/171            // 那么 author 就是 "zozoh" 
+            // 如果输入的 URL 是： /user/zozoh/topic/35/comment/171            // 那么 author 就是 "zozoh" 
             // 而 topicId 就是 35
             // 而 commentId 就是 171
         }
