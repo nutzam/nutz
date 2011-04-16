@@ -1,5 +1,6 @@
 package org.nutz;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.AccessController;
@@ -34,7 +35,10 @@ public class Nutzs {
 		InputStream is = null;
 		try {
 			pp = new Properties();
-			is = new FileInputStream(Files.findFile(fileName));
+			File f = Files.findFile(fileName);
+			if(f == null)
+				throw new RuntimeException("nutz-test.properties Not FOUND!!!");
+			is = new FileInputStream(f);
 			pp.load(is);
 			pp.list(System.out);
 		}
