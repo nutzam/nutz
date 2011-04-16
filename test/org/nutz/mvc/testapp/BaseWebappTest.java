@@ -1,5 +1,7 @@
 package org.nutz.mvc.testapp;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.Map;
 
@@ -43,7 +45,8 @@ public abstract class BaseWebappTest {
 	
 	@After
 	public void shutdownServer() throws Throwable{
-		server.stop();
+		if(server != null)
+			server.stop();
 	}
 	
 	public String getContextPath(){
@@ -52,11 +55,13 @@ public abstract class BaseWebappTest {
 	
 	public Response get(String path){
 		resp = Http.get("http://localhost:8888"+getContextPath()+path);
+		assertNotNull(resp);
 		return resp;
 	}
 	
 	public Response post(String path,Map<String, Object> params){
 		resp = Sender.create(Request.create("http://localhost:8888"+getContextPath()+path, METHOD.POST, params, null)).send();
+		assertNotNull(resp);
 		return resp;
 	}
 }
