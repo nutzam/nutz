@@ -53,14 +53,18 @@ public abstract class BaseWebappTest {
 		return "/nutztest";
 	}
 	
+	public String getBaseURL(){
+		return "http://localhost:8888"+getContextPath();
+	}
+	
 	public Response get(String path){
-		resp = Http.get("http://localhost:8888"+getContextPath()+path);
+		resp = Http.get(getBaseURL()+path);
 		assertNotNull(resp);
 		return resp;
 	}
 	
 	public Response post(String path,Map<String, Object> params){
-		resp = Sender.create(Request.create("http://localhost:8888"+getContextPath()+path, METHOD.POST, params, null)).send();
+		resp = Sender.create(Request.create(getBaseURL()+path, METHOD.POST, params, null)).send();
 		assertNotNull(resp);
 		return resp;
 	}

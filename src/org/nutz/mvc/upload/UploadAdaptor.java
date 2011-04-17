@@ -13,16 +13,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
-import org.nutz.mvc.adaptor.AbstractAdaptor;
+import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
-import org.nutz.mvc.adaptor.injector.MapPairInjector;
-import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.upload.injector.FileInjector;
 import org.nutz.mvc.upload.injector.FileMetaInjector;
 import org.nutz.mvc.upload.injector.InputStreamInjector;
-import org.nutz.mvc.upload.injector.MapArrayInjector;
-import org.nutz.mvc.upload.injector.MapItemInjector;
 import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.ReaderInjector;
@@ -55,13 +51,12 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * 
  * @see org.nutz.mvc.annotation.Param
  */
-public class UploadAdaptor extends AbstractAdaptor {
+public class UploadAdaptor extends PairAdaptor {
 
 	private UploadingContext context;
 
 	public UploadAdaptor() throws IOException {
-		context = new UploadingContext(new NutFilePool(File.createTempFile("nutz", null)
-															.getParent(), 2000));
+		context = new UploadingContext(File.createTempFile("nutz", null).getParent());
 	}
 
 	public UploadAdaptor(UploadingContext context) {
@@ -106,7 +101,7 @@ public class UploadAdaptor extends AbstractAdaptor {
 			return new MapSelfInjector();
 
 		if (null == param)
-			return null;
+			return super.evalInjector(type, param);
 
 		String paramName = param.value();
 
@@ -128,34 +123,17 @@ public class UploadAdaptor extends AbstractAdaptor {
 		// List
 		if (List.class.isAssignableFrom(type))
 			return new MapListInjector(paramName);
-		// Array
-		if (type.isArray())
-			return new MapArrayInjector(type.getComponentType(), paramName);
-		// POJO
-		if ("..".equals(paramName)) {
-			if (type.isAssignableFrom(Map.class))
-				return new MapPairInjector();
-			return new ObjectPairInjector(null, type);
-			// return new MapReferInjector(null, type);
-		}
-		// POJO with prefix
-		else if (paramName.startsWith("::") && paramName.length() > 2) {
-			return new ObjectPairInjector(null, type);
-			// return new MapReferInjector(paramName.substring(2), type);
-		}
-
-		// Default case
-		return new MapItemInjector(paramName, type);
+		// Other
+		return super.evalInjector(type, param);
 	}
 
-	public Object[] adapt(	ServletContext sc,
+	public Object getReferObject(	ServletContext sc,
 							HttpServletRequest request,
 							HttpServletResponse response,
 							String[] pathArgs) {
-		Map<String, Object> map;
 		try {
 			Uploading ing = new FastUploading();
-			map = ing.parse(request, context);
+			return ing.parse(request, context);
 		}
 		catch (UploadException e) {
 			throw Lang.wrapThrow(e);
@@ -163,13 +141,5 @@ public class UploadAdaptor extends AbstractAdaptor {
 		finally {
 			Uploads.removeInfo(request);
 		}
-		// Try to make the args
-		Object[] args = new Object[injs.length];
-		int i = fillPathArgs(request, response, pathArgs, args);
-		// Inject another params
-		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(sc, request, response, map);
-		}
-		return args;
 	}
 }

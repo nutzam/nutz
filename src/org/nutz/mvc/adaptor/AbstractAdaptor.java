@@ -159,8 +159,10 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 			args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
 		}
 		Class<?>[] argTypes = method.getParameterTypes();
+		Object obj = getReferObject(sc, req, resp, pathArgs);
 		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(sc, req, resp, null);
+			System.out.println("i="+i+"&"+injs[i].getClass());
+			args[i] = injs[i].get(sc, req, resp, obj);
 			if(args[i] == null && argTypes[i].isPrimitive()) {
 				args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
 			}
@@ -168,17 +170,24 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		return args;
 	}
 
-	protected int fillPathArgs(	HttpServletRequest req,
-								HttpServletResponse resp,
-								String[] pathArgs,
-								Object[] args) {
-		int i = 0;
-		// Loop path args
-		if (null != pathArgs) {
-			int len = Math.min(args.length, pathArgs.length);
-			for (; i < len; i++)
-				args[i] = injs[i].get(null, req, resp, pathArgs[i]);
-		}
-		return i;
+//	protected int fillPathArgs(	HttpServletRequest req,
+//								HttpServletResponse resp,
+//								String[] pathArgs,
+//								Object[] args) {
+//		int i = 0;
+//		// Loop path args
+//		if (null != pathArgs) {
+//			int len = Math.min(args.length, pathArgs.length);
+//			for (; i < len; i++)
+//				args[i] = injs[i].get(null, req, resp, pathArgs[i]);
+//		}
+//		return i;
+//	}
+	
+	protected Object getReferObject(ServletContext sc,
+							HttpServletRequest req,
+							HttpServletResponse resp,
+							String[] pathArgs) {
+		return null;
 	}
 }

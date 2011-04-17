@@ -27,7 +27,7 @@ public class UploadingContext {
 	}
 
 	public UploadingContext(String poolPath) {
-		this(new NutFilePool(poolPath, 255));
+		this(new NutFilePool(poolPath, 2000));
 	}
 
 	public UploadingContext(FilePool pool) {

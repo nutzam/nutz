@@ -18,26 +18,16 @@ import org.nutz.mvc.annotation.Param;
  */
 public class JsonAdaptor extends AbstractAdaptor {
 
-	public Object[] adapt(	ServletContext sc,
+	public Object getReferObject(	ServletContext sc,
 							HttpServletRequest request,
 							HttpServletResponse response, String[] pathArgs) {
 		// Read all as String
-		String str;
 		try {
-			str = Streams.readAndClose(Streams.utf8r(request.getInputStream()));
+			return Streams.readAndClose(Streams.utf8r(request.getInputStream()));
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
-		//Map<String, Object> map = Lang.map(str);
-		// Try to make the args
-		Object[] args = new Object[injs.length];
-		int i = fillPathArgs(request, response, pathArgs, args);
-		// Inject another params
-		for (; i < injs.length; i++) {
-			args[i] = injs[i].get(sc, request, response, str);
-		}
-		return args;
 	}
 
 	@Override
