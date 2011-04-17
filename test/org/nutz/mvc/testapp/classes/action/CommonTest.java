@@ -65,4 +65,10 @@ public class CommonTest extends BaseWebappTest {
 	@Ok(">>:/${key}.jsp")
 	public void test_req_param(){
 	}
+	
+	//Test EL
+	@At("/path2")
+	@Ok("->:/${key.length() == 1}.jsp")
+	public void test_req_param2(){
+	}
 }

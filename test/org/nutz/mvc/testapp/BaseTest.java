@@ -48,4 +48,12 @@ public class BaseTest extends BaseWebappTest{
 		get("/common/path?key=base");
 		assertEquals(getContextPath(), resp.getContent());
 	}
+	
+
+	//With EL
+	@Test
+	public void test_req_param2(){
+		get("/common/path2?key=base");
+		assertEquals("base", resp.getContent());
+	}
 }
