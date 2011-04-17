@@ -48,7 +48,9 @@ public class ConnectionHolder {
 	}
 
 	public void rollback() throws SQLException {
-		if (null != sp)
+		if (null == sp)
+			conn.rollback();
+		else
 			conn.rollback(sp);
 	}
 
