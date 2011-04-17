@@ -74,14 +74,6 @@ public abstract class AbstractPathView implements View {
 			context.putAll((Context) globalContext);
 		}
 
-		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
-		Map<String,String> p = new HashMap<String, String>();
-		for (Object o : req.getParameterMap().keySet()) {
-			String key = (String) o;
-			p.put(key, req.getParameter(key));
-		}
-		context.set("p", p);
-		
 		// 请求对象的属性列表
 		Map<String,Object> a = new HashMap<String, Object>();
 		for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
@@ -89,6 +81,17 @@ public abstract class AbstractPathView implements View {
 			a.put(tem, req.getAttribute(tem));
 		}
 		context.set("a", a);//TODO 是否应该用a呢? attr是不是更加好呢?
+		
+		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
+		Map<String,String> p = new HashMap<String, String>();
+		for (Object o : req.getParameterMap().keySet()) {
+			String key = (String) o;
+			String value = req.getParameter(key);
+			p.put(key, value);
+			context.set(key, value);//以支持直接获取请求参数
+		}
+		context.set("p", p);
+		
 		// 加入返回对象
 		if (null != obj)
 			context.set(ViewProcessor.DEFAULT_ATTRIBUTE, obj);
