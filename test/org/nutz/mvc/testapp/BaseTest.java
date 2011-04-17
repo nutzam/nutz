@@ -42,4 +42,10 @@ public class BaseTest extends BaseWebappTest{
 		get("/common/param?id="+Long.MAX_VALUE);
 		assertEquals(""+Long.MAX_VALUE, resp.getContent());
 	}
+	
+	@Test
+	public void test_req_param(){
+		get("/common/path?key=base");
+		assertEquals(getContextPath(), resp.getContent());
+	}
 }

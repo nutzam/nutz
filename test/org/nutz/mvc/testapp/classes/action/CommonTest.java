@@ -59,4 +59,10 @@ public class CommonTest extends BaseWebappTest {
 	public String test_param(@Param("id") long id){
 		return ""+id;
 	}
+	
+	//Parms混用
+	@At("/path")
+	@Ok(">>:/${key}.jsp")
+	public void test_req_param(){
+	}
 }
