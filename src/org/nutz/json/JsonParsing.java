@@ -406,11 +406,7 @@ class JsonParsing {
 				if (lastChar == 'F')
 					return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
 				else{
-					Double value = Double.valueOf(numValue);
-					if (Float.MIN_VALUE < value && value < Float.MAX_VALUE)
-						return (T) Float.valueOf(value.floatValue());
-					else
-						return (T) value;
+					return (T)Double.valueOf(numValue);
 				}
 			} else {
 				if (lastChar == 'L')
