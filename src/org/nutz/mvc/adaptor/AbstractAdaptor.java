@@ -161,7 +161,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		Class<?>[] argTypes = method.getParameterTypes();
 		Object obj = getReferObject(sc, req, resp, pathArgs);
 		for (; i < injs.length; i++) {
-			System.out.println("i="+i+"&"+injs[i].getClass());
 			args[i] = injs[i].get(sc, req, resp, obj);
 			if(args[i] == null && argTypes[i].isPrimitive()) {
 				args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
