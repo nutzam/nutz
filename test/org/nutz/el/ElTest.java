@@ -178,4 +178,18 @@ public class ElTest {
 		El.eval(context, "b[0].equals('')");
 	}
 
+	@Test
+	public void test_object_equal() {
+		Context context = Lang.context();
+		context.set("b", "abc");
+		context.set("c", new Object());
+		context.set("d", null);
+		assertTrue(El.eval(context, "b != null").getBoolean());
+		assertTrue(El.eval(context, "b == b").getBoolean());
+		assertTrue(El.eval(context, "c != null").getBoolean());
+		assertTrue(El.eval(context, "c == c").getBoolean());
+		assertTrue(El.eval(context, "d == null").getBoolean());
+		assertTrue(El.eval(context, "d == d").getBoolean());
+		assertEquals("wendal", El.eval(context, "b != null ? 'wendal' : null").getString());
+	}
 }

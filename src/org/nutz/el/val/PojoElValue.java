@@ -74,11 +74,15 @@ public class PojoElValue<T> implements ElValue {
 	}
 
 	public ElValue isEquals(ElValue ta) {
-		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isEquals");
+		if(obj == ta.get())
+			return El.TRUE;
+		return El.FALSE;
 	}
 	
 	public ElValue isNEQ(ElValue ta) {
-		throw new ElException("%s don't support [%s]!", getClass().getSimpleName(), "isNEQ");
+		if(obj != ta.get())
+			return El.TRUE;
+		return El.FALSE;
 	}
 
 	public ElValue isGT(ElValue ta) {
