@@ -405,13 +405,23 @@ class JsonParsing {
 			if (numValue.indexOf('.') >= 0) {
 				if (lastChar == 'F')
 					return (T) Float.valueOf(numValue.substring(0, numValue.length() - 1));
-				else
-					return (T) Double.valueOf(numValue);
+				else{
+					Double value = Double.valueOf(numValue);
+					if (Float.MIN_VALUE < value && value < Float.MAX_VALUE)
+						return (T) Float.valueOf(value.floatValue());
+					else
+						return (T) value;
+				}
 			} else {
 				if (lastChar == 'L')
 					return (T) Long.valueOf(numValue.substring(0, numValue.length() - 1));
-				else
-					return (T) Integer.valueOf(numValue);
+				else{
+					Long value = Long.valueOf(numValue);
+					if (Integer.MIN_VALUE < value && value < Integer.MAX_VALUE)
+						return (T) Integer.valueOf(value.intValue());
+					else
+						return (T) value;
+					}
 			}
 		}
 		// Unknown case...
