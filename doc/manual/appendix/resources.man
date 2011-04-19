@@ -32,8 +32,10 @@
 		 @[http://blog.163.com/qqabc20082006@126/ CH] 
 -----------------------------------------------------------------------------------
 关于 Mvc
+	 * 《[http://helloqiner.iteye.com/blog/982157 在Nutz框架中提供Pojo校验（验证）功能的支持]》 \
+	     @[http://helloqiner.iteye.com/ helloqiner] {#008800;*新}
 	 * 《[http://myblog.sunfarms.net/100.html 在Nutz MVC中使用Freemarker]》 \
-	     @[http://myblog.sunfarms.net/ wendal] {#008800;*新}
+	     @[http://myblog.sunfarms.net/ wendal] {#008800;*推荐}
 	 * 《[http://axhack.javaeye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
 	     @[http://axhack.javaeye.com axhack] {#008800;*推荐}
 	 * 《[http://yunhaifeiwu.javaeye.com/blog/763832 nutz 文件上传例子]》 \
