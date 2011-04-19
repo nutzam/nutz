@@ -1,8 +1,17 @@
 package org.nutz.mvc.testapp.classes.action.views;
 
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStream;
+import java.io.Reader;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.nutz.ioc.loader.annotation.IocBean;
 
 import org.nutz.ioc.annotation.InjectName;
+import org.nutz.json.Json;
+import org.nutz.lang.Files;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 
@@ -62,7 +71,39 @@ public class ViewTestModule {
 	}
 
 	@At("/for3")
-	@Ok("forward:/${p.to}.jsp")
+	@Ok("forward:/${p.to == null ? 'base' : 'base'}.jsp")
 	public void forwardView3(){
+	}
+	
+	//--------------Raw view
+	@At("/raw")
+	@Ok("raw")
+	public String raw(){
+		return "ABC";
+	}
+	
+	@At("/raw2")
+	@Ok("raw")
+	public InputStream raw2() throws Throwable{
+		return new FileInputStream(Files.findFile("哈哈/abc.txt"));
+	}
+	
+	@At("/raw3")
+	@Ok("raw")
+	public Reader raw3() throws Throwable{
+		return new FileReader(Files.findFile("哈哈/abc.txt"));
+	}
+	
+	@At("/raw4")
+	@Ok("raw")
+	public void raw4(){
+	}
+	
+	@At("/raw5")
+	@Ok("raw:json")
+	public String raw5(){
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("name", "wendal");
+		return Json.toJson(map);
 	}
 }

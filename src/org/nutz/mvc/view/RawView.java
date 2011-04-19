@@ -118,5 +118,7 @@ public class RawView implements View {
 		contentTypeMap.put("html", "text/html");
 		contentTypeMap.put("htm", "text/html");
 		contentTypeMap.put("stream", "application/octet-stream");
+		contentTypeMap.put("js", "text/javascript");
+		contentTypeMap.put("json", "text/javascript");
 	}
 }
