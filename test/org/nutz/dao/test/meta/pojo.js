@@ -1,5 +1,12 @@
 var ioc = {
 /*------------------------------------------------------------------*/
+		
+	config : {
+		type : "org.nutz.ioc.impl.PropertiesProxy",
+		fields : {
+			paths : ["nutz-test.properties"]
+		}
+	},
 // Data source
 	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
@@ -8,16 +15,16 @@ var ioc = {
 		},
 		fields : {
 			driverClassName : {
-				java :"org.nutz.Nutzs.driver"
+				java :"$config.get('driver')"
 			},
 			url : {
-				java :"org.nutz.Nutzs.url"
+				java :"$config.get('url')"
 			},
 			username : {
-				java :"org.nutz.Nutzs.userName"
+				java :"$config.get('username')"
 			},
 			password : {
-				java :"org.nutz.Nutzs.password"
+				java :"$config.get('password')"
 			}
 		}
 	},
