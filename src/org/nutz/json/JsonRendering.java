@@ -23,7 +23,7 @@ import org.nutz.lang.Strings;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-class JsonRendering {
+public class JsonRendering {
 	private static String NL = "\n";
 
 	private HashMap<Object, Object> memo;
@@ -37,7 +37,7 @@ class JsonRendering {
 	 * @throws NullPointerException
 	 *             if writer or format is null
 	 */
-	JsonRendering(Writer writer, JsonFormat format) {
+	public JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
 		// TODO make a new faster collection
@@ -234,6 +234,7 @@ class JsonRendering {
 	}
 
 	@SuppressWarnings({"rawtypes"})
+	public
 	void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");
