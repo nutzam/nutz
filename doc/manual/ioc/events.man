@@ -26,7 +26,7 @@
 	通过实现一个触发器
 		触发器
 			{{{
-			package nutz.demo.ioc.book;
+			package nutz.demo.ioc.book;//提醒: 不要把你的类放在缺省包中!!
 
 			import org.nutz.ioc.IocEventTrigger;
 
@@ -40,7 +40,7 @@
 			}}}
 			
 			IocEventTrigger 接口只有一个方法，当它被调用的时候，就表示某个事件发生了。
-			具体什么事件呢？完全看你在 JSON 配置文件中把这个触发器，声明在那种事件下面
+			具体什么事件呢？完全看你在 JSON 配置文件中把这个触发器，声明在哪种事件下面
 		
 		在 JSON 配置文件中声明监听的事件
 			{{{

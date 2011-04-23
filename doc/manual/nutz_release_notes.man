@@ -52,6 +52,7 @@
     * [http://code.google.com/p/nutz/issues/detail?id=347 Issue 347] 应该设计一个PostActionFilter或者改造现在的ActionFilter {#AAA;by} {*moreztea}
     * [http://code.google.com/p/nutz/issues/detail?id=369 Issue 369] mvc:PairAdaptor在处理REST风格的URL时对参数的解析不够智能 {#AAA;by} {*Landraxee}
     * [http://code.google.com/p/nutz/issues/detail?id=383 Issue 383] 1.b.35Rollback SQLException {#AAA;by} {*幸福的旁边}
+    * [http://code.google.com/p/nutz/issues/detail?id=395 Issue 395] 	在使用ioc的事件监听功能时，如何配置存在于默认包下的类？ {#AAA;by} {*ywjno.dev}
     * [http://code.google.com/p/nutz/issues/detail?id=410 Issue 410] 关于EL中的StringElValue {#AAA;by} {*juqkai}
     * [http://code.google.com/p/nutz/issues/detail?id=412 Issue 412] UploadAdaptor不支持路径参数 {#AAA;by} {*天行健}
     * [http://code.google.com/p/nutz/issues/detail?id=417 Issue 417] 入口方法中包含数组参数时,启动报错 {#AAA;by} {*幸福的旁边}
