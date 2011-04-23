@@ -154,7 +154,7 @@
 	 * [aop.man AOP] -- 声明式切片
 	 * [scope.man 对象生命范围] -- 级联的上下文环境
 	 * [xml_ioc_loader.man 使用XML作为配置文件格式] -- 使用XML作为配置文件格式
-	 * [annotation_ioc_loader.man 使用注解配置Ioc] --使用注解配置Ioc
+	 * [loader_annotation.man 使用注解配置Ioc] --使用注解配置Ioc
 	 * [aop_json.man 在json配置文件中声明Aop] -- 在json配置文件中声明Aop及声明式事务
 	
 	

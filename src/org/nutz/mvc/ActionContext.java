@@ -42,7 +42,6 @@ public class ActionContext extends SimpleContext {
 
 	/**
 	 * 获取异常对象
-	 * @return
 	 */
 	public Throwable getError() {
 		return this.getAs(Throwable.class, ERROR);
@@ -92,7 +91,6 @@ public class ActionContext extends SimpleContext {
 
 	/**
 	 * 获取这个Action对应的Method
-	 * @return
 	 */
 	public Method getMethod() {
 		return this.getAs(Method.class, METHOD);
@@ -136,7 +134,6 @@ public class ActionContext extends SimpleContext {
 
 	/**
 	 * 获取method返回值
-	 * @return
 	 */
 	public Object getMethodReturn() {
 		return this.get(METHOD_RETURN);

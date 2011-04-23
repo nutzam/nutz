@@ -13,8 +13,6 @@ public abstract class Params {
 
 	/**
 	 * 构造参数转换器
-	 * @param type
-	 * @return
 	 */
 	public static ParamConvertor makeParamConvertor(Class<?> type) {
 		if (type.isArray())
@@ -30,9 +28,6 @@ public abstract class Params {
 
 	/**
 	 * 构造参数提取器
-	 * @param req
-	 * @param refer
-	 * @return
 	 */
 	@SuppressWarnings("unchecked")
 	public static ParamExtractor makeParamExtractor(HttpServletRequest req, Object refer){

@@ -15,7 +15,7 @@
     的 HTML 提交表单
 	
 	这个适配器的工作细节是这样的：
-	 * 它一次将 HTTP 输入流中所有的文件读入，保存在[/lang/filepool.man 临时文件目录]里
+	 * 它一次将 HTTP 输入流中所有的文件读入，保存在[../lang/filepool.man 临时文件目录]里
 	 * 表单项目会保存在内存里
 	 * 在上传的过程中，它会向当前 Session 中设置一个对象： {*org.nutz.mvc.upload.UploadInfo}
 		 * 属性名为 "org.nutz.mvc.upload.UploadInfo"

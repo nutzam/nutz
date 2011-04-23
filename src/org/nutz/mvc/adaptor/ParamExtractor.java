@@ -10,13 +10,10 @@ import java.util.Set;
 public interface ParamExtractor {
 	/**
 	 * 根据名称提取值
-	 * @param name
-	 * @return
 	 */
 	public String[] extractor(String name);
 	/**
 	 * 键
-	 * @return
 	 */
 	public Set<String> keys();
 }
