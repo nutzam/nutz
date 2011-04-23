@@ -65,8 +65,6 @@ public class SqlLiteral implements Cloneable {
 	 * 46		.
 	 * </pre>
 	 * 
-	 * @param str
-	 * @return SqlLiteral
 	 */
 	public SqlLiteral valueOf(String str) {
 		reset();

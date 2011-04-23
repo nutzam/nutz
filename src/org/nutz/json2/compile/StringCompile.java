@@ -82,8 +82,6 @@ public class StringCompile implements JsonCompile{
 	}
 	/**
 	 * 编译数组,将所有'[]','{}'包裹的字符串理解成数组
-	 * @return
-	 * @throws IOException
 	 */
 	private JsonItem compileArray() throws IOException{
 		boolean isObj = cursor == '{' ? true: false;
@@ -109,9 +107,6 @@ public class StringCompile implements JsonCompile{
 
 	/**
 	 * 保存键值对对象
-	 * @param name
-	 * @return
-	 * @throws IOException
 	 */
 	private JsonItem compilePair(JsonItem name) throws IOException{
 		PairJsonItem obj = new PairJsonItem();

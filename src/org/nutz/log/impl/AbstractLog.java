@@ -35,9 +35,6 @@ public abstract class AbstractLog implements Log {
 	 * 产生一个LogInfo对象,以支持以下调用方式:
 	 * <p/><code>log.warn(e)</code>
 	 * <p/><code>log.warnf("User(name=%s) login fail",username,e)</code>
-	 * @param obj
-	 * @param args
-	 * @return
 	 */
 	private LogInfo makeInfo(Object obj, Object... args) {
 		if (obj == null)

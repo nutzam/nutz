@@ -20,12 +20,10 @@ import org.nutz.lang.Lang;
  * 记录对象
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author mawenming  at Jan 11, 2011 2:20:09 PM
  */
 public class Record implements Map<String, Object>,java.io.Serializable {
 
-	/**
-	 * @author mawenming  at Jan 11, 2011 2:20:09 PM
-	 */
 	private static final long serialVersionUID = 4614645901639942051L;
 
 	public static Record create(ResultSet rs) {

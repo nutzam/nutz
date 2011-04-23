@@ -171,12 +171,6 @@ class JsonParsing {
 		return sb;
 	}
 
-	/**
-	 * @param <T>
-	 * @param type
-	 * @return
-	 * @throws Exception
-	 */
 	private Object parseFromCurrentLocation(Type type) throws Exception {
 		Class<?> clazz = Lang.getTypeClass(type);
 		ParameterizedType pt = null;

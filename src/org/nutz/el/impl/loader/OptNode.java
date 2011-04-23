@@ -70,7 +70,7 @@ class OptNode {
 	/**
 	 * 根据路径获得对应子节点
 	 * 
-	 * @param cs
+	 * @param c
 	 *            查找路径
 	 * @return 节点对象。null 表示不存在
 	 */

@@ -11,9 +11,6 @@ import java.io.Reader;
 public interface JsonCompile {
 	/**
 	 * 编译
-	 * @param reader
-	 * @return
-	 * @throws IOException 
 	 */
 	public JsonItem Compile(Reader reader);
 }

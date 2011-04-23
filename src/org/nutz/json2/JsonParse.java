@@ -10,7 +10,6 @@ import java.lang.reflect.Type;
 public interface JsonParse {
 	/**
 	 * 解析
-	 * @return
 	 */
 	public Object parse(Type type);
 }
