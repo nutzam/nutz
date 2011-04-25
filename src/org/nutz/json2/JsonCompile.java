@@ -1,6 +1,5 @@
 package org.nutz.json2;
 
-import java.io.IOException;
 import java.io.Reader;
 
 /**
