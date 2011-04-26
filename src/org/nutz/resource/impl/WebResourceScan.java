@@ -59,15 +59,11 @@ public class WebResourceScan extends AbstractResourceScan {
 			if (log.isDebugEnabled())
 				log.debugf("Scan in web classes : %s , base = %s", dir, base);
 
-			List<NutResource> list2 = scanInDir(regex, base, dir, true);
+			List<NutResource> list2 = scanInDir(regex, dir, true);
 			for (NutResource nutResource : list2) {
 				String name = nutResource.getName();
 				if (name.indexOf(base) > -1) {
-					String tmpName = name.substring(base.length());
-					if (tmpName.indexOf(src) < 0) {
-						tmpName = src + tmpName;
-						tmpName = tmpName.replaceAll("//", "/");
-					}
+					String tmpName = name.substring(base.length()+1);
 					nutResource.setName(tmpName);
 				}
 				list.add(nutResource);
@@ -80,12 +76,12 @@ public class WebResourceScan extends AbstractResourceScan {
 				String base = sc.getRealPath("/WEB-INF/classes/");
 				String path = sc.getRealPath("/WEB-INF/classes/" + src);
 				if (path != null) {
-					List<NutResource> list2 = scanInDir(regex, base, new File(
+					List<NutResource> list2 = scanInDir(regex, new File(
 							path), true);
 					for (NutResource nutResource : list2) {
 						String name = nutResource.getName();
 						if (name.indexOf(base) > -1)
-							nutResource.setName(name.substring(base.length()));
+							nutResource.setName(name.substring(base.length()+1));
 						list.add(nutResource);
 					}
 					flag = list.isEmpty();
@@ -105,7 +101,7 @@ public class WebResourceScan extends AbstractResourceScan {
 				if (pathZ.endsWith(".jar"))
 					list.addAll(scanInJar(checkSrc(src), regex, pathZ));
 				else
-					list.addAll(scanInDir(regex, pathZ, new File(pathZ + "/"
+					list.addAll(scanInDir(regex, new File(pathZ + "/"
 							+ src),true));
 			}
 			flag = list.isEmpty();

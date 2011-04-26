@@ -64,9 +64,9 @@ public class LocalResourceScan extends AbstractResourceScan {
 		// 如果存在，递归这个目录
 		if (f != null && f.exists()) {
 			if (f.isFile())
-				list.addAll(scanInDir(regex, src, f.getParentFile(), ignoreHidden));
+				list.addAll(scanInDir(regex, f.getParentFile(), ignoreHidden));
 			else
-				list.addAll(scanInDir(regex, src, f, ignoreHidden));
+				list.addAll(scanInDir(regex, f, ignoreHidden));
 		}
 		// 查看资源是否存在在 CLASSPATH 中
 		else {
@@ -81,7 +81,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 					// 首先查找以下， CLASSPATH 从哪里开始
 					int pos = path.lastIndexOf(src);
 					if (pos > 0)
-						list.addAll(scanInDir(regex, path.substring(0, pos), f, ignoreHidden));
+						list.addAll(scanInDir(regex, f, ignoreHidden));
 				}
 				// 如果在 jar 中，则循环查找这个 jar 的每一个实体
 				else {
@@ -101,7 +101,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 						list.addAll(scanInJar(checkSrc(src), regex, pathZ));
 					else
 						list.addAll(scanInDir(	regex,
-												pathZ,
+//												pathZ,
 												new File(pathZ + "/" + src),
 												ignoreHidden));
 				}

@@ -26,13 +26,6 @@ public class NutMessageLoader implements MessageLoader {
 	public Map<String, Map<String, Object>> load(String refer) {
 		Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
 		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
-		for (NutResource nutResource : allnrs) {
-			if (nutResource.getName().indexOf(refer) > -1)
-				if (refer.endsWith("/"))
-					nutResource.setName(nutResource.getName().substring(refer.length()));
-				else
-					nutResource.setName(nutResource.getName().substring(refer.length() + 1));
-		}
 		if (log.isDebugEnabled())
 			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
 		// 求取路径的最大长度

@@ -131,10 +131,6 @@ public class Scans {
 			packagePath = packagePath.substring(0, packagePath.length() - 1);
 		List<Class<?>> re = new ArrayList<Class<?>>(list.size());
 		if (!list.isEmpty()) {
-			String firstItemName = list.get(0).getName().replace('\\', '/');
-			int pos = firstItemName.lastIndexOf(packagePath);
-			if (pos < 0)
-				pos = 0;
 			for (NutResource nr : list) {
 				int r = nr.getName().lastIndexOf(".class");
 				if (r < 0) {
@@ -143,8 +139,8 @@ public class Scans {
 					continue;
 				}
 				try {
-					String className = nr.getName()
-											.substring(pos, r)
+					String className = packagePath.replace('/', '.') + "." + nr.getName()
+											.substring(0, r)
 											.replace('/', '.')
 											.replace('\\', '.');
 					Class<?> klass = Lang.loadClass(className);
@@ -152,7 +148,7 @@ public class Scans {
 				}
 				catch (ClassNotFoundException e) {
 					if (LOG.isInfoEnabled())
-						LOG.infof("Resource can't map to Class, Resource %s", nr);
+						LOG.infof("Resource can't map to Class, Resource %s", nr, e);
 				}
 			}
 		}

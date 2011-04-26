@@ -2,12 +2,9 @@ package org.nutz.resource.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.nutz.lang.Lang;
 import org.nutz.resource.JarEntryInfo;
 import org.nutz.resource.NutResource;
 
@@ -24,19 +21,16 @@ public class JarEntryResource extends NutResource {
 
 	public JarEntryResource(JarEntryInfo jeInfo) throws IOException {
 		this.jar = new JarFile(jeInfo.getJarPath());
-		List<JarEntry> ens = Lang.enum2collection(jar.entries(), new ArrayList<JarEntry>());
-		for (JarEntry en : ens)
-			System.out.println(en.getName());
 		this.entry = jar.getJarEntry(jeInfo.getEntryName());
 		if (null == this.entry)
 			throw new IOException("Invalid JarEntry :" + jeInfo);
 		this.name = jeInfo.getEntryName();
 	}
 
-	public JarEntryResource(JarFile jar, JarEntry jen) {
+	public JarEntryResource(JarFile jar, JarEntry jen, String name) {
 		this.jar = jar;
 		this.entry = jen;
-		this.name = jen.getName();
+		this.name = name;
 	}
 
 	public JarFile getJar() {

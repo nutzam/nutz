@@ -36,7 +36,7 @@ public abstract class AbstractResourceScan implements ResourceScan {
 					continue;
 				String name = jen.getName();
 				if (name.startsWith(src) && (null != regex && regex.matcher(name).find())) {
-					list.add(new JarEntryResource(jar, jen));
+					list.add(new JarEntryResource(jar, jen, jen.getName().substring(src.length())));
 				}
 			}
 			if (log.isDebugEnabled())
@@ -55,7 +55,7 @@ public abstract class AbstractResourceScan implements ResourceScan {
 
 	/* 存在两种调用,有的需要得出的Resouce包含原始的base,有些却不需要 */
 	protected List<NutResource> scanInDir(	final Pattern regex,
-											final String base,
+//											final String base,
 											File f,
 											final boolean ignoreHidden) {
 		final List<NutResource> list = new ArrayList<NutResource>();
@@ -64,7 +64,7 @@ public abstract class AbstractResourceScan implements ResourceScan {
 
 		if (!f.isDirectory())
 			f = f.getParentFile();
-
+		final String base = f.getAbsolutePath();
 		Disks.visitFile(f, new FileVisitor() {
 			public void visit(File file) {
 				list.add(new FileResource(base, file));
