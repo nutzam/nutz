@@ -1,4 +1,4 @@
-package org.nutz.json2.item;
+package org.nutz.json.item;
 
 import java.lang.reflect.Type;
 

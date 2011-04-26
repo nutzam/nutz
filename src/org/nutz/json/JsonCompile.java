@@ -1,4 +1,4 @@
-package org.nutz.json2;
+package org.nutz.json;
 
 import java.io.Reader;
 

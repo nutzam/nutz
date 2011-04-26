@@ -37,7 +37,7 @@ public class JsonRendering {
 	 * @throws NullPointerException
 	 *             if writer or format is null
 	 */
-	public JsonRendering(Writer writer, JsonFormat format) {
+	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
 		// TODO make a new faster collection

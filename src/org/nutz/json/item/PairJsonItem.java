@@ -1,8 +1,8 @@
-package org.nutz.json2.item;
+package org.nutz.json.item;
 
 import java.lang.reflect.Type;
 
-import org.nutz.json2.JsonItem;
+import org.nutz.json.JsonItem;
 
 /**
  * JSON结点

@@ -4,15 +4,11 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
-
+import org.nutz.json.JsonException;
+import org.nutz.json.JsonFormat;
+import org.nutz.json.JsonRendering;
 import org.nutz.lang.Lang;
 
-/**
- * JSON 转换工具
- * 
- * @author zozoh(zozohtnt@gmail.com)
- * @author wendal(wendal1985@gmail.com)
- */
 public class Json {
 
 	/**
@@ -45,7 +41,8 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return (T) new JsonParsing(reader).parseFromJson(type);
+		JsonParsing jp = new JsonParsing(reader);
+		return (T) jp.parseFromJson(type);
 	}
 
 	/**
@@ -108,6 +105,7 @@ public class Json {
 		return fromJson(type, Lang.inr(cs));
 	}
 
+
 	/**
 	 * 将一个 JAVA 对象转换成 JSON 字符串
 	 * 
@@ -167,5 +165,4 @@ public class Json {
 			throw Lang.wrapThrow(e, JsonException.class);
 		}
 	}
-
 }

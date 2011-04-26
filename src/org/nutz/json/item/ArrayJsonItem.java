@@ -1,4 +1,4 @@
-package org.nutz.json2.item;
+package org.nutz.json.item;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.castor.Castors;
-import org.nutz.json2.JsonItem;
+import org.nutz.json.JsonItem;
 import org.nutz.lang.Mirror;
 
 public class ArrayJsonItem extends JsonItem{

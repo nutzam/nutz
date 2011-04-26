@@ -1,9 +1,9 @@
-package org.nutz.json2.compile;
+package org.nutz.json.compile;
 
 import java.io.Reader;
 
-import org.nutz.json2.JsonCompile;
-import org.nutz.json2.item.PairJsonItem;
+import org.nutz.json.JsonCompile;
+import org.nutz.json.item.PairJsonItem;
 
 /**
  * 配对预编译.
