@@ -12,14 +12,14 @@ import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Processor;
-import org.nutz.mvc.impl.chainconfig.ActionChainMakerConfiguretion;
+import org.nutz.mvc.impl.chainconfig.ActionChainMakerConfiguration;
 import org.nutz.mvc.impl.chainconfig.JsonActionChainMakerConfiguretion;
 
 public class NutActionChainMaker implements ActionChainMaker {
 	
 	private static final Log logger = Logs.get();
 	
-	ActionChainMakerConfiguretion co;
+	ActionChainMakerConfiguration co;
 	
 	public NutActionChainMaker(String...args) {
 		co = new JsonActionChainMakerConfiguretion(args);

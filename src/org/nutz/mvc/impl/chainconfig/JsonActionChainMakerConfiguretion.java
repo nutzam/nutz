@@ -17,7 +17,7 @@ import org.nutz.resource.Scans;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguretion {
+public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguration {
 
 	protected Map<String,Map<String,Object>> map = new HashMap<String, Map<String,Object>>();
 	
