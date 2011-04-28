@@ -10,6 +10,8 @@
 	     @[http://zozoh.javaeye.com zozoh]
 -----------------------------------------------------------------------------------
 关于 Dao
+	 * 《[http://www.iteye.com/topic/1012527 使nutz支持类似hibernate的二级缓存,现支持HashtableCache,OSCache,EhCache]》\
+		 @[http://finallygo.iteye.com/ finallygo] {#008800;*推荐}
 	 * 《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》\
 		 @[http://hzzdong.javaeye.com 知足常乐] {#008800;*推荐}
 	 * 《[http://yongshan-ji.javaeye.com/blog/651119 Nutz DAO懒加载实体关联对象]》 \
