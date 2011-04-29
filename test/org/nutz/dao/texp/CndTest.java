@@ -1,9 +1,11 @@
 package org.nutz.dao.texp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.Cnd;
@@ -24,6 +26,21 @@ public class CndTest extends DaoCase {
 	}
 
 	protected void after() {}
+	
+	@Test
+	public void test_segment() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("name", "比尔盖茨");
+		map.put("age", 50);
+		Condition c1 = Cnd.wrap("name='${name}' AND age>${age}", map);
+		assertEquals("name='比尔盖茨' AND age>50", c1.toSql(en));
+		
+		Worker worker = new Worker();
+		worker.name = "老板";
+		worker.age = 30;
+		Condition c2 = Cnd.wrap("name like'${name}%' AND age>${age}", worker);
+		assertEquals("name like'老板%' AND age>30", c2.toSql(en));
+	}
 
 	@Test
 	public void test_gt_like() {

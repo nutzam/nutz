@@ -13,6 +13,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
+import org.nutz.lang.segment.CharSegment;
 
 /**
  * 是 Condition 的一个实现，这个类给你比较方便的方法来构建 Condition 接口的实例。
@@ -32,6 +33,18 @@ import org.nutz.lang.Strings;
  * Cnd.orderBy().desc("id"); <br>
  * 相当于<br>
  * ORDER BY id DESC
+ * 
+ * <h4>使用代码模板示例</h4><br>
+ * <code>
+ * Map<String, Object> map = new HashMap<String, Object>();<br>
+ * map.put("name", "比尔盖茨");<br>
+ * map.put("age", "50");<br>
+ * Cnd.wrap("name='${name}' AND age>${age}", map);<br>
+ * </code>
+ * 相当于<br>
+ * WHERE name='比尔盖茨' AND age>50
+ * <p>
+ * Cnd.wrap 第二个参数传入 map 或 pojo 类型均可正常转换
  * 
  * <h4 style=color:red>你还需要知道的是:</h4><br>
  * <ul>
@@ -54,6 +67,10 @@ public class Cnd implements OrderBy, ExpGroup {
 
 	public static Condition wrap(String str) {
 		return new SimpleCondition((Object) str);
+	}
+	
+	public static Condition wrap(String sql, Object value) {
+		return new SimpleCondition( new CharSegment(sql).setBy(value));
 	}
 
 	public static Expression exp(String name, String op, Object value) {
