@@ -1,74 +1,16 @@
-#title: 1.b.37 发行注记
+#title: 1.b.37 发行注记(Hatching...)
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.37 发行注记
+1.b.38 发行注记(Hatching...)
 
-    春暖花开，万物复苏，那啥的那啥在地震后那啥了；那谁谁因为用飞架炸了自己的那谁谁而被那谁谁给那啥了；当然
-    还有那谁因为不减肥而且还要做飞机去做展会，在机场被伟大的那啥给那啥了...我们这个世界悲惨的丰富多彩着。
-    和这个世界的多彩相比，我想 Nutz 这个小项目的动静简直是不值一提的。尤其是这次更新 ...
-    
-    我们这次发布的是一个 bug fix 版，没有重大改动
-
-    这个版主要解决了前一个版本 [http://code.google.com/p/nutz/wiki/history_1_b_36 1.b.36] 的某些问题。
-    前一个版本因为重写了 Mvc 的核心逻辑，因此带来了一点点不太严重的小问题。
-    在这个版（1.b.37）基本都被我们修了，总之，我可以负责任的告诉你，这个版，比 1.b.36 要好那么一点点 ^_^
-
-    还有一件事: [http://wendal.net Wendal 同学] 录制了两款视频教程，分别在
-    [http://code.google.com/p/nutz/downloads/detail?name=NutMVC--%E4%B8%8EIoc%E5%92%8CDao%E4%B8%80%E8%B5%B7%E4%BD%BF%E7%94%A8.zip 这里]
-    和
-    [http://code.google.com/p/nutz/downloads/detail?name=NutMVC%20--%20QuickStart_v2.exe 这里]
-    ，无论怎样，你在 [http://code.google.com/p/nutz/downloads/list Nutz 的下载列表] 就能找到这两个文件，
-    强烈推荐刚接触 [http://nutzam.com Nutz 框架] 的同学看一下
-
-    另外需要推介的是 [http://helloqiner.iteye.com/ QinerG] 同学写的两篇文章
-
-	 * 《[http://helloqiner.iteye.com/blog/1007646 让Nutz支持最快的模板引擎Smarty4j] 
-	 * 《[http://helloqiner.iteye.com/blog/982157 在Nutz框架中提供Pojo校验（验证）功能的支持]》
-
-    我们已经收录在 [http://code.google.com/p/nutz/wiki/appendix_resources Nutz 的推荐文章列表]中了。
-    看到这样的扩展很欣慰，因为我们的确希望大家这么来扩展和使用 Nutz 的，
-    这个小框架就是为了让你很方便的扩展而设计的。
-    它可以很容易的让你进行高度的订制化，并且它还有很多很方便的扩展点在等着你去挖掘 ^_^
-
-    最后，和大家预告一件事情，下个版（1.b.38），我们会提供一个全新的 Dao，当然，主要接口不变，你原来使用的
-     * Dao
-     * Condition
-     * Sql & SqlCallback
-    这三个接口的用法会维持不变，其中 Dao 和 Sql 接口会有所增强。新的 Dao 会解决批量插入，Blob 等问题。
-    同时会带来一些更酷的功能，到时候我们会提供一些相关的说明文档
-
-    如果不出意外下个版会在6月的某一天发布 :)
-    
-    下面是本版（1.b.37）的一些细节...
+    ...
 
 --------------------------------------------------------------------------------------------------------
 问题修复
 
     * [http://code.google.com/p/nutz/issues/detail?id=298 Issue 298] 文档的覆盖不够 {#AAA;by} {*zozoh}
-    * [http://code.google.com/p/nutz/issues/detail?id=323 Issue 323] 建议对REST的改进 {#AAA;by} {*wenglonghui}
-    * [http://code.google.com/p/nutz/issues/detail?id=346 Issue 346] Json.fromJson 对Long类型有问题 {#AAA;by} {*lvjinhua}
-    * [http://code.google.com/p/nutz/issues/detail?id=347 Issue 347] 应该设计一个PostActionFilter或者改造现在的ActionFilter {#AAA;by} {*moreztea}
-    * [http://code.google.com/p/nutz/issues/detail?id=369 Issue 369] mvc:PairAdaptor在处理REST风格的URL时对参数的解析不够智能 {#AAA;by} {*Landraxee}
-    * [http://code.google.com/p/nutz/issues/detail?id=383 Issue 383] 1.b.35Rollback SQLException {#AAA;by} {*幸福的旁边}
-    * [http://code.google.com/p/nutz/issues/detail?id=395 Issue 395] 	在使用ioc的事件监听功能时，如何配置存在于默认包下的类？ {#AAA;by} {*ywjno.dev}
-    * [http://code.google.com/p/nutz/issues/detail?id=410 Issue 410] 关于EL中的StringElValue {#AAA;by} {*juqkai}
-    * [http://code.google.com/p/nutz/issues/detail?id=412 Issue 412] UploadAdaptor不支持路径参数 {#AAA;by} {*天行健}
-    * [http://code.google.com/p/nutz/issues/detail?id=417 Issue 417] 入口方法中包含数组参数时,启动报错 {#AAA;by} {*幸福的旁边}
-    * [http://code.google.com/p/nutz/issues/detail?id=418 Issue 418] redirect时${p.xxx}参数失效 {#AAA;by} {*jdomyth}
-    * [http://code.google.com/p/nutz/issues/detail?id=419 Issue 419] 重构后的 Mvc 创建 Module 的效率 {#AAA;by} {*zozoh}
-    * [http://code.google.com/p/nutz/issues/detail?id=425 Issue 425] "传人" 应该改为"传入" {#AAA;by} {*wczhang.china}
-    * [http://code.google.com/p/nutz/issues/detail?id=427 Issue 427] 3.6版，@Fail不自动把Exception放进request的obj了！！ {#AAA;by} {*zvin.strategy}
-    * [http://code.google.com/p/nutz/issues/detail?id=429 Issue 429] 当直接请求一个jsp页面时，${base}取不到 {#AAA;by} {*caji.net}
-    * [http://code.google.com/p/nutz/issues/detail?id=430 Issue 430] org.nutz.lang.meta.Pair {#AAA;by} {*goodyorkye}
-    * [http://code.google.com/p/nutz/issues/detail?id=432 Issue 432] 文件池的 默认构造方法中 文件池的大小 不妥 {#AAA;by} {*feiyan}
-    * [http://code.google.com/p/nutz/issues/detail?id=434 Issue 434] 升级到nutz1.b.36后, json解析出错. {#AAA;by} {*wenzhihong2003}
-    * [http://code.google.com/p/nutz/issues/detail?id=435 Issue 435] 使用37rc的jar包的时候出现的无法更新数据库的情况 {#AAA;by} {*ywjno.dev}
-    * [http://code.google.com/p/nutz/issues/detail?id=438 Issue 438] 当URL中使用EL表达式时,每次都扫描OPT类,效率低下 {#AAA;by} {*Wendal}
-    * [http://code.google.com/p/nutz/issues/detail?id=439 Issue 439] ioc:XmlIocLoader的parseField对内部对象的解析错误 {#AAA;by} {*Landraxee}
-    * [http://code.google.com/p/nutz/issues/detail?id=440 Issue 440] ioc:XmlIocLoader的parseMap解析错误 {#AAA;by} {*Landraxee}
-    * [http://code.google.com/p/nutz/issues/detail?id=450 Issue 450] FreeMarker视图下，在注解@OK里使用EL表达式报错 {#AAA;by} {*mamacmm}
 
 
 --------------------------------------------------------------------------------------------------------
@@ -89,9 +31,7 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-	 * 增加 [http://code.google.com/p/nutz/wiki/mvc_rest REST 的支持]
-	 * 修改 [http://code.google.com/p/nutz/wiki/mvc_http_adaptor#路径参数 适配器>路径参数]
-	 * 修改 [http://code.google.com/p/nutz/wiki/mvc_annotations Nutz.Mvc 注解一览表]
+	 * 增加 [http://code.google.com/p/nutz/wiki/... ...]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -109,24 +49,8 @@
 
     || 贡献者           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
     || caji.net      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || feiyan        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || goodyorkye    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || jdomyth       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || landraxee     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || juqkai        	||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  O   ||
-    || lvjinhua      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || mamacmm       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || moreztea      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || QinerG           ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   || 
-    || wczhang.china 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || wendal        	||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||
-    || wenglonghui   	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || wenzhihong2003	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || ywjno.dev     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || zozoh         	||  O   ||  -   ||  O   ||  O   ||  -   ||  O   ||  -   ||
-    || zvin.strategy 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || 天行健         	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || 幸福的旁边      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || feiyan35488    	||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || mamacmm      	||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||
 
 	另外，很多朋友都在：
 	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
