@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.nutz.ioc.annotation.InjectName;
+import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -153,10 +154,20 @@ public abstract class Loadings {
 
 	private static void evalModule(ActionInfo ai, Class<?> type) {
 		ai.setModuleType(type);
-		InjectName in = type.getAnnotation(InjectName.class);
-		if (null != in)
-			ai.setInjectName(Strings.isBlank(in.value()) ? Strings.lowerFirst(type.getSimpleName())
-														: Strings.trim(in.value()));
+		//按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字  Modify By QinerG@gmai.com
+		IocBean iocBean = type.getAnnotation(IocBean.class);
+		if (iocBean != null) {
+			String beanName = iocBean.name();
+			if (Strings.isBlank(beanName)) {
+				InjectName innm = type.getAnnotation(InjectName.class);
+				if (null != innm && !Strings.isBlank(innm.value())) {
+					beanName = innm.value();
+				} else {
+					beanName = Strings.lowerFirst(type.getSimpleName());
+				}
+			}
+			ai.setInjectName(beanName);
+		}
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
