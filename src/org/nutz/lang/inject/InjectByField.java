@@ -26,7 +26,7 @@ public class InjectByField implements Injecting {
 		}
 		catch (Exception e) {
 			if (log.isInfoEnabled())
-				log.info("Fail to value by field", e);
+				log.info("Fail to set value by field", e);
 			throw Lang.makeThrow(	"Fail to set '%s'[ %s ] to field %s.'%s' because [%s]: %s",
 									value,
 			                     	v,

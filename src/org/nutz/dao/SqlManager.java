@@ -1,12 +1,14 @@
 package org.nutz.dao;
 
-import org.nutz.dao.sql.ComboSql;
+import java.util.List;
+
 import org.nutz.dao.sql.Sql;
 
 /**
- * 自定 SQL 的管理接口。
- * <p>
+ * 自定 SQL 的管理接口。 <br>
  * 通常，你可以通过 Dao 接口 sqls() 方法获得这个接口
+ * <p>
+ * 你可以通过这个接口的实现类，将你的自定义 SQL 存放在文件或者数据库中
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * 
@@ -35,13 +37,13 @@ public interface SqlManager {
 	Sql create(String key) throws SqlNotFoundException;
 
 	/**
-	 * 根据一组 Sql 的键值，创建一个组合 Sql
+	 * 根据一组 Sql 的键值，创建一个 Sql 列表
 	 * 
 	 * @param keys
 	 *            键值数组
-	 * @return 组合 Sql
+	 * @return Sql 列表
 	 */
-	ComboSql createCombo(String... keys);
+	List<Sql> createCombo(String... keys);
 
 	/**
 	 * @return 本接口下共管理了多少条 Sql 语句

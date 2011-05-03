@@ -19,7 +19,6 @@ import java.util.regex.Pattern;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.SqlNotFoundException;
 import org.nutz.dao.Sqls;
-import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -31,7 +30,7 @@ import org.nutz.lang.util.LinkedCharArray;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  * @author mawenming at 2010-4-10 上午10:04:17
- *
+ * 
  */
 public abstract class AbstractSqlManager implements SqlManager {
 
@@ -77,15 +76,15 @@ public abstract class AbstractSqlManager implements SqlManager {
 		return Sqls.create(get(key));
 	}
 
-	public ComboSql createCombo(String... keys) {
-		ComboSql combo = new ComboSql();
+	public List<Sql> createCombo(String... keys) {
+		List<Sql> list = new ArrayList<Sql>(keys.length);
 		if (null == keys || keys.length == 0)
 			keys = this.keys();
 		for (String key : keys) {
 			Sql sql = create(key);
-			combo.add(sql);
+			list.add(sql);
 		}
-		return combo;
+		return list;
 	}
 
 	public int count() {

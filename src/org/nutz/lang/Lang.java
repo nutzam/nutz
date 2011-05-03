@@ -65,6 +65,13 @@ public abstract class Lang {
 	}
 
 	/**
+	 * @return 一个不可能的运行时异常
+	 */
+	public static RuntimeException impossible() {
+		return new RuntimeException("r u kidding me?! It is impossible!");
+	}
+
+	/**
 	 * 根据格式化字符串，生成运行时异常
 	 * 
 	 * @param format
@@ -358,6 +365,43 @@ public abstract class Lang {
 	 */
 	public static <T> T[] array(T... eles) {
 		return eles;
+	}
+
+	/**
+	 * 判断一个对象是否为空。它支持如下对象类型：
+	 * <ul>
+	 * <li>null : 一定为空
+	 * <li>数组
+	 * <li>集合
+	 * <li>Map
+	 * <li>其他对象 : 一定不为空
+	 * </ul>
+	 * 
+	 * @param obj
+	 *            任意对象
+	 * @return 是否为空
+	 */
+	public static boolean isEmpty(Object obj) {
+		if (obj == null)
+			return true;
+		if (obj.getClass().isArray())
+			return Array.getLength(obj) == 0;
+		if (obj instanceof Collection<?>)
+			return ((Collection<?>) obj).isEmpty();
+		if (obj instanceof Map<?, ?>)
+			return ((Map<?, ?>) obj).isEmpty();
+		return false;
+	}
+
+	/**
+	 * 判断一个数组是否是空数组
+	 * 
+	 * @param ary
+	 *            数组
+	 * @return null 或者空数组都为 true 否则为 false
+	 */
+	public static <T> boolean isEmptyArray(T[] ary) {
+		return null == ary || ary.length == 0;
 	}
 
 	/**
@@ -1052,6 +1096,18 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 根据一个 Map 包裹成一个上下文对象
+	 * 
+	 * @param map
+	 *            Map 对象
+	 * 
+	 * @return 一个新创建的上下文对象
+	 */
+	public static Context context(Map<String, Object> map) {
+		return new SimpleContext(map);
+	}
+
+	/**
 	 * 根据一段 JSON 字符串，生产一个新的上下文对象
 	 * 
 	 * @return 一个新创建的上下文对象
@@ -1218,6 +1274,17 @@ public abstract class Lang {
 						catch (ExitLoop e) {
 							break;
 						}
+				}
+			} else if (obj instanceof Iterator<?>) {
+				Iterator<?> it = (Iterator<?>) obj;
+				int i = 0;
+				while (it.hasNext()) {
+					try {
+						callback.invoke(i++, (T) it.next(), -1);
+					}
+					catch (ExitLoop e) {
+						break;
+					}
 				}
 			} else
 				try {

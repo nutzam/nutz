@@ -37,6 +37,10 @@ public interface Segment {
 	boolean contains(String key);
 
 	Set<String> keys();
+	
+	int keyCount();
+	
+	boolean hasKey();
 
 	List<Object> values();
 	

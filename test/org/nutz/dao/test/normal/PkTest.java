@@ -5,13 +5,12 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 
 public class PkTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/dog.dod"));
+		dao.create(Dog.class, true);
 		// Insert 8 records
 		for (int i = 0; i < 8; i++) {
 			Dog dog = new Dog();

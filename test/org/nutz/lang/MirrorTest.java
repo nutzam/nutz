@@ -16,8 +16,9 @@ import org.nutz.NutzEnum;
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
-import org.nutz.dao.test.meta.Base;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.meta.Email;
+import org.nutz.lang.reflect.ObjA;
 
 public class MirrorTest {
 
@@ -322,6 +323,19 @@ public class MirrorTest {
 		assertEquals("B", d.args[1]);
 	}
 
+	@Test
+	public void testBornEmail() {
+		Email email = Mirror.me(Email.class).born("a@b.com");
+		assertEquals("a", email.getAccount());
+		assertEquals("b.com", email.getHost());
+
+		email = Mirror.me(Email.class).born();
+		email.setAccount("a");
+		email.setHost("b.com");
+		assertEquals("a", email.getAccount());
+		assertEquals("b.com", email.getHost());
+	}
+
 	public static int testStaticMethod(long l) {
 		return (int) (l * 10);
 	}
@@ -410,8 +424,8 @@ public class MirrorTest {
 
 	@Test(expected = RuntimeException.class)
 	public void set_null_value_by_invoking() {
-		Base base = Base.make("Temp");
-		Mirror<Base> mirror = Mirror.me(Base.class);
+		ObjA base = new ObjA("abc");
+		Mirror<ObjA> mirror = Mirror.me(ObjA.class);
 		mirror.invoke(base, "setName", (Object) null);
 		assertNull(base.getName());
 		base.setName("FYZ");

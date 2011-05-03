@@ -7,6 +7,7 @@ import org.nutz.dao.entity.annotation.Table;
 
 @Table("${name}")
 public class DPet {
+
 	@Id
 	private int id;
 

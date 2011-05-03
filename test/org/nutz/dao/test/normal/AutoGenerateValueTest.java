@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 
 public class AutoGenerateValueTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/killer.dod"));
+		dao.create(Killer.class, true);
+		dao.create(Resident.class, true);
 	}
 
 	@Override
@@ -18,6 +18,8 @@ public class AutoGenerateValueTest extends DaoCase {
 
 	@Test
 	public void test_var_in_prev() {
+		dao.create(Pet2.class, true);
+
 		// TODO Oracle 那个 @Prev 有问题，暂时先忽略
 		if (pojos.dao().meta().isOracle())
 			return;
@@ -63,7 +65,9 @@ public class AutoGenerateValueTest extends DaoCase {
 		assertEquals("GFW", cnm.getLastKillName());
 	}
 
-	@Test
+	// 重构后的 Dao 将不再支持这个用例
+	// TODO 在正式发布 1.b.38 时删除这个用例
+	// @Test
 	public void test_insert_prev_by_fastInsert() {
 		Resident xh = new Resident("XH");
 		Resident xw = new Resident("XW");

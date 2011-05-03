@@ -20,10 +20,12 @@ import org.nutz.lang.Lang;
  * 记录对象
  * 
  * @author zozoh(zozohtnt@gmail.com)
- * @author mawenming  at Jan 11, 2011 2:20:09 PM
  */
 public class Record implements Map<String, Object>,java.io.Serializable {
 
+	/**
+	 * @author mawenming  at Jan 11, 2011 2:20:09 PM
+	 */
 	private static final long serialVersionUID = 4614645901639942051L;
 
 	public static Record create(ResultSet rs) {
@@ -109,31 +111,6 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 
 	public String toString() {
 		return Json.toJson(map);
-	}
-
-	/**
-	 * 如果你想将这个记录转换成你的数据库实体类，请用这个方法
-	 * 
-	 * @param enType
-	 *            实体类型
-	 * @return 实体的一个实例
-	 * 
-	 * @see org.nutz.dao.Dao#getEntity(Class)
-	 */
-	public <T> T toPojo(Entity<T> enType) {
-		try {
-			T obj = enType.getType().newInstance();
-			for (EntityField ef : enType.fields()) {
-				Object v = map.get(ef.getColumnName());
-				if (null != v) {
-					ef.setValue(obj, v);
-				}
-			}
-			return obj;
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
 	}
 
 	public <T> T toPojo(Class<T> type) {

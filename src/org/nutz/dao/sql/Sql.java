@@ -1,18 +1,15 @@
 package org.nutz.dao.sql;
 
-import java.sql.Connection;
-import java.util.List;
-
 import org.nutz.dao.Condition;
-import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.jdbc.ValueAdaptor;
 
 /**
- * 为了将来构建性能更好的 Sql 解析和执行的实现，创建此接口
+ * 封装了自定义 SQL
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public interface Sql {
+public interface Sql extends DaoStatement {
 
 	/**
 	 * 所谓"变量"，就是当 Sql 对象转换成 Statement 对象前，预先被填充的占位符。
@@ -34,6 +31,20 @@ public interface Sql {
 	VarSet params();
 
 	/**
+	 * 手动为某个语句参数设置适配器。
+	 * <p>
+	 * 默认的，Sql 的实现类会自动根据你设置的值，自动为所有的参数设置适配器。<br>
+	 * 但是，有些时候，你可能传入了 null 值或者其他的特殊对象，<br>
+	 * 这里允许你主动为其设置一个适配器，这样你就有了终极手段最合理的适配你的参数对象
+	 * 
+	 * @param name
+	 *            对应参数的名称
+	 * @param adaptor
+	 *            适配器实例
+	 */
+	void setValueAdaptor(String name, ValueAdaptor adaptor);
+
+	/**
 	 * @return 整个 SQL 的变量索引，你可以获得变量的个数和名称
 	 */
 	VarIndex varIndex();
@@ -44,15 +55,25 @@ public interface Sql {
 	VarIndex paramIndex();
 
 	/**
-	 * 上下文对象，随着 Sql 对象的创建而创建，随着其消亡而消亡。
-	 * 
-	 * @return 上下文对象
+	 * 将当前的参数列表存储，以便执行批处理
 	 */
-	SqlContext getContext();
+	void addBatch();
 
 	/**
-	 * 当执行完查询后，你还需要做些什么。尤其是 SELECT 语句，你需要在回调里从 ResultSet 取出<br>
-	 * 查询的结果，记录到你的 JAVA 对象中。
+	 * 清除所有的曾经设置过的参数
+	 */
+	void clearBatch();
+
+	/**
+	 * 重写父接口返回值
+	 */
+	Sql setEntity(Entity<?> entity);
+
+	/**
+	 * 当前 Statement 被执行完毕后，有可能会产生一个 ResultSet。 针对这个 ResultSet 你可以执行更多的操作。
+	 * <p>
+	 * 当然如果不是 SELECT 语句，那么你依然可以设置一个回调，<br>
+	 * 当你的语句执行完毕后， 会调用它（Connection 不会被 commit），但是 ResultSet 参数会是 null
 	 * 
 	 * @param callback
 	 *            回调函数
@@ -61,102 +82,17 @@ public interface Sql {
 	Sql setCallback(SqlCallback callback);
 
 	/**
-	 * 条件，当主要用来生成 WHERE 后面的那段 SQL
+	 * 为 SQL 增加条件，SQL 必须有 '$condition' 变量
 	 * 
-	 * @param condition
-	 *            条件对象
-	 * @return 自身
-	 * @see org.nutz.dao.Condition
-	 */
-	Sql setCondition(Condition condition);
-
-	/**
-	 * 执行本 Sql
-	 * 
-	 * @param conn
-	 *            数据库连接
-	 * @throws DaoException
-	 */
-	void execute(Connection conn) throws DaoException;
-
-	/**
-	 * 你可以通过 setCallback 函数为本 Sql设置一个回调。 在回调中，你可以返回一个对象。这个对象会存储在本 Sql中。 当本 Sql
-	 * 执行完毕，你可以通过这个函数获得回调函数生成的返回。
-	 * <p>
-	 * 一般的情况，回调函数是用来从 ResultSet 生成对象的。即，如果 本 Sql 不是 SELECT XXXX， 一般不会被设置回调
-	 * 
-	 * @return 执行结果。
-	 * 
-	 * @see org.nutz.dao.sql.SqlCallback
-	 */
-	Object getResult();
-
-	/**
-	 * @return 当前 Sql 所对应的实体
-	 * @see org.nutz.dao.entity.Entity
-	 */
-	Entity<?> getEntity();
-
-	/**
-	 * 设置语句适配器
-	 * 
-	 * @param adapter
-	 *            语句适配器
+	 * @param cnd
+	 *            条件
 	 * @return 自身
 	 */
-	Sql setAdapter(StatementAdapter adapter);
-
-	/**
-	 * 设置 当前 Sql 对应的实体
-	 * 
-	 * @param entity
-	 *            实体
-	 * @return 自身
-	 */
-	Sql setEntity(Entity<?> entity);
-
-	/**
-	 * @return 如果当前 Sql 为 DELETE | UPDATE | INSERT，返回执行后所影响的记录数。否则返回 -1
-	 */
-	int getUpdateCount();
+	Sql setCondition(Condition cnd);
 
 	/**
 	 * @return 一个新的和当前对象一样的对象。只是原来设置的变量和参数，需要你重新设置
 	 */
 	Sql duplicate();
-
-	/**
-	 * 一个 getResult() 函数的变种，将当前对象的 Result 转换成 List<T> 返回。<br>
-	 * 如果 Result 本身就是一个列表，如果第一个元素的类型和参数相符，则直接返回，<br>
-	 * 否则会被用 Castors 智能转换 如果不是列表，则会强制用 ArrayList 包裹
-	 * 
-	 * @param <T>
-	 *            列表容器內的元素类型
-	 * @param classOfT
-	 *            列表容器內的元素类型
-	 * @return 列表
-	 */
-	<T> List<T> getList(Class<T> classOfT);
-
-	/**
-	 * 转换结果对象到你想要的类型
-	 * 
-	 * @param <T>
-	 *            对象类型
-	 * @param classOfT
-	 *            对象类型
-	 * @return 对象
-	 */
-	<T> T getObject(Class<T> classOfT);
-
-	/**
-	 * @return 将结果对象作为 int 返回
-	 */
-	int getInt();
-
-	/**
-	 * @return 将结果对象作为 String 返回
-	 */
-	String getString();
 
 }

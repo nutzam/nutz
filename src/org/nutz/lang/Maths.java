@@ -1,12 +1,37 @@
 package org.nutz.lang;
 
 /**
- * 一些计算方面的帮助函数
+ * A group of helper functions to counting some ...
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
 public abstract class Maths {
 
+	/**
+	 * Seek the maximum number from an INT array
+	 * 
+	 * @param nums
+	 *            INT array
+	 * @return the maximum
+	 */
+	public static int max(int... nums) {
+		if (null == nums || nums.length == 0)
+			return 0;
+		int re = nums[0];
+		for (int i = 1; i < nums.length; i++) {
+			if (nums[i] > re)
+				re = nums[i];
+		}
+		return re;
+	}
+
+	/**
+	 * Convert a binary string to a integer
+	 * 
+	 * @param s
+	 *            binary string
+	 * @return integer
+	 */
 	public static int bit(String s) {
 		return Integer.valueOf(s, 2);
 	}

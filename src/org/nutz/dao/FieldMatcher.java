@@ -34,10 +34,6 @@ public class FieldMatcher {
 	 */
 	private boolean ignoreNull;
 
-	public boolean isIgnoreNull() {
-		return ignoreNull;
-	}
-
 	public boolean match(String str) {
 		if (null != locked)
 			if (locked.matcher(str).find())
@@ -46,6 +42,30 @@ public class FieldMatcher {
 			if (!actived.matcher(str).find())
 				return false;
 		return true;
+	}
+
+	public boolean isIgnoreNull() {
+		return ignoreNull;
+	}
+
+	public void setIgnoreNull(boolean ignoreNull) {
+		this.ignoreNull = ignoreNull;
+	}
+
+	public Pattern getActived() {
+		return actived;
+	}
+
+	public Pattern getLocked() {
+		return locked;
+	}
+
+	public void setActived(Pattern actived) {
+		this.actived = actived;
+	}
+
+	public void setLocked(Pattern locked) {
+		this.locked = locked;
 	}
 
 }

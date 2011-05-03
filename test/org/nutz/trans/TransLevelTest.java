@@ -13,7 +13,6 @@ import org.junit.Test;
 import org.nutz.Nutzs;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 import org.nutz.service.IdEntityService;
 
 /**
@@ -91,7 +90,7 @@ public class TransLevelTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/trans/trans.dod"));
+		dao.create(Company.class, true);
 		comService = new IdEntityService<Company>(dao) {};
 		Company c = Company.create("com1");
 		comService.dao().insert(c);

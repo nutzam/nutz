@@ -13,7 +13,6 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Mission;
-import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 
 public class BatchTransTest extends DaoCase {
@@ -23,7 +22,9 @@ public class BatchTransTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/trans/trans.dod"));
+		dao.create(Company.class, true);
+		dao.create(Master.class, true);
+		dao.create(Cat.class, true);
 	}
 
 	@Test

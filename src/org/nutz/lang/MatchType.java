@@ -23,5 +23,9 @@ public enum MatchType {
 	/**
 	 * 不匹配
 	 */
-	NO
+	NO,
+	/**
+	 * 长度相同，但是需要转换
+	 */
+	NEED_CAST
 }

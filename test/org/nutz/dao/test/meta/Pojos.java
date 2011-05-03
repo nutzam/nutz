@@ -1,46 +1,34 @@
 package org.nutz.dao.test.meta;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
-
 import org.nutz.dao.Dao;
 import org.nutz.dao.TableName;
-import org.nutz.dao.impl.NutDao;
-import org.nutz.dao.tools.DTable;
-import org.nutz.dao.tools.TableDefinition;
-import org.nutz.dao.tools.Tables;
-import org.nutz.lang.Lang;
-import org.nutz.lang.Streams;
-import org.nutz.lang.segment.CharSegment;
-import org.nutz.lang.segment.Segment;
 import org.nutz.service.*;
 import org.nutz.trans.Atom;
 
 public class Pojos extends Service {
 
-	public static void main(String[] args) {
-
-	}
-
-	private String topTables;
-	private String platoonTables;
 	private Dao dao;
 
 	public Pojos(Dao dao) {
 		super(dao);
-		String prefix = Pojos.class.getPackage().getName().replace('.', '/');
-		topTables = Lang.readAll(Streams.fileInr(prefix + "/top_tables.dod"));
-		platoonTables = Lang.readAll(Streams.fileInr(prefix + "/platoon_tables.dod"));
 		this.dao = dao;
 	}
 
 	public void initPet() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
+		dao.create(Pet.class, true);
 	}
 
 	public void init() {
-		Tables.define(dao, Tables.load(topTables));
+		synchronized (Pojos.class) {
+			dao.create(Country.class, true);
+			dao.create(Platoon.class, true);
+			dao.create(Base.class, true);
+			dao.create(Fighter.class, true);
+			dao.create(WaveBand.class, true);
+		}
 	}
 
 	public Platoon create4Platoon(Base base, String name) {
@@ -58,13 +46,10 @@ public class Pojos extends Service {
 
 				Tank m1a1 = p.addTank(Tank.make("M1-A1"));
 				m1a1.setMotorName(bush.getName());
-				m1a1.setMembers(new HashMap<String, Soldier>());
-				m1a1.addMember(bush).addMember(sm).addMember(zzh);
+				
 
 				Tank t92 = p.addTank(Tank.make("T92"));
 				t92.setMotorName(zzh.getName());
-				t92.setMembers(new HashMap<String, Soldier>());
-				t92.addMember(zzh).addMember(mick).addMember(peter);
 
 				p.setLeaderName(zzh.getName());
 				p.setLeader(zzh);
@@ -77,8 +62,17 @@ public class Pojos extends Service {
 
 				dao.update(p);
 				dao.insertLinks(p, "leader|soliders|tanks");
-				dao.insertLinks(m1a1, "members");
-				dao.insertLinks(t92, "members");
+
+				m1a1 = dao.fetch(Tank.class, "M1-A1");
+				m1a1.setMembers(new HashMap<String, Soldier>());
+				m1a1.addMember(bush).addMember(sm).addMember(zzh);
+				
+				t92 = dao.fetch(Tank.class, "T92");
+				t92.setMembers(new HashMap<String, Soldier>());
+				t92.addMember(zzh).addMember(mick).addMember(peter);
+
+				dao.insertRelation(m1a1, "members");
+				dao.insertRelation(t92, "members");
 				dao.insertLinks(Gun.assign(mick, Gun.TYPE.AK47, Gun.TYPE.P228), "guns");
 				dao.insertLinks(Gun.assign(zzh, Gun.TYPE.AWP, Gun.TYPE.MP5, Gun.TYPE.P228), "guns");
 				dao.insertLinks(Gun.assign(peter, Gun.TYPE.M16, Gun.TYPE.UMP_45), "guns");
@@ -90,18 +84,21 @@ public class Pojos extends Service {
 	}
 
 	public void initPlatoon(int id) {
-		Segment seg = new CharSegment(this.platoonTables);
-		Tables.define(dao, Tables.load(seg.set("id", id).toString()));
+		TableName.set(id);
+		dao.create(Soldier.class, true);
+		dao.create(Tank.class, true);
+		dao.create(Gun.class, true);
+		dao.create(Mission.class, true);
+		TableName.clear();
 	}
 
 	public void dropPlatoon(int id) {
-		Segment seg = new CharSegment(this.platoonTables);
-		List<DTable> dts = Tables.load(seg.set("id", id).toString());
-		TableDefinition maker = Tables.newInstance(((NutDao) dao).meta());
-		for (DTable dt : dts) {
-			if (dao.exists(dt.getName()))
-				dao.execute(maker.makeDropSql(dt));
-		}
+		TableName.set(id);
+		dao.drop(Soldier.class);
+		dao.drop(Tank.class);
+		dao.drop(Gun.class);
+		dao.drop(Mission.class);
+		TableName.clear();
 	}
 
 	public void initData() {
@@ -113,7 +110,7 @@ public class Pojos extends Service {
 
 		Base b = Base.make("red");
 		b.setCountry(Country.make("China"));
-		b.setFighters(new LinkedList<Fighter>());
+		b.setFighters(new ArrayList<Fighter>(6));
 		b.getFighters().add(Fighter.make(Fighter.TYPE.SU_35));
 		b.getFighters().add(Fighter.make(Fighter.TYPE.SU_27));
 		b.getFighters().add(Fighter.make(Fighter.TYPE.SU_27));

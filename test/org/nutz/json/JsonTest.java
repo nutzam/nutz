@@ -16,6 +16,9 @@ import java.util.Map;
 import org.junit.Test;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.meta.JA;
+import org.nutz.json.meta.JB;
+import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -24,6 +27,25 @@ import org.nutz.lang.stream.StringOutputStream;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
+
+	@Test
+	public void test_map_class_item() {
+		String path = "org.nutz.json.meta";
+		String s = String.format("{map:{a:'%s.JA', b:'%s.JB'}}", path, path);
+		JMapItem jmi = Json.fromJson(JMapItem.class, s);
+		assertEquals(2, jmi.getMap().size());
+		assertEquals(JB.class, jmi.getMap().get("b"));
+	}
+
+	@Test
+	public void test_map_class_item_as_string() {
+		String path = "org.nutz.json.meta";
+		String s = String.format("{list:['%s.JA','%s.JB']}", path, path);
+		JMapItem jmi = Json.fromJson(JMapItem.class, s);
+		assertEquals(2, jmi.getList().size());
+		assertEquals(JA.class, jmi.getList().get(0));
+		assertEquals(JB.class, jmi.getList().get(1));
+	}
 
 	@Test
 	public void test_unknown_field_in_json_string() {
@@ -574,19 +596,19 @@ public class JsonTest {
 		Object pc = OuterClass.make();
 		assertEquals("ItMe", Json.toJson(pc));
 	}
-	
+
 	@Test
-	public void test_X(){
+	public void test_X() {
 		Map<Object, Object> map = new HashMap<Object, Object>();
 		map.put("abc", "abc中文abc");
 		JsonFormat format = new JsonFormat(true);
 		format.setAutoUnicode(true);
-		assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}",Json.toJson(map,format));
+		assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}", Json.toJson(map, format));
 	}
-	
+
 	@Test
-	public void test_toList(){
-		List<Map<String,Integer>> msgList = Json.fromJson(List.class, "[{'a':1}, {'b':2}]");
+	public void test_toList() {
+		List<Map<String, Integer>> msgList = Json.fromJson(List.class, "[{'a':1}, {'b':2}]");
 		assertNotNull(msgList);
 		assertTrue(msgList.size() == 2);
 		assertEquals(1, msgList.get(0).get("a").intValue());

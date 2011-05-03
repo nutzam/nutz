@@ -142,14 +142,14 @@ public class Invoking {
 										type.getName(),
 										methodName,
 										Lang.concat('\n', args));
-		this.type = type;
-		this.methodName = methodName;
-		this.args = args;
+		msg = format(	"Fail to invoke [%s].%s() by args:\n %s",
+						type.getName(),
+						methodName,
+						Lang.concat('\n', args))
+				+ "\nFor the reason: %s";
 	}
 
-	private Class<?> type;
-	private String methodName;
-	private Object[] args;
+	private String msg;
 	private Invoker invoker;
 
 	public Object invoke(Object obj) {
@@ -157,11 +157,6 @@ public class Invoking {
 			return invoker.invoke(obj);
 		}
 		catch (Throwable e) {
-			String msg = format(	"Fail to invoke [%s].%s() by args:\n %s",
-					type.getName(),
-					methodName,
-					Lang.concat('\n', args))
-			+ "\nFor the reason: %s";
 			throw new InvokingException(msg, Lang.unwrapThrow(e));
 		}
 	}

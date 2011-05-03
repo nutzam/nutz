@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface One {
 

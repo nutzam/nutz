@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.castor.castor.Array2Array;
+import org.nutz.castor.castor.Object2Object;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.TypeExtractor;
@@ -161,17 +163,18 @@ public class Castors {
 			if (null != list && list.size() > 0)
 				classes.addAll(list);
 		}
-		//一个类都找不到,好吧,加载默认的,从文件读取列表
+		// 一个类都找不到,好吧,加载默认的,从文件读取列表
 		if (classes.size() == 0) {
 			if (log.isWarnEnabled())
 				log.warn("!!No castor found!!!!!!!!! Load default castor list");
-			
+
 			String str = Streams.readAndClose(Streams.fileInr("/org/nutz/castor/default-castors.txt"));
 			String[] classNames = str.split("\\n");
 			for (String className : classNames)
 				try {
-					classes.add(Class.forName("org.nutz.castor.castor."+className.trim()));
-				} catch (Throwable e) {}
+					classes.add(Class.forName("org.nutz.castor.castor." + className.trim()));
+				}
+				catch (Throwable e) {}
 		}
 		for (Class<?> klass : classes) {
 			try {
@@ -207,7 +210,7 @@ public class Castors {
 			}
 		}
 		if (log.isDebugEnabled())
-			log.debugf("Using %s castor for Castors",map.size());
+			log.debugf("Using %s castor for Castors", map.size());
 	}
 
 	/**
@@ -234,8 +237,27 @@ public class Castors {
 	public <F, T> T cast(Object src, Class<F> fromType, Class<T> toType, String... args)
 			throws FailToCastObjectException {
 		if (null == src) {
-			if (toType.isPrimitive())
-				return cast(0, int.class, toType);
+			// 原生数据的默认值
+			if (toType.isPrimitive()) {
+				if (toType == int.class)
+					return (T) Integer.valueOf(0);
+				else if (toType == long.class)
+					return (T) Long.valueOf(0L);
+				else if (toType == byte.class)
+					return (T) Byte.valueOf((byte) 0);
+				else if (toType == short.class)
+					return (T) Short.valueOf((short) 0);
+				else if (toType == float.class)
+					return (T) Float.valueOf(.0f);
+				else if (toType == double.class)
+					return (T) Double.valueOf(.0);
+				else if (toType == boolean.class)
+					return (T) Boolean.FALSE;
+				else if (toType == char.class)
+					return (T) Character.valueOf(' ');
+				throw Lang.impossible();
+			}
+			// 是对象，直接返回 null
 			return null;
 		}
 		if (fromType == toType || toType == null || fromType == null)
@@ -266,7 +288,8 @@ public class Castors {
 																toType.getName(),
 																src,
 																e.getClass().getSimpleName(),
-																e.getMessage()),e);
+																e.getMessage()),
+												e);
 		}
 	}
 
@@ -316,6 +339,24 @@ public class Castors {
 	 */
 	public <T> T castTo(Object src, Class<T> toType) throws FailToCastObjectException {
 		return cast(src, null == src ? null : src.getClass(), toType);
+	}
+
+	/**
+	 * 判断一个类型是否可以被转换成另外一个类型
+	 * <p>
+	 * 判断的依据就是看是否可以直接被转型，以及能不能找到一个专有的转换器
+	 * 
+	 * @param fromType
+	 *            起始类型
+	 * @param toType
+	 *            目标类型
+	 * @return 是否可以转换
+	 */
+	public boolean canCast(Class<?> fromType, Class<?> toType) {
+		if (Mirror.me(fromType).canCastToDirectly(toType))
+			return true;
+		Castor<?, ?> castor = this.find(fromType, toType);
+		return !(castor instanceof Object2Object);
 	}
 
 	/**

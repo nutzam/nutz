@@ -14,7 +14,6 @@ import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.Chain;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.meta.Email;
@@ -23,7 +22,7 @@ public class SupportedFieldTypeTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/normal/types.dod"));
+		dao.create(EntityTypes.class, true);
 	}
 
 	public static enum TT {

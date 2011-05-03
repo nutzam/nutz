@@ -2,11 +2,12 @@ package org.nutz.dao.test.sqls;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.impl.FileSqlManager;
-import org.nutz.dao.sql.ComboSql;
 import org.nutz.dao.sql.Sql;
 
 public class SQLFileParsingTest {
@@ -90,8 +91,8 @@ public class SQLFileParsingTest {
 	@Test
 	public void check_parse_comboSqls() {
 		SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/sqls.sqls");
-		ComboSql sql = sqls.createCombo();
-		assertEquals(10, sql.count());
+		List<Sql> list = sqls.createCombo();
+		assertEquals(10, list.size());
 	}
 
 	@Test

@@ -29,4 +29,5 @@ public interface Condition {
 	 * @return 条件字符串
 	 */
 	String toSql(Entity<?> entity);
+
 }

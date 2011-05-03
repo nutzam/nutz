@@ -12,10 +12,8 @@ public interface Context extends Cloneable {
 	
 	Map<String,Object> getInnerMap();
 
-	Context putAll(Map<String, Object> map);
-
-	Context putAll(Context context);
-
+	Context putAll(Object obj);
+	
 	boolean has(String key);
 
 	Context clear();

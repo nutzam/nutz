@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 import org.nutz.lang.Lang;
 import org.nutz.service.IdEntityService;
 import org.nutz.trans.Atom;
@@ -18,7 +17,9 @@ public class TransactionTest extends DaoCase {
 	private IdEntityService<Master> masterService;
 
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/trans/trans.dod"));
+		dao.create(Company.class, true);
+		dao.create(Master.class, true);
+		dao.create(Cat.class, true);
 		catService = new IdEntityService<Cat>(dao) {};
 		comService = new IdEntityService<Company>(dao) {};
 		masterService = new IdEntityService<Master>(dao) {};

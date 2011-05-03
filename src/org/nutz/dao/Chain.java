@@ -6,7 +6,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.EntityField;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
 
@@ -33,6 +34,18 @@ public class Chain {
 		return new Chain(name, value, null, null);
 	}
 
+	/**
+	 * 保护起来的构造函数
+	 * 
+	 * @param name
+	 *            名称
+	 * @param value
+	 *            值
+	 * @param head
+	 *            链头
+	 * @param next
+	 *            后续节点
+	 */
 	private Chain(String name, Object value, Chain head, Chain next) {
 		this.name = name;
 		this.value = value;
@@ -41,6 +54,7 @@ public class Chain {
 		else
 			this.head = head;
 		this.next = next;
+		this.size = 1;
 	}
 
 	private Chain head;
@@ -49,7 +63,18 @@ public class Chain {
 
 	private Object value;
 
+	private ValueAdaptor adaptor;
+
 	private Chain next;
+
+	private int size;
+
+	/**
+	 * @return 链的长度
+	 */
+	public int size() {
+		return head.size;
+	}
 
 	/**
 	 * 改变当前节点的名称
@@ -76,6 +101,25 @@ public class Chain {
 	}
 
 	/**
+	 * 设置节点的参考适配器
+	 * 
+	 * @param adaptor
+	 *            适配器
+	 * @return 当前节点
+	 */
+	public Chain adaptor(ValueAdaptor adaptor) {
+		this.adaptor = adaptor;
+		return this;
+	}
+
+	/**
+	 * @return 当前节点的参考适配器
+	 */
+	public ValueAdaptor adaptor() {
+		return this.adaptor;
+	}
+
+	/**
 	 * 将一个名值对，添加为本链节点的下一环
 	 * 
 	 * @param name
@@ -87,6 +131,7 @@ public class Chain {
 	public Chain add(String name, Object value) {
 		Chain oldNext = next;
 		next = new Chain(name, value, this.head, oldNext);
+		head.size++;
 		return next;
 	}
 
@@ -128,13 +173,15 @@ public class Chain {
 	 * @return 链头节点
 	 */
 	public Chain updateBy(Entity<?> entity) {
-		Chain c = head;
-		while (c != null) {
-			EntityField ef = entity.getField(c.name);
-			if (null != ef) {
-				c.name(ef.getColumnName());
+		if (null != entity) {
+			Chain c = head;
+			while (c != null) {
+				MappingField ef = entity.getField(c.name);
+				if (null != ef) {
+					c.name(ef.getColumnName());
+				}
+				c = c.next;
 			}
-			c = c.next;
 		}
 		return head;
 	}
@@ -169,6 +216,19 @@ public class Chain {
 			map.put(c.name(), c.value());
 			c = c.next;
 		}
+		return map;
+	}
+
+	/**
+	 * 由当前的值链生成一个可被实体化的 Map。 即有 '.table' 属性
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @return 可被实体化的 Map
+	 */
+	public Map<String, Object> toEntityMap(String tableName) {
+		Map<String, Object> map = toMap();
+		map.put(".table", tableName);
 		return map;
 	}
 

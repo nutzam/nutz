@@ -13,13 +13,13 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
-import org.nutz.dao.tools.Tables;
+import org.nutz.lang.Lang;
 
 public class SimpleDaoTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
+		dao.create(Pet.class, true);
 	}
 
 	private void insertRecords(int len) {
@@ -31,14 +31,29 @@ public class SimpleDaoTest extends DaoCase {
 	}
 
 	@Test
+	public void test_simple_update() {
+		dao.fastInsert(Lang.array(Pet.create("A"), Pet.create("B")));
+		Pet a = dao.fetch(Pet.class, "A");
+		a.setName("C");
+		a.setAge(5);
+		
+		dao.update(a);
+
+		Pet c = dao.fetch(Pet.class, "C");
+		assertEquals("C", c.getName());
+		assertEquals(5, c.getAge());
+
+		Pet b = dao.fetch(Pet.class, "B");
+		assertEquals("B", b.getName());
+		assertEquals(0, b.getAge());
+	}
+
+	@Test
 	public void test_fetch_by_condition_in_special_char() {
-		if (dao.exists(Pet.class)) {
-			Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
-			dao.clear(Pet.class);
-			dao.insert(Pet.create("a@b"));
-		}
+		dao.insert(Pet.create("a@b").setNickName("ABC"));
 		Pet pet = dao.fetch(Pet.class, Cnd.where("name", "=", "a@b"));
 		assertEquals("a@b", pet.getName());
+		assertEquals("ABC", pet.getNickName());
 	}
 
 	@Test
@@ -62,7 +77,7 @@ public class SimpleDaoTest extends DaoCase {
 		insertRecords(4);
 		assertEquals(4, dao.count(Pet.class));
 		assertEquals(	2,
-						dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC)")));
+						dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
 	}
 
 	@Test

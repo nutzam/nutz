@@ -21,7 +21,13 @@ import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.born.BorningException;
+import org.nutz.lang.born.Borns;
+import org.nutz.lang.eject.EjectByField;
+import org.nutz.lang.eject.EjectByGetter;
+import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
@@ -287,7 +293,7 @@ public class Mirror<T> {
 									return method;
 							}
 					}
-					//还是没有? 会不会是包装类型啊?
+					// 还是没有? 会不会是包装类型啊?
 					if (!paramType.isPrimitive()) {
 						Class<?> p = unWrapper();
 						if (null != p)
@@ -405,6 +411,25 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 向父类递归查找某一个运行时注解
+	 * 
+	 * @param <A>
+	 *            注解类型参数
+	 * @param annType
+	 *            注解类型
+	 * @return 注解
+	 */
+	public <A extends Annotation> A getAnnotation(Class<A> annType) {
+		Class<?> cc = klass;
+		A ann;
+		do {
+			ann = cc.getAnnotation(annType);
+			cc = cc.getSuperclass();
+		} while (null == ann && cc != Object.class);
+		return ann;
+	}
+
+	/**
 	 * 获取本类型所有的方法，包括私有方法。不包括 Object 的方法
 	 */
 	public Method[] getMethods() {
@@ -472,11 +497,12 @@ public class Mirror<T> {
 		if (e instanceof FailToSetValueException) {
 			return (FailToSetValueException) e;
 		}
-		return new FailToSetValueException(String.format(	"Fail to set value [%s] to [%s]->[%s] because '%s'",
+		return new FailToSetValueException(	String.format(	"Fail to set value [%s] to [%s]->[%s] because '%s'",
 															value,
 															type.getName(),
 															name,
-															e.getMessage()),e);
+															e.getMessage()),
+											e);
 	}
 
 	/**
@@ -563,7 +589,7 @@ public class Mirror<T> {
 	private static RuntimeException makeGetValueException(Class<?> type, String name, Throwable e) {
 		return new FailToGetValueException(String.format(	"Fail to get value for [%s]->[%s]",
 															type.getName(),
-															name),e);
+															name), e);
 	}
 
 	/**
@@ -583,7 +609,7 @@ public class Mirror<T> {
 			return f.get(obj);
 		}
 		catch (Exception e) {
-			throw makeGetValueException(obj.getClass(), f.getName(),e);
+			throw makeGetValueException(obj.getClass(), f.getName(), e);
 		}
 	}
 
@@ -688,14 +714,40 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 获取对象构建器
+	 * 
 	 * @param args
 	 *            构造函数参数
 	 * @return 当前对象的构建方式。
 	 * 
+	 * @throws BorningException
+	 *             当没有发现合适的 Borning 时抛出
+	 * 
 	 * @see org.nutz.lang.born.Borning
 	 */
-	public Borning<T> getBorning(Object... args) {
-		return new MirrorBorning<T>(this, args).getBorning();
+	public Borning<T> getBorning(Object... args) throws BorningException {
+		BornContext<T> bc = Borns.eval(klass, args);
+		if (null == bc)
+			throw new BorningException(klass, args);
+
+		return bc.getBorning();
+	}
+
+	/**
+	 * 获取对象构建器
+	 * 
+	 * @param argTypes
+	 *            构造函数参数类型数组
+	 * @return 当前对象构建方式
+	 * 
+	 * @throws BorningException
+	 *             当没有发现合适的 Borning 时抛出
+	 */
+	public Borning<T> getBorningByArgTypes(Class<?>... argTypes) throws BorningException {
+		BornContext<T> bc = Borns.evalByArgTypes(klass, argTypes);
+		if (null == bc)
+			throw new BorningException(klass, argTypes);
+		return bc.getBorning();
 	}
 
 	/**
@@ -706,7 +758,7 @@ public class Mirror<T> {
 	 * @return 新对象
 	 */
 	public T born(Object... args) {
-		return new MirrorBorning<T>(this, args).born();
+		return Borns.eval(klass, args).doBorn();
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
@@ -756,8 +808,7 @@ public class Mirror<T> {
 			try {
 				Field field = this.getField(fieldName);
 				try {
-					Method setter = this.getSetter(field);
-					return new InjectBySetter(setter);
+					return new InjectBySetter(this.getSetter(field));
 				}
 				catch (NoSuchMethodException e) {
 					return new InjectByField(field);
@@ -766,6 +817,34 @@ public class Mirror<T> {
 			catch (NoSuchFieldException e) {
 				throw Lang.wrapThrow(e);
 			}
+	}
+
+	/**
+	 * 根据字段名获得一个字段输入方式。优先用 Getter
+	 * 
+	 * @param fieldName
+	 *            字段名
+	 * @return 输出方式
+	 */
+	public Ejecting getEjecting(String fieldName) {
+		try {
+			return new EjectByGetter(getGetter(fieldName));
+		}
+		catch (NoSuchMethodException e) {
+			try {
+				Field field = this.getField(fieldName);
+				try {
+					return new EjectByGetter(getGetter(field));
+				}
+				catch (NoSuchMethodException e1) {
+					return new EjectByField(field);
+				}
+			}
+			catch (NoSuchFieldException e1) {
+				throw Lang.wrapThrow(e1);
+			}
+		}
+
 	}
 
 	/**
@@ -893,7 +972,7 @@ public class Mirror<T> {
 		return types;
 	}
 
-	static Object evalArgToSameTypeRealArray(Object... args) {
+	public static Object evalArgToSameTypeRealArray(Object... args) {
 		Object array = evalArgToRealArray(args);
 		return array == args ? null : array;
 	}
@@ -903,7 +982,7 @@ public class Mirror<T> {
 	 * 
 	 * @param args
 	 *            数组
-	 * @return 新数组
+	 * @return 新数组,如果数组中包括了 null，或者数组的类型不一致，则返回旧数组
 	 */
 	public static Object evalArgToRealArray(Object... args) {
 		if (null == args || args.length == 0 || null == args[0])
@@ -1156,7 +1235,14 @@ public class Mirror<T> {
 		return klass.getName();
 	}
 
-	static Object[] blankArrayArg(Class<?>[] pts) {
+	/**
+	 * 根据函数参数类型数组的最后一个类型（一定是数组，表示变参），为最后一个变参生成一个空数组
+	 * 
+	 * @param pts
+	 *            函数参数类型列表
+	 * @return 变参空数组
+	 */
+	public static Object[] blankArrayArg(Class<?>[] pts) {
 		return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
 	}
 
@@ -1350,23 +1436,24 @@ public class Mirror<T> {
 				return f;
 		return null;
 	}
-	
-	public Class<?> unWrapper(){
+
+	public Class<?> unWrapper() {
 		return TypeMapping2.get(klass);
 	}
 
-//	private static final Map<Class<?>, Class<?>> TypeMapping = new HashMap<Class<?>, Class<?>>();
+	// private static final Map<Class<?>, Class<?>> TypeMapping = new
+	// HashMap<Class<?>, Class<?>>();
 	private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
 	static {
-//		TypeMapping.put(short.class, Short.class);
-//		TypeMapping.put(int.class, Integer.class);
-//		TypeMapping.put(long.class, Long.class);
-//		TypeMapping.put(double.class, Double.class);
-//		TypeMapping.put(float.class, Float.class);
-//		TypeMapping.put(byte.class, Byte.class);
-//		TypeMapping.put(char.class, Character.class);
-//		TypeMapping.put(boolean.class, Boolean.class);
-		
+		// TypeMapping.put(short.class, Short.class);
+		// TypeMapping.put(int.class, Integer.class);
+		// TypeMapping.put(long.class, Long.class);
+		// TypeMapping.put(double.class, Double.class);
+		// TypeMapping.put(float.class, Float.class);
+		// TypeMapping.put(byte.class, Byte.class);
+		// TypeMapping.put(char.class, Character.class);
+		// TypeMapping.put(boolean.class, Boolean.class);
+
 		TypeMapping2.put(Short.class, short.class);
 		TypeMapping2.put(Integer.class, int.class);
 		TypeMapping2.put(Long.class, long.class);

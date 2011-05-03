@@ -33,6 +33,13 @@ public class JsonFormat {
 		return new JsonFormat(false).setIgnoreNull(true);
 	}
 
+	/**
+	 * 为了打印出来容易看，把名字去掉引号
+	 */
+	public static JsonFormat forLook() {
+		return new JsonFormat(false).setQuoteName(false).setIgnoreNull(true);
+	}
+
 	public JsonFormat() {
 		this(true);
 	}

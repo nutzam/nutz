@@ -1,42 +1,47 @@
 package org.nutz.dao;
 
-import java.util.regex.Pattern;
-
-import org.nutz.dao.entity.Entity;
-import org.nutz.dao.sql.DefaultStatementAdapter;
-import org.nutz.dao.sql.FetchEntityCallback;
-import org.nutz.dao.sql.FetchIntegerCallback;
-import org.nutz.dao.sql.FetchLongCallback;
-import org.nutz.dao.sql.FetchRecordCallback;
-import org.nutz.dao.sql.FetchStringCallback;
-import org.nutz.dao.sql.QueryEntityCallback;
-import org.nutz.dao.sql.QueryIntCallback;
-import org.nutz.dao.sql.QueryLongCallback;
-import org.nutz.dao.sql.QueryRecordCallback;
-import org.nutz.dao.sql.QueryStringArrayCallback;
-import org.nutz.dao.sql.QueryStringCallback;
+import org.nutz.dao.impl.sql.NutSql;
+import org.nutz.dao.impl.sql.ValueEscaper;
+import org.nutz.dao.impl.sql.callback.*;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
-import org.nutz.dao.sql.SqlImpl;
-import org.nutz.dao.sql.SqlLiteral;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Strings;
+import org.nutz.lang.born.Borning;
 
 /**
  * 提供了 Sql 相关的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Sqls {
+public abstract class Sqls {
 
 	private static final ValueEscaper ES_FLD_VAL = new ValueEscaper();
 	private static final ValueEscaper ES_SQL_FLD = new ValueEscaper();
 	private static final ValueEscaper ES_CND_VAL = new ValueEscaper();
 
+	private static Borning<? extends Sql> sqlBorning;
+
 	static {
 		ES_FLD_VAL.add('\'', "''").add('\\', "\\\\").ready();
 		ES_SQL_FLD.add('\'', "''").add('\\', "\\\\").add('$', "$$").add('@', "@@").ready();
 		ES_CND_VAL.add('\'', "''").add('\\', "\\\\").add('_', "\\_").add('%', "\\%").ready();
+
+		setSqlBorning(NutSql.class);
+	}
+
+	/**
+	 * 改变 Sql 接口的实现类，如果你调用了这个方法，以后你再调用本类其他帮助函数创建的 SQL 就是你提供的这个实现类
+	 * <p>
+	 * 默认的，将用 org.nutz.dao.sql.impl.sql.NutSql 作为实现类
+	 * <p>
+	 * 你给出的 Sql 实现类必须有一个可访问的构造函数，接受一个字符串型参数
+	 * 
+	 * @param type
+	 *            你的 Sql 接口实现类
+	 */
+	public static <T extends Sql> void setSqlBorning(Class<T> type) {
+		sqlBorning = Mirror.me(type).getBorningByArgTypes(String.class);
 	}
 
 	/**
@@ -55,7 +60,7 @@ public class Sqls {
 	 * @see org.nutz.dao.sql.Sql
 	 */
 	public static Sql create(String sql) {
-		return new SqlImpl(new SqlLiteral().valueOf(sql), DefaultStatementAdapter.ME);
+		return sqlBorning.born(Lang.array(sql));
 	}
 
 	/**
@@ -181,7 +186,7 @@ public class Sqls {
 	/**
 	 * 一些内置的回调对象
 	 */
-	public final static CallbackFactory callback = new CallbackFactory();
+	public static CallbackFactory callback = new CallbackFactory();
 
 	public static class CallbackFactory {
 		/**
@@ -260,28 +265,6 @@ public class Sqls {
 		public SqlCallback records() {
 			return new QueryRecordCallback();
 		}
-	}
-
-	private static final Pattern CND = Pattern.compile(	"^([ \t]*)(WHERE|ORDER BY)(.+)$",
-														Pattern.CASE_INSENSITIVE);
-
-	/**
-	 * @param en
-	 *            实体
-	 * @param condition
-	 *            条件
-	 * @return WHERE 子句
-	 */
-	public static String getConditionString(Entity<?> en, Condition condition) {
-		if (null != condition) {
-			String cnd = condition.toSql(en);
-			if (!Strings.isBlank(cnd)) {
-				if (!CND.matcher(cnd).find())
-					return " WHERE " + cnd;
-				return cnd;
-			}
-		}
-		return null;
 	}
 
 	/**

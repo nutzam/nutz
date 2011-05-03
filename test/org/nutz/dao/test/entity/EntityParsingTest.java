@@ -5,11 +5,12 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.EntityField;
-import org.nutz.dao.entity.Link;
-import org.nutz.dao.entity.annotation.Prev;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.impl.entity.field.ManyLinkField;
+import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.normal.Pet2;
 
@@ -20,44 +21,46 @@ public class EntityParsingTest extends DaoCase {
 	}
 
 	@Test
+	public void test_extends_tables_name() {
+		Entity<?> en = en(Pet.class);
+		Entity<?> en2 = en(Pet2.class);
+		assertEquals(en.getTableName(), en2.getTableName());
+		assertEquals(en.getViewName(), en2.getViewName());
+	}
+
+	@Test
 	public void test_override_field() {
-		pojos.initPet();
 		Entity<?> en = en(Pet2.class);
-		EntityField ef = en.getField("nickName");
+		MappingField ef = en.getField("nickName");
 		assertEquals("alias", ef.getColumnName());
-		Prev prev = ef.getField().getAnnotation(Prev.class);
-		assertTrue(prev.value().length > 0);
+		assertEquals(1, en.cloneBeforeInsertMacroes().size());
 	}
 
 	@Test
 	public void eval_manys() {
-		pojos.init();
 		Entity<?> en = en(Base.class);
-		Link link = en.getLinks("platoons").get(0);
-		assertEquals("platoons", link.getOwnField().getName());
-		assertEquals("org.nutz.dao.test.meta.Platoon", link.getTargetClass().getName());
-		assertEquals("platoons", link.getOwnField().getName());
-		assertEquals("name", link.getReferField().getName());
-		assertEquals("baseName", link.getTargetField().getName());
+		ManyLinkField link = (ManyLinkField) en.getLinkFields("platoons").get(0);
+		assertEquals("platoons", link.getName());
+		assertEquals("org.nutz.dao.test.meta.Platoon", link.getLinkedEntity().getType().getName());
+		assertEquals("baseName", link.getLinkedField().getName());
+		assertEquals("name", link.getHostField().getName());
 	}
 
 	@Test
 	public void eval_manys_with_null_field() {
-		pojos.init();
 		Entity<?> en = en(Base.class);
-		Link link = en.getLinks("wavebands").get(0);
-		assertEquals("wavebands", link.getOwnField().getName());
-		assertEquals("org.nutz.dao.test.meta.WaveBand", link.getTargetClass().getName());
-		assertNull(link.getReferField());
-		assertNull(link.getTargetField());
+		ManyLinkField link = (ManyLinkField) en.getLinkFields("wavebands").get(0);
+		assertEquals("wavebands", link.getName());
+		assertEquals("org.nutz.dao.test.meta.WaveBand", link.getLinkedEntity().getType().getName());
+		assertNull(link.getLinkedField());
+		assertNull(link.getHostField());
 	}
 
 	@Test
 	public void eval_manymany() {
-		pojos.init();
 		Entity<?> en = en(Base.class);
-		Link link = en.getLinks("fighters").get(0);
-		assertEquals("dao_m_base_fighter", link.getRelation());
+		ManyManyLinkField link = (ManyManyLinkField) en.getLinkFields("fighters").get(0);
+		assertEquals("dao_m_base_fighter", link.getRelationName());
 	}
 
 	@Test
@@ -70,53 +73,53 @@ public class EntityParsingTest extends DaoCase {
 	@Test
 	public void test_pk_multiple() {
 		Entity<?> en = en(TO0.class);
-		assertEquals(2, en.getPkFields().length);
+		assertEquals(2, en.getCompositePKFields().size());
 		assertEquals("to0", en.getViewName());
-		assertEquals("id", en.getPkFields()[0].getName());
-		assertEquals("name", en.getPkFields()[1].getName());
+		assertEquals("id", en.getCompositePKFields().get(0).getName());
+		assertEquals("name", en.getCompositePKFields().get(1).getName());
 		assertNull(en.getIdField());
 		assertNull(en.getNameField());
 
-		assertTrue(en.getField("id").isPk());
-		assertTrue(en.getField("name").isPk());
+		assertTrue(en.getField("id").isCompositePk());
+		assertTrue(en.getField("name").isCompositePk());
 	}
 
 	@Test
 	public void test_pk_id() {
 		Entity<?> en = en(TO1.class);
-		assertNull(en.getPkFields());
+		assertTrue(en.getCompositePKFields().isEmpty());
 		assertEquals("to1", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 
-		assertTrue(en.getField("id").isPk());
-		assertFalse(en.getField("name").isPk());
+		assertFalse(en.getField("id").isCompositePk());
+		assertFalse(en.getField("name").isCompositePk());
 	}
 
 	@Test
 	public void test_pk_name() {
 		Entity<?> en = en(TO2.class);
-		assertNull(en.getPkFields());
+		assertTrue(en.getCompositePKFields().isEmpty());
 		assertEquals("to2", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 
-		assertFalse(en.getField("id").isPk());
-		assertTrue(en.getField("name").isPk());
+		assertFalse(en.getField("id").isCompositePk());
+		assertFalse(en.getField("name").isCompositePk());
 	}
 
 	@Test
 	public void test_pk_order() {
 		Entity<?> en = en(TO4.class);
-		assertEquals(2, en.getPkFields().length);
+		assertEquals(2, en.getCompositePKFields().size());
 		assertEquals("to4", en.getViewName());
-		assertEquals("masterId", en.getPkFields()[0].getName());
-		assertEquals("id", en.getPkFields()[1].getName());
+		assertEquals("masterId", en.getCompositePKFields().get(0).getName());
+		assertEquals("id", en.getCompositePKFields().get(1).getName());
 		assertNull(en.getIdField());
 		assertNull(en.getNameField());
 
-		assertTrue(en.getField("masterId").isPk());
-		assertTrue(en.getField("id").isPk());
+		assertTrue(en.getField("masterId").isCompositePk());
+		assertTrue(en.getField("id").isCompositePk());
 	}
 
 	@Test

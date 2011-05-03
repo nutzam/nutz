@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.Link;
+import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Tank;
 
@@ -17,10 +17,10 @@ public class DynamicEntityParsingTest extends DaoCase {
 		pojos.initPlatoon(1);
 		TableName.set(1);
 		Entity<?> en = dao.getEntity(Tank.class);
-		Link link = en.getLinks("members").get(0);
-		assertEquals("dao_d_m_soldier_tank_1", link.getRelation());
-		assertEquals("id", link.getReferField().getName());
-		assertEquals("name", link.getTargetField().getName());
+		ManyManyLinkField link = (ManyManyLinkField) en.getLinkFields("members").get(0);
+		assertEquals("dao_d_m_soldier_tank_1", link.getRelationName());
+		assertEquals("id", link.getLinkedPkNames()[0]);
+		assertEquals("name", link.getLinkedPkNames()[1]);
 		TableName.clear();
 		pojos.dropPlatoon(1);
 	}

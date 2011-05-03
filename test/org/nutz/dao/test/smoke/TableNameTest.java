@@ -6,13 +6,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.TableName;
 import org.nutz.dao.test.DaoCase;
-import org.nutz.dao.tools.Tables;
 
 public class TableNameTest extends DaoCase {
 
 	@Before
 	public void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
+		TableName.set("t_pet");
+		dao.create(DPet.class, true);
+		TableName.clear();
 	}
 
 	@Test
@@ -31,5 +32,5 @@ public class TableNameTest extends DaoCase {
 			TableName.clear();
 		}
 	}
-
+	
 }

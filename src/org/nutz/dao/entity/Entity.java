@@ -1,216 +1,243 @@
 package org.nutz.dao.entity;
 
 import java.sql.ResultSet;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import org.nutz.castor.Castors;
 import org.nutz.dao.FieldMatcher;
-import org.nutz.dao.entity.next.FieldQuery;
-import org.nutz.lang.Lang;
+import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.util.SimpleContext;
+import org.nutz.lang.util.Context;
 
 /**
- * 描述了一个 POJO 对象同数据表之间的映射关系。
+ * 描述了一个实体
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class Entity<T> extends SimpleContext{
+public interface Entity<T> {
 
-	public Entity() {
-		super();
-		fields = new HashMap<String, EntityField>();
-		// ones = new HashMap<String, Link>();
-		// //manys = new HashMap<String, Link>();
-		// manyManys = new HashMap<String, Link>();
-		links = new LinkedList<Link>();
-		_ln_cache = new HashMap<String, List<Link>>();
-	}
+	/**
+	 * @return 实体的 Java 类型`
+	 */
+	Class<T> getType();
 
-	private Map<String, EntityField> fields;
-	private Mirror<? extends T> mirror;
+	/**
+	 * @return 实体的 Java 类型
+	 */
+	Mirror<T> getMirror();
 
-	private EntityName tableName;
-	private EntityName viewName;
-	private List<Link> links;
-	private EntityField idField;
-	private EntityField nameField;
-	private EntityField[] pkFields;
-	private Borning borning;
-	private FieldQuery[] befores;
-	private FieldQuery[] afters;
+	/**
+	 * @return 实体索引列表
+	 */
+	List<EntityIndex> getIndexes();
 
-	public EntityField[] getPkFields() {
-		return pkFields;
-	}
+	/**
+	 * 获取实体的表名
+	 * 
+	 * @return 实体表名
+	 */
+	String getTableName();
 
-	public void setPkFields(EntityField[] pkFields) {
-		if (null != pkFields && pkFields.length == 1) {
-			Mirror<?> mr = Mirror.me(pkFields[0].getField().getType());
-			if (null == idField && mr.isIntLike()) {
-				idField = pkFields[0];
-			} else if (null == nameField && mr.isStringLike()) {
-				nameField = pkFields[0];
-			} else {
-				throw Lang.makeThrow("Can not support '%s' as PK of '%s'", mr, mirror);
-			}
-		} else {
-			this.pkFields = pkFields;
-		}
-	}
+	/**
+	 * 获取实体视图名
+	 * 
+	 * @return 实体视图名
+	 */
+	String getViewName();
 
-	public EntityField getIdField() {
-		return idField;
-	}
+	/**
+	 * 按名称获取一个实体的索引
+	 * 
+	 * @param name
+	 *            索引名称
+	 * @return 实体索引
+	 */
+	EntityIndex getIndex(String name);
 
-	public EntityField getNameField() {
-		return nameField;
-	}
+	/**
+	 * 从结果集中生成一个实体实例
+	 * 
+	 * @param rs
+	 *            结果集
+	 * @param matcher
+	 *            字段匹配器。如果为null，则获取实体的全部字段
+	 * @return 从结果集生成 Java 对象
+	 */
+	T getObject(ResultSet rs, FieldMatcher matcher);
 
-	public EntityField getIdentifiedField() {
-		if (null != idField)
-			return idField;
-		return nameField;
-	}
+	/**
+	 * 根据实体的 Java 字段名获取一个实体字段对象
+	 * 
+	 * @param name
+	 *            实体字段的 Java 对象名
+	 * @return 实体字段
+	 */
+	MappingField getField(String name);
 
-	public String getTableName() {
-		return tableName.value();
-	}
+	/**
+	 * 增加一个插入前字段宏
+	 * 
+	 * @param pojo
+	 *            Pojo 语句
+	 * @return 自身
+	 */
+	Entity<?> addBeforeInsertMacro(Pojo pojo);
 
-	public String getOrignalTableName() {
-		return tableName.getOrignalString();
-	}
+	/**
+	 * 增加一个插入后字段宏
+	 * 
+	 * @param pojo
+	 *            Pojo 语句
+	 * @return 自身
+	 */
+	Entity<?> addAfterInsertMacro(Pojo pojo);
 
-	public String getViewName() {
-		return viewName.value();
-	}
+	/**
+	 * 获取实体所有自动执行的字段宏列表
+	 * <p>
+	 * 这些自动执行宏，在实体被插入到数据库前调用
+	 * <p>
+	 * 比如程序员可以为某个字段定义值的自动生成规则
+	 * 
+	 * @return 预执行宏列表
+	 */
+	List<Pojo> cloneBeforeInsertMacroes();
 
-	public void addField(EntityField ef) {
-		fields.put(ef.getName(), ef);
-		if (ef.isId())
-			idField = ef;
-		else if (ef.isName())
-			nameField = ef;
-	}
+	/**
+	 * 获取实体所有自动执行的字段宏列表
+	 * <p>
+	 * 这些自动执行宏，在实体被插入到数据库后调用
+	 * <p>
+	 * 比如程序员可以为数据库自动生成的字段获取生成后的值
+	 * 
+	 * @return 后执行字段宏列表
+	 */
+	List<Pojo> cloneAfterInsertMacroes();
 
-	public Collection<EntityField> fields() {
-		return fields.values();
-	}
+	/**
+	 * 根据实体的数据库字段名获取一个实体字段对象
+	 * 
+	 * @param name
+	 *            实体字段数据库字段名
+	 * @return 实体字段
+	 */
+	MappingField getColumn(String name);
 
-	public EntityField getField(String name) {
-		return this.fields.get(name);
-	}
+	/**
+	 * @return 实体所有的映射字段
+	 */
+	List<MappingField> getMappingFields();
 
-	public Borning getBorning() {
-		return borning;
-	}
+	/**
+	 * 获取实体所有匹配上正则表达是的关联字段，如果正则表达是为 null，则表示获取全部关联字段
+	 * 
+	 * @param regex
+	 *            正则表达式
+	 * 
+	 * @return 实体所有匹配上正则表达是的关联字段
+	 */
+	List<LinkField> getLinkFields(String regex);
 
-	public void setBorning(Borning borning) {
-		this.borning = borning;
-	}
+	/**
+	 * 访问所有一对一映射。即 '@One' 声明的字段
+	 * 
+	 * @param obj
+	 *            映射的宿主对象
+	 * @param visitor
+	 *            处理器
+	 * @param regex
+	 *            正则表达式匹配 Java 字段名。null 表示匹配所有一对一映射字段
+	 * @return 匹配上的映射字段
+	 */
+	List<LinkField> visitOne(Object obj, String regex, LinkVisitor visitor);
 
-	public Mirror<?> getMirror() {
-		return mirror;
-	}
+	/**
+	 * 访问所有一对多映射。即 '@Many' 声明的字段
+	 * 
+	 * @param obj
+	 *            映射的宿主对象
+	 * @param visitor
+	 *            处理器
+	 * @param regex
+	 *            正则表达式匹配 Java 字段名。null 表示匹配所有一对多映射字段
+	 * @return 匹配上的映射字段
+	 */
+	List<LinkField> visitMany(Object obj, String regex, LinkVisitor visitor);
 
-	@SuppressWarnings("unchecked")
-	public void setMirror(Mirror<?> mirror) {
-		this.mirror = (Mirror<? extends T>) mirror;
-	}
+	/**
+	 * 访问所有多对多映射。即 '@ManyMany' 声明的字段
+	 * 
+	 * @param obj
+	 *            映射的宿主对象
+	 * @param visitor
+	 *            处理器
+	 * @param regex
+	 *            正则表达式匹配 Java 字段名。null 表示匹配所有多对多映射字段
+	 * @return 匹配上的映射字段
+	 */
+	List<LinkField> visitManyMany(Object obj, String regex, LinkVisitor visitor);
 
-	public void setTableName(EntityName tableName) {
-		this.tableName = tableName;
-	}
+	/**
+	 * 如果实体采用了复合主键，调用这个函数能返回所有的复合主键，顺序就是复合主键的顺序
+	 * <p>
+	 * 如果没有复合主键，那么将返回 null
+	 * 
+	 * @return 实体所复合主键字段
+	 */
+	List<MappingField> getCompositePKFields();
 
-	public void setViewName(EntityName viewName) {
-		this.viewName = viewName;
-	}
+	/**
+	 * @return 实体唯一字符类型主键
+	 */
+	MappingField getNameField();
 
-	public EntityName getViewNameObject() {
-		return this.viewName;
-	}
+	/**
+	 * @return 实体唯一数字类型主键
+	 */
+	MappingField getIdField();
 
-	public Class<? extends T> getType() {
-		return mirror.getType();
-	}
+	/**
+	 * 根据，"数字主键 > 字符主键 > 复合主键" 的优先顺序，返回主键列表
+	 * 
+	 * @return 实体的主键列表
+	 */
+	List<MappingField> getPks();
 
-	public Object getObject(final ResultSet rs, FieldMatcher actived) {
-		try {
-			return borning.born(rs, actived);
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+	/**
+	 * @return 当前实体首选主键类型
+	 */
+	PkType getPkType();
 
-	private Map<String, List<Link>> _ln_cache;
+	/**
+	 * 将一个实体对象的实例包裹成 Context 接口
+	 * 
+	 * @param obj
+	 *            实体对象的实例
+	 * @return Context
+	 */
+	Context wrapAsContext(Object obj);
 
-	public List<Link> getLinks(String regex) {
-		if (null == regex)
-			return links;
-		List<Link> re = _ln_cache.get(regex);
-		if (null == re) {
-			synchronized (this) {
-				re = _ln_cache.get(regex);
-				if (null == re) {
-					re = new LinkedList<Link>();
-					Pattern p = Pattern.compile(regex);
-					for (Iterator<Link> it = links.iterator(); it.hasNext();) {
-						Link e = it.next();
-						if (p.matcher(e.getOwnField().getName()).find())
-							re.add(e);
-					}
-				}
-				_ln_cache.put(regex, re);
-			}
-		}
-		return re;
-	}
+	/**
+	 * 获取一个实体补充描述
+	 * 
+	 * @param key
+	 *            实体补充描述的键值
+	 * @return 实体补充描述的内容
+	 */
+	Object getMeta(String key);
 
-	public void addLinks(Link link) {
-		links.add(link);
-	}
+	/**
+	 * 实体是否包含某一种 meta
+	 * 
+	 * @param key
+	 *            meta 的键值
+	 * @return 是否包含
+	 */
+	boolean hasMeta(String key);
 
-	public long getId(Object obj) {
-		if (null == idField)
-			return 0;
-		return Castors.me().castTo(idField.getValue(obj), long.class);
-	}
+	/**
+	 * @return 实体补充描述的集合
+	 */
+	Map<String, Object> getMetas();
 
-	public String getName(Object obj) {
-		if (null == nameField)
-			return null;
-		return Castors.me().castToString(nameField.getValue(obj));
-	}
-
-	public FieldQuery[] getBefores() {
-		return befores;
-	}
-
-	public void setBefores(FieldQuery[] befores) {
-		this.befores = befores;
-	}
-
-	public FieldQuery[] getAfters() {
-		return afters;
-	}
-
-	public void setAfters(FieldQuery[] afters) {
-		this.afters = afters;
-	}
-
-	public static String normalizeName(String name, Entity<?> en) {
-		if (null == en || null == name)
-			return name;
-		EntityField ef = en.getField(name);
-		if (null == ef)
-			return name;
-		return ef.getColumnName();
-	}
 }

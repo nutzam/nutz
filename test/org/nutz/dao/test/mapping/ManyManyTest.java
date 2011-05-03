@@ -6,6 +6,8 @@ import java.util.Iterator;
 
 import org.junit.Test;
 
+import org.nutz.dao.impl.entity.field.*;
+
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Fighter;
@@ -32,10 +34,10 @@ public class ManyManyTest extends DaoCase {
 		Base b = dao.fetchLinks(dao.fetch(Base.class, "red"), "fighters");
 		dao.deleteLinks(b, "fighters");
 		assertEquals(7, dao.count(Fighter.class));
-		assertEquals(7, dao.count(dao	.getEntity(Base.class)
-										.getLinks("fighters")
-										.get(0)
-										.getRelation()));
+		assertEquals(	7,
+						dao.count(((ManyManyLinkField) dao.getEntity(Base.class)
+															.getLinkFields("fighters")
+															.get(0)).getRelationName()));
 	}
 
 	@Test
@@ -70,10 +72,10 @@ public class ManyManyTest extends DaoCase {
 		Base b = dao.fetch(Base.class, "red");
 		dao.clearLinks(b, "fighters");
 		assertEquals(13, dao.count(Fighter.class));
-		assertEquals(7, dao.count(dao	.getEntity(Base.class)
-										.getLinks("fighters")
-										.get(0)
-										.getRelation()));
+		assertEquals(	7,
+						dao.count(((ManyManyLinkField) dao.getEntity(Base.class)
+															.getLinkFields("fighters")
+															.get(0)).getRelationName()));
 	}
 
 	@Test

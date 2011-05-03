@@ -119,9 +119,9 @@ public interface Dao {
 	void insert(Class<?> classOfT, Chain chain);
 
 	/**
-	 * 快速插入一个对象。 对象的 '@Default' 以及 '@Next' 在这个函数里不起作用。
+	 * 快速插入一个对象。 对象的 '@Prev' 以及 '@Next' 在这个函数里不起作用。
 	 * <p>
-	 * 即，它只会为你预先获取值，但不会为你在插入后获得自增的主键值。
+	 * 即，你必须为其设置好值，它会统一采用 batch 的方法插入
 	 * 
 	 * @param obj
 	 *            要被插入的对象
@@ -238,29 +238,29 @@ public interface Dao {
 	 *            数据表名
 	 * @param chain
 	 *            数据名值链。
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件
 	 * 
 	 * @return 有多少条记录被更新了
 	 */
-	int update(String tableName, Chain chain, Condition condition);
+	int update(String tableName, Chain chain, Condition cnd);
 
 	/**
-	 * 与 update(String tableName, Chain chain, Condition condition)
-	 * 一样，不过，数据表名，将取自 POJO 的数据表声明，请参看 '@Table' 注解的详细说明
+	 * 与 update(String tableName, Chain chain, Condition cnd) 一样，不过，数据表名，将取自
+	 * POJO 的数据表声明，请参看 '@Table' 注解的详细说明
 	 * 
 	 * @param classOfT
 	 *            实体类型
 	 * @param chain
 	 *            数据名值链
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件
 	 * 
 	 * @return 有多少条记录被更新了
 	 * 
 	 * @see org.nutz.dao.entity.annotation.Table
 	 */
-	int update(Class<?> classOfT, Chain chain, Condition condition);
+	int update(Class<?> classOfT, Chain chain, Condition cnd);
 
 	/**
 	 * 将对象更新的同时，也将符合一个正则表达式的所有关联字段关联的对象统统更新
@@ -307,27 +307,27 @@ public interface Dao {
 	 *            正则表达式，描述了那种多对多关联字段将被执行该操作
 	 * @param chain
 	 *            针对中间关联表的名值链。
-	 * @param condition
+	 * @param cnd
 	 *            针对中间关联表的 WHERE 条件
 	 * 
 	 * @return 共有多少条数据被更新
 	 * 
 	 * @see org.nutz.dao.entity.annotation.ManyMany
 	 */
-	int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition condition);
+	int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd);
 
 	/**
 	 * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
 	 * 
 	 * @param classOfT
 	 *            对象类型
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
 	 * @param pager
 	 *            翻页信息。如果为 null，则一次全部返回
 	 * @return 对象列表
 	 */
-	<T> List<T> query(Class<T> classOfT, Condition condition, Pager pager);
+	<T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
 
 	/**
 	 * 查询出一组记录。
@@ -336,8 +336,8 @@ public interface Dao {
 	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
 	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
 	 *            字段，否则 不能分页
-	 * @param condition
-	 *            条件 - <b style=color:red>请注意：</b> 你传入的 Condition 实现必须考虑到 没有
+	 * @param cnd
+	 *            条件 - <b style=color:red>请注意：</b> 你传入的 Criteria 实现必须考虑到 没有
 	 *            'Entity<?>' 传入。即 toSql 函数的参数永远为 null。
 	 * @param pager
 	 *            翻页信息
@@ -345,7 +345,7 @@ public interface Dao {
 	 * 
 	 * @see org.nutz.dao.Condition
 	 */
-	List<Record> query(String tableName, Condition condition, Pager pager);
+	List<Record> query(String tableName, Condition cnd, Pager pager);
 
 	/**
 	 * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。
@@ -417,11 +417,13 @@ public interface Dao {
 	 * @param regex
 	 *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被删除
 	 * 
+	 * @return 被影响的记录行数
+	 * 
 	 * @see org.nutz.dao.entity.annotation.One
 	 * @see org.nutz.dao.entity.annotation.Many
 	 * @see org.nutz.dao.entity.annotation.ManyMany
 	 */
-	<T> void deleteWith(T obj, String regex);
+	int deleteWith(Object obj, String regex);
 
 	/**
 	 * 根据一个正则表达式，仅删除对象所有的关联字段，并不包括对象本身。
@@ -437,11 +439,13 @@ public interface Dao {
 	 * @param regex
 	 *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被删除
 	 * 
+	 * @return 被影响的记录行数
+	 * 
 	 * @see org.nutz.dao.entity.annotation.One
 	 * @see org.nutz.dao.entity.annotation.Many
 	 * @see org.nutz.dao.entity.annotation.ManyMany
 	 */
-	<T> void deleteLinks(T obj, String regex);
+	int deleteLinks(Object obj, String regex);
 
 	/**
 	 * 根据对象 ID 获取一个对象。它只会获取这个对象，关联对象不会被获取。
@@ -486,25 +490,25 @@ public interface Dao {
 	 * 
 	 * @param classOfT
 	 *            对象类型
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件
 	 * @return 对象本身
 	 * 
 	 * @see org.nutz.dao.Condition
 	 * @see org.nutz.dao.entity.annotation.Name
 	 */
-	<T> T fetch(Class<T> classOfT, Condition condition);
+	<T> T fetch(Class<T> classOfT, Condition cnd);
 
 	/**
 	 * 根据条件获取一个 Record 对象
 	 * 
 	 * @param tableName
 	 *            表名
-	 * @param condition
+	 * @param cnd
 	 *            条件
 	 * @return Record 对象
 	 */
-	Record fetch(String tableName, Condition condition);
+	Record fetch(String tableName, Condition cnd);
 
 	/**
 	 * Fetch one object from DB, it is upon the insert sequence and DB
@@ -558,20 +562,20 @@ public interface Dao {
 	 * 
 	 * @param classOfT
 	 *            对象类型
-	 * @param condition
+	 * @param cnd
 	 *            查询条件，如果为 null，则全部清除
 	 * @return 影响的行数
 	 */
-	int clear(Class<?> classOfT, Condition condition);
+	int clear(Class<?> classOfT, Condition cnd);
 
 	/**
 	 * 根据一个 WHERE 条件，清除一组记录
 	 * 
 	 * @param tableName
-	 * @param condition
+	 * @param cnd
 	 * @return 影响的行数
 	 */
-	int clear(String tableName, Condition condition);
+	int clear(String tableName, Condition cnd);
 
 	/**
 	 * 清除对象所有的记录
@@ -627,11 +631,11 @@ public interface Dao {
 	 * 
 	 * @param classOfT
 	 *            对象类型
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件
 	 * @return 数量
 	 */
-	int count(Class<?> classOfT, Condition condition);
+	int count(Class<?> classOfT, Condition cnd);
 
 	/**
 	 * 计算某个对象在数据库中有多少条记录
@@ -647,11 +651,11 @@ public interface Dao {
 	 * 
 	 * @param tableName
 	 *            表名
-	 * @param condition
+	 * @param cnd
 	 *            WHERE 条件
 	 * @return 数量
 	 */
-	int count(String tableName, Condition condition);
+	int count(String tableName, Condition cnd);
 
 	/**
 	 * 计算某个数据表或视图中有多少条记录
@@ -721,4 +725,32 @@ public interface Dao {
 	 */
 	boolean exists(String tableName);
 
+	/**
+	 * 根据一个实体的配置信息为其创建一张表
+	 * 
+	 * @param classOfT
+	 *            实体类型
+	 * @param dropIfExists
+	 *            如果表存在是否强制移除
+	 * @return 实体对象
+	 */
+	<T> Entity<T> create(Class<T> classOfT, boolean dropIfExists);
+
+	/**
+	 * 如果一个实体的数据表存在，移除它
+	 * 
+	 * @param classOfT
+	 *            实体类型
+	 * @return 是否移除成功
+	 */
+	boolean drop(Class<?> classOfT);
+
+	/**
+	 * 如果一个数据表存在，移除它
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @return 是否移除成功
+	 */
+	boolean drop(String tableName);
 }

@@ -33,7 +33,7 @@ import java.lang.annotation.Target;
  * @see org.nutz.dao.entity.annotation.Table
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface ManyMany {
 

@@ -73,6 +73,14 @@ public class CharSegment implements Segment, Cloneable {
 		return this.keys.keySet();
 	}
 
+	public int keyCount() {
+		return this.keys.size();
+	}
+
+	public boolean hasKey() {
+		return !this.keys.isEmpty();
+	}
+
 	public List<Object> values() {
 		List<Object> re = new ArrayList<Object>(nodes.size());
 		for (SegmentNode node : nodes) {
@@ -131,7 +139,7 @@ public class CharSegment implements Segment, Cloneable {
 		return this;
 	}
 
-	public List<SegmentNode> getNodes(){
+	public List<SegmentNode> getNodes() {
 		return nodes;
 	}
 

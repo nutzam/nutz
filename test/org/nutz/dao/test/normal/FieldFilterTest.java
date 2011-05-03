@@ -11,7 +11,6 @@ import org.nutz.dao.FieldFilter;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.EmtryObject;
 import org.nutz.dao.test.meta.Pet;
-import org.nutz.dao.tools.Tables;
 import org.nutz.trans.Atom;
 
 public class FieldFilterTest extends DaoCase {
@@ -24,7 +23,7 @@ public class FieldFilterTest extends DaoCase {
 
 	@Override
 	protected void before() {
-		Tables.define(dao, Tables.loadFrom("org/nutz/dao/test/meta/pet.dod"));
+		dao.create(Pet.class, true);
 		dao.insert(pet("xb"));
 	}
 
@@ -80,11 +79,18 @@ public class FieldFilterTest extends DaoCase {
 		assertNull(pets.get(0).getNickName());
 	}
 
-	//Issue 435
-	@Test(expected=DaoException.class)
+	// Issue 435
+	@Test(expected = DaoException.class)
 	public void test_filter_no_field_match() {
-		Tables.define(dao, Tables.parse(EmtryObject.class));
-		EmtryObject obj = new EmtryObject();
-		dao.insert(obj);//应该抛出一个DaoException,因为没有任何的字段需要插入!
+		dao.create(EmtryObject.class, true);
+		final EmtryObject obj = new EmtryObject();
+
+		// 应该抛出一个DaoException,因为没有任何的字段需要插入!
+		FieldFilter.create(EmtryObject.class, "id").run(new Atom() {
+			public void run() {
+				dao.insert(obj);
+			}
+		});
+
 	}
 }

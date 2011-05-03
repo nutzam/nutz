@@ -14,6 +14,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.nutz.NutzEnum;
 import org.nutz.castor.castor.DateTimeCastor;
@@ -21,6 +23,13 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.meta.Email;
 
 public class CastorTest {
+
+	@Test
+	public void test_null_to_byte_and_short() {
+		Castors cts = Castors.me();
+		Assert.assertEquals((byte) 0, cts.castTo(null, byte.class).byteValue());
+		Assert.assertEquals((short) 0, cts.castTo(null, short.class).shortValue());
+	}
 
 	/**
 	 * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
@@ -390,10 +399,9 @@ public class CastorTest {
 		assertEquals(c1.get(Calendar.MINUTE), c2.get(Calendar.MINUTE));
 		assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
 	}
-	
-	
+
 	@Test
-	public void load_form_nowhere(){
+	public void load_form_nowhere() {
 		Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
 		castors.castTo(1, Long.class);
 	}

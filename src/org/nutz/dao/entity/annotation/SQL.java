@@ -34,7 +34,7 @@ import org.nutz.dao.DB;
  * @see org.nutz.dao.TableName
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface SQL {
 
