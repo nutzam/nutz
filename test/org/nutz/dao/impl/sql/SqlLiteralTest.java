@@ -1,12 +1,16 @@
 package org.nutz.dao.impl.sql;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.junit.Test;
-import org.nutz.dao.impl.sql.NutSql;
+import org.nutz.dao.test.meta.Pet;
 
 public class SqlLiteralTest {
 
@@ -151,5 +155,28 @@ public class SqlLiteralTest {
 		Arrays.sort(varNames);
 		Arrays.sort(result);
 		assertArrayEquals(varNames, result);
+	}
+	
+	@Test
+	public void test_param_names_putall_map() {
+		NutSql sql = L("INSERT INTO t_pet($id,$name,$alias,$age) VALUES(@id,@name,@nickName,@age)");
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("id", "userId");
+		map.put("name", "userName");
+		map.put("alias", "alias");
+		map.put("age", "age");
+		
+		Pet pet = new Pet();
+		pet.setId(18);
+		pet.setName("pet");
+		pet.setNickName("haha");
+		pet.setAge(5);
+		
+		sql.vars().putAll(map);
+		sql.params().putAll(pet);
+
+		String expect = "INSERT INTO t_pet(userId,userName,alias,age) VALUES(18,'pet','haha',5)";
+		assertEquals(expect, sql.toString());
 	}
 }
