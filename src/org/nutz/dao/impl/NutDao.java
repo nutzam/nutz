@@ -417,6 +417,7 @@ public class NutDao extends DaoSupport implements Dao {
 		// 如果有条件的话
 		if (null != cnd) {
 			Pojo pojo = pojoMaker.makeFunc(tableName, "COUNT", "*");
+			pojo.setEntity(en);
 			// 高级条件接口，直接得到 WHERE 子句
 			if (cnd instanceof Criteria) {
 				pojo.append(((Criteria) cnd).where());
