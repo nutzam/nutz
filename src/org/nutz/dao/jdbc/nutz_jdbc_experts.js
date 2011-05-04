@@ -9,7 +9,8 @@ var ioc = {
 	experts : {
 		"h2.*" : "org.nutz.dao.impl.jdbc.h2.H2JdbcExpert",
 		"mysql.*" : "org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert",
-		"postgresql.*" : "org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert"
+		"postgresql.*" : "org.nutz.dao.impl.jdbc.psql.PsqlJdbcExpert",
+		"db2.*" : "org.nutz.dao.impl.jdbc.db2.Db2JdbcExpert"	
 	// ~ 映射结束
 	},
 
