@@ -5,17 +5,23 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.apache.commons.dbcp.BasicDataSource;
+import org.junit.Test;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.json.Json;
 import org.nutz.lang.Stopwatch;
 
 public class DaoPerformanceTest {
+	
+	static int num = 100000;
 
 	/**
-	 * @param args
+	 * 务必先把log关闭!! 设置为Error或者NONE
 	 */
-	public static void main(String[] args) throws Throwable{
+	@Test
+	public void test_dao() throws Throwable{
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.h2.Driver");
 		ds.setUsername("sa");
@@ -26,39 +32,50 @@ public class DaoPerformanceTest {
 		
 		NutDao dao = new NutDao(ds);
 		
-		dao.create(Pojo.class, true);
+
 		List<Pojo> list = new ArrayList<Pojo>();
-		for (int i = 0; i < 50000; i++) {
+		for (int i = 0; i < num; i++) {
 			Pojo pojo = new Pojo();
 			pojo.setName("abc"+i);
 			list.add(pojo);
 		}
-		dao.fastInsert(list);
+		
 		dao.create(Pojo.class, true);
+		dao.fastInsert(list);
 		System.out.println("预热完成,开始测试");
+		
+		//--------------------------------------------------
+		dao.create(Pojo.class, true);
+		dao(dao,list);
+		
+		dao.create(Pojo.class, true);
+		jdbc(ds, list);
+		
+		dao.create(Pojo.class, true);
+		dao(dao,list);
+	}
+
+	public static void dao(Dao dao, List<Pojo> list){
 		Stopwatch sw = Stopwatch.begin();
 		dao.fastInsert(list);
 		sw.stop();
-		System.out.println("Dao 批量插入5w条,耗时"+sw.getDuration()+"ms");
-
-		sw.start();
-		{
-			Connection conn = ds.getConnection();
-			PreparedStatement ps = conn.prepareStatement("insert into tb_pojo(name) values(?)");
-			for (Pojo pojo : list) {
-				ps.setString(1, pojo.getName());
-				ps.addBatch();
-			}
-			ps.executeBatch();
-			conn.commit();
-			conn.close();
-		}
-		sw.stop();
-
-		System.out.println("JDBC 批量插入5w条,耗时"+sw.getDuration()+"ms");
-//		System.out.println("Time = " + sw.getDuration());
-		
-//		System.out.println(dao.count(Pojo.class));
+		System.out.printf("Dao 批量插入%d条,耗时%dms\n",num,sw.getDuration());
 	}
-
+	
+	public static void jdbc(DataSource ds, List<Pojo> list) throws Throwable{
+		
+		Stopwatch sw = Stopwatch.begin();
+		Connection conn = ds.getConnection();
+		PreparedStatement ps = conn.prepareStatement("insert into tb_pojo(name) values(?)");
+		for (Pojo pojo : list) {
+			ps.setString(1, pojo.getName());
+			ps.addBatch();
+		}
+		ps.executeBatch();
+		conn.commit();
+		conn.close();
+		
+		sw.stop();
+		System.out.printf("JDBC 批量插入%d条,耗时%dms\n",num,sw.getDuration());
+	}
 }
