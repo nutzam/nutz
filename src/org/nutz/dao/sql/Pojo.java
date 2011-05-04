@@ -103,10 +103,49 @@ public interface Pojo extends DaoStatement {
 	/**
 	 * 为POJO语句增加一个或多个语句元素
 	 * 
-	 * @param items
+	 * @param itemAry
 	 *            语句元素
+	 * @return 自身
 	 */
-	Pojo append(PItem... items);
+	Pojo append(PItem... itemAry);
+
+	/**
+	 * 在 POJO 所有的语句前插入一组语句元素
+	 * 
+	 * @param itemAry
+	 *            语句元素
+	 * @return 自身
+	 */
+	Pojo insertFirst(PItem... itemAry);
+
+	/**
+	 * 置换 POJO 的一个语句元素
+	 * 
+	 * @param index
+	 *            位置下标
+	 * @param pi
+	 *            语句元素
+	 * @return 自身
+	 */
+	Pojo setItem(int index, PItem pi);
+
+	/**
+	 * 获取 POJO 的一个语句元素
+	 * 
+	 * @param index
+	 *            位置下标
+	 * @return 语句元素
+	 */
+	PItem getItem(int index);
+
+	/**
+	 * 删除 POJO 的一个语句元素
+	 * 
+	 * @param index
+	 *            位置下标
+	 * @return 自身
+	 */
+	Pojo removeItem(int index);
 
 	/**
 	 * 复制一份自己的实例

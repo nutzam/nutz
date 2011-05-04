@@ -9,14 +9,15 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.nutz.dao.Chain;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
-import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
@@ -50,7 +51,7 @@ public class NutPojo extends NutStatement implements Pojo {
 	public NutPojo() {
 		super();
 		params = new LinkedList<Object>();
-		items = new ArrayList<PItem>();
+		items = new ArrayList<PItem>(6);
 		_pmnum = -1;
 		append(Pojos.Items.sqlType());
 	}
@@ -180,6 +181,28 @@ public class NutPojo extends NutStatement implements Pojo {
 				items.add(item);
 				item.setPojo(this);
 			}
+		return this;
+	}
+
+	public Pojo insertFirst(PItem... itemAry) {
+		items.addAll(0, Lang.list(itemAry));
+		for (PItem pi : itemAry)
+			pi.setPojo(this);
+		return this;
+	}
+
+	public Pojo setItem(int index, PItem pi) {
+		items.set(index, pi);
+		pi.setPojo(this);
+		return this;
+	}
+
+	public PItem getItem(int index) {
+		return items.get(index);
+	}
+
+	public Pojo removeItem(int index) {
+		items.remove(index);
 		return this;
 	}
 

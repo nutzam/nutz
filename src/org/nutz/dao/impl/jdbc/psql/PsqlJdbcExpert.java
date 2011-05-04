@@ -10,6 +10,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
@@ -25,10 +26,12 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 	}
 
 	public void formatQuery(Pojo pojo) {
-		if (pojo.getContext().getPager() != null)
+		Pager pager = pojo.getContext().getPager();
+		// 需要进行分页
+		if (pager != null)
 			pojo.append(Pojos.Items.wrapf(	" LIMIT %d OFFSET %d",
-											pojo.getContext().getPager().getPageSize(),
-											pojo.getContext().getPager().getOffset()));
+											pager.getPageSize(),
+											pager.getOffset()));
 	}
 
 	public boolean createEntity(Dao dao, Entity<?> en) {
