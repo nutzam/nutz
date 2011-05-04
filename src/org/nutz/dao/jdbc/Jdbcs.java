@@ -27,6 +27,7 @@ import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Streams;
 import org.nutz.lang.meta.Email;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -47,15 +48,12 @@ public abstract class Jdbcs {
 	 */
 	static {
 		// 看看有没有用户自定义的映射文件
-		File f = Files.findFile("nutz_jdbc_experts.js");
+		File f = Files.findFile("nutz_jdbc_experts.js");//TODO 不可配置??
 		// 如果没有则使用默认的映射文件
 		if (null == f) {
-			f = Files.findFile("org/nutz/dao/jdbc/nutz_jdbc_experts.js");
-			// 什么情况？！抛错先!
-			if (null == f)
-				throw Lang.makeThrow("Fail to found nutz_jdbc_experts.js");
-		}
-		conf = Json.fromJson(JdbcExpertConfigFile.class, Files.read(f)).init();
+			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
+		} else
+			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("nutz_jdbc_experts.js")).init();
 		try {
 			for (String key : conf.getExperts().keySet()) {
 				// 检查一下正则表达式是否正确

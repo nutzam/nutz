@@ -398,6 +398,8 @@ public abstract class Streams {
 	 */
 	public static InputStream utf8filte(InputStream in) {
 		try {
+			if(in.available() == -1)
+				return in;
 			PushbackInputStream pis = new PushbackInputStream(in,3);
 			byte[] header = new byte[3];
 			int len = pis.read(header,0,3);
