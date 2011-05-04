@@ -95,7 +95,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		Mirror<?> mirror = ef.getTypeMirror();
 		// 为数字型枚举的特殊判断
 		if (mirror.isEnum() && ColType.INT == ef.getColumnType())
-			return Jdbcs.adaptor.asEnumInt;
+			return Jdbcs.Adaptor.asEnumInt;
 		// 用普通逻辑返回适配器
 		return Jdbcs.getAdaptor(mirror);
 	}

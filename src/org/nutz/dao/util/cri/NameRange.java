@@ -28,7 +28,7 @@ public class NameRange extends AbstractSqlExpression {
 
 	public int joinAdaptor(Entity<?> en,ValueAdaptor[] adaptors, int off) {
 		for (int i = 0; i < names.length; i++)
-			adaptors[off++] = Jdbcs.adaptor.asString;
+			adaptors[off++] = Jdbcs.Adaptor.asString;
 		return off;
 	}
 

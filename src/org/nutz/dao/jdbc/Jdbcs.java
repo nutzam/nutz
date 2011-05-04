@@ -148,59 +148,59 @@ public abstract class Jdbcs {
 
 	public static ValueAdaptor getAdaptorBy(Object obj) {
 		if (null == obj)
-			return adaptor.asNull;
+			return Adaptor.asNull;
 		return getAdaptor(Mirror.me(obj));
 	}
 
 	public static ValueAdaptor getAdaptor(Mirror<?> mirror) {
 		// String and char
 		if (mirror.isStringLike())
-			return Jdbcs.adaptor.asString;
+			return Jdbcs.Adaptor.asString;
 		// Int
 		if (mirror.isInt())
-			return Jdbcs.adaptor.asInteger;
+			return Jdbcs.Adaptor.asInteger;
 		// Boolean
 		if (mirror.isBoolean())
-			return Jdbcs.adaptor.asBoolean;
+			return Jdbcs.Adaptor.asBoolean;
 		// Long
 		if (mirror.isLong())
-			return Jdbcs.adaptor.asLong;
+			return Jdbcs.Adaptor.asLong;
 		// Enum
 		if (mirror.isEnum())
-			return Jdbcs.adaptor.asEnumChar;
+			return Jdbcs.Adaptor.asEnumChar;
 		// Char
 		if (mirror.isChar())
-			return Jdbcs.adaptor.asString;
+			return Jdbcs.Adaptor.asString;
 		// Timestamp
 		if (mirror.isOf(Timestamp.class))
-			return Jdbcs.adaptor.asTimestamp;
+			return Jdbcs.Adaptor.asTimestamp;
 		// Byte
 		if (mirror.isByte())
-			return Jdbcs.adaptor.asByte;
+			return Jdbcs.Adaptor.asByte;
 		// Short
 		if (mirror.isShort())
-			return Jdbcs.adaptor.asShort;
+			return Jdbcs.Adaptor.asShort;
 		// Float
 		if (mirror.isFloat())
-			return Jdbcs.adaptor.asFloat;
+			return Jdbcs.Adaptor.asFloat;
 		// Double
 		if (mirror.isDouble())
-			return Jdbcs.adaptor.asDouble;
+			return Jdbcs.Adaptor.asDouble;
 		// BigDecimal
 		if (mirror.isOf(BigDecimal.class))
-			return Jdbcs.adaptor.asBigDecimal;
+			return Jdbcs.Adaptor.asBigDecimal;
 		// Calendar
 		if (mirror.isOf(Calendar.class))
-			return Jdbcs.adaptor.asCalendar;
+			return Jdbcs.Adaptor.asCalendar;
 		// java.util.Date
 		if (mirror.isOf(java.util.Date.class))
-			return Jdbcs.adaptor.asDate;
+			return Jdbcs.Adaptor.asDate;
 		// java.sql.Date
 		if (mirror.isOf(java.sql.Date.class))
-			return Jdbcs.adaptor.asSqlDate;
+			return Jdbcs.Adaptor.asSqlDate;
 		// java.sql.Time
 		if (mirror.isOf(java.sql.Time.class))
-			return Jdbcs.adaptor.asSqlTime;
+			return Jdbcs.Adaptor.asSqlTime;
 		// Blob
 		if (mirror.isOf(Blob.class))
 			return new BlobValueAdaptor(conf.getPool());
@@ -209,10 +209,10 @@ public abstract class Jdbcs {
 			return new ClobValueAdaptor(conf.getPool());
 
 		// 默认情况
-		return Jdbcs.adaptor.asString;
+		return Jdbcs.Adaptor.asString;
 	}
 
-	public static class adaptor {
+	public static class Adaptor {
 		/**
 		 * 空值适配器
 		 */

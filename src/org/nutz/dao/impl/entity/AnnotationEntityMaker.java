@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.sql.DataSource;
 
@@ -88,8 +89,9 @@ public class AnnotationEntityMaker implements EntityMaker {
 		// 当前表
 		if (null != ti.annMeta) {
 			Map<String, Object> map = Lang.map(ti.annMeta.value());
-			for (String key : map.keySet())
-				en.getMetas().put(key, map.get(key).toString());
+			for (Entry<String, Object> entry : map.entrySet()) {
+				en.getMetas().put(entry.getKey(),entry.getValue().toString());
+			}
 		}
 
 		/*

@@ -88,7 +88,7 @@ public class NutSql extends NutStatement implements Sql {
 				}
 				// 如果找不到用 Null 适配器
 				else {
-					adaptors[i] = Jdbcs.adaptor.asNull;
+					adaptors[i] = Jdbcs.Adaptor.asNull;
 				}
 
 			}

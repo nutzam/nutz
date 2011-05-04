@@ -77,9 +77,9 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public List<Sql> createCombo(String... keys) {
-		List<Sql> list = new ArrayList<Sql>(keys.length);
 		if (null == keys || keys.length == 0)
 			keys = this.keys();
+		List<Sql> list = new ArrayList<Sql>(keys.length);
 		for (String key : keys) {
 			Sql sql = create(key);
 			list.add(sql);

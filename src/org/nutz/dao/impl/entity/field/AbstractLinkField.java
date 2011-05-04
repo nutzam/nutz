@@ -29,6 +29,8 @@ public abstract class AbstractLinkField extends AbstractEntityField implements L
 	protected MappingField hostField;
 
 	protected MappingField linkedField;
+	
+	private boolean[] lock = new boolean[0];//最小化的锁对象
 
 	public AbstractLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
 		super(entity);
@@ -62,7 +64,7 @@ public abstract class AbstractLinkField extends AbstractEntityField implements L
 
 	public Entity<?> getLinkedEntity() {
 		if (null == target) {
-			synchronized (this) {
+			synchronized (lock) {
 				if (null == target) {
 					if (targetType.equals(getEntity().getType()))
 						target = getEntity();

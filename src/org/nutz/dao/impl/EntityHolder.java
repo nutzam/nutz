@@ -3,6 +3,7 @@ package org.nutz.dao.impl;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.entity.Entity;
@@ -73,10 +74,11 @@ public class EntityHolder {
 		final NutEntity<T> en = new NutEntity(map.getClass());
 		en.setTableName(tableName);
 		en.setViewName(tableName);
-		for (String key : map.keySet()) {
+		for (Entry<String, ?> entry : map.entrySet()) {
+			String key = entry.getKey();
 			// 是实体补充描述吗？
 			if (key.startsWith("#")) {
-				en.getMetas().put(key.substring(1), map.get(key).toString());
+				en.getMetas().put(key.substring(1), entry.getValue().toString());
 				continue;
 			}
 			// 以 "." 开头的字段，不是实体字段
@@ -85,8 +87,8 @@ public class EntityHolder {
 			}
 
 			// 是实体字段
-			Mirror<?> mirror = Mirror.me(map.get(key));
-			Object value = map.get(key);
+			Object value = entry.getValue();
+			Mirror<?> mirror = Mirror.me(value);
 			NutMappingField ef = new NutMappingField(en);
 
 			if (key.startsWith("+")) {
@@ -112,7 +114,8 @@ public class EntityHolder {
 			// 猜测一下数据库类型
 			Jdbcs.guessEntityFieldColumnType(ef);
 			ef.setAdaptor(support.expert.getAdaptor(ef));
-			ef.setType(mirror.getType());
+			if(mirror != null)
+				ef.setType(mirror.getType());
 			ef.setInjecting(new InjectToMap(key));
 			ef.setEjecting(new EjectFromMap(key));
 
@@ -156,7 +159,7 @@ public class EntityHolder {
 		if (first == null)
 			throw Lang.makeThrow("Can not evaluate entity for empty object");
 
-		return null == first ? null : getEntity(first.getClass());
+		return getEntity(first.getClass());
 	}
 
 }

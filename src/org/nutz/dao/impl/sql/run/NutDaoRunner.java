@@ -50,7 +50,7 @@ public class NutDaoRunner implements DaoRunner {
 				try {
 					conn.rollback();
 				}
-				catch (SQLException e1) {}
+				catch (SQLException e1) {}//TODO 简单记录一下?
 				throw new DaoException(e);
 			}
 			// 保证释放资源

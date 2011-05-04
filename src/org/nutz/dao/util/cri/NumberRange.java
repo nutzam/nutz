@@ -26,7 +26,7 @@ public abstract class NumberRange extends AbstractSqlExpression {
 
 	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
 		for (int i = 0; i < ids.length; i++)
-			adaptors[off++] = Jdbcs.adaptor.asString;
+			adaptors[off++] = Jdbcs.Adaptor.asString;
 		return off;
 	}
 
