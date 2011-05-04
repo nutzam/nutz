@@ -45,8 +45,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	protected JdbcExpertConfigFile conf;
 
 	// ====================================================================
-	// 构造函数：子类需要将重载，并变成 public
-	protected AbstractJdbcExpert(JdbcExpertConfigFile conf) {
+	// 构造函数：子类需要将重载
+	public AbstractJdbcExpert(JdbcExpertConfigFile conf) {
 		this.conf = conf;
 	}
 

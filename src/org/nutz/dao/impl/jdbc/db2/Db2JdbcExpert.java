@@ -12,7 +12,7 @@ import org.nutz.lang.Lang;
 
 public class Db2JdbcExpert extends AbstractJdbcExpert {
 
-	protected Db2JdbcExpert(JdbcExpertConfigFile conf) {
+	public Db2JdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
 
