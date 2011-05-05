@@ -1,9 +1,10 @@
 package org.nutz.dao.util.cri;
 
-import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 
-public class Like extends NoParamsSqlExpression {
+public class Like extends AbstractSqlExpression {
 
 	static Like create(String name, String value, boolean ignoreCase) {
 		Like like = new Like(name);
@@ -26,6 +27,31 @@ public class Like extends NoParamsSqlExpression {
 		super(name);
 	}
 
+	public void joinSql(Entity<?> en, StringBuilder sb) {
+		String colName = _fmtcol(en);
+		if (not)
+			sb.append(" NOT ");
+		if (ignoreCase)
+			sb.append("LOWER(").append(colName).append(") LIKE LOWER(?)");
+		else
+			sb.append(colName).append(" LIKE ?");
+
+	}
+
+	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
+		adaptors[off++] = Jdbcs.Adaptor.asString;
+		return off;
+	}
+
+	public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
+		params[off++] = (null == left ? "" : left) + value + (null == right ? "" : right);
+		return off;
+	}
+
+	public int paramCount(Entity<?> en) {
+		return 1;
+	}
+
 	public Like left(String left) {
 		this.left = left;
 		return this;
@@ -39,29 +65,6 @@ public class Like extends NoParamsSqlExpression {
 	public Like ignoreCase(boolean ignoreCase) {
 		this.ignoreCase = ignoreCase;
 		return this;
-	}
-
-	public void joinSql(Entity<?> en, StringBuilder sb) {
-		String colName = _fmtcol(en);
-		CharSequence colValue = Sqls.escapteConditionValue(value);
-		if (not)
-			sb.append(" NOT ");
-		if (ignoreCase) {
-			sb.append("LOWER(")
-				.append(colName)
-				.append(") LIKE LOWER('")
-				.append(null == left ? "" : left)
-				.append(colValue)
-				.append(null == right ? "" : right)
-				.append("')");
-		} else {
-			sb.append(colName)
-				.append(" LIKE '")
-				.append(null == left ? "" : left)
-				.append(colValue)
-				.append(null == right ? "" : right)
-				.append("'");
-		}
 	}
 
 }

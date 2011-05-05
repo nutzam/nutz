@@ -9,6 +9,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.util.cri.SimpleCriteria;
 
 public class QueryTest extends DaoCase {
 
@@ -25,7 +26,7 @@ public class QueryTest extends DaoCase {
 		List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a@b"), null);
 		assertEquals(1, pets.size());
 	}
-	
+
 	@Test
 	public void query_by_special_char2() {
 		dao.update(dao.fetch(Pet.class).setName("a$b"));
@@ -39,6 +40,24 @@ public class QueryTest extends DaoCase {
 		assertEquals(2, pets.size());
 		assertEquals("pet4", pets.get(0).getName());
 		assertEquals("pet5", pets.get(1).getName());
+	}
+
+	@Test
+	public void query_by_like() {
+		List<Pet> pets = dao.query(	Pet.class,
+									Cnd.where("name", "LIKE", "6"),
+									dao.createPager(1, 10));
+		assertEquals(1, pets.size());
+		assertEquals("pet6", pets.get(0).getName());
+	}
+
+	@Test
+	public void query_by_like_ignorecase() {
+		SimpleCriteria cri = Cnd.cri();
+		cri.where().andLike("name", "PeT6", true);
+		List<Pet> pets = dao.query(Pet.class, cri, dao.createPager(1, 10));
+		assertEquals(1, pets.size());
+		assertEquals("pet6", pets.get(0).getName());
 	}
 
 	@Test
