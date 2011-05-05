@@ -59,7 +59,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 			w.append("/*").append(Strings.dup('-', 60)).append("*/\n");
 			String sql = map().get(key);
 			w.append(format("/*%s*/\n", key));
-			w.append(sql).append("\n");
+			w.append(sql).append('\n');
 		}
 		w.flush();
 		w.close();
@@ -193,7 +193,10 @@ public abstract class AbstractSqlManager implements SqlManager {
 	protected void loadSQL(Reader reader) throws IOException {
 		BufferedReader bufferedReader = null;
 		try {
-			bufferedReader = new BufferedReader(reader);
+			if(reader instanceof BufferedReader)
+				bufferedReader = (BufferedReader)reader;
+			else
+				bufferedReader = new BufferedReader(reader);
 			SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
 
 			Iterator<String> it = p.keys().iterator();
@@ -206,7 +209,6 @@ public abstract class AbstractSqlManager implements SqlManager {
 		}
 		finally {
 			Streams.safeClose(bufferedReader);
-			Streams.safeClose(reader);
 		}
 
 	}

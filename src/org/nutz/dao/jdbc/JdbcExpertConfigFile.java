@@ -1,6 +1,7 @@
 package org.nutz.dao.jdbc;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.nutz.filepool.NutFilePool;
@@ -16,7 +17,7 @@ public class JdbcExpertConfigFile {
 
 	JdbcExpertConfigFile init() {
 		String home = config.get("pool-home").toString();
-		Integer max = (Integer) config.get("pool-max");
+		Integer max = (Integer) config.get("pool-max");//TODO maybe a Long
 		pool = new NutFilePool(home, max);
 		return this;
 	}
@@ -27,9 +28,9 @@ public class JdbcExpertConfigFile {
 	}
 
 	public JdbcExpert matchExpert(String dbName) {
-		for (String key : experts.keySet()) {
-			if (Pattern.matches(key, dbName))
-				return Mirror.me(experts.get(key)).born(this);
+		for (Entry<String, Class<? extends JdbcExpert>> entry : experts.entrySet()) {
+			if (Pattern.matches(entry.getKey(), dbName))
+				return Mirror.me(entry.getValue()).born(this);
 		}
 		return null;
 	}

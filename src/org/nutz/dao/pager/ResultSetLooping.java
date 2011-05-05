@@ -42,7 +42,7 @@ public abstract class ResultSetLooping {
 			if (pager.getPageSize() > 1000)
 				rs.setFetchSize(20);
 			else
-				rs.setFetchSize(pager.getPageSize());
+				rs.setFetchSize(pager.getPageSize());//TODO 那FetchSize会被设置可观的999!!
 			LoopScope ls = LoopScope.eval(pager, rs.getRow());
 			if (rs.absolute(ls.start + 1))
 				for (int i = ls.start; i < ls.max; i++) {

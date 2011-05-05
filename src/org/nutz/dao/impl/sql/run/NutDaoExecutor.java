@@ -190,7 +190,7 @@ public class NutDaoExecutor implements DaoExecutor {
 					for (int i = 0; i < params.length; i++) {
 						adaptors[i].set(pstat, params[i], i + 1);
 					}
-					pstat.addBatch();
+					pstat.addBatch();//需要配置一下batchSize,嘻嘻,不然分分钟爆内存!!
 				}
 				int[] counts = pstat.executeBatch();
 

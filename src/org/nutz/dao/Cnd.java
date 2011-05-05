@@ -67,9 +67,7 @@ public class Cnd implements OrderBy, Criteria {
 	}
 
 	public static SqlExpressionGroup exps(SqlExpression exp) {
-		SqlExpressionGroup grp = new SqlExpressionGroup();
-		grp.and(exp);
-		return grp;
+		return new SqlExpressionGroup().and(exp);
 	}
 
 	public static Cnd where(String name, String op, Object value) {

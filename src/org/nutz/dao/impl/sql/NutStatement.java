@@ -52,7 +52,7 @@ public abstract class NutStatement implements DaoStatement {
 		return context.getResult();
 	}
 
-	// TODO 是不是太暴力了涅~~~
+	// TODO 是不是太暴力了涅~~~ --> 不是一般的暴力!!
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> classOfT) {
 		return (List<T>) getResult();
@@ -63,7 +63,7 @@ public abstract class NutStatement implements DaoStatement {
 	}
 
 	public int getInt() {
-		return getObject(Integer.class);
+		return getObject(Integer.class);//TODO 怪怪的,如果getObject返回null,这里就NPE了
 	}
 
 	public String getString() {
@@ -115,7 +115,7 @@ public abstract class NutStatement implements DaoStatement {
 				}
 			}
 
-			// 输出可执行的 SQL 语句
+			// 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
 			sb.append("\n  For example:> \"");
 			sb.append(toStatement(mtrx, sql));
 			sb.append('"');

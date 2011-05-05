@@ -20,7 +20,7 @@ public class TableName {
 
 	private static final Log log = Logs.get();
 
-	private static ThreadLocal<Object> object = new ThreadLocal<Object>();
+	private static final ThreadLocal<Object> object = new ThreadLocal<Object>();
 
 	/**
 	 * 代码模板，这个模板保证了，在 atom 中运行的 POJO 的动态表名，都会被参考对象所影响

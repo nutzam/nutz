@@ -13,7 +13,7 @@ public class RelationObjectMap extends NutMap {
 
 	private static final long serialVersionUID = 5310528028330500782L;
 
-	private ManyManyLinkField mm;
+	private ManyManyLinkField mm;//TODO 这个字段无法序列化
 
 	private Object host;
 

@@ -21,7 +21,7 @@ public class Static extends NoParamsPItem implements SqlExpression {
 	}
 
 	public String toString() {
-		return " " + str + " ";
+		return ' ' + str + ' ';
 	}
 
 	public void joinSql(Entity<?> en, StringBuilder sb) {

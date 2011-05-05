@@ -62,7 +62,7 @@ public abstract class Exps {
 		return new NameRange(name, names);
 	}
 
-	public static SqlRange insql(String name, String subSql, Object... args) {
+	public static SqlRange inSql(String name, String subSql, Object... args) {
 		return new SqlRange(name, subSql, args);
 	}
 
@@ -99,7 +99,7 @@ public abstract class Exps {
 			}
 			// Sql Range
 			else {
-				re = insql(name, value.toString());
+				re = inSql(name, value.toString());
 			}
 			return re.setNot(op.startsWith("NOT"));
 		}
@@ -121,7 +121,7 @@ public abstract class Exps {
 			return eq(name, value);
 		}
 		// !=
-		else if ("!=".equals(op) && "<>".equals(op)) {
+		else if ("!=".equals(op) || "<>".equals(op)) {//TODO 检查一下,原本是&&, 明显永远成立
 			return eq(name, value).setNot(true);
 		}
 		// Others

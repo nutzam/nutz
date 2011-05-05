@@ -6,7 +6,7 @@ import static org.nutz.dao.util.cri.Exps.gte;
 import static org.nutz.dao.util.cri.Exps.inInt;
 import static org.nutz.dao.util.cri.Exps.inLong;
 import static org.nutz.dao.util.cri.Exps.inStr;
-import static org.nutz.dao.util.cri.Exps.insql;
+import static org.nutz.dao.util.cri.Exps.inSql;
 import static org.nutz.dao.util.cri.Exps.isNull;
 import static org.nutz.dao.util.cri.Exps.like;
 import static org.nutz.dao.util.cri.Exps.lt;
@@ -30,7 +30,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 	private boolean top;
 
 	public SqlExpressionGroup() {
-		exps = new ArrayList<SqlExpression>(10); // 初始10个，能放5个条件，够了吧
+		exps = new ArrayList<SqlExpression>(); // 默认就是10个，能放5个条件，够了吧
 		top = true;
 	}
 
@@ -90,11 +90,11 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 	}
 
 	public SqlExpressionGroup andInBySql(String name, String subSql, Object... args) {
-		return and(insql(name, subSql, args));
+		return and(inSql(name, subSql, args));
 	}
 
 	public SqlExpressionGroup andNotInBySql(String name, String subSql, Object... args) {
-		return and(insql(name, subSql, args).not());
+		return and(inSql(name, subSql, args).not());
 	}
 
 	public SqlExpressionGroup andNotIn(String name, long... ids) {
@@ -177,11 +177,11 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 	}
 
 	public SqlExpressionGroup orInBySql(String name, String subSql, Object... args) {
-		return or(insql(name, subSql, args));
+		return or(inSql(name, subSql, args));
 	}
 
 	public SqlExpressionGroup orNotInBySql(String name, String subSql, Object... args) {
-		return or(insql(name, subSql, args).not());
+		return or(inSql(name, subSql, args).not());
 	}
 
 	public SqlExpressionGroup orNotIn(String name, long... ids) {

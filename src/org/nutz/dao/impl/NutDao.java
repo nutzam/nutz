@@ -106,7 +106,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public void insert(Class<?> classOfT, Chain chain) {
-		insert(chain.toObject(classOfT));
+		insert(chain.toObject(classOfT));//TODO 这样的效率,未免太低了,需要改进
 	}
 
 	public <T> T fastInsert(T obj) {
@@ -116,7 +116,7 @@ public class NutDao extends DaoSupport implements Dao {
 		return obj;
 	}
 
-	public <T> T insertWith(T obj, String regex) {
+	public <T> T insertWith(T obj, String regex) {//TODO 天啊,每个调用都有4个正则表达式,能快起来不?
 		EntityOperator opt = __opt(obj);
 
 		opt.entity.visitOne(obj, regex, doInsert(opt));
@@ -129,7 +129,7 @@ public class NutDao extends DaoSupport implements Dao {
 		return obj;
 	}
 
-	public <T> T insertLinks(T obj, String regex) {
+	public <T> T insertLinks(T obj, String regex) {//TODO 天啊,每个调用都有4个正则表达式,能快起来不?
 		EntityOperator opt = __opt(obj);
 
 		opt.entity.visitOne(obj, regex, doInsert(opt));
@@ -241,7 +241,7 @@ public class NutDao extends DaoSupport implements Dao {
 		return opt.getUpdateCount();
 	}
 
-	public int deleteWith(Object obj, String regex) {
+	public int deleteWith(Object obj, String regex) {//TODO 天啊,又有4个正则表达式,能快起来不?
 		EntityOperator opt = this.__opt(obj);
 
 		opt.entity.visitMany(obj, regex, doDelete(opt));
@@ -253,7 +253,7 @@ public class NutDao extends DaoSupport implements Dao {
 		return opt.exec().getUpdateCount();
 	}
 
-	public int deleteLinks(Object obj, String regex) {
+	public int deleteLinks(Object obj, String regex) {//TODO 天啊,又有4个正则表达式,能快起来不?
 		EntityOperator opt = this.__opt(obj);
 
 		opt.entity.visitMany(obj, regex, doDelete(opt));

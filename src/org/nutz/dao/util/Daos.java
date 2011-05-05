@@ -40,32 +40,26 @@ public abstract class Daos {
 	}
 
 	public static int getColumnIndex(ResultSetMetaData meta, String colName) throws SQLException {
-		int ci = 0;
-		if (null != meta) {
-			int columnCount = meta.getColumnCount();
-			for (int i = 1; i <= columnCount; i++)
-				if (meta.getColumnName(i).equalsIgnoreCase(colName)) {
-					ci = i;
-					break;
-				}
-			if (ci == 0)
-				throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
-		}
-		return ci;
+		if(meta == null)
+			return 0;
+		int columnCount = meta.getColumnCount();
+		for (int i = 1; i <= columnCount; i++)
+			if (meta.getColumnName(i).equalsIgnoreCase(colName))
+				return i;
+		//TODO 尝试一下meta.getColumnLabel?
+		throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
 	}
 	
 	public static boolean isIntLikeColumn(ResultSetMetaData meta, int index) throws SQLException {
-		boolean isIntLike = false;
-		int colType = meta.getColumnType(index);
-		switch (colType) {
+		switch (meta.getColumnType(index)) {
 		case Types.BIGINT:
 		case Types.INTEGER:
 		case Types.SMALLINT:
 		case Types.TINYINT:
 		case Types.NUMERIC:
-			isIntLike = true;
+			return true;
 		}
-		return isIntLike;
+		return false;
 	}
 
 	public static Pager updatePagerCount(Pager pager, Dao dao, Class<?> entityType, Condition cnd) {

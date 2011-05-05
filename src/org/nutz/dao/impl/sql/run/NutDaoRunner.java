@@ -57,6 +57,7 @@ public class NutDaoRunner implements DaoRunner {
 			finally {
 				if (null != conn) {
 					// 恢复链接自动提交设定
+					// 这种事情也要NutDao自己干?
 					try {
 						if (old != conn.getAutoCommit())
 							conn.setAutoCommit(old);
