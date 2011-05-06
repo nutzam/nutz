@@ -154,20 +154,23 @@ public abstract class Loadings {
 
 	private static void evalModule(ActionInfo ai, Class<?> type) {
 		ai.setModuleType(type);
+		String beanName = null;
 		//按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字  Modify By QinerG@gmai.com
+		InjectName innm = type.getAnnotation(InjectName.class);
 		IocBean iocBean = type.getAnnotation(IocBean.class);
+		if(innm == null && iocBean == null) //TODO 再考虑考虑
+			return;
 		if (iocBean != null) {
-			String beanName = iocBean.name();
-			if (Strings.isBlank(beanName)) {
-				InjectName innm = type.getAnnotation(InjectName.class);
-				if (null != innm && !Strings.isBlank(innm.value())) {
-					beanName = innm.value();
-				} else {
-					beanName = Strings.lowerFirst(type.getSimpleName());
-				}
-			}
-			ai.setInjectName(beanName);
+			beanName = iocBean.name();
 		}
+		if (Strings.isBlank(beanName)) {
+			if (!Strings.isBlank(innm.value())) {
+				beanName = innm.value();
+			} else {
+				beanName = Strings.lowerFirst(type.getSimpleName());
+			}
+		}
+		ai.setInjectName(beanName);
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
