@@ -1,11 +1,22 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
+import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Pojos;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -20,31 +31,159 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 									+ " BEGIN "
 									+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
 									+ " END ${T}_${F}_ST;";
-
-	private static String PTN =
-	// <min>
-	"SELECT * FROM ("
-	// <..max>
-			+ "SELECT T.*, ROWNUM RN FROM ("
-			// <...query>
-			+ "SELECT %s FROM %s %s"
-			// </...query>
-			+ ") T WHERE ROWNUM <= %d)"
-			// </..max>
-			+ " WHERE RN > %d"; // </min>
+	
+	private static final Log log = Logs.get();
 
 	public OracleJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
 
 	public boolean createEntity(Dao dao, Entity<?> en) {
-		return false;
+		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
+		boolean pked = false;
+		// 创建字段
+		for (MappingField mf : en.getMappingFields()) {
+			sb.append('\n').append(mf.getColumnName());
+			sb.append(' ').append(evalFieldType(mf));
+			// 非主键的 @Name，应该加入唯一性约束
+			if (mf.isName() && en.getPkType() != PkType.NAME) {
+				sb.append(" NOT NULL UNIQUE");
+				if (mf.hasDefaultValue())
+					sb.append(" DEFAULT '").append(mf.getDefaultValue(null)).append('\'');
+			}
+			// 普通字段
+			else {
+				if (mf.isPk())
+					if(pked)
+						log.info("Too many primary keys, ignore!!"); //TODO 啥情况??!! 复合主键?!
+					else {
+						sb.append(" primary key ");
+						pked = true;
+					}
+				if (mf.isNotNull())
+					sb.append(" NOT NULL");
+				if (mf.hasDefaultValue())
+					sb.append(" DEFAULT '").append(mf.getDefaultValue(null)).append('\'');
+				if (mf.isUnsigned()) //有点暴力
+					sb.append(" Check ( ").append(mf.getColumnName()).append(" >= 0)");
+			}
+			sb.append(',');
+		}
+		
+		// 创建索引
+		// TODO ...
+
+		// 结束表字段设置
+		sb.setCharAt(sb.length() - 1, ')');
+		
+		List<Sql> sqls = new ArrayList<Sql>();
+		sqls.add(Sqls.create(sb.toString()));
+		
+		// 创建复合主键
+		List<MappingField> pks = en.getPks();
+		if (pks.size() > 1) {
+			StringBuilder pkNames  = new StringBuilder();
+			StringBuilder pkNames2  = new StringBuilder();
+			for (MappingField pk : pks) {
+				pkNames.append(pk.getColumnName()).append(',');
+				pkNames2.append(pk.getColumnName()).append('_');
+			}
+			pkNames.setLength(pkNames.length() - 1);
+			pkNames2.setLength(pkNames2.length() - 1);
+			String sql = String.format("alter table %s add constraint primary_key_%s primary key (%s);", en.getTableName(),pkNames2,pkNames);
+			sqls.add(Sqls.create(sql));
+		}
+//		// 处理非主键unique
+//		for (MappingField mf : en.getMappingFields()) {
+//			if(!mf.isPk())
+//				continue;
+//			String sql = gSQL("alter table ${T} add constraint unique_key_${F} unique (${F});", en.getTableName(),mf.getColumnName());
+//			sqls.add(Sqls.create(sql));
+//		}
+		// 处理AutoIncreasement
+		for (MappingField mf : en.getMappingFields()) {
+			if(!mf.isAutoIncreasement())
+				continue;
+			// 序列
+			sqls.add(Sqls.create(gSQL(CSEQ, en.getTableName(),mf.getColumnName())));
+			// 触发器
+			sqls.add(Sqls.create(gSQL(CTRI, en.getTableName(),mf.getColumnName())));
+		}
+		
+		// TODO 详细处理Clob
+		// TODO 详细处理Blob
+		
+		// 执行创建语句
+		dao.execute(sqls.toArray(new Sql[sqls.size()]));
+		// 创建关联表
+		createRelation(dao, en);
+
+		return true;
 	}
 
-	public void formatQuery(Pojo pojo) {}
+	public void formatQuery(Pojo pojo) {
+		Pager pager = pojo.getContext().getPager();
+		// 需要进行分页
+		if (pager != null) {
+			pojo.insertFirst(Pojos.Items.wrap("SELECT * FROM (SELECT T.*, ROWNUM RN FROM ("));
+			pojo.append(Pojos.Items.wrapf(") T WHERE ROWNUM <= %d) WHERE RN > %d", pager.getOffset() + pager.getPageSize(), pager.getOffset()));
+		}
+	}
 
 	public String getDatabaseType() {
 		return DB.ORACLE.name();
 	}
+	
+	@Override
+	protected String evalFieldType(MappingField mf) {
+		switch (mf.getColumnType()) {
+		case BOOLEAN:
+			return "char(1) check (" + mf.getColumnName() + " in(0,1))";
+		case TEXT:
+			return "CLOB";
+		case VARCHAR:
+			return "VARCHAR2(" + mf.getWidth() + ")";
+		case INT:
+			// 用户自定义了宽度
+			if (mf.getWidth() > 0)
+				return "NUMBER(" + mf.getWidth() + ")";
+			// 用数据库的默认宽度
+			return "NUMBER";
+
+		case FLOAT:
+			// 用户自定义了精度
+			if (mf.getWidth() > 0 && mf.getPrecision() > 0) {
+				return "NUMBER(" + mf.getWidth() + "," + mf.getPrecision() + ")";
+			}
+			// 用默认精度
+			if (mf.getTypeMirror().isDouble())
+				return "NUMBER(15,10)";
+			return "NUMBER";
+		case TIME:
+			return "DATE";
+		default:
+			return super.evalFieldType(mf);
+		}
+	}
+	
+	@Override
+	public boolean dropEntity(Dao dao, Entity<?> en) {
+		if(super.dropEntity(dao, en)) {
+			if(en.getPks().isEmpty())
+				return true;
+			List<Sql> sqls = new ArrayList<Sql>();
+			for (MappingField pk : en.getPks()) {
+				String sql = gSQL(DSEQ, en.getTableName(),pk.getColumnName());
+				sqls.add(Sqls.create(sql));
+			}
+			try {
+				dao.execute(sqls.toArray(new Sql[sqls.size()]));
+				return true;
+			} catch (Exception e) {
+			}
+		}
+		return false;
+	}
+
 
 }

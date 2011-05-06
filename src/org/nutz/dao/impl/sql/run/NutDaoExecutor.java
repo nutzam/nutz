@@ -31,7 +31,6 @@ public class NutDaoExecutor implements DaoExecutor {
 			 * 语句执行前的预操作
 			 */
 			st.onBefore(conn);
-
 			/*
 			 * 开始执行语句
 			 */
@@ -135,6 +134,7 @@ public class NutDaoExecutor implements DaoExecutor {
 				_runStatement(conn, st);
 				st.onAfter(conn, null);
 				break;
+			case ALTER:
 			// 仅仅是运行回调
 			case RUN:
 				st.onAfter(conn, null);

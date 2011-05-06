@@ -27,6 +27,7 @@ import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.segment.CharSegment;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -227,4 +228,9 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		return sts;
 	}
 
+	protected static String gSQL(String ptn, String table, String field) {
+		CharSegment cs = new CharSegment(ptn);
+		cs.set("T", table).set("F", field);
+		return cs.toString();
+	}
 }
