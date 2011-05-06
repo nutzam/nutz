@@ -2,6 +2,7 @@ package org.nutz.ioc.loader.json;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +10,8 @@ import java.util.Map;
 import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -22,9 +25,13 @@ import org.nutz.resource.Scans;
  */
 @SuppressWarnings("unchecked")
 public class JsonLoader extends MapLoader {
+	
+	private static final Log log = Logs.get();
 
 	public JsonLoader(Reader reader) {
 		loadFromReader(reader);
+		if(log.isDebugEnabled())
+			log.debugf("Loaded %d bean define from reader", getMap().size());
 	}
 
 	public JsonLoader(String... paths) {
@@ -37,6 +44,8 @@ public class JsonLoader extends MapLoader {
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
+		if(log.isDebugEnabled())
+			log.debugf("Loaded %d bean define from path=%s", getMap().size(), Arrays.toString(paths));
 	}
 
 	private void loadFromReader(Reader reader) {
