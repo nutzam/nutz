@@ -86,6 +86,29 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
 		return true;
 	}
+	
+	@Override
+	protected String evalFieldType(MappingField mf) {
+		switch (mf.getColumnType()) {
+		case INT:
+			// 用户自定义了宽度
+			if (mf.getWidth() > 0)
+				return "NUMERIC(" + mf.getWidth() + ")";
+			// 用数据库的默认宽度
+			return "INT";
+
+		case FLOAT:
+			// 用户自定义了精度
+			if (mf.getWidth() > 0 && mf.getPrecision() > 0) {
+				return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
+			}
+			// 用默认精度
+			if (mf.getTypeMirror().isDouble())
+				return "NUMERIC(15,10)";
+			return "NUMERIC";
+		}
+		return super.evalFieldType(mf);
+	}
 
 	protected String createResultSetMetaSql(Entity<?> en) {
 		return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
