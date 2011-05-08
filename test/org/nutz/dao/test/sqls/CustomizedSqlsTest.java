@@ -30,6 +30,13 @@ import org.nutz.trans.Atom;
 public class CustomizedSqlsTest extends DaoCase {
 
 	@Test
+	public void test_escape_varname_test() {
+		Sql sql = Sqls.create("A_$xyz$_B");
+		sql.vars().set("xyz", "X");
+		assertEquals("A_X_B", sql.toString());
+	}
+
+	@Test
 	public void test_query_by_limit() {
 		// For mysql only
 		if (dao.meta().isMySql()) {

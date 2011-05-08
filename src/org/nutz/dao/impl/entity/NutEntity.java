@@ -357,16 +357,20 @@ public class NutEntity<T> implements Entity<T> {
 		return this.viewName.value();
 	}
 
-	public Entity<?> addBeforeInsertMacro(Pojo pojo) {
-		if (null != pojo)
+	public boolean addBeforeInsertMacro(Pojo pojo) {
+		if (null != pojo) {
 			beforeInsertMacroes.add(pojo);
-		return this;
+			return true;
+		}
+		return false;
 	}
 
-	public Entity<?> addAfterInsertMacro(Pojo pojo) {
-		if (null != pojo)
+	public boolean addAfterInsertMacro(Pojo pojo) {
+		if (null != pojo) {
 			afterInsertMacroes.add(pojo);
-		return this;
+			return true;
+		}
+		return false;
 	}
 
 	public List<Pojo> cloneBeforeInsertMacroes() {

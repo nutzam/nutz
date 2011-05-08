@@ -90,7 +90,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		if (null != ti.annMeta) {
 			Map<String, Object> map = Lang.map(ti.annMeta.value());
 			for (Entry<String, Object> entry : map.entrySet()) {
-				en.getMetas().put(entry.getKey(),entry.getValue().toString());
+				en.getMetas().put(entry.getKey(), entry.getValue().toString());
 			}
 		}
 
@@ -367,10 +367,11 @@ public class AnnotationEntityMaker implements EntityMaker {
 			}
 
 			// '@Next' : 后续获取
-			if (null != info.annNext) {
-				en.addAfterInsertMacro(__macro(	en.getField(info.name),
-												_annToFieldMacroInfo(	info.annNext.els(),
-																		info.annNext.value())));
+			if (null != info.annNext
+				&& en.addAfterInsertMacro(__macro(	en.getField(info.name),
+													_annToFieldMacroInfo(	info.annNext.els(),
+																			info.annNext.value())))) {
+				continue;
 			}
 			// '@Id' : 的自动后续获取
 			else if (null != info.annId && info.annId.auto()) {

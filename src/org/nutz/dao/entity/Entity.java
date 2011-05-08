@@ -79,18 +79,18 @@ public interface Entity<T> {
 	 * 
 	 * @param pojo
 	 *            Pojo 语句
-	 * @return 自身
+	 * @return 是否增加成功
 	 */
-	Entity<?> addBeforeInsertMacro(Pojo pojo);
+	boolean addBeforeInsertMacro(Pojo pojo);
 
 	/**
 	 * 增加一个插入后字段宏
 	 * 
 	 * @param pojo
 	 *            Pojo 语句
-	 * @return 自身
+	 * @return 是否增加成功
 	 */
-	Entity<?> addAfterInsertMacro(Pojo pojo);
+	boolean addAfterInsertMacro(Pojo pojo);
 
 	/**
 	 * 获取实体所有自动执行的字段宏列表
