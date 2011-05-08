@@ -43,7 +43,7 @@ public class SqlFieldMacro extends NutPojo {
 
 			// 填充占位符 ...
 			for (String name : sql.varIndex().names())
-				if (!name.equals("view") && !name.equals("field"))
+				if (!name.equals("table") && !name.equals("view") && !name.equals("field"))
 					sql.vars().set(name, en.getField(name).getValue(obj));
 			// 填充变量 ...
 			for (String name : sql.paramIndex().names())
@@ -90,6 +90,8 @@ public class SqlFieldMacro extends NutPojo {
 		for (String name : sql.varIndex().names()) {
 			if ("view".equals(name))
 				sql.vars().set("view", getEntity().getViewName());
+			else if ("table".equals(name))
+				sql.vars().set("view", getEntity().getTableName());
 			else if ("field".equals(name))
 				sql.vars().set("field", entityField.getColumnName());
 			else

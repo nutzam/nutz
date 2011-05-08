@@ -1089,6 +1089,19 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 根据一个格式化字符串，生成 Map 对象
+	 * 
+	 * @param fmt
+	 *            格式化字符串
+	 * @param args
+	 *            字符串参数
+	 * @return Map 对象
+	 */
+	public static Map<String, Object> mapf(String fmt, Object... args) {
+		return map(String.format(fmt, args));
+	}
+
+	/**
 	 * @return 一个新创建的上下文对象
 	 */
 	public static Context context() {
