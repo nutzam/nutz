@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
-import java.util.regex.Pattern;
 
 import javax.sql.DataSource;
 
@@ -57,9 +56,10 @@ public abstract class Jdbcs {
 		try {
 			for (String key : conf.getExperts().keySet()) {
 				// 检查一下正则表达式是否正确
-				Pattern.compile(key);
+				//在conf类中自行检查
+				//Pattern.compile(key,Pattern.DOTALL & Pattern.CASE_INSENSITIVE);
 				// 检查一下是否可以生成 Expert 的实例
-				conf.getExpert(key);
+				conf.getExpert(key);//TODO 值得商讨
 			}
 		}
 		catch (Exception e) {

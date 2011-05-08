@@ -1,5 +1,7 @@
 package org.nutz.dao.jdbc;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
@@ -10,6 +12,7 @@ import org.nutz.lang.Mirror;
 public class JdbcExpertConfigFile {
 
 	private Map<String, Class<? extends JdbcExpert>> experts;
+	private Map<Pattern, Class<? extends JdbcExpert>> _experts; 
 
 	private Map<String, Object> config;
 
@@ -28,15 +31,18 @@ public class JdbcExpertConfigFile {
 	}
 
 	public JdbcExpert matchExpert(String dbName) {
-		for (Entry<String, Class<? extends JdbcExpert>> entry : experts.entrySet()) {
-			if (Pattern.matches(entry.getKey(), dbName))
+		for (Entry<Pattern, Class<? extends JdbcExpert>> entry : _experts.entrySet()) {
+			if (entry.getKey().matcher(dbName).find())
 				return Mirror.me(entry.getValue()).born(this);
 		}
 		return null;
 	}
 
+	/**
+	 * 注意,返回的Map实例不允许被修改
+	 */
 	public Map<String, Class<? extends JdbcExpert>> getExperts() {
-		return experts;
+		return Collections.unmodifiableMap(experts);
 	}
 
 	public Map<String, Object> getConfig() {
@@ -49,6 +55,11 @@ public class JdbcExpertConfigFile {
 
 	public void setExperts(Map<String, Class<? extends JdbcExpert>> experts) {
 		this.experts = experts;
+		this._experts = new HashMap<Pattern, Class<? extends JdbcExpert>>();
+		for (Entry<String, Class<? extends JdbcExpert>> entry : experts.entrySet()) {
+			//忽略大小写,并且让换行符与.能够匹配
+			_experts.put(Pattern.compile(entry.getKey(), Pattern.DOTALL & Pattern.CASE_INSENSITIVE), entry.getValue());
+		}
 	}
 
 	public void setConfig(Map<String, Object> config) {
