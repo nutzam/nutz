@@ -164,7 +164,7 @@ public abstract class Loadings {
 			beanName = iocBean.name();
 		}
 		if (Strings.isBlank(beanName)) {
-			if (innm != null && Strings.isBlank(innm.value())) {
+			if (innm != null && !Strings.isBlank(innm.value())) {
 				beanName = innm.value();
 			} else {
 				beanName = Strings.lowerFirst(type.getSimpleName());
