@@ -25,6 +25,8 @@ public class StringCompile implements JsonCompile{
 	private int col;
 	private int row;
 	
+	private static final int END = -1;
+	
 	public JsonItem Compile(Reader reader) {
 		this.reader = reader;
 		try {
@@ -34,7 +36,7 @@ public class StringCompile implements JsonCompile{
 				/*
 				 * Meet the var ioc ={ maybe, try to find the '{' and break
 				 */
-				while (-1 != nextChar())
+				while (END != nextChar())
 					if ('{' == cursor)
 						break;
 			}
@@ -67,7 +69,7 @@ public class StringCompile implements JsonCompile{
 		
 		if(cursor != '\'' && cursor != '"'){
 			StringBuilder sb = new StringBuilder();
-			while(cursor != -1 && cursor != ':' && cursor != ',' && cursor != ']' && cursor != '}'){
+			while(cursor != END && cursor != ':' && cursor != ',' && cursor != ']' && cursor != '}'){
 				sb.append((char)cursor);
 				nextChar();
 				skipCommentsAndBlank();
@@ -87,7 +89,7 @@ public class StringCompile implements JsonCompile{
 		boolean isObj = cursor == '{' ? true: false;
 		nextChar();
 		ArrayJsonItem aji = isObj ? new ObjectJsonItem() : new ArrayJsonItem();
-		while(cursor != '}' && cursor != ']'){
+		while(cursor != END && cursor != '}' && cursor != ']'){
 			if(cursor == ','){
 				nextChar();
 				continue;
@@ -120,7 +122,7 @@ public class StringCompile implements JsonCompile{
 		StringBuilder sb = new StringBuilder();
 		int expEnd = cursor;
 		nextChar();
-		while (cursor != -1 && cursor != expEnd) {
+		while (cursor != END && cursor != expEnd) {
 			if (cursor == '\\') {
 				nextChar();
 				switch (cursor) {
@@ -148,7 +150,7 @@ public class StringCompile implements JsonCompile{
 			sb.append((char) cursor);
 			nextChar();
 		}
-		if (cursor == -1)
+		if (cursor == END)
 			throw makeError("Unclose string");
 		nextChar();
 		return sb;
@@ -174,7 +176,7 @@ public class StringCompile implements JsonCompile{
 
 	private void skipCommentsAndBlank() throws IOException {
 		skipBlank();
-		while (cursor == '/') {
+		while (cursor != END && cursor == '/') {
 			nextChar();
 			if (cursor == '/') { // inline comment
 				skipInlineComment();
@@ -189,7 +191,7 @@ public class StringCompile implements JsonCompile{
 		}
 	}
 	private void skipInlineComment() throws IOException {
-		while (nextChar() != -1 && cursor != '\n') {}
+		while (nextChar() != END && cursor != '\n') {}
 	}
 	
 	private void skipBlank() throws IOException {
@@ -199,7 +201,7 @@ public class StringCompile implements JsonCompile{
 
 	private void skipBlockComment() throws IOException {
 		nextChar();
-		while (cursor != -1) {
+		while (cursor != END) {
 			if (cursor == '*') {
 				if (nextChar() == '/')
 					break;

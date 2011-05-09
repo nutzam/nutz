@@ -75,7 +75,7 @@ public class SingleJsonItem extends JsonItem{
 					}
 			}
 		}catch(Exception e){
-			throw new RuntimeException("SingleJsonItem 类型转换错误");
+			throw new RuntimeException("SingleJsonItem 类型转换错误",e);
 		}
 	}
 	

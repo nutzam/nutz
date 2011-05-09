@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -613,5 +614,14 @@ public class JsonTest {
 		assertTrue(msgList.size() == 2);
 		assertEquals(1, msgList.get(0).get("a").intValue());
 		assertEquals(2, msgList.get(1).get("b").intValue());
+	}
+	
+	@Test(timeout=5000)
+	public void test_bad_json() {
+		Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}]");
+		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}}");
+		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name'wendal'}]}");
+		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh', {name:'wendal'}]}");
+		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:wendal'}]}");
 	}
 }
