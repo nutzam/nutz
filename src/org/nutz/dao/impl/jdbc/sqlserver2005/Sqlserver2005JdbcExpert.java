@@ -125,7 +125,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 		String str = sb.toString();
 		if(str.trim().toLowerCase().startsWith("select")){
 			pojo.setItem(0, Pojos.Items.wrap(str.substring(6)));
-		}
+		} else
+			return;//以免出错.
 		pojo.insertFirst(Pojos.Items.wrapf("select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ", pager.getOffset() + pager.getPageSize()));
 		pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d",pager.getOffset()));
 	}
