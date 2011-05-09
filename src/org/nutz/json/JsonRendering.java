@@ -246,9 +246,9 @@ public class JsonRendering {
 			Mirror mr = Mirror.me(obj.getClass());
 			if (mr.isEnum()) {
 				string2Json(((Enum) obj).name());
-			} else if (mr.isNumber() || mr.isBoolean() || mr.isChar()) {
+			} else if (mr.isNumber() || mr.isBoolean()) {
 				writer.append(obj.toString());
-			} else if (mr.isStringLike()) {
+			} else if (mr.isStringLike()  || mr.isChar()) {
 				string2Json(obj.toString());
 			} else if (mr.isDateTimeLike()) {
 				string2Json(format.getCastors().castToString(obj));

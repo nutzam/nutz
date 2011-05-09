@@ -624,4 +624,11 @@ public class JsonTest {
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh', {name:'wendal'}]}");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:wendal'}]}");
 	}
+	
+	@Test
+	public void test_render_char() {
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("charX", 'c');
+		assertEquals("{\"charX\":\"c\"}", Json.toJson(map, JsonFormat.compact()));
+	}
 }
