@@ -42,8 +42,6 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 			// 非主键的 @Name，应该加入唯一性约束
 			if (mf.isName() && en.getPkType() != PkType.NAME) {
 				sb.append(" UNIQUE NOT NULL");
-				if (mf.hasDefaultValue())
-					sb.append(" DEFAULT '").append(mf.getDefaultValue(null)).append('\'');
 			}
 			// 普通字段
 			else {

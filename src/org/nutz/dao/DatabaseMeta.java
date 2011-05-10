@@ -51,6 +51,8 @@ public class DatabaseMeta {
 			type = DB.SQLSERVER;
 		} else if (proName.startsWith("sqlite")) {
 			type = DB.SQLITE;
+		} else if (proName.startsWith("hsql")) {
+			type = DB.HSQL;
 		} else {
 			type = DB.OTHER;
 		}
@@ -139,5 +141,9 @@ public class DatabaseMeta {
 
 	public boolean isSQLite() {
 		return DB.SQLITE == type;
+	}
+	
+	public boolean isHsql() {
+		return DB.HSQL == type;
 	}
 }
