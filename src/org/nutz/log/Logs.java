@@ -47,7 +47,7 @@ public final class Logs {
 	 * 返回以调用者的类命名的Log,是获取Log对象最简单的方法!
 	 */
 	public static Log get() {
-		return adapter.getLogger(new Throwable().getStackTrace()[1].getClassName());
+		return adapter.getLogger(Thread.currentThread().getStackTrace()[2].getClassName());
 	}
 
 	/**
