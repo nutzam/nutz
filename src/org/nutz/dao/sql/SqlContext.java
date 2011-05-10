@@ -96,8 +96,9 @@ public class SqlContext {
 
 	public void setPager(Pager pager) {
 		this.pager = pager;
-		if (null != pager && pager.getPageSize() > 0)
-			this.fetchSize = pager.getPageSize();
+		//TODO 为何要这样写??为什么?!! SQLite死活不给我全部数据!! by wendal
+//		if (null != pager && pager.getPageSize() > 0)
+//			this.fetchSize = pager.getPageSize();
 	}
 
 }

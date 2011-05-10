@@ -14,7 +14,8 @@ var ioc = {
 		"oracle.*" : "org.nutz.dao.impl.jdbc.oracle.OracleJdbcExpert",
 		//SqlServer2005 --> 9.0 , SqlServer2008 --> 10.0
 		"microsoft sql server.*(9|10)[.].+" : "org.nutz.dao.impl.jdbc.sqlserver2005.Sqlserver2005JdbcExpert",
-		"hsql.*" : "org.nutz.dao.impl.jdbc.hsqldb.HsqldbJdbcExpert"
+		"hsql.*" : "org.nutz.dao.impl.jdbc.hsqldb.HsqldbJdbcExpert",
+		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLieJdbcExpert"
 	// ~ 映射结束
 	},
 
