@@ -167,6 +167,11 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 	}
 	
 	@Override
+	protected String createResultSetMetaSql(Entity<?> en) {
+		return "select * from " + en.getViewName() + " where rownum <= 1";
+	}
+	
+	@Override
 	public boolean dropEntity(Dao dao, Entity<?> en) {
 		if(super.dropEntity(dao, en)) {
 			if(en.getPks().isEmpty())

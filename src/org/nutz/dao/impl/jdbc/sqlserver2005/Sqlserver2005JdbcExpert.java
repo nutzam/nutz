@@ -130,4 +130,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 		pojo.insertFirst(Pojos.Items.wrapf("select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ", pager.getOffset() + pager.getPageSize()));
 		pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d",pager.getOffset()));
 	}
+	
+	@Override
+	protected String createResultSetMetaSql(Entity<?> en) {
+		return "SELECT top 1 * FROM " + en.getViewName();
+	}
 }
