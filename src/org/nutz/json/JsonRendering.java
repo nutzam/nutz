@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.nutz.lang.FailToGetValueException;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
@@ -30,13 +32,6 @@ public class JsonRendering {
 
 	private Writer writer;
 
-	/**
-	 * 
-	 * @param writer
-	 * @param format
-	 * @throws NullPointerException
-	 *             if writer or format is null
-	 */
 	JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
@@ -87,13 +82,13 @@ public class JsonRendering {
 	}
 
 	private void appendBraceBegin() throws IOException {
-		writer.append("{");
+		writer.append('{');
 	}
 
 	private void appendBraceEnd() throws IOException {
 		if (!isCompact(this))
 			writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
-		writer.append("}");
+		writer.append('}');
 	}
 
 	static class Pair {
@@ -137,30 +132,38 @@ public class JsonRendering {
 		Class<? extends Object> type = obj.getClass();
 		ToJson tj = type.getAnnotation(ToJson.class);
 		String myMethodName = Strings.sNull(null == tj ? null : tj.value(), "toJson");
-		/*
-		 * toJson()
-		 */
 		try {
-			Method myMethod = type.getMethod(myMethodName);
-			if (!myMethod.isAccessible())
-				myMethod.setAccessible(true);
-			Object re = myMethod.invoke(obj);
-			writer.append(String.valueOf(re));
-			return;
-		}
-		/*
-		 * toJson(JsonFormat fmt)
-		 */
-		catch (Exception e1) {
+			/*
+			 * toJson()
+			 */
 			try {
-				Method myMethod = type.getMethod(myMethodName, JsonFormat.class);
+				Method myMethod = type.getMethod(myMethodName);
 				if (!myMethod.isAccessible())
 					myMethod.setAccessible(true);
-				Object re = myMethod.invoke(obj, format);
+				Object re = myMethod.invoke(obj);
 				writer.append(String.valueOf(re));
 				return;
 			}
-			catch (Exception e) {}
+			/*
+			 * toJson(JsonFormat fmt)
+			 */
+			catch (NoSuchMethodException e1) {
+				try{
+					Method myMethod = type.getMethod(myMethodName, JsonFormat.class);
+					if (!myMethod.isAccessible())
+						myMethod.setAccessible(true);
+					Object re = myMethod.invoke(obj, format);
+					writer.append(String.valueOf(re));
+					return;
+				}
+				catch (NoSuchMethodException e) {}
+			}
+		} catch (IllegalArgumentException e) {
+			throw Lang.wrapThrow(e);
+		} catch (IllegalAccessException e) {
+			throw Lang.wrapThrow(e);
+		} catch (InvocationTargetException e) {
+			throw Lang.wrapThrow(e);
 		}
 		/*
 		 * Default
@@ -290,6 +293,8 @@ public class JsonRendering {
 			render(it.next());
 			if (it.hasNext())
 				writer.append(',').append(' ');
+			else
+				break;
 		}
 		writer.append(']');
 	}
