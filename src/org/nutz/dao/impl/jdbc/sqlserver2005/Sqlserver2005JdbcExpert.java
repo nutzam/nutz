@@ -16,7 +16,7 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.Pojos;
 
 /**
- *
+ * 
  * @author wendal
  */
 public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
@@ -25,12 +25,10 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 		super(conf);
 	}
 
-	@Override
 	public String getDatabaseType() {
 		return DB.SQLSERVER.name();
 	}
 
-	@Override
 	public boolean createEntity(Dao dao, Entity<?> en) {
 		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
 		// 创建字段
@@ -78,15 +76,15 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 
 		return true;
 	}
-	
+
 	@Override
 	protected String evalFieldType(MappingField mf) {
 		switch (mf.getColumnType()) {
 		case BOOLEAN:
 			return "BIT";
-		
+
 		case TIMESTAMP:
-			return "DATETIME";//TODO 值得讨论
+			return "DATETIME";// TODO 值得讨论
 
 		case DATETIME:
 		case DATE:
@@ -112,25 +110,25 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 		return super.evalFieldType(mf);
 	}
 
-	@Override
 	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
-		if(pager == null)
+		if (pager == null)
 			return;
-		//-----------------------------------------------------
-		//TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
+		// -----------------------------------------------------
+		// TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
 		PItem pi = pojo.getItem(0);
 		StringBuilder sb = new StringBuilder();
 		pi.joinSql(pojo.getEntity(), sb);
 		String str = sb.toString();
-		if(str.trim().toLowerCase().startsWith("select")){
+		if (str.trim().toLowerCase().startsWith("select")) {
 			pojo.setItem(0, Pojos.Items.wrap(str.substring(6)));
 		} else
-			return;//以免出错.
-		pojo.insertFirst(Pojos.Items.wrapf("select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ", pager.getOffset() + pager.getPageSize()));
-		pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d",pager.getOffset()));
+			return;// 以免出错.
+		pojo.insertFirst(Pojos.Items.wrapf(	"select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
+											pager.getOffset() + pager.getPageSize()));
+		pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d", pager.getOffset()));
 	}
-	
+
 	@Override
 	protected String createResultSetMetaSql(Entity<?> en) {
 		return "SELECT top 1 * FROM " + en.getViewName();
