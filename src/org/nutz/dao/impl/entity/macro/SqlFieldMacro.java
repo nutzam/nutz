@@ -91,7 +91,7 @@ public class SqlFieldMacro extends NutPojo {
 			if ("view".equals(name))
 				sql.vars().set("view", getEntity().getViewName());
 			else if ("table".equals(name))
-				sql.vars().set("view", getEntity().getTableName());
+				sql.vars().set("table", getEntity().getTableName());
 			else if ("field".equals(name))
 				sql.vars().set("field", entityField.getColumnName());
 			else

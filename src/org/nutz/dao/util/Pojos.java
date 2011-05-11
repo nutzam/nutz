@@ -85,7 +85,9 @@ public abstract class Pojos {
 		}
 
 		public static PItem cndColumn(MappingField mappingField, Object def) {
-			return new SingleColumnCondtionPItem(mappingField, def);
+			SingleColumnCondtionPItem re = new SingleColumnCondtionPItem(mappingField, def);
+			re.setCasesensitive(mappingField.isCasesensitive());
+			return re;
 		}
 
 		public static PItem cndColumn(String colName, MappingField mappingField, Object def) {
