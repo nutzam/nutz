@@ -2,7 +2,6 @@ package org.nutz.json.compile;
 
 import java.io.IOException;
 import java.io.Reader;
-import java.io.StringReader;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -26,9 +25,12 @@ public class StringCompile2 {
 	
 	private static final int END = -1;
 	
-	public Object Compile(Reader reader) {
+	private boolean skipOneChar = false;
+	
+	public Object parse(Reader reader) {
 		this.reader = reader;
 		try {
+			
 			//开始读取数据
 			nextChar();
 			skipCommentsAndBlank();
@@ -41,42 +43,36 @@ public class StringCompile2 {
 						break;
 				}
 			}
-			return compileLocation();
+			return parseFromHere();
 		} catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
 	
-	private Object compileLocation() throws IOException{
+	private Object parseFromHere() throws IOException{
 		skipCommentsAndBlank();
-		Object ji = null;
 		switch(cursor){
 		case '{':
-			skipCommentsAndBlank();
-			nextChar();
-			ji = new LinkedHashMap<String, Object>();
-			compileMap((Map<String, Object>)ji);
-			break;//TODO 处理为Map
+			Map<String, Object> map = new LinkedHashMap<String, Object>();
+			parseMap(map);
+			return map;
 		case '[':
-			ji = new LinkedList<Object>();
-			compileList((List<Object>)ji);
-			break;//TODO 处理为List
+			List<Object> list = new LinkedList<Object>();
+			parseList(list);
+			return list;
 		case '"':
 		case '\'':
-			ji = compileString(cursor);//看来是个String
-			break;
+			return parseString(cursor);//看来是个String
 		default:
-			ji = compileSimple();//其他基本数据类型
-			break;
+			return parseSimpleType();//其他基本数据类型
 		}
-		return ji;
 	}
 	
 	/**
 	 * 
 	 * @param endTag 以什么作为结束符
 	 */
-	private String compileString(int endTag) throws IOException{
+	private String parseString(int endTag) throws IOException{
 		//直至读取到相应的结束符!
 		StringBuilder sb = new StringBuilder();
 		while(true) {
@@ -84,7 +80,7 @@ public class StringCompile2 {
 			if(cursor == endTag)
 				break;
 			if(cursor == '\\') {//转义字符?
-				complieSp(sb);
+				parseSp(sb);
 			} else
 				sb.append((char)cursor);
 		}
@@ -92,7 +88,7 @@ public class StringCompile2 {
 	}
 	
 	//读取转义字符
-	private void complieSp(StringBuilder sb) throws IOException {
+	private void parseSp(StringBuilder sb) throws IOException {
 		nextChar();
 		switch (cursor) {
 		case 'n':
@@ -103,6 +99,12 @@ public class StringCompile2 {
 			break;
 		case 't':
 			sb.append('\t');
+			break;
+		case '\'':
+			sb.append('\'');
+			break;
+		case '\"':
+			sb.append('\"');
 			break;
 		case 'u':
 			char[] hex = new char[4];
@@ -121,7 +123,7 @@ public class StringCompile2 {
 	 * 处理基本数据类型
 	 * @return
 	 */
-	private Object compileSimple() throws IOException{
+	private Object parseSimpleType() throws IOException{
 		StringBuilder sb = new StringBuilder();
 		switch (cursor) {
 		case 't':
@@ -171,12 +173,14 @@ public class StringCompile2 {
 		case '9':
 			//看来是数字
 			sb.append((char)cursor);
-//			System.out.println("---->"+sb.toString());
 			boolean hasPoint = false;
 			while(true) {
-				try {
-					if(!tryNextChar())
-						break;
+				if(!tryNextChar()) {//读完了? 处理一下
+						if(hasPoint)
+							return Double.parseDouble(sb.toString());
+						else
+							return Long.parseLong(sb.toString());
+					}
 					switch (cursor) {
 					case '0':
 					case '1':
@@ -189,8 +193,6 @@ public class StringCompile2 {
 					case '8':
 					case '9':
 						sb.append((char)cursor);
-//						System.out.println(sb.toString());
-//						System.out.println("++++++" + (char)cursor);
 						break;
 					case '.':
 						if(hasPoint)
@@ -208,18 +210,14 @@ public class StringCompile2 {
 					case 'F':
 					case 'f':
 						return Float.parseFloat(sb.toString());
-					default :
+					default : {//越界读取了!!
+						skipOneChar = true;
 						if(hasPoint)
 							return Double.parseDouble(sb.toString());
 						else
 							return Long.parseLong(sb.toString());
 					}
-				} catch (IOException e) {//读取完了? OK,处理一下
-					if(hasPoint)
-						return Double.parseDouble(sb.toString());
-					else
-						return Long.parseLong(sb.toString());
-				}
+					}
 			}
 
 		default:
@@ -230,16 +228,35 @@ public class StringCompile2 {
 	/**
 	 * 
 	 */
-	private void compileMap(Map<String, Object> map) throws IOException{
+	private void parseMap(Map<String, Object> map) throws IOException{
+		nextChar();
+		skipCommentsAndBlank();
+		if(cursor == '}')
+			return;
+		while(true) {
+			parseMapItem(map);
+			nextChar();
+			skipCommentsAndBlank();
+			switch (cursor) {
+			case '}':
+				return;
+			case ',':
+				nextChar();
+				skipCommentsAndBlank();
+				continue;
+			default:
+				throw unexpectedChar();
+			}
+		}
+	}
+	
+	private void parseMapItem(Map<String, Object> map) throws IOException {
 		//找key
 		String key = null;
 		switch (cursor) {
-		case '}':	
-			//看来已经结束了
-			return;
 		case '"':
 		case '\'':
-			key = compileString(cursor);
+			key = parseString(cursor);
 			break;
 		default:
 			//没办法,看来是无分隔符的字符串,找一下吧
@@ -249,45 +266,22 @@ public class StringCompile2 {
 				nextChar();
 				switch (cursor) {
 				case '\\'://特殊字符
-					complieSp(sb);
+					parseSp(sb);
 					break;
-				case ' ':
+				//case ' ':
 				case ':':
+					key = sb.toString().trim();
 					break OUTER;
 				default:
 					sb.append((char)cursor);
 				}
 			}
-			key = sb.toString();
 		}
 		//TODO 判断一下key是否合法
-		//key找到了,开始找:
-		while(cursor != ':') {
-			nextChar();
-		}
 		//当前字符为: 跳过去
-		System.out.println((char)cursor);
 		nextChar();
 		skipCommentsAndBlank();
-		Object value = compileLocation();
-		map.put(key, value);
-		System.out.println("??+++>>>>>>>>    "+(char)cursor);
-		if(value instanceof Map || value instanceof List)
-			;
-		else
-			nextChar();
-		skipCommentsAndBlank();
-		switch (cursor) {
-		case '}':
-			return;
-		case ','://看来还有其他key/value
-			nextChar();
-			skipCommentsAndBlank();
-			compileMap(map);
-			return;
-		default:
-			throw unexpectedChar();
-		}
+		map.put(key, parseFromHere());
 	}
 	
 	/**
@@ -295,50 +289,37 @@ public class StringCompile2 {
 	 * @param list
 	 * @throws IOException
 	 */ 
-	private void compileList(List<Object> list) throws IOException{
-		skipCommentsAndBlank();
+	private void parseList(List<Object> list) throws IOException{
 		nextChar();
-		list.add(compileLocation());
 		skipCommentsAndBlank();
-//		if(!tryNextChar())
-//			return;
-//		System.out.println(">-> " + (char)cursor);
-//		System.out.println(">-> " + list);
-		switch (cursor) {
-		case ']':
+		if(cursor == ']')
 			return;
-		case ','://看来还有其他key/value
-			compileList2(list);
-			return;
-		default:
-			throw unexpectedChar();
+		while(true) {
+			list.add(parseFromHere());
+			nextChar();
+			skipCommentsAndBlank();
+			switch (cursor) {
+			case ']':
+				return;
+			case ','://看来还有其他key/value
+				nextChar();
+				skipCommentsAndBlank();
+				continue;
+			default:
+				throw unexpectedChar();
+			}
 		}
+		
 	}
-	
-	private void compileList2(List<Object> list) throws IOException{
-		skipCommentsAndBlank();
-		nextChar();
-		list.add(compileLocation());
-		skipCommentsAndBlank();
-		if(!tryNextChar())
-			return;
-		switch (cursor) {
-		case ']':
-			return;
-		case ','://看来还有其他key/value
-			compileList(list);
-			return;
-		default:
-			throw unexpectedChar();
-		}
-	}
-
 	
 	private int nextChar() throws IOException {
+		if(skipOneChar) {
+			skipOneChar = false;
+			return cursor;
+		}
 		if (-1 == cursor)
 			return -1;
 		cursor = reader.read();
-		System.out.println("read --> " + (char)cursor);
 		if (cursor == END)
 			throw unexpectedEnd();
 		if (cursor == '\n') {
@@ -376,7 +357,7 @@ public class StringCompile2 {
 
 	private void skipBlockComment() throws IOException {
 		nextChar();
-		while (cursor != END) {
+		while (true) {
 			if (cursor == '*') {
 				if (nextChar() == '/')
 					break;
@@ -386,8 +367,11 @@ public class StringCompile2 {
 	}
 	
 	private boolean tryNextChar() throws IOException {
+		if(skipOneChar) {
+			skipOneChar = false;
+			return cursor != END;
+		}
 		cursor = reader.read();
-		System.out.println("read --> " + (char)cursor);
 		return cursor != END;
 	}
 	
@@ -402,16 +386,29 @@ public class StringCompile2 {
 		return new JsonException(row, col, (char) cursor, "Unexpected char");
 	}
 	
-	public static void main(String[] args) {
-		StringReader sr = new StringReader("{abc      :'ccc',ppp      : 123 ,                xx : true            }");
-		StringCompile2 sc2 = new StringCompile2();
-		System.out.println(sc2.Compile(sr));
-		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{abc:123f}}")));
-		System.out.println(new StringCompile2().Compile(new StringReader("[123,true]")));
-		System.out.println(new StringCompile2().Compile(new StringReader("[123,456]")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("[123,{abc:456}]")));
+//	public static void main(String[] args) {
+//		StringReader sr = new StringReader("{abc      :'ccc',ppp      : 123 ,                xx : true            }");
+//		StringCompile2 sc2 = new StringCompile2();
+//		System.out.println(sc2.Compile(sr));
+//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{abc:123f}}")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{       abc:123f}}")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{abc:      123f}}")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("[123,true]")));
 //		System.out.println(new StringCompile2().Compile(new StringReader("[123,456]")));
-	}
+//		System.out.println(new StringCompile2().Compile(new StringReader("[123,{abc:456}]")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("[123,456L]")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("123456789L")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("2.3")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("0.0f")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("2.9999")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("true")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("false")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("null")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("undefined")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("\"abc\"")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("\"a\'bc\"")));
+//		System.out.println(new StringCompile2().Compile(new StringReader("\"\'a\\\"bc\"")));
+//	}
 	
 	
 }
