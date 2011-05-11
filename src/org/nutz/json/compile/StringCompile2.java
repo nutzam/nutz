@@ -285,9 +285,8 @@ public class StringCompile2 {
 				case '\\'://特殊字符
 					parseSp(sb);
 					break;
-				//case ' ':
 				case ':':
-					key = sb.toString().trim();
+					key = sb.toString().trim().intern();
 					break OUTER;
 				default:
 					sb.append((char)cursor);
