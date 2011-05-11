@@ -32,14 +32,15 @@ public class StringCompile2 {
 		try {
 			
 			//开始读取数据
-			nextChar();
+			if(!tryNextChar())
+				return null;
 			skipCommentsAndBlank();
 			if(cursor == 'v'){
 				/*
 				 * Meet the var ioc ={ maybe, try to find the '{' and break
 				 */
 				while (true) {
-					if ('{' == cursor)//尝试找到{,以确定是否为"var ioc ={"格式
+					if ('{' == nextChar())//尝试找到{,以确定是否为"var ioc ={"格式
 						break;
 				}
 			}
@@ -100,6 +101,9 @@ public class StringCompile2 {
 		case 't':
 			sb.append('\t');
 			break;
+		case '\\':
+			sb.append('\\');
+			break;
 		case '\'':
 			sb.append('\'');
 			break;
@@ -116,6 +120,8 @@ public class StringCompile2 {
 			throw makeError("don't support \\b");
 		case 'f':
 			throw makeError("don't support \\f");
+		default:
+			throw unexpectedChar();	
 		}
 	}
 	
@@ -171,6 +177,7 @@ public class StringCompile2 {
 		case '7':
 		case '8':
 		case '9':
+		case '-':
 			//看来是数字
 			sb.append((char)cursor);
 			boolean hasPoint = false;
@@ -178,8 +185,12 @@ public class StringCompile2 {
 				if(!tryNextChar()) {//读完了? 处理一下
 						if(hasPoint)
 							return Double.parseDouble(sb.toString());
-						else
-							return Long.parseLong(sb.toString());
+						else {
+							Long p = Long.parseLong(sb.toString());
+							if(Integer.MIN_VALUE < p.longValue() && p.longValue() < Integer.MAX_VALUE )
+								return p.intValue();
+							return p;
+						}
 					}
 					switch (cursor) {
 					case '0':
@@ -214,8 +225,12 @@ public class StringCompile2 {
 						skipOneChar = true;
 						if(hasPoint)
 							return Double.parseDouble(sb.toString());
-						else
-							return Long.parseLong(sb.toString());
+						else {
+							Long p = Long.parseLong(sb.toString());
+							if(Integer.MIN_VALUE < p.longValue() && p.longValue() < Integer.MAX_VALUE )
+								return p.intValue();
+							return p;
+						}
 					}
 					}
 			}
@@ -257,6 +272,8 @@ public class StringCompile2 {
 		case '"':
 		case '\'':
 			key = parseString(cursor);
+			nextChar();
+			skipCommentsAndBlank();
 			break;
 		default:
 			//没办法,看来是无分隔符的字符串,找一下吧
@@ -389,26 +406,26 @@ public class StringCompile2 {
 //	public static void main(String[] args) {
 //		StringReader sr = new StringReader("{abc      :'ccc',ppp      : 123 ,                xx : true            }");
 //		StringCompile2 sc2 = new StringCompile2();
-//		System.out.println(sc2.Compile(sr));
-//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{abc:123f}}")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{       abc:123f}}")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("{abc:{abc:      123f}}")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("[123,true]")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("[123,456]")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("[123,{abc:456}]")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("[123,456L]")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("123456789L")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("2.3")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("0.0f")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("2.9999")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("true")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("false")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("null")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("undefined")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("\"abc\"")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("\"a\'bc\"")));
-//		System.out.println(new StringCompile2().Compile(new StringReader("\"\'a\\\"bc\"")));
+//		System.out.println(sc2.parse(sr));
+//		System.out.println(new StringCompile2().parse(new StringReader("{abc:{abc:123f}}")));
+//		System.out.println(new StringCompile2().parse(new StringReader("{abc:{       abc:123f}}")));
+//		System.out.println(new StringCompile2().parse(new StringReader("{abc:{abc:      123f}}")));
+//		System.out.println(new StringCompile2().parse(new StringReader("[123,true]")));
+//		System.out.println(new StringCompile2().parse(new StringReader("[123,456]")));
+//		System.out.println(new StringCompile2().parse(new StringReader("[123,{abc:456}]")));
+//		System.out.println(new StringCompile2().parse(new StringReader("[123,456L]")));
+//		System.out.println(new StringCompile2().parse(new StringReader("123456789L")));
+//		System.out.println(new StringCompile2().parse(new StringReader("2.3")));
+//		System.out.println(new StringCompile2().parse(new StringReader("0.0f")));
+//		System.out.println(new StringCompile2().parse(new StringReader("2.9999")));
+//		System.out.println(new StringCompile2().parse(new StringReader("true")));
+//		System.out.println(new StringCompile2().parse(new StringReader("false")));
+//		System.out.println(new StringCompile2().parse(new StringReader("null")));
+//		System.out.println(new StringCompile2().parse(new StringReader("undefined")));
+//		System.out.println(new StringCompile2().parse(new StringReader("\"abc\"")));
+//		System.out.println(new StringCompile2().parse(new StringReader("\"a\'bc\"")));
+//		System.out.println(new StringCompile2().parse(new StringReader("\"\'a\\\"bc\"")));
+//		
+//		System.out.println(new StringCompile2().parse(new StringReader("var ioc = {id:6};")));
 //	}
-	
-	
 }
