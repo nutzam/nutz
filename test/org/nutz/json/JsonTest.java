@@ -616,7 +616,7 @@ public class JsonTest {
 		assertEquals(2, msgList.get(1).get("b").intValue());
 	}
 	
-	@Test(timeout=5000)
+	@Test(timeout=5000,expected=Throwable.class)
 	public void test_bad_json() {
 		Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}]");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}}");
