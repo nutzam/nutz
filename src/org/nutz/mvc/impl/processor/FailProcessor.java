@@ -23,8 +23,8 @@ public class FailProcessor extends ViewProcessor {
 	
 	@Override
 	public void process(ActionContext ac) throws Throwable {
-		if (log.isDebugEnabled())
-			log.debug("Catch handle error", ac.getError());
+		if (log.isErrorEnabled())
+			log.error("Catch handle error", ac.getError());
 		super.process(ac);
 	}
 }
