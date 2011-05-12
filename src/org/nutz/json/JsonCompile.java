@@ -343,14 +343,7 @@ public class JsonCompile {
 	}
 	
 	private int nextChar() throws IOException {
-		if(skipOneChar) {
-			skipOneChar = false;
-			return cursor;
-		}
-		if (-1 == cursor)
-			return -1;
-		cursor = reader.read();
-		if (cursor == END)
+		if (!tryNextChar())
 			throw unexpectedEnd();
 		if (cursor == '\n') {
 			row++;
@@ -362,7 +355,7 @@ public class JsonCompile {
 
 	private void skipCommentsAndBlank() throws IOException {
 		skipBlank();
-		while (cursor != END && cursor == '/') {
+		while (cursor == '/') {
 			nextChar();
 			if (cursor == '/') { // inline comment
 				skipInlineComment();
@@ -377,7 +370,7 @@ public class JsonCompile {
 		}
 	}
 	private void skipInlineComment() throws IOException {
-		while (nextChar() != END && cursor != '\n') {}
+		while (nextChar() != '\n') {}
 	}
 	
 	private void skipBlank() throws IOException {
