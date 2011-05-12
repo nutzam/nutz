@@ -18,6 +18,9 @@ public class Json {
 	 * <li>List
 	 * <li>Integer 或者 Float
 	 * <li>String
+	 * <li>Boolean
+	 * <li>Char
+	 * <li>Long Double
 	 * </ul>
 	 * 
 	 * @param reader
@@ -26,7 +29,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(null);
+		return new JsonCompile().parse(reader);
 	}
 
 	/**
@@ -41,8 +44,7 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		JsonParsing jp = new JsonParsing(reader);
-		return (T) jp.parseFromJson(type);
+		return (T) new JsonParsing().parse(type, reader);
 	}
 
 	/**
@@ -56,7 +58,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
-		return new JsonParsing(reader).parseFromJson(type);
+		return new JsonParsing().parse(type, reader);
 	}
 
 	/**
