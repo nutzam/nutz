@@ -38,9 +38,13 @@ public class JsonCompile {
 				/*
 				 * Meet the var ioc ={ maybe, try to find the '{' and break
 				 */
-				while (true) {
-					if ('{' == nextChar())//尝试找到{,以确定是否为"var ioc ={"格式
-						break;
+				OUTER: while (true) {
+					nextChar();//尝试找到{,以确定是否为"var ioc ={"格式
+					switch (cursor) {
+					case '{':
+					//case '['://还真有人这样写
+						break OUTER;
+					}
 				}
 			}
 			return parseFromHere();
@@ -115,12 +119,14 @@ public class JsonCompile {
 				hex[i] = (char) nextChar();
 			sb.append((char)Integer.valueOf(new String(hex), 16).intValue());
 			break;
-		case 'b':
-			throw makeError("don't support \\b");
+		case 'b': //这个支持一下又何妨?
+			sb.append(' ');//空格
+			break;
 		case 'f':
-			throw makeError("don't support \\f");
+			sb.append('\f');//这个支持一下又何妨?
+			break;
 		default:
-			throw unexpectedChar();	
+			throw unexpectedChar();	//1.b.37及之前的版本,会忽略非法的转义字符
 		}
 	}
 	
@@ -325,7 +331,7 @@ public class JsonCompile {
 			switch (cursor) {
 			case ']':
 				return;
-			case ','://看来还有其他key/value
+			case ','://看来还有元素
 				nextChar();
 				skipCommentsAndBlank();
 				continue;
