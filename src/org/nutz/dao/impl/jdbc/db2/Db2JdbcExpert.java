@@ -34,8 +34,8 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 												+ "T.* FROM ("));
 			// 之后插入
 			pojo.append(Pojos.Items.wrapf(	") T) AS A WHERE ROWNUM BETWEEN %d AND %d",
-											pager.getOffset(),
-											pager.getOffset() + pager.getPageSize() - 1));
+											pager.getOffset() + 1,
+											pager.getOffset() + pager.getPageSize() ));
 		}
 	}
 
