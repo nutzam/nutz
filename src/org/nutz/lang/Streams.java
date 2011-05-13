@@ -94,10 +94,27 @@ public abstract class Streams {
 	 * @throws IOException
 	 */
 	public static void write(OutputStream ops, InputStream ins) throws IOException {
+		write(ops, ins, BUF_SIZE);
+	}
+
+	/**
+	 * 将输出流写入一个输出流。
+	 * <p>
+	 * <b style=color:red>注意</b>，它并不会关闭输入/出流
+	 * 
+	 * @param ops
+	 *            输出流
+	 * @param ins
+	 *            输入流
+	 * @param 缓冲块大小
+	 * 
+	 * @throws IOException
+	 */
+	public static void write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
 		if (null == ops || null == ins)
 			return;
 
-		byte[] buf = new byte[BUF_SIZE];
+		byte[] buf = new byte[bufferSize];
 		int len;
 		while (-1 != (len = ins.read(buf))) {
 			ops.write(buf, 0, len);
@@ -368,9 +385,11 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 根据一个文件路径建立一个 UTF-8文本输入流
-	 * <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b><p/>
-	 * <b>警告!! 如果存在BOM头,则自动跳过</b><p/>
+	 * 根据一个文件路径建立一个 UTF-8文本输入流 <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b>
+	 * <p/>
+	 * <b>警告!! 如果存在BOM头,则自动跳过</b>
+	 * <p/>
+	 * 
 	 * @param path
 	 *            文件路径
 	 * @return 文本输入流
@@ -380,9 +399,11 @@ public abstract class Streams {
 	}
 
 	/**
-	 * 根据一个文件路径建立一个 UTF-8 文本输入流
-	 * <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b><p/>
-	 * <b>警告!! 如果存在BOM头,则自动跳过</b><p/>
+	 * 根据一个文件路径建立一个 UTF-8 文本输入流 <b>警告!! 本方法会预先读取3个字节以判断该文件是否存在BOM头</b>
+	 * <p/>
+	 * <b>警告!! 如果存在BOM头,则自动跳过</b>
+	 * <p/>
+	 * 
 	 * @param file
 	 *            文件
 	 * @return 文本输入流
@@ -390,26 +411,27 @@ public abstract class Streams {
 	public static Reader fileInr(File file) {
 		return utf8r(fileIn(file));
 	}
-	
-	private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF,(byte) 0xBB,(byte) 0xBF};
-	
+
+	private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
+
 	/**
 	 * 判断并移除UTF-8的BOM头
 	 */
 	public static InputStream utf8filte(InputStream in) {
 		try {
-			if(in.available() == -1)
+			if (in.available() == -1)
 				return in;
-			PushbackInputStream pis = new PushbackInputStream(in,3);
+			PushbackInputStream pis = new PushbackInputStream(in, 3);
 			byte[] header = new byte[3];
-			int len = pis.read(header,0,3);
-			if(len < 1)
+			int len = pis.read(header, 0, 3);
+			if (len < 1)
 				return in;
-			if(header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
-				pis.unread(header,0,len);
+			if (header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
+				pis.unread(header, 0, len);
 			}
 			return pis;
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -462,11 +484,11 @@ public abstract class Streams {
 	public static Writer fileOutw(File file) {
 		return utf8w(fileOut(file));
 	}
-	
+
 	public static Reader utf8r(InputStream is) {
 		return new InputStreamReader(utf8filte(is), Encoding.CHARSET_UTF8);
 	}
-	
+
 	public static Writer utf8w(OutputStream os) {
 		return new OutputStreamWriter(os, Encoding.CHARSET_UTF8);
 	}

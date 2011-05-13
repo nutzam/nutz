@@ -21,6 +21,31 @@ public class QueryTest extends DaoCase {
 	}
 
 	@Test
+	public void query_by_int_range() {
+		int maxId = dao.getMaxId(Pet.class);
+		List<Pet> pets = dao.query(	Pet.class,
+									Cnd.where("id", "IN", new int[]{maxId, maxId - 1}),
+									null);
+		assertEquals(2, pets.size());
+	}
+
+	@Test
+	public void clear_by_int_range() {
+		int maxId = dao.getMaxId(Pet.class);
+		int num = dao.clear(Pet.class, Cnd.where("id", "IN", new int[]{maxId, maxId - 1}));
+		assertEquals(2, num);
+	}
+
+	@Test
+	public void query_by_long_range() {
+		int maxId = dao.getMaxId(Pet.class);
+		List<Pet> pets = dao.query(	Pet.class,
+									Cnd.where("id", "IN", new long[]{maxId, maxId - 1}),
+									null);
+		assertEquals(2, pets.size());
+	}
+
+	@Test
 	public void query_by_special_char() {
 		dao.update(dao.fetch(Pet.class).setName("a@b"));
 		List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a@b"), null);
