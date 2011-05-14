@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -398,7 +399,7 @@ public class Mirror<T> {
 	 */
 	public Field[] getFields() {
 		Class<?> cc = klass;
-		Map<String, Field> map = new HashMap<String, Field>();
+		Map<String, Field> map = new LinkedHashMap<String, Field>();
 		while (null != cc && cc != Object.class) {
 			Field[] fs = cc.getDeclaredFields();
 			for (int i = 0; i < fs.length; i++) {
@@ -456,7 +457,7 @@ public class Mirror<T> {
 	 */
 	public Method[] getAllDeclaredMethods(Class<?> top) {
 		Class<?> cc = klass;
-		Map<String, Method> map = new HashMap<String, Method>();
+		Map<String, Method> map = new LinkedHashMap<String, Method>();
 		while (null != cc && cc != Object.class) {
 			Method[] fs = cc.getDeclaredMethods();
 			for (int i = 0; i < fs.length; i++) {
@@ -1441,18 +1442,8 @@ public class Mirror<T> {
 		return TypeMapping2.get(klass);
 	}
 
-	// private static final Map<Class<?>, Class<?>> TypeMapping = new
-	// HashMap<Class<?>, Class<?>>();
 	private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
 	static {
-		// TypeMapping.put(short.class, Short.class);
-		// TypeMapping.put(int.class, Integer.class);
-		// TypeMapping.put(long.class, Long.class);
-		// TypeMapping.put(double.class, Double.class);
-		// TypeMapping.put(float.class, Float.class);
-		// TypeMapping.put(byte.class, Byte.class);
-		// TypeMapping.put(char.class, Character.class);
-		// TypeMapping.put(boolean.class, Boolean.class);
 
 		TypeMapping2.put(Short.class, short.class);
 		TypeMapping2.put(Integer.class, int.class);
