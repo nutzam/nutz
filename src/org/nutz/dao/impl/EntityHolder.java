@@ -156,8 +156,9 @@ public class EntityHolder {
 
 		// 正常的构建一个 Entity
 		Object first = Lang.first(obj);
+		// 对象为空，不能构建实体
 		if (first == null)
-			throw Lang.makeThrow("Can not evaluate entity for empty object");
+			return null;
 
 		return getEntity(first.getClass());
 	}

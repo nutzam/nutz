@@ -291,8 +291,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		// Name 字段
 		if (null != info.annName) {
 			ef.setAsName();
-			if (info.annName.casesensitive())
-				ef.setAsCasesensitive();
+			ef.setCasesensitive(info.annName.casesensitive());
 		}
 
 		// 检查 @Id 和 @Name 的冲突

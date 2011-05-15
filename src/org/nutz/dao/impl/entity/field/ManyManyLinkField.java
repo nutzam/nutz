@@ -70,16 +70,17 @@ public class ManyManyLinkField extends AbstractLinkField implements LinkField {
 				hostField = host.getIdField();
 				linkedField = ta.getNameField();
 			}
-			// 都有 Name
-			else if (null != host.getNameField() && null != ta.getNameField()) {
-				hostField = host.getNameField();
-				linkedField = ta.getNameField();
-			}
 			// 宿主Name 链 ID
 			else if (null != host.getNameField() && null != ta.getIdField()) {
 				hostField = host.getNameField();
 				linkedField = ta.getIdField();
 			}
+			// 都有 Name
+			else if (null != host.getNameField() && null != ta.getNameField()) {
+				hostField = host.getNameField();
+				linkedField = ta.getNameField();
+			}
+
 		}
 		// 最后再检查一下 ...
 		if (null == hostField || null == linkedField) {

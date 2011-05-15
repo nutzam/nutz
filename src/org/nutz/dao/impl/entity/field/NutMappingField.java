@@ -171,8 +171,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.unsigned = true;
 	}
 
-	public void setAsCasesensitive() {
-		this.casesensitive = true;
+	public void setCasesensitive(boolean casesensitive) {
+		this.casesensitive = casesensitive;
 	}
 
 	public void setAsAutoIncreasement() {

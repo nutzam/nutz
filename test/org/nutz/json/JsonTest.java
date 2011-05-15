@@ -504,7 +504,7 @@ public class JsonTest {
 		a.list2 = new ArrayList<String>();
 		a.list2.add("aaa");
 		String json = Json.toJson(a, JsonFormat.compact().setQuoteName(false));
-		String exp = "{list2:[\"aaa\"],list1:[\"aaa\"]}";
+		String exp = "{list1:[\"aaa\"],list2:[\"aaa\"]}";
 		assertEquals(exp, json);
 	}
 
