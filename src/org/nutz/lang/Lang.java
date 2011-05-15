@@ -1580,10 +1580,8 @@ public abstract class Lang {
 	public static boolean isJDK6() {
 		InputStream is = null;
 		try {
-			String classFileName = Lang.class.getName().replace('.', '/') + ".class";
-			is = Lang.class.getResourceAsStream(classFileName);
-			if (is == null)
-				is = Lang.class.getResourceAsStream("/" + classFileName);
+			String classFileName = "/" + Lang.class.getName().replace('.', '/') + ".class";
+			is = Lang.class.getClassLoader().getResourceAsStream(classFileName);
 			if (is != null && is.available() > 8) {
 				is.skip(7);
 				return is.read() > 49;

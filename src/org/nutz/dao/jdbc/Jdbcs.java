@@ -50,7 +50,7 @@ public abstract class Jdbcs {
 		File f = Files.findFile("nutz_jdbc_experts.js");//TODO 不可配置??
 		// 如果没有则使用默认的映射文件
 		if (null == f) {
-			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
+			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("/org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
 		} else
 			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("nutz_jdbc_experts.js")).init();
 		try {

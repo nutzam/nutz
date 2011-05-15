@@ -2,6 +2,7 @@ package org.nutz.mvc;
 
 import java.io.IOException;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -22,9 +23,8 @@ public class NutServlet extends HttpServlet {
 	private ActionHandler handler;
 
 	@Override
-	public void init() throws ServletException {
-		NutConfig config = new ServletNutConfig(getServletConfig());
-		handler = new ActionHandler(config);
+	public void init(ServletConfig servletConfig) throws ServletException {
+		handler = new ActionHandler(new ServletNutConfig(servletConfig));
 	}
 
 	public void destroy() {

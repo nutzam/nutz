@@ -217,8 +217,5 @@ public class BufferRing {
 	public void close() {
 		Streams.safeClose(ins);
 	}
-	
-	public static void main(String[] args) throws Throwable{
-		Thread.class.getResourceAsStream("").read();
-	}
+
 }
