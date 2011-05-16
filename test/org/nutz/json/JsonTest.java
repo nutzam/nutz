@@ -19,6 +19,7 @@ import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
+import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Lang;
@@ -618,11 +619,12 @@ public class JsonTest {
 	
 	@Test(timeout=5000,expected=Throwable.class)
 	public void test_bad_json() {
-		Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}]");
+//		Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}]");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:'wendal'}}");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name'wendal'}]}");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh', {name:'wendal'}]}");
 		//Json.fromJson(LinkedHashMap.class, "{persons: [{name:'zzh'}, {name:wendal'}]}");
+		Json.fromJson(LinkedHashMap.class, "{persons: [123,,,,,]}");
 	}
 	
 	@Test
@@ -630,5 +632,13 @@ public class JsonTest {
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("charX", 'c');
 		assertEquals("{\"charX\":\"c\"}", Json.toJson(map, JsonFormat.compact()));
+	}
+	
+	@Test //For issue 474
+	public void test_inner_class() {
+		JC c = new JC();
+		String str = Json.toJson(c);
+		Map<String, Map<String,Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(str);
+		assertEquals(1, map.get("ixx").get("abc"));
 	}
 }
