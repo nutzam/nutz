@@ -173,7 +173,7 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public int update(Class<?> classOfT, Chain chain, Condition cnd) {
 		Entity<?> en = holder.getEntity(classOfT);
-		return update(en.getTableName(), chain, cnd);
+		return update(en.getTableName(), chain.updateBy(en), cnd);
 	}
 
 	public <T> T updateWith(T obj, String regex) {
