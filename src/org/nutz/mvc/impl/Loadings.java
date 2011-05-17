@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -35,6 +37,7 @@ import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
+import org.nutz.mvc.annotation.PathMap;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
@@ -45,6 +48,7 @@ public abstract class Loadings {
 		evalEncoding(ai, type.getAnnotation(Encoding.class));
 		evalHttpAdaptor(ai, type.getAnnotation(AdaptBy.class));
 		evalActionFilters(ai, type.getAnnotation(Filters.class));
+		evalPathMap(ai, type.getAnnotation(PathMap.class));
 		evalOk(ai, type.getAnnotation(Ok.class));
 		evalFail(ai, type.getAnnotation(Fail.class));
 		evalAt(ai, type.getAnnotation(At.class), type.getSimpleName());
@@ -139,17 +143,34 @@ public abstract class Loadings {
 				ai.setPathKey(at.key());
 		}
 	}
-
-	private static void evalFail(ActionInfo ai, Fail fail) {
-		if (null != fail) {
-			ai.setFailView(fail.value());
+	
+	private static Map<String, String> path = null;
+	@SuppressWarnings("unchecked")
+	private static void evalPathMap(ActionInfo ai, PathMap pathMap){
+		if(pathMap != null){
+			path = Json.fromJson(Map.class, pathMap.value());
 		}
 	}
 
-	private static void evalOk(ActionInfo ai, Ok ok) {
-		if (null != ok) {
-			ai.setOkView(ok.value());
+	private static void evalFail(ActionInfo ai, Fail fail) {
+		if (null == fail) {
+			return;
 		}
+		ai.setFailView(parsePath(fail.key(), fail.value()));
+	}
+
+	private static void evalOk(ActionInfo ai, Ok ok) {
+		if (null == ok) {
+			return;
+		}
+		ai.setFailView(parsePath(ok.key(), ok.value()));
+	}
+	
+	private static String parsePath(String key, String value){
+		if(path == null || key == null || key.equals("")){
+			return value;
+		}
+		return value + path.get(key);
 	}
 
 	private static void evalModule(ActionInfo ai, Class<?> type) {
