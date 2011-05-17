@@ -89,7 +89,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public <T> T insert(final T obj) {
-		final EntityOperator opt = __opt(Lang.first(obj));
+		final EntityOperator opt = _optBy(Lang.first(obj));
 		Lang.each(obj, new Each<Object>() {
 			public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
 				opt.addInsert(opt.entity, ele);
@@ -100,24 +100,26 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public void insert(String tableName, Chain chain) {
-		EntityOperator opt = __opt(chain.toEntityMap(tableName));
+		EntityOperator opt = _optBy(chain.toEntityMap(tableName));
 		opt.addInsert();
 		opt.exec();
 	}
 
 	public void insert(Class<?> classOfT, Chain chain) {
-		insert(chain.toObject(classOfT));//TODO 这样的效率,未免太低了,需要改进
+		insert(chain.toObject(classOfT));// TODO 这样的效率,未免太低了,需要改进
 	}
 
 	public <T> T fastInsert(T obj) {
-		EntityOperator opt = __opt(obj);
+		EntityOperator opt = _optBy(obj);
 		opt.addInsertSelfOnly();
 		opt.exec();
 		return obj;
 	}
 
-	public <T> T insertWith(T obj, String regex) {//TODO 天啊,每个调用都有4个正则表达式,能快起来不?
-		EntityOperator opt = __opt(obj);
+	public <T> T insertWith(T obj, String regex) {
+		// TODO 天啊,每个调用都有4个正则表达式,能快起来不?
+		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
+		EntityOperator opt = _optBy(obj);
 
 		opt.entity.visitOne(obj, regex, doInsert(opt));
 		opt.addInsert();
@@ -129,8 +131,10 @@ public class NutDao extends DaoSupport implements Dao {
 		return obj;
 	}
 
-	public <T> T insertLinks(T obj, String regex) {//TODO 天啊,每个调用都有4个正则表达式,能快起来不?
-		EntityOperator opt = __opt(obj);
+	public <T> T insertLinks(T obj, String regex) {
+		// TODO 天啊,每个调用都有4个正则表达式,能快起来不?
+		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
+		EntityOperator opt = _optBy(obj);
 
 		opt.entity.visitOne(obj, regex, doInsert(opt));
 		opt.entity.visitMany(obj, regex, doInsert(opt));
@@ -142,7 +146,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public <T> T insertRelation(T obj, String regex) {
-		EntityOperator opt = __opt(obj);
+		EntityOperator opt = _optBy(obj);
 
 		opt.entity.visitManyMany(obj, regex, doInsertRelation(opt));
 		opt.exec();
@@ -151,33 +155,35 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int update(Object obj) {
-		EntityOperator opt = __opt(obj);
+		EntityOperator opt = _optBy(obj);
 		opt.addUpdate();
 		opt.exec();
 		return opt.getUpdateCount();
 	}
 
 	public int updateIgnoreNull(final Object obj) {
-		EntityOperator opt = __opt(obj);
+		EntityOperator opt = _optBy(obj);
 		opt.addUpdateForIgnoreNull(opt.entity, obj, FieldFilter.get(opt.entity.getType()));
 		opt.exec();
 		return opt.getUpdateCount();
 	}
 
 	public int update(String tableName, Chain chain, Condition cnd) {
-		EntityOperator opt = __opt(chain.toEntityMap(tableName));
+		EntityOperator opt = _optBy(chain.toEntityMap(tableName));
 		opt.addUpdate(cnd);
 		opt.exec();
 		return opt.getUpdateCount();
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition cnd) {
-		Entity<?> en = holder.getEntity(classOfT);
-		return update(en.getTableName(), chain.updateBy(en), cnd);
+		EntityOperator opt = _opt(classOfT);
+		opt.addUpdate(chain, cnd);
+		opt.exec();
+		return opt.getUpdateCount();
 	}
 
 	public <T> T updateWith(T obj, String regex) {
-		EntityOperator opt = this.__opt(obj);
+		EntityOperator opt = this._optBy(obj);
 
 		opt.entity.visitOne(obj, regex, doUpdate(opt));
 		opt.addUpdate();
@@ -190,7 +196,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public <T> T updateLinks(T obj, String regex) {
-		EntityOperator opt = this.__opt(obj);
+		EntityOperator opt = this._optBy(obj);
 
 		opt.entity.visitOne(obj, regex, doUpdate(opt));
 		opt.entity.visitMany(obj, regex, doUpdate(opt));
@@ -235,14 +241,16 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int delete(Object obj) {
-		EntityOperator opt = __opt(obj);
+		EntityOperator opt = _optBy(obj);
 		opt.addDeleteSelfOnly();
 		opt.exec();
 		return opt.getUpdateCount();
 	}
 
-	public int deleteWith(Object obj, String regex) {//TODO 天啊,又有4个正则表达式,能快起来不?
-		EntityOperator opt = this.__opt(obj);
+	public int deleteWith(Object obj, String regex) {
+		// TODO 天啊,又有4个正则表达式,能快起来不?
+		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
+		EntityOperator opt = this._optBy(obj);
 
 		opt.entity.visitMany(obj, regex, doDelete(opt));
 		opt.entity.visitManyMany(obj, regex, doClearRelationByLinkedField(opt));
@@ -253,8 +261,10 @@ public class NutDao extends DaoSupport implements Dao {
 		return opt.exec().getUpdateCount();
 	}
 
-	public int deleteLinks(Object obj, String regex) {//TODO 天啊,又有4个正则表达式,能快起来不?
-		EntityOperator opt = this.__opt(obj);
+	public int deleteLinks(Object obj, String regex) {
+		// TODO 天啊,又有4个正则表达式,能快起来不?
+		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
+		EntityOperator opt = this._optBy(obj);
 
 		opt.entity.visitMany(obj, regex, doDelete(opt));
 		opt.entity.visitManyMany(obj, regex, doClearRelationByLinkedField(opt));
@@ -351,7 +361,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public <T> T fetchLinks(T obj, String regex) {
-		EntityOperator opt = this.__opt(obj);
+		EntityOperator opt = this._optBy(obj);
 		opt.entity.visitMany(obj, regex, doFetch(opt));
 		opt.entity.visitManyMany(obj, regex, doFetch(opt));
 		opt.entity.visitOne(obj, regex, doFetch(opt));
@@ -380,7 +390,7 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public <T> T clearLinks(T obj, String regex) {
-		EntityOperator opt = this.__opt(obj);
+		EntityOperator opt = this._optBy(obj);
 
 		opt.entity.visitMany(obj, regex, doClear(opt));
 		opt.entity.visitManyMany(obj, regex, doClearRelationByHostField(opt));
@@ -592,7 +602,7 @@ public class NutDao extends DaoSupport implements Dao {
 		return _opt(holder.getEntity(classOfT));
 	}
 
-	EntityOperator __opt(Object obj) {
+	EntityOperator _optBy(Object obj) {
 		EntityOperator re = _opt(holder.getEntityBy(obj));
 		re.myObj = obj.getClass().isArray() ? Lang.array2list((Object[]) obj) : obj;
 		return re;

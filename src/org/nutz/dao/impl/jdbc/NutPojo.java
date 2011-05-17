@@ -178,8 +178,10 @@ public class NutPojo extends NutStatement implements Pojo {
 	public Pojo append(PItem... itemAry) {
 		if (null != itemAry)
 			for (PItem item : itemAry) {
-				items.add(item);
-				item.setPojo(this);
+				if (null != item) {
+					items.add(item);
+					item.setPojo(this);
+				}
 			}
 		return this;
 	}

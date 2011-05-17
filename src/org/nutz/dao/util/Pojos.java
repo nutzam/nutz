@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
@@ -23,6 +24,7 @@ import org.nutz.dao.impl.sql.pojo.InsertFieldsPItem;
 import org.nutz.dao.impl.sql.pojo.InsertValuesPItem;
 import org.nutz.dao.impl.sql.pojo.SqlTypePItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
+import org.nutz.dao.impl.sql.pojo.UpdateFieldsByChainPItem;
 import org.nutz.dao.impl.sql.pojo.UpdateFieldsPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -70,6 +72,10 @@ public abstract class Pojos {
 
 		public static PItem updateFields(Object refer) {
 			return new UpdateFieldsPItem(refer);
+		}
+
+		public static PItem updateFieldsBy(Chain chain) {
+			return new UpdateFieldsByChainPItem(chain);
 		}
 
 		public static PItem queryEntityFields() {
@@ -132,9 +138,12 @@ public abstract class Pojos {
 		public static PItem[] cnd(Condition cnd) {
 			List<PItem> list = new LinkedList<PItem>();
 			if (null == cnd) {}
-			if (cnd instanceof Criteria) {
+			// 高级条件
+			else if (cnd instanceof Criteria) {
 				list.add((Criteria) cnd);
-			} else {
+			}
+			// 普通条件
+			else {
 				list.add(new ConditionPItem(cnd));
 			}
 			return list.toArray(new PItem[list.size()]);

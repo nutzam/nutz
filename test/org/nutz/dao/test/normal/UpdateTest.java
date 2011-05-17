@@ -8,6 +8,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Fighter;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.lang.Lang;
 
@@ -20,6 +21,18 @@ public class UpdateTest extends DaoCase {
 
 	@Override
 	protected void after() {}
+
+	@Test
+	public void test_update_chain_and_cnd() {
+		dao.create(Pet.class, true);
+		Pet pet = Pet.create("xb");
+		pet.setNickName("XB");
+		dao.insert(pet);
+
+		dao.update(Pet.class, Chain.make("name", "xiaobai"), Cnd.where("nickName", "=", "XB"));
+		pet = dao.fetch(Pet.class, "xiaobai");
+		assertEquals("XB", pet.getNickName());
+	}
 
 	@Test
 	public void batch_update_all() {
@@ -69,15 +82,15 @@ public class UpdateTest extends DaoCase {
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
 		dao.update(p);
-		
+
 		p = dao.fetch(Platoon.class, "sF");
 		String name = p.getLeaderName(); // xyz
 		assertNotNull(name);
-		
+
 		p.setLeaderName(null);
 		int re = dao.updateIgnoreNull(p);
 		assertEquals(1, re);
-		
+
 		p = dao.fetch(Platoon.class, "sF");
 		assertEquals(name, p.getLeaderName());
 
@@ -92,15 +105,15 @@ public class UpdateTest extends DaoCase {
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
 		dao.update(p);
-		
+
 		p = dao.fetch(Platoon.class, "sF");
 		String name = p.getLeaderName(); // xyz
 		assertNotNull(name);
-		
+
 		p.setLeaderName(null);
 		int re = dao.updateIgnoreNull(Lang.list(p));
 		assertEquals(1, re);
-		
+
 		p = dao.fetch(Platoon.class, "sF");
 		assertEquals(name, p.getLeaderName());
 
