@@ -12,6 +12,11 @@ public class Pager implements PageInfo{
 	private int pageCount;
 	private int recordCount;
 
+	public Pager(){
+		pageNumber = FIRST_PAGE_NUMBER;
+		pageSize = DEFAULT_PAGE_SIZE;
+	}
+	
 	public Pager resetPageCount() {
 		pageCount = -1;
 		return this;
