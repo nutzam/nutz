@@ -58,9 +58,7 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		try {
 			this.setValue(obj, adaptor.get(rs, columnName));
 		}
-		catch (SQLException e) {
-			throw Lang.wrapThrow(e);
-		}
+		catch (SQLException e) {}
 	}
 
 	public String getColumnName() {
