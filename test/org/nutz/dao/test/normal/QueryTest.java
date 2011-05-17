@@ -2,7 +2,9 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.Cnd;
@@ -18,6 +20,25 @@ public class QueryTest extends DaoCase {
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));
+	}
+
+	@Test
+	public void query_by_map_idkeyset() {
+		List<Pet> pets = dao.query(Pet.class, null, null);
+		Map<Integer, Pet> map = new HashMap<Integer, Pet>();
+		map.put(pets.get(2).getId(), null);
+		map.put(pets.get(4).getId(), null);
+		pets = dao.query(Pet.class, Cnd.where("id", "in", map.keySet()), null);
+		assertEquals(2, pets.size());
+	}
+	
+	@Test
+	public void query_by_map_namekeyset() {
+		Map<String, Pet> map = new HashMap<String, Pet>();
+		map.put("pet3", null);
+		map.put("pet5", null);
+		List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "in", map.keySet()), null);
+		assertEquals(2, pets.size());
 	}
 
 	@Test
