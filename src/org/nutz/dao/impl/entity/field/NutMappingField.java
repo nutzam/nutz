@@ -1,6 +1,7 @@
 package org.nutz.dao.impl.entity.field;
 
 import java.sql.ResultSet;
+
 import java.sql.SQLException;
 
 import org.nutz.dao.entity.Entity;
@@ -8,7 +9,6 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.entity.EntityObjectContext;
 import org.nutz.dao.jdbc.ValueAdaptor;
-import org.nutz.lang.Lang;
 import org.nutz.lang.segment.Segment;
 
 public class NutMappingField extends AbstractEntityField implements MappingField {
