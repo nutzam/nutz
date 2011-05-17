@@ -163,7 +163,7 @@ public abstract class Loadings {
 		if (null == ok) {
 			return;
 		}
-		ai.setFailView(parsePath(ok.key(), ok.value()));
+		ai.setOkView(parsePath(ok.key(), ok.value()));
 	}
 	
 	private static String parsePath(String key, String value){
