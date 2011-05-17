@@ -17,6 +17,8 @@
 
 	<property name="JDK_VERSION" value="1.6" />
 
+	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
+
 	<property name="v" value="-1.b.38" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
@@ -43,11 +45,14 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
-			source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="UTF-8" listfiles="on">  
-			<compilerarg value="-Xlint:all" /> 
+		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="UTF-8" listfiles="on">
+			<compilerarg value="-Xlint:all" />
 			<classpath refid="CLASSPATH" />
 		</javac>
+		<copyfile src="${SRC}/${JDBC_EXPERT}" dest="${TMP}/${JDBC_EXPERT}" />
+		<copy todir="${TMP}">
+			<fileset dir="${SRC}" excludes="**/*.java" />
+		</copy>
 	</target>
 
 	<target name="jar" depends="compile">
