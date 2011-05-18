@@ -41,9 +41,10 @@ import org.nutz.mvc.annotation.PathMap;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
+
 	private static final Log log = Logs.get();
 
-	static ActionInfo createInfo(Class<?> type) {
+	public static ActionInfo createInfo(Class<?> type) {
 		ActionInfo ai = new ActionInfo();
 		evalEncoding(ai, type.getAnnotation(Encoding.class));
 		evalHttpAdaptor(ai, type.getAnnotation(AdaptBy.class));
@@ -57,7 +58,7 @@ public abstract class Loadings {
 		return ai;
 	}
 
-	static ActionInfo createInfo(Method method) {
+	public static ActionInfo createInfo(Method method) {
 		ActionInfo ai = new ActionInfo();
 		evalEncoding(ai, method.getAnnotation(Encoding.class));
 		evalHttpAdaptor(ai, method.getAnnotation(AdaptBy.class));
@@ -71,7 +72,7 @@ public abstract class Loadings {
 		return ai;
 	}
 
-	static Set<Class<?>> scanModules(Class<?> mainModule) {
+	public static Set<Class<?>> scanModules(Class<?> mainModule) {
 		Modules ann = mainModule.getAnnotation(Modules.class);
 		boolean scan = null == ann ? false : ann.scanPackage();
 		// 准备扫描列表
@@ -115,7 +116,7 @@ public abstract class Loadings {
 		return modules;
 	}
 
-	private static void evalHttpMethod(ActionInfo ai, Method method) {
+	public static void evalHttpMethod(ActionInfo ai, Method method) {
 		if (method.getAnnotation(GET.class) != null)
 			ai.getHttpMethods().add("GET");
 		if (method.getAnnotation(POST.class) != null)
@@ -126,13 +127,13 @@ public abstract class Loadings {
 			ai.getHttpMethods().add("DELETE");
 	}
 
-	private static void evalActionChainMaker(ActionInfo ai, Chain cb) {
+	public static void evalActionChainMaker(ActionInfo ai, Chain cb) {
 		if (null != cb) {
 			ai.setChainName(cb.value());
 		}
 	}
 
-	private static void evalAt(ActionInfo ai, At at, String def) {
+	public static void evalAt(ActionInfo ai, At at, String def) {
 		if (null != at) {
 			if (null == at.value() || at.value().length == 0) {
 				ai.setPaths(Lang.array("/" + def.toLowerCase()));
@@ -152,14 +153,14 @@ public abstract class Loadings {
 		}
 	}
 
-	private static void evalFail(ActionInfo ai, Fail fail) {
+	public static void evalFail(ActionInfo ai, Fail fail) {
 		if (null == fail) {
 			return;
 		}
 		ai.setFailView(parsePath(fail.key(), fail.value()));
 	}
 
-	private static void evalOk(ActionInfo ai, Ok ok) {
+	public static void evalOk(ActionInfo ai, Ok ok) {
 		if (null == ok) {
 			return;
 		}
@@ -173,13 +174,13 @@ public abstract class Loadings {
 		return value + path.get(key);
 	}
 
-	private static void evalModule(ActionInfo ai, Class<?> type) {
+	public static void evalModule(ActionInfo ai, Class<?> type) {
 		ai.setModuleType(type);
 		String beanName = null;
-		//按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字  Modify By QinerG@gmai.com
+		// 按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字 Modify By QinerG@gmai.com
 		InjectName innm = type.getAnnotation(InjectName.class);
 		IocBean iocBean = type.getAnnotation(IocBean.class);
-		if(innm == null && iocBean == null) //TODO 再考虑考虑
+		if (innm == null && iocBean == null) // TODO 再考虑考虑
 			return;
 		if (iocBean != null) {
 			beanName = iocBean.name();
@@ -195,7 +196,7 @@ public abstract class Loadings {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static void evalActionFilters(ActionInfo ai, Filters filters) {
+	public static void evalActionFilters(ActionInfo ai, Filters filters) {
 		if (null != filters) {
 			List<ObjectInfo<? extends ActionFilter>> list = new ArrayList<ObjectInfo<? extends ActionFilter>>(filters.value().length);
 			for (By by : filters.value()) {
@@ -206,14 +207,14 @@ public abstract class Loadings {
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static void evalHttpAdaptor(ActionInfo ai, AdaptBy ab) {
+	public static void evalHttpAdaptor(ActionInfo ai, AdaptBy ab) {
 		if (null != ab) {
 			ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(	ab.type(),
 																					ab.args()));
 		}
 	}
 
-	private static void evalEncoding(ActionInfo ai, Encoding encoding) {
+	public static void evalEncoding(ActionInfo ai, Encoding encoding) {
 		if (null == encoding) {
 			ai.setInputEncoding(org.nutz.lang.Encoding.UTF8);
 			ai.setOutputEncoding(org.nutz.lang.Encoding.UTF8);
@@ -238,7 +239,7 @@ public abstract class Loadings {
 		return Mirror.me(type).born((Object[]) args);
 	}
 
-	private static boolean isModule(Class<?> classZ) {
+	public static boolean isModule(Class<?> classZ) {
 		int classModify = classZ.getModifiers();
 		if (!Modifier.isPublic(classModify)
 			|| Modifier.isAbstract(classModify)
