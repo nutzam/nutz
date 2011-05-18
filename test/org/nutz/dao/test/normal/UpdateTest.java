@@ -23,6 +23,20 @@ public class UpdateTest extends DaoCase {
 	protected void after() {}
 
 	@Test
+	public void test_update_chain_and_cnd_by_in() {
+		dao.create(Pet.class, true);
+		Pet pet = Pet.create("xb");
+		pet.setNickName("XB");
+		dao.insert(pet);
+
+		dao.update(	Pet.class,
+					Chain.make("name", "xiaobai"),
+					Cnd.where("nickName", "in", Lang.array("XB")));
+		pet = dao.fetch(Pet.class, "xiaobai");
+		assertEquals("XB", pet.getNickName());
+	}
+
+	@Test
 	public void test_update_chain_and_cnd() {
 		dao.create(Pet.class, true);
 		Pet pet = Pet.create("xb");
