@@ -145,35 +145,25 @@ public abstract class Loadings {
 		}
 	}
 	
-	private static Map<String, String> path = null;
 	@SuppressWarnings("unchecked")
 	private static void evalPathMap(ActionInfo ai, PathMap pathMap){
 		if(pathMap != null){
-			path = Json.fromJson(Map.class, pathMap.value());
+			ai.setPathMap(Json.fromJson(Map.class, pathMap.value()));
 		}
 	}
 
 	public static void evalFail(ActionInfo ai, Fail fail) {
-		if (null == fail) {
-			return;
+		if (null != fail) {
+			ai.setFailView(fail.value());
 		}
-		ai.setFailView(parsePath(fail.key(), fail.value()));
 	}
 
 	public static void evalOk(ActionInfo ai, Ok ok) {
-		if (null == ok) {
-			return;
+		if (null != ok) {
+			ai.setOkView(ok.value());
 		}
-		ai.setOkView(parsePath(ok.key(), ok.value()));
 	}
 	
-	private static String parsePath(String key, String value){
-		if(path == null || key == null || key.equals("")){
-			return value;
-		}
-		return value + path.get(key);
-	}
-
 	public static void evalModule(ActionInfo ai, Class<?> type) {
 		ai.setModuleType(type);
 		String beanName = null;

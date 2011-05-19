@@ -15,7 +15,9 @@ import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.Loading;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
+import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.processor.ViewProcessor;
 
 /**
@@ -91,6 +93,15 @@ public abstract class AbstractPathView implements View {
 			context.set(key, value);//以支持直接获取请求参数
 		}
 		context.set("p", p);
+		
+		//
+		Map<String, String> u = new HashMap<String, String>();
+		AtMap at = Mvcs.getAtMap(req.getSession().getServletContext());
+		for(Object o : at.keys()){
+			String key = (String) o;
+			u.put(key, at.get(key));
+		}
+		context.set("u", u);
 		
 		// 加入返回对象
 		if (null != obj)

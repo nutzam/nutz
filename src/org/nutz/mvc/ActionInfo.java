@@ -3,6 +3,8 @@ package org.nutz.mvc;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 public class ActionInfo {
 
@@ -13,6 +15,8 @@ public class ActionInfo {
 	private String pathKey;
 
 	private String[] paths;
+	
+	private Map<String, String> pathMap;
 
 	private String chainName;
 
@@ -49,6 +53,17 @@ public class ActionInfo {
 				}
 			}
 			paths = myPaths.toArray(new String[myPaths.size()]);
+		}
+		
+		if(null == pathMap){
+			pathMap = parent.pathMap;
+		} else {
+			for(Entry<String, String> en : parent.pathMap.entrySet()){
+				if(pathMap.containsKey(en.getKey())){
+					continue;
+				}
+				pathMap.put(en.getKey(), en.getValue());
+			}
 		}
 
 		// 填充默认值
@@ -116,6 +131,14 @@ public class ActionInfo {
 
 	public void setPaths(String[] paths) {
 		this.paths = paths;
+	}
+	
+	public Map<String, String> getPathMap() {
+		return pathMap;
+	}
+
+	public void setPathMap(Map<String, String> pathMap) {
+		this.pathMap = pathMap;
 	}
 
 	public ObjectInfo<? extends HttpAdaptor> getAdaptorInfo() {

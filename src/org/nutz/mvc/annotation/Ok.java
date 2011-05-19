@@ -12,5 +12,4 @@ import java.lang.annotation.Target;
 public @interface Ok {
 
 	public String value();
-	String key() default "";
 }
