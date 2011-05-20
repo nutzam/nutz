@@ -1,8 +1,6 @@
 package org.nutz.dao.util.blob;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
@@ -31,12 +29,7 @@ public class SimpleClob implements Clob {
 	}
 
 	public Reader getCharacterStream() throws SQLException {
-		try {
-			return new FileReader(file);
-		}
-		catch (FileNotFoundException e) {
-			throw Lang.wrapThrow(e);
-		}
+		return Streams.fileInr(file);
 	}
 
 	public InputStream getAsciiStream() throws SQLException {

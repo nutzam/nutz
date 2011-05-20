@@ -1,16 +1,13 @@
 package org.nutz.mvc.testapp.classes.action.views;
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.nutz.ioc.loader.annotation.IocBean;
-
 import org.nutz.ioc.annotation.InjectName;
+import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
-import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
@@ -85,13 +82,13 @@ public class ViewTestModule {
 	@At("/raw2")
 	@Ok("raw")
 	public InputStream raw2() throws Throwable{
-		return Streams.fileIn(Files.findFile("哈哈/abc.txt"));
+		return Streams.fileIn("哈哈/abc.txt");
 	}
 	
 	@At("/raw3")
 	@Ok("raw")
 	public Reader raw3() throws Throwable{
-		return new FileReader(Files.findFile("哈哈/abc.txt"));
+		return Streams.fileInr("哈哈/abc.txt");
 	}
 	
 	@At("/raw4")
