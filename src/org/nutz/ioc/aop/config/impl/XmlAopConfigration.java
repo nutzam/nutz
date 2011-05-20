@@ -7,8 +7,9 @@ import java.util.List;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.resource.NutResource;
+import org.nutz.resource.Scans;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -27,8 +28,9 @@ public class XmlAopConfigration extends AbstractAopConfigration {
 		DocumentBuilder builder = Lang.xmls();
 		Document document;
 		List<AopConfigrationItem> aopList = new ArrayList<AopConfigrationItem>();
-		for (String fileName : fileNames) {
-			document = builder.parse(Files.findFile(fileName));
+		List<NutResource> list = Scans.me().loadResource(null, fileNames);
+		for (NutResource nutResource : list) {
+			document = builder.parse(nutResource.getInputStream());
 			document.normalizeDocument();
 			NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
 			for (int i = 0; i < nodeListZ.getLength(); i++)
