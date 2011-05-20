@@ -503,9 +503,9 @@ public abstract class Streams {
 	 * @return
 	 * @throws IOException
 	 */
-	public static InputStream _input(File file) throws IOException {
+	protected static InputStream _input(File file) throws IOException {
 		if (file.exists())
-			return new BufferedInputStream(new FileInputStream(file));
+			return new FileInputStream(file);
 		if (Scans.isInJar(file)) {
 			NutResource nutResource = Scans.makeJarNutResource(file);
 			if(nutResource != null)
