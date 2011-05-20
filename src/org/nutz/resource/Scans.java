@@ -204,12 +204,20 @@ public class Scans {
 		return list;
 	}
 
-	protected boolean isInJar(File file) {
-		return file.getAbsolutePath().contains(".jar!");
+	public static boolean isInJar(File file) {
+		return isInJar(file.getAbsolutePath());
+	}
+	
+	public static boolean isInJar(String filePath) {
+		return filePath.contains(".jar!");
 	}
 
-	protected NutResource makeJarNutResource(File file) {
-		JarEntryInfo jeInfo = new JarEntryInfo(file.getAbsolutePath());
+	public static NutResource makeJarNutResource(File file) {
+		return makeJarNutResource(file.getAbsolutePath());
+	}
+	
+	public static NutResource makeJarNutResource(String filePath) {
+		JarEntryInfo jeInfo = new JarEntryInfo(filePath);
 		try {
 			JarFile jar = new JarFile(jeInfo.getJarPath());
 			JarEntry entry = jar.getJarEntry(jeInfo.getEntryName());

@@ -97,11 +97,13 @@ public abstract class AbstractPathView implements View {
 		//
 		Map<String, String> u = new HashMap<String, String>();
 		AtMap at = Mvcs.getAtMap(req.getSession().getServletContext());
-		for(Object o : at.keys()){
-			String key = (String) o;
-			u.put(key, at.get(key));
+		if (at != null) {
+			for(Object o : at.keys()){
+				String key = (String) o;
+				u.put(key, at.get(key));
+			}
+			context.set("u", u);
 		}
-		context.set("u", u);
 		
 		// 加入返回对象
 		if (null != obj)

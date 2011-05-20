@@ -2,7 +2,6 @@ package org.nutz.http.sender;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class FilePostSender extends PostSender {
 						outs.writeBytes("Content-Type:   application/octet-stream\r\n\r\n");
 						if(f.length() == 0)
 							continue;
-						InputStream is = new FileInputStream(f);
+						InputStream is = Streams.fileIn(f);
 						byte[] buffer = new byte[is.available()];
 						while (true) {
 							int amountRead = is.read(buffer);

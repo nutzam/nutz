@@ -19,6 +19,9 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.nutz.resource.NutResource;
+import org.nutz.resource.Scans;
+
 /**
  * 提供了一组创建 Reader/Writer/InputStream/OutputStream 的便利函数
  * 
@@ -361,9 +364,9 @@ public abstract class Streams {
 			File f = Files.findFile(path);
 			if (null != f)
 				try {
-					ins = new FileInputStream(f);
+					ins = Streams._input(f);
 				}
-				catch (FileNotFoundException e) {}
+				catch (IOException e) {}
 		}
 		return buff(ins);
 	}
@@ -377,9 +380,9 @@ public abstract class Streams {
 	 */
 	public static InputStream fileIn(File file) {
 		try {
-			return buff(new FileInputStream(file));
+			return buff(Streams._input(file));
 		}
-		catch (FileNotFoundException e) {
+		catch (IOException e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -491,5 +494,23 @@ public abstract class Streams {
 
 	public static Writer utf8w(OutputStream os) {
 		return new OutputStreamWriter(os, Encoding.CHARSET_UTF8);
+	}
+
+	/**
+	 * 获取File对象输入流,即使在Jar文件中一样工作良好!!
+	 * <b>强烈推荐</b>
+	 * @param file
+	 * @return
+	 * @throws IOException
+	 */
+	public static InputStream _input(File file) throws IOException {
+		if (file.exists())
+			return new BufferedInputStream(new FileInputStream(file));
+		if (Scans.isInJar(file)) {
+			NutResource nutResource = Scans.makeJarNutResource(file);
+			if(nutResource != null)
+				return nutResource.getInputStream();
+		}
+		return null;
 	}
 }

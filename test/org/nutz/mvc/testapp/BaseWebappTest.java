@@ -2,7 +2,7 @@ package org.nutz.mvc.testapp;
 
 import static org.junit.Assert.*;
 
-import java.io.File;
+import java.net.URL;
 import java.util.Map;
 
 import org.eclipse.jetty.server.Server;
@@ -14,7 +14,6 @@ import org.nutz.http.Request;
 import org.nutz.http.Request.METHOD;
 import org.nutz.http.Response;
 import org.nutz.http.Sender;
-import org.nutz.lang.Files;
 
 /**
  * 需要Jetty 7.3.1 的jar包
@@ -31,15 +30,17 @@ public abstract class BaseWebappTest {
 	public void startServer() throws Throwable{
 		
 		try {
-			String WEBAPPDIR = "org/nutz/mvc/testapp/ROOT";
-			File root = Files.findFile(WEBAPPDIR);
+			URL url = getClass().getClassLoader().getResource("org/nutz/mvc/testapp/Root/FLAG");
+			String path = url.toExternalForm();
+			System.err.println(url);
 			server = new Server(8888);
-			String warUrlString = root.toURI().toURL().toExternalForm();
+			String warUrlString = path.substring(0,path.length() - 4);
 			server.setHandler(new WebAppContext(warUrlString, getContextPath()));
 			server.start();
 		} catch (Throwable e) {
 			if(server != null)
 				server.stop();
+			throw e;
 		}
 	}
 	

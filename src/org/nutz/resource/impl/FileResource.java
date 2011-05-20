@@ -1,10 +1,10 @@
 package org.nutz.resource.impl;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.nutz.lang.Streams;
 import org.nutz.lang.util.Disks;
 import org.nutz.resource.NutResource;
 
@@ -46,7 +46,7 @@ public class FileResource extends NutResource {
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return new FileInputStream(file);
+		return Streams.fileIn(file);
 	}
 
 }
