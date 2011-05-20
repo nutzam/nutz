@@ -36,7 +36,7 @@ public class WebResourceScan extends AbstractResourceScan {
 		final List<NutResource> list = new ArrayList<NutResource>();
 		// 获取全部jar
 		Set<String> jars = sc.getResourcePaths("/WEB-INF/lib/");
-		if(jars != null) //这个文件夹不一定存在,尤其是Maven的WebApp项目
+		if (jars != null) // 这个文件夹不一定存在,尤其是Maven的WebApp项目
 			for (String path : jars) {
 				if (!path.toLowerCase().endsWith(".jar"))
 					continue;
@@ -52,7 +52,8 @@ public class WebResourceScan extends AbstractResourceScan {
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
-			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);//TODO 如果不含classes,一样找不到!!
+			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);// TODO
+																			// 如果不含classes,一样找不到!!
 			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
 
 			// 那么很好，深层递归一下吧
@@ -63,7 +64,7 @@ public class WebResourceScan extends AbstractResourceScan {
 			for (NutResource nutResource : list2) {
 				String name = nutResource.getName();
 				if (name.indexOf(base) > -1) {
-					String tmpName = name.substring(base.length()+1);
+					String tmpName = name.substring(base.length() + 1);
 					nutResource.setName(tmpName);
 				}
 				list.add(nutResource);
@@ -76,39 +77,36 @@ public class WebResourceScan extends AbstractResourceScan {
 				String base = sc.getRealPath("/WEB-INF/classes/");
 				String path = sc.getRealPath("/WEB-INF/classes/" + src);
 				if (path != null) {
-					List<NutResource> list2 = scanInDir(regex, new File(
-							path), true);
+					List<NutResource> list2 = scanInDir(regex, new File(path), true);
 					for (NutResource nutResource : list2) {
 						String name = nutResource.getName();
 						if (name.indexOf(base) > -1)
-							nutResource.setName(name.substring(base.length()+1));
+							nutResource.setName(name.substring(base.length() + 1));
 						list.add(nutResource);
 					}
 					flag = list.isEmpty();
 				}
-			} catch (Throwable e) {
 			}
+			catch (Throwable e) {}
 		}
 		// 还是空? 查一下classpath变量吧, Fix Issue 411
 		if (flag) {
-			String classpath = System.getProperties().getProperty(
-					"java.class.path");
+			String classpath = System.getProperties().getProperty("java.class.path");
 			if (log.isInfoEnabled())
 				log.info("Try to search in classpath : " + classpath);
-			String[] paths = classpath.split(System.getProperties()
-					.getProperty("path.separator"));
+			String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
 			for (String pathZ : paths) {
 				if (pathZ.endsWith(".jar"))
 					list.addAll(scanInJar(checkSrc(src), regex, pathZ));
 				else
-					list.addAll(scanInDir(regex, new File(pathZ + "/"
-							+ src),true));
+					list.addAll(scanInDir(regex, new File(pathZ + "/" + src), true));
 			}
 			flag = list.isEmpty();
 		}
 		if (flag && log.isInfoEnabled())
-			log.infof("Fail to found '%s' in /WEB-INF/classes of context [%s]",
-					src, sc.getServletContextName());
+			log.infof(	"Fail to found '%s' in /WEB-INF/classes of context [%s]",
+						src,
+						sc.getServletContextName());
 		return list;
 	}
 

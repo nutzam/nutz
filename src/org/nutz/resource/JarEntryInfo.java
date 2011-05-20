@@ -30,7 +30,6 @@ public class JarEntryInfo {
 		int posR = path.indexOf(".jar!") + ".jar!".length();
 		this.jarPath = path.substring(posL, posR - 1);
 		this.entryName = path.substring(posR + 1);
-
 	}
 
 	public JarEntryInfo(String jarPath, String entryName) {

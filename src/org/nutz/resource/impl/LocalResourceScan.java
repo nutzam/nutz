@@ -1,6 +1,8 @@
 package org.nutz.resource.impl;
 
 import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -8,8 +10,6 @@ import java.util.regex.Pattern;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Files;
 import org.nutz.lang.util.Disks;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.resource.JarEntryInfo;
 import org.nutz.resource.NutResource;
 
@@ -33,7 +33,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	private boolean ignoreHidden;
 
-	private static final Log LOG = Logs.get();
+	// private static final Log LOG = Logs.get();
 
 	/**
 	 * 是否忽略隐藏文件
@@ -91,19 +91,19 @@ public class LocalResourceScan extends AbstractResourceScan {
 											jeInfo.getJarPath()));
 				}
 			} else {
-				String classpath = System.getProperties().getProperty("java.class.path");
-				if (LOG.isInfoEnabled())
-					LOG.info("Try to search in classpath : " + classpath);
-				String[] paths = classpath.split(System.getProperties()
-														.getProperty("path.separator"));
-				for (String pathZ : paths) {
-					if (pathZ.endsWith(".jar"))
-						list.addAll(scanInJar(checkSrc(src), regex, pathZ));
-					else
-						list.addAll(scanInDir(	regex,
-//												pathZ,
-												new File(pathZ + "/" + src),
-												ignoreHidden));
+				try {
+					Enumeration<URL> en = getClass().getClassLoader().getResources(src);
+					if (en != null) {
+						while (en.hasMoreElements()) {
+							JarEntryInfo jeInfo = new JarEntryInfo(en.nextElement().getPath());
+							list.addAll(scanInJar(	checkSrc(jeInfo.getEntryName()),
+													regex,
+													jeInfo.getJarPath()));
+						}
+					}
+				}
+				catch (Throwable e) {
+					e.printStackTrace();
 				}
 			}
 		}

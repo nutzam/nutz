@@ -28,7 +28,7 @@ public class FileResource extends NutResource {
 
 	public FileResource(String base, File file) {
 		base = Disks.normalize(Disks.getCanonicalPath(base));
-		if(!base.endsWith("/"))
+		if (!base.endsWith("/"))
 			base += "/";
 		this.name = Disks.normalize(Disks.getCanonicalPath(file.getAbsolutePath()));
 		this.name = this.name.substring(this.name.indexOf(base) + base.length()).replace('\\', '/');

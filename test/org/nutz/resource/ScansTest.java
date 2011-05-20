@@ -119,4 +119,18 @@ public class ScansTest {
 		assertEquals(0, list.size());
 	}
 
+	@Test
+	public void test_class_in_jar() {
+		String testPath = Test.class.getName().replace('.', '/') + ".class";
+		String testFilter = "^Test.class$";
+		List<NutResource> list = Scans.me().scan(testPath, testFilter);
+		assertEquals(1, list.size());
+	}
+	
+	@Test
+	public void test_path_in_jar() {
+		String testPath = Test.class.getPackage().getName().replace('.', '/');
+		List<NutResource> list = Scans.me().scan(testPath, null);
+		assertTrue(list.size() > 10);
+	}
 }

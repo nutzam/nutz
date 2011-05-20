@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 import javax.servlet.ServletContext;
 
@@ -70,9 +72,18 @@ public class Scans {
 	 */
 	public List<NutResource> scan(String src, String regex) {
 		File file = Files.findFile(src);
-		if (file != null && file.isFile()) {
-			src = src.replace('\\', '/');
-			src = src.substring(0, src.lastIndexOf("/") + 1);
+		if (file != null) {
+			if (file.isFile()) {
+				src = src.replace('\\', '/');
+				src = src.substring(0, src.lastIndexOf("/") + 1);
+			} else if (isInJar(file)) {// 需要判断到底是Zip文件中的文件还是文件夹
+				NutResource nutResource = makeJarNutResource(file);
+				if (nutResource != null) {
+					List<NutResource> list = new ArrayList<NutResource>(1);
+					list.add(nutResource);
+					return list;
+				}
+			}
 		}
 		List<NutResource> list = getScaner().list(src, regex);
 		if (LOG.isDebugEnabled())
@@ -139,7 +150,9 @@ public class Scans {
 					continue;
 				}
 				try {
-					String className = packagePath.replace('/', '.') + "." + nr.getName()
+					String className = packagePath.replace('/', '.')
+										+ "."
+										+ nr.getName()
 											.substring(0, r)
 											.replace('/', '.')
 											.replace('\\', '.');
@@ -158,27 +171,28 @@ public class Scans {
 	public List<NutResource> loadResource(String regex, String... paths) {
 		List<NutResource> list = new LinkedList<NutResource>();
 		// 解析路径
-		try {
-			for (String path : paths) {
-				File f = Files.findFile(path);
+		for (String path : paths) {
+			File f = Files.findFile(path);
 
-				// 如果没找到， 或者是个目录 scan 一下
-				if(null==f || f.isDirectory()){
+			// 如果没找到， 或者是个目录 scan 一下
+			if (null == f || f.isDirectory()) {
+				list.addAll(scan(path, regex));
+			}
+			// 普通磁盘文件
+			else if (f.isFile()) {
+				list.add(new FileResource(f));
+			}
+			// 存放在 jar 中的文件
+			else if (isInJar(f)) {
+				NutResource nutResource = makeJarNutResource(f);
+				if (nutResource != null) {
+					list.add(nutResource);
+				} else {
+					if (!path.replace('\\', '/').endsWith("/"))
+						path += '/';
 					list.addAll(scan(path, regex));
 				}
-				// 普通磁盘文件
-				else if (f.isFile()) {
-					list.add(new FileResource(f));
-				}
-				// 存放在 jar 中的文件
-				else if (f.getAbsolutePath().contains(".jar!")) {
-					list.add(new JarEntryResource(new JarEntryInfo(f.getAbsolutePath())));
-				}
-				
 			}
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
 		}
 
 		// 如果找不到?
@@ -190,4 +204,26 @@ public class Scans {
 		return list;
 	}
 
+	protected boolean isInJar(File file) {
+		return file.getAbsolutePath().contains(".jar!");
+	}
+
+	protected NutResource makeJarNutResource(File file) {
+		JarEntryInfo jeInfo = new JarEntryInfo(file.getAbsolutePath());
+		try {
+			JarFile jar = new JarFile(jeInfo.getJarPath());
+			JarEntry entry = jar.getJarEntry(jeInfo.getEntryName());
+			if (entry != null) {
+				// JDK里面判断实体是否为文件夹的方法非常不靠谱 by wendal
+				if (entry.getName().endsWith("/"))// 明显是文件夹
+					return null;
+				JarEntry e2 = jar.getJarEntry(jeInfo.getEntryName() + "/");
+				if (e2 != null) // 加个/,还是能找到?! 那肯定是文件夹了!
+					return null;
+				return new JarEntryResource(jeInfo);
+			}
+		}
+		catch (IOException e) {}
+		return null;
+	}
 }
