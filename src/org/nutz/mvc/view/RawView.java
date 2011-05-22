@@ -47,10 +47,7 @@ public class RawView implements View {
 	public RawView(String contentType) {
 		if (Strings.isBlank(contentType))
 			contentType = "text/plain";
-		else {
-			this.contentType = Strings.sNull(	contentTypeMap.get(contentType.toLowerCase()),
-												contentType);
-		}
+		this.contentType = Strings.sNull(contentTypeMap.get(contentType.toLowerCase()), contentType);
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)

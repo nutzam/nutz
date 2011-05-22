@@ -42,6 +42,10 @@ public class AtMap {
 		return this;
 	}
 
+	public List<Pair<String>> getAll() {
+		return getList((String[]) null);
+	}
+
 	public List<Pair<String>> getList(String... prefixes) {
 		List<Pair<String>> list = new ArrayList<Pair<String>>(ats.size());
 		Set<Entry<String, String>> ens = ats.entrySet();
