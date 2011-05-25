@@ -19,6 +19,7 @@ import java.io.PushbackInputStream;
 import java.io.Reader;
 import java.io.Writer;
 
+import org.nutz.lang.stream.NullInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -496,9 +497,13 @@ public abstract class Streams {
 		return new OutputStreamWriter(os, Encoding.CHARSET_UTF8);
 	}
 
+	public static InputStream nullInputStream() {
+		return new NullInputStream();
+	}
+
 	/**
-	 * 获取File对象输入流,即使在Jar文件中一样工作良好!!
-	 * <b>强烈推荐</b>
+	 * 获取File对象输入流,即使在Jar文件中一样工作良好!! <b>强烈推荐</b>
+	 * 
 	 * @param file
 	 * @return
 	 * @throws IOException
@@ -508,7 +513,7 @@ public abstract class Streams {
 			return new FileInputStream(file);
 		if (Scans.isInJar(file)) {
 			NutResource nutResource = Scans.makeJarNutResource(file);
-			if(nutResource != null)
+			if (nutResource != null)
 				return nutResource.getInputStream();
 		}
 		return null;
