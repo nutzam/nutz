@@ -95,7 +95,7 @@ public class JsonParsing {
 			Object ary = Array.newInstance(clazz.getComponentType(), list.size());
 			int i = 0;
 
-			for (Iterator it = list.iterator(); it.hasNext();) {
+			for (Iterator it = re.iterator(); it.hasNext();) {
 				if (tt != null)
 					Array.set(ary, i++, convert(tt, it.next()));
 				else
