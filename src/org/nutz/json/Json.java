@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
@@ -16,7 +16,7 @@ public class Json {
 	/**
 	 * 保存所有的 Json 实体
 	 */
-	private static Map<String, JsonEntity> entities = new HashMap<String, JsonEntity>();
+	private static final Map<String, JsonEntity> entities = new WeakHashMap<String, JsonEntity>();
 
 	/**
 	 * 获取一个 Json 实体
