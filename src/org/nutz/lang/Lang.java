@@ -1650,4 +1650,26 @@ public abstract class Lang {
 		}
 		return clazz;
 	}
+
+	/**
+	 * 强制从字符串转换成一个 Class，将 ClassNotFoundException 包裹成 RuntimeException
+	 * 
+	 * @param <T>
+	 * @param name
+	 *            类名
+	 * @param type
+	 *            这个类型的边界
+	 * @return 类对象
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> forName(String name, Class<T> type) {
+		Class<?> re;
+		try {
+			re = Class.forName(name);
+			return (Class<T>) re;
+		}
+		catch (ClassNotFoundException e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
 }

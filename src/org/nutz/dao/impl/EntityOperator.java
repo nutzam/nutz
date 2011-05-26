@@ -18,7 +18,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 
-public class EntityOperator {
+public class EntityOperator{
 
 	Entity<?> entity;
 
