@@ -4,10 +4,39 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 
 public class Json {
+
+	/**
+	 * 保存所有的 Json 实体
+	 */
+	private static Map<String, JsonEntity> entities = new HashMap<String, JsonEntity>();
+
+	/**
+	 * 获取一个 Json 实体
+	 * 
+	 * @param classOfT
+	 *            类型
+	 * @return 实体对象
+	 */
+	static JsonEntity getEntity(Class<?> classOfT) {
+		JsonEntity je = entities.get(classOfT.getName());
+		if (null == je)
+			synchronized (entities) {
+				je = entities.get(classOfT.getName());
+				if (null == je) {
+					je = new JsonEntity(Mirror.me(classOfT));
+					entities.put(classOfT.getName(), je);
+				}
+			}
+		return je;
+	}
 
 	/**
 	 * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
@@ -105,7 +134,6 @@ public class Json {
 		return fromJson(type, Lang.inr(cs));
 	}
 
-
 	/**
 	 * 将一个 JAVA 对象转换成 JSON 字符串
 	 * 
@@ -165,4 +193,5 @@ public class Json {
 			throw Lang.wrapThrow(e, JsonException.class);
 		}
 	}
+
 }

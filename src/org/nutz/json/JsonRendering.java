@@ -3,18 +3,20 @@ package org.nutz.json;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -148,7 +150,7 @@ public class JsonRendering {
 			 * toJson(JsonFormat fmt)
 			 */
 			catch (NoSuchMethodException e1) {
-				try{
+				try {
 					Method myMethod = type.getMethod(myMethodName, JsonFormat.class);
 					if (!myMethod.isAccessible())
 						myMethod.setAccessible(true);
@@ -158,25 +160,28 @@ public class JsonRendering {
 				}
 				catch (NoSuchMethodException e) {}
 			}
-		} catch (IllegalArgumentException e) {
+		}
+		catch (IllegalArgumentException e) {
 			throw Lang.wrapThrow(e);
-		} catch (IllegalAccessException e) {
+		}
+		catch (IllegalAccessException e) {
 			throw Lang.wrapThrow(e);
-		} catch (InvocationTargetException e) {
+		}
+		catch (InvocationTargetException e) {
 			throw Lang.wrapThrow(e);
 		}
 		/*
 		 * Default
 		 */
-		Mirror<?> me = Mirror.me(type);
-		Field[] fields = me.getFields();
+		JsonEntity jen = Json.getEntity(type);
+		List<JsonEntityField> fields = jen.getFields();
 		appendBraceBegin();
 		increaseFormatIndent();
-		ArrayList<Pair> list = new ArrayList<Pair>(fields.length);
-		for (Field f : fields) {
-			String name = f.getName();
+		ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
+		for (JsonEntityField jef : fields) {
+			String name = jef.getName();
 			try {
-				Object value = me.getValue(obj, name);
+				Object value = jef.getValue(obj);
 				if (!this.isIgnore(name, value))
 					list.add(new Pair(name, value));
 			}
@@ -228,7 +233,7 @@ public class JsonRendering {
 				default:
 					if (c >= 256 && format.isAutoUnicode())
 						writer.append("\\u").append(Integer.toHexString(c).toUpperCase());
-					else 
+					else
 						writer.append(c);
 				}
 			}
@@ -237,8 +242,7 @@ public class JsonRendering {
 	}
 
 	@SuppressWarnings({"rawtypes"})
-	public
-	void render(Object obj) throws IOException {
+	public void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");
 		} else if (obj instanceof Class) {
@@ -251,7 +255,7 @@ public class JsonRendering {
 				string2Json(((Enum) obj).name());
 			} else if (mr.isNumber() || mr.isBoolean()) {
 				writer.append(obj.toString());
-			} else if (mr.isStringLike()  || mr.isChar()) {
+			} else if (mr.isStringLike() || mr.isChar()) {
 				string2Json(obj.toString());
 			} else if (mr.isDateTimeLike()) {
 				string2Json(format.getCastors().castToString(obj));

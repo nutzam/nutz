@@ -8,5 +8,6 @@ import org.junit.runners.Suite;
 						JsonCommentTest.class,
 						JsonRecursiveTest.class,
 						CustomizedJsonTest.class,
-						JsonCharsetTest.class})
+						JsonCharsetTest.class,
+						JsonEntityTest.class})
 public class AllJson {}

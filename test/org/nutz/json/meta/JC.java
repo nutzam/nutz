@@ -8,7 +8,7 @@ public class JC {
 		return ixx;
 	}
 	
-	class IXX {
+	public class IXX {
 		private int abc = 1;
 		
 		public int getAbc() {
