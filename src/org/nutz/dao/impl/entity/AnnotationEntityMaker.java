@@ -97,7 +97,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		/*
 		 * 获得表名以及视图名称
 		 */
-		String tableName = null == ti.annTable	? type.getSimpleName().toLowerCase()
+		String tableName = null == ti.annTable	? Strings.lowerWord(type.getSimpleName(), '_')
 												: ti.annTable.value();
 
 		String viewName = null == ti.annView ? tableName : ti.annView.value();

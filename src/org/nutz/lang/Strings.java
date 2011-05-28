@@ -576,30 +576,60 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 将一个字符串由驼峰式命名变成分割符分隔单词
+	 * 
+	 * <pre>
+	 *  lowerWord("helloWorld", '-') => "hello-world"
+	 * </pre>
+	 * 
+	 * @param cs
+	 *            字符串
+	 * @param c
+	 *            分隔符
+	 * 
+	 * @return 转换后字符串
+	 */
+	public static String lowerWord(CharSequence cs, char c) {
+		StringBuilder sb = new StringBuilder();
+		int len = cs.length();
+		for (int i = 0; i < len; i++) {
+			char ch = cs.charAt(i);
+			if (Character.isUpperCase(ch)) {
+				if (i > 0)
+					sb.append(c);
+				sb.append(Character.toLowerCase(ch));
+			} else {
+				sb.append(ch);
+			}
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * 将一个字符串某一个字符后面的字母变成大写，比如
 	 * 
 	 * <pre>
 	 *  upperWord("hello-world", '-') => "helloWorld"
 	 * </pre>
 	 * 
-	 * @param s
+	 * @param cs
 	 *            字符串
 	 * @param c
-	 *            字符
+	 *            分隔符
 	 * 
 	 * @return 转换后字符串
 	 */
-	public static String upperWord(CharSequence s, char c) {
+	public static String upperWord(CharSequence cs, char c) {
 		StringBuilder sb = new StringBuilder();
-		int len = s.length();
+		int len = cs.length();
 		for (int i = 0; i < len; i++) {
-			char ch = s.charAt(i);
+			char ch = cs.charAt(i);
 			if (ch == c) {
 				do {
 					i++;
 					if (i >= len)
 						return sb.toString();
-					ch = s.charAt(i);
+					ch = cs.charAt(i);
 				} while (ch == c);
 				sb.append(Character.toUpperCase(ch));
 			} else {
