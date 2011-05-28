@@ -86,12 +86,12 @@ public abstract class Sockets {
 	 *            要监听的端口
 	 * @param str
 	 *            命令名称
-	 * @param atom
+	 * @param action
 	 *            动作执行类
 	 */
-	public static void localListenOneAndStop(int port, String line, SocketAction atom) {
+	public static void localListenOneAndStop(int port, String line, SocketAction action) {
 		Map<String, SocketAction> actions = createActions();
-		actions.put(line, atom);
+		actions.put(line, action);
 		actions.put("$:^(close|stop|bye|exit)$", doClose());
 		localListenByLine(port, actions);
 	}
@@ -103,12 +103,12 @@ public abstract class Sockets {
 	 *            要监听的端口
 	 * @param str
 	 *            命令名称
-	 * @param atom
+	 * @param action
 	 *            动作执行类
 	 */
-	public static void localListenOne(int port, String line, SocketAction atom) {
+	public static void localListenOne(int port, String line, SocketAction action) {
 		Map<String, SocketAction> actions = createActions();
-		actions.put(line, atom);
+		actions.put(line, action);
 		localListenByLine(port, actions);
 	}
 
