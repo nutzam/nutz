@@ -13,6 +13,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
+import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.lang.Lang;
 
 public class SimpleDaoTest extends DaoCase {
@@ -125,5 +126,15 @@ public class SimpleDaoTest extends DaoCase {
 		dao.update(pet.setAge(null));
 		pet = dao.fetch(PetObj.class, "X");
 		assertNull(pet.getAge());
+	}
+	
+	@Test
+	public void test_insert_readonly() {
+		dao.create(SimplePOJO.class, true);
+		SimplePOJO p = new SimplePOJO();
+		p.setSex("火星");
+		dao.insert(p);
+		p.setSex("东方不败");
+		dao.update(p);
 	}
 }
