@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.nutz.castor.Castors;
+import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
@@ -45,8 +46,6 @@ public class AnnotationIocLoader implements IocLoader {
 						Castors.me().castToString(map.keySet()));
 	}
 
-	@SuppressWarnings("deprecation")
-	// TODO RC 前，移除这个警告
 	private void addClass(Class<?> classZ) {
 		if (classZ.isInterface()
 			|| classZ.isMemberClass()
@@ -85,8 +84,8 @@ public class AnnotationIocLoader implements IocLoader {
 
 			// 看看构造函数都需要什么函数
 			String[] args = iocBean.args();
-			if (null == args || args.length == 0)
-				args = iocBean.param();
+//			if (null == args || args.length == 0)
+//				args = iocBean.param();
 			if (null != args && args.length > 0)
 				for (String value : args)
 					iocObject.addArg(convert(value));
@@ -104,11 +103,12 @@ public class AnnotationIocLoader implements IocLoader {
 			// 处理字段(以@Inject方式,位于字段)
 			List<String> fieldList = new ArrayList<String>();
 			Mirror<?> mirror = Mirror.me(classZ);
-			Field[] fields = mirror.getFields();
+			Field[] fields = mirror.getFields(Inject.class);
 			for (Field field : fields) {
 				Inject inject = field.getAnnotation(Inject.class);
-				if (inject == null)
-					continue;
+				//无需检查,因为字段名是唯一的
+				//if(fieldList.contains(field.getName()))
+				//	throw duplicateField(classZ,field.getName());
 				IocField iocField = new IocField();
 				iocField.setName(field.getName());
 				IocValue iocValue;
@@ -128,11 +128,18 @@ public class AnnotationIocLoader implements IocLoader {
 				Inject inject = method.getAnnotation(Inject.class);
 				if (inject == null)
 					continue;
-				if (method.getName().startsWith("set")
+				//过滤特殊方法
+				int m = method.getModifiers();
+				if(Modifier.isAbstract(m) || (!Modifier.isPublic(m))
+						|| Modifier.isStatic(m))
+					continue;
+				if (method.getName().startsWith("set") 
 					&& method.getName().length() > 3
 					&& method.getParameterTypes().length == 1) {
 					IocField iocField = new IocField();
 					iocField.setName(Strings.lowerFirst(method.getName().substring(3)));
+					if(fieldList.contains(iocField.getName()))
+						throw duplicateField(classZ,iocField.getName());
 					IocValue iocValue;
 					if (Strings.isBlank(inject.value())) {
 						iocValue = new IocValue();
@@ -147,15 +154,13 @@ public class AnnotationIocLoader implements IocLoader {
 			}
 			// 处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
 			String[] flds = iocBean.fields();
-			if (null == flds || flds.length == 0) {
-				flds = iocBean.field();
-			}
+//			if (null == flds || flds.length == 0) {
+//				flds = iocBean.field();
+//			}
 			if (flds != null && flds.length > 0) {
 				for (String fieldInfo : flds) {
 					if (fieldList.contains(fieldInfo))
-						throw Lang.makeThrow(	"Duplicate filed defined! Class=%s,FileName=%s",
-												classZ,
-												fieldInfo);
+						throw duplicateField(classZ,fieldInfo);
 					IocField iocField = new IocField();
 					iocField.setName(fieldInfo);
 					IocValue iocValue = new IocValue();
@@ -193,5 +198,11 @@ public class AnnotationIocLoader implements IocLoader {
 		if (has(name))
 			return map.get(name);
 		throw new ObjectLoadException("Object '" + name + "' without define!");
+	}
+	
+	private static final IocException duplicateField(Class<?> classZ, String name){
+		return Lang.makeThrow(IocException.class,	"Duplicate filed defined! Class=%s,FileName=%s",
+				classZ,
+				name);
 	}
 }
