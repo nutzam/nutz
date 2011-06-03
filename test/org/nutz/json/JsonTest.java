@@ -21,6 +21,7 @@ import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JMapItem;
+import org.nutz.json.meta.JU;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -640,5 +641,13 @@ public class JsonTest {
 		String str = Json.toJson(c);
 		Map<String, Map<String,Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(str);
 		assertEquals(1, map.get("ixx").get("abc"));
+	}
+	
+	//For issue 487
+	@Test
+	public void test_map_null() {
+		String j = "{map:{map:null,m2:{abc:123}}}";
+		Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(j);
+		assertNull(map.get("map").get("map"));
 	}
 }
