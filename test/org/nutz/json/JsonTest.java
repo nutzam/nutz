@@ -21,7 +21,6 @@ import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JMapItem;
-import org.nutz.json.meta.JU;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
