@@ -31,11 +31,11 @@ public @interface IocBean {
 	 */
 	String[] args() default {};
 
-	/**
-	 * args 的别名， 不赞成使用，请使用 args 来代替
-	 */
-	@Deprecated
-	String[] param() default {};
+//	/**
+//	 * args 的别名， 不赞成使用，请使用 args 来代替
+//	 */
+//	@Deprecated
+//	String[] param() default {};
 
 	String scope() default "app";
 
@@ -63,11 +63,11 @@ public @interface IocBean {
 	 */
 	String[] fields() default {};
 
-	/**
-	 * fields 的别名
-	 */
-	@Deprecated
-	String[] field() default {};
+//	/**
+//	 * fields 的别名
+//	 */
+//	@Deprecated
+//	String[] field() default {};
 
 	// /**
 	// * 还没设计,是否真的需要呢?
