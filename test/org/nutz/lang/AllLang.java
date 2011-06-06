@@ -20,6 +20,7 @@ import org.nutz.lang.util.AllUtil;
 						SegmentsTest.class,
 						CastorTest.class,
 						AllUtil.class,
+						NumsTest.class,
 						StringsTest.class,
 						StringOutputStreamTest.class,
 						AllMeta.class})
