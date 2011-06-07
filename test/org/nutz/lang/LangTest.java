@@ -267,4 +267,12 @@ public class LangTest {
 		int[] is = {'a', 'b', 'c', 150};
 		assertArrayEquals(new byte[]{97, 98, 99, -106}, Lang.toBytes(is));
 	}
+	
+	@Test
+	public void test_str2number() {
+		Long re = (Long) Lang.str2number(""+Long.MAX_VALUE);
+		assertEquals(Long.MAX_VALUE, re);
+		assertEquals(Integer.MAX_VALUE, Lang.str2number(""+Integer.MAX_VALUE));
+		assertEquals(0, Lang.str2number("0"));
+	}
 }

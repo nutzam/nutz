@@ -1406,7 +1406,10 @@ public abstract class Lang {
 			return Long.valueOf(s.substring(0, s.length() - 1));
 		}
 		// 普通整数
-		return Integer.valueOf(s);
+		Long re = Long.parseLong(s);
+		if( Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE)
+			return re.intValue();
+		return re;
 	}
 
 	@SuppressWarnings("unchecked")
