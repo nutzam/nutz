@@ -213,7 +213,7 @@ public class NutElAnalyzerTest {
 		BinElObj bin = El.compile(exp);
 
 		assertEquals("/", bin.getOperator().toString());
-		assertEquals("178L", bin.getRight().toString());
+		assertEquals("178", bin.getRight().toString());
 
 		BinElObj ob = (BinElObj) bin.getLeft();
 		assertEquals("6", ob.getLeft().toString());

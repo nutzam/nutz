@@ -13,6 +13,12 @@ import org.nutz.lang.util.Context;
 public class ElTest {
 	
 	@Test
+	public void test_float(){
+		ElValue val = El.eval("(2-3)*0.1");
+		assertEquals(Float.valueOf("-0.1"),val.getFloat());
+	}
+	
+	@Test
 	public void test_simple_and_or(){
 		ElValue val = El.eval("4 && 0 || 5");
 		assertTrue(val.getBoolean().booleanValue());
@@ -191,5 +197,25 @@ public class ElTest {
 		assertTrue(El.eval(context, "d == null").getBoolean());
 		assertTrue(El.eval(context, "d == d").getBoolean());
 		assertEquals("wendal", El.eval(context, "b != null ? 'wendal' : null").getString());
+	}
+	
+	@Test
+	public void test_issue_485_1() {
+		assertEquals(Float.valueOf((2100 - 2000) * 0.05f), El.eval("(2100-2000)*0.05").getFloat());
+		assertEquals(Float.valueOf((2100 - 2000) * .05f), El.eval("(2100-2000)*.05").getFloat());
+	}
+	
+	@Test
+	public void test_issue_485_2() {
+		assertEquals(Float.valueOf(1/3*3), El.eval("1/3*3").getFloat());
+		assertEquals(Float.valueOf((87-32)*5/9), El.eval("(87-32)*5/9").getFloat());
+		assertEquals(Float.valueOf(35.0f/10), El.eval("35/10").getFloat());
+	}
+	
+	@Test
+	public void test_issue_485_3() {
+		assertEquals(Float.valueOf(1%3), El.eval("1%3").getFloat());
+		assertEquals(Float.valueOf((87-32)*5%9), El.eval("(87-32)*5%9").getFloat());
+		assertEquals(Float.valueOf(35.0f%10), El.eval("35%10").getFloat());
 	}
 }

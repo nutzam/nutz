@@ -1,5 +1,7 @@
 package org.nutz.el.val;
 
+import java.math.BigDecimal;
+
 import org.nutz.el.El;
 import org.nutz.el.ElException;
 import org.nutz.el.ElValue;
@@ -37,62 +39,51 @@ public class StringElValue extends PojoElValue<String> {
 
 	public ElValue sub(ElValue ta) {
 		Object taObj = ta.get();
-		if (taObj instanceof Integer)
-			return new IntegerElValue(Integer.valueOf(obj) - (Integer) taObj);
-		else if (taObj instanceof Float)
-			return new FloatElValue(Float.valueOf(obj) - (Float) taObj);
-		else if (taObj instanceof Long)
-			return new LongElValue(Long.valueOf(obj) - (Long) taObj);
+		if (!(taObj instanceof Integer) || !(taObj instanceof Float) || !(taObj instanceof Long)) {
+			throw new ElException(	"String '%s' can not SUB '%s', because it is a '%s'",
+					obj,
+					taObj,
+					taObj.getClass().getSimpleName());
+		}
 
-		throw new ElException(	"String '%s' can not SUB '%s', because it is a '%s'",
-								obj,
-								taObj,
-								taObj.getClass().getSimpleName());
+		return new NumberElValue(new BigDecimal(obj).subtract(new BigDecimal(ta.toString())));
+
 	}
 
 	public ElValue mul(ElValue ta) {
 		Object taObj = ta.get();
-		if (taObj instanceof Integer)
-			return new IntegerElValue(Integer.valueOf(obj) * (Integer) taObj);
-		else if (taObj instanceof Float)
-			return new FloatElValue(Float.valueOf(obj) * (Float) taObj);
-		else if (taObj instanceof Long)
-			return new LongElValue(Long.valueOf(obj) * (Long) taObj);
+		if (!(taObj instanceof Integer) || !(taObj instanceof Float) || !(taObj instanceof Long)) {
+			throw new ElException(	"String '%s' can not MUL '%s', because it is a '%s'",
+					obj,
+					taObj,
+					taObj.getClass().getSimpleName());
+		}
 
-		throw new ElException(	"String '%s' can not MUL '%s', because it is a '%s'",
-								obj,
-								taObj,
-								taObj.getClass().getSimpleName());
+		return new NumberElValue(new BigDecimal(obj).multiply(new BigDecimal(ta.toString())));
 	}
 
 	public ElValue div(ElValue ta) {
 		Object taObj = ta.get();
-		if (taObj instanceof Integer)
-			return new IntegerElValue(Integer.valueOf(obj) / (Integer) taObj);
-		else if (taObj instanceof Float)
-			return new FloatElValue(Float.valueOf(obj) / (Float) taObj);
-		else if (taObj instanceof Long)
-			return new LongElValue(Long.valueOf(obj) / (Long) taObj);
+		if (!(taObj instanceof Integer) || !(taObj instanceof Float) || !(taObj instanceof Long)) {
+			throw new ElException(	"String '%s' can not DIV '%s', because it is a '%s'",
+					obj,
+					taObj,
+					taObj.getClass().getSimpleName());
+		}
 
-		throw new ElException(	"String '%s' can not DIV '%s', because it is a '%s'",
-								obj,
-								taObj,
-								taObj.getClass().getSimpleName());
+		return new NumberElValue(new BigDecimal(obj).divide(new BigDecimal(ta.toString())));
 	}
 
 	public ElValue mod(ElValue ta) {
 		Object taObj = ta.get();
-		if (taObj instanceof Integer)
-			return new IntegerElValue(Integer.valueOf(obj) % (Integer) taObj);
-		else if (taObj instanceof Float)
-			return new FloatElValue(Float.valueOf(obj) % (Float) taObj);
-		else if (taObj instanceof Long)
-			return new LongElValue(Long.valueOf(obj) % (Long) taObj);
+		if (!(taObj instanceof Integer) || !(taObj instanceof Float) || !(taObj instanceof Long)) {
+			throw new ElException(	"String '%s' can not MOD '%s', because it is a '%s'",
+					obj,
+					taObj,
+					taObj.getClass().getSimpleName());
+		}
 
-		throw new ElException(	"String '%s' can not MOD '%s', because it is a '%s'",
-								obj,
-								taObj,
-								taObj.getClass().getSimpleName());
+		return new NumberElValue(new BigDecimal(obj).remainder(new BigDecimal(ta.toString())));
 	}
 
 	public ElValue isEquals(ElValue ta) {

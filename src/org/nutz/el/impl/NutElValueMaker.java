@@ -47,11 +47,11 @@ public class NutElValueMaker implements ElValueMaker {
 
 		// 长整
 		if (mirror.isLong())
-			return new LongElValue((Long) obj);
+			return new NumberElValue((Long) obj);
 
 		// 整数
 		if (mirror.isIntLike())
-			return new IntegerElValue((Integer) obj);
+			return new NumberElValue((Integer) obj);
 
 		// 布尔
 		if (mirror.isBoolean())
@@ -59,7 +59,7 @@ public class NutElValueMaker implements ElValueMaker {
 
 		// 浮点
 		if (mirror.isFloat())
-			return new FloatElValue((Float) obj);
+			return new NumberElValue((Float) obj);
 
 		return new PojoElValue<Object>(obj);
 	}

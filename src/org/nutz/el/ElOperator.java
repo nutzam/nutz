@@ -27,7 +27,7 @@ public interface ElOperator {
 	void setString(String str);
 
 	int getWeight();
-	
+
 	boolean isHigherIfSame();
 
 	void setHigherIfSame(boolean higherIfSame);

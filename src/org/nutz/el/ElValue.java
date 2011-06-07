@@ -26,7 +26,7 @@ public interface ElValue {
 	 * @return 值的浮点形式
 	 */
 	Float getFloat();
-	
+
 	/**
 	 * @return 值的长整形式
 	 */
@@ -108,7 +108,7 @@ public interface ElValue {
 	 * @return true 或 false
 	 */
 	ElValue isEquals(ElValue ta);
-	
+
 	/**
 	 * 判断不相等
 	 * 

@@ -157,15 +157,15 @@ public class El {
 		}
 
 		public static ElObj oFloat(Float v) {
-			return new StaticElObj(new FloatElValue(v));
+			return new StaticElObj(new NumberElValue(v));
 		}
 
 		public static ElObj oInt(Integer v) {
-			return new StaticElObj(new IntegerElValue(v));
+			return new StaticElObj(new NumberElValue(v));
 		}
 
 		public static ElObj oLong(Long v) {
-			return new StaticElObj(new LongElValue(v));
+			return new StaticElObj(new NumberElValue(v));
 		}
 
 		public static ElObj oBoolean(Boolean v) {
