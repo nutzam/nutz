@@ -18,6 +18,8 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
 	private static final String META_ENGINE = "mysql-engine";
 
+	private static final String META_CHARSET = "mysql-charset";
+
 	public MysqlJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
@@ -73,8 +75,15 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');
 		// 设置特殊引擎
-		if (en.hasMeta(META_ENGINE))
-			sb.append("ENGINE=" + en.getMeta(META_ENGINE));
+		if (en.hasMeta(META_ENGINE)) {
+			sb.append(" ENGINE=" + en.getMeta(META_ENGINE));
+		}
+		// 默认采用 UTF-8 编码
+		if (en.hasMeta(META_CHARSET)) {
+			sb.append(" CHARSET=" + en.getMeta(META_CHARSET));
+		} else {
+			sb.append(" CHARSET=utf8");
+		}
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
