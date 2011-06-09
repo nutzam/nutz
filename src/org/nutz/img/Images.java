@@ -37,14 +37,16 @@ public class Images {
 	 *            宽度
 	 * @param h
 	 *            高度
-	 * @return 被转换后的图像
+	 * @return 被转换前的图像对象
 	 * 
 	 * @throws IOException
 	 *             当读写文件失败时抛出
 	 */
-	public static void clipScale(File srcIm, File taIm, int w, int h) throws IOException {
-		BufferedImage im = Images.clipScale(read(srcIm), w, h);
+	public static BufferedImage clipScale(File srcIm, File taIm, int w, int h) throws IOException {
+		BufferedImage old = read(srcIm);
+		BufferedImage im = Images.clipScale(old, w, h);
 		write(im, taIm);
+		return old;
 	}
 
 	/**
