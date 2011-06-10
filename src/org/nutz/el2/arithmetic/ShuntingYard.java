@@ -1,0 +1,96 @@
+package org.nutz.el2.arithmetic;
+
+import java.io.IOException;
+import java.util.Deque;
+import java.util.LinkedList;
+import java.util.Queue;
+
+import org.nutz.el2.Operator;
+import org.nutz.el2.Opt.LBracketOpt;
+import org.nutz.el2.Opt.RBracketOpt;
+import org.nutz.el2.parse.Converter;
+
+/**
+ * Shunting yard算法是一个用于将中缀表达式转换为后缀表达式的经典算法，由艾兹格·迪杰斯特拉引入，因其操作类似于火车编组场而得名。
+ * 参考:
+ * <a href='http://zh.wikipedia.org/wiki/Shunting_yard%E7%AE%97%E6%B3%95'>Shunting yard算法</a>
+ * 
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
+public class ShuntingYard {
+	private Queue<Object> rpn;
+	private Deque<Operator> opts;
+	
+	public Queue<Object> parseToRPN(String val) throws IOException{
+		Queue<Character> reader = new LinkedList<Character>();
+		for(char c : val.toCharArray()){
+			reader.add(c);
+		}
+		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
+		Queue<Object> RPN = parseToRPN(reader);
+		return RPN;
+	}
+	
+	/**
+	 * 转换成 逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
+	 * @param reader
+	 * @return
+	 * @throws IOException 
+	 */
+	private Queue<Object> parseToRPN(Queue<Character> queue) throws IOException {
+		rpn = new LinkedList<Object>();
+		opts = new LinkedList<Operator>();
+		
+		Converter converter = new Converter(queue);
+		while(!queue.isEmpty()){
+			Object item = converter.readNext();
+			if(item instanceof Operator){
+				parseOperator((Operator) item);
+				continue;
+			}
+			rpn.add(item);
+		}
+		while(!opts.isEmpty()){
+			rpn.add(opts.poll());
+		}
+		
+		return rpn;
+	}
+	
+	/**
+	 * 转换操作符
+	 * @param current
+	 */
+	private void parseOperator(Operator current){
+		//空,直接添加进操作符队列
+		if(opts.isEmpty()){
+			opts.addFirst(current);
+			return;
+		}
+		//左括号
+		if(current instanceof LBracketOpt){
+			opts.addFirst(current);
+			return;
+		}
+		//遇到右括号
+		if(current instanceof RBracketOpt){
+			while(!(opts.peek() instanceof LBracketOpt)){
+				rpn.add(opts.poll());
+			}
+			opts.poll();
+			return;
+		}
+		
+		//符号队列top元素优先级大于当前,则直接添加到
+		if(!opts.isEmpty() && opts.peek().fetchPriority() > current.fetchPriority()){
+			opts.addFirst(current);
+			return;
+		}
+		//一般情况,即优先级小于栈顶,那么直接弹出来,添加到逆波兰表达式中
+		while(!opts.isEmpty() && opts.peek().fetchPriority() <= current.fetchPriority()){
+			rpn.add(opts.poll());
+		}
+		opts.addFirst(current);
+	}
+}
