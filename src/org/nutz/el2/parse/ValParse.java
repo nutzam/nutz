@@ -1,0 +1,92 @@
+package org.nutz.el2.parse;
+
+import java.util.Queue;
+
+/**
+ * 操作数转换器
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
+public class ValParse implements Parse {
+
+	public Object fetchItem(Queue<Character> exp){
+		StringBuilder sb = new StringBuilder();
+		switch(exp.peek()){
+		case 't':
+			exp.poll();
+			if('r' == exp.poll())
+				if('u' == exp.poll())
+					if('e' == exp.poll())
+						return Boolean.TRUE;
+			break;
+		case 'f':
+			exp.poll();
+			if('a' == exp.poll())
+				if('l' == exp.poll())
+					if('s' == exp.poll())
+						if('e' == exp.poll())
+							return Boolean.FALSE;
+			break;
+		case '.':
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+		case '-':
+			boolean hasPoint = exp.peek() == '.';
+			sb.append(exp.poll());
+			while(!exp.isEmpty()){
+				switch(exp.peek()){
+				case '0':
+				case '1':
+				case '2':
+				case '3':
+				case '4':
+				case '5':
+				case '6':
+				case '7':
+				case '8':
+				case '9':
+					sb.append(exp.poll());
+					break;
+				case '.':
+					if(hasPoint){
+						throw new RuntimeException("表达式错误,请查看是否有多个'.'!");
+					}
+					hasPoint = true;
+					sb.append(exp.poll());
+					break;
+				case 'l':
+				case 'L':
+					sb.append(exp.poll());
+					return Long.parseLong(sb.toString());
+				case 'f':
+				case 'F':
+					sb.append(exp.poll());
+					return Float.parseFloat(sb.toString());
+				case 'd':
+				case 'D':
+					sb.append(exp.poll());
+					return Double.parseDouble(sb.toString());
+				default:
+					if(hasPoint){
+						return Double.parseDouble(sb.toString());
+					}
+					return Integer.parseInt(sb.toString());
+				}
+			}
+			if(hasPoint){
+				return Double.parseDouble(sb.toString());
+			}
+			return Integer.parseInt(sb.toString());
+		}
+		return null;
+	}
+	
+}
