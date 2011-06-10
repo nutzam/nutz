@@ -26,6 +26,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
+import org.nutz.lang.util.NutParameterizedType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
@@ -649,4 +650,14 @@ public class JsonTest {
 		Map<String, Map<String, Object>> map = (Map<String, Map<String, Object>>) Json.fromJson(j);
 		assertNull(map.get("map").get("map"));
 	}
+	
+	@Test
+	public void test_from_list(){
+		List<Abc> list = (List<Abc>) Json.fromJson(NutParameterizedType.list(Abc.class), Streams.fileInr("org/nutz/json/list.txt"));
+		assertNotNull(list);
+		assertEquals(2, list.size());
+		assertEquals("nutz", list.get(0).name);
+		assertEquals("wendal", list.get(1).name);
+	}
 }
+
