@@ -5,19 +5,48 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
-public class NutParameterizedType implements ParameterizedType {
+/**
+ * 通过实现ParameterizedType,达到无需通过反射得到泛型Type</p>
+ * 通过嵌套Map/List,可得出无限可能
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
+public class NutType implements ParameterizedType {
 	
+	/**
+	 * 生成List<AbcBean>形式的泛型信息
+	 * @param clazz 泛型的具体类
+	 * @return List<clazz>形式的泛型Type
+	 */
 	public static Type list(Type clazz){
-		NutParameterizedType type = new NutParameterizedType();
+		NutType type = new NutType();
 		type.rawType = List.class;
 		type.setActualTypeArguments(clazz);
 		return type;
 	}
 	
+	/**
+	 * 生成Map<key,value>形式的泛型Type
+	 * @param key key的泛型
+	 * @param value value的泛型
+	 * @return Map<key,value>形式的泛型Type
+	 */
 	public static Type map(Type key, Type value){
-		NutParameterizedType type = new NutParameterizedType();
+		NutType type = new NutType();
 		type.rawType = Map.class;
 		type.setActualTypeArguments(key,value);
+		return type;
+	}
+	
+	/**
+	 * 生成Map<String,value>形式的泛型Type
+	 * @param value value的泛型
+	 * @return Map<String,value>形式的泛型Type
+	 */
+	public static Type mapStr(Type value){
+		NutType type = new NutType();
+		type.rawType = Map.class;
+		type.setActualTypeArguments(String.class,value);
 		return type;
 	}
 	
@@ -27,17 +56,14 @@ public class NutParameterizedType implements ParameterizedType {
 	
 	private Type ownerType;
 
-	@Override
 	public Type[] getActualTypeArguments() {
 		return actualTypeArguments;
 	}
 
-	@Override
 	public Type getRawType() {
 		return rawType;
 	}
 
-	@Override
 	public Type getOwnerType() {
 		return ownerType;
 	}
