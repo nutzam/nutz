@@ -1,11 +1,14 @@
 package org.nutz.el2;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
-
-import static org.junit.Assert.*;
 
 public class El2Test {
 	El2 el;
@@ -148,5 +151,14 @@ public class El2Test {
 		assertEquals("GT 5", el.eval(context, s));
 		context.set("a", 5);
 		assertEquals("LTE 5", el.eval(context, s));
+	}
+	
+	@Test
+	public void context(){
+		Context context = Lang.context();
+		List<String> list = new ArrayList<String>();
+		list.add("jk");
+		context.set("a", list);
+		assertEquals("jk", el.eval(context, "a.get(0)"));
 	}
 }
