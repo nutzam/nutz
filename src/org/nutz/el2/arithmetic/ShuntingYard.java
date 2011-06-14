@@ -6,8 +6,10 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import org.nutz.el2.Operator;
-import org.nutz.el2.Opt.LBracketOpt;
-import org.nutz.el2.Opt.RBracketOpt;
+import org.nutz.el2.opt.CommaOpt;
+import org.nutz.el2.opt.ListOpt;
+import org.nutz.el2.opt.arithmetic.LBracketOpt;
+import org.nutz.el2.opt.arithmetic.RBracketOpt;
 import org.nutz.el2.parse.Converter;
 
 /**
@@ -28,8 +30,7 @@ public class ShuntingYard {
 			reader.add(c);
 		}
 		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-		Queue<Object> RPN = parseToRPN(reader);
-		return RPN;
+		return parseToRPN(reader);
 	}
 	
 	/**
@@ -43,8 +44,8 @@ public class ShuntingYard {
 		opts = new LinkedList<Operator>();
 		
 		Converter converter = new Converter(queue);
-		while(!queue.isEmpty()){
-			Object item = converter.readNext();
+		while(!converter.isEnd()){
+			Object item = converter.fetchItem();
 			if(item instanceof Operator){
 				parseOperator((Operator) item);
 				continue;
@@ -59,10 +60,22 @@ public class ShuntingYard {
 	}
 	
 	/**
-	 * 转换操作符
+	 * 转换操作符.
+	 * 根据 ShuntingYard 算法进行操作
 	 * @param current
 	 */
 	private void parseOperator(Operator current){
+		if(current instanceof CommaOpt){
+			return;
+		}
+		if(current instanceof ListOpt){
+			if(!opts.isEmpty()){
+				rpn.add(opts.poll());
+			}
+			rpn.add(current);
+			return;
+		}
+		
 		//空,直接添加进操作符队列
 		if(opts.isEmpty()){
 			opts.addFirst(current);

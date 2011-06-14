@@ -1,8 +1,8 @@
-package org.nutz.el2.Opt;
+package org.nutz.el2.opt;
 
 /**
  * 操作符定义
- * @ TODO 感觉这个Enum是多余的...
+ * @ JKTODO 感觉这个Enum是多余的...
  * @author juqkai(juqkai@gmail.com)
  *
  */
@@ -72,7 +72,35 @@ public enum OptEnum {
 	/**
 	 * 且
 	 */
-	AND;
+	AND, 
+	/**
+	 * ?
+	 */
+	QUESTION, 
+	/**
+	 * :
+	 */
+	QUESTION_SELECT, 
+	/**
+	 * .
+	 */
+	ACCESS, 
+	/**
+	 * invoke
+	 */
+	INVOKE, 
+	/**
+	 * 负号
+	 */
+	NEGATIVE, 
+	/**
+	 * ','
+	 */
+	COMMA,
+	/**
+	 * list
+	 */
+	LIST;
 	
 	public String toString(){
 		switch(this){
@@ -108,7 +136,22 @@ public enum OptEnum {
 			return "||";
 		case AND :
 			return "&&";
+		case QUESTION:
+			return "?";
+		case QUESTION_SELECT:
+			return ":";
+		case ACCESS:
+			return ".";
+		case INVOKE:
+			return "invoke";
+		case NEGATIVE:
+			return "-";
+		case COMMA:
+			return ",";
+		case LIST:
+			return "list";
 		}
+		
 		return "";
 	}
 }

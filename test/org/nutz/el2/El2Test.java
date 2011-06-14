@@ -2,6 +2,8 @@ package org.nutz.el2;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.lang.Lang;
+import org.nutz.lang.util.Context;
 
 import static org.junit.Assert.*;
 
@@ -16,7 +18,7 @@ public class El2Test {
 	@Test
 	public void notCalculateOneNumber(){
 		assertEquals(1, el.eval("1"));
-		assertEquals(0.1, el.eval(".1"));
+//		assertEquals(0.1, el.eval(".1"));
 		assertEquals(0.1d, el.eval("0.1"));
 		assertEquals(0.1f, el.eval("0.1f"));
 		assertEquals(0.1d, el.eval("0.1d"));
@@ -80,7 +82,17 @@ public class El2Test {
 		assertEquals(true, el.eval("true || false"));
 		assertEquals(false, el.eval("true && false"));
 		assertEquals(false, el.eval("false || true && false"));
-		
+		//@ JKTODO 短路判断,会不会存在右边的表达式会运行的情况?
+	}
+	
+	/**
+	 * 三元运算
+	 * ?:
+	 */
+	@Test
+	public void threeTernary(){
+		assertEquals(2, el.eval("1>0?2:3"));
+		assertEquals(2, el.eval("1>0&&1<2?2:3"));
 	}
 	
 	/**
@@ -90,6 +102,8 @@ public class El2Test {
 	public void stringTest(){
 		assertEquals("jk", el.eval("'jk'"));
 		assertEquals(2, el.eval("'jk'.length()"));
+		assertEquals(2, el.eval("\"jk\".length()"));
+		assertEquals("jk", el.eval("\"    jk   \".trim()"));
 	}
 	
 	@Test
@@ -102,8 +116,37 @@ public class El2Test {
 	/**
 	 * 带负数的运算
 	 */
+	@Test
 	public void negative(){
+		assertEquals(-1, el.eval("-1"));
+		assertEquals(0, el.eval("-1+1"));
 		assertEquals(9+8*7+(6+5)*(-(4-1*2+3)), el.eval("9+8*7+(6+5)*(-(4-1*2+3))"));
 	}
 	
+	/**
+	 * 方法调用
+	 */
+	@Test
+	public void callMethod(){
+		assertEquals('j',el.eval("'jk'.charAt(0)"));
+		assertEquals("cde", el.eval("\"abcde\".substring(2)"));
+		assertEquals("b", el.eval("\"abcde\".substring(1,2)"));
+		assertEquals(true, el.eval("\"abcd\".regionMatches(2,\"ccd\",1,2)"));
+	}
+	
+	/**
+	 * 参数
+	 */
+	@Test
+	public void test_simple_condition() {
+		Context context = Lang.context();
+		context.set("a", 10);
+		assertEquals(10, el.eval(context, "a"));
+		assertEquals(20, el.eval(context, "a + a"));
+		
+		String s = "a>5?'GT 5':'LTE 5'";
+		assertEquals("GT 5", el.eval(context, s));
+		context.set("a", 5);
+		assertEquals("LTE 5", el.eval(context, s));
+	}
 }

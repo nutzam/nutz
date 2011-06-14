@@ -16,10 +16,16 @@ public interface Operator {
 	public int fetchPriority();
 
 	/**
-	 * 计算
+	 * 
 	 * @param operand 操作数
 	 * @return
 	 */
-	public Object calculate(Queue<Object> operand);
+	public void wrap(Queue<Object> operand);
+
+	/**
+	 * 计算
+	 * @return
+	 */
+	public Object calculate();
 
 }

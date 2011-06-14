@@ -12,21 +12,6 @@ public class ValParse implements Parse {
 	public Object fetchItem(Queue<Character> exp){
 		StringBuilder sb = new StringBuilder();
 		switch(exp.peek()){
-		case 't':
-			exp.poll();
-			if('r' == exp.poll())
-				if('u' == exp.poll())
-					if('e' == exp.poll())
-						return Boolean.TRUE;
-			break;
-		case 'f':
-			exp.poll();
-			if('a' == exp.poll())
-				if('l' == exp.poll())
-					if('s' == exp.poll())
-						if('e' == exp.poll())
-							return Boolean.FALSE;
-			break;
 		case '.':
 		case '0':
 		case '1':
