@@ -1,28 +1,16 @@
 package org.nutz.el2.opt.logic;
 
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * 大于
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class GTOpt extends AbstractOpt {
-	private Object right;
-	private Object left;
-
+public class GTOpt extends TwoTernary {
 	public int fetchPriority() {
 		return 6;
 	}
-
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
-	}
-
 	public Object calculate() {
 		Number lval = (Number) calculateItem(this.left);
 		Number rval = (Number) calculateItem(this.right);
@@ -37,8 +25,8 @@ public class GTOpt extends AbstractOpt {
 		}
 		return lval.intValue() > rval.intValue();
 	}
-	public OptEnum fetchSelf() {
-		return OptEnum.GT;
+	public String fetchSelf() {
+		return ">";
 	}
 
 }

@@ -3,7 +3,6 @@ package org.nutz.el2.opt.arithmetic;
 import java.util.Queue;
 
 import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
 
 /**
  * 负号:'-'
@@ -32,8 +31,8 @@ public class NegativeOpt extends AbstractOpt {
 		return 0 - (Integer)rval;
 	}
 
-	public OptEnum fetchSelf() {
-		return OptEnum.NEGATIVE;
+	public String fetchSelf() {
+		return "-";
 	}
 
 }

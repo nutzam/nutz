@@ -1,26 +1,15 @@
 package org.nutz.el2.opt.arithmetic;
 
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * 乘
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class MulOpt extends AbstractOpt {
-	private Object right;
-	private Object left;
-	
+public class MulOpt extends TwoTernary {
 	public int fetchPriority() {
 		return 3;
-	}
-
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
 	}
 	public Object calculate() {
 		Number lval = (Number) calculateItem(this.left);
@@ -37,8 +26,8 @@ public class MulOpt extends AbstractOpt {
 		return lval.intValue() * rval.intValue();
 	}
 
-	public OptEnum fetchSelf() {
-		return OptEnum.MUL;
+	public String fetchSelf() {
+		return "*";
 	}
 
 }

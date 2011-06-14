@@ -1,32 +1,20 @@
 package org.nutz.el2.opt.arithmetic;
 
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * "+"
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class PlusOpt extends AbstractOpt {
-	private Object right;
-	private Object left;
-
+public class PlusOpt extends TwoTernary {
 	public int fetchPriority() {
 		return 4;
 	}
 
-	public OptEnum fetchSelf() {
-		return OptEnum.PLUS;
+	public String fetchSelf() {
+		return "+";
 	}
-
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
-	}
-	
 	public Object calculate() {
 		Number lval = (Number) calculateItem(this.left);
 		Number rval = (Number) calculateItem(this.right);

@@ -1,28 +1,18 @@
 package org.nutz.el2.opt.arithmetic;
-
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * "-"
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class SubOpt extends AbstractOpt{
-	private Object right;
-	private Object left;
+public class SubOpt extends TwoTernary{
 
-	public OptEnum fetchSelf() {
-		return OptEnum.SUB;
+	public String fetchSelf() {
+		return "-";
 	}
 	public int fetchPriority() {
 		return 4;
-	}
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
 	}
 	
 	public Object calculate() {

@@ -1,10 +1,11 @@
-package org.nutz.el2.opt;
+package org.nutz.el2.opt.object;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
 import org.nutz.el2.obj.IdentifierObj;
+import org.nutz.el2.opt.AbstractOpt;
 import org.nutz.lang.Mirror;
 
 /**
@@ -16,13 +17,10 @@ public class InvokeMethodOpt extends AbstractOpt {
 	private Object left;
 	private List<Object> right;
 
-	@Override
 	public int fetchPriority() {
-
 		return 0;
 	}
 
-	@Override
 	public void wrap(Queue<Object> operand) {
 		right = new ArrayList<Object>();
 		//读取参数列表
@@ -51,8 +49,8 @@ public class InvokeMethodOpt extends AbstractOpt {
 		return Mirror.me(obj).invoke(obj, method.toString(), right.toArray());
 	}
 
-	public OptEnum fetchSelf() {
-		return OptEnum.INVOKE;
+	public String fetchSelf() {
+		return "invoke";
 	}
 
 }

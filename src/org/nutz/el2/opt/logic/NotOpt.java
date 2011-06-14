@@ -3,7 +3,6 @@ package org.nutz.el2.opt.logic;
 import java.util.Queue;
 
 import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
 
 /**
  * Not(!)
@@ -28,7 +27,7 @@ public class NotOpt extends AbstractOpt{
 		throw new RuntimeException();
 	}
 	
-	public OptEnum fetchSelf() {
-		return OptEnum.NOT;
+	public String fetchSelf() {
+		return "!";
 	}
 }

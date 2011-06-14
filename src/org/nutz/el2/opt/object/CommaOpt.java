@@ -1,6 +1,8 @@
-package org.nutz.el2.opt;
+package org.nutz.el2.opt.object;
 
 import java.util.Queue;
+
+import org.nutz.el2.opt.AbstractOpt;
 
 /**
  * ","
@@ -17,8 +19,8 @@ public class CommaOpt extends AbstractOpt {
 	public Object calculate() {
 		return null;
 	}
-	public OptEnum fetchSelf() {
-		return OptEnum.COMMA;
+	public String fetchSelf() {
+		return ",";
 	}
 
 }

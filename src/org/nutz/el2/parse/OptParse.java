@@ -2,8 +2,6 @@ package org.nutz.el2.parse;
 
 import java.util.Queue;
 
-import org.nutz.el2.opt.AccessOpt;
-import org.nutz.el2.opt.CommaOpt;
 import org.nutz.el2.opt.arithmetic.DivOpt;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.ModOpt;
@@ -22,6 +20,9 @@ import org.nutz.el2.opt.logic.NotOpt;
 import org.nutz.el2.opt.logic.OrOpt;
 import org.nutz.el2.opt.logic.QuestionOpt;
 import org.nutz.el2.opt.logic.QuestionSelectOpt;
+import org.nutz.el2.opt.object.AccessOpt;
+import org.nutz.el2.opt.object.ArrayOpt;
+import org.nutz.el2.opt.object.CommaOpt;
 
 /**
  * 操作符转换器
@@ -106,7 +107,6 @@ public class OptParse implements Parse {
 			throw new RuntimeException("表达式错误,请检查'|'后是否有非法字符!");
 		case '?':
 			exp.poll();
-//			return new CommaOpt();
 			return new QuestionOpt();
 		case ':':
 			exp.poll();
@@ -118,6 +118,13 @@ public class OptParse implements Parse {
 		case ',':
 			exp.poll();
 			return new CommaOpt();
+		case '[':
+			exp.poll();
+			return new CommaOpt();
+//			return new ListOpt();
+		case ']':
+			exp.poll();
+			return new ArrayOpt();
 		}
 		return null;
 	}

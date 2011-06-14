@@ -1,25 +1,16 @@
 package org.nutz.el2.opt.logic;
 
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * or(||)
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class OrOpt extends AbstractOpt{
-	private Object right;
-	private Object left;
+public class OrOpt extends TwoTernary{
 	
 	public int fetchPriority() {
 		return 12;
-	}
-	public void wrap(Queue<Object> operand) {
-		right = operand.poll();
-		left = operand.poll();
 	}
 	public Object calculate() {
 		Object lval = calculateItem(left);
@@ -38,8 +29,8 @@ public class OrOpt extends AbstractOpt{
 		}
 		return false;
 	}
-	public OptEnum fetchSelf() {
-		return OptEnum.OR;
+	public String fetchSelf() {
+		return "||";
 	}
 
 }
