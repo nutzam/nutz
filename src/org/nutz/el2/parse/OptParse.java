@@ -2,22 +2,26 @@ package org.nutz.el2.parse;
 
 import java.util.Queue;
 
-import org.nutz.el2.Opt.AndOpt;
-import org.nutz.el2.Opt.DivOpt;
-import org.nutz.el2.Opt.EQOpt;
-import org.nutz.el2.Opt.GTEOpt;
-import org.nutz.el2.Opt.GTOpt;
-import org.nutz.el2.Opt.LBracketOpt;
-import org.nutz.el2.Opt.LTEOpt;
-import org.nutz.el2.Opt.LTOpt;
-import org.nutz.el2.Opt.ModOpt;
-import org.nutz.el2.Opt.MulOpt;
-import org.nutz.el2.Opt.NEQOpt;
-import org.nutz.el2.Opt.NotOpt;
-import org.nutz.el2.Opt.OrOpt;
-import org.nutz.el2.Opt.PlusOpt;
-import org.nutz.el2.Opt.RBracketOpt;
-import org.nutz.el2.Opt.SubOpt;
+import org.nutz.el2.opt.AccessOpt;
+import org.nutz.el2.opt.CommaOpt;
+import org.nutz.el2.opt.arithmetic.DivOpt;
+import org.nutz.el2.opt.arithmetic.LBracketOpt;
+import org.nutz.el2.opt.arithmetic.ModOpt;
+import org.nutz.el2.opt.arithmetic.MulOpt;
+import org.nutz.el2.opt.arithmetic.PlusOpt;
+import org.nutz.el2.opt.arithmetic.RBracketOpt;
+import org.nutz.el2.opt.arithmetic.SubOpt;
+import org.nutz.el2.opt.logic.AndOpt;
+import org.nutz.el2.opt.logic.EQOpt;
+import org.nutz.el2.opt.logic.GTEOpt;
+import org.nutz.el2.opt.logic.GTOpt;
+import org.nutz.el2.opt.logic.LTEOpt;
+import org.nutz.el2.opt.logic.LTOpt;
+import org.nutz.el2.opt.logic.NEQOpt;
+import org.nutz.el2.opt.logic.NotOpt;
+import org.nutz.el2.opt.logic.OrOpt;
+import org.nutz.el2.opt.logic.QuestionOpt;
+import org.nutz.el2.opt.logic.QuestionSelectOpt;
 
 /**
  * 操作符转换器
@@ -100,9 +104,20 @@ public class OptParse implements Parse {
 				return new AndOpt();
 			}
 			throw new RuntimeException("表达式错误,请检查'|'后是否有非法字符!");
+		case '?':
+			exp.poll();
+//			return new CommaOpt();
+			return new QuestionOpt();
+		case ':':
+			exp.poll();
+			return new QuestionSelectOpt();
+		
 		case '.':
 			exp.poll();
-			return
+			return new AccessOpt();
+		case ',':
+			exp.poll();
+			return new CommaOpt();
 		}
 		return null;
 	}
