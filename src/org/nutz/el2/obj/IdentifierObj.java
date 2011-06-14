@@ -20,7 +20,8 @@ public class IdentifierObj {
 		if(context.has(val)){
 			return context.get(val);
 		}
-		throw new RuntimeException("找不到变量'"+val+"'!");
+		return null;
+//		throw new RuntimeException("找不到变量'"+val+"'!");
 	}
 	public String toString() {
 		return val;

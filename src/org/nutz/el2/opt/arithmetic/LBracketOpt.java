@@ -3,7 +3,6 @@ package org.nutz.el2.opt.arithmetic;
 import java.util.Queue;
 
 import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
 
 /**
  * "("
@@ -11,8 +10,8 @@ import org.nutz.el2.opt.OptEnum;
  *
  */
 public class LBracketOpt extends AbstractOpt{
-	public OptEnum fetchSelf() {
-		return OptEnum.LBRACKET;
+	public String fetchSelf() {
+		return "(";
 	}
 	public int fetchPriority() {
 		return 100;

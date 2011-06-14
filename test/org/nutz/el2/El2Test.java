@@ -1,6 +1,6 @@
 package org.nutz.el2;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -147,6 +147,9 @@ public class El2Test {
 		assertEquals(10, el.eval(context, "a"));
 		assertEquals(20, el.eval(context, "a + a"));
 		
+		context.set("b", "abc");
+		assertEquals(25, el.eval(context, "a + 2 +a+ b.length()"));
+		
 		String s = "a>5?'GT 5':'LTE 5'";
 		assertEquals("GT 5", el.eval(context, s));
 		context.set("a", 5);
@@ -160,5 +163,25 @@ public class El2Test {
 		list.add("jk");
 		context.set("a", list);
 		assertEquals("jk", el.eval(context, "a.get(0)"));
+		
+		assertTrue((Boolean)el.eval(Lang.context(),"a==null"));
+		try{
+			assertTrue((Boolean)el.eval(Lang.context(), "a.a"));
+			fail();
+		}catch(Exception e){}
+	}
+	
+	/**
+	 * 数组测试
+	 */
+	@Test
+	public void array(){
+		Context context = Lang.context();
+		String[] str = new String[]{"a","b","c"};
+		String[][] bb = new String[][]{{"a","b"},{"c","d"}};
+		context.set("a", str);
+		context.set("b", bb);
+		assertEquals("d", el.eval(context, "b[1][1]"));
+		assertEquals("b", el.eval(context, "a[1]"));
 	}
 }

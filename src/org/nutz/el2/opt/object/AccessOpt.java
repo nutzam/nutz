@@ -1,28 +1,16 @@
-package org.nutz.el2.opt;
-
-import java.util.Queue;
+package org.nutz.el2.opt.object;
 
 import org.nutz.el2.obj.IdentifierObj;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * 访问符:'.'
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class AccessOpt extends AbstractOpt {
-	private Object left;
-	private Object right;
-	
-	
-
+public class AccessOpt extends TwoTernary {
 	public int fetchPriority() {
-
 		return 1;
-	}
-
-	public void wrap(Queue<Object> operand) {
-		this.right = operand.poll();
-		this.left = operand.poll();
 	}
 
 	public Object calculate() {
@@ -55,8 +43,8 @@ public class AccessOpt extends AbstractOpt {
 		return left;
 	}
 
-	public OptEnum fetchSelf() {
-		return OptEnum.ACCESS;
+	public String fetchSelf() {
+		return ".";
 	}
 
 }

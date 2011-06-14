@@ -1,30 +1,20 @@
 package org.nutz.el2.opt.logic;
 
-import java.util.Queue;
-
-import org.nutz.el2.opt.AbstractOpt;
-import org.nutz.el2.opt.OptEnum;
+import org.nutz.el2.opt.TwoTernary;
 
 /**
  * 小于
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class LTOpt extends AbstractOpt {
-	private Object right;
-	private Object left;
+public class LTOpt extends TwoTernary {
 
 	public int fetchPriority() {
 		return 6;
 	}
 
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
-	}
-
-	public OptEnum fetchSelf() {
-		return OptEnum.LT;
+	public String fetchSelf() {
+		return "<";
 	}
 
 	public Object calculate() {
