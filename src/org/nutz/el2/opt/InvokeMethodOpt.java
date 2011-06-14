@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.lang.Mirror;
 
 /**
@@ -43,6 +44,9 @@ public class InvokeMethodOpt extends AbstractOpt {
 		AccessOpt lval = (AccessOpt) left;
 		Object[] objs = (Object[]) lval.calculate();
 		Object obj = objs[0];
+		if(objs[0] instanceof IdentifierObj){
+			obj = ((IdentifierObj) objs[0]).fetchVal();
+		}
 		Object method = objs[1];
 		return Mirror.me(obj).invoke(obj, method.toString(), right.toArray());
 	}
