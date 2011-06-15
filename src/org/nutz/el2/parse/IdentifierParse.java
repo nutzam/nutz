@@ -18,7 +18,6 @@ public class IdentifierParse implements Parse{
 			while(!exp.isEmpty() && Character.isJavaIdentifierPart(exp.peek())){
 				sb.append(exp.poll());
 			}
-			//@ JKTODO 这个地方可以弄个接口,然后整成自定义函数什么的
 			if(sb.toString().equals("true")){
 				return true;
 			}
