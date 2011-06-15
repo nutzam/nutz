@@ -1,14 +1,17 @@
 package org.nutz.el2.opt.object;
 
+import java.util.List;
+
 import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.TwoTernary;
+import org.nutz.lang.Mirror;
 
 /**
  * 访问符:'.'
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class AccessOpt extends TwoTernary {
+public class AccessOpt extends TwoTernary implements RunMethod{
 	public int fetchPriority() {
 		return 1;
 	}
@@ -18,6 +21,23 @@ public class AccessOpt extends TwoTernary {
 			left = ((AccessOpt) left).fetchVar();
 		}
 		return new Object[]{left, right};
+	}
+	
+	public Object run(List<Object> param) {
+		Object obj = left ;
+		if(left instanceof AccessOpt){
+			obj = ((AccessOpt) left).fetchVar();
+		}
+		
+		if(obj instanceof IdentifierObj){
+			obj = ((IdentifierObj) obj).fetchVal();
+		}
+		
+		Mirror<?> me = Mirror.me(obj);
+		if(param.isEmpty()){
+			return me.invoke(obj, right.toString());
+		}
+		return me.invoke(obj, right.toString(), param.toArray());
 	}
 	
 	/**

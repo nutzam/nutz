@@ -186,4 +186,12 @@ public class El2Test {
 		assertEquals("b", el.eval(context, "a[2-1]"));
 		assertEquals("d", el.eval(context, "b[1][1]"));
 	}
+	
+	/**
+	 * 自定义函数
+	 */
+	@Test
+	public void custom(){
+		assertEquals(2, el.eval("max(1, 2)"));
+	}
 }
