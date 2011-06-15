@@ -11,7 +11,7 @@ import org.nutz.el2.opt.arithmetic.RBracketOpt;
 import org.nutz.el2.parse.Converter;
 
 /**
- * Shunting yard算法是一个用于将中缀表达式转换为后缀表达式的经典算法，由艾兹格·迪杰斯特拉引入，因其操作类似于火车编组场而得名。
+ * Shunting yard算法是一个用于将中缀表达式转换为后缀表达式的经典算法，由艾兹格·迪杰斯特拉引入，因其操作类似于火车编组场而得名。<br/>
  * 参考:
  * <a href='http://zh.wikipedia.org/wiki/Shunting_yard%E7%AE%97%E6%B3%95'>Shunting yard算法</a>
  * 

@@ -9,7 +9,9 @@ import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.lang.util.Context;
 
 /**
- * 逆波兰表达式计算
+ * 逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法），是一种是由波兰数学家扬·武卡谢维奇1920年引入的数学表达式方式，在逆波兰记法中，所有操作符置于操作数的后面，因此也被称为后缀表示法。<br/>
+ * 参考:<a href="http://zh.wikipedia.org/wiki/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E7%A4%BA%E6%B3%95">逆波兰表达式</a>
+ * 
  * @author juqkai(juqkai@gmail.com)
  *
  */
