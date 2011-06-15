@@ -17,10 +17,10 @@ public class IdentifierObj {
 		return val;
 	}
 	public Object fetchVal(){
-		if(context.has(val)){
+		if(context != null && context.has(val)){
 			return context.get(val);
 		}
-		return null;
+		return val;
 	}
 	public String toString() {
 		return val;
