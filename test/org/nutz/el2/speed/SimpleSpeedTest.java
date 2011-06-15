@@ -3,6 +3,8 @@ package org.nutz.el2.speed;
 import org.nutz.el.El;
 import org.nutz.el.obj.BinElObj;
 import org.nutz.el2.El2;
+import org.nutz.el2.El2pre;
+import org.nutz.el2.El2pre2;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
@@ -72,10 +74,46 @@ public class SimpleSpeedTest {
 			}
 		});
 		System.out.println("\n" + Strings.dup('=', 100));
+		
+		Stopwatch sw4 = Stopwatch.run(new Atom() {
+			public void run() {
+				try {
+					El2pre el2pre = new El2pre(elstr);
+					context.set("num", 0);
+					context.set("z", z);
+					for (int i = 0; i < max; i++)
+						context.set("num", el2pre.eval(context.set("i", i)));
+					System.out.println("Num: " + context.getInt("num"));
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		});
+		System.out.println("\n" + Strings.dup('=', 100));
+		
+		Stopwatch sw5 = Stopwatch.run(new Atom() {
+			public void run() {
+				try {
+					El2pre2 el2pre = new El2pre2(elstr);
+					context.set("num", 0);
+					context.set("z", z);
+					for (int i = 0; i < max; i++)
+						context.set("num", el2pre.eval(context.set("i", i)));
+					System.out.println("Num: " + context.getInt("num"));
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		});
+		System.out.println("\n" + Strings.dup('=', 100));
 
 		System.out.printf("\n%20s : %s", "Invoke", sw.toString());
 		System.out.printf("\n%20s : %s", "Reflect", sw2.toString());
 		System.out.printf("\n%20s : %s", "Reflect", sw3.toString());
+		System.out.printf("\n%20s : %s", "Reflect", sw4.toString());
+		System.out.printf("\n%20s : %s", "Reflect", sw5.toString());
 		System.out.println();
 
 	}
