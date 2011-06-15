@@ -21,9 +21,6 @@ public class RPNCalculate {
 	 * @param rpn
 	 * @return
 	 */
-	public Object calculate(Queue<Object> rpn){
-		return calculate(null,rpn);
-	}
 	public Object calculate(Context context, Queue<Object> rpn) {
 		Deque<Object> operand = OperatorTree(context, rpn);
 		if(operand.peek() instanceof Operator){

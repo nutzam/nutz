@@ -2,10 +2,13 @@ package org.nutz.el2.parse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
 import org.nutz.el2.Operator;
+import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.NegativeOpt;
 import org.nutz.el2.opt.arithmetic.RBracketOpt;
@@ -27,26 +30,48 @@ public class Converter {
 		parses.add(new IdentifierParse());
 		parses.add(new ValParse());
 	}
+	
 	//表达式字符队列
 	private Queue<Character> exp;
+	//表达式项
+	private Queue<Object> itemCache;
+	//括号栈
+	private Deque<BracketType> bracket = new LinkedList<BracketType>();
 	
 	//上一个数据
 	private Object prev = null;
-	//是否有执行操作,判断方法体的括号
-	private boolean isInvoke = false;
 	
 	public Converter(Queue<Character> expression) {
 		this.exp = expression;
+		itemCache = new LinkedList<Object>();
 		skipSpace();
+		initItems();
 	}
 	
 	/**
-	 * 取得一个有效数据
-	 * @param exp
+	 * 初始化EL项
+	 * @throws IOException 
+	 */
+	private void initItems(){
+		while(!exp.isEmpty()){
+			Object obj = parseItem();
+			//处理数组的情况
+			if(obj.getClass().isArray()){
+				for(Object o : (Object[])obj){
+					itemCache.add(o);
+				}
+				continue;
+			}
+			itemCache.add(obj);
+		}
+	}
+	
+	/**
+	 * 解析数据
 	 * @return
 	 * @throws IOException
 	 */
-	public Object fetchItem() throws IOException{
+	private Object parseItem(){
 		Object obj = null;
 		for(Parse parse : parses){
 			obj = parse.fetchItem(exp);
@@ -58,23 +83,40 @@ public class Converter {
 		throw new RuntimeException("无法解析!");
 	}
 	
+	/**
+	 * 取得一个有效数据
+	 * @param exp
+	 * @return
+	 * @throws IOException
+	 */
+	public Object fetchItem(){
+		return itemCache.poll();
+	}
+	
+	
+
 	
 	/**
 	 * 转换数据,主要是转换负号,方法执行
 	 * @param item
 	 * @return
-	 * @throws IOException
 	 */
-	private Object fetchItem(Object item) throws IOException{
+	private Object fetchItem(Object item){
 		//左括号
-		if(item instanceof LBracketOpt && !(prev instanceof Operator)){
-			item = new MethodOpt();
-			isInvoke = true;
+		if(item instanceof LBracketOpt){
+			if(prev instanceof IdentifierObj){
+				item = new Object[]{new MethodOpt(), new LBracketOpt()};
+				bracket.addFirst(BracketType.Method);
+			}else {
+				bracket.addFirst(BracketType.Default);
+			}
 		}
 		//右括号
-		if(isInvoke && item instanceof RBracketOpt){
-			item = new InvokeMethodOpt();
-			isInvoke = false;
+		if(item instanceof RBracketOpt){
+			switch(bracket.poll()){
+			case Method:
+				item = new Object[]{new RBracketOpt(),new InvokeMethodOpt()};
+			}
 		}
 		//转换负号'-'
 		if(item instanceof SubOpt && (prev == null || prev instanceof Operator)){
@@ -83,6 +125,8 @@ public class Converter {
 		prev = item;
 		return item;
 	}
+	
+	
 	
 	
 	/**
@@ -102,6 +146,23 @@ public class Converter {
 	 * @return
 	 */
 	public boolean isEnd(){
-		return exp.isEmpty();
+		return itemCache.isEmpty();
+	}
+	
+	
+	/**
+	 * 括号类型
+	 * @author juqkai(juqkai@gmail.com)
+	 *
+	 */
+	enum BracketType{
+		/**
+		 * 方法
+		 */
+		Method,
+		/**
+		 * 默认
+		 */
+		Default;
 	}
 }

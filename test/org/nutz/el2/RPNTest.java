@@ -15,7 +15,7 @@ public class RPNTest {
 	public void setup(){
 		sy = new ShuntingYard();
 	}
-	private String parseRPN(String val) throws IOException{
+	private String parseRPN(String val){
 		String rpn = "";
 		for(Object obj : sy.parseToRPN(val)){
 			rpn += obj.toString();

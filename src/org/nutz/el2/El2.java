@@ -1,6 +1,5 @@
 package org.nutz.el2;
 
-import java.io.IOException;
 import java.util.Queue;
 
 import org.nutz.el2.arithmetic.RPNCalculate;
@@ -17,29 +16,14 @@ public class El2 {
 	 * @return
 	 */
 	public Object eval(String val) {
-		try {
-			//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-			
-			Queue<Object> rpn = sy.parseToRPN(val);
-			return rc.calculate(rpn);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
+		return eval(null, val);
 	}
 
 	public Object eval(Context context, String val) {
-		try {
-			Queue<Object> rpn = sy.parseToRPN(val);
-			return rc.calculate(context, rpn);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		Queue<Object> rpn = sy.parseToRPN(val);
+		return rc.calculate(context, rpn);
 	}
 	
-	//@ JKTODO 添加变量支持
-	//@ JKTODO 在变量基础上,添加数组支持
 	//@ JKTODO abc(1+(1-1)),不知道这个函数请求会不会出错
 }
