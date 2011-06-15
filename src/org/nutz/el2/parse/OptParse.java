@@ -23,6 +23,7 @@ import org.nutz.el2.opt.logic.QuestionSelectOpt;
 import org.nutz.el2.opt.object.AccessOpt;
 import org.nutz.el2.opt.object.ArrayOpt;
 import org.nutz.el2.opt.object.CommaOpt;
+import org.nutz.el2.opt.object.FetchArrayOpt;
 
 /**
  * 操作符转换器
@@ -120,11 +121,11 @@ public class OptParse implements Parse {
 			return new CommaOpt();
 		case '[':
 			exp.poll();
-			return new CommaOpt();
+			return new ArrayOpt();
 //			return new ListOpt();
 		case ']':
 			exp.poll();
-			return new ArrayOpt();
+			return new FetchArrayOpt();
 		}
 		return null;
 	}

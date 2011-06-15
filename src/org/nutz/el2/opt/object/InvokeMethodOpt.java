@@ -5,7 +5,8 @@ import java.util.Queue;
 import org.nutz.el2.opt.AbstractOpt;
 
 /**
- * 执行
+ * 方法执行
+ * 以方法体右括号做为边界
  * @author juqkai(juqkai@gmail.com)
  *
  */
@@ -17,14 +18,14 @@ public class InvokeMethodOpt extends AbstractOpt {
 	}
 
 	public Object calculate() {
-		if(left instanceof ListOpt){
-			return ((ListOpt) left).calculate();
+		if(left instanceof MethodOpt){
+			return ((MethodOpt) left).calculate();
 		}
 		return null;
 	}
 
 	public String fetchSelf() {
-		return "invoke";
+		return "method invoke";
 	}
 
 	public void wrap(Queue<Object> operand) {
