@@ -5,9 +5,8 @@ import java.util.List;
 import java.util.Queue;
 
 import org.nutz.el2.Operator;
-import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.TwoTernary;
-import org.nutz.lang.Mirror;
+import org.nutz.el2.opt.custom.CustomMake;
 
 
 /**
@@ -30,32 +29,48 @@ public class MethodOpt extends TwoTernary {
 		super.wrap(rpn);
 	}
 	
-	public Object calculate() {
+	public Object calculate(){
+		RunMethod rm = fetchMethod();
+		return rm.run(fetchParam());
+	}
+	
+	private RunMethod fetchMethod(){
 		if(!(left instanceof AccessOpt)){
 			//@ JKTODO 添加自定义方法的调用
-			return null;
+			return CustomMake.make(left.toString());
 		}
 		AccessOpt lval = (AccessOpt) left;
-		Object[] objs = (Object[]) lval.calculate();
-		Object obj = objs[0];
-		if(objs[0] instanceof IdentifierObj){
-			obj = ((IdentifierObj) objs[0]).fetchVal();
-		}
-		Object method = objs[1];
-		
-		List<Object> rvals = fetchParam();
-		
-		Mirror<?> me = Mirror.me(obj);
-		if(rvals.isEmpty()){
-			return me.invoke(obj, method.toString());
-		}
-		for(int i = 0; i < rvals.size(); i ++){
-			if(rvals.get(i) instanceof Operator){
-				rvals.set(i, ((Operator)rvals.get(i)).calculate());
-			}
-		}
-		return me.invoke(obj, method.toString(), rvals.toArray());
+		return lval;
 	}
+	
+//	public Object calculate() {
+//		
+//		Object[] objs = fetchMethodBody();
+//		List<Object> rvals = fetchParam();
+//		
+//		Object obj = objs[0];
+//		if(objs[0] instanceof IdentifierObj){
+//			obj = ((IdentifierObj) objs[0]).fetchVal();
+//		}
+//		Object method = objs[1];
+//		
+//		
+//		Mirror<?> me = Mirror.me(obj);
+//		if(rvals.isEmpty()){
+//			return me.invoke(obj, method.toString());
+//		}
+//		return me.invoke(obj, method.toString(), rvals.toArray());
+//	}
+//	
+//	private Object[] fetchMethodBody(){
+//		if(!(left instanceof AccessOpt)){
+//			//@ JKTODO 添加自定义方法的调用
+//			Custom cu = CustomMake.make(left.toString());
+//			return cu.fetchMethodBody();
+//		}
+//		AccessOpt lval = (AccessOpt) left;
+//		return (Object[]) lval.calculate();
+//	}
 	
 	/**
 	 * 取得方法执行的参数
@@ -69,6 +84,13 @@ public class MethodOpt extends TwoTernary {
 				rvals = (List<Object>) ((CommaOpt) right).calculate();
 			} else {
 				rvals.add(calculateItem(right));
+			}
+		}
+		if(!rvals.isEmpty()){
+			for(int i = 0; i < rvals.size(); i ++){
+				if(rvals.get(i) instanceof Operator){
+					rvals.set(i, ((Operator)rvals.get(i)).calculate());
+				}
 			}
 		}
 		return rvals;
