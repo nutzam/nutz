@@ -2,6 +2,7 @@ package org.nutz.el2.opt.object;
 
 import java.util.List;
 
+import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.TwoTernary;
 import org.nutz.lang.Mirror;
@@ -24,14 +25,7 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	}
 	
 	public Object run(List<Object> param) {
-		Object obj = left ;
-		if(left instanceof AccessOpt){
-			obj = ((AccessOpt) left).fetchVar();
-		}
-		
-		if(obj instanceof IdentifierObj){
-			obj = ((IdentifierObj) obj).fetchVal();
-		}
+		Object obj = fetchVar();
 		
 		Mirror<?> me = Mirror.me(obj);
 		if(param.isEmpty()){
@@ -41,19 +35,15 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	}
 	
 	/**
-	 * 执行方法
-	 * @param var 方法参数
-	 */
-	public void runMethod(Object... var){
-		
-	}
-	/**
 	 * 取得变得的值
 	 * @return 
 	 */
 	public Object fetchVar(){
 		if(left instanceof AccessOpt){
 			return ((AccessOpt)left).fetchVar();
+		}
+		if(left instanceof Operator){
+			return ((Operator) left).calculate();
 		}
 		if(left instanceof IdentifierObj){
 			return ((IdentifierObj) left).fetchVal();

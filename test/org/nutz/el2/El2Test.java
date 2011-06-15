@@ -183,6 +183,7 @@ public class El2Test {
 		context.set("a", str);
 		context.set("b", bb);
 		assertEquals("b", el.eval(context, "a[1]"));
+		assertEquals("b", el.eval(context, "a[1].toString()"));
 		assertEquals("b", el.eval(context, "a[2-1]"));
 		assertEquals("d", el.eval(context, "b[1][1]"));
 	}
