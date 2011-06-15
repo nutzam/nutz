@@ -162,6 +162,8 @@ public class El2Test {
 		List<String> list = new ArrayList<String>();
 		list.add("jk");
 		context.set("a", list);
+		assertEquals("jk", el.eval(context, "a.get((1-1))"));
+		assertEquals("jk", el.eval(context, "a.get(1-1)"));
 		assertEquals("jk", el.eval(context, "a.get(0)"));
 		
 		assertTrue((Boolean)el.eval(Lang.context(),"a==null"));

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
 
+import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.TwoTernary;
 import org.nutz.lang.Mirror;
@@ -29,7 +30,6 @@ public class MethodOpt extends TwoTernary {
 		super.wrap(rpn);
 	}
 	
-	@SuppressWarnings("unchecked")
 	public Object calculate() {
 		if(!(left instanceof AccessOpt)){
 			//@ JKTODO 添加自定义方法的调用
@@ -43,6 +43,26 @@ public class MethodOpt extends TwoTernary {
 		}
 		Object method = objs[1];
 		
+		List<Object> rvals = fetchParam();
+		
+		Mirror<?> me = Mirror.me(obj);
+		if(rvals.isEmpty()){
+			return me.invoke(obj, method.toString());
+		}
+		for(int i = 0; i < rvals.size(); i ++){
+			if(rvals.get(i) instanceof Operator){
+				rvals.set(i, ((Operator)rvals.get(i)).calculate());
+			}
+		}
+		return me.invoke(obj, method.toString(), rvals.toArray());
+	}
+	
+	/**
+	 * 取得方法执行的参数
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	private List<Object> fetchParam(){
 		List<Object> rvals = new ArrayList<Object>();
 		if(right != null){
 			if(right instanceof CommaOpt){
@@ -51,12 +71,9 @@ public class MethodOpt extends TwoTernary {
 				rvals.add(calculateItem(right));
 			}
 		}
-		Mirror<?> me = Mirror.me(obj);
-		if(rvals.isEmpty()){
-			return me.invoke(obj, method.toString());
-		}
-		return me.invoke(obj, method.toString(), rvals.toArray());
+		return rvals;
 	}
+	
 	public String fetchSelf() {
 		return "method";
 	}

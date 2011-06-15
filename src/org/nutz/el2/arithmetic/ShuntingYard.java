@@ -22,7 +22,7 @@ public class ShuntingYard {
 	private Queue<Object> rpn;
 	private Deque<Operator> opts;
 	
-	public Queue<Object> parseToRPN(String val) throws IOException{
+	public Queue<Object> parseToRPN(String val){
 		Queue<Character> reader = new LinkedList<Character>();
 		for(char c : val.toCharArray()){
 			reader.add(c);
@@ -37,7 +37,7 @@ public class ShuntingYard {
 	 * @return
 	 * @throws IOException 
 	 */
-	private Queue<Object> parseToRPN(Queue<Character> queue) throws IOException {
+	private Queue<Object> parseToRPN(Queue<Character> queue) {
 		rpn = new LinkedList<Object>();
 		opts = new LinkedList<Operator>();
 		
