@@ -25,5 +25,4 @@ public class El2 {
 		return rc.calculate(context, rpn);
 	}
 	
-	//@ JKTODO abc(1+(1-1)),不知道这个函数请求会不会出错
 }
