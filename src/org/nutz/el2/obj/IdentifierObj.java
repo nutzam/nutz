@@ -21,7 +21,6 @@ public class IdentifierObj {
 			return context.get(val);
 		}
 		return null;
-//		throw new RuntimeException("找不到变量'"+val+"'!");
 	}
 	public String toString() {
 		return val;

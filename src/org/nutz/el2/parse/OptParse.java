@@ -121,11 +121,10 @@ public class OptParse implements Parse {
 			return new CommaOpt();
 		case '[':
 			exp.poll();
-			return new ArrayOpt();
-//			return new ListOpt();
+			return new Object[]{new ArrayOpt(),new LBracketOpt()};
 		case ']':
 			exp.poll();
-			return new FetchArrayOpt();
+			return new Object[]{new RBracketOpt(), new FetchArrayOpt()};
 		}
 		return null;
 	}

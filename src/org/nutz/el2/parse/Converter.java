@@ -84,19 +84,6 @@ public class Converter {
 	}
 	
 	/**
-	 * 取得一个有效数据
-	 * @param exp
-	 * @return
-	 * @throws IOException
-	 */
-	public Object fetchItem(){
-		return itemCache.poll();
-	}
-	
-	
-
-	
-	/**
 	 * 转换数据,主要是转换负号,方法执行
 	 * @param item
 	 * @return
@@ -126,9 +113,6 @@ public class Converter {
 		return item;
 	}
 	
-	
-	
-	
 	/**
 	 * 跳过空格,并返回是否跳过空格(是否存在空格)
 	 * @return
@@ -141,6 +125,18 @@ public class Converter {
 		}
 		return space;
 	}
+
+	/**
+	 * 取得一个有效数据
+	 * @param exp
+	 * @return
+	 * @throws IOException
+	 */
+	public Object fetchItem(){
+		return itemCache.poll();
+	}
+	
+	
 	/**
 	 * 是否结束
 	 * @return

@@ -85,7 +85,6 @@ public class El2Test {
 		assertEquals(true, el.eval("true || false"));
 		assertEquals(false, el.eval("true && false"));
 		assertEquals(false, el.eval("false || true && false"));
-		//@ JKTODO 短路判断,会不会存在右边的表达式会运行的情况?
 	}
 	
 	/**
@@ -184,6 +183,7 @@ public class El2Test {
 		context.set("a", str);
 		context.set("b", bb);
 		assertEquals("b", el.eval(context, "a[1]"));
+		assertEquals("b", el.eval(context, "a[2-1]"));
 		assertEquals("d", el.eval(context, "b[1][1]"));
 	}
 }
