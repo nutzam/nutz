@@ -106,7 +106,7 @@ public class Converter {
 			}
 		}
 		//转换负号'-'
-		if(item instanceof SubOpt && (prev == null || prev instanceof Operator)){
+		if(item instanceof SubOpt && (prev == null || prev instanceof LBracketOpt)){
 			item = new NegativeOpt();
 		}
 		prev = item;

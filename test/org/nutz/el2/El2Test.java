@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.el2.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
@@ -211,5 +212,19 @@ public class El2Test {
 	public void custom(){
 		assertEquals(2, el.eval("max(1, 2)"));
 		assertEquals("jk", el.eval("trim('    jk    ')"));
+	}
+	
+	@Test
+	public void speed(){
+		SimpleSpeedTest z = new SimpleSpeedTest();
+		int num = 4988;
+		String elstr = "num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i)";
+		int i = 5000;
+		Context con = Lang.context();
+		con.set("num", num);
+		con.set("i", i);
+		con.set("z", z);
+		System.out.println(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i));
+		assertEquals(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i), el.eval(con, elstr));
 	}
 }
