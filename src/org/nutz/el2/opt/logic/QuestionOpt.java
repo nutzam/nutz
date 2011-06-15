@@ -22,11 +22,4 @@ public class QuestionOpt extends TwoTernary{
 	public String fetchSelf() {
 		return "?";
 	}
-
-	public Object getRight() {
-		if(right instanceof Operator){
-			return ((Operator) right).calculate();
-		}
-		return right;
-	}
 }

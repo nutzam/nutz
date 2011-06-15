@@ -8,8 +8,6 @@ import java.util.Queue;
 import org.nutz.el2.Operator;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.RBracketOpt;
-import org.nutz.el2.opt.object.CommaOpt;
-import org.nutz.el2.opt.object.ListOpt;
 import org.nutz.el2.parse.Converter;
 
 /**
@@ -65,17 +63,6 @@ public class ShuntingYard {
 	 * @param current
 	 */
 	private void parseOperator(Operator current){
-		if(current instanceof CommaOpt){
-			return;
-		}
-		if(current instanceof ListOpt){
-			if(!opts.isEmpty()){
-				rpn.add(opts.poll());
-			}
-			rpn.add(current);
-			return;
-		}
-		
 		//空,直接添加进操作符队列
 		if(opts.isEmpty()){
 			opts.addFirst(current);

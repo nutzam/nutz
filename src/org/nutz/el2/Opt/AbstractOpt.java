@@ -25,10 +25,16 @@ public abstract class AbstractOpt implements Operator{
 	 * @return
 	 */
 	protected Object calculateItem(Object obj){
+		if(obj == null){
+			return null;
+		}
 		if(obj instanceof Number){
 			return obj;
 		}
 		if(obj instanceof Boolean){
+			return obj;
+		}
+		if(obj instanceof String){
 			return obj;
 		}
 		if(obj instanceof IdentifierObj){
