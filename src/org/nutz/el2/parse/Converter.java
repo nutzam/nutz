@@ -11,7 +11,7 @@ import org.nutz.el2.opt.arithmetic.NegativeOpt;
 import org.nutz.el2.opt.arithmetic.RBracketOpt;
 import org.nutz.el2.opt.arithmetic.SubOpt;
 import org.nutz.el2.opt.object.InvokeMethodOpt;
-import org.nutz.el2.opt.object.ListOpt;
+import org.nutz.el2.opt.object.MethodOpt;
 
 /**
  * 转换器,也就是用来将字符串转换成队列.
@@ -68,7 +68,7 @@ public class Converter {
 	private Object fetchItem(Object item) throws IOException{
 		//左括号
 		if(item instanceof LBracketOpt && !(prev instanceof Operator)){
-			item = new ListOpt();
+			item = new MethodOpt();
 			isInvoke = true;
 		}
 		//右括号

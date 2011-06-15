@@ -10,11 +10,12 @@ import org.nutz.lang.Mirror;
 
 
 /**
- * 列表对象,基本上用来做为一个分割符
+ * 方法体封装.
+ * 主要是把方法的左括号做为边界
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class ListOpt extends TwoTernary {
+public class MethodOpt extends TwoTernary {
 
 	public int fetchPriority() {
 		return 1;
@@ -57,7 +58,7 @@ public class ListOpt extends TwoTernary {
 		return me.invoke(obj, method.toString(), rvals.toArray());
 	}
 	public String fetchSelf() {
-		return "list";
+		return "method";
 	}
 
 }
