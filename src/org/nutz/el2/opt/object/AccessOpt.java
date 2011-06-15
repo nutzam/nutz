@@ -18,10 +18,10 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	}
 
 	public Object calculate() {
-		if(left instanceof AccessOpt){
-			left = ((AccessOpt) left).fetchVar();
-		}
-		return new Object[]{left, right};
+		//如果直接调用计算方法,那基本上就是直接调用属性了吧...我也不知道^^
+		Object obj = fetchVar();
+		Mirror<?> me = Mirror.me(fetchVar());
+		return me.getValue(obj, right.toString());
 	}
 	
 	public Object run(List<Object> param) {

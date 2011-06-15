@@ -189,6 +189,20 @@ public class El2Test {
 	}
 	
 	/**
+	 * 属性测试
+	 */
+	@Test
+	public void field(){
+		class abc{
+			public String name = "jk";
+		}
+		Context context = Lang.context();
+		context.set("a", new abc());
+		assertEquals("jk", el.eval(context, "a.name"));
+//		assertFalse((Boolean)el.eval("Boolean.FALSE"));
+	}
+	
+	/**
 	 * 自定义函数
 	 */
 	@Test

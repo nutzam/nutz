@@ -43,34 +43,6 @@ public class MethodOpt extends TwoTernary {
 		return lval;
 	}
 	
-//	public Object calculate() {
-//		
-//		Object[] objs = fetchMethodBody();
-//		List<Object> rvals = fetchParam();
-//		
-//		Object obj = objs[0];
-//		if(objs[0] instanceof IdentifierObj){
-//			obj = ((IdentifierObj) objs[0]).fetchVal();
-//		}
-//		Object method = objs[1];
-//		
-//		
-//		Mirror<?> me = Mirror.me(obj);
-//		if(rvals.isEmpty()){
-//			return me.invoke(obj, method.toString());
-//		}
-//		return me.invoke(obj, method.toString(), rvals.toArray());
-//	}
-//	
-//	private Object[] fetchMethodBody(){
-//		if(!(left instanceof AccessOpt)){
-//			//@ JKTODO 添加自定义方法的调用
-//			Custom cu = CustomMake.make(left.toString());
-//			return cu.fetchMethodBody();
-//		}
-//		AccessOpt lval = (AccessOpt) left;
-//		return (Object[]) lval.calculate();
-//	}
 	
 	/**
 	 * 取得方法执行的参数

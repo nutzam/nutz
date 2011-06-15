@@ -25,5 +25,5 @@ public class El2 {
 		return rc.calculate(context, rpn);
 	}
 	
-	//@ JKTODO 自定义函数
+	//@ JKTODO 添加自动找包,比如现在就不能使用Boolean.FALSE来得到false
 }
