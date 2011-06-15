@@ -20,7 +20,7 @@ public class IdentifierObj {
 		if(context != null && context.has(val)){
 			return context.get(val);
 		}
-		return val;
+		return null;
 	}
 	public String toString() {
 		return val;

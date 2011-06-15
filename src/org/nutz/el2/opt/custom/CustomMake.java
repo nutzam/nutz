@@ -13,6 +13,9 @@ public class CustomMake {
 		if("max".equals(val)){
 			return new Max();
 		}
+		if("trim".equals(val)){
+			return new Trim();
+		}
 		return null;
 	}
 	

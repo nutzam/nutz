@@ -106,6 +106,7 @@ public class El2Test {
 		assertEquals(2, el.eval("'jk'.length()"));
 		assertEquals(2, el.eval("\"jk\".length()"));
 		assertEquals("jk", el.eval("\"    jk   \".trim()"));
+		assertEquals("j\\n\\tk", el.eval("\"j\\n\\tk\""));
 	}
 	
 	@Test
@@ -194,6 +195,7 @@ public class El2Test {
 	@Test
 	public void field(){
 		class abc{
+			@SuppressWarnings("unused")
 			public String name = "jk";
 		}
 		Context context = Lang.context();
@@ -208,5 +210,6 @@ public class El2Test {
 	@Test
 	public void custom(){
 		assertEquals(2, el.eval("max(1, 2)"));
+		assertEquals("jk", el.eval("trim('    jk    ')"));
 	}
 }
