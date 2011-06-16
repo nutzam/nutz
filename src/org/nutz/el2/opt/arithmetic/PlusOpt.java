@@ -16,22 +16,26 @@ public class PlusOpt extends TwoTernary {
 		return "+";
 	}
 	public Object calculate() {
-		if(this.right instanceof String || this.left instanceof String){
-			return this.left.toString() + this.right.toString();
+		Object lval = calculateItem(this.left);
+		Object rval = calculateItem(this.right);
+		
+		if(lval instanceof String || rval instanceof String){
+			return lval.toString() + rval.toString();
 		}
 		
-		Number lval = (Number) calculateItem(this.left);
-		Number rval = (Number) calculateItem(this.right);
-		if(rval instanceof Double || lval instanceof Double){
-			return lval.doubleValue() + rval.doubleValue();
+		Number nlval = (Number) lval;
+		Number nrval = (Number) rval;
+		
+		if(nrval instanceof Double || nlval instanceof Double){
+			return nlval.doubleValue() + nrval.doubleValue();
 		}
-		if(rval instanceof Float || lval instanceof Float){
-			return lval.floatValue() + rval.floatValue();
+		if(nrval instanceof Float || nlval instanceof Float){
+			return nlval.floatValue() + nrval.floatValue();
 		}
-		if(rval instanceof Long || lval instanceof Long){
-			return lval.longValue() + rval.longValue();
+		if(nrval instanceof Long || nlval instanceof Long){
+			return nlval.longValue() + nrval.longValue();
 		}
-		return lval.intValue() + rval.intValue();
+		return nlval.intValue() + nrval.intValue();
 	}
 
 }

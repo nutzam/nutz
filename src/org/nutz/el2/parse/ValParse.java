@@ -23,7 +23,6 @@ public class ValParse implements Parse {
 		case '7':
 		case '8':
 		case '9':
-		case '-':
 			boolean hasPoint = exp.peek() == '.';
 			sb.append(exp.poll());
 			while(!exp.isEmpty()){
