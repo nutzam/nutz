@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
+import org.nutz.el2.opt.RunMethod;
 import org.nutz.el2.opt.TwoTernary;
 import org.nutz.lang.Mirror;
 
@@ -28,7 +29,7 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 			}
 		}
 		
-		Mirror<?> me = Mirror.me(fetchVar());
+		Mirror<?> me = Mirror.me(obj);
 		return me.getValue(obj, right.toString());
 	}
 	
@@ -56,8 +57,6 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 		if(left instanceof IdentifierObj){
 			return ((IdentifierObj) left).fetchVal();
 		}
-		//@ JKTODO 添加属性读取
-		//@ JKTODO 添加包引用
 		return left;
 	}
 
