@@ -238,4 +238,17 @@ public class El2Test {
 		assertEquals(2/-3,el.eval("2/-3"));
 		assertEquals(2%-3,el.eval("2%-3"));
 	}
+	
+	/**
+	 * map测试
+	 */
+	@Test
+	public void map(){
+		Context context = Lang.context();
+		context.set("a", Lang.map("{x:10,y:50,txt:'Hello'}"));
+		
+		assertEquals(100, el.eval(context, "a.get('x')*10"));
+		assertEquals(100, el.eval(context, "a.x*10"));
+		assertEquals(100, el.eval(context, "a['x']*10"));
+	}
 }

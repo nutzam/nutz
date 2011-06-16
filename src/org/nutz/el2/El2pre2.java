@@ -25,5 +25,4 @@ public class El2pre2 {
 		return rc.calculate(context);
 	}
 	
-	//@ JKTODO 添加自动找包,比如现在就不能使用Boolean.FALSE来得到false
 }
