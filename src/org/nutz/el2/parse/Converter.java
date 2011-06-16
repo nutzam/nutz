@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.NegativeOpt;
@@ -106,7 +105,7 @@ public class Converter {
 			}
 		}
 		//转换负号'-'
-		if(item instanceof SubOpt && (prev == null || prev instanceof LBracketOpt)){
+		if(item instanceof SubOpt && NegativeOpt.isNegetive(prev)){
 			item = new NegativeOpt();
 		}
 		prev = item;
