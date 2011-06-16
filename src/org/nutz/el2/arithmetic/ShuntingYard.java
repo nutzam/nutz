@@ -8,6 +8,8 @@ import java.util.Queue;
 import org.nutz.el2.Operator;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.RBracketOpt;
+import org.nutz.el2.opt.logic.QuestionOpt;
+import org.nutz.el2.opt.logic.QuestionSelectOpt;
 import org.nutz.el2.parse.Converter;
 
 /**
@@ -89,6 +91,14 @@ public class ShuntingYard {
 		}
 		//一般情况,即优先级小于栈顶,那么直接弹出来,添加到逆波兰表达式中
 		while(!opts.isEmpty() && opts.peek().fetchPriority() <= current.fetchPriority()){
+			//三元表达式嵌套的特殊处理
+			if(opts.peek() instanceof QuestionOpt && current instanceof QuestionOpt){
+				break;
+			}
+			if(opts.peek() instanceof QuestionOpt && current instanceof QuestionSelectOpt){
+				rpn.add(opts.poll());
+				break;
+			}
 			rpn.add(opts.poll());
 		}
 		opts.addFirst(current);
