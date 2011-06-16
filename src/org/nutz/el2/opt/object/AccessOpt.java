@@ -1,6 +1,7 @@
 package org.nutz.el2.opt.object;
 
 import java.util.List;
+import java.util.Map;
 
 import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
@@ -20,6 +21,13 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	public Object calculate() {
 		//如果直接调用计算方法,那基本上就是直接调用属性了吧...我也不知道^^
 		Object obj = fetchVar();
+		if(obj instanceof Map){
+			Map<?,?> om = (Map<?, ?>) obj;
+			if(om.containsKey(right.toString())){
+				return om.get(right.toString());
+			}
+		}
+		
 		Mirror<?> me = Mirror.me(fetchVar());
 		return me.getValue(obj, right.toString());
 	}

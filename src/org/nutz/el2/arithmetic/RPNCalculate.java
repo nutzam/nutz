@@ -23,16 +23,21 @@ public class RPNCalculate {
 	
 	public RPNCalculate() {}
 	
+	/**
+	 * 进行EL的预编译
+	 * @param rpn
+	 */
 	public RPNCalculate(Queue<Object> rpn) {
 		el = OperatorTree(rpn);
 	}
-	
+	/**
+	 * 执行已经预编译的EL
+	 * @param context
+	 * @return
+	 */
 	public Object calculate(Context context){
 		ec.setContext(context);
-		Deque<Object> el2 = new LinkedList<Object>();
-		el2.addAll(el);
-		
-		return calculate(el2);
+		return calculate(el);
 	}
 	
 	/**
@@ -46,15 +51,20 @@ public class RPNCalculate {
 		return calculate(operand);
 	}
 	
+	/**
+	 * 计算
+	 * @param el2
+	 * @return
+	 */
 	private Object calculate(Deque<Object> el2){
 		if(el2.peek() instanceof Operator){
-			Operator obj = (Operator) el2.poll();
+			Operator obj = (Operator) el2.peek();
 			return obj.calculate();
 		}
 		if(el2.peek() instanceof IdentifierObj){
 			return ((IdentifierObj) el2.peek()).fetchVal();
 		}
-		return el2.poll();
+		return el2.peek();
 	}
 	/**
 	 * 转换成操作树

@@ -1,6 +1,7 @@
 package org.nutz.el2.opt.object;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 
 import org.nutz.el2.opt.TwoTernary;
 
@@ -18,6 +19,15 @@ public class ArrayOpt extends TwoTernary {
 	public Object calculate() {
 		Object lval = calculateItem(left);
 		Object rval = calculateItem(right);
+		
+		//@ JKTODO 这里要不要与, AccessOpt 里面相同的代码合并呢?
+		if(lval instanceof Map){
+			Map<?,?> om = (Map<?, ?>) lval;
+			if(om.containsKey(right.toString())){
+				return om.get(right.toString());
+			}
+		}
+		
 		return Array.get(lval, (Integer)rval);
 	}
 	public String fetchSelf() {
