@@ -16,7 +16,8 @@ public interface Operator {
 	public int fetchPriority();
 
 	/**
-	 * 
+	 * 打包数据.
+	 * 每个操作符都有相应的操作数,这个方法目的在于,根据操作符自身的需求,从operand中读取相应的操作数
 	 * @param operand 操作数
 	 * @return
 	 */
