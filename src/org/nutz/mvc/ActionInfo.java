@@ -15,7 +15,7 @@ public class ActionInfo {
 	private String pathKey;
 
 	private String[] paths;
-	
+
 	private Map<String, String> pathMap;
 
 	private String chainName;
@@ -44,7 +44,7 @@ public class ActionInfo {
 
 	public ActionInfo mergeWith(ActionInfo parent) {
 		// 组合路径 - 与父路径做一个笛卡尔积
-		if (null != parent.paths && parent.paths.length > 0) {
+		if (null != paths && null != parent.paths && parent.paths.length > 0) {
 			List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
 			for (int i = 0; i < parent.paths.length; i++) {
 				String pp = parent.paths[i];
@@ -54,12 +54,12 @@ public class ActionInfo {
 			}
 			paths = myPaths.toArray(new String[myPaths.size()]);
 		}
-		
-		if(null == pathMap){
+
+		if (null == pathMap) {
 			pathMap = parent.pathMap;
 		} else {
-			for(Entry<String, String> en : parent.pathMap.entrySet()){
-				if(pathMap.containsKey(en.getKey())){
+			for (Entry<String, String> en : parent.pathMap.entrySet()) {
+				if (pathMap.containsKey(en.getKey())) {
 					continue;
 				}
 				pathMap.put(en.getKey(), en.getValue());
@@ -132,7 +132,7 @@ public class ActionInfo {
 	public void setPaths(String[] paths) {
 		this.paths = paths;
 	}
-	
+
 	public Map<String, String> getPathMap() {
 		return pathMap;
 	}

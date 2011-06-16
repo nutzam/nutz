@@ -124,7 +124,7 @@ public class NutLoading implements Loading {
 		 */
 		mapping = createUrlMapping(config);
 		if (log.isInfoEnabled())
-			log.infof("Build URL mapping by %s ...", mapping);
+			log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
 
 		/*
 		 * 创建视图工厂
