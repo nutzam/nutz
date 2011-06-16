@@ -47,9 +47,23 @@ public class El2Test {
 //		assertEquals(3.3, el.eval("9.9/3"));//哭死,这个要报错,计算结果是:3.3000000000000003
 		//取余
 		assertEquals(1, el.eval("5%2"));
-		
-		
 	}
+	
+	/**
+	 * 位运算
+	 */
+	@Test
+	public void bit(){
+		assertEquals(-40, el.eval("-5<<3"));
+		assertEquals(-1, el.eval("-5>>3"));
+		assertEquals(5, el.eval("5>>>32"));
+		assertEquals(-5, el.eval("-5>>>32"));
+		assertEquals(1, el.eval("5&3"));
+		assertEquals(7, el.eval("5|3"));
+		assertEquals(-6, el.eval("~5"));
+		assertEquals(6, el.eval("5^3"));
+	}
+	
 	/**
 	 * 多级运算
 	 */
