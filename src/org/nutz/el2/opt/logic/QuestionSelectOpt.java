@@ -21,7 +21,7 @@ public class QuestionSelectOpt extends TwoTernary{
 		if(cval){
 			return qo.getRight();
 		}
-		return right;
+		return calculateItem(right);
 	}
 	public String fetchSelf() {
 		return ":";
