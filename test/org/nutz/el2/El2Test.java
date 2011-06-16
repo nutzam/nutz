@@ -22,7 +22,7 @@ public class El2Test {
 	@Test
 	public void notCalculateOneNumber(){
 		assertEquals(1, el.eval("1"));
-//		assertEquals(0.1, el.eval(".1"));
+		assertEquals(0.1, el.eval(".1"));
 		assertEquals(0.1d, el.eval("0.1"));
 		assertEquals(0.1f, el.eval("0.1f"));
 		assertEquals(0.1d, el.eval("0.1d"));
@@ -48,6 +48,7 @@ public class El2Test {
 		//取余
 		assertEquals(1, el.eval("5%2"));
 		
+		
 	}
 	/**
 	 * 多级运算
@@ -61,6 +62,8 @@ public class El2Test {
 		assertEquals(7, el.eval("1+2*3"));
 		assertEquals(2*4+2*3+4*5, el.eval("2*4+2*3+4*5"));
 		assertEquals(9+8*7+(6+5)*((4-1*2+3)), el.eval("9+8*7+(6+5)*((4-1*2+3))"));
+		System.out.println(.3+.2*.5);
+		assertEquals(.3+.2*.5,el.eval(".3+.2*.5"));
 	}
 	/**
 	 * 空格
@@ -136,6 +139,7 @@ public class El2Test {
 		assertEquals("cde", el.eval("\"abcde\".substring(2)"));
 		assertEquals("b", el.eval("\"abcde\".substring(1,2)"));
 		assertEquals(true, el.eval("\"abcd\".regionMatches(2,\"ccd\",1,2)"));
+		assertEquals("bbbb", el.eval("'  abab  '.replace('a','b').trim()"));
 	}
 	
 	/**
@@ -157,6 +161,7 @@ public class El2Test {
 		assertEquals("LTE 5", el.eval(context, s));
 		
 		assertEquals("jk", el.eval("\"j\"+\"k\""));
+		
 	}
 	
 	@Test
@@ -250,5 +255,6 @@ public class El2Test {
 		assertEquals(100, el.eval(context, "a.get('x')*10"));
 		assertEquals(100, el.eval(context, "a.x*10"));
 		assertEquals(100, el.eval(context, "a['x']*10"));
+		assertEquals("Hello-40", el.eval(context, "a.get('txt')+(a.get('x')-a.get('y'))"));
 	}
 }
