@@ -116,7 +116,6 @@ public class OptParse implements Parse {
 		
 		case '.':
 			exp.poll();
-			//@ JKTODO 感觉这里有点违背选择Queue的初衷,但是却也没有其它好的实现方式
 			if(!Character.isJavaIdentifierStart(exp.peek())){
 				((Deque<Character>)exp).addFirst('.');
 				return null;

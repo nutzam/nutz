@@ -2,7 +2,7 @@ package org.nutz.el2.opt.custom;
 
 import java.util.List;
 
-import org.nutz.el2.opt.object.RunMethod;
+import org.nutz.el2.opt.RunMethod;
 
 public class Trim implements RunMethod{
 	public Object run(List<Object> fetchParam) {

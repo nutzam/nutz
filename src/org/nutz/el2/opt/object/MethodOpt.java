@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Queue;
 
 import org.nutz.el2.Operator;
+import org.nutz.el2.opt.RunMethod;
 import org.nutz.el2.opt.TwoTernary;
 import org.nutz.el2.opt.custom.CustomMake;
 
@@ -30,13 +31,11 @@ public class MethodOpt extends TwoTernary {
 	}
 	
 	public Object calculate(){
-		RunMethod rm = fetchMethod();
-		return rm.run(fetchParam());
+		return fetchMethod().run(fetchParam());
 	}
 	
 	private RunMethod fetchMethod(){
 		if(!(left instanceof AccessOpt)){
-			//@ JKTODO 添加自定义方法的调用
 			return CustomMake.make(left.toString());
 		}
 		AccessOpt lval = (AccessOpt) left;

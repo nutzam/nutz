@@ -209,6 +209,8 @@ public class El2Test {
 		Context context = Lang.context();
 		context.set("a", new abc());
 		assertEquals("jk", el.eval(context, "a.name"));
+		//这个功能放弃
+//		assertFalse((Boolean)el.eval("java.lang.Boolean.FALSE"));
 //		assertFalse((Boolean)el.eval("Boolean.FALSE"));
 	}
 	
@@ -288,7 +290,8 @@ public class El2Test {
         vars.set("t", "");
         String t = "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99";
 //        t = "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99";
-        System.out.println(100*3.14f+(-3.9*(byte)4-199)/(1-(-3.9*3.14f))-(2+100-100/3.14f)%99);
         assertEquals(true, el.eval(vars, t));
+        
+        assertEquals('A' == 'A' || 'B' == 'B' && "ABCD" == "" &&  'A' == 'A', el.eval(vars, "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
 	}
 }

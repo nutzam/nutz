@@ -1,4 +1,4 @@
-package org.nutz.el2.opt.object;
+package org.nutz.el2.opt;
 
 import java.util.List;
 
