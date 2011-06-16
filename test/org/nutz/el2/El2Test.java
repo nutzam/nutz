@@ -278,5 +278,17 @@ public class El2Test {
 		assertEquals(1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71, el.eval("1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71"));
 		System.out.println(6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3);
 		assertEquals(6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3, el.eval("6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3"));
+		
+		Context vars = Lang.context();
+		vars.set("i",100);
+        vars.set("pi",3.14f);
+        vars.set("d",-3.9);
+        vars.set("b",(byte)4);
+        vars.set("bool",false);
+        vars.set("t", "");
+        String t = "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99 ==i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99";
+//        t = "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99";
+        System.out.println(100*3.14f+(-3.9*(byte)4-199)/(1-(-3.9*3.14f))-(2+100-100/3.14f)%99);
+        assertEquals(true, el.eval(vars, t));
 	}
 }

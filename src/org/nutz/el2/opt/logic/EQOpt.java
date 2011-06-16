@@ -15,7 +15,10 @@ public class EQOpt extends TwoTernary {
 	public Object calculate() {
 		Object lval = calculateItem(this.left);
 		Object rval = calculateItem(this.right);
-		return lval == rval;
+		if(lval == rval){
+			return true;
+		}
+		return lval.equals(rval);
 	}
 	
 	public String fetchSelf() {
