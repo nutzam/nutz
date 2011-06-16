@@ -62,8 +62,8 @@ public class El2Test {
 		assertEquals(7, el.eval("1+2*3"));
 		assertEquals(2*4+2*3+4*5, el.eval("2*4+2*3+4*5"));
 		assertEquals(9+8*7+(6+5)*((4-1*2+3)), el.eval("9+8*7+(6+5)*((4-1*2+3))"));
-		System.out.println(.3+.2*.5);
 		assertEquals(.3+.2*.5,el.eval(".3+.2*.5"));
+		assertEquals((.5 + 0.1)*.9, el.eval("(.5 + 0.1)*.9"));
 	}
 	/**
 	 * 空格
@@ -256,5 +256,20 @@ public class El2Test {
 		assertEquals(100, el.eval(context, "a.x*10"));
 		assertEquals(100, el.eval(context, "a['x']*10"));
 		assertEquals("Hello-40", el.eval(context, "a.get('txt')+(a.get('x')-a.get('y'))"));
+	}
+	
+	/**
+	 * list测试
+	 */
+	@Test
+	public void list(){
+		Context context = Lang.context();
+		List<String> list = new ArrayList<String>();
+		context.set("b", list);
+		assertEquals(0, el.eval(context, "b.size()"));
+		list.add("");
+		assertEquals(1, el.eval(context, "b.size()"));
+		el.eval(context, "b.add('Q\nQ')");
+		assertEquals(2, el.eval(context, "b.size()"));
 	}
 }
