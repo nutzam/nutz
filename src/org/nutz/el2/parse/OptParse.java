@@ -10,6 +10,13 @@ import org.nutz.el2.opt.arithmetic.MulOpt;
 import org.nutz.el2.opt.arithmetic.PlusOpt;
 import org.nutz.el2.opt.arithmetic.RBracketOpt;
 import org.nutz.el2.opt.arithmetic.SubOpt;
+import org.nutz.el2.opt.bit.BitAnd;
+import org.nutz.el2.opt.bit.BitNot;
+import org.nutz.el2.opt.bit.BitOr;
+import org.nutz.el2.opt.bit.BitXro;
+import org.nutz.el2.opt.bit.LeftShift;
+import org.nutz.el2.opt.bit.RightShift;
+import org.nutz.el2.opt.bit.UnsignedLeftShift;
 import org.nutz.el2.opt.logic.AndOpt;
 import org.nutz.el2.opt.logic.EQOpt;
 import org.nutz.el2.opt.logic.GTEOpt;
@@ -65,6 +72,13 @@ public class OptParse implements Parse {
 			case '=':
 				exp.poll();
 				return new GTEOpt();
+			case '>':
+				exp.poll();
+				if(exp.peek() == '>'){
+					exp.poll();
+					return new UnsignedLeftShift();
+				}
+				return new RightShift();
 			}
 			return new GTOpt();
 		case '<':
@@ -73,6 +87,9 @@ public class OptParse implements Parse {
 			case '=':
 				exp.poll();
 				return new LTEOpt();
+			case '<':
+				exp.poll();
+				return new LeftShift();
 			}
 			return new LTOpt();
 		case '=':
@@ -98,7 +115,7 @@ public class OptParse implements Parse {
 				exp.poll();
 				return new OrOpt();
 			}
-			throw new RuntimeException("表达式错误,请检查'|'后是否有非法字符!");
+			return new BitOr();
 		case '&':
 			exp.poll();
 			switch(exp.peek()){
@@ -106,7 +123,13 @@ public class OptParse implements Parse {
 				exp.poll();
 				return new AndOpt();
 			}
-			throw new RuntimeException("表达式错误,请检查'|'后是否有非法字符!");
+			return new BitAnd();
+		case '~':
+			exp.poll();
+			return new BitNot();
+		case '^':
+			exp.poll();
+			return new BitXro();
 		case '?':
 			exp.poll();
 			return new QuestionOpt();
