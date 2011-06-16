@@ -155,6 +155,8 @@ public class El2Test {
 		assertEquals("GT 5", el.eval(context, s));
 		context.set("a", 5);
 		assertEquals("LTE 5", el.eval(context, s));
+		
+		assertEquals("jk", el.eval("\"j\"+\"k\""));
 	}
 	
 	@Test

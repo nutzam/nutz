@@ -3,6 +3,11 @@ package org.nutz.el2.opt;
 import org.nutz.el2.Operator;
 import org.nutz.el2.obj.IdentifierObj;
 
+/**
+ * 操作符抽象类
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public abstract class AbstractOpt implements Operator{
 	/**
 	 * 操作符对象自身的符号

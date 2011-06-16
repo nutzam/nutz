@@ -16,6 +16,10 @@ public class PlusOpt extends TwoTernary {
 		return "+";
 	}
 	public Object calculate() {
+		if(this.right instanceof String || this.left instanceof String){
+			return this.left.toString() + this.right.toString();
+		}
+		
 		Number lval = (Number) calculateItem(this.left);
 		Number rval = (Number) calculateItem(this.right);
 		if(rval instanceof Double || lval instanceof Double){
