@@ -224,7 +224,16 @@ public class El2Test {
 		con.set("num", num);
 		con.set("i", i);
 		con.set("z", z);
-		System.out.println(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i));
 		assertEquals(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i), el.eval(con, elstr));
+	}
+	
+	@Test
+	public void lssue_486(){
+		assertEquals(2+(-3),el.eval("2+(-3)"));
+		assertEquals(2+-3,el.eval("2+-3"));
+		assertEquals(2*-3,el.eval("2*-3"));
+		assertEquals(-2*-3,el.eval("-2*-3"));
+		assertEquals(2/-3,el.eval("2/-3"));
+		assertEquals(2%-3,el.eval("2%-3"));
 	}
 }

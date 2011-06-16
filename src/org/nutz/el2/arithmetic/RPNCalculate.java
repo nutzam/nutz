@@ -32,14 +32,7 @@ public class RPNCalculate {
 		Deque<Object> el2 = new LinkedList<Object>();
 		el2.addAll(el);
 		
-		if(el2.peek() instanceof Operator){
-			Operator obj = (Operator) el2.poll();
-			return obj.calculate();
-		}
-		if(el2.peek() instanceof IdentifierObj){
-			return ((IdentifierObj) el2.peek()).fetchVal();
-		}
-		return el2.poll();
+		return calculate(el2);
 	}
 	
 	/**
@@ -49,16 +42,19 @@ public class RPNCalculate {
 	 */
 	public Object calculate(Context context, Queue<Object> rpn) {
 		ec.setContext(context);
-		
-		Deque<Object> operand = OperatorTree(context, rpn);
-		if(operand.peek() instanceof Operator){
-			Operator obj = (Operator) operand.poll();
+		Deque<Object> operand = OperatorTree(rpn);
+		return calculate(operand);
+	}
+	
+	private Object calculate(Deque<Object> el2){
+		if(el2.peek() instanceof Operator){
+			Operator obj = (Operator) el2.poll();
 			return obj.calculate();
 		}
-		if(operand.peek() instanceof IdentifierObj){
-			return ((IdentifierObj) operand.peek()).fetchVal();
+		if(el2.peek() instanceof IdentifierObj){
+			return ((IdentifierObj) el2.peek()).fetchVal();
 		}
-		return operand.poll();
+		return el2.poll();
 	}
 	/**
 	 * 转换成操作树
@@ -75,35 +71,10 @@ public class RPNCalculate {
 				continue;
 			}
 			if(rpn.peek() instanceof IdentifierObj){
-//				((IdentifierObj) rpn.peek()).setContext(context);
 				((IdentifierObj) rpn.peek()).setEc(ec);
 			}
 			operand.addFirst(rpn.poll());
 		}
 		return operand;
 	}
-	/**
-	 * 转换成操作树
-	 * @param rpn
-	 * @return
-	 */
-	private Deque<Object> OperatorTree(Context context, Queue<Object> rpn){
-		Deque<Object> operand = new LinkedList<Object>();
-		while(!rpn.isEmpty()){
-			if(rpn.peek() instanceof Operator){
-				Operator opt = (Operator) rpn.poll();
-				opt.wrap(operand);
-				operand.addFirst(opt);
-				continue;
-			}
-			if(rpn.peek() instanceof IdentifierObj){
-//				((IdentifierObj) rpn.peek()).setContext(context);
-				((IdentifierObj) rpn.peek()).setEc(ec);
-			}
-			operand.addFirst(rpn.poll());
-		}
-		return operand;
-	}
-	
-
 }

@@ -34,5 +34,27 @@ public class NegativeOpt extends AbstractOpt {
 	public String fetchSelf() {
 		return "-";
 	}
+	
+	public static boolean isNegetive(Object prev){
+		if(prev == null){
+			return true;
+		}
+		if(prev instanceof LBracketOpt){
+			return true;
+		}
+		if(prev instanceof PlusOpt){
+			return true;
+		}
+		if(prev instanceof MulOpt){
+			return true;
+		}
+		if(prev instanceof DivOpt){
+			return true;
+		}
+		if(prev instanceof ModOpt){
+			return true;
+		}
+		return false;
+	}
 
 }
