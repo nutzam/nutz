@@ -17,21 +17,21 @@ public class SocketAtom implements Atom {
 
 	private static final Log log = Logs.get();
 
-	Socket socket;
+	protected Socket socket;
 
-	OutputStream ops;
+	protected OutputStream ops;
 
-	BufferedReader br;
+	protected BufferedReader br;
 
-	String line;
+	protected String line;
 
-	private SocketActionTable saTable;
+	protected SocketActionTable saTable;
 
-	private SocketLock lock;
+	protected SocketLock lock;
 
-	private List<SocketAtom> atoms;
+	protected List<SocketAtom> atoms;
 
-	SocketAtom(List<SocketAtom> atoms, SocketLock lock, Socket socket, SocketActionTable saTable) {
+	protected SocketAtom(List<SocketAtom> atoms, SocketLock lock, Socket socket, SocketActionTable saTable) {
 		this.atoms = atoms;
 		this.lock = lock;
 		this.socket = socket;
