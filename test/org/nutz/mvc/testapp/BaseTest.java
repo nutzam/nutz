@@ -58,4 +58,11 @@ public class BaseTest extends BaseWebappTest{
 		get("/common/path2?key=T");
 		assertEquals(getContextPath(), resp.getContent());
 	}
+	
+	//有用户报告测试 resp.getOutputStream失败
+	@Test
+	public void test_servlet_obj(){
+		get("/common/servlet_obj");
+		assertEquals(200, resp.getStatus());
+	}
 }
