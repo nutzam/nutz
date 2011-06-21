@@ -1,5 +1,10 @@
 package org.nutz.mvc.testapp.classes.action;
 
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.mvc.annotation.At;
@@ -70,5 +75,23 @@ public class CommonTest extends BaseWebappTest {
 	@At("/path2")
 	@Ok("->:/${key.length() == 1 ? 'base' : 'false'}.jsp")
 	public void test_req_param2(){
+	}
+	
+	//Test 测试获取Servlet的对象
+	@At("/servlet_obj")
+	@Ok("http:200")
+	public void test_servlet_obj(HttpServletRequest req,
+	                             HttpServletResponse resp,
+	                             ServletContext context,
+	                             HttpSession session)  throws Throwable {
+		req.getInputStream();
+		req.getContentLength();
+		
+		//resp.getOutputStream();
+		resp.getWriter();
+		session.getId();
+		session.isNew();
+		
+		context.getAttributeNames();
 	}
 }
