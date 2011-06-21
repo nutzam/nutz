@@ -3,6 +3,7 @@ package org.nutz.lang.socket.json;
 import java.io.IOException;
 import java.io.Writer;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,7 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.socket.SocketAction;
 import org.nutz.lang.socket.SocketActionTable;
 import org.nutz.lang.socket.SocketAtom;
+import org.nutz.lang.socket.SocketContext;
 import org.nutz.lang.socket.SocketLock;
 import org.nutz.lang.socket.Sockets;
 import org.nutz.log.Log;
@@ -35,15 +37,21 @@ public class SocketJsonAtom extends SocketAtom {
 		try {
 			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, 
 			                                        Streams.utf8r(socket.getInputStream()));
-			Writer writer = Streams.utf8w(socket.getOutputStream());
 			SocketAction action = saTable.get(map.get("cmd").toString());
-			if (null != action && action instanceof JsonAction) {
-				Object re = ((JsonAction)action).run((Map<String, Object>) map.get("data"));
-				Json.toJson(writer, re);
+			if (null != action) {
+				SocketContext context = new SocketContext(this);
+				if(action instanceof JsonAction)
+					((JsonAction)action).run(map,context);
+				else
+					action.run(context);
 			} else {
-				Json.toJson(writer, "Unknow CMD");
+				Writer writer = Streams.utf8w(socket.getOutputStream());
+				Map<String, Object> x = new HashMap<String, Object>();
+				x.put("ok", false);
+				x.put("msg", "Unknown CMD");
+				Json.toJson(writer, x);
+				writer.close();
 			}
-			writer.close();
 		}
 		catch (IOException e) {
 			log.error("Error!! ", e);
