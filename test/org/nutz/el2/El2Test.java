@@ -47,6 +47,8 @@ public class El2Test {
 //		assertEquals(3.3, el.eval("9.9/3"));//哭死,这个要报错,计算结果是:3.3000000000000003
 		//取余
 		assertEquals(1, el.eval("5%2"));
+		assertEquals(1.0%0.1, el.eval("1.0%0.1"));
+		
 	}
 	
 	/**
@@ -141,6 +143,7 @@ public class El2Test {
 	public void negative(){
 		assertEquals(-1, el.eval("-1"));
 		assertEquals(0, el.eval("-1+1"));
+		assertEquals(-1 - -1, el.eval("-1 - -1"));
 		assertEquals(9+8*7+(6+5)*(-(4-1*2+3)), el.eval("9+8*7+(6+5)*(-(4-1*2+3))"));
 	}
 	
