@@ -54,6 +54,9 @@ public class NegativeOpt extends AbstractOpt {
 		if(prev instanceof ModOpt){
 			return true;
 		}
+		if(prev instanceof SubOpt){
+			return true;
+		}
 		return false;
 	}
 
