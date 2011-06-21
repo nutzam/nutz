@@ -47,19 +47,23 @@ public abstract class Jdbcs {
 	 */
 	static {
 		// 看看有没有用户自定义的映射文件
-		File f = Files.findFile("nutz_jdbc_experts.js");//TODO 不可配置??
+		File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
 		// 如果没有则使用默认的映射文件
 		if (null == f) {
-			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
+			conf = Json.fromJson(	JdbcExpertConfigFile.class,
+									Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js"))
+						.init();
 		} else
-			conf = Json.fromJson(JdbcExpertConfigFile.class, Streams.fileInr("nutz_jdbc_experts.js")).init();
+			conf = Json.fromJson(	JdbcExpertConfigFile.class,
+									Streams.fileInr("nutz_jdbc_experts.js")).init();
 		try {
 			for (String key : conf.getExperts().keySet()) {
 				// 检查一下正则表达式是否正确
-				//在conf类中自行检查
-				//Pattern.compile(key,Pattern.DOTALL & Pattern.CASE_INSENSITIVE);
+				// 在conf类中自行检查
+				// Pattern.compile(key,Pattern.DOTALL &
+				// Pattern.CASE_INSENSITIVE);
 				// 检查一下是否可以生成 Expert 的实例
-				conf.getExpert(key);//TODO 值得商讨
+				conf.getExpert(key);// TODO 值得商讨
 			}
 		}
 		catch (Exception e) {
@@ -319,6 +323,9 @@ public abstract class Jdbcs {
 
 		/**
 		 * 布尔适配器
+		 * <p>
+		 * 对 Oracle，Types.BOOLEAN 对于 setNull 是不工作的 因此 OracleExpert 会用一个新的
+		 * Adaptor 处理自己这种特殊情况
 		 */
 		public static final ValueAdaptor asBoolean = new ValueAdaptor() {
 			public Object get(ResultSet rs, String colName) throws SQLException {
@@ -328,11 +335,7 @@ public abstract class Jdbcs {
 
 			public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
 				if (null == obj) {
-					/*
-					 * 对 Oracle，Types.BOOLEAN 对于 setNull 是不工作的
-					 * 其他的数据库都没有这个问题，所以，只好把类型设成 INTEGER了
-					 */
-					stat.setNull(i, Types.INTEGER);
+					stat.setNull(i, Types.BOOLEAN);
 				} else {
 					boolean v;
 					if (obj instanceof Boolean)
@@ -523,11 +526,15 @@ public abstract class Jdbcs {
 
 			public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
 				Timestamp v;
-				if (obj instanceof java.util.Date)
-					v = new Timestamp(((java.util.Date) obj).getTime());
-				else
-					v = Castors.me().castTo(obj, Timestamp.class);
-				stat.setTimestamp(i, v);
+				if (null == obj) {
+					stat.setNull(i, Types.TIMESTAMP);
+				} else {
+					if (obj instanceof java.util.Date)
+						v = new Timestamp(((java.util.Date) obj).getTime());
+					else
+						v = Castors.me().castTo(obj, Timestamp.class);
+					stat.setTimestamp(i, v);
+				}
 			}
 		};
 

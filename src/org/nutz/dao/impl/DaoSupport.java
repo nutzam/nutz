@@ -2,10 +2,13 @@ package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
+import java.sql.Savepoint;
 
 import javax.sql.DataSource;
 
 import org.nutz.dao.ConnCallback;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.entity.EntityMaker;
@@ -177,9 +180,18 @@ public class DaoSupport {
 		final int[] re = new int[1];
 		runner.run(dataSource, new ConnCallback() {
 			public void invoke(Connection conn) throws Exception {
-				for (DaoStatement st : sts) {
-					executor.exec(conn, st);
-					re[0] += st.getUpdateCount();
+				Savepoint sp = conn.setSavepoint();
+				try {
+					for (DaoStatement st : sts) {
+						executor.exec(conn, st);
+						re[0] += st.getUpdateCount();
+					}
+				}
+				catch (Exception e) {
+					if (e instanceof DaoException)
+						if (null != e.getCause() && e.getCause() instanceof SQLException)
+							conn.rollback(sp);
+					throw e;
 				}
 			}
 		});
