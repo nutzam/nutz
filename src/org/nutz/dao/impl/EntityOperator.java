@@ -8,6 +8,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.impl.sql.pojo.InsertByChainPItem;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoMaker;
@@ -18,7 +19,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 
-public class EntityOperator{
+public class EntityOperator {
 
 	Entity<?> entity;
 
@@ -180,7 +181,16 @@ public class EntityOperator{
 		if (null == entity)
 			return null;
 
-		Pojo pojo = dao.pojoMaker.makeInsert(en).setOperatingObject(obj);
+		Pojo pojo;
+
+		if (obj instanceof Chain) {
+			pojo = dao.pojoMaker.makePojo(SqlType.INSERT);
+			pojo.append(Pojos.Items.entityTableName());
+			pojo.append(new InsertByChainPItem((Chain)obj));
+			pojo.setEntity(en);
+		} else {
+			pojo = dao.pojoMaker.makeInsert(en).setOperatingObject(obj);
+		}
 		pojoList.add(pojo);
 		return pojo;
 	}

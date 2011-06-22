@@ -2,6 +2,7 @@ package org.nutz.trans;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 import org.junit.Test;
@@ -82,7 +83,7 @@ public class BatchTransTest extends DaoCase {
 
 	@Test
 	public void try_insert_multiple_companys() {
-		Trans.exec(new Atom() {
+		Trans.exec(Connection.TRANSACTION_READ_COMMITTED,new Atom() {
 			public void run() {
 				dao.insert(Company.make("Google"));
 				dao.insert(Company.make("Yahoo"));

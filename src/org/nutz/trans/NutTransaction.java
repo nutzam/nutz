@@ -13,14 +13,14 @@ public class NutTransaction extends Transaction {
 
 	private static int ID = 0;
 
-	private List<Pair> list;
+	private List<ConnInfo> list;
 
-	private static class Pair {
-		Pair(DataSource ds, Connection conn, int level) throws SQLException {
+	private static class ConnInfo {
+		ConnInfo(DataSource ds, Connection conn, int level) throws SQLException {
 			this.ds = ds;
 			this.conn = conn;
-			oldLevel = conn.getTransactionIsolation();
-			if (oldLevel != level)
+			this.oldLevel = conn.getTransactionIsolation();
+			if (this.oldLevel != level)
 				conn.setTransactionIsolation(level);
 		}
 
@@ -30,19 +30,19 @@ public class NutTransaction extends Transaction {
 	}
 
 	public NutTransaction() {
-		list = new ArrayList<Pair>();
+		list = new ArrayList<ConnInfo>();
 	}
 
 	@Override
 	protected void commit() {
 		ComboException ce = new ComboException();
-		for (Pair p : list) {
+		for (ConnInfo cInfo : list) {
 			try {
 				// 提交事务
-				p.conn.commit();
+				cInfo.conn.commit();
 				// 恢复旧的事务级别
-				if (p.conn.getTransactionIsolation() != p.oldLevel)
-					p.conn.setTransactionIsolation(p.oldLevel);
+				if (cInfo.conn.getTransactionIsolation() != cInfo.oldLevel)
+					cInfo.conn.setTransactionIsolation(cInfo.oldLevel);
 			}
 			catch (SQLException e) {
 				ce.add(e);
@@ -56,7 +56,7 @@ public class NutTransaction extends Transaction {
 
 	@Override
 	public Connection getConnection(DataSource dataSource) throws SQLException {
-		for (Pair p : list)
+		for (ConnInfo p : list)
 			if (p.ds == dataSource)
 				return p.conn;
 		Connection conn = dataSource.getConnection();
@@ -64,7 +64,7 @@ public class NutTransaction extends Transaction {
 		if (conn.getAutoCommit())
 			conn.setAutoCommit(false);
 		// Store conn, it will set the trans level
-		list.add(new Pair(dataSource, conn, getLevel()));
+		list.add(new ConnInfo(dataSource, conn, getLevel()));
 		return conn;
 	}
 
@@ -76,17 +76,18 @@ public class NutTransaction extends Transaction {
 	@Override
 	public void close() {
 		ComboException ce = new ComboException();
-		for (Pair p : list) {
+		for (ConnInfo cInfo : list) {
 			try {
 				// 试图恢复旧的事务级别
-				if (!p.conn.isClosed())
-					if (p.conn.getTransactionIsolation() != p.oldLevel)
-						p.conn.setTransactionIsolation(p.oldLevel);
+				if (!cInfo.conn.isClosed()) {
+					if (cInfo.conn.getTransactionIsolation() != cInfo.oldLevel)
+						cInfo.conn.setTransactionIsolation(cInfo.oldLevel);
+				}
 			}
 			catch (Throwable e) {}
 			finally {
 				try {
-					p.conn.close();
+					cInfo.conn.close();
 				}
 				catch (Exception e) {
 					ce.add(e);
@@ -99,9 +100,9 @@ public class NutTransaction extends Transaction {
 
 	@Override
 	protected void rollback() {
-		for (Pair p : list) {
+		for (ConnInfo cInfo : list) {
 			try {
-				p.conn.rollback();
+				cInfo.conn.rollback();
 			}
 			catch (Throwable e) {}
 		}

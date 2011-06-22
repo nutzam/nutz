@@ -110,7 +110,11 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public void insert(Class<?> classOfT, Chain chain) {
-		insert(chain.toObject(classOfT));// TODO 这样的效率,未免太低了,需要改进
+		EntityOperator opt = _opt(classOfT);
+		opt.myObj = chain;
+		opt.addInsertSelfOnly();
+		//insert(chain.toObject(classOfT));// TODO 这样的效率,未免太低了,需要改进
+		opt.exec();
 	}
 
 	public <T> T fastInsert(T obj) {

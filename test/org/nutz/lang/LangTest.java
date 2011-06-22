@@ -271,7 +271,7 @@ public class LangTest {
 	@Test
 	public void test_str2number() {
 		Long re = (Long) Lang.str2number(""+Long.MAX_VALUE);
-		assertEquals(Long.MAX_VALUE, re);
+		assertEquals(Long.MAX_VALUE, re.longValue());
 		assertEquals(Integer.MAX_VALUE, Lang.str2number(""+Integer.MAX_VALUE));
 		assertEquals(0, Lang.str2number("0"));
 	}

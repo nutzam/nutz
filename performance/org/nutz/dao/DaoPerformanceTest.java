@@ -25,6 +25,7 @@ public class DaoPerformanceTest {
 		BasicDataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.h2.Driver");
 		ds.setUsername("sa");
+		
 		ds.setPassword("sa");
 		ds.setUrl("jdbc:h2:mem:~");
 		ds.setDefaultAutoCommit(false);

@@ -72,9 +72,12 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public String getDefaultValue(Object obj) {
 		if (null == defaultValue)
 			return null;
+		String re;
 		if (null == obj)
-			defaultValue.toString();
-		return defaultValue.render(new EntityObjectContext(getEntity(), obj)).toString();
+			re = defaultValue.toString();
+		else
+			re = defaultValue.render(new EntityObjectContext(getEntity(), obj)).toString();
+		return re.replace("@", "@@");
 	}
 
 	public int getWidth() {

@@ -74,7 +74,7 @@ public class EntityParsingTest extends DaoCase {
 	public void test_pk_multiple() {
 		Entity<?> en = en(TO0.class);
 		assertEquals(2, en.getCompositePKFields().size());
-		assertEquals("to0", en.getViewName());
+		assertEquals("t_o0", en.getViewName());
 		assertEquals("id", en.getCompositePKFields().get(0).getName());
 		assertEquals("name", en.getCompositePKFields().get(1).getName());
 		assertNull(en.getIdField());
@@ -88,7 +88,7 @@ public class EntityParsingTest extends DaoCase {
 	public void test_pk_id() {
 		Entity<?> en = en(TO1.class);
 		assertTrue(en.getCompositePKFields().isEmpty());
-		assertEquals("to1", en.getViewName());
+		assertEquals("t_o1", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 
@@ -100,7 +100,7 @@ public class EntityParsingTest extends DaoCase {
 	public void test_pk_name() {
 		Entity<?> en = en(TO2.class);
 		assertTrue(en.getCompositePKFields().isEmpty());
-		assertEquals("to2", en.getViewName());
+		assertEquals("t_o2", en.getViewName());
 		assertEquals("id", en.getIdField().getName());
 		assertEquals("name", en.getNameField().getName());
 
@@ -112,7 +112,7 @@ public class EntityParsingTest extends DaoCase {
 	public void test_pk_order() {
 		Entity<?> en = en(TO4.class);
 		assertEquals(2, en.getCompositePKFields().size());
-		assertEquals("to4", en.getViewName());
+		assertEquals("t_o4", en.getViewName());
 		assertEquals("masterId", en.getCompositePKFields().get(0).getName());
 		assertEquals("id", en.getCompositePKFields().get(1).getName());
 		assertNull(en.getIdField());
