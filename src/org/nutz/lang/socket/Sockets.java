@@ -14,7 +14,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
+import org.nutz.lang.born.Borning;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -149,7 +151,7 @@ public abstract class Sockets {
 																		.availableProcessors()
 																	* poolSize));
 	}
-
+	
 	/**
 	 * 监听本地某一个端口，根据用户输入的命令的不同，执行不同的操作
 	 * <p>
@@ -166,6 +168,27 @@ public abstract class Sockets {
 	public static void localListenByLine(	int port,
 											Map<String, SocketAction> actions,
 											ExecutorService service) {
+		localListen(port, actions, service, SocketMain.class);
+	}
+
+	/**
+	 * 监听本地某一个端口，根据用户输入的命令的不同，执行不同的操作
+	 * <p>
+	 * 当然，你如果想让一个过程处理多种命令，请给的 key 前用 "REGEX:" 作为前缀，后面用一个正则表达式 来表示你的你要的匹配的命令 <br>
+	 * "REGEX:!" 开头的，表示后面的正则表达式是一个命令过滤，所有没有匹配上的命令都会被处理
+	 * 
+	 * @param port
+	 *            要监听的端口
+	 * @param actions
+	 *            动作执行类映射表
+	 * @param service
+	 *            线程池的实现类
+	 */
+	@SuppressWarnings({"rawtypes", "unchecked"})
+	public static void localListen(	int port,
+											Map<String, SocketAction> actions,
+											ExecutorService service,
+											Class<? extends SocketMain> klass) {
 		try {
 			// 建立动作映射表
 			SocketActionTable saTable = new SocketActionTable(actions);
@@ -186,12 +209,15 @@ public abstract class Sockets {
 			final SocketLock lock = new SocketLock();
 			ExecutorService execs = Executors.newCachedThreadPool();
 			SocketMain main = null;
+			Mirror mirror = Mirror.me(klass);
+			Borning<SocketMain> borning = null;
 			List<SocketAtom> atoms = new LinkedList<SocketAtom>();
 			while (!lock.isStop()) {
 				if (log.isDebugEnabled())
 					log.debug("create new main thread to wait...");
-
-				main = new SocketMain(atoms, lock, server, service, saTable);
+				if(borning == null)
+					borning = mirror.getBorning(atoms, lock, server, service, saTable);
+				main = borning.born(new Object[]{atoms, lock, server, service, saTable});
 
 				if (log.isDebugEnabled())
 					log.debug("Ready for listen");
@@ -278,6 +304,8 @@ public abstract class Sockets {
 
 	}
 
+	
+	
 	/**
 	 * 安全关闭套接层，容忍 null
 	 * 
