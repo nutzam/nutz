@@ -142,7 +142,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
         为了更加详细的说明一下回调的用处，我们再下面这个例子：
         {{{<Java>
         Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
-        sql.setCallback(Sql.callback.entities());
+        sql.setCallback(Sqls.callback.entities());
         sql.setEntity(dao.getEntity(Master.class));
         dao.execute(sql);
         List<Master> list = sql.getList(Master.class);
