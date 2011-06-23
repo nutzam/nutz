@@ -7,8 +7,30 @@ import org.nutz.el2.arithmetic.ShuntingYard;
 import org.nutz.lang.util.Context;
 
 public class El2 {
-	private ShuntingYard sy = new ShuntingYard();
-	private RPNCalculate rc = new RPNCalculate();
+	private RPNCalculate rc = null;
+	
+	public El2(){}
+	/**
+	 * 预编译
+	 * @param cs
+	 * @return
+	 */
+	public El2(CharSequence cs){
+		ShuntingYard sy = new ShuntingYard();
+		Queue<Object> rpn = sy.parseToRPN(cs.toString());
+		rc = new RPNCalculate(rpn);
+	}
+	/**
+	 * 解析预编译后的EL表达式
+	 * @param context
+	 * @return
+	 */
+	public Object eval(Context context) {
+		if(rc == null){
+			throw new El2Exception("没有进行预编译!");
+		}
+		return rc.calculate(context);
+	}
 
 	/**
 	 * 对参数代表的表达式进行运算
@@ -21,6 +43,8 @@ public class El2 {
 	}
 
 	public Object eval(Context context, String val) {
+		ShuntingYard sy = new ShuntingYard();
+		RPNCalculate rc = new RPNCalculate();
 		Queue<Object> rpn = sy.parseToRPN(val);
 		return rc.calculate(context, rpn);
 	}

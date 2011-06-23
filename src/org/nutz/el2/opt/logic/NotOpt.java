@@ -2,6 +2,7 @@ package org.nutz.el2.opt.logic;
 
 import java.util.Queue;
 
+import org.nutz.el2.El2Exception;
 import org.nutz.el2.opt.AbstractOpt;
 
 /**
@@ -24,7 +25,7 @@ public class NotOpt extends AbstractOpt{
 		if(rval instanceof Boolean){
 			return !(Boolean) rval;
 		}
-		throw new RuntimeException();
+		throw new El2Exception("'!'操作符操作失败!");
 	}
 	
 	public String fetchSelf() {

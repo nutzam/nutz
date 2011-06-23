@@ -30,6 +30,14 @@ public class RPNCalculate {
 	public RPNCalculate(Queue<Object> rpn) {
 		el = OperatorTree(rpn);
 	}
+	
+	/**
+	 * 预先编译
+	 * @param rpn
+	 */
+	public void compile(Queue<Object> rpn){
+		el = OperatorTree(rpn);
+	}
 	/**
 	 * 执行已经预编译的EL
 	 * @param context

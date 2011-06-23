@@ -3,6 +3,7 @@ package org.nutz.el2.parse;
 import java.util.Deque;
 import java.util.Queue;
 
+import org.nutz.el2.El2Exception;
 import org.nutz.el2.opt.arithmetic.DivOpt;
 import org.nutz.el2.opt.arithmetic.LBracketOpt;
 import org.nutz.el2.opt.arithmetic.ModOpt;
@@ -42,7 +43,7 @@ public class OptParse implements Parse {
 
 	public Object fetchItem(Queue<Character> exp){
 		if(exp.isEmpty()){
-			throw new RuntimeException();
+			throw new El2Exception("表达式错误,不能进行操作符转换!");
 		}
 		switch(exp.peek()){
 		case '+':
@@ -99,7 +100,7 @@ public class OptParse implements Parse {
 				exp.poll();
 				return new EQOpt();
 			}
-			throw new RuntimeException("表达式错误,请检查'='后是否有非法字符!");
+			throw new El2Exception("表达式错误,请检查'='后是否有非法字符!");
 		case '!':
 			exp.poll();
 			switch(exp.peek()){
