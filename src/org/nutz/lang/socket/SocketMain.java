@@ -66,7 +66,7 @@ public class SocketMain implements Atom {
 		if (log.isDebugEnabled())
 			log.debug("run action in a new thread");
 
-		service.execute(new SocketAtom(atoms, lock, socket, saTable));
+		service.execute(createSocketAtom(atoms, lock, socket, saTable));
 
 		if (log.isDebugEnabled())
 			log.debugf("done for my job [%s], notify the lock", accepted);
@@ -84,4 +84,7 @@ public class SocketMain implements Atom {
 		return lock.isStop();
 	}
 
+	protected SocketAtom createSocketAtom(List<SocketAtom> atoms, SocketLock lock, Socket socket, SocketActionTable saTable) {
+		return new SocketAtom(atoms, lock, socket, saTable);
+	}
 }

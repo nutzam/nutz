@@ -5,7 +5,7 @@ package org.nutz.lang.socket;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-class SocketLock {
+public class SocketLock {
 
 	private boolean stop;
 
