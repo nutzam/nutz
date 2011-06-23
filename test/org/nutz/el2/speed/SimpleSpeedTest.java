@@ -3,8 +3,6 @@ package org.nutz.el2.speed;
 import org.nutz.el.El;
 import org.nutz.el.obj.BinElObj;
 import org.nutz.el2.El2;
-import org.nutz.el2.El2pre;
-import org.nutz.el2.El2pre2;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
@@ -78,7 +76,7 @@ public class SimpleSpeedTest {
 		Stopwatch sw4 = Stopwatch.run(new Atom() {
 			public void run() {
 				try {
-					El2pre el2pre = new El2pre(elstr);
+					El2 el2pre = new El2(elstr);
 					context.set("num", 0);
 					context.set("z", z);
 					for (int i = 0; i < max; i++)
@@ -95,7 +93,7 @@ public class SimpleSpeedTest {
 		Stopwatch sw5 = Stopwatch.run(new Atom() {
 			public void run() {
 				try {
-					El2pre2 el2pre = new El2pre2(elstr);
+					El2 el2pre = new El2(elstr);
 					context.set("num", 0);
 					context.set("z", z);
 					for (int i = 0; i < max; i++)
