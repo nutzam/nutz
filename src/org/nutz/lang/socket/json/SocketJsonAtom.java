@@ -33,7 +33,13 @@ public class SocketJsonAtom extends SocketAtom {
 			log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
 
 		atoms.add(this);
-
+		try {
+			ops = socket.getOutputStream();
+		}
+		catch (IOException e1) {
+			e1.printStackTrace();
+			return;
+		}
 		try {
 			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, 
 			                                        Streams.utf8r(socket.getInputStream()));
