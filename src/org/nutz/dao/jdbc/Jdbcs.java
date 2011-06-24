@@ -27,6 +27,7 @@ import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Email;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -174,7 +175,7 @@ public abstract class Jdbcs {
 			return Jdbcs.Adaptor.asEnumChar;
 		// Char
 		if (mirror.isChar())
-			return Jdbcs.Adaptor.asString;
+			return Jdbcs.Adaptor.asChar;
 		// Timestamp
 		if (mirror.isOf(Timestamp.class))
 			return Jdbcs.Adaptor.asTimestamp;
@@ -253,7 +254,10 @@ public abstract class Jdbcs {
 		 */
 		public static final ValueAdaptor asChar = new ValueAdaptor() {
 			public Object get(ResultSet rs, String colName) throws SQLException {
-				return rs.getCharacterStream(colName);
+				String re = Strings.trim(rs.getString(colName));
+				if (re == null || re.length() == 0)
+					return null;
+				return re;
 			}
 
 			public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
@@ -685,7 +689,7 @@ public abstract class Jdbcs {
 		// 字符
 		else if (mirror.isChar()) {
 			ef.setColumnType(ColType.CHAR);
-			ef.setWidth(20);
+			ef.setWidth(4);
 		}
 		// 日期
 		else if (mirror.is(java.sql.Date.class)) {
