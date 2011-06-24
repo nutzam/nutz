@@ -26,6 +26,9 @@ public class SqlContext {
 	private Map<String, Object> attrs;
 
 	public SqlContext() {
+		// zozoh: 默认的，SQL 的游标类型是 TYPE_FORWARD_ONLY，即，使用各个数据库自有的分页语句
+		// 但是如果数据库比较原始，你可以将游标类型设置成 TYPE_SCROLL_INSENSITIVE
+		// 如果你还设置了 Pager，那么执行器应该使用 JDBC 游标的方式来进行分页
 		resultSetType = ResultSet.TYPE_FORWARD_ONLY;
 	}
 
@@ -96,9 +99,9 @@ public class SqlContext {
 
 	public void setPager(Pager pager) {
 		this.pager = pager;
-		//TODO 为何要这样写??为什么?!! SQLite死活不给我全部数据!! by wendal
-//		if (null != pager && pager.getPageSize() > 0)
-//			this.fetchSize = pager.getPageSize();
+		// TODO 为何要这样写??为什么?!! SQLite死活不给我全部数据!! by wendal
+		// if (null != pager && pager.getPageSize() > 0)
+		// this.fetchSize = pager.getPageSize();
 	}
 
 }
