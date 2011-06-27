@@ -32,13 +32,6 @@ public class RPNCalculate {
 	}
 	
 	/**
-	 * 预先编译
-	 * @param rpn
-	 */
-	public void compile(Queue<Object> rpn){
-		el = OperatorTree(rpn);
-	}
-	/**
 	 * 执行已经预编译的EL
 	 * @param context
 	 * @return
@@ -47,7 +40,6 @@ public class RPNCalculate {
 		ec.setContext(context);
 		return calculate(el);
 	}
-	
 	/**
 	 * 根据逆波兰表达式进行计算
 	 * @param rpn
@@ -73,6 +65,14 @@ public class RPNCalculate {
 			return ((IdentifierObj) el2.peek()).fetchVal();
 		}
 		return el2.peek();
+	}
+	
+	/**
+	 * 预先编译
+	 * @param rpn
+	 */
+	public void compile(Queue<Object> rpn){
+		el = OperatorTree(rpn);
 	}
 	/**
 	 * 转换成操作树

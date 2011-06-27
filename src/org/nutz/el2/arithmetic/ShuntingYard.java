@@ -21,43 +21,8 @@ import org.nutz.el2.parse.Converter;
  *
  */
 public class ShuntingYard {
-	private Queue<Object> rpn;
 	private Deque<Operator> opts;
-	
-	public Queue<Object> parseToRPN(String val){
-		Queue<Character> reader = new LinkedList<Character>();
-		for(char c : val.toCharArray()){
-			reader.add(c);
-		}
-		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-		return parseToRPN(reader);
-	}
-	
-	/**
-	 * 转换成 逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-	 * @param reader
-	 * @return
-	 * @throws IOException 
-	 */
-	private Queue<Object> parseToRPN(Queue<Character> queue) {
-		rpn = new LinkedList<Object>();
-		opts = new LinkedList<Operator>();
-		
-		Converter converter = new Converter(queue);
-		while(!converter.isEnd()){
-			Object item = converter.fetchItem();
-			if(item instanceof Operator){
-				parseOperator((Operator) item);
-				continue;
-			}
-			rpn.add(item);
-		}
-		while(!opts.isEmpty()){
-			rpn.add(opts.poll());
-		}
-		
-		return rpn;
-	}
+	private Queue<Object> rpn;
 	
 	/**
 	 * 转换操作符.
@@ -102,5 +67,40 @@ public class ShuntingYard {
 			rpn.add(opts.poll());
 		}
 		opts.addFirst(current);
+	}
+	
+	/**
+	 * 转换成 逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
+	 * @param reader
+	 * @return
+	 * @throws IOException 
+	 */
+	private Queue<Object> parseToRPN(Queue<Character> queue) {
+		rpn = new LinkedList<Object>();
+		opts = new LinkedList<Operator>();
+		
+		Converter converter = new Converter(queue);
+		while(!converter.isEnd()){
+			Object item = converter.fetchItem();
+			if(item instanceof Operator){
+				parseOperator((Operator) item);
+				continue;
+			}
+			rpn.add(item);
+		}
+		while(!opts.isEmpty()){
+			rpn.add(opts.poll());
+		}
+		
+		return rpn;
+	}
+	
+	public Queue<Object> parseToRPN(String val){
+		Queue<Character> reader = new LinkedList<Character>();
+		for(char c : val.toCharArray()){
+			reader.add(c);
+		}
+		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
+		return parseToRPN(reader);
 	}
 }
