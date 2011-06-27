@@ -7,8 +7,7 @@ import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.nutz.el.El;
-import org.nutz.el.ElObj;
+import org.nutz.el2.El2;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
@@ -28,15 +27,15 @@ public abstract class AbstractPathView implements View {
 
 	private Segment dest;
 
-	private Map<String, ElObj> exps;
+	private Map<String, El2> exps;
 
 	public AbstractPathView(String dest) {
 		if (null != dest) {
 			this.dest = new CharSegment(Strings.trim(dest));
-			this.exps = new HashMap<String, ElObj>();
+			this.exps = new HashMap<String, El2>();
 			// 预先将每个占位符解析成表达式
 			for (String key : this.dest.keys()) {
-				this.exps.put(key, El.compile(key));
+				this.exps.put(key, new El2(key));
 			}
 		}
 	}
@@ -49,8 +48,8 @@ public abstract class AbstractPathView implements View {
 
 		// 解析每个表达式
 		Context expContext = createContext(req, obj);
-		for (Entry<String, ElObj> en : exps.entrySet())
-			context.set(en.getKey(), en.getValue().eval(expContext).getString());
+		for (Entry<String, El2> en : exps.entrySet())
+			context.set(en.getKey(), en.getValue().eval(expContext));
 
 		// 生成解析后的路径
 		return Strings.trim(this.dest.render(context).toString());
