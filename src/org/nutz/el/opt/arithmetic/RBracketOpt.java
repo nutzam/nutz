@@ -2,7 +2,7 @@ package org.nutz.el.opt.arithmetic;
 
 import java.util.Queue;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.opt.AbstractOpt;
 
 /**
@@ -19,10 +19,10 @@ public class RBracketOpt extends AbstractOpt{
 		return ")";
 	}
 	public void wrap(Queue<Object> obj) {
-		throw new El2Exception("')符号不能进行wrap操作!'");
+		throw new ElException("')符号不能进行wrap操作!'");
 	}
 	public Object calculate() {
-		throw new El2Exception("')'符号不能进行计算操作!");
+		throw new ElException("')'符号不能进行计算操作!");
 	}
 
 }

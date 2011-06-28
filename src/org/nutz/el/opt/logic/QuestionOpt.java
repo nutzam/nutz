@@ -1,6 +1,6 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.Operator;
 import org.nutz.el.opt.TwoTernary;
 
@@ -23,7 +23,7 @@ public class QuestionOpt extends TwoTernary{
 		if(left instanceof Operator){
 			return ((Operator) left).calculate();
 		}
-		throw new El2Exception("三元表达式错误!");
+		throw new ElException("三元表达式错误!");
 	}
 
 	public String fetchSelf() {

@@ -1,6 +1,6 @@
 package org.nutz.el.opt;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.Operator;
 import org.nutz.el.obj.IdentifierObj;
 
@@ -49,7 +49,7 @@ public abstract class AbstractOpt implements Operator{
 		if(obj instanceof Operator){
 			return ((Operator) obj).calculate();
 		}
-		throw new El2Exception("未知计算类型!" + obj);
+		throw new ElException("未知计算类型!" + obj);
 		
 	}
 }

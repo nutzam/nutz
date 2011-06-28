@@ -7,17 +7,17 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.nutz.el.El2;
+import org.nutz.el.El;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
 
 public class El2Test {
-	El2 el;
+	El el;
 	
 	@Before
 	public void setUp(){
-		el = new El2();
+		el = new El();
 	}
 	
 	@Test

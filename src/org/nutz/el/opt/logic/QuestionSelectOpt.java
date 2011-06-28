@@ -1,6 +1,6 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.opt.TwoTernary;
 
 /**
@@ -21,7 +21,7 @@ public class QuestionSelectOpt extends TwoTernary{
 	}
 	public Object calculate() {
 		if(!(left instanceof QuestionOpt)){
-			throw new El2Exception("三元表达式错误!");
+			throw new ElException("三元表达式错误!");
 		}
 		QuestionOpt qo = (QuestionOpt) left;
 		Boolean cval = (Boolean) qo.calculate();

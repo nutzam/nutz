@@ -6,16 +6,16 @@ import org.nutz.el.arithmetic.ShuntingYard;
 import org.nutz.el.arithmetic.RPNCalculate;
 import org.nutz.lang.util.Context;
 
-public class El2 {
+public class El {
 	private RPNCalculate rc = null;
 	
-	public El2(){}
+	public El(){}
 	/**
 	 * 预编译
 	 * @param cs
 	 * @return
 	 */
-	public El2(CharSequence cs){
+	public El(CharSequence cs){
 		ShuntingYard sy = new ShuntingYard();
 		Queue<Object> rpn = sy.parseToRPN(cs.toString());
 		rc = new RPNCalculate(rpn);
@@ -27,7 +27,7 @@ public class El2 {
 	 */
 	public Object eval(Context context) {
 		if(rc == null){
-			throw new El2Exception("没有进行预编译!");
+			throw new ElException("没有进行预编译!");
 		}
 		return rc.calculate(context);
 	}

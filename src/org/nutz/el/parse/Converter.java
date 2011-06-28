@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.opt.arithmetic.LBracketOpt;
 import org.nutz.el.opt.arithmetic.NegativeOpt;
 import org.nutz.el.opt.arithmetic.RBracketOpt;
@@ -80,7 +80,7 @@ public class Converter {
 				return fetchItem(obj);
 			}
 		}
-		throw new El2Exception("无法解析!");
+		throw new ElException("无法解析!");
 	}
 	
 	/**

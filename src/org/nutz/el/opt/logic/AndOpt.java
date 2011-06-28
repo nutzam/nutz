@@ -1,6 +1,6 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 import org.nutz.el.opt.TwoTernary;
 
 /**
@@ -16,14 +16,14 @@ public class AndOpt extends TwoTernary {
 	public Object calculate() {
 		Object lval = calculateItem(this.left);
 		if(!(lval instanceof Boolean)){
-			throw new El2Exception("操作数类型错误!");
+			throw new ElException("操作数类型错误!");
 		}
 		if(!(Boolean)lval){
 			return false;
 		}
 		Object rval = calculateItem(this.right);
 		if(!(rval instanceof Boolean)){
-			throw new El2Exception("操作数类型错误!");
+			throw new ElException("操作数类型错误!");
 		}
 		if(!(Boolean)rval){
 			return false;

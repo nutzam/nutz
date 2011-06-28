@@ -2,8 +2,13 @@ package org.nutz.el.parse;
 
 import java.util.Queue;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 
+/**
+ * 字符串转换器
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public class StringParse implements Parse {
 	public Object fetchItem(Queue<Character> exp) {
 		//@ JKTODO 添加转意字符
@@ -58,7 +63,7 @@ public class StringParse implements Parse {
 			sb.append('\f');//这个支持一下又何妨?
 			break;
 		default:
-			throw new El2Exception("Unexpected char");	//1.b.37及之前的版本,会忽略非法的转义字符
+			throw new ElException("Unexpected char");	//1.b.37及之前的版本,会忽略非法的转义字符
 		}
 	}
 

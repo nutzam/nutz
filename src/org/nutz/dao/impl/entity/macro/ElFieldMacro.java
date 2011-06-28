@@ -7,18 +7,18 @@ import java.sql.SQLException;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.jdbc.NutPojo;
 import org.nutz.dao.sql.Pojo;
-import org.nutz.el.El2;
+import org.nutz.el.El;
 import org.nutz.lang.util.Context;
 
 public class ElFieldMacro extends NutPojo {
 
-	private El2 bin;
+	private El bin;
 
 	private MappingField entityField;
 
 	public ElFieldMacro(MappingField field, String str) {
 		this.entityField = field;
-		this.bin = new El2(str);
+		this.bin = new El(str);
 	}
 
 	private ElFieldMacro() {}

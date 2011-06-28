@@ -2,10 +2,10 @@ package org.nutz.el.parse;
 
 import java.util.Queue;
 
-import org.nutz.el.El2Exception;
+import org.nutz.el.ElException;
 
 /**
- * 操作数转换器
+ * 数值转换器
  * @author juqkai(juqkai@gmail.com)
  *
  */
@@ -43,7 +43,7 @@ public class ValParse implements Parse {
 					break;
 				case '.':
 					if(hasPoint){
-						throw new El2Exception("表达式错误,请查看是否有多个'.'!");
+						throw new ElException("表达式错误,请查看是否有多个'.'!");
 					}
 					hasPoint = true;
 					sb.append(exp.poll());
