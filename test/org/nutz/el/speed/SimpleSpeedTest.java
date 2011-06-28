@@ -1,7 +1,6 @@
 package org.nutz.el.speed;
 
-import org.nutz.el.El;
-import org.nutz.el.obj.BinElObj;
+import org.nutz.el.El2;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.Strings;
@@ -24,7 +23,7 @@ public class SimpleSpeedTest {
 
 	public static void main(String[] args) throws SecurityException, NoSuchMethodException {
 		final SimpleSpeedTest z = new SimpleSpeedTest();
-		final BinElObj exp = El.compile("num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i)");
+		final String elstr = "num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i)";
 		final Context context = Lang.context("{num:0}");
 		context.set("z", z);
 
@@ -40,12 +39,48 @@ public class SimpleSpeedTest {
 		});
 
 		System.out.println("\n" + Strings.dup('=', 100));
-
-		Stopwatch sw2 = Stopwatch.run(new Atom() {
+		
+		Stopwatch sw3 = Stopwatch.run(new Atom() {
 			public void run() {
 				try {
+					El2 el2 = new El2();
+					context.set("num", 0);
 					for (int i = 0; i < max; i++)
-						context.set("num", exp.eval(context.set("i", i)).getInteger());
+						context.set("num", el2.eval(context.set("i", i), elstr));
+					System.out.println("Num: " + context.getInt("num"));
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		});
+		System.out.println("\n" + Strings.dup('=', 100));
+		
+		Stopwatch sw4 = Stopwatch.run(new Atom() {
+			public void run() {
+				try {
+					El2 el2pre = new El2(elstr);
+					context.set("num", 0);
+					context.set("z", z);
+					for (int i = 0; i < max; i++)
+						context.set("num", el2pre.eval(context.set("i", i)));
+					System.out.println("Num: " + context.getInt("num"));
+				}
+				catch (Exception e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		});
+		System.out.println("\n" + Strings.dup('=', 100));
+		
+		Stopwatch sw5 = Stopwatch.run(new Atom() {
+			public void run() {
+				try {
+					El2 el2pre = new El2(elstr);
+					context.set("num", 0);
+					context.set("z", z);
+					for (int i = 0; i < max; i++)
+						context.set("num", el2pre.eval(context.set("i", i)));
 					System.out.println("Num: " + context.getInt("num"));
 				}
 				catch (Exception e) {
@@ -56,7 +91,10 @@ public class SimpleSpeedTest {
 		System.out.println("\n" + Strings.dup('=', 100));
 
 		System.out.printf("\n%20s : %s", "Invoke", sw.toString());
-		System.out.printf("\n%20s : %s", "Reflect", sw2.toString());
+		System.out.printf("\n%20s : %s", "Reflect", sw3.toString());
+		System.out.printf("\n%20s : %s", "Reflect", sw4.toString());
+		System.out.printf("\n%20s : %s", "Reflect", sw5.toString());
+		System.out.println();
 
 	}
 
