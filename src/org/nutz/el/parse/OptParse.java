@@ -1,8 +1,5 @@
 package org.nutz.el.parse;
 
-import java.util.Deque;
-import java.util.Queue;
-
 import org.nutz.el.ElException;
 import org.nutz.el.opt.arithmetic.LBracketOpt;
 import org.nutz.el.opt.arithmetic.ModOpt;
@@ -41,7 +38,7 @@ import org.nutz.el.opt.object.AccessOpt;
  */
 public class OptParse implements Parse {
 
-	public Object fetchItem(Queue<Character> exp){
+	public Object fetchItem(ElQueue<Character> exp){
 		if(exp.isEmpty()){
 			throw new ElException("表达式错误,不能进行操作符转换!");
 		}
@@ -139,11 +136,10 @@ public class OptParse implements Parse {
 			return new QuestionSelectOpt();
 		
 		case '.':
-			exp.poll();
-			if(!Character.isJavaIdentifierStart(exp.peek())){
-				((Deque<Character>)exp).addFirst('.');
+			if(!Character.isJavaIdentifierStart(exp.peek(1))){
 				return null;
 			}
+			exp.poll();
 			return new AccessOpt();
 		case ',':
 			exp.poll();

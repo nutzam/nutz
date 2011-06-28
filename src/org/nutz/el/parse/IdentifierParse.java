@@ -1,7 +1,5 @@
 package org.nutz.el.parse;
 
-import java.util.Queue;
-
 import org.nutz.el.obj.IdentifierObj;
 
 /**
@@ -11,7 +9,7 @@ import org.nutz.el.obj.IdentifierObj;
  */
 public class IdentifierParse implements Parse{
 
-	public Object fetchItem(Queue<Character> exp) {
+	public Object fetchItem(ElQueue<Character> exp) {
 		StringBuilder sb = new StringBuilder();
 		if(Character.isJavaIdentifierStart(exp.peek())){
 			sb.append(exp.poll());

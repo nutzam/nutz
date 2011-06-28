@@ -32,7 +32,7 @@ public class Converter {
 	}
 	
 	//表达式字符队列
-	private Queue<Character> exp;
+	private ElQueue<Character> exp;
 	//表达式项
 	private Queue<Object> itemCache;
 	//括号栈
@@ -41,7 +41,7 @@ public class Converter {
 	//上一个数据
 	private Object prev = null;
 	
-	public Converter(Queue<Character> expression) {
+	public Converter(ElQueue<Character> expression) {
 		this.exp = expression;
 		itemCache = new LinkedList<Object>();
 		skipSpace();

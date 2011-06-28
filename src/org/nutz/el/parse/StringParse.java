@@ -1,7 +1,5 @@
 package org.nutz.el.parse;
 
-import java.util.Queue;
-
 import org.nutz.el.ElException;
 
 /**
@@ -10,7 +8,7 @@ import org.nutz.el.ElException;
  *
  */
 public class StringParse implements Parse {
-	public Object fetchItem(Queue<Character> exp) {
+	public Object fetchItem(ElQueue<Character> exp) {
 		//@ JKTODO 添加转意字符
 		switch(exp.peek()){
 		case '\'':
@@ -30,7 +28,7 @@ public class StringParse implements Parse {
 		return null;
 	}
 	
-	private void parseSp(Queue<Character> exp, StringBuilder sb){
+	private void parseSp(ElQueue<Character> exp, StringBuilder sb){
 		switch (exp.poll()) {
 		case 'n':
 			sb.append('\n');

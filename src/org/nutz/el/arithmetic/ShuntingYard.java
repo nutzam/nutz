@@ -11,6 +11,8 @@ import org.nutz.el.opt.arithmetic.RBracketOpt;
 import org.nutz.el.opt.logic.QuestionOpt;
 import org.nutz.el.opt.logic.QuestionSelectOpt;
 import org.nutz.el.parse.Converter;
+import org.nutz.el.parse.ElQueue;
+import org.nutz.el.parse.ElQueueImpl;
 
 /**
  * Shunting yard算法是一个用于将中缀表达式转换为后缀表达式的经典算法，由艾兹格·迪杰斯特拉引入，因其操作类似于火车编组场而得名。<br/>
@@ -75,7 +77,7 @@ public class ShuntingYard {
 	 * @return
 	 * @throws IOException 
 	 */
-	private Queue<Object> parseToRPN(Queue<Character> queue) {
+	private Queue<Object> parseToRPN(ElQueue<Character> queue) {
 		rpn = new LinkedList<Object>();
 		opts = new LinkedList<Operator>();
 		
@@ -96,7 +98,7 @@ public class ShuntingYard {
 	}
 	
 	public Queue<Object> parseToRPN(String val){
-		Queue<Character> reader = new LinkedList<Character>();
+		ElQueue<Character> reader = new ElQueueImpl<Character>();
 		for(char c : val.toCharArray()){
 			reader.add(c);
 		}

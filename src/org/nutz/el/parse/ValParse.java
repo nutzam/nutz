@@ -1,7 +1,5 @@
 package org.nutz.el.parse;
 
-import java.util.Queue;
-
 import org.nutz.el.ElException;
 
 /**
@@ -11,7 +9,7 @@ import org.nutz.el.ElException;
  */
 public class ValParse implements Parse {
 
-	public Object fetchItem(Queue<Character> exp){
+	public Object fetchItem(ElQueue<Character> exp){
 		StringBuilder sb = new StringBuilder();
 		switch(exp.peek()){
 		case '.':
