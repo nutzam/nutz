@@ -22,33 +22,33 @@ public class El2Test {
 	
 	@Test
 	public void notCalculateOneNumber(){
-		assertEquals(1, el.eval("1"));
-		assertEquals(0.1, el.eval(".1"));
-		assertEquals(0.1d, el.eval("0.1"));
-		assertEquals(0.1f, el.eval("0.1f"));
-		assertEquals(0.1d, el.eval("0.1d"));
-		assertEquals(true, el.eval("true"));
-		assertEquals(false, el.eval("false"));
-		assertEquals("jk", el.eval("'jk'"));
+		assertEquals(1, El.eval("1"));
+		assertEquals(0.1, El.eval(".1"));
+		assertEquals(0.1d, El.eval("0.1"));
+		assertEquals(0.1f, El.eval("0.1f"));
+		assertEquals(0.1d, El.eval("0.1d"));
+		assertEquals(true, El.eval("true"));
+		assertEquals(false, El.eval("false"));
+		assertEquals("jk", El.eval("'jk'"));
 	}
 	
 	@Test
 	public void simpleCalculate(){
 		//加
-		assertEquals(2, el.eval("1+1"));
-		assertEquals(2.2, el.eval("1.1+1.1"));
+		assertEquals(2, El.eval("1+1"));
+		assertEquals(2.2, El.eval("1.1+1.1"));
 		//减
-		assertEquals(1, el.eval("2-1"));
+		assertEquals(1, El.eval("2-1"));
 		//乘
-		assertEquals(9, el.eval("3*3"));
-		assertEquals(0, el.eval("3*0"));
+		assertEquals(9, El.eval("3*3"));
+		assertEquals(0, El.eval("3*0"));
 		//除
-		assertEquals(3, el.eval("9/3"));
-		assertEquals(2.2, el.eval("4.4/2"));
-		assertEquals(9.9/3, el.eval("9.9/3"));
+		assertEquals(3, El.eval("9/3"));
+		assertEquals(2.2, El.eval("4.4/2"));
+		assertEquals(9.9/3, El.eval("9.9/3"));
 		//取余
-		assertEquals(1, el.eval("5%2"));
-		assertEquals(1.0%0.1, el.eval("1.0%0.1"));
+		assertEquals(1, El.eval("5%2"));
+		assertEquals(1.0%0.1, El.eval("1.0%0.1"));
 		
 	}
 	
@@ -57,14 +57,14 @@ public class El2Test {
 	 */
 	@Test
 	public void bit(){
-		assertEquals(-40, el.eval("-5<<3"));
-		assertEquals(-1, el.eval("-5>>3"));
-		assertEquals(5, el.eval("5>>>32"));
-		assertEquals(-5, el.eval("-5>>>32"));
-		assertEquals(1, el.eval("5&3"));
-		assertEquals(7, el.eval("5|3"));
-		assertEquals(-6, el.eval("~5"));
-		assertEquals(6, el.eval("5^3"));
+		assertEquals(-40, El.eval("-5<<3"));
+		assertEquals(-1, El.eval("-5>>3"));
+		assertEquals(5, El.eval("5>>>32"));
+		assertEquals(-5, El.eval("-5>>>32"));
+		assertEquals(1, El.eval("5&3"));
+		assertEquals(7, El.eval("5|3"));
+		assertEquals(-6, El.eval("~5"));
+		assertEquals(6, El.eval("5^3"));
 	}
 	
 	/**
@@ -72,15 +72,15 @@ public class El2Test {
 	 */
 	@Test
 	public void multiStageOperation(){
-		assertEquals(3, el.eval("1 + 1 + 1"));
-		assertEquals(1, el.eval("1+1-1"));
-		assertEquals(-1, el.eval("1-1-1"));
-		assertEquals(1, el.eval("1-(1-1)"));
-		assertEquals(7, el.eval("1+2*3"));
-		assertEquals(2*4+2*3+4*5, el.eval("2*4+2*3+4*5"));
-		assertEquals(9+8*7+(6+5)*((4-1*2+3)), el.eval("9+8*7+(6+5)*((4-1*2+3))"));
-		assertEquals(.3+.2*.5,el.eval(".3+.2*.5"));
-		assertEquals((.5 + 0.1)*.9, el.eval("(.5 + 0.1)*.9"));
+		assertEquals(3, El.eval("1 + 1 + 1"));
+		assertEquals(1, El.eval("1+1-1"));
+		assertEquals(-1, El.eval("1-1-1"));
+		assertEquals(1, El.eval("1-(1-1)"));
+		assertEquals(7, El.eval("1+2*3"));
+		assertEquals(2*4+2*3+4*5, El.eval("2*4+2*3+4*5"));
+		assertEquals(9+8*7+(6+5)*((4-1*2+3)), El.eval("9+8*7+(6+5)*((4-1*2+3))"));
+		assertEquals(.3+.2*.5,El.eval(".3+.2*.5"));
+		assertEquals((.5 + 0.1)*.9, El.eval("(.5 + 0.1)*.9"));
 	}
 	/**
 	 * 空格
@@ -88,13 +88,13 @@ public class El2Test {
 	@Test
 	public void sikpSpace(){
 		//空格检测
-		assertEquals(3, el.eval("    1 + 2    "));
+		assertEquals(3, El.eval("    1 + 2    "));
 	}
 	
 	@Test
 	public void testNull(){
-		assertEquals(null, el.eval("null"));
-		assertTrue((Boolean)el.eval("null == null"));
+		assertEquals(null, El.eval("null"));
+		assertTrue((Boolean)El.eval("null == null"));
 	}
 	
 	/**
@@ -102,17 +102,17 @@ public class El2Test {
 	 */
 	@Test
 	public void logical(){
-		assertEquals(true, el.eval("2 > 1"));
-		assertEquals(false, el.eval("2 < 1"));
-		assertEquals(true, el.eval("2 >= 2"));
-		assertEquals(true, el.eval("2 <= 2"));
-		assertEquals(true, el.eval("2 == 2 "));
-		assertEquals(true, el.eval("1 != 2"));
-		assertEquals(true, el.eval("!(1 == 2)"));
-		assertEquals(true, el.eval("!false"));
-		assertEquals(true, el.eval("true || false"));
-		assertEquals(false, el.eval("true && false"));
-		assertEquals(false, el.eval("false || true && false"));
+		assertEquals(true, El.eval("2 > 1"));
+		assertEquals(false, El.eval("2 < 1"));
+		assertEquals(true, El.eval("2 >= 2"));
+		assertEquals(true, El.eval("2 <= 2"));
+		assertEquals(true, El.eval("2 == 2 "));
+		assertEquals(true, El.eval("1 != 2"));
+		assertEquals(true, El.eval("!(1 == 2)"));
+		assertEquals(true, El.eval("!false"));
+		assertEquals(true, El.eval("true || false"));
+		assertEquals(false, El.eval("true && false"));
+		assertEquals(false, El.eval("false || true && false"));
 	}
 	
 	/**
@@ -121,8 +121,8 @@ public class El2Test {
 	 */
 	@Test
 	public void threeTernary(){
-		assertEquals(2, el.eval("1>0?2:3"));
-		assertEquals(2, el.eval("1>0&&1<2?2:3"));
+		assertEquals(2, El.eval("1>0?2:3"));
+		assertEquals(2, El.eval("1>0&&1<2?2:3"));
 	}
 	
 	/**
@@ -130,17 +130,17 @@ public class El2Test {
 	 */
 	@Test
 	public void stringTest(){
-		assertEquals("jk", el.eval("'jk'"));
-		assertEquals(2, el.eval("'jk'.length()"));
-		assertEquals(2, el.eval("\"jk\".length()"));
-		assertEquals("jk", el.eval("\"    jk   \".trim()"));
-		assertEquals("j\\n\\tk", el.eval("\"j\\n\\tk\""));
+		assertEquals("jk", El.eval("'jk'"));
+		assertEquals(2, El.eval("'jk'.length()"));
+		assertEquals(2, El.eval("\"jk\".length()"));
+		assertEquals("jk", El.eval("\"    jk   \".trim()"));
+		assertEquals("j\\n\\tk", El.eval("\"j\\n\\tk\""));
 	}
 	
 	@Test
 	public void test_issue_397_3() {
 		int expect = 1 / 1 + 10 * (1400 - 1400) / 400;
-		Object val = el.eval("1/1+10*(1400-1400)/400");
+		Object val = El.eval("1/1+10*(1400-1400)/400");
 		assertEquals(expect, val);
 	}
 	
@@ -149,10 +149,10 @@ public class El2Test {
 	 */
 	@Test
 	public void negative(){
-		assertEquals(-1, el.eval("-1"));
-		assertEquals(0, el.eval("-1+1"));
-		assertEquals(-1 - -1, el.eval("-1 - -1"));
-		assertEquals(9+8*7+(6+5)*(-(4-1*2+3)), el.eval("9+8*7+(6+5)*(-(4-1*2+3))"));
+		assertEquals(-1, El.eval("-1"));
+		assertEquals(0, El.eval("-1+1"));
+		assertEquals(-1 - -1, El.eval("-1 - -1"));
+		assertEquals(9+8*7+(6+5)*(-(4-1*2+3)), El.eval("9+8*7+(6+5)*(-(4-1*2+3))"));
 	}
 	
 	/**
@@ -160,11 +160,11 @@ public class El2Test {
 	 */
 	@Test
 	public void callMethod(){
-		assertEquals('j',el.eval("'jk'.charAt(0)"));
-		assertEquals("cde", el.eval("\"abcde\".substring(2)"));
-		assertEquals("b", el.eval("\"abcde\".substring(1,2)"));
-		assertEquals(true, el.eval("\"abcd\".regionMatches(2,\"ccd\",1,2)"));
-		assertEquals("bbbb", el.eval("'  abab  '.replace('a','b').trim()"));
+		assertEquals('j',El.eval("'jk'.charAt(0)"));
+		assertEquals("cde", El.eval("\"abcde\".substring(2)"));
+		assertEquals("b", El.eval("\"abcde\".substring(1,2)"));
+		assertEquals(true, El.eval("\"abcd\".regionMatches(2,\"ccd\",1,2)"));
+		assertEquals("bbbb", El.eval("'  abab  '.replace('a','b').trim()"));
 	}
 	
 	/**
@@ -174,18 +174,18 @@ public class El2Test {
 	public void test_simple_condition() {
 		Context context = Lang.context();
 		context.set("a", 10);
-		assertEquals(10, el.eval(context, "a"));
-		assertEquals(20, el.eval(context, "a + a"));
+		assertEquals(10, El.eval(context, "a"));
+		assertEquals(20, El.eval(context, "a + a"));
 		
 		context.set("b", "abc");
-		assertEquals(25, el.eval(context, "a + 2 +a+ b.length()"));
+		assertEquals(25, El.eval(context, "a + 2 +a+ b.length()"));
 		
 		String s = "a>5?'GT 5':'LTE 5'";
-		assertEquals("GT 5", el.eval(context, s));
+		assertEquals("GT 5", El.eval(context, s));
 		context.set("a", 5);
-		assertEquals("LTE 5", el.eval(context, s));
+		assertEquals("LTE 5", El.eval(context, s));
 		
-		assertEquals("jk", el.eval("\"j\"+\"k\""));
+		assertEquals("jk", El.eval("\"j\"+\"k\""));
 		
 	}
 	
@@ -195,13 +195,13 @@ public class El2Test {
 		List<String> list = new ArrayList<String>();
 		list.add("jk");
 		context.set("a", list);
-		assertEquals("jk", el.eval(context, "a.get((1-1))"));
-		assertEquals("jk", el.eval(context, "a.get(1-1)"));
-		assertEquals("jk", el.eval(context, "a.get(0)"));
+		assertEquals("jk", El.eval(context, "a.get((1-1))"));
+		assertEquals("jk", El.eval(context, "a.get(1-1)"));
+		assertEquals("jk", El.eval(context, "a.get(0)"));
 		
-		assertTrue((Boolean)el.eval(Lang.context(),"a==null"));
+		assertTrue((Boolean)El.eval(Lang.context(),"a==null"));
 		try{
-			assertTrue((Boolean)el.eval(Lang.context(), "a.a"));
+			assertTrue((Boolean)El.eval(Lang.context(), "a.a"));
 			fail();
 		}catch(Exception e){}
 	}
@@ -216,10 +216,10 @@ public class El2Test {
 		String[][] bb = new String[][]{{"a","b"},{"c","d"}};
 		context.set("a", str);
 		context.set("b", bb);
-		assertEquals("b", el.eval(context, "a[1]"));
-		assertEquals("b", el.eval(context, "a[1].toString()"));
-		assertEquals("b", el.eval(context, "a[2-1]"));
-		assertEquals("d", el.eval(context, "b[1][1]"));
+		assertEquals("b", El.eval(context, "a[1]"));
+		assertEquals("b", El.eval(context, "a[1].toString()"));
+		assertEquals("b", El.eval(context, "a[2-1]"));
+		assertEquals("d", El.eval(context, "b[1][1]"));
 	}
 	
 	/**
@@ -233,10 +233,10 @@ public class El2Test {
 		}
 		Context context = Lang.context();
 		context.set("a", new abc());
-		assertEquals("jk", el.eval(context, "a.name"));
+		assertEquals("jk", El.eval(context, "a.name"));
 		//这个功能放弃
-//		assertFalse((Boolean)el.eval("java.lang.Boolean.FALSE"));
-//		assertFalse((Boolean)el.eval("Boolean.FALSE"));
+//		assertFalse((Boolean)El.eval("java.lang.Boolean.FALSE"));
+//		assertFalse((Boolean)El.eval("Boolean.FALSE"));
 	}
 	
 	/**
@@ -244,8 +244,8 @@ public class El2Test {
 	 */
 	@Test
 	public void custom(){
-		assertEquals(2, el.eval("max(1, 2)"));
-		assertEquals("jk", el.eval("trim('    jk    ')"));
+		assertEquals(2, El.eval("max(1, 2)"));
+		assertEquals("jk", El.eval("trim('    jk    ')"));
 	}
 	
 	@Test
@@ -258,17 +258,17 @@ public class El2Test {
 		con.set("num", num);
 		con.set("i", i);
 		con.set("z", z);
-		assertEquals(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i), el.eval(con, elstr));
+		assertEquals(num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i), El.eval(con, elstr));
 	}
 	
 	@Test
 	public void lssue_486(){
-		assertEquals(2+(-3),el.eval("2+(-3)"));
-		assertEquals(2+-3,el.eval("2+-3"));
-		assertEquals(2*-3,el.eval("2*-3"));
-		assertEquals(-2*-3,el.eval("-2*-3"));
-		assertEquals(2/-3,el.eval("2/-3"));
-		assertEquals(2%-3,el.eval("2%-3"));
+		assertEquals(2+(-3),El.eval("2+(-3)"));
+		assertEquals(2+-3,El.eval("2+-3"));
+		assertEquals(2*-3,El.eval("2*-3"));
+		assertEquals(-2*-3,El.eval("-2*-3"));
+		assertEquals(2/-3,El.eval("2/-3"));
+		assertEquals(2%-3,El.eval("2%-3"));
 	}
 	
 	/**
@@ -279,10 +279,10 @@ public class El2Test {
 		Context context = Lang.context();
 		context.set("a", Lang.map("{x:10,y:50,txt:'Hello'}"));
 		
-		assertEquals(100, el.eval(context, "a.get('x')*10"));
-		assertEquals(100, el.eval(context, "a.x*10"));
-		assertEquals(100, el.eval(context, "a['x']*10"));
-		assertEquals("Hello-40", el.eval(context, "a.get('txt')+(a.get('x')-a.get('y'))"));
+		assertEquals(100, El.eval(context, "a.get('x')*10"));
+		assertEquals(100, El.eval(context, "a.x*10"));
+		assertEquals(100, El.eval(context, "a['x']*10"));
+		assertEquals("Hello-40", El.eval(context, "a.get('txt')+(a.get('x')-a.get('y'))"));
 	}
 	
 	/**
@@ -293,18 +293,18 @@ public class El2Test {
 		Context context = Lang.context();
 		List<String> list = new ArrayList<String>();
 		context.set("b", list);
-		assertEquals(0, el.eval(context, "b.size()"));
+		assertEquals(0, El.eval(context, "b.size()"));
 		list.add("");
-		assertEquals(1, el.eval(context, "b.size()"));
-		el.eval(context, "b.add('Q\nQ')");
-		assertEquals(2, el.eval(context, "b.size()"));
+		assertEquals(1, El.eval(context, "b.size()"));
+		El.eval(context, "b.add('Q\nQ')");
+		assertEquals(2, El.eval(context, "b.size()"));
 	}
 	
 	@SuppressWarnings("unused")
 	@Test
 	public void complexOperation(){
-		assertEquals(1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71, el.eval("1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71"));
-		assertEquals(6.7-100>39.6 ? (5)==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3, el.eval("6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3"));
+		assertEquals(1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71, El.eval("1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71"));
+		assertEquals(6.7-100>39.6 ? (5)==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3, El.eval("6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3"));
 		
 		Context vars = Lang.context();
 		vars.set("i",100);
