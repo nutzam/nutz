@@ -30,6 +30,6 @@ public interface ElQueue<T> {
 	 * 是否读取完
 	 * @return
 	 */
-	public boolean isEmpty();
+	public boolean isEnd();
 	
 }

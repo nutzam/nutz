@@ -53,7 +53,7 @@ public class Converter {
 	 * @throws IOException 
 	 */
 	private void initItems(){
-		while(!exp.isEmpty()){
+		while(!exp.isEnd()){
 			Object obj = parseItem();
 			//处理数组的情况
 			if(obj.getClass().isArray()){
@@ -77,7 +77,7 @@ public class Converter {
 			obj = parse.fetchItem(exp);
 			if(obj != null){
 				skipSpace();
-				return fetchItem(obj);
+				return parseItem(obj);
 			}
 		}
 		throw new ElException("无法解析!");
@@ -88,7 +88,7 @@ public class Converter {
 	 * @param item
 	 * @return
 	 */
-	private Object fetchItem(Object item){
+	private Object parseItem(Object item){
 		//左括号
 		if(item instanceof LBracketOpt){
 			if(prev instanceof IdentifierObj){
@@ -119,7 +119,7 @@ public class Converter {
 	 */
 	private boolean skipSpace(){
 		boolean space = false;
-		while(!exp.isEmpty() && Character.isWhitespace(exp.peek())){
+		while(!exp.isEnd() && Character.isWhitespace(exp.peek())){
 			space = true;
 			exp.poll();
 		}

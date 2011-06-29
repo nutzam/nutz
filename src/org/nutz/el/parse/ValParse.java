@@ -25,7 +25,7 @@ public class ValParse implements Parse {
 		case '9':
 			boolean hasPoint = exp.peek() == '.';
 			sb.append(exp.poll());
-			while(!exp.isEmpty()){
+			while(!exp.isEnd()){
 				switch(exp.peek()){
 				case '0':
 				case '1':

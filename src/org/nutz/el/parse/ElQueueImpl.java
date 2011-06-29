@@ -37,12 +37,12 @@ public class ElQueueImpl<T> implements ElQueue<T>{
 	 * @param index
 	 */
 	private void checking(int index){
-		if(isEmpty()){
+		if(isEnd()){
 			throw new ElException("已读取到最后一个元素了,不能继续读取!");
 		}
 	}
 
-	public boolean isEmpty() {
+	public boolean isEnd() {
 		return index >= list.size();
 	}
 

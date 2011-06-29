@@ -90,6 +90,12 @@ public class El2Test {
 		//空格检测
 		assertEquals(3, el.eval("    1 + 2    "));
 	}
+	
+	@Test
+	public void testNull(){
+		assertEquals(null, el.eval("null"));
+	}
+	
 	/**
 	 * 逻辑运算
 	 */
