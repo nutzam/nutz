@@ -1,5 +1,7 @@
 package org.nutz.el.parse;
 
+import java.util.Queue;
+
 import org.nutz.el.ElException;
 
 /**
@@ -9,7 +11,7 @@ import org.nutz.el.ElException;
  */
 public class ValParse implements Parse {
 
-	public Object fetchItem(ElQueue<Character> exp){
+	public Object fetchItem(Queue<Character> exp){
 		StringBuilder sb = new StringBuilder();
 		switch(exp.peek()){
 		case '.':
@@ -25,7 +27,7 @@ public class ValParse implements Parse {
 		case '9':
 			boolean hasPoint = exp.peek() == '.';
 			sb.append(exp.poll());
-			while(!exp.isEnd()){
+			while(!exp.isEmpty()){
 				switch(exp.peek()){
 				case '0':
 				case '1':

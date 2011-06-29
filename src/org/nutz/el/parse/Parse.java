@@ -1,5 +1,7 @@
 package org.nutz.el.parse;
 
+import java.util.Queue;
+
 /**
  * 转换器接口.<br>
  * 负责对字符队列进行转意,将其零散的字符转换成有具体意义的对象.
@@ -15,6 +17,6 @@ public interface Parse {
 	 * @param exp 表达式
 	 * @return
 	 */
-	Object fetchItem(ElQueue<Character> exp);
+	Object fetchItem(Queue<Character> exp);
 
 }

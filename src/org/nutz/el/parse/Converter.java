@@ -32,7 +32,7 @@ public class Converter {
 	}
 	
 	//表达式字符队列
-	private ElQueue<Character> exp;
+	private Queue<Character> exp;
 	//表达式项
 	private Queue<Object> itemCache;
 	//括号栈
@@ -41,7 +41,7 @@ public class Converter {
 	//上一个数据
 	private Object prev = null;
 	
-	public Converter(ElQueue<Character> expression) {
+	public Converter(Queue<Character> expression) {
 		this.exp = expression;
 		itemCache = new LinkedList<Object>();
 		skipSpace();
@@ -53,7 +53,7 @@ public class Converter {
 	 * @throws IOException 
 	 */
 	private void initItems(){
-		while(!exp.isEnd()){
+		while(!exp.isEmpty()){
 			Object obj = parseItem();
 			//处理数组的情况
 			if(obj.getClass().isArray()){
@@ -119,7 +119,7 @@ public class Converter {
 	 */
 	private boolean skipSpace(){
 		boolean space = false;
-		while(!exp.isEnd() && Character.isWhitespace(exp.peek())){
+		while(!exp.isEmpty() && Character.isWhitespace(exp.peek())){
 			space = true;
 			exp.poll();
 		}

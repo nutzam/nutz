@@ -1,5 +1,8 @@
 package org.nutz.el.parse;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 import org.nutz.el.ElException;
 import org.nutz.el.opt.arithmetic.LBracketOpt;
 import org.nutz.el.opt.arithmetic.ModOpt;
@@ -38,7 +41,7 @@ import org.nutz.el.opt.object.AccessOpt;
  */
 public class OptParse implements Parse {
 
-	public Object fetchItem(ElQueue<Character> exp){
+	public Object fetchItem(Queue<Character> exp){
 		switch(exp.peek()){
 		case '+':
 			exp.poll();
@@ -133,7 +136,7 @@ public class OptParse implements Parse {
 			return new QuestionSelectOpt();
 		
 		case '.':
-			if(!Character.isJavaIdentifierStart(exp.peek(1))){
+			if(!Character.isJavaIdentifierStart(((LinkedList<Character>)exp).get(1))){
 				return null;
 			}
 			exp.poll();
