@@ -4,6 +4,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import org.nutz.el.ElCache;
 import org.nutz.el.Operator;
 import org.nutz.el.obj.IdentifierObj;
 import org.nutz.lang.util.Context;
@@ -15,20 +16,20 @@ import org.nutz.lang.util.Context;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class RPNCalculate {
+public class RPN {
 	//存放context
 	private final ElCache ec = new ElCache();
 	//预编译后的对象
 	private Deque<Object> el;
 	
-	public RPNCalculate() {}
+	public RPN() {}
 	
 	/**
 	 * 进行EL的预编译
 	 * @param rpn
 	 */
-	public RPNCalculate(Queue<Object> rpn) {
-		el = OperatorTree(rpn);
+	public RPN(Queue<Object> rpn) {
+		compile(rpn);
 	}
 	
 	/**

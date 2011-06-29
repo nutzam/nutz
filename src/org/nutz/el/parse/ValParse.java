@@ -3,6 +3,7 @@ package org.nutz.el.parse;
 import java.util.Queue;
 
 import org.nutz.el.ElException;
+import org.nutz.el.Parse;
 
 /**
  * 数值转换器

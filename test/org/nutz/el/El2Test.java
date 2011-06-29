@@ -45,7 +45,7 @@ public class El2Test {
 		//除
 		assertEquals(3, el.eval("9/3"));
 		assertEquals(2.2, el.eval("4.4/2"));
-//		assertEquals(3.3, el.eval("9.9/3"));//哭死,这个要报错,计算结果是:3.3000000000000003
+		assertEquals(9.9/3, el.eval("9.9/3"));
 		//取余
 		assertEquals(1, el.eval("5%2"));
 		assertEquals(1.0%0.1, el.eval("1.0%0.1"));
@@ -94,6 +94,7 @@ public class El2Test {
 	@Test
 	public void testNull(){
 		assertEquals(null, el.eval("null"));
+		assertTrue((Boolean)el.eval("null == null"));
 	}
 	
 	/**
@@ -303,8 +304,7 @@ public class El2Test {
 	@Test
 	public void complexOperation(){
 		assertEquals(1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71, el.eval("1000+100.0*99-(600-3*15)%(((68-9)-3)*2-100)+10000%7*71"));
-		System.out.println(6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3);
-		assertEquals(6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3, el.eval("6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3"));
+		assertEquals(6.7-100>39.6 ? (5)==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3, el.eval("6.7-100>39.6 ? 5==5? 4+5:6-1 : !(100%3-39.0<27) ? 8*2-199: 100%3"));
 		
 		Context vars = Lang.context();
 		vars.set("i",100);
@@ -317,6 +317,6 @@ public class El2Test {
 //        t = "i * pi + (d * b - 199) / (1 - d * pi) - (2 + 100 - i / pi) % 99";
         assertEquals(true, el.eval(vars, t));
         
-        assertEquals('A' == 'A' || 'B' == 'B' && "ABCD" == "" &&  'A' == 'A', el.eval(vars, "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
+        assertEquals('A' == ('A') || 'B' == 'B' && "ABCD" == "" &&  'A' == 'A', el.eval(vars, "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
 	}
 }

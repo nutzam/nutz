@@ -2,6 +2,7 @@ package org.nutz.el.parse;
 
 import java.util.Queue;
 
+import org.nutz.el.Parse;
 import org.nutz.el.obj.IdentifierObj;
 
 /**

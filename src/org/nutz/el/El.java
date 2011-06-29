@@ -3,11 +3,11 @@ package org.nutz.el;
 import java.util.Queue;
 
 import org.nutz.el.arithmetic.ShuntingYard;
-import org.nutz.el.arithmetic.RPNCalculate;
+import org.nutz.el.arithmetic.RPN;
 import org.nutz.lang.util.Context;
 
 public class El {
-	private RPNCalculate rc = null;
+	private RPN rc = null;
 	
 	public El(){}
 	/**
@@ -18,7 +18,7 @@ public class El {
 	public El(CharSequence cs){
 		ShuntingYard sy = new ShuntingYard();
 		Queue<Object> rpn = sy.parseToRPN(cs.toString());
-		rc = new RPNCalculate(rpn);
+		rc = new RPN(rpn);
 	}
 	/**
 	 * 解析预编译后的EL表达式
@@ -44,7 +44,7 @@ public class El {
 
 	public Object eval(Context context, String val) {
 		ShuntingYard sy = new ShuntingYard();
-		RPNCalculate rc = new RPNCalculate();
+		RPN rc = new RPN();
 		Queue<Object> rpn = sy.parseToRPN(val);
 		return rc.calculate(context, rpn);
 	}
