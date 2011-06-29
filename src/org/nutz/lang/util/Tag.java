@@ -111,6 +111,12 @@ public class Tag extends SimpleNode<HtmlToken> {
 		return (" " + cns + " ").indexOf(" " + name + " ") != -1;
 	}
 
+	public Tag add(String tagName, String... attrs) {
+		Tag re = Tag.tag(tagName, attrs);
+		this.add(re);
+		return re;
+	}
+
 	public Tag id(String id) {
 		get().attr("id", id);
 		return this;
