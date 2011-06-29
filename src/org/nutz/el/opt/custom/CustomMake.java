@@ -2,6 +2,11 @@ package org.nutz.el.opt.custom;
 
 import org.nutz.el.opt.RunMethod;
 
+/**
+ * 自定义函数工厂类
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public class CustomMake {
 
 	/**
