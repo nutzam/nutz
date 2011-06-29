@@ -43,10 +43,9 @@ public class SimpleSpeedTest {
 		Stopwatch sw3 = Stopwatch.run(new Atom() {
 			public void run() {
 				try {
-					El el2 = new El();
 					context.set("num", 0);
 					for (int i = 0; i < max; i++)
-						context.set("num", el2.eval(context.set("i", i), elstr));
+						context.set("num", El.eval(context.set("i", i), elstr));
 					System.out.println("Num: " + context.getInt("num"));
 				}
 				catch (Exception e) {

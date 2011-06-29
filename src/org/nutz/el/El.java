@@ -37,12 +37,12 @@ public class El {
 	 * @param val
 	 * @return
 	 */
-	public Object eval(String val) {
+	public static Object eval(String val) {
 		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
 		return eval(null, val);
 	}
 
-	public Object eval(Context context, String val) {
+	public static Object eval(Context context, String val) {
 		ShuntingYard sy = new ShuntingYard();
 		RPN rc = new RPN();
 		Queue<Object> rpn = sy.parseToRPN(val);
