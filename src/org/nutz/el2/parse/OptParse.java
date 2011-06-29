@@ -1,35 +1,38 @@
-package org.nutz.el.parse;
+package org.nutz.el2.parse;
 
-import org.nutz.el.ElException;
-import org.nutz.el.opt.arithmetic.LBracketOpt;
-import org.nutz.el.opt.arithmetic.ModOpt;
-import org.nutz.el.opt.arithmetic.MulOpt;
-import org.nutz.el.opt.arithmetic.PlusOpt;
-import org.nutz.el.opt.arithmetic.RBracketOpt;
-import org.nutz.el.opt.arithmetic.SubOpt;
-import org.nutz.el.opt.bit.BitNot;
-import org.nutz.el.opt.bit.BitOr;
-import org.nutz.el.opt.bit.BitXro;
-import org.nutz.el.opt.bit.LeftShift;
-import org.nutz.el.opt.bit.RightShift;
-import org.nutz.el.opt.bit.UnsignedLeftShift;
-import org.nutz.el.opt.logic.AndOpt;
-import org.nutz.el.opt.logic.GTEOpt;
-import org.nutz.el.opt.logic.GTOpt;
-import org.nutz.el.opt.logic.LTEOpt;
-import org.nutz.el.opt.logic.LTOpt;
-import org.nutz.el.opt.logic.NEQOpt;
-import org.nutz.el.opt.logic.NotOpt;
-import org.nutz.el.opt.logic.OrOpt;
-import org.nutz.el.opt.logic.QuestionOpt;
-import org.nutz.el.opt.logic.QuestionSelectOpt;
-import org.nutz.el.opt.object.ArrayOpt;
-import org.nutz.el.opt.object.CommaOpt;
-import org.nutz.el.opt.object.FetchArrayOpt;
-import org.nutz.el.opt.arithmetic.DivOpt;
-import org.nutz.el.opt.bit.BitAnd;
-import org.nutz.el.opt.logic.EQOpt;
-import org.nutz.el.opt.object.AccessOpt;
+import java.util.Deque;
+import java.util.Queue;
+
+import org.nutz.el2.El2Exception;
+import org.nutz.el2.opt.arithmetic.DivOpt;
+import org.nutz.el2.opt.arithmetic.LBracketOpt;
+import org.nutz.el2.opt.arithmetic.ModOpt;
+import org.nutz.el2.opt.arithmetic.MulOpt;
+import org.nutz.el2.opt.arithmetic.PlusOpt;
+import org.nutz.el2.opt.arithmetic.RBracketOpt;
+import org.nutz.el2.opt.arithmetic.SubOpt;
+import org.nutz.el2.opt.bit.BitAnd;
+import org.nutz.el2.opt.bit.BitNot;
+import org.nutz.el2.opt.bit.BitOr;
+import org.nutz.el2.opt.bit.BitXro;
+import org.nutz.el2.opt.bit.LeftShift;
+import org.nutz.el2.opt.bit.RightShift;
+import org.nutz.el2.opt.bit.UnsignedLeftShift;
+import org.nutz.el2.opt.logic.AndOpt;
+import org.nutz.el2.opt.logic.EQOpt;
+import org.nutz.el2.opt.logic.GTEOpt;
+import org.nutz.el2.opt.logic.GTOpt;
+import org.nutz.el2.opt.logic.LTEOpt;
+import org.nutz.el2.opt.logic.LTOpt;
+import org.nutz.el2.opt.logic.NEQOpt;
+import org.nutz.el2.opt.logic.NotOpt;
+import org.nutz.el2.opt.logic.OrOpt;
+import org.nutz.el2.opt.logic.QuestionOpt;
+import org.nutz.el2.opt.logic.QuestionSelectOpt;
+import org.nutz.el2.opt.object.AccessOpt;
+import org.nutz.el2.opt.object.ArrayOpt;
+import org.nutz.el2.opt.object.CommaOpt;
+import org.nutz.el2.opt.object.FetchArrayOpt;
 
 /**
  * 操作符转换器
@@ -38,7 +41,10 @@ import org.nutz.el.opt.object.AccessOpt;
  */
 public class OptParse implements Parse {
 
-	public Object fetchItem(ElQueue<Character> exp){
+	public Object fetchItem(Queue<Character> exp){
+		if(exp.isEmpty()){
+			throw new El2Exception("表达式错误,不能进行操作符转换!");
+		}
 		switch(exp.peek()){
 		case '+':
 			exp.poll();
@@ -94,7 +100,7 @@ public class OptParse implements Parse {
 				exp.poll();
 				return new EQOpt();
 			}
-			throw new ElException("表达式错误,请检查'='后是否有非法字符!");
+			throw new El2Exception("表达式错误,请检查'='后是否有非法字符!");
 		case '!':
 			exp.poll();
 			switch(exp.peek()){
@@ -133,10 +139,11 @@ public class OptParse implements Parse {
 			return new QuestionSelectOpt();
 		
 		case '.':
-			if(!Character.isJavaIdentifierStart(exp.peek(1))){
+			exp.poll();
+			if(!Character.isJavaIdentifierStart(exp.peek())){
+				((Deque<Character>)exp).addFirst('.');
 				return null;
 			}
-			exp.poll();
 			return new AccessOpt();
 		case ',':
 			exp.poll();
