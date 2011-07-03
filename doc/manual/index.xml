@@ -83,16 +83,16 @@
 		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
-	<doc path="zmole" title="zMole - 快速代码生成工具">
+	<doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
 	</doc>
-	<doc path="zdoc" title="zDoc 手册">
+	<!--doc path="zdoc" title="zDoc 手册">
 		<doc path="overview.man"/>
 		<doc path="syntax.man"/>
 		<doc path="index_xml.man"/>
 		<doc path="dir_convert.man"/>
 		<doc path="ant_task.man"/>
-	</doc>
+	</doc-->
 	<doc path="history" title="版本历史">
 		<doc path="1_b_37.man"/>
 		<doc path="1_b_36.man"/>

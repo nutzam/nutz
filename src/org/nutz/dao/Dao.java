@@ -55,8 +55,11 @@ public interface Dao {
 	 * 因为 Dao 接口可以知道一个 POJO 的映射细节，这个函数可以帮你节省一点体力。
 	 * 
 	 * @param classOfT
+	 *            对象类型
 	 * @param rs
+	 *            结果集
 	 * @param fm
+	 *            字段过滤器
 	 * @return 对象
 	 */
 	<T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
@@ -510,14 +513,6 @@ public interface Dao {
 	 */
 	Record fetch(String tableName, Condition cnd);
 
-	/**
-	 * Fetch one object from DB, it is upon the insert sequence and DB
-	 * implementation about which one will be fetched.
-	 * 
-	 * @param classOfT
-	 *            The POJO java type
-	 * @return a POJO object, null will be returned if the data set is empty
-	 */
 	/**
 	 * 随便获取一个对象。某些时候，你的数据表永远只有一条记录，这个操作就很适合你
 	 * 

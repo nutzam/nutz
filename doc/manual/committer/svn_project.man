@@ -144,7 +144,7 @@ Check out
 
 	注意，请别忘了设置过滤的 pattern:
 
-	<../imgs/build/16_2.png>
+	<800x:../imgs/build/16_2.png>
 
 	否则，会出编译警告，因为 svn 缓存在目录中的文件也会被 Eclipse 看到。分别为 src 和 test 增加过滤 pattern，就可以让 Eclipse 
 	忽略所有的 .svn 工作目录
