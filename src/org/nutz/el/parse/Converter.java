@@ -27,12 +27,6 @@ import org.nutz.lang.Lang;
  */
 public class Converter {
 	private static final List<Parse> parses = new ArrayList<Parse>();
-	static{
-		parses.add(new OptParse());
-		parses.add(new StringParse());
-		parses.add(new IdentifierParse());
-		parses.add(new ValParse());
-	}
 	
 	//表达式字符队列
 	private CharQueue exp;
@@ -48,7 +42,7 @@ public class Converter {
 		this.exp = reader;
 		itemCache = new LinkedList<Object>();
 		skipSpace();
-		initItems();
+		initParse();
 	}
 	public Converter(String val) {
 		this(Lang.inr(val));
@@ -56,12 +50,28 @@ public class Converter {
 	public Converter(Reader reader){
 		this(new CharQueueDefault(reader));
 	}
+	/**
+	 * 初始化解析器
+	 */
+	private void initParse(){
+		parses.add(new OptParse());
+		parses.add(new StringParse());
+		parses.add(new IdentifierParse());
+		parses.add(new ValParse());
+	}
+	/**
+	 * 重新设置解析器
+	 * @param val
+	 */
+	public void setParse(List<Parse> val){
+		parses.addAll(val);
+	}
 
 	/**
 	 * 初始化EL项
 	 * @throws IOException 
 	 */
-	private void initItems(){
+	public void initItems(){
 		while(!exp.isEmpty()){
 			Object obj = parseItem();
 			//处理数组的情况

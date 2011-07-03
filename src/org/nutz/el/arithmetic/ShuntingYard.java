@@ -80,6 +80,7 @@ public class ShuntingYard {
 		opts = new LinkedList<Operator>();
 		
 		Converter converter = new Converter(val);
+		converter.initItems();
 		while(!converter.isEnd()){
 			Object item = converter.fetchItem();
 			if(item instanceof Operator){
