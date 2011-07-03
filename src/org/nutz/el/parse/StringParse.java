@@ -1,7 +1,5 @@
 package org.nutz.el.parse;
 
-import java.util.Queue;
-
 import org.nutz.el.ElException;
 import org.nutz.el.Parse;
 
@@ -11,14 +9,15 @@ import org.nutz.el.Parse;
  *
  */
 public class StringParse implements Parse {
-	public Object fetchItem(Queue<Character> exp) {
+	public Object fetchItem(CharQueue exp) {
 		//@ JKTODO 添加转意字符
 		switch(exp.peek()){
 		case '\'':
 		case '"':
 			StringBuilder sb = new StringBuilder();
 			char end = exp.poll();
-			while(!exp.isEmpty() && !exp.peek().equals(end)){
+//			while(!exp.isEmpty() && !exp.peek().equals(end)){
+			while(!exp.isEmpty() && exp.peek() != end){
 				if(exp.peek() == '\\') {//转义字符?
 					parseSp(exp, sb);
 				}else{
@@ -31,7 +30,7 @@ public class StringParse implements Parse {
 		return null;
 	}
 	
-	private void parseSp(Queue<Character> exp, StringBuilder sb){
+	private void parseSp(CharQueue exp, StringBuilder sb){
 		switch (exp.poll()) {
 		case 'n':
 			sb.append('\n');

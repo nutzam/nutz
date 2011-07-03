@@ -1,6 +1,7 @@
 package org.nutz.el.parse;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.LinkedList;
@@ -16,6 +17,7 @@ import org.nutz.el.opt.arithmetic.SubOpt;
 import org.nutz.el.opt.object.InvokeMethodOpt;
 import org.nutz.el.opt.object.MethodOpt;
 import org.nutz.el.obj.IdentifierObj;
+import org.nutz.lang.Lang;
 
 /**
  * 转换器,也就是用来将字符串转换成队列.
@@ -33,7 +35,7 @@ public class Converter {
 	}
 	
 	//表达式字符队列
-	private Queue<Character> exp;
+	private CharQueue exp;
 	//表达式项
 	private Queue<Object> itemCache;
 	//括号栈
@@ -42,13 +44,19 @@ public class Converter {
 	//上一个数据
 	private Object prev = null;
 	
-	public Converter(Queue<Character> expression) {
-		this.exp = expression;
+	public Converter(CharQueue reader) {
+		this.exp = reader;
 		itemCache = new LinkedList<Object>();
 		skipSpace();
 		initItems();
 	}
-	
+	public Converter(String val) {
+		this(Lang.inr(val));
+	}
+	public Converter(Reader reader){
+		this(new CharQueueDefault(reader));
+	}
+
 	/**
 	 * 初始化EL项
 	 * @throws IOException 
