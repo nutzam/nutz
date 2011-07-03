@@ -75,11 +75,12 @@ public class ShuntingYard {
 	 * @return
 	 * @throws IOException 
 	 */
-	private Queue<Object> parseToRPN(Queue<Character> queue) {
+	public Queue<Object> parseToRPN(String val) {
 		rpn = new LinkedList<Object>();
 		opts = new LinkedList<Operator>();
 		
-		Converter converter = new Converter(queue);
+		Converter converter = new Converter(val);
+		converter.initItems();
 		while(!converter.isEnd()){
 			Object item = converter.fetchItem();
 			if(item instanceof Operator){
@@ -93,14 +94,5 @@ public class ShuntingYard {
 		}
 		
 		return rpn;
-	}
-	
-	public Queue<Object> parseToRPN(String val){
-		Queue<Character> reader = new LinkedList<Character>();
-		for(char c : val.toCharArray()){
-			reader.add(c);
-		}
-		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-		return parseToRPN(reader);
 	}
 }

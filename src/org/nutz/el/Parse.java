@@ -1,6 +1,6 @@
 package org.nutz.el;
 
-import java.util.Queue;
+import org.nutz.el.parse.CharQueue;
 
 /**
  * 转换器接口.<br>
@@ -17,6 +17,6 @@ public interface Parse {
 	 * @param exp 表达式
 	 * @return
 	 */
-	Object fetchItem(Queue<Character> exp);
+	Object fetchItem(CharQueue exp);
 
 }
