@@ -73,7 +73,7 @@ public abstract class Exps {
 		if (null == value) {
 			SqlExpression re;
 			// IS NULL
-			if ("IS".equals(op) || "NOT IS".equals(op) || "IS NOT".equals(op)) {
+			if ("=".equals(op) || "IS".equals(op) || "NOT IS".equals(op) || "IS NOT".equals(op)) {
 				re = isNull(name);
 			}
 			// !!!
@@ -121,7 +121,7 @@ public abstract class Exps {
 			return eq(name, value);
 		}
 		// !=
-		else if ("!=".equals(op) || "<>".equals(op)) {//TODO 检查一下,原本是&&, 明显永远成立
+		else if ("!=".equals(op) || "<>".equals(op)) {// TODO 检查一下,原本是&&, 明显永远成立
 			return eq(name, value).setNot(true);
 		}
 		// Others
