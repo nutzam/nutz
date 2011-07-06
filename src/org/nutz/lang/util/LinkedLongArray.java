@@ -53,13 +53,13 @@ public class LinkedLongArray {
 
 	public long first() {
 		if (size() == 0)
-			return (char) 0;
+			return -1;
 		return innerGet(offset);
 	}
 
 	public long last() {
 		if (size() == 0)
-			return (char) 0;
+			return -1;
 		return innerGet(cursor - 1);
 	}
 
@@ -104,7 +104,7 @@ public class LinkedLongArray {
 	public long[] toArray() {
 		long[] re = new long[size()];
 		for (int i = 0; i < re.length; i++)
-			re[i] = (char) this.get(i);
+			re[i] = this.get(i);
 		return re;
 	}
 
