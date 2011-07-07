@@ -8,6 +8,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
@@ -33,6 +34,24 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 		// 需要进行分页
 		if (pager != null)
 			pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+	}
+
+	@Override
+	protected String evalFieldType(MappingField mf) {
+		// Mysql 的精度是按照 bit
+		if (mf.getColumnType() == ColType.INT) {
+			int width = mf.getWidth();
+			if (width <= 0)
+				return "INT(32)";
+			else if (width <= 4) {
+				return "TINYINT(" + (width * 4) + ")";
+			} else if (width <= 8) {
+				return "INT(" + (width * 4) + ")";
+			}
+			return "BIGINT(" + (width * 4) + ")";
+		}
+		// 其它的参照默认字段规则 ...
+		return super.evalFieldType(mf);
 	}
 
 	public boolean createEntity(Dao dao, Entity<?> en) {
