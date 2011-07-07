@@ -19,7 +19,7 @@ import org.nutz.dao.ConnCallback;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * 
- * @see org.nutz.dao.impl.DefaultDaoRunner
+ * @see org.nutz.dao.impl.sql.run.NutDaoRunner
  */
 public interface DaoRunner {
 

@@ -11,8 +11,6 @@ public class CustomMake {
 
 	/**
 	 * 自定义方法 工厂方法
-	 * @param val
-	 * @return
 	 */
 	public static RunMethod make(String val) {
 		if("max".equals(val)){

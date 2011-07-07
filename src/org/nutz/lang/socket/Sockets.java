@@ -86,7 +86,7 @@ public abstract class Sockets {
 	 * 
 	 * @param port
 	 *            要监听的端口
-	 * @param str
+	 * @param line
 	 *            命令名称
 	 * @param action
 	 *            动作执行类
@@ -103,7 +103,7 @@ public abstract class Sockets {
 	 * 
 	 * @param port
 	 *            要监听的端口
-	 * @param str
+	 * @param line
 	 *            命令名称
 	 * @param action
 	 *            动作执行类

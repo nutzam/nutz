@@ -62,7 +62,6 @@ public class Images {
 	 *            宽度
 	 * @param h
 	 *            高度
-	 * @return 被转换后的图像
 	 * 
 	 * @throws IOException
 	 *             当读写文件失败时抛出

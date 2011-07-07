@@ -20,7 +20,6 @@ public interface RunMethod {
 	/**
 	 * 根据传入的参数执行方法
 	 * @param fetchParam 参数
-	 * @return
 	 */
 	Object run(List<Object> fetchParam);
 

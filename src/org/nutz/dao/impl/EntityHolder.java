@@ -63,12 +63,6 @@ public class EntityHolder {
 		return (Entity<T>) re;
 	}
 
-	/**
-	 * @param <T>
-	 * @param tableName
-	 * @param map
-	 * @return
-	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public <T extends Map<String, ?>> Entity<T> makeEntity(String tableName, T map) {
 		final NutEntity<T> en = new NutEntity(map.getClass());

@@ -15,7 +15,6 @@ public interface Parse {
 	 * 特别注意,实现本方法的子程序只应该读取自己要转换的数据,不是自己要使用的数据一律不做取操作.<br>
 	 * 一句话,只读取自己能转换的,自己不能转换的一律不操作.
 	 * @param exp 表达式
-	 * @return
 	 */
 	Object fetchItem(CharQueue exp);
 

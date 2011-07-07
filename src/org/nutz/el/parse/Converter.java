@@ -1,6 +1,5 @@
 package org.nutz.el.parse;
 
-import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -61,7 +60,6 @@ public class Converter {
 	}
 	/**
 	 * 重新设置解析器
-	 * @param val
 	 */
 	public void setParse(List<Parse> val){
 		parses.addAll(val);
@@ -69,7 +67,6 @@ public class Converter {
 
 	/**
 	 * 初始化EL项
-	 * @throws IOException 
 	 */
 	public void initItems(){
 		while(!exp.isEmpty()){
@@ -87,8 +84,6 @@ public class Converter {
 	
 	/**
 	 * 解析数据
-	 * @return
-	 * @throws IOException
 	 */
 	private Object parseItem(){
 		Object obj = null;
@@ -104,8 +99,6 @@ public class Converter {
 	
 	/**
 	 * 转换数据,主要是转换负号,方法执行
-	 * @param item
-	 * @return
 	 */
 	private Object parseItem(Object item){
 		//左括号
@@ -134,7 +127,6 @@ public class Converter {
 	
 	/**
 	 * 跳过空格,并返回是否跳过空格(是否存在空格)
-	 * @return
 	 */
 	private boolean skipSpace(){
 		boolean space = false;
@@ -147,9 +139,6 @@ public class Converter {
 
 	/**
 	 * 取得一个有效数据
-	 * @param exp
-	 * @return
-	 * @throws IOException
 	 */
 	public Object fetchItem(){
 		return itemCache.poll();
@@ -158,7 +147,6 @@ public class Converter {
 	
 	/**
 	 * 是否结束
-	 * @return
 	 */
 	public boolean isEnd(){
 		return itemCache.isEmpty();
@@ -167,7 +155,6 @@ public class Converter {
 	
 	/**
 	 * 括号类型
-	 * @author juqkai(juqkai@gmail.com)
 	 *
 	 */
 	enum BracketType{

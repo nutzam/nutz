@@ -26,7 +26,6 @@ public class RPN {
 	
 	/**
 	 * 进行EL的预编译
-	 * @param rpn
 	 */
 	public RPN(Queue<Object> rpn) {
 		compile(rpn);
@@ -34,8 +33,6 @@ public class RPN {
 	
 	/**
 	 * 执行已经预编译的EL
-	 * @param context
-	 * @return
 	 */
 	public Object calculate(Context context){
 		ec.setContext(context);
@@ -43,8 +40,6 @@ public class RPN {
 	}
 	/**
 	 * 根据逆波兰表达式进行计算
-	 * @param rpn
-	 * @return
 	 */
 	public Object calculate(Context context, Queue<Object> rpn) {
 		ec.setContext(context);
@@ -54,8 +49,6 @@ public class RPN {
 	
 	/**
 	 * 计算
-	 * @param el2
-	 * @return
 	 */
 	private Object calculate(Deque<Object> el2){
 		if(el2.peek() instanceof Operator){
@@ -70,15 +63,13 @@ public class RPN {
 	
 	/**
 	 * 预先编译
-	 * @param rpn
 	 */
 	public void compile(Queue<Object> rpn){
 		el = OperatorTree(rpn);
 	}
+	
 	/**
 	 * 转换成操作树
-	 * @param rpn
-	 * @return
 	 */
 	private Deque<Object> OperatorTree(Queue<Object> rpn){
 		Deque<Object> operand = new LinkedList<Object>();

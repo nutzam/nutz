@@ -45,7 +45,6 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	
 	/**
 	 * 取得变得的值
-	 * @return 
 	 */
 	public Object fetchVar(){
 		if(left instanceof AccessOpt){

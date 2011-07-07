@@ -651,8 +651,6 @@ public abstract class Jdbcs {
 	 * 
 	 * @param ef
 	 *            映射字段
-	 * @param info
-	 *            字段配置信息
 	 */
 	public static void guessEntityFieldColumnType(NutMappingField ef) {
 		Mirror<?> mirror = ef.getTypeMirror();

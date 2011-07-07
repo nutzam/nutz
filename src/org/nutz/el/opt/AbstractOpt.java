@@ -12,7 +12,6 @@ import org.nutz.el.obj.IdentifierObj;
 public abstract class AbstractOpt implements Operator{
 	/**
 	 * 操作符对象自身的符号
-	 * @return
 	 */
 	public abstract String fetchSelf();
 	public boolean equals(Object obj) {
@@ -27,8 +26,6 @@ public abstract class AbstractOpt implements Operator{
 	
 	/**
 	 * 计算子项
-	 * @param obj
-	 * @return
 	 */
 	protected Object calculateItem(Object obj){
 		if(obj == null){

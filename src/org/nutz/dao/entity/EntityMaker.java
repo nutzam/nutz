@@ -4,7 +4,6 @@ package org.nutz.dao.entity;
  * Entity 的工厂接口
  * 
  * @author zozoh(zozohtnt@gmail.com)
- * @param <T>
  *            Entity 的配置对象类型
  */
 public interface EntityMaker {

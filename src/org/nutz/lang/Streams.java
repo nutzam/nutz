@@ -110,7 +110,8 @@ public abstract class Streams {
 	 *            输出流
 	 * @param ins
 	 *            输入流
-	 * @param 缓冲块大小
+	 * @param bufferSize
+	 * 			     缓冲块大小
 	 * 
 	 * @throws IOException
 	 */
@@ -504,9 +505,6 @@ public abstract class Streams {
 	/**
 	 * 获取File对象输入流,即使在Jar文件中一样工作良好!! <b>强烈推荐</b>
 	 * 
-	 * @param file
-	 * @return
-	 * @throws IOException
 	 */
 	protected static InputStream _input(File file) throws IOException {
 		if (file.exists())

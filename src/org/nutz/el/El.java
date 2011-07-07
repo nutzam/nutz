@@ -12,8 +12,6 @@ public class El {
 	public El(){}
 	/**
 	 * 预编译
-	 * @param cs
-	 * @return
 	 */
 	public El(CharSequence cs){
 		ShuntingYard sy = new ShuntingYard();
@@ -22,8 +20,6 @@ public class El {
 	}
 	/**
 	 * 解析预编译后的EL表达式
-	 * @param context
-	 * @return
 	 */
 	public Object eval(Context context) {
 		if(rc == null){
@@ -34,8 +30,6 @@ public class El {
 
 	/**
 	 * 对参数代表的表达式进行运算
-	 * @param val
-	 * @return
 	 */
 	public static Object eval(String val) {
 		//逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）

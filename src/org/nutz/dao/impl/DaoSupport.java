@@ -201,10 +201,6 @@ public class DaoSupport {
 	/**
 	 * 子类可以重写这个类，用来扩展成其他的实体配置方式
 	 * 
-	 * @param ds
-	 *            数据源
-	 * @param expert
-	 *            数据源专家类
 	 * @return 实体工厂
 	 */
 	protected EntityMaker createEntityMaker() {
