@@ -200,29 +200,29 @@
 			}}}
 		 * 切除首位空白
 			{{{
-			assertEquals("ABC", Strings.trim("\t   ABC \r\n   ");
+			assertEquals("ABC", Strings.trim("\t   ABC \r\n   "));
 			}}}
 		 * 左填充 (居右)
 			{{{
-			assertEquals("00FE", Strings.alignRight("FE", 4, '0');
+			assertEquals("00FE", Strings.alignRight("FE", 4, '0'));
 			}}}
 		 * 右填充 (居左)
 			{{{
-			assertEquals("FE00", Strings.alignLeft("FE", 4, '0');
+			assertEquals("FE00", Strings.alignLeft("FE", 4, '0'));
 			}}}
 	转换
 		 * 二进制形式字符串
 			{{{
-			assertEquals("0110", Strings.fillBinary(6, 4);
+			assertEquals("0110", Strings.fillBinary(6, 4));
 			}}}
 		 * 十六进制形式字符串
 			{{{
-			assertEquals("00FF", Strings.fillHex(255, 4);
+			assertEquals("00FF", Strings.fillHex(255, 4));
 			}}}
 		 * 拆分数组 （忽略空白元素）
 			{{{
-			assertEquals(3, Strings.splitIgnoreBlank("A,B,C");
-			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,");
+			assertEquals(3, Strings.splitIgnoreBlank("A,B,C"));
+			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,"));
 			}}}
 		 
 	创建重复

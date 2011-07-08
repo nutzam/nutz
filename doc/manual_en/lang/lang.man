@@ -185,29 +185,29 @@ Operate String
 			}}}
 		 * Trim
 			{{{
-			assertEquals("ABC", Strings.trim("\t   ABC \r\n   ");
+			assertEquals("ABC", Strings.trim("\t   ABC \r\n   "));
 			}}}
 		 * Right align
 			{{{
-			assertEquals("00FE", Strings.alignRight("FE", 4, '0');
+			assertEquals("00FE", Strings.alignRight("FE", 4, '0'));
 			}}}
 		 * Left align
 			{{{
-			assertEquals("FE00", Strings.alignLeft("FE", 4, '0');
+			assertEquals("FE00", Strings.alignLeft("FE", 4, '0'));
 			}}}
 	Convert
 		 * To binary format string
 			{{{
-			assertEquals("0110", Strings.fillBinary(6, 4);
+			assertEquals("0110", Strings.fillBinary(6, 4));
 			}}}
 		 * To hex format string
 			{{{
-			assertEquals("00FF", Strings.fillHex(255, 4);
+			assertEquals("00FF", Strings.fillHex(255, 4));
 			}}}
 		 * Split String(ignore empty element)
 			{{{
-			assertEquals(3, Strings.splitIgnoreBlank("A,B,C");
-			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,");
+			assertEquals(3, Strings.splitIgnoreBlank("A,B,C"));
+			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,"));
 			}}}
 		 
 	Duplicate
