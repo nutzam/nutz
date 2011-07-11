@@ -1395,14 +1395,18 @@ public abstract class Lang {
 		s = s.toUpperCase();
 		// 浮点
 		if (s.indexOf('.') != -1) {
-			return Float.valueOf(s);
+			char c = s.charAt(s.length() - 1);
+			if (c == 'F' || c == 'f') {
+				return Float.valueOf(s);
+			}
+			return Double.valueOf(s);
 		}
 		// 16进制整数
 		if (s.startsWith("0X")) {
 			return Integer.valueOf(s.substring(2), 16);
 		}
 		// 长整数
-		if (s.charAt(s.length() - 1) == 'L') {
+		if (s.charAt(s.length() - 1) == 'L' || s.charAt(s.length() - 1) == 'l') {
 			return Long.valueOf(s.substring(0, s.length() - 1));
 		}
 		// 普通整数
