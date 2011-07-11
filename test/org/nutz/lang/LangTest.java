@@ -274,5 +274,10 @@ public class LangTest {
 		assertEquals(Long.MAX_VALUE, re.longValue());
 		assertEquals(Integer.MAX_VALUE, Lang.str2number(""+Integer.MAX_VALUE));
 		assertEquals(0, Lang.str2number("0"));
+		assertEquals(0.1, Lang.str2number("0.1"));
+		assertEquals(0.1, Lang.str2number("0.1d"));
+		assertEquals(0.1f, Lang.str2number("0.1f"));
+		assertEquals(2147483648L, Lang.str2number("2147483648"));
+		assertEquals(2147483648L, Lang.str2number("2147483648l"));
 	}
 }
