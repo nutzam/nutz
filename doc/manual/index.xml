@@ -4,6 +4,7 @@
 	<doc path="nutz_release_notes.man"/>
 	<doc path="committer"  title="关于源码">
 		<doc path="svn_project.man"/>
+		<doc path="git_project.man"/>
 		<doc path="compile.man"/>
 		<doc path="ant.man"/>
 		<doc path="packages.man"/>

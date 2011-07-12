@@ -25,10 +25,6 @@ public class NutFilePool implements FilePool {
 		this.size = size;
 		this.home = Files.createDirIfNoExists(homePath);
 
-		if (null == home) {
-			home = new File(homePath);
-			Files.makeDir(home);
-		}
 		if (!home.isDirectory())
 			throw Lang.makeThrow(	"Path error '%s'! ,You must declare a real directory as the '%s' home folder.",
 									homePath,

@@ -32,20 +32,26 @@ Nutz 给你的快速实现
 		{{{<JAVA>
 		List<Person> crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age>20"), null);
 		}}}
+
 		这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 [hello.man Nutz.Dao 入门]
 		针对 Person 对象的描述，实际上，上面那句话执行的 SQL 代码为：
-		{{{<SQL>
+		
+        {{{<SQL>
 		SELECT * FROM t_person WHERE name LIKE 'J%' AND age>20;
 		}}}
-		当然你要是写
-		{{{<JAVA>
+		
+        当然你要是写
+		
+        {{{<JAVA>
 		Cnd.wrap("name LIKE 'J%' AND age>20 ORDER BY name ASC");
 		}}}
-		就会按照 name 字段排序。
+		
+        就会按照 name 字段排序。
 
 	一个友好一些的工具类 -- Cnd
 	
-		有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column({#F0F;"数据库字段名"})
+		有些情况，数据库中的字段同 Java 对象中的字段并不同名，
+        所以就需要给 Java 字段上的数据库字段注解加上参数 @Column({#F0F;"数据库字段名"})
 		如果你通过 Cnd.wrap() 硬编码某个字段，那么当这个字段数据库字段名发生改变时，你就需要改动很多。
 		因此你希望仅仅将对于数据库的变动限制在 Java 对象的源文件里
 		所以 Nutz 提供了 Cnd.where() 方法
@@ -58,11 +64,69 @@ Nutz 给你的快速实现
 		}}}
 		你也可以嵌套表达式
 		{{{<JAVA>
-		ExpGroup e1 = Cnd.exps("name", "LIKE", "P%").and("age", ">", "20");
-		ExpGroup e2 = Cnd.exps("name", "LIKE", "S%").and("age", "<", "30");
+		SqlExpressionGroup e1 = Cnd.exps("name", "LIKE", "P%").and("age", ">", "20");
+		SqlExpressionGroup e2 = Cnd.exps("name", "LIKE", "S%").and("age", "<", "30");
 		Condition c = Cnd.where(e1).or(e2).asc("name");
 		}}}
 		这个条件将生成 SQL 
 		{{{<SQL>
 		WHERE (name LIKE 'P%' AND age>'20') OR (name LIKE 'S%' AND age<'30') ORDER BY name ASC
 		}}}
+
+------------------------------------------------------------------------------------------------------------
+拼装更加复杂的条件
+    
+    上面的例子的 Cnd.where 函数，在大多数情况下可以快速的生成一个简单的查询条件。但是，如果查询条件非常复杂，
+    用它可能就比较费劲了。是的，它的设计初衷就是 "{#080;* 查询条件应该一行搞定}"。
+
+    有些时候，查询条件很复杂，一行确实搞不定，怎么办？{* Nutz-1.b.38} 以后，提供了 Criteria 接口，它继承自
+    Condition 接口，它的设计目的有两个：
+     # 让程序员更容易的拼装复杂逻辑的条件
+     # 让生成的 SQL 可以被参数化，更好的支持 PreparedStatement
+
+    这个接口的使用也很简单，它基本符合 "IDE 的所见即所得" 接口设计原则。 就是说，如果你的 IDE 有智能提示的话，
+    你使用这个接口是不需要文档的。
+
+    {{{
+    // 创建一个 Criteria 接口实例
+    Criteria cri = Cnd.cri();
+
+    // 组装条件
+    if(...){
+        cri.where().andIn("id", 3,4,5).andIn("name", "Peter", "Wendal", "Juqkai");
+    }else if(...){
+        cri.where().andLT("id", 9);
+    }
+
+    if(...){
+        cri.where().andLike("name", "%A%");
+    }
+
+    cri.getOrderBy().asc("name").desc("id");
+
+    // 执行查询
+    List<MyObj> list = dao.query(MyObj.class, cri, null);
+    }}}
+
+    Criteria 的 where() 函数返回的是 SqlExpressionGroup，主要由它来提供各种 SQL 条件的组合方法。
+    这里需要给出一点提示，比如方法名 {#080;* andGT}，表示的是 and{#080;*G}reat{#080;*T}han，即
+    "{#080;*大于}" 的意思，同理:
+     * LT : 小于 (LessThan)
+     * GTE : 大于等于 (GreatThanEquale)
+     * LTE : 小于等于 (LessThanEquale)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

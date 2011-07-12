@@ -29,7 +29,7 @@ Dao 接口的第三个参数
 	 * 通过 Pager.setRecordCount() 可以为 Pager 设置结果集的总数，Pager 会通过 getPageCount() 返回总页数
 
 ----------------------------------------------------------------------------------------
-一个简单的例子
+将分页信息和查询结果一起返回
 	{{{
 	public QueryResult getPetList(Dao dao, int pageNumber, int pageSize){
 		Pager pager = dao.createPager(pageNumber, pageSize);
@@ -39,73 +39,24 @@ Dao 接口的第三个参数
 	}
 	}}}
 
-	通过 dao.createPager() 函数， Nutz.Dao 根据当前的数据库类型，创建一个相应的 Pager，以适应不同数据库的分页方式。
-	默认，Nutz.Dao支持的数据库有：
-	 # H2
-	 # Oracle
-	 # Mysql
-	 # Postgresql
-	 # SQLServer2000
-	 # SQLServer2005
-	 # DB2
+    Nutz 会自动为各种不通的数据库，根据你传入的 Pager 生成翻页方言。但是考虑到效率因素，
+    Nutz.Dao 并不会为 Pager 计算结果集的总数。我知道这那么一点点让人觉得有点不方便，但是我想给你
+    控制权，我想让你可以: "只在必要的时候才计算结果集的总数"，我想，这个控制权对你来说，比少写
+    一行CRUD代码更加重要，对吗？
 
-	考虑到效率因素， Nutz.Dao 并不会为 Pager 计算结果集的总数。我知道这那么一点点让人觉得有点不方便，但是你很容易
-	就可以写一个自己的 org.nutz.dao.impl.NutDao 的子类，为其做一点扩展，不是吗？ 
 
-----------------------------------------------------------------------------------------
-OtherPager
-	
-	如果很不幸，你正在使用的数据库并不是 Nutz.Dao 所支持的数据库，那么 Nutz.Dao 会返回一个名叫 OtherPager 的实现。
-	这个实现会利用 JDBC 的游标进行分页。当然，如果你的 JDBC 驱动不支持 TYPE_SCROLL_INSENSITIVE 类型的 ResultSet
-	{#FF0000;*在执行查询的时候会抛出异常！}
 
-	当然，采用 JDBC 游标的方式进行分页，可能是比较低效的做法，所以 Nutz.Dao 也允许你{*为你的数据库定制 Pager}。
-	但是，它的好处是，你不用自己设置 recordCount，因为 Nutz 会利用游标为你计算。
-	
-	实际上，对于微软的 SQLServer 2000，我们现在实现的分页就是利用 OtherPager 的实现。因此你可以不用设置 recordCount
-	但是同样是微软的产品的 {#FF0000;*SQLServer 2005}，同 SQLServer 2000 有非常大的差别，尤其是在分页上。
-	
-	{#FF0000;* 因此，在 2005 上，一定要手工设置 recordCount !}
 
-----------------------------------------------------------------------------------------
-自定义 Pager
 
-	使用 Nutz.Dao， 但是我使用的数据库不在 Nutz 的支持列表里，怎么办呢？
-	
-	好办，你需要：
-	 # 为你的数据库，实现一个 Pager - 最省力的办法是继承抽象类 org.nutz.dao.pager.AbstractPager
-	 # 修改 NutDao 的 Pager 获取逻辑
-	
-	第一条很好理解，第二条，怎么修改 NutzDao 的 Pager 获取逻辑呢？ 
-	
-	答案是：修改 PagerMaker
-	
-	{{{
-	((NutDao)dao).setPagerMaker(yourPagerMaker);
-	}}}
-	
-	默认的，Nutz.Dao Pager 创建逻辑封装在 DefaultPagerMaker 类中。 你可以继承这个类，或者重新实现一个 PagerMaker 接口：
-	
-	{{{
-	public interface PagerMaker {
-		Pager make(DatabaseMeta meta, int pageNumber, int pageSize);
-	}
-	}}}
-	
-	通过 DatabaseMeta 的 getProductName() 和 getVersion() 方法，你能了解当前数据库的类型，剩下的，就看你的了
 
-	另外再给你点提示：
-	 # 如果你的数据库分页方式同默认支持的哪些数据的某一个一致，在你的 PagerMaker 里直接返回相应的 Pager 实现就是了
-	 # 如果你的 Pager 实现类直接继承自 org.nutz.dao.pager.AbstractPager，你需要实现两个方法
-		 * {*getResultSetType()} - 查询的时候，你的 ResultSet 类型是什么，它可以是：
-			 * ResultSet.TYPE_FORWARD_ONLY
-			 * ResultSet.TYPE_SCROLL_INSENSITIVE
-			 * ResultSet.TYPE_SCROLL_SENSITIVE
-		 * {*toSql()} - 你需要根据传入的三个参数来返回真正被执行的 SELECT 语句
-			 * `Entity<?> entity` - 查询的实体，你可以通过这个类获得视图/表的名称
-			 * String fields - 要查询的字符串，实际上逗号分隔的字段名，你可以直接使用
-			 * String cnd - 条件，是 WHERE 后面的语句（包括 WHERE），你也可以直接使用
-			
 
-	
-	
+
+
+
+
+
+
+
+
+
+
