@@ -5,6 +5,7 @@ import java.lang.reflect.Type;
 
 import org.nutz.json.JsonField;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
 
@@ -18,18 +19,25 @@ public class JsonEntityField {
 
 	private Ejecting ejecting;
 
-	public JsonEntityField(Mirror<?> mirror, Field fld) {
-		this.injecting = mirror.getInjecting(fld.getName());
-		this.ejecting = mirror.getEjecting(fld.getName());
-		this.genericType = fld.getGenericType();
-
+	public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
 		JsonField jf = fld.getAnnotation(JsonField.class);
-		if (null != jf)
-			name = jf.value();
-		else
-			name = fld.getName();
+		if (null != jf && jf.ignore())
+			return null;
 
+		JsonEntityField jef = new JsonEntityField();
+		jef.injecting = mirror.getInjecting(fld.getName());
+		jef.ejecting = mirror.getEjecting(fld.getName());
+		jef.genericType = fld.getGenericType();
+
+		if (null != jf && !Strings.isBlank(jf.value()))
+			jef.name = jf.value();
+		else
+			jef.name = fld.getName();
+
+		return jef;
 	}
+
+	private JsonEntityField() {}
 
 	public String getName() {
 		return name;

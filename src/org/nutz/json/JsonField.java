@@ -14,6 +14,11 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface JsonField {
 
-	String value();
+	String value() default "";
+
+	/**
+	 * @return 是否忽略这个字段
+	 */
+	boolean ignore() default false;
 
 }

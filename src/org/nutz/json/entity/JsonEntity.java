@@ -25,8 +25,9 @@ public class JsonEntity {
 		Field[] flds = mirror.getFields();
 		fields = new ArrayList<JsonEntityField>(flds.length);
 		for (Field fld : flds) {
-			JsonEntityField ef = new JsonEntityField(mirror, fld);
-			fields.add(ef);
+			JsonEntityField ef = JsonEntityField.eval(mirror, fld);
+			if (null != ef)
+				fields.add(ef);
 		}
 
 		try {
