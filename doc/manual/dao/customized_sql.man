@@ -106,6 +106,17 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回
 		结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。
 	
+    批量执行
+        在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作
+        {{{
+        Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
+        sql.params().set("name","XiaoBai").set("id",4);
+        sql.addBatch();
+        sql.params().set("name","XiaoHei").set("id",5);
+        sql.addBatch();
+        dao.execute(sql);
+        }}}
+
 	回调的用处
 		接上例，你需要这么改造一下你的函数：
 		{{{<JAVA>
