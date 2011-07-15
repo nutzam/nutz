@@ -29,6 +29,7 @@
 		<doc path="transaction.man"/>
 		<doc path="transaction_complex.man"/>
 		<doc path="runner.man"/>
+		<doc path="entity.man"/>
 		<doc path="services.man"/>
 		<doc path="pojo.man"/>
 		<doc path="record.man"/>

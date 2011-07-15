@@ -1,70 +1,110 @@
-#title: 定制自己的事务模板
+#title: 更底层定制NutDao
 #author:zozoh(zozohtnt@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------------------
+Dao 接口的默认实现 NutDao
+    
+    Nutz 的 Dao 接口是它最大的一个接口，这个接口封装了一组更便利的数据库操作，同时 Nutz 也提供了一个
+    默认的实现 : {#00A;*org.nutz.dao.impl.NutDao}，基本上这个实现足够你使用。但是有些时候你希望对它
+    进行更加深刻的，触及灵魂的定制，比如你打算让 Dao 的使用 Spring 的事务管理器等等，那么你可以读读
+    这篇文档，它告诉你几个 NutDao 类的几个扩展点，可以让你更加底层定制 NutDao
+
+--------------------------------------------------------------------------------------------------
+完全控制SQL语句的执行
+    
+    NutDao 中无论任何操作，最终都要生成一个 SQL 语句，并传入给 JDBC 来执行。
+     * PojoMaker 接口负责语句的生成
+     * DaoExecutor 接口负责语句的执行
+    我们很鼓励你自己实现自己的 DaoExecutor 接口替换掉默认的实现，但是 PojoMaker 接口则暂时不建议你
+    这么做，因为里面的逻辑稍微有点复杂，你非常容易弄错。
+
+    DaoExecutor 接口的源码如下：
+    {{{
+    public interface DaoExecutor {
+        void exec(Connection conn, DaoStatement st);
+    }
+    }}}
+    它的实现类面对的是一个 DaoStatement，无论你是用自定义SQL，还是直接操作 POJO，最后NutDao都要生成
+    DaoStatement 接口的一个实例，然后交付给 DaoExecutor 来运行. 
+    
+    Nutz 默认提供的 NutDaoExecutor 也不太复杂，算上空行和注释，240多行，你如果有兴趣看看它的源码，
+    它倒是能成为你自定义 DaoExecutor 的一个很好的参考。
+
+    总之，通过 DaoExecutor 接口，你可以完全控制单条SQL语句的执行，当然，到现在，似乎还没有人明确
+    的希望控制这个接口，大家都在用 Nutz 的默认实现。
+
+--------------------------------------------------------------------------------------------------
 终极扩展点 - DaoRunner
 
-	如果你使用的是 Dao 接口的默认实现类 (org.nutz.dao.impl.NutDao)，你觉得任何事情都很满意，
-	但是就是单单事务这部分你很不喜欢。你很不喜欢[transaction.man 事务模板]的写法：
+    如果你使用的是 Dao 接口的默认实现类 (org.nutz.dao.impl.NutDao)，你觉得任何事情都很满意，
+    但是就是单单事务这部分你很不喜欢。你很不喜欢[transaction.man 事务模板]的写法：
 
-	{{{<JAVA>
-	public void doSomething(final Pet pet){
-		Trans.exec(new Atom(){
-			public void runt(){
-				dao.update(pet);	
-				dao.update(pet.getMaster());
-			}
-		});
-	}
-	}}}
+    {{{<JAVA>
+    public void doSomething(final Pet pet){
+        Trans.exec(new Atom(){
+            public void runt(){
+                dao.update(pet);	
+                dao.update(pet.getMaster());
+            }
+        });
+    }
+    }}}
 
-	看看，这样写代码太多了。因此，你甚至开始怀念 Spring，它的声明式事务管理，可以让你的代码完全不用这么
-	繁琐。怎么办呢？
+    看看，这样写代码太多了。因此，你甚至开始怀念 Spring，它的声明式事务管理，可以让你的代码完全不用这么
+    繁琐。怎么办呢？
 
-	我们提供了一个扩展点。通过修改这个接口，你可以为 Dao 的默认实现类 NutDao 彻底定制事务行为 
-	它就是 DaoRunner，它只有一个方法：
-	{{{<JAVA>
-	public interface DaoRunner {
+    虽然 Nutz 也提供了声明式事务，但是你的项目是个老项目，一直在用 Spring，你所有的 CRUD 都是由 Spring
+    来管理的，但是你很想试试 Nutz.Dao，你可以做到吗？
 
-		public void run(DataSource dataSource, ConnCallback callback);
+    我们提供了一个扩展点。通过修改这个接口，你可以为 Dao 的默认实现类 NutDao 彻底定制事务行为 
+    它就是 DaoRunner，它只有一个方法：
+    {{{<JAVA>
+    public interface DaoRunner {
 
-	}
-	}}}
+        public void run(DataSource dataSource, ConnCallback callback);
+
+    }
+    }}}
+    你可以根据自己的喜欢实现这个接口，然后
+    {{{
+    dao.setRuner(yourRuner);
+    }}}
+    当然，你可以通过 IOC 容器，将你的 runner 注入进 NutDao 对象中
 
 --------------------------------------------------------------------------------------------------
 同 Spring 事务整合的例子
 
-	这个特性是在 1.a.27 之后，由[http://hzzdong.javaeye.com 知足常乐(hzzdong)] 在博客
-	《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》提出的，我们因此得到了 Issue 162。
-	
-	在做了一点修改后，现在(1.a.28)，只要你提供一个这样的 DaoRunner
-	{{{<JAVA>
-	import org.springframework.jdbc.datasource.DataSourceUtils;
+    这个特性是在 1.a.27 之后，由[http://hzzdong.javaeye.com 知足常乐(hzzdong)] 在博客
+    《[http://hzzdong.javaeye.com/blog/656948 Nutz DAO与spring集成讨论]》提出的，我们因此得到了 Issue 162。
+    
+    在做了一点修改后，现在(1.a.28)，只要你提供一个这样的 DaoRunner
+    {{{<JAVA>
+    import org.springframework.jdbc.datasource.DataSourceUtils;
 
-	public class SpringDaoRunner implements DaoRunner {
+    public class SpringDaoRunner implements DaoRunner {
 
-		public void run(DataSource dataSource, ConnCallback callback) {
-			Connection con = DataSourceUtils.getConnection(dataSource);  
-			try {  
-				callback.invoke(con);  
-			}
-			catch (Exception e) {  
-				if (e instanceof RuntimeException)  
-					throw (RuntimeException) e;  
-				else  
-					throw new RuntimeException(e);  
-			} finally {  
-				DataSourceUtils.releaseConnection(con, dataSource);
-			}  
-		}
-	}
-	}}}
+        public void run(DataSource dataSource, ConnCallback callback) {
+            Connection con = DataSourceUtils.getConnection(dataSource);  
+            try {  
+                callback.invoke(con);  
+            }
+            catch (Exception e) {  
+                if (e instanceof RuntimeException)  
+                    throw (RuntimeException) e;  
+                else  
+                    throw new RuntimeException(e);  
+            } finally {  
+                DataSourceUtils.releaseConnection(con, dataSource);
+            }  
+        }
+    }
+    }}}
 
-	任何时候你可以通过:
-	{{{
-	dao.setRunner(new SpringDaoRunner());
-	}}}
-	修改 NutDao 的默认事务行为。 当然，如果你的 Dao 对像本身就是通过 Ioc 容器获得，我想你一定知道如何为
-	你的对象设置一个属性，对吧。
-	
-	
+    任何时候你可以通过:
+    {{{
+    dao.setRunner(new SpringDaoRunner());
+    }}}
+    修改 NutDao 的默认事务行为。 当然，如果你的 Dao 对像本身就是通过 Ioc 容器获得，我想你一定知道如何为
+    你的对象设置一个属性，对吧。
+    
+    

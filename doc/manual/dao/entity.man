@@ -1,0 +1,136 @@
+#title: 实体解析
+#author:zozoh(zozohtnt@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------------------
+什么是实体解析
+
+    对于任何一个 ORM 工具，大都是根据配置者约定了解你打算怎么把一张数据表与你的 Java 对象
+    映射到一起。默认的 Nutz.Dao 采用 Java 注解(Annotation) 的方式描述这个映射，但是，当然
+    世界上还有很多其它的映射方式，比如用各种配置文件，比如 JPA 的注解，或者你很想把这个
+    映射关系写在数据库的几张表里，甚至一个 Excel 表格里（你就觉得这样很酷）
+
+    从 1.b.38 之后，Nutz.Dao 开放了自己的 Entity 接口，你就可以定义自己的映射存放方式了。
+
+    {{{
+    Class<?>  --->  Entity<?> ---> PojoMaker ---> DaoStatement ---> DaoExecutor ---> JDBC
+               |               |              |                 |                |
+               \------------------------ NutDao 的实现流程 -----------------------/
+    }}}
+
+    从上图，我们可以清楚的看到，Nutz.Dao 会首先分析你传入的 `Class<?>`，然后将将映射关系
+    保存成一个 `Entity<?>`，也就是说通过找个 `Entity<?>`，NutDao 可以了解到调用者打算怎么
+    映射数据表和Java类。
+
+    通过 EntityMaker 接口，Nutz 封装了这个过程，你可以重载 NutDao 的一个函数:
+    {{{
+    public class MyDao extends NutDao {
+        @Override
+        protected EntityMaker createEntityMaker() {
+            return new MyEntityMaker();
+        }
+    }
+    }}}
+    之后，如果使用 MyDao，那么实体的生成方式就是你说了算啦 ^_^
+
+------------------------------------------------------------------------------------------
+默认的注解解析
+    
+    通过在你的 POJO 类上标注注解，可以让 Nutz 来理解你打算怎么映射字段，这里我们举几个例子
+
+    声明实体对应的表名
+        {{{
+        @Table
+        public class PetBean {
+            ...
+        }}}
+         * 将对应到数据表 "pet_bean"
+         * @Table("t_pet") 将对应到 "t_pet"
+    
+    描述字段
+        {{{
+        @Column
+        @Name
+        @ColDefine(type=ColType.VARCHAR, width=20)
+        private String name;
+        }}}
+         * 将对应到数据表的 "name" 字段 -- 默认用 field 的名字
+         * 如果 @Column("nm") 将对应到数据表的 "nm" 字段
+         * @Name 表示这个字段有唯一性约束，你可以 `Pet pet = dao.fetch(Pet.class,"abc");`
+         * @Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写
+         * @ColDefine 是给出这个字段最精确的描述，比如上例就是 `VARCHAR(20)`
+             * @ColDefine 不是必须的，你如果没有声明，Nutz.Dao 会根据字段类型进行猜测
+             * 通常，它能猜对，但是对于 String 类型的字段，它实在不知到长度为多少为好
+             * 所以它会给一个默认的长度，但是很有可能你希望给一个别的长度
+             * @ColDefine 主要是为 `dao.create(XXX.class)` 设计的，因为它要生成建表语句
+
+        通常一个字段，你只需要:
+        {{{
+        @Column
+        private int age;
+
+        @Column("pname")
+        private String parentName;
+        }}}
+
+        如果你的 POJO 没有任何一个字段标注了 @Column，那么相当于你所有的字段都是数据库字段。
+        否则，仅仅是标注了 @Column 的字段才被认为是数据库字段
+------------------------------------------------------------------------------------------
+EntityMaker 接口
+
+    EntityMaker 接口负责具体的 Entity 生成，你可以参看一下它的源代码:
+    {{{
+    package org.nutz.dao.entity;
+
+    public interface EntityMaker {
+            <T> Entity<T> make(Class<T> type);
+    }
+    }}}
+
+    `Entity<T>` 也是一个接口，当然，默认实现类 `NutEntity<T>` 应该能满足你大多数需求，我想
+    至力于想扩展 Entity 生成方式的同学，会直接阅读相关的源代码作为参考，所以这里就不啰嗦了。
+
+------------------------------------------------------------------------------------------
+动态实体
+    
+    在 1.b.38 之前的版本，曾经记得有个朋友提出一个意见，他希望:
+    {{{
+    Map<String,Object> map = new HashMap<String,Object>();
+    map.put("name", "abc");
+    map.put("age", 18);
+    dao.update(map);    // 这个是不会有编译错误的
+    }}}
+    我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””
+
+    现在，我们已经支持了这个特性:
+    {{{
+    Map<String,Object> map = new HashMap<String,Object>();
+    map.put(".table", "t_person");
+    map.put("name", "abc");
+    map.put("age", 18);
+    dao.update(map); 
+    }}}
+    你给的 Map 只要多一个固定的名值对 ".table"，那么我就能知道你想操作的数据库表名。
+    所以，你还可以:
+    {{{
+    Map<String,Object> map = new HashMap<String,Object>();
+    map.put(".table", "t_person");
+    map.put("name", "abc");
+    map.put("age", 18);
+    dao.insert(map); 
+    }}}
+
+    实际上，NutDao 是根据给定的 Map，先构建了一个 `Entity<?>`，然后之后的事情就顺理
+    成章了。这个特性从另外一方面也验证了现在的实体机制，它的确工作的还不错 :)
+
+
+
+
+
+
+
+
+
+
+
+
+

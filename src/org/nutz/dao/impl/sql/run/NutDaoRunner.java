@@ -2,6 +2,7 @@ package org.nutz.dao.impl.sql.run;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Savepoint;
 
 import javax.sql.DataSource;
 
@@ -21,11 +22,30 @@ public class NutDaoRunner implements DaoRunner {
 		Transaction t = Trans.get();
 		// 有事务
 		if (null != t) {
+			Connection conn = null;
+			Savepoint sp = null;
 			try {
-				Connection conn = t.getConnection(dataSource);
+				conn = t.getConnection(dataSource);
+				sp = conn.setSavepoint();
 				callback.invoke(conn);
+
 			}
 			catch (Exception e) {
+				if (e instanceof DaoException)
+					if (null != conn
+						&& null != e.getCause()
+						&& e.getCause() instanceof SQLException) {
+						try {
+							if (null == sp)
+								conn.rollback();
+							else
+								conn.rollback(sp);
+						}
+						catch (SQLException e1) {
+							if (log.isErrorEnabled())
+								log.error(e1);
+						}
+					}
 				throw new DaoException(e);
 			}
 		}
@@ -50,7 +70,7 @@ public class NutDaoRunner implements DaoRunner {
 				try {
 					conn.rollback();
 				}
-				catch (SQLException e1) {}//TODO 简单记录一下?
+				catch (SQLException e1) {}// TODO 简单记录一下?
 				throw new DaoException(e);
 			}
 			// 保证释放资源
