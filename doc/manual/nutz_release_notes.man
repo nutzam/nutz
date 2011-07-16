@@ -110,7 +110,36 @@ EL 兼容性问题
     El exp = new El("3+4");
     }}}
     看起来更清爽一些不是吗？ [https://github.com/juqkai Juqkai] 同学的设计 ^_^
+    
+-------------------------------------------------------------------------------------------------------
+Json 新玩法
+
+    看看你的项目是否需要处理这样的Json字符串:
+    {{{
+    [
+        {"id":2345,"name":"Wendal"},
+        {"id":2436,"name":"Zozoh"}
+    ]
+    }}}
+    现在支持一行语句完成转换了
+    {{{
+    List<User> users = (List<User>)Json.fromJson(NutType.list(User.class),json_str);
+    }}}
  
+    Pojo中有不期望被输出的字段?
+    {{{
+    public class User{
+        
+        private long id;
+        private String name;
+
+        @JsonField(ignore=true)
+        private String password;
+    
+    }
+    }}}
+    那么执行Json.toJson时,password字段就会被忽略
+    
 --------------------------------------------------------------------------------------------------------
 问题修复
 
@@ -156,6 +185,7 @@ EL 兼容性问题
 	Nutz.Dao 经测试在如下数据库上可以工作正常
 	 * [http://www.h2database.com H2]
 	 * [http://www.sqlite.org SQLite]
+	 * [http://hsqldb.org hsqldb]
 	 * [http://www.mysql.com MySql]
 	 * [http://www.oracle.com Oracle]
 	 * [http://www.postgresql.org Postgresql]
