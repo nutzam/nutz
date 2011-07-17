@@ -179,9 +179,10 @@ public abstract class Pojos {
 				if (en.getPkType() == PkType.COMPOSITE && mf.isCompositePk())
 					continue;
 			}
-			if (!mf.isAutoIncreasement() && !mf.isReadonly())
-				if (null != fm && null != refer && fm.isIgnoreNull() && null == mf.getValue(refer))
-					continue;
+			if (mf.isReadonly() || mf.isAutoIncreasement())
+				continue;
+			else if (null != fm && null != refer && fm.isIgnoreNull() && null == mf.getValue(refer))
+				continue;
 			if (null == fm || fm.match(mf.getName()))
 				re.add(mf);
 		}

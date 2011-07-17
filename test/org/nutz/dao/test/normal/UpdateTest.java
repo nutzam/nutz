@@ -83,6 +83,28 @@ public class UpdateTest extends DaoCase {
 	}
 
 	@Test
+	public void test_update_obj_with_readonly_field() {
+		dao.create(Plant.class, true);
+		Plant p = new Plant();
+		p.setNumber(100);
+		p.setColor("red");
+		p.setName("Rose");
+		dao.insert(p);
+
+		p = dao.fetch(Plant.class, "Rose");
+		assertNull(p.getColor());
+		assertEquals(100, p.getNumber());
+
+		p.setColor("black");
+		p.setNumber(88);
+		dao.update(p);
+
+		p = dao.fetch(Plant.class, "Rose");
+		assertNull(p.getColor());
+		assertEquals(88, p.getNumber());
+	}
+
+	@Test
 	public void update_with_null_links() {
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
