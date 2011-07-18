@@ -109,6 +109,9 @@ function main() {
     var href = pgan();
     if (href) 
         doLoadPage(href);
+	else{
+		$("#sky li:first-child a").click();
+	}
 }
 
 (function($) {
@@ -118,12 +121,7 @@ function main() {
 function pgan(lo) {
     var lo = lo ? lo : "" + unescape(window.location.href);
     var pos = lo.indexOf("#");
-    if (pos < 0) 
-        return {
-            ch: null,
-            link: null
-        };
-    return lo.substring(pos + 1);
+    return pos>0?lo.substring(pos + 1):"";
 }
 
 function adjustLayout() {
