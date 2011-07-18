@@ -286,7 +286,7 @@ public class SimpleNode<T> implements Node<T> {
 		return re.prev(null).next(null);
 	}
 
-	public Node<T> remove(int index) {
+	public Node<T> removeChild(int index) {
 		if (hasChild()) {
 			Node<T> node = child(index);
 			if (null == node)
@@ -300,6 +300,26 @@ public class SimpleNode<T> implements Node<T> {
 			return node.prev(null).next(null);
 		}
 		return null;
+	}
+
+	public boolean remove() {
+		int i = getIndex();
+		if (i < 0)
+			return false;
+		parent.removeChild(i);
+		return true;
+
+	}
+
+	public int getIndex() {
+		if (parent == null)
+			return -1;
+		int i = 0;
+		Node<T> n = parent.firstChild();
+		while (n != this) {
+			i++;
+		}
+		return i;
 	}
 
 	public String toString() {

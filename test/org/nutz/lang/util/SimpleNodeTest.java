@@ -230,33 +230,33 @@ public class SimpleNodeTest {
 	@Test
 	public void testRemove() {
 		root.add(A, B, C, D, E);
-		assertEquals(C, root.remove(2));
+		assertEquals(C, root.removeChild(2));
 		assertEquals(A, root.child(0));
 		assertEquals(B, root.child(1));
 		assertEquals(D, root.child(2));
 		assertEquals(E, root.child(3));
 
-		assertEquals(E, root.remove(3));
+		assertEquals(E, root.removeChild(3));
 		assertEquals(A, root.child(0));
 		assertEquals(B, root.child(1));
 		assertEquals(D, root.child(2));
 
-		assertEquals(A, root.remove(0));
+		assertEquals(A, root.removeChild(0));
 		assertEquals(B, root.child(0));
 		assertEquals(D, root.child(1));
 
-		assertNull(root.remove(5));
+		assertNull(root.removeChild(5));
 		assertEquals(B, root.child(0));
 		assertEquals(D, root.child(1));
 
-		assertNull(root.remove(-1));
+		assertNull(root.removeChild(-1));
 		assertEquals(B, root.child(0));
 		assertEquals(D, root.child(1));
 
 		assertEquals(2, root.countChildren());
 
-		assertEquals(B, root.remove(0));
-		assertEquals(D, root.remove(0));
+		assertEquals(B, root.removeChild(0));
+		assertEquals(D, root.removeChild(0));
 
 		assertTrue(!root.hasChild());
 	}

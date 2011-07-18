@@ -42,7 +42,14 @@ public interface Node<T> {
 
 	Node<T> popFirst();
 
-	Node<T> remove(int index);
+	Node<T> removeChild(int index);
+	
+	int getIndex();
+	
+	/**
+	 * @return true 成功移除，false 不能移除
+	 */
+	boolean remove();
 
 	Node<T> clearChildren();
 
