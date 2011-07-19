@@ -93,7 +93,7 @@ td, th, font, p, #arena li {
 }
 
 #arena .zdoc_author em {
-    color:#AAA;
+    color: #AAA;
 }
 
 #arena .zdoc_author em, #arena .zdoc_footer em {
@@ -144,6 +144,7 @@ td, th, font, p, #arena li {
 }
 
 #nav li {
+    display: none;
     padding-left: 6px;
     border-radius: 4px 0 0 4px;
 }
@@ -151,6 +152,10 @@ td, th, font, p, #arena li {
 #nav li.hlt {
     background-color: rgba(255, 255, 255, 0.4);
     box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.5);
+}
+
+#nav li.current, #nav li.current li {
+	display:block;
 }
 
 #nav a {
@@ -184,7 +189,7 @@ td, th, font, p, #arena li {
 
 #nav .hlt .num {
     font-weight: bold;
-    font-size:14px;
+    font-size: 14px;
     color: #F0F;
 }
 
@@ -208,7 +213,7 @@ td, th, font, p, #arena li {
 
 #sky .hlt a {
     text-decoration: none;
-    text-shadow:1px 1px 2px #888;
+    text-shadow: 1px 1px 2px #888;
     color: #000;
 }
 
@@ -220,8 +225,8 @@ td, th, font, p, #arena li {
     line-height: 28px;
     height: 30px;
     padding-right: 16px;
-	background-color:#CCC;
-	margin-left:260px;
+    background-color: #CCC;
+    margin-left: 260px;
 }
 
 #sky:after {
@@ -233,14 +238,6 @@ td, th, font, p, #arena li {
     height: 0;
 }
 
-#sky li, #sky div, #sky .num {
-    display: none;
-}
-
-#sky li.sky_menu_li, #sky div.sky_menu_div {
-    display: block;
-}
-
 #sky ul {
     list-style: none;
     margin: 0;
@@ -248,27 +245,27 @@ td, th, font, p, #arena li {
     float: right;
 }
 
-#sky li.sky_menu_li {
+#sky li {
     float: left;
     padding-left: 10px;
     padding-right: 10px;
     border-top: 3px solid #CCC;
-    margin-left:1px;
+    margin-left: 1px;
 }
 
 #sky li:hover {
-    background-color:#EEE;
+    background-color: #EEE;
 }
 
-#sky li:hover a{
-    color:#666;
+#sky li:hover a {
+    color: #666;
 }
 
 #sky li.hlt {
     background-color: #FFF;
     border-radius: 4px 4px 0 0;
     border-top-color: #F80;
-    box-shadow:-2px -2px 2px #888;
+    box-shadow: -2px -2px 2px #888;
 }
 
 

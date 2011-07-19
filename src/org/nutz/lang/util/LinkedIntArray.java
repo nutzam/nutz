@@ -72,6 +72,11 @@ public class LinkedIntArray {
 		return this;
 	}
 
+	public LinkedIntArray setLast(int e) {
+		set(this.size() - 1, e);
+		return this;
+	}
+
 	private void checkBound(int index) {
 		if (index >= size() || index < 0)
 			throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
