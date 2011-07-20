@@ -55,7 +55,7 @@ public abstract class NutStatement implements DaoStatement {
 	// TODO 是不是太暴力了涅~~~ --> 不是一般的暴力!!
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> classOfT) {
-		return (List<T>) getResult();
+		return (List<T>) getResult();//TODO 考虑先遍历转换一次
 	}
 
 	public <T> T getObject(Class<T> classOfT) {
@@ -63,7 +63,11 @@ public abstract class NutStatement implements DaoStatement {
 	}
 
 	public int getInt() {
-		return getObject(Integer.class);//TODO 怪怪的,如果getObject返回null,这里就NPE了
+		Integer i = getObject(Integer.class);
+		if(i == null)
+			return 0;//TODO 是不是应该抛出异常呢?
+		return i;//TODO 怪怪的,如果getObject返回null,这里就NPE了 by zozoh
+		         // 因为自动解包的原因,by wendal
 	}
 
 	public String getString() {
