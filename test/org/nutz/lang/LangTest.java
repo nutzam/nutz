@@ -120,7 +120,7 @@ public class LangTest {
 		map1 = Lang.map("{a:'1',b:2}");
 		map2 = Lang.map("{b:2,a:1}");
 
-		assertFalse(Lang.equals(map1, map2));
+		assertTrue(Lang.equals(map1, map2));
 	}
 
 	@Test
