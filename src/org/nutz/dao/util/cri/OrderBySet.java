@@ -25,11 +25,13 @@ class OrderBySet extends NoParamsPItem implements OrderBy {
 			}
 			sb.setCharAt(sb.length() - 2, ' ');
 		} else
-			;//OK,无需添加.
+			;// OK,无需添加.
 	}
 
-	public String toSql(Entity<?> entity) {
-		return toString();
+	public String toSql(Entity<?> en) {
+		StringBuilder sb = new StringBuilder();
+		joinSql(en, sb);
+		return sb.toString();
 	}
 
 	public OrderBy asc(String name) {

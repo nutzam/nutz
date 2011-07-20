@@ -23,6 +23,12 @@ public class QueryTest extends DaoCase {
 	}
 
 	@Test
+	public void query_by_orderbyset() {
+		List<Pet> pets = dao.query(Pet.class, Cnd.cri().asc("id"), null);
+		assertEquals(8, pets.size());
+	}
+
+	@Test
 	public void query_by_map_idkeyset() {
 		List<Pet> pets = dao.query(Pet.class, null, null);
 		Map<Integer, Pet> map = new HashMap<Integer, Pet>();
@@ -31,7 +37,7 @@ public class QueryTest extends DaoCase {
 		pets = dao.query(Pet.class, Cnd.where("id", "in", map.keySet()), null);
 		assertEquals(2, pets.size());
 	}
-	
+
 	@Test
 	public void query_by_map_namekeyset() {
 		Map<String, Pet> map = new HashMap<String, Pet>();
