@@ -68,4 +68,25 @@ public class PropertiesProxy {
 	public String get(String key, String defaultValue) {
 		return Strings.sNull(mp.get(key), defaultValue);
 	}
+
+	public int getInt(String key) {
+		return getInt(key, -1);
+	}
+
+	public int getInt(String key, int defaultValue) {
+		try {
+			return Integer.parseInt(key);
+		}
+		catch (NumberFormatException e) {
+			return defaultValue;
+		}
+	}
+
+	public String getTrim(String key) {
+		return Strings.trim(get(key));
+	}
+
+	public String getTrim(String key, String defaultValue) {
+		return Strings.trim(get(key, defaultValue));
+	}
 }
