@@ -111,10 +111,24 @@ public class NutDaoExecutor implements DaoExecutor {
 
 				}
 				break;
+			// 创建 & 删除 & 修改 & 清空
+			case ALTER:
+			case TRUNCATE:
+			case CREATE:
+			case DROP:
+				_runStatement(conn, st);
+				st.onAfter(conn, null);
+				break;
+			// 仅仅是运行回调
+			case RUN:
+				st.onAfter(conn, null);
+				break;
 			// 插入 & 删除 & 更新
-			case DELETE:
-			case UPDATE:
-			case INSERT:
+			// case DELETE:
+			// case UPDATE:
+			// case INSERT:
+			// 见鬼了，未知类型，也当作普通 SQL 运行吧，见 Issue#13
+			default:
 				paramMatrix = st.getParamMatrix();
 				// 木有参数，直接运行
 				if (null == paramMatrix || paramMatrix.length == 0) {
@@ -126,22 +140,6 @@ public class NutDaoExecutor implements DaoExecutor {
 				}
 				// 运行回调
 				st.onAfter(conn, null);
-				break;
-			// 创建 & 删除 & 清空
-			case TRUNCATE:
-			case CREATE:
-			case DROP:
-				_runStatement(conn, st);
-				st.onAfter(conn, null);
-				break;
-			case ALTER:
-			// 仅仅是运行回调
-			case RUN:
-				st.onAfter(conn, null);
-				break;
-			// 见鬼了
-			default:
-				throw Lang.impossible();
 			}
 		}
 		// If any SQLException happend, throw out the SQL string
@@ -190,7 +188,7 @@ public class NutDaoExecutor implements DaoExecutor {
 					for (int i = 0; i < params.length; i++) {
 						adaptors[i].set(pstat, params[i], i + 1);
 					}
-					pstat.addBatch();//需要配置一下batchSize,嘻嘻,不然分分钟爆内存!!
+					pstat.addBatch();// 需要配置一下batchSize,嘻嘻,不然分分钟爆内存!!
 				}
 				int[] counts = pstat.executeBatch();
 
