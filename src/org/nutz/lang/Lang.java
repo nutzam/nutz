@@ -191,17 +191,21 @@ public abstract class Lang {
 		if (a1.equals(a2))
 			return true;
 
-		Mirror<?> mirror = Mirror.me(a1);
+		Mirror<?> mr1 = Mirror.me(a1);
 
-		if (mirror.isStringLike()) {
+		if (mr1.isStringLike()) {
 			return a1.toString().equals(a2.toString());
 		}
-		if (mirror.isDateTimeLike()) {
+		if (mr1.isDateTimeLike()) {
 			return a1.equals(a2);
 		}
-		if (mirror.isNumber()) {
+		if (mr1.isNumber()) {
 			return a2 instanceof Number && a1.toString().equals(a2.toString());
 		}
+
+		if (!a1.getClass().isAssignableFrom(a2.getClass())
+			&& !a2.getClass().isAssignableFrom(a1.getClass()))
+			return false;
 
 		if (a1 instanceof Map && a2 instanceof Map) {
 			Map<?, ?> m1 = (Map<?, ?>) a1;
