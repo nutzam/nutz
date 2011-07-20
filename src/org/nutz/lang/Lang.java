@@ -181,12 +181,28 @@ public abstract class Lang {
 	public static boolean equals(Object a1, Object a2) {
 		if (a1 == a2)
 			return true;
+
+		if (a1 == null && a2 == null)
+			return false;
+
 		if (a1 == null || a2 == null)
 			return false;
+
 		if (a1.equals(a2))
 			return true;
-		if (a1 instanceof Number)
+
+		Mirror<?> mirror = Mirror.me(a1);
+
+		if (mirror.isStringLike()) {
+			return a1.toString().equals(a2.toString());
+		}
+		if (mirror.isDateTimeLike()) {
+			return a1.equals(a2);
+		}
+		if (mirror.isNumber()) {
 			return a2 instanceof Number && a1.toString().equals(a2.toString());
+		}
+
 		if (a1 instanceof Map && a2 instanceof Map) {
 			Map<?, ?> m1 = (Map<?, ?>) a1;
 			Map<?, ?> m2 = (Map<?, ?>) a2;
@@ -1411,7 +1427,7 @@ public abstract class Lang {
 		}
 		// 普通整数
 		Long re = Long.parseLong(s);
-		if( Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE)
+		if (Integer.MAX_VALUE >= re && re >= Integer.MIN_VALUE)
 			return re.intValue();
 		return re;
 	}
