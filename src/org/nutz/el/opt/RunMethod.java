@@ -10,7 +10,8 @@ import java.util.List;
  * 怎么实现自定义函数:<br>
  * <ul>
  * <li>实现本接口
- * <li>在CustomMake中添加EL中的映射名
+ * <li>将自定义的配置信息以JSON的形式写入一个js文件中，并将文件放入'org/nutz/el/opt/custom/'包目录下.
+ *  请参考'org/nutz/el/opt/custom/plugin.js'
  * </ul>
  * @author juqkai(juqkai@gmail.com)
  *
@@ -23,4 +24,9 @@ public interface RunMethod {
 	 */
 	Object run(List<Object> fetchParam);
 
+	/**
+	 * 取得方法自身的符号
+	 * @return
+	 */
+	String fetchSelf();
 }
