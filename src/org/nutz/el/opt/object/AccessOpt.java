@@ -62,5 +62,4 @@ public class AccessOpt extends TwoTernary implements RunMethod{
 	public String fetchSelf() {
 		return ".";
 	}
-
 }

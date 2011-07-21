@@ -3,13 +3,14 @@ package org.nutz.el.opt.custom;
 import java.util.List;
 
 import org.nutz.el.opt.RunMethod;
+import org.nutz.plugin.Plugin;
 
 /**
  * 取小
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class Min implements RunMethod{
+public class Min implements RunMethod, Plugin{
 	public Object run(List<Object> param) {
 		if(param.size() == 1){
 			return param.get(0);
@@ -36,5 +37,13 @@ public class Min implements RunMethod{
 		}
 		return null;
 	}
+
+    public boolean canWork() {
+        return true;
+    }
+
+    public String fetchSelf() {
+        return "min";
+    }
 
 }
