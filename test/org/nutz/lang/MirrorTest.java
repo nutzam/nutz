@@ -22,6 +22,40 @@ import org.nutz.lang.reflect.ObjA;
 
 public class MirrorTest {
 
+	public static class MTGSF {
+		public static final int F_AGE = 9;
+		public static final String F_NAME = "ABC";
+
+		public static int X;
+		public static String Y;
+		public static int Z;
+
+		String m_a;
+
+		String m_b;
+	}
+
+	@Test
+	public void test_getFields() {
+		Field[] fs = Mirror.me(MTGSF.class).getFields();
+		assertEquals(2, fs.length);
+		for (Field f : fs)
+			assertTrue(f.getName().startsWith("m_"));
+
+		fs = Mirror.me(MTGSF.class).getStaticField(true);
+		assertEquals(3, fs.length);
+		for (Field f : fs) {
+			assertFalse(f.getName().startsWith("m_"));
+			assertFalse(f.getName().startsWith("F_"));
+		}
+
+		fs = Mirror.me(MTGSF.class).getStaticField(false);
+		assertEquals(5, fs.length);
+		for (Field f : fs) {
+			assertFalse(f.getName().startsWith("m_"));
+		}
+	}
+
 	public static class TDMFGADM {
 		public String toString() {
 			return super.toString();

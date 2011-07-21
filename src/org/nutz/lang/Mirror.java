@@ -388,23 +388,47 @@ public class Mirror<T> {
 		return fields.toArray(new Field[fields.size()]);
 	}
 
-	private static boolean isIgnoredField(Field f) {
-		return Modifier.isStatic(f.getModifiers())
-				|| Modifier.isFinal(f.getModifiers())
-				|| f.getName().startsWith("this$");
+	/**
+	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
+	 * 
+	 * @return 字段列表
+	 */
+	public Field[] getFields() {
+		return _getFields(true, false, true, true);
 	}
 
 	/**
-	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
+	 * 获得所有的静态变量属性
+	 * 
+	 * @param noFinal
+	 *            是否包括 final 修饰符的字段
+	 * 
+	 * @return 字段列表
 	 */
-	public Field[] getFields() {
+	public Field[] getStaticField(boolean noFinal) {
+		return _getFields(false, true, noFinal, true);
+	}
+
+	private Field[] _getFields(boolean noStatic, boolean noMember, boolean noFinal, boolean noInner) {
 		Class<?> cc = klass;
 		Map<String, Field> map = new LinkedHashMap<String, Field>();
 		while (null != cc && cc != Object.class) {
 			Field[] fs = cc.getDeclaredFields();
 			for (int i = 0; i < fs.length; i++) {
-				if (!isIgnoredField(fs[i]) && !map.containsKey(fs[i].getName()))
-					map.put(fs[i].getName(), fs[i]);
+				Field f = fs[i];
+				int m = f.getModifiers();
+				if (noStatic && Modifier.isStatic(m))
+					continue;
+				if (noFinal && Modifier.isFinal(m))
+					continue;
+				if (noInner && f.getName().startsWith("this$"))
+					continue;
+				if (noMember && !Modifier.isStatic(m))
+					continue;
+				if (map.containsKey(fs[i].getName()))
+					continue;
+
+				map.put(fs[i].getName(), fs[i]);
 			}
 			cc = cc.getSuperclass();
 		}
