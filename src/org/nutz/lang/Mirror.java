@@ -389,9 +389,7 @@ public class Mirror<T> {
 	}
 
 	private static boolean isIgnoredField(Field f) {
-		return Modifier.isStatic(f.getModifiers())
-				|| Modifier.isFinal(f.getModifiers())
-				|| f.getName().startsWith("this$");
+		return f.getName().startsWith("this$");
 	}
 
 	/**

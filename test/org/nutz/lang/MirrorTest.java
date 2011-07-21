@@ -168,6 +168,23 @@ public class MirrorTest {
 		String id;
 	}
 
+	public static class Constants extends F {
+		@Name
+		public static final String DEFAULT_DB_NAME = "MYSQL";
+
+		protected final static Map<String, String> APPROVAL_LEVEL = null;
+
+		static final int DEFAULT_AGE = 20;
+
+		private static final String DEFAULT_ADDR = "sun";
+
+		final Boolean USE_GIT = true;
+
+		public static String getAddr() {
+			return DEFAULT_ADDR;
+		}
+	}
+
 	public static class FF {
 
 		public FF(String myId) {
@@ -186,6 +203,19 @@ public class MirrorTest {
 		Field[] fields = Mirror.me(SubF.class).getFields();
 		assertEquals(1, fields.length);
 		assertNotNull(fields[0].getAnnotation(Name.class));
+	}
+
+	@Test
+	public void test_get_fields_fix_issues15() throws NoSuchFieldException {
+		Mirror<?> mirror = Mirror.me(Constants.class);
+		Field[] fields = mirror.getFields();
+		assertEquals(6, fields.length);
+		assertEquals("MYSQL", mirror.getValue(Constants.class, "DEFAULT_DB_NAME"));
+		assertEquals(true, mirror.getValue(new Constants(), "USE_GIT"));
+		assertEquals(1, mirror.getStaticMethods().length);
+		assertNotNull(fields[0].getAnnotation(Name.class));
+		//Calendar类无继承的父类，因此getDeclaredFields的数量跟getFields数量应该一致
+		assertEquals(Calendar.class.getDeclaredFields().length, Mirror.me(Calendar.class).getFields().length);
 	}
 
 	@Test
