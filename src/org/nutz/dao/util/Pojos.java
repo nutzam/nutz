@@ -112,6 +112,7 @@ public abstract class Pojos {
 		}
 
 		public static PItem cndAuto(Entity<?> en, Object obj) {
+			obj = Lang.first(obj);
 			switch (en.getPkType()) {
 			case ID:
 				Number id = null != obj ? ((Number) en.getIdField().getValue(obj)) : null;

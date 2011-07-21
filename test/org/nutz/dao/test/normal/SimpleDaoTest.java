@@ -2,6 +2,9 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
@@ -32,12 +35,24 @@ public class SimpleDaoTest extends DaoCase {
 	}
 
 	@Test
+	public void test_delete_list() {
+		insertRecords(8);
+		List<Pet> list = dao.query(Pet.class, null, null);
+		List<Pet> pets = new ArrayList<Pet>(list.size());
+		pets.addAll(list);
+		assertEquals(8, pets.size());
+		pets.addAll(list);
+		dao.delete(pets);
+		assertEquals(0, dao.count(Pet.class));
+	}
+
+	@Test
 	public void test_simple_update() {
 		dao.fastInsert(Lang.array(Pet.create("A"), Pet.create("B")));
 		Pet a = dao.fetch(Pet.class, "A");
 		a.setName("C");
 		a.setAge(5);
-		
+
 		dao.update(a);
 
 		Pet c = dao.fetch(Pet.class, "C");
@@ -77,8 +92,7 @@ public class SimpleDaoTest extends DaoCase {
 	public void test_count_by_condition() {
 		insertRecords(4);
 		assertEquals(4, dao.count(Pet.class));
-		assertEquals(	2,
-						dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
+		assertEquals(2, dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
 	}
 
 	@Test
@@ -127,7 +141,7 @@ public class SimpleDaoTest extends DaoCase {
 		pet = dao.fetch(PetObj.class, "X");
 		assertNull(pet.getAge());
 	}
-	
+
 	@Test
 	public void test_insert_readonly() {
 		dao.create(SimplePOJO.class, true);
