@@ -58,6 +58,8 @@
 	     @[http://myblog.sunfarms.net wendal]
 -----------------------------------------------------------------------------------
 关于 Ioc
+	 * 《[http://gevin.iteye.com/blog/1131500 在Nutz中使用Ioc-Annotation的入门教程]》\
+		 @[http://gevin.iteye.com/ Gevin] {#008800;*新}
 	 * 《[http://wendal.iteye.com/blog/654658 Nutz 1.a.27 最新变化之一 -- XML配置ioc]》\
 		 @[http://wendal.iteye.com wendal]
 -----------------------------------------------------------------------------------
@@ -68,6 +70,14 @@
 		 @[http://wendal.iteye.com wendal]
 -----------------------------------------------------------------------------------
 综合实践
+	 * 《[http://pangwu86.iteye.com/blog/1126182 使用Nutz+ExtJS+JBPM4.4实现会签]》 \
+	     @[http://pangwu86.iteye.com/ 胖五] {#008800;*新}
+	 * 《[http://pangwu86.iteye.com/blog/1114082 ExtJS+Nutz+JBPM实现一个简单的请假流程]》 \
+	     @[http://pangwu86.iteye.com/ 胖五] {#008800;*新}
+	 * 《[http://pangwu86.iteye.com/blog/1076177 基于Nutz与ExtJs的快速开发]》 \
+	     @[http://pangwu86.iteye.com/ 胖五] {#008800;*新}
+	 * 《[http://pangwu86.iteye.com/blog/905815 Nutz+ExtJS示例教程——搭建开发环境]》 \
+	     @[http://pangwu86.iteye.com/ 胖五] {#008800;*新}
 	 * 《[http://www.iteye.com/topic/890454 nutz on gae 系列： 1.1 gae数据存储]》 \
 	     @[http://feiyan35488.iteye.com/ feiyan] {#008800;*新}
 	 * 《[http://yunhaifeiwu.iteye.com/blog/760352 nutz简单综合实例----通过html网页对数据库进行管理操作（MVC,Ioc,Dao)]》 \
