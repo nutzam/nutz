@@ -216,6 +216,17 @@ public interface Dao {
 	int update(Object obj);
 
 	/**
+	 * 更新对象一部分字段
+	 * 
+	 * @param obj
+	 *            对象
+	 * @param regex
+	 *            正则表达式描述要被更新的字段
+	 * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
+	 */
+	int update(Object obj, String regex);
+
+	/**
 	 * 更新一个对象，并且忽略所有非 null 字段。
 	 * 
 	 * @param obj

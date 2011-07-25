@@ -46,6 +46,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
+import org.nutz.trans.Molecule;
 
 public class NutDao extends DaoSupport implements Dao {
 
@@ -113,7 +114,7 @@ public class NutDao extends DaoSupport implements Dao {
 		EntityOperator opt = _opt(classOfT);
 		opt.myObj = chain;
 		opt.addInsertSelfOnly();
-		//insert(chain.toObject(classOfT));// TODO 这样的效率,未免太低了,需要改进
+		// insert(chain.toObject(classOfT));// TODO 这样的效率,未免太低了,需要改进
 		opt.exec();
 	}
 
@@ -177,6 +178,23 @@ public class NutDao extends DaoSupport implements Dao {
 		opt.addUpdate();
 		opt.exec();
 		return opt.getUpdateCount();
+	}
+
+	public int update(final Object obj, String regex) {
+		Object first = Lang.first(obj);
+		if (null == first)
+			return 0;
+
+		if (Strings.isBlank(regex))
+			return update(obj);
+
+		Molecule<Integer> m = new Molecule<Integer>() {
+			public void run() {
+				setObj(update(obj));
+			}
+		};
+		FieldFilter.create(first.getClass(), regex).run(m);
+		return m.getObj();
 	}
 
 	public int updateIgnoreNull(final Object obj) {
