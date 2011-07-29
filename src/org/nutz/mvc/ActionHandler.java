@@ -17,6 +17,8 @@ public class ActionHandler {
 		this.config = config;
 		this.loading = config.createLoading();
 		this.mapping = loading.load(config);
+		//之所以放在这里,主要是因为NutLoading里面不确定是使用 JSP/SERVLET 容器
+		config.getServletContext().setAttribute(UrlMapping.class.getName(), this.mapping);
 	}
 
 	public boolean handle(HttpServletRequest req, HttpServletResponse resp) {
