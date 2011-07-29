@@ -13,7 +13,6 @@ public class ServletNutConfig extends AbstractNutConfig {
 
 	public ServletNutConfig(ServletConfig config) {
 		this.config = config;
-		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
 		Scans.me().init(config.getServletContext());
 	}
 

@@ -6,7 +6,6 @@ import javax.servlet.ServletContext;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.util.Context;
-import org.nutz.mvc.config.AtMap;
 
 /**
  * 这个接口是一个抽象封装
@@ -109,7 +108,7 @@ public interface NutConfig {
 	/**
 	 * 在你的模块中通过 '@At' 声明的入口函数，可以存储在 AtMap 中，这个函数提供一个 AtMap 的实例
 	 */
-	AtMap getAtMap();
+	UrlMapping getUrlMap();
 
 	/**
 	 * 根据 MainModule 中的 '@LoadingBy' 得到一个加载逻辑的实现类

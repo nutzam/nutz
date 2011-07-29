@@ -15,7 +15,6 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Localization;
-import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.ioc.SessionIocContext;
 
 /**
@@ -60,8 +59,8 @@ public abstract class Mvcs {
 		return (Ioc) context.getAttribute(Ioc.class.getName());
 	}
 
-	public static AtMap getAtMap(ServletContext context) {
-		return (AtMap) context.getAttribute(AtMap.class.getName());
+	public static UrlMapping getUrlMap(ServletContext context) {
+		return (UrlMapping) context.getAttribute(UrlMapping.class.getName());
 	}
 
 	/**

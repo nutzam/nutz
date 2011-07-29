@@ -136,8 +136,6 @@ public abstract class Loadings {
 			} else {
 				ai.setPaths(at.value());
 			}
-			if (!Strings.isBlank(at.key()))
-				ai.setPathKey(at.key());
 		}
 	}
 	

@@ -10,8 +10,6 @@ public class ActionInfo {
 
 	private String outputEncoding;
 
-	private String pathKey;
-
 	private String[] paths;
 
 	private String chainName;
@@ -84,14 +82,6 @@ public class ActionInfo {
 	 */
 	public List<String> getHttpMethods() {
 		return httpMethods;
-	}
-
-	public String getPathKey() {
-		return pathKey;
-	}
-
-	public void setPathKey(String pathKey) {
-		this.pathKey = pathKey;
 	}
 
 	public String getInputEncoding() {

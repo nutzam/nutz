@@ -16,6 +16,7 @@ import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
+import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.impl.NutLoading;
 
@@ -110,8 +111,8 @@ public abstract class AbstractNutConfig implements NutConfig {
 		}
 	}
 
-	public AtMap getAtMap() {
-		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
+	public UrlMapping getUrlMap() {
+		return this.getAttributeAs(UrlMapping.class, UrlMapping.class.getName());
 	}
 
 	protected List<String> enum2list(Enumeration<?> enums) {

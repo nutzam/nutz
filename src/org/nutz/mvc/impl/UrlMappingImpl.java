@@ -86,10 +86,6 @@ public class UrlMappingImpl implements UrlMapping {
 							ai.getOutputEncoding());
 			}
 		}
-		// TODO 下面个IF要不要转换到NutLoading中去呢?
-		// 记录一个 @At.key
-		if (!Strings.isBlank(ai.getPathKey()))
-			config.getAtMap().add(ai.getPathKey(), ai.getPaths()[0]);
 	}
 
 	public ActionInvoker get(ActionContext ac) {
