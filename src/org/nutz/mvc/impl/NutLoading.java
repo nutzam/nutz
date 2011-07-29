@@ -163,13 +163,6 @@ public class NutLoading implements Loading {
 				info.setViewMakers(makers);
 				mapping.add(maker, info, config);
 			}
-			
-			//记录pathMap
-			if(null != moduleInfo.getPathMap()){
-				for(Entry<String, String> en : moduleInfo.getPathMap().entrySet()){
-					config.getAtMap().add(en.getKey(), en.getValue());
-				}
-			}
 		}
 		return mapping;
 	}

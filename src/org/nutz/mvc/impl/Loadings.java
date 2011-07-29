@@ -6,12 +6,10 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -37,7 +35,6 @@ import org.nutz.mvc.annotation.Modules;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
-import org.nutz.mvc.annotation.PathMap;
 import org.nutz.resource.Scans;
 
 public abstract class Loadings {
@@ -49,7 +46,6 @@ public abstract class Loadings {
 		evalEncoding(ai, type.getAnnotation(Encoding.class));
 		evalHttpAdaptor(ai, type.getAnnotation(AdaptBy.class));
 		evalActionFilters(ai, type.getAnnotation(Filters.class));
-		evalPathMap(ai, type.getAnnotation(PathMap.class));
 		evalOk(ai, type.getAnnotation(Ok.class));
 		evalFail(ai, type.getAnnotation(Fail.class));
 		evalAt(ai, type.getAnnotation(At.class), type.getSimpleName());
@@ -145,13 +141,6 @@ public abstract class Loadings {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
-	private static void evalPathMap(ActionInfo ai, PathMap pathMap){
-		if(pathMap != null){
-			ai.setPathMap(Json.fromJson(Map.class, pathMap.value()));
-		}
-	}
-
 	public static void evalFail(ActionInfo ai, Fail fail) {
 		if (null != fail) {
 			ai.setFailView(fail.value());
