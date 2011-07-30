@@ -131,6 +131,8 @@ public class FastUploading implements Uploading {
 					log.debugf("Upload File info: FilePath=[%s],fieldName=[%s]",meta.getFileLocalPath(),meta.getName());
 				// 作为文件读取
 				if (meta.isFile()) {
+					if (log.isDebugEnabled())
+						log.debugf("Upload Info: name=%s,content_type=%s", meta.getFileLocalName(),meta.getContentType());
 					// 检查是否通过文件名过滤
 					if (!context.isNameAccepted(meta.getFileLocalName())) {
 						throw new UploadUnsupportedFileNameException(meta);
@@ -141,7 +143,7 @@ public class FastUploading implements Uploading {
 					}
 
 					// 上传的是一个空文件
-					if (Strings.isBlank(meta.getFileLocalPath())) {
+					if ("\"\"".equals(meta.getName()) || Strings.isBlank(meta.getFileLocalPath())) {
 						do {
 							info.current = br.load();
 							mm = br.mark(itemEndlBytes);

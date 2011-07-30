@@ -130,7 +130,8 @@ public class UploadingContext {
 	}
 
 	public boolean isNameAccepted(String name) {
-		if (null == nameFilter || Strings.isBlank(name))
+		if (null == nameFilter || Strings.isBlank(name) 
+				|| "\"\"".equals(name)) //用户不选择文件时,文件名会是"" 两个双引号
 			return true;
 		return Pattern.matches(nameFilter, name.toLowerCase());
 	}
