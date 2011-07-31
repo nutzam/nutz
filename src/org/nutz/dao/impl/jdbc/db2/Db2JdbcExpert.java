@@ -22,12 +22,10 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 		return DB.DB2.name();
 	}
 
-	
-	//TODO not tested!!
+	// TODO not tested!!
 	public boolean createEntity(Dao dao, Entity<?> en) {
 		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
 		// 创建字段
-		boolean pked = true;
 		for (MappingField mf : en.getMappingFields()) {
 			sb.append('\n').append(mf.getColumnName());
 			sb.append(' ').append(evalFieldType(mf));
@@ -48,12 +46,11 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 						sb.append(" primary key ");
 					else
 						sb.append(" NOT NULL primary key ");
-					pked = false;
 				}
 			}
 			sb.append(',');
 		}
-		
+
 		// 创建索引
 		// TODO ...
 
@@ -62,24 +59,26 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
-		
+
 		// 创建联合主键
-		if(en.getPks().size() > 1) {
+		if (en.getPks().size() > 1) {
 			sb = new StringBuilder();
-			sb.append("ALTER TABLE ").append(en.getTableName()).append(" ADD CONSTRAINT PK_FA PRIMARY KEY (");
-			for(MappingField mf : en.getPks()) {
+			sb.append("ALTER TABLE ")
+				.append(en.getTableName())
+				.append(" ADD CONSTRAINT PK_FA PRIMARY KEY (");
+			for (MappingField mf : en.getPks()) {
 				sb.append(mf.getName()).append(",");
 			}
 			sb.setCharAt(sb.length() - 1, ')');
 			dao.execute(Sqls.create(sb.toString()));
 		}
-		
+
 		// 创建关联表
 		createRelation(dao, en);
 
 		return true;
 	}
-	
+
 	@Override
 	protected String evalFieldType(MappingField mf) {
 		switch (mf.getColumnType()) {
@@ -87,8 +86,8 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 			return "SMALLINT";
 		case INT:
 			// 用户自定义了宽度
-			//if (mf.getWidth() > 0)
-			//	return "decimal(" + mf.getWidth() + ")";
+			// if (mf.getWidth() > 0)
+			// return "decimal(" + mf.getWidth() + ")";
 			// 用数据库的默认宽度
 			return "INTEGER";
 
@@ -116,7 +115,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 			// 之后插入
 			pojo.append(Pojos.Items.wrapf(	") T) AS A WHERE ROWNUM BETWEEN %d AND %d",
 											pager.getOffset() + 1,
-											pager.getOffset() + pager.getPageSize() ));
+											pager.getOffset() + pager.getPageSize()));
 		}
 	}
 
