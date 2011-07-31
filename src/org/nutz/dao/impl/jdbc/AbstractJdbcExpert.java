@@ -67,8 +67,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 			for (MappingField mf : en.getMappingFields()) {
 				int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
 				// 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
-				if (!mf.isReadonly() && rsmd.isReadOnly(ci))
-					mf.setAsReadonly();
+//				if (!mf.isReadonly() && rsmd.isReadOnly(ci))
+//					mf.setAsReadonly();
 				// 是否非空
 				if (ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci))
 					mf.setAsNotNull();
