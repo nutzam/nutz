@@ -138,7 +138,7 @@ public class QueryTest extends DaoCase {
 	public void fetch_record() {
 		Record re = dao.fetch("t_pet", Cnd.where("name", "=", "pet3"));
 		Pet pet = re.toPojo(Pet.class);
-		assertEquals(4, re.getColumnCount());
+		assertEquals(5, re.getColumnCount());
 		assertEquals(4, pet.getId());
 		assertEquals("pet3", pet.getName());
 	}

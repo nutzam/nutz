@@ -1,13 +1,17 @@
 package org.nutz.dao.test.mapping;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.junit.Test;
 
+import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.Master;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.dao.test.meta.WaveBand;
 
@@ -20,6 +24,30 @@ public class ManyTest extends DaoCase {
 
 	@Override
 	protected void after() {}
+
+	@Test
+	public void insert_links() {
+		dao.create(Pet.class, true);
+		dao.create(Master.class, true);
+
+		Master m = new Master();
+		m.setName("zozoh");
+		m.setPets(new ArrayList<Pet>(2));
+
+		Pet pet = new Pet();
+		pet.setAge(25);
+		pet.setName("Wendal");
+		m.getPets().add(pet);
+
+		pet = new Pet();
+		pet.setAge(25);
+		pet.setName("Juqkai");
+		m.getPets().add(pet);
+
+		dao.insertWith(m, "pets");
+		assertTrue(m.getId() > 0);
+		assertEquals(2, dao.count(Pet.class, Cnd.where("masterId", "=", m.getId())));
+	}
 
 	@Test
 	public void fetch_links() {

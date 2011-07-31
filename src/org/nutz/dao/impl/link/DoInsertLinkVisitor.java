@@ -18,12 +18,18 @@ import org.nutz.lang.LoopException;
 public class DoInsertLinkVisitor extends AbstractLinkVisitor {
 
 	public void visit(final Object obj, final LinkField lnk) {
-		Object value = lnk.getValue(obj);
+		final Object value = lnk.getValue(obj);
 		if (Lang.length(value) == 0)
 			return;
 
 		// 从宿主对象更新关联对象
-		lnk.updateLinkedField(obj, value);
+		opt.add(Pojos.createRun(new PojoCallback() {
+			public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+				lnk.updateLinkedField(obj, value);
+				return pojo.getOperatingObject();
+			}
+		}).setOperatingObject(obj));
+
 		// 为其循环生成插入语句 : holder.getEntityBy 会考虑到集合和数组的情况的
 		final Entity<?> en = lnk.getLinkedEntity();
 		Lang.each(value, new Each<Object>() {

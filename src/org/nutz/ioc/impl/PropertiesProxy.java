@@ -61,6 +61,10 @@ public class PropertiesProxy {
 		}
 	}
 
+	public void put(String key, String value) {
+		mp.put(key, value);
+	}
+
 	public String get(String key) {
 		return mp.get(key);
 	}

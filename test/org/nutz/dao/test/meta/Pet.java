@@ -1,5 +1,6 @@
 package org.nutz.dao.test.meta;
 
+import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Strings;
 
@@ -20,6 +21,7 @@ public class Pet {
 	}
 
 	@Id
+	@Next({@SQL(db = DB.PSQL, value = "SELECT currval('$table$_id_seq')")})
 	private int id;
 
 	@Name
@@ -31,6 +33,9 @@ public class Pet {
 	@Column
 	private int age;
 
+	@Column("mas")
+	private int masterId;
+
 	public int getId() {
 		return id;
 	}
@@ -38,6 +43,14 @@ public class Pet {
 	public Pet setId(int id) {
 		this.id = id;
 		return this;
+	}
+
+	public int getMasterId() {
+		return masterId;
+	}
+
+	public void setMasterId(int masterId) {
+		this.masterId = masterId;
 	}
 
 	public String getName() {
