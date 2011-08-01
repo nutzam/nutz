@@ -5,8 +5,6 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
-import org.nutz.resource.Scans;
-
 public class ServletNutConfig extends AbstractNutConfig {
 
 	private ServletConfig config;
@@ -14,7 +12,6 @@ public class ServletNutConfig extends AbstractNutConfig {
 	public ServletNutConfig(ServletConfig config) {
 		this.config = config;
 		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
-		Scans.me().init(config.getServletContext());
 	}
 
 	public ServletContext getServletContext() {
