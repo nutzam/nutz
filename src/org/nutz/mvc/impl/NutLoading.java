@@ -144,6 +144,7 @@ public class NutLoading implements Loading {
 		/*
 		 * 准备要加载的模块列表
 		 */
+		//TODO 为什么用Set呢? 用List不是更快吗?
 		Set<Class<?>> modules = Loadings.scanModules(mainModule);
 
 		/*

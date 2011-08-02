@@ -83,25 +83,17 @@ public abstract class Loadings {
 				list.add(module);
 			}
 		}
-		// 执行扫描
+		//扫描包
 		Set<Class<?>> modules = new HashSet<Class<?>>();
+		if(null != ann && ann.packages() != null && ann.packages().length > 0 ){
+			for (String packageName : ann.packages()) 
+				scanModuleInPackage(modules, packageName);
+		}
+		// 执行扫描
 		for (Class<?> type : list) {
 			// 扫描子包
-			if (scan) {
-				if (log.isDebugEnabled())
-					log.debugf(" > scan '%s'", type.getPackage().getName());
-
-				List<Class<?>> subs = Scans.me().scanPackage(type);
-				for (Class<?> sub : subs) {
-					if (isModule(sub)) {
-						if (log.isDebugEnabled())
-							log.debugf("   >> add '%s'", sub.getName());
-						modules.add(sub);
-					} else if (log.isTraceEnabled()) {
-						log.tracef("   >> ignore '%s'", sub.getName());
-					}
-				}
-			}
+			if (scan) 
+				scanModuleInPackage(modules, type.getPackage().getName());
 			// 仅仅加载自己
 			else {
 				if (isModule(type)) {
@@ -114,6 +106,22 @@ public abstract class Loadings {
 			}
 		}
 		return modules;
+	}
+	
+	protected static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
+		if (log.isDebugEnabled())
+			log.debugf(" > scan '%s'", packageName);
+
+		List<Class<?>> subs = Scans.me().scanPackage(packageName);
+		for (Class<?> sub : subs) {
+			if (isModule(sub)) {
+				if (log.isDebugEnabled())
+					log.debugf("   >> add '%s'", sub.getName());
+				modules.add(sub);
+			} else if (log.isTraceEnabled()) {
+				log.tracef("   >> ignore '%s'", sub.getName());
+			}
+		}
 	}
 
 	public static void evalHttpMethod(ActionInfo ai, Method method) {
