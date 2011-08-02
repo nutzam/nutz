@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Array;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -15,10 +16,19 @@ public class ArrayInjector extends NameInjector {
 		super(name, type);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		if (null != refer)
-			return Castors.me().castTo(refer, type);
+		Object value = null;
+		if (null != refer) {
+			if (refer instanceof Map) {
+				value = ((Map<String, Object>)refer).get(name);
+				if(value != null && value.getClass().isArray())
+					return Lang.array2array(value, type.getComponentType());
+			}
+			if (value != null)
+				return convertMe(value);
+		}
 
 		String[] values = req.getParameterValues(name);
 		if (null == values || values.length == 0)
@@ -26,18 +36,21 @@ public class ArrayInjector extends NameInjector {
 
 		if (values.length == 1) {
 			// 如果只有一个值，那么试图直接转换
-			try {
-				return Castors.me().castTo(values[0], type);
-			}
-			// zzh: 如果不成，按数组转换
-			catch (Exception e) {
-				Object re = Array.newInstance(type.getComponentType(), 1);
-				Object v = Castors.me().castTo(values[0], type.getComponentType());
-				Array.set(re, 0, v);
-				return re;
-			}
+			return convertMe(values[0]);
 		}
 		return Lang.array2array(values, type.getComponentType());
 	}
 
+	protected Object convertMe(Object value) {
+		try {
+			return Castors.me().castTo(value, type);
+		}
+		// zzh: 如果不成，按数组转换
+		catch (Exception e) {
+			Object re = Array.newInstance(type.getComponentType(), 1);
+			Object v = Castors.me().castTo(value, type.getComponentType());
+			Array.set(re, 0, v);
+			return re;
+		}
+	}
 }

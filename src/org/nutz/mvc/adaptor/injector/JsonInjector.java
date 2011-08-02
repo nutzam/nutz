@@ -1,15 +1,14 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Type;
+import java.util.Map;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
-import org.nutz.lang.util.NutMap;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 /**
@@ -27,14 +26,15 @@ public class JsonInjector implements ParamInjector {
 		this.name = name;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object get(	ServletContext sc,
 						HttpServletRequest req,
 						HttpServletResponse resp,
 						Object refer) {
 		if (null == name)
-			return Json.fromJson(type, refer.toString());
+			return Castors.me().castTo(refer, Lang.getTypeClass(type));
 
-		NutMap map = Json.fromJson(NutMap.class, refer.toString());
+		Map<String, Object> map = (Map<String, Object>)refer;
 		Object theObj = map.get(name);
 		if (null == theObj)
 			return null;

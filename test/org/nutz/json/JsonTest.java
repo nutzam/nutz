@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
@@ -249,6 +250,7 @@ public class JsonTest {
 		assertEquals(15, cal.get(Calendar.DAY_OF_MONTH));
 	}
 
+	@Ignore
 	@Test
 	public void testPersonObject() throws Exception {
 		Person p = Json.fromJson(	Person.class,
