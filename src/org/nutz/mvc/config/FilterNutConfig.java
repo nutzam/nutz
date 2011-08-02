@@ -10,6 +10,7 @@ public class FilterNutConfig extends AbstractNutConfig {
 	private FilterConfig config;
 
 	public FilterNutConfig(FilterConfig config) {
+		super(config.getServletContext());
 		this.config = config;
 		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
 	}

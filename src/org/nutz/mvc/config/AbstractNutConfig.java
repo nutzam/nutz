@@ -4,6 +4,8 @@ import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
+
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
@@ -18,10 +20,15 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.impl.NutLoading;
+import org.nutz.resource.Scans;
 
 public abstract class AbstractNutConfig implements NutConfig {
 
 	private static final Log log = Logs.get();
+	
+	public AbstractNutConfig(ServletContext context) {
+		Scans.me().init(context);
+	}
 
 	public Loading createLoading() {
 		/*

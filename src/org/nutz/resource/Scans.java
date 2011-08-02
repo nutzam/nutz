@@ -43,6 +43,10 @@ public class Scans {
 
 	private WebResourceScan web;
 
+	/**
+	 * 在Web环境中使用Nutz的任何功能,都应该先调用这个方法,以初始化资源扫描器
+	 * <p/>调用一次就可以了
+	 */
 	public Scans init(ServletContext servletContext) {
 		if (servletContext == null)
 			web = null;
