@@ -38,6 +38,7 @@ public class JsonAdaptorTest extends AbstractMvcTest {
 		String json = "[{name:'a'},{name:'b'},{name:'c'}]";
 		initreq(path, json);
 		servlet.service(request, response);
+		System.out.println(response.getAsString());
 		assertEquals(3,response.getAsInt());
 	}
 	

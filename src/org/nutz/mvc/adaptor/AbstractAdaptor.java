@@ -168,20 +168,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		}
 		return args;
 	}
-
-//	protected int fillPathArgs(	HttpServletRequest req,
-//								HttpServletResponse resp,
-//								String[] pathArgs,
-//								Object[] args) {
-//		int i = 0;
-//		// Loop path args
-//		if (null != pathArgs) {
-//			int len = Math.min(args.length, pathArgs.length);
-//			for (; i < len; i++)
-//				args[i] = injs[i].get(null, req, resp, pathArgs[i]);
-//		}
-//		return i;
-//	}
 	
 	protected Object getReferObject(ServletContext sc,
 							HttpServletRequest req,

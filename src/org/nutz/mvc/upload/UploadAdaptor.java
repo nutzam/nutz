@@ -127,7 +127,7 @@ public class UploadAdaptor extends PairAdaptor {
 		return super.evalInjector(type, param);
 	}
 
-	public Object getReferObject(	ServletContext sc,
+	public Map<String,Object> getReferObject(	ServletContext sc,
 							HttpServletRequest request,
 							HttpServletResponse response,
 							String[] pathArgs) {

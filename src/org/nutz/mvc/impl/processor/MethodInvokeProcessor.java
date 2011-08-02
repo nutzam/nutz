@@ -3,6 +3,7 @@ package org.nutz.mvc.impl.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.nutz.lang.Lang;
 import org.nutz.mvc.ActionContext;
 
 /**
@@ -23,13 +24,13 @@ public class MethodInvokeProcessor extends AbstractProcessor{
 			doNext(ac);
 		} 
 		catch (IllegalAccessException e) {
-			throw e.getCause();
+			throw Lang.unwrapThrow(e);
 		}
 		catch (IllegalArgumentException e) {
-			throw e.getCause();
+			throw Lang.unwrapThrow(e);
 		}
 		catch (InvocationTargetException e) {
-			throw e.getTargetException();
+			throw Lang.unwrapThrow(e);
 		}
 	}
 
