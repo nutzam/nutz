@@ -62,9 +62,13 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 			sb = new StringBuilder();
 			sb.append("ALTER TABLE ")
 				.append(en.getTableName())
-				.append(" ADD CONSTRAINT PK_FA PRIMARY KEY (");
+				.append(" ADD CONSTRAINT PK");
 			for (MappingField mf : en.getPks()) {
-				sb.append(mf.getName()).append(",");
+				sb.append("_").append(mf.getColumnName());
+			}
+			sb.append(" PRIMARY KEY (");
+			for (MappingField mf : en.getPks()) {
+				sb.append(mf.getColumnName()).append(",");
 			}
 			sb.setCharAt(sb.length() - 1, ')');
 			dao.execute(Sqls.create(sb.toString()));

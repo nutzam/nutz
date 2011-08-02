@@ -22,7 +22,9 @@ public class AutoGenerateValueTest extends DaoCase {
 
 		// TODO Oracle 那个 @Prev 有问题，暂时先忽略
 		// TODO HSQL 也不认这样的语句 SELECT 'dog.xb'
-		if (pojos.dao().meta().isOracle() || pojos.dao().meta().isHsql())
+		// TODO DB2 同样不认
+		if (dao.meta().isOracle() || dao.meta().isHsql()
+				|| dao.meta().isDB2())
 			return;
 		pojos.initPet();
 		Pet2 pet = new Pet2();
