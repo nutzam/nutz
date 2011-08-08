@@ -20,6 +20,8 @@ public class Animal {
 
 	private String name;
 
+	private Animal another;
+
 	private AnimalRace race;
 
 	private Calendar birthday;
@@ -37,6 +39,10 @@ public class Animal {
 	private int deposeTime;
 
 	private int createTime;
+
+	public Animal getAnother() {
+		return another;
+	}
 
 	public int getFetchTime() {
 		return fetchTime;

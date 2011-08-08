@@ -23,6 +23,14 @@ import org.nutz.lang.Streams;
 public class SimpleJsonIocTest {
 
 	@Test
+	public void test_refer_self() {
+		Ioc ioc = I(J("fox", "name:'Fox',another:{refer:'fox'}"));
+		Animal f = ioc.get(Animal.class, "fox");
+		assertEquals("Fox", f.getName());
+		assertTrue(f == f.getAnother());
+	}
+
+	@Test
 	public void test_null_json_file() {
 		IocLoader loader = new JsonLoader("org/nutz/ioc/json/empty.js");
 		Ioc ioc = new NutIoc(loader);
@@ -84,7 +92,7 @@ public class SimpleJsonIocTest {
 		assertTrue(f.getName().length() > 0);
 		assertEquals(f.getName(), f.getMisc().get(0).toString());
 	}
-	
+
 	@Test
 	public void test_sys() {
 		Properties properties = System.getProperties();
@@ -92,7 +100,7 @@ public class SimpleJsonIocTest {
 		properties.put("sysP", "ZZZ");
 		Animal f = A("name:{sys:'sysA'},misc:[{sys:'sysP'}]");
 		assertEquals("XX", f.getName());
-		assertEquals("ZZZ",f.getMisc().get(0).toString());
+		assertEquals("ZZZ", f.getMisc().get(0).toString());
 	}
 
 	@Test
@@ -175,19 +183,19 @@ public class SimpleJsonIocTest {
 		Ioc ioc = I(J("fox", "name:'P',age:10"), J("f2", "parent:'x'"), J("f3", "parent:'y'"));
 		ioc.get(Animal.class, "f3");
 	}
-	
+
 	@Test
 	public void test_load_from_dir() throws ObjectLoadException {
 		IocLoader loader = new JsonLoader("org/nutz/ioc/json/");
 		assertTrue(loader.getName().length > 0);
 	}
-	
+
 	@Test
 	public void test_load_from_reader() throws ObjectLoadException {
 		IocLoader loader = new JsonLoader(Streams.fileInr("org/nutz/ioc/json/main.js"));
 		assertTrue(loader.getName().length > 0);
 	}
-	
+
 	@Test
 	public void test_get_ioc_self() {
 		Ioc ioc = I(J("iocV", "type:'org.nutz.ioc.json.pojo.IocSelf',fields:{ioc:{refer : '$iOc'}}"));
