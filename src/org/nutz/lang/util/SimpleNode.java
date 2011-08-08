@@ -316,7 +316,7 @@ public class SimpleNode<T> implements Node<T> {
 			return -1;
 		int i = 0;
 		Node<T> n = parent.firstChild();
-		while (n != this) {
+		while (n != this.child(i)) {
 			i++;
 		}
 		return i;

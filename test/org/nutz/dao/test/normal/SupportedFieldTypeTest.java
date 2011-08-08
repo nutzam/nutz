@@ -187,7 +187,8 @@ public class SupportedFieldTypeTest extends DaoCase {
 			Object expValue;
 			Object ttValue;
 			// Mysql 5.0.18， 会去掉毫秒数
-			if (f.getName().equals("sqlTime") &&  dao.meta().isMySql()) {
+			if (f.getName().equals("sqlTime") &&  
+					(dao.meta().isMySql() || dao.meta().isHsql())) {
 				expValue = me.getValue(exp, f).toString();
 				ttValue = me.getValue(et, f).toString();
 			}

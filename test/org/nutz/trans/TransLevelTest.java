@@ -156,8 +156,8 @@ public class TransLevelTest extends DaoCase {
 
 	@Test
 	public void testReadCommitted() {
-		// SqlServer 在这个测试中，两个线程会相互等待 ...
-		if (dao.meta().isSqlServer()) {
+		// SqlServer/hsql 在这个测试中，两个线程会相互等待 ...
+		if (dao.meta().isSqlServer() || dao.meta().isHsql()) {
 			Nutzs.notSupport(dao.meta());
 		}
 		// H2 会在抛异常：Timeout trying to lock table "TRANS_COMPANY";
