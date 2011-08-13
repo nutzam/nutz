@@ -19,10 +19,7 @@ public class NutType implements ParameterizedType {
 	 * @return List<clazz>形式的泛型Type
 	 */
 	public static Type list(Type clazz){
-		NutType type = new NutType();
-		type.rawType = List.class;
-		type.setActualTypeArguments(clazz);
-		return type;
+		return new NutType(List.class,clazz);
 	}
 	
 	/**
@@ -32,10 +29,7 @@ public class NutType implements ParameterizedType {
 	 * @return Map<key,value>形式的泛型Type
 	 */
 	public static Type map(Type key, Type value){
-		NutType type = new NutType();
-		type.rawType = Map.class;
-		type.setActualTypeArguments(key,value);
-		return type;
+		return new NutType(Map.class,key,value);
 	}
 	
 	/**
@@ -44,12 +38,18 @@ public class NutType implements ParameterizedType {
 	 * @return Map<String,value>形式的泛型Type
 	 */
 	public static Type mapStr(Type value){
-		NutType type = new NutType();
-		type.rawType = Map.class;
-		type.setActualTypeArguments(String.class,value);
-		return type;
+		return new NutType(Map.class,String.class,value);
 	}
 	
+	public NutType() {}
+	
+	public NutType(Type rawType, Type...actualTypeArguments) {
+		this.rawType = rawType;
+		this.actualTypeArguments = actualTypeArguments;
+	}
+
+
+
 	private Type[] actualTypeArguments;
 	
 	private Type rawType;
