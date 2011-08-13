@@ -113,6 +113,9 @@ public class JsonCompile {
 		case '\"':
 			sb.append('\"');
 			break;
+		case '/':
+			sb.append('/');
+			break;
 		case 'u':
 			char[] hex = new char[4];
 			for (int i = 0; i < 4; i++)

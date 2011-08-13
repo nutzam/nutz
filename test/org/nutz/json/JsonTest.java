@@ -661,5 +661,12 @@ public class JsonTest {
 		assertEquals("nutz", list.get(0).name);
 		assertEquals("wendal", list.get(1).name);
 	}
+	
+	@Test
+	public void test_sp(){
+		String j = "{'abc':'http:\\/\\/wendal.net'}";
+		Map<String, Object> map = Json.fromJson(Map.class, j);
+		assertEquals("http://wendal.net", map.get("abc"));
+	}
 }
 
