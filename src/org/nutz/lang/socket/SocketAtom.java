@@ -31,7 +31,10 @@ public class SocketAtom implements Atom {
 
 	protected List<SocketAtom> atoms;
 
-	protected SocketAtom(List<SocketAtom> atoms, SocketLock lock, Socket socket, SocketActionTable saTable) {
+	protected SocketAtom(	List<SocketAtom> atoms,
+							SocketLock lock,
+							Socket socket,
+							SocketActionTable saTable) {
 		this.atoms = atoms;
 		this.lock = lock;
 		this.socket = socket;
@@ -57,6 +60,10 @@ public class SocketAtom implements Atom {
 			doRun();
 		}
 		catch (SocketException e) {}
+		// 要关闭 socket 监听 ...
+		catch (CloseSocketException e) {
+			lock.setStop(true);
+		}
 		catch (IOException e) {
 			log.error("Error!! ", e);
 		}
@@ -69,12 +76,15 @@ public class SocketAtom implements Atom {
 				log.debug("Done and notify lock");
 
 			synchronized (lock) {
-				lock.notify();
+				try {
+					lock.notify();
+				}
+				catch (Exception e) {}
 			}
 		}
 	}
 
-	private void doRun() throws IOException {
+	protected void doRun() throws IOException {
 		// 预先读取一行
 		line = br.readLine();
 
@@ -86,16 +96,9 @@ public class SocketAtom implements Atom {
 			SocketAction action = saTable.get(Strings.trim(line));
 			if (null != action) {
 				SocketContext context = new SocketContext(this);
-				try {
-					// action.run 抛出的异常会被原汁原味的抛到外面，而 本函数的异常则
-					// 在各个语句被处理了 ^_^
-					action.run(context);
-				}
-				// 要关闭 socket 监听 ...
-				catch (CloseSocketException e) {
-					lock.setStop(true);
-					break;
-				}
+				// action.run 抛出的异常会被原汁原味的抛到外面，
+				// 而本函数的异常则在各个语句被处理了 ^_^
+				action.run(context);
 			}
 			// 继续读取
 			line = br.readLine();

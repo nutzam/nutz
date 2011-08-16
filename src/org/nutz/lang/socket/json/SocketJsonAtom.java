@@ -9,70 +9,75 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.json.Json;
+import org.nutz.json.JsonException;
 import org.nutz.lang.Streams;
+import org.nutz.lang.Strings;
 import org.nutz.lang.socket.SocketAction;
 import org.nutz.lang.socket.SocketActionTable;
 import org.nutz.lang.socket.SocketAtom;
 import org.nutz.lang.socket.SocketContext;
 import org.nutz.lang.socket.SocketLock;
-import org.nutz.lang.socket.Sockets;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 public class SocketJsonAtom extends SocketAtom {
-	
+
 	private static final Log log = Logs.get();
 
-	public SocketJsonAtom(List<SocketAtom> atoms, SocketLock lock, Socket socket, SocketActionTable saTable) {
+	public SocketJsonAtom(	List<SocketAtom> atoms,
+							SocketLock lock,
+							Socket socket,
+							SocketActionTable saTable) {
 		super(atoms, lock, socket, saTable);
 	}
 
 	@SuppressWarnings("unchecked")
-	public void run() {
+	public void doRun() throws IOException {
+		StringBuilder sb = new StringBuilder();
+		// 预先读取一行
+		line = br.readLine();
+		// 在这个 socket 中逐行读取 ...
+		while (null != line) {
+			sb.append(line).append('\n');
+			// 前面有空行
+			if (Strings.isBlank(line))
+				break;
+			// 接着读 ...
+			line = br.readLine();
+		}
+		// 打印信息
 		if (log.isDebugEnabled())
-			log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
+			log.debug("  <<socket<<: " + sb);
 
-		atoms.add(this);
+		// 解析成 JSON
 		try {
-			ops = socket.getOutputStream();
-		}
-		catch (IOException e1) {
-			e1.printStackTrace();
-			return;
-		}
-		try {
-			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, 
-			                                        Streams.utf8r(socket.getInputStream()));
+			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, sb);
+
 			SocketAction action = saTable.get(map.get("cmd").toString());
 			if (null != action) {
 				SocketContext context = new SocketContext(this);
-				if(action instanceof JsonAction)
-					((JsonAction)action).run(map,context);
+				if (action instanceof JsonAction)
+					((JsonAction) action).run(map, context);
 				else
 					action.run(context);
 			} else {
-				Writer writer = Streams.utf8w(socket.getOutputStream());
+				Writer writer = Streams.utf8w(ops);
 				Map<String, Object> x = new HashMap<String, Object>();
 				x.put("ok", false);
 				x.put("msg", "Unknown CMD");
 				Json.toJson(writer, x);
-				writer.close();
+				try {
+					writer.close();
+				}
+				catch (IOException e) {
+					if (log.isWarnEnabled())
+						log.warn("Error to write...", e);
+				}
 			}
 		}
-		catch (IOException e) {
-			log.error("Error!! ", e);
-		}
-		finally {
-			Sockets.safeClose(socket);
-			// 移除自己
-			atoms.remove(this);
-
-			if (log.isDebugEnabled())
-				log.debug("Done and notify lock");
-
-			synchronized (lock) {
-				lock.notify();
-			}
+		catch (JsonException e) {
+			if (log.isWarnEnabled())
+				log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
 		}
 	}
 }
