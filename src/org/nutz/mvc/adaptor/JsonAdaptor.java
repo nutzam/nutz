@@ -22,21 +22,21 @@ public class JsonAdaptor extends PairAdaptor {
 
 	@Override
 	protected ParamInjector evalInjector(Type type, Param param) {
-		if(param == null)
-			return new JsonInjector(type,null);
+		if (param == null)
+			return new JsonInjector(type, null);
 		return super.evalInjector(type, param);
 	}
-	
+
 	public Object getReferObject(	ServletContext sc,
-							HttpServletRequest request,
-							HttpServletResponse response, String[] pathArgs) {
+							HttpServletRequest req,
+							HttpServletResponse resp, String[] pathArgs) {
 		// Read all as String
 		try {
-			return Json.fromJson(Streams.utf8r(request.getInputStream()));
+			String str = Streams.readAndClose(Streams.utf8r(req.getInputStream()));
+			return Json.fromJson(str);
 		}
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 	}
-
 }

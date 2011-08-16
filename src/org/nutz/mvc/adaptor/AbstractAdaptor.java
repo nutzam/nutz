@@ -2,6 +2,7 @@ package org.nutz.mvc.adaptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -31,17 +32,18 @@ import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
+
 /**
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
-	
+
 	private static final Log log = Logs.get();
 
 	protected ParamInjector[] injs;
-	
+
 	protected Method method;
 
 	public void init(Method method) {
@@ -94,8 +96,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		}
 	}
 
-
-
 	private static ParamInjector evalInjectorByAttrScope(Attr attr) {
 		if (attr.scope() == Scope.APP)
 			return new AppAttrInjector(attr.value());
@@ -132,20 +132,29 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
 	protected ParamInjector evalInjector(Type type, Param param) {
 		Class<?> clazz = Lang.getTypeClass(type);
-		if( clazz == null) {
-			if(log.isWarnEnabled())
-				log.warnf("!!Fail to get Type Class : type=%s , param=%s",type,param);
+		Type[] paramTypes = null;
+		if (type instanceof ParameterizedType)
+			paramTypes = ((ParameterizedType) type).getActualTypeArguments();
+		if (clazz == null) {
+			if (log.isWarnEnabled())
+				log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
 			return null;
 		}
-		return evalInjector(clazz, param);
+		return evalInjectorBy(clazz, param, paramTypes);
 	}
-	
+
 	/**
-	 * 子类应该覆盖这个方法或者evalInjector(Type,Param)方法.
+	 * 子类实现这个方法根据自己具体的逻辑来生产一个参数注入器
+	 * 
+	 * @param type
+	 *            参数类型
+	 * @param param
+	 *            参数的注解
+	 * @param paramTypes
+	 *            参数的范型，无范型的，值为 null
+	 * @return 一个新的参数注入器实例
 	 */
-	protected ParamInjector evalInjector(Class<?> type, Param param) {
-		return null;
-	}
+	protected abstract ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes);
 
 	public Object[] adapt(	ServletContext sc,
 							HttpServletRequest req,
@@ -153,7 +162,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 							String[] pathArgs) {
 		Object[] args = new Object[injs.length];
 		int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
-		int i = 0;//确保路径参数不会被覆盖
+		int i = 0;// 确保路径参数不会被覆盖
 		// Inject another params
 		for (; i < len; i++) {
 			args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
@@ -162,17 +171,17 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		Object obj = getReferObject(sc, req, resp, pathArgs);
 		for (; i < injs.length; i++) {
 			args[i] = injs[i].get(sc, req, resp, obj);
-			if(args[i] == null && argTypes[i].isPrimitive()) {
+			if (args[i] == null && argTypes[i].isPrimitive()) {
 				args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
 			}
 		}
 		return args;
 	}
-	
+
 	protected Object getReferObject(ServletContext sc,
-							HttpServletRequest req,
-							HttpServletResponse resp,
-							String[] pathArgs) {
+									HttpServletRequest req,
+									HttpServletResponse resp,
+									String[] pathArgs) {
 		return null;
 	}
 }

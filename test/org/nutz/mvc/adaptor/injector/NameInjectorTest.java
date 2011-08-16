@@ -14,7 +14,7 @@ public class NameInjectorTest {
 
 	@SuppressWarnings({"unchecked"})
 	private static <T> T inj(String name, Class<T> type, HttpServletRequest req) {
-		return (T) new NameInjector(name, type).get(null, req, null, null);
+		return (T) new NameInjector(name, type, null).get(null, req, null, null);
 	}
 
 	/**

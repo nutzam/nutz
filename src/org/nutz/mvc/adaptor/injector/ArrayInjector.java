@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -12,18 +13,21 @@ import org.nutz.lang.Lang;
 
 public class ArrayInjector extends NameInjector {
 
-	public ArrayInjector(String name, Class<?> type) {
-		super(name, type);
+	public ArrayInjector(String name, Class<?> type, Type[] paramTypes) {
+		super(name, type, paramTypes);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+	public Object get(	ServletContext sc,
+						HttpServletRequest req,
+						HttpServletResponse resp,
+						Object refer) {
 		Object value = null;
 		if (null != refer) {
 			if (refer instanceof Map) {
-				value = ((Map<String, Object>)refer).get(name);
-				if(value != null && value.getClass().isArray())
+				value = ((Map<String, Object>) refer).get(name);
+				if (value != null && value.getClass().isArray())
 					return Lang.array2array(value, type.getComponentType());
 			}
 			if (value != null)

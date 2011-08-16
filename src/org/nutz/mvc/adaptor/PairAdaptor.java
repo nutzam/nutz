@@ -1,5 +1,6 @@
 package org.nutz.mvc.adaptor;
 
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.nutz.mvc.adaptor.injector.ArrayInjector;
@@ -17,8 +18,7 @@ import org.nutz.mvc.annotation.Param;
  */
 public class PairAdaptor extends AbstractAdaptor {
 
-	@Override
-	protected ParamInjector evalInjector(Class<?> type, Param param) {
+	protected ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes) {
 		if (null == param)
 			return new PathArgInjector(type);
 		String pm = param.value();
@@ -34,10 +34,10 @@ public class PairAdaptor extends AbstractAdaptor {
 		}
 		// POJO[]
 		else if (type.isArray())
-			return new ArrayInjector(pm, type);
+			return new ArrayInjector(pm, type, paramTypes);
 
 		// Name-value
-		return new NameInjector(pm, type);
+		return new NameInjector(pm, type, paramTypes);
 	}
 
 }

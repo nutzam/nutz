@@ -1,11 +1,14 @@
 package org.nutz.http;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.nutz.json.Json;
+import org.nutz.lang.Encoding;
+import org.nutz.lang.util.ByteInputStream;
 
 public class Request {
 
@@ -39,7 +42,10 @@ public class Request {
 		return Request.create(url, method, params, Header.create());
 	}
 
-	public static Request create(String url, METHOD method, Map<String, Object> params, Header header) {
+	public static Request create(	String url,
+									METHOD method,
+									Map<String, Object> params,
+									Header header) {
 		return new Request().setMethod(method).setParams(params).setUrl(url).setHeader(header);
 	}
 
@@ -49,6 +55,7 @@ public class Request {
 	private METHOD method;
 	private Header header;
 	private Map<String, Object> params;
+	private byte[] data;
 
 	public URL getUrl() {
 		StringBuilder sb = new StringBuilder(url);
@@ -67,7 +74,7 @@ public class Request {
 	public Map<String, Object> getParams() {
 		return params;
 	}
-	
+
 	public String getURLEncodedParams() {
 		StringBuilder sb = new StringBuilder();
 		for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
@@ -77,6 +84,32 @@ public class Request {
 				sb.append('&');
 		}
 		return sb.toString();
+	}
+
+	public InputStream getInputStream() {
+		// TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
+		if (null == data) {
+			StringBuilder sb = new StringBuilder();
+			for (String key : params.keySet()) {
+				sb.append(key).append('=').append(params.get(key)).append('&');
+			}
+			sb.setCharAt(sb.length() - 1, '\n');
+			byte[] bytes = sb.toString().getBytes(Encoding.CHARSET_UTF8);
+			return new ByteInputStream(bytes);
+		}
+		return null == data ? null : new ByteInputStream(data);
+	}
+
+	public byte[] getData() {
+		return data;
+	}
+
+	public void setData(byte[] data) {
+		this.data = data;
+	}
+
+	public void setData(String data) {
+		this.data = data.getBytes(Encoding.CHARSET_UTF8);
 	}
 
 	private Request setParams(Map<String, Object> params) {

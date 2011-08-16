@@ -1,5 +1,7 @@
 package org.nutz.mvc.adaptor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.mvc.annotation.Param;
 
 /**
@@ -11,8 +13,7 @@ import org.nutz.mvc.annotation.Param;
  */
 public class VoidAdaptor extends AbstractAdaptor {
 
-	@Override
-	protected ParamInjector evalInjector(Class<?> type, Param param) {
+	protected ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes) {
 		return null;
 	}
 

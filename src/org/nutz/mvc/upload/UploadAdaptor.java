@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
 
@@ -95,13 +96,13 @@ public class UploadAdaptor extends PairAdaptor {
 		return context;
 	}
 
-	protected ParamInjector evalInjector(Class<?> type, Param param) {
+	protected ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes) {
 		// Map
 		if (Map.class.isAssignableFrom(type))
 			return new MapSelfInjector();
 
 		if (null == param)
-			return super.evalInjector(type, param);
+			return super.evalInjectorBy(type, param, paramTypes);
 
 		String paramName = param.value();
 
@@ -124,13 +125,13 @@ public class UploadAdaptor extends PairAdaptor {
 		if (List.class.isAssignableFrom(type))
 			return new MapListInjector(paramName);
 		// Other
-		return super.evalInjector(type, param);
+		return super.evalInjectorBy(type, param, paramTypes);
 	}
 
-	public Map<String,Object> getReferObject(	ServletContext sc,
-							HttpServletRequest request,
-							HttpServletResponse response,
-							String[] pathArgs) {
+	public Map<String, Object> getReferObject(	ServletContext sc,
+												HttpServletRequest request,
+												HttpServletResponse response,
+												String[] pathArgs) {
 		try {
 			Uploading ing = new FastUploading();
 			return ing.parse(request, context);

@@ -1,8 +1,7 @@
 package org.nutz.http.sender;
 
-import java.io.BufferedWriter;
-import java.io.Writer;
-import java.util.Map;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.nutz.http.HttpException;
 import org.nutz.http.Request;
@@ -20,18 +19,15 @@ public class PostSender extends Sender {
 	public Response send() throws HttpException {
 		try {
 			openConnection();
-			Map<String, ?> params = request.getParams();
-			String data = null;
-			if (null != params && params.size() > 0) {
-				data = request.getURLEncodedParams();
-			}
 			setupRequestHeader();
 			setupDoInputOutputFlag();
-			if (data != null) {
-				Writer w = new BufferedWriter(Streams.utf8w(conn.getOutputStream()));
-				w.write(data);
-				Streams.safeFlush(w);
-				Streams.safeClose(w);
+			InputStream ins = request.getInputStream();
+			if(null!=ins){
+				OutputStream ops = Streams.buff(conn.getOutputStream());
+				Streams.write(ops, ins, 8192);
+				Streams.safeClose(ins);
+				Streams.safeFlush(ops);
+				Streams.safeClose(ops);
 			}
 			return createResponse(getResponseHeader());
 		}
