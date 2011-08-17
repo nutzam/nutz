@@ -38,7 +38,8 @@ public class MappingNode<T> {
 			}
 			// '?'
 			else if ("?".equals(key)) {
-				quesmark = new MappingNode<T>();
+				if (quesmark == null) //也许这个节点之前就已经有值呢
+					quesmark = new MappingNode<T>();
 				quesmark.add(it, obj);
 			}
 			// 其它节点，加入 map

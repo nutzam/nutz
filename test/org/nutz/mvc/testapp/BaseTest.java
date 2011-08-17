@@ -32,8 +32,9 @@ public class BaseTest extends BaseWebappTest {
 		assertEquals("Wendal12345123456789123123200truen", resp.getContent());
 
 		get("/common/pathArgs3/public/blog/200");
-
 		assertEquals("public&200", resp.getContent());
+		get("/common/pathArgs3/puZ");
+		assertEquals("puZ&Z", resp.getContent());
 
 		get("/common/pathArgs4/nutz?name=wendal");
 		assertEquals("nutz&wendal", resp.getContent());

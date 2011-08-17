@@ -44,6 +44,12 @@ public class CommonTest extends BaseWebappTest {
 		return type + "&" +id;
 	}
 	
+	//含? 与方法test_base_pathargs3比对,
+	@At("/pathArgs3/?")
+	public String test_base_pathargs3_2(String type){
+		return type + "&Z";
+	}
+	
 	//与Parms混用
 	@At("/pathArgs4/*")
 	public String test_base_pathargs4(String key,@Param("..")UserT userT){
