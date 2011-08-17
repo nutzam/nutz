@@ -122,7 +122,7 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 	}
 
 	public boolean containsKey(Object key) {
-		return map.containsKey(key);
+		return map.containsKey(key.toString().toLowerCase());
 	}
 
 	public boolean containsValue(Object value) {
