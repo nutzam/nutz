@@ -177,6 +177,24 @@ public class AnnotationEntityMaker implements EntityMaker {
 			}
 		}
 
+		//给字段排序一下, fix issue #29
+		List<MappingInfo> tmp = new ArrayList<MappingInfo>(infos.size());
+		MappingInfo miId = null;
+		MappingInfo miName = null;
+		for (MappingInfo mi : infos) {
+			if (mi.annId != null)
+				miId = mi;
+			else if (mi.annName != null)
+				miName = mi;
+			else
+				tmp.add(mi);
+		}
+		if (miName != null)
+			tmp.add(0, miName);
+		if (miId != null)
+			tmp.add(0, miId);
+		infos = tmp;
+		
 		/*
 		 * 解析所有映射字段
 		 */
