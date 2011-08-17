@@ -16,7 +16,6 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
-import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -118,11 +117,10 @@ public class NutLoading implements Loading {
 		 * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
 		 */
 		
-		UrlMapping mapping;
 		/*
 		 * 准备 UrlMapping
 		 */
-		mapping = createUrlMapping(config);
+		UrlMapping mapping = createUrlMapping(config);
 		if (log.isInfoEnabled())
 			log.infof("Build URL mapping by %s ...", mapping.getClass().getName());
 
@@ -201,13 +199,8 @@ public class NutLoading implements Loading {
 
 	private UrlMapping createUrlMapping(NutConfig config) throws Exception {
 		UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
-		if (umb != null) {
-			String value = umb.value();
-			if ((!Strings.isBlank(value)) && value.startsWith("ioc:"))
-				return config.getIoc().get(UrlMapping.class, value.substring(4));
-			else
-				return (UrlMapping) Mirror.me(Lang.loadClass(umb.value())).born();
-		}
+		if (umb != null)
+			return Loadings.evalObj(config, umb.value(), umb.args());
 		return new UrlMappingImpl();
 	}
 
@@ -225,7 +218,7 @@ public class NutLoading implements Loading {
 		if (null != sb) {
 			if (log.isInfoEnabled())
 				log.info("Setup application...");
-			Setup setup = Mirror.me(sb.value()).born();
+			Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
 			config.setAttributeIgnoreNull(Setup.class.getName(), setup);
 			setup.init(config);
 		}
@@ -284,8 +277,8 @@ public class NutLoading implements Loading {
 			// 保存 Ioc 对象
 			config.setAttributeIgnoreNull(Ioc.class.getName(), ioc);
 
-		} else if (log.isDebugEnabled())
-			log.debug("!!!Your application without @IocBy supporting");
+		} else if (log.isInfoEnabled())
+			log.info("!!!Your application without @IocBy supporting");
 	}
 
 
@@ -303,10 +296,12 @@ public class NutLoading implements Loading {
 		catch (Exception e) {
 			throw new LoadingException(e);
 		}
-		// If the application has Ioc, depose it
-		Ioc ioc = config.getIoc();
-		if (null != ioc)
-			ioc.depose();
+		finally {
+			// If the application has Ioc, depose it
+			Ioc ioc = config.getIoc();
+			if (null != ioc)
+				ioc.depose();
+		}
 
 		// Done, print info
 		sw.stop();

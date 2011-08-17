@@ -13,6 +13,7 @@ import org.nutz.mvc.Setup;
 @Documented
 public @interface SetupBy {
 
-	Class<? extends Setup> value();
+	Class<? extends Setup> value() default Setup.class;
 
+	String[] args() default {};
 }
