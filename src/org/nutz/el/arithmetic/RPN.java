@@ -1,6 +1,5 @@
 package org.nutz.el.arithmetic;
 
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -20,7 +19,7 @@ public class RPN {
 	//存放context
 	private final ElCache ec = new ElCache();
 	//预编译后的对象
-	private Deque<Object> el;
+	private LinkedList<Object> el;
 	
 	public RPN() {}
 	
@@ -43,14 +42,14 @@ public class RPN {
 	 */
 	public Object calculate(Context context, Queue<Object> rpn) {
 		ec.setContext(context);
-		Deque<Object> operand = OperatorTree(rpn);
+		LinkedList<Object> operand = OperatorTree(rpn);
 		return calculate(operand);
 	}
 	
 	/**
 	 * 计算
 	 */
-	private Object calculate(Deque<Object> el2){
+	private Object calculate(LinkedList<Object> el2){
 		if(el2.peek() instanceof Operator){
 			Operator obj = (Operator) el2.peek();
 			return obj.calculate();
@@ -71,8 +70,8 @@ public class RPN {
 	/**
 	 * 转换成操作树
 	 */
-	private Deque<Object> OperatorTree(Queue<Object> rpn){
-		Deque<Object> operand = new LinkedList<Object>();
+	private LinkedList<Object> OperatorTree(Queue<Object> rpn){
+		LinkedList<Object> operand = new LinkedList<Object>();
 		while(!rpn.isEmpty()){
 			if(rpn.peek() instanceof Operator){
 				Operator opt = (Operator) rpn.poll();

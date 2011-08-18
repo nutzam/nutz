@@ -1,7 +1,6 @@
 package org.nutz.el.arithmetic;
 
 import java.io.IOException;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -21,7 +20,7 @@ import org.nutz.el.parse.Converter;
  *
  */
 public class ShuntingYard {
-	private Deque<Operator> opts;
+	private LinkedList<Operator> opts;
 	private Queue<Object> rpn;
 	
 	/**

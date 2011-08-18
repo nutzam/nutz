@@ -2,7 +2,6 @@ package org.nutz.el.parse;
 
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -32,7 +31,7 @@ public class Converter {
 	//表达式项
 	private Queue<Object> itemCache;
 	//括号栈
-	private Deque<BracketType> bracket = new LinkedList<BracketType>();
+	private LinkedList<BracketType> bracket = new LinkedList<BracketType>();
 	
 	//上一个数据
 	private Object prev = null;
