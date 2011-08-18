@@ -1,6 +1,7 @@
 package org.nutz.http;
 
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -94,7 +95,13 @@ public class Request {
 				sb.append(key).append('=').append(params.get(key)).append('&');
 			}
 			sb.setCharAt(sb.length() - 1, '\n');
-			byte[] bytes = sb.toString().getBytes(Encoding.CHARSET_UTF8);
+			byte[] bytes = null;
+			try {
+				bytes = sb.toString().getBytes(Encoding.UTF8);
+			}
+			catch (UnsupportedEncodingException e) {
+				//不可能
+			}
 			return new ByteInputStream(bytes);
 		}
 		return null == data ? null : new ByteInputStream(data);
@@ -109,7 +116,12 @@ public class Request {
 	}
 
 	public void setData(String data) {
-		this.data = data.getBytes(Encoding.CHARSET_UTF8);
+		try {
+			this.data = data.getBytes(Encoding.UTF8);
+		}
+		catch (UnsupportedEncodingException e) {
+			// 不可能
+		}
 	}
 
 	private Request setParams(Map<String, Object> params) {

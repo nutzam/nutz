@@ -37,7 +37,7 @@ public class SocketContext {
 	public void write(String str) {
 		if (!atom.socket.isClosed())
 			try {
-				atom.ops.write(str.getBytes(Encoding.CHARSET_UTF8));
+				atom.ops.write(str.getBytes(Encoding.UTF8));
 			}
 			catch (IOException e) {
 				throw Lang.wrapThrow(e);

@@ -37,7 +37,7 @@ public abstract class Nums {
 
 	/**
 	 * 整合两个整数数组为一个数组
-	 * 
+	 * <b>这个方法在JDK5不可用!!<b/>
 	 * @param ary
 	 *            整数数组
 	 * @param is
