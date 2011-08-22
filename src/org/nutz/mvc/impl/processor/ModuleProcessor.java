@@ -9,6 +9,8 @@ import org.nutz.ioc.impl.ComboContext;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
@@ -22,6 +24,8 @@ import org.nutz.mvc.ioc.SessionIocContext;
  * 
  */
 public class ModuleProcessor extends AbstractProcessor {
+	
+	private static final Log log = Logs.get();
 
 	private String injectName;
 
@@ -73,6 +77,8 @@ public class ModuleProcessor extends AbstractProcessor {
 
 			}
 			ac.setMethod(method);
+			if (log.isDebugEnabled()) //打印实际执行的Method信息
+				log.debugf("Handle URL[%s] by Method[%s]",ac.getPath(),method);
 			doNext(ac);
 		}
 		finally {
