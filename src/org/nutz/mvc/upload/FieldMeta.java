@@ -42,7 +42,7 @@ public class FieldMeta {
 	}
 
 	public String getFileLocalName() {
-		return (new File(getFileLocalPath())).getName();
+		return (new File(getFileLocalPath().replace('\\', '/'))).getName();
 	}
 
 	public String getFileExtension() {

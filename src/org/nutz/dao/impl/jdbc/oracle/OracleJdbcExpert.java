@@ -16,8 +16,6 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -32,8 +30,6 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 									+ " BEGIN "
 									+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
 									+ " END ${T}_${F}_ST;";
-
-	private static final Log log = Logs.get();
 
 	public OracleJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
