@@ -27,7 +27,7 @@ public abstract class Mvcs {
 
 	public static final String DEFAULT_MSGS = "$default";
 	public static final String MSG = "msg";
-	public static final String LOCALE_NAME = "nutz.mvc.locale";
+	public static final String LOCALE_NAME = "nutz_mvc_locale";
 
 	/**
 	 * 从 Request 里获取一个 Ioc 容器
