@@ -20,5 +20,7 @@ public @interface JsonField {
 	 * @return 是否忽略这个字段
 	 */
 	boolean ignore() default false;
+	
+	String by() default "";
 
 }
