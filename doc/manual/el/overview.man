@@ -168,7 +168,7 @@
     	{{{<JAVA>
     	Context context = new Context();
     	Pet pet = new Pet();
-        
+        context.set("pet",pet);
         El.eval(context, "pet.setName('XiaoBai')");
     
     	System.out.println(El.eval(context,"pet.getName()"));
