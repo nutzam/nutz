@@ -23,6 +23,7 @@ import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
+import org.nutz.json.meta.TestBy;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -687,5 +688,19 @@ public class JsonTest {
 		String j = "{'abc':'http:\\/\\/wendal.net'}";
 		Map<String, Object> map = Json.fromJson(Map.class, j);
 		assertEquals("http://wendal.net", map.get("abc"));
+	}
+	
+	@Test
+	public void test_by() {
+		TestBy b = new TestBy();
+		b.setId(1000);
+		Map<String, Object> map = Json.fromJson(Map.class,Json.toJson(b));
+		assertEquals(1000, map.get("id"));
+		assertEquals("I am OK", map.get("obj"));
+		assertEquals("Wendal", map.get("obj2"));
+	}
+	
+	public static String justOK(Object obj){
+		return "I am OK";
 	}
 }

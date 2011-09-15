@@ -43,7 +43,7 @@ public class MultiLineProperties implements Map<String, String> {
 		while (null != (s = tr.readLine())) {
 			if (Strings.isBlank(s))
 				continue;
-			if (s.length() > 0 && s.charAt(0) == '#')
+			if (s.length() > 0 && s.trim().charAt(0) == '#') //只要第一个非空白字符是#,就认为是注释
 				continue;
 			int pos;
 			char c = '0';

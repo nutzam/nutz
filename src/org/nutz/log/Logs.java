@@ -4,7 +4,6 @@ import org.nutz.plugin.SimplePluginManager;
 
 /**
  * 获取 Log 的静态工厂方法
- * 
  * @author Young(sunonfire@gmail.com)
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
@@ -56,13 +55,18 @@ public final class Logs {
 	 * <b>加载本类时,该方法已经在静态构造函数中调用,用户无需主动调用.</b>
 	 * <p/>
 	 * <b>除非迫不得已,请不要调用本方法<b/>
+	 * <p/>
 	 */
 	public static void init() {
 		try {
-			adapter = new SimplePluginManager<LogAdapter>(	"org.nutz.log.impl.Log4jLogAdapter",
-															"org.nutz.log.impl.SystemLogAdapter").get();
+			String packageName = Logs.class.getPackage().getName() + ".impl.";
+			adapter = new SimplePluginManager<LogAdapter>(	packageName + "Log4jLogAdapter",
+															packageName + "SystemLogAdapter").get();
 		}
 		catch (Throwable e) {
+			//这是不应该发生的,SystemLogAdapter应该永远返回true
+			//唯一的可能性是所请求的org.nutz.log.impl.SystemLogAdapter根本不存在
+			//例如改了package
 			e.printStackTrace();
 		}
 	}

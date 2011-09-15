@@ -51,7 +51,7 @@ public class SocketJsonAtom extends SocketAtom {
 
 		// 解析成 JSON
 		try {
-			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, sb);
+			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, br);
 
 			SocketAction action = saTable.get(map.get("cmd").toString());
 			if (null != action) {
@@ -76,8 +76,8 @@ public class SocketJsonAtom extends SocketAtom {
 			}
 		}
 		catch (JsonException e) {
-			if (log.isWarnEnabled())
-				log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
+//			if (log.isWarnEnabled())
+//				log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
 		}
 	}
 }

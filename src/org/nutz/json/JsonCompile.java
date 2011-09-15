@@ -27,6 +27,8 @@ public class JsonCompile {
 	private boolean skipOneChar = false;
 	
 	public Object parse(Reader reader) {
+		if (reader == null)
+			return null;
 		this.reader = reader;
 		try {
 			

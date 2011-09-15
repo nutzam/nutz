@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import org.nutz.json.JsonField;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
 
@@ -26,8 +27,14 @@ public class JsonEntityField {
 
 		JsonEntityField jef = new JsonEntityField();
 		jef.injecting = mirror.getInjecting(fld.getName());
-		jef.ejecting = mirror.getEjecting(fld.getName());
 		jef.genericType = fld.getGenericType();
+		
+		//看看有没有指定获取方式
+		if (null != jf && !Strings.isBlank(jf.by()))
+			jef.ejecting = new EjectBySimpleEL(jf.by());
+		else
+			jef.ejecting = mirror.getEjecting(fld.getName());
+			
 
 		if (null != jf && !Strings.isBlank(jf.value()))
 			jef.name = jf.value();
