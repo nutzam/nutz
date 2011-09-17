@@ -175,7 +175,6 @@ public class NutDaoExecutor implements DaoExecutor {
 					adaptors[i].set(pstat, paramMatrix[0][i], i + 1);
 				}
 				pstat.execute();
-
 				st.getContext().setUpdateCount(pstat.getUpdateCount());
 				pstat.close();
 				statIsClosed = true;
@@ -227,6 +226,7 @@ public class NutDaoExecutor implements DaoExecutor {
 		try {
 			stat = conn.createStatement();
 			stat.execute(sql);
+			st.getContext().setUpdateCount(stat.getUpdateCount());
 			stat.close();
 			statIsClosed = true;
 		}

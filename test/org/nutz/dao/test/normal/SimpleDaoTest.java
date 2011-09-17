@@ -14,6 +14,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.Abc;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
@@ -150,5 +151,28 @@ public class SimpleDaoTest extends DaoCase {
 		dao.insert(p);
 		p.setSex("东方不败");
 		dao.update(p);
+	}
+	
+	@Test
+	public void test_order_by() {
+		dao.create(Abc.class, true);
+		Abc a = new Abc();
+		a.setName("ccc");
+		dao.insert(a);
+		a.setName("abc");
+		dao.insert(a);
+		dao.query(Abc.class, Cnd.where("id", ">", "-1").asc("name"), null);
+	}
+	
+	@Test
+	public void test_clear() {
+		dao.create(Pet.class, true);
+		dao.insert(Pet.create("Wendal"));
+		dao.insert(Pet.create("Wendal2"));
+		dao.insert(Pet.create("Wendal3"));
+		dao.insert(Pet.create("Wendal4"));
+		dao.insert(Pet.create("Wendal5"));
+		assertEquals(5, dao.count(Pet.class));
+		assertEquals(5, dao.clear(Pet.class));
 	}
 }
