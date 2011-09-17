@@ -34,6 +34,19 @@ import org.nutz.lang.util.NutType;
 public class JsonTest {
 
 	@Test
+	public void test_toJson_with_super_field() {
+		Xyz x = new Xyz();
+		x.id = 100;
+		x.name = "haha";
+		x.setXyz("!!!");
+		String str = Json.toJson(x);
+		Xyz x2 = Json.fromJson(Xyz.class, str);
+		assertEquals(x.getXyz(), x2.getXyz());
+		assertEquals(x.id, x2.id);
+		assertEquals(x.name, x2.name);
+	}
+
+	@Test
 	public void test_map_class_item() {
 		String path = "org.nutz.json.meta";
 		String s = String.format("{map:{a:'%s.JA', b:'%s.JB'}}", path, path);

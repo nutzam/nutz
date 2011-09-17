@@ -26,7 +26,6 @@ public class EjectBySimpleEL implements Ejecting {
 		this.by = by;
 	}
 
-	@Override
 	public Object eject(Object obj) {
 		try {
 			if (method != null)
