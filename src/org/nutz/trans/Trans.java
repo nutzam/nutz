@@ -131,27 +131,4 @@ public abstract class Trans {
 			depose();
 		}
 	}
-	
-	/**
-	 * exec的带返回值的版本,仅返回最后一个Atom2接口的返回值
-	 */
-	public static Object exec(final Atom2... atom2s) {
-		return exec(Connection.TRANSACTION_READ_COMMITTED, atom2s);
-	}
-	
-	/**
-	 * exec的带返回值的版本,仅返回最后一个Atom2对象的返回值
-	 */
-	public static Object exec(final int level, final Atom2... atom2s) {
-		if (atom2s == null || atom2s.length == 0)
-			return null;
-		final Object[] result = new Object[1];
-		exec(level,new Atom() {
-			public void run() {
-				for (int i = 0; i < result.length; i++)
-					result[0] = atom2s[i].run();
-			}
-		});
-		return result[0];
-	}
 }
