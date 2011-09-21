@@ -83,5 +83,6 @@ public @interface At {
 	String key() default "";
 
 	String[] value() default {};
-
+	
+	String[] levels() default {};
 }

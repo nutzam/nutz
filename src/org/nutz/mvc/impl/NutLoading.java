@@ -3,6 +3,8 @@ package org.nutz.mvc.impl;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -145,10 +147,15 @@ public class NutLoading implements Loading {
 		//TODO 为什么用Set呢? 用List不是更快吗?
 		Set<Class<?>> modules = Loadings.scanModules(mainModule);
 
+		//读取级别信息
+		LevelConf levelConf = createLevelConf(config);
 		/*
 		 * 分析所有的子模块
 		 */
 		for (Class<?> module : modules) {
+			if(isIgnore(levelConf, module.getAnnotation(At.class))){
+                continue;
+            }
 			ActionInfo moduleInfo = Loadings.createInfo(module).mergeWith(mainInfo);
 			for (Method method : module.getMethods()) {
 				/*
@@ -157,6 +164,9 @@ public class NutLoading implements Loading {
 				if (!Modifier.isPublic(method.getModifiers())
 					|| !method.isAnnotationPresent(At.class))
 					continue;
+				if(isIgnore(levelConf, method.getAnnotation(At.class))){
+				    continue;
+				}
 				// 增加到映射中
 				ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
 				info.setViewMakers(makers);
@@ -172,7 +182,82 @@ public class NutLoading implements Loading {
 		}
 		return mapping;
 	}
-
+	/**
+	 * 读取级别信息
+	 * @param config
+	 * @return
+	 */
+	private static LevelConf createLevelConf(NutConfig config){
+	    LevelConf lc = new LevelConf();
+	    Map<?,?> levelConf = config.getAttributeAs(Map.class, "level");
+        lc.levels = Arrays.asList((String[]) levelConf.get("leves"));
+        lc.use = Arrays.asList((String[]) levelConf.get("use"));
+        lc.type = levelConf.get("type").toString();
+        return lc;
+	}
+	/**
+	 * 级别配置类
+	 */
+	static class LevelConf{
+	    List<String> levels;
+	    List<String> use;
+	    String type;
+	}
+	
+	/**
+	 * 验证级别
+	 */
+	private static boolean isIgnore(LevelConf lconf, At at){
+        if(null != at.levels() && at.levels().length > 0){
+            //权重模式
+            if(lconf.type.equals("weight")){
+                weightLevel(lconf, at);
+            }
+            //固定级别模式
+            if(lconf.type.equals("fix")){
+                return fixLevel(lconf, at);
+            }
+                
+        }
+        return false;
+	}
+	/**
+	 * 固定级别模式
+	 * @param lconf
+	 * @param at
+	 * @return
+	 */
+	private static boolean fixLevel(LevelConf lconf, At at){
+	    for(String level : at.levels()){
+            if(lconf.use.contains(level)){
+                return true;
+            }
+        }
+        return false;
+	}
+	/**
+	 * 权重模式
+	 * @param lconf
+	 * @param at
+	 * @return
+	 */
+	private static boolean weightLevel(LevelConf lconf, At at){
+	    int mainIndex = -1;
+        for(int i = 0; i < lconf.levels.size(); i++){
+            if(lconf.use.contains(lconf.levels.get(i))){
+                mainIndex = i;
+                break;
+            }
+        }
+        for(String level : at.levels()){
+            int index = lconf.levels.indexOf(level);
+            if(index > mainIndex){
+                return true;
+            }
+        }
+        return false;
+	}
+	
 	private static void createContext(NutConfig config) {
 		// 构建一个上下文对象，方便子类获取更多的环境信息
 		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
