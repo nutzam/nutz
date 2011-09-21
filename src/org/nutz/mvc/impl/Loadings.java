@@ -40,8 +40,6 @@ import org.nutz.mvc.annotation.PUT;
 import org.nutz.mvc.annotation.PathMap;
 import org.nutz.resource.Scans;
 
-import com.sun.org.apache.bcel.internal.verifier.exc.LoadingException;
-
 public abstract class Loadings {
 
 	private static final Log log = Logs.get();
@@ -145,17 +143,11 @@ public abstract class Loadings {
 
 	public static void evalAt(ActionInfo ai, At at, String def) {
 		if (null != at) {
-		    String[] paths;
-		    if (null == at.value() || at.value().length == 0) {
-		        paths = Lang.array("/" + def.toLowerCase());
-		    } else {
-		        paths = at.value();
-		    }
-		    
-		    if(null != at.levels() && at.levels().length > 0){
-		        throw new LoadingException("ignore " + paths);
-		    }
-		    ai.setPaths(paths);
+			if (null == at.value() || at.value().length == 0) {
+				ai.setPaths(Lang.array("/" + def.toLowerCase()));
+			} else {
+				ai.setPaths(at.value());
+			}
 			if (!Strings.isBlank(at.key()))
 				ai.setPathKey(at.key());
 		}
