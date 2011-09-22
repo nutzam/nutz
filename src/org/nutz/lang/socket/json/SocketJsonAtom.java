@@ -38,6 +38,9 @@ public class SocketJsonAtom extends SocketAtom {
 		line = br.readLine();
 		// 在这个 socket 中逐行读取 ...
 		while (null != line) {
+			if (lock.isStop())
+				return;
+			
 			sb.append(line).append('\n');
 			// 前面有空行
 			if (Strings.isBlank(line))
