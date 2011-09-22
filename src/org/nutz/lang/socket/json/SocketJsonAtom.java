@@ -79,8 +79,8 @@ public class SocketJsonAtom extends SocketAtom {
 			}
 		}
 		catch (JsonException e) {
-//			if (log.isWarnEnabled())
-//				log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
+			if (log.isWarnEnabled())
+				log.warnf("Json error > %s : \n<%s>", e.getMessage(), sb);
 		}
 	}
 }

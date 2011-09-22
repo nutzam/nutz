@@ -245,7 +245,7 @@ public abstract class Sockets {
 					}
 
 					if (log.isDebugEnabled())
-						log.debugf(	"check main accept [%s], lock [%s]",
+						log.debugf(	"check main accept [%s], lock stop [%s]",
 									main.isAccepted(),
 									lock.isStop());
 

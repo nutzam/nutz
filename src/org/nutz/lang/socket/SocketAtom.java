@@ -62,6 +62,8 @@ public class SocketAtom implements Atom {
 		catch (SocketException e) {}
 		// 要关闭 socket 监听 ...
 		catch (CloseSocketException e) {
+			if (log.isInfoEnabled())
+				log.info("Catch CloseSocketException , set lock stop");
 			lock.setStop();
 		}
 		catch (IOException e) {
