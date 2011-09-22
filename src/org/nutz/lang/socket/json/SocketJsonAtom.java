@@ -54,8 +54,12 @@ public class SocketJsonAtom extends SocketAtom {
 
 		// 解析成 JSON
 		try {
-			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, br);
-
+			LinkedHashMap<String, Object> map = Json.fromJson(LinkedHashMap.class, sb.toString());
+			if (map == null) {
+				if (log.isWarnEnabled())
+					log.warn("Null data ???!!");
+				return;
+			}
 			SocketAction action = saTable.get(map.get("cmd").toString());
 			if (null != action) {
 				if (log.isDebugEnabled())
