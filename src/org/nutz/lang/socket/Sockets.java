@@ -228,7 +228,7 @@ public abstract class Sockets {
 					log.debug("wait for accept ...");
 
 				// 如果没有接受套接字，那么自旋判断是不是有一个连接提示要关闭整个监听
-				while ((!main.isAccepted()) && (!main.isStop())) {
+				while ((!main.isAccepted())) {
 					// System.out.print(".");
 					// if(++i%80==0)
 					// System.out.println();

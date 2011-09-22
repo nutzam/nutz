@@ -51,8 +51,9 @@ public class SocketMain implements Atom {
 			socket = server.accept();
 		}
 		// 网络通信问题，整个监听
+		// TODO 值得商讨
 		catch (IOException e) {
-			lock.setStop(true);
+			//lock.setStop();
 			throw Lang.wrapThrow(e);
 		}
 		// 设置标志位，让主程序知道自己已经开始工作了
