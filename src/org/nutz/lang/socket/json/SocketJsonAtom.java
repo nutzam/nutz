@@ -58,12 +58,18 @@ public class SocketJsonAtom extends SocketAtom {
 
 			SocketAction action = saTable.get(map.get("cmd").toString());
 			if (null != action) {
+				if (log.isDebugEnabled())
+					log.debugf("handle request by "+ action);
 				SocketContext context = new SocketContext(this);
 				if (action instanceof JsonAction)
 					((JsonAction) action).run(map, context);
 				else
 					action.run(context);
+				if (log.isDebugEnabled())
+					log.debugf("finish request by "+ action);
 			} else {
+				if (log.isWarnEnabled())
+					log.warn("Unknown CMD="+map.get("cmd"));
 				Writer writer = Streams.utf8w(ops);
 				Map<String, Object> x = new HashMap<String, Object>();
 				x.put("ok", false);
