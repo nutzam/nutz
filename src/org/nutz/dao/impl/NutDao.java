@@ -655,9 +655,15 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	EntityOperator _optBy(Object obj) {
+		// 阻止空对象
 		if (null == obj)
 			return null;
-		EntityOperator re = _opt(holder.getEntityBy(obj));
+		// 对象是否有内容，这里会考虑集合与数组
+		Entity<?> en = holder.getEntityBy(obj);
+		if (null == en)
+			return null;
+		// 创建操作对象
+		EntityOperator re = _opt(en);
 		re.myObj = obj.getClass().isArray() ? Lang.array2list((Object[]) obj) : obj;
 		return re;
 	}
