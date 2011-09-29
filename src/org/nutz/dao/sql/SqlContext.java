@@ -44,6 +44,18 @@ public class SqlContext {
 		return null == attrs ? null : attrs.get(name);
 	}
 
+	public <T> T attr(Class<T> type) {
+		return attr(type, type.getName());
+	}
+
+	@SuppressWarnings("unchecked")
+	public <T> T attr(Class<T> classOfT, String name) {
+		Object obj = attr(name);
+		if (null == obj)
+			return null;
+		return (T) obj;
+	}
+
 	public boolean hasAttr(String name) {
 		return null == attrs ? false : attrs.containsKey(name);
 	}

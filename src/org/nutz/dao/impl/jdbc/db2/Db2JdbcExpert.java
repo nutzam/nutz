@@ -60,9 +60,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 		// 创建联合主键
 		if (en.getPks().size() > 1) {
 			sb = new StringBuilder();
-			sb.append("ALTER TABLE ")
-				.append(en.getTableName())
-				.append(" ADD CONSTRAINT PK");
+			sb.append("ALTER TABLE ").append(en.getTableName()).append(" ADD CONSTRAINT PK");
 			for (MappingField mf : en.getPks()) {
 				sb.append("_").append(mf.getColumnName());
 			}
@@ -108,7 +106,7 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
 		// 需要进行分页
-		if (null != pager) {
+		if (null != pager && pager.getPageNumber() > 0) {
 			// 之前插入
 			pojo.insertFirst(Pojos.Items.wrap("SELECT * FROM ("
 												+ "SELECT ROW_NUMBER() OVER() AS ROWNUM, "

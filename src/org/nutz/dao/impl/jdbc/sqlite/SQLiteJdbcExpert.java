@@ -15,9 +15,9 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
  *
  * @author wendal
  */
-public class SQLieJdbcExpert extends MysqlJdbcExpert {
+public class SQLiteJdbcExpert extends MysqlJdbcExpert {
 
-	public SQLieJdbcExpert(JdbcExpertConfigFile conf) {
+	public SQLiteJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
 

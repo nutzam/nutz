@@ -124,7 +124,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
 		// 需要进行分页
-		if (pager != null) {
+		if (null != pager && pager.getPageNumber() > 0) {
 			pojo.insertFirst(Pojos.Items.wrap("SELECT * FROM (SELECT T.*, ROWNUM RN FROM ("));
 			pojo.append(Pojos.Items.wrapf(	") T WHERE ROWNUM <= %d) WHERE RN > %d",
 											pager.getOffset() + pager.getPageSize(),
