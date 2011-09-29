@@ -1248,6 +1248,13 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 继续 each 循环，如果再递归，则停止递归
+	 */
+	public static void Continue() throws ExitLoop {
+		throw new ContinueLoop();
+	}
+
+	/**
 	 * 用回调的方式，遍历一个对象，可以支持遍历
 	 * <ul>
 	 * <li>数组
@@ -1273,6 +1280,7 @@ public abstract class Lang {
 					try {
 						callback.invoke(i, (T) Array.get(obj, i), len);
 					}
+					catch (ContinueLoop e) {}
 					catch (ExitLoop e) {
 						break;
 					}
@@ -1283,6 +1291,7 @@ public abstract class Lang {
 					try {
 						callback.invoke(i++, it.next(), len);
 					}
+					catch (ContinueLoop e) {}
 					catch (ExitLoop e) {
 						break;
 					}
@@ -1295,6 +1304,7 @@ public abstract class Lang {
 						try {
 							callback.invoke(i++, (T) v, len);
 						}
+						catch (ContinueLoop e) {}
 						catch (ExitLoop e) {
 							break;
 						}
@@ -1304,6 +1314,7 @@ public abstract class Lang {
 						try {
 							callback.invoke(i++, (T) ((Entry) v).getValue(), len);
 						}
+						catch (ContinueLoop e) {}
 						catch (ExitLoop e) {
 							break;
 						}
@@ -1315,6 +1326,7 @@ public abstract class Lang {
 					try {
 						callback.invoke(i++, (T) it.next(), -1);
 					}
+					catch (ContinueLoop e) {}
 					catch (ExitLoop e) {
 						break;
 					}
@@ -1323,6 +1335,7 @@ public abstract class Lang {
 				try {
 					callback.invoke(0, (T) obj, 1);
 				}
+				catch (ContinueLoop e) {}
 				catch (ExitLoop e) {}
 		}
 		catch (LoopException e) {
