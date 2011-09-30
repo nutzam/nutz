@@ -28,6 +28,8 @@ import org.nutz.dao.impl.link.DoInsertLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateRelationLinkVisitor;
+import org.nutz.dao.impl.sql.pojo.PojoEachEntityCallback;
+import org.nutz.dao.impl.sql.pojo.PojoEachRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchIntCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchRecordCallback;
@@ -54,9 +56,13 @@ public class NutDao extends DaoSupport implements Dao {
 
 	private PojoCallback _pojo_fetchEntity;
 
+	private PojoCallback _pojo_eachEntity;
+
 	private PojoCallback _pojo_queryRecord;
 
 	private PojoCallback _pojo_fetchRecord;
+
+	private PojoCallback _pojo_eachRecord;
 
 	private PojoCallback _pojo_fetchInt;
 
@@ -67,9 +73,11 @@ public class NutDao extends DaoSupport implements Dao {
 		// 设置默认的回调
 		_pojo_queryEntity = new PojoQueryEntityCallback();
 		_pojo_fetchEntity = new PojoFetchEntityCallback();
+		_pojo_eachEntity = new PojoEachEntityCallback();
 		_pojo_fetchInt = new PojoFetchIntCallback();
 		_pojo_queryRecord = new PojoQueryRecordCallback();
 		_pojo_fetchRecord = new PojoFetchRecordCallback();
+		_pojo_eachRecord = new PojoEachRecordCallback();
 	}
 
 	public NutDao(DataSource dataSource) {
@@ -334,6 +342,19 @@ public class NutDao extends DaoSupport implements Dao {
 		return pojo.getList(classOfT);
 	}
 
+	public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback) {
+		Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
+								.append(Pojos.Items.cnd(cnd))
+								.addParamsBy("*")
+								.setPager(pager)
+								.setAfter(_pojo_queryEntity);
+		expert.formatQuery(pojo);
+		pojo.setAfter(_pojo_eachEntity);
+		pojo.getContext().attr(Each.class.getName(), callback);
+		_exec(pojo);
+		return pojo.getInt();
+	}
+
 	public List<Record> query(String tableName, Condition cnd, Pager pager) {
 		Pojo pojo = pojoMaker.makeQuery(tableName)
 								.addParamsBy("*")
@@ -343,6 +364,18 @@ public class NutDao extends DaoSupport implements Dao {
 		pojo.setAfter(_pojo_queryRecord);
 		_exec(pojo);
 		return pojo.getList(Record.class);
+	}
+
+	public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback) {
+		Pojo pojo = pojoMaker.makeQuery(tableName)
+								.addParamsBy("*")
+								.setPager(pager)
+								.append(Pojos.Items.cnd(cnd));
+		expert.formatQuery(pojo);
+		pojo.setAfter(_pojo_eachRecord);
+		pojo.getContext().attr(Each.class.getName(), callback);
+		_exec(pojo);
+		return pojo.getInt();
 	}
 
 	public <T> T fetch(Class<T> classOfT, long id) {

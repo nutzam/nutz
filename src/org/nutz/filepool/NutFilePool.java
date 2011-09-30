@@ -134,4 +134,43 @@ public class NutFilePool implements FilePool {
 		return f;
 	}
 
+	public File createDir() {
+		if (size > 0 && cursor >= size)
+			cursor = -1;
+		long id = ++cursor;
+		if (size > 0 && id >= size)
+			Lang.makeThrow("Id (%d) is out of range (%d)", id, size);
+
+		return Files.createDirIfNoExists(Pools.getFilePathById(home, id, null));
+	}
+
+	public File removeDir(long fId) {
+		File f = Pools.getFileById(home, fId, null);
+		if (f.isDirectory()) {
+			Files.deleteDir(f);
+		} else {
+			Files.deleteFile(f);
+		}
+		return f;
+	}
+
+	public boolean hasDir(long fId) {
+		File f = Pools.getFileById(home, fId, null);
+		return f.exists();
+	}
+
+	public File getDir(long fId) {
+		File f = Pools.getFileById(home, fId, null);
+		if (!f.exists())
+			return null;
+		return f;
+	}
+
+	public File returnDir(long fId) {
+		File f = Pools.getFileById(home, fId, null);
+		if (!f.exists())
+			Files.makeDir(f);
+		return f;
+	}
+
 }

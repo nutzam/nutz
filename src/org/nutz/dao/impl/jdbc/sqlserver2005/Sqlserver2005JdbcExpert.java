@@ -112,21 +112,21 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 
 	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
-		if (pager == null)
-			return;
-		// -----------------------------------------------------
-		// TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
-		PItem pi = pojo.getItem(0);
-		StringBuilder sb = new StringBuilder();
-		pi.joinSql(pojo.getEntity(), sb);
-		String str = sb.toString();
-		if (str.trim().toLowerCase().startsWith("select")) {
-			pojo.setItem(0, Pojos.Items.wrap(str.substring(6)));
-		} else
-			return;// 以免出错.
-		pojo.insertFirst(Pojos.Items.wrapf(	"select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
-											pager.getOffset() + pager.getPageSize()));
-		pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d", pager.getOffset()));
+		if (null != pager && pager.getPageNumber() > 0) {
+			// -----------------------------------------------------
+			// TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
+			PItem pi = pojo.getItem(0);
+			StringBuilder sb = new StringBuilder();
+			pi.joinSql(pojo.getEntity(), sb);
+			String str = sb.toString();
+			if (str.trim().toLowerCase().startsWith("select")) {
+				pojo.setItem(0, Pojos.Items.wrap(str.substring(6)));
+			} else
+				return;// 以免出错.
+			pojo.insertFirst(Pojos.Items.wrapf(	"select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
+												pager.getOffset() + pager.getPageSize()));
+			pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d", pager.getOffset()));
+		}
 	}
 
 	@Override

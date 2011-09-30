@@ -7,6 +7,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
+import org.nutz.lang.Each;
 
 /**
  * Nutz.Dao 核心接口。 封装了所有的数据库操作
@@ -360,6 +361,38 @@ public interface Dao {
 	 * @see org.nutz.dao.Condition
 	 */
 	List<Record> query(String tableName, Condition cnd, Pager pager);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param pager
+	 *            翻页信息。如果为 null，则一次全部返回
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	<T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param pager
+	 *            翻页信息。如果为 null，则一次全部返回
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	int each(String tableName, Condition cnd, Pager pager, Each<Record> callback);
 
 	/**
 	 * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。

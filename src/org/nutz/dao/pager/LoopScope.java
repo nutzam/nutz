@@ -1,6 +1,5 @@
 package org.nutz.dao.pager;
 
-
 class LoopScope {
 
 	static LoopScope eval(Pager pager, int len) {
@@ -11,7 +10,13 @@ class LoopScope {
 		return ls;
 	}
 
+	/**
+	 * 起始，一般由 0 开始
+	 */
 	public int start; // inclusive
+	/**
+	 * 结束，不包括
+	 */
 	public int max; // exclusive
 
 	@Override

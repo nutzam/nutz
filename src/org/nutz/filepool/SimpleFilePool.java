@@ -96,6 +96,41 @@ public class SimpleFilePool implements FilePool {
 		return re;
 	}
 
+	public boolean hasDir(long fId) {
+		return _F(fId, null).exists();
+	}
+
+	public File removeDir(long fId) {
+		File f = _F(fId, null);
+		Files.deleteDir(f);
+		return f;
+	}
+
+	public File createDir() {
+		File f = _F(current++, null);
+		if (current > max)
+			current = 0;
+		if (f.exists())
+			Files.clearDir(f);
+		else
+			Files.makeDir(f);
+		return f;
+	}
+
+	public File getDir(long fId) {
+		File re = _F(fId, null);
+		if (re.exists())
+			return re;
+		return null;
+	}
+
+	public File returnDir(long fId) {
+		File re = _F(fId, null);
+		if (!re.exists())
+			Files.makeDir(re);
+		return re;
+	}
+
 	public void clear() {
 		Files.clearDir(home);
 	}

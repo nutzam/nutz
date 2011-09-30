@@ -7,6 +7,7 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.pager.Pager;
+import org.nutz.lang.Each;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -20,7 +21,7 @@ public abstract class EntityService<T> extends Service {
 	@SuppressWarnings("unchecked")
 	public EntityService() {
 		try {
-			Class<T> entryClass = (Class<T>) Mirror.getTypeParam(getClass(),0);
+			Class<T> entryClass = (Class<T>) Mirror.getTypeParam(getClass(), 0);
 			mirror = Mirror.me(entryClass);
 			if (log.isDebugEnabled())
 				log.debugf("Get TypeParams for self : %s", entryClass.getName());
@@ -58,28 +59,32 @@ public abstract class EntityService<T> extends Service {
 		return mirror.getType();
 	}
 
-	public int clear(Condition condition) {
-		return dao().clear(getEntityClass(), condition);
+	public int clear(Condition cnd) {
+		return dao().clear(getEntityClass(), cnd);
 	}
 
 	public int clear() {
 		return dao().clear(getEntityClass(), null);
 	}
 
-	public List<T> query(Condition condition, Pager pager) {
-		return (List<T>) dao().query(getEntityClass(), condition, pager);
+	public List<T> query(Condition cnd, Pager pager) {
+		return (List<T>) dao().query(getEntityClass(), cnd, pager);
 	}
 
-	public int count(Condition condition) {
-		return dao().count(getEntityClass(), condition);
+	public int each(Condition cnd, Pager pager, Each<T> callback) {
+		return dao().each(getEntityClass(), cnd, pager, callback);
+	}
+
+	public int count(Condition cnd) {
+		return dao().count(getEntityClass(), cnd);
 	}
 
 	public int count() {
 		return dao().count(getEntityClass());
 	}
 
-	public T fetch(Condition condition) {
-		return dao().fetch(getEntityClass(), condition);
+	public T fetch(Condition cnd) {
+		return dao().fetch(getEntityClass(), cnd);
 	}
 
 	/**
@@ -104,12 +109,12 @@ public abstract class EntityService<T> extends Service {
 		return null != fetchx(pks);
 	}
 
-	public void update(Chain chain, Condition condition) {
-		dao().update(getEntityClass(), chain, condition);
+	public void update(Chain chain, Condition cnd) {
+		dao().update(getEntityClass(), chain, cnd);
 	}
 
-	public void updateRelation(String regex, Chain chain, Condition condition) {
-		dao().updateRelation(getEntityClass(), regex, chain, condition);
+	public void updateRelation(String regex, Chain chain, Condition cnd) {
+		dao().updateRelation(getEntityClass(), regex, chain, cnd);
 	}
 
 	public int deletex(Object... pks) {

@@ -32,7 +32,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 	public void formatQuery(Pojo pojo) {
 		Pager pager = pojo.getContext().getPager();
 		// 需要进行分页
-		if (pager != null)
+		if (null != pager && pager.getPageNumber()>0)
 			pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
 	}
 

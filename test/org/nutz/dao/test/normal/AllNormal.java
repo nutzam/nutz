@@ -7,6 +7,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({	FieldFilterTest.class,
 						SimpleDaoTest.class,
 						QueryTest.class,
+						EachTest.class,
 						UpdateTest.class,
 						BoneCP_Test.class,
 						SupportedFieldTypeTest.class,
