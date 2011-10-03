@@ -95,10 +95,12 @@ public abstract class Streams {
 	 *            输出流
 	 * @param ins
 	 *            输入流
+	 * 
+	 * @return 写入的字节数
 	 * @throws IOException
 	 */
-	public static void write(OutputStream ops, InputStream ins) throws IOException {
-		write(ops, ins, BUF_SIZE);
+	public static int write(OutputStream ops, InputStream ins) throws IOException {
+		return write(ops, ins, BUF_SIZE);
 	}
 
 	/**
@@ -111,19 +113,24 @@ public abstract class Streams {
 	 * @param ins
 	 *            输入流
 	 * @param bufferSize
-	 * 			     缓冲块大小
+	 *            缓冲块大小
+	 * 
+	 * @return 写入的字节数
 	 * 
 	 * @throws IOException
 	 */
-	public static void write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
+	public static int write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
 		if (null == ops || null == ins)
-			return;
+			return 0;
 
 		byte[] buf = new byte[bufferSize];
 		int len;
+		int re = 0;
 		while (-1 != (len = ins.read(buf))) {
+			re += len;
 			ops.write(buf, 0, len);
 		}
+		return re;
 	}
 
 	/**
@@ -135,10 +142,11 @@ public abstract class Streams {
 	 *            输出流
 	 * @param ins
 	 *            输入流
+	 * @return 写入的字节数
 	 */
-	public static void writeAndClose(OutputStream ops, InputStream ins) {
+	public static int writeAndClose(OutputStream ops, InputStream ins) {
 		try {
-			write(ops, ins);
+			return write(ops, ins);
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);

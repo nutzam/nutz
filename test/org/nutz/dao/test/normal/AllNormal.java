@@ -6,6 +6,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({	FieldFilterTest.class,
 						SimpleDaoTest.class,
+						InsertTest.class,
 						QueryTest.class,
 						EachTest.class,
 						UpdateTest.class,
