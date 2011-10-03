@@ -145,9 +145,6 @@
     字符串操作
 	
     	{{{<JAVA>
-    	System.out.println(El.eval("  abc  ".trim()));
-    	// 输出为  abc
-
 	System.out.println(El.eval("trim(\"  abc  \")"));
     	// 输出为  abc
     	}}}
