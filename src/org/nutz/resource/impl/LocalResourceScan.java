@@ -33,8 +33,6 @@ public class LocalResourceScan extends AbstractResourceScan {
 
 	private boolean ignoreHidden;
 
-	// private static final Log LOG = Logs.get();
-
 	/**
 	 * 是否忽略隐藏文件
 	 * 
@@ -107,6 +105,8 @@ public class LocalResourceScan extends AbstractResourceScan {
 				}
 			}
 		}
+		if (list.isEmpty())
+			scanClasspath(src, regex, list);
 		// 返回资源列表
 		return list;
 	}

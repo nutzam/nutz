@@ -95,4 +95,17 @@ public abstract class AbstractResourceScan implements ResourceScan {
 			src += "/";
 		return src;
 	}
+	
+	protected void scanClasspath(String src, Pattern regex, List<NutResource> list) {
+		String classpath = System.getProperties().getProperty("java.class.path");
+		if (log.isInfoEnabled())
+			log.info("Try to search in classpath : " + classpath);
+		String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
+		for (String pathZ : paths) {
+			if (pathZ.endsWith(".jar"))
+				list.addAll(scanInJar(checkSrc(src), regex, pathZ));
+			else
+				list.addAll(scanInDir(regex, new File(pathZ + "/" + src), true));
+		}
+	}
 }
