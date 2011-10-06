@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -19,6 +21,11 @@ import org.nutz.resource.ResourceScan;
 public abstract class AbstractResourceScan implements ResourceScan {
 
 	private static final Log log = Logs.get();
+	
+	/**
+	 * 保存扫描过的
+	 */
+	private static final Map<String, List<String>> jars = new HashMap<String, List<String>>(10);
 
 	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();
@@ -28,15 +35,28 @@ public abstract class AbstractResourceScan implements ResourceScan {
 							jarPath,
 							regex,
 							src);
-			JarFile jar = new JarFile(jarPath);
-			Enumeration<JarEntry> ens = jar.entries();
-			while (ens.hasMoreElements()) {
-				JarEntry jen = ens.nextElement();
-				if (jen.isDirectory())
-					continue;
-				String name = jen.getName();
-				if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
-					list.add(new JarEntryResource(jar, jen, jen.getName().substring(src.length())));
+			//先看看这个jar是否已经扫描过,如果有的话,直接读取
+			if (jars.containsKey(jarPath)) {
+				JarFile jar = null;
+				for (String name : jars.get(jarPath))
+					if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
+						if (jar == null)
+							jar = new JarFile(jarPath);
+						list.add(new JarEntryResource(jar, jar.getJarEntry(name), name.substring(src.length())));
+					}
+			} else {
+				JarFile jar = new JarFile(jarPath);
+				ArrayList<String> names = new ArrayList<String>();
+				jars.put(jarPath, names);
+				Enumeration<JarEntry> ens = jar.entries();
+				while (ens.hasMoreElements()) {
+					JarEntry jen = ens.nextElement();
+					if (jen.isDirectory())
+						continue;
+					String name = jen.getName();
+					if (name.startsWith(src) && (null == regex || regex.matcher(name).find()))
+						list.add(new JarEntryResource(jar, jen, jen.getName().substring(src.length())));
+					names.add(name);
 				}
 			}
 			if (log.isDebugEnabled())
@@ -75,8 +95,8 @@ public abstract class AbstractResourceScan implements ResourceScan {
 					return false;
 				if (theFile.isDirectory()) {
 					String fnm = theFile.getName().toLowerCase();
-					// 忽略 SVN 和 CVS 文件
-					if (".svn".equals(fnm) || ".cvs".equals(fnm))
+					// 忽略 SVN 和 CVS 文件,还有Git文件
+					if (".svn".equals(fnm) || ".cvs".equals(fnm) || ".git".equals(fnm))
 						return false;
 					return true;
 				}
