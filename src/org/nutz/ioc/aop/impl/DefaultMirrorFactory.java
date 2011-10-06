@@ -13,6 +13,8 @@ import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
 import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 通过AopConfigration来识别需要拦截的方法,并根据需要生成新的类
@@ -21,6 +23,8 @@ import org.nutz.lang.Mirror;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultMirrorFactory implements MirrorFactory {
+	
+	private static final Log log = Logs.get();
 
 	private Ioc ioc;
 
@@ -38,8 +42,9 @@ public class DefaultMirrorFactory implements MirrorFactory {
 		if (MethodInterceptor.class.isAssignableFrom(type)
 			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
 			|| AopConfigration.IOCNAME.equals(name)
-			|| AopConfigration.class.isAssignableFrom(type))
+			|| AopConfigration.class.isAssignableFrom(type)) {
 			return Mirror.me(type);
+		}
 		try {
 			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
 		}
@@ -50,8 +55,11 @@ public class DefaultMirrorFactory implements MirrorFactory {
 			else
 				aopConfigration = new AnnotationAopConfigration();
 		List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
-		if (interceptorPairs == null || interceptorPairs.size() < 1)
+		if (interceptorPairs == null || interceptorPairs.size() < 1) {
+			if (log.isDebugEnabled())
+				log.debugf("%s , no config to enable AOP.", type);
 			return Mirror.me(type);
+		}
 		ClassAgent agent = new AsmClassAgent();
 		for (InterceptorPair interceptorPair : interceptorPairs)
 			agent.addInterceptor(	interceptorPair.getMethodMatcher(),
