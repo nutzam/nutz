@@ -20,13 +20,13 @@ import org.nutz.lang.Mirror;
 
 public class JsonParsing {
 
-	Object parse(Type type, Reader reader) {
+	public static Object parse(Type type, Reader reader) {
 		Object obj = new JsonCompile().parse(reader);
 		return convert(type, obj);
 	}
 
 	@SuppressWarnings("unchecked")
-	Object convert(Type type, Object obj) {
+	public static Object convert(Type type, Object obj) {
 		if (obj == null)
 			return null;
 		if (type == null)
@@ -36,12 +36,12 @@ public class JsonParsing {
 		} else if (obj instanceof List) {
 			return list2Object(type, (List<Object>) obj);
 		} else {// obj是基本数据类型或String
-			return Castors.me().castTo(obj, (Class<?>) type);
+			return Castors.me().castTo(obj, Lang.getTypeClass(type));
 		}
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
-	Object map2Object(Type type, Map<String, Object> map) {
+	public static Object map2Object(Type type, Map<String, Object> map) {
 		Class<?> clazz = Lang.getTypeClass(type);
 		Mirror<?> me = Mirror.me(clazz);
 		if (Map.class.isAssignableFrom(clazz)) {
@@ -56,7 +56,7 @@ public class JsonParsing {
 				Type[] ts = pt.getActualTypeArguments();
 				Type tt = null;
 				if (ts != null && ts.length > 1)
-					tt = Lang.getTypeClass(ts[1]);// TODO 只能做到一层的泛型
+					tt = Lang.getTypeClass(ts[1]);// TODO 多层的泛型
 				for (Entry<String, Object> entry : map.entrySet()) {
 					re.put(entry.getKey(), convert(tt, entry.getValue()));
 				}
@@ -71,14 +71,15 @@ public class JsonParsing {
 				Object value = map.get(jef.getName());
 				if (value == null)
 					continue;
-				jef.setValue(re, convert(jef.getGenericType(), value));
+				System.out.println(jef.getName());
+				jef.setValue(re, jef.createValue(re, value));
 			}
 			return re;
 		}
 	}
 
 	@SuppressWarnings({"unchecked", "rawtypes"})
-	Object list2Object(Type type, List<Object> list) {
+	public static Object list2Object(Type type, List<Object> list) {
 		Class<?> clazz = Lang.getTypeClass(type);
 		Type tt = null;
 		if (type instanceof ParameterizedType) {

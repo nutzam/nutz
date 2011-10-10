@@ -24,11 +24,18 @@ public class JsonEntity {
 	public JsonEntity(Mirror<?> mirror) {
 		Field[] flds = mirror.getFields();
 		fields = new ArrayList<JsonEntityField>(flds.length);
+		List<JsonEntityField> hasAnnos = new ArrayList<JsonEntityField>();
 		for (Field fld : flds) {
 			JsonEntityField ef = JsonEntityField.eval(mirror, fld);
-			if (null != ef)
-				fields.add(ef);
+			if (null != ef) {
+				if (ef.hasAnno())
+					hasAnnos.add(ef);
+				else
+					fields.add(ef);
+			}
 		}
+		if (hasAnnos.size() > 0 )
+			fields.addAll(hasAnnos);
 
 		try {
 			borning = mirror.getBorning();

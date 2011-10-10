@@ -21,6 +21,10 @@ public @interface JsonField {
 	 */
 	boolean ignore() default false;
 	
+	@Deprecated
 	String by() default "";
+	
+	String getBy() default "";
 
+	String createBy() default "";
 }

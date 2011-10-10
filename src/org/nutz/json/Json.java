@@ -71,7 +71,7 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return (T) new JsonParsing().parse(type, reader);
+		return (T) JsonParsing.parse(type, reader);
 	}
 
 	/**
@@ -85,7 +85,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
-		return new JsonParsing().parse(type, reader);
+		return JsonParsing.parse(type, reader);
 	}
 
 	/**
