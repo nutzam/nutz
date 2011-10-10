@@ -71,7 +71,6 @@ public class JsonParsing {
 				Object value = map.get(jef.getName());
 				if (value == null)
 					continue;
-				System.out.println(jef.getName());
 				jef.setValue(re, jef.createValue(re, value));
 			}
 			return re;
