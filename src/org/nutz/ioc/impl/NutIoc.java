@@ -32,6 +32,8 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  */
 public class NutIoc implements Ioc2 {
+	
+	private static final Object lock_get = new Object();
 
 	private static final Log log = Logs.get();
 
@@ -155,7 +157,7 @@ public class NutIoc implements Ioc2 {
 		// 如果未发现对象
 		if (null == op) {
 			// 线程同步
-			synchronized (this) {
+			synchronized (lock_get) {
 				// 再次读取
 				op = cntx.fetch(name);
 
@@ -193,7 +195,9 @@ public class NutIoc implements Ioc2 {
 				}
 			}
 		}
-		return (T) op.get(type, ing);
+		synchronized (lock_get) {
+			return (T) op.get(type, ing);
+		}
 	}
 
 	public <T> T get(Class<T> type, String name) {
