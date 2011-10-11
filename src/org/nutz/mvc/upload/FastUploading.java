@@ -36,6 +36,14 @@ public class FastUploading implements Uploading {
 			throws UploadException {
 		if (log.isDebugEnabled())
 			log.debug("FastUpload : " + Mvcs.getRequestPath(req));
+		
+		//检查一下Content-Type,如果不是标准上传的Content-Type,就无情地警告一下
+		if (log.isWarnEnabled()) {
+			String contentType = req.getContentType();
+			if (contentType == null || contentType.indexOf("multipart/form-data") < 0)
+				log.warn("Content-Type is NOT multipart/form-data ??!! Pls check your form!!! Your content-type="+contentType);
+		}
+			
 		/*
 		 * 初始化一些临时变量
 		 */
