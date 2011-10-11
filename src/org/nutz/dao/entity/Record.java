@@ -20,6 +20,7 @@ import org.nutz.lang.Lang;
  * 记录对象
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class Record implements Map<String, Object>,java.io.Serializable {
 
@@ -35,11 +36,20 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 			int count = meta.getColumnCount();
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
-				if (meta.getColumnType(i) == Types.CLOB) {
-					re.set(name, rs.getString(i));
-				} else {
-					re.set(name, rs.getObject(i));
+				switch (meta.getColumnType(i)) {
+				case Types.TIMESTAMP : {
+					re.set(name, re.getTimestamp(name));
+					break;
 				}
+				case Types.CLOB : {
+					re.set(name, rs.getString(i));
+					break;
+				}
+				default :
+					re.set(name, rs.getObject(i));
+					break;
+				}
+				re.setSqlType(name, meta.getColumnType(i));
 			}
 			return re;
 		}
@@ -49,9 +59,12 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 	}
 
 	private Map<String, Object> map;
+	
+	private Map<String, Integer> sqlTypeMap;
 
 	public Record() {
 		map = new HashMap<String, Object>();
+		sqlTypeMap = new HashMap<String, Integer>();
 	}
 
 	/**
@@ -180,4 +193,13 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 		return Chain.from(map);
 	}
 
+	//===========================================
+	
+	public int getSqlType(String name) {
+		return sqlTypeMap.get(name.toLowerCase());
+	}
+	
+	protected void setSqlType(String name, int value) {
+		sqlTypeMap.put(name.toLowerCase(), value);
+	}
 }
