@@ -121,7 +121,7 @@ public class Images {
 		else if (oR < nR) {
 			nH = h;
 			nW = (int) (((float) h) * oR);
-			x = (w - nH) / 2;
+			x = (w - nW) / 2;
 			y = 0;
 		}
 		// 比例相同
