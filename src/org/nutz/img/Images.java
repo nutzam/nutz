@@ -1,6 +1,7 @@
 package org.nutz.img;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
@@ -23,6 +24,123 @@ import org.nutz.lang.Lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class Images {
+
+	/**
+	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上，并将其保存成目标图像文件
+	 * <p>
+	 * 图片格式支持 png | gif | jpg | bmp | wbmp
+	 * 
+	 * @param srcIm
+	 *            源图像文件对象
+	 * @param taIm
+	 *            目标图像文件对象
+	 * @param w
+	 *            宽度
+	 * @param h
+	 *            高度
+	 * @param bgColor
+	 *            背景颜色
+	 * 
+	 * @return 被转换前的图像对象
+	 * 
+	 * @throws IOException
+	 *             当读写文件失败时抛出
+	 */
+	public static BufferedImage zoomScale(File srcIm, File taIm, int w, int h, Color bgColor)
+			throws IOException {
+		BufferedImage old = read(srcIm);
+		BufferedImage im = Images.zoomScale(old, w, h, bgColor);
+		write(im, taIm);
+		return old;
+	}
+
+	/**
+	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上，并将其保存到目标图像路径
+	 * <p>
+	 * 图片格式支持 png | gif | jpg | bmp | wbmp
+	 * 
+	 * @param srcPath
+	 *            源图像路径
+	 * @param taPath
+	 *            目标图像路径，如果不存在，则创建
+	 * @param w
+	 *            宽度
+	 * @param h
+	 *            高度
+	 * @param bgColor
+	 *            背景颜色
+	 * 
+	 * @throws IOException
+	 *             当读写文件失败时抛出
+	 */
+	public static void zoomScale(String srcPath, String taPath, int w, int h, Color bgColor)
+			throws IOException {
+		File srcIm = Files.findFile(srcPath);
+		if (null == srcIm)
+			throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+
+		File taIm = Files.createFileIfNoExists(taPath);
+		zoomScale(srcIm, taIm, w, h, bgColor);
+	}
+
+	/**
+	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上
+	 * 
+	 * @param im
+	 *            图像对象
+	 * @param w
+	 *            宽度
+	 * @param h
+	 *            高度
+	 * @param bgColor
+	 *            背景颜色
+	 * 
+	 * @return 被转换后的图像
+	 */
+	public static BufferedImage zoomScale(BufferedImage im, int w, int h, Color bgColor) {
+		// 检查背景颜色
+		bgColor = null == bgColor ? Color.black : bgColor;
+		// 获得尺寸
+		int oW = im.getWidth();
+		int oH = im.getHeight();
+		float oR = (float) oW / (float) oH;
+		float nR = (float) w / (float) h;
+
+		int nW, nH, x, y;
+		/*
+		 * 缩放
+		 */
+		// 原图太宽，计算当原图与画布同高时，原图的等比宽度
+		if (oR > nR) {
+			nW = w;
+			nH = (int) (((float) w) / oR);
+			x = 0;
+			y = (h - nH) / 2;
+		}
+		// 原图太长
+		else if (oR < nR) {
+			nH = h;
+			nW = (int) (((float) h) * oR);
+			x = (w - nH) / 2;
+			y = 0;
+		}
+		// 比例相同
+		else {
+			nW = w;
+			nH = h;
+			x = 0;
+			y = 0;
+		}
+		// 创建图像
+		BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
+		// 得到一个绘制接口
+		Graphics gc = re.getGraphics();
+		gc.setColor(bgColor);
+		gc.fillRect(0, 0, w, h);
+		gc.drawImage(im, x, y, nW, nH, bgColor, null);
+		// 返回
+		return re;
+	}
 
 	/**
 	 * 自动缩放剪切一个图片，令其符合给定的尺寸，并将其保存成目标图像文件
@@ -120,10 +238,10 @@ public class Images {
 			x = 0;
 			y = 0;
 		}
-
+		// 创建图像
 		BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
 		re.getGraphics().drawImage(im, x, y, nW, nH, Color.black, null);
-
+		// 返回
 		return re;
 	}
 
