@@ -49,8 +49,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 				return "INT(" + (width * 4) + ")"; 
 			}
 			return "BIGINT(" + (width * 4) + ")";
-		} else if (mf.getColumnType() == ColType.BOOLEAN) 
-			return "TinyINT(i)";
+		}
 		// 其它的参照默认字段规则 ...
 		return super.evalFieldType(mf);
 	}
