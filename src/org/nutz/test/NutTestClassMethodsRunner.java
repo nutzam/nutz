@@ -9,25 +9,20 @@ import org.nutz.trans.Trans;
 
 public class NutTestClassMethodsRunner extends TestClassMethodsRunner {
 	
-	private Class<?> klass;
-	
 	public NutTestClassMethodsRunner(Class<?> klass) {
 		super(klass);
-		this.klass = klass;
 	}
 
 	@Override
-	protected void invokeTestMethod(Method method, final RunNotifier notifier) {
+	protected void invokeTestMethod(final Method method, final RunNotifier notifier) {
 		NutTest nutTest = method.getAnnotation(NutTest.class);
-		if (nutTest == null)
-			nutTest = klass.getAnnotation(NutTest.class);
 		boolean needRollback = nutTest != null && nutTest.rollback();
 		if (needRollback)
 			try {
 				Trans.exec(new Atom(){
 					@Override
 					public void run() {
-						NutTestClassMethodsRunner.super.run(notifier);
+						NutTestClassMethodsRunner.super.invokeTestMethod(method, notifier);
 						throw JustRollback.me();
 					}
 				});
