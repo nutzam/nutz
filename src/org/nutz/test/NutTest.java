@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface NutTest {
 
-	boolean rollback() default true;
+	boolean rollback() default false;
 }
