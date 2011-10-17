@@ -267,6 +267,13 @@ public class FieldFilter {
 	}
 
 	/**
+	 * @return 内部的文件类型与过滤器的映射表
+	 */
+	public Map<Class<?>, FieldMatcher> map() {
+		return map;
+	}
+
+	/**
 	 * 运行模板函数
 	 * 
 	 * @param atom
