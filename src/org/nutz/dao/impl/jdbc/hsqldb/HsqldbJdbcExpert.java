@@ -47,7 +47,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 				else if (mf.isNotNull())
 					sb.append(" NOT NULL");
 				if (mf.hasDefaultValue())
-					sb.append(" DEFAULT '").append(mf.getDefaultValue(null)).append('\'');
+					sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
 			}
 			sb.append(',');
 		}

@@ -1,7 +1,6 @@
 package org.nutz.dao.impl.entity;
 
 import java.sql.ResultSet;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
