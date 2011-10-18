@@ -638,4 +638,34 @@ public abstract class Strings {
 		}
 		return sb.toString();
 	}
+
+	/**
+	 * 将一个字符串出现的HMTL元素进行转义，比如
+	 * 
+	 * <pre>
+	 *  escapeHtml("&lt;script&gt;alert("hello world");&lt;/script&gt;") => "&amp;lt;script&amp;gt;alert(&amp;quot;hello world&amp;quot;);&amp;lt;/script&amp;gt;"
+	 * </pre>
+	 * 
+	 * 转义字符对应如下
+	 * <ul>
+	 * <li>& => &amp;amp;
+	 * <li>< => &amp;lt;
+	 * <li>> => &amp;gt;
+	 * <li>' => &amp;#x27;
+	 * <li>" => &amp;quot;
+	 * </ul>
+	 * 
+	 * @param cs
+	 *            字符串
+	 * 
+	 * @return 转换后字符串
+	 */
+	public static String escapeHtml(CharSequence cs) {
+		return cs.toString()
+				.replaceAll("&", "&amp;")
+				.replaceAll("<", "&lt;")
+				.replaceAll(">", "&gt;")
+				.replaceAll("'", "&#x27;")
+				.replaceAll("\"", "&quot;");
+	}
 }
