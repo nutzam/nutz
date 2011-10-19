@@ -650,7 +650,7 @@ public abstract class Strings {
 	 * <ul>
 	 * <li>& => &amp;amp;
 	 * <li>< => &amp;lt;
-	 * <li>> => &amp;gt;
+	 * <li>>=> &amp;gt;
 	 * <li>' => &amp;#x27;
 	 * <li>" => &amp;quot;
 	 * </ul>
@@ -661,11 +661,31 @@ public abstract class Strings {
 	 * @return 转换后字符串
 	 */
 	public static String escapeHtml(CharSequence cs) {
-		return cs.toString()
-				.replaceAll("&", "&amp;")
-				.replaceAll("<", "&lt;")
-				.replaceAll(">", "&gt;")
-				.replaceAll("'", "&#x27;")
-				.replaceAll("\"", "&quot;");
+		if (null == cs)
+			return null;
+		char[] cas = cs.toString().toCharArray();
+		StringBuilder sb = new StringBuilder();
+		for (char c : cas) {
+			switch (c) {
+			case '&':
+				sb.append("&amp;");
+				break;
+			case '<':
+				sb.append("&lt;");
+				break;
+			case '>':
+				sb.append("&gt;");
+				break;
+			case '\'':
+				sb.append("&#x27;");
+				break;
+			case '"':
+				sb.append("&quot;");
+				break;
+			default:
+				sb.append(c);
+			}
+		}
+		return sb.toString();
 	}
 }
