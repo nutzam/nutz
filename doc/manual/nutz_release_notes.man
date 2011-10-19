@@ -1,41 +1,13 @@
-#title: 1.b.39 发行注记
+#title: 1.b.40 发行注记
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.39 发行注记
+1.b.40 发行注记
 
-    又发布了？ 是的，因为这是一个 [http://code.google.com/p/nutz/wiki/history_1_b_38 1.b.38] 的 Bug Fix 版。
-    Bug Fix 版发布就要快嘛，嘿嘿，你看人家 Firefox  ^_^
-    
-    当然这么快发布还有一个原因 ＝》 [https://github.com/nutzam/nutz/issues/23 Issue 23] 
-    
-    [http://code.google.com/p/nutz/wiki/history_1_b_38 1.b.38] 的 Dao 部分进行了重大的调整，这几周来，似乎
-    没有被大家抱怨特别的不适，Dao 的变动带来的影响比我想想的小多了，因此强烈推荐你升级到这个版本
-
-     * 这里是 Nutz 的下载列表 : [http://code.google.com/p/nutz/downloads/list]
-     * 木有听说过 Nutz 的同学请看 : [http://nutz.googlecode.com]
-
-    本版涉及到的问题，有兴趣的同学请看下面的问题列表，这里就不废话了。 
-    
-    还有，天气热，气压低，国度神奇，希望8月份的人民注意防暑，
-    [http://pangwu86.iteye.com/ 胖五同学]做动车时不要轻易睡着，我会持之以恒的为你祈祷的 :P
 
 --------------------------------------------------------------------------------------------------------
 问题修复
 
-    * [https://github.com/nutzam/nutz/issues/28 Issue 28] NutzQuickStart 木有与时俱进 {#AAA;by} {*fjay}
-    * [https://github.com/nutzam/nutz/issues/25 Issue 25] Mvc：使用UploadAdaptor时，ArrayInjector和NameInjector注入的参数值错误 Mvc {#AAA;by} {*lAndRaxeE}
-    * [https://github.com/nutzam/nutz/issues/24 Issue 24] 主模块声明应用的子模块时，能够直接指定包的相对路径，来搜索子模块 Mvc 需求 {#AAA;by} {*conanca}
-    * [https://github.com/nutzam/nutz/issues/23 Issue 23] 一对多关联，调用insertWith方法关联新增后，发现关联属性字段为空 Dao {#AAA;by} {*fnet123}
-    * [https://github.com/nutzam/nutz/issues/22 Issue 22] 在Setup的init方法中，通过Mvcs.getAtMap(config.getServletContext())得到的AtMap的size为0 Mvc 需求 5 comments  {#AAA;by} {*conanca}
-    * [https://github.com/nutzam/nutz/issues/21 Issue 21] DB2环境上NutzDao的fastInsert失败 {#AAA;by} {*nneverwei}
-    * [https://github.com/nutzam/nutz/issues/17 Issue 17] dao.delete 需要支持传入一个集合或者数组 Dao {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/15 Issue 15] Mirror类无法获取对象中的静态变量 {#AAA;by} {*happyday517}
-    * [https://github.com/nutzam/nutz/issues/14 Issue 14] Nutz.dao获取实体的回调，实体类中的非数据表字段未被赋值 Dao FAQ {#AAA;by} {*conanca}
-    * [https://github.com/nutzam/nutz/issues/13 Issue 13] 1.38执行sql语句有问题. Dao FAQ {#AAA;by} {*wangyingdong}
-    * [https://github.com/nutzam/nutz/issues/12 Issue 12] 发布 Nutz1.b.39 项目维护 {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/11 Issue 11] [1.b.38]Model类中@Readonly注解失效 Dao 重要 {#AAA;by} {*gevinhjy}
-    * [https://github.com/nutzam/nutz/issues/10 Issue 10] 测试与JDK7的兼容性 项目维护 {#AAA;by} {*wendal}
 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -56,7 +28,7 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-    没有更新
+     * 修改: [dao/field_filter.man 文档过滤器]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
