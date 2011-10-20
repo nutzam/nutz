@@ -72,7 +72,6 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	@Override
 	public Object getValue(Object obj) {
 		Object value = super.getValue(obj);
-		System.out.println("----------------------------------------->"+value);
 		if (value == null)
 			return getDefaultValue(obj);
 		return value;
