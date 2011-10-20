@@ -290,4 +290,12 @@ public class StringsTest {
 		assertEquals("aBCD", Strings.upperWord("a-b-c-d", '-'));
 		assertEquals("helloWorld", Strings.upperWord("hello-world", '-'));
 	}
+	
+	@Test
+	public void test_escape_html() {
+		assertEquals("&lt;/article&gt;Oops &lt;script&gt;alert(&quot;hello world&quot;);&lt;/script&gt;",
+		             Strings.escapeHtml("</article>Oops <script>alert(\"hello world\");</script>"));
+		assertEquals("alert(&#x27;hello world&#x27;);",
+		             Strings.escapeHtml("alert('hello world');"));
+	}
 }
