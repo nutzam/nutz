@@ -43,7 +43,7 @@ public class InsertByChainPItem extends AbstractPItem {
 
 	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
 		for (int i = 0; i < names.length; i++)
-			adaptors[off++] = en.getField(_colname(en, i)).getAdaptor();
+			adaptors[off++] = en.getColumn(_colname(en, i)).getAdaptor();
 		return off;
 	}
 

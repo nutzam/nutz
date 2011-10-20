@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.dao.Chain;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
@@ -190,5 +191,10 @@ public class SimpleDaoTest extends DaoCase {
 		dao.insert(Pet.create("Wendal5"));
 		assertEquals(5, dao.count(Pet.class));
 		assertEquals(5, dao.clear(Pet.class));
+	}
+	
+	@Test
+	public void test_chain_insert() {
+		dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
 	}
 }
