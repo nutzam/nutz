@@ -1,5 +1,6 @@
 package org.nutz.mvc.config;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,19 +15,29 @@ public class AtMap {
 
 	private Map<String, String> ats;
 
+	private Map<String, Method> methods;
+
 	public AtMap() {
 		ats = new HashMap<String, String>();
+		methods = new HashMap<String, Method>();
 	}
 
-	public AtMap add(String key, String actionPath) {
+	public void add(String key, String actionPath) {
 		if (actionPath.endsWith("/*"))
 			actionPath = actionPath.substring(0, actionPath.length() - 2);
 		ats.put(Strings.trim(key), Strings.trim(actionPath));
-		return this;
+	}
+
+	public void addMethod(String url, Method method) {
+		methods.put(url, method);
 	}
 
 	public Set<String> keys() {
 		return ats.keySet();
+	}
+
+	public Map<String, Method> getMethodMapping() {
+		return methods;
 	}
 
 	public int size() {
