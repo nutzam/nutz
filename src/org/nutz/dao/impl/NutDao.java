@@ -43,6 +43,7 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
@@ -230,32 +231,44 @@ public class NutDao extends DaoSupport implements Dao {
 		return opt.getUpdateCount();
 	}
 
-	public <T> T updateWith(T obj, String regex) {
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public <T> T updateWith(T obj, final String regex) {
+		if (null == obj)
 			return null;
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
 
-		opt.entity.visitOne(obj, regex, doUpdate(opt));
-		opt.addUpdate();
-		opt.entity.visitMany(obj, regex, doUpdate(opt));
-		opt.entity.visitManyMany(obj, regex, doUpdate(opt));
+				opt.entity.visitOne(ele, regex, doUpdate(opt));
+				opt.addUpdate();
+				opt.entity.visitMany(ele, regex, doUpdate(opt));
+				opt.entity.visitManyMany(ele, regex, doUpdate(opt));
 
-		opt.exec();
-
+				opt.exec();
+			}
+		});
 		return obj;
 	}
 
-	public <T> T updateLinks(T obj, String regex) {
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public <T> T updateLinks(T obj, final String regex) {
+		if (null == obj)
 			return null;
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
 
-		opt.entity.visitOne(obj, regex, doUpdate(opt));
-		opt.entity.visitMany(obj, regex, doUpdate(opt));
-		opt.entity.visitManyMany(obj, regex, doUpdate(opt));
+				opt.entity.visitOne(ele, regex, doUpdate(opt));
+				opt.entity.visitMany(ele, regex, doUpdate(opt));
+				opt.entity.visitManyMany(ele, regex, doUpdate(opt));
 
-		opt.exec();
-
+				opt.exec();
+			}
+		});
 		return obj;
 	}
 
@@ -301,34 +314,47 @@ public class NutDao extends DaoSupport implements Dao {
 		return opt.getUpdateCount();
 	}
 
-	public int deleteWith(Object obj, String regex) {
-		// TODO 天啊,又有4个正则表达式,能快起来不?
-		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public int deleteWith(Object obj, final String regex) {
+		if (null == obj)
 			return 0;
+		final int[] re = new int[1];
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
+				opt.entity.visitMany(ele, regex, doDelete(opt));
+				opt.entity.visitManyMany(ele, regex, doClearRelationByLinkedField(opt));
+				opt.entity.visitManyMany(ele, regex, doDelete(opt));
+				opt.addDeleteSelfOnly();
+				opt.entity.visitOne(ele, regex, doDelete(opt));
 
-		opt.entity.visitMany(obj, regex, doDelete(opt));
-		opt.entity.visitManyMany(obj, regex, doClearRelationByLinkedField(opt));
-		opt.entity.visitManyMany(obj, regex, doDelete(opt));
-		opt.addDeleteSelfOnly();
-		opt.entity.visitOne(obj, regex, doDelete(opt));
-
-		return opt.exec().getUpdateCount();
+				re[0] += opt.exec().getUpdateCount();
+			}
+		});
+		return re[0];
 	}
 
-	public int deleteLinks(Object obj, String regex) {
-		// TODO 天啊,又有4个正则表达式,能快起来不?
-		// TODO zzh: NutEntity 会缓存正则表达式计算的结果的，会很快的
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public int deleteLinks(Object obj, final String regex) {
+		if (null == obj)
 			return 0;
-		opt.entity.visitMany(obj, regex, doDelete(opt));
-		opt.entity.visitManyMany(obj, regex, doClearRelationByLinkedField(opt));
-		opt.entity.visitManyMany(obj, regex, doDelete(opt));
-		opt.entity.visitOne(obj, regex, doDelete(opt));
+		final int[] re = new int[1];
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
+				opt.entity.visitMany(ele, regex, doDelete(opt));
+				opt.entity.visitManyMany(ele, regex, doClearRelationByLinkedField(opt));
+				opt.entity.visitManyMany(ele, regex, doDelete(opt));
+				opt.entity.visitOne(ele, regex, doDelete(opt));
 
-		return opt.exec().getUpdateCount();
+				re[0] += opt.exec().getUpdateCount();
+			}
+		});
+		return re[0];
 	}
 
 	public <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager) {
@@ -442,14 +468,21 @@ public class NutDao extends DaoSupport implements Dao {
 		return null;
 	}
 
-	public <T> T fetchLinks(T obj, String regex) {
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public <T> T fetchLinks(T obj, final String regex) {
+		if (null == obj)
 			return null;
-		opt.entity.visitMany(obj, regex, doFetch(opt));
-		opt.entity.visitManyMany(obj, regex, doFetch(opt));
-		opt.entity.visitOne(obj, regex, doFetch(opt));
-		opt.exec();
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
+				opt.entity.visitMany(ele, regex, doFetch(opt));
+				opt.entity.visitManyMany(ele, regex, doFetch(opt));
+				opt.entity.visitOne(ele, regex, doFetch(opt));
+				opt.exec();
+			}
+		});
 		return obj;
 	}
 
@@ -473,16 +506,22 @@ public class NutDao extends DaoSupport implements Dao {
 		return clear(tableName, null);
 	}
 
-	public <T> T clearLinks(T obj, String regex) {
-		EntityOperator opt = this._optBy(obj);
-		if (null == opt)
+	public <T> T clearLinks(T obj, final String regex) {
+		if (null == obj)
 			return null;
-		opt.entity.visitMany(obj, regex, doClear(opt));
-		opt.entity.visitManyMany(obj, regex, doClearRelationByHostField(opt));
-		opt.entity.visitOne(obj, regex, doClear(opt));
+		Lang.each(obj, new Each<Object>() {
+			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
+					LoopException {
+				EntityOperator opt = _optBy(ele);
+				if (null == opt)
+					return;
+				opt.entity.visitMany(ele, regex, doClear(opt));
+				opt.entity.visitManyMany(ele, regex, doClearRelationByHostField(opt));
+				opt.entity.visitOne(ele, regex, doClear(opt));
 
-		opt.exec();
-
+				opt.exec();
+			}
+		});
 		return obj;
 	}
 
