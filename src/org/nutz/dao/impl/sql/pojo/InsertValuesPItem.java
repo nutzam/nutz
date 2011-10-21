@@ -11,6 +11,9 @@ import org.nutz.lang.Lang;
 
 public class InsertValuesPItem extends AbstractPItem {
 
+	/**
+	 * 缓存要操作的字段
+	 */
 	protected List<MappingField> mfs;
 
 	protected List<MappingField> _mfs(Entity<?> en) {

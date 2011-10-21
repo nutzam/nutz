@@ -20,7 +20,7 @@ public class UrlMappingImpl implements UrlMapping {
 
 	private static final Log log = Logs.get();
 
-	private Map<String, ActionInvoker> map;//这个对象有点多余,考虑换成AtMap吧!!
+	private Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
 
 	private MappingNode<ActionInvoker> root;
 
@@ -43,11 +43,13 @@ public class UrlMappingImpl implements UrlMapping {
 				invoker = new ActionInvoker();
 				map.put(path, invoker);
 				root.add(path, invoker);
+				// 记录一下方法与 url 的映射
+				config.getAtMap().addMethod(path, ai.getMethod());
 			}
 
 			// 将动作链，根据特殊的 HTTP 方法，保存到调用者内部
 			if (ai.isForSpecialHttpMethod()) {
-				for(String httpMethod : ai.getHttpMethods())
+				for (String httpMethod : ai.getHttpMethods())
 					invoker.addChain(httpMethod, chain);
 			}
 			// 否则，将其设置为默认动作链
