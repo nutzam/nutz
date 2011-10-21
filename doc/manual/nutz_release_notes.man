@@ -96,7 +96,15 @@
     * [https://github.com/nutzam/nutz/issues/26 Issue 26] url匹配的问题 Mvc {#AAA;by} {*hszdz}
     * [https://github.com/nutzam/nutz/issues/22 Issue 22] 在Setup的init方法中，通过Mvcs.getAtMap(config.getServletContext())得到的AtMap的size为0 Mvc 需求 {#AAA;by} {*conanca}
 
-
+	* In google code
+	* [http://code.google.com/p/nutz/issues/detail?id=513 Issue 513] 关于类org.nutz.ioc.meta.IocEventSet的描述错误  {#AAA;by} {* ronggen...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=514 Issue 514] 上传文件 获取本地文件名 tempFile.getMeta().getFileLocalName()可能不正确的问题  {#AAA;by} {*maiger...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=519 Issue 519] 1.b.39的manual文档中关于El的例子  {#AAA;by} {*lanlon.zen}
+	* [http://code.google.com/p/nutz/issues/detail?id=521 Issue 521] RecurArrayRandom 在多线程环境下会出错  {#AAA;by} {*feiyan35...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=522 Issue 522] 关于dao数据删除接口dao.clear()调用返回值的问题  {#AAA;by} {*hjingfen...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=524 Issue 524] Nutz表达式引擎的问题  {#AAA;by} {*chaoshi...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=528 Issue 528] 使用dao进行数据插入，Chain条件报错  {#AAA;by} {*wak...@gmail.com}
+	* [http://code.google.com/p/nutz/issues/detail?id=531 Issue 531] 关于nutz1.b.39中po属性类型为clob无法查询  {#AAA;by} {*shao0...@163.com}
 --------------------------------------------------------------------------------------------------------
 质量
 	共通过了 {#FF00FF;*738}  个单元测试用例,代码覆盖率达到 {#FF00FF;64.5%}(按line计算)
@@ -105,7 +113,7 @@
 	 
 	Nutz.Dao 经测试在如下数据库上可以工作正常
 	 * [http://www.h2database.com H2]
-	 * [http://www.sqlite.org SQLite]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
 	 * [http://hsqldb.org hsqldb]
 	 * [http://www.mysql.com MySql]
 	 * [http://www.oracle.com Oracle]
@@ -117,6 +125,7 @@
 文档
 
      * 修改: [dao/field_filter.man 文档过滤器]
+     * 添加: [ioc/ioc_annos.man Ioc注解列表]
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
