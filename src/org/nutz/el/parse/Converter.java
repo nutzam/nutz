@@ -19,7 +19,7 @@ import org.nutz.lang.Lang;
 
 /**
  * 转换器,也就是用来将字符串转换成队列.
- * @ JKTODO 这个类的名字不知道取什么好...
+ * TODO 这个类的名字不知道取什么好...
  * @author juqkai(juqkai@gmail.com)
  *
  */

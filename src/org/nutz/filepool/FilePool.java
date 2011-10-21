@@ -99,8 +99,6 @@ public interface FilePool {
 	/**
 	 * 在池中创建一个临时目录
 	 * 
-	 * @param suffix
-	 *            文件的后缀
 	 * @return 临时目录
 	 * @throws IOException
 	 */

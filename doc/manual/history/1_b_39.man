@@ -9,7 +9,7 @@
     
     当然这么快发布还有一个原因 ＝》 [https://github.com/nutzam/nutz/issues/23 Issue 23] 
     
-    [http://code.google.com/p/nutz/wiki/history_1_b_38 1.b.38] 的 Dao 部分进行了重大的调整，这几周来，似乎
+    [1_b_38.man 1.b.38] 的 Dao 部分进行了重大的调整，这几周来，似乎
     没有被大家抱怨特别的不适，Dao 的变动带来的影响比我想想的小多了，因此强烈推荐你升级到这个版本
 
      * 这里是 Nutz 的下载列表 : [http://code.google.com/p/nutz/downloads/list]

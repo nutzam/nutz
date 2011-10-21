@@ -11,7 +11,6 @@ public class SocketLock {
 
 	/**
 	 * 一旦设置为true,就不允许取消
-	 * @param stop
 	 */
 	public synchronized void setStop() {
 		this.stop = true;
