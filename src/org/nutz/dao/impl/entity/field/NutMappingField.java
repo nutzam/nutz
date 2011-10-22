@@ -68,16 +68,24 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public ColType getColumnType() {
 		return columnType;
 	}
+	
+	@Override
+	public Object getValue(Object obj) {
+		Object value = super.getValue(obj);
+		if (value == null)
+			return getDefaultValue(obj);
+		return value;
+	}
 
 	public String getDefaultValue(Object obj) {
 		if (null == defaultValue)
 			return null;
 		String re;
-		if (null == obj)
+		if (null == obj || defaultValue.keyCount() == 0)
 			re = defaultValue.toString();
 		else
 			re = defaultValue.render(new EntityObjectContext(getEntity(), obj)).toString();
-		return re.replace("@", "@@");
+		return re;
 	}
 
 	public int getWidth() {

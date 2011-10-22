@@ -38,7 +38,7 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 				String name = meta.getColumnLabel(i);
 				switch (meta.getColumnType(i)) {
 				case Types.TIMESTAMP : {
-					re.set(name, re.getTimestamp(name));
+					re.set(name, rs.getTimestamp(name));
 					break;
 				}
 				case Types.CLOB : {

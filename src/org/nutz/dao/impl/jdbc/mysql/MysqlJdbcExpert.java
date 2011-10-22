@@ -73,7 +73,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 				if (mf.isAutoIncreasement())
 					sb.append(" AUTO_INCREMENT");
 				if (mf.hasDefaultValue())
-					sb.append(" DEFAULT '").append(mf.getDefaultValue(null)).append('\'');
+					sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
 			}
 			sb.append(',');
 		}

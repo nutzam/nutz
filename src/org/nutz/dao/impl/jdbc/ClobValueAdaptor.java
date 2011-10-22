@@ -20,7 +20,10 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
 
 	public Object get(ResultSet rs, String colName) throws SQLException {
 		File f = this.createTempFile();
-		Files.write(f, rs.getClob(colName).getAsciiStream());
+		Clob clob = rs.getClob(colName);
+		if (clob == null)
+			return null;
+		Files.write(f, clob.getAsciiStream());
 		return new SimpleClob(f);
 	}
 

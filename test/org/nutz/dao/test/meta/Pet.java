@@ -1,5 +1,7 @@
 package org.nutz.dao.test.meta;
 
+import java.sql.Timestamp;
+
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Strings;
@@ -35,6 +37,9 @@ public class Pet {
 
 	@Column("mas")
 	private int masterId;
+
+	@Column
+	private Timestamp birthday;
 
 	public int getId() {
 		return id;
@@ -78,6 +83,14 @@ public class Pet {
 	public Pet setAge(int age) {
 		this.age = age;
 		return this;
+	}
+
+	public Timestamp getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Timestamp birthday) {
+		this.birthday = birthday;
 	}
 
 	public String toString() {

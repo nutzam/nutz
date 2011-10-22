@@ -10,6 +10,7 @@ import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
+import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 
 /**
@@ -47,15 +48,15 @@ public class Cnd implements OrderBy, Criteria {
 
 	/*------------------------------------------------------------------*/
 	public static Condition format(String format, Object... args) {
-		return new SimpleCondition(format, args);
+		return Strings.isBlank(format) ? null : new SimpleCondition(format, args);
 	}
 
 	public static Condition wrap(String str) {
-		return new SimpleCondition((Object) str);
+		return Strings.isBlank(str) ? null : new SimpleCondition((Object) str);
 	}
 
 	public static Condition wrap(String sql, Object value) {
-		return new SimpleCondition(new CharSegment(sql).setBy(value));
+		return Strings.isBlank(sql) ? null : new SimpleCondition(new CharSegment(sql).setBy(value));
 	}
 
 	public static SqlExpression exp(String name, String op, Object value) {

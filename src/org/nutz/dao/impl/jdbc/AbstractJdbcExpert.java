@@ -233,4 +233,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		cs.set("T", table).set("F", field);
 		return cs.toString();
 	}
+	
+	protected String getDefaultValue(MappingField mf) {
+		return mf.getDefaultValue(null).replaceAll("@", "@@");
+	}
 }

@@ -23,6 +23,12 @@ public class QueryTest extends DaoCase {
 	}
 
 	@Test
+	public void query_by_wrap_null() {
+		List<Pet> pets = dao.query(Pet.class, Cnd.wrap(null), null);
+		assertEquals(8, pets.size());
+	}
+
+	@Test
 	public void query_by_orderbyset() {
 		List<Pet> pets = dao.query(Pet.class, Cnd.cri().asc("id"), null);
 		assertEquals(8, pets.size());
@@ -138,7 +144,7 @@ public class QueryTest extends DaoCase {
 	public void fetch_record() {
 		Record re = dao.fetch("t_pet", Cnd.where("name", "=", "pet3"));
 		Pet pet = re.toPojo(Pet.class);
-		assertEquals(5, re.getColumnCount());
+		assertEquals(6, re.getColumnCount());
 		assertEquals(4, pet.getId());
 		assertEquals("pet3", pet.getName());
 	}
