@@ -29,9 +29,9 @@ import org.nutz.lang.born.Borns;
 import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectByGetter;
 import org.nutz.lang.eject.Ejecting;
-import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
+import org.nutz.lang.inject.Injecting;
 
 /**
  * 包裹了 Class<?>， 提供了更多的反射方法
@@ -140,9 +140,27 @@ public class Mirror<T> {
 								: new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
 																								: typeExtractor);
 	}
+	
+	/**
+	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br> 
+	 * 可以使用 getGenericsTypes() 方法取得它的泛型数组
+	 * @param type
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked" })
+    public static <T> Mirror<T> me(Type type){
+	    if(null == type){
+	        return null;
+	    }
+	    Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
+	    mir.type = type;
+	    return mir;
+	}
 
 	private Class<T> klass;
-
+	
+	private Type type;
+	
 	private TypeExtractor typeExtractor;
 
 	/**
@@ -452,6 +470,17 @@ public class Mirror<T> {
 			cc = cc.getSuperclass();
 		} while (null == ann && cc != Object.class);
 		return ann;
+	}
+	
+	/**
+	 * 取得当前类型的泛型数组
+	 * @return
+	 */
+	public Type[] getGenericsTypes(){
+	    if(type instanceof ParameterizedType){
+	        return Lang.getGenericsTypes(type);
+	    }
+	    return null;
 	}
 
 	/**
