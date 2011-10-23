@@ -2,10 +2,13 @@ package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
@@ -83,6 +86,8 @@ class ObjcetNaviNode {
 	        return injectList(mirror);
 	    } else if(mirror.is(Map.class)){
 	        return injectMap(mirror);
+	    } else if(mirror.is(Set.class)){
+	        return injectSet(mirror);
 	    }
         return injectObj(mirror);
 	}
@@ -99,28 +104,36 @@ class ObjcetNaviNode {
 	            continue;
 	        }
 	        // 不是叶子结点,不能直接注入
-	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[0]);
+	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[1]);
 	        obj.put(entry.getKey(), onn.inject(fieldMirror));
 	    }
 	    return obj;
 	}
 	
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Object injectList(Mirror<?> mirror){
-        List obj = new ArrayList();
+	@SuppressWarnings({ "rawtypes" })
+	private Object injectSet(Mirror<?> mirror){
+	    return injectCollection(new HashSet(), mirror);
+	}
+	@SuppressWarnings("rawtypes")
+    private Object injectList(Mirror<?> mirror){
+	    return injectCollection(new ArrayList(), mirror);
+	}
+	
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    private Object injectCollection(Collection obj, Mirror mirror){
 	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
-	        ObjcetNaviNode onn = entry.getValue();
-	        if (onn.isLeaf()) {
-	                Class<?> clazz = (Class<?>) mirror.getGenericsTypes()[0];
-	                ParamConvertor pc = Params.makeParamConvertor(clazz);
-	                obj.add(pc.convert(onn.getValue()));
-	            continue;
-	        }
-	        // 不是叶子结点,不能直接注入
-	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[0]);
-	        obj.add(onn.inject(fieldMirror));
-	    }
-	    return obj;
+            ObjcetNaviNode onn = entry.getValue();
+            if (onn.isLeaf()) {
+                Class<?> clazz = (Class<?>) mirror.getGenericsTypes()[0];
+                ParamConvertor pc = Params.makeParamConvertor(clazz);
+                obj.add(pc.convert(onn.getValue()));
+                continue;
+            }
+            // 不是叶子结点,不能直接注入
+            Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[0]);
+            obj.add(onn.inject(fieldMirror));
+        }
+        return obj;
 	}
 	private Object injectObj(Mirror<?> mirror){
 	    Object obj = mirror.born();

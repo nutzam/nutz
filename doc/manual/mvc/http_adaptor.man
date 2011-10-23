@@ -69,8 +69,30 @@
 			user.id = 23
 			user.name = abc
 			user.age = 56
+			
 			dep.id = 15
 			dep.name = QA
+			
+			dep.users[1].id = 23
+			dep.users[1].name = abc
+			dep.users[1].age = 56
+			
+			dep.users[10001].id = 22
+			dep.users[10001].name = abcd
+			dep.users[10001].age = 26
+			
+			dep.users.50001.id = 22
+			dep.users.50001.name = abcd
+			dep.users.50001.age = 26
+			
+			dep.children[abc].id = 13
+			dep.children[abc].name = ABC
+			
+			dep.children[jk].id = 25
+			dep.children[jk].name = JK
+			
+			dep.children.nutz.id = 1
+			dep.children.nutz.name = NUTZ
 			}}}
 			怎样在入口函数内声明这样的表单项呢？我们可以采用前缀方式：
 			{{{<Java>
@@ -80,15 +102,25 @@
 			}
 			}}}
 			关键就是这个 {*`@Param("::user.")`} 符号 '{#FF00FF;*::}' 表示这个参数是一个表单对象，并且它有统一的前缀
-			'{#FF00FF;*user.}' 表示前缀，Nutz.Mvc 会查看一下 User 类所有的字段：
+			'{#FF00FF;*user.}' 表示前缀，Nutz.Mvc 会查看一下 User, Department 类所有的字段：
 			{{{
 			public class User {
 				private int id;
 				private String name;
 				private int age;
 			}
+			public class Department {
+				private List<User> users;
+				private Map<String, User> children;
+			}
 			}}}
-			那么， id 会对应到 HTTP 参数中的  'user.id'， 其他的字段同理
+			那么， id 会对应到 HTTP 参数中的  'user.id'， 其他的字段同理.
+			眼尖的你肯定发现了有点异样的地方, 对了, 那就是我们 nutz 对集合的支持. 在此, 你不仅可以对一般的属性进行注入, 还能对list, set,map集合进行注入. 在此我们提供了两种书写方式:
+			1. 对象.集合名[索引/key] = 值
+				对象.集合[索引/key].泛型属性 = 值
+			2. 对象.集合名.索引/key = 值
+				对象.集合名.索引/key.泛型属性 = 值
+			两种方式是完全等价的(小声透露一下, 其实代码里面是把'[' 转成'.'并去掉 ']' 的方式实现的...). 并且都可以包含多层集合. 同时需要注意的是, 在进行 list 注入的时候需要注意, 出于内存方面的考虑, 所提供的 "索引" 只做为一个组装对象的参考字段(必需,不然不能组装对象), 不做为真实list的索引使用. 因此, list 的索引可以是任意大小的数字, 以及字符, 出字符串组成.
 
 		混合方式
 			值得一说的是，按照这个约定，实际上，一个入口函数，是可以支持多个  POJO 的，也可以写成这样

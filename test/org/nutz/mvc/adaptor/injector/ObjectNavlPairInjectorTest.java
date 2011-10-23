@@ -107,12 +107,13 @@ public class ObjectNavlPairInjectorTest {
 	}
 	
 	@Test
-	public void test_collection(){
+	public void testList(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
 	    req.setParameter("books[1]", "a");
-	    req.setParameter("books[2]", "b");
+	    req.setParameter("books[ads]", "b");
 	    req.setParameter("books[3]", "c");
+	   
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
@@ -122,14 +123,35 @@ public class ObjectNavlPairInjectorTest {
 	}
 	
 	@Test
-	public void testList(){
+	public void testMap(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("pojos[1].str", "a");
+	    req.setParameter("maps[abc].str", "a");
+	    req.setParameter("maps[1].str", "b");
+	    req.setParameter("maps.jk.str", "c");
+	    req.setParameter("maps.jk.maps.nutz", "k");
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
-	    assertEquals(pojo.pojos.get(0).str, "a");
+	    assertEquals(pojo.maps.get("abc").str, "a");
+	    assertEquals(pojo.maps.get("1").str, "b");
+	    assertEquals(pojo.maps.get("jk").str, "c");
+	    assertEquals(pojo.maps.get("jk").maps.get("nutz"), "k");
+	}
+	
+	@Test
+	public void testSet(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("sets.jk.str", "c");
+	    req.setParameter("sets.jk.maps.nutz", "k");
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    for(MvcTestPojo m : pojo.sets){
+	        assertEquals(m.str, "c");
+	        assertEquals(m.maps.get("nutz"), "k");
+	    }
 	}
 
 }
