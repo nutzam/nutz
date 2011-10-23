@@ -1,6 +1,8 @@
 package org.nutz.mvc.adaptor.injector;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 
@@ -102,6 +104,54 @@ public class ObjectNavlPairInjectorTest {
 		MvcTestPojo pojoNull = (MvcTestPojo) inj().get(null, req, null, null);
 		
 		assertEquals(null, pojoNull.date);
+	}
+	
+	@Test
+	public void testList(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("books[1]", "a");
+	    req.setParameter("books[ads]", "b");
+	    req.setParameter("books[3]", "c");
+	   
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    assertTrue(pojo.books.contains("a"));
+	    assertTrue(pojo.books.contains("b"));
+	    assertTrue(pojo.books.contains("c"));
+	}
+	
+	@Test
+	public void testMap(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("maps[abc].str", "a");
+	    req.setParameter("maps[1].str", "b");
+	    req.setParameter("maps.jk.str", "c");
+	    req.setParameter("maps.jk.maps.nutz", "k");
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    assertEquals(pojo.maps.get("abc").str, "a");
+	    assertEquals(pojo.maps.get("1").str, "b");
+	    assertEquals(pojo.maps.get("jk").str, "c");
+	    assertEquals(pojo.maps.get("jk").maps.get("nutz"), "k");
+	}
+	
+	@Test
+	public void testSet(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("sets.jk.str", "c");
+	    req.setParameter("sets.jk.maps.nutz", "k");
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    for(MvcTestPojo m : pojo.sets){
+	        assertEquals(m.str, "c");
+	        assertEquals(m.maps.get("nutz"), "k");
+	    }
 	}
 
 }
