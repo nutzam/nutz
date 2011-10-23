@@ -482,6 +482,17 @@ public class Mirror<T> {
 	    }
 	    return null;
 	}
+	
+	/**
+	 * 取得当前类型的指定泛型
+	 * @param index
+	 * @return
+	 */
+	public Type getGenericsType(int index){
+	    Type[] ts = getGenericsTypes();
+	    return ts == null ? null : 
+	        (ts.length <= index ? null : ts[index]);
+	}
 
 	/**
 	 * 获取本类型所有的方法，包括私有方法。不包括 Object 的方法
@@ -1304,6 +1315,7 @@ public class Mirror<T> {
 	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
 	 */
 	public static Type[] getTypeParams(Class<?> klass) {
+	    // TODO 这个实现会导致泛型丢失,只能取得申明类型
 		if (klass == null || "java.lang.Object".equals(klass.getName()))
 			return null;
 		// 看看父类

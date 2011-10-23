@@ -82,6 +82,7 @@ class ObjcetNaviNode {
 	 *            待注入对象
 	 */
 	public Object inject(Mirror<?> mirror) {
+	    // TODO 这里的几个实现, 感觉可以把它们提成单独的类来实现.
 	    if(mirror.is(List.class)){
 	        return injectList(mirror);
 	    } else if(mirror.is(Map.class)){
@@ -98,13 +99,13 @@ class ObjcetNaviNode {
 	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
 	        ObjcetNaviNode onn = entry.getValue();
 	        if (onn.isLeaf()) {
-	            Class<?> clazz = (Class<?>) mirror.getGenericsTypes()[0];
+	            Class<?> clazz = (Class<?>) mirror.getGenericsType(0);
 	            ParamConvertor pc = Params.makeParamConvertor(clazz);
 	            obj.put(entry.getKey(), pc.convert(onn.getValue()));
 	            continue;
 	        }
 	        // 不是叶子结点,不能直接注入
-	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[1]);
+	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsType(1));
 	        obj.put(entry.getKey(), onn.inject(fieldMirror));
 	    }
 	    return obj;
@@ -124,13 +125,13 @@ class ObjcetNaviNode {
 	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
             ObjcetNaviNode onn = entry.getValue();
             if (onn.isLeaf()) {
-                Class<?> clazz = (Class<?>) mirror.getGenericsTypes()[0];
+                Class<?> clazz = (Class<?>) mirror.getGenericsType(0);
                 ParamConvertor pc = Params.makeParamConvertor(clazz);
                 obj.add(pc.convert(onn.getValue()));
                 continue;
             }
             // 不是叶子结点,不能直接注入
-            Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsTypes()[0]);
+            Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsType(0));
             obj.add(onn.inject(fieldMirror));
         }
         return obj;
