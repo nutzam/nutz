@@ -130,7 +130,7 @@ public abstract class Pojos {
 				}
 				return cndPk(en, pks);
 			default:
-				throw Lang.makeThrow(	"Don't know how to delete %s:'%s'",
+				throw Lang.makeThrow(	"Don't know how to make fetch key %s:'%s'",
 										en.getType().getName(),
 										obj);
 			}
