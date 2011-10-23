@@ -70,8 +70,7 @@ public class ShuntingYard {
 	
 	/**
 	 * 转换成 逆波兰表示法（Reverse Polish notation，RPN，或逆波兰记法）
-	 * @param reader
-	 * @return
+	 * @param val
 	 * @throws IOException 
 	 */
 	public Queue<Object> parseToRPN(String val) {

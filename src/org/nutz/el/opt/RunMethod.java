@@ -26,7 +26,6 @@ public interface RunMethod {
 
 	/**
 	 * 取得方法自身的符号
-	 * @return
 	 */
 	String fetchSelf();
 }
