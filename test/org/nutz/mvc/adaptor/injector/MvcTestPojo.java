@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.util.Date;
+import java.util.List;
 
 public class MvcTestPojo {
 
@@ -13,4 +14,8 @@ public class MvcTestPojo {
 	public Long longValue;
 
 	public Date date;
+	
+	public List<String> books;
+	
+	public List<MvcTestPojo> pojos;
 }

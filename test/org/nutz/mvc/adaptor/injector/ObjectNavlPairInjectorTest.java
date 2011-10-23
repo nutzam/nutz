@@ -1,6 +1,8 @@
 package org.nutz.mvc.adaptor.injector;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 
@@ -102,6 +104,32 @@ public class ObjectNavlPairInjectorTest {
 		MvcTestPojo pojoNull = (MvcTestPojo) inj().get(null, req, null, null);
 		
 		assertEquals(null, pojoNull.date);
+	}
+	
+	@Test
+	public void test_collection(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("books[1]", "a");
+	    req.setParameter("books[2]", "b");
+	    req.setParameter("books[3]", "c");
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    assertTrue(pojo.books.contains("a"));
+	    assertTrue(pojo.books.contains("b"));
+	    assertTrue(pojo.books.contains("c"));
+	}
+	
+	@Test
+	public void testList(){
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("pojos[1].str", "a");
+	    //执行
+	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
+	    
+	    assertEquals(pojo.pojos.get(0).str, "a");
 	}
 
 }
