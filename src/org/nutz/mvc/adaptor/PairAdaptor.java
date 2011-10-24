@@ -19,6 +19,7 @@ import org.nutz.mvc.annotation.Param;
  * 将整个 HTTP 请求作为名值对来处理
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author juqkai(juqkai@gmail.com)
  */
 public class PairAdaptor extends AbstractAdaptor {
     private static final Log log = Logs.get();

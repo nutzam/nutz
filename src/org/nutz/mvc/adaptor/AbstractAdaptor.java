@@ -34,6 +34,7 @@ import org.nutz.mvc.annotation.Param;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author juqkai(juqkai@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
 

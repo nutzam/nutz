@@ -16,6 +16,11 @@ import org.nutz.lang.Mirror;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 
+/**
+ * 
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public class ObjectNavlPairInjectorTest {
 
 	public static ObjectNavlPairInjector inj() {
@@ -193,5 +198,18 @@ public class ObjectNavlPairInjectorTest {
 	        assertEquals(m.maps.get("nutz"), "k");
 	    }
 	}
+	
+    @Test
+    public void testArray() throws NoSuchFieldException{
+        //准备数据
+        MockHttpServletRequest req = Mock.servlet.request();
+        req.setParameter("arrays[1].str", "a");
+        Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
+        Field field = mirror.getField("arrays");
+        ObjectNavlPairInjector onpi = inj("arrays", field.getGenericType());
+        //执行
+        MvcTestPojo[] pojo =  (MvcTestPojo[]) onpi.get(null, req, null, null);
+        assertTrue(pojo[0].str.contains("a"));
+    }
 
 }
