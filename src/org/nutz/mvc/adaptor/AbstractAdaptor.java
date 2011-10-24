@@ -2,7 +2,6 @@ package org.nutz.mvc.adaptor;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
@@ -14,8 +13,6 @@ import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
@@ -37,10 +34,9 @@ import org.nutz.mvc.annotation.Param;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
+ * @author juqkai(juqkai@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
-
-	private static final Log log = Logs.get();
 
 	protected ParamInjector[] injs;
 
@@ -131,16 +127,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 	}
 
 	protected ParamInjector evalInjector(Type type, Param param) {
-		Class<?> clazz = Lang.getTypeClass(type);
-		Type[] paramTypes = null;
-		if (type instanceof ParameterizedType)
-			paramTypes = ((ParameterizedType) type).getActualTypeArguments();
-		if (clazz == null) {
-			if (log.isWarnEnabled())
-				log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
-			return null;
-		}
-		return evalInjectorBy(clazz, param, paramTypes);
+		return evalInjectorBy(type, param);
 	}
 
 	/**
@@ -154,7 +141,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 	 *            参数的范型，无范型的，值为 null
 	 * @return 一个新的参数注入器实例
 	 */
-	protected abstract ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes);
+	protected abstract ParamInjector evalInjectorBy(Type type, Param param);
 
 	public Object[] adapt(	ServletContext sc,
 							HttpServletRequest req,

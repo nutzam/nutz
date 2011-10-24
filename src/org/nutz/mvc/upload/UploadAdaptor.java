@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.annotation.Param;
@@ -53,6 +55,7 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * @see org.nutz.mvc.annotation.Param
  */
 public class UploadAdaptor extends PairAdaptor {
+    private static final Log log = Logs.get();
 
 	private UploadingContext context;
 
@@ -96,36 +99,45 @@ public class UploadAdaptor extends PairAdaptor {
 		return context;
 	}
 
-	protected ParamInjector evalInjectorBy(Class<?> type, Param param, Type[] paramTypes) {
+	protected ParamInjector evalInjectorBy(Type type, Param param) {
+	 // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
+        // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
+        Class<?> clazz = Lang.getTypeClass(type);
+        if (clazz == null) {
+            if (log.isWarnEnabled())
+                log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
+            return null;
+        }
+        
 		// Map
-		if (Map.class.isAssignableFrom(type))
+		if (Map.class.isAssignableFrom(clazz))
 			return new MapSelfInjector();
 
 		if (null == param)
-			return super.evalInjectorBy(type, param, paramTypes);
+			return super.evalInjectorBy(type, param);
 
 		String paramName = param.value();
 
 		// File
-		if (File.class.isAssignableFrom(type))
+		if (File.class.isAssignableFrom(clazz))
 			return new FileInjector(paramName);
 		// FileMeta
-		if (FieldMeta.class.isAssignableFrom(type))
+		if (FieldMeta.class.isAssignableFrom(clazz))
 			return new FileMetaInjector(paramName);
 		// TempFile
-		if (TempFile.class.isAssignableFrom(type))
+		if (TempFile.class.isAssignableFrom(clazz))
 			return new TempFileInjector(paramName);
 		// InputStream
-		if (InputStream.class.isAssignableFrom(type))
+		if (InputStream.class.isAssignableFrom(clazz))
 			return new InputStreamInjector(paramName);
 		// Reader
-		if (Reader.class.isAssignableFrom(type))
+		if (Reader.class.isAssignableFrom(clazz))
 			return new ReaderInjector(paramName);
 		// List
-		if (List.class.isAssignableFrom(type))
+		if (List.class.isAssignableFrom(clazz))
 			return new MapListInjector(paramName);
 		// Other
-		return super.evalInjectorBy(type, param, paramTypes);
+		return super.evalInjectorBy(type, param);
 	}
 
 	public Map<String, Object> getReferObject(	ServletContext sc,

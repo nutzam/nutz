@@ -1,5 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
+import java.lang.reflect.Type;
+
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,7 +25,7 @@ public class ObjectNavlPairInjector implements ParamInjector {
 	protected Mirror<?> mirror;
 	private String prefix;
 
-	public ObjectNavlPairInjector(String prefix, Class<?> type) {
+	public ObjectNavlPairInjector(String prefix, Type type) {
 		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
 		this.prefix = prefix;
 		this.mirror = Mirror.me(type);

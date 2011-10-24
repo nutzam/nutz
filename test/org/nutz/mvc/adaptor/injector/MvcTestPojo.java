@@ -24,4 +24,6 @@ public class MvcTestPojo {
 	public Set<MvcTestPojo> sets;
 	
 	public Map<String, MvcTestPojo> maps;
+	
+	public MvcTestPojo[] arrays;
 }

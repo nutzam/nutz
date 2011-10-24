@@ -1,5 +1,6 @@
 package org.nutz.mvc.adaptor.injector;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,10 +90,15 @@ class ObjcetNaviNode {
 	        return injectMap(mirror);
 	    } else if(mirror.is(Set.class)){
 	        return injectSet(mirror);
+	    } else if(mirror.getType().isArray()){
+	        return injectArray(mirror);
 	    }
         return injectObj(mirror);
 	}
 	
+	/**
+	 * 注入map
+	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Object injectMap(Mirror<?> mirror){
 	    Map obj = new HashMap();
@@ -111,15 +117,30 @@ class ObjcetNaviNode {
 	    return obj;
 	}
 	
+	/**
+	 * 注入set
+	 * @param mirror
+	 * @return
+	 */
 	@SuppressWarnings({ "rawtypes" })
 	private Object injectSet(Mirror<?> mirror){
 	    return injectCollection(new HashSet(), mirror);
 	}
+	/**
+	 * 注入list
+	 * @param mirror
+	 * @return
+	 */
 	@SuppressWarnings("rawtypes")
     private Object injectList(Mirror<?> mirror){
 	    return injectCollection(new ArrayList(), mirror);
 	}
-	
+	/**
+	 * 注入集合
+	 * @param obj
+	 * @param mirror
+	 * @return
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
     private Object injectCollection(Collection obj, Mirror mirror){
 	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
@@ -136,6 +157,33 @@ class ObjcetNaviNode {
         }
         return obj;
 	}
+	/**
+	 * 注入数组
+	 * @param mirror
+	 * @return
+	 */
+    private Object injectArray(Mirror<?> mirror){
+        Class<?> clazz = (Class<?>) mirror.getType().getComponentType();
+        Object obj = Array.newInstance(clazz, child.size());
+        int index = 0;
+        for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
+            ObjcetNaviNode onn = entry.getValue();
+            if (onn.isLeaf()) {
+                ParamConvertor pc = Params.makeParamConvertor(clazz);
+                Array.set(obj, index ++, pc.convert(onn.getValue()));
+                continue;
+            }
+            // 不是叶子结点,不能直接注入
+            Mirror<?> fieldMirror = Mirror.me(clazz);
+            Array.set(obj, index++, onn.inject(fieldMirror));
+        }
+        return obj;
+    }
+    /**
+     * 注入普通对象
+     * @param mirror
+     * @return
+     */
 	private Object injectObj(Mirror<?> mirror){
 	    Object obj = mirror.born();
 	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {

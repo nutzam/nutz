@@ -1,6 +1,7 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -29,7 +30,7 @@ public class ObjectPairInjector implements ParamInjector {
 	protected Field[] fields;
 	protected ParamConvertor[] converters;
 
-	public ObjectPairInjector(String prefix, Class<?> type) {
+	public ObjectPairInjector(String prefix, Type type) {
 		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
 		this.mirror = Mirror.me(type);
 		fields = mirror.getFields();
