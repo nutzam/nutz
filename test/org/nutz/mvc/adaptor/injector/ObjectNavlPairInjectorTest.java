@@ -4,21 +4,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 
 public class ObjectNavlPairInjectorTest {
 
-	public static ObjectNavlPairInjector inj(Class<?> type) {
-		return new ObjectNavlPairInjector("", type);
-	}
-
 	public static ObjectNavlPairInjector inj() {
-		return inj(MvcTestPojo.class);
+		return new ObjectNavlPairInjector("pojo", MvcTestPojo.class);
+	}
+	
+	public static ObjectNavlPairInjector inj(String prefix, Type type){
+	    return new ObjectNavlPairInjector(prefix, type);
 	}
 
 	/**
@@ -28,8 +33,8 @@ public class ObjectNavlPairInjectorTest {
 	public void test_balnk_param_to_number() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameter("longValue", "  ");
-		req.setParameter("num", "  ");
+		req.setParameter("pojo.longValue", "  ");
+		req.setParameter("pojo.num", "  ");
 
 		// 执行
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
@@ -46,8 +51,8 @@ public class ObjectNavlPairInjectorTest {
 	public void test_duplicated_name_params() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameter("num", 23);
-		req.setParameterValues("names", Lang.array("A", "B", "C"));
+		req.setParameter("pojo.num", 23);
+		req.setParameterValues("pojo.names", Lang.array("A", "B", "C"));
 
 		// 执行
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
@@ -65,7 +70,7 @@ public class ObjectNavlPairInjectorTest {
 	public void test_array_to_string() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameterValues("str", Lang.array("A", "B", "C"));
+		req.setParameterValues("pojo.str", Lang.array("A", "B", "C"));
 
 		// 执行
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
@@ -78,7 +83,7 @@ public class ObjectNavlPairInjectorTest {
 	public void test_string_to_string() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameterValues("str", Lang.array("A"));
+		req.setParameterValues("pojo.str", Lang.array("A"));
 
 		// 执行
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
@@ -91,7 +96,7 @@ public class ObjectNavlPairInjectorTest {
 	public void test_date(){
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameter("date", "2010-01-01");
+		req.setParameter("pojo.date", "2010-01-01");
 		// 执行
 		MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 		
@@ -99,7 +104,7 @@ public class ObjectNavlPairInjectorTest {
 		System.out.println(sdf.format(pojo.date));
 		assertEquals("2010-01-01", sdf.format(pojo.date));
 		
-		req.setParameter("date", "");
+		req.setParameter("pojo.date", "");
 		// 执行
 		MvcTestPojo pojoNull = (MvcTestPojo) inj().get(null, req, null, null);
 		
@@ -110,9 +115,9 @@ public class ObjectNavlPairInjectorTest {
 	public void testList(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("books[1]", "a");
-	    req.setParameter("books[ads]", "b");
-	    req.setParameter("books[3]", "c");
+	    req.setParameter("pojo.books[1]", "a");
+	    req.setParameter("pojo.books[ads]", "b");
+	    req.setParameter("pojo.books[3]", "c");
 	   
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
@@ -122,14 +127,28 @@ public class ObjectNavlPairInjectorTest {
 	    assertTrue(pojo.books.contains("c"));
 	}
 	
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testListParam() throws NoSuchFieldException{
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("lists[1].str", "a");
+	    Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
+	    Field field = mirror.getField("lists");
+	    ObjectNavlPairInjector onpi = inj("lists", field.getGenericType());
+	    //执行
+	    List<MvcTestPojo> pojo =  (List<MvcTestPojo>) onpi.get(null, req, null, null);
+	    assertTrue(pojo.get(0).str.contains("a"));
+	}
+	
 	@Test
 	public void testMap(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("maps[abc].str", "a");
-	    req.setParameter("maps[1].str", "b");
-	    req.setParameter("maps.jk.str", "c");
-	    req.setParameter("maps.jk.maps.nutz", "k");
+	    req.setParameter("pojo.maps[abc].str", "a");
+	    req.setParameter("pojo.maps[1].str", "b");
+	    req.setParameter("pojo.maps.jk.str", "c");
+	    req.setParameter("pojo.maps.jk.maps.nutz", "k");
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
@@ -139,12 +158,33 @@ public class ObjectNavlPairInjectorTest {
 	    assertEquals(pojo.maps.get("jk").maps.get("nutz"), "k");
 	}
 	
+	@SuppressWarnings("unchecked")
+    @Test
+	public void testMapParam() throws NoSuchFieldException{
+	    //准备数据
+	    MockHttpServletRequest req = Mock.servlet.request();
+	    req.setParameter("maps[abc].str", "a");
+	    req.setParameter("maps[1].str", "b");
+	    req.setParameter("maps.jk.str", "c");
+	    req.setParameter("maps.jk.maps.nutz", "k");
+	    //执行
+	    Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
+        Field field = mirror.getField("maps");
+        ObjectNavlPairInjector onpi = inj("maps", field.getGenericType());
+        Map<String, MvcTestPojo> pojo = (Map<String, MvcTestPojo>) onpi.get(null, req, null, null);
+	    
+	    assertEquals(pojo.get("abc").str, "a");
+	    assertEquals(pojo.get("1").str, "b");
+	    assertEquals(pojo.get("jk").str, "c");
+	    assertEquals(pojo.get("jk").maps.get("nutz"), "k");
+	}
+	
 	@Test
 	public void testSet(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("sets.jk.str", "c");
-	    req.setParameter("sets.jk.maps.nutz", "k");
+	    req.setParameter("pojo.sets.jk.str", "c");
+	    req.setParameter("pojo.sets.jk.maps.nutz", "k");
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
