@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
+import org.nutz.lang.util.NutType;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 
@@ -138,9 +137,7 @@ public class ObjectNavlPairInjectorTest {
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
 	    req.setParameter("lists[1].str", "a");
-	    Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
-	    Field field = mirror.getField("lists");
-	    ObjectNavlPairInjector onpi = inj("lists", field.getGenericType());
+	    ObjectNavlPairInjector onpi = inj("lists", NutType.list(MvcTestPojo.class));
 	    //执行
 	    List<MvcTestPojo> pojo =  (List<MvcTestPojo>) onpi.get(null, req, null, null);
 	    assertTrue(pojo.get(0).str.contains("a"));
@@ -173,9 +170,7 @@ public class ObjectNavlPairInjectorTest {
 	    req.setParameter("maps.jk.str", "c");
 	    req.setParameter("maps.jk.maps.nutz", "k");
 	    //执行
-	    Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
-        Field field = mirror.getField("maps");
-        ObjectNavlPairInjector onpi = inj("maps", field.getGenericType());
+        ObjectNavlPairInjector onpi = inj("maps", NutType.map(String.class, MvcTestPojo.class));
         Map<String, MvcTestPojo> pojo = (Map<String, MvcTestPojo>) onpi.get(null, req, null, null);
 	    
 	    assertEquals(pojo.get("abc").str, "a");
@@ -204,9 +199,7 @@ public class ObjectNavlPairInjectorTest {
         //准备数据
         MockHttpServletRequest req = Mock.servlet.request();
         req.setParameter("arrays[1].str", "a");
-        Mirror<?> mirror = Mirror.me(MvcTestPojo.class);
-        Field field = mirror.getField("arrays");
-        ObjectNavlPairInjector onpi = inj("arrays", field.getGenericType());
+        ObjectNavlPairInjector onpi = inj("arrays", NutType.array(MvcTestPojo.class));
         //执行
         MvcTestPojo[] pojo =  (MvcTestPojo[]) onpi.get(null, req, null, null);
         assertTrue(pojo[0].str.contains("a"));

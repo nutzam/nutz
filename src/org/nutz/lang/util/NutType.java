@@ -1,5 +1,6 @@
 package org.nutz.lang.util;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.List;
@@ -20,6 +21,15 @@ public class NutType implements ParameterizedType {
 	 */
 	public static Type list(Type clazz){
 		return new NutType(List.class,clazz);
+	}
+	
+	/**
+	 * 生成Abc[]形式的泛型信息
+	 * @param clazz
+	 * @return
+	 */
+	public static Type array(Class<?> clazz){
+	    return new NutType(Array.newInstance(clazz, 0).getClass());
 	}
 	
 	/**
