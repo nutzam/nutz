@@ -46,8 +46,10 @@ public class InsertValuesPItem extends AbstractPItem {
 
 	public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
 		List<MappingField> mfs = _mfs(en);
-		for (MappingField mf : mfs)
-			params[off++] = mf.getValue(obj);
+		for (MappingField mf : mfs) {
+			Object v = mf.getValue(obj);
+			params[off++] = null == v ? mf.getDefaultValue(obj) : v;
+		}
 		return off;
 	}
 

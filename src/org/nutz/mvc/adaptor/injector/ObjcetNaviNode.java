@@ -1,8 +1,15 @@
 package org.nutz.mvc.adaptor.injector;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
@@ -32,6 +39,8 @@ class ObjcetNaviNode {
 	 * 
 	 */
 	public void put(String path, String[] value) {
+	    path = path.replace('[', '.');
+	    path = path.replace("]", "");
 		name = fetchName(path);
 		String subPath = path.substring(path.indexOf(separator) + 1); 
 		if (path.indexOf(separator) <= 0 || "".equals(subPath)) {
@@ -55,7 +64,7 @@ class ObjcetNaviNode {
 		onn.put(path, value);
 		child.put(subname, onn);
 	}
-
+	
 	/**
 	 * 取得节点名
 	 * 
@@ -66,7 +75,7 @@ class ObjcetNaviNode {
 		}
 		return path.substring(0, path.indexOf(separator));
 	}
-
+	
 	/**
 	 * 将结点树中的值注入到 mirror 中
 	 * 
@@ -74,31 +83,132 @@ class ObjcetNaviNode {
 	 *            待注入对象
 	 */
 	public Object inject(Mirror<?> mirror) {
-		Object obj = mirror.born();
-		for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
-			ObjcetNaviNode onn = entry.getValue();
-			Injecting in = mirror.getInjecting(entry.getKey());
-			if (onn.isLeaf()) {
-				try {
-					ParamConvertor pc = Params.makeParamConvertor(mirror.getField(entry.getKey()).getType());
-					in.inject(obj, pc.convert(onn.getValue()));
-	//				in.inject(obj, onn.getValue());
-				} catch (NoSuchFieldException e) {
-					continue;
-				}
-				continue;
-			}
-			// 不是叶子结点,不能直接注入
-			Mirror<?> fieldMirror;
-			try {
-				fieldMirror = Mirror.me(mirror.getField(entry.getKey()).getType());
-				in.inject(obj, onn.inject(fieldMirror));
-			}
-			catch (NoSuchFieldException e) {
-				continue;//TODO 是不是应该log一下呢?
-			}
-		}
-		return obj;
+	    // TODO 这里的几个实现, 感觉可以把它们提成单独的类来实现.
+	    if(mirror.is(List.class)){
+	        return injectList(mirror);
+	    } else if(mirror.is(Map.class)){
+	        return injectMap(mirror);
+	    } else if(mirror.is(Set.class)){
+	        return injectSet(mirror);
+	    } else if(mirror.getType().isArray()){
+	        return injectArray(mirror);
+	    }
+        return injectObj(mirror);
+	}
+	
+	/**
+	 * 注入map
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private Object injectMap(Mirror<?> mirror){
+	    Map obj = new HashMap();
+	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
+	        ObjcetNaviNode onn = entry.getValue();
+	        if (onn.isLeaf()) {
+	            Class<?> clazz = (Class<?>) mirror.getGenericsType(0);
+	            ParamConvertor pc = Params.makeParamConvertor(clazz);
+	            obj.put(entry.getKey(), pc.convert(onn.getValue()));
+	            continue;
+	        }
+	        // 不是叶子结点,不能直接注入
+	        Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsType(1));
+	        obj.put(entry.getKey(), onn.inject(fieldMirror));
+	    }
+	    return obj;
+	}
+	
+	/**
+	 * 注入set
+	 * @param mirror
+	 * @return
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	private Object injectSet(Mirror<?> mirror){
+	    return injectCollection(new HashSet(), mirror);
+	}
+	/**
+	 * 注入list
+	 * @param mirror
+	 * @return
+	 */
+	@SuppressWarnings("rawtypes")
+    private Object injectList(Mirror<?> mirror){
+	    return injectCollection(new ArrayList(), mirror);
+	}
+	/**
+	 * 注入集合
+	 * @param obj
+	 * @param mirror
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+    private Object injectCollection(Collection obj, Mirror mirror){
+	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
+            ObjcetNaviNode onn = entry.getValue();
+            if (onn.isLeaf()) {
+                Class<?> clazz = (Class<?>) mirror.getGenericsType(0);
+                ParamConvertor pc = Params.makeParamConvertor(clazz);
+                obj.add(pc.convert(onn.getValue()));
+                continue;
+            }
+            // 不是叶子结点,不能直接注入
+            Mirror<?> fieldMirror = Mirror.me(mirror.getGenericsType(0));
+            obj.add(onn.inject(fieldMirror));
+        }
+        return obj;
+	}
+	/**
+	 * 注入数组
+	 * @param mirror
+	 * @return
+	 */
+    private Object injectArray(Mirror<?> mirror){
+        Class<?> clazz = (Class<?>) mirror.getType().getComponentType();
+        Object obj = Array.newInstance(clazz, child.size());
+        int index = 0;
+        for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
+            ObjcetNaviNode onn = entry.getValue();
+            if (onn.isLeaf()) {
+                ParamConvertor pc = Params.makeParamConvertor(clazz);
+                Array.set(obj, index ++, pc.convert(onn.getValue()));
+                continue;
+            }
+            // 不是叶子结点,不能直接注入
+            Mirror<?> fieldMirror = Mirror.me(clazz);
+            Array.set(obj, index++, onn.inject(fieldMirror));
+        }
+        return obj;
+    }
+    /**
+     * 注入普通对象
+     * @param mirror
+     * @return
+     */
+	private Object injectObj(Mirror<?> mirror){
+	    Object obj = mirror.born();
+	    for (Entry<String, ObjcetNaviNode> entry : child.entrySet()) {
+            ObjcetNaviNode onn = entry.getValue();
+            Injecting in = mirror.getInjecting(entry.getKey());
+            if (onn.isLeaf()) {
+                try {
+                    ParamConvertor pc = Params.makeParamConvertor(mirror.getField(entry.getKey()).getType());
+                    in.inject(obj, pc.convert(onn.getValue()));
+                } catch (NoSuchFieldException e) {
+                    continue;
+                }
+                continue;
+            }
+            // 不是叶子结点,不能直接注入
+            try {
+                Type type = mirror.getField(entry.getKey()).getGenericType();
+                Mirror<?> fieldMirror = Mirror.me(type);
+                in.inject(obj, onn.inject(fieldMirror));
+            }
+            catch (NoSuchFieldException e) {
+                continue;//TODO 是不是应该log一下呢?
+            }
+        }
+	    return obj;
 	}
 
 	public String getName() {

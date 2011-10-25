@@ -1690,6 +1690,19 @@ public abstract class Lang {
 		}
 		return clazz;
 	}
+	
+	/**
+	 * 返回一个type的泛型数组, 如果没有, 则直接返回null
+	 * @param type
+	 * @return
+	 */
+	public static Type[] getGenericsTypes(Type type){
+	    if(type instanceof ParameterizedType){
+	        ParameterizedType pt = (ParameterizedType) type;
+	        return pt.getActualTypeArguments();
+	    }
+	    return null;
+	}
 
 	/**
 	 * 强制从字符串转换成一个 Class，将 ClassNotFoundException 包裹成 RuntimeException

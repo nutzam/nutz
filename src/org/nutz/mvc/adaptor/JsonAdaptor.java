@@ -20,7 +20,6 @@ import org.nutz.mvc.annotation.Param;
  */
 public class JsonAdaptor extends PairAdaptor {
 
-	@Override
 	protected ParamInjector evalInjector(Type type, Param param) {
 		if (param == null)
 			return new JsonInjector(type, null);
