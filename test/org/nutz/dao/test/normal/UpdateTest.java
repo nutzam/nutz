@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.BeanWithDefault;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
@@ -14,13 +15,31 @@ import org.nutz.lang.Lang;
 
 public class UpdateTest extends DaoCase {
 
-	@Override
-	protected void before() {
-		pojos.initData();
-	}
+	/**
+	 * For issue #84
+	 */
+	@Test
+	public void test_updateIgnoreNull_width_default() {
+		dao.create(BeanWithDefault.class, true);
+		BeanWithDefault bean = new BeanWithDefault();
+		bean.setName("abc");
+		dao.insert(bean);
 
-	@Override
-	protected void after() {}
+		BeanWithDefault b2 = dao.fetch(BeanWithDefault.class);
+		assertEquals("--", b2.getAlias());
+
+		b2.setAlias("AAA");
+		dao.update(b2);
+
+		b2 = dao.fetch(BeanWithDefault.class, "abc");
+		assertEquals("AAA", b2.getAlias());
+
+		b2.setAlias(null);
+		dao.updateIgnoreNull(b2);
+
+		b2 = dao.fetch(BeanWithDefault.class, "abc");
+		assertEquals("AAA", b2.getAlias());
+	}
 
 	@Test
 	public void test_update_chain_and_cnd_by_in() {
@@ -50,6 +69,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void batch_update_all() {
+		pojos.initData();
 		dao.update(Fighter.class, Chain.make("type", Fighter.TYPE.SU_35.name()), null);
 		assertEquals(	13,
 						dao.count(Fighter.class, Cnd.where("type", "=", Fighter.TYPE.SU_35.name())));
@@ -57,6 +77,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void batch_update_partly() {
+		pojos.initData();
 		int re = dao.update(Fighter.class,
 							Chain.make("type", "F15"),
 							Cnd.where("type", "=", "SU_35"));
@@ -69,6 +90,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void batch_update_relation() {
+		pojos.initData();
 		dao.updateRelation(	Fighter.class,
 							"base",
 							Chain.make("bname", "blue"),
@@ -78,6 +100,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void fetch_by_name_ignorecase() {
+		pojos.initData();
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		assertEquals("SF", p.getName());
 	}
@@ -106,6 +129,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void update_with_null_links() {
+		pojos.initData();
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
 		dao.updateWith(p, null);
@@ -115,6 +139,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void test_updateIgnoreNull() {
+		pojos.initData();
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
 		dao.update(p);
@@ -138,6 +163,7 @@ public class UpdateTest extends DaoCase {
 
 	@Test
 	public void test_updateIgnoreNull_by_list() {
+		pojos.initData();
 		Platoon p = dao.fetch(Platoon.class, "sF");
 		p.setLeaderName("xyz");
 		dao.update(p);
