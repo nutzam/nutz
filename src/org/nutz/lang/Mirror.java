@@ -29,9 +29,9 @@ import org.nutz.lang.born.Borns;
 import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectByGetter;
 import org.nutz.lang.eject.Ejecting;
-import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
+import org.nutz.lang.inject.Injecting;
 
 /**
  * 包裹了 Class<?>， 提供了更多的反射方法
@@ -172,29 +172,24 @@ public class Mirror<T> {
 	 *             没有找到 Getter
 	 */
 	public Method getGetter(String fieldName) throws NoSuchMethodException {
-		try {
-			String fn = Strings.capitalize(fieldName);
-			try {
-				try {
-					return klass.getMethod("get" + fn);
-				}
-				catch (NoSuchMethodException e) {
-					Method m = klass.getMethod("is" + fn);
-					if (!Mirror.me(m.getReturnType()).isBoolean())
-						throw new NoSuchMethodException();
-					return m;
-				}
+		String fn = Strings.capitalize(fieldName);
+		String _get = "get" + fn;
+		String _is = "is" + fn;
+		for (Method method : klass.getMethods()) {
+			if (_get.equals(method.getName()))
+				return method;
+			if (_is.equals(method.getName())) {
+				if (!Mirror.me(method.getReturnType()).isBoolean())
+					throw new NoSuchMethodException();
+				return method;
 			}
-			catch (NoSuchMethodException e) {
-				return klass.getMethod(fieldName);
-			}
+			if (fieldName.equals(method.getName()))
+				return method;
 		}
-		catch (RuntimeException e) {
-			throw Lang.makeThrow(	NoSuchMethodException.class,
+		throw Lang.makeThrow(	NoSuchMethodException.class,
 									"Fail to find getter for [%s]->[%s]",
 									klass.getName(),
 									fieldName);
-		}
 	}
 
 	/**
@@ -208,24 +203,7 @@ public class Mirror<T> {
 	 *             没有找到 Getter
 	 */
 	public Method getGetter(Field field) throws NoSuchMethodException {
-		try {
-			try {
-				String fn = Strings.capitalize(field.getName());
-				if (Mirror.me(field.getType()).isBoolean())
-					return klass.getMethod("is" + fn);
-				else
-					return klass.getMethod("get" + fn);
-			}
-			catch (NoSuchMethodException e) {
-				return klass.getMethod(field.getName());
-			}
-		}
-		catch (Exception e) {
-			throw Lang.makeThrow(	NoSuchMethodException.class,
-									"Fail to find getter for [%s]->[%s]",
-									klass.getName(),
-									field.getName());
-		}
+		return getGetter(field.getName());
 	}
 
 	/**
@@ -240,26 +218,7 @@ public class Mirror<T> {
 	 *             没找到 Setter
 	 */
 	public Method getSetter(Field field) throws NoSuchMethodException {
-		try {
-			try {
-				return klass.getMethod("set" + Strings.capitalize(field.getName()), field.getType());
-			}
-			catch (RuntimeException e) {
-				try {
-					if (field.getName().startsWith("is") && Mirror.me(field.getType()).isBoolean())
-						return klass.getMethod(	"set" + field.getName().substring(2),
-												field.getType());
-				}
-				catch (RuntimeException e1) {}
-				return klass.getMethod(field.getName(), field.getType());
-			}
-		}
-		catch (RuntimeException e) {
-			throw Lang.makeThrow(	NoSuchMethodException.class,
-									"Fail to find setter for [%s]->[%s]",
-									klass.getName(),
-									field.getName());
-		}
+		return getSetter(field.getName(), field.getType());
 	}
 
 	/**
