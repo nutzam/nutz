@@ -149,7 +149,7 @@
 	自定义:
 	当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? 
 	1. 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
-	2. 在 org.nutz.el.opt 包下面创建一个 js 文件, 格式:
+	2. 在 org.nutz.el.opt 包(不用建在JAR包里面, 在你的工程里面建就可以了, 这个配置, 我们再想想其它地方会不会更好)下面创建一个 js 文件, 格式:
 		{{"custom":[
 		"org.nutz.el.opt.custom.Max",
 		"org.nutz.el.opt.custom.Min",
