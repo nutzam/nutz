@@ -12,6 +12,7 @@ import org.nutz.dao.sql.SqlContext;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Loop;
 import org.nutz.lang.LoopException;
 
 public class PojoEachRecordCallback implements PojoCallback {
@@ -37,9 +38,21 @@ public class PojoEachRecordCallback implements PojoCallback {
 			}
 		};
 		try {
+			// 循环开始
+			if (each instanceof Loop)
+				if (!((Loop<?>) each).begin())
+					return 0;
+			// 循环中
 			ing.doLoop(rs, pojo.getContext());
+
+			// 循环结束
+			if (each instanceof Loop)
+				((Loop<?>) each).end();
 		}
 		catch (ExitLoop e) {}
+		catch (LoopException e) {
+			throw new SQLException(e.getCause());
+		}
 
 		// 返回数量
 		return ing.getIndex() + 1;

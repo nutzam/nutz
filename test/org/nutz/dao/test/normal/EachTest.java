@@ -15,6 +15,8 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Loop;
+import org.nutz.lang.LoopException;
 
 public class EachTest extends DaoCase {
 
@@ -23,6 +25,31 @@ public class EachTest extends DaoCase {
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));
+	}
+
+	@Test
+	public void each_by_loop() {
+		final List<Pet> pets = new ArrayList<Pet>();
+		final String[] ss = new String[2];
+		int re = dao.each(Pet.class, Cnd.cri().asc("id"), null, new Loop<Pet>() {
+
+			public boolean begin() throws LoopException {
+				ss[0] = "begin";
+				return true;
+			}
+
+			public void invoke(int i, Pet pet, int length) {
+				pets.add(pet);
+			}
+
+			public void end() throws LoopException {
+				ss[1] = "end";
+			}
+		});
+		assertEquals(8, re);
+		assertEquals(re, pets.size());
+		assertEquals("begin", ss[0]);
+		assertEquals("end", ss[1]);
 	}
 
 	@Test

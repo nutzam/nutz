@@ -1273,6 +1273,12 @@ public abstract class Lang {
 		if (null == obj || null == callback)
 			return;
 		try {
+			// 循环开始
+			if (callback instanceof Loop)
+				if (!((Loop) callback).begin())
+					return;
+
+			// 进行循环
 			Class<T> eType = Mirror.getTypeParam(callback.getClass(), 0);
 			if (obj.getClass().isArray()) {
 				int len = Array.getLength(obj);
@@ -1337,6 +1343,10 @@ public abstract class Lang {
 				}
 				catch (ContinueLoop e) {}
 				catch (ExitLoop e) {}
+
+			// 循环结束
+			if (callback instanceof Loop)
+				((Loop) callback).end();
 		}
 		catch (LoopException e) {
 			throw Lang.wrapThrow(e.getCause());
@@ -1690,18 +1700,19 @@ public abstract class Lang {
 		}
 		return clazz;
 	}
-	
+
 	/**
 	 * 返回一个type的泛型数组, 如果没有, 则直接返回null
+	 * 
 	 * @param type
 	 * @return
 	 */
-	public static Type[] getGenericsTypes(Type type){
-	    if(type instanceof ParameterizedType){
-	        ParameterizedType pt = (ParameterizedType) type;
-	        return pt.getActualTypeArguments();
-	    }
-	    return null;
+	public static Type[] getGenericsTypes(Type type) {
+		if (type instanceof ParameterizedType) {
+			ParameterizedType pt = (ParameterizedType) type;
+			return pt.getActualTypeArguments();
+		}
+		return null;
 	}
 
 	/**
