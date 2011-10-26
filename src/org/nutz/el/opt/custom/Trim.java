@@ -6,6 +6,11 @@ import org.nutz.el.ElException;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.plugin.Plugin;
 
+/**
+ * 去掉字符串两边的空格
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public class Trim implements RunMethod, Plugin{
 	public Object run(List<Object> fetchParam) {
 		if(fetchParam.size() <= 0){
@@ -20,8 +25,6 @@ public class Trim implements RunMethod, Plugin{
     }
 
     public String fetchSelf() {
-        
         return "trim";
     }
-
 }
