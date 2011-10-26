@@ -2,6 +2,7 @@ package org.nutz.el;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -334,5 +335,15 @@ public class El2Test {
 		// "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
 		assertEquals(	true || true && false && true,
 						El.eval(vars, "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
+	}
+	
+	@Test
+	public void testIssues87(){
+	    Context context = Lang.context();
+	    context.set("a", new BigDecimal("7"));
+	    context.set("b", new BigDecimal("3"));
+	    assertEquals(10, El.eval(context, "a.add(b).intValue()"));
+	    //这个会抛java.lang.reflect.InvocationTargetException异常, 可能是BigDecimal实现的原因吧
+	    //assertEquals(2.33, El.eval(context, "a.divide(b)"));
 	}
 }
