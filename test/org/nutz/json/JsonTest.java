@@ -54,7 +54,7 @@ public class JsonTest {
 		assertEquals(2, jmi.getMap().size());
 		assertEquals(JB.class, jmi.getMap().get("b"));
 	}
-
+	
 	@Test
 	public void test_map_class_item_as_string() {
 		String path = "org.nutz.json.meta";
@@ -202,6 +202,14 @@ public class JsonTest {
 		assertEquals(45, map.get("id"));
 		assertEquals("xyz", map.get("name"));
 	}
+	
+	@Test
+	public void testSimpleMap_asMap() {
+	    String s = "{id:45,m:{x:1},name:'xyz'}";
+	    Map<String, Object> map = Json.fromJsonAsMap(Object.class, Lang.inr(s));
+	    assertEquals(45, map.get("id"));
+	    assertEquals("xyz", map.get("name"));
+	}
 
 	@Test
 	public void testSimpleMap2() {
@@ -291,6 +299,21 @@ public class JsonTest {
 		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
 		String[] reAry = Json.fromJson(String[].class, Lang.inr(s));
 		assertTrue(Arrays.equals(expAry, reAry));
+	}
+	
+	@Test
+	public void testSimpleArray2() throws Exception {
+	    String[] expAry = {"abc", "bbc", "fff"};
+	    String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
+	    String[] reAry = Json.fromJsonAsArray(String.class, Lang.inr(s));
+	    assertTrue(Arrays.equals(expAry, reAry));
+	}
+	@Test
+	public void testSimpleList() throws Exception {
+	    String[] expAry = {"abc", "bbc", "fff"};
+	    String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
+	    List<String> reAry = Json.fromJsonAsList(String.class, Lang.inr(s));
+	    assertTrue(Arrays.equals(expAry, reAry.toArray(new String[0])));
 	}
 
 	@Test

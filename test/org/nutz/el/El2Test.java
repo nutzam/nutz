@@ -343,7 +343,5 @@ public class El2Test {
 	    context.set("a", new BigDecimal("7"));
 	    context.set("b", new BigDecimal("3"));
 	    assertEquals(10, El.eval(context, "a.add(b).intValue()"));
-	    //这个会抛java.lang.reflect.InvocationTargetException异常, 可能是BigDecimal实现的原因吧
-	    //assertEquals(2.33, El.eval(context, "a.divide(b)"));
 	}
 }

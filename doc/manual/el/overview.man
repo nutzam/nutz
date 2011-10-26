@@ -193,13 +193,10 @@
 	    context.set("a", new BigDecimal("7"));
 	    context.set("b", new BigDecimal("3"));
 	    assertEquals(10, El.eval(context, "a.add(b).intValue()"));
-		//这个会抛java.lang.reflect.InvocationTargetException异常, 可能是BigDecimal实现的原因吧
-	    //assertEquals(2.33, El.eval(context, "a.divide(b)"));
 	   }}}
 	   看到什么没? 对了, BigDecimal 你完全可以丢各种各样的对象到 context 里面去, 然后在 EL 中调用它们的方法. 
 	   然后你就进行各种各样的虐待, 皮鞭, 蜡烛, 想来啥来啥...额...太邪恶了...
-	   同样, EL 是使用反射的, 所以会存在一些底层异常的问题. 比如上面的 a.divide 方法, 我在网上查了一下, 
-	   怀疑是 divide 里面使用了匿名类之类的东西所导致的.
+	   同样, EL 是使用反射的, 所以会存在一些底层异常的问题. 
 	   
 ------------------------------------------------------------------------
 一些表达式的例子
