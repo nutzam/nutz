@@ -7,6 +7,8 @@ import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Strings;
 
 @Table("t_pet")
+@TableIndexes({@Index(name="t_pet_name_masterId",fields={"name","masterId"}, unique=true),
+			   @Index(name="t_pet_name_age",fields={"name","age"}, unique=false)})
 public class Pet {
 
 	public static Pet create(String name) {

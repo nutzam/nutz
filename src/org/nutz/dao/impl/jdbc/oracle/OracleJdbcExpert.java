@@ -5,8 +5,11 @@ import java.util.List;
 
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityField;
+import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
@@ -16,6 +19,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Lang;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -65,9 +69,6 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 			sb.append(',');
 		}
 
-		// 创建索引
-		// TODO ...
-
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');
 
@@ -108,6 +109,27 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 			sqls.add(Sqls.create(gSQL(CSEQ, en.getTableName(), mf.getColumnName())));
 			// 触发器
 			sqls.add(Sqls.create(gSQL(CTRI, en.getTableName(), mf.getColumnName())));
+		}
+
+		// 创建索引
+		List<EntityIndex> indexs = en.getIndexes();
+		for (EntityIndex index : indexs) {
+			sb.setLength(0);
+			sb.append("Create Index ").append(index.getName());
+			sb.append(" ON ").append(en.getTableName()).append("(");
+			for (EntityField field : index.getFields()) {
+				if (field instanceof MappingField) {
+					MappingField mf = (MappingField)field;
+					sb.append(mf.getColumnName()).append(',');
+				} else {
+					throw Lang.makeThrow(	DaoException.class,
+											"%s %s is NOT a mapping field, can't use as index field!!",
+											en.getClass(),
+											field.getName());
+				}
+			}
+			sb.setCharAt(sb.length() - 1, ')');
+			sqls.add(Sqls.create(sb.toString()));
 		}
 
 		// TODO 详细处理Clob
