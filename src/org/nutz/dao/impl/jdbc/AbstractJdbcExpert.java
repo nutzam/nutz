@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityField;
+import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
@@ -236,5 +239,34 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	
 	protected String getDefaultValue(MappingField mf) {
 		return mf.getDefaultValue(null).replaceAll("@", "@@");
+	}
+	
+	protected List<Sql> createIndexs(Entity<?> en) {
+		List<Sql> sqls = new ArrayList<Sql>();
+		StringBuilder sb = new StringBuilder();
+		List<EntityIndex> indexs = en.getIndexes();
+		for (EntityIndex index : indexs) {
+			sb.setLength(0);
+			if (index.isUnique())
+				sb.append("Create UNIQUE Index ");
+			else
+				sb.append("Create Index ");
+			sb.append(index.getName());
+			sb.append(" ON ").append(en.getTableName()).append("(");
+			for (EntityField field : index.getFields()) {
+				if (field instanceof MappingField) {
+					MappingField mf = (MappingField)field;
+					sb.append(mf.getColumnName()).append(',');
+				} else {
+					throw Lang.makeThrow(	DaoException.class,
+											"%s %s is NOT a mapping field, can't use as index field!!",
+											en.getClass(),
+											field.getName());
+				}
+			}
+			sb.setCharAt(sb.length() - 1, ')');
+			sqls.add(Sqls.create(sb.toString()));
+		}
+		return sqls;
 	}
 }
