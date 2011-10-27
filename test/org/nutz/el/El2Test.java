@@ -2,6 +2,7 @@ package org.nutz.el;
 
 import static org.junit.Assert.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -246,6 +247,7 @@ public class El2Test {
 	@Test
 	public void custom() {
 		assertEquals(2, El.eval("max(1, 2)"));
+		assertEquals(1, El.eval("min(1, 2)"));
 		assertEquals("jk", El.eval("trim('    jk    ')"));
 	}
 
@@ -333,5 +335,13 @@ public class El2Test {
 		// "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
 		assertEquals(	true || true && false && true,
 						El.eval(vars, "'A' == 'A' || 'B' == 'B' && 'ABCD' == t &&  'A' == 'A'"));
+	}
+	
+	@Test
+	public void testIssues87(){
+	    Context context = Lang.context();
+	    context.set("a", new BigDecimal("7"));
+	    context.set("b", new BigDecimal("3"));
+	    assertEquals(10, El.eval(context, "a.add(b).intValue()"));
 	}
 }

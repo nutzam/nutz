@@ -20,7 +20,7 @@ public interface RunMethod {
 
 	/**
 	 * 根据传入的参数执行方法
-	 * @param fetchParam 参数
+	 * @param fetchParam 参数, 即EL表达式中, 函数括号内的内容.
 	 */
 	Object run(List<Object> fetchParam);
 

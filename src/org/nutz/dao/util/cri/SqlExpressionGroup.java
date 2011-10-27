@@ -81,7 +81,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 		return and(inLong(name, ids));
 	}
 
-	public SqlExpressionGroup andIn(String name, int... ids) {
+	public SqlExpressionGroup andInIntArray(String name, int... ids) {
 		return and(inInt(name, ids));
 	}
 
@@ -270,6 +270,5 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 	public boolean isEmpty() {
 		return exps.isEmpty();
 	}
-
 
 }
