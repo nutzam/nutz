@@ -1208,6 +1208,13 @@ public class Mirror<T> {
 	public boolean isIntLike() {
 		return isInt() || isLong() || isShort() || isByte() || is(BigDecimal.class);
 	}
+	
+	/**
+	 * @return 当前类型是不是接口
+	 */
+	public boolean isInterface(){
+	    return null == klass ? null : klass.isInterface();
+	}
 
 	/**
 	 * @return 当前对象是否为小数 (float, dobule)
