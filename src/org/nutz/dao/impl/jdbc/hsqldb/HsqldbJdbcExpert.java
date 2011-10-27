@@ -12,6 +12,7 @@ import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 
 /**
@@ -62,14 +63,17 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 			sb.setCharAt(sb.length() - 1, ')');
 			sb.append("\n ");
 		}
-		// 创建索引
-		// TODO ...
 
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
+		
+		
+		// 创建索引
+		dao.execute(createIndexs(en).toArray(new Sql[0]));
+		
 		// 创建关联表
 		createRelation(dao, en);
 
