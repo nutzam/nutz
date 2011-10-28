@@ -1,5 +1,6 @@
 package org.nutz.lang;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -13,16 +14,35 @@ import org.nutz.lang.inject.Injecting;
 public class Lang2 {
     public static Object inject(Object model, Type type){
         Mirror<?> me = Mirror.me(type);
-        if(me.is(List.class)){
+        if(List.class.isAssignableFrom(me.getType())){
             return injectList(model, me);
-        } else if(me.is(Map.class)){
+        } else if(Map.class.isAssignableFrom(me.getType())){
             return injectMap(model, me);
 //        } else if(me.is(Set.class)){
 //            return injectSet(me);
-//        } else if(me.getType().isArray()){
-//            return injectArray(me);
+        } else if(me.getType().isArray()){
+            return injectArray(model, me);
         }
         return injectObj(model, me);
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private static Object injectArray(Object model, Mirror<?> me){
+        Class<?> clazz = me.getType().getComponentType();
+        List list = (List) model;
+        List vals = new ArrayList();
+        for(Object obj : list){
+            if(isLeaf(obj)){
+                vals.add(Castors.me().castTo(obj, clazz));
+                continue;
+            }
+            vals.add(inject(obj, clazz));
+        }
+        Object obj = Array.newInstance(clazz, vals.size());
+        for(int i = 0; i < vals.size(); i++){
+            Array.set(obj, i, vals.get(i));
+        }
+        return obj;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -35,14 +55,24 @@ public class Lang2 {
         }
         
         Map map = (Map) model;
+        if(me.getGenericsTypes() == null){
+            re.putAll(map);
+            return re;
+        }
+        
         for(Object key : map.keySet()){
             Object val = map.get(key);
             if(isLeaf(val)){
-                re.put(key, Castors.me().castTo(val, (Class<?>) me.getGenericsType(1)));
+                re.put(key, Castors.me().castTo(val, fetchGenericsType(me, 1)));
+                continue;
             }
-            re.put(key, inject(val, me.getGenericsType(1)));
+            re.put(key, inject(val, fetchGenericsType(me, 1)));
         }
         return re;
+    }
+    
+    private static Class<?> fetchGenericsType(Mirror<?> me, int index){
+        return Lang.getTypeClass(me.getGenericsType(index));
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -53,13 +83,16 @@ public class Lang2 {
         } else {
             re = (List) me.born();
         }
+        if(me.getGenericsTypes() == null){
+            return model;
+        }
         
         for(Object obj : (List) model){
             if(isLeaf(obj)){
-                re.add(Castors.me().castTo(obj, (Class<?>) me.getGenericsType(0)));
+                re.add(Castors.me().castTo(obj, fetchGenericsType(me, 0)));
                 continue;
             }
-            re.add(inject(obj, me.getGenericsType(0)));
+            re.add(inject(obj, fetchGenericsType(me, 0)));
         }
         return re;
     }

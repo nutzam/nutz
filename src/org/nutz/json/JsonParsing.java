@@ -16,6 +16,7 @@ import org.nutz.castor.Castors;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Lang2;
 import org.nutz.lang.Mirror;
 
 public class JsonParsing {
@@ -32,9 +33,11 @@ public class JsonParsing {
 		if (type == null)
 			return obj;
 		if (obj instanceof Map) {
-			return map2Object(type, (Map<String, Object>) obj);
+		    return Lang2.inject(obj, type);
+//			return map2Object(type, (Map<String, Object>) obj);
 		} else if (obj instanceof List) {
-			return list2Object(type, (List<Object>) obj);
+		    return Lang2.inject(obj, type);
+//			return list2Object(type, (List<Object>) obj);
 		} else {// obj是基本数据类型或String
 			return Castors.me().castTo(obj, Lang.getTypeClass(type));
 		}
