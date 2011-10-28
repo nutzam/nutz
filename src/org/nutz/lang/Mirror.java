@@ -194,6 +194,8 @@ public class Mirror<T> {
 		String _get = "get" + fn;
 		String _is = "is" + fn;
 		for (Method method : klass.getMethods()) {
+			if (method.getParameterTypes().length != 0)
+				continue;
 			if (_get.equals(method.getName()))
 				return method;
 			if (_is.equals(method.getName())) {
