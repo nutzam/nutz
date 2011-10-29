@@ -1,7 +1,7 @@
 package org.nutz.mvc.view;
 
+import java.io.File;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.View;
@@ -20,6 +21,7 @@ import org.nutz.mvc.View;
  * <h2>数据对象可以是如下类型:</h2>
  * <ol>
  * <li><b>null</b> - 什么都不做
+ * <li><b>File</b> - 文件,以下载方法返回,文件名将自动设置
  * <li><b>byte[]</b> - 按二进制方式写入HTTP响应流
  * <li><b>InputStream</b> - 按二进制方式写入响应流，并关闭 InputStream
  * <li><b>char[]</b> - 按文本方式写入HTTP响应流
@@ -55,11 +57,17 @@ public class RawView implements View {
 		resp.setContentType(contentType);
 		if (obj == null)
 			return;
+		//文件
+		if (obj instanceof File) {
+			File file = (File)obj;
+			String encode = new String(file.getName().getBytes(Encoding.CHARSET_UTF8), "ISO8859-1");
+			resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
+			resp.setHeader("Content-Length", "" + file.length());
+			Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
+		}
 		// 字节数组
-		if (obj instanceof byte[]) {
-			OutputStream os = resp.getOutputStream();
-			os.write((byte[]) obj);
-			os.flush();
+		else if (obj instanceof byte[]) {
+			Streams.writeAndClose(resp.getOutputStream(), (byte[])obj);
 		}
 		// 字符数组
 		else if (obj instanceof char[]) {
@@ -69,42 +77,15 @@ public class RawView implements View {
 		}
 		// 文本流
 		else if (obj instanceof Reader) {
-			Writer w = resp.getWriter();
-			Reader r = (Reader) obj;
-			char[] cbuf = new char[8192];
-			int len;
-			try {
-				while (-1 != (len = r.read(cbuf))) {
-					w.write(cbuf, 0, len);
-				}
-				resp.flushBuffer();
-			}
-			finally {
-				Streams.safeClose(w);
-				Streams.safeClose(r);
-			}
+			Streams.writeAndClose(resp.getWriter(), (Reader)obj);
 		}
 		// 二进制流
 		else if (obj instanceof InputStream) {
-			OutputStream out = resp.getOutputStream();
-			InputStream ins = (InputStream) obj;
-			byte[] buf = new byte[8192];
-			int len;
-			try {
-				while (-1 != (len = ins.read(buf))) {
-					out.write(buf, 0, len);
-				}
-			}
-			finally {
-				Streams.safeClose(out);
-				Streams.safeClose(ins);
-			}
+			Streams.writeAndClose(resp.getOutputStream(), (InputStream) obj);
 		}
 		// 普通对象
 		else {
-			Writer writer = resp.getWriter();
-			writer.write(String.valueOf(obj));
-			writer.flush();
+			Streams.writeAndClose(resp.getWriter(), String.valueOf(obj));
 		}
 	}
 

@@ -130,6 +130,7 @@ public abstract class Streams {
 			re += len;
 			ops.write(buf, 0, len);
 		}
+		ops.flush();
 		return re;
 	}
 
