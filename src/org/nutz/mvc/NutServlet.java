@@ -21,9 +21,14 @@ import org.nutz.mvc.config.ServletNutConfig;
 public class NutServlet extends HttpServlet {
 
 	private ActionHandler handler;
+	
+	private String selfName;
 
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
+		Mvcs.setServletContext(servletConfig.getServletContext());
+		selfName = servletConfig.getServletName();
+		Mvcs.set(selfName, null, null);
 		handler = new ActionHandler(new ServletNutConfig(servletConfig));
 	}
 
@@ -35,8 +40,8 @@ public class NutServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		if (!handler.handle(req, resp)) {
+		Mvcs.set(selfName, req, resp);
+		if (!handler.handle(req, resp))
 			resp.setStatus(404);
-		}
 	}
 }

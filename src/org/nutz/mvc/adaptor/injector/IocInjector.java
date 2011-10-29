@@ -10,7 +10,7 @@ import org.nutz.mvc.adaptor.ParamInjector;
 public class IocInjector implements ParamInjector {
 
 	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return Mvcs.getIoc(sc);
+		return Mvcs.getIoc();
 	}
 
 }

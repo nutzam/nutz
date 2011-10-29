@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 
+import org.nutz.mvc.Mvcs;
+
 public class FilterNutConfig extends AbstractNutConfig {
 
 	private FilterConfig config;
@@ -12,7 +14,7 @@ public class FilterNutConfig extends AbstractNutConfig {
 	public FilterNutConfig(FilterConfig config) {
 		super(config.getServletContext());
 		this.config = config;
-		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
+		Mvcs.setAtMap(new AtMap());
 	}
 
 	public ServletContext getServletContext() {
