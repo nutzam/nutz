@@ -2,6 +2,7 @@ package org.nutz.castor;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -233,65 +234,87 @@ public class Castors {
 	 * @throws FailToCastObjectException
 	 *             如果没有找到转换器，或者转换失败
 	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	public <F, T> T cast(Object src, Class<F> fromType, Class<T> toType, String... args)
 			throws FailToCastObjectException {
-		if (null == src) {
-			// 原生数据的默认值
-			if (toType.isPrimitive()) {
-				if (toType == int.class)
-					return (T) Integer.valueOf(0);
-				else if (toType == long.class)
-					return (T) Long.valueOf(0L);
-				else if (toType == byte.class)
-					return (T) Byte.valueOf((byte) 0);
-				else if (toType == short.class)
-					return (T) Short.valueOf((short) 0);
-				else if (toType == float.class)
-					return (T) Float.valueOf(.0f);
-				else if (toType == double.class)
-					return (T) Double.valueOf(.0);
-				else if (toType == boolean.class)
-					return (T) Boolean.FALSE;
-				else if (toType == char.class)
-					return (T) Character.valueOf(' ');
-				throw Lang.impossible();
-			}
-			// 是对象，直接返回 null
-			return null;
-		}
-		if (fromType == toType || toType == null || fromType == null)
-			return (T) src;
-		if (fromType.getName().equals(toType.getName()))
-			return (T) src;
-		if (toType.isAssignableFrom(fromType))
-			return (T) src;
-		Mirror<?> from = Mirror.me(fromType, extractor);
-		if (from.canCastToDirectly(toType)) // Use language built-in cases
-			return (T) src;
-		Castor c = find(from, toType);
-		if (null == c)
-			throw new FailToCastObjectException(String.format(	"Can not find castor for '%s'=>'%s' in (%d) because:\n%s",
-																fromType.getName(),
-																toType.getName(),
-																map.size(),
-																"Fail to find matched castor"));
-		try {
-			return (T) c.cast(src, toType, args);
-		}
-		catch (FailToCastObjectException e) {
-			throw e;
-		}
-		catch (Exception e) {
-			throw new FailToCastObjectException(String.format(	"Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s",
-																fromType.getName(),
-																toType.getName(),
-																src,
-																e.getClass().getSimpleName(),
-																e.getMessage()),
-												e);
-		}
+		return (T) typeCast(src, fromType, toType, args);
 	}
+	/**
+     * 转换一个 POJO 从一个指定的类型到另外的类型
+     * 
+     * @param src
+     *            源对象
+     * @param fromType
+     *            源对象类型
+     * @param toType
+     *            目标类型
+     * @param args
+     *            转换时参数。有些 Castor 可能需要这个参数，比如 Array2Map
+     * @return 目标对象
+     * @throws FailToCastObjectException
+     *             如果没有找到转换器，或者转换失败
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public Object typeCast(Object src, Type fromType, Type toType, String... args)
+            throws FailToCastObjectException {
+        Class<?> fromClass = Lang.getTypeClass(fromType);
+        Class<?> toClass = Lang.getTypeClass(toType);
+        if (null == src) {
+            // 原生数据的默认值
+            if (toClass.isPrimitive()) {
+                if (toClass == int.class)
+                    return Integer.valueOf(0);
+                else if (toClass == long.class)
+                    return Long.valueOf(0L);
+                else if (toClass == byte.class)
+                    return Byte.valueOf((byte) 0);
+                else if (toClass == short.class)
+                    return Short.valueOf((short) 0);
+                else if (toClass == float.class)
+                    return Float.valueOf(.0f);
+                else if (toClass == double.class)
+                    return Double.valueOf(.0);
+                else if (toClass == boolean.class)
+                    return Boolean.FALSE;
+                else if (toClass == char.class)
+                    return Character.valueOf(' ');
+                throw Lang.impossible();
+            }
+            // 是对象，直接返回 null
+            return null;
+        }
+        if (fromClass == toClass || toClass == null || fromClass == null)
+            return src;
+        if (fromClass.getName().equals(toClass.getName()))
+            return src;
+        if (toClass.isAssignableFrom(fromClass))
+            return src;
+        Mirror<?> from = Mirror.me(fromClass, extractor);
+        if (from.canCastToDirectly(toClass)) // Use language built-in cases
+            return src;
+        Castor c = find(from, toClass);
+        if (null == c)
+            throw new FailToCastObjectException(String.format(  "Can not find castor for '%s'=>'%s' in (%d) because:\n%s",
+                                                                fromClass.getName(),
+                                                                toClass.getName(),
+                                                                map.size(),
+                                                                "Fail to find matched castor"));
+        try {
+            return c.cast(src, toClass, args);
+        }
+        catch (FailToCastObjectException e) {
+            throw e;
+        }
+        catch (Exception e) {
+            throw new FailToCastObjectException(String.format(  "Fail to cast from <%s> to <%s> for {%s} because:\n%s:%s",
+                                                                fromClass.getName(),
+                                                                toClass.getName(),
+                                                                src,
+                                                                e.getClass().getSimpleName(),
+                                                                e.getMessage()),
+                                                e);
+        }
+    }
 
 	/**
 	 * 获取一个转换器
@@ -312,6 +335,7 @@ public class Castors {
 		Castor<F, T> c = null;
 		Class<?>[] fets = from.extractTypes();
 		Class<?>[] tets = to.extractTypes();
+		// TODO 这里应该可以使用哈希来提升速度
 		for (Class<?> ft : fets) {
 			Map<String, Castor<?, ?>> m2 = map.get(ft.getName());
 			if (null != m2)

@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.castor.Castors;
+import org.nutz.castor.castor.Indirect;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
@@ -32,15 +33,16 @@ public class JsonParsing {
 			return null;
 		if (type == null)
 			return obj;
-		if (obj instanceof Map) {
-		    return Lang2.inject(obj, type);
-//			return map2Object(type, (Map<String, Object>) obj);
-		} else if (obj instanceof List) {
-		    return Lang2.inject(obj, type);
-//			return list2Object(type, (List<Object>) obj);
-		} else {// obj是基本数据类型或String
-			return Castors.me().castTo(obj, Lang.getTypeClass(type));
-		}
+		return Castors.me().typeCast(new Indirect(obj), Indirect.class, type);
+//		if (obj instanceof Map) {
+//		    return Lang2.inject(obj, type);
+////			return map2Object(type, (Map<String, Object>) obj);
+//		} else if (obj instanceof List) {
+//		    return Lang2.inject(obj, type);
+////			return list2Object(type, (List<Object>) obj);
+//		} else {// obj是基本数据类型或String
+//			return Castors.me().castTo(obj, Lang.getTypeClass(type));
+//		}
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
