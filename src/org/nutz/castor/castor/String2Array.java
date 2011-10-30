@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
@@ -16,13 +17,13 @@ public class String2Array extends Castor<String, Object> {
 	}
 
 	@Override
-	public Object cast(String src, Class<?> toType, String... args)
+	public Object cast(String src, Type toType, String... args)
 			throws FailToCastObjectException {
 		if (Strings.isQuoteByIgnoreBlank(src, '[', ']')) {
 			return Json.fromJson(toType, src);
 		}
 		String[] ss = Strings.splitIgnoreBlank(src);
-		return Lang.array2array(ss, toType.getComponentType());
+		return Lang.array2array(ss, ((Class<?>)toType).getComponentType());
 	}
 
 }

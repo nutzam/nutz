@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
@@ -16,7 +17,7 @@ public class Array2String extends Castor<Object, String> {
 	}
 
 	@Override
-	public String cast(Object src, Class<?> toType, String... args)
+	public String cast(Object src, Type toType, String... args)
 			throws FailToCastObjectException {
 		if (null != src && CharSequence.class.isAssignableFrom(src.getClass().getComponentType())) {
 			return Lang.concat(",", (CharSequence[]) src).toString();

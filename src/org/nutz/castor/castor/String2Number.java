@@ -1,7 +1,10 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
@@ -19,9 +22,9 @@ import org.nutz.lang.Strings;
 public class String2Number extends Castor<String, Number> {
 
 	@Override
-	public Number cast(String src, Class<?> toType, String... args) {
+	public Number cast(String src, Type toType, String... args) {
 		if (Strings.isBlank(src)) {
-			if (toType.isPrimitive())
+			if (Lang.getTypeClass(toType).isPrimitive())
 				return 0;
 			else
 				return null;
@@ -35,7 +38,7 @@ public class String2Number extends Castor<String, Number> {
 		catch (Exception e) {
 			throw new FailToCastObjectException(String.format(	"Fail to cast '%s' to <%s>",
 																src,
-																toType.getName()), e);
+																Lang.getTypeClass(toType).getName()), e);
 		}
 	}
 }

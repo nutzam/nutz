@@ -1,12 +1,14 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.castor.Castor;
 
 @SuppressWarnings({"rawtypes"})
 public class Class2String extends Castor<Class, String> {
 
 	@Override
-	public String cast(Class src, Class<?> toType, String... args) {
+	public String cast(Class src, Type toType, String... args) {
 		return src.getName();
 	}
 

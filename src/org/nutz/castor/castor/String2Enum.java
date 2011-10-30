@@ -1,5 +1,7 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
@@ -8,7 +10,7 @@ public class String2Enum extends Castor<String, Enum> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Enum cast(String src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Enum cast(String src, Type toType, String... args) throws FailToCastObjectException {
 		return Enum.valueOf((Class<Enum>) toType, src);
 	}
 

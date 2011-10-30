@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
 
@@ -11,7 +12,7 @@ import org.nutz.lang.Lang;
 public class Collection2Map extends Castor<Collection, Map> {
 
 	@Override
-	public Map cast(Collection src, Class<?> toType, String... args)
+	public Map cast(Collection src, Type toType, String... args)
 			throws FailToCastObjectException {
 		if (null == args || args.length == 0)
 			throw Lang.makeThrow(	FailToCastObjectException.class,

@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 
@@ -8,7 +9,7 @@ import org.nutz.lang.Lang;
 public class String2Datetime extends DateTimeCastor<String, java.util.Date> {
 
 	@Override
-	public java.util.Date cast(String src, Class<?> toType, String... args) {
+	public java.util.Date cast(String src, Type toType, String... args) {
 		try {
 			return ((DateFormat) dateTimeFormat.clone()).parse(src);
 		}

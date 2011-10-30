@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.nutz.castor.Castor;
@@ -16,7 +17,7 @@ public class Array2Map extends Castor<Object, Map> {
 	}
 
 	@Override
-	public Map cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Map cast(Object src, Type toType, String... args) throws FailToCastObjectException {
 		if (null == args || args.length == 0)
 			throw Lang.makeThrow(	FailToCastObjectException.class,
 									"For the elements in array %s[], castors don't know which one is the key field.",

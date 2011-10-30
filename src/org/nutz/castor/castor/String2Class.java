@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class String2Class extends Castor<String, Class> {
 	}
 
 	@Override
-	public Class<?> cast(String src, Class toType, String... args) {
+	public Class<?> cast(String src, Type toType, String... args) {
 		if (null == src)
 			return null;
 		Class<?> c = map.get(src);

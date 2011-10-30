@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.nutz.castor.Castor;
@@ -9,7 +10,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class Collection2Collection extends Castor<Collection, Collection> {
 
 	@Override
-	public Collection cast(Collection src, Class<?> toType, String... args)
+	public Collection cast(Collection src, Type toType, String... args)
 			throws FailToCastObjectException {
 		Collection coll = createCollection(src, toType);
 		coll.addAll(src);

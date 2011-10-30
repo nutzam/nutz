@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
@@ -14,9 +15,9 @@ public class Array2Array extends Castor<Object, Object> {
 	}
 
 	@Override
-	public Object cast(Object src, Class<?> toType, String... args)
+	public Object cast(Object src, Type toType, String... args)
 			throws FailToCastObjectException {
-		return Lang.array2array(src, toType.getComponentType());
+		return Lang.array2array(src, ((Class<?>) toType).getComponentType());
 	}
 
 }

@@ -2,9 +2,11 @@ package org.nutz.castor;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 /**
@@ -19,40 +21,41 @@ import org.nutz.lang.Mirror;
 public abstract class Castor<FROM, TO> {
 
 	protected Castor() {
-		fromClass = (Class<?>) Mirror.getTypeParams(getClass())[0];
-		toClass = (Class<?>) Mirror.getTypeParams(getClass())[1];
+		fromClass = Mirror.getTypeParams(getClass())[0];
+		toClass = Mirror.getTypeParams(getClass())[1];
 	}
 
-	protected Class<?> fromClass;
-	protected Class<?> toClass;
+	protected Type fromClass;
+	protected Type toClass;
 
 	public Class<?> getFromClass() {
 
-		return fromClass;
+		return (Class<?>) fromClass;
 	}
 
 	public Class<?> getToClass() {
-		return toClass;
+		return (Class<?>) toClass;
 	}
 
-	public abstract TO cast(FROM src, Class<?> toType, String... args)
+	public abstract TO cast(FROM src, Type toType, String... args)
 			throws FailToCastObjectException;
 
 	@SuppressWarnings({"unchecked"})
-	protected static Collection<?> createCollection(Object src, Class<?> toType)
+	protected static Collection<?> createCollection(Object src, Type toType)
 			throws FailToCastObjectException {
+	    Class<?> type = Lang.getTypeClass(toType);
 		Collection<?> coll = null;
 		try {
-			coll = (Collection<Object>) toType.newInstance();
+			coll = (Collection<Object>) type.newInstance();
 		}
 		catch (Exception e) {
-			if (Modifier.isAbstract(toType.getModifiers())
-				&& toType.isAssignableFrom(ArrayList.class)) {
+			if (Modifier.isAbstract(type.getModifiers())
+				&& type.isAssignableFrom(ArrayList.class)) {
 				coll = new ArrayList<Object>(Array.getLength(src));
 			}
 			if (null == coll)
 				throw new FailToCastObjectException(String.format(	"Castors don't know how to implement '%s'",
-																	toType.getName()),
+				                                    type.getName()),
 													e);
 		}
 		return coll;

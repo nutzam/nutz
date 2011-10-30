@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.nutz.castor.Castor;
@@ -11,7 +12,7 @@ import org.nutz.json.JsonFormat;
 public class Collection2String extends Castor<Collection, String> {
 
 	@Override
-	public String cast(Collection src, Class<?> toType, String... args)
+	public String cast(Collection src, Type toType, String... args)
 			throws FailToCastObjectException {
 		return Json.toJson(src, JsonFormat.compact());
 	}

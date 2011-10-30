@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Map;
 
 import org.nutz.castor.Castor;
@@ -16,8 +17,8 @@ public class Map2Array extends Castor<Map, Object> {
 	}
 
 	@Override
-	public Object cast(Map src, Class<?> toType, String... args) throws FailToCastObjectException {
-		return Lang.collection2array(src.values(), toType.getComponentType());
+	public Object cast(Map src, Type toType, String... args) throws FailToCastObjectException {
+		return Lang.collection2array(src.values(), ((Class<?>) toType).getComponentType());
 	}
 
 }

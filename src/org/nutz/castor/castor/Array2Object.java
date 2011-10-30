@@ -1,10 +1,12 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
 
 public class Array2Object extends Castor<Object, Object> {
 
@@ -14,11 +16,11 @@ public class Array2Object extends Castor<Object, Object> {
 	}
 
 	@Override
-	public Object cast(Object src, Class<?> toType, String... args)
+	public Object cast(Object src, Type toType, String... args)
 			throws FailToCastObjectException {
 		if (Array.getLength(src) == 0)
 			return null;
-		return Castors.me().castTo(Array.get(src, 0), toType);
+		return Castors.me().castTo(Array.get(src, 0), Lang.getTypeClass(toType));
 	}
 
 }

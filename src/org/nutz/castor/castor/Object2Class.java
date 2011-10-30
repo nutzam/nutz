@@ -1,5 +1,7 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
 
@@ -7,7 +9,7 @@ import org.nutz.castor.FailToCastObjectException;
 public class Object2Class extends Castor<Object, Class> {
 
 	@Override
-	public Class cast(Object src, Class<?> toType, String... args) throws FailToCastObjectException {
+	public Class cast(Object src, Type toType, String... args) throws FailToCastObjectException {
 		return src.getClass();
 	}
 

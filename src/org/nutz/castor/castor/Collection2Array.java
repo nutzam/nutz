@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -17,9 +18,9 @@ public class Collection2Array extends Castor<Collection, Object> {
 	}
 
 	@Override
-	public Object cast(Collection src, Class<?> toType, String... args)
+	public Object cast(Collection src, Type toType, String... args)
 			throws FailToCastObjectException {
-		Class<?> compType = toType.getComponentType();
+		Class<?> compType = ((Class<?>) toType).getComponentType();
 		Object ary = Array.newInstance(compType, src.size());
 		int index = 0;
 		for (Iterator it = src.iterator(); it.hasNext();) {

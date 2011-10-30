@@ -1,5 +1,6 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
 
@@ -9,7 +10,7 @@ import org.nutz.lang.Strings;
 public class String2SqlDate extends DateTimeCastor<String, java.sql.Date> {
 
 	@Override
-	public java.sql.Date cast(String src, Class<?> toType, String... args) {
+	public java.sql.Date cast(String src, Type toType, String... args) {
 		if (Strings.isBlank(src))
 			return null;
 		try {

@@ -1,5 +1,7 @@
 package org.nutz.castor.castor;
 
+import java.lang.reflect.Type;
+
 import org.nutz.castor.Castor;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -7,7 +9,7 @@ import org.nutz.lang.Mirror;
 public class Boolean2Number extends Castor<Boolean, Number> {
 
 	@Override
-	public Number cast(Boolean src, Class<?> toType, String... args) {
+	public Number cast(Boolean src, Type toType, String... args) {
 		try {
 			return (Number) Mirror	.me(toType)
 									.getWrapperClass()

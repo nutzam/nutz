@@ -1,6 +1,7 @@
 package org.nutz.castor.castor;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Type;
 import java.util.Collection;
 
 import org.nutz.castor.Castor;
@@ -15,7 +16,7 @@ public class Array2Collection extends Castor<Object, Collection> {
 	}
 
 	@Override
-	public Collection<?> cast(Object src, Class<?> toType, String... args)
+	public Collection<?> cast(Object src, Type toType, String... args)
 			throws FailToCastObjectException {
 		Collection coll = createCollection(src, toType);
 		for (int i = 0; i < Array.getLength(src); i++)
