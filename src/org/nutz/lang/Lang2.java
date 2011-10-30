@@ -59,19 +59,16 @@ public class Lang2 {
             return re;
         }
         
+        Type type = me.getGenericsType(1);
         for(Object key : map.keySet()){
             Object val = map.get(key);
             if(isLeaf(val)){
-                re.put(key, Castors.me().castTo(val, fetchGenericsType(me, 1)));
+                re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
                 continue;
             }
-            re.put(key, inject(val, fetchGenericsType(me, 1)));
+            re.put(key, inject(val, type));
         }
         return re;
-    }
-    
-    private static Class<?> fetchGenericsType(Mirror<?> me, int index){
-        return Lang.getTypeClass(me.getGenericsType(index));
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -85,13 +82,13 @@ public class Lang2 {
         if(me.getGenericsTypes() == null){
             return model;
         }
-        
+        Type type = me.getGenericsType(0);
         for(Object obj : (List) model){
             if(isLeaf(obj)){
-                re.add(Castors.me().castTo(obj, fetchGenericsType(me, 0)));
+                re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
                 continue;
             }
-            re.add(inject(obj, fetchGenericsType(me, 0)));
+            re.add(inject(obj, type));
         }
         return re;
     }
@@ -110,9 +107,10 @@ public class Lang2 {
                     continue;
                 }
                 in.inject(obj, inject(val, Lang.getFieldType(me, key)));
-            } catch (NoSuchFieldException e){
+            } catch (Exception e){
                 continue;
             }
+            
         }
         return obj;
     }
