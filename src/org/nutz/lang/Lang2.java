@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.castor.Castors;
+import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.inject.Injecting;
 
 public class Lang2 {
@@ -94,22 +96,23 @@ public class Lang2 {
     }
     
     @SuppressWarnings("unchecked")
-    private static Object injectObj(Object model, Mirror<?> me) {
+    private static Object injectObj(Object model, Mirror<?> me){
         Object obj = me.born();
         Map<String, ?> map = (Map<String, ?>) model;
-        for(String key : map.keySet()){
-            try{
-                Object val = map.get(key);
-                Injecting in = me.getInjecting(key);
-                if(isLeaf(val)){
-                    Type t = Lang.getFieldType(me, key);
-                    in.inject(obj, Castors.me().castTo(val, Lang.getTypeClass(t)));
-                    continue;
-                }
-                in.inject(obj, inject(val, Lang.getFieldType(me, key)));
-            } catch (Exception e){
+        for(Field field : me.getFields()){
+            JsonEntityField jef = JsonEntityField.eval(me, field);
+            Object val = map.get(jef.getName());
+            if(val == null){
                 continue;
             }
+            
+            Injecting in = me.getInjecting(field.getName());
+            if(isLeaf(val)){
+                Type t = Lang.getFieldType(me, field);
+                in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
+                continue;
+            }
+            in.inject(obj, jef.createValue(obj, inject(val, Lang.getFieldType(me, field))));
             
         }
         return obj;
