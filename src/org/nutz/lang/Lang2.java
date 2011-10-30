@@ -3,6 +3,7 @@ package org.nutz.lang;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +111,17 @@ public class Lang2 {
                     in.inject(obj, Castors.me().castTo(val, field.getType()));
                     continue;
                 }
-                in.inject(obj, inject(val, field.getGenericType()));
+                Type type = field.getGenericType();
+                if(type instanceof TypeVariable){
+                    Type[] tvs = me.getType().getTypeParameters();
+                    for(int i = 0; i < tvs.length; i++){
+                        if(type.equals(tvs[i])){
+                            type = me.getGenericsType(i);
+                            break;
+                        }
+                    }
+                }
+                in.inject(obj, inject(val, type));
             } catch (NoSuchFieldException e){
                 continue;
             }
