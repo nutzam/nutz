@@ -1,9 +1,7 @@
 package org.nutz.lang;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Type;
-import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -104,24 +102,14 @@ public class Lang2 {
         Map<String, ?> map = (Map<String, ?>) model;
         for(String key : map.keySet()){
             try{
-                Field field = me.getField(key);
                 Object val = map.get(key);
                 Injecting in = me.getInjecting(key);
                 if(isLeaf(val)){
-                    in.inject(obj, Castors.me().castTo(val, field.getType()));
+                    Type t = Lang.getFieldType(me, key);
+                    in.inject(obj, Castors.me().castTo(val, Lang.getTypeClass(t)));
                     continue;
                 }
-                Type type = field.getGenericType();
-                if(type instanceof TypeVariable){
-                    Type[] tvs = me.getType().getTypeParameters();
-                    for(int i = 0; i < tvs.length; i++){
-                        if(type.equals(tvs[i])){
-                            type = me.getGenericsType(i);
-                            break;
-                        }
-                    }
-                }
-                in.inject(obj, inject(val, type));
+                in.inject(obj, inject(val, Lang.getFieldType(me, key)));
             } catch (NoSuchFieldException e){
                 continue;
             }

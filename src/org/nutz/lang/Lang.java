@@ -1669,6 +1669,36 @@ public abstract class Lang {
 			return Boolean.FALSE;
 		return null;
 	}
+	
+	/**
+     * 返回类的一个字段的具体类型。
+     * @param me
+     * @param field
+     * @return
+     */
+	public static Type getFieldType(Mirror<?> me, String field) throws NoSuchFieldException{
+	    return getFieldType(me, me.getField(field));
+	}
+	
+	/**
+	 * 返回类的一个字段的具体类型。
+	 * @param me
+	 * @param field
+	 * @return
+	 */
+	public static Type getFieldType(Mirror<?> me, Field field){
+	    Type type = field.getGenericType();
+        if(type instanceof TypeVariable && me.getGenericsTypes().length > 0){
+            Type[] tvs = me.getType().getTypeParameters();
+            for(int i = 0; i < tvs.length; i++){
+                if(type.equals(tvs[i])){
+                    type = me.getGenericsType(i);
+                    break;
+                }
+            }
+        }
+	    return type;
+	}
 
 	/**
 	 * 获取一个Type类型实际对应的Class
