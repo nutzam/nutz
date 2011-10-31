@@ -3,6 +3,8 @@ package org.nutz.mvc.view;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.Mvcs;
+
 /**
  * 重定向视图
  * <p>
@@ -34,7 +36,7 @@ public class ServerRedirectView extends AbstractPathView {
 		}
 		// Relative path, add current URL path for it
 		else {
-			String myPath = req.getPathInfo();
+			String myPath = Mvcs.getRequestPath(req);
 			int pos = myPath.lastIndexOf('/');
 			if (pos > 0)
 				path = myPath.substring(0, pos) + "/" + path;
