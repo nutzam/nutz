@@ -34,16 +34,7 @@ public class ServerRedirectView extends AbstractPathView {
 		else if (path.length() > 0 && path.charAt(0) == '/') {
 			path = req.getContextPath() + path;
 		}
-		// Relative path, add current URL path for it
-		else {
-			String myPath = Mvcs.getRequestPath(req);
-			int pos = myPath.lastIndexOf('/');
-			if (pos > 0)
-				path = myPath.substring(0, pos) + "/" + path;
-			else
-				path = "/" + path;
-		}
-		resp.sendRedirect(path);
+		resp.sendRedirect(path); //这个原生支持相对路径的,就不要再做无用功了
 		resp.flushBuffer();
 	}
 
