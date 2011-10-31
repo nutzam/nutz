@@ -11,6 +11,7 @@ import java.util.WeakHashMap;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Parsing;
 import org.nutz.lang.util.NutType;
 
 public class Json {
@@ -73,7 +74,7 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return (T) JsonParsing.parse(type, reader);
+		return (T) parse(type, reader);
 	}
 
 	/**
@@ -87,8 +88,13 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
-		return JsonParsing.parse(type, reader);
+		return parse(type, reader);
 	}
+	
+	private static Object parse(Type type, Reader reader) {
+        Object obj = new JsonCompile().parse(reader);
+        return Parsing.convert(obj, type);
+    }
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。

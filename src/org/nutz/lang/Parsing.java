@@ -12,7 +12,35 @@ import org.nutz.castor.Castors;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.inject.Injecting;
 
-public class Lang2 {
+/**
+ * 对象转换器.<br/>
+ * 这个实现, 主要将 List, Map 的对象结构转换成真实的对象.<br/>
+ * 规则:<br/>
+ * <ul>
+ *  <li>对象以Map存储, key为属性名, value为属性值
+ *  <li>数组以List存储
+ *  <li>Map直接存储为Map
+ *  <li>List直接存储为List
+ *  <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
+ * </ul>
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
+public class Parsing {
+    
+    public static Object convert(Object model, Type type) {
+        if (model == null)
+            return null;
+        if (type == null)
+            return model;
+        // obj是基本数据类型或String
+        if (!(model instanceof Map) && !(model instanceof List)) {
+            return Castors.me().castTo(model, Lang.getTypeClass(type));
+        }
+        
+        return inject(model, type);
+    }
+    
     public static Object inject(Object model, Type type){
         Mirror<?> me = Mirror.me(type);
         if(List.class.isAssignableFrom(me.getType())){
@@ -64,6 +92,11 @@ public class Lang2 {
         Type type = me.getGenericsType(1);
         for(Object key : map.keySet()){
             Object val = map.get(key);
+            //转换Key
+            if(!isLeaf(key)){
+                key = inject(key, me.getGenericsType(0));
+            }
+            //转换val并填充
             if(isLeaf(val)){
                 re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
                 continue;
