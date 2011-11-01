@@ -38,7 +38,7 @@ public class ObjectNavlPairInjector implements ParamInjector {
 						HttpServletRequest req,
 						HttpServletResponse resp,
 						Object refer) {
-		ObjectNaviNode2 no = new ObjectNaviNode2();
+		ObjectNaviNode no = new ObjectNaviNode();
 		String pre = "";
 		if ("".equals(prefix))
 			pre = "node.";
