@@ -149,6 +149,9 @@ public class Parsing {
         Map<String, ?> map = (Map<String, ?>) model;
         for(Field field : me.getFields()){
             JsonEntityField jef = JsonEntityField.eval(me, field);
+            if(jef == null){
+                continue;
+            }
             Object val = map.get(jef.getName());
             if(val == null){
                 continue;
