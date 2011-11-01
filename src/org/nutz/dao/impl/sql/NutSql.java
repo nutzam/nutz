@@ -104,6 +104,20 @@ public class NutSql extends NutStatement implements Sql {
 	}
 
 	public Object[][] getParamMatrix() {
+		// 仅仅去掉队尾没有参数设定的VarSet，尽可能的不遍历
+		if (rows.size() > 0) {
+			VarSet vs = rows.get(rows.size() - 1);
+			while (null != vs) {
+				if (vs.keys().size() == 0) {
+					rows.remove(vs);
+					vs = null;
+					if (rows.size() > 0)
+						vs = rows.get(rows.size() - 1);
+				} else {
+					break;
+				}
+			}
+		}
 		Object[][] re = new Object[rows.size()][adaptors.length];
 		int i = 0;
 		for (VarSet row : rows) {
