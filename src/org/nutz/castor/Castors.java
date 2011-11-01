@@ -1,5 +1,6 @@
 package org.nutz.castor;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -153,7 +154,9 @@ public class Castors {
 				settingMap.put(pts[0], m1);
 		}
 		// build castors
-		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
+//		this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
+
+		this.map = new HashMap<Integer, Castor<?,?>>();
 		ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
 		for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
 			Class<?> baseClass = it.next();
@@ -182,27 +185,7 @@ public class Castors {
 					continue;
 				if (!Castor.class.isAssignableFrom(klass))
 					continue;
-				Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-				Map<String, Castor<?, ?>> map2 = this.map.get(castor.getFromClass().getName());
-				if (null == map2) {
-					map2 = new HashMap<String, Castor<?, ?>>();
-					this.map.put(castor.getFromClass().getName(), map2);
-				}
-				if (!map2.containsKey(castor.getToClass().getName())) {
-					Method m = settingMap.get(castor.getClass());
-					if (null == m) {
-						for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
-							Class<?> cc = entry.getKey();
-							if (cc.isAssignableFrom(klass)) {
-								m = settingMap.get(cc);
-								break;
-							}
-						}
-					}
-					if (null != m)
-						m.invoke(setting, castor);
-					map2.put(castor.getToClass().getName(), castor);
-				}
+				fillMap(klass, settingMap);
 			}
 			catch (Throwable e) {
 				if (log.isWarnEnabled())
@@ -212,11 +195,41 @@ public class Castors {
 		if (log.isDebugEnabled())
 			log.debugf("Using %s castor for Castors", map.size());
 	}
+	
+	/**
+	 * 填充 map .<br>
+	 * 在map中使用hash值来做为key来进行存储
+	 * @param klass
+	 * @param settingMap
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws IllegalArgumentException
+	 * @throws InvocationTargetException
+	 */
+	private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
+	    Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
+	    if(!map.containsKey(castor.hashCode())){
+	        map.put(castor.hashCode(), castor);
+	    }
+	    Method m = settingMap.get(castor.getClass());
+        if (null == m) {
+            for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
+                Class<?> cc = entry.getKey();
+                if (cc.isAssignableFrom(klass)) {
+                    m = settingMap.get(cc);
+                    break;
+                }
+            }
+        }
+        if (null != m)
+            m.invoke(setting, castor);
+	}
 
 	/**
 	 * First index is "from" (source) The second index is "to" (target)
 	 */
-	private Map<String, Map<String, Castor<?, ?>>> map;
+//	private Map<String, Map<String, Castor<?, ?>>> map;
+	private Map<Integer, Castor<?,?>> map;
 
 	/**
 	 * 转换一个 POJO 从一个指定的类型到另外的类型
@@ -309,21 +322,16 @@ public class Castors {
 	@SuppressWarnings("unchecked")
 	private <F, T> Castor<F, T> find(Mirror<F> from, Class<T> toType) {
 		Mirror<T> to = Mirror.me(toType, extractor);
-		Castor<F, T> c = null;
 		Class<?>[] fets = from.extractTypes();
 		Class<?>[] tets = to.extractTypes();
-		for (Class<?> ft : fets) {
-			Map<String, Castor<?, ?>> m2 = map.get(ft.getName());
-			if (null != m2)
-				for (Class<?> tt : tets) {
-					c = (Castor<F, T>) m2.get(tt.getName());
-					if (null != c)
-						break;
-				}
-			if (null != c)
-				break;
+		for(Class<?> ft : fets){
+		    for(Class<?> tt : tets){
+		        if(map.containsKey(Castor.fetchHash(ft, tt))){
+		            return (Castor<F, T>) map.get(Castor.fetchHash(ft, tt));
+		        }
+		    }
 		}
-		return c;
+		return null;
 	}
 
 	/**
