@@ -147,17 +147,17 @@ public class ObjectNavlPairInjectorTest {
 	public void testMap(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("pojo.maps[abc].str", "a");
-	    req.setParameter("pojo.maps[1].str", "b");
-	    req.setParameter("pojo.maps.jk.str", "c");
-	    req.setParameter("pojo.maps.jk.maps.nutz", "k");
+	    req.setParameter("pojo.maps(abc).str", "a");
+	    req.setParameter("pojo.maps(1).str", "b");
+	    req.setParameter("pojo.maps(jk).str", "c");
+	    req.setParameter("pojo.maps(jk).maps.nutz.str", "k");
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
 	    assertEquals(pojo.maps.get("abc").str, "a");
 	    assertEquals(pojo.maps.get("1").str, "b");
 	    assertEquals(pojo.maps.get("jk").str, "c");
-	    assertEquals(pojo.maps.get("jk").maps.get("nutz"), "k");
+	    assertEquals(pojo.maps.get("jk").maps.get("nutz").str, "k");
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -165,10 +165,10 @@ public class ObjectNavlPairInjectorTest {
 	public void testMapParam() throws NoSuchFieldException{
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("maps[abc].str", "a");
-	    req.setParameter("maps[1].str", "b");
-	    req.setParameter("maps.jk.str", "c");
-	    req.setParameter("maps.jk.maps.nutz", "k");
+	    req.setParameter("maps(abc).str", "a");
+	    req.setParameter("maps(1).str", "b");
+	    req.setParameter("maps(jk).str", "c");
+	    req.setParameter("maps.jk.maps.nutz.str", "k");
 	    //执行
         ObjectNavlPairInjector onpi = inj("maps", NutType.map(String.class, MvcTestPojo.class));
         Map<String, MvcTestPojo> pojo = (Map<String, MvcTestPojo>) onpi.get(null, req, null, null);
@@ -176,7 +176,7 @@ public class ObjectNavlPairInjectorTest {
 	    assertEquals(pojo.get("abc").str, "a");
 	    assertEquals(pojo.get("1").str, "b");
 	    assertEquals(pojo.get("jk").str, "c");
-	    assertEquals(pojo.get("jk").maps.get("nutz"), "k");
+	    assertEquals(pojo.get("jk").maps.get("nutz").str, "k");
 	}
 	
 	@Test
