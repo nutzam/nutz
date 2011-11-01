@@ -16,7 +16,7 @@ import org.nutz.lang.Parsing;
  *  <li>数组,Collection对象, 使用"[]"或":"做为索引引用符. <b style='color:red'>索引只是一个参考字段, 不会根据其值设置索引</b>
  *  <li>Map使用"()"或"."分割key值
  * </ul>
- * 例:<br>
+ * 例:<br> 
  * <code>
  * Object:  node.str = str<br>
  * list:    node.list[1].str = abc;<br>
