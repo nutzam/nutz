@@ -183,14 +183,14 @@ public class ObjectNavlPairInjectorTest {
 	public void testSet(){
 	    //准备数据
 	    MockHttpServletRequest req = Mock.servlet.request();
-	    req.setParameter("pojo.sets.jk.str", "c");
-	    req.setParameter("pojo.sets.jk.maps.nutz", "k");
+	    req.setParameter("pojo.sets[jk].str", "c");
+	    req.setParameter("pojo.sets[jk].maps(nutz).str", "k");
 	    //执行
 	    MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
 	    
 	    for(MvcTestPojo m : pojo.sets){
 	        assertEquals(m.str, "c");
-	        assertEquals(m.maps.get("nutz"), "k");
+	        assertEquals(m.maps.get("nutz").str, "k");
 	    }
 	}
 	

@@ -4,9 +4,12 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.entity.JsonEntityField;
@@ -43,8 +46,10 @@ public class Parsing {
     
     public static Object inject(Object model, Type type){
         Mirror<?> me = Mirror.me(type);
-        if(List.class.isAssignableFrom(me.getType())){
+        if(Collection.class.isAssignableFrom(me.getType())){
             return injectList(model, me);
+//        if(List.class.isAssignableFrom(me.getType())){
+//            return injectList(model, me);
         } else if(Map.class.isAssignableFrom(me.getType())){
             return injectMap(model, me);
 //        } else if(me.is(Set.class)){
@@ -108,17 +113,17 @@ public class Parsing {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static Object injectList(Object model, Mirror<?> me){
-        List re = null;
-        if(me.isInterface()){
-            re = new ArrayList();
+        Collection re = null;
+        if(!me.isInterface()){
+            re =  (Collection) me.born();
         } else {
-            re = (List) me.born();
+            re = makeCollection(me);
         }
         if(me.getGenericsTypes() == null){
             return model;
         }
         Type type = me.getGenericsType(0);
-        for(Object obj : (List) model){
+        for(Object obj : (Collection) model){
             if(isLeaf(obj)){
                 re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
                 continue;
@@ -128,6 +133,17 @@ public class Parsing {
         return re;
     }
     
+    @SuppressWarnings("rawtypes")
+    private static Collection makeCollection(Mirror<?> me) {
+        if(List.class.isAssignableFrom(me.getType())){
+            return new ArrayList();
+        }
+        if(Set.class.isAssignableFrom(me.getType())){
+            return new HashSet();
+        }
+        throw new RuntimeException("不支持的类型!");
+    }
+
     @SuppressWarnings("unchecked")
     private static Object injectObj(Object model, Mirror<?> me){
         Object obj = me.born();
