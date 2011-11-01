@@ -3,8 +3,6 @@ package org.nutz.mvc.view;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.mvc.Mvcs;
-
 /**
  * 重定向视图
  * <p>
@@ -34,7 +32,7 @@ public class ServerRedirectView extends AbstractPathView {
 		else if (path.length() > 0 && path.charAt(0) == '/') {
 			path = req.getContextPath() + path;
 		}
-		resp.sendRedirect(path); //这个原生支持相对路径的,就不要再做无用功了
+		resp.sendRedirect(path); // 这个原生支持相对路径的,就不要再做无用功了
 		resp.flushBuffer();
 	}
 

@@ -38,7 +38,6 @@ public final class DaoHelper {
 												final Pager pager,
 												final String regex) {
 		Molecule<List<T>> molecule = new Molecule<List<T>>() {
-			@Override
 			public void run() {
 				List<T> list = dao.query(classOfT, cnd, pager);
 				for (T t : list)
