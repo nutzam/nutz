@@ -57,4 +57,38 @@ public abstract class Castor<FROM, TO> {
 		}
 		return coll;
 	}
+	
+	public int hashCode() {
+	    return fetchHash(fromClass.getName() ,toClass.getName());
+	}
+	
+	public boolean equals(Object obj) {
+	    if(!(obj instanceof Castor)){
+	        return false;
+	    }
+	    Castor<?, ?> castor = (Castor<?, ?>) obj;
+	    return toString().equals(castor.toString());
+	}
+	/**
+	 * 取得hash值
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	public static int fetchHash(Class<?> from, Class<?> to){
+	    return fetchHash(from.getName(), to.getName());
+	}
+	/**
+	 * 取得Hash值
+	 * @param from
+	 * @param to
+	 * @return
+	 */
+	public static int fetchHash(String from, String to){
+	    return (from + "2" + to).hashCode();
+	}
+	
+	public String toString() {
+	    return fromClass.getName() + "2" + toClass.getName();
+	}
 }
