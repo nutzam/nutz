@@ -47,13 +47,9 @@ public class Parsing {
     public static Object inject(Object model, Type type){
         Mirror<?> me = Mirror.me(type);
         if(Collection.class.isAssignableFrom(me.getType())){
-            return injectList(model, me);
-//        if(List.class.isAssignableFrom(me.getType())){
-//            return injectList(model, me);
+            return injectCollection(model, me);
         } else if(Map.class.isAssignableFrom(me.getType())){
             return injectMap(model, me);
-//        } else if(me.is(Set.class)){
-//            return injectSet(me);
         } else if(me.getType().isArray()){
             return injectArray(model, me);
         }
@@ -112,7 +108,7 @@ public class Parsing {
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static Object injectList(Object model, Mirror<?> me){
+    private static Object injectCollection(Object model, Mirror<?> me){
         Collection re = null;
         if(!me.isInterface()){
             re =  (Collection) me.born();
