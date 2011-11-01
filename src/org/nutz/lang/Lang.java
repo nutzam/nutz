@@ -1671,7 +1671,7 @@ public abstract class Lang {
 	}
 	
 	/**
-     * 返回类的一个字段的具体类型。
+     * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
      * @param me
      * @param field
      * @return
@@ -1681,14 +1681,15 @@ public abstract class Lang {
 	}
 	
 	/**
-	 * 返回类的一个字段的具体类型。
+	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
 	 * @param me
 	 * @param field
 	 * @return
 	 */
 	public static Type getFieldType(Mirror<?> me, Field field){
 	    Type type = field.getGenericType();
-        if(type instanceof TypeVariable && me.getGenericsTypes().length > 0){
+	    Type[] types = me.getGenericsTypes();
+        if(type instanceof TypeVariable && types != null && types.length > 0){
             Type[] tvs = me.getType().getTypeParameters();
             for(int i = 0; i < tvs.length; i++){
                 if(type.equals(tvs[i])){

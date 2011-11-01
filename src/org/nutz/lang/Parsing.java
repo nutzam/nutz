@@ -163,7 +163,8 @@ public class Parsing {
                 in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
                 continue;
             }
-            in.inject(obj, jef.createValue(obj, inject(val, Lang.getFieldType(me, field))));
+            Object o = jef.createValue(obj, inject(val, Lang.getFieldType(me, field)));
+            in.inject(obj, o);
             
         }
         return obj;

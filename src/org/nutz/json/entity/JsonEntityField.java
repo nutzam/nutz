@@ -33,7 +33,7 @@ public class JsonEntityField {
 			return null;
 
 		JsonEntityField jef = new JsonEntityField();
-		jef.genericType = fld.getGenericType();
+	    jef.genericType = Lang.getFieldType(mirror, fld);
 		
 		//看看有没有指定获取方式
 		if (jf != null) {
