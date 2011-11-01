@@ -201,11 +201,14 @@ public class JsonTest {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		assertEquals(45, map.get("id"));
 		assertEquals("xyz", map.get("name"));
+		Map<?,?> m = (Map<?, ?>) map.get("m");
+		assertEquals(1, m.get("x"));
+		
 	}
 	
 	@Test
 	public void testSimpleMap_asMap() {
-	    String s = "{id:45,m:{x:1},name:'xyz'}";
+	    String s = "{id:45,m:1,name:'xyz'}";
 	    Map<String, Object> map = Json.fromJsonAsMap(Object.class, Lang.inr(s));
 	    assertEquals(45, map.get("id"));
 	    assertEquals("xyz", map.get("name"));

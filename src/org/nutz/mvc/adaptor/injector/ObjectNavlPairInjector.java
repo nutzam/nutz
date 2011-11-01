@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Parsing;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.ParamInjector;
@@ -24,18 +25,20 @@ import org.nutz.mvc.adaptor.Params;
 public class ObjectNavlPairInjector implements ParamInjector {
 	protected Mirror<?> mirror;
 	private String prefix;
+	private Type type;
 
 	public ObjectNavlPairInjector(String prefix, Type type) {
 		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
 		this.prefix = prefix;
 		this.mirror = Mirror.me(type);
+		this.type = type;
 	}
 
 	public Object get(	ServletContext sc,
 						HttpServletRequest req,
 						HttpServletResponse resp,
 						Object refer) {
-		ObjcetNaviNode no = new ObjcetNaviNode();
+		ObjectNaviNode no = new ObjectNaviNode();
 		String pre = "";
 		if ("".equals(prefix))
 			pre = "node.";
@@ -46,7 +49,10 @@ public class ObjectNavlPairInjector implements ParamInjector {
 				no.put(pre + na, pe.extractor(na));
 			}
 		}
-		return no.inject(mirror);
+		Object model = no.get();
+		Object re = Parsing.convert(model, type);
+		return re;
+//		return no.inject(mirror);
 	}
 
 }
