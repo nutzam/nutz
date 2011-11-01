@@ -45,6 +45,9 @@ public class Parsing {
     }
     
     public static Object inject(Object model, Type type){
+        if(model == null){
+            return null;
+        }
         Mirror<?> me = Mirror.me(type);
         if(Collection.class.isAssignableFrom(me.getType())){
             return injectCollection(model, me);
