@@ -11,7 +11,7 @@ import java.util.WeakHashMap;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Parsing;
+import org.nutz.lang.Objs;
 import org.nutz.lang.util.NutType;
 
 public class Json {
@@ -93,7 +93,7 @@ public class Json {
 	
 	private static Object parse(Type type, Reader reader) {
         Object obj = new JsonCompile().parse(reader);
-        return Parsing.convert(obj, type);
+        return Objs.convert(obj, type);
     }
 
 	/**

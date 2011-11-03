@@ -29,7 +29,7 @@ import org.nutz.lang.inject.Injecting;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class Parsing {
+public class Objs {
     
     public static Object convert(Object model, Type type) {
         if (model == null)
