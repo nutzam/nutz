@@ -77,12 +77,19 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 				}
 				if (mf.isAutoIncreasement())
 					sb.append(" AUTO_INCREMENT");
-				if (mf.hasDefaultValue()) {
-					sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
-				} else if (mf.getColumnType() == ColType.TIMESTAMP && mf.isNotNull()) {
-					sb.append(" DEFAULT '0000-00-00 00:00:00'");
-				} else if (mf.getColumnType() == ColType.TIMESTAMP && !mf.isNotNull()) {
-					sb.append(" DEFAULT NULL");
+				if (mf.getColumnType() == ColType.TIMESTAMP) {
+					if (mf.hasDefaultValue()) {
+						sb.append(" ").append(getDefaultValue(mf));
+					} else {
+						if (mf.isNotNull()) {
+							sb.append(" DEFAULT 0");
+						} else {
+							sb.append(" DEFAULT NULL");
+						}
+					}
+				} else {
+					if (mf.hasDefaultValue())
+						sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
 				}
 			}
 			sb.append(',');
