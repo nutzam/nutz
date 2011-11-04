@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.lang.Objs;
+import org.nutz.lang.objs.Objs;
 
 /**
  * 对象路径节点转换.<br/>
