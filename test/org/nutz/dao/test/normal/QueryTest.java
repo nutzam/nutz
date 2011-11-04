@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SimpleCriteria;
@@ -20,6 +21,22 @@ public class QueryTest extends DaoCase {
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));
+	}
+
+	/**
+	 * Github Issue #101
+	 */
+	@Test
+	public void query_by_cri_equals_null() {
+		Criteria cri = Cnd.cri();
+		cri.where().andEquals("name", null);
+		List<Pet> pets = dao.query(Pet.class, cri, null);
+		assertEquals(0, pets.size());
+
+		cri = Cnd.cri();
+		cri.where().andNotEquals("name", null);
+		pets = dao.query(Pet.class, cri, null);
+		assertEquals(8, pets.size());
 	}
 
 	@Test
