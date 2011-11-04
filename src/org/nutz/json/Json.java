@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -11,7 +12,9 @@ import java.util.WeakHashMap;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Objs;
+import org.nutz.lang.objs.Objs;
+import org.nutz.lang.objs.ObjsMerge;
+import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.util.NutType;
 
 public class Json {
@@ -299,5 +302,16 @@ public class Json {
 			throw Lang.wrapThrow(e, JsonException.class);
 		}
 	}
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public static Object fromJsonMerge(String... srcs) {
+        List list = new ArrayList();
+        for(String src : srcs){
+            Reader reader = new StringReader(src);
+            Object obj = new JsonCompile().parse(reader);
+            list.add(obj);
+        }
+        return ObjsMerge.merge(list.toArray());
+    }
 
 }

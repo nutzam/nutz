@@ -1,4 +1,4 @@
-package org.nutz.lang;
+package org.nutz.lang.objs;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.entity.JsonEntityField;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
 
 /**

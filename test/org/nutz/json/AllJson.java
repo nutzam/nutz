@@ -11,6 +11,7 @@ import org.nutz.json.generic.GenericTest;
 						CustomizedJsonTest.class,
 						JsonCharsetTest.class,
 						JsonEntityTest.class,
-						GenericTest.class
+						GenericTest.class,
+						JsonMergeTest.class
 						})
 public class AllJson {}
