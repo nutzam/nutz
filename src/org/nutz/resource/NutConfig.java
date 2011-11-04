@@ -9,7 +9,7 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
-import org.nutz.lang.Objs;
+import org.nutz.lang.objs.Objs;
 import org.nutz.lang.util.NutType;
 import org.nutz.resource.impl.FileResource;
 

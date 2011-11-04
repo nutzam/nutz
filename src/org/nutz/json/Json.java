@@ -12,7 +12,8 @@ import java.util.WeakHashMap;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Objs;
+import org.nutz.lang.objs.Objs;
+import org.nutz.lang.objs.ObjsMerge;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.util.NutType;
 
@@ -310,7 +311,7 @@ public class Json {
             Object obj = new JsonCompile().parse(reader);
             list.add(obj);
         }
-        return JsonMerge.merge(list.toArray());
+        return ObjsMerge.merge(list.toArray());
     }
 
 }

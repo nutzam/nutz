@@ -10,6 +10,19 @@ import static org.junit.Assert.*;
  */
 public class JsonMergeTest {
     
+    /**
+     * 一般对象合并
+     */
+    @Test
+    public void objMergeTest(){
+        String json1 = "'jk'";
+        String json2 = "'nutz'";
+        String json3 = "['jk','nutz']";
+        
+        Object obj = Json.fromJsonMerge(json1, json2);
+        Object obj2 = Json.fromJson(json3);
+        assertEquals(obj, obj2);
+    }
     @Test
     public void simpleTest(){
         String json1 = "{'user':'jk'}";

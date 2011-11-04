@@ -1,16 +1,26 @@
-package org.nutz.json;
+package org.nutz.lang.objs;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.json.JsonException;
+
 /**
- * 
+ * 转换器中间对象合并器<br/>
+ * 合并 {@link Objs} 中定义的中间结构.
+ * 规则:<br>
+ * <ul>
+ *  <li>普通属性, 不做合并, 但是要去掉重复.
+ *  <li>合并 map , 如果 key 值相同, 那么后一个值覆盖前面的值.递归合并 
+ *  <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
+ * </ul>
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class JsonMerge {
+public class ObjsMerge {
+    
     public static Object merge(Object... objs){
         if(objs == null || objs.length == 0){
             return null;
@@ -31,10 +41,28 @@ public class JsonMerge {
         if(objs[0] instanceof List){
             return mergeList(objs);
         }
-            
-        return null;
+        return mergeObj(objs);
     }
     
+    /**
+     * 对象合并
+     * @param objs
+     * @return
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static Object mergeObj(Object[] objs) {
+        List list = new ArrayList();
+        for(Object obj : objs){
+            list.add(obj);
+        }
+        return list;
+    }
+
+    /**
+     * list合并
+     * @param objs
+     * @return
+     */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     private static Object mergeList(Object... objs) {
         List list = new ArrayList();
@@ -49,6 +77,11 @@ public class JsonMerge {
         return list;
     }
 
+    /**
+     * map合并
+     * @param objs
+     * @return
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static Object mergeMap(Object... objs){
         Map obj = new HashMap();
