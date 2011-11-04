@@ -25,7 +25,6 @@ public class CreateDropTableTest extends DaoCase {
 			Sql descTable = Sqls.create(DESC_TABLE_SQL);
 			descTable.params().set("tableName", "t_ts");
 			descTable.setCallback(new SqlCallback() {
-				@Override
 				public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
 					boolean ts1 = false;
 					boolean ts2 = false;
