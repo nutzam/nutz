@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.json.JsonException;
-
 /**
  * 转换器中间对象合并器<br/>
- * 合并 {@link Objs} 中定义的中间结构.
+ * 合并 {@link Objs} 中定义的中间结构.<br/>
  * 规则:<br>
  * <ul>
  *  <li>普通对象, 保存为List, 但是要去掉重复.
@@ -28,13 +26,7 @@ public class ObjsMerge {
         if(objs.length == 1){
             return objs[0];
         }
-        //判断是否兼容
-        Class<?> clazz = objs[0].getClass();
-        for(int i = 1; i < objs.length; i ++){
-            if(!objs[i].getClass().isAssignableFrom(clazz)){
-                throw new JsonException(0, 0, '0', "类型不兼容, 无法进行合并!");
-            }
-        }
+        //@ TODO 这里要不要判断是否兼容呢?
         if(objs[0] instanceof Map){
             return mergeMap(objs);
         }

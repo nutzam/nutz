@@ -10,6 +10,7 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.objs.Objs;
+import org.nutz.lang.objs.ObjsMerge;
 import org.nutz.lang.util.NutType;
 import org.nutz.resource.impl.FileResource;
 
@@ -73,7 +74,7 @@ public class NutConfig {
                     Object obj = Json.fromJson(nr.getReader());
                     if(obj instanceof Map){
                         Map m = (Map) obj;
-                        map.putAll(m);
+                        map = (Map) ObjsMerge.merge(map, m);
                         for(Object key : m.keySet()){
                             if(key.equals("include")){
                                 List<String> include = (List) m.get("include");
