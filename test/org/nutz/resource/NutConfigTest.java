@@ -16,16 +16,30 @@ public class NutConfigTest {
     
     @Test
     public void simpleNullTypeTest(){
-        NutConfig.load("config/nutz.js");
+        NutConfig.load("config/test.js");
         Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST");
         assertEquals("jk", conf.get("name"));
     }
     
     @Test
     public void simpleTest(){
-        NutConfig.load("config/nutz.js");
+        NutConfig.load("config/test.js");
         Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
         assertEquals("jk", conf.get("name"));
+    }
+    
+    @Test
+    public void pathTest(){
+        NutConfig.load("config");
+        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        assertEquals("jk", conf.get("name"));
+    }
+    
+    @Test
+    public void loadDefaultConfigTest(){
+        NutConfig.load("config/NutzDefaultConfig.js");
+        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        assertNotNull(conf);
     }
     
     @Test
