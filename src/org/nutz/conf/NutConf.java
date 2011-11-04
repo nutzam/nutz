@@ -1,4 +1,4 @@
-package org.nutz.resource;
+package org.nutz.conf;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -12,6 +12,8 @@ import org.nutz.lang.Files;
 import org.nutz.lang.objs.Objs;
 import org.nutz.lang.objs.ObjsMerge;
 import org.nutz.lang.util.NutType;
+import org.nutz.resource.NutResource;
+import org.nutz.resource.Scans;
 import org.nutz.resource.impl.FileResource;
 
 /**
@@ -29,22 +31,22 @@ import org.nutz.resource.impl.FileResource;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class NutConfig {
-    private static final String DEFAULT_CONFIG = "config/NutzDefaultConfig.js";
+public class NutConf {
+    private static final String DEFAULT_CONFIG = "org/nutz/conf/NutzDefaultConfig.js";
     
     //所有的配置信息
     @SuppressWarnings("rawtypes")
     private Map<?, ?> map = new HashMap();
     
-    private static NutConfig conf;
-    private static NutConfig me(){
+    private static NutConf conf;
+    private static NutConf me(){
         if(null == conf){
-            conf = new NutConfig();
+            conf = new NutConf();
         }
         return conf;
     }
     
-    private NutConfig(){
+    private NutConf(){
         //加载框架自己的一些配置
         loadResource(DEFAULT_CONFIG);
     }

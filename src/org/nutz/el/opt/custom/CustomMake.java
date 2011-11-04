@@ -4,10 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.conf.NutConf;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.plugin.PluginManager;
 import org.nutz.plugin.SimplePluginManager;
-import org.nutz.resource.NutConfig;
 
 /**
  * 自定义函数工厂类
@@ -25,7 +25,7 @@ public class CustomMake {
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
     private static void init(){
-        List<String> plug = (List<String>) ((Map)NutConfig.get("EL")).get("custom");
+        List<String> plug = (List<String>) ((Map)NutConf.get("EL")).get("custom");
         String [] t = plug.toArray(new String[0]);
         PluginManager<RunMethod> rm = new SimplePluginManager<RunMethod>(t);
         for(RunMethod r : rm.gets()){
