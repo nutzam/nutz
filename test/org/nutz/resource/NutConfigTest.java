@@ -3,7 +3,7 @@ package org.nutz.resource;
 import java.util.Map;
 
 import org.junit.Test;
-import org.nutz.resource.NutConfig;
+import org.nutz.conf.NutConf;
 
 import static org.junit.Assert.*;
 
@@ -15,37 +15,43 @@ import static org.junit.Assert.*;
 public class NutConfigTest {
     
     @Test
+    public void nullConfigTest(){
+      //加载nutz配置
+        NutConf.load();
+    }
+    
+    @Test
     public void simpleNullTypeTest(){
-        NutConfig.load("config/test.js");
-        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST");
+        NutConf.load("config/test.js");
+        Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST");
         assertEquals("jk", conf.get("name"));
     }
     
     @Test
     public void simpleTest(){
-        NutConfig.load("config/test.js");
-        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        NutConf.load("config/test.js");
+        Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
         assertEquals("jk", conf.get("name"));
     }
     
     @Test
     public void pathTest(){
-        NutConfig.load("config");
-        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        NutConf.load("config");
+        Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
         assertEquals("jk", conf.get("name"));
     }
     
     @Test
     public void loadDefaultConfigTest(){
-        NutConfig.load("config/NutzDefaultConfig.js");
-        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        NutConf.load("config/NutzDefaultConfig.js");
+        Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
         assertNotNull(conf);
     }
     
     @Test
     public void includeTest(){
-        NutConfig.load("config/include.js");
-        Map<?, ?> conf = (Map<?, ?>) NutConfig.get("TEST", Map.class);
+        NutConf.load("config/include.js");
+        Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
         assertEquals("jk", conf.get("name"));
     }
 }
