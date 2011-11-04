@@ -5,9 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 
+ * @author juqkai(juqkai@gmail.com)
+ *
+ */
 public class JsonMerge {
     public static Object merge(Object... objs){
-        if(objs == null){
+        if(objs == null || objs.length == 0){
             return null;
         }
         if(objs.length == 1){
@@ -52,7 +57,7 @@ public class JsonMerge {
             for(Object key : map.keySet()){
                 Object objval = obj.get(key);
                 Object val = map.get(key);
-                if(val instanceof List || val instanceof Map){
+                if(objval != null && (val instanceof List || val instanceof Map)){
                     val = merge(objval, val);
                 }
                 obj.put(key, val);
