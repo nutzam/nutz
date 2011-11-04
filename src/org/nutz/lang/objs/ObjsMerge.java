@@ -12,7 +12,7 @@ import org.nutz.json.JsonException;
  * 合并 {@link Objs} 中定义的中间结构.
  * 规则:<br>
  * <ul>
- *  <li>普通属性, 不做合并, 但是要去掉重复.
+ *  <li>普通对象, 保存为List, 但是要去掉重复.
  *  <li>合并 map , 如果 key 值相同, 那么后一个值覆盖前面的值.递归合并 
  *  <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
  * </ul>
@@ -53,6 +53,9 @@ public class ObjsMerge {
     private static Object mergeObj(Object[] objs) {
         List list = new ArrayList();
         for(Object obj : objs){
+            if(list.contains(obj)){
+                continue;
+            }
             list.add(obj);
         }
         return list;

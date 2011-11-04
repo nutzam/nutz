@@ -17,9 +17,10 @@ public class JsonMergeTest {
     public void objMergeTest(){
         String json1 = "'jk'";
         String json2 = "'nutz'";
+        String json4 = "'nutz'";
         String json3 = "['jk','nutz']";
         
-        Object obj = Json.fromJsonMerge(json1, json2);
+        Object obj = Json.fromJsonMerge(json1, json2, json4);
         Object obj2 = Json.fromJson(json3);
         assertEquals(obj, obj2);
     }
