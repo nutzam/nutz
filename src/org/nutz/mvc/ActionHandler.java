@@ -17,8 +17,6 @@ public class ActionHandler {
 		this.config = config;
 		this.loading = config.createLoading();
 		this.mapping = loading.load(config);
-		//加载nutz配置
-		org.nutz.conf.NutConf.load();
 	}
 
 	public boolean handle(HttpServletRequest req, HttpServletResponse resp) {

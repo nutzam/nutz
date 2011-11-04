@@ -43,7 +43,7 @@ public class NutConfigTest {
     
     @Test
     public void loadDefaultConfigTest(){
-        NutConf.load("config/NutzDefaultConfig.js");
+        NutConf.load("org/nutz/conf/NutzDefaultConfig.js");
         Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
         assertNotNull(conf);
     }
