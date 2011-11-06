@@ -143,7 +143,7 @@ public class ObjectNaviNode {
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Object get(){
         if(isLeaf()){
-            return value.length == 1 ? value[0] : value;
+            return value == null ? null : value.length == 1 ? value[0] : value;
         }
         if(type == TYPE_LIST){
             List list = new ArrayList();
