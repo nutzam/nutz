@@ -6,11 +6,11 @@ import java.lang.reflect.Type;
 import org.nutz.json.JsonField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Parsing;
 import org.nutz.lang.Strings;
 import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.objs.Objs;
 
 public class JsonEntityField {
 
@@ -78,7 +78,7 @@ public class JsonEntityField {
 
 	public Object createValue(Object holder, Object value) {
 		if (this.createBy == null)
-		    return Parsing.convert(value, genericType);
+		    return Objs.convert(value, genericType);
 //			return JsonParsing.convert(genericType, value);
 //		try {
 //			return genericType.getMethod(createBy, holder.getClass(), Type.class, Object.class).invoke(null, holder,genericType,value);

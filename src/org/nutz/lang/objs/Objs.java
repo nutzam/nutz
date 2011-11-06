@@ -1,4 +1,4 @@
-package org.nutz.lang;
+package org.nutz.lang.objs;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -13,6 +13,8 @@ import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.json.entity.JsonEntityField;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
 
 /**
@@ -29,7 +31,7 @@ import org.nutz.lang.inject.Injecting;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class Parsing {
+public class Objs {
     
     public static Object convert(Object model, Type type) {
         if (model == null)

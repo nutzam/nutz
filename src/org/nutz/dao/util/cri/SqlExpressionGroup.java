@@ -45,10 +45,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 	}
 
 	public SqlExpressionGroup andEquals(String name, Object val) {
+		if (null == val)
+			return andIsNull(name);
 		return and(eq(name, val));
 	}
 
 	public SqlExpressionGroup andNotEquals(String name, Object val) {
+		if (null == val)
+			return andNotIsNull(name);
 		return and(eq(name, val).not());
 
 	}

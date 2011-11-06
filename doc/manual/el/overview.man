@@ -149,13 +149,13 @@
 	自定义:
 	当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? 
 	1. 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
-	2. 在 org.nutz.el.opt 包(不用建在JAR包里面, 在你的工程里面建就可以了, 这个配置, 我们再想想其它地方会不会更好)下面创建一个 js 文件, 格式:
-		{{"custom":[
-		"org.nutz.el.opt.custom.Max",
-		"org.nutz.el.opt.custom.Min",
-		"org.nutz.el.opt.custom.Trim"
-		  ]}}
-	
+	2. 在配置文件中添加一个配置项:
+		{
+			"EL": {"custom":[...函数列表...]}
+		}
+	3. 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
+		NutConfig.load("配置文件");
+		
 	完成这两步后, 你就定义了你自己的函数. 看个trim的例子:
 	{{{<JAVA>
 	public class Trim implements RunMethod, Plugin{
