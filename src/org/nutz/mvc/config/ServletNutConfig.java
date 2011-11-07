@@ -5,6 +5,8 @@ import java.util.List;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 
+import org.nutz.mvc.Mvcs;
+
 public class ServletNutConfig extends AbstractNutConfig {
 
 	private ServletConfig config;
@@ -12,7 +14,7 @@ public class ServletNutConfig extends AbstractNutConfig {
 	public ServletNutConfig(ServletConfig config) {
 		super(config.getServletContext());
 		this.config = config;
-		config.getServletContext().setAttribute(AtMap.class.getName(), new AtMap());
+		Mvcs.setAtMap(new AtMap());
 	}
 
 	public ServletContext getServletContext() {

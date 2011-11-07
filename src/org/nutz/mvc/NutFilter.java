@@ -31,8 +31,14 @@ public class NutFilter implements Filter {
 	private Pattern ignorePtn;
 
 	private boolean skipMode;
+	
+	private String selfName;
 
 	public void init(FilterConfig conf) throws ServletException {
+		Mvcs.setServletContext(conf.getServletContext());
+		this.selfName = conf.getFilterName();
+		Mvcs.set(selfName, null, null);
+		
 		FilterNutConfig config = new FilterNutConfig(conf);
 		// 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
 		// @see Issue 301
@@ -50,10 +56,12 @@ public class NutFilter implements Filter {
 	public void destroy() {
 		if(handler !=null)
 			handler.depose();
+		Mvcs.setServletContext(null);
 	}
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
+		Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
 		if (!skipMode) {
 			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
 			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
@@ -61,7 +69,6 @@ public class NutFilter implements Filter {
 					return;
 			}
 		}
-		// 如果已经找到对应的action,而且正确处理,并且不是donext模式,那么不会走到这里
 		//更新 Request 必要的属性
 		Mvcs.updateRequestAttributes((HttpServletRequest) req);
 		// 本过滤器没有找到入口函数，继续其他的过滤器

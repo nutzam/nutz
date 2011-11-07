@@ -69,7 +69,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 	}
 
 	public Ioc getIoc() {
-		return Mvcs.getIoc(getServletContext());
+		return Mvcs.getIoc();
 	}
 
 	public Object getAttribute(String name) {
@@ -118,7 +118,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 	}
 
 	public AtMap getAtMap() {
-		return this.getAttributeAs(AtMap.class, AtMap.class.getName());
+		return Mvcs.getAtMap();
 	}
 
 	protected List<String> enum2list(Enumeration<?> enums) {

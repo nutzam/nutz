@@ -23,6 +23,7 @@ import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.LoadingException;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMapping;
@@ -231,7 +232,7 @@ public class NutLoading implements Loading {
 				log.debugf("Localization message: '%s'", lc.value());
 
 			Map<String, Map<String, Object>> msgss = Mirror.me(lc.type()).born().load(lc.value());
-			config.setAttributeIgnoreNull(Localization.class.getName(), msgss);
+			Mvcs.setMessageSet(msgss);
 		} else if (log.isDebugEnabled()) {
 			log.debug("!!!Can not find localization message resource");
 		}
@@ -275,7 +276,7 @@ public class NutLoading implements Loading {
 				((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));
 			}
 			// 保存 Ioc 对象
-			config.setAttributeIgnoreNull(Ioc.class.getName(), ioc);
+			Mvcs.setIoc(ioc);
 
 		} else if (log.isInfoEnabled())
 			log.info("!!!Your application without @IocBy supporting");

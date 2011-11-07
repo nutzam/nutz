@@ -37,7 +37,7 @@ public class ActionContext extends SimpleContext {
 	 * @return 如果定义了IocBy注解,则肯定返回非空对象
 	 */
 	public Ioc getIoc() {
-		return Mvcs.getIoc(getServletContext());
+		return Mvcs.getIoc();
 	}
 
 	/**
