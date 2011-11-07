@@ -21,6 +21,7 @@ import org.nutz.mvc.ioc.SessionIocContext;
  * Mvc 相关帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Mvcs {
 
