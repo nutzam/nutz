@@ -15,7 +15,7 @@ import org.nutz.resource.Scans;
  * 通过json文件获取配置信息.
  * <p/>默认配置会首先加载,用户文件可以覆盖之
  * @author wendal(wendal1985@gmail.com)
- *
+ * TODO 合并到NutConfig
  */
 public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguration {
 

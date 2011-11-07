@@ -95,8 +95,7 @@ public class Json {
 	}
 	
 	private static Object parse(Type type, Reader reader) {
-        Object obj = new JsonCompile().parse(reader);
-        return Objs.convert(obj, type);
+        return Objs.convert(new JsonCompile().parse(reader), type);
     }
 
 	/**

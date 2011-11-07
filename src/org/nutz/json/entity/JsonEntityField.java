@@ -79,10 +79,6 @@ public class JsonEntityField {
 	public Object createValue(Object holder, Object value) {
 		if (this.createBy == null)
 		    return Objs.convert(value, genericType);
-//			return JsonParsing.convert(genericType, value);
-//		try {
-//			return genericType.getMethod(createBy, holder.getClass(), Type.class, Object.class).invoke(null, holder,genericType,value);
-//		} catch (Throwable e){}
 		try {
 			return holder.getClass().getMethod(createBy, Type.class, Object.class).invoke(holder, genericType, value);
 		} catch (Throwable e){

@@ -36,6 +36,7 @@ import org.nutz.log.Logs;
  * 提供一些与 JDBC 有关的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * TODO 合并到NutConfig
  */
 public abstract class Jdbcs {
 
