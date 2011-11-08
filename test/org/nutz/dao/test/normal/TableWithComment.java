@@ -14,8 +14,11 @@ public class TableWithComment {
 	private int id;
 
 	@Column("nm")
-	@Comment("名称")
+	@Comment()
 	private String name;
+
+	@Column("num")
+	private long num;
 
 	public int getId() {
 		return id;
@@ -31,6 +34,14 @@ public class TableWithComment {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public long getNum() {
+		return num;
+	}
+
+	public void setNum(long num) {
+		this.num = num;
 	}
 
 }

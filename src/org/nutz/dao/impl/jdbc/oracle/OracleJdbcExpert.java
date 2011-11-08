@@ -31,6 +31,11 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 									+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
 									+ " END ${T}_${F}_ST;";
 
+	// FIXME 这里is后面如果使用@Comment Oralce下报ora-01780错误 有可能是nutz的bug，需要测试
+	private static String COMMENT_TABLE = "COMMENT ON TABLE $table IS '$tableComment'";
+
+	private static String COMMENT_COLUMN = "COMMENT ON COLUMN $table.$column IS '$columnComment'";
+
 	public OracleJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
@@ -117,8 +122,37 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 		// 创建关联表
 		createRelation(dao, en);
+		// 添加注释(表注释与字段注释)
+		addComment(dao, en);
 
 		return true;
+	}
+
+	private void addComment(Dao dao, Entity<?> en) {
+		List<Sql> sqls = new ArrayList<Sql>();
+		// 表注释
+		if (en.hasTableComment()) {
+			Sql tableCommentSQL = Sqls.create(COMMENT_TABLE);
+			tableCommentSQL.vars()
+							.set("table", en.getTableName())
+							.set("tableComment", en.getTableComment());
+			dao.execute(tableCommentSQL);
+		}
+		// 字段注释
+		if (en.hasColumnComment()) {
+			for (MappingField mf : en.getMappingFields()) {
+				if (mf.hasColumnComment()) {
+					Sql columnCommentSQL = Sqls.create(COMMENT_COLUMN);
+					columnCommentSQL.vars()
+									.set("table", en.getTableName())
+									.set("column", mf.getColumnName())
+									.set("columnComment", mf.getColumnComment());
+					sqls.add(columnCommentSQL);
+				}
+			}
+		}
+		// 执行创建语句
+		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 	}
 
 	public void formatQuery(Pojo pojo) {

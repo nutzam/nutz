@@ -40,7 +40,25 @@ public class CreateTableWithCommentTest extends DaoCase {
 			findNameComment.setCallback(Sqls.callback.str());
 			dao.execute(findNameComment);
 			String nameComment = findNameComment.getString();
-			Assert.assertTrue(!Strings.isBlank(nameComment) && "名称".equals(nameComment));
+			Assert.assertTrue(!Strings.isBlank(nameComment) && "name".equals(nameComment));
+
+			Sql findNumComment = Sqls.create(FIND_COLUMN_COMMENT_MYSQL);
+			findNumComment.params().set("tableName", "t_twc").set("columnName", "num");
+			findNumComment.setCallback(Sqls.callback.str());
+			dao.execute(findNumComment);
+			String numComment = findNumComment.getString();
+			Assert.assertTrue(Strings.isBlank(numComment));
+		}
+	}
+
+	@Test
+	public void createTableInOracle() throws Exception {
+		boolean isOracle = dao.meta().isOracle();
+		// 这个仅仅测试Oracle数据库
+		if (isOracle) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			// 字段注释
 		}
 	}
 
