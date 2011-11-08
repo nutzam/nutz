@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 
 import org.nutz.dao.entity.annotation.ColDefine;
 import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Comment;
 import org.nutz.dao.entity.annotation.Default;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Many;
@@ -113,6 +114,7 @@ public class _Infos {
 		info.one = field.getAnnotation(One.class);
 		info.many = field.getAnnotation(Many.class);
 		info.manymany = field.getAnnotation(ManyMany.class);
+		info.comment = field.getAnnotation(Comment.class);
 		return info;
 	}
 
@@ -159,6 +161,7 @@ public class _Infos {
 		info.annNext = field.getAnnotation(Next.class);
 		info.annPrev = field.getAnnotation(Prev.class);
 		info.annReadonly = field.getAnnotation(Readonly.class);
+		info.columnComment = field.getAnnotation(Comment.class);
 		return info;
 	}
 

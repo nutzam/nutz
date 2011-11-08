@@ -14,5 +14,6 @@ import org.junit.runners.Suite;
 						SupportedFieldTypeTest.class,
 						AutoGenerateValueTest.class,
 						PkTest.class,
-						CreateDropTableTest.class})
+						CreateDropTableTest.class,
+						CreateTableWithCommentTest.class})
 public class AllNormal {}

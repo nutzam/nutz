@@ -70,13 +70,16 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 				// 下面的关于Timestamp处理，是因为MySql中第一出现Timestamp的话，如果没有设定default，数据库默认会设置为CURRENT_TIMESTAMP
 				if (mf.isUnsigned())
 					sb.append(" UNSIGNED");
+
 				if (mf.isNotNull()) {
 					sb.append(" NOT NULL");
 				} else if (mf.getColumnType() == ColType.TIMESTAMP) {
 					sb.append(" NULL");
 				}
+
 				if (mf.isAutoIncreasement())
 					sb.append(" AUTO_INCREMENT");
+
 				if (mf.getColumnType() == ColType.TIMESTAMP) {
 					if (mf.hasDefaultValue()) {
 						sb.append(" ").append(getDefaultValue(mf));
@@ -89,9 +92,14 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 					}
 				} else {
 					if (mf.hasDefaultValue())
-						sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+						sb.append(" DEFAULT '").append(getDefaultValue(mf)).append("'");
 				}
 			}
+
+			if (mf.hasColumnComment()) {
+				sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
+			}
+
 			sb.append(',');
 		}
 		// 创建主键
@@ -117,6 +125,10 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 			sb.append(" CHARSET=" + en.getMeta(META_CHARSET));
 		} else {
 			sb.append(" CHARSET=utf8");
+		}
+		// 表名注释
+		if (en.hasTableComment()) {
+			sb.append(" COMMENT='").append(en.getTableComment()).append("'");
 		}
 
 		// 执行创建语句

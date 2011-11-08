@@ -1,0 +1,47 @@
+package org.nutz.dao.test.normal;
+
+import junit.framework.Assert;
+
+import org.junit.Test;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.sql.Sql;
+import org.nutz.dao.test.DaoCase;
+import org.nutz.lang.Strings;
+
+public class CreateTableWithCommentTest extends DaoCase {
+
+	private static String FIND_TABLE_COMMENT_MYSQL = "select table_comment from information_schema.`tables` where table_name = @tableName";
+
+	private static String FIND_COLUMN_COMMENT_MYSQL = "select column_comment from information_schema.`columns` where table_name = @tableName and column_name = @columnName";
+
+	@Test
+	public void createTableInMySQL() throws Exception {
+		boolean isMySql = dao.meta().isMySql();
+		// 这个仅仅测试MySQL数据库
+		if (isMySql) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			Sql findTableComment = Sqls.create(FIND_TABLE_COMMENT_MYSQL);
+			findTableComment.params().set("tableName", "t_twc");
+			findTableComment.setCallback(Sqls.callback.str());
+			dao.execute(findTableComment);
+			String tableComment = findTableComment.getString();
+			Assert.assertTrue(!Strings.isBlank(tableComment) && "测试表".equals(tableComment));
+			// 字段注释
+			Sql findIdComment = Sqls.create(FIND_COLUMN_COMMENT_MYSQL);
+			findIdComment.params().set("tableName", "t_twc").set("columnName", "id");
+			findIdComment.setCallback(Sqls.callback.str());
+			dao.execute(findIdComment);
+			String idComment = findIdComment.getString();
+			Assert.assertTrue(!Strings.isBlank(idComment) && "唯一主键".equals(idComment));
+
+			Sql findNameComment = Sqls.create(FIND_COLUMN_COMMENT_MYSQL);
+			findNameComment.params().set("tableName", "t_twc").set("columnName", "nm");
+			findNameComment.setCallback(Sqls.callback.str());
+			dao.execute(findNameComment);
+			String nameComment = findNameComment.getString();
+			Assert.assertTrue(!Strings.isBlank(nameComment) && "名称".equals(nameComment));
+		}
+	}
+
+}

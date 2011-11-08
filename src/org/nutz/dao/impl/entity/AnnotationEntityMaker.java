@@ -18,6 +18,7 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.Column;
+import org.nutz.dao.entity.annotation.Comment;
 import org.nutz.dao.entity.annotation.EL;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Index;
@@ -95,27 +96,40 @@ public class AnnotationEntityMaker implements EntityMaker {
 		}
 
 		/*
-		 * 获得表名以及视图名称
+		 * 获得表名以及视图名称及注释
 		 */
 		String tableName = null == ti.annTable	? Strings.lowerWord(type.getSimpleName(), '_')
 												: ti.annTable.value();
-
 		String viewName = null == ti.annView ? tableName : ti.annView.value();
-
 		en.setTableName(tableName);
 		en.setViewName(viewName);
+
+		boolean hasTableComment = null != ti.tableComment;
+		String tableComment = hasTableComment	? Strings.isBlank(ti.tableComment.value())	? type.getName()
+																							: ti.tableComment.value()
+												: null;
+		en.setHasTableComment(hasTableComment);
+		en.setTableComment(tableComment);
 
 		/*
 		 * 获取所有的数据库字段
 		 */
-		// 字段里面是不是有声明过 '@Column'
+		// 字段里面是不是有声明过 '@Column' @Comment
 		boolean shouldUseColumn = false;
+		boolean hasColumnComment = false;
 		for (Field field : en.getMirror().getFields()) {
-			if (null != field.getAnnotation(Column.class)) {
-				shouldUseColumn = true;
+			if (shouldUseColumn && hasColumnComment) {
 				break;
 			}
+			if (!shouldUseColumn && null != field.getAnnotation(Column.class)) {
+				shouldUseColumn = true;
+			}
+			if (!hasColumnComment && null != field.getAnnotation(Comment.class)) {
+				hasColumnComment = true;
+			}
 		}
+
+		en.setHasColumnComment(hasColumnComment);
 
 		/*
 		 * 循环获取实体字段
@@ -177,7 +191,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 			}
 		}
 
-		//给字段排序一下, fix issue #29
+		// 给字段排序一下, fix issue #29
 		List<MappingInfo> tmp = new ArrayList<MappingInfo>(infos.size());
 		MappingInfo miId = null;
 		MappingInfo miName = null;
@@ -194,7 +208,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		if (miId != null)
 			tmp.add(0, miId);
 		infos = tmp;
-		
+
 		/*
 		 * 解析所有映射字段
 		 */
@@ -259,6 +273,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		info.annMeta = mirror.getAnnotation(TableMeta.class);
 		info.annPK = mirror.getAnnotation(PK.class);
 		info.annIndexes = mirror.getAnnotation(TableIndexes.class);
+		info.tableComment = mirror.getAnnotation(Comment.class);
 		return info;
 	}
 
@@ -298,6 +313,18 @@ public class AnnotationEntityMaker implements EntityMaker {
 			ef.setColumnName(info.name);
 		else
 			ef.setColumnName(info.annColumn.value());
+
+		// 字段的注释
+		boolean hasColumnComment = null != info.columnComment;
+		ef.setHasColumnComment(hasColumnComment);
+		if (hasColumnComment) {
+			String comment = info.columnComment.value();
+			if (Strings.isBlank(comment)) {
+				ef.setColumnComment(info.name);
+			} else {
+				ef.setColumnComment(comment);
+			}
+		}
 
 		// Id 字段
 		if (null != info.annId) {
