@@ -136,7 +136,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 			tableCommentSQL.vars()
 							.set("table", en.getTableName())
 							.set("tableComment", en.getTableComment());
-			dao.execute(tableCommentSQL);
+			sqls.add(tableCommentSQL);
 		}
 		// 字段注释
 		if (en.hasColumnComment()) {
