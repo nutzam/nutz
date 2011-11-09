@@ -63,10 +63,11 @@ public class CreateTableWithCommentTest extends DaoCase {
 	}
 
 	@Test
-	public void createTableInPostgersql() throws Exception {
+	public void createTableInPostgersqlAndH2() throws Exception {
 		boolean isPostgresql = dao.meta().isPostgresql();
+		boolean isH2 = dao.meta().isH2();
 		// 这个仅仅测试Postgresql数据库
-		if (isPostgresql) {
+		if (isPostgresql || isH2) {
 			dao.create(TableWithComment.class, true);
 			// 表注释
 			// 字段注释
@@ -78,6 +79,17 @@ public class CreateTableWithCommentTest extends DaoCase {
 		boolean isDB2 = dao.meta().isDB2();
 		// 这个仅仅测试DB2数据库
 		if (isDB2) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			// 字段注释
+		}
+	}
+
+	@Test
+	public void createTableInHSQL() throws Exception {
+		boolean isHSQL = dao.meta().isHsql();
+		// 这个仅仅测试HSQL数据库
+		if (isHSQL) {
 			dao.create(TableWithComment.class, true);
 			// 表注释
 			// 字段注释
