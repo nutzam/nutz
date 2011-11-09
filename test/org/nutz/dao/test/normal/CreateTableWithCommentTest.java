@@ -73,4 +73,15 @@ public class CreateTableWithCommentTest extends DaoCase {
 		}
 	}
 
+	@Test
+	public void createTableInDB2() throws Exception {
+		boolean isDB2 = dao.meta().isDB2();
+		// 这个仅仅测试DB2数据库
+		if (isDB2) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			// 字段注释
+		}
+	}
+
 }
