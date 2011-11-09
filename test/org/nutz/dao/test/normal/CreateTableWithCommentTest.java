@@ -62,4 +62,15 @@ public class CreateTableWithCommentTest extends DaoCase {
 		}
 	}
 
+	@Test
+	public void createTableInPostgersql() throws Exception {
+		boolean isPostgresql = dao.meta().isPostgresql();
+		// 这个仅仅测试Postgresql数据库
+		if (isPostgresql) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			// 字段注释
+		}
+	}
+
 }

@@ -123,36 +123,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 		// 创建关联表
 		createRelation(dao, en);
 		// 添加注释(表注释与字段注释)
-		addComment(dao, en);
+		addComment(dao, en, COMMENT_TABLE, COMMENT_COLUMN);
 
 		return true;
-	}
-
-	private void addComment(Dao dao, Entity<?> en) {
-		List<Sql> sqls = new ArrayList<Sql>();
-		// 表注释
-		if (en.hasTableComment()) {
-			Sql tableCommentSQL = Sqls.create(COMMENT_TABLE);
-			tableCommentSQL.vars()
-							.set("table", en.getTableName())
-							.set("tableComment", en.getTableComment());
-			sqls.add(tableCommentSQL);
-		}
-		// 字段注释
-		if (en.hasColumnComment()) {
-			for (MappingField mf : en.getMappingFields()) {
-				if (mf.hasColumnComment()) {
-					Sql columnCommentSQL = Sqls.create(COMMENT_COLUMN);
-					columnCommentSQL.vars()
-									.set("table", en.getTableName())
-									.set("column", mf.getColumnName())
-									.set("columnComment", mf.getColumnComment());
-					sqls.add(columnCommentSQL);
-				}
-			}
-		}
-		// 执行创建语句
-		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 	}
 
 	public void formatQuery(Pojo pojo) {

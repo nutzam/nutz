@@ -70,8 +70,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 			for (MappingField mf : en.getMappingFields()) {
 				int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
 				// 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
-//				if (!mf.isReadonly() && rsmd.isReadOnly(ci))
-//					mf.setAsReadonly();
+				// if (!mf.isReadonly() && rsmd.isReadOnly(ci))
+				// mf.setAsReadonly();
 				// 是否非空
 				if (ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci))
 					mf.setAsNotNull();
@@ -236,11 +236,11 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		cs.set("T", table).set("F", field);
 		return cs.toString();
 	}
-	
+
 	protected String getDefaultValue(MappingField mf) {
 		return mf.getDefaultValue(null).replaceAll("@", "@@");
 	}
-	
+
 	protected List<Sql> createIndexs(Entity<?> en) {
 		List<Sql> sqls = new ArrayList<Sql>();
 		StringBuilder sb = new StringBuilder();
@@ -255,7 +255,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 			sb.append(" ON ").append(en.getTableName()).append("(");
 			for (EntityField field : index.getFields()) {
 				if (field instanceof MappingField) {
-					MappingField mf = (MappingField)field;
+					MappingField mf = (MappingField) field;
 					sb.append(mf.getColumnName()).append(',');
 				} else {
 					throw Lang.makeThrow(	DaoException.class,
@@ -268,5 +268,35 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 			sqls.add(Sqls.create(sb.toString()));
 		}
 		return sqls;
+	}
+
+	public void addComment(Dao dao, Entity<?> en, String commentTable, String commentColumn) {
+		if (!en.hasTableComment() && !en.hasColumnComment()) {
+			return;
+		}
+		List<Sql> sqls = new ArrayList<Sql>();
+		// 表注释
+		if (en.hasTableComment()) {
+			Sql tableCommentSQL = Sqls.create(commentTable);
+			tableCommentSQL.vars()
+							.set("table", en.getTableName())
+							.set("tableComment", en.getTableComment());
+			sqls.add(tableCommentSQL);
+		}
+		// 字段注释
+		if (en.hasColumnComment()) {
+			for (MappingField mf : en.getMappingFields()) {
+				if (mf.hasColumnComment()) {
+					Sql columnCommentSQL = Sqls.create(commentColumn);
+					columnCommentSQL.vars()
+									.set("table", en.getTableName())
+									.set("column", mf.getColumnName())
+									.set("columnComment", mf.getColumnComment());
+					sqls.add(columnCommentSQL);
+				}
+			}
+		}
+		// 执行创建语句
+		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 	}
 }
