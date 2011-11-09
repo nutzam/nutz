@@ -30,7 +30,7 @@ public class AtMapInitTest extends AbstractMvcTest {
 		servlet.service(request, response);
 		assertEquals("\">>xyz\"", response.getAsString());
 
-		AtMap am = Mvcs.getAtMap(servletContext);
+		AtMap am = Mvcs.getAtMap();
 		assertEquals("/atmap/ABC", am.get("at.abc"));
 		assertEquals("/atmap/xyz", am.get("at.xyz"));
 	}

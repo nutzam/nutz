@@ -3,6 +3,8 @@ package org.nutz.img;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.color.ColorSpace;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
@@ -24,6 +26,95 @@ import org.nutz.lang.Lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class Images {
+	/**
+	 * 对一个图像进行旋转
+	 * 
+	 * @param srcIm
+	 *            原图像文件
+	 * @param taIm
+	 *            转换后的图像文件
+	 * @param degree
+	 *            旋转角度, 90 为顺时针九十度， -90 为逆时针九十度
+	 * @return 旋转后得图像对象
+	 */
+	public static BufferedImage rotate(File srcIm, File taIm, int degree) {
+		BufferedImage im = Images.read(srcIm);
+		BufferedImage im2 = Images.rotate(im, degree);
+		Images.write(im2, taIm);
+		return im2;
+	}
+
+	/**
+	 * 对一个图像进行旋转
+	 * 
+	 * @param srcPath
+	 *            原图像文件路径
+	 * @param taPath
+	 *            转换后的图像文件路径
+	 * @param degree
+	 *            旋转角度, 90 为顺时针九十度， -90 为逆时针九十度
+	 * @return 旋转后得图像对象
+	 */
+	public static BufferedImage rotate(String srcPath, String taPath, int degree)
+			throws IOException {
+		File srcIm = Files.findFile(srcPath);
+		if (null == srcIm)
+			throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+
+		File taIm = Files.createFileIfNoExists(taPath);
+		return rotate(srcIm, taIm, degree);
+	}
+
+	/**
+	 * 对一个图像进行旋转
+	 * 
+	 * @param image
+	 *            图像
+	 * @param degree
+	 *            旋转角度, 90 为顺时针九十度， -90 为逆时针九十度
+	 * @return 旋转后得图像对象
+	 */
+	public static BufferedImage rotate(BufferedImage image, int degree) {
+		int iw = image.getWidth();// 原始图象的宽度
+		int ih = image.getHeight();// 原始图象的高度
+		int w = 0;
+		int h = 0;
+		int x = 0;
+		int y = 0;
+		degree = degree % 360;
+		if (degree < 0)
+			degree = 360 + degree;// 将角度转换到0-360度之间
+		double ang = degree * 0.0174532925;// 将角度转为弧度
+
+		/**
+		 * 确定旋转后的图象的高度和宽度
+		 */
+
+		if (degree == 180 || degree == 0 || degree == 360) {
+			w = iw;
+			h = ih;
+		} else if (degree == 90 || degree == 270) {
+			w = ih;
+			h = iw;
+		} else {
+			int d = iw + ih;
+			w = (int) (d * Math.abs(Math.cos(ang)));
+			h = (int) (d * Math.abs(Math.sin(ang)));
+		}
+
+		x = (w / 2) - (iw / 2);// 确定原点坐标
+		y = (h / 2) - (ih / 2);
+		BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
+		Graphics gs = rotatedImage.getGraphics();
+		gs.fillRect(0, 0, w, h);// 以给定颜色绘制旋转后图片的背景
+		AffineTransform at = new AffineTransform();
+		at.rotate(ang, w / 2, h / 2);// 旋转图象
+		at.translate(x, y);
+		AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+		op.filter(image, rotatedImage);
+		image = rotatedImage;
+		return image;
+	}
 
 	/**
 	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上，并将其保存成目标图像文件
@@ -70,17 +161,19 @@ public class Images {
 	 * @param bgColor
 	 *            背景颜色
 	 * 
+	 * @return 被转换前的图像对象
+	 * 
 	 * @throws IOException
 	 *             当读写文件失败时抛出
 	 */
-	public static void zoomScale(String srcPath, String taPath, int w, int h, Color bgColor)
+	public static BufferedImage zoomScale(String srcPath, String taPath, int w, int h, Color bgColor)
 			throws IOException {
 		File srcIm = Files.findFile(srcPath);
 		if (null == srcIm)
 			throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
 
 		File taIm = Files.createFileIfNoExists(taPath);
-		zoomScale(srcIm, taIm, w, h, bgColor);
+		return zoomScale(srcIm, taIm, w, h, bgColor);
 	}
 
 	/**
@@ -181,16 +274,19 @@ public class Images {
 	 * @param h
 	 *            高度
 	 * 
+	 * @return 被转换前的图像对象
+	 * 
 	 * @throws IOException
 	 *             当读写文件失败时抛出
 	 */
-	public static void clipScale(String srcPath, String taPath, int w, int h) throws IOException {
+	public static BufferedImage clipScale(String srcPath, String taPath, int w, int h)
+			throws IOException {
 		File srcIm = Files.findFile(srcPath);
 		if (null == srcIm)
 			throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
 
 		File taIm = Files.createFileIfNoExists(taPath);
-		clipScale(srcIm, taIm, w, h);
+		return clipScale(srcIm, taIm, w, h);
 	}
 
 	/**
