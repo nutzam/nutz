@@ -31,11 +31,6 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 									+ " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
 									+ " END ${T}_${F}_ST;";
 
-	// FIXME 这里is后面如果使用@Comment Oralce下报ora-01780错误 有可能是nutz的bug，需要测试
-	private static String COMMENT_TABLE = "COMMENT ON TABLE $table IS '$tableComment'";
-
-	private static String COMMENT_COLUMN = "COMMENT ON COLUMN $table.$column IS '$columnComment'";
-
 	public OracleJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
@@ -123,7 +118,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 		// 创建关联表
 		createRelation(dao, en);
 		// 添加注释(表注释与字段注释)
-		addComment(dao, en, COMMENT_TABLE, COMMENT_COLUMN);
+		addComment(dao, en);
 
 		return true;
 	}

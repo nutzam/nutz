@@ -96,4 +96,15 @@ public class CreateTableWithCommentTest extends DaoCase {
 		}
 	}
 
+	@Test
+	public void createTableInSqlServer() throws Exception {
+		boolean isSqlServer = dao.meta().isSqlServer();
+		// 这个仅仅测试SqlServer数据库
+		if (isSqlServer) {
+			dao.create(TableWithComment.class, true);
+			// 表注释
+			// 字段注释
+		}
+	}
+
 }

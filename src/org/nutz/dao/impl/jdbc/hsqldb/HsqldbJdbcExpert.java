@@ -21,10 +21,6 @@ import org.nutz.dao.util.Pojos;
  */
 public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 
-	private static String COMMENT_TABLE = "COMMENT ON TABLE $table IS '$tableComment'";
-
-	private static String COMMENT_COLUMN = "COMMENT ON COLUMN $table.$column IS '$columnComment'";
-
 	public HsqldbJdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
 	}
@@ -80,7 +76,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 		// 创建关联表
 		createRelation(dao, en);
 		// 添加注释(表注释与字段注释)
-		addComment(dao, en, COMMENT_TABLE, COMMENT_COLUMN);
+		addComment(dao, en);
 
 		return true;
 	}
