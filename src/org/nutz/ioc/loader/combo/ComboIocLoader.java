@@ -9,6 +9,8 @@ import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 融化多种IocLoader
@@ -17,6 +19,8 @@ import org.nutz.lang.Mirror;
  * 
  */
 public class ComboIocLoader implements IocLoader {
+	
+	private static final Log log = Logs.get();
 
 	private List<IocLoader> iocLoaders = new ArrayList<IocLoader>();
 
@@ -84,9 +88,14 @@ public class ComboIocLoader implements IocLoader {
 	}
 
 	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
+		
 		for (IocLoader iocLoader : iocLoaders)
-			if (iocLoader.has(name))
-				return iocLoader.load(loading, name);
+			if (iocLoader.has(name)) {
+				IocObject iocObject = iocLoader.load(loading, name);
+				if (log.isDebugEnabled())
+					log.debugf("Found IocObject(%s) in IocLoader(%s)", name, iocLoader);
+				return iocObject;
+			}
 		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
