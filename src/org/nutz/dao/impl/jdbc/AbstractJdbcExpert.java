@@ -43,6 +43,10 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 
 	private static final Log log = Logs.get();
 
+	private static String DEFAULT_COMMENT_TABLE = "comment on table $table is '$tableComment'";
+
+	private static String DEFAULT_COMMENT_COLUMN = "comment on column $table.$column is '$columnComment'";
+
 	/**
 	 * 提供给子类使用的配置文件对象
 	 */
@@ -270,6 +274,10 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		return sqls;
 	}
 
+	public void addComment(Dao dao, Entity<?> en) {
+		addComment(dao, en, null, null);
+	}
+
 	public void addComment(Dao dao, Entity<?> en, String commentTable, String commentColumn) {
 		if (!en.hasTableComment() && !en.hasColumnComment()) {
 			return;
@@ -277,7 +285,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		List<Sql> sqls = new ArrayList<Sql>();
 		// 表注释
 		if (en.hasTableComment()) {
-			Sql tableCommentSQL = Sqls.create(commentTable);
+			Sql tableCommentSQL = Sqls.create(Strings.isBlank(commentTable)	? DEFAULT_COMMENT_TABLE
+																			: commentTable);
 			tableCommentSQL.vars()
 							.set("table", en.getTableName())
 							.set("tableComment", en.getTableComment());
@@ -287,7 +296,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		if (en.hasColumnComment()) {
 			for (MappingField mf : en.getMappingFields()) {
 				if (mf.hasColumnComment()) {
-					Sql columnCommentSQL = Sqls.create(commentColumn);
+					Sql columnCommentSQL = Sqls.create(Strings.isBlank(commentColumn)	? DEFAULT_COMMENT_COLUMN
+																						: commentColumn);
 					columnCommentSQL.vars()
 									.set("table", en.getTableName())
 									.set("column", mf.getColumnName())
