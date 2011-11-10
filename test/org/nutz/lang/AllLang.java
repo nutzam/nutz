@@ -23,5 +23,6 @@ import org.nutz.lang.util.AllUtil;
 						NumsTest.class,
 						StringsTest.class,
 						StringOutputStreamTest.class,
-						AllMeta.class})
+						AllMeta.class,
+						CodeTest.class})
 public class AllLang {}
