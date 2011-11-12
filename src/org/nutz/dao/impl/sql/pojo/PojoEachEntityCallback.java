@@ -53,7 +53,9 @@ public class PojoEachEntityCallback implements PojoCallback {
 		}
 		catch (ExitLoop e) {}
 		catch (LoopException e) {
-			throw new SQLException(e.getCause());
+			SQLException e2 = new SQLException();
+			e2.initCause(e.getCause());
+			throw e2;
 		}
 
 		// 返回数量
