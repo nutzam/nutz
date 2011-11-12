@@ -6,4 +6,18 @@
 			"org.nutz.el.opt.custom.Min",
 			"org.nutz.el.opt.custom.Trim"
 		]}
+	"MVC":{
+		"localization":{
+			"type": "org.nutz.mvc.impl.NutMessageLoader",
+			"value":""
+		},
+		"iocBy":{
+			"type":"",
+			"args":[]
+		},
+		"setupBy":{
+			"value":"org.nutz.mvc.Setup",
+			"args":[]
+		}
+	}
 }
