@@ -32,7 +32,6 @@ import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.impl.Loadings;
 import org.nutz.mvc.impl.NutActionChainMaker;

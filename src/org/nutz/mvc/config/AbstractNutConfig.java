@@ -7,6 +7,7 @@ import java.util.List;
 import javax.servlet.ServletContext;
 
 import org.nutz.castor.Castors;
+import org.nutz.conf.MvcConf;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -43,7 +44,8 @@ public abstract class AbstractNutConfig implements NutConfig {
 		if (null == by) {
 			if (log.isDebugEnabled())
 				log.debug("Loading by " + NutLoading.class);
-			return new NutLoading();
+			return new MvcConf();
+//			return new NutLoading();
 		}
 		try {
 			if (log.isDebugEnabled())
