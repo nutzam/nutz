@@ -9,7 +9,7 @@
 	,"MVC":{
 		"localization":{
 			"type": "org.nutz.mvc.impl.NutMessageLoader",
-			"value":""
+			"args":[""]//这里的属性与原注解属性不一样, 但为了统一
 		},
 		"iocBy":{
 			"type":"",

@@ -4,8 +4,8 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.Nutz;
 import org.nutz.ioc.Ioc;
@@ -25,6 +25,7 @@ import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.IocProvider;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.LoadingException;
+import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Setup;
@@ -32,9 +33,7 @@ import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.ChainBy;
-import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
-import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.impl.Loadings;
@@ -242,12 +241,17 @@ public class MvcConf implements Loading{
     }
 
     private void evalLocalization(NutConfig config, Class<?> mainModule) {
-        Localization lc = mainModule.getAnnotation(Localization.class);
-        if (null != lc) {
+//        Localization lc = mainModule.getAnnotation(Localization.class);
+        ConfItem lc = (ConfItem) Objs.convert(map.get("localization"), ConfItem.class);
+        if (null != lc && null != lc.getClazz()) {
+            String arg = "";
+            if(lc.getArgs().length > 0){
+                arg = lc.getArgs()[0];
+            }
             if (log.isDebugEnabled())
-                log.debugf("Localization message: '%s'", lc.value());
+                log.debugf("Localization message: '%s'", arg);
 
-            Map<String, Map<String, Object>> msgss = Mirror.me(lc.type()).born().load(lc.value());
+            Map<String, Map<String, Object>> msgss = ((MessageLoader)Mirror.me(lc.getClazz()).born()).load(arg);
             Mvcs.setMessageSet(msgss);
         } else if (log.isDebugEnabled()) {
             log.debug("!!!Can not find localization message resource");
