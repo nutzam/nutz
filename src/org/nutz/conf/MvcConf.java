@@ -3,7 +3,6 @@ package org.nutz.conf;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -17,6 +16,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.objs.Objs;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -276,15 +276,12 @@ public class MvcConf implements Loading{
 
     private void createIoc(NutConfig config, Class<?> mainModule) throws Exception {
 //        IocBy ib = mainModule.getAnnotation(IocBy.class);
-        Map ib = (Map) map.get("iocBy");
-        if (null != ib && ib.size() == 2) {
-            String type = (String) ib.get("type");
-            List<String> list = (List<String>) ib.get("args");
-            String[] args = list.toArray(new String[0]);
-                    
+//        Map ib = (Map) map.get("iocBy"); 
+        ConfItem ib = (ConfItem) Objs.convert(map.get("iocBy"), ConfItem.class);
+        if (null != ib && ib.getClazz() != null) {
             if (log.isDebugEnabled())
-                log.debugf("@IocBy(%s)", ib.get("type"));
-            Ioc ioc = ((IocProvider)Mirror.me(fetchType(type)).born()).create(config, args);
+                log.debugf("@IocBy(%s)", ib.getClazz());
+            Ioc ioc = ((IocProvider)Mirror.me(ib.getClazz()).born()).create(config, ib.getArgs());
             // 如果是 Ioc2 的实现，增加新的 ValueMaker
             if (ioc instanceof Ioc2) {
                 ((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));
@@ -322,15 +319,6 @@ public class MvcConf implements Loading{
         sw.stop();
         if (log.isInfoEnabled())
             log.infof("Nutz.Mvc[%s] is down in %sms", config.getAppName(), sw.getDuration());
-    }
-    
-    private Class<?> fetchType(String type){
-        try {
-            return this.getClass().getClassLoader().loadClass(type);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }
