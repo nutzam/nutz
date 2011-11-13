@@ -12,12 +12,11 @@
 			"value":""
 		},
 		"iocBy":{
-			"type":"org.nutz.mvc.ioc.provider.ComboIocProvider",
-			"args":["*org.nutz.ioc.loader.json.JsonLoader","org/nutz/mvc/init/module/base.js",
-			    	"*org.nutz.ioc.loader.annotation.AnnotationIocLoader","org.nutz.mvc.init.module"]
+			"type":"",
+			"args":[]
 		},
 		"setupBy":{
-			"type":"org.nutz.mvc.Setup",//属性名与注解中名字不一样, 但是为了统一
+			"type":"",//属性名与注解中名字不一样, 但是为了统一. 坑爹呀, 这里不能使用org.nutz.mvc.Setup为默认值, 因为它是接口, 不能被实例化的...
 			"args":[]
 		}
 	}

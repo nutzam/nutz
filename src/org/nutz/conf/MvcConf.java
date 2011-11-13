@@ -48,6 +48,7 @@ public class MvcConf implements Loading{
     private static final Log log = Logs.get();
     private Map map;
     public MvcConf() {
+        NutConf.load("org/nutz/mvc/init/conf/testMvcConf.js");
         map = (Map) NutConf.get("MVC");
     }
 
@@ -225,11 +226,16 @@ public class MvcConf implements Loading{
     }
 
     private void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
-        SetupBy sb = mainModule.getAnnotation(SetupBy.class);
-        if (null != sb) {
+//        SetupBy sb = mainModule.getAnnotation(SetupBy.class);
+        ConfItem sb = (ConfItem) Objs.convert(map.get("setupBy"), ConfItem.class);
+        if (null != sb && null != sb.getClazz()) {
             if (log.isInfoEnabled())
                 log.info("Setup application...");
-            Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
+            Object obj = Loadings.evalObj(config, sb.getClazz(), sb.getArgs());
+            if(obj == null){
+                return ;
+            }
+            Setup setup = (Setup) obj;
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
         }
