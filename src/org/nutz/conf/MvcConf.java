@@ -33,7 +33,6 @@ import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.ChainBy;
-import org.nutz.mvc.annotation.Localization;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.impl.Loadings;
@@ -216,9 +215,10 @@ public class MvcConf implements Loading{
     }
 
     private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
-        ChainBy ann = mainModule.getAnnotation(ChainBy.class);
+//        ChainBy ann = mainModule.getAnnotation(ChainBy.class);
+        ConfItem ann = (ConfItem) Objs.convert(map.get("chainBy"), ConfItem.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
-                                            : Loadings.evalObj(config, ann.type(), ann.args());
+                                            : (ActionChainMaker)Loadings.evalObj(config, ann.getClazz(), ann.getArgs());
         if (log.isDebugEnabled())
             log.debugf("@ChainBy(%s)", maker.getClass().getName());
         return maker;
@@ -241,7 +241,6 @@ public class MvcConf implements Loading{
     }
 
     private void evalLocalization(NutConfig config, Class<?> mainModule) {
-//        Localization lc = mainModule.getAnnotation(Localization.class);
         ConfItem lc = (ConfItem) Objs.convert(map.get("localization"), ConfItem.class);
         if (null != lc && null != lc.getClazz()) {
             String arg = "";

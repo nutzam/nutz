@@ -18,6 +18,10 @@
 		"setupBy":{
 			"type":"",//属性名与注解中名字不一样, 但是为了统一. 坑爹呀, 这里不能使用org.nutz.mvc.Setup为默认值, 因为它是接口, 不能被实例化的...
 			"args":[]
+		},
+		"chainBy":{
+			"type":"org.nutz.mvc.impl.NutActionChainMaker",
+			"args":[]
 		}
 	}
 }
