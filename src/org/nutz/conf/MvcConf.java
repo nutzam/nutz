@@ -32,7 +32,6 @@ import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.annotation.At;
-import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
 import org.nutz.mvc.impl.Loadings;
@@ -208,14 +207,13 @@ public class MvcConf implements Loading{
     
 
     private UrlMapping createUrlMapping(NutConfig config) throws Exception {
-        UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
-        if (umb != null)
-            return Loadings.evalObj(config, umb.value(), umb.args());
+        ConfItem umb = (ConfItem) Objs.convert(map.get("urlMappingBy"), ConfItem.class);
+        if (umb != null && null != umb.getClazz())
+            return (UrlMapping) Loadings.evalObj(config, umb.getClazz(), umb.getArgs());
         return new UrlMappingImpl();
     }
 
     private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
-//        ChainBy ann = mainModule.getAnnotation(ChainBy.class);
         ConfItem ann = (ConfItem) Objs.convert(map.get("chainBy"), ConfItem.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
                                             : (ActionChainMaker)Loadings.evalObj(config, ann.getClazz(), ann.getArgs());
@@ -225,7 +223,6 @@ public class MvcConf implements Loading{
     }
 
     private void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
-//        SetupBy sb = mainModule.getAnnotation(SetupBy.class);
         ConfItem sb = (ConfItem) Objs.convert(map.get("setupBy"), ConfItem.class);
         if (null != sb && null != sb.getClazz()) {
             if (log.isInfoEnabled())

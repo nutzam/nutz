@@ -22,6 +22,10 @@
 		"chainBy":{
 			"type":"org.nutz.mvc.impl.NutActionChainMaker",
 			"args":[]
+		},
+		"urlMappingBy":{
+			"type":"org.nutz.mvc.impl.UrlMappingImpl", //这里也不一样
+			"args":[]
 		}
 	}
 }
