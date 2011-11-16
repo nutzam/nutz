@@ -40,6 +40,7 @@ public class NutFilter implements Filter {
 		Mvcs.set(selfName, null, null);
 		
 		FilterNutConfig config = new FilterNutConfig(conf);
+		Mvcs.setNutConfig(config);
 		// 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
 		// @see Issue 301
 		String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
@@ -61,6 +62,7 @@ public class NutFilter implements Filter {
 
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
+		Mvcs.resetALL();
 		Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
 		if (!skipMode) {
 			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
@@ -73,5 +75,6 @@ public class NutFilter implements Filter {
 		Mvcs.updateRequestAttributes((HttpServletRequest) req);
 		// 本过滤器没有找到入口函数，继续其他的过滤器
 		chain.doFilter(req, resp);
+		Mvcs.resetALL();
 	}
 }

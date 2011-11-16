@@ -29,7 +29,9 @@ public class NutServlet extends HttpServlet {
 		Mvcs.setServletContext(servletConfig.getServletContext());
 		selfName = servletConfig.getServletName();
 		Mvcs.set(selfName, null, null);
-		handler = new ActionHandler(new ServletNutConfig(servletConfig));
+		NutConfig config = new ServletNutConfig(servletConfig);
+		Mvcs.setNutConfig(config);
+		handler = new ActionHandler(config);
 	}
 
 	public void destroy() {
@@ -40,8 +42,10 @@ public class NutServlet extends HttpServlet {
 	@Override
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		Mvcs.resetALL();
 		Mvcs.set(selfName, req, resp);
 		if (!handler.handle(req, resp))
 			resp.setStatus(404);
+		Mvcs.resetALL();
 	}
 }

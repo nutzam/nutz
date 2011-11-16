@@ -64,6 +64,14 @@ public abstract class Mvcs {
 		return null;
 	}
 	
+	public static void setNutConfig(NutConfig config) {
+		getServletContext().setAttribute(getName() + "_mvc_config", config);
+	}
+	
+	public static NutConfig getNutConfig() {
+		return (NutConfig) getServletContext().getAttribute(getName() + "_mvc_config");
+	}
+	
 	//====================================================================
 
 	/**
@@ -353,6 +361,7 @@ public abstract class Mvcs {
 	private static final ThreadLocal<HttpServletRequest> REQ = new ThreadLocal<HttpServletRequest>();
 	private static final ThreadLocal<HttpServletResponse> RESP = new ThreadLocal<HttpServletResponse>();
 	private static final ThreadLocal<String> NAME = new ThreadLocal<String>();
+	private static final ThreadLocal<ActionContext> ACTION_CONTEXT = new ThreadLocal<ActionContext>();
 	
 	private static ServletContext servletContext;
 
@@ -368,6 +377,10 @@ public abstract class Mvcs {
 		return NAME.get();
 	}
 	
+	public static final ActionContext getActionContext() {
+		return ACTION_CONTEXT.get();
+	}
+	
 	public static void set(String name, HttpServletRequest req, HttpServletResponse resp) {
 		NAME.set(name);
 		REQ.set(req);
@@ -378,8 +391,20 @@ public abstract class Mvcs {
 		Mvcs.servletContext = servletContext;
 	}
 	
+	public static void setActionContext(ActionContext actionContext) {
+		ACTION_CONTEXT.set(actionContext);
+	}
+	
 	public static ServletContext getServletContext() {
 		return servletContext;
 	}
 	//==================================================================
+	
+	//重置当前线程所持有的对象
+	public static void resetALL() {
+		ACTION_CONTEXT.set(null);
+		REQ.set(null);
+		RESP.set(null);
+		NAME.set(null);
+	}
 }
