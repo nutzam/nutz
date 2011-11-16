@@ -43,9 +43,12 @@ public class NutServlet extends HttpServlet {
 	protected void service(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		Mvcs.resetALL();
-		Mvcs.set(selfName, req, resp);
-		if (!handler.handle(req, resp))
-			resp.setStatus(404);
-		Mvcs.resetALL();
+		try {
+			Mvcs.set(selfName, req, resp);
+			if (!handler.handle(req, resp))
+				resp.setStatus(404);
+		} finally {
+			Mvcs.resetALL();
+		}
 	}
 }

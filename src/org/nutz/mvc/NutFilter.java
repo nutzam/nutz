@@ -63,18 +63,21 @@ public class NutFilter implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		Mvcs.resetALL();
-		Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
-		if (!skipMode) {
-			RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
-			if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-				if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
-					return;
+		try {
+			Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
+			if (!skipMode) {
+				RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
+				if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
+					if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
+						return;
+				}
 			}
+			//更新 Request 必要的属性
+			Mvcs.updateRequestAttributes((HttpServletRequest) req);
+			// 本过滤器没有找到入口函数，继续其他的过滤器
+			chain.doFilter(req, resp);
+		} finally {
+			Mvcs.resetALL();
 		}
-		//更新 Request 必要的属性
-		Mvcs.updateRequestAttributes((HttpServletRequest) req);
-		// 本过滤器没有找到入口函数，继续其他的过滤器
-		chain.doFilter(req, resp);
-		Mvcs.resetALL();
 	}
 }
