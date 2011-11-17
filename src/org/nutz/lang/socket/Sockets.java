@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -44,7 +45,7 @@ public abstract class Sockets {
 			OutputStream sOut = socket.getOutputStream();
 			Streams.write(sOut, ins);
 			sOut.flush();
-			sOut.close();
+			//sOut.close();
 
 			// 接收服务器的反馈
 			if (!socket.isClosed()) {
@@ -207,22 +208,20 @@ public abstract class Sockets {
 
 			// 循环监听的主程序
 			final SocketLock lock = new SocketLock();
-			ExecutorService execs = Executors.newCachedThreadPool();
+//			ExecutorService execs = Executors.newCachedThreadPool();
 			SocketMain main = null;
 			Mirror mirror = Mirror.me(klass);
-			Borning<SocketMain> borning = null;
 			List<SocketAtom> atoms = new LinkedList<SocketAtom>();
+			Borning<SocketMain> borning = mirror.getBorning(atoms, lock, server, service, saTable);
 			while (!lock.isStop()) {
 				if (log.isDebugEnabled())
 					log.debug("create new main thread to wait...");
-				if(borning == null)
-					borning = mirror.getBorning(atoms, lock, server, service, saTable);
 				main = borning.born(new Object[]{atoms, lock, server, service, saTable});
 
 				if (log.isDebugEnabled())
 					log.debug("Ready for listen");
 
-				execs.execute(main);
+				service.execute(main);
 
 				if (log.isDebugEnabled())
 					log.debug("wait for accept ...");
@@ -277,8 +276,14 @@ public abstract class Sockets {
 			if (log.isInfoEnabled())
 				log.info("Stop connected threads...");
 
-			while (!execs.isTerminated())
-				execs.shutdown();
+			while (!service.isTerminated()) {
+				service.shutdown();
+				try {
+					service.awaitTermination(120, TimeUnit.SECONDS);
+				} catch (InterruptedException e1) {
+					throw Lang.wrapThrow(e1);
+				}
+			}
 
 			if (log.isInfoEnabled())
 				log.info("Close all sockets..");
