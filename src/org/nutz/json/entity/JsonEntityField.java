@@ -1,6 +1,7 @@
 package org.nutz.json.entity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
 import org.nutz.json.JsonField;
@@ -30,6 +31,9 @@ public class JsonEntityField {
 	public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
 		JsonField jf = fld.getAnnotation(JsonField.class);
 		if (null != jf && jf.ignore())
+			return null;
+		//瞬时变量就不要持久化了
+		if (Modifier.isTransient(fld.getModifiers()))
 			return null;
 
 		JsonEntityField jef = new JsonEntityField();
