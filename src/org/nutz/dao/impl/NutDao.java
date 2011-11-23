@@ -102,7 +102,7 @@ public class NutDao extends DaoSupport implements Dao {
 		final EntityOperator opt = _optBy(Lang.first(obj));
 		if (null == opt)
 			return null;
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
 				opt.addInsert(opt.entity, ele);
 			}
@@ -234,7 +234,7 @@ public class NutDao extends DaoSupport implements Dao {
 	public <T> T updateWith(T obj, final String regex) {
 		if (null == obj)
 			return null;
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);
@@ -255,7 +255,7 @@ public class NutDao extends DaoSupport implements Dao {
 	public <T> T updateLinks(T obj, final String regex) {
 		if (null == obj)
 			return null;
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);
@@ -318,7 +318,7 @@ public class NutDao extends DaoSupport implements Dao {
 		if (null == obj)
 			return 0;
 		final int[] re = new int[1];
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);
@@ -340,7 +340,7 @@ public class NutDao extends DaoSupport implements Dao {
 		if (null == obj)
 			return 0;
 		final int[] re = new int[1];
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);
@@ -471,7 +471,7 @@ public class NutDao extends DaoSupport implements Dao {
 	public <T> T fetchLinks(T obj, final String regex) {
 		if (null == obj)
 			return null;
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);
@@ -509,7 +509,7 @@ public class NutDao extends DaoSupport implements Dao {
 	public <T> T clearLinks(T obj, final String regex) {
 		if (null == obj)
 			return null;
-		Lang.each(obj, new Each<Object>() {
+		Lang.each(obj, false, new Each<Object>() {
 			public void invoke(int index, Object ele, int length) throws ExitLoop, ContinueLoop,
 					LoopException {
 				EntityOperator opt = _optBy(ele);

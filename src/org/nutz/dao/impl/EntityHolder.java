@@ -108,7 +108,7 @@ public class EntityHolder {
 			// 猜测一下数据库类型
 			Jdbcs.guessEntityFieldColumnType(ef);
 			ef.setAdaptor(support.expert.getAdaptor(ef));
-			if(mirror != null)
+			if (mirror != null)
 				ef.setType(mirror.getType());
 			ef.setInjecting(new InjectToMap(key));
 			ef.setEjecting(new EjectFromMap(key));
@@ -139,21 +139,21 @@ public class EntityHolder {
 	 */
 	@SuppressWarnings("unchecked")
 	public Entity<?> getEntityBy(Object obj) {
-		// 这是一个 Map,试图构建一个 entity
-		if (obj instanceof Map<?, ?>) {
-			Object tableName = ((Map<String, ?>) obj).get(".table");
-			if (null == tableName)
-				throw Lang.makeThrow(	"Can not insert map without key '.table' : \n%s",
-										Json.toJson(obj, JsonFormat.forLook()));
-			return makeEntity(tableName.toString(), (Map<String, ?>) obj);
-		}
-
 		// 正常的构建一个 Entity
 		Object first = Lang.first(obj);
 		// 对象为空，不能构建实体
 		if (first == null)
 			return null;
 
+		// 这是一个 Map,试图构建一个 entity
+		if (first instanceof Map<?, ?>) {
+			Object tableName = ((Map<String, ?>) first).get(".table");
+			if (null == tableName)
+				throw Lang.makeThrow(	"Can not insert map without key '.table' : \n%s",
+										Json.toJson(first, JsonFormat.forLook()));
+			return makeEntity(tableName.toString(), (Map<String, ?>) first);
+		}
+		// 作为 POJO 构建
 		return getEntity(first.getClass());
 	}
 

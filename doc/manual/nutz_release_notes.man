@@ -2,73 +2,30 @@
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.40 发行注记
+1.b.41 发行注记
 
-    Hi 大家好，好久不见，^_^
-    
-    又到了30天一度的 Nutz 发布的日子了。 当然，上一个 30天我们木有发布，为啥涅？ 因为看看 Issue 列表，想再攒攒嘛。不过可以看出
-    [http://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版] 顶了2个多月，看起来工作的还可以。
-    
-    我记得 [http://nutzam.com/doc/html/#history/1_b_39.html 1.b.39 这个版]发布后 和 [http://wendal.net/ Wendal] 
-    私下小声嘀咕过，看起来再过几个版，Nutz 似乎可以 RC 了。 说起 [http://wendal.net/ Wendal 同学]，如果你仔细阅读他
-    的博客，你会发现，这个博客很有料，文章的品质很高，而且更新的频率也不低，这里推荐几篇文章给大家:
-     * [http://wendal.net/326.html 《初试Jetty使用Mongodb作为Session管理器》]
-     * [http://wendal.net/324.html 《Nutz事务模板值得注意的细节》]
-     * [http://wendal.net/335.html 《捐点钱给自己喜欢的开源软件》]
-     * [http://wendal.net/299.html 《JGit初试牛刀》]
-     * [http://wendal.net/320.html 《实现Rk2918的System分区可写》]
-    技术博不少，深度广度兼具的技博难找，[http://wendal.net/ Wendal 同学] 的博客已经初具摸样了，作为它的老订户，
-    不得不说:"此博值得一订呀"。这里是 [http://wendal.net/feed Wendal随笔的RSS订阅地址]。
-    
-    {*回过头来我们再说说 Nutz:}
-    
-    日子过的很快，子在川曰：“逝者如斯夫”， 看看 [http://code.google.com/p/nutz/ Nutz 在 Google code 的首页]，
-    上面有一句 : {#080;"它没有过去，只有未来"}。 
-    现在再说这话似乎有点不好意思的，都2年了，你还跟这儿装嫩，你好意思吗？ 
-    但是现在到也实在不想把这句话删掉，
-    因为它可以做一个时间的铭，告诉我们这个小开源项目是无所谓过去的，
-    它不关心自己所谓的用户量，也不关心自己所谓的影响力，更不关心和现在的所有流行代码库之间的比较。
-    它不过是一些喜欢写程序的人凑在一起，写一些自认为很有用的代码，并且希望更多的人使用自己的代码，然后和朋友吃饭喝酒的时候，
-    可以吹个牛X，就非常满足了。
-    
-    我们的策略很简单，就是，希望大家来[https://github.com/nutzam/nutz/issues 这里报Bug]，然后我们修复。当然我们欢迎任何
-    喜欢这个游戏的朋友们参与进来，你可以在[https://github.com/nutzam/nutz github 上 fork Nutz] 然后，给出你的修改，
-    给我们发 [https://github.com/nutzam/nutz/pulls pull request]，我们接受了，贡献者名单就一定有你。 
-    
-    {#00F;*喜欢 Nutz，就 fork 它 ^_^}
-    
-    在 Nutz 正式版发布的时候，我们也打算把所有版本的贡献者，放到代码里，做成一个常量，算是一个永久的纪念吧。
-    
-    为此，特地感谢 [https://github.com/ywjno ywjno 同学]，现在似乎只有他提了不少 [https://github.com/nutzam/nutz/pulls pull request]
-    
-    {#080;*一件神奇的事情}
-    
-    此外，还有一件神奇的事情，[http://weibo.com/n/ClarenceAu ClarenceAu 同学]在某年某月静悄悄的提交了 
-    [http://plugins.netbeans.org/plugin/40173/nutzframeworksupport Nut 在 Netbeans 上的插件]，
-    经过数小时调查，有证据显示该插件系由 {*华南农业大学XXX工作室} 集体创作，试用过的用户纷纷表示"有点意思"，
-    据相关人士透露，该工作室由一伙不明身份的大学生构成，数目未知，
-    据一份不完全名单透露，下面这些帐号与该工作室有非常紧密的联系，甚至很可能是其中一员：
-     * [http://weibo.com/n/ClarenceAu ClarenceAu]
-     * [http://weibo.com/n/steven0lisa steven0lisa]
-     * [http://weibo.com/n/Niuza Niuza]
-     * [http://weibo.com/n/old_OU old_oU]
-     * [http://weibo.com/n/华农金中菊 华农金中菊]
-     * [http://weibo.com/n/钟泽明 钟泽明]
-     * [http://weibo.com/n/KevinO凯 KevinO凯]
-    其中，我们可以确切的知道， [http://weibo.com/n/KevinO凯 KevinO凯] 是 [http://minizhi.com/login 迷你志]的作者，它
-    是一个[http://www.iteye.com/news/17313 基于Nutz的网站]，并且作者曾经表示过要开源。
-    想要 [http://www.iteye.com/news/17313 迷你志] 源代码的同学们，冤有头债有主，本家儿我终于给你们找到了!
-    
-    {#F80;*推介}
-    
-    如果有对数据转换有需求的同学，[http://www.iteye.com/news/22986 XBlink 项目]是非常值得关注的。它的切入点非常犀利，就是追求
-    一个字 --- {*快}，我们期待着他们能搞出一些更酷的代码，大家拿来用用哈 :D
-    
-    {#00F;*最后 ...}
-     * Nutz 的首页 : [http://nutzam.com/]
-     * Nutz 的下载地址 : [http://code.google.com/p/nutz/downloads/list]
-    
-    {#080;Enjoy it ^_^}
+    管理员小恶
+        
+        当小恶告诉我们他想得到一个管理员权限的时候，所有人都很惊讶。但是小恶得到了这个权限。
+        
+        因为小恶说，我想为 Nutz 这个小屁框架社区做点事情
+        
+        于是，小恶就成为了一个管理员。
+
+        我是一个很好奇的人。我的诸多爱好之一就是观察，于是我就观察小恶。
+        
+        小恶爱踢人。当然，无敌的 Wendal 会不定期是成批的踢掉一些僵死帐户，以及发广告的人。
+        但是与 Wendal 不同，小恶只是在踢人，TA 很少说话，就是踢人。
+        
+        每当我的电脑 Dock 条那个 QQ 小图标别别的在跳，很多时候，我就看到小恶把人提出去的消息。 
+        
+        我也踢过人，我认为踢人很辛苦。 我认为一个技术群，发言主题的比例应该是:
+
+        60%(那个图和笑话} + 20%(类似程序员就是任人宰割的驴肉) +  20％（技术讨论）
+
+        如果有人试图破坏这个我心目中美好的平衡，我就会考虑踢他。`
+        
+        我和怀疑有人会持续的向 "Nutz & XBlink" 这个群发广告。因为小恶在，
 
 --------------------------------------------------------------------------------------------------------
 问题修复
