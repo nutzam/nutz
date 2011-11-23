@@ -1207,8 +1207,10 @@ public abstract class Lang {
 		if (null == obj)
 			return obj;
 
-		if (obj instanceof Collection<?>)
-			return ((Collection<?>) obj).iterator().next();
+		if (obj instanceof Collection<?>) {
+			Iterator<?> it = ((Collection<?>) obj).iterator();
+			return it.hasNext() ? it.next() : null;
+		}
 
 		if (obj.getClass().isArray())
 			return Array.getLength(obj) > 0 ? Array.get(obj, 0) : null;
