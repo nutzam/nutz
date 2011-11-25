@@ -10,12 +10,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.nutz.castor.Castors;
+import org.nutz.el.El;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.util.Context;
 
 /**
  * 对象转换器.<br/>
@@ -32,7 +35,14 @@ import org.nutz.lang.inject.Injecting;
  *
  */
 public class Objs {
-    
+    //路径
+    Stack<String> path = new Stack<String>();
+    //对象缓存
+    Context context = Lang.context();
+    public Objs(){
+        
+    }
+
     public static Object convert(Object model, Type type) {
         if (model == null)
             return null;
@@ -43,34 +53,42 @@ public class Objs {
             return Castors.me().castTo(model, Lang.getTypeClass(type));
         }
         
-        return inject(model, type);
+        return new Objs().inject(model, type);
     }
     
-    public static Object inject(Object model, Type type){
+    
+    public Object inject(Object model, Type type){
         if(model == null){
             return null;
         }
         Mirror<?> me = Mirror.me(type);
+        Object obj = null;
         if(Collection.class.isAssignableFrom(me.getType())){
-            return injectCollection(model, me);
+            obj = injectCollection(model, me);
         } else if(Map.class.isAssignableFrom(me.getType())){
-            return injectMap(model, me);
+            obj = injectMap(model, me);
         } else if(me.getType().isArray()){
-            return injectArray(model, me);
+            obj = injectArray(model, me);
+        } else {
+            obj= injectObj(model, me);
         }
-        return injectObj(model, me);
+        if(path.size() > 0)
+            path.pop();
+        return obj;
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Object injectArray(Object model, Mirror<?> me){
+    private Object injectArray(Object model, Mirror<?> me){
         Class<?> clazz = me.getType().getComponentType();
         List list = (List) model;
         List vals = new ArrayList();
+        int j = 0;
         for(Object obj : list){
             if(isLeaf(obj)){
                 vals.add(Castors.me().castTo(obj, clazz));
                 continue;
             }
+            path.push("["+(j++)+"]");
             vals.add(inject(obj, clazz));
         }
         Object obj = Array.newInstance(clazz, vals.size());
@@ -81,7 +99,7 @@ public class Objs {
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static Object injectMap(Object model, Mirror<?> me){
+    private Object injectMap(Object model, Mirror<?> me){
         Map re = null;
         if(me.isInterface()){
             re = new HashMap();
@@ -107,13 +125,14 @@ public class Objs {
                 re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
                 continue;
             }
+            path.push(key.toString());
             re.put(key, inject(val, type));
         }
         return re;
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    private static Object injectCollection(Object model, Mirror<?> me){
+    private Object injectCollection(Object model, Mirror<?> me){
         Collection re = null;
         if(!me.isInterface()){
             re =  (Collection) me.born();
@@ -124,18 +143,20 @@ public class Objs {
             return model;
         }
         Type type = me.getGenericsType(0);
+        int j = 0;
         for(Object obj : (Collection) model){
             if(isLeaf(obj)){
                 re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
                 continue;
             }
+            path.push("["+(j++)+"]");
             re.add(inject(obj, type));
         }
         return re;
     }
     
     @SuppressWarnings("rawtypes")
-    private static Collection makeCollection(Mirror<?> me) {
+    private Collection makeCollection(Mirror<?> me) {
         if(List.class.isAssignableFrom(me.getType())){
             return new ArrayList();
         }
@@ -146,8 +167,9 @@ public class Objs {
     }
 
     @SuppressWarnings("unchecked")
-    private static Object injectObj(Object model, Mirror<?> me){
+    private Object injectObj(Object model, Mirror<?> me){
         Object obj = me.born();
+        context.set(fetchPath(), obj);
         Map<String, ?> map = (Map<String, ?>) model;
         for(Field field : me.getFields()){
             JsonEntityField jef = JsonEntityField.eval(me, field);
@@ -162,9 +184,13 @@ public class Objs {
             Injecting in = me.getInjecting(field.getName());
             if(isLeaf(val)){
                 Type t = Lang.getFieldType(me, field);
+                if(val instanceof El){
+                    val = ((El)val).eval(context);
+                }
                 in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
                 continue;
             }
+            path.push(field.getName());
             Object o = jef.createValue(obj, inject(val, Lang.getFieldType(me, field)));
             in.inject(obj, o);
             
@@ -172,7 +198,7 @@ public class Objs {
         return obj;
     }
     
-    private static boolean isLeaf(Object obj){
+    private boolean isLeaf(Object obj){
         if(obj instanceof Map){
             return false;
         }
@@ -180,5 +206,17 @@ public class Objs {
             return false;
         }
         return true;
+    }
+    
+    private String fetchPath(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("root");
+        for(String item : path){
+            if(item.charAt(0) != '['){
+                sb.append(".");
+            }
+            sb.append(item);
+        }
+        return sb.toString();
     }
 }

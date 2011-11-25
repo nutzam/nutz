@@ -38,7 +38,7 @@ public class RecursionQuotedTest {
         a.b = b;
         b.a = a;
         
-        A ta = (A)Json.fromJson(Json.toJson(a));
+        A ta = (A)Json.fromJson(A.class, Json.toJson(a));
         assertEquals("testa", ta.b.a.name);
     }
 }
