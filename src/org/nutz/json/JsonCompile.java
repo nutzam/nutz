@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.el.El;
 import org.nutz.lang.Lang;
 
 /**
@@ -245,7 +246,17 @@ public class JsonCompile {
 					}
 					}
 			}
-
+		case '$':
+		    //EL表达式
+		    if('{' == nextChar()){
+		        while(true){
+		            if(nextChar() == '}'){
+		                return new El(sb);
+		            }
+		            sb.append((char)cursor);
+		        }
+		    }
+		    throw makeError("'EL' is expected!");
 		default:
 			throw unexpectedChar();//不是数值,不是布尔值,不是null和undefined? 玩野啊? 抛异常!!
 		}

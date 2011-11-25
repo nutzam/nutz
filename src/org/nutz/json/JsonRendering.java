@@ -295,6 +295,7 @@ public class JsonRendering {
 				render(Array.get(obj, i));
 				writer.append(',').append(' ');
 			}
+			path.push("["+i+"]");
 			render(Array.get(obj, i));
 		}
 		writer.append(']');
