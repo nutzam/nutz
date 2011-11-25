@@ -67,6 +67,7 @@ public class RawView implements View {
 		}
 		// 字节数组
 		else if (obj instanceof byte[]) {
+			resp.setHeader("Content-Length", "" + ((byte[])obj).length);
 			Streams.writeAndClose(resp.getOutputStream(), (byte[])obj);
 		}
 		// 字符数组
@@ -85,7 +86,9 @@ public class RawView implements View {
 		}
 		// 普通对象
 		else {
-			Streams.writeAndClose(resp.getWriter(), String.valueOf(obj));
+			byte[] data = String.valueOf(obj).getBytes(Encoding.CHARSET_UTF8);
+			resp.setHeader("Content-Length", "" + data.length);
+			Streams.writeAndClose(resp.getOutputStream(), data);
 		}
 	}
 
