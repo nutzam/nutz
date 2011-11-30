@@ -134,7 +134,13 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public ServletOutputStream getOutputStream() throws IOException {
-		throw Lang.noImplement();
+		return new ServletOutputStream() {
+			
+			@Override
+			public void write(int arg0) throws IOException {
+				stream.write(arg0);
+			}
+		};
 	}
 
 	public PrintWriter getWriter() throws IOException {
