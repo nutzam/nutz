@@ -20,6 +20,7 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.nutz.lang.stream.NullInputStream;
+import org.nutz.lang.util.ByteInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -40,7 +41,8 @@ public abstract class Streams {
 	public static boolean equals(InputStream sA, InputStream sB) throws IOException {
 		int dA;
 		while ((dA = sA.read()) != -1) {
-			if (dA != sB.read())
+			int dB = sB.read();
+			if (dA != dB)
 				return false;
 		}
 		return sB.read() == -1;
@@ -285,6 +287,42 @@ public abstract class Streams {
 	}
 
 	/**
+	 * 读取一个输入流中所有的字节
+	 * 
+	 * @param ins
+	 *            输入流，必须支持 available()
+	 * @return 一个字节数组
+	 * @throws IOException
+	 */
+	public static byte[] readBytes(InputStream ins) throws IOException {
+		byte[] bytes = new byte[ins.available()];
+		ins.read(bytes);
+		return bytes;
+	}
+
+	/**
+	 * 读取一个输入流中所有的字节，并关闭输入流
+	 * 
+	 * @param ins
+	 *            输入流，必须支持 available()
+	 * @return 一个字节数组
+	 * @throws IOException
+	 */
+	public static byte[] readBytesAndClose(InputStream ins) {
+		byte[] bytes = null;
+		try {
+			bytes = readBytes(ins);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+		finally {
+			Streams.safeClose(ins);
+		}
+		return bytes;
+	}
+
+	/**
 	 * 关闭一个可关闭对象，可以接受 null。如果成功关闭，返回 true，发生异常 返回 false
 	 * 
 	 * @param cb
@@ -509,6 +547,10 @@ public abstract class Streams {
 
 	public static InputStream nullInputStream() {
 		return new NullInputStream();
+	}
+
+	public static InputStream wrap(byte[] bytes) {
+		return new ByteInputStream(bytes);
 	}
 
 	/**

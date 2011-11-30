@@ -116,6 +116,9 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 			if (mf.getTypeMirror().isDouble())
 				return "NUMERIC(15,10)";
 			return "NUMERIC";
+
+		case BINARY:
+			return "BYTEA";
 		}
 		return super.evalFieldType(mf);
 	}

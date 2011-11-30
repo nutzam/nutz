@@ -56,6 +56,31 @@ public abstract class Files {
 	}
 
 	/**
+	 * 读取文件全部字节，并关闭文件
+	 * 
+	 * @param path
+	 *            文件路径
+	 * @return 文件的字节内容
+	 */
+	public static byte[] readBytes(String path) {
+		File f = Files.findFile(path);
+		if (null == f)
+			throw Lang.makeThrow("Can not find file '%s'", path);
+		return readBytes(f);
+	}
+
+	/**
+	 * 读取文件全部字节，并关闭文件
+	 * 
+	 * @param f
+	 *            文件
+	 * @return 文件的字节内容
+	 */
+	public static byte[] readBytes(File f) {
+		return Streams.readBytesAndClose(Streams.buff(Streams.fileIn(f)));
+	}
+
+	/**
 	 * 将内容写到一个文件内，内容对象可以是：
 	 * <ul>
 	 * <li>InputStream - 按二进制方式写入
