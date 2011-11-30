@@ -90,6 +90,21 @@ public class NutMessageLoader implements MessageLoader {
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
+		//看看有没有默认的,没有的话,取第一个为默认
+		if (!re.containsKey(Mvcs.DEFAULT_MSGS)) {
+			if (log.isInfoEnabled())
+				log.info("No default msg found ,try to set first one as default");
+			if (re.size() > 0) {
+				String first_lang = re.keySet().iterator().next();
+				if (log.isInfoEnabled())
+					log.infof("Set %s as default msg", first_lang);
+				re.put(Mvcs.DEFAULT_MSGS, re.get(first_lang));
+			} else {
+				if (log.isInfoEnabled())
+					log.info("Msg is Emtry!!");
+			}
+		}
+		
 		if (log.isDebugEnabled())
 			log.debugf("Message Loaded, size = %s", re.size());
 		if (log.isTraceEnabled())
