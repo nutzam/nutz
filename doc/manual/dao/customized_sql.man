@@ -93,6 +93,23 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		sql.params().set("name","Peter").set("age",18).set("weight",60);
 		}}}
 		通过上例，我们可以看出，变量占位符和参数占位符的确可以重名且不相互干扰的。
+
+    Sql 的逃逸字符
+        
+        有些时候，有的朋友给出的 SQL 包括特殊字符 '@' 或者 '$'，比如:
+        {{{
+        Sql sql = Sqls.create("INSERT INTO t_usr (name,email) VALUES('XiaoMing','xiaoming@163.com');"
+        }}}
+        这个时候，因为有关键字 '@'，所以 SQL 不能被正确解析，因为你的本意是给一个 'xiaoming@163.com' 
+        这个字符串。但是 Nutz.Dao 却认为这个是个语句参数。
+        
+        这时候你可以使用逃逸字符:
+        {{{
+        Sql sql = Sqls.create("INSERT INTO t_usr (name,email) VALUES('XiaoMing','xiaoming@@163.com');"
+        }}}
+        即
+         * 输入 "@@" 表示一个 '@'
+         * 输入 "$$" 表示一个 '$'
 	
 	如何执行 Sql 对象
 		当你顺利的创建了一个 Sql 对象，执行它就相当简单了，比如：
