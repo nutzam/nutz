@@ -16,8 +16,15 @@ import org.nutz.dao.test.normal.Pet2;
 
 public class EntityParsingTest extends DaoCase {
 
-	private Entity<?> en(Class<?> type) {
+	private <T> Entity<T> en(Class<T> type) {
 		return dao.getEntity(type);
+	}
+
+	@Test
+	public void test_pk_and_name_in_same_pojo() {
+		Entity<TO6> en = en(TO6.class);
+		assertEquals(2, en.getCompositePKFields().size());
+		assertEquals("id", en.getNameField().getName());
 	}
 
 	@Test
