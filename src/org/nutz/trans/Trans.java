@@ -131,4 +131,17 @@ public abstract class Trans {
 			depose();
 		}
 	}
+
+	/**
+	 * 执行一个分子，并给出返回值
+	 * 
+	 * @param <T>
+	 * @param molecule
+	 *            分子
+	 * @return 分子返回值
+	 */
+	public static <T> T exec(Molecule<T> molecule) {
+		Trans.exec(molecule);
+		return molecule.getObj();
+	}
 }
