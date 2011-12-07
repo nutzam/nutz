@@ -270,6 +270,14 @@
 			{{{
 			Files.cleanAllFolderInSubFolderes(new File("D:/demo"), ".svn");
 			}}}
+         * 文件拷贝
+            {{{
+            Files.copyFile(new File("D:/a/b/c.txt"), new File("E:/a/b/e.txt"));
+            }}}
+         * 目录拷贝
+            {{{
+            Files.copyDir(new File("D:/a/b/c"), new File("E:/a/b/e"));
+            }}}
 	读取-写入
 		 * 读取文件全部内容 - UTF-8
 			{{{

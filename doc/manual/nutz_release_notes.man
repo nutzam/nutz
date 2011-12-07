@@ -30,38 +30,7 @@
 --------------------------------------------------------------------------------------------------------
 问题修复
 
-
-    * [https://github.com/nutzam/nutz/issues/73 Issue 73] Bug,org.nutz.dao.FieldMatcher类38行 {#AAA;by} {*cqyunqin}
-    * [https://github.com/nutzam/nutz/issues/71 Issue 71] 应用启动后,客户端用Chrome登录,同时请求某个Module类的两个入口方法的URL时,其中一个方法中抛空指针异常 Ioc Mvc {#AAA;by} {*conanca}
-    * [https://github.com/nutzam/nutz/issues/70 Issue 70] NUTZ DAO @DEFAULT注解存在一定问题 {#AAA;by} {*JefWang}
-    * [https://github.com/nutzam/nutz/issues/65 Issue 65] AOP调试信息不够 Ioc {#AAA;by} {*qianshan}
-    * [https://github.com/nutzam/nutz/issues/62 Issue 62] 源代码放入web项目报2个js错误 Mvc {#AAA;by} {*cqyunqin}
-    * [https://github.com/nutzam/nutz/issues/59 Issue 59] WIKI中中说多对多关系，插入使dao.insertLinks()有所误导。 {#AAA;by} {*liuyxit}
-    * [https://github.com/nutzam/nutz/issues/52 Issue 52] Json.toJson 可不可以对某些字段特殊处理 Json 需求 {#AAA;by} {*xbl}
-    * [https://github.com/nutzam/nutz/issues/50 Issue 50] 建议在IOC手册文档里新增注解列表 Ioc 文档 {#AAA;by} {*JefWang}
-    * [https://github.com/nutzam/nutz/issues/47 Issue 47] nutzmole-1.2生成的代码。添加时不能自动封装对象 Mvc {#AAA;by} {*godson741}
-    * [https://github.com/nutzam/nutz/issues/46 Issue 46] 获取当前会话的 Locale 名称 不支持EL表达式？ Mvc 文档 需求 {#AAA;by} {*zwtlong}
-    * [https://github.com/nutzam/nutz/issues/45 Issue 45] 39中于dao的问题，当条件为null 或空字符串时出错 Dao {#AAA;by} {*yunhaifeiwu}
-    * [https://github.com/nutzam/nutz/issues/44 Issue 44] Json.fromJson(null)报错 Json {#AAA;by} {*yunhaifeiwu}
-    * [https://github.com/nutzam/nutz/issues/42 Issue 42] 国际化配置文件注释前面有空格会报空异常？ Mvc {#AAA;by} {*zwtlong}
-    * [https://github.com/nutzam/nutz/issues/41 Issue 41] nutz-1.b.39在glassfish v2.1环境出现类初始化失败 Dao 重要 {#AAA;by} {*shinwell}
-    * [https://github.com/nutzam/nutz/issues/36 Issue 36] 表达式引擎的使用报错 重要 {#AAA;by} {*dengqi100}
-    * [https://github.com/nutzam/nutz/issues/35 Issue 35] DAO多对多查询出错 {#AAA;by} {*liuyxit}
-    * [https://github.com/nutzam/nutz/issues/33 Issue 33] 实现Setup接口类里面不能使用注入方式？希望可以改进 Mvc 需求 {#AAA;by} {*zwt}
-    * [https://github.com/nutzam/nutz/issues/32 Issue 32] mvc JsonAdaptor遇对象集合适配有问题 Mvc 重要 {#AAA;by} {*hujun82589167}
-    * [https://github.com/nutzam/nutz/issues/29 Issue 29] 实体用继承Pojo的方式生成字段，生成的ID排到字段的最后面去了 {#AAA;by} {*crab041}
-    * [https://github.com/nutzam/nutz/issues/26 Issue 26] url匹配的问题 Mvc {#AAA;by} {*hszdz}
-    * [https://github.com/nutzam/nutz/issues/22 Issue 22] 在Setup的init方法中，通过Mvcs.getAtMap(config.getServletContext())得到的AtMap的size为0 Mvc 需求 {#AAA;by} {*conanca}
-
-	* In google code
-	* [http://code.google.com/p/nutz/issues/detail?id=513 Issue 513] 关于类org.nutz.ioc.meta.IocEventSet的描述错误  {#AAA;by} {* ronggen...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=514 Issue 514] 上传文件 获取本地文件名 tempFile.getMeta().getFileLocalName()可能不正确的问题  {#AAA;by} {*maiger...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=519 Issue 519] 1.b.39的manual文档中关于El的例子  {#AAA;by} {*lanlon.zen}
-	* [http://code.google.com/p/nutz/issues/detail?id=521 Issue 521] RecurArrayRandom 在多线程环境下会出错  {#AAA;by} {*feiyan35...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=522 Issue 522] 关于dao数据删除接口dao.clear()调用返回值的问题  {#AAA;by} {*hjingfen...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=524 Issue 524] Nutz表达式引擎的问题  {#AAA;by} {*chaoshi...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=528 Issue 528] 使用dao进行数据插入，Chain条件报错  {#AAA;by} {*wak...@gmail.com}
-	* [http://code.google.com/p/nutz/issues/detail?id=531 Issue 531] 关于nutz1.b.39中po属性类型为clob无法查询  {#AAA;by} {*shao0...@163.com}
+    ...
 --------------------------------------------------------------------------------------------------------
 质量
 	共通过了 {#FF00FF;*738}  个单元测试用例,代码覆盖率达到 {#FF00FF;64.5%}(按line计算)
@@ -82,6 +51,7 @@
 文档
 
      * 修改: [dao/customized_sql.man ] : 增加 SQL 逃逸字符的描述
+     * 修改: [lang/lang.man ] : 增加文件/目录拷贝的描述
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
