@@ -45,7 +45,6 @@ public abstract class Sockets {
 			OutputStream sOut = socket.getOutputStream();
 			Streams.write(sOut, ins);
 			sOut.flush();
-			//sOut.close();
 
 			// 接收服务器的反馈
 			if (!socket.isClosed()) {
@@ -152,7 +151,7 @@ public abstract class Sockets {
 																		.availableProcessors()
 																	* poolSize));
 	}
-	
+
 	/**
 	 * 监听本地某一个端口，根据用户输入的命令的不同，执行不同的操作
 	 * <p>
@@ -187,9 +186,9 @@ public abstract class Sockets {
 	 */
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static void localListen(	int port,
-											Map<String, SocketAction> actions,
-											ExecutorService service,
-											Class<? extends SocketMain> klass) {
+									Map<String, SocketAction> actions,
+									ExecutorService service,
+									Class<? extends SocketMain> klass) {
 		try {
 			// 建立动作映射表
 			SocketActionTable saTable = new SocketActionTable(actions);
@@ -208,7 +207,7 @@ public abstract class Sockets {
 
 			// 循环监听的主程序
 			final SocketLock lock = new SocketLock();
-//			ExecutorService execs = Executors.newCachedThreadPool();
+			// ExecutorService execs = Executors.newCachedThreadPool();
 			SocketMain main = null;
 			Mirror mirror = Mirror.me(klass);
 			List<SocketAtom> atoms = new LinkedList<SocketAtom>();
@@ -280,7 +279,8 @@ public abstract class Sockets {
 				service.shutdown();
 				try {
 					service.awaitTermination(120, TimeUnit.SECONDS);
-				} catch (InterruptedException e1) {
+				}
+				catch (InterruptedException e1) {
 					throw Lang.wrapThrow(e1);
 				}
 			}
@@ -309,8 +309,6 @@ public abstract class Sockets {
 
 	}
 
-	
-	
 	/**
 	 * 安全关闭套接层，容忍 null
 	 * 
