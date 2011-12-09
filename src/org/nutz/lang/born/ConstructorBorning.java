@@ -8,6 +8,7 @@ public class ConstructorBorning<T> implements Borning<T> {
 
 	public ConstructorBorning(Constructor<T> c) {
 		this.c = c;
+		this.c.setAccessible(true);
 	}
 
 	public T born(Object[] args) {

@@ -11,6 +11,7 @@ public class MethodCastingBorning<T> implements Borning<T> {
 
 	public MethodCastingBorning(Method method) {
 		this.method = method;
+		this.method.setAccessible(true);
 		this.pts = method.getParameterTypes();
 	}
 

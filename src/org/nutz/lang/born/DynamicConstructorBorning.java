@@ -10,6 +10,7 @@ public class DynamicConstructorBorning<T> implements Borning<T> {
 
 	public DynamicConstructorBorning(Constructor<T> c) {
 		this.c = c;
+		this.c.setAccessible(true);
 	}
 
 	public T born(Object[] args) {

@@ -26,16 +26,10 @@ public class SocketAtom implements Atom {
 	protected String line;
 
 	protected SocketActionTable saTable;
-	
+
 	protected Context context;
 
-//	protected SocketLock lock;
-
-//	protected List<SocketAtom> atoms;
-
-	protected SocketAtom(	Context context,
-							Socket socket,
-							SocketActionTable saTable) {
+	public SocketAtom(Context context, Socket socket, SocketActionTable saTable) {
 		this.context = context;
 		this.socket = socket;
 		this.saTable = saTable;
@@ -44,8 +38,6 @@ public class SocketAtom implements Atom {
 	public void run() {
 		if (log.isDebugEnabled())
 			log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
-
-//		atoms.add(this);
 
 		try {
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -69,20 +61,9 @@ public class SocketAtom implements Atom {
 		catch (IOException e) {
 			log.error("Error!! ", e);
 		}
+		// 最后保证关闭
 		finally {
 			Sockets.safeClose(socket);
-			// 移除自己
-//			atoms.remove(this);
-
-//			if (log.isDebugEnabled())
-//				log.debug("Done and notify lock");
-
-//			synchronized (lock) {
-//				try {
-//					lock.notifyAll();
-//				}
-//				catch (Exception e) {}
-//			}
 		}
 	}
 
