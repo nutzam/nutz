@@ -244,9 +244,16 @@ public abstract class Sockets {
 					break;
 			}
 			
+			if (!server.isClosed()) {
+				try {
+					server.close();
+				} catch (Throwable e) {}
+			}
+			
 			log.info("Seem stop signal was got, all running thread to exit in 60s");
 			
 			try {
+				service.shutdown();
 				service.awaitTermination(15, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
 			}
