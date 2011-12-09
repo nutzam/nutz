@@ -216,24 +216,24 @@ public abstract class Sockets {
 					while (true) {
 						try {
 							Thread.sleep(1000);
-							if(log.isDebugEnabled())
-								log.debug(" %% check ... " + context.getBoolean("stop"));
 							if (context.getBoolean("stop")) {
 								try {
-									if(log.isDebugEnabled())
-										log.debug(" %% close server");
 									server.close();
-								}catch (Throwable e) {}
+								}
+								catch (Throwable e) {}
 								return;
 							}
-						} catch (Throwable e) {}
+						}
+						catch (Throwable e) {}
 					}
 				}
 			}).start();
 			/*
 			 * 准备 SocketAtom 的生成器
 			 */
-			Borning borning = Mirror.me(klass).getBorningByArgTypes(Context.class, Socket.class, SocketActionTable.class);
+			Borning borning = Mirror.me(klass).getBorningByArgTypes(Context.class,
+																	Socket.class,
+																	SocketActionTable.class);
 			if (borning == null) {
 				log.error("boring == null !!!!");
 				return;
@@ -248,31 +248,38 @@ public abstract class Sockets {
 					Socket socket = server.accept();
 					if (log.isDebugEnabled())
 						log.debug("Appact a new socket, create new SocketAtom to handle it ...");
-					Runnable runnable = (Runnable) borning.born(new Object[]{context,socket, saTable});
+					Runnable runnable = (Runnable) borning.born(new Object[]{	context,
+																				socket,
+																				saTable});
 					service.execute(runnable);
-				} catch (Throwable e) {
+				}
+				catch (Throwable e) {
 					log.info("Throwable catched!! maybe ask to exit", e);
 				}
+				if (log.isDebugEnabled())
+					log.debugf("next loop '%s'", context.getBoolean("stop"));
 				if (context.getBoolean("stop"))
 					break;
 			}
-			
+
 			if (!server.isClosed()) {
 				try {
 					server.close();
-				} catch (Throwable e) {}
+				}
+				catch (Throwable e) {}
 			}
-			
+
 			log.info("Seem stop signal was got, all running thread to exit in 60s");
-			
+
 			try {
 				service.shutdown();
 				service.awaitTermination(15, TimeUnit.SECONDS);
-			} catch (InterruptedException e) {
 			}
+			catch (InterruptedException e) {}
 			try {
 				service.shutdownNow();
-			} catch (Throwable e2) {}
+			}
+			catch (Throwable e2) {}
 		}
 		catch (RuntimeException e) {
 			throw e;
