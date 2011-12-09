@@ -6,9 +6,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketException;
-import java.util.List;
 
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
@@ -26,17 +26,17 @@ public class SocketAtom implements Atom {
 	protected String line;
 
 	protected SocketActionTable saTable;
+	
+	protected Context context;
 
-	protected SocketLock lock;
+//	protected SocketLock lock;
 
-	protected List<SocketAtom> atoms;
+//	protected List<SocketAtom> atoms;
 
-	protected SocketAtom(	List<SocketAtom> atoms,
-							SocketLock lock,
+	protected SocketAtom(	Context context,
 							Socket socket,
 							SocketActionTable saTable) {
-		this.atoms = atoms;
-		this.lock = lock;
+		this.context = context;
 		this.socket = socket;
 		this.saTable = saTable;
 	}
@@ -45,7 +45,7 @@ public class SocketAtom implements Atom {
 		if (log.isDebugEnabled())
 			log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
 
-		atoms.add(this);
+//		atoms.add(this);
 
 		try {
 			br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -64,7 +64,7 @@ public class SocketAtom implements Atom {
 		catch (CloseSocketException e) {
 			if (log.isInfoEnabled())
 				log.info("Catch CloseSocketException , set lock stop");
-			lock.setStop();
+			context.set("stop", true);
 		}
 		catch (IOException e) {
 			log.error("Error!! ", e);
@@ -72,17 +72,17 @@ public class SocketAtom implements Atom {
 		finally {
 			Sockets.safeClose(socket);
 			// 移除自己
-			atoms.remove(this);
+//			atoms.remove(this);
 
-			if (log.isDebugEnabled())
-				log.debug("Done and notify lock");
+//			if (log.isDebugEnabled())
+//				log.debug("Done and notify lock");
 
-			synchronized (lock) {
-				try {
-					lock.notify();
-				}
-				catch (Exception e) {}
-			}
+//			synchronized (lock) {
+//				try {
+//					lock.notifyAll();
+//				}
+//				catch (Exception e) {}
+//			}
 		}
 	}
 

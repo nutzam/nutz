@@ -7,8 +7,6 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -17,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
-import org.nutz.lang.born.Borning;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -168,7 +166,7 @@ public abstract class Sockets {
 	public static void localListenByLine(	int port,
 											Map<String, SocketAction> actions,
 											ExecutorService service) {
-		localListen(port, actions, service, SocketMain.class);
+		localListen(port, actions, service, SocketAtom.class);
 	}
 
 	/**
@@ -184,11 +182,10 @@ public abstract class Sockets {
 	 * @param service
 	 *            线程池的实现类
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
 	public static void localListen(	int port,
 									Map<String, SocketAction> actions,
 									ExecutorService service,
-									Class<? extends SocketMain> klass) {
+									Class<? extends SocketAtom> klass) {
 		try {
 			// 建立动作映射表
 			SocketActionTable saTable = new SocketActionTable(actions);
@@ -205,95 +202,51 @@ public abstract class Sockets {
 			if (log.isInfoEnabled())
 				log.infof("Local socket is up at :%d with %d action ready", port, actions.size());
 
-			// 循环监听的主程序
-			final SocketLock lock = new SocketLock();
-			// ExecutorService execs = Executors.newCachedThreadPool();
-			SocketMain main = null;
-			Mirror mirror = Mirror.me(klass);
-			List<SocketAtom> atoms = new LinkedList<SocketAtom>();
-			Borning<SocketMain> borning = mirror.getBorning(atoms, lock, server, service, saTable);
-			while (!lock.isStop()) {
-				if (log.isDebugEnabled())
-					log.debug("create new main thread to wait...");
-				main = borning.born(new Object[]{atoms, lock, server, service, saTable});
-
-				if (log.isDebugEnabled())
-					log.debug("Ready for listen");
-
-				service.execute(main);
-
-				if (log.isDebugEnabled())
-					log.debug("wait for accept ...");
-
-				// 如果没有接受套接字，那么自旋判断是不是有一个连接提示要关闭整个监听
-				while ((!main.isAccepted())) {
-					// System.out.print(".");
-					// if(++i%80==0)
-					// System.out.println();
-					if (log.isDebugEnabled())
-						log.debug("wait lock ...");
-
-					synchronized (lock) {
+			final Context context = Lang.context();
+			context.set("stop", false);
+			new Thread() {
+				@Override
+				public void run() {
+					setName("Nutz.Sockets monitor thread");
+					while (true) {
 						try {
-							lock.wait();
-						}
-						catch (InterruptedException e) {
-							throw Lang.wrapThrow(e);
-						}
+							Thread.sleep(1000);
+							if (context.getBoolean("stop")) {
+								try {
+									server.close();
+								}catch (Throwable e) {}
+								return;
+							}
+						} catch (Throwable e) {}
 					}
-
+				}
+			};
+			
+			while (true) {
+				try {
 					if (log.isDebugEnabled())
-						log.debugf(	"check main accept [%s], lock stop [%s]",
-									main.isAccepted(),
-									lock.isStop());
-
-					if (lock.isStop())
+						log.debug("Waiting for new socket");
+					Socket socket = server.accept();
+					if (log.isDebugEnabled())
+						log.debug("Appact a new socket, create new SocketAtom to handle it ...");
+					Runnable runnable = Mirror.me(klass).born(context,socket, saTable);
+					service.execute(runnable);
+				} catch (Throwable e) {
+					log.info("Throwable catched!! maybe ask to exit", e);
+					if (context.getBoolean("stop"))
 						break;
 				}
-
-				if (log.isDebugEnabled())
-					log.debug("Created a socket");
-
 			}
-
-			// 关闭所有的监听，退出程序
-			if (null != main && !main.isAccepted()) {
-				if (log.isInfoEnabled())
-					log.info("Notify waiting threads...");
-
-				try {
-					Socket ss = new Socket("127.0.0.1", port);
-					OutputStream sOut = ss.getOutputStream();
-					sOut.write("V~~".getBytes());
-					sOut.flush();
-					sOut.close();
-					ss.close();
-				}
-				catch (Exception e) {}
-			}
-
-			if (log.isInfoEnabled())
-				log.info("Stop connected threads...");
-
-			while (!service.isTerminated()) {
-				service.shutdown();
-				try {
-					service.awaitTermination(120, TimeUnit.SECONDS);
-				}
-				catch (InterruptedException e1) {
-					throw Lang.wrapThrow(e1);
-				}
-			}
-
-			if (log.isInfoEnabled())
-				log.info("Close all sockets..");
-
+			
+			log.info("Seem stop signal was got, all running thread to exit in 60s");
+			
 			try {
-				for (SocketAtom atom : atoms)
-					Sockets.safeClose(atom.getSocket());
+				service.awaitTermination(60, TimeUnit.SECONDS);
+			} catch (InterruptedException e) {
+				try {
+					service.shutdownNow();
+				} catch (Throwable e2) {}
 			}
-			catch (Exception e) {}
-
 		}
 		catch (RuntimeException e) {
 			throw e;
