@@ -239,20 +239,20 @@ public abstract class Sockets {
 					service.execute(runnable);
 				} catch (Throwable e) {
 					log.info("Throwable catched!! maybe ask to exit", e);
-					if (context.getBoolean("stop"))
-						break;
 				}
+				if (context.getBoolean("stop"))
+					break;
 			}
 			
 			log.info("Seem stop signal was got, all running thread to exit in 60s");
 			
 			try {
-				service.awaitTermination(60, TimeUnit.SECONDS);
+				service.awaitTermination(15, TimeUnit.SECONDS);
 			} catch (InterruptedException e) {
-				try {
-					service.shutdownNow();
-				} catch (Throwable e2) {}
 			}
+			try {
+				service.shutdownNow();
+			} catch (Throwable e2) {}
 		}
 		catch (RuntimeException e) {
 			throw e;
