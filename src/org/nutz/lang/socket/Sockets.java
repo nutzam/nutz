@@ -206,15 +206,22 @@ public abstract class Sockets {
 
 			final Context context = Lang.context();
 			context.set("stop", false);
-			new Thread() {
+			/*
+			 * 启动一个守护线程，判断是否该关闭 socket 服务
+			 */
+			(new Thread() {
 				@Override
 				public void run() {
 					setName("Nutz.Sockets monitor thread");
 					while (true) {
 						try {
 							Thread.sleep(1000);
+							if(log.isDebugEnabled())
+								log.debug(" %% check ... " + context.getBoolean("stop"));
 							if (context.getBoolean("stop")) {
 								try {
+									if(log.isDebugEnabled())
+										log.debug(" %% close server");
 									server.close();
 								}catch (Throwable e) {}
 								return;
@@ -222,12 +229,18 @@ public abstract class Sockets {
 						} catch (Throwable e) {}
 					}
 				}
-			};
+			}).start();
+			/*
+			 * 准备 SocketAtom 的生成器
+			 */
 			Borning borning = Mirror.me(klass).getBorningByArgTypes(Context.class, Socket.class, SocketActionTable.class);
 			if (borning == null) {
 				log.error("boring == null !!!!");
 				return;
 			}
+			/*
+			 * 进入监听循环
+			 */
 			while (true) {
 				try {
 					if (log.isDebugEnabled())
