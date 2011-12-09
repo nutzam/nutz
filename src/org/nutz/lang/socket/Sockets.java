@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
+import org.nutz.lang.born.Borning;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -182,6 +183,7 @@ public abstract class Sockets {
 	 * @param service
 	 *            线程池的实现类
 	 */
+	@SuppressWarnings("rawtypes")
 	public static void localListen(	int port,
 									Map<String, SocketAction> actions,
 									ExecutorService service,
@@ -221,7 +223,11 @@ public abstract class Sockets {
 					}
 				}
 			};
-			
+			Borning borning = Mirror.me(klass).getBorningByArgTypes(Context.class, Socket.class, SocketActionTable.class);
+			if (borning == null) {
+				log.error("boring == null !!!!");
+				return;
+			}
 			while (true) {
 				try {
 					if (log.isDebugEnabled())
@@ -229,7 +235,7 @@ public abstract class Sockets {
 					Socket socket = server.accept();
 					if (log.isDebugEnabled())
 						log.debug("Appact a new socket, create new SocketAtom to handle it ...");
-					Runnable runnable = Mirror.me(klass).born(context,socket, saTable);
+					Runnable runnable = (Runnable) borning.born(new Object[]{context,socket, saTable});
 					service.execute(runnable);
 				} catch (Throwable e) {
 					log.info("Throwable catched!! maybe ask to exit", e);

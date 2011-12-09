@@ -24,7 +24,7 @@ public class SocketJsonAtom extends SocketAtom {
 
 	private static final Log log = Logs.get();
 
-	protected SocketJsonAtom(Context context, Socket socket,
+	public SocketJsonAtom(Context context, Socket socket,
 			SocketActionTable saTable) {
 		super(context, socket, saTable);
 	}
@@ -62,7 +62,7 @@ public class SocketJsonAtom extends SocketAtom {
 				if (log.isDebugEnabled())
 					log.debugf("handle request by "+ action);
 				SocketContext context = new SocketContext(this);
-				context.set("json_data", map.get("data"));
+				context.set("json_data", map);
 				action.run(context);
 				if (log.isDebugEnabled())
 					log.debugf("finish request by "+ action);
