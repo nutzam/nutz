@@ -7,11 +7,11 @@ import java.lang.reflect.Type;
 import org.nutz.json.JsonField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Objs;
 import org.nutz.lang.Strings;
 import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
-import org.nutz.lang.objs.Objs;
 
 public class JsonEntityField {
 

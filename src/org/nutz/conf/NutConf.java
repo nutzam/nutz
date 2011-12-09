@@ -9,8 +9,7 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
-import org.nutz.lang.objs.Objs;
-import org.nutz.lang.objs.ObjsMerge;
+import org.nutz.lang.Objs;
 import org.nutz.lang.util.NutType;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -84,7 +83,7 @@ public class NutConf {
 					Object obj = Json.fromJson(nr.getReader());
 					if (obj instanceof Map) {
 						Map m = (Map) obj;
-						map = (Map) ObjsMerge.merge(map, m);
+						map = (Map) Objs.merge(map, m);
 						for (Object key : m.keySet()) {
 							if (key.equals("include")) {
 								List<String> include = (List) m.get("include");

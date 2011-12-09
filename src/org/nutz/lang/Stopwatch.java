@@ -7,7 +7,10 @@ package org.nutz.lang;
  */
 public class Stopwatch {
 
+	private boolean nano;
+
 	private long from;
+
 	private long to;
 
 	public static Stopwatch begin() {
@@ -16,8 +19,21 @@ public class Stopwatch {
 		return sw;
 	}
 
+	public static Stopwatch beginNano() {
+		Stopwatch sw = new Stopwatch();
+		sw.nano = true;
+		sw.start();
+		return sw;
+	}
+
 	public static Stopwatch create() {
 		return new Stopwatch();
+	}
+
+	public static Stopwatch createNano() {
+		Stopwatch sw = new Stopwatch();
+		sw.nano = true;
+		return sw;
 	}
 
 	public static Stopwatch run(Runnable atom) {
@@ -27,13 +43,20 @@ public class Stopwatch {
 		return sw;
 	}
 
+	public static Stopwatch runNano(Runnable atom) {
+		Stopwatch sw = beginNano();
+		atom.run();
+		sw.stop();
+		return sw;
+	}
+
 	public long start() {
-		from = System.currentTimeMillis();
+		from = nano ? System.nanoTime() : System.currentTimeMillis();
 		return from;
 	}
 
 	public long stop() {
-		to = System.currentTimeMillis();
+		to = nano ? System.nanoTime() : System.currentTimeMillis();
 		return to;
 	}
 
@@ -51,8 +74,9 @@ public class Stopwatch {
 
 	@Override
 	public String toString() {
-		return String.format(	"Total: %dms : [%s]=>[%s]",
+		return String.format(	"Total: %d%s : [%s]=>[%s]",
 								this.getDuration(),
+								(nano ? "ns" : "ms"),
 								new java.sql.Timestamp(from).toString(),
 								new java.sql.Timestamp(to).toString());
 	}
