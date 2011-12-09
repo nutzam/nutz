@@ -71,6 +71,8 @@ public class SocketAtom implements Atom {
 		}
 		// 最后保证关闭
 		finally {
+			if (log.isDebugEnabled())
+				log.debug("Close socket");
 			Sockets.safeClose(socket);
 		}
 	}
