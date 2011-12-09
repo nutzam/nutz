@@ -36,6 +36,14 @@ public class SocketAtom implements Atom {
 	}
 
 	public void run() {
+		if (this.context.getBoolean("stop")) {
+			if (log.isInfoEnabled())
+				log.info("stop=true, so, exit ...."); //线程池里面可能还有有尚未启动的任务
+													  //所以,这里还需要判断一下
+			Sockets.safeClose(socket);
+			return;
+		}
+		
 		if (log.isDebugEnabled())
 			log.debugf("connect with '%s'", socket.getRemoteSocketAddress().toString());
 

@@ -216,8 +216,8 @@ public abstract class Sockets {
 					while (true) {
 						try {
 							Thread.sleep(1000);
-							if(log.isDebugEnabled())
-								log.debug(" %% check ... " + context.getBoolean("stop"));
+							//if(log.isDebugEnabled())
+							//	log.debug(" %% check ... " + context.getBoolean("stop"));
 							if (context.getBoolean("stop")) {
 								try {
 									if(log.isDebugEnabled())
@@ -241,20 +241,22 @@ public abstract class Sockets {
 			/*
 			 * 进入监听循环
 			 */
-			while (true) {
+			while (!context.getBoolean("stop")) {
 				try {
 					if (log.isDebugEnabled())
 						log.debug("Waiting for new socket");
 					Socket socket = server.accept();
+					if (context.getBoolean("stop")) {
+						Sockets.safeClose(socket);
+						break;//监护线程也许还是睡觉,还没来得及关掉哦,所以自己检查一下
+					}
 					if (log.isDebugEnabled())
-						log.debug("Appact a new socket, create new SocketAtom to handle it ...");
+						log.debug("accept a new socket, create new SocketAtom to handle it ...");
 					Runnable runnable = (Runnable) borning.born(new Object[]{context,socket, saTable});
 					service.execute(runnable);
 				} catch (Throwable e) {
 					log.info("Throwable catched!! maybe ask to exit", e);
 				}
-				if (context.getBoolean("stop"))
-					break;
 			}
 			
 			if (!server.isClosed()) {
