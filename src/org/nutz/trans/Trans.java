@@ -141,7 +141,7 @@ public abstract class Trans {
 	 * @return 分子返回值
 	 */
 	public static <T> T exec(Molecule<T> molecule) {
-		Trans.exec(molecule);
+		Trans.exec((Atom)molecule);
 		return molecule.getObj();
 	}
 }

@@ -269,7 +269,7 @@ public abstract class Sockets {
 				catch (Throwable e) {}
 			}
 
-			log.info("Seem stop signal was got, all running thread to exit in 60s");
+			log.info("Seem stop signal was got, wait 15 for all running thread");
 
 			try {
 				service.shutdown();
