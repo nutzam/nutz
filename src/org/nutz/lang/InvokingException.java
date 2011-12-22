@@ -10,6 +10,6 @@ public class InvokingException extends RuntimeException {
 	}
 
 	public InvokingException(String msg, Throwable cause) {
-		super(msg, cause);
+		super(String.format(msg, cause.getMessage()), cause);
 	}
 }
