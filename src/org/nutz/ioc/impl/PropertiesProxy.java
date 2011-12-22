@@ -80,7 +80,7 @@ public class PropertiesProxy {
 
 	public int getInt(String key, int defaultValue) {
 		try {
-			return Integer.parseInt(key);
+			return Integer.parseInt(get(key));
 		}
 		catch (NumberFormatException e) {
 			return defaultValue;
