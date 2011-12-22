@@ -140,27 +140,28 @@ public class Mirror<T> {
 								: new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
 																								: typeExtractor);
 	}
-	
+
 	/**
-	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br> 
+	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br>
 	 * 可以使用 getGenericsTypes() 方法取得它的泛型数组
+	 * 
 	 * @param type
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
-    public static <T> Mirror<T> me(Type type){
-	    if(null == type){
-	        return null;
-	    }
-	    Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
-	    mir.type = type;
-	    return mir;
+	@SuppressWarnings({"unchecked"})
+	public static <T> Mirror<T> me(Type type) {
+		if (null == type) {
+			return null;
+		}
+		Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
+		mir.type = type;
+		return mir;
 	}
 
 	private Class<T> klass;
-	
+
 	private Type type;
-	
+
 	private TypeExtractor typeExtractor;
 
 	/**
@@ -207,9 +208,9 @@ public class Mirror<T> {
 				return method;
 		}
 		throw Lang.makeThrow(	NoSuchMethodException.class,
-									"Fail to find getter for [%s]->[%s]",
-									klass.getName(),
-									fieldName);
+								"Fail to find getter for [%s]->[%s]",
+								klass.getName(),
+								fieldName);
 	}
 
 	/**
@@ -368,9 +369,10 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
+	 * 获得当前类以及所有父类的所有的属性，包括私有属性。 <br>
+	 * 但是父类不包括 Object 类，并且，如果子类的属性如果与父类重名，将会将其覆盖
 	 * 
-	 * @return 字段列表
+	 * @return 属性列表
 	 */
 	public Field[] getFields() {
 		return _getFields(true, false, true, true);
@@ -432,27 +434,28 @@ public class Mirror<T> {
 		} while (null == ann && cc != Object.class);
 		return ann;
 	}
-	
+
 	/**
 	 * 取得当前类型的泛型数组
+	 * 
 	 * @return
 	 */
-	public Type[] getGenericsTypes(){
-	    if(type instanceof ParameterizedType){
-	        return Lang.getGenericsTypes(type);
-	    }
-	    return null;
+	public Type[] getGenericsTypes() {
+		if (type instanceof ParameterizedType) {
+			return Lang.getGenericsTypes(type);
+		}
+		return null;
 	}
-	
+
 	/**
 	 * 取得当前类型的指定泛型
+	 * 
 	 * @param index
 	 * @return
 	 */
-	public Type getGenericsType(int index){
-	    Type[] ts = getGenericsTypes();
-	    return ts == null ? null : 
-	        (ts.length <= index ? null : ts[index]);
+	public Type getGenericsType(int index) {
+		Type[] ts = getGenericsTypes();
+		return ts == null ? null : (ts.length <= index ? null : ts[index]);
 	}
 
 	/**
@@ -1169,12 +1172,12 @@ public class Mirror<T> {
 	public boolean isIntLike() {
 		return isInt() || isLong() || isShort() || isByte() || is(BigDecimal.class);
 	}
-	
+
 	/**
 	 * @return 当前类型是不是接口
 	 */
-	public boolean isInterface(){
-	    return null == klass ? null : klass.isInterface();
+	public boolean isInterface() {
+		return null == klass ? null : klass.isInterface();
 	}
 
 	/**
@@ -1283,7 +1286,7 @@ public class Mirror<T> {
 	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
 	 */
 	public static Type[] getTypeParams(Class<?> klass) {
-	    // TODO 这个实现会导致泛型丢失,只能取得申明类型
+		// TODO 这个实现会导致泛型丢失,只能取得申明类型
 		if (klass == null || "java.lang.Object".equals(klass.getName()))
 			return null;
 		// 看看父类

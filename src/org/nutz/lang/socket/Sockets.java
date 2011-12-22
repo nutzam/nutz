@@ -248,7 +248,7 @@ public abstract class Sockets {
 					Socket socket = server.accept();
 					if (context.getBoolean("stop")) {
 						Sockets.safeClose(socket);
-						break;//监护线程也许还是睡觉,还没来得及关掉哦,所以自己检查一下
+						break;// 监护线程也许还是睡觉,还没来得及关掉哦,所以自己检查一下
 					}
 					if (log.isDebugEnabled())
 						log.debug("accept a new socket, create new SocketAtom to handle it ...");

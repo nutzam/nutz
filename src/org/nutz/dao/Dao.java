@@ -740,6 +740,36 @@ public interface Dao {
 	int func(String tableName, String funcName, String colName);
 
 	/**
+	 * 对某一个对象字段，进行计算。
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param funcName
+	 *            计算函数名，请确保你的数据是支持这个函数的
+	 * @param fieldName
+	 *            对象 java 字段名
+	 * @param cnd
+	 *            过滤条件
+	 * @return 计算结果
+	 */
+	int func(Class<?> classOfT, String funcName, String colName, Condition cnd);
+
+	/**
+	 * 对某一个数据表字段，进行计算。
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @param funcName
+	 *            计算函数名，请确保你的数据是支持这个函数的
+	 * @param colName
+	 *            数据库字段名
+	 * @param cnd
+	 *            过滤条件
+	 * @return 计算结果
+	 */
+	int func(String tableName, String funcName, String colName, Condition cnd);
+
+	/**
 	 * 根据数据源的类型，创建一个翻页对象
 	 * 
 	 * @param pageNumber
