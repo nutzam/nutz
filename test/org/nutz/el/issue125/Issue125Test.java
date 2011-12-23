@@ -37,4 +37,10 @@ public class Issue125Test {
         context.set("map", map);
         System.out.println(exp.eval(context));
 	}
+	
+	/** 
+	 * 原因级结论
+	 * 由于","操作符的权重设置不正确, 导致错误的逆波兰解析.
+	 * @ TODO 整理一下这个问题的测试, 别这么乱
+	 */
 }
