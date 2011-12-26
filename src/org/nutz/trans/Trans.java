@@ -35,7 +35,7 @@ public abstract class Trans {
 		implClass = classOfTransaction;
 	}
 
-	private static void begain(int level) throws Exception {
+	static void _begain(int level) throws Exception {
 		if (null == trans.get()) {
 			Transaction tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
 			tn.setLevel(level);
@@ -45,13 +45,13 @@ public abstract class Trans {
 		count.set(count.get() + 1);
 	}
 
-	private static void commit() throws Exception {
+	static void _commit() throws Exception {
 		count.set(count.get() - 1);
 		if (count.get() == 0)
 			trans.get().commit();
 	}
 
-	private static void depose() {
+	static void _depose() {
 		if (count.get() == 0)
 			try {
 				trans.get().close();
@@ -64,7 +64,7 @@ public abstract class Trans {
 			}
 	}
 
-	private static void rollback(Integer num) {
+	static void _rollback(Integer num) {
 		count.set(num);
 		if (count.get() == 0)
 			trans.get().rollback();
@@ -118,17 +118,17 @@ public abstract class Trans {
 			return;
 		int num = count.get() == null ? 0 : count.get();
 		try {
-			begain(level);
+			_begain(level);
 			for (Atom atom : atoms)
 				atom.run();
-			commit();
+			_commit();
 		}
 		catch (Throwable e) {
-			rollback(num);
+			_rollback(num);
 			throw Lang.wrapThrow(e);
 		}
 		finally {
-			depose();
+			_depose();
 		}
 	}
 
