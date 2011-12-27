@@ -217,7 +217,7 @@ public abstract class Streams {
 	 * @throws IOException
 	 */
 	public static void write(OutputStream ops, byte[] bytes) throws IOException {
-		if (null == ops || null == bytes)
+		if (null == ops || null == bytes || bytes.length == 0)
 			return;
 		ops.write(bytes);
 	}
