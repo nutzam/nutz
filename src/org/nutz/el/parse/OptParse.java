@@ -135,7 +135,7 @@ public class OptParse implements Parse {
 		
 		case '.':
 			if(!Character.isJavaIdentifierStart(exp.peek(1))){
-				return null;
+				return nullobj;
 			}
 			exp.poll();
 			return new AccessOpt();
@@ -149,7 +149,7 @@ public class OptParse implements Parse {
 			exp.poll();
 			return new Object[]{new RBracketOpt(), new FetchArrayOpt()};
 		}
-		return null;
+		return nullobj;
 	}
 
 }

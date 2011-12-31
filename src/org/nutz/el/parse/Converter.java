@@ -85,10 +85,10 @@ public class Converter {
 	 * 解析数据
 	 */
 	private Object parseItem(){
-		Object obj = null;
+		Object obj = Parse.nullobj;
 		for(Parse parse : parses){
 			obj = parse.fetchItem(exp);
-			if(obj != null){
+			if(obj != Parse.nullobj){
 				skipSpace();
 				return parseItem(obj);
 			}
