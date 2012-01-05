@@ -49,6 +49,7 @@
 		<doc path="loader_combo.man"/>
 		<doc path="aop_json.man"/>
 		<doc path="ioc_annos.man"/>
+		<doc path="ioc_properties.man"/>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
