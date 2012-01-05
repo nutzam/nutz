@@ -71,7 +71,7 @@ public class ValParse implements Parse {
 			}
 			return Integer.parseInt(sb.toString());
 		}
-		return null;
+		return nullobj;
 	}
 	
 }
