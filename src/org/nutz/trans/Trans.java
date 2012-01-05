@@ -141,7 +141,64 @@ public abstract class Trans {
 	 * @return 分子返回值
 	 */
 	public static <T> T exec(Molecule<T> molecule) {
-		Trans.exec((Atom)molecule);
+		Trans.exec((Atom) molecule);
 		return molecule.getObj();
+	}
+
+	/* ===========================下面暴露几个方法给喜欢 try...catch...finally 的人 ===== */
+
+	/**
+	 * 开始一个事务，级别为 TRANSACTION_READ_COMMITTED
+	 * <p>
+	 * 你需要手工用 try...catch...finally 来保证你提交和关闭这个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void begin() throws Exception {
+		Trans._begain(Connection.TRANSACTION_READ_COMMITTED);
+	}
+
+	/**
+	 * 开始一个指定事务
+	 * <p>
+	 * 你需要手工用 try...catch...finally 来保证你提交和关闭这个事务
+	 * 
+	 * @param level
+	 *            指定级别
+	 * 
+	 * @throws Exception
+	 */
+	public static void begin(int level) throws Exception {
+		Trans._begain(level);
+	}
+
+	/**
+	 * 提交事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void commit() throws Exception {
+		Trans._commit();
+	}
+
+	/**
+	 * 回滚事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void rollback() throws Exception {
+		Integer c = Trans.count.get();
+		if (c == null)
+			c = Integer.valueOf(0);
+		Trans._rollback(c);
+	}
+
+	/**
+	 * 关闭事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void close() throws Exception {
+		Trans._depose();
 	}
 }
