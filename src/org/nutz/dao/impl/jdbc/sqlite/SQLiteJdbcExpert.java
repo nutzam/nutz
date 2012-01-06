@@ -10,9 +10,10 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.sql.Sql;
 
 /**
- *
+ * 
  * @author wendal
  */
 public class SQLiteJdbcExpert extends MysqlJdbcExpert {
@@ -29,18 +30,19 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
 	@Override
 	public boolean createEntity(Dao dao, Entity<?> en) {
 		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
-		if(en.getPks().size() > 1 && en.getPkType() == PkType.ID) {
+		if (en.getPks().size() > 1 && en.getPkType() == PkType.ID) {
 			return false;
 		}
 		// 创建字段
 		boolean mPks = en.getPks().size() > 1;
 		for (MappingField mf : en.getMappingFields()) {
 			sb.append('\n').append(mf.getColumnName());
-			// Sqlite的整数型主键,一般都是自增的,必须定义为(PRIMARY KEY AUTOINCREMENT),但这样就无法定义多主键!!
-			if(mf.isId() && en.getPkType() == PkType.ID) {
+			// Sqlite的整数型主键,一般都是自增的,必须定义为(PRIMARY KEY
+			// AUTOINCREMENT),但这样就无法定义多主键!!
+			if (mf.isId() && en.getPkType() == PkType.ID) {
 				sb.append(" INTEGER PRIMARY KEY AUTOINCREMENT,");
 				continue;
-			}else
+			} else
 				sb.append(' ').append(evalFieldType(mf));
 			// 非主键的 @Name，应该加入唯一性约束
 			if (mf.isName() && en.getPkType() != PkType.NAME) {
@@ -52,7 +54,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
 					sb.append(" UNSIGNED");
 				if (mf.isNotNull())
 					sb.append(" NOT NULL");
-				if (mf.isPk() && !mPks) {//复合主键需要另外定义
+				if (mf.isPk() && !mPks) {// 复合主键需要另外定义
 					sb.append(" PRIMARY KEY");
 				}
 				if (mf.hasDefaultValue())
@@ -72,7 +74,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
 			sb.append("\n ");
 		}
 		// 创建索引
-		// TODO ...
+		dao.execute(createIndexs(en).toArray(new Sql[0]));
 
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');

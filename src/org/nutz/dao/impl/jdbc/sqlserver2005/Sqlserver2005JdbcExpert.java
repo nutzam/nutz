@@ -70,14 +70,14 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 			sb.setCharAt(sb.length() - 1, ')');
 			sb.append("\n ");
 		}
-		// 创建索引
-		// TODO ...
 
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
+		// 创建索引
+		dao.execute(createIndexs(en).toArray(new Sql[0]));
 		// 创建关联表
 		createRelation(dao, en);
 		// 添加注释(表注释与字段注释)
