@@ -42,37 +42,40 @@ public class WebResourceScan extends AbstractResourceScan {
 					continue;
 				list.addAll(scanInJar(checkSrc(src), regex, sc.getRealPath(path)));
 			}
+//		if (!list.isEmpty())
+//			return list;
 		// 获取classes里面文件
 		// 对 classes 文件夹作一个深层遍历
 		// 忽略隐藏文件，以不能被 filter 匹配的项目
 		// 返回的 NutResource 对象，都是以 classes 目录为根
 		File dir = Files.findFile(src);
-		boolean flag = true;
 		if (null != dir && dir.exists()) {
 			// 获取 CLASSPATH 的基目录
 			String src2 = Disks.getCanonicalPath(src);
 			String dirPath = Disks.getCanonicalPath(dir.getAbsolutePath());
-			int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);// TODO
-																			// 如果不含classes,一样找不到!!
-			final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
+			if (dirPath.indexOf("classes") > -1) {
+				int pos = dirPath.indexOf(src2, dirPath.indexOf("classes") + 7);
+				final String base = pos < 0 ? dirPath : dirPath.substring(0, pos);
 
-			// 那么很好，深层递归一下吧
-			if (log.isDebugEnabled())
-				log.debugf("Scan in web classes : %s , base = %s", dir, base);
+				// 那么很好，深层递归一下吧
+				if (log.isDebugEnabled())
+					log.debugf("Scan in web classes : %s , base = %s", dir, base);
 
-			List<NutResource> list2 = scanInDir(regex, dir, true);
-			for (NutResource nutResource : list2) {
-				String name = nutResource.getName();
-				if (name.indexOf(base) > -1) {
-					String tmpName = name.substring(base.length() + 1);
-					nutResource.setName(tmpName);
+				List<NutResource> list2 = scanInDir(regex, dir, true);
+				for (NutResource nutResource : list2) {
+					String name = nutResource.getName();
+					if (name.indexOf(base) > -1) {
+						String tmpName = name.substring(base.length() + 1);
+						nutResource.setName(tmpName);
+					}
+					list.add(nutResource);
 				}
-				list.add(nutResource);
+				if (!list.isEmpty())
+					return list;
 			}
-			flag = list.isEmpty();
 		}
 		// 目录不存在,或者里面没有任何文件
-		if (flag && (!src.startsWith("/"))) {
+		if (!src.startsWith("/")) {
 			try {
 				String base = sc.getRealPath("/WEB-INF/classes/");
 				String path = sc.getRealPath("/WEB-INF/classes/" + src);
@@ -84,17 +87,18 @@ public class WebResourceScan extends AbstractResourceScan {
 							nutResource.setName(name.substring(base.length() + 1));
 						list.add(nutResource);
 					}
-					flag = list.isEmpty();
+					if (!list.isEmpty())
+						return list;
 				}
 			}
 			catch (Throwable e) {}
 		}
 		// 还是空? 查一下classpath变量吧, Fix Issue 411
-		if (flag) {
-			scanClasspath(src, regex, list);
-			flag = list.isEmpty();
-		}
-		if (flag && log.isInfoEnabled())
+		scanClasspath(src, regex, list);
+		if (!list.isEmpty())
+			return list;
+		//能到这里,证明全面所有努力都失败了
+		if (log.isInfoEnabled())
 			log.infof(	"Fail to found '%s' in /WEB-INF/classes of context [%s]",
 						src,
 						sc.getServletContextName());

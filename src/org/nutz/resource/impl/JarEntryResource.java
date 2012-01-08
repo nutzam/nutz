@@ -46,4 +46,8 @@ public class JarEntryResource extends NutResource {
 		return jar.getInputStream(entry);
 	}
 
+	@Override
+	public String toString() {
+		return String.format("JarEntryResource[%s] jarPath[%s]", entry.getName(), jar.getName());
+	}
 }
