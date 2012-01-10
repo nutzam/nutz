@@ -2,6 +2,7 @@ package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -38,7 +39,9 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
 import org.nutz.mvc.annotation.PathMap;
+import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
+import org.nutz.resource.impl.LocalResourceScan;
 
 public abstract class Loadings {
 
@@ -92,8 +95,14 @@ public abstract class Loadings {
 		// 执行扫描
 		for (Class<?> type : list) {
 			// 扫描子包
-			if (scan) 
-				scanModuleInPackage(modules, type.getPackage().getName());
+			if (scan) {
+				// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
+				URL jarLocation = type.getProtectionDomain().getCodeSource().getLocation();
+				if (log.isDebugEnabled())
+					log.debugf(" jarLocation '%s'", jarLocation);
+				scanModuleInPackageByJar(jarLocation, modules, type);
+
+			}
 			// 仅仅加载自己
 			else {
 				if (isModule(type)) {
@@ -107,12 +116,20 @@ public abstract class Loadings {
 		}
 		return modules;
 	}
-	
+
 	protected static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
 		if (log.isDebugEnabled())
 			log.debugf(" > scan '%s'", packageName);
 
 		List<Class<?>> subs = Scans.me().scanPackage(packageName);
+		checkModule(modules, subs);
+	}
+
+	/**
+	 * @param modules
+	 * @param subs
+	 */
+	private static void checkModule(Set<Class<?>> modules, List<Class<?>> subs) {
 		for (Class<?> sub : subs) {
 			if (isModule(sub)) {
 				if (log.isDebugEnabled())
@@ -122,6 +139,40 @@ public abstract class Loadings {
 				log.tracef("   >> ignore '%s'", sub.getName());
 			}
 		}
+	}
+
+	/**
+	 * 基于jar进行 sub package 的扫描操作.扫描位于此jar内的相同package下面的子模块.
+	 * 
+	 * @param jarLocation
+	 *            type所在的jar的位置
+	 * @param modules
+	 * @param type
+	 */
+	protected static void scanModuleInPackageByJar(	URL jarLocation,
+													Set<Class<?>> modules,
+													Class<?> type) {
+		// 1,先扫描jar内的package
+		String path = jarLocation.getPath();
+		String packageName = type.getPackage().getName();
+		if (path.endsWith(".jar")) { 
+			// 支队jar进行处理,其他的留给 原程序进行操作
+			String regex = "^.+[.]class$";
+
+			LocalResourceScan s = new LocalResourceScan();
+			List<NutResource> list = s.list(path, regex);
+
+			String classname = packageName.replace('.', '/') + '/';
+			List<Class<?>> subs = Scans.me().scanPackageInJar(classname, regex, path);
+
+			checkModule(modules, subs);
+			// Scans.me(). scanPackage(String pkg, String regex)
+			if (log.isDebugEnabled())
+				log.debugf("   loadResource '%s'", list);
+		}
+
+		// 2,在扫描classes类的package,如果有一致的则替换
+		scanModuleInPackage(modules, packageName);
 	}
 
 	public static void evalHttpMethod(ActionInfo ai, Method method) {

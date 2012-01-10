@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -131,6 +132,27 @@ public class Scans {
 	public List<Class<?>> scanPackage(Class<?> classZ) {
 		return scanPackage(classZ.getPackage().getName(), FLT_CLASS);
 	}
+
+
+
+	/**在jar包中加载基于 src的 package下面的对象
+	 * @param src
+	 * @param regex
+	 * @param jarPath
+	 * @return
+	 * @author mawm at 2012-1-10 下午7:49:48
+	 */
+	public List<Class<?>> scanPackageInJar(String src, String regexTxt, String jarPath) {
+
+		final Pattern regex = null == regexTxt ? null : Pattern.compile(regexTxt);
+
+		LocalResourceScan lr = (LocalResourceScan) local;
+		
+		//通过local在jar中进行搜索 
+		List<NutResource> scanInJar = lr.scanInJar(src, regex, jarPath);
+
+		return rs2class(src, scanInJar);
+	} 
 
 	/**
 	 * 将一组 NutResource 转换成 class 对象
