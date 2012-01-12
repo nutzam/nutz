@@ -86,10 +86,10 @@ public abstract class Loadings {
 				list.add(module);
 			}
 		}
-		//扫描包
+		// 扫描包
 		Set<Class<?>> modules = new HashSet<Class<?>>();
-		if(null != ann && ann.packages() != null && ann.packages().length > 0 ){
-			for (String packageName : ann.packages()) 
+		if (null != ann && ann.packages() != null && ann.packages().length > 0) {
+			for (String packageName : ann.packages())
 				scanModuleInPackage(modules, packageName);
 		}
 		// 执行扫描
@@ -97,10 +97,10 @@ public abstract class Loadings {
 			// 扫描子包
 			if (scan) {
 				// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
-				URL jarLocation = type.getProtectionDomain().getCodeSource().getLocation();
+				URL location = type.getProtectionDomain().getCodeSource().getLocation();
 				if (log.isDebugEnabled())
-					log.debugf(" jarLocation '%s'", jarLocation);
-				scanModuleInPackageByJar(jarLocation, modules, type);
+					log.debugf("module class location '%s'", location);
+				scanModuleInPackageByLocation(location, modules, type);
 
 			}
 			// 仅仅加载自己
@@ -142,37 +142,42 @@ public abstract class Loadings {
 	}
 
 	/**
-	 * 基于jar进行 sub package 的扫描操作.扫描位于此jar内的相同package下面的子模块.
+	 * 基于类的所在位置 进行 sub package 的扫描操作.扫描位于此location内的相同package下面的子模块.
 	 * 
-	 * @param jarLocation
+	 * @param classLocation
 	 *            type所在的jar的位置
 	 * @param modules
 	 * @param type
 	 */
-	protected static void scanModuleInPackageByJar(	URL jarLocation,
-													Set<Class<?>> modules,
-													Class<?> type) {
+	protected static void scanModuleInPackageByLocation(URL classLocation,
+														Set<Class<?>> modules,
+														Class<?> type) {
+		String regex = "^.+[.]class$";
+
 		// 1,先扫描jar内的package
-		String path = jarLocation.getPath();
+		String path = classLocation.getPath();
 		String packageName = type.getPackage().getName();
-		if (path.endsWith(".jar")) { 
+
+		String classname = packageName.replace('.', '/') + '/';
+
+		if (path.endsWith(".jar")) {
 			// 支队jar进行处理,其他的留给 原程序进行操作
-			String regex = "^.+[.]class$";
 
-			LocalResourceScan s = new LocalResourceScan();
-			List<NutResource> list = s.list(path, regex);
-
-			String classname = packageName.replace('.', '/') + '/';
 			List<Class<?>> subs = Scans.me().scanPackageInJar(classname, regex, path);
 
 			checkModule(modules, subs);
-			// Scans.me(). scanPackage(String pkg, String regex)
+
+			// 2,在扫描classes类的package,如果有一致的则替换,避免和下面的else进行重复扫描
+			scanModuleInPackage(modules, packageName);
+
 			if (log.isDebugEnabled())
-				log.debugf("   loadResource '%s'", list);
+				log.debugf("scanModuleInPackageByJar '%s'", subs);
+		} else {
+			// 3,解决基于maven的工程中,依赖多个工程的情况,因此module的路径是它自身工程的target/classes
+			List<Class<?>> subs = Scans.me().scanPackageInLocation(classname, regex, path);
+			checkModule(modules, subs);
 		}
 
-		// 2,在扫描classes类的package,如果有一致的则替换
-		scanModuleInPackage(modules, packageName);
 	}
 
 	public static void evalHttpMethod(ActionInfo ai, Method method) {
@@ -203,10 +208,10 @@ public abstract class Loadings {
 				ai.setPathKey(at.key());
 		}
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	private static void evalPathMap(ActionInfo ai, PathMap pathMap){
-		if(pathMap != null){
+	private static void evalPathMap(ActionInfo ai, PathMap pathMap) {
+		if (pathMap != null) {
 			ai.setPathMap(Json.fromJson(Map.class, pathMap.value()));
 		}
 	}
@@ -222,7 +227,7 @@ public abstract class Loadings {
 			ai.setOkView(ok.value());
 		}
 	}
-	
+
 	public static void evalModule(ActionInfo ai, Class<?> type) {
 		ai.setModuleType(type);
 		String beanName = null;
