@@ -159,9 +159,12 @@ public class Scans {
 	 * 在具体位置查找 基于 src的 package下面的对象
 	 * 
 	 * 
-	 * @param src 需要扫描的包名称
-	 * @param regexTxt 正则表达式
-	 * @param fileDir 源对象所在的磁盘目录
+	 * @param src
+	 *            需要扫描的包名称
+	 * @param regexTxt
+	 *            正则表达式
+	 * @param fileDir
+	 *            源对象所在的磁盘目录
 	 * @return
 	 * @author replaceToYouName at 2012-1-12 上午9:33:40
 	 */
@@ -170,7 +173,7 @@ public class Scans {
 
 		LocalResourceScan lr = (LocalResourceScan) local;
 
-		File location = new File(fileDir);
+		File location = new File(fileDir + "/" + src.replace('.', '/'));
 		// 通过local在jar中进行搜索
 		List<NutResource> scanInJar = lr.scanInDir(regex, location);
 
@@ -256,7 +259,7 @@ public class Scans {
 	public static boolean isInJar(File file) {
 		return isInJar(file.getAbsolutePath());
 	}
-	
+
 	public static boolean isInJar(String filePath) {
 		return filePath.contains(".jar!");
 	}
@@ -264,7 +267,7 @@ public class Scans {
 	public static NutResource makeJarNutResource(File file) {
 		return makeJarNutResource(file.getAbsolutePath());
 	}
-	
+
 	public static NutResource makeJarNutResource(String filePath) {
 		JarEntryInfo jeInfo = new JarEntryInfo(filePath);
 		try {
