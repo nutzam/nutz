@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
+import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
@@ -367,6 +368,7 @@ public abstract class Mvcs {
 	private static final ThreadLocal<HttpServletResponse> RESP = new ThreadLocal<HttpServletResponse>();
 	private static final ThreadLocal<String> NAME = new ThreadLocal<String>();
 	private static final ThreadLocal<ActionContext> ACTION_CONTEXT = new ThreadLocal<ActionContext>();
+	private static final ThreadLocal<IocContext> IOC_CONTEXT = new ThreadLocal<IocContext>();
 
 	private static ServletContext servletContext;
 
@@ -403,6 +405,14 @@ public abstract class Mvcs {
 	public static ServletContext getServletContext() {
 		return servletContext;
 	}
+	
+	public static void setIocContext(IocContext iocContext) {
+		IOC_CONTEXT.set(iocContext);
+	}
+	
+	public static IocContext getIocContext() {
+		return IOC_CONTEXT.get();
+	}
 
 	// ==================================================================
 
@@ -412,5 +422,6 @@ public abstract class Mvcs {
 		REQ.set(null);
 		RESP.set(null);
 		NAME.set(null);
+		IOC_CONTEXT.set(null);
 	}
 }

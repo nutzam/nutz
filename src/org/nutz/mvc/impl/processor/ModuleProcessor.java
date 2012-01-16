@@ -13,6 +13,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
@@ -66,6 +67,7 @@ public class ModuleProcessor extends AbstractProcessor {
 					SessionIocContext sessionContext = new SessionIocContext(ac.getRequest()
 																				.getSession());
 					IocContext myContext = new ComboContext(reqContext, sessionContext);
+					Mvcs.setIocContext(myContext);
 					obj = ((Ioc2) ioc).get(moduleType, injectName, myContext);
 				}
 				/*

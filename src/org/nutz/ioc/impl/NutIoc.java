@@ -138,18 +138,11 @@ public class NutIoc implements Ioc2 {
 		if (log.isDebugEnabled())
 			log.debugf("Get '%s'<%s>", name, type);
 
-		// 连接上下文
-		IocContext cntx;
-		if (null == context || context == this.context)
-			cntx = this.context;
-		else {
-			if (log.isTraceEnabled())
-				log.trace("Link contexts");
-			cntx = new ComboContext(context, this.context);
-		}
+		
 
 		// 创建对象创建时
-		IocMaking ing = new IocMaking(this, mirrors, cntx, maker, vpms, name);
+		IocMaking ing = makeIocMaking(context, name);
+		IocContext cntx = ing.getContext();
 
 		// 从上下文缓存中获取对象代理
 		ObjectProxy op = cntx.fetch(name);
@@ -246,4 +239,19 @@ public class NutIoc implements Ioc2 {
 		this.defaultScope = defaultScope;
 	}
 
+	/**
+	 * 暴露IocMaking的创建过程
+	 */
+	public IocMaking makeIocMaking(IocContext context, String name) {
+		// 连接上下文
+		IocContext cntx;
+		if (null == context || context == this.context)
+			cntx = this.context;
+		else {
+			if (log.isTraceEnabled())
+				log.trace("Link contexts");
+			cntx = new ComboContext(context, this.context);
+		}
+		return new IocMaking(this, mirrors, cntx, maker, vpms, name);
+	}
 }
