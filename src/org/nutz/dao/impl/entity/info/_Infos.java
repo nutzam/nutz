@@ -18,13 +18,15 @@ import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Strings;
 import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectByGetter;
 import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
+import org.nutz.lang.util.Callback3;
 
 public class _Infos {
+
+	private final static String ERR_MSG = "Method '%s'(%s) can not add '@Column', it MUST be a setter or getter!";
 
 	private static <T extends FieldInfo> T create(Class<T> classOfT, Field field) {
 		T info = Mirror.me(classOfT).born();
@@ -35,69 +37,29 @@ public class _Infos {
 		return info;
 	}
 
-	private static <T extends FieldInfo> T create(Class<T> classOfT, Method method) {
-		T info = Mirror.me(classOfT).born();
-		String name = method.getName();
-		Method setter;
-		Method getter;
-		// 是 getter
-		if (name.startsWith("get") && method.getParameterTypes().length == 0) {
-			getter = method;
-			name = Strings.lowerFirst(name.substring(4));
-			// 寻找 setter
-			try {
-				setter = method.getDeclaringClass().getMethod(	"set" + Strings.capitalize(name),
-																method.getReturnType());
+	private static <T extends FieldInfo> T create(Class<T> classOfT, final Method method) {
+		final T info = Mirror.me(classOfT).born();
+		Mirror.evalGetterSetter(method, ERR_MSG, new Callback3<String, Method, Method>() {
+			public void invoke(String name, Method getter, Method setter) {
+				// 木有 getter
+				if (null == getter) {
+					throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
+											method.getName(),
+											method.getDeclaringClass().getName());
+				}
+				// 木有 setter
+				if (null == setter) {
+					throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
+											method.getName(),
+											method.getDeclaringClass().getName());
+				}
+				// 正常，开始设值
+				info.name = name;
+				info.fieldType = getter.getGenericReturnType();
+				info.ejecting = new EjectByGetter(getter);
+				info.injecting = new InjectBySetter(setter);
 			}
-			catch (Exception e) {
-				throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
-										method.getName(),
-										method.getDeclaringClass().getName());
-			}
-
-		}
-		// 布尔的 getter
-		else if (name.startsWith("is")
-					&& Mirror.me(method.getReturnType()).isBoolean()
-					&& method.getParameterTypes().length == 0) {
-			getter = method;
-			name = Strings.lowerFirst(name.substring(3));
-			// 寻找 setter
-			try {
-				setter = method.getDeclaringClass().getMethod(	"set" + Strings.capitalize(name),
-																method.getReturnType());
-			}
-			catch (Exception e) {
-				throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
-										method.getName(),
-										method.getDeclaringClass().getName());
-			}
-		}
-		// 是 setter
-		else if (name.startsWith("set") && method.getParameterTypes().length == 1) {
-			setter = method;
-			name = Strings.lowerFirst(name.substring(4));
-			// 寻找 getter
-			try {
-				getter = method.getDeclaringClass().getMethod("get" + Strings.capitalize(name));
-			}
-			catch (Exception e) {
-				throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO getter!",
-										method.getName(),
-										method.getDeclaringClass().getName());
-			}
-
-		}
-		// 靠，这哥们一定把 '@Column' 写错地方了，抛个异常提醒下丫的
-		else {
-			throw Lang.makeThrow(	"Method '%s'(%s) can not add '@Column', it MUST be a setter or getter!",
-									method.getName(),
-									method.getDeclaringClass().getName());
-		}
-		info.name = name;
-		info.fieldType = getter.getGenericReturnType();
-		info.ejecting = new EjectByGetter(getter);
-		info.injecting = new InjectBySetter(setter);
+		});
 		return info;
 	}
 
