@@ -53,7 +53,7 @@ public abstract class R {
 		return new StringGenerator(len, len);
 	}
 
-	public static final char[] _UU64 = "$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".toCharArray();
+	private static final char[] _UU64 = "$0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".toCharArray();
 
 	/**
 	 * @return 64进制表示的紧凑格式的 UUID
