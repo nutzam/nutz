@@ -100,6 +100,8 @@ public abstract class Loadings {
 					log.debugf("module class location '%s'", location);
 				scanModuleInPackageByLocation(location, modules, type);
 
+				//重复扫描,确保能扫描到最可信的类
+				scanModuleInPackage(modules, type.getPackage().getName());
 			}
 			// 仅仅加载自己
 			else {
