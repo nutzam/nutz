@@ -145,7 +145,12 @@ public class NutLoading implements Loading {
 		 */
 		//TODO 为什么用Set呢? 用List不是更快吗?
 		Set<Class<?>> modules = Loadings.scanModules(mainModule);
+		
+		if (modules.isEmpty())
+			if (log.isWarnEnabled())
+				log.warn("None module classes found!!!");
 
+		boolean hasAtMethod = false;
 		/*
 		 * 分析所有的子模块
 		 */
@@ -162,6 +167,7 @@ public class NutLoading implements Loading {
 				ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
 				info.setViewMakers(makers);
 				mapping.add(maker, info, config);
+				hasAtMethod = true;
 			}
 			
 			//记录pathMap
@@ -171,6 +177,11 @@ public class NutLoading implements Loading {
 				}
 			}
 		}
+		
+		if (!hasAtMethod)
+			if (log.isWarnEnabled())
+				log.warn("None @At found in any modules class!!");
+		
 		return mapping;
 	}
 
