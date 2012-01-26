@@ -87,6 +87,19 @@ public class PropertiesProxy {
 		}
 	}
 
+	public long getLong(String key) {
+		return getLong(key, -1);
+	}
+
+	public long getLong(String key, long dfval) {
+		try {
+			return Long.parseLong(get(key));
+		}
+		catch (NumberFormatException e) {
+			return dfval;
+		}
+	}
+
 	public String getTrim(String key) {
 		return Strings.trim(get(key));
 	}
