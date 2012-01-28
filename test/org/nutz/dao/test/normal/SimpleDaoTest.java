@@ -5,8 +5,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +15,6 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
-import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
@@ -29,8 +26,6 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.lang.Lang;
-import org.nutz.trans.Molecule;
-import org.nutz.trans.Trans;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -200,63 +195,10 @@ public class SimpleDaoTest extends DaoCase {
 		assertEquals(5, dao.count(Pet.class));
 		assertEquals(5, dao.clear(Pet.class));
 	}
-	
+
 	@Test
 	public void test_chain_insert() {
 		dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
 	}
-	
-	//For github issue 131
-	@Test
-	public void test_fastInsert_rollback() {
-		dao.create(Pet.class, true);
-		final List<Pet> pets = new ArrayList<Pet>();
-		for (int i = 0; i < 100; i++) {
-			Pet u = new Pet();
-			u.setName("XXXX" + i);
-			pets.add(u);
-		}
-		try {
-			Trans.exec(new Molecule<Object>() {
-				@Override
-				public void run() {
-					dao.fastInsert(pets);
-					throw new RuntimeException();
-				}
-			});
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		assertEquals(0, dao.count(Pet.class));
-	}
-	
-	//For github issue 131
-	@Test
-	public void test_fastInsert_rollback_jdbc() {
-		dao.create(Pet.class, true);
-		try {
-			Trans.exec(new Molecule<Object>() {
-				@Override
-				public void run() {
-					dao.run(new ConnCallback() {
-						
-						@Override
-						public void invoke(Connection conn) throws Exception {
-							PreparedStatement ps = conn.prepareStatement("INSERT INTO t_pet(name) VALUES(?)");
-							for (int i = 0; i < 100; i++) {
-								ps.setString(1, "XXXXX" + i);
-								ps.addBatch();
-							}
-							ps.execute();
-						}
-					});
-					throw new RuntimeException();
-				}
-			});
-		} catch (Throwable e) {
-			e.printStackTrace();
-		}
-		assertEquals(0, dao.count(Pet.class));
-	}
-		
+
 }
