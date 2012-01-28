@@ -110,7 +110,9 @@ public abstract class NutStatement implements DaoStatement {
 			}
 
 			// 输出内容到字符串缓冲区
-			for (int row = 0; row < mtrx.length; row++) {
+			// XXX 只输出50行
+			int maxRow = mtrx.length > 50 ? 50 : mtrx.length;
+			for (int row = 0; row < maxRow; row++) {
 				sb.append("\n    |");
 				for (int col = 0; col < mtrx[0].length; col++) {
 					sb.append(' ');
@@ -118,7 +120,11 @@ public abstract class NutStatement implements DaoStatement {
 					sb.append(" |");
 				}
 			}
-
+			
+			if (maxRow != mtrx.length)
+				sb.append("\n  .............................................")
+				  .append("\n  !!!Too many data . Only display 50 lines , don't show the remaining record")
+				  .append("\n  .............................................");
 			// 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
 			sb.append("\n  For example:> \"");
 			sb.append(toStatement(mtrx, sql));
