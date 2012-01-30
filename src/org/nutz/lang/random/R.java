@@ -64,7 +64,7 @@ public abstract class R {
 	}
 
 	/**
-	 * 返回一个 UUID ，并用 64 进制转换成紧凑形式的字符串，内容为 [$0-9a-zA-Z_]
+	 * 返回一个 UUID ，并用 64 进制转换成紧凑形式的字符串，内容为 [\\-0-9a-zA-Z_]
 	 * <p>
 	 * 比如一个类似下面的 UUID:
 	 * 
@@ -114,7 +114,7 @@ public abstract class R {
 	 * 从一个 UU64 恢复回一个 UUID 对象
 	 * 
 	 * @param uu64
-	 *            64进制表示的 UUID, 内容为 [$0-9a-zA-Z_]
+	 *            64进制表示的 UUID, 内容为 [\\-0-9a-zA-Z_]
 	 * @return UUID 对象
 	 */
 	public static UUID fromUU64(String uu64) {
@@ -153,7 +153,7 @@ public abstract class R {
 	 * </prev>
 	 * 
 	 * @param uu64
-	 *            uu64 64进制表示的 UUID, 内容为 [$0-9a-zA-Z_]
+	 *            uu64 64进制表示的 UUID, 内容为 [\\-0-9a-zA-Z_]
 	 * @return 16进制表示的紧凑格式的 UUID
 	 */
 	public static String UU16FromUU64(String uu64) {
