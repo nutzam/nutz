@@ -1,16 +1,16 @@
 package org.nutz.lang.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 
 @SuppressWarnings("serial")
-public class NutMap extends HashMap<String, Object> {
+public class NutMap extends TreeMap<String, Object> {
 
 	public int getInt(String key) {
 		return getAs(int.class, key, -1);

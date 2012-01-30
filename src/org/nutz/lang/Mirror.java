@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -1347,6 +1348,75 @@ public class Mirror<T> {
 	 */
 	public boolean isPrimitiveNumber() {
 		return isInt() || isLong() || isFloat() || isDouble() || isByte() || isShort();
+	}
+
+	/**
+	 * 如果不是容器，也不是 POJO，那么它必然是个 Obj
+	 * 
+	 * @return true or false
+	 */
+	public boolean isObj() {
+		return !isContainer() && !isPojo();
+	}
+
+	/**
+	 * 判断当前类型是否为POJO。 除了下面的类型，其他均为 POJO
+	 * <ul>
+	 * <li>原生以及所有包裹类
+	 * <li>类字符串
+	 * <li>类日期
+	 * <li>非容器
+	 * </ul>
+	 * 
+	 * @return true or false
+	 */
+	public boolean isPojo() {
+		if (this.klass.isPrimitive())
+			return false;
+
+		if (this.isStringLike() || this.isDateTimeLike())
+			return false;
+
+		if (this.isPrimitiveNumber() || this.isBoolean() || this.isChar())
+			return false;
+
+		return !isContainer();
+	}
+
+	/**
+	 * 判断当前类型是否为容器，包括 Map，Collection, 以及数组
+	 * 
+	 * @return true of false
+	 */
+	public boolean isContainer() {
+		return isArray() || isCollection() || isMap();
+	}
+
+	/**
+	 * 判断当前类型是否为数组
+	 * 
+	 * @return true of false
+	 */
+	public boolean isArray() {
+		return klass.isArray();
+	}
+
+	/**
+	 * 判断当前类型是否为 Collection
+	 * 
+	 * @return true of false
+	 */
+	public boolean isCollection() {
+		return isOf(Collection.class);
+	}
+
+	/**
+	 * 判断当前类型是否为 Map
+	 * 
+	 * @return true of false
+	 */
+	public boolean isMap() {
+		return isOf(Map.class);
 	}
 
 	/**
