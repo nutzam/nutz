@@ -1061,12 +1061,15 @@ public abstract class Lang {
 					}
 				}
 				// Map
-				else if (v instanceof Map) {
+				else if (v instanceof Map && Map.class.isAssignableFrom(ft)) {
 					// 创建
 					final Map map;
+					// Map 接口
 					if (ft == Map.class) {
 						map = new HashMap();
-					} else {
+					}
+					// 自己特殊的 Map
+					else {
 						try {
 							map = (Map) ft.newInstance();
 						}
@@ -1081,9 +1084,10 @@ public abstract class Lang {
 							map.put(en.getKey(), Castors.me().castTo(en.getValue(), valType));
 						}
 					});
-
 					vv = map;
-				} else {
+				}
+				// 强制转换
+				else {
 					vv = Castors.me().castTo(v, ft);
 				}
 				mirror.setValue(obj, field, vv);
