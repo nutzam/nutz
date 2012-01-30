@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -1356,7 +1355,7 @@ public class Mirror<T> {
 	 * @return true or false
 	 */
 	public boolean isObj() {
-		return !isContainer() && !isPojo();
+		return isContainer() || isPojo();
 	}
 
 	/**
