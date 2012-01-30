@@ -242,7 +242,7 @@ public class Mirror<T> {
 	 * <ul>
 	 * <li>如果是 setAbc : 那么就是 "abc"
 	 * <li>如果是 getAbc : 那么就是 "abc"
-	 * <li>如果是 istAbc : 那么就是 "abc"
+	 * <li>如果是 isAbc : 那么就是 "abc"
 	 * </ul>
 	 * 而 getter 或者 setter 参数如果为 null，则表示本函数未发现对应的 getter|setter
 	 * 
