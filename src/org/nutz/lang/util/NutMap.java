@@ -12,6 +12,20 @@ import org.nutz.lang.Lang;
 @SuppressWarnings("serial")
 public class NutMap extends TreeMap<String, Object> {
 
+	public NutMap() {
+		super();
+	}
+
+	public NutMap(Map<String, Object> map) {
+		super();
+		this.putAll(map);
+	}
+
+	public NutMap(String json) {
+		super();
+		this.putAll(Lang.map(json));
+	}
+
 	public int getInt(String key) {
 		return getAs(int.class, key, -1);
 	}
