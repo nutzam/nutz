@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -37,7 +39,7 @@ public class Images {
 	 *            旋转角度, 90 为顺时针九十度， -90 为逆时针九十度
 	 * @return 旋转后得图像对象
 	 */
-	public static BufferedImage rotate(File srcIm, File taIm, int degree) {
+	public static BufferedImage rotate(Object srcIm, File taIm, int degree) {
 		BufferedImage im = Images.read(srcIm);
 		BufferedImage im2 = Images.rotate(im, degree);
 		Images.write(im2, taIm);
@@ -137,7 +139,7 @@ public class Images {
 	 * @throws IOException
 	 *             当读写文件失败时抛出
 	 */
-	public static BufferedImage zoomScale(File srcIm, File taIm, int w, int h, Color bgColor)
+	public static BufferedImage zoomScale(Object srcIm, File taIm, int w, int h, Color bgColor)
 			throws IOException {
 		BufferedImage old = read(srcIm);
 		BufferedImage im = Images.zoomScale(old, w, h, bgColor);
@@ -253,7 +255,7 @@ public class Images {
 	 * @throws IOException
 	 *             当读写文件失败时抛出
 	 */
-	public static BufferedImage clipScale(File srcIm, File taIm, int w, int h) throws IOException {
+	public static BufferedImage clipScale(Object srcIm, File taIm, int w, int h) throws IOException {
 		BufferedImage old = read(srcIm);
 		BufferedImage im = Images.clipScale(old, w, h);
 		write(im, taIm);
@@ -348,9 +350,15 @@ public class Images {
 	 *            图片文件
 	 * @return 图片对象
 	 */
-	public static BufferedImage read(File imgFile) {
+	public static BufferedImage read(Object img) {
 		try {
-			return ImageIO.read(imgFile);
+			if (img instanceof File)
+				return ImageIO.read((File) img);
+			else if (img instanceof URL)
+				return ImageIO.read((URL)img);
+			else if (img instanceof InputStream)
+				return ImageIO.read((InputStream)img);
+			throw Lang.makeThrow("Unkown img info!! --> " + img);
 		}
 		catch (IOException e) {
 			throw Lang.wrapThrow(e);
