@@ -1388,7 +1388,7 @@ public class Mirror<T> {
 	 * @return true of false
 	 */
 	public boolean isContainer() {
-		return isArray() || isCollection() || isMap();
+		return isColl() || isMap();
 	}
 
 	/**
@@ -1407,6 +1407,13 @@ public class Mirror<T> {
 	 */
 	public boolean isCollection() {
 		return isOf(Collection.class);
+	}
+
+	/**
+	 * @return 当前类型是否是数组或者集合
+	 */
+	public boolean isColl() {
+		return isArray() || isCollection();
 	}
 
 	/**
