@@ -9,6 +9,13 @@ import java.util.TreeMap;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 
+/**
+ * 对于 TreeMap 的一个友好封装
+ * <p>
+ * 同 TreeMap 不同的是，如果 get(null)，它不会抛错，就是返回 null 或默认值
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 @SuppressWarnings("serial")
 public class NutMap extends TreeMap<String, Object> {
 
@@ -62,6 +69,8 @@ public class NutMap extends TreeMap<String, Object> {
 	}
 
 	public <T> T getAs(Class<T> toType, String key, T dft) {
+		if (null == key)
+			return dft;
 		Object obj = get(key);
 		if (null == obj)
 			return dft;
