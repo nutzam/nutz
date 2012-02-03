@@ -280,10 +280,7 @@ public class Images {
 
 		// 创建图像
 		BufferedImage re = new BufferedImage(nW, nH, ColorSpace.TYPE_RGB);
-		// 得到一个绘制接口
-		Graphics gc = re.getGraphics();
-		gc.fillRect(0, 0, w, h);
-		gc.drawImage(im, 0, 0, nW, nH, null);
+		re.getGraphics().drawImage(im, 0, 0, nW, nH, null);
 		// 返回
 		return re;
 	}
