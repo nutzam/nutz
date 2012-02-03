@@ -179,7 +179,8 @@ public class Images {
 	}
 
 	/**
-	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上
+	 * 自动等比缩放一个图片，多余的部分，用给定背景颜色补上<br />
+	 * 如果参数中的宽度或高度为<b>-1</b>的话，着按照指定的高度或宽度等比例缩放图片，不添加背景颜色
 	 * 
 	 * @param im
 	 *            图像对象
@@ -193,6 +194,10 @@ public class Images {
 	 * @return 被转换后的图像
 	 */
 	public static BufferedImage zoomScale(BufferedImage im, int w, int h, Color bgColor) {
+		if (w == -1 || h == -1) {
+			return zoomScale(im, w, h);
+		}
+
 		// 检查背景颜色
 		bgColor = null == bgColor ? Color.black : bgColor;
 		// 获得尺寸
@@ -226,6 +231,7 @@ public class Images {
 			x = 0;
 			y = 0;
 		}
+
 		// 创建图像
 		BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
 		// 得到一个绘制接口
@@ -233,6 +239,47 @@ public class Images {
 		gc.setColor(bgColor);
 		gc.fillRect(0, 0, w, h);
 		gc.drawImage(im, x, y, nW, nH, bgColor, null);
+		// 返回
+		return re;
+	}
+
+	/**
+	 * 自动等比缩放一个图片
+	 * 
+	 * @param im
+	 *            图像对象
+	 * @param w
+	 *            宽度
+	 * @param h
+	 *            高度
+	 * 
+	 * @return 被转换后的图像
+	 */
+	public static BufferedImage zoomScale(BufferedImage im, int w, int h) {
+		// 获得尺寸
+		int oW = im.getWidth();
+		int oH = im.getHeight();
+
+		int nW = w, nH = h;
+
+		/*
+		 * 缩放
+		 */
+		// 未指定图像高度，根据原图尺寸计算出高度
+		if (h == -1) {
+			nH = (int) ((float) w / oW * oH);
+		}
+		// 未指定图像宽度，根据原图尺寸计算出宽度
+		else if (w == -1) {
+			nW = (int) ((float) h / oH * oW);
+		}
+
+		// 创建图像
+		BufferedImage re = new BufferedImage(nW, nH, ColorSpace.TYPE_RGB);
+		// 得到一个绘制接口
+		Graphics gc = re.getGraphics();
+		gc.fillRect(0, 0, w, h);
+		gc.drawImage(im, 0, 0, nW, nH, null);
 		// 返回
 		return re;
 	}
@@ -355,9 +402,9 @@ public class Images {
 			if (img instanceof File)
 				return ImageIO.read((File) img);
 			else if (img instanceof URL)
-				return ImageIO.read((URL)img);
+				return ImageIO.read((URL) img);
 			else if (img instanceof InputStream)
-				return ImageIO.read((InputStream)img);
+				return ImageIO.read((InputStream) img);
 			throw Lang.makeThrow("Unkown img info!! --> " + img);
 		}
 		catch (IOException e) {
