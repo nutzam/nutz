@@ -153,6 +153,55 @@ public abstract class Files {
 	}
 
 	/**
+	 * 将内容写到一个文件末尾
+	 * <ul>
+	 * <li>InputStream - 按二进制方式写入
+	 * <li>byte[] - 按二进制方式写入
+	 * <li>Reader - 按 UTF-8 方式写入
+	 * <li>其他对象被 toString() 后按照 UTF-8 方式写入
+	 * </ul>
+	 * 
+	 * @param f
+	 *            文件
+	 * @param obj
+	 *            内容
+	 */
+	public static void appendWrite(File f, Object obj) {
+		if (null == f || null == obj)
+			return;
+		if (f.isDirectory())
+			throw Lang.makeThrow("Directory '%s' can not be write as File", f);
+
+		try {
+			// 保证文件存在
+			if (!f.exists())
+				Files.createNewFile(f);
+			// 输入流
+			if (obj instanceof InputStream) {
+				// TODO
+				throw Lang.noImplement();
+			}
+			// 字节数组
+			else if (obj instanceof byte[]) {
+				// TODO
+				throw Lang.noImplement();
+			}
+			// 文本输入流
+			else if (obj instanceof Reader) {
+				// TODO
+				throw Lang.noImplement();
+			}
+			// 其他对象
+			else {
+				Streams.appendWriteAndClose(f, obj.toString());
+			}
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
+	/**
 	 * 将文件后缀改名，从而生成一个新的文件对象。但是并不在磁盘上创建它
 	 * 
 	 * @param f

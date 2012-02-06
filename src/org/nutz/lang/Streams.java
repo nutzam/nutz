@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -566,5 +567,17 @@ public abstract class Streams {
 				return nutResource.getInputStream();
 		}
 		return null;
+	}
+
+	public static void appendWriteAndClose(File f, String text) {
+		try {
+			FileWriter fw = new FileWriter(f, true);
+			fw.write(text);
+			fw.close();
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+
 	}
 }
