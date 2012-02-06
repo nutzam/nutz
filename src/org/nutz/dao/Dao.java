@@ -345,6 +345,17 @@ public interface Dao {
 	<T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
 
 	/**
+	 * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @return 对象列表
+	 */
+	<T> List<T> query(Class<T> classOfT, Condition cnd);
+
+	/**
 	 * 查询出一组记录。
 	 * 
 	 * @param tableName
@@ -361,6 +372,22 @@ public interface Dao {
 	 * @see org.nutz.dao.Condition
 	 */
 	List<Record> query(String tableName, Condition cnd, Pager pager);
+
+	/**
+	 * 查询出一组记录。
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param cnd
+	 *            条件 - <b style=color:red>请注意：</b> 你传入的 Criteria 实现必须考虑到 没有
+	 *            'Entity<?>' 传入。即 toSql 函数的参数永远为 null。
+	 * @return Record 对象。实际上是一个 Map 的包裹类
+	 * 
+	 * @see org.nutz.dao.Condition
+	 */
+	List<Record> query(String tableName, Condition cnd);
 
 	/**
 	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
@@ -380,6 +407,19 @@ public interface Dao {
 	/**
 	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
 	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	<T> int each(Class<T> classOfT, Condition cnd, Each<T> callback);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
 	 * @param tableName
 	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
 	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
@@ -393,6 +433,21 @@ public interface Dao {
 	 * @return 一共迭代的数量
 	 */
 	int each(String tableName, Condition cnd, Pager pager, Each<Record> callback);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	int each(String tableName, Condition cnd, Each<Record> callback);
 
 	/**
 	 * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。
