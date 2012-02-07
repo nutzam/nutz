@@ -129,6 +129,10 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 		return and(like(name, value, ignoreCase).not());
 	}
 
+	public SqlExpressionGroup or(String name, String op, Object value) {
+		return or(Exps.create(name, op, value));
+	}
+
 	public SqlExpressionGroup or(SqlExpression exp) {
 		if (!exps.isEmpty())
 			_add(new Static("OR"));
