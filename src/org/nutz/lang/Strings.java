@@ -339,41 +339,43 @@ public abstract class Strings {
 	/**
 	 * 在字符串左侧填充一定数量的特殊字符
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param o
+	 *            可被 toString 的对象
 	 * @param width
 	 *            字符数量
 	 * @param c
 	 *            字符
 	 * @return 新字符串
 	 */
-	public static String alignRight(CharSequence cs, int width, char c) {
-		if (null == cs)
+	public static String alignRight(Object o, int width, char c) {
+		if (null == o)
 			return null;
-		int len = cs.length();
+		String s = o.toString();
+		int len = s.length();
 		if (len >= width)
-			return cs.toString();
-		return new StringBuilder().append(dup(c, width - len)).append(cs).toString();
+			return s;
+		return new StringBuilder().append(dup(c, width - len)).append(s).toString();
 	}
 
 	/**
 	 * 在字符串右侧填充一定数量的特殊字符
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param o
+	 *            可被 toString 的对象
 	 * @param width
 	 *            字符数量
 	 * @param c
 	 *            字符
 	 * @return 新字符串
 	 */
-	public static String alignLeft(CharSequence cs, int width, char c) {
-		if (null == cs)
+	public static String alignLeft(Object o, int width, char c) {
+		if (null == o)
 			return null;
-		int length = cs.length();
+		String s = o.toString();
+		int length = s.length();
 		if (length >= width)
-			return cs.toString();
-		return new StringBuilder().append(cs).append(dup(c, width - length)).toString();
+			return s.toString();
+		return new StringBuilder().append(s).append(dup(c, width - length)).toString();
 	}
 
 	/**
