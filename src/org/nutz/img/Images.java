@@ -6,17 +6,22 @@ import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import javax.imageio.ImageWriteParam;
 import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import org.nutz.lang.Files;
@@ -409,6 +414,16 @@ public class Images {
 			throw Lang.makeThrow("Unkown img info!! --> " + img);
 		}
 		catch (IOException e) {
+			if (img.toString().endsWith(".jpg")) 
+				try {
+					InputStream in = null;
+					if (img instanceof File)
+						in = new FileInputStream((File)img);
+					else if (img instanceof URL)
+						in = ((URL)img).openStream();
+					if (in != null)
+						return readJpeg(in);
+				} catch (IOException e2) {}
 			throw Lang.wrapThrow(e);
 		}
 	}
@@ -455,4 +470,32 @@ public class Images {
 		}
 	}
 
+	/**
+	 * 尝试读取JPEG文件的高级方法,可读取32位的jpeg文件
+	 * <p/>
+	 * 来自: http://stackoverflow.com/questions/2408613/problem-reading-jpeg-image-using-imageio-readfile-file
+	 * 
+	 * */
+	public static BufferedImage readJpeg(InputStream in) throws IOException {
+		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
+	    ImageReader reader = null;
+	    while(readers.hasNext()) {
+	        reader = (ImageReader)readers.next();
+	        if(reader.canReadRaster()) {
+	            break;
+	        }
+	    }
+	    ImageInputStream input = ImageIO.createImageInputStream(in);
+	    reader.setInput(input);
+	    //Read the image raster
+	    Raster raster = reader.readRaster(0, null); 
+
+	    //Create a new RGB image
+	    BufferedImage bi = new BufferedImage(raster.getWidth(), raster.getHeight(), 
+	    BufferedImage.TYPE_4BYTE_ABGR); 
+
+	    //Fill the new image with the old raster
+	    bi.getRaster().setRect(raster);
+	    return bi;
+	}
 }
