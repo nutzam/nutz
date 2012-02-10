@@ -2,12 +2,18 @@ package org.nutz.img;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.ColorModel;
+import java.awt.image.ComponentColorModel;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
+import java.awt.image.WritableRaster;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -408,23 +414,31 @@ public class Images {
 			if (img instanceof File)
 				return ImageIO.read((File) img);
 			else if (img instanceof URL)
-				return ImageIO.read((URL) img);
-			else if (img instanceof InputStream)
-				return ImageIO.read((InputStream) img);
+				img = ((URL) img).openStream();
+			if (img instanceof InputStream) {
+				File tmp = File.createTempFile("nutz_img", "jpg");
+				Files.write(tmp, (InputStream)img);
+				tmp.deleteOnExit();
+				return read(tmp);
+			}
 			throw Lang.makeThrow("Unkown img info!! --> " + img);
 		}
 		catch (IOException e) {
-			if (img.toString().endsWith(".jpg")) 
-				try {
+			try {
 					InputStream in = null;
 					if (img instanceof File)
 						in = new FileInputStream((File)img);
 					else if (img instanceof URL)
 						in = ((URL)img).openStream();
+					else if (img instanceof InputStream)
+						in = (InputStream)img;
 					if (in != null)
 						return readJpeg(in);
-				} catch (IOException e2) {}
-			throw Lang.wrapThrow(e);
+			} catch (IOException e2) {
+				e2.fillInStackTrace();
+			}
+			return null;
+			//throw Lang.wrapThrow(e);
 		}
 	}
 
@@ -476,7 +490,7 @@ public class Images {
 	 * 来自: http://stackoverflow.com/questions/2408613/problem-reading-jpeg-image-using-imageio-readfile-file
 	 * 
 	 * */
-	public static BufferedImage readJpeg(InputStream in) throws IOException {
+	private static BufferedImage readJpeg(InputStream in) throws IOException {
 		Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
 	    ImageReader reader = null;
 	    while(readers.hasNext()) {
@@ -489,13 +503,54 @@ public class Images {
 	    reader.setInput(input);
 	    //Read the image raster
 	    Raster raster = reader.readRaster(0, null); 
-
-	    //Create a new RGB image
-	    BufferedImage bi = new BufferedImage(raster.getWidth(), raster.getHeight(), 
-	    BufferedImage.TYPE_4BYTE_ABGR); 
-
-	    //Fill the new image with the old raster
-	    bi.getRaster().setRect(raster);
-	    return bi;
+	    BufferedImage image = createJPEG4(raster);
+	    File tmp = File.createTempFile("nutz.img", "jpg"); //需要写到文件,然后重新解析哦
+	    writeJpeg(image, tmp, 1);
+	    return read(tmp);
 	}
+	
+	  /**                                                                                                                                           
+    Java's ImageIO can't process 4-component images                                                                                             
+    and Java2D can't apply AffineTransformOp either,                                                                                            
+    so convert raster data to RGB.                                                                                                              
+    Technique due to MArk Stephens.                                                                                                             
+    Free for any use.                                                                                                                           
+  */
+    private static BufferedImage createJPEG4(Raster raster) {
+        int w = raster.getWidth();
+        int h = raster.getHeight();
+        byte[] rgb = new byte[w * h * 3];
+      
+        float[] Y = raster.getSamples(0, 0, w, h, 0, (float[]) null);
+        float[] Cb = raster.getSamples(0, 0, w, h, 1, (float[]) null);
+        float[] Cr = raster.getSamples(0, 0, w, h, 2, (float[]) null);
+        float[] K = raster.getSamples(0, 0, w, h, 3, (float[]) null);
+
+        for (int i = 0, imax = Y.length, base = 0; i < imax; i++, base += 3) {
+            float k = 220 - K[i], y = 255 - Y[i], cb = 255 - Cb[i],
+                    cr = 255 - Cr[i];
+
+            double val = y + 1.402 * (cr - 128) - k;
+            val = (val - 128) * .65f + 128;
+            rgb[base] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff
+                    : (byte) (val + 0.5);
+
+            val = y - 0.34414 * (cb - 128) - 0.71414 * (cr - 128) - k;
+            val = (val - 128) * .65f + 128;
+            rgb[base + 1] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff
+                    : (byte) (val + 0.5);
+
+            val = y + 1.772 * (cb - 128) - k;
+            val = (val - 128) * .65f + 128;
+            rgb[base + 2] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff
+                    : (byte) (val + 0.5);
+        }
+
+
+        raster = Raster.createInterleavedRaster(new DataBufferByte(rgb, rgb.length), w, h, w * 3, 3, new int[]{0, 1, 2}, null);
+
+        ColorSpace cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+        ColorModel cm = new ComponentColorModel(cs, false, true, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+        return new BufferedImage(cm, (WritableRaster) raster, true, null);
+    }
 }
