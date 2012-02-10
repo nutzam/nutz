@@ -55,6 +55,8 @@ public class NutFilter implements Filter {
 	}
 
 	public void destroy() {
+		Mvcs.resetALL();
+		Mvcs.set(selfName, null, null);
 		if(handler !=null)
 			handler.depose();
 		Mvcs.setServletContext(null);
