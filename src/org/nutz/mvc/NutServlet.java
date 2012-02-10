@@ -35,8 +35,11 @@ public class NutServlet extends HttpServlet {
 	}
 
 	public void destroy() {
+		Mvcs.resetALL();
+		Mvcs.set(selfName, null, null);
 		if(handler != null)
 			handler.depose();
+		Mvcs.setServletContext(null);
 	}
 
 	@Override
