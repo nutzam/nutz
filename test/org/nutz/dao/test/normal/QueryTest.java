@@ -165,4 +165,12 @@ public class QueryTest extends DaoCase {
 		assertEquals(4, pet.getId());
 		assertEquals("pet3", pet.getName());
 	}
+
+	@Test
+	public void query_records_pager_new() {
+		List<Record> pets = dao.query("t_pet:id", Cnd.limit().limit(3, 2).asc("name"));
+		assertEquals(2, pets.size());
+		assertEquals("pet4", pets.get(0).get("name"));
+		assertEquals("pet5", pets.get(1).get("name"));
+	}
 }
