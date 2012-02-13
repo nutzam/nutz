@@ -1,70 +1,78 @@
-#title: 1.b.41 发行注记
+#title: 1.b.42 发行注记
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.41 发行注记
+1.b.42 发行注记
 
-    大家好，经过2个多月，我们又见面了。兔年岁末这2个月，贺岁档很是让人失望，但是网络上却热闹的要命。方舟子和老罗陪我度过了很多
-    有趣的夜晚，现在连韩寒都加入了。鉴于网调一边倒的局面，我就没啥好说的，龙年让我们搬个板凳继续看某斗士的嘴脸吧。
+    大家好，情人节快乐 （或许你看到这段文字，已经是情人节之后了，那么就是情人节之后，快乐）
     
-    说到 Nutz 的这个版，我们主要进行了一些微小的调整，我相信大多数使用者都能平滑的从 1.b.40 升级到 1.b.41 -- 换一个 Jar 而已
+    本版没啥好说的，我们修复了几个错误，决定在 1.b.43 前，发一版，因为 1.b.43 可能要等到 3月底了。所以它是一个非常安全升级版
     
-    本版，我们还不得不隆重介绍一下 Nutz 另外一位提交者 -- [http://pangwu86.iteye.com/ 胖五]， 经过百般忽悠，终于诱使
-    [http://pangwu86.iteye.com/ 胖五] 同学为 Nutz 做了好几个比较关键的提交，尤其是完善了 Dao 的 `@Index` 注解。
-    这下声明一个 POJO，创建一个数据表就会更加轻松，以前 `@Index` 注解没有完全实现，所以大家必须的手工建立索引。 当然，对于高性能
-    要求的应用，这个特性可能没啥用，因为索引的建立和调整，通常是需要 DBA 来做的，我们程序员定好表结构和主键就是了。但是一些
-    中小型项目，程序员往往得兼 DBA，所以没啥好说得，`@Index` 注解会很帮你得忙的。
+    这期间，[https://github.com/ywjno 罗马de温泉] 同学非常抢眼，给 [http://nutzam.com Nutz] 的
+    [https://github.com/nutzam/nutz GitHub 代码库] 提交了 [https://github.com/nutzam/nutz/pulls 很多 Pull Request]。
+    啥都别说了，感动啊，眼泪 Hua Hua 的 ...
     
-    总之，龙年就要到了，一不小心又过了一年。从 09 年发起的这个小项目已经进入了它第三个年头。我记得当初发这个项目的时候，有一类
-    很大的质疑声音就是：
+    鉴于很多入门级朋友抱怨的 demo 不给力问题，我们会开始有重点的整理一下 [https://github.com/nutzam/nutzdemo Nutz Demo]
+    的一些文档和注释，当然也会慢慢 review 代码，让 demo 程序变得更好
     
-    {#F00;*“个人的项目不能保证长期维护，不敢用呀。” }
+    关注 [http://nutzam.com Nutz] 的老朋友都知道，
+    为了支持我们把 Web 程序做得更好，我们发布 [http://nutzam.com Nutz] 的同时也一直在维护下面这些项目:
+     * [https://github.com/nutzam/nutzdoc zDoc] - 一个更友好的 wiki
+     * [https://github.com/nutzam/nutzmole zMole] - Nutz 的项目脚手架代码生成器
+     * [https://github.com/nutzam/nutzmore NutzMore] - Nutz 的扩展包
+     * [https://github.com/nutzam/nutzdiff NutzDiff] - 序列比较算法
     
-    为此，我们花了2年多的时间将它变成一个非个人项目，同时也证明了：
-    
-    {#080;*“嘿嘿，它会是一个长期的项目”}
-    
-    今年我们也关注了一下其他的语言，在自己的工作中也分别用了用 Python 之类的语言，有很多感悟，比如 [http://wendal.net/ wendal 同学]
-    的 [http://wendal.net/355.html 这篇文章]。 而且现在似乎 {#F0F;*Java 过气了} 的这种说法慢慢淡下去了，所以似乎这个
-    小项目还会走上很长的一段时间。
-    
-    通常来说，一个孩子，过了3岁，就不太容易夭折，一个公司过了3年，就不太容易倒闭。 因此这一年对这个小项目似乎很是关键，如果到了
-    明年的这个时候，大家还能读到 1.x.xxx 的发行注记，那么我们可以负责的说，它真的会是一个长期的项目了。这一点也与国内其他做开源
-    的同行一起共勉吧。喊的多响都木有用，踏踏实实的活三年下来，并且每周都有点进步，那么三年后，你的项目总是不会差的，而且多半还是很好的 ^_^
+    这些都是一些辅助程序包，或者简易工具 ...
 
-    最后，这里代表 Nutz 所有的提交者（抱歉，来不及沟通了，你们暂时被戴表一下吧），祝大家
-     * 龙年行大运
-         * 更少的 bug
-         * 更多的技术积累
-         * 更少的加班
-         * 更多的奖金
-         * 耶~~~ ^0^
+    但是今年刚刚开始 ...
+     * [https://github.com/howe Howe Chiang 同学] 召集了一个 [https://github.com/howe/ngqa 问答类项目]， \
+        [http://wendal.net/ 无敌的Wendal] 以及 [https://github.com/ywjno 罗马de温泉] 为这个项目贡献了主要的代码。
+     * [http://wendal.net 无敌的Wendal] 创建了 [https://github.com/wendal/viv 一个基于 Nutz 的 Issue 管理系统]，但还未完工 ...
+     * [http://weibo.com/zozoh zozoh 同学] 创建的 [https://github.com/zozoh/ztask zTask] 也接近完工。
+     * ...
+    
+    是的，没错，{#080;*我们开始逐渐转向应用层面了}
+    
+    虽然上面那些项目我们并不承诺一定要做的惊世骇俗，甚至我们都不承诺一定要做完，
+    但是我们的确会不断的，快速得，试验性的写一些应用出来。如果这个应用不错，我们希望能持续投入，做的更好。 我们也将会在 
+    [http://nutzam.com nutzam.com] 上有选择的部署几个成熟一点的应用 ...
+    
+    如果有兴趣，你可以回头看看 [http://nutzam.com/doc/html/ 这个页面]，
+    它写于 3 年前的某个寒冷的晚上， 那个时候这个小项目刚刚诞生，这篇文章说出了它存在的意义:
+    
+    {#FF0000;* "在力所能及的情况下，最大限度的提高Web开发人员的生产力。"}
+    
+    
+    现在，为了这句话，我们终于开始制作一些完整的应用了。 下面这句话，我忍了1年多，现在终于可是迫不及待的说出来了：
+    
+    {#0000FFF;* "Nutz 并不仅仅意味着一个 jar 包 ..."}
+    
+    到底它还意味着什么，今年，我们将拭目以待 ^_^
+    
+    最后， 大家情人节快乐哦
+    
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+    
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
+     * Nutz 的主页 :  [http://nutzam.com]
+
 
 --------------------------------------------------------------------------------------------------------
 问题修复
 
-    * [https://github.com/nutzam/nutz/issues/125 Issue 125] el中使用函数调用有问题 EL {#AAA;by} {*hujun82589167}
-    * [https://github.com/nutzam/nutz/issues/124 Issue 124] 动态实体功能不能正常使用 重要 {#AAA;by} {*goulin}
-    * [https://github.com/nutzam/nutz/issues/119 Issue 119] 为何从数据库里面取出二进制数据时会被转成String类型？ {#AAA;by} {*elkan1788}
-    * [https://github.com/nutzam/nutz/issues/118 Issue 118] fastInsert存在问题 {#AAA;by} {*fjayblue}
-    * [https://github.com/nutzam/nutz/issues/111 Issue 111] 文档中"文件操作"有纰漏 文档 {#AAA;by} {*conanca}
-    * [https://github.com/nutzam/nutz/issues/107 Issue 107] Nutz在JDK1.5下编译不过了 Dao {#AAA;by} {*pangwu86}
-    * [https://github.com/nutzam/nutz/issues/106 Issue 106] Oracle下使用出现ora-01780问题 Dao {#AAA;by} {*pangwu86}
-    * [https://github.com/nutzam/nutz/issues/101 Issue 101] 智能判断字段值为空的时候生成is null语句 Dao {#AAA;by} {*sjbwylbs}
-    * [https://github.com/nutzam/nutz/issues/100 Issue 100] JSON合并输出 {#AAA;by} {*juqkai}
-    * [https://github.com/nutzam/nutz/issues/94 Issue 94] NutzMVC多主模块部署中Ioc冲突问题 Mvc {#AAA;by} {*netstarry}
-    * [https://github.com/nutzam/nutz/issues/92 Issue 92] 能不能搞个@comment注解 Dao {#AAA;by} {*pangwu86}
-    * [https://github.com/nutzam/nutz/issues/90 Issue 90] @Index注解没有实现 Dao {#AAA;by} {*pangwu86}
-    * [https://github.com/nutzam/nutz/issues/88 Issue 88] 扩展Each接口 {#AAA;by} {*fjay}
-    * [https://github.com/nutzam/nutz/issues/87 Issue 87] nutz项目有没有像Apache 的commons-confiugrations一样的工具类？ {#AAA;by} {*wanghaipeng789}
-    * [https://github.com/nutzam/nutz/issues/86 Issue 86] 希望EL能支持精度 EL FAQ {#AAA;by} {*qilicn}
-    * [https://github.com/nutzam/nutz/issues/85 Issue 85] 让Nutz Json支持多泛型 {#AAA;by} {*fjay}
-    * [https://github.com/nutzam/nutz/issues/84 Issue 84] updateIgnoreNull隐藏的BUG {#AAA;by} {*JefWang}
-    * [https://github.com/nutzam/nutz/issues/30 Issue 30] 表单收集不支持List字段 Mvc 需求 {#AAA;by} {*fjay}
+    * [https://github.com/nutzam/nutz/issues/153 Issue 153] Mvc Setup 的 destroy 方法，读取不到 Ioc {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/146 Issue 146] 给Cnd中添加limit方法 Code Attached  {#AAA;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/138 Issue 138] HttpStatusView返回403时,不会使用web.xml中的errorPage配置 文档 Mvc {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/135 Issue 135] Images.java无法处理源文件是URL link的图片 FAQ {#AAA;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/134 Issue 134] 1.41没法找到At()中的路径 {#AAA;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/133 Issue 133] 修改两个javadoc错误 Code Attached  {#AAA;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/131 Issue 131] 无法回滚fastInsert后的数据 Dao 重要 {#AAA;by} {*fjay}
+    * [https://github.com/nutzam/nutz/issues/60 Issue 60] 希望能支持全局设置请求范围，这样不需要的时候可以不用写ioc Mvc {#AAA;by} {*cqyunqin}
 
 --------------------------------------------------------------------------------------------------------
 质量
-	共通过了 {#FF00FF;*738}  个单元测试用例,代码覆盖率达到 {#FF00FF;64.5%}(按line计算)
+	共通过了 {#FF00FF;*781}  个单元测试用例,代码覆盖率达到 {#FF00FF;64.5%}(按line计算)
 
     <http://www.nutzam.com/wiki/img/emma.png>
 	 
@@ -81,9 +89,7 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-     * 修改: [dao/customized_sql.man ] : 增加 SQL 逃逸字符的描述
-     * 修改: [lang/lang.man ] : 增加文件/目录拷贝的描述
-     * 新增: [ioc/ioc_properties.man] 让Ioc容器帮你规划配置文件
+     ... 少量改动 ...
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -100,21 +106,12 @@
 	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}
 
     || 贡献者           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
-    || Jay 蓝色幽默    	||  O   ||  -   ||  O   ||  -   ||  -   ||  -   ||  O   ||
-    || JefWang       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || conanca       	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || elkan1788     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || goulin        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || hujun82589167 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || juqkai        	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
-    || netstarry     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || pangwu86      	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
-    || qilicn        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || sjbwylbs        	||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||  -   ||
-    || wanghaipeng789	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || wendal        	||  O   ||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||
-    || zozoh        	||  O   ||  -   ||  O   ||  O   ||  O   ||  O   ||  O   ||
-    || 花米®           	||  O   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
+    || Jay 蓝色幽默 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || cqyunqin 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || enzozhong	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || wendal   	||  O   ||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||
+    || ywjno    	||  O   ||  -   ||  -   ||  O   ||  -   ||  O   ||  O   ||
+    || zozoh    	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
 
 
 	另外，很多朋友都在：
