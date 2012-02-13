@@ -368,6 +368,10 @@ public class NutDao extends DaoSupport implements Dao {
 		return pojo.getList(classOfT);
 	}
 
+	public <T> List<T> query(Class<T> classOfT, Condition cnd) {
+		return query(classOfT, cnd, Pojos.Items.pager(cnd));
+	}
+
 	public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback) {
 		Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
 								.append(Pojos.Items.cnd(cnd))
@@ -381,6 +385,10 @@ public class NutDao extends DaoSupport implements Dao {
 		return pojo.getInt();
 	}
 
+	public <T> int each(Class<T> classOfT, Condition cnd, Each<T> callback) {
+		return each(classOfT, cnd, Pojos.Items.pager(cnd), callback);
+	}
+
 	public List<Record> query(String tableName, Condition cnd, Pager pager) {
 		Pojo pojo = pojoMaker.makeQuery(tableName)
 								.addParamsBy("*")
@@ -390,6 +398,10 @@ public class NutDao extends DaoSupport implements Dao {
 		pojo.setAfter(_pojo_queryRecord);
 		_exec(pojo);
 		return pojo.getList(Record.class);
+	}
+
+	public List<Record> query(String tableName, Condition cnd) {
+		return query(tableName, cnd, Pojos.Items.pager(cnd));
 	}
 
 	public int each(String tableName, Condition cnd, Pager pager, Each<Record> callback) {
@@ -402,6 +414,10 @@ public class NutDao extends DaoSupport implements Dao {
 		pojo.getContext().attr(Each.class.getName(), callback);
 		_exec(pojo);
 		return pojo.getInt();
+	}
+
+	public int each(String tableName, Condition cnd, Each<Record> callback) {
+		return each(tableName, cnd, Pojos.Items.pager(cnd), callback);
 	}
 
 	public <T> T fetch(Class<T> classOfT, long id) {
