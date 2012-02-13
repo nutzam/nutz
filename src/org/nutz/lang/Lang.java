@@ -1383,6 +1383,27 @@ public abstract class Lang {
 	}
 
 	/**
+	 * 安全的从一个数组获取一个元素，容忍 null 数组，以及支持负数的 index
+	 * <p>
+	 * 如果该下标越界，则返回 null
+	 * 
+	 * @param <T>
+	 * @param array
+	 *            数组，如果为 null 则直接返回 null
+	 * @param index
+	 *            下标，-1 表示倒数第一个， -2 表示倒数第二个，以此类推
+	 * @return 数组元素
+	 */
+	public static <T> T get(T[] array, int index) {
+		if (null == array)
+			return null;
+		int i = index < 0 ? array.length + index : index;
+		if (i < 0 || i >= array.length)
+			return null;
+		return array[i];
+	}
+
+	/**
 	 * 将一个抛出对象的异常堆栈，显示成一个字符串
 	 * 
 	 * @param e

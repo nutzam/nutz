@@ -16,6 +16,7 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.config.AtMap;
+import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
 
 /**
@@ -236,6 +237,17 @@ public abstract class Mvcs {
 	}
 
 	/**
+	 * 获取当前请求对象的字符串表（NutMessageMap 封装）
+	 * 
+	 * @param req
+	 *            请求对象
+	 * @return 字符串表
+	 */
+	public static NutMessageMap getMessageMap(ServletRequest req) {
+		return (NutMessageMap) req.getAttribute(MSG);
+	}
+
+	/**
 	 * 获取当前请求对象的字符串表中的某一个字符串
 	 * 
 	 * @param req
@@ -405,11 +417,11 @@ public abstract class Mvcs {
 	public static ServletContext getServletContext() {
 		return servletContext;
 	}
-	
+
 	public static void setIocContext(IocContext iocContext) {
 		IOC_CONTEXT.set(iocContext);
 	}
-	
+
 	public static IocContext getIocContext() {
 		return IOC_CONTEXT.get();
 	}

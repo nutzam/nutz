@@ -41,20 +41,6 @@ public class SimpleContext extends AbstractContext {
 		return map;
 	}
 
-	public Context putAll(Object obj) {
-		if (null != obj) {
-			// 同类型
-			if (obj instanceof SimpleContext) {
-				map.putAll(((SimpleContext) obj).getInnerMap());
-			}
-			// 其他
-			else {
-				super.putAll(obj);
-			}
-		}
-		return this;
-	}
-
 	public Context clear() {
 		this.map.clear();
 		return this;

@@ -204,6 +204,23 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 将给定字符串，变成 "xxx...xxx" 形式的字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @param len
+	 *            最大长度
+	 * @return 紧凑的字符串
+	 */
+	public static String brief(String str, int len) {
+		if (Strings.isBlank(str) || (str.length() + 3) <= len)
+			return str;
+		int w = len / 2;
+		int l = str.length();
+		return str.substring(0, len - w) + " ... " + str.substring(l - w);
+	}
+
+	/**
 	 * 将字符串按半角逗号，拆分成数组，空元素将被忽略
 	 * 
 	 * @param s

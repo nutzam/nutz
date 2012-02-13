@@ -36,16 +36,30 @@ public abstract class AbstractContext implements Context {
 	}
 
 	public Context putAll(Object obj) {
+		return putAll(null, obj);
+	}
+
+	public Context putAll(String prefix, Object obj) {
 		if (null != obj) {
 			// Context
 			if (obj instanceof Context) {
-				for (String key : ((Context) obj).keys())
+				for (String key : ((Context) obj).keys()) {
+					if (null != prefix)
+						key = prefix + key;
 					this.set(key, ((Context) obj).get(key));
+				}
 			}
 			// Map
 			else if (obj instanceof Map<?, ?>) {
-				for (Map.Entry<?, ?> en : ((Map<?, ?>) obj).entrySet())
-					this.set(en.getKey().toString(), en.getValue());
+				for (Map.Entry<?, ?> en : ((Map<?, ?>) obj).entrySet()) {
+					Object oKey = en.getKey();
+					if (null == oKey)
+						continue;
+					String key = oKey.toString();
+					if (null != prefix)
+						key = prefix + key;
+					this.set(key.toString(), en.getValue());
+				}
 			}
 			// 普通 Java 对象
 			else {
@@ -61,7 +75,10 @@ public abstract class AbstractContext implements Context {
 				// 普通 Java 对象，应该取其每个字段
 				else {
 					for (Field field : mirror.getFields()) {
-						this.set(field.getName(), mirror.getValue(obj, field));
+						String key = field.getName();
+						if (null != prefix)
+							key = prefix + key;
+						this.set(key, mirror.getValue(obj, field));
 					}
 				}
 			}

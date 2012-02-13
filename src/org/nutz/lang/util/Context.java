@@ -9,11 +9,13 @@ public interface Context extends Cloneable {
 	Context set(String name, Object value);
 
 	Set<String> keys();
-	
-	Map<String,Object> getInnerMap();
+
+	Map<String, Object> getInnerMap();
 
 	Context putAll(Object obj);
-	
+
+	Context putAll(String prefix, Object obj);
+
 	boolean has(String key);
 
 	Context clear();
