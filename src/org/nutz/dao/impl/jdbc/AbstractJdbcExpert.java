@@ -288,8 +288,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 			Sql tableCommentSQL = Sqls.create(Strings.isBlank(commentTable)	? DEFAULT_COMMENT_TABLE
 																			: commentTable);
 			tableCommentSQL.vars()
-							.set("table", en.getTableName())
-							.set("tableComment", en.getTableComment());
+							.set("table", en.getTableName().toUpperCase())
+							.set("tableComment", en.getTableComment().toUpperCase());
 			sqls.add(tableCommentSQL);
 		}
 		// 字段注释
@@ -299,8 +299,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 					Sql columnCommentSQL = Sqls.create(Strings.isBlank(commentColumn)	? DEFAULT_COMMENT_COLUMN
 																						: commentColumn);
 					columnCommentSQL.vars()
-									.set("table", en.getTableName())
-									.set("column", mf.getColumnName())
+									.set("table", en.getTableName().toUpperCase())
+									.set("column", mf.getColumnName().toUpperCase())
 									.set("columnComment", mf.getColumnComment());
 					sqls.add(columnCommentSQL);
 				}
