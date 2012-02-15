@@ -45,7 +45,7 @@
     
     此外，还有一件神奇的事情，[http://weibo.com/n/ClarenceAu ClarenceAu 同学]在某年某月静悄悄的提交了 
     [http://plugins.netbeans.org/plugin/40173/nutzframeworksupport Nut 在 Netbeans 上的插件]，
-    经过数小时调查，有证据显示该插件系由 {*华南农业大学XXX工作室} 集体创作，试用过的用户分分表示"有点意思"，
+    经过数小时调查，有证据显示该插件系由 {*华南农业大学人机交互工作室} 集体创作，试用过的用户分分表示"有点意思"，
     据相关人士透露，该工作室由一伙不明身份的大学生构成，数目未知，
     据一份不完全名单透露，下面这些帐号与该工作室有非常紧密的联系，甚至很可能是其中一员：
      * [http://weibo.com/n/ClarenceAu ClarenceAu]
