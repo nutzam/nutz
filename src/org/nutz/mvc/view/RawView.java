@@ -60,7 +60,7 @@ public class RawView implements View {
 		//文件
 		if (obj instanceof File) {
 			File file = (File)obj;
-			String encode = new String(file.getName().getBytes(Encoding.CHARSET_UTF8), "ISO8859-1");
+			String encode = new String(file.getName().getBytes(Encoding.UTF8), "ISO8859-1");
 			resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
 			resp.setHeader("Content-Length", "" + file.length());
 			Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
@@ -86,7 +86,7 @@ public class RawView implements View {
 		}
 		// 普通对象
 		else {
-			byte[] data = String.valueOf(obj).getBytes(Encoding.CHARSET_UTF8);
+			byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
 			resp.setHeader("Content-Length", "" + data.length);
 			Streams.writeAndClose(resp.getOutputStream(), data);
 		}
