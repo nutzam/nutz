@@ -1,19 +1,32 @@
 package org.nutz.dao.util;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.annotation.Table;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
+import org.nutz.resource.Scans;
 import org.nutz.trans.Molecule;
 import org.nutz.trans.Trans;
 
@@ -112,4 +125,64 @@ public abstract class Daos {
 		return Trans.exec(molecule);
 	}
 
+	/*根据Pojo生成数据字典,zdoc格式*/
+	public static StringBuilder dataDict(DataSource ds, String...packages) {
+		StringBuilder sb = new StringBuilder();
+		List<Class<?>> ks = new ArrayList<Class<?>>();
+		for (String packageName : packages) {
+			ks.addAll(Scans.me().scanPackage(packageName));
+		}
+		Iterator<Class<?>> it = ks.iterator();
+		while (it.hasNext()) {
+			Class<?> klass = it.next();
+			if (klass.getAnnotation(Table.class) == null)
+				it.remove();
+		}
+		//log.infof("Found %d table class", ks.size());
+		
+		JdbcExpert exp = Jdbcs.getExpert(ds);
+		NutDao dao = new NutDao(ds);
+		
+		Method evalFieldType;
+		try {
+			evalFieldType = exp.getClass().getDeclaredMethod("evalFieldType", MappingField.class);
+		} catch (Throwable e) {
+			throw Lang.wrapThrow(e);
+		}
+		evalFieldType.setAccessible(true);
+		Entity<?> entity = null;
+		String line = "-------------------------------------------------------------------\n";
+		sb.append("#title:数据字典\n");
+		sb.append("#author:wendal\n");
+		sb.append("#index:0,1\n").append(line);
+		for (Class<?> klass : ks) {
+			sb.append(line);
+			entity = dao.getEntity(klass);
+			sb.append("表名 ").append(entity.getTableName()).append("\n\n");
+				if (!Strings.isBlank(entity.getTableComment()))
+					sb.append("表注释: ").append(entity.getTableComment());
+				sb.append("\t").append("Java类名 ").append(klass.getName()).append("\n\n");
+				sb.append("\t||序号||列名||数据类型||主键||非空||默认值||java属性名||java类型||注释||\n");
+				int index = 1;
+				for (MappingField field : entity.getMappingFields()) {
+					String dataType;
+					try {
+						dataType = (String) evalFieldType.invoke(exp, field);
+					} catch (Throwable e) {
+						throw Lang.wrapThrow(e); //不可能发生的
+					}
+					sb.append("\t||").append(index++).append("||")
+						.append(field.getColumnName()).append("||")
+						.append(dataType).append("||")
+						.append(field.isPk()).append("||")
+						.append(field.isNotNull()).append("||")
+						.append(field.getDefaultValue(null) == null ? " " : field.getDefaultValue(null)).append("||")
+						.append(field.getName()).append("||")
+						.append(field.getTypeClass().getName()).append("||")
+						.append(field.getColumnComment() == null ? " " : field.getColumnComment()).append("||\n");
+				}
+		}
+		return sb;
+	}
+	
 }

@@ -889,7 +889,11 @@ public class Mirror<T> {
 	 * @return 新对象
 	 */
 	public T born(Object... args) {
-		return Borns.eval(klass, args).doBorn();
+		BornContext<T> bc = Borns.eval(klass, args);
+		if (null == bc)
+			throw new BorningException(klass, args);
+
+		return bc.doBorn();
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
