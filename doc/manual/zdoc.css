@@ -138,6 +138,7 @@ h3,h4,h5,h6{
 table{
 	margin-top:10px;
 	margin-bottom:10px;
+	margin-left:40px;
 }
 /*---------------------------------------------------------------------------
  * Code
@@ -153,9 +154,10 @@ pre{
 	margin-left:60px;
 }
 
-table{
-	margin-left:30px;
+.zdoc_code_cmt{
+    color:#888
 }
+
 /*---------------------------------------------------------------------------
  * Index table
  */
