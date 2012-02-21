@@ -55,14 +55,9 @@ public abstract class Times {
 	 * @return 时间
 	 */
 	public static Date D(String ds) {
-		try {
-			if (ds.length() < 12)
-				return DF_DATE.parse(ds);
-			return DF_DATE_TIME.parse(ds);
-		}
-		catch (ParseException e) {
-			throw Lang.wrapThrow(e);
-		}
+		if (ds.length() < 12)
+			return parseWithoutException(DF_DATE, ds);
+		return parseWithoutException(DF_DATE_TIME, ds);
 	}
 
 	/**
@@ -127,7 +122,7 @@ public abstract class Times {
 	 * @return 时间字符串 , 格式为 y-M-d H:m:s.S
 	 */
 	public static String sDTms(Date d) {
-		return DF_DATE_TIME_MS.format(d);
+		return format(DF_DATE_TIME_MS, d);
 	}
 
 	/**
@@ -138,7 +133,7 @@ public abstract class Times {
 	 * @return 时间字符串 , 格式为 yyyy-MM-dd HH:mm:ss
 	 */
 	public static String sDT(Date d) {
-		return DF_DATE_TIME.format(d);
+		return format(DF_DATE_TIME, d);
 	}
 
 	/**
@@ -149,7 +144,7 @@ public abstract class Times {
 	 * @return 时间字符串 , 格式为 yyyy-MM-dd
 	 */
 	public static String sD(Date d) {
-		return DF_DATE.format(d);
+		return format(DF_DATE, d);
 	}
 
 	/**
@@ -256,6 +251,50 @@ public abstract class Times {
 
 		// 返回
 		return re;
+	}
+
+	/**
+	 * 安全的 format 方法
+	 * 
+	 * @param fmt
+	 *            解析类
+	 * @param d
+	 *            时间对象
+	 * @return 格式化后的字符串
+	 */
+	public static String format(DateFormat fmt, Date d) {
+		return ((DateFormat) fmt.clone()).format(d);
+	}
+
+	/**
+	 * 安全的 parse 方法
+	 * 
+	 * @param fmt
+	 *            解析类
+	 * @param s
+	 *            日期时间字符串
+	 * @return 解析后的时间对象
+	 */
+	public static Date parseWithoutException(DateFormat fmt, String s) {
+		try {
+			return parse(fmt, s);
+		}
+		catch (ParseException e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
+	/**
+	 * 安全的 parse 方法
+	 * 
+	 * @param fmt
+	 *            解析类
+	 * @param s
+	 *            日期时间字符串
+	 * @return 解析后的时间对象
+	 */
+	public static Date parse(DateFormat fmt, String s) throws ParseException {
+		return ((DateFormat) fmt.clone()).parse(s);
 	}
 
 	private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");

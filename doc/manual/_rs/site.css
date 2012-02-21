@@ -77,6 +77,10 @@ td, th, font, p, #arena li {
     margin-left: 20px;
 }
 
+#arena .zdoc_code_cmt{
+    color:#888;
+}
+
 #arena .zdoc_header {
     font-size: 20px;
     text-align: center;
