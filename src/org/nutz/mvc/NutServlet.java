@@ -49,7 +49,7 @@ public class NutServlet extends HttpServlet {
 		try {
 			Mvcs.set(selfName, req, resp);
 			if (!handler.handle(req, resp))
-				resp.setStatus(404);
+				resp.sendError(404);
 		} finally {
 			Mvcs.resetALL();
 		}
