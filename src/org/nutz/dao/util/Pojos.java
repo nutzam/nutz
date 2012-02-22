@@ -28,6 +28,7 @@ import org.nutz.dao.impl.sql.pojo.UpdateFieldsByChainPItem;
 import org.nutz.dao.impl.sql.pojo.UpdateFieldsPItem;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
@@ -130,9 +131,8 @@ public abstract class Pojos {
 				}
 				return cndPk(en, pks);
 			default:
-				throw Lang.makeThrow(	"Don't know how to make fetch key %s:'%s'",
-										en.getType().getName(),
-										obj);
+				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s'", en.getType()
+																					.getName(), obj);
 			}
 		}
 
@@ -148,6 +148,20 @@ public abstract class Pojos {
 				list.add(new ConditionPItem(cnd));
 			}
 			return list.toArray(new PItem[list.size()]);
+		}
+
+		public static Pager pager(Condition cnd) {
+			if (null == cnd) {
+				return null;
+			}
+			// 高级条件
+			else if (cnd instanceof Criteria) {
+				return ((Criteria) cnd).getPager();
+			}
+			// 普通条件
+			else {
+				return null;
+			}
 		}
 
 	}

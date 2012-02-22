@@ -8,6 +8,7 @@ public class MethodBorning<T> implements Borning<T> {
 
 	public MethodBorning(Method method) {
 		this.method = method;
+		this.method.setAccessible(true);
 	}
 
 	@SuppressWarnings("unchecked")

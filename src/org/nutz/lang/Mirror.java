@@ -32,6 +32,8 @@ import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.util.Callback;
+import org.nutz.lang.util.Callback3;
 
 /**
  * 包裹了 Class<?>， 提供了更多的反射方法
@@ -140,27 +142,28 @@ public class Mirror<T> {
 								: new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
 																								: typeExtractor);
 	}
-	
+
 	/**
-	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br> 
+	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br>
 	 * 可以使用 getGenericsTypes() 方法取得它的泛型数组
+	 * 
 	 * @param type
 	 * @return
 	 */
-	@SuppressWarnings({ "unchecked" })
-    public static <T> Mirror<T> me(Type type){
-	    if(null == type){
-	        return null;
-	    }
-	    Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
-	    mir.type = type;
-	    return mir;
+	@SuppressWarnings({"unchecked"})
+	public static <T> Mirror<T> me(Type type) {
+		if (null == type) {
+			return null;
+		}
+		Mirror<T> mir = (Mirror<T>) Mirror.me(Lang.getTypeClass(type));
+		mir.type = type;
+		return mir;
 	}
 
 	private Class<T> klass;
-	
+
 	private Type type;
-	
+
 	private TypeExtractor typeExtractor;
 
 	/**
@@ -207,9 +210,9 @@ public class Mirror<T> {
 				return method;
 		}
 		throw Lang.makeThrow(	NoSuchMethodException.class,
-									"Fail to find getter for [%s]->[%s]",
-									klass.getName(),
-									fieldName);
+								"Fail to find getter for [%s]->[%s]",
+								klass.getName(),
+								fieldName);
 	}
 
 	/**
@@ -224,6 +227,106 @@ public class Mirror<T> {
 	 */
 	public Method getGetter(Field field) throws NoSuchMethodException {
 		return getGetter(field.getName());
+	}
+
+	/**
+	 * 根据给定的一个方法，判断其是 Getter 还是 Setter
+	 * <p>
+	 * 对于回调会接受三个参数
+	 * 
+	 * <pre>
+	 * callback(虚字段名, getter, setter)
+	 * </pre>
+	 * 
+	 * 回调都会给一个参数，表示这个方法对应的虚拟字段名。所谓"虚拟字段"，就比如
+	 * <ul>
+	 * <li>如果是 setAbc : 那么就是 "abc"
+	 * <li>如果是 getAbc : 那么就是 "abc"
+	 * <li>如果是 isAbc : 那么就是 "abc"
+	 * </ul>
+	 * 而 getter 或者 setter 参数如果为 null，则表示本函数未发现对应的 getter|setter
+	 * 
+	 * @param method
+	 *            方法对象
+	 * @param callback
+	 *            回调, 如果为 null，则无视
+	 * @param whenError
+	 *            如果本方法即不是 Getter 也不是 Setter 的回调, 如果为 null，则无视
+	 */
+	public static void evalGetterSetter(Method method,
+										Callback3<String, Method, Method> callback,
+										Callback<Method> whenError) {
+		String name = method.getName();
+		Method getter = null;
+		Method setter = null;
+
+		// 是 getter
+		if (name.startsWith("get") && method.getParameterTypes().length == 0) {
+			name = Strings.lowerFirst(name.substring(4));
+			getter = method;
+			// 寻找 setter
+			try {
+				setter = method.getDeclaringClass().getMethod(	"set" + Strings.capitalize(name),
+																method.getReturnType());
+			}
+			catch (Exception e) {}
+
+		}
+		// 布尔的 getter
+		else if (name.startsWith("is")
+					&& Mirror.me(method.getReturnType()).isBoolean()
+					&& method.getParameterTypes().length == 0) {
+			name = Strings.lowerFirst(name.substring(3));
+			getter = method;
+			// 寻找 setter
+			try {
+				setter = method.getDeclaringClass().getMethod(	"set" + Strings.capitalize(name),
+																method.getReturnType());
+			}
+			catch (Exception e) {}
+		}
+		// 是 setter
+		else if (name.startsWith("set") && method.getParameterTypes().length == 1) {
+			name = Strings.lowerFirst(name.substring(4));
+			setter = method;
+			// 寻找 getter
+			try {
+				getter = method.getDeclaringClass().getMethod("get" + Strings.capitalize(name));
+			}
+			catch (Exception e) {}
+
+		}
+		// 虾米都不是，错!
+		else {
+			if (null != whenError)
+				whenError.invoke(method);
+			return;
+		}
+		// 最后调用回调
+		if (null != callback)
+			callback.invoke(name, getter, setter);
+	}
+
+	/**
+	 * 根据给定的一个方法，判断其是 Getter 还是 Setter，根据情况不同，调用不同的回调。
+	 * 
+	 * @param method
+	 *            方法对象
+	 * @param errmsgFormat
+	 *            如果本方法即不是 Getter 也不是 Setter 的回调, 则根据这个消息模板抛出一个运行时异常。 这个字符串格式是个
+	 *            Java 的字符串模板，接受两个参数，第一个是方法名，第二个是所在类名
+	 * @param callback
+	 *            回调, 如果为 null，则无视
+	 */
+	public static void evalGetterSetter(final Method method,
+										final String errmsgFormat,
+										Callback3<String, Method, Method> callback) {
+		evalGetterSetter(method, callback, new Callback<Method>() {
+			public void invoke(Method method) {
+				throw Lang.makeThrow(errmsgFormat, method.getName(), method.getDeclaringClass()
+																			.getName());
+			}
+		});
 	}
 
 	/**
@@ -368,9 +471,10 @@ public class Mirror<T> {
 	}
 
 	/**
-	 * 获得所有的属性，包括私有属性。不包括 Object 的属性
+	 * 获得当前类以及所有父类的所有的属性，包括私有属性。 <br>
+	 * 但是父类不包括 Object 类，并且，如果子类的属性如果与父类重名，将会将其覆盖
 	 * 
-	 * @return 字段列表
+	 * @return 属性列表
 	 */
 	public Field[] getFields() {
 		return _getFields(true, false, true, true);
@@ -432,27 +536,28 @@ public class Mirror<T> {
 		} while (null == ann && cc != Object.class);
 		return ann;
 	}
-	
+
 	/**
 	 * 取得当前类型的泛型数组
+	 * 
 	 * @return
 	 */
-	public Type[] getGenericsTypes(){
-	    if(type instanceof ParameterizedType){
-	        return Lang.getGenericsTypes(type);
-	    }
-	    return null;
+	public Type[] getGenericsTypes() {
+		if (type instanceof ParameterizedType) {
+			return Lang.getGenericsTypes(type);
+		}
+		return null;
 	}
-	
+
 	/**
 	 * 取得当前类型的指定泛型
+	 * 
 	 * @param index
 	 * @return
 	 */
-	public Type getGenericsType(int index){
-	    Type[] ts = getGenericsTypes();
-	    return ts == null ? null : 
-	        (ts.length <= index ? null : ts[index]);
+	public Type getGenericsType(int index) {
+		Type[] ts = getGenericsTypes();
+		return ts == null ? null : (ts.length <= index ? null : ts[index]);
 	}
 
 	/**
@@ -784,7 +889,11 @@ public class Mirror<T> {
 	 * @return 新对象
 	 */
 	public T born(Object... args) {
-		return Borns.eval(klass, args).doBorn();
+		BornContext<T> bc = Borns.eval(klass, args);
+		if (null == bc)
+			throw new BorningException(klass, args);
+
+		return bc.doBorn();
 	}
 
 	private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
@@ -1169,12 +1278,12 @@ public class Mirror<T> {
 	public boolean isIntLike() {
 		return isInt() || isLong() || isShort() || isByte() || is(BigDecimal.class);
 	}
-	
+
 	/**
 	 * @return 当前类型是不是接口
 	 */
-	public boolean isInterface(){
-	    return null == klass ? null : klass.isInterface();
+	public boolean isInterface() {
+		return null == klass ? null : klass.isInterface();
 	}
 
 	/**
@@ -1245,6 +1354,82 @@ public class Mirror<T> {
 	}
 
 	/**
+	 * 如果不是容器，也不是 POJO，那么它必然是个 Obj
+	 * 
+	 * @return true or false
+	 */
+	public boolean isObj() {
+		return isContainer() || isPojo();
+	}
+
+	/**
+	 * 判断当前类型是否为POJO。 除了下面的类型，其他均为 POJO
+	 * <ul>
+	 * <li>原生以及所有包裹类
+	 * <li>类字符串
+	 * <li>类日期
+	 * <li>非容器
+	 * </ul>
+	 * 
+	 * @return true or false
+	 */
+	public boolean isPojo() {
+		if (this.klass.isPrimitive())
+			return false;
+
+		if (this.isStringLike() || this.isDateTimeLike())
+			return false;
+
+		if (this.isPrimitiveNumber() || this.isBoolean() || this.isChar())
+			return false;
+
+		return !isContainer();
+	}
+
+	/**
+	 * 判断当前类型是否为容器，包括 Map，Collection, 以及数组
+	 * 
+	 * @return true of false
+	 */
+	public boolean isContainer() {
+		return isColl() || isMap();
+	}
+
+	/**
+	 * 判断当前类型是否为数组
+	 * 
+	 * @return true of false
+	 */
+	public boolean isArray() {
+		return klass.isArray();
+	}
+
+	/**
+	 * 判断当前类型是否为 Collection
+	 * 
+	 * @return true of false
+	 */
+	public boolean isCollection() {
+		return isOf(Collection.class);
+	}
+
+	/**
+	 * @return 当前类型是否是数组或者集合
+	 */
+	public boolean isColl() {
+		return isArray() || isCollection();
+	}
+
+	/**
+	 * 判断当前类型是否为 Map
+	 * 
+	 * @return true of false
+	 */
+	public boolean isMap() {
+		return isOf(Map.class);
+	}
+
+	/**
 	 * @return 当前对象是否为数字
 	 */
 	public boolean isNumber() {
@@ -1283,7 +1468,7 @@ public class Mirror<T> {
 	 * 获取一个类的泛型参数数组，如果这个类没有泛型参数，返回 null
 	 */
 	public static Type[] getTypeParams(Class<?> klass) {
-	    // TODO 这个实现会导致泛型丢失,只能取得申明类型
+		// TODO 这个实现会导致泛型丢失,只能取得申明类型
 		if (klass == null || "java.lang.Object".equals(klass.getName()))
 			return null;
 		// 看看父类

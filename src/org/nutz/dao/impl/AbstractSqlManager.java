@@ -36,6 +36,8 @@ public abstract class AbstractSqlManager implements SqlManager {
 
 	protected Map<String, String> _sql_map;
 	private List<String> _sql_keys;
+	
+	private boolean allowDuplicate;
 
 	private Map<String, String> map() {
 		if (null == _sql_map)
@@ -96,9 +98,8 @@ public abstract class AbstractSqlManager implements SqlManager {
 	}
 
 	public void addSql(String key, String value) {
-		if (map().containsKey(key)) {
+		if (map().containsKey(key) && !allowDuplicate)
 			throw Lang.makeThrow("duplicate key '%s'", key);
-		}
 		key = Strings.trim(key);
 		map().put(key, value);
 		keylist().add(key);
@@ -213,4 +214,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 
 	}
 
+	public void setAllowDuplicate(boolean allowDuplicate) {
+		this.allowDuplicate = allowDuplicate;
+	}
 }

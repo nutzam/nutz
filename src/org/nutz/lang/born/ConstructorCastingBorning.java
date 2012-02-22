@@ -11,6 +11,7 @@ public class ConstructorCastingBorning<T> implements Borning<T> {
 
 	public ConstructorCastingBorning(Constructor<T> c) {
 		this.c = c;
+		this.c.setAccessible(true);
 		this.pts = c.getParameterTypes();
 	}
 

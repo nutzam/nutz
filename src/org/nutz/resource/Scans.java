@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 
@@ -45,7 +46,8 @@ public class Scans {
 
 	/**
 	 * 在Web环境中使用Nutz的任何功能,都应该先调用这个方法,以初始化资源扫描器
-	 * <p/>调用一次就可以了
+	 * <p/>
+	 * 调用一次就可以了
 	 */
 	public Scans init(ServletContext servletContext) {
 		if (servletContext == null)
@@ -133,6 +135,52 @@ public class Scans {
 	}
 
 	/**
+	 * 在jar包中加载基于 src的 package下面的对象
+	 * 
+	 * @param src
+	 * @param regex
+	 * @param jarPath
+	 * @return
+	 * @author mawm at 2012-1-10 下午7:49:48
+	 */
+	public List<Class<?>> scanPackageInJar(String src, String regexTxt, String jarPath) {
+
+		final Pattern regex = null == regexTxt ? null : Pattern.compile(regexTxt);
+
+		LocalResourceScan lr = (LocalResourceScan) local;
+
+		// 通过local在jar中进行搜索
+		List<NutResource> scanInJar = lr.scanInJar(src, regex, jarPath);
+
+		return rs2class(src, scanInJar);
+	}
+
+	/**
+	 * 在具体位置查找 基于 src的 package下面的对象
+	 * 
+	 * 
+	 * @param src
+	 *            需要扫描的包名称
+	 * @param regexTxt
+	 *            正则表达式
+	 * @param fileDir
+	 *            源对象所在的磁盘目录
+	 * @return
+	 * @author replaceToYouName at 2012-1-12 上午9:33:40
+	 */
+	public List<Class<?>> scanPackageInLocation(String src, String regexTxt, String fileDir) {
+		final Pattern regex = null == regexTxt ? null : Pattern.compile(regexTxt);
+
+		LocalResourceScan lr = (LocalResourceScan) local;
+
+		File location = new File(fileDir + "/" + src.replace('.', '/'));
+		// 通过local在jar中进行搜索
+		List<NutResource> scanInJar = lr.scanInDir(regex, location);
+
+		return rs2class(src, scanInJar);
+	}
+
+	/**
 	 * 将一组 NutResource 转换成 class 对象
 	 * 
 	 * @param packagePath
@@ -211,7 +259,7 @@ public class Scans {
 	public static boolean isInJar(File file) {
 		return isInJar(file.getAbsolutePath());
 	}
-	
+
 	public static boolean isInJar(String filePath) {
 		return filePath.contains(".jar!");
 	}
@@ -219,7 +267,7 @@ public class Scans {
 	public static NutResource makeJarNutResource(File file) {
 		return makeJarNutResource(file.getAbsolutePath());
 	}
-	
+
 	public static NutResource makeJarNutResource(String filePath) {
 		JarEntryInfo jeInfo = new JarEntryInfo(filePath);
 		try {

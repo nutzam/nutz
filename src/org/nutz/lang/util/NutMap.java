@@ -1,16 +1,37 @@
 package org.nutz.lang.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 
+/**
+ * 对于 TreeMap 的一个友好封装
+ * <p>
+ * 同 TreeMap 不同的是，如果 get(null)，它不会抛错，就是返回 null 或默认值
+ * 
+ * @author zozoh(zozohtnt@gmail.com)
+ */
 @SuppressWarnings("serial")
-public class NutMap extends HashMap<String, Object> {
+public class NutMap extends TreeMap<String, Object> {
+
+	public NutMap() {
+		super();
+	}
+
+	public NutMap(Map<String, Object> map) {
+		super();
+		this.putAll(map);
+	}
+
+	public NutMap(String json) {
+		super();
+		this.putAll(Lang.map(json));
+	}
 
 	public int getInt(String key) {
 		return getAs(int.class, key, -1);
@@ -48,6 +69,8 @@ public class NutMap extends HashMap<String, Object> {
 	}
 
 	public <T> T getAs(Class<T> toType, String key, T dft) {
+		if (null == key)
+			return dft;
 		Object obj = get(key);
 		if (null == obj)
 			return dft;

@@ -41,6 +41,11 @@ public interface MappingField extends EntityField {
 	String getColumnName();
 
 	/**
+	 * @return 数据库中字段的注释
+	 */
+	String getColumnComment();
+
+	/**
 	 * @return 数据库中的字段类型
 	 */
 	ColType getColumnType();
@@ -136,5 +141,10 @@ public interface MappingField extends EntityField {
 	 * @return 当前字段是否是自增的
 	 */
 	boolean isAutoIncreasement();
+
+	/**
+	 * @return 当前字段是否有注释。
+	 */
+	boolean hasColumnComment();
 
 }

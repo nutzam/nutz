@@ -204,6 +204,23 @@ public abstract class Strings {
 	}
 
 	/**
+	 * 将给定字符串，变成 "xxx...xxx" 形式的字符串
+	 * 
+	 * @param str
+	 *            字符串
+	 * @param len
+	 *            最大长度
+	 * @return 紧凑的字符串
+	 */
+	public static String brief(String str, int len) {
+		if (Strings.isBlank(str) || (str.length() + 3) <= len)
+			return str;
+		int w = len / 2;
+		int l = str.length();
+		return str.substring(0, len - w) + " ... " + str.substring(l - w);
+	}
+
+	/**
 	 * 将字符串按半角逗号，拆分成数组，空元素将被忽略
 	 * 
 	 * @param s
@@ -339,41 +356,43 @@ public abstract class Strings {
 	/**
 	 * 在字符串左侧填充一定数量的特殊字符
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param o
+	 *            可被 toString 的对象
 	 * @param width
 	 *            字符数量
 	 * @param c
 	 *            字符
 	 * @return 新字符串
 	 */
-	public static String alignRight(CharSequence cs, int width, char c) {
-		if (null == cs)
+	public static String alignRight(Object o, int width, char c) {
+		if (null == o)
 			return null;
-		int len = cs.length();
+		String s = o.toString();
+		int len = s.length();
 		if (len >= width)
-			return cs.toString();
-		return new StringBuilder().append(dup(c, width - len)).append(cs).toString();
+			return s;
+		return new StringBuilder().append(dup(c, width - len)).append(s).toString();
 	}
 
 	/**
 	 * 在字符串右侧填充一定数量的特殊字符
 	 * 
-	 * @param cs
-	 *            字符串
+	 * @param o
+	 *            可被 toString 的对象
 	 * @param width
 	 *            字符数量
 	 * @param c
 	 *            字符
 	 * @return 新字符串
 	 */
-	public static String alignLeft(CharSequence cs, int width, char c) {
-		if (null == cs)
+	public static String alignLeft(Object o, int width, char c) {
+		if (null == o)
 			return null;
-		int length = cs.length();
+		String s = o.toString();
+		int length = s.length();
 		if (length >= width)
-			return cs.toString();
-		return new StringBuilder().append(cs).append(dup(c, width - length)).toString();
+			return s.toString();
+		return new StringBuilder().append(s).append(dup(c, width - length)).toString();
 	}
 
 	/**

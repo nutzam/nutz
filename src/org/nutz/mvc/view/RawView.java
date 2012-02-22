@@ -60,13 +60,14 @@ public class RawView implements View {
 		//文件
 		if (obj instanceof File) {
 			File file = (File)obj;
-			String encode = new String(file.getName().getBytes(Encoding.CHARSET_UTF8), "ISO8859-1");
+			String encode = new String(file.getName().getBytes(Encoding.UTF8), "ISO8859-1");
 			resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
 			resp.setHeader("Content-Length", "" + file.length());
 			Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
 		}
 		// 字节数组
 		else if (obj instanceof byte[]) {
+			resp.setHeader("Content-Length", "" + ((byte[])obj).length);
 			Streams.writeAndClose(resp.getOutputStream(), (byte[])obj);
 		}
 		// 字符数组
@@ -85,7 +86,9 @@ public class RawView implements View {
 		}
 		// 普通对象
 		else {
-			Streams.writeAndClose(resp.getWriter(), String.valueOf(obj));
+			byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
+			resp.setHeader("Content-Length", "" + data.length);
+			Streams.writeAndClose(resp.getOutputStream(), data);
 		}
 	}
 

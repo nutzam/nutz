@@ -134,4 +134,12 @@ public class CndTest extends DaoCase {
 		String exp = "WHERE nm NOT IN (1,2,3)";
 		assertEquals(exp, c.toSql(null).trim());
 	}
+
+	@Test
+	public void test_add_other_or_method_by_github_issuse_148() {
+		SqlExpression e1 = Cnd.exps("city", "=", "beijing").or("city", "=", "shanghai").or("city", "=", "guangzhou").or("city", "=", "shenzhen");
+		SqlExpression e2 = Cnd.exps("age", ">", 18).and("age", "<", 30);
+		String exp = "WHERE (ct='beijing' OR ct='shanghai' OR ct='guangzhou' OR ct='shenzhen') AND (age>18 AND age<30)";
+		assertEquals(exp, Cnd.where(e1).and(e2).toSql(en).trim());
+	}
 }

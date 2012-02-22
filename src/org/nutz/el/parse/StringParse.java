@@ -27,7 +27,7 @@ public class StringParse implements Parse {
 			exp.poll();
 			return sb.toString();
 		}
-		return null;
+		return nullobj;
 	}
 	
 	private void parseSp(CharQueue exp, StringBuilder sb){

@@ -8,6 +8,7 @@ public class EmptyArgsMethodBorning<T> implements Borning<T> {
 
 	public EmptyArgsMethodBorning(Method method) {
 		this.method = method;
+		this.method.setAccessible(true);
 	}
 
 	@SuppressWarnings("unchecked")

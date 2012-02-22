@@ -39,7 +39,7 @@ public class SimpleFilePool implements FilePool {
 		return new File(home.getAbsolutePath() + "/" + fId + (null == suffix ? "" : suffix));
 	}
 
-	public boolean hasFile(long fId, String suffix) {
+	public synchronized boolean hasFile(long fId, String suffix) {
 		return _F(fId, suffix).exists();
 	}
 
@@ -47,14 +47,14 @@ public class SimpleFilePool implements FilePool {
 		return current;
 	}
 
-	public File removeFile(long fId, String suffix) {
+	public synchronized File removeFile(long fId, String suffix) {
 		File f = _F(fId, suffix);
 		if (f.exists())
 			Files.deleteFile(f);
 		return f;
 	}
 
-	public File createFile(String suffix) {
+	public synchronized File createFile(String suffix) {
 		File f = _F(current++, suffix);
 		if (current > max)
 			current = 0;
@@ -84,7 +84,7 @@ public class SimpleFilePool implements FilePool {
 		return null;
 	}
 
-	public File returnFile(long fId, String suffix) {
+	public synchronized File returnFile(long fId, String suffix) {
 		File re = _F(fId, suffix);
 		if (!re.exists())
 			try {
@@ -96,17 +96,17 @@ public class SimpleFilePool implements FilePool {
 		return re;
 	}
 
-	public boolean hasDir(long fId) {
+	public synchronized boolean hasDir(long fId) {
 		return _F(fId, null).exists();
 	}
 
-	public File removeDir(long fId) {
+	public synchronized File removeDir(long fId) {
 		File f = _F(fId, null);
 		Files.deleteDir(f);
 		return f;
 	}
 
-	public File createDir() {
+	public synchronized File createDir() {
 		File f = _F(current++, null);
 		if (current > max)
 			current = 0;
@@ -124,14 +124,14 @@ public class SimpleFilePool implements FilePool {
 		return null;
 	}
 
-	public File returnDir(long fId) {
+	public synchronized File returnDir(long fId) {
 		File re = _F(fId, null);
 		if (!re.exists())
 			Files.makeDir(re);
 		return re;
 	}
 
-	public void clear() {
+	public synchronized void clear() {
 		Files.clearDir(home);
 	}
 

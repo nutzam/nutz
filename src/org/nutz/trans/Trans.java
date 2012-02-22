@@ -35,7 +35,7 @@ public abstract class Trans {
 		implClass = classOfTransaction;
 	}
 
-	private static void begain(int level) throws Exception {
+	static void _begain(int level) throws Exception {
 		if (null == trans.get()) {
 			Transaction tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
 			tn.setLevel(level);
@@ -45,13 +45,13 @@ public abstract class Trans {
 		count.set(count.get() + 1);
 	}
 
-	private static void commit() throws Exception {
+	static void _commit() throws Exception {
 		count.set(count.get() - 1);
 		if (count.get() == 0)
 			trans.get().commit();
 	}
 
-	private static void depose() {
+	static void _depose() {
 		if (count.get() == 0)
 			try {
 				trans.get().close();
@@ -64,7 +64,7 @@ public abstract class Trans {
 			}
 	}
 
-	private static void rollback(Integer num) {
+	static void _rollback(Integer num) {
 		count.set(num);
 		if (count.get() == 0)
 			trans.get().rollback();
@@ -118,17 +118,87 @@ public abstract class Trans {
 			return;
 		int num = count.get() == null ? 0 : count.get();
 		try {
-			begain(level);
+			_begain(level);
 			for (Atom atom : atoms)
 				atom.run();
-			commit();
+			_commit();
 		}
 		catch (Throwable e) {
-			rollback(num);
+			_rollback(num);
 			throw Lang.wrapThrow(e);
 		}
 		finally {
-			depose();
+			_depose();
 		}
+	}
+
+	/**
+	 * 执行一个分子，并给出返回值
+	 * 
+	 * @param <T>
+	 * @param molecule
+	 *            分子
+	 * @return 分子返回值
+	 */
+	public static <T> T exec(Molecule<T> molecule) {
+		Trans.exec((Atom) molecule);
+		return molecule.getObj();
+	}
+
+	/* ===========================下面暴露几个方法给喜欢 try...catch...finally 的人 ===== */
+
+	/**
+	 * 开始一个事务，级别为 TRANSACTION_READ_COMMITTED
+	 * <p>
+	 * 你需要手工用 try...catch...finally 来保证你提交和关闭这个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void begin() throws Exception {
+		Trans._begain(Connection.TRANSACTION_READ_COMMITTED);
+	}
+
+	/**
+	 * 开始一个指定事务
+	 * <p>
+	 * 你需要手工用 try...catch...finally 来保证你提交和关闭这个事务
+	 * 
+	 * @param level
+	 *            指定级别
+	 * 
+	 * @throws Exception
+	 */
+	public static void begin(int level) throws Exception {
+		Trans._begain(level);
+	}
+
+	/**
+	 * 提交事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void commit() throws Exception {
+		Trans._commit();
+	}
+
+	/**
+	 * 回滚事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void rollback() throws Exception {
+		Integer c = Trans.count.get();
+		if (c == null)
+			c = Integer.valueOf(0);
+		Trans._rollback(c);
+	}
+
+	/**
+	 * 关闭事务，执行它前，你必需保证你已经手工开始了一个事务
+	 * 
+	 * @throws Exception
+	 */
+	public static void close() throws Exception {
+		Trans._depose();
 	}
 }

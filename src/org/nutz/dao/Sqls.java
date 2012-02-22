@@ -135,6 +135,23 @@ public abstract class Sqls {
 	}
 
 	/**
+	 * 创建一个获取长整数的 Sql。
+	 * <p>
+	 * 这个函数除了执行 create(String)外，还会为这个 Sql 语句设置回调，用来获取长整数值。
+	 * <p>
+	 * <b style=color:red>注意：</b>你的 Sql 语句返回的 ResultSet 的第一列必须是数字
+	 * 
+	 * @param sql
+	 *            Sql 语句
+	 * @return Sql 对象
+	 * 
+	 * @see org.nutz.dao.sql.Sql
+	 */
+	public static Sql fetchLong(String sql) {
+		return create(sql).setCallback(callback.longValue());
+	}
+
+	/**
 	 * 创建一个获取字符串的 Sql。
 	 * <p>
 	 * 这个函数除了执行 create(String)外，还会为这个 Sql 语句设置回调，用来获取字符串。

@@ -19,7 +19,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.41" />
+	<property name="v" value="-1.b.43" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -45,7 +45,11 @@
 	</target>
 
 	<target name="compile" depends="init">
-		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" source="${JDK_VERSION}" target="${JDK_VERSION}" encoding="UTF-8" listfiles="on">
+		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
+			source="${JDK_VERSION}" target="${JDK_VERSION}" 
+			encoding="UTF-8" listfiles="off"
+			includeantruntime="false"
+			fork="true">
 			<compilerarg value="-Xlint:all" />
 			<classpath refid="CLASSPATH" />
 		</javac>

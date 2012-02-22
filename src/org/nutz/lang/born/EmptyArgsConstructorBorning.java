@@ -8,6 +8,7 @@ public class EmptyArgsConstructorBorning<T> implements Borning<T> {
 
 	public EmptyArgsConstructorBorning(Constructor<T> c) {
 		this.c = c;
+		this.c.setAccessible(true);
 	}
 
 	public T born(Object[] args) {

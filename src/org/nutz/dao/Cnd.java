@@ -2,6 +2,7 @@ package org.nutz.dao;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
@@ -87,6 +88,10 @@ public class Cnd implements OrderBy, Criteria {
 		return new Cnd();
 	}
 
+	public static Cnd limit() {
+		return new Cnd();
+	}
+
 	/*------------------------------------------------------------------*/
 
 	private SimpleCriteria cri;
@@ -146,6 +151,10 @@ public class Cnd implements OrderBy, Criteria {
 		return orNot(Cnd.exp(name, op, value));
 	}
 
+	public Pager getPager() {
+		return cri.getPager();
+	}
+
 	public String toSql(Entity<?> en) {
 		return cri.toSql(en);
 	}
@@ -188,6 +197,21 @@ public class Cnd implements OrderBy, Criteria {
 
 	public OrderBy getOrderBy() {
 		return cri.getOrderBy();
+	}
+
+	public Cnd limit(int pageNumber, int pageSize) {
+		cri.setPager(pageNumber, pageSize);
+		return this;
+	}
+
+	public Cnd limit(int pageSize) {
+		cri.setPager(1, pageSize);
+		return this;
+	}
+
+	public Cnd limit(Pager pager) {
+		cri.setPager(pager);
+		return this;
 	}
 
 }

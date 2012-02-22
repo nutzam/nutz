@@ -68,7 +68,7 @@ public interface Dao {
 	/**
 	 * 将一个对象插入到一个数据源。
 	 * <p>
-	 * 声明了 '@Id'，的字段会在插入数据库时被忽略，因为数据库会自动为其设值。如果想手动 设置，请设置 '@Id(auto=false)'
+	 * 声明了 '@Id'的字段会在插入数据库时被忽略，因为数据库会自动为其设值。如果想手动设置，请设置 '@Id(auto=false)'
 	 * <p>
 	 * <b>插入之前</b>，会检查声明了 '@Default(@SQL("SELECT ..."))' 的字段，预先执行 SQL 为字段设置。
 	 * <p>
@@ -345,6 +345,17 @@ public interface Dao {
 	<T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
 
 	/**
+	 * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @return 对象列表
+	 */
+	<T> List<T> query(Class<T> classOfT, Condition cnd);
+
+	/**
 	 * 查询出一组记录。
 	 * 
 	 * @param tableName
@@ -361,6 +372,22 @@ public interface Dao {
 	 * @see org.nutz.dao.Condition
 	 */
 	List<Record> query(String tableName, Condition cnd, Pager pager);
+
+	/**
+	 * 查询出一组记录。
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param cnd
+	 *            条件 - <b style=color:red>请注意：</b> 你传入的 Criteria 实现必须考虑到 没有
+	 *            'Entity<?>' 传入。即 toSql 函数的参数永远为 null。
+	 * @return Record 对象。实际上是一个 Map 的包裹类
+	 * 
+	 * @see org.nutz.dao.Condition
+	 */
+	List<Record> query(String tableName, Condition cnd);
 
 	/**
 	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
@@ -380,6 +407,19 @@ public interface Dao {
 	/**
 	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
 	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	<T> int each(Class<T> classOfT, Condition cnd, Each<T> callback);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
 	 * @param tableName
 	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
 	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
@@ -393,6 +433,21 @@ public interface Dao {
 	 * @return 一共迭代的数量
 	 */
 	int each(String tableName, Condition cnd, Pager pager, Each<Record> callback);
+
+	/**
+	 * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里
+	 * 
+	 * @param tableName
+	 *            表名 - 格式为 <b>tableName[:idName]</b> 比如 ： <b>t_pet</b> 或者
+	 *            <b>t_pet:id</b> 尤其在 SqlServer2005 的环境下，需要用 t_pet:id 的形式来指明 ID
+	 *            字段，否则 不能分页
+	 * @param cnd
+	 *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+	 * @param callback
+	 *            处理回调
+	 * @return 一共迭代的数量
+	 */
+	int each(String tableName, Condition cnd, Each<Record> callback);
 
 	/**
 	 * 根据对象 ID 删除一个对象。它只会删除这个对象，关联对象不会被删除。
@@ -453,7 +508,9 @@ public interface Dao {
 	int delete(Object obj);
 
 	/**
-	 * 将对象删除的同时，也将符合一个正则表达式的所有关联字段关联的对象统统删除 <b style=color:red>注意：</b>
+	 * 将对象删除的同时，也将符合一个正则表达式的所有关联字段关联的对象统统删除
+	 * <p>
+	 * <b style=color:red>注意：</b>
 	 * <p>
 	 * Java 对象的字段会被保留，这里的删除，将只会删除数据库中的记录
 	 * <p>
@@ -738,6 +795,36 @@ public interface Dao {
 	 * @return 计算结果
 	 */
 	int func(String tableName, String funcName, String colName);
+
+	/**
+	 * 对某一个对象字段，进行计算。
+	 * 
+	 * @param classOfT
+	 *            对象类型
+	 * @param funcName
+	 *            计算函数名，请确保你的数据是支持这个函数的
+	 * @param fieldName
+	 *            对象 java 字段名
+	 * @param cnd
+	 *            过滤条件
+	 * @return 计算结果
+	 */
+	int func(Class<?> classOfT, String funcName, String colName, Condition cnd);
+
+	/**
+	 * 对某一个数据表字段，进行计算。
+	 * 
+	 * @param tableName
+	 *            表名
+	 * @param funcName
+	 *            计算函数名，请确保你的数据是支持这个函数的
+	 * @param colName
+	 *            数据库字段名
+	 * @param cnd
+	 *            过滤条件
+	 * @return 计算结果
+	 */
+	int func(String tableName, String funcName, String colName, Condition cnd);
 
 	/**
 	 * 根据数据源的类型，创建一个翻页对象

@@ -1,0 +1,173 @@
+#title:让Ioc容器帮你规划配置文件
+#author:zozoh
+#index:0,1
+----------------------------------------------------------------------------
+配置文件的痛苦
+    
+    一个 Java 项目，无论大小，多半是有那么几个配置文件的，比如:
+     * 数据库连接啦
+     * 关键的文件路径啦
+     * 一些曝露给运维人员的配置项啦
+
+    如果我们采用了 Ioc 方式组织我们的程序，我们（程序员）会理直气壮的对运维人员
+    说：“你去改xxxx Ioc 文件去。”
+
+    老实说，运维人员会恨死你，我列一个很简单的 JSON 配置文件:
+    {{{
+    var ioc = {
+    	// 数据源
+    	dataSource : {
+    		type :"org.apache.commons.dbcp.BasicDataSource",
+    		events : {
+    			depose :"close"
+    		},
+    		fields : {
+    			driverClassName : "com.mysql.jdbc.Driver",
+    			url             : "jdbc:mysql://127.0.0.1:3306/mydb",
+    			username        : "root",
+    			password        : "123456",
+    			initialSize     : 10,
+    			maxActive       : 100,
+    			testOnReturn    : true,
+    			//validationQueryTimeout : 5,
+    			validationQuery : "select 1"
+    		}
+    	},
+    	// Dao
+    	dao : {
+    		type :'org.nutz.dao.impl.NutDao',
+    		args : [ {refer :"dataSource"}]
+    	}
+    };
+    }}}
+    这个配置文件就是简单的配置了以下数据源，以及一个 Dao 对象。一个运维人员打开这个文件，首先映入
+    眼帘的就是 {#F00;*"org.apache.commons.dbcp.BasicDataSource"} 以及 {#F00;*depose :"close"}
+    他会吓的够呛，心里嘀咕:"这TM是神马东西！"
+    
+    运维人员希望看到什么呢？ 他希望看到这个:
+    {{{
+    db-driver=com.mysql.jdbc.Driver
+    db-url=jdbc:mysql://127.0.0.1:3306/mydb
+    db-username=root
+    db-password=123456
+    }}}
+    这样格式的文件，傻子也知道怎么维护。
+    
+    当然，很多小JIAN人喜欢XML，这样的文件
+    {{{
+    <db>
+        <driver>com.mysql.jdbc.Driver</driver>
+        <url>jdbc:mysql://127.0.0.1:3306/mydb</url>
+        <username>root</username>
+        <password>123456</password>
+    </db>
+    }}}
+    TA 看到会欢喜的不得了。
+    
+    总之，有没有什么办法，能够让运维人员之看到他们喜欢看到的文件，而程序员则继续维护自己的 Ioc 文件呢？ 怎么把
+    这两种文件连接起来呢？
+    
+    有，实际上，从很早以前，Nutz 就很好的支持了这样的做法，不过这次，郑重写个文档出来，也是为了避免有人再有
+    [https://github.com/nutzam/nutz/issues/87 这个问题]
+    
+    答案是：{#00F;*采用 java 型注入值}
+    
+用 Properties 举个例子
+
+    就用上面的例子，如果我们需要暴露给运维人员一个 properties 文件任其修改：
+    {{{
+    -----------------------------------------------------[下面是 myapp.properties 文件的内容]---
+    db-driver=com.mysql.jdbc.Driver
+    db-url=jdbc:mysql://127.0.0.1:3306/mydb
+    db-username=root
+    db-password=123456
+    }}}
+    那么我们的 Ioc 文件就改成这样：
+    {{{
+    var ioc = {
+    	// 读取配置文件
+    	config : {
+    		type : "org.nutz.ioc.impl.PropertiesProxy",
+    		fields : {
+    			paths : ["myapp.properties"]
+    		}
+    	},
+    	// 数据源
+    	dataSource : {
+    		type :"org.apache.commons.dbcp.BasicDataSource",
+    		events : {
+    			depose :"close"
+    		},
+    		fields : {
+    			driverClassName : {java :"$config.get('db-driver')"},
+    			url             : {java :"$config.get('db-url')"},
+    			username        : {java :"$config.get('db-username')"},
+    			password        : {java :"$config.get('db-password')"},
+    			initialSize     : 10,
+    			maxActive       : 100,
+    			testOnReturn    : true,
+    			//validationQueryTimeout : 5,
+    			validationQuery : "select 1"
+    		}
+    	},
+    	// Dao
+    	dao : {
+    		type :'org.nutz.dao.impl.NutDao',
+    		args : [ {refer :"dataSource"}]
+    	}
+    };
+    }}}
+    这里有几个重点
+     # Nutz 提供了一个类 {#00F; org.nutz.ioc.impl.PropertiesProxy}，他能读取并解析一个 properties 文件
+     # 在 Ioc 容器中，我们创建一个这样的单例对象，随便起个名字，比如叫 {#080;*"config"}
+     # 那么根据配置 "myapp.properties" 会被 {*PropertiesProxy} 类加载
+     # 通过 java 调用，你可以直接调用 {#080;*"config"} 对象的 get 方法
+     # 这样，你就能将分散在各个 Ioc 文件中的值集中到一个 properties 文件里了
+
+关于XML
+
+    如果你打算给你的运维人员看 XML 怎么办呢？抱歉，Nutz 木有给出内部支持，但是简单的要命，你需要：
+     # 提供一个 XML 配置解析类，从xml读取内容，然后，提供 get 方法
+     # 在 Ioc 配置的任何地方，你都可以用 java 调用的方式，调用 get 方法
+
+我是用Annotation的Ioc
+    
+    如果是这样，那么 @Inject 可以这样写:
+    {{{
+    @Inject("java:$config.get('xxxxx')
+    private String myXXXX;
+    }}}
+    
+关于更多扩展的意淫
+    
+    现在的云端应用，你不弄七八台机器放在一负载均衡后面，你都不好意思叫它们服务器。并且这些机器基本
+    都是跑一样的程序，用一样的配置文件，很多运维人员（尤其是不会写脚本的鼠标派运维人员）会很痛苦：
+
+    “配置文件同步害死人呀！”
+
+    那么，如果你把关键的配置信息放到一张数据表里，然后自己提供一个类 ...
+    {{{
+    +--------+                     +------------+          +----------+
+    |  Ioc   | <<< {java:...} <<<  | Your Class |  <<<<<<  | Database |
+    +--------+                     +------------+          +----------+
+    }}}
+    你只需要修改数据表，然后重启各个应用 ......
+
+    根据这个思路，你可以将你的关键配置信息汇集在:
+     * 数据表里
+     * YAML 或者其它什么运维人员喜欢的格式上
+     * 电子表格中
+    写一个解析类动态读取，于是，整个世界就会安静了 ...
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+

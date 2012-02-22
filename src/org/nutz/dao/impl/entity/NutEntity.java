@@ -119,6 +119,26 @@ public class NutEntity<T> implements Entity<T> {
 	private EntityName tableName;
 
 	/**
+	 * 实体表注释
+	 */
+	private String tableComment;
+
+	/**
+	 * 字段注释
+	 */
+	private Map<String, String> columnComments;
+
+	/**
+	 * 是否有表注释
+	 */
+	private boolean hasTableComment;
+
+	/**
+	 * 是否有字段注释
+	 */
+	private boolean hasColumnComment;
+
+	/**
 	 * 实体视图名
 	 */
 	private EntityName viewName;
@@ -143,6 +163,7 @@ public class NutEntity<T> implements Entity<T> {
 		this.indexes = new ArrayList<EntityIndex>(3);
 		this.theComposites = new ArrayList<MappingField>(3);
 		this.metas = new HashMap<String, Object>();
+		this.columnComments = new HashMap<String, String>();
 
 		this.pkType = PkType.UNKNOWN;
 
@@ -220,6 +241,7 @@ public class NutEntity<T> implements Entity<T> {
 		byJava.put(field.getName(), field);
 		byDB.put(field.getColumnName(), field);
 		fields.add(field);
+		columnComments.put(field.getName(), field.getColumnComment());
 	}
 
 	/**
@@ -273,6 +295,18 @@ public class NutEntity<T> implements Entity<T> {
 
 	public void setTableName(String namep) {
 		this.tableName = EntityName.create(namep);
+	}
+
+	public void setTableComment(String tComment) {
+		this.tableComment = tComment;
+	}
+
+	public void setHasTableComment(boolean hasTableComment) {
+		this.hasTableComment = hasTableComment;
+	}
+
+	public void setHasColumnComment(boolean hasColumnComment) {
+		this.hasColumnComment = hasColumnComment;
 	}
 
 	public void setBeforeInsertMacroes(List<Pojo> beforeInsertMacroes) {
@@ -406,4 +440,19 @@ public class NutEntity<T> implements Entity<T> {
 		return String.format("Entity<%s:%s>", getType().getName(), getTableName());
 	}
 
+	public boolean hasTableComment() {
+		return hasTableComment;
+	}
+
+	public String getTableComment() {
+		return tableComment;
+	}
+
+	public boolean hasColumnComment() {
+		return hasColumnComment;
+	}
+
+	public String getColumnComent(String columnName) {
+		return columnComments.get(columnName);
+	}
 }

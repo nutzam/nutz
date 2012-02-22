@@ -7,16 +7,16 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -44,7 +44,6 @@ public abstract class Sockets {
 			OutputStream sOut = socket.getOutputStream();
 			Streams.write(sOut, ins);
 			sOut.flush();
-			sOut.close();
 
 			// 接收服务器的反馈
 			if (!socket.isClosed()) {
@@ -151,7 +150,7 @@ public abstract class Sockets {
 																		.availableProcessors()
 																	* poolSize));
 	}
-	
+
 	/**
 	 * 监听本地某一个端口，根据用户输入的命令的不同，执行不同的操作
 	 * <p>
@@ -168,7 +167,7 @@ public abstract class Sockets {
 	public static void localListenByLine(	int port,
 											Map<String, SocketAction> actions,
 											ExecutorService service) {
-		localListen(port, actions, service, SocketMain.class);
+		localListen(port, actions, service, SocketAtom.class);
 	}
 
 	/**
@@ -184,11 +183,11 @@ public abstract class Sockets {
 	 * @param service
 	 *            线程池的实现类
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings("rawtypes")
 	public static void localListen(	int port,
-											Map<String, SocketAction> actions,
-											ExecutorService service,
-											Class<? extends SocketMain> klass) {
+									Map<String, SocketAction> actions,
+									ExecutorService service,
+									Class<? extends SocketAtom> klass) {
 		try {
 			// 建立动作映射表
 			SocketActionTable saTable = new SocketActionTable(actions);
@@ -205,90 +204,82 @@ public abstract class Sockets {
 			if (log.isInfoEnabled())
 				log.infof("Local socket is up at :%d with %d action ready", port, actions.size());
 
-			// 循环监听的主程序
-			final SocketLock lock = new SocketLock();
-			ExecutorService execs = Executors.newCachedThreadPool();
-			SocketMain main = null;
-			Mirror mirror = Mirror.me(klass);
-			Borning<SocketMain> borning = null;
-			List<SocketAtom> atoms = new LinkedList<SocketAtom>();
-			while (!lock.isStop()) {
-				if (log.isDebugEnabled())
-					log.debug("create new main thread to wait...");
-				if(borning == null)
-					borning = mirror.getBorning(atoms, lock, server, service, saTable);
-				main = borning.born(new Object[]{atoms, lock, server, service, saTable});
-
-				if (log.isDebugEnabled())
-					log.debug("Ready for listen");
-
-				execs.execute(main);
-
-				if (log.isDebugEnabled())
-					log.debug("wait for accept ...");
-
-				// 如果没有接受套接字，那么自旋判断是不是有一个连接提示要关闭整个监听
-				while ((!main.isAccepted())) {
-					// System.out.print(".");
-					// if(++i%80==0)
-					// System.out.println();
-					if (log.isDebugEnabled())
-						log.debug("wait lock ...");
-
-					synchronized (lock) {
+			final Context context = Lang.context();
+			context.set("stop", false);
+			/*
+			 * 启动一个守护线程，判断是否该关闭 socket 服务
+			 */
+			(new Thread() {
+				@Override
+				public void run() {
+					setName("Nutz.Sockets monitor thread");
+					while (true) {
 						try {
-							lock.wait();
+							Thread.sleep(1000);
+							if (context.getBoolean("stop")) {
+								try {
+									server.close();
+								}
+								catch (Throwable e) {}
+								return;
+							}
 						}
-						catch (InterruptedException e) {
-							throw Lang.wrapThrow(e);
-						}
+						catch (Throwable e) {}
 					}
-
-					if (log.isDebugEnabled())
-						log.debugf(	"check main accept [%s], lock stop [%s]",
-									main.isAccepted(),
-									lock.isStop());
-
-					if (lock.isStop())
-						break;
 				}
-
-				if (log.isDebugEnabled())
-					log.debug("Created a socket");
-
+			}).start();
+			/*
+			 * 准备 SocketAtom 的生成器
+			 */
+			Borning borning = Mirror.me(klass).getBorningByArgTypes(Context.class,
+																	Socket.class,
+																	SocketActionTable.class);
+			if (borning == null) {
+				log.error("boring == null !!!!");
+				return;
 			}
-
-			// 关闭所有的监听，退出程序
-			if (null != main && !main.isAccepted()) {
-				if (log.isInfoEnabled())
-					log.info("Notify waiting threads...");
-
+			/*
+			 * 进入监听循环
+			 */
+			while (!context.getBoolean("stop")) {
 				try {
-					Socket ss = new Socket("127.0.0.1", port);
-					OutputStream sOut = ss.getOutputStream();
-					sOut.write("V~~".getBytes());
-					sOut.flush();
-					sOut.close();
-					ss.close();
+					if (log.isDebugEnabled())
+						log.debug("Waiting for new socket");
+					Socket socket = server.accept();
+					if (context.getBoolean("stop")) {
+						Sockets.safeClose(socket);
+						break;// 监护线程也许还是睡觉,还没来得及关掉哦,所以自己检查一下
+					}
+					if (log.isDebugEnabled())
+						log.debug("accept a new socket, create new SocketAtom to handle it ...");
+					Runnable runnable = (Runnable) borning.born(new Object[]{	context,
+																				socket,
+																				saTable});
+					service.execute(runnable);
 				}
-				catch (Exception e) {}
+				catch (Throwable e) {
+					log.info("Throwable catched!! maybe ask to exit", e);
+				}
 			}
 
-			if (log.isInfoEnabled())
-				log.info("Stop connected threads...");
+			if (!server.isClosed()) {
+				try {
+					server.close();
+				}
+				catch (Throwable e) {}
+			}
 
-			while (!execs.isTerminated())
-				execs.shutdown();
-
-			if (log.isInfoEnabled())
-				log.info("Close all sockets..");
+			log.info("Seem stop signal was got, wait 15 for all running thread");
 
 			try {
-				for (SocketAtom atom : atoms)
-					Sockets.safeClose(atom.getSocket());
+				service.shutdown();
+				service.awaitTermination(15, TimeUnit.SECONDS);
 			}
-			catch (Exception e) {}
-
+			catch (InterruptedException e) {}
+			try {
+				service.shutdownNow();
+			}
+			catch (Throwable e2) {}
 		}
 		catch (RuntimeException e) {
 			throw e;
@@ -304,8 +295,6 @@ public abstract class Sockets {
 
 	}
 
-	
-	
 	/**
 	 * 安全关闭套接层，容忍 null
 	 * 

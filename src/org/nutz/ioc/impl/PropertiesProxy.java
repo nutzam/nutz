@@ -80,10 +80,23 @@ public class PropertiesProxy {
 
 	public int getInt(String key, int defaultValue) {
 		try {
-			return Integer.parseInt(key);
+			return Integer.parseInt(get(key));
 		}
 		catch (NumberFormatException e) {
 			return defaultValue;
+		}
+	}
+
+	public long getLong(String key) {
+		return getLong(key, -1);
+	}
+
+	public long getLong(String key, long dfval) {
+		try {
+			return Long.parseLong(get(key));
+		}
+		catch (NumberFormatException e) {
+			return dfval;
 		}
 	}
 

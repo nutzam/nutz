@@ -13,7 +13,7 @@ import org.nutz.el.opt.TwoTernary;
  */
 public class CommaOpt extends TwoTernary {
 	public int fetchPriority() {
-		return 0;
+		return 99;
 	}
 
 	@SuppressWarnings("unchecked")

@@ -38,6 +38,14 @@ public class LangTest {
 	}
 
 	@Test
+	public void test_map_to_obj() {
+		Map<String, Object> map = Lang.map("{name:'aa', t1: {name:'bb'}}");
+		ObjT0 t0 = Lang.map2Object(map, ObjT0.class);
+		assertEquals("aa", t0.getName());
+		assertEquals("bb", t0.getT1().getName());
+	}
+
+	@Test
 	public void test_equals_simple() {
 		assertTrue(Lang.equals(null, null));
 		assertTrue(Lang.equals("abc", "abc"));
@@ -267,12 +275,12 @@ public class LangTest {
 		int[] is = {'a', 'b', 'c', 150};
 		assertArrayEquals(new byte[]{97, 98, 99, -106}, Lang.toBytes(is));
 	}
-	
+
 	@Test
 	public void test_str2number() {
-		Long re = (Long) Lang.str2number(""+Long.MAX_VALUE);
+		Long re = (Long) Lang.str2number("" + Long.MAX_VALUE);
 		assertEquals(Long.MAX_VALUE, re.longValue());
-		assertEquals(Integer.MAX_VALUE, Lang.str2number(""+Integer.MAX_VALUE));
+		assertEquals(Integer.MAX_VALUE, Lang.str2number("" + Integer.MAX_VALUE));
 		assertEquals(0, Lang.str2number("0"));
 		assertEquals(0.1, Lang.str2number("0.1"));
 		assertEquals(0.1, Lang.str2number("0.1d"));

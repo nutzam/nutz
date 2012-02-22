@@ -110,4 +110,30 @@ public class LocalResourceScan extends AbstractResourceScan {
 		// 返回资源列表
 		return list;
 	}
+
+	/**
+	 * 用于Scans.java中,在jar包里面搜索对应的模块
+	 * 
+	 * @param src
+	 * @param regex
+	 * @param jarPath
+	 * @return
+	 * @see org.nutz.resource.impl.AbstractResourceScan#scanInJar(java.lang.String,
+	 *      java.util.regex.Pattern, java.lang.String)
+	 */
+	public List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
+		return super.scanInJar(src, regex, jarPath);
+	}
+
+	/**
+	 * @param regex
+	 * @param f
+	 * @return
+	 * @author replaceToYouName at 2012-1-12 上午9:15:02
+	 */
+	public List<NutResource> scanInDir(final Pattern regex, File f) {
+		final boolean ignoreHidden = true;
+		return super.scanInDir(regex, f, ignoreHidden);
+
+	}
 }

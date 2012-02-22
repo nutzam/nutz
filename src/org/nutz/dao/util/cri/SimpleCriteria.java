@@ -4,6 +4,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
@@ -13,6 +14,8 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
 	private SqlExpressionGroup where;
 
 	private OrderBySet orderBy;
+
+	private Pager pager;
 
 	public SimpleCriteria() {
 		where = new SqlExpressionGroup();
@@ -28,6 +31,20 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
 	public void setPojo(Pojo pojo) {
 		where.setPojo(pojo);
 		orderBy.setPojo(pojo);
+	}
+
+	public void setPager(int pageNumber, int pageSize) {
+		pager = new Pager();
+		pager.setPageNumber(pageNumber);
+		pager.setPageSize(pageSize);
+	}
+
+	public void setPager(Pager pager) {
+		this.pager = pager;
+	}
+
+	public Pager getPager() {
+		return pager;
 	}
 
 	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {

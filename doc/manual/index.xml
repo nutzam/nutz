@@ -49,6 +49,7 @@
 		<doc path="loader_combo.man"/>
 		<doc path="aop_json.man"/>
 		<doc path="ioc_annos.man"/>
+		<doc path="ioc_properties.man"/>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
@@ -97,6 +98,8 @@
 		<doc path="ant_task.man"/>
 	</doc-->
 	<doc path="history" title="版本历史">
+		<doc path="1_b_42.man"/>
+		<doc path="1_b_41.man"/>
 		<doc path="1_b_40.man"/>
 		<doc path="1_b_39.man"/>
 		<doc path="1_b_38.man"/>

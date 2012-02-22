@@ -24,4 +24,8 @@ public class NutMessageMap extends HashMap<String, Object> {
 		return obj.toString();
 	}
 
+	public Object getObject(String key) {
+		return super.get(key);
+	}
+
 }

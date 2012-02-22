@@ -1,0 +1,32 @@
+package org.nutz.lang;
+
+import java.io.File;
+
+import org.junit.Test;
+import org.nutz.lang.Code.CodeAnalysisResult;
+
+/**
+ * 测试下
+ */
+public class CodeTest {
+
+	// 路径
+	private static String path;
+
+	// 获得当前路径
+	static {
+		path = CodeTest.class.getResource("").getPath();
+	}
+
+	@Test
+	public void analysisAFile() throws Exception {
+		File file = new File(path + "CodeAnalysisDemo1.ca");
+		CodeAnalysisResult analysisResult = Code.countingCode(file, null);
+	}
+
+	@Test
+	public void analysisAFolder() throws Exception {
+
+	}
+
+}

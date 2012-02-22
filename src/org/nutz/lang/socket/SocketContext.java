@@ -6,8 +6,9 @@ import java.io.OutputStream;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.SimpleContext;
 
-public class SocketContext {
+public class SocketContext extends SimpleContext {
 
 	private SocketAtom atom;
 

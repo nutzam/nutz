@@ -1,6 +1,9 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -8,8 +11,8 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.nutz.dao.Chain;
 import org.nutz.castor.Castors;
+import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.DaoException;
@@ -192,9 +195,10 @@ public class SimpleDaoTest extends DaoCase {
 		assertEquals(5, dao.count(Pet.class));
 		assertEquals(5, dao.clear(Pet.class));
 	}
-	
+
 	@Test
 	public void test_chain_insert() {
 		dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
 	}
+
 }

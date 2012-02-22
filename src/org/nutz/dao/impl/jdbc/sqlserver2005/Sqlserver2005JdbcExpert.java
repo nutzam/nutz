@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.sqlserver2005;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -13,6 +14,7 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 
 /**
@@ -20,6 +22,11 @@ import org.nutz.dao.util.Pojos;
  * @author wendal
  */
 public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
+
+	// private static String COMMENT_TABLE =
+	// "EXECUTE sp_updateextendedproperty N'Description', '$tableComment', N'user', N'dbo', N'table', N'$table', NULL, NULL";
+
+	private static String COMMENT_COLUMN = "EXECUTE sp_addextendedproperty N'Description', '$columnComment', N'user', N'dbo', N'table', N'$table', N'column', N'$column'";
 
 	public Sqlserver2005JdbcExpert(JdbcExpertConfigFile conf) {
 		super(conf);
@@ -63,18 +70,40 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 			sb.setCharAt(sb.length() - 1, ')');
 			sb.append("\n ");
 		}
-		// 创建索引
-		// TODO ...
 
 		// 结束表字段设置
 		sb.setCharAt(sb.length() - 1, ')');
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
+		// 创建索引
+		dao.execute(createIndexs(en).toArray(new Sql[0]));
 		// 创建关联表
 		createRelation(dao, en);
+		// 添加注释(表注释与字段注释)
+		addComment(dao, en, COMMENT_COLUMN);
 
 		return true;
+	}
+
+	private void addComment(Dao dao, Entity<?> en, String commentColumn) {
+		// TODO 表注释 SQLServer2005中貌似不行
+		// 字段注释
+		if (en.hasColumnComment()) {
+			List<Sql> sqls = new ArrayList<Sql>();
+			for (MappingField mf : en.getMappingFields()) {
+				if (mf.hasColumnComment()) {
+					Sql columnCommentSQL = Sqls.create(commentColumn);
+					columnCommentSQL.vars()
+									.set("table", en.getTableName())
+									.set("column", mf.getColumnName())
+									.set("columnComment", mf.getColumnComment());
+					sqls.add(columnCommentSQL);
+				}
+			}
+			// 执行创建语句
+			dao.execute(sqls.toArray(new Sql[sqls.size()]));
+		}
 	}
 
 	@Override

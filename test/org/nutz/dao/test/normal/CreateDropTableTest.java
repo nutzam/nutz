@@ -17,7 +17,7 @@ public class CreateDropTableTest extends DaoCase {
 	private static String DESC_TABLE_SQL = "select column_name, is_nullable, column_default, extra from information_schema.`columns` where table_name = @tableName";
 
 	@Test
-	public void mysqlCreateTableTimestampFieldDefaultNull() throws Exception {
+	public void createTableTimestampFieldDefaultNullInMySQL() throws Exception {
 		boolean isMySql = dao.meta().isMySql();
 		// 这个仅仅测试MySQL数据库
 		if (isMySql) {

@@ -1,27 +1,21 @@
 package org.nutz.castor.castor;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 
-import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 
 public class String2Datetime extends DateTimeCastor<String, java.util.Date> {
 
 	@Override
 	public java.util.Date cast(String src, Class<?> toType, String... args) {
-	    if(src == null || "".equals(src)){
-	        return null;
-	    }
+		if (Strings.isBlank(src))
+			return null;
 		try {
-			return ((DateFormat) dateTimeFormat.clone()).parse(src);
+			return Times.parse(dateTimeFormat, src);
 		}
 		catch (ParseException e1) {
-			try {
-				return ((DateFormat) dateFormat.clone()).parse(src);
-			}
-			catch (ParseException e) {
-				throw Lang.wrapThrow(e);
-			}
+			return Times.parseWithoutException(dateFormat, src);
 		}
 	}
 

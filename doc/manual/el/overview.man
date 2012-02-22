@@ -135,9 +135,11 @@
 
 ------------------------------------------------------------------------
 自定义函数
+
 	好吧, 你肯定要说上面的功能简直弱爆了, 就一点简单的加加减减有什么好稀奇的, 
 	再强点的需求就没办法满足了.
-	确实是这样, 所以, 我们在 EL 里面添加了自定义函数, 嘿嘿, 这回强了吧. 言归正传,下面详细的说说它的使用, 以及怎么自定义.
+	确实是这样, 所以, 我们在 EL 里面添加了自定义函数, 
+    嘿嘿, 这回强了吧. 言归正传,下面详细的说说它的使用, 以及怎么自定义.
 	
 	现有的自定义函数:
 	|| 名称 || 参数           || 解释                 || 例子                 ||
@@ -146,57 +148,72 @@
 	|| trim || 一个String     || 去掉字符串两边的空格 || trim("   1  ")=> "1" ||
 	
 	使用很简单吧.
-	自定义:
+
 	当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? 
-	1. 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
-	2. 在配置文件中添加一个配置项:
-		{
-			"EL": {"custom":[...函数列表...]}
-		}
-	3. 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
-		NutConfig.load("配置文件");
-		
-	完成这两步后, 你就定义了你自己的函数. 看个trim的例子:
-	{{{<JAVA>
-	public class Trim implements RunMethod, Plugin{
-		//处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
-		public Object run(List<Object> fetchParam) {
-			if(fetchParam.size() <= 0){
-				throw new ElException("trim方法参数错误");
-			}
-			String obj = (String) fetchParam.get(0);
-			return obj.trim();
-		}
-		//是否可以执行
-		public boolean canWork() {
-			return true;
-		}
-		//在EL表达式中的函数名
-		public String fetchSelf() {
-			return "trim";
-		}
-	}
-	}}}
+    {{{
+    # 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
+    # 在配置文件中添加一个配置项:
+    {
+    "EL": {"custom":[...函数列表...]}
+    }
+    # 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
+    NutConfig.load("配置文件");
+    }}}
+
+    完成这两步后, 你就定义了你自己的函数. 看个trim的例子:
+    {{{<JAVA>
+    public class Trim implements RunMethod, Plugin{
+        //处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
+        public Object run(List<Object> fetchParam) {
+            if(fetchParam.size() <= 0){
+            throw new ElException("trim方法参数错误");
+            }
+            String obj = (String) fetchParam.get(0);
+            return obj.trim();
+        }
+        //是否可以执行
+        public boolean canWork() {
+            return true;
+        }
+        //在EL表达式中的函数名
+        public String fetchSelf() {
+            return "trim";
+        }
+    }
+    }}}
+
 ------------------------------------------------------------------------
 还有些什么功能?
+    
 	其实我们的 EL 很强悍的, 有好多功能, 好多使用技巧等待着你的发现. 现在简单的罗列一下, EL中的一些特性吧. 
-	1.  Nutz中的 EL 完全忠实于 JAVA 基本运算规则, 并没有做一些扩展, 比如最常见的, 数据类型转换,
-	    在 JAVA 中进行数值运算的过程中, 是根据运算符两边的类型而最终决定运算结果的类型的, 
-		比如: 7/3 将返回int型, 而 (1.0 * 7)/3 返回double, (1.0f * 7)/3 则返回float. 为什么后面两个返回类型不一样呢?
-		因为在 JAVA 中默认浮点类型是 double 哦.
-		基于这个原因, 在 EL 中同样保留了这些特点. 所以, 亲, 要是没返回 double 别骂我们哦~~~
-	
-	2. 亲, EL 支持对象, 支持对象方法调用哦~~~
-	   这有什么好大不了的? 给你看个例子, 嘿嘿:
-	   {{{<JAVA>
-		Context context = Lang.context();
-	    context.set("a", new BigDecimal("7"));
-	    context.set("b", new BigDecimal("3"));
-	    assertEquals(10, El.eval(context, "a.add(b).intValue()"));
-	   }}}
-	   看到什么没? 对了, BigDecimal 你完全可以丢各种各样的对象到 context 里面去, 然后在 EL 中调用它们的方法. 
-	   然后你就进行各种各样的虐待, 皮鞭, 蜡烛, 想来啥来啥...额...太邪恶了...
-	   同样, EL 是使用反射的, 所以会存在一些底层异常的问题. 
+    
+    忠于 Java 
+        Nutz中的 EL 完全忠实于 JAVA 基本运算规则, 并没有做一些扩展, 比如最常见的, 数据类型转换,
+        在 JAVA 中进行数值运算的过程中, 是根据运算符两边的类型而最终决定运算结果的类型的, 
+        比如: 
+        {{{
+        7/3  // 将返回int型
+        而 
+        (1.0 * 7)/3    // 返回double
+        (1.0f * 7)/3   // 则返回float
+        }}}
+        为什么后面两个返回类型不一样呢?  因为在 JAVA 中默认浮点类型是 double 哦.
+
+        基于这个原因, 在 EL 中同样保留了这些特点. 所以, 亲, 要是没返回 double 别骂我们哦~~~
+
+    支持对象方法调用
+        亲, EL 支持对象, 支持对象方法调用哦~~~
+
+        这有什么好大不了的? 给你看个例子, 嘿嘿:
+        {{{<JAVA>
+        Context context = Lang.context();
+        context.set("a", new BigDecimal("7"));
+        context.set("b", new BigDecimal("3"));
+        assertEquals(10, El.eval(context, "a.add(b).intValue()"));
+        }}}
+         * 看到什么没? 对了, BigDecimal 你完全可以丢各种各样的对象到 context 里面去, 然后在 EL 中调用它们的方法. 
+         * 然后你就进行各种各样的虐待, 皮鞭, 蜡烛, 想来啥来啥...额...太邪恶了...
+         * 同样, EL 是使用反射的, 所以会存在一些底层异常的问题. 
 	   
 ------------------------------------------------------------------------
 一些表达式的例子

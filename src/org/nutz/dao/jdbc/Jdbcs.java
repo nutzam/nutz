@@ -35,8 +35,7 @@ import org.nutz.log.Logs;
 /**
  * 提供一些与 JDBC 有关的帮助函数
  * 
- * @author zozoh(zozohtnt@gmail.com)
- * TODO 合并到NutConfig
+ * @author zozoh(zozohtnt@gmail.com) TODO 合并到NutConfig
  */
 public abstract class Jdbcs {
 
@@ -213,6 +212,10 @@ public abstract class Jdbcs {
 		// Clob
 		if (mirror.isOf(Clob.class))
 			return new ClobValueAdaptor(conf.getPool());
+		// byte[]
+		if (mirror.getType().isArray() && mirror.getType().getComponentType() == byte.class) {
+			return Jdbcs.Adaptor.asBytes;
+		}
 
 		// 默认情况
 		return Jdbcs.Adaptor.asString;
@@ -644,6 +647,25 @@ public abstract class Jdbcs {
 					stat.setString(i, v);
 				}
 			}
+		};
+
+		/**
+		 * 字节数组适配器
+		 */
+		public static final ValueAdaptor asBytes = new ValueAdaptor() {
+
+			public Object get(ResultSet rs, String colName) throws SQLException {
+				return rs.getBytes(colName);
+			}
+
+			public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
+				if (null == obj) {
+					stat.setNull(index, Types.BINARY);
+				} else {
+					stat.setBytes(index, (byte[]) obj);
+				}
+			}
+
 		};
 	}
 

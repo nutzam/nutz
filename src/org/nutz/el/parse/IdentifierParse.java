@@ -28,7 +28,7 @@ public class IdentifierParse implements Parse{
 			}
 			return new IdentifierObj(sb.toString());
 		}
-		return null;
+		return nullobj;
 	}
 
 }

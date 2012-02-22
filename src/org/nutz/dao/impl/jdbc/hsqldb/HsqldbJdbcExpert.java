@@ -69,13 +69,14 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 
 		// 执行创建语句
 		dao.execute(Sqls.create(sb.toString()));
-		
-		
+
 		// 创建索引
 		dao.execute(createIndexs(en).toArray(new Sql[0]));
-		
+
 		// 创建关联表
 		createRelation(dao, en);
+		// 添加注释(表注释与字段注释)
+		addComment(dao, en);
 
 		return true;
 	}

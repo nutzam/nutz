@@ -181,8 +181,6 @@ public class NutDaoExecutor implements DaoExecutor {
 			}
 			// 恩，批
 			else {
-				boolean oldAutoCommit = conn.getAutoCommit();
-				conn.setAutoCommit(false);
 				for (Object[] params : paramMatrix) {
 					for (int i = 0; i < params.length; i++) {
 						adaptors[i].set(pstat, params[i], i + 1);
@@ -193,8 +191,6 @@ public class NutDaoExecutor implements DaoExecutor {
 
 				pstat.close();
 				statIsClosed = true;
-				conn.commit();
-				conn.setAutoCommit(oldAutoCommit);
 
 				// 计算总共影响的行数
 				int sum = 0;

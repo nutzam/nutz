@@ -117,6 +117,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 		// 创建关联表
 		createRelation(dao, en);
+		// 添加注释(表注释与字段注释)
+		addComment(dao, en);
 
 		return true;
 	}

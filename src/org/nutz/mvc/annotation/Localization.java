@@ -25,4 +25,5 @@ public @interface Localization {
 
 	String value();
 
+	String defaultLang() default "";
 }

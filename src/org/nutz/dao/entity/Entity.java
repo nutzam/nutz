@@ -240,4 +240,28 @@ public interface Entity<T> {
 	 */
 	Map<String, Object> getMetas();
 
+	/**
+	 * @return 表是否有注释
+	 */
+	boolean hasTableComment();
+
+	/**
+	 * @return 字段是否注释
+	 */
+	boolean hasColumnComment();
+
+	/**
+	 * @return 表注释
+	 */
+	String getTableComment();
+
+	/**
+	 * 根据字段名获得注释
+	 * 
+	 * @param columnName
+	 *            字段名称
+	 * @return 注释
+	 */
+	String getColumnComent(String columnName);
+
 }

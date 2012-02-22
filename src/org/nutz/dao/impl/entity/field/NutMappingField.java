@@ -1,7 +1,6 @@
 package org.nutz.dao.impl.entity.field;
 
 import java.sql.ResultSet;
-
 import java.sql.SQLException;
 
 import org.nutz.dao.entity.Entity;
@@ -18,6 +17,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private ColType columnType;
 
 	private Segment defaultValue;
+
+	private String columnComment;
 
 	private int width;
 
@@ -38,6 +39,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean autoIncreasement;
 
 	private boolean casesensitive;
+
+	private boolean hasColumnComment;
 
 	private ValueAdaptor adaptor;
 
@@ -136,6 +139,14 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.columnType = columnType;
 	}
 
+	public void setColumnComment(String columnComment) {
+		this.columnComment = columnComment;
+	}
+
+	public void setHasColumnComment(boolean hasColumnComment) {
+		this.hasColumnComment = hasColumnComment;
+	}
+
 	public void setDefaultValue(Segment defaultValue) {
 		this.defaultValue = defaultValue;
 	}
@@ -178,6 +189,14 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 
 	public void setAsAutoIncreasement() {
 		this.autoIncreasement = true;
+	}
+
+	public String getColumnComment() {
+		return columnComment;
+	}
+
+	public boolean hasColumnComment() {
+		return hasColumnComment;
 	}
 
 }
