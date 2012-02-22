@@ -9,8 +9,36 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.junit.Test;
+import org.nutz.lang.util.Disks;
 
 public class FilesTest {
+
+	@Test
+	public void test_relative_path() {
+		File d1 = new File(Disks.normalize("~/a/b"));
+		File d2 = new File(Disks.normalize("~/a/c"));
+
+		String path = Disks.getRelativePath(d1, d2);
+		assertEquals("../c", path);
+
+		d1 = new File(Disks.normalize("~/a/b"));
+		d2 = new File(Disks.normalize("~/a/b"));
+
+		path = Disks.getRelativePath(d1, d2);
+		assertEquals("./", path);
+		
+		d1 = new File(Disks.normalize("~/a/b"));
+		d2 = new File(Disks.normalize("~/a/b/d"));
+
+		path = Disks.getRelativePath(d1, d2);
+		assertEquals("d", path);
+		
+		d1 = new File(Disks.normalize("~/a/c"));
+		d2 = new File(Disks.normalize("~/a/b/d"));
+
+		path = Disks.getRelativePath(d1, d2);
+		assertEquals("../b/d", path);
+	}
 
 	@Test
 	public void test_get_major_name() {
@@ -72,10 +100,10 @@ public class FilesTest {
 
 	@Test
 	public void test_get_suffix_name() {
-        assertEquals(null, Files.getSuffixName((String)null));
-        assertEquals("", Files.getSuffixName(""));
-        assertEquals("", Files.getSuffixName("abc."));
-        assertEquals("txt", Files.getSuffixName("abc.txt"));
-        assertEquals("txt", Files.getSuffixName("abc.bcd.txt"));
+		assertEquals(null, Files.getSuffixName((String) null));
+		assertEquals("", Files.getSuffixName(""));
+		assertEquals("", Files.getSuffixName("abc."));
+		assertEquals("txt", Files.getSuffixName("abc.txt"));
+		assertEquals("txt", Files.getSuffixName("abc.bcd.txt"));
 	}
 }

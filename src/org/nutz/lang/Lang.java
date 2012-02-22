@@ -26,9 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.nutz.castor.Castors;
@@ -1449,7 +1447,7 @@ public abstract class Lang {
 	 * @throws ParserConfigurationException
 	 */
 	public static DocumentBuilder xmls() throws ParserConfigurationException {
-		return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		return Xmls.xmls();
 	}
 
 	/**

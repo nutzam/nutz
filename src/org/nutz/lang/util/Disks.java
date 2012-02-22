@@ -74,7 +74,11 @@ public abstract class Disks {
 		for (; pos < len; pos++)
 			if (!bb[pos].equals(ff[pos]))
 				break;
-		StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - 1 - pos));
+
+		if (len == pos && bb.length == ff.length)
+			return "./";
+
+		StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - pos));
 		return sb.append(Lang.concat(pos, ff.length - pos, '/', ff)).toString();
 	}
 
@@ -156,8 +160,8 @@ public abstract class Disks {
 					url = Thread.currentThread().getContextClassLoader().getResource(path);
 				if (null == url)
 					url = ClassLoader.getSystemResource(path);
-			} catch (Throwable e) {
 			}
+			catch (Throwable e) {}
 			if (null != url)
 				return normalize(url.getPath(), Encoding.UTF8);// 通过URL获取String,一律使用UTF-8编码进行解码
 			return null;

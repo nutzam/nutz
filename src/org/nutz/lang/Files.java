@@ -637,6 +637,26 @@ public abstract class Files {
 	}
 
 	/**
+	 * 自动决定是 copy 文件还是目录
+	 * 
+	 * @param src
+	 *            源
+	 * @param target
+	 *            目标
+	 * @return 是否 copy 成功
+	 */
+	public static boolean copy(File src, File target) {
+		try {
+			if (src.isDirectory())
+				return copyDir(src, target);
+			return copyFile(src, target);
+		}
+		catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+
+	/**
 	 * 拷贝一个目录
 	 * 
 	 * @param src
