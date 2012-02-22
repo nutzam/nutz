@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Stack;
 import java.util.regex.Pattern;
 
 import org.nutz.json.entity.JsonEntity;
@@ -28,9 +29,12 @@ import org.nutz.lang.Strings;
  * 
  */
 public class JsonRendering {
+    public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
 	private static String NL = "\n";
 
 	private HashMap<Object, Object> memo;
+	
+	private Stack<String> path = new Stack<String>();
 
 	private Writer writer;
 
@@ -40,6 +44,7 @@ public class JsonRendering {
 		// TODO make a new faster collection
 		// implementation
 		memo = new HashMap<Object, Object>();
+//		path.push("root");
 	}
 
 	private JsonFormat format;
@@ -70,6 +75,7 @@ public class JsonRendering {
 		appendPairBegin();
 		appendName(name);
 		appendPairSep();
+		path.push(name);
 		render(value);
 	}
 
@@ -260,9 +266,10 @@ public class JsonRendering {
 			} else if (mr.isDateTimeLike()) {
 				string2Json(format.getCastors().castToString(obj));
 			} else if (memo.containsKey(obj)) {
-				writer.append("null");
+			    //转换成EL表达式
+//				writer.append("${"+memo.get(obj)+"}");
+				writer.append("\"" + RECURSION_QUOTED_PREFIX + memo.get(obj)+"\"");
 			} else {
-				memo.put(obj, null);
 				if (obj instanceof Map)
 					map2Json((Map) obj);
 				else if (obj instanceof Collection)
@@ -270,11 +277,14 @@ public class JsonRendering {
 				else if (obj.getClass().isArray())
 					array2Json(obj);
 				else {
+				    memo.put(obj, fetchPath());
 					pojo2Json(obj);
 				}
-				memo.remove(obj);
+//				memo.remove(obj);
 			}
 		}
+		if(path.size() > 0)
+		    path.pop();
 	}
 
 	private void array2Json(Object obj) throws IOException {
@@ -283,9 +293,11 @@ public class JsonRendering {
 		if (len > -1) {
 			int i;
 			for (i = 0; i < len; i++) {
+			    path.push("["+i+"]");
 				render(Array.get(obj, i));
 				writer.append(',').append(' ');
 			}
+			path.push("["+i+"]");
 			render(Array.get(obj, i));
 		}
 		writer.append(']');
@@ -293,7 +305,9 @@ public class JsonRendering {
 
 	private void coll2Json(Collection<?> obj) throws IOException {
 		writer.append('[');
+		int i = 0;
 		for (Iterator<?> it = obj.iterator(); it.hasNext();) {
+		    path.push("["+(i ++)+"]");
 			render(it.next());
 			if (it.hasNext())
 				writer.append(',').append(' ');
@@ -301,5 +315,17 @@ public class JsonRendering {
 				break;
 		}
 		writer.append(']');
+	}
+	
+	private String fetchPath(){
+	    StringBuffer sb = new StringBuffer();
+	    sb.append("root");
+	    for(String item : path){
+	        if(item.charAt(0) != '['){
+	            sb.append(".");
+	        }
+	        sb.append(item);
+	    }
+	    return sb.toString();
 	}
 }
