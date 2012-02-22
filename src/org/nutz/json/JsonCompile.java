@@ -69,10 +69,22 @@ public class JsonCompile {
 			return list;
 		case '"':
 		case '\'':
-			return parseString(cursor);//看来是个String
+			return parseEl(parseString(cursor));//看来是个String
 		default:
 			return parseSimpleType();//其他基本数据类型
 		}
+	}
+	
+	/**
+	 * 判断字符串是否能转换成EL对象, 如果能则返回EL对象, 否则返回字符串
+	 * @param str
+	 * @return
+	 */
+	private Object parseEl(String str){
+	    if(str.startsWith(JsonRendering.RECURSION_QUOTED_PREFIX)){
+	        return new El(str.substring(JsonRendering.RECURSION_QUOTED_PREFIX.length()));
+	    }
+	    return str;
 	}
 	
 	/**
@@ -93,6 +105,7 @@ public class JsonCompile {
 		}
 		return sb.toString();
 	}
+	
 	
 	//读取转义字符
 	private void parseSp(StringBuilder sb) throws IOException {
@@ -246,17 +259,6 @@ public class JsonCompile {
 					}
 					}
 			}
-		case '$':
-		    //EL表达式
-		    if('{' == nextChar()){
-		        while(true){
-		            if(nextChar() == '}'){
-		                return new El(sb);
-		            }
-		            sb.append((char)cursor);
-		        }
-		    }
-		    throw makeError("'EL' is expected!");
 		default:
 			throw unexpectedChar();//不是数值,不是布尔值,不是null和undefined? 玩野啊? 抛异常!!
 		}

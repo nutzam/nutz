@@ -23,7 +23,7 @@ public class RecursionQuotedTest {
                 "   \"name\" :\"testa\",\n"+
                 "   \"b\" :{\n"+
                 "      \"name\" :\"testb\",\n"+
-                "      \"a\" :${root}\n"+
+                "      \"a\" :\"$nutz.json::root\"\n"+
                 "   }\n"+
                 "}";
         assertEquals(tt, Json.toJson(a));

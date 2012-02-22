@@ -29,6 +29,7 @@ import org.nutz.lang.Strings;
  * 
  */
 public class JsonRendering {
+    public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
 	private static String NL = "\n";
 
 	private HashMap<Object, Object> memo;
@@ -266,7 +267,8 @@ public class JsonRendering {
 				string2Json(format.getCastors().castToString(obj));
 			} else if (memo.containsKey(obj)) {
 			    //转换成EL表达式
-				writer.append("${"+memo.get(obj)+"}");
+//				writer.append("${"+memo.get(obj)+"}");
+				writer.append("\"" + RECURSION_QUOTED_PREFIX + memo.get(obj)+"\"");
 			} else {
 				if (obj instanceof Map)
 					map2Json((Map) obj);
