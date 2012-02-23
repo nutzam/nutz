@@ -299,6 +299,7 @@ public class JsonRendering {
 				else {
 					memo.put(obj, fetchPath());
 					pojo2Json(obj);
+					memo.remove(obj);
 				}
 				// memo.remove(obj);
 			}

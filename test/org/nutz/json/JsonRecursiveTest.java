@@ -28,6 +28,27 @@ public class JsonRecursiveTest {
 		public R recur;
 
 		public R[] parents;
+
+		public int hashCode() {
+			return id;
+		}
+	}
+
+	@Test
+	public void test_two_render() {
+		R r1 = new R(1);
+		R r2 = new R(2);
+		r1.recur = new R(80);
+		r2.recur = r1.recur;
+
+		R[] rs = Lang.array(r1, r2);
+
+		String json = Json.toJson(rs);
+
+		R[] rs2 = Json.fromJson(R[].class, json);
+		assertEquals(2, rs2.length);
+		assertEquals(80, rs2[0].recur.id);
+		assertEquals(80, rs2[1].recur.id);
 	}
 
 	@Test
