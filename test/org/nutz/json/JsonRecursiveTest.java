@@ -14,13 +14,35 @@ public class JsonRecursiveTest {
 
 		public R() {}
 
+		public R(int id) {
+			this.id = id;
+		}
+
 		public R(int id, R r) {
 			this.id = id;
 			this.recur = r;
 		}
 
 		public int id;
+
 		public R recur;
+
+		public R[] parents;
+	}
+
+	@Test
+	public void test_nutz_json_parents() {
+		R r = new R(1);
+		r.parents = Lang.array(new R(-1), new R(-2), new R(-3));
+		r.recur = r.parents[1];
+
+		String json = Json.toJson(r);
+
+		R r2 = Json.fromJson(R.class, json);
+		assertEquals(r.id, r2.id);
+		assertEquals(r.parents[0].id, r2.parents[0].id);
+		assertEquals(r.parents[1].id, r2.parents[1].id);
+		assertEquals(r.parents[2].id, r2.parents[2].id);
 	}
 
 	@Test

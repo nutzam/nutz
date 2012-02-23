@@ -3,7 +3,6 @@ package org.nutz.json;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -167,13 +166,7 @@ public class JsonRendering {
 				catch (NoSuchMethodException e) {}
 			}
 		}
-		catch (IllegalArgumentException e) {
-			throw Lang.wrapThrow(e);
-		}
-		catch (IllegalAccessException e) {
-			throw Lang.wrapThrow(e);
-		}
-		catch (InvocationTargetException e) {
+		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
 		/*
@@ -188,8 +181,23 @@ public class JsonRendering {
 			String name = jef.getName();
 			try {
 				Object value = jef.getValue(obj);
-				if (!this.isIgnore(name, value))
+				// 判断是否应该被忽略
+				if (!this.isIgnore(name, value)) {
+					// 以前曾经输出过 ...
+					if (null != value && memo.containsKey(value)) {
+						// zozoh: 如果在 format 里特别指定，要采用 nutz json 特殊兼容格式，
+						// 则记录循环引用对象的 JSON 路径
+						if (format.isNutzJson()) {
+							value = RECURSION_QUOTED_PREFIX + memo.get(obj);
+						}
+						// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
+						else {
+							value = null;
+						}
+					}
+					// 加入输出列表 ...
 					list.add(new Pair(name, value));
+				}
 			}
 			catch (FailToGetValueException e) {}
 		}
@@ -257,34 +265,37 @@ public class JsonRendering {
 			string2Json(((Mirror<?>) obj).getType().getName());
 		} else {
 			Mirror mr = Mirror.me(obj.getClass());
+			// 枚举
 			if (mr.isEnum()) {
 				string2Json(((Enum) obj).name());
-			} else if (mr.isNumber() || mr.isBoolean()) {
+			}
+			// 数字，布尔等
+			else if (mr.isNumber() || mr.isBoolean()) {
 				writer.append(obj.toString());
-			} else if (mr.isStringLike() || mr.isChar()) {
+			}
+			// 字符串
+			else if (mr.isStringLike() || mr.isChar()) {
 				string2Json(obj.toString());
-			} else if (mr.isDateTimeLike()) {
+			}
+			// 日期时间
+			else if (mr.isDateTimeLike()) {
 				string2Json(format.getCastors().castToString(obj));
-			} else if (memo.containsKey(obj)) {
-				// 转换成EL表达式
-				// writer.append("${"+memo.get(obj)+"}");
-
-				// zozoh: 如果在 format 里特别指定，要采用 nutz json 特殊兼容格式，
-				// 则记录循环引用对象的 JSON 路径
-				if (format.isNutzJson()) {
-					writer.append("\"" + RECURSION_QUOTED_PREFIX + memo.get(obj) + "\"");
-				}
-				// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-				else {
-					writer.append("null");
-				}
-			} else {
-				if (obj instanceof Map)
+			}
+			// 其他
+			else {
+				// Map
+				if (obj instanceof Map) {
 					map2Json((Map) obj);
-				else if (obj instanceof Collection)
+				}
+				// 集合
+				else if (obj instanceof Collection) {
 					coll2Json((Collection) obj);
-				else if (obj.getClass().isArray())
+				}
+				// 数组
+				else if (obj.getClass().isArray()) {
 					array2Json(obj);
+				}
+				// 普通 Java 对象
 				else {
 					memo.put(obj, fetchPath());
 					pojo2Json(obj);
