@@ -29,11 +29,11 @@ import org.nutz.lang.Strings;
  * 
  */
 public class JsonRendering {
-    public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
+	public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
 	private static String NL = "\n";
 
 	private HashMap<Object, Object> memo;
-	
+
 	private Stack<String> path = new Stack<String>();
 
 	private Writer writer;
@@ -44,7 +44,7 @@ public class JsonRendering {
 		// TODO make a new faster collection
 		// implementation
 		memo = new HashMap<Object, Object>();
-//		path.push("root");
+		// path.push("root");
 	}
 
 	private JsonFormat format;
@@ -266,9 +266,18 @@ public class JsonRendering {
 			} else if (mr.isDateTimeLike()) {
 				string2Json(format.getCastors().castToString(obj));
 			} else if (memo.containsKey(obj)) {
-			    //转换成EL表达式
-//				writer.append("${"+memo.get(obj)+"}");
-				writer.append("\"" + RECURSION_QUOTED_PREFIX + memo.get(obj)+"\"");
+				// 转换成EL表达式
+				// writer.append("${"+memo.get(obj)+"}");
+
+				// zozoh: 如果在 format 里特别指定，要采用 nutz json 特殊兼容格式，
+				// 则记录循环引用对象的 JSON 路径
+				if (format.isNutzJson()) {
+					writer.append("\"" + RECURSION_QUOTED_PREFIX + memo.get(obj) + "\"");
+				}
+				// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
+				else {
+					writer.append("null");
+				}
 			} else {
 				if (obj instanceof Map)
 					map2Json((Map) obj);
@@ -277,14 +286,14 @@ public class JsonRendering {
 				else if (obj.getClass().isArray())
 					array2Json(obj);
 				else {
-				    memo.put(obj, fetchPath());
+					memo.put(obj, fetchPath());
 					pojo2Json(obj);
 				}
-//				memo.remove(obj);
+				// memo.remove(obj);
 			}
 		}
-		if(path.size() > 0)
-		    path.pop();
+		if (path.size() > 0)
+			path.pop();
 	}
 
 	private void array2Json(Object obj) throws IOException {
@@ -293,11 +302,11 @@ public class JsonRendering {
 		if (len > -1) {
 			int i;
 			for (i = 0; i < len; i++) {
-			    path.push("["+i+"]");
+				path.push("[" + i + "]");
 				render(Array.get(obj, i));
 				writer.append(',').append(' ');
 			}
-			path.push("["+i+"]");
+			path.push("[" + i + "]");
 			render(Array.get(obj, i));
 		}
 		writer.append(']');
@@ -307,7 +316,7 @@ public class JsonRendering {
 		writer.append('[');
 		int i = 0;
 		for (Iterator<?> it = obj.iterator(); it.hasNext();) {
-		    path.push("["+(i ++)+"]");
+			path.push("[" + (i++) + "]");
 			render(it.next());
 			if (it.hasNext())
 				writer.append(',').append(' ');
@@ -316,16 +325,16 @@ public class JsonRendering {
 		}
 		writer.append(']');
 	}
-	
-	private String fetchPath(){
-	    StringBuffer sb = new StringBuffer();
-	    sb.append("root");
-	    for(String item : path){
-	        if(item.charAt(0) != '['){
-	            sb.append(".");
-	        }
-	        sb.append(item);
-	    }
-	    return sb.toString();
+
+	private String fetchPath() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("root");
+		for (String item : path) {
+			if (item.charAt(0) != '[') {
+				sb.append(".");
+			}
+			sb.append(item);
+		}
+		return sb.toString();
 	}
 }

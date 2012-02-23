@@ -24,6 +24,20 @@ public class JsonRecursiveTest {
 	}
 
 	@Test
+	public void test_nutz_json_recur() {
+		R r = new R(1, null);
+		r.recur = r;
+
+		String json = Json.toJson(r);
+		R r2 = Json.fromJson(R.class, json);
+		assertNull(r2.recur);
+
+		json = Json.toJson(r, JsonFormat.compact().setNutzJson(true));
+		r2 = Json.fromJson(R.class, json);
+		assertTrue(r2 == r2.recur);
+	}
+
+	@Test
 	public void testSimpleRecur() {
 		R r1 = new R(1, null);
 		R r2 = new R(2, r1);

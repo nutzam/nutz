@@ -6,9 +6,10 @@ import org.nutz.castor.Castors;
 
 /**
  * 描述Json输出的格式
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
- *
+ * 
  */
 public class JsonFormat {
 
@@ -83,6 +84,20 @@ public class JsonFormat {
 	 * 是否自动将值应用Unicode编码
 	 */
 	private boolean autoUnicode;
+
+	/**
+	 * 采用 Nutz JSON 特殊兼容模式，这样，循环引用的字段，会标记成特殊字符串表一个路径
+	 */
+	private boolean nutzJson;
+
+	public boolean isNutzJson() {
+		return nutzJson;
+	}
+
+	public JsonFormat setNutzJson(boolean nutzJson) {
+		this.nutzJson = nutzJson;
+		return this;
+	}
 
 	public boolean ignore(String name) {
 		if (null != actived)
@@ -165,12 +180,12 @@ public class JsonFormat {
 		this.castors = castors;
 		return this;
 	}
-	
+
 	public JsonFormat setSeparator(char separator) {
 		this.separator = separator;
 		return this;
 	}
-	
+
 	public char getSeparator() {
 		return separator;
 	}
@@ -179,7 +194,7 @@ public class JsonFormat {
 		this.autoUnicode = autoUnicode;
 		return this;
 	}
-	
+
 	public boolean isAutoUnicode() {
 		return autoUnicode;
 	}

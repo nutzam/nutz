@@ -81,11 +81,11 @@ public class MockHttpServletResponse implements HttpServletResponse {
 	}
 
 	public void sendError(int error) throws IOException {
-		throw Lang.noImplement();
+		this.setStatus(error);
 	}
 
 	public void sendError(int arg0, String arg1) throws IOException {
-		throw Lang.noImplement();
+		this.setStatus(arg0, arg1);
 	}
 
 	public void sendRedirect(String value) throws IOException {
