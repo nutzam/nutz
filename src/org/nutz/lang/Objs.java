@@ -145,7 +145,7 @@ public class Objs {
             return Castors.me().castTo(model, Lang.getTypeClass(type));
         }
         
-        return new Objs2().inject(model, type);
+        return new Objs().inject(model, type);
 	}
 	
 	
