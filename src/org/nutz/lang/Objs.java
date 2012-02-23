@@ -10,10 +10,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
 import org.nutz.castor.Castors;
+import org.nutz.el.El;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.lang.util.Context;
 
 /**
  * 集合了对象转换合并等高级操作
@@ -110,6 +113,15 @@ public class Objs {
 		}
 		return obj;
 	}
+	
+	
+	//路径
+    Stack<String> path = new Stack<String>();
+    //对象缓存
+    Context context = Lang.context();
+    public Objs(){
+        
+    }
 
 	/**
 	 * 这个实现, 主要将 List, Map 的对象结构转换成真实的对象.
@@ -124,160 +136,181 @@ public class Objs {
 	 * </ul>
 	 */
 	public static Object convert(Object model, Type type) {
-		if (model == null)
-			return null;
-		if (type == null)
-			return model;
-		// obj是基本数据类型或String
-		if (!(model instanceof Map) && !(model instanceof List)) {
-			return Castors.me().castTo(model, Lang.getTypeClass(type));
-		}
-
-		return convertDeeply(model, type);
+	    if (model == null)
+            return null;
+        if (type == null)
+            return model;
+        // obj是基本数据类型或String
+        if (!(model instanceof Map) && !(model instanceof List)) {
+            return Castors.me().castTo(model, Lang.getTypeClass(type));
+        }
+        
+        return new Objs2().inject(model, type);
 	}
+	
+	
+	
 
-	/**
-	 * 深层转换集合或者数组
-	 * 
-	 * @param model
-	 *            对象
-	 * @param type
-	 *            要转换成为的类型
-	 * @return 转换后的对象
-	 */
-	public static Object convertDeeply(Object model, Type type) {
-		if (model == null) {
-			return null;
-		}
-		Mirror<?> me = Mirror.me(type);
-		if (Collection.class.isAssignableFrom(me.getType())) {
-			return _convertCollection(model, me);
-		} else if (Map.class.isAssignableFrom(me.getType())) {
-			return _convertMap(model, me);
-		} else if (me.getType().isArray()) {
-			return _convertArray(model, me);
-		}
-		return _convertObj(model, me);
-	}
+    public Object inject(Object model, Type type){
+        if(model == null){
+            return null;
+        }
+        Mirror<?> me = Mirror.me(type);
+        Object obj = null;
+        if(Collection.class.isAssignableFrom(me.getType())){
+            obj = injectCollection(model, me);
+        } else if(Map.class.isAssignableFrom(me.getType())){
+            obj = injectMap(model, me);
+        } else if(me.getType().isArray()){
+            obj = injectArray(model, me);
+        } else {
+            obj= injectObj(model, me);
+        }
+        if(path.size() > 0)
+            path.pop();
+        return obj;
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Object injectArray(Object model, Mirror<?> me){
+        Class<?> clazz = me.getType().getComponentType();
+        List list = (List) model;
+        List vals = new ArrayList();
+        int j = 0;
+        for(Object obj : list){
+            if(isLeaf(obj)){
+                vals.add(Castors.me().castTo(obj, clazz));
+                continue;
+            }
+            path.push("["+(j++)+"]");
+            vals.add(inject(obj, clazz));
+        }
+        Object obj = Array.newInstance(clazz, vals.size());
+        for(int i = 0; i < vals.size(); i++){
+            Array.set(obj, i, vals.get(i));
+        }
+        return obj;
+    }
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private Object injectMap(Object model, Mirror<?> me){
+        Map re = null;
+        if(me.isInterface()){
+            re = new HashMap();
+        } else {
+            re = (Map) me.born();
+        }
+        
+        Map map = (Map) model;
+        if(me.getGenericsTypes() == null){
+            re.putAll(map);
+            return re;
+        }
+        
+        Type type = me.getGenericsType(1);
+        for(Object key : map.keySet()){
+            Object val = map.get(key);
+            //转换Key
+            if(!isLeaf(key)){
+                key = inject(key, me.getGenericsType(0));
+            }
+            //转换val并填充
+            if(isLeaf(val)){
+                re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
+                continue;
+            }
+            path.push(key.toString());
+            re.put(key, inject(val, type));
+        }
+        return re;
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private Object injectCollection(Object model, Mirror<?> me){
+        Collection re = null;
+        if(!me.isInterface()){
+            re =  (Collection) me.born();
+        } else {
+            re = makeCollection(me);
+        }
+        if(me.getGenericsTypes() == null){
+            return model;
+        }
+        Type type = me.getGenericsType(0);
+        int j = 0;
+        for(Object obj : (Collection) model){
+            if(isLeaf(obj)){
+                re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
+                continue;
+            }
+            path.push("["+(j++)+"]");
+            re.add(inject(obj, type));
+        }
+        return re;
+    }
+    
+    @SuppressWarnings("rawtypes")
+    private Collection makeCollection(Mirror<?> me) {
+        if(List.class.isAssignableFrom(me.getType())){
+            return new ArrayList();
+        }
+        if(Set.class.isAssignableFrom(me.getType())){
+            return new HashSet();
+        }
+        throw new RuntimeException("不支持的类型!");
+    }
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static Object _convertArray(Object model, Mirror<?> me) {
-		Class<?> clazz = me.getType().getComponentType();
-		List list = (List) model;
-		List vals = new ArrayList();
-		for (Object obj : list) {
-			if (isLeaf(obj)) {
-				vals.add(Castors.me().castTo(obj, clazz));
-				continue;
-			}
-			vals.add(convertDeeply(obj, clazz));
-		}
-		Object obj = Array.newInstance(clazz, vals.size());
-		for (int i = 0; i < vals.size(); i++) {
-			Array.set(obj, i, vals.get(i));
-		}
-		return obj;
-	}
-
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static Object _convertMap(Object model, Mirror<?> me) {
-		Map re = null;
-		if (me.isInterface()) {
-			re = new HashMap();
-		} else {
-			re = (Map) me.born();
-		}
-
-		Map map = (Map) model;
-		if (me.getGenericsTypes() == null) {
-			re.putAll(map);
-			return re;
-		}
-
-		Type type = me.getGenericsType(1);
-		for (Object key : map.keySet()) {
-			Object val = map.get(key);
-			// 转换Key
-			if (!isLeaf(key)) {
-				key = convertDeeply(key, me.getGenericsType(0));
-			}
-			// 转换val并填充
-			if (isLeaf(val)) {
-				re.put(key, Castors.me().castTo(val, Lang.getTypeClass(type)));
-				continue;
-			}
-			re.put(key, convertDeeply(val, type));
-		}
-		return re;
-	}
-
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static Object _convertCollection(Object model, Mirror<?> me) {
-		Collection re = null;
-		if (!me.isInterface()) {
-			re = (Collection) me.born();
-		} else {
-			re = makeCollection(me);
-		}
-		if (me.getGenericsTypes() == null) {
-			return model;
-		}
-		Type type = me.getGenericsType(0);
-		for (Object obj : (Collection) model) {
-			if (isLeaf(obj)) {
-				re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
-				continue;
-			}
-			re.add(convertDeeply(obj, type));
-		}
-		return re;
-	}
-
-	@SuppressWarnings("rawtypes")
-	private static Collection makeCollection(Mirror<?> me) {
-		if (List.class.isAssignableFrom(me.getType())) {
-			return new ArrayList();
-		}
-		if (Set.class.isAssignableFrom(me.getType())) {
-			return new HashSet();
-		}
-		throw Lang.makeThrow("Unsupport collection type '%s'", me.getType().getName());
-	}
-
-	@SuppressWarnings("unchecked")
-	private static Object _convertObj(Object model, Mirror<?> me) {
-		Object obj = me.born();
-		Map<String, ?> map = (Map<String, ?>) model;
-		for (Field field : me.getFields()) {
-			JsonEntityField jef = JsonEntityField.eval(me, field);
-			if (jef == null) {
-				continue;
-			}
-			Object val = map.get(jef.getName());
-			if (val == null) {
-				continue;
-			}
-
-			Injecting in = me.getInjecting(field.getName());
-			if (isLeaf(val)) {
-				Type t = Lang.getFieldType(me, field);
-				in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
-				continue;
-			}
-			Object o = jef.createValue(obj, convertDeeply(val, Lang.getFieldType(me, field)));
-			in.inject(obj, o);
-
-		}
-		return obj;
-	}
-
-	private static boolean isLeaf(Object obj) {
-		if (obj instanceof Map) {
-			return false;
-		}
-		if (obj instanceof List) {
-			return false;
-		}
-		return true;
-	}
+    @SuppressWarnings("unchecked")
+    private Object injectObj(Object model, Mirror<?> me){
+        Object obj = me.born();
+        context.set(fetchPath(), obj);
+        Map<String, ?> map = (Map<String, ?>) model;
+        for(Field field : me.getFields()){
+            JsonEntityField jef = JsonEntityField.eval(me, field);
+            if(jef == null){
+                continue;
+            }
+            Object val = map.get(jef.getName());
+            if(val == null){
+                continue;
+            }
+            
+            Injecting in = me.getInjecting(field.getName());
+            if(isLeaf(val)){
+                Type t = Lang.getFieldType(me, field);
+                if(val instanceof El){
+                    val = ((El)val).eval(context);
+                }
+                in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
+                continue;
+            }
+            path.push(field.getName());
+            Object o = jef.createValue(obj, inject(val, Lang.getFieldType(me, field)));
+            in.inject(obj, o);
+            
+        }
+        return obj;
+    }
+    
+    private boolean isLeaf(Object obj){
+        if(obj instanceof Map){
+            return false;
+        }
+        if(obj instanceof List){
+            return false;
+        }
+        return true;
+    }
+    
+    private String fetchPath(){
+        StringBuffer sb = new StringBuffer();
+        sb.append("root");
+        for(String item : path){
+            if(item.charAt(0) != '['){
+                sb.append(".");
+            }
+            sb.append(item);
+        }
+        return sb.toString();
+    }
 }

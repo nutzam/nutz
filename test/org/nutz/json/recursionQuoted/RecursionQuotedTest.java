@@ -2,6 +2,7 @@ package org.nutz.json.recursionQuoted;
 
 import org.junit.Test;
 import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
 
 import static org.junit.Assert.*;
 
@@ -19,14 +20,8 @@ public class RecursionQuotedTest {
         b.name = "testb";
         a.b = b;
         b.a = a;
-        String tt = "{\n"+
-                "   \"name\" :\"testa\",\n"+
-                "   \"b\" :{\n"+
-                "      \"name\" :\"testb\",\n"+
-                "      \"a\" :\"$nutz.json::root\"\n"+
-                "   }\n"+
-                "}";
-        assertEquals(tt, Json.toJson(a));
+        String tt = "{\"name\":\"testa\",\"b\":{\"name\":\"testb\",\"a\":\"$nutz.json::root\"}}";
+        assertEquals(tt, Json.toJson(a,JsonFormat.compact().setNutzJson(true)));
     }
     
     @Test
@@ -38,7 +33,7 @@ public class RecursionQuotedTest {
         a.b = b;
         b.a = a;
         
-        A ta = (A)Json.fromJson(A.class, Json.toJson(a));
+        A ta = (A)Json.fromJson(A.class, Json.toJson(a, JsonFormat.compact().setNutzJson(true)));
         assertEquals("testa", ta.b.a.name);
     }
 }
