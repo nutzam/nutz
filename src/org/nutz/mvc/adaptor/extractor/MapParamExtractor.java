@@ -22,7 +22,12 @@ public class MapParamExtractor implements ParamExtractor{
 	}
 	public String[] extractor(String name) {
 		if (null != map && map.containsKey(name)){
-			return new String[]{map.get(name).toString()}; 
+			Object obj = map.get(name);
+			if (obj instanceof String[])
+				return (String[])obj;
+			if (obj == null)
+				return null;
+			return new String[]{obj.toString()}; 
 		}
 		return req.getParameterValues(name);
 	}
