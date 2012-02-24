@@ -82,7 +82,11 @@ public class JsonCompile {
 	 */
 	private Object parseEl(String str){
 	    if(str.startsWith(JsonRendering.RECURSION_QUOTED_PREFIX)){
-	        return new El(str.substring(JsonRendering.RECURSION_QUOTED_PREFIX.length()));
+	        String s = str.substring(JsonRendering.RECURSION_QUOTED_PREFIX.length());
+	        s = s.replace('.', 'm');
+	        s = s.replace('[', 'a');
+	        s = s.replace("]", "");
+	        return new El(s);
 	    }
 	    return str;
 	}

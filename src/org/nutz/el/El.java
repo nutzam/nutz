@@ -8,12 +8,14 @@ import org.nutz.lang.util.Context;
 
 public class El {
 	private RPN rc = null;
+	private CharSequence elstr = "";
 	
 	public El(){}
 	/**
 	 * 预编译
 	 */
 	public El(CharSequence cs){
+	    elstr = cs;
 		ShuntingYard sy = new ShuntingYard();
 		Queue<Object> rpn = sy.parseToRPN(cs.toString());
 		rc = new RPN(rpn);
@@ -43,6 +45,9 @@ public class El {
 		return rc.calculate(context, rpn);
 	}
 	
+	public String toString() {
+	    return elstr.toString();
+	}
 	
 	/**
 	 * 说明:

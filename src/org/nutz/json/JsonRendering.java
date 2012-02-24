@@ -74,6 +74,7 @@ public class JsonRendering {
 		appendPairBegin();
 		appendName(name);
 		appendPairSep();
+		System.out.println(name + ":" + value + ":" + value.getClass());
 		path.push(name);
 		render(value);
 	}
@@ -188,7 +189,7 @@ public class JsonRendering {
 						// zozoh: 如果在 format 里特别指定，要采用 nutz json 特殊兼容格式，
 						// 则记录循环引用对象的 JSON 路径
 						if (format.isNutzJson()) {
-							value = RECURSION_QUOTED_PREFIX + memo.get(obj);
+							value = RECURSION_QUOTED_PREFIX + memo.get(value);
 						}
 						// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
 						else {
@@ -299,7 +300,7 @@ public class JsonRendering {
 				else {
 					memo.put(obj, fetchPath());
 					pojo2Json(obj);
-					memo.remove(obj);
+//					memo.remove(obj);
 				}
 				// memo.remove(obj);
 			}

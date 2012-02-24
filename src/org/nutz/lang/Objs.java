@@ -182,7 +182,7 @@ public class Objs {
                 vals.add(Castors.me().castTo(obj, clazz));
                 continue;
             }
-            path.push("["+(j++)+"]");
+            path.push("a"+(j++));
             vals.add(inject(obj, clazz));
         }
         Object obj = Array.newInstance(clazz, vals.size());
@@ -243,7 +243,7 @@ public class Objs {
                 re.add(Castors.me().castTo(obj, Lang.getTypeClass(type)));
                 continue;
             }
-            path.push("["+(j++)+"]");
+            path.push("a"+(j++));
             re.add(inject(obj, type));
         }
         return re;
@@ -306,8 +306,8 @@ public class Objs {
         StringBuffer sb = new StringBuffer();
         sb.append("root");
         for(String item : path){
-            if(item.charAt(0) != '['){
-                sb.append(".");
+            if(item.charAt(0) != 'a'){
+                sb.append("m");
             }
             sb.append(item);
         }
