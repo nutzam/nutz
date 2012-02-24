@@ -21,7 +21,7 @@ import org.nutz.mvc.annotation.Param;
 public class JsonAdaptor extends PairAdaptor {
 
 	protected ParamInjector evalInjector(Type type, Param param) {
-		if (param == null)
+		if (param == null || "..".equals(param.value()))
 			return new JsonInjector(type, null);
 		return super.evalInjector(type, param);
 	}
