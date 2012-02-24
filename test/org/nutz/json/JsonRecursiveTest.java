@@ -43,7 +43,7 @@ public class JsonRecursiveTest {
 
 		R[] rs = Lang.array(r1, r2);
 
-		String json = Json.toJson(rs);
+		String json = Json.toJson(rs, JsonFormat.compact().setNutzJson(true));
 
 		R[] rs2 = Json.fromJson(R[].class, json);
 		assertEquals(2, rs2.length);
