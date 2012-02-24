@@ -1,8 +1,12 @@
 package org.nutz.json.recursionQuoted;
 
+import java.util.Map;
+
 import org.junit.Test;
+import org.nutz.el.El;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Lang;
 
 import static org.junit.Assert.*;
 
@@ -35,5 +39,10 @@ public class RecursionQuotedTest {
         
         A ta = (A)Json.fromJson(A.class, Json.toJson(a, JsonFormat.compact().setNutzJson(true)));
         assertEquals("testa", ta.b.a.name);
+    }
+    
+    @Test
+    public void testJsonEl(){
+        assertEquals(2, ((El)((Json.fromJson(Map.class, "{'a':\"$nutz.el::1+1\"}")).get("a"))).eval(Lang.context()));
     }
 }
