@@ -15,7 +15,6 @@ import java.util.Stack;
 import org.nutz.castor.Castors;
 import org.nutz.el.El;
 import org.nutz.json.entity.JsonEntityField;
-import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.util.Context;
 
@@ -276,8 +275,7 @@ public class Objs {
                 continue;
             }
             
-//            Injecting in = me.getInjecting(field.getName());
-            Injecting in = new InjectByField(field);
+            Injecting in = me.getInjecting(field.getName());
             if(isLeaf(val)){
                 Type t = Lang.getFieldType(me, field);
                 if(val instanceof El){

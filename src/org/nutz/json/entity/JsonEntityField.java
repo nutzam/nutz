@@ -9,7 +9,6 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Objs;
 import org.nutz.lang.Strings;
-import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
@@ -54,8 +53,7 @@ public class JsonEntityField {
 			jef.hasAnno = true;
 		}
 		if (null == jef.ejecting )
-//			jef.ejecting = mirror.getEjecting(fld.getName());
-		    jef.ejecting = new EjectByField(fld);
+			jef.ejecting = mirror.getEjecting(fld.getName());
 		if (null == jef.injecting)
 			jef.injecting = mirror.getInjecting(fld.getName());
 		if (null == jef.name)
