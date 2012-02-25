@@ -27,8 +27,8 @@ public class OneLinkField extends AbstractLinkField implements LinkField {
 		linkedField = hostField.getTypeMirror().isIntLike()	? this.getLinkedEntity().getIdField()
 															: this.getLinkedEntity().getNameField();
 		if (null == linkedField)
-			throw Lang.makeThrow(	"Fail to find linkedField for @Many(field=%s) '%s' : %s<=>%s",
-									info.many.field(),
+			throw Lang.makeThrow(	"Fail to find linkedField for @One(field=%s) '%s' : %s<=>%s",
+									info.one.field(),
 									this.getName(),
 									this.getEntity().getType(),
 									this.getLinkedEntity().getType());
