@@ -6,12 +6,6 @@
 
 body {
     margin: 0;
-    overflow-y: scroll;
-    background: #CCC url(sitebg.png) no-repeat fixed;
-}
-
-td, th, font, p, #arena li {
-    font-size: 12px;
 }
 
 .hdn {
@@ -19,12 +13,7 @@ td, th, font, p, #arena li {
 }
 
 #arena {
-    margin-top: 30px;
-    margin-left: 260px;
-    padding: 10px;
-    background-color: #FFF;
-    border-radius: 8px 0 0 8px;
-    box-shadow: -4px 4px 4px rgba(0, 0, 0, 0.4);
+    padding:10px 10px 50px 320px
 }
 
 #arena p {
@@ -33,14 +22,21 @@ td, th, font, p, #arena li {
 }
 
 #arena p, #arena table {
-    margin-left: 20px;
+    margin-left: 30px;
 }
 
 #arena ul, #arena ol {
     border-radius: 4px;
-    line-height: 18px;
-    margin-right: 10px;
-    color: #000;
+    line-height: 24px;
+    margin:10px 30px;
+    margin-right:0;
+    padding:10px 30px;
+}
+
+#arena ul ul, #arena ol ol, #arena ul ol, #arena ol ul {
+    margin:0px 0px 8px 10px;
+    padding:0px 0px 0px 10px;
+    background:transparent;
 }
 
 #arena h1 {
@@ -64,6 +60,11 @@ td, th, font, p, #arena li {
 
 #arena h3, #arena h4, #arena h5, #arena h6 {
     font-size: 14px;
+    margin-left:20px;
+    padding-left:4px;
+    border-left:14px solid #F80;
+    color:#C60;
+    margin-top:28px;
 }
 
 #arena pre {
@@ -78,7 +79,7 @@ td, th, font, p, #arena li {
 }
 
 #arena .zdoc_code_cmt{
-    color:#888;
+    color:#888
 }
 
 #arena .zdoc_header {
@@ -97,7 +98,7 @@ td, th, font, p, #arena li {
 }
 
 #arena .zdoc_author em {
-    color: #AAA;
+    color:#AAA;
 }
 
 #arena .zdoc_author em, #arena .zdoc_footer em {
@@ -121,155 +122,119 @@ td, th, font, p, #arena li {
 
 #nav {
     position: fixed;
-    top: 0px;
     left: 0;
-    width: 260px;
-    height: 100%;
-    overflow: auto;
-    padding-left: 0;
-    padding-bottom: 20px;
-    padding-top: 80px;
-    line-height: 20px;
-    font-size: 12px;
-}
-
-#nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    margin-left: 8px;
-}
-
-#nav .num {
-    width: 36px;
-    display: inline-block;
-    color: #666;
-    font-size: 10px;
-}
-
-#nav li {
-    display: none;
-    padding-left: 6px;
-    border-radius: 4px 0 0 4px;
-}
-
-#nav li.hlt {
-    background-color: rgba(255, 255, 255, 0.4);
-    box-shadow: -2px 2px 2px rgba(0, 0, 0, 0.5);
-}
-
-#nav li.current, #nav li.current li {
-	display:block;
-}
-
-#nav a {
-    text-decoration: none;
-    color: #444;
-}
-
-#nav a:hover {
-    color: #00F;
-    text-decoration: underline;
-}
-
-#nav .hlt a {
-    color: #000;
-    font-weight: bold;
-    text-shadow: 2px 2px 4px #888;
-    text-decoration: none;
-}
-
-#nav .inner_anchors {
-    margin-left: 10px;
-    padding-bottom: 10px;
-}
-
-#nav .inner_anchors .anchor {
-    border-left: 1px solid #CCC;
-    padding-left: 10px;
-    color: #080;
-    cursor: pointer;
-}
-
-#nav .hlt .num {
-    font-weight: bold;
-    font-size: 14px;
-    color: #F0F;
-}
-
-#nav .inner_anchors .h2 {
-    padding-left: 24px;
+    top: 0;
+    width: 300px;
+    border-right: 1px dashed #CCC;
     font-size: 11px;
+    background-color:#F0F0F0;
 }
 
-#nav .inner_anchors .anchor:hover {
-    text-decoration: underline;
+#nav_viewport {
+    overflow: hidden;
+    position: relative;
 }
 
-#nav .zdoc_folder {
-    color: #000;
+#nav_scroller {
+    width: 999999px;
+    position: absolute;
 }
 
-#sky a {
-    text-decoration: none;
+#nav_crumb {
+    border-bottom: 1px dotted #CCC;
+    line-height: 24px;
+    padding: 0 2 x;
     color: #444;
 }
 
-#sky .hlt a {
-    text-decoration: none;
-    text-shadow: 1px 1px 2px #888;
-    color: #000;
-}
-
-#sky {
-    position: fixed;
-    top: 0px;
-    right: 0;
-    font-size: 12px;
-    line-height: 28px;
-    height: 30px;
-    padding-right: 16px;
-    background-color: #CCC;
-    margin-left: 260px;
-}
-
-#sky:after {
-    content: ".";
+#nav_crumb:after {
     display: block;
-    clear: both;
-    visibility: hidden;
-    line-height: 0;
+    content: ".";
     height: 0;
+    clear: both;
 }
 
-#sky ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    float: right;
-}
-
-#sky li {
+.nav_block {
     float: left;
-    padding-left: 10px;
-    padding-right: 10px;
-    border-top: 3px solid #CCC;
-    margin-left: 1px;
+    overflow: auto;
+    padding: 1px;
 }
 
-#sky li:hover {
+.nav_block a.nav_folder:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -32px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a {
+    display: block;
+    line-height: 30px;
+    cursor: pointer;
+    border-bottom: 1px dotted #E0E0E0;
+    padding: 0 4px 0 26px;
+    color: #888;
+    position: relative;
+}
+
+.nav_block a:hover {
+    background-color: #FFE;
+}
+
+.nav_block a.nav_doc:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -48px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a.nav_doc{
+    color:#08F;
+}
+
+.nav_block a.nav_indoc:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -64px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a.nav_indoc{
+    color:#66F;
+    text-decoration: none;
+}
+
+
+.nav_crumb_item {
+    float: left;
+    padding-left: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    background: url(dotteds.png) no-repeat 0 3px;
+}
+
+.nav_crumb_item:hover {
     background-color: #EEE;
 }
 
-#sky li:hover a {
-    color: #666;
+.nav_crumb_item_hlt, .nav_crumb_item_hlt:hover {
+    color: #F80;
 }
 
-#sky li.hlt {
-    background-color: #FFF;
-    border-radius: 4px 4px 0 0;
-    border-top-color: #F80;
-    box-shadow: -2px -2px 2px #888;
+.nav_transient {
+    opacity: 0.4;
+    text-decoration: line-through;
 }
-
 
