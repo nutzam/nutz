@@ -204,36 +204,61 @@ function main() {
             nav_active($(this).prevAll().size());
         }
     });
+    // 事件: 点击文档内的链接
+    $("#arena").delegate("a", "click", function() {
+        var href = $(this).attr("href");
+        if(href && href.match(/^#/)) {
+            goto_page(href);
+        }
+    });
     // 根据 pgan 加载数据
     var pgan = z.pgan();
     if(pgan) {
-        var ss = pgan.split("!");
-        var href = ss[0];
-        // 找到 li
-        var li = $('.zdoc_index_table a[href="' + href + '"]');
-        // 增加父
-        var uls = li.parents("ul");
-        for(var i =                      uls.size() - 1; i >= 0; i--) {
-            var ul = $(uls[i]);
-            var str = div_text(ul.prev());
-            nav_add_ul(str, ul);
-        };
-        // 在列表中找到自己
-        var jA = $(".nav_block").last().find('a[href="#' + href + '"]');
-        // 读取文档
-        load_doc(jA, function() {
-            if(ss.length > 1) {
-                var an = ss[1];
-                var jq = $('.nav_block').last().find('a:contains("' + an + '")');
-                jq.click();
-            }
-            nav_active(-1);
-        });
+        goto_page(pgan);
     }
     // 最后高亮最后一个块
     else {
         nav_active(-1);
     }
+}
+
+function goto_page(pgan) {
+    if(!pgan)
+        return;
+
+    if(pgan.match(/^#/))
+        pgan = pgan.substring(1);
+
+    var ss = pgan.split("!");
+    var href = ss[0];
+    // 找到 li
+    var li = $('.zdoc_index_table a[href="' + href + '"]');
+
+    if(li.size() == 0)
+        return;
+
+    // 除了第一块，都清除
+    $(".nav_block").first().nextAll().remove();
+    $(".nav_crumb_item").first().nextAll().remove();
+
+    // 增加父
+    var uls = li.parents("ul");
+    for(var i =                            uls.size() - 1; i >= 0; i--) {
+        var ul = $(uls[i]);
+        var str = div_text(ul.prev());
+        nav_add_ul(str, ul);
+    };
+    // 在列表中找到自己
+    var jA = $(".nav_block").last().find('a[href="#' + href + '"]');
+    // 读取文档
+    load_doc(jA, function() {
+        if(ss.length > 1) {
+            var an = ss[1];
+            var jq = $('.nav_block').last().find('a:contains("' + an + '")');
+            jq.click();
+        }
+        nav_active(-1);
+    });
 }
 
 function ajustLayout() {
