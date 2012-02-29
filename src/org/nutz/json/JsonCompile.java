@@ -88,6 +88,9 @@ public class JsonCompile {
 	        s = s.replace("]", "");
 	        return new El(s);
 	    }
+	    if(str.startsWith(JsonRendering.JSON_EL_PREFIX)){
+	        return new El(str.substring(JsonRendering.JSON_EL_PREFIX.length()));
+	    }
 	    return str;
 	}
 	

@@ -29,6 +29,7 @@ import org.nutz.lang.Strings;
  */
 public class JsonRendering {
 	public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
+	public static final String JSON_EL_PREFIX = "$nutz.el::";
 	private static String NL = "\n";
 
 	private HashMap<Object, Object> memo;
@@ -74,7 +75,6 @@ public class JsonRendering {
 		appendPairBegin();
 		appendName(name);
 		appendPairSep();
-		System.out.println(name + ":" + value + ":" + value.getClass());
 		path.push(name);
 		render(value);
 	}
