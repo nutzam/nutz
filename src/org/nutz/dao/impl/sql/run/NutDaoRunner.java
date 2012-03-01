@@ -68,7 +68,8 @@ public class NutDaoRunner implements DaoRunner {
 			// 异常回滚
 			catch (Exception e) {
 				try {
-					conn.rollback();
+					if (conn != null) // 高并发时,从数据库连接池获取连接就已经抛错误,所以conn可能为null的
+						conn.rollback();
 				}
 				catch (SQLException e1) {}// TODO 简单记录一下?
 				throw new DaoException(e);
