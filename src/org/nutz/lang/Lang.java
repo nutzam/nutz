@@ -1521,12 +1521,14 @@ public abstract class Lang {
 			Object v = mirror.getValue(obj, fld);
 			if (null == v) {
 				map.put(fld.getName(), null);
+				continue;
 			}
 			Mirror<?> mr = Mirror.me(fld.getType());
 			if (mr.isNumber()
 				|| mr.isBoolean()
 				|| mr.isChar()
 				|| mr.isStringLike()
+				|| mr.isEnum()
 				|| mr.isDateTimeLike()) {
 				map.put(fld.getName(), v);
 			} else if (memo.containsKey(v)) {
