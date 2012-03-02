@@ -38,8 +38,9 @@ public abstract class ResultSetLooping {
 			|| ResultSet.TYPE_FORWARD_ONLY == rs.getType()
 			|| pager.getPageNumber() <= 0) {
 			// 根据 Pager 设定 Fetch Size
-			if (null != pager && pager.getPageSize() > 0)
-				rs.setFetchSize(pager.getPageSize());
+			// by wendal: 设置与否,影响不大的,而且旧版本的Oracle会出问题,故,注释掉了
+			//if (null != pager && pager.getPageSize() > 0)
+			//	rs.setFetchSize(pager.getPageSize());
 
 			// 循环调用
 			while (rs.next()) {
