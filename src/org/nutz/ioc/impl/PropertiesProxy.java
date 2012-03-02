@@ -115,4 +115,12 @@ public class PropertiesProxy {
 	public Collection<String> getValues() {
 		return mp.values();
 	}
+	
+	public Properties toProperties() {
+		Properties p = new Properties();
+		for (String key : mp.keySet()) {
+			p.put(key, mp.get(key));
+		}
+		return p;
+	}
 }
