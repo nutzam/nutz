@@ -35,6 +35,24 @@ public class JsonRecursiveTest {
 	}
 
 	@Test
+	public void test_two_render_in_array_field() {
+		R r = new R(0);
+		R r1 = new R(1);
+		R r2 = new R(2);
+		r1.recur = new R(80);
+		r2.recur = r1.recur;
+
+		r.parents = Lang.array(r1, r2);
+
+		String json = Json.toJson(r, JsonFormat.compact());
+
+		R rBack = Json.fromJson(R.class, json);
+		assertEquals(2, rBack.parents.length);
+		assertEquals(80, rBack.parents[0].recur.id);
+		assertEquals(80, rBack.parents[1].recur.id);
+	}
+
+	@Test
 	public void test_two_render() {
 		R r1 = new R(1);
 		R r2 = new R(2);
