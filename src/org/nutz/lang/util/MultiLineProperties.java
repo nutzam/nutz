@@ -3,9 +3,9 @@ package org.nutz.lang.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -26,19 +26,27 @@ public class MultiLineProperties implements Map<String, String> {
 
 	public MultiLineProperties() {
 		maps = new HashMap<String, String>();
-		keys = new LinkedList<String>();
 	}
 
 	protected Map<String, String> maps;
-	protected List<String> keys;
 
+	/**
+	 * <b>载入并销毁之前的记录</b>
+	 * @param reader
+	 * @throws IOException
+	 */
 	public synchronized void load(Reader reader) throws IOException {
+		load(reader, false);
+	}
+		
+	public synchronized void load(Reader reader, boolean clear) throws IOException {
+		if (clear)
+			this.clear();
 		BufferedReader tr = null;
 		if (reader instanceof BufferedReader)
 			tr = (BufferedReader) reader;
 		else
 			tr = new BufferedReader(reader);
-		this.clear();
 		String s;
 		while (null != (s = tr.readLine())) {
 			if (Strings.isBlank(s))
@@ -55,7 +63,6 @@ public class MultiLineProperties implements Map<String, String> {
 			if (c == '=') {
 				String name = s.substring(0, pos);
 				maps.put(name, s.substring(pos + 1));
-				keys.add(name);
 			} else if (c == ':') {
 				String name = s.substring(0, pos);
 				StringBuffer sb = new StringBuffer();
@@ -67,12 +74,10 @@ public class MultiLineProperties implements Map<String, String> {
 					sb.append("\r\n" + ss);
 				}
 				maps.put(name, sb.toString());
-				keys.add(name);
 				if (null == ss)
 					return;
 			} else {
 				maps.put(s, null);
-				keys.add(s);
 			}
 		}
 	}
@@ -112,7 +117,7 @@ public class MultiLineProperties implements Map<String, String> {
 	}
 
 	public List<String> keys() {
-		return keys;
+		return new ArrayList<String>(maps.keySet());
 	}
 
 	public synchronized String put(String key, String value) {

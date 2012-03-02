@@ -48,7 +48,7 @@ public class PropertiesProxy {
 		try {
 			if (utf8)
 				for (NutResource nr : list)
-					mp.load(nr.getReader());
+					mp.load(nr.getReader(), false);
 			else {
 				Properties p = new Properties();
 				for (NutResource nr : list) {
