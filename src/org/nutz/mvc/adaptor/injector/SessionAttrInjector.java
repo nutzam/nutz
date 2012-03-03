@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.Mvcs;
+
 public class SessionAttrInjector extends AttrInjector {
 
 	public SessionAttrInjector(String name) {
@@ -11,7 +13,7 @@ public class SessionAttrInjector extends AttrInjector {
 	}
 
 	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return req.getSession().getAttribute(name);
+		return Mvcs.getHttpSession().getAttribute(name);
 	}
 
 }

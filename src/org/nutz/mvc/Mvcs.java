@@ -276,7 +276,7 @@ public abstract class Mvcs {
 	@SuppressWarnings("unchecked")
 	public static void updateRequestAttributes(HttpServletRequest req) {
 		if (null != getMessageSet()) {
-			HttpSession session = req.getSession();
+			HttpSession session = getHttpSession();
 			Map<String, String> msgs = null;
 			if (!hasLocale(session))
 				msgs = setLocale(session, getLocaleName(session));
@@ -435,5 +435,25 @@ public abstract class Mvcs {
 		RESP.set(null);
 		NAME.set(null);
 		IOC_CONTEXT.set(null);
+	}
+	
+	public static SessionProvider sessionProvider;
+	static {
+		sessionProvider = new SessionProvider() {
+			public HttpSession getHttpSession(HttpServletRequest req, boolean createNew) {
+				return req.getSession(createNew);
+			}
+			public HttpSession getHttpSession(HttpServletRequest req) {
+				return req.getSession();
+			}
+		};
+	}
+	
+	public static HttpSession getHttpSession() {
+		return sessionProvider.getHttpSession(REQ.get());
+	}
+	
+	public static HttpSession getHttpSession(boolean createNew) {
+		return sessionProvider.getHttpSession(REQ.get(), createNew);
 	}
 }

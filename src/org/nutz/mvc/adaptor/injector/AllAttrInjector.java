@@ -4,6 +4,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.mvc.Mvcs;
+
 public class AllAttrInjector extends AttrInjector {
 
 	public AllAttrInjector(String name) {
@@ -14,7 +16,7 @@ public class AllAttrInjector extends AttrInjector {
 		Object re = req.getAttribute(name);
 		if (null != re)
 			return re;
-		re = req.getSession().getAttribute(name);
+		re = Mvcs.getHttpSession().getAttribute(name);
 		if (null != re)
 			return re;
 		return sc.getAttribute(name);

@@ -64,8 +64,7 @@ public class ModuleProcessor extends AbstractProcessor {
 				 */
 				if (ioc instanceof Ioc2) {
 					reqContext = new RequestIocContext(ac.getRequest());
-					SessionIocContext sessionContext = new SessionIocContext(ac.getRequest()
-																				.getSession());
+					SessionIocContext sessionContext = new SessionIocContext(Mvcs.getHttpSession());
 					IocContext myContext = new ComboContext(reqContext, sessionContext);
 					Mvcs.setIocContext(myContext);
 					obj = ((Ioc2) ioc).get(moduleType, injectName, myContext);

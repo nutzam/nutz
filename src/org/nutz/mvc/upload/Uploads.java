@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.lang.util.NutMap;
+import org.nutz.mvc.Mvcs;
 
 /**
  * 关于上传的一些帮助函数
@@ -20,7 +21,7 @@ public abstract class Uploads {
 	 * @return 当前会话的上传进度对象，如果没有上传，则返回 null
 	 */
 	public static UploadInfo getInfo(HttpServletRequest req) {
-		return (UploadInfo) req.getSession().getAttribute(UploadInfo.SESSION_NAME);
+		return (UploadInfo) Mvcs.getHttpSession().getAttribute(UploadInfo.SESSION_NAME);
 	}
 
 	/**
@@ -30,7 +31,7 @@ public abstract class Uploads {
 	 */
 	public static UploadInfo createInfo(HttpServletRequest req) {
 		UploadInfo info = new UploadInfo();
-		HttpSession sess = req.getSession();
+		HttpSession sess = Mvcs.getHttpSession();
 		if (null != sess) {
 			sess.setAttribute(UploadInfo.SESSION_NAME, info);
 		}
