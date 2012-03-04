@@ -15,14 +15,14 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.NutPojo;
-import org.nutz.dao.impl.sql.pojo.SingleColumnCondtionPItem;
-import org.nutz.dao.impl.sql.pojo.PkConditionPItem;
-import org.nutz.dao.impl.sql.pojo.QueryEntityFieldsPItem;
 import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.EntityTableNamePItem;
 import org.nutz.dao.impl.sql.pojo.EntityViewNamePItem;
 import org.nutz.dao.impl.sql.pojo.InsertFieldsPItem;
 import org.nutz.dao.impl.sql.pojo.InsertValuesPItem;
+import org.nutz.dao.impl.sql.pojo.PkConditionPItem;
+import org.nutz.dao.impl.sql.pojo.QueryEntityFieldsPItem;
+import org.nutz.dao.impl.sql.pojo.SingleColumnCondtionPItem;
 import org.nutz.dao.impl.sql.pojo.SqlTypePItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.impl.sql.pojo.UpdateFieldsByChainPItem;
@@ -37,12 +37,8 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 public abstract class Pojos {
-	
-	private static final Log log = Logs.get();
 
 	// ==========================================================
 	// 以下是创建 POJO 语句元素的帮助方法
