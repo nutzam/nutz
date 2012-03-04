@@ -68,6 +68,7 @@ String2Object
 String2Pattern
 String2SqlDate
 String2SqlTime
+String2Set
 String2Timestamp
 String2TimeZone
 Timestamp2Calendar

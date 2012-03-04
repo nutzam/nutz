@@ -248,7 +248,7 @@ public abstract class Jdbcs {
 				if (null == obj) {
 					stat.setString(i, null);
 				} else {
-					stat.setString(i, obj.toString());
+					stat.setString(i, Castors.me().castToString(obj));
 				}
 			}
 		};
