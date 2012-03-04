@@ -3,6 +3,7 @@ package org.nutz.dao.util;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.nutz.dao.Chain;
@@ -135,9 +136,13 @@ public abstract class Pojos {
 				}
 				return cndPk(en, pks);
 			default:
-				log.infof("Don't know how to make fetch key %s:'%s'", en.getType()
+				if (Map.class.isAssignableFrom(en.getType())){
+					log.infof("Don't know how to make fetch key %s:'%s'", en.getType()
 																					.getName(), obj);
-				return null;
+					return null;
+				}
+				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s'", en.getType()
+						.getName(), obj);
 			}
 		}
 
