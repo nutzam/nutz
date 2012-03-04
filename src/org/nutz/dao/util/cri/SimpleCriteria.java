@@ -95,4 +95,7 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
 		return orderBy;
 	}
 
+	public String toString() {
+		return toSql(null);
+	}
 }
