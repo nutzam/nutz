@@ -234,7 +234,8 @@ public class Objs {
             re = makeCollection(me);
         }
         if(me.getGenericsTypes() == null){
-            return model;
+        	re.addAll((Collection) model);
+            return re;
         }
         Type type = me.getGenericsType(0);
         int j = 0;
