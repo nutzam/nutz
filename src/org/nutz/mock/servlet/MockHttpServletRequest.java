@@ -19,6 +19,7 @@ import javax.servlet.http.HttpSession;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
+import org.nutz.mvc.Mvcs;
 
 public class MockHttpServletRequest implements HttpServletRequest {
 
@@ -31,6 +32,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	public MockHttpServletRequest() {
 		this.headers = new HashMap<String, String>();
 		this.dispatcherTarget = new String[1];
+		Mvcs.set("", this, null);
 	}
 
 	public String getDispatcherTarget() {
@@ -274,6 +276,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 					throw Lang.wrapThrow(e);
 				}
 			}
+		Mvcs.set("", this, null);
 		return this;
 	}
 
