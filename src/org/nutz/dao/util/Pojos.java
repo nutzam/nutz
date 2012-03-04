@@ -36,8 +36,12 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public abstract class Pojos {
+	
+	private static final Log log = Logs.get();
 
 	// ==========================================================
 	// 以下是创建 POJO 语句元素的帮助方法
@@ -131,8 +135,9 @@ public abstract class Pojos {
 				}
 				return cndPk(en, pks);
 			default:
-				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s'", en.getType()
+				log.infof("Don't know how to make fetch key %s:'%s'", en.getType()
 																					.getName(), obj);
+				return null;
 			}
 		}
 
