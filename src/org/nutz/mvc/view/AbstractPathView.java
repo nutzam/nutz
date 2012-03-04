@@ -68,8 +68,7 @@ public abstract class AbstractPathView implements View {
 	public static Context createContext(HttpServletRequest req, Object obj) {
 		Context context = Lang.context();
 		// 复制全局的上下文对象
-		Object globalContext = Mvcs.getHttpSession()
-									.getServletContext()
+		Object globalContext = Mvcs.getServletContext()
 									.getAttribute(Loading.CONTEXT_NAME);
 		if (globalContext != null) {
 			context.putAll((Context) globalContext);
