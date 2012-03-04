@@ -3,6 +3,7 @@ package org.nutz.dao.util;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.nutz.dao.Chain;
@@ -14,14 +15,14 @@ import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.NutPojo;
-import org.nutz.dao.impl.sql.pojo.SingleColumnCondtionPItem;
-import org.nutz.dao.impl.sql.pojo.PkConditionPItem;
-import org.nutz.dao.impl.sql.pojo.QueryEntityFieldsPItem;
 import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.EntityTableNamePItem;
 import org.nutz.dao.impl.sql.pojo.EntityViewNamePItem;
 import org.nutz.dao.impl.sql.pojo.InsertFieldsPItem;
 import org.nutz.dao.impl.sql.pojo.InsertValuesPItem;
+import org.nutz.dao.impl.sql.pojo.PkConditionPItem;
+import org.nutz.dao.impl.sql.pojo.QueryEntityFieldsPItem;
+import org.nutz.dao.impl.sql.pojo.SingleColumnCondtionPItem;
 import org.nutz.dao.impl.sql.pojo.SqlTypePItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.impl.sql.pojo.UpdateFieldsByChainPItem;
@@ -131,8 +132,11 @@ public abstract class Pojos {
 				}
 				return cndPk(en, pks);
 			default:
+				if (Map.class.isAssignableFrom(en.getType())){
+					return null; //Map形式的话,不一定需要主键嘛
+				}
 				throw Lang.makeThrow("Don't know how to make fetch key %s:'%s'", en.getType()
-																					.getName(), obj);
+						.getName(), obj);
 			}
 		}
 

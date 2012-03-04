@@ -1,5 +1,6 @@
 package org.nutz.dao;
 
+import org.nutz.castor.Castors;
 import org.nutz.dao.impl.sql.NutSql;
 import org.nutz.dao.impl.sql.ValueEscaper;
 import org.nutz.dao.impl.sql.callback.*;
@@ -297,7 +298,7 @@ public abstract class Sqls {
 		else if (Sqls.isNotNeedQuote(v.getClass()))
 			return Sqls.escapeFieldValue(v.toString());
 		else
-			return new StringBuilder("'").append(Sqls.escapeFieldValue(v.toString())).append('\'');
+			return new StringBuilder("'").append(Sqls.escapeFieldValue(Castors.me().castToString(v))).append('\'');
 	}
 
 	/**
