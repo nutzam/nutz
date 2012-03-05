@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 
@@ -275,13 +276,15 @@ public abstract class Mvcs {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void updateRequestAttributes(HttpServletRequest req) {
+		HttpSession sess = getHttpSession();
+
+		// 初始化本次请求的多国语言字符串
 		if (null != getMessageSet()) {
-			HttpSession session = getHttpSession();
 			Map<String, String> msgs = null;
-			if (!hasLocale(session))
-				msgs = setLocale(session, getLocaleName(session));
+			if (!hasLocale(sess))
+				msgs = setLocale(sess, getLocaleName(sess));
 			else
-				msgs = (Map<String, String>) session.getAttribute(MSG);
+				msgs = (Map<String, String>) sess.getAttribute(MSG);
 			// 没有设定特殊的 Local 名字，随便取一个
 			if (null == msgs) {
 				Map<String, Map<String, String>> msgss = getMessageSet();
@@ -291,8 +294,24 @@ public abstract class Mvcs {
 			// 记录到请求中
 			req.setAttribute(MSG, msgs);
 		}
+
+		// 记录一些数据到请求对象中
 		req.setAttribute("base", req.getContextPath());
 		req.setAttribute("$request", req);
+
+		// 将 Session 的内容也 copy 到请求对象中
+		// zzh: 当采用特殊得 SessionProvider 时，这个就派上用场了 ...
+		HttpSession reqSess = req.getSession();
+		if (null != reqSess && null != sess && !reqSess.getId().equals(sess.getId())) {
+			Enumeration<String> em = sess.getAttributeNames();
+			while (em.hasMoreElements()) {
+				String name = em.nextElement();
+				if (null != name) {
+					Object val = sess.getAttribute(name);
+					reqSess.setAttribute(name, val);
+				}
+			}
+		}
 	}
 
 	/**
@@ -436,23 +455,24 @@ public abstract class Mvcs {
 		NAME.set(null);
 		IOC_CONTEXT.set(null);
 	}
-	
+
 	public static SessionProvider sessionProvider;
 	static {
 		sessionProvider = new SessionProvider() {
 			public HttpSession getHttpSession(HttpServletRequest req, boolean createNew) {
 				return req.getSession(createNew);
 			}
+
 			public HttpSession getHttpSession(HttpServletRequest req) {
 				return req.getSession();
 			}
 		};
 	}
-	
+
 	public static HttpSession getHttpSession() {
 		return sessionProvider.getHttpSession(REQ.get());
 	}
-	
+
 	public static HttpSession getHttpSession(boolean createNew) {
 		return sessionProvider.getHttpSession(REQ.get(), createNew);
 	}
