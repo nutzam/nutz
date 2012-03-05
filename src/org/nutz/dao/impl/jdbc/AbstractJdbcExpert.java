@@ -309,4 +309,19 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 		// 执行创建语句
 		dao.execute(sqls.toArray(new Sql[sqls.size()]));
 	}
+	
+	public void formatQuery(DaoStatement daoStatement) {
+		if (daoStatement instanceof Pojo)
+			formatQuery((Pojo)daoStatement);
+		else if (daoStatement instanceof Sql)
+			formatQuery((Sql)daoStatement);
+		else
+			throw Lang.noImplement();
+	}
+
+	public abstract void formatQuery(Pojo pojo);
+	
+	public void formatQuery(Sql sql) {
+		throw Lang.noImplement();
+	}
 }

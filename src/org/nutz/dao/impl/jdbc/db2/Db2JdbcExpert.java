@@ -119,4 +119,14 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 		}
 	}
 
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		if (null != pager && pager.getPageNumber() > 0) {
+			String pre = "SELECT * FROM (SELECT ROW_NUMBER() OVER() AS ROWNUM, T.* FROM (";
+			String last = String.format(	") T) AS A WHERE ROWNUM BETWEEN %d AND %d",
+					pager.getOffset() + 1,
+					pager.getOffset() + pager.getPageSize());
+			sql.setSourceSql(pre + sql.getSourceSql() + last);
+		}
+	}
 }

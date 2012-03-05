@@ -114,6 +114,16 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 		}
 	}
 
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		if (null != pager && pager.getPageNumber() > 0) {
+			// See http://hsqldb.org/doc/guide/ch09.html#select-section
+			sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d offset %d",
+											pager.getPageSize(),
+											pager.getOffset()));
+		}
+	}
+	
 	protected String createResultSetMetaSql(Entity<?> en) {
 		return "SELECT limit 1 1 * FROM " + en.getViewName();
 	}

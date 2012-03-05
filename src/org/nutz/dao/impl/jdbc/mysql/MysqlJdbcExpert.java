@@ -36,6 +36,13 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 		if (null != pager && pager.getPageNumber() > 0)
 			pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
 	}
+	
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		// 需要进行分页
+		if (null != pager && pager.getPageNumber() > 0)
+			sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+	}
 
 	@Override
 	protected String evalFieldType(MappingField mf) {

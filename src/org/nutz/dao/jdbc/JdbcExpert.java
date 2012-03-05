@@ -6,6 +6,7 @@ import java.util.Map;
 import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.SqlType;
 
@@ -88,6 +89,6 @@ public interface JdbcExpert {
 	 * @param pojo
 	 *            Dao 语句
 	 */
-	void formatQuery(Pojo pojo);
+	void formatQuery(DaoStatement daoStatement);
 
 }

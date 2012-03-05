@@ -133,6 +133,19 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 											pager.getOffset()));
 		}
 	}
+	
+	@Override
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		// 需要进行分页
+		if (null != pager && pager.getPageNumber() > 0) {
+			String pre = "SELECT * FROM (SELECT T.*, ROWNUM RN FROM (";
+			String last = String.format(	") T WHERE ROWNUM <= %d) WHERE RN > %d",
+					pager.getOffset() + pager.getPageSize(),
+					pager.getOffset());
+			sql.setSourceSql(pre + sql.getSourceSql() + last);
+		}
+	}
 
 	public String getDatabaseType() {
 		return DB.ORACLE.name();

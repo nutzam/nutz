@@ -10,6 +10,7 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.VarIndex;
@@ -227,4 +228,19 @@ public class NutSql extends NutStatement implements Sql {
 		return super.toStatement(this.getParamMatrix(), this.toPreparedStatement());
 	}
 
+	public NutSql setPager(Pager pager) {
+		this.getContext().setPager(pager);
+		return this;
+	}
+	
+	public void setSourceSql(String sql) {
+		if (literal != null)
+			literal.valueOf(sql);
+		else
+			literal = new SqlLiteral().valueOf(sql);
+	}
+	
+	public String getSourceSql() {
+		return this.literal.toString();
+	}
 }

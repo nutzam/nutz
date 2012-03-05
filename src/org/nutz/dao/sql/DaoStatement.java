@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 
 /**
  * 抽象 Dao 语句
@@ -157,5 +158,6 @@ public interface DaoStatement {
 	 *             回调函数抛出的异常
 	 */
 	void onAfter(Connection conn, ResultSet rs) throws SQLException;
-
+	
+	DaoStatement setPager(Pager pager);
 }

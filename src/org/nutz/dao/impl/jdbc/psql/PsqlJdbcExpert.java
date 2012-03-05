@@ -38,6 +38,15 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 											pager.getPageSize(),
 											pager.getOffset()));
 	}
+	
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		if (null != pager && pager.getPageNumber() > 0) {
+			sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d OFFSET %d",
+											pager.getPageSize(),
+											pager.getOffset()));
+		}
+	}
 
 	public boolean createEntity(Dao dao, Entity<?> en) {
 		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
