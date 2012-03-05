@@ -207,7 +207,6 @@ public class SimpleDaoTest extends DaoCase {
 		}
 		Pager pager = dao.createPager(5, 5);
 		pager.setRecordCount(dao.count(Pet.class));
-		
 		Sql sql = Sqls.queryEntity("select * from t_pet");
 		sql.setEntity(dao.getEntity(Pet.class));
 		sql.setPager(pager);
