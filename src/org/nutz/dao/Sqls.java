@@ -283,6 +283,14 @@ public abstract class Sqls {
 		public SqlCallback records() {
 			return new QueryRecordCallback();
 		}
+		
+		public SqlCallback bool() {
+			return new FetchBooleanCallback();
+		}
+		
+		public SqlCallback bools() {
+			return new QueryBooleanCallback();
+		}
 	}
 
 	/**

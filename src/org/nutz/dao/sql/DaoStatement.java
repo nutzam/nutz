@@ -86,6 +86,7 @@ public interface DaoStatement {
 	Object getResult();
 
 	/**
+	 * <b>无结果的话,会抛NPE</b>
 	 * @return 将结果对象作为 int 返回
 	 */
 	int getInt();
@@ -96,6 +97,7 @@ public interface DaoStatement {
 	String getString();
 
 	/**
+	 * <b>无结果的话,会抛NPE</b>
 	 * @return 将结果对象作为 boolean 返回
 	 */
 	boolean getBoolean();
