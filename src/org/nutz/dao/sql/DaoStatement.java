@@ -95,6 +95,11 @@ public interface DaoStatement {
 	String getString();
 
 	/**
+	 * @return 将结果对象作为 boolean 返回
+	 */
+	boolean getBoolean();
+
+	/**
 	 * 一个 getResult() 函数的变种，将当前对象的 Result 转换成 List<T> 返回。<br>
 	 * 如果 Result 本身就是一个列表，如果第一个元素的类型和参数相符，则直接返回，<br>
 	 * 否则会被用 Castors 智能转换 如果不是列表，则会强制用 ArrayList 包裹
