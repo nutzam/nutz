@@ -18,6 +18,7 @@ import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.NutConfigException;
+import org.nutz.mvc.SessionProvider;
 import org.nutz.mvc.annotation.LoadingBy;
 import org.nutz.mvc.impl.NutLoading;
 import org.nutz.resource.Scans;
@@ -25,6 +26,8 @@ import org.nutz.resource.Scans;
 public abstract class AbstractNutConfig implements NutConfig {
 
 	private static final Log log = Logs.get();
+	
+	private SessionProvider sessionProvider;
 	
 	public AbstractNutConfig(ServletContext context) {
 		Scans.me().init(context);
@@ -128,4 +131,11 @@ public abstract class AbstractNutConfig implements NutConfig {
 		return re;
 	}
 
+	public void setSessionProvider(SessionProvider provider) {
+		this.sessionProvider = provider;
+	}
+	
+	public SessionProvider getSessionProvider() {
+		return sessionProvider;
+	}
 }

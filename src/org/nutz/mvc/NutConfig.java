@@ -132,4 +132,7 @@ public interface NutConfig {
 	 */
 	Context getLoadingContext();
 
+	void setSessionProvider(SessionProvider provider);
+	
+	SessionProvider getSessionProvider();
 }

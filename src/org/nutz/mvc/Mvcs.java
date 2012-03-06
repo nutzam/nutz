@@ -1,7 +1,6 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.Map;
 import java.util.Set;
 
@@ -298,20 +297,6 @@ public abstract class Mvcs {
 		// 记录一些数据到请求对象中
 		req.setAttribute("base", req.getContextPath());
 		req.setAttribute("$request", req);
-
-		// 将 Session 的内容也 copy 到请求对象中
-		// zzh: 当采用特殊得 SessionProvider 时，这个就派上用场了 ...
-		HttpSession reqSess = req.getSession();
-		if (null != reqSess && null != sess && !reqSess.getId().equals(sess.getId())) {
-			Enumeration<String> em = sess.getAttributeNames();
-			while (em.hasMoreElements()) {
-				String name = em.nextElement();
-				if (null != name) {
-					Object val = sess.getAttribute(name);
-					reqSess.setAttribute(name, val);
-				}
-			}
-		}
 	}
 
 	/**
@@ -456,27 +441,11 @@ public abstract class Mvcs {
 		IOC_CONTEXT.set(null);
 	}
 
-	public static SessionProvider sessionProvider;
-	static {
-		sessionProvider = new SessionProvider() {
-			public HttpSession getHttpSession(HttpServletRequest req, boolean createNew) {
-				return req.getSession(createNew);
-			}
-
-			public HttpSession getHttpSession(HttpServletRequest req) {
-				return req.getSession();
-			}
-
-			public void notifyStop() {}
-
-		};
-	}
-
 	public static HttpSession getHttpSession() {
-		return sessionProvider.getHttpSession(REQ.get());
+		return REQ.get().getSession();
 	}
 
 	public static HttpSession getHttpSession(boolean createNew) {
-		return sessionProvider.getHttpSession(REQ.get(), createNew);
+		return REQ.get().getSession(createNew);
 	}
 }

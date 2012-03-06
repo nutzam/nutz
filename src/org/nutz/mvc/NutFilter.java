@@ -33,6 +33,8 @@ public class NutFilter implements Filter {
 	private boolean skipMode;
 
 	private String selfName;
+	
+	private SessionProvider sp;
 
 	public void init(FilterConfig conf) throws ServletException {
 		Mvcs.setServletContext(conf.getServletContext());
@@ -52,10 +54,10 @@ public class NutFilter implements Filter {
 			}
 		} else
 			this.skipMode = true;
+		sp = config.getSessionProvider();
 	}
 
 	public void destroy() {
-		Mvcs.sessionProvider.notifyStop();
 		Mvcs.resetALL();
 		Mvcs.set(selfName, null, null);
 		if (handler != null)
@@ -67,6 +69,8 @@ public class NutFilter implements Filter {
 			throws IOException, ServletException {
 		Mvcs.resetALL();
 		try {
+			if (sp != null)
+				req = sp.filter((HttpServletRequest)req, (HttpServletResponse)resp, Mvcs.getServletContext());
 			Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
 			if (!skipMode) {
 				RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);

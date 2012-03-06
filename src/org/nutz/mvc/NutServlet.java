@@ -23,6 +23,8 @@ public class NutServlet extends HttpServlet {
 	private ActionHandler handler;
 	
 	private String selfName;
+	
+	private SessionProvider sp;
 
 	@Override
 	public void init(ServletConfig servletConfig) throws ServletException {
@@ -32,10 +34,10 @@ public class NutServlet extends HttpServlet {
 		NutConfig config = new ServletNutConfig(servletConfig);
 		Mvcs.setNutConfig(config);
 		handler = new ActionHandler(config);
+		sp = config.getSessionProvider();
 	}
 
 	public void destroy() {
-		Mvcs.sessionProvider.notifyStop();
 		Mvcs.resetALL();
 		Mvcs.set(selfName, null, null);
 		if(handler != null)
@@ -48,6 +50,8 @@ public class NutServlet extends HttpServlet {
 			throws ServletException, IOException {
 		Mvcs.resetALL();
 		try {
+			if (sp != null)
+				req = sp.filter(req, resp, getServletContext());
 			Mvcs.set(selfName, req, resp);
 			if (!handler.handle(req, resp))
 				resp.sendError(404);
