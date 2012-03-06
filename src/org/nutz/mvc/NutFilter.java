@@ -31,14 +31,14 @@ public class NutFilter implements Filter {
 	private Pattern ignorePtn;
 
 	private boolean skipMode;
-	
+
 	private String selfName;
 
 	public void init(FilterConfig conf) throws ServletException {
 		Mvcs.setServletContext(conf.getServletContext());
 		this.selfName = conf.getFilterName();
 		Mvcs.set(selfName, null, null);
-		
+
 		FilterNutConfig config = new FilterNutConfig(conf);
 		Mvcs.setNutConfig(config);
 		// 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
@@ -55,9 +55,10 @@ public class NutFilter implements Filter {
 	}
 
 	public void destroy() {
+		Mvcs.sessionProvider.notifyStop();
 		Mvcs.resetALL();
 		Mvcs.set(selfName, null, null);
-		if(handler !=null)
+		if (handler != null)
 			handler.depose();
 		Mvcs.setServletContext(null);
 	}
@@ -74,11 +75,12 @@ public class NutFilter implements Filter {
 						return;
 				}
 			}
-			//更新 Request 必要的属性
+			// 更新 Request 必要的属性
 			Mvcs.updateRequestAttributes((HttpServletRequest) req);
 			// 本过滤器没有找到入口函数，继续其他的过滤器
 			chain.doFilter(req, resp);
-		} finally {
+		}
+		finally {
 			Mvcs.resetALL();
 		}
 	}

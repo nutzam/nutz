@@ -35,6 +35,7 @@ public class NutServlet extends HttpServlet {
 	}
 
 	public void destroy() {
+		Mvcs.sessionProvider.notifyStop();
 		Mvcs.resetALL();
 		Mvcs.set(selfName, null, null);
 		if(handler != null)

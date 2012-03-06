@@ -466,6 +466,9 @@ public abstract class Mvcs {
 			public HttpSession getHttpSession(HttpServletRequest req) {
 				return req.getSession();
 			}
+
+			public void notifyStop() {}
+
 		};
 	}
 
