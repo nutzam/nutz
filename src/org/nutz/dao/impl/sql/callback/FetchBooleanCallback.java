@@ -6,7 +6,6 @@ import java.sql.SQLException;
 
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
-import org.nutz.lang.util.LinkedArray;
 
 /**
  * 这个回调将返回一个 boolean 值
@@ -16,10 +15,9 @@ import org.nutz.lang.util.LinkedArray;
 public class FetchBooleanCallback implements SqlCallback {
 
 	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
-		LinkedArray<Boolean> array = new LinkedArray<Boolean>();
 		if (null != rs && rs.next())
-			array.push(rs.getBoolean(1));
-		return array;
+			return rs.getBoolean(1);
+		return null;
 	}
 
 }
