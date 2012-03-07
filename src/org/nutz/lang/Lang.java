@@ -14,6 +14,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -1817,6 +1819,29 @@ public abstract class Lang {
 		}
 		catch (ClassNotFoundException e) {
 			throw Lang.wrapThrow(e);
+		}
+	}
+	
+	public static String md5(String str) {
+		if (str == null)
+			str = "";
+		try {
+			MessageDigest md5 = MessageDigest.getInstance("md5");
+			md5.update(str.getBytes(Encoding.CHARSET_UTF8));
+			byte[] data = md5.digest();
+			StringBuilder sb = new StringBuilder();
+			for (byte b : data) {
+				String s = Integer.toHexString(b);
+				if (s.length() == 1)
+					sb.append('0').append(s);
+				else if (s.length() == 2)
+					sb.append(s);
+				else
+					sb.append(s.substring(s.length() - 2, s.length()));
+			}
+			return sb.toString();
+		} catch (NoSuchAlgorithmException e) {
+			throw Lang.impossible();
 		}
 	}
 }

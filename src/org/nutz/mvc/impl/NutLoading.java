@@ -25,6 +25,7 @@ import org.nutz.mvc.Loading;
 import org.nutz.mvc.LoadingException;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
+import org.nutz.mvc.SessionProvider;
 import org.nutz.mvc.Setup;
 import org.nutz.mvc.UrlMapping;
 import org.nutz.mvc.ViewMaker;
@@ -32,6 +33,7 @@ import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.ChainBy;
 import org.nutz.mvc.annotation.IocBy;
 import org.nutz.mvc.annotation.Localization;
+import org.nutz.mvc.annotation.SessionBy;
 import org.nutz.mvc.annotation.SetupBy;
 import org.nutz.mvc.annotation.UrlMappingBy;
 import org.nutz.mvc.annotation.Views;
@@ -90,6 +92,9 @@ public class NutLoading implements Loading {
 			 * 分析本地化字符串
 			 */
 			evalLocalization(config, mainModule);
+			
+			//初始化SessionProvider
+			createSessionProvider(config, mainModule);
 
 			/*
 			 * 执行用户自定义 Setup
@@ -292,6 +297,21 @@ public class NutLoading implements Loading {
 		} else if (log.isInfoEnabled())
 			log.info("!!!Your application without @IocBy supporting");
 	}
+	
+	@SuppressWarnings({"all"})
+	private void createSessionProvider(NutConfig config, Class<?> mainModule) throws Exception {
+		SessionBy sb = mainModule.getAnnotation(SessionBy.class);
+		if (sb != null) {
+			SessionProvider sp = null;
+			if (sb.args() != null && sb.args().length == 1 && sb.args()[0].startsWith("ioc:"))
+				sp = config.getIoc().get(sb.value(), sb.args()[0].substring(4));
+			else
+				sp = Mirror.me(sb.value()).born(sb.args());
+			if (log.isInfoEnabled())
+				log.info("SessionBy --> "+ sp);
+			config.setSessionProvider(sp);
+		}
+	}
 
 
 	public void depose(NutConfig config) {
@@ -309,6 +329,9 @@ public class NutLoading implements Loading {
 			throw new LoadingException(e);
 		}
 		finally {
+			SessionProvider sp = config.getSessionProvider();
+			if (sp != null)
+				sp.notifyStop();
 			// If the application has Ioc, depose it
 			Ioc ioc = config.getIoc();
 			if (null != ioc)

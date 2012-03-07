@@ -1,9 +1,6 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -19,6 +16,7 @@ import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Abc;
@@ -201,4 +199,26 @@ public class SimpleDaoTest extends DaoCase {
 		dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
 	}
 
+	@Test
+	public void test_sql_pager() {
+		dao.create(Pet.class, true);
+		for (int i = 0; i < 100; i++) {
+			dao.insert(Pet.class, Chain.make("name", "record" + i).add("nickName", "Time="+System.currentTimeMillis()));
+		}
+		Pager pager = dao.createPager(5, 5);
+		pager.setRecordCount(dao.count(Pet.class));
+		Sql sql = Sqls.queryEntity("select * from t_pet");
+		sql.setEntity(dao.getEntity(Pet.class));
+		sql.setPager(pager);
+		dao.execute(sql);
+		
+		List<Pet> pets = sql.getList(Pet.class);
+		assertNotNull(pets);
+		assertEquals(5, pets.size());
+		assertEquals("record20", pets.get(0).getName());
+		assertEquals("record21", pets.get(1).getName());
+		assertEquals("record22", pets.get(2).getName());
+		assertEquals("record23", pets.get(3).getName());
+		assertEquals("record24", pets.get(4).getName());
+	}
 }

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 
 /**
  * 抽象 Dao 语句
@@ -85,6 +86,7 @@ public interface DaoStatement {
 	Object getResult();
 
 	/**
+	 * <b>无结果的话,会抛NPE</b>
 	 * @return 将结果对象作为 int 返回
 	 */
 	int getInt();
@@ -93,6 +95,12 @@ public interface DaoStatement {
 	 * @return 将结果对象作为 String 返回
 	 */
 	String getString();
+
+	/**
+	 * <b>无结果的话,会抛NPE</b>
+	 * @return 将结果对象作为 boolean 返回
+	 */
+	boolean getBoolean();
 
 	/**
 	 * 一个 getResult() 函数的变种，将当前对象的 Result 转换成 List<T> 返回。<br>
@@ -157,5 +165,6 @@ public interface DaoStatement {
 	 *             回调函数抛出的异常
 	 */
 	void onAfter(Connection conn, ResultSet rs) throws SQLException;
-
+	
+	DaoStatement setPager(Pager pager);
 }

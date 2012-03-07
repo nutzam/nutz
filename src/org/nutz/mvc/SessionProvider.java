@@ -1,11 +1,12 @@
 package org.nutz.mvc;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+import javax.servlet.http.HttpServletResponse;
 
 public interface SessionProvider {
 
-	public HttpSession getHttpSession(HttpServletRequest req);
+	HttpServletRequest filter(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext);
 	
-	public HttpSession getHttpSession(HttpServletRequest req, boolean createNew);
+	void notifyStop();
 }

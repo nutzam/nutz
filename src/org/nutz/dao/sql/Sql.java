@@ -95,4 +95,7 @@ public interface Sql extends DaoStatement {
 	 */
 	Sql duplicate();
 
+	public void setSourceSql(String sql) ;
+	
+	public String getSourceSql() ;
 }

@@ -4,5 +4,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SQLFileParsingTest.class, SqlImplTest.class, CustomizedSqlsTest.class})
-public class AllSqls {}
+@Suite.SuiteClasses({ SQLFileParsingTest.class, SqlImplTest.class, CustomizedSqlsTest.class, CallbackTest.class })
+public class AllSqls {
+}

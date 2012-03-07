@@ -157,8 +157,24 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 			pojo.append(Pojos.Items.wrapf(")t)tt where __rn__ > %d", pager.getOffset()));
 		}
 	}
-
+	
 	@Override
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		// 需要进行分页
+		if (null != pager && pager.getPageNumber() > 0) {
+			// -----------------------------------------------------
+			// TODO XXX 这个写法灰常暴力!!But , it works!!!! 期待更好的写法
+			if (!sql.getSourceSql().toUpperCase().startsWith("SELECT "))
+				return;// 以免出错.
+			String xSql = sql.getSourceSql().substring(6);
+			String pre = String.format(	"select * from(select row_number()over(order by __tc__)__rn__,* from(select top %d 0 __tc__, ",
+															pager.getOffset() + pager.getPageSize());
+			String last = String.format(")t)tt where __rn__ > %d", pager.getOffset());
+			sql.setSourceSql(pre + xSql + last);
+		}
+	}
+
 	protected String createResultSetMetaSql(Entity<?> en) {
 		return "SELECT top 1 * FROM " + en.getViewName();
 	}
