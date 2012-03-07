@@ -44,7 +44,7 @@ public class JsonEntityField {
 			String getBy = jf.getBy();
 			if (Strings.isBlank(getBy))
 				getBy = jf.by();
-			if (!Strings.isBlank(jf.by()))
+			if (!Strings.isBlank(getBy))
 				jef.ejecting = new EjectBySimpleEL(getBy);
 			if (!Strings.isBlank(jf.value()))
 				jef.name = jf.value();
