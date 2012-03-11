@@ -813,8 +813,6 @@ public abstract class Files {
 		try {
 			ins1 = Streams.fileIn(f1);
 			ins2 = Streams.fileIn(f2);
-			if (null == ins1 || null == ins2)
-				return false;
 			return Streams.equals(ins1, ins2);
 		}
 		catch (IOException e) {
@@ -906,6 +904,22 @@ public abstract class Files {
 						&& (null == suffix || f.getName().endsWith(suffix));
 			}
 		});
+	}
+	
+	/**
+	 * 判断两个文件内容是否相等
+	 * 
+	 * @param f1
+	 *            文件对象
+	 * @param f2
+	 *            文件对象
+	 * @return <ul>
+	 *         <li>true: 两个文件内容完全相等
+	 *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
+	 *         </ul>
+	 */
+	public static boolean equals(File f1, File f2) {
+		return isEquals(f1, f2);
 	}
 
 }
