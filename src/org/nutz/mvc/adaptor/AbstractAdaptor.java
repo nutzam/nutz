@@ -3,6 +3,7 @@ package org.nutz.mvc.adaptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRequest;
@@ -13,13 +14,17 @@ import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.MethodParamNamesScaner;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
-import org.nutz.mvc.adaptor.injector.ErrorInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
 import org.nutz.mvc.adaptor.injector.IocObjInjector;
+import org.nutz.mvc.adaptor.injector.NameInjector;
+import org.nutz.mvc.adaptor.injector.PathArgInjector;
 import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
 import org.nutz.mvc.adaptor.injector.RequestInjector;
 import org.nutz.mvc.adaptor.injector.ResponseInjector;
@@ -37,7 +42,9 @@ import org.nutz.mvc.annotation.Param;
  * @author juqkai(juqkai@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
-
+	
+	private static final Log log = Logs.get();
+	
 	protected ParamInjector[] injs;
 
 	protected Method method;
@@ -87,8 +94,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 			// 子类也不能确定，如何适配这个参数，那么做一个标记，如果
 			// 这个参数被 ParamInjector 适配到，就会抛错。
 			// 这个设计是因为了 "路径参数"
-			if (null == injs[i])
-				injs[i] = new ErrorInjector(method, i);
+			if (null == injs[i]) {
+				injs[i] = paramNameInject(method, i);
+			}
 		}
 	}
 
@@ -170,5 +178,17 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 									HttpServletResponse resp,
 									String[] pathArgs) {
 		return null;
+	}
+	
+	/**
+	 * 这是最后的大招了,查一下形参的名字,作为@Param("形参名")进行处理
+	 */
+	protected ParamInjector paramNameInject(Method method, int index) {
+		List<String> names = MethodParamNamesScaner.getParamNames(method);
+		if (names != null)
+			return new NameInjector(names.get(index), method.getParameterTypes()[index], null);
+		else if (log.isInfoEnabled())
+			log.info("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index="+index);
+		return new PathArgInjector(method.getParameterTypes()[index]);
 	}
 }

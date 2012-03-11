@@ -12,7 +12,6 @@ import org.nutz.mvc.adaptor.injector.MapPairInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
-import org.nutz.mvc.adaptor.injector.PathArgInjector;
 import org.nutz.mvc.annotation.Param;
 
 /**
@@ -40,7 +39,7 @@ public class PairAdaptor extends AbstractAdaptor {
 
 	    
 		if (null == param)
-			return new PathArgInjector(clazz);
+			return null;//让超类来处理吧,我不管了!!
 		String pm = param.value();
 		// POJO
 		if ("..".equals(pm)) {
