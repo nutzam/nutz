@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.lang.Streams;
 import org.nutz.lang.util.Disks;
 
 /**
@@ -799,16 +800,21 @@ public abstract class Files {
 	 *            文件1
 	 * @param f2
 	 *            文件2
-	 * @return 是否相等
+	 * @return <ul>
+	 *         <li>true: 两个文件内容完全相等
+	 *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
+	 *         </ul>
 	 */
 	public static boolean isEquals(File f1, File f2) {
-		if (!f1.isFile() || !f2.isFile())
+		if (null == f1 || null == f2 || !f1.isFile() || !f2.isFile())
 			return false;
 		InputStream ins1 = null;
 		InputStream ins2 = null;
 		try {
-			ins1 = new BufferedInputStream(new FileInputStream(f1));
-			ins2 = new BufferedInputStream(new FileInputStream(f2));
+			ins1 = Streams.fileIn(f1);
+			ins2 = Streams.fileIn(f2);
+			if (null == ins1 || null == ins2)
+				return false;
 			return Streams.equals(ins1, ins2);
 		}
 		catch (IOException e) {
@@ -900,41 +906,6 @@ public abstract class Files {
 						&& (null == suffix || f.getName().endsWith(suffix));
 			}
 		});
-	}
-
-	/**
-	 * 判断两个文件内容是否相等
-	 * 
-	 * @param f1
-	 *            文件对象
-	 * @param f2
-	 *            文件对象
-	 * @return <ul>
-	 *         <li>true: 两个文件内容完全相等
-	 *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
-	 *         </ul>
-	 */
-	public static boolean equals(File f1, File f2) {
-		if (null == f1 || null == f2)
-			return false;
-		InputStream ins1, ins2;
-		ins1 = Streams.fileIn(f1);
-		ins2 = Streams.fileIn(f2);
-		if (null == ins1 || null == ins2) {
-			return false;
-		}
-
-		try {
-			return Streams.equals(ins1, ins2);
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-		finally {
-			Streams.safeClose(ins1);
-			Streams.safeClose(ins2);
-		}
-
 	}
 
 }
