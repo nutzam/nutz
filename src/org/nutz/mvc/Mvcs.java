@@ -133,7 +133,7 @@ public abstract class Mvcs {
 	 * 判断当前会话是够设置了特殊的 Locale 的名称。
 	 */
 	public static boolean hasLocaleName(HttpSession session) {
-		return Strings.isBlank(getLocaleName(session));
+		return !Strings.isBlank(getLocaleName(session));
 	}
 
 	/**
