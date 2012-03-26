@@ -1,5 +1,7 @@
 package org.nutz.dao.impl.sql;
 
+import java.sql.Blob;
+import java.sql.Clob;
 import java.util.List;
 
 import org.nutz.castor.Castors;
@@ -82,7 +84,6 @@ public abstract class NutStatement implements DaoStatement {
 		return context.getUpdateCount();
 	}
 
-	//TODO 对象很大的时候,很容易爆内存
 	public String toString() {
 		String sql = this.toPreparedStatement();
 		StringBuilder sb = new StringBuilder(sql);
@@ -95,7 +96,7 @@ public abstract class NutStatement implements DaoStatement {
 			String[][] sss = new String[mtrx.length][mtrx[0].length];
 			for (int row = 0; row < mtrx.length; row++)
 				for (int col = 0; col < mtrx[0].length; col++) {
-					String s = Strings.sNull(Castors.me().castToString(mtrx[row][col]), "NULL");
+					String s = param2String(mtrx[row][col]);
 					maxes[col] = Math.max(maxes[col], s.length());
 					sss[row][col] = s;
 				}
@@ -153,5 +154,21 @@ public abstract class NutStatement implements DaoStatement {
 			sb.append(ss[i]);
 
 		return sb.toString();
+	}
+	
+	protected String param2String(Object obj) {
+		if (obj == null)
+			return "NULL";
+		else {
+			if (obj instanceof Blob) {
+				Blob blob = (Blob)obj;
+				return "Blob(" + blob.hashCode() + ")";
+			} else if (obj instanceof Clob) {
+				Clob clob = (Clob)obj;
+				return "Clob(" +clob.hashCode() + ")";
+			} else {
+				return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
+			}
+		}
 	}
 }
