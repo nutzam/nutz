@@ -726,6 +726,12 @@ public class JsonTest {
 		assertEquals("Wendal", map.get("obj2"));
 	}
 	
+	@Test
+	//#184
+	public void test_setting(){
+	    
+	}
+	
 	public static String justOK(Object obj){
 		return "I am OK";
 	}

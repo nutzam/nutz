@@ -10,6 +10,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -1732,6 +1733,21 @@ public abstract class Lang {
 	public static Type getFieldType(Mirror<?> me, String field) throws NoSuchFieldException {
 		return getFieldType(me, me.getField(field));
 	}
+	
+	/**
+	 * 当一个类使用<T, K> 来定义泛型时, 本方法返回类的一个方法所有参数的具体类型
+	 * @param me
+	 * @param method
+	 * @return
+	 */
+	public static Type[] getMethodParamTypes(Mirror<?> me, Method method){
+	    Type[] types = method.getGenericParameterTypes();
+	    List<Type> ts = new ArrayList<Type>();
+	    for(Type type : types){
+	        ts.add(getGenericsType(me, type));
+	    }
+	    return ts.toArray(new Type[ts.size()]);
+	}
 
 	/**
 	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
@@ -1742,17 +1758,27 @@ public abstract class Lang {
 	 */
 	public static Type getFieldType(Mirror<?> me, Field field) {
 		Type type = field.getGenericType();
-		Type[] types = me.getGenericsTypes();
-		if (type instanceof TypeVariable && types != null && types.length > 0) {
-			Type[] tvs = me.getType().getTypeParameters();
-			for (int i = 0; i < tvs.length; i++) {
-				if (type.equals(tvs[i])) {
-					type = me.getGenericsType(i);
-					break;
-				}
-			}
-		}
-		return type;
+		return getGenericsType(me, type);
+	}
+	
+	/**
+	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
+	 * @param me
+	 * @param type
+	 * @return
+	 */
+	public static Type getGenericsType(Mirror<?> me, Type type){
+	    Type[] types = me.getGenericsTypes();
+        if (type instanceof TypeVariable && types != null && types.length > 0) {
+            Type[] tvs = me.getType().getTypeParameters();
+            for (int i = 0; i < tvs.length; i++) {
+                if (type.equals(tvs[i])) {
+                    type = me.getGenericsType(i);
+                    break;
+                }
+            }
+        }
+        return type;
 	}
 
 	/**

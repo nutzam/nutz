@@ -1,6 +1,7 @@
 package org.nutz.json.entity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 
@@ -27,8 +28,33 @@ public class JsonEntityField {
 	
 	private boolean hasAnno;
 
+	/**
+	 * 根据名称获取字段实体, 默认以set优先
+	 * @param mirror
+	 * @param name
+	 * @return
+	 */
+	public static JsonEntityField eval(Mirror<?> mirror, String name){
+	    Method[] methods = mirror.findSetters(name);
+	    if(methods.length == 1){
+	        Type[] types = Lang.getMethodParamTypes(mirror, methods[0]);
+	        JsonEntityField jef = new JsonEntityField();
+	        jef.genericType = types[0];
+	        fillJef(jef, mirror, name);
+	    }else {
+	        try {
+                return eval(mirror, mirror.getField(name));
+            } catch (NoSuchFieldException e) {
+                return null;
+            }
+	    }
+	    return null;
+	}
 	@SuppressWarnings("deprecation")
 	public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
+	    if(fld == null){
+	        return null;
+	    }
 		JsonField jf = fld.getAnnotation(JsonField.class);
 		if (null != jf && jf.ignore())
 			return null;
@@ -52,14 +78,18 @@ public class JsonEntityField {
 				jef.createBy = jf.createBy();
 			jef.hasAnno = true;
 		}
-		if (null == jef.ejecting )
-			jef.ejecting = mirror.getEjecting(fld.getName());
-		if (null == jef.injecting)
-			jef.injecting = mirror.getInjecting(fld.getName());
-		if (null == jef.name)
-			jef.name = fld.getName();
+		fillJef(jef, mirror, fld.getName());
 
 		return jef;
+	}
+	
+	private static void fillJef(JsonEntityField jef, Mirror<?> mirror, String name){
+	    if (null == jef.ejecting )
+            jef.ejecting = mirror.getEjecting(name);
+        if (null == jef.injecting)
+            jef.injecting = mirror.getInjecting(name);
+        if (null == jef.name)
+            jef.name = name;
 	}
 
 	private JsonEntityField() {}
