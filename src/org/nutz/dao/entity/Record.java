@@ -22,10 +22,10 @@ import org.nutz.lang.Lang;
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class Record implements Map<String, Object>,java.io.Serializable {
+public class Record implements Map<String, Object>, java.io.Serializable {
 
 	/**
-	 * @author mawenming  at Jan 11, 2011 2:20:09 PM
+	 * @author mawenming at Jan 11, 2011 2:20:09 PM
 	 */
 	private static final long serialVersionUID = 4614645901639942051L;
 
@@ -37,15 +37,15 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 			for (int i = 1; i <= count; i++) {
 				String name = meta.getColumnLabel(i);
 				switch (meta.getColumnType(i)) {
-				case Types.TIMESTAMP : {
+				case Types.TIMESTAMP: {
 					re.set(name, rs.getTimestamp(name));
 					break;
 				}
-				case Types.CLOB : {
+				case Types.CLOB: {
 					re.set(name, rs.getString(i));
 					break;
 				}
-				default :
+				default:
 					re.set(name, rs.getObject(i));
 					break;
 				}
@@ -59,7 +59,7 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 	}
 
 	private Map<String, Object> map;
-	
+
 	private Map<String, Integer> sqlTypeMap;
 
 	public Record() {
@@ -107,15 +107,28 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 	}
 
 	public int getInt(String name) {
-		return Castors.me().castTo(get(name), int.class);
+		try {
+			Object val = get(name);
+			if (null == val)
+				return -1;
+			return Castors.me().castTo(val, int.class);
+		}
+		catch (Exception e) {}
+		return -1;
 	}
 
 	public String getString(String name) {
-		return Castors.me().castToString(get(name));
+		Object val = get(name);
+		if (null == val)
+			return null;
+		return Castors.me().castToString(val);
 	}
 
 	public Timestamp getTimestamp(String name) {
-		return Castors.me().castTo(get(name), Timestamp.class);
+		Object val = get(name);
+		if (null == val)
+			return null;
+		return Castors.me().castTo(val, Timestamp.class);
 	}
 
 	public String toJson(JsonFormat format) {
@@ -193,12 +206,12 @@ public class Record implements Map<String, Object>,java.io.Serializable {
 		return Chain.from(map);
 	}
 
-	//===========================================
-	
+	// ===========================================
+
 	public int getSqlType(String name) {
 		return sqlTypeMap.get(name.toLowerCase());
 	}
-	
+
 	protected void setSqlType(String name, int value) {
 		sqlTypeMap.put(name.toLowerCase(), value);
 	}
