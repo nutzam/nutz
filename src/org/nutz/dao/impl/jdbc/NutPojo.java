@@ -13,7 +13,6 @@ import java.util.List;
 import org.nutz.dao.Chain;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.NutStatement;
-import org.nutz.dao.impl.sql.pojo.SqlTypePItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PItem;
@@ -91,22 +90,11 @@ public class NutPojo extends NutStatement implements Pojo {
 		}
 		return re;
 	}
-
-	private String sql=null;
-	public NutPojo setSql(String sql) {
-		this.sql=sql;
-		return this;
-	}
 	
 	public String toPreparedStatement() {
 		StringBuilder sb = new StringBuilder();
-		for (PItem item : items) {
-			if (item instanceof SqlTypePItem && sql!=null) {//支持原生sql的语句生成
-				sb.append(sql);
-			}else{
-				item.joinSql(getEntity(), sb);
-			}
-		}
+		for (PItem item : items) 
+			item.joinSql(getEntity(), sb);
 		return sb.toString();
 	}
 
