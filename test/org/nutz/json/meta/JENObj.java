@@ -34,5 +34,9 @@ public class JENObj {
 	public void setAge(int age) {
 		this.age = age;
 	}
+	
+	public void setName2(String name){
+	    this.name = name;
+	}
 
 }

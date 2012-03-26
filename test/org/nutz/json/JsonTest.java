@@ -21,6 +21,7 @@ import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
+import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.json.meta.TestBy;
@@ -729,7 +730,9 @@ public class JsonTest {
 	@Test
 	//#184
 	public void test_setting(){
-	    
+	    String j = "{name2:'abc'}";
+	    JENObj jj = Json.fromJson(JENObj.class, j);
+	    assertEquals("abc", jj.getName());
 	}
 	
 	public static String justOK(Object obj){

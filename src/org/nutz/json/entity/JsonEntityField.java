@@ -41,14 +41,25 @@ public class JsonEntityField {
 	        JsonEntityField jef = new JsonEntityField();
 	        jef.genericType = types[0];
 	        fillJef(jef, mirror, name);
+	        return jef;
 	    }else {
 	        try {
                 return eval(mirror, mirror.getField(name));
             } catch (NoSuchFieldException e) {
+                for(Field field : mirror.getFields()){
+                    JsonField jf = field.getAnnotation(JsonField.class);
+                    if(jf == null){
+                        continue;
+                    }
+                    if (null != jf && jf.ignore())
+                        return null;
+                    if(jf.value().equals(name)){
+                        return eval(mirror, field);
+                    }
+                }
                 return null;
             }
 	    }
-	    return null;
 	}
 	@SuppressWarnings("deprecation")
 	public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
@@ -85,7 +96,10 @@ public class JsonEntityField {
 	
 	private static void fillJef(JsonEntityField jef, Mirror<?> mirror, String name){
 	    if (null == jef.ejecting )
-            jef.ejecting = mirror.getEjecting(name);
+	        // @ TODO 如果是纯方法, 没有字段的形式进行注入时并没有getter方法, 但是这里的实现可能有点欠妥.
+	        try{
+	            jef.ejecting = mirror.getEjecting(name);
+	        }catch(Exception e){}
         if (null == jef.injecting)
             jef.injecting = mirror.getInjecting(name);
         if (null == jef.name)

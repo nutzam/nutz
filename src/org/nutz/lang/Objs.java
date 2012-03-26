@@ -1,8 +1,6 @@
 package org.nutz.lang;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +14,6 @@ import java.util.Stack;
 import org.nutz.castor.Castors;
 import org.nutz.el.El;
 import org.nutz.json.entity.JsonEntityField;
-import org.nutz.lang.inject.Injecting;
 import org.nutz.lang.util.Context;
 
 /**
@@ -273,47 +270,23 @@ public class Objs {
             if(jef == null){
                 continue;
             }
+            
             Object val = map.get(jef.getName());
             if(val == null){
                 continue;
             }
             
-            Injecting in = me.getInjecting(key);
             if(isLeaf(val)){
                 if(val instanceof El){
                     val = ((El)val).eval(context);
                 }
-                in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(jef.getGenericType())));
+                jef.setValue(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(jef.getGenericType())));
                 continue;
             }
             path.push(key);
             Object o = jef.createValue(obj, inject(val, jef.getGenericType()));
-            in.inject(obj, o);
+            jef.setValue(obj, o);
         }
-        
-//        for(Field field : me.getFields()){
-//            JsonEntityField jef = JsonEntityField.eval(me, field);
-//            if(jef == null){
-//                continue;
-//            }
-//            Object val = map.get(jef.getName());
-//            if(val == null){
-//                continue;
-//            }
-//            
-//            Injecting in = me.getInjecting(field.getName());
-//            if(isLeaf(val)){
-//                Type t = Lang.getFieldType(me, field);
-//                if(val instanceof El){
-//                    val = ((El)val).eval(context);
-//                }
-//                in.inject(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(t)));
-//                continue;
-//            }
-//            path.push(field.getName());
-//            Object o = jef.createValue(obj, inject(val, Lang.getFieldType(me, field)));
-//            in.inject(obj, o);
-//        }
         return obj;
     }
     
