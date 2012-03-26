@@ -144,6 +144,8 @@ public class NutDaoExecutor implements DaoExecutor {
 		}
 		// If any SQLException happend, throw out the SQL string
 		catch (SQLException e) {
+			if (log.isInfoEnabled())
+				log.debug("SQLException", e);
 			throw new DaoException(format(	"!Nutz SQL Error: '%s'\nPreparedStatement: \n'%s'",
 											st.toString(),
 											st.toPreparedStatement()), e);

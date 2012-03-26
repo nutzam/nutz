@@ -82,6 +82,7 @@ public abstract class NutStatement implements DaoStatement {
 		return context.getUpdateCount();
 	}
 
+	//TODO 对象很大的时候,很容易爆内存
 	public String toString() {
 		String sql = this.toPreparedStatement();
 		StringBuilder sb = new StringBuilder(sql);
