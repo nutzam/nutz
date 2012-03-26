@@ -19,10 +19,9 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.Record;
-import org.nutz.dao.impl.jdbc.NutPojo;
+import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByLinkedFieldLinkVisitor;
-import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoDeleteLinkVisitor;
 import org.nutz.dao.impl.link.DoFetchLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertLinkVisitor;
@@ -42,8 +41,6 @@ import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
-import org.nutz.dao.sql.SqlCallback;
-import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.ContinueLoop;
@@ -373,44 +370,6 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public <T> List<T> query(Class<T> classOfT, Condition cnd) {
 		return query(classOfT, cnd, Pojos.Items.pager(cnd));
-	}
-	
-	/*
-	 * 查询sql并把结果放入传入的class组成的List中,必须再修改了NutPojo类的toPreparedStatement方法
-	 */
-	public <T> List<T> query(Class<T> classOfT,String sql,Condition cnd, Pager pager) {
-		NutPojo pojo = new NutPojo();
-		pojo.setEntity(getEntity(classOfT));
-		pojo.setSqlType(SqlType.SELECT)
-						.setSql(sql)
-						.setPager(pager)
-						.setAfter(_pojo_queryEntity)
-						.append(Pojos.Items.cnd(cnd))
-						.addParamsBy("*");
-		expert.formatQuery(pojo);
-		_exec(pojo);
-		return pojo.getList(classOfT);
-	}
-	
-	/*
-	 * 查询某sql的结果条数
-	 */
-	public int queryCount(String sql) {
-		Sql sql2 = Sqls.create("select count(1) FROM ("+sql+")");
-		sql2.setCallback(new SqlCallback() {
-			private int tmp_l;
-			@Override
-			public Object invoke(Connection conn, ResultSet rs, Sql sql)
-					throws SQLException {
-				while (rs.next()){
-					tmp_l=rs.getInt(1);
-				}
-				return tmp_l;
-			}
-			
-		});
-		execute(sql2);
-		return sql2.getInt();
 	}
 
 	public <T> int each(Class<T> classOfT, Condition cnd, Pager pager, Each<T> callback) {
@@ -796,5 +755,9 @@ public class NutDao extends DaoSupport implements Dao {
 		re.myObj = obj.getClass().isArray() ? Lang.array2list((Object[]) obj) : obj;
 		return re;
 	}
+
+	//---------------------------------------------------------------
+	//专属于NutDao的一些帮助方法
+
 
 }
