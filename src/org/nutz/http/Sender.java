@@ -2,12 +2,15 @@ package org.nutz.http;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.List;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
@@ -45,30 +48,28 @@ public abstract class Sender {
 
 	public abstract Response send() throws HttpException;
 
-	protected Response createResponse(Map<String, String> reHeaders) throws IOException {
+	protected Response createResponse(Map<String, String> reHeaders)
+			throws IOException {
 		Response rep = null;
 		if (reHeaders != null && reHeaders.get(null) != null) {
 			rep = new Response(reHeaders);
-			if (rep.isOK()){
-				InputStream is1=conn.getInputStream();
-				InputStream is2=null;
-				String encoding=conn.getContentEncoding();
-				//如果采用了压缩,则需要处理否则都是乱码
-				if(encoding!=null && encoding.contains("gzip")){
-					 is2 = new GZIPInputStream (is1);
-	            		}
-				else if(encoding!=null && encoding.contains("deflate")){
-	            	 		 is2 = new InflaterInputStream (is1);
-	            		}
-	            		else
-	           		 {
-	            	 		is2 = is1;
-	            		}
+			if (rep.isOK()) {
+				InputStream is1 = conn.getInputStream();
+				InputStream is2 = null;
+				String encoding = conn.getContentEncoding();
+				// 如果采用了压缩,则需要处理否则都是乱码
+				if (encoding != null && encoding.contains("gzip")) {
+					is2 = new GZIPInputStream(is1);
+				} else if (encoding != null && encoding.contains("deflate")) {
+					is2 = new InflaterInputStream(is1);
+				} else {
+					is2 = is1;
+				}
 
-				BufferedInputStream is=new BufferedInputStream(is2);
-				rep.setStream(is);				
+				BufferedInputStream is = new BufferedInputStream(is2);
+				rep.setStream(is);
 			}
-				
+
 			else
 				rep.setStream(Lang.ins(""));
 		}
