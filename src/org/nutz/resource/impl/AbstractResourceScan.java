@@ -3,13 +3,10 @@ package org.nutz.resource.impl;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
@@ -17,15 +14,11 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.ResourceScan;
+import org.nutz.resource.Scans;
 
 public abstract class AbstractResourceScan implements ResourceScan {
 
 	private static final Log log = Logs.get();
-	
-	/**
-	 * 保存扫描过的
-	 */
-	private static final Map<String, List<String>> jars = new HashMap<String, List<String>>(10);
 
 	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();
@@ -35,31 +28,18 @@ public abstract class AbstractResourceScan implements ResourceScan {
 							jarPath,
 							regex,
 							src);
-			//先看看这个jar是否已经扫描过,如果有的话,直接读取
-			if (jars.containsKey(jarPath)) {
-				JarFile jar = null;
-				for (String name : jars.get(jarPath))
-					if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
-						if (jar == null)
-							jar = new JarFile(jarPath);
-						list.add(new JarEntryResource(jar, jar.getJarEntry(name), name.substring(src.length())));
-					}
-			} else {
-				JarFile jar = new JarFile(jarPath);
-				ArrayList<String> names = new ArrayList<String>();
-				jars.put(jarPath, names);
-				Enumeration<JarEntry> ens = jar.entries();
-				while (ens.hasMoreElements()) {
-					JarEntry jen = ens.nextElement();
-					if (jen.isDirectory())
-						continue;
-					String name = jen.getName();
-					if (name.startsWith(src) && (null == regex || regex.matcher(name).find()))
-						list.add(new JarEntryResource(jar, jen, jen.getName().substring(src.length())));
-					names.add(name);
+			ZipInputStream zis = Scans.makeZipInputStream(jarPath);
+			ZipEntry ens = null;
+			while (null != (ens = zis.getNextEntry())) {
+				if (ens.isDirectory())
+					continue;
+				String name = ens.getName();
+				if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
+					list.add(Scans.makeJarNutResource(zis, ens, src));
 				}
 			}
-			if (log.isDebugEnabled())
+			zis.close();
+			if (list.size() > 0 && log.isDebugEnabled())
 				log.debugf(	"Found %s resources in JarFile( %s ) by regex( %s ) base on src ( %s )",
 							list.size(),
 							jarPath,

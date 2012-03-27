@@ -1,23 +1,27 @@
 package org.nutz.resource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import javax.servlet.ServletContext;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.FileResource;
-import org.nutz.resource.impl.JarEntryResource;
 import org.nutz.resource.impl.LocalResourceScan;
 import org.nutz.resource.impl.WebResourceScan;
 
@@ -271,19 +275,46 @@ public class Scans {
 	public static NutResource makeJarNutResource(String filePath) {
 		JarEntryInfo jeInfo = new JarEntryInfo(filePath);
 		try {
-			JarFile jar = new JarFile(jeInfo.getJarPath());
-			JarEntry entry = jar.getJarEntry(jeInfo.getEntryName());
-			if (entry != null) {
-				// JDK里面判断实体是否为文件夹的方法非常不靠谱 by wendal
-				if (entry.getName().endsWith("/"))// 明显是文件夹
-					return null;
-				JarEntry e2 = jar.getJarEntry(jeInfo.getEntryName() + "/");
-				if (e2 != null) // 加个/,还是能找到?! 那肯定是文件夹了!
-					return null;
-				return new JarEntryResource(jeInfo);
+			ZipInputStream zis = makeZipInputStream(jeInfo.getJarPath());
+			ZipEntry ens = null;
+			while (null != (ens = zis.getNextEntry())) {
+				if (ens.isDirectory())
+					continue;
+				if (jeInfo.getEntryName().equals(ens.getName())) {
+					return makeJarNutResource(zis, ens, "");
+				}
 			}
 		}
 		catch (IOException e) {}
 		return null;
+	}
+	
+	public static NutResource makeJarNutResource(ZipInputStream zis, ZipEntry ens, String base) throws IOException {
+		File entryData = File.createTempFile("nutz.jar.data.", ".bin");
+		OutputStream os = Streams.fileOut(entryData);
+		long count = ens.getSize();
+		byte[] buff = new byte[8192];
+		while (count > 0) {
+			int len = zis.read(buff);
+			count -= len;
+			os.write(buff, 0, len);
+		}
+		os.flush();
+		os.close();
+		FileResource resource = new FileResource(entryData);
+		String name= ens.getName();
+		resource.setName(name.substring(base.length()));
+
+		return resource;
+	}
+	
+	public static ZipInputStream makeZipInputStream(String jarPath) throws MalformedURLException, IOException {
+		ZipInputStream zis = null;
+		try {
+			zis = new ZipInputStream(new FileInputStream(jarPath));
+		} catch (IOException e) {
+			zis = new ZipInputStream(new URL(jarPath).openStream());
+		}
+		return zis;
 	}
 }
