@@ -3,7 +3,8 @@ package org.nutz.lang;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.regex.Pattern;
+
+import org.nutz.lang.meta.Email;
 
 /**
  * 字符串操作的帮助函数
@@ -581,8 +582,6 @@ public abstract class Strings {
 		return false;
 	}
 
-	private static Pattern email_Pattern = Pattern.compile("^([\\w-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([\\w-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$");
-
 	/**
 	 * 检查一个字符串是否为合法的电子邮件地址
 	 * 
@@ -590,8 +589,15 @@ public abstract class Strings {
 	 *            需要检查的字符串
 	 * @return true 如果是有效的邮箱地址
 	 */
-	public static synchronized final boolean isEmail(CharSequence input) {
-		return email_Pattern.matcher(input).matches();
+	public static final boolean isEmail(CharSequence input) {
+		if (Strings.isBlank(input))
+			return false;
+		try {
+			new Email(input.toString());
+			return true;
+		}
+		catch (Exception e) {}
+		return false;
 	}
 
 	/**
