@@ -1,8 +1,12 @@
 package org.nutz.dao.pager;
 
+import java.io.Serializable;
+
 import org.nutz.lang.util.PageInfo;
 
-public class Pager implements PageInfo {
+public class Pager implements PageInfo, Serializable {
+
+	private static final long serialVersionUID = 8848523495013555357L;
 
 	/**
 	 * 改变这个，当每页大小超过 MAX_FETCH_SIZE 时，这个将士默认的 fetchSize
