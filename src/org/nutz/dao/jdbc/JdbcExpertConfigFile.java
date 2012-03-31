@@ -6,8 +6,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.nutz.dao.DaoException;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class JdbcExpertConfigFile {
 
@@ -17,11 +20,19 @@ public class JdbcExpertConfigFile {
 	private Map<String, Object> config;
 
 	private NutFilePool pool;
+	
+	private static final Log log = Logs.get();
 
 	JdbcExpertConfigFile init() {
-		String home = config.get("pool-home").toString();
-		Integer max = (Integer) config.get("pool-max");//TODO maybe a Long
-		pool = new NutFilePool(home, max);
+		// 即使初始化失败,也继续执行
+		try {
+			String home = config.get("pool-home").toString();
+			long max = ((Number) config.get("pool-max")).longValue();
+			pool = new NutFilePool(home, max);
+		} catch (Throwable e) {
+			if (log.isWarnEnabled())
+				log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!! Home="+config.get("pool-home"), e);
+		}
 		return this;
 	}
 
@@ -50,6 +61,11 @@ public class JdbcExpertConfigFile {
 	}
 
 	public NutFilePool getPool() {
+		if (pool == null) {
+			if (log.isWarnEnabled())
+				log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
+			throw new DaoException("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
+		}
 		return pool;
 	}
 
