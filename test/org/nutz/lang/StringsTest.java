@@ -272,7 +272,7 @@ public class StringsTest {
 		assertFalse(Strings.isin(arr, "ccC"));
 	}
 	
-	@Test(expected = NullPointerException.class)
+	@Test
 	public void test_is_email() {
 		assertFalse(Strings.isEmail(""));
 		assertFalse(Strings.isEmail("mc02cxj"));

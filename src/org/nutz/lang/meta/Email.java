@@ -1,6 +1,7 @@
 package org.nutz.lang.meta;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 
 public class Email implements Cloneable {
 
@@ -18,6 +19,8 @@ public class Email implements Cloneable {
 		catch (Exception e) {
 			throw Lang.makeThrow("Error email format [%s]", str);
 		}
+		if (Strings.isBlank(account) || Strings.isBlank(account) || host.indexOf('.') < 0)
+			throw Lang.makeThrow("Error email format [%s]", str);
 	}
 
 	public Email(String account, String host) {
