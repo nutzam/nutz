@@ -3,6 +3,7 @@ package org.nutz.resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,6 +20,7 @@ import org.nutz.castor.Castors;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.ClassTools;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.impl.FileResource;
@@ -205,19 +207,27 @@ public class Scans {
 						LOG.infof("Resource can't map to Class, Resource %s", nr);
 					continue;
 				}
+				InputStream in = null;
 				try {
-					String className = packagePath.replace('/', '.')
-										+ "."
-										+ nr.getName()
-											.substring(0, r)
-											.replace('/', '.')
-											.replace('\\', '.');
+					in = nr.getInputStream();
+					String className = ClassTools.getClassName(in);
+					if (className == null) {
+						if (LOG.isInfoEnabled())
+							LOG.infof("Resource can't map to Class, Resource %s", nr);
+						continue;
+					}
 					Class<?> klass = Lang.loadClass(className);
 					re.add(klass);
 				}
 				catch (ClassNotFoundException e) {
 					if (LOG.isInfoEnabled())
 						LOG.infof("Resource can't map to Class, Resource %s", nr, e);
+				}
+				catch (IOException e) {
+					if (LOG.isInfoEnabled())
+						LOG.infof("Resource can't map to Class, Resource %s", nr, e);
+				} finally {
+					Streams.safeClose(in);
 				}
 			}
 		}
