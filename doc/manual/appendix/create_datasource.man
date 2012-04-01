@@ -3,6 +3,75 @@
 #author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------
+内置的SimpleDataSource
+	
+	Nutz内置,非常适合新手!!
+		
+		* 自动加载NutDao所支持的数据库的驱动
+		* 无额外依赖,适合新手试用
+		* 非连接池,配置简单
+		* 不建议在生产环境使用
+		* 1.b.43开始提供,旧版本的Nutz可通过拷贝源文件的方式添加这个类
+
+	SimpleDataSource: 直接书写 Java 代码
+		{{{<Java>
+		import org.nutz.dao.impl.SimpleDataSource;
+		
+		...
+		
+		SimpleDataSource ds = new SimpleDataSource();
+		//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
+		ds.setjdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUsername("demo");
+		ds.setPassword("123456");
+		...
+		//ds.close();  // 这个DataSource不是一个连接池,所以关不关都行
+		}}}
+		
+	SimpleDataSource: 通过 Nutz.Ioc 的 JSON 配置文件
+		{{{<IOC-JSON 配置>
+		{
+			dataSource : {
+				type : "org.nutz.dao.impl.SimpleDataSource",
+				fields : {
+					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					username : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+		
+	SimpleDataSource: 通过 Nutz.Ioc 的 XML 配置文件
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="org.nutz.dao.impl.SimpleDataSource">
+					<field name="jdbcUrl"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
+		}}}
+	
+	附送一个完整的NutDao配置js文件
+	
+	{{{<IOC-JSON 配置>
+		var ioc = {
+			dao : {
+				type : "org.nutz.dao.impl.NutDao",
+				args : [{refer:"dataSource"}]
+			},
+			dataSource : {
+				type : "org.nutz.dao.impl.SimpleDataSource",
+				fields : {
+					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
+					username : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+--------------------------------------------------------------------------------------
 Apache DBCP
 	dbcp: 直接书写 Java 代码
 		{{{<Java>
