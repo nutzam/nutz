@@ -341,7 +341,19 @@ Nutz.Dao SQL 文件的格式
 			}}}
 			
 			那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)
-			
-			{#FF0000;注}，虽然通过接口 SqlContext，你可以为自定义的 SQL 设置 Pager，但是，它是不会起作用的。如果你没找到
-			如何给你自定义的 Sql 设置 Pager, 太好了，忘记它吧。
+	
+------------------------------------------------------------------------------------------------
+分页
 
+	这是1.b.43才添加的功能!
+	
+	一直被投诉,终于被实现!
+		{{{<JAVA>
+		Sql sql = Sqls.queryEntity("SELECT * FROM t_pet");
+		sql.setPager(dao.createPager(2,20));
+		sql.setEntity(dao.getEntity(Pet.class));
+		dao.execute(sql);
+		return sql.getList(Pet.class);
+		}}}
+
+	
