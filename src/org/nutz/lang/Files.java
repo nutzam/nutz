@@ -368,7 +368,7 @@ public abstract class Files {
 	}
 
 	/**
-	 * 从 CLASSPATH 下寻找一个文件
+	 * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 	 * 
 	 * @param path
 	 *            文件路径
@@ -387,7 +387,7 @@ public abstract class Files {
 	}
 
 	/**
-	 * 从 CLASSPATH 下寻找一个文件
+	 * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 	 * 
 	 * @param path
 	 *            文件路径
@@ -400,7 +400,7 @@ public abstract class Files {
 	}
 
 	/**
-	 * 从 CLASSPATH 下寻找一个文件
+	 * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 	 * 
 	 * @param path
 	 *            文件路径
@@ -414,7 +414,7 @@ public abstract class Files {
 	}
 
 	/**
-	 * 从 CLASSPATH 下寻找一个文件
+	 * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 	 * 
 	 * @param path
 	 *            文件路径
@@ -905,7 +905,7 @@ public abstract class Files {
 			}
 		});
 	}
-	
+
 	/**
 	 * 判断两个文件内容是否相等
 	 * 

@@ -5,156 +5,157 @@
 -----------------------------------------------------------------------------------------
 什么是函数糖？
 	
-	Nutz 还提供一系列有用的静态函数和类。它们帮助你更轻松的使用 Java。 你可以查看
-	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 下
-	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
-	
-	本篇文档主要列出的，全是一些帮助函数，在 80% 以上的情况下，这些函数能让你有效的缩短你
-	代码的体积，并且增加代码的可读性。
------------------------------------------------------------------------------------------
-语言的扩展
 	Java 的语法比 C/C++ 友好很多， 因为它设计之初，就是为了考虑到程序员的使用是否舒适。
 	当然很多事情愿望是美好的，现实是残酷的。Java 语言本身的语法仍然不可避免的带有着 10年前那种
 	的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全
 	可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。
 	
+	你可以查看 [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 下
+	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
 	
-	异常
-		创建异常
-			 * 根据格式化字符串，生成运行时异常
-				{{{
-				throw Lang.makeThrow("Error for %d [%s]", obj.getId(), obj.getName());
-				}}}
-			 * 根据格式化字符串，生成一个指定的异常。
-				{{{
-				throw Lang.makeThrow(SQLException.class, "Error for %d [%s]", obj.getId(), obj.getName());
-				}}}
-			 * 未实现的运行时异常
-				{{{
-				throw Lang.noImplement();
-				}}}
-			 
-		包裹异常
-			 * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
-				{{{
-				throw Lang.wrapThrow(e);
-				}}}
-			 * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
-				{{{
-				throw Lang.wrapThrow(e, SQLException.class);
-				}}}
-			 * 将一个或者多个异常组合抛出
-				{{{
-				throw Lang.comboThrow(e1,e2,e3);
-				}}}
-			 * 将抛出对象包裹成运行时异常，并增加自己的描述
-				{{{
-				throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
-				}}}
+	我希望在 80% 以上的情况下，这些函数能让你有效的缩短你 代码的体积，并且增加代码的可读性。
+	
+-----------------------------------------------------------------------------------------
+异常
+    创建异常
+         * 根据格式化字符串，生成运行时异常
+            {{{
+            throw Lang.makeThrow("Error for %d [%s]", obj.getId(), obj.getName());
+            }}}
+         * 根据格式化字符串，生成一个指定的异常。
+            {{{
+            throw Lang.makeThrow(SQLException.class, "Error for %d [%s]", obj.getId(), obj.getName());
+            }}}
+         * 未实现的运行时异常
+            {{{
+            throw Lang.noImplement();
+            }}}
+         
+    包裹异常
+         * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
+            {{{
+            throw Lang.wrapThrow(e);
+            }}}
+         * 用一个指定可抛出类型来包裹一个抛出对象。这个指定的可抛出类型需要有一个构造函数 接受 Throwable 类型的对象
+            {{{
+            throw Lang.wrapThrow(e, SQLException.class);
+            }}}
+         * 将一个或者多个异常组合抛出
+            {{{
+            throw Lang.comboThrow(e1,e2,e3);
+            }}}
+         * 将抛出对象包裹成运行时异常，并增加自己的描述
+            {{{
+            throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
+            }}}
 		
-	对象
-		 * 比较对象: 支持数组，集合，和容器
-			{{{
-			return Lang.equals(map1, map2);
-			}}}
-		 * 显示对象
-			{{{
-			return Dumps.obj(pojo);
-			}}}
-		 * 是否包括
-			{{{
-			return Lang.contains(myArray, ele);
-			}}}
-		 * 遍历
-			{{{
-			Lang.each(obj, new Each<Object>(){
-				public void invoke(int i, T ele, int length){
-					obj 可以是集合，数组，Map，普通对象.
-					普通对象的话，则会传给本匿名类的 ele
-				}
-			});
-			}}}
-		
-	容器转换
-		 * 数组 to Map
-			{{{
-			Pet[] pets = new Pet[3];
-			... // 为数组赋值
+-----------------------------------------------------------------------------------------
+对象
+     * 比较对象: 支持数组，集合，和容器
+        {{{
+        return Lang.equals(map1, map2);
+        }}}
+     * 显示对象
+        {{{
+        return Dumps.obj(pojo);
+        }}}
+     * 是否包括
+        {{{
+        return Lang.contains(myArray, ele);
+        }}}
+     * 遍历
+        {{{
+        Lang.each(obj, new Each<Object>(){
+            public void invoke(int i, T ele, int length){
+                obj 可以是集合，数组，Map，普通对象.
+                普通对象的话，则会传给本匿名类的 ele
+            }
+        });
+        }}}
+    
+-----------------------------------------------------------------------------------------
+容器转换
+     * 数组 to Map
+        {{{
+        Pet[] pets = new Pet[3];
+        ... // 为数组赋值
+        
+        // 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+        Map<String,Pet> petMap = Lang.array2map(HashMap.class, pets, "name");
+        }}}
+     * 数组 to 数组
+        {{{
+        Pet[] pets = new Pet[3];
+        
+        String[] ss = Lang.array2array(pets, String.class);
+        }}}
+     * 集合 to 数组
+        {{{
+        List<Pet> pets = new ArrayList<Pet>();
+        ... // 为列表赋值
+        
+        Pet[] petArray = Lang.collection2array(pets);
+        }}}
+     * 集合 to 列表
+        {{{
+        Queue<Pet> pets = new ArrayDeque<Pet>();
+        ... // 为队列赋值
+        
+        List<Pet> list = Lang.collection2list(pets);
+        }}}
+     * 集合 to Map
+        {{{
+        Queue<Pet> pets = new ArrayDeque<Pet>();
+        ... // 为队列赋值
+        
+        // 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+        Map<String,Pet> petMap = Lang.collection2map(HashMap.class, pets, "name");
+        }}}
+     * Map to 对象
+        {{{
+        return Lang.map2Object(map,Pet.class);
+        }}}
 			
-			// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
-			Map<String,Pet> petMap = Lang.array2map(HashMap.class, pets, "name");
-			}}}
-		 * 数组 to 数组
-			{{{
-			Pet[] pets = new Pet[3];
-			
-			String[] ss = Lang.array2array(pets, String.class);
-			}}}
-		 * 集合 to 数组
-			{{{
-			List<Pet> pets = new ArrayList<Pet>();
-			... // 为列表赋值
-			
-			Pet[] petArray = Lang.collection2array(pets);
-			}}}
-		 * 集合 to 列表
-			{{{
-			Queue<Pet> pets = new ArrayDeque<Pet>();
-			... // 为队列赋值
-			
-			List<Pet> list = Lang.collection2list(pets);
-			}}}
-		 * 集合 to Map
-			{{{
-			Queue<Pet> pets = new ArrayDeque<Pet>();
-			... // 为队列赋值
-			
-			// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
-			Map<String,Pet> petMap = Lang.collection2map(HashMap.class, pets, "name");
-			}}}
-		 * Map to 对象
-			{{{
-			return Lang.map2Object(map,Pet.class);
-			}}}
-			
-	对象模拟
-		 * 生成数组
-			{{{
-			String[] ss = Lang.array("A","B","C");
-			}}}
-		 * 从字符串生成 Reader
-			{{{
-			Reader reader = Lang.inr("ABCDEF");
-			}}}
-		 * 从字符串生成 InputStream
-			{{{
-			InputStream ins = Lang.ins("ABCDEF");
-			}}}
-		 * 从字符串生成 Map
-			{{{
-			Map<String,Object> map = Lang.map("{a:10, b:'ABC', c:true}");
-			}}}
-			
-		 * 从字符串生成 List
-			{{{
-			List<Object> list =  Lang.list("[true, 23, 'ABC']");
-			}}}
-	XML
-		 * 创建 DocumentBuilder
-			{{{
-			return Lang.xmls();
-			}}}
-	其他
-		 * 打印 java.util.regex.Matcher 的详细信息
-			{{{
-			return Dumps.matcher(matcher);
-			}}}
-		 * 解析 Boolean
-			{{{
-			assertTrue(Lang.parseBoolean("on"));
-			assertTrue(Lang.parseBoolean("1"));
-			assertTrue(Lang.parseBoolean("yes"));
-			}}}
+-----------------------------------------------------------------------------------------
+对象模拟
+     * 生成数组
+        {{{
+        String[] ss = Lang.array("A","B","C");
+        }}}
+     * 从字符串生成 Reader
+        {{{
+        Reader reader = Lang.inr("ABCDEF");
+        }}}
+     * 从字符串生成 InputStream
+        {{{
+        InputStream ins = Lang.ins("ABCDEF");
+        }}}
+     * 从字符串生成 Map
+        {{{
+        Map<String,Object> map = Lang.map("{a:10, b:'ABC', c:true}");
+        }}}
+        
+     * 从字符串生成 List
+        {{{
+        List<Object> list =  Lang.list("[true, 23, 'ABC']");
+        }}}
+
+-----------------------------------------------------------------------------------------
+XML
+     * 创建 DocumentBuilder
+        {{{
+        return Xmls.xmls();
+        }}}
+     * 解析 XML 文档
+        {{{
+        Document xmlDoc = Xmls.xml(Files.find("~/my.xml"));
+        }}}
+     * 读取某个子元素内容
+        {{{
+        Element ele = ...    // 假设你取到了一个 Element
+        String txt = Xml.get(ele, "abc");   // 获取 ele 下的 <abc> 的文本内容并去掉前后空白
+        }}}
+
 -----------------------------------------------------------------------------------------
 字符串操作
 	判断
@@ -236,7 +237,7 @@
 -----------------------------------------------------------------------------------------
 文件操作
 	查找
-		 * 从 CLASSPATH 下寻找一个文件
+		 * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 			{{{
 			return Files.findFile("org/nutz/lang/Lang.class");
 			}}}
@@ -350,6 +351,7 @@
 	sw.stop();
 	System.out.println(sw.getDuration());
 	}}}
+    
 -----------------------------------------------------------------------------------------
 随机数据
 	 * 随机字符串
@@ -383,3 +385,15 @@
 			System.out.println(r.next());
 		}}}
 	
+-----------------------------------------------------------------------------------------
+其他
+     * 打印 java.util.regex.Matcher 的详细信息
+        {{{
+        System.out.println(Dumps.matcher(matcher));
+        }}}
+     * 解析 Boolean
+        {{{
+        assertTrue(Lang.parseBoolean("on"));
+        assertTrue(Lang.parseBoolean("1"));
+        assertTrue(Lang.parseBoolean("yes"));
+        }}}
