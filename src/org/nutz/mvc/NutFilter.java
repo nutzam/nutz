@@ -26,7 +26,7 @@ public class NutFilter implements Filter {
 
 	private ActionHandler handler;
 
-	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf)$";
+	private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico)$";
 
 	private Pattern ignorePtn;
 
