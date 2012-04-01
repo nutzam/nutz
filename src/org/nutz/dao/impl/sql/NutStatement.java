@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.sql;
 
+import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.util.List;
@@ -166,7 +167,10 @@ public abstract class NutStatement implements DaoStatement {
 			} else if (obj instanceof Clob) {
 				Clob clob = (Clob)obj;
 				return "Clob(" +clob.hashCode() + ")";
-			} else {
+			} else if (obj instanceof byte[] || obj instanceof char[]) {
+				return "data[" + Array.getLength(obj) +"]";
+			}
+			else {
 				return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
 			}
 		}
