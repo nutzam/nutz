@@ -416,7 +416,7 @@ public class Images {
 			else if (img instanceof URL)
 				img = ((URL) img).openStream();
 			if (img instanceof InputStream) {
-				File tmp = File.createTempFile("nutz_img", "jpg");
+				File tmp = File.createTempFile("nutz_img", ".jpg");
 				Files.write(tmp, (InputStream)img);
 				tmp.deleteOnExit();
 				return read(tmp);
