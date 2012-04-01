@@ -55,7 +55,7 @@
 	
 	附送一个完整的NutDao配置js文件
 	
-	{{{<IOC-JSON 配置>
+		{{{<IOC-JSON 配置>
 		var ioc = {
 			dao : {
 				type : "org.nutz.dao.impl.NutDao",
