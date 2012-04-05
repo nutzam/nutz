@@ -302,19 +302,17 @@ public class Scans {
 	public static NutResource makeJarNutResource(ZipInputStream zis, ZipEntry ens, String base) throws IOException {
 		File entryData = File.createTempFile("nutz.jar.data.", ".bin");
 		OutputStream os = Streams.fileOut(entryData);
-		long count = ens.getSize();
+		int count = 0;
 		byte[] buff = new byte[8192];
-		while (count > 0) {
-			int len = zis.read(buff);
-			count -= len;
-			os.write(buff, 0, len);
+		while ((count = zis.read(buff)) != -1) {
+			os.write(buff, 0, count);
 		}
 		os.flush();
 		os.close();
 		FileResource resource = new FileResource(entryData);
 		String name= ens.getName();
 		resource.setName(name.substring(base.length()));
-
+		entryData.deleteOnExit();
 		return resource;
 	}
 	
