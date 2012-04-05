@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import javax.sql.DataSource;
 
@@ -115,7 +116,7 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
 
 	class LazyMethodInterceptor implements MethodInterceptor {
 
-		private LazyStatus status = LazyStatus.CAN_FETCH;
+		private WeakHashMap<Object, LazyStatus> status = new WeakHashMap<Object, LazyAnnotationEntityMaker.LazyStatus>();
 
 		private Method setter;
 		private String fieldName;
@@ -126,12 +127,11 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
 		}
 
 		public void filter(InterceptorChain chain) throws Throwable {
-			if (status == LazyStatus.CAN_FETCH) {
-				if (chain.getCallingMethod() != setter) {
+			LazyStatus stat = status.get(chain.getCallingObj());
+			if (stat == null) {
+				if (chain.getCallingMethod() != setter)
 					dao.fetchLinks(chain.getCallingObj(), fieldName);// 这里会触发setter被调用
-					status = LazyStatus.FETCHED;
-				} else
-					status = LazyStatus.NO_NEED; // 如果setter被调用,那么也就不再需要懒加载了
+				status.put(chain.getCallingObj(), LazyStatus.NO_NEED); // 如果setter被调用,那么也就不再需要懒加载了
 			}
 			chain.doChain();
 		}
