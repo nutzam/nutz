@@ -106,7 +106,7 @@ public class NutEntity<T> implements Entity<T> {
 	/**
 	 * 根据 ResultSet 创建实体的方法
 	 */
-	private Borning<T> bornByRS;
+	protected Borning<T> bornByRS;
 
 	/**
 	 * 根据默认构造函数或者工厂方法创建实体的方法
