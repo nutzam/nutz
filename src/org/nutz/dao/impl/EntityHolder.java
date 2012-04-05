@@ -26,7 +26,7 @@ import org.nutz.lang.inject.InjectToMap;
 public class EntityHolder {
 
 	// DaoSupport 会设置这个值
-	EntityMaker maker;
+	public EntityMaker maker;
 
 	private DaoSupport support;
 

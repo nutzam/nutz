@@ -23,9 +23,12 @@ public class SimpleDataSource implements DataSource {
 	private String jdbcUrl;
 	
 	public Connection getConnection() throws SQLException {
+		Connection conn;
 		if (username != null)
-			return DriverManager.getConnection(jdbcUrl, username, password);
-		return DriverManager.getConnection(jdbcUrl);
+			conn = DriverManager.getConnection(jdbcUrl, username, password);
+		else
+			conn = DriverManager.getConnection(jdbcUrl);
+		return conn;
 	}
 	
 	public void close() {}

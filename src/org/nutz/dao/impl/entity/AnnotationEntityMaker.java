@@ -75,7 +75,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 	}
 
 	public <T> Entity<T> make(Class<T> type) {
-		NutEntity<T> en = new NutEntity<T>(type);
+		NutEntity<T> en = _createNutEntity(type);
 
 		TableInfo ti = _createTableInfo(type);
 
@@ -496,4 +496,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		}
 	}
 
+	protected <T> NutEntity<T> _createNutEntity(Class<T> type) {
+		return new NutEntity<T>(type);
+	}
 }

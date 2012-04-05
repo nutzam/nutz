@@ -15,7 +15,7 @@ import org.nutz.lang.Strings;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-class LinkFieldSet {
+public class LinkFieldSet {
 
 	private ArrayList<LinkField> lnks;
 
@@ -30,7 +30,7 @@ class LinkFieldSet {
 		lnks.add(lnk);
 	}
 
-	List<LinkField> getAll() {
+	public List<LinkField> getAll() {
 		return lnks;
 	}
 
