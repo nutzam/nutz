@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import org.nutz.lang.Mirror;
 
@@ -46,9 +48,12 @@ public abstract class Castor<FROM, TO> {
 			coll = (Collection<Object>) toType.newInstance();
 		}
 		catch (Exception e) {
-			if (Modifier.isAbstract(toType.getModifiers())
-				&& toType.isAssignableFrom(ArrayList.class)) {
-				coll = new ArrayList<Object>(Array.getLength(src));
+			if (Modifier.isAbstract(toType.getModifiers())) {
+				if (toType.isAssignableFrom(ArrayList.class)) {
+					coll = new ArrayList<Object>(Array.getLength(src));
+				} else if (toType.isAssignableFrom(HashSet.class)) {
+					coll = new HashSet<Object>();
+				}
 			}
 			if (null == coll)
 				throw new FailToCastObjectException(String.format(	"Castors don't know how to implement '%s'",
