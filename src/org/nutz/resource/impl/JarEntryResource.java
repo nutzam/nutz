@@ -13,7 +13,6 @@ import org.nutz.resource.NutResource;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-@Deprecated
 public class JarEntryResource extends NutResource {
 
 	private JarFile jar;

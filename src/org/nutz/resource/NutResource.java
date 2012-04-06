@@ -19,8 +19,10 @@ public abstract class NutResource implements Comparable<NutResource> {
 		return this;
 	}
 
+	/**使用完毕后,务必关闭*/
 	public abstract InputStream getInputStream() throws IOException;
 
+	/**使用完毕后,务必关闭*/
 	public Reader getReader() throws IOException {
 		return Streams.utf8r(getInputStream());
 	}

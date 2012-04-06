@@ -2,8 +2,13 @@ package org.nutz.resource.impl;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -20,7 +25,7 @@ public abstract class AbstractResourceScan implements ResourceScan {
 
 	private static final Log log = Logs.get();
 
-	protected List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
+	public List<NutResource> scanInJar(String src, Pattern regex, String jarPath) {
 		List<NutResource> list = new ArrayList<NutResource>();
 		try {
 			if (log.isDebugEnabled())
@@ -28,17 +33,34 @@ public abstract class AbstractResourceScan implements ResourceScan {
 							jarPath,
 							regex,
 							src);
-			ZipInputStream zis = Scans.makeZipInputStream(jarPath);
-			ZipEntry ens = null;
-			while (null != (ens = zis.getNextEntry())) {
-				if (ens.isDirectory())
-					continue;
-				String name = ens.getName();
-				if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
-					list.add(Scans.makeJarNutResource(zis, ens, src));
+			//先尝试普通方式
+			try {
+				JarFile jarFile = new JarFile(new File(jarPath));
+				Enumeration<JarEntry> ens = jarFile.entries();
+				while(ens.hasMoreElements()) {
+					JarEntry entry = ens.nextElement();
+					String name = entry.getName();
+					if (!entry.isDirectory() && entry.getName().startsWith(src)) {
+						if (regex != null && !regex.matcher(name).find())
+							continue;
+						list.add(new JarEntryResource(jarFile, entry, name));
+					}
 				}
+			} catch (IOException e) {
+				//换成万能方式
+				ZipInputStream zis = new ZipInputStream(new URL(jarPath).openStream());
+				ZipEntry ens = null;
+				while (null != (ens = zis.getNextEntry())) {
+					if (ens.isDirectory())
+						continue;
+					String name = ens.getName();
+					if (name.startsWith(src) && (null == regex || regex.matcher(name).find())) {
+						list.add(Scans.makeJarNutResource(jarPath, name, src));
+					}
+				}
+				zis.close();
 			}
-			zis.close();
+			
 			if (list.size() > 0 && log.isDebugEnabled())
 				log.debugf(	"Found %s resources in JarFile( %s ) by regex( %s ) base on src ( %s )",
 							list.size(),

@@ -4,7 +4,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -291,7 +290,7 @@ public class Scans {
 				if (ens.isDirectory())
 					continue;
 				if (jeInfo.getEntryName().equals(ens.getName())) {
-					return makeJarNutResource(zis, ens, "");
+					return makeJarNutResource(jeInfo.getJarPath(), ens.getName(), "");
 				}
 			}
 		}
@@ -299,21 +298,21 @@ public class Scans {
 		return null;
 	}
 	
-	public static NutResource makeJarNutResource(ZipInputStream zis, ZipEntry ens, String base) throws IOException {
-		File entryData = File.createTempFile("nutz.jar.data.", ".bin");
-		OutputStream os = Streams.fileOut(entryData);
-		int count = 0;
-		byte[] buff = new byte[8192];
-		while ((count = zis.read(buff)) != -1) {
-			os.write(buff, 0, count);
-		}
-		os.flush();
-		os.close();
-		FileResource resource = new FileResource(entryData);
-		String name= ens.getName();
-		resource.setName(name.substring(base.length()));
-		entryData.deleteOnExit();
-		return resource;
+	public static NutResource makeJarNutResource(final String jarPath, final String entryName, final String base) throws IOException {
+		NutResource nutResource =  new NutResource() {
+			
+			public InputStream getInputStream() throws IOException {
+				ZipInputStream zis = makeZipInputStream(jarPath);
+				ZipEntry ens = null;
+				while (null != (ens = zis.getNextEntry())) {
+					if (ens.getName().equals(entryName))
+						return zis;
+				}
+				throw Lang.impossible();
+			}
+		};
+		nutResource.setName(entryName.substring(base.length()));
+		return nutResource;
 	}
 	
 	public static ZipInputStream makeZipInputStream(String jarPath) throws MalformedURLException, IOException {
