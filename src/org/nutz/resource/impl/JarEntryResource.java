@@ -5,7 +5,6 @@ import java.io.InputStream;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-import org.nutz.resource.JarEntryInfo;
 import org.nutz.resource.NutResource;
 
 /**
@@ -15,39 +14,23 @@ import org.nutz.resource.NutResource;
  */
 public class JarEntryResource extends NutResource {
 
-	private JarFile jar;
-
-	private JarEntry entry;
-
-	public JarEntryResource(JarEntryInfo jeInfo) throws IOException {
-		this.jar = new JarFile(jeInfo.getJarPath());
-		this.entry = jar.getJarEntry(jeInfo.getEntryName());
-		if (null == this.entry)
-			throw new IOException("Invalid JarEntry :" + jeInfo);
-		this.name = jeInfo.getEntryName();
-	}
+	private String jarPath;
+	private String entryName;
 
 	public JarEntryResource(JarFile jar, JarEntry jen, String name) {
-		this.jar = jar;
-		this.entry = jen;
+		this.jarPath = jar.getName();
+		this.entryName = jen.getName();
 		this.name = name;
-	}
-
-	public JarFile getJar() {
-		return jar;
-	}
-
-	public JarEntry getEntry() {
-		return entry;
 	}
 
 	@Override
 	public InputStream getInputStream() throws IOException {
-		return jar.getInputStream(entry);
+		JarFile jarFile = new JarFile(jarPath);
+		return jarFile.getInputStream(jarFile.getEntry(entryName));
 	}
 
 	@Override
 	public String toString() {
-		return String.format("JarEntryResource[%s] jarPath[%s]", entry.getName(), jar.getName());
+		return String.format("JarEntryResource[%s] jarPath[%s]", entryName, jarPath);
 	}
 }
