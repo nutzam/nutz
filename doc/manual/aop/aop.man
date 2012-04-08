@@ -1,0 +1,128 @@
+#title: AOP -- 声明式切片
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------
+单纯的AOP
+
+	创建一个拦截器类,在方法执行前后打印一句日志
+		{{{
+        package aop;
+        import org.nutz.aop.ClassAgent;
+        import org.nutz.aop.ClassDefiner;
+        import org.nutz.aop.DefaultClassDefiner;
+        import org.nutz.aop.InterceptorChain;
+        import org.nutz.aop.MethodInterceptor;
+        import org.nutz.aop.asm.AsmClassAgent;
+        import org.nutz.aop.matcher.MethodMatcherFactory;
+        
+        public class UserAction { //被AOP的类,必须是public的非abstract类!
+            
+            public boolean login(String username, String password) throws Throwable {
+                if ("wendal".equals(username) && "qazwsxedc".equals(password)) {
+                    System.out.println("登陆成功");
+                    return true;
+                }
+                System.out.println("登陆失败");
+                return false;
+            }
+        
+            private static ClassDefiner cd = new DefaultClassDefiner(UserAction.class.getClassLoader());
+            
+            public static void main(String[] args) throws Throwable {
+                //无AOP的时候
+                UserAction ua = new UserAction(); //直接new,将按原本的流程执行
+                ua.login("wendal", "qazwsxedc");
+        
+                System.out.println("-----------------------------------------------------");
+                System.out.println("-----------------------------------------------------");
+                
+                //有AOP的时候
+                ClassAgent agent = new AsmClassAgent();
+                LogInterceptor log = new LogInterceptor();
+                agent.addInterceptor(MethodMatcherFactory.matcher("^login$"), log);
+                //返回被AOP改造的Class实例
+                Class<? extends UserAction> userAction2 = agent.define(cd, UserAction.class);
+                UserAction action = userAction2.newInstance();
+                action.login("wendal", "qazwsxedc");//通过日志,可以看到方法执行前后有额外的日志
+            }
+        }
+        
+        class LogInterceptor implements MethodInterceptor {
+            public void filter(InterceptorChain chain) throws Throwable {
+                System.out.println("方法即将执行 -->" + chain.getCallingMethod());
+                chain.doChain();// 继续执行其他拦截器
+                System.out.println("方法执行完毕 -->" + chain.getCallingMethod());
+            }
+        }
+		}}}
+	
+	输出
+		{{{
+		登陆成功
+		-----------------------------------------------------
+		-----------------------------------------------------
+		方法即将执行 -->public boolean aop.UserAction.login(java.lang.String,java.lang.String) throws java.lang.Throwable
+		登陆成功
+		方法执行完毕 -->public boolean aop.UserAction.login(java.lang.String,java.lang.String) throws java.lang.Throwable
+		}}}
+------------------------------------------------------------------------------
+在Ioc中使用Aop
+
+	声明拦截器
+		* 你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。
+		* 将这个对象声明在你的Ioc配置文件里，就像一个普通的对象一样
+		
+	在对象的方法中声明切片
+		* 在你要拦截的方法上，声明 @Aop 注解或者其他配置形式,如js/xml
+		* @Aop 注解接受数目可变的字符串，每个字符串都是一个拦截器的名称,即必须在ioc中声明这个拦截器
+		* 方法所在的对象必须是Ioc容器中的对象
+		
+	将上一个例子,改造为Ioc形式
+		{{{
+        package aop;
+        import org.nutz.ioc.aop.Aop;
+        import org.nutz.ioc.loader.annotation.IocBean;
+        
+        import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
+        import org.nutz.ioc.Ioc;
+        import org.nutz.ioc.impl.NutIoc;
+        
+        @IocBean
+        public class UserAction { //被AOP的类,必须是public的非abstract类!
+            
+            @Aop({"logInterceptor"}) //这里写拦截器bean的名字
+            public boolean login(String username, String password) throws Throwable {
+                if ("wendal".equals(username) && "qazwsxedc".equals(password)) {
+                    System.out.println("登陆成功");
+                    return true;
+                }
+                System.out.println("登陆失败");
+                return false;
+            }
+            
+            public static void main(String[] args) throws Throwable {
+            	Ioc ioc = new NutIoc(new AnnotationIocLoader("aop"));
+            	UserAction action = ioc.get(UserAction.class);
+            	action.login("wendal", "qazwsxedc");
+            }
+        }
+        //另外一个类文件
+        package aop;
+        import org.nutz.ioc.loader.annotation.IocBean;
+        import org.nutz.aop.InterceptorChain;
+        import org.nutz.aop.MethodInterceptor;
+        
+        @IocBean //声明为一个Ioc的bean,名字为logInterceptor
+        public class LogInterceptor implements MethodInterceptor {
+            public void filter(InterceptorChain chain) throws Throwable {
+                System.out.println("方法即将执行 -->" + chain.getCallingMethod());
+                chain.doChain();// 继续执行其他拦截器
+                System.out.println("方法执行完毕 -->" + chain.getCallingMethod());
+            }
+        }
+		}}}
+
+------------------------------------------------------------------------------
+已经为你准备好的拦截器
+    * org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录
+    * org.nutz.aop.interceptor.TransactionInterceptor 添加数据库事务(用于NutDao)
