@@ -3,7 +3,6 @@ package org.nutz.dao.test.normal;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -52,7 +51,7 @@ public class BinaryDaoTest extends DaoCase {
 		dao.create(TheGoods.class, true);
 		TheGoods tg = TheGoods.create("AAA", path);
 		dao.insert(tg);
-		
+
 		new File(path).delete();
 	}
 }
