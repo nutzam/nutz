@@ -638,7 +638,9 @@ public class NutDao extends DaoSupport implements Dao {
 				return en;
 			}
 		}
+		en = holder.reloadEntity(classOfT); //需要重新载入,以免之前数据库表的信息影响Entity
 		expert.createEntity(this, en);
+		holder.reloadEntity(classOfT); //再次重新载入,使配置信息与数据库信息相符
 		return en;
 	}
 

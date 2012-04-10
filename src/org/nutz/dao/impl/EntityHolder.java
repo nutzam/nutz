@@ -62,6 +62,19 @@ public class EntityHolder {
 		}
 		return (Entity<T>) re;
 	}
+	
+	/**
+	 * 重新载入
+	 */
+	public <T> Entity<T> reloadEntity(Class<T> classOfT) {
+		Entity<T> re = getEntity(classOfT);
+		if (null != re) {
+			synchronized (map) {
+				map.remove(re.getType());
+			}
+		}
+		return getEntity(classOfT);
+	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})
 	public <T extends Map<String, ?>> Entity<T> makeEntity(String tableName, T map) {
