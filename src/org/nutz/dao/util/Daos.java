@@ -190,7 +190,7 @@ public abstract class Daos {
 	/*
 	 * 查询sql并把结果放入传入的class组成的List中
 	 */
-	public <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
+	public static <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
 		Sql sql2 = Sqls.queryEntity(sql);
 		sql2.setEntity(dao.getEntity(classOfT));
 		sql2.setCondition(cnd);
@@ -202,7 +202,7 @@ public abstract class Daos {
 	/*
 	 * 查询某sql的结果条数
 	 */
-	public int queryCount(Dao dao, String sql) {
+	public static int queryCount(Dao dao, String sql) {
 		Sql sql2 = Sqls.fetchLong("select count(1) FROM ("+sql+")");
 		dao.execute(sql2);
 		return sql2.getInt();
