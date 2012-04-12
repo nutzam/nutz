@@ -70,6 +70,8 @@ public abstract class Jdbcs {
 		catch (Exception e) {
 			throw Lang.wrapThrow(e);
 		}
+		if (log.isDebugEnabled())
+			log.debug("Jdbcs init complete");
 	}
 
 	/**
