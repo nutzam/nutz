@@ -6,6 +6,8 @@ import static org.nutz.ioc.json.Utils.I;
 import static org.nutz.ioc.json.Utils.J;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import org.junit.Test;
@@ -17,10 +19,48 @@ import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.json.pojo.Animal;
 import org.nutz.ioc.json.pojo.AnimalRace;
 import org.nutz.ioc.json.pojo.IocSelf;
+import org.nutz.ioc.json.pojo.IocTO00;
 import org.nutz.ioc.loader.json.JsonLoader;
+import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.lang.Streams;
 
 public class SimpleJsonIocTest {
+
+	@Test
+	public void test_2darray_by_map_iocvalue() {
+		Map<String, Map<String, Object>> map = new HashMap<String, Map<String, Object>>();
+
+		Map<String, Object> objMap = new HashMap<String, Object>();
+		String[][] strss = new String[2][2];
+		strss[0][0] = "a";
+		strss[0][1] = "b";
+		strss[1][0] = "c";
+		strss[1][1] = "d";
+		objMap.put("args", new Object[]{strss});
+
+		map.put("obj", objMap);
+		Ioc ioc = new NutIoc(new MapLoader(map));
+
+		IocTO00 obj = ioc.get(IocTO00.class, "obj");
+		assertEquals(2, obj.getStrss().length);
+		assertEquals(2, obj.getStrss()[0].length);
+		assertEquals("a", obj.getStrss()[0][0]);
+		assertEquals("b", obj.getStrss()[0][1]);
+		assertEquals("c", obj.getStrss()[1][0]);
+		assertEquals("d", obj.getStrss()[1][1]);
+	}
+
+	@Test
+	public void test_2darray_iocvalue() {
+		Ioc ioc = I("obj:{args:[[['a','b'],['c','d']]]}");
+		IocTO00 obj = ioc.get(IocTO00.class, "obj");
+		assertEquals(2, obj.getStrss().length);
+		assertEquals(2, obj.getStrss()[0].length);
+		assertEquals("a", obj.getStrss()[0][0]);
+		assertEquals("b", obj.getStrss()[0][1]);
+		assertEquals("c", obj.getStrss()[1][0]);
+		assertEquals("d", obj.getStrss()[1][1]);
+	}
 
 	@Test
 	public void test_refer_self() {
