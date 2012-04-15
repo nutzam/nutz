@@ -46,7 +46,7 @@ public class Chain {
 	 * @param next
 	 *            后续节点
 	 */
-	private Chain(String name, Object value, Chain head, Chain next) {
+	Chain(String name, Object value, Chain head, Chain next) {
 		this.name = name;
 		this.value = value;
 		if (head == null)
@@ -134,7 +134,7 @@ public class Chain {
 		head.size++;
 		return next;
 	}
-
+	
 	/**
 	 * @return 当前节点的名称
 	 */
@@ -312,5 +312,30 @@ public class Chain {
 	public static Chain from(Object obj) {
 		return from(obj, null);
 	}
+	
+	//=============================================================
+	//===========update语句使用特定的值,例如+1 -1 toDate()等========
+	//=============================================================
+	
+	public boolean special;
 
+	public Chain addSpecial(String name, Object value) {
+		Chain oldNext = next;
+		next = new Chain(name, value, this.head, oldNext);
+		next.special = true;
+		head.size++;
+		return next;
+	}
+	
+	public static Chain makeSpecial(String name, Object value) {
+		Chain chain = make(name, value);
+		chain.special = true;
+		return chain;
+	}
+	
+	public boolean isSpecial() {
+		if (special)
+			return true;
+		return next != null ? next.isSpecial() : false;
+	}
 }

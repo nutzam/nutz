@@ -642,12 +642,7 @@ public abstract class Jdbcs {
 			}
 
 			public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
-				if (null == obj) {
-					stat.setString(i, null);
-				} else {
-					String v = Castors.me().castToString(obj);
-					stat.setString(i, v);
-				}
+				stat.setObject(i, obj);
 			}
 		};
 

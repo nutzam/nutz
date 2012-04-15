@@ -35,7 +35,11 @@ public class UpdateFieldsByChainPItem extends AbstractPItem {
 		Chain c = chain.head();
 		while (c != null) {
 			MappingField mf = en.getField(c.name());
-			adaptors[off++] = (null == mf ? Jdbcs.getAdaptorBy(c.value()) : mf.getAdaptor());
+			// TODO 移除这种数组下标用++的写法!!!
+			if (c.adaptor() == null)
+				adaptors[off++] = (null == mf ? Jdbcs.getAdaptorBy(c.value()) : mf.getAdaptor());
+			else
+				adaptors[off++] = c.adaptor();
 			c = c.next();
 		}
 		return off;

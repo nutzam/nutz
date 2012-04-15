@@ -225,6 +225,8 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			return Daos.updateBySpecialChain(this, classOfT, chain, cnd);
 		EntityOperator opt = _opt(classOfT);
 		opt.addUpdate(chain, cnd);
 		opt.exec();
