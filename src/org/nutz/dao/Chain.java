@@ -317,8 +317,21 @@ public class Chain {
 	//===========update语句使用特定的值,例如+1 -1 toDate()等========
 	//=============================================================
 	
+	/**
+	 * 当前节点是否为特殊节点
+	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
+	 * @since 1.b.44
+	 */
 	public boolean special;
 
+	/**
+	 * 添加一个特殊节点, 如果value非空,则有3个情况:<p>
+	 * <li>+1 效果如age=age+1</li>
+	 * <li>-1 效果如count=count-1</li>
+	 * <li>其他值, 则对value.toString(),效果如 time=todate("XXXXX")</li>
+	 * 
+	 * @since 1.b.44
+	 */
 	public Chain addSpecial(String name, Object value) {
 		Chain oldNext = next;
 		next = new Chain(name, value, this.head, oldNext);
@@ -327,12 +340,21 @@ public class Chain {
 		return next;
 	}
 	
+	/**
+	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
+	 * @since 1.b.44
+	 */
 	public static Chain makeSpecial(String name, Object value) {
 		Chain chain = make(name, value);
 		chain.special = true;
 		return chain;
 	}
 	
+	/**
+	 * 整个Chain是否为特殊Chain
+	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
+	 * @since 1.b.44
+	 */
 	public boolean isSpecial() {
 		if (special)
 			return true;

@@ -196,7 +196,7 @@ public abstract class Daos {
 		return sb;
 	}
 	
-	/*
+	/**
 	 * 查询sql并把结果放入传入的class组成的List中
 	 */
 	public static <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
@@ -208,7 +208,7 @@ public abstract class Daos {
 		return sql2.getList(classOfT);
 	}
 	
-	/*
+	/**
 	 * 查询某sql的结果条数
 	 */
 	public static int queryCount(Dao dao, String sql) {
@@ -217,6 +217,10 @@ public abstract class Daos {
 		return sql2.getInt();
 	}
 	
+	/**
+	 * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
+	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
+	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static int updateBySpecialChain(Dao dao, Class klass, Chain chain, Condition cnd) {
 		Entity en = dao.getEntity(klass);
@@ -255,9 +259,8 @@ public abstract class Daos {
 			public void invoke(Connection conn) throws Exception {
 				PreparedStatement ps = conn.prepareStatement(sql.toString());
 				try {
-					for (int i = 0; i < values.size(); i++) {
+					for (int i = 0; i < values.size(); i++)
 						adaptors.get(i).set(ps, values.get(i), i + 1);
-					}
 					ints[0] = ps.executeUpdate();
 				} finally {
 					Daos.safeClose(ps);
