@@ -19,7 +19,10 @@ public class SimpleExpression extends AbstractSqlExpression {
 	public void joinSql(Entity<?> en, StringBuilder sb) {
 		if (not)
 			sb.append(" NOT ");
-		sb.append(_fmtcol(en)).append(op).append('?');
+		if ("=".equals(op) || ">".equals(op) || "<".equals(op) || "!=".equals(op))
+			sb.append(_fmtcol(en)).append(op).append('?');
+		else
+			sb.append(_fmtcol(en)).append(' ').append(op).append(' ').append('?');
 	}
 
 	public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
