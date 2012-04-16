@@ -8,7 +8,7 @@ import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 
-class OrderBySet extends NoParamsPItem implements OrderBy {
+public class OrderBySet extends NoParamsPItem implements OrderBy {
 
 	private List<OrderByItem> list;
 
@@ -55,4 +55,7 @@ class OrderBySet extends NoParamsPItem implements OrderBy {
 			obi.setPojo(pojo);
 	}
 
+	public List<OrderByItem> getItems() {
+		return list;
+	}
 }
