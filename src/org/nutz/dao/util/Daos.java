@@ -229,7 +229,7 @@ public abstract class Daos {
 		final List<Object> values = new ArrayList<Object>();
 		final List<ValueAdaptor> adaptors = new ArrayList<ValueAdaptor>();
 		while (head != null) {
-			MappingField mf = en.getColumn(head.name());
+			MappingField mf = en.getField(head.name());
 			sql.append(mf.getColumnName()).append("=");
 			if (head.value() != null && head.special) {
 				if ("+1".equals(head.value())) {
