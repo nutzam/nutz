@@ -1,0 +1,354 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.a.25 及 更早版本</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.a.25 及 更早版本</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#1a25">1.a.25</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">1.3</span><a href="#改进">改进</a></div>
+</li>
+<li>
+<div><span class="num">1.4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">1.5</span><a href="#博客">博客</a></div>
+</li>
+<li>
+<div><span class="num">1.6</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+<li>
+<div><span class="num">1.7</span><a href="#下一版目标">下一版目标</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">2</span><a href="#1a22">1.a.22</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#1a15">1.a.15</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="1a25"></a>1.a.25</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><span style="color:#FF0000;"><b>这是个里程碑式的版本</b></span>，从这个版本开始， Nutz 将不再依赖 Javassist，而依赖 ASM(内嵌Asm 3.2 ,无需额外jar包)所以，编译时，你将不再需要 Javassist.jar （在此，特地感谢	<a href="http://wendal.javaeye.com">无敌的 Wendal</a>）。</p>
+<p>同时，为了更好的输出日志，Nutz 在编译时依赖了 Log4j， 但是运行时，没有 Log4j 它会选用 Java 的 Logging 或者是控制台输出。</p>
+<p>由于已经有小部分人开始试验性的在自己的项目里应用 Nutz，从本版开始，所有的接口和使用方式<b>变动会非常慎重</b>，没有重大理由和经过社区充分讨论，它将保持不变。</p>
+<h2><a name="问题修复"></a>问题修复</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>Issue 12: Should support one config file can import other config files function. <span style="color:#AAAAAA;">by</span> <b>satellite168</b></li>
+<li>Issue 70: 简化json配置(在ioc配置的是时候能把包名用变量代替？) <span style="color:#AAAAAA;">by</span> <b>lhasasky</b></li>
+<li>Issue 71: aop: 修改拦截器接口,改为使用asm实现 <span style="color:#AAAAAA;">by</span> <b>wendal</b></li>
+<li>Issue 72: 客户端提交表单服务器端自动绑定pojo的建议 <span style="color:#AAAAAA;">by</span> <b>lhasasky</b></li>
+<li>Issue 78: 出现@Id或者@name时 还需要@column <span style="color:#AAAAAA;">by</span> <b>amosleaf</b></li>
+<li>Issue 80: mvc: 支持 @Attr 注解，可以从 request, session, ServletContext 获取属性 <span style="color:#AAAAAA;">by</span> <b>zozoh</b></li>
+<li>Issue 86: NameInjector不能处理一个name有多个值的情况 <span style="color:#AAAAAA;">by</span> <b>blue_rain</b></li>
+<li>Issue 91: delete(Object)操作无法删除@PK对象问题 <span style="color:#AAAAAA;">by</span> <b>harkoo</b></li>
+<li>Issue 93: dao update 接口建议 <span style="color:#AAAAAA;">by</span> <b>Bird.Wyatt</b></li>
+<li>Issue 96: 将HttpServletRequest所接收的参数转为Map <span style="color:#AAAAAA;">by</span> <b>会跑的蜗牛</b></li>
+</ul>
+<h2><a name="质量"></a>质量</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>共通过了 397 个单元测试用例</li>
+<li>可以 GAE SDK 1.3.0 上工作正常 （除了 Dao 部分）</li>
+<li>Nutz.Dao 经测试在如下数据库上可以工作正常
+<ul type="disc">
+<li>H2</li>
+<li>MySql</li>
+<li>Oracle</li>
+<li>Postgresql</li>
+<li>SqlServer2005</li>
+<li>SqlServer2000</li>
+</ul>
+</li>
+</ol>
+<h2><a name="改进"></a>改进</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>重新实现Log模块，支持 Log4j, Jdk Log</li>
+<li>新增Plugin模块， 支持“部署时决定插件的实现”</li>
+<li>修改了测试用例 JsonCharsetTest.test_zh_CN_from_file</li>
+<li>Castors 去掉了大多数静态方法</li>
+<li>JsonFormat 支持设置自定义 Castors</li>
+<li>Log 部分的结构和实现修改的更加简洁</li>
+</ol>
+<h2><a name="文档"></a>文档</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>添加了 Nutz.Lang （Wiki 《<a href="../lang/lang.html">甜Java</a>》）下全部文档</li>
+<li>完成了 <a href="../lang/mirror.html">Mirror</a> 类的所有 Java Doc</li>
+</ol>
+<h2><a name="博客"></a>博客</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>《<a href="http://wendal.javaeye.com/blog/543936">Nutz:重新发明轮子:自己动手,用字节码工具做一个Aop拦截器</a>》@<a href="http://wendal.javaeye.com">Wendal</a></li>
+<li>《<a href="http://wendal.javaeye.com/blog/543681">Nutz:基于ASM的Nut.Aop实现</a>》@<a href="http://wendal.javaeye.com">Wendal</a></li>
+<li>《<a href="http://axhack.javaeye.com/blog/542441">给 nutz 添加 freemarker 视图</a>》 @<a href="http://axhack.javaeye.com">Axhack</a></li>
+<li>《<a href="http://zozoh.javaeye.com/blog/526494">回复fireflyc：Nutz 的设计以及提高程序员生产力</a>》 @<a href="http://zozoh.javaeye.com">zozoh</a></li>
+<li>《<a href="http://amosleaf.javaeye.com/blog/548337">Nutz的 数据库事务</a>》@<a href="http://amosleaf.javaeye.com">amosleaf</a></li>
+<li>《<a href="http://xiaofeng.javaeye.com/blog/549410">不用写代码 你也能为开源作出贡献</a>》@<a href="http://xiaofeng.javaeye.com">hilliate</a></li>
+</ul>
+<h2><a name="主要贡献者名单"></a>主要贡献者名单</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者 									</td>
+<td> 问题 </td>
+<td> 博客 </td>
+<td> 讨论 </td>
+<td> 代码 </td>
+<td> Demo </td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> <a href="http://amosleaf.javaeye.com">amosleaf</a>	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://www.ai-java.com">axhack</a>			</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://birdwindy.javaeye.com">bird.wyatt</a></td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> blue_rain								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td> -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://bonyfish.cn">bonyfish</a>			</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://xiaofeng.javaeye.com">hilliate</a>	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://hi.baidu.com/lifecube">mastung</a>	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> mawm										</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> Roy Tonhee								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> satellite168								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> lhasasky									</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> sunonfire								</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> Tony										</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://wendal.javaeye.com">wendal</a>		</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> wsc0918									</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> yuansicau								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://zozoh.javaeye.com">zozoh</a>			</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://windir.javaeye.com">密林仙踪</a>		</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://yinxvxv.javaeye.com">农大天狼</a>	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://www.3km.com.cn">会跑的蜗牛</a>		</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> 知足常乐									</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+</table>
+<p>另外，非常感谢<a href="http://qun.qq.com/air/#75818186">Nutz QQ 群(75818186)</a>以及<a href="https://groups.google.com/group/nutzam?hl=zh-CN">Nutzam 讨论区</a>的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 <b>产生着潜移默化的影响</b>。我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。</p>
+<p>另，由于众所周知的原因，建议大家通过<a href="https://groups.google.com/group/nutzam?hl=zh-CN">通过 https 方式访问讨论区</a>有时候是可以上的。但是能跳墙还是跳墙的比较好。</p>
+<h2><a name="下一版目标"></a>下一版目标</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>将主要集中在</p>
+<ul type="disc">
+<li>Issue 37 ioc: 自动甄别对象的 Ioc 字段</li>
+<li>Issue 68 通过配置文件添加AOP</li>
+<li>Issue 76 Ioc中增加类似Spring的Autoweave的特性</li>
+<li>Issue 83 castor: 用 Method 替换实现类</li>
+<li>Issue 87 重新实现一个更友好的字节码工具</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="1a22"></a>1.a.22</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请参看 <a href="http://www.javaeye.com">JavaEye</a> 的 <a href="http://www.javaeye.com/news">新闻</a>:《<a href="http://www.javaeye.com/news/11774-nutz">Nutz1.a.22 发布-Mvc,Ioc 文档完成</a>》</p>
+<div class="hr"><b></b></div>
+<h1><a name="1a15"></a>1.a.15</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请参看 <a href="http://www.javaeye.com">JavaEye</a> 的 <a href="http://www.javaeye.com/news">新闻</a>:《<a href="http://www.javaeye.com/news/10461"> Nutz 框架 1.a.15 发布，全部用例通过 Oracle/Psql/MySql 测试</a>》</p>
+<div class="hr"><b></b></div>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>增强反射 -- Mirror</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">增强反射 -- Mirror</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#反射的意义">反射的意义</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#创建_Mirror">创建 Mirror</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#更方便的构造">更方便的构造</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#自动判断构造函数">自动判断构造函数</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#自动判断工厂方法">自动判断工厂方法</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#自动转换类型">自动转换类型</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#更快的构建_-_缓存构造方法">更快的构建 - 缓存构造方法</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#更方便的调用">更方便的调用</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#调用一个函数">调用一个函数</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#参数自动转型">参数自动转型</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#更方便的获取和设置">更方便的获取和设置</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#获取泛型参数">获取泛型参数</a></div>
+</li>
+<li>
+<div><span class="num">5.2</span><a href="#获取_getter">获取 getter</a></div>
+</li>
+<li>
+<div><span class="num">5.3</span><a href="#获取_setter">获取 setter</a></div>
+</li>
+<li>
+<div><span class="num">5.4</span><a href="#获取全部属性">获取全部属性</a></div>
+</li>
+<li>
+<div><span class="num">5.5</span><a href="#获取全部方法">获取全部方法</a></div>
+</li>
+<li>
+<div><span class="num">5.6</span><a href="#获取全部静态方法">获取全部静态方法</a></div>
+</li>
+<li>
+<div><span class="num">5.7</span><a href="#获取字段">获取字段</a></div>
+</li>
+<li>
+<div><span class="num">5.8</span><a href="#获取字段值">获取字段值</a></div>
+</li>
+<li>
+<div><span class="num">5.9</span><a href="#设置字段值">设置字段值</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="反射的意义"></a>反射的意义</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Java 是静态语言。但是 JVM 却不那么静态。静态语言的好处是，IDE 可以提供很高级的重构功能。缺点是你的代码会比较僵化，像 Javascript 一样的动态语言（或者说，后绑定语言），在编写程序时的随心所欲，估计 Java 程序员是享受不到了。 但是好在 Java 还提供了“反射”。</p>
+<p>在任何时候，你如果想在运行时决定采用哪个实现类，或者调用哪个方法，通过反射都可以实现，虽然不那么方便 （你需要捕捉很多无聊的异常），虽然不那么快。</p>
+<p>既然这样，那么能不能让反射工作的更好一些呢？<a href="http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang">org.nutz.lang</a> 包提供了Mirror&lt;T&gt; 类，通过它，你可以更方便的使用反射的特性</p>
+<div class="hr"><b></b></div>
+<h1><a name="创建_Mirror"></a>创建 Mirror</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Mirror 就是 Class 的一个包裹：</p>
+<pre>Mirror&lt;Pet&gt; mirror = Mirror.me(Pet.class);
+</pre>
+<p>更多时候，Mirror 用不到类型：</p>
+<pre>Mirror&lt;?&gt; mirror = Mirror.me(Pet.class);
+</pre>
+<p>一旦你获得了 Mirror 对象，你就可以做如下操作:</p>
+<div class="hr"><b></b></div>
+<h1><a name="更方便的构造"></a>更方便的构造</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>反射的 Class.newInstance() 是个很方便的函数。但是它只能调用默认构造函数。如果你想调用类的某个带参数的构造函数，是很麻烦的。通过 Mirror 你可以</p>
+<h2><a name="自动判断构造函数"></a>自动判断构造函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如类：</p>
+<pre>public class Pet{
+	private String name;
+	
+	public Pet(String name){
+		this.name = name;
+	}
+}
+</pre>
+<p>通过如下调用：</p>
+<pre>Mirror.me(Pet.class).born("XiaoBai");
+</pre>
+<p>Mirror 会自动根据你的参数寻找到相应的构造函数的。</p>
+<h2><a name="自动判断工厂方法"></a>自动判断工厂方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如类：</p>
+<pre>public class Pet{
+	private String name;
+	
+	public static Pet create(String name){
+		return new Pet("Pet:" + name);
+	}
+	
+	private Pet(String name){
+		this.name = name;
+	}
+}
+</pre>
+<p>通过如下调用：</p>
+<pre>Mirror.me(Pet.class).born("XiaoBai");
+</pre>
+<p>Mirror 会自动根据你的参数寻找到相应的工厂方法。</p>
+<p>构造函数最优先，如果找不到构造函数会寻找静态工厂方法</p>
+<h2><a name="自动转换类型"></a>自动转换类型</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public class Pet{
+	private String name;
+	private Calendar birthday;
+	
+	private Pet(String name,Calendar birthday){
+		this.name = name;
+		this.birthday = birthday;
+	}
+}
+</pre>
+<p>通过如下调用：</p>
+<pre>Mirror.me(Pet.class).born("XiaoBai", "2008-10-12 12:23:24");
+</pre>
+<p>Mirror 会尝试寻找接受两个字符串的构造函数。如果找不到，它发现构造函数 Pet(String, Calendar) 起码参数的数量是一致的，于是就尝试通过 <a href="castors.html">Castors</a> 将 "2008-10-12 12:23:24" 转换成一个 Calendar</p>
+<h2><a name="更快的构建_-_缓存构造方法"></a>更快的构建 - 缓存构造方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>就像你知道的一样， Mirror 根据参数自动判断一个类型的构造函数，过程比较费时。一旦它找到了一个构造函数，或者一个静态工厂方法，我们就希望把它记下来，所以你可以：</p>
+<pre>Mirror&lt;Pet&gt; mirror = Mirror.me(Pet.class);
+Borning&lt;Pet&gt; borning = mirror.getBorning("XiaoBai");
+Pet xb = borning.born("XiaoBai");
+Pet xh = borning.born("XiaoHei");
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="更方便的调用"></a>更方便的调用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Java 的反射允许你在运行时决定调用一个类的某一个成员方法。 通过 Mirror 调用的过程将会变得更加简单。</p>
+<h2><a name="调用一个函数"></a>调用一个函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如你有一个类:</p>
+<pre>public class MyClass {
+	public String getInfo(String s) {
+		return "Get " + s + " @ " + System.currentTimeMillis();
+	}
+}
+</pre>
+<p>你可以这么调用 getInfo 方法：</p>
+<pre>Mirror&lt;MyClass&gt; mirror = Mirror.me(MyClass.class);
+MyClass mc = mirror.born();
+System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
+</pre>
+<p>控制台输出：</p>
+<pre>Get Hello~~~ @ 1259836169165
+</pre>
+<p></p>
+<h2><a name="参数自动转型"></a>参数自动转型</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>System.out.println(mirror.invoke(mc, "getInfo", new Email("zozoh", "263.net")));
+</pre>
+<p>控制台输出：</p>
+<pre>Get zozoh@263.net @ 1259836289830
+</pre>
+<p>当然， Email 类的 toString() 需要正常工作。 实际上，它是利用 <a href="castors.html">Castors</a> 来做对象的转型的。</p>
+<div class="hr"><b></b></div>
+<h1><a name="更方便的获取和设置"></a>更方便的获取和设置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="获取泛型参数"></a>获取泛型参数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>如果没有泛型参数，返回 null
+<pre>Type[] types = Mirror.getTypeParams(MyClass.class);
+</pre>
+<p></p>
+</li>
+</ul>
+<h2><a name="获取_getter"></a>获取 getter</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>// 获取 getName() 方法
+Method getter = mirror.getGetter("name");
+</pre>
+<h2><a name="获取_setter"></a>获取 setter</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>// 获取 setName(String) 方法
+Method setter = mirror.getSetter("name", String.class);
+</pre>
+<h2><a name="获取全部属性"></a>获取全部属性</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>获得所有的属性，包括私有属性。不包括 Object 的属性</p>
+<pre>Field[] fields = mirror.getFields();
+</pre>
+<h2><a name="获取全部方法"></a>获取全部方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>获取所有的方法，包括私有方法。不包括 Object 的方法</p>
+<pre>Method[] methods = mirror.getMethods();
+</pre>
+<h2><a name="获取全部静态方法"></a>获取全部静态方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Method[] methods = mirror.getStaticMethods();
+</pre>
+<p></p>
+<h2><a name="获取字段"></a>获取字段</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>获取一个字段。这个字段可以是当前类型或者其父类的私有字段。
+<pre>Field f = mirror.getField("name");
+</pre>
+</li>
+<li>获取一组声明了特殊注解的字段
+<pre>Field[] fields = mirror.getFields(MyAnnotation.class);
+</pre>
+</li>
+<li>获取第一个声明了特殊注解的字段
+<pre>Field f = mirror.getField(MyAnnotation.class);
+</pre>
+<p></p>
+</li>
+</ul>
+<h2><a name="获取字段值"></a>获取字段值</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>不调用 getter，直接获得字段的值
+<pre>Object v = mirror.getValue(obj, mirror.getField("name"));
+</pre>
+</li>
+<li>优先通过 getter 获取字段值，如果没有，则直接获取字段值
+<pre>Object v = mirror.getValue(obj, "name");
+</pre>
+<p></p>
+</li>
+</ul>
+<h2><a name="设置字段值"></a>设置字段值</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>为对象的一个字段设值。 不会调用对象的 setter，直接设置字段的值
+<pre>mirror.setValue(obj, mirror.getField("name"), "XiaoBai");
+</pre>
+</li>
+<li>为对象的一个字段设置。优先调用 setter 方法。
+<pre>mirror.setValue(obj, "name", "XiaoBai");
+</pre>
+<p></p>
+</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

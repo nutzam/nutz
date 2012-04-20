@@ -1,0 +1,293 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.b.41 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.b.41 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#1b41_发行注记">1.b.41 发行注记</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="1b41_发行注记"></a>1.b.41 发行注记</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>大家好，经过2个多月，我们又见面了。兔年岁末这2个月，贺岁档很是让人失望，但是网络上却热闹的要命。方舟子和老罗陪我度过了很多有趣的夜晚，现在连韩寒都加入了。鉴于网调一边倒的局面，我就没啥好说的，龙年让我们搬个板凳继续看某斗士的嘴脸吧。</p>
+<p>说到 Nutz 的这个版，我们主要进行了一些微小的调整，我相信大多数使用者都能平滑的从 1.b.40 升级到 1.b.41 -- 换一个 Jar 而已</p>
+<p>本版，我们还不得不隆重介绍一下 Nutz 另外一位提交者 -- <a href="http://pangwu86.iteye.com/">胖五</a>， 经过百般忽悠，终于诱使<a href="http://pangwu86.iteye.com/">胖五</a> 同学为 Nutz 做了好几个比较关键的提交，尤其是完善了 Dao 的 @Index 注解。这下声明一个 POJO，创建一个数据表就会更加轻松，以前 @Index 注解没有完全实现，所以大家必须的手工建立索引。 当然，对于高性能要求的应用，这个特性可能没啥用，因为索引的建立和调整，通常是需要 DBA 来做的，我们程序员定好表结构和主键就是了。但是一些中小型项目，程序员往往得兼 DBA，所以没啥好说得，@Index 注解会很帮你得忙的。</p>
+<p>总之，龙年就要到了，一不小心又过了一年。从 09 年发起的这个小项目已经进入了它第三个年头。我记得当初发这个项目的时候，有一类很大的质疑声音就是：</p>
+<p><span style="color:#FF0000;"><b>“个人的项目不能保证长期维护，不敢用呀。” </b></span></p>
+<p>为此，我们花了2年多的时间将它变成一个非个人项目，同时也证明了：</p>
+<p><span style="color:#008800;"><b>“嘿嘿，它会是一个长期的项目”</b></span></p>
+<p>今年我们也关注了一下其他的语言，在自己的工作中也分别用了用 Python 之类的语言，有很多感悟，比如 <a href="http://wendal.net/">wendal 同学</a>的 <a href="http://wendal.net/355.html">这篇文章</a>。 而且现在似乎 <span style="color:#FF00FF;"><b>Java 过气了</b></span> 的这种说法慢慢淡下去了，所以似乎这个小项目还会走上很长的一段时间。</p>
+<p>通常来说，一个孩子，过了3岁，就不太容易夭折，一个公司过了3年，就不太容易倒闭。 因此这一年对这个小项目似乎很是关键，如果到了明年的这个时候，大家还能读到 1.x.xxx 的发行注记，那么我们可以负责的说，它真的会是一个长期的项目了。这一点也与国内其他做开源的同行一起共勉吧。喊的多响都木有用，踏踏实实的活三年下来，并且每周都有点进步，那么三年后，你的项目总是不会差的，而且多半还是很好的 ^_^</p>
+<p>最后，这里代表 Nutz 所有的提交者（抱歉，来不及沟通了，你们暂时被戴表一下吧），祝大家</p>
+<ul type="disc">
+<li>龙年行大运
+<ul type="circle">
+<li>更少的 bug</li>
+<li>更多的技术积累</li>
+<li>更少的加班</li>
+<li>更多的奖金</li>
+<li>耶~~~ ^0^</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li><a href="https://github.com/nutzam/nutz/issues/125">Issue 125</a> el中使用函数调用有问题 EL <span style="color:#AAAAAA;">by</span> <b>hujun82589167</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/124">Issue 124</a> 动态实体功能不能正常使用 重要 <span style="color:#AAAAAA;">by</span> <b>goulin</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/119">Issue 119</a> 为何从数据库里面取出二进制数据时会被转成String类型？ <span style="color:#AAAAAA;">by</span> <b>elkan1788</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/118">Issue 118</a> fastInsert存在问题 <span style="color:#AAAAAA;">by</span> <b>fjayblue</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/111">Issue 111</a> 文档中"文件操作"有纰漏 文档 <span style="color:#AAAAAA;">by</span> <b>conanca</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/107">Issue 107</a> Nutz在JDK1.5下编译不过了 Dao <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/106">Issue 106</a> Oracle下使用出现ora-01780问题 Dao <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/101">Issue 101</a> 智能判断字段值为空的时候生成is null语句 Dao <span style="color:#AAAAAA;">by</span> <b>sjbwylbs</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/100">Issue 100</a> JSON合并输出 <span style="color:#AAAAAA;">by</span> <b>juqkai</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/94">Issue 94</a> NutzMVC多主模块部署中Ioc冲突问题 Mvc <span style="color:#AAAAAA;">by</span> <b>netstarry</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/92">Issue 92</a> 能不能搞个@comment注解 Dao <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/90">Issue 90</a> @Index注解没有实现 Dao <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/88">Issue 88</a> 扩展Each接口 <span style="color:#AAAAAA;">by</span> <b>fjay</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/87">Issue 87</a> nutz项目有没有像Apache 的commons-confiugrations一样的工具类？ <span style="color:#AAAAAA;">by</span> <b>wanghaipeng789</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/86">Issue 86</a> 希望EL能支持精度 EL FAQ <span style="color:#AAAAAA;">by</span> <b>qilicn</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/85">Issue 85</a> 让Nutz Json支持多泛型 <span style="color:#AAAAAA;">by</span> <b>fjay</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/84">Issue 84</a> updateIgnoreNull隐藏的BUG <span style="color:#AAAAAA;">by</span> <b>JefWang</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/30">Issue 30</a> 表单收集不支持List字段 Mvc 需求 <span style="color:#AAAAAA;">by</span> <b>fjay</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>共通过了 <span style="color:#FF00FF;"><b>738</b></span>  个单元测试用例,代码覆盖率达到 <span style="color:#FF00FF;">64.5%</span>(按line计算)</p>
+<p><img src="http://www.nutzam.com/wiki/img/emma.png"/></p>
+<p>Nutz.Dao 经测试在如下数据库上可以工作正常</p>
+<ul type="disc">
+<li><a href="http://www.h2database.com">H2</a></li>
+<li><a href="http://www.sqlite.org">SQLite</a> -- 仅有限支持事务操作</li>
+<li><a href="http://hsqldb.org">hsqldb</a></li>
+<li><a href="http://www.mysql.com">MySql</a></li>
+<li><a href="http://www.oracle.com">Oracle</a></li>
+<li><a href="http://www.postgresql.org">Postgresql</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
+<li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>修改: <a href="dao/customized_sql.man">dao/customized_sql.man</a> : 增加 SQL 逃逸字符的描述</li>
+<li>修改: <a href="lang/lang.man">lang/lang.man</a> : 增加文件/目录拷贝的描述</li>
+<li>新增: <a href="ioc/ioc_properties.man">ioc/ioc_properties.man</a> 让Ioc容器帮你规划配置文件</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>贡献的种类:</p>
+<ul type="disc">
+<li>问题: 给项目的<a href="http://code.google.com/p/nutz/issues/list">问题列表</a>汇报一个上的问题，并且该问题被本次发布包括</li>
+<li>博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 <a href="http://code.google.com/p/nutz/wiki/appendix_resources">推荐列表</a>收录</li>
+<li>代码: 提交过至少一个修订</li>
+<li>Demo: 为 <a href="https://github.com/nutzam/nutzdemo">NutzDemo</a> 提交过代码</li>
+<li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
+<li>测试: 发布前，参与测试周发布人给出的任务</li>
+</ul>
+<p>如有遗漏,请提醒我们 ^_^</p>
+<p><span style="color:#CCCCCC;"><i>贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...</i></span></p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者           </td>
+<td> 问题 </td>
+<td> 博客 </td>
+<td> 支持 </td>
+<td> 代码 </td>
+<td> 示例 </td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> Jay 蓝色幽默    	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> JefWang       	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> conanca       	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> elkan1788     	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> goulin        	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> hujun82589167 	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> juqkai        	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> netstarry     	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> pangwu86      	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> qilicn        	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> sjbwylbs        	</td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> wanghaipeng789	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> wendal        	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> zozoh        	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> 花米®           	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+</table>
+<p>另外，很多朋友都在：</p>
+<ul type="disc">
+<li><a href="https://groups.google.bg/group/nutzam?hl=zh-CN">Nutzam 讨论区</a></li>
+<li><a href="http://qun.qq.com/air/#58444676">Nutz &amp; XBlink （58444676 超级群）</a></li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/60504323">Nutz在微笑 （60504323）超级群</a></li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz ② 群 （68428921）超级群</a></li>
+<li>GTalk 聊天群 <span style="color:#AAAAAA;"><i>添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span></li>
+<li><a href="http://q.weibo.com/128323">Nutz的新浪微群</a></li>
+<li><a href="http://www.douban.com/group/339199/">Nutz的豆瓣小组</a></li>
+<li><a href="http://www.chatterous.com/nutzam/">Nutz的聊天室</a></li>
+</ul>
+<p>回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!</p>
+<p>欢迎访问<a href="http://nutzam.com">官网</a>,以获取 <a href="http://build.sunfarms.net/nutz/">最新的快照版</a> 和<a href="http://nutzam.com/doc/html/">用户手册</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

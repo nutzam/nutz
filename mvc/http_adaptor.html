@@ -1,0 +1,395 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>适配器</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">适配器</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是适配器？">什么是适配器？</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#如何使用适配器？">如何使用适配器？</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#通过构造函数获得适配器">通过构造函数获得适配器</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#通过_Ioc_容器获得适配器">通过 Ioc 容器获得适配器</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#内置的适配器">内置的适配器</a></div>
+<ul>
+<li>
+<div class="zdoc_folder"><span class="num">3.1</span><a href="#名值对_(默认)_-_PairAdaptor">名值对 (默认) - PairAdaptor</a></div>
+<ul>
+<li>
+<div><span class="num">3.1.1</span><a href="#一般方式">一般方式</a></div>
+</li>
+<li>
+<div><span class="num">3.1.2</span><a href="#表单方式_-_Form_Bean">表单方式 - Form Bean</a></div>
+</li>
+<li>
+<div><span class="num">3.1.3</span><a href="#前缀表单方式">前缀表单方式</a></div>
+</li>
+<li>
+<div><span class="num">3.1.4</span><a href="#混合方式">混合方式</a></div>
+</li>
+<li>
+<div><span class="num">3.1.5</span><a href="#JSON_的支持">JSON 的支持</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#JSON_输入流_-_JsonAdaptor">JSON 输入流 - JsonAdaptor</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#什么都不干_-_VoidAdaptor">什么都不干 - VoidAdaptor</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#上传文件_-_UploadAdaptor">上传文件 - UploadAdaptor</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#特殊参数">特殊参数</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#NutzMvc_支持的特殊参数类型">Nutz.Mvc 支持的特殊参数类型</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#路径参数">路径参数</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#单层通配符">单层通配符</a></div>
+</li>
+<li>
+<div><span class="num">5.2</span><a href="#多层通配符">多层通配符</a></div>
+</li>
+<li>
+<div><span class="num">5.3</span><a href="#单层多层通配符混用">单层多层通配符混用</a></div>
+</li>
+<li>
+<div><span class="num">5.4</span><a href="#通配符的限制">通配符的限制</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">6</span><a href="#定制自己的适配器">定制自己的适配器</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是适配器？"></a>什么是适配器？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>将 HTTP 参数转换成一个函数参数的过程是一个典型适配过程，执行这个过程的对象被称为适配器了。Nutz.Mvc 提供了 <b>org.nutz.mvc.HttpAdaptor</b> 接口，隔离了这种行为。</p>
+<p>在每一个入口函数上，你都可以通过注解 <span style="color:#888888;">@AdaptBy</span> 来声明如何适配 HTTP 参数。当然，你没必要在每一个入口函数上都声明，在子模块类上声明，或者在整个应用的主模块上声明均可。</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用适配器？"></a>如何使用适配器？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>默认的，如果你什么也不写，Nutz.Mvc 会采用 <b>org.nutz.mvc.adaptor.PairAdaptor</b> （<i>也就是名值对的方式</i>）来适配你的 HTTP 参数。</p>
+<h2><a name="通过构造函数获得适配器"></a>通过构造函数获得适配器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你可以通过 @AdaptBy 注解来改变任何一个入口函数的适配方式。比如</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+</pre>
+<p>某些时候，你需要对一个适配器做一些复杂的设置，@AdaptBy 注解还支持一个属性 args，你可以通过这个属性为你的适配器设置构造函数参数</p>
+<div class="hr"><b></b></div>
+<h2><a name="通过_Ioc_容器获得适配器"></a>通过 Ioc 容器获得适配器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>更复杂的情况是，如果你希望你的适配器是交由 Ioc 容器管理的，你可以：</p>
+<pre>@AdaptBy(type=JsonAdaptor.class, args={"ioc:objName"})
+</pre>
+<p>即，如果你的参数数组长度为一，并且，由 "ioc:" 开始，那么这个适配器会交付 Ioc 容器管理，你可以在容器的配置文件中详细规定这个适配器的各个属性。当然，你需要在整个应用启用 Ioc 容器，详情，请参看 <a href="with_ioc.html">同 Ioc 容器一起工作</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="内置的适配器"></a>内置的适配器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 为你内置了 4 个最常用的适配器，可以让支持用如下四种方式适配 HTTP 参数：</p>
+<h2><a name="名值对_(默认)_-_PairAdaptor"></a>名值对 (默认) - PairAdaptor</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h3><a name="一般方式"></a>一般方式</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@AdaptBy(type=PairAdaptor.class)
+</pre>
+<p>这种方式，是传统的 HTTP 参数方式。关键的问题是如何将 HTTP 的参数表同入口函数的参数对应起来。为此，它支持一个新的注解 <b>@Param</b>，你可以:</p>
+<pre>public String someFunc(	@Param("pid") int petId,
+                        @Param("pnm") String petName){
+	...
+</pre>
+<p>通过这个注解，为每个参数声明 HTTP 参数名。</p>
+<p>特例:你连@Param都不写(1.b.43+)</p>
+<pre>public String someFunc(	int pid,
+                        String petName){
+	...
+</pre>
+<p>那么,这等同于</p>
+<pre>public String someFunc(	@Param("petId") int petId,
+                        @Param("petName") String petName){
+	...
+</pre>
+<p>很神奇,很方便,不是吗? 前提是编译的时候,加上-debug,保留局部变量名,且大部分IDE都是默认打开这个属性的.</p>
+<h3><a name="表单方式_-_Form_Bean"></a>表单方式 - Form Bean</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些时候，你需要入口函数接受一个对象，比如一个表单对象</p>
+<pre>public String someFunc(	@Param("..") Pet pet){
+	...
+</pre>
+<p>值 ".." 有特殊含义，表示当前的这个对象，需要对应整个的 HTTP 参数表。 所以， Nutz.Mvc 会将 HTTP 参数表中的参数一个个的按照名字设置到 Pet 对象的字段里。 但是如果 Pet 对象的字段名同 HTTP 参数不符怎么办？ 你可以在Pet 字段上声明 @Param。</p>
+<h3><a name="前缀表单方式"></a>前缀表单方式</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>进行比较复杂的 HTTP 交互是，大家都比较偏爱名值对的方式提交数据，可能是因为数据组织比较方便 -- 通过&lt;form&gt; 即可。但是如果在一个表单里混合上两个甚至多个表单项，那么 HTTP 的参数就会有点复杂，虽然这种情况下我更推荐采用<a href="#JSON_输入流_-_JsonAdaptor">Json 输入流</a>，但是并不是所有人都那么喜欢它，对吗？</p>
+<p>比如有一个表单，它希望提交两个对象的数据， User 以及 Department，这HTTP 请求的参数格式可能是这样的：</p>
+<pre>user.id = 23
+user.name = abc
+user.age = 56
+
+dep.id = 15
+dep.name = QA
+
+dep.users[1].id = 23
+dep.users[1].name = abc
+dep.users[1].age = 56
+
+dep.users[10001].id = 22
+dep.users[10001].name = abcd
+dep.users[10001].age = 26
+
+dep.users:50001.id = 22
+dep.users:50001.name = abcd
+dep.users:50001.age = 26
+
+dep.children(abc).id = 13
+dep.children(abc).name = ABC
+
+dep.children(jk).id = 25
+dep.children(jk).name = JK
+
+dep.children.nutz.id = 1
+dep.children.nutz.name = NUTZ
+</pre>
+<p>怎样在入口函数内声明这样的表单项呢？我们可以采用前缀方式：</p>
+<pre>public String someFunc( @Param("::user.") User user,
+                        @Param("::dep.") Department dept){
+	...
+}
+</pre>
+<p>关键就是这个 <b>@Param("::user.")</b> 符号 '<span style="color:#FF00FF;"><b>::</b></span>' 表示这个参数是一个表单对象，并且它有统一的前缀'<span style="color:#FF00FF;"><b>user.</b></span>' 表示前缀，Nutz.Mvc 会查看一下 User, Department 类所有的字段：</p>
+<pre>public class User {
+	private int id;
+	private String name;
+	private int age;
+}
+public class Department {
+	private List&lt;User&gt; users;
+	private Map&lt;String, User&gt; children;
+}
+</pre>
+<h4><a name="那么，_id_会对应到_HTTP_参数中的_userid，_其他的字段同理眼尖的你肯定发现了有点异样的地方,_对了,_那就是我们_nutz_对集合的支持_在此,_你不仅可以对一般的属性进行注入,_还能对list,_set,_map集合以及对象数组进行注入_在此我们提供了两种书写方式:1_对象list索引_=_值"></a>那么， id 会对应到 HTTP 参数中的  'user.id'， 其他的字段同理.眼尖的你肯定发现了有点异样的地方, 对了, 那就是我们 nutz 对集合的支持. 在此, 你不仅可以对一般的属性进行注入, 还能对list, set, map集合以及对象数组进行注入. 在此我们提供了两种书写方式:1. 	对象.list<a href="索引">索引</a> = 值</h4>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>对象.list<a href="索引">索引</a>.属性 = 值</p>
+<p>对象.map(key) = 值对象.map(key).属性 = 值</p>
+<h4><a name="2_对象list:索引_=_值"></a>2. 	对象.list:索引 = 值</h4>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>对象.list:索引.属性 = 值</p>
+<p>对象.map.key = 值对象.map.key.属性 = 值</p>
+<p>两种方式是完全等价的(小声透露一下, 其实代码里面就是把第一种方式转换成第二种方式实现的哦...). 并且都可以包含多层集合. 同时需要注意的是, 在进行 list 注入的时候需要注意, 出于内存方面的考虑, 所提供的 "索引" 只做为一个组装对象的参考字段(必需,不然不能组装对象), 不做为真实list的索引使用. 因此, list 的索引可以是任意大小的数字, 以及字符, 出字符串组成.</p>
+<p>从现在开始, nutz 参数的类型不再只支持单纯的 Object 对象注入了, 同时也提供了 List, Map, Set 以及对象数组. 亲, 还等什么? 赶快来试试吧, 不需要9998, 也不需要998, 只要98, 亲, 还等什么, 赶快拿起你手中的电话...额...请在参数前加上@Param(::前缀).</p>
+<p>更更更强大的功能, nutz开始支持泛型了, 直接来例子, 懒得解释:</p>
+<pre>	class Abc&lt;T&gt;{
+		T obj;
+	}
+	class jk{
+		String name;
+	}
+	public void test(@Param("::abc.")Abc&lt;jk&gt; abc){}
+</pre>
+<p>如果要写test的参数, 你可以直接写 abc.obj.name = "nutz" , 我们的nutz就会非常智能的生成jk对象.</p>
+<h3><a name="混合方式"></a>混合方式</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>值得一说的是，按照这个约定，实际上，一个入口函数，是可以支持多个  POJO 的，也可以写成这样</p>
+<pre>public String someFunc(	@Param("pid") int petId,
+                        @Param("..") Pet pet,
+                        @Param("..") Food food){
+	...
+</pre>
+<p></p>
+<h3><a name="JSON_的支持"></a>JSON 的支持</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你的 HTTP 参数也可以是一个 JSON 字符串</p>
+<pre>public String someFunc(	@Param("pid") int petId,
+                        @Param("pet") Pet pet,
+                        @Param("foods") Food[] food){
+	...
+</pre>
+<p>HTTP 参数的值都是字符串，比如上例的第二个参数，Nutz.Mvc 会看看 HTTP 参数表中的 "pet" 的值，如果它用 "" 和 ""包裹，则会试图将其按照 JSON 的方式解析成 Pet 对象。当然，如果你传入的参数格式有问题，会解析失败，抛出异常。</p>
+<p>第三个参数，是一个数组，Nutz.Mvc 会看看 HTTP 参数表中的 "foods" 的值，如果用 "[" 和 "]" 包裹，则会视试图将其转换成一个数组。 如果你 JSON 字符串的格式有问题，它也会抛出异常。</p>
+<p>参数类型如果是列表（java.util.List），同数组的处理方式相同。但是它不知道列表元素的类型，所以转换出的元素只可能是</p>
+<ul type="disc">
+<li>布尔</li>
+<li>数字</li>
+<li>字符串</li>
+<li>列表</li>
+<li>Map</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="JSON_输入流_-_JsonAdaptor"></a>JSON 输入流 - JsonAdaptor</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你要通过 HTTP 传给服务器一个比较复杂的对象，通过名值对的方式可能有点不方便。因为它很难同时传两个对象。并且一个对象如果还嵌入了另外一个对象，也很难传入，你必须要自己定义一些奇奇怪怪的格式，在 JS 里组织字符串，在服务器端，手工解析这些字符串。</p>
+<p>针对这个问题， JSON 流是一个比 XML 流更好的解决方案，它足够用，并且它更短小。</p>
+<p>如果你的 HTTP 输入流就是一个 JSON 串，你可以这样：</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+public String someFunc( Pet pet ){
+	...
+</pre>
+<p>如果你的 JSON 流是一个数组</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+public String someFunc( Pet[] pet ){
+	...
+</pre>
+<p>如果你的 JSON 流类似：</p>
+<pre>{
+	fox : {
+		name : "Fox",
+		arg : 30
+	},
+	fox_food : {
+		type : "Fish" ,
+		price : 1.3
+	}
+}
+</pre>
+<p>你希望有两个 POJO （Pet 和 Food） 分别表示这两个对象，你可以：</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+public String someFunc(	@Param("fox") Pet pet,
+                        @Param("fox_food") Food food){
+	...
+</pre>
+<p>实际上，Nutz.Mvc 会将 HTTP 输入流解析成一个 Map，然后从 Map 里取出 "fox" 和 "fox_food" 这两个子 Map，分别转换成 Pet 对象和 Food 对象。</p>
+<div class="hr"><b></b></div>
+<h2><a name="什么都不干_-_VoidAdaptor"></a>什么都不干 - VoidAdaptor</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>某些特殊的情况，你需要彻底控制输入流的解析，同时你又不想使用任何适配器，你可以</p>
+<pre>@AdaptBy(type=VoidAdaptor.class)
+public String someFunc(HttpServletRequest req){
+	...
+</pre>
+<p>VoidAdaptor 什么都不会干，不会碰 HTTP 请求对象的输入流。</p>
+<div class="hr"><b></b></div>
+<h2><a name="上传文件_-_UploadAdaptor"></a>上传文件 - UploadAdaptor</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>NutzMvc 内置了 org.nutz.mvc.upload.UploadAdaptor。关于文件上传详细的说明，请参看：<a href="file_upload.html">文件上传</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="特殊参数"></a>特殊参数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>某些时候，你可能需要得到 HttpSession，或者你需要得到 Ioc 容器的一个引用。因为你想做点更高级的事情，你想出搞掂小花样。Nutz.Mvc 完全支持你这样做。</p>
+<p>你只要在你的入口函数里声明你希望得到的对象类型即可，比如：</p>
+<pre>@At("/myfunc")
+public String someFunc(	@Param("pid") int petId,
+                        Ioc ioc,
+                        HttpServletRequest req){
+	...
+</pre>
+<ul type="disc">
+<li>第一个参数会从 HTTP 参数表中取出赋给入口函数</li>
+<li>第二个参数，Nutz.Mvc 会把自身使用的 Ioc 容器赋给入口函数，</li>
+<li>第三个参数，当前请求对象也会直接赋给入口函数。</li>
+</ul>
+<p>那么 Nutz.Mvc 到底支持多少类似这样的特殊参数类型呢？</p>
+<h2><a name="NutzMvc_支持的特殊参数类型"></a>Nutz.Mvc 支持的特殊参数类型</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>ServletRequest &amp; HttpServletRequest</li>
+<li>ServletResponse * HttpServletResponse</li>
+<li>HttpSession</li>
+<li>ServletContext</li>
+<li>Ioc &amp; Ioc2</li>
+</ul>
+<p>如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。</p>
+<div class="hr"><b></b></div>
+<h1><a name="路径参数"></a>路径参数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>某些时候，你可能觉得这样的 URL 很酷</p>
+<pre>/my/article/1056.nut
+</pre>
+<p>起码比</p>
+<pre>/my/article.nut?id=1056
+</pre>
+<p>看起来要顺眼一些。</p>
+<p>Nutz.Mvc 支持将路径作为参数吗？ 你可以在路径中增加通配符，在运行时，Nutz.Mvc 会将路径对应的内容依次变成你的入口函数的调用参数。通配符有两种：</p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b>'?'</b></span> - 单层通配符，后面你可以继续写路径和其他的通配符</li>
+<li><span style="color:#FF00FF;"><b>'*'</b></span> - 多层通配符，后面个不能再有任何内容</li>
+</ul>
+<h2><a name="单层通配符"></a>单层通配符</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@At("/topic/?/comment/?")
+public String getComment(int topicId, int commentId){
+    // 如果输入的 URL 是： /topic/35/comment/171
+    // 那么 topicId 就是 35
+    // 而 commentId 就是 171
+}
+</pre>
+<p>如果你有这种需求，我想不用我废话了，不解释，你懂的。</p>
+<h2><a name="多层通配符"></a>多层通配符</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@At("/article/*")
+public String getArticle(String author, int articleId){
+    // 如果输入的 URL 是： /article/zozoh/1352
+    // 那么 author 就是 "zozoh"
+    // 而 articleId 就是 1352       	
+}
+</pre>
+<p>Nutz.Mvc 在一层一层解析路径的时候，碰到了 <span style="color:#FF00FF;"><b>'*'</b></span>，	它就会将这个路径从此处截断，后面的字串按照字符 '/' 拆分成一个字符串数组。为入口函数填充参数的时候，会优先将这个路径参数数组按照顺序填充成参数。之后，如果它发现入口函数还有参数没有被填充完全，它才应用适配器的内部逻辑，填充其余的参数。</p>
+<h2><a name="单层多层通配符混用"></a>单层多层通配符混用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@At("/user/?/topic/?/comment/*")
+public String getComment(String author, int topicId, int commentId){
+    // 如果输入的 URL 是： /user/zozoh/topic/35/comment/171            // 那么 author 就是 "zozoh" 
+    // 而 topicId 就是 35
+    // 而 commentId 就是 171
+}
+</pre>
+<p></p>
+<h2><a name="通配符的限制"></a>通配符的限制	</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>总之，在 @At 注解中通过通配符，你可以声明你的路径参数，但是你的通配符必须是一层路径，但是它们有限制：</p>
+<pre>你不能这么写
+/article/a?/topic/*
+也不能这么写
+/article/y*
+</pre>
+<p>如果你这么写了，匹配的时候很可能出一些奇奇怪怪的问题。因此你记住了，通配符如果在路径中出现：</p>
+<ul type="disc">
+<li>左边一定有一个字符 <span style="color:#FF00FF;"><b>'/'</b></span></li>
+<li>右侧可能没有字符，但是如果有，也一定是  <span style="color:#FF00FF;"><b>'/'</b></span></li>
+</ul>
+<p>当然，通配符声明的路径参数仍然可以同 @Param 以及 <a href="#特殊参数">特殊参数</a> 混用，只是请记得，将入口函数中的路径参数排在前面</p>
+<div class="hr"><b></b></div>
+<h1><a name="定制自己的适配器"></a>定制自己的适配器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>先来看看适配器的接口：</p>
+<pre>public interface HttpAdaptor {
+	void init(Method method);
+	Object[] adapt( HttpServletRequest request, HttpServletResponse response, String[] pathArgs);
+}
+</pre>
+<p>你如果实现自己的适配器，你需要知道：</p>
+<ul type="disc">
+<li>你的适配器，对每个入口函数，只会有一份实例 -- Nutz.Mvc 只会创建一遍
+<ul type="circle">
+<li>如果你的适配器是从 Ioc 容器中取得的，那么也只会被取出一次</li>
+</ul>
+</li>
+<li>init 函数是 Nutz.Mvc 在创建你的适配器以后，马上就要调用的一个方法，你可以在这个方法里初始化一些逻辑</li>
+<li>adapt 方法的第三个参数，是 Nutz.Mvc 为你准备好的路径参数，它有可能为 null。 你的适配器 将决定是不是应用这个路径参数</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

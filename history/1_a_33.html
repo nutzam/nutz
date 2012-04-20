@@ -1,0 +1,321 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.a.33 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.a.33 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#1a33_发行注记">1.a.33 发行注记</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="1a33_发行注记"></a>1.a.33 发行注记</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>大家好，又到了一月一度的 Nutz 新版本发行的日子了 ^_^</p>
+<p>前几天 360 和腾讯刚干完架，特地记录一下。作为一名不明真相且兴致勃勃的围观群众，我表示："<b>不过瘾，不给力，希望他们能早日再战</b>"。</p>
+<p>关于 <a href="http://nutzam.com">Nutz</a>，最大的新闻就是，从这个版起，无敌的<a href="http://myblog.sunfarms.net/">Wendal</a>同学<a href="http://myblog.sunfarms.net/124.html">终于把 Nutz 提交给 Maven 库了</a>，之后，<a href="http://myblog.sunfarms.net/126.html">据说他要看亚运会</a>，让我们在这里祝福他。</p>
+<p>这个版我们修复了一些小问题，关闭了一些老问题。其中重点有两个</p>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=233">Issue 233</a> - Dao 关于映射的操作可以接受集合，数组，以及 Map 了</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=303">Issue 303</a> - Mvc 中，Ioc 容器内的对象可以支持注入 ServletContext 对象
+<ul type="circle">
+<li>我想对于打算用 Freemarker 或者其他视图模板引擎的同学来是，是个好消息</li>
+</ul>
+</li>
+</ul>
+<p><b>八卦</b></p>
+<p>前几天一个朋友告诉我，他面试一个实习生，对方在介绍自己的编程经历时提到了 Nutz，说很是喜欢这个框架。我问他：此人水平如何?他说挺好的。对此我表示很欣慰。同时我也深刻的意识到喜欢 Nutz 的人，水平都不会太菜，即使现在菜，以后也能迅速变得不菜。理由如下：</p>
+<ol type="1">
+<li>喜欢小众东东的多半是发烧友</li>
+<li>发烧友通常很快都能成为该领域的专家</li>
+<li>Nutz 是个小众的东东</li>
+<li>Nutz 是个编程框架</li>
+<li>因此，喜欢 Nutz 的同学多半都会很快成为编程专家</li>
+</ol>
+<p>另外，在这里也推荐一下另外一个小众框架 -- <a href="http://guzz.googlecode.com/">Guzz</a>。这个项目的文档非常不错，作者这一年来做了难以想象的工作，前段时间，Wendal 同学为 Guzz 贡献了一个 <a href="http://qun.qq.com/air/#36429094">QQ 群(36429094)</a>。我简单的浏览过 <a href="http://code.google.com/p/guzz/source/browse/#svn/trunk">Guzz 的代码</a>，写的很漂亮，我想在这个项目会帮助到不少人的，希望喜欢 Guzz 的同学，踊跃加入 <a href="http://qun.qq.com/air/#36429094">QQ 群(36429094)</a> ^_^</p>
+<p>同时也向其他战斗在开源第一线的的同学们致敬： <b>不挣钱都这么认真? 你真牛 ^_^!</b></p>
+<p><b>预告:</b></p>
+<p>下个版，我们有可能会再做一次小小的膨胀:</p>
+<ul type="disc">
+<li>增加功能更全面的 Condition 实现类</li>
+<li>为 Mvc 再增加个默认视图实现</li>
+<li>并打算内置一个文件比较工具类</li>
+</ul>
+<p>下面是这个版本的更多细节...</p>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=29">Issue 29</a> Dao在执行SQL时应提供处理数组类型数据的功能。 <span style="color:#AAAAAA;">by</span> <b>satellite</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=122">Issue 122</a> 不支持设置单PK <span style="color:#AAAAAA;">by</span> <b>Chen.Bao.Yi</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=181">Issue 181</a> 问个弱弱的问题,怎么实现内部跳转?forward方式 <span style="color:#AAAAAA;">by</span> <b>zkgale</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=231">Issue 231</a> 关于dao多表查询 <span style="color:#AAAAAA;">by</span> <b>shao0707@163.com</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=233">Issue 233</a> Dao: 接口混乱问题-relation 相关操作支持了集合 <span style="color:#AAAAAA;">by</span> <b>jiongs753</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=241">Issue 241</a> PairAdaptor应支持POJO中的数组类型的变量注入 <span style="color:#AAAAAA;">by</span> <b>landraxee</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=252">Issue 252</a> mvc: HTTP 重名参数 <span style="color:#AAAAAA;">by</span> <b>zozohtnt</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=279">Issue 279</a> 希望能使用Record进行数据库操作 <span style="color:#AAAAAA;">by</span> <b>ywjno.dev</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=297">Issue 297</a> 文件上传增加种方式，直接在内存操作文件，不存入临时目录 <span style="color:#AAAAAA;">by</span> <b>conanca2006</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=301">Issue 301</a> web.xml配置问题 <span style="color:#AAAAAA;">by</span> <b>happyday0517</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=303">Issue 303</a> 实现ServletContext更优雅的绑定到ioc容器以便可以方便的访问它 <span style="color:#AAAAAA;">by</span> <b>nightmarelin</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=305">Issue 305</a> 在使用Mirror.setValue给bean的属性赋值的时候出错 <span style="color:#AAAAAA;">by</span> <b>ywjno.dev</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=306">Issue 306</a> @Views注入的viewmaker是直接new出来而不是ioc容器注入，这个设计是否有bug <span style="color:#AAAAAA;">by</span> <b>nightmarelin</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=308">Issue 308</a> castor: 日期转换成 java.util.Date 失败 <span style="color:#AAAAAA;">by</span> <b>zozohtnt</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=311">Issue 311</a> updateIgnoreNull在更新集合时，没有忽略null <span style="color:#AAAAAA;">by</span> <b>happyday0517</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=313">Issue 313</a> mvc: 文件上传应该支持 InputStream 和 Reader <span style="color:#AAAAAA;">by</span> <b>zozohtnt</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=314">Issue 314</a> JsonAdaptor不能将键值对转化为对象。 <span style="color:#AAAAAA;">by</span> <b>satellite</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=315">Issue 315</a> MVC文档编辑错误 <span style="color:#AAAAAA;">by</span> <b>sjbwylbs</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=316">Issue 316</a> 以json方式传递数组,入口函数无法正常接收转换为对象数组 <span style="color:#AAAAAA;">by</span> <b>goulin.home</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=317">Issue 317</a> FileSqlManager重复加载文件,导致获取sql时出错 <span style="color:#AAAAAA;">by</span> <b>wendal1985</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>共通过了 597 个单元测试用例,代码覆盖率达到<b>65%</b>(按line计算)</li>
+<li>Nutz.Dao 经测试在如下数据库上可以工作正常
+<ul type="disc">
+<li><a href="http://www.h2database.com">H2</a></li>
+<li><a href="http://www.sqlite.org">SQLite</a></li>
+<li><a href="http://www.mysql.com">MySql</a></li>
+<li><a href="http://www.oracle.com">Oracle</a></li>
+<li><a href="http://www.postgresql.org">Postgresql</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
+<li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
+</ul>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="../mvc/view.html">视图</a> : 添加两种新视图的描述(内部重定向视图/Raw视图)</li>
+<li>修正文档中的一些字眼</li>
+<li><a href="../zdoc/ant_task.html">在Ant中使用zDoc</a> : 演示如何在Ant中使用zDoc</li>
+<li><a href="../appendix/case.html">案例</a> : 展示使用Nutz构建的网站/应用</li>
+<li><a href="../mvc/with_ioc.html#在容器对象里获得_ServletContext">同Ioc一起工作</a> : 在容器对象里获得 ServletContext</li>
+<li><a href="../appendix/work_with_maven.html">../appendix/work_with_maven.man</a> : 在Maven中使用Nutz</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>贡献的种类:</p>
+<ul type="disc">
+<li>问题: 给项目的<a href="http://code.google.com/p/nutz/issues/list">问题列表</a>汇报一个上的问题，并且该问题被本次发布包括</li>
+<li>博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 <a href="http://code.google.com/p/nutz/wiki/appendix_resources">推荐列表</a>收录</li>
+<li>代码: 提交过至少一个修订</li>
+<li>Demo: 为 <a href="http://code.google.com/p/nutzdemo">Demo Site</a> 提交过代码</li>
+<li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
+<li>测试: 发布前，参与测试周发布人给出的任务</li>
+</ul>
+<p>如有遗漏,请提醒我们 ^_^</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者        </td>
+<td> 问题  </td>
+<td> 博客  </td>
+<td> 支持 </td>
+<td> 代码 </td>
+<td> 示例 </td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> Conanca  	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Landraxee	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Nightmare	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Satellite	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Shao0707 	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Wendal   	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> YanKunCheng 	</td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Ywjno.dev	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Zkgale   	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Zozoh    	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> 宝        	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 冬天温泉      	</td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 花米®        	</td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 前冲       	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 天行健      	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 幸福的旁边    	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 云海飞舞    	</td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+</table>
+<p>另外，很多朋友都在：</p>
+<ul type="disc">
+<li><a href="https://groups.google.bg/group/nutzam?hl=zh-CN">Nutzam 讨论区</a></li>
+<li><a href="http://qun.qq.com/air/#58444676">Nutz交流超级群(58444676)</a></li>
+<li>GTalk 聊天群 <span style="color:#AAAAAA;"><i>添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span></li>
+</ul>
+<p>回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^</p>
+<p>欢迎访问<a href="http://nutzam.com">官网</a>,以获取 <a href="http://build.sunfarms.net/nutz/">最新的快照版</a> 和<a href="http://build.sunfarms.net/nutz/lastest/manual/">用户手册</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

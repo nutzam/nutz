@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>动作链</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">动作链</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#动作链机制概述">动作链机制概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#(A)获取动作链工厂">(A)获取动作链工厂</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#(B)获取动作链工厂配置信息">(B)获取动作链工厂配置信息</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#(C)解析配置文件">(C)解析配置文件</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#(D)至少还有默认配置文件">(D)至少还有默认配置文件</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#(E)为入口函数创建动作链">(E)为入口函数创建动作链</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#(F)每个入口函数的动作链都可以不同">(F)每个入口函数的动作链都可以不同</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="动作链机制概述"></a>动作链机制概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在新的版本中(1.b.36)之后的版本，Nutz.Mvc 统一采用动作链机制来处理每一个 HTTP 请求。我们认为:</p>
+<ul type="disc">
+<li>对于一个 HTTP 请求的处理实际上是由一系列子处理构成的
+<ul type="circle">
+<li>比如根据映射找到入口函数</li>
+<li>比如为入口函数生成调用参数</li>
+<li>比如调用入口函数</li>
+</ul>
+</li>
+<li>我们希望这一系列子处理可以根据 URL 的不同而不同</li>
+<li>我们也希望子处理是可配置的</li>
+</ul>
+<p>因此它能让你的HTTP映射处理具备更大的灵活性。</p>
+<p>下面是一张稍微有点复杂的图，根据这张图，我们来详细的解释一下这个机制，在了解了它之后，我相信你掌握更多的复用你代码的手段，从而更合理处理你的 URL 映射关系:</p>
+<p><img src="nutz_mvc_actionchain.png"/></p>
+<p>这张图稍微有点复杂，你可能看起来稍微要皱一下眉头。本文的后面几节会详细为你解释，但是你首先要记住:</p>
+<ul type="disc">
+<li>这种图的流程都是 Nutz.Mvc 在<span style="color:#0000FF;"><b>加载时</b></span>进行的操作</li>
+<li>在<span style="color:#008800;"><b>运行时</b></span>，Nutz.Mvc 将根据 URL 获得 ActionChain 接口，直接执行整条动作链</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="(A)获取动作链工厂"></a>(A)获取动作链工厂</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>整个 Nutz.Mvc 的应用，必须有且只能有一个动作链工厂。在<b>主模块</b>上，你可以声明你自己的动作链工厂（通过 <span style="color:#AAAAAA;">@ChainBy</span> 注解）。当然，如果你没有声明这个注解，Nutz.Mvc 会采用默认的动作链工厂实现类(<span style="color:#0000AA;"><b>org.nutz.mvc.impl.NutActionChainMaker</b></span>)</p>
+<p>如果你需要定制动作链工厂，你可以通过类似下面的形式，声明自己特殊配置的动作链工厂：</p>
+<pre>@ChainBy(args={"配置文件A路径", "配置文件B路径"})
+</pre>
+<p>你也可以采用自己的动作链工厂实现类</p>
+<pre>@ChainBy(type=MyChainMaker.class, args={...})
+</pre>
+<p>如果你的动作链工厂需要更复杂的配置，你可以交给 Ioc 容器来管理</p>
+<pre>@ChainBy(type=MyChainMaker.class, args={"ioc:myChianMaker"})
+</pre>
+<p>这样，你就可以在 Ioc 容器里，声明一个 "myChainMaker" 对象，来对其做任何你想要的配置。当然，首先你需要在主函数里声明了 Ioc 容器（请参看<a href="with_ioc.html">同 Ioc 容器一起工作</a>一文）</p>
+<div class="hr"><b></b></div>
+<h1><a name="(B)获取动作链工厂配置信息"></a>(B)获取动作链工厂配置信息</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你采用的是 Nutz.Mvc 的默认动作链工厂，它允许你在构造函数中声明动作链的配置文件。你可以增加任意多的动作链配置文件，在一个文件中，你可以声明任意多的动作链。</p>
+<p>它有一个默认的配置文件，声明了一个名字为 "default" 的动作链。你的入口函数如果没有声明<span style="color:#AAAAAA;">@Chain</span> 注解的话，就是使用这个动作链。你可以通过自己的配置文件覆盖它。</p>
+<p>它的构造函数定义为：</p>
+<pre>public NutActionChainMaker(String...args) {
+    ...
+</pre>
+<p>接受变参数数组，每个参数，都是你配置文件的路径，可以是类路径，也可以是绝对路径，当然你也可以写成:</p>
+<pre>@ChainBy(args={"${app.root}/WEB-INF/chain/mychain.js"})
+</pre>
+<p>其中 ${app.root} 会被 Nutz.Mvc 替换成你的应用在服务器上的根目录。</p>
+<div class="hr"><b></b></div>
+<h1><a name="(C)解析配置文件"></a>(C)解析配置文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>每个配置文件你可以配置多个动作链，每个动作链需要一个名字，以便在入口函数通过 <span style="color:#AAAAAA;">@Chain</span>注解来引用，下面让我们来看看默认动作链配置文件的内容：</p>
+<pre>{
+    default : {
+        ps : [
+            "org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
+            "org.nutz.mvc.impl.processor.EncodingProcessor",
+            "org.nutz.mvc.impl.processor.ModuleProcessor",
+            "org.nutz.mvc.impl.processor.ActionFiltersProcessor",
+            "org.nutz.mvc.impl.processor.AdaptorProcessor",
+            "org.nutz.mvc.impl.processor.MethodInvokeProcessor",
+            "org.nutz.mvc.impl.processor.ViewProcessor"
+        ],
+        error : 'org.nutz.mvc.impl.processor.FailProcessor'
+    }
+}
+</pre>
+<p>动作链的配置文件采用了 <a href="http://www.json.org">JSON 格式</a>。在上面的文件内只有一个动作链，名字为 <span style="color:#FF0000;"><b> "default"</b></span>。通过例子你可以很容易看出，一个动作链需要两方面的信息：</p>
+<ul type="disc">
+<li>正常的流程是怎样的？
+<ul type="circle">
+<li>"ps" 属性时一个数组，每个值就是一个处理器接口的实现类</li>
+<li>每次该动作链执行时，会按顺序调用这些处理器</li>
+</ul>
+</li>
+<li>遇到错时怎么办？
+<ul type="circle">
+<li>通过给出的错误处理器的实现类来处理错误</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="(D)至少还有默认配置文件"></a>(D)至少还有默认配置文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>默认的配置文件优先级最低，它随着 nutz.jar 一起发布，所以它没打算让你直接修改。你可以通过自己的配置文件覆盖其唯一的动作链 <span style="color:#FF0000;"><b> "default"</b></span></p>
+<div class="hr"><b></b></div>
+<h1><a name="(E)为入口函数创建动作链"></a>(E)为入口函数创建动作链</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>就像前面提到的，在每个入口函数里，你可以通过注解 <span style="color:#AAAAAA;">@Chain</span> 来指定你的这个函数将采用哪个动作链。如果你没有指定，Nutz.Mvc 认为你是希望用  <span style="color:#AAAAAA;">@Chain(</span><span style="color:#FF0000;">"default"</span><span style="color:#AAAAAA;">)</span>} 来处理这个入口函数。</p>
+<p>需要说明的是，考虑到效率，在 Nutz.Mvc 加载时，它就会为每个入口函数创建 URL 映射关系。即把一个 URL 映射到一个动作链实例上。所以动作链的实例，是在加载时就被创建了。所以如果你自己实现了动作链工厂，<span style="color:#FF0000;"><b>请保证工厂生成的每个动作链是线程安全的</b></span>。</p>
+<div class="hr"><b></b></div>
+<h1><a name="(F)每个入口函数的动作链都可以不同"></a>(F)每个入口函数的动作链都可以不同</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你读完了上述小节，本节光看标题就足够了。</p>
+<p>但是，我唠叨成性，这里再举个小例子：</p>
+<pre>@At("/a")
+@Chain("abc")
+public void funcA(){}
+
+@At("/b")
+@Chain("abc")
+public void funcB(){}
+
+@At("/c")
+public void funcC(){}
+
+@At("/d")
+public void funcD(){}
+</pre>
+<p>在上面的例子中，四个入口函数，其中：</p>
+<ul type="disc">
+<li>每个入口函数都各自有一份动作链实例</li>
+<li>具体的实例是由动作链工厂决定的</li>
+<li>每个动作链实例的生命周期范围是 App(ServletContext) 级别</li>
+</ul>
+<p>原因不解释。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

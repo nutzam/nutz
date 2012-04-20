@@ -1,0 +1,394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>自定义 SQL</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">自定义 SQL</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#NutzDao_自定义_SQL_的概述">Nutz.Dao 自定义 SQL 的概述</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#Sql_对象_--_orgnutzdaosqlSql">Sql 对象 -- org.nutz.dao.sql.Sql</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#如何创建_Sql_对象">如何创建 Sql 对象</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#Sql_的逃逸字符">Sql 的逃逸字符</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#如何执行_Sql_对象">如何执行 Sql 对象</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#批量执行">批量执行</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#回调的用处">回调的用处</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#获取一个列表的回调">获取一个列表的回调</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#NutzDao_SQL_文件的格式">Nutz.Dao SQL 文件的格式</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#加载_SQL_文件">加载 SQL 文件</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#在构造时加载">在构造时加载</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#在构造之后的任何时加载">在构造之后的任何时加载</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#条件变量占位符">条件变量占位符</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#特殊的占位符_--_null">特殊的占位符 -- null</a></div>
+</li>
+<li>
+<div><span class="num">5.2</span><a href="#使用_Entity<?>">使用 Entity&lt;?&gt;</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">6</span><a href="#分页">分页</a></div>
+<ul>
+<li>
+<div><span class="num">6.1</span><a href="#一直被投诉,终于被实现!">一直被投诉,终于被实现!</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="NutzDao_自定义_SQL_的概述"></a>Nutz.Dao 自定义 SQL 的概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Dao 提供了大多数简单的操作，在80%以上的情况下，你并不需要编写 SQL，因为 Nutz.Dao 会自动替你生成可以使用的 SQL。但是，在某些特殊的情况下，尤其是考虑到效率等问题，直接写作 SQL 仍然是程序员们的一个杀手锏，有了这个杀手锏，程序员们永远可以针对任何数据库做他们想要的任何操作。</p>
+<p>在之前的时代，很多程序员将 SQL 代码同 Java 代码混杂在一起，即所谓的<span style="color:#0000AA;"><b>硬编码</b></span>。硬编码通常是不好的，所以很多程序员都采用了各种办法将 SQL 提炼出来存放在一个独立的文件中。其中比较著名的一个框架就是 iBatis。这个小巧的 SQL 映射框架（Nutz.Dao 比它还小）在这个领域里干的不错。缺省的它将 SQL 存放在 XML 文件中，现在最新的 iBatis3 也提供了JAVA注解的写法。但是我并不认为 XML 文件或者是 JAVA注解是存放我的 SQL 语句好地方，我认为 SQL 存放的地方，应该是可以用 Eclipse 的 SQL 编辑器打开并且能够被正确语法高亮的一种文本文件。</p>
+<p>著名的 Hibernate 提供 HQL， 虽然语法近似于 SQL 但是它必然会有两个不可避免的缺点</p>
+<ol type="1">
+<li>对于数据库方言支持的不好</li>
+<li>必然会增加使用者的学习曲线</li>
+</ol>
+<p>因此，Nutz.Dao 的自定义 SQL 部分的解决方案是：</p>
+<ol type="1">
+<li>用户可以硬编码 SQL 语句，比如：
+<pre>Sql sql = Sqls.create("DELETE FROM t_abc WHERE name='Peter'");
+</pre>
+</li>
+<li>支持占位符的书写方式，比如：
+<pre>Sql sql = Sqls.create("DELETE FROM $table WHERE name=@name");
+sql.vars().set("table","t_abc");
+sql.params().set("name","Peter");
+</pre>
+<ul type="disc">
+<li>$table 将会被替换成 <span style="color:#FF00FF;">t_abc</span></li>
+<li>@name 将会被替换成 <span style="color:#FF00FF;">?</span>，用来创建 PreparedStatement</li>
+</ul>
+</li>
+<li>用户可以将所有的 SQL 语句存放在一个或者多个文件中，语句的间隔可以通过注释，比如：
+<pre>/* delete.data */
+DELETE FROM $table WHERE name LIKE @name
+/* update.data */
+UPDATE FROM $table SET name=@name WHERE id=@id
+</pre>
+<p>在你的 Java 代码中：</p>
+<pre>Sql sql = dao.sqls().create("delete.data");
+</pre>
+</li>
+<li>你可以为你的 SQL 任意定制回调，后面会有详细讲解</li>
+</ol>
+<p>下面我们就由 org.nutz.dao.sql.Sql 接口入手，详细讲解一下 Nutz.Dao 的自定义 SQL 解决方案</p>
+<div class="hr"><b></b></div>
+<h1><a name="Sql_对象_--_orgnutzdaosqlSql"></a>Sql 对象 -- org.nutz.dao.sql.Sql</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我几乎是不加思索的将 SQL 的实现封装在一个接口后面。现在想想这到也没什么坏处。接口的默认实现是<span style="color:#008800;"><b> org.nutz.dao.impl.sql.NutSql</b></span>。你可以直接 new 这个对象，当然，我也提供了构造 Sql 对象的静态方法:</p>
+<h2><a name="如何创建_Sql_对象"></a>如何创建 Sql 对象</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过 org.nutz.dao.Sqls 类提供的静态方法 create，你可以很方便的构建你的 Sql 对象</p>
+<pre>Sql sql = Sqls.create("INSERT INTO t_abc (name,age) VALUES('Peter',18)");
+</pre>
+<p>Sqls 提供的 </p>
+<ul type="disc">
+<li>fetchEntity</li>
+<li>fetchInt</li>
+<li>fetchString</li>
+<li>queryEntity</li>
+</ul>
+<p>方法来帮助你构建 Sql 对象。它们之间的区别在稍后会详细说明。</p>
+<p>通常的情况，你需要构建某些 <b>动态</b> 的 SQL，所以我也允许你为你的 SQL 设置占位符，占位符分两种：</p>
+<ul type="disc">
+<li>变量(var)占位符 - 形式为 <span style="color:#008800;">$名称</span>
+<ul type="circle">
+<li>以字符 $ 开头，名称为英文字母，数字，下划线，减号和句点。</li>
+<li>正则表达式为：
+<pre> [$][a-zA-Z0-9_-]
+</pre>
+</li>
+<li>在执行 SQL 前，该占位符会被用户设置的值替换</li>
+<li>类似 C 语言中的 <span style="color:#008800;"><b>宏</b></span></li>
+</ul>
+</li>
+<li>参数(param)占位符 - 形式为 <span style="color:#008800;">@名称</span>
+<ul type="circle">
+<li>以字符 @ 开头，名称为英文字母，数字，下划线，减号和句点。</li>
+<li>正则表达式为：
+<pre>[@][a-zA-Z0-9_-]+
+</pre>
+</li>
+<li>在执行 SQL 前，该占位符会被字符 "<span style="color:#FF00FF;"><b>?</b></span>" 替换，用来创建 PreparedStatement</li>
+<li>Nutz.Dao 会自动计算 PreparedStatement的索引值</li>
+</ul>
+</li>
+</ul>
+<p>所有的占位符可以同样的名称出现的多个地方。并且变量占位符和参数占位符的名称不互相干扰，比如:</p>
+<pre>Sql sql = Sqls.create("INSERT INTO $table ($name,$age,$weight) VALUES(@name,@age,@weight)");
+// 为变量占位符设值
+sql.vars().set("table","t_person");	
+sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
+// 为参数占位符设值
+sql.params().set("name","Peter").set("age",18).set("weight",60);
+</pre>
+<p>通过上例，我们可以看出，变量占位符和参数占位符的确可以重名且不相互干扰的。</p>
+<h2><a name="Sql_的逃逸字符"></a>Sql 的逃逸字符</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些时候，有的朋友给出的 SQL 包括特殊字符 '@' 或者 '$'，比如:</p>
+<pre>Sql sql = Sqls.create("INSERT INTO t_usr (name,email) VALUES('XiaoMing','xiaoming@163.com');"
+</pre>
+<p>这个时候，因为有关键字 '@'，所以 SQL 不能被正确解析，因为你的本意是给一个 'xiaoming@163.com' 这个字符串。但是 Nutz.Dao 却认为这个是个语句参数。</p>
+<p>这时候你可以使用逃逸字符:</p>
+<pre>Sql sql = Sqls.create("INSERT INTO t_usr (name,email) VALUES('XiaoMing','xiaoming@@163.com');"
+</pre>
+<p>即</p>
+<ul type="disc">
+<li>输入 "@@" 表示一个 '@'</li>
+<li>输入 "$$$$" 表示一个 '$'</li>
+</ul>
+<h2><a name="如何执行_Sql_对象"></a>如何执行 Sql 对象</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>当你顺利的创建了一个 Sql 对象，执行它就相当简单了，比如：</p>
+<pre>void demoSql(Dao dao){
+	Sql sql = Sqls.create("SELECT name FROM t_abc WHERE name LIKE @name");
+	sql.params().set("name", "A%");
+	dao.execute(sql);
+}
+</pre>
+<p>这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。</p>
+<h2><a name="批量执行"></a>批量执行</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作</p>
+<pre>Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
+sql.params().set("name","XiaoBai").set("id",4);
+sql.addBatch();
+sql.params().set("name","XiaoHei").set("id",5);
+sql.addBatch();
+dao.execute(sql);
+</pre>
+<p></p>
+<h2><a name="回调的用处"></a>回调的用处</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>接上例，你需要这么改造一下你的函数：</p>
+<pre>List&lt;String&gt; demoSql(Dao dao) {
+	Sql sql = Sqls.create("SELECT name FROM t_abc WHERE name LIKE @name");
+	sql.params().set("name", "A%");
+	sql.setCallback(new SqlCallback() {
+		public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
+			List&lt;String&gt; list = new LinkedList&lt;String&gt;();
+			while (rs.next())
+				list.add(rs.getString("name"));
+			return list;
+		}
+	});
+	dao.execute(sql);
+	return sql.getList(String.class);
+}
+</pre>
+<p>看到熟悉的 ResultSet 了吧。 当然，如果你执行的不是 SELECT 语句，你依然可以设置回调，但是 ResultSet 参数就是 null  了。</p>
+<p>总结一下：</p>
+<ol type="1">
+<li>回调对象实现接口 org.nutz.dao.sql.SqlCallback，事实上，就像上例所示，这种场景非常适合使用匿名类。</li>
+<li>你的回调函数的返回值会存放在 Sql 对象中</li>
+<li>调用 sql.getResult() 可以直接返回这个对象</li>
+<li>sql.getList() 以及 sql.getObject() 方法会泛型安全的替你转型
+<ul type="disc">
+<li>如果你的对象类型符合要求，则直接返回，否则会通过 <a href="../lang/castors.html">Nutz.Castors</a> 替你转换。</li>
+<li>对于 getList()，泛型参数用来描述集合内部元素的类型</li>
+</ul>
+</li>
+<li>sql.getInt() 会安全的替你将结果转成 int，如果它可以被转成 int 的话，以下是我能想到的列表：
+<ul type="disc">
+<li>字符串</li>
+<li>各种数字类型</li>
+<li>字符</li>
+<li>布尔类型</li>
+</ul>
+</li>
+</ol>
+<h2><a name="获取一个列表的回调"></a>获取一个列表的回调</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>为了更加详细的说明一下回调的用处，我们再下面这个例子：</p>
+<pre>Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
+sql.setCallback(Sqls.callback.entities());
+sql.setEntity(dao.getEntity(Master.class));
+dao.execute(sql);
+List&lt;Master&gt; list = sql.getList(Master.class);
+</pre>
+<p>只要你保证你的 Master 类声明了 @Table 并且每个字段上的 @Column 可以同你的 ResultSet 配置起来那么，上面的代码可以很方便的帮你获取一个 List&lt;Master&gt;.</p>
+<div class="hr"><b></b></div>
+<h1><a name="NutzDao_SQL_文件的格式"></a>Nutz.Dao SQL 文件的格式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我们了解了如何构建 Sql 对象，但是一个应用通常由很多 SQL 语句构成，如何管理这些语句呢？前面我说过，我希望：" <span style="color:#0000AA;">用户可以将所有的 SQL 语句存放在一个或者多个文件中，语句的间隔可以通过注释</span> "。是的这是一种非常简单的纯文本文件，文件里只包含三种信息：</p>
+<ol type="1">
+<li>SQL 语句</li>
+<li>SQL 语句的名称 <span style="color:#777777;">(或者说是键值)</span>。你的程序可以通过语句的名称获取到某一条或几条 SQL 语句</li>
+<li>注释  (通常包括在 /* 与 */ 之间)</li>
+</ol>
+<p><span style="color:#FF0000;"><b>请注意：</b></span> 你的 SQL 文件必须为 "<span style="color:#FF00FF;"><b>UTF-8</b></span>" 编码。</p>
+<p>下面是一个例子</p>
+<pre>/*
+这里是这个 SQL 文件的注释，你随便怎么写
+*/
+/* sql1 */
+DROP TABLE t_abc
+/* 你可以随便写任何的注释文字，只有距离 SQL 语句最近的那一行注释，才会被认为是键值 */
+/* getpet*/
+SELECT * FROM t_pet WHERE id=@id
+/* listpets*/
+SELECT * FROM t_pet $condition
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="加载_SQL_文件"></a>加载 SQL 文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如何使用上述的 SQL 文件呢，可以将数个 SQL 文件加载到 Dao 对象中。在之后，只要得到 Dao 的对象，可以使用 dao.sqls() 方法获得org.nutz.dao.SqlManager 接口，从这个接口中你就可以获得你预先定义好的 Sql 对象了。</p>
+<p>对于 Dao 接口的默认实现， org.nutz.dao.impl.NutDao，提供两个方法，一个是通过构造函数，另一个是 setter 函数。</p>
+<h2><a name="在构造时加载"></a>在构造时加载</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Dao dao = new NutDao(datasource,new FileSqlManager("demo/sqls/all.sqls"));
+System.out.println(dao.sqls().count());
+</pre>
+<p>上述代码将打印出 all.sqls 文件中 SQL 语句的数量。路径 "demo/sqls/all.sqls" 是一个存在在 CLASSPATH 的文件。</p>
+<ul type="disc">
+<li>FileSqlManager 的构造函数接受数目可变的字符串对象，每个对象就是 SQL 文件的路径。</li>
+<li>如不是存在在 CLASSPATH 中的文件，则需要写上绝对路径。</li>
+<li>如果你给出的 path 是一个目录，那么该目录下所有后缀为<b>.sqls</b> 的文件都会被加载</li>
+</ul>
+<h2><a name="在构造之后的任何时加载"></a>在构造之后的任何时加载</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Dao dao = new NutDao(datasource);
+((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
+System.out.println(dao.sqls().count());
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="条件变量占位符"></a>条件变量占位符</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我认为 Nutz.Dao 比较吸引人的一个函数就是 Dao.query，它允许你用多种方法传入一个条件关于复杂的条件，请参看 <a href="condition.html">复杂的SQL条件</a></p>
+<p>在 Sql 对象中，我在接口里也设计了一个方法 :</p>
+<pre>Sql setCondition(Condition condition);
+</pre>
+<p>是的，你的 Sql 对象也可以使用 Condition，但是这个 Condition 要如何同你自定义的 SQL 拼装在一起呢，这里，我提供了一个特殊的变量占位符 -- 条件变量占位符 $condition</p>
+<div class="hr"><b></b></div>
+<h2><a name="特殊的占位符_--_null"></a>特殊的占位符 -- <span style="color:#0000AA;"><b>null</b></span></h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>唯一需要说明的是，在你写作的 SQL 中，需要声明一个特殊的占位符，比如下面的代码输出所有 id 大于 35 的 Pet 对象的名称</p>
+<pre>Sql sql = Sqls.create("SELECT name FROM t_pet $condition");
+sql.setCondition(Cnd.where("id", "&gt;", 35)).setCallback(new SqlCallback() {
+	public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
+		List&lt;String&gt; list = new LinkedList&lt;String&gt;();
+		while (rs.next())
+			list.add(rs.getString("name"));
+		return list;
+	}
+});
+dao.execute(sql);
+for (String name : sql.getList(String.class))
+	System.out.println(name);
+</pre>
+<p>请主要看看这两行代码：</p>
+<pre>Sql sql = Sqls.create("SELECT name FROM t_pet $condition");
+sql.setCondition(Cnd.where("id", "&gt;", 35));
+</pre>
+<p>第一行的占位符 $condition 已经被 Nutz.Dao 保留。声明了该占位符的 SQL 都可以使用 setCondition 函数。否则，你设置的条件将无效。</p>
+<p>另外一个例子 - <b>将所有的 id 大于 35 的 Pet 对象的 masterId 设置为 45</b></p>
+<pre>void demoCondition2(Dao dao){
+    Sql sql = Sqls.create("UPDATE t_pet SET masterid=@masterId $condition");
+    sql.params().set("masterId", 45);
+    sql.setCondition(Cnd.wrap("id&gt;35"));
+    dao.execute(sql);
+}
+</pre>
+<div class="hr"><b></b></div>
+<h2><a name="使用_Entity<?>"></a>使用 Entity&lt;?&gt;</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Dao 会将你的 POJO 预先处理，处理的结果就是 Entity&lt;?&gt;。你可以通过 Dao 接口的 getEntity() 方法获取。你通过<a href="annotations.html">实体注解</a>配置的信息，尤其是 @Column 中配置的数据库字段的名字（当数据库字段名同 Java 字段名不同时）尤其有用。Condition 接口的 toString(Entity&lt;?&gt;) 方法是你唯一要实现的方法，如果你将一个 Condition 赋个了 Sql 对象，在生成真正 SQL 语句的时候，这个 Entity&lt;?&gt;又要从那里来呢？答案是，(*你要预先设置}。</p>
+<p>如果你不设置 Entity&lt;?&gt;，那么你的 Condition 的 toString(Entity&lt;?&gt;) 参数就是 null。你可以通过 Dao接口随时获取任何一个 POJO 的Entity&lt;?&gt;，但是如何设置给你的 Condition 呢，答案是，通过 Sql 对象。</p>
+<pre>void demoEntityCondition(Dao dao) {
+	Sql sql = Sqls.create("UPDATE t_pet SET masterid=@masterId $condition");
+	Entity&lt;Pet&gt; entity = dao.getEntity(Pet.class);
+	sql.setEntity(entity).setCondition(new Condition() {
+		public String toString(Entity&lt;?&gt; entity) {
+			return String.format("%s LIKE 'Y%'", entity.getField("name").getColumnName());
+		}
+	});
+	dao.execute(sql);
+}
+</pre>
+<p>很多时候，大量的 SQL 语句就是为了能够查出一些 POJO 对象，因此，我给你内置了两个回调，这两个回调都需要你为你的 Sql 设置一个正确的 Entity&lt;?&gt;</p>
+<h3><a name="获取实体的回调"></a>获取实体的回调</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Pet demoEntityQuery(Dao dao) {
+	Sql sql = Sqls.create("SELECT * FROM t_pet $condition");
+	sql.setCallback(Sqls.callback.entity());
+	Entity&lt;Pet&gt; entity = dao.getEntity(Pet.class);
+	sql.setEntity(entity).setCondition(Cnd.wrap("id=15"));
+	dao.execute(sql);
+	return sql.getObject(Pet.class);
+}
+</pre>
+<p>为了方便起见，你可以直接使用 Sqls.fetch 来创建你的 Sql 对象，这个函数会自动为你的 Sql 设置获取实体的回调</p>
+<pre>Pet demoEntityQuery(Dao dao) {
+	Sql sql = Sqls.fetchEntity("SELECT * FROM t_pet $condition");
+	Entity&lt;Pet&gt; entity = dao.getEntity(Pet.class);
+	sql.setEntity(entity).setCondition(Cnd.wrap("id=15"));
+	dao.execute(sql);
+	return sql.getObject(Pet.class);
+}
+</pre>
+<p></p>
+<h3><a name="查询实体的回调"></a>查询实体的回调</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>List&lt;Pet&gt; demoEntityQuery(Dao dao) {
+	Sql sql = Sqls.create("SELECT * FROM t_pet $condition");
+	sql.setCallback(Sqls.callback.entities());
+	Entity&lt;Pet&gt; entity = dao.getEntity(Pet.class);
+	sql.setEntity(entity).setCondition(Cnd.wrap("id=15"));
+	dao.execute(sql);
+	return sql.getList(Pet.class);
+}
+</pre>
+<p>那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)</p>
+<div class="hr"><b></b></div>
+<h1><a name="分页"></a>分页</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是1.b.43才添加的功能!</p>
+<h2><a name="一直被投诉,终于被实现!"></a>一直被投诉,终于被实现!</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Sql sql = Sqls.queryEntity("SELECT * FROM t_pet");
+sql.setPager(dao.createPager(2,20));
+sql.setEntity(dao.getEntity(Pet.class));
+dao.execute(sql);
+return sql.getList(Pet.class);
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

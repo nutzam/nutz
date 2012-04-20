@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz 的版本命名规范</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz 的版本命名规范</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><em>Verify by:</em><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<h1><a name="Nutz_每个版本_jar_包的命名遵照如下格式"></a>Nutz 每个版本 jar 包的命名遵照如下格式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>nutz[.模块名]-主版本号.质量级别.[发布序号].jar
+</pre>
+<ol type="1">
+<li><b>模块名</b> : 可选，如不声明，则表示包括所有功能</li>
+<li><b>主版本号</b> : 从 1 开始顺序递增，除非程序结构或者接口发生重大改动，否则保持不变</li>
+<li><b>质量级别</b> : <b>a</b> 表示 alpha 品质， <b>b</b> 表示 beta 品质， <b>r</b> 表示 release 品质
+<ul type="disc">
+<li><b>a</b> <span style="color:#008800;">alpha</span>: 表示这个版本，接口仍然不稳定，每次发布仍然有可能做微小的调整</li>
+<li><b>b</b> <span style="color:#008800;">beta</span>: 表示这个版本，接口已经稳定，主版号一致的 Beta 版会一直向前兼容，直至遇到一个 alpha 版</li>
+<li><b>r</b> <span style="color:#008800;">release</span>: 表示这个版本是一个非常稳定的版本。</li>
+</ul>
+</li>
+<li><b>发布序号</b> : 从 1 开始顺序递增</li>
+</ol>
+<p>这就意味着，如果是如下的一系列版本</p>
+<p><span style="color:#008800;"><b>1.b.30</b></span> -&gt; <span style="color:#AA0000;"><b>1.a.31</b></span> -&gt; <span style="color:#008800;"><b>1.b.32</b></span> -&gt; <span style="color:#008800;"><b>1.b.33</b></span> -&gt; <span style="color:#008800;"><b>1.b.34</b></span></p>
+<ul type="disc">
+<li>1.b.32 可能不会兼容 1.b.30</li>
+<li>1.b.34, 可以兼容 1.b.33 和 1.b.32</li>
+</ul>
+<h1><a name="你还需要知道"></a>你还需要知道</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你看到 nutz-1.a.20.jar 和 nutz.1.b.18.jar</p>
+<ul type="disc">
+<li>1.a.20 比较新，因为它的发布序号更新</li>
+<li>1.b.18 更稳定，它可以兼容之前所有的 beta 版本</li>
+<li>1.b.19 之后的 beta 版本，将兼容到 1.b.18 （不包括），因为期间的 alpha 版将兼容序列破坏了</li>
+</ul>
+<h1><a name="持续集成"></a>持续集成</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>每当有代码提交,Nutz的构建服务器会在15分钟内构建一个快照版本<a href="http://build.sunfarms.net/nutz/">http://build.sunfarms.net/nutz/</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><em>Verify by:</em><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+</body>
+</html>

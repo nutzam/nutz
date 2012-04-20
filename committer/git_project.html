@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>从 Git 编译源码</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">从 Git 编译源码</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#我们转移到了_Git">我们转移到了 Git</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#从_Github_获取Nutz">从 Github 获取Nutz</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#编译_Nutz">编译 Nutz</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="我们转移到了_Git"></a>我们转移到了 Git</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>现在 (Nutz-1.b.38) 之后的版本，源码的即时更新都会在 <a href="https://github.com/nutzam/nutz">Github</a> 上进行。当然，我们起码会在每次发布前更新一下 Google Code 的 svn 服务，满足那些 svn 用户的需求。但是，我们还是得说，<span style="color:#008800;"><b> Nutz 最鲜活的更新</b></span>，只有从 <a href="https://github.com/nutzam/nutz">Github</a> 上才能看的到哦。</p>
+<p>如何使用 Git，什么是 Git ?</p>
+<p>如果你问出上面的问题，建议你 Google 一下，基本上各种介绍满天飞，如果你想尝试装个玩玩，我觉得<a href="http://www.scmlife.com/thread-23938-1-1.html">这篇文章</a> 还不错。</p>
+<p>如果你已经是 Github 的用户（是的，为什么不是呢？）请把眼睛凑近屏幕一些，再近一些，再近一些，我必须告诉你：</p>
+<p><span style="color:#008800;"><b> 喜欢 Nutz ，就 Fork 它 ^_^</b></span></p>
+<p>然后把你认为得意的修改给我们发个 pull request，我们很乐意看到你的杰作</p>
+<p>当然，我个人认为 Github 的界面貌似华丽，但是很多细节设计的很脑残，但是只要你是它的用户，只要你稍微有点耐心，其实它比 Google Code 要好玩的多</p>
+<div class="hr"><b></b></div>
+<h1><a name="从_Github_获取Nutz"></a>从 Github 获取Nutz</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>简单的要命，执行下面的命令（前提是你装了 Git）</p>
+<pre>cd xx/xxx/xx/xx    &lt;- 意思是，到你打算放 Nutz 的那个目录
+git clone git://github.com/nutzam/nutz.git
+</pre>
+<p>稍微等个1分钟不到，因为 github 线路问题，有点慢，原因你懂的 ...</p>
+<p>屏幕上开始显示...</p>
+<pre>Cloning into nutz...
+remote: Counting objects: 26249, done.
+remote: Compressing objects: 100% (6919/6919), done.
+Receiving objects:  38% (10050/26249), 8.46 MiB | 306 KiB/s 
+</pre>
+<p>耐心等待，直到 ...</p>
+<pre>Cloning into nutz...
+remote: Counting objects: 26249, done.
+remote: Compressing objects: 100% (6919/6919), done.
+remote: Total 26249 (delta 16407), reused 26160 (delta 16319)
+Receiving objects: 100% (26249/26249), 28.10 MiB | 275 KiB/s, done.
+Resolving deltas: 100% (16407/16407), done.
+</pre>
+<p>恭喜你，你拿到了 Nutz 最新的代码。</p>
+<p>PS：强烈建议第一次通过Git取得代码之后，运行git gc命令以减小磁盘占用空间</p>
+<pre>cd nutz
+git gc
+</pre>
+<p>而且，Git 一个好处就是，每个目录下都没有万恶的 .svn 目录，只是在项目的根目录下有个 .git 目录。这让我觉得整个世界清爽了许多 ^_^</p>
+<div class="hr"><b></b></div>
+<h1><a name="编译_Nutz"></a>编译 Nutz</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><a href="svn_project.html">从 SVN 编译</a> 这篇文章的后一半给出详细的图文介绍，告诉大家如何在 Eclipse 上搭建一个Nutz 的编译环境。至于 Git 用户，鉴于你们大多是骨灰级玩家，随便编译个项目对大家来说是毛毛雨，小意思。但是，这里还是列一下 Nutz 编译的必要条件，无论你是用 NetBean 还是 Eclipse 还是 JDK 手动编译，都会有点帮助：</p>
+<p>Nutz 编译依赖如下 jar:</p>
+<ul type="disc">
+<li>Log4j-1.2.15 以上版本 : <span style="color:#008800;"> 仅编译时需要，运行时不需要</span></li>
+<li>servlet-api.jar : <span style="color:#008800;"> 编译时需要，运行时，如果用 Nutz.Mvc 就需要，随便找一个 JSP/Servlet 容器，里面就会给你这个 jar, 比如 TOMCAT</span></li>
+</ul>
+<p>如果你想运行 Nutz 的单元测试，你需要依赖更多的 Jar</p>
+<ul type="disc">
+<li>一个数据库驱动，比如我用的 mysql-connector-java-5.1.7-bin.jar</li>
+<li>一个数据库连接池，比如我用的 commons-dbcp-1.4.jar + commons-pool-1.5.4.jar
+<ul type="circle">
+<li>更多关于数据库连接池的介绍请看 <a href="../appendix/create_datasource.html">如何创建 DataSource</a></li>
+</ul>
+</li>
+<li>一个特殊的数据库链接池 bonecp-0.7.0.jar， 因为我们为其专门写了测试用例</li>
+<li>于是你还需要
+<ul type="circle">
+<li>slf4j-api-1.6.1.jar</li>
+<li>slf4j-simple-1.6.1.jar</li>
+<li>google-collect-1.0.jar</li>
+</ul>
+</li>
+</ul>
+<p>上面这些 jar 是运行 Nutz 的单元测试才需要的，你如果不打算运行 Nutz 的单元测试，你不一定需要它们。关于 Nutz 的单元测试，你还需要看这篇文章 : <a href="compile.html">运行 JUnit 测试</a>，它告诉如何修改一个配置文件就能成功运行 Nutz 的单元测试.</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

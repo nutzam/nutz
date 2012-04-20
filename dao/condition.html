@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>复杂的SQL条件</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">复杂的SQL条件</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#概述">概述</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#什么是_NutzDao_中的复杂SQL条件">什么是 Nutz.Dao 中的复杂SQL条件</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#NutzDao_将如何如何使用这个条件">Nutz.Dao 将如何如何使用这个条件</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Condition_接口">Condition 接口</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#Nutz_给你的快速实现">Nutz 给你的快速实现</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#直接硬编码">直接硬编码</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#一个友好一些的工具类_--_Cnd">一个友好一些的工具类 -- Cnd</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#拼装更加复杂的条件">拼装更加复杂的条件</a></div>
+</li>
+</ul>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="什么是_NutzDao_中的复杂SQL条件"></a>什么是 Nutz.Dao 中的复杂SQL条件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>对于 Nutz.Dao 来说，它本质上就是将你的 Java 对象转化成 SQL，然后交给 JDBC 去执行。</li>
+<li>而 SQL 中，当执行数据删除和查询操作时，最常用的就是 WHERE 关键字。</li>
+<li>WHERE 关键字后面的就是所谓的复杂查询条件</li>
+</ul>
+<h2><a name="NutzDao_将如何如何使用这个条件"></a>Nutz.Dao 将如何如何使用这个条件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>Dao 接口的 clear 方法和 query 方法的第二个参数，就是为了生成 WHERE 后面那段字符串设计的</li>
+<li>这个参数是一个 org.nutz.dao.Condition 接口的实现类</li>
+<li>通过该接口的 toString(org.nutz.dao.entity.Entity) 方法， Nutz.Dao 将获得 WHERE 后面那段字符串</li>
+<li>当然也包括 ORDER BY</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Condition_接口"></a>Condition 接口</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>这个接口只有一个方法 toString(Entity<img src="?"/> entity)
+<ul type="circle">
+<li>这个方法带一个参数 org.nutz.dao.entity.Entity</li>
+<li>通过这个参数，实现者可以获得当前需要操作的实体的配置信息</li>
+<li>当然，如果你不需要的话，你可以不理睬这个参数</li>
+</ul>
+</li>
+<li>Nutz.Dao 会将 toString(Entity<img src="?"/> entity) 的返回直接拼接到SQL 的 WHERE 关键字后面
+<ul type="circle">
+<li>如果你返回的字符串以 WHERE 或者 ORDER BY 开头，它会直接使用，否则会补上一个 WHERE 关键字</li>
+<li>这个判断会忽略前后空白以及大小写</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_给你的快速实现"></a>Nutz 给你的快速实现</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>如果你的数据库字段被假设不会发生变化，用直接硬编码是个很好的选择</li>
+<li>如果在开发期，你的数据库字段变化非常频繁，用 Cnd 工具类则是更好的选择</li>
+</ul>
+<h2><a name="直接硬编码"></a>直接硬编码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>最简单直接的方法就是直接输出 WHERE 关键字后面的 SQL 代码了。比如查询一个 Person 对象</p>
+<pre>List&lt;Person&gt; crowd = dao.query(Person.class, Cnd.wrap("name LIKE 'J%' AND age&gt;20"), null);
+</pre>
+<p>这句话，就会将所有名称以 J 开头，并且年龄超过20岁的人全部查询出来。参看 <a href="hello.html">Nutz.Dao 入门</a>针对 Person 对象的描述，实际上，上面那句话执行的 SQL 代码为：</p>
+<pre>SELECT * FROM t_person WHERE name LIKE 'J%' AND age&gt;20;
+</pre>
+<p>当然你要是写</p>
+<pre>Cnd.wrap("name LIKE 'J%' AND age&gt;20 ORDER BY name ASC");
+</pre>
+<p>就会按照 name 字段排序。</p>
+<h2><a name="一个友好一些的工具类_--_Cnd"></a>一个友好一些的工具类 -- Cnd</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column(<span style="color:#FF00FF;">"数据库字段名"</span>)如果你通过 Cnd.wrap() 硬编码某个字段，那么当这个字段数据库字段名发生改变时，你就需要改动很多。因此你希望仅仅将对于数据库的变动限制在 Java 对象的源文件里所以 Nutz 提供了 Cnd.where() 方法</p>
+<pre>Condition c = Cnd.where("age","&gt;",30).and("name", "LIKE", "%K%").asc("name").desc("id");
+</pre>
+<p>这个条件将生成 SQL </p>
+<pre>WHERE age&gt;30 AND name LIKE '%K%' ORDERBY name ASC, id DESC
+</pre>
+<p>你也可以嵌套表达式</p>
+<pre>SqlExpressionGroup e1 = Cnd.exps("name", "LIKE", "P%").and("age", "&gt;", "20");
+SqlExpressionGroup e2 = Cnd.exps("name", "LIKE", "S%").and("age", "&lt;", "30");
+Condition c = Cnd.where(e1).or(e2).asc("name");
+</pre>
+<p>这个条件将生成 SQL </p>
+<pre>WHERE (name LIKE 'P%' AND age&gt;'20') OR (name LIKE 'S%' AND age&lt;'30') ORDER BY name ASC
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="拼装更加复杂的条件"></a>拼装更加复杂的条件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>上面的例子的 Cnd.where 函数，在大多数情况下可以快速的生成一个简单的查询条件。但是，如果查询条件非常复杂，用它可能就比较费劲了。是的，它的设计初衷就是 "<span style="color:#008800;"><b> 查询条件应该一行搞定</b></span>"。</p>
+<p>有些时候，查询条件很复杂，一行确实搞不定，怎么办？<b> Nutz-1.b.38</b> 以后，提供了 Criteria 接口，它继承自Condition 接口，它的设计目的有两个：</p>
+<ol type="1">
+<li>让程序员更容易的拼装复杂逻辑的条件</li>
+<li>让生成的 SQL 可以被参数化，更好的支持 PreparedStatement</li>
+</ol>
+<p>这个接口的使用也很简单，它基本符合 "IDE 的所见即所得" 接口设计原则。 就是说，如果你的 IDE 有智能提示的话，你使用这个接口是不需要文档的。</p>
+<pre>// 创建一个 Criteria 接口实例
+Criteria cri = Cnd.cri();
+
+// 组装条件
+if(...){
+    cri.where().andIn("id", 3,4,5).andIn("name", "Peter", "Wendal", "Juqkai");
+}else if(...){
+    cri.where().andLT("id", 9);
+}
+
+if(...){
+    cri.where().andLike("name", "%A%");
+}
+
+cri.getOrderBy().asc("name").desc("id");
+
+// 执行查询
+List&lt;MyObj&gt; list = dao.query(MyObj.class, cri, null);
+</pre>
+<p>Criteria 的 where() 函数返回的是 SqlExpressionGroup，主要由它来提供各种 SQL 条件的组合方法。这里需要给出一点提示，比如方法名 <span style="color:#008800;"><b> andGT</b></span>，表示的是 and<span style="color:#008800;"><b>G</b></span>reat<span style="color:#008800;"><b>T</b></span>han，即"<span style="color:#008800;"><b>大于</b></span>" 的意思，同理:</p>
+<ul type="disc">
+<li>LT : 小于 (LessThan)</li>
+<li>GTE : 大于等于 (GreatThanEquale)</li>
+<li>LTE : 小于等于 (LessThanEquale)</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>分页查询</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">分页查询</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#概述">概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Dao_接口的第三个参数">Dao 接口的第三个参数</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#将分页信息和查询结果一起返回">将分页信息和查询结果一起返回</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>使用数据库的应用程序，多数情况下都需要使用 <span style="color:#0000AA;">“分页”</span> 这个功能。尤其是在 Web 应用程序中，后端的分页查询尤其的普遍。在以往的使用经验中，一个分页查询，除了能获取到一个列表外，我们通常需要如下几个信息才能在客户端显示出一个完整的翻页条。</p>
+<ul type="disc">
+<li>当前页数 -- 第几页</li>
+<li>页大小 -- 每页有多少条记录</li>
+<li>总页数 -- 一共多少页</li>
+<li>总记录数 -- 如果不分页，一共有多少条记录</li>
+</ul>
+<p>当我们获得了这四条信息后，对于维护一个翻页查询就足够。</p>
+<p>Nutz.Dao 的查询接口天然就支持翻页查询。并且每次会提供给你所有以上的信息。</p>
+<div class="hr"><b></b></div>
+<h1><a name="Dao_接口的第三个参数"></a>Dao 接口的第三个参数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>让我们先看看 Nutz.Dao 接口查询函数的声明：</p>
+<pre>&lt;T&gt; List&lt;T&gt; query(Class&lt;T&gt; classOfT, Condition condition, Pager pager);
+</pre>
+<p>这个接口有三个参数</p>
+<ul type="disc">
+<li>classOfT 告诉 Nutz.Dao 需要查询的实体类型</li>
+<li><a href="condition.html">condition</a> 告诉 Nutz.Dao 查询出的列表需要符合的条件。详细请看 <a href="condition.html">复杂条件</a>。</li>
+<li>最后一个参数，就是告诉 Nutz.Dao 将结果如何分页的了。</li>
+</ul>
+<p><span style="color:#FF0000;"><b> Pager 对象有如下几个注意事项：</b></span></p>
+<ul type="disc">
+<li>如果 pager 被传入了 null，则不分页</li>
+<li>生成 Pager 对象的时候需要传入 <span style="color:#0000AA;">“当前页数”</span> 和 <span style="color:#0000AA;">“页大小”</span></li>
+<li>Pager 虽然有 getRecordCount() 和 getPageCount() 方法，但是它不会自动被设值 -- 因为考虑到效率</li>
+<li>通过 Pager.setRecordCount() 可以为 Pager 设置结果集的总数，Pager 会通过 getPageCount() 返回总页数</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="将分页信息和查询结果一起返回"></a>将分页信息和查询结果一起返回</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public QueryResult getPetList(Dao dao, int pageNumber, int pageSize){
+	Pager pager = dao.createPager(pageNumber, pageSize);
+	List&lt;Pet&gt; list = dao.query(Pet.class, null, pager);
+	pager.setRecordCount(dao.count(Pet.class));
+	return new QueryResult(list, pager);
+}
+</pre>
+<p>Nutz 会自动为各种不同的数据库，根据你传入的 Pager 生成翻页方言。但是考虑到效率因素，Nutz.Dao 并不会为 Pager 计算结果集的总数。我知道这那么一点点让人觉得有点不方便，但是我想给你控制权，我想让你可以: "只在必要的时候才计算结果集的总数"，我想，这个控制权对你来说，比少写一行CRUD代码更加重要，对吗？</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

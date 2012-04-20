@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>对象生命范围</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">对象生命范围</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#高级接口容器接口">高级接口容器接口</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#这个设计有什么用？">这个设计有什么用？</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#通过_ComboContext_链接">通过 ComboContext 链接</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="高级接口容器接口"></a>高级接口容器接口</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>NutIoc 实现了 Ioc2 接口，它继承自 Ioc 接口，并多出了两个方法。一个允许你自行添加自定义的值类型，另一个是允许你在获取对象时，链入自己的上下文环境</p>
+<p>请阅读 org.nutz.ioc.IocContext 的接口文档， 你可以根据需要实现这个上下文接口</p>
+<div class="hr"><b></b></div>
+<h1><a name="这个设计有什么用？"></a>这个设计有什么用？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如，在一个 Web 应用中，你希望在会话中保存一个数据源，你不希望这个数据源保存在 Application级别里。因为，只有当用户登录的时候，你才能确定你到底要连接哪个数据源。</p>
+<p>那么，在配置文件中，我的那个数据源对象，以及所有引用它的对象，都会声明了 scope : "session"。每次启动一个会话，我们就创建一个 Session 的上下文，当请求发生时，就用通过 Ioc2 来获取对象--- 传入 session 上下文。 当会话停止时，会注销这个上下文，那么保存在里面的数据源也会彻底关闭</p>
+<p>如果没有 Ioc2 这个接口，则做不到这一点</p>
+<div class="hr"><b></b></div>
+<h1><a name="通过_ComboContext_链接"></a>通过 ComboContext 链接</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 org.ioc.impl.NutIoc 里，默认有一个 IocContext，它的 scope 是 "app"。</p>
+<p>每次从 NutIoc 里获取对象，如果你想告诉容器：“嘿，我还有另外的一个缓存，请优先在里面查查”你可以这样调用：</p>
+<pre>IocContext myCache = ...;  // 获取你的缓存
+MyObject obj = ioc.get(MyObjec.class, "objName", myCache);
+</pre>
+<p>Nutz.Ioc 默认提供了两个 IocContext:</p>
+<ul type="disc">
+<li>ScopeContext： 顾名思义，它只表示某一个指定的声明周期范围
+<ul type="circle">
+<li>在其构造函数里，你必须指明这个上下文对象可以接受的生命周期范围的名称</li>
+<li>当你的配置信息中 scope 一项同它的范围名称完全匹配时，它会接受你的对象</li>
+</ul>
+</li>
+<li>ComboContext：它可以把多个 IocContext 集合成一个 IocContext
+<ul type="circle">
+<li>通过它，你可以一次向多个 IocContext 获取或者存入对象</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

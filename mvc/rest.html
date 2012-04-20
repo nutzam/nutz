@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>REST 的支持</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">REST 的支持</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么要支持_REST">为什么要支持 REST</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何使用_REST">如何使用 REST</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么要支持_REST"></a>为什么要支持 REST</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个特性被喊了好几个版本了，并且先后被报了好几个 Issue:</p>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=323">Issue 323</a></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=369">Issue 369</a></li>
+</ul>
+<p>加上今天是个风和日丽的日子，Nutz.Mvc 重构完毕。架构这么灵活强大，那么我就把这个特性加上吧，呵呵。</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用_REST"></a>如何使用 REST</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>暂时的，Nutz.Mvc 对于 REST 的支持，仅仅包括四个方法：</p>
+<ul type="disc">
+<li>GET</li>
+<li>POST</li>
+<li>PUT</li>
+<li>DELETE</li>
+</ul>
+<p>比如，你有一个 User 对象，你想为其增加 "修改" 和 "删除" 的操作，在模块类里你可以定义如下两个方法</p>
+<pre>@At("/user/?")
+@GET
+public User getUser(int userId){
+    // TODO 这里是实现代码
+}
+
+@At("/user/?")
+@POST
+public User updateUser(int userId, @Param("..") User user){
+    // TODO 这里是实现代码
+}
+
+@At("/user/?")
+@DELETE
+public void deleteUser(int userId){
+    // TODO 这里是实现代码
+}
+</pre>
+<p>看，很简单，不是吗？你可以为你的请求设置路径参数，也可以为你的请求声明一个特殊的 HTTP 方法。路径参数的形式可以是：</p>
+<ol type="1">
+<li><span style="color:#FF00FF;"> /user/?/topic/?</span></li>
+<li><span style="color:#FF00FF;"> /user/?/topic/*</span></li>
+<li><span style="color:#FF00FF;"> /*</span></li>
+</ol>
+<p>关于 "路径参数" 的具体的解释，请参看 <a href="http_adaptor.html">适配器</a> &gt; <a href="http_adaptor.html#路径参数">路径参数</a></p>
+<p>在一个入口函数上，你可以标注一个或多个下面的注解:</p>
+<ul type="disc">
+<li><span style="color:#888888;"><b> @GET</b></span></li>
+<li><span style="color:#888888;"><b> @POST</b></span></li>
+<li><span style="color:#888888;"><b> @PUT</b></span></li>
+<li><span style="color:#888888;"><b> @DELETE</b></span></li>
+</ul>
+<p>这几个注解描述了当前入口函数仅仅相应什么样的 HTTP 请求方法。在你的应用运行时，即使 Nut.Mvc 匹配上了 URL，如果 HTTP 请求的方法和你声明的不符，它也当这个入口函数不存在。</p>
+<p>如果你不声明这四个注解中的任何一个，则表示你希望你的这个入口函数处理发送到这个 URL 的任何HTTP 请求。</p>
+<p>因此，你可以为一个入口函数声明 (@GET|@POST|@PUT|@DELETE) 中的一个或多个，处理其中一种或者多种HTTP 请求，而另外一个入口函数不声明注解，用来处理余下的其他 HTTP 请求方法。当然，这两个入口函数的 @At 应该是一致的。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b></div>
+</body>
+</html>

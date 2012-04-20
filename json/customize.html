@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>高级定制</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">高级定制</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#动机">动机</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#POJO_的源代码">POJO 的源代码</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#Button_对象">Button 对象</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#Function_对象">Function 对象</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#一点说明">一点说明</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#调用代码">调用代码</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#控制台输出">控制台输出</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="动机"></a>动机</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Json 天然的同 Javascript 融为一体，做 WEB 应用，服务器同浏览器的通信，通过 JSON 是最方便高效的选择。同时，有一个事实：<b>服务器比浏览器聪明</b>， 因为我们可以在服务器写更复杂的逻辑。</p>
+<p>这里有一个需求，程序员希望自己的 JSON 返回是这个样子的：</p>
+<pre>{
+	text : 'click me',
+	handle : function(){
+		alert('a function');
+	}
+}
+</pre>
+<p>这样的返回不符合 JSON 的语法，但是它符合 JavaScript 的语法。 默认的，Nutz.Json 并不支持这样的输出。但是它的确为类似这样的要求做了考虑:</p>
+<p>简单的说，就是通过 @ToJson 注解，你可以控制你的对象在 JSON 字符串中的表现形式</p>
+<div class="hr"><b></b></div>
+<h1><a name="POJO_的源代码"></a>POJO 的源代码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="Button_对象"></a>Button 对象 </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public class Button {
+	private String text;
+
+	private Function handler;
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public Function getHandler() {
+		return handler;
+	}
+
+	public void setHandler(Function handler) {
+		this.handler = handler;
+	}
+}
+</pre>
+<p></p>
+<h2><a name="Function_对象"></a>Function 对象</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@ToJson
+public class Function {
+	private String body;
+
+	public Function(String body) {
+		this.body = body;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
+
+	public String toJson(JsonFormat format) {
+		StringBuilder sb = new StringBuilder("function(){");
+		sb.append(body);
+		sb.append('}');
+		return sb.toString();
+	}
+}
+</pre>
+<p></p>
+<h2><a name="一点说明"></a>一点说明</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>上面的例子，我想你已经能基本明白了，这里再着重做几点说明：</p>
+<ul type="disc">
+<li>将 Function 对象序列化成 JSON 字符串时，会调用 toJson 函数
+<ul type="circle">
+<li>这个函数必须有一个参数，类型为 JsonFormat</li>
+</ul>
+</li>
+<li>@ToJson 注解默认值为 "toJson"
+<ul type="circle">
+<li>即，如果你不喜欢 "toJson" 这个名字，你可以在你的 POJO 中 @ToJson("任何你喜欢的名字")</li>
+<li>你的函数也必须有一个参数，类型为 JsonFormat</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="调用代码"></a>调用代码</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Button btn = new Button();
+Function func = new Function("alert('I am button');");
+
+btn.setText("Click me!");
+btn.setHandler(func);
+
+System.out.println(Json.toJson(btn));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="控制台输出"></a>控制台输出</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+   text :"Click me!",
+   handler :function(){alert('I am button');}
+}
+</pre>
+<div class="hr"><b></b></div>
+<p>只要你高兴，通过 @ToJson 注解，你可以随意控制对象的输出内容。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

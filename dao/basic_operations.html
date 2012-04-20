@@ -1,0 +1,244 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Dao 接口的基本操作</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Dao 接口的基本操作</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#概述">概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#示例的前提条件">示例的前提条件</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#创建数据表">创建数据表</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#删除数据表">删除数据表</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#插入_Insert">插入 Insert</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#取得_Fetch">取得 Fetch</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#更新_Update">更新 Update</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#更新多条">更新多条</a></div>
+</li>
+<li>
+<div><span class="num">9</span><a href="#删除_Delete">删除 Delete</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">10</span><a href="#查询_Query">查询 Query</a></div>
+<ul>
+<li>
+<div><span class="num">10.1</span><a href="#查询全部记录">查询全部记录</a></div>
+</li>
+<li>
+<div><span class="num">10.2</span><a href="#按条件查询">按条件查询</a></div>
+</li>
+<li>
+<div><span class="num">10.3</span><a href="#分页查询">分页查询</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">11</span><a href="#清除_Clear">清除 Clear</a></div>
+<ul>
+<li>
+<div><span class="num">11.1</span><a href="#清除所有记录">清除所有记录</a></div>
+</li>
+<li>
+<div><span class="num">11.2</span><a href="#按条件清除">按条件清除</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">12</span><a href="#插入和更新集合">插入和更新集合</a></div>
+</li>
+</ul>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>传统关系型数据库定义了四种数据操作：</p>
+<ol type="1">
+<li>插入 Insert</li>
+<li>删除 Delete</li>
+<li>更新 Update</li>
+<li>查询 Query</li>
+</ol>
+<p>可以说，这四种操作涵盖了所有的数据操作。并且，除了 插入 操作，所有的操作都是可以一次针对多条记录的。</p>
+<p>但是，Nutz.Dao 认为从使用者的角度来看，这四种操作还是有所不同的。比如，查询返回的结果，很多时候仅仅是一条记录。我们需要为这种情况进行优化。所以，Nutz.Dao 在传统关系型数据库数据操作的基础上定义了如下的数据操作：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 插入 </td>
+<td> Insert	</td>
+<td> 一条 SQL 插入一条记录 </td>
+</tr>
+<tr>
+<td> 删除 </td>
+<td> Delete	</td>
+<td> 一条 SQL 删除一条记录 </td>
+</tr>
+<tr>
+<td> 更新 </td>
+<td> Update	</td>
+<td> 一条 SQL 更新一条或者多条记录 </td>
+</tr>
+<tr>
+<td> 获取 </td>
+<td> Fetch	</td>
+<td> 一条 SQL 获取一条记录 </td>
+</tr>
+<tr>
+<td> 查询 </td>
+<td> Query	</td>
+<td> 一条 SQL 根据条件获取多条记录 </td>
+</tr>
+<tr>
+<td> 清除 </td>
+<td> Clear	</td>
+<td> 一条 SQL 根据条件删除多条记录	</td>
+</tr>
+</table>
+<p><span style="color:#FF0000;"><b>请注意：</b></span> 这里我是说 “<i>一条</i>”  SQL。 如果通过 Dao 接口，你传入的是一个集合或者数组，它为为每一个元素都生成一条 SQL 并执行，并更新操作:</p>
+<pre>Pet[] pets = xxxx;
+dao.update(pets);	// 可以是数组，当然 pets 也可以是集合，
+</pre>
+<p>同理，delete 和 insert 也支持传入数组和集合</p>
+<div class="hr"><b></b></div>
+<h1><a name="示例的前提条件"></a>示例的前提条件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>我们假设已经创建了实体类 <b>com.zzh.demo.Person</b> 和实体表 <b>t_person</b></li>
+<li>在文档 <a href="hello.html">Nutz.Dao 入门</a> 中，我们已经声明了这个实体</li>
+<li>下述所有的操作都是假设已经有了 dao 变量，并且它指向一个 Dao 的实例。文档 <a href="hello.html">Nutz.Dao 入门</a> 中，我们给出了如何创建 Dao 实例，以及如何搭建运行环境</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="创建数据表"></a>创建数据表</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>为 Pet 创建数据表，如果数据表存在，先 DROP 掉，再创建</p>
+<pre>dao.create(Pet.class, true);
+</pre>
+<p>为 Pet 创建数据表，如果数据表存在，忽略</p>
+<pre>dao.create(Pet.class, false);
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="删除数据表"></a>删除数据表</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>删除 Pet 的数据表</p>
+<pre>dao.drop(Pet.class);
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="插入_Insert"></a>插入 Insert</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Person p = new Person();
+p.setName("Peter");
+p.setAge(22);
+dao.insert(p);
+System.out.println(p.getId());
+</pre>
+<p>Person 对象的 Id 被自动更新了。</p>
+<ul type="disc">
+<li>更多的关于 @Id 注解的描述，请参看 <a href="primary_key.html">关于主键</a> 以及 <a href="next_prev.html">在插入前后的为字段设值</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="取得_Fetch"></a>取得 Fetch</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>根据名称获取 （如果你的实体声明了 @Name 字段）</p>
+<pre>Person p = dao.fetch(Person.class,"Peter");
+System.out.println(p.getId());
+</pre>
+<p>根据 ID 获取 （如果你的实体声明了 @Id 字段）</p>
+<pre>Person p = dao.fetch(Person.class,2);
+System.out.println(p.getName());
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="更新_Update"></a>更新 Update</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Person p = dao.fetch(Person.class,2);
+p.setAge(32);
+dao.update(p)
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="更新多条"></a>更新多条</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>dao.update(Person.class, Chain.make("dead",true), Cnd.where("age","&gt;",150));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="删除_Delete"></a>删除 Delete</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>根据名称删除 （如果你的实体声明了 @Name 字段）</p>
+<pre>dao.delete(Person.class,"Peter");
+</pre>
+<p>根据 ID 删除 （如果你的实体声明了 @Id 字段）</p>
+<pre>dao.delete(Person.class,2);
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="查询_Query"></a>查询 Query</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="查询全部记录"></a>查询全部记录</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>List&lt;Person&gt; = dao.query(Person.class,null,null);
+</pre>
+<h2><a name="按条件查询"></a>按条件查询</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>List&lt;Person&gt; people = dao.query(Person.class, Cnd.where("name", "like", "P%"), null);
+</pre>
+<ul type="disc">
+<li>Cnd 类的全名是 org.nutz.dao.Cnd
+<ul type="circle">
+<li>它主要是用来快速替你建立一个 org.nutz.dao.Condition 接口的实现类</li>
+<li>where() 函数 第一个参数是字段名，要和 Java 类里面的字段名相同。</li>
+<li>where() 函数 第二个参数遵循 SQL 的标准，可以是 &gt;, &lt;, &gt;=, &lt;= 等等</li>
+<li>提供了一个 wrap 函数，你可以直接写 SQL 的条件</li>
+</ul>
+</li>
+<li>如果你愿意，你完全可以自己实现一个 Condition，来做更复杂灵活的判断</li>
+<li>关于更多的查询条件的说明，请参看 <a href="condition.html">复杂条件</a></li>
+</ul>
+<h2><a name="分页查询"></a>分页查询</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>List&lt;Person&gt;people = dao.query(Person.class, null, dao.createPager(1, 4));
+</pre>
+<ul type="disc">
+<li>dao.createPager 第一个参数是第几页，第二参数是一页有多少条记录</li>
+<li>关于分页更多的说明，请参看 <a href="pager.html">分页查询</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="清除_Clear"></a>清除 Clear</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="清除所有记录"></a>清除所有记录</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>dao.clear(Person.class);
+</pre>
+<h2><a name="按条件清除"></a>按条件清除</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>dao.clear(Person.class,Cnd.where("id", "&gt;", 35));
+</pre>
+<ul type="disc">
+<li>关于更多的清除条件的说明，请参看 <a href="condition.html">复杂条件</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="插入和更新集合"></a>插入和更新集合</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论是插入 (Insert) 还是更新 (Update)，你传入的对象都可以不仅仅是一个 POJO，你可以传入：</p>
+<ul type="disc">
+<li>集合 ( Collection&lt;?&gt; )</li>
+<li>Map&lt;?,?&gt;</li>
+<li>数组 ( T[] )</li>
+</ul>
+<p>Nutz.Dao 会自动替你拆包，对集合成员依次执行相应操作。 对于 Map，它会迭代每一个值。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>从 SVN 编译 - Eclipse</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">从 SVN 编译 - Eclipse</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#准备目录">准备目录</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#使用_SVN_工具">使用 SVN 工具</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#Check_out">Check out</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#连接">连接</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#选择本地目录">选择本地目录</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#检出">检出</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#查看结果">查看结果</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#准备依赖的_jar_包">准备依赖的 jar 包</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#准备Eclipse工作区">准备Eclipse工作区</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#建立_Tomcat_运行环境">建立 Tomcat 运行环境</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#建立_Java_项目">建立 Java 项目</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#链接源文件">链接源文件</a></div>
+</li>
+<li>
+<div><span class="num">9</span><a href="#配置_Build_Path">配置 Build Path</a></div>
+</li>
+<li>
+<div><span class="num">10</span><a href="#检查一下">检查一下</a></div>
+</li>
+<li>
+<div><span class="num">11</span><a href="#设置_jar_包的依赖关系">设置 jar 包的依赖关系</a></div>
+</li>
+<li>
+<div><span class="num">12</span><a href="#完成">完成</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="准备目录"></a>准备目录</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="../imgs/build/01.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="使用_SVN_工具"></a>使用 SVN 工具</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>Windows 用户： 这里用的是 <a href="http://tortoisesvn.net">龟版 SVN</a></li>
+<li>Linux 用户： 你肯定用不到我废话了</li>
+</ul>
+<p><img src="../imgs/build/02.png"/></p>
+<p>连接 http://nutz.googlecode.com/svn</p>
+<div class="hr"><b></b></div>
+<h1><a name="Check_out"></a>Check out</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="连接"></a>连接</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>SVN 的 http 连接比较慢，需要等待几十秒至1分钟。连接上后，选择 trunk 目录，并 checkout</p>
+<p><img src="../imgs/build/03.png"/></p>
+<h2><a name="选择本地目录"></a>选择本地目录</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>选择 Checkout 的目标地址，点确定</p>
+<p><img src="../imgs/build/04.png"/></p>
+<p>这个例子，我们的目标地址就是 D:\nutz\svn\trunk</p>
+<h2><a name="检出"></a>检出</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>点击  OK 后，会开始下载 Nutz 全部的文件</p>
+<p><img src="../imgs/build/05.png"/></p>
+<p>Nutz 全部的文件并不大，如果是正常的 ADSL， 大概半分钟左后就能全部下完：</p>
+<p><img src="../imgs/build/05_2.png"/></p>
+<p>下载之后，你的目录结构应该是：</p>
+<h2><a name="查看结果"></a>查看结果</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="../imgs/build/05_3.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="准备依赖的_jar_包"></a>准备依赖的 jar 包</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="../imgs/build/06.png"/></p>
+<p>Nutz 不是不依赖其他 jar 吗? 是的，但是在编译时它依赖 Log4j。</p>
+<p>在运行时如果 Log4j 的 jar 不存在，它会采用System.out/err 详情请参看 <a href="../lang/log.html">Nutz 的日志模块</a></p>
+<p>Nutz.Dao 的测试时在</p>
+<ul type="disc">
+<li>Mysql</li>
+<li>Postgresql</li>
+<li>Oracle</li>
+<li>H2</li>
+<li>SqlServer2000</li>
+<li>SqlServer2005</li>
+</ul>
+<p>这几个数据库上作的，所以需要它们的 JDBC 实现。你可以根据需要选择一个你喜欢的数据库。我最喜欢 PSQL，但是当然，大多数人都爱用 Mysql。</p>
+<p>要是运行测试用例，你还得需要 Apache 的连接池，以及某一个数据库的 JDBC 实现。Apache 提供的连接池是两个 jar，有了它，我们就可以很简单的创建 DataSource，你可以选择你喜欢的连接池实现。c3p0，proxool ，爱用什么都可以，但是得把 jar 包准备好。</p>
+<p><span style="color:#AA0000;"><b>注意:</b></span> 如果你顺利的检出（Check out）了 SVN 文件，你会发现在 <span style="color:#0000FF;"><b> /trunk/build/deps</b></span> 目录下，有你需要的所有 jar 包<span style="color:#AA0000;"><b>注意:</b></span> 如果你需要配置成其他数据源,请修改test\org\nutz\dao\test\meta\pojo.js , 参考<a href="../appendix/create_datasource.html">如何创建DataSource</a></p>
+<p>我们，先把 jar 文件在 D:/nutz/deps 里面放好，后面会用得到</p>
+<div class="hr"><b></b></div>
+<h1><a name="准备Eclipse工作区"></a>准备Eclipse工作区</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>打开 Eclipse, 工作区路径为 D:/nutz/workspace</p>
+<p><img src="../imgs/build/07.png"/></p>
+<p>打开之后的工作区是空空如也</p>
+<p><img src="../imgs/build/08.png"/></p>
+<p>当然，你要在你已经存在的工作区里进行下面的操作也可以。</p>
+<div class="hr"><b></b></div>
+<h1><a name="建立_Tomcat_运行环境"></a>建立 Tomcat 运行环境</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>增加 Tomcat 服务器 (你必选先装了 Tomcat)</p>
+<p>这里主要是为了编译，而需要 tomcat 带的 Servlet 相关的类选择<b>Window &gt; Preferences &gt; Server &gt; Runtime Environment &gt; Add</b> 在弹出的对话框选择<b>Apache &gt; Apache Tomcat v6.0</b> （<i>因为我装的就是 Tomcat6.0</i>）点击 next ，填写 Tomcat 的安装路径</p>
+<p><img src="../imgs/build/09.png"/></p>
+<p>然后点击 finish ， OK 之类的，确认所有的对话框</p>
+<div class="hr"><b></b></div>
+<h1><a name="建立_Java_项目"></a>建立 Java 项目</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>选择 File &gt; New，在弹出的对话框中选择 建立普通的 Java 项目（Java Project），并点 Next</p>
+<p><img src="../imgs/build/10.png"/></p>
+<ul type="disc">
+<li>输入项目名称为： nutz@google   (其实，随便你起个什么名字, 不要有'.'就行)</li>
+<li>直接点击 Finish。</li>
+<li>如果Eclipse 弹出对话框问你要不要转到 Java透视图，随你便，都行</li>
+</ul>
+<p><img src="../imgs/build/10_2.png"/></p>
+<p>请确保你的项目，文本的编码是 UTF-8 格式的。因为我大部分源代码的注释用的是中文，而且 doc 目录下的文本文件用的都是 UTF-8编码</p>
+<div class="hr"><b></b></div>
+<h1><a name="链接源文件"></a>链接源文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>新建立的项目包括一个默认的 src 文件夹，以及默认的 JRE System Library，选中 src，按 delete 键删除，我们不需要它</p>
+<p><img src="../imgs/build/11.png"/></p>
+<p>项目目录清净了，那么让我们把 Nutz SVN 目录下的文件链接进来：</p>
+<p><img src="../imgs/build/12.png"/></p>
+<p>右击项目名称，选择 New &gt; Folder</p>
+<p>在弹出的对话框中，选择链接外部文件</p>
+<p><img src="../imgs/build/13.png"/></p>
+<p>点击 Finish 按钮后，项目下多出了一个链接文件夹</p>
+<p><img src="../imgs/build/14.png"/></p>
+<p>以此类推，将 test 目录也加进来，如果你愿意，你可以把所有的目录都加进来</p>
+<p><img src="../imgs/build/14_2.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="配置_Build_Path"></a>配置 Build Path</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下面配置项目的 build path</p>
+<p><img src="../imgs/build/15.png"/></p>
+<p>在弹出的 Configure Build Path 对话框中，将 src 和 test 加为 source folder</p>
+<p><img src="../imgs/build/16.png"/></p>
+<p>注意，请别忘了设置过滤的 pattern:</p>
+<p><img src="../imgs/build/16_2.png" width="800"/></p>
+<p>否则，会出编译警告，因为 svn 缓存在目录中的文件也会被 Eclipse 看到。分别为 src 和 test 增加过滤 pattern，就可以让 Eclipse 忽略所有的 .svn 工作目录</p>
+<p>过滤的表达式是：  <span style="color:#0000AA;"><b> **/.svn/** </b></span></p>
+<div class="hr"><b></b></div>
+<h1><a name="检查一下"></a>检查一下</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>最后，检查一下，设置完毕后，是不是这个样子，注意下图红圈部分：</p>
+<p><img src="../imgs/build/17.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="设置_jar_包的依赖关系"></a>设置 jar 包的依赖关系</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>最后，让我们设置依赖关系包，增加依赖的 Jar 包</p>
+<p><img src="../imgs/build/18.png"/></p>
+<p>确认之后，再点击 Add Library ... ，在弹出的对话框里选 Server Runtime，之后，选前面加入的 Apache Tomcat 6.0</p>
+<p><img src="../imgs/build/18_2.png"/></p>
+<p>为了运行单元测试，你还需要加入 JUnit 4 的依赖包: Add Library... &gt; JUnit &gt; JUnit 4 &gt; OK</p>
+<p>设置完毕后，所有的依赖关系应该是这个样子</p>
+<p><img src="../imgs/build/18_3.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="完成"></a>完成</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>至此，你的项目全部都建立起来了，并且在 Eclipse 应该都会被自动编译通过</p>
+<p><img src="../imgs/build/19.png"/></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

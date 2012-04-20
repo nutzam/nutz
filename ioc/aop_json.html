@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>用json文件声明Aop切片</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">用json文件声明Aop切片</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#需使用的类">需使用的类</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#看看一个示例的ioc配置文件">看看一个示例的ioc配置文件</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#规则如下:">规则如下:</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#拓展使用_--_声明式事务">拓展使用 -- 声明式事务</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#按照上述声明:">按照上述声明:</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#重要提醒_--_与@Aop同时使用">重要提醒 -- 与@Aop同时使用</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="需使用的类"></a>需使用的类</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>org.nutz.ioc.aop.config.impl.JsonAopConfigration</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="看看一个示例的ioc配置文件"></a>看看一个示例的ioc配置文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>var ioc = {
+	log : {
+		type :'org.nutz.aop.interceptor.LoggingMethodInterceptor'
+	},
+	myMI : {
+		type : 'org.nutz.ioc.aop.config.impl.MyMI'
+	},
+	pet2 : {
+	type : "org.nutz.ioc.aop.config.impl.Pet2"
+	},
+	
+	$aop : {
+		type : 'org.nutz.ioc.aop.config.impl.JsonAopConfigration',
+		fields : {
+			itemList : [
+				['.+','toString','ioc:log'],
+				['.+','.+','ioc:myMI'],
+				['.+','.+','org.nutz.ioc.aop.config.impl.MyMI2','false']
+			]
+		}
+	}
+}
+</pre>
+<p>可以看到, 除了$aop这个对象外,其他的与普通的ioc配置文件没有任何区别.$aop ,其实是org.nutz.ioc.aop.config.AopConfigration接口的IOCNAME字段的值,只有你声明这个名字,且类型为这个接口的实现,就能轻易的配置Ioc.估计你已经猜到,org.nutz.ioc.aop.config.impl.JsonAopConfigration就是其中一个实现!细看这个部分代码:</p>
+<pre>		fields : {
+			itemList : [
+				['.+','toString','ioc:log'],
+				['.+','.+','ioc:myMI'],
+				['.+','.+','org.nutz.ioc.aop.config.impl.MyMI2','false']
+			]
+		}
+</pre>
+<p>使用JsonAopConfigration,只需要为其itemList赋值.需要什么值? 对,一个数组.数组的每一行,对应一条规则:</p>
+<pre>['.+','toString','ioc:log'],
+['.+','.+','ioc:myMI']
+['com\.wendal\.nutz\..+','get.+','org.nutz.ioc.aop.config.impl.MyMI2','false']
+</pre>
+<h2><a name="规则如下:"></a>规则如下:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>第一个值,对应className,必选,用于匹配类的全称的正则表达式</li>
+<li>第二个值,对应methodName,必选,用于匹配方法名的正则表达式</li>
+<li>第三个值,对应interceptorName,必选,如果以ioc:开头,则代表对于ioc容器的一个对象,否则,将认为是一个类名</li>
+<li>第四个值,对应singleton,可选,仅当interceptorName为类名时有效</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="拓展使用_--_声明式事务"></a>拓展使用 -- 声明式事务</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先,声明5种事务等级对应的拦截器(使用内置的事务拦截器 org.nutz.aop.interceptor.TransactionInterceptor)</p>
+<pre>	txNONE : {
+		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
+		args : [0]
+	},
+	txREAD_UNCOMMITTED : {
+		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
+		args : [1]
+	},
+	txREAD_COMMITTED : {
+		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
+		args : [2]
+	},
+	txREPEATABLE_READ : {
+		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
+		args : [4]
+	},
+	txSERIALIZABLE : {
+		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
+		args : [8]
+	},
+	//声明一个log进行日志记录
+	log : {
+		type :'org.nutz.aop.interceptor.LoggingMethodInterceptor'
+	}
+</pre>
+<p>然后,定义哪些类的什么方法需要进行声明,继续添加 (一般来说,应该把等级高的往后放)</p>
+<pre>	$aop : {
+		type : 'org.nutz.ioc.aop.config.impl.JsonAopConfigration',
+		fields : {
+			itemList : [
+				['com\\.service\\..+','.+','ioc:log'],
+				['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE'],
+				['com\\.service\\.media\\..+','(get|set).+','ioc:txREAD_UNCOMMITTED'],
+				['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+				['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
+				['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE']
+			]
+		}
+	}
+</pre>
+<h2><a name="按照上述声明:"></a>按照上述声明:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>对于com.service包下的类的全部方法,均应用log拦截器</li>
+<li>对于com.service.status包下的类的全部get/set方法,均应用txNONE拦截器,事务级别 NONE</li>
+<li>对于com.service.media包下的类的全部get/set方法,均应用txREAD_UNCOMMITTED拦截器,事务级别 READ_UNCOMMITTED</li>
+<li>对于com.service.news包下的类的全部get/set方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_COMMITTED</li>
+<li>对于com.service.blog包下的类的全部get/set/update/delete方法,均应用txREPEATABLE_READ拦截器,事务级别 READ_REPEATABLE_READ</li>
+<li>对于com.service.auth包下的类的全部方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="重要提醒_--_与@Aop同时使用"></a>重要提醒 -- 与@Aop同时使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你既使用了@Aop注解,又配置了上述的声明式Aop,你需要ComboAopConfigration来整合两种配置,示例:</p>
+<pre>$aop : {
+	type : 'org.nutz.ioc.aop.config.impl.ComboAopConfigration',
+	fields : {
+		aopConfigrations  : [
+			{	type : 'org.nutz.ioc.aop.config.impl.JsonAopConfigration',
+				fields : {
+    				itemList : [
+            			['com\\.service\\..+','.+','ioc:log'],
+						['com\\.service\\.status\\..+','(get|set).+','ioc:txNONE'],
+						['com\\.service\\.media\\..+','(get|set).+','ioc:txREAD_UNCOMMITTED'],
+						['com\\.service\\.news\\..+','(get|set).+','ioc:txREAD_COMMITTED'],
+						['com\\.service\\.blog\\..+','(get|save|update|delete).+','ioc:txREPEATABLE_READ'],
+						['com\\.service\\.auth\\..+','.+','ioc:txSERIALIZABLE']
+    				]
+				}
+			},
+			{	type : 'org.nutz.ioc.aop.config.impl.AnnotationAopConfigration'}
+		]
+	}
+}
+</pre>
+<p>同理,你也可以整合XML声明式Aop,不过,为避免不必要的问题,请勿在不同配置方式中对同一个方法添加同一个拦截器</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

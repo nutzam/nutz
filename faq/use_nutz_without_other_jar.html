@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz需要依赖第三方jar吗?Log如何配置?</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz需要依赖第三方jar吗?Log如何配置?</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#一个老生常谈的问题">一个老生常谈的问题</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#解答">解答</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#搭配组合">搭配组合</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="一个老生常谈的问题"></a>一个老生常谈的问题</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>Nutz需要第三方jar包才能运行吗? 答案是,不需要.但如果有的话更好.</li>
+<li>一般有几种疑问:
+<ol type="a">
+<li>刚刚接触Nutz,直接把nutz.jar扔进工程,发现正常运行起来了</li>
+<li>读源码,发现源码其实是依赖Log4j的几个类的,但为什么没有log4j的jar,Nutz也正常运行了呢?</li>
+<li>想把日志输出到log4j,加上log4j的jar,发现nutz的日志就按log4j的设置输出了</li>
+<li>不想使用log4j,想使用更高效的Logback或者传统的JDK Logging,不知道行不行?</li>
+</ol>
+</li>
+</ol>
+<h1><a name="解答"></a>解答</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>Nutz的源码中,依赖两个外部jar -- servlet-api.jar 和 log4j.jar
+<ol type="a">
+<li>前者在任何标准J2EE Web应用中都有, Nutz仅支持Servlet 2.4或以上.</li>
+<li>后者是极其常见的Log4j, 编译器依赖于1.2.14版,但在运行时仅要求是1.2.x. 不过,我推荐最新的log4j 1.2.16 .</li>
+</ol>
+</li>
+<li>我们使用Nutz.Plugin,通过检测是否存在Log4j的核心接口 org.apache.log4j.Log是否存在来判断是否将日志输出到Log4j
+<ol type="a">
+<li>由于仅检测是否存在org.apache.log4j.Log接口,这样就导致两个情况:
+<ol type="i">
+<li>仅仅把Log4j的jar放进classpath,而没有配置之,那么输出日志时,log4j会警告你. 我们认为这是你的失误.</li>
+<li>这样也提供了一个自由度,因为slf4j的log4j-over-slf4j桥也提供这个接口.</li>
+</ol>
+<p>换句话说,如果你把log4j-over-slf4j.jar放进classpath,那么Nutz的日志也能通过Slf4j输出去.</p>
+</li>
+</ol>
+</li>
+</ol>
+<h1><a name="搭配组合"></a>搭配组合</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>最精简搭配,适合尝试阶段的新手,默认输出的就是Debug信息,完全无鸭梨!!
+<ul type="disc">
+<li>nutz.jar</li>
+</ul>
+</li>
+<li>经典搭配,适合大部分人的需要
+<ul type="disc">
+<li>nutz.jar + log4j-1.2.14.jar</li>
+</ul>
+</li>
+<li>推荐搭配,搭配最新的log4j
+<ul type="disc">
+<li>nutz.jar + log4j-1.2.16.jar</li>
+</ul>
+</li>
+<li>性能至上,使用Logback
+<ul type="disc">
+<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + logback.jar</li>
+</ul>
+</li>
+<li>传统选择,使用JDK Loggging
+<ul type="disc">
+<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jdk.jar</li>
+</ul>
+</li>
+<li>另类之选,使用Apache Common Logging
+<ul type="disc">
+<li>nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + slfj4-jcl.jar</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

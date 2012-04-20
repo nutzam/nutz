@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Hello world</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Hello world</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#Ioc_的概念">Ioc 的概念</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#一个简单的例子">一个简单的例子</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#POJO_源代码">POJO 源代码</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#Json_配置文件">Json 配置文件</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#调用代码">调用代码</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#控制台输出">控制台输出</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#如果配置文件中声明了类型，则可不传入类型">如果配置文件中声明了类型，则可不传入类型</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#声明了_singleton:_false，那么它每次获取，都会生成一个新的实例">声明了 singleton: false，那么它每次获取，都会生成一个新的实例</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#关于进阶">关于进阶</a></div>
+</li>
+</ul>
+<h1><a name="Ioc_的概念"></a>Ioc 的概念</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Ioc 从概念上是很简单：将一部分关于对象的依赖关系单独存储在某种介质里，并且提供一个接口帮助使用者获得这些对象。</p>
+<p>但是将依赖关系存储在什么地方呢？ Spring 选的是 XML， Guice 选的 Java （硬编码）</p>
+<p>Nutz.Ioc 核心逻辑并没有限定配置信息的存储方式，但它还是提供了一个默认的配置文件编写方式 -- JSON。因为</p>
+<ul type="disc">
+<li>省却了 XML 书写的烦恼</li>
+<li>避免了硬编码 -- 修改配置，不需要重新编译工程</li>
+</ul>
+<p>当然，你可以扩展它，提供自己的配置文件加载方式， Nutz.Ioc 不反对你这样，它甚至有点鼓励你这样，虽然 JSON 方式的配置文件书写方式已经工作的很好了。</p>
+<p>下面，我先以 JSON 文件为例，给大家一个 Hello World</p>
+<h1><a name="一个简单的例子"></a>一个简单的例子</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在这个例子中，你需要一 POJO，以及一个 JSON 配置文件。例子的源代码，你可以访问 <a href="http://nutzdemo.googlecode.com">http://nutzdemo.googlecode.com</a>  获取</p>
+<h2><a name="POJO_源代码"></a>POJO 源代码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>package nutz.demo.ioc.book;
+
+import java.util.Calendar;
+
+public class Pet {
+
+	private String name;
+
+	private Calendar birthday;
+
+	private Pet friend;
+
+	public Pet() {}
+
+	public Pet(String name) {
+		this.name = name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Calendar getBirthday() {
+		return birthday;
+	}
+
+	public void setBirthday(Calendar birthday) {
+		this.birthday = birthday;
+	}
+
+	public Pet getFriend() {
+		return friend;
+	}
+
+	public void setFriend(Pet friend) {
+		this.friend = friend;
+	}
+}
+</pre>
+<p>这个对象有两个构造函数</p>
+<h2><a name="Json_配置文件"></a>Json 配置文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>与 POJO 在同一包路径下</p>
+<pre>/*
+ * 开始写上 var ioc = { ， 是为了利用 eclipse 的  javascript 编辑器的自动格式化功能
+ */
+var ioc = {
+	/*
+	 * 默认的，你仅仅需要直接声明每个字段的值即可，Nutz.Ioc 会为你转型
+	 */
+	xiaobai : {
+		name : 'XiaoBai',
+		birthday : '2009-10-25 15:23:40'
+	},
+	/*
+	 * 你当然也可以做更细致的设置
+	 */
+	xiaohei : {
+		type : 'nutz.demo.ioc.book.Pet', // 类型
+		singleton : false, // 是否为单件
+		args : [ 'XiaoHei' ], // 构造函数参数
+		fields : {
+			birthday : '2009-11-3 08:02:14',
+			friend : {refer : 'xiaobai'}	// 指向容器里另外一个对象
+		}
+	}
+}
+</pre>
+<p></p>
+<h2><a name="调用代码"></a>调用代码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>package nutz.demo.ioc.book;
+
+import org.nutz.ioc.Ioc;
+import org.nutz.ioc.impl.NutIoc;
+import org.nutz.ioc.loader.json.JsonLoader;
+
+public class HelloPet {
+
+	public static void main(String[] args) {
+		Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
+		Pet pet = ioc.get(Pet.class, "xiaobai");
+		System.out.printf("%s - [%s]\n", pet.getName(), pet.getBirthday().getTimeZone().getID());
+	}
+
+}
+</pre>
+<h2><a name="控制台输出"></a>控制台输出</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>XiaoBai - [Asia/Shanghai]
+</pre>
+<p></p>
+<h2><a name="如果配置文件中声明了类型，则可不传入类型"></a>如果配置文件中声明了类型，则可不传入类型</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Pet xh = ioc.get(null, "xiaohei");
+System.out.printf("%s's friend is %s\n", xh.getName(), xh.getFriend().getName());
+</pre>
+<p>控制台输出：</p>
+<pre>XiaoHei's friend is XiaoBai
+</pre>
+<p></p>
+<h2><a name="声明了_singleton:_false，那么它每次获取，都会生成一个新的实例"></a>声明了 singleton: false，那么它每次获取，都会生成一个新的实例</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Pet p1 = ioc.get(null, "xiaohei");
+Pet p2 = ioc.get(null, "xiaohei");
+System.out.println(p1==p2);
+</pre>
+<p>控制台输出：</p>
+<pre>false
+</pre>
+<p></p>
+<h1><a name="关于进阶"></a>关于进阶</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我可以负责任的告诉你：你已经掌握了 Nutz.Ioc 在你开发的时候 80% 情况下所需要的知识。当然，它还提供了更多的功能，有些功能是其他 Ioc 容器所不具备的，你可以根据自己需要来阅读，他们包括：</p>
+<ul type="disc">
+<li><a href="inner_object.html">匿名对象</a></li>
+<li><a href="events.html">事件监听</a></li>
+<li><a href="injecting.html">你都可以注入什么</a></li>
+<li><a href="events.html">事件的监听</a></li>
+<li><a href="ioc_loader.html">定义自己的配置文件格式</a></li>
+<li><a href="aop_solution.html">AOP模型</a> -- NutAop的实现思路</li>
+<li><a href="aop.html">AOP</a> -- 声明式切片</li>
+<li><a href="scope.html">对象生命范围</a> -- 级联的上下文环境</li>
+<li><a href="xml_ioc_loader.html">使用XML作为配置文件格式</a> -- 使用XML作为配置文件格式</li>
+<li><a href="loader_annotation.html">使用注解配置Ioc</a> --使用注解配置Ioc</li>
+<li><a href="aop_json.html">在json配置文件中声明Aop</a> -- 在json配置文件中声明Aop及声明式事务</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

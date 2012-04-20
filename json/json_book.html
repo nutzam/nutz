@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Json Book</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Json Book</div>
+<div class="zdoc_author"><em>By:</em><b>mastung</b><a href="mailto:mastung@gmail.com">&lt;mastung@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#目标">目标</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#简单开始">简单开始</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#对Map的操作">对Map的操作</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#对Bean的操作">对Bean的操作</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#更进一步">更进一步</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#JsonFormat默认提供了3种初始对象:">JsonFormat默认提供了3种初始对象:</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="目标"></a>目标</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>通过简单的toJson 和fromJson能完成绝大部分的互转工作, 不再需要额外的配置.</li>
+<li>能够提供模板, 容易的更改Json的展现, 和反向的Java Object生成</li>
+<li>适用于任何的Java对象, 包括基本类型</li>
+<li>支持JDK1.5+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="简单开始"></a>简单开始</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Java转换成Json:</p>
+<pre>Json.toJson(6.5); ===&gt; 输出: 6.5
+Json.toJson("json"); ===&gt; 输出: "json"
+Json.toJson(new int[0]); ===&gt; 输出: []
+</pre>
+<p>Json转换成Java:</p>
+<pre>int intValue = Json.fromJson(Lang.inr("65"));
+float floatValue = Json.fromJson(float.class, Lang.inr("65"));
+int[] intArray = Json.fromJson(int[].class, Lang.inr("[65]"));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="对Map的操作"></a>对Map的操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Java转换成Json:</p>
+<pre>Map&lt;String,Object&gt; map = new HashMap&lt;String, Object&gt;();
+map.put("name", "Peter");
+map.put("age", 21);
+map.put("friends", null);
+System.out.println(Json.toJson(map));
+</pre>
+<p>这个时候会输出成:</p>
+<pre>{
+	age :21,
+	name :"Peter"
+}
+</pre>
+<p>会自动忽略掉值为空的字段.</p>
+<p>Json转换成Java:</p>
+<pre>String json = "{age :21,name :\"Peter\"}";
+map = Json.fromJson(HashMap.class, Lang.inr(json));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="对Bean的操作"></a>对Bean的操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>设计这样的类:</p>
+<pre>public static class UserObject {
+	public static enum Sex {
+		Male, Female
+	};
+	private String name;
+	private int age;
+	private Sex sex;
+	private Date birthday;
+	private UserObject bestFriend;
+//省略Getter/setter
+}
+</pre>
+<p>Java转换成Json:</p>
+<pre>UserObject peter = new UserObject();
+peter.setName("Peter");
+peter.setAge(22);
+peter.setSex(UserObject.Sex.Male);
+System.out.println(Json.toJson(peter));
+</pre>
+<p>这个时候会输出成:</p>
+<pre>{
+	name :"Peter",
+	age :22,
+	sex :"Male"
+}
+</pre>
+<p>会自动忽略掉值没有赋值的字段birthday和bestFriend.</p>
+<p>更进一步, 我们来看看关联的情况, 在以上代码的基础上面:</p>
+<pre>amy.setName("Amy");
+amy.setAge(21);
+amy.setSex(UserObject.Sex.Female);
+amy.setBirthday(new Date());
+amy.setBestFriend(peter);
+System.out.println(Json.toJson(amy));
+</pre>
+<p>这个时候会输出成:</p>
+<pre>{
+	name :"Amy",
+	age :21,
+	sex :"Female",
+	birthday :"2009-04-11 21:28:59",
+	bestFriend :{
+	name :"Peter",
+	age :22,
+	sex :"Male"
+	}
+}
+</pre>
+<p>关联对象的关联会被自动探知.</p>
+<p>注意:如果关联里面存在循环关联,在内部对象的关联属性里面会被置空. 如:</p>
+<pre>peter.setBestFriend(amy);
+System.out.println(Json.toJson(peter));
+</pre>
+<p>这个时候输出:</p>
+<pre>{
+name :"Amy",
+age :21,
+sex :"Female",
+birthday :"2009-04-11 21:28:59",
+bestFriend :{
+	name :"Peter",
+	age :22,
+	sex :"Male",
+	bestFriend :null
+	}
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="更进一步"></a>更进一步</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>还可以定制JsonFormat的属性来控制输出内容. 如是否忽略null字段, 是否压缩等等.</p>
+<h2><a name="JsonFormat默认提供了3种初始对象:"></a>JsonFormat默认提供了3种初始对象:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>compact() : 压缩并忽略null字段</li>
+<li>nice() : 不压缩;字段名不加引号;忽略null字段</li>
+<li>full() : 不压缩;字段名加引号;不忽略null字段</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>mastung</b><a href="mailto:mastung@gmail.com">&lt;mastung@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

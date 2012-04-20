@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>成为代码提交者</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">成为代码提交者</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#如果你已经是代码提交者">如果你已经是代码提交者</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#一定要注意">一定要注意</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#你需要知道">你需要知道</a></div>
+</li>
+<li>
+<div><span class="num">1.3</span><a href="#关于代码重写">关于代码重写</a></div>
+</li>
+<li>
+<div><span class="num">1.4</span><a href="#关于翻天覆地的重写">关于翻天覆地的重写</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如果你不是，但是想成为代码提交者">如果你不是，但是想成为代码提交者</a></div>
+</li>
+</ul>
+<h1><a name="如果你已经是代码提交者"></a>如果你已经是代码提交者</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="一定要注意"></a>一定要注意</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>请确保你修改的类上的 JDoc, 有你的大名，比如 "@author zozoh(zozohtnt@gmail.com)"
+<ul type="circle">
+<li>首先，体现了你的贡献</li>
+<li>否则，出了问题，不知道由谁主要负责</li>
+</ul>
+</li>
+<li>请尽量用统一的 code formatter， 导入 /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml，否则我们同步代码是很难比较</li>
+<li>去掉的代码不要注释掉，直接删掉。我们会用文件比较工具比较两个版本的不同</li>
+</ul>
+<h2><a name="你需要知道"></a>你需要知道</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>Nutz 特点是代码短 （<span style="color:#AAAAAA;">以不影响阅读为前提</span>）
+<ul type="circle">
+<li>无论任何时候，同样的功能，一段更短的代码，总比更长的代码要好</li>
+<li>这里的“短”，主要指的是“逻辑”短，而不是“字符长度”短</li>
+</ul>
+</li>
+<li>如果你指出，某一个函数或者类其实无用，是最大的贡献</li>
+<li>删掉一段代码的贡献，比增加一段代码的贡献要大，至少不比它小</li>
+<li>如果你有机会能将代码减少一行，既不影响阅读，也不影响效率，你的贡献很杰出</li>
+<li>我希望代码越来越优美，我认为简单，直接，就是优美</li>
+<li>实现什么样的功能，由社区决定</li>
+<li>如何实现，由你决定</li>
+<li>如果有可能，请尽量为 public 的类和方法写 Java Doc，中文或者英文都可以</li>
+<li>主要的函数，需要由 JUnit 来保证质量</li>
+<li>你必须遵守这样的编码原则:  请阅读 <a href="coding.html">Nutz Java 编码规范</a></li>
+</ul>
+<h2><a name="关于代码重写"></a>关于代码重写</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>接口的实现可以随时被重写，没关系，我们有版本控制，可以回滚</li>
+<li>你的每一次提交，必须都是编译通过的</li>
+<li>你的每一次提交，最好都是通过 JUnit 测试的
+<ul type="circle">
+<li>除非有特别的情况 -- 比如你要和其他人分享的修改</li>
+</ul>
+</li>
+<li>我希望服务器上的代码通不过 JUnit 测试的情况，不要持续 3 天以上。最好，它时时刻刻都是可以通过全部 JUnit 测试的。</li>
+</ul>
+<h2><a name="关于翻天覆地的重写"></a>关于翻天覆地的重写</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>这是不可避免的</li>
+<li>如果有充足的理由，我很高兴这样做</li>
+<li>我很喜欢我现在写出的代码，但是我不能保证一直喜欢它们</li>
+<li>实际上，我认为在相当长的一段时间里，我们没有精力维护两个或两个以上的版本，Nutz 应该只有 trunk</li>
+</ul>
+<h1><a name="如果你不是，但是想成为代码提交者"></a>如果你不是，但是想成为代码提交者</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>你需要申请加入社区， 发信至： nutzam@googlegroups.com</li>
+<li>通过社区，你可以让我们了解你，如果你发的贴很有价值，我们会考虑邀请你成为代码提交者</li>
+<li>或者你可以直接给任何一个 Nutz 的代码提交者发信， 指出 Nutz 代码哪里存在不足，并提供修改建议。
+<ul type="circle">
+<li>如果连续五次，你的修改建议被接受，我们会邀请你成为 Nutz 的代码提交者 -- 当然你可以拒绝</li>
+</ul>
+</li>
+<li>除此之外，没有其他的途径</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

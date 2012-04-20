@@ -1,0 +1,191 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>部署时决定-插件机制</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">部署时决定-插件机制</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是插件">什么是插件</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#简单使用插件">简单使用插件</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#与_Ioc_容器一起工作">与 Ioc 容器一起工作</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#最后一点说明">最后一点说明</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是插件"></a>什么是插件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="plugin_motivation.png"/></p>
+<p>如果我们的项目依赖了一个接口，但是我们在开发时，真的没办法确定，部署的时候，到底采用哪个实现。</p>
+<p>比如 <a href="log.html">Nutz 的 Log</a>。 它在运行时，会判读当前运行环境 log4j 是否可用（有 log4j 的org.apache.log4j.Logger类)，如果没有，那么它就把日志信息输出到控制台上。它的实现，就是依靠的方式。</p>
+<p>但是，同复杂强大的 OSGI 插件体系不同，这里的插件只是强调，在部署时决定采用什么实现。在运行时，它是没办法更改的。因此 Nutz 虽然在编译时依赖了 Log4j，但是在运行时，没有 log4j 的 jar，依然能够工作的很好。</p>
+<p>也正因为，这个插件简单的令人发指。有兴趣的同学可以参看：<a href="http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/plugin">org.nutz.plugin</a> 里面的源代码，我想几分钟你就会全部看完。</p>
+<div class="hr"><b></b></div>
+<h1><a name="简单使用插件"></a>简单使用插件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如有一个接口：</p>
+<pre>public interface Said{
+	String say();
+}
+</pre>
+<p>你有两个实现类：</p>
+<ul type="disc">
+<li>实现类 A
+<pre>public class TomSaid implements Said{
+	public String say(){
+		return "I am Tom";
+	}
+}
+</pre>
+</li>
+<li>实现类 B
+<pre>public class PeterSaid implements Said{
+	public String say(){
+		return "I am Peter";
+	}
+}
+</pre>
+</li>
+</ul>
+<p>这两个实现类分别放在两个 jar 包里，在你的工程部署时，负责部署的工程师很希望：</p>
+<ul type="disc">
+<li>将 tom.jar 放到项目里，整个工程就会使用 TomSaid，</li>
+<li>将 peter.jar 放到项目，整个工程就会使用 PeterSaid，</li>
+<li>将两个 jar 都放到项目，PeterSaid 有更高的优先级</li>
+</ul>
+<p><span style="color:#AA3311;"><b>怎样做到这一点呢？</b></span></p>
+<p>首先我们需要在你的工程里为 TomSaid 实现一个插件：</p>
+<pre>public class TomSaidPlugin implements Plugin, Said{
+	private Said said;
+	public boolean canWork(){
+		try {
+			said = (Said)(Class.forName("com.you.app.TomSaid").newInstance());
+			return true;
+		} catch (Exception e) {}
+		return false;
+	}
+	public String say(){
+		return said.say();
+	}
+}
+</pre>
+<p>同理，为 PeterSaid 也实现一个插件：</p>
+<pre>public class PeterSaidPlugin implements Plugin, Said{
+	private Said said;
+	public boolean canWork(){
+		try {
+			said = (Said)(Class.forName("com.you.app.PeterSaid").newInstance());
+			return true;
+		} catch (Exception e) {}
+		return false;
+	}
+	public String say(){
+		return said.say();
+	}
+}
+</pre>
+<p>在调用代码里这样实现：</p>
+<pre>PluginManager&lt;Said&gt; plugins = new SimplePluginManager&lt;Said&gt;(
+		"com.you.app.PeterSaidPlugin",
+	    "com.you.app.TomSaidPlugin");
+Said said = plugins.get();
+System.out.println(said.say());
+</pre>
+<p>上面的代码既不依赖 PeterSaid，也不依赖 TomSaid，完全能满足部署工程师的要求。</p>
+<p>采用 SimplePluginManager 有几个注意事项：</p>
+<ul type="disc">
+<li>插件实现类必须有一个默认的构造函数</li>
+<li>插件实现类必须实现目标接口，在上例中就是 Said 接口</li>
+<li>插件实现类实际上就是一个被适配目标的一个代理 （在这里，你可以套套“代理模式”）</li>
+<li>构造函数参数的顺序，就是插件的优先级，第一个最优先</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="与_Ioc_容器一起工作"></a>与 Ioc 容器一起工作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些时候，你的 Plugin 实现类需要一些配置信息，某些配置信息可能相当复杂。 我们可以将插件同 <a href="../ioc/hello.html">Ioc 容器</a>联用（通过 IocPlugManager&lt;T&gt;）。</p>
+<p>比如我们修改一下上面的两个插件，让它们都需要被配置一个字段:</p>
+<pre>public class PeterSaidPlugin implements Plugin, Said {
+	private String prefix;
+	
+	private Said said;
+
+	public boolean canWork() {
+		try {
+			said = (Said) (Class.forName("com.you.app.PeterSaid").newInstance());
+			return true;
+		} catch (Exception e) {}
+		return false;
+	}
+
+	public String say() {
+		return prefix + said.say();
+	}
+}
+</pre>
+<p>这两个插件，都需要一个 "prefix" 的属性	</p>
+<pre>public class TomSaidPlugin implements Plugin, Said {
+	private String prefix;
+
+	private Said said;
+
+	public boolean canWork() {
+		try {
+			said = (Said) (Class.forName("com.you.app.TomSaid").newInstance());
+			return true;
+		} catch (Exception e) {}
+		return false;
+	}
+
+	public String say() {
+		return prefix + said.say();
+	}
+}
+</pre>
+<p>在 <a href="../ioc/hello.html">Ioc 容器</a>的 Json 配置文件中:</p>
+<pre>// plugins.js
+{
+	peter : {
+		type	: 'com.you.app.PeterSaidPlugin',
+		fields	: {
+			prefix : 'Peter: '
+		}
+	},
+	tom : {
+		type	: 'com.you.app.TomSaidPlugin',
+		fields	: {
+			prefix : 'Tom: '
+		}
+	}
+}
+</pre>
+<p>调用代码改成：</p>
+<pre>Ioc ioc = new NutIoc(new JsonLoader("conf/plugins.js"));
+PluginManager&lt;Said&gt; plugins = new IocPluginManager&lt;Said&gt;(ioc, "peter", "tom");
+Said said = plugins.get();
+System.out.println(said.say());
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="最后一点说明"></a>最后一点说明</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我曾一度怀疑这个插件功能很无聊，因为它真的可以用“简陋”二字来形容（我们实现这个插件用的时间还没有我写这篇文档所用时间的一半），但是它毕竟给了你一条很简明的途径，让你的程序可以做到：</p>
+<p><span style="color:#FF0000;"><b>部署时才决定某一个接口的实现</b></span></p>
+<p>你用微小的代价（实现一个接口函数）获得下面两个好处：</p>
+<ul type="disc">
+<li>你的应用很容易做到 <span style="color:#0000FF;"><b>模块化</b></span></li>
+<li>它几乎 <span style="color:#0000FF;"><b>没有侵入性</b></span></li>
+</ul>
+<p>挺值得的，不是吗？ 这也是为什么我们将它放到 Nutz 的核心发布包里原因：（<i>超值的东西才会被放到 Nutz 的核心包里</i>）</p>
+<p>如果你想做到运行时加载/卸载，这个“简陋”的小插件方案恐怕是帮不上你了。但是你真的需要吗？我注意到一个事实：Eclipse 采用的是 “OSGI”，但是在安装了一个插件之后它还是会建议你重启应用，每次我看到这个对话框，都觉得是对 “OSGI” 的一个讽刺。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

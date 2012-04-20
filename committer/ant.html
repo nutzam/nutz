@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>使用 Ant 编译</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">使用 Ant 编译</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#简单介绍">简单介绍</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#buildxml_-_快速编译脚本">build.xml - 快速编译脚本</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#build2xml_-_全面编译脚本">build2.xml - 全面编译脚本</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="简单介绍"></a>简单介绍</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你不知道怎么从 svn 服务器下载 Nutz 的源代码，请看<a href="svn_project.html">从 SVN 编译</a> 一节</p>
+<p>编译通常是个麻烦的问题，依赖关系啊，环境变量啊，等等，全是些没有技术含量的东东，但是却能搞的你非常头疼。虽然编译 Nutz 是一个相对简单的工作 -- 它编译的时候不需要依赖第三方 jar 包，但是还是有一些工作要做的。</p>
+<p>从我个人的情况来看，我经常在如下三个环境下进行 Nutz 的开发：</p>
+<ul type="disc">
+<li>公司 - Vista</li>
+<li>家 - Ubuntu</li>
+<li>笔记本 - Win XP</li>
+</ul>
+<p>我这三台机器由于安装的时候不同，加上我是一个比较随意的人，所有依赖库的位置均有所不同，但是我配置编译环境基本上能在5分钟搞定。写这个介绍的目的就是分享我的一些经验，帮助大家远离痛苦，选择欢乐。</p>
+<p>Nutz 提供 Ant 编译的脚本，在 Ant 运行前，你需要配置几个环境变量，在你的命令行客户端输入 ant，查看一下你的 ant 安装没有，如果没有请先从<a href="http://ant.apache.org">它的官方网站下载</a>。你还需要检查：</p>
+<ol type="1">
+<li>Java 是否安装，Nutz 需要至少 1.5 以上版本</li>
+<li><a href="http://tomcat.apache.org">Tomcat</a>（Nutz 需要它的 servletAPI），</li>
+<li><a href="http://logging.apache.org/log4j/">Log4j</a> 在编译时需要它。 当然，运行时，我们不一定需要 Log4j</li>
+</ol>
+<p>有了这些我们就可以顺利编译 Nutz 了。</p>
+<p>我们提供了两个 ant 脚本：</p>
+<ul type="disc">
+<li>build.xml - 快速编译，只编译 nutz.jar</li>
+<li>build2.xml - 全面的编译 nutz 的 jar，文档，并运行单元测试，等等</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="buildxml_-_快速编译脚本"></a>build.xml - 快速编译脚本</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个是我在开发中最常用到的编译脚本，我其他的基于 Nutz 的项目在，在 Nutz 代码更新时，我就运行一下，其他的项目一刷新，就升级到这个 Jar 文件了。</p>
+<p>在 /trunk/build 目录下你能看到 build.bat（写给 windows的）以及 build（写给 Linux）的。你可以将其拷贝到你的 PATH 目录下，以便你在控制台执行。执行前，请先打开脚本文件，修改其中的内容。因为 build.xml 需要如下环境变量：</p>
+<ul type="disc">
+<li><b>TOMCAT_HOME</b> : 你的 tomcat 安装目录，这目录下应该有 lib 目录，下面包括了 servlet-api.jar</li>
+<li><b>JAVA_HOME</b> : 你的 JDK 安装目录，这目录下应该有 jre/lib/rt.jar</li>
+<li><b>DEPS</b> : 第三方 jar 包存放的目录，这个目录下应该有 log4j.jar</li>
+<li><b>OUTPUT</b> : 成功编译后 nutz 的 jar 包的输出目录</li>
+<li><b>PROJECT_HOME</b> : Nutz 的项目目录，这个目录下应该有 src 目录</li>
+</ul>
+<p>正确的设置这些环境变量后，运行这个脚本，Nutz 的 jar 就会出现在你的输出目录中</p>
+<div class="hr"><b></b></div>
+<h1><a name="build2xml_-_全面编译脚本"></a>build2.xml - 全面编译脚本</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>每次发布前，我们都会运行一下这个脚本，因为它要运行单元测试，所以你需要更多的依赖包</p>
+<p>这个脚本现在只是用作内部使用，Wendal 在里面做了详细的描述，根据我的经验，只要你把需要的 jar 包都放在依赖目录下，它会正常运行的。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

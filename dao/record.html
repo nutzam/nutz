@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>不构建 POJO 访问数据库</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">不构建 POJO 访问数据库</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#POJO_之苦">POJO 之苦</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#获取一条记录">获取一条记录</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#查询多条记录">查询多条记录</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#插入">插入</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#更新">更新</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#删除">删除</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="POJO_之苦"></a>POJO 之苦</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>很多时候，程序员在访问数据库时，预先构建一个 POJO 对象，会为之后的编程带来很大的便利。但是有些时候，构建 POJO 是不可能的，或者是很麻烦的，比如：</p>
+<ul type="disc">
+<li>字段可以动态增删的表</li>
+<li>表是被动态创建出来的</li>
+<li>非常少用到的表，为此维护一个 POJO 很不划算</li>
+</ul>
+<p>当然上述三个问题都可以通过 <a href="customized_sql.html">自定义 SQL</a> 来实现，但是它毕竟有一点点复杂。想想其他的动态语言是怎么做的吧。他们为每条数据库记录直接返回一组名值对。很简单不是吗？</p>
+<p>名值对，非常像 JDBC 中的 ResourceSet 对象，但是不幸的是，你不能把它保存到任意的地方，因为一旦 Connection 关闭了，它就 Over 了。为此，我想很多人都会想到从 ResultSet 读取一组 Map。Nutz.Dao 也提供了一个，它不是 Map 而是一个 Map 的包裹类 -- Record。它比 Map 提供了更多的一些包裹方法，便于你取值。</p>
+<p>对于 Update, Insert 操作，你可以使用 Chain （值链）。 这个我们后面会给你举几个例子，一看便知。</p>
+<p>至于 Delete 操作， 通过 Dao.clear 操作，并配合上 Condition，你可以很容易删除数据</p>
+<p>后面的例子，我们都假设有这样一个数据表：</p>
+<pre>t_pet {
+	id INT PK,
+	name VARCHAR(20) UNIQUE,
+	birthday TIMESTAMP
+}
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="获取一条记录"></a>获取一条记录</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>// 根据主键获取
+Record re = dao.fetch("t_pet", Cnd.where("id","=",2);
+
+// 根据名字获取
+re = dao.fetch("t_pet", Cnd.where("name","=","XiaoBai");
+
+// 打印名字
+System.out.println(re.getString("name"));
+
+// 打印生日
+System.out.println(re.getTimestamp("birthday"));
+
+// 打印字段总数
+System.out.println(re.getColumnCount());
+
+// 转换成 Pet 类，如果你有 Pet 类的话
+Pet pet = re.toPojo(Pet.class);
+
+// 转换成 Json 字符串
+String json = re.toJson(JsonFormat.nice());
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="查询多条记录"></a>查询多条记录</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>// 查询所有以 A 开头的 Pet
+List&lt;Record&gt; list = dao.query("t_pet", Cnd.where("name","LIKE","A%"), null);
+
+// 查询所有以 A 开头的 Pet，返回前10个
+List&lt;Record&gt; list = dao.query("t_pet", Cnd.where("name","LIKE","A%"), dao.createPager(1,10));
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="插入"></a>插入</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>dao.insert("t_pet", Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis()));
+</pre>
+<p>它会执行 SQL</p>
+<pre>INSERT INTO t_pet (name,birthday) VALUES ('XiaoBai', '2010-4-28 14:27:12')
+</pre>
+<p>值链实际就是通过链式赋值的方式构建出的一组名值对，当然如果值链较长你可以：</p>
+<pre>Chain ch = Chain.make("字段名",字段值);
+ch.add("字段名", 字段值);
+ch.add("字段名", 字段值);
+ch.add("字段名", 字段值);
+...
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="更新"></a>更新</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>dao.update("t_pet",
+			Chain.make("name","XiaoBai").add("birthday", new Timestampe(System.currentTimeMillis())),
+			Cnd.where("id","=",2));
+</pre>
+<p>它会执行 SQL</p>
+<pre>UPDATE t_pet SET name='XiaoBai', birthday='2010-4-28 14:27:12' WHERE id=2;
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="删除"></a>删除</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>dao.clear("t_pet", Cnd.where("id", "=" ,2);
+</pre>
+<p>它会执行 SQL</p>
+<pre>DELETE t_pet WHERE id=2;
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

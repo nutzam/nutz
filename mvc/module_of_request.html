@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>请求范围的模块</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">请求范围的模块</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要请求范围的模块">为什么需要请求范围的模块</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#怎样做？">怎样做？</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#你的模块代码">你的模块代码</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#修改_Ioc_配置文件">修改 Ioc 配置文件</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#添加_HttpFilter">添加 HttpFilter</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#最后">最后</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么需要请求范围的模块"></a>为什么需要请求范围的模块</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论 Struts2 还是 Spring，都提供了一种控制器： 每次请求，创建实例，使用后即抛弃。这样的控制器的好处就是可以放心的吧 request 和 response 对象放心的存成它的私有属性，反正使用一次后就丢掉了。</p>
+<p>在 Nutz.Mvc，所谓控制器，实际上就是 Module，默认的，所有的模块都是整个应用程序唯一的，除非你在 Ioc 配置文件里另有说明。</p>
+<p>那么 Nutz 可以做到每次请求即抛弃的控制器（<span style="color:#008800;"><i>Module</i></span>）吗？ 答案是肯定的，稍微有点麻烦，但是绝对不会繁琐的让你头疼，你需要自己动手做点事情，如果你对编写 JSP/Servlet 应用程序有点基本的支持，这点事情对你不会构成负担。</p>
+<div class="hr"><b></b></div>
+<h1><a name="怎样做？"></a>怎样做？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我们这里给你举一个简单的例子，假设你有一个模块，通过 Nutz.Ioc 来配置：</p>
+<div class="hr"><b></b></div>
+<h2><a name="你的模块代码"></a>你的模块代码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@InjectName("myModule")
+public class MyModule{
+
+	private HttpServletRequest request;
+	
+	@At("/abc")
+	public String tryIt(){
+		return request.getParameter("abc");
+	}
+}
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h2><a name="修改_Ioc_配置文件"></a>修改 Ioc 配置文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>...
+myModule : {
+	type : 'com.you.app.MyModule',
+	scope : 'request',
+	fields : {
+		request : {refer: '$request'}
+	}
+}
+...
+</pre>
+<ul type="disc">
+<li>请注意 <span style="color:#FF0000;"><b> scope : 'request'</b></span> 以及 fields 里 request 字段的属性 <span style="color:#FF0000;"><b> refer: '$request'</b></span></li>
+<li>scope 指明了这个对象存在的上下文环境，如果你不指明，默认是 '<b>app</b>'
+<ul type="circle">
+<li>更多关于 scope，请参看 </li>
+</ul>
+</li>
+</ul>
+<p>关键就是这个 <span style="color:#FF0000;"><b> refer: '$request'</b></span>，很抱歉，你得自己设置它的值。怎样设置呢？通过 web.xml 的 HttpFilter</p>
+<div class="hr"><b></b></div>
+<h2><a name="添加_HttpFilter"></a>添加 HttpFilter</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><span style="color:#FF0000;">注:</span> 如果你使用的是 Nutz.1.b.37 以及之后的版本，不需要做这个操作，因为每次请求，它都会自动增加 下面的属性，而之前的版本则不会。</p>
+<p>增加一个 HttpFilter</p>
+<pre>public class MyFilter implements Filter {
+	public void destroy() {}
+	public void init(FilterConfig arg0) throws ServletException {}
+	
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+			throws IOException, ServletException {
+		req.setAttribute("$request", req);
+		chain.doFilter(req, resp);
+	}
+}
+</pre>
+<p>将它配置在 web.xml 里，具体怎么配置我想就不用我废话了吧</p>
+<div class="hr"><b></b></div>
+<h2><a name="最后"></a>最后</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这样，就可以做到 Request 级别的 Module 了，即，每次请求，都会重新创建你的 Module 实例</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>AOP -- 声明式切片</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">AOP -- 声明式切片</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#声明拦截器">声明拦截器</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#在对象的方法中声明切片">在对象的方法中声明切片</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#最简单的一个拦截器">最简单的一个拦截器</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#已经为你准备好的拦截器">已经为你准备好的拦截器</a></div>
+</li>
+</ul>
+<h1><a name="声明拦截器"></a>声明拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。</li>
+<li>将这个对象声明在你的配置文件里，就像一个普通的对象一样</li>
+</ul>
+<h1><a name="在对象的方法中声明切片"></a>在对象的方法中声明切片</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>在你要拦截的方法上，声明 @Aop 注解</li>
+<li>方法所在的对象必须是容器中的对象</li>
+<li>@Aop 注解接受数目可变的字符串，每个字符串都是一个拦截器的名称,即必须在ioc中声明这个拦截器</li>
+</ul>
+<h1><a name="最简单的一个拦截器"></a>最简单的一个拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>     public class MyMethodInterceptor implements MethodInterceptor {
+            
+            public void filter(InterceptorChain chain) throws Throwable {
+            		System.out.println("咦?这个方法执行了!");
+            		chain.doChain();// 继续执行其他拦截器
+            		System.out.println("这个方法执行完成了!");
+            }
+     }
+</pre>
+<p></p>
+<pre> public class MyClass {
+           
+           @Aop("myMethodInterceptor")
+           public void oneMethod(){
+               //Do something
+               System.out.println("没人知道我在干什么的!");
+           }
+ 
+ }
+</pre>
+<p>将会打印</p>
+<pre> 咦?这个方法执行了!
+ 没人知道我在干什么的!
+ 这个方法执行完成了!
+</pre>
+<p>很简洁,对吧? 这就是NutAop</p>
+<h1><a name="已经为你准备好的拦截器"></a>已经为你准备好的拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录</li>
+<li>org.nutz.aop.interceptor.TransactionInterceptor 添加事务</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

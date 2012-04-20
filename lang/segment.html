@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>代码模板</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">代码模板</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是代码模板">什么是代码模板</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Nutz_的代码模板">Nutz 的代码模板</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#什么时候使用_Nutz_的代码模板">什么时候使用 Nutz 的代码模板</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是代码模板"></a>什么是代码模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过 Java 提供的 String.format() 方法，可以很方便的声明字符串模板，以及占位符。但是，它不方便的是，如果我的字符串模板两个占位符希望的是同一个值：</p>
+<pre>XXXXXXXX $A  XXXXXX $B  XXXXXX $A XXXXX
+</pre>
+<p>通过 String.format() 需要这么写：</p>
+<pre>String.format("XXXXXXXX %s  XXXXXX %s  XXXXXX %s XXXXX", "TxtA","TxtB","TxtA");
+</pre>
+<p>并且你不设值，会被无情抛错。</p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_的代码模板"></a>Nutz 的代码模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>接上例，你可以这么写：</p>
+<pre>Segment seg = new CharSegment("XXXXXXXX ${A}  XXXXXX ${B}  XXXXXX ${A} XXXXX");
+seg.set("A", "TxtA").set("B", "TxtB");
+System.out.println(seg.toString());
+</pre>
+<p></p>
+<ul type="disc">
+<li>无需重复设置占位符</li>
+<li>自动通过 <a href="castors.html">Castors</a> 将你的对象转成字符串</li>
+<li>不设值的占位符，输出时会被空串 （<span style="color:#FF00FF;">""</span>）填充</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么时候使用_Nutz_的代码模板"></a>什么时候使用 Nutz 的代码模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>如果你的代码模板比较简单，还是推荐使用 String.format</li>
+<li>如果你的代码模板比较复杂，有重复的占位符，或者可能有重复的占位符，推荐使用 CharSegment</li>
+<li>你需要知道
+<ul type="circle">
+<li>如果多线程共享一个 CharSegment，那么最好使用前复制一份：
+<pre>Segment newSeg = seg.born();
+newSeg.set("A",XXX").set("B",XXX") ....
+</pre>
+<ul type="square">
+<li>否则通常会有多线程内存共享的问题。</li>
+</ul>
+</li>
+<li>CharSegment 解析的速度很快</li>
+<li>Clone 方法对多线程是不安全的，因为每个占位符的值不会被深层 clone
+<pre>Segment newSeg = seg.clone();
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

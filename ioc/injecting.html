@@ -1,0 +1,317 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>你都可以注入什么</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">你都可以注入什么</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#从哪里注入？">从哪里注入？</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#向构造函数里注入参数">向构造函数里注入参数</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#向属性注入参数">向属性注入参数</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#值可以不仅是字符串">值可以不仅是字符串</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#布尔">布尔</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#数字">数字</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#内部对象">内部对象</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#引用">引用</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#容器自身">容器自身</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#对象的名称">对象的名称</a></div>
+</li>
+<li>
+<div><span class="num">2.7</span><a href="#容器上下文">容器上下文</a></div>
+</li>
+<li>
+<div><span class="num">2.8</span><a href="#环境变量">环境变量</a></div>
+</li>
+<li>
+<div><span class="num">2.9</span><a href="#文件">文件</a></div>
+</li>
+<li>
+<div><span class="num">2.10</span><a href="#数组或容器">数组或容器</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2.11</span><a href="#Java_调用">Java 调用</a></div>
+<ul>
+<li>
+<div><span class="num">2.11.1</span><a href="#静态属性">静态属性</a></div>
+</li>
+<li>
+<div><span class="num">2.11.2</span><a href="#静态函数">静态函数</a></div>
+</li>
+<li>
+<div><span class="num">2.11.3</span><a href="#带参数的静态函数">带参数的静态函数</a></div>
+</li>
+<li>
+<div><span class="num">2.11.4</span><a href="#容器中的对象">容器中的对象</a></div>
+</li>
+<li>
+<div><span class="num">2.11.5</span><a href="#容器对象某个属性">容器对象某个属性</a></div>
+</li>
+<li>
+<div><span class="num">2.11.6</span><a href="#容器对象某个方法的返回值">容器对象某个方法的返回值</a></div>
+</li>
+<li>
+<div><span class="num">2.11.7</span><a href="#容器对象某个方法的返回值，带参数">容器对象某个方法的返回值，带参数</a></div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#你可以增加自己的特殊类型">你可以增加自己的特殊类型</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#实现一个扩展接口">实现一个扩展接口</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#添加到_Ioc_容器中">添加到 Ioc 容器中</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="从哪里注入？"></a>从哪里注入？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你可以向对象注入值的位置有两个</p>
+<ol type="1">
+<li>构造函数参数</li>
+<li>属性</li>
+</ol>
+<h2><a name="向构造函数里注入参数"></a>向构造函数里注入参数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你的 JSON 配置文件会是这样</p>
+<pre>{
+	xb : {
+		type : 'nutz.demo.ioc.book.Pet',
+		args : ['XiaoBai']
+	}
+}
+</pre>
+<p>args 的值时一个数组，里面每一个元素都将对应构造函数的一个参数。当然，你必须确保你得有这样的构造函数。每个参数按照 JSON 的规定，是用半角逗号分隔的。</p>
+<h2><a name="向属性注入参数"></a>向属性注入参数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你的 JSON 配置文件会是这样</p>
+<pre>{
+	xb : {
+		type : 'nutz.demo.ioc.book.Pet',
+		fields : {
+			name : 'XiaoBai'
+		}
+	}
+}
+</pre>
+<p>如果你不需要写 type，那么你可以用简写模式:</p>
+<pre>{
+xb : { name: 'XiaoBai'	}
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="值可以不仅是字符串"></a>值可以不仅是字符串</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>是的，它还可以是</p>
+<h2><a name="布尔"></a>布尔</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { dead: true }
+}
+</pre>
+<p></p>
+<h2><a name="数字"></a>数字</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { age: 24 }
+}
+</pre>
+<p></p>
+<h2><a name="内部对象"></a>内部对象</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : {
+		friend: {
+			type : 'nutz.demo.ioc.book.Pet',
+			fields : {name : 'XiaoHei'}
+		}
+	}
+}
+</pre>
+<p>关于内部对象 <a href="inner_object.html">请看这里</a></p>
+<h2><a name="引用"></a>引用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { friend: {refer: 'XiaoBai' } }
+}
+</pre>
+<p>{refer : '另外一个对象在容器中的名称'} 将会得到容器中另外一个对象</p>
+<h2><a name="容器自身"></a>容器自身	</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { myIoc : {refer: '$Ioc'} }
+}
+</pre>
+<p>一种特殊的引用，大小写不敏感，值就是 Ioc 容器本身</p>
+<h2><a name="对象的名称"></a>对象的名称</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { myIoc : {refer: '$Name'} }
+}
+</pre>
+<p>一种特殊的引用，大小写不敏感，值就是对象的名称，即 "xb"</p>
+<h2><a name="容器上下文"></a>容器上下文</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { myIoc : {refer: '$Context'} }
+}
+</pre>
+<p>一种特殊的引用，大小写不敏感，值就是当前容器的上下文环境接口 org.nutz.ioc.IocContext</p>
+<h2><a name="环境变量"></a>环境变量</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { name : {env : "JAVA_HOME"} }
+}
+</pre>
+<p>{env : '环境变量名'} 将会得到系统中环境变量的值</p>
+<h2><a name="文件"></a>文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { profile : {file : "/home/zozoh/tmp/name.txt"} }
+}
+</pre>
+<p>{file : '文件路径'} 可以是绝对路径，也可以是 CLASSPATH 中的路径</p>
+<h2><a name="数组或容器"></a>数组或容器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你对象某个字段是数组，集合，或者 Map， 用 JSON 可以很自然为其设置值，不是吗？</p>
+<div class="hr"><b></b></div>
+<h2><a name="Java_调用"></a>Java 调用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是个极度灵活的注入方式，它几乎可以让你 <b>做任何事情</b>。 因为它允许你直接调用一个 JAVA 函数。</p>
+<p>更详细的说明，请参看 <a href="http://code.google.com/p/nutz/source/browse/trunk/src/org/nutz/ioc/val/JavaValue.java">org.nutz.ioc.val.JavaValue</a> 的 JDoc</p>
+<p>下面只是列出主要的几种应用方式</p>
+<h3><a name="静态属性"></a>静态属性</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: 'com.my.SomeClass.staticPropertyName'} }
+}
+</pre>
+<h3><a name="静态函数"></a>静态函数</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: 'com.my.SomeClass.someFunc'} }
+}
+</pre>
+<h3><a name="带参数的静态函数"></a>带参数的静态函数</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: 'com.my.SomeClass.someFunc("p1",true)'} }
+}
+</pre>
+<p>参数可以是任何种类的值</p>
+<h3><a name="容器中的对象"></a>容器中的对象</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: '$xh'} } ,
+	xh : { name : 'XiaoHei'}
+}
+</pre>
+<h3><a name="容器对象某个属性"></a>容器对象某个属性</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: '$xh.name'} } ,
+	xh : { name : 'XiaoHei'}
+}
+</pre>
+<h3><a name="容器对象某个方法的返回值"></a>容器对象某个方法的返回值</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: '$xh.getXXX()'} } ,
+	xh : { name : 'XiaoHei'}
+}
+</pre>
+<h3><a name="容器对象某个方法的返回值，带参数"></a>容器对象某个方法的返回值，带参数</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>{
+	xb : { oneField : {java: '$xh.getXXX("some string", true, 34)'} } ,
+	xh : { name : 'XiaoHei'}
+}
+</pre>
+<p>参数可以是任何种类的值</p>
+<div class="hr"><b></b></div>
+<h1><a name="你可以增加自己的特殊类型"></a>你可以增加自己的特殊类型</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从上面你可以看到 JSON 语法的好处，非常轻巧</p>
+<ul type="disc">
+<li>文件  -- {file: '路径'}</li>
+<li>环境变量  -- {env: '环境变量名'}</li>
+<li>引用  -- {refer: '对象名'}</li>
+<li>JAVA   -- {java: '$对象名.方法名(参数1, 参数2)'}</li>
+</ul>
+<p>还可以更多吗？</p>
+<p>是的，你完全可以扩展，比如你如果想支持一种新的类型：</p>
+<pre>oneField : {scan : '扫描仪地址'}
+</pre>
+<p>如何支持这种新的值的类型呢？</p>
+<h2><a name="实现一个扩展接口"></a>实现一个扩展接口</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>实现  org.nutz.ioc.ValueProxyMaker 接口：</p>
+<pre>package nutz.demo.ioc.book;
+
+import org.nutz.ioc.IocMaking;
+import org.nutz.ioc.ValueProxy;
+import org.nutz.ioc.ValueProxyMaker;
+import org.nutz.ioc.meta.IocValue;
+import org.nutz.lang.Lang;
+
+public class ScanValueProxyMaker implements ValueProxyMaker {
+
+	@Override
+	public ValueProxy make(IocMaking ing, IocValue iv) {
+		if ("scan".equals(iv.getType())) {
+			final String address = iv.getValue().toString();
+
+			return new ValueProxy() {
+				public Object get(IocMaking ing) {
+					// 根据 address 创建一个对象
+					throw Lang.noImplement();
+				}
+
+			};
+		}
+		return null;
+	}
+
+}
+</pre>
+<h2><a name="添加到_Ioc_容器中"></a>添加到 Ioc 容器中</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Ioc2 ioc = new NutIoc(new JsonLoader("path/path/name.js"));
+ioc.addValueProxyMaker(new ScanValueProxyMaker());
+
+// 下面，你就可以正常使用 Ioc 接口了
+</pre>
+<p><span style="color:#FF0000;"><b>注意</b></span>，这里使用的是 Ioc2 接口，它继承自 Ioc 接口，提供了更高级的方法</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

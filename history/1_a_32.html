@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.a.32 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.a.32 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#关于_1a32">关于 1.a.32</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于_1a32"></a>关于 1.a.32 </h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>本版除了修复问题，主要增加如下特性</p>
+<ol type="1">
+<li>Ioc: 字段注入的循环依赖，不能正常工作</li>
+<li>Mvc: 上传时，支持文件名过滤，以及大小限制</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=94">Issue 94</a>    	Ioc中有相互依赖时会出现空指针异常    <span style="color:#AAAAAA;">by</span> <b>Blue Rain</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=200">Issue 200</a>    MVC: UploadAdapter文件大小限额    <span style="color:#AAAAAA;">by</span> <b>天行健</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=249">Issue 249</a>    mvc: UploadAdaptor 应该支持一个选项，是否记录空文件（默认应该为 "不记录"）    <span style="color:#AAAAAA;">by</span> <b>zozohtnt</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=266">Issue 266</a>    通过注解方式使用Ioc文档太少,也没有Demo,建议尽快补充    <span style="color:#AAAAAA;">by</span> <b>LQ10001</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=274">Issue 274</a>    lang: Files.write 应该支持 InputStream    <span style="color:#AAAAAA;">by</span> <b>zozohtnt</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=278">Issue 278</a>    入口函数返回View时，ActionInvokerImpl处理不对    <span style="color:#AAAAAA;">by</span> <b>茶几</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=283">Issue 283</a>    Http#encode    <span style="color:#AAAAAA;">by</span> <b>caji.net</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=284">Issue 284</a>    关于项目打成JAR包,IOC,MSG,SQL目录无法找到.    <span style="color:#AAAAAA;">by</span> <b>shao0707@163.com</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=288">Issue 288</a>    希望多增加几个内置转换器    <span style="color:#AAAAAA;">by</span> <b>LQ10001</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=289">Issue 289</a>    更新20100916快照版的jar包后，JsonLoader无法找到js文件所在的文件夹.    <span style="color:#AAAAAA;">by</span> <b>qi.yang.cn</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=290">Issue 290</a>    NutDao主键类型转换错误    <span style="color:#AAAAAA;">by</span> <b>yonlist</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=291">Issue 291</a>    Castors 初始化错误    <span style="color:#AAAAAA;">by</span> <b>caji.net</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=293">Issue 293</a>    关于dao查询问题,查询email的一个bug     <span style="color:#AAAAAA;">by</span> <b>shao0707@163.com</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=296">Issue 296</a>    在gae上使用nutz ioc报错， nutz版本1.a.31及以后版本都报    <span style="color:#AAAAAA;">by</span> <b>yuansicau</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>共通过了 XXX 个单元测试用例,代码覆盖率达到62%(按line计算)</li>
+<li>Nutz.Dao 经测试在如下数据库上可以工作正常
+<ul type="disc">
+<li><a href="http://www.h2database.com">H2</a></li>
+<li><a href="http://www.sqlite.org">SQLite</a></li>
+<li><a href="http://www.mysql.com">MySql</a></li>
+<li><a href="http://www.oracle.com">Oracle</a></li>
+<li><a href="http://www.postgresql.org">Postgresql</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
+<li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
+</ul>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="../mvc/localization.html">本地化字符串</a> : 修改描述</li>
+<li><a href="../zdoc/overview.html">zDoc 概述</a> : 添加生成PDF的描述</li>
+<li><a href="../appendix/plugins.html">可用插件</a> : 添加插件中心的描述</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>贡献的种类:</p>
+<ul type="disc">
+<li>问题: 给项目的<a href="http://code.google.com/p/nutz/issues/list">问题列表</a>汇报一个上的问题，并且该问题被本次发布包括</li>
+<li>博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 <a href="http://code.google.com/p/nutz/wiki/appendix_resources">推荐列表</a>收录</li>
+<li>代码: 提交过至少一个修订</li>
+<li>Demo: 为 <a href="http://code.google.com/p/nutzdemo">Demo Site</a> 提交过代码</li>
+<li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
+<li>测试: 发布前，参与测试周发布人给出的任务</li>
+</ul>
+<p>如有遗漏,请提醒我们 ^_^</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者 									</td>
+<td> 问题 </td>
+<td> 博客</td>
+<td> 支持 </td>
+<td> 代码  </td>
+<td> Demo</td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> O(∩_7∩)O								</td>
+<td>  -   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  O  </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> Blue Rain								</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> caji.net									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Jay										</td>
+<td>  -   </td>
+<td>  -  </td>
+<td>  O   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> LQ10001									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> qi.yang.cn								</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> shao0707									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> yonlist									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> yuansicau								</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> wendal									</td>
+<td>  O   </td>
+<td>  O  </td>
+<td>  O   </td>
+<td>  O	</td>
+<td>  O  </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> zozohtnt									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  O   </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> 茶几										</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 老袁										</td>
+<td>  -   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 水蓝										</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  O   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 天行健									</td>
+<td>  O   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 云海飞舞									</td>
+<td>  -   </td>
+<td>  O  </td>
+<td>  O   </td>
+<td>  -	</td>
+<td>  O  </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 冬天温泉									</td>
+<td>  -   </td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+</table>
+<p>另外，很多朋友都在：</p>
+<ul type="disc">
+<li><a href="https://groups.google.at/group/nutzam?hl=zh-CN">Nutzam 讨论区</a></li>
+<li><a href="http://qun.qq.com/air/#58444676">Nutz交流超级群(58444676)</a></li>
+<li>GTalk 聊天群 <span style="color:#AAAAAA;"><i>添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span></li>
+</ul>
+<p>回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^</p>
+<p>欢迎访问<a href="http://nutzam.com">官网</a>,以获取最新的快照版和用户手册</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

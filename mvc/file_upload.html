@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>文件上传</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">文件上传</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#关于文件上传">关于文件上传</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#如何使用">如何使用</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#通过_@AdaptBy_声明">通过 @AdaptBy 声明</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#更细腻的控制">更细腻的控制</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#在入口函数的参数里获得上传的文件">在入口函数的参数里获得上传的文件</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#一次上传多个同名文件">一次上传多个同名文件</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于文件上传"></a>关于文件上传</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>大多数的 Web 应用都不可避免的，会涉及到文件上传。文件上传，不过是一种适配 HTTP 输入流的方式。为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 <b>org.nutz.mvc.upload.UploadAdaptor</b></p>
+<p>这个适配器专门解析形式为</p>
+<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+    &lt;input type="file"&gt;
+    ...
+</pre>
+<p>的 HTML 提交表单</p>
+<p>这个适配器的工作细节是这样的：</p>
+<ul type="disc">
+<li>它一次将 HTTP 输入流中所有的文件读入，保存在<a href="../lang/filepool.html">临时文件目录</a>里</li>
+<li>表单项目会保存在内存里</li>
+<li>在上传的过程中，它会向当前 Session 中设置一个对象： <b>org.nutz.mvc.upload.UploadInfo</b>
+<ul type="circle">
+<li>属性名为 "org.nutz.mvc.upload.UploadInfo"</li>
+<li>通过静态函数 Uploads.getInfo(HttpServletRequest req) 可以很方便的获取当前会话的 UploadInfo</li>
+</ul>
+</li>
+<li>不断的读入输入流的过程，会记录在 UploadInfo 里面。
+<ul type="circle">
+<li>UploadInfo 字段 sum 是当前 HTTP 请求的 ContentLength，表示 HTTP 输入流总长度为多少字节</li>
+<li>UploadInfo 字段 current 是当前会话已经上传了多少字节</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用"></a>如何使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你读过 <a href="http_adaptor.html">适配器</a> 一节，我想你已经知道怎么使用文件上传了，这里还需要多一点说明</p>
+<div class="hr"><b></b></div>
+<h2><a name="通过_@AdaptBy_声明"></a>通过 @AdaptBy 声明</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>...
+@AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/WEB-INF/tmp" })
+public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
+	...
+</pre>
+<p>Nutz.Mvc 会为你的入口函数创建一个上传适配器，上传适配器的会将临时文件存放在<i><b>WEB-INF/tmp</b></i> 目录下。</p>
+<div class="hr"><b></b></div>
+<h2><a name="更细腻的控制"></a>更细腻的控制</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>更多的时候，你想控制</p>
+<ul type="disc">
+<li>上传文件的临时文件数量</li>
+<li>可以上传的单个文件最大尺寸</li>
+<li>文件的类型</li>
+<li>空文件跳过不保存</li>
+</ul>
+<p>那么你需要把上传适配器交由 Ioc 容器来管理，首先你的入口函数需要这么写：</p>
+<pre>...
+@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
+    ...
+</pre>
+<p>请注意这里的 "ioc:myUpload"，Nutz.Mvc 发现你的参数为此形式时，它会从 Ioc 容器里获取你的上传适配器的实例（名字为<b>myUpload</b>），而不是直接 new 出来。</p>
+<p>然后你需要在你的 Ioc 配置文件里 （以 Json 配置为例子）配置你的 UploadAdaptor, 你需要增加下面这三个对象：</p>
+<pre>...
+tmpFilePool : {
+    type : 'org.nutz.filepool.NutFilePool',
+    // 临时文件最大个数为 1000 个
+    args : [ "~/nutz/blog/upload/tmps", 1000 ]   
+},
+uploadFileContext : {
+    type : 'org.nutz.mvc.upload.UploadingContext',
+    singleton : false,
+    args : [ { refer : 'tmpFilePool' } ],
+    fields : {
+        // 是否忽略空文件, 默认为 false
+        ignoreNull : true,
+        // 单个文件最大尺寸(大约的值，单位为字节，即 1048576 为 1M)
+        maxFileSize : 1048576,
+        // 正则表达式匹配可以支持的文件名
+        nameFilter : '^(.+[.])(gif|jpg|png)$' 
+    } 
+},
+myUpload : {
+    type : 'org.nutz.mvc.upload.UploadAdaptor',
+    singleton : false,
+    args : [ { refer : 'uploadFileContext' } ] 
+}
+...
+</pre>
+<p>这样，在配置文件中，你就可以随心所欲的进行控制了。而且这么写仅仅多写了不到 20 行的配置文件，到也没有特别麻烦，对吗？（相关详细规则描述：<a href="http_adaptor.html#通过_Ioc_容器获得适配器">http_adaptor.man#通过_Ioc_容器获得适配器</a>）</p>
+<p>看到这里，有些同学会问了，为什么你用注解的方式可以这么写：</p>
+<pre>@AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/WEB-INF/tmp" })
+</pre>
+<p>'<b>{app.root}</b>' 用起来多方便啊，那么在 Ioc 容器来，我的临时目录还想放在这里，有没有什么办法啊？ </p>
+<p>办法有。但是因为 Ioc 容器原来设计的是同 Mvc 的 Web 容器环境不相干的，所以要想绕过了这点限制，会稍微的有一点麻烦。</p>
+<p>首先，因为 Ioc 容器设计的良好扩展性，所有实现了 '<b>org.nutz.ioc.Ioc2</b>' 这个接口的 Ioc容器（当然，Nutz 自带的 Ioc 容器 - NutzIoc，很好的实现了 Ioc2 这个接口）都可以被 Nutz.Mvc注入一种新的获取值的方式（详情请参看 <a href="with_ioc.html#在容器对象里获得_ServletContext">with_ioc.man#在容器对象里获得_ServletContext</a>),我想你只需要实现一个简单的 Java 对象即可:</p>
+<pre>package com.abc.myapp;
+
+import javax.servlet.ServletContext;
+
+public class MyUtils {
+
+    private ServletContext sc;
+
+    public String getPath(String path) {
+        return sc.getRealPath(path);
+    }
+}
+
+</pre>
+<p>然后，你可以在 Ioc 容器的配置文件里，增一个对象，并修改 'tmpFilePool' 对象的配置信息：</p>
+<pre>utils : {
+    type : 'com.abc.myapp.MyUtils',
+    fields : {
+        sc : {app:'$servlet'}   // 将 ServletContext 对象注入 MyUtils
+    }
+},
+
+tmpFilePool : {
+    type : 'org.nutz.filepool.NutFilePool',
+    args : [ {java:'$utils.getPath("/WEB-INF/tmp")'}, 1000 ]   // 调用 MyUtils.getPath 函数
+},
+</pre>
+<div class="hr"><b></b></div>
+<h2><a name="在入口函数的参数里获得上传的文件"></a>在入口函数的参数里获得上传的文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>因为 FORM 表单里的 input type=file 项都已经被 UploadAdaptor 解析并存入服务器的临时目录（你声明的那个目录，比如上例是 /WEB-INF/tmp），你在入口函数里可以直接获取：</p>
+<pre>@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+public void uploadPhoto( @Param("photo") File f){
+    ...
+</pre>
+<p>你的参数 f 将获取到表单项中:</p>
+<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+    &lt;input type="file" name="photo"&gt;
+    ...
+</pre>
+<p>中的文件内容。你直接打开一个 InputStream 就能从这个 File 中读取客户端上传的文件内容了。</p>
+<p>但是，如果你也想知道这个文件在客户端原本的名字，怎么办呢？你可以：</p>
+<pre>@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+public void uploadPhoto( @Param("photo") TempFile tf){
+    File f = tf.getFile();                       // 这个是保存的临时文件
+    FieldMeta meta = tf.getMeta();               // 这个原本的文件信息
+    String oldName = meta.getFileLocalName();    // 这个时原本的文件名称
+    // TODO do what you wanna to do here ...
+}
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h2><a name="一次上传多个同名文件"></a>一次上传多个同名文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>相信很多同学都会有这样的用法，就是，希望一次上传的表单为：</p>
+<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+    &lt;input type="file" name="photo"&gt;
+    &lt;input type="file" name="photo"&gt;
+    &lt;input type="file" name="photo"&gt;
+    ...
+</pre>
+<p>看，一个上传表单中带有多个同名文件，那么怎么办呢？ 你在入口函数里可以这么声明：</p>
+<pre>@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
+public void uploadPhoto( @Param("photo") TempFile[] tfs){
+    ...
+}
+</pre>
+<p>是的，它们会被变成一个数组。顺序同 &lt;form&gt; 中的顺序。</p>
+<p>但是这里，有一点<span style="color:#FF0000;"><b>限制</b></span></p>
+<ul type="disc">
+<li><span style="color:#FF0000;"><b> 你只能用 TempFile[]</b></span></li>
+</ul>
+<p>也就是说，如果你用了 File[] 将会出错。原因不解释。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

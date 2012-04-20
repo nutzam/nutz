@@ -1,0 +1,170 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>关于主键</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">关于主键</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#简要介绍">简要介绍</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#整数型主键">整数型主键</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#默认自增">默认自增</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#手工设值">手工设值</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#快速插入">快速插入</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#字符型主键">字符型主键</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#忽略大小写">忽略大小写</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#复合主键">复合主键</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#通过变参获取和删除">通过变参获取和删除</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#其他操作">其他操作</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="简要介绍"></a>简要介绍</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>为使用 Dao 接口的 fetch(Class&lt;?&gt;, long) 以及 fetch(Class&lt;?&gt;, String)，需要为一个 POJO 指明它的主键。主键可以是整数型的，也可以是字符型的。同时它也可以支持复合主键。</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 整数型主键	</td>
+<td> 注解 @Id		</td>
+<td> 声明在字段上 </td>
+</tr>
+<tr>
+<td> 字符型主键	</td>
+<td> 注解 @Name	</td>
+<td> 声明在字段上 </td>
+</tr>
+<tr>
+<td> 复合主键		</td>
+<td> 注解 @PK		</td>
+<td> 声明在类上 </td>
+</tr>
+</table>
+<p><span style="color:#FF0000;"><b>注意：</b></span> 对于一个 POJO，你可以同时为其声明 @Id 和 @Name，它们都能正常工作。你只需要保证 @Name 对应的字段在数据库里有唯一性约束即可。 但是通常， Nutz.Dao 并没有假设你同时在一个 POJO 里应用 @Id, @Name 和 @PK，如果你这么做了，可能会引发一些奇怪的问题。事实上，你也不可能这么做，不是吗？</p>
+<div class="hr"><b></b></div>
+<h1><a name="整数型主键"></a>整数型主键</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Table("t_pet")
+public class Pet{
+	@Column
+	@Id
+	private int id;
+...
+</pre>
+<p>通过 @Id 声明了一个整数型主键后，你可以：</p>
+<pre>Pet pet = dao.fetch(Pet.class,23);
+</pre>
+<h2><a name="默认自增"></a>默认自增</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>默认的，Nutz.Dao 认为一个整数型主键默认就是自增的。所以他会在：</p>
+<pre>dao.insert(pet);
+</pre>
+<p>之后，为你插入的对象执行</p>
+<pre>SELECT MAX(id) FROM t_pet;
+</pre>
+<p>并设置到 pet 对象中。当然，不同的数据库，获得自增值的方式是不一样的，请参看 <a href="next_prev.html">在插入前后的为字段设值</a>里面描述了，通过 @Next 注解，声明数据库本地方言，来获取自增值。</p>
+<h2><a name="手工设值"></a>手工设值</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>由于默认的，@Id 字段被认为是自增的，所以在插入时，Nutz.Dao 会忽略这个字段。但是，有些时候，你的整数主键不是自增的，你希望手工为其设值，怎么办呢？ 你可以给 @Id 设一个属性: auto=false</p>
+<pre>@Table("t_pet")
+public class Pet{
+	@Column
+	@Id(auto=false)
+	private int id;
+...
+</pre>
+<p>Nutz.Dao 在插入对象是，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。</p>
+<h2><a name="快速插入"></a>快速插入</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)</p>
+<pre>dao.fastInsert(pet)
+</pre>
+<p>它只会单纯的拼出一条 INSERT XXX，然后执行。 在一个循环里，一次插入多个对象时，很适合使用。</p>
+<div class="hr"><b></b></div>
+<h1><a name="字符型主键"></a>字符型主键</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Table("t_pet")
+public class Pet{
+	@Column
+	@Name
+	private String name;
+...
+</pre>
+<p>通过 @Name 声明了一个字符型主键后，你可以：</p>
+<pre>Pet pet = dao.fetch(Pet.class,"XiaoBai");
+</pre>
+<h2><a name="忽略大小写"></a>忽略大小写</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Table("t_pet")
+	public class Pet{
+		@Column
+		@Name(casesensitive=false)
+		private String name;
+	...
+</pre>
+<p>因此</p>
+<pre>Pet pet = dao.fetch(Pet.class,"XiaoBai");
+同
+Pet pet = dao.fetch(Pet.class,"xiaobai");
+运行的结果就会没有区别
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="复合主键"></a>复合主键</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Table("t_pet")
+@PK( {"masterId", "petId"} )
+public class Pet{
+	@Column
+	private int masterId
+
+	@Column
+	private int petId;
+...
+</pre>
+<p>通过 @PK 声明了复合主键，你就可以:</p>
+<h2><a name="通过变参获取和删除"></a>通过变参获取和删除</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><b>获取</b></p>
+<pre>Pet pet = dao.fetchx(Pet.class, 23, 12);
+</pre>
+<p><b>删除</b></p>
+<pre>Pet pet = dao.deletex(Pet.class, 23, 12);
+</pre>
+<p><span style="color:#FF0000;"><b> 注意</b></span></p>
+<ul type="disc">
+<li>这里你给的变参的顺序必须按照你 @PK 里声明的顺序。</li>
+<li>是 fetch<b>X</b> 和 delete<b>X</b></li>
+</ul>
+<h2><a name="其他操作"></a>其他操作</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>至于 update, clear, insert 则和平常的对象一样。 不过 Update 的时候，你的 POJO 所有的复合主键字段需要被设上值，才能正确被更新。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

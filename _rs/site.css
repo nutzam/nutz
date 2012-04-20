@@ -1,0 +1,240 @@
+* {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+.hdn {
+    display: none;
+}
+
+#arena {
+    padding:10px 10px 50px 320px
+}
+
+#arena p {
+    line-height: 20px;
+    color: #444;
+}
+
+#arena p, #arena table {
+    margin-left: 30px;
+}
+
+#arena ul, #arena ol {
+    border-radius: 4px;
+    line-height: 24px;
+    margin:10px 30px;
+    margin-right:0;
+    padding:10px 30px;
+}
+
+#arena ul ul, #arena ol ol, #arena ul ol, #arena ol ul {
+    margin:0px 0px 8px 10px;
+    padding:0px 0px 0px 10px;
+    background:transparent;
+}
+
+#arena h1 {
+    font-size: 20px;
+    padding: 10px;
+    background-color: #F0F0F0;
+    border-radius: 6px;
+    border: 1px dotted #F80;
+    color: #D60;
+    margin-top: 20px;
+}
+
+#arena h2 {
+    font-size: 16px;
+    margin-left: 10px;
+    margin-top: 20px;
+    padding: 6px;
+    border-left: 4px solid #F80;
+    border-top: 1px dotted rgba(255, 128, 0, 0.2);
+}
+
+#arena h3, #arena h4, #arena h5, #arena h6 {
+    font-size: 14px;
+    margin-left:20px;
+    padding-left:4px;
+    border-left:14px solid #F80;
+    color:#C60;
+    margin-top:28px;
+}
+
+#arena pre {
+    font-size: 12px;
+    font-family: Courier;
+    color: #00A;
+    background-color: #F0F0F0;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px dashed #CCC;
+    margin-left: 20px;
+}
+
+#arena .zdoc_code_cmt{
+    color:#888
+}
+
+#arena .zdoc_header {
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 20px;
+    text-shadow: 0px 0px 8px #888;
+}
+
+#arena .zdoc_author {
+    text-align: center;
+    font-size: 11px;
+    color: #080;
+}
+
+#arena .zdoc_author em {
+    color:#AAA;
+}
+
+#arena .zdoc_author em, #arena .zdoc_footer em {
+    margin-right: 8px;
+}
+
+#arena .zdoc_author b, #arena .zdoc_footer b {
+    margin-right: 8px;
+}
+
+#arena .zdoc_footer {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    font-size: 11px;
+    padding: 4px;
+    background-color: #CCC;
+    opacity: 0.5;
+    border-radius: 6px 0 0 0;
+}
+
+#nav {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 300px;
+    border-right: 1px dashed #CCC;
+    font-size: 11px;
+    background-color:#F0F0F0;
+}
+
+#nav_viewport {
+    overflow: hidden;
+    position: relative;
+}
+
+#nav_scroller {
+    width: 999999px;
+    position: absolute;
+}
+
+#nav_crumb {
+    border-bottom: 1px dotted #CCC;
+    line-height: 24px;
+    padding: 0 2 x;
+    color: #444;
+}
+
+#nav_crumb:after {
+    display: block;
+    content: ".";
+    height: 0;
+    clear: both;
+}
+
+.nav_block {
+    float: left;
+    overflow: auto;
+    padding: 1px;
+}
+
+.nav_block a.nav_folder:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -32px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a {
+    display: block;
+    line-height: 30px;
+    cursor: pointer;
+    border-bottom: 1px dotted #E0E0E0;
+    padding: 0 4px 0 26px;
+    color: #888;
+    position: relative;
+}
+
+.nav_block a:hover {
+    background-color: #FFE;
+}
+
+.nav_block a.nav_doc:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -48px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a.nav_doc{
+    color:#08F;
+}
+
+.nav_block a.nav_indoc:before {
+    display: block;
+    content: "";
+    width: 16px;
+    height: 16px;
+    background:url(dotteds.png) no-repeat 0 -64px;
+    position: absolute;
+    top: 6px;
+    left: 6px;
+}
+
+.nav_block a.nav_indoc{
+    color:#66F;
+    text-decoration: none;
+}
+
+
+.nav_crumb_item {
+    float: left;
+    padding-left: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    background: url(dotteds.png) no-repeat 0 3px;
+}
+
+.nav_crumb_item:hover {
+    background-color: #EEE;
+}
+
+.nav_crumb_item_hlt, .nav_crumb_item_hlt:hover {
+    color: #F80;
+}
+
+.nav_transient {
+    opacity: 0.4;
+    text-decoration: line-through;
+}
+

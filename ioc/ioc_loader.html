@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>定义自己的配置文件格式</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">定义自己的配置文件格式</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#你如果不喜欢_JSON_怎么办？">你如果不喜欢 JSON 怎么办？</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#在_NutzIoc_定义一个对象的数据结构是怎样的？">在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#事件集合_IocEventSet">事件集合 IocEventSet</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#值_IocValue">值 IocValue</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#字段_IocField">字段 IocField</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#实现你的加载器">实现你的加载器</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#最后">最后</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#附:已经可用的IocLoader">附:已经可用的IocLoader</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="你如果不喜欢_JSON_怎么办？"></a>你如果不喜欢 JSON 怎么办？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我很喜欢 JSON，因为它语法轻巧。当然，我不能保证你也很喜欢 JSON，因为你可能会说：</p>
+<ul type="disc">
+<li>没有很好的 JSON 编辑器 -- <span style="color:#999999;"><i>如果是这样，我推荐你试试 Eclipse 自带的 Javascript 编辑器</i></span>。</li>
+<li>我更喜欢 XML，我不喜欢大括号</li>
+<li>我就是讨厌 JSON</li>
+</ul>
+<p>那么，你想自己规定自己的配置文件格式吗？ 你可以定义一个比  JSON  更酷的配置文件语法，当然你得多写一点点代码，解析你的配置文件。但是你就想做点很酷的事情，不是吗？</p>
+<p>Nutz.Ioc 提供了一个扩展点：<b>org.nutz.ioc.IocLoader</b> 接口。实际上 JSON 的配置文件语法，不过是我预先为这个接口写的一个实现，所以你当然也可以写一个，请注意 Nutz.Ioc 接口是如何被构建的：</p>
+<pre>Ioc ioc = new NutIoc(new JsonLoader("文件路径"));
+</pre>
+<p>我提供的 JsonLoader 没有任何“特殊待遇”，它和你自己要实现的 IocLoader 地位是完全一样的，你完全可以这么写：</p>
+<pre>Ioc ioc = new NutIoc(new MyIocLoader());
+</pre>
+<p>只要你正确的实现了 IocLoader 接口，如何持有对象，如果解释对象的语义，都由 Nutz.Ioc 的标准实现流程负责，你完全不用操心。</p>
+<p>你可能还有一个问题：“<b>那么 IocLoader 接口实现起来复杂吗？</b>”</p>
+<p>我可以负责任的告诉你，虽然那不是极其简单，但是绝对不复杂。你只要理解下面这个知识即可：</p>
+<div class="hr"><b></b></div>
+<h1><a name="在_NutzIoc_定义一个对象的数据结构是怎样的？"></a>在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部信息，你会发现它其实也简单：</p>
+<pre>public class IocObject {
+
+	private Class&lt;?&gt; type;
+	private boolean singleton;
+	private IocEventSet events;
+	private List&lt;IocValue&gt; args;
+	private List&lt;IocField&gt; fields;
+	private String scope;
+	
+	// 省略所有的 getter 和 setter 函数
+</pre>
+<p>看看这个类的属性，顾名思义：</p>
+<ul type="disc">
+<li><b>type</b> --  对象类型</li>
+<li><b>singleton</b> -- 声明对象是否为单例</li>
+<li><b>events</b> -- 对象监听何种事件</li>
+<li><b>args</b> -- 对象构造函数的参数列表</li>
+<li><b>fields</b> -- 对象的字段</li>
+</ul>
+<p>没有对象的名称，对吗？是的，通过 JSON （如果你了解一点 Javascript，那就更容易理解了），你通常要这么写：</p>
+<pre>你的 JSON 文件，下面是正文
+------------------------------------------------
+{
+	"对象名称" : {
+		type : "对象类型",
+		singleton : true | false,
+		events : {
+			fetch : "触发器的类型或者函数名",
+			create : "触发器的类型或者函数名",
+			depose : "触发器的类型或者函数名"
+		},
+		args : [
+			参数1， 参数2 ...
+		],
+		fields : {
+			"字段名称1" : 字段值1 ,
+			"字段名称2" : 字段值2 ,
+			...
+		}
+	}
+}
+</pre>
+<p>那么你如果想通过其他的配置文件格式，比如 XML 类获取 IocObject， 文件格式应该如何定义，完全看你个人的喜好了。</p>
+<p>这里需要说一下：</p>
+<h2><a name="事件集合_IocEventSet"></a>事件集合 IocEventSet</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>描述了一个对象可以监听的事件。三个属性分别表示： </p>
+<ul type="disc">
+<li>create: 对象创建时触发</li>
+<li>fetch: 对象获取时触发</li>
+<li>depose: 对象销毁时触发</li>
+</ul>
+<p>它们的值:</p>
+<ul type="disc">
+<li>可以是一个函数名，也可以是一个 org.nutz.ioc.IocEventTrigger 的实现类全名</li>
+<li>如果 是函数，那么这个函数就是对象内的一个非静态 public 的函数，而且不能有参数</li>
+<li>如果是 IocEventTrigger 的实现类，你的实现类必须有一个 public 的默认构造函数</li>
+</ul>
+<h2><a name="值_IocValue"></a>值 IocValue</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>描述了对象的一个值，这个值可以是构造函数的参数，也可以是一个字段的值。 它由两个属性，一个是值的类型，另外一个是 value。 </p>
+<p><i><b>赋值约定:</b></i></p>
+<ul type="disc">
+<li>如果 type 是 "null"，则值会被认为是 null</li>
+<li>如果 value 是 字符串，数字，布尔，那么 type 必须为 "normal"或 null</li>
+<li>如果 value 是 数组， Collection 或 Map，那么类型也必须是 "normal"或 null，Ioc 容器的实现类会深层递归集合的每个元素。集合内的每个元素的值也可以是 IocValue，规则符合本约定</li>
+<li>如果 value 是 IocObject，则表示这个值是一个内部匿名对象，type 必须为 "inner" 或者 null</li>
+<li>如果 value 是字符串，表示另外一个对象的名称，type 必须是 "refer"</li>
+<li>如果 value 是字符串，表示一个环境变量，type 必须是 "env"</li>
+<li>如果 value 是字符串，表示一个文件路径，type 必须是 "file"</li>
+<li>如果 value 是字符串，表示一个 Java 调用，type 必须是 "java"，具体值的语法，请参看 JavaValue 类的 JDoc，当然 Ioc 容器来解析执行它，不需要 IocLoader 操心 说明</li>
+<li>你的 ValueProxyMaker 可以扩展这个约定</li>
+</ul>
+<h2><a name="字段_IocField"></a>字段 IocField</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>描述了一个对象的字段，两个属性分别表示字段名，和字段值</p>
+<div class="hr"><b></b></div>
+<h1><a name="实现你的加载器"></a>实现你的加载器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你的 IocLoader 的实现类需要实现三个方法:</p>
+<pre>public interface IocLoader {
+
+	/**
+	 * @return 配置信息里所有对象的名称
+	 */
+	String[] getName();
+
+	/**
+	 * 每次这个函数被调用，则要构造一个新的 IocObject
+	 * 
+	 * @param name
+	 * @return
+	 * @throws ObjectLoadException
+	 */
+	IocObject load(String name) throws ObjectLoadException;
+
+	/**
+	 * @param name
+	 * @return 配置信息里是否存在一个对象
+	 */
+	boolean has(String name);
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="最后"></a>最后</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>没什么要说的了，充分发挥你的想象力吧，如果你愿意，将配置信息放在 PDF 里，放在 excel 表格里都是可以的 如果你完成了一个IocLoader,不妨分享出来,我们将收录到 http://code.google.com/p/nutz-ioc-loaders/</p>
+<div class="hr"><b></b></div>
+<h1><a name="附:已经可用的IocLoader"></a>附:已经可用的IocLoader</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>使用Json作为配置文件 org.nutz.ioc.loader.json.JsonLoader</li>
+<li>使用XML作为配置文件 org.nutz.ioc.loader.xml.XmlIocLoader</li>
+<li>使用注解作为配置文件 org.nutz.ioc.loader.annotation.AnnotationIocLoader</li>
+<li>使用Map作为配置文件 org.nutz.ioc.loader.map.MapLoader</li>
+<li>混合使用多种配置?一样可以! org.nutz.ioc.loader.combo.ComboIocLoader</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

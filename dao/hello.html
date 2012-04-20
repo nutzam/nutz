@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Hello world</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Hello world</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><em>Verify by:</em><b>Peter.Tung</b><a href="mailto:mastung@gmail.com">&lt;mastung@gmail.com&gt;</a><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#检查运行环境">检查运行环境</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#创建数据库">创建数据库</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#创建_POJO">创建 POJO</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#创建_main_函数">创建 main 函数</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#如何进阶">如何进阶</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="检查运行环境"></a>检查运行环境</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ol type="1">
+<li>首先，你必须安装 JDK1.5 或者以上版本：
+<ol type="a">
+<li>如果你直接使用编译好的 jar 包，请保证你使用对应版本的jar,因为Nutz分成 JDK5 和 JDK6 两种编译级别的jar。我们推荐使用JDK6,因为它更快!</li>
+<li>最好有 <a href="http://logging.apache.org/log4j/1.2/index.html">Log4J 1.2.12或以上</a>，如果没有，也没关系</li>
+</ol>
+</li>
+<li>其次，为了运行 Nutz.Dao，你必须要有一个数据库软件：
+<ol type="a">
+<li>Mysql,Postgresql, SQLServer, Oracle, DB2 , H2都可以。</li>
+</ol>
+</li>
+<li>建立一个普通的 Java 项目：
+<ol type="a">
+<li>你可以采用任何自己觉得舒适的 IDE 环境，或者编辑器。</li>
+<li>你要将数据库的 JDBC Driver 和你喜欢的连接池加入项目的 classpath。</li>
+</ol>
+</li>
+<li>在数据库里建立一张你自己的数据表， 这里我们用 t_person 来举例：</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="创建数据库"></a>创建数据库</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>此处代码适用于PostgreSQL，如果你使用了不同的数据库，请自行修改相应建库语句：</p>
+<pre>CREATE TABLE t_person (
+  id  SERIAL PRIMARY KEY,
+  name  VARCHAR(50) NOT NULL UNIQUE,
+  age INT
+);
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="创建_POJO"></a>创建 POJO</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 Java 项目中建立一个POJO，比如 com.zzh.demo.Person :</p>
+<pre>import org.nutz.dao.entity.annotation.*;
+
+@Table("t_person")   // 声明了Person对象的数据表
+public class Person {
+
+	@Column	  // 表示该对象属性可以映射到数据库里作为一个字段
+	@Id       // 表示该字段为一个自增长的Id
+	private int id;
+	
+	@Column
+	@Name    // 表示该字段可以用来标识此对象，或者是字符型主键，或者是唯一性约束
+	private String name;
+
+	@Column
+	private int age;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public void setAge(int age) {
+		this.age = age;
+	}
+
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="创建_main_函数"></a>创建 main 函数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>随便建立一个有 main 函数的类，在 main 函数里这么写：</p>
+<pre>Dao dao = new NutDao(dataSource);
+Person p = new Person();
+p.setName("ABC");
+p.setAge(20);
+dao.insert(p);
+</pre>
+<ul type="disc">
+<li>执行完毕后，在数据表中会多出一条记录。</li>
+<li>如果你<span style="color:#FF0000;"><b>不知道如何创建 Datasource</b></span>，请参看 附录：<a href="../appendix/create_datasource.html">如何创建 Datasource</a></li>
+<li>这个例子足够作为 Hello World 了， 祝你玩的开心  :)</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="如何进阶"></a>如何进阶</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在你看完上述这个例子以后，你可以看看 <a href="basic_operations.html">Nutz.Dao 的基本操作</a>，这篇短短的文章会让你很快对 Nutz.Dao 建立一个大体上的印象。但是实际上，你的 POJO 在真正的项目中可能不会这么简单，你需要操作也不会只是增删改查。下面有三个建议：</p>
+<ul type="disc">
+<li>Nutz.Dao 全部的文档并不很多，花上1-2个晚上，你就可以看完。</li>
+<li>你如果想快速了解 Nutz.Dao 到底支持多少注解，<a href="annotations.html">请看这里</a></li>
+<li>在 <a href="http://nutzdemo.googlecode.com">Nutz 的 Demo Site</a> 上，我们也会不断增加有针对性的演示，你可以 <a href="http://nutzdemo.googlecode.com">访问它的首页</a>，看看里面有没有你需要的例子代码</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><em>Verify by:</em><b>Peter.Tung</b><a href="mailto:mastung@gmail.com">&lt;mastung@gmail.com&gt;</a><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.a.26</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.a.26</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#概述">概述</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#改进">改进</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#改进">改进</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#博客">博客</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="概述"></a>概述</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个版本是在 1.a.25 基础上修复了一些 BUG，并让 Dao 支持 ActiveRecord</p>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>Issue 95 : Ioc - 没有检测循环依赖,且不支持多次继承</li>
+<li>Issue 97: 从 Dao 里查出来的对象是一个 Map，或者是List&lt;Map&lt;String, Object&gt;&gt; <span style="color:#AAAAAA;">by</span> <b>Gdunser</b></li>
+<li>Issue 100: MVC手册在jsp视图处描述有误 <span style="color:#AAAAAA;">by</span> <b>ToFishes</b></li>
+<li>Issue 101: Dumps.matcher NullpointerException <span style="color:#AAAAAA;">by</span> <b>for5million</b></li>
+<li>Issue 102: 在update时，如果http参数有Date类型为null，会出错 <span style="color:#AAAAAA;">by</span> <b>Gdunser</b></li>
+<li>Issue 103: 移除JsonIocLoader中对$import,$vars的支持 <span style="color:#AAAAAA;">by</span> <b>Wendal</b></li>
+<li>Issue 104: 当server启动后,死一次访问界面无法显示国际化的message <span style="color:#AAAAAA;">by</span> <b>Bird.Wyatt</b></li>
+<li>Issue 106: 在 NutIoc 中缓存 IocObject <span style="color:#AAAAAA;">by</span> <b>Wendal</b></li>
+<li>Issue 108: 添加Maven支持文件-- pom.xml <span style="color:#AAAAAA;">by</span> <b>Wendal</b></li>
+<li>Issue 109: 继承Module类，如果是@OK("json")，会出错 <span style="color:#AAAAAA;">by</span> <b>Gdunser</b></li>
+<li>Issue 111: IoC配置能扫描Package内的Class的注解直接获取到 <span style="color:#AAAAAA;">by</span> <b>nwangwei</b></li>
+<li>Issue 114: context.js的正確格式是? <span style="color:#AAAAAA;">by</span> <b>wsc0918</b></li>
+<li>Issue 115: JSON格式不标准 <span style="color:#AAAAAA;">by</span> <b>deadeye2k</b></li>
+<li>Issue 120: dao: @Next 和 @Prev 变量 $view.NEXTVAL 解析失败 <span style="color:#AAAAAA;">by</span> <b>hzzdong</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>共通过了 414 个单元测试用例</li>
+<li>Nutz.Dao 经测试在如下数据库上可以工作正常
+<ul type="disc">
+<li>H2</li>
+<li>MySql</li>
+<li>Oracle</li>
+<li>Postgresql</li>
+<li>SqlServer2005</li>
+<li>SqlServer2000</li>
+</ul>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="改进"></a>改进</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>小幅修正了一些 Bug 和文档错误</li>
+<li>Dao : 提供了新的接口函数： List&lt;Record&gt; query(String tableName, Condition condition, Pager pager)</li>
+<li>Ioc : 引入 IocObject 的缓存，提升了非 Singleton 对象构建速度</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="改进"></a>改进</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>小幅修正了一些 Bug 和文档错误</li>
+</ol>
+<ul type="disc">
+<li>Issue 103: 移除JsonIocLoader中对$import,$vars的支持   <span style="color:#AAAAAA;">by</span> <b>Wendal</b></li>
+<li>Issue 106: Ioc: 在 NutIoc 中缓存 IocObject   <span style="color:#AAAAAA;">by</span> <b>Wendal</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>修改了 <a href="../mvc/view.html">Mvc 视图部分</a></li>
+<li>增加了 <a href="../mvc/with_ioc.html">同 Ioc 容器一起工作.需要注意的问题</a></li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="博客"></a>博客</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>《<a href="http://birdwindy.javaeye.com/blog/582200">我的第一个Nutz程序</a>》@<a href="http://birdwindy.javaeye.com">Bird.Wyatt</a></li>
+<li>《<a href="http://bobby1222.javaeye.com/blog/585483">NUTZ与SQL SERVER2000兼容性问题</a>》@<a href="http://wendal.javaeye.com">Ge.PH /hl</a></li>
+<li>《<a href="http://www.3km.com.cn/?p=96">借于Nutz快速实现对表的增删改操作</a>》 @<a href="http://www.3km.com.cn">会跑的蜗牛</a></li>
+<li>《<a href="http://amosleaf.javaeye.com/blog/562141">使用注解做ORM</a>》@<a href="http://amosleaf.javaeye.com">amosleaf</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者 									</td>
+<td> 问题 </td>
+<td> 博客 </td>
+<td> 讨论 </td>
+<td> 代码 </td>
+<td> Demo </td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> <a href="http://amosleaf.javaeye.com">amosleaf</a>	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://birdwindy.javaeye.com">bird.wyatt</a></td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> deadeye2k								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td> -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> E-Hunter									</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> for5million								</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://hi.baidu.com/lifecube">mastung</a>	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> mawm										</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> rocy03									</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> Sega										</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> ToFishes									</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> yangchunhai2005							</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://wendal.javaeye.com">wendal</a>		</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://zozoh.javaeye.com">zozoh</a>			</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  X	</td>
+<td>  X	</td>
+</tr>
+<tr>
+<td> <a href="http://www.3km.com.cn">会跑的蜗牛</a>		</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+</tr>
+<tr>
+<td> <a href="http://www.ecplive.cn">知足常乐</a>			</td>
+<td>  X	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  -	</td>
+<td>  X	</td>
+</tr>
+</table>
+<p>另外，非常感谢<a href="http://qun.qq.com/air/#75818186">Nutz QQ 群(75818186)</a>以及<a href="https://groups.google.com/group/nutzam?hl=zh-CN">Nutzam 讨论区</a>的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 <b>产生着潜移默化的影响</b>。我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。</p>
+<p>另，由于众所周知的原因，建议大家通过<a href="http://groups.google.de/group/nutzam?hl=zh-CN">别的服务访问讨论区</a>因为非中文版的 Google Group 是没有被 QIAng 的。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

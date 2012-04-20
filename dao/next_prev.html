@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>插入前后的设置</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">插入前后的设置</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#插入之前_-_@Prev">插入之前 - @Prev</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#插入之后_-_@Next">插入之后 - @Next</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#以_@Prev_来举例">以 @Prev 来举例</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#使用变量的例子">使用变量的例子</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#使用参数的例子">使用参数的例子</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#数据库方言">数据库方言</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="插入之前_-_@Prev"></a>插入之前 - @Prev</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在插入之前，你想通过一段 SQL 为你的 POJO 某一个字段设值。你可以通过 @Prev 属性</p>
+<pre>@Table("t_pet")
+public class Pet{
+	@Name
+	private String name;
+
+	@Column("photo")
+	@Prev( @SQL("SELECT txt FROM t_pet_photo WHERE pname=@name") )
+	private String photoPath;
+...
+</pre>
+<p>@Prev 注解接受一组 @SQL 作为参数，它遵守如下约定：</p>
+<ul type="disc">
+<li>@SQL 声明了一条 SQL 语句，支持动态占位符。
+<ul type="circle">
+<li>变量 - <span style="color:#008800;">形式如： $变量名</span>
+<ul type="square">
+<li>其值由 org.nutz.dao.TableName 来设置，具体使用方式请参看 <a href="dynamic_table_name.html">动态表名</a></li>
+<li>特殊占位符不需要手工设值，Nutz.Dao 自动为你设置，它们是：
+<ul type="disc">
+<li><b>$view</b> - 表示当前实体对象的视图名称</li>
+<li><b>$field</b> - 表示注解所在字段数据库名称</li>
+</ul>
+</li>
+<li>其他特殊占位符，会被对象自身的同名属性值替换</li>
+</ul>
+</li>
+<li>参数 - <span style="color:#008800;">形式如：@参数名</span>
+<ul type="square">
+<li>其值直接使用 POJO 自身的属性值</li>
+<li><b>比如上例</b>，将会参考对象自身的 name  字段的值</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>如果 SQL 执行没有结果，即结果集合为空，将不会为相应字段设置</li>
+<li>如果 SQL 执行的结果集包含多条记录，只有第一条记录的第一列的值会被使用</li>
+<li>@SQL 更详细的语法规范请参看 <a href="customized_sql.html">自定义 SQL</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="插入之后_-_@Next"></a>插入之后 - @Next</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在插入之后，你想通过一段 SQL 为你的 POJO 某一个字段设值。你可以通过 @Next 属性</p>
+<pre>@Table("t_pet")
+public class Pet{
+	@Column
+	@Id
+	@Next( @SQL("SELECT currval('t_pet_id_seq')") )
+	private int id;
+...
+</pre>
+<p>如上例，执行插入后，你的 Pet 对象的 id 会被数据库中新的值更新。</p>
+<p>@Next 的规则和 @Prev 是一样的</p>
+<div class="hr"><b></b></div>
+<h1><a name="以_@Prev_来举例"></a>以 @Prev 来举例</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下面让我们举两个例子，详细说明一下 <b>变量</b> 和 <b>参数</b> 的异同点。</p>
+<h2><a name="使用变量的例子"></a>使用变量的例子	</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm='$ownerName'"))
+private String name;
+</pre>
+<p>在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，变量 <b> $ownerName</b> 会被对象本身的 ownerName 字段的值替换，如果对象本身的 ownerName 字段的值恰好是 "zzh"，那么执行的 SQL 会变成：</p>
+<pre>SELECT pet_name FROM m_user_pet WHERE ownm='zzh';
+</pre>
+<p>这段 SQL 执行的结果会复制给对象的 name 字段。</p>
+<h2><a name="使用参数的例子"></a>使用参数的例子</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Prev(@SQL("SELECT pet_name FROM t_user_pet WHERE ownm=@ownerName"))
+private String name;
+</pre>
+<p>在执行 dao.inert 操作时， Nutz.Dao 会预先执行这段 SQL, 执行之前，参数 <b> @ownerName</b> 会被 '?' 替换，并根据这段 SQL 生成 PreparedStatement 对象：</p>
+<pre>SELECT pet_name FROM m_user_pet WHERE ownm=?;
+</pre>
+<p>然后，根据对象本身的 ownerName 字段的值，为这个 PreparedStatement 设置参数，执行之后，这段 SQL 执行的结果会复制给对象的 name 字段。</p>
+<div class="hr"><b></b></div>
+<h1><a name="数据库方言"></a>数据库方言</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论是 @Prev 还是 @Next，你都是通过 @SQL 声明的数据库方言。但是，假设你并不确定你的 POJO 将会工作在哪一个数据库上，比如你的项目有两个数据源，一个是 Oracle 一个是 Postgresql，那么你的 POJO 该如何写方言呢？</p>
+<pre>@Table("t_pet")
+public class Pet{
+	@Column
+	@Id
+	@Next({
+		@SQL(db = DB.PSQL,   "SELECT currval('t_pet_id_seq')"),
+		@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')"),
+		@SQL(db = DB.OTHER,  "SELECT MAX(id) FROM t_pet") 
+	})
+	private int id;
+...
+</pre>
+<p>现在 Nutz.Dao 支持这些数据库:</p>
+<pre>public enum DB {
+	H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

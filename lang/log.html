@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>日志</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">日志</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>sunonfire</b><a href="mailto:sunonfire@gmail.com">&lt;sunonfire@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么要自己写一个_Log?">为什么要自己写一个 Log?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何使用日志">如何使用日志</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#让_Nutz_输出日志">让 Nutz 输出日志</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#什么都不配置呢?Nutz在你没有配置任何Log时,一样工作得很好_下面是默认行为:">什么都不配置呢?Nutz在你没有配置任何Log时,一样工作得很好. 下面是默认行为:</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么要自己写一个_Log?"></a>为什么要自己写一个 Log?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先，我们没有从头实现一个日志，我们不过是 <b>适配</b> 日志。我们适配了 log4j 。但是为什么呢?为什么不直接依赖 slf4j 呢?</p>
+<p>我必须要在这里重申一下 <a href="../nutz_preface.html">Nutz 框架的目标</a>：</p>
+<ul type="disc">
+<li>尽量让程序员在 <span style="color:#0000FF;"><b>设立开发环境</b></span> 以及 <span style="color:#0000FF;"><b>部署应用</b></span> 的时候获得最佳的体验</li>
+</ul>
+<p>如果你下载了 Nutz 的 jar，满心欢喜的加到你的项目里，然后，运行你的项目，你会发现从 Nutz.jar 里会迅速抛出一个异常。经过一番查阅，你发现你不得不访问 slf4j 的网站，下载它的 jar 包，然后再加入自己的项目里...</p>
+<p><b>你会因此而很高兴吗？</b></p>
+<p>........</p>
+<p>不不，起码我不会高兴。 :(</p>
+<p>如果这个功能特别复杂，以至于我们没有能力做到很好，我们肯定会毫不犹豫的依赖其他的 jar 包的。比如 1.a.23之前，我们依赖了 <a href="http://www.javassist.org">javassist</a>， 1.a.24 我们包括了 <a href="http://asm.ow2.org">ASM</a>。</p>
+<p>另外一个原因：随着 Nutz 使用的人越来越多，如果它依赖了过多的  Jar 包，便会导致人们更多的下载行为，从而浪费不必要的带宽，耗费更多的电能，从而让这个地球排放更多的温室气体，厄尔尼诺现象加剧，北极融化，珍稀物种灭绝，农作物减产，粮食供应紧张，不利于喝血社会，不能体现带三个婊的以德治国的精神。</p>
+<p>.</p>
+<p>..</p>
+<p>...</p>
+<p>....</p>
+<p>.....</p>
+<p>......</p>
+<p><span style="color:#CCCCCC;"><i>好吧，我承认，我上面说的统统是狡辩，根本原因不过是因为手痒痒。而且我揭发：实际上这个模块代码都是</i></span> <a href="http://myblog.sunfarms.net"><span style="color:#CCCCCC;"><i>wendal</i></span></a> <span style="color:#CCCCCC;"><i>和 Sunonfire 写的，我其实不过是出来打酱油的 ... </i></span></p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用日志"></a>如何使用日志</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz Log的基本用法和常见的log4j等工具没什么不同。比如：</p>
+<pre>public class MyClass {
+	private static final Log log = Logs.getLog(MyClass.class);
+
+	public void myFuncion() {
+		if (log.isDebugEnabled())
+			log.debug("I am debug message");
+	}
+}
+</pre>
+<p>Nutz.Log 使用了<a href="plugin.html">插件技术</a>，其中优先级依次为：</p>
+<ol type="1">
+<li>Log4j --&gt; 通过log4j-over-slf4j桥,你可以将其拓展到其他log框架,如logback</li>
+<li>System.out | System.err</li>
+</ol>
+<p>它们可以使用的条件是：</p>
+<ul type="disc">
+<li>Log4j
+<ol type="1">
+<li>如果能够加载类 <b>org.apache.log4j.Logger</b>，则认为可用;</li>
+</ol>
+</li>
+<li>System.out | System.err
+<ol type="1">
+<li>默认永远可用</li>
+</ol>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="让_Nutz_输出日志"></a>让 Nutz 输出日志</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>以 log4j 为例 （因为我就对这个熟），你需要：</p>
+<ul type="disc">
+<li>在你的项目里部署某一个 Log4j 的 jar 包，推荐 Log4j 1.2.12 或更新版本
+<ul type="circle">
+<li>Log4j 1.2.11及之前的版本不支持 Trace,自动转为使用Debug级别来记录.</li>
+</ul>
+</li>
+<li>在项目的 CLASSPATH 根目录部署 log4j.properties</li>
+<li>将 log4j.category.org.nutz 基本设成 DEBUG，你就能看到 Nutz 框架详细的 Log
+<pre>log4j.category.org.nutz=DEBUG, A1
+ 
+log4j.appender.A1=org.apache.log4j.ConsoleAppender
+log4j.appender.A1.layout=org.apache.log4j.PatternLayout
+log4j.appender.A1.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
+</pre>
+</li>
+<li>你可以分别控制 Dao, Ioc 和 Mvc:
+<ul type="circle">
+<li>category.org.nutz.dao=DEBUG</li>
+<li>category.org.nutz.ioc=DEBUG</li>
+<li>category.org.nutz.mvc=DEBUG</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么都不配置呢?Nutz在你没有配置任何Log时,一样工作得很好_下面是默认行为:"></a>什么都不配置呢?Nutz在你没有配置任何Log时,一样工作得很好. 下面是默认行为:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>输出到System.err/out</li>
+<li>默认日志等级为 DEBUG</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>sunonfire</b><a href="mailto:sunonfire@gmail.com">&lt;sunonfire@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

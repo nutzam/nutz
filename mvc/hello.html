@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Hello World</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Hello World</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#关于这个_Hello_World">关于这个 Hello World</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#详细步骤">详细步骤</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#创建一个_Dynamic_Web_Project">创建一个 Dynamic Web Project</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#创建一个_Tomcat_运行服务器">创建一个 Tomcat 运行服务器</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#将_Nutzjar_加入_lib_目录中">将 Nutz.jar 加入 lib 目录中</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#创建主模块">创建主模块</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#修改_webxml">修改 web.xml</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#创建入口函数">创建入口函数</a></div>
+</li>
+<li>
+<div><span class="num">2.7</span><a href="#创建_jsp_页面">创建 jsp 页面</a></div>
+</li>
+<li>
+<div><span class="num">2.8</span><a href="#启动服务">启动服务</a></div>
+</li>
+<li>
+<div><span class="num">2.9</span><a href="#在浏览器中访问">在浏览器中访问</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#如何进阶">如何进阶</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于这个_Hello_World"></a>关于这个 Hello World</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是一个简单的小例子，通过简单的几步，即可在 Eclipse 中搭建出一个 Nutz.Mvc的运行环境，我假设你已经：</p>
+<ol type="1">
+<li>有了 Eclipse J2EE 套件 -- Eclipse 3.5 以上版本</li>
+<li>安装了 Tomcat 6.0 及以上版本</li>
+<li>下载了 Nutz 的最新版本 （最好是 1.a.31 或更新版本）
+<ul type="disc">
+<li>截止到本文写作之时， 1.a.31 还未发布，不过你可以<a href="../committer/svn_project.html">自己编译一个最新版本</a></li>
+</ul>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="详细步骤"></a>详细步骤</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="创建一个_Dynamic_Web_Project"></a>创建一个 Dynamic Web Project</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>创建一个新的 Dynamic Web Project （File &gt; New &gt; Project ... &gt; Web &gt; Dynamic Web Project）</p>
+<ul type="disc">
+<li>项目的名称为 hellonutz</li>
+<li>这个例子使用的是 Tomcat 6.0，所以请将 Dynamic Web module version 设置成 2.5
+<ul type="circle">
+<li>如果你的 Tomcat 是 7.0， 则可以设置成 3.0</li>
+</ul>
+</li>
+</ul>
+<p><img src="hello/project_new.png"/></p>
+<h2><a name="创建一个_Tomcat_运行服务器"></a>创建一个 Tomcat 运行服务器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你已经在 Eclipse 中创建了一个 Tomcat 服务器，请<a href="#将_Nutzjar_加入_lib_目录中">跳过本步骤</a>，直接将项目 hellonutz 添加到这个服务器中即可</p>
+<p>在 Eclipse 的 Servers 视图中点击右键，选择 New&gt;Server</p>
+<p><img src="hello/server_new.png"/></p>
+<p>我们使用的 Tomcat 6.0，当然你可以根据自己的需要选用你的 Tomcat 版本，现在 7.0 已经出来了 ^_^</p>
+<p><img src="hello/server_config.png"/></p>
+<p>将项目加入运行服务器</p>
+<p><img src="hello/server_add_project.png"/></p>
+<p>点击 'Finish' 按钮，在 Servers 视图应该出现一个 Tomcat 服务器，这个服务器下应该有一个项目 -- hellonutz</p>
+<h2><a name="将_Nutzjar_加入_lib_目录中"></a>将 Nutz.jar 加入 lib 目录中</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>本例子需要 Nutz-1.a.31 或者更高的版本，不过你可以<a href="../committer/svn_project.html">自己编译一个最新版本</a></p>
+<p>在 WebContent &gt; WEB-INF &gt; lib 文件夹下右键选择 New &gt; File</p>
+<p><img src="hello/link_nutz.png"/></p>
+<p>点击 'Finish' Eclipse 会将 nutz 的 jar 链到项目中</p>
+<h2><a name="创建主模块"></a>创建主模块</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 src 目录上右键选择 New &gt; Class</p>
+<p><img src="hello/main_module.png"/></p>
+<p>直接点 'Finsih'， 后面我们会修改它的代码</p>
+<h2><a name="修改_webxml"></a>修改 web.xml</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过声明一个 Filter，<a href="web_xml.html">将 Nutz.mvc 挂载到 Tomcat 中</a></p>
+<pre>&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5"&gt;
+	&lt;display-name&gt;hellonutz&lt;/display-name&gt;
+	&lt;filter&gt;
+		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
+		&lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
+		&lt;init-param&gt;
+			&lt;param-name&gt;modules&lt;/param-name&gt;
+			&lt;param-value&gt;demo.hello.MainModule&lt;/param-value&gt;
+		&lt;/init-param&gt;
+	&lt;/filter&gt;
+
+	&lt;filter-mapping&gt;
+		&lt;filter-name&gt;nutz&lt;/filter-name&gt;
+		&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+	&lt;/filter-mapping&gt;
+&lt;/web-app&gt;
+</pre>
+<h2><a name="创建入口函数"></a>创建入口函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>打开刚才创建的 MainModule.java，添加一个函数，整个类的源代码如下：</p>
+<pre>package demo.hello;
+
+import org.nutz.mvc.annotation.*;
+
+public class MainModule {
+
+	@At("/hello")
+	@Ok("jsp:jsp.hello")
+	public String doHello() {
+		return "Hello Nutz";
+	}
+
+}
+</pre>
+<p>如果你想知道更多配置方式，请参看</p>
+<ul type="disc">
+<li><a href="modules.html">Nutz.Mvc 的配置语法</a></li>
+<li><a href="url_mapping.html">URL 映射</a></li>
+</ul>
+<h2><a name="创建_jsp_页面"></a>创建 jsp 页面</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>因为我们在入口函数里声明了一个 <a href="view.html#JSP_视图">JSP 视图</a>，按照视图的定义</p>
+<ul type="disc">
+<li>@Ok("jsp:jsp.hello")</li>
+</ul>
+<p>我们需要在 WEB-INF 下面建立一个名为 <b>jsp</b> 的文件夹，并在里面建立一个 <b>hello.jsp</b></p>
+<p><img src="hello/jsp.png"/></p>
+<p>下面是 hello.jsp 的源代码：</p>
+<pre>&lt;html&gt;
+&lt;head&gt;
+&lt;title&gt;I am hello ^_^&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;h1&gt;&lt;%=request.getAttribute("obj")%&gt;&lt;/h1&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</pre>
+<p>仅仅是输出入口函数的返回值。是的，无论入口函数返回什么，都会保存在 request 对象 "obj" 属性中</p>
+<h2><a name="启动服务"></a>启动服务</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="hello/server_run.png"/></p>
+<p>控制台输出</p>
+<p><img src="hello/console.png"/></p>
+<p>如果你想打印更详细的日志，请参看 <a href="../lang/log.html#让_Nutz_输出日志">让_Nutz_输出日志</a></p>
+<h2><a name="在浏览器中访问"></a>在浏览器中访问</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="hello/ok.png"/></p>
+<p>这篇文章虽然不算短，但是实际上，你需要作的事情不多，不是吗？ ^_^</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何进阶"></a>如何进阶</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://nutzdemo.googlecode.com/">访问 demo site</a></li>
+<li><a href="../lang/log.html#让_Nutz_输出日志">让_Nutz_输出日志</a></li>
+<li><a href="overview.html">详细阅读 Mvc 手册</a></li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

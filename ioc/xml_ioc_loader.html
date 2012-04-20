@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>使用XML作为配置文件格式</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">使用XML作为配置文件格式</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<div class="hr"><b></b></div>
+<p>格式约定: 参阅xsd文件(包含在jar中): <a href="http://code.google.com/p/nutz/source/browse/trunk/src/nutz-ioc-0.1.xsd">nutz-ioc-0.1.xsd</a></p>
+<p>示例文件 <a href="http://code.google.com/p/nutz/source/browse/trunk/test/org/nutz/ioc/loader/xml/conf/zzh-offered.xml">示例</a>:</p>
+<pre>&lt;ioc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd"&gt;
+	&lt;obj name="obj" singleton="true" scope="app" parent="XXX"
+		type="java.lang.String"&gt;
+		&lt;args&gt;
+			&lt;str&gt;Tasdfadf&lt;/str&gt; &lt;!-- 对应具体类型 --&gt;
+			&lt;int&gt;23&lt;/int&gt;
+			&lt;float&gt;78.34&lt;/float&gt;
+			&lt;bool&gt;true&lt;/bool&gt;
+			&lt;refer&gt;abc&lt;/refer&gt;
+			&lt;refer&gt;$Ioc&lt;/refer&gt;
+			&lt;java&gt;$abc.find('YYY')&lt;/java&gt;
+			&lt;env&gt;TOMCAT_HOME&lt;/env&gt;
+			&lt;file&gt;/home/zozoh/tmp/name.txt&lt;/file&gt;
+			&lt;obj type="java.lang.StringBuilder" name="xx"&gt; &lt;!-- 内部对象 --&gt;
+				&lt;args&gt;
+					&lt;str&gt;tttt&lt;/str&gt;
+				&lt;/args&gt;
+			&lt;/obj&gt;
+			&lt;array&gt;
+				&lt;str&gt;XXXX&lt;/str&gt;
+				&lt;str&gt;XXXX&lt;/str&gt;
+			&lt;/array&gt;
+			&lt;list&gt;
+				&lt;int&gt;34&lt;/int&gt;
+				&lt;float&gt;78.34&lt;/float&gt;
+			&lt;/list&gt;
+			&lt;map&gt;
+				&lt;item key="a"&gt;
+					&lt;str&gt;XXXX&lt;/str&gt;
+				&lt;/item&gt;
+				&lt;item key="B"&gt;
+					&lt;int&gt;11&lt;/int&gt;
+				&lt;/item&gt;
+			&lt;/map&gt;
+		&lt;/args&gt;
+		&lt;field name="field1"&gt;
+			&lt;env&gt;JAVA_HOME&lt;/env&gt;
+		&lt;/field&gt;
+		&lt;events&gt;
+			&lt;create&gt;onCreate&lt;/create&gt;
+			&lt;depose&gt;depose&lt;/depose&gt;
+			&lt;fetch&gt;com.you.app.OnFetchObject&lt;/fetch&gt;
+		&lt;/events&gt;
+	&lt;/obj&gt;
+	&lt;obj name="XXX"&gt;
+		&lt;events&gt;
+			&lt;create&gt;xxxx&lt;/create&gt;
+			&lt;depose&gt;&lt;/depose&gt;
+		&lt;/events&gt;
+	&lt;/obj&gt;
+&lt;/ioc&gt;
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

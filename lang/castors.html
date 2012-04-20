@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>让 Java 类型不那么强</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">让 Java 类型不那么强</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#类型强好，还是类型弱好？">类型强好，还是类型弱好？</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Hello_Castors">Hello Castors</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#Castors_的原理">Castors 的原理</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#类型转换配置">类型转换配置</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#添加自己的_Castor">添加自己的 Castor</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="类型强好，还是类型弱好？"></a>类型强好，还是类型弱好？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>强类型好，尤其是对编译器友好。而且 IDE 支持的比较好。 弱类型好，因为程序员写程序的时候，不需要考虑类型，只需要考虑逻辑。</p>
+<p>其实，即使是 Javascript，这样的弱类型语言，也不能很好的将类型互相转换的很好。</p>
+<p>我希望在我编程的时候，大多数时间都强类型。我感觉很安全，但是当我想模糊类型的时候，我能有一个工具，帮我把任何类型转成我希望的另外的类型。当然，我自己定义的对象，我并不介意写一个转换过程，但是请只让我写一次。</p>
+<p>所以，这就是 Nutz.Castors</p>
+<div class="hr"><b></b></div>
+<h1><a name="Hello_Castors"></a>Hello Castors</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>举个很简单的例子：</p>
+<pre>System.out.println(Castors.me().castTo("563", int.class));
+</pre>
+<p>或者</p>
+<pre>System.out.println(Castors.me().castTo("zozohtnt@gmail.com", org.nutz.lang.meta.Email.class));
+</pre>
+<p>你还可以：</p>
+<pre>Calendar c = Castors.me().castTo("2009-11-12 15:23:12", Calendar.class)
+</pre>
+<p>你甚至还能：</p>
+<pre>Timestamp t = Castors.me().castTo(Calendar.getInstance(), Timestamp.class);
+</pre>
+<p>它完全能支持容器：</p>
+<pre>List&lt;Pet&gt; petList = ...;
+Pet[] pets = Castors.me().castTo(petList, Pet[].class);
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="Castors_的原理"></a>Castors 的原理</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请查看 <a href="http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/castor/castor">org.nutz.castor.castor  包</a>，这里面的一个个的实现类就是 Nutz 为你内置的类型转换器。</p>
+<p>每当你要转换一个对象，Nutz.castors 都会看看能不能直接转换，如果不能，它就在这个包里找找，看看有没有合适的转换器。Object2Object 转换器是最终极的转换。它尝试着在目标对象里寻找构造函数，或者静态工厂方法，如果找到一个方法有且只有一个参数是源对象。那么它就会高兴的构造目标对象，否则则抛出异常。</p>
+<div class="hr"><b></b></div>
+<h1><a name="类型转换配置"></a>类型转换配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如日期和时间，你需要定制自己的日期类型，请参看默认的 CastorSetting 的源代码：</p>
+<pre>public class CastorSetting {
+	public static void setup(DateTimeCastor&lt;?, ?&gt; c) {
+		c.setDateFormat(new SimpleDateFormat("yyyy-MM-dd"));
+		c.setTimeFormat(new SimpleDateFormat("HH:mm:ss"));
+		c.setDateTimeFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+	}
+}
+</pre>
+<p>它有一个函数，是设置 DataTimeCastor 的，那么 Nutz.Castor 会在构造这种类型的转换器前，调用一下这个函数。这个函数会初始化一下相应的 DataTimeCastor。</p>
+<p>你可以通过：</p>
+<pre>Object yourSetting = ...;
+Castors.setSetting(yourSetting);
+</pre>
+<p>替换这个默认实现。</p>
+<p>你可以通过：</p>
+<pre>Castors.resetSetting();
+</pre>
+<p>来把转换配置，恢复到默认值</p>
+<div class="hr"><b></b></div>
+<h1><a name="添加自己的_Castor"></a>添加自己的 Castor</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你的项目可能会有很多自定义的 POJO，而如果你想支持它们之间流畅的转换，你可能需要写一组 A2B 以及 B2A 的转换器。这些转换器，你可以分别放在不同的包下，为了能让 Nutz.Castors 找到你的转换器，你需要在项目启动时：</p>
+<pre>Castors.addCastorPaths(A2B.class, E2D.class);
+</pre>
+<p>举个详细的例子，比如你有两组转换器：</p>
+<pre>com.you.red
+	A2B
+	B2A
+	A2C
+	C2A
+	B2C
+	C2B
+
+com.you.blue
+	X2Y
+	Y2X
+	X2Z
+	Z2X
+	Y2Z
+	Z2Y
+</pre>
+<p>为了能让 Nutz.Castors 找到这两组转换器，你需要在项目启动时加载一下：</p>
+<pre>Castors.addCastorPaths(A2B.class, X2Y.class);
+</pre>
+<p>这样， A2B 和 X2Y 这两包下所有的转换器，都会被加载，并且他们的优先级按加载顺序，后加载的比先加载的要高。Nutz 提供的默认的转换器，自然优先级最低。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

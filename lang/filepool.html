@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>文件池</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">文件池</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是文件池">什么是文件池</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#怎么使用文件池">怎么使用文件池</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#创建文件池">创建文件池</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#在池中创建一个文件">在池中创建一个文件</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#从池中获取一个文件">从池中获取一个文件</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#从池中获取一个文件，如果不存在，创建它">从池中获取一个文件，如果不存在，创建它</a></div>
+</li>
+<li>
+<div><span class="num">2.5</span><a href="#从池中删除一个文件">从池中删除一个文件</a></div>
+</li>
+<li>
+<div><span class="num">2.6</span><a href="#判断池中是否存在一个文件">判断池中是否存在一个文件</a></div>
+</li>
+<li>
+<div><span class="num">2.7</span><a href="#看看当前池中最大的文件_ID">看看当前池中最大的文件 ID</a></div>
+</li>
+<li>
+<div><span class="num">2.8</span><a href="#看看某一个池中的文件的_ID_为多少">看看某一个池中的文件的 ID 为多少</a></div>
+</li>
+<li>
+<div><span class="num">2.9</span><a href="#清除池中所有文件">清除池中所有文件</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#在_Ioc_中使用">在 Ioc 中使用</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是文件池"></a>什么是文件池</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果大家写一些稍微复杂的应用，可能或多或少的会使用一下临时文件。或者希望能有一个目录，保存用户上传的文件。你的用法可能有下面两种：</p>
+<ul type="disc">
+<li>文件不能超过一定数量，超过了自动删除旧的</li>
+<li>文件永远保存，除非程序主动删除</li>
+</ul>
+<p>对于网络应用，处理用户上传的文件，有一种比较常用的做法是：</p>
+<ul type="disc">
+<li>把文件的索引以及一些信息记录在数据库里</li>
+<li>把文件内容记录在磁盘里</li>
+</ul>
+<p>而 Nutz 的文件池，就是为上述这些场景设计的。</p>
+<div class="hr"><b></b></div>
+<h1><a name="怎么使用文件池"></a>怎么使用文件池</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>对于文件池，它有一个接口 '<span style="color:#AA00AA;"><b>org.nutz.filepool.FilePool</b></span>' 以及一个简单的实现 '<span style="color:#AA00AA;"><b>org.nutz.filepool.NutFilePool</b></span>'。当然，你可以根据需要实现自己的特殊规则的文件池实现类。</p>
+<h2><a name="创建文件池"></a>创建文件池</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面最多同时有2000个文件
+FilePool pool = new NutFilePool("~/tmp/myfiles", 2000);
+
+// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面不限文件
+FilePool pool = new NutFilePool("~/tmp/myfiles");
+// 相当于 FilePool pool = new NutFilePool("~/tmp/myfiles", 0);
+</pre>
+<p></p>
+<h2><a name="在池中创建一个文件"></a>在池中创建一个文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>File f = pool.createFile(239, ".png");  // 该文件本句之后，已经被创建
+// TODO 为这个文件写入内容
+</pre>
+<p>实际上， NutFilePool 会将你的 id （一个 Long 值）以及后缀变成如下形式的文件路径:</p>
+<pre>~/tmp/myfiles/00/00/00/00/00/00/00/EF.png
+</pre>
+<p>也就是说，你传入的 Long 值会先变成字符串 '00000000000000EF'， 然后每两位字符加入一个 '/'，最后拼上 ".png" 就成为你这个文件在池中的路径了。</p>
+<p>这样做的好处是，你只要在数据库记录一个自增的 ID，就能知道在池中对应文件的路径。同样，如果你知道了在池中对应文件的路径，你也能知道在数据库中记录的 ID。这个特性有时候是很有用的。</p>
+<p>文件池会维护一个自增的 id， 每当成功创建一个文件后，它就会自加。</p>
+<p><span style="color:#0000AA;"><b>补充说明:</b></span>NutFilePool 这个实现非常简单，没有考虑到集群，即多台主机共用一个文件池的问题。但是如果在一台主机内，虽然它没用用线程同步锁，但是线程安全也不太会是问题，因为是直接一句自加，即使是多线程竞争也不会出问题的。</p>
+<p>了解了这个之后，之后的操作就都顺理成章了 ^_^</p>
+<h2><a name="从池中获取一个文件"></a>从池中获取一个文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>File f = pool.getFile(239, ".png");  // 如果文件不存在，将返回 null
+</pre>
+<p></p>
+<h2><a name="从池中获取一个文件，如果不存在，创建它"></a>从池中获取一个文件，如果不存在，创建它</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>File f = pool.returnFile(239, ".png");  
+</pre>
+<p></p>
+<h2><a name="从池中删除一个文件"></a>从池中删除一个文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>File f = pool.removeFile(239, ".png");
+</pre>
+<p></p>
+<h2><a name="判断池中是否存在一个文件"></a>判断池中是否存在一个文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>boolean exists = pool.hasFile(239, ".png");
+</pre>
+<p></p>
+<h2><a name="看看当前池中最大的文件_ID"></a>看看当前池中最大的文件 ID</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>long maxId = pool.current();
+</pre>
+<p></p>
+<h2><a name="看看某一个池中的文件的_ID_为多少"></a>看看某一个池中的文件的 ID 为多少</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>File f = pool.getFile(239, ".png");
+long fId = pool.getFileId(f, ".png");
+// fId should be 239
+</pre>
+<p></p>
+<h2><a name="清除池中所有文件"></a>清除池中所有文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>pool.clear();
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="在_Ioc_中使用"></a>在 Ioc 中使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>文件池当然可以被任何 Ioc 容器管理，下面我们以 Nutz.Ioc 的 JSON 配置方式来举例:</p>
+<pre>{
+    pool : {
+        type : 'org.nutz.filepool.NutFilePool',
+        args : ['~/tmp/files', 2000]
+    }
+}
+</pre>
+<p>我想熟悉 Spring 或者 Guice 的朋友，怎么配置自然不用我多嘴了吧 </p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

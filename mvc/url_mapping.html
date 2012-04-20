@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>URL 映射</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">URL 映射</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要详细描述_URL_映射">为什么需要详细描述 URL 映射</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#什么是_URL">什么是 URL</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#webxml_中的映射_-_url-pattern">web.xml 中的映射 - url-pattern</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#webxml_中的全匹配_-_/*">web.xml 中的全匹配 - /*</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#webxml_中的录匹配_-_/abc/*">web.xml 中的录匹配 - /abc/*</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#webxml_中的后缀匹配_-_*nut">web.xml 中的后缀匹配 - *.nut</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#webxml_中的精确匹配_-_/abc/getlistnut">web.xml 中的精确匹配 - /abc/getlist.nut</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#在_NutzMvc_中的映射">在 Nutz.Mvc 中的映射</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#如何通过_@At_寻找入口函数">如何通过 @At 寻找入口函数</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#Nutz_中的全匹配_-_/*">Nutz 中的全匹配 - /*</a></div>
+</li>
+<li>
+<div><span class="num">4.3</span><a href="#Nutz_中的目录匹配_-_/abc/*">Nutz 中的目录匹配 - /abc/*</a></div>
+</li>
+<li>
+<div><span class="num">4.4</span><a href="#Nutz_中的后缀匹配_-_*nut">Nutz 中的后缀匹配 - *.nut</a></div>
+</li>
+<li>
+<div><span class="num">4.5</span><a href="#Nutz_中的精确匹配_-_/abc/getlistnut">Nutz 中的精确匹配 - /abc/getlist.nut</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么需要详细描述_URL_映射"></a>为什么需要详细描述 URL 映射</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 的核心任务就是将 HTTP 请求的 URL 映射到某一个入口函数，如果你看完了 <a href="overview.html">Nutz.Mvc 概述</a>你大概应该知道，映射的配置信息是通过注解 @At 来设置的，@At 注解也非常简单，配置起来应该没有什么障碍。</p>
+<p>但是，依然在某些时候，你会在你的应用出现 404 错误，为了能让你在编写项目是，心里非常有底，这里将详细的解释一下JSP/Servlet 以及 Nutz.Mvc 映射部分的工作原理，在你遇到讨厌的 404 时，只要通读本文，相信就能找到问题的症结。</p>
+<div class="hr"><b></b></div>
+<h1><a name="什么是_URL"></a>什么是 URL</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>任何 URL 都由如下部分组成</p>
+<p><span style="color:#FFAA00;"><b>http://</b></span> <span style="color:#008800;"><b>www.myapp.com</b></span> <span style="color:#FF0000;"><b> /app</b></span> <span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span> <b>.suffix</b></p>
+<ul type="disc">
+<li><span style="color:#FFAA00;"><b>http://</b></span> - 协议，也可以是 https://</li>
+<li><span style="color:#008800;"><b>www.myapp.com</b></span> - 域名或者 IP 地址，由 DNS 服务器负责转发</li>
+<li><span style="color:#FF0000;"><b> /app</b></span> - Context 的 path， 这个匹配到 server.xml 中每个 &lt;context&gt; 的 path 属性，由 HTTP 服务负责转发</li>
+<li><span style="color:#FF00FF;"><b> /module</b></span><span style="color:#0000FF;"><b> /action</b></span><b>.suffix</b> - 从这里以后的匹配将交给相应的 Context 的 <b>web.xml</b>，由HTTP 服务器根据 <b>web.xml</b> 来转发</li>
+</ul>
+<p>因此，我们主要研究的就是 <span style="color:#FF00FF;"><b> /module</b></span><span style="color:#0000FF;"><b> /action</b></span><b>.suffix</b> 的部分是如何转发的。</p>
+<div class="hr"><b></b></div>
+<h1><a name="webxml_中的映射_-_url-pattern"></a>web.xml 中的映射 - url-pattern</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常，在 web.xml 中，我们可以声明各种 HttpServlet 子类， 为了能让某一个子类接受 URL， 就需要配置映射，众所周知你可以通过 &lt;servlet-mapping&gt;，为你的 Servelet 增加一组至多组的配置：</p>
+<pre>&lt;servlet-mapping&gt;
+	&lt;servlet-name&gt;MyServletName&lt;/servlet-name&gt;
+	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
+&lt;/servlet-mapping&gt;
+</pre>
+<p>同样，根据 Servlet 的规范，你的 &lt;url-pattern&gt; 可以有如下几种形式的值:</p>
+<p></p>
+<div class="hr"><b></b></div>
+<h2><a name="webxml_中的全匹配_-_/*"></a>web.xml 中的全匹配 - /*</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>转发到本 Context 的任何请求都会调用这个 Servlet，比如：</p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b> /abc</b></span></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /dosome</b></span></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /dosome</b></span><b>.nut</b></li>
+<li><span style="color:#FF00FF;"><b> /index</b></span><b>.jsp</b></li>
+<li><span style="color:#FF00FF;"><b> /img</b></span><span style="color:#0000FF;"><b> /logo</b></span><b>.png</b></li>
+</ul>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>调用 request 对象不同方法将会返回的值：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> req.getRequestURL()	</td>
+<td> "http://localhost:8080/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getRequestURI()	</td>
+<td> "/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getPathInfo()	</td>
+<td> "/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getServletPath()	</td>
+<td> "" </td>
+</tr>
+</table>
+<div class="hr"><b></b></div>
+<h2><a name="webxml_中的录匹配_-_/abc/*"></a>web.xml 中的录匹配 - /abc/*</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>转发到本 Context 的任何请求只要以 <b> /abc/</b> 开头，都会调用这个 Servlet，比如：</p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /dosome</b></span></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /dosome</b></span><b>.nut</b></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /index</b></span><b>.jsp</b></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /logo</b></span><b>.png</b></li>
+</ul>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>调用 request 对象不同方法将会返回的值：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> req.getRequestURL()	</td>
+<td> "http://localhost:8080/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getRequestURI()	</td>
+<td> "/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getPathInfo()	</td>
+<td> "/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getServletPath()	</td>
+<td> "/abc" </td>
+</tr>
+</table>
+<p>因此我们可以认为， req.getPathInfo() 的值是：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+---------------------------------^   匹配 /abc/*，从这个位置之后的字符串 
+</pre>
+<div class="hr"><b></b></div>
+<h2><a name="webxml_中的后缀匹配_-_*nut"></a>web.xml 中的后缀匹配 - *.nut</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>转发到本 Context 的任何请求只要以 <b> .nut</b> 结尾，都会调用这个 Servlet，比如：</p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /dosome</b></span><b>.nut</b></li>
+<li><span style="color:#FF00FF;"><b> /abc</b></span><b>.nut</b></li>
+</ul>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>调用 request 对象不同方法将会返回的值：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> req.getRequestURL()	</td>
+<td> "http://localhost:8080/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getRequestURI()	</td>
+<td> "/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getPathInfo()	</td>
+<td> null </td>
+</tr>
+<tr>
+<td> req.getServletPath()	</td>
+<td> "/abc/getlist.nut" </td>
+</tr>
+</table>
+<div class="hr"><b></b></div>
+<h2><a name="webxml_中的精确匹配_-_/abc/getlistnut"></a>web.xml 中的精确匹配 - /abc/getlist.nut</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>转发到本 Context 的任何请求必须为 <b> /abc/getlist.nut</b>，才会调用这个 Servlet</p>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>调用 request 对象不同方法将会返回的值：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> req.getRequestURL()	</td>
+<td> "http://localhost:8080/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getRequestURI()	</td>
+<td> "/testweb/abc/getlist.nut" </td>
+</tr>
+<tr>
+<td> req.getPathInfo()	</td>
+<td> null </td>
+</tr>
+<tr>
+<td> req.getServletPath()	</td>
+<td> "/abc/getlist.nut" </td>
+</tr>
+</table>
+<div class="hr"><b></b></div>
+<h1><a name="在_NutzMvc_中的映射"></a>在 Nutz.Mvc 中的映射</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 通过 org.nutz.mvc.NutFilter 类将自己同一个 JSP/SERVLET 容器挂接关于挂接的方法，详细请看 <a href="web_xml.html">如何配置 web.xml</a></p>
+<p>在设计这个框架之初，我们有一个基本的设计要求：</p>
+<p><b>如果用户修改了 web.xml 或者 server.xml，不需要用户重新修改 Nutz.Mvc 相关的配置</b></p>
+<p>对于任意一个请求:</p>
+<ul type="disc">
+<li><span style="color:#FFAA00;"><b>http://</b></span> <span style="color:#008800;"><b>www.myapp.com</b></span> <span style="color:#FF0000;"><b> /app</b></span> <span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span> <b>.suffix</b></li>
+</ul>
+<p>Nutz.Mvc 匹配的时候，只会关心这个部分：</p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span></li>
+</ul>
+<p>发现了吗？是的，它对 <b>.suffix</b> 不敏感，匹配之前，它会把 <b>.suffix</b> 切去。之后，它会通过注解 '@At' 寻找合适的入口函数，</p>
+<div class="hr"><b></b></div>
+<h2><a name="如何通过_@At_寻找入口函数"></a>如何通过 @At 寻找入口函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在<a href="overview.html">Nutz.Mvc 概述</a>里，我提到，@At 注解可以被声明在三个地方：</p>
+<pre>主模块 - @At("/a")
+   子模块 - @At("/b")
+	   入口函数 - @At("/c")
+</pre>
+<p>最终确定了 URL <b> /a/b/c</b> 要匹配的入口函数。</p>
+<p>所以要想匹配 <b> /a/b/c</b> 下面几种形式都是可以的</p>
+<pre>@At("/a")
+public class MainModule{
+   ...
+
+@At("/b")
+public class SubModule{
+   ...
+   @At("/c")
+   public String helle(){
+	 ...
+</pre>
+<p>或者</p>
+<pre>public class MainModule{
+   ...
+
+@At("/a")
+public class SubModule{
+   ...
+   @At("/b/c")
+   public String helle(){
+	 ...
+</pre>
+<p>或者</p>
+<pre>public class MainModule{
+   ...
+
+public class SubModule{
+   ...
+   @At("/a/b/c")
+   public String helle(){
+	 ...
+</pre>
+<p>当然，一般的说，很少有人在主模块上声明 @At</p>
+<p>通过上面的内容我们可以知道，只要有一个 URL，我们就知道如何设置注解 '@At'，但是你确定我们要匹配的 URL 就是 </p>
+<ul type="disc">
+<li><span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span></li>
+</ul>
+<p>吗？ 不，这同时也得参考 web.xml 的匹配方式：</p>
+<p></p>
+<div class="hr"><b></b></div>
+<h2><a name="Nutz_中的全匹配_-_/*"></a>Nutz 中的全匹配 - /*</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
+<ul type="disc">
+<li>/abc/getlist</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="Nutz_中的目录匹配_-_/abc/*"></a>Nutz 中的目录匹配 - /abc/*</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
+<ul type="disc">
+<li>/getlist</li>
+</ul>
+<p>这里需要说明的是，可能人们会怀疑，为什么目录匹配的时候，只匹配  /getlist 而不匹配  /abc/getlist 呢？因为，你在你的 web.xml 声明了这样的 url-pattern:</p>
+<pre>...
+&lt;url-pattern&gt;/abc/*&lt;/url-pattern&gt;
+...
+</pre>
+<p>显然，你希望在 web.xml 来决定你的 URL 前面那部分，所以后面一部分就交给 Nutz.Mvc 来匹配吧。否则，你修改了web.xml 的时候，你还需要修改 Nutz.Mvc 的配置，这与显然我们设计的初衷不符，Nutz.Mvc 设计的基本要求就是：</p>
+<p><b>如果用户修改了 web.xml 或者 server.xml，不需要用户重新修改 Nutz.Mvc 相关的配置</b></p>
+<div class="hr"><b></b></div>
+<h2><a name="Nutz_中的后缀匹配_-_*nut"></a>Nutz 中的后缀匹配 - *.nut</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
+<ul type="disc">
+<li>/abc/getlist</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="Nutz_中的精确匹配_-_/abc/getlistnut"></a>Nutz 中的精确匹配 - /abc/getlist.nut</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果请求为：</p>
+<pre>http://localhost:8080/testweb/abc/getlist.nut
+</pre>
+<p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
+<ul type="disc">
+<li>/abc/getlist</li>
+</ul>
+<p>这种映射方式基本是不会发生的，因为你需要让 Nutz.Mvc 控制一批 URL 而不是单个 URL。所以，你如果选择了这种模式我就没话讲了，在 Nutz.Mvc 中你就全部匹配吧，惩罚你，哼！</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

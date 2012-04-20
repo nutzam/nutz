@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>事务模板</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">事务模板</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么提供事务模板">为什么提供事务模板</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#使用事务模板">使用事务模板</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#一段示例代码">一段示例代码</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#事务的关键就是原子的界定">事务的关键就是原子的界定</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#设置事务的级别">设置事务的级别</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#事务的嵌套">事务的嵌套</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#扩展实现">扩展实现</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#总结一下_NutzDao_事务">总结一下 Nutz.Dao 事务</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么提供事务模板"></a>为什么提供事务模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>截至到现在为止，除非你使用 dao.execute(Sql ...) ，一次执行多个 SQL，是事务安全的，其他的情况均是事务不安全的，比如如下代码：</p>
+<pre>Pet pet1 = dao.fetch(Pet.class,"XiaoBai");
+Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
+
+pet1.setNickname("BaiBai");
+pet2.setNickname("HeiHei");
+
+dao.update(pet1);
+dao.update(pet2);
+</pre>
+<p>尤其是请关注最后两句:</p>
+<pre>dao.update(pet1);
+dao.update(pet2);
+</pre>
+<p>当第二句话抛出异常的时候，第一句话不能被回滚。这两条调用就是不事务安全的。如果我想让 pet1 和 pet2的更新操作是原子性的，它们必须一同成功，一同失败，怎么办呢？</p>
+<div class="hr"><b></b></div>
+<h1><a name="使用事务模板"></a>使用事务模板</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Dao 提供了简单的解决办法： <b>事务模板</b></p>
+<div class="hr"><b></b></div>
+<h2><a name="一段示例代码"></a>一段示例代码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>上一节的例子可以修改为:</p>
+<pre>final Pet pet1 = dao.fetch(Pet.class,"XiaoBai");
+final Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
+
+pet1.setNickname("BaiBai");
+pet2.setNickname("HeiHei");
+// Begin transaction		
+Trans.exec(new Atom(){
+	public void run() {
+		dao.update(pet1);
+		dao.update(pet2);
+	}
+});
+// End transaction
+</pre>
+<p>提供一个 org.nutz.trans.Atom 接口的匿名实现，在里面执行的所有的 Dao 操作都是原子性的，因为它们在同一个 “<b>原子</b> (<span style="color:#008800;">Atom</span>)” 里。</p>
+<div class="hr"><b></b></div>
+<h2><a name="事务的关键就是原子的界定"></a>事务的关键就是原子的界定</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>事务最核心的是原子的界定，在 Nutz.Dao中，界定原子的方法出奇的简单，借助匿名类，你可以随时将一段代码用你的原子实现包裹住。而 Trans.exec() 方法接受<b>数目可变的原子</b>，每个原子都是事务性的。</p>
+<p><b> Trans.exec 的函数声明</b></p>
+<pre>public static void exec(Atom... atoms);
+</pre>
+<p><span style="color:#0000AA;"><b>被原子实现包裹住的代码就是事务安全的</b></span>，无论它同时操作了多少个 DataSource。Nutz.Dao 提供的原子接口非常简单，实际上它就是 java.lang.Runnable 的一个别名，下面就是这个接口的全部代码：</p>
+<pre>package com.zzh.trans;
+public interface Atom extends Runnable {}
+</pre>
+<p>这几乎是我写过的最简单的 Java 类了，正是因为它简单，所以才有无限的威力。你如果查看过 Nutz 的源代码包，在和数据库操作的地方，你总会和 Atom 不期而遇。很多朋友曾经很不适应匿名类的写法，是的，我在早期写 Java 的时候也比较讨厌匿名类，但是熟悉了以后，你会真正喜欢上这个东西，就像你写 Javascript 的一段时候以后，多数人都会喜欢上“<span style="color:#0000AA;">闭包</span>”一样。你可以把匿名类当作 Java 给你的<span style="color:#0000AA;">闭包</span>。</p>
+<p>采用事物模板的来界定事物有一个缺点，这是 Java 语言带来的限制：你有可能需要将一些相关的变量声明成 final 的。并且在 run 函数中，你只能向外抛 RuntimeException 或其子类。</p>
+<div class="hr"><b></b></div>
+<h2><a name="设置事务的级别"></a>设置事务的级别</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 JDBC 的 java.sql.Connection 接口中定义的 setTransactionIsolation 函数可以设置事务的级别Nutz.Dao 也提供另外一个静态函数，允许你设置事务的级别:</p>
+<p><b> Trans.exec 的函数声明</b></p>
+<pre>public static void exec(int level, Atom... atoms);
+</pre>
+<p>这里的第一个参数 level 和 java.sql.Connection 接口中的 setTransactionIsolation 规定的 level 是一样的。下面是在 java.sql.Connection 里面关于 level 参数的 JDoc 说明：</p>
+<p>它可以是下列常量中的任意一个值：</p>
+<ul type="disc">
+<li>Connection.TRANSACTION_READ_UNCOMMITTED</li>
+<li>Connection.TRANSACTION_READ_COMMITTED</li>
+<li>Connection.TRANSACTION_REPEATABLE_READ</li>
+<li>Connection.TRANSACTION_SERIALIZABLE</li>
+</ul>
+<p><span style="color:#FF0000;"><b>注意：</b></span> 不能使用常量 Connection.TRANSACTION_NONE，因为它的意思是“不支持事务”</p>
+<p>关于 level 参数的更多说明，请参看<a href="http://java.sun.com/javase/6/docs/api/java/sql/Connection.html#setTransactionIsolation(int)">java.sql.Connection 的文档</a></p>
+<p>不同的数据库，对于 JDBC 事务级别的规范，支持的力度不同。请参看相应数据库的文档，已 确定你设置的数据库事务级别是否被支持。</p>
+<div class="hr"><b></b></div>
+<h2><a name="事务的嵌套"></a>事务的嵌套</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz 的事务模板可以嵌套吗？ 答案是肯定的。事实上，Nutz 支持事务模板的无限层级嵌套。</p>
+<p>这里，如果每一层嵌套，指定的事务级别有所不同，不同的数据库，可能引发不可预知的错误。所以，嵌套的事务模板的事务，将以最顶层的事务为级别为标准。就是说，如果最顶层的事务级别为 'TRANSACTION_READ_COMMITTED'，那么下面所包含的所有事务，无论你指定什么样的事务级别，都是 'TRANSACTION_READ_COMMITTED'， 这一点，由抽象类 Transaction 来保证。其 setLevel 当被设置了一个大于 0 的整数以后，将不再 接受任何其他的值。 </p>
+<p>你可以通过继承 Transaction 来修改这个默认的行为，当然，这个行为修改一般是没有必要的。 </p>
+<p>另外，你还可能需要知道，通过 Trans.setup 方法，能让整个虚拟机的 Nutz 事务操作都使用你的 Transaction 实现</p>
+<p>下面我给出两个例子:</p>
+<p><b>最外层模板决定了整个事务的级别:</b></p>
+<pre>Trans.exec(Connection.TRANSACTION_READ_COMMITTED, new Atom(){
+	public void run(){
+		dao.update(xxx);
+		dao.update(bbb);
+
+		// 在下层模板，虽然你指定了新的事务级别，但是这里的事务级别还是
+		// 'TRANSACTION_READ_COMMITTED'。在一个事务中，级别一旦设定就不可更改
+		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
+			public void run(){
+				dao.update(CCC);
+				dao.update(EEE);
+			}
+		});
+	}
+});
+</pre>
+<p><b>让整个函数都是事务的:</b></p>
+<pre>public void updatePet(final Pet pet){
+	Trans.exec(new Atom(){
+		public void run(){
+			dao.update(pet);
+			dao.update(pet.getMaster());
+		}
+	});
+}
+
+// 在另外一个函数里，可以这么使用
+public void updateDogAndCat(final Pet dog, final Pet cat){
+	Trans.exec(new Atom(){
+		public void run(){
+			updatePet(dog);
+			updatePet(cat);
+		}
+	});
+}
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="扩展实现"></a>扩展实现</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>com.zzh.trans.Trans 类的 exec()方法，接受数目可变的 Atom 实例，足够方便了吧。 但是它默认只能支持在一台机器上保证事务性，就是在一个 JVM 里保证代码的事务性。如果跨越多个JVM一起组合的 Service，如何保证事务性呢，很抱歉，Nutz.Dao 的第一版的实现里不包括跨越多个JVM依然保证事务性的功能，但是你如果真的需要这个功能也没关系，你可以自己写一个 org.nutz.trans.Transaction 的实现，然后在你的应用启动时，通过</p>
+<pre>com.zzh.trans.Trans.setup(你的实现类)
+</pre>
+<p>替换 Nutz.Dao 的默认实现。</p>
+<div class="hr"><b></b></div>
+<h1><a name="总结一下_NutzDao_事务"></a>总结一下 Nutz.Dao 事务</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>org.nutz.trans.Trans 类提供了两个函数 exec
+<ul type="circle">
+<li>一个接受数目可变的 Atom 对象</li>
+<li>一个接受一个整型值用以界定本事务的级别，以及一个数目可变的 Atom 对象</li>
+</ul>
+</li>
+<li>Atom 类就是 java.lang.Runnable 的一个别名</li>
+<li>在一个 Atom 里，无论同时操作多少 DataSource，都是事务安全的</li>
+<li>你可以通过实现自己的 Transaction 实现类，扩展 Nutz.Dao 对于事务的支持</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

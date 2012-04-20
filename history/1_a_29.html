@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.a.29 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.a.29 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#关于_1a29">关于 1.a.29</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于_1a29"></a>关于 1.a.29</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是一个Bug Fix版本</p>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=211">Issue 211</a> 更换1.28后的问题</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=214">Issue 214</a> aop: 有些时候，用 AOP 生成的字节码抛 UnsupportedClassVersion</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=216">Issue 216</a> Aop: 声明式切片 难以配置</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=217">Issue 217</a> Json toJson()当传入的是HttpRequest时出错</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=218">Issue 218</a> org.nutz.lang.String 510行，注释字写错了</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=219">Issue 219</a> 上传文件出错</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=221">Issue 221</a> Ioc 如果DataSource是在Web容器里面定义的,就无法获取</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=223">Issue 223</a> Ioc @Inject应当允许标注在set方法上</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=225">Issue 225</a> ioc: 自定义注入的特殊类型不能正确解析</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=227">Issue 227</a> mvc: ServerRedirectView.render函数类型转换bug</li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=228">Issue 228</a> ioc: 注入容器上下文貌似没有实现</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>共通过了 503 个单元测试用例,代码覆盖率达到62%(按line计算)</li>
+<li>Nutz.Dao 经测试在如下数据库上可以工作正常
+<ul type="disc">
+<li><a href="http://www.h2database.com">H2</a></li>
+<li><a href="http://www.mysql.com">MySql</a></li>
+<li><a href="http://www.oracle.com">Oracle</a></li>
+<li><a href="http://www.postgresql.org">Postgresql</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
+</ul>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>修正部分文字错误</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>贡献的种类:</p>
+<ul type="disc">
+<li>问题: 给项目的<a href="http://code.google.com/p/nutz/issues/list">问题列表</a>汇报一个上的问题，并且该问题被本次发布包括</li>
+<li>博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 <a href="http://code.google.com/p/nutz/wiki/appendix_resources">推荐列表</a>收录</li>
+<li>支持: 总结至少出 FAQ 文档
+<ul type="circle">
+<li>关于 FAQ 文档的写作规范请先阅读： <a href="http://groups.google.de/group/nutzam/browse_thread/thread/4caf8181456b7adc?hl=zh-CN">Nutz 的虎年计划.5提供更好的社区支持</a></li>
+</ul>
+</li>
+<li>代码: 提交过至少一个修订</li>
+<li>Demo: 为 <a href="http://code.google.com/p/nutzdemo">Demo Site</a> 提交过代码</li>
+<li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
+<li>测试: 发布前，参与测试周，发布人给出的任务</li>
+</ul>
+<p>如有遗漏,请提醒我们 ^_^</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者 									</td>
+<td> 问题</td>
+<td> 博客</td>
+<td> 支持</td>
+<td> 代码</td>
+<td> Demo</td>
+<td> 文档</td>
+<td> 测试</td>
+</tr>
+<tr>
+<td> happyday0517 							</td>
+<td>  O  </td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  -  </td>
+</tr>
+<tr>
+<td> landraxee 								</td>
+<td>  O  </td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  -  </td>
+</tr>
+<tr>
+<td> wendal									</td>
+<td>  O  </td>
+<td>  -  </td>
+<td>  O  </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  O  </td>
+<td>  O  </td>
+</tr>
+<tr>
+<td> winstars									</td>
+<td>  O  </td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  -	</td>
+<td>  -  </td>
+<td>  -  </td>
+<td>  -  </td>
+</tr>
+<tr>
+<td> zozohtnt									</td>
+<td>  O  </td>
+<td>  -  </td>
+<td>  O  </td>
+<td>  O	</td>
+<td>  -  </td>
+<td>  O  </td>
+<td>  O  </td>
+</tr>
+</table>
+<p>另外，非常感谢</p>
+<ul type="disc">
+<li><a href="https://groups.google.at/group/nutzam?hl=zh-CN">Nutzam 讨论区</a></li>
+<li><a href="http://qun.qq.com/air/#75818186">Nutz QQ 群(75818186)</a></li>
+<li><a href="http://qun.qq.com/air/#68315571">Nutz QQ 2群(68315571)</a></li>
+<li>GTalk 聊天群 <span style="color:#AAAAAA;"><i>添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span></li>
+</ul>
+<p>的朋友们，你们提出的任何问题，发表的任何言论，实际上都对这个小框架 <b>产生着潜移默化的影响</b>。我们也正在不断的努力，希望每一个新版本都能让大家获得更好的编程体验。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

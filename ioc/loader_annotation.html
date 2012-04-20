@@ -1,0 +1,248 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Ioc - Annotation 加载器</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Ioc - Annotation 加载器</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要_Ioc_注解加载器">为什么需要 Ioc 注解加载器</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#如何使用_AnnotationIocLoader">如何使用 AnnotationIocLoader</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#指定对象的名称">指定对象的名称</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#不要单例">不要单例</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#为对象传递构造函数">为对象传递构造函数</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#为对象的字段注入">为对象的字段注入</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#声明对象的事件">声明对象的事件</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#如果要注入的字段在超类怎么办">如果要注入的字段在超类怎么办</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么需要_Ioc_注解加载器"></a>为什么需要 Ioc 注解加载器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>无论是 XML 还是 JSON，都需要你创建一个新的配置文件，在里面描述你的对象依赖关系。一般的来说，一个应用大多数的对象依赖关系，是固定的，即，在项目发布以后是不必调整的。如果将这些依赖关系通通写到配置文件中，颇有点"脱了裤子放屁"的感觉，最理想的情况是，将可能变动的依赖关系写到配置文件里，而将不怎么会变动的依赖关系写成 Java 的注解 (<i>Annotation</i>)， 如果能这样的话，一切就圆满了。</p>
+<p><b>但是，真的可以吗？</b></p>
+<p>我可以负责任的告诉你，完全是可以滴 ^_^</p>
+<p>首先这篇文章，会详细讲解一下如果通过注解来配置你的容器对象，而 <a href="loader_combo.html">Ioc 复合加载器</a>一篇，将会告诉你如何组合多个加载器，这样你就可以把你的对象依赖关系分别写到 xml,json,以及 Java 注解里，组合使用了。</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用_AnnotationIocLoader"></a>如何使用 AnnotationIocLoader</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>同 JsonLoader 一样，你可以直接 new 一个 AnnoationIocLoader</p>
+<pre>Ioc ioc = new NutIoc(new AnnotationIocLoader("com.you.app.package0", "com.you.app.package1");
+</pre>
+<p>当然在 Nutz.Mvc 中，你可以通过 IocProvider 来初始化 Ioc 容器，所以你可以在你的 MainModule 上这么声明</p>
+<pre>@IocBy(type = AnnotationIocProvider.class, 
+       args = { "com.you.app.package0",
+                "com.you.app.package1"})
+public class MainModule {
+    ....
+</pre>
+<p>这样，你在</p>
+<ul type="disc">
+<li>com.you.app.package0</li>
+<li>com.you.app.package1</li>
+</ul>
+<p>这两包下，所有声明了 <b> @IocBean</b> 这个注解的对象，都会被认为是容器对象。是的，通过注解 <b> @IocBean</b>， AnnotationIocLoader 就能辨别你指定的包中，哪些类是可以交由容器管理的。</p>
+<p>那么，<b> @IocBean</b>里面还能声明什么信息，我怎么为我的容器对象设置注入内容呢？ 请继续看下面内容 ^_^</p>
+<div class="hr"><b></b></div>
+<h1><a name="指定对象的名称"></a>指定对象的名称</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>任何一个 Ioc 容器管理的对象，都必须有一个名字，以便通过:</p>
+<pre>MyObject obj = ioc.get(MyObject.class, "myObjectName");
+</pre>
+<p>来获取对象。</p>
+<p>因此，你可以为你的对象这么声明:</p>
+<pre>@IocBean(name="myObjectName")
+public class MyObject {
+	...
+</pre>
+<p>如果你的对象名字为你对象类名的首字母小写形式，你可以省略名字这个属性, 即</p>
+<pre>@IocBean
+public class MyObject {
+	...
+</pre>
+<p>同</p>
+<pre>@IocBean(name="myObject")
+public class MyObject {
+	...
+</pre>
+<p>效果是一样的。</p>
+<p>还有另外一种方法，你可以为你的对象声明一个单独注解：</p>
+<pre>@InjectName("myObjectName")
+@IocBean
+public class MyObject {
+	...
+</pre>
+<p>列位，看到这里，可能有人会问了，这不是脱裤子放屁吗？ @IocBean 可以有 name 属性，而你又搞了一个@InjectName 注解专门声明名字，你到底打算让我们用哪一个？你逗我们玩哪？</p>
+<p>首先，我得跟大家声明一下，这的确是一点点历史问题，原先的 @InjectName 是给 Nutz.Mvc 用的，它如果发现了子模块声明了这个属性，就交付给 Ioc 容器管理。 后来，我们发现，介个名字和 @IocBean 的名字必须是相同的，所以在 AnnotationIocLoader 里，我们做了如下优先级的判断:</p>
+<ol type="1">
+<li>如果发现 @IocBean 有 name 属性，这个对象就采用这个名字</li>
+<li>如果没有 @IocBean(name="xxxx")，哪么就看看有没有声明了 @InjectName</li>
+<li>还没有的话，就用对象的类名首字母小写形式作为这个对象的名称</li>
+</ol>
+<p>因此对于一个 Nutz.Mvc 的模块类来说， @InjectName + @IocBean 是一个比较方便的写法。</p>
+<p>但是现在我也承认， @IocBean 的 name 属性有点多余，或者 @InjectName 有点多余。 但是由于是过了几个版本以后才认识到的这个问题，所以我想，不如就留着这个设计，作为 Nutz 这个项目的一段 <b>盲肠</b>， 希望列位看官理解我们的苦衷，毕竟我们宣称了接口不会有重大变动之后，就要拿掉这个盲肠话，仿佛自己打了一记自己嘴巴。因此，人类的劣根性导致我们这么安慰自己：“没事没事，这个设计虽然有一点点臃肿，但是没人让人更难用，也过得去啦 -_-!”</p>
+<div class="hr"><b></b></div>
+<h1><a name="不要单例"></a>不要单例</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>默认的，Ioc 容器管理的对象都是单例的，你如果不想单例，你可以:</p>
+<pre>@IocBean(name="myObject", singleton=false)
+public class MyObject {
+	...
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="为对象传递构造函数"></a>为对象传递构造函数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>当然 @IocBean 这点是不够，很多对象注入的时候，需要为构造函数声明信息，你可以这样：</p>
+<pre>@IocBean(name="myObject", args={"a string", "refer:anotherObject", true, 234})
+public class MyObject {
+	...
+</pre>
+<p>看，简单不？ 你的构造函数有多少个参数，你就一并在 "args" 属性里声明就好了， 那么你都能注入什么呢？</p>
+<p>它注入的值同字段注入的值描述方式相同，请继续看下面一节，我们有更详细的解释</p>
+<div class="hr"><b></b></div>
+<h1><a name="为对象的字段注入"></a>为对象的字段注入</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个更加简单，比如:</p>
+<pre>@IocBean
+public class MyObject {
+	
+	@Inject("abcc")
+	private String name;
+	
+	@Inject("true")
+	private boolean live;
+	
+	@Inject("refer:another")
+	private AnotherObject obj;
+	
+	...
+	
+</pre>
+<p>那么你到底能注入什么呢？ 感兴趣的同学可以看这里：<a href="injecting.html">你都可以注入什么</a>。当然，同 Json 的方式有点不同，你这里直接写 "refer:xxxx" 或者 "env:xxxx" 就好了。下面是一个列表</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> @Inject("Hello world")              </td>
+<td>  字符串 </td>
+</tr>
+<tr>
+<td> @Inject("135897415")                </td>
+<td>  数字 </td>
+</tr>
+<tr>
+<td> @Inject("true")                     </td>
+<td>  布尔型值 </td>
+</tr>
+<tr>
+<td> @Inject("refer:objName")            </td>
+<td>  注入容器其他对象的引用 </td>
+</tr>
+<tr>
+<td> @Inject("refer:$Ioc")               </td>
+<td>  容器自身 </td>
+</tr>
+<tr>
+<td> @Inject("refer:$Name")              </td>
+<td>  对象的名称，即你在 @InjectName 或者 @IocBean 里声明的 name </td>
+</tr>
+<tr>
+<td> @Inject("refer:$Context")           </td>
+<td>  容器上下文 </td>
+</tr>
+<tr>
+<td> @Inject("env:JAVA_HOME")            </td>
+<td>  系统环境变量 </td>
+</tr>
+<tr>
+<td> @Inject("sys:user.home")            </td>
+<td>  虚拟机属性 </td>
+</tr>
+<tr>
+<td> @Inject("jndi:jndiName")            </td>
+<td>  JNDI 资源 </td>
+</tr>
+<tr>
+<td> @Inject("file:/home/zzh/abc.txt")   </td>
+<td>  文件对象 </td>
+</tr>
+<tr>
+<td> @Inject("java:com.my.SomeClass.staticPropertyName")   </td>
+<td> 调用某 JAVA 类的静态属性 </td>
+</tr>
+<tr>
+<td> @Inject("java:com.my.SomeClass.someFunc")             </td>
+<td> 调用某 JAVA 类的静态函数 </td>
+</tr>
+<tr>
+<td> @Inject("java:com.my.SomeClass.someFunc("p1",true)")  </td>
+<td> 调用某 JAVA 类的带参数的静态函数 </td>
+</tr>
+<tr>
+<td> @Inject("java:$xh")                                   </td>
+<td> 获得容器对象 xh ，相当于 "refer:xh" </td>
+</tr>
+<tr>
+<td> @Inject("java:$xh.name")                              </td>
+<td> 容器对象某个属性 </td>
+</tr>
+<tr>
+<td> @Inject("java:$xh.getXXX()")                          </td>
+<td> 容器对象某个方法的返回值 </td>
+</tr>
+<tr>
+<td> @Inject("$xh.getXXX("some string", true, 34)")        </td>
+<td> 容器对象某个方法的返回值 </td>
+</tr>
+</table>
+<p>基本上，看到上面的表格，你同时也能完全明白怎么 <a href="#为对象传递构造函数">#为对象传递构造函数</a>，不是吗？</p>
+<div class="hr"><b></b></div>
+<h1><a name="声明对象的事件"></a>声明对象的事件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 Nutz.Ioc 容器里，一个对象有三种事件：</p>
+<ol type="1">
+<li>create - 当对象被创建时触发</li>
+<li>fetch - 当对象被从容器中取出时触发</li>
+<li>depose - 当对象被销毁时触发</li>
+</ol>
+<p>同 JSON 配置一样， Annotation 方式的配置也允许你声明这三种事件的处理方式</p>
+<pre>@IocBean(
+	create = "init",
+	fetch = "com.myapp.MyObjectOnFetchTrigger",
+	depose = 'onDepose'
+)
+public class MyObject {
+	...
+</pre>
+<p>同 JSON 的配置方式相同的是，你可以为该对象处理该事件的一个函数，比如上面的例子，MyObject 需要有一个函数<b>init</b> 来处理创建时的事件，还需要一个函数 <b>onDepose</b> 来处理注销时的事件。当然这两个函数不能时静态的，也不能有任何参数。 对一个事件，你还可以声明一个 <b>IocEventTrigger</b> 的实现类，来处理一个事件。比如上面的例子，我们就用 com.myapp.MyObjectOnFetchTrigger 来处理 fetch 事件的。</p>
+<p>看到这里，可能有的同学会弱弱的问了，这个功能到底是干虾米滴？ 我认为所有需要问这个问题的同学都可以无视这个功能，因为你根本不需要它。但是如果你想在对象创建的时候，做点初始化工作，比如为某几个字段设设值；或者你希望在容器注销你的对象时，你想同时释放点资源，比如数据连接池对象被销毁时，你需要释放一下池内的连接；又或者你想为你的对象做一个计数，每次从容器获取的时候，计数＋1，用来统计你对象被使用的频率，我想你也很需要 fetch 这个事件。无论你采用对象的函数，还是自己实现 IocEventTrigger 这个接口，你会拿到容器里的对象实例，然后你想做什么完全随你喽 :)</p>
+<div class="hr"><b></b></div>
+<h1><a name="如果要注入的字段在超类怎么办"></a>如果要注入的字段在超类怎么办</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>答</p>
+<pre>@IocBean(fields={"dao"})
+public AbcService extends Service {
+	...
+</pre>
+<p>比如上例，你的 AbcService 从 Service 继承，但是 Serivce 有一个私有字段为 "private Dao dao"， 你怎么描述它的注入呢？ 你可以通过 @IocBean 注解提供 fields 属性，描述你要注入超类那个字段，比如上面的例子，我们会为超类的 "dao" 字段注入一个名为 "dao" 容器对象。 </p>
+<p>但是，如果我想注入的容器对象同超类的那个字段名字不一样怎么办？ 或者我不打算注入一个容器对象，我想注入一个字符串，或者布尔值怎么办？ 呵呵，抱歉，截止到现在，我们还没有解决这个问题，不过很快我们会给出一个设计，并且我可以负责的说，给出新的设计一定会兼容现在的这个用法的。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

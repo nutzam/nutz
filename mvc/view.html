@@ -1,0 +1,479 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>视图</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">视图</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是视图？">什么是视图？</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#入口函数返回值">入口函数返回值</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#比如_Jsp_视图">比如 Jsp 视图</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#比如_Json_视图">比如 Json 视图</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#怎样使用视图？">怎样使用视图？</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#通过注解">通过注解</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#直接返回_View_对象">直接返回 View 对象</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#内置的视图">内置的视图</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#JSP_视图">JSP 视图</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#JSON_视图">JSON 视图</a></div>
+</li>
+<li>
+<div><span class="num">4.3</span><a href="#重定向视图">重定向视图</a></div>
+</li>
+<li>
+<div><span class="num">4.4</span><a href="#内部重定向视图">内部重定向视图</a></div>
+</li>
+<li>
+<div><span class="num">4.5</span><a href="#HTTP_返回码视图">HTTP 返回码视图</a></div>
+</li>
+<li>
+<div><span class="num">4.6</span><a href="#空白视图">空白视图</a></div>
+</li>
+<li>
+<div><span class="num">4.7</span><a href="#从_Ioc_容器中获取的视图">从 Ioc 容器中获取的视图</a></div>
+</li>
+<li>
+<div><span class="num">4.8</span><a href="#Raw视图">Raw视图</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#定制自己的视图">定制自己的视图</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#实现自己的视图">实现自己的视图</a></div>
+</li>
+<li>
+<div><span class="num">5.2</span><a href="#实现自己的视图工厂">实现自己的视图工厂</a></div>
+</li>
+<li>
+<div><span class="num">5.3</span><a href="#将视图工厂整合进应用中">将视图工厂整合进应用中</a></div>
+</li>
+<li>
+<div><span class="num">5.4</span><a href="#已有的,经过检验的自定义视图">已有的,经过检验的自定义视图</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是视图？"></a>什么是视图？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的任务就是将入口函数的返回值（一个Java对象）渲染到 HTTP 响应流中。</p>
+<p>现在 Nutz.Mvc 自带的主要视图有 </p>
+<ul type="disc">
+<li>JSP － 采用 JSP 模板输出网页</li>
+<li>Redirect － 客户端重定向</li>
+<li>Forward － 服务器端中转</li>
+<li>Json － 将对象输出成 Json 字符串</li>
+<li>void - 什么都不做</li>
+</ul>
+<p>当然你还可以根据需要开发你自己的视图实现类，定制自己的视图也非常简单，请参看本文 <a href="#定制自己的视图">#定制自己的视图</a> 一节</p>
+<div class="hr"><b></b></div>
+<h1><a name="入口函数返回值"></a>入口函数返回值</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>前面提到的，视图（View）就是来处理入口函数的返回值的。 当然每个视图的实现类处理的方式不同。我们先来看看视图接口的源代码，非常简单：</p>
+<pre>public interface View {
+    void render(HttpServletRequest req, 
+                HttpServletResponse resp,
+                Object obj)
+                throws Throwable;
+}
+</pre>
+<p>你要想创建自己的视图，你主要的工作就是实现这个接口。 </p>
+<ul type="disc">
+<li>显然你的实现类能拿到这次 HTTP 请求的 request 和 response 对象</li>
+<li>参数 <b>obj</b> 就是你入口函数的返回</li>
+<li>如果你在 <span style="color:#3366BB;">@Fail</span> 里声明的视图， <b>obj</b> 就是抛出的异常对象</li>
+</ul>
+<p>这里还需要再强调一下 Nutz 所谓视图的概念：</p>
+<p><span style="color:#0000FF;"><b>一种视图就是一种将 Java 对象写入 HTTP 响应流的方式，谢谢</b></span></p>
+<p>下面，我们就这个观点，再多举几个个例子，希望大家能通过这两例子，理解不同的视图处理同样的对象，可以有多大的差异。</p>
+<h2><a name="比如_Jsp_视图"></a>比如 Jsp 视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>即你声明:</p>
+<pre>@Ok("jsp:xxxx")
+</pre>
+<p>的时候，无论入口函数返回什么对象,它会将其保存到request的 <b>"obj"</b> 属性中。比如</p>
+<pre>@At
+@Ok("/test.jsp")
+public String test(){
+    return "this is test";
+}
+</pre>
+<p>那么，你在 test.jsp 这个页面里，通过:</p>
+<pre>&lt;%=request.getAttribute("obj")%&gt;
+</pre>
+<p>或者用 JSTL 的 EL </p>
+<pre>${obj}
+</pre>
+<p>都会直接输出字符串 <b>"this is test"</b></p>
+<p>JSP 视图的更多介绍请参看 <a href="#JSP_视图">#JSP_视图</a></p>
+<h2><a name="比如_Json_视图"></a>比如 Json 视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>即你声明:</p>
+<pre>@Ok("json")
+</pre>
+<p>的时候，无论入口函数返回什么对象，都会被 Json.toJson 函数变成字符串，直接写到HTTP 响应流里。</p>
+<p>当然，有些对象，被 Json.toJson 有点麻烦，比如 </p>
+<ul type="disc">
+<li>InputStream</li>
+<li>Reader</li>
+</ul>
+<p>等，这时候你用 Json 视图来输出本身也是自找别扭，建议你使用 <a href="#Raw视图">#Raw视图</a></p>
+<p>Json 视图的更多介绍请参看 <a href="#JSON_视图">#JSON_视图</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="怎样使用视图？"></a>怎样使用视图？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过注解 @Ok 和 @Fail 你可以为你的入口函数声明不同的渲染方式。当然，在你的逻辑非常复杂的情况下你可以从你的入口函数直接返回一个 View 对象。</p>
+<h2><a name="通过注解"></a>通过注解 </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>执行一个业务逻辑可能有两种结果</p>
+<ol type="1">
+<li>成功</li>
+<li>失败</li>
+</ol>
+<p>在每个入口函数上，你都可声明这两个注解</p>
+<ol type="1">
+<li>@Ok</li>
+<li>@Fail</li>
+</ol>
+<p>仔细观察，你会发现，这两个注解的值只能是一个字符串，那么怎么通过字符串，匹配到视图呢？</p>
+<p>无论是 @Ok 还是 @Fail，他们的值的格式总是：</p>
+<pre>"视图类型:视图值"
+</pre>
+<ul type="disc">
+<li>字符 ':' 将这个字符串隔断，左半部分是视图的类型，右半部分是视图的值。</li>
+<li>不同的视图类型，值的形式可能也是不一样的</li>
+</ul>
+<h2><a name="直接返回_View_对象"></a>直接返回 View 对象</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你可以在你入口函数根据不同的条件，决定返回何种视图。如果你需要为你的视图声明要渲染的数据，请返回 org.nutz.mvc.view.ViewWrapper</p>
+<p>比如你可以这样写：</p>
+<pre>...
+@At("/myurl")
+public View myFunction(@Param("type") type){
+	if(type==0)
+		return new ViewWrapper(new UTF8JsonView(), "It is zero!");
+	
+	if(type&lt;10)
+		return new ViewWrapper(new UTF8JsonView(), "It less than 10!");
+	
+	return new ViewWrapper(new JspView("mypage.showNumber"), type);
+}
+...
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="内置的视图"></a>内置的视图</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过 <b>org.nutz.mvc.view.DefaultViewMaker</b>， Nutz.Mvc 提供了一些内置视图， 你可以通过@Ok 和 @Fail 注解声明在你的入口函数上</p>
+<div class="hr"><b></b></div>
+<h2><a name="JSP_视图"></a>JSP 视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.JspView</b></p>
+<h3><a name="一般的使用形式："></a>一般的使用形式：</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("jsp:pet.detail")
+</pre>
+<p>将会使用 <i><b>WEB-INF/pet/detail.jsp</b></i> 来渲染 HTTP 输出流</p>
+<p>你可以不声明视图的值：</p>
+<pre>@Ok("jsp")
+</pre>
+<p>那么会根据这个请求的地址来寻找 JSP 文件，比如请求：</p>
+<pre>/pet/detail.nut
+</pre>
+<p>将会使用 <i><b>WEB-INF/pet/detail.jsp</b></i> 来渲染 HTTP 输出流</p>
+<h3><a name="使用_JSTL"></a>使用 JSTL</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你使用 JSTL，你还可以</p>
+<ul type="disc">
+<li>通过 ${msg.xxxx} 输出本地字符创，参看 <a href="localization.html">本地化字符串更多的介绍</a></li>
+<li>通过 ${base} 输出当前应用的 ContextPath</li>
+<li>通过 ${obj.xxx} 输出要渲染对象的某个属性值</li>
+<li>你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"</li>
+</ul>
+<h3><a name="JSP_文件的位置"></a>JSP 文件的位置</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些人（比如我）喜欢把 JSP 文件统统放在 WEB-INF 目录里。但是更多人的习惯是将 JSP 放在 WEB-INF 外面。</p>
+<ul type="disc">
+<li>这个将对应 <span style="color:#0000AA;"><i><b>WEB-INF/abc/bbc.jsp</b></i></span>
+<pre>@Ok("jsp:abc.bbc")
+</pre>
+</li>
+<li>这个将对应 <span style="color:#0000AA;"><i><b>abc/bbc.jsp</b></i></span>
+<pre>@Ok("jsp:/abc/bbc")
+</pre>
+</li>
+<li>这个也将对应 <span style="color:#0000AA;"><i><b>abc/bbc.jsp</b></i></span>
+<pre>@Ok("jsp:/abc/bbc.jsp")
+</pre>
+<p></p>
+</li>
+</ul>
+<h3><a name="本地化字符串"></a>本地化字符串</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 Nutz.Mvc 入口函数里使用的 JSP 文件可以使用 ${base} 和 ${msg} 来获取应用的 URL 前缀以及本地字符串。</p>
+<p>如果你希望放在 WEB-INF 外面如果还希望使用本地化字符串，那么你需要在 web.xml 额外声明一个 Fileter，请参考 <a href="localization.html">本地化字符串</a> <b>使用过滤器</b>一节。</p>
+<div class="hr"><b></b></div>
+<h2><a name="JSON_视图"></a>JSON 视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.UTF8JsonView</b></p>
+<p>一般的使用形式：</p>
+<pre>@Ok("json")
+</pre>
+<p>会将入口函数返回的对象转换成 JSON 字符串</p>
+<p>你可以对这个 JSON 字符串的格式进行更多的控制：</p>
+<pre>@Ok("json:{quoteName:true, ignoreNull:true}")
+</pre>
+<p>视图的值就是： <b>"{quoteName:true, ignoreNull:true}"</b>，这个字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
+<div class="hr"><b></b></div>
+<h2><a name="重定向视图"></a>重定向视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.ServerRedirectView</b></p>
+<p>一般的使用形式：</p>
+<pre>@Ok("redirect:/pet/list.nut")
+或者
+@Ok("redirect:/article/2009/10465.html")
+</pre>
+<p>它将按照给定的视图值，发送 HTTP 重定向命令到客户端</p>
+<p>给定参数</p>
+<pre>@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+或者
+@Ok("redirect:/article/2009/${articleId}.html")
+</pre>
+<p>视图会填充占位符号。填充的规则是：</p>
+<ol type="1">
+<li>如果占位符名称以 "obj." 开头，则表示应该用入口函数的返回对象的某一个字段来填充
+<ul type="disc">
+<li>"obj.name" 表示对象的 "name" 字段</li>
+</ul>
+</li>
+<li>如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
+<ul type="disc">
+<li>"p.abc" 就表示 HTTP 参数中的 "abc" 参数</li>
+</ul>
+</li>
+<li>如果参数表没有值，则直接用返回的对象来填充。</li>
+</ol>
+<p>下面举几个例子：</p>
+<h3><a name="用返回对象的字段填充："></a>用返回对象的字段填充：</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("redirect:/pet/detail.nut?pid=${obj.id}")
+入口函数返回： Pet 对象
+则取 pet.getId() 填充 ${obj.id}
+</pre>
+<p></p>
+<h3><a name="用_HTTP_参数填充"></a>用 HTTP 参数填充</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
+从 HTTP 参数表取 "id"，填充
+如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
+如果入口函数是 void 或者返回 null，则用空串填充
+</pre>
+<p></p>
+<h3><a name="另外一种写法"></a>另外一种写法</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
+//等价于
+@Ok("&gt;&gt;:/pet/detail.nut?pid=${id}")
+</pre>
+<div class="hr"><b></b></div>
+<h2><a name="内部重定向视图"></a>内部重定向视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.ForwardView</b></p>
+<p>一般的使用形式：</p>
+<pre>@Ok("forward:/pet/list.nut")
+//或者
+@Ok("forward:/article/2009/10465.html")
+同时也可以写成
+@Ok("-&gt;:/article/2009/10465.html")
+</pre>
+<h3><a name="当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加jsp之外_其实Jsp视图只是Forward视图的子类而已"></a>当:后面不加值,或者不是以/开头的话,生成的路径将与Jsp视图类似,除了最后不加.jsp之外. 其实Jsp视图只是Forward视图的子类而已</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>这个将对应 <span style="color:#0000AA;"><i><b>WEB-INF/abc/bbc</b></i></span>
+<pre>@Ok("jsp:abc.bbc")
+</pre>
+</li>
+<li>这个将对应 <span style="color:#0000AA;"><i><b>abc/bbc</b></i></span>
+<pre>@Ok("jsp:/abc/bbc")
+</pre>
+</li>
+<li>这个将对应 <span style="color:#0000AA;"><i><b>abc/bbc.jsp</b></i></span>
+<pre>@Ok("jsp:/abc/bbc.jsp")
+</pre>
+<p></p>
+</li>
+</ul>
+<p>它将按照给定的视图值，服务器内部重定向到指定的地址.</p>
+<div class="hr"><b></b></div>
+<h2><a name="HTTP_返回码视图"></a>HTTP 返回码视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.HttpStatusView</b></p>
+<p>使用形式</p>
+<pre>@Ok("http:404")
+</pre>
+<p>返回 HTTP 404 错误码</p>
+<div class="hr"><b></b></div>
+<h2><a name="空白视图"></a>空白视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.VoidView</b></p>
+<p>使用形式</p>
+<pre>@Ok("void")
+</pre>
+<p>对 HTTP 输出流不做任何处理</p>
+<div class="hr"><b></b></div>
+<h2><a name="从_Ioc_容器中获取的视图"></a>从 Ioc 容器中获取的视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>使用形式</p>
+<pre>@Ok("ioc:myView")
+</pre>
+<p>将从 Ioc 容器中获取 myView 对象。 它必须是一个 View，否则会发生转型错误。通过这种形式，可以支持你可以在 Ioc 容器中定义自己的视图对象。</p>
+<div class="hr"><b></b></div>
+<h2><a name="Raw视图"></a>Raw视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.RawView</b></p>
+<p>该视图将数据对象直接写入 HTTP 响应</p>
+<p>ContentType 支持几种缩写: </p>
+<ul type="disc">
+<li>xml - 表示 text/xml</li>
+<li>html - 表示 text/html</li>
+<li>htm - 表示 text/html</li>
+<li>stream - 表示 application/octet-stream</li>
+<li>默认的(<span style="color:#AAAAAA;">即 '@Ok("raw")'</span> ) - 将采用 <span style="color:#008800;">ContentType?=text/plain</span></li>
+</ul>
+<p>使用方式</p>
+<pre>@Ok("raw")
+</pre>
+<p>将方法的返回值直接写入流，数据对象可以是如下类型: </p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> null        </td>
+<td> 什么都不做 </td>
+</tr>
+<tr>
+<td> byte[]    </td>
+<td> 按二进制方式写入HTTP响应流 </td>
+</tr>
+<tr>
+<td> InputStream </td>
+<td> 按二进制方式写入响应流，并关闭 InputStream? </td>
+</tr>
+<tr>
+<td> char[]    </td>
+<td> 按文本方式写入HTTP响应流 </td>
+</tr>
+<tr>
+<td> Reader      </td>
+<td> 按文本方式写入HTTP响应流，并关闭 Reader  </td>
+</tr>
+<tr>
+<td> 默认的      </td>
+<td> 直接将对象 toString() 后按文本方式写入HTTP响应流 </td>
+</tr>
+</table>
+<p>默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值</p>
+<pre>@Ok("raw:application/rtf")
+</pre>
+<p>同时，它也支持如下的缩写形式：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> @Ok("raw:xml")    </td>
+<td> 等价于@Ok("raw:text/xml");  </td>
+</tr>
+<tr>
+<td> @Ok("raw:html")   </td>
+<td> 等价于@Ok("raw:text/html"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:htm")    </td>
+<td> 等价于@Ok("raw:text/html"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:stream") </td>
+<td> 等价于@Ok("raw:application/octet-stream"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:json")   </td>
+<td> 等价于@Ok("raw:application/x-javascript"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:js")     </td>
+<td> 等价于@Ok("raw:application/x-javascript"); </td>
+</tr>
+</table>
+<div class="hr"><b></b></div>
+<h1><a name="定制自己的视图"></a>定制自己的视图</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过 @Ok("xxx:xxxx") 这种形式声明的视图非常简洁，易于理解。某些时候，你可能觉得 Nutz.Mvc 支持的视图类型不够，你喜欢其他的视图模板引擎，比如 <a href="http://freemarker.org/">FreeMarker</a>。因此你希望你的 @Ok 能写成这样：</p>
+<pre>@Ok("freemaker:/pattern/pet/myTemplate")
+</pre>
+<p>又或者，你希望你的能想这样来输出 PDF 文件：</p>
+<pre>@Ok("pdf:/pdf/article")
+</pre>
+<p>在视图层，总会有这样或者哪样的需求，对吗？ 那么你可以自己来定制自己的视图规则：</p>
+<div class="hr"><b></b></div>
+<h2><a name="实现自己的视图"></a>实现自己的视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>实现 org.nutz.mvc.View 接口，比如：</p>
+<pre>public class PdfView implements View{
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj){
+        // TODO 实现代码 ...
+    }
+}
+</pre>
+<p>实现 Render 函数即可，第三个参数就是你的入口函数的返回</p>
+<div class="hr"><b></b></div>
+<h2><a name="实现自己的视图工厂"></a>实现自己的视图工厂</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>实现 org.nutz.mvc.ViewMaker 接口，比如：</p>
+<pre>public class PdfViewMaker implements ViewMaker{
+	public View make(Ioc ioc, String type, String value){
+		if("pdf".equalsIgnoreCase(type)){
+			return new PdfView(value);
+		}
+		return null;
+	}
+}	
+</pre>
+<p>函数 make 如果返回 null，则表示你的这个视图工厂不知道如何构建这种视图。 Nutz.Mvc 会看看其他的工厂能不能创建这个视图。如果所有的工厂都不能创建这个视图，则会导致异常。</p>
+<div class="hr"><b></b></div>
+<h2><a name="将视图工厂整合进应用中"></a>将视图工厂整合进应用中</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在主模块上，通过注解 @Views 将你的工厂声明进整个应用即可。</p>
+<ul type="disc">
+<li>你可以声明多个 ViewMaker</li>
+<li>所有的视图工厂，必须有一个 public 的默认构造函数。</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="已有的,经过检验的自定义视图"></a>已有的,经过检验的自定义视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><a href="http://axhack.javaeye.com/blog/542441">Freemarker</a> <a href="http://myblog.sunfarms.net/100.html">Freemarker</a> 可以拓展为Velocity</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
+</body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>过滤器</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">过滤器</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是过滤器?">什么是过滤器?</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#如何使用过滤器？">如何使用过滤器？</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#使用内置过滤器">使用内置过滤器</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#定制你自己的过滤器">定制你自己的过滤器</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#交给_Ioc_容器管理">交给 Ioc 容器管理</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是过滤器?"></a>什么是过滤器?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请你再一次回顾这张图：</p>
+<p><img src="nutz_mvc_workflow_detail.png"/></p>
+<p>一个 HTTP 请求，过滤器是第一组被执行的对象。同适配器不同的是，一个请求中，可以执行多个过滤器。</p>
+<div class="hr"><b></b></div>
+<h1><a name="如何使用过滤器？"></a>如何使用过滤器？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过 @Filters 注解。</p>
+<p>注解 '@Filters' 的值是一个 '@By' 注解的数组，它可以声明在这三个地方</p>
+<ol type="1">
+<li>入口函数</li>
+<li>子模块</li>
+<li>主模块</li>
+</ol>
+<p>其中入口函数的 @Filters 优先级更高，其次是子模块，最后是主模块。</p>
+<p>就是说，你在入口模块声明了两个过滤器：</p>
+<pre>@Filters({@By(type=Filter1.class), @By(type=Filter2.class)})
+public final class MainModule{
+	...
+</pre>
+<p>在某一个入口函数上声明了一个空的过滤器数组：</p>
+<pre>...
+@At
+@Filters
+public String myFunction(){
+	...
+</pre>
+<p>那么，这个入口函数将不会应用任何过滤器。</p>
+<div class="hr"><b></b></div>
+<h2><a name="使用内置过滤器"></a>使用内置过滤器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Filters(@By(type=CheckSession.class, args={"user", "/login.jsp"}))
+</pre>
+<p>CheckSession 是 Nutz.Mvc 为你内置的一个唯一的过滤器，它的构造函数需要两个参数：</p>
+<ul type="disc">
+<li>检查 session 的什么属性？</li>
+<li>如果不存在，重定向到哪里？</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="定制你自己的过滤器"></a>定制你自己的过滤器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你当然可以定制你自己的过滤器，请注意过滤器接口代码：</p>
+<pre>public interface ActionFilter {
+	View match(ActionContext context);
+}
+</pre>
+<p>根据  HttpRequest 对象，你的过滤器需要决定返回值是：</p>
+<ul type="disc">
+<li><b>一个 View</b> : 这个请求有问题，不要继续执行了，马上用这个 View 来渲染 HTTP 输出流吧</li>
+<li><b>null</b> : 恩，这个请求没问题，继续吧。</li>
+</ul>
+<p>如果你的过滤器返回的是 null，Nutz.Mvc 会继续执行下一个过滤器，如果全部的过滤器都返回 null它就会调用适配器，进行后面的操作</p>
+<div class="hr"><b></b></div>
+<h1><a name="交给_Ioc_容器管理"></a>交给 Ioc 容器管理</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你的 Filter 需要比较灵活的配置，你可以将它交由 Ioc 容器负责</p>
+<pre>@Filters(@By(type=MyFilter.class, args={"ioc:myFilter"}))
+</pre>
+<p>其中 "myFilter" 就是你这个过滤器在 Ioc 容器中的名字。关于 Ioc 容器更多的知识，请参看<a href="../ioc/hello.html">Ioc 手册</a>。</p>
+<p><span style="color:#FF0000;"><b>请注意</b></span> 如果你要让 Ioc 容器管理你的过滤器，你的应用必须已经声明了一个 Ioc 容器。 如何在Mvc 框架中声明 Ioc 容器，请参看	<a href="with_ioc.html">同 Ioc 容器一起工作</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

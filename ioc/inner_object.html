@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>匿名对象</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">匿名对象</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#鸭子法则">鸭子法则</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#匿名对象">匿名对象</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#JSON_配置文件：">JSON 配置文件：</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#调用代码">调用代码</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#控制台输出">控制台输出</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<h1><a name="鸭子法则"></a>鸭子法则</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><b>如果它走路像鸭子，说话像鸭子，样子像鸭子，叫声也像鸭子，那它就是一只鸭子。</b></p>
+<p>对于 Nutz Ioc 来说，它面对的配置文件就是层层嵌套的 "名值对集合"，或者说是 Map 集合。事实上，它是先把整个配置文件解析成 Map 再做判断的。</p>
+<p>如果一个 Map 仅包括如下的键，则被认为是一个注入对象：</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> <b>type</b>        	</td>
+<td> <span style="color:#008800;"> 对象类型</span> </td>
+</tr>
+<tr>
+<td> <b>singleton</b>   	</td>
+<td> <span style="color:#008800;"> 是否单例</span> </td>
+</tr>
+<tr>
+<td> <b>scope</b>       	</td>
+<td> <span style="color:#008800;"> 生命周期范围</span> </td>
+</tr>
+<tr>
+<td> <b>events</b>		</td>
+<td> <span style="color:#008800;"> 监听事件</span> </td>
+</tr>
+<tr>
+<td> <b>args</b>			</td>
+<td> <span style="color:#008800;"> 构造函数参数</span> </td>
+</tr>
+<tr>
+<td> <b>fields</b>		</td>
+<td> <span style="color:#008800;"> 字段设定</span> </td>
+</tr>
+</table>
+<p>否则，这个 Map 被认为，是在声明对象的每个字段。</p>
+<h1><a name="匿名对象"></a>匿名对象</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果，一个字段的值就是这样一个 “鸭子 Map” 呢？ 那么，自然会被认为是另外一个对象。这个对象没有名字，你不能通过 Ioc 接口直接获得，它隐藏在某个对象的某个字段里面。所以我们称这个对象为 <b>匿名对象</b></p>
+<p>匿名对象，没有所谓的单例，你声明了 singleton: true 也没有用。如果它的宿主是单例，它自然也只会被创建一次。否则，每次宿主被创建的时候，它都会被创建。</p>
+<h2><a name="JSON_配置文件："></a>JSON 配置文件：</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>var ioc = {
+	xb : {
+		name : 'XiaoBai',
+		// 请注意，在这里， friend 字段，直接声明了另外一个对象
+		friend : {
+			type : 'nutz.demo.ioc.book.Pet',
+			fields : {
+				name : 'XiaoHei'
+			}
+		}
+	}
+}
+</pre>
+<p></p>
+<h2><a name="调用代码"></a>调用代码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
+Pet pet = ioc.get(Pet.class, "xb");
+System.out.println(pet.getFriend().getName());
+</pre>
+<p></p>
+<h2><a name="控制台输出"></a>控制台输出</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>XiaoHei
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

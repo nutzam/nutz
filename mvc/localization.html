@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>本地化字符串</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">本地化字符串</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#基本策略">基本策略</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#使用方式">使用方式</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#在主模块上声明">在主模块上声明</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#在_JSP_里使用">在 JSP 里使用</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#我到底支持哪些语言">我到底支持哪些语言</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#使用过滤器">使用过滤器</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#定制自己的本地化字符串方式">定制自己的本地化字符串方式</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="基本策略"></a>基本策略</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>每个 Mvc 框架都有自己的本地化字符串的解决方案， Nutz.Mvc 的这个是相当简陋的。我只是个人觉得足够用了。下面我把它简单介绍一下：</p>
+<ul type="disc">
+<li>假定所有的本地化字符串文件都会存放在某一目录下
+<ul type="circle">
+<li>这个目录下所有的 .properties 文件，将作为默认的本地字符串文件。</li>
+<li>每一种语言都会是一个目录，目录名称对应一个 Locale 的 toString()，请参看 java.util.Locale 的 JDoc
+<ul type="square">
+<li>比如简体中文，就是 zh_CN</li>
+<li>比如美式英语，就是 en_US</li>
+</ul>
+</li>
+<li>目录下所有的 .properties 文件存放着该地区的字符串信息</li>
+<li> .properties 文件需要按照 UTF-8 方式编码</li>
+</ul>
+</li>
+<li>目录，通过 @Localization("全路径") 声明在主模块上</li>
+<li>当应用启动时，一次读入所有的字符串，并存入 ServletContext，属性名称为：“org.nutz.mvc.annotation.Localization”</li>
+<li>应用可以自行设置当前 Session 是哪一个国家和地区
+<ul type="circle">
+<li>Mvcs.setLocaleName(String localeName)</li>
+</ul>
+</li>
+<li>每次请求时，会根据 Session 中的 localeName，从 ServletContext 中将对应 Locale 的字符串取出，设入 Request 对象
+<ul type="circle">
+<li>属性名为 "msg"</li>
+<li>如果当前会话没有被设置 Locale，则将 "msg" 设置成默认本地化字符串</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="使用方式"></a>使用方式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="在主模块上声明"></a>在主模块上声明</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如：</p>
+<pre>...
+@Localization("mymsg")
+public class MyMainClass {
+	...
+</pre>
+<ul type="disc">
+<li>在主模块上声明 @Localization 注解，指向一个目录</li>
+<li>在目录下建立文件夹，比如 <b>zh_CN</b>，每个目录下所有 <b> .properties</b> 文件都会被当作字符串文件</li>
+<li><b> .properties</b> 文件 一定要是 UTF-8 编码的</li>
+<li>比如 @Locallization("mymsg") 会指向 CLASSPATH 下的 <b>mymsg</b> 目录</li>
+</ul>
+<h2><a name="在_JSP_里使用"></a>在 JSP 里使用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><b>直接 Scriptlet</b></p>
+<pre>...
+&lt;h1&gt;&lt;%=((Map&lt;String,String&gt;)request.getObject("msg")).get("my.msg.key")%&gt;&lt;/h1&gt;
+...
+</pre>
+<p><b>采用 JSTL</b></p>
+<pre>...
+&lt;h1&gt;${msg['my.msg.key']}&lt;/h1&gt;
+...
+</pre>
+<p></p>
+<h2><a name="我到底支持哪些语言"></a>我到底支持哪些语言</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>请参看 <b>org.nutz.mvc.Mvcs</b> 的 JavaDoc，这里我列几个常用的方法:</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> Mvcs.getLocaleName(HttpSession session)					</td>
+<td> 获取当前会话的 Locale 名称 </td>
+</tr>
+<tr>
+<td> Mvcs.setLocaleName(HttpSession session, String name)		</td>
+<td> 为当前会话设置 Locale 的名称 </td>
+</tr>
+<tr>
+<td> Mvcs.getLocaleNames(ServletContext context)			 	</td>
+<td> 获取整个应用可用的 Locale 名称集合 </td>
+</tr>
+<tr>
+<td> Mvcs.hasLocaleName(HttpSession session)					</td>
+<td> 判断当前会话是够设置了特殊的 Locale 的名称 </td>
+</tr>
+<tr>
+<td> Mvcs.hasLocale(HttpSession session)						</td>
+<td> 判断当前会话是否已经设置了本地字符串表 </td>
+</tr>
+</table>
+<div class="hr"><b></b></div>
+<h1><a name="使用过滤器"></a>使用过滤器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"<b>本地化字符串</b>"功能，那么你需要在 web.xml 这么配置:</p>
+<pre>&lt;!--
+	Nutz.Mvc 还提供了一个过滤器，你可以用这个过滤器为所有的直接访问的 jsp 设置必要的 Request 属性。 比如 ${base}
+	以及 ${msg}
+--&gt;
+&lt;filter&gt;
+	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
+	&lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
+&lt;/filter&gt;
+
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
+	&lt;url-pattern&gt;*.jsp&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+
+&lt;filter-mapping&gt;
+	&lt;filter-name&gt;msgs&lt;/filter-name&gt;
+	&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;
+&lt;/filter-mapping&gt;
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="定制自己的本地化字符串方式"></a>定制自己的本地化字符串方式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>很简单是吗？ 你想将 Message 字符串存在 XML 里，或者你想换一种 Message 字符串的存储方式。那么实现一个新的 <b>org.nutz.mvc.MessageLoader</b>，并在 @Localization 注解的 type 属性中注明就是了。不过你的实现类必须有一个接受一个 String 类型参数的构造函数，以便 Nutz.Mvc 为你传入 @Localization 里面声明的值。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

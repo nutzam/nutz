@@ -1,0 +1,392 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>动态表名</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">动态表名</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要动态表名">为什么需要动态表名</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#动态表名的常用形式">动态表名的常用形式</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#Nutz对于动态表名的支持">Nutz对于动态表名的支持</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#在_POJO_中声明动态表名">在 POJO 中声明动态表名</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#在调用时应用动态表名">在调用时应用动态表名</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#动态表名赋值规则">动态表名赋值规则</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#更灵活的应用动态表名">更灵活的应用动态表名</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3.5</span><a href="#在映射中的动态表名">在映射中的动态表名</a></div>
+<ul>
+<li>
+<div><span class="num">3.5.1</span><a href="#一对一映射">一对一映射</a></div>
+</li>
+<li>
+<div><span class="num">3.5.2</span><a href="#一对多映射">一对多映射</a></div>
+</li>
+<li>
+<div><span class="num">3.5.3</span><a href="#多对多映射">多对多映射</a></div>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#总结一下">总结一下</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么需要动态表名"></a>为什么需要动态表名</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>当数据量比较大的时候，为了提高数据库操作的效率，尤其是查询的效率，其中一种解决方案就是将数据表拆分。拆分的数据表，结构完全一致，只不过是表的名字，按照某种规律，而成为一组。</p>
+<div class="hr"><b></b></div>
+<h1><a name="动态表名的常用形式"></a>动态表名的常用形式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通常情况下动态表名都是通过一个后缀来表示的。比如我们要记录全中国所有的公司以及其雇员，通常的设计是建立两张数据表， t_company 记录公司，t_employee 记录雇员。由于考虑到 t_employee 的数量可能太过庞大，我们可以将 t_employee 进行拆分，为每个公司建立一张雇员表。 比如 t_employee_1 记录 ID 为 1 的公司所有雇员，t_employee_19 记录 ID 为 19 的公司所有雇员。</p>
+<p>当然，我们也不能排除动态表名的其他形式，比如，如果公司也是动态表名： t_company_3 表示在 ID 为 3 的国家的公司。那么雇员表有可能被设计成 t_employee_3_10， 在 ID 为 3 的国家且 ID 为 10 的公司所有的雇员记录</p>
+<p>另外，表名的中的变量可能不只是数字，也可能不只是后缀。考虑到这样的情况，同时也希望不增加 org.nutz.dao.Dao接口的复杂程度， Nutz.Dao 将怎样为这样的数据库操作方法提供支持的呢？</p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz对于动态表名的支持"></a>Nutz对于动态表名的支持</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="在_POJO_中声明动态表名"></a>在 POJO 中声明动态表名</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>毫无疑问，首先，需要配置你的 POJO。 Nutz.Dao 提供的 @Table 注解本身就支持动态表名，比如：</p>
+<pre>@Table("t_employee_${cid}")
+public class Employee{
+	// The class fields and methods...
+}
+</pre>
+<p>@Table 注解支持字符串模板的写法，在你希望放置动态表名变量的位置插入 ${变量名} ，如 ${cid}，那么${cid} 会在运行时被 Nutz.Dao 替换。</p>
+<p>如何替换？用什么替换？请看下面一节。</p>
+<div class="hr"><b></b></div>
+<h2><a name="在调用时应用动态表名"></a>在调用时应用动态表名</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Dao 提供了一个小巧的类: org.nutz.dao.TableName。 通过这个类你可以随意设置你的动态表名：</p>
+<pre>public void demoTableName(final Dao dao) {
+	TableName.run(3, new Runnable() {
+		public void run() {
+			Employee peter = dao.fetch(Employee.class, "peter");
+			System.out.println(peter);
+		}
+	});
+}
+</pre>
+<p>通过创建一个匿名 java.lang.Runnable 对象，你可以像静态 POJO 一样使用 Dao 接口的一切方法。因为通过你传入的参数 3 (TableName.run 方法的第一个参数)， 以及前面的 @Table 声明，Nutz.Dao 已经很清楚如何操作数据库了，它会用 3 替代 null。</p>
+<p>如果细心一些，你会发现在 TableName.run 方法的声明是：</p>
+<pre>public static void run(Object refer, Runnable atom);
+</pre>
+<p>是的，第一个参数是个 Object，也就是说，你可以传入任何对象，上面的例子我们传入的是个整数，Java编译器会自动将其包裹成 Integer 对象。考虑到动态表名可能存在的复杂性（在前面一节“动态表名的常用形式”提到），你还可以传入一个 Map 或者一个POJO， Nutz.Dao 会根据你的传入为动态表名的多个变量同时赋值。下面我列出一个完整的<b>动态表名赋值规则</b></p>
+<div class="hr"><b></b></div>
+<h2><a name="动态表名赋值规则"></a>动态表名赋值规则</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>当传入参数为数字或字符串
+<ul type="circle">
+<li>所有的动态表名变量将被其替换</li>
+</ul>
+</li>
+<li>当传入参数为 Map
+<ul type="circle">
+<li>按照动态表名变量的名称在 Map 中查找值，并进行替换</li>
+<li>大小写敏感</li>
+<li>未找到的变量将被空串替换</li>
+</ul>
+</li>
+<li>当传入参数为 任意Java对象(POJO)
+<ul type="circle">
+<li>按照动态表名变量名称在对象中查找对应字段的值，并进行替换</li>
+<li>大小写敏感</li>
+<li>未找到的变量将被空串替换</li>
+</ul>
+</li>
+<li>当传入参数为null
+<ul type="circle">
+<li>所有变量将被空串替换</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="更灵活的应用动态表名"></a>更灵活的应用动态表名</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>使用 TableName.run 提供的动态表名模板的方式设置动态表名是很好的做法，也很安全。因为不会在 ThreadLocal里面留下垃圾动态表名变量值。但是通过模板的写法另外一方面也限制了一定线程灵活性。所以上述例子还有另外一个写法:</p>
+<pre>public void demoTableName2(final Dao dao) {
+	TableName.set(3);
+	Employee peter = dao.fetch(Employee.class, "peter");
+	System.out.println(peter);
+	TableName.clear();
+}
+</pre>
+<p>在 TableName.set 和 TableName.clear 之间的代码，就是动态表名变量的生命周期。当然，这个写法存在两个潜在的危险。</p>
+<ol type="1">
+<li>可能在 ThreadLocal 留下垃圾动态表名变量</li>
+<li>会清除掉 ThreadLocal 所有的动态表名变量</li>
+</ol>
+<p>关于第一点，可以用 try...catch...finally 来解决:</p>
+<pre>public void demoTableName3(final Dao dao) {
+	try {
+		TableName.set(3);
+		Employee peter = dao.fetch(Employee.class, "peter");
+		System.out.println(peter);
+	} finally {
+		TableName.clear();
+	}
+}
+</pre>
+<p>这样，永远都不会留下垃圾动态表名了</p>
+<p>关于第二点，是的，如果在 TableName.set(3) 之前你曾经设置了另一个动态表名变量，比如</p>
+<pre>public void demoTableName_multi(final Dao dao) {
+	TableName.set(10);
+	Employee john = dao.fetch(Employee.class, "john");
+	System.out.println(john);
+
+	TableName.set(3);
+	Employee peter = dao.fetch(Employee.class, "peter");
+	System.out.println(peter);
+	TableName.clear();
+
+	Employee mary = dao.fetch(Employee.class, "Mary");
+	System.out.println(mary);
+	TableName.clear();
+}
+</pre>
+<p>当执行到 Employee mary = dao.fetch(Employee.class, "Mary"); 一定会出错，不是吗？ 所以比较安全的写法是</p>
+<pre>public void demoTableName_multi(final Dao dao) {
+	TableName.set(10);
+	Employee john = dao.fetch(Employee.class, "john");
+	System.out.println(john);
+	Object old = TableName.get();
+	try {
+		TableName.set(3);
+		Employee peter = dao.fetch(Employee.class, "peter");
+		System.out.println(peter);
+	} finally {
+		TableName.set(old);
+	}
+	Employee mary = dao.fetch(Employee.class, "Mary");
+	System.out.println(mary);
+	TableName.clear();
+}
+</pre>
+<p>比较麻烦是吗？ 是的，使用 TableName.get ... TableName.set ... TableName.clear 虽然带来更大的灵活性，但是写起来有点麻烦，这也是为什么我要提供模板写法，上面的例子用模板的写法看起来是这个样子的：</p>
+<pre>public void demoTableName_multi_temp(final Dao dao) {
+	TableName.run(10, new Runnable() {
+		public void run() {
+			Employee john = dao.fetch(Employee.class, "john");
+			System.out.println(john);
+			TableName.run(3, new Runnable() {
+				public void run() {
+					Employee peter = dao.fetch(Employee.class, "peter");
+					System.out.println(peter);
+				}
+			});
+			Employee mary = dao.fetch(Employee.class, "Mary");
+			System.out.println(mary);
+		}
+	});
+}
+</pre>
+<p>看，虽然行数并没有减少，但是你不会犯错了。是的，模板写法主要的目的是 <span style="color:#AA8800;"><b>为了让你不会出错</b></span>。Java 语法上的局限让上述写法不可避免的有点显得臃肿，但是，层次的确清晰了一些，不是吗？在这个方面，我也期待这 Java 能向函数式编程靠近一些，提供闭包或者匿名函数，当然，前提是不能损害现在 Java 语言结构清晰易于调试的优点。</p>
+<div class="hr"><b></b></div>
+<h2><a name="在映射中的动态表名"></a>在映射中的动态表名</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过Java注解 @One, @Many, @ManyMany，Nutz.Dao 支持对象间的映射。很自然的，对象间的映射自动的会支持动态表名。比如，如果 Company 对象有个成员变量 private List&lt;Employee&gt; employees; 由于 Employee 是动态表名的所以当获取 employee 的时候，同样也能支持动态表名。</p>
+<div class="hr"><b></b></div>
+<h3><a name="一对一映射"></a>一对一映射</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如，我们的 Company 对象需要一个新的字段存储 CEO 的 ID，以及另外一个字段存储 CEO 对象本身。按照Nutz.Dao 对于一对一映射的定义：</p>
+<p><span style="color:#008800;">当对象A有字段f1指向对象B的主键，且在对象A上有字段b类型为B，且声明了@One(target=B.class,field="f1"，则称A.b为对于B的一对一映射</span></p>
+<p>那么，我们的 Company 对象必然会有类似如下的代码：</p>
+<pre>@Table("t_company")
+public class Company {
+
+	@Column
+	@Id
+	private int id;
+
+	@Column
+	@Name
+	private String name;
+
+	@Column
+	private int ceoId;
+
+	@One(target = Employee.class, field = "ceoId")
+	private Employee CEO;
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public int getCeoId() {
+		return ceoId;
+	}
+
+	public void setCeoId(int ceoId) {
+		this.ceoId = ceoId;
+	}
+
+	public Employee getCEO() {
+		return CEO;
+	}
+
+	public void setCEO(Employee ceo) {
+		CEO = ceo;
+	}
+
+}
+</pre>
+<p>比如，我们要在控制台上打印"nutz" 的公司的 CEO 的名字时，代码将为：</p>
+<pre>public void demoTableName_links_one(final Dao dao) {
+	final Company nutz = dao.fetch(Company.class,"nutz");
+	TableName.run(nutz.getId(), new Runnable(){
+		public void run() {
+			dao.fetchLinks(nutz, "CEO");
+		}
+	});
+	System.out.println(nutz.getCEO().getName());
+}
+</pre>
+<div class="hr"><b></b></div>
+<h3><a name="一对多映射"></a>一对多映射</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下面我们来增加一对多映射，是的，一个公司有很多雇员，不是吗？那么我们就为 Company 类增加一个新的字段</p>
+<pre>@Table("t_company")
+public class Company {
+
+	// ... another fields ...
+
+	@Many(target = Employee.class, field = "companyId")
+	private List&lt;Employee&gt; employees;
+
+	public List&lt;Employee&gt; getEmployees() {
+		return employees;
+	}
+
+	public void setEmployees(List&lt;Employee&gt; employees) {
+		this.employees = employees;
+	}
+
+	// ... another methods ...
+
+}
+</pre>
+<p>可以看到，在字段 employees 增加了 @Many 说明，就像一般的一对多映射一样， field 项声明了 Employee 类必须有一个名叫（companyId）的字段指向 Company 的主键。所以 Employee 类的代码为：</p>
+<pre>@Table("t_employee_${cid}")
+public class Employee {
+
+	@Column
+	@Id
+	private int id;
+
+	@Column
+	@Name
+	private String name;
+
+	@Column("comid")
+	private int companyId;
+
+	public int getCompanyId() {
+		return companyId;
+	}
+
+	public void setCompanyId(int companyId) {
+		this.companyId = companyId;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+}
+</pre>
+<p>一切设置完毕，我们就可以这么调用：</p>
+<pre>public void demoTableName_links_many(final Dao dao) {
+	final Company nutz = dao.fetch(Company.class, "nutz");
+	TableName.run(nutz.getId(), new Runnable() {
+		public void run() {
+			dao.fetchLinks(nutz, "employess");
+		}
+	});
+	for (Employee e : nutz.getEmployees())
+		System.out.println(e.getName());
+}
+</pre>
+<p>上面的程序会逐行打印出 nutz 公司所有的雇员名称。</p>
+<div class="hr"><b></b></div>
+<h3><a name="多对多映射"></a>多对多映射</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>多对多映射是通过一个中间表进行的数据关联，比如数据库中有数据表 A,B， 可以在建立一张表 C，描述 A 表和 B 表的数据关联。一般的关联表至少有两个字段，一个是 A 表的主键，另一个记录 B 表的主键。如果是复合主键或者要记录关联的权重，关联表的设计将会更加复杂。</p>
+<p>Nutz.Dao 提供了 @ManyMany 注解帮助你的 POJO 来声明多对多关联，比如在 Employee 类中可以增加一个新的字段，表示某个雇员的下属。</p>
+<pre>@ManyMany(target = Employee.class, relation = "t_employee_staff_${cid}", from = "eid", to = "sid")
+private List&lt;Employee&gt; staffs;
+</pre>
+<p>请注意</p>
+<ul type="disc">
+<li>relation 项就是关联表的名称，这个名称也可以写成动态的。</li>
+<li>from 项是关联表字段的名称，将对应到本 POJO 的主键，这里的 eid 将对应 Employee.id</li>
+<li>to 项也是关联表字段的名称，将对应到 target 项声明的主键，这里的 sid 也将对应 Employee.id</li>
+</ul>
+<p>在调用代码里可以这样调用</p>
+<pre>public void demoTableName_links_manymany(final Dao dao) {
+	final Company nutz = dao.fetch(Company.class, "nutz");
+	TableName.run(nutz.getId(), new Runnable() {
+		public void run() {
+			Employee peter = dao.fetch(Employee.class,"Peter");
+			dao.fetchLinks(peter, "staffs");
+			for (Employee e : peter.getStaffs())
+				System.out.println(e.getName());
+		}
+	});
+}
+</pre>
+<p>这段代码将 nutz 公司雇员 Peter 的所有下属逐行打印出来。</p>
+<div class="hr"><b></b></div>
+<h1><a name="总结一下"></a>总结一下</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>关于动态表名的这一节写的比较长，因为我认为动态表名的支持，Nutz.Dao 是比较独特的。它基本做到了这两个效果</p>
+<ol type="1">
+<li>如果你不希望使用动态表名，你根本不会看到 Nutz.Dao 关于动态表名的设计</li>
+<li>如果你希望使用动态表名，你并不需要学习更多的配置方法</li>
+</ol>
+<p>并不是因为我是 Nutz 的作者而努力的在为自己吹嘘，如果你细心体会 Nutz 各个模块的设计，所有的设计基本是本着上述两个原则，即需要的时候你会看见，不需要的时候尽量让你看不见。由于我是个职业界面设计师，所以我会自然而然的将我设计 UE 时很多原则应用在编程接口的设计上，事实上我发现，这的确在某种程度上让程序接口更简洁更轻便了，所以自然也就会对程序员更友好了。当然我并不否认 Nutz 可能依然存在一些脑残设计，我和你们一样不能忍受它们，如果发现它们请第一时间通知我。在讨论区发个贴就是个很好的办法。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b></div>
+</body>
+</html>

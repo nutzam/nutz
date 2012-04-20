@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Aop能做什么,不能做什么?</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Aop能做什么,不能做什么?</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#NutzAop能做什么?">Nutz.Aop能做什么?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#NutzAop不能做什么?">Nutz.Aop不能做什么?</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#NutzAop是如何做到拦截一个方法的">Nutz.Aop是如何做到拦截一个方法的</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#NutzAop实现的细节问题:">Nutz.Aop实现的细节问题:</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#NutzAop能怎么用:">Nutz.Aop能怎么用:</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#NutzAop代码中的注释">Nutz.Aop代码中的注释</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop能做什么?"></a>Nutz.Aop能做什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>为实例方法添加 前置(before)/后置(after)/一般异常处理(Exception)/错误(Throwable)</p>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop不能做什么?"></a>Nutz.Aop不能做什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>对构造方法进行拦截,对静态方法进行拦截,对字段进行拦截,对final类/final方法进行拦截,对私有方法进行拦截</p>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop是如何做到拦截一个方法的"></a>Nutz.Aop是如何做到拦截一个方法的</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>继承需要拦截的类. 这个类必须的非abstract非final的顶层类,不能是内部类和本地类(这个很少见)</li>
+<li>override需要拦截的方法. 这个方法必须是非abstract非final非static非native</li>
+<li>嵌入拦截器逻辑到方法中. 看网页: <a href="../ioc/aop_solution.html">Nutz.Aop模型</a></li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop实现的细节问题:"></a>Nutz.Aop实现的细节问题:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>使用的是内嵌的精简过的<a href="http://asm.ow2.org/">ASM</a>
+<ol type="a">
+<li>虽然说是精简过,但实际代码使用率约50%,还有精简的余地</li>
+<li>位于org.nutz.repo.org.objectweb.asm , 除非非常非常必要,请不要引用这里的类, 如果你要使用Asm,请使用官方原版</li>
+</ol>
+</li>
+<li>通过AbstractClassAgent过滤不可能被拦截的类和方法
+<ol type="a">
+<li>这个类与具体实现无关</li>
+<li>没有引用Asm的类</li>
+<li>如果觉得我实现得太烂,我想继承这个类仍是不错的选择</li>
+</ol>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop能怎么用:"></a>Nutz.Aop能怎么用:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>内置拦截器
+<ol type="a">
+<li>Log拦截器 为方法添加Log日志,记录方法进入/返回/异常等情况</li>
+<li>事务拦截器 为方法添加事务</li>
+</ol>
+</li>
+<li>拦截器接口MethodInterceptor
+<ol type="a">
+<li>仅需要实现一个方法void filter(InterceptorChain chain)</li>
+<li>InterceptorChain实例包含方法执行的全部信息--对象/参数/方法/返回值
+<ol type="i">
+<li>InterceptorChain对象最重要的方法doChain(),用于继续执行过滤链</li>
+<li>InterceptorChain对象的方法invoke()用于直接执行原方法,一般不直接调用</li>
+</ol>
+</li>
+<li>大部分情况下,继承AbstractMethodInterceptor是不错的选择,可以清晰处理方法执行的不同阶段</li>
+</ol>
+</li>
+<li>在Ioc中添加Aop支持
+<ol type="a">
+<li><a href="../ioc/loader_annotation.html">@Aop注解</a></li>
+<li>声明式Aop
+<ol type="i">
+<li><a href="../ioc/aop_json.html">json方式</a></li>
+<li>xml方式,暂未资料</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<div class="hr"><b></b></div>
+<h1><a name="NutzAop代码中的注释"></a>Nutz.Aop代码中的注释</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ol type="1">
+<li>在org.nutz.aop/org.nutz.aop.interceptor/org.nutz.aop.matcher下的类,基本上都是注释了的</li>
+<li>在org.nutz.aop.asm下的类,基本上是无注释的,在可预见的将来我也不打算添加
+<ol type="a">
+<li>基本上都是Asm操作字节码,苦涩难懂</li>
+<li>即使添加注释,我相信对你的理解不会有太多帮助</li>
+<li>如果你能看懂这部分的代码,那你也不需要注释</li>
+</ol>
+</li>
+</ol>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

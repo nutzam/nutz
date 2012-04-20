@@ -1,0 +1,478 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>表达式引擎简介</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">表达式引擎简介</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要_EL_表达式引擎">为什么需要 EL 表达式引擎</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#近一步介绍表达式引擎">近一步介绍表达式引擎</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#它容易使用吗？">它容易使用吗？</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#它功能强大吗？">它功能强大吗？</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#它速度怎么样？">它速度怎么样？</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#支持什么样的操作符">支持什么样的操作符</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#自定义函数">自定义函数</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">5</span><a href="#还有些什么功能?">还有些什么功能?</a></div>
+<ul>
+<li>
+<div><span class="num">5.1</span><a href="#忠于_Java">忠于 Java</a></div>
+</li>
+<li>
+<div><span class="num">5.2</span><a href="#支持对象方法调用">支持对象方法调用</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">6</span><a href="#一些表达式的例子">一些表达式的例子</a></div>
+<ul>
+<li>
+<div><span class="num">6.1</span><a href="#普通运算">普通运算</a></div>
+</li>
+<li>
+<div><span class="num">6.2</span><a href="#字符串操作">字符串操作</a></div>
+</li>
+<li>
+<div><span class="num">6.3</span><a href="#Java_对象属性属性访问调用">Java 对象属性属性访问调用</a></div>
+</li>
+<li>
+<div><span class="num">6.4</span><a href="#函数调用">函数调用</a></div>
+</li>
+<li>
+<div><span class="num">6.5</span><a href="#数组访问">数组访问</a></div>
+</li>
+<li>
+<div><span class="num">6.6</span><a href="#列表访问">列表访问</a></div>
+</li>
+<li>
+<div><span class="num">6.7</span><a href="#Map_访问">Map 访问</a></div>
+</li>
+<li>
+<div><span class="num">6.8</span><a href="#判断">判断</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么需要_EL_表达式引擎"></a>为什么需要 EL 表达式引擎</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你，对，就是你，正在看这篇文章的人，我虽然不认识你，但是 我可以负责任的说，如果你看到这个标题就心里在悄悄的呼喊：<span style="color:#008800;"><b>“靠，他们连这个都有！我省事了，哇哈哈哈和”</b></span>。那么，你绝对属于百分之一的特例。 就是说，绝大多数人的绝大多数项目，是不需要一个嵌入式的表达式引擎的。因此，提供这个功能的目的就是：</p>
+<p><span style="color:#0000AA;"><b> 满足一小撮人的一小撮要求</b></span></p>
+<p>但是，"一小撮人"的"一小撮要求"有很多，作为一个小众类库，为什么单单打算支持这个特性呢？下面是我的理由：</p>
+<ul type="disc">
+<li>这个功能是其它模块功能的基础，我们需要它</li>
+<li>可能因此吸引其他的开发者对 Nutz 的兴趣
+<ul type="circle">
+<li>需要嵌入式表达式引擎的人是 Java 开发者的少数人，但是这些人也应该比 Nutz 的用户要多</li>
+<li>这些人基本上编程水平要强一些</li>
+</ul>
+</li>
+<li>其他的提交者对增加这个特性没有特别强烈的反对</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="近一步介绍表达式引擎"></a>近一步介绍表达式引擎</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>那么它怎么使用呢？</p>
+<p>是的，我想这可能会是你脑海里闪出的第一个问题。并且，我想你真正想问的是:“它好用吗？”</p>
+<p>如果你脑海里第一个问题不是这个，而是：“表达式引擎是神马东东？” 那么建议你不用阅读本文了，反正你也用不着。等你需要的时候，再读也不迟，反正这篇文章又不长。</p>
+<p>而关于 <b>"好用"</b>，还有下面这三层含义：</p>
+<h2><a name="它容易使用吗？"></a>它容易使用吗？</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>System.out.println(El.eval("3+4*5").equals(23));  // 将打印 true，够简单吧
+</pre>
+<p>表达式接受的是字符串输入，输出则是一个Object对象，而Object对象本身是根据计算结果进行进行了自动封装的。</p>
+<h2><a name="它功能强大吗？"></a>它功能强大吗？</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>虽然在 <a href="#一些表达式的例子">#一些表达式的例子</a> 这一节我有更详细的例子，但是这里我必须要先概括几点：</p>
+<p><b>它支持变量</b>，比如</p>
+<pre>Context context = Lang.context();
+context.set("a", 10);
+System.out.println(El.eval(context, "a*10"));  // 将打印 100 
+</pre>
+<p>通过 Context 接口，你可以为你的表达式随意设置变量的值。它支持如下类型的 Java 数据</p>
+<ul type="disc">
+<li>整型 - int 或  Integer</li>
+<li>浮点 - float 或 Float</li>
+<li>长整 - long 或 Long</li>
+<li>布尔 - boolean 或 Boolean</li>
+<li>字符串 - String</li>
+<li>数组 - T[]</li>
+<li>列表 - Lst&lt;Ti&gt;</li>
+<li>集合 - Collection&lt;T&gt;</li>
+<li>Map - Map&lt;String,?&gt;</li>
+<li>普通 Java 对象</li>
+</ul>
+<p>基本上，有了这些，你可以为所欲为了吧。</p>
+<h2><a name="它速度怎么样？"></a>它速度怎么样？</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我觉得它速度不怎么样。它的工作的原理是这样的，每次解析都经过如果下三步</p>
+<ol type="1">
+<li>解析成后缀表达式形式的一个队列</li>
+<li>将后缀表达式解析成一棵运算树.</li>
+<li>对运算树的根结点进行运算.</li>
+</ol>
+<p>当然我也提供了一个提升效率的手段，因为如果每次计算都经过这三个步骤当然慢，所以我们可以对它先预编译：</p>
+<pre>El exp = new El("a*10");  // 预编译结果为一个 El 对象
+
+Context context = Lang.context();
+context.set("a", 10);
+
+System.out.println(exp.eval(context));  // 将打印 100 
+</pre>
+<p>El在实例化时就会对表达式进行预编译，会直接编译成运算树，当调用eval方法时，就不用再耗时的编译动作了.</p>
+<p>它的 eval 函数是线程安全的，只要在多个线程内给它不同的 context 就是了。当然，你也可以在多个线程间共享同一个 Context，那运行起来一定很有趣，不是吗？</p>
+<div class="hr"><b></b></div>
+<h1><a name="支持什么样的操作符"></a>支持什么样的操作符</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>我想但凡有机会和兴趣独到这篇文字的同学，一定是编程老手，即使是自称<b>小白</b>的的同学们，你们对一个编程语言应该支持的操作符基本都差不多熟的不行，所以，我就不在这里唠叨操作符的具体细节了，我只给一个列表，告诉你我现在支持什么操作符。</p>
+<p>另外，再加上一句：</p>
+<p><b>只要支持的操作符，我会让它的优先级以及行为会和 Java 的表达式一致。如果你发现不一致别犹豫，给我报 Issue 吧。</b></p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 符号       </td>
+<td> 权重 </td>
+<td>   解释       </td>
+</tr>
+<tr>
+<td> ()       </td>
+<td> 100  </td>
+<td> 括号，优先计算   </td>
+</tr>
+<tr>
+<td> ,        </td>
+<td> 0    </td>
+<td> 逗号，主要是方法参数   </td>
+</tr>
+<tr>
+<td> .        </td>
+<td> 1    </td>
+<td> 访问对象的属性，或者Map的值，或者方法调用，或者自定义函数调用（需要结合后面是否有括号） </td>
+</tr>
+<tr>
+<td> ['abc']  </td>
+<td> 1    </td>
+<td> Java 对象 Map按键值获得值   </td>
+</tr>
+<tr>
+<td> [3]      </td>
+<td> 1    </td>
+<td> 数字，列表，或者集合的下标访问符号  </td>
+</tr>
+<tr>
+<td> *        </td>
+<td> 3    </td>
+<td> 乘           </td>
+</tr>
+<tr>
+<td> /        </td>
+<td> 3    </td>
+<td> 整除         </td>
+</tr>
+<tr>
+<td> %        </td>
+<td> 3    </td>
+<td> 取模         </td>
+</tr>
+<tr>
+<td> +        </td>
+<td> 4    </td>
+<td> 加           </td>
+</tr>
+<tr>
+<td> -        </td>
+<td> 4    </td>
+<td> 减           </td>
+</tr>
+<tr>
+<td> -        </td>
+<td> 2    </td>
+<td> 负           </td>
+</tr>
+<tr>
+<td> &gt;=       </td>
+<td> 6    </td>
+<td> 大于等于     </td>
+</tr>
+<tr>
+<td> &lt;=       </td>
+<td> 5    </td>
+<td> 小于等于     </td>
+</tr>
+<tr>
+<td> ==       </td>
+<td> 7    </td>
+<td> 等于         </td>
+</tr>
+<tr>
+<td> !=       </td>
+<td> 6    </td>
+<td> 不等于       </td>
+</tr>
+<tr>
+<td> !        </td>
+<td> 7    </td>
+<td> 非           </td>
+</tr>
+<tr>
+<td> &gt;        </td>
+<td> 6    </td>
+<td> 大于         </td>
+</tr>
+<tr>
+<td> &lt;        </td>
+<td> 6    </td>
+<td> 小于         </td>
+</tr>
+<tr>
+<td> &amp;&amp;       </td>
+<td> 11   </td>
+<td> 逻辑与       </td>
+</tr>
+<tr>
+<td> | |       </td>
+<td> 12   </td>
+<td> 逻辑或       </td>
+</tr>
+<tr>
+<td> ?:       </td>
+<td> 13   </td>
+<td> 三元运算     </td>
+</tr>
+<tr>
+<td> &amp;        </td>
+<td> 8    </td>
+<td> 位运算，与    </td>
+</tr>
+<tr>
+<td> ~        </td>
+<td> 2    </td>
+<td> 位运算，非    </td>
+</tr>
+<tr>
+<td> |        </td>
+<td> 10   </td>
+<td> 位运算，或    </td>
+</tr>
+<tr>
+<td> ^        </td>
+<td> 9    </td>
+<td> 位运算，异或  </td>
+</tr>
+<tr>
+<td> &lt;&lt;       </td>
+<td> 5    </td>
+<td> 位运算，左移  </td>
+</tr>
+<tr>
+<td> &gt;&gt;       </td>
+<td> 5    </td>
+<td> 位运算，右移  </td>
+</tr>
+<tr>
+<td> &gt;&gt;&gt;      </td>
+<td> 5    </td>
+<td> 位运算，无符号右移  </td>
+</tr>
+<tr>
+<td> &amp;        </td>
+<td> 8    </td>
+<td> 位运算，与    </td>
+</tr>
+</table>
+<p>当然，同任何编程语言一样，表达式也支持 左括号 <span style="color:#0000AA;"><b>(</b></span> 以及 右括号<span style="color:#0000AA;"><b>)</b></span>，来控制表达式的的计算优先级别</p>
+<div class="hr"><b></b></div>
+<h1><a name="自定义函数"></a>自定义函数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>好吧, 你肯定要说上面的功能简直弱爆了, 就一点简单的加加减减有什么好稀奇的, 再强点的需求就没办法满足了.确实是这样, 所以, 我们在 EL 里面添加了自定义函数, 嘿嘿, 这回强了吧. 言归正传,下面详细的说说它的使用, 以及怎么自定义.</p>
+<p>现有的自定义函数:</p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 名称 </td>
+<td> 参数           </td>
+<td> 解释                 </td>
+<td> 例子                 </td>
+</tr>
+<tr>
+<td> max  </td>
+<td> 任意个Number型 </td>
+<td> 取出参数中最大值     </td>
+<td> max(1, 2, 3, 4)=&gt;4   </td>
+</tr>
+<tr>
+<td> min  </td>
+<td> 任意个Number型 </td>
+<td> 取出参数中最小值     </td>
+<td> min(1, 2, 3, 4)=&gt;1   </td>
+</tr>
+<tr>
+<td> trim </td>
+<td> 一个String     </td>
+<td> 去掉字符串两边的空格 </td>
+<td> trim("   1  ")=&gt; "1" </td>
+</tr>
+</table>
+<p>使用很简单吧.</p>
+<p>当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? </p>
+<pre># 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
+# 在配置文件中添加一个配置项:
+{
+"EL": {"custom":[...函数列表...]}
+}
+# 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
+NutConfig.load("配置文件");
+</pre>
+<p>完成这两步后, 你就定义了你自己的函数. 看个trim的例子:</p>
+<pre>public class Trim implements RunMethod, Plugin{
+    //处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
+    public Object run(List&lt;Object&gt; fetchParam) {
+        if(fetchParam.size() &lt;= 0){
+        throw new ElException("trim方法参数错误");
+        }
+        String obj = (String) fetchParam.get(0);
+        return obj.trim();
+    }
+    //是否可以执行
+    public boolean canWork() {
+        return true;
+    }
+    //在EL表达式中的函数名
+    public String fetchSelf() {
+        return "trim";
+    }
+}
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h1><a name="还有些什么功能?"></a>还有些什么功能?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>其实我们的 EL 很强悍的, 有好多功能, 好多使用技巧等待着你的发现. 现在简单的罗列一下, EL中的一些特性吧. </p>
+<h2><a name="忠于_Java"></a>忠于 Java </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz中的 EL 完全忠实于 JAVA 基本运算规则, 并没有做一些扩展, 比如最常见的, 数据类型转换,在 JAVA 中进行数值运算的过程中, 是根据运算符两边的类型而最终决定运算结果的类型的, 比如: </p>
+<pre>7/3  // 将返回int型
+而 
+(1.0 * 7)/3    // 返回double
+(1.0f * 7)/3   // 则返回float
+</pre>
+<p>为什么后面两个返回类型不一样呢?  因为在 JAVA 中默认浮点类型是 double 哦.</p>
+<p>基于这个原因, 在 EL 中同样保留了这些特点. 所以, 亲, 要是没返回 double 别骂我们哦~~~</p>
+<h2><a name="支持对象方法调用"></a>支持对象方法调用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>亲, EL 支持对象, 支持对象方法调用哦~~~</p>
+<p>这有什么好大不了的? 给你看个例子, 嘿嘿:</p>
+<pre>Context context = Lang.context();
+context.set("a", new BigDecimal("7"));
+context.set("b", new BigDecimal("3"));
+assertEquals(10, El.eval(context, "a.add(b).intValue()"));
+</pre>
+<ul type="disc">
+<li>看到什么没? 对了, BigDecimal 你完全可以丢各种各样的对象到 context 里面去, 然后在 EL 中调用它们的方法.</li>
+<li>然后你就进行各种各样的虐待, 皮鞭, 蜡烛, 想来啥来啥...额...太邪恶了...</li>
+<li>同样, EL 是使用反射的, 所以会存在一些底层异常的问题.</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="一些表达式的例子"></a>一些表达式的例子</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="普通运算"></a>普通运算</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>System.out.println(El.eval("3+2*5"));
+// 输出为  13
+</pre>
+<p></p>
+<h2><a name="字符串操作"></a>字符串操作</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>System.out.println(El.eval("trim(\"  abc  \")"));
+// 输出为  abc
+</pre>
+<p></p>
+<h2><a name="Java_对象属性属性访问调用"></a>Java 对象属性属性访问调用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+Pet pet = new Pet();
+pet.setName("GFW");
+context.set("pet",pet);
+System.out.println(El.eval(context,"pet.name"));
+// 输出为  GFW
+</pre>
+<p></p>
+<h2><a name="函数调用"></a>函数调用	</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+Pet pet = new Pet();
+context.set("pet",pet);
+El.eval(context, "pet.setName('XiaoBai')");
+
+System.out.println(El.eval(context,"pet.getName()"));
+// 输出为  XiaoBai
+</pre>
+<p></p>
+<h2><a name="数组访问"></a>数组访问</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+context.set("x",Lang.array("A", "B", "C"));
+
+System.out.println(El.eval(context,"x[0].toLowerCase()"));
+// 输出为  a
+</pre>
+<p></p>
+<h2><a name="列表访问"></a>列表访问</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+context.set("x",Lang.list("A", "B", "C"));
+
+System.out.println(El.eval(context,"x[0].toLowerCase()"));
+// 输出为  a
+</pre>
+<p></p>
+<h2><a name="Map_访问"></a>Map 访问</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+context.set("map",Lang.map("{x:10, y:5}"));
+
+System.out.println(El.eval(context,"map['x'] * map['y']"));
+// 输出为  50
+</pre>
+<p></p>
+<h2><a name="判断"></a>判断</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<pre>Context context = new Context();
+context.set("a",5);
+
+System.out.println(El.eval(context,"a&gt;10"));
+// 输出为  false
+
+context.set("a",20);
+System.out.println(El.eval(context,"a&gt;10"));
+// 输出为  true
+</pre>
+<p></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
+</body>
+</html>

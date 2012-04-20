@@ -1,0 +1,260 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>1.b.36 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">1.b.36 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#1b36_发行注记">1.b.36 发行注记</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="1b36_发行注记"></a>1.b.36 发行注记</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Hi, 大家好，又是我。</p>
+<p>接着本次发布的机会，我们要 highlight 一位开发者 -- <b>juqkai</b>。</p>
+<p>在他和 <a href="http://myblog.sunfarms.net/">Wendal同学</a>的<a href="http://code.google.com/p/nutz/source/detail?r=1823">前后鼓动下</a>，我们终于毅然的重写了<a href="http://code.google.com/p/nutz/wiki/mvc_action_chain">Mvc的核心加载逻辑</a>。</p>
+<p>现在的 Mvc 更加灵活，至于如何灵活，大家可以读读 <a href="http://code.google.com/p/nutz/wiki/mvc_action_chain">这篇文档</a>。</p>
+<p>同时，我发现 <b>juqkai</b> 同学也是一位对代码的品质有执着追求的同学，比如他<a href="http://code.google.com/p/nutz/source/detail?r=1901">毅然的重构了 Nutz 的 JsonParsing</a>，记得当时我写这个类时，就是一个大函数，一个长长的 switch...case，因为我想:"JSON 这点简单的东东，还用弄个什么结构吗？"。 但是后来我发现代码越来越长，也犹豫过："要不要重构一下，起码弄几个私有函数嘛。"。 但是后来想:"算了，反正长也不过 400行。我还要留点时间看火影的好 ^_^"</p>
+<p>但是，我这点懒散被目光如炬的 <b>juqkai</b> 的同学发现了，他挺身而出，完成了我一直想做但可耻的没有做的事情。实话说，这种精神已经感动我好几个礼拜了。 喂神马！喂神马！又出现一个执着于代码品质的提交者涅？ </p>
+<p>这版 Nutz 经过这次重构，解决了很多 Mvc 方面潜在的问题。 这时，似乎大家又把目光投向了 Dao。 恩，是的，我们打算重构一下它。彻底的重构。</p>
+<p>有些人可能会担心，你们这么乱搞，代码的正确性如何保证啊？ 我们基本不太担心，我们的代码质量现在基本由 600 多个 JUnit 来保证。每当有人报 Issue，我们会尽可能添加 JUnit 来重现。 我记得在早些时候，我认为如果项目的 JUnit 到了 1000 个，那么代码的质量应该是坚若磐石的。现在我们可以说，Nutz 差不多是一块 65% 的磐石。 即使我们肆无忌惮的重构，它的质量也不太会发生什么大的变化。所以，很有可能在之后的1－2个版本，我们会重构 Dao.		</p>
+<div class="hr"><b></b></div>
+<h1><a name="问题修复"></a>问题修复</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=204">Issue 204</a> Mirror表达式（嵌套属性的支持）  <span style="color:#AAAAAA;">by</span> <b>jiongs753</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=350">Issue 350</a> 实现更优雅的URL  <span style="color:#AAAAAA;">by</span> <b>wesnow</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=354">Issue 354</a> Mvc:是否可以在执行ActionFilter之前进行参数适配，并将适配后的参数数组作为传入ActionFilter  <span style="color:#AAAAAA;">by</span> <b>landraxee</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=381">Issue 381</a> 关于上传文件正则表达式匹配可以支持的文件名报错的问题  <span style="color:#AAAAAA;">by</span> <b>axhack</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=382">Issue 382</a> 能否考虑将DefaultEntityMaker中的哪些私有的方法改为protected的?  <span style="color:#AAAAAA;">by</span> <b>a357857613@qq.com</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=384">Issue 384</a> 换成 JSON 字符串时，\u转义有误  <span style="color:#AAAAAA;">by</span> <b>fjayblue</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=388">Issue 388</a> Json: 多线程的时候，转换时间类型到字符串会出现错误  <span style="color:#AAAAAA;">by</span> <b>liaojiaohe</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=389">Issue 389</a> Cnd拼条件时使用not in，生成的SQL文不正确  <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=392">Issue 392</a> 配置正确的url路径却进不到对应的Action  <span style="color:#AAAAAA;">by</span> <b>pangwu86</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=393">Issue 393</a> Feature: Please support variant in the locale message  <span style="color:#AAAAAA;">by</span> <b>袁青云</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=394">Issue 394</a> 路径参数最好定义成包装类型  <span style="color:#AAAAAA;">by</span> <b>wesnow</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=396">Issue 396</a> 处理异常信息的时候出现异常  <span style="color:#AAAAAA;">by</span> <b>fjayblue</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=397">Issue 397</a> El.eval在某些算式中出现的问题  <span style="color:#AAAAAA;">by</span> <b>ywjno.dev</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=399">Issue 399</a> WebResourceScan.list NullPointerException  <span style="color:#AAAAAA;">by</span> <b>jiongs753</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=404">Issue 404</a> FailProcessor 异常时不会在控制台打印信息  <span style="color:#AAAAAA;">by</span> <b>juqkai</b></li>
+<li><a href="http://code.google.com/p/nutz/issues/detail?id=411">Issue 411</a> WebResourceScan 不能扫描 classpath 下面的 jar 包.  <span style="color:#AAAAAA;">by</span> <b>Json.Shen</b></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="质量"></a>质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>共通过了 <span style="color:#FF00FF;"><b>664</b></span>  个单元测试用例,代码覆盖率达到</p>
+<p>Nutz.Dao 经测试在如下数据库上可以工作正常</p>
+<ul type="disc">
+<li><a href="http://www.h2database.com">H2</a></li>
+<li><a href="http://www.sqlite.org">SQLite</a></li>
+<li><a href="http://www.mysql.com">MySql</a></li>
+<li><a href="http://www.oracle.com">Oracle</a></li>
+<li><a href="http://www.postgresql.org">Postgresql</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
+<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
+<li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="文档"></a>文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>增加 <a href="http://code.google.com/p/nutz/wiki/mvc_action_chain">动作链</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>贡献的种类:</p>
+<ul type="disc">
+<li>问题: 给项目的<a href="http://code.google.com/p/nutz/issues/list">问题列表</a>汇报一个上的问题，并且该问题被本次发布包括</li>
+<li>博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 <a href="http://code.google.com/p/nutz/wiki/appendix_resources">推荐列表</a>收录</li>
+<li>代码: 提交过至少一个修订</li>
+<li>Demo: 为 <a href="http://code.google.com/p/nutzdemo">Demo Site</a> 提交过代码</li>
+<li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
+<li>测试: 发布前，参与测试周发布人给出的任务</li>
+</ul>
+<p>如有遗漏,请提醒我们 ^_^</p>
+<p><span style="color:#CCCCCC;"><i>贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...</i></span></p>
+<table border="1" cellspacing="2" cellpadding="4">
+<tr>
+<td> 贡献者        </td>
+<td> 问题 </td>
+<td> 博客 </td>
+<td> 支持 </td>
+<td> 代码 </td>
+<td> 示例 </td>
+<td> 文档 </td>
+<td> 测试 </td>
+</tr>
+<tr>
+<td> A357857613	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Axhack    	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Fjayblue  	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Json.Shen 	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Juqkai    	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> Landraxee 	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Liaojiaohe	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Pangwu86  	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Wendal    	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> Wesnow    	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> Ywjno.dev 	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> zozoh    	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  O   </td>
+</tr>
+<tr>
+<td> 天行健       	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 袁青云       	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+<td>  -   </td>
+</tr>
+</table>
+<p>另外，很多朋友都在：</p>
+<ul type="disc">
+<li><a href="https://groups.google.bg/group/nutzam?hl=zh-CN">Nutzam 讨论区</a></li>
+<li><a href="http://qun.qq.com/air/#58444676">Nutz &amp; XBlink （58444676 超级群）</a></li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/60504323">Nutz在微笑 （60504323）超级群</a></li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz ② 群 （68428921）超级群</a></li>
+<li>GTalk 聊天群 <span style="color:#AAAAAA;"><i>添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span></li>
+</ul>
+<p>回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!</p>
+<p>欢迎访问<a href="http://nutzam.com">官网</a>,以获取 <a href="http://build.sunfarms.net/nutz/">最新的快照版</a> 和<a href="http://build.sunfarms.net/nutz/lastest/manual/">用户手册</a></p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

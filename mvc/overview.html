@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Mvc 概述</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Mvc 概述</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#几句话的介绍">几句话的介绍</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#图解_NutzMvc">图解 Nutz.Mvc</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#每一次请求，都经过如下流程">每一次请求，都经过如下流程</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#更详细的流程">更详细的流程</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#进阶阅读">进阶阅读</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="几句话的介绍"></a>几句话的介绍</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 是要和一个 Web 服务器 （比如 Tomcat）一起工作的，它存在的意义<b>就是要把一个标准的 HTTP 请求，转发到某一个 Java 函数中</b>。</p>
+<p>它的特点是：</p>
+<ul type="disc">
+<li>帮你做参数的解析 （<i>当然你自己可以随意扩展</i>）</li>
+<li>如果你愿意，你可以不用 View 来渲染 HTTP 输出流</li>
+<li>提供几个基本的渲染方式 （比如 JSP, JSON）</li>
+<li>除此以外，不内置更多的功能</li>
+</ul>
+<p>每一种 HTTP 请求，标识就是一个 URL，而每一个 Java 函数怎样和一个 URL 关联呢？ 最直接的办法就是在函数上声明一个注解，这个注解，在 Nutz.Mvc 中，叫 @At</p>
+<p>你如果想快速开始，来一个 Hellow World， 那么请看 <a href="hello.html">Hello World</a> 一节</p>
+<div class="hr"><b></b></div>
+<h1><a name="图解_NutzMvc"></a>图解 Nutz.Mvc</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>为了能让你更快速直观的了解 Nutz.Mvc 的工作方式，我提供下面两张图：</p>
+<h2><a name="每一次请求，都经过如下流程"></a>每一次请求，都经过如下流程</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="nutz_mvc_workflow_overview.png"/></p>
+<p>Nutz.Mvc 根据 @At 注解，将一个 HTTP 请求映射到了一个函数，函数只有一个参数，会被路径参数 （1045） 填充。</p>
+<ul type="disc">
+<li>Nutz.Mvc 最基本的想法，就是通过注解 @At 将一个HTTP请求路径同一个 Java 函数关联起来。</li>
+<li>并且，@At 支持你写多个路径</li>
+</ul>
+<h2><a name="更详细的流程"></a>更详细的流程</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="nutz_mvc_workflow_detail.png"/></p>
+<ul type="disc">
+<li>声明了 @At 的函数被称为 <b>入口函数</b></li>
+<li>任何一个请求，都会经过四道工序
+<ol type="1">
+<li><b>A</b> - <b>过滤</b>: 你通过 @Filters 注解可以为你的<b>入口函数</b>定义任意多的过滤器</li>
+<li><b>B</b> - <b>适配</b>: 这个过程将 HTTP 输入流转换成<b>入口函数</b>的参数数组
+<ul type="circle">
+<li>默认的，它认为输入流是传统的名值对方式</li>
+<li>更多的适配方式请参看 <a href="http_adaptor.html">关于适配器</a></li>
+<li>文件上传也是一种适配方式，请参看 UploadAdptor</li>
+</ul>
+</li>
+<li><b>C</b> - <b>调用</b>: 调用<b>入口函数</b>，你在里面需要调用相关的业务层代码。
+<ul type="circle">
+<li>如果你的业务比较复杂，为了解耦合，你可能需要 Ioc 容器的帮助，请参看 <a href="with_ioc.html">同 Ioc 容器一起工作</a> 一节</li>
+</ul>
+</li>
+<li><b>D</b> - <b>渲染</b>: 根据<b>入口函数</b>的返回，渲染 HTTP Response。
+<ul type="circle">
+<li>如果返回是个 View，则用这个 View 来渲染 null （null? 是的，你没看错，这种情况 View 接口第三个参数会是 null）
+<ul type="square">
+<li>你可以用 org.nutz.mvc.view.ViewWrapper 将你的返回对象以及要返回的视图组合在一起返回，ViewWrapper 也是一个 View</li>
+</ul>
+</li>
+<li>否则用函数的 @Ok 注解声明的 View 来渲染<b>入口函数</b>的返回对象</li>
+<li>如果你的函数处理过程中抛出了异常，用 @Error 注解声明的 View 来渲染异常对象</li>
+<li>返回值会保存在request的attr中,名字是<b>obj</b></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="进阶阅读"></a>进阶阅读</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li><a href="web_xml.html">如何配置 web.xml</a></li>
+<li><a href="modules.html">Nutz.Mvc 的配置语法</a></li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

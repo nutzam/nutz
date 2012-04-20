@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>主模块-子模块-入口函数</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">主模块-子模块-入口函数</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#主模块">主模块</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#@Modules_-_声明应用的所有子模块">@Modules - 声明应用的所有子模块</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#@IocBy_-_设置应用所采用的_Ioc_容器">@IocBy - 设置应用所采用的 Ioc 容器</a></div>
+</li>
+<li>
+<div><span class="num">1.3</span><a href="#@SetupBy_-_应用启动以及关闭时的额外处理">@SetupBy - 应用启动以及关闭时的额外处理</a></div>
+</li>
+<li>
+<div><span class="num">1.4</span><a href="#@Views_-_自定义的扩展视图">@Views - 自定义的扩展视图</a></div>
+</li>
+<li>
+<div><span class="num">1.5</span><a href="#@Localization_-_应用的本地化字符串设定">@Localization - 应用的本地化字符串设定</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">2</span><a href="#子模块">子模块</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#入口函数">入口函数</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#@At_-_入口函数对应的_URL">@At - 入口函数对应的 URL</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#@Ok_-_成功视图">@Ok - 成功视图</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#@Fail_-_失败视图">@Fail - 失败视图</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#@AdaptBy_-_HTTP_参数适配方式">@AdaptBy - HTTP 参数适配方式</a></div>
+</li>
+<li>
+<div><span class="num">3.5</span><a href="#@Filter_-_过滤器">@Filter - 过滤器</a></div>
+</li>
+<li>
+<div><span class="num">3.6</span><a href="#@Encoding_-_输入输出编码">@Encoding - 输入输出编码</a></div>
+</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="主模块"></a>主模块</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>任何一个类都可以作为主模块，只要你将其配置在 web.xml 中，这样的设计主要是为了方便一些非 JSP/Servlet 标注的 web 服务器整合 Nutz.mvc 框架。</p>
+<p>在主模块中，你可以声明如下的注解：</p>
+<ul type="disc">
+<li><a href="#@Modules_-_声明应用的所有子模块">@Modules - 声明应用的所有子模块</a></li>
+<li><a href="#@IocBy_-_设置应用所采用的_Ioc_容器">@IocBy - 设置应用所采用的 Ioc 容器</a></li>
+<li><a href="#@SetupBy_-_应用启动以及关闭时的额外处理">@SetupBy - 应用启动以及关闭时的额外处理</a></li>
+<li><a href="#@Views_-_自定义的扩展视图">@Views - 自定义的扩展视图</a></li>
+<li><a href="#@Localization_-_应用的本地化字符串设定">@Localization - 应用的本地化字符串设定</a></li>
+<li><a href="#入口函数">所有入口函数上支持的注解</a>
+<ul type="circle">
+<li>声明在主模块模块的注解，将作为所有<a href="#入口函数">入口函数</a>的默认配置</li>
+<li>在<a href="#子模块">子模块</a>中的定义更为优先</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h2><a name="@Modules_-_声明应用的所有子模块"></a>@Modules - 声明应用的所有子模块</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>指定子模块</p>
+<pre>@Modules({ UserModule.class, PetModule.class})
+public class MainModule {
+	...
+</pre>
+<p>自动搜索子模块</p>
+<pre>@Modules(scanPackage = true)
+public class MainModule {
+	...
+</pre>
+<p>将自动搜索主模块所在的包（包括子包）下所有的类，如果有类包括了一个以上的<a href="#入口函数">入口函数</a>将被认为是模块类</p>
+<p>半自动搜索子模块</p>
+<pre>@Modules(value={Abc.class, Xyz.class}, scanPackage = true)
+public class MainModule {
+	...
+</pre>
+<p>将自动搜索主模块类，Abc.class，Xyz.class 所在的包（包括子包）下所有的类，如果有类包括了一个以上的<a href="#入口函数">入口函数</a>将被认为是模块类</p>
+<div class="hr"><b></b></div>
+<h2><a name="@IocBy_-_设置应用所采用的_Ioc_容器"></a>@IocBy - 设置应用所采用的 Ioc 容器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>声明了 Ioc 容器的获取方式，详情请参看 <a href="with_ioc.html">同 Ioc 容器一起工作</a> 一节</p>
+<div class="hr"><b></b></div>
+<h2><a name="@SetupBy_-_应用启动以及关闭时的额外处理"></a>@SetupBy - 应用启动以及关闭时的额外处理</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在整个应用启动或者关闭时，你想做一些额外的处理工作，你可以实现一个org.nutz.mvc.Setup 接口，并将其配置在<a href="#主模块">主模块</a>上</p>
+<pre>@SetupBy(MyAppSetup.class)
+public class MainModule {
+	...
+</pre>
+<p></p>
+<div class="hr"><b></b></div>
+<h2><a name="@Views_-_自定义的扩展视图"></a>@Views - 自定义的扩展视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 允许你定制自己的<a href="view.html">视图</a>，如何使用这个注解，请参看<a href="view.html#定制自己的视图">视图&gt;定制自己的视图</a> 一节</p>
+<div class="hr"><b></b></div>
+<h2><a name="@Localization_-_应用的本地化字符串设定"></a>@Localization - 应用的本地化字符串设定</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz.Mvc 允许你定制自己的本地化字符串存取方式，同时它也提供了默认的本地化字符串存取方式，请参看 <a href="localization.html">本地化字符串</a> 一节</p>
+<div class="hr"><b></b></div>
+<h1><a name="子模块"></a>子模块</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>任何类都可以作为子模块，只要通过<a href="#@Modules_-_声明应用的所有子模块">@Modules 注解</a>	声明到<a href="#配置主模块">主模块</a>上即可</p>
+<p>在子模块，你可以声明</p>
+<ul type="disc">
+<li><a href="with_ioc.html">@InjectName 使用 Ioc 容器管理本模块</a></li>
+<li><a href="#入口函数">所有入口函数上支持的注解</a>
+<ul type="circle">
+<li>声明在子模块的注解，将作为所有<a href="#入口函数">入口函数</a>的默认配置</li>
+</ul>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="入口函数"></a>入口函数</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>子模块中任何函数，只要是 public 的，且不是 static 的，都可以作为入口函数标记入口函数的方法是在其上标注注解 <a href="#@At_-_入口函数对应的_URL">@At</a></p>
+<p>在入口函数上，你可以声明如下注解：</p>
+<ul type="disc">
+<li><a href="#@At_-_入口函数对应的_URL">@At - 入口函数对应的 URL</a></li>
+<li><a href="#@Ok_-_成功视图">@Ok - 成功视图</a></li>
+<li><a href="#@Fail_-_失败视图">@Fail - 失败视图</a></li>
+<li><a href="#@AdaptBy_-_HTTP_参数适配方式">@AdaptBy - HTTP 参数适配方式</a></li>
+<li><a href="#@Filter_-_过滤器">@Filter - 过滤器</a></li>
+<li><a href="#@Encoding_-_输入输出编码">@Encoding - 输入输出编码</a></li>
+</ul>
+<h2><a name="@At_-_入口函数对应的_URL"></a>@At - 入口函数对应的 URL</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>只有标记了这个注解的函数才被认为是<a href="#入口函数">入口函数</a>，例如</p>
+<pre>@At("/my/abc")
+public void someFunc(){
+	...
+</pre>
+<p>你也可以为该函数声明多个 URL </p>
+<pre>@At({"/my/abc", "/my/xyz"})
+public void someFunc(){
+	...
+</pre>
+<p></p>
+<ul type="disc">
+<li>你也可以为其声明路径参数，详细情况请参看 <a href="http_adaptor.html#路径参数">适配器&gt;路径参数</a> 一节</li>
+<li>如果，你想详细了解 URL 映射的细节，请参看 <a href="url_mapping.html">URL 映射</a> 一节。</li>
+</ul>
+<h2><a name="@Ok_-_成功视图"></a>@Ok - 成功视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>声明了入口函数的成功视图，即如果入口函数正常执行，将会通过这个视图将函数返回值渲染到 HTTP 响应中。当然，如果你的函数直接返回的就是一个视图对象，那么就不会使用成功视图（而是你返回的视图对象）来渲染HTTP 响应详细的介绍，请参看 <a href="view.html">视图</a> 一节</p>
+<h2><a name="@Fail_-_失败视图"></a>@Fail - 失败视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>声明了入口函数的失败视图，即如果入口函数抛出异常，将会通过这个视图将异常渲染到 HTTP 响应中详细的介绍，请参看 <a href="view.html">视图</a> 一节</p>
+<h2><a name="@AdaptBy_-_HTTP_参数适配方式"></a>@AdaptBy - HTTP 参数适配方式</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>将 HTTP 请求参数转变成你当前入口函数的参数的过程叫做 <b>适配</b>，这个注解就是声明这个适配器。如果你没有声明这个注解，默认的会采用 PairAdaptor 来适配 HTTP 请求参数。详细的介绍，请参看<a href="http_adaptor.html">适配器</a> 一节</p>
+<h2><a name="@Filter_-_过滤器"></a>@Filter - 过滤器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>详细介绍请参看 <a href="action_filter.html">过滤器</a> 一节		</p>
+<h2><a name="@Encoding_-_输入输出编码"></a>@Encoding - 输入输出编码</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>定义 HTTP 请求的输入输出编码，这个注解通常是会定义在 <a href="#主模块">主模块</a> 上面，从而保证整个应用有统一的输入输出设定</p>
+<p>如果你不定义，默认的，Nutz.Mvc 会采用 <b>UTF-8</b> 作为输入输出的编码</p>
+<pre>@Encoding(input="UTF-8",output="UTF-8")
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

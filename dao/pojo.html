@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>更快的构建你的POJO</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">更快的构建你的POJO</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要提供更多构建_POJO_的手段">为什么需要提供更多构建 POJO 的手段</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#将构建的过程掌握在你自己的手里">将构建的过程掌握在你自己的手里</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#最优先_--_带一个参数的静态工厂方法">最优先 -- 带一个参数的静态工厂方法</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#第二优先：带一个参数的构造函数">第二优先：带一个参数的构造函数</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#第三优先：无参数静态工厂方法">第三优先：无参数静态工厂方法</a></div>
+</li>
+<li>
+<div><span class="num">2.4</span><a href="#最不优先：默认构造函数">最不优先：默认构造函数</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#总结一下这四个约定">总结一下这四个约定</a></div>
+</li>
+</ul>
+<h1><a name="为什么需要提供更多构建_POJO_的手段"></a>为什么需要提供更多构建 POJO 的手段</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>当查询以及获取一个或者是多个 POJO 时，Nutz.Dao 采用反射来创建对象以及为对象的各个相关字段填充值。为了提高速度，Nutz.Dao 对对象采取一些缓存的策略，所以基本上不用去查询每个对象的构造函数以及getter，setter 或者公共字段,所有的时间开销都集中在反射的 invoke 方法上。事实证明，这让 POJO 的构建速度提高了不少，但是对于那些还想对速度进行优化的应用，怎么办呢？ Nutz.Dao 还提供了更加极限的手段。</p>
+<h1><a name="将构建的过程掌握在你自己的手里"></a>将构建的过程掌握在你自己的手里</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些人说JDK1.5 以后，反射更快了。并且由于 Nutz.Dao 对于实体的反射做了缓存，所以它创建对象比一般的反射更快，但是，还是有些人不满意，他们还需要更快。所以我提出了一个约定：</p>
+<h2><a name="最优先_--_带一个参数的静态工厂方法"></a>最优先 -- 带一个参数的静态工厂方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你的实体对象有一个静态的函数，返回类型的是你的实体对象(有点类似于工厂方法)，输入参数是 java.sql.ResultSet， 那么在创建实例的时候，会直接调用你这个方法。</p>
+<p>例如:</p>
+<pre>public class Pet {
+
+	public static Pet getInstance(ResultSet rs) throws SQLException{
+		Pet pet = new Pet();
+		pet.id = rs.getInt("id");
+		pet.name = rs.getString("name");
+		pet.nickname = rs.getString("nick");
+		return pet;
+	}
+
+	// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</pre>
+<p>只要你声明了一个可访问的，带有一个参数其类型为ResultSet，且返回值为 Pet 的静态函数，名称无所谓， 那么 Nutz.Dao 在构建 Pet 对象时，就会优先使用这个函数。 因为 Nutz.Dao 认为你打算亲自来做 ResultSet 到 POJO 字段的映射工作。你可以将这个过程写的很快，因为如果交由 Nutz.Dao 来做的话，它不得不做一些字段类型的判断以及转换的工作。</p>
+<h2><a name="第二优先：带一个参数的构造函数"></a>第二优先：带一个参数的构造函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你的实体中有一个构造函数，参数是 java.sql.ResultSet，那么创建实例的时候会直接使用这个构造函数。</p>
+<p>例如:</p>
+<pre>public class Pet {
+	
+	public Pet(){}
+
+	public Pet(ResultSet rs) throws SQLException{
+		id = rs.getInt("id");
+		name = rs.getString("name");
+		nickname = rs.getString("nick");
+	}
+	
+	// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</pre>
+<p>只要你声明了构造函数 Pet(ResultSet rs)， 那么 Nutz.Dao 在构建的时候，就不会使用默认构造函数，无论你是否声明它。</p>
+<h2><a name="第三优先：无参数静态工厂方法"></a>第三优先：无参数静态工厂方法</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你的实体对象有一个静态的函数，返回类型的是你的实体对象(有点类似于工厂方法)，不需要输入参数， 那么在创建实例的时候，会直接调用你这个方法。再通过反射为各个字段填充值。</p>
+<p>例如:</p>
+<pre>public class Pet {
+
+	public static Pet getInstance(){
+		return new Pet();
+	}
+	
+	private Pet(){}
+	
+	// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</pre>
+<p>你的静态函数名称是无所谓的，只要它的返回类型是当前的类，并且无参数。 如果出现多个符合改条件的函数，Nutz.Dao 会挑取任意一个。</p>
+<h2><a name="最不优先：默认构造函数"></a>最不优先：默认构造函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果你的 POJO 仅仅有默认构造函数可用，那么，Nutz.Dao 就会采用JAVA反射机制来为你构建 POJO 对象。但是你必须保证默认构造函数是可被访问的。</p>
+<p>多数 POJO 都会采用这种形式，因为它最方便，比如：</p>
+<h3><a name="编译器自己为你增加默认构造函数"></a>编译器自己为你增加默认构造函数</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public class Pet {
+
+	@Column
+	@Id
+	private int id;
+	
+	@Column
+	@Name
+	private String name;
+	
+	@Column
+	private String nickname;
+
+	// ... 这里是 getter 和 setter
+}
+</pre>
+<h3><a name="自己定制的默认构造函数"></a>自己定制的默认构造函数</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>public class Pet {
+	
+	public Pet(){
+		this.nickname = "Unknown";
+	}
+
+	@Column
+	@Id
+	private int id;
+	
+	@Column
+	@Name
+	private String name;
+	
+	@Column
+	private String nickname;
+
+	// ... 这里是 getter 和 setter
+}
+</pre>
+<p></p>
+<h1><a name="总结一下这四个约定"></a>总结一下这四个约定</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过头两个约定，你可以让你的数据库操作同直接调用 JDBC 接口一样快。别忘了，在数据库操作的时候，拼装SQL 这点小开销几乎可以忽略不计。第三个约定，适用于在你不希望暴露POJO的构造函数的前提下。最后一个约定则是 Nutz.Dao 的默认期望的工作方式。</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
+</body>
+</html>

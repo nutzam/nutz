@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>写在前面的话</title><link href="zdoc.css" rel="stylesheet" type="text/css"/><link href="_rs/site.css" rel="stylesheet" type="text/css"/><script src="_rs/site.js" language="Javascript"></script><script src="_rs/jquery.js" language="Javascript"></script><script src="_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">写在前面的话</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><em>Verify by:</em><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<p><img src="logo.png"/></p>
+<div class="hr"><b></b></div>
+<h1><a name="Java_为什么不能是一门敏捷的语言呢？"></a>Java 为什么不能是一门敏捷的语言呢？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>起码 Java 是一门优美的编程语言，经过10多年的发展，它几乎已经被应用到了任何地方，在高端的企业服务器上，手持设备的芯片里，车载设备，智能家电甚至火星车上。在功能上，它广泛的涉足到了软件应用的各个领域，现在，它开始向桌面和图像处理方面频频发力。 从历史上看它是一门成熟的语言，从现在来看，它是世界上使用最广泛的语言，从将来看，它是最有前途的语言（现在它依然充满了活力和创新）。</p>
+<p>但是，在越来越流行的 Web 开发领域， Java 似乎逐渐露出了疲态。是的，脚本语言们卷起了一场热潮，似乎已经快可以用“革命”两个字来形容了。而Java，被“脚本小子们”诟病最多的便是 <span style="color:#FF0000;"><b>低下的开发效率</b></span>。</p>
+<p><span style="color:#0000AA;"><b>但是，真的是这样的吗？</b></span></p>
+<p>从本质上来说， Java 语言本身为程序员提供的帮助只有两点，一是语言的语法，二是内置的类库。 现在从事 Web 开发，大多是采用第三方的类库（或者说是框架），比如流行的 SSH。 所谓 Java 在Web 开发的低效，不妨这样说比较贴切一些: <span style="color:#FF8800;"><b>采用第三方类库进行开发比较低效</b></span>。</p>
+<p>为了证明这一点，我写作了 Nutz， 它是一组轻便小型的框架的集合， 各个部分可以被独立使用。 而 Nutz 的目标就是</p>
+<p><span style="color:#FF0000;"><b> 在力所能及的情况下，最大限度的提高Web开发人员的生产力</b></span>。</p>
+<p>是的，提高生产力是这个框架唯一的目标。 就像 Java 设计之初，考虑最多的是程序员的易用性和运行时效率的权衡， Nutz 也是这样。希望通过 Nutz， Java 的开发人员可以获得更快的开发速度，更少的代码量，并且这些以不损害运行时效率为前提。</p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_可以做什么？"></a>Nutz 可以做什么？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>Dao -- 针对 <b>JDBC</b> 的薄封装，事务模板，无缓存</li>
+<li>Ioc -- JSON 风格的配置文件，声明时切片支持</li>
+<li>Mvc -- 注解风格的配置，内置多文件上传功能</li>
+<li>Json -- 解析和渲染</li>
+<li>Castors -- Java 对象类型转换</li>
+<li>Lang -- 更简洁的 Java 函数以及更丰富的反射支持</li>
+<li>Aop -- 轻便快速的切面编程支持</li>
+<li>Plugin -- 轻便的插件机制</li>
+<li>Resource -- 资源扫描</li>
+</ul>
+<p>它所有的功能均不依赖第三方 jar 包</p>
+<p>这就意味着：</p>
+<ul type="disc">
+<li>如果一个 Web 应用，你在 WEB-INF/lib 下只 需要放置一个 nutz.jar 就够了</li>
+<li>当然你要使用连接池，数据库驱动等功能，还需要自行添置 jar 包。</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_为谁而设计？"></a>Nutz 为谁而设计？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li>如果你觉得 Hibernate 控制比较繁琐，iBatis 编写SQL又比较麻烦，<span style="color:#0000FF;"><b>Nutz.Dao</b></span> 专为你设计。</li>
+<li>如果你觉得在多个服务器部署或者修改 Spring 配置文件很麻烦，<span style="color:#0000FF;"><b>Nutz.Ioc</b></span> 专为你设计</li>
+<li>如果你觉得直接写 XML 配置文件很麻烦，可视化编辑器又没控制感，<span style="color:#0000FF;"><b>Nutz.Mvc</b></span> 专为你设计</li>
+<li>如果你觉得 JSON 转换很麻烦（要写超过一行以上的代码），<span style="color:#0000FF;"><b>Nutz.Json</b></span> 专为你设计</li>
+<li>如果你觉得 Java 语法不如 Ruby 便捷， Nutz.Castor 以及 <span style="color:#0000FF;"><b>Nutz.Lang</b></span> 专为你设计</li>
+<li>如果你以前根本没接触过 SSH ，只使用 JDBC 编程， 整个 <b>Nutz</b> 专门为你设计</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_的质量"></a>Nutz 的质量</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>截至到现在为止，Nutz 的 JUnit 用例覆盖率大概是这样的</p>
+<p><img src="emma.png"/></p>
+<p>并且这个数字还在不断增加。</p>
+<p>在一个功能告一段落以后，我通常会花1－2个晚上在一边咂着廉价的红酒一边颇有成就感的书写JUnit测试。通常我会用 JUnit 把我自己击溃，紧接着的那几天我都努力让那个该死红条变绿，之后，又想方设法写出新的Junit测试试图让它再度变红。并且我还要保证所做的修改不能让代码膨胀，这的确让我死掉了不少脑细胞。这些测试中，不仅涵盖各种功能上的测试，也涵盖了一些跨越线程的测试。在以后，我会针对代码执行的效率加入一些新的测试。</p>
+<p>我能保证的就是Nutz的代码是小巧的，以及通过尽可能多的 JUnit 测试。但是所有我能做的也就只是这些了，找出剩下的那些代码上的缺陷，就应该交给 Nutz 第一批“小白”们了。“小白”们，加油！我支持你们...</p>
+<p><span style="color:#AAAAAA;"><i> 小白： 是小白鼠的简称。小白鼠是实验室的最爱，实验室是产生新东西的地方。</i></span></p>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz_的未来"></a>Nutz 的未来</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz 是一个新兴的开源项目</p>
+<p><b>它没有过去，只有未来</b></p>
+<p>我可以保证，在未来，Nutz 的代码 <span style="color:#FF0000;"><b>绝对不会膨胀</b></span>。 所有的功能设计的出发点就是最大限度给予程序员实惠。</p>
+<div class="hr"><b></b></div>
+<h1><a name="你完全可以让这个项目变得更加美好"></a>你完全可以让这个项目变得更加美好</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ul type="disc">
+<li><a href="http://xiaofeng.javaeye.com/blog/549410">不编写代码，你可以能为这个项目做很多事情</a> @<a href="http://xiaofeng.javaeye.com">hilliate</a></li>
+<li>你可以随时 <a href="http://code.google.com/p/nutz/issues/entry">提交你发现的问题</a></li>
+<li>任何人 用 任何方式 =&gt; 指出 Nutz 的缺陷，都是被欢迎的</li>
+<li>如果你想成为 Nutz Committers 中的一员，请 <a href="committer/be_committer.html">阅读这里</a></li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="我使用的时候如果出现问题怎么办？"></a>我使用的时候如果出现问题怎么办？</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
+<ol type="1">
+<li>加入 <a href="http://groups.google.at/group/nutzam">讨论区</a>，讨论组一般总是有人在线，你的问题会很快得到响应</li>
+<li>加入 <b>GTalk 聊天群</b> -- 感谢 <b>Van</b> <span style="color:#999999;"><i> 添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令</i></span>
+<ul type="disc">
+<li>或者访问 <a href="http://www.chatterous.com/nutzam/">http://www.chatterous.com/nutzam/</a></li>
+</ul>
+</li>
+<li>还有新浪微群
+<ol type="a">
+<li><a href="http://q.t.sina.com.cn/128323">Nutz 在微笑</a></li>
+</ol>
+</li>
+<li>还有豆瓣小组
+<ol type="a">
+<li><a href="http://www.douban.com/group/339199/">Nutz 的微笑</a></li>
+</ol>
+</li>
+<li>或者加入 QQ 群
+<ul type="disc">
+<li><a href="http://qun.qq.com/air/#58444676">Nutz &amp; XBlink （58444676 超级群）</a> -- 感谢 <b>E-Hunter</b> 的支持</li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/60504323">Nutz在微笑 （60504323）超级群</a> -- 感谢 <b>milk cat!</b> 和 <b>yanick</b> 的支持</li>
+<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz ② 群 （68428921）超级群</a> -- 感谢 <b>c.A</b> 的支持</li>
+</ul>
+</li>
+</ol>
+<p>考虑到，现在这个特殊时期，<a href="https://groups.google.com/group/nutzam">讨论区</a> 即使用 https 也会不时被墙。所以你还可以给<a href="http://code.google.com/p/nutz/people/list">项目成员</a>直接发信</p>
+<ul type="disc">
+<li>一般情况下，你的问题都会得到答复</li>
+<li>但是你必须知道，这是个开源项目，每个 Contributor 和 Committer 没有义务回答问题</li>
+<li>所以，最好你能翻墙</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><em>Verify by:</em><b>Xiaofeng.Fu</b><a href="mailto:hilliate@gmail.com">&lt;hilliate@gmail.com&gt;</a></div>
+</body>
+</html>
