@@ -7,8 +7,10 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -97,6 +99,7 @@ public class Scans {
 			}
 		}
 		List<NutResource> list = getScaner().list(src, regex);
+		list = new ArrayList<NutResource>(new HashSet<NutResource>(list));
 		if (LOG.isDebugEnabled())
 			LOG.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
 		return list;
@@ -197,7 +200,7 @@ public class Scans {
 	private static List<Class<?>> rs2class(String packagePath, List<NutResource> list) {
 		if (packagePath.endsWith("/"))
 			packagePath = packagePath.substring(0, packagePath.length() - 1);
-		List<Class<?>> re = new ArrayList<Class<?>>(list.size());
+		Set<Class<?>> re = new HashSet<Class<?>>(list.size());
 		if (!list.isEmpty()) {
 			for (NutResource nr : list) {
 				int r = nr.getName().lastIndexOf(".class");
@@ -230,7 +233,7 @@ public class Scans {
 				}
 			}
 		}
-		return re;
+		return new ArrayList<Class<?>>(re);
 	}
 
 	public List<NutResource> loadResource(String regex, String... paths) {
