@@ -1,5 +1,6 @@
 package org.nutz.aop.asm;
 
+import org.nutz.repo.org.objectweb.asm.Attribute;
 import org.nutz.repo.org.objectweb.asm.Label;
 import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
@@ -123,4 +124,9 @@ class AopMethodAdapter extends NormalMethodAdapter implements Opcodes {
 		mv.visitInsn(returnType.getOpcode(IRETURN));
 	}
 
+	void visitAttribute() {
+		Attribute attr = new Attribute("LocalVariableTable");
+		attr.value= new byte[]{0,0};
+		mv.visitAttribute(attr);
+	}
 }
