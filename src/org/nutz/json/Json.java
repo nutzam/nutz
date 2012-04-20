@@ -312,4 +312,7 @@ public class Json {
         return Objs.merge(list.toArray());
     }
 
+    public static void clearEntityCache() {
+    	entities.clear();
+    }
 }

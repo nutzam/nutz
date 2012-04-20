@@ -8,6 +8,7 @@ import javax.servlet.ServletContext;
 
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -31,6 +32,7 @@ public abstract class AbstractNutConfig implements NutConfig {
 	
 	public AbstractNutConfig(ServletContext context) {
 		Scans.me().init(context);
+		Json.clearEntityCache();
 	}
 
 	public Loading createLoading() {
