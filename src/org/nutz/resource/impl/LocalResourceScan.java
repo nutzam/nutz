@@ -105,8 +105,7 @@ public class LocalResourceScan extends AbstractResourceScan {
 				}
 			}
 		}
-		if (list.isEmpty())
-			scanClasspath(src, regex, list);
+		scanClasspath(src, regex, list);
 		// 返回资源列表
 		return list;
 	}

@@ -17,6 +17,7 @@ import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.JarEntryInfo;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.ResourceScan;
 import org.nutz.resource.Scans;
@@ -119,15 +120,24 @@ public abstract class AbstractResourceScan implements ResourceScan {
 	}
 	
 	protected void scanClasspath(String src, Pattern regex, List<NutResource> list) {
-		String classpath = System.getProperties().getProperty("java.class.path");
-		if (log.isInfoEnabled())
-			log.info("Try to search in classpath : " + classpath);
-		String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
-		for (String pathZ : paths) {
-			if (pathZ.endsWith(".jar"))
-				list.addAll(scanInJar(checkSrc(src), regex, pathZ));
-			else
-				list.addAll(scanInDir(regex, new File(pathZ + "/" + src), true));
-		}
+		try {
+			String classpath = System.getProperties().getProperty("java.class.path");
+			if (log.isInfoEnabled())
+				log.info("Try to search in classpath : " + classpath);
+			String[] paths = classpath.split(System.getProperties().getProperty("path.separator"));
+			for (String pathZ : paths) {
+				if (pathZ.endsWith(".jar"))
+					list.addAll(scanInJar(checkSrc(src), regex, pathZ));
+				else
+					list.addAll(scanInDir(regex, new File(pathZ + "/" + src), true));
+			}
+		} catch (Throwable e) {}
+		//这是最后的手段了
+		try {
+			Enumeration<URL> urls = getClass().getClassLoader().getResources("/META-INF/MANIFEST.MF");
+			while (urls.hasMoreElements()) {
+				list.addAll(scanInJar(src, regex, new JarEntryInfo(urls.nextElement().toString()).getJarPath()));
+			}
+		} catch (Throwable e) {}
 	}
 }
