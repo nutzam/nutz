@@ -77,7 +77,13 @@ public class AnnotationIocLoader2 implements IocLoader {
 				}
 			}
 		}else{
-			beanName = classZ.getName();
+			String clazzName = classZ.getName();
+			if(clazzName.endsWith("Controller") && clazzName.length()>"Controller".length()){
+				beanName = classZ.getName();
+			}
+			if(clazzName.endsWith("Service") && clazzName.length()>"Service".length()){
+				beanName = Strings.lowerFirst(classZ.getSimpleName());
+			}
 		}
 		IocObject iocObject = new IocObject();
 		iocObject.setType(classZ);
@@ -148,7 +154,10 @@ public class AnnotationIocLoader2 implements IocLoader {
 				IocField iocField = new IocField();
 				iocField.setName(Strings.lowerFirst(method.getName().substring(3)));
 				if(fieldList.contains(iocField.getName()))
-					throw duplicateField(classZ,iocField.getName());
+					if(inject != null)
+						throw duplicateField(classZ,iocField.getName());
+					else
+						continue;
 				IocValue iocValue;
 				if (inject == null || Strings.isBlank(inject.value())) {
 					iocValue = new IocValue();

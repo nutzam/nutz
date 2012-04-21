@@ -221,7 +221,7 @@ public class LoadingsImpl{
 					ai.setPaths(Lang.array("/" + ctnName));
 				else
 					ai.setPaths(Lang.array("/"
-							+ moduleName.replaceAll(".", "/") + "/" + ctnName));
+							+ moduleName.replaceAll("\\.", "/") + "/" + ctnName));
 			}
 		}
 	}
@@ -273,10 +273,10 @@ public class LoadingsImpl{
 				String moduleName = getContrllerModule(clazz);
 				String ctnName = getControllerName(clazz);
 				if (Strings.isEmpty(moduleName))
-					ai.setOkView("jsp:views." + ctnName + ".common");
+					ai.setOkView("jsp:views." + ctnName + ".default");
 				else
 					ai.setOkView("jsp:views." + moduleName + "." + ctnName
-							+ ".common");
+							+ ".default");
 			}
 		}
 	}
@@ -395,8 +395,12 @@ public class LoadingsImpl{
 
 	public static String getControllerName(Class<?> clazz) {
 		String name = clazz.getSimpleName();
-		return Strings.lowerFirst(name.substring(0, name.length()
+		if(name.endsWith("Controller") && "Controller".length() < name.length())
+			return Strings.lowerFirst(name.substring(0, name.length()
 				- "Controller".length()));
+		else{
+			return Strings.lowerFirst(name);
+		}
 	}
 
 	public static String getContrllerModule(Class<?> clazz) {
