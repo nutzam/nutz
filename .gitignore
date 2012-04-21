@@ -4,3 +4,5 @@
 /tmp/
 /.settings/
 *.DS_Store
+/build/output
+/deps
