@@ -39,10 +39,9 @@ import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
 import org.nutz.mvc.annotation.PathMap;
-import org.nutz.mvc.init.module.MainModule;
 import org.nutz.resource.Scans;
 
-public class LoadingsImpl extends Loadings {
+public class LoadingsImpl{
 
 	private static final Log log = Logs.get();
 
