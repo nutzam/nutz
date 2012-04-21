@@ -11,9 +11,11 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.nutz.lang.Strings;
 import org.nutz.mvc.config.FilterNutConfig;
+import org.nutz.mvc.view.ServerRedirectView;
 
 /**
  * 同 JSP/Serlvet 容器的挂接点
@@ -72,6 +74,9 @@ public class NutFilter implements Filter {
 			if (sp != null)
 				req = sp.filter((HttpServletRequest)req, (HttpServletResponse)resp, Mvcs.getServletContext());
 			Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
+			
+			checkForRedirect((HttpServletRequest)req);
+			
 			if (!skipMode) {
 				RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
 				if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
@@ -86,6 +91,18 @@ public class NutFilter implements Filter {
 		}
 		finally {
 			Mvcs.resetALL();
+		}
+	}
+	
+	private void checkForRedirect(HttpServletRequest req){
+		HttpSession session = req.getSession(true);
+		String oldReferer = (String)session.getAttribute(ServerRedirectView.REFERER);
+		if(!Strings.isEmpty(oldReferer)){
+			if(oldReferer.equals(req.getHeader("Referer"))){
+				req.setAttribute("message", session.getAttribute(ServerRedirectView.MESSAGE));
+			}
+			session.setAttribute(ServerRedirectView.REFERER, null);
+			session.setAttribute(ServerRedirectView.MESSAGE, null);
 		}
 	}
 }

@@ -3,6 +3,9 @@ package org.nutz.mvc.view;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
+
 /**
  * 重定向视图
  * <p>
@@ -16,7 +19,8 @@ import javax.servlet.http.HttpServletResponse;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class ServerRedirectView extends AbstractPathView {
-
+	public static final String REFERER = "SESSION_LAST_REFERER";
+	public static final String MESSAGE = "SESSION_MESSAGE";
 	public ServerRedirectView(String dest) {
 		super(dest);
 	}
@@ -34,6 +38,19 @@ public class ServerRedirectView extends AbstractPathView {
 		}
 		resp.sendRedirect(path); // 这个原生支持相对路径的,就不要再做无用功了
 		resp.flushBuffer();
+		String referer = req.getHeader("Referer");
+		if(! Strings.isEmpty(referer) && obj != null){
+			if(obj instanceof String){
+				req.getSession().setAttribute(REFERER, referer);
+				req.getSession().setAttribute(MESSAGE, obj);
+			}else if(obj instanceof Context){
+				Context temp = (Context) obj;
+				if(temp.get("message") != null){
+					req.getSession().setAttribute(REFERER, referer);
+					req.getSession().setAttribute(MESSAGE, temp.get("message"));
+				}
+			}
+		}
 	}
 
 }
