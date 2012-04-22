@@ -165,10 +165,33 @@ public class NutLoading2 implements Loading {
 				/*
 				 * public 就是入口函数
 				 */
-				if (!Modifier.isPublic(method.getModifiers()))
-					continue;
+				if(module.getSimpleName().endsWith("Controller")){
+					if (!Modifier.isPublic(method.getModifiers()))
+						continue;
+					else{
+						String mName = method.getName();
+						if(mName.startsWith("set") || mName.startsWith("get")){
+							continue;
+						}
+						Method[] ms = Object.class.getMethods();
+						boolean flag = false;
+						for(Method mt : ms){
+							if(mName.equals(mt.getName())){
+								flag = true;
+								break;
+							}
+						}
+						if(flag){
+							continue;
+						}
+					}
+				}else{
+					if(!Modifier.isPublic(method.getModifiers()) || method.getAnnotation(At.class) == null){
+						continue;
+					}
+				}
 				// 增加到映射中
-				ActionInfo info = LoadingsImpl.createInfo(method).mergeWith(moduleInfo);
+				ActionInfo info = LoadingsImpl.createInfo(method,module).mergeWith(moduleInfo);
 				info.setViewMakers(makers);
 				mapping.add(maker, info, config);
 				hasAtMethod = true;

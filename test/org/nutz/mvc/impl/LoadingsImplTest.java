@@ -68,17 +68,17 @@ public class LoadingsImplTest {
 		for(Class<?> clazz: testClasses){
 			ActionInfo ai = createInfo(clazz);
 			Method hello = clazz.getMethod("hello");
-			ActionInfo mai = createInfo(hello);
+			ActionInfo mai = createInfo(hello,clazz);
 			Assert.assertEquals("/helloAt", mai.getPaths()[0]);
 			Assert.assertEquals(ai.getOkView().replace("default", "hello"), mai.getOkView());
 			
 			Method test1 = clazz.getMethod("test1",String.class);
-			mai = createInfo(test1);
+			mai = createInfo(test1,clazz);
 			Assert.assertEquals("/test1", mai.getPaths()[0]);
 			Assert.assertEquals("jsp:views.test1", mai.getOkView());
 			
 			Method test3 = clazz.getMethod("test3");
-			mai = createInfo(test3);
+			mai = createInfo(test3,clazz);
 			Assert.assertEquals("/test3", mai.getPaths()[0]);
 			Assert.assertEquals(ai.getOkView().replace("default", "test3"), mai.getOkView());
 			
@@ -86,17 +86,17 @@ public class LoadingsImplTest {
 		Class<?> clazz = TestContro.class;
 		ActionInfo ai = createInfo(clazz);
 		Method hello = clazz.getMethod("hello");
-		ActionInfo mai = createInfo(hello);
+		ActionInfo mai = createInfo(hello,clazz);
 		Assert.assertEquals("/helloAt" , mai.getPaths()[0]);
 		Assert.assertNull(mai.getOkView());
 		
 		Method test1 = clazz.getMethod("test1",String.class);
-		mai = createInfo(test1);
+		mai = createInfo(test1,clazz);
 		Assert.assertNull( mai.getPaths());
 		Assert.assertEquals("jsp:views.test1", mai.getOkView());
 		
 		Method test3 = clazz.getMethod("test3");
-		mai = createInfo(test3);
+		mai = createInfo(test3,clazz);
 		Assert.assertNull(mai.getPaths());
 		Assert.assertNull(mai.getOkView());
 	}

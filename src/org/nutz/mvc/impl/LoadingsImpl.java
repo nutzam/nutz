@@ -59,14 +59,14 @@ public class LoadingsImpl{
 		return ai;
 	}
 
-	public static ActionInfo createInfo(Method method) {
+	public static ActionInfo createInfo(Method method,Class<?> module) {
 		ActionInfo ai = new ActionInfo();
 		evalEncoding(ai, method.getAnnotation(Encoding.class));
 		evalHttpAdaptor(ai, method.getAnnotation(AdaptBy.class));
 		evalActionFilters(ai, method.getAnnotation(Filters.class));
-		evalOk(ai, method.getAnnotation(Ok.class), method);
+		evalOk(ai, method.getAnnotation(Ok.class), method.getName(),module);
 		evalFail(ai, method.getAnnotation(Fail.class));
-		evalAt(ai, method.getAnnotation(At.class), method);
+		evalAt(ai, method.getAnnotation(At.class), method.getName(),module);
 		evalActionChainMaker(ai, method.getAnnotation(Chain.class));
 		evalHttpMethod(ai, method);
 		ai.setMethod(method);
@@ -226,11 +226,10 @@ public class LoadingsImpl{
 		}
 	}
 
-	public static void evalAt(ActionInfo ai, At at, Method method) {
+	public static void evalAt(ActionInfo ai, At at, String def ,Class<?> clazz) {
 		/**
-		 * Controller内的需要module.ctnName.methodName MainModule为 methodName
+		 * Controller内的为module.ctnName.methodName MainModule为 methodName
 		 */
-		String def = method.getName();
 		if (null != at) {
 			if (null == at.value() || at.value().length == 0) {
 				ai.setPaths(Lang.array("/" + def.toLowerCase()));
@@ -240,12 +239,12 @@ public class LoadingsImpl{
 			if (!Strings.isBlank(at.key()))
 				ai.setPathKey(at.key());
 		} else { // create by wangc
-			if (isController(method.getDeclaringClass())) {
+			if (isController(clazz)) {
 				// 只处理符合规范的module
 				// TODO 这里是不是该把 module的包直接关联起来呢？ 要不然method的url就不能定制了
 				ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));
 			} else {
-				if (method.getDeclaringClass().getAnnotation(Modules.class) != null) {
+				if (clazz.getAnnotation(Modules.class) != null) {
 					ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));
 				}
 			}
@@ -281,22 +280,21 @@ public class LoadingsImpl{
 		}
 	}
 
-	public static void evalOk(ActionInfo ai, Ok ok, Method method) {
+	public static void evalOk(ActionInfo ai, Ok ok, String def ,Class<?> clazz) {
 		if (null != ok) {
 			ai.setOkView(ok.value());
 		} else {// create by wangc
-			Class<?> clazz = method.getDeclaringClass();
 			if(isController(clazz)){  
 				String moduleName = getContrllerModule(clazz);
 				String ctnName = getControllerName(clazz);
 				if(Strings.isEmpty(moduleName)){
-					ai.setOkView("jsp:views."+ ctnName+"."+Strings.lowerFirst(method.getName()));
+					ai.setOkView("jsp:views."+ ctnName+"."+Strings.lowerFirst(def));
 				}else{
-					ai.setOkView("jsp:views."+moduleName+"."+ctnName+"."+Strings.lowerFirst(method.getName()));
+					ai.setOkView("jsp:views."+moduleName+"."+ctnName+"."+Strings.lowerFirst(def));
 				}
 			}else{
 				if(clazz.getAnnotation(Modules.class) != null){
-					ai.setOkView("jsp:views."+Strings.lowerFirst(method.getName()));
+					ai.setOkView("jsp:views."+Strings.lowerFirst(def));
 				}
 			}
 		}
