@@ -230,16 +230,15 @@ public abstract class Daos {
 		final List<ValueAdaptor> adaptors = new ArrayList<ValueAdaptor>();
 		while (head != null) {
 			MappingField mf = en.getField(head.name());
-			sql.append(mf.getColumnName()).append("=");
-			if (head.value() != null && head.special) {
-				if ("+1".equals(head.value())) {
-					sql.append(mf.getColumnName() + "+1");
+			String colName = head.name();
+			if (mf != null)
+				colName = mf.getColumnName();
+			sql.append(colName).append("=");
+			if (head.special) {
+				if ("+1".equals(head.value()) || "-1".equals(head.value())) {
+					sql.append(colName);
 				}
-				else if ("-1".equals(head.value())) {
-					sql.append(mf.getColumnName() + "-1");
-				}
-				else 
-					sql.append(head.value());
+				sql.append(head.value());
 			} else {
 				sql.append("?");
 				values.add(head.value());

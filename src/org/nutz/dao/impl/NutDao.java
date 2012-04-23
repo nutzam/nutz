@@ -216,6 +216,8 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int update(String tableName, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			throw Lang.noImplement();
 		EntityOperator opt = _optBy(chain.toEntityMap(tableName));
 		if (null == opt)
 			return 0;
