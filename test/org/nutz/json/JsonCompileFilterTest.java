@@ -22,14 +22,16 @@ public class JsonCompileFilterTest {
     @Test
     public void includeTest(){
         mates.add("age");
-        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), mates, true);
+        JsonFilter filter = new JsonFilter(mates, true);
+        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), filter);
         assertEquals(1, map.size());
     }
     @Test
     public void includeTest2(){
         mates.add("father.realname");
         mates.add("father.name");
-        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), mates, true);
+        JsonFilter filter = new JsonFilter(mates, true);
+        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), filter);
         Map<?, ?> father = (Map<?, ?>) map.get("father");
         assertEquals(2, father.size());
     }
@@ -37,7 +39,8 @@ public class JsonCompileFilterTest {
     public void excludeTest(){
         mates.add("father.realname");
         mates.add("father.name");
-        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), mates, false);
+        JsonFilter filter = new JsonFilter(mates, false);
+        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), filter);
         Map<?, ?> father = (Map<?, ?>) map.get("father");
         assertEquals(2, father.size());
         assertEquals(69, father.get("age"));
@@ -47,7 +50,8 @@ public class JsonCompileFilterTest {
     @Test
     public void listIncludeTest(){
         mates.add("users.name");
-        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"), mates, true);
+        JsonFilter filter = new JsonFilter(mates, true);
+        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"), filter);
         assertEquals(map.size(), 1);
         List<?> users = (List<?>) map.get("users");
         assertEquals(users.size(), 2);
@@ -58,7 +62,8 @@ public class JsonCompileFilterTest {
     @Test
     public void listexcludeTest(){
         mates.add("users.name");
-        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"), mates, false);
+        JsonFilter filter = new JsonFilter(mates, false);
+        Map<?, ?> map = (Map<?, ?>) Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"), filter);
         assertEquals(map.size(), 2);
         List<?> users = (List<?>) map.get("users");
         assertEquals(users.size(), 2);
