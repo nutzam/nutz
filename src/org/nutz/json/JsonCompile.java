@@ -296,50 +296,19 @@ public class JsonCompile {
 		}
 	}
 	
+	/**
+	 * 生成MAP对象
+	 * @param map
+	 * @throws IOException
+	 */
 	protected void parseMapItem(Map<String, Object> map) throws IOException {
-		//找key
-//		String key = fetchKey();
-//		switch (cursor) {
-//		case '"':
-//		case '\'':
-//			key = parseString(cursor);
-//			nextChar();
-//			skipCommentsAndBlank();
-//			break;
-//		default:
-//			//没办法,看来是无分隔符的字符串,找一下吧
-//			StringBuilder sb = new StringBuilder();
-//			sb.append((char)cursor);
-//			OUTER: while(true) {
-//				nextChar();
-//				switch (cursor) {
-//				case '\\'://特殊字符
-//					parseSp(sb);
-//					break;
-//				case ' ':
-//				case '/':
-//					skipCommentsAndBlank();
-//					if(cursor == ':') {
-//						key = sb.toString().trim().intern();
-//						break OUTER;
-//					} else
-//						throw unexpectedChar();
-//				case ':':
-//					key = sb.toString().trim().intern();
-//					break OUTER;
-//				default:
-//					sb.append((char)cursor);
-//				}
-//			}
-//		}
-		//TODO 判断一下key是否合法
-		//当前字符为: 跳过去
-	    
-//		nextChar();
-//		skipCommentsAndBlank();
 		map.put(fetchKey(), parseFromHere());
 	}
-	
+	/**
+	 * 找KEY
+	 * @return
+	 * @throws IOException
+	 */
 	protected String fetchKey() throws IOException{
 	  //找key
         String key = null;
