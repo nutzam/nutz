@@ -102,6 +102,34 @@ public class Json {
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
 		return (T) parse(type, reader);
 	}
+	
+	/**
+     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+     * <ul>
+     * <li>Map
+     * <li>List
+     * <li>Integer 或者 Float
+     * <li>String
+     * <li>Boolean
+     * <li>Char
+     * <li>Long Double
+     * </ul>
+     * 
+     * @param type
+     *            转换的类型
+     * @param cs
+     *            JSON 字符串
+     * @param mates
+     *            匹配项
+     * @param t
+     *            类型, true为包含(只解析满足条件的), false为过滤
+     * @return JAVA 对象
+     * @throws JsonException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(Class<T> type, Reader reader, List<String> mates, boolean t) throws JsonException {
+        return (T) parse(type, reader, mates, t);
+    }
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -117,9 +145,40 @@ public class Json {
 		return parse(type, reader);
 	}
 	
+	/**
+     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+     * <ul>
+     * <li>Map
+     * <li>List
+     * <li>Integer 或者 Float
+     * <li>String
+     * <li>Boolean
+     * <li>Char
+     * <li>Long Double
+     * </ul>
+     * 
+     * @param type
+     *            转换的类型
+     * @param cs
+     *            JSON 字符串
+     * @param mates
+     *            匹配项
+     * @param t
+     *            类型, true为包含(只解析满足条件的), false为过滤
+     * @return JAVA 对象
+     * @throws JsonException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(Type type, Reader reader, List<String> mates, boolean t) throws JsonException {
+        return (T) parse(type, reader, mates, t);
+    }
+	
 	private static Object parse(Type type, Reader reader) {
         return Objs.convert(new JsonCompile().parse(reader), type);
     }
+	private static Object parse(Type type, Reader reader, List<String> mates, boolean t) {
+	    return Objs.convert(new JsonCompileExtend().parse(reader, mates, t), type);
+	}
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -150,6 +209,7 @@ public class Json {
 	public static Object fromJson(CharSequence cs) throws JsonException {
 		return fromJson(Lang.inr(cs));
 	}
+	
 
 	/**
 	 * 从 JSON 字符串中，根据获取某种指定类型的 JSON 对象。
