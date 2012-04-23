@@ -72,15 +72,22 @@ public class JsonRendering {
 	}
 
 	protected boolean appendPair(boolean first, String name, Object value) throws IOException {
-	    if(!first){
-	        appendPairEnd();
-	    }
-		appendPairBegin();
-		appendName(name);
-		appendPairSep();
-		path.push(name);
-		render(value);
-		return true;
+	    format.pushPath(name);
+	    boolean type = false;
+        if(format.filter()){
+    	    if(!first){
+    	        appendPairEnd();
+    	    }
+    		appendPairBegin();
+    		appendName(name);
+    		appendPairSep();
+    		path.push(name);
+    		render(value);
+		
+    		type = true;
+        }
+        format.pollPath();
+        return type;
 	}
 
 	private boolean isIgnore(String name, Object value) {
