@@ -38,7 +38,7 @@ public class JsonRendering {
 
 	private Writer writer;
 
-	JsonRendering(Writer writer, JsonFormat format) {
+	protected JsonRendering(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
 		// TODO make a new faster collection
@@ -71,12 +71,16 @@ public class JsonRendering {
 		writer.append(!isCompact(this) ? " :" : ":");
 	}
 
-	private void appendPair(String name, Object value) throws IOException {
+	protected boolean appendPair(boolean first, String name, Object value) throws IOException {
+	    if(!first){
+	        appendPairEnd();
+	    }
 		appendPairBegin();
 		appendName(name);
 		appendPairSep();
 		path.push(name);
 		render(value);
+		return true;
 	}
 
 	private boolean isIgnore(String name, Object value) {
@@ -124,14 +128,7 @@ public class JsonRendering {
 			if (!this.isIgnore(name, value))
 				list.add(new Pair(name, value));
 		}
-		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
-			Pair p = it.next();
-			this.appendPair(p.name, p.value);
-			if (it.hasNext())
-				this.appendPairEnd();
-		}
-		decreaseFormatIndent();
-		appendBraceEnd();
+		writeItem(list);
 	}
 
 	private void pojo2Json(Object obj) throws IOException {
@@ -202,14 +199,18 @@ public class JsonRendering {
 			}
 			catch (FailToGetValueException e) {}
 		}
-		for (Iterator<Pair> it = list.iterator(); it.hasNext();) {
-			Pair p = it.next();
-			this.appendPair(p.name, p.value);
-			if (it.hasNext())
-				this.appendPairEnd();
-		}
-		decreaseFormatIndent();
-		appendBraceEnd();
+		writeItem(list);
+	}
+	
+	private void writeItem(List<Pair> list) throws IOException{
+	    boolean first = true;
+        for(Pair p : list){
+            if(appendPair(first, p.name, p.value)){
+                first = first ? false : false;
+            }
+        }
+        decreaseFormatIndent();
+        appendBraceEnd();
 	}
 
 	private void decreaseFormatIndent() {
@@ -317,7 +318,8 @@ public class JsonRendering {
 			for (i = 0; i < len; i++) {
 				path.push("[" + i + "]");
 				render(Array.get(obj, i));
-				writer.append(',').append(' ');
+				appendPairEnd();
+				writer.append(' ');
 			}
 			path.push("[" + i + "]");
 			render(Array.get(obj, i));
@@ -331,8 +333,10 @@ public class JsonRendering {
 		for (Iterator<?> it = obj.iterator(); it.hasNext();) {
 			path.push("[" + (i++) + "]");
 			render(it.next());
-			if (it.hasNext())
-				writer.append(',').append(' ');
+			if (it.hasNext()){
+			    appendPairEnd();
+			    writer.append(' ');
+			}
 			else
 				break;
 		}

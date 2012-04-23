@@ -1,13 +1,9 @@
 package org.nutz.json;
 
-import java.io.IOException;
-import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 扩充 JsonCompile 实现, 以使它支持对JSON字符串的过滤处理.
  * <p>
  * 规则:
  * <ul> 
@@ -18,36 +14,22 @@ import java.util.Map;
  * </ul>
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonCompileExtend extends JsonCompile{
+public class JsonFilter {
     private List<String> mates;
     private LinkedList<String> path = new LinkedList<String>();
     /**
      * 过滤类型, true为包含, false为排除
      */
     private boolean type;
-    
-    public Object parse(Reader reader, List<String> mates, boolean type) {
-        this.type = type;
+    public JsonFilter(List<String> mates, boolean type) {
         this.mates = mates;
-        return super.parse(reader);
-    }
-    /**
-     * 在Map解释添加过滤
-     */
-    protected void parseMapItem(Map<String, Object> map) throws IOException {
-        String key = fetchKey();
-        path.addLast(key);
-        Object val = parseFromHere();
-        if(include()){
-            map.put(key, val);
-        }
-        path.removeLast();
+        this.type = type;
     }
     /**
      * 包含
      * @return
      */
-    private boolean include() {
+    public boolean include() {
         if (mates == null) {
             return true;
         }
@@ -80,5 +62,18 @@ public class JsonCompileExtend extends JsonCompile{
             sb.append(s);
         }
         return sb.toString();
+    }
+    /**
+     * 压栈
+     * @param path
+     */
+    public void pushPath(String path){
+        this.path.addLast(path);
+    }
+    /**
+     * 退栈
+     */
+    public void pollPath(){
+        this.path.removeLast();
     }
 }
