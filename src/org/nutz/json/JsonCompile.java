@@ -18,12 +18,20 @@ import org.nutz.lang.Lang;
  */
 public class JsonCompile {
 	
+    private JsonFormat format;
 	private int cursor;
 	private Reader reader;
 	private int col;
 	private int row;
 	
 	private static final int END = -1;
+	
+	public JsonCompile() {
+	    this(new JsonFormat());
+    }
+	public JsonCompile(JsonFormat format) {
+	    this.format = format;
+	}
 	
 	private boolean skipOneChar = false;
 	
@@ -302,7 +310,14 @@ public class JsonCompile {
 	 * @throws IOException
 	 */
 	protected void parseMapItem(Map<String, Object> map) throws IOException {
-		map.put(fetchKey(), parseFromHere());
+//		map.put(fetchKey(), parseFromHere());
+	    String key = fetchKey();
+        format.pushPath(key);
+        Object val = parseFromHere();
+        if(format.filter()){
+            map.put(key, val);
+        }
+        format.pollPath();
 	}
 	/**
 	 * 找KEY
