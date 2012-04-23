@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.filter.JsonCompileFilter;
+import org.nutz.json.filter.JsonRenderingFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Objs;
@@ -85,7 +87,7 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Reader reader, List<String> mates, boolean type) throws JsonException {
-	    return new JsonCompileExtend().parse(reader, mates, type);
+	    return new JsonCompileFilter().parse(reader, mates, type);
 	}
 
 	/**
@@ -177,7 +179,7 @@ public class Json {
         return Objs.convert(new JsonCompile().parse(reader), type);
     }
 	private static Object parse(Type type, Reader reader, List<String> mates, boolean t) {
-	    return Objs.convert(new JsonCompileExtend().parse(reader, mates, t), type);
+	    return Objs.convert(new JsonCompileFilter().parse(reader, mates, t), type);
 	}
 
 	/**
@@ -333,7 +335,17 @@ public class Json {
 	 * @return JSON 字符串
 	 */
 	public static String toJson(Object obj) {
-		return toJson(obj, null);
+		return toJson(obj, null, null);
+	}
+	/**
+	 * 将一个 JAVA 对象转换成 JSON 字符串
+	 * 
+	 * @param obj
+	 *            JAVA 对象
+	 * @return JSON 字符串
+	 */
+	public static String toJson(Object obj, JsonFilter filter) {
+	    return toJson(obj, null, filter);
 	}
 
 	/**
@@ -350,6 +362,20 @@ public class Json {
 		toJson(Lang.opw(sb), obj, format);
 		return sb.toString();
 	}
+	/**
+	 * 将一个 JAVA 对象转换成 JSON 字符串，并且可以设定 JSON 字符串的格式化方式
+	 * 
+	 * @param obj
+	 *            JAVA 对象
+	 * @param format
+	 *            JSON 字符串格式化
+	 * @return JSON 字符串
+	 */
+	public static String toJson(Object obj, JsonFormat format, JsonFilter filter) {
+	    StringBuilder sb = new StringBuilder();
+	    toJson(Lang.opw(sb), obj, format, filter);
+	    return sb.toString();
+	}
 
 	/**
 	 * 将一个 JAVA 对象写到一个文本输出流里
@@ -360,7 +386,18 @@ public class Json {
 	 *            JAVA 对象
 	 */
 	public static void toJson(Writer writer, Object obj) {
-		toJson(writer, obj, null);
+		toJson(writer, obj, null, null);
+	}
+	/**
+	 * 将一个 JAVA 对象写到一个文本输出流里
+	 * 
+	 * @param writer
+	 *            文本输出流
+	 * @param obj
+	 *            JAVA 对象
+	 */
+	public static void toJson(Writer writer, Object obj, JsonFilter filter) {
+	    toJson(writer, obj, null, filter);
 	}
 
 	/**
@@ -374,15 +411,32 @@ public class Json {
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-		try {
-			if (format == null)
-				format = JsonFormat.nice();
-			new JsonRendering(writer, format).render(obj);
-			writer.flush();
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e, JsonException.class);
-		}
+		toJson(writer, obj, format, null);
+	}
+	/**
+	 * 将一个 JAVA 对象写到一个文本输出流里，并且可以设定 JSON 字符串的格式化方式
+	 * 
+	 * @param writer
+	 *            文本输出流
+	 * @param obj
+	 *            JAVA 对象
+	 * @param format
+	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
+	 */
+	public static void toJson(Writer writer, Object obj, JsonFormat format, JsonFilter filter) {
+	    try {
+	        if (format == null)
+	            format = JsonFormat.nice();
+	        if(filter != null){
+	            new JsonRenderingFilter(writer, format, filter).render(obj);
+	        } else {
+	            new JsonRendering(writer, format).render(obj);
+	        }
+	        writer.flush();
+	    }
+	    catch (IOException e) {
+	        throw Lang.wrapThrow(e, JsonException.class);
+	    }
 	}
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

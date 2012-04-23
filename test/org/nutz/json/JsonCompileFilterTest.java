@@ -13,7 +13,7 @@ import org.nutz.lang.Streams;
  * JsonCompileExtend测试
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonCompileExtendTest {
+public class JsonCompileFilterTest {
     List<String> mates = new ArrayList<String>();
     @Before
     public void init(){
