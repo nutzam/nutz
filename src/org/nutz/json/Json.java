@@ -63,6 +63,28 @@ public class Json {
 	public static Object fromJson(Reader reader) throws JsonException {
 		return new JsonCompile().parse(reader);
 	}
+	/**
+	 * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+	 * <ul>
+	 * <li>Map
+	 * <li>List
+	 * <li>Integer 或者 Float
+	 * <li>String
+	 * <li>Boolean
+	 * <li>Char
+	 * <li>Long Double
+	 * </ul>
+	 * 
+	 * @param reader
+	 *            输入流
+	 * @param filter
+	 *            过滤器
+	 * @return JAVA 对象
+	 * @throws JsonException
+	 */
+	public static Object fromJson(Reader reader, JsonFormat format) throws JsonException {
+	    return new JsonCompile(format).parse(reader);
+	}
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -78,6 +100,32 @@ public class Json {
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
 		return (T) parse(type, reader);
 	}
+	
+	/**
+     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+     * <ul>
+     * <li>Map
+     * <li>List
+     * <li>Integer 或者 Float
+     * <li>String
+     * <li>Boolean
+     * <li>Char
+     * <li>Long Double
+     * </ul>
+     * 
+     * @param type
+     *            转换的类型
+     * @param cs
+     *            JSON 字符串
+     * @param filter
+     *            过滤器
+     * @return JAVA 对象
+     * @throws JsonException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(Class<T> type, Reader reader, JsonFormat filter) throws JsonException {
+        return (T) parse(type, reader, filter);
+    }
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -93,9 +141,38 @@ public class Json {
 		return parse(type, reader);
 	}
 	
+	/**
+     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+     * <ul>
+     * <li>Map
+     * <li>List
+     * <li>Integer 或者 Float
+     * <li>String
+     * <li>Boolean
+     * <li>Char
+     * <li>Long Double
+     * </ul>
+     * 
+     * @param type
+     *            转换的类型
+     * @param cs
+     *            JSON 字符串
+     * @param format
+     *            过滤器
+     * @return JAVA 对象
+     * @throws JsonException
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T fromJson(Type type, Reader reader, JsonFormat format) throws JsonException {
+        return (T) parse(type, reader, format);
+    }
+	
 	private static Object parse(Type type, Reader reader) {
         return Objs.convert(new JsonCompile().parse(reader), type);
     }
+	private static Object parse(Type type, Reader reader, JsonFormat format) {
+	    return Objs.convert(new JsonCompile(format).parse(reader), type);
+	}
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -126,6 +203,7 @@ public class Json {
 	public static Object fromJson(CharSequence cs) throws JsonException {
 		return fromJson(Lang.inr(cs));
 	}
+	
 
 	/**
 	 * 从 JSON 字符串中，根据获取某种指定类型的 JSON 对象。
@@ -290,15 +368,15 @@ public class Json {
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-		try {
-			if (format == null)
-				format = JsonFormat.nice();
-			new JsonRendering(writer, format).render(obj);
-			writer.flush();
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e, JsonException.class);
-		}
+	    try {
+            if (format == null)
+                format = JsonFormat.nice();
+                new JsonRendering(writer, format).render(obj);
+            writer.flush();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e, JsonException.class);
+        }
 	}
 
     @SuppressWarnings({ "rawtypes", "unchecked" })

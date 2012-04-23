@@ -18,12 +18,20 @@ import org.nutz.lang.Lang;
  */
 public class JsonCompile {
 	
+    private JsonFormat format;
 	private int cursor;
 	private Reader reader;
 	private int col;
 	private int row;
 	
 	private static final int END = -1;
+	
+	public JsonCompile() {
+	    this(new JsonFormat());
+    }
+	public JsonCompile(JsonFormat format) {
+	    this.format = format;
+	}
 	
 	private boolean skipOneChar = false;
 	
@@ -56,7 +64,7 @@ public class JsonCompile {
 		}
 	}
 	
-	private Object parseFromHere() throws IOException{
+	protected Object parseFromHere() throws IOException{
 		skipCommentsAndBlank();
 		switch(cursor){
 		case '{':
@@ -296,48 +304,69 @@ public class JsonCompile {
 		}
 	}
 	
-	private void parseMapItem(Map<String, Object> map) throws IOException {
-		//找key
-		String key = null;
-		switch (cursor) {
-		case '"':
-		case '\'':
-			key = parseString(cursor);
-			nextChar();
-			skipCommentsAndBlank();
-			break;
-		default:
-			//没办法,看来是无分隔符的字符串,找一下吧
-			StringBuilder sb = new StringBuilder();
-			sb.append((char)cursor);
-			OUTER: while(true) {
-				nextChar();
-				switch (cursor) {
-				case '\\'://特殊字符
-					parseSp(sb);
-					break;
-				case ' ':
-				case '/':
-					skipCommentsAndBlank();
-					if(cursor == ':') {
-						key = sb.toString().trim().intern();
-						break OUTER;
-					} else
-						throw unexpectedChar();
-				case ':':
-					key = sb.toString().trim().intern();
-					break OUTER;
-				default:
-					sb.append((char)cursor);
-				}
-			}
-		}
-		//TODO 判断一下key是否合法
-		//当前字符为: 跳过去
-		nextChar();
-		skipCommentsAndBlank();
-		map.put(key, parseFromHere());
+	/**
+	 * 生成MAP对象
+	 * @param map
+	 * @throws IOException
+	 */
+	protected void parseMapItem(Map<String, Object> map) throws IOException {
+//		map.put(fetchKey(), parseFromHere());
+	    String key = fetchKey();
+        format.pushPath(key);
+        Object val = parseFromHere();
+        if(format.filter()){
+            map.put(key, val);
+        }
+        format.pollPath();
 	}
+	/**
+	 * 找KEY
+	 * @return
+	 * @throws IOException
+	 */
+	protected String fetchKey() throws IOException{
+	  //找key
+        String key = null;
+        switch (cursor) {
+        case '"':
+        case '\'':
+            key = parseString(cursor);
+            nextChar();
+            skipCommentsAndBlank();
+            break;
+        default:
+            //没办法,看来是无分隔符的字符串,找一下吧
+            StringBuilder sb = new StringBuilder();
+            sb.append((char)cursor);
+            OUTER: while(true) {
+                nextChar();
+                switch (cursor) {
+                case '\\'://特殊字符
+                    parseSp(sb);
+                    break;
+                case ' ':
+                case '/':
+                    skipCommentsAndBlank();
+                    if(cursor == ':') {
+                        key = sb.toString().trim().intern();
+                        break OUTER;
+                    } else
+                        throw unexpectedChar();
+                case ':':
+                    key = sb.toString().trim().intern();
+                    break OUTER;
+                default:
+                    sb.append((char)cursor);
+                }
+            }
+        }
+        // TODO 判断一下key是否合法
+        // 当前字符为: 跳过去
+        nextChar();
+        skipCommentsAndBlank();
+        return key;
+	}
+	
 	
 	/**
 	 * 处理List
