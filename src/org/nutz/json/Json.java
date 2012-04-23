@@ -63,6 +63,30 @@ public class Json {
 	public static Object fromJson(Reader reader) throws JsonException {
 		return new JsonCompile().parse(reader);
 	}
+	/**
+	 * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
+	 * <ul>
+	 * <li>Map
+	 * <li>List
+	 * <li>Integer 或者 Float
+	 * <li>String
+	 * <li>Boolean
+	 * <li>Char
+	 * <li>Long Double
+	 * </ul>
+	 * 
+	 * @param reader
+	 *            输入流
+	 * @param mates
+	 *            匹配项
+	 * @param type
+	 *            类型, true为包含(只解析满足条件的), false为过滤
+	 * @return JAVA 对象
+	 * @throws JsonException
+	 */
+	public static Object fromJson(Reader reader, List<String> mates, boolean type) throws JsonException {
+	    return new JsonCompileExtend().parse(reader, mates, type);
+	}
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
