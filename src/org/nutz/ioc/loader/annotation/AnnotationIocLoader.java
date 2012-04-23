@@ -152,22 +152,28 @@ public class AnnotationIocLoader implements IocLoader {
 					fieldList.add(iocField.getName());
 				}
 			}
-			// 处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
+			// 处理字段(以@IocBean.field方式)
 			String[] flds = iocBean.fields();
-//			if (null == flds || flds.length == 0) {
-//				flds = iocBean.field();
-//			}
 			if (flds != null && flds.length > 0) {
 				for (String fieldInfo : flds) {
 					if (fieldList.contains(fieldInfo))
 						throw duplicateField(classZ,fieldInfo);
 					IocField iocField = new IocField();
-					iocField.setName(fieldInfo);
-					IocValue iocValue = new IocValue();
-					iocValue.setType(IocValue.TYPE_REFER);
-					iocValue.setValue(fieldInfo);
-					iocField.setValue(iocValue);
-					iocObject.addField(iocField);
+					if (fieldInfo.contains(":")) { // dao:jndi:dataSource/jdbc形式
+						String[] datas = fieldInfo.split(":", 2);
+						//完整形式, 与@Inject完全一致了
+						iocField.setName(datas[0]); 
+						iocField.setValue(convert(datas[1]));
+						iocObject.addField(iocField);
+					} else {
+						//基本形式, 引用与自身同名的bean
+						iocField.setName(fieldInfo);
+						IocValue iocValue = new IocValue();
+						iocValue.setType(IocValue.TYPE_REFER);
+						iocValue.setValue(fieldInfo);
+						iocField.setValue(iocValue);
+						iocObject.addField(iocField);
+					}
 					fieldList.add(iocField.getName());
 				}
 			}
@@ -178,11 +184,12 @@ public class AnnotationIocLoader implements IocLoader {
 
 	protected IocValue convert(String value) {
 		IocValue iocValue = new IocValue();
-		if (value.indexOf(':') > -1) {
+		if (value.contains(":")) {
 			iocValue.setType(value.substring(0, value.indexOf(':')));
 			iocValue.setValue(value.substring(value.indexOf(':') + 1));
-		} else
-			iocValue.setValue(value);
+		} else {
+			iocValue.setValue(value); //TODO 是否应该改为默认refer呢?
+		}
 		return iocValue;
 	}
 
