@@ -25,6 +25,7 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.Jdbcs.Adaptor;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
@@ -242,7 +243,10 @@ public abstract class Daos {
 			} else {
 				sql.append("?");
 				values.add(head.value());
-				adaptors.add(mf.getAdaptor());
+				ValueAdaptor adaptor = Jdbcs.getAdaptorBy(head.value());
+				if (mf != null && mf.getAdaptor() != null)
+					adaptor = mf.getAdaptor();
+				adaptors.add(adaptor);
 			}
 			sql.append(" ");
 			head = head.next();
