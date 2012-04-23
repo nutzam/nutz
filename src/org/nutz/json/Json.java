@@ -79,15 +79,13 @@ public class Json {
 	 * 
 	 * @param reader
 	 *            输入流
-	 * @param mates
-	 *            匹配项
-	 * @param type
-	 *            类型, true为包含(只解析满足条件的), false为过滤
+	 * @param filter
+	 *            过滤器
 	 * @return JAVA 对象
 	 * @throws JsonException
 	 */
-	public static Object fromJson(Reader reader, List<String> mates, boolean type) throws JsonException {
-	    return new JsonCompileFilter().parse(reader, mates, type);
+	public static Object fromJson(Reader reader, JsonFilter filter) throws JsonException {
+	    return new JsonCompileFilter().parse(reader, filter);
 	}
 
 	/**
@@ -121,16 +119,14 @@ public class Json {
      *            转换的类型
      * @param cs
      *            JSON 字符串
-     * @param mates
-     *            匹配项
-     * @param t
-     *            类型, true为包含(只解析满足条件的), false为过滤
+     * @param filter
+     *            过滤器
      * @return JAVA 对象
      * @throws JsonException
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Class<T> type, Reader reader, List<String> mates, boolean t) throws JsonException {
-        return (T) parse(type, reader, mates, t);
+    public static <T> T fromJson(Class<T> type, Reader reader, JsonFilter filter) throws JsonException {
+        return (T) parse(type, reader, filter);
     }
 
 	/**
@@ -163,23 +159,21 @@ public class Json {
      *            转换的类型
      * @param cs
      *            JSON 字符串
-     * @param mates
-     *            匹配项
-     * @param t
-     *            类型, true为包含(只解析满足条件的), false为过滤
+     * @param filter
+     *            过滤器
      * @return JAVA 对象
      * @throws JsonException
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Type type, Reader reader, List<String> mates, boolean t) throws JsonException {
-        return (T) parse(type, reader, mates, t);
+    public static <T> T fromJson(Type type, Reader reader, JsonFilter filter) throws JsonException {
+        return (T) parse(type, reader, filter);
     }
 	
 	private static Object parse(Type type, Reader reader) {
         return Objs.convert(new JsonCompile().parse(reader), type);
     }
-	private static Object parse(Type type, Reader reader, List<String> mates, boolean t) {
-	    return Objs.convert(new JsonCompileFilter().parse(reader, mates, t), type);
+	private static Object parse(Type type, Reader reader, JsonFilter filter) {
+	    return Objs.convert(new JsonCompileFilter().parse(reader, filter), type);
 	}
 
 	/**
@@ -369,6 +363,8 @@ public class Json {
 	 *            JAVA 对象
 	 * @param format
 	 *            JSON 字符串格式化
+	 * @param filter
+	 *            JSON 字符过滤器
 	 * @return JSON 字符串
 	 */
 	public static String toJson(Object obj, JsonFormat format, JsonFilter filter) {
@@ -395,6 +391,8 @@ public class Json {
 	 *            文本输出流
 	 * @param obj
 	 *            JAVA 对象
+	 * @param filter
+     *            JSON 字符过滤器           
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFilter filter) {
 	    toJson(writer, obj, null, filter);
@@ -422,6 +420,8 @@ public class Json {
 	 *            JAVA 对象
 	 * @param format
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
+	 * @param filter
+     *            JSON 字符过滤器
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format, JsonFilter filter) {
 	    try {
