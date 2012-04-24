@@ -71,8 +71,8 @@ public class ScansTest {
 
 	@Test
 	public void test_in_classpath() {
-		String testPath = ResourceScan.class.getName().replace('.', '/') + ".class";
-		String testFilter = "^" + ResourceScan.class.getSimpleName() + ".class$";
+		String testPath = Scans.class.getName().replace('.', '/') + ".class";
+		String testFilter = "^" + Scans.class.getSimpleName() + ".class$";
 		List<NutResource> list = Scans.me().scan(testPath, testFilter);
 		assertEquals(1, list.size());
 	}

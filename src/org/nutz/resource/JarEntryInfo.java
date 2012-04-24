@@ -4,9 +4,32 @@ import java.io.IOException;
 
 public class JarEntryInfo {
 
-	private String jarPath;
+	public String getEntryName() {
+		return entryName;
+	}
+
+	public String getJarPath() {
+		return jarPath;
+	}
+
+	public JarEntryInfo setEntryName(String entryName) {
+		this.entryName = entryName;
+		return this;
+	}
+
+	public JarEntryInfo setJarPath(String jarPath) {
+		this.jarPath = jarPath;
+		return this;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("%s!/%s", jarPath, entryName);
+	}
 
 	private String entryName;
+
+	private String jarPath;
 
 	public JarEntryInfo() {}
 
@@ -35,29 +58,6 @@ public class JarEntryInfo {
 	public JarEntryInfo(String jarPath, String entryName) {
 		this.jarPath = jarPath;
 		this.entryName = entryName;
-	}
-
-	public String getJarPath() {
-		return jarPath;
-	}
-
-	public JarEntryInfo setJarPath(String jarPath) {
-		this.jarPath = jarPath;
-		return this;
-	}
-
-	public String getEntryName() {
-		return entryName;
-	}
-
-	public JarEntryInfo setEntryName(String entryName) {
-		this.entryName = entryName;
-		return this;
-	}
-
-	@Override
-	public String toString() {
-		return String.format("%s!/%s", jarPath, entryName);
 	}
 
 }
