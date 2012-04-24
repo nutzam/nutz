@@ -140,4 +140,35 @@
 		* nice() : 不压缩;字段名不加引号;忽略null字段
 		* full() : 不压缩;字段名加引号;不忽略null字段
 		
+--------------------------------------------------------------------------------------------------------	
+对Json的过滤.
+	
+	在使用JSON的过程中不管是序列化也好, 还是反序列化也好, 或多或少都会过滤一部分数据. 
+	同样的, 要过滤, 需要使用JsonFormat. 具体使用如下:
+	
+	序列化:
+	{{{<JAVA>
+	JsonFormat format = new JsonFormat();
+	List<String> mates = new ArrayList<String>();
+    mates.add("name");
+	format.setMates(mates);
+	format.setFilterType(FilterType.include);
+	String s = Json.toJson(a, format);
+	}}}
+	反序列化:
+	{{{<JAVA>
+	JsonFormat format = new JsonFormat();
+	List<String> mates = new ArrayList<String>();
+    mates.add("name");
+	format.setMates(mates);
+	format.setFilterType(FilterType.include);
+	Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"), format);
+	}}}
+	
+	可以发现序列化, 反序列化的过滤使用方法完全相同. 
+	mates规则:
+	1. 要定义过滤或是包含, 都直接以对象关联的方式写出, 如: user.name, 
+	2. 不区分 Map, List 全部都使用 1 中的形式. 这里指的 Map, List 是指 JsonCompile 转换的中间对象, 也可以理解成JSON的数组, 而非 JAVA 属性中的 Map, List. 注意概念
+	3. 包含还是排除, 以 FilterType 属性做标识, FilterType.include 为包含, FilterType.exclude 为排除.
+	4. 同一时间只支持一种关系.
 	
