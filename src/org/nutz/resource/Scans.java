@@ -48,7 +48,8 @@ public class Scans {
 		// 获取classes文件夹的路径
 		Set<String> paths = sc.getResourcePaths("/WEB-INF/classes/");
 		if (paths != null && !paths.isEmpty()) {
-			locations.add(ResourceLocation.file(new File(paths.toArray(new String[paths.size()])[0]).getParentFile()));
+			String path = sc.getRealPath(paths.toArray(new String[paths.size()])[0]);
+			locations.add(ResourceLocation.file(new File(path).getParentFile()));
 		}
 
 		// 获取lib文件夹中的全部jar
@@ -57,7 +58,7 @@ public class Scans {
 			for (String path : jars) {
 				if (!path.toLowerCase().endsWith(".jar"))
 					continue;
-				locations.add(ResourceLocation.jar(path));
+				locations.add(ResourceLocation.jar(sc.getRealPath(path)));
 			}
 
 		return this;
