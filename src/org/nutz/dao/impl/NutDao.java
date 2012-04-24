@@ -217,7 +217,7 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public int update(String tableName, Chain chain, Condition cnd) {
 		if (chain.isSpecial())
-			throw Lang.noImplement();
+			return Daos.updateBySpecialChain(this, null, tableName, chain, cnd);
 		EntityOperator opt = _optBy(chain.toEntityMap(tableName));
 		if (null == opt)
 			return 0;
@@ -228,7 +228,7 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public int update(Class<?> classOfT, Chain chain, Condition cnd) {
 		if (chain.isSpecial())
-			return Daos.updateBySpecialChain(this, classOfT, chain, cnd);
+			return Daos.updateBySpecialChain(this, getEntity(classOfT), null, chain, cnd);
 		EntityOperator opt = _opt(classOfT);
 		opt.addUpdate(chain, cnd);
 		opt.exec();
@@ -277,6 +277,9 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			throw Lang.noImplement();
+		
 		EntityOperator opt = this._opt(classOfT);
 
 		opt.entity.visitManyMany(null, regex, doUpdateRelation(opt, chain, cnd));

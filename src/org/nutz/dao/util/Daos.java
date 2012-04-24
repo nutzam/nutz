@@ -18,6 +18,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
@@ -25,7 +26,6 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
-import org.nutz.dao.jdbc.Jdbcs.Adaptor;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
@@ -222,15 +222,20 @@ public abstract class Daos {
 	 * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
 	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
 	 */
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static int updateBySpecialChain(Dao dao, Class klass, Chain chain, Condition cnd) {
-		Entity en = dao.getEntity(klass);
-		final StringBuilder sql = new StringBuilder("UPDATE ").append(en.getTableName()).append(" SET ");
+	@SuppressWarnings({ "rawtypes" })
+	public static int updateBySpecialChain(Dao dao, Entity en, String tableName, Chain chain, Condition cnd) {
+		if (en != null)
+			tableName = en.getTableName();
+		if (tableName == null)
+			throw Lang.makeThrow(DaoException.class, "tableName and en is NULL !!");
+		final StringBuilder sql = new StringBuilder("UPDATE ").append(tableName).append(" SET ");
 		Chain head = chain.head();
 		final List<Object> values = new ArrayList<Object>();
 		final List<ValueAdaptor> adaptors = new ArrayList<ValueAdaptor>();
 		while (head != null) {
-			MappingField mf = en.getField(head.name());
+			MappingField mf = null;
+			if (en != null)
+				mf = en.getField(head.name());
 			String colName = head.name();
 			if (mf != null)
 				colName = mf.getColumnName();
