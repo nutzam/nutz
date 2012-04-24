@@ -260,8 +260,7 @@ public class Scans {
 		Set<Class<?>> re = new HashSet<Class<?>>(list.size());
 		if (!list.isEmpty()) {
 			for (NutResource nr : list) {
-				int r = nr.getName().lastIndexOf(".class");
-				if (r < 0) {
+				if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
 					if (log.isInfoEnabled())
 						log.infof("Resource can't map to Class, Resource %s",
 								nr);
