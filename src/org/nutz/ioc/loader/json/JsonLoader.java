@@ -55,4 +55,7 @@ public class JsonLoader extends MapLoader {
 			getMap().putAll(map);
 	}
 
+	public String toString() {
+		return "JsonLoader"+getMap().keySet();
+	}
 }

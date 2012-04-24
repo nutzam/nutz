@@ -212,4 +212,8 @@ public class AnnotationIocLoader implements IocLoader {
 				classZ,
 				name);
 	}
+	
+	public String toString() {
+		return "AnnotationIocLoader"+map.keySet();
+	}
 }
