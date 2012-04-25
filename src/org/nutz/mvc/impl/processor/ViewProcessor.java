@@ -5,6 +5,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
@@ -17,6 +19,7 @@ public class ViewProcessor extends AbstractProcessor {
 
 	protected View view;
 	public static final String DEFAULT_ATTRIBUTE = "obj";
+	private static final Log log = Logs.get();
 	
 	@Override
 	public void init(NutConfig config, ActionInfo ai) throws Throwable {
@@ -67,6 +70,12 @@ public class ViewProcessor extends AbstractProcessor {
 			type = str;
 			value = null;
 		}
+		
+		//需要特别提醒一下使用jsonView,但方法的返回值是String的!!
+		if("json".equals(type) && String.class.equals(ai.getMethod().getReturnType())) {
+			log.warn("Not a good idea : Return String ,and using JsonView!! (Using @Ok(\"raw\") or return map/list/pojo)--> " + ai.getMethod());
+		}
+		
 		for (ViewMaker maker : ai.getViewMakers()) {
 			View view = maker.make(config.getIoc(), type, value);
 			if (null != view)

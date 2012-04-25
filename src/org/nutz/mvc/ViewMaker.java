@@ -34,6 +34,6 @@ public interface ViewMaker {
 	 * 
 	 * @return 产生的视图对象
 	 */
-	View make(Ioc ioc, String type, String value);
+	View make(Ioc ioc, String type, String value); //by wendal, 我很想把Ioc改成ActionInfo
 
 }
