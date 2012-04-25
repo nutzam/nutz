@@ -124,6 +124,9 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
 		case BINARY:
 			return "BYTEA";
+			
+		case DATETIME:
+			return "TIMESTAMP";
 		}
 		return super.evalFieldType(mf);
 	}
