@@ -1,12 +1,14 @@
 package org.nutz.resource.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -18,11 +20,58 @@ public abstract class ResourceLocation {
 	public abstract void scan(String base, Pattern pattern, List<NutResource> list);
 	
 	public static ResourceLocation file(File root) {
-		return new FileSystemResourceLocation(root.getAbsoluteFile());
+		if (!root.exists())
+			return new ErrorResourceLocation(root);
+		try {
+			return new FileSystemResourceLocation(root.getAbsoluteFile());
+		} catch (Exception e) {
+			return new ErrorResourceLocation(root);
+		}
 	}
 	
 	public static ResourceLocation jar(String jarPath) {
-		return new JarResourceLocation(jarPath);
+		try {
+			return new JarResourceLocation(jarPath);
+		} catch (Exception e) {
+			return new ErrorResourceLocation(jarPath);
+		}
+	}
+}
+
+class ErrorResourceLocation extends ResourceLocation {
+	public void scan(String base, Pattern pattern, List<NutResource> list) {}
+	
+	private static final Log log = Logs.get();
+	
+	Object loc;
+	public ErrorResourceLocation(Object loc) {
+		this.loc = loc;
+		if (log.isInfoEnabled())
+			log.info("ErrorResourceLocation [loc=" + loc + "], maybe it is in your classpath, but not exist");
+	}
+	public String toString() {
+		return "ErrorResourceLocation [loc=" + loc + "]";
+	}
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((loc == null) ? 0 : loc.hashCode());
+		return result;
+	}
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ErrorResourceLocation other = (ErrorResourceLocation) obj;
+		if (loc == null) {
+			if (other.loc != null)
+				return false;
+		} else if (!loc.equals(other.loc))
+			return false;
+		return true;
 	}
 }
 
@@ -98,19 +147,18 @@ class JarResourceLocation extends ResourceLocation {
 	}
 
 	public void scan(String base, Pattern regex, List<NutResource> list) {
-		try {
-			for (String ensName : names) {
+		for (String ensName : names) {
 				String name = ensName;
 				if (name.contains("/"))
 					name = name.substring(name.lastIndexOf('/') + 1);
 				if (ensName.startsWith(base) && (null == regex || regex.matcher(name).find())) {
-					list.add(Scans.makeJarNutResource(jarPath, ensName, base));
+					try {
+						list.add(Scans.makeJarNutResource(jarPath, ensName, base));
+					} catch (IOException e) {
+						if (log.isInfoEnabled())
+							log.info("Jar delete while scan?!! " + jarPath,e);
+					}
 				}
-			}
-		}
-		catch (Throwable e) {
-			if (log.isWarnEnabled())
-				log.warn("Fail to scan path '" + jarPath + "'!", e);
 		}
 	}
 	
@@ -136,9 +184,8 @@ class JarResourceLocation extends ResourceLocation {
 			}
 			zis.close();
 		}
-		catch (Throwable e) {
-			if (log.isWarnEnabled())
-				log.warn("Fail to scan path '" + jarPath + "'!", e);
+		catch (Exception e) {
+			throw Lang.wrapThrow(e);
 		}
 	}
 }
