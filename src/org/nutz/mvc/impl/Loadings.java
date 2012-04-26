@@ -98,7 +98,7 @@ public abstract class Loadings {
 				URL location = type.getProtectionDomain().getCodeSource().getLocation();
 				if (log.isDebugEnabled())
 					log.debugf("module class location '%s'", location);
-				Scans.me().registerLocation(location, "");
+				Scans.me().registerLocation(location);
 
 				//重复扫描,确保能扫描到最可信的类
 				scanModuleInPackage(modules, type.getPackage().getName());

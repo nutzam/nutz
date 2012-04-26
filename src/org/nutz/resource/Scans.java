@@ -78,22 +78,17 @@ public class Scans {
 	}
 
 	public void registerLocation(Class<?> klass) {
-		String referPath = klass.getName().replace('.', '/') + ".class";
-		URL fileURL = getClass().getClassLoader().getResource(referPath);
-		registerLocation(fileURL, referPath);
+		registerLocation(klass.getProtectionDomain().getCodeSource().getLocation());
 	}
 
-	public void registerLocation(URL url, String referPath) {
+	public void registerLocation(URL url) {
 		if (url == null)
 			return;
 		try {
-			if (url.toString().contains("jar!")) {
-				locations.add(ResourceLocation.jar(new JarEntryInfo(url
-						.toString()).getJarPath()));
+			if (url.toString().endsWith(".jar")) {
+				locations.add(ResourceLocation.jar(new JarEntryInfo(url.toString()).getJarPath()));
 			} else {
-				String root = new File(url.toURI()).getAbsolutePath();
-				root = root.substring(0, root.length() - referPath.length());
-				locations.add(ResourceLocation.file(new File(root)));
+				locations.add(ResourceLocation.file(new File(url.toURI())));
 			}
 		} catch (Throwable e) {
 			if (log.isInfoEnabled())
@@ -352,7 +347,9 @@ public class Scans {
 			Enumeration<URL> urls = getClass().getClassLoader().getResources(
 					referPath);
 			while (urls.hasMoreElements()) {
-				registerLocation(urls.nextElement(), referPath);
+				URL url = urls.nextElement();
+				url = new URL(url.toString().substring(0, url.toString().length() - referPath.length() - 2));
+				registerLocation(url);
 			}
 		} catch (IOException e) {}
 
