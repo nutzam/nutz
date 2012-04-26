@@ -86,7 +86,7 @@ public class Scans {
 			return;
 		try {
 			if (url.toString().endsWith(".jar")) {
-				locations.add(ResourceLocation.jar(new JarEntryInfo(url.toString()).getJarPath()));
+				locations.add(ResourceLocation.jar(url.toString()));
 			} else {
 				locations.add(ResourceLocation.file(new File(url.toURI())));
 			}
@@ -348,7 +348,10 @@ public class Scans {
 					referPath);
 			while (urls.hasMoreElements()) {
 				URL url = urls.nextElement();
-				url = new URL(url.toString().substring(0, url.toString().length() - referPath.length() - 2));
+				if (url.toString().contains("jar!"))
+					url = new URL(url.toString().substring(0, url.toString().length() - referPath.length() - 2));
+				else
+					url = new URL(url.toString().substring(0, url.toString().length() - referPath.length()));
 				registerLocation(url);
 			}
 		} catch (IOException e) {}
