@@ -102,10 +102,6 @@ public class NutConf {
 
 	/**
 	 * 读取一个配置项, 并转换成相应的类型.
-	 * 
-	 * @param key
-	 * @param type
-	 * @return
 	 */
 	public static Object get(String key, Type type) {
 		return me().getItem(key, type);
@@ -113,9 +109,6 @@ public class NutConf {
 
 	/**
 	 * 读取配置项, 返回Map, List或者 Object. 具体返回什么, 请参考 JSON 规则
-	 * 
-	 * @param key
-	 * @return
 	 */
 	public static Object get(String key) {
 		return me().getItem(key, null);

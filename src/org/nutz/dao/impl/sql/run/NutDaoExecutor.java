@@ -11,6 +11,7 @@ import java.sql.Statement;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
@@ -58,6 +59,12 @@ public class NutDaoExecutor implements DaoExecutor {
 						if (st.getContext().getFetchSize() > 0)
 							stat.setFetchSize(st.getContext().getFetchSize());
 						rs = stat.executeQuery(sql);
+						if (st.getContext().getResultSetType() == ResultSet.TYPE_SCROLL_INSENSITIVE) {
+							Pager pager = st.getContext().getPager();
+							if (pager != null) {
+								rs.absolute(pager.getOffset());
+							}
+						}
 						st.onAfter(conn, rs);
 					}
 					finally {

@@ -220,7 +220,6 @@ public class Code {
 	 *            是否统计子文件夹(true的话，将递归统计所有子文件夹)
 	 * @param conf
 	 *            代码分析配置项(为空的话，则按照JAVA代码来进行分析统计)
-	 * @return
 	 */
 	public static CodeStatisticsResult countingCode(File src,
 													String suffix,

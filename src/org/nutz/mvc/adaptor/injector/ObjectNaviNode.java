@@ -125,8 +125,6 @@ public class ObjectNaviNode {
     
     /**
      * 取得节点的name信息
-     * @param key
-     * @return
      */
     private String fetchName(String path){
         String key = fetchNode(path);

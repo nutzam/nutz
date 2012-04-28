@@ -145,8 +145,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 	 *            参数类型
 	 * @param param
 	 *            参数的注解
-	 * @param paramTypes
-	 *            参数的范型，无范型的，值为 null
 	 * @return 一个新的参数注入器实例
 	 */
 	protected abstract ParamInjector evalInjectorBy(Type type, Param param);

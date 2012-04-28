@@ -30,9 +30,6 @@ public class JsonEntityField {
 
 	/**
 	 * 根据名称获取字段实体, 默认以set优先
-	 * @param mirror
-	 * @param name
-	 * @return
 	 */
 	public static JsonEntityField eval(Mirror<?> mirror, String name){
 	    Method[] methods = mirror.findSetters(name);

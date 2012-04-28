@@ -75,18 +75,12 @@ public abstract class Castor<FROM, TO> {
 	}
 	/**
 	 * 取得hash值
-	 * @param from
-	 * @param to
-	 * @return
 	 */
 	public static int fetchHash(Class<?> from, Class<?> to){
 	    return fetchHash(from.getName(), to.getName());
 	}
 	/**
 	 * 取得Hash值
-	 * @param from
-	 * @param to
-	 * @return
 	 */
 	public static int fetchHash(String from, String to){
 	    return (from + "2" + to).hashCode();

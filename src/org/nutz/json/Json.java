@@ -77,8 +77,6 @@ public class Json {
 	 * 
 	 * @param reader
 	 *            输入流
-	 * @param filter
-	 *            过滤器
 	 * @return JAVA 对象
 	 * @throws JsonException
 	 */
@@ -117,8 +115,6 @@ public class Json {
      *            转换的类型
      * @param cs
      *            JSON 字符串
-     * @param filter
-     *            过滤器
      * @return JAVA 对象
      * @throws JsonException
      */
@@ -155,8 +151,6 @@ public class Json {
      * 
      * @param type
      *            转换的类型
-     * @param cs
-     *            JSON 字符串
      * @param format
      *            过滤器
      * @return JAVA 对象
@@ -226,7 +220,7 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
      * @param cs
      *            JSON 字符串
@@ -242,7 +236,7 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
      * @param cs
      *            JSON 字符串
@@ -259,7 +253,7 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
      * @param cs
      *            JSON 字符串
@@ -275,9 +269,9 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
-     * @param cs
+     * @param reader
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
@@ -291,7 +285,7 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
      * @param cs
      *            JSON 字符串
@@ -307,9 +301,9 @@ public class Json {
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
-     * @param type
+     * @param eleType
      *            对象类型
-     * @param cs
+     * @param reader
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException

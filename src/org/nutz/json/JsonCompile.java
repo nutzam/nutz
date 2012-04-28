@@ -321,8 +321,6 @@ public class JsonCompile {
 	}
 	/**
 	 * 找KEY
-	 * @return
-	 * @throws IOException
 	 */
 	protected String fetchKey() throws IOException{
 	  //找key

@@ -86,7 +86,7 @@ public interface JdbcExpert {
 	/**
 	 * 根据 Dao 查询语句，以及其翻页信息，对其进行格式化
 	 * 
-	 * @param pojo
+	 * @param daoStatement
 	 *            Dao 语句
 	 */
 	void formatQuery(DaoStatement daoStatement);
