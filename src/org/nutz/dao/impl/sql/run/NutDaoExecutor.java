@@ -39,6 +39,21 @@ public class NutDaoExecutor implements DaoExecutor {
 			// 查询
 			case SELECT:
 				paramMatrix = st.getParamMatrix();
+				
+
+				//-------------------------------------------------
+				//以下代码,就为了该死的游标分页!!
+				//-------------------------------------------------
+				int startRow = -1;
+				int lastRow = -1;
+				if (st.getContext().getResultSetType() == ResultSet.TYPE_SCROLL_INSENSITIVE) {
+					Pager pager = st.getContext().getPager();
+					if (pager != null) {
+						startRow = pager.getOffset();
+						lastRow = pager.getOffset() + pager.getPageSize();
+					}
+				}
+				//-------------------------------------------------
 
 				// 木有参数，直接运行
 				if (null == paramMatrix || paramMatrix.length == 0 || paramMatrix[0].length == 0) {
@@ -56,18 +71,6 @@ public class NutDaoExecutor implements DaoExecutor {
 					try {
 						stat = conn.createStatement(st.getContext().getResultSetType(),
 													ResultSet.CONCUR_READ_ONLY);
-						//-------------------------------------------------
-						//以下代码,就为了该死的游标分页!!
-						int startRow = -1;
-						int lastRow = -1;
-						if (st.getContext().getResultSetType() == ResultSet.TYPE_SCROLL_INSENSITIVE) {
-							Pager pager = st.getContext().getPager();
-							if (pager != null) {
-								startRow = pager.getOffset();
-								lastRow = pager.getOffset() + pager.getPageSize();
-							}
-						}
-						//-------------------------------------------------
 						if (lastRow > 0)
 							stat.setMaxRows(lastRow); //游标分页,现在总行数
 						if (st.getContext().getFetchSize() > 0)
@@ -110,11 +113,14 @@ public class NutDaoExecutor implements DaoExecutor {
 						pstat = conn.prepareStatement(	sql,
 														st.getContext().getResultSetType(),
 														ResultSet.CONCUR_READ_ONLY);
+						if (lastRow > 0)
+							pstat.setMaxRows(lastRow);
 						for (int i = 0; i < paramMatrix[0].length; i++) {
 							adaptors[i].set(pstat, paramMatrix[0][i], i + 1);
 						}
 						rs = pstat.executeQuery();
-
+						if (startRow > 0)
+							rs.absolute(startRow);
 						// 执行回调
 						st.onAfter(conn, rs);
 					}
