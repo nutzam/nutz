@@ -162,6 +162,8 @@ public class DaoSupport {
 				meta.setVersion(dmd.getDatabaseProductVersion());
 			}
 		});
+		if (log.isDebugEnabled())
+			log.debug("Database info --> " + meta);
 
 		holder = new EntityHolder(this);
 		holder.maker = createEntityMaker();
