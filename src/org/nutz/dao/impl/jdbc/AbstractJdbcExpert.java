@@ -140,7 +140,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	// 下面是提供给子类使用的一些帮助函数
 
 	protected String createResultSetMetaSql(Entity<?> en) {
-		return "SELECT * FROM " + en.getViewName();
+		return "SELECT * FROM " + en.getViewName() + " where 1!=1";
 	}
 
 	protected void createRelation(Dao dao, Entity<?> en) {

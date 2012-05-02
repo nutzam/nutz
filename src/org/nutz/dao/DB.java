@@ -40,6 +40,10 @@ public enum DB {
 	 */
 	HSQL,
 	/**
+	 * 
+	 */
+	DERBY,
+	/**
 	 * 其他数据库
 	 */
 	OTHER
