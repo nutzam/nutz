@@ -56,15 +56,25 @@ public class NutDaoExecutor implements DaoExecutor {
 					try {
 						stat = conn.createStatement(st.getContext().getResultSetType(),
 													ResultSet.CONCUR_READ_ONLY);
-						if (st.getContext().getFetchSize() > 0)
-							stat.setFetchSize(st.getContext().getFetchSize());
-						rs = stat.executeQuery(sql);
+						//-------------------------------------------------
+						//以下代码,就为了该死的游标分页!!
+						int startRow = -1;
+						int lastRow = -1;
 						if (st.getContext().getResultSetType() == ResultSet.TYPE_SCROLL_INSENSITIVE) {
 							Pager pager = st.getContext().getPager();
 							if (pager != null) {
-								rs.absolute(pager.getOffset());
+								startRow = pager.getOffset();
+								lastRow = pager.getOffset() + pager.getPageSize();
 							}
 						}
+						//-------------------------------------------------
+						if (lastRow > 0)
+							stat.setMaxRows(lastRow); //游标分页,现在总行数
+						if (st.getContext().getFetchSize() > 0)
+							stat.setFetchSize(st.getContext().getFetchSize());
+						rs = stat.executeQuery(sql);
+						if (startRow > 0)
+							rs.absolute(startRow); //跳到第一条记录
 						st.onAfter(conn, rs);
 					}
 					finally {
