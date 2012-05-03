@@ -21,6 +21,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.ArgsInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
 import org.nutz.mvc.adaptor.injector.IocObjInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
@@ -130,6 +131,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 		// Ioc
 		else if (Ioc.class.isAssignableFrom(type)) {
 			return new IocInjector();
+		}else if (Args.class.isAssignableFrom(type)){
+			return new ArgsInjector();
 		}
 		return null;
 	}
