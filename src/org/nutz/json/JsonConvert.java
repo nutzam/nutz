@@ -222,7 +222,7 @@ public class JsonConvert {
         private void injectList(List<Object> list, int i) {
             int index = 0; 
             if(arrayIndex.size() > arrayItem){
-                arrayIndex.get(arrayItem ++);
+                index = arrayIndex.get(arrayItem ++);
             }
             if(i == keys.length - 1){
                 list.set(index, val);
