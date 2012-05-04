@@ -1,6 +1,7 @@
 package org.nutz.json;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -63,11 +64,8 @@ public class JsonConvert {
     private LinkedList<Integer> arrayIndex = new LinkedList<Integer>();
     //关系
     private Map<String, List<String>> relation = new HashMap<String, List<String>>();
-    private Map<String, Object> newobj = new HashMap<String, Object>();
     
-    public JsonConvert() {
-        newobj.put("obj", null);
-    }
+    private Rebuild structure = new Rebuild();
     
     /**
      * 转换
@@ -78,7 +76,7 @@ public class JsonConvert {
     public Object convert(Object obj, String model){
         initRelation(model);
         convertObj(obj);
-        return newobj.get("obj");
+        return structure.fetchNewobj();
     }
     /**
      * 转换对象
@@ -145,98 +143,13 @@ public class JsonConvert {
         if(relation.containsKey(path)){
             List<String> dests = relation.get(path);
             for(String dest : dests){
-                new structure(dest, object).inject();
+                structure.put(dest, object);
             }
         }
     }
     
     
-    /**
-     * 构建新的对象
-     * @author juqkai(juqkai@gmail.com)
-     */
-    class structure{
-        private String[] keys;
-        private Object val;
-        private Integer arrayItem = 0;
-        
-        private structure(String keys, Object obj){
-            keys = "obj." + keys;
-            this.keys = keys.split("\\.");
-            val = obj;
-        }
-        
-        public void inject(){
-            injectMap(newobj, 0);
-        }
-
-        /**
-         * 注入MAP
-         * @param obj
-         * @param i
-         * @return 
-         */
-        @SuppressWarnings("unchecked")
-        private Object injectMap(Object obj, int i) {
-            String key = keys[i];
-            if(key.equals("[]")){
-                List<Object> list = new ArrayList<Object>();
-                if(obj != null){
-                    list = (List<Object>) obj;
-                }
-                injectList(list, i);
-                return list;
-            }
-            Map<String, Object> map = new HashMap<String, Object>();
-            if(obj != null){
-                map = (Map<String, Object>) obj;
-            }
-            //有Key的list
-            if(key.endsWith("[]")){
-                String k = key.substring(0, key.indexOf('['));
-                if(!map.containsKey(k)){
-                    map.put(k, new ArrayList<Object>());
-                }
-                injectList((List<Object>) map.get(k), i);
-                return map;
-            }
-            
-            if(i == keys.length - 1){
-                map.put(key, val);
-                return map;
-            }
-            if(map.containsKey(key) && map.get(key) != null){
-                injectMap(map.get(key), i + 1);
-            } else {
-                map.put(key, injectMap(null, i + 1));
-            }
-            return map;
-        }
-
-        /**
-         * 注入List
-         * @param list
-         * @param i
-         */
-        @SuppressWarnings("unchecked")
-        private void injectList(List<Object> list, int i) {
-            int index = 0; 
-            if(arrayIndex.size() > arrayItem){
-                index = arrayIndex.get(arrayItem ++);
-            }
-            if(i == keys.length - 1){
-                list.set(index, val);
-                return;
-            }
-            if(list.size() <= index){
-                list.add(index, new HashMap<String, Object>());
-            }
-            injectMap((Map<String, Object>) list.get(index), i + 1);
-        }
-        
-    }
-    
-    
+   
 
 
     
@@ -299,4 +212,107 @@ public class JsonConvert {
     private String space(String path){
         return path == "" ? "" : ".";
     }
+    
+    
+    
+    /**
+     * 构建新的对象
+     * @author juqkai(juqkai@gmail.com)
+     */
+    class Rebuild{
+        private String[] keys;
+        private Object val;
+        private Integer arrayItem;
+        private Map<String, Object> newobj = new HashMap<String, Object>();
+        
+        private Rebuild(){
+            newobj.put("obj", null);
+        }
+        
+        public void put(String keys, Object obj){
+            init(keys, obj);
+            injectMap(newobj, 0);
+        }
+        private void init(String keys, Object obj){
+            keys = "obj." + keys;
+            this.keys = keys.split("\\.");
+            val = obj;
+            arrayItem = 0;
+        }
+        
+        public Object fetchNewobj(){
+            return newobj.get("obj");
+        }
+        
+        /**
+         * 注入MAP
+         * @param obj
+         * @param i
+         * @return 
+         */
+        @SuppressWarnings("unchecked")
+        private Object injectMap(Object obj, int i) {
+            String key = keys[i];
+            if(key.equals("[]")){
+                List<Object> list = new ArrayList<Object>();
+                if(obj != null){
+                    list = (List<Object>) obj;
+                }
+                injectList(list, i);
+                return list;
+            }
+            Map<String, Object> map = new HashMap<String, Object>();
+            if(obj != null){
+                map = (Map<String, Object>) obj;
+            }
+            //有Key的list
+            if(key.endsWith("[]")){
+                String k = key.substring(0, key.indexOf('['));
+                if(!map.containsKey(k)){
+                    map.put(k, new ArrayList<Object>());
+                }
+                injectList((List<Object>) map.get(k), i);
+                return map;
+            }
+            
+            if(i == keys.length - 1){
+                map.put(key, val);
+                return map;
+            }
+            if(map.containsKey(key) && map.get(key) != null){
+                injectMap(map.get(key), i + 1);
+            } else {
+                map.put(key, injectMap(null, i + 1));
+            }
+            return map;
+        }
+
+        /**
+         * 注入List
+         * @param list
+         * @param i
+         */
+        @SuppressWarnings("unchecked")
+        private void injectList(List<Object> list, int i) {
+            int index = 0; 
+            if(arrayIndex.size() > arrayItem){
+                index = arrayIndex.get(arrayItem ++);
+            }
+            if(i == keys.length - 1){
+                if(val instanceof Collection){
+                    list.addAll((Collection<? extends Object>) val);
+                } else {
+                    list.add(index, val);
+                }
+                return;
+            }
+            if(list.size() <= index){
+                list.add(index, new HashMap<String, Object>());
+            }
+            injectMap((Map<String, Object>) list.get(index), i + 1);
+        }
+        
+    }
+    
+    
 }
