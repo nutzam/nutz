@@ -11,7 +11,8 @@ import org.nutz.lang.Lang;
 
 /**
  * 这是一个神奇的DataSource!!你甚至不需要设置driverClassName!!
- * <p/>把用户名,密码,jdbcURL设置一下,这个类就能用了!!
+ * <p>把用户名,密码,jdbcURL设置一下,这个类就能用了!!
+ * <p>当然，你在你的 CLASSPATH 下要放置响应的数据库驱动 jar 包
  * 
  * @author wendal(wendal1985@gmail.com)
  */
