@@ -386,7 +386,7 @@ public class Objs {
      * @return
      */
     private int fetchListIndex(String path){
-        if(path.indexOf('[') <= 0){
+        if(path.indexOf('[') < 0){
             throw new RuntimeException(path + "没有索引!");
         }
         String index = path.substring(path.indexOf('[') + 1, path.indexOf(']'));

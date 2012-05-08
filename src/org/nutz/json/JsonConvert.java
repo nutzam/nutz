@@ -1,5 +1,6 @@
 package org.nutz.json;
 
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -79,6 +80,28 @@ public class JsonConvert {
         return structure.fetchNewobj();
     }
     /**
+     * 转换
+     * @param obj 目标对象
+     * @param model 对应关系
+     * @return 
+     */
+    public Object convert(Object obj, Reader reader){
+        initRelation(reader);
+        convertObj(obj);
+        return structure.fetchNewobj();
+    }
+    /**
+     * 转换
+     * @param obj 目标对象
+     * @param model 对应关系
+     * @return 
+     */
+    public Object convert(Reader obj, Reader reader){
+        initRelation(reader);
+        convertObj(Json.fromJson(obj));
+        return structure.fetchNewobj();
+    }
+    /**
      * 转换对象
      * @param obj
      */
@@ -155,12 +178,17 @@ public class JsonConvert {
     
     
     
+    
     /**
      * 初始化关系
      * @param model
      */
     private void initRelation(String model){
         Object obj = Json.fromJson(Streams.fileInr(model));
+        loadRelation(obj, "");
+    }
+    private void initRelation(Reader reader){
+        Object obj = Json.fromJson(reader);
         loadRelation(obj, "");
     }
     /**

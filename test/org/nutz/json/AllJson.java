@@ -14,6 +14,7 @@ import org.nutz.json.generic.GenericTest;
 						GenericTest.class,
 						JsonCompileFilterTest.class,
 						JsonRenderingFilterTest.class,
+						JsonConvertTest.class,
 						JsonMergeTest.class
 						})
 public class AllJson {}
