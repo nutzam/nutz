@@ -213,16 +213,6 @@ public class LoadingsImpl{
 			}
 			if (!Strings.isBlank(at.key()))
 				ai.setPathKey(at.key());
-		} else { // create by wangc
-			if (isController(clazz)) {// 只处理符合规范的控制器
-				String moduleName = getContrllerModule(clazz);
-				String ctnName = getControllerName(clazz);
-				if (Strings.isEmpty(moduleName))
-					ai.setPaths(Lang.array("/" + ctnName));
-				else
-					ai.setPaths(Lang.array("/"
-							+ moduleName.replaceAll("\\.", "/") + "/" + ctnName));
-			}
 		}
 	}
 
@@ -239,10 +229,15 @@ public class LoadingsImpl{
 			if (!Strings.isBlank(at.key()))
 				ai.setPathKey(at.key());
 		} else { // create by wangc
-			if (isController(clazz)) {
-				// 只处理符合规范的module
-				// TODO 这里是不是该把 module的包直接关联起来呢？ 要不然method的url就不能定制了
-				ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));
+			
+			if (isController(clazz)) {// 只处理符合规范的控制器
+				String moduleName = getContrllerModule(clazz);
+				String ctnName = getControllerName(clazz);
+				if (Strings.isEmpty(moduleName))
+					ai.setPaths(Lang.array("/" + ctnName +"/" + Strings.lowerFirst(def)));
+				else
+					ai.setPaths(Lang.array("/"
+							+ moduleName.replaceAll("\\.", "/") + "/" + ctnName +"/" + Strings.lowerFirst(def)));
 			} else {
 				if (clazz.getAnnotation(Modules.class) != null) {
 					ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));

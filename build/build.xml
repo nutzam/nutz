@@ -6,8 +6,8 @@
 	<!-- set global properties for this build -->
 	<property environment="env" />
 
-	<property name="PROJECT_HOME" value="/home/tt/workspace/java/nor" />
-	<property name="TOMCAT_HOME" value="/home/tt/software/apache-tomcat-7.0.26" />
+	<property name="PROJECT_HOME" value="D:/grails-work/nor" />
+	<property name="TOMCAT_HOME" value="D:/software/apache-tomcat-7.0.27" />
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
 	<property name="DEPHOME" value="${PROJECT_HOME}/deps" />
 	<property name="OP" value="${PROJECT_HOME}/build/output" />
@@ -19,7 +19,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.43-2-fix" />
+	<property name="v" value="-1.b.43-3" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />

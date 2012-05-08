@@ -1,8 +1,6 @@
 package org.nutz.mvc.impl;
 
-import static org.nutz.mvc.impl.LoadingsImpl.createInfo;
-import static org.nutz.mvc.impl.LoadingsImpl.getContrllerModule;
-import static org.nutz.mvc.impl.LoadingsImpl.getControllerName;
+import static org.nutz.mvc.impl.LoadingsImpl.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import nocontrollers.Test5Controller;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionInfo;
 
 import controllers.TestContro;
@@ -45,16 +44,16 @@ public class LoadingsImplTest {
 		Class<?> clazz4 = Test4Controller.class;
 		ActionInfo ai = null;
 		ai = createInfo(clazz);
-		Assert.assertEquals("/test",ai.getPaths()[0]);
+		Assert.assertNull(ai.getPaths());
 		Assert.assertEquals("jsp:views.test.default",ai.getOkView());
 		ai = createInfo(clazz2);
-		Assert.assertEquals("/test2",ai.getPaths()[0]);
+		Assert.assertNull(ai.getPaths());
 		Assert.assertEquals("jsp:views.test2.default",ai.getOkView());
 		ai = createInfo(clazz3);
-		Assert.assertEquals("/submodule/test3",ai.getPaths()[0]);
+		Assert.assertNull(ai.getPaths());
 		Assert.assertEquals("jsp:views.submodule.test3.default",ai.getOkView());
 		ai = createInfo(clazz4);
-		Assert.assertEquals("/submodule/test4",ai.getPaths()[0]);
+		Assert.assertNull(ai.getPaths());
 		Assert.assertEquals("jsp:views.submodule.test4.default",ai.getOkView());
 	}
 	@Test
@@ -66,6 +65,13 @@ public class LoadingsImplTest {
 		testClasses.add(Test4Controller.class);
 		
 		for(Class<?> clazz: testClasses){
+			String clazzPre =  getContrllerModule(clazz);
+			if(Strings.isEmpty(clazzPre)){
+				clazzPre = "/" + getControllerName(clazz);
+			}else{
+				clazzPre = "/"+ clazzPre  + "/" + getControllerName(clazz);
+			}
+			
 			ActionInfo ai = createInfo(clazz);
 			Method hello = clazz.getMethod("hello");
 			ActionInfo mai = createInfo(hello,clazz);
@@ -74,12 +80,12 @@ public class LoadingsImplTest {
 			
 			Method test1 = clazz.getMethod("test1",String.class);
 			mai = createInfo(test1,clazz);
-			Assert.assertEquals("/test1", mai.getPaths()[0]);
+			Assert.assertEquals(clazzPre+"/test1", mai.getPaths()[0]);
 			Assert.assertEquals("jsp:views.test1", mai.getOkView());
 			
 			Method test3 = clazz.getMethod("test3");
 			mai = createInfo(test3,clazz);
-			Assert.assertEquals("/test3", mai.getPaths()[0]);
+			Assert.assertEquals(clazzPre+"/test3", mai.getPaths()[0]);
 			Assert.assertEquals(ai.getOkView().replace("default", "test3"), mai.getOkView());
 			
 		}
