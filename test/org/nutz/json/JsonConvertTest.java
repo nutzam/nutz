@@ -11,7 +11,6 @@ import org.nutz.lang.stream.StringReader;
  * @author juqkai(juqkai@gmail.com)
  */
 public class JsonConvertTest {
-    JsonConvert jc = new JsonConvert();
     
     /**
      * 简单转换
@@ -20,7 +19,7 @@ public class JsonConvertTest {
     public void testSimple(){
         String json = "{'name':'jk', 'age':12}";
         String model = "{'name':'姓名', 'age':'年龄'}";
-        Object obj = jc.convert(new StringReader(json), new StringReader(model));
+        Object obj = Json.convertJson(new StringReader(json), new StringReader(model));
         assertEquals("jk", Objs.cell(obj, "姓名"));
         assertEquals(12, Objs.cell(obj, "年龄"));
     }
@@ -32,7 +31,7 @@ public class JsonConvertTest {
     public void testSimpleArray(){
         String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
         String model = "{'user':[{'name':'user[].姓名', 'age':'user[].年龄'}]}";
-        Object obj = jc.convert(new StringReader(json), new StringReader(model));
+        Object obj = Json.convertJson(new StringReader(json), new StringReader(model));
         assertEquals("jk", Objs.cell(obj, "user[0].姓名"));
         assertEquals("nutz", Objs.cell(obj, "user[1].姓名"));
         assertEquals(12, Objs.cell(obj, "user[0].年龄"));
@@ -46,7 +45,7 @@ public class JsonConvertTest {
     public void testMultiPath(){
         String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
         String model = "{'user':[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]}";
-        Object obj = jc.convert(new StringReader(json), new StringReader(model));
+        Object obj = Json.convertJson(new StringReader(json), new StringReader(model));
         assertEquals("jk", Objs.cell(obj, "user[0].姓名"));
         assertEquals("nutz", Objs.cell(obj, "user[1].姓名"));
         assertEquals("jk", Objs.cell(obj, "people[0].name"));
@@ -60,7 +59,7 @@ public class JsonConvertTest {
     public void testRoot2Array(){
         String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
         String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
-        Object obj = jc.convert(new StringReader(json), new StringReader(model));
+        Object obj = Json.convertJson(new StringReader(json), new StringReader(model));
         assertEquals("jk", Objs.cell(obj, "user[0].姓名"));
         assertEquals("nutz", Objs.cell(obj, "user[1].姓名"));
         assertEquals("jk", Objs.cell(obj, "people[0].name"));
@@ -73,7 +72,7 @@ public class JsonConvertTest {
     public void testArray2Root(){
         String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
         String model = "{'user':[{'name':['[].name'], 'age':'[].age'}]}";
-        Object obj = jc.convert(new StringReader(json), new StringReader(model));
+        Object obj = Json.convertJson(new StringReader(json), new StringReader(model));
         assertEquals("jk", Objs.cell(obj, "[0].name"));
         assertEquals(5, Objs.cell(obj, "[1].age"));
     }
