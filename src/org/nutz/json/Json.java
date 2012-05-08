@@ -373,6 +373,11 @@ public class Json {
         }
 	}
 
+	/**
+	 * 合并多个JSON
+	 * @param srcs json文件路径列表
+	 * @return
+	 */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public static Object fromJsonMerge(String... srcs) {
         List list = new ArrayList();
@@ -383,8 +388,38 @@ public class Json {
         }
         return Objs.merge(list.toArray());
     }
+    
+    /**
+     * 合并多个JSON
+     * @param objs 将Json转换后的Map, List结构对象
+     * @return
+     */
+    public static Object fromJsonMerge(Object[] objs){
+        return Objs.merge(objs);
+    }
 
     public static void clearEntityCache() {
     	entities.clear();
+    }
+    
+    /**
+     * 转换Json结构
+     * @param reader 原始JSON数据, 一定是Map list结构, 如果自己没有, 那就直接用 fromJson 方法生成的吧.
+     * @param modelPath 转换模板路径
+     * @return
+     */
+    public static Object convertJson(Reader reader, String modelPath){
+        JsonConvert convert = new JsonConvert();
+        return convert.convert(fromJson(reader), modelPath);
+    }
+    /**
+     * 转换Json结构
+     * @param reader 原始JSON数据, 一定是Map list结构, 如果自己没有, 那就直接用 fromJson 方法生成的吧.
+     * @param model 模板流
+     * @return
+     */
+    public static Object convertJson(Reader reader, Reader model){
+        JsonConvert convert = new JsonConvert();
+        return convert.convert(fromJson(reader), model);
     }
 }
