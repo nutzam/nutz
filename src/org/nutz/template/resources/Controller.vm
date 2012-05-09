@@ -1,0 +1,79 @@
+package controllers;
+
+import org.nutz.dao.Dao;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.sql.Sql;
+import org.nutz.lang.Strings;
+import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.Param;
+
+import utils.CV;
+import utils.form.PageForm;
+import domains.*;
+
+public class ${domain_name}Controller {
+
+	@Ok(">>:/${domain_name}/list")
+	public void index(){
+	}
+	/**
+	 * @return
+	 */
+	public PageForm<${domain_name}> list(@Param("offset")int offset , @Param("max")int max ) {
+		PageForm<${domain_name}> pf = PageForm.getPaper(dao, ${domain_name}.class,null, offset, max);
+		return pf;
+	}
+	public void create() {
+	}
+	@Ok(">>:/${low_domain_name}/list")
+	public Object save(@Param("..")${domain_name} ${low_domain_name}) {
+		String message = "";
+		if(${low_domain_name} != null){
+				${low_domain_name} = new ${domain_name}();
+				${low_domain_name}.setName(name);
+				dao.insert(${low_domain_name});
+				message = "插入成功";
+				return  message;
+		}else{
+			message = "校验不成功";
+		}
+		return CV.redirect("/${low_domain_name}/create", message);
+	}
+	public Object edit(@Param("id")long id) {
+		${domain_name} ${low_domain_name} = dao.fetch(${domain_name}.class,id);
+		if(${low_domain_name} == null){
+			return CV.redirect("/${low_domain_name}/list", "此标签不存在");
+		}
+		return ${low_domain_name};
+	}
+	@Ok(">>:/${low_domain_name}/list")
+	public Object update(@Param("..")${domain_name} ${low_domain_name}) {
+		String message = "";
+		if(${low_domain_name}!=null){
+				dao.update(${low_domain_name});
+				message = "更新成功";
+		}else{
+			message = "校验不成功,请重新输入";
+			return CV.redirect("/${low_domain_name}/edit?id="+id, message);
+		}
+		return  message;
+	}
+	@Ok(">>:/${low_domain_name}/list")
+	public Object delete(@Param("id")Long id) {
+		dao.delete(${domain_name}.class, id);
+		return  "删除成功";
+	}	
+	@Ok(">>:/${low_domain_name}/list")
+	public Object deleteAll(@Param("ids")String ids) {
+		if(!Strings.isEmpty(ids)){
+			Sql sql = Sqls.create("delete from ${low_domain_name} where id in ("+ids+")");
+			dao.execute(sql);
+		}
+		return "删除成功";
+	}
+	private Dao dao;
+	public void setDao(Dao dao){
+		this.dao = dao;
+	}
+}
+
