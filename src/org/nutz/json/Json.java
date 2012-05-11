@@ -18,6 +18,9 @@ import org.nutz.lang.util.NutType;
 
 public class Json {
 
+	//=========================================================================
+	//============================Json.fromJson================================
+	//=========================================================================
 	/**
 	 * 从一个文本输入流中，生成一个对象。
 	 */
@@ -73,7 +76,7 @@ public class Json {
 	private static Object parse(Type type, Reader reader, JsonFilter filter) {
 		Object obj = new JsonCompileImpl().parse(reader);
 		if (filter != null)
-			filter.filter(obj);
+			obj = filter.filter(obj);
 		if (type != null)
 			return Objs.convert(obj, type);
 		return obj;
@@ -126,6 +129,9 @@ public class Json {
 		return fromJson(type, Lang.inr(cs));
 	}
 
+	//=========================================================================
+	//============================Json.toJson==================================
+	//=========================================================================
 	
 	/**
 	 * 将一个 JAVA 对象转换成 JSON 字符串
@@ -149,7 +155,7 @@ public class Json {
 	 */
 	public static String toJson(Object obj, JsonFormat format) {
 		StringBuilder sb = new StringBuilder();
-		toJson(Lang.opw(sb), obj, format);
+		toJson(Lang.opw(sb), obj, format, null);
 		return sb.toString();
 	}
 
@@ -162,7 +168,7 @@ public class Json {
 	 *            JAVA 对象
 	 */
 	public static void toJson(Writer writer, Object obj) {
-		toJson(writer, obj, null);
+		toJson(writer, obj, null, null);
 	}
 
 	/**
@@ -176,10 +182,20 @@ public class Json {
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-	    try {
+	    toJson(writer, obj, format, null);
+	}
+	
+	@SuppressWarnings("rawtypes")
+	public static void toJson(Writer writer, Object obj, JsonFormat format, JsonFilter filter) {
+		try {
             if (format == null)
                 format = JsonFormat.nice();
-                new JsonRenderImpl(writer, format).render(obj);
+            if (obj != null && filter != null) {
+            	Mirror mirror = Mirror.me(obj);
+            	if (mirror.isPojo())
+            		obj = filter.filter(obj);
+            }
+            new JsonRenderImpl(writer, format).render(obj);
             writer.flush();
         }
         catch (IOException e) {
@@ -214,7 +230,7 @@ public class Json {
 	
 	
 	//==================================================================================
-	//====================帮助函数
+	//====================帮助函数======================================================
 	
 	/**
      * 从 JSON 字符串中，根据获取某种指定类型的 List 对象。
