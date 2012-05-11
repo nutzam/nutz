@@ -68,6 +68,7 @@ public class NutFilter implements Filter {
 		Mvcs.setServletContext(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		Mvcs.resetALL();
