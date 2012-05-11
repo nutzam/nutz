@@ -51,8 +51,8 @@ public abstract class Mvcs {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Map<String, String>> getMessageSet() {
-		return (Map<String, Map<String, String>>) servletContext.getAttribute(getName()
+	public static Map<String, Map<String, Object>> getMessageSet() {
+		return (Map<String, Map<String, Object>>) servletContext.getAttribute(getName()
 																				+ "_localization");
 	}
 
@@ -60,8 +60,8 @@ public abstract class Mvcs {
 		servletContext.setAttribute(getName() + "_localization", messageSet);
 	}
 
-	public static Map<String, String> getLocaleMessage(String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> getLocaleMessage(String localeName) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.get(localeName);
 		return null;
@@ -147,7 +147,7 @@ public abstract class Mvcs {
 	 * 获取整个应用可用的 Locale 名称集合
 	 */
 	public static Set<String> getLocaleNames(ServletContext context) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.keySet();
 		return null;
@@ -161,10 +161,10 @@ public abstract class Mvcs {
 	 * 
 	 * @return 设置的 本地化字符串表
 	 */
-	public static Map<String, String> setLocale(HttpSession session, String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> setLocale(HttpSession session, String localeName) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss) {
-			Map<String, String> msgs = null;
+			Map<String, Object> msgs = null;
 			if (null != localeName)
 				msgs = msgss.get(localeName);
 			if (null == msgs)
@@ -191,8 +191,8 @@ public abstract class Mvcs {
 	 * @see org.nutz.mvc.MessageLoader
 	 */
 	@Deprecated
-	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> getLocaleMessage(ServletContext context, String localeName) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.get(localeName);
 		return null;
@@ -205,8 +205,8 @@ public abstract class Mvcs {
 	 *            上下文
 	 * @return 字符串表
 	 */
-	public static Map<String, String> getDefaultLocaleMessage(ServletContext context) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> getDefaultLocaleMessage(ServletContext context) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.get(DEFAULT_MSGS);
 		return null;
@@ -220,7 +220,7 @@ public abstract class Mvcs {
 	 * @return 字符串表集合
 	 */
 	@Deprecated
-	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
+	public static Map<String, Map<String, Object>> getMessageSet(ServletContext context) {
 		return getMessageSet();
 	}
 
@@ -279,14 +279,14 @@ public abstract class Mvcs {
 
 		// 初始化本次请求的多国语言字符串
 		if (null != getMessageSet()) {
-			Map<String, String> msgs = null;
+			Map<String, Object> msgs = null;
 			if (!hasLocale(sess))
 				msgs = setLocale(sess, getLocaleName(sess));
 			else
-				msgs = (Map<String, String>) sess.getAttribute(MSG);
+				msgs = (Map<String, Object>) sess.getAttribute(MSG);
 			// 没有设定特殊的 Local 名字，随便取一个
 			if (null == msgs) {
-				Map<String, Map<String, String>> msgss = getMessageSet();
+				Map<String, Map<String, Object>> msgss = getMessageSet();
 				if (msgss.size() > 0)
 					msgs = msgss.values().iterator().next();
 			}
