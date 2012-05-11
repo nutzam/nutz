@@ -4,84 +4,25 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.nutz.json.entity.JsonEntity;
+import org.nutz.json.impl.JsonCompileImpl;
+import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Objs;
-import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.util.NutType;
 
 public class Json {
 
 	/**
-	 * 保存所有的 Json 实体
-	 */
-	private static final Map<String, JsonEntity> entities = new WeakHashMap<String, JsonEntity>();
-
-	/**
-	 * 获取一个 Json 实体
-	 * 
-	 * @param classOfT
-	 *            类型
-	 * @return 实体对象
-	 */
-	static JsonEntity getEntity(Class<?> classOfT) {
-		JsonEntity je = entities.get(classOfT.getName());
-		if (null == je)
-			synchronized (entities) {
-				je = entities.get(classOfT.getName());
-				if (null == je) {
-					je = new JsonEntity(Mirror.me(classOfT));
-					entities.put(classOfT.getName(), je);
-				}
-			}
-		return je;
-	}
-
-	/**
-	 * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
-	 * <ul>
-	 * <li>Map
-	 * <li>List
-	 * <li>Integer 或者 Float
-	 * <li>String
-	 * <li>Boolean
-	 * <li>Char
-	 * <li>Long Double
-	 * </ul>
-	 * 
-	 * @param reader
-	 *            输入流
-	 * @return JAVA 对象
-	 * @throws JsonException
+	 * 从一个文本输入流中，生成一个对象。
 	 */
 	public static Object fromJson(Reader reader) throws JsonException {
-		return new JsonCompile().parse(reader);
-	}
-	/**
-	 * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
-	 * <ul>
-	 * <li>Map
-	 * <li>List
-	 * <li>Integer 或者 Float
-	 * <li>String
-	 * <li>Boolean
-	 * <li>Char
-	 * <li>Long Double
-	 * </ul>
-	 * 
-	 * @param reader
-	 *            输入流
-	 * @return JAVA 对象
-	 * @throws JsonException
-	 */
-	public static Object fromJson(Reader reader, JsonFormat format) throws JsonException {
-	    return new JsonCompile(format).parse(reader);
+		return new JsonCompileImpl().parse(reader);
 	}
 
 	/**
@@ -96,30 +37,14 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return (T) parse(type, reader);
+		return (T) parse(type, reader, null);
 	}
 	
 	/**
-     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
-     * <ul>
-     * <li>Map
-     * <li>List
-     * <li>Integer 或者 Float
-     * <li>String
-     * <li>Boolean
-     * <li>Char
-     * <li>Long Double
-     * </ul>
-     * 
-     * @param type
-     *            转换的类型
-     * @param cs
-     *            JSON 字符串
-     * @return JAVA 对象
-     * @throws JsonException
+     * 从一个文本输入流中，生成一个对象。
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Class<T> type, Reader reader, JsonFormat filter) throws JsonException {
+    public static <T> T fromJson(Class<T> type, Reader reader, JsonFilter filter) throws JsonException {
         return (T) parse(type, reader, filter);
     }
 
@@ -134,38 +59,24 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
-		return parse(type, reader);
+		return parse(type, reader, null);
 	}
 	
 	/**
-     * 从一个文本输入流中，生成一个对象。根据内容不同，可能会生成
-     * <ul>
-     * <li>Map
-     * <li>List
-     * <li>Integer 或者 Float
-     * <li>String
-     * <li>Boolean
-     * <li>Char
-     * <li>Long Double
-     * </ul>
-     * 
-     * @param type
-     *            转换的类型
-     * @param format
-     *            过滤器
-     * @return JAVA 对象
-     * @throws JsonException
+     * 从一个文本输入流中，生成一个对象。
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Type type, Reader reader, JsonFormat format) throws JsonException {
-        return (T) parse(type, reader, format);
+    public static <T> T fromJson(Type type, Reader reader, JsonFilter filter) throws JsonException {
+        return (T) parse(type, reader, filter);
     }
-	
-	private static Object parse(Type type, Reader reader) {
-        return Objs.convert(new JsonCompile().parse(reader), type);
-    }
-	private static Object parse(Type type, Reader reader, JsonFormat format) {
-	    return Objs.convert(new JsonCompile(format).parse(reader), type);
+    
+	private static Object parse(Type type, Reader reader, JsonFilter filter) {
+		Object obj = new JsonCompileImpl().parse(reader);
+		if (filter != null)
+			filter.filter(obj);
+		if (type != null)
+			return Objs.convert(obj, type);
+		return obj;
 	}
 
 	/**
@@ -214,6 +125,96 @@ public class Json {
 	public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
 		return fromJson(type, Lang.inr(cs));
 	}
+
+	
+	/**
+	 * 将一个 JAVA 对象转换成 JSON 字符串
+	 * 
+	 * @param obj
+	 *            JAVA 对象
+	 * @return JSON 字符串
+	 */
+	public static String toJson(Object obj) {
+		return toJson(obj, null);
+	}
+
+	/**
+	 * 将一个 JAVA 对象转换成 JSON 字符串，并且可以设定 JSON 字符串的格式化方式
+	 * 
+	 * @param obj
+	 *            JAVA 对象
+	 * @param format
+	 *            JSON 字符串格式化
+	 * @return JSON 字符串
+	 */
+	public static String toJson(Object obj, JsonFormat format) {
+		StringBuilder sb = new StringBuilder();
+		toJson(Lang.opw(sb), obj, format);
+		return sb.toString();
+	}
+
+	/**
+	 * 将一个 JAVA 对象写到一个文本输出流里
+	 * 
+	 * @param writer
+	 *            文本输出流
+	 * @param obj
+	 *            JAVA 对象
+	 */
+	public static void toJson(Writer writer, Object obj) {
+		toJson(writer, obj, null);
+	}
+
+	/**
+	 * 将一个 JAVA 对象写到一个文本输出流里，并且可以设定 JSON 字符串的格式化方式
+	 * 
+	 * @param writer
+	 *            文本输出流
+	 * @param obj
+	 *            JAVA 对象
+	 * @param format
+	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
+	 */
+	public static void toJson(Writer writer, Object obj, JsonFormat format) {
+	    try {
+            if (format == null)
+                format = JsonFormat.nice();
+                new JsonRenderImpl(writer, format).render(obj);
+            writer.flush();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e, JsonException.class);
+        }
+	}
+
+    public static void clearEntityCache() {
+    	entities.clear();
+    }
+
+	/**
+	 * 保存所有的 Json 实体
+	 */
+	private static final Map<String, JsonEntity> entities = new WeakHashMap<String, JsonEntity>();
+
+	/**
+	 * 获取一个 Json 实体
+	 */
+	public static JsonEntity getEntity(Class<?> classOfT) {
+		JsonEntity je = entities.get(classOfT.getName());
+		if (null == je)
+			synchronized (entities) {
+				je = entities.get(classOfT.getName());
+				if (null == je) {
+					je = new JsonEntity(Mirror.me(classOfT));
+					entities.put(classOfT.getName(), je);
+				}
+			}
+		return je;
+	}
+	
+	
+	//==================================================================================
+	//====================帮助函数
 	
 	/**
      * 从 JSON 字符串中，根据获取某种指定类型的 List 对象。
@@ -313,113 +314,5 @@ public class Json {
 	    return (Map<String, T>) fromJson(NutType.mapStr(eleType), reader);
 	}
 
-	/**
-	 * 将一个 JAVA 对象转换成 JSON 字符串
-	 * 
-	 * @param obj
-	 *            JAVA 对象
-	 * @return JSON 字符串
-	 */
-	public static String toJson(Object obj) {
-		return toJson(obj, null);
-	}
-
-	/**
-	 * 将一个 JAVA 对象转换成 JSON 字符串，并且可以设定 JSON 字符串的格式化方式
-	 * 
-	 * @param obj
-	 *            JAVA 对象
-	 * @param format
-	 *            JSON 字符串格式化
-	 * @return JSON 字符串
-	 */
-	public static String toJson(Object obj, JsonFormat format) {
-		StringBuilder sb = new StringBuilder();
-		toJson(Lang.opw(sb), obj, format);
-		return sb.toString();
-	}
-
-	/**
-	 * 将一个 JAVA 对象写到一个文本输出流里
-	 * 
-	 * @param writer
-	 *            文本输出流
-	 * @param obj
-	 *            JAVA 对象
-	 */
-	public static void toJson(Writer writer, Object obj) {
-		toJson(writer, obj, null);
-	}
-
-	/**
-	 * 将一个 JAVA 对象写到一个文本输出流里，并且可以设定 JSON 字符串的格式化方式
-	 * 
-	 * @param writer
-	 *            文本输出流
-	 * @param obj
-	 *            JAVA 对象
-	 * @param format
-	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
-	 */
-	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-	    try {
-            if (format == null)
-                format = JsonFormat.nice();
-                new JsonRendering(writer, format).render(obj);
-            writer.flush();
-        }
-        catch (IOException e) {
-            throw Lang.wrapThrow(e, JsonException.class);
-        }
-	}
-
-	/**
-	 * 合并多个JSON
-	 * @param srcs json文件路径列表
-	 * @return
-	 */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public static Object fromJsonMerge(String... srcs) {
-        List list = new ArrayList();
-        for(String src : srcs){
-            Reader reader = new StringReader(src);
-            Object obj = new JsonCompile().parse(reader);
-            list.add(obj);
-        }
-        return Objs.merge(list.toArray());
-    }
-    
-    /**
-     * 合并多个JSON
-     * @param objs 将Json转换后的Map, List结构对象
-     * @return
-     */
-    public static Object fromJsonMerge(Object[] objs){
-        return Objs.merge(objs);
-    }
-
-    public static void clearEntityCache() {
-    	entities.clear();
-    }
-    
-    /**
-     * 转换Json结构
-     * @param reader 原始JSON数据, 一定是Map list结构, 如果自己没有, 那就直接用 fromJson 方法生成的吧.
-     * @param modelPath 转换模板路径
-     * @return
-     */
-    public static Object convertJson(Reader reader, String modelPath){
-        JsonConvert convert = new JsonConvert();
-        return convert.convert(fromJson(reader), modelPath);
-    }
-    /**
-     * 转换Json结构
-     * @param reader 原始JSON数据, 一定是Map list结构, 如果自己没有, 那就直接用 fromJson 方法生成的吧.
-     * @param model 模板流
-     * @return
-     */
-    public static Object convertJson(Reader reader, Reader model){
-        JsonConvert convert = new JsonConvert();
-        return convert.convert(fromJson(reader), model);
-    }
+	//==============================================================================
 }
