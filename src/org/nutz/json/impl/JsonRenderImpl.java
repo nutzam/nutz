@@ -6,12 +6,12 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.regex.Pattern;
 
 import org.nutz.json.Json;
@@ -30,6 +30,7 @@ import org.nutz.lang.Strings;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
+@SuppressWarnings({"rawtypes"})
 public class JsonRenderImpl implements JsonRender {
 
 	private static String NL = "\n";
@@ -38,9 +39,8 @@ public class JsonRenderImpl implements JsonRender {
 	
 	private Writer writer;
 	
-	private Set<Object> memo = new TreeSet<Object>();
+	private Set memo = new HashSet();
 	
-	@SuppressWarnings({"rawtypes"})
 	public void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");
@@ -228,10 +228,13 @@ public class JsonRenderImpl implements JsonRender {
 					// 以前曾经输出过 ...
 					if (null != value) {
 						// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-						if (memo.contains(value))
-							value = null;
-						else
-							memo.add(value);
+						Mirror mirror = Mirror.me(value);
+						if (mirror.isPojo()) {
+							if (memo.contains(value))
+								value = null;
+							else
+								memo.add(value);
+						}
 					}
 					// 加入输出列表 ...
 					list.add(new Pair(name, value));
