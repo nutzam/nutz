@@ -39,7 +39,7 @@ public class JsonRenderImpl implements JsonRender {
 	
 	private Writer writer;
 	
-	private Set memo = new HashSet();
+	private Set<Object> memo = new HashSet<Object>();
 	
 	public void render(Object obj) throws IOException {
 		if (null == obj) {
@@ -158,7 +158,7 @@ public class JsonRenderImpl implements JsonRender {
 		Object value;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	private void map2Json(Map map) throws IOException {
 		if (null == map)
 			return;
@@ -316,7 +316,6 @@ public class JsonRenderImpl implements JsonRender {
 		writer.append(']');
 	}
 
-	@SuppressWarnings("rawtypes")
 	private void coll2Json(Collection iterable) throws IOException {
 		writer.append('[');
 		for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
