@@ -117,16 +117,14 @@ public class JsonRenderImpl implements JsonRender {
 		writer.append(!isCompact(this) ? " :" : ":");
 	}
 
-	protected boolean appendPair(boolean first, String name, Object value) throws IOException {
-	    boolean type = false;
-        if(!first){
-    	   appendPairEnd();
-    	}
-    	appendPairBegin();
+	protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
+	    appendPairBegin();
     	appendName(name);
     	appendPairSep();
     	render(value);
-        return type;
+    	if(needPairEnd){
+     	   appendPairEnd();
+     	}
 	}
 
 	private boolean isIgnore(String name, Object value) {
@@ -245,12 +243,11 @@ public class JsonRenderImpl implements JsonRender {
 	}
 	
 	private void writeItem(List<Pair> list) throws IOException{
-	    boolean first = true;
-        for(Pair p : list){
-            if(appendPair(first, p.name, p.value)){
-                first = first ? false : false;
-            }
-        }
+		Iterator<Pair> it = list.iterator();
+		while (it.hasNext()) {
+			Pair p = it.next();
+			appendPair(it.hasNext(), p.name, p.value);
+		}
         decreaseFormatIndent();
         appendBraceEnd();
 	}
