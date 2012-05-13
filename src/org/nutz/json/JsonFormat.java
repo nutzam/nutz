@@ -1,8 +1,5 @@
 package org.nutz.json;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
@@ -54,9 +51,6 @@ public class JsonFormat {
 		this.quoteName = true;
 		this.castors = Castors.me();
 		this.separator = '\"';
-		
-		this.mates = new ArrayList<String>();
-		this.filterType = FilterType.exclude;
 	}
 
 	/**
@@ -91,97 +85,6 @@ public class JsonFormat {
 	 */
 	private boolean autoUnicode;
 
-	/**
-	 * 采用 Nutz JSON 特殊兼容模式，这样，循环引用的字段，会标记成特殊字符串表一个路径
-	 */
-	private boolean nutzJson;
-	
-	/**
-	 * 过滤匹配列表
-	 */
-	private List<String> mates;
-	/**
-	 * JSON层级路径
-	 */
-    private LinkedList<String> path = new LinkedList<String>();
-    /**
-     * 过滤类型, true为包含, false为排除
-     */
-    private FilterType filterType;
-    
-    
-    
-    /**
-     * 包含
-     */
-    public boolean filter() {
-        if (mates == null) {
-            return true;
-        }
-        String path = fetchPath();
-        for (String s : mates) {
-            if (filterType == FilterType.include) {
-                //包含
-                if (s.startsWith(path)) {
-                    return true;
-                }
-            } else {
-                //排除
-                if (s.equals(path)) {
-                    return false;
-                }
-            }
-        }
-        return filterType == FilterType.include ? false : true;
-    }
-    /**
-     * 获取路径
-     * @return
-     */
-    private String fetchPath(){
-        StringBuffer sb = new StringBuffer();
-        for(String s : path){
-            if(sb.length() > 0){
-                sb.append(".");
-            }
-            sb.append(s);
-        }
-        return sb.toString();
-    }
-    /**
-     * 压栈
-     * @param path
-     */
-    public void pushPath(String path){
-        this.path.addLast(path);
-    }
-    /**
-     * 退栈
-     */
-    public void pollPath(){
-        this.path.removeLast();
-    }
-    
-    
-    
-
-	public void setMates(List<String> mates) {
-        this.mates = mates;
-    }
-
-    public void setFilterType(FilterType filterType) {
-        this.filterType = filterType;
-    }
-
-    public boolean isNutzJson() {
-		return nutzJson;
-	}
-
-	public JsonFormat setNutzJson(boolean nutzJson) {
-		this.nutzJson = nutzJson;
-		return this;
-	}
-
 	public boolean ignore(String name) {
 		if (null != actived)
 			return !actived.matcher(name).find();
@@ -190,7 +93,9 @@ public class JsonFormat {
 		return false;
 	}
 	
-
+//===================================================================
+//getter setter
+	
 	public boolean isCompact() {
 		return compact;
 	}
@@ -283,14 +188,4 @@ public class JsonFormat {
 		return autoUnicode;
 	}
 	
-	
-	/**
-	 * filter类型
-	 * @author juqkai(juqkai@gmail.com)
-	 */
-	public static enum FilterType{
-	    include, exclude
-	}
-    
-    
 }

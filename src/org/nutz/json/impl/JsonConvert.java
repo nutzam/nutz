@@ -1,4 +1,4 @@
-package org.nutz.json;
+package org.nutz.json.impl;
 
 import java.io.Reader;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 

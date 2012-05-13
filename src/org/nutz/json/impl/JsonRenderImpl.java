@@ -1,4 +1,4 @@
-package org.nutz.json;
+package org.nutz.json.impl;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -6,15 +6,18 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
-import java.util.Stack;
+import java.util.Set;
 import java.util.regex.Pattern;
 
+import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
+import org.nutz.json.JsonRender;
+import org.nutz.json.ToJson;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
@@ -27,29 +30,72 @@ import org.nutz.lang.Strings;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-public class JsonRendering {
-	public static final String RECURSION_QUOTED_PREFIX = "$nutz.json::";
-	public static final String JSON_EL_PREFIX = "$nutz.el::";
+@SuppressWarnings({"rawtypes"})
+public class JsonRenderImpl implements JsonRender {
+
 	private static String NL = "\n";
 
-	private HashMap<Object, Object> memo;
-
-	private Stack<String> path = new Stack<String>();
-
+	private JsonFormat format;
+	
 	private Writer writer;
-
-	protected JsonRendering(Writer writer, JsonFormat format) {
+	
+	private Set<Object> memo = new HashSet<Object>();
+	
+	public void render(Object obj) throws IOException {
+		if (null == obj) {
+			writer.write("null");
+		} else if (obj instanceof JsonRender) {
+			((JsonRender)obj).render(null);
+		} else if (obj instanceof Class) {
+			string2Json(((Class<?>) obj).getName());
+		} else if (obj instanceof Mirror) {
+			string2Json(((Mirror<?>) obj).getType().getName());
+		} else {
+			Mirror mr = Mirror.me(obj.getClass());
+			// 枚举
+			if (mr.isEnum()) {
+				string2Json(((Enum) obj).name());
+			}
+			// 数字，布尔等
+			else if (mr.isNumber() || mr.isBoolean()) {
+				writer.append(obj.toString());
+			}
+			// 字符串
+			else if (mr.isStringLike() || mr.isChar()) {
+				string2Json(obj.toString());
+			}
+			// 日期时间
+			else if (mr.isDateTimeLike()) {
+				string2Json(format.getCastors().castToString(obj));
+			}
+			// 其他
+			else {
+				// Map
+				if (obj instanceof Map) {
+					map2Json((Map) obj);
+				}
+				// 集合
+				else if (obj instanceof Collection) {
+					coll2Json((Collection) obj);
+				}
+				// 数组
+				else if (obj.getClass().isArray()) {
+					array2Json(obj);
+				}
+				// 普通 Java 对象
+				else {
+					pojo2Json(obj);
+				}
+			}
+		}
+	}
+	
+	public JsonRenderImpl(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
-		// TODO make a new faster collection
-		// implementation
-		memo = new HashMap<Object, Object>();
-		// path.push("root");
 	}
 
-	private JsonFormat format;
-
-	private static boolean isCompact(JsonRendering render) {
+	private static boolean isCompact(JsonRenderImpl render) {
 		return render.format.isCompact();
 	}
 
@@ -71,23 +117,14 @@ public class JsonRendering {
 		writer.append(!isCompact(this) ? " :" : ":");
 	}
 
-	protected boolean appendPair(boolean first, String name, Object value) throws IOException {
-	    format.pushPath(name);
-	    boolean type = false;
-        if(format.filter()){
-    	    if(!first){
-    	        appendPairEnd();
-    	    }
-    		appendPairBegin();
-    		appendName(name);
-    		appendPairSep();
-    		path.push(name);
-    		render(value);
-		
-    		type = true;
-        }
-        format.pollPath();
-        return type;
+	protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
+	    appendPairBegin();
+    	appendName(name);
+    	appendPairSep();
+    	render(value);
+    	if(needPairEnd){
+     	   appendPairEnd();
+     	}
 	}
 
 	private boolean isIgnore(String name, Object value) {
@@ -121,7 +158,7 @@ public class JsonRendering {
 		Object value;
 	}
 
-	@SuppressWarnings({"unchecked", "rawtypes"})
+	@SuppressWarnings({"unchecked"})
 	private void map2Json(Map map) throws IOException {
 		if (null == map)
 			return;
@@ -189,15 +226,14 @@ public class JsonRendering {
 				// 判断是否应该被忽略
 				if (!this.isIgnore(name, value)) {
 					// 以前曾经输出过 ...
-					if (null != value && memo.containsKey(value)) {
-						// zozoh: 如果在 format 里特别指定，要采用 nutz json 特殊兼容格式，
-						// 则记录循环引用对象的 JSON 路径
-						if (format.isNutzJson()) {
-							value = RECURSION_QUOTED_PREFIX + memo.get(value);
-						}
+					if (null != value) {
 						// zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-						else {
-							value = null;
+						Mirror mirror = Mirror.me(value);
+						if (mirror.isPojo()) {
+							if (memo.contains(value))
+								value = null;
+							else
+								memo.add(value);
 						}
 					}
 					// 加入输出列表 ...
@@ -210,12 +246,11 @@ public class JsonRendering {
 	}
 	
 	private void writeItem(List<Pair> list) throws IOException{
-	    boolean first = true;
-        for(Pair p : list){
-            if(appendPair(first, p.name, p.value)){
-                first = first ? false : false;
-            }
-        }
+		Iterator<Pair> it = list.iterator();
+		while (it.hasNext()) {
+			Pair p = it.next();
+			appendPair(it.hasNext(), p.name, p.value);
+		}
         decreaseFormatIndent();
         appendBraceEnd();
 	}
@@ -264,58 +299,7 @@ public class JsonRendering {
 		}
 	}
 
-	@SuppressWarnings({"rawtypes"})
-	public void render(Object obj) throws IOException {
-		if (null == obj) {
-			writer.write("null");
-		} else if (obj instanceof Class) {
-			string2Json(((Class<?>) obj).getName());
-		} else if (obj instanceof Mirror) {
-			string2Json(((Mirror<?>) obj).getType().getName());
-		} else {
-			Mirror mr = Mirror.me(obj.getClass());
-			// 枚举
-			if (mr.isEnum()) {
-				string2Json(((Enum) obj).name());
-			}
-			// 数字，布尔等
-			else if (mr.isNumber() || mr.isBoolean()) {
-				writer.append(obj.toString());
-			}
-			// 字符串
-			else if (mr.isStringLike() || mr.isChar()) {
-				string2Json(obj.toString());
-			}
-			// 日期时间
-			else if (mr.isDateTimeLike()) {
-				string2Json(format.getCastors().castToString(obj));
-			}
-			// 其他
-			else {
-				// Map
-				if (obj instanceof Map) {
-					map2Json((Map) obj);
-				}
-				// 集合
-				else if (obj instanceof Collection) {
-					coll2Json((Collection) obj);
-				}
-				// 数组
-				else if (obj.getClass().isArray()) {
-					array2Json(obj);
-				}
-				// 普通 Java 对象
-				else {
-					memo.put(obj, fetchPath());
-					pojo2Json(obj);
-					memo.remove(obj);
-				}
-				// memo.remove(obj);
-			}
-		}
-		if (path.size() > 0)
-			path.pop();
-	}
+
 
 	private void array2Json(Object obj) throws IOException {
 		writer.append('[');
@@ -323,22 +307,18 @@ public class JsonRendering {
 		if (len > -1) {
 			int i;
 			for (i = 0; i < len; i++) {
-				path.push("[" + i + "]");
 				render(Array.get(obj, i));
 				appendPairEnd();
 				writer.append(' ');
 			}
-			path.push("[" + i + "]");
 			render(Array.get(obj, i));
 		}
 		writer.append(']');
 	}
 
-	private void coll2Json(Collection<?> obj) throws IOException {
+	private void coll2Json(Collection iterable) throws IOException {
 		writer.append('[');
-		int i = 0;
-		for (Iterator<?> it = obj.iterator(); it.hasNext();) {
-			path.push("[" + (i++) + "]");
+		for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
 			render(it.next());
 			if (it.hasNext()){
 			    appendPairEnd();
@@ -350,15 +330,4 @@ public class JsonRendering {
 		writer.append(']');
 	}
 
-	private String fetchPath() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("root");
-		for (String item : path) {
-			if (item.charAt(0) != '[') {
-				sb.append(".");
-			}
-			sb.append(item);
-		}
-		return sb.toString();
-	}
 }
