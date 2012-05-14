@@ -1,6 +1,5 @@
 package org.nutz.json.impl;
 
-import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -9,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.json.Json;
+import org.nutz.json.JsonException;
+import org.nutz.json.JsonFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
@@ -60,7 +61,7 @@ import org.nutz.lang.Streams;
  * </pre>
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonConvert {
+public class JsonConvert implements JsonFilter{
     //路径
     private LinkedList<String> paths = new LinkedList<String>();
     private LinkedList<Integer> arrayIndex = new LinkedList<Integer>();
@@ -69,39 +70,21 @@ public class JsonConvert {
     
     private Rebuild structure = new Rebuild();
     
-    /**
-     * 转换
-     * @param obj 目标对象
-     * @param model 对应关系
-     * @return 
-     */
-    public Object convert(Object obj, String model){
+    public JsonConvert(String model){
         initRelation(model);
-        convertObj(obj);
-        return structure.fetchNewobj();
     }
+    
     /**
      * 转换
      * @param obj 目标对象
      * @param model 对应关系
      * @return 
      */
-    public Object convert(Object obj, Reader reader){
-        initRelation(reader);
+    public Object filter(Object obj) throws JsonException{
         convertObj(obj);
         return structure.fetchNewobj();
     }
-    /**
-     * 转换
-     * @param obj 目标对象
-     * @param model 对应关系
-     * @return 
-     */
-    public Object convert(Reader obj, Reader reader){
-        initRelation(reader);
-        convertObj(Json.fromJson(obj));
-        return structure.fetchNewobj();
-    }
+    
     /**
      * 转换对象
      * @param obj
@@ -167,6 +150,10 @@ public class JsonConvert {
         if(relation.containsKey(path)){
             List<String> dests = relation.get(path);
             for(String dest : dests){
+                if(dest.equals("")){
+                    structure.put(path, object);
+                    continue;
+                } 
                 structure.put(dest, object);
             }
         }
@@ -186,10 +173,6 @@ public class JsonConvert {
      */
     private void initRelation(String model){
         Object obj = Json.fromJson(Streams.fileInr(model));
-        loadRelation(obj, "");
-    }
-    private void initRelation(Reader reader){
-        Object obj = Json.fromJson(reader);
         loadRelation(obj, "");
     }
     /**
