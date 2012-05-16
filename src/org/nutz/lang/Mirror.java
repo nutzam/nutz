@@ -1366,7 +1366,7 @@ public class Mirror<T> {
 	 * @return true or false
 	 */
 	public boolean isPojo() {
-		if (this.klass.isPrimitive())
+		if (this.klass.isPrimitive() || this.isEnum())
 			return false;
 
 		if (this.isStringLike() || this.isDateTimeLike())
