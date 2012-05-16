@@ -10,10 +10,11 @@ import org.nutz.mvc.annotation.Param;
 import utils.CV;
 import utils.form.PageForm;
 import domains.*;
+import services.*;
 
 public class ${domain_name}Controller {
 
-	@Ok(">>:/${domain_name}/list")
+	@Ok(">>:/${low_domain_name}/list")
 	public void index(){
 	}
 	/**
