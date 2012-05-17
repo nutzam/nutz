@@ -426,8 +426,8 @@ public abstract class Streams {
 		if (null == ins) {
 			//TODO 考虑一下,应该抛异常呢?还是返回null呢?
 			
-			//throw new RuntimeException(new FileNotFoundException(path));
-			return null;
+			throw new RuntimeException(new FileNotFoundException(path));
+			//return null;
 		}
 		return buff(ins);
 	}
@@ -577,7 +577,7 @@ public abstract class Streams {
 			if (nutResource != null)
 				return nutResource.getInputStream();
 		}
-		return null;
+		throw new FileNotFoundException(file.toString());
 	}
 
 	public static void appendWriteAndClose(File f, String text) {
