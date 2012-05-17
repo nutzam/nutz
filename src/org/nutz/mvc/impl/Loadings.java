@@ -90,17 +90,17 @@ public abstract class Loadings {
 			for (String packageName : ann.packages())
 				scanModuleInPackage(modules, packageName);
 		}
+		for (Class<?> type : list) {
+			// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
+			URL location = type.getProtectionDomain().getCodeSource().getLocation();
+			if (log.isDebugEnabled())
+				log.debugf("module class location '%s'", location);
+			Scans.me().registerLocation(location);
+		}
 		// 执行扫描
 		for (Class<?> type : list) {
 			// 扫描子包
 			if (scan) {
-				// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
-				URL location = type.getProtectionDomain().getCodeSource().getLocation();
-				if (log.isDebugEnabled())
-					log.debugf("module class location '%s'", location);
-				Scans.me().registerLocation(location);
-
-				//重复扫描,确保能扫描到最可信的类
 				scanModuleInPackage(modules, type.getPackage().getName());
 			}
 			// 仅仅加载自己

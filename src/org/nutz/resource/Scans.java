@@ -60,7 +60,8 @@ public class Scans {
 					continue;
 				locations.add(ResourceLocation.jar(sc.getRealPath(path)));
 			}
-
+		if (log.isDebugEnabled())
+			log.debug("Locations for Scans:\n" + locations);
 		return this;
 	}
 
@@ -84,16 +85,30 @@ public class Scans {
 	public void registerLocation(URL url) {
 		if (url == null)
 			return;
+		locations.add(makeResourceLocation(url));
+	}
+	
+	protected ResourceLocation makeResourceLocation(URL url) {
 		try {
-			if (url.toString().endsWith(".jar")) {
-				locations.add(ResourceLocation.jar(url.toString()));
-			} else {
-				locations.add(ResourceLocation.file(new File(url.toURI())));
+			String str = url.toString();
+			if (str.endsWith(".jar")) {
+				return ResourceLocation.jar(url.toString());
+			} 
+			else if (str.contains("jar!")) {
+				return ResourceLocation.jar(str.substring(0, str.lastIndexOf("jar!")) + 3);
+			}
+			else if (url.toString().startsWith("file:")) {
+				return ResourceLocation.file(new File(url.getFile()));
+			}
+			else {
+				return ResourceLocation.file(new File(url.toURI()));
 			}
 		} catch (Throwable e) {
 			if (log.isInfoEnabled())
 				log.info("Fail to registerLocation --> " + url, e);
+			return null;
 		}
+		
 	}
 
 	public List<NutResource> scan(String src) {
@@ -131,6 +146,30 @@ public class Scans {
 		}
 		for (ResourceLocation location : locations) {
 			location.scan(src, pattern, list);
+		}
+		//如果啥都没找到,那么,用增强扫描
+		if (list.isEmpty()) {
+			try{
+				Enumeration<URL> enu = getClass().getClassLoader().getResources(src);
+				if (enu != null && enu.hasMoreElements()) {
+					while (enu.hasMoreElements()) {
+						try {
+							URL url = enu.nextElement();
+							ResourceLocation loc = makeResourceLocation(url);
+							if (url.toString().contains("jar!"))
+								loc.scan(src, pattern, list);
+							else
+								loc.scan("", pattern, list);
+						} catch (Throwable e) {
+							if (log.isTraceEnabled())
+								log.trace("", e);
+						}
+					}
+				}
+			} catch (Throwable e) {
+				if (log.isDebugEnabled())
+					log.debug("Fail to run deep scan!", e);
+			}
 		}
 		list = new ArrayList<NutResource>((new HashSet<NutResource>(list)));
 		if (log.isDebugEnabled())
@@ -341,20 +380,26 @@ public class Scans {
 		// 推测一下nutz自身所在的位置
 		registerLocation(Nutz.class);
 
-		// 通过/META-INF/MANIFEST.MF获知所有jar文件的路径
-		try {
-			String referPath = "META-INF/MANIFEST.MF";
-			Enumeration<URL> urls = getClass().getClassLoader().getResources(
-					referPath);
-			while (urls.hasMoreElements()) {
-				URL url = urls.nextElement();
-				if (url.toString().contains("jar!"))
-					url = new URL(url.toString().substring(0, url.toString().length() - referPath.length() - 2));
-				else
-					url = new URL(url.toString().substring(0, url.toString().length() - referPath.length()));
-				registerLocation(url);
+		// 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
+		String[] referPaths = new String[] { "META-INF/MANIFEST.MF", "log4j.properties",".nutz.resource.mark" };
+		ClassLoader cloader = getClass().getClassLoader();
+		for (String referPath : referPaths) {
+			try {
+				Enumeration<URL> urls = cloader.getResources(referPath);
+				while (urls.hasMoreElements()) {
+					URL url = urls.nextElement();
+					String url_str = url.toString();
+					if (url.toString().contains("jar!"))
+						url = new URL(url_str.substring(0, url_str.length() - referPath.length() - 2));
+					else
+						url = new URL(url_str.substring(0, url_str.length() - referPath.length()));
+					registerLocation(url);
+				}
+			} catch (IOException e) {
 			}
-		} catch (IOException e) {}
+		}
+			
+		
 
 		// 把ClassPath也扫描一下
 		try {
