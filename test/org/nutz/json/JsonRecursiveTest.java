@@ -66,7 +66,8 @@ public class JsonRecursiveTest {
 		assertEquals(r.parents[2].id, r2.parents[2].id);
 	}
 
-	// TODO 这个功能被还原没有了，稍等以后把功能补回来吧
+	// TODO zzh : 换成 JsonFilter 实现后， setNutJson 这个木有实现了
+	// 暂时保留这个 case，之后可能会被删除
 	// @Test
 	public void test_nutz_json_recur() {
 		R r = new R(1, null);
@@ -76,7 +77,7 @@ public class JsonRecursiveTest {
 		R r2 = Json.fromJson(R.class, json);
 		assertNull(r2.recur);
 
-		json = Json.toJson(r, JsonFormat.compact());
+		// json = Json.toJson(r, JsonFormat.compact().setNutzJson(true));
 		r2 = Json.fromJson(R.class, json);
 		assertTrue(r2 == r2.recur);
 	}
