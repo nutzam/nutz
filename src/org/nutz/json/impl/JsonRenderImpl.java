@@ -36,16 +36,16 @@ public class JsonRenderImpl implements JsonRender {
 	private static String NL = "\n";
 
 	private JsonFormat format;
-	
+
 	private Writer writer;
-	
+
 	private Set<Object> memo = new HashSet<Object>();
-	
+
 	public void render(Object obj) throws IOException {
 		if (null == obj) {
 			writer.write("null");
 		} else if (obj instanceof JsonRender) {
-			((JsonRender)obj).render(null);
+			((JsonRender) obj).render(null);
 		} else if (obj instanceof Class) {
 			string2Json(((Class<?>) obj).getName());
 		} else if (obj instanceof Mirror) {
@@ -84,12 +84,14 @@ public class JsonRenderImpl implements JsonRender {
 				}
 				// 普通 Java 对象
 				else {
+					memo.add(obj);
 					pojo2Json(obj);
+					memo.remove(obj);
 				}
 			}
 		}
 	}
-	
+
 	public JsonRenderImpl(Writer writer, JsonFormat format) {
 		this.format = format;
 		this.writer = writer;
@@ -118,13 +120,13 @@ public class JsonRenderImpl implements JsonRender {
 	}
 
 	protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
-	    appendPairBegin();
-    	appendName(name);
-    	appendPairSep();
-    	render(value);
-    	if(needPairEnd){
-     	   appendPairEnd();
-     	}
+		appendPairBegin();
+		appendName(name);
+		appendPairSep();
+		render(value);
+		if (needPairEnd) {
+			appendPairEnd();
+		}
 	}
 
 	private boolean isIgnore(String name, Object value) {
@@ -232,8 +234,6 @@ public class JsonRenderImpl implements JsonRender {
 						if (mirror.isPojo()) {
 							if (memo.contains(value))
 								value = null;
-							else
-								memo.add(value);
 						}
 					}
 					// 加入输出列表 ...
@@ -244,15 +244,15 @@ public class JsonRenderImpl implements JsonRender {
 		}
 		writeItem(list);
 	}
-	
-	private void writeItem(List<Pair> list) throws IOException{
+
+	private void writeItem(List<Pair> list) throws IOException {
 		Iterator<Pair> it = list.iterator();
 		while (it.hasNext()) {
 			Pair p = it.next();
 			appendPair(it.hasNext(), p.name, p.value);
 		}
-        decreaseFormatIndent();
-        appendBraceEnd();
+		decreaseFormatIndent();
+		appendBraceEnd();
 	}
 
 	private void decreaseFormatIndent() {
@@ -299,8 +299,6 @@ public class JsonRenderImpl implements JsonRender {
 		}
 	}
 
-
-
 	private void array2Json(Object obj) throws IOException {
 		writer.append('[');
 		int len = Array.getLength(obj) - 1;
@@ -320,11 +318,10 @@ public class JsonRenderImpl implements JsonRender {
 		writer.append('[');
 		for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
 			render(it.next());
-			if (it.hasNext()){
-			    appendPairEnd();
-			    writer.append(' ');
-			}
-			else
+			if (it.hasNext()) {
+				appendPairEnd();
+				writer.append(' ');
+			} else
 				break;
 		}
 		writer.append(']');
