@@ -12,6 +12,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.SqlManager;
@@ -429,6 +430,8 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public <T> T fetch(Class<T> classOfT, long id) {
 		Entity<T> en = holder.getEntity(classOfT);
+		if (en.getIdField() == null)
+			throw new DaoException("Need @Id for " + classOfT);
 		Pojo pojo = pojoMaker.makeQuery(en)
 								.append(Pojos.Items.cndId(en, id))
 								.addParamsBy(id)
@@ -439,6 +442,8 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public <T> T fetch(Class<T> classOfT, String name) {
 		Entity<T> en = holder.getEntity(classOfT);
+		if (en.getNameField() == null)
+			throw new DaoException("Need @Name for " + classOfT);
 		Pojo pojo = pojoMaker.makeQuery(en)
 								.append(Pojos.Items.cndName(en, name))
 								.addParamsBy(name)
