@@ -423,8 +423,12 @@ public abstract class Streams {
 				}
 				catch (IOException e) {}
 		}
-		if (null == ins)
-			throw new RuntimeException(new FileNotFoundException(path));
+		if (null == ins) {
+			//TODO 考虑一下,应该抛异常呢?还是返回null呢?
+			
+			//throw new RuntimeException(new FileNotFoundException(path));
+			return null;
+		}
 		return buff(ins);
 	}
 
