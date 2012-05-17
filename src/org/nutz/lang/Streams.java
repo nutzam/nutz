@@ -357,9 +357,12 @@ public abstract class Streams {
 	 * @return 缓冲输入流
 	 */
 	public static BufferedInputStream buff(InputStream ins) {
+		if (ins == null)
+			throw new NullPointerException("ins is null!");
 		if (ins instanceof BufferedInputStream)
 			return (BufferedInputStream) ins;
-		return new BufferedInputStream(ins);
+		//BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
+		return new BufferedInputStream(ins); 
 	}
 
 	/**
@@ -370,6 +373,8 @@ public abstract class Streams {
 	 * @return 缓冲输出流
 	 */
 	public static BufferedOutputStream buff(OutputStream ops) {
+		if (ops == null)
+			throw new NullPointerException("ops is null!");
 		if (ops instanceof BufferedOutputStream)
 			return (BufferedOutputStream) ops;
 		return new BufferedOutputStream(ops);
@@ -418,6 +423,8 @@ public abstract class Streams {
 				}
 				catch (IOException e) {}
 		}
+		if (null == ins)
+			throw new RuntimeException(new FileNotFoundException(path));
 		return buff(ins);
 	}
 
