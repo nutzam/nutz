@@ -92,12 +92,12 @@ public class Scans {
 		try {
 			String str = url.toString();
 			if (str.endsWith(".jar")) {
-				return ResourceLocation.jar(url.toString());
+				return ResourceLocation.jar(str);
 			} 
 			else if (str.contains("jar!")) {
-				return ResourceLocation.jar(str.substring(0, str.lastIndexOf("jar!")) + 3);
+				return ResourceLocation.jar(str.substring(0, str.lastIndexOf("jar!") + 3));
 			}
-			else if (url.toString().startsWith("file:")) {
+			else if (str.startsWith("file:")) {
 				return ResourceLocation.file(new File(url.getFile()));
 			}
 			else {
