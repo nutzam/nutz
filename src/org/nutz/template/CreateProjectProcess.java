@@ -3,9 +3,10 @@ package org.nutz.template;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Enumeration;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
@@ -28,6 +29,7 @@ public class CreateProjectProcess implements CmdProcess{
 			System.out.println("args Invalid");
 			return ;
 		}else{
+			ZipInputStream zis = null;
 			try {
 				File currentDir = new File(args);
 				if(currentDir.exists()){
@@ -35,30 +37,39 @@ public class CreateProjectProcess implements CmdProcess{
 					return ;
 				}
 				currentDir.mkdirs();
-				ZipFile zipFile = new ZipFile(new File(Start.class.getResource("/org/nutz/template/resources/sample.zip").toURI()));
-				@SuppressWarnings("unchecked")
-				Enumeration<ZipEntry> entries =   (Enumeration<ZipEntry>) zipFile.entries();
-				while(entries.hasMoreElements()){
-					ZipEntry entry = entries.nextElement();
+				
+				InputStream is = Start.class.getResourceAsStream("/org/nutz/template/resources/sample.zip");
+				zis = new ZipInputStream(is);
+				ZipEntry entry = null;
+				while((entry = zis.getNextEntry()) != null){
 					if(entry.isDirectory()){
 						new File(currentDir.getAbsoluteFile(),entry.getName()).mkdirs();
 					}else{
-						File target = new File(currentDir.getAbsolutePath(),entry.getName());
-						Files.createNewFile(target);
-						FileOutputStream fos = new FileOutputStream(target);
-						BufferedInputStream bis = new BufferedInputStream(zipFile.getInputStream(entry));
-						byte[] buffer = new byte[1024];
-						int len = 0;
-						while((len = bis.read(buffer)) != -1){
-							fos.write(buffer, 0, len);
+						FileOutputStream fos = null;
+						BufferedInputStream bis = null;
+						try{
+							File target = new File(currentDir.getAbsolutePath(),entry.getName());
+							Files.createNewFile(target);
+							fos = new FileOutputStream(target);
+							bis = new BufferedInputStream(zis);
+							byte[] buffer = new byte[1024];
+							int len = 0;
+							while((len = bis.read(buffer)) != -1){
+								fos.write(buffer, 0, len);
+							}
+						}finally{
+							if(fos != null)
+								fos.close();
 						}
-						bis.close();
-						fos.close();
 					}
+					zis.closeEntry();
 				}
 				System.out.println("create project <" + args + "> success");
 			} catch (Exception e) {
 				System.out.println("occured some errors ,sorry\nerror code:"+e.getMessage());
+			}finally{
+				if(zis != null)
+					try {zis.close();} catch (IOException e) {}
 			}
 		}
 	}

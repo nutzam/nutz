@@ -6,6 +6,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
+import.org.nutz.template.util.LocalMessage;
 
 import utils.CV;
 import utils.form.PageForm;
@@ -54,7 +55,7 @@ public class ${domain_name}Controller {
 				message = "更新成功";
 		}else{
 			message = "校验不成功,请重新输入";
-			return CV.redirect("/${low_domain_name}/edit?id="+id, message);
+			return CV.redirect("/${low_domain_name}/edit?id="+${low_domain_name}.id, message);
 		}
 		return  message;
 	}

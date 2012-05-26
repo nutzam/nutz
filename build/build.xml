@@ -6,8 +6,8 @@
 	<!-- set global properties for this build -->
 	<property environment="env" />
 
-	<property name="PROJECT_HOME" value="D:/grails-work/nor" />
-	<property name="TOMCAT_HOME" value="D:/software/apache-tomcat-7.0.27" />
+	<property name="PROJECT_HOME" value="/home/tt/workspace/java/nor" />
+	<property name="TOMCAT_HOME" value="/home/tt/software/apache-tomcat-7.0.26" />
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
 	<property name="DEPHOME" value="${PROJECT_HOME}/deps" />
 	<property name="OP" value="${PROJECT_HOME}/build/output" />
@@ -19,7 +19,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.43-3" />
+	<property name="v" value="-1.b.43-4" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -49,8 +49,7 @@
 		<javac srcdir="${SRC}" destdir="${TMP}" debuglevel="lines,vars,source" debug="true" 
 			source="${JDK_VERSION}" target="${JDK_VERSION}" 
 			encoding="UTF-8" listfiles="off"
-			includeantruntime="false"
-			>
+			includeantruntime="false">
 			<compilerarg value="-Xlint:deprecation" />
 			<classpath refid="CLASSPATH" />
 		</javac>
@@ -67,8 +66,10 @@
 		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
 		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
 		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
-		<jar destfile="${OP}/nor${v}.jar" basedir="${TMP}" includes="${zall}" />
-		<jar destfile="${OP}/nor-source${v}.jar" basedir="${SRC}" includes="${zall}" />
+		<jar destfile="${OP}/nor${v}.jar" basedir="${TMP}" excludes="org/nutz/template/**"/>
+		<jar destfile="${OP}/nor-source${v}.jar" basedir="${SRC}" excludes="org/nutz/template/**"/>
+		<jar destfile="${OP}/ncode${v}.jar" basedir="${TMP}" includes="org/nutz/template/**"/>
+		<jar destfile="${OP}/ncode-source${v}.jar" basedir="${SRC}" includes="org/nutz/template/**"/>
 	</target>
 
 	<target name="run" depends="jar">
