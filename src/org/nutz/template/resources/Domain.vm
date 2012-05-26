@@ -1,8 +1,8 @@
-package org.nutz.template.resources;
+package domains;
 
 import org.nutz.dao.entity.annotation.*;
 
-@Table("${domain_name}")
+@Table("${low_domain_name}")
 public class ${domain_name} {
 	@Id
 	private Long id;

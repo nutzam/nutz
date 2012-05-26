@@ -63,4 +63,9 @@ public class CreateProjectProcess implements CmdProcess{
 		}
 	}
 
+	@Override
+	public String getInfo() {
+		return "create project will generate complete project";
+	}
+
 }

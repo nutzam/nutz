@@ -231,13 +231,18 @@ public class LoadingsImpl{
 		} else { // create by wangc
 			
 			if (isController(clazz)) {// 只处理符合规范的控制器
-				String moduleName = getContrllerModule(clazz);
-				String ctnName = getControllerName(clazz);
-				if (Strings.isEmpty(moduleName))
-					ai.setPaths(Lang.array("/" + ctnName +"/" + Strings.lowerFirst(def)));
-				else
-					ai.setPaths(Lang.array("/"
-							+ moduleName.replaceAll("\\.", "/") + "/" + ctnName +"/" + Strings.lowerFirst(def)));
+				At cat = clazz.getAnnotation(At.class);
+				if(cat == null){
+					String ctnName = getControllerName(clazz);
+					String moduleName = getContrllerModule(clazz);
+					if (Strings.isEmpty(moduleName))
+						ai.setPaths(Lang.array("/" + ctnName +"/" + Strings.lowerFirst(def)));
+					else
+						ai.setPaths(Lang.array("/"
+								+ moduleName.replaceAll("\\.", "/") + "/" + ctnName +"/" + Strings.lowerFirst(def)));
+				}else{
+					ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));
+				}
 			} else {
 				if (clazz.getAnnotation(Modules.class) != null) {
 					ai.setPaths(Lang.array("/" + Strings.lowerFirst(def)));

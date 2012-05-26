@@ -1,0 +1,66 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"pageEncoding="UTF-8"%>
+<html>
+<head>
+<title><#noparse>$</#noparse>{msg["${domain_name}.listName"]}列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="layout" content="main">
+</head>
+<body>
+<div class="row">
+					<#noparse>
+		 			<div class="span12">
+		 				<c:if test="${message != null }">
+			 				<div class="badge badge-info">
+								${message}			 					
+			 				</div>
+		 				</c:if>
+		 				<c:if test="${obj.results.size() != 0 }">
+		 					</#noparse>
+		 				<form action="<#noparse>${base }</#noparse>/${low_domain_name}/deleteAll" method="post">
+		 					<table width="100%">
+		 						<thead>
+		 							<tr>
+		 								<td><input type="checkbox" id="ids" class="selectAll"><input class="btn" type="submit" value="删除"/></td>
+		 								<#list properties as p>
+		 									<td><#noparse>$</#noparse>{msg["${domain_name}.${p.name}"]}</td>
+		 								</#list>
+		 								<td>操作</td>
+		 							</tr>
+		 						</thead>
+		 						<tbody><#noparse>
+		 							<c:forEach items="${obj.results }" var="it">
+		 							<tr>
+		 								<td><input type="checkbox" name="ids" value="${it.id }"></td>
+		 								</#noparse>
+		 								<#list properties as p>
+		 									<td><#noparse>$</#noparse>{it.${p.name}}</td>
+		 								</#list>
+		 								<td>
+		 									<a href="<#noparse>${base }</#noparse>/${low_domain_name}/edit?id=<#noparse>${it.id}">编辑</a>
+		 									<a href="${base }</#noparse>/${low_domain_name}/delete?id=<#noparse>${it.id}</#noparse>">删除</a>
+										</td >
+		 							</tr>
+		 							</c:forEach>
+		 						</tbody>
+		 					</table>
+	 					</form>
+	 					<div class="row">
+							<div class="span12 pager">
+							<#noparse>
+								<c:if test="${ ! obj.pager.first}">
+									<a href="${base }</#noparse>/${low_domain_name}/list?offset=<#noparse>${obj.pager.pageNumber -1}" class="before">上一页</a>
+								</c:if>
+								<span >第${obj.pager.pageNumber}页，总页数：${obj.pager.pageCount}，总记录：${obj.pager.recordCount }</span>
+								<c:if test="${ ! obj.pager.last}">
+									<a href="${base }</#noparse>/${low_domain_name}/list?offset=<#noparse>${obj.pager.pageNumber +1}</#noparse>" class="after">下一页</a>
+								</c:if>
+							</div>
+						</div>
+	 					</c:if>
+	 					<c:if test="<#noparse>${obj.results.size() == 0 }">
+	 						没有$</#noparse>{msg["${domain_name}.listName"]}，去<a href="<#noparse>${base }</#noparse>/${low_domain_name}/create">添加</a>
+	 					</c:if>
+		 			</div>
+		 	</div>
+</body>
+</html>
