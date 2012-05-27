@@ -5,4 +5,5 @@
 /.settings/
 *.DS_Store
 /build/output
+/src/org/nutz/template/resources/sample.zip
 /deps

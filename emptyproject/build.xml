@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<project default="war" name="${projectName}" basedir=".">
+	<property name="src.dir" value="src"/>
+	<property name="resources.dir" value="resources"/>
+	<property name="webapp.dir" value="webapp"/>
+	<property name="webapp.lib" value="${webapp.dir}/WEB-INF/lib"/>
+	<property name="webapp.classes" value="${webapp.dir}/WEB-INF/classes"/>
+	<property name="build.dir" value="build/root"/>
+	
+	<property name="version" value="0.0.1"/>
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete dir="${webapp.classes}"/>
+    </target>
+	<target name="prepare" depends="clean">
+		<mkdir dir="${build.dir}"/>
+		<mkdir dir="${webapp.classes}"/>	
+	</target>
+	<target name="build-class" depends="prepare">
+		<javac srcdir="${src.dir}" encoding="utf-8"
+         destdir="${webapp.classes}" includeantruntime="true" includes="**/*.java" debug="on">
+			<classpath>
+				<fileset dir="${webapp.lib}">
+					<include name="*.jar"/>
+				</fileset>
+			</classpath>
+		</javac>
+		<copy todir="${webapp.classes}">
+			<fileset dir="${resources.dir}">
+			</fileset>
+		</copy>
+	</target>
+	<target name="build-web">
+		<copy todir="${build.dir}">
+			<fileset dir="${webapp.dir}">
+			</fileset>
+		</copy>
+	</target>
+	<target name="war" depends="build-class,build-web">
+		<tstamp prefix="build.">
+			<format property="time" pattern="yyyyMMddHHmmssSSS"/>
+		</tstamp>
+		<war warfile="target/${ant.project.name}-${version}-${build.time}.war" basedir="${build.dir}">
+			<exclude name="**/*junit*.jar"/>
+			<exclude name="**/servlet-api*.jar"/>
+		</war>
+	</target>
+</project>

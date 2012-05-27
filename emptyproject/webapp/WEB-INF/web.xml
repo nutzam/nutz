@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+  <filter>
+    <filter-name>nutzfilter</filter-name>
+    <filter-class>org.nutz.mvc.NutFilter</filter-class>
+    <init-param>
+      <param-name>modules</param-name>
+      <param-value>controllers.MainModule</param-value>
+    </init-param>
+  </filter>
+  <filter>
+    <filter-name>sitemesh</filter-name>
+    <filter-class>filters.MetaSiteMeshFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>nutzfilter</filter-name>
+    <url-pattern>/*</url-pattern>
+  </filter-mapping>
+  <filter-mapping>
+    <filter-name>sitemesh</filter-name>
+    <url-pattern>/*</url-pattern>
+    <dispatcher>FORWARD</dispatcher>
+    <dispatcher>REQUEST</dispatcher>
+  </filter-mapping>
+</web-app>

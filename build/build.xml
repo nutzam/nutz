@@ -68,8 +68,12 @@
 		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
 		<jar destfile="${OP}/nor${v}.jar" basedir="${TMP}" excludes="org/nutz/template/**"/>
 		<jar destfile="${OP}/nor-source${v}.jar" basedir="${SRC}" excludes="org/nutz/template/**"/>
+		<copyfile dest="${PROJECT_HOME}/emptyproject/webapp/WEB-INF/lib/nor-lastest.jar" src="${OP}/nor${v}.jar"/>
+		<zip destfile="${SRC}/org/nutz/template/resources/sample.zip" basedir="${PROJECT_HOME}/emptyproject"></zip>
+		<copyfile dest="${TMP}/org/nutz/template/resources/sample.zip" src="${SRC}/org/nutz/template/resources/sample.zip"/>
 		<jar destfile="${OP}/ncode${v}.jar" basedir="${TMP}" includes="org/nutz/template/**"/>
 		<jar destfile="${OP}/ncode-source${v}.jar" basedir="${SRC}" includes="org/nutz/template/**"/>
+		<zip destfile="${OP}/nor-all-${v}.zip" basedir="${OP}"/>
 	</target>
 
 	<target name="run" depends="jar">
