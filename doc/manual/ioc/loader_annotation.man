@@ -23,7 +23,7 @@
 
 	同 JsonLoader 一样，你可以直接 new 一个 AnnoationIocLoader
 	{{{<Java>
-	Ioc ioc = new NutIoc(new AnnotationIocLoader("com.you.app.package0", "com.you.app.package1");
+	Ioc ioc = new NutIoc(new AnnotationIocLoader("com.you.app.package0", "com.you.app.package1"));
 	}}}
 
 	当然在 Nutz.Mvc 中，你可以通过 IocProvider 来初始化 Ioc 容器，所以你可以在你的 MainModule 上这么声明
