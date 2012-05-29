@@ -11,7 +11,7 @@ import java.util.Map;
  * 构建新的MapList结构对象, 根据path重建MapList结构
  * @author juqkai(juqkai@gmail.com)
  */
-public class RebuildMapList{
+public class MapListRebuild{
     private String[] keys;
     private Object val;
     //数组索引
@@ -21,7 +21,7 @@ public class RebuildMapList{
     //新MapList结构
     private Map<String, Object> newobj = new HashMap<String, Object>();
     
-    public RebuildMapList(){
+    public MapListRebuild(){
         newobj.put("obj", null);
     }
     

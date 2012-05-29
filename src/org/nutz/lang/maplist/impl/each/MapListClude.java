@@ -7,28 +7,32 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonFilter;
 import org.nutz.lang.Streams;
-import org.nutz.lang.maplist.EachMapList;
-import org.nutz.lang.maplist.RebuildMapList;
+import org.nutz.lang.maplist.MapListEach;
+import org.nutz.lang.maplist.MapListRebuild;
 
 /**
  * Json过滤, 
  * <p>
- * 根据模板将原始的JSON进行过滤, 只显示一部分. 不做转换
+ * 根据模板将原始的JSON进行过滤, 只显示一部分. 不做转换.
+ * <p>
+ * 包括两种模式, 即, 包含, 排除模式, 默认为排除模式.
+ * <p>
+ * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonFilterImpl extends EachMapList implements JsonFilter{
+public class MapListClude extends MapListEach implements JsonFilter{
     //处理列表
     private List<String> paths = new ArrayList<String>();
     //类型, 取名自exclude(排除), include(包含), false时为排除, true时为包含
     private boolean clude = false;
-    private RebuildMapList build = new RebuildMapList();
+    private MapListRebuild build = new MapListRebuild();
     
     @SuppressWarnings("unchecked")
-    public JsonFilterImpl(String path) {
+    public MapListClude(String path) {
         paths = (List<String>) Json.fromJson(Streams.fileInr(path));
     }
     
-    public JsonFilterImpl(List<String> paths){
+    public MapListClude(List<String> paths){
         this.paths = paths;
     }
     

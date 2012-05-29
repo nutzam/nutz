@@ -10,8 +10,8 @@ import org.nutz.json.JsonException;
 import org.nutz.json.JsonFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.lang.maplist.EachMapList;
-import org.nutz.lang.maplist.RebuildMapList;
+import org.nutz.lang.maplist.MapListEach;
+import org.nutz.lang.maplist.MapListRebuild;
 
 /**
  * Json转换.
@@ -61,17 +61,17 @@ import org.nutz.lang.maplist.RebuildMapList;
  * </pre>
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonConvert extends EachMapList implements JsonFilter{
+public class MapListConvert extends MapListEach implements JsonFilter{
     //关系
     private Map<String, List<String>> relation = new HashMap<String, List<String>>();
     
-    private RebuildMapList structure = new RebuildMapList();
+    private MapListRebuild structure = new MapListRebuild();
     
     /**
      * 
      * @param path 模板文件路径
      */
-    public JsonConvert(String path){
+    public MapListConvert(String path){
         Object obj = Json.fromJson(Streams.fileInr(path));
         loadRelation(obj, "");
     }
@@ -79,7 +79,7 @@ public class JsonConvert extends EachMapList implements JsonFilter{
      * 
      * @param reader 模板流
      */
-    public JsonConvert(Reader reader){
+    public MapListConvert(Reader reader){
         Object obj = Json.fromJson(reader);
         loadRelation(obj, "");
     }
@@ -87,7 +87,7 @@ public class JsonConvert extends EachMapList implements JsonFilter{
      * 
      * @param obj 模板的Map, List结构
      */
-    public JsonConvert(Object obj){
+    public MapListConvert(Object obj){
         loadRelation(obj, "");
     }
     
