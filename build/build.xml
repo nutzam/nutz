@@ -71,9 +71,14 @@
 		<copyfile dest="${PROJECT_HOME}/emptyproject/webapp/WEB-INF/lib/nor-lastest.jar" src="${OP}/nor${v}.jar"/>
 		<zip destfile="${SRC}/org/nutz/template/resources/sample.zip" basedir="${PROJECT_HOME}/emptyproject"></zip>
 		<copyfile dest="${TMP}/org/nutz/template/resources/sample.zip" src="${SRC}/org/nutz/template/resources/sample.zip"/>
-		<jar destfile="${OP}/ncode${v}.jar" basedir="${TMP}" includes="org/nutz/template/**"/>
+		<jar destfile="${OP}/ncode${v}.jar" basedir="${TMP}" includes="org/nutz/template/**">
+			<manifest>
+				<attribute name="Main-Class" value="org.nutz.template.Start"/>
+				<attribute name="Class-Path" value="ecj-3.7.2.jar  nor${v}.jar freemarker-2.3.15.jar"/>
+			</manifest>	
+		</jar>
 		<jar destfile="${OP}/ncode-source${v}.jar" basedir="${SRC}" includes="org/nutz/template/**"/>
-		<zip destfile="${OP}/nor-all-${v}.zip" basedir="${OP}"/>
+		<zip destfile="${PROJECT_HOME}/build/nor-all-${v}.zip" basedir="${OP}"/>
 	</target>
 
 	<target name="run" depends="jar">
