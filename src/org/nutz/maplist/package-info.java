@@ -1,4 +1,4 @@
 /**
  * 对于mapList的处理
  */
-package org.nutz.lang.maplist;
+package org.nutz.maplist;

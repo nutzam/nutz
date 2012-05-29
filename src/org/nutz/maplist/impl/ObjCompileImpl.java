@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist.impl;
+package org.nutz.maplist.impl;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.maplist.MapListCompile;
+import org.nutz.maplist.MapListCompile;
 
 /**
  * 将对象理解成Map+List

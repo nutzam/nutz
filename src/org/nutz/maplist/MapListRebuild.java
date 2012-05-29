@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist;
+package org.nutz.maplist;
 
 import java.util.ArrayList;
 import java.util.Collection;

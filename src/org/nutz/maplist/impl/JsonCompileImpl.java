@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist.impl;
+package org.nutz.maplist.impl;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -10,7 +10,7 @@ import java.util.Map;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
-import org.nutz.lang.maplist.MapListCompile;
+import org.nutz.maplist.MapListCompile;
 
 /**
  * 将json理解为Map+List

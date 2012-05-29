@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist;
+package org.nutz.maplist;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;

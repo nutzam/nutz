@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist;
+package org.nutz.maplist;
 
 /**
  * 将输入理解成Map+List

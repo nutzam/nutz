@@ -1,4 +1,4 @@
-package org.nutz.lang.maplist;
+package org.nutz.maplist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,7 +10,9 @@ import java.util.Map;
  * @author juqkai(juqkai@gmail.com)
  */
 public class MapListMerge {
-    public static Object merge(Object... objs){}
+    public static Object merge(Object... objs){
+        return new MapListMerge().mergeItems(objs);
+    }
     /**
      * 转换器中间对象合并器<br/>
      * 合并 {@link Objs} 中定义的中间结构.<br/>
@@ -21,7 +23,7 @@ public class MapListMerge {
      * <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
      * </ul>
      */
-    public Object merge(Object... objs) {
+    public Object mergeItems(Object... objs) {
         if (objs == null || objs.length == 0) {
             return null;
         }
