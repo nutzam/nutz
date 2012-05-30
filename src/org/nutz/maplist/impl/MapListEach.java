@@ -30,8 +30,9 @@ public abstract class MapListEach {
     private void convertMap(Map<?, ?> obj) {
         for(Object key : obj.keySet()){
             paths.addLast(key.toString());
-            handle(fetchPath(), obj.get(key));
+            DLR(fetchPath(), obj.get(key));
             each(obj.get(key));
+            LRD(fetchPath(), obj.get(key));
             paths.removeLast();
         }
     }
@@ -69,9 +70,15 @@ public abstract class MapListEach {
     }
     
     /**
-     * 处理
+     * 前序
      * @param path
      * @param item
      */
-    protected abstract void handle(String path, Object item);
+    protected abstract void DLR(String path, Object item);
+    /**
+     * 后序
+     * @param path
+     * @param item
+     */
+    protected abstract void LRD(String path, Object item);
 }

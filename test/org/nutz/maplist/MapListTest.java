@@ -93,4 +93,18 @@ public class MapListTest {
         assertNull(MapListCell.cell(obj, "users[0].name"));
         assertEquals(12, MapListCell.cell(obj, "users[0].age"));
     }
+    /**
+     * 过滤测试
+     */
+    @Test
+    public void excludeFilterConvertTest2(){
+        List<String> paths = new ArrayList<String>();
+        paths.add("users");
+        FilterConvertImpl filter = new FilterConvertImpl(paths);
+//        filter.useExcludeModel();
+        Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
+        Object obj = filter.convert(dest);
+        assertNull(MapListCell.cell(obj, "users"));
+        assertEquals(12, MapListCell.cell(obj, "people[0].age"));
+    }
 }

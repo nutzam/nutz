@@ -100,13 +100,15 @@ public class StructureConvert extends MapListEach implements MapListConvert{
         each(obj);
         return structure.fetchNewobj();
     }
+    
+    protected void LRD(String path, Object item) {}
 
     /**
      * 重建新对象
      * @param path
      * @param object
      */
-    protected void handle(String path, Object object) {
+    protected void DLR(String path, Object object) {
         if(relation.containsKey(path)){
             List<String> dests = relation.get(path);
             for(String dest : dests){
@@ -168,5 +170,6 @@ public class StructureConvert extends MapListEach implements MapListConvert{
     private String space(String path){
         return path == "" ? "" : ".";
     }
+    
     
 }

@@ -46,22 +46,25 @@ public class FilterConvertImpl extends MapListEach implements MapListConvert{
         return build.fetchNewobj();
     }
     
-    public void handle(String path, Object item) {
+    protected void DLR(String path, Object item) {
         if(clude){
             if(paths.contains(path)){
                 build.put(path, item, arrayIndex);
             } 
-        } else {
-            for(String p : paths){
-                if(!p.startsWith(path)){
-                    build.put(path, item, arrayIndex);
-                }
-            }
-//            if(!paths.contains(path)){
-//                build.put(path, item, arrayIndex);
-//            } 
         }
     }
+
+    protected void LRD(String path, Object item) {
+        if(clude){
+           return;
+        }
+        for(String p : paths){
+            if(!p.startsWith(path) && !path.startsWith(p)){
+                build.put(path, item, arrayIndex);
+            }
+        }
+    }
+
 
     public void useExcludeModel() {
         this.clude = false;
