@@ -26,6 +26,15 @@ public class MapListCell {
         if(obj instanceof Map){
             return cellMap(obj, paths, index);
         }else if(obj instanceof Collection){
+            if(!canList(paths[index])){
+                index++;
+                try{
+                    return cellList(obj, paths, index, Integer.parseInt(paths[index]));
+                } catch(Exception e){
+                    throw new RuntimeException("List路径错误, 请使用list[1]或list.1格式");
+                }
+//                return cell(obj, paths, index + 1);
+            }
             return cellList(obj, paths, index);
         }
         throw new RuntimeException(obj.getClass() + "类型无法识别! 只支持Map, List结构!");
@@ -59,12 +68,21 @@ public class MapListCell {
      * @return
      */
     private Object cellList(Object obj, String[] paths, int index){
+        return cellList(obj, paths, index, fetchListIndex(paths[index]));
+    }
+    /**
+     * 访问集合
+     * @param obj
+     * @param paths
+     * @param index
+     * @return
+     */
+    private Object cellList(Object obj, String[] paths, int index, int arrayIndex){
         if(!(obj instanceof Collection)){
             throw new RuntimeException("提取数据所使用的路径有问题.请检查[" + paths[index] + "]结点!");
         }
-        int i = fetchListIndex(paths[index]);
         Collection<?> col = (Collection<?>) obj;
-        Object o = col.toArray()[i];
+        Object o = col.toArray()[arrayIndex];
         return cell(o, paths, index + 1);
     }
     /**
@@ -73,10 +91,13 @@ public class MapListCell {
      * @return
      */
     private String fetchKey(String path){
-        if(path.indexOf('[') <= 0){
+        if(!canList(path)){
             return path;
         }
         return path.substring(0, path.indexOf('['));
+    }
+    private boolean canList(String path){
+        return path.indexOf('[') >= 0;
     }
     /**
      * 得到集合的index
