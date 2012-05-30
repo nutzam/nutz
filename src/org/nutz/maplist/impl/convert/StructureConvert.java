@@ -13,8 +13,8 @@ import org.nutz.maplist.impl.MapListEach;
 import org.nutz.maplist.impl.MapListRebuild;
 
 /**
- * Json结构转换.
- * <p> 将一种JSON结构转换成另外一种JSON结构.例:
+ * MapList结构转换.
+ * <p> 将一种MapList结构转换成另外一种MapList结构.例:
  * <pre>
  *  {
  *      "age":"123",
@@ -28,7 +28,7 @@ import org.nutz.maplist.impl.MapListRebuild;
  * </pre>
  * <p>要进行这样的转换需要预先配置一个对应关系的配置, 具体的配置关系说明如下:
  * <ul>
- * <li>使用原JSON一样的结构
+ * <li>使用原MapList一样的结构
  * <li>有数组的, 只写第一个元素的结构
  * <li>原结构中的值, 以字符串或字符串数组做为目标结构的对应关系
  * <li>对应关系可以为数组
