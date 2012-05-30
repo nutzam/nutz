@@ -52,9 +52,14 @@ public class FilterConvertImpl extends MapListEach implements MapListConvert{
                 build.put(path, item, arrayIndex);
             } 
         } else {
-            if(!paths.contains(path)){
-                build.put(path, item, arrayIndex);
-            } 
+            for(String p : paths){
+                if(!p.startsWith(path)){
+                    build.put(path, item, arrayIndex);
+                }
+            }
+//            if(!paths.contains(path)){
+//                build.put(path, item, arrayIndex);
+//            } 
         }
     }
 
