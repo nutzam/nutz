@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl;
+package org.nutz.maplist.impl.compile;
 
 import java.io.IOException;
 import java.io.Reader;
@@ -29,7 +29,11 @@ public class JsonCompileImpl implements JsonParser, MapListCompile<Reader> {
 	
 	private boolean skipOneChar = false;
 	
-	public Object parse(Reader reader) {
+    public Object parse(Reader reader) throws IOException, JsonException {
+        return compile(reader);
+    }
+	
+	public Object compile(Reader reader) {
 		if (reader == null)
 			return null;
 		this.reader = reader;
@@ -429,6 +433,8 @@ public class JsonCompileImpl implements JsonParser, MapListCompile<Reader> {
 	private JsonException unexpectedChar() {
 		return new JsonException(row, col, (char) cursor, "Unexpected char");
 	}
+
+   
 	
 //	public static void main(String[] args) {
 //		StringReader sr = new StringReader("{abc      :'ccc',ppp      : 123 ,                xx : true            }");

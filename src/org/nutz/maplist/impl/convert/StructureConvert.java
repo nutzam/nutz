@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl.each;
+package org.nutz.maplist.impl.convert;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -6,15 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.json.Json;
-import org.nutz.json.JsonException;
-import org.nutz.json.JsonFilter;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MapListEach;
-import org.nutz.maplist.MapListRebuild;
+import org.nutz.maplist.MapListConvert;
+import org.nutz.maplist.impl.MapListEach;
+import org.nutz.maplist.impl.MapListRebuild;
 
 /**
- * Json转换.
+ * Json结构转换.
  * <p> 将一种JSON结构转换成另外一种JSON结构.例:
  * <pre>
  *  {
@@ -61,7 +60,7 @@ import org.nutz.maplist.MapListRebuild;
  * </pre>
  * @author juqkai(juqkai@gmail.com)
  */
-public class MapListConvert extends MapListEach implements JsonFilter{
+public class StructureConvert extends MapListEach implements MapListConvert{
     //关系
     private Map<String, List<String>> relation = new HashMap<String, List<String>>();
     
@@ -71,7 +70,7 @@ public class MapListConvert extends MapListEach implements JsonFilter{
      * 
      * @param path 模板文件路径
      */
-    public MapListConvert(String path){
+    public StructureConvert(String path){
         Object obj = Json.fromJson(Streams.fileInr(path));
         loadRelation(obj, "");
     }
@@ -79,7 +78,7 @@ public class MapListConvert extends MapListEach implements JsonFilter{
      * 
      * @param reader 模板流
      */
-    public MapListConvert(Reader reader){
+    public StructureConvert(Reader reader){
         Object obj = Json.fromJson(reader);
         loadRelation(obj, "");
     }
@@ -87,7 +86,7 @@ public class MapListConvert extends MapListEach implements JsonFilter{
      * 
      * @param obj 模板的Map, List结构
      */
-    public MapListConvert(Object obj){
+    public StructureConvert(Object obj){
         loadRelation(obj, "");
     }
     
@@ -97,8 +96,8 @@ public class MapListConvert extends MapListEach implements JsonFilter{
      * @param model 对应关系
      * @return 
      */
-    public Object filter(Object obj) throws JsonException{
-        convertObj(obj);
+    public Object convert(Object obj){
+        each(obj);
         return structure.fetchNewobj();
     }
 
@@ -107,7 +106,7 @@ public class MapListConvert extends MapListEach implements JsonFilter{
      * @param path
      * @param object
      */
-    public void handle(String path, Object object) {
+    protected void handle(String path, Object object) {
         if(relation.containsKey(path)){
             List<String> dests = relation.get(path);
             for(String dest : dests){

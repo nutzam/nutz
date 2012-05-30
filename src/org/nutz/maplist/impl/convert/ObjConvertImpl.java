@@ -1,4 +1,4 @@
-package org.nutz.maplist;
+package org.nutz.maplist.impl.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -17,126 +17,39 @@ import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
+import org.nutz.maplist.MapListConvert;
 
 /**
- * 集合了对象转换合并等高级操作
- * 
+ * 对象转换
+ * 将MapList结构转换成对应的对象
  * @author juqkai(juqkai@gmail.com)
- * 
  */
-public class Objs {
+public class ObjConvertImpl implements MapListConvert{
 
-	/**
-	 * 转换器中间对象合并器<br/>
-	 * 合并 {@link Objs} 中定义的中间结构.<br/>
-	 * 规则:<br>
-	 * <ul>
-	 * <li>普通对象, 保存为List, 但是要去掉重复.
-	 * <li>合并 map , 如果 key 值相同, 那么后一个值覆盖前面的值.递归合并
-	 * <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
-	 * </ul>
-	 */
-	public static Object merge(Object... objs) {
-		if (objs == null || objs.length == 0) {
-			return null;
-		}
-		if (objs.length == 1) {
-			return objs[0];
-		}
-		// @ TODO 这里要不要判断是否兼容呢?
-		if (objs[0] instanceof Map) {
-			return mergeMap(objs);
-		}
-		if (objs[0] instanceof List) {
-			return mergeList(objs);
-		}
-		return mergeObj(objs);
-	}
-
-	/**
-	 * 对象合并
-	 * 
-	 * @param objs
-	 * @return
-	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static Object mergeObj(Object[] objs) {
-		List list = new ArrayList();
-		for (Object obj : objs) {
-			if (list.contains(obj)) {
-				continue;
-			}
-			list.add(obj);
-		}
-		return list;
-	}
-
-	/**
-	 * list合并
-	 * 
-	 * @param objs
-	 * @return
-	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static Object mergeList(Object... objs) {
-		List list = new ArrayList();
-		for (Object li : objs) {
-			List src = (List) li;
-			for (Object obj : src) {
-				if (!list.contains(obj)) {
-					list.add(obj);
-				}
-			}
-		}
-		return list;
-	}
-
-	/**
-	 * map合并
-	 * 
-	 * @param objs
-	 * @return
-	 */
-	@SuppressWarnings({"unchecked", "rawtypes"})
-	private static Object mergeMap(Object... objs) {
-		Map obj = new HashMap();
-		for (int i = 0; i < objs.length; i++) {
-			Map map = (Map) objs[i];
-			for (Object key : map.keySet()) {
-				Object objval = obj.get(key);
-				Object val = map.get(key);
-				if (objval != null && (val instanceof List || val instanceof Map)) {
-					val = merge(objval, val);
-				}
-				obj.put(key, val);
-			}
-		}
-		return obj;
-	}
-	
-	
-	//路径
+    //路径
     Stack<String> path = new Stack<String>();
     //对象缓存
     Context context = Lang.context();
-    public Objs(){
-        
-    }
+    
+    private Type type;
 
-	/**
-	 * 这个实现, 主要将 List, Map 的对象结构转换成真实的对象.
-	 * <p>
-	 * 规则:
-	 * <ul>
-	 * <li>对象以Map存储, key为属性名, value为属性值
-	 * <li>数组以List存储
-	 * <li>Map直接存储为Map
-	 * <li>List直接存储为List
-	 * <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
-	 * </ul>
-	 */
-	public static Object convert(Object model, Type type) {
-	    if (model == null)
+    public ObjConvertImpl(Type type) {
+        this.type = type;
+    }
+    /**
+     * 这个实现, 主要将 List, Map 的对象结构转换成真实的对象.
+     * <p>
+     * 规则:
+     * <ul>
+     * <li>对象以Map存储, key为属性名, value为属性值
+     * <li>数组以List存储
+     * <li>Map直接存储为Map
+     * <li>List直接存储为List
+     * <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
+     * </ul>
+     */
+    public Object convert(Object model) {
+        if (model == null)
             return null;
         if (type == null)
             return model;
@@ -145,13 +58,13 @@ public class Objs {
             return Castors.me().castTo(model, Lang.getTypeClass(type));
         }
         
-        return new Objs().inject(model, type);
-	}
-	
-	
-	
+        return inject(model, type);
+    }
+    
+    
+    
 
-    public Object inject(Object model, Type type){
+    Object inject(Object model, Type type){
         if(model == null){
             return null;
         }
@@ -234,7 +147,7 @@ public class Objs {
             re = makeCollection(me);
         }
         if(me.getGenericsTypes() == null){
-        	re.addAll((Collection) model);
+            re.addAll((Collection) model);
             return re;
         }
         Type type = me.getGenericsType(0);
@@ -313,13 +226,4 @@ public class Objs {
         }
         return sb.toString();
     }
-    
-    //-------------------------------------提取数据-----------------------------------------
-    /**
-     * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
-     */
-    public static Object cell(Object obj, String path){
-        return MapListCell.cell(obj, path);
-    }
-    
 }

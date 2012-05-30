@@ -1,14 +1,13 @@
-package org.nutz.maplist.impl.each;
+package org.nutz.maplist.impl.convert;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.json.Json;
-import org.nutz.json.JsonException;
-import org.nutz.json.JsonFilter;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MapListEach;
-import org.nutz.maplist.MapListRebuild;
+import org.nutz.maplist.MapListConvert;
+import org.nutz.maplist.impl.MapListEach;
+import org.nutz.maplist.impl.MapListRebuild;
 
 /**
  * Json过滤, 
@@ -20,7 +19,7 @@ import org.nutz.maplist.MapListRebuild;
  * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class MapListClude extends MapListEach implements JsonFilter{
+public class FilterConvertImpl extends MapListEach implements MapListConvert{
     //处理列表
     private List<String> paths = new ArrayList<String>();
     //类型, 取名自exclude(排除), include(包含), false时为排除, true时为包含
@@ -28,11 +27,11 @@ public class MapListClude extends MapListEach implements JsonFilter{
     private MapListRebuild build = new MapListRebuild();
     
     @SuppressWarnings("unchecked")
-    public MapListClude(String path) {
+    public FilterConvertImpl(String path) {
         paths = (List<String>) Json.fromJson(Streams.fileInr(path));
     }
     
-    public MapListClude(List<String> paths){
+    public FilterConvertImpl(List<String> paths){
         this.paths = paths;
     }
     
@@ -42,8 +41,8 @@ public class MapListClude extends MapListEach implements JsonFilter{
      * @param model 对应关系
      * @return 
      */
-    public Object filter(Object obj) throws JsonException{
-        convertObj(obj);
+    public Object convert(Object obj){
+        each(obj);
         return build.fetchNewobj();
     }
     

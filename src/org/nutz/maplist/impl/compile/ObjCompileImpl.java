@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl;
+package org.nutz.maplist.impl.compile;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -30,11 +30,11 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     
     
     @SuppressWarnings("rawtypes")
-    public Object parse(Object obj) {
+    public Object compile(Object obj) {
         if (null == obj) {
             return null;
         } else if (obj instanceof ObjCompileImpl) {
-            return ((ObjCompileImpl)obj).parse(null);
+            return ((ObjCompileImpl)obj).compile(null);
         } else if (obj instanceof Class) {
             return obj;
         } else if (obj instanceof Mirror) {
@@ -175,7 +175,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
         List<Object> list = new ArrayList<Object>();
         int len = Array.getLength(obj);
         for (int i = 0; i < len; i++) {
-            list.add(parse(Array.get(obj, i)));
+            list.add(compile(Array.get(obj, i)));
         }
         return list;
     }
@@ -184,7 +184,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     private List<Object> coll2Json(Collection iterable) {
         List<Object> list = new ArrayList<Object>();
         for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
-            list.add(parse(it.next()));
+            list.add(compile(it.next()));
         }
         return list;
     }
