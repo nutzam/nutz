@@ -44,6 +44,9 @@ public class MapListCell {
         }
         Object o = ((Map<String, Object>)obj).get(fetchKey(paths[index]));
         if(o instanceof Collection){
+            if(index + 1 >= paths.length){
+                return o;
+            }
             return cell(o, paths, index);
         }
         return cell(o, paths, index + 1);

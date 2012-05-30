@@ -18,16 +18,42 @@ import static org.junit.Assert.*;
  */
 public class MapListTest {
     
+    /**
+     * 测试MAP提取
+     */
     public void cellTest(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"));
         assertEquals("dtri", MapListCell.cell(dest, "company.name"));
         assertEquals("Dao", MapListCell.cell(dest, "company.creator.name"));
     }
+    /**
+     * 测试提取LIST下的值
+     */
     @Test
     public void cellArrayTest(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
         assertEquals("1", MapListCell.cell(dest, "users[0].name"));
         assertEquals("2", MapListCell.cell(dest, "people[1].name"));
+    }
+    /**
+     * 测试提取LIST
+     */
+    @Test
+    public void cellArrayTest2(){
+        Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
+        assertTrue(MapListCell.cell(dest, "users") instanceof List);
+        List<?> list = (List<?>)MapListCell.cell(dest, "users");
+        assertEquals(2, list.size());
+    }
+    /**
+     * 测试根就是LIST的情况
+     */
+    @Test
+    public void cellArrayTest3(){
+        Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
+        assertTrue(MapListCell.cell(dest, "users") instanceof List);
+        List<?> list = (List<?>)MapListCell.cell(dest, "users");
+        assertEquals("1", MapListCell.cell(list, "[0].name"));
     }
     /**
      * 过滤测试
