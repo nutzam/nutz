@@ -6,11 +6,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
+import org.nutz.json.Abc;
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
 import org.nutz.maplist.impl.MapListCell;
+import org.nutz.maplist.impl.compile.ObjCompileImpl;
 import org.nutz.maplist.impl.convert.FilterConvertImpl;
 
 /**
@@ -66,7 +69,7 @@ public class MapListTest {
         assertEquals("1", MapListCell.cell(list, "[0].name"));
     }
     /**
-     * 过滤测试
+     * 包含过滤测试
      */
     @Test
     public void includeFilterConvertTest(){
@@ -80,7 +83,7 @@ public class MapListTest {
         assertEquals("1", MapListCell.cell(obj, "users[0].name"));
     }
     /**
-     * 过滤测试
+     * 排除过滤测试
      */
     @Test
     public void excludeFilterConvertTest(){
@@ -94,7 +97,7 @@ public class MapListTest {
         assertEquals(12, MapListCell.cell(obj, "users[0].age"));
     }
     /**
-     * 过滤测试
+     * 排除过滤测试
      */
     @Test
     public void excludeFilterConvertTest2(){
@@ -106,5 +109,20 @@ public class MapListTest {
         Object obj = filter.convert(dest);
         assertNull(MapListCell.cell(obj, "users"));
         assertEquals(12, MapListCell.cell(obj, "people[0].age"));
+    }
+    
+    /**
+     * 对象转MapList测试
+     */
+    @Test
+    public void objCompileTest(){
+        Abc abc = new Abc();
+        abc.id = 1;
+        abc.name = "jk";
+        ObjCompileImpl convert = new ObjCompileImpl();
+        Object obj = convert.compile(abc);
+        assertTrue(obj instanceof Map);
+        assertEquals(1, MapListCell.cell(obj, "id"));
+        assertEquals("jk", MapListCell.cell(obj, "name"));
     }
 }
