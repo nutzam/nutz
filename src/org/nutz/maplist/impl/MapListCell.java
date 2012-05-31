@@ -27,11 +27,15 @@ public class MapListCell {
             return cellMap(obj, paths, index);
         }else if(obj instanceof Collection){
             if(!canList(paths[index])){
-                index++;
                 try{
                     return cellList(obj, paths, index, Integer.parseInt(paths[index]));
-                } catch(Exception e){
-                    throw new RuntimeException("List路径错误, 请使用list[1]或list.1格式");
+                } catch(NumberFormatException e){
+                    try{
+                        index++;
+                        return cellList(obj, paths, index, Integer.parseInt(paths[index]));
+                    }catch(NumberFormatException ex){
+                        throw new RuntimeException("List路径错误, 请使用list[1]或list.1格式");
+                    }
                 }
 //                return cell(obj, paths, index + 1);
             }

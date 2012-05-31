@@ -1,8 +1,6 @@
 package org.nutz.maplist;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,4 +123,44 @@ public class MapListTest {
         assertEquals(1, MapListCell.cell(obj, "id"));
         assertEquals("jk", MapListCell.cell(obj, "name"));
     }
+    /**
+     * 对象转MapList测试
+     */
+    @Test
+    public void objCompileArrayTest(){
+        Abc abc = new Abc();
+        abc.id = 1;
+        abc.name = "jk";
+        Abc b = new Abc();
+        b.id = 2;
+        b.name = "juqkai";
+        List<Abc> list = new ArrayList<Abc>();
+        list.add(abc);
+        list.add(b);
+        
+        ObjCompileImpl compile = new ObjCompileImpl();
+        Object obj = compile.compile(list);
+        assertTrue(obj instanceof List);
+        assertEquals(1, MapListCell.cell(obj, "[0].id"));
+        assertEquals("juqkai", MapListCell.cell(obj, "1.name"));
+    }
+    
+    /**
+     * 对象转MapList循环引用测试
+     */
+    @Test
+    public void objCompileCircularReferenceTest(){
+        A a = new A();
+        B b = new B();
+        a.b = b;
+        b.a = a;
+        
+        ObjCompileImpl compile = new ObjCompileImpl();
+        Object obj = compile.compile(a);
+        assertTrue(obj instanceof Map);
+        assertNotNull(MapListCell.cell(obj, "b"));
+        assertEquals("b", MapListCell.cell(obj, "b.name"));
+        assertEquals("a", MapListCell.cell(obj, "b.a.name"));
+    }
+    
 }
