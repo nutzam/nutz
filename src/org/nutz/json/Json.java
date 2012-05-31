@@ -13,8 +13,8 @@ import org.nutz.json.impl.JsonCompileImpl;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Objs;
 import org.nutz.lang.util.NutType;
+import org.nutz.maplist.Maplist;
 
 public class Json {
 
@@ -40,16 +40,9 @@ public class Json {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
-		return (T) parse(type, reader, null);
+		return (T) parse(type, reader);
 	}
 	
-	/**
-     * 从一个文本输入流中，生成一个对象。
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Class<T> type, Reader reader, JsonFilter filter) throws JsonException {
-        return (T) parse(type, reader, filter);
-    }
 
 	/**
 	 * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
@@ -62,23 +55,13 @@ public class Json {
 	 * @throws JsonException
 	 */
 	public static Object fromJson(Type type, Reader reader) throws JsonException {
-		return parse(type, reader, null);
+		return parse(type, reader);
 	}
 	
-	/**
-     * 从一个文本输入流中，生成一个对象。
-     */
-    @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Type type, Reader reader, JsonFilter filter) throws JsonException {
-        return (T) parse(type, reader, filter);
-    }
-    
-	private static Object parse(Type type, Reader reader, JsonFilter filter) {
+	private static Object parse(Type type, Reader reader) {
 		Object obj = new JsonCompileImpl().parse(reader);
-		if (filter != null)
-			obj = filter.filter(obj);
 		if (type != null)
-			return Objs.convert(obj, type);
+			return Maplist.maplistToObj(obj, type);
 		return obj;
 	}
 
@@ -155,7 +138,7 @@ public class Json {
 	 */
 	public static String toJson(Object obj, JsonFormat format) {
 		StringBuilder sb = new StringBuilder();
-		toJson(Lang.opw(sb), obj, format, null);
+		toJson(Lang.opw(sb), obj, format);
 		return sb.toString();
 	}
 
@@ -168,7 +151,7 @@ public class Json {
 	 *            JAVA 对象
 	 */
 	public static void toJson(Writer writer, Object obj) {
-		toJson(writer, obj, null, null);
+		toJson(writer, obj, null);
 	}
 
 	/**
@@ -182,19 +165,9 @@ public class Json {
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-	    toJson(writer, obj, format, null);
-	}
-	
-	@SuppressWarnings("rawtypes")
-	public static void toJson(Writer writer, Object obj, JsonFormat format, JsonFilter filter) {
 		try {
             if (format == null)
                 format = JsonFormat.nice();
-            if (obj != null && filter != null) {
-            	Mirror mirror = Mirror.me(obj);
-            	if (mirror.isPojo())
-            		obj = filter.filter(obj);
-            }
             new JsonRenderImpl(writer, format).render(obj);
             writer.flush();
         }
