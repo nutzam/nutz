@@ -4,7 +4,6 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -24,7 +23,7 @@ import org.nutz.maplist.MapListCompile;
  */
 public class ObjCompileImpl implements MapListCompile<Object>{
     
-    private Set<Object> memo = new HashSet<Object>();
+    private Map<Object, Object> memo = new HashMap<Object, Object>();
     
     @SuppressWarnings("rawtypes")
     public Object compile(Object obj) {
@@ -56,21 +55,31 @@ public class ObjCompileImpl implements MapListCompile<Object>{
             }
             // 其他
             else {
-                // Map
-                if (obj instanceof Map) {
-                    return map2Json((Map) obj);
-                }
-                // 集合
-                else if (obj instanceof Collection) {
-                    return coll2Json((Collection) obj);
-                }
-                // 数组
-                else if (obj.getClass().isArray()) {
-                    return array2Json(obj);
-                }
-                // 普通 Java 对象
-                else {
-                    return pojo2Json(obj);
+                //既然到了这里, 那么断定它只有List, Array, Map, Object这4种类型
+                //是否已经存在(循环引用)
+                if (memo.containsKey(obj)){
+                    return memo.get(obj);
+                }else{
+                    //这里使用了一个小小的占坑技巧, 
+                    if(obj instanceof Collection || obj.getClass().isArray()){
+                        List<Object> list = new ArrayList<Object>();
+                        memo.put(obj, list);
+                        // 集合
+                        if (obj instanceof Collection) {
+                            return coll2Json((Collection) obj, list);
+                        }
+                        // 数组
+                        return array2Json(obj, list);
+                    } else {
+                        Map<String, Object> map = new HashMap<String, Object>();
+                        memo.put(obj, map);
+                        // Map
+                        if (obj instanceof Map) {
+                            return map2Json((Map) obj, map);
+                        }
+                        // 普通 Java 对象
+                        return pojo2Json(obj, map);
+                    }
                 }
             }
         }
@@ -87,7 +96,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Map<String, Object> map2Json(Map map) {
+    private Map<String, Object> map2Json(Map map, Map<String, Object> valMap) {
         if (null == map)
             return null;
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
@@ -97,16 +106,13 @@ public class ObjCompileImpl implements MapListCompile<Object>{
             Object value = entry.getValue();
             list.add(new Pair(name, value));
         }
-        return writeItem(list);
+        return writeItem(list, valMap);
     }
 
-    private Map<String, Object> pojo2Json(Object obj) {
+    private Map<String, Object> pojo2Json(Object obj, Map<String, Object> map) {
         if (null == obj)
             return null;
         Class<? extends Object> type = obj.getClass();
-        /*
-         * Default
-         */
         JsonEntity jen = Json.getEntity(type);
         List<JsonEntityField> fields = jen.getFields();
         ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
@@ -114,15 +120,11 @@ public class ObjCompileImpl implements MapListCompile<Object>{
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);
-                // 以前曾经输出过 ...
                 if (null != value) {
-                    // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
+                    // 递归
                     Mirror<?> mirror = Mirror.me(value);
                     if (mirror.isPojo()) {
-                        if (memo.contains(value))
-                            value = null;
-                        else
-                            memo.add(value);
+                        value = compile(value);
                     }
                 }
                 // 加入输出列表 ...
@@ -130,19 +132,17 @@ public class ObjCompileImpl implements MapListCompile<Object>{
             }
             catch (FailToGetValueException e) {}
         }
-        return writeItem(list);
+        return writeItem(list, map);
     }
     
-    private Map<String, Object> writeItem(List<Pair> list){
-        Map<String, Object> map = new HashMap<String, Object>();
+    private Map<String, Object> writeItem(List<Pair> list, Map<String, Object> map){
         for(Pair p : list){
             map.put(p.name, p.value);
         }
         return map;
     }
 
-    private List<Object> array2Json(Object obj) {
-        List<Object> list = new ArrayList<Object>();
+    private List<Object> array2Json(Object obj, List<Object> list) {
         int len = Array.getLength(obj);
         for (int i = 0; i < len; i++) {
             list.add(compile(Array.get(obj, i)));
@@ -151,8 +151,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     }
 
     @SuppressWarnings("rawtypes")
-    private List<Object> coll2Json(Collection iterable) {
-        List<Object> list = new ArrayList<Object>();
+    private List<Object> coll2Json(Collection iterable, List<Object> list) {
         for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
             list.add(compile(it.next()));
         }

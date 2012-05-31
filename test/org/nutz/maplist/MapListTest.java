@@ -161,6 +161,7 @@ public class MapListTest {
         assertNotNull(MapListCell.cell(obj, "b"));
         assertEquals("b", MapListCell.cell(obj, "b.name"));
         assertEquals("a", MapListCell.cell(obj, "b.a.name"));
+        assertEquals(MapListCell.cell(obj, "b.a.b"), MapListCell.cell(obj, "b"));
     }
     
 }
