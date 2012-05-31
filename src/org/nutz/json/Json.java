@@ -164,10 +164,6 @@ public class Json {
 	 * @param format
 	 *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
 	 */
-//	public static void toJson(Writer writer, Object obj, JsonFormat format) {
-//	    toJson(writer, obj, format, null);
-//	}
-	
 	public static void toJson(Writer writer, Object obj, JsonFormat format) {
 		try {
             if (format == null)
