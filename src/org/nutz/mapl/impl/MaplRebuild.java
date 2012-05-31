@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl;
+package org.nutz.mapl.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,7 +11,7 @@ import java.util.Map;
  * 构建新的MapList结构对象, 根据path重建MapList结构
  * @author juqkai(juqkai@gmail.com)
  */
-public class MaplistRebuild{
+public class MaplRebuild{
     private String[] keys;
     private Object val;
     //数组索引
@@ -21,7 +21,7 @@ public class MaplistRebuild{
     //新MapList结构
     private Map<String, Object> newobj = new HashMap<String, Object>();
     
-    public MaplistRebuild(){
+    public MaplRebuild(){
         newobj.put("obj", null);
     }
     

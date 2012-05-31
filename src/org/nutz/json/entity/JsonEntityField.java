@@ -12,7 +12,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
-import org.nutz.maplist.Maplist;
+import org.nutz.mapl.Mapl;
 
 public class JsonEntityField {
 
@@ -123,7 +123,7 @@ public class JsonEntityField {
 
 	public Object createValue(Object holder, Object value) {
 		if (this.createBy == null)
-		    return Maplist.maplistToObj(value, genericType);
+		    return Mapl.maplistToObj(value, genericType);
 		try {
 			return holder.getClass().getMethod(createBy, Type.class, Object.class).invoke(holder, genericType, value);
 		} catch (Throwable e){

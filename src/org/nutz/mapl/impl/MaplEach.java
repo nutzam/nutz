@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl;
+package org.nutz.mapl.impl;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -8,7 +8,7 @@ import java.util.Map;
  * 递归MapList结构, 将路径与相应的值传递给子类进行处理.
  * @author juqkai(juqkai@gmail.com)
  */
-public abstract class MaplistEach {
+public abstract class MaplEach {
     //路径
     protected LinkedList<String> paths = new LinkedList<String>();
     protected LinkedList<Integer> arrayIndex = new LinkedList<Integer>();

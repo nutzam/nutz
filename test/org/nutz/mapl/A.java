@@ -1,4 +1,4 @@
-package org.nutz.maplist;
+package org.nutz.mapl;
 
 public class A {
     String name = "a";

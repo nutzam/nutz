@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl.convert;
+package org.nutz.mapl.impl.convert;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Type;
@@ -17,7 +17,7 @@ import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Context;
-import org.nutz.maplist.MaplistConvert;
+import org.nutz.mapl.MaplConvert;
 
 /**
  * 对象转换
@@ -25,7 +25,7 @@ import org.nutz.maplist.MaplistConvert;
  * @ TODO 具有循环引用的对象应该会出问题
  * @author juqkai(juqkai@gmail.com)
  */
-public class ObjConvertImpl implements MaplistConvert{
+public class ObjConvertImpl implements MaplConvert{
 
     //路径
     Stack<String> path = new Stack<String>();

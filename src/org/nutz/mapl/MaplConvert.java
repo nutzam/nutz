@@ -1,10 +1,10 @@
-package org.nutz.maplist;
+package org.nutz.mapl;
 
 /**
  * MapList转换器
  * @author juqkai(juqkai@gmail.com)
  */
-public interface MaplistConvert {
+public interface MaplConvert {
     /**
      * 转换
      * @param obj MapList结构对象

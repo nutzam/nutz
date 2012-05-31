@@ -1,15 +1,15 @@
-package org.nutz.maplist;
+package org.nutz.mapl;
 
 import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.nutz.maplist.impl.MaplistCell;
-import org.nutz.maplist.impl.MaplistMerge;
-import org.nutz.maplist.impl.compile.ObjCompileImpl;
-import org.nutz.maplist.impl.convert.FilterConvertImpl;
-import org.nutz.maplist.impl.convert.ObjConvertImpl;
-import org.nutz.maplist.impl.convert.StructureConvert;
+import org.nutz.mapl.impl.MaplCell;
+import org.nutz.mapl.impl.MaplMerge;
+import org.nutz.mapl.impl.compile.ObjCompileImpl;
+import org.nutz.mapl.impl.convert.FilterConvertImpl;
+import org.nutz.mapl.impl.convert.ObjConvertImpl;
+import org.nutz.mapl.impl.convert.StructureConvert;
 
 /**
  * 集合了对象转换合并等高级操作
@@ -17,7 +17,7 @@ import org.nutz.maplist.impl.convert.StructureConvert;
  * @author juqkai(juqkai@gmail.com)
  * 
  */
-public class Maplist {
+public class Mapl {
 	/**
 	 * 这个实现, 主要将 List, Map 的对象结构转换成真实的对象.
 	 * <p>
@@ -43,14 +43,14 @@ public class Maplist {
      * @return
      */
     public static Object cell(Object maplist, String path){
-        return MaplistCell.cell(maplist, path);
+        return MaplCell.cell(maplist, path);
     }
     
     //------------------------------------------------------------------
 
     /**
      * 转换器中间对象合并器<br/>
-     * 合并 {@link Maplist} 中定义的中间结构.<br/>
+     * 合并 {@link Mapl} 中定义的中间结构.<br/>
      * 规则:<br>
      * <ul>
      * <li>普通对象, 保存为List, 但是要去掉重复.
@@ -59,7 +59,7 @@ public class Maplist {
      * </ul>
      */
     public static Object merge(Object... maplists) {
-        return MaplistMerge.merge(maplists);
+        return MaplMerge.merge(maplists);
     }
     
     //------------------------------------------------------------------

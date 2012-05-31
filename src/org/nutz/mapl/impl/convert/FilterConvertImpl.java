@@ -1,13 +1,13 @@
-package org.nutz.maplist.impl.convert;
+package org.nutz.mapl.impl.convert;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MaplistConvert;
-import org.nutz.maplist.impl.MaplistEach;
-import org.nutz.maplist.impl.MaplistRebuild;
+import org.nutz.mapl.MaplConvert;
+import org.nutz.mapl.impl.MaplEach;
+import org.nutz.mapl.impl.MaplRebuild;
 
 /**
  * Json过滤, 
@@ -19,12 +19,12 @@ import org.nutz.maplist.impl.MaplistRebuild;
  * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class FilterConvertImpl extends MaplistEach implements MaplistConvert{
+public class FilterConvertImpl extends MaplEach implements MaplConvert{
     //处理列表
     private List<String> paths = new ArrayList<String>();
     //类型, 取名自exclude(排除), include(包含), false时为排除, true时为包含
     private boolean clude = false;
-    private MaplistRebuild build = new MaplistRebuild();
+    private MaplRebuild build = new MaplRebuild();
     
     @SuppressWarnings("unchecked")
     public FilterConvertImpl(String path) {

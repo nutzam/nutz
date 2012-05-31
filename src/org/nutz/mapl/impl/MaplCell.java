@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl;
+package org.nutz.mapl.impl;
 
 import java.util.Collection;
 import java.util.Map;
@@ -7,7 +7,7 @@ import java.util.Map;
  * MapList结构访问
  * @author juqkai(juqkai@gmail.com)
  */
-public class MaplistCell {
+public class MaplCell {
     /**
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
      */
@@ -16,7 +16,7 @@ public class MaplistCell {
         if(paths == null || paths.length == 0){
             paths = new String []{path};
         }
-        return new MaplistCell().cell(obj, paths, 0);
+        return new MaplCell().cell(obj, paths, 0);
     }
     
     private Object cell(Object obj, String[] paths, int index){

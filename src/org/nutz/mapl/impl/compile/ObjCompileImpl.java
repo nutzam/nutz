@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl.compile;
+package org.nutz.mapl.impl.compile;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Mirror;
-import org.nutz.maplist.MaplistCompile;
+import org.nutz.mapl.MaplCompile;
 
 /**
  * 将对象理解成Map+List
  * @author juqkai(juqkai@gmail.com)
  */
-public class ObjCompileImpl implements MaplistCompile<Object>{
+public class ObjCompileImpl implements MaplCompile<Object>{
     
     private Map<Object, Object> memo = new HashMap<Object, Object>();
     

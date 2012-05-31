@@ -14,7 +14,7 @@ import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.util.NutType;
-import org.nutz.maplist.Maplist;
+import org.nutz.mapl.Mapl;
 
 public class Json {
 
@@ -61,7 +61,7 @@ public class Json {
 	private static Object parse(Type type, Reader reader) {
 		Object obj = new JsonCompileImpl().parse(reader);
 		if (type != null)
-			return Maplist.maplistToObj(obj, type);
+			return Mapl.maplistToObj(obj, type);
 		return obj;
 	}
 

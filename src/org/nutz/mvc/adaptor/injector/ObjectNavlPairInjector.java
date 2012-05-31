@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
-import org.nutz.maplist.Maplist;
+import org.nutz.mapl.Mapl;
 import org.nutz.mvc.adaptor.ParamExtractor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.adaptor.Params;
@@ -50,7 +50,7 @@ public class ObjectNavlPairInjector implements ParamInjector {
 			}
 		}
 		Object model = no.get();
-		Object re = Maplist.maplistToObj(model, type);
+		Object re = Mapl.maplistToObj(model, type);
 		return re;
 //		return no.inject(mirror);
 	}

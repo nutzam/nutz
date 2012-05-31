@@ -2,12 +2,12 @@ package org.nutz.lang;
 
 import java.lang.reflect.Type;
 
-import org.nutz.maplist.Maplist;
+import org.nutz.mapl.Mapl;
 
 /**
  * 集合了对象转换合并等高级操作
  * 
- * 不再使用, 已将所有功能转移支 {@link Maplist}
+ * 不再使用, 已将所有功能转移支 {@link Mapl}
  * @author juqkai(juqkai@gmail.com)
  * 
  */
@@ -23,11 +23,11 @@ public class Objs {
 	 * <li>合并 map , 如果 key 值相同, 那么后一个值覆盖前面的值.递归合并
 	 * <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
 	 * </ul>
-	 * * 请使用 {@link Maplist}.merge 方法
+	 * * 请使用 {@link Mapl}.merge 方法
      */
     @Deprecated
 	public static Object merge(Object... objs) {
-	    return Maplist.merge(objs);
+	    return Mapl.merge(objs);
 	}
 
 	/**
@@ -41,20 +41,20 @@ public class Objs {
 	 * <li>List直接存储为List
 	 * <li>只要不是List, Map 存储的, 都认为是可以直接写入对象的. TODO 这点可以调整一下.
 	 * </ul>
-	 * * 请使用 {@link Maplist}.maplistToObj 方法
+	 * * 请使用 {@link Mapl}.maplistToObj 方法
      */
     @Deprecated
 	public static Object convert(Object model, Type type) {
-	    return Maplist.maplistToObj(model, type);
+	    return Mapl.maplistToObj(model, type);
 	}
 	
     //-------------------------------------提取数据-----------------------------------------
     /**
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
-     * 请使用 {@link Maplist}.cell 方法
+     * 请使用 {@link Mapl}.cell 方法
      */
 	@Deprecated
     public static Object cell(Object obj, String path){
-        return Maplist.cell(obj, path);
+        return Mapl.cell(obj, path);
     }
 }

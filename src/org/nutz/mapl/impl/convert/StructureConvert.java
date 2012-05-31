@@ -1,4 +1,4 @@
-package org.nutz.maplist.impl.convert;
+package org.nutz.mapl.impl.convert;
 
 import java.io.Reader;
 import java.util.HashMap;
@@ -8,9 +8,9 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MaplistConvert;
-import org.nutz.maplist.impl.MaplistEach;
-import org.nutz.maplist.impl.MaplistRebuild;
+import org.nutz.mapl.MaplConvert;
+import org.nutz.mapl.impl.MaplEach;
+import org.nutz.mapl.impl.MaplRebuild;
 
 /**
  * MapList结构转换.
@@ -60,11 +60,11 @@ import org.nutz.maplist.impl.MaplistRebuild;
  * </pre>
  * @author juqkai(juqkai@gmail.com)
  */
-public class StructureConvert extends MaplistEach implements MaplistConvert{
+public class StructureConvert extends MaplEach implements MaplConvert{
     //关系
     private Map<String, List<String>> relation = new HashMap<String, List<String>>();
     
-    private MaplistRebuild structure = new MaplistRebuild();
+    private MaplRebuild structure = new MaplRebuild();
     
     /**
      * 
