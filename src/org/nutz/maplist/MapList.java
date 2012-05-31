@@ -4,8 +4,8 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.nutz.maplist.impl.MapListCell;
-import org.nutz.maplist.impl.MapListMerge;
+import org.nutz.maplist.impl.MaplistCell;
+import org.nutz.maplist.impl.MaplistMerge;
 import org.nutz.maplist.impl.compile.ObjCompileImpl;
 import org.nutz.maplist.impl.convert.FilterConvertImpl;
 import org.nutz.maplist.impl.convert.ObjConvertImpl;
@@ -39,7 +39,7 @@ public class Maplist {
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
      */
     public static Object cell(Object maplist, String path){
-        return MapListCell.cell(maplist, path);
+        return MaplistCell.cell(maplist, path);
     }
     
     //------------------------------------------------------------------
@@ -55,7 +55,7 @@ public class Maplist {
      * </ul>
      */
     public static Object merge(Object... maplist) {
-        return MapListMerge.merge(maplist);
+        return MaplistMerge.merge(maplist);
     }
     
     //------------------------------------------------------------------

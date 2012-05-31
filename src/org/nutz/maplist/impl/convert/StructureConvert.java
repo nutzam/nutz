@@ -8,9 +8,9 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MapListConvert;
-import org.nutz.maplist.impl.MapListEach;
-import org.nutz.maplist.impl.MapListRebuild;
+import org.nutz.maplist.MaplistConvert;
+import org.nutz.maplist.impl.MaplistEach;
+import org.nutz.maplist.impl.MaplistRebuild;
 
 /**
  * MapList结构转换.
@@ -60,11 +60,11 @@ import org.nutz.maplist.impl.MapListRebuild;
  * </pre>
  * @author juqkai(juqkai@gmail.com)
  */
-public class StructureConvert extends MapListEach implements MapListConvert{
+public class StructureConvert extends MaplistEach implements MaplistConvert{
     //关系
     private Map<String, List<String>> relation = new HashMap<String, List<String>>();
     
-    private MapListRebuild structure = new MapListRebuild();
+    private MaplistRebuild structure = new MaplistRebuild();
     
     /**
      * 

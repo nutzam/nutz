@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
-import org.nutz.maplist.MapListConvert;
-import org.nutz.maplist.impl.MapListEach;
-import org.nutz.maplist.impl.MapListRebuild;
+import org.nutz.maplist.MaplistConvert;
+import org.nutz.maplist.impl.MaplistEach;
+import org.nutz.maplist.impl.MaplistRebuild;
 
 /**
  * Json过滤, 
@@ -19,12 +19,12 @@ import org.nutz.maplist.impl.MapListRebuild;
  * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class FilterConvertImpl extends MapListEach implements MapListConvert{
+public class FilterConvertImpl extends MaplistEach implements MaplistConvert{
     //处理列表
     private List<String> paths = new ArrayList<String>();
     //类型, 取名自exclude(排除), include(包含), false时为排除, true时为包含
     private boolean clude = false;
-    private MapListRebuild build = new MapListRebuild();
+    private MaplistRebuild build = new MaplistRebuild();
     
     @SuppressWarnings("unchecked")
     public FilterConvertImpl(String path) {

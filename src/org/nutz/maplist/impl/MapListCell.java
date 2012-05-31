@@ -7,7 +7,7 @@ import java.util.Map;
  * MapList结构访问
  * @author juqkai(juqkai@gmail.com)
  */
-public class MapListCell {
+public class MaplistCell {
     /**
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
      */
@@ -16,7 +16,7 @@ public class MapListCell {
         if(paths == null || paths.length == 0){
             paths = new String []{path};
         }
-        return new MapListCell().cell(obj, paths, 0);
+        return new MaplistCell().cell(obj, paths, 0);
     }
     
     private Object cell(Object obj, String[] paths, int index){

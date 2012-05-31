@@ -15,13 +15,13 @@ import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
 import org.nutz.lang.Mirror;
-import org.nutz.maplist.MapListCompile;
+import org.nutz.maplist.MaplistCompile;
 
 /**
  * 将对象理解成Map+List
  * @author juqkai(juqkai@gmail.com)
  */
-public class ObjCompileImpl implements MapListCompile<Object>{
+public class ObjCompileImpl implements MaplistCompile<Object>{
     
     private Map<Object, Object> memo = new HashMap<Object, Object>();
     

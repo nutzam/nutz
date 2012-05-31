@@ -4,7 +4,7 @@ package org.nutz.maplist;
  * MapList转换器
  * @author juqkai(juqkai@gmail.com)
  */
-public interface MapListConvert {
+public interface MaplistConvert {
     /**
      * 转换
      * @param obj MapList结构对象

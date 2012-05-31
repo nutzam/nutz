@@ -8,13 +8,13 @@ import org.nutz.json.JsonFormat;
 import org.nutz.json.impl.JsonRenderImpl;
 import org.nutz.lang.Lang;
 import org.nutz.lang.stream.StringWriter;
-import org.nutz.maplist.MapListConvert;
+import org.nutz.maplist.MaplistConvert;
 
 /**
  * 将MapList转换成Json
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonConvertImpl implements MapListConvert{
+public class JsonConvertImpl implements MaplistConvert{
     private JsonFormat format = null;
     
     public JsonConvertImpl() {

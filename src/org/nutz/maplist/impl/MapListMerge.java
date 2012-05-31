@@ -11,9 +11,9 @@ import org.nutz.maplist.Maplist;
  * MapList合并
  * @author juqkai(juqkai@gmail.com)
  */
-public class MapListMerge {
+public class MaplistMerge {
     public static Object merge(Object... objs){
-        return new MapListMerge().mergeItems(objs);
+        return new MaplistMerge().mergeItems(objs);
     }
     /**
      * 转换器中间对象合并器<br/>

@@ -10,7 +10,7 @@ import java.util.Map;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
-import org.nutz.maplist.MapListCompile;
+import org.nutz.maplist.MaplistCompile;
 
 /**
  * 将json理解为Map+List
@@ -18,7 +18,7 @@ import org.nutz.maplist.MapListCompile;
  * @author wendal
  *
  */
-public class JsonCompileImpl implements JsonParser, MapListCompile<Reader> {
+public class JsonCompileImpl implements JsonParser, MaplistCompile<Reader> {
 	
 	private int cursor;
 	private Reader reader;
