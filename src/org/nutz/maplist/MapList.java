@@ -33,10 +33,14 @@ public class Maplist {
 	public static Object maplistToObj(Object maplist, Type type) {
 	    return new ObjConvertImpl(type).convert(maplist);
 	}
-	//------------------------------------------------------------------
 	
+	
+	//------------------------------------------------------------------
     /**
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
+     * @param maplist
+     * @param path 路径
+     * @return
      */
     public static Object cell(Object maplist, String path){
         return MaplistCell.cell(maplist, path);
@@ -60,7 +64,9 @@ public class Maplist {
     
     //------------------------------------------------------------------
     /**
-     * MapList过滤器
+     * MapList过滤器, 详情参见: {@link FilterConvertImpl}
+     * @param maplist maplist结构的对象
+     * @param paths 过滤列表
      * @return 
      */
     public static Object includeFilter(Object maplist, List<String> paths){
@@ -69,8 +75,10 @@ public class Maplist {
         return filter.convert(maplist);
     }
     /**
-     * MapList过滤器
-     * @return 
+     * MapList过滤器, 详情参见: {@link FilterConvertImpl}
+     * @param maplist maplist结构的对象
+     * @param paths 过滤列表
+     * @return
      */
     public static Object excludeFilter(Object maplist, List<String> paths){
         FilterConvertImpl filter = new FilterConvertImpl(paths);
@@ -82,6 +90,8 @@ public class Maplist {
     
     /**
      * 结构转换, 详情参见: {@link StructureConvert}
+     * @param maplist maplist结构的对象
+     * @param model 转换模板, 一个JSON格式的reader
      * @return
      */
     public static Object convert(Object maplist, Reader model){
@@ -90,6 +100,8 @@ public class Maplist {
     }
     /**
      * 结构转换, 详情参见: {@link StructureConvert}
+     * @param maplist maplist结构的对象
+     * @param model 转换模板, 也是一个规定格式的maplist结构
      * @return
      */
     public static Object convert(Object maplist, Object model){
@@ -99,6 +111,7 @@ public class Maplist {
     //------------------------------------------------------------------
     /**
      * 将对象转换成Maplist结构
+     * @param obj 待转换的对象
      */
     public static Object toMaplist(Object obj){
         ObjCompileImpl convert = new ObjCompileImpl();
