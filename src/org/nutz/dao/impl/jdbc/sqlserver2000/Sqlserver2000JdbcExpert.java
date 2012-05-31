@@ -2,7 +2,6 @@ package org.nutz.dao.impl.jdbc.sqlserver2000;
 
 import java.sql.ResultSet;
 
-import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.jdbc.sqlserver2005.Sqlserver2005JdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.sql.Pojo;
@@ -24,11 +23,4 @@ public class Sqlserver2000JdbcExpert extends Sqlserver2005JdbcExpert {
 		sql.getContext().setResultSetType(ResultSet.TYPE_SCROLL_INSENSITIVE);
 	}
 	
-	protected String evalFieldType(MappingField mf) {
-		switch (mf.getColumnType()) {
-		case BINARY:
-			return "BINARY";
-		}
-		return super.evalFieldType(mf);
-	}
 }
