@@ -64,7 +64,7 @@ public class Maplist {
     
     //------------------------------------------------------------------
     /**
-     * MapList过滤器, 详情参见: {@link FilterConvertImpl}
+     * 包含MapList过滤器, 详情参见: {@link FilterConvertImpl}
      * @param maplist maplist结构的对象
      * @param paths 过滤列表
      * @return 
@@ -75,7 +75,7 @@ public class Maplist {
         return filter.convert(maplist);
     }
     /**
-     * MapList过滤器, 详情参见: {@link FilterConvertImpl}
+     * 排除MapList过滤器, 详情参见: {@link FilterConvertImpl}
      * @param maplist maplist结构的对象
      * @param paths 过滤列表
      * @return
