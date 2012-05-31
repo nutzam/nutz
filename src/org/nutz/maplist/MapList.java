@@ -58,8 +58,8 @@ public class Maplist {
      * <li>list不做递归合并, 只做简单的合并, 清除重复的操作.
      * </ul>
      */
-    public static Object merge(Object... maplist) {
-        return MaplistMerge.merge(maplist);
+    public static Object merge(Object... maplists) {
+        return MaplistMerge.merge(maplists);
     }
     
     //------------------------------------------------------------------
