@@ -79,7 +79,24 @@ public class Scans {
 	}
 
 	public void registerLocation(Class<?> klass) {
-		registerLocation(klass.getProtectionDomain().getCodeSource().getLocation());
+		if (klass == null)
+			return;
+		try {
+			registerLocation(klass.getProtectionDomain().getCodeSource().getLocation());
+		}	catch (Throwable e) { //Android上会死
+			String classFile = klass.getName().replace('.', '/') + ".class";
+			URL url = klass.getClassLoader().getResource(classFile);
+			if (url != null) { //基本上不可能为null
+				String str = url.toString();
+				str = str.substring(0, str.length() - classFile.length());
+				try {
+					registerLocation(new URL(str));
+				} catch (Throwable e2) {
+					if (log.isInfoEnabled())
+						log.info("Fail to registerLocation --> " + str, e);
+				}
+			}
+		}
 	}
 
 	public void registerLocation(URL url) {
