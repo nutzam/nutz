@@ -153,6 +153,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
 
 	@Override
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case BOOLEAN:
 			return "char(1) check (" + mf.getColumnName() + " in(0,1))";

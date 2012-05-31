@@ -61,5 +61,4 @@ public enum ColType {
 	 * 浮点:根据字段的宽度和精度来决定具体的数据库字段类型
 	 */
 	FLOAT
-
 }

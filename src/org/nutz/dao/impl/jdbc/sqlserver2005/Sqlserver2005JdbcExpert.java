@@ -108,6 +108,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 
 	@Override
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case BOOLEAN:
 			return "BIT";

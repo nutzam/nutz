@@ -49,6 +49,8 @@ public class DerbyJdbcExpert extends MysqlJdbcExpert {
 	}
 
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case INT : {
 			int width = mf.getWidth();
