@@ -17,7 +17,9 @@ import org.nutz.maplist.MapListConvert;
 public class JsonConvertImpl implements MapListConvert{
     private JsonFormat format = null;
     
-    public JsonConvertImpl() {}
+    public JsonConvertImpl() {
+        format = new JsonFormat();
+    }
     public JsonConvertImpl(JsonFormat format) {
         this.format = format;
     }

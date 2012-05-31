@@ -1,6 +1,9 @@
 package org.nutz.maplist;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +13,12 @@ import org.junit.Test;
 import org.nutz.json.Abc;
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
+import org.nutz.lang.stream.StringReader;
 import org.nutz.maplist.impl.MapListCell;
 import org.nutz.maplist.impl.compile.ObjCompileImpl;
 import org.nutz.maplist.impl.convert.FilterConvertImpl;
+import org.nutz.maplist.impl.convert.JsonConvertImpl;
+import org.nutz.maplist.impl.convert.StructureConvert;
 
 /**
  * MapList测试
@@ -23,6 +29,7 @@ public class MapListTest {
     /**
      * 测试MAP提取
      */
+    @Test
     public void cellTest(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"));
         assertEquals("dtri", MapListCell.cell(dest, "company.name"));
@@ -164,4 +171,86 @@ public class MapListTest {
         assertEquals(MapListCell.cell(obj, "b.a.b"), MapListCell.cell(obj, "b"));
     }
     
+    
+    
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    /**
+     * 结构转换测试
+     */
+    /**
+     * 简单转换
+     */
+    @Test
+    public void structureConvertSimple(){
+        String json = "{'name':'jk', 'age':12}";
+        String model = "{'name':'姓名', 'age':'年龄'}";
+        String dest = "{\"姓名\":\"jk\",\"年龄\":12}";
+        StructureConvert convert = new StructureConvert(new StringReader(model));
+        Object obj = convert.convert(Json.fromJson(new StringReader(json)));
+        assertEquals("jk", MapListCell.cell(obj, "姓名"));
+        assertEquals(12, MapListCell.cell(obj, "年龄"));
+        assertEquals(dest, new JsonConvertImpl().convert(obj));
+    }
+    
+    /**
+     * 数组转换
+     */
+    @Test
+    public void structureConvertSimpleArray(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        String model = "{'user':[{'name':'user[].姓名', 'age':'user[].年龄'}]}";
+        StructureConvert convert = new StructureConvert(new StringReader(model));
+        Object obj = convert.convert(Json.fromJson(new StringReader(json)));
+        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
+        assertEquals(12, MapListCell.cell(obj, "user[0].年龄"));
+        assertEquals(5, MapListCell.cell(obj, "user[1].年龄"));
+    }
+    
+    /**
+     * 多路径转换
+     */
+    @Test
+    public void structureConvertMultiPath(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        String model = "{'user':[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]}";
+        StructureConvert convert = new StructureConvert(new StringReader(model));
+        Object obj = convert.convert(Json.fromJson(new StringReader(json)));
+        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
+        assertEquals("jk", MapListCell.cell(obj, "people[0].name"));
+        assertEquals(5, MapListCell.cell(obj, "people[1].age"));
+    }
+    
+    /**
+     * 根路径为Array的转换
+     */
+    @Test
+    public void structureConvertRoot2Array(){
+        String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
+        String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
+        String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
+        StructureConvert convert = new StructureConvert(new StringReader(model));
+        Object obj = convert.convert(Json.fromJson(new StringReader(json)));
+        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
+        assertEquals("jk", MapListCell.cell(obj, "people[0].name"));
+        assertEquals(5, MapListCell.cell(obj, "people[1].age"));
+        assertEquals(dest, new JsonConvertImpl().convert(obj));
+    }
+    /**
+     * Array转换成根array结构
+     */
+    @Test
+    public void structureConvertArray2Root(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        String model = "{'user':[{'name':['[].name'], 'age':'[].age'}]}";
+        String dest = "[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}]";
+        StructureConvert convert = new StructureConvert(new StringReader(model));
+        Object obj = convert.convert(Json.fromJson(new StringReader(json)));
+        assertEquals("jk", MapListCell.cell(obj, "[0].name"));
+        assertEquals(5, MapListCell.cell(obj, "[1].age"));
+        assertEquals(dest, new JsonConvertImpl().convert(obj));
+    }
+
 }
