@@ -26,11 +26,11 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     private Map<Object, Object> memo = new HashMap<Object, Object>();
     
     @SuppressWarnings("rawtypes")
-    public Object compile(Object obj) {
+    public Object parse(Object obj) {
         if (null == obj) {
             return null;
         } else if (obj instanceof ObjCompileImpl) {
-            return ((ObjCompileImpl)obj).compile(null);
+            return ((ObjCompileImpl)obj).parse(null);
         } else if (obj instanceof Class) {
             return obj;
         } else if (obj instanceof Mirror) {
@@ -124,7 +124,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
                     // 递归
                     Mirror<?> mirror = Mirror.me(value);
                     if (mirror.isPojo()) {
-                        value = compile(value);
+                        value = parse(value);
                     }
                 }
                 // 加入输出列表 ...
@@ -145,7 +145,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     private List<Object> array2Json(Object obj, List<Object> list) {
         int len = Array.getLength(obj);
         for (int i = 0; i < len; i++) {
-            list.add(compile(Array.get(obj, i)));
+            list.add(parse(Array.get(obj, i)));
         }
         return list;
     }
@@ -153,7 +153,7 @@ public class ObjCompileImpl implements MapListCompile<Object>{
     @SuppressWarnings("rawtypes")
     private List<Object> coll2Json(Collection iterable, List<Object> list) {
         for (Iterator<?> it = iterable.iterator(); it.hasNext();) {
-            list.add(compile(it.next()));
+            list.add(parse(it.next()));
         }
         return list;
     }

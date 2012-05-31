@@ -1,6 +1,5 @@
 package org.nutz.json;
 
-import java.io.IOException;
 import java.io.Reader;
 
 /**
@@ -8,6 +7,6 @@ import java.io.Reader;
  */
 public interface JsonParser {
 
-	Object parse(Reader reader) throws IOException, JsonException;
+	Object parse(Reader reader) throws Exception;
 	
 }

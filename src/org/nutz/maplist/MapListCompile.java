@@ -5,5 +5,5 @@ package org.nutz.maplist;
  * @author juqkai(juqkai@gmail.com)
  */
 public interface MapListCompile<T> {
-    public Object compile(T t);
+    public Object parse(T t);
 }

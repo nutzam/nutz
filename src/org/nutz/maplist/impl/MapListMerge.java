@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.maplist.MapList;
+import org.nutz.maplist.Maplist;
 
 /**
  * MapList合并
@@ -17,7 +17,7 @@ public class MapListMerge {
     }
     /**
      * 转换器中间对象合并器<br/>
-     * 合并 {@link MapList} 中定义的中间结构.<br/>
+     * 合并 {@link Maplist} 中定义的中间结构.<br/>
      * 规则:<br>
      * <ul>
      * <li>普通对象, 保存为List, 但是要去掉重复.

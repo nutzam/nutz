@@ -14,7 +14,6 @@ import org.nutz.json.Abc;
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringReader;
-import org.nutz.maplist.impl.MapListCell;
 import org.nutz.maplist.impl.compile.ObjCompileImpl;
 import org.nutz.maplist.impl.convert.FilterConvertImpl;
 import org.nutz.maplist.impl.convert.JsonConvertImpl;
@@ -32,8 +31,8 @@ public class MapListTest {
     @Test
     public void cellTest(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/person.txt"));
-        assertEquals("dtri", MapListCell.cell(dest, "company.name"));
-        assertEquals("Dao", MapListCell.cell(dest, "company.creator.name"));
+        assertEquals("dtri", MapList.cell(dest, "company.name"));
+        assertEquals("Dao", MapList.cell(dest, "company.creator.name"));
     }
     /**
      * 测试提取LIST下的值
@@ -41,8 +40,8 @@ public class MapListTest {
     @Test
     public void cellArrayTest(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
-        assertEquals("1", MapListCell.cell(dest, "users[0].name"));
-        assertEquals("2", MapListCell.cell(dest, "people[1].name"));
+        assertEquals("1", MapList.cell(dest, "users[0].name"));
+        assertEquals("2", MapList.cell(dest, "people[1].name"));
     }
     /**
      * 测试提取LIST下的值
@@ -50,8 +49,8 @@ public class MapListTest {
     @Test
     public void cellArrayTest1(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
-        assertEquals("1", MapListCell.cell(dest, "users.0.name"));
-        assertEquals("2", MapListCell.cell(dest, "people.1.name"));
+        assertEquals("1", MapList.cell(dest, "users.0.name"));
+        assertEquals("2", MapList.cell(dest, "people.1.name"));
     }
     /**
      * 测试提取LIST
@@ -59,8 +58,8 @@ public class MapListTest {
     @Test
     public void cellArrayTest2(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
-        assertTrue(MapListCell.cell(dest, "users") instanceof List);
-        List<?> list = (List<?>)MapListCell.cell(dest, "users");
+        assertTrue(MapList.cell(dest, "users") instanceof List);
+        List<?> list = (List<?>)MapList.cell(dest, "users");
         assertEquals(2, list.size());
     }
     /**
@@ -69,9 +68,9 @@ public class MapListTest {
     @Test
     public void cellArrayTest3(){
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
-        assertTrue(MapListCell.cell(dest, "users") instanceof List);
-        List<?> list = (List<?>)MapListCell.cell(dest, "users");
-        assertEquals("1", MapListCell.cell(list, "[0].name"));
+        assertTrue(MapList.cell(dest, "users") instanceof List);
+        List<?> list = (List<?>)MapList.cell(dest, "users");
+        assertEquals("1", MapList.cell(list, "[0].name"));
     }
     /**
      * 包含过滤测试
@@ -84,8 +83,8 @@ public class MapListTest {
         filter.useIncludeModel();
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
         Object obj = filter.convert(dest);
-        assertNull(MapListCell.cell(obj, "people"));
-        assertEquals("1", MapListCell.cell(obj, "users[0].name"));
+        assertNull(MapList.cell(obj, "people"));
+        assertEquals("1", MapList.cell(obj, "users[0].name"));
     }
     /**
      * 排除过滤测试
@@ -98,8 +97,8 @@ public class MapListTest {
 //        filter.useExcludeModel();
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
         Object obj = filter.convert(dest);
-        assertNull(MapListCell.cell(obj, "users[0].name"));
-        assertEquals(12, MapListCell.cell(obj, "users[0].age"));
+        assertNull(MapList.cell(obj, "users[0].name"));
+        assertEquals(12, MapList.cell(obj, "users[0].age"));
     }
     /**
      * 排除过滤测试
@@ -112,8 +111,8 @@ public class MapListTest {
 //        filter.useExcludeModel();
         Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
         Object obj = filter.convert(dest);
-        assertNull(MapListCell.cell(obj, "users"));
-        assertEquals(12, MapListCell.cell(obj, "people[0].age"));
+        assertNull(MapList.cell(obj, "users"));
+        assertEquals(12, MapList.cell(obj, "people[0].age"));
     }
     
     /**
@@ -125,10 +124,10 @@ public class MapListTest {
         abc.id = 1;
         abc.name = "jk";
         ObjCompileImpl convert = new ObjCompileImpl();
-        Object obj = convert.compile(abc);
+        Object obj = convert.parse(abc);
         assertTrue(obj instanceof Map);
-        assertEquals(1, MapListCell.cell(obj, "id"));
-        assertEquals("jk", MapListCell.cell(obj, "name"));
+        assertEquals(1, MapList.cell(obj, "id"));
+        assertEquals("jk", MapList.cell(obj, "name"));
     }
     /**
      * 对象转MapList测试
@@ -146,10 +145,10 @@ public class MapListTest {
         list.add(b);
         
         ObjCompileImpl compile = new ObjCompileImpl();
-        Object obj = compile.compile(list);
+        Object obj = compile.parse(list);
         assertTrue(obj instanceof List);
-        assertEquals(1, MapListCell.cell(obj, "[0].id"));
-        assertEquals("juqkai", MapListCell.cell(obj, "1.name"));
+        assertEquals(1, MapList.cell(obj, "[0].id"));
+        assertEquals("juqkai", MapList.cell(obj, "1.name"));
     }
     
     /**
@@ -163,12 +162,12 @@ public class MapListTest {
         b.a = a;
         
         ObjCompileImpl compile = new ObjCompileImpl();
-        Object obj = compile.compile(a);
+        Object obj = compile.parse(a);
         assertTrue(obj instanceof Map);
-        assertNotNull(MapListCell.cell(obj, "b"));
-        assertEquals("b", MapListCell.cell(obj, "b.name"));
-        assertEquals("a", MapListCell.cell(obj, "b.a.name"));
-        assertEquals(MapListCell.cell(obj, "b.a.b"), MapListCell.cell(obj, "b"));
+        assertNotNull(MapList.cell(obj, "b"));
+        assertEquals("b", MapList.cell(obj, "b.name"));
+        assertEquals("a", MapList.cell(obj, "b.a.name"));
+        assertEquals(MapList.cell(obj, "b.a.b"), MapList.cell(obj, "b"));
     }
     
     
@@ -187,8 +186,8 @@ public class MapListTest {
         String dest = "{\"姓名\":\"jk\",\"年龄\":12}";
         StructureConvert convert = new StructureConvert(new StringReader(model));
         Object obj = convert.convert(Json.fromJson(new StringReader(json)));
-        assertEquals("jk", MapListCell.cell(obj, "姓名"));
-        assertEquals(12, MapListCell.cell(obj, "年龄"));
+        assertEquals("jk", MapList.cell(obj, "姓名"));
+        assertEquals(12, MapList.cell(obj, "年龄"));
         assertEquals(dest, new JsonConvertImpl().convert(obj));
     }
     
@@ -201,10 +200,10 @@ public class MapListTest {
         String model = "{'user':[{'name':'user[].姓名', 'age':'user[].年龄'}]}";
         StructureConvert convert = new StructureConvert(new StringReader(model));
         Object obj = convert.convert(Json.fromJson(new StringReader(json)));
-        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
-        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
-        assertEquals(12, MapListCell.cell(obj, "user[0].年龄"));
-        assertEquals(5, MapListCell.cell(obj, "user[1].年龄"));
+        assertEquals("jk", MapList.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapList.cell(obj, "user[1].姓名"));
+        assertEquals(12, MapList.cell(obj, "user[0].年龄"));
+        assertEquals(5, MapList.cell(obj, "user[1].年龄"));
     }
     
     /**
@@ -216,10 +215,10 @@ public class MapListTest {
         String model = "{'user':[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]}";
         StructureConvert convert = new StructureConvert(new StringReader(model));
         Object obj = convert.convert(Json.fromJson(new StringReader(json)));
-        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
-        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
-        assertEquals("jk", MapListCell.cell(obj, "people[0].name"));
-        assertEquals(5, MapListCell.cell(obj, "people[1].age"));
+        assertEquals("jk", MapList.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapList.cell(obj, "user[1].姓名"));
+        assertEquals("jk", MapList.cell(obj, "people[0].name"));
+        assertEquals(5, MapList.cell(obj, "people[1].age"));
     }
     
     /**
@@ -232,10 +231,10 @@ public class MapListTest {
         String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
         StructureConvert convert = new StructureConvert(new StringReader(model));
         Object obj = convert.convert(Json.fromJson(new StringReader(json)));
-        assertEquals("jk", MapListCell.cell(obj, "user[0].姓名"));
-        assertEquals("nutz", MapListCell.cell(obj, "user[1].姓名"));
-        assertEquals("jk", MapListCell.cell(obj, "people[0].name"));
-        assertEquals(5, MapListCell.cell(obj, "people[1].age"));
+        assertEquals("jk", MapList.cell(obj, "user[0].姓名"));
+        assertEquals("nutz", MapList.cell(obj, "user[1].姓名"));
+        assertEquals("jk", MapList.cell(obj, "people[0].name"));
+        assertEquals(5, MapList.cell(obj, "people[1].age"));
         assertEquals(dest, new JsonConvertImpl().convert(obj));
     }
     /**
@@ -248,8 +247,8 @@ public class MapListTest {
         String dest = "[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}]";
         StructureConvert convert = new StructureConvert(new StringReader(model));
         Object obj = convert.convert(Json.fromJson(new StringReader(json)));
-        assertEquals("jk", MapListCell.cell(obj, "[0].name"));
-        assertEquals(5, MapListCell.cell(obj, "[1].age"));
+        assertEquals("jk", MapList.cell(obj, "[0].name"));
+        assertEquals(5, MapList.cell(obj, "[1].age"));
         assertEquals(dest, new JsonConvertImpl().convert(obj));
     }
 
