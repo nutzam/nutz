@@ -1,21 +1,21 @@
-#title: Maplist结构 
+#title: Mapl.构 
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 #author:juqkai(juqkai@gmail.com)
 #index:0,1
 ------------------------------------------------------------------------
-为什么需要 Maplist结构
+为什么需要 Mapl.构
     
-    一直以来都没有刻意的去思考说需要 Maplist结构 这样的东西. 最初都是 wendal 在重写JSON的时候, 将JSON理解成了Maplist结构, 然后突然在某一天发现, 咦, Maplist好象还可以这么用, 那么用, 慢慢的, 以Maplist为基础的小功能点越来越多, 已经不能够完全的与JSON概念协调, 所以才有了这样一个中间结构.
+    一直以来都没有刻意的去思考说需要 Mapl.构 这样的东西. 最初都是 wendal 在重写JSON的时候, 将JSON理解成了Mapl.构, 然后突然在某一天发现, 咦, Mapl.象还可以这么用, 那么用, 慢慢的, 以Mapl.基础的小功能点越来越多, 已经不能够完全的与JSON概念协调, 所以才有了这样一个中间结构.
 
-    恩, 上面那段是给灰太狼, wendal看的. 我想你肯定看得头有点大, 要不我再说直白点, Maplist结构 就是为Json服务的, 为什么呢? 妈的, Json.fromJson()忒难用了, 要是只给它一个Reader, 而不给Type, 那它给我返回的就是 Maplist结构 , 苍天呀, 大地呀, 烦都烦死了. 我要取其中的某个值, 我得遍历N层的Map, List, 每次写这种东西的时候, 我都想哭, 所以干脆对它封装吧, 越封越多, 然后就有了这玩意...
+    恩, 上面那段是给灰太狼, wendal看的. 我想你肯定看得头有点大, 要不我再说直白点, Mapl.构 就是为Json服务的, 为什么呢? 妈的, Json.fromJson()忒难用了, 要是只给它一个Reader, 而不给Type, 那它给我返回的就是 Mapl.构 , 苍天呀, 大地呀, 烦都烦死了. 我要取其中的某个值, 我得遍历N层的Map, List, 每次写这种东西的时候, 我都想哭, 所以干脆对它封装吧, 越封越多, 然后就有了这玩意...
 
     当然, 它也与EL一样{#0000AA;* 满足一小撮人的一小撮要求}
 
 ------------------------------------------------------------------------
-什么是 Maplist结构 呢?
+什么是 Mapl.构 呢?
     
-    一种以 Map, List 接口对象所组织起来的结构体系. 类似于JSON结构便于JAVA在内存中处理的结构. 主要提供键值对, 与列表的有机组合, 因这种结构只由Map, List组成, 因些称其为Maplist结构.
+    一种以 Map, List 接口对象所组织起来的结构体系. 类似于JSON结构便于JAVA在内存中处理的结构. 主要提供键值对, 与列表的有机组合, 因这种结构只由Map, List组成, 因些称其为Mapl.构.
 
     {{{<java>
     Map a = new HashMap();
@@ -32,13 +32,13 @@
     d.put("items", list);
     }}}
     
-    通过上面的代码我们就组织了一个Maplist结构, 它等效于以下的JSON文档:
+    通过上面的代码我们就组织了一个Mapl.构, 它等效于以下的JSON文档:
 
     {{{<json>
     {"items":[{"name":"a"},{"name":"b"},{"name":"c"}]}
     }}}
 
-    当然, Maplist不仅可以用来表示JSON, 也可以用来表示JAVA对象的结构, 然后有了Maplist后, 你会发现, 做转换, 合并, 都是非常轻松滴~~~ 
+    当然, Mapl.仅可以用来表示JSON, 也可以用来表示JAVA对象的结构, 然后有了Mapl., 你会发现, 做转换, 合并, 都是非常轻松滴~~~ 
 
     具体规则:
     *对象以Map存储, key为属性名, value为属性值
@@ -47,9 +47,9 @@
     *List直接存储为List
     *只要不是List, Map存储的, 都认为是可以直接写入对象的
 ------------------------------------------------------------------------
-Maplist 转 对象
+Mapl.转 对象
     
-    也就是根据Maplist以及Type信息转换成一个Type的实体对象了啦, 直接看例子:
+    也就是根据Mapl.及Type信息转换成一个Type的实体对象了啦, 直接看例子:
     {{{<java>
     class A{
         String name;
@@ -62,18 +62,18 @@ Maplist 转 对象
     class C{
         public static void main(String args[]){
 	    String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-	    //这样得到的就是Maplist结构的数据了.
+	    //这样得到的就是Mapl.构的数据了.
 	    Object obj = Json.fromJson(json);
 	    
-	    B b = Maplist.maplistToObj(obj, B.class);
+	    B b = Mapl.maplistToObj(obj, B.class);
 	}
     }
     }}}
     
-    通过上面的 Maplist.maplistToObj() 方法就可以将一个Maplist对象转换成B类型的实体对象. 我偷偷的告诉你哦, JSON里面也是这样搞的哦~~~先将JSON字符串转换成Maplist结构后再调用Maplist.maplistToObj()方法转换成对应的类型.
+    通过上面的 Mapl.maplistToObj() 方法就可以将一个Mapl.象转换成B类型的实体对象. 我偷偷的告诉你哦, JSON里面也是这样搞的哦~~~先将JSON字符串转换成Mapl.构后再调用Mapl.maplistToObj()方法转换成对应的类型.
 ------------------------------------------------------------------------
 对象转Maplist
-    除了通过JSON转换成Maplist结构以外, 还可以直接使用对象来转换成maplist结构
+    除了通过JSON转换成Mapl.构以外, 还可以直接使用对象来转换成maplist结构
     {{{<java>
     A a = new A();
     a.name="a"
@@ -81,19 +81,19 @@ Maplist 转 对象
     b.name = "b";
     b.as = new ArrayList();
     b.as.add(a);
-    Maplist.toMaplist(b);
+    Mapl.toMapl.b);
     }}}
     结果: {name:"b", as:[{name:"a", id:null}]}
 
-    通过toMaplist就可以进行这种简单的转换
+    通过toMapl.可以进行这种简单的转换
 ------------------------------------------------------------------------
 访问 Maplist
     
-    就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Maplist结构的数据时非常的繁杂, 经常需要很多层的类型转换.
+    就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Mapl.构的数据时非常的繁杂, 经常需要很多层的类型转换.
 
     {{{<java>
 	    String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-	    //这样得到的就是Maplist结构的数据了.
+	    //这样得到的就是Mapl.构的数据了.
 	    Object obj = Json.fromJson(json);
     }}}
 
@@ -109,7 +109,7 @@ Maplist 转 对象
     亲, 看到没, 看到没~~~妈哦, 还好这里只有几层, 要是再多几次这样的, 我一定会疯的, 你肯定也跟我一样吧. 所以咯, 让我们解脱吧~~~
 
     {{{<java>
-    String name = (String) Maplist.cell(obj, "as[1].name");
+    String name = (String) Mapl.cell(obj, "as[1].name");
     }}}
 
     完了? 这就样? 是的, 完了, 就这样, 一句话搞定. so easy~~~
@@ -131,7 +131,7 @@ maplist 合并
     String json2 = "{'age':12}"
     Object obj1 = Json.fromJson(json1);
     Object obj2 = Json.fromJson(json2);
-    Object obj3 = Maplist.merge(obj1, obj2);
+    Object obj3 = Mapl.merge(obj1, obj2);
     }}}
 
     最终obj3的输出将是: {"name":"nutz", 'age':12}
@@ -188,7 +188,7 @@ maplist 结构转换
         String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
         String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
         String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
-        Object obj = Maplist.convert(Json.fromJson(new StringReader(json)), new StringReader(model));
+        Object obj = Mapl.convert(Json.fromJson(new StringReader(json)), new StringReader(model));
         assertEquals(dest, Json.toJson(obj, new JsonFormat()));
     }}}
     结果: "{"people":[{"age":12,"name":"jk"}, {"age":5,"name":"nutz"}],"user":[{"姓名":"jk","年龄":12}, {"姓名":"nutz","年龄":5}]}";
