@@ -92,10 +92,14 @@ public abstract class Loadings {
 		}
 		for (Class<?> type : list) {
 			// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
-			URL location = type.getProtectionDomain().getCodeSource().getLocation();
-			if (log.isDebugEnabled())
-				log.debugf("module class location '%s'", location);
-			Scans.me().registerLocation(location);
+			try {
+				URL location = type.getProtectionDomain().getCodeSource().getLocation();
+				if (log.isDebugEnabled())
+					log.debugf("module class location '%s'", location);
+			} catch (NullPointerException e) {
+				//Android上无法拿到getProtectionDomain,just pass
+			}
+			Scans.me().registerLocation(type);
 		}
 		// 执行扫描
 		for (Class<?> type : list) {
