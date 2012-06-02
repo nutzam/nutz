@@ -90,7 +90,8 @@ public class ModuleProcessor extends AbstractProcessor {
 					reqContext.depose();
 				}
 				catch (Throwable e) {
-					e.printStackTrace();
+					if (log.isDebugEnabled())
+						log.debug("ReqContext depose fail?!", e);
 				}
 		}
 	}
