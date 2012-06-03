@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
-import org.nutz.http.sender.FilePostSender;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
 import org.nutz.lang.Lang;
@@ -31,8 +30,6 @@ public abstract class Sender {
 	public static Sender create(Request request) {
 		if (request.isGet())
 			return new GetSender(request);
-		else if (request.isMultipart())
-			return new FilePostSender(request);
 		return new PostSender(request);
 	}
 
@@ -48,8 +45,7 @@ public abstract class Sender {
 
 	public abstract Response send() throws HttpException;
 
-	protected Response createResponse(Map<String, String> reHeaders)
-			throws IOException {
+	protected Response createResponse(Map<String, String> reHeaders) throws IOException {
 		Response rep = null;
 		if (reHeaders != null && reHeaders.get(null) != null) {
 			rep = new Response(reHeaders);
