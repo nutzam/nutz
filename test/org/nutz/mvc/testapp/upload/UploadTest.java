@@ -16,7 +16,7 @@ public class UploadTest extends BaseWebappTest {
 
 	@Test
 	public void test_upload() throws Throwable {
-		Request req = Request.create(getBaseURL()+"/upload/image",METHOD.MULTIPART);
+		Request req = Request.create(getBaseURL()+"/upload/image",METHOD.POST);
 		File f = File.createTempFile("nutz", "data");
 		FileWriter fw = new FileWriter(f);
 		fw.write("abc");
