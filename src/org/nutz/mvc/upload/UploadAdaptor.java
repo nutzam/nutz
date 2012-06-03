@@ -148,7 +148,7 @@ public class UploadAdaptor extends PairAdaptor {
 												HttpServletResponse response,
 												String[] pathArgs) {
 		try {
-			if (!"POST".equals(request.getMethod()) || !"PUT".equals(request.getMethod())) {
+			if (!"POST".equals(request.getMethod()) && !"PUT".equals(request.getMethod())) {
 				String str = "Not POST or PUT, Wrong HTTP method! --> " + request.getMethod();
 				throw Lang.makeThrow(IllegalArgumentException.class, str);
 			}
