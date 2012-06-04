@@ -6,10 +6,9 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
-import.org.nutz.template.util.LocalMessage;
 
-import utils.CV;
-import utils.form.PageForm;
+import utils.*;
+import utils.form.*;
 import domains.*;
 import services.*;
 
@@ -50,12 +49,12 @@ public class ${domain_name}Controller {
 	@Ok(">>:/${low_domain_name}/list")
 	public Object update(@Param("..")${domain_name} ${low_domain_name}) {
 		String message = "";
-		if(${low_domain_name}!=null){
+		if(${low_domain_name}.getId()!=null){
 				dao.update(${low_domain_name});
 				message = "更新成功";
 		}else{
 			message = "校验不成功,请重新输入";
-			return CV.redirect("/${low_domain_name}/edit?id="+${low_domain_name}.id, message);
+			return CV.redirect("/${low_domain_name}/edit?id="+${low_domain_name}.getId(), message);
 		}
 		return  message;
 	}
