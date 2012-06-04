@@ -7,17 +7,17 @@ import org.nutz.mvc.Mvcs;
 
 public class LocalMessage {
 	
-	private static Map<String,String> messages  = new HashMap<String, String>();
+	private static Map<String, Object> messages  = new HashMap<String, Object>();
 	private static boolean inited = false;
-	public static String get(String name){
+	public static Object get(String name){
 		if(!inited){
 			synchronized (messages) {
 				if(!inited){
-					messages = Mvcs.getDefaultLocaleMessage(Mvcs.getServletContext());
+					messages = Mvcs.getLocaleMessage(Mvcs.DEFAULT_MSGS);
 				}
 			}
 		}
-		String value = messages.get(name);
+		Object value = messages.get(name);
 		if(value ==null) return name;
 		else return value;
 	}

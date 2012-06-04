@@ -90,18 +90,21 @@ public class LoadingsImpl{
 			for (String packageName : ann.packages())
 				scanModuleInPackage(modules, packageName);
 		}
+		for (Class<?> type : list) {
+			// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
+			try {
+				URL location = type.getProtectionDomain().getCodeSource().getLocation();
+				if (log.isDebugEnabled())
+					log.debugf("module class location '%s'", location);
+			} catch (NullPointerException e) {
+				//Android上无法拿到getProtectionDomain,just pass
+			}
+			Scans.me().registerLocation(type);
+		}
 		// 执行扫描
 		for (Class<?> type : list) {
 			// 扫描子包
 			if (scan) {
-				// mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
-				URL location = type.getProtectionDomain().getCodeSource()
-						.getLocation();
-				if (log.isDebugEnabled())
-					log.debugf("module class location '%s'", location);
-				scanModuleInPackageByLocation(location, modules, type);
-
-				// 重复扫描,确保能扫描到最可信的类
 				scanModuleInPackage(modules, type.getPackage().getName());
 			}
 			// 仅仅加载自己
@@ -118,8 +121,7 @@ public class LoadingsImpl{
 		return modules;
 	}
 
-	protected static void scanModuleInPackage(Set<Class<?>> modules,
-			String packageName) {
+	protected static void scanModuleInPackage(Set<Class<?>> modules, String packageName) {
 		if (log.isDebugEnabled())
 			log.debugf(" > scan '%s'", packageName);
 
@@ -143,46 +145,6 @@ public class LoadingsImpl{
 		}
 	}
 
-	/**
-	 * 基于类的所在位置 进行 sub package 的扫描操作.扫描位于此location内的相同package下面的子模块.
-	 * 
-	 * @param classLocation
-	 *            type所在的jar的位置
-	 * @param modules
-	 * @param type
-	 */
-	protected static void scanModuleInPackageByLocation(URL classLocation,
-			Set<Class<?>> modules, Class<?> type) {
-		String regex = "^.+[.]class$";
-
-		// 1,先扫描jar内的package
-		String path = classLocation.getPath();
-		String packageName = type.getPackage().getName();
-
-		String classname = packageName.replace('.', '/') + '/';
-
-		if (path.endsWith(".jar")) {
-			// 支队jar进行处理,其他的留给 原程序进行操作
-
-			List<Class<?>> subs = Scans.me().scanPackageInJar(classname, regex,
-					path);
-
-			checkModule(modules, subs);
-
-			// 2,在扫描classes类的package,如果有一致的则替换,避免和下面的else进行重复扫描
-			scanModuleInPackage(modules, packageName);
-
-			if (log.isDebugEnabled())
-				log.debugf("scanModuleInPackageByJar '%s'", subs);
-		} else {
-			// 3,解决基于maven的工程中,依赖多个工程的情况,因此module的路径是它自身工程的target/classes
-			List<Class<?>> subs = Scans.me().scanPackageInLocation(classname,
-					regex, path);
-			checkModule(modules, subs);
-		}
-
-	}
-
 	public static void evalHttpMethod(ActionInfo ai, Method method) {
 		if (method.getAnnotation(GET.class) != null)
 			ai.getHttpMethods().add("GET");
@@ -201,9 +163,6 @@ public class LoadingsImpl{
 	}
 
 	public static void evalAt(ActionInfo ai, At at, Class<?> clazz) {
-		/**
-		 * 以Controller后缀的包, 子包处理在controllers包内的 不处理MainModule
-		 */
 		String def = clazz.getSimpleName();
 		if (null != at) {
 			if (null == at.value() || at.value().length == 0) {
@@ -309,7 +268,8 @@ public class LoadingsImpl{
 		if (innm == null && iocBean == null) // TODO 再考虑考虑
 			if(isController(type)){  // create by wangc
 				beanName = type.getName();
-			}
+			}else
+				return ;
 		if (iocBean != null) {
 			beanName = iocBean.name();
 		}
@@ -323,11 +283,10 @@ public class LoadingsImpl{
 		ai.setInjectName(beanName);
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes" })
 	public static void evalActionFilters(ActionInfo ai, Filters filters) {
 		if (null != filters) {
-			List<ObjectInfo<? extends ActionFilter>> list = new ArrayList<ObjectInfo<? extends ActionFilter>>(
-					filters.value().length);
+			List<ObjectInfo<? extends ActionFilter>> list = new ArrayList<ObjectInfo<? extends ActionFilter>>(filters.value().length);
 			for (By by : filters.value()) {
 				list.add(new ObjectInfo(by.type(), by.args()));
 			}
@@ -335,11 +294,11 @@ public class LoadingsImpl{
 		}
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	public static void evalHttpAdaptor(ActionInfo ai, AdaptBy ab) {
 		if (null != ab) {
-			ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(
-					ab.type(), ab.args()));
+			ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(	ab.type(),
+																					ab.args()));
 		}
 	}
 
@@ -348,10 +307,8 @@ public class LoadingsImpl{
 			ai.setInputEncoding(org.nutz.lang.Encoding.UTF8);
 			ai.setOutputEncoding(org.nutz.lang.Encoding.UTF8);
 		} else {
-			ai.setInputEncoding(Strings.sNull(encoding.input(),
-					org.nutz.lang.Encoding.UTF8));
-			ai.setOutputEncoding(Strings.sNull(encoding.output(),
-					org.nutz.lang.Encoding.UTF8));
+			ai.setInputEncoding(Strings.sNull(encoding.input(), org.nutz.lang.Encoding.UTF8));
+			ai.setOutputEncoding(Strings.sNull(encoding.output(), org.nutz.lang.Encoding.UTF8));
 		}
 	}
 
