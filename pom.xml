@@ -27,19 +27,19 @@
 			<id>zozoh</id>
 			<name>zozoh</name>
 			<email>zozohtnt@gmail.com</email>
-			<url>http://zozoh.javaeye.com/</url>
+			<url>http://weibo.com/zozoh</url>
 		</developer>
 		<developer>
 			<id>wendal</id>
 			<name>Wendal Chen</name>
 			<email>wendal1985@gmail.com</email>
-			<url>http://myblog.sunfarms.net</url>
+			<url>http://wendal.net/</url>
 		</developer>
 		<developer>
-			<id>Birdwindy</id>
-			<name>Birdwindy</name>
+			<id>juqkai</id>
+			<name>Juqkai</name>
 			<email>Bird.Wyatt@gmail.com</email>
-			<url>http://birdwindy.javaeye.com/</url>
+			<url>https://github.com/juqkai</url>
 		</developer>
 	</developers>
 	<scm>
