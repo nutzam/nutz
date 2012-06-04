@@ -1,0 +1,153 @@
+#title: 1.b.44 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.44 发行注记
+
+    又到了 [http://nutzam.com Nutz] 发布的日子，本次发布不像之前的几次，仅仅是一点微调，
+    这次我们还是稍微的用了一点心思
+     * 我们支持了 [http://db.apache.org/derby/ Derby] 数据库
+     * 为了能更灵活的支持 JSON 类的数据转换，将 JSON 包中的某些方法抽象成 [maplist/overview.man Mapl 结构]
+     * 之前一直被抱怨的 Nutz.Mvc 多国语言字符串，切换本地字符串时，那几个脑残的接口也被改的不那么脑残
+     * 最重大的修改是 Wendal 重构了 Scans 包，我想，这应该能成为我们更好支持 Maven 运行环境的基础
+    
+    总之这个版，是很值得升级的。
+    
+    说点新闻。前几天，[http://www.iteye.com/news/24777 我们的开源项目] 在北京弄了一个沙龙一样的聚会，
+    征集演讲主题，并投票决定是否给你分配演讲的时间。由于自知是一个小众的项目，因此如果事先知道还要被投票，我们可能就不会参加了。
+    不过另我们意外的是，[http://nutzam.com Nutz] 水军力量似乎比较强大，我们获得了排名第二的投票。所以阴差阳错的去了。
+    说起来，这似乎是第一次，我们在公开场合肉身谈论 Nutz 这个项目。
+    记得当天早上，我神奇发了烧，嗓子发炎的厉害。
+    以致被 [http://pangwu86.iteye.com/ 胖五] 坚决的认为我心理素质有问题，遇见大场面就需要尿不湿。
+    
+    无论怎样，我们是去参加了这个活动，并且认真的准备了一组演讲稿:
+    [http://nutzam.com/press/what_is_nutz/ Nutz:一次刻意的意外 de 演讲稿]
+    
+    当天 [http://pangwu86.iteye.com/ 胖五] 录了一段未剪辑过的演讲视频。有兴趣的朋友请看这里:
+    [http://v.youku.com/v_show/id_XNDAzMDI0NDEy.html Nutz - 一次刻意的意外]
+    
+    这个活动是一个系列的活动，我想关注国内开源的朋友或多或少都听说过，有的还参加过。
+    这里，我们希望活动的主创人员能够坚持下去，也祝愿这个活动越办越好。
+    
+    因为要肉身现场和上百个人谈论 [http://nutzam.com Nutz]， [http://wendal.net Wendal] 也就决定肉身过来听听。
+    因此我心里上很感谢 [http://www.iteye.com/news/24777 我们的开源项目]，要不是他们，我可能到现在还没有见过 
+    [http://wendal.net Wendal] 的真人。 我们在一起度过一个愉快的周末，当然我们也录了很多 DV，
+    因为太多，不能全放上来，我做了一点剪辑，后来发现加几个字配个背景音乐，可以完全当作一个 [http://nutzam.com Nutz]
+    的宣传视频，有兴趣的朋友可以看这里  [http://v.youku.com/v_show/id_XNDA3MDE3ODc2.html nutz_宣传片第0季]
+    
+    [http://my.oschina.net/dlpinghailinfeng jeffsui] 在 OSChain 上也投递了一篇相关的新闻
+    [http://www.oschina.net/news/29608/nutz-video IT范儿是什么范儿-nutz_宣传片第0季]
+    
+    期间，我就 [http://nutzam.com Nutz] 这个项目采访了过 [http://pangwu86.iteye.com/ 胖五同学]， 
+    稍候我会做整理，把视频传上来。 [http://pangwu86.iteye.com/ 胖五同学] 对 [http://nutzam.com Nutz] 未来的一些
+    设想，未来的几个月内将变成现实，我可以负责任的说: "虽然还需要继续做一些工作，但是基本已经没有什么悬念了。" 
+
+    
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+    
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
+     * Nutz 的主页 :  [http://nutzam.com]
+
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/231 Issue 231] 引入MapList, 取消JsonFilter 项目维护 Json Lang 文档 需求  {#AAA;by} {*juqkai}
+    * [https://github.com/nutzam/nutz/issues/229 Issue 229] org.nutz.dao.util.cri.Exps.create方法NOT LKIE写错 项目维护 Dao  {#AAA;by} {*hzl7652}
+    * [https://github.com/nutzam/nutz/issues/228 Issue 228] ColType 字段类型太少 Dao 需求 重要  {#AAA;by} {*gnoloahs}
+    * [https://github.com/nutzam/nutz/issues/224 Issue 224] Json.toJson 如果对象有枚举字段，将输出 null Json {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/222 Issue 222] maven项目引用其他子项目时，class文件不能被扫描 需求  {#AAA;by} {*for5million}
+    * [https://github.com/nutzam/nutz/issues/218 Issue 218] NutzDao建表时 ，Blob转译问题(sqlserver2000/2005) Dao 重要  {#AAA;by} {*naily}
+    * [https://github.com/nutzam/nutz/issues/216 Issue 216] Mvc 的本地化 问题 Mvc  {#AAA;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/214 Issue 214] 1.44对象扫描异常 项目维护 Lang  {#AAA;by} {*albinhdk}
+    * [https://github.com/nutzam/nutz/issues/209 Issue 209] nutz dao 能不能实现 update table set col=col+10 where id=1 这样的语句? Dao FAQ  {#AAA;by} {*ming300}
+    * [https://github.com/nutzam/nutz/issues/208 Issue 208] 添加对SQLServer2012的支持 Dao 需求 重要  {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/207 Issue 207] 添加对Derby数据库的支持  {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/206 Issue 206] Dao.execute如果传入null,会报Not implement yet! Dao 重要  {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/205 Issue 205] JSON结构转换  {#AAA;by} {*juqkai}
+    * [https://github.com/nutzam/nutz/issues/204 Issue 204] dao.query和动态sql中 分页 在sql2000中无效  {#AAA;by} {*j9dai}
+    * [https://github.com/nutzam/nutz/issues/203 Issue 203] Scans 总是抛异常 项目维护 Lang 重要  {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/201 Issue 201] DAO对于pgsql的date类型问题 Dao 重要  {#AAA;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/200 Issue 200] 重新实现Resouce包 项目维护 Lang 重要  {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/198 Issue 198] Nutz Ioc找不到jar包内的类 Lang 需求  {#AAA;by} {*fnet123}
+    * [https://github.com/nutzam/nutz/issues/195 Issue 195] Json中对entities缓存不能清空 Json 需求  {#AAA;by} {*weirhp}
+    * [https://github.com/nutzam/nutz/issues/194 Issue 194] 在多对多的映射关系中,NutzDao不支持SET类型！ Dao 需求  {#AAA;by} {*elkan1788}
+    * [https://github.com/nutzam/nutz/issues/159 Issue 159] 视图的填充占位符只能获取到req作用域以下的值。 Mvc 需求  {#AAA;by} {*godson741}
+    * [https://github.com/nutzam/nutz/issues/83 Issue 83] Criteria对between and没有支持 不接纳  {#AAA;by} {*mengqiang81}
+    * [https://github.com/nutzam/nutz/issues/34 Issue 34] 国际化的一个小BUG Mvc 需求  {#AAA;by} {*zwt}
+
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*781}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
+
+    <http://www.nutzam.com/wiki/img/emma.png>
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+--------------------------------------------------------------------------------------------------------
+文档
+
+     * 增加 [maplist/overview.man Mapl 结构]
+
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [https://github.com/nutzam/nutzdemo NutzDemo] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
+    
+    || 贡献者        || 问题  || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || albinhdk   	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || elkan1788  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || enzozhong  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||
+    || fnet123    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || for5million	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  O   ||
+    || gnoloahs   	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || godson741  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || hzl7652    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || j9dai      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || jeffsui    	||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || juqkai     	||  O   ||  -   ||  O   ||  O   ||  -   ||  O   ||  O   ||
+    || mengqiang81	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || ming300    	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || naily      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || weirhp     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || wendal     	||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||
+    || ywjno     	||  -   ||  -   ||  O   ||  O   ||  -   ||  -   ||  -   ||
+    || zozoh      	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || zwt        	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://q.weibo.com/128323 Nutz的新浪微群]
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[http://nutzam.com/doc/html/ 用户手册]
+

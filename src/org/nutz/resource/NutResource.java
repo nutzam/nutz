@@ -8,23 +8,6 @@ import org.nutz.lang.Streams;
 
 public abstract class NutResource implements Comparable<NutResource> {
 
-	protected String name;
-
-	public String getName() {
-		return name;
-	}
-
-	public NutResource setName(String name) {
-		this.name = name;
-		return this;
-	}
-
-	public abstract InputStream getInputStream() throws IOException;
-
-	public Reader getReader() throws IOException {
-		return Streams.utf8r(getInputStream());
-	}
-
 	public int compareTo(NutResource o) {
 		if (o == null)
 			return -1;
@@ -44,14 +27,33 @@ public abstract class NutResource implements Comparable<NutResource> {
 		return false;
 	}
 
+	/**使用完毕后,务必关闭*/
+	public abstract InputStream getInputStream() throws IOException;
+
+	public String getName() {
+		return name;
+	}
+
+	/**使用完毕后,务必关闭*/
+	public Reader getReader() throws IOException {
+		return Streams.utf8r(getInputStream());
+	}
+
 	@Override
 	public int hashCode() {
 		return null == name ? "NULL".hashCode() : name.hashCode();
+	}
+
+	public NutResource setName(String name) {
+		this.name = name;
+		return this;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("NutResource[%s]", name);
 	}
+
+	protected String name;
 
 }

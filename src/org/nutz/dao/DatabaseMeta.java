@@ -53,6 +53,8 @@ public class DatabaseMeta {
 			type = DB.SQLITE;
 		} else if (proName.startsWith("hsql")) {
 			type = DB.HSQL;
+		} else if (proName.contains("derby")) {
+			type = DB.DERBY;
 		} else {
 			type = DB.OTHER;
 		}
@@ -145,5 +147,9 @@ public class DatabaseMeta {
 	
 	public boolean isHsql() {
 		return DB.HSQL == type;
+	}
+	
+	public boolean isDerby() {
+		return DB.DERBY == type;
 	}
 }

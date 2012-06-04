@@ -11,7 +11,8 @@ import org.nutz.lang.Lang;
 
 /**
  * 这是一个神奇的DataSource!!你甚至不需要设置driverClassName!!
- * <p/>把用户名,密码,jdbcURL设置一下,这个类就能用了!!
+ * <p>把用户名,密码,jdbcURL设置一下,这个类就能用了!!
+ * <p>当然，你在你的 CLASSPATH 下要放置响应的数据库驱动 jar 包
  * 
  * @author wendal(wendal1985@gmail.com)
  */
@@ -23,9 +24,12 @@ public class SimpleDataSource implements DataSource {
 	private String jdbcUrl;
 	
 	public Connection getConnection() throws SQLException {
+		Connection conn;
 		if (username != null)
-			return DriverManager.getConnection(jdbcUrl, username, password);
-		return DriverManager.getConnection(jdbcUrl);
+			conn = DriverManager.getConnection(jdbcUrl, username, password);
+		else
+			conn = DriverManager.getConnection(jdbcUrl);
+		return conn;
 	}
 	
 	public void close() {}

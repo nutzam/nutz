@@ -20,6 +20,8 @@ import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 /**
  * Dao 接口实现类的一些基础环境
@@ -160,6 +162,8 @@ public class DaoSupport {
 				meta.setVersion(dmd.getDatabaseProductVersion());
 			}
 		});
+		if (log.isDebugEnabled())
+			log.debug("Database info --> " + meta);
 
 		holder = new EntityHolder(this);
 		holder.maker = createEntityMaker();
@@ -176,21 +180,9 @@ public class DaoSupport {
 	}
 
 	protected int _exec(final DaoStatement... sts) {
-		final int[] re = new int[1];
-		runner.run(dataSource, new ConnCallback() {
-			public void invoke(Connection conn) throws Exception {
-				for (DaoStatement st : sts) {
-					if (st == null) {
-						if (log.isInfoEnabled())
-							log.info("Found a null DaoStatement(SQL), ingore it ~~");
-						continue;
-					}
-					executor.exec(conn, st);
-					re[0] += st.getUpdateCount();
-				}
-			}
-		});
-		return re[0];
+		DaoExec exec = new DaoExec(sts);
+		Trans.exec(exec); //还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
+		return exec.re;
 	}
 
 	/**
@@ -202,4 +194,33 @@ public class DaoSupport {
 		return new AnnotationEntityMaker(dataSource, expert, holder);
 	}
 
+	/**
+	 * 
+	 * @author wendal
+	 * @since 1.b.44
+	 */
+	protected class DaoExec implements Atom, ConnCallback {
+		private DaoStatement[] sts;
+		private int re;
+		
+		public DaoExec(DaoStatement... sts) {
+			this.sts = sts;
+		}
+		
+		public void run() {
+			runner.run(dataSource, this);
+		}
+		
+		public void invoke(Connection conn) throws Exception {
+			for (DaoStatement st : sts) {
+				if (st == null) {
+					if (log.isInfoEnabled())
+						log.info("Found a null DaoStatement(SQL), ingore it ~~");
+					continue;
+				}
+				executor.exec(conn, st);
+				re += st.getUpdateCount();
+			}
+		}
+	}
 }

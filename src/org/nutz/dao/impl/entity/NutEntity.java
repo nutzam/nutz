@@ -71,17 +71,17 @@ public class NutEntity<T> implements Entity<T> {
 	/**
 	 * 所有一对一映射字段
 	 */
-	private LinkFieldSet ones;
+	protected LinkFieldSet ones;
 
 	/**
 	 * 所有一对多映射字段
 	 */
-	private LinkFieldSet manys;
+	protected LinkFieldSet manys;
 
 	/**
 	 * 所有多对多映射字段
 	 */
-	private LinkFieldSet manymanys;
+	protected LinkFieldSet manymanys;
 
 	/**
 	 * 数字型主键
@@ -96,7 +96,7 @@ public class NutEntity<T> implements Entity<T> {
 	/**
 	 * 实体 Java 类型
 	 */
-	private Class<T> type;
+	protected Class<T> type;
 
 	/**
 	 * 实体 Java 类型：通过 Mirror 增强
@@ -106,12 +106,12 @@ public class NutEntity<T> implements Entity<T> {
 	/**
 	 * 根据 ResultSet 创建实体的方法
 	 */
-	private Borning<T> bornByRS;
+	protected Borning<T> bornByRS;
 
 	/**
 	 * 根据默认构造函数或者工厂方法创建实体的方法
 	 */
-	private Borning<T> bornByDefault;
+	protected Borning<T> bornByDefault;
 
 	/**
 	 * 实体表名

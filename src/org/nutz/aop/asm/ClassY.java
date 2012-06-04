@@ -26,6 +26,8 @@ class ClassY implements Opcodes {
 	Method[] methodArray;
 
 	Constructor<?>[] constructors;
+	
+	private Class<?> superClass;
 
 	ClassY(Class<?> klass, String myName, Method[] methodArray, Constructor<?>[] constructors) {
 		this.myName = myName.replace('.', '/');
@@ -39,6 +41,7 @@ class ClassY implements Opcodes {
 					getParentInterfaces(klass));
 		this.methodArray = methodArray;
 		this.constructors = constructors;
+		this.superClass = klass;
 	}
 
 	String[] getParentInterfaces(Class<?> xClass) {
@@ -95,6 +98,7 @@ class ClassY implements Opcodes {
 		addConstructors();
 		addAopMethods();
 		enhandMethod();
+		cw.visitSource(superClass.getSimpleName() + ".java", null);
 		return cw.toByteArray();
 	}
 
@@ -109,13 +113,15 @@ class ClassY implements Opcodes {
 												null,
 												convertExp(method.getExceptionTypes()));
 			int methodIndex = findMethodIndex(methodName, methodDesc, methodArray);
-			new AopMethodAdapter(	mv,
+			AopMethodAdapter adapter = new AopMethodAdapter(	mv,
 									methodAccess,
 									methodName,
 									methodDesc,
 									methodIndex,
 									myName,
-									enhancedSuperName).visitCode();
+									enhancedSuperName);
+			adapter.visitCode();
+			adapter.visitAttribute();
 		}
 	}
 

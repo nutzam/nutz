@@ -14,7 +14,6 @@ import org.nutz.castor.castor.Array2Array;
 import org.nutz.castor.castor.Object2Object;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Streams;
 import org.nutz.lang.TypeExtractor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -34,8 +33,6 @@ import org.nutz.resource.Scans;
 public class Castors {
 
 	private static final Log log = Logs.get();
-
-	private static Castors one = new Castors();
 
 	/**
 	 * @return 单例
@@ -170,14 +167,7 @@ public class Castors {
 		if (classes.size() == 0) {
 			if (log.isWarnEnabled())
 				log.warn("!!No castor found!!!!!!!!! Load default castor list");
-
-			String str = Streams.readAndClose(Streams.fileInr("/org/nutz/castor/default-castors.txt"));
-			String[] classNames = str.split("\\n");
-			for (String className : classNames)
-				try {
-					classes.add(Class.forName("org.nutz.castor.castor." + className.trim()));
-				}
-				catch (Throwable e) {}
+			classes.addAll(defaultCastorList);
 		}
 		for (Class<?> klass : classes) {
 			try {
@@ -382,4 +372,91 @@ public class Castors {
 			return String.valueOf(src);
 		}
 	}
+	
+	private static List<Class<?>> defaultCastorList = new ArrayList<Class<?>>(100);
+	static {
+        defaultCastorList.add(org.nutz.castor.castor.String2Character.class);
+        defaultCastorList.add(org.nutz.castor.castor.Calendar2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Calendar2Timestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Collection2Collection.class);
+        defaultCastorList.add(org.nutz.castor.castor.Collection2Object.class);
+        defaultCastorList.add(org.nutz.castor.castor.File2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Timestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Map2Object.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Array2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2SqlTime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Calendar.class);
+        defaultCastorList.add(org.nutz.castor.castor.SqlDate2Timestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2Mirror.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Collection.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2Calendar.class);
+        defaultCastorList.add(org.nutz.castor.castor.Class2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Enum.class);
+        defaultCastorList.add(org.nutz.castor.castor.Array2Object.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2Calendar.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2SqlTime.class);
+        defaultCastorList.add(org.nutz.castor.castor.TimeZone2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Boolean.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2SqlDate.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2List.class);
+        defaultCastorList.add(org.nutz.castor.castor.SqlDate2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlDate.class);
+        defaultCastorList.add(org.nutz.castor.castor.Map2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.DateTimeCastor.class);
+        defaultCastorList.add(org.nutz.castor.castor.Boolean2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Class.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Pattern.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Map.class);
+        defaultCastorList.add(org.nutz.castor.castor.Mirror2Class.class);
+        defaultCastorList.add(org.nutz.castor.castor.SqlTime2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2Object.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2TimeZone.class);
+        defaultCastorList.add(org.nutz.castor.castor.Character2Number.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Number.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Boolean.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2SqlTime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2Long.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Calendar.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Email.class);
+        defaultCastorList.add(org.nutz.castor.castor.Calendar2Datetime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Enum2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Collection2Map.class);
+        defaultCastorList.add(org.nutz.castor.castor.Array2Array.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Datetime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Map2Array.class);
+        defaultCastorList.add(org.nutz.castor.castor.Array2Collection.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Set.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Mirror.class);
+        defaultCastorList.add(org.nutz.castor.castor.Mirror2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.SqlTime2Timestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2Class.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2Map.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2File.class);
+        defaultCastorList.add(org.nutz.castor.castor.Boolean2Number.class);
+        defaultCastorList.add(org.nutz.castor.castor.Map2Collection.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2SqlDate.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Array.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Object.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Number.class);
+        defaultCastorList.add(org.nutz.castor.castor.Class2Mirror.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Datetime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Calendar2Long.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Character.class);
+        defaultCastorList.add(org.nutz.castor.castor.Collection2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2Long.class);
+        defaultCastorList.add(org.nutz.castor.castor.Array2Map.class);
+        defaultCastorList.add(org.nutz.castor.castor.Number2Timestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Collection2Array.class);
+        defaultCastorList.add(org.nutz.castor.castor.Enum2Number.class);
+        defaultCastorList.add(org.nutz.castor.castor.Object2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Timestamp2Datetime.class);
+        defaultCastorList.add(org.nutz.castor.castor.Datetime2Timpestamp.class);
+        defaultCastorList.add(org.nutz.castor.castor.Map2Enum.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2Enum.class);
+	}
+	
+	private static Castors one = new Castors();
 }

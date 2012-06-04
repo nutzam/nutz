@@ -35,16 +35,39 @@ import org.nutz.lang.util.NutType;
 public class JsonTest {
 
 	@Test
+	public void test_toJson_with_enum() {
+		Person[] ps = new Person[2];
+
+		ps[0] = new Person();
+		ps[0].setName("A");
+		ps[0].setSex(PersonSex.MAN);
+
+		ps[1] = new Person();
+		ps[1].setName("B");
+		ps[1].setSex(PersonSex.MAN);
+
+		String str = Json.toJson(ps);
+
+		Person[] ps2 = Json.fromJson(Person[].class, str);
+		assertEquals(2, ps2.length);
+		assertEquals(PersonSex.MAN, ps2[0].getSex());
+		assertEquals(PersonSex.MAN, ps2[1].getSex());
+		assertEquals("A", ps2[0].getName());
+		assertEquals("B", ps2[1].getName());
+	}
+
+	// TODO zozoh : 如果没人有意见，这个 case 被我第二次注意到时，将被删除
+	@Test
 	public void test_toJson_with_super_field() {
-//		Xyz x = new Xyz();
-//		x.id = 100;
-//		x.name = "haha";
-//		x.setXyz("!!!");
-//		String str = Json.toJson(x);
-//		Xyz x2 = Json.fromJson(Xyz.class, str);
-//		assertEquals(x.getXyz(), x2.getXyz());
-//		assertEquals(x.id, x2.id);
-//		assertEquals(x.name, x2.name);
+		// Xyz x = new Xyz();
+		// x.id = 100;
+		// x.name = "haha";
+		// x.setXyz("!!!");
+		// String str = Json.toJson(x);
+		// Xyz x2 = Json.fromJson(Xyz.class, str);
+		// assertEquals(x.getXyz(), x2.getXyz());
+		// assertEquals(x.id, x2.id);
+		// assertEquals(x.name, x2.name);
 	}
 
 	@Test
@@ -55,7 +78,7 @@ public class JsonTest {
 		assertEquals(2, jmi.getMap().size());
 		assertEquals(JB.class, jmi.getMap().get("b"));
 	}
-	
+
 	@Test
 	public void test_map_class_item_as_string() {
 		String path = "org.nutz.json.meta";
@@ -202,17 +225,17 @@ public class JsonTest {
 		Map<?, ?> map = (Map<?, ?>) Json.fromJson(Lang.inr(s));
 		assertEquals(45, map.get("id"));
 		assertEquals("xyz", map.get("name"));
-		Map<?,?> m = (Map<?, ?>) map.get("m");
+		Map<?, ?> m = (Map<?, ?>) map.get("m");
 		assertEquals(1, m.get("x"));
-		
+
 	}
-	
+
 	@Test
 	public void testSimpleMap_asMap() {
-	    String s = "{id:45,m:1,name:'xyz'}";
-	    Map<String, Object> map = Json.fromJsonAsMap(Object.class, Lang.inr(s));
-	    assertEquals(45, map.get("id"));
-	    assertEquals("xyz", map.get("name"));
+		String s = "{id:45,m:1,name:'xyz'}";
+		Map<String, Object> map = Json.fromJsonAsMap(Object.class, Lang.inr(s));
+		assertEquals(45, map.get("id"));
+		assertEquals("xyz", map.get("name"));
 	}
 
 	@Test
@@ -304,20 +327,21 @@ public class JsonTest {
 		String[] reAry = Json.fromJson(String[].class, Lang.inr(s));
 		assertTrue(Arrays.equals(expAry, reAry));
 	}
-	
+
 	@Test
 	public void testSimpleArray2() throws Exception {
-	    String[] expAry = {"abc", "bbc", "fff"};
-	    String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
-	    String[] reAry = Json.fromJsonAsArray(String.class, Lang.inr(s));
-	    assertTrue(Arrays.equals(expAry, reAry));
+		String[] expAry = {"abc", "bbc", "fff"};
+		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
+		String[] reAry = Json.fromJsonAsArray(String.class, Lang.inr(s));
+		assertTrue(Arrays.equals(expAry, reAry));
 	}
+
 	@Test
 	public void testSimpleList() throws Exception {
-	    String[] expAry = {"abc", "bbc", "fff"};
-	    String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
-	    List<String> reAry = Json.fromJsonAsList(String.class, Lang.inr(s));
-	    assertTrue(Arrays.equals(expAry, reAry.toArray(new String[0])));
+		String[] expAry = {"abc", "bbc", "fff"};
+		String s = String.format("[%s]", Lang.concatBy("\"%s\"", ',', expAry));
+		List<String> reAry = Json.fromJsonAsList(String.class, Lang.inr(s));
+		assertTrue(Arrays.equals(expAry, reAry.toArray(new String[0])));
 	}
 
 	@Test
@@ -716,26 +740,26 @@ public class JsonTest {
 		Map<String, Object> map = Json.fromJson(Map.class, j);
 		assertEquals("http://wendal.net", map.get("abc"));
 	}
-	
+
 	@Test
 	public void test_by() {
 		TestBy b = new TestBy();
 		b.setId(1000);
-		Map<String, Object> map = Json.fromJson(Map.class,Json.toJson(b));
+		Map<String, Object> map = Json.fromJson(Map.class, Json.toJson(b));
 		assertEquals(1000, map.get("id"));
 		assertEquals("I am OK", map.get("obj"));
 		assertEquals("Wendal", map.get("obj2"));
 	}
-	
+
 	@Test
-	//#184
-	public void test_setting(){
-	    String j = "{name2:'abc'}";
-	    JENObj jj = Json.fromJson(JENObj.class, j);
-	    assertEquals("abc", jj.getName());
+	// #184
+	public void test_setting() {
+		String j = "{name2:'abc'}";
+		JENObj jj = Json.fromJson(JENObj.class, j);
+		assertEquals("abc", jj.getName());
 	}
-	
-	public static String justOK(Object obj){
+
+	public static String justOK(Object obj) {
 		return "I am OK";
 	}
 }

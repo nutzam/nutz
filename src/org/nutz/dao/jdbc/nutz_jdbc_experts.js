@@ -15,8 +15,10 @@ var ioc = {
 		// SqlServer2005 --> 9.0 , SqlServer2008 --> 10.0
 		"microsoft sql server.*(9|10)[.].+" : "org.nutz.dao.impl.jdbc.sqlserver2005.Sqlserver2005JdbcExpert",
 		"microsoft sql server.*(8)[.].+" : "org.nutz.dao.impl.jdbc.sqlserver2000.Sqlserver2000JdbcExpert",
+		"microsoft sql server.*(11)[.].+" : "org.nutz.dao.impl.jdbc.sqlserver2012.Sqlserver2012JdbcExpert",
 		"hsql.*" : "org.nutz.dao.impl.jdbc.hsqldb.HsqldbJdbcExpert",
-		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLiteJdbcExpert"
+		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLiteJdbcExpert",
+		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert"
 	// ~ 映射结束
 	},
 

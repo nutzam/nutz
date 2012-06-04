@@ -21,7 +21,7 @@ public @interface ColDefine {
 	 * 
 	 * @see org.nutz.dao.entity.annotation.ColType
 	 */
-	ColType type();
+	ColType type() default ColType.VARCHAR;
 
 	int width() default 0;
 
@@ -36,4 +36,5 @@ public @interface ColDefine {
 	 */
 	boolean auto() default false;
 
+	String customType() default "";
 }

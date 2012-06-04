@@ -85,20 +85,6 @@ public class JsonFormat {
 	 */
 	private boolean autoUnicode;
 
-	/**
-	 * 采用 Nutz JSON 特殊兼容模式，这样，循环引用的字段，会标记成特殊字符串表一个路径
-	 */
-	private boolean nutzJson;
-
-	public boolean isNutzJson() {
-		return nutzJson;
-	}
-
-	public JsonFormat setNutzJson(boolean nutzJson) {
-		this.nutzJson = nutzJson;
-		return this;
-	}
-
 	public boolean ignore(String name) {
 		if (null != actived)
 			return !actived.matcher(name).find();
@@ -106,7 +92,10 @@ public class JsonFormat {
 			return locked.matcher(name).find();
 		return false;
 	}
-
+	
+//===================================================================
+//getter setter
+	
 	public boolean isCompact() {
 		return compact;
 	}
@@ -198,4 +187,5 @@ public class JsonFormat {
 	public boolean isAutoUnicode() {
 		return autoUnicode;
 	}
+	
 }

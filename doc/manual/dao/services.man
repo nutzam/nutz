@@ -51,9 +51,10 @@ Nutz 内置的服务类
 	
 	错误的写法,你在log中会看到一条警告信息.
 	{{{<JAVA>
-	 	public class RegisterService extends IdEntityServiceIdEntityService {
+	 	public class RegisterService extends IdEntityService {
 	 		public RegisterService(Dao dao){
 	 			super(dao);
 	 		}
 	 	}
 	 }}}
+     即，你的 Service 必须通过模板参数，告诉自己的父类，自己要操作的 POJO 类是什么，否则父类会很茫然的

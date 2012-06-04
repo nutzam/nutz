@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -29,7 +30,7 @@ public abstract class Mvcs {
 
 	public static final String DEFAULT_MSGS = "$default";
 	public static final String MSG = "msg";
-	public static final String LOCALE_NAME = "nutz_mvc_locale";
+	public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
 	// 新的,基于ThreadLoacl改造过的Mvc辅助方法
 	// ====================================================================
@@ -51,8 +52,8 @@ public abstract class Mvcs {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static Map<String, Map<String, String>> getMessageSet() {
-		return (Map<String, Map<String, String>>) servletContext.getAttribute(getName()
+	public static Map<String, Map<String, Object>> getMessageSet() {
+		return (Map<String, Map<String, Object>>) servletContext.getAttribute(getName()
 																				+ "_localization");
 	}
 
@@ -60,10 +61,10 @@ public abstract class Mvcs {
 		servletContext.setAttribute(getName() + "_localization", messageSet);
 	}
 
-	public static Map<String, String> getLocaleMessage(String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> getLocaleMessage(String key) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
-			return msgss.get(localeName);
+			return msgss.get(key);
 		return null;
 	}
 
@@ -117,21 +118,24 @@ public abstract class Mvcs {
 	/**
 	 * 获取当前会话的 Locale 名称
 	 */
+	@Deprecated
 	public static String getLocaleName(HttpSession session) {
-		return (String) session.getAttribute(LOCALE_NAME);
+		return (String) session.getAttribute(LOCALE_KEY);
 	}
 
 	/**
 	 * 为当前会话设置 Locale 的名称
 	 */
+	@Deprecated
 	public static void setLocaleName(HttpSession session, String name) {
-		session.setAttribute(LOCALE_NAME, name);
+		session.setAttribute(LOCALE_KEY, name);
 		session.removeAttribute(MSG);
 	}
 
 	/**
 	 * 判断当前会话是够设置了特殊的 Locale 的名称。
 	 */
+	@Deprecated
 	public static boolean hasLocaleName(HttpSession session) {
 		return !Strings.isBlank(getLocaleName(session));
 	}
@@ -139,6 +143,7 @@ public abstract class Mvcs {
 	/**
 	 * 判断当前会话是否已经设置了本地字符串表
 	 */
+	@Deprecated
 	public static boolean hasLocale(HttpSession session) {
 		return null != session.getAttribute(MSG);
 	}
@@ -146,8 +151,9 @@ public abstract class Mvcs {
 	/**
 	 * 获取整个应用可用的 Locale 名称集合
 	 */
+	@Deprecated
 	public static Set<String> getLocaleNames(ServletContext context) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.keySet();
 		return null;
@@ -161,10 +167,11 @@ public abstract class Mvcs {
 	 * 
 	 * @return 设置的 本地化字符串表
 	 */
-	public static Map<String, String> setLocale(HttpSession session, String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	@Deprecated
+	public static Map<String, Object> setLocale(HttpSession session, String localeName) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss) {
-			Map<String, String> msgs = null;
+			Map<String, Object> msgs = null;
 			if (null != localeName)
 				msgs = msgss.get(localeName);
 			if (null == msgs)
@@ -191,8 +198,8 @@ public abstract class Mvcs {
 	 * @see org.nutz.mvc.MessageLoader
 	 */
 	@Deprecated
-	public static Map<String, String> getLocaleMessage(ServletContext context, String localeName) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	public static Map<String, Object> getLocaleMessage(ServletContext context, String localeName) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.get(localeName);
 		return null;
@@ -205,8 +212,9 @@ public abstract class Mvcs {
 	 *            上下文
 	 * @return 字符串表
 	 */
-	public static Map<String, String> getDefaultLocaleMessage(ServletContext context) {
-		Map<String, Map<String, String>> msgss = getMessageSet();
+	@Deprecated
+	public static Map<String, Object> getDefaultLocaleMessage(ServletContext context) {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
 		if (null != msgss)
 			return msgss.get(DEFAULT_MSGS);
 		return null;
@@ -220,7 +228,7 @@ public abstract class Mvcs {
 	 * @return 字符串表集合
 	 */
 	@Deprecated
-	public static Map<String, Map<String, String>> getMessageSet(ServletContext context) {
+	public static Map<String, Map<String, Object>> getMessageSet(ServletContext context) {
 		return getMessageSet();
 	}
 
@@ -264,6 +272,42 @@ public abstract class Mvcs {
 	}
 
 	/**
+	 * @return 当前会话的本地字符串集合的键值
+	 */
+	public static String getLocalizationKey() {
+		HttpSession sess = getHttpSession();
+		return null == sess ? null : (String) sess.getAttribute(LOCALE_KEY);
+	}
+
+	/**
+	 * 设置本地话字符串的键值
+	 * <p>
+	 * 如果你用的是 Nutz.Mvc 默认的本地化机制，那么你的本地字符串键值，相当于一个你目录名。 <br>
+	 * 比如 "zh_CN" 等
+	 * 
+	 * @param key
+	 *            键值
+	 * @return 是否设置成功
+	 */
+	public static boolean setLocalizationKey(String key) {
+		HttpSession sess = getHttpSession();
+		if (null == sess)
+			return false;
+		sess.setAttribute(LOCALE_KEY, key);
+		return true;
+	}
+
+	/**
+	 * @return 当前都加载了哪些种字符串的 key
+	 */
+	public static Set<String> getLocalizationKeySet() {
+		Map<String, Map<String, Object>> msgss = getMessageSet();
+		if (null == msgss)
+			return new HashSet<String>();
+		return msgss.keySet();
+	}
+
+	/**
 	 * 为当前的 HTTP 请求对象设置一些必要的属性。包括：
 	 * <ul>
 	 * <li>本地化子字符串 => ${msg}
@@ -273,20 +317,19 @@ public abstract class Mvcs {
 	 * @param req
 	 *            HTTP 请求对象
 	 */
-	@SuppressWarnings("unchecked")
 	public static void updateRequestAttributes(HttpServletRequest req) {
-		HttpSession sess = getHttpSession();
-
 		// 初始化本次请求的多国语言字符串
-		if (null != getMessageSet()) {
-			Map<String, String> msgs = null;
-			if (!hasLocale(sess))
-				msgs = setLocale(sess, getLocaleName(sess));
-			else
-				msgs = (Map<String, String>) sess.getAttribute(MSG);
+		Map<String, Map<String, Object>> msgss = getMessageSet();
+		if (null != msgss) {
+			Map<String, Object> msgs = null;
+
+			String lKey = Mvcs.getLocalizationKey();
+
+			if (!Strings.isBlank(lKey))
+				msgs = msgss.get(lKey);
+
 			// 没有设定特殊的 Local 名字，随便取一个
 			if (null == msgs) {
-				Map<String, Map<String, String>> msgss = getMessageSet();
 				if (msgss.size() > 0)
 					msgs = msgss.values().iterator().next();
 			}

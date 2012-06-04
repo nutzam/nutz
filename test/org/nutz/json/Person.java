@@ -6,12 +6,21 @@ public class Person {
 
 	private int age;
 	private String name;
+	private PersonSex sex;
 	private String realname;
 	private Date birthday;
 	private Person father;
 	private Company company;
 
 	private int num;
+
+	public PersonSex getSex() {
+		return sex;
+	}
+
+	public void setSex(PersonSex sex) {
+		this.sex = sex;
+	}
 
 	public int getNum() {
 		return num;

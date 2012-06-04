@@ -8,6 +8,7 @@ import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.cnd.SimpleCondition;
 import org.nutz.dao.util.cri.Exps;
+import org.nutz.dao.util.cri.OrderBySet;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
@@ -214,4 +215,28 @@ public class Cnd implements OrderBy, Criteria {
 		return this;
 	}
 
+	/**
+	 * 简单合并2个Cnd,以第一个Cnd的值为先
+	 */
+	public static Cnd merge(Cnd first, Cnd second) {
+		Cnd cnd = new Cnd();
+		if (!first.where().isEmpty()) {
+			for (SqlExpression se : first.where().cloneExps())
+				first.where().and(se);
+		}
+		if (!second.where().isEmpty()) {
+			for (SqlExpression se : second.where().cloneExps())
+				second.where().and(se);
+		}
+		OrderBySet order = (OrderBySet) cnd.getOrderBy();
+		if (first.getOrderBy() != null)
+			order.getItems().addAll(((OrderBySet) first.getOrderBy()).getItems());
+		if (second.getOrderBy() != null)
+			order.getItems().addAll(((OrderBySet) second.getOrderBy()).getItems());
+		if (second.getPager() == null)
+			cnd.cri.setPager(first.getPager());
+		else
+			cnd.cri.setPager(second.getPager());
+		return cnd;
+	}
 }

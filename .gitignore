@@ -4,6 +4,7 @@
 /tmp/
 /.settings/
 *.DS_Store
-/build/output
+/build
 /src/org/nutz/template/resources/sample.zip
 /deps
+/emptyproject/webapp/WEB-INF/lib/nor*.jar

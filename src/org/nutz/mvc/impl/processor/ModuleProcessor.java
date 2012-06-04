@@ -40,6 +40,8 @@ public class ModuleProcessor extends AbstractProcessor {
 		moduleType = ai.getModuleType();
 		// 不使用 Ioc 容器管理模块
 		if (Strings.isBlank(ai.getInjectName())) {
+			if (log.isInfoEnabled())
+				log.info("Create Module obj without Ioc --> " + moduleType);
 			moduleObj = Mirror.me(moduleType).born();
 		}
 		// 使用 Ioc 容器管理模块
@@ -56,8 +58,8 @@ public class ModuleProcessor extends AbstractProcessor {
 			} else {
 				Ioc ioc = ac.getIoc();
 				if (null == ioc)
-					throw Lang.makeThrow(	"Moudle with @InjectName('%s') but you not declare a Ioc for this app",
-											injectName);
+					throw Lang.makeThrow(	"Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app",
+											injectName, injectName);
 				Object obj;
 				/*
 				 * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
@@ -88,7 +90,8 @@ public class ModuleProcessor extends AbstractProcessor {
 					reqContext.depose();
 				}
 				catch (Throwable e) {
-					e.printStackTrace();
+					if (log.isDebugEnabled())
+						log.debug("ReqContext depose fail?!", e);
 				}
 		}
 	}

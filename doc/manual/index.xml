@@ -41,15 +41,17 @@
 		<doc path="events.man"/>
 		<doc path="injecting.man"/>
 		<doc path="ioc_loader.man"/>
-		<doc path="aop_solution.man"/>
-		<doc path="aop.man"/>
 		<doc path="scope.man"/>
 		<doc path="xml_ioc_loader.man"/>
 		<doc path="loader_annotation.man"/>
 		<doc path="loader_combo.man"/>
-		<doc path="aop_json.man"/>
 		<doc path="ioc_annos.man"/>
 		<doc path="ioc_properties.man"/>
+	</doc>
+	<doc path="aop" title="Aop 手册">
+		<doc path="aop_solution.man"/>
+		<doc path="aop.man"/>
+		<doc path="aop_json.man"/>
 	</doc>
 	<doc path="mvc"	title="Mvc 手册">
 		<doc path="overview.man"/>
@@ -75,8 +77,11 @@
 		<doc path="customize.man"/>
 		<doc path="json_book.man"></doc>
 	</doc>
-    <doc path="el" title="表达式引擎">
+    	<doc path="el" title="表达式引擎">
 		<doc path="overview.man"></doc>
+	</doc>
+	<doc path="maplist" title="maplist结构">
+	    <doc path="overview.man"></doc>
 	</doc>
 	<doc path="lang" title="甜 Java">
 		<doc path="lang.man"/>
@@ -90,14 +95,15 @@
 	<doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
 	</doc>
-	<!--doc path="zdoc" title="zDoc 手册">
+	<doc path="zdoc" title="zDoc 手册">
 		<doc path="overview.man"/>
 		<doc path="syntax.man"/>
 		<doc path="index_xml.man"/>
 		<doc path="dir_convert.man"/>
 		<doc path="ant_task.man"/>
-	</doc-->
+	</doc>
 	<doc path="history" title="版本历史">
+		<doc path="1_b_44.man"/>
 		<doc path="1_b_43.man"/>
 		<doc path="1_b_42.man"/>
 		<doc path="1_b_41.man"/>
@@ -123,6 +129,7 @@
 		<doc path="use_nutz_without_other_jar.man"/>
 		<doc path="what_aop_can_do.man"/>
 		<doc path="jar_encoding.man"/>
+		<doc path="common_qa_1.man"/>
 	</doc>
 	<doc path="appendix" title="附录">
 		<doc path="case.man"/>

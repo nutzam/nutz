@@ -75,7 +75,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 	}
 
 	public <T> Entity<T> make(Class<T> type) {
-		NutEntity<T> en = new NutEntity<T>(type);
+		NutEntity<T> en = _createNutEntity(type);
 
 		TableInfo ti = _createTableInfo(type);
 
@@ -386,6 +386,11 @@ public class AnnotationEntityMaker implements EntityMaker {
 			// 自增，如果 @Id(auto=false)，则忽略
 			if (info.annDefine.auto() && !ef.isId())
 				ef.setAsAutoIncreasement();
+			
+			//是否为自定义类型呢?
+			if (info.annDefine.customType().length() > 0) {
+				ef.setCustomDbType(info.annDefine.customType());
+			}
 		}
 		// 猜测字段类型
 		else {
@@ -496,4 +501,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		}
 	}
 
+	protected <T> NutEntity<T> _createNutEntity(Class<T> type) {
+		return new NutEntity<T>(type);
+	}
 }

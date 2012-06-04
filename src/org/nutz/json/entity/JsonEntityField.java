@@ -8,11 +8,11 @@ import java.lang.reflect.Type;
 import org.nutz.json.JsonField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.Objs;
 import org.nutz.lang.Strings;
 import org.nutz.lang.eject.EjectBySimpleEL;
 import org.nutz.lang.eject.Ejecting;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.mapl.Mapl;
 
 public class JsonEntityField {
 
@@ -30,9 +30,6 @@ public class JsonEntityField {
 
 	/**
 	 * 根据名称获取字段实体, 默认以set优先
-	 * @param mirror
-	 * @param name
-	 * @return
 	 */
 	public static JsonEntityField eval(Mirror<?> mirror, String name){
 	    Method[] methods = mirror.findSetters(name);
@@ -126,7 +123,7 @@ public class JsonEntityField {
 
 	public Object createValue(Object holder, Object value) {
 		if (this.createBy == null)
-		    return Objs.convert(value, genericType);
+		    return Mapl.maplistToObj(value, genericType);
 		try {
 			return holder.getClass().getMethod(createBy, Type.class, Object.class).invoke(holder, genericType, value);
 		} catch (Throwable e){

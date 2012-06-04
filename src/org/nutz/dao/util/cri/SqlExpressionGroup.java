@@ -279,4 +279,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 		return exps.isEmpty();
 	}
 
+	public List<SqlExpression> cloneExps() {
+		return new ArrayList<SqlExpression>(exps);
+	}
 }

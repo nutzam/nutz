@@ -83,6 +83,8 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
 
 	@Override
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case INT:
 			// 用户自定义了宽度

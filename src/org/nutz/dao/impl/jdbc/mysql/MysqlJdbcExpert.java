@@ -46,6 +46,8 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
 	@Override
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		// Mysql 的精度是按照 bit
 		if (mf.getColumnType() == ColType.INT) {
 			int width = mf.getWidth();

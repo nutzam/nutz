@@ -72,6 +72,59 @@
 		}
 		}}}
 --------------------------------------------------------------------------------------
+Apache Tomcat 7 连接池
+
+	这里使用的是tomcat7新的自带连接,但是,请把其2个jar移到项目的lib中!!
+	
+	直接书写 Java 代码
+		{{{<Java>
+		import org.apache.tomcat.jdbc.pool.DataSource;
+		
+		...
+		
+		DataSource ds = new DataSource();
+		ds.setDriverClassName("org.postgresql.Driver");
+		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUsername("demo");
+		ds.setPassword("123456");
+		...
+		ds.close();  // 关闭池内所有连接
+		}}}
+	通过 Nutz.Ioc 的 JSON 配置文件
+		{{{<IOC-JSON 配置>
+		{
+			dataSource : {
+				type : "org.apache.tomcat.jdbc.pool.DataSource",
+				events : {
+					depose : 'close'
+				},
+				fields : {
+					driverClassName : 'org.postgresql.Driver',
+					url : 'jdbc:postgresql://localhost:5432/mydatabase',
+					username : 'demo',
+					password : '123456'
+				}
+			}
+		}
+		}}}
+	通过 Nutz.Ioc 的 XML 配置文件
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="org.apache.tomcat.jdbc.pool.DataSource">
+					<events>
+						<depose>close</depose>
+					</events>
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>demo</str></field>
+					<field name="password"><str>123456</str></field>
+				</obj>
+			</ioc>
+		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
+	
+--------------------------------------------------------------------------------------
 Apache DBCP
 	dbcp: 直接书写 Java 代码
 		{{{<Java>
@@ -258,3 +311,57 @@ BoneCP
 			</ioc>
 		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+--------------------------------------------------------------------------------------
+如何使用这些配置
+
+	Java代码的方式:
+		{{{
+		//创建dataSource,以DBCP为例
+		DataSource ds = new DataSource();
+		ds.setDriverClassName("org.postgresql.Driver");
+		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setUsername("demo");
+		ds.setPassword("123456");
+		Dao dao = new NutDao(ds);
+		
+		dao.create(User.class, true);
+		dao.insert(User.create("wendal","123456"));
+		
+		//.... ... ...
+		
+		//所有操作都已经完成,关闭连接池,退出系统
+		ds.close();
+		return;
+		
+		//额外提醒,NutDao是线程安全的,请不要多次创建NutDao,除非你有多个DataSource
+		}}}
+	
+	通过 Nutz.Ioc 的 JSON 配置文件
+		{{{
+		//将配置信息保存到dao.js,并存放于src文件夹下
+		
+		Ioc ioc = new NutIoc(new JsonLoader("dao.js"));
+		DataSource ds = ioc.get(DataSource.class);
+		Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
+		
+		dao.create(User.class, true);
+		dao.insert(User.create("wendal","123456"));
+		
+		ioc.depose(); //关闭Ioc容器
+		}}}
+		
+	
+	通过 Nutz.Ioc 的 XML 配置文件
+		{{{
+		//将配置信息保存到dao.xml,并存放于src文件夹下
+		
+		Ioc ioc = new NutIoc(new XmlIocLoader("dao.js"));
+		DataSource ds = ioc.get(DataSource.class);
+		Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
+		
+		dao.create(User.class, true);
+		dao.insert(User.create("wendal","123456"));
+		
+		ioc.depose(); //关闭Ioc容器
+		}}}
+		

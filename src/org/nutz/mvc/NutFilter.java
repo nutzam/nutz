@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -37,6 +38,8 @@ public class NutFilter implements Filter {
 	private String selfName;
 	
 	private SessionProvider sp;
+	
+	private boolean needRealName = true;
 
 	public void init(FilterConfig conf) throws ServletException {
 		Mvcs.setServletContext(conf.getServletContext());
@@ -67,12 +70,25 @@ public class NutFilter implements Filter {
 		Mvcs.setServletContext(null);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		Mvcs.resetALL();
 		try {
 			if (sp != null)
 				req = sp.filter((HttpServletRequest)req, (HttpServletResponse)resp, Mvcs.getServletContext());
+			if (needRealName && skipMode) {
+				//直接无视自己的名字!!到容器取nutzservlet的名字!!
+				Enumeration<String> names = Mvcs.getServletContext().getAttributeNames();
+				while (names.hasMoreElements()) {
+					String name = (String) names.nextElement();
+					if (name.endsWith("_localization")) {
+						this.selfName = name.substring(0, name.length() - "_localization".length());
+						break;
+					}
+				}
+				needRealName = false;
+			}
 			Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
 			
 			checkForRedirect((HttpServletRequest)req);

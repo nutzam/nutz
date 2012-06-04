@@ -146,9 +146,6 @@ public class Mirror<T> {
 	/**
 	 * 根据Type生成Mirror, 如果type是 {@link ParameterizedType} 类型的对象<br>
 	 * 可以使用 getGenericsTypes() 方法取得它的泛型数组
-	 * 
-	 * @param type
-	 * @return
 	 */
 	@SuppressWarnings({"unchecked"})
 	public static <T> Mirror<T> me(Type type) {
@@ -539,8 +536,6 @@ public class Mirror<T> {
 
 	/**
 	 * 取得当前类型的泛型数组
-	 * 
-	 * @return
 	 */
 	public Type[] getGenericsTypes() {
 		if (type instanceof ParameterizedType) {
@@ -551,9 +546,6 @@ public class Mirror<T> {
 
 	/**
 	 * 取得当前类型的指定泛型
-	 * 
-	 * @param index
-	 * @return
 	 */
 	public Type getGenericsType(int index) {
 		Type[] ts = getGenericsTypes();
@@ -1374,7 +1366,7 @@ public class Mirror<T> {
 	 * @return true or false
 	 */
 	public boolean isPojo() {
-		if (this.klass.isPrimitive())
+		if (this.klass.isPrimitive() || this.isEnum())
 			return false;
 
 		if (this.isStringLike() || this.isDateTimeLike())

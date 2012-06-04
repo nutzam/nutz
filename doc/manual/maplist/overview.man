@@ -1,0 +1,302 @@
+#title: Mapl 结构 
+#author:juqkai(juqkai@gmail.com)
+#index:0,1
+------------------------------------------------------------------------
+为什么需要 Mapl 结构 
+    
+    一直以来都没有刻意的去思考说需要 Mapl 结构这样的东西. 
+    所谓 Mapl 结构就是 Map-List 结构，我原来就叫 maplist 后来被灰太郎说太长，就改成 "mapl" 了
+    
+    最初都是 wendal 在重写JSON的时候, 将JSON理解成了Mapl结构.
+    然后突然在某一天发现, 咦, Mapl.象还可以这么用, 那么用, 
+    慢慢的, 以Mapl 基础的小功能点越来越多, 
+    已经不能够完全的与JSON概念协调, 所以才有了这样一个中间结构.
+
+    恩, 上面那段是给灰太狼, wendal看的. 
+    我想你肯定看得头有点大, 要不我再说直白点, 
+    Mapl结构 就是为Json服务的, 为什么呢? 
+    MD, Json.fromJson()忒难用了, 
+    要是只给它一个Reader, 而不给Type, 那它给我返回的就是 Mapl结构 , 
+    苍天呀, 大地呀, 烦都烦死了. 
+    
+    我要取其中的某个值, 我得遍历N层的Map, List, 
+    每次写这种东西的时候, 我都想哭, 所以干脆对它封装吧, 越封越多, 然后就有了这玩意...
+
+    当然, 它也与EL一样{#0000AA;* 满足一小撮人的一小撮要求}
+
+------------------------------------------------------------------------
+什么是 Mapl 结构?
+    
+    一种以 Map, List 接口对象所组织起来的结构体系. 类似于JSON结构便于JAVA在内存中处理的结构. 
+    主要提供键值对, 与列表的有机组合, 因这种结构只由Map, List组成, 因些称其为Mapl结构.
+
+    {{{<java>
+    Map a = new HashMap();
+    a.put("name","a");
+    Map b = new HashMap();
+    b.put("name","b");
+    Map c = new HashMap();
+    c.put("name","c");
+    List list = new ArrayList();
+    list.add(a);
+    list.add(b);
+    list.add(c);
+    Map d = new HashMap();
+    d.put("items", list);
+    }}}
+    
+    通过上面的代码我们就组织了一个Mapl结构, 它等效于以下的JSON文档:
+
+    {{{<json>
+    {"items":[{"name":"a"},{"name":"b"},{"name":"c"}]}
+    }}}
+
+    当然, Mapl.仅可以用来表示JSON, 也可以用来表示JAVA对象的结构, 
+    然后有了Mapl., 你会发现, 做转换, 合并, 都是非常轻松滴~~~ 
+
+    具体规则:
+    *对象以Map存储, key为属性名, value为属性值
+    *数组以List存储
+    *Map直接存储为Map
+    *List直接存储为List
+    *只要不是List, Map存储的, 都认为是可以直接写入对象的
+------------------------------------------------------------------------
+Mapl.转 对象
+    
+    也就是根据Mapl.及Type信息转换成一个Type的实体对象了啦, 直接看例子:
+    {{{<java>
+    class A{
+        String name;
+	Integer id;
+    }
+    class B{
+        String name;
+	List<A> as;
+    }
+    class C{
+        public static void main(String args[]){
+	    String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
+	    //这样得到的就是Mapl结构的数据了.
+	    Object obj = Json.fromJson(json);
+	    
+	    B b = Mapl.maplistToObj(obj, B.class);
+	}
+    }
+    }}}
+    
+    通过上面的 Mapl.maplistToObj() 方法就可以将一个Mapl.象转换成B类型的实体对象. 
+    我偷偷的告诉你哦, JSON里面也是这样搞的哦 ~~~
+    先将JSON字符串转换成Mapl结构后再调用Mapl.maplistToObj()方法转换成对应的类型.
+------------------------------------------------------------------------
+对象转Maplist
+
+    除了通过JSON转换成Mapl结构以外, 还可以直接使用对象来转换成maplist结构
+    {{{<java>
+    A a = new A();
+    a.name="a"
+    B b = new B();
+    b.name = "b";
+    b.as = new ArrayList();
+    b.as.add(a);
+    Mapl.toMapl.b);
+    }}}
+    结果: 
+    {{{
+    {name:"b", as:[{name:"a", id:null}]}
+    }}}
+
+    通过toMapl.可以进行这种简单的转换
+------------------------------------------------------------------------
+访问 Maplist
+    
+    就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Mapl结构的数据时非常的繁杂, 经常需要很多层的类型转换.
+
+    {{{<java>
+	    String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
+	    //这样得到的就是Mapl结构的数据了.
+	    Object obj = Json.fromJson(json);
+    }}}
+
+    上面的obj, 如果我想取as索引为1的name的值, 怎么办? 只能这样:
+
+    {{{<java>
+        Map map = (Map) obj;
+	List list = map.get("as");
+	Map item = list.get(1);
+	String name = item.get("name");
+    }}}
+
+    亲, 看到没, 看到没~~~妈哦, 还好这里只有几层, 要是再多几次这样的, 
+    我一定会疯的, 你肯定也跟我一样吧. 所以咯, 让我们解脱吧~~~
+
+    {{{<java>
+    String name = (String) Mapl.cell(obj, "as[1].name");
+    }}}
+
+    完了? 这就样? 是的, 完了, 就这样, 一句话搞定. so easy~~~
+    
+    最后说说关于里面path的规则:
+    *map的值访问直接使用 '.', 如: abc.name
+    *list的访问使用 "名称`[索引]`", 如: `as[1]`. 当然要是不想写`[]`也可以使用 as.1.name的形式.
+    *顶层为list时, 使用 "`[索引].其它`", 如: `[1].name`
+    *如果想得到一个List, 而不是它某个值, 则可以使用 "名称" 不加 "`[索引]`". 如: as
+------------------------------------------------------------------------
+maplist 合并
+    
+    哇咔咔, 一个神器来鸟. 为嘛我要说它是神器呢, 看名字就知道了噻, 
+    当然, 这个只是一小撮的一小撮的一小撮人会觉得是神器...额...好吧, 
+    它只是一个没啥大用的一个伪神器...
+    
+    顾名思义, maplist 合并, 就是将多个maplist合并在一起, 组成一个新的 maplist .
+
+    {{{<java>
+    String json1 = "{'name':'nutz'}";
+    String json2 = "{'age':12}"
+    Object obj1 = Json.fromJson(json1);
+    Object obj2 = Json.fromJson(json2);
+    Object obj3 = Mapl.merge(obj1, obj2);
+    }}}
+
+    最终obj3的输出将是: 
+    {{{
+    {"name":"nutz", 'age':12}
+    }}}
+
+    规则:
+    *普通对象, 保存为List, 但是要去年重复.
+    *合并map, 如果key值相同, 那么后一个值覆盖前面的值, 注意, 对值将会进行递归合并
+    *list不做递归合并, 只做简单的合并, 清除重复
+
+------------------------------------------------------------------------
+maplist 过滤
+    
+    这玩意有什么用呢, 用来剔除/筛选 maplist 中的值, 使maplist更加满足我们的需求. 还是用例子来说明吧.
+
+    {{{<json>
+    String json = "{name:'nutz', age:12, address:[{area:1,name:"abc"}, {area:2,name:"123"}]}";
+    Object obj = Json.fromJson(json);
+
+    List<String> list = new ArrayList<String>();
+    list.add("age");
+    list.add("address[].area");
+    Object newobj = Maplise.excludeFilter(obj, list);
+    }}}
+
+    结果: 
+    {{{
+    {name:'nutz', address:[{name:"abc"}, {name:"123"}]}
+    }}}
+    
+    可以发现, 通过给定的过滤列表, 可以将原始的maplist结构给过滤掉满足条件的内容, 当然, 除了排除, 还有包含.
+
+    {{{<json>
+    String json = "{name:'nutz', age:12, address:[{area:1,name:"abc"}, {area:2,name:"123"}]}";
+    Object obj = Json.fromJson(json);
+
+    List<String> list = new ArrayList<String>();
+    list.add("age");
+    list.add("address[].area");
+    Object newobj = Maplise.includeFilter(obj, list);
+    }}}
+
+    结果: 
+    {{{
+    {age:12, address:[{area:1},{area:2}]}
+    }}}
+
+    excludeFilter与includeFilter是一组完全相反的功能.
+    
+    path规则:
+    *map以 "key." 间隔
+    *list以"`key[].`"间隔, 即多一个`[]`, 注意其中没有索引哦.
+    
+------------------------------------------------------------------------
+maplist 结构转换
+
+    好吧, 我觉得这个才是神器~~~啦~啦~~啦~~~啦~~~~完全是神一样的存在.
+
+    有没有使用过其它公司的API? 有吧, 其它公司都返回些什么格式? 
+    它的格式与你程序的格式一样吗? 
+    或许有, 但大部分是不一样的, 对吧. 既然这样, 那结构转换是肯定的了.
+
+    {{{<java>    
+    String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
+    String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
+    String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, "
+                  + "{\"age\":5,\"name\":\"nutz\"}],"
+                  + "\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, "
+                  + "{\"姓名\":\"nutz\",\"年龄\":5}]}";
+    Object obj = Mapl.convert(Json.fromJson(new StringReader(json)), new StringReader(model));
+    assertEquals(dest, Json.toJson(obj, new JsonFormat()));
+    }}}
+    结果: 
+    {{{
+    {
+        "people":[
+            {"age":12,"name":"jk"}, 
+            {"age":5,"name":"nutz"}
+        ],
+        "user":[
+            {"姓名":"jk","年龄":12}, 
+            {"姓名":"nutz","年龄":5}
+        ]
+    }";
+    }}}
+
+    通过一个简单的操作, 我们就将一个maplist结构转换成了一个完全不一样的结构, 是不是很神奇?
+
+    什么是 maplist 结构转换呢? 就是将一种MapList结构转换成另外一种MapList结构.例: 
+    {{{<json>
+    {
+        "age":"123",
+        "name":"juqkai"
+    }
+    }}}
+    转换成:
+    {{{<json>
+    {
+        "年龄":"123",
+        "姓名":"juqkai"
+    }
+    }}}
+ 
+    要进行这样的转换需要预先配置一个对应关系的配置, 具体的配置关系说明如下: 
+    *使用原MapList一样的结构 
+    *有数组的, 只写第一个元素的结构 
+    *原结构中的值, 以字符串或字符串数组做为目标结构的对应关系 
+    *对应关系可以为数组 
+    *有数组的, 目标结构以key[].abc来代替数组 
+    *原结构数组层次强制限定一致, 目标结构中'`[]`'的索引按原结构中出现先后顺序进行匹配. 
+    *如果原结果不存在, 那默认为0 
+    *未在模板中申明的不做转换 
+    例: 
+
+     例1:
+     {{{
+      {
+          "age":"user.年龄",
+          "name":["user.name", "user.姓名"]
+      }
+     }}}
+
+     例2
+     {{{
+     (原json:[{"name":"nutz"},{"name":"juqkai"}]):
+     [{
+          "name":"[].姓名"
+     }]
+     }}}
+
+     例3:
+     {{{
+     {
+          users:[
+              {
+                  "name":["people[].name", "users[].name"],
+                  "age":"users[].name"
+              }
+          ]
+     }
+     }}}
+    
+------------------------------------------------------------------------

@@ -405,7 +405,7 @@ public class Images {
 	/**
 	 * 将一个图片文件读入内存
 	 * 
-	 * @param imgFile
+	 * @param img
 	 *            图片文件
 	 * @return 图片对象
 	 */

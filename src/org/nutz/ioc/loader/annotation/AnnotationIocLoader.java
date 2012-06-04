@@ -31,7 +31,7 @@ import org.nutz.resource.Scans;
  */
 public class AnnotationIocLoader implements IocLoader {
 
-	private static final Log LOG = Logs.get();
+	private static final Log log = Logs.get();
 
 	private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 
@@ -39,11 +39,16 @@ public class AnnotationIocLoader implements IocLoader {
 		for (String packageZ : packages)
 			for (Class<?> classZ : Scans.me().scanPackage(packageZ))
 				addClass(classZ);
-		if (LOG.isInfoEnabled())
-			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
+		if (map.size() > 0) {
+			if (log.isInfoEnabled())
+				log.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
 						map.size(),
 						packages.length,
 						Castors.me().castToString(map.keySet()));
+		}
+		else {
+			log.warn("NONE Annotation-Class found!! Check your configure or report a bug!! packages=" + packages);
+		}
 	}
 
 	private void addClass(Class<?> classZ) {
@@ -58,8 +63,8 @@ public class AnnotationIocLoader implements IocLoader {
 			return;
 		IocBean iocBean = classZ.getAnnotation(IocBean.class);
 		if (iocBean != null) {
-			if (LOG.isDebugEnabled())
-				LOG.debugf("Found a Class with Ioc-Annotation : %s", classZ);
+			if (log.isDebugEnabled())
+				log.debugf("Found a Class with Ioc-Annotation : %s", classZ);
 
 			// 采用 @IocBean->name
 			String beanName = iocBean.name();
@@ -152,37 +157,44 @@ public class AnnotationIocLoader implements IocLoader {
 					fieldList.add(iocField.getName());
 				}
 			}
-			// 处理字段(以@IocBean.field方式),只允许引用同名的bean, 就映射为 refer:FieldName
+			// 处理字段(以@IocBean.field方式)
 			String[] flds = iocBean.fields();
-//			if (null == flds || flds.length == 0) {
-//				flds = iocBean.field();
-//			}
 			if (flds != null && flds.length > 0) {
 				for (String fieldInfo : flds) {
 					if (fieldList.contains(fieldInfo))
 						throw duplicateField(classZ,fieldInfo);
 					IocField iocField = new IocField();
-					iocField.setName(fieldInfo);
-					IocValue iocValue = new IocValue();
-					iocValue.setType(IocValue.TYPE_REFER);
-					iocValue.setValue(fieldInfo);
-					iocField.setValue(iocValue);
-					iocObject.addField(iocField);
+					if (fieldInfo.contains(":")) { // dao:jndi:dataSource/jdbc形式
+						String[] datas = fieldInfo.split(":", 2);
+						//完整形式, 与@Inject完全一致了
+						iocField.setName(datas[0]); 
+						iocField.setValue(convert(datas[1]));
+						iocObject.addField(iocField);
+					} else {
+						//基本形式, 引用与自身同名的bean
+						iocField.setName(fieldInfo);
+						IocValue iocValue = new IocValue();
+						iocValue.setType(IocValue.TYPE_REFER);
+						iocValue.setValue(fieldInfo);
+						iocField.setValue(iocValue);
+						iocObject.addField(iocField);
+					}
 					fieldList.add(iocField.getName());
 				}
 			}
-			if (LOG.isDebugEnabled())
-				LOG.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
+			if (log.isDebugEnabled())
+				log.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
 		}
 	}
 
 	protected IocValue convert(String value) {
 		IocValue iocValue = new IocValue();
-		if (value.indexOf(':') > -1) {
+		if (value.contains(":")) {
 			iocValue.setType(value.substring(0, value.indexOf(':')));
 			iocValue.setValue(value.substring(value.indexOf(':') + 1));
-		} else
-			iocValue.setValue(value);
+		} else {
+			iocValue.setValue(value); //TODO 是否应该改为默认refer呢?
+		}
 		return iocValue;
 	}
 
@@ -204,5 +216,9 @@ public class AnnotationIocLoader implements IocLoader {
 		return Lang.makeThrow(IocException.class,	"Duplicate filed defined! Class=%s,FileName=%s",
 				classZ,
 				name);
+	}
+	
+	public String toString() {
+		return "AnnotationIocLoader"+map.keySet();
 	}
 }

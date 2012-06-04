@@ -14,7 +14,7 @@ import org.nutz.lang.util.ByteInputStream;
 public class Request {
 
 	public static enum METHOD {
-		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, MULTIPART
+		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT
 	}
 
 	public static Request get(String url) {
@@ -90,21 +90,9 @@ public class Request {
 	public InputStream getInputStream() {
 		// TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
 		if (null == data) {
-			StringBuilder sb = new StringBuilder();
-			for (String key : params.keySet()) {
-				sb.append(key).append('=').append(params.get(key)).append('&');
-			}
-			sb.setCharAt(sb.length() - 1, '\n');
-			byte[] bytes = null;
-			try {
-				bytes = sb.toString().getBytes(Encoding.UTF8);
-			}
-			catch (UnsupportedEncodingException e) {
-				//不可能
-			}
-			return new ByteInputStream(bytes);
+			return new ByteInputStream(getURLEncodedParams().getBytes(Encoding.CHARSET_UTF8));
 		}
-		return null == data ? null : new ByteInputStream(data);
+		return new ByteInputStream(data);
 	}
 
 	public byte[] getData() {
@@ -136,10 +124,6 @@ public class Request {
 
 	public METHOD getMethod() {
 		return method;
-	}
-
-	public boolean isMultipart() {
-		return METHOD.MULTIPART == method;
 	}
 
 	public boolean isGet() {

@@ -41,6 +41,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean casesensitive;
 
 	private boolean hasColumnComment;
+	
+	private String customDbType;
 
 	private ValueAdaptor adaptor;
 
@@ -199,4 +201,11 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		return hasColumnComment;
 	}
 
+	public void setCustomDbType(String customDbType) {
+		this.customDbType = customDbType;
+	}
+	
+	public String getCustomDbType() {
+		return customDbType;
+	}
 }

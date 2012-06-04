@@ -104,6 +104,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
 	@Override
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case INT:
 			// 用户自定义了宽度
@@ -124,6 +126,9 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
 		case BINARY:
 			return "BYTEA";
+			
+		case DATETIME:
+			return "TIMESTAMP";
 		}
 		return super.evalFieldType(mf);
 	}

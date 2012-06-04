@@ -12,6 +12,7 @@ import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.SqlManager;
@@ -216,6 +217,8 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int update(String tableName, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			return Daos.updateBySpecialChain(this, null, tableName, chain, cnd);
 		EntityOperator opt = _optBy(chain.toEntityMap(tableName));
 		if (null == opt)
 			return 0;
@@ -225,6 +228,8 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int update(Class<?> classOfT, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			return Daos.updateBySpecialChain(this, getEntity(classOfT), null, chain, cnd);
 		EntityOperator opt = _opt(classOfT);
 		opt.addUpdate(chain, cnd);
 		opt.exec();
@@ -273,6 +278,9 @@ public class NutDao extends DaoSupport implements Dao {
 	}
 
 	public int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd) {
+		if (chain.isSpecial())
+			throw Lang.noImplement();
+		
 		EntityOperator opt = this._opt(classOfT);
 
 		opt.entity.visitManyMany(null, regex, doUpdateRelation(opt, chain, cnd));
@@ -422,6 +430,8 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public <T> T fetch(Class<T> classOfT, long id) {
 		Entity<T> en = holder.getEntity(classOfT);
+		if (en.getIdField() == null)
+			throw new DaoException("Need @Id for " + classOfT);
 		Pojo pojo = pojoMaker.makeQuery(en)
 								.append(Pojos.Items.cndId(en, id))
 								.addParamsBy(id)
@@ -432,6 +442,8 @@ public class NutDao extends DaoSupport implements Dao {
 
 	public <T> T fetch(Class<T> classOfT, String name) {
 		Entity<T> en = holder.getEntity(classOfT);
+		if (en.getNameField() == null)
+			throw new DaoException("Need @Name for " + classOfT);
 		Pojo pojo = pojoMaker.makeQuery(en)
 								.append(Pojos.Items.cndName(en, name))
 								.addParamsBy(name)
@@ -638,8 +650,9 @@ public class NutDao extends DaoSupport implements Dao {
 				return en;
 			}
 		}
+		en = holder.reloadEntity(classOfT); //需要重新载入,以免之前数据库表的信息影响Entity
 		expert.createEntity(this, en);
-		return en;
+		return holder.reloadEntity(classOfT); //再次重新载入,使配置信息与数据库信息相符
 	}
 
 	public boolean drop(Class<?> classOfT) {

@@ -25,6 +25,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlContext;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
@@ -139,7 +140,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	// 下面是提供给子类使用的一些帮助函数
 
 	protected String createResultSetMetaSql(Entity<?> en) {
-		return "SELECT * FROM " + en.getViewName();
+		return "SELECT * FROM " + en.getViewName() + " where 1!=1";
 	}
 
 	protected void createRelation(Dao dao, Entity<?> en) {
@@ -169,6 +170,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	}
 
 	protected String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
 		switch (mf.getColumnType()) {
 		case CHAR:
 			return "CHAR(" + mf.getWidth() + ")";
@@ -311,11 +314,16 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	}
 	
 	public void formatQuery(DaoStatement daoStatement) {
+		if (daoStatement == null)
+			return;
+		SqlContext ctx = daoStatement.getContext();
+		if (ctx == null || ctx.getPager() == null)
+			return;
 		if (daoStatement instanceof Pojo)
 			formatQuery((Pojo)daoStatement);
 		else if (daoStatement instanceof Sql)
 			formatQuery((Sql)daoStatement);
-		else
+		else 
 			throw Lang.noImplement();
 	}
 
@@ -324,4 +332,5 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 	public void formatQuery(Sql sql) {
 		throw Lang.noImplement();
 	}
+	
 }

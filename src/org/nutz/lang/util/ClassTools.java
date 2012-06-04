@@ -15,8 +15,6 @@ public class ClassTools {
 
 	/**
 	 * 从输入流中读取Class的名字,输入流必须是Class文件格式
-	 * @param in
-	 * @return
 	 */
 	public static String getClassName(InputStream in) {
 		try {

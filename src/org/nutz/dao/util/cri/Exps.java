@@ -104,7 +104,7 @@ public abstract class Exps {
 			return re.setNot(op.startsWith("NOT"));
 		}
 		// LIKE || IS
-		else if ("LIKE".equals(op) || "NOT LIKEs".equals(op)) {
+		else if ("LIKE".equals(op) || "NOT LIKE".equals(op)) {
 			String v = value.toString();
 			Like re;
 			if (v.length() == 1) {

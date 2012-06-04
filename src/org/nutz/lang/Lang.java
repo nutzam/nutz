@@ -1725,10 +1725,6 @@ public abstract class Lang {
 
 	/**
 	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-	 * 
-	 * @param me
-	 * @param field
-	 * @return
 	 */
 	public static Type getFieldType(Mirror<?> me, String field) throws NoSuchFieldException {
 		return getFieldType(me, me.getField(field));
@@ -1738,7 +1734,6 @@ public abstract class Lang {
 	 * 当一个类使用<T, K> 来定义泛型时, 本方法返回类的一个方法所有参数的具体类型
 	 * @param me
 	 * @param method
-	 * @return
 	 */
 	public static Type[] getMethodParamTypes(Mirror<?> me, Method method){
 	    Type[] types = method.getGenericParameterTypes();
@@ -1751,10 +1746,6 @@ public abstract class Lang {
 
 	/**
 	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-	 * 
-	 * @param me
-	 * @param field
-	 * @return
 	 */
 	public static Type getFieldType(Mirror<?> me, Field field) {
 		Type type = field.getGenericType();
@@ -1763,9 +1754,6 @@ public abstract class Lang {
 	
 	/**
 	 * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-	 * @param me
-	 * @param type
-	 * @return
 	 */
 	public static Type getGenericsType(Mirror<?> me, Type type){
 	    Type[] types = me.getGenericsTypes();
@@ -1814,9 +1802,6 @@ public abstract class Lang {
 
 	/**
 	 * 返回一个type的泛型数组, 如果没有, 则直接返回null
-	 * 
-	 * @param type
-	 * @return
 	 */
 	public static Type[] getGenericsTypes(Type type) {
 		if (type instanceof ParameterizedType) {

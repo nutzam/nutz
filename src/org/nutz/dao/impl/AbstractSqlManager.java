@@ -37,7 +37,7 @@ public abstract class AbstractSqlManager implements SqlManager {
 	protected Map<String, String> _sql_map;
 	private List<String> _sql_keys;
 	
-	private boolean allowDuplicate;
+	private boolean allowDuplicate = true;
 
 	private Map<String, String> map() {
 		if (null == _sql_map)

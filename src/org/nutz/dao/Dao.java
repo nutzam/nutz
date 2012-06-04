@@ -809,7 +809,7 @@ public interface Dao {
 	 *            过滤条件
 	 * @return 计算结果
 	 */
-	int func(Class<?> classOfT, String funcName, String colName, Condition cnd);
+	int func(Class<?> classOfT, String funcName, String fieldName, Condition cnd);
 
 	/**
 	 * 对某一个数据表字段，进行计算。

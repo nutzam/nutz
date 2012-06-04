@@ -142,4 +142,9 @@ public class CndTest extends DaoCase {
 		String exp = "WHERE (ct='beijing' OR ct='shanghai' OR ct='guangzhou' OR ct='shenzhen') AND (age>18 AND age<30)";
 		assertEquals(exp, Cnd.where(e1).and(e2).toSql(en).trim());
 	}
+	
+	@Test
+	public void test_other_op() {
+		assertEquals(" WHERE ok IS true", Cnd.where("ok", "is", true).toString());
+	}
 }

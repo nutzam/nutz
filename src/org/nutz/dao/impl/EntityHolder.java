@@ -26,7 +26,7 @@ import org.nutz.lang.inject.InjectToMap;
 public class EntityHolder {
 
 	// DaoSupport 会设置这个值
-	EntityMaker maker;
+	public EntityMaker maker;
 
 	private DaoSupport support;
 
@@ -61,6 +61,19 @@ public class EntityHolder {
 			}
 		}
 		return (Entity<T>) re;
+	}
+	
+	/**
+	 * 重新载入
+	 */
+	public <T> Entity<T> reloadEntity(Class<T> classOfT) {
+		Entity<T> re = getEntity(classOfT);
+		if (null != re) {
+			synchronized (map) {
+				map.remove(re.getType());
+			}
+		}
+		return getEntity(classOfT);
 	}
 
 	@SuppressWarnings({"rawtypes", "unchecked"})

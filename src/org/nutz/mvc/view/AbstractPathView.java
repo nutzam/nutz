@@ -75,12 +75,21 @@ public abstract class AbstractPathView implements View {
 		}
 
 		// 请求对象的属性列表
-		Map<String,Object> a = new HashMap<String, Object>();
+		Map<String,Object> req_attr = new HashMap<String, Object>();
 		for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
 			String tem = en.nextElement();
-			a.put(tem, req.getAttribute(tem));
+			req_attr.put(tem, req.getAttribute(tem));
 		}
-		context.set("a", a);//TODO 是否应该用a呢? attr是不是更加好呢?
+		context.set("a", req_attr);//兼容最初的写法
+		context.set("req_attr", req_attr);
+		
+		Map<String,Object> session_attr = new HashMap<String, Object>();
+		for (Enumeration<String> en = req.getSession().getAttributeNames(); en.hasMoreElements();) {
+			String tem = en.nextElement();
+			session_attr.put(tem, req.getAttribute(tem));
+		}
+		context.set("session_attr", session_attr);
+		
 		
 		// 请求的参数表,需要兼容之前的p.参数, Fix issue 418
 		Map<String,String> p = new HashMap<String, String>();
@@ -92,7 +101,6 @@ public abstract class AbstractPathView implements View {
 		}
 		context.set("p", p);
 		
-		//
 		Map<String, String> u = new HashMap<String, String>();
 		AtMap at = Mvcs.getAtMap();
 		if (at != null) {

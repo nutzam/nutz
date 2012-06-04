@@ -1,6 +1,8 @@
 package org.nutz.dao.util;
 
 import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -12,8 +14,11 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
+import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
@@ -21,11 +26,14 @@ import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
 import org.nutz.trans.Molecule;
 import org.nutz.trans.Trans;
@@ -38,6 +46,8 @@ import org.nutz.trans.Trans;
  * @author cqyunqin
  */
 public abstract class Daos {
+	
+	private static final Log log = Logs.get();
 
 	public static void safeClose(Statement stat, ResultSet rs) {
 		safeClose(rs);
@@ -187,10 +197,10 @@ public abstract class Daos {
 		return sb;
 	}
 	
-	/*
+	/**
 	 * 查询sql并把结果放入传入的class组成的List中
 	 */
-	public <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
+	public static <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
 		Sql sql2 = Sqls.queryEntity(sql);
 		sql2.setEntity(dao.getEntity(classOfT));
 		sql2.setCondition(cnd);
@@ -199,12 +209,72 @@ public abstract class Daos {
 		return sql2.getList(classOfT);
 	}
 	
-	/*
+	/**
 	 * 查询某sql的结果条数
 	 */
-	public int queryCount(Dao dao, String sql) {
+	public static int queryCount(Dao dao, String sql) {
 		Sql sql2 = Sqls.fetchLong("select count(1) FROM ("+sql+")");
 		dao.execute(sql2);
 		return sql2.getInt();
+	}
+	
+	/**
+	 * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
+	 * @see org.nutz.dao.Chain#addSpecial(String, Object)
+	 */
+	@SuppressWarnings({ "rawtypes" })
+	public static int updateBySpecialChain(Dao dao, Entity en, String tableName, Chain chain, Condition cnd) {
+		if (en != null)
+			tableName = en.getTableName();
+		if (tableName == null)
+			throw Lang.makeThrow(DaoException.class, "tableName and en is NULL !!");
+		final StringBuilder sql = new StringBuilder("UPDATE ").append(tableName).append(" SET ");
+		Chain head = chain.head();
+		final List<Object> values = new ArrayList<Object>();
+		final List<ValueAdaptor> adaptors = new ArrayList<ValueAdaptor>();
+		while (head != null) {
+			MappingField mf = null;
+			if (en != null)
+				mf = en.getField(head.name());
+			String colName = head.name();
+			if (mf != null)
+				colName = mf.getColumnName();
+			sql.append(colName).append("=");
+			if (head.special) {
+				if ("+1".equals(head.value()) || "-1".equals(head.value())) {
+					sql.append(colName);
+				}
+				sql.append(head.value());
+			} else {
+				sql.append("?");
+				values.add(head.value());
+				ValueAdaptor adaptor = Jdbcs.getAdaptorBy(head.value());
+				if (mf != null && mf.getAdaptor() != null)
+					adaptor = mf.getAdaptor();
+				adaptors.add(adaptor);
+			}
+			sql.append(" ");
+			head = head.next();
+			if (head != null)
+				sql.append(", ");
+		}
+		if (cnd != null)
+			sql.append(" ").append(cnd.toSql(en));
+		if (log.isDebugEnabled())
+			log.debug(sql);
+		final int[] ints = new int[1];
+		dao.run(new ConnCallback() {
+			public void invoke(Connection conn) throws Exception {
+				PreparedStatement ps = conn.prepareStatement(sql.toString());
+				try {
+					for (int i = 0; i < values.size(); i++)
+						adaptors.get(i).set(ps, values.get(i), i + 1);
+					ints[0] = ps.executeUpdate();
+				} finally {
+					Daos.safeClose(ps);
+				}
+			}
+		});
+		return ints[0];
 	}
 }

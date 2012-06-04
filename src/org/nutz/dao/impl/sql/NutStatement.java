@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.sql;
 
+import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
 import java.util.List;
@@ -133,9 +134,38 @@ public abstract class NutStatement implements DaoStatement {
 						.append("\n  .............................................");
 			// 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
 			sb.append("\n  For example:> \"");
-			sb.append(toStatement(mtrx, sql));
+			sb.append(toExampleStatement(mtrx, sql));
 			sb.append('"');
 		}
+
+		return sb.toString();
+	}
+	
+	protected String toExampleStatement(Object[][] mtrx, String sql) {
+		StringBuilder sb = new StringBuilder();
+		String[] ss = sql.split("[?]");
+		int i = 0;
+		if (mtrx.length > 0) {
+			for (; i < mtrx[0].length; i++) {
+				sb.append(ss[i]);
+				Object obj = mtrx[0][i];
+				if (obj != null) {
+					if (obj instanceof Blob) {
+						Blob blob = (Blob)obj;
+						obj = "Blob(" + blob.hashCode() + ")";
+					} else if (obj instanceof Clob) {
+						Clob clob = (Clob)obj;
+						obj = "Clob(" +clob.hashCode() + ")";
+					} else if (obj instanceof byte[] || obj instanceof char[]) {
+						if (Array.getLength(obj) > 10240)
+							obj = "*BigData[len=" + Array.getLength(obj) +"]";
+					}
+				}
+				sb.append(Sqls.formatFieldValue(obj));
+			}
+		}
+		if (i < ss.length)
+			sb.append(ss[i]);
 
 		return sb.toString();
 	}
@@ -166,9 +196,11 @@ public abstract class NutStatement implements DaoStatement {
 			} else if (obj instanceof Clob) {
 				Clob clob = (Clob)obj;
 				return "Clob(" +clob.hashCode() + ")";
-			} else {
-				return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
+			} else if (obj instanceof byte[] || obj instanceof char[]) {
+				if (Array.getLength(obj) > 10240)
+					return "*BigData[len=" + Array.getLength(obj) +"]";
 			}
+			return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
 		}
 	}
 }

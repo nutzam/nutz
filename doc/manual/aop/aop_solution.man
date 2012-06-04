@@ -1,0 +1,69 @@
+#title: AOP模型 -- NutAop的实现思路
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------
+为什么需要特别写出NutAop的模型呢?
+
+	 * NutAop清晰简洁地实现了Aop中最常用,最常见的需求--控制特定方法的执行逻辑
+	 * 了解这个模型,能够更好地理解Aop
+------------------------------------------------------------------------------    
+基本思路
+
+	原方法(没有返回值)
+	{{{
+	public void exe(){
+		//Do something
+	}
+	}}}
+	
+	被改造后
+	{{{
+    import org.nutz.aop.InterceptorChain;
+    ....
+    
+    public void exe(){
+        try{
+            new InterceptorChain(XX,XXX...).doChain();
+        }catch (Throwable) {
+            throw e;
+        }
+    }
+	}}}
+	其中使用到的InterceptorChain,可以理解为Servlet里面的FilterChain,它携带着执行原方法时可以获取的信息,
+	如调用对象.调用方法,参数,返回值等整个 InterceptorChain 不到100行,我相信你很快就能看完.
+	懒人的话,只看doChain()/invoke(),你将会豁然开朗.
+    
+	{*整体思路}
+	 * 将方法调用的信息,拦截器信息,全部封装到InterceptorChain
+	 * 调用InterceptorChain里面第一个拦截器,并由该拦截器决定是否进行,如果继续,则调用doChain()
+	 * 当InterceptorChain中最后一个拦截器也调用了doChain(),在开始调用原方法实现,然后返回.
+	 * 由于doChain()返回了,堆栈开始往回走,依次通过原本的拦截器, 这时,你可以改变/替换原本的返回值
+------------------------------------------------------------------------------
+具体实现
+
+	如果在你的方法中打印堆栈,你将看到类似的信息
+	{{{
+	java.lang.Throwable
+		at org.nutz.aop.asm.test.Aop1.mixArgsVoid(Aop1.java:55)
+		at org.nutz.aop.asm.test.Aop1$$NUTZAOP._aop_invoke(Unknown Source)
+		at org.nutz.aop.InterceptorChain.invoke(InterceptorChain.java:51)
+		at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:39)
+		at org.nutz.aop.interceptor.LoggingMethodInterceptor.filter(LoggingMethodInterceptor.java:29) //拦截器B
+		at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
+		at org.nutz.aop.AbstractMethodInterceptor.filter(AbstractMethodInterceptor.java:10) //拦截器A
+		at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
+		at org.nutz.aop.asm.test.Aop1$$NUTZAOP.mixArgsVoid(Unknown Source)
+	}}}
+	mixArgsVoid 就是你原本方法
+------------------------------------------------------------------------------
+注意
+	* 切勿自行实现org.nutz.aop.AopCallback接口,并不要使用该接口声明的方法签名
+	* 虽然org.nutz.aop.MethodInterceptor接口允许你抛出任何异常,但*请不要抛出原方法未声明的受检异常*
+
+
+
+
+
+
+
+

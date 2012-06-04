@@ -21,13 +21,12 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-
 import static org.nutz.ioc.Iocs.*;
 
 public class IocLoading {
 
 	private static final Log log = Logs.get();
-	
+
 	private Set<String> supportedTypes;
 
 	public IocLoading(Set<String> supportedTypes) {
@@ -48,9 +47,10 @@ public class IocLoading {
 				ifld.setValue(object2value(en.getValue()));
 				iobj.addField(ifld);
 			}
-			if(log.isWarnEnabled()) //TODO 移除这种兼容性
-				log.warn("Using *Declared* ioc-define (without type or events)!!! Pls use Standard Ioc-Define!!" +
-						" Bean will define as:\n"+Json.toJson(iobj));
+			if (log.isWarnEnabled()) // TODO 移除这种兼容性
+				log.warn("Using *Declared* ioc-define (without type or events)!!! Pls use Standard Ioc-Define!!"
+							+ " Bean will define as:\n"
+							+ Json.toJson(iobj));
 		} else {
 			Object v = map.get("type");
 			// type
@@ -172,10 +172,11 @@ public class IocLoading {
 			Object[] array = (Object[]) obj;
 			IocValue[] ivs = new IocValue[array.length];
 			for (int i = 0; i < ivs.length; i++) {
-				ivs[i] = object2value(ivs[i]);
+				ivs[i] = object2value(array[i]);
 			}
 			iv.setType(IocValue.TYPE_NORMAL);
 			iv.setValue(ivs);
+			return iv;
 		}
 		// Collection
 		else if (obj instanceof Collection<?>) {
