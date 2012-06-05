@@ -7,6 +7,7 @@ import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
@@ -99,4 +100,18 @@ public class ComboIocLoader implements IocLoader {
 		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("/*ComboIocLoader*/\n{");
+		for (IocLoader loader : iocLoaders) {
+			String str = Json.toJson(loader);
+			str = str.replaceFirst("{", "");  //肯定有!!
+			int index = str.lastIndexOf("}"); //肯定有!!
+			StringBuilder sb2 = new StringBuilder(str);
+			sb2.setCharAt(index, ' ');
+			sb.append(sb2).append("\n");
+		}
+		sb.append("}");
+		return sb.toString();
+	}
 }

@@ -17,6 +17,7 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -219,6 +220,6 @@ public class AnnotationIocLoader implements IocLoader {
 	}
 	
 	public String toString() {
-		return "AnnotationIocLoader"+map.keySet();
+		return "/*AnnotationIocLoader*/\n"+Json.toJson(map);
 	}
 }
