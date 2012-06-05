@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.HttpURLConnection;
 import java.util.Map;
 
 import org.nutz.lang.Encoding;
@@ -13,13 +14,10 @@ import org.nutz.lang.Lang;
 
 public class Response {
 
-	public Response(Map<String, String> reHeader) {
-		// HTTP/1.1 404 /test/cc/yyt
-		String[] codes = reHeader.get(null).split(" ");
-		protocal = codes[0];
-		status = Integer.parseInt(codes[1]);
-		if (codes.length >= 3)
-			detail = codes[2];
+	public Response(HttpURLConnection conn, Map<String, String> reHeader) throws IOException {
+		protocal = "HTTP/1.1";
+		status = conn.getResponseCode();
+		detail = conn.getResponseMessage();
 		this.header = Header.create(reHeader);
 		String s = header.get("Set-Cookie");
 		if (null != s)
