@@ -3,12 +3,12 @@ package org.nutz.http;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.List;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.InflaterInputStream;
 
@@ -37,7 +37,7 @@ public abstract class Sender {
 
 	protected int timeout;
 
-	protected URLConnection conn;
+	protected HttpURLConnection conn;
 
 	protected Sender(Request request) {
 		this.request = request;
@@ -45,10 +45,11 @@ public abstract class Sender {
 
 	public abstract Response send() throws HttpException;
 
-	protected Response createResponse(Map<String, String> reHeaders) throws IOException {
+	protected Response createResponse(Map<String, String> reHeaders)
+			throws IOException {
 		Response rep = null;
 		if (reHeaders != null && reHeaders.get(null) != null) {
-			rep = new Response(reHeaders);
+			rep = new Response(conn, reHeaders);
 			if (rep.isOK()) {
 				InputStream is1 = conn.getInputStream();
 				InputStream is2 = null;
@@ -88,7 +89,7 @@ public abstract class Sender {
 	}
 
 	protected void openConnection() throws IOException {
-		conn = request.getUrl().openConnection();
+		conn = (HttpURLConnection) request.getUrl().openConnection();
 		if (timeout > 0)
 			conn.setReadTimeout(timeout);
 	}
