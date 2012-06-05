@@ -220,6 +220,6 @@ public class AnnotationIocLoader implements IocLoader {
 	}
 	
 	public String toString() {
-		return "AnnotationIocLoader:\n"+Json.toJson(map);
+		return "/*AnnotationIocLoader*/\n"+Json.toJson(map);
 	}
 }
