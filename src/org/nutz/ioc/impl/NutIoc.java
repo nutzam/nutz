@@ -21,7 +21,6 @@ import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.cached.CachedIocLoader;
 import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
 import org.nutz.ioc.meta.IocObject;
-import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
