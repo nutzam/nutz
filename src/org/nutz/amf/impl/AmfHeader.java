@@ -13,11 +13,11 @@ public class AmfHeader {
 	public Object body;
 	
 	public void readObject(DataInputStream dis) throws IOException {
-		name = dis.readUTF();
+		name = AmfParser.readUTF(dis);
 		mustUnderstand = dis.readBoolean();
 		dis.readInt(); // skip body size
 		
-		Map<String, Object> res = AmfParser.readObject(dis);
+		Map<String, Object> res = AmfParser.readAmfObject(dis);
 		body = res.get("body");
 		if (res.containsKey("version"))
 			version = (Integer)res.get("version");

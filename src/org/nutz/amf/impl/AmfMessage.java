@@ -14,11 +14,11 @@ public class AmfMessage {
 	public String responseURI;
 	public Object body;
 	public void readObject(DataInputStream dis) throws IOException {
-		targetURI = dis.readUTF();
-		responseURI = dis.readUTF();
+		targetURI = AmfParser.readUTF(dis);
+		responseURI = AmfParser.readUTF(dis);
 		dis.readInt(); //skip body size
 		
-		Map<String, Object> res = AmfParser.readObject(dis);
+		Map<String, Object> res = AmfParser.readAmfObject(dis);
 		body = res.get("body");
 		if (res.containsKey("version"))
 			version = (Integer)res.get("version");
