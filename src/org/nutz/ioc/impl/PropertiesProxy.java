@@ -34,6 +34,11 @@ public class PropertiesProxy {
 		this.utf8 = utf8;
 	}
 
+	public PropertiesProxy(String... paths) {
+		this(true);
+		this.setPaths(paths);
+	}
+
 	/**
 	 * 加载指定文件/文件夹的Properties文件,合并成一个Properties对象
 	 * <p>
@@ -115,7 +120,7 @@ public class PropertiesProxy {
 	public Collection<String> getValues() {
 		return mp.values();
 	}
-	
+
 	public Properties toProperties() {
 		Properties p = new Properties();
 		for (String key : mp.keySet()) {

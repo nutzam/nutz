@@ -20,7 +20,7 @@ import org.nutz.log.Logs;
  * 
  */
 public class ComboIocLoader implements IocLoader {
-	
+
 	private static final Log log = Logs.get();
 
 	private List<IocLoader> iocLoaders = new ArrayList<IocLoader>();
@@ -62,7 +62,7 @@ public class ComboIocLoader implements IocLoader {
 	}
 
 	private void createIocLoader(String className, List<String> args) throws ClassNotFoundException {
-		iocLoaders.add((IocLoader) Mirror	.me(Lang.loadClass(className))
+		iocLoaders.add((IocLoader) Mirror.me(Lang.loadClass(className))
 											.born(args.toArray(new Object[args.size()])));
 	}
 
@@ -89,7 +89,7 @@ public class ComboIocLoader implements IocLoader {
 	}
 
 	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-		
+
 		for (IocLoader iocLoader : iocLoaders)
 			if (iocLoader.has(name)) {
 				IocObject iocObject = iocLoader.load(loading, name);
@@ -100,13 +100,14 @@ public class ComboIocLoader implements IocLoader {
 		throw new ObjectLoadException("Object '" + name + "' without define!");
 	}
 
+	// TODO 这个方法好好整理一下 ...
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("/*ComboIocLoader*/\n{");
 		for (IocLoader loader : iocLoaders) {
 			String str = Json.toJson(loader);
-			str = str.replaceFirst("{", "");  //肯定有!!
-			int index = str.lastIndexOf("}"); //肯定有!!
+			str = str.replaceFirst("[{]", ""); // 肯定有!!
+			int index = str.lastIndexOf("}"); // 肯定有!!
 			StringBuilder sb2 = new StringBuilder(str);
 			sb2.setCharAt(index, ' ');
 			sb.append(sb2).append("\n");
