@@ -308,6 +308,24 @@ public abstract class Mvcs {
 	}
 
 	/**
+	 * 默认的本地化字符串 KEY，当为 NULL 时，Nutz.Mvc 会随便用一个
+	 */
+	private static String default_localization_key = null;
+
+	/**
+	 * 
+	 * @param key
+	 *            默认的多国语言 KEY
+	 */
+	public static void setDefaultLocalizationKey(String key) {
+		default_localization_key = key;
+	}
+
+	public static String getDefaultLocalizationKey() {
+		return default_localization_key;
+	}
+
+	/**
 	 * 为当前的 HTTP 请求对象设置一些必要的属性。包括：
 	 * <ul>
 	 * <li>本地化子字符串 => ${msg}
@@ -323,7 +341,7 @@ public abstract class Mvcs {
 		if (null != msgss) {
 			Map<String, Object> msgs = null;
 
-			String lKey = Mvcs.getLocalizationKey();
+			String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
 
 			if (!Strings.isBlank(lKey))
 				msgs = msgss.get(lKey);
