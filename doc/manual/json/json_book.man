@@ -144,16 +144,16 @@
 对Json的过滤.
 	
     此功能已由Mapl.includeFilter(), Mapl.excludeFilter()代替.
-    http://code.google.com/p/nutz/wiki/maplist_overview#maplist_过滤
+    [../maplist/overview.man Mapl文档]
 --------------------------------------------------------------------------------------------------------	
 JSON 结构转换(其实是Map,List结构, 不一定非要JSON转换的)
+
     此功能已由Mapl.convert()代替.
-    http://code.google.com/p/nutz/wiki/maplist_overview#maplist_结构转换
-	
+    [../maplist/overview.man Mapl文档]
 
 --------------------------------------------------------------------------------------------------------	
 Map, List结构访问.
-    此功能已由Mapl.cell代替
-    http://code.google.com/p/nutz/wiki/maplist_overview#访问_Maplist
 
+    此功能已由Mapl.cell代替
+    [../maplist/overview.man Mapl文档]
 
