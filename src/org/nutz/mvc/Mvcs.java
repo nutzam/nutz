@@ -503,10 +503,16 @@ public abstract class Mvcs {
 	}
 
 	public static HttpSession getHttpSession() {
-		return REQ.get().getSession();
+		HttpServletRequest req = REQ.get();
+		if (null == req)
+			return null;
+		return req.getSession();
 	}
 
 	public static HttpSession getHttpSession(boolean createNew) {
-		return REQ.get().getSession(createNew);
+		HttpServletRequest req = REQ.get();
+		if (null == req)
+			return null;
+		return req.getSession(createNew);
 	}
 }
