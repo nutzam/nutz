@@ -225,7 +225,8 @@ public class XmlIocLoader implements IocLoader {
 			iocValue.setValue(set);
 		} else {
 			iocValue.setType(null);
-			iocValue.setValue(element.getFirstChild().getTextContent());
+			if (element.getFirstChild() != null)
+				iocValue.setValue(element.getFirstChild().getTextContent());
 		}
 		return iocValue;
 	}

@@ -254,4 +254,9 @@ public class NutIoc implements Ioc2 {
 		}
 		return new IocMaking(this, mirrors, cntx, maker, vpms, name);
 	}
+	
+	@Override
+	public String toString() {
+		return "/*NutIoc*/\n{\nloader:" + loader + "\n}";
+	}
 }

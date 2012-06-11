@@ -124,4 +124,9 @@ public class IocObject implements Cloneable {
 	public IocObject clone() {
 		return Json.fromJson(IocObject.class, Json.toJson(this));
 	}
+	
+	@Override
+	public String toString() {
+		return Json.toJson(this);
+	}
 }

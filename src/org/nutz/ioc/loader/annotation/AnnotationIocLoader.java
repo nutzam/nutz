@@ -17,6 +17,7 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.Json;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -31,7 +32,7 @@ import org.nutz.resource.Scans;
  */
 public class AnnotationIocLoader implements IocLoader {
 
-	private static final Log LOG = Logs.get();
+	private static final Log log = Logs.get();
 
 	private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 
@@ -39,11 +40,16 @@ public class AnnotationIocLoader implements IocLoader {
 		for (String packageZ : packages)
 			for (Class<?> classZ : Scans.me().scanPackage(packageZ))
 				addClass(classZ);
-		if (LOG.isInfoEnabled())
-			LOG.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
+		if (map.size() > 0) {
+			if (log.isInfoEnabled())
+				log.infof(	"Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
 						map.size(),
 						packages.length,
 						Castors.me().castToString(map.keySet()));
+		}
+		else {
+			log.warn("NONE Annotation-Class found!! Check your configure or report a bug!! packages=" + packages);
+		}
 	}
 
 	private void addClass(Class<?> classZ) {
@@ -58,8 +64,8 @@ public class AnnotationIocLoader implements IocLoader {
 			return;
 		IocBean iocBean = classZ.getAnnotation(IocBean.class);
 		if (iocBean != null) {
-			if (LOG.isDebugEnabled())
-				LOG.debugf("Found a Class with Ioc-Annotation : %s", classZ);
+			if (log.isDebugEnabled())
+				log.debugf("Found a Class with Ioc-Annotation : %s", classZ);
 
 			// 采用 @IocBean->name
 			String beanName = iocBean.name();
@@ -177,8 +183,8 @@ public class AnnotationIocLoader implements IocLoader {
 					fieldList.add(iocField.getName());
 				}
 			}
-			if (LOG.isDebugEnabled())
-				LOG.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
+			if (log.isDebugEnabled())
+				log.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
 		}
 	}
 
@@ -214,6 +220,6 @@ public class AnnotationIocLoader implements IocLoader {
 	}
 	
 	public String toString() {
-		return "AnnotationIocLoader"+map.keySet();
+		return "/*AnnotationIocLoader*/\n"+Json.toJson(map);
 	}
 }

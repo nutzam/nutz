@@ -28,7 +28,7 @@ import org.nutz.mvc.upload.injector.ReaderInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
 /**
- * 本适配器专门处理 HTTP 文件上传。 它支持多文件，多参数上传。具体的做法是将 HTTP 上传的所有内容
+ * 本适配器专门处理 HTTP 文件上传(1.b.44及之后的版本,兼容Html5的流式上传)。 它支持多文件，多参数上传。具体的做法是将 HTTP 上传的所有内容
  * 包括文件以及名值对都预先缓存下来。其中，文件缓存在磁盘上，名值对缓存在内存中。
  * <p>
  * 因此，本适配器构造的时候，需要四个参数：
@@ -48,6 +48,9 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
  * <li>org.nutz.mvc.upload.TempFile : 组合了 File 和 FieldMeta
  * </ul>
  * 当然，这三种参数，都是需要你在入口函数的参数列表里声明 '@Param' 注解，用来告诉本适配器，你的参数 具体取自请求中的哪一个参数。
+ * 
+ * <p/>
+ * <b>Html5流式上传(实验性)的注意事项: 参数名默认是filedata,除非req.getHeader("Content-Disposition")中有描述另外的name</b>
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
@@ -100,7 +103,7 @@ public class UploadAdaptor extends PairAdaptor {
 	}
 
 	protected ParamInjector evalInjectorBy(Type type, Param param) {
-	 // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
+		// TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
@@ -145,8 +148,32 @@ public class UploadAdaptor extends PairAdaptor {
 												HttpServletResponse response,
 												String[] pathArgs) {
 		try {
-			Uploading ing = new FastUploading();
-			return ing.parse(request, context);
+			if (!"POST".equals(request.getMethod()) && !"PUT".equals(request.getMethod())) {
+				String str = "Not POST or PUT, Wrong HTTP method! --> " + request.getMethod();
+				throw Lang.makeThrow(IllegalArgumentException.class, str);
+			}
+			//看看是不是传统的上传
+			String contentType = request.getContentType();
+			if (contentType == null) {
+				throw Lang.makeThrow(IllegalArgumentException.class, "Content-Type is NULL!!");
+			}
+			if (contentType.contains("multipart/form-data")) { //普通表单上传
+				if (log.isDebugEnabled())
+					log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
+				Uploading ing = new FastUploading();
+				return ing.parse(request, context);
+			}
+			if (contentType.contains("application/octet-stream")) { //Html5 流式上传
+				if (log.isDebugEnabled())
+					log.debug("Select Html5 Stream upload parser --> " + request.getRequestURI());
+				Uploading ing = new Html5Uploading();
+				return ing.parse(request, context);
+			}
+			// 100%是没写enctype='multipart/form-data'
+			if (contentType.contains("application/x-www-form-urlencoded")) {
+				log.warn("Using form upload ? You forgot this --> enctype='multipart/form-data' ?");
+			}
+			throw Lang.makeThrow(IllegalArgumentException.class, "Unknow Content-Type : " + contentType);
 		}
 		catch (UploadException e) {
 			throw Lang.wrapThrow(e);

@@ -29,7 +29,9 @@ public class AtMapInitTest extends AbstractMvcTest {
 		request.setPathInfo("/atmap/xyz");
 		servlet.service(request, response);
 		assertEquals("\">>xyz\"", response.getAsString());
-
+		
+		Mvcs.set("nutz", request, response);
+		
 		AtMap am = Mvcs.getAtMap();
 		assertEquals("/atmap/ABC", am.get("at.abc"));
 		assertEquals("/atmap/xyz", am.get("at.xyz"));

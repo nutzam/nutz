@@ -14,7 +14,7 @@ import org.nutz.lang.util.ByteInputStream;
 public class Request {
 
 	public static enum METHOD {
-		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT, MULTIPART
+		GET, POST, OPTIONS, PUT, DELETE, TRACE, CONNECT
 	}
 
 	public static Request get(String url) {
@@ -124,10 +124,6 @@ public class Request {
 
 	public METHOD getMethod() {
 		return method;
-	}
-
-	public boolean isMultipart() {
-		return METHOD.MULTIPART == method;
 	}
 
 	public boolean isGet() {

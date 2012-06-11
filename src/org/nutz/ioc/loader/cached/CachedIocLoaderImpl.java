@@ -52,4 +52,9 @@ public class CachedIocLoaderImpl implements CachedIocLoader {
 		}
 		return iocObject;
 	}
+	
+	@Override
+	public String toString() {
+		return proxyIocLoader.toString();
+	}
 }

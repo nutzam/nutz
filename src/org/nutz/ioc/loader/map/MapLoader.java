@@ -128,4 +128,8 @@ public class MapLoader implements IocLoader {
 		return map.get(name);
 	}
 
+	@Override
+	public String toString() {
+		return "/*" + getClass().getSimpleName() + "*/\n" + Json.toJson(map);
+	}
 }

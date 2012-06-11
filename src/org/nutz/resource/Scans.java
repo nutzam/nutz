@@ -431,6 +431,9 @@ public class Scans {
 		} catch (Throwable e) {
 			// TODO: handle exception
 		}
+		
+		if (log.isDebugEnabled())
+			log.debug("Locations for Scans:\n" + locations);
 	}
 }
 
