@@ -94,7 +94,7 @@ public class ComboIocLoader implements IocLoader {
 			if (iocLoader.has(name)) {
 				IocObject iocObject = iocLoader.load(loading, name);
 				if (log.isDebugEnabled())
-					log.debugf("Found IocObject(%s) in IocLoader(%s)", name, iocLoader);
+					log.debugf("Found IocObject(%s) in IocLoader(%s)", name, iocLoader.getClass().getSimpleName() + "@" + iocLoader.hashCode());
 				return iocObject;
 			}
 		throw new ObjectLoadException("Object '" + name + "' without define!");
