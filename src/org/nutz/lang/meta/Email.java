@@ -19,7 +19,7 @@ public class Email implements Cloneable {
 		catch (Exception e) {
 			throw Lang.makeThrow("Error email format [%s]", str);
 		}
-		if (Strings.isBlank(account) || Strings.isBlank(account) || host.indexOf('.') < 0)
+		if (Strings.isBlank(account) || Strings.isBlank(host) || host.indexOf('.') < 0)
 			throw Lang.makeThrow("Error email format [%s]", str);
 	}
 
