@@ -235,5 +235,39 @@ public class MaplTest {
         assertEquals(5, Mapl.cell(obj, "[1].age"));
         assertEquals(dest, Json.toJson(obj, new JsonFormat()));
     }
+    
+    /**
+     * 添加元素到mapl中
+     */
+    @Test
+    public void addItemTest(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        Object obj = Json.fromJson(json);
+        Mapl.put(obj, "user[0].test", "test");
+        assertEquals("test", Mapl.cell(obj, "user[0].test"));
+    }
+    
+    /**
+     * 删除元素到mapl中
+     */
+    @Test
+    public void delItemTest(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        Object obj = Json.fromJson(json);
+        Mapl.del(obj, "user[0].age");
+        assertNull(Mapl.cell(obj, "user[0].age"));
+        assertEquals(1, ((Map<?,?>)Mapl.cell(obj, "user[0]")).size());
+    }
+    
+    /**
+     * 修改元素到mapl中
+     */
+    @Test
+    public void updateItemTest(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        Object obj = Json.fromJson(json);
+        Mapl.update(obj, "user[0].name", "test");
+        assertEquals("test", Mapl.cell(obj, "user[0].name"));
+    }
 
 }
