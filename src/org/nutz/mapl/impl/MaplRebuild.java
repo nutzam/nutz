@@ -12,6 +12,8 @@ import java.util.Map;
  * @author juqkai(juqkai@gmail.com)
  */
 public class MaplRebuild{
+    enum Model{add,del}
+    private Model model = Model.add;
     private String[] keys;
     private Object val;
     //数组索引
@@ -25,6 +27,10 @@ public class MaplRebuild{
         newobj.put("obj", null);
     }
     
+    public MaplRebuild(Object mapl){
+        newobj.put("obj", mapl);
+    }
+    
     /**
      * 添加属性
      * @param keys
@@ -32,7 +38,17 @@ public class MaplRebuild{
      */
     public void put(String keys, Object obj){
         init(keys, obj);
-        injectMap(newobj, 0);
+        inject(newobj, 0);
+    }
+    
+    /**
+     * 删除结点
+     * @param path
+     */
+    public void remove(String path) {
+        model = Model.del;
+        init(path, null);
+        inject(newobj, 0);
     }
     /**
      * 添加属性
@@ -59,6 +75,56 @@ public class MaplRebuild{
         arrayItem = 0;
     }
     
+    /**
+     * 注入
+     * @param obj
+     * @param i
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private Object inject(Object obj, int i){
+        String key = keys[i];
+        //根数组
+        if(key.indexOf('[') == 0){
+            List<Object> list = new ArrayList<Object>();
+            if(obj != null){
+                list = (List<Object>) obj;
+            }
+            injectList(list, i, fetchIndex(key));
+            return list;
+        }
+        //数组
+//        if(key.endsWith("[]")){
+        if(key.indexOf('[') >0){
+            Map<String, Object> map = new HashMap<String, Object>();
+            if(obj != null){
+                map = (Map<String, Object>) obj;
+            }
+            //有Key的list
+            String k = key.substring(0, key.indexOf('['));
+            if(!map.containsKey(k)){
+                map.put(k, new ArrayList<Object>());
+            }
+            int index = fetchIndex(key.substring(key.indexOf('['), key.length()));
+            injectList((List<Object>) map.get(k), i, index);
+            return map;
+        }
+        return injectMap(obj, i);
+    }
+    
+    private int fetchIndex(String val){
+        int index = 0; 
+        if(val.indexOf(']') == 1){
+            //[]格式的路径, 即索引放在arrayIndex里面的.
+            if(arrayIndex.size() > arrayItem){
+                index = arrayIndex.get(arrayItem ++);
+            }
+        } else {
+            //[1]格式, 路径上自带索引
+            index = Integer.parseInt(val.substring(1, val.length() - 1));
+        }
+        return index;
+    }
     
     /**
      * 注入MAP
@@ -68,37 +134,32 @@ public class MaplRebuild{
      */
     @SuppressWarnings("unchecked")
     private Object injectMap(Object obj, int i) {
-        String key = keys[i];
-        if(key.equals("[]")){
-            List<Object> list = new ArrayList<Object>();
-            if(obj != null){
-                list = (List<Object>) obj;
-            }
-            injectList(list, i);
-            return list;
-        }
         Map<String, Object> map = new HashMap<String, Object>();
+        String key = keys[i];
         if(obj != null){
             map = (Map<String, Object>) obj;
         }
-        //有Key的list
-        if(key.endsWith("[]")){
-            String k = key.substring(0, key.indexOf('['));
-            if(!map.containsKey(k)){
-                map.put(k, new ArrayList<Object>());
+        
+        if(model == Model.add){
+            if(i == keys.length - 1){
+                map.put(key, val);
+                return map;
             }
-            injectList((List<Object>) map.get(k), i);
-            return map;
+            if(!map.containsKey(key) || map.get(key) == null){
+                map.put(key, inject(null, i + 1));
+            }
+        } else if(model == Model.del){
+            if(i == keys.length - 1){
+                map.remove(key);
+                return map;
+            }
+            if(!map.containsKey(key) || map.get(key) == null){
+                return map;
+            }
         }
         
-        if(i == keys.length - 1){
-            map.put(key, val);
-            return map;
-        }
         if(map.containsKey(key) && map.get(key) != null){
-            injectMap(map.get(key), i + 1);
-        } else {
-            map.put(key, injectMap(null, i + 1));
+            inject(map.get(key), i + 1);
         }
         return map;
     }
@@ -109,23 +170,32 @@ public class MaplRebuild{
      * @param i
      */
     @SuppressWarnings("unchecked")
-    private void injectList(List<Object> list, int i) {
-        int index = 0; 
-        if(arrayIndex.size() > arrayItem){
-            index = arrayIndex.get(arrayItem ++);
-        }
-        if(i == keys.length - 1){
-            if(val instanceof Collection){
-                list.addAll((Collection<? extends Object>) val);
-            } else {
-                list.add(index, val);
+    private void injectList(List<Object> list, int i, int index) {
+        //添加模式
+        if(model == Model.add){
+            if(i == keys.length - 1){
+                if(val instanceof Collection){
+                    list.addAll((Collection<? extends Object>) val);
+                } else {
+                    list.add(index, val);
+                }
+                return;
             }
-            return;
+            if(list.size() <= index){
+                list.add(index, new HashMap<String, Object>());
+            }
+        } else if(model == Model.del){
+            if(i == keys.length - 1){
+                if(list.size() < index){
+                    list.remove(index);
+                }
+                return;
+            }
+            if(list.size() <= index){
+                return;
+            }
         }
-        if(list.size() <= index){
-            list.add(index, new HashMap<String, Object>());
-        }
-        injectMap((Map<String, Object>) list.get(index), i + 1);
+        inject((Map<String, Object>) list.get(index), i + 1);
     }
-    
+
 }

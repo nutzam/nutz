@@ -57,7 +57,11 @@ public class MaplCell {
         }
         Object o = ((Map<String, Object>)obj).get(fetchKey(paths[index]));
         if(o instanceof Collection){
+            // @ TODO 这里有个问题, 如果是path[0], 那么将会导致读取不到[0]的数据
             if(index + 1 >= paths.length){
+                if(canList(paths[index])){
+                    return cellList(o, paths, index);
+                }
                 return o;
             }
             return cell(o, paths, index);

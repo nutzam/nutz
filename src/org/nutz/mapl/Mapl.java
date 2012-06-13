@@ -4,8 +4,10 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import org.nutz.json.Json;
 import org.nutz.mapl.impl.MaplCell;
 import org.nutz.mapl.impl.MaplMerge;
+import org.nutz.mapl.impl.MaplRebuild;
 import org.nutz.mapl.impl.compile.ObjCompileImpl;
 import org.nutz.mapl.impl.convert.FilterConvertImpl;
 import org.nutz.mapl.impl.convert.ObjConvertImpl;
@@ -117,4 +119,44 @@ public class Mapl {
         ObjCompileImpl convert = new ObjCompileImpl();
         return convert.parse(obj);
     }
+
+
+    /**
+     * 添加新的结点
+     * @param obj 原始的MapList
+     * @param path 路径
+     * @param val 值
+     */
+    public static void put(Object obj, String path, Object val) {
+        Object mapList = Mapl.toMaplist(val);
+        MaplRebuild rebuild = new MaplRebuild(obj);
+        rebuild.put(path, mapList);
+    }
+
+
+    /**
+     * 删除一个结点
+     * @param obj
+     * @param path
+     */
+    public static void del(Object obj, String path) {
+        MaplRebuild rebuild = new MaplRebuild(obj);
+        rebuild.remove(path);
+    }
+
+
+    /**
+     * 更新
+     * @param obj
+     * @param path
+     * @param val
+     */
+    public static void update(Object obj, String path, Object val) {
+//        Object mapList = Mapl.toMaplist(val);
+//        MaplRebuild rebuild = new MaplRebuild(obj);
+//        rebuild.put(path, mapList);
+        put(obj, path, val);
+    }
+    
+    
 }
