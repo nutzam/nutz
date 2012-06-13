@@ -30,5 +30,9 @@ import java.lang.annotation.Target;
 public @interface Column {
 
 	String value() default "";
+	
+	boolean insertable() default true;
+	
+	boolean updateable() default true;
 
 }
