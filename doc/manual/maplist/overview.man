@@ -300,3 +300,27 @@ maplist 结构转换
      }}}
     
 ------------------------------------------------------------------------
+MapList的增删改
+
+	只有访问, 肯定是不够的, 难免会添加, 删除, 修改某个结点. 所以, 特意的为您添加了这些功能.
+	很简单的, 其实就三个接口而已.
+	添加: Mapl.put, Mapl.del, Mapl.update. 具体的使用方法, 你看看注释咯, 简单得很. 
+
+	除了上面的几个一次性的接口外. MapList还包含一个 MaplRebuild 类, 从名字就可以很容易知道它是干嘛的. 没错, 就是Maplist重建. 你可以根据已有的Maplist来构建它, 也可以全新的构建它, 然后你就可以对它进行添加新的结点, 修改某个结点, 或者删除某个结点. 如此反复.
+
+	下面看看Mapl.put的实现你就知道怎么用了:
+
+	{{{<java>
+			/**
+		     * 添加新的结点
+		     * @param obj 原始的MapList
+		     * @param path 路径
+		     * @param val 值
+		     */
+		    public static void put(Object obj, String path, Object val) {
+		        Object mapList = Mapl.toMaplist(val);
+		        MaplRebuild rebuild = new MaplRebuild(obj);
+		        rebuild.put(path, mapList);
+		    }
+	}}}
+------------------------------------------------------------------------

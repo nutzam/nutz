@@ -33,11 +33,11 @@ public class MaplRebuild{
     
     /**
      * 添加属性
-     * @param keys
-     * @param obj
+     * @param path 路径
+     * @param obj 值
      */
-    public void put(String keys, Object obj){
-        init(keys, obj);
+    public void put(String path, Object obj){
+        init(path, obj);
         inject(newobj, 0);
     }
     
@@ -52,13 +52,13 @@ public class MaplRebuild{
     }
     /**
      * 添加属性
-     * @param keys
-     * @param obj
-     * @param arrayIndex
+     * @param path 路径
+     * @param obj 值
+     * @param arrayIndex 索引队列
      */
-    public void put(String keys, Object obj, LinkedList<Integer> arrayIndex){
+    public void put(String path, Object obj, LinkedList<Integer> arrayIndex){
         this.arrayIndex = arrayIndex;
-        put(keys, obj);
+        put(path, obj);
     }
     /**
      * 提取重建后的MapList

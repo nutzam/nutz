@@ -136,8 +136,8 @@ public class Mapl {
 
     /**
      * 删除一个结点
-     * @param obj
-     * @param path
+     * @param obj 原始的Maplist
+     * @param path 路径
      */
     public static void del(Object obj, String path) {
         MaplRebuild rebuild = new MaplRebuild(obj);
@@ -147,14 +147,11 @@ public class Mapl {
 
     /**
      * 更新
-     * @param obj
-     * @param path
-     * @param val
+     * @param obj 原始的Maplist
+     * @param path 路径
+     * @param val 新的值
      */
     public static void update(Object obj, String path, Object val) {
-//        Object mapList = Mapl.toMaplist(val);
-//        MaplRebuild rebuild = new MaplRebuild(obj);
-//        rebuild.put(path, mapList);
         put(obj, path, val);
     }
     
