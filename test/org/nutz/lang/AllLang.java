@@ -13,6 +13,7 @@ import org.nutz.lang.util.AllUtil;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({	MirrorTest.class,
 						LangTest.class,
+						TimesTest.class,
 						FilesTest.class,
 						MathsTest.class,
 						AllRandom.class,
