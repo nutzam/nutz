@@ -32,10 +32,8 @@ public class ActionFiltersProcessor extends AbstractProcessor {
 		for (ActionFilter filter : filters) {
 			view = filter.match(ac);
 			if (null != view) {
-				Object obj = ac.getError();
-				if (null == obj)
-					obj = ac.getMethodReturn();
-				renderView(view, obj);
+				ac.setMethodReturn(view);
+				renderView(ac);
 				return;
 			}
 		}

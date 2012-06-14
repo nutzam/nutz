@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.nutz.json.Json;
 import org.nutz.mapl.impl.MaplCell;
 import org.nutz.mapl.impl.MaplMerge;
 import org.nutz.mapl.impl.MaplRebuild;
