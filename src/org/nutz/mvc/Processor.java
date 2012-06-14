@@ -9,4 +9,5 @@ public interface Processor {
 	
 	void setNext(Processor p);
 
+	Processor getNext();
 }

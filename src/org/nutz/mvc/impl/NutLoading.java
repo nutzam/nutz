@@ -194,11 +194,11 @@ public class NutLoading implements Loading {
 		// 构建一个上下文对象，方便子类获取更多的环境信息
 		// 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
 		Context context = Lang.context();
-		context.set("app.root", config.getAppRoot());
-
-		if (log.isDebugEnabled()) {
-			log.debugf(">> app.root = %s", config.getAppRoot());
-		}
+//		context.set("app.root", config.getAppRoot());
+//
+//		if (log.isDebugEnabled()) {
+//			log.debugf(">> app.root = %s", config.getAppRoot());
+//		}
 
 		// 载入环境变量
 		for (Entry<String, String> entry : System.getenv().entrySet())

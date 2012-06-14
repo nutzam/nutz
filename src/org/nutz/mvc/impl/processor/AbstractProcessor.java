@@ -1,10 +1,14 @@
 package org.nutz.mvc.impl.processor;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.Processor;
+import org.nutz.mvc.View;
 import org.nutz.mvc.impl.Loadings;
 
 /**
@@ -15,6 +19,8 @@ import org.nutz.mvc.impl.Loadings;
  *
  */
 public abstract class AbstractProcessor implements Processor {
+	
+	private static final Log log = Logs.get();
 
 	private Processor next;
 	
@@ -48,4 +54,22 @@ public abstract class AbstractProcessor implements Processor {
 		return null == info ? null : Loadings.evalObj(config, info.getType(), info.getArgs());
 	}
 
+	protected void renderView(View view, Object obj) {
+		Processor p = next;
+		while (p != null) {
+			if (p instanceof ViewProcessor)
+				break;
+			p = next.getNext();
+		}
+		if (p != null)
+			((ViewProcessor)p).renderView(view, obj);
+		else {
+			if (log.isInfoEnabled())
+				log.infof("Not ViewProcessor found!![URL=%s] view=%s,obj=%s", Mvcs.getReq().getRequestURI(), view, obj);
+		}
+	}
+	
+	public Processor getNext() {
+		return next;
+	}
 }
