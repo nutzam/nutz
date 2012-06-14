@@ -183,9 +183,6 @@ public abstract class Lang {
 		if (a1 == a2)
 			return true;
 
-		if (a1 == null && a2 == null)
-			return false;
-
 		if (a1 == null || a2 == null)
 			return false;
 
