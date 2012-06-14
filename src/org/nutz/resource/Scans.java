@@ -46,10 +46,12 @@ public class Scans {
 	@SuppressWarnings("unchecked")
 	public Scans init(ServletContext sc) {
 		// 获取classes文件夹的路径
-		Set<String> paths = sc.getResourcePaths("/WEB-INF/classes/");
-		if (paths != null && !paths.isEmpty()) {
-			String path = sc.getRealPath(paths.toArray(new String[paths.size()])[0]);
-			locations.add(ResourceLocation.file(new File(path).getParentFile()));
+		String classesPath = sc.getRealPath("/WEB-INF/classes/");
+		if (classesPath != null ) {
+			locations.add(ResourceLocation.file(new File(classesPath)));
+		} else {
+			if (log.isWarnEnabled())
+				log.warn("/WEB-INF/classes/ NOT found?!");
 		}
 
 		// 获取lib文件夹中的全部jar
@@ -60,6 +62,10 @@ public class Scans {
 					continue;
 				locations.add(ResourceLocation.jar(sc.getRealPath(path)));
 			}
+		else {
+			if (log.isWarnEnabled())
+				log.warn("/WEB-INF/lib/ NOT found?!");
+		}
 		if (log.isDebugEnabled())
 			log.debug("Locations for Scans:\n" + locations);
 		return this;
