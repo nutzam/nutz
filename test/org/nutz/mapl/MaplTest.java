@@ -3,6 +3,8 @@ package org.nutz.mapl;
 import static org.junit.Assert.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -274,5 +276,27 @@ public class MaplTest {
         Object item = Mapl.cell(obj, "user[]");
         assertFalse(item instanceof List);
         assertTrue(item instanceof Map);
+    }
+    
+    @Test
+    public void issue243Test2(){
+        List<HashMap<String, Object>> list = new ArrayList<HashMap<String, Object>>();
+
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        List<String> items= new LinkedList<String>();
+        items.add(new String("aa"));
+        items.add(new String("bb"));
+
+        map.put("id", 0);
+        map.put("items",items);
+
+        list.add(map);
+        
+        assertEquals(Mapl.cell(list,"[0].items.0"), "aa");
+        assertTrue(Mapl.cell(list,"[0].items[0]").equals("aa"));
+        assertTrue(Mapl.cell(list,"[0].items[1]").equals("bb"));
+        assertTrue(Mapl.cell(list,"[0].items[]").equals("aa"));
+        assertTrue(Mapl.cell(list,"[0].items").equals(items));
     }
 }
