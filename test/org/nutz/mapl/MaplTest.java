@@ -1,9 +1,6 @@
 package org.nutz.mapl;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -270,4 +267,12 @@ public class MaplTest {
         assertEquals("test", Mapl.cell(obj, "user[0].name"));
     }
 
+    @Test
+    public void issue243Test(){
+        String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
+        Object obj = Json.fromJson(json);
+        Object item = Mapl.cell(obj, "user[]");
+        assertFalse(item instanceof List);
+        assertTrue(item instanceof Map);
+    }
 }

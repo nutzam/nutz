@@ -45,7 +45,9 @@ public class Mapl {
      * @return
      */
     public static Object cell(Object maplist, String path){
-        return MaplCell.cell(maplist, path);
+//        return MaplCell.cell(maplist, path);
+        MaplRebuild mr = new MaplRebuild(maplist);
+        return mr.cell(path);
     }
     
     //------------------------------------------------------------------
