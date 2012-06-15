@@ -4,8 +4,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.nutz.json.Json;
-import org.nutz.mapl.impl.MaplCell;
 import org.nutz.mapl.impl.MaplMerge;
 import org.nutz.mapl.impl.MaplRebuild;
 import org.nutz.mapl.impl.compile.ObjCompileImpl;
@@ -45,7 +43,6 @@ public class Mapl {
      * @return
      */
     public static Object cell(Object maplist, String path){
-//        return MaplCell.cell(maplist, path);
         MaplRebuild mr = new MaplRebuild(maplist);
         return mr.cell(path);
     }
