@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import org.nutz.mapl.impl.MaplCell;
 import org.nutz.mapl.impl.MaplMerge;
 import org.nutz.mapl.impl.MaplRebuild;
 import org.nutz.mapl.impl.compile.ObjCompileImpl;
@@ -35,18 +34,17 @@ public class Mapl {
 		return new ObjConvertImpl(type).convert(maplist);
 	}
 
-	// ------------------------------------------------------------------
-	/**
-	 * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
-	 * 
-	 * @param maplist
-	 * @param path
-	 *            路径
-	 * @return
-	 */
-	public static Object cell(Object maplist, String path) {
-		return MaplCell.cell(maplist, path);
-	}
+    //------------------------------------------------------------------
+    /**
+     * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
+     * @param maplist
+     * @param path 路径
+     * @return
+     */
+    public static Object cell(Object maplist, String path){
+        MaplRebuild mr = new MaplRebuild(maplist);
+        return mr.cell(path);
+    }
 
 	// ------------------------------------------------------------------
 
@@ -179,5 +177,4 @@ public class Mapl {
 	public static void update(Object obj, String path, Object val) {
 		put(obj, path, val);
 	}
-
 }

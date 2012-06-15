@@ -12,7 +12,7 @@ import java.util.Map;
  * @author juqkai(juqkai@gmail.com)
  */
 public class MaplRebuild{
-    enum Model{add,del}
+    enum Model{add,del, cell}
     private Model model = Model.add;
     private String[] keys;
     private Object val;
@@ -22,6 +22,8 @@ public class MaplRebuild{
     protected LinkedList<Integer> arrayIndex = new LinkedList<Integer>();
     //新MapList结构
     private Map<String, Object> newobj = new HashMap<String, Object>();
+    
+    private Object cellObj = null;
     
     public MaplRebuild(){
         newobj.put("obj", null);
@@ -40,6 +42,16 @@ public class MaplRebuild{
         init(path, obj);
         inject(newobj, 0);
     }
+    /**
+     * 添加属性
+     * @param path 路径
+     * @param obj 值
+     * @param arrayIndex 索引队列
+     */
+    public void put(String path, Object obj, LinkedList<Integer> arrayIndex){
+        this.arrayIndex = arrayIndex;
+        put(path, obj);
+    }
     
     /**
      * 删除结点
@@ -50,15 +62,17 @@ public class MaplRebuild{
         init(path, null);
         inject(newobj, 0);
     }
+    
     /**
-     * 添加属性
+     * 访问结点
      * @param path 路径
-     * @param obj 值
-     * @param arrayIndex 索引队列
+     * @return
      */
-    public void put(String path, Object obj, LinkedList<Integer> arrayIndex){
-        this.arrayIndex = arrayIndex;
-        put(path, obj);
+    public Object cell(String path){
+        model = Model.cell;
+        init(path, null);
+        inject(newobj, 0);
+        return cellObj;
     }
     /**
      * 提取重建后的MapList
@@ -109,6 +123,15 @@ public class MaplRebuild{
             injectList((List<Object>) map.get(k), i, index);
             return map;
         }
+        if(obj instanceof List){
+            try{
+                int index = Integer.parseInt(keys[i]); 
+                injectList((List<Object>) obj, i, index);
+                return obj;
+            }catch (Exception e) {
+                throw new RuntimeException("路径格式不正确!");
+            }
+        }
         return injectMap(obj, i);
     }
     
@@ -156,6 +179,14 @@ public class MaplRebuild{
             if(!map.containsKey(key) || map.get(key) == null){
                 return map;
             }
+        } else if(model == Model.cell){
+            if(i == keys.length - 1){
+                cellObj = map.get(key);
+                return map;
+            }
+            if(!map.containsKey(key) || map.get(key) == null){
+                return map;
+            }
         }
         
         if(map.containsKey(key) && map.get(key) != null){
@@ -186,8 +217,18 @@ public class MaplRebuild{
             }
         } else if(model == Model.del){
             if(i == keys.length - 1){
-                if(list.size() < index){
+                if(list.size() > index){
                     list.remove(index);
+                }
+                return;
+            }
+            if(list.size() <= index){
+                return;
+            }
+        } else if(model == Model.cell){
+            if(i == keys.length - 1){
+                if(list.size() > index){
+                    cellObj = list.get(index);
                 }
                 return;
             }
@@ -197,5 +238,5 @@ public class MaplRebuild{
         }
         inject((Map<String, Object>) list.get(index), i + 1);
     }
-
+    
 }
