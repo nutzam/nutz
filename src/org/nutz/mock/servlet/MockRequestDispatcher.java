@@ -13,10 +13,10 @@ public class MockRequestDispatcher implements RequestDispatcher {
 		target[0] = dest;
 	}
 
-	public void forward(ServletRequest arg0, ServletResponse arg1) throws ServletException,
+	public void forward(ServletRequest req, ServletResponse resp) throws ServletException,
 			IOException {}
 
-	public void include(ServletRequest arg0, ServletResponse arg1) throws ServletException,
+	public void include(ServletRequest req, ServletResponse resp) throws ServletException,
 			IOException {}
 
 }

@@ -362,7 +362,7 @@ public class UploadingUnitTest {
 	@Test
 	public void test_cast_dt01() throws UploadException {
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setHeader(	"content-type",
+		req.setHeader(	"Content-Type",
 						"multipart/form-data; boundary=----ESDT-321271401654cc6d669eef664aac");
 		Uploading up = UploadUnit.TYPE.born();
 		ServletInputStream ins = Mock.servlet.ins("org/nutz/mvc/upload/files/cast_dt01");

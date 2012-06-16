@@ -55,7 +55,7 @@ public class ObjectNavlPairInjectorTest {
 	public void test_duplicated_name_params() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameter("pojo.num", 23);
+		req.setParameter("pojo.num", ""+23);
 		req.setParameterValues("pojo.names", Lang.array("A", "B", "C"));
 
 		// 执行

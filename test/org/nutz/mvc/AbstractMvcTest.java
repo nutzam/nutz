@@ -40,7 +40,8 @@ public abstract class AbstractMvcTest {
 	}
 
 	protected void newreq() {
-		request = Mock.servlet.request().setSession(session);
+		request = Mock.servlet.request();
+		request.setSession(session);
 		request.setContextPath("");
 		request.setSession(session);
 		response = new MockHttpServletResponse();

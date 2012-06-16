@@ -44,7 +44,7 @@ public class ObjectPairInjectorTest {
 	public void test_duplicated_name_params() {
 		// 准备数据
 		MockHttpServletRequest req = Mock.servlet.request();
-		req.setParameter("num", 23);
+		req.setParameter("num", ""+23);
 		req.setParameterValues("names", Lang.array("A", "B", "C"));
 
 		// 执行
