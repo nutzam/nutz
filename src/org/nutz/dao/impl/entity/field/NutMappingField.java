@@ -5,6 +5,7 @@ import java.sql.SQLException;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.entity.EntityObjectContext;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -41,7 +42,7 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean casesensitive;
 
 	private boolean hasColumnComment;
-	
+
 	private String customDbType;
 
 	private ValueAdaptor adaptor;
@@ -57,6 +58,14 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 
 	public void setAdaptor(ValueAdaptor adaptor) {
 		this.adaptor = adaptor;
+	}
+
+	public void injectValue(Object obj, Record rec) {
+		try {
+			Object val = rec.get(columnName);
+			this.setValue(obj, val);
+		}
+		catch (Exception e) {}
 	}
 
 	public void injectValue(Object obj, ResultSet rs) {
@@ -204,7 +213,7 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public void setCustomDbType(String customDbType) {
 		this.customDbType = customDbType;
 	}
-	
+
 	public String getCustomDbType() {
 		return customDbType;
 	}

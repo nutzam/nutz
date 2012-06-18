@@ -13,6 +13,7 @@ import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.Record;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -171,11 +172,15 @@ public class NutEntity<T> implements Entity<T> {
 		beforeInsertMacroes = new ArrayList<Pojo>(3);
 		afterInsertMacroes = new ArrayList<Pojo>(3);
 
+		// 获得默认的构造方法
+		try {
+			bornByDefault = mirror.getBorningByArgTypes();
+		}
+		catch (Exception e) {}
+
 		// 检查对象的创建方法
 		BornContext<T> bc = Borns.evalByArgTypes(type, ResultSet.class);
-		if (null == bc)
-			this.bornByDefault = this.mirror.getBorningByArgTypes();
-		else
+		if (null != bc)
 			this.bornByRS = bc.getBorning();
 
 		// 映射
@@ -201,6 +206,14 @@ public class NutEntity<T> implements Entity<T> {
 
 		// 返回构造的对象
 		return re;
+	}
+
+	public T getObject(Record rec) {
+		T obj = bornByDefault.born(new Object[]{});
+		for (MappingField fld : fields)
+			fld.injectValue(obj, rec);
+		return obj;
+
 	}
 
 	/**

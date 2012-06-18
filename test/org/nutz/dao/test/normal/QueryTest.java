@@ -8,11 +8,15 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SimpleCriteria;
+import org.nutz.lang.Each;
 
 public class QueryTest extends DaoCase {
 
@@ -21,6 +25,27 @@ public class QueryTest extends DaoCase {
 		// Insert 8 records
 		for (int i = 0; i < 8; i++)
 			dao.insert(Pet.create("pet" + i));
+	}
+
+	@Test
+	public void test_record_to_entity() {
+		dao.each(Pet.class, null, new Each<Pet>() {
+			public void invoke(int index, Pet pet, int length) {
+				pet.setNickName("AA_" + pet.getName().toUpperCase());
+				dao.update(pet);
+			}
+		});
+		Entity<Pet> en = dao.getEntity(Pet.class);
+		Sql sql = Sqls.queryRecord("SELECT * FROM t_pet");
+		dao.execute(sql);
+		List<Record> recs = sql.getList(Record.class);
+		Pet[] pets = new Pet[recs.size()];
+		int i = 0;
+		for (Record rec : recs)
+			pets[i++] = rec.toEntity(en);
+
+		for (Pet pet : pets)
+			assertEquals("AA_" + pet.getName().toUpperCase(), pet.getNickName());
 	}
 
 	/**

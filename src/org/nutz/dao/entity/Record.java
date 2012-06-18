@@ -41,7 +41,8 @@ public class Record implements Map<String, Object>, java.io.Serializable {
 					re.set(name, rs.getTimestamp(name));
 					break;
 				}
-				case Types.DATE: {//ORACLE的DATE类型包含时间,如果用默认的只有日期没有时间 from cqyunqin
+				case Types.DATE: {// ORACLE的DATE类型包含时间,如果用默认的只有日期没有时间 from
+									// cqyunqin
 					re.set(name, rs.getTimestamp(name));
 					break;
 				}
@@ -145,6 +146,10 @@ public class Record implements Map<String, Object>, java.io.Serializable {
 
 	public <T> T toPojo(Class<T> type) {
 		return Lang.map2Object(map, type);
+	}
+
+	public <T> T toEntity(Entity<T> en) {
+		return en.getObject(this);
 	}
 
 	public void clear() {

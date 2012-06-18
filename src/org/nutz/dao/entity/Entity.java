@@ -61,9 +61,19 @@ public interface Entity<T> {
 	 *            结果集
 	 * @param matcher
 	 *            字段匹配器。如果为null，则获取实体的全部字段
-	 * @return 从结果集生成 Java 对象
+	 * @return Java 对象
 	 */
 	T getObject(ResultSet rs, FieldMatcher matcher);
+
+	/**
+	 * 从一个记录中生成一个实体实例
+	 * 
+	 * @param rec
+	 *            结果集
+	 * 
+	 * @return Java 对象
+	 */
+	T getObject(Record rec);
 
 	/**
 	 * 根据实体的 Java 字段名获取一个实体字段对象
