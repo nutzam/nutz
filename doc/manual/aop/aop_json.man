@@ -9,6 +9,7 @@
 --------------------------------------------------------------------------------------------------------
 看看一个示例的ioc配置文件
 
+	配置示例:
 	{{{
 	var ioc = {
 		log : {
@@ -34,6 +35,7 @@
 	}
 	}}}
 	可以看到, 除了$aop这个对象外,其他的与普通的ioc配置文件没有任何区别.
+	
 	$aop ,其实是org.nutz.ioc.aop.config.AopConfigration接口的IOCNAME字段的值,
 	只有你声明这个名字,且类型为这个接口的实现,就能轻易的配置Ioc.
 	估计你已经猜到,org.nutz.ioc.aop.config.impl.JsonAopConfigration就是其中一个实现!
@@ -47,6 +49,7 @@
 				]
 			}
 	}}}
+	
 	使用JsonAopConfigration,只需要为其itemList赋值.
 	需要什么值? 对,一个数组.
 	数组的每一行,对应一条规则:
@@ -55,6 +58,7 @@
 	['.+','.+','ioc:myMI']
 	['com\.wendal\.nutz\..+','get.+','org.nutz.ioc.aop.config.impl.MyMI2','false']
 	}}}
+	
 	规则如下:
 		* 第一个值,对应className,必选,用于匹配类的全称的正则表达式
 		* 第二个值,对应methodName,必选,用于匹配方法名的正则表达式
@@ -91,6 +95,7 @@
 			type :'org.nutz.aop.interceptor.LoggingMethodInterceptor'
 		}
 	}}}
+	
 	然后,定义哪些类的什么方法需要进行声明,继续添加 (一般来说,应该把等级高的往后放)
 	{{{
 		$aop : {

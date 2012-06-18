@@ -4,6 +4,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 
 /**
@@ -24,7 +25,7 @@ public class FailProcessor extends ViewProcessor {
 	@Override
 	public void process(ActionContext ac) throws Throwable {
 		if (log.isErrorEnabled())
-			log.error("Catch handle error", ac.getError());
+			log.error("Catch handle error URI=" + Mvcs.getReq().getRequestURL(), ac.getError());
 		super.process(ac);
 	}
 }

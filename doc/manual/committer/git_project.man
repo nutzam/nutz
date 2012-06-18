@@ -29,7 +29,7 @@
     简单的要命，执行下面的命令（前提是你装了 Git）
     {{{
     cd xx/xxx/xx/xx    <- 意思是，到你打算放 Nutz 的那个目录
-    git clone git://github.com/nutzam/nutz.git
+    git clone git://github.com/nutzam/nutz.git --depth=0
     }}}
     稍微等个1分钟不到，因为 github 线路问题，有点慢，原因你懂的 ...
 
