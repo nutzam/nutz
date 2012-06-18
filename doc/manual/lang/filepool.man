@@ -36,7 +36,7 @@
 
     在池中创建一个文件
         {{{<Java>
-        File f = pool.createFile(239, ".png");  // 该文件本句之后，已经被创建
+        File f = pool.createFile(".png");  // 该文件本句之后，已经被创建
         // TODO 为这个文件写入内容
         }}}
 
