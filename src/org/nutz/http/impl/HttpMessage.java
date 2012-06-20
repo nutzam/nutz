@@ -13,6 +13,11 @@ import javax.servlet.http.Cookie;
 
 import org.nutz.lang.Lang;
 
+/**
+ * 抽象的Http消息
+ * @author wendal
+ *
+ */
 public abstract class HttpMessage extends HttpObject {
 	//----------------------------------------------------------------
 	//Header相关

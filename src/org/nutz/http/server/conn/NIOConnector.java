@@ -18,65 +18,73 @@ import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class NIOConnector {
+/**
+ * 将客户端的请求,转换为一个NutHttpReq对象,然后交给容器继续处理 ~~ 其他就不管啦!
+ * @author wendal
+ *
+ */
+public class NIOConnector implements Runnable {
 	
 	private static final Log log = Logs.get();
-
-	protected int port = 8080;
 	
-	protected NutWebContext ctx = new NutWebContext();
+	public NIOConnector(NutWebContext ctx) {
+		this.ctx = ctx;
+	}
+	
+	protected NutWebContext ctx;
 	
 	protected boolean running = true;
 	
-	public void run() {
-		//启动监听线程
-		new Thread() {
-			public void run() {
-				setName("NIOConnector port="+port);
-				try {
-					_run();
-				} catch (IOException e) {
-					acceptConn = false;
-					running = false;
-					log.error("Start fail!!", e);
-					throw Lang.wrapThrow(e);
-				}
-			}
-		}.start();
-	}
-	
 	protected boolean acceptConn = true;
 	
+	public void start() {
+		new Thread(this, "NIOConnector port="+ctx.port).start();
+	}
+	
+	public void run() {
+		try {
+			_run();
+		} catch (Exception e) {
+			log.error("Down ...", e);
+			throw Lang.wrapThrow(e);
+		} finally {
+			acceptConn = false;
+			running = false;
+		}
+	}
+	
 	public void _run() throws IOException {
+		//打开Selector
 		Selector selector = Selector.open();
 		
+		//开启ServerSocketChannel
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-		InetSocketAddress address = new InetSocketAddress(port);
+		InetSocketAddress address = new InetSocketAddress(ctx.port);
 		serverSocketChannel.socket().bind(address);
 		serverSocketChannel.configureBlocking(false);
 		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 		
+		//开始监听
 		log.debug("Listening ...");
 		while (acceptConn) {
 			try {
-				int s = selector.select();
-				if (s < 1) {
+				int s = selector.select(3000);//等3s就可以循环一次
+				if (s < 1) { //如果为0,那就是啥都没有咯
 					continue;
 				}
 				Iterator<SelectionKey> iterator = selector.selectedKeys().iterator();
 				while (iterator.hasNext()) {
 					SelectionKey selectionKey = (SelectionKey) iterator.next();
 					iterator.remove();
-					if(!selectionKey.isValid())
+					if(!selectionKey.isValid()) //必须确保是有效的
 						continue;
-					if (selectionKey.isAcceptable()) {
+					if (selectionKey.isAcceptable()) { //新连接!!
 						ServerSocket serverSocket = serverSocketChannel.socket();
 			            serverSocket.setReceiveBufferSize(8192);
 			            serverSocket.setReuseAddress(true);
 
-						if (log.isDebugEnabled()) {
+						if (log.isDebugEnabled())
 							log.debug("NIO --> isAcceptable=true");
-						}
 						boolean hasSocket = true;
 			            do {
 			            	SocketChannel socketChannel = serverSocketChannel.accept();
@@ -85,34 +93,34 @@ public class NIOConnector {
 				            	socketChannel.socket();
 				            	socketChannel.register(selector, SelectionKey.OP_READ);
 			                } else {
-			                  hasSocket = false;
+			                	hasSocket = false;
 			                }
 			             } while (hasSocket);
-					} else if (selectionKey.isReadable()) {
+					} else if (selectionKey.isReadable()) { //可读,那么,继续之前的读取吧!!
 						log.debug("selectionKey isReadable=true");
-						int pos = handleConn(selectionKey);
+						int pos = handleConn(selectionKey); //根据获取的请求头,判断是否需要继续读数据
 						if (pos > 0) { //看来请求头拿到了!!
 							log.debug("Req head readed!!");
-							selectionKey.cancel();
+							selectionKey.cancel(); //把它无效掉,这样才能恢复为阻塞式IO
 							selectionKey.channel().configureBlocking(true);
 							SocketContext socketContext = (SocketContext) selectionKey.attachment();
 							Socket socket = socketContext.socket;
 							
-							int readPos = socketContext.getInt("read_pos");
-							byte[] buf = (byte[])socketContext.get("read_buf");
+							int readPos = socketContext.readPos;
+							byte[] buf = socketContext.buf;
 							byte[] head = new byte[pos];
-							System.arraycopy(buf, 0, head, 0, pos);
+							System.arraycopy(buf, 0, head, 0, pos); //头部是必须有的!
 							
 							byte[] preRead = null;
-							if (readPos > pos) {
+							if (readPos > pos) { //被超读的部分,需要并入Socket.Inputstream呢
 								preRead = new byte[readPos - pos];
 								System.arraycopy(buf, pos, preRead, 0, preRead.length);
 							}
 							
 							NutHttpReq req = Https.makeHttpReq(ctx, socket, head, preRead);
-							ctx.workFor(req);
+							ctx.workFor(req);//交给容器处理了, 我不管了!!
 						}
-					} else {
+					} else { //按理说,不应该有其他key的出现
 						log.debug("Unuse key, drop it -->" + selectionKey);
 					}
 				}
@@ -125,27 +133,27 @@ public class NIOConnector {
 	
 	protected int handleConn(SelectionKey selectionKey) throws IOException {
 		SocketContext socketContext = (SocketContext) selectionKey.attachment();
-		if (socketContext == null) { //New conn
+		if (socketContext == null) { //新连接,没上下文,那就新建一个咯
 			socketContext = new SocketContext();
 			selectionKey.attach(socketContext);
-			byte[] buf = new byte[4192];
+			byte[] buf = new byte[4192]; //TODO 改成可配置的
 			ByteBuffer dst = ByteBuffer.allocate(4096);
-			socketContext.set("read_buf", buf);
+			socketContext.buf = buf;
 			SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 			Socket socket = socketChannel.socket();
 			socketContext.socket = socket;
 			int len = socketChannel.read(dst);
 			if (len == -1) {
-				socketChannel.socket().close();
+				socket.close();
 				throw new IOException("conn is CLOSED!" + socketChannel);
 			}
 			dst.flip();
 			dst.get(buf, 0, dst.remaining());
-			socketContext.set("read_pos", len);
+			socketContext.readPos = len;
 		} else {
 			SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
-			byte[] buf = (byte[])socketContext.get("read_buf");
-			int readPos = socketContext.getInt("read_pos");
+			byte[] buf = socketContext.buf;
+			int readPos = socketContext.readPos;
 			ByteBuffer dst = ByteBuffer.allocate(4096 - readPos);
 			int len = socketChannel.read(dst);
 			if (len == -1) {
@@ -156,21 +164,21 @@ public class NIOConnector {
 			byte[] _buf = new byte[dst.remaining()];
 			dst.get(_buf, 0, dst.remaining());
 			System.arraycopy(_buf, 0, buf, readPos, _buf.length);
-			socketContext.set("read_pos", len + readPos);
+			socketContext.readPos = len + readPos;
 		}
 		
 		//尝试解码Http头
-		byte[] buf = (byte[])socketContext.get("read_buf");
-		for (int i = 0; i < buf.length; i++) {
-			if (buf[i] == '\r') {
+		int readPos = socketContext.readPos;
+		byte[] buf = socketContext.buf;
+		for (int i = 0; i < readPos; i++) { //TODO 增加一个标记值,这样就不必重复判断了
+			if (buf[i] == '\r') { // 正确的HTTP请求,头部都是由\r\n\r\n结束的!!
 				if (buf.length - i > 3) {
 					if (buf[i+1] == '\n' && buf[i+2] == '\r' && buf[i+3] == '\n')
 						return i+3;
 				}
 			}
 		}
-		int readPos = socketContext.getInt("read_pos");
-		if (readPos >= 4192)
+		if (readPos >= 4192) //TODO 做成可配置的
 			throw Lang.makeThrow("Head too large!");
 		
 		return -1;

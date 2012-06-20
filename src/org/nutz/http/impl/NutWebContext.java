@@ -24,6 +24,8 @@ public class NutWebContext extends HttpObject {
 	
 	List<NutHttpAction> actions = new ArrayList<NutHttpAction>();
 	
+	public int port;
+	
 	public boolean running = true;
 	
 	public void close() {

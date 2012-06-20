@@ -49,7 +49,7 @@ public class NutHttpReq extends HttpMessage {
 	}
 
 	/**
-	 * 请求的URI,原始的,未URLDecoder进行翻译
+	 * 请求的URI,原始的,未经URLDecoder进行翻译
 	 */
 	protected String originalURI;
 
