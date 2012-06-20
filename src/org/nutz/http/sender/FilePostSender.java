@@ -21,7 +21,6 @@ public class FilePostSender extends PostSender {
 		super(request);
 	}
 
-	@Override
 	public Response send() throws HttpException {
 		try {
 			String boundary = "---------------------------[Nutz]7d91571440efc";

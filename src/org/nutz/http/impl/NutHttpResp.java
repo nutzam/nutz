@@ -2,9 +2,10 @@ package org.nutz.http.impl;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map.Entry;
+
+import org.nutz.Nutz;
 
 /**
  * Nutz对Http响应的理解:
@@ -42,7 +43,7 @@ public class NutHttpResp extends HttpMessage {
 	/**
 	 * 响应信息
 	 */
-	protected String msg; //默认为OK
+	protected String msg = "OK"; //默认为OK
 	public String msg() {
 		return msg;
 	}
@@ -75,13 +76,18 @@ public class NutHttpResp extends HttpMessage {
 	 */
 	public void sendRespHeaders() throws IOException {
 		if (!headerSent) {
+			// 补充几个附加的头,调试用
+			addHeader("X-Power-By", "Nutz Http Server " + Nutz.version());
+			addDateHeader("ServerTime", System.currentTimeMillis());
+			setHeader("Connection", "close");
+			
 			//发送响应头
 			out.write(("HTTP/1.1 "+status+" " + msg + "\r\n").getBytes());
 			for (Entry<String, List<String>> header : headers.entrySet()) {
 				for (String headerValue : header.getValue()) {
 					out.write(header.getKey().getBytes());
 					out.write(": ".getBytes());
-					out.write(URLEncoder.encode(headerValue, "ISO-8891-1").getBytes());
+					out.write(headerValue.getBytes());
 					out.write("\r\n".getBytes());
 				}
 			}
@@ -115,5 +121,12 @@ public class NutHttpResp extends HttpMessage {
 		msg = "Redirect";
 		setHeader("Location", path);
 		sendAndClose(null);
+	}
+	
+	//--------------------------------------------------------------------------------
+	// 附加属性
+	protected NutHttpReq req;
+	public NutHttpReq req() {
+		return req;
 	}
 }

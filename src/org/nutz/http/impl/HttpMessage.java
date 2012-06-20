@@ -13,7 +13,7 @@ import javax.servlet.http.Cookie;
 
 import org.nutz.lang.Lang;
 
-public class HttpMessage extends HttpObject {
+public abstract class HttpMessage extends HttpObject {
 	//----------------------------------------------------------------
 	//Header相关
 	protected Map<String, List<String>> headers = new HashMap<String, List<String>>();
