@@ -1,4 +1,4 @@
-package org.nutz.http.server.impl.servlet;
+package org.nutz.http.impl.servlet;
 
 import java.util.Collections;
 import java.util.Enumeration;

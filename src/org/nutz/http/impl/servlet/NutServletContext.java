@@ -1,4 +1,4 @@
-package org.nutz.http.server.impl.servlet;
+package org.nutz.http.impl.servlet;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,12 +14,11 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.nutz.http.impl.NutWebContext;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class NutServletContext extends NutWebContext implements ServletContext {
+public abstract class NutServletContext implements ServletContext {
 
 	//----------------------------------------------------------
 	private static final Log log = Logs.get();

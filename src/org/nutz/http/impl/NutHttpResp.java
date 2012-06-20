@@ -1,127 +1,119 @@
 package org.nutz.http.impl;
 
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Date;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 import java.util.List;
+import java.util.Map.Entry;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-
-import org.nutz.lang.Lang;
-
-public class NutHttpResp extends AbstractHttpObject2 {
+/**
+ * Nutz对Http响应的理解:
+ * <ul>
+ * 响应码(200,302,404等)
+ * </ul>
+ * <ul>
+ * 响应信息(例如200对应OK,等等)
+ * </ul>
+ * <ul>
+ * Headers,头部信息
+ * </ul>
+ * <ul>
+ * 响应体(Body)
+ * </ul>
+ * </p>其他信息,都是上述信息的进一步约定而已
+ * 
+ * @author wendal
+ * 
+ */
+public class NutHttpResp extends HttpMessage {
 
 	//------------------------------------------------
-	protected int status;
+	/**
+	 * 响应码
+	 */
+	protected int status = 200;//默认200
+	public int getStatus() {
+		return status;
+	}
 	public void setStatus(int status) {
 		this.status = status;
 	}
-	//----------------------------------------------------
-	// add header
-	public void addDateHeader(String key, long value) {
-		headers.put(key, Https.httpDate(new Date(value)));
+	
+	/**
+	 * 响应信息
+	 */
+	protected String msg; //默认为OK
+	public String msg() {
+		return msg;
 	}
-	public void addHeader(String key, String value) {
-		headers.put(key, value);
-	}
-	public void addIntHeader(String key, int value) {
-		headers.put(key, ""+value);
-	}
-	public boolean containsHeader(String key) {
-		return headers.containsKey(key);
-	}
-	public void setDateHeader(String key, long value) {
-		headers.put(key, Https.httpDate(new Date(value)));
-	}
-	public void setIntHeader(String key, int value) {
-		headers.put(key, ""+value);
-	}
-	public void setHeader(String key, String value) {
-		headers.put(key, value);
-	}
-	public void setContentLength(int len) {
-		headers.put("Content-Length", ""+len);
-	}
-	public void setContentType(String type) {
-		headers.put("Content-Type", type);
-	}
-	public String getContentType() {
-		return headers.get("Content-Type");
-	}
-	//---------------------------------------------------
-	protected List<Cookie> cookies = new ArrayList<Cookie>();
-	public void addCookie(Cookie cookie) {
-		cookies.add(cookie);
-	}
+	
+	/*Header信息由HttpMessage提供*/
 	
 	//---------------------------------------------------
-	// Http Action
-	protected boolean committed;
-	
-	public boolean isCommitted() {
-		return committed;
+	/**
+	 * 响应体,由OutputStreamt表示
+	 */
+	protected OutputStream out;
+	public OutputStream getOutputStream() {
+		return out;
 	}
-	public void sendError(int errNo) throws IOException {
-		throw Lang.noImplement();
+	public void setOutputStream(OutputStream out) {
+		this.out = out;
 	}
 	
-	public void sendError(int errNo, String msg) throws IOException {
-		throw Lang.noImplement();
+	
+	// ----------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------
+	// 以下均为基本信息延伸的结果
+	// ----------------------------------------------------------------------------
+	// ----------------------------------------------------------------------------
+	
+	protected boolean headerSent;
+	/**
+	 * 发送响应头部
+	 */
+	public void sendRespHeaders() throws IOException {
+		if (!headerSent) {
+			//发送响应头
+			out.write(("HTTP/1.1 "+status+" " + msg + "\r\n").getBytes());
+			for (Entry<String, List<String>> header : headers.entrySet()) {
+				for (String headerValue : header.getValue()) {
+					out.write(header.getKey().getBytes());
+					out.write(": ".getBytes());
+					out.write(URLEncoder.encode(headerValue, "ISO-8891-1").getBytes());
+					out.write("\r\n".getBytes());
+				}
+			}
+			out.write("\r\n".getBytes());
+			out.flush();
+		}
+	}
+	
+	public void sendAndClose(String body) throws IOException {
+		if (body != null && body.length() > 0) {
+			setContentLength(body.getBytes().length);
+		}
+		sendRespHeaders();
+		if (body != null && body.length() > 0) {
+			out.write(body.getBytes());
+		}
+		out.flush();
+		out.close();
+	}
+	
+	public void sendError(int status, String msg, String body) throws IOException {
+		this.status = status;
+		this.msg = msg;
+		sendAndClose(body);
 	}
 	
 	public void sendRedirect(String path) throws IOException {
-		throw Lang.noImplement();
+		if (path == null)
+			throw new NullPointerException("path is null");
+		status = 302;
+		msg = "Redirect";
+		setHeader("Location", path);
+		sendAndClose(null);
 	}
-	
-	public void flushBuffer() throws IOException {
-		throw Lang.noImplement();
-	}
-	
-	public void reset() {
-		throw Lang.noImplement();
-	}
-	
-	public void resetBuffer() {
-		throw Lang.noImplement();
-	}
-	
-	public int getBufferSize() {
-		return 8192;
-	}
-	
-	public void setBufferSize(int paramInt) {
-		//just pass
-	}
-	
-	public void setStatus(int paramInt, String paramString) {
-		throw Lang.noImplement();
-	}
-	//------------------------------------------------------
-	protected ServletOutputStream out;
-	protected boolean canGetOutputStream = true;
-	
-	public ServletOutputStream getOutputStream() throws IOException {
-		if (canGetOutputStream) {
-			canGetOutputStream = false;
-			return out;
-		}
-		throw new IllegalStateException();
-	}
-	
-	public PrintWriter getWriter() throws IOException {
-		return new PrintWriter(getOutputStream());
-	}
-	//---------------------------------------------------------
-	protected String characterEncoding = "UTF-8";
-	
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
-	
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
-	//---------------------------------------------------------
 }

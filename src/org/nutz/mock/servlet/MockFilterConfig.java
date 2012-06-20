@@ -1,6 +1,6 @@
 package org.nutz.mock.servlet;
 
-import org.nutz.http.server.impl.servlet.NutHttpConfig;
+import org.nutz.http.impl.servlet.NutHttpConfig;
 
 /**
  * 模拟FilterConfig

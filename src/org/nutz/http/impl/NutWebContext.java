@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.nutz.lang.Lang;
 
-public class NutWebContext extends AbstractHttpObject {
+public class NutWebContext extends HttpObject {
 	
 	//-----------------------------------------------------------
 	protected Map<String,String> initParams = new HashMap<String, String>();

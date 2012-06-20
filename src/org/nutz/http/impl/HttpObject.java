@@ -1,25 +1,19 @@
 package org.nutz.http.impl;
 
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
-import javax.servlet.ServletContext;
-
-public class AbstractHttpObject {
+public class HttpObject {
 	
-	//---------------------------------------------------------------
-	protected ServletContext servletContext;
-	public ServletContext getServletContext() {
-		return servletContext;
-	}
 	protected SessionManger sessionManger;
-	
 	
 	//----------------------------------------------------------------
 	//Attr相关
 	protected Map<String, Object> attrs = new HashMap<String, Object>();
+	public Map<String, Object> attrs() {
+		return attrs;
+	}
 	
 	public Object getAttribute(String name) {
 		return attrs.get(name);
@@ -29,8 +23,8 @@ public class AbstractHttpObject {
 		attrs.put(name, o);
 	}
 	
-	public Enumeration<String> getAttributeNames() {
-		return Collections.enumeration(attrs.keySet());
+	public Set<String> getAttributeNames() {
+		return attrs.keySet();
 	}
 	
 	public void removeAttribute(String name) {

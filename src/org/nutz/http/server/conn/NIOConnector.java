@@ -1,7 +1,6 @@
 package org.nutz.http.server.conn;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
