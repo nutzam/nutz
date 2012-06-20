@@ -20,7 +20,7 @@ public class NutWebContext extends HttpObject {
 	
 	private static final Log log = Logs.get();
 	
-	ExecutorService es = Executors.newCachedThreadPool();
+	ExecutorService es = Executors.newFixedThreadPool(1024);
 	
 	List<NutHttpAction> actions = new ArrayList<NutHttpAction>();
 	
