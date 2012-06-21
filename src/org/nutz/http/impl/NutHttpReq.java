@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.http.server.NutWebContext;
 import org.nutz.lang.Lang;
 
 /**
@@ -231,5 +232,10 @@ public class NutHttpReq extends HttpMessage {
 	protected Socket socket;
 	public Socket socket() {
 		return socket;
+	}
+	
+	protected NutWebContext ctx;
+	public NutWebContext ctx() {
+		return ctx;
 	}
 }

@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.nutz.http.server.NutWebContext;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -94,6 +95,7 @@ public class Https {
 		req.resp.req = req;
 		req.resp.out = socket.getOutputStream();
 		req.socket = socket;
+		req.ctx = ctx;
 		
 		req.analysisOriginalURI();
 		req.analysisParameters();

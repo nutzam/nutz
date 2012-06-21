@@ -13,7 +13,7 @@ import java.util.Iterator;
 
 import org.nutz.http.impl.Https;
 import org.nutz.http.impl.NutHttpReq;
-import org.nutz.http.impl.NutWebContext;
+import org.nutz.http.server.NutWebContext;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -23,7 +23,7 @@ import org.nutz.log.Logs;
  * @author wendal
  *
  */
-public class NIOConnector implements Runnable {
+public class NIOConnector implements NutWebConnector {
 	
 	private static final Log log = Logs.get();
 	
