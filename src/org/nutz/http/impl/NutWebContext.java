@@ -8,12 +8,11 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-
-import com.vladium.util.Files;
 
 
 public class NutWebContext extends HttpObject {
@@ -82,7 +81,7 @@ public class NutWebContext extends HttpObject {
 				}
 				if (f.exists() && f.isFile()) {
 					resp.setContentLength((int)f.length());
-					resp.setContentType(Mimes.guess(Files.getFileExtension(f).substring(1)));
+					resp.setContentType(Mimes.guess(Files.getSuffixName(f)));
 					resp.setDateHeader("Last-Modify", f.lastModified());
 					resp.sendRespHeaders();
 					Streams.write(resp.out, new FileInputStream(f));
