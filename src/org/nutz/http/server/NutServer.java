@@ -2,48 +2,41 @@ package org.nutz.http.server;
 
 import org.nutz.http.server.conn.NutWebConnector;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.web.WebConfig;
 
 public class NutServer implements Runnable {
 	
 	private static final Log log = Logs.get();
 	
-	protected WebConfig cfg;
+	protected NutWebContext ctx;
 	
-	public NutServer(WebConfig cfg) {
-		this.cfg = cfg;
+	public NutServer(NutWebContext ctx) {
+		this.ctx = ctx;
 	}
 
 	protected Thread serverThread;
 	
-	protected boolean running;
-	
 	public void start() {
-		if (running)
+		if (ctx.isRunning())
 			return;
 		try {
-			serverThread = new Thread(this, "NutServer port="+cfg.getAppPort());
+			serverThread = new Thread(this, "NutServer port="+ctx.conf.getAppPort());
 			serverThread.start();
-			serverThread.interrupt();
 		} catch (Throwable e) {
 			throw Lang.wrapThrow(e);
 		}
-		running = true;
 	}
 	
 	public void run() {
-		NutWebContext ctx = new NutWebContext();
-		ctx.port = cfg.getAppPort();
-		ctx.root = cfg.getAppRoot();
-		String connClass = cfg.get("nutz.web.connector", "org.nutz.http.server.conn.NIOConnector");
+		String connClass = ctx.conf.get("nutz.web.connector", "org.nutz.http.server.conn.NIOConnector");
 		try {
-			running = true;
+			ctx.running = true;
 			NutWebConnector connector = (NutWebConnector) Class.forName(connClass).getConstructor(NutWebContext.class).newInstance(ctx);
 			connector.run();
 		} catch (Throwable e) {
-			running = false;
+			ctx.running = false;
 			serverThread = null;
 			if (e instanceof ThreadDeath)
 				throw (ThreadDeath)e;
@@ -53,14 +46,17 @@ public class NutServer implements Runnable {
 	
 	@SuppressWarnings("deprecation")
 	public void shutdown() {
-		if (!running)
+		if (!ctx.isRunning())
 			return;
 		if (serverThread == null) {
-			running = false;
+			ctx.running = false;
 			return;
 		}
 		if (serverThread.isAlive()) {
-			running = false;
+			
+			ctx.running = false;
+			ctx.es.shutdown();
+
 			try {
 				Thread.sleep(5000);
 			} catch (InterruptedException e) {}
@@ -70,9 +66,13 @@ public class NutServer implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		WebConfig cfg = new WebConfig(null);
-		NutServer server = new NutServer(cfg);
+		String path = Strings.sBlank(Lang.first(args), "nutzweb.properties");
+		NutWebConfig conf = new NutWebConfig(path);
+		NutWebContext cxt = new NutWebContext();
+		cxt.conf = conf;
+		NutServer server = new NutServer(cxt);
+		log.infof("NutServer start --> port="+conf.getAppPort());
 		server.run();
+		log.infof("NutServer shutdown --> port="+conf.getAppPort());
 	}
-
 }

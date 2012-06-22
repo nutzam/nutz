@@ -24,17 +24,22 @@ public class NutWebContext extends HttpObject {
 	
 	private static final Log log = Logs.get();
 	
-	ExecutorService es = Executors.newFixedThreadPool(1024);
+	public final ExecutorService es = Executors.newFixedThreadPool(1024);
 	
-	List<NutHttpAction> actions = new ArrayList<NutHttpAction>();
+	public final List<NutHttpAction> actions = new ArrayList<NutHttpAction>();
 	
-	public int port;
+	protected NutWebConfig conf;
+	public NutWebConfig conf() {
+		return conf;
+	}
 	
-	public boolean running = true;
+	protected boolean running;
 	
-	public void close() {
-		running = false;
-		es.shutdown();
+	public void setRunning(boolean running) {
+		this.running = running;
+	}
+	public boolean isRunning() {
+		return running;
 	}
 	
 	public void workFor(final NutHttpReq req) {
@@ -74,15 +79,13 @@ public class NutWebContext extends HttpObject {
 		return null;
 	}
 	
-	protected String root = "root";
-	
 	protected NutHttpAction defaultHttpAction = new NutHttpAction() {
 		
 		public void exec(NutHttpReq req, NutHttpResp resp) {
 			try {
-				File f = new File(root + req.requestURI());
+				File f = new File(conf.getAppRoot() + req.requestURI());
 				if (f.exists() && f.isDirectory()) {
-					f = new File(root + req.requestURI() + "/index.html");
+					f = new File(conf.getAppRoot() + req.requestURI() + "/index.html");
 				}
 				if (f.exists() && f.isFile()) {
 					resp.setContentLength((int)f.length());

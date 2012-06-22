@@ -33,23 +33,12 @@ public class NIOConnector implements NutWebConnector {
 	
 	protected NutWebContext ctx;
 	
-	protected boolean running = true;
-	
-	protected boolean acceptConn = true;
-	
-	public void start() {
-		new Thread(this, "NIOConnector port="+ctx.port).start();
-	}
-	
 	public void run() {
 		try {
 			_run();
 		} catch (Exception e) {
 			log.error("Down ...", e);
 			throw Lang.wrapThrow(e);
-		} finally {
-			acceptConn = false;
-			running = false;
 		}
 	}
 	
@@ -59,14 +48,14 @@ public class NIOConnector implements NutWebConnector {
 		
 		//开启ServerSocketChannel
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-		InetSocketAddress address = new InetSocketAddress(ctx.port);
+		InetSocketAddress address = new InetSocketAddress(ctx.conf().getAppPort());
 		serverSocketChannel.socket().bind(address);
 		serverSocketChannel.configureBlocking(false);
 		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 		
 		//开始监听
 		log.debug("Listening ...");
-		while (acceptConn) {
+		while (ctx.isRunning()) {
 			try {
 				int s = selector.select(3000);//等3s就可以循环一次
 				if (s < 1) { //如果为0,那就是啥都没有咯
@@ -179,7 +168,7 @@ public class NIOConnector implements NutWebConnector {
 			}
 		}
 		if (readPos >= 4192) //TODO 做成可配置的
-			throw Lang.makeThrow("Head too large!");
+			throw Lang.makeThrow("Http Head too large!");
 		
 		return -1;
 	}

@@ -1,4 +1,4 @@
-package org.nutz.web;
+package org.nutz.http.server;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,7 +14,7 @@ import org.nutz.lang.util.MultiLineProperties;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class WebConfig {
+public class NutWebConfig {
 
 	/**
 	 * 配置文件的键名: 应用的根路径，比如 "~/workspace/git/danoo/strato/domain/ROOT"
@@ -52,15 +52,15 @@ public class WebConfig {
 	protected PropertiesProxy pp;
 
 	public String getAppRoot() {
-		return pp.get(APP_ROOT);
+		return pp.get(APP_ROOT, "root");
 	}
 
 	public int getAppPort() {
-		return pp.getInt(APP_PORT);
+		return pp.getInt(APP_PORT, 8080);
 	}
 
 	public String getAppRs() {
-		return pp.get(APP_RS);
+		return pp.get(APP_RS, "rs");
 	}
 
 	public String getAppClasspath() {
@@ -68,7 +68,7 @@ public class WebConfig {
 	}
 
 	public int getAdminPort() {
-		return pp.getInt(ADMIN_PORT);
+		return pp.getInt(ADMIN_PORT, 8081);
 	}
 
 	// ================================================= 一些通用方法
@@ -115,7 +115,7 @@ public class WebConfig {
 	 * @param path
 	 *            配置文件路径
 	 */
-	public WebConfig(String path) {
+	public NutWebConfig(String path) {
 		// 开始解析
 		this.pp = new PropertiesProxy();
 		this.pp.setPaths(path);
