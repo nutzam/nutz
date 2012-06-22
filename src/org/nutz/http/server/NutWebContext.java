@@ -58,6 +58,7 @@ public class NutWebContext extends HttpObject {
 					action = defaultHttpAction;
 				try {
 					log.debug("Work for req URI="+req.requestURI());
+					req.analysisParameters(); //TODO 推迟到第一次获取参数的时候
 					action.exec(req, req.resp());
 					log.debug("Done for req URI="+req.requestURI());
 				} catch (Throwable e) {

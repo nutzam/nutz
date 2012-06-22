@@ -98,7 +98,7 @@ public class Https {
 		req.ctx = ctx;
 		
 		req.analysisOriginalURI();
-		req.analysisParameters();
+		//req.analysisParameters();  在容器中处理!!
 		
 		log.debug("Req create complete --> " + req.requestURI);
 		
