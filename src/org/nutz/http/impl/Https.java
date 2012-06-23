@@ -58,7 +58,7 @@ public class Https {
 			//检测一下非法的header值
 			if (name.contains("_") || name.length() > 48 || value.length() > 128)
 				throw new IllegalArgumentException("Bad req header --> " + headerLine);
-			req.addHeader(name, value);
+			req.headers().add(name, value);
 		}
 		
 		//生成输入InputStream

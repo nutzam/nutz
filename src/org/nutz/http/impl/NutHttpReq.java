@@ -169,8 +169,12 @@ public class NutHttpReq extends HttpMessage {
 		if (contentType == null || !contentType.contains("application/x-www-form-urlencoded"))
 			return; //只有Content-Type是
 		String contentEncoding = "UTF-8";
-		if (contentType.contains(";"))
-			contentEncoding = contentType.substring(contentType.indexOf(";") + 1);
+		if (contentType.contains(";")) {
+			if (!contentType.endsWith(";"))
+				contentEncoding = contentType.substring(contentType.indexOf(";") + 1).trim().intern();
+			
+			contentType = contentType.substring(0, contentType.indexOf(";"));
+		}
 		
 		//先读取100个字符,找找=号,如果没有,那就是假的!这是不对的!!
 		PushbackInputStream pis = new PushbackInputStream(in, 300);
@@ -179,7 +183,10 @@ public class NutHttpReq extends HttpMessage {
 		int len = reader.read(buf);
 		if (len < 1)
 			return; //没数据?!不太可能吧
-		String str = new String(buf.array());
+		buf.flip();
+		char[] bs = new char[len];
+		buf.get(bs);
+		String str = new String(bs);
 		if (!str.contains("=")) {
 			//没有包含?! 我%*&
 			pis.unread(str.getBytes(contentEncoding));
@@ -187,11 +194,13 @@ public class NutHttpReq extends HttpMessage {
 		} else {
 			//嘿嘿,来吧,重头戏!!!
 			StringBuilder sb = new StringBuilder(str);
-			buf.clear();
-			while (reader.ready()) {
-				if (reader.read(buf) < 0)
+			buf = CharBuffer.allocate(4196);
+			bs = new char[4196];
+			while (reader.ready()) { //TODO 限制POST的大小
+				len = reader.read(bs);
+				if (len < 0)
 					break;
-				sb.append(new String(buf.array()));
+				sb.append(new String(bs, 0, len));
 				buf.clear();
 			}
 			resolveParameters(sb.toString(), contentEncoding);
@@ -209,13 +218,13 @@ public class NutHttpReq extends HttpMessage {
 			if (pair.startsWith("="))
 				continue;
 			if (pair.endsWith("="))
-				addHeader(pair.substring(0, pair.length() - 1).intern(), "");
+				headers.add(pair.substring(0, pair.length() - 1).intern(), "");
 			else
 				try {
 					if (enc.isEmpty())
-						addHeader(pair.substring(0, pair.indexOf('=')), pair.substring(pair.indexOf('=') + 1));
+						headers.add(pair.substring(0, pair.indexOf('=')), pair.substring(pair.indexOf('=') + 1));
 					else
-						addHeader(pair.substring(0, pair.indexOf('=')), URLDecoder.decode(pair.substring(pair.indexOf('=') + 1), enc));
+						headers.add(pair.substring(0, pair.indexOf('=')), URLDecoder.decode(pair.substring(pair.indexOf('=') + 1), enc));
 				} catch (UnsupportedEncodingException e) {
 					throw Lang.wrapThrow(e);
 				}

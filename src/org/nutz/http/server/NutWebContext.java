@@ -91,7 +91,7 @@ public class NutWebContext extends HttpObject {
 				if (f.exists() && f.isFile()) {
 					resp.setContentLength((int)f.length());
 					resp.setContentType(Mimes.guess(Files.getSuffixName(f)));
-					resp.setDateHeader("Last-Modify", f.lastModified());
+					resp.headers().setDate("Last-Modify", f.lastModified());
 					resp.sendRespHeaders();
 					Streams.write(resp.getOutputStream(), new FileInputStream(f));
 				} else {

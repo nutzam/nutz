@@ -77,13 +77,13 @@ public class NutHttpResp extends HttpMessage {
 	public void sendRespHeaders() throws IOException {
 		if (!headerSent) {
 			// 补充几个附加的头,调试用
-			addHeader("X-Power-By", "Nutz Http Server " + Nutz.version());
-			addDateHeader("ServerTime", System.currentTimeMillis());
-			setHeader("Connection", "close");
+			headers.add("X-Power-By", "Nutz Http Server " + Nutz.version());
+			headers.addDate("ServerTime", System.currentTimeMillis());
+			headers.set("Connection", "close"); //暂不支持长连接
 			
 			//发送响应头
 			out.write(("HTTP/1.1 "+status+" " + msg + "\r\n").getBytes());
-			for (Entry<String, List<String>> header : headers.entrySet()) {
+			for (Entry<String, List<String>> header : headers.datas().entrySet()) {
 				for (String headerValue : header.getValue()) {
 					out.write(header.getKey().getBytes());
 					out.write(": ".getBytes());
@@ -119,7 +119,7 @@ public class NutHttpResp extends HttpMessage {
 			throw new NullPointerException("path is null");
 		status = 302;
 		msg = "Redirect";
-		setHeader("Location", path);
+		headers.set("Location", path);
 		sendAndClose(null);
 	}
 	
