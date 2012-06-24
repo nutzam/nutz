@@ -93,7 +93,7 @@ public class NutHttpReq extends HttpMessage {
 	}
 	protected String requestURI;
 	public String requestURI() {
-		return queryString;
+		return requestURI;
 	}
 
 	/**

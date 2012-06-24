@@ -137,6 +137,7 @@ public class NutServer implements Runnable {
 				if (f.exists() && f.isDirectory()) {
 					f = new File(conf.getAppRoot() + req.requestURI() + "/index.html");
 				}
+				log.debugf("File=%s, exist=%s", f.getPath(), f.exists());
 				if (f.exists() && f.isFile()) {
 					resp.setContentLength((int)f.length());
 					resp.setContentType(Mimes.guess(Files.getSuffixName(f)));
@@ -144,6 +145,7 @@ public class NutServer implements Runnable {
 					resp.sendRespHeaders();
 					Streams.write(resp.getOutputStream(), new FileInputStream(f));
 				} else {
+					log.debug("File not found , send 404");
 					resp.sendError(404, "File Not Found", null);
 				}
 			} catch (IOException e) {
