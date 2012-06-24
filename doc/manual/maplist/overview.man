@@ -8,7 +8,7 @@
     所谓 Mapl 结构就是 Map-List 结构，我原来就叫 maplist 后来被灰太郎说太长，就改成 "mapl" 了
     
     最初都是 wendal 在重写JSON的时候, 将JSON理解成了Mapl结构.
-    然后突然在某一天发现, 咦, Mapl.象还可以这么用, 那么用, 
+    然后突然在某一天发现, 咦, Mapl对象还可以这么用, 那么用, 
     慢慢的, 以Mapl 基础的小功能点越来越多, 
     已经不能够完全的与JSON概念协调, 所以才有了这样一个中间结构.
 
@@ -23,6 +23,9 @@
     每次写这种东西的时候, 我都想哭, 所以干脆对它封装吧, 越封越多, 然后就有了这玩意...
 
     当然, 它也与EL一样{#0000AA;* 满足一小撮人的一小撮要求}
+
+
+    提醒: Mapl这个名词,是MapList的缩写
 
 ------------------------------------------------------------------------
 什么是 Mapl 结构?
@@ -180,7 +183,7 @@ maplist 过滤
     List<String> list = new ArrayList<String>();
     list.add("age");
     list.add("address[].area");
-    Object newobj = Maplise.excludeFilter(obj, list);
+    Object newobj = Mapl.excludeFilter(obj, list);
     }}}
 
     结果: 
@@ -197,7 +200,7 @@ maplist 过滤
     List<String> list = new ArrayList<String>();
     list.add("age");
     list.add("address[].area");
-    Object newobj = Maplise.includeFilter(obj, list);
+    Object newobj = Mapl.includeFilter(obj, list);
     }}}
 
     结果: 
