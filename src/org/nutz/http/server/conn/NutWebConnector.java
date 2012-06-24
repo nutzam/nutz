@@ -1,5 +1,11 @@
 package org.nutz.http.server.conn;
 
-public interface NutWebConnector extends Runnable {
+import java.io.IOException;
+
+import org.nutz.http.server.NutServer;
+
+public interface NutWebConnector {
+	
+	void run(NutServer server) throws IOException ;
 
 }

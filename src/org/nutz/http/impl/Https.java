@@ -10,7 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.nutz.http.server.NutWebContext;
+import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -26,7 +26,7 @@ public class Https {
 		return httpDateFormat.format(date);
 	}
 	
-	public static NutHttpReq makeHttpReq(NutWebContext ctx, final Socket socket, byte[] head, final byte[] preRead) throws IOException {
+	public static NutHttpReq makeHttpReq(Context webContext, final Socket socket, byte[] head, final byte[] preRead) throws IOException {
 
 		NutHttpReq req = new NutHttpReq();
 		
@@ -95,7 +95,7 @@ public class Https {
 		req.resp.req = req;
 		req.resp.out = socket.getOutputStream();
 		req.socket = socket;
-		req.ctx = ctx;
+		req.webContext = webContext;
 		
 		req.analysisOriginalURI();
 		//req.analysisParameters();  在容器中处理!!

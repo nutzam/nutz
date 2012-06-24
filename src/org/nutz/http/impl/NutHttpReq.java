@@ -12,8 +12,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nutz.http.server.NutWebContext;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.Context;
 
 /**
  * Nutz对Http请求的理解:
@@ -243,8 +243,8 @@ public class NutHttpReq extends HttpMessage {
 		return socket;
 	}
 	
-	protected NutWebContext ctx;
-	public NutWebContext ctx() {
-		return ctx;
+	protected Context webContext;
+	public Context webContext() {
+		return webContext;
 	}
 }

@@ -11,9 +11,7 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.util.Iterator;
 
-import org.nutz.http.impl.Https;
-import org.nutz.http.impl.NutHttpReq;
-import org.nutz.http.server.NutWebContext;
+import org.nutz.http.server.NutServer;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -27,35 +25,20 @@ public class NIOConnector implements NutWebConnector {
 	
 	private static final Log log = Logs.get();
 	
-	public NIOConnector(NutWebContext ctx) {
-		this.ctx = ctx;
-	}
-	
-	protected NutWebContext ctx;
-	
-	public void run() {
-		try {
-			_run();
-		} catch (Exception e) {
-			log.error("Down ...", e);
-			throw Lang.wrapThrow(e);
-		}
-	}
-	
-	public void _run() throws IOException {
+	public void run(NutServer server) throws IOException {
 		//打开Selector
 		Selector selector = Selector.open();
 		
 		//开启ServerSocketChannel
 		ServerSocketChannel serverSocketChannel = ServerSocketChannel.open();
-		InetSocketAddress address = new InetSocketAddress(ctx.conf().getAppPort());
+		InetSocketAddress address = new InetSocketAddress(server.conf().getAppPort());
 		serverSocketChannel.socket().bind(address);
 		serverSocketChannel.configureBlocking(false);
 		serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
 		
 		//开始监听
 		log.debug("Listening ...");
-		while (ctx.isRunning()) {
+		while (server.isRunning()) {
 			try {
 				int s = selector.select(3000);//等3s就可以循环一次
 				if (s < 1) { //如果为0,那就是啥都没有咯
@@ -106,8 +89,7 @@ public class NIOConnector implements NutWebConnector {
 								System.arraycopy(buf, pos, preRead, 0, preRead.length);
 							}
 							
-							NutHttpReq req = Https.makeHttpReq(ctx, socket, head, preRead);
-							ctx.workFor(req);//交给容器处理了, 我不管了!!
+							server.workFor(socket, head, preRead);//交给容器处理了, 我不管了!!
 						}
 					} else { //按理说,不应该有其他key的出现
 						log.debug("Unuse key, drop it -->" + selectionKey);
