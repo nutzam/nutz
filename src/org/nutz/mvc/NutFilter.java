@@ -34,9 +34,9 @@ public class NutFilter implements Filter {
 	private boolean skipMode;
 
 	private String selfName;
-	
+
 	private SessionProvider sp;
-	
+
 	private boolean needRealName = true;
 
 	public void init(FilterConfig conf) throws ServletException {
@@ -74,9 +74,11 @@ public class NutFilter implements Filter {
 		Mvcs.resetALL();
 		try {
 			if (sp != null)
-				req = sp.filter((HttpServletRequest)req, (HttpServletResponse)resp, Mvcs.getServletContext());
+				req = sp.filter((HttpServletRequest) req,
+								(HttpServletResponse) resp,
+								Mvcs.getServletContext());
 			if (needRealName && skipMode) {
-				//直接无视自己的名字!!到容器取nutzservlet的名字!!
+				// 直接无视自己的名字!!到容器取nutzservlet的名字!!
 				Enumeration<String> names = Mvcs.getServletContext().getAttributeNames();
 				while (names.hasMoreElements()) {
 					String name = (String) names.nextElement();
