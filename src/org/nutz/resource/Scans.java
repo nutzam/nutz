@@ -28,6 +28,7 @@ import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
 import org.nutz.resource.impl.ResourceLocation;
 
@@ -124,15 +125,16 @@ public class Scans {
 			} else if (str.startsWith("file:")) {
 				return ResourceLocation.file(new File(url.getFile()));
 			} else {
-				return ResourceLocation.file(new File(url.toURI()));
+				if (log.isDebugEnabled())
+					log.debug("Unkown URL " + url);
+				//return ResourceLocation.file(new File(url.toURI()));
 			}
 		}
 		catch (Throwable e) {
 			if (log.isInfoEnabled())
 				log.info("Fail to registerLocation --> " + url, e);
-			return null;
 		}
-
+		return new ErrorResourceLocation(url);
 	}
 
 	public List<NutResource> scan(String src) {
