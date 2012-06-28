@@ -11,7 +11,7 @@ Purpose of Reflection
 	You can change your implemented class or calling methods in runtime through reflection. Even it's not so convenient(you have to catch many exceptions) nor fast.
 
 	Is there a way to let it works better?
-	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] provides 
+	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] provides 
 	`Mirror<T>` Class. Through it, you will feel yourself full of enenge while using reflection.
 
 ---------------------------------------------------------------------------------------------------------

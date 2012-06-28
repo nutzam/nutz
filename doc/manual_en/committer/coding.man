@@ -12,8 +12,8 @@
 
 ------------------------------------------------------------------------------------------
 1. Code format
-	 # {#F00;*R}-Please use Eclipse code formatter: [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml]
-		 * get it from svn trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml
+	 # {#F00;*R}-Please use Eclipse code formatter: [https://github.com/nutzam/nutz/blob/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml]
+		 * get it from [https://raw.github.com/nutzam/nutz/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml github]
 	 # {#080;*S}-Non Eclipse users, please read above XML
 		 * {/No official formatter provided for Non Eclipse users yet, waiting for contributers.}
 ------------------------------------------------------------------------------------------

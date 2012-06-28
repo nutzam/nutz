@@ -10,7 +10,7 @@
 	的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全
 	可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。
 	
-	你可以查看 [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 下
+	你可以查看 [https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] 下
 	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
 	
 	我希望在 80% 以上的情况下，这些函数能让你有效的缩短你 代码的体积，并且增加代码的可读性。

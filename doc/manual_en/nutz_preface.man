@@ -84,7 +84,7 @@ Future of Nutz
 You can make Nutz better
 
 	 * [http://devlicio.us/blogs/krzysztof_kozmic/archive/2009/09/10/how-to-contribute-to-open-source-without-writing-a-single-line-of-code.aspx How to contribute to open source without writing a single line of code]
-	 * You can [http://code.google.com/p/nutz/issues/entry commit issues here]
+	 * You can [https://github.com/nutzam/nutz/issues/new commit issues here]
 	 * Always welcome comments and suggestions
 	 * If you want to be a Nutz Committer, please read [committer/be_committer.man here]
 --------------------------------------------------------------------------------------------------------

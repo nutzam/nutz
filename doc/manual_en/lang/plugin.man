@@ -15,7 +15,7 @@ What is plugin in nutz?
 	In this way, Nutz depends on Log4j for compiling. But it does not depends Log4j for running.
 
 	The plugin is too simple to implement. You can refer：
-	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/plugin org.nutz.plugin] the source code. It may only take you few minutes.
+	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/plugin org.nutz.plugin] the source code. It may only take you few minutes.
 --------------------------------------------------------------------------------------------------------
 Try to use plugin
 	Suppose there is an interface：
