@@ -9,10 +9,10 @@ import org.nutz.dao.sql.PojoCallback;
 
 public class PojoFetchEntityCallback implements PojoCallback {
 
-	public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
-		if (null != rs && rs.next())
-			return pojo.getEntity().getObject(rs, pojo.getContext().getFieldMatcher());
-		return null;
-	}
+    public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+        if (null != rs && rs.next())
+            return pojo.getEntity().getObject(rs, pojo.getContext().getFieldMatcher());
+        return null;
+    }
 
 }

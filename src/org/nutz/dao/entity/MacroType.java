@@ -7,13 +7,13 @@ package org.nutz.dao.entity;
  */
 public enum MacroType {
 
-	/**
-	 * 表达式
-	 */
-	EL,
-	/**
-	 * 通过 SQL
-	 */
-	SQL
+    /**
+     * 表达式
+     */
+    EL,
+    /**
+     * 通过 SQL
+     */
+    SQL
 
 }

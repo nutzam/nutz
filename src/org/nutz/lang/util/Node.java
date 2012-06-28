@@ -12,78 +12,78 @@ import java.util.List;
  */
 public interface Node<T> {
 
-	T get();
+    T get();
 
-	Node<T> set(T obj);
+    Node<T> set(T obj);
 
-	Node<T> parent(Node<T> node);
+    Node<T> parent(Node<T> node);
 
-	Node<T> parent();
+    Node<T> parent();
 
-	Node<T> top();
+    Node<T> top();
 
-	Node<T> prev();
+    Node<T> prev();
 
-	Node<T> prev(Node<T> node);
+    Node<T> prev(Node<T> node);
 
-	Node<T> prev(int index);
+    Node<T> prev(int index);
 
-	Node<T> next();
+    Node<T> next();
 
-	Node<T> next(Node<T> node);
+    Node<T> next(Node<T> node);
 
-	Node<T> next(int index);
+    Node<T> next(int index);
 
-	Node<T> add(Node<?>... nodes);
+    Node<T> add(Node<?>... nodes);
 
-	Node<T> addFirst(Node<T> node);
+    Node<T> addFirst(Node<T> node);
 
-	Node<T> pop();
+    Node<T> pop();
 
-	Node<T> popFirst();
+    Node<T> popFirst();
 
-	Node<T> removeChild(int index);
-	
-	int getIndex();
-	
-	/**
-	 * @return true 成功移除，false 不能移除
-	 */
-	boolean remove();
+    Node<T> removeChild(int index);
+    
+    int getIndex();
+    
+    /**
+     * @return true 成功移除，false 不能移除
+     */
+    boolean remove();
 
-	Node<T> clearChildren();
+    Node<T> clearChildren();
 
-	Node<T> insertBefore(int index, Node<T> node);
+    Node<T> insertBefore(int index, Node<T> node);
 
-	boolean isRoot();
+    boolean isRoot();
 
-	boolean isLast();
+    boolean isLast();
 
-	boolean isFirst();
+    boolean isFirst();
 
-	List<Node<T>> getAncestors();
+    List<Node<T>> getAncestors();
 
-	int depth();
+    int depth();
 
-	List<Node<T>> getNextSibling();
+    List<Node<T>> getNextSibling();
 
-	List<Node<T>> getPrevSibling();
+    List<Node<T>> getPrevSibling();
 
-	int index();
+    int index();
 
-	List<Node<T>> getChildren();
+    List<Node<T>> getChildren();
 
-	Node<T> child(int index);
+    Node<T> child(int index);
 
-	Node<T> desc(int... indexes);
+    Node<T> desc(int... indexes);
 
-	int countChildren();
+    int countChildren();
 
-	boolean hasChild();
+    boolean hasChild();
 
-	Node<T> firstChild();
+    Node<T> firstChild();
 
-	Node<T> lastChild();
+    Node<T> lastChild();
 
-	Iterator<Node<T>> iterator();
+    Iterator<Node<T>> iterator();
 }

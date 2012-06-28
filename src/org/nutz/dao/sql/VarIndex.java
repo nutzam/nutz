@@ -10,18 +10,18 @@ import java.util.Set;
  */
 public interface VarIndex {
 
-	int[] indexesOf(String name);
+    int[] indexesOf(String name);
 
-	String nameOf(int i);
+    String nameOf(int i);
 
-	int[] getOrderIndex(String name);
+    int[] getOrderIndex(String name);
 
-	String getOrderName(int i);
-	
-	List<String> getOrders();
+    String getOrderName(int i);
+    
+    List<String> getOrders();
 
-	Set<String> names();
+    Set<String> names();
 
-	int size();
+    int size();
 
 }

@@ -5,18 +5,18 @@ import org.nutz.json.Json;
 
 public class NumberNode extends ChainNode {
 
-	private Object v;
+    private Object v;
 
-	public NumberNode(String num) {
-		v = Json.fromJson(num);
-	}
+    public NumberNode(String num) {
+        v = Json.fromJson(num);
+    }
 
-	protected String asString() {
-		return v.toString();
-	}
+    protected String asString() {
+        return v.toString();
+    }
 
-	protected Object getValue(IocMaking ing, Object obj) throws Exception {
-		return v;
-	}
+    protected Object getValue(IocMaking ing, Object obj) throws Exception {
+        return v;
+    }
 
 }

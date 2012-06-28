@@ -11,39 +11,39 @@ import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
 public class FileSqlManager extends AbstractSqlManager {
-	
-	private static final Log log = Logs.get();
+    
+    private static final Log log = Logs.get();
 
-	private String[] paths;
+    private String[] paths;
 
-	private String regex;
+    private String regex;
 
-	public FileSqlManager(String... paths) {
-		this.paths = paths;
-	}
+    public FileSqlManager(String... paths) {
+        this.paths = paths;
+    }
 
-	public String getRegex() {
-		return regex;
-	}
+    public String getRegex() {
+        return regex;
+    }
 
-	public FileSqlManager setRegex(String regex) {
-		this.regex = regex;
-		return this;
-	}
+    public FileSqlManager setRegex(String regex) {
+        this.regex = regex;
+        return this;
+    }
 
-	public void refresh() {
-		List<NutResource> list = Scans.me().loadResource(regex, paths);
-		_sql_map = new HashMap<String, String>();
-		for (NutResource ins : list) {
-			if (log.isDebugEnabled())
-				log.debug("Loading sqls from " + ins);
-			try {
-				loadSQL(ins.getReader());
-			}
-			catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
-		}
-	}
+    public void refresh() {
+        List<NutResource> list = Scans.me().loadResource(regex, paths);
+        _sql_map = new HashMap<String, String>();
+        for (NutResource ins : list) {
+            if (log.isDebugEnabled())
+                log.debug("Loading sqls from " + ins);
+            try {
+                loadSQL(ins.getReader());
+            }
+            catch (IOException e) {
+                throw Lang.wrapThrow(e);
+            }
+        }
+    }
 
 }

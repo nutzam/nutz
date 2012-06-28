@@ -16,21 +16,21 @@ import org.nutz.mvc.View;
  */
 public class HttpStatusView implements View {
 
-	private int sc;
+    private int sc;
 
-	public HttpStatusView(int sc) {
-		this.sc = sc;
-	}
+    public HttpStatusView(int sc) {
+        this.sc = sc;
+    }
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
-		if (sc >= 400)
-			try {
-				resp.sendError(sc);
-			} catch (IOException e) {
-				throw Lang.wrapThrow(e);
-			}
-		else
-			resp.setStatus(sc);
-	}
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
+        if (sc >= 400)
+            try {
+                resp.sendError(sc);
+            } catch (IOException e) {
+                throw Lang.wrapThrow(e);
+            }
+        else
+            resp.setStatus(sc);
+    }
 
 }

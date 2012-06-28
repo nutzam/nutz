@@ -8,18 +8,18 @@ package org.nutz.mvc;
  */
 public interface Setup {
 
-	/**
-	 * 启动时，额外逻辑
-	 * 
-	 * @param config
-	 */
-	void init(NutConfig config);
+    /**
+     * 启动时，额外逻辑
+     * 
+     * @param config
+     */
+    void init(NutConfig config);
 
-	/**
-	 * 关闭时，额外逻辑
-	 * 
-	 * @param config
-	 */
-	void destroy(NutConfig config);
+    /**
+     * 关闭时，额外逻辑
+     * 
+     * @param config
+     */
+    void destroy(NutConfig config);
 
 }

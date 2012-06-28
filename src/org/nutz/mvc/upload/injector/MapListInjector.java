@@ -11,24 +11,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 public class MapListInjector implements ParamInjector {
-	
-	public MapListInjector(String name) {
-		this.name = name;
-	}
+    
+    public MapListInjector(String name) {
+        this.name = name;
+    }
 
-	private String name;
+    private String name;
 
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		Object obj = ((Map<?,?>) refer).get(name);
-		if (obj == null)
-			return null;
-		
-		if(obj instanceof List)
-			return obj;
-		
-		List<Object> re = new ArrayList<Object>(1);
-		re.add(obj);
-		return re;
-	}
+    public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        Object obj = ((Map<?,?>) refer).get(name);
+        if (obj == null)
+            return null;
+        
+        if(obj instanceof List)
+            return obj;
+        
+        List<Object> re = new ArrayList<Object>(1);
+        re.add(obj);
+        return re;
+    }
 
 }

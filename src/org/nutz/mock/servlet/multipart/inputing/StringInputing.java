@@ -8,36 +8,36 @@ import org.nutz.lang.stream.StringInputStream;
 
 public class StringInputing implements Inputing {
 
-	private InputStream ins;
+    private InputStream ins;
 
-	StringInputing(String str) {
-		ins = Lang.ins(str);
-	}
-	
-	StringInputing(String str, String charset) {
-		ins = new StringInputStream(str, charset);
-	}
+    StringInputing(String str) {
+        ins = Lang.ins(str);
+    }
+    
+    StringInputing(String str, String charset) {
+        ins = new StringInputStream(str, charset);
+    }
 
-	public int read() {
-		try {
-			return ins.read();
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public int read() {
+        try {
+            return ins.read();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
-	public long size() {
-		try {
-			return ins.available();
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public long size() {
+        try {
+            return ins.available();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
-	public void close() throws IOException {}
+    public void close() throws IOException {}
 
-	public void init() throws IOException {}
+    public void init() throws IOException {}
 
 }

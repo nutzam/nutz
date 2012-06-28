@@ -17,8 +17,8 @@ import org.nutz.mvc.ActionFilter;
 @Documented
 public @interface By {
 
-	Class<? extends ActionFilter> type();
+    Class<? extends ActionFilter> type();
 
-	String[] args() default {};
+    String[] args() default {};
 
 }

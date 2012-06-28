@@ -16,50 +16,50 @@ import org.nutz.mvc.impl.Loadings;
  */
 public abstract class AbstractProcessor implements Processor {
 
-	private Processor next;
-	
-	/**
-	 * 建议覆盖这个方法,以便从NutConfig/ActionInfo获取需要的信息
-	 */
-	public void init(NutConfig config, ActionInfo ai) throws Throwable {
-	}
+    private Processor next;
+    
+    /**
+     * 建议覆盖这个方法,以便从NutConfig/ActionInfo获取需要的信息
+     */
+    public void init(NutConfig config, ActionInfo ai) throws Throwable {
+    }
 
-	/**
-	 * 设置下一个Processor
-	 * <p/><b>一般情形下都不应该覆盖这个方法<b>
-	 * @param next 下一个Processor,一般不为null
-	 */
-	public void setNext(Processor next) {
-		this.next = next;
-	}
+    /**
+     * 设置下一个Processor
+     * <p/><b>一般情形下都不应该覆盖这个方法<b>
+     * @param next 下一个Processor,一般不为null
+     */
+    public void setNext(Processor next) {
+        this.next = next;
+    }
 
-	/**
-	 * 继续执行下一个Processor
-	 * <p/><b>一般情形下都不应该覆盖这个方法<b>
-	 * @param ac 执行方法的上下文
-	 * @throws Throwable
-	 */
-	protected void doNext(ActionContext ac) throws Throwable {
-		if (null != next)
-			next.process(ac);
-	}
+    /**
+     * 继续执行下一个Processor
+     * <p/><b>一般情形下都不应该覆盖这个方法<b>
+     * @param ac 执行方法的上下文
+     * @throws Throwable
+     */
+    protected void doNext(ActionContext ac) throws Throwable {
+        if (null != next)
+            next.process(ac);
+    }
 
-	protected static <T> T evalObj(NutConfig config, ObjectInfo<T> info) {
-		return null == info ? null : Loadings.evalObj(config, info.getType(), info.getArgs());
-	}
+    protected static <T> T evalObj(NutConfig config, ObjectInfo<T> info) {
+        return null == info ? null : Loadings.evalObj(config, info.getType(), info.getArgs());
+    }
 
-	protected void renderView(ActionContext ac) throws Throwable {
-		Processor p = next;
-		while (p != null) {
-			if (p instanceof ViewProcessor) {
-				p.process(ac);
-				return;
-			}
-			p = p.getNext();
-		}
-	}
-	
-	public Processor getNext() {
-		return next;
-	}
+    protected void renderView(ActionContext ac) throws Throwable {
+        Processor p = next;
+        while (p != null) {
+            if (p instanceof ViewProcessor) {
+                p.process(ac);
+                return;
+            }
+            p = p.getNext();
+        }
+    }
+    
+    public Processor getNext() {
+        return next;
+    }
 }

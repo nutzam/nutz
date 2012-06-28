@@ -7,12 +7,12 @@ import org.nutz.dao.entity.annotation.One;
 
 public class LinkInfo extends FieldInfo {
 
-	public One one;
+    public One one;
 
-	public Many many;
+    public Many many;
 
-	public ManyMany manymany;
+    public ManyMany manymany;
 
-	public Comment comment;
+    public Comment comment;
 
 }

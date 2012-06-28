@@ -23,10 +23,10 @@ import javax.servlet.http.HttpSessionListener;
  */
 public class NutSessionListener implements HttpSessionListener {
 
-	public void sessionCreated(HttpSessionEvent se) {}
+    public void sessionCreated(HttpSessionEvent se) {}
 
-	public void sessionDestroyed(HttpSessionEvent se) {
-		Mvcs.deposeSession(se.getSession());
-	}
+    public void sessionDestroyed(HttpSessionEvent se) {
+        Mvcs.deposeSession(se.getSession());
+    }
 
 }

@@ -6,9 +6,9 @@ import org.nutz.mock.servlet.multipart.inputing.StreamEndlInputing;
 
 public class EndlMultipartItem extends MultipartItem {
 
-	public EndlMultipartItem(InputingHelper helper, String boundary) {
-		super(helper, boundary);
-		this.addInputing(new StreamEndlInputing());
-	}
+    public EndlMultipartItem(InputingHelper helper, String boundary) {
+        super(helper, boundary);
+        this.addInputing(new StreamEndlInputing());
+    }
 
 }

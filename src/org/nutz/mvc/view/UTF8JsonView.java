@@ -17,20 +17,20 @@ import org.nutz.mvc.View;
  */
 public class UTF8JsonView implements View {
 
-	private JsonFormat format;
+    private JsonFormat format;
 
-	private Object data;
+    private Object data;
 
-	public void setData(Object data) {
-		this.data = data;
-	}
+    public void setData(Object data) {
+        this.data = data;
+    }
 
-	public UTF8JsonView(JsonFormat format) {
-		this.format = format;
-	}
+    public UTF8JsonView(JsonFormat format) {
+        this.format = format;
+    }
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws IOException {
-		Mvcs.write(resp, null == obj ? data : obj, format);
-	}
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws IOException {
+        Mvcs.write(resp, null == obj ? data : obj, format);
+    }
 }

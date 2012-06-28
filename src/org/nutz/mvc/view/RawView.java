@@ -44,62 +44,62 @@ import org.nutz.mvc.View;
  */
 public class RawView implements View {
 
-	private String contentType;
+    private String contentType;
 
-	public RawView(String contentType) {
-		if (Strings.isBlank(contentType))
-			contentType = "text/plain";
-		this.contentType = Strings.sNull(contentTypeMap.get(contentType.toLowerCase()), contentType);
-	}
+    public RawView(String contentType) {
+        if (Strings.isBlank(contentType))
+            contentType = "text/plain";
+        this.contentType = Strings.sNull(contentTypeMap.get(contentType.toLowerCase()), contentType);
+    }
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws Throwable {
-		resp.setContentType(contentType);
-		if (obj == null)
-			return;
-		//文件
-		if (obj instanceof File) {
-			File file = (File)obj;
-			String encode = new String(file.getName().getBytes(Encoding.UTF8), "ISO8859-1");
-			resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
-			resp.setHeader("Content-Length", "" + file.length());
-			Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
-		}
-		// 字节数组
-		else if (obj instanceof byte[]) {
-			resp.setHeader("Content-Length", "" + ((byte[])obj).length);
-			Streams.writeAndClose(resp.getOutputStream(), (byte[])obj);
-		}
-		// 字符数组
-		else if (obj instanceof char[]) {
-			Writer writer = resp.getWriter();
-			writer.write((char[]) obj);
-			writer.flush();
-		}
-		// 文本流
-		else if (obj instanceof Reader) {
-			Streams.writeAndClose(resp.getWriter(), (Reader)obj);
-		}
-		// 二进制流
-		else if (obj instanceof InputStream) {
-			Streams.writeAndClose(resp.getOutputStream(), (InputStream) obj);
-		}
-		// 普通对象
-		else {
-			byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
-			resp.setHeader("Content-Length", "" + data.length);
-			Streams.writeAndClose(resp.getOutputStream(), data);
-		}
-	}
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws Throwable {
+        resp.setContentType(contentType);
+        if (obj == null)
+            return;
+        //文件
+        if (obj instanceof File) {
+            File file = (File)obj;
+            String encode = new String(file.getName().getBytes(Encoding.UTF8), "ISO8859-1");
+            resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
+            resp.setHeader("Content-Length", "" + file.length());
+            Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
+        }
+        // 字节数组
+        else if (obj instanceof byte[]) {
+            resp.setHeader("Content-Length", "" + ((byte[])obj).length);
+            Streams.writeAndClose(resp.getOutputStream(), (byte[])obj);
+        }
+        // 字符数组
+        else if (obj instanceof char[]) {
+            Writer writer = resp.getWriter();
+            writer.write((char[]) obj);
+            writer.flush();
+        }
+        // 文本流
+        else if (obj instanceof Reader) {
+            Streams.writeAndClose(resp.getWriter(), (Reader)obj);
+        }
+        // 二进制流
+        else if (obj instanceof InputStream) {
+            Streams.writeAndClose(resp.getOutputStream(), (InputStream) obj);
+        }
+        // 普通对象
+        else {
+            byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
+            resp.setHeader("Content-Length", "" + data.length);
+            Streams.writeAndClose(resp.getOutputStream(), data);
+        }
+    }
 
-	private static final Map<String, String> contentTypeMap = new HashMap<String, String>();
+    private static final Map<String, String> contentTypeMap = new HashMap<String, String>();
 
-	static {
-		contentTypeMap.put("xml", "text/xml");
-		contentTypeMap.put("html", "text/html");
-		contentTypeMap.put("htm", "text/html");
-		contentTypeMap.put("stream", "application/octet-stream");
-		contentTypeMap.put("js", "text/javascript");
-		contentTypeMap.put("json", "text/javascript");
-	}
+    static {
+        contentTypeMap.put("xml", "text/xml");
+        contentTypeMap.put("html", "text/html");
+        contentTypeMap.put("htm", "text/html");
+        contentTypeMap.put("stream", "application/octet-stream");
+        contentTypeMap.put("js", "text/javascript");
+        contentTypeMap.put("json", "text/javascript");
+    }
 }

@@ -20,86 +20,86 @@ import org.nutz.lang.Lang;
  */
 public class SimpleDataSource implements DataSource {
 
-	private String username;
-	private String password;
-	protected String driverClassName;
-	private String jdbcUrl;
-	
-	public Connection getConnection() throws SQLException {
-		Connection conn;
-		if (username != null)
-			conn = DriverManager.getConnection(jdbcUrl, username, password);
-		else
-			conn = DriverManager.getConnection(jdbcUrl);
-		return conn;
-	}
-	
-	public void close() {}
-	
-	public void setDriverClassName(String driverClassName) throws ClassNotFoundException {
-		Class.forName(driverClassName);
-	}
-	
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    private String username;
+    private String password;
+    protected String driverClassName;
+    private String jdbcUrl;
+    
+    public Connection getConnection() throws SQLException {
+        Connection conn;
+        if (username != null)
+            conn = DriverManager.getConnection(jdbcUrl, username, password);
+        else
+            conn = DriverManager.getConnection(jdbcUrl);
+        return conn;
+    }
+    
+    public void close() {}
+    
+    public void setDriverClassName(String driverClassName) throws ClassNotFoundException {
+        Class.forName(driverClassName);
+    }
+    
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public void setJdbcUrl(String jdbcUrl) {
-		this.jdbcUrl = jdbcUrl;
-	}
+    public void setJdbcUrl(String jdbcUrl) {
+        this.jdbcUrl = jdbcUrl;
+    }
 
-	//加载Nutz所支持的数据库的驱动!!
-	static {
-		String[] drivers = {"org.h2.Driver",
-							"com.ibm.db2.jcc.DB2Driver",
-							"org.hsqldb.jdbcDriver",
-							"org.gjt.mm.mysql.Driver",
-							"oracle.jdbc.OracleDriver",
-							"org.postgresql.Driver",
-							"net.sourceforge.jtds.jdbc.Driver",
-							"com.microsoft.sqlserver.jdbc.SQLServerDriver",
-							"org.sqlite.JDBC"};
-		for (String driverClassName : drivers) {
-			try {
-				Class.forName(driverClassName);
-			} catch (Throwable e) {}
-		}
-	}
-	
+    //加载Nutz所支持的数据库的驱动!!
+    static {
+        String[] drivers = {"org.h2.Driver",
+                            "com.ibm.db2.jcc.DB2Driver",
+                            "org.hsqldb.jdbcDriver",
+                            "org.gjt.mm.mysql.Driver",
+                            "oracle.jdbc.OracleDriver",
+                            "org.postgresql.Driver",
+                            "net.sourceforge.jtds.jdbc.Driver",
+                            "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+                            "org.sqlite.JDBC"};
+        for (String driverClassName : drivers) {
+            try {
+                Class.forName(driverClassName);
+            } catch (Throwable e) {}
+        }
+    }
+    
 //---------------------------------------------------------------
 
-	public PrintWriter getLogWriter() throws SQLException {
-		throw Lang.noImplement();
-	}
+    public PrintWriter getLogWriter() throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		throw Lang.noImplement();
-	}
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public void setLoginTimeout(int seconds) throws SQLException {throw Lang.noImplement();}
+    public void setLoginTimeout(int seconds) throws SQLException {throw Lang.noImplement();}
 
-	public int getLoginTimeout() throws SQLException {
-		throw Lang.noImplement();
-	}
+    public int getLoginTimeout() throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		throw Lang.noImplement();
-	}
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		throw Lang.noImplement();
-	}
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public Connection getConnection(String username, String password)
-			throws SQLException {
-		throw Lang.noImplement();
-	}
+    public Connection getConnection(String username, String password)
+            throws SQLException {
+        throw Lang.noImplement();
+    }
 
-	public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-		throw new SQLFeatureNotSupportedException();
-	}
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new SQLFeatureNotSupportedException();
+    }
 }

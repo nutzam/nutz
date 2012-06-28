@@ -4,8 +4,8 @@ import org.nutz.dao.DB;
 
 public @interface EL {
 
-	DB db() default DB.OTHER;
+    DB db() default DB.OTHER;
 
-	String value();
-	
+    String value();
+    
 }

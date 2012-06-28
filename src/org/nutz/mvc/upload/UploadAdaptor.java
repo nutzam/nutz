@@ -60,50 +60,50 @@ import org.nutz.mvc.upload.injector.TempFileInjector;
 public class UploadAdaptor extends PairAdaptor {
     private static final Log log = Logs.get();
 
-	private UploadingContext context;
+    private UploadingContext context;
 
-	public UploadAdaptor() throws IOException {
-		context = new UploadingContext(File.createTempFile("nutz", null).getParent());
-	}
+    public UploadAdaptor() throws IOException {
+        context = new UploadingContext(File.createTempFile("nutz", null).getParent());
+    }
 
-	public UploadAdaptor(UploadingContext context) {
-		this.context = context;
-	}
+    public UploadAdaptor(UploadingContext context) {
+        this.context = context;
+    }
 
-	public UploadAdaptor(String path) {
-		context = new UploadingContext(path);
-	}
+    public UploadAdaptor(String path) {
+        context = new UploadingContext(path);
+    }
 
-	public UploadAdaptor(String path, int buffer) {
-		this(path);
-		context.setBufferSize(buffer);
-	}
+    public UploadAdaptor(String path, int buffer) {
+        this(path);
+        context.setBufferSize(buffer);
+    }
 
-	public UploadAdaptor(String path, int buffer, String charset) {
-		this(path);
-		context.setBufferSize(buffer);
-		context.setCharset(charset);
-	}
+    public UploadAdaptor(String path, int buffer, String charset) {
+        this(path);
+        context.setBufferSize(buffer);
+        context.setCharset(charset);
+    }
 
-	public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
-		context = new UploadingContext(new NutFilePool(path, poolSize));
-		context.setBufferSize(buffer);
-		context.setCharset(charset);
-	}
+    public UploadAdaptor(String path, int buffer, String charset, int poolSize) {
+        context = new UploadingContext(new NutFilePool(path, poolSize));
+        context.setBufferSize(buffer);
+        context.setCharset(charset);
+    }
 
-	public UploadAdaptor(String path, int buffer, String charset, int poolSize, int maxFileSize) {
-		context = new UploadingContext(new NutFilePool(path, poolSize));
-		context.setBufferSize(buffer);
-		context.setCharset(charset);
-		context.setMaxFileSize(maxFileSize);
-	}
+    public UploadAdaptor(String path, int buffer, String charset, int poolSize, int maxFileSize) {
+        context = new UploadingContext(new NutFilePool(path, poolSize));
+        context.setBufferSize(buffer);
+        context.setCharset(charset);
+        context.setMaxFileSize(maxFileSize);
+    }
 
-	public UploadingContext getContext() {
-		return context;
-	}
+    public UploadingContext getContext() {
+        return context;
+    }
 
-	protected ParamInjector evalInjectorBy(Type type, Param param) {
-		// TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
+    protected ParamInjector evalInjectorBy(Type type, Param param) {
+        // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
@@ -112,74 +112,74 @@ public class UploadAdaptor extends PairAdaptor {
             return null;
         }
         
-		// Map
-		if (Map.class.isAssignableFrom(clazz))
-			return new MapSelfInjector();
+        // Map
+        if (Map.class.isAssignableFrom(clazz))
+            return new MapSelfInjector();
 
-		if (null == param)
-			return super.evalInjectorBy(type, param);
+        if (null == param)
+            return super.evalInjectorBy(type, param);
 
-		String paramName = param.value();
+        String paramName = param.value();
 
-		// File
-		if (File.class.isAssignableFrom(clazz))
-			return new FileInjector(paramName);
-		// FileMeta
-		if (FieldMeta.class.isAssignableFrom(clazz))
-			return new FileMetaInjector(paramName);
-		// TempFile
-		if (TempFile.class.isAssignableFrom(clazz))
-			return new TempFileInjector(paramName);
-		// InputStream
-		if (InputStream.class.isAssignableFrom(clazz))
-			return new InputStreamInjector(paramName);
-		// Reader
-		if (Reader.class.isAssignableFrom(clazz))
-			return new ReaderInjector(paramName);
-		// List
-		if (List.class.isAssignableFrom(clazz))
-			return new MapListInjector(paramName);
-		// Other
-		return super.evalInjectorBy(type, param);
-	}
+        // File
+        if (File.class.isAssignableFrom(clazz))
+            return new FileInjector(paramName);
+        // FileMeta
+        if (FieldMeta.class.isAssignableFrom(clazz))
+            return new FileMetaInjector(paramName);
+        // TempFile
+        if (TempFile.class.isAssignableFrom(clazz))
+            return new TempFileInjector(paramName);
+        // InputStream
+        if (InputStream.class.isAssignableFrom(clazz))
+            return new InputStreamInjector(paramName);
+        // Reader
+        if (Reader.class.isAssignableFrom(clazz))
+            return new ReaderInjector(paramName);
+        // List
+        if (List.class.isAssignableFrom(clazz))
+            return new MapListInjector(paramName);
+        // Other
+        return super.evalInjectorBy(type, param);
+    }
 
-	public Map<String, Object> getReferObject(	ServletContext sc,
-												HttpServletRequest request,
-												HttpServletResponse response,
-												String[] pathArgs) {
-		try {
-			if (!"POST".equals(request.getMethod()) && !"PUT".equals(request.getMethod())) {
-				String str = "Not POST or PUT, Wrong HTTP method! --> " + request.getMethod();
-				throw Lang.makeThrow(IllegalArgumentException.class, str);
-			}
-			//看看是不是传统的上传
-			String contentType = request.getContentType();
-			if (contentType == null) {
-				throw Lang.makeThrow(IllegalArgumentException.class, "Content-Type is NULL!!");
-			}
-			if (contentType.contains("multipart/form-data")) { //普通表单上传
-				if (log.isDebugEnabled())
-					log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
-				Uploading ing = new FastUploading();
-				return ing.parse(request, context);
-			}
-			if (contentType.contains("application/octet-stream")) { //Html5 流式上传
-				if (log.isDebugEnabled())
-					log.debug("Select Html5 Stream upload parser --> " + request.getRequestURI());
-				Uploading ing = new Html5Uploading();
-				return ing.parse(request, context);
-			}
-			// 100%是没写enctype='multipart/form-data'
-			if (contentType.contains("application/x-www-form-urlencoded")) {
-				log.warn("Using form upload ? You forgot this --> enctype='multipart/form-data' ?");
-			}
-			throw Lang.makeThrow(IllegalArgumentException.class, "Unknow Content-Type : " + contentType);
-		}
-		catch (UploadException e) {
-			throw Lang.wrapThrow(e);
-		}
-		finally {
-			Uploads.removeInfo(request);
-		}
-	}
+    public Map<String, Object> getReferObject(    ServletContext sc,
+                                                HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                String[] pathArgs) {
+        try {
+            if (!"POST".equals(request.getMethod()) && !"PUT".equals(request.getMethod())) {
+                String str = "Not POST or PUT, Wrong HTTP method! --> " + request.getMethod();
+                throw Lang.makeThrow(IllegalArgumentException.class, str);
+            }
+            //看看是不是传统的上传
+            String contentType = request.getContentType();
+            if (contentType == null) {
+                throw Lang.makeThrow(IllegalArgumentException.class, "Content-Type is NULL!!");
+            }
+            if (contentType.contains("multipart/form-data")) { //普通表单上传
+                if (log.isDebugEnabled())
+                    log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
+                Uploading ing = new FastUploading();
+                return ing.parse(request, context);
+            }
+            if (contentType.contains("application/octet-stream")) { //Html5 流式上传
+                if (log.isDebugEnabled())
+                    log.debug("Select Html5 Stream upload parser --> " + request.getRequestURI());
+                Uploading ing = new Html5Uploading();
+                return ing.parse(request, context);
+            }
+            // 100%是没写enctype='multipart/form-data'
+            if (contentType.contains("application/x-www-form-urlencoded")) {
+                log.warn("Using form upload ? You forgot this --> enctype='multipart/form-data' ?");
+            }
+            throw Lang.makeThrow(IllegalArgumentException.class, "Unknow Content-Type : " + contentType);
+        }
+        catch (UploadException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Uploads.removeInfo(request);
+        }
+    }
 }

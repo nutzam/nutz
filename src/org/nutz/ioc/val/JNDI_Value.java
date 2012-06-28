@@ -14,23 +14,23 @@ import org.nutz.lang.Lang;
  *
  */
 public class JNDI_Value implements ValueProxy{
-	
-	private String jndiName;
-	private Context cntxt;
-	
-	public JNDI_Value(String jndiName) {
-		this.jndiName = jndiName;
-	}
+    
+    private String jndiName;
+    private Context cntxt;
+    
+    public JNDI_Value(String jndiName) {
+        this.jndiName = jndiName;
+    }
 
-	public Object get(IocMaking ing) {
-		try {
-			if (cntxt == null)
-				cntxt = (Context)new InitialContext().lookup("java:/comp/env");
-			return cntxt.lookup(jndiName);
-		}
-		catch (NamingException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public Object get(IocMaking ing) {
+        try {
+            if (cntxt == null)
+                cntxt = (Context)new InitialContext().lookup("java:/comp/env");
+            return cntxt.lookup(jndiName);
+        }
+        catch (NamingException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
 }

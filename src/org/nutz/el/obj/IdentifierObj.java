@@ -9,25 +9,25 @@ import org.nutz.lang.util.Context;
  *
  */
 public class IdentifierObj {
-	private String val;
-	private ElCache ec;
-	public IdentifierObj(String val) {
-		this.val = val;
-	}
-	public String getVal() {
-		return val;
-	}
-	public Object fetchVal(){
-		Context context = ec.getContext();
-		if(context != null && context.has(val)){
-			return context.get(val);
-		}
-		return null;
-	}
-	public String toString() {
-		return val;
-	}
-	public void setEc(ElCache ec) {
-		this.ec = ec;
-	}
+    private String val;
+    private ElCache ec;
+    public IdentifierObj(String val) {
+        this.val = val;
+    }
+    public String getVal() {
+        return val;
+    }
+    public Object fetchVal(){
+        Context context = ec.getContext();
+        if(context != null && context.has(val)){
+            return context.get(val);
+        }
+        return null;
+    }
+    public String toString() {
+        return val;
+    }
+    public void setEc(ElCache ec) {
+        this.ec = ec;
+    }
 }

@@ -4,11 +4,11 @@ import org.nutz.dao.entity.LinkVisitor;
 
 public abstract class AbstractLinkVisitor implements LinkVisitor {
 
-	protected EntityOperator opt;
+    protected EntityOperator opt;
 
-	public LinkVisitor opt(EntityOperator opt) {
-		this.opt = opt;
-		return this;
-	}
+    public LinkVisitor opt(EntityOperator opt) {
+        this.opt = opt;
+        return this;
+    }
 
 }

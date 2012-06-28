@@ -9,5 +9,5 @@ import java.io.IOException;
  */
 public interface JsonRender {
 
-	void render(Object obj) throws IOException, JsonException;
+    void render(Object obj) throws IOException, JsonException;
 }

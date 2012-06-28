@@ -16,51 +16,51 @@ import org.nutz.dao.pager.Pager;
  */
 public class QueryResult implements Serializable {
 
-	private static final long serialVersionUID = 5104522523949248573L;
-	private List<?> list;
-	private Pager pager;
+    private static final long serialVersionUID = 5104522523949248573L;
+    private List<?> list;
+    private Pager pager;
 
-	public QueryResult() {}
+    public QueryResult() {}
 
-	public QueryResult(List<?> list, Pager pager) {
-		this.list = list;
-		this.pager = pager;
-	}
+    public QueryResult(List<?> list, Pager pager) {
+        this.list = list;
+        this.pager = pager;
+    }
 
-	public List<?> getList() {
-		return list;
-	}
+    public List<?> getList() {
+        return list;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> List<T> getList(Class<T> eleType) {
-		return (List<T>) list;
-	}
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(Class<T> eleType) {
+        return (List<T>) list;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> List<T> convertList(Class<T> eleType) {
-		if (null == list || list.isEmpty())
-			return (List<T>) list;
+    @SuppressWarnings("unchecked")
+    public <T> List<T> convertList(Class<T> eleType) {
+        if (null == list || list.isEmpty())
+            return (List<T>) list;
 
-		List<T> re = new ArrayList<T>(list.size());
-		Castors castors = Castors.me();
-		for (Object obj : list)
-			re.add(castors.castTo(obj, eleType));
+        List<T> re = new ArrayList<T>(list.size());
+        Castors castors = Castors.me();
+        for (Object obj : list)
+            re.add(castors.castTo(obj, eleType));
 
-		return re;
-	}
+        return re;
+    }
 
-	public QueryResult setList(List<?> list) {
-		this.list = list;
-		return this;
-	}
+    public QueryResult setList(List<?> list) {
+        this.list = list;
+        return this;
+    }
 
-	public Pager getPager() {
-		return pager;
-	}
+    public Pager getPager() {
+        return pager;
+    }
 
-	public QueryResult setPager(Pager pager) {
-		this.pager = pager;
-		return this;
-	}
+    public QueryResult setPager(Pager pager) {
+        this.pager = pager;
+        return this;
+    }
 
 }

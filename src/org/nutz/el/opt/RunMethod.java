@@ -18,14 +18,14 @@ import java.util.List;
  */
 public interface RunMethod {
 
-	/**
-	 * 根据传入的参数执行方法
-	 * @param fetchParam 参数, 即EL表达式中, 函数括号内的内容.
-	 */
-	Object run(List<Object> fetchParam);
+    /**
+     * 根据传入的参数执行方法
+     * @param fetchParam 参数, 即EL表达式中, 函数括号内的内容.
+     */
+    Object run(List<Object> fetchParam);
 
-	/**
-	 * 取得方法自身的符号
-	 */
-	String fetchSelf();
+    /**
+     * 取得方法自身的符号
+     */
+    String fetchSelf();
 }

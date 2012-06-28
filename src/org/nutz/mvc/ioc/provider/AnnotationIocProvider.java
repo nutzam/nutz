@@ -9,8 +9,8 @@ import org.nutz.mvc.NutConfig;
 
 public class AnnotationIocProvider implements IocProvider {
 
-	public Ioc create(NutConfig config, String[] args) {
-		return new NutIoc(new AnnotationIocLoader(args), new ScopeContext("app"), "app");
-	}
+    public Ioc create(NutConfig config, String[] args) {
+        return new NutIoc(new AnnotationIocLoader(args), new ScopeContext("app"), "app");
+    }
 
 }

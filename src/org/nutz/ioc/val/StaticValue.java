@@ -5,14 +5,14 @@ import org.nutz.ioc.ValueProxy;
 
 public class StaticValue implements ValueProxy {
 
-	private Object obj;
+    private Object obj;
 
-	public StaticValue(Object obj) {
-		this.obj = obj;
-	}
+    public StaticValue(Object obj) {
+        this.obj = obj;
+    }
 
-	public Object get(IocMaking ing) {
-		return obj;
-	}
+    public Object get(IocMaking ing) {
+        return obj;
+    }
 
 }

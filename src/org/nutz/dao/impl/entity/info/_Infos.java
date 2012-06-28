@@ -26,105 +26,105 @@ import org.nutz.lang.util.Callback3;
 
 public class _Infos {
 
-	private final static String ERR_MSG = "Method '%s'(%s) can not add '@Column', it MUST be a setter or getter!";
+    private final static String ERR_MSG = "Method '%s'(%s) can not add '@Column', it MUST be a setter or getter!";
 
-	private static <T extends FieldInfo> T create(Class<T> classOfT, Field field) {
-		T info = Mirror.me(classOfT).born();
-		info.name = field.getName();
-		info.fieldType = field.getGenericType();
-		info.injecting = new InjectByField(field);
-		info.ejecting = new EjectByField(field);
-		return info;
-	}
+    private static <T extends FieldInfo> T create(Class<T> classOfT, Field field) {
+        T info = Mirror.me(classOfT).born();
+        info.name = field.getName();
+        info.fieldType = field.getGenericType();
+        info.injecting = new InjectByField(field);
+        info.ejecting = new EjectByField(field);
+        return info;
+    }
 
-	private static <T extends FieldInfo> T create(Class<T> classOfT, final Method method) {
-		final T info = Mirror.me(classOfT).born();
-		Mirror.evalGetterSetter(method, ERR_MSG, new Callback3<String, Method, Method>() {
-			public void invoke(String name, Method getter, Method setter) {
-				// 木有 getter
-				if (null == getter) {
-					throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
-											method.getName(),
-											method.getDeclaringClass().getName());
-				}
-				// 木有 setter
-				if (null == setter) {
-					throw Lang.makeThrow(	"Method '%s'(%s) has '@Column', but NO setter!",
-											method.getName(),
-											method.getDeclaringClass().getName());
-				}
-				// 正常，开始设值
-				info.name = name;
-				info.fieldType = getter.getGenericReturnType();
-				info.ejecting = new EjectByGetter(getter);
-				info.injecting = new InjectBySetter(setter);
-			}
-		});
-		return info;
-	}
+    private static <T extends FieldInfo> T create(Class<T> classOfT, final Method method) {
+        final T info = Mirror.me(classOfT).born();
+        Mirror.evalGetterSetter(method, ERR_MSG, new Callback3<String, Method, Method>() {
+            public void invoke(String name, Method getter, Method setter) {
+                // 木有 getter
+                if (null == getter) {
+                    throw Lang.makeThrow(    "Method '%s'(%s) has '@Column', but NO setter!",
+                                            method.getName(),
+                                            method.getDeclaringClass().getName());
+                }
+                // 木有 setter
+                if (null == setter) {
+                    throw Lang.makeThrow(    "Method '%s'(%s) has '@Column', but NO setter!",
+                                            method.getName(),
+                                            method.getDeclaringClass().getName());
+                }
+                // 正常，开始设值
+                info.name = name;
+                info.fieldType = getter.getGenericReturnType();
+                info.ejecting = new EjectByGetter(getter);
+                info.injecting = new InjectBySetter(setter);
+            }
+        });
+        return info;
+    }
 
-	public static LinkInfo createLinkInfo(Method method) {
-		LinkInfo info = create(LinkInfo.class, method);
-		info.one = method.getAnnotation(One.class);
-		info.many = method.getAnnotation(Many.class);
-		info.manymany = method.getAnnotation(ManyMany.class);
-		return info;
-	}
+    public static LinkInfo createLinkInfo(Method method) {
+        LinkInfo info = create(LinkInfo.class, method);
+        info.one = method.getAnnotation(One.class);
+        info.many = method.getAnnotation(Many.class);
+        info.manymany = method.getAnnotation(ManyMany.class);
+        return info;
+    }
 
-	public static LinkInfo createLinkInfo(Field field) {
-		LinkInfo info = create(LinkInfo.class, field);
-		info.one = field.getAnnotation(One.class);
-		info.many = field.getAnnotation(Many.class);
-		info.manymany = field.getAnnotation(ManyMany.class);
-		info.comment = field.getAnnotation(Comment.class);
-		return info;
-	}
+    public static LinkInfo createLinkInfo(Field field) {
+        LinkInfo info = create(LinkInfo.class, field);
+        info.one = field.getAnnotation(One.class);
+        info.many = field.getAnnotation(Many.class);
+        info.manymany = field.getAnnotation(ManyMany.class);
+        info.comment = field.getAnnotation(Comment.class);
+        return info;
+    }
 
-	/**
-	 * 根据 getter/setter 函数获取一个实体字段信息对象
-	 * 
-	 * @param pk
-	 *            复合主键
-	 * @param method
-	 *            方法：可能是 getter 或者是 setter
-	 * @return 字段信息对象
-	 */
-	public static MappingInfo createMapingInfo(PK pk, Method method) {
-		MappingInfo info = create(MappingInfo.class, method);
-		info.annPK = pk;
-		info.annColumn = method.getAnnotation(Column.class);
-		info.annDefine = method.getAnnotation(ColDefine.class);
-		info.annDefault = method.getAnnotation(Default.class);
-		info.annId = method.getAnnotation(Id.class);
-		info.annName = method.getAnnotation(Name.class);
-		info.annNext = method.getAnnotation(Next.class);
-		info.annPrev = method.getAnnotation(Prev.class);
-		info.annReadonly = method.getAnnotation(Readonly.class);
-		return info;
-	}
+    /**
+     * 根据 getter/setter 函数获取一个实体字段信息对象
+     * 
+     * @param pk
+     *            复合主键
+     * @param method
+     *            方法：可能是 getter 或者是 setter
+     * @return 字段信息对象
+     */
+    public static MappingInfo createMapingInfo(PK pk, Method method) {
+        MappingInfo info = create(MappingInfo.class, method);
+        info.annPK = pk;
+        info.annColumn = method.getAnnotation(Column.class);
+        info.annDefine = method.getAnnotation(ColDefine.class);
+        info.annDefault = method.getAnnotation(Default.class);
+        info.annId = method.getAnnotation(Id.class);
+        info.annName = method.getAnnotation(Name.class);
+        info.annNext = method.getAnnotation(Next.class);
+        info.annPrev = method.getAnnotation(Prev.class);
+        info.annReadonly = method.getAnnotation(Readonly.class);
+        return info;
+    }
 
-	/**
-	 * 根据 Java 字段创建一个实体字段信息对象
-	 * 
-	 * @param pk
-	 *            复合主键
-	 * @param field
-	 *            Java 字段
-	 * @return 字段信息对象
-	 */
-	public static MappingInfo createMappingInfo(PK pk, Field field) {
-		MappingInfo info = create(MappingInfo.class, field);
-		info.annPK = pk;
-		info.annColumn = field.getAnnotation(Column.class);
-		info.annDefine = field.getAnnotation(ColDefine.class);
-		info.annDefault = field.getAnnotation(Default.class);
-		info.annId = field.getAnnotation(Id.class);
-		info.annName = field.getAnnotation(Name.class);
-		info.annNext = field.getAnnotation(Next.class);
-		info.annPrev = field.getAnnotation(Prev.class);
-		info.annReadonly = field.getAnnotation(Readonly.class);
-		info.columnComment = field.getAnnotation(Comment.class);
-		return info;
-	}
+    /**
+     * 根据 Java 字段创建一个实体字段信息对象
+     * 
+     * @param pk
+     *            复合主键
+     * @param field
+     *            Java 字段
+     * @return 字段信息对象
+     */
+    public static MappingInfo createMappingInfo(PK pk, Field field) {
+        MappingInfo info = create(MappingInfo.class, field);
+        info.annPK = pk;
+        info.annColumn = field.getAnnotation(Column.class);
+        info.annDefine = field.getAnnotation(ColDefine.class);
+        info.annDefault = field.getAnnotation(Default.class);
+        info.annId = field.getAnnotation(Id.class);
+        info.annName = field.getAnnotation(Name.class);
+        info.annNext = field.getAnnotation(Next.class);
+        info.annPrev = field.getAnnotation(Prev.class);
+        info.annReadonly = field.getAnnotation(Readonly.class);
+        info.columnComment = field.getAnnotation(Comment.class);
+        return info;
+    }
 
 }

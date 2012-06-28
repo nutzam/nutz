@@ -9,8 +9,8 @@ import org.nutz.mvc.NutConfig;
 
 public class JsonIocProvider implements IocProvider {
 
-	public Ioc create(NutConfig config, String[] args) {
-		return new NutIoc(new JsonLoader(args), new ScopeContext("app"), "app");
-	}
+    public Ioc create(NutConfig config, String[] args) {
+        return new NutIoc(new JsonLoader(args), new ScopeContext("app"), "app");
+    }
 
 }

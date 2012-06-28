@@ -7,31 +7,31 @@ import org.nutz.mvc.impl.ActionInvoker;
 
 public class ActionHandler {
 
-	private Loading loading;
+    private Loading loading;
 
-	private UrlMapping mapping;
+    private UrlMapping mapping;
 
-	private NutConfig config;
+    private NutConfig config;
 
-	public ActionHandler(NutConfig config) {
-		this.config = config;
-		this.loading = config.createLoading();
-		this.mapping = loading.load(config);
-	}
+    public ActionHandler(NutConfig config) {
+        this.config = config;
+        this.loading = config.createLoading();
+        this.mapping = loading.load(config);
+    }
 
-	public boolean handle(HttpServletRequest req, HttpServletResponse resp) {
-		ActionContext ac = new ActionContext();
-		ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
+    public boolean handle(HttpServletRequest req, HttpServletResponse resp) {
+        ActionContext ac = new ActionContext();
+        ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
-		ActionInvoker invoker = mapping.get(ac);
-		if (null == invoker)
-			return false;
-		Mvcs.setActionContext(ac);
-		return invoker.invoke(ac);
-	}
+        ActionInvoker invoker = mapping.get(ac);
+        if (null == invoker)
+            return false;
+        Mvcs.setActionContext(ac);
+        return invoker.invoke(ac);
+    }
 
-	public void depose() {
-		loading.depose(config);
-	}
+    public void depose() {
+        loading.depose(config);
+    }
 
 }

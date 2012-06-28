@@ -10,29 +10,29 @@ import java.io.InputStream;
  */
 public class ByteInputStream extends InputStream {
 
-	private byte[] bytes;
+    private byte[] bytes;
 
-	private int cursor;
+    private int cursor;
 
-	private int length;
+    private int length;
 
-	public ByteInputStream(byte[] bytes) {
-		this(bytes, 0, bytes.length);
-	}
+    public ByteInputStream(byte[] bytes) {
+        this(bytes, 0, bytes.length);
+    }
 
-	public ByteInputStream(byte[] bytes, int off, int len) {
-		this.bytes = bytes;
-		this.cursor = off;
-		this.length = off + len;
-		if (this.length > bytes.length)
-			this.length = bytes.length;
-	}
+    public ByteInputStream(byte[] bytes, int off, int len) {
+        this.bytes = bytes;
+        this.cursor = off;
+        this.length = off + len;
+        if (this.length > bytes.length)
+            this.length = bytes.length;
+    }
 
-	@Override
-	public int read() throws IOException {
-		if (cursor < length)
-			return bytes[cursor++];
-		return -1;
-	}
+    @Override
+    public int read() throws IOException {
+        if (cursor < length)
+            return bytes[cursor++];
+        return -1;
+    }
 
 }

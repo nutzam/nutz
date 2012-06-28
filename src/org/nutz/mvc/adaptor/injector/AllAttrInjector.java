@@ -8,18 +8,18 @@ import org.nutz.mvc.Mvcs;
 
 public class AllAttrInjector extends AttrInjector {
 
-	public AllAttrInjector(String name) {
-		super(name);
-	}
+    public AllAttrInjector(String name) {
+        super(name);
+    }
 
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		Object re = req.getAttribute(name);
-		if (null != re)
-			return re;
-		re = Mvcs.getHttpSession().getAttribute(name);
-		if (null != re)
-			return re;
-		return sc.getAttribute(name);
-	}
+    public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        Object re = req.getAttribute(name);
+        if (null != re)
+            return re;
+        re = Mvcs.getHttpSession().getAttribute(name);
+        if (null != re)
+            return re;
+        return sc.getAttribute(name);
+    }
 
 }

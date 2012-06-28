@@ -10,6 +10,6 @@ package org.nutz.aop;
  */
 public interface MethodInterceptor {
 
-	void filter(InterceptorChain chain) throws Throwable;
+    void filter(InterceptorChain chain) throws Throwable;
 
 }

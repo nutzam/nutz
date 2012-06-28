@@ -15,32 +15,32 @@ import org.nutz.mvc.adaptor.ParamExtractor;
  * 
  */
 public class MapParamExtractor implements ParamExtractor {
-	private HttpServletRequest req;
-	private Map<String, Object> map;
+    private HttpServletRequest req;
+    private Map<String, Object> map;
 
-	public MapParamExtractor(HttpServletRequest req, Map<String, Object> refer) {
-		this.req = req;
-		this.map = refer;
-	}
+    public MapParamExtractor(HttpServletRequest req, Map<String, Object> refer) {
+        this.req = req;
+        this.map = refer;
+    }
 
-	public String[] extractor(String name) {
-		if (null != map && map.containsKey(name)) {
-			Object obj = map.get(name);
-			if (obj instanceof String[])
-				return (String[]) obj;
-			if (obj == null)
-				return null;
-			return new String[]{obj.toString()};
-		}
-		return req.getParameterValues(name);
-	}
+    public String[] extractor(String name) {
+        if (null != map && map.containsKey(name)) {
+            Object obj = map.get(name);
+            if (obj instanceof String[])
+                return (String[]) obj;
+            if (obj == null)
+                return null;
+            return new String[]{obj.toString()};
+        }
+        return req.getParameterValues(name);
+    }
 
-	@SuppressWarnings("unchecked")
-	public Set<String> keys() {
-		Set<String> ss = new HashSet<String>();
-		ss.addAll(map.keySet());
-		ss.addAll(req.getParameterMap().keySet());
-		return ss;
-	}
+    @SuppressWarnings("unchecked")
+    public Set<String> keys() {
+        Set<String> ss = new HashSet<String>();
+        ss.addAll(map.keySet());
+        ss.addAll(req.getParameterMap().keySet());
+        return ss;
+    }
 
 }

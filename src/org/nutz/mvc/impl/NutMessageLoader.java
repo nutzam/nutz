@@ -21,96 +21,96 @@ import org.nutz.resource.Scans;
 
 public class NutMessageLoader implements MessageLoader {
 
-	private static final Log log = Logs.get();
+    private static final Log log = Logs.get();
 
-	public Map<String, Map<String, Object>> load(String refer) {
-		Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
-		List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
-		if (log.isDebugEnabled())
-			log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
-		// 求取路径的最大长度
-		int max = 0;
-		for (NutResource nr : allnrs) {
-			String[] nms = nr.getName().split("[\\\\/]");
-			max = Math.max(max, nms.length);
-		}
+    public Map<String, Map<String, Object>> load(String refer) {
+        Map<String, Map<String, Object>> re = new HashMap<String, Map<String, Object>>();
+        List<NutResource> allnrs = Scans.me().scan(refer, "^.+[.]properties$");
+        if (log.isDebugEnabled())
+            log.debugf("Load Messages in %s resource : [%s]", allnrs.size(), allnrs);
+        // 求取路径的最大长度
+        int max = 0;
+        for (NutResource nr : allnrs) {
+            String[] nms = nr.getName().split("[\\\\/]");
+            max = Math.max(max, nms.length);
+        }
 
-		// 根据第二级目录，编制列表
-		Map<String, List<NutResource>> map = new HashMap<String, List<NutResource>>();
-		for (NutResource nr : allnrs) {
-			String langType;
-			String resName = nr.getName();
-			if (resName.contains("/"))
-				langType = resName.substring(0, resName.indexOf('/'));
-			else if (resName.contains("\\"))
-				langType = resName.substring(0, resName.indexOf('\\'));
-			else
-				langType = Mvcs.DEFAULT_MSGS;
-			// 按语言类型编制
-			List<NutResource> list = map.get(langType);
-			if (null == list) {
-				list = new ArrayList<NutResource>(10);
-				map.put(langType, list);
-			}
-			list.add(nr);
-		}
-		// 根据语言的分类，依次构建字符串 Map
-		try {
-			for (Entry<String, List<NutResource>> entry : map.entrySet()) {
-				List<NutResource> nrs = entry.getValue();
-				String langType = entry.getKey();
-				// 循环读取该语言的文件夹
-				for (NutResource nr : nrs) {
-					// 读取多行属性
-					MultiLineProperties p = new MultiLineProperties();
-					Reader r = nr.getReader();
-					p.load(r);
-					r.close();
+        // 根据第二级目录，编制列表
+        Map<String, List<NutResource>> map = new HashMap<String, List<NutResource>>();
+        for (NutResource nr : allnrs) {
+            String langType;
+            String resName = nr.getName();
+            if (resName.contains("/"))
+                langType = resName.substring(0, resName.indexOf('/'));
+            else if (resName.contains("\\"))
+                langType = resName.substring(0, resName.indexOf('\\'));
+            else
+                langType = Mvcs.DEFAULT_MSGS;
+            // 按语言类型编制
+            List<NutResource> list = map.get(langType);
+            if (null == list) {
+                list = new ArrayList<NutResource>(10);
+                map.put(langType, list);
+            }
+            list.add(nr);
+        }
+        // 根据语言的分类，依次构建字符串 Map
+        try {
+            for (Entry<String, List<NutResource>> entry : map.entrySet()) {
+                List<NutResource> nrs = entry.getValue();
+                String langType = entry.getKey();
+                // 循环读取该语言的文件夹
+                for (NutResource nr : nrs) {
+                    // 读取多行属性
+                    MultiLineProperties p = new MultiLineProperties();
+                    Reader r = nr.getReader();
+                    p.load(r);
+                    r.close();
 
-					// 获取当前语言的 Map
-					Map<String, Object> msgs = re.get(langType);
-					if (null == msgs) {
-						msgs = new NutMessageMap();
-						re.put(langType, msgs);
-					}
+                    // 获取当前语言的 Map
+                    Map<String, Object> msgs = re.get(langType);
+                    if (null == msgs) {
+                        msgs = new NutMessageMap();
+                        re.put(langType, msgs);
+                    }
 
-					// 将本地化字符串增加到当前语言
-					for (String key : p.keySet()) {
-						String str = p.get(key);
-						Segment seg = (new CharSegment()).valueOf(str);
-						if (seg.keys().isEmpty())
-							msgs.put(key, str);
-						else
-							msgs.put(key, seg);
-					}
+                    // 将本地化字符串增加到当前语言
+                    for (String key : p.keySet()) {
+                        String str = p.get(key);
+                        Segment seg = (new CharSegment()).valueOf(str);
+                        if (seg.keys().isEmpty())
+                            msgs.put(key, str);
+                        else
+                            msgs.put(key, seg);
+                    }
 
-				} // ~ 内部循环结束
-			}
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		//看看有没有默认的,没有的话,取第一个为默认
-		if (!re.containsKey(Mvcs.DEFAULT_MSGS)) {
-			if (log.isInfoEnabled())
-				log.info("No default msg found ,try to set first one as default");
-			if (re.size() > 0) {
-				String first_lang = re.keySet().iterator().next();
-				if (log.isInfoEnabled())
-					log.infof("Set %s as default msg", first_lang);
-				re.put(Mvcs.DEFAULT_MSGS, re.get(first_lang));
-			} else {
-				if (log.isInfoEnabled())
-					log.info("Msg is Emtry!!");
-			}
-		}
-		
-		if (log.isDebugEnabled())
-			log.debugf("Message Loaded, size = %s", re.size());
-		if (log.isTraceEnabled())
-			log.tracef("Messages -->\n%s", Json.toJson(re));
-		// 返回结果
-		return re;
-	}
+                } // ~ 内部循环结束
+            }
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+        //看看有没有默认的,没有的话,取第一个为默认
+        if (!re.containsKey(Mvcs.DEFAULT_MSGS)) {
+            if (log.isInfoEnabled())
+                log.info("No default msg found ,try to set first one as default");
+            if (re.size() > 0) {
+                String first_lang = re.keySet().iterator().next();
+                if (log.isInfoEnabled())
+                    log.infof("Set %s as default msg", first_lang);
+                re.put(Mvcs.DEFAULT_MSGS, re.get(first_lang));
+            } else {
+                if (log.isInfoEnabled())
+                    log.info("Msg is Emtry!!");
+            }
+        }
+        
+        if (log.isDebugEnabled())
+            log.debugf("Message Loaded, size = %s", re.size());
+        if (log.isTraceEnabled())
+            log.tracef("Messages -->\n%s", Json.toJson(re));
+        // 返回结果
+        return re;
+    }
 
 }

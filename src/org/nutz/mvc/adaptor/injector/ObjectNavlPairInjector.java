@@ -23,36 +23,36 @@ import org.nutz.mvc.adaptor.Params;
  * 
  */
 public class ObjectNavlPairInjector implements ParamInjector {
-	protected Mirror<?> mirror;
-	private String prefix;
-	private Type type;
+    protected Mirror<?> mirror;
+    private String prefix;
+    private Type type;
 
-	public ObjectNavlPairInjector(String prefix, Type type) {
-		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
-		this.prefix = prefix;
-		this.mirror = Mirror.me(type);
-		this.type = type;
-	}
+    public ObjectNavlPairInjector(String prefix, Type type) {
+        prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
+        this.prefix = prefix;
+        this.mirror = Mirror.me(type);
+        this.type = type;
+    }
 
-	public Object get(	ServletContext sc,
-						HttpServletRequest req,
-						HttpServletResponse resp,
-						Object refer) {
-		ObjectNaviNode no = new ObjectNaviNode();
-		String pre = "";
-		if ("".equals(prefix))
-			pre = "node.";
-		ParamExtractor pe = Params.makeParamExtractor(req, refer);
-		for (Object name : pe.keys()) {
-			String na = (String) name;
-			if (na.startsWith(prefix)) {
-				no.put(pre + na, pe.extractor(na));
-			}
-		}
-		Object model = no.get();
-		Object re = Mapl.maplistToObj(model, type);
-		return re;
-//		return no.inject(mirror);
-	}
+    public Object get(    ServletContext sc,
+                        HttpServletRequest req,
+                        HttpServletResponse resp,
+                        Object refer) {
+        ObjectNaviNode no = new ObjectNaviNode();
+        String pre = "";
+        if ("".equals(prefix))
+            pre = "node.";
+        ParamExtractor pe = Params.makeParamExtractor(req, refer);
+        for (Object name : pe.keys()) {
+            String na = (String) name;
+            if (na.startsWith(prefix)) {
+                no.put(pre + na, pe.extractor(na));
+            }
+        }
+        Object model = no.get();
+        Object re = Mapl.maplistToObj(model, type);
+        return re;
+//        return no.inject(mirror);
+    }
 
 }

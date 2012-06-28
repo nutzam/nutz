@@ -10,18 +10,18 @@ import org.nutz.lang.Lang;
 
 public class Array2String extends Castor<Object, String> {
 
-	public Array2String() {
-		this.fromClass = Array.class;
-		this.toClass = String.class;
-	}
+    public Array2String() {
+        this.fromClass = Array.class;
+        this.toClass = String.class;
+    }
 
-	@Override
-	public String cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
-		if (null != src && CharSequence.class.isAssignableFrom(src.getClass().getComponentType())) {
-			return Lang.concat(",", (CharSequence[]) src).toString();
-		}
-		return Json.toJson(src, JsonFormat.compact());
-	}
+    @Override
+    public String cast(Object src, Class<?> toType, String... args)
+            throws FailToCastObjectException {
+        if (null != src && CharSequence.class.isAssignableFrom(src.getClass().getComponentType())) {
+            return Lang.concat(",", (CharSequence[]) src).toString();
+        }
+        return Json.toJson(src, JsonFormat.compact());
+    }
 
 }

@@ -37,14 +37,14 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManyMany {
 
-	Class<?> target();
+    Class<?> target();
 
-	String relation();
+    String relation();
 
-	String from();
+    String from();
 
-	String to();
+    String to();
 
-	String key() default "";
+    String key() default "";
 
 }

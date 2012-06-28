@@ -14,64 +14,64 @@ import org.nutz.lang.Lang;
  */
 public class ObjectProxy {
 
-	/**
-	 * 存储动态编织对象的方法
-	 */
-	private ObjectWeaver weaver;
+    /**
+     * 存储动态编织对象的方法
+     */
+    private ObjectWeaver weaver;
 
-	/**
-	 * 存储静态对象
-	 */
-	private Object obj;
+    /**
+     * 存储静态对象
+     */
+    private Object obj;
 
-	/**
-	 * 获取时触发器
-	 */
-	private IocEventTrigger<Object> fetch;
+    /**
+     * 获取时触发器
+     */
+    private IocEventTrigger<Object> fetch;
 
-	/**
-	 * 销毁时触发器。如果有静态对象被销毁，触发
-	 */
-	private IocEventTrigger<Object> depose;
+    /**
+     * 销毁时触发器。如果有静态对象被销毁，触发
+     */
+    private IocEventTrigger<Object> depose;
 
-	public ObjectProxy setWeaver(ObjectWeaver weaver) {
-		this.weaver = weaver;
-		return this;
-	}
+    public ObjectProxy setWeaver(ObjectWeaver weaver) {
+        this.weaver = weaver;
+        return this;
+    }
 
-	public ObjectProxy setObj(Object obj) {
-		this.obj = obj;
-		return this;
-	}
+    public ObjectProxy setObj(Object obj) {
+        this.obj = obj;
+        return this;
+    }
 
-	public ObjectProxy setFetch(IocEventTrigger<Object> fetch) {
-		this.fetch = fetch;
-		return this;
-	}
+    public ObjectProxy setFetch(IocEventTrigger<Object> fetch) {
+        this.fetch = fetch;
+        return this;
+    }
 
-	public ObjectProxy setDepose(IocEventTrigger<Object> depose) {
-		this.depose = depose;
-		return this;
-	}
+    public ObjectProxy setDepose(IocEventTrigger<Object> depose) {
+        this.depose = depose;
+        return this;
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> T get(Class<T> classOfT, IocMaking ing) {
-		Object re;
-		if (null != obj)
-			re = obj;
-		else if (null != weaver)
-			re = weaver.onCreate(weaver.fill(ing, weaver.born(ing)));
-		else
-			throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
+    @SuppressWarnings("unchecked")
+    public <T> T get(Class<T> classOfT, IocMaking ing) {
+        Object re;
+        if (null != obj)
+            re = obj;
+        else if (null != weaver)
+            re = weaver.onCreate(weaver.fill(ing, weaver.born(ing)));
+        else
+            throw Lang.makeThrow("NullProxy for '%s'!", ing.getObjectName());
 
-		if (null != fetch)
-			fetch.trigger(re);
-		return (T) re;
-	}
+        if (null != fetch)
+            fetch.trigger(re);
+        return (T) re;
+    }
 
-	public void depose() {
-		if (null != obj && null != depose)
-			depose.trigger(obj);
-	}
+    public void depose() {
+        if (null != obj && null != depose)
+            depose.trigger(obj);
+    }
 
 }

@@ -20,44 +20,44 @@ import org.nutz.lang.Mirror;
  */
 public abstract class AbstractAopConfigration implements AopConfigration {
 
-	private List<AopConfigrationItem> aopItemList;
+    private List<AopConfigrationItem> aopItemList;
 
-	public List<InterceptorPair> getInterceptorPairList(Ioc ioc, Class<?> clazz) {
-		List<InterceptorPair> ipList = new ArrayList<InterceptorPair>();
-		for (AopConfigrationItem aopItem : aopItemList) {
-			if (aopItem.matchClassName(clazz.getName()))
-				ipList.add(new InterceptorPair(	getMethodInterceptor(	ioc,
-																		aopItem.getInterceptor(),
-																		aopItem.isSingleton()),
-												MethodMatcherFactory.matcher(aopItem.getMethodName())));
-		}
-		return ipList;
-	}
+    public List<InterceptorPair> getInterceptorPairList(Ioc ioc, Class<?> clazz) {
+        List<InterceptorPair> ipList = new ArrayList<InterceptorPair>();
+        for (AopConfigrationItem aopItem : aopItemList) {
+            if (aopItem.matchClassName(clazz.getName()))
+                ipList.add(new InterceptorPair(    getMethodInterceptor(    ioc,
+                                                                        aopItem.getInterceptor(),
+                                                                        aopItem.isSingleton()),
+                                                MethodMatcherFactory.matcher(aopItem.getMethodName())));
+        }
+        return ipList;
+    }
 
-	public void setAopItemList(List<AopConfigrationItem> aopItemList) {
-		this.aopItemList = aopItemList;
-	}
+    public void setAopItemList(List<AopConfigrationItem> aopItemList) {
+        this.aopItemList = aopItemList;
+    }
 
-	protected MethodInterceptor getMethodInterceptor(	Ioc ioc,
-														String interceptorName,
-														boolean singleton) {
-		if (interceptorName.startsWith("ioc:"))
-			return ioc.get(MethodInterceptor.class, interceptorName.substring(4));
-		try {
-			if (singleton == false)
-				return (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
-			MethodInterceptor methodInterceptor = cachedMethodInterceptor.get(interceptorName);
-			if (methodInterceptor == null) {
-				methodInterceptor = (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
-				cachedMethodInterceptor.put(interceptorName, methodInterceptor);
-			}
-			return methodInterceptor;
-		}
-		catch (Throwable e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    protected MethodInterceptor getMethodInterceptor(    Ioc ioc,
+                                                        String interceptorName,
+                                                        boolean singleton) {
+        if (interceptorName.startsWith("ioc:"))
+            return ioc.get(MethodInterceptor.class, interceptorName.substring(4));
+        try {
+            if (singleton == false)
+                return (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
+            MethodInterceptor methodInterceptor = cachedMethodInterceptor.get(interceptorName);
+            if (methodInterceptor == null) {
+                methodInterceptor = (MethodInterceptor) Mirror.me(Lang.loadClass(interceptorName)).born();
+                cachedMethodInterceptor.put(interceptorName, methodInterceptor);
+            }
+            return methodInterceptor;
+        }
+        catch (Throwable e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
-	private HashMap<String, MethodInterceptor> cachedMethodInterceptor = new HashMap<String, MethodInterceptor>();
+    private HashMap<String, MethodInterceptor> cachedMethodInterceptor = new HashMap<String, MethodInterceptor>();
 
 }

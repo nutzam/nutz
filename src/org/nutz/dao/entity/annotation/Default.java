@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Default {
 
-	String value();
+    String value();
 
 }

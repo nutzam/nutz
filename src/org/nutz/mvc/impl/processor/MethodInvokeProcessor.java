@@ -14,24 +14,24 @@ import org.nutz.mvc.ActionContext;
  */
 public class MethodInvokeProcessor extends AbstractProcessor{
 
-	public void process(ActionContext ac) throws Throwable {
-		Object module = ac.getModule();
-		Method method = ac.getMethod();
-		Object[] args = ac.getMethodArgs();
-		try {
-			Object re = method.invoke(module, args);
-			ac.setMethodReturn(re);
-			doNext(ac);
-		} 
-		catch (IllegalAccessException e) {
-			throw Lang.unwrapThrow(e);
-		}
-		catch (IllegalArgumentException e) {
-			throw Lang.unwrapThrow(e);
-		}
-		catch (InvocationTargetException e) {
-			throw Lang.unwrapThrow(e);
-		}
-	}
+    public void process(ActionContext ac) throws Throwable {
+        Object module = ac.getModule();
+        Method method = ac.getMethod();
+        Object[] args = ac.getMethodArgs();
+        try {
+            Object re = method.invoke(module, args);
+            ac.setMethodReturn(re);
+            doNext(ac);
+        } 
+        catch (IllegalAccessException e) {
+            throw Lang.unwrapThrow(e);
+        }
+        catch (IllegalArgumentException e) {
+            throw Lang.unwrapThrow(e);
+        }
+        catch (InvocationTargetException e) {
+            throw Lang.unwrapThrow(e);
+        }
+    }
 
 }

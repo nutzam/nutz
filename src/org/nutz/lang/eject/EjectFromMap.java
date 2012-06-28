@@ -4,14 +4,14 @@ import java.util.Map;
 
 public class EjectFromMap implements Ejecting {
 
-	private String key;
+    private String key;
 
-	public EjectFromMap(String key) {
-		this.key = key;
-	}
+    public EjectFromMap(String key) {
+        this.key = key;
+    }
 
-	public Object eject(Object obj) {
-		return null == obj ? null : ((Map<?, ?>) obj).get(key);
-	}
+    public Object eject(Object obj) {
+        return null == obj ? null : ((Map<?, ?>) obj).get(key);
+    }
 
 }

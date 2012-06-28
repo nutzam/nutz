@@ -20,27 +20,27 @@ import org.nutz.trans.Trans;
  */
 public class TransactionInterceptor implements MethodInterceptor {
 
-	private int level;
+    private int level;
 
-	public TransactionInterceptor() {
-		this.level = Connection.TRANSACTION_READ_COMMITTED;
-	}
+    public TransactionInterceptor() {
+        this.level = Connection.TRANSACTION_READ_COMMITTED;
+    }
 
-	public TransactionInterceptor(int level) {
-		this.level = level;
-	}
+    public TransactionInterceptor(int level) {
+        this.level = level;
+    }
 
-	public void filter(final InterceptorChain chain) {
-		Trans.exec(level, new Atom() {
-			public void run() {
-				try {
-					chain.doChain();
-				}
-				catch (Throwable e) {
-					throw Lang.wrapThrow(e);
-				}
-			}
-		});
-	}
+    public void filter(final InterceptorChain chain) {
+        Trans.exec(level, new Atom() {
+            public void run() {
+                try {
+                    chain.doChain();
+                }
+                catch (Throwable e) {
+                    throw Lang.wrapThrow(e);
+                }
+            }
+        });
+    }
 
 }

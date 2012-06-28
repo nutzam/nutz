@@ -16,60 +16,60 @@ import org.nutz.lang.util.LinkedIntArray;
  */
 class WorkingStack {
 
-	WorkingStack() {
-		sb = new StringBuilder();
-		chain = new ArrayList<String>();
-		indexes = new LinkedIntArray(20);
-	}
+    WorkingStack() {
+        sb = new StringBuilder();
+        chain = new ArrayList<String>();
+        indexes = new LinkedIntArray(20);
+    }
 
-	private String first;
-	private StringBuilder sb;
-	private List<String> chain;
-	private LinkedIntArray indexes;
+    private String first;
+    private StringBuilder sb;
+    private List<String> chain;
+    private LinkedIntArray indexes;
 
-	void push(char c) {
-		sb.append(c);
-	}
+    void push(char c) {
+        sb.append(c);
+    }
 
-	void finish() {
-		if (sb.length() > 0)
-			chain.add(sb.toString());
-		if (chain.size() > 0) {
-			first = chain.get(0);
-			char[] cs = Strings.trim(first).toCharArray();
-			int i = 0;
-			for (; i < cs.length; i++) {
-				char c = cs[i];
-				if (c > 0 && c <= 32)
-					break;
-			}
-			first = String.valueOf(cs, 0, i).toUpperCase();
-		}
-	}
+    void finish() {
+        if (sb.length() > 0)
+            chain.add(sb.toString());
+        if (chain.size() > 0) {
+            first = chain.get(0);
+            char[] cs = Strings.trim(first).toCharArray();
+            int i = 0;
+            for (; i < cs.length; i++) {
+                char c = cs[i];
+                if (c > 0 && c <= 32)
+                    break;
+            }
+            first = String.valueOf(cs, 0, i).toUpperCase();
+        }
+    }
 
-	int markToken() {
-		// int re = indexes.size();
-		if (sb.length() > 0) {
-			chain.add(sb.toString());
-			sb = new StringBuilder();
-		}
-		indexes.push(chain.size());
-		chain.add("");
-		return chain.size() - 1;
-	}
+    int markToken() {
+        // int re = indexes.size();
+        if (sb.length() > 0) {
+            chain.add(sb.toString());
+            sb = new StringBuilder();
+        }
+        indexes.push(chain.size());
+        chain.add("");
+        return chain.size() - 1;
+    }
 
-	String[] cloneChain() {
-		return chain.toArray(new String[chain.size()]);
-	}
+    String[] cloneChain() {
+        return chain.toArray(new String[chain.size()]);
+    }
 
-	int size() {
-		return chain.size();
-	}
+    int size() {
+        return chain.size();
+    }
 
-	boolean firstEquals(String str) {
-		if (null == first)
-			return false;
-		return first.equals(str);
-	}
+    boolean firstEquals(String str) {
+        if (null == first)
+            return false;
+        return first.equals(str);
+    }
 
 }

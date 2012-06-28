@@ -9,6 +9,6 @@ package org.nutz.lang.util;
  */
 public interface Callback2<T0, T1> {
 
-	void invoke(T0 arg0, T1 arg1);
+    void invoke(T0 arg0, T1 arg1);
 
 }

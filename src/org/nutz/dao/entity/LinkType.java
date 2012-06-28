@@ -7,19 +7,19 @@ package org.nutz.dao.entity;
  */
 public enum LinkType {
 
-	/**
-	 * 一对一映射
-	 */
-	ONE,
+    /**
+     * 一对一映射
+     */
+    ONE,
 
-	/**
-	 * 一对多映射
-	 */
-	MANY,
+    /**
+     * 一对多映射
+     */
+    MANY,
 
-	/**
-	 * 多对多映射
-	 */
-	MANYMANY
+    /**
+     * 多对多映射
+     */
+    MANYMANY
 
 }

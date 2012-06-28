@@ -38,10 +38,10 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Many {
 
-	Class<?> target();
+    Class<?> target();
 
-	String field();
+    String field();
 
-	String key() default "";
+    String key() default "";
 
 }

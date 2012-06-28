@@ -18,39 +18,39 @@ import org.nutz.lang.LoopException;
 
 public class DoInsertRelationLinkVisitor extends AbstractLinkVisitor {
 
-	private EntityHolder holder;
+    private EntityHolder holder;
 
-	public DoInsertRelationLinkVisitor(EntityHolder holder) {
-		this.holder = holder;
-	}
+    public DoInsertRelationLinkVisitor(EntityHolder holder) {
+        this.holder = holder;
+    }
 
-	public void visit(final Object obj, LinkField lnk) {
-		// 只有多对多的映射才被考虑
-		if (lnk instanceof ManyManyLinkField) {
-			// 获取两边映射主键的值
-			final ManyManyLinkField mm = (ManyManyLinkField) lnk;
+    public void visit(final Object obj, LinkField lnk) {
+        // 只有多对多的映射才被考虑
+        if (lnk instanceof ManyManyLinkField) {
+            // 获取两边映射主键的值
+            final ManyManyLinkField mm = (ManyManyLinkField) lnk;
 
-			Object value = lnk.getValue(obj);
-			
-			final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(Lang.length(value));
-			Lang.each(value, new Each<Object>() {
-				public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
-					list.add(new RelationObjectMap(mm, obj, ele));
-				}
-			});
+            Object value = lnk.getValue(obj);
+            
+            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>(Lang.length(value));
+            Lang.each(value, new Each<Object>() {
+                public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+                    list.add(new RelationObjectMap(mm, obj, ele));
+                }
+            });
 
-			if (list.isEmpty())
-				return;
+            if (list.isEmpty())
+                return;
 
-			Entity<Map<String, Object>> en = holder.makeEntity(mm.getRelationName(), list.get(0));
-			Pojo pojo = opt.maker().makeInsert(en);
-			pojo.setOperatingObject(list);
-			for (Object p : list)
-				pojo.addParamsBy(p);
+            Entity<Map<String, Object>> en = holder.makeEntity(mm.getRelationName(), list.get(0));
+            Pojo pojo = opt.maker().makeInsert(en);
+            pojo.setOperatingObject(list);
+            for (Object p : list)
+                pojo.addParamsBy(p);
 
-			opt.add(pojo);
+            opt.add(pojo);
 
-		}
-	}
+        }
+    }
 
 }

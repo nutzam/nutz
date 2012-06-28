@@ -32,34 +32,34 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface HttpAdaptor {
 
-	/**
-	 * 这个函数将在你的适配器生命周期内，这个函数将只被调用一次。它用来告诉你的适配器，你需要适配什么方法。
-	 * 
-	 * @param method
-	 *            你需要适配的方法
-	 */
-	void init(Method method);
+    /**
+     * 这个函数将在你的适配器生命周期内，这个函数将只被调用一次。它用来告诉你的适配器，你需要适配什么方法。
+     * 
+     * @param method
+     *            你需要适配的方法
+     */
+    void init(Method method);
 
-	/**
-	 * 你的适配器需要根据传入的 request 和 response 生成函数的调用参数
-	 * 
-	 * @param sc
-	 *            Servlet 上下文对象
-	 * @param req
-	 *            请求对象
-	 * @param resp
-	 *            响应对象
-	 * @param pathArgs
-	 *            字符串数组，路径参数。详情请参看 <a
-	 *            href="http://code.google.com/p/nutz/wiki/mvc_http_adaptor#路径参数"
-	 *            >路径参数</a>
-	 * 
-	 * @return 调用参数数组
-	 * 
-	 */
-	Object[] adapt(	ServletContext sc,
-					HttpServletRequest req,
-					HttpServletResponse resp,
-					String[] pathArgs);
+    /**
+     * 你的适配器需要根据传入的 request 和 response 生成函数的调用参数
+     * 
+     * @param sc
+     *            Servlet 上下文对象
+     * @param req
+     *            请求对象
+     * @param resp
+     *            响应对象
+     * @param pathArgs
+     *            字符串数组，路径参数。详情请参看 <a
+     *            href="http://code.google.com/p/nutz/wiki/mvc_http_adaptor#路径参数"
+     *            >路径参数</a>
+     * 
+     * @return 调用参数数组
+     * 
+     */
+    Object[] adapt(    ServletContext sc,
+                    HttpServletRequest req,
+                    HttpServletResponse resp,
+                    String[] pathArgs);
 
 }

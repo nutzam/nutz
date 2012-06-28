@@ -20,22 +20,22 @@ import org.nutz.mvc.annotation.Param;
  */
 public class JsonAdaptor extends PairAdaptor {
 
-	protected ParamInjector evalInjector(Type type, Param param) {
-		if (param == null || "..".equals(param.value()))
-			return new JsonInjector(type, null);
-		return super.evalInjector(type, param);
-	}
+    protected ParamInjector evalInjector(Type type, Param param) {
+        if (param == null || "..".equals(param.value()))
+            return new JsonInjector(type, null);
+        return super.evalInjector(type, param);
+    }
 
-	public Object getReferObject(	ServletContext sc,
-							HttpServletRequest req,
-							HttpServletResponse resp, String[] pathArgs) {
-		// Read all as String
-		try {
-			String str = Streams.readAndClose(Streams.utf8r(req.getInputStream()));
-			return Json.fromJson(str);
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public Object getReferObject(    ServletContext sc,
+                            HttpServletRequest req,
+                            HttpServletResponse resp, String[] pathArgs) {
+        // Read all as String
+        try {
+            String str = Streams.readAndClose(Streams.utf8r(req.getInputStream()));
+            return Json.fromJson(str);
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 }

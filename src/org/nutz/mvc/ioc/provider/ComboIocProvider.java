@@ -10,13 +10,13 @@ import org.nutz.mvc.NutConfig;
 
 public class ComboIocProvider implements IocProvider {
 
-	public Ioc create(NutConfig config, String[] args) {
-		try {
-			return new NutIoc(new ComboIocLoader(args), new ScopeContext("app"), "app");
-		}
-		catch (ClassNotFoundException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public Ioc create(NutConfig config, String[] args) {
+        try {
+            return new NutIoc(new ComboIocLoader(args), new ScopeContext("app"), "app");
+        }
+        catch (ClassNotFoundException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
 }

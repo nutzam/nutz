@@ -6,7 +6,7 @@ package org.nutz.log.impl;
  */
 public class LogInfo {
 
-	String message;
-	
-	Throwable e;
+    String message;
+    
+    Throwable e;
 }

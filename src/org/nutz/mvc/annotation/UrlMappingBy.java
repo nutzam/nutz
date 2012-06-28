@@ -14,8 +14,8 @@ import org.nutz.mvc.impl.UrlMappingImpl;
 @Documented
 public @interface UrlMappingBy {
 
-	Class<? extends UrlMapping> value() default UrlMappingImpl.class;
-	
-	String[] args() default {};
-	
+    Class<? extends UrlMapping> value() default UrlMappingImpl.class;
+    
+    String[] args() default {};
+    
 }

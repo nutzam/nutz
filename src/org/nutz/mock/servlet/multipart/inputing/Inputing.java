@@ -4,12 +4,12 @@ import java.io.IOException;
 
 public interface Inputing {
 
-	long size();
+    long size();
 
-	int read() throws IOException;
+    int read() throws IOException;
 
-	void close() throws IOException;
+    void close() throws IOException;
 
-	void init() throws IOException;
+    void init() throws IOException;
 
 }

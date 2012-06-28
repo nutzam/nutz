@@ -9,19 +9,19 @@ import java.util.List;
  */
 public interface EntityIndex {
 
-	/**
-	 * @return 是否是唯一性索引
-	 */
-	boolean isUnique();
+    /**
+     * @return 是否是唯一性索引
+     */
+    boolean isUnique();
 
-	/**
-	 * @return 索引名称
-	 */
-	String getName();
+    /**
+     * @return 索引名称
+     */
+    String getName();
 
-	/**
-	 * @return 按顺序的索引实体字段
-	 */
-	List<EntityField> getFields();
+    /**
+     * @return 按顺序的索引实体字段
+     */
+    List<EntityField> getFields();
 
 }

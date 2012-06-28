@@ -36,9 +36,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface Id {
-	/**
-	 * true : auto increasement
-	 */
-	boolean auto() default true;
+    /**
+     * true : auto increasement
+     */
+    boolean auto() default true;
 
 }

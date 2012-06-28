@@ -11,20 +11,20 @@ import org.nutz.plugin.Plugin;
  *
  */
 public class Min implements RunMethod, Plugin{
-	public Object run(List<Object> param) {
-	    if(param.size() <= 0){
-	        return null;
-	    }
-	    Number n1 = (Number) param.get(0);
-	    for(int i = 1; i < param.size(); i ++){
-	        Number n2 = (Number) param.get(i);
-	        n1 = (Number) min(n1, n2);
-	    }
-	    return n1;
-	}
-	
-	private Object min(Number n1, Number n2){
-	    if(n1 == null){
+    public Object run(List<Object> param) {
+        if(param.size() <= 0){
+            return null;
+        }
+        Number n1 = (Number) param.get(0);
+        for(int i = 1; i < param.size(); i ++){
+            Number n2 = (Number) param.get(i);
+            n1 = (Number) min(n1, n2);
+        }
+        return n1;
+    }
+    
+    private Object min(Number n1, Number n2){
+        if(n1 == null){
             return n2;
         }
         if(n2 == null){
@@ -40,7 +40,7 @@ public class Min implements RunMethod, Plugin{
             return Math.min(n1.longValue(), n2.longValue());
         }
         return Math.min(n1.intValue(), n2.intValue());
-	}
+    }
 
     public boolean canWork() {
         return true;

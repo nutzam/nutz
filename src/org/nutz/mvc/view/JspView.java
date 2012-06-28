@@ -39,13 +39,13 @@ package org.nutz.mvc.view;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class JspView extends ForwardView {
-	
-	public JspView(String name) {
-		super(name);
-	}
+    
+    public JspView(String name) {
+        super(name);
+    }
 
-	@Override
-	protected String getExt() {
-		return ".jsp";
-	}
+    @Override
+    protected String getExt() {
+        return ".jsp";
+    }
 }

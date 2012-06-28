@@ -11,9 +11,9 @@ import org.nutz.dao.util.cri.SqlExpressionGroup;
  */
 public interface Criteria extends Condition, PItem {
 
-	SqlExpressionGroup where();
+    SqlExpressionGroup where();
 
-	OrderBy getOrderBy();
+    OrderBy getOrderBy();
 
-	Pager getPager();
+    Pager getPager();
 }

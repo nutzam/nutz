@@ -17,17 +17,17 @@ import org.nutz.dao.entity.Entity;
  */
 public interface Condition {
 
-	/**
-	 * 根据一个实体，你可以生成一个条件，这个条件就是 SQL 'WHERE' 关键字后面的那部分。
-	 * <p>
-	 * 当然你返回的字符串如果不是以 WHERE 或者 ORDER BY 开头，将会被 Nutz.Dao 加上 WHERE。
-	 * <p>
-	 * 你的字符串前后的空白会被截除
-	 * 
-	 * @param entity
-	 *            实体
-	 * @return 条件字符串
-	 */
-	String toSql(Entity<?> entity);
+    /**
+     * 根据一个实体，你可以生成一个条件，这个条件就是 SQL 'WHERE' 关键字后面的那部分。
+     * <p>
+     * 当然你返回的字符串如果不是以 WHERE 或者 ORDER BY 开头，将会被 Nutz.Dao 加上 WHERE。
+     * <p>
+     * 你的字符串前后的空白会被截除
+     * 
+     * @param entity
+     *            实体
+     * @return 条件字符串
+     */
+    String toSql(Entity<?> entity);
 
 }

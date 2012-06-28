@@ -19,36 +19,36 @@ import org.nutz.resource.Scans;
  */
 public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguration {
 
-	protected Map<String,Map<String,Object>> map = new HashMap<String, Map<String,Object>>();
-	
-	@SuppressWarnings("unchecked")
-	public JsonActionChainMakerConfiguretion(String...jsonPaths) {
-		List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", jsonPaths);
-		try {
-			map.putAll(Json.fromJson(Map.class,
-					new InputStreamReader(getClass().getClassLoader().
-							getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
-			for (NutResource nr : list)
-				map.putAll(Json.fromJson(Map.class,nr.getReader()));
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
-	
-	@SuppressWarnings("unchecked")
-	public List<String> getProcessors(String key) {
-		Map<String,Object> config = map.get(key);
-		if(config != null && config.containsKey("ps"))
-			return (List<String>) config.get("ps");
-		return (List<String>) map.get("default").get("ps");
-	}
-	
-	public String getErrorProcessor(String key) {
-		Map<String,Object> config = map.get(key);
-		if(config != null && config.containsKey("error"))
-			return (String) config.get("error");
-		return (String) map.get("default").get("error");
-	}
-	
+    protected Map<String,Map<String,Object>> map = new HashMap<String, Map<String,Object>>();
+    
+    @SuppressWarnings("unchecked")
+    public JsonActionChainMakerConfiguretion(String...jsonPaths) {
+        List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", jsonPaths);
+        try {
+            map.putAll(Json.fromJson(Map.class,
+                    new InputStreamReader(getClass().getClassLoader().
+                            getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
+            for (NutResource nr : list)
+                map.putAll(Json.fromJson(Map.class,nr.getReader()));
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+    
+    @SuppressWarnings("unchecked")
+    public List<String> getProcessors(String key) {
+        Map<String,Object> config = map.get(key);
+        if(config != null && config.containsKey("ps"))
+            return (List<String>) config.get("ps");
+        return (List<String>) map.get("default").get("ps");
+    }
+    
+    public String getErrorProcessor(String key) {
+        Map<String,Object> config = map.get(key);
+        if(config != null && config.containsKey("error"))
+            return (String) config.get("error");
+        return (String) map.get("default").get("error");
+    }
+    
 }

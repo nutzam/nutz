@@ -4,20 +4,20 @@ import org.nutz.dao.Dao;
 
 public abstract class Service {
 
-	public Service() {}
+    public Service() {}
 
-	public Service(Dao dao) {
-		this.dao = dao;
-	}
+    public Service(Dao dao) {
+        this.dao = dao;
+    }
 
-	private Dao dao;
+    private Dao dao;
 
-	public void setDao(Dao dao) {
-		this.dao = dao;
-	}
+    public void setDao(Dao dao) {
+        this.dao = dao;
+    }
 
-	public Dao dao() {
-		return dao;
-	}
+    public Dao dao() {
+        return dao;
+    }
 
 }

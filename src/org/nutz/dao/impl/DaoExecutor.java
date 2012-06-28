@@ -13,6 +13,6 @@ import org.nutz.dao.sql.DaoStatement;
  */
 public interface DaoExecutor {
 
-	void exec(Connection conn, DaoStatement st);
+    void exec(Connection conn, DaoStatement st);
 
 }

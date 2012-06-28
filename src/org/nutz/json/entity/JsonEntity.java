@@ -15,44 +15,44 @@ import org.nutz.lang.born.BorningException;
  */
 public class JsonEntity {
 
-	private List<JsonEntityField> fields;
+    private List<JsonEntityField> fields;
 
-	private Borning<?> borning;
+    private Borning<?> borning;
 
-	private BorningException err;
+    private BorningException err;
 
-	public JsonEntity(Mirror<?> mirror) {
-		Field[] flds = mirror.getFields();
-		fields = new ArrayList<JsonEntityField>(flds.length);
-		List<JsonEntityField> hasAnnos = new ArrayList<JsonEntityField>();
-		for (Field fld : flds) {
-			JsonEntityField ef = JsonEntityField.eval(mirror, fld);
-			if (null != ef) {
-				if (ef.hasAnno())
-					hasAnnos.add(ef);
-				else
-					fields.add(ef);
-			}
-		}
-		if (hasAnnos.size() > 0 )
-			fields.addAll(hasAnnos);
+    public JsonEntity(Mirror<?> mirror) {
+        Field[] flds = mirror.getFields();
+        fields = new ArrayList<JsonEntityField>(flds.length);
+        List<JsonEntityField> hasAnnos = new ArrayList<JsonEntityField>();
+        for (Field fld : flds) {
+            JsonEntityField ef = JsonEntityField.eval(mirror, fld);
+            if (null != ef) {
+                if (ef.hasAnno())
+                    hasAnnos.add(ef);
+                else
+                    fields.add(ef);
+            }
+        }
+        if (hasAnnos.size() > 0 )
+            fields.addAll(hasAnnos);
 
-		try {
-			borning = mirror.getBorning();
-		}
-		catch (BorningException e) {
-			err = e;
-		}
-	}
+        try {
+            borning = mirror.getBorning();
+        }
+        catch (BorningException e) {
+            err = e;
+        }
+    }
 
-	public List<JsonEntityField> getFields() {
-		return fields;
-	}
+    public List<JsonEntityField> getFields() {
+        return fields;
+    }
 
-	public Object born() {
-		if (null == borning)
-			throw err;
-		return borning.born(new Object[0]);
-	}
+    public Object born() {
+        if (null == borning)
+            throw err;
+        return borning.born(new Object[0]);
+    }
 
 }

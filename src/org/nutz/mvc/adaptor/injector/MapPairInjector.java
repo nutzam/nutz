@@ -24,30 +24,30 @@ import org.nutz.mvc.adaptor.ParamInjector;
  */
 public class MapPairInjector implements ParamInjector {
 
-	@SuppressWarnings("unchecked")
-	public Object get(	ServletContext sc,
-						HttpServletRequest req,
-						HttpServletResponse resp,
-						Object refer) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		Enumeration<String> enu = (Enumeration<String>) req.getParameterNames();
-		while (enu.hasMoreElements()) {
-			String name = enu.nextElement();
-			String[] vs = req.getParameterValues(name);
-			// Null Value
-			if (null == vs || vs.length == 0) {
-				map.put(name, null);
-			}
-			// Has Value
-			else if (vs.length == 1) {
-				map.put(name, vs[0]);
-			}
-			// Array Value
-			else {
-				map.put(name, vs);
-			}
-		}
-		return map;
-	}
+    @SuppressWarnings("unchecked")
+    public Object get(    ServletContext sc,
+                        HttpServletRequest req,
+                        HttpServletResponse resp,
+                        Object refer) {
+        Map<String, Object> map = new HashMap<String, Object>();
+        Enumeration<String> enu = (Enumeration<String>) req.getParameterNames();
+        while (enu.hasMoreElements()) {
+            String name = enu.nextElement();
+            String[] vs = req.getParameterValues(name);
+            // Null Value
+            if (null == vs || vs.length == 0) {
+                map.put(name, null);
+            }
+            // Has Value
+            else if (vs.length == 1) {
+                map.put(name, vs[0]);
+            }
+            // Array Value
+            else {
+                map.put(name, vs);
+            }
+        }
+        return map;
+    }
 
 }

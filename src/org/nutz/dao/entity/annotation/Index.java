@@ -2,10 +2,10 @@ package org.nutz.dao.entity.annotation;
 
 public @interface Index {
 
-	boolean unique() default true;
+    boolean unique() default true;
 
-	String name();
+    String name();
 
-	String[] fields();
+    String[] fields();
 
 }

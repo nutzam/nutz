@@ -11,18 +11,18 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface Uploading {
 
-	/**
-	 * 对流的解析
-	 * 
-	 * @param req
-	 * @param context
-	 * 
-	 * @throws UploadException
-	 * @throws UploadOutOfSizeException
-	 * @throws UploadUnsupportedFileNameException
-	 * @throws UploadUnsupportedFileTypeException
-	 */
-	Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
-			throws UploadException, UploadOutOfSizeException, UploadUnsupportedFileNameException,
-			UploadUnsupportedFileTypeException;
+    /**
+     * 对流的解析
+     * 
+     * @param req
+     * @param context
+     * 
+     * @throws UploadException
+     * @throws UploadOutOfSizeException
+     * @throws UploadUnsupportedFileNameException
+     * @throws UploadUnsupportedFileTypeException
+     */
+    Map<String, Object> parse(HttpServletRequest req, UploadingContext context)
+            throws UploadException, UploadOutOfSizeException, UploadUnsupportedFileNameException,
+            UploadUnsupportedFileTypeException;
 }

@@ -7,21 +7,21 @@ package org.nutz.mvc;
  */
 public enum Scope {
 
-	/**
-	 * 所有范围
-	 */
-	ALL,
-	/**
-	 * ServletContext 级别
-	 */
-	APP,
-	/**
-	 * Session 级别
-	 */
-	SESSION,
-	/**
-	 * Request 级别
-	 */
-	REQUEST
+    /**
+     * 所有范围
+     */
+    ALL,
+    /**
+     * ServletContext 级别
+     */
+    APP,
+    /**
+     * Session 级别
+     */
+    SESSION,
+    /**
+     * Request 级别
+     */
+    REQUEST
 
 }

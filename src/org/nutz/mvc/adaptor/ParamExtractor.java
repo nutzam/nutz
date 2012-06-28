@@ -8,12 +8,12 @@ import java.util.Set;
  *
  */
 public interface ParamExtractor {
-	/**
-	 * 根据名称提取值
-	 */
-	public String[] extractor(String name);
-	/**
-	 * 键
-	 */
-	public Set<String> keys();
+    /**
+     * 根据名称提取值
+     */
+    public String[] extractor(String name);
+    /**
+     * 键
+     */
+    public Set<String> keys();
 }

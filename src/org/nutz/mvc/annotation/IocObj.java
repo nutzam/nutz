@@ -22,11 +22,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface IocObj {
 
-	/**
-	 * 声明了容器中对象的名称，如果为空，则表示自动通过 ioc.get(MyObject.class) 方式获取对象
-	 * 
-	 * @return Ioc 容器中对象的名称
-	 */
-	String value() default "";
+    /**
+     * 声明了容器中对象的名称，如果为空，则表示自动通过 ioc.get(MyObject.class) 方式获取对象
+     * 
+     * @return Ioc 容器中对象的名称
+     */
+    String value() default "";
 
 }

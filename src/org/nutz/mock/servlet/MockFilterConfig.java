@@ -8,14 +8,14 @@ import javax.servlet.FilterConfig;
  *
  */
 public class MockFilterConfig extends MockServletObject implements FilterConfig {
-	
-	private String filterName;
+    
+    private String filterName;
 
-	public String getFilterName() {
-		return filterName;
-	}
+    public String getFilterName() {
+        return filterName;
+    }
 
-	public void setFilterName(String filterName) {
-		this.filterName = filterName;
-	}
+    public void setFilterName(String filterName) {
+        this.filterName = filterName;
+    }
 }

@@ -24,42 +24,42 @@ import org.nutz.mvc.annotation.Param;
  */
 public class ObjectPairInjector implements ParamInjector {
 
-	protected Injecting[] injs;
-	protected String[] names;
-	protected Mirror<?> mirror;
-	protected Field[] fields;
-	protected ParamConvertor[] converters;
+    protected Injecting[] injs;
+    protected String[] names;
+    protected Mirror<?> mirror;
+    protected Field[] fields;
+    protected ParamConvertor[] converters;
 
-	public ObjectPairInjector(String prefix, Type type) {
-		prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
-		this.mirror = Mirror.me(type);
-		fields = mirror.getFields();
-		this.injs = new Injecting[fields.length];
-		this.names = new String[fields.length];
-		this.converters = new ParamConvertor[fields.length];
+    public ObjectPairInjector(String prefix, Type type) {
+        prefix = Strings.isBlank(prefix) ? "" : Strings.trim(prefix);
+        this.mirror = Mirror.me(type);
+        fields = mirror.getFields();
+        this.injs = new Injecting[fields.length];
+        this.names = new String[fields.length];
+        this.converters = new ParamConvertor[fields.length];
 
-		for (int i = 0; i < fields.length; i++) {
-			Field f = fields[i];
-			this.injs[i] = mirror.getInjecting(f.getName());
-			Param param = f.getAnnotation(Param.class);
-			String nm = null == param ? f.getName() : param.value();
-			this.names[i] = prefix + nm;
-			this.converters[i] = Params.makeParamConvertor(f.getType());
-		}
-	}
+        for (int i = 0; i < fields.length; i++) {
+            Field f = fields[i];
+            this.injs[i] = mirror.getInjecting(f.getName());
+            Param param = f.getAnnotation(Param.class);
+            String nm = null == param ? f.getName() : param.value();
+            this.names[i] = prefix + nm;
+            this.converters[i] = Params.makeParamConvertor(f.getType());
+        }
+    }
 
-	public Object get(	ServletContext sc,
-						HttpServletRequest req,
-						HttpServletResponse resp,
-						Object refer) {
-		ParamExtractor pe = Params.makeParamExtractor(req, refer);
-		Object obj = mirror.born();
-		for (int i = 0; i < injs.length; i++) {
-			Object param = converters[i].convert(pe.extractor(names[i]));
-			if (null != param)
-				injs[i].inject(obj, param);
-		}
-		return obj;
-	}
+    public Object get(    ServletContext sc,
+                        HttpServletRequest req,
+                        HttpServletResponse resp,
+                        Object refer) {
+        ParamExtractor pe = Params.makeParamExtractor(req, refer);
+        Object obj = mirror.born();
+        for (int i = 0; i < injs.length; i++) {
+            Object param = converters[i].convert(pe.extractor(names[i]));
+            if (null != param)
+                injs[i].inject(obj, param);
+        }
+        return obj;
+    }
 
 }

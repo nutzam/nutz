@@ -13,66 +13,66 @@ import org.nutz.lang.meta.Pair;
 
 public class AtMap {
 
-	private Map<String, String> ats;
+    private Map<String, String> ats;
 
-	private Map<String, Method> methods;
+    private Map<String, Method> methods;
 
-	public AtMap() {
-		ats = new HashMap<String, String>();
-		methods = new HashMap<String, Method>();
-	}
+    public AtMap() {
+        ats = new HashMap<String, String>();
+        methods = new HashMap<String, Method>();
+    }
 
-	public void add(String key, String actionPath) {
-		if (actionPath.endsWith("/*"))
-			actionPath = actionPath.substring(0, actionPath.length() - 2);
-		ats.put(Strings.trim(key), Strings.trim(actionPath));
-	}
+    public void add(String key, String actionPath) {
+        if (actionPath.endsWith("/*"))
+            actionPath = actionPath.substring(0, actionPath.length() - 2);
+        ats.put(Strings.trim(key), Strings.trim(actionPath));
+    }
 
-	public void addMethod(String url, Method method) {
-		methods.put(url, method);
-	}
+    public void addMethod(String url, Method method) {
+        methods.put(url, method);
+    }
 
-	public Set<String> keys() {
-		return ats.keySet();
-	}
+    public Set<String> keys() {
+        return ats.keySet();
+    }
 
-	public Map<String, Method> getMethodMapping() {
-		return methods;
-	}
+    public Map<String, Method> getMethodMapping() {
+        return methods;
+    }
 
-	public int size() {
-		return ats.size();
-	}
+    public int size() {
+        return ats.size();
+    }
 
-	public String get(String key) {
-		return ats.get(key);
-	}
+    public String get(String key) {
+        return ats.get(key);
+    }
 
-	public AtMap clear() {
-		ats.clear();
-		return this;
-	}
+    public AtMap clear() {
+        ats.clear();
+        return this;
+    }
 
-	public List<Pair<String>> getAll() {
-		return getList((String[]) null);
-	}
+    public List<Pair<String>> getAll() {
+        return getList((String[]) null);
+    }
 
-	public List<Pair<String>> getList(String... prefixes) {
-		List<Pair<String>> list = new ArrayList<Pair<String>>(ats.size());
-		Set<Entry<String, String>> ens = ats.entrySet();
-		for (Entry<String, String> en : ens) {
-			String key = en.getKey();
-			if (null == prefixes || prefixes.length == 0)
-				list.add(new Pair<String>(key, en.getValue()));
-			else {
-				for (String prefix : prefixes)
-					if (key.startsWith(prefix)) {
-						list.add(new Pair<String>(key, en.getValue()));
-						break;
-					}
-			}
-		}
-		return list;
-	}
+    public List<Pair<String>> getList(String... prefixes) {
+        List<Pair<String>> list = new ArrayList<Pair<String>>(ats.size());
+        Set<Entry<String, String>> ens = ats.entrySet();
+        for (Entry<String, String> en : ens) {
+            String key = en.getKey();
+            if (null == prefixes || prefixes.length == 0)
+                list.add(new Pair<String>(key, en.getValue()));
+            else {
+                for (String prefix : prefixes)
+                    if (key.startsWith(prefix)) {
+                        list.add(new Pair<String>(key, en.getValue()));
+                        break;
+                    }
+            }
+        }
+        return list;
+    }
 
 }

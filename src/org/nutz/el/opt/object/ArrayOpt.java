@@ -13,24 +13,24 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class ArrayOpt extends TwoTernary {
-	public int fetchPriority() {
-		return 1;
-	}
-	public Object calculate() {
-		Object lval = calculateItem(left);
-		Object rval = calculateItem(right);
-		
-		//@ JKTODO 这里要不要与, AccessOpt 里面相同的代码合并呢?
-		if(lval instanceof Map){
-			Map<?,?> om = (Map<?, ?>) lval;
-			if(om.containsKey(right.toString())){
-				return om.get(right.toString());
-			}
-		}
-		
-		return Array.get(lval, (Integer)rval);
-	}
-	public String fetchSelf() {
-		return "[";
-	}
+    public int fetchPriority() {
+        return 1;
+    }
+    public Object calculate() {
+        Object lval = calculateItem(left);
+        Object rval = calculateItem(right);
+        
+        //@ JKTODO 这里要不要与, AccessOpt 里面相同的代码合并呢?
+        if(lval instanceof Map){
+            Map<?,?> om = (Map<?, ?>) lval;
+            if(om.containsKey(right.toString())){
+                return om.get(right.toString());
+            }
+        }
+        
+        return Array.get(lval, (Integer)rval);
+    }
+    public String fetchSelf() {
+        return "[";
+    }
 }

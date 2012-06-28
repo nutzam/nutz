@@ -8,11 +8,11 @@ import org.nutz.dao.sql.SqlContext;
 
 public class FetchEntityCallback extends EntityCallback {
 
-	protected Object process(ResultSet rs, Entity<?> entity, SqlContext context)
-			throws SQLException {
-		if (null != rs && rs.next())
-			return entity.getObject(rs, context.getFieldMatcher());
-		return null;
-	}
+    protected Object process(ResultSet rs, Entity<?> entity, SqlContext context)
+            throws SQLException {
+        if (null != rs && rs.next())
+            return entity.getObject(rs, context.getFieldMatcher());
+        return null;
+    }
 
 }

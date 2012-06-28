@@ -7,19 +7,19 @@ import org.nutz.lang.Lang;
 
 public class MethodEventTrigger implements IocEventTrigger<Object> {
 
-	private Method method;
+    private Method method;
 
-	public MethodEventTrigger(Method method) {
-		this.method = method;
-	}
+    public MethodEventTrigger(Method method) {
+        this.method = method;
+    }
 
-	public void trigger(Object obj) {
-		try {
-			method.invoke(obj);
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public void trigger(Object obj) {
+        try {
+            method.invoke(obj);
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
 }

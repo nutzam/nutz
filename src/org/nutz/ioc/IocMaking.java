@@ -9,66 +9,66 @@ import org.nutz.lang.Lang;
 
 public class IocMaking {
 
-	private String objectName;
+    private String objectName;
 
-	private ObjectMaker objectMaker;
+    private ObjectMaker objectMaker;
 
-	private Ioc ioc;
+    private Ioc ioc;
 
-	private IocContext context;
+    private IocContext context;
 
-	private List<ValueProxyMaker> vpms;
+    private List<ValueProxyMaker> vpms;
 
-	private MirrorFactory mirrors;
+    private MirrorFactory mirrors;
 
-	public IocMaking(	Ioc ioc,
-						MirrorFactory mirrors,
-						IocContext context,
-						ObjectMaker maker,
-						List<ValueProxyMaker> vpms,
-						String objName) {
-		this.objectName = objName;
-		this.objectMaker = maker;
-		this.ioc = ioc;
-		this.context = context;
-		this.vpms = vpms;
-		this.mirrors = mirrors;
-	}
+    public IocMaking(    Ioc ioc,
+                        MirrorFactory mirrors,
+                        IocContext context,
+                        ObjectMaker maker,
+                        List<ValueProxyMaker> vpms,
+                        String objName) {
+        this.objectName = objName;
+        this.objectMaker = maker;
+        this.ioc = ioc;
+        this.context = context;
+        this.vpms = vpms;
+        this.mirrors = mirrors;
+    }
 
-	public Ioc getIoc() {
-		return ioc;
-	}
+    public Ioc getIoc() {
+        return ioc;
+    }
 
-	public IocContext getContext() {
-		return context;
-	}
+    public IocContext getContext() {
+        return context;
+    }
 
-	public String getObjectName() {
-		return objectName;
-	}
+    public String getObjectName() {
+        return objectName;
+    }
 
-	public ObjectMaker getObjectMaker() {
-		return objectMaker;
-	}
+    public ObjectMaker getObjectMaker() {
+        return objectMaker;
+    }
 
-	public MirrorFactory getMirrors() {
-		return mirrors;
-	}
+    public MirrorFactory getMirrors() {
+        return mirrors;
+    }
 
-	public IocMaking clone(String objectName) {
-		return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName);
-	}
+    public IocMaking clone(String objectName) {
+        return new IocMaking(ioc, mirrors, context, objectMaker, vpms, objectName);
+    }
 
-	public ValueProxy makeValue(IocValue iv) {
-		for (ValueProxyMaker vpm : vpms) {
-			ValueProxy vp = vpm.make(this, iv);
-			if (null != vp)
-				return vp;
-		}
-		throw Lang.makeThrow(	"Unknown value {'%s':%s} for object [%s]",
-								iv.getType(),
-								Json.toJson(iv.getValue()),
-								objectName);
-	}
+    public ValueProxy makeValue(IocValue iv) {
+        for (ValueProxyMaker vpm : vpms) {
+            ValueProxy vp = vpm.make(this, iv);
+            if (null != vp)
+                return vp;
+        }
+        throw Lang.makeThrow(    "Unknown value {'%s':%s} for object [%s]",
+                                iv.getType(),
+                                Json.toJson(iv.getValue()),
+                                objectName);
+    }
 
 }

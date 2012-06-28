@@ -11,18 +11,18 @@ import java.util.List;
  */
 public class JsonAopConfigration extends AbstractAopConfigration {
 
-	public void setItemList(List<List<String>> itemList) {
-		List<AopConfigrationItem> aopItemList = new ArrayList<AopConfigrationItem>();
-		for (List<String> list : itemList) {
-			AopConfigrationItem item = new AopConfigrationItem();
-			item.setClassName(list.get(0));
-			item.setMethodName(list.get(1));
-			item.setInterceptor(list.get(2));
-			if (list.size() == 4)
-				item.setSingleton(Boolean.parseBoolean(list.get(3)));
-			aopItemList.add(item);
-		}
-		super.setAopItemList(aopItemList);
-	}
+    public void setItemList(List<List<String>> itemList) {
+        List<AopConfigrationItem> aopItemList = new ArrayList<AopConfigrationItem>();
+        for (List<String> list : itemList) {
+            AopConfigrationItem item = new AopConfigrationItem();
+            item.setClassName(list.get(0));
+            item.setMethodName(list.get(1));
+            item.setInterceptor(list.get(2));
+            if (list.size() == 4)
+                item.setSingleton(Boolean.parseBoolean(list.get(3)));
+            aopItemList.add(item);
+        }
+        super.setAopItemList(aopItemList);
+    }
 
 }

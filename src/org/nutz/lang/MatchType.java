@@ -12,20 +12,20 @@ package org.nutz.lang;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public enum MatchType {
-	/**
-	 * 匹配
-	 */
-	YES,
-	/**
-	 * 参数不足
-	 */
-	LACK,
-	/**
-	 * 不匹配
-	 */
-	NO,
-	/**
-	 * 长度相同，但是需要转换
-	 */
-	NEED_CAST
+    /**
+     * 匹配
+     */
+    YES,
+    /**
+     * 参数不足
+     */
+    LACK,
+    /**
+     * 不匹配
+     */
+    NO,
+    /**
+     * 长度相同，但是需要转换
+     */
+    NEED_CAST
 }

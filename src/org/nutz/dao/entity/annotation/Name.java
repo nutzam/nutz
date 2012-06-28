@@ -19,5 +19,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 public @interface Name {
-	boolean casesensitive() default true;
+    boolean casesensitive() default true;
 }

@@ -8,15 +8,15 @@ import org.nutz.dao.util.Pojos;
 
 public class InsertFieldsPItem extends NoParamsPItem {
 
-	public void joinSql(Entity<?> en, StringBuilder sb) {
-		List<MappingField> mfs = Pojos.getFieldsForInsert(_en(en), getFieldMatcher());
+    public void joinSql(Entity<?> en, StringBuilder sb) {
+        List<MappingField> mfs = Pojos.getFieldsForInsert(_en(en), getFieldMatcher());
 
-		sb.append('(');
-		for (MappingField mf : mfs)
-			sb.append(mf.getColumnName()).append(',');
+        sb.append('(');
+        for (MappingField mf : mfs)
+            sb.append(mf.getColumnName()).append(',');
 
-		sb.setCharAt(sb.length() - 1, ')');
-		sb.append(' ');
-	}
+        sb.setCharAt(sb.length() - 1, ')');
+        sb.append(' ');
+    }
 
 }

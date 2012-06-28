@@ -21,8 +21,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface One {
 
-	Class<?> target();
+    Class<?> target();
 
-	String field();
+    String field();
 
 }

@@ -10,6 +10,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public interface View {
 
-	void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable;
+    void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable;
 
 }

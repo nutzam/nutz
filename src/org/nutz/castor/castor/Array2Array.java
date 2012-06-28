@@ -8,15 +8,15 @@ import org.nutz.lang.Lang;
 
 public class Array2Array extends Castor<Object, Object> {
 
-	public Array2Array() {
-		this.fromClass = Array.class;
-		this.toClass = Array.class;
-	}
+    public Array2Array() {
+        this.fromClass = Array.class;
+        this.toClass = Array.class;
+    }
 
-	@Override
-	public Object cast(Object src, Class<?> toType, String... args)
-			throws FailToCastObjectException {
-		return Lang.array2array(src, toType.getComponentType());
-	}
+    @Override
+    public Object cast(Object src, Class<?> toType, String... args)
+            throws FailToCastObjectException {
+        return Lang.array2array(src, toType.getComponentType());
+    }
 
 }

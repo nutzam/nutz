@@ -16,22 +16,22 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class QuestionSelectOpt extends TwoTernary{
-	public int fetchPriority() {
-		return 13;
-	}
-	public Object calculate() {
-		if(!(left instanceof QuestionOpt)){
-			throw new ElException("三元表达式错误!");
-		}
-		QuestionOpt qo = (QuestionOpt) left;
-		Boolean cval = (Boolean) qo.calculate();
-		if(cval){
-			return qo.getRight();
-		}
-		return calculateItem(right);
-	}
-	public String fetchSelf() {
-		return ":";
-	}
+    public int fetchPriority() {
+        return 13;
+    }
+    public Object calculate() {
+        if(!(left instanceof QuestionOpt)){
+            throw new ElException("三元表达式错误!");
+        }
+        QuestionOpt qo = (QuestionOpt) left;
+        Boolean cval = (Boolean) qo.calculate();
+        if(cval){
+            return qo.getRight();
+        }
+        return calculateItem(right);
+    }
+    public String fetchSelf() {
+        return ":";
+    }
 
 }

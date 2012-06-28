@@ -13,50 +13,50 @@ import org.nutz.lang.util.Context;
  */
 public interface Segment {
 
-	Segment setAll(Object v);
+    Segment setAll(Object v);
 
-	/**
-	 * 根据对象设置每个插入点的值。
-	 * 
-	 * @param obj
-	 *            可以是 POJO 或者 Map
-	 * @return Segment
-	 */
-	Segment setBy(Object obj);
+    /**
+     * 根据对象设置每个插入点的值。
+     * 
+     * @param obj
+     *            可以是 POJO 或者 Map
+     * @return Segment
+     */
+    Segment setBy(Object obj);
 
-	Segment set(String key, Object v);
+    Segment set(String key, Object v);
 
-	Segment add(String key, Object v);
+    Segment add(String key, Object v);
 
-	void clearAll();
+    void clearAll();
 
-	Segment born();
+    Segment born();
 
-	Segment clone();
+    Segment clone();
 
-	boolean contains(String key);
+    boolean contains(String key);
 
-	Set<String> keys();
-	
-	int keyCount();
-	
-	boolean hasKey();
+    Set<String> keys();
+    
+    int keyCount();
+    
+    boolean hasKey();
 
-	List<Object> values();
-	
-	Segment valueOf(String str);
+    List<Object> values();
+    
+    Segment valueOf(String str);
 
-	void parse(Reader reader);
+    void parse(Reader reader);
 
-	CharSequence render();
+    CharSequence render();
 
-	CharSequence render(Context context);
+    CharSequence render(Context context);
 
-	Context getContext();
+    Context getContext();
 
-	void fillNulls(Context context);
+    void fillNulls(Context context);
 
-	String getOrginalString();
+    String getOrginalString();
 
-	List<SegmentNode> getNodes();
+    List<SegmentNode> getNodes();
 }

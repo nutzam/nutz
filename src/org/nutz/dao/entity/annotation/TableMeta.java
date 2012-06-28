@@ -20,6 +20,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface TableMeta {
 
-	String value();
+    String value();
 
 }

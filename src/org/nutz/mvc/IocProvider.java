@@ -15,6 +15,6 @@ import org.nutz.ioc.Ioc;
  */
 public interface IocProvider {
 
-	Ioc create(NutConfig config, String[] args);
+    Ioc create(NutConfig config, String[] args);
 
 }

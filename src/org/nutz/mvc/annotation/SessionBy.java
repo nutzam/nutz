@@ -14,7 +14,7 @@ import org.nutz.mvc.SessionProvider;
 @Documented
 public @interface SessionBy {
 
-	Class<? extends SessionProvider> value();
-	
-	String[] args() default {};
+    Class<? extends SessionProvider> value();
+    
+    String[] args() default {};
 }

@@ -11,23 +11,23 @@ import org.nutz.repo.org.objectweb.asm.MethodVisitor;
  */
 class ChangeToChildConstructorMethodAdapter extends NormalMethodAdapter {
 
-	private String superClassName;
+    private String superClassName;
 
-	ChangeToChildConstructorMethodAdapter(	MethodVisitor mv,
-													String desc,
-													int access,
-													String superClassName) {
-		super(mv, desc, access);
-		this.superClassName = superClassName;
-	}
+    ChangeToChildConstructorMethodAdapter(    MethodVisitor mv,
+                                                    String desc,
+                                                    int access,
+                                                    String superClassName) {
+        super(mv, desc, access);
+        this.superClassName = superClassName;
+    }
 
-	void visitCode() {
-		mv.visitCode();
-		mv.visitVarInsn(ALOAD, 0);
-		loadArgs();
-		mv.visitMethodInsn(INVOKESPECIAL, superClassName, "<init>", desc);
-		mv.visitInsn(RETURN);
-		mv.visitMaxs(2, 2);
-		mv.visitEnd();
-	}
+    void visitCode() {
+        mv.visitCode();
+        mv.visitVarInsn(ALOAD, 0);
+        loadArgs();
+        mv.visitMethodInsn(INVOKESPECIAL, superClassName, "<init>", desc);
+        mv.visitInsn(RETURN);
+        mv.visitMaxs(2, 2);
+        mv.visitEnd();
+    }
 }

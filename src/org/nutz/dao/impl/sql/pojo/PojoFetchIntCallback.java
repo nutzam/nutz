@@ -9,11 +9,11 @@ import org.nutz.dao.sql.PojoCallback;
 
 public class PojoFetchIntCallback implements PojoCallback {
 
-	public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
-		if(null!=rs && rs.next()){
-			return rs.getInt(1);
-		}
-		return -1;
-	}
+    public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+        if(null!=rs && rs.next()){
+            return rs.getInt(1);
+        }
+        return -1;
+    }
 
 }

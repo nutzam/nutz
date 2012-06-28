@@ -23,10 +23,10 @@ import org.nutz.mvc.annotation.Param;
 public class PairAdaptor extends AbstractAdaptor {
     private static final Log log = Logs.get();
 
-	protected ParamInjector evalInjectorBy(Type type, Param param) {
-	    // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
-	    // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
-	    Class<?> clazz = Lang.getTypeClass(type);
+    protected ParamInjector evalInjectorBy(Type type, Param param) {
+        // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
+        // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
+        Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
             if (log.isWarnEnabled())
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
@@ -37,26 +37,26 @@ public class PairAdaptor extends AbstractAdaptor {
         if (type instanceof ParameterizedType)
             paramTypes = ((ParameterizedType) type).getActualTypeArguments();
 
-	    
-		if (null == param)
-			return null;//让超类来处理吧,我不管了!!
-		String pm = param.value();
-		// POJO
-		if ("..".equals(pm)) {
-			if (clazz.isAssignableFrom(Map.class))
-				return new MapPairInjector();
-			return new ObjectPairInjector(null, type);
-		}
-		// POJO with prefix
-		else if (pm.startsWith("::") && pm.length() > 2) {
-			return new ObjectNavlPairInjector(pm.substring(2), type);
-		}
-		// POJO[]
-		else if (clazz.isArray())
-			return new ArrayInjector(pm, clazz, paramTypes);
+        
+        if (null == param)
+            return null;//让超类来处理吧,我不管了!!
+        String pm = param.value();
+        // POJO
+        if ("..".equals(pm)) {
+            if (clazz.isAssignableFrom(Map.class))
+                return new MapPairInjector();
+            return new ObjectPairInjector(null, type);
+        }
+        // POJO with prefix
+        else if (pm.startsWith("::") && pm.length() > 2) {
+            return new ObjectNavlPairInjector(pm.substring(2), type);
+        }
+        // POJO[]
+        else if (clazz.isArray())
+            return new ArrayInjector(pm, clazz, paramTypes);
 
-		// Name-value
-		return new NameInjector(pm, clazz, paramTypes);
-	}
-	
+        // Name-value
+        return new NameInjector(pm, clazz, paramTypes);
+    }
+    
 }

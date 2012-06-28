@@ -10,25 +10,25 @@ import org.nutz.el.Operator;
  *
  */
 public abstract class TwoTernary extends AbstractOpt{
-	protected Object right;
-	protected Object left;
-	
-	public void wrap(Queue<Object> rpn){
-		right = rpn.poll();
-		left = rpn.poll();
-	}
+    protected Object right;
+    protected Object left;
+    
+    public void wrap(Queue<Object> rpn){
+        right = rpn.poll();
+        left = rpn.poll();
+    }
 
-	public Object getRight() {
-		if(right instanceof Operator){
-			return ((Operator) right).calculate();
-		}
-		return right;
-	}
+    public Object getRight() {
+        if(right instanceof Operator){
+            return ((Operator) right).calculate();
+        }
+        return right;
+    }
 
-	public Object getLeft() {
-		if(left instanceof Operator){
-			return ((Operator) left).calculate();
-		}
-		return left;
-	}
+    public Object getLeft() {
+        if(left instanceof Operator){
+            return ((Operator) left).calculate();
+        }
+        return left;
+    }
 }

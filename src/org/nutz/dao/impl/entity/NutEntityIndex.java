@@ -8,38 +8,38 @@ import org.nutz.dao.entity.EntityIndex;
 
 public class NutEntityIndex implements EntityIndex {
 
-	private boolean unique;
+    private boolean unique;
 
-	private String name;
+    private String name;
 
-	private List<EntityField> fields;
+    private List<EntityField> fields;
 
-	public NutEntityIndex() {
-		this.fields = new ArrayList<EntityField>(3);
-	}
+    public NutEntityIndex() {
+        this.fields = new ArrayList<EntityField>(3);
+    }
 
-	public boolean isUnique() {
-		return unique;
-	}
+    public boolean isUnique() {
+        return unique;
+    }
 
-	public void setUnique(boolean unique) {
-		this.unique = unique;
-	}
+    public void setUnique(boolean unique) {
+        this.unique = unique;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void addField(EntityField field) {
-		fields.add(field);
-	}
+    public void addField(EntityField field) {
+        fields.add(field);
+    }
 
-	public List<EntityField> getFields() {
-		return fields;
-	}
+    public List<EntityField> getFields() {
+        return fields;
+    }
 
 }

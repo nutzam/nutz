@@ -8,6 +8,6 @@ package org.nutz.lang.util;
  */
 public interface ObjFilter<T> {
 
-	boolean accept(T o);
+    boolean accept(T o);
 
 }

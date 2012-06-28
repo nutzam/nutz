@@ -7,6 +7,6 @@ import java.sql.SQLException;
 
 public interface SqlCallback {
 
-	Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException;
+    Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException;
 
 }

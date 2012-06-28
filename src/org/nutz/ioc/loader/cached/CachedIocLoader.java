@@ -8,6 +8,6 @@ import org.nutz.ioc.IocLoader;
  */
 public interface CachedIocLoader extends IocLoader {
 
-	void clear();
+    void clear();
 
 }

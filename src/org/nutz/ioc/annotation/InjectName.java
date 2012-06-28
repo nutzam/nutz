@@ -22,6 +22,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface InjectName {
 
-	String value() default "";
+    String value() default "";
 
 }

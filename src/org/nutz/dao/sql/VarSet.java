@@ -5,14 +5,14 @@ import java.util.Set;
 
 public interface VarSet {
 
-	VarSet set(String name, Object value);
+    VarSet set(String name, Object value);
 
-	VarSet putAll(Map<String, Object> map);
-	
-	VarSet putAll(Object pojo);
+    VarSet putAll(Map<String, Object> map);
+    
+    VarSet putAll(Object pojo);
 
-	Object get(String name);
+    Object get(String name);
 
-	Set<String> keys();
+    Set<String> keys();
 
 }

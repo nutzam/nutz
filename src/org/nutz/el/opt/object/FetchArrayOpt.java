@@ -11,20 +11,20 @@ import org.nutz.el.opt.AbstractOpt;
  *
  */
 public class FetchArrayOpt extends AbstractOpt {
-	private Object left;
-	public void wrap(Queue<Object> operand) {
-		left = operand.poll();
-	}
-	public int fetchPriority() {
-		return 1;
-	}
-	public Object calculate() {
-		if(left instanceof ArrayOpt){
-			return ((ArrayOpt) left).calculate();
-		}
-		return null;
-	}
-	public String fetchSelf() {
-		return "]";
-	}
+    private Object left;
+    public void wrap(Queue<Object> operand) {
+        left = operand.poll();
+    }
+    public int fetchPriority() {
+        return 1;
+    }
+    public Object calculate() {
+        if(left instanceof ArrayOpt){
+            return ((ArrayOpt) left).calculate();
+        }
+        return null;
+    }
+    public String fetchSelf() {
+        return "]";
+    }
 }

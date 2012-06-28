@@ -13,24 +13,24 @@ import org.nutz.dao.util.Pojos;
 
 public class DoUpdateRelationLinkVisitor extends AbstractLinkVisitor {
 
-	private Map<String, Object> map;
+    private Map<String, Object> map;
 
-	private PItem[] items;
+    private PItem[] items;
 
-	public DoUpdateRelationLinkVisitor(Map<String, Object> map, Condition cnd) {
-		this.map = map;
-		this.items = Pojos.Items.cnd(cnd);
-	}
+    public DoUpdateRelationLinkVisitor(Map<String, Object> map, Condition cnd) {
+        this.map = map;
+        this.items = Pojos.Items.cnd(cnd);
+    }
 
-	public void visit(Object obj, LinkField lnk) {
-		if (lnk instanceof ManyManyLinkField) {
-			ManyManyLinkField mm = (ManyManyLinkField) lnk;
-			Entity<?> en = opt.makeEntity(mm.getRelationName(), map);
-			Pojo pojo = opt.maker().makeUpdate(en, null);
-			pojo.setOperatingObject(map);
-			pojo.append(items);
-			opt.add(pojo);
-		}
-	}
+    public void visit(Object obj, LinkField lnk) {
+        if (lnk instanceof ManyManyLinkField) {
+            ManyManyLinkField mm = (ManyManyLinkField) lnk;
+            Entity<?> en = opt.makeEntity(mm.getRelationName(), map);
+            Pojo pojo = opt.maker().makeUpdate(en, null);
+            pojo.setOperatingObject(map);
+            pojo.append(items);
+            opt.add(pojo);
+        }
+    }
 
 }

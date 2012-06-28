@@ -7,12 +7,12 @@ import org.nutz.lang.inject.Injecting;
 
 abstract class FieldInfo {
 
-	public String name;
+    public String name;
 
-	public Type fieldType;
+    public Type fieldType;
 
-	public Ejecting ejecting;
+    public Ejecting ejecting;
 
-	public Injecting injecting;
+    public Injecting injecting;
 
 }

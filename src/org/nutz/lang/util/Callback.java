@@ -8,6 +8,6 @@ package org.nutz.lang.util;
  */
 public interface Callback<T> {
 
-	void invoke(T obj);
+    void invoke(T obj);
 
 }

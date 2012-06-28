@@ -6,12 +6,12 @@ import javax.servlet.http.HttpServletResponse;
 
 public class RequestAttrInjector extends AttrInjector {
 
-	public RequestAttrInjector(String name) {
-		super(name);
-	}
+    public RequestAttrInjector(String name) {
+        super(name);
+    }
 
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return req.getAttribute(name);
-	}
+    public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        return req.getAttribute(name);
+    }
 
 }

@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Column {
 
-	String value() default "";
+    String value() default "";
 
 }

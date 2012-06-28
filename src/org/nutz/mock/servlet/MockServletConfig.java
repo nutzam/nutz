@@ -14,43 +14,43 @@ import javax.servlet.ServletContext;
  *
  */
 public class MockServletConfig implements ServletConfig {
-	
-	private Map<String, String> initParameterMap = new HashMap<String, String>();
-	
-	private ServletContext servletContext;
-	
-	private String servletName;
+    
+    private Map<String, String> initParameterMap = new HashMap<String, String>();
+    
+    private ServletContext servletContext;
+    
+    private String servletName;
 
-	public MockServletConfig(MockServletContext servletContext, String string) {
-		this.servletContext = servletContext;
-		this.servletName = string;
-	}
+    public MockServletConfig(MockServletContext servletContext, String string) {
+        this.servletContext = servletContext;
+        this.servletName = string;
+    }
 
-	public String getInitParameter(String key) {
-		return initParameterMap.get(key);
-	}
+    public String getInitParameter(String key) {
+        return initParameterMap.get(key);
+    }
 
-	public Enumeration<String> getInitParameterNames() {
-		return new Vector<String>(initParameterMap.keySet()).elements();
-	}
+    public Enumeration<String> getInitParameterNames() {
+        return new Vector<String>(initParameterMap.keySet()).elements();
+    }
 
-	public ServletContext getServletContext() {
-		return servletContext;
-	}
+    public ServletContext getServletContext() {
+        return servletContext;
+    }
 
-	public String getServletName() {
-		return servletName;
-	}
+    public String getServletName() {
+        return servletName;
+    }
 
-	public void addInitParameter(String key,String value){
-		initParameterMap.put(key, value);
-	}
-	
-	public void setServletContext(ServletContext servletContext) {
-		this.servletContext = servletContext;
-	}
-	
-	public void setServletName(String servletName) {
-		this.servletName = servletName;
-	}
+    public void addInitParameter(String key,String value){
+        initParameterMap.put(key, value);
+    }
+    
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+    
+    public void setServletName(String servletName) {
+        this.servletName = servletName;
+    }
 }

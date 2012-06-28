@@ -14,8 +14,8 @@ import org.nutz.mvc.impl.NutActionChainMaker;
 @Documented
 public @interface ChainBy {
 
-	Class<? extends ActionChainMaker> type() default NutActionChainMaker.class;
+    Class<? extends ActionChainMaker> type() default NutActionChainMaker.class;
 
-	String[] args();
+    String[] args();
 
 }

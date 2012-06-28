@@ -33,11 +33,11 @@ public class CustomMake {
         }
     }
     
-	/**
-	 * 自定义方法 工厂方法
-	 */
-	public static RunMethod make(String val) {
-	    return runms.get(val);
-	}
-	
+    /**
+     * 自定义方法 工厂方法
+     */
+    public static RunMethod make(String val) {
+        return runms.get(val);
+    }
+    
 }

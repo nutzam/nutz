@@ -20,6 +20,6 @@ import org.nutz.mvc.ViewMaker;
 @Documented
 public @interface Views {
 
-	Class<? extends ViewMaker>[] value();
+    Class<? extends ViewMaker>[] value();
 
 }

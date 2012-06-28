@@ -21,22 +21,22 @@ import org.nutz.mvc.adaptor.ParamInjector;
  */
 public class IocObjInjector implements ParamInjector {
 
-	private String objName;
+    private String objName;
 
-	private Class<?> objType;
+    private Class<?> objType;
 
-	public IocObjInjector(Class<?> objType, String objName) {
-		this.objType = objType;
-		this.objName = objName;
-	}
+    public IocObjInjector(Class<?> objType, String objName) {
+        this.objType = objType;
+        this.objName = objName;
+    }
 
-	public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		Ioc ioc = Mvcs.getIoc();
-		if (null == ioc)
-			throw new RuntimeException("You need define @IocBy in main module!!!");
-		if (Strings.isBlank(objName))
-			return ioc.get(objType);
-		return ioc.get(objType, objName);
-	}
+    public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        Ioc ioc = Mvcs.getIoc();
+        if (null == ioc)
+            throw new RuntimeException("You need define @IocBy in main module!!!");
+        if (Strings.isBlank(objName))
+            return ioc.get(objType);
+        return ioc.get(objType, objName);
+    }
 
 }

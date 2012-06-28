@@ -16,45 +16,45 @@ import org.nutz.ioc.meta.IocObject;
  */
 public class CachedIocLoaderImpl implements CachedIocLoader {
 
-	public static CachedIocLoaderImpl create(IocLoader proxyIocLoader) {
-		return new CachedIocLoaderImpl(proxyIocLoader);
-	}
+    public static CachedIocLoaderImpl create(IocLoader proxyIocLoader) {
+        return new CachedIocLoaderImpl(proxyIocLoader);
+    }
 
-	private IocLoader proxyIocLoader;
+    private IocLoader proxyIocLoader;
 
-	private Map<String, IocObject> map;
+    private Map<String, IocObject> map;
 
-	private CachedIocLoaderImpl(IocLoader proxyIocLoader) {
-		this.proxyIocLoader = proxyIocLoader;
-		this.map = new HashMap<String, IocObject>();
-	}
+    private CachedIocLoaderImpl(IocLoader proxyIocLoader) {
+        this.proxyIocLoader = proxyIocLoader;
+        this.map = new HashMap<String, IocObject>();
+    }
 
-	public void clear() {
-		map.clear();
-	}
+    public void clear() {
+        map.clear();
+    }
 
-	public String[] getName() {
-		return proxyIocLoader.getName();
-	}
+    public String[] getName() {
+        return proxyIocLoader.getName();
+    }
 
-	public boolean has(String name) {
-		return proxyIocLoader.has(name);
-	}
+    public boolean has(String name) {
+        return proxyIocLoader.has(name);
+    }
 
-	public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
-		IocObject iocObject = map.get(name);
-		if (iocObject == null) {
-			iocObject = proxyIocLoader.load(loading, name);
-			if (iocObject == null)
-				return null;
-			if (iocObject.isSingleton() && iocObject.getType() != null)
-				map.put(name, iocObject);
-		}
-		return iocObject;
-	}
-	
-	@Override
-	public String toString() {
-		return proxyIocLoader.toString();
-	}
+    public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
+        IocObject iocObject = map.get(name);
+        if (iocObject == null) {
+            iocObject = proxyIocLoader.load(loading, name);
+            if (iocObject == null)
+                return null;
+            if (iocObject.isSingleton() && iocObject.getType() != null)
+                map.put(name, iocObject);
+        }
+        return iocObject;
+    }
+    
+    @Override
+    public String toString() {
+        return proxyIocLoader.toString();
+    }
 }

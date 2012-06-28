@@ -7,25 +7,25 @@ import javax.sql.DataSource;
 
 public abstract class Transaction {
 
-	private int level;
+    private int level;
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setLevel(int level) {
-		if (this.level <= 0)
-			this.level = level;
-	}
+    public void setLevel(int level) {
+        if (this.level <= 0)
+            this.level = level;
+    }
 
-	public abstract int getId();
+    public abstract int getId();
 
-	protected abstract void commit();
+    protected abstract void commit();
 
-	protected abstract void rollback();
+    protected abstract void rollback();
 
-	public abstract Connection getConnection(DataSource dataSource) throws SQLException;
+    public abstract Connection getConnection(DataSource dataSource) throws SQLException;
 
-	public abstract void close();
+    public abstract void close();
 
 }

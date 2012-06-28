@@ -9,43 +9,43 @@ import org.nutz.dao.sql.SqlType;
 
 public abstract class AbstractPItem implements PItem {
 
-	protected Pojo pojo;
+    protected Pojo pojo;
 
-	public Pojo getPojo() {
-		return pojo;
-	}
+    public Pojo getPojo() {
+        return pojo;
+    }
 
-	public void setPojo(Pojo pojo) {
-		this.pojo = pojo;
-		this.setupPojo(pojo);
-	}
+    public void setPojo(Pojo pojo) {
+        this.pojo = pojo;
+        this.setupPojo(pojo);
+    }
 
-	protected SqlType getSqlType() {
-		return pojo.getSqlType();
-	}
+    protected SqlType getSqlType() {
+        return pojo.getSqlType();
+    }
 
-	protected FieldMatcher getFieldMatcher() {
-		return pojo.getContext().getFieldMatcher();
-	}
+    protected FieldMatcher getFieldMatcher() {
+        return pojo.getContext().getFieldMatcher();
+    }
 
-	protected void setupPojo(Pojo pojo) {}
+    protected void setupPojo(Pojo pojo) {}
 
-	protected Entity<?> _en(Entity<?> en) {
-		if (null == en && null != pojo)
-			return pojo.getEntity();
-		return en;
-	}
+    protected Entity<?> _en(Entity<?> en) {
+        if (null == en && null != pojo)
+            return pojo.getEntity();
+        return en;
+    }
 
-	protected String _fmtcolnm(Entity<?> en, String name) {
-		if (null == en && null != pojo)
-			en = pojo.getEntity();
+    protected String _fmtcolnm(Entity<?> en, String name) {
+        if (null == en && null != pojo)
+            en = pojo.getEntity();
 
-		if (null != en) {
-			MappingField mf = en.getField(name);
-			if (null != mf)
-				return mf.getColumnName();
-		}
-		return name;
-	}
+        if (null != en) {
+            MappingField mf = en.getField(name);
+            if (null != mf)
+                return mf.getColumnName();
+        }
+        return name;
+    }
 
 }

@@ -18,6 +18,6 @@ import org.nutz.mvc.Loading;
 @Documented
 public @interface LoadingBy {
 
-	Class<? extends Loading> value();
+    Class<? extends Loading> value();
 
 }

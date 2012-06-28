@@ -15,31 +15,31 @@ import java.io.Serializable;
  */
 public class UploadInfo implements Serializable {
 
-	private static final long serialVersionUID = 1145316598297147074L;
+    private static final long serialVersionUID = 1145316598297147074L;
 
-	public static final String SESSION_NAME = "UPLOAD_INFO";
+    public static final String SESSION_NAME = "UPLOAD_INFO";
 
-	/**
-	 * 本次上传，流的总大小。单位 byte
-	 */
-	public long sum;
+    /**
+     * 本次上传，流的总大小。单位 byte
+     */
+    public long sum;
 
-	/**
-	 * 当前已经读取的字节数
-	 */
-	public long current;
+    /**
+     * 当前已经读取的字节数
+     */
+    public long current;
 
-	/**
-	 * 是否要立刻停止
-	 */
-	public boolean stop;
+    /**
+     * 是否要立刻停止
+     */
+    public boolean stop;
 
-	public UploadInfo clone() {
-		UploadInfo old = new UploadInfo();
-		old.sum = sum;
-		old.current = current;
-		stop = true;
-		return old;
-	}
+    public UploadInfo clone() {
+        UploadInfo old = new UploadInfo();
+        old.sum = sum;
+        old.current = current;
+        stop = true;
+        return old;
+    }
 
 }

@@ -30,47 +30,47 @@ import org.nutz.mvc.Mvcs;
  */
 public class ForwardView extends AbstractPathView {
 
-	public ForwardView(String dest) {
-		super(dest == null ? null : dest.replace('\\', '/'));
-	}
+    public ForwardView(String dest) {
+        super(dest == null ? null : dest.replace('\\', '/'));
+    }
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws Exception {
-		String path = evalPath(req, obj);
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws Exception {
+        String path = evalPath(req, obj);
 
-		// 空路径，采用默认规则
-		if (Strings.isBlank(path)) {
-			path = Mvcs.getRequestPath(req);
-			path = "/WEB-INF"
-					+ (path.startsWith("/") ? "" : "/")
-					+ Files.renameSuffix(path, getExt());
-		}
-		// 绝对路径 : 以 '/' 开头的路径不增加 '/WEB-INF'
-		else if (path.charAt(0) == '/') {
-			String ext = getExt();
-			if (!path.toLowerCase().endsWith(ext))
-				path += ext;
-		}
-		// 包名形式的路径
-		else {
-			path = "/WEB-INF/" + path.replace('.', '/') + getExt();
-		}
+        // 空路径，采用默认规则
+        if (Strings.isBlank(path)) {
+            path = Mvcs.getRequestPath(req);
+            path = "/WEB-INF"
+                    + (path.startsWith("/") ? "" : "/")
+                    + Files.renameSuffix(path, getExt());
+        }
+        // 绝对路径 : 以 '/' 开头的路径不增加 '/WEB-INF'
+        else if (path.charAt(0) == '/') {
+            String ext = getExt();
+            if (!path.toLowerCase().endsWith(ext))
+                path += ext;
+        }
+        // 包名形式的路径
+        else {
+            path = "/WEB-INF/" + path.replace('.', '/') + getExt();
+        }
 
-		// 执行 Forward
-		RequestDispatcher rd = req.getRequestDispatcher(path);
-		if (rd == null)
-			throw Lang.makeThrow("Fail to find Forward '%s'", path);
-		// Do rendering
-		rd.forward(req, resp);
-	}
+        // 执行 Forward
+        RequestDispatcher rd = req.getRequestDispatcher(path);
+        if (rd == null)
+            throw Lang.makeThrow("Fail to find Forward '%s'", path);
+        // Do rendering
+        rd.forward(req, resp);
+    }
 
-	/**
-	 * 子类可以覆盖这个方法，给出自己特殊的后缀
-	 * 
-	 * @return 后缀
-	 */
-	protected String getExt() {
-		return "";
-	}
+    /**
+     * 子类可以覆盖这个方法，给出自己特殊的后缀
+     * 
+     * @return 后缀
+     */
+    protected String getExt() {
+        return "";
+    }
 
 }

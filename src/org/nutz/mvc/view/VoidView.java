@@ -7,7 +7,7 @@ import org.nutz.mvc.View;
 
 public class VoidView implements View {
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws Throwable {}
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws Throwable {}
 
 }

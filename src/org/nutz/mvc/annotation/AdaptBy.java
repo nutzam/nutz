@@ -27,8 +27,8 @@ import org.nutz.mvc.adaptor.PairAdaptor;
 @Documented
 public @interface AdaptBy {
 
-	Class<? extends HttpAdaptor> type() default PairAdaptor.class;
+    Class<? extends HttpAdaptor> type() default PairAdaptor.class;
 
-	String[] args() default {};
+    String[] args() default {};
 
 }

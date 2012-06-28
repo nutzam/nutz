@@ -6,14 +6,14 @@ import org.nutz.lang.Files;
 
 public class FileValue implements ValueProxy {
 
-	private String path;
+    private String path;
 
-	public FileValue(String path) {
-		this.path = path;
-	}
+    public FileValue(String path) {
+        this.path = path;
+    }
 
-	public Object get(IocMaking ing) {
-		return Files.findFile(path);
-	}
+    public Object get(IocMaking ing) {
+        return Files.findFile(path);
+    }
 
 }

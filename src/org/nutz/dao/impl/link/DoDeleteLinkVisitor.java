@@ -12,19 +12,19 @@ import org.nutz.lang.LoopException;
 
 public class DoDeleteLinkVisitor extends AbstractLinkVisitor {
 
-	public void visit(Object obj, LinkField lnk) {
-		Object value = lnk.getValue(obj);
+    public void visit(Object obj, LinkField lnk) {
+        Object value = lnk.getValue(obj);
 
-		final Pojo pojo = opt.maker().makeDelete(lnk.getLinkedEntity());
-		pojo.setOperatingObject(value);
-		pojo.append(Pojos.Items.cndAuto(lnk.getLinkedEntity(), null));
-		Lang.each(value, new Each<Object>() {
-			public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
-				pojo.addParamsBy(ele);
-			}
-		});
+        final Pojo pojo = opt.maker().makeDelete(lnk.getLinkedEntity());
+        pojo.setOperatingObject(value);
+        pojo.append(Pojos.Items.cndAuto(lnk.getLinkedEntity(), null));
+        Lang.each(value, new Each<Object>() {
+            public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+                pojo.addParamsBy(ele);
+            }
+        });
 
-		opt.add(pojo);
-	}
+        opt.add(pojo);
+    }
 
 }

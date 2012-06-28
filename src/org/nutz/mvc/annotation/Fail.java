@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Fail {
 
-	String value();
+    String value();
 }

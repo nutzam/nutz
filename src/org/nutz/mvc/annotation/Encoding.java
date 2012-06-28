@@ -19,8 +19,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Encoding {
 
-	String input();
+    String input();
 
-	String output();
+    String output();
 
 }

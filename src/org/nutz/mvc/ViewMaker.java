@@ -21,19 +21,19 @@ import org.nutz.ioc.Ioc;
  */
 public interface ViewMaker {
 
-	/**
-	 * 注解 '@Ok' 和 '@Fail' 的值是个字符串，用户可以随意定义。字符串从第一个冒号处拆成两半
-	 * 前半部分会转换成小写，作为视图类型，后一半为视图的值。
-	 * 
-	 * @param ioc
-	 *            整个应用的的 Ioc。 如果默认模块没有声明 '@IocBy' 这个参数为 null
-	 * @param type
-	 *            视图的类型
-	 * @param value
-	 *            视图的值
-	 * 
-	 * @return 产生的视图对象
-	 */
-	View make(Ioc ioc, String type, String value); //by wendal, 我很想把Ioc改成ActionInfo
+    /**
+     * 注解 '@Ok' 和 '@Fail' 的值是个字符串，用户可以随意定义。字符串从第一个冒号处拆成两半
+     * 前半部分会转换成小写，作为视图类型，后一半为视图的值。
+     * 
+     * @param ioc
+     *            整个应用的的 Ioc。 如果默认模块没有声明 '@IocBy' 这个参数为 null
+     * @param type
+     *            视图的类型
+     * @param value
+     *            视图的值
+     * 
+     * @return 产生的视图对象
+     */
+    View make(Ioc ioc, String type, String value); //by wendal, 我很想把Ioc改成ActionInfo
 
 }

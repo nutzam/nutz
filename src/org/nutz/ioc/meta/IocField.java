@@ -11,28 +11,28 @@ import org.nutz.json.Json;
  */
 public class IocField {
 
-	private String name;
+    private String name;
 
-	private IocValue value;
+    private IocValue value;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public IocValue getValue() {
-		return value;
-	}
+    public IocValue getValue() {
+        return value;
+    }
 
-	public void setValue(IocValue value) {
-		this.value = value;
-	}
+    public void setValue(IocValue value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("{%s:%s}", name, Json.toJson(value));
-	}
+    @Override
+    public String toString() {
+        return String.format("{%s:%s}", name, Json.toJson(value));
+    }
 }

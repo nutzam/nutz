@@ -17,23 +17,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ServerRedirectView extends AbstractPathView {
 
-	public ServerRedirectView(String dest) {
-		super(dest);
-	}
+    public ServerRedirectView(String dest) {
+        super(dest);
+    }
 
-	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
-			throws Exception {
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
+            throws Exception {
 
-		String path = evalPath(req, obj);
+        String path = evalPath(req, obj);
 
-		// Another site
-		if (path.startsWith("http://") || path.startsWith("https://")) {}
-		// Absolute path, add the context path for it
-		else if (path.length() > 0 && path.charAt(0) == '/') {
-			path = req.getContextPath() + path;
-		}
-		resp.sendRedirect(path); // 这个原生支持相对路径的,就不要再做无用功了
-		resp.flushBuffer();
-	}
+        // Another site
+        if (path.startsWith("http://") || path.startsWith("https://")) {}
+        // Absolute path, add the context path for it
+        else if (path.length() > 0 && path.charAt(0) == '/') {
+            path = req.getContextPath() + path;
+        }
+        resp.sendRedirect(path); // 这个原生支持相对路径的,就不要再做无用功了
+        resp.flushBuffer();
+    }
 
 }

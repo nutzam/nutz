@@ -9,8 +9,8 @@ import org.nutz.mvc.NutConfig;
 
 public class XmlIocProvider implements IocProvider {
 
-	public Ioc create(NutConfig config, String[] args) {
-		return new NutIoc(new XmlIocLoader(args), new ScopeContext("app"), "app");
-	}
+    public Ioc create(NutConfig config, String[] args) {
+        return new NutIoc(new XmlIocLoader(args), new ScopeContext("app"), "app");
+    }
 
 }

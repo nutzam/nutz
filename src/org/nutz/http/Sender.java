@@ -23,87 +23,87 @@ import org.nutz.lang.Lang;
  */
 public abstract class Sender {
 
-	public static Sender create(String url) {
-		return create(Request.get(url));
-	}
+    public static Sender create(String url) {
+        return create(Request.get(url));
+    }
 
-	public static Sender create(Request request) {
-		if (request.isGet())
-			return new GetSender(request);
-		return new PostSender(request);
-	}
+    public static Sender create(Request request) {
+        if (request.isGet())
+            return new GetSender(request);
+        return new PostSender(request);
+    }
 
-	protected Request request;
+    protected Request request;
 
-	protected int timeout;
+    protected int timeout;
 
-	protected HttpURLConnection conn;
+    protected HttpURLConnection conn;
 
-	protected Sender(Request request) {
-		this.request = request;
-	}
+    protected Sender(Request request) {
+        this.request = request;
+    }
 
-	public abstract Response send() throws HttpException;
+    public abstract Response send() throws HttpException;
 
-	protected Response createResponse(Map<String, String> reHeaders)
-			throws IOException {
-		Response rep = null;
-		if (reHeaders != null && reHeaders.get(null) != null) {
-			rep = new Response(conn, reHeaders);
-			if (rep.isOK()) {
-				InputStream is1 = conn.getInputStream();
-				InputStream is2 = null;
-				String encoding = conn.getContentEncoding();
-				// 如果采用了压缩,则需要处理否则都是乱码
-				if (encoding != null && encoding.contains("gzip")) {
-					is2 = new GZIPInputStream(is1);
-				} else if (encoding != null && encoding.contains("deflate")) {
-					is2 = new InflaterInputStream(is1);
-				} else {
-					is2 = is1;
-				}
+    protected Response createResponse(Map<String, String> reHeaders)
+            throws IOException {
+        Response rep = null;
+        if (reHeaders != null && reHeaders.get(null) != null) {
+            rep = new Response(conn, reHeaders);
+            if (rep.isOK()) {
+                InputStream is1 = conn.getInputStream();
+                InputStream is2 = null;
+                String encoding = conn.getContentEncoding();
+                // 如果采用了压缩,则需要处理否则都是乱码
+                if (encoding != null && encoding.contains("gzip")) {
+                    is2 = new GZIPInputStream(is1);
+                } else if (encoding != null && encoding.contains("deflate")) {
+                    is2 = new InflaterInputStream(is1);
+                } else {
+                    is2 = is1;
+                }
 
-				BufferedInputStream is = new BufferedInputStream(is2);
-				rep.setStream(is);
-			}
+                BufferedInputStream is = new BufferedInputStream(is2);
+                rep.setStream(is);
+            }
 
-			else
-				rep.setStream(Lang.ins(""));
-		}
-		return rep;
-	}
+            else
+                rep.setStream(Lang.ins(""));
+        }
+        return rep;
+    }
 
-	protected Map<String, String> getResponseHeader() {
-		Map<String, String> reHeaders = new HashMap<String, String>();
-		for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
-			List<String> val = en.getValue();
-			if (null != val && val.size() > 0)
-				reHeaders.put(en.getKey(), en.getValue().get(0));
-		}
-		return reHeaders;
-	}
+    protected Map<String, String> getResponseHeader() {
+        Map<String, String> reHeaders = new HashMap<String, String>();
+        for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
+            List<String> val = en.getValue();
+            if (null != val && val.size() > 0)
+                reHeaders.put(en.getKey(), en.getValue().get(0));
+        }
+        return reHeaders;
+    }
 
-	protected void setupDoInputOutputFlag() {
-		conn.setDoInput(true);
-		conn.setDoOutput(true);
-	}
+    protected void setupDoInputOutputFlag() {
+        conn.setDoInput(true);
+        conn.setDoOutput(true);
+    }
 
-	protected void openConnection() throws IOException {
-		conn = (HttpURLConnection) request.getUrl().openConnection();
-		if (timeout > 0)
-			conn.setReadTimeout(timeout);
-	}
+    protected void openConnection() throws IOException {
+        conn = (HttpURLConnection) request.getUrl().openConnection();
+        if (timeout > 0)
+            conn.setReadTimeout(timeout);
+    }
 
-	protected void setupRequestHeader() {
-		URL url = request.getUrl();
-		String host = url.getHost();
-		if (url.getPort() > 0 && url.getPort() != 80)
-			host += ":" + url.getPort();
-		conn.setRequestProperty("Host", host);
-		Header header = request.getHeader();
-		if (null != header)
-			for (Entry<String, String> entry : header.getAll())
-				conn.addRequestProperty(entry.getKey(), entry.getValue());
-	}
+    protected void setupRequestHeader() {
+        URL url = request.getUrl();
+        String host = url.getHost();
+        if (url.getPort() > 0 && url.getPort() != 80)
+            host += ":" + url.getPort();
+        conn.setRequestProperty("Host", host);
+        Header header = request.getHeader();
+        if (null != header)
+            for (Entry<String, String> entry : header.getAll())
+                conn.addRequestProperty(entry.getKey(), entry.getValue());
+    }
 
 }

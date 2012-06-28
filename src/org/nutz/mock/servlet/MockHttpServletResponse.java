@@ -22,212 +22,212 @@ import org.nutz.lang.Lang;
 
 public class MockHttpServletResponse implements HttpServletResponse {
 
-	protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
+    protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
-	protected PrintWriter writer;
+    protected PrintWriter writer;
 
-	protected Map<String, String> headers;
+    protected Map<String, String> headers;
 
-	protected Set<Cookie> cookies;
+    protected Set<Cookie> cookies;
 
-	protected int status;
+    protected int status;
 
-	protected String statusMessage;
+    protected String statusMessage;
 
-	protected Locale locale;
+    protected Locale locale;
 
-	protected String contentType;
+    protected String contentType;
 
-	public MockHttpServletResponse() {
-		headers = new HashMap<String, String>();
-		cookies = new HashSet<Cookie>();
-		status = 200;
-		statusMessage = "OK";
-	}
+    public MockHttpServletResponse() {
+        headers = new HashMap<String, String>();
+        cookies = new HashSet<Cookie>();
+        status = 200;
+        statusMessage = "OK";
+    }
 
-	public void addCookie(Cookie cookie) {
-		cookies.add(cookie);
-	}
+    public void addCookie(Cookie cookie) {
+        cookies.add(cookie);
+    }
 
-	public void addDateHeader(String key, long value) {
-		headers.put(key, "" + value);
-	}
+    public void addDateHeader(String key, long value) {
+        headers.put(key, "" + value);
+    }
 
-	public void addHeader(String key, String value) {
-		headers.put(key, value);
-	}
+    public void addHeader(String key, String value) {
+        headers.put(key, value);
+    }
 
-	public void addIntHeader(String key, int value) {
-		headers.put(key, "" + value);
-	}
+    public void addIntHeader(String key, int value) {
+        headers.put(key, "" + value);
+    }
 
-	public boolean containsHeader(String key) {
-		return headers.containsKey(key);
-	}
+    public boolean containsHeader(String key) {
+        return headers.containsKey(key);
+    }
 
-	public String encodeRedirectURL(String arg0) {
-		throw Lang.noImplement();
-	}
+    public String encodeRedirectURL(String arg0) {
+        throw Lang.noImplement();
+    }
 
-	public String encodeRedirectUrl(String arg0) {
-		throw Lang.noImplement();
-	}
+    public String encodeRedirectUrl(String arg0) {
+        throw Lang.noImplement();
+    }
 
-	public String encodeURL(String arg0) {
-		throw Lang.noImplement();
-	}
+    public String encodeURL(String arg0) {
+        throw Lang.noImplement();
+    }
 
-	public String encodeUrl(String arg0) {
-		throw Lang.noImplement();
-	}
+    public String encodeUrl(String arg0) {
+        throw Lang.noImplement();
+    }
 
-	public void sendError(int error) throws IOException {
-		this.setStatus(error);
-	}
+    public void sendError(int error) throws IOException {
+        this.setStatus(error);
+    }
 
-	public void sendError(int arg0, String arg1) throws IOException {
-		this.setStatus(arg0, arg1);
-	}
+    public void sendError(int arg0, String arg1) throws IOException {
+        this.setStatus(arg0, arg1);
+    }
 
-	public void sendRedirect(String value) throws IOException {
-		headers.put("Location", "" + value);
-	}
+    public void sendRedirect(String value) throws IOException {
+        headers.put("Location", "" + value);
+    }
 
-	public void setDateHeader(String key, long value) {
-		headers.put(key, "" + value);
-	}
+    public void setDateHeader(String key, long value) {
+        headers.put(key, "" + value);
+    }
 
-	public void setHeader(String key, String value) {
-		headers.put(key, value);
-	}
+    public void setHeader(String key, String value) {
+        headers.put(key, value);
+    }
 
-	public void setIntHeader(String key, int value) {
-		headers.put(key, "" + value);
-	}
+    public void setIntHeader(String key, int value) {
+        headers.put(key, "" + value);
+    }
 
-	public void setStatus(int status) {
-		this.status = status;
-	}
+    public void setStatus(int status) {
+        this.status = status;
+    }
 
-	public void setStatus(int status, String statusMessage) {
-		this.status = status;
-		this.statusMessage = statusMessage;
-	}
+    public void setStatus(int status, String statusMessage) {
+        this.status = status;
+        this.statusMessage = statusMessage;
+    }
 
-	public void flushBuffer() throws IOException {
-		getWriter().flush();
-	}
+    public void flushBuffer() throws IOException {
+        getWriter().flush();
+    }
 
-	public int getBufferSize() {
-		return stream.size();
-	}
+    public int getBufferSize() {
+        return stream.size();
+    }
 
-	public String getCharacterEncoding() {
-		return characterEncoding;
-	}
+    public String getCharacterEncoding() {
+        return characterEncoding;
+    }
 
-	public String getContentType() {
-		return contentType;
-	}
+    public String getContentType() {
+        return contentType;
+    }
 
-	public Locale getLocale() {
-		return locale;
-	}
+    public Locale getLocale() {
+        return locale;
+    }
 
-	public ServletOutputStream getOutputStream() throws IOException {
-		return new ServletOutputStream() {
+    public ServletOutputStream getOutputStream() throws IOException {
+        return new ServletOutputStream() {
 
-			@Override
-			public void write(int arg0) throws IOException {
-				stream.write(arg0);
-			}
-		};
-	}
+            @Override
+            public void write(int arg0) throws IOException {
+                stream.write(arg0);
+            }
+        };
+    }
 
-	public PrintWriter getWriter() throws IOException {
-		if (writer == null) {
-			writer = new PrintWriter(new OutputStreamWriter(stream, characterEncoding));
-		}
-		return writer;
-	}
+    public PrintWriter getWriter() throws IOException {
+        if (writer == null) {
+            writer = new PrintWriter(new OutputStreamWriter(stream, characterEncoding));
+        }
+        return writer;
+    }
 
-	public boolean isCommitted() {
-		throw Lang.noImplement();
-	}
+    public boolean isCommitted() {
+        throw Lang.noImplement();
+    }
 
-	public void reset() {
-		stream.reset();
-	}
+    public void reset() {
+        stream.reset();
+    }
 
-	public void resetBuffer() {
-		stream.reset();
-	}
+    public void resetBuffer() {
+        stream.reset();
+    }
 
-	public void setBufferSize(int arg0) {
-		throw Lang.noImplement();
-	}
+    public void setBufferSize(int arg0) {
+        throw Lang.noImplement();
+    }
 
-	protected String characterEncoding = Encoding.defaultEncoding();
+    protected String characterEncoding = Encoding.defaultEncoding();
 
-	public void setCharacterEncoding(String characterEncoding) {
-		this.characterEncoding = characterEncoding;
-	}
+    public void setCharacterEncoding(String characterEncoding) {
+        this.characterEncoding = characterEncoding;
+    }
 
-	public void setContentLength(int arg0) {
-		throw Lang.noImplement();
-	}
+    public void setContentLength(int arg0) {
+        throw Lang.noImplement();
+    }
 
-	public void setContentType(String contentType) {
-		this.contentType = contentType;
-	}
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
 
-	public void setLocale(Locale locale) {
-		this.locale = locale;
-	}
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
 
-	public int getStatus() {
-		return status;
-	}
+    public int getStatus() {
+        return status;
+    }
 
-	public String getStatusMessage() {
-		return statusMessage;
-	}
+    public String getStatusMessage() {
+        return statusMessage;
+    }
 
-	public String getAsString() {
-		try {
-			getWriter().flush();
-			return stream.toString(characterEncoding);
-		}
-		catch (UnsupportedEncodingException e) {
-			throw Lang.wrapThrow(e);
-		}
-		catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		}
-	}
+    public String getAsString() {
+        try {
+            getWriter().flush();
+            return stream.toString(characterEncoding);
+        }
+        catch (UnsupportedEncodingException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
 
-	public int getAsInt() {
-		return Integer.parseInt(getAsString());
-	}
+    public int getAsInt() {
+        return Integer.parseInt(getAsString());
+    }
 
-	public long getAsLong() {
-		return Long.parseLong(getAsString());
-	}
+    public long getAsLong() {
+        return Long.parseLong(getAsString());
+    }
 
-	public <T> T getAs(Class<T> type) {
-		return Castors.me().castTo(getAsString(), type);
-	}
+    public <T> T getAs(Class<T> type) {
+        return Castors.me().castTo(getAsString(), type);
+    }
 
-	public String getHeader(String key) {
-		return headers.get(key);
-	}
+    public String getHeader(String key) {
+        return headers.get(key);
+    }
 
-	public Collection<String> getHeaders(String name) {
-		throw Lang.noImplement();
-	}
+    public Collection<String> getHeaders(String name) {
+        throw Lang.noImplement();
+    }
 
-	public Collection<String> getHeaderNames() {
-		throw Lang.noImplement();
-	}
+    public Collection<String> getHeaderNames() {
+        throw Lang.noImplement();
+    }
 
 }

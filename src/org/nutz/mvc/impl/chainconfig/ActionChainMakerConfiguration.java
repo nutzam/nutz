@@ -8,7 +8,7 @@ import java.util.List;
  */
 public interface ActionChainMakerConfiguration {
 
-	public List<String> getProcessors(String key);
-	
-	public String getErrorProcessor(String key);
+    public List<String> getProcessors(String key);
+    
+    public String getErrorProcessor(String key);
 }

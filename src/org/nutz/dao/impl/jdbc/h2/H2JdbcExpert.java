@@ -6,13 +6,13 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 
 public class H2JdbcExpert extends PsqlJdbcExpert {
 
-	public H2JdbcExpert(JdbcExpertConfigFile conf) {
-		super(conf);
-	}
+    public H2JdbcExpert(JdbcExpertConfigFile conf) {
+        super(conf);
+    }
 
-	@Override
-	public String getDatabaseType() {
-		return DB.H2.name();
-	}
+    @Override
+    public String getDatabaseType() {
+        return DB.H2.name();
+    }
 
 }

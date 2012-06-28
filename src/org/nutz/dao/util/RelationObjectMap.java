@@ -12,31 +12,31 @@ import org.nutz.lang.util.NutMap;
 @SuppressWarnings("serial")
 public class RelationObjectMap extends NutMap {
 
-	private ManyManyLinkField mm;// TODO 这个字段无法序列化
+    private ManyManyLinkField mm;// TODO 这个字段无法序列化
 
-	private Object host;
+    private Object host;
 
-	private Object linked;
+    private Object linked;
 
-	public RelationObjectMap() {
-		throw Lang.noImplement();
-	}
+    public RelationObjectMap() {
+        throw Lang.noImplement();
+    }
 
-	public RelationObjectMap(ManyManyLinkField mm, Object host, Object linked) {
-		this.mm = mm;
-		this.host = host;
-		this.linked = linked;
-		this.put(mm.getFromColumnName(), mm.getHostField().getValue(host));
-		this.put(mm.getToColumnName(), mm.getLinkedField().getValue(linked));
-	}
+    public RelationObjectMap(ManyManyLinkField mm, Object host, Object linked) {
+        this.mm = mm;
+        this.host = host;
+        this.linked = linked;
+        this.put(mm.getFromColumnName(), mm.getHostField().getValue(host));
+        this.put(mm.getToColumnName(), mm.getLinkedField().getValue(linked));
+    }
 
-	@Override
-	public Object get(Object key) {
-		if (mm.getFromColumnName().equals(key))
-			return mm.getHostField().getValue(host);
-		if (mm.getToColumnName().equals(key))
-			return mm.getLinkedField().getValue(linked);
-		return super.get(key);
-	}
+    @Override
+    public Object get(Object key) {
+        if (mm.getFromColumnName().equals(key))
+            return mm.getHostField().getValue(host);
+        if (mm.getToColumnName().equals(key))
+            return mm.getLinkedField().getValue(linked);
+        return super.get(key);
+    }
 
 }

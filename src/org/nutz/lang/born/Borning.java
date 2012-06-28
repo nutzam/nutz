@@ -9,6 +9,6 @@ package org.nutz.lang.born;
  */
 public interface Borning<T> {
 
-	T born(Object[] args);
+    T born(Object[] args);
 
 }

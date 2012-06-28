@@ -10,14 +10,14 @@ import org.nutz.lang.util.Context;
  *
  */
 public class ElCache {
-	private Context context;
+    private Context context;
 
-	public Context getContext() {
-		return context;
-	}
+    public Context getContext() {
+        return context;
+    }
 
-	public void setContext(Context context) {
-		this.context = context;
-	}
-	
+    public void setContext(Context context) {
+        this.context = context;
+    }
+    
 }

@@ -10,6 +10,6 @@ package org.nutz.mvc;
  */
 public interface ActionChain {
 
-	void doChain(ActionContext ac);
+    void doChain(ActionContext ac);
 
 }

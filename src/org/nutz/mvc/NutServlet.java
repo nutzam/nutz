@@ -20,43 +20,43 @@ import org.nutz.mvc.config.ServletNutConfig;
 @SuppressWarnings("serial")
 public class NutServlet extends HttpServlet {
 
-	private ActionHandler handler;
-	
-	private String selfName;
-	
-	private SessionProvider sp;
+    private ActionHandler handler;
+    
+    private String selfName;
+    
+    private SessionProvider sp;
 
-	@Override
-	public void init(ServletConfig servletConfig) throws ServletException {
-		Mvcs.setServletContext(servletConfig.getServletContext());
-		selfName = servletConfig.getServletName();
-		Mvcs.set(selfName, null, null);
-		NutConfig config = new ServletNutConfig(servletConfig);
-		Mvcs.setNutConfig(config);
-		handler = new ActionHandler(config);
-		sp = config.getSessionProvider();
-	}
+    @Override
+    public void init(ServletConfig servletConfig) throws ServletException {
+        Mvcs.setServletContext(servletConfig.getServletContext());
+        selfName = servletConfig.getServletName();
+        Mvcs.set(selfName, null, null);
+        NutConfig config = new ServletNutConfig(servletConfig);
+        Mvcs.setNutConfig(config);
+        handler = new ActionHandler(config);
+        sp = config.getSessionProvider();
+    }
 
-	public void destroy() {
-		Mvcs.resetALL();
-		Mvcs.set(selfName, null, null);
-		if(handler != null)
-			handler.depose();
-		Mvcs.setServletContext(null);
-	}
+    public void destroy() {
+        Mvcs.resetALL();
+        Mvcs.set(selfName, null, null);
+        if(handler != null)
+            handler.depose();
+        Mvcs.setServletContext(null);
+    }
 
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		Mvcs.resetALL();
-		try {
-			if (sp != null)
-				req = sp.filter(req, resp, getServletContext());
-			Mvcs.set(selfName, req, resp);
-			if (!handler.handle(req, resp))
-				resp.sendError(404);
-		} finally {
-			Mvcs.resetALL();
-		}
-	}
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        Mvcs.resetALL();
+        try {
+            if (sp != null)
+                req = sp.filter(req, resp, getServletContext());
+            Mvcs.set(selfName, req, resp);
+            if (!handler.handle(req, resp))
+                resp.sendError(404);
+        } finally {
+            Mvcs.resetALL();
+        }
+    }
 }

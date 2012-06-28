@@ -21,9 +21,9 @@ import org.nutz.mvc.impl.NutMessageLoader;
 @Documented
 public @interface Localization {
 
-	Class<? extends MessageLoader> type() default NutMessageLoader.class;
+    Class<? extends MessageLoader> type() default NutMessageLoader.class;
 
-	String value();
+    String value();
 
-	String defaultLang() default "";
+    String defaultLang() default "";
 }

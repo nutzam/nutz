@@ -16,17 +16,17 @@ import org.nutz.el.opt.TwoTernary;
  * @author juqkai(juqkai@gmail.com)
  */
 public class QuestionOpt extends TwoTernary{
-	public int fetchPriority() {
-		return 13;
-	}
-	public Object calculate() {
-		if(left instanceof Operator){
-			return ((Operator) left).calculate();
-		}
-		throw new ElException("三元表达式错误!");
-	}
+    public int fetchPriority() {
+        return 13;
+    }
+    public Object calculate() {
+        if(left instanceof Operator){
+            return ((Operator) left).calculate();
+        }
+        throw new ElException("三元表达式错误!");
+    }
 
-	public String fetchSelf() {
-		return "?";
-	}
+    public String fetchSelf() {
+        return "?";
+    }
 }

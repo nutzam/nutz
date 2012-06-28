@@ -13,26 +13,26 @@ import org.nutz.dao.jdbc.ValueAdaptor;
  */
 public class OracleBooleanAdaptor implements ValueAdaptor {
 
-	public Object get(ResultSet rs, String colName) throws SQLException {
-		boolean re = rs.getBoolean(colName);
-		return rs.wasNull() ? null : re;
-	}
+    public Object get(ResultSet rs, String colName) throws SQLException {
+        boolean re = rs.getBoolean(colName);
+        return rs.wasNull() ? null : re;
+    }
 
-	public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
-		if (null == obj) {
-			stat.setNull(i, Types.INTEGER);
-		} else {
-			boolean v;
-			if (obj instanceof Boolean)
-				v = (Boolean) obj;
-			else if (obj instanceof Number)
-				v = ((Number) obj).intValue() > 0;
-			else if (obj instanceof Character)
-				v = Character.toUpperCase((Character) obj) == 'T';
-			else
-				v = Boolean.valueOf(obj.toString());
-			stat.setBoolean(i, v);
-		}
-	}
+    public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
+        if (null == obj) {
+            stat.setNull(i, Types.INTEGER);
+        } else {
+            boolean v;
+            if (obj instanceof Boolean)
+                v = (Boolean) obj;
+            else if (obj instanceof Number)
+                v = ((Number) obj).intValue() > 0;
+            else if (obj instanceof Character)
+                v = Character.toUpperCase((Character) obj) == 'T';
+            else
+                v = Boolean.valueOf(obj.toString());
+            stat.setBoolean(i, v);
+        }
+    }
 
 }

@@ -225,7 +225,7 @@ public class Type {
      * @param c a class.
      * @return the Java type corresponding to the given class.
      */
-	public static Type getType(final Class<?> c) {
+    public static Type getType(final Class<?> c) {
         if (c.isPrimitive()) {
             if (c == Integer.TYPE) {
                 return INT_TYPE;

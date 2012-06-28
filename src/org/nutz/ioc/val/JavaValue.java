@@ -58,15 +58,15 @@ import org.nutz.ioc.java.ChainParsing;
  */
 public class JavaValue implements ValueProxy {
 
-	private ChainNode node;
+    private ChainNode node;
 
-	public JavaValue(String callPath) {
-		ChainParsing parsing = new ChainParsing(callPath);
-		this.node = parsing.getNode();
-	}
+    public JavaValue(String callPath) {
+        ChainParsing parsing = new ChainParsing(callPath);
+        this.node = parsing.getNode();
+    }
 
-	public Object get(IocMaking ing) {
-		return node.eval(ing);
-	}
+    public Object get(IocMaking ing) {
+        return node.eval(ing);
+    }
 
 }

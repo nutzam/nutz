@@ -18,32 +18,32 @@ import org.nutz.lang.inject.Injecting;
  */
 public class MapReferInjector extends ObjectPairInjector {
 
-	public MapReferInjector(String prefix, Class<?> type) {
-		super(prefix, type);
-	}
+    public MapReferInjector(String prefix, Class<?> type) {
+        super(prefix, type);
+    }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public Object get(ServletContext sc, HttpServletRequest req,
-			HttpServletResponse resp, Object refer) {
-		Object obj = mirror.born();
-		Map<String, Object> map = null;
-		if (Map.class.isAssignableFrom(refer.getClass()))
-			map = (Map<String, Object>) refer;
-		for (int i = 0; i < injs.length; i++) {
-			Injecting inj = injs[i];
-			Object s;
-			if (null != map && map.containsKey(names[i]))
-				s = map.get(names[i]);
-			else
-				s = req.getParameter(names[i]);
-			if (null == s)
-				continue;
-			if (s instanceof String && Strings.isBlank((String) s))
-				s = null;
-			inj.inject(obj, s);
-		}
-		return obj;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Object get(ServletContext sc, HttpServletRequest req,
+            HttpServletResponse resp, Object refer) {
+        Object obj = mirror.born();
+        Map<String, Object> map = null;
+        if (Map.class.isAssignableFrom(refer.getClass()))
+            map = (Map<String, Object>) refer;
+        for (int i = 0; i < injs.length; i++) {
+            Injecting inj = injs[i];
+            Object s;
+            if (null != map && map.containsKey(names[i]))
+                s = map.get(names[i]);
+            else
+                s = req.getParameter(names[i]);
+            if (null == s)
+                continue;
+            if (s instanceof String && Strings.isBlank((String) s))
+                s = null;
+            inj.inject(obj, s);
+        }
+        return obj;
+    }
 
 }

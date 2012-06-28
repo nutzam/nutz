@@ -23,6 +23,6 @@ import org.nutz.dao.ConnCallback;
  */
 public interface DaoRunner {
 
-	void run(DataSource dataSource, ConnCallback callback);
+    void run(DataSource dataSource, ConnCallback callback);
 
 }

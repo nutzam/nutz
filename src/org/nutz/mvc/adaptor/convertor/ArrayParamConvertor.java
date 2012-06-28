@@ -8,24 +8,24 @@ import org.nutz.mvc.adaptor.Params;
 
 public class ArrayParamConvertor implements ParamConvertor {
 
-	private Class<?> eleType;
+    private Class<?> eleType;
 
-	private ParamConvertor convertor;
+    private ParamConvertor convertor;
 
-	public ArrayParamConvertor(Class<?> eleType) {
-		this.eleType = eleType;
-		this.convertor = Params.makeParamConvertor(eleType);
-	}
+    public ArrayParamConvertor(Class<?> eleType) {
+        this.eleType = eleType;
+        this.convertor = Params.makeParamConvertor(eleType);
+    }
 
-	public Object convert(String[] ss) {
-		if (null == ss)
-			return null;
+    public Object convert(String[] ss) {
+        if (null == ss)
+            return null;
 
-		Object re = Array.newInstance(eleType, ss.length);
-		for (int i = 0; i < ss.length; i++) {
-			Array.set(re, i, convertor.convert(Lang.array(ss[i])));
-		}
-		return re;
-	}
+        Object re = Array.newInstance(eleType, ss.length);
+        for (int i = 0; i < ss.length; i++) {
+            Array.set(re, i, convertor.convert(Lang.array(ss[i])));
+        }
+        return re;
+    }
 
 }

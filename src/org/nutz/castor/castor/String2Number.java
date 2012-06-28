@@ -18,24 +18,24 @@ import org.nutz.lang.Strings;
  */
 public class String2Number extends Castor<String, Number> {
 
-	@Override
-	public Number cast(String src, Class<?> toType, String... args) {
-		if (Strings.isBlank(src)) {
-			if (toType.isPrimitive())
-				return 0;
-			else
-				return null;
-		}
-		try {
-			return (Number) Mirror.me(toType)
-									.getWrapperClass()
-									.getConstructor(String.class)
-									.newInstance(src);
-		}
-		catch (Exception e) {
-			throw new FailToCastObjectException(String.format(	"Fail to cast '%s' to <%s>",
-																src,
-																toType.getName()), e);
-		}
-	}
+    @Override
+    public Number cast(String src, Class<?> toType, String... args) {
+        if (Strings.isBlank(src)) {
+            if (toType.isPrimitive())
+                return 0;
+            else
+                return null;
+        }
+        try {
+            return (Number) Mirror.me(toType)
+                                    .getWrapperClass()
+                                    .getConstructor(String.class)
+                                    .newInstance(src);
+        }
+        catch (Exception e) {
+            throw new FailToCastObjectException(String.format(    "Fail to cast '%s' to <%s>",
+                                                                src,
+                                                                toType.getName()), e);
+        }
+    }
 }

@@ -4,14 +4,14 @@ import org.nutz.ioc.IocMaking;
 
 public class IocSelfNode extends ChainNode {
 
-	@Override
-	protected Object getValue(IocMaking ing, Object obj) throws Exception {
-		return ing.getIoc();
-	}
+    @Override
+    protected Object getValue(IocMaking ing, Object obj) throws Exception {
+        return ing.getIoc();
+    }
 
-	@Override
-	protected String asString() {
-		return "@Ioc";
-	}
+    @Override
+    protected String asString() {
+        return "@Ioc";
+    }
 
 }

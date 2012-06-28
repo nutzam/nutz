@@ -9,16 +9,16 @@ import org.nutz.dao.entity.annotation.View;
 
 public class TableInfo {
 
-	public Table annTable;
+    public Table annTable;
 
-	public View annView;
+    public View annView;
 
-	public TableMeta annMeta;
+    public TableMeta annMeta;
 
-	public PK annPK;
+    public PK annPK;
 
-	public TableIndexes annIndexes;
+    public TableIndexes annIndexes;
 
-	public Comment tableComment;
+    public Comment tableComment;
 
 }

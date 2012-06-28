@@ -17,85 +17,85 @@ import org.nutz.log.Logs;
  */
 public class ScopeContext implements IocContext {
 
-	private static final Log log = Logs.get();
+    private static final Log log = Logs.get();
 
-	private String scope;
-	private Map<String, ObjectProxy> objs;
+    private String scope;
+    private Map<String, ObjectProxy> objs;
 
-	public ScopeContext(String scope) {
-		this.scope = scope;
-		objs = new HashMap<String, ObjectProxy>();
-	}
+    public ScopeContext(String scope) {
+        this.scope = scope;
+        objs = new HashMap<String, ObjectProxy>();
+    }
 
-	private void checkBuffer() {
-		if (null == objs)
-			throw Lang.makeThrow("Context '%s' had been deposed!", scope);
-	}
+    private void checkBuffer() {
+        if (null == objs)
+            throw Lang.makeThrow("Context '%s' had been deposed!", scope);
+    }
 
-	public Map<String, ObjectProxy> getObjs() {
-		return objs;
-	}
+    public Map<String, ObjectProxy> getObjs() {
+        return objs;
+    }
 
-	public String getScope() {
-		return scope;
-	}
+    public String getScope() {
+        return scope;
+    }
 
-	public void setScope(String scope) {
-		this.scope = scope;
-	}
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
 
-	public ObjectProxy fetch(String name) {
-		checkBuffer();
-		return objs.get(name);
-	}
+    public ObjectProxy fetch(String name) {
+        checkBuffer();
+        return objs.get(name);
+    }
 
-	public boolean save(String scope, String name, ObjectProxy obj) {
-		if (accept(scope)) {
-			checkBuffer();
-			synchronized (this) {
-				if (!objs.containsKey(name)) {
-					if (log.isDebugEnabled())
-						log.debugf("Save object '%s' to [%s] ", name, scope);
-					return null != objs.put(name, obj);
-				}
-			}
-		}
-		return false;
-	}
+    public boolean save(String scope, String name, ObjectProxy obj) {
+        if (accept(scope)) {
+            checkBuffer();
+            synchronized (this) {
+                if (!objs.containsKey(name)) {
+                    if (log.isDebugEnabled())
+                        log.debugf("Save object '%s' to [%s] ", name, scope);
+                    return null != objs.put(name, obj);
+                }
+            }
+        }
+        return false;
+    }
 
-	protected boolean accept(String scope) {
-		return null != scope && this.scope.equals(scope);
-	}
+    protected boolean accept(String scope) {
+        return null != scope && this.scope.equals(scope);
+    }
 
-	public boolean remove(String scope, String name) {
-		if (accept(scope)) {
-			checkBuffer();
+    public boolean remove(String scope, String name) {
+        if (accept(scope)) {
+            checkBuffer();
 
-			synchronized (this) {
-				if (!objs.containsKey(name)) {
-					if (log.isDebugEnabled())
-						log.debugf("Remove object '%s' from [%s] ", name, scope);
-					return null != objs.remove(name);
-				}
-			}
-		}
-		return false;
-	}
+            synchronized (this) {
+                if (!objs.containsKey(name)) {
+                    if (log.isDebugEnabled())
+                        log.debugf("Remove object '%s' from [%s] ", name, scope);
+                    return null != objs.remove(name);
+                }
+            }
+        }
+        return false;
+    }
 
-	public void clear() {
-		checkBuffer();
-		for (Entry<String, ObjectProxy> en : objs.entrySet()) {
-			if (log.isDebugEnabled())
-				log.debugf("Depose object '%s' ...", en.getKey());
+    public void clear() {
+        checkBuffer();
+        for (Entry<String, ObjectProxy> en : objs.entrySet()) {
+            if (log.isDebugEnabled())
+                log.debugf("Depose object '%s' ...", en.getKey());
 
-			en.getValue().depose();
-		}
-		objs.clear();
-	}
+            en.getValue().depose();
+        }
+        objs.clear();
+    }
 
-	public void depose() {
-		clear();
-		objs = null;
-	}
+    public void depose() {
+        clear();
+        objs = null;
+    }
 
 }

@@ -15,32 +15,32 @@ import org.nutz.lang.Mirror;
 
 public class MappingInfo extends FieldInfo {
 
-	public PK annPK;
+    public PK annPK;
 
-	public Column annColumn;
+    public Column annColumn;
 
-	public ColDefine annDefine;
+    public ColDefine annDefine;
 
-	public Default annDefault;
+    public Default annDefault;
 
-	public Id annId;
+    public Id annId;
 
-	public Name annName;
+    public Name annName;
 
-	public Next annNext;
+    public Next annNext;
 
-	public Prev annPrev;
+    public Prev annPrev;
 
-	public Readonly annReadonly;
+    public Readonly annReadonly;
 
-	public Comment columnComment;
+    public Comment columnComment;
 
-	public Class<?> getFieldTypeClass() {
-		return Lang.getTypeClass(fieldType);
-	}
+    public Class<?> getFieldTypeClass() {
+        return Lang.getTypeClass(fieldType);
+    }
 
-	public Mirror<?> getFieldTypeMirror() {
-		return Mirror.me(getFieldTypeClass());
-	}
+    public Mirror<?> getFieldTypeMirror() {
+        return Mirror.me(getFieldTypeClass());
+    }
 
 }

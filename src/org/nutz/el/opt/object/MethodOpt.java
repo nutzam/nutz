@@ -18,57 +18,57 @@ import org.nutz.el.opt.custom.CustomMake;
  */
 public class MethodOpt extends TwoTernary {
 
-	public int fetchPriority() {
-		return 1;
-	}
-	
-	public void wrap(Queue<Object> rpn) {
-		if(rpn.peek() instanceof AccessOpt){
-			left = rpn.poll();
-			return;
-		}
-		super.wrap(rpn);
-	}
-	
-	public Object calculate(){
-		return fetchMethod().run(fetchParam());
-	}
-	
-	private RunMethod fetchMethod(){
-		if(!(left instanceof AccessOpt)){
-			return CustomMake.make(left.toString());
-		}
-		AccessOpt lval = (AccessOpt) left;
-		return lval;
-	}
-	
-	
-	/**
-	 * 取得方法执行的参数
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	private List<Object> fetchParam(){
-		List<Object> rvals = new ArrayList<Object>();
-		if(right != null){
-			if(right instanceof CommaOpt){
-				rvals = (List<Object>) ((CommaOpt) right).calculate();
-			} else {
-				rvals.add(calculateItem(right));
-			}
-		}
-		if(!rvals.isEmpty()){
-			for(int i = 0; i < rvals.size(); i ++){
-				if(rvals.get(i) instanceof Operator){
-					rvals.set(i, ((Operator)rvals.get(i)).calculate());
-				}
-			}
-		}
-		return rvals;
-	}
-	
-	public String fetchSelf() {
-		return "method";
-	}
+    public int fetchPriority() {
+        return 1;
+    }
+    
+    public void wrap(Queue<Object> rpn) {
+        if(rpn.peek() instanceof AccessOpt){
+            left = rpn.poll();
+            return;
+        }
+        super.wrap(rpn);
+    }
+    
+    public Object calculate(){
+        return fetchMethod().run(fetchParam());
+    }
+    
+    private RunMethod fetchMethod(){
+        if(!(left instanceof AccessOpt)){
+            return CustomMake.make(left.toString());
+        }
+        AccessOpt lval = (AccessOpt) left;
+        return lval;
+    }
+    
+    
+    /**
+     * 取得方法执行的参数
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    private List<Object> fetchParam(){
+        List<Object> rvals = new ArrayList<Object>();
+        if(right != null){
+            if(right instanceof CommaOpt){
+                rvals = (List<Object>) ((CommaOpt) right).calculate();
+            } else {
+                rvals.add(calculateItem(right));
+            }
+        }
+        if(!rvals.isEmpty()){
+            for(int i = 0; i < rvals.size(); i ++){
+                if(rvals.get(i) instanceof Operator){
+                    rvals.set(i, ((Operator)rvals.get(i)).calculate());
+                }
+            }
+        }
+        return rvals;
+    }
+    
+    public String fetchSelf() {
+        return "method";
+    }
 
 }

@@ -30,38 +30,38 @@ import org.nutz.json.Json;
  */
 public class IocValue {
 
-	public static final String TYPE_NORMAL = "normal";
-	public static final String TYPE_INNER = "inner";
-	public static final String TYPE_REFER = "refer";
-	public static final String TYPE_ENV = "env";
-	public static final String TYPE_SYS = "sys";
-	public static final String TYPE_FILE = "file";
-	public static final String TYPE_JAVA = "java";
-	public static final String TYPE_JNDI = "jndi";
+    public static final String TYPE_NORMAL = "normal";
+    public static final String TYPE_INNER = "inner";
+    public static final String TYPE_REFER = "refer";
+    public static final String TYPE_ENV = "env";
+    public static final String TYPE_SYS = "sys";
+    public static final String TYPE_FILE = "file";
+    public static final String TYPE_JAVA = "java";
+    public static final String TYPE_JNDI = "jndi";
 
-	private String type;
+    private String type;
 
-	private Object value;
+    private Object value;
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public Object getValue() {
-		return value;
-	}
+    public Object getValue() {
+        return value;
+    }
 
-	public void setValue(Object value) {
-		this.value = value;
-	}
+    public void setValue(Object value) {
+        this.value = value;
+    }
 
-	@Override
-	public String toString() {
-		return String.format("{%s:%s}", type, Json.toJson(value));
-	}
+    @Override
+    public String toString() {
+        return String.format("{%s:%s}", type, Json.toJson(value));
+    }
 
 }

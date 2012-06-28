@@ -20,91 +20,91 @@ import org.nutz.mock.servlet.multipart.MultipartInputStream;
  */
 public abstract class Mock {
 
-	public static class servlet {
-		public static MockServletContext context() {
-			return new MockServletContext();
-		}
+    public static class servlet {
+        public static MockServletContext context() {
+            return new MockServletContext();
+        }
 
-		public static MockServletConfig config(String s) {
-			return new MockServletConfig(context(), s);
-		}
+        public static MockServletConfig config(String s) {
+            return new MockServletConfig(context(), s);
+        }
 
-		public static MockHttpServletRequest request() {
-			return new MockHttpServletRequest();
-		}
+        public static MockHttpServletRequest request() {
+            return new MockHttpServletRequest();
+        }
 
-		public static MockHttpServletRequest fullRequest() {
-			MockHttpServletRequest req = request();
-			req.setSession(session(context()));
-			return req;
-		}
+        public static MockHttpServletRequest fullRequest() {
+            MockHttpServletRequest req = request();
+            req.setSession(session(context()));
+            return req;
+        }
 
-		public static MockHttpSession session(MockServletContext context) {
-			return new MockHttpSession(context);
-		}
+        public static MockHttpSession session(MockServletContext context) {
+            return new MockHttpSession(context);
+        }
 
-		public static ServletInputStream ins(final InputStream ins) {
-			return new ServletInputStream() {
-				public int read() throws IOException {
-					return ins.read();
-				}
+        public static ServletInputStream ins(final InputStream ins) {
+            return new ServletInputStream() {
+                public int read() throws IOException {
+                    return ins.read();
+                }
 
-				public int available() throws IOException {
-					return super.available();
-				}
+                public int available() throws IOException {
+                    return super.available();
+                }
 
-				public void close() throws IOException {
-					ins.close();
-				}
+                public void close() throws IOException {
+                    ins.close();
+                }
 
-				public synchronized void mark(int readlimit) {
-					ins.mark(readlimit);
-				}
+                public synchronized void mark(int readlimit) {
+                    ins.mark(readlimit);
+                }
 
-				public boolean markSupported() {
-					return ins.markSupported();
-				}
+                public boolean markSupported() {
+                    return ins.markSupported();
+                }
 
-				public int read(byte[] b, int off, int len) throws IOException {
-					return ins.read(b, off, len);
-				}
+                public int read(byte[] b, int off, int len) throws IOException {
+                    return ins.read(b, off, len);
+                }
 
-				public int read(byte[] b) throws IOException {
-					return ins.read(b);
-				}
+                public int read(byte[] b) throws IOException {
+                    return ins.read(b);
+                }
 
-				public synchronized void reset() throws IOException {
-					ins.reset();
-				}
+                public synchronized void reset() throws IOException {
+                    ins.reset();
+                }
 
-				public long skip(long n) throws IOException {
-					return ins.skip(n);
-				}
-			};
-		}
+                public long skip(long n) throws IOException {
+                    return ins.skip(n);
+                }
+            };
+        }
 
-		public static ServletInputStream ins(String path) {
-			return ins(Streams.fileIn(path));
-		}
+        public static ServletInputStream ins(String path) {
+            return ins(Streams.fileIn(path));
+        }
 
-		public static MultipartInputStream insmulti(String charset, String boundary) {
-			return new MultipartInputStream(charset, boundary);
-		}
+        public static MultipartInputStream insmulti(String charset, String boundary) {
+            return new MultipartInputStream(charset, boundary);
+        }
 
-		public static MultipartInputStream insmulti(String charset) {
-			return insmulti(charset,
-							"------NutzMockHTTPBoundary@"
-									+ Long.toHexString(System.currentTimeMillis()));
-		}
+        public static MultipartInputStream insmulti(String charset) {
+            return insmulti(charset,
+                            "------NutzMockHTTPBoundary@"
+                                    + Long.toHexString(System.currentTimeMillis()));
+        }
 
-		public static MultipartInputStream insmulti(String charset, File... files) {
-			MultipartInputStream ins = insmulti(charset);
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isFile())
-					ins.append("F" + i, files[i]);
-			}
-			return ins;
-		}
-	}
+        public static MultipartInputStream insmulti(String charset, File... files) {
+            MultipartInputStream ins = insmulti(charset);
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isFile())
+                    ins.append("F" + i, files[i]);
+            }
+            return ins;
+        }
+    }
 
 }

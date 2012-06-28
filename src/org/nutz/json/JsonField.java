@@ -14,17 +14,17 @@ import java.lang.annotation.Target;
 @Target({ElementType.FIELD})
 public @interface JsonField {
 
-	String value() default "";
+    String value() default "";
 
-	/**
-	 * @return 是否忽略这个字段
-	 */
-	boolean ignore() default false;
-	
-	@Deprecated
-	String by() default "";
-	
-	String getBy() default "";
+    /**
+     * @return 是否忽略这个字段
+     */
+    boolean ignore() default false;
+    
+    @Deprecated
+    String by() default "";
+    
+    String getBy() default "";
 
-	String createBy() default "";
+    String createBy() default "";
 }

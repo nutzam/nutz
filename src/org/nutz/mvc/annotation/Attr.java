@@ -18,14 +18,14 @@ import org.nutz.mvc.Scope;
 @Documented
 public @interface Attr {
 
-	/**
-	 * 属性的上下文环境
-	 */
-	Scope scope() default Scope.ALL;
+    /**
+     * 属性的上下文环境
+     */
+    Scope scope() default Scope.ALL;
 
-	/**
-	 * 属性的名称
-	 */
-	String value();
+    /**
+     * 属性的名称
+     */
+    String value();
 
 }

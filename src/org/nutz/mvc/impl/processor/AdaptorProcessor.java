@@ -16,28 +16,28 @@ import org.nutz.mvc.adaptor.PairAdaptor;
  */
 public class AdaptorProcessor extends AbstractProcessor {
 
-	private HttpAdaptor adaptor;
-	
-	@Override
-	public void init(NutConfig config, ActionInfo ai) throws Throwable {
-		adaptor = evalHttpAdaptor(config, ai);
-	}
+    private HttpAdaptor adaptor;
+    
+    @Override
+    public void init(NutConfig config, ActionInfo ai) throws Throwable {
+        adaptor = evalHttpAdaptor(config, ai);
+    }
 
-	public void process(ActionContext ac) throws Throwable {
-		List<String> phArgs = ac.getPathArgs();
-		Object[] args = adaptor.adapt(	ac.getServletContext(),
-										ac.getRequest(),
-										ac.getResponse(),
-										phArgs.toArray(new String[phArgs.size()]));
-		ac.setMethodArgs(args);
-		doNext(ac);
-	}
+    public void process(ActionContext ac) throws Throwable {
+        List<String> phArgs = ac.getPathArgs();
+        Object[] args = adaptor.adapt(    ac.getServletContext(),
+                                        ac.getRequest(),
+                                        ac.getResponse(),
+                                        phArgs.toArray(new String[phArgs.size()]));
+        ac.setMethodArgs(args);
+        doNext(ac);
+    }
 
-	protected static HttpAdaptor evalHttpAdaptor(NutConfig config, ActionInfo ai) {
-		HttpAdaptor re = evalObj(config, ai.getAdaptorInfo());
-		if (null == re)
-			re = new PairAdaptor();
-		re.init(ai.getMethod());
-		return re;
-	}
+    protected static HttpAdaptor evalHttpAdaptor(NutConfig config, ActionInfo ai) {
+        HttpAdaptor re = evalObj(config, ai.getAdaptorInfo());
+        if (null == re)
+            re = new PairAdaptor();
+        re.init(ai.getMethod());
+        return re;
+    }
 }

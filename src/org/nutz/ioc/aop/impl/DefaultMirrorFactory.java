@@ -23,51 +23,51 @@ import org.nutz.log.Logs;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultMirrorFactory implements MirrorFactory {
-	
-	private static final Log log = Logs.get();
+    
+    private static final Log log = Logs.get();
 
-	private Ioc ioc;
+    private Ioc ioc;
 
-	private ClassDefiner cd;
+    private ClassDefiner cd;
 
-	private AopConfigration aopConfigration;
+    private AopConfigration aopConfigration;
 
-	public DefaultMirrorFactory(Ioc ioc) {
-		this.ioc = ioc;
-		this.cd = new DefaultClassDefiner(getClass().getClassLoader());
-	}
+    public DefaultMirrorFactory(Ioc ioc) {
+        this.ioc = ioc;
+        this.cd = new DefaultClassDefiner(getClass().getClassLoader());
+    }
 
-	@SuppressWarnings("unchecked")
-	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		if (MethodInterceptor.class.isAssignableFrom(type)
-			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
-			|| AopConfigration.IOCNAME.equals(name)
-			|| AopConfigration.class.isAssignableFrom(type)) {
-			return Mirror.me(type);
-		}
-		try {
-			return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
-		}
-		catch (ClassNotFoundException e) {}
-		if (aopConfigration == null)
-			if (ioc.has(AopConfigration.IOCNAME))
-				aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
-			else
-				aopConfigration = new AnnotationAopConfigration();
-		List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
-		if (interceptorPairs == null || interceptorPairs.size() < 1) {
-			if (log.isDebugEnabled())
-				log.debugf("%s , no config to enable AOP.", type);
-			return Mirror.me(type);
-		}
-		ClassAgent agent = new AsmClassAgent();
-		for (InterceptorPair interceptorPair : interceptorPairs)
-			agent.addInterceptor(	interceptorPair.getMethodMatcher(),
-									interceptorPair.getMethodInterceptor());
-		return Mirror.me(agent.define(cd, type));
-	}
+    @SuppressWarnings("unchecked")
+    public <T> Mirror<T> getMirror(Class<T> type, String name) {
+        if (MethodInterceptor.class.isAssignableFrom(type)
+            || type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
+            || AopConfigration.IOCNAME.equals(name)
+            || AopConfigration.class.isAssignableFrom(type)) {
+            return Mirror.me(type);
+        }
+        try {
+            return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
+        }
+        catch (ClassNotFoundException e) {}
+        if (aopConfigration == null)
+            if (ioc.has(AopConfigration.IOCNAME))
+                aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
+            else
+                aopConfigration = new AnnotationAopConfigration();
+        List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
+        if (interceptorPairs == null || interceptorPairs.size() < 1) {
+            if (log.isDebugEnabled())
+                log.debugf("%s , no config to enable AOP.", type);
+            return Mirror.me(type);
+        }
+        ClassAgent agent = new AsmClassAgent();
+        for (InterceptorPair interceptorPair : interceptorPairs)
+            agent.addInterceptor(    interceptorPair.getMethodMatcher(),
+                                    interceptorPair.getMethodInterceptor());
+        return Mirror.me(agent.define(cd, type));
+    }
 
-	public void setAopConfigration(AopConfigration aopConfigration) {
-		this.aopConfigration = aopConfigration;
-	}
+    public void setAopConfigration(AopConfigration aopConfigration) {
+        this.aopConfigration = aopConfigration;
+    }
 }

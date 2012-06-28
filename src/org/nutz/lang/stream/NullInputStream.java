@@ -5,8 +5,8 @@ import java.io.InputStream;
 
 public class NullInputStream extends InputStream {
 
-	public int read() throws IOException {
-		return -1;
-	}
+    public int read() throws IOException {
+        return -1;
+    }
 
 }

@@ -11,15 +11,15 @@ import org.nutz.mvc.upload.TempFile;
 
 public class TempFileInjector implements ParamInjector {
 
-	public TempFileInjector(String name) {
-		this.name = name;
-	}
+    public TempFileInjector(String name) {
+        this.name = name;
+    }
 
-	private String name;
+    private String name;
 
-	@SuppressWarnings("unchecked")
-	public TempFile get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
-		return (TempFile) ((Map<String, Object>) refer).get(name);
-	}
+    @SuppressWarnings("unchecked")
+    public TempFile get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        return (TempFile) ((Map<String, Object>) refer).get(name);
+    }
 
 }

@@ -7,51 +7,51 @@ package org.nutz.log;
  */
 public interface Log {
 
-	boolean isFatalEnabled();
+    boolean isFatalEnabled();
 
-	void fatal(Object message);
+    void fatal(Object message);
 
-	void fatalf(String fmt, Object... args);
+    void fatalf(String fmt, Object... args);
 
-	void fatal(Object message, Throwable t);
+    void fatal(Object message, Throwable t);
 
-	boolean isErrorEnabled();
+    boolean isErrorEnabled();
 
-	void error(Object message);
+    void error(Object message);
 
-	void errorf(String fmt, Object... args);
+    void errorf(String fmt, Object... args);
 
-	void error(Object message, Throwable t);
+    void error(Object message, Throwable t);
 
-	boolean isWarnEnabled();
+    boolean isWarnEnabled();
 
-	void warn(Object message);
+    void warn(Object message);
 
-	void warnf(String fmt, Object... args);
+    void warnf(String fmt, Object... args);
 
-	void warn(Object message, Throwable t);
+    void warn(Object message, Throwable t);
 
-	boolean isInfoEnabled();
+    boolean isInfoEnabled();
 
-	void info(Object message);
+    void info(Object message);
 
-	void infof(String fmt, Object... args);
+    void infof(String fmt, Object... args);
 
-	void info(Object message, Throwable t);
+    void info(Object message, Throwable t);
 
-	boolean isDebugEnabled();
+    boolean isDebugEnabled();
 
-	void debug(Object message);
+    void debug(Object message);
 
-	void debugf(String fmt, Object... args);
+    void debugf(String fmt, Object... args);
 
-	void debug(Object message, Throwable t);
+    void debug(Object message, Throwable t);
 
-	boolean isTraceEnabled();
+    boolean isTraceEnabled();
 
-	void trace(Object message);
+    void trace(Object message);
 
-	void tracef(String fmt, Object... args);
+    void tracef(String fmt, Object... args);
 
-	void trace(Object message, Throwable t);
+    void trace(Object message, Throwable t);
 }

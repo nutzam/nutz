@@ -7,16 +7,16 @@ import org.nutz.filepool.FilePool;
 
 abstract class AbstractFileValueAdaptor implements ValueAdaptor {
 
-	private FilePool pool;
+    private FilePool pool;
 
-	String suffix;
+    String suffix;
 
-	AbstractFileValueAdaptor(FilePool pool) {
-		this.pool = pool;
-	}
+    AbstractFileValueAdaptor(FilePool pool) {
+        this.pool = pool;
+    }
 
-	File createTempFile() {
-		return pool.createFile(suffix);
-	}
+    File createTempFile() {
+        return pool.createFile(suffix);
+    }
 
 }

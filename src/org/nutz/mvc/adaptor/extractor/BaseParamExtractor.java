@@ -13,19 +13,19 @@ import org.nutz.mvc.adaptor.ParamExtractor;
  * 
  */
 public class BaseParamExtractor implements ParamExtractor {
-	private HttpServletRequest req;
+    private HttpServletRequest req;
 
-	public BaseParamExtractor(HttpServletRequest req) {
-		this.req = req;
-	}
+    public BaseParamExtractor(HttpServletRequest req) {
+        this.req = req;
+    }
 
-	public String[] extractor(String name) {
-		return req.getParameterValues(name);
-	}
+    public String[] extractor(String name) {
+        return req.getParameterValues(name);
+    }
 
-	@SuppressWarnings("unchecked")
-	public Set<String> keys() {
-		return req.getParameterMap().keySet();
-	}
+    @SuppressWarnings("unchecked")
+    public Set<String> keys() {
+        return req.getParameterMap().keySet();
+    }
 
 }

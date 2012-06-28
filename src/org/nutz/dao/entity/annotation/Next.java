@@ -25,8 +25,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Next {
 
-	SQL[] value() default {};
+    SQL[] value() default {};
 
-	EL[] els() default {};
+    EL[] els() default {};
 
 }

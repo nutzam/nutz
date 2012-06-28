@@ -12,26 +12,26 @@ import org.nutz.el.opt.TwoTernary;
  *
  */
 public class CommaOpt extends TwoTernary {
-	public int fetchPriority() {
-		return 99;
-	}
+    public int fetchPriority() {
+        return 99;
+    }
 
-	@SuppressWarnings("unchecked")
-	public Object calculate() {
-		List<Object> objs = new ArrayList<Object>();
-		if(left instanceof CommaOpt){
-			List<Object> tem = (List<Object>) ((CommaOpt) left).calculate();
-			for(Object t : tem){
-				objs.add(t);
-			}
-		}else{
-			objs.add(calculateItem(left));
-		}
-		objs.add(calculateItem(right));
-		return objs;
-	}
-	public String fetchSelf() {
-		return ",";
-	}
+    @SuppressWarnings("unchecked")
+    public Object calculate() {
+        List<Object> objs = new ArrayList<Object>();
+        if(left instanceof CommaOpt){
+            List<Object> tem = (List<Object>) ((CommaOpt) left).calculate();
+            for(Object t : tem){
+                objs.add(t);
+            }
+        }else{
+            objs.add(calculateItem(left));
+        }
+        objs.add(calculateItem(right));
+        return objs;
+    }
+    public String fetchSelf() {
+        return ",";
+    }
 
 }

@@ -4,10 +4,10 @@ import org.nutz.mvc.adaptor.ParamInjector;
 
 public abstract class AttrInjector implements ParamInjector {
 
-	protected String name;
+    protected String name;
 
-	protected AttrInjector(String name) {
-		this.name = name;
-	}
+    protected AttrInjector(String name) {
+        this.name = name;
+    }
 
 }

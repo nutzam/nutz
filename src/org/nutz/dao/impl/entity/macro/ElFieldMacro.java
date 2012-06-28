@@ -13,33 +13,33 @@ import org.nutz.lang.util.Context;
 
 public class ElFieldMacro extends NutPojo {
 
-	private El bin;
+    private El bin;
 
-	private MappingField entityField;
+    private MappingField entityField;
 
-	public SqlType getSqlType() {
-		return SqlType.RUN;
-	}
+    public SqlType getSqlType() {
+        return SqlType.RUN;
+    }
 
-	public ElFieldMacro(MappingField field, String str) {
-		this.entityField = field;
-		this.bin = new El(str);
-	}
+    public ElFieldMacro(MappingField field, String str) {
+        this.entityField = field;
+        this.bin = new El(str);
+    }
 
-	private ElFieldMacro() {}
+    private ElFieldMacro() {}
 
-	public void onAfter(Connection conn, ResultSet rs) throws SQLException {
-		Context context = entityField.getEntity().wrapAsContext(getOperatingObject());
-		Object value = bin.eval(context);
-		entityField.setValue(getOperatingObject(), value);
-	}
+    public void onAfter(Connection conn, ResultSet rs) throws SQLException {
+        Context context = entityField.getEntity().wrapAsContext(getOperatingObject());
+        Object value = bin.eval(context);
+        entityField.setValue(getOperatingObject(), value);
+    }
 
-	@Override
-	public Pojo duplicate() {
-		ElFieldMacro re = new ElFieldMacro();
-		re.bin = bin;
-		re.entityField = entityField;
-		return re;
-	}
+    @Override
+    public Pojo duplicate() {
+        ElFieldMacro re = new ElFieldMacro();
+        re.bin = bin;
+        re.entityField = entityField;
+        return re;
+    }
 
 }

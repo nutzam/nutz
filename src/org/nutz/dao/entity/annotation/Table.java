@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * <pre>
  * &#064;Table(&quot;t_tab_${cid}&quot;)
  * public class MyPojo{
- * 	...
+ *     ...
  * </pre>
  * 
  * 那么 ${cid} 会在运行时被 Nutz.Dao 替换。
@@ -62,6 +62,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Table {
 
-	String value();
+    String value();
 
 }

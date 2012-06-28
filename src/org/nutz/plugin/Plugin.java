@@ -8,9 +8,9 @@ package org.nutz.plugin;
  */
 public interface Plugin {
 
-	/**
-	 * @return 当前插件是否能正常工作
-	 */
-	boolean canWork();
+    /**
+     * @return 当前插件是否能正常工作
+     */
+    boolean canWork();
 
 }

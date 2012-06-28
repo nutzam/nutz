@@ -38,8 +38,8 @@ import org.nutz.dao.DB;
 @Documented
 public @interface SQL {
 
-	DB db() default DB.OTHER;
+    DB db() default DB.OTHER;
 
-	String value();
+    String value();
 
 }

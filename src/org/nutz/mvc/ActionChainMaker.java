@@ -9,15 +9,15 @@ package org.nutz.mvc;
  */
 public interface ActionChainMaker {
 
-	/**
-	 * 根据配置信息，生成一个动作链
-	 * 
-	 * @param config
-	 *            应用配置信息对象
-	 * @param ai
-	 *            入口函数配置信息
-	 * @return 动作链
-	 */
-	ActionChain eval(NutConfig config, ActionInfo ai);
+    /**
+     * 根据配置信息，生成一个动作链
+     * 
+     * @param config
+     *            应用配置信息对象
+     * @param ai
+     *            入口函数配置信息
+     * @return 动作链
+     */
+    ActionChain eval(NutConfig config, ActionInfo ai);
 
 }

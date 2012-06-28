@@ -23,30 +23,30 @@ import org.xml.sax.SAXException;
  */
 public class XmlAopConfigration extends AbstractAopConfigration {
 
-	public XmlAopConfigration(String... fileNames) throws ParserConfigurationException,
-			SAXException, IOException {
-		DocumentBuilder builder = Lang.xmls();
-		Document document;
-		List<AopConfigrationItem> aopList = new ArrayList<AopConfigrationItem>();
-		List<NutResource> list = Scans.me().loadResource(null, fileNames);
-		for (NutResource nutResource : list) {
-			document = builder.parse(nutResource.getInputStream());
-			document.normalizeDocument();
-			NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
-			for (int i = 0; i < nodeListZ.getLength(); i++)
-				aopList.add(parse((Element) nodeListZ.item(i)));
-		}
-		setAopItemList(aopList);
-	}
+    public XmlAopConfigration(String... fileNames) throws ParserConfigurationException,
+            SAXException, IOException {
+        DocumentBuilder builder = Lang.xmls();
+        Document document;
+        List<AopConfigrationItem> aopList = new ArrayList<AopConfigrationItem>();
+        List<NutResource> list = Scans.me().loadResource(null, fileNames);
+        for (NutResource nutResource : list) {
+            document = builder.parse(nutResource.getInputStream());
+            document.normalizeDocument();
+            NodeList nodeListZ = ((Element) document.getDocumentElement()).getElementsByTagName("class");
+            for (int i = 0; i < nodeListZ.getLength(); i++)
+                aopList.add(parse((Element) nodeListZ.item(i)));
+        }
+        setAopItemList(aopList);
+    }
 
-	private AopConfigrationItem parse(Element item) {
-		AopConfigrationItem aopItem = new AopConfigrationItem();
-		aopItem.setClassName(item.getAttribute("name"));
-		aopItem.setMethodName(item.getAttribute("method"));
-		aopItem.setInterceptor(item.getAttribute("interceptor"));
-		if (item.hasAttribute("singleton"))
-			aopItem.setSingleton(Boolean.parseBoolean(item.getAttribute("singleton")));
-		return aopItem;
-	}
+    private AopConfigrationItem parse(Element item) {
+        AopConfigrationItem aopItem = new AopConfigrationItem();
+        aopItem.setClassName(item.getAttribute("name"));
+        aopItem.setMethodName(item.getAttribute("method"));
+        aopItem.setInterceptor(item.getAttribute("interceptor"));
+        if (item.hasAttribute("singleton"))
+            aopItem.setSingleton(Boolean.parseBoolean(item.getAttribute("singleton")));
+        return aopItem;
+    }
 
 }

@@ -7,6 +7,6 @@ import java.io.Reader;
  */
 public interface JsonParser {
 
-	Object parse(Reader reader) throws Exception;
-	
+    Object parse(Reader reader) throws Exception;
+    
 }

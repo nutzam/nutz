@@ -9,13 +9,13 @@ package org.nutz.lang.eject;
  */
 public interface Ejecting {
 
-	/**
-	 * 通过反射，从一个对象中获取某一字段的值
-	 * 
-	 * @param obj
-	 *            被取值的对象
-	 * @return 值
-	 */
-	Object eject(Object obj);
+    /**
+     * 通过反射，从一个对象中获取某一字段的值
+     * 
+     * @param obj
+     *            被取值的对象
+     * @return 值
+     */
+    Object eject(Object obj);
 
 }
