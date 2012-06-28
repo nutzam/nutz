@@ -2,7 +2,7 @@ package org.nutz.http.impl.wrapper;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.http.impl.NutHttpResp;
+import org.nutz.web.NutHttpResp;
 
 public class NutHttpRespWrapper extends NutHttpResp {
 

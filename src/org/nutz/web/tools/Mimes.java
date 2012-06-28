@@ -1,4 +1,4 @@
-package org.nutz.http.impl;
+package org.nutz.web.tools;
 
 import java.util.HashMap;
 import java.util.Map;

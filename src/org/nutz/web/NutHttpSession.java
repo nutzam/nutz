@@ -1,6 +1,8 @@
-package org.nutz.http.impl;
+package org.nutz.web;
+
 
 public class NutHttpSession extends HttpObject {
+    
 	protected String id;
 	public String getId() {
 		return id;

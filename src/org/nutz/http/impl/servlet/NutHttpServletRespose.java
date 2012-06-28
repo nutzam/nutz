@@ -7,8 +7,8 @@ import java.lang.reflect.Proxy;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 
-import org.nutz.http.impl.NutHttpResp;
 import org.nutz.lang.Lang;
+import org.nutz.web.NutHttpResp;
 
 public class NutHttpServletRespose extends HttpServletResponseWrapper {
 

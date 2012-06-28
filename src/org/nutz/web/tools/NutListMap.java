@@ -1,4 +1,4 @@
-package org.nutz.http.server;
+package org.nutz.web.tools;
 
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.nutz.http.impl.Https;
 import org.nutz.lang.Lang;
+import org.nutz.web.Https;
 
 public class NutListMap {
 

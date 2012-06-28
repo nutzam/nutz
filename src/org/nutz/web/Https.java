@@ -1,4 +1,4 @@
-package org.nutz.http.impl;
+package org.nutz.web;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

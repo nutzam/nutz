@@ -1,4 +1,4 @@
-package org.nutz.http.impl;
+package org.nutz.web;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -129,4 +129,7 @@ public class NutHttpResp extends HttpMessage {
 	public NutHttpReq req() {
 		return req;
 	}
+	public void setReq(NutHttpReq req) {
+        this.req = req;
+    }
 }

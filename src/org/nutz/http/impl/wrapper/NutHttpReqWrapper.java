@@ -2,7 +2,7 @@ package org.nutz.http.impl.wrapper;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.nutz.http.impl.NutHttpReq;
+import org.nutz.web.NutHttpReq;
 
 /**
  * 将HttpServletRequest封装为NutHttpReq对象

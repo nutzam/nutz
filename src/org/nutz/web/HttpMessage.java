@@ -1,4 +1,4 @@
-package org.nutz.http.impl;
+package org.nutz.web;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -6,7 +6,8 @@ import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 
-import org.nutz.http.server.NutListMap;
+import org.nutz.web.tools.NutListMap;
+
 
 /**
  * 抽象的Http消息

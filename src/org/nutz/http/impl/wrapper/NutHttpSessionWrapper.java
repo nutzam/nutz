@@ -2,7 +2,7 @@ package org.nutz.http.impl.wrapper;
 
 import javax.servlet.http.HttpSession;
 
-import org.nutz.http.impl.NutHttpSession;
+import org.nutz.web.NutHttpSession;
 
 public class NutHttpSessionWrapper extends NutHttpSession {
 

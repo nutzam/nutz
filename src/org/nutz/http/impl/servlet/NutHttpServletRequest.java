@@ -7,8 +7,8 @@ import java.lang.reflect.Proxy;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.nutz.http.impl.NutHttpReq;
 import org.nutz.lang.Lang;
+import org.nutz.web.NutHttpReq;
 
 public class NutHttpServletRequest extends HttpServletRequestWrapper {
 	protected NutHttpReq req;

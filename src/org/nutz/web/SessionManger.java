@@ -1,4 +1,5 @@
-package org.nutz.http.impl;
+package org.nutz.web;
+
 
 
 public interface SessionManger {

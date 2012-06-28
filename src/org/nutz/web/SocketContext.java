@@ -1,4 +1,4 @@
-package org.nutz.http.server.conn;
+package org.nutz.web;
 
 import java.net.Socket;
 

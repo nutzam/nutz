@@ -1,4 +1,4 @@
-package org.nutz.http.impl;
+package org.nutz.web;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.util.Context;
