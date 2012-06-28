@@ -114,7 +114,11 @@ public class Converter {
 			switch(bracket.poll()){
 			case Method:
 				item = new Object[]{new RBracketOpt(),new InvokeMethodOpt()};
+				break;
+			default :
+				break;
 			}
+			
 		}
 		//转换负号'-'
 		if(item instanceof SubOpt && NegativeOpt.isNegetive(prev)){

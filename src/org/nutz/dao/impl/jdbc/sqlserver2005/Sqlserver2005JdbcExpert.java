@@ -139,6 +139,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
 			return "float";
 		case BINARY:
 			return "BINARY";
+		default :
+			break;
 		}
 		return super.evalFieldType(mf);
 	}

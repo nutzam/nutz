@@ -62,6 +62,8 @@ public class DerbyJdbcExpert extends MysqlJdbcExpert {
 			return "TIMESTAMP";
 		case BOOLEAN :
 			return "varchar(1)";
+		default :
+			break;
 		}
 		// 其它的参照默认字段规则 ...
 		return super.evalFieldType(mf);

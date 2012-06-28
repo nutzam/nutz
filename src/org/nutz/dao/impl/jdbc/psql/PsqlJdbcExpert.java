@@ -129,6 +129,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 			
 		case DATETIME:
 			return "TIMESTAMP";
+		default :
+			break;
 		}
 		return super.evalFieldType(mf);
 	}

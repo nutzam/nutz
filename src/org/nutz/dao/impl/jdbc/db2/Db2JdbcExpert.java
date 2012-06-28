@@ -102,6 +102,8 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
 			if (mf.getTypeMirror().isDouble())
 				return "decimal(15,10)";
 			return "FLOAT";
+		default:
+			break;
 		}
 		return super.evalFieldType(mf);
 	}
