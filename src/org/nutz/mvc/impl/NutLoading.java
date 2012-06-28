@@ -94,8 +94,8 @@ public class NutLoading implements Loading {
              * 分析本地化字符串
              */
             evalLocalization(config, mainModule);
-            
-            //初始化SessionProvider
+
+            // 初始化SessionProvider
             createSessionProvider(config, mainModule);
 
             /*
@@ -117,14 +117,13 @@ public class NutLoading implements Loading {
         return mapping;
 
     }
-    
 
-    private UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule) throws Exception{
+    private UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule) throws Exception {
         /*
          * @ TODO 个人建议可以将这个方法所涉及的内容转换到Loadings类或相应的组装类中,
          * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
          */
-        
+
         /*
          * 准备 UrlMapping
          */
@@ -150,9 +149,9 @@ public class NutLoading implements Loading {
         /*
          * 准备要加载的模块列表
          */
-        //TODO 为什么用Set呢? 用List不是更快吗?
+        // TODO 为什么用Set呢? 用List不是更快吗?
         Set<Class<?>> modules = Loadings.scanModules(mainModule);
-        
+
         if (modules.isEmpty())
             if (log.isWarnEnabled())
                 log.warn("None module classes found!!!");
@@ -176,19 +175,19 @@ public class NutLoading implements Loading {
                 mapping.add(maker, info, config);
                 hasAtMethod = true;
             }
-            
-            //记录pathMap
-            if(null != moduleInfo.getPathMap()){
-                for(Entry<String, String> en : moduleInfo.getPathMap().entrySet()){
+
+            // 记录pathMap
+            if (null != moduleInfo.getPathMap()) {
+                for (Entry<String, String> en : moduleInfo.getPathMap().entrySet()) {
                     config.getAtMap().add(en.getKey(), en.getValue());
                 }
             }
         }
-        
+
         if (!hasAtMethod)
             if (log.isWarnEnabled())
                 log.warn("None @At found in any modules class!!");
-        
+
         return mapping;
     }
 
@@ -214,7 +213,6 @@ public class NutLoading implements Loading {
         }
         config.getServletContext().setAttribute(Loading.CONTEXT_NAME, context);
     }
-    
 
     private UrlMapping createUrlMapping(NutConfig config) throws Exception {
         UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
@@ -247,21 +245,37 @@ public class NutLoading implements Loading {
         Localization lc = mainModule.getAnnotation(Localization.class);
         if (null != lc) {
             if (log.isDebugEnabled())
-                log.debugf("Localization message: '%s'", lc.value());
-            
+                log.debugf("Localization: %s('%s') %s dft<%s>",
+                           lc.type().getName(),
+                           lc.value(),
+                           Strings.isBlank(lc.beanName()) ? "" : "$ioc->" + lc.beanName(),
+                           lc.defaultLocalizationKey());
+
             MessageLoader msgLoader = null;
+            // 通过 Ioc 方式加载 MessageLoader ...
             if (!Strings.isBlank(lc.beanName())) {
                 msgLoader = config.getIoc().get(lc.type(), lc.beanName());
-            } else {
+            }
+            // 普通方式加载
+            else {
                 msgLoader = Mirror.me(lc.type()).born();
             }
+            // 加载数据
             Map<String, Map<String, Object>> msgss = msgLoader.load(lc.value());
+
+            // 保存消息 Map
             Mvcs.setMessageSet(msgss);
-        } else if (log.isDebugEnabled()) {
+
+            // 如果有声明默认语言 ...
+            if (!Strings.isBlank(lc.defaultLocalizationKey()))
+                Mvcs.setDefaultLocalizationKey(lc.defaultLocalizationKey());
+
+        }
+        // 否则记录一下
+        else if (log.isDebugEnabled()) {
             log.debug("@Localization not define");
         }
     }
-
 
     private ViewMaker[] createViewMakers(Class<?> mainModule) throws Exception {
         Views vms = mainModule.getAnnotation(Views.class);
@@ -305,7 +319,7 @@ public class NutLoading implements Loading {
         } else if (log.isInfoEnabled())
             log.info("!!!Your application without @IocBy supporting");
     }
-    
+
     @SuppressWarnings({"all"})
     private void createSessionProvider(NutConfig config, Class<?> mainModule) throws Exception {
         SessionBy sb = mainModule.getAnnotation(SessionBy.class);
@@ -316,11 +330,10 @@ public class NutLoading implements Loading {
             else
                 sp = Mirror.me(sb.value()).born(sb.args());
             if (log.isInfoEnabled())
-                log.info("SessionBy --> "+ sp);
+                log.info("SessionBy --> " + sp);
             config.setSessionProvider(sp);
         }
     }
-
 
     public void depose(NutConfig config) {
         if (log.isInfoEnabled())

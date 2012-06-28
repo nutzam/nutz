@@ -26,7 +26,7 @@
 		{{{
 		...
 		@Localization("mymsg")
-		public class MyMainClass {
+		public class MyMainModule {
 			...
 		}}}
 		 * 在主模块上声明 `@Localization` 注解，指向一个目录
@@ -96,6 +96,14 @@
     ...
     }}}
 
+    在 1.b.45 后，Nutz 又给出一个更直接的实现，你可以直接:
+    {{{
+    ...
+    @Localization(value="mymsg", defaultLocalizationKey="zh_CN")
+    public class MyMainModule {
+    ...
+    }}}
+
 ------------------------------------------------------------------------------------------
 使用过滤器
 	有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"{*本地化字符串}"
@@ -123,7 +131,68 @@
 	
 ------------------------------------------------------------------------------------------
 定制自己的本地化字符串方式
-	很简单是吗？ 你想将 Message 字符串存在 XML 里，或者你想换一种 Message 字符串的存储方式。
-	那么实现一个新的 {*org.nutz.mvc.MessageLoader}，并在 @Localization 注解的 type 属性中注明就是了。
-	不过你的实现类必须有一个接受一个 String 类型参数的构造函数，以便 Nutz.Mvc 为你传入 @Localization 里面声明
-	的值。
+    
+    你需要自己实现一个 MessageLoader 的接口，然后声明到 '@Localization' 中。
+    比如你的实现类名字为 'MyMessageLoader'，那么你应该这么声明:
+    {{{
+    ...
+    @Localization( type=MyMessageLoader.class,
+                   value="msg" )
+    public class MyMainModule {
+    ...
+    }}}
+
+    对于 MessageLoader 接口，就一个方法需要你来实现:
+    {{{
+    public interface MessageLoader {
+        /**
+         * 本函数将根据传入的 "refer" 参数，返回一个 Map <br>
+         * Map 的键是语言的名称，比如 "en_US", "zh_CN" 等，<br>
+         * 你会通过 Mvcs.setLocalizationKey 来直接使用这个键值
+         * <p>
+         * 与键对应的是一个消息字符串的 Map, 该 Map 的键就是消息键，值就是消息内容
+         * 
+         * @param refer
+         *            参考值。来自 '@Localization.value'
+         * @return 多国语言字符串的 Map
+         */
+        Map<String, Map<String, Object>> load(String refer);
+    }
+    }}}
+
+    你声明在 '@Localization' 中的 "value" 的值，会被传入这个接口，作为 refer 参数的值
+
+------------------------------------------------------------------------------------------
+让 Ioc 容器管理你的 MessageLoader
+    
+    这是 1.b.45 已后才有的方法:
+    {{{
+    ...
+    @Localization( type=MyMessageLoader.class,
+                   beanName="myMessages", 
+                   value="msg" )
+    public class MyMainModule {
+    ...
+    }}}
+
+    提供了 "beanName" 属性，这样，Nutz.Mvc 将从 Ioc 容器中加载名字为 "myMessages" 的对象。
+    当然它的类型必须是你声明的 "MyMessageLoader.class" 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

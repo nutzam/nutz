@@ -21,18 +21,25 @@ import org.nutz.mvc.impl.NutMessageLoader;
 @Documented
 public @interface Localization {
 
-	/**
-	 * @return 加载类的类型
-	 */
-	Class<? extends MessageLoader> type() default NutMessageLoader.class;
+    /**
+     * @return 加载类的类型
+     */
+    Class<? extends MessageLoader> type() default NutMessageLoader.class;
 
-	/**
-	 * @return 传递给 Message Loader 的值
-	 */
-	String value();
+    /**
+     * @return 传递给 Message Loader 的值
+     */
+    String value();
 
-	/**
-	 * @return 如果有值，则从 Ioc 容器中获取 MessageLoader（需要 '@IocBy' 支持）
-	 */
-	String beanName() default "";
+    /**
+     * @return 如果有值，则从 Ioc 容器中获取 MessageLoader（需要 '@IocBy' 支持）
+     * @since 1.b.45
+     */
+    String beanName() default "";
+
+    /**
+     * @return 整个应用默认的语言
+     * @since 1.b.45
+     */
+    String defaultLocalizationKey() default "";
 }
