@@ -168,7 +168,7 @@ public class StructureConvert extends MaplEach implements MaplConvert{
     }
     
     private String space(String path){
-        return path == "" ? "" : ".";
+        return "".equals(path) ? "" : ".";
     }
     
     

@@ -117,7 +117,7 @@ public class UploadAdaptor extends PairAdaptor {
             return new MapSelfInjector();
 
         if (null == param)
-            return super.evalInjectorBy(type, param);
+            return super.evalInjectorBy(type, null);
 
         String paramName = param.value();
 

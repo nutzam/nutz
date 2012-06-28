@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -48,7 +49,7 @@ public class AnnotationIocLoader implements IocLoader {
                         Castors.me().castToString(map.keySet()));
         }
         else {
-            log.warn("NONE Annotation-Class found!! Check your configure or report a bug!! packages=" + packages);
+            log.warn("NONE Annotation-Class found!! Check your configure or report a bug!! packages=" + Arrays.toString(packages));
         }
     }
 

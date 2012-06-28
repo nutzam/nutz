@@ -1,5 +1,7 @@
 package org.nutz.log.impl;
 
+import java.util.Arrays;
+
 import org.nutz.log.Log;
 
 public abstract class AbstractLog implements Log {
@@ -62,7 +64,7 @@ public abstract class AbstractLog implements Log {
         }
         catch (Throwable e) { //即使格式错误也继续log
             if (isWarnEnabled())
-                warn("String format fail in log , fmt = "+ obj + " , args = " +args,e);
+                warn("String format fail in log , fmt = "+ obj + " , args = " +Arrays.toString(args),e);
             return LOGINFO_ERROR;
         }
     }

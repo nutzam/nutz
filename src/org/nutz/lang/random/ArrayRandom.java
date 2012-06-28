@@ -10,6 +10,7 @@ public class ArrayRandom<T> implements Random<T> {
     private T[] array;
     private Integer len;
     private java.util.Random r = new java.util.Random();
+    private Object lock = new Object();
 
     public ArrayRandom(T[] array) {
         this.array = array;
@@ -17,7 +18,7 @@ public class ArrayRandom<T> implements Random<T> {
     }
 
     public T next() {
-        synchronized (len) {
+        synchronized (lock) {
             if (len <= 0)
                 return null;
             if (len == 1)

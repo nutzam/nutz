@@ -110,7 +110,7 @@ public class MethodParamNamesScaner {
             case 1://CONSTANT_Utf8:
                 int len = dis.readUnsignedShort();
                 byte[] data = new byte[len];
-                dis.read(data);
+                dis.readFully(data);
                 strs.put(i + 1, new String(data, "UTF-8"));//必然是UTF8的
                 break;
             case 15://CONSTANT_MethodHandle:

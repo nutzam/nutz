@@ -15,6 +15,8 @@ public abstract class AbstractOpt implements Operator{
      */
     public abstract String fetchSelf();
     public boolean equals(Object obj) {
+        if (obj == null)
+            return false;
         if(obj.equals(fetchSelf())){
             return true;
         }

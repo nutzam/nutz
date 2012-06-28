@@ -237,7 +237,7 @@ public class Scans {
         String packagePath = pkg.replace('.', '/').replace('\\', '/');
         if (!packagePath.endsWith("/"))
             packagePath += "/";
-        return rs2class(packagePath, scan(packagePath, regex));
+        return rs2class(scan(packagePath, regex));
     }
 
     public static boolean isInJar(File file) {
@@ -317,9 +317,7 @@ public class Scans {
      *            列表
      * @return 类对象列表
      */
-    private static List<Class<?>> rs2class(String packagePath, List<NutResource> list) {
-        if (packagePath.endsWith("/"))
-            packagePath = packagePath.substring(0, packagePath.length() - 1);
+    private static List<Class<?>> rs2class(List<NutResource> list) {
         Set<Class<?>> re = new HashSet<Class<?>>(list.size());
         if (!list.isEmpty()) {
             for (NutResource nr : list) {

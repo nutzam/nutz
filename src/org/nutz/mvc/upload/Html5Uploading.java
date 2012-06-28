@@ -81,7 +81,7 @@ public class Html5Uploading implements Uploading {
             NutMap params = Uploads.createParamsMap(req);
             
             //检查空文件
-            if (tmp.length() == 0 || context.isIgnoreNull()) {
+            if (tmp.length() == 0 && context.isIgnoreNull()) {
                 if (log.isDebugEnabled())
                     log.debug("emtry file , drop it ~~");
                 tmp.delete();

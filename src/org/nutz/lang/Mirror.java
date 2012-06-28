@@ -689,10 +689,10 @@ public class Mirror<T> {
     public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
         if (null == value) {
             try {
-                setValue(obj, this.getField(fieldName), value);
+                setValue(obj, this.getField(fieldName), null);
             }
             catch (Exception e1) {
-                throw makeSetValueException(obj.getClass(), fieldName, value, e1);
+                throw makeSetValueException(obj.getClass(), fieldName, null, e1);
             }
         } else {
             try {
