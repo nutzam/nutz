@@ -5,7 +5,7 @@
 
 现有实现
 	
-	已经有一个独立项目来完成这个功能 -- [http://code.google.com/p/nutzmole/ Nutz.Mole], 现阶段仅仅是一个简单
+	已经有一个独立项目来完成这个功能 -- [https://github.com/nutzam/nutzmole nutzam.nutzmole], 现阶段仅仅是一个简单
 	实现,已经可以完成DB-->项目的生成,但CRUD页面还没完成,一对一/一对多/多对多关系未完成.
 	
 	你可以通过svn来获取当前的代码,期待的建议与想法.

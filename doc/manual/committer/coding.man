@@ -12,8 +12,8 @@
 
 ------------------------------------------------------------------------------------------
 1. 代码格式
-	 # {#F00;*R}-使用统一的 Eclipse 的代码格式: [http://code.google.com/p/nutz/source/browse/trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml]
-		 * 请从 svn 的 trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml 获得此文件
+	 # {#F00;*R}-使用统一的 Eclipse 的代码格式: [https://github.com/nutzam/nutz/blob/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml]
+		 * 请从 [https://raw.github.com/nutzam/nutz/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml github项目中] 获得此文件
 	 # {#080;*S}-非 Eclipse 用户请阅读上述 XML 代码自行遵守
 		 * {/基本上我们没有为非 Eclipse 用户指定规范，我们还没有一个好办法}
 ------------------------------------------------------------------------------------------

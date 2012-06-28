@@ -42,7 +42,7 @@ Hello Castors
 ----------------------------------------------------------------------------------------------------------------
 Castors 的原理
 
-	请查看 [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/castor/castor org.nutz.castor.castor  包]，
+	请查看 [https://github.com/nutzam/nutz/tree/master/src/org/nutz/castor/castor org.nutz.castor.castor  包]，
 	这里面的一个个的实现类就是 Nutz 为你内置的类型转换器。
 
 	每当你要转换一个对象，Nutz.castors 都会看看能不能直接转换，如果不能，它就在这个包里找找，看看有没有合适的转换器。
