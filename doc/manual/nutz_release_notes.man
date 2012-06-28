@@ -44,7 +44,7 @@
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
 	贡献的种类:
-	 * 问题: 给项目的[http://code.google.com/p/nutz/issues/list 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
 	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
 	 * 代码: 提交过至少一个修订
 	 * Demo: 为 [https://github.com/nutzam/nutzdemo NutzDemo] 提交过代码

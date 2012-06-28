@@ -8,7 +8,7 @@
 		 * 请确保你修改的类上的 JDoc, 有你的大名，比如 "@author zozoh(zozohtnt@gmail.com)"
 			 * 首先，体现了你的贡献
 			 * 否则，出了问题，不知道由谁主要负责
-		 * 请尽量用统一的 code formatter， 导入 /trunk/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml，否则我们同步代码是很难比较
+		 * 请尽量用统一的 code formatter， 导入 /nutz/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml，否则我们同步代码是很难比较
 		 * 去掉的代码不要注释掉，直接删掉。我们会用文件比较工具比较两个版本的不同
 		 
 	你需要知道
@@ -36,7 +36,7 @@
 		 * 这是不可避免的
 		 * 如果有充足的理由，我很高兴这样做
 		 * 我很喜欢我现在写出的代码，但是我不能保证一直喜欢它们
-		 * 实际上，我认为在相当长的一段时间里，我们没有精力维护两个或两个以上的版本，Nutz 应该只有 trunk
+		 * 实际上，我认为在相当长的一段时间里，我们没有精力维护两个或两个以上的版本，Nutz 应该只有 master
 	
 
 

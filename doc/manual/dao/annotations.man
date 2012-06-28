@@ -5,9 +5,10 @@
 --------------------------------------------------------------------------------------------------------
 以下的列表，是 Nutz.Dao 支持的全部注解，如果你想深入了解每个注解的意义，你可以
  * 请参看相关的 JDoc
- * 直接浏览源代码: [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/dao/entity/annotation]
- * 用 SVN 工具检出源代码: [http://code.google.com/p/nutz/source/checkout]
- * 下载源代码: [http://code.google.com/p/nutz/downloads/list]
+ * 直接浏览源代码: [https://github.com/nutzam/nutz/tree/master/src/org/nutz/dao/entity/annotation]
+ * 用 Git 工具检出源代码: [https://github.com/nutzam/nutz.git]
+ * 用 SVN 工具检出源代码（因只在新版本发布的时候更新该地址，不推荐）: [http://code.google.com/p/nutz/source/checkout]
+ * 下载源代码: [https://github.com/ywjno/yuchberry-server-plus/zipball/master]
 
 || {#888;@Column}	|| 字段			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Column} ||
 || {#888;@ColDefine}|| 字段精确定义	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.ColDefine} ||
