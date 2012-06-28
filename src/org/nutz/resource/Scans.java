@@ -28,6 +28,7 @@ import org.nutz.lang.util.Disks;
 import org.nutz.lang.util.FileVisitor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.resource.impl.ErrorResourceLocation;
 import org.nutz.resource.impl.FileResource;
 import org.nutz.resource.impl.ResourceLocation;
 
@@ -47,7 +48,7 @@ public class Scans {
 	public Scans init(ServletContext sc) {
 		// 获取classes文件夹的路径
 		String classesPath = sc.getRealPath("/WEB-INF/classes/");
-		if (classesPath != null ) {
+		if (classesPath != null) {
 			locations.add(ResourceLocation.file(new File(classesPath)));
 		} else {
 			if (log.isWarnEnabled())
@@ -78,9 +79,10 @@ public class Scans {
 		}
 		// 如果找不到?
 		if (list.size() < 1 && paths.length > 0)
-			throw Lang.makeThrow(RuntimeException.class,
-					"folder or file like '%s' no found in %s", regex, Castors
-							.me().castToString(paths));
+			throw Lang.makeThrow(	RuntimeException.class,
+									"folder or file like '%s' no found in %s",
+									regex,
+									Castors.me().castToString(paths));
 		return list;
 	}
 
@@ -89,15 +91,17 @@ public class Scans {
 			return;
 		try {
 			registerLocation(klass.getProtectionDomain().getCodeSource().getLocation());
-		}	catch (Throwable e) { //Android上会死
+		}
+		catch (Throwable e) { // Android上会死
 			String classFile = klass.getName().replace('.', '/') + ".class";
 			URL url = klass.getClassLoader().getResource(classFile);
-			if (url != null) { //基本上不可能为null
+			if (url != null) { // 基本上不可能为null
 				String str = url.toString();
 				str = str.substring(0, str.length() - classFile.length());
 				try {
 					registerLocation(new URL(str));
-				} catch (Throwable e2) {
+				}
+				catch (Throwable e2) {
 					if (log.isInfoEnabled())
 						log.info("Fail to registerLocation --> " + str, e);
 				}
@@ -110,28 +114,27 @@ public class Scans {
 			return;
 		locations.add(makeResourceLocation(url));
 	}
-	
+
 	protected ResourceLocation makeResourceLocation(URL url) {
 		try {
 			String str = url.toString();
 			if (str.endsWith(".jar")) {
 				return ResourceLocation.jar(str);
-			} 
-			else if (str.contains("jar!")) {
+			} else if (str.contains("jar!")) {
 				return ResourceLocation.jar(str.substring(0, str.lastIndexOf("jar!") + 3));
-			}
-			else if (str.startsWith("file:")) {
+			} else if (str.startsWith("file:")) {
 				return ResourceLocation.file(new File(url.getFile()));
+			} else {
+				if (log.isDebugEnabled())
+					log.debug("Unkown URL " + url);
+				//return ResourceLocation.file(new File(url.toURI()));
 			}
-			else {
-				return ResourceLocation.file(new File(url.toURI()));
-			}
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			if (log.isInfoEnabled())
 				log.info("Fail to registerLocation --> " + url, e);
-			return null;
 		}
-		
+		return new ErrorResourceLocation(url);
 	}
 
 	public List<NutResource> scan(String src) {
@@ -140,7 +143,9 @@ public class Scans {
 
 	/**
 	 * 在磁盘目录或者 CLASSPATH(包括 jar) 中搜索资源
-	 * <p/><b>核心方法</b>
+	 * <p/>
+	 * <b>核心方法</b>
+	 * 
 	 * @param src
 	 *            起始路径
 	 * @param regex
@@ -158,8 +163,8 @@ public class Scans {
 			if (srcFile.exists()) {
 				if (srcFile.isDirectory()) {
 					Disks.visitFile(srcFile,
-							new ResourceFileVisitor(list, src),
-							new ResourceFileFilter(pattern));
+									new ResourceFileVisitor(list, src),
+									new ResourceFileFilter(pattern));
 				} else {
 					list.add(new FileResource(src, srcFile));
 				}
@@ -170,9 +175,9 @@ public class Scans {
 		for (ResourceLocation location : locations) {
 			location.scan(src, pattern, list);
 		}
-		//如果啥都没找到,那么,用增强扫描
+		// 如果啥都没找到,那么,用增强扫描
 		if (list.isEmpty()) {
-			try{
+			try {
 				Enumeration<URL> enu = getClass().getClassLoader().getResources(src);
 				if (enu != null && enu.hasMoreElements()) {
 					while (enu.hasMoreElements()) {
@@ -183,21 +188,22 @@ public class Scans {
 								loc.scan(src, pattern, list);
 							else
 								loc.scan("", pattern, list);
-						} catch (Throwable e) {
+						}
+						catch (Throwable e) {
 							if (log.isTraceEnabled())
 								log.trace("", e);
 						}
 					}
 				}
-			} catch (Throwable e) {
+			}
+			catch (Throwable e) {
 				if (log.isDebugEnabled())
 					log.debug("Fail to run deep scan!", e);
 			}
 		}
 		list = new ArrayList<NutResource>((new HashSet<NutResource>(list)));
 		if (log.isDebugEnabled())
-			log.debugf("Found %s resource by src( %s ) , regex( %s )",
-					list.size(), src, regex);
+			log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
 		return list;
 	}
 
@@ -255,17 +261,17 @@ public class Scans {
 				if (ens.isDirectory())
 					continue;
 				if (jeInfo.getEntryName().equals(ens.getName())) {
-					return makeJarNutResource(jeInfo.getJarPath(),
-							ens.getName(), "");
+					return makeJarNutResource(jeInfo.getJarPath(), ens.getName(), "");
 				}
 			}
-		} catch (IOException e) {
 		}
+		catch (IOException e) {}
 		return null;
 	}
 
-	public static NutResource makeJarNutResource(final String jarPath,
-			final String entryName, final String base) throws IOException {
+	public static NutResource makeJarNutResource(	final String jarPath,
+													final String entryName,
+													final String base) throws IOException {
 		NutResource nutResource = new NutResource() {
 
 			@Override
@@ -286,12 +292,13 @@ public class Scans {
 		return nutResource;
 	}
 
-	public static ZipInputStream makeZipInputStream(String jarPath)
-			throws MalformedURLException, IOException {
+	public static ZipInputStream makeZipInputStream(String jarPath) throws MalformedURLException,
+			IOException {
 		ZipInputStream zis = null;
 		try {
 			zis = new ZipInputStream(new FileInputStream(jarPath));
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			zis = new ZipInputStream(new URL(jarPath).openStream());
 		}
 		return zis;
@@ -310,8 +317,7 @@ public class Scans {
 	 *            列表
 	 * @return 类对象列表
 	 */
-	private static List<Class<?>> rs2class(String packagePath,
-			List<NutResource> list) {
+	private static List<Class<?>> rs2class(String packagePath, List<NutResource> list) {
 		if (packagePath.endsWith("/"))
 			packagePath = packagePath.substring(0, packagePath.length() - 1);
 		Set<Class<?>> re = new HashSet<Class<?>>(list.size());
@@ -319,8 +325,7 @@ public class Scans {
 			for (NutResource nr : list) {
 				if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
 					if (log.isInfoEnabled())
-						log.infof("Resource can't map to Class, Resource %s",
-								nr);
+						log.infof("Resource can't map to Class, Resource %s", nr);
 					continue;
 				}
 				InputStream in = null;
@@ -329,22 +334,21 @@ public class Scans {
 					String className = ClassTools.getClassName(in);
 					if (className == null) {
 						if (log.isInfoEnabled())
-							log.infof(
-									"Resource can't map to Class, Resource %s",
-									nr);
+							log.infof("Resource can't map to Class, Resource %s", nr);
 						continue;
 					}
 					Class<?> klass = Lang.loadClass(className);
 					re.add(klass);
-				} catch (ClassNotFoundException e) {
+				}
+				catch (ClassNotFoundException e) {
 					if (log.isInfoEnabled())
-						log.infof("Resource can't map to Class, Resource %s",
-								nr, e);
-				} catch (IOException e) {
+						log.infof("Resource can't map to Class, Resource %s", nr, e);
+				}
+				catch (IOException e) {
 					if (log.isInfoEnabled())
-						log.infof("Resource can't map to Class, Resource %s",
-								nr, e);
-				} finally {
+						log.infof("Resource can't map to Class, Resource %s", nr, e);
+				}
+				finally {
 					Streams.safeClose(in);
 				}
 			}
@@ -394,9 +398,9 @@ public class Scans {
 	private static final Log log = Logs.get();
 
 	private static final Scans me = new Scans();
-	
+
 	private Set<ResourceLocation> locations = new HashSet<ResourceLocation>();
-	
+
 	private Scans() {
 		// 当前文件夹
 		locations.add(ResourceLocation.file(new File(".")));
@@ -404,7 +408,9 @@ public class Scans {
 		registerLocation(Nutz.class);
 
 		// 通过/META-INF/MANIFEST.MF等标记文件,获知所有jar文件的路径
-		String[] referPaths = new String[] { "META-INF/MANIFEST.MF", "log4j.properties",".nutz.resource.mark" };
+		String[] referPaths = new String[]{	"META-INF/MANIFEST.MF",
+											"log4j.properties",
+											".nutz.resource.mark"};
 		ClassLoader cloader = getClass().getClassLoader();
 		for (String referPath : referPaths) {
 			try {
@@ -413,16 +419,16 @@ public class Scans {
 					URL url = urls.nextElement();
 					String url_str = url.toString();
 					if (url.toString().contains("jar!"))
-						url = new URL(url_str.substring(0, url_str.length() - referPath.length() - 2));
+						url = new URL(url_str.substring(0, url_str.length()
+															- referPath.length()
+															- 2));
 					else
 						url = new URL(url_str.substring(0, url_str.length() - referPath.length()));
 					registerLocation(url);
 				}
-			} catch (IOException e) {
 			}
+			catch (IOException e) {}
 		}
-			
-		
 
 		// 把ClassPath也扫描一下
 		try {
@@ -434,14 +440,12 @@ public class Scans {
 				else
 					locations.add(ResourceLocation.file(new File(pathZ)));
 			}
-		} catch (Throwable e) {
+		}
+		catch (Throwable e) {
 			// TODO: handle exception
 		}
-		
+
 		if (log.isDebugEnabled())
 			log.debug("Locations for Scans:\n" + locations);
 	}
 }
-
-
-

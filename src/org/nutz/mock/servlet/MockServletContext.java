@@ -6,23 +6,31 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.servlet.Filter;
+import javax.servlet.FilterRegistration;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
+import javax.servlet.ServletRegistration.Dynamic;
+import javax.servlet.SessionCookieConfig;
+import javax.servlet.SessionTrackingMode;
+import javax.servlet.descriptor.JspConfigDescriptor;
 
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 public class MockServletContext extends MockServletObject implements ServletContext {
-	
+
 	private static final Log log = Logs.get();
 
 	public int getMajorVersion() {
@@ -47,7 +55,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
 		if (path.startsWith("/WEB-INF/classes/"))
 			return new File(path.substring("/WEB-INF/classes/".length())).getAbsolutePath();
 		if (path.startsWith("/"))
-			return new File("."+path).getAbsolutePath();
+			return new File("." + path).getAbsolutePath();
 		return new File(path).getAbsolutePath();
 	}
 
@@ -141,6 +149,113 @@ public class MockServletContext extends MockServletObject implements ServletCont
 	}
 
 	public String getContextPath() {
+		throw Lang.noImplement();
+	}
+
+	// =====================================================3.0
+
+	public int getEffectiveMajorVersion() {
+		throw Lang.noImplement();
+	}
+
+	public int getEffectiveMinorVersion() {
+		throw Lang.noImplement();
+	}
+
+	public boolean setInitParameter(String name, String value) {
+		throw Lang.noImplement();
+	}
+
+	public Dynamic addServlet(String servletName, String className) {
+		throw Lang.noImplement();
+	}
+
+	public Dynamic addServlet(String servletName, Servlet servlet) {
+		throw Lang.noImplement();
+	}
+
+	public Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
+		throw Lang.noImplement();
+	}
+
+	public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
+		throw Lang.noImplement();
+	}
+
+	public ServletRegistration getServletRegistration(String servletName) {
+		throw Lang.noImplement();
+	}
+
+	public Map<String, ? extends ServletRegistration> getServletRegistrations() {
+		throw Lang.noImplement();
+	}
+
+	public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, String className) {
+		throw Lang.noImplement();
+	}
+
+	public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
+		throw Lang.noImplement();
+	}
+
+	public javax.servlet.FilterRegistration.Dynamic addFilter(	String filterName,
+																Class<? extends Filter> filterClass) {
+		throw Lang.noImplement();
+	}
+
+	public <T extends Filter> T createFilter(Class<T> clazz) throws ServletException {
+		throw Lang.noImplement();
+	}
+
+	public FilterRegistration getFilterRegistration(String filterName) {
+		throw Lang.noImplement();
+	}
+
+	public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
+		throw Lang.noImplement();
+	}
+
+	public SessionCookieConfig getSessionCookieConfig() {
+		throw Lang.noImplement();
+	}
+
+	public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes) {
+		throw Lang.noImplement();
+	}
+
+	public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
+		throw Lang.noImplement();
+	}
+
+	public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
+		throw Lang.noImplement();
+	}
+
+	public void addListener(String className) {
+		throw Lang.noImplement();
+	}
+
+	public <T extends EventListener> void addListener(T t) {
+		throw Lang.noImplement();
+	}
+
+	public void addListener(Class<? extends EventListener> listenerClass) {
+		throw Lang.noImplement();
+	}
+
+	public <T extends EventListener> T createListener(Class<T> clazz) throws ServletException {
+		throw Lang.noImplement();
+	}
+
+	public JspConfigDescriptor getJspConfigDescriptor() {
+		throw Lang.noImplement();
+	}
+
+	public ClassLoader getClassLoader() {
+		throw Lang.noImplement();
+	}
+
+	public void declareRoles(String... roleNames) {
 		throw Lang.noImplement();
 	}
 

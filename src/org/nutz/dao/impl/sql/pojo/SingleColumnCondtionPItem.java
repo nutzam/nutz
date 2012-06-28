@@ -67,6 +67,8 @@ public class SingleColumnCondtionPItem extends AbstractPItem {
 			case TEXT:
 				sb.append(" WHERE LOWER(").append(colName).append(")=LOWER(?)");
 				return;
+			default :
+				break;
 			}
 
 		sb.append(" WHERE ").append(colName).append("=?");
