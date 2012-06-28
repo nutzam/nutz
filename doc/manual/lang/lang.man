@@ -148,7 +148,7 @@ XML
         }}}
      * 解析 XML 文档
         {{{
-        Document xmlDoc = Xmls.xml(Files.find("~/my.xml"));
+        Document xmlDoc = Xmls.xml(Files.findFile("~/my.xml"));
         }}}
      * 读取某个子元素内容
         {{{
