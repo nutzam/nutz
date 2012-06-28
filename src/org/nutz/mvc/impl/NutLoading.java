@@ -16,6 +16,7 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -23,6 +24,7 @@ import org.nutz.mvc.ActionChainMaker;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.LoadingException;
+import org.nutz.mvc.MessageLoader;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.SessionProvider;
@@ -246,11 +248,17 @@ public class NutLoading implements Loading {
         if (null != lc) {
             if (log.isDebugEnabled())
                 log.debugf("Localization message: '%s'", lc.value());
-
-            Map<String, Map<String, Object>> msgss = Mirror.me(lc.type()).born().load(lc.value());
+            
+            MessageLoader msgLoader = null;
+            if (!Strings.isBlank(lc.beanName())) {
+                msgLoader = config.getIoc().get(lc.type(), lc.beanName());
+            } else {
+                msgLoader = Mirror.me(lc.type()).born();
+            }
+            Map<String, Map<String, Object>> msgss = msgLoader.load(lc.value());
             Mvcs.setMessageSet(msgss);
         } else if (log.isDebugEnabled()) {
-            log.debug("!!!Can not find localization message resource");
+            log.debug("@Localization not define");
         }
     }
 
@@ -272,7 +280,7 @@ public class NutLoading implements Loading {
         if (log.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
             sb.append(makers[0].getClass().getSimpleName());
-            for (i = 1; i < makers.length; i++)
+            for (i = 0; i < makers.length - 1; i++)
                 sb.append(',').append(makers[i].getClass().getSimpleName());
             log.debugf("@Views(%s)", sb);
         }
