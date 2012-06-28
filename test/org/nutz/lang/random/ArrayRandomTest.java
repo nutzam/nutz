@@ -10,14 +10,14 @@ import org.nutz.lang.random.Random;
 
 public class ArrayRandomTest {
 
-	@Test
-	public void testString() {
-		Random<String> r = new ArrayRandom<String>(Lang.array("A", "B", "C"));
-		int i = 0;
-		while (null != r.next()) {
-			i++;
-		}
-		assertEquals(3, i);
-	}
+    @Test
+    public void testString() {
+        Random<String> r = new ArrayRandom<String>(Lang.array("A", "B", "C"));
+        int i = 0;
+        while (null != r.next()) {
+            i++;
+        }
+        assertEquals(3, i);
+    }
 
 }

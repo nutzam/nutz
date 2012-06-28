@@ -9,6 +9,6 @@ import org.nutz.mvc.annotation.At;
 @At("/session")
 public class SessionScopeModule {
 
-	@At
-	public void me(){}
+    @At
+    public void me(){}
 }

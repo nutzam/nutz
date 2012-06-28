@@ -2,24 +2,24 @@ package org.nutz.lang;
 
 public class ObjT1 {
 
-	private String name;
+    private String name;
 
-	private int number;
+    private int number;
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getNumber() {
-		return number;
-	}
+    public int getNumber() {
+        return number;
+    }
 
-	public void setNumber(int number) {
-		this.number = number;
-	}
+    public void setNumber(int number) {
+        this.number = number;
+    }
 
 }

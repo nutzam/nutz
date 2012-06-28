@@ -9,39 +9,39 @@ import org.nutz.dao.entity.annotation.Table;
 @Comment("测试表")
 public class TableWithComment {
 
-	@Id
-	@Comment("唯一主键")
-	private int id;
+    @Id
+    @Comment("唯一主键")
+    private int id;
 
-	@Column("nm")
-	@Comment()
-	private String name;
+    @Column("nm")
+    @Comment()
+    private String name;
 
-	@Column("num")
-	private long num;
+    @Column("num")
+    private long num;
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public long getNum() {
-		return num;
-	}
+    public long getNum() {
+        return num;
+    }
 
-	public void setNum(long num) {
-		this.num = num;
-	}
+    public void setNum(long num) {
+        this.num = num;
+    }
 
 }

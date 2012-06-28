@@ -17,29 +17,29 @@ import org.nutz.mvc.annotation.Param;
 @Fail("json")
 public class JsonModule {
 
-	@At("/hello")
-	public String hello(@Param("pet") Pet pet) throws UnsupportedEncodingException {
-		return "!!" + pet.getName() + "!!";
-	}
+    @At("/hello")
+    public String hello(@Param("pet") Pet pet) throws UnsupportedEncodingException {
+        return "!!" + pet.getName() + "!!";
+    }
 
-	@At("/map")
-	public int jsonMap(NutMap map) {
-		return map.size();
-	}
+    @At("/map")
+    public int jsonMap(NutMap map) {
+        return map.size();
+    }
 
-	@At("/list")
-	public int jsonList(List<Pet> pets) {
-		return pets.size();
-	}
+    @At("/list")
+    public int jsonList(List<Pet> pets) {
+        return pets.size();
+    }
 
-	@At("/array")
-	public int jsonArray(Pet[] pets) {
-		return pets.length;
-	}
+    @At("/array")
+    public int jsonArray(Pet[] pets) {
+        return pets.length;
+    }
 
-	@At("/map/obj")
-	public int mapPet(Pet pet) {
-		return pet.map.size();
-	}
+    @At("/map/obj")
+    public int mapPet(Pet pet) {
+        return pet.map.size();
+    }
 
 }

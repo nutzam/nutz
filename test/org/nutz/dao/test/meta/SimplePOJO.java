@@ -8,39 +8,39 @@ import org.nutz.dao.entity.annotation.Table;
 @Table("t_simple_pojo")
 public class SimplePOJO {
 
-	@Id
-	private long id;
-	
-	@Column
-	@Readonly
-	private String name;
-	
-	@Column
-	private String sex;
+    @Id
+    private long id;
+    
+    @Column
+    @Readonly
+    private String name;
+    
+    @Column
+    private String sex;
 
-	public String getSex() {
-		return sex;
-	}
+    public String getSex() {
+        return sex;
+    }
 
-	public void setSex(String sex) {
-		this.sex = sex;
-	}
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
-	public long getId() {
-		return id;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
 }

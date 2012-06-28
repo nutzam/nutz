@@ -24,135 +24,135 @@ import org.nutz.lang.Mirror;
  */
 public class SimpleRunner {
 
-	public static void main(String[] args) throws IllegalArgumentException, ClassNotFoundException,
-			IllegalAccessException, InvocationTargetException {
+    public static void main(String[] args) throws IllegalArgumentException, ClassNotFoundException,
+            IllegalAccessException, InvocationTargetException {
 
-		for (String arg : args) {
+        for (String arg : args) {
 
-			int index = arg.indexOf(':');
+            int index = arg.indexOf(':');
 
-			String className = null;
-			Set<String> methodNames = new HashSet<String>(5);
+            String className = null;
+            Set<String> methodNames = new HashSet<String>(5);
 
-			if (index == -1) {
-				className = arg;
-			} else {
-				className = arg.substring(0, index);
+            if (index == -1) {
+                className = arg;
+            } else {
+                className = arg.substring(0, index);
 
-				String allNames = arg.substring(index + 1);
+                String allNames = arg.substring(index + 1);
 
-				if (!"*".equals(allNames)) {
-					String[] methodNameArray = allNames.split(",");
+                if (!"*".equals(allNames)) {
+                    String[] methodNameArray = allNames.split(",");
 
-					for (String m : methodNameArray) {
-						if (m.trim().length() != 0)
-							methodNames.add(m);
-					}
-				}
-			}
+                    for (String m : methodNameArray) {
+                        if (m.trim().length() != 0)
+                            methodNames.add(m);
+                    }
+                }
+            }
 
-			runClassTest(className, methodNames);
-		}
-	}
+            runClassTest(className, methodNames);
+        }
+    }
 
-	protected static void runClassTest(String className, Set<String> methodNames)
-			throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException,
-			InvocationTargetException {
+    protected static void runClassTest(String className, Set<String> methodNames)
+            throws ClassNotFoundException, IllegalArgumentException, IllegalAccessException,
+            InvocationTargetException {
 
-		Mirror<?> mi = Mirror.me(Class.forName(className));
+        Mirror<?> mi = Mirror.me(Class.forName(className));
 
-		Method beforeClass = null;
-		Method afterClass = null;
-		Method before = null;
-		Method after = null;
-		List<Method> testMethods = new ArrayList<Method>(10);
+        Method beforeClass = null;
+        Method afterClass = null;
+        Method before = null;
+        Method after = null;
+        List<Method> testMethods = new ArrayList<Method>(10);
 
-		Method[] methods = mi.getMethods();
+        Method[] methods = mi.getMethods();
 
-		final boolean methodNamesIsEmptyAtBeginning = methodNames.isEmpty();
+        final boolean methodNamesIsEmptyAtBeginning = methodNames.isEmpty();
 
-		for (Method m : methods) {
+        for (Method m : methods) {
 
-			if (m.getName().indexOf("access$") != -1) {
-				continue;
-			}
+            if (m.getName().indexOf("access$") != -1) {
+                continue;
+            }
 
-			if (m.isAnnotationPresent(BeforeClass.class)) {
-				beforeClass = m;
-				continue;
-			}
+            if (m.isAnnotationPresent(BeforeClass.class)) {
+                beforeClass = m;
+                continue;
+            }
 
-			if (m.isAnnotationPresent(AfterClass.class)) {
-				afterClass = m;
-				continue;
-			}
+            if (m.isAnnotationPresent(AfterClass.class)) {
+                afterClass = m;
+                continue;
+            }
 
-			if (m.isAnnotationPresent(Before.class)) {
-				before = m;
-				continue;
-			}
+            if (m.isAnnotationPresent(Before.class)) {
+                before = m;
+                continue;
+            }
 
-			if (m.isAnnotationPresent(After.class)) {
-				after = m;
-				continue;
-			}
+            if (m.isAnnotationPresent(After.class)) {
+                after = m;
+                continue;
+            }
 
-			if (methodNamesIsEmptyAtBeginning && m.isAnnotationPresent(Test.class)) {
-				testMethods.add(m);
-				continue;
-			}
+            if (methodNamesIsEmptyAtBeginning && m.isAnnotationPresent(Test.class)) {
+                testMethods.add(m);
+                continue;
+            }
 
-			if (methodNames.remove(m.getName())) {
-				testMethods.add(m);
-			}
-		}
+            if (methodNames.remove(m.getName())) {
+                testMethods.add(m);
+            }
+        }
 
-		if (!methodNames.isEmpty()) {
+        if (!methodNames.isEmpty()) {
 
-			System.out.println("Warning!!!: The following methods cannot find in class "
-								+ className);
+            System.out.println("Warning!!!: The following methods cannot find in class "
+                                + className);
 
-			for (String name : methodNames) {
-				System.out.println(name);
-			}
-		}
+            for (String name : methodNames) {
+                System.out.println(name);
+            }
+        }
 
-		Object caze = mi.born();
+        Object caze = mi.born();
 
-		runClassTestInner(beforeClass, afterClass, before, after, testMethods, caze);
-	}
+        runClassTestInner(beforeClass, afterClass, before, after, testMethods, caze);
+    }
 
-	protected static void runClassTestInner(Method beforeClass,
-											Method afterClass,
-											Method before,
-											Method after,
-											List<Method> testMethods,
-											Object caze) throws IllegalAccessException,
-			InvocationTargetException {
+    protected static void runClassTestInner(Method beforeClass,
+                                            Method afterClass,
+                                            Method before,
+                                            Method after,
+                                            List<Method> testMethods,
+                                            Object caze) throws IllegalAccessException,
+            InvocationTargetException {
 
-		// System.out.println("Before run test case " +
-		// caze.getClass().getName());
+        // System.out.println("Before run test case " +
+        // caze.getClass().getName());
 
-		if (beforeClass != null) {
-			beforeClass.invoke(null);
-		}
+        if (beforeClass != null) {
+            beforeClass.invoke(null);
+        }
 
-		if (afterClass != null) {
-			afterClass.invoke(null);
-		}
+        if (afterClass != null) {
+            afterClass.invoke(null);
+        }
 
-		for (Method test : testMethods) {
+        for (Method test : testMethods) {
 
-			// System.out.println("\tbefore run test " + test.getName());
+            // System.out.println("\tbefore run test " + test.getName());
 
-			if (before != null) {
-				before.invoke(caze);
-			}
+            if (before != null) {
+                before.invoke(caze);
+            }
 
-			test.invoke(caze);
+            test.invoke(caze);
 
-			if (after != null)
-				after.invoke(caze);
-		}
-	}
+            if (after != null)
+                after.invoke(caze);
+        }
+    }
 }

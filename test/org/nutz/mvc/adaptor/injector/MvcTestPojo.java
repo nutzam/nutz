@@ -7,23 +7,23 @@ import java.util.Set;
 
 public class MvcTestPojo {
 
-	public String[] names;
+    public String[] names;
 
-	public int num;
+    public int num;
 
-	public String str;
+    public String str;
 
-	public Long longValue;
+    public Long longValue;
 
-	public Date date;
-	
-	public List<String> books;
-	
-	public List<MvcTestPojo> lists;
-	
-	public Set<MvcTestPojo> sets;
-	
-	public Map<String, MvcTestPojo> maps;
-	
-	public MvcTestPojo[] arrays;
+    public Date date;
+    
+    public List<String> books;
+    
+    public List<MvcTestPojo> lists;
+    
+    public Set<MvcTestPojo> sets;
+    
+    public Map<String, MvcTestPojo> maps;
+    
+    public MvcTestPojo[] arrays;
 }

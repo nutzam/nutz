@@ -21,12 +21,12 @@ import org.nutz.dao.texp.CndTest;
  */
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	AllEntity.class,
-						AllSmoke.class,
-						AllSqls.class,
-						AllMapping.class,
-						AllNormal.class,
-						CndTest.class,
-						ChainTest.class,
-						SqlLiteralTest.class})
+@Suite.SuiteClasses({    AllEntity.class,
+                        AllSmoke.class,
+                        AllSqls.class,
+                        AllMapping.class,
+                        AllNormal.class,
+                        CndTest.class,
+                        ChainTest.class,
+                        SqlLiteralTest.class})
 public class AllDao {}

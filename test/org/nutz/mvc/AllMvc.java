@@ -16,15 +16,15 @@ import org.nutz.mvc.view.AllView;
 import org.nutz.mvc.view.DefaultViewMakerTest;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	MappingNodeTest.class,
-						RemountBytesTest.class,
-						BufferRingTest.class,
-						UploadingUnitTest.class,
-						JsonAdaptorTest.class,
-						DefaultViewMakerTest.class,
-						ViewProcessorTest.class,
-						AllInit.class,
-						AllInjector.class,
-						AllView.class,
-						AllApp.class})
+@Suite.SuiteClasses({    MappingNodeTest.class,
+                        RemountBytesTest.class,
+                        BufferRingTest.class,
+                        UploadingUnitTest.class,
+                        JsonAdaptorTest.class,
+                        DefaultViewMakerTest.class,
+                        ViewProcessorTest.class,
+                        AllInit.class,
+                        AllInjector.class,
+                        AllView.class,
+                        AllApp.class})
 public class AllMvc {}

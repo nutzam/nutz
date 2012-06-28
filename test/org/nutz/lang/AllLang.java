@@ -11,19 +11,19 @@ import org.nutz.lang.stream.StringOutputStreamTest;
 import org.nutz.lang.util.AllUtil;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	MirrorTest.class,
-						LangTest.class,
-						TimesTest.class,
-						FilesTest.class,
-						MathsTest.class,
-						AllRandom.class,
-						CharSegmentTest.class,
-						SegmentsTest.class,
-						CastorTest.class,
-						AllUtil.class,
-						NumsTest.class,
-						StringsTest.class,
-						StringOutputStreamTest.class,
-						AllMeta.class,
-						CodeTest.class})
+@Suite.SuiteClasses({    MirrorTest.class,
+                        LangTest.class,
+                        TimesTest.class,
+                        FilesTest.class,
+                        MathsTest.class,
+                        AllRandom.class,
+                        CharSegmentTest.class,
+                        SegmentsTest.class,
+                        CastorTest.class,
+                        AllUtil.class,
+                        NumsTest.class,
+                        StringsTest.class,
+                        StringOutputStreamTest.class,
+                        AllMeta.class,
+                        CodeTest.class})
 public class AllLang {}

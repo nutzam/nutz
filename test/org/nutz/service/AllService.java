@@ -8,7 +8,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({})
 public class AllService {
 
-	@Test
-	public void test_must_ok() {}
+    @Test
+    public void test_must_ok() {}
 
 }

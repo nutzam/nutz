@@ -15,17 +15,17 @@ import org.nutz.plugin.AllPlugin;
 import org.nutz.resource.AllResourceScan;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({	AllLang.class,
-						AllJson.class,
-						AllFilePool.class,
-						AllIoc.class,
-						AllAop.class,
-						AllFilePool.class,
-						AllHttp.class,
-						AllResourceScan.class,
-						AllMvc.class,
-						AllEl.class,
-						AllLog.class,
-						AllPlugin.class
-						})
+@Suite.SuiteClasses({    AllLang.class,
+                        AllJson.class,
+                        AllFilePool.class,
+                        AllIoc.class,
+                        AllAop.class,
+                        AllFilePool.class,
+                        AllHttp.class,
+                        AllResourceScan.class,
+                        AllMvc.class,
+                        AllEl.class,
+                        AllLog.class,
+                        AllPlugin.class
+                        })
 public class AllWithoutDB {}

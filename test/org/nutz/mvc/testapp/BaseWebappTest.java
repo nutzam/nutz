@@ -23,68 +23,68 @@ import org.nutz.http.Sender;
  */
 public abstract class BaseWebappTest {
 
-	protected Server server;
+    protected Server server;
 
-	protected Response resp;
+    protected Response resp;
 
-	@Before
-	public void startServer() throws Throwable {
+    @Before
+    public void startServer() throws Throwable {
 
-		try {
-			URL url = getClass().getClassLoader().getResource("org/nutz/mvc/testapp/Root/FLAG");
-			String path = url.toExternalForm();
-			System.err.println(url);
-			server = new Server(8888);
-			String warUrlString = path.substring(0, path.length() - 4);
-			server.setHandler(new WebAppContext(warUrlString, getContextPath()));
-			server.start();
-		}
-		catch (Throwable e) {
-			if (server != null)
-				server.stop();
-			throw e;
-		}
-	}
+        try {
+            URL url = getClass().getClassLoader().getResource("org/nutz/mvc/testapp/Root/FLAG");
+            String path = url.toExternalForm();
+            System.err.println(url);
+            server = new Server(8888);
+            String warUrlString = path.substring(0, path.length() - 4);
+            server.setHandler(new WebAppContext(warUrlString, getContextPath()));
+            server.start();
+        }
+        catch (Throwable e) {
+            if (server != null)
+                server.stop();
+            throw e;
+        }
+    }
 
-	@After
-	public void shutdownServer() throws Throwable {
-		if (server != null)
-			server.stop();
-	}
+    @After
+    public void shutdownServer() throws Throwable {
+        if (server != null)
+            server.stop();
+    }
 
-	public String getContextPath() {
-		return "/nutztest";
-	}
+    public String getContextPath() {
+        return "/nutztest";
+    }
 
-	public String getBaseURL() {
-		return "http://localhost:8888" + getContextPath();
-	}
+    public String getBaseURL() {
+        return "http://localhost:8888" + getContextPath();
+    }
 
-	public Response get(String path) {
-		resp = Http.get(getBaseURL() + path);
-		assertNotNull(resp);
-		return resp;
-	}
+    public Response get(String path) {
+        resp = Http.get(getBaseURL() + path);
+        assertNotNull(resp);
+        return resp;
+    }
 
-	public Response post(String path, Map<String, Object> params) {
-		resp = Sender.create(Request.create(getBaseURL() + path, METHOD.POST, params, null)).send();
-		assertNotNull(resp);
-		return resp;
-	}
+    public Response post(String path, Map<String, Object> params) {
+        resp = Sender.create(Request.create(getBaseURL() + path, METHOD.POST, params, null)).send();
+        assertNotNull(resp);
+        return resp;
+    }
 
-	public Response post(String path, String data) {
-		Request req = Request.create(getBaseURL() + path, METHOD.POST);
-		req.setData(data);
-		resp = Sender.create(req).send();
-		assertNotNull(resp);
-		return resp;
-	}
+    public Response post(String path, String data) {
+        Request req = Request.create(getBaseURL() + path, METHOD.POST);
+        req.setData(data);
+        resp = Sender.create(req).send();
+        assertNotNull(resp);
+        return resp;
+    }
 
-	public Response post(String path, byte[] bytes) {
-		Request req = Request.create(getBaseURL() + path, METHOD.POST);
-		req.setData(bytes);
-		resp = Sender.create(req).send();
-		assertNotNull(resp);
-		return resp;
-	}
+    public Response post(String path, byte[] bytes) {
+        Request req = Request.create(getBaseURL() + path, METHOD.POST);
+        req.setData(bytes);
+        resp = Sender.create(req).send();
+        assertNotNull(resp);
+        return resp;
+    }
 }

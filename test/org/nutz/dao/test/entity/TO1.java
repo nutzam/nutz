@@ -6,9 +6,9 @@ import org.nutz.dao.entity.annotation.PK;
 @PK("id")
 public class TO1 {
 
-	public int id;
+    public int id;
 
-	@Name
-	public String name;
+    @Name
+    public String name;
 
 }

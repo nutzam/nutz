@@ -6,8 +6,8 @@ import org.nutz.mvc.impl.UrlMappingImpl;
 @IocBean
 public class MyUrlMappingImpl extends UrlMappingImpl {
 
-	public MyUrlMappingImpl() {
-		System.out.println("I am Here");
-	}
-	
+    public MyUrlMappingImpl() {
+        System.out.println("I am Here");
+    }
+    
 }

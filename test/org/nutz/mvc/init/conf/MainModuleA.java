@@ -12,16 +12,16 @@ import org.nutz.mvc.annotation.Param;
 @Fail("json")
 public class MainModuleA {
 
-	@At("/param/a")
-	@Ok("json")
-	public List<String> f_A(@Param("ids") long[] ids) {
-		return Lang.list(Json.toJson(ids));
-	}
+    @At("/param/a")
+    @Ok("json")
+    public List<String> f_A(@Param("ids") long[] ids) {
+        return Lang.list(Json.toJson(ids));
+    }
 
-	@At("/param/b")
-	@Ok("raw")
-	public String f_B(@Param("ids") long[] ids) {
-		return Json.toJson(ids);
-	}
+    @At("/param/b")
+    @Ok("raw")
+    public String f_B(@Param("ids") long[] ids) {
+        return Json.toJson(ids);
+    }
 
 }

@@ -7,10 +7,10 @@ import org.nutz.mvc.annotation.Ok;
 @IocBean
 class NotPublicClass {
 
-	@At("/here")
-	@Ok("json")
-	public String here(){
-		return "asfdasdf";
-	}
-	
+    @At("/here")
+    @Ok("json")
+    public String here(){
+        return "asfdasdf";
+    }
+    
 }

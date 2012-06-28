@@ -4,7 +4,7 @@ import org.nutz.mvc.annotation.At;
 
 public class SimpleErrorModule {
 
-	@At({"/check", ""})
-	public void check() {}
+    @At({"/check", ""})
+    public void check() {}
 
 }

@@ -9,14 +9,14 @@ import org.nutz.mvc.annotation.Ok;
 @Fail("json")
 public class AtMapModule {
 
-	@At(key = "at.abc", value = "/ABC")
-	public String abc() {
-		return ">>abc";
-	}
+    @At(key = "at.abc", value = "/ABC")
+    public String abc() {
+        return ">>abc";
+    }
 
-	@At(key = "at.xyz")
-	public String xyz() {
-		return ">>xyz";
-	}
+    @At(key = "at.xyz")
+    public String xyz() {
+        return ">>xyz";
+    }
 
 }

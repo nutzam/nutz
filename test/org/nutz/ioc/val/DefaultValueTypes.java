@@ -13,21 +13,21 @@ import org.nutz.ioc.loader.map.MapLoader;
 
 public class DefaultValueTypes {
 
-	@InjectName("obj")
-	public static class TestReferContext {
-		IocContext ic;
-	}
+    @InjectName("obj")
+    public static class TestReferContext {
+        IocContext ic;
+    }
 
-	@Test
-	public void test_refer_context() {
-		IocContext context = new ScopeContext("abc");
-		String json = "{obj:{singleton:false,fields:{ic:{refer:'$conText'}}}}";
-		Ioc2 ioc = new NutIoc(new MapLoader(json), context, "abc");
-		TestReferContext trc = ioc.get(TestReferContext.class);
-		assertTrue(context == trc.ic);
+    @Test
+    public void test_refer_context() {
+        IocContext context = new ScopeContext("abc");
+        String json = "{obj:{singleton:false,fields:{ic:{refer:'$conText'}}}}";
+        Ioc2 ioc = new NutIoc(new MapLoader(json), context, "abc");
+        TestReferContext trc = ioc.get(TestReferContext.class);
+        assertTrue(context == trc.ic);
 
-		IocContext context2 = new ScopeContext("rrr");
-		trc = ioc.get(TestReferContext.class, "obj", context2);
-		assertTrue(trc.ic instanceof ComboContext);
-	}
+        IocContext context2 = new ScopeContext("rrr");
+        trc = ioc.get(TestReferContext.class, "obj", context2);
+        assertTrue(trc.ic instanceof ComboContext);
+    }
 }

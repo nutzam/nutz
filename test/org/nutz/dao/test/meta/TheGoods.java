@@ -11,44 +11,44 @@ import org.nutz.lang.Files;
 @Table("t_goods")
 public class TheGoods {
 
-	public static TheGoods create(String name, String thumbPath) {
-		TheGoods tg = new TheGoods();
-		tg.setName(name);
-		tg.setThumbnail(Files.readBytes(thumbPath));
-		return tg;
-	}
+    public static TheGoods create(String name, String thumbPath) {
+        TheGoods tg = new TheGoods();
+        tg.setName(name);
+        tg.setThumbnail(Files.readBytes(thumbPath));
+        return tg;
+    }
 
-	@Id
-	private int id;
+    @Id
+    private int id;
 
-	@Name
-	private String name;
+    @Name
+    private String name;
 
-	@Column("thumb")
-	private byte[] thumbnail;
+    @Column("thumb")
+    private byte[] thumbnail;
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public byte[] getThumbnail() {
-		return thumbnail;
-	}
+    public byte[] getThumbnail() {
+        return thumbnail;
+    }
 
-	public void setThumbnail(byte[] thumbnail) {
-		this.thumbnail = thumbnail;
-	}
+    public void setThumbnail(byte[] thumbnail) {
+        this.thumbnail = thumbnail;
+    }
 
 }

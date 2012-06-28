@@ -15,43 +15,43 @@ import org.nutz.mock.servlet.MockServletContext;
 @Ignore
 public abstract class AbstractMvcTest {
 
-	protected Servlet servlet;
+    protected Servlet servlet;
 
-	protected MockHttpServletRequest request;
+    protected MockHttpServletRequest request;
 
-	protected MockHttpServletResponse response;
+    protected MockHttpServletResponse response;
 
-	protected MockHttpSession session;
+    protected MockHttpSession session;
 
-	protected MockServletContext servletContext;
+    protected MockServletContext servletContext;
 
-	protected MockServletConfig servletConfig;
+    protected MockServletConfig servletConfig;
 
-	@Before
-	public void init() throws Throwable {
-		servletContext = new MockServletContext();
-		servletConfig = new MockServletConfig(servletContext, "nutz");
-		initServletConfig();
-		servlet = new NutServlet();
-		servlet.init(servletConfig);
+    @Before
+    public void init() throws Throwable {
+        servletContext = new MockServletContext();
+        servletConfig = new MockServletConfig(servletContext, "nutz");
+        initServletConfig();
+        servlet = new NutServlet();
+        servlet.init(servletConfig);
 
-		session = Mock.servlet.session(servletContext);
-		newreq();
-	}
+        session = Mock.servlet.session(servletContext);
+        newreq();
+    }
 
-	protected void newreq() {
-		request = Mock.servlet.request().setSession(session);
-		request.setContextPath("");
-		request.setSession(session);
-		response = new MockHttpServletResponse();
-	}
+    protected void newreq() {
+        request = Mock.servlet.request().setSession(session);
+        request.setContextPath("");
+        request.setSession(session);
+        response = new MockHttpServletResponse();
+    }
 
-	protected abstract void initServletConfig();
+    protected abstract void initServletConfig();
 
-	@After
-	public void destroy() {
-		if (servlet != null)
-			servlet.destroy();
-	}
+    @After
+    public void destroy() {
+        if (servlet != null)
+            servlet.destroy();
+    }
 
 }

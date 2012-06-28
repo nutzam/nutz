@@ -8,7 +8,7 @@ import org.nutz.mvc.testapp.views.AllView;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({BaseTest.class,
-					 AllView.class,
-					 //AllAdaptor.class,
-					 AllUpload.class})
+                     AllView.class,
+                     //AllAdaptor.class,
+                     AllUpload.class})
 public class AllApp {}

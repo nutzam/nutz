@@ -5,12 +5,12 @@ import org.nutz.mvc.Setup;
 
 public class TestSetup implements Setup {
 
-	public void init(NutConfig config) {
-		System.out.println(config.getAtMap().size());
-	}
+    public void init(NutConfig config) {
+        System.out.println(config.getAtMap().size());
+    }
 
-	public void destroy(NutConfig config) {
+    public void destroy(NutConfig config) {
 
-	}
+    }
 
 }

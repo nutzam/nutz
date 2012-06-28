@@ -6,20 +6,20 @@ import org.junit.runner.notification.RunNotifier;
 
 public class DatabaseTestRunner extends Runner {
 
-	public DatabaseTestRunner(Class<?> testClass) {
-		super();
-	}
+    public DatabaseTestRunner(Class<?> testClass) {
+        super();
+    }
 
-	@Override
-	public Description getDescription() {
-		return Description.createSuiteDescription("Nutz Database relative testing");
-	}
+    @Override
+    public Description getDescription() {
+        return Description.createSuiteDescription("Nutz Database relative testing");
+    }
 
-	@Override
-	public void run(RunNotifier rn) {
-		System.out.println("before");
+    @Override
+    public void run(RunNotifier rn) {
+        System.out.println("before");
 
-		System.out.println("end");
-	}
+        System.out.println("end");
+    }
 
 }

@@ -9,20 +9,20 @@ import org.nutz.lang.Lang;
 
 class Utils {
 
-	static Ioc2 I(String... ss) {
-		String json = "{";
-		json += Lang.concat(',', ss);
-		json += "}";
-		return new NutIoc(new MapLoader(json));
-	}
+    static Ioc2 I(String... ss) {
+        String json = "{";
+        json += Lang.concat(',', ss);
+        json += "}";
+        return new NutIoc(new MapLoader(json));
+    }
 
-	static String J(String name, String s) {
-		return name + " : {" + s + "}";
-	}
+    static String J(String name, String s) {
+        return name + " : {" + s + "}";
+    }
 
-	static Animal A(String s) {
-		Ioc ioc = I(J("obj", s));
-		return ioc.get(Animal.class, "obj");
-	}
+    static Animal A(String s) {
+        Ioc ioc = I(J("obj", s));
+        return ioc.get(Animal.class, "obj");
+    }
 
 }

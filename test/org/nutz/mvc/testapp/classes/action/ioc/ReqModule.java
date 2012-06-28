@@ -9,6 +9,6 @@ import org.nutz.mvc.annotation.At;
 @At("/req")
 public class ReqModule {
 
-	@At
-	public void me(){}
+    @At
+    public void me(){}
 }

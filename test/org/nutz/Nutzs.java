@@ -23,93 +23,93 @@ import static java.lang.String.*;
 
 public class Nutzs {
 
-	private static Properties pp;
+    private static Properties pp;
 
-	private static void checkProperties() {
-		if (null == pp)
-			loadProperties("nutz-test.properties");
-	}
+    private static void checkProperties() {
+        if (null == pp)
+            loadProperties("nutz-test.properties");
+    }
 
-	public static void loadProperties(String fileName) {
-		InputStream is = null;
-		try {
-			pp = new Properties();
-			File f = Files.findFile(fileName);
-			if(f == null)
-				throw new RuntimeException("nutz-test.properties Not FOUND!!!");
-			is = Streams.fileIn(f);
-			pp.load(is);
-			pp.list(System.out);
-		}
-		catch (Exception e) {
-			throw Lang.wrapThrow(e);
-		}
-		finally {
-			Streams.safeClose(is);
-		}
-	}
+    public static void loadProperties(String fileName) {
+        InputStream is = null;
+        try {
+            pp = new Properties();
+            File f = Files.findFile(fileName);
+            if(f == null)
+                throw new RuntimeException("nutz-test.properties Not FOUND!!!");
+            is = Streams.fileIn(f);
+            pp.load(is);
+            pp.list(System.out);
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(is);
+        }
+    }
 
-	public static String getDriver() {
-		checkProperties();
-		return Strings.trim(pp.getProperty("driver"));
-	}
+    public static String getDriver() {
+        checkProperties();
+        return Strings.trim(pp.getProperty("driver"));
+    }
 
-	public static String getUrl() {
-		checkProperties();
-		return Strings.trim(pp.getProperty("url"));
-	}
+    public static String getUrl() {
+        checkProperties();
+        return Strings.trim(pp.getProperty("url"));
+    }
 
-	public static String getPassword() {
-		checkProperties();
-		return Strings.trim(pp.getProperty("password"));
-	}
+    public static String getPassword() {
+        checkProperties();
+        return Strings.trim(pp.getProperty("password"));
+    }
 
-	public static String getUserName() {
-		checkProperties();
-		return Strings.trim(pp.getProperty("username"));
-	}
+    public static String getUserName() {
+        checkProperties();
+        return Strings.trim(pp.getProperty("username"));
+    }
 
-	private static Map<String, Ioc> nuts = new HashMap<String, Ioc>();
+    private static Map<String, Ioc> nuts = new HashMap<String, Ioc>();
 
-	public static Ioc getIoc(String key) {
-		Ioc nut = nuts.get(key);
-		if (null == nut) {
-			synchronized (Nutzs.class) {
-				nut = nuts.get(key);
-				try {
-					if (null == nut) {
-						nut = new NutIoc(new JsonLoader(key));
-						nuts.put(key, nut);
-					}
-				}
-				catch (Exception e) {
-					throw Lang.wrapThrow(e);
-				}
-			}
-		}
-		return nut;
-	}
+    public static Ioc getIoc(String key) {
+        Ioc nut = nuts.get(key);
+        if (null == nut) {
+            synchronized (Nutzs.class) {
+                nut = nuts.get(key);
+                try {
+                    if (null == nut) {
+                        nut = new NutIoc(new JsonLoader(key));
+                        nuts.put(key, nut);
+                    }
+                }
+                catch (Exception e) {
+                    throw Lang.wrapThrow(e);
+                }
+            }
+        }
+        return nut;
+    }
 
-	public static void depose() {
-		for (Ioc ioc : nuts.values())
-			ioc.depose();
-		nuts.clear();
-		nuts = null;
-	}
+    public static void depose() {
+        for (Ioc ioc : nuts.values())
+            ioc.depose();
+        nuts.clear();
+        nuts = null;
+    }
 
-	public static void notSupport(String message) {
-		// junit.framework.Assert.fail(message);
-	}
+    public static void notSupport(String message) {
+        // junit.framework.Assert.fail(message);
+    }
 
-	public static void notSupport(DatabaseMeta meta) {
-		notSupport(format("[%S] don't support this test", meta.getTypeName()));
-	}
+    public static void notSupport(DatabaseMeta meta) {
+        notSupport(format("[%S] don't support this test", meta.getTypeName()));
+    }
 
-	public static ClassDefiner cd() {
-		return AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
-			public DefaultClassDefiner run() {
-				return new DefaultClassDefiner(Nutzs.class.getClassLoader());
-			}
-		});
-	}
+    public static ClassDefiner cd() {
+        return AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
+            public DefaultClassDefiner run() {
+                return new DefaultClassDefiner(Nutzs.class.getClassLoader());
+            }
+        });
+    }
 }

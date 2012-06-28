@@ -8,19 +8,19 @@ import org.nutz.mvc.annotation.Ok;
 @At("/base")
 @Ok("json")
 public class BaseModule {
-	
-	private String nameX;
+    
+    private String nameX;
 
-	@At
-	public boolean login(){
-		return getNameX() != null;
-	}
-	
-	public void setNameX(String nameX) {
-		this.nameX = nameX;
-	}
-	
-	public String getNameX() {
-		return nameX;
-	}
+    @At
+    public boolean login(){
+        return getNameX() != null;
+    }
+    
+    public void setNameX(String nameX) {
+        this.nameX = nameX;
+    }
+    
+    public String getNameX() {
+        return nameX;
+    }
 }

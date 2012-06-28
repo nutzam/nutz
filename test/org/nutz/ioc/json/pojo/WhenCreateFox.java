@@ -4,8 +4,8 @@ import org.nutz.ioc.IocEventTrigger;
 
 public class WhenCreateFox implements IocEventTrigger<Animal> {
 
-	public void trigger(Animal obj) {
-		obj.setName("$" + obj.getName());
-	}
+    public void trigger(Animal obj) {
+        obj.setName("$" + obj.getName());
+    }
 
 }

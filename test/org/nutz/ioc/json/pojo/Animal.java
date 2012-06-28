@@ -8,140 +8,140 @@ import org.nutz.lang.Strings;
 
 public class Animal {
 
-	public Animal() {}
+    public Animal() {}
 
-	public Animal(String name) {
-		this.name = name;
-	}
+    public Animal(String name) {
+        this.name = name;
+    }
 
-	private int age;
+    private int age;
 
-	private float attact;
+    private float attact;
 
-	private String name;
+    private String name;
 
-	private Animal another;
+    private Animal another;
 
-	private AnimalRace race;
+    private AnimalRace race;
 
-	private Calendar birthday;
+    private Calendar birthday;
 
-	private Animal[] enemies;
+    private Animal[] enemies;
 
-	private Map<String, Integer> map;
+    private Map<String, Integer> map;
 
-	private List<Object> misc;
+    private List<Object> misc;
 
-	private Map<String, Animal> relations;
+    private Map<String, Animal> relations;
 
-	private int fetchTime;
+    private int fetchTime;
 
-	private int deposeTime;
+    private int deposeTime;
 
-	private int createTime;
+    private int createTime;
 
-	public Animal getAnother() {
-		return another;
-	}
+    public Animal getAnother() {
+        return another;
+    }
 
-	public int getFetchTime() {
-		return fetchTime;
-	}
+    public int getFetchTime() {
+        return fetchTime;
+    }
 
-	public int getDeposeTime() {
-		return deposeTime;
-	}
+    public int getDeposeTime() {
+        return deposeTime;
+    }
 
-	public int getCreateTime() {
-		return createTime;
-	}
+    public int getCreateTime() {
+        return createTime;
+    }
 
-	public int getAge() {
-		return age;
-	}
+    public int getAge() {
+        return age;
+    }
 
-	public void setAge(int age) {
-		this.age = age;
-	}
+    public void setAge(int age) {
+        this.age = age;
+    }
 
-	public float getAttact() {
-		return attact;
-	}
+    public float getAttact() {
+        return attact;
+    }
 
-	public void setAttact(float attact) {
-		this.attact = attact;
-	}
+    public void setAttact(float attact) {
+        this.attact = attact;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public AnimalRace getRace() {
-		return race;
-	}
+    public AnimalRace getRace() {
+        return race;
+    }
 
-	public void setRace(AnimalRace race) {
-		this.race = race;
-	}
+    public void setRace(AnimalRace race) {
+        this.race = race;
+    }
 
-	public Calendar getBirthday() {
-		return birthday;
-	}
+    public Calendar getBirthday() {
+        return birthday;
+    }
 
-	public void setBirthday(Calendar birthday) {
-		this.birthday = birthday;
-	}
+    public void setBirthday(Calendar birthday) {
+        this.birthday = birthday;
+    }
 
-	public Animal[] getEnemies() {
-		return enemies;
-	}
+    public Animal[] getEnemies() {
+        return enemies;
+    }
 
-	public void setEnemies(Animal[] enemies) {
-		this.enemies = enemies;
-	}
+    public void setEnemies(Animal[] enemies) {
+        this.enemies = enemies;
+    }
 
-	public Map<String, Integer> getMap() {
-		return map;
-	}
+    public Map<String, Integer> getMap() {
+        return map;
+    }
 
-	public void setMap(Map<String, Integer> map) {
-		this.map = map;
-	}
+    public void setMap(Map<String, Integer> map) {
+        this.map = map;
+    }
 
-	public List<Object> getMisc() {
-		return misc;
-	}
+    public List<Object> getMisc() {
+        return misc;
+    }
 
-	public void setMisc(List<Object> misc) {
-		this.misc = misc;
-	}
+    public void setMisc(List<Object> misc) {
+        this.misc = misc;
+    }
 
-	public Map<String, Animal> getRelations() {
-		return relations;
-	}
+    public Map<String, Animal> getRelations() {
+        return relations;
+    }
 
-	public void setRelations(Map<String, Animal> relations) {
-		this.relations = relations;
-	}
+    public void setRelations(Map<String, Animal> relations) {
+        this.relations = relations;
+    }
 
-	public String showName(String prefix, int num, String name) {
-		return Strings.dup(prefix, num) + name;
-	}
+    public String showName(String prefix, int num, String name) {
+        return Strings.dup(prefix, num) + name;
+    }
 
-	public void onFetch() {
-		fetchTime++;
-	}
+    public void onFetch() {
+        fetchTime++;
+    }
 
-	public void onCreate() {
-		createTime++;
-	}
+    public void onCreate() {
+        createTime++;
+    }
 
-	public void onDepose() {
-		deposeTime++;
-	}
+    public void onDepose() {
+        deposeTime++;
+    }
 
 }

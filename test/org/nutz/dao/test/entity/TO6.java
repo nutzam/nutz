@@ -11,38 +11,38 @@ import org.nutz.dao.entity.annotation.*;
 @PK({"type", "id"})
 public class TO6 {
 
-	@Column
-	private String type = "7";
+    @Column
+    private String type = "7";
 
-	@Column
-	@Name
-	private String id;
+    @Column
+    @Name
+    private String id;
 
-	@Column("name")
-	private int value;
+    @Column("name")
+    private int value;
 
-	public String getType() {
-		return type;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public void setType(String type) {
-		this.type = type;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public int getValue() {
-		return value;
-	}
+    public int getValue() {
+        return value;
+    }
 
-	public void setValue(int value) {
-		this.value = value;
-	}
+    public void setValue(int value) {
+        this.value = value;
+    }
 
 }
