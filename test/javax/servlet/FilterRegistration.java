@@ -7,7 +7,7 @@ package javax.servlet;
  */
 public class FilterRegistration {
 
-	public class Dynamic {
+    public class Dynamic {
 
-	}
+    }
 }
