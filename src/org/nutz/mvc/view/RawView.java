@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.View;
 
 /**
@@ -43,6 +46,8 @@ import org.nutz.mvc.View;
  * 
  */
 public class RawView implements View {
+    
+    private static final Log log = Logs.get();
 
     private String contentType;
 
@@ -60,8 +65,15 @@ public class RawView implements View {
         //文件
         if (obj instanceof File) {
             File file = (File)obj;
-            String encode = new String(file.getName().getBytes(Encoding.UTF8), "ISO8859-1");
-            resp.setHeader("Content-Disposition", "attachment; filename=" + encode);
+            if (log.isDebugEnabled())
+                log.debug("File downloading ... " +  file.getAbsolutePath());
+            if (!file.exists() && file.isDirectory()) {
+                resp.sendError(404);
+                return;
+            }
+            file = file.getAbsoluteFile();
+            String filename = URLEncoder.encode(file.getName(), Encoding.UTF8);
+            resp.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
             resp.setHeader("Content-Length", "" + file.length());
             Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
         }
