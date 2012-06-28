@@ -39,7 +39,6 @@ public class Nutzs {
                 throw new RuntimeException("nutz-test.properties Not FOUND!!!");
             is = Streams.fileIn(f);
             pp.load(is);
-            pp.list(System.out);
         }
         catch (Exception e) {
             throw Lang.wrapThrow(e);

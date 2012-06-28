@@ -16,11 +16,11 @@ public class RPNTest {
         sy = new ShuntingYard();
     }
     private String parseRPN(String val){
-        String rpn = "";
+        StringBuilder sb = new StringBuilder();
         for(Object obj : sy.parseToRPN(val)){
-            rpn += obj.toString();
+            sb.append(obj);
         }
-        return rpn;
+        return sb.toString();
     }
     
     @Test

@@ -151,7 +151,7 @@ public class CharSegmentTest {
         Segment seg = Segments.create("true:[${true}]\tfalse:[${false}]");
         seg.set("true", true);
         seg.set("false", false);
-        assertEquals("true:[true]    false:[false]", seg.toString());
+        assertEquals("true:[true]\tfalse:[false]", seg.toString());
     }
 
     @Test
