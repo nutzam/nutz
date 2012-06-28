@@ -28,7 +28,9 @@ import org.nutz.mvc.ioc.SessionIocContext;
  */
 public abstract class Mvcs {
 
+    // TODO 这个变量应该在 1.b.46 之后的某一个版本删掉
     public static final String DEFAULT_MSGS = "$default";
+    
     public static final String MSG = "msg";
     public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
@@ -54,7 +56,7 @@ public abstract class Mvcs {
     @SuppressWarnings("unchecked")
     public static Map<String, Map<String, Object>> getMessageSet() {
         return (Map<String, Map<String, Object>>) servletContext.getAttribute(getName()
-                                                                                + "_localization");
+                                                                              + "_localization");
     }
 
     public static void setMessageSet(Map<String, Map<String, Object>> messageSet) {
