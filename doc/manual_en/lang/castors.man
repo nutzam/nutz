@@ -41,7 +41,7 @@ Hello Castors
 ----------------------------------------------------------------------------------------------------------------
 The Principle of Castors
 
-	Please refer [http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/castor/castor org.nutz.castor.castor  Package],
+	Please refer [https://github.com/nutzam/nutz/tree/master/src/org/nutz/castor/castor org.nutz.castor.castor  Package],
 	The implemented classes are the building typing castors.
 
 	Every time, while you want to convert a class, Nutz.castors will check if it can be converted directly. If not, it will search in the package to check if there is suitable castor.

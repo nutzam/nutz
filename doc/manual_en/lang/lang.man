@@ -5,7 +5,7 @@
 What is Function Candy?
 	
 	Nutz provides bundles of static functions and classes, which could improve your Java experience. You can refer the source code in 
-	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang org.nutz.lang] 
+	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] 
 	I list here the most common usage parts for you.
 	
 	All of these in this chapter are utility functions. In most cases, these functions can help you shorten your codes, 

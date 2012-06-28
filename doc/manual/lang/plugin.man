@@ -14,7 +14,7 @@
 	办法更改的。因此 Nutz 虽然在编译时依赖了 Log4j，但是在运行时，没有 log4j 的 jar，依然能够工作的很好。
 
 	也正因为，这个插件简单的令人发指。有兴趣的同学可以参看：
-	[http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/plugin org.nutz.plugin] 里面的源
+	[https://github.com/nutzam/nutz/tree/master/src/org/nutz/plugin org.nutz.plugin] 里面的源
 	代码，我想几分钟你就会全部看完。
 --------------------------------------------------------------------------------------------------------
 简单使用插件
