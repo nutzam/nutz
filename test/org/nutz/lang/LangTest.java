@@ -288,4 +288,21 @@ public class LangTest {
         assertEquals(2147483648L, Lang.str2number("2147483648"));
         assertEquals(2147483648L, Lang.str2number("2147483648l"));
     }
+
+    @Test
+    public void test_md5() {
+        // MD5的算法在RFC1321中定义（http://www.ietf.org/rfc/rfc1321.txt）
+        // 在RFC1321中，给出了MD5的test suite测试用例：
+        // MD5 ("") = d41d8cd98f00b204e9800998ecf8427e
+        // MD5 ("a") = 0cc175b9c0f1b6a831c399e269772661
+        // MD5 ("abc") = 900150983cd24fb0d6963f7d28e17f72
+        // MD5 ("message digest") = f96b697d7cb7938d525a2f31aaf161d0
+        // MD5 ("abcdefghijklmnopqrstuvwxyz") = c3fcd3d76192e4007dfb496cca67e13b
+        assertEquals("d41d8cd98f00b204e9800998ecf8427e", Lang.md5(""));
+        assertEquals("0cc175b9c0f1b6a831c399e269772661", Lang.md5("a"));
+        assertEquals("900150983cd24fb0d6963f7d28e17f72", Lang.md5("abc"));
+        assertEquals("f96b697d7cb7938d525a2f31aaf161d0", Lang.md5("message digest"));
+        assertEquals("c3fcd3d76192e4007dfb496cca67e13b", Lang.md5("abcdefghijklmnopqrstuvwxyz"));
+        assertEquals("046a899ee7a6ec88d370211a518c9e80", Lang.md5("算法"));
+    }
 }
