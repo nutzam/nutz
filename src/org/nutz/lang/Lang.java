@@ -59,6 +59,8 @@ public abstract class Lang {
     }
 
     /**
+     * 生成一个未实现的运行时异常
+     * 
      * @return 一个未实现的运行时异常
      */
     public static RuntimeException noImplement() {
@@ -66,6 +68,8 @@ public abstract class Lang {
     }
 
     /**
+     * 生成一个不可能的运行时异常
+     * 
      * @return 一个不可能的运行时异常
      */
     public static RuntimeException impossible() {
@@ -327,7 +331,7 @@ public abstract class Lang {
     }
 
     /**
-     * 根据一段文本模拟出一个输入流对象 <br/>
+     * 根据一段文本模拟出一个输入流对象
      * 
      * @param cs
      *            文本
@@ -426,7 +430,7 @@ public abstract class Lang {
      * 较方便的创建一个列表，比如：
      * 
      * <pre>
-     * List《Pet》 pets = Lang.list(pet1, pet2, pet3);
+     * List&lt;Pet&gt; pets = Lang.list(pet1, pet2, pet3);
      * </pre>
      * 
      * 注，这里的 List，是 ArrayList 的实例
@@ -747,9 +751,9 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> collection2map(    Class<T> mapClass,
-                                                                            Collection<?> coll,
-                                                                            String keyFieldName) {
+    public static <T extends Map<Object, Object>> Map<?, ?> collection2map(Class<T> mapClass,
+                                                                           Collection<?> coll,
+                                                                           String keyFieldName) {
         if (null == coll)
             return null;
         Map<Object, Object> map = createMap(mapClass);
@@ -857,9 +861,9 @@ public abstract class Lang {
      *            采用集合中元素的哪个一个字段为键。
      * @return Map 对象
      */
-    public static <T extends Map<Object, Object>> Map<?, ?> array2map(    Class<T> mapClass,
-                                                                        Object array,
-                                                                        String keyFieldName) {
+    public static <T extends Map<Object, Object>> Map<?, ?> array2map(Class<T> mapClass,
+                                                                      Object array,
+                                                                      String keyFieldName) {
         if (null == array)
             return null;
         Map<Object, Object> map = createMap(mapClass);
@@ -1722,20 +1726,24 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
+     * 
+     * @param me
+     * @param field
      */
     public static Type getFieldType(Mirror<?> me, String field) throws NoSuchFieldException {
         return getFieldType(me, me.getField(field));
     }
-    
+
     /**
      * 当一个类使用<T, K> 来定义泛型时, 本方法返回类的一个方法所有参数的具体类型
+     * 
      * @param me
      * @param method
      */
-    public static Type[] getMethodParamTypes(Mirror<?> me, Method method){
+    public static Type[] getMethodParamTypes(Mirror<?> me, Method method) {
         Type[] types = method.getGenericParameterTypes();
         List<Type> ts = new ArrayList<Type>();
-        for(Type type : types){
+        for (Type type : types) {
             ts.add(getGenericsType(me, type));
         }
         return ts.toArray(new Type[ts.size()]);
@@ -1743,16 +1751,22 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
+     * 
+     * @param me
+     * @param field
      */
     public static Type getFieldType(Mirror<?> me, Field field) {
         Type type = field.getGenericType();
         return getGenericsType(me, type);
     }
-    
+
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
+     * 
+     * @param me
+     * @param type
      */
-    public static Type getGenericsType(Mirror<?> me, Type type){
+    public static Type getGenericsType(Mirror<?> me, Type type) {
         Type[] types = me.getGenericsTypes();
         if (type instanceof TypeVariable && types != null && types.length > 0) {
             Type[] tvs = me.getType().getTypeParameters();
@@ -1768,6 +1782,8 @@ public abstract class Lang {
 
     /**
      * 获取一个Type类型实际对应的Class
+     * 
+     * @param type
      */
     @SuppressWarnings("rawtypes")
     public static Class<?> getTypeClass(Type type) {
@@ -1799,6 +1815,8 @@ public abstract class Lang {
 
     /**
      * 返回一个type的泛型数组, 如果没有, 则直接返回null
+     * 
+     * @param type
      */
     public static Type[] getGenericsTypes(Type type) {
         if (type instanceof ParameterizedType) {
@@ -1829,7 +1847,14 @@ public abstract class Lang {
             throw Lang.wrapThrow(e);
         }
     }
-    
+
+    /**
+     * 使用MD5加密文字
+     * 
+     * @param str
+     *            需要加密的文字
+     * @return MD5加密后的文字
+     */
     public static String md5(String str) {
         if (str == null)
             str = "";
@@ -1840,15 +1865,17 @@ public abstract class Lang {
             StringBuilder sb = new StringBuilder();
             for (byte b : data) {
                 String s = Integer.toHexString(b);
-                if (s.length() == 1)
+                int length = s.length();
+                if (length == 1)
                     sb.append('0').append(s);
-                else if (s.length() == 2)
+                else if (length == 2)
                     sb.append(s);
                 else
-                    sb.append(s.substring(s.length() - 2, s.length()));
+                    sb.append(s.substring(length - 2, length));
             }
             return sb.toString();
-        } catch (NoSuchAlgorithmException e) {
+        }
+        catch (NoSuchAlgorithmException e) {
             throw Lang.impossible();
         }
     }
