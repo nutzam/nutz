@@ -2,7 +2,9 @@ package org.nutz.lang;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -12,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.nutz.lang.util.Callback2;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -260,6 +263,33 @@ public abstract class Xmls {
             else
                 throw e;
         }
+    }
 
+    /**
+     * 获取该 XML 元素内所有的属性的值，按照Map的形式返回
+     * 
+     * @param ele
+     *            XML 元素
+     * @return 所有属性的值
+     */
+    public static Map<String, String> getAttrs(Element ele) {
+        NamedNodeMap nodeMap = ele.getAttributes();
+        Map<String, String> attrs = new HashMap<String, String>(nodeMap.getLength());
+        for (int i = 0; i < nodeMap.getLength(); i++) {
+            attrs.put(nodeMap.item(i).getNodeName(), nodeMap.item(i).getNodeValue());
+        }
+        return attrs;
+    }
+
+    /**
+     * 从 XML 元素中得到指定属性的值，如该指定属性不存在，则返回空字符串
+     * 
+     * @param ele
+     *            XML 元素
+     * @return 该指定属性的值
+     */
+    public static String getAttr(Element ele, String attrName) {
+        Node node = ele.getAttributes().getNamedItem(attrName);
+        return node != null ? node.getNodeValue() : "";
     }
 }
