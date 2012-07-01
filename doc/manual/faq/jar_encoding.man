@@ -19,4 +19,23 @@ Ecipse 用户
 -------------------------------------------------------------
 Netbean 用户 
     
-    还没发现 Netbean 用户遇到过这个问题
+    # 找到你的Netbeans安装目录下的etc文件夹,如C:\Program Files\NetBeans 6.0 M9\etc
+    # 用记事本打开netbeans.conf
+    # 找到netbeans_default_options这一句(没带#号的,带#号的是注释)
+    # 在最后面加上一个空格,再加入-J-Dfile.encoding=UTF-8
+    比如:
+    {{{:
+    netbeans_default_options="
+        -J-DAM_CONFIG_FILE=\"C:\Sun\AppServer\domains\domain1\config\AMConfig.properties\" 
+        -J-Dcom.sun.aas.installRoot=\"C:\Sun\AppServer\" 
+        -J-Xms128m 
+        -J-Xmx512m 
+        -J-XX:PermSize=32m 
+        -J-XX:MaxPermSize=160m 
+        -J-Dapple.laf.useScreenMenuBar=true 
+        -J-XX:+UseConcMarkSweepGC 
+        -J-XX:+CMSClassUnloadingEnabled 
+        -J-XX:+CMSPermGenSweepingEnabled 
+        -J-Dfile.encoding=UTF-8
+    "
+    }}}
