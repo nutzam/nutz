@@ -35,6 +35,18 @@ import org.nutz.lang.util.NutType;
 public class JsonTest {
 
     @Test
+    public void test_bear_error_end_list() {
+        int[] is = Json.fromJson(int[].class, "[2,]");
+        assertEquals(2, is[0]);
+    }
+
+    @Test
+    public void test_bear_error_end_map() {
+        Person p = Json.fromJson(Person.class, "{name:'a',}");
+        assertEquals("a", p.getName());
+    }
+
+    @Test
     public void test_toJson_with_enum() {
         Person[] ps = new Person[2];
 
@@ -286,8 +298,8 @@ public class JsonTest {
 
     @Test
     public void testSimplePersonObject() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/simplePerson.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/simplePerson.txt"));
         assertEquals("youoo", p.getName());
         assertEquals("YouChunSheng", p.getRealname());
         assertEquals(69, p.getAge());
@@ -302,8 +314,8 @@ public class JsonTest {
     @Ignore
     @Test
     public void testPersonObject() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/person.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/person.txt"));
         StringBuilder sb = new StringBuilder();
         Writer w = new OutputStreamWriter(new StringOutputStream(sb));
         w.write(p.dump());
@@ -316,8 +328,8 @@ public class JsonTest {
         w.flush();
         w.close();
 
-        assertTrue(Streams.equals(    new StringInputStream(sb),
-                                    getClass().getResourceAsStream("/org/nutz/json/person.expect.txt")));
+        assertTrue(Streams.equals(new StringInputStream(sb),
+                                  getClass().getResourceAsStream("/org/nutz/json/person.expect.txt")));
     }
 
     @Test
@@ -405,8 +417,8 @@ public class JsonTest {
 
     @Test
     public void testParseNullFieldObject() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/personNull.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/personNull.txt"));
         assertEquals("youoo", p.getName());
         assertEquals("YouChunSheng", p.getRealname());
         assertEquals(69, p.getAge());
@@ -420,8 +432,8 @@ public class JsonTest {
 
     @Test
     public void testPrintJsonObject() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/person.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/person.txt"));
         String json = Json.toJson(p, JsonFormat.nice());
         Person p2 = Json.fromJson(Person.class, Lang.inr(json));
         assertEquals(p.getName(), p2.getName());
@@ -435,21 +447,21 @@ public class JsonTest {
         assertEquals(p.getCompany().getName(), p2.getCompany().getName());
         assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
         assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany()
-                                                                    .getCreator()
-                                                                    .getRealname());
+                                                                  .getCreator()
+                                                                  .getRealname());
         assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
         assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany()
                                                                 .getCreator()
                                                                 .getFather());
         assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany()
-                                                                    .getCreator()
-                                                                    .getBirthday());
+                                                                  .getCreator()
+                                                                  .getBirthday());
     }
 
     @Test
     public void testFilterField() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/person.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/person.txt"));
         String json = Json.toJson(p, JsonFormat.nice().setActived("^name$"));
         Person p2 = Json.fromJson(Person.class, Lang.inr(json));
         assertEquals(p.getName(), p2.getName());
@@ -462,8 +474,8 @@ public class JsonTest {
 
     @Test
     public void testFilterField2() throws Exception {
-        Person p = Json.fromJson(    Person.class,
-                                    getFileAsInputStreamReader("org/nutz/json/person.txt"));
+        Person p = Json.fromJson(Person.class,
+                                 getFileAsInputStreamReader("org/nutz/json/person.txt"));
         String json = Json.toJson(p, JsonFormat.nice().setLocked("realname|father|company"));
         Person p2 = Json.fromJson(Person.class, Lang.inr(json));
         assertNull(p2.getRealname());
@@ -726,8 +738,8 @@ public class JsonTest {
 
     @Test
     public void test_from_list() {
-        List<Abc> list = (List<Abc>) Json.fromJson(    NutType.list(Abc.class),
-                                                    Streams.fileInr("org/nutz/json/list.txt"));
+        List<Abc> list = (List<Abc>) Json.fromJson(NutType.list(Abc.class),
+                                                   Streams.fileInr("org/nutz/json/list.txt"));
         assertNotNull(list);
         assertEquals(2, list.size());
         assertEquals("nutz", list.get(0).name);
