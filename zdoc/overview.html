@@ -1,0 +1,252 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>zDoc 概述</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">zDoc 概述</div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#我为什么要建立_zDoc_项目?">我为什么要建立 zDoc 项目?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#zDoc_要达到的目标">zDoc 要达到的目标</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#如何使用_zDoc">如何使用 zDoc</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#设置运行环境">设置运行环境</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#将_zDoc_转换成_HTML">将 zDoc 转换成 HTML</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#将_zDoc_转换成_Goolge_wiki">将 zDoc 转换成 Goolge wiki</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#将_zDoc_转换成_PDF_文件">将 zDoc 转换成 PDF 文件</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#其他">其他</a></div>
+</li>
+</ul>
+<h1><a name="我为什么要建立_zDoc_项目?"></a>我为什么要建立 zDoc 项目?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>开源项目最需要的（同时也是最缺乏的）就是丰富全面的文档。在建立开源项目 <a href="http://nutz.googlecode.com">Nutz</a> 的时候，我深刻的体会到了这一点。为此，经过思考，我认为只要做到下面两件事：</p>
+<ol type="1">
+<li>让每篇文档很容易写</li>
+<li>让每篇文档可以同时被多人写</li>
+</ol>
+<p>那么，对在开源项目的文档写作方面的工作，会有很大帮助的。</p>
+<p>根据多年惨痛的文档写作经验我得出了如下两个结论：</p>
+<ul type="disc">
+<li> 类似 Word 的桌面文档工具并不适合多人协同工作
+<ul type="circle">
+<li>除非你给MS纳钱，架个 SharePoint 类的服务器</li>
+<li>文档的改动历史追踪很困难</li>
+<li>跨平台性不太好（因为兼容性的问题）</li>
+</ul>
+</li>
+<li>在线文档应用并不适写庞大的文档
+<ul type="circle">
+<li>Google Doc 之类的，当文档大的时候，编辑起来会很慢</li>
+<li>总有意外的小Bug，而且通常很恼人</li>
+</ul>
+</li>
+</ul>
+<p>所以，我必须构建自己的文档写作方式。我注意到两个事实：</p>
+<ol type="1">
+<li>对于文档变动的管理，我想现在的版本控制系统已经做的足够好了（比如 SVN, Git, Mercurial）。</li>
+<li>市面上所有的操作系统都会对纯文本文件（尤其是 UTF-8）支持的很好。（比如 Windows的Nodepad++，Editplus,Ultra-Edit 以及 Linux 下的 Vim 等）</li>
+</ol>
+<p>所以，我打算将这两个事实充分利用起来。尤其幸运的是我本人就是一名程序员，于是我便是建立了一个小小的文本文件解析渲染器 -- zDoc。</p>
+<h1><a name="zDoc_要达到的目标"></a>zDoc 要达到的目标</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>我将使用任何一款我喜欢的<b>纯文本编辑器</b>来编辑我的文档
+<ul type="circle">
+<li>所以我可以利用 SVN 等工具来管理版本，协作编写文档</li>
+</ul>
+</li>
+<li>我的文档将包含文字，以及 B/I/S 等格式信息</li>
+<li>利用缩进来划分文档的结构</li>
+<li>可以生成文档目录索引</li>
+<li>支持超链接，包括文档内部和外部</li>
+<li>支持图片
+<ul type="circle">
+<li>流行的图片</li>
+<li>支持 Icon</li>
+<li>可自定义大小</li>
+</ul>
+</li>
+<li>支持输出的格式
+<ul type="circle">
+<li>PDF</li>
+<li>HTML (browser from local)</li>
+<li>HTML (browser from web)</li>
+<li>Google Wikie</li>
+</ul>
+</li>
+<li>文档可以 include 另外一个文档</li>
+</ul>
+<h1><a name="如何使用_zDoc"></a>如何使用 zDoc</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="设置运行环境"></a>设置运行环境</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>zDoc 提供了命令行程序，使用它之前你需要做如下设定</p>
+<ol type="1">
+<li>在发布包里面找到 run 目录</li>
+<li>打开其中的 win 目录或者 linux 目录(依你自己的操作系统而定)</li>
+<li>修改脚本文件 zdoc ( Windows 下为 zdoc.bat ) -- 你需要修改三个变量
+<ol type="a">
+<li>JAVA_HOME 指向你的 Java 安装的根目录（这个目录下有 lib 子目录，其内有 tools.jar, dt.jar 以及 rt.jar）</li>
+<li>NUTZ_HOME 指向 Nutz 的核心 jar 包: 可从此处下载=&gt; <a href="http://nutz.googlecode.com">http://nutz.googlecode.com</a></li>
+<li>ZDOC_HOME 指向 Nutz.Doc 的运行 jar 包: 可从此处下载=&gt; <a href="http://nutzdoc.googlecode.com">http://nutzdoc.googlecode.com</a></li>
+</ol>
+</li>
+<li>修改运行路径
+<ul type="disc">
+<li><b>Windows</b> 用户可以将 run 目录加入到你的系统环境变量 <span style="color:#0000AA;"><b>%PATH%</b></span> 中去</li>
+<li><b>Linux</b> 用户，可以将 zdoc 脚本文件链接至 ~/bin 目录下。
+<ul type="circle">
+<li>请确保此脚本文件权限为可执行
+<pre>chmod +x ./zdoc
+</pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h2><a name="将_zDoc_转换成_HTML"></a>将 zDoc 转换成 HTML</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><b>命令格式</b></p>
+<pre> zdoc html [源目录] [目标目录]
+</pre>
+<p><b>说明</b></p>
+<ul type="disc">
+<li>这三个参数缺一不可</li>
+<li>第一个参数表示要转换成 HTML</li>
+<li>第二个参数声明了zDoc源目录
+<ul type="circle">
+<li>该目录下如果有 index.xml，将能更为精确的控制生成的 html 目录索引</li>
+<li>请看 <a href="index_xml.html">zDoc 目录转换中的索引文件--index.xml的语法</a></li>
+<li>你的 zdoc 文件必须以 .man 或者 .zdoc 为后缀名，大小写不敏感</li>
+<li>更多的关于目录转换的细节请参看 <a href="dir_convert.html">目录转换细则</a></li>
+</ul>
+</li>
+<li>第三个参数为目标输出的目录</li>
+</ul>
+<p><b>比如</b></p>
+<pre>zdoc html /folder/abc /output/abc
+</pre>
+<p>会将目录 /folder/abc 所有的 zdoc 文档转换成 HTML 文档，并输出到 /output/abc 目录下</p>
+<h2><a name="将_zDoc_转换成_Goolge_wiki"></a>将 zDoc 转换成 Goolge wiki</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Google code  是很多开源项目理想的开发平台。 它提供了 wiki 功能。 如果你建立一个 wiki 页面，在它的版本控制服务的目录内，会出现一个 wiki 的目录，通常，是在 /trunk/wiki 下。</p>
+<p>Google code 的 wiki 格式非常简单，易于理解，Google 为其提供了较强大的页面渲染支持。所以将 zDoc 直接渲染成 Google wiki 对大多数在 Google code 上的开源项目是很有用的，你需要执行如下格式的命令</p>
+<p><b>命令格式</b></p>
+<pre>zdoc gwiki [源目录] [目标目录] [索引文件名] [图片地址前缀]
+</pre>
+<p><b>说明</b></p>
+<ul type="disc">
+<li>第一个参数表示要转换成 Goolge Wiki</li>
+<li>第二个参数声明了zDoc源目录
+<ul type="circle">
+<li>该目录下如果有 index.xml，将能更为精确的控制生成的目录索引</li>
+<li>请看 <a href="index_xml.html">zDoc 目录转换中的索引文件--index.xml的语法</a></li>
+</ul>
+</li>
+<li>第三个参数指明 wiki 目录， zDoc 将会在这个目录下生成所有的 .wiki 文件</li>
+<li>第四个参数为索引文件名，请参看 <a href="http://code.google.com/p/support/wiki/WikiSyntax#Navigation">Google wiki 关于目录索引的描述</a>
+<ul type="circle">
+<li>zDoc 会替你生成这个索引文件</li>
+<li>如果你写 null，zDoc 将不会生成这个文件</li>
+</ul>
+</li>
+<li>第五个参数有些奇怪，因为 Google wiki 并不支持图片存储，它只支持图片引用。所以你的文档中如果有图片，必须要存放在某一个可被互联网访问到的地址上
+<ul type="circle">
+<li>这个参数也不是必须的</li>
+<li>如果你声明了这个参数，所有的 zDoc 文档中引用的本地图片
+<ul type="square">
+<li>将会被目标目录根录下一个叫 <b>wiki_imgs</b> 的目录下，你可以用 ftp 工具，将图片上传到你指定的地址</li>
+<li>生成后的 wiki 文件，图片地址将指向你声明的地址</li>
+<li>如果你的图片重名，zDoc 将自动为你改名（按顺序增加数字后缀）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><b>比如</b></p>
+<pre>zdoc gwiki /folder/abc /output/abc wiki_index_page http://www.my.com/wiki/img
+</pre>
+<p>会将目录 /folder/abc 所有的 zdoc 文档转换成 Google wiki 文档，并输出到 /output/abc 目录下。并会根据 index.xml （如果没有，根据文件）生成一个索引 wiki 页，文件名为 wiki_index_page.wiki。所有的本地图片都会被打入压缩包 /output/abc/wiki_images.zip，并且所有的本地图片地址都将变成 http://www.my.com/wiki/img/xxxx.xxx</p>
+<h2><a name="将_zDoc_转换成_PDF_文件"></a>将 zDoc 转换成 PDF 文件</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>PDF 是一个非常通用的文档格式。如果你通过 zDoc 建立一组文件，你就可以用如下命令生成 PDF 文件</p>
+<pre>zdoc pdf [source dir] [target pdf path]
+</pre>
+<p><b>说明</b></p>
+<ul type="disc">
+<li>第一个参数表示要转换成 PDF 文档</li>
+<li>第二个参数声明了zDoc源目录
+<ul type="circle">
+<li>该目录下如果有 index.xml，将能更为精确的控制生成的目录索引</li>
+<li>请看 <a href="index_xml.html">zDoc 目录转换中的索引文件--index.xml的语法</a></li>
+</ul>
+</li>
+<li>第三个参数指明一个 PDF 的文件，如果该文件不存在，会被自动创建，否则会被覆盖。</li>
+</ul>
+<p>这里还需要注意的是，因为 PDF 输出，zDoc 依赖的是 iText 项目，你需要</p>
+<ol type="1">
+<li>iText-2.X.X.jar</li>
+<li>iTextAsian.jar - 用来支持中文</li>
+<li>在你的 CLASSPATH 内，放置一个字体文件，名字为 <b>pdf_font.ttf</b> 或者 <b>pdf_font.ttc</b>
+<ul type="disc">
+<li>这个文件必须放置在 CLASSPATH 的根，即，同 Log4j.properties 同级，比如：</li>
+</ul>
+<pre> [My Class Folder]
+    [com]
+	   [my]
+	       Abc.class
+		   Main.class
+    log4j.properties
+	pdf_font.ttf
+</pre>
+<ul type="disc">
+<li><b>.ttf</b> 字体文件更优先</li>
+</ul>
+</li>
+</ol>
+<p><b>比如</b></p>
+<pre>zdoc pdf /home/peter/myDoc /home/peter/myPdf.pdf
+</pre>
+<p>会将目录 /home/peter/myDoc 所有的 zDoc 文档转换成一个大的 PDF 文件 /home/peter/myPdf.pdf</p>
+<h1><a name="其他"></a>其他</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>关于 zdoc 文件详细的语法，请参看 <a href="syntax.html">zDoc 的语法说明</a></li>
+<li>关于目录转换的细则，请参看 <a href="dir_convert.html">目录转换细则</a> 以及 <a href="index_xml.html">使用 index.xml 作为索引文件</a></li>
+<li>zDoc 已经被我应用到具体的工作中，比如写作界面设计文档，以后如果我打算写小说，也会使用 zDoc。</li>
+</ul>
+<p>总之，一个文本编辑器，一个 SVN 服务器就可以多人协作，写出漂亮的文档，这种感觉会很美妙的。</p>
+</div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div id="disqus_thread"></div>
+</body>
+</html>

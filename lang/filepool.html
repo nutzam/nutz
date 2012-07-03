@@ -1,7 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>文件池</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>文件池</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">文件池</div>
@@ -77,7 +78,7 @@ FilePool pool = new NutFilePool("~/tmp/myfiles");
 <p></p>
 <h2><a name="在池中创建一个文件"></a>在池中创建一个文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>File f = pool.createFile(239, ".png");  // 该文件本句之后，已经被创建
+<pre>File f = pool.createFile(".png");  // 该文件本句之后，已经被创建
 // TODO 为这个文件写入内容
 </pre>
 <p>实际上， NutFilePool 会将你的 id （一个 Long 值）以及后缀变成如下形式的文件路径:</p>
@@ -150,5 +151,6 @@ long fId = pool.getFileId(f, ".png");
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

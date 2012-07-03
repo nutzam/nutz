@@ -1,11 +1,11 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>适配器</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>适配器</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">适配器</div>
-<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
@@ -122,8 +122,7 @@
                         @Param("pnm") String petName){
 	...
 </pre>
-<p>通过这个注解，为每个参数声明 HTTP 参数名。</p>
-<p>特例:你连@Param都不写(1.b.43+)</p>
+<p>通过这个注解，为每个参数声明 HTTP 参数名。实验性,不推荐在生产环境中使用. 仅当class是通过ecj/eclipse编译的,才完整支持.请参看: <a href="http://wendal.net/416.html">在Ant/Maven中使用ecj编译器(Eclipse内置的Java编译器)</a>特例:你连@Param都不写(1.b.43+)</p>
 <pre>public String someFunc(	int pid,
                         String petName){
 	...
@@ -390,7 +389,6 @@ public String getComment(String author, int topicId, int commentId){
 <li>adapt 方法的第三个参数，是 Nutz.Mvc 为你准备好的路径参数，它有可能为 null。 你的适配器 将决定是不是应用这个路径参数</li>
 </ul>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <script type="text/javascript">
     /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
     var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
@@ -402,5 +400,6 @@ public String getComment(String author, int topicId, int commentId){
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

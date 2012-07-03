@@ -1,7 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>我的Nutz的源码是乱码怎么办？</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>我的Nutz的源码是乱码怎么办？</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">我的Nutz的源码是乱码怎么办？</div>
@@ -21,7 +22,17 @@
 <div class="hr"><b></b></div>
 <h1><a name="Netbean_用户"></a>Netbean 用户 </h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>还没发现 Netbean 用户遇到过这个问题</p>
+<p></p>
+<ol type="1">
+<li>找到你的Netbeans安装目录下的etc文件夹,如C:\Program Files\NetBeans 6.0 M9\etc</li>
+<li>用记事本打开netbeans.conf</li>
+<li>找到netbeans_default_options这一句(没带#号的,带#号的是注释)</li>
+<li>在最后面加上一个空格,再加入-J-Dfile.encoding=UTF-8</li>
+</ol>
+<h2><a name="比如:"></a>比如:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>-J-DAM_CONFIG_FILE=\"C:\Sun\AppServer\domains\domain1\config\AMConfig.properties\" -J-Dcom.sun.aas.installRoot=\"C:\Sun\AppServer\" -J-Xms128m -J-Xmx512m -J-XX:PermSize=32m -J-XX:MaxPermSize=160m -J-Dapple.laf.useScreenMenuBar=true -J-XX:+UseConcMarkSweepGC -J-XX:+CMSClassUnloadingEnabled -J-XX:+CMSPermGenSweepingEnabled -J-Dfile.encoding=UTF-8</p>
+<p>"}}}</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <script type="text/javascript">
@@ -35,5 +46,6 @@
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

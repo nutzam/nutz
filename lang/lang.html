@@ -1,7 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>Java 的函数糖</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>Java 的函数糖</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">Java 的函数糖</div>
@@ -85,7 +86,7 @@
 <h1><a name="什么是函数糖？"></a>什么是函数糖？</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>Java 的语法比 C/C++ 友好很多， 因为它设计之初，就是为了考虑到程序员的使用是否舒适。当然很多事情愿望是美好的，现实是残酷的。Java 语言本身的语法仍然不可避免的带有着 10年前那种的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。</p>
-<p>你可以查看 <a href="http://code.google.com/p/nutz/source/browse/#svn/trunk/src/org/nutz/lang">org.nutz.lang</a> 下的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。</p>
+<p>你可以查看 <a href="https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang">org.nutz.lang</a> 下的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。</p>
 <p>我希望在 80% 以上的情况下，这些函数能让你有效的缩短你 代码的体积，并且增加代码的可读性。</p>
 <div class="hr"><b></b></div>
 <h1><a name="异常"></a>异常</h1>
@@ -237,7 +238,7 @@ Map&lt;String,Pet&gt; petMap = Lang.collection2map(HashMap.class, pets, "name");
 </pre>
 </li>
 <li>解析 XML 文档
-<pre>Document xmlDoc = Xmls.xml(Files.find("~/my.xml"));
+<pre>Document xmlDoc = Xmls.xml(Files.findFile("~/my.xml"));
 </pre>
 </li>
 <li>读取某个子元素内容
@@ -533,5 +534,6 @@ assertTrue(Lang.parseBoolean("yes"));
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

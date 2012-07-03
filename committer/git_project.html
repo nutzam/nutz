@@ -1,7 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>从 Git 编译源码</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>从 Git 编译源码</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">从 Git 编译源码</div>
@@ -33,7 +34,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>简单的要命，执行下面的命令（前提是你装了 Git）</p>
 <pre>cd xx/xxx/xx/xx    &lt;- 意思是，到你打算放 Nutz 的那个目录
-git clone git://github.com/nutzam/nutz.git
+git clone git://github.com/nutzam/nutz.git --depth=0
 </pre>
 <p>稍微等个1分钟不到，因为 github 线路问题，有点慢，原因你懂的 ...</p>
 <p>屏幕上开始显示...</p>
@@ -96,5 +97,6 @@ git gc
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

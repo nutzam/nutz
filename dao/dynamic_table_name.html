@@ -1,7 +1,8 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>动态表名</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+<title>动态表名</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">动态表名</div>
@@ -85,7 +86,7 @@ public class Employee{
 	});
 }
 </pre>
-<p>通过创建一个匿名 java.lang.Runnable 对象，你可以像静态 POJO 一样使用 Dao 接口的一切方法。因为通过你传入的参数 3 (TableName.run 方法的第一个参数)， 以及前面的 @Table 声明，Nutz.Dao 已经很清楚如何操作数据库了，它会用 3 替代 null。</p>
+<p>通过创建一个匿名 java.lang.Runnable 对象，你可以像静态 POJO 一样使用 Dao 接口的一切方法。因为通过你传入的参数 3 (TableName.run 方法的第一个参数)， 以及前面的 @Table 声明，Nutz.Dao 已经很清楚如何操作数据库了，它会用 3 替代 $cid。</p>
 <p>如果细心一些，你会发现在 TableName.run 方法的声明是：</p>
 <pre>public static void run(Object refer, Runnable atom);
 </pre>
@@ -399,5 +400,6 @@ private List&lt;Employee&gt; staffs;
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
     })();
 </script>
-<div id="disqus_thread"></div></body>
+<div id="disqus_thread"></div>
+</body>
 </html>

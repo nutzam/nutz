@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>在Ant中使用</title>
+<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">在Ant中使用</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#配置Taskdef">配置Taskdef</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#使用zdoc_Task">使用zdoc Task</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="配置Taskdef"></a>配置Taskdef</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>使用Resource</p>
+<pre>	&lt;taskdef resource="zdoc_ant.properties"&gt;
+		&lt;classpath path="nutz-1.a.32.jar"&gt;&lt;/classpath&gt;
+		&lt;classpath path="nutzdoc-1.13.jar"&gt;&lt;/classpath&gt;
+	&lt;/taskdef&gt;
+</pre>
+<p>直接指定类</p>
+<pre>	&lt;taskdef name="zdoc" classname="org.nutz.doc.ant.ZDocTask"&gt;
+		&lt;classpath path="nutz-1.a.32.jar"&gt;&lt;/classpath&gt;
+		&lt;classpath path="nutzdoc-1.13.jar"&gt;&lt;/classpath&gt;
+	&lt;/taskdef&gt;
+</pre>
+<p></p>
+<h1><a name="使用zdoc_Task"></a>使用zdoc Task</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>通过定义不同的suffix,生成不同类型的文档</p>
+<pre>	&lt;zdoc suffix="html" src="doc/manual" dest="manual-dir"/&gt;
+	&lt;zdoc suffix="pdf" src="doc/manual" dest="nutz.manual.pdf"/&gt;
+	&lt;zdoc suffix="rtf" src="doc/manual" dest="nutz.manual.rtf"/&gt;
+</pre>
+<p></p>
+<ul type="disc">
+<li>html/htm 在目标文件夹生成网页</li>
+<li>pdf 生成PDF文件</li>
+<li>rtf 生成RTF文件</li>
+</ul>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<script type="text/javascript">
+    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
+
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<div id="disqus_thread"></div>
+</body>
+</html>
