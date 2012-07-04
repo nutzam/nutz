@@ -1,51 +1,17 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>过滤字段</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">过滤字段</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#为什么需要过滤字段">为什么需要过滤字段</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#如何过滤字段的例子">如何过滤字段的例子</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#字段过滤器的原理">字段过滤器的原理</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">4</span><a href="#字段过滤器的创建">字段过滤器的创建</a></div>
-<ul>
-<li>
-<div><span class="num">4.1</span><a href="#忽略少数字段">忽略少数字段</a></div>
-</li>
-<li>
-<div><span class="num">4.2</span><a href="#忽略空值">忽略空值</a></div>
-</li>
-<li>
-<div><span class="num">4.3</span><a href="#保留几个字段且忽略空值">保留几个字段且忽略空值</a></div>
-</li>
-<li>
-<div><span class="num">4.4</span><a href="#忽略少数字段且忽略空值">忽略少数字段且忽略空值</a></div>
-</li>
-<li>
-<div><span class="num">4.5</span><a href="#为多个实体设置字段过滤">为多个实体设置字段过滤</a></div>
-</li>
-</ul>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="为什么需要过滤字段"></a>为什么需要过滤字段</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。通过注解 <a href="annotations.html">Nutz.Dao 实体注解</a> <span style="color:#AA7744;"><b>@Readonly</b></span> 可以达到 这个目的。但是更多的时候，对于 POJO 对象，只有在运行时，用户的程序才能决定哪些字段更新，哪些不更新。<span style="color:#AA7744;"><b>@Readonly</b></span> 注解可就达不到这个 目的了。</p>
-<p>怎么办呢？ Nutz.Dao 提供了类似于 <a href="dynamic_table_name.html">动态表名</a> 的解决办法。</p>
+<h1>为什么需要过滤字段</h1>
+<p>某些时候，尤其是在更新对象的时候，用户希望忽略某些字段。通过注解 <a href="#dao/annotations.html">Nutz.Dao 实体注解</a> <span style="color:#AA7744;"><b>@Readonly</b></span> 可以达到 这个目的。但是更多的时候，对于 POJO 对象，只有在运行时，用户的程序才能决定哪些字段更新，哪些不更新。<span style="color:#AA7744;"><b>@Readonly</b></span> 注解可就达不到这个 目的了。</p>
+<p>怎么办呢？ Nutz.Dao 提供了类似于 <a href="#dao/dynamic_table_name.html">动态表名</a> 的解决办法。</p>
 <div class="hr"><b></b></div>
-<h1><a name="如何过滤字段的例子"></a>如何过滤字段的例子</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>如何过滤字段的例子</h1>
 <p>如下代码，将只更新 Pet 的 id 和 name 字段：</p>
 <pre>FieldFilter.create(Pet.class, "^id|name$").run(new Atom() {
 	public void run() {
@@ -56,10 +22,8 @@
 	}
 });
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="字段过滤器的原理"></a>字段过滤器的原理</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>字段过滤器的原理</h1>
 <p>字段过滤，不过是要在一个地方记录一下下面两个信息：</p>
 <ol type="1">
 <li>对什么实体</li>
@@ -73,24 +37,21 @@
     ...
     private Map&lt;Class&lt;?&gt;, FieldMatcher&gt; map;
     ...
-
 </pre>
 <p>而且既然在 ThreadLocal 设置了数据，它就不得不考虑如何让你清除这个数据。因此，它的写法也保证了你一定会清掉你的数据了。</p>
 <pre>FieldFilter ... run(new Atom(){   &lt;-- 开始将自身加入 ThreadLocal
     public void run(){
-        // 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
-    }
+        <span class="zdoc_code_cmt">// 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
+</span>    }
 });   &lt;-- run 方法结束前，会从 ThreadLocal 清除自身
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="字段过滤器的创建"></a>字段过滤器的创建</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>字段过滤器的创建</h1>
 <p>下面是一个最简单和常用的例子：</p>
 <pre>FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
 <ul type="disc">
@@ -108,64 +69,44 @@
 <li>如果我想忽略所有之为空的字段怎么办呢？</li>
 <li>如果我想同时为多个实体设置字段过滤怎么办呢？</li>
 </ul>
-<h2><a name="忽略少数字段"></a>忽略少数字段</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>忽略少数字段</h2>
 <pre>FieldFilter.lock(Pet.class, "^last|age$").run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
-<h2><a name="忽略空值"></a>忽略空值</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>忽略空值</h2>
 <pre>FieldFilter.create(Pet.class, true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
-<h2><a name="保留几个字段且忽略空值"></a>保留几个字段且忽略空值</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>保留几个字段且忽略空值</h2>
 <pre>FieldFilter.create(Pet.class,"^id|name|age|last$", true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
-<h2><a name="忽略少数字段且忽略空值"></a>忽略少数字段且忽略空值</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>忽略少数字段且忽略空值</h2>
 <pre>FieldFilter.create(Pet.class, null, "^age|last$", true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
-<h2><a name="为多个实体设置字段过滤"></a>为多个实体设置字段过滤</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>为多个实体设置字段过滤</h2>
 <pre>FieldFilter.create(Pet.class, true)
            .set(Master.class, "^id|name$")
            .run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
 </div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
 </html>

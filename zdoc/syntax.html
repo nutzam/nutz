@@ -1,64 +1,20 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>zDoc语法</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">zDoc语法</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#什么是zDoc文档">什么是zDoc文档</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#标题与段落">标题与段落</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#无序列表">无序列表</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#有序列表">有序列表</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#超链接">超链接</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#逃逸字符">逃逸字符</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#文字及样式">文字及样式</a></div>
-</li>
-<li>
-<div><span class="num">8</span><a href="#图片">图片</a></div>
-</li>
-<li>
-<div><span class="num">9</span><a href="#分隔线">分隔线</a></div>
-</li>
-<li>
-<div><span class="num">10</span><a href="#代码">代码</a></div>
-</li>
-<li>
-<div><span class="num">11</span><a href="#表格">表格</a></div>
-</li>
-<li>
-<div><span class="num">12</span><a href="#目录索引">目录索引</a></div>
-</li>
-<li>
-<div><span class="num">13</span><a href="#文档属性">文档属性</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="什么是zDoc文档"></a>什么是zDoc文档</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>什么是zDoc文档</h1>
 <ul type="disc">
 <li>zDoc 是纯文本的文档</li>
 <li>zDoc 必须是 UTF-8 编码的</li>
 <li>它以"行"为单位进行文档解析</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="标题与段落"></a>标题与段落</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>标题与段落</h1>
 <pre>这里是标题
 	这里是内容
 
@@ -75,8 +31,7 @@
 <li>zDoc 理论上拥有无限层次的标题行</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="无序列表"></a>无序列表</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>无序列表</h1>
 <pre> * 项目 A
 	 * 项目 A1
 	 * 项目 A2
@@ -87,20 +42,18 @@
 <li>连续的这样的段落为一个列表</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="有序列表"></a>有序列表</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre> # 项目 A
-	 # 项目 A1
-	 # 项目 A2
- # 项目 B
-</pre>
+<h1>有序列表</h1>
+<pre> <span class="zdoc_code_cmt"># 项目 A
+</span>	 <span class="zdoc_code_cmt"># 项目 A1
+</span>	 <span class="zdoc_code_cmt"># 项目 A2
+</span> <span class="zdoc_code_cmt"># 项目 B
+</span></pre>
 <ul type="disc">
 <li>格式段落以 #  (星号+空格) 或者 (空格+星号+空格) 开头</li>
 <li>连续的这样的段落为一个有序列表，生成器会自动为你生成序号</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="超链接"></a>超链接</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>超链接</h1>
 <ul type="disc">
 <li>在行内 被方括弧[和]包裹起来的就是超链接</li>
 <li>[http://www.google.com] 将显示成 <a href="http://www.google.com">http://www.google.com</a></li>
@@ -111,15 +64,13 @@
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="逃逸字符"></a>逃逸字符</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>逃逸字符</h1>
 <ul type="disc">
 <li>被字符  包括起来的内容将不做格式转换</li>
 <li>连续两个   将表示一个 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="文字及样式"></a>文字及样式</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>文字及样式</h1>
 <p>zDoc 支持如下字体样式，暂时不支持下划线，以及字体颜色</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -170,8 +121,7 @@
 </table>
 <p><span style="color:#008800;">各个格式的组合，顺序没有限制</span></p>
 <div class="hr"><b></b></div>
-<h1><a name="图片"></a>图片</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>图片</h1>
 <p>格式为</p>
 <pre>&lt;[宽x高:]图片地址&gt;
 </pre>
@@ -195,16 +145,15 @@
 <pre>图片：&lt;../logo.png&gt;
 </pre>
 <p>将显示成:</p>
-<p>图片：<img src="../logo.png"/></p>
+<p>图片：<img src="imgs/logo.png"/></p>
 <p>当然，我们可以控制图片的大小</p>
 <pre>图片：&lt;60x15:../logo.png&gt;
 </pre>
 <p>将显示成:</p>
-<p>图片：<img src="../logo.png" width="60" height="15"/></p>
+<p>图片：<img src="imgs/logo.png" width="60" height="15"/></p>
 <p><span style="color:#FF0000;"><b>注意</b></span>，你必须同时写出图片的宽度和高度。</p>
 <div class="hr"><b></b></div>
-<h1><a name="分隔线"></a>分隔线</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>分隔线</h1>
 <ul type="disc">
 <li>任何行内内容全部为减号 - ，并且数量不少于5个，将被认为是分隔线</li>
 <li>比如如果一行內容为
@@ -216,8 +165,7 @@
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="代码"></a>代码</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>代码</h1>
 <ul type="disc">
 <li>以 {{{ 开始的行，下面所有的行都被认为是代码，一直到 }}} 开始的行为止</li>
 <li>{{{&lt;java&gt; 表示代码的类型为java源代码
@@ -238,16 +186,15 @@ alert(msg);
 }
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="表格"></a>表格</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>表格</h1>
 <ul type="disc">
 <li>以 || 开始，并以 || 结束的行，被认为是表格行</li>
 <li>连续的表格行被认为是一个表格</li>
 <li>符号 || 之间的内容被认为是一个单元格
 <p>比如</p>
-<pre>||A||{*B}||[http://www.google.com Google]||
-||X||{*YYY}||[http://www.apache.org Apache]||
-</pre>
+<pre>||A||{*B}||[http:<span class="zdoc_code_cmt">//www.google.com Google]||
+</span>||X||{*YYY}||[http:<span class="zdoc_code_cmt">//www.apache.org Apache]||
+</span></pre>
 <p>将显示成：</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -264,8 +211,7 @@ alert(msg);
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="目录索引"></a>目录索引</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>目录索引</h1>
 <ul type="disc">
 <li>在文档任何行写 #index:3 将会在该位置生成目录
 <ul type="circle">
@@ -276,8 +222,7 @@ alert(msg);
 <li>声明 #index:0,3 表示目录级别为第0层到第3层</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="文档属性"></a>文档属性</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>文档属性</h1>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
 <td> <b>zDoc 语法</b>			</td>
@@ -293,17 +238,6 @@ alert(msg);
 </tr>
 </table>
 </div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
 </html>

@@ -1,33 +1,12 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>事件监听</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">事件监听</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#都有哪些事件">都有哪些事件</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#怎么监听">怎么监听</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#通过实现一个触发器">通过实现一个触发器</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#通过对象自身的一个函数">通过对象自身的一个函数</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#监听其他事件">监听其他事件</a></div>
-</li>
-</ul>
-<h1><a name="都有哪些事件"></a>都有哪些事件</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>都有哪些事件</h1>
 <p>Nutz.Ioc 容器有三种事件：</p>
 <ul type="disc">
 <li>对象被创建</li>
@@ -35,21 +14,18 @@
 <li>对象被销毁</li>
 </ul>
 <p>在这三种时刻，你如果想做一些特殊的操作，比如，当一个数据源被销毁时，你希望能够关闭所有的连接，你可以在 JSON 配置文件中，声明一下，你想监听什么事件，以及怎么监听。</p>
-<h1><a name="怎么监听"></a>怎么监听</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>怎么监听</h1>
 <p>我们为 Pet 对象增加一个新的属性:</p>
 <pre>public class Pet {
 
 	private int fetchCount;
 	
-	... // 省略其他属性以及 getter 和 setter
-</pre>
-<h2><a name="通过实现一个触发器"></a>通过实现一个触发器</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h3><a name="触发器"></a>触发器</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre>package nutz.demo.ioc.book;//提醒: 不要把你的类放在缺省包中!!
-
+	... <span class="zdoc_code_cmt">// 省略其他属性以及 getter 和 setter
+</span></pre>
+<h2>通过实现一个触发器</h2>
+<h3>触发器</h3>
+<pre>package nutz.demo.ioc.book;<span class="zdoc_code_cmt">//提醒: 不要把你的类放在缺省包中!!
+</span>
 import org.nutz.ioc.IocEventTrigger;
 
 public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
@@ -61,8 +37,7 @@ public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
 }
 </pre>
 <p>IocEventTrigger 接口只有一个方法，当它被调用的时候，就表示某个事件发生了。具体什么事件呢？完全看你在 JSON 配置文件中把这个触发器，声明在哪种事件下面</p>
-<h3><a name="在_JSON_配置文件中声明监听的事件"></a>在 JSON 配置文件中声明监听的事件</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>在 JSON 配置文件中声明监听的事件</h3>
 <pre>var ioc = {
 	xb : {
 		events : {
@@ -74,32 +49,24 @@ public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
 	}
 }
 </pre>
-<p></p>
-<h3><a name="调用代码"></a>调用代码</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>调用代码</h3>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/events.js"));
 Pet pet = ioc.get(Pet.class, "xb");
 ioc.get(Pet.class, "xb");
 ioc.get(Pet.class, "xb");
 System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 </pre>
-<h3><a name="控制台输出"></a>控制台输出</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>控制台输出</h3>
 <pre>XiaoBai be fetch 3 times
 </pre>
-<p></p>
-<h2><a name="通过对象自身的一个函数"></a>通过对象自身的一个函数</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>通过对象自身的一个函数</h2>
 <p>这个函数必须为  public，并且不能有参数</p>
-<h3><a name="为_Pet_对象增加一个函数："></a>为 Pet 对象增加一个函数：</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>为 Pet 对象增加一个函数：</h3>
 <pre>public void onFetch() {
 	this.fetchCount++;
 }
 </pre>
-<p></p>
-<h3><a name="在_JSON_配置文件中增加新的对象"></a>在 JSON 配置文件中增加新的对象</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>在 JSON 配置文件中增加新的对象</h3>
 <pre>xh : {
 	events : {
 		fetch : 'onFetch'
@@ -109,18 +76,15 @@ System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 	}
 }
 </pre>
-<h3><a name="调用代码"></a>调用代码</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>调用代码</h3>
 <pre>Pet xh = ioc.get(Pet.class, "xh");
 ioc.get(Pet.class, "xh");
 System.out.printf("%s be fetch %d times\n", xh.getName(), xh.getFetchCount());
 </pre>
-<h3><a name="控制台输出"></a>控制台输出</h3>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h3>控制台输出</h3>
 <pre>XiaoHei be fetch 2 times
 </pre>
-<h1><a name="监听其他事件"></a>监听其他事件</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>监听其他事件</h1>
 <pre>events : {
 	fetch  : ... ,
 	create : ... ,
@@ -129,17 +93,6 @@ System.out.printf("%s be fetch %d times\n", xh.getName(), xh.getFetchCount());
 </pre>
 <p>根据需要，你可以选择上述三个事件，为其声明触发器，或者触发函数。</p>
 </div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
 </html>

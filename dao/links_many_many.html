@@ -1,44 +1,18 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>多对多映射</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">多对多映射</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#什么是多对多映射">什么是多对多映射</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#在_POJO_中配置多对多映射">在 POJO 中配置多对多映射</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#你不仅可以在集合类型字段上声明一对多映射">你不仅可以在集合类型字段上声明一对多映射</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#插入操作">插入操作</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#获取操作">获取操作</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#更新操作">更新操作</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#删除操作">删除操作</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="什么是多对多映射"></a>什么是多对多映射</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>什么是多对多映射</h1>
 <p>有两张数据表，通过第三张数据表来表示关联关系，我们称之为多对多的映射</p>
-<p><img src="links_manymany.png"/></p>
+<p><img src="imgs/dao/links_manymany.png"/></p>
 <p>如上图，通过一个中间数据表的两个字段，分别指向两个对象的主键，可以实现多对多映射。所以，Pet.foods（一个 List&lt;Food&gt;）或者 Food.pets（一个List&lt;Pet&gt;）就是多对多映射。</p>
 <div class="hr"><b></b></div>
-<h1><a name="在_POJO_中配置多对多映射"></a>在 POJO 中配置多对多映射</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>在 POJO 中配置多对多映射</h1>
 <p>在 POJO 类中字段中增加注解 <b>@ManyMany</b>：</p>
 <pre>@Table("t_food")
 public class Food extends Pojo {
@@ -59,7 +33,7 @@ public class Food extends Pojo {
 <p>在 Food 对象中必须存在一个 List&lt;Pet&gt; 类型的字段，你的多对多映射就需要配置在这个字段上。通过 <b>@ManyMany</b> 注解告诉 Nutz.Dao对象 Food 和 Pet 之间的关系，其中：</p>
 <ul type="disc">
 <li>target 表示你要映射的对象类型</li>
-<li>relation 为中间数据表的表名，它也支持<a href="dynamic_table_name.html">动态表名</a></li>
+<li>relation 为中间数据表的表名，它也支持<a href="#dao/dynamic_table_name.html">动态表名</a></li>
 <li>from 是中间数据表的字段名，这个字段将储存主对象的主键（上例的 Food 的主键）</li>
 <li>to  是中间数据表的字段名，这个字段将储存映射对象的主键（上例的 Pet 的主键）</li>
 </ul>
@@ -81,18 +55,16 @@ public class Food extends Pojo {
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="你不仅可以在集合类型字段上声明一对多映射"></a>你不仅可以在集合类型字段上声明一对多映射</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>你不仅可以在集合类型字段上声明一对多映射</h1>
 <p>本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在</p>
 <ul type="disc">
 <li>数组</li>
 <li>Map</li>
 <li>POJO</li>
 </ul>
-<p>详情，可以参看 <a href="links_many.html">一对多映射</a> 的相关描述</p>
+<p>详情，可以参看 <a href="#dao/links_many.html">一对多映射</a> 的相关描述</p>
 <div class="hr"><b></b></div>
-<h1><a name="插入操作"></a>插入操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>插入操作</h1>
 <p>如果你已经实现准备好了这样的对象：</p>
 <pre>Food food = new Food("Fish");
 
@@ -107,14 +79,14 @@ food.setPets(pets);
 </pre>
 <p>Nutz.Dao 会根据正则表达式 "pets" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：</p>
 <pre>执行 SQL : INSERT INTO t_food (name) VALUES("Fish");
-执行 SQL 获取 最大值： SELECT MAX(id) FROM t_food  // 假设返回的值是 6
-循环 food.pets
+执行 SQL 获取 最大值： SELECT MAX(id) FROM t_food  <span class="zdoc_code_cmt">// 假设返回的值是 6
+</span>循环 food.pets
 	执行 SQL: INSERT INTO t_pet (name) VALUES("XiaoBai");
-	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  // 假设返回的值是 97
-	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  <span class="zdoc_code_cmt">// 假设返回的值是 97
+</span>	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
 	...
 </pre>
-<p>这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 <a href="primary_key.html">关于主键</a>一章。</p>
+<p>这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 <a href="#dao/primary_key.html">关于主键</a>一章。</p>
 <ul type="disc">
 <li>这里因为是多对多映射，所以会首先插入主对象并循环插入映射对象，以便获得双发的主键</li>
 <li>如果你的对象中包括多个 @ManyMany 字段，被你的正则式匹配上，那么这些字段对应的字段（如果不为null）都会被匹配，一次被执行</li>
@@ -125,8 +97,8 @@ food.setPets(pets);
 <p>如果 food.id 的值为 6，那么上述操作实际上会执行：</p>
 <pre>循环 food.pets
 	执行 SQL: INSERT INTO t_pet (name) VALUES("XiaoBai");
-	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  // 假设返回的值是 97
-	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  <span class="zdoc_code_cmt">// 假设返回的值是 97
+</span>	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
 	...
 </pre>
 <p>看，并不会插入 food 对象。</p>
@@ -140,23 +112,21 @@ food.setPets(pets);
 </pre>
 <p>看，仅仅只会插入 food 和 pets 的关联</p>
 <div class="hr"><b></b></div>
-<h1><a name="获取操作"></a>获取操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>获取操作</h1>
 <p>仅仅获取映射对象：</p>
 <pre>Food food = dao.fetch(Food.class, "Fish");
 dao.fetchLinks(food, "pets");
 </pre>
 <p>这会执行操作：</p>
-<pre>执行 SQL: SELECT * FROM t_food WHERE name='Fish'; // 如果 food.id 是6
-执行 SQL: SELECT * FROM t_pet WHERE id IN (SELECT petid FROM t_pet_food WHERE foodid=6)
+<pre>执行 SQL: SELECT * FROM t_food WHERE name='Fish'; <span class="zdoc_code_cmt">// 如果 food.id 是6
+</span>执行 SQL: SELECT * FROM t_pet WHERE id IN (SELECT petid FROM t_pet_food WHERE foodid=6)
 </pre>
 <p>但是 Nutz.Dao 没有提供一次获取 food 对象以及 pets 对象的方法，因为，你完全可以把上面的两句话写在一行上：</p>
 <pre>Food food = dao.fetchLinks(dao.fetch(Food.class, "Fish"), "pets");
 </pre>
 <p>然后，你可以通过 food.getPets() 得到 Nutz.Dao 为 food.pets 字段设置的值。</p>
 <div class="hr"><b></b></div>
-<h1><a name="更新操作"></a>更新操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>更新操作</h1>
 <p>同时更新 food 和 pet</p>
 <pre>dao.updateWith(food, "pets");
 </pre>
@@ -171,8 +141,7 @@ dao.fetchLinks(food, "pets");
 <pre>循环 food.pets 并依次执行SQL: UPDATE t_pet ...
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="删除操作"></a>删除操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>删除操作</h1>
 <p>同时删除 food 和 pets</p>
 <pre>dao.deleteWith(food, "pets");
 </pre>
@@ -184,17 +153,6 @@ dao.fetchLinks(food, "pets");
 </pre>
 <p>清除同删除的区别在于，清除只会执行一条 SQL 删除 t_pet_food 的记录，但是 t_pet 和 t_food 表中的数据不会被删除而删除则不仅会清除 t_pet_food 里的记录，还会逐个调用 dao.delete 来删除对象。</p>
 </div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
 </html>

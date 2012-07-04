@@ -1,33 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>让Ioc容器帮你规划配置文件</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">让Ioc容器帮你规划配置文件</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#配置文件的痛苦">配置文件的痛苦</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#用_Properties_举个例子">用 Properties 举个例子</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#关于XML">关于XML</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#我是用Annotation的Ioc">我是用Annotation的Ioc</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#关于更多扩展的意淫">关于更多扩展的意淫</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="配置文件的痛苦"></a>配置文件的痛苦</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>配置文件的痛苦</h1>
 <p>一个 Java 项目，无论大小，多半是有那么几个配置文件的，比如:</p>
 <ul type="disc">
 <li>数据库连接啦</li>
@@ -37,26 +17,26 @@
 <p>如果我们采用了 Ioc 方式组织我们的程序，我们（程序员）会理直气壮的对运维人员说：“你去改xxxx Ioc 文件去。”</p>
 <p>老实说，运维人员会恨死你，我列一个很简单的 JSON 配置文件:</p>
 <pre>var ioc = {
-	// 数据源
-	dataSource : {
+	<span class="zdoc_code_cmt">// 数据源
+</span>	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
 		events : {
 			depose :"close"
 		},
 		fields : {
 			driverClassName : "com.mysql.jdbc.Driver",
-			url             : "jdbc:mysql://127.0.0.1:3306/mydb",
-			username        : "root",
+			url             : "jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb",
+</span>			username        : "root",
 			password        : "123456",
 			initialSize     : 10,
 			maxActive       : 100,
 			testOnReturn    : true,
-			//validationQueryTimeout : 5,
-			validationQuery : "select 1"
+			<span class="zdoc_code_cmt">//validationQueryTimeout : 5,
+</span>			validationQuery : "select 1"
 		}
 	},
-	// Dao
-	dao : {
+	<span class="zdoc_code_cmt">// Dao
+</span>	dao : {
 		type :'org.nutz.dao.impl.NutDao',
 		args : [ {refer :"dataSource"}]
 	}
@@ -65,16 +45,16 @@
 <p>这个配置文件就是简单的配置了以下数据源，以及一个 Dao 对象。一个运维人员打开这个文件，首先映入眼帘的就是 <span style="color:#FF0000;"><b>"org.apache.commons.dbcp.BasicDataSource"</b></span> 以及 <span style="color:#FF0000;"><b>depose :"close"</b></span>他会吓的够呛，心里嘀咕:"这TM是神马东西！"</p>
 <p>运维人员希望看到什么呢？ 他希望看到这个:</p>
 <pre>db-driver=com.mysql.jdbc.Driver
-db-url=jdbc:mysql://127.0.0.1:3306/mydb
-db-username=root
+db-url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb
+</span>db-username=root
 db-password=123456
 </pre>
 <p>这样格式的文件，傻子也知道怎么维护。</p>
 <p>当然，很多小JIAN人喜欢XML，这样的文件</p>
 <pre>&lt;db&gt;
     &lt;driver&gt;com.mysql.jdbc.Driver&lt;/driver&gt;
-    &lt;url&gt;jdbc:mysql://127.0.0.1:3306/mydb&lt;/url&gt;
-    &lt;username&gt;root&lt;/username&gt;
+    &lt;url&gt;jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb&lt;/url&gt;
+</span>    &lt;username&gt;root&lt;/username&gt;
     &lt;password&gt;123456&lt;/password&gt;
 &lt;/db&gt;
 </pre>
@@ -82,26 +62,25 @@ db-password=123456
 <p>总之，有没有什么办法，能够让运维人员之看到他们喜欢看到的文件，而程序员则继续维护自己的 Ioc 文件呢？ 怎么把这两种文件连接起来呢？</p>
 <p>有，实际上，从很早以前，Nutz 就很好的支持了这样的做法，不过这次，郑重写个文档出来，也是为了避免有人再有<a href="https://github.com/nutzam/nutz/issues/87">这个问题</a></p>
 <p>答案是：<span style="color:#0000FF;"><b>采用 java 型注入值</b></span></p>
-<h1><a name="用_Properties_举个例子"></a>用 Properties 举个例子</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>用 Properties 举个例子</h1>
 <p>就用上面的例子，如果我们需要暴露给运维人员一个 properties 文件任其修改：</p>
 <pre>-----------------------------------------------------[下面是 myapp.properties 文件的内容]---
 db-driver=com.mysql.jdbc.Driver
-db-url=jdbc:mysql://127.0.0.1:3306/mydb
-db-username=root
+db-url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb
+</span>db-username=root
 db-password=123456
 </pre>
 <p>那么我们的 Ioc 文件就改成这样：</p>
 <pre>var ioc = {
-	// 读取配置文件
-	config : {
+	<span class="zdoc_code_cmt">// 读取配置文件
+</span>	config : {
 		type : "org.nutz.ioc.impl.PropertiesProxy",
 		fields : {
 			paths : ["myapp.properties"]
 		}
 	},
-	// 数据源
-	dataSource : {
+	<span class="zdoc_code_cmt">// 数据源
+</span>	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
 		events : {
 			depose :"close"
@@ -114,12 +93,12 @@ db-password=123456
 			initialSize     : 10,
 			maxActive       : 100,
 			testOnReturn    : true,
-			//validationQueryTimeout : 5,
-			validationQuery : "select 1"
+			<span class="zdoc_code_cmt">//validationQueryTimeout : 5,
+</span>			validationQuery : "select 1"
 		}
 	},
-	// Dao
-	dao : {
+	<span class="zdoc_code_cmt">// Dao
+</span>	dao : {
 		type :'org.nutz.dao.impl.NutDao',
 		args : [ {refer :"dataSource"}]
 	}
@@ -133,22 +112,18 @@ db-password=123456
 <li>通过 java 调用，你可以直接调用 <span style="color:#008800;"><b>"config"</b></span> 对象的 get 方法</li>
 <li>这样，你就能将分散在各个 Ioc 文件中的值集中到一个 properties 文件里了</li>
 </ol>
-<h1><a name="关于XML"></a>关于XML</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>关于XML</h1>
 <p>如果你打算给你的运维人员看 XML 怎么办呢？抱歉，Nutz 木有给出内部支持，但是简单的要命，你需要：</p>
 <ol type="1">
 <li>提供一个 XML 配置解析类，从xml读取内容，然后，提供 get 方法</li>
 <li>在 Ioc 配置的任何地方，你都可以用 java 调用的方式，调用 get 方法</li>
 </ol>
-<h1><a name="我是用Annotation的Ioc"></a>我是用Annotation的Ioc</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>我是用Annotation的Ioc</h1>
 <p>如果是这样，那么 @Inject 可以这样写:</p>
 <pre>@Inject("java:$config.get('xxxxx')
 private String myXXXX;
 </pre>
-<p></p>
-<h1><a name="关于更多扩展的意淫"></a>关于更多扩展的意淫</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>关于更多扩展的意淫</h1>
 <p>现在的云端应用，你不弄七八台机器放在一负载均衡后面，你都不好意思叫它们服务器。并且这些机器基本都是跑一样的程序，用一样的配置文件，很多运维人员（尤其是不会写脚本的鼠标派运维人员）会很痛苦：</p>
 <p>“配置文件同步害死人呀！”</p>
 <p>那么，如果你把关键的配置信息放到一张数据表里，然后自己提供一个类 ...</p>
@@ -166,17 +141,5 @@ private String myXXXX;
 <p>写一个解析类动态读取，于是，整个世界就会安静了 ...</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

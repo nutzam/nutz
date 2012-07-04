@@ -1,25 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>如何配置 web.xml</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">如何配置 web.xml</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#在_webxml_中，一个比较典型的例子：">在 web.xml 中，一个比较典型的例子：</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#比较传统的方式">比较传统的方式</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="在_webxml_中，一个比较典型的例子："></a>在 web.xml 中，一个比较典型的例子：</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
+<h1>在 web.xml 中，一个比较典型的例子：</h1>
 <pre>&lt;filter&gt;
     &lt;filter-name&gt;nutz&lt;/filter-name&gt;
     &lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
@@ -34,7 +22,6 @@
     &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </pre>
-<p></p>
 <ul type="disc">
 <li>如果你没有声明 '<b>modules</b>' 参数，这个过滤器将不会映射 URL，但是它并不会抛异常</li>
 <li>默认的，只要被正则式 <b> "^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg)$"</b> 匹配上的 URL 都不会被 Nutz 过滤器处理</li>
@@ -56,7 +43,7 @@
 		&lt;/init-param&gt;
 	&lt;/filter&gt;
 </pre>
-<p>注意,如果你使用<a href="view.html">Forward视图</a>,请这样写filter-mapping</p>
+<p>注意,如果你使用<a href="#mvc/view.html">Forward视图</a>,请这样写filter-mapping</p>
 <pre>&lt;filter-mapping&gt;
 	&lt;filter-name&gt;nutz&lt;/filtername&gt;
 	&lt;url-pattern&gt;/*&lt;/url-pattern&gt;
@@ -64,9 +51,7 @@
 	&lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
 &lt;/filter-mapping&gt;
 </pre>
-<p></p>
-<h1><a name="比较传统的方式"></a>比较传统的方式</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>比较传统的方式</h1>
 <pre>&lt;filter&gt;
     &lt;filter-name&gt;msgs&lt;/filter-name&gt;
     &lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
@@ -94,20 +79,7 @@
 	    &lt;url-pattern&gt;*.nut&lt;/url-pattern&gt;
     &lt;/servlet-mapping&gt;
 </pre>
-<p></p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

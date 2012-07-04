@@ -1,38 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>实体解析</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">实体解析</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#什么是实体解析">什么是实体解析</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#默认的注解解析">默认的注解解析</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#声明实体对应的表名">声明实体对应的表名</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#描述字段">描述字段</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#EntityMaker_接口">EntityMaker 接口</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#动态实体">动态实体</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="什么是实体解析"></a>什么是实体解析</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>什么是实体解析</h1>
 <p>对于任何一个 ORM 工具，大都是根据配置者约定了解你打算怎么把一张数据表与你的 Java 对象映射到一起。默认的 Nutz.Dao 采用 Java 注解(Annotation) 的方式描述这个映射，但是，当然世界上还有很多其它的映射方式，比如用各种配置文件，比如 JPA 的注解，或者你很想把这个映射关系写在数据库的几张表里，甚至一个 Excel 表格里（你就觉得这样很酷）</p>
 <p>从 1.b.38 之后，Nutz.Dao 开放了自己的 Entity 接口，你就可以定义自己的映射存放方式了。</p>
 <pre>Class&lt;?&gt;  ---&gt;  Entity&lt;?&gt; ---&gt; PojoMaker ---&gt; DaoStatement ---&gt; DaoExecutor ---&gt; JDBC
@@ -50,11 +25,9 @@
 </pre>
 <p>之后，如果使用 MyDao，那么实体的生成方式就是你说了算啦 ^_^</p>
 <div class="hr"><b></b></div>
-<h1><a name="默认的注解解析"></a>默认的注解解析</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>默认的注解解析</h1>
 <p>通过在你的 POJO 类上标注注解，可以让 Nutz 来理解你打算怎么映射字段，这里我们举几个例子</p>
-<h2><a name="声明实体对应的表名"></a>声明实体对应的表名</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>声明实体对应的表名</h2>
 <pre>@Table
 public class PetBean {
     ...
@@ -63,8 +36,7 @@ public class PetBean {
 <li>将对应到数据表 "pet_bean"</li>
 <li>@Table("t_pet") 将对应到 "t_pet"</li>
 </ul>
-<h2><a name="描述字段"></a>描述字段</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>描述字段</h2>
 <pre>@Column
 @Name
 @ColDefine(type=ColType.VARCHAR, width=20)
@@ -93,8 +65,7 @@ private String parentName;
 </pre>
 <p>如果你的 POJO 没有任何一个字段标注了 @Column，那么相当于你所有的字段都是数据库字段。否则，仅仅是标注了 @Column 的字段才被认为是数据库字段</p>
 <div class="hr"><b></b></div>
-<h1><a name="EntityMaker_接口"></a>EntityMaker 接口</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>EntityMaker 接口</h1>
 <p>EntityMaker 接口负责具体的 Entity 生成，你可以参看一下它的源代码:</p>
 <pre>package org.nutz.dao.entity;
 
@@ -104,14 +75,13 @@ public interface EntityMaker {
 </pre>
 <p>Entity&lt;T&gt; 也是一个接口，当然，默认实现类 NutEntity&lt;T&gt; 应该能满足你大多数需求，我想至力于想扩展 Entity 生成方式的同学，会直接阅读相关的源代码作为参考，所以这里就不啰嗦了。</p>
 <div class="hr"><b></b></div>
-<h1><a name="动态实体"></a>动态实体</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>动态实体</h1>
 <p>在 1.b.38 之前的版本，曾经记得有个朋友提出一个意见，他希望:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
 map.put("name", "abc");
 map.put("age", 18);
-dao.update(map);    // 这个是不会有编译错误的
-</pre>
+dao.update(map);    <span class="zdoc_code_cmt">// 这个是不会有编译错误的
+</span></pre>
 <p>我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””</p>
 <p>现在，我们已经支持了这个特性:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
@@ -130,17 +100,5 @@ dao.insert(map);
 <p>实际上，NutDao 是根据给定的 Map，先构建了一个 Entity&lt;?&gt;，然后之后的事情就顺理成章了。这个特性从另外一方面也验证了现在的实体机制，它的确工作的还不错 :)</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

@@ -1,48 +1,14 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>AOP -- 声明式切片</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">AOP -- 声明式切片</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div class="zdoc_folder"><span class="num">1</span><a href="#单纯的AOP">单纯的AOP</a></div>
-<ul>
-<li>
-<div><span class="num">1.1</span><a href="#创建一个拦截器类,在方法执行前后打印一句日志">创建一个拦截器类,在方法执行前后打印一句日志</a></div>
-</li>
-<li>
-<div><span class="num">1.2</span><a href="#输出">输出</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#在Ioc中使用Aop">在Ioc中使用Aop</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#声明拦截器">声明拦截器</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#在对象的方法中声明切片">在对象的方法中声明切片</a></div>
-</li>
-<li>
-<div><span class="num">2.3</span><a href="#将上一个例子,改造为Ioc形式">将上一个例子,改造为Ioc形式</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#已经为你准备好的拦截器">已经为你准备好的拦截器</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="单纯的AOP"></a>单纯的AOP</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="创建一个拦截器类,在方法执行前后打印一句日志"></a>创建一个拦截器类,在方法执行前后打印一句日志</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>单纯的AOP</h1>
+<h2>创建一个拦截器类,在方法执行前后打印一句日志</h2>
 <pre>package aop;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
@@ -52,8 +18,8 @@ import org.nutz.aop.MethodInterceptor;
 import org.nutz.aop.asm.AsmClassAgent;
 import org.nutz.aop.matcher.MethodMatcherFactory;
 
-public class UserAction { //被AOP的类,必须是public的非abstract类!
-    
+public class UserAction { <span class="zdoc_code_cmt">//被AOP的类,必须是public的非abstract类!
+</span>    
     public boolean login(String username, String password) throws Throwable {
         if ("wendal".equals(username) &amp;&amp; "qazwsxedc".equals(password)) {
             System.out.println("登陆成功");
@@ -66,35 +32,33 @@ public class UserAction { //被AOP的类,必须是public的非abstract类!
     private static ClassDefiner cd = new DefaultClassDefiner(UserAction.class.getClassLoader());
     
     public static void main(String[] args) throws Throwable {
-        //无AOP的时候
-        UserAction ua = new UserAction(); //直接new,将按原本的流程执行
-        ua.login("wendal", "qazwsxedc");
+        <span class="zdoc_code_cmt">//无AOP的时候
+</span>        UserAction ua = new UserAction(); <span class="zdoc_code_cmt">//直接new,将按原本的流程执行
+</span>        ua.login("wendal", "qazwsxedc");
 
         System.out.println("-----------------------------------------------------");
         System.out.println("-----------------------------------------------------");
         
-        //有AOP的时候
-        ClassAgent agent = new AsmClassAgent();
+        <span class="zdoc_code_cmt">//有AOP的时候
+</span>        ClassAgent agent = new AsmClassAgent();
         LogInterceptor log = new LogInterceptor();
         agent.addInterceptor(MethodMatcherFactory.matcher("^login$"), log);
-        //返回被AOP改造的Class实例
-        Class&lt;? extends UserAction&gt; userAction2 = agent.define(cd, UserAction.class);
+        <span class="zdoc_code_cmt">//返回被AOP改造的Class实例
+</span>        Class&lt;? extends UserAction&gt; userAction2 = agent.define(cd, UserAction.class);
         UserAction action = userAction2.newInstance();
-        action.login("wendal", "qazwsxedc");//通过日志,可以看到方法执行前后有额外的日志
-    }
+        action.login("wendal", "qazwsxedc");<span class="zdoc_code_cmt">//通过日志,可以看到方法执行前后有额外的日志
+</span>    }
 }
 
 class LogInterceptor implements MethodInterceptor {
     public void filter(InterceptorChain chain) throws Throwable {
         System.out.println("方法即将执行 --&gt;" + chain.getCallingMethod());
-        chain.doChain();// 继续执行其他拦截器
-        System.out.println("方法执行完毕 --&gt;" + chain.getCallingMethod());
+        chain.doChain();<span class="zdoc_code_cmt">// 继续执行其他拦截器
+</span>        System.out.println("方法执行完毕 --&gt;" + chain.getCallingMethod());
     }
 }
 </pre>
-<p></p>
-<h2><a name="输出"></a>输出</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>输出</h2>
 <pre>登陆成功
 -----------------------------------------------------
 -----------------------------------------------------
@@ -103,23 +67,19 @@ class LogInterceptor implements MethodInterceptor {
 方法执行完毕 --&gt;public boolean aop.UserAction.login(java.lang.String,java.lang.String) throws java.lang.Throwable
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="在Ioc中使用Aop"></a>在Ioc中使用Aop</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="声明拦截器"></a>声明拦截器</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>在Ioc中使用Aop</h1>
+<h2>声明拦截器</h2>
 <ul type="disc">
 <li>你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。</li>
 <li>将这个对象声明在你的Ioc配置文件里，就像一个普通的对象一样</li>
 </ul>
-<h2><a name="在对象的方法中声明切片"></a>在对象的方法中声明切片</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>在对象的方法中声明切片</h2>
 <ul type="disc">
 <li>在你要拦截的方法上，声明 @Aop 注解或者其他配置形式,如js/xml</li>
 <li>@Aop 注解接受数目可变的字符串，每个字符串都是一个拦截器的名称,即必须在ioc中声明这个拦截器</li>
 <li>方法所在的对象必须是Ioc容器中的对象</li>
 </ul>
-<h2><a name="将上一个例子,改造为Ioc形式"></a>将上一个例子,改造为Ioc形式</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>将上一个例子,改造为Ioc形式</h2>
 <pre>package aop;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -129,10 +89,10 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 
 @IocBean
-public class UserAction { //被AOP的类,必须是public的非abstract类!
-    
-    @Aop({"logInterceptor"}) //这里写拦截器bean的名字
-    public boolean login(String username, String password) throws Throwable {
+public class UserAction { <span class="zdoc_code_cmt">//被AOP的类,必须是public的非abstract类!
+</span>    
+    @Aop({"logInterceptor"}) <span class="zdoc_code_cmt">//这里写拦截器bean的名字
+</span>    public boolean login(String username, String password) throws Throwable {
         if ("wendal".equals(username) &amp;&amp; "qazwsxedc".equals(password)) {
             System.out.println("登陆成功");
             return true;
@@ -147,42 +107,28 @@ public class UserAction { //被AOP的类,必须是public的非abstract类!
     	action.login("wendal", "qazwsxedc");
     }
 }
-//另外一个类文件
-package aop;
+<span class="zdoc_code_cmt">//另外一个类文件
+</span>package aop;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.aop.InterceptorChain;
 import org.nutz.aop.MethodInterceptor;
 
-@IocBean //声明为一个Ioc的bean,名字为logInterceptor
-public class LogInterceptor implements MethodInterceptor {
+@IocBean <span class="zdoc_code_cmt">//声明为一个Ioc的bean,名字为logInterceptor
+</span>public class LogInterceptor implements MethodInterceptor {
     public void filter(InterceptorChain chain) throws Throwable {
         System.out.println("方法即将执行 --&gt;" + chain.getCallingMethod());
-        chain.doChain();// 继续执行其他拦截器
-        System.out.println("方法执行完毕 --&gt;" + chain.getCallingMethod());
+        chain.doChain();<span class="zdoc_code_cmt">// 继续执行其他拦截器
+</span>        System.out.println("方法执行完毕 --&gt;" + chain.getCallingMethod());
     }
 }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="已经为你准备好的拦截器"></a>已经为你准备好的拦截器</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>已经为你准备好的拦截器</h1>
 <ul type="disc">
 <li>org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录</li>
 <li>org.nutz.aop.interceptor.TransactionInterceptor 添加数据库事务(用于NutDao)</li>
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

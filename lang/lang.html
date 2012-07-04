@@ -1,98 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>Java 的函数糖</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">Java 的函数糖</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#什么是函数糖？">什么是函数糖？</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#异常">异常</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#创建异常">创建异常</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#包裹异常">包裹异常</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#对象">对象</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#容器转换">容器转换</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#对象模拟">对象模拟</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#XML">XML</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">7</span><a href="#字符串操作">字符串操作</a></div>
-<ul>
-<li>
-<div><span class="num">7.1</span><a href="#判断">判断</a></div>
-</li>
-<li>
-<div><span class="num">7.2</span><a href="#修改">修改</a></div>
-</li>
-<li>
-<div><span class="num">7.3</span><a href="#转换">转换</a></div>
-</li>
-<li>
-<div><span class="num">7.4</span><a href="#创建重复">创建重复</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">8</span><a href="#文件操作">文件操作</a></div>
-<ul>
-<li>
-<div><span class="num">8.1</span><a href="#查找">查找</a></div>
-</li>
-<li>
-<div><span class="num">8.2</span><a href="#创建-删除-拷贝">创建-删除-拷贝</a></div>
-</li>
-<li>
-<div><span class="num">8.3</span><a href="#读取-写入">读取-写入</a></div>
-</li>
-<li>
-<div><span class="num">8.4</span><a href="#直接在磁盘修改文件属性">直接在磁盘修改文件属性</a></div>
-</li>
-<li>
-<div><span class="num">8.5</span><a href="#创建文件对象">创建文件对象</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">9</span><a href="#秒表">秒表</a></div>
-</li>
-<li>
-<div><span class="num">10</span><a href="#随机数据">随机数据</a></div>
-</li>
-<li>
-<div><span class="num">11</span><a href="#其他">其他</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="什么是函数糖？"></a>什么是函数糖？</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>什么是函数糖？</h1>
 <p>Java 的语法比 C/C++ 友好很多， 因为它设计之初，就是为了考虑到程序员的使用是否舒适。当然很多事情愿望是美好的，现实是残酷的。Java 语言本身的语法仍然不可避免的带有着 10年前那种的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。</p>
 <p>你可以查看 <a href="https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang">org.nutz.lang</a> 下的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。</p>
 <p>我希望在 80% 以上的情况下，这些函数能让你有效的缩短你 代码的体积，并且增加代码的可读性。</p>
 <div class="hr"><b></b></div>
-<h1><a name="异常"></a>异常</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="创建异常"></a>创建异常</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>异常</h1>
+<h2>创建异常</h2>
 <ul type="disc">
 <li>根据格式化字符串，生成运行时异常
 <pre>throw Lang.makeThrow("Error for %d [%s]", obj.getId(), obj.getName());
@@ -105,11 +26,9 @@
 <li>未实现的运行时异常
 <pre>throw Lang.noImplement();
 </pre>
-<p></p>
 </li>
 </ul>
-<h2><a name="包裹异常"></a>包裹异常</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>包裹异常</h2>
 <ul type="disc">
 <li>用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
 <pre>throw Lang.wrapThrow(e);
@@ -126,12 +45,10 @@
 <li>将抛出对象包裹成运行时异常，并增加自己的描述
 <pre>throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="对象"></a>对象</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>对象</h1>
 <ul type="disc">
 <li>比较对象: 支持数组，集合，和容器
 <pre>return Lang.equals(map1, map2);
@@ -153,19 +70,17 @@
     }
 });
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="容器转换"></a>容器转换</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>容器转换</h1>
 <ul type="disc">
 <li>数组 to Map
 <pre>Pet[] pets = new Pet[3];
-... // 为数组赋值
-
-// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
-Map&lt;String,Pet&gt; petMap = Lang.array2map(HashMap.class, pets, "name");
+... <span class="zdoc_code_cmt">// 为数组赋值
+</span>
+<span class="zdoc_code_cmt">// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+</span>Map&lt;String,Pet&gt; petMap = Lang.array2map(HashMap.class, pets, "name");
 </pre>
 </li>
 <li>数组 to 数组
@@ -176,35 +91,33 @@ String[] ss = Lang.array2array(pets, String.class);
 </li>
 <li>集合 to 数组
 <pre>List&lt;Pet&gt; pets = new ArrayList&lt;Pet&gt;();
-... // 为列表赋值
-
+... <span class="zdoc_code_cmt">// 为列表赋值
+</span>
 Pet[] petArray = Lang.collection2array(pets);
 </pre>
 </li>
 <li>集合 to 列表
 <pre>Queue&lt;Pet&gt; pets = new ArrayDeque&lt;Pet&gt;();
-... // 为队列赋值
-
+... <span class="zdoc_code_cmt">// 为队列赋值
+</span>
 List&lt;Pet&gt; list = Lang.collection2list(pets);
 </pre>
 </li>
 <li>集合 to Map
 <pre>Queue&lt;Pet&gt; pets = new ArrayDeque&lt;Pet&gt;();
-... // 为队列赋值
-
-// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
-Map&lt;String,Pet&gt; petMap = Lang.collection2map(HashMap.class, pets, "name");
+... <span class="zdoc_code_cmt">// 为队列赋值
+</span>
+<span class="zdoc_code_cmt">// 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
+</span>Map&lt;String,Pet&gt; petMap = Lang.collection2map(HashMap.class, pets, "name");
 </pre>
 </li>
 <li>Map to 对象
 <pre>return Lang.map2Object(map,Pet.class);
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="对象模拟"></a>对象模拟</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>对象模拟</h1>
 <ul type="disc">
 <li>生成数组
 <pre>String[] ss = Lang.array("A","B","C");
@@ -221,17 +134,14 @@ Map&lt;String,Pet&gt; petMap = Lang.collection2map(HashMap.class, pets, "name");
 <li>从字符串生成 Map
 <pre>Map&lt;String,Object&gt; map = Lang.map("{a:10, b:'ABC', c:true}");
 </pre>
-<p></p>
 </li>
 <li>从字符串生成 List
 <pre>List&lt;Object&gt; list =  Lang.list("[true, 23, 'ABC']");
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="XML"></a>XML</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>XML</h1>
 <ul type="disc">
 <li>创建 DocumentBuilder
 <pre>return Xmls.xmls();
@@ -242,17 +152,14 @@ Map&lt;String,Pet&gt; petMap = Lang.collection2map(HashMap.class, pets, "name");
 </pre>
 </li>
 <li>读取某个子元素内容
-<pre>Element ele = ...    // 假设你取到了一个 Element
-String txt = Xml.get(ele, "abc");   // 获取 ele 下的 &lt;abc&gt; 的文本内容并去掉前后空白
-</pre>
-<p></p>
+<pre>Element ele = ...    <span class="zdoc_code_cmt">// 假设你取到了一个 Element
+</span>String txt = Xml.get(ele, "abc");   <span class="zdoc_code_cmt">// 获取 ele 下的 &lt;abc&gt; 的文本内容并去掉前后空白
+</span></pre>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="字符串操作"></a>字符串操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="判断"></a>判断</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>字符串操作</h1>
+<h2>判断</h2>
 <ul type="disc">
 <li>是否为空串
 <pre>assertTrue(Strings.isEmpty(""));
@@ -265,15 +172,15 @@ String txt = Xml.get(ele, "abc");   // 获取 ele 下的 &lt;abc&gt; 的文本�
 <li>是否被特定字符包裹
 <pre>assertTrue(Strings.isQuoteBy("[ABC]", '[', ']'));
 
-// 忽略空白
-assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
+<span class="zdoc_code_cmt">// 忽略空白
+</span>assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
 </pre>
 </li>
 <li>集合中的最长串
 <pre>assertEquals(3, Strings.maxLength((String[]){"A","ABC","BC"}));
 
-// 集合
-assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
+<span class="zdoc_code_cmt">// 集合
+</span>assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 </pre>
 </li>
 <li>如果字符为null，返回特定默认值
@@ -283,11 +190,9 @@ assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 <li>如果字符为空白，返回特定默认值
 <pre>assertEquals("abc", Strings.sBlank(" \n\t", "abc"));
 </pre>
-<p></p>
 </li>
 </ul>
-<h2><a name="修改"></a>修改</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>修改</h2>
 <ul type="disc">
 <li>首字母大写
 <pre>assertEquals("Abc", Strings.capitalize("abc"));
@@ -310,8 +215,7 @@ assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 </pre>
 </li>
 </ul>
-<h2><a name="转换"></a>转换</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>转换</h2>
 <ul type="disc">
 <li>二进制形式字符串
 <pre>assertEquals("0110", Strings.fillBinary(6, 4));
@@ -325,22 +229,18 @@ assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 <pre>assertEquals(3, Strings.splitIgnoreBlank("A,B,C"));
 assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,"));
 </pre>
-<p></p>
 </li>
 </ul>
-<h2><a name="创建重复"></a>创建重复</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<pre>// 重复字符
-assertEquals("---", Strings.dup('-', 3));
+<h2>创建重复</h2>
+<pre><span class="zdoc_code_cmt">// 重复字符
+</span>assertEquals("---", Strings.dup('-', 3));
 
-// 重复字串
-assertEquals("ABCABCABC", Strings.dup("ABC", 3));
+<span class="zdoc_code_cmt">// 重复字串
+</span>assertEquals("ABCABCABC", Strings.dup("ABC", 3));
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="文件操作"></a>文件操作</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="查找"></a>查找</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>文件操作</h1>
+<h2>查找</h2>
 <ul type="disc">
 <li>从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
 <pre>return Files.findFile("org/nutz/lang/Lang.class");
@@ -353,11 +253,9 @@ assertEquals("ABCABCABC", Strings.dup("ABC", 3));
 <li>搜索一个类同一包下面的所有类
 <pre>return Resources.scanClass(Lang.class);
 </pre>
-<p></p>
 </li>
 </ul>
-<h2><a name="创建-删除-拷贝"></a>创建-删除-拷贝</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>创建-删除-拷贝</h2>
 <ul type="disc">
 <li>创建新文件，如果父目录不存在，也一并创建
 <pre>Files.createNewFile(new File("D:/demo/abc.txt"));
@@ -388,8 +286,7 @@ assertEquals("ABCABCABC", Strings.dup("ABC", 3));
 </pre>
 </li>
 </ul>
-<h2><a name="读取-写入"></a>读取-写入</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>读取-写入</h2>
 <ul type="disc">
 <li>读取文件全部内容 - UTF-8
 <pre>String txt = Files.read("D:/abc.txt");
@@ -398,11 +295,11 @@ String txt = Lang.readAll(Streams.fileInr("D:/abc.txt"));
 </pre>
 </li>
 <li>重写文件全部内容 - UTF-8
-<pre>// 如果 D:/abc.txt 不存在，则创建它
-String txt = Files.write("D:/abc.txt", "some text");
+<pre><span class="zdoc_code_cmt">// 如果 D:/abc.txt 不存在，则创建它
+</span>String txt = Files.write("D:/abc.txt", "some text");
 或者
-// 如果 D:/abc.txt 不存在，则什么都不做
-String txt = Lang.writeAll(Streams.fileOutw("D:/abc.txt"), content.toString());
+<span class="zdoc_code_cmt">// 如果 D:/abc.txt 不存在，则什么都不做
+</span>String txt = Lang.writeAll(Streams.fileOutw("D:/abc.txt"), content.toString());
 </pre>
 </li>
 <li>获取 Reader - UTF-8
@@ -430,8 +327,7 @@ OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
 </pre>
 </li>
 </ul>
-<h2><a name="直接在磁盘修改文件属性"></a>直接在磁盘修改文件属性</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>直接在磁盘修改文件属性</h2>
 <ul type="disc">
 <li>将文件移动到新的位置
 <pre>Files.move(new File("D:/demo/abc.txt"), new File("D:/demo/def.txt"));
@@ -442,8 +338,7 @@ OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
 </pre>
 </li>
 </ul>
-<h2><a name="创建文件对象"></a>创建文件对象</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>创建文件对象</h2>
 <ul type="disc">
 <li>将文件后缀改名，从而生成一个新的文件对象。但是并不在磁盘上创建它
 <pre>return Files.renameSuffix(new File("D:/demo/abc.txt"), ".java");
@@ -456,12 +351,10 @@ OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
 <li>获取文件后缀名
 <pre>assertEquals("txt", Files.getSuffixName(new File("D:/demo/abc.txt")));
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="秒表"></a>秒表</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>秒表</h1>
 <pre>Stopwatch sw = Stopwatch.begin();
 ...
 这里是你的运行代码
@@ -469,14 +362,12 @@ OutputStream ops =  Streams.fileOut(new File("D:/abc.txt"));
 sw.stop();
 System.out.println(sw.getDuration());
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="随机数据"></a>随机数据</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>随机数据</h1>
 <ul type="disc">
 <li>随机字符串
-<pre>// 生成 100 个长度不超过20的字符串
-StringGenerator sg = new StringGenerator(20);
+<pre><span class="zdoc_code_cmt">// 生成 100 个长度不超过20的字符串
+</span>StringGenerator sg = new StringGenerator(20);
 for(int i=0;i&lt;100;i++)
 	System.out.println(sg.next());
 </pre>
@@ -503,12 +394,10 @@ assertEquals(3, i);
 for(int i=0; i&lt;100; i++)
 	System.out.println(r.next());
 </pre>
-<p></p>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="其他"></a>其他</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>其他</h1>
 <ul type="disc">
 <li>打印 java.util.regex.Matcher 的详细信息
 <pre>System.out.println(Dumps.matcher(matcher));
@@ -523,17 +412,5 @@ assertTrue(Lang.parseBoolean("yes"));
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

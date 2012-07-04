@@ -1,8 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>使用XML作为配置文件格式</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">使用XML作为配置文件格式</div>
@@ -11,8 +9,8 @@
 <div class="hr"><b></b></div>
 <p>格式约定: 参阅xsd文件(包含在jar中): <a href="http://code.google.com/p/nutz/source/browse/trunk/src/nutz-ioc-0.1.xsd">nutz-ioc-0.1.xsd</a></p>
 <p>示例文件 <a href="http://code.google.com/p/nutz/source/browse/trunk/test/org/nutz/ioc/loader/xml/conf/zzh-offered.xml">示例</a>:</p>
-<pre>&lt;ioc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd"&gt;
+<pre>&lt;ioc xmlns:xsi="http:<span class="zdoc_code_cmt">//www.w3.org/2001/XMLSchema-instance"
+</span>	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd"&gt;
 	&lt;obj name="obj" singleton="true" scope="app" parent="XXX"
 		type="java.lang.String"&gt;
 		&lt;args&gt;
@@ -66,17 +64,5 @@
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

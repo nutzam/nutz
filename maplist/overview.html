@@ -1,45 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>Mapl 结构</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">Mapl 结构</div>
 <div class="zdoc_author"><em>By:</em><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#为什么需要_Mapl_结构">为什么需要 Mapl 结构</a></div>
-</li>
-<li>
-<div><span class="num">2</span><a href="#什么是_Mapl_结构?">什么是 Mapl 结构?</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#Mapl转_对象">Mapl.转 对象</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#对象转Maplist">对象转Maplist</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#访问_Maplist">访问 Maplist</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#maplist_合并">maplist 合并</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#maplist_过滤">maplist 过滤</a></div>
-</li>
-<li>
-<div><span class="num">8</span><a href="#maplist_结构转换">maplist 结构转换</a></div>
-</li>
-<li>
-<div><span class="num">9</span><a href="#MapList的增删改">MapList的增删改</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="为什么需要_Mapl_结构"></a>为什么需要 Mapl 结构 </h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>为什么需要 Mapl 结构 </h1>
 <p>一直以来都没有刻意的去思考说需要 Mapl 结构这样的东西. 所谓 Mapl 结构就是 Map-List 结构，我原来就叫 maplist 后来被灰太郎说太长，就改成 "mapl" 了</p>
 <p>最初都是 wendal 在重写JSON的时候, 将JSON理解成了Mapl结构.然后突然在某一天发现, 咦, Mapl对象还可以这么用, 那么用, 慢慢的, 以Mapl 基础的小功能点越来越多, 已经不能够完全的与JSON概念协调, 所以才有了这样一个中间结构.</p>
 <p>恩, 上面那段是给灰太狼, wendal看的. 我想你肯定看得头有点大, 要不我再说直白点, Mapl结构 就是为Json服务的, 为什么呢? MD, Json.fromJson()忒难用了, 要是只给它一个Reader, 而不给Type, 那它给我返回的就是 Mapl结构 , 苍天呀, 大地呀, 烦都烦死了. </p>
@@ -47,8 +15,7 @@
 <p>当然, 它也与EL一样<span style="color:#0000AA;"><b> 满足一小撮人的一小撮要求</b></span></p>
 <p>提醒: Mapl这个名词,是MapList的缩写</p>
 <div class="hr"><b></b></div>
-<h1><a name="什么是_Mapl_结构?"></a>什么是 Mapl 结构?</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>什么是 Mapl 结构?</h1>
 <p>一种以 Map, List 接口对象所组织起来的结构体系. 类似于JSON结构便于JAVA在内存中处理的结构. 主要提供键值对, 与列表的有机组合, 因这种结构只由Map, List组成, 因些称其为Mapl结构.</p>
 <pre>Map a = new HashMap();
 a.put("name","a");
@@ -76,8 +43,7 @@ d.put("items", list);
 <li>只要不是List, Map存储的, 都认为是可以直接写入对象的</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="Mapl转_对象"></a>Mapl.转 对象</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>Mapl.转 对象</h1>
 <p>也就是根据Mapl.及Type信息转换成一个Type的实体对象了啦, 直接看例子:</p>
 <pre>class A{
     String name;
@@ -90,8 +56,8 @@ class B{
 class C{
     public static void main(String args[]){
         String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-        //这样得到的就是Mapl结构的数据了.
-        Object obj = Json.fromJson(json);
+        <span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
+</span>        Object obj = Json.fromJson(json);
         
         B b = Mapl.maplistToObj(obj, B.class);
     }
@@ -99,8 +65,7 @@ class C{
 </pre>
 <p>通过上面的 Mapl.maplistToObj() 方法就可以将一个Mapl.象转换成B类型的实体对象. 我偷偷的告诉你哦, JSON里面也是这样搞的哦 ~~~先将JSON字符串转换成Mapl结构后再调用Mapl.maplistToObj()方法转换成对应的类型.</p>
 <div class="hr"><b></b></div>
-<h1><a name="对象转Maplist"></a>对象转Maplist</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>对象转Maplist</h1>
 <p>除了通过JSON转换成Mapl结构以外, 还可以直接使用对象来转换成maplist结构</p>
 <pre>A a = new A();
 a.name="a"
@@ -115,12 +80,11 @@ Mapl.toMapl.b);
 </pre>
 <p>通过toMapl.可以进行这种简单的转换</p>
 <div class="hr"><b></b></div>
-<h1><a name="访问_Maplist"></a>访问 Maplist</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>访问 Maplist</h1>
 <p>就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Mapl结构的数据时非常的繁杂, 经常需要很多层的类型转换.</p>
 <pre>String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-//这样得到的就是Mapl结构的数据了.
-Object obj = Json.fromJson(json);
+<span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
+</span>Object obj = Json.fromJson(json);
 </pre>
 <p>上面的obj, 如果我想取as索引为1的name的值, 怎么办? 只能这样:</p>
 <pre>Map map = (Map) obj;
@@ -141,8 +105,7 @@ String name = item.get("name");
 <li>如果List后加了""中间却没有索引, 则默认访问第一个元素, 如: user 等效 user<a href="1">1</a></li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="maplist_合并"></a>maplist 合并</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>maplist 合并</h1>
 <p>哇咔咔, 一个神器来鸟. 为嘛我要说它是神器呢, 看名字就知道了噻, 当然, 这个只是一小撮的一小撮的一小撮人会觉得是神器...额...好吧, 它只是一个没啥大用的一个伪神器...</p>
 <p>顾名思义, maplist 合并, 就是将多个maplist合并在一起, 组成一个新的 maplist .</p>
 <pre>String json1 = "{'name':'nutz'}";
@@ -161,8 +124,7 @@ Object obj3 = Mapl.merge(obj1, obj2);
 <li>list不做递归合并, 只做简单的合并, 清除重复</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="maplist_过滤"></a>maplist 过滤</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>maplist 过滤</h1>
 <p>这玩意有什么用呢, 用来剔除/筛选 maplist 中的值, 使maplist更加满足我们的需求. 还是用例子来说明吧.</p>
 <pre>String json = "{name:'nutz', age:12, address:[{area:1,name:'abc'}, {area:2,name:'123'}]}";
 Object obj = Json.fromJson(json);
@@ -194,8 +156,7 @@ Object newobj = Mapl.includeFilter(obj, list);
 <li>list以"key[]."间隔, 即多一个[], 注意其中没有索引哦.</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="maplist_结构转换"></a>maplist 结构转换</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>maplist 结构转换</h1>
 <p>好吧, 我觉得这个才是神器~~~啦~啦~~啦~~~啦~~~~完全是神一样的存在.</p>
 <p>有没有使用过其它公司的API? 有吧, 其它公司都返回些什么格式? 它的格式与你程序的格式一样吗? 或许有, 但大部分是不一样的, 对吧. 既然这样, 那结构转换是肯定的了.</p>
 <pre>String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
@@ -266,10 +227,8 @@ assertEquals(dest, Json.toJson(obj, new JsonFormat()));
       ]
  }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="MapList的增删改"></a>MapList的增删改</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>MapList的增删改</h1>
 <p>只有访问, 肯定是不够的, 难免会添加, 删除, 修改某个结点. 所以, 特意的为您添加了这些功能.很简单的, 其实就三个接口而已.添加: Mapl.put, Mapl.del, Mapl.update. 具体的使用方法, 你看看注释咯, 简单得很. </p>
 <p>除了上面的几个一次性的接口外. MapList还包含一个 MaplRebuild 类, 从名字就可以很容易知道它是干嘛的. 没错, 就是Maplist重建. 你可以根据已有的Maplist来构建它, 也可以全新的构建它, 然后你就可以对它进行添加新的结点, 修改某个结点, 或者删除某个结点. 如此反复.</p>
 <p>下面看看Mapl.put的实现你就知道怎么用了:</p>
@@ -288,17 +247,5 @@ assertEquals(dest, Json.toJson(obj, new JsonFormat()));
 <div class="hr"><b></b></div>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

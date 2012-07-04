@@ -1,44 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>定义自己的配置文件格式</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">定义自己的配置文件格式</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#你如果不喜欢_JSON_怎么办？">你如果不喜欢 JSON 怎么办？</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#在_NutzIoc_定义一个对象的数据结构是怎样的？">在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#事件集合_IocEventSet">事件集合 IocEventSet</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#值_IocValue">值 IocValue</a></div>
-</li>
-<li>
-<div><span class="num">2.3</span><a href="#字段_IocField">字段 IocField</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#实现你的加载器">实现你的加载器</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#最后">最后</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#附:已经可用的IocLoader">附:已经可用的IocLoader</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="你如果不喜欢_JSON_怎么办？"></a>你如果不喜欢 JSON 怎么办？</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>你如果不喜欢 JSON 怎么办？</h1>
 <p>我很喜欢 JSON，因为它语法轻巧。当然，我不能保证你也很喜欢 JSON，因为你可能会说：</p>
 <ul type="disc">
 <li>没有很好的 JSON 编辑器 -- <span style="color:#999999;"><i>如果是这样，我推荐你试试 Eclipse 自带的 Javascript 编辑器</i></span>。</li>
@@ -56,8 +25,7 @@
 <p>你可能还有一个问题：“<b>那么 IocLoader 接口实现起来复杂吗？</b>”</p>
 <p>我可以负责任的告诉你，虽然那不是极其简单，但是绝对不复杂。你只要理解下面这个知识即可：</p>
 <div class="hr"><b></b></div>
-<h1><a name="在_NutzIoc_定义一个对象的数据结构是怎样的？"></a>在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</h1>
 <p>在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部信息，你会发现它其实也简单：</p>
 <pre>public class IocObject {
 
@@ -68,8 +36,8 @@
 	private List&lt;IocField&gt; fields;
 	private String scope;
 	
-	// 省略所有的 getter 和 setter 函数
-</pre>
+	<span class="zdoc_code_cmt">// 省略所有的 getter 和 setter 函数
+</span></pre>
 <p>看看这个类的属性，顾名思义：</p>
 <ul type="disc">
 <li><b>type</b> --  对象类型</li>
@@ -103,8 +71,7 @@
 </pre>
 <p>那么你如果想通过其他的配置文件格式，比如 XML 类获取 IocObject， 文件格式应该如何定义，完全看你个人的喜好了。</p>
 <p>这里需要说一下：</p>
-<h2><a name="事件集合_IocEventSet"></a>事件集合 IocEventSet</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>事件集合 IocEventSet</h2>
 <p>描述了一个对象可以监听的事件。三个属性分别表示： </p>
 <ul type="disc">
 <li>create: 对象创建时触发</li>
@@ -117,8 +84,7 @@
 <li>如果 是函数，那么这个函数就是对象内的一个非静态 public 的函数，而且不能有参数</li>
 <li>如果是 IocEventTrigger 的实现类，你的实现类必须有一个 public 的默认构造函数</li>
 </ul>
-<h2><a name="值_IocValue"></a>值 IocValue</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>值 IocValue</h2>
 <p>描述了对象的一个值，这个值可以是构造函数的参数，也可以是一个字段的值。 它由两个属性，一个是值的类型，另外一个是 value。 </p>
 <p><i><b>赋值约定:</b></i></p>
 <ul type="disc">
@@ -132,12 +98,10 @@
 <li>如果 value 是字符串，表示一个 Java 调用，type 必须是 "java"，具体值的语法，请参看 JavaValue 类的 JDoc，当然 Ioc 容器来解析执行它，不需要 IocLoader 操心 说明</li>
 <li>你的 ValueProxyMaker 可以扩展这个约定</li>
 </ul>
-<h2><a name="字段_IocField"></a>字段 IocField</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>字段 IocField</h2>
 <p>描述了一个对象的字段，两个属性分别表示字段名，和字段值</p>
 <div class="hr"><b></b></div>
-<h1><a name="实现你的加载器"></a>实现你的加载器</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>实现你的加载器</h1>
 <p>你的 IocLoader 的实现类需要实现三个方法:</p>
 <pre>public interface IocLoader {
 
@@ -163,12 +127,10 @@
 }
 </pre>
 <div class="hr"><b></b></div>
-<h1><a name="最后"></a>最后</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>最后</h1>
 <p>没什么要说的了，充分发挥你的想象力吧，如果你愿意，将配置信息放在 PDF 里，放在 excel 表格里都是可以的 如果你完成了一个IocLoader,不妨分享出来,我们将收录到 http://code.google.com/p/nutz-ioc-loaders/</p>
 <div class="hr"><b></b></div>
-<h1><a name="附:已经可用的IocLoader"></a>附:已经可用的IocLoader</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>附:已经可用的IocLoader</h1>
 <ul type="disc">
 <li>使用Json作为配置文件 org.nutz.ioc.loader.json.JsonLoader</li>
 <li>使用XML作为配置文件 org.nutz.ioc.loader.xml.XmlIocLoader</li>
@@ -178,17 +140,5 @@
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
 </body>
 </html>

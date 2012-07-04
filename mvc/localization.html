@@ -1,49 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<head>
 <title>本地化字符串</title>
-<link href="../zdoc.css" rel="stylesheet" type="text/css"/><link href="../_rs/site.css" rel="stylesheet" type="text/css"/><script src="../_rs/site.js" language="Javascript"></script><script src="../_rs/jquery.js" language="Javascript"></script><script src="../_rs/z.js" language="Javascript"></script>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">本地化字符串</div>
+<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<ul class="zdoc_index_table">
-<li>
-<div><span class="num">1</span><a href="#基本策略">基本策略</a></div>
-</li>
-<li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#使用字符串">使用字符串</a></div>
-<ul>
-<li>
-<div><span class="num">2.1</span><a href="#在主模块上声明">在主模块上声明</a></div>
-</li>
-<li>
-<div><span class="num">2.2</span><a href="#在_JSP_里使用">在 JSP 里使用</a></div>
-</li>
-<li>
-<div><span class="num">2.3</span><a href="#我到底支持哪些语言">我到底支持哪些语言</a></div>
-</li>
-</ul>
-</li>
-<li>
-<div><span class="num">3</span><a href="#切换本地语言">切换本地语言</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#设置应用程序的默认语言">设置应用程序的默认语言</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#使用过滤器">使用过滤器</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#定制自己的本地化字符串方式">定制自己的本地化字符串方式</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#让_Ioc_容器管理你的_MessageLoader">让 Ioc 容器管理你的 MessageLoader</a></div>
-</li>
-</ul>
 <div class="hr"><b></b></div>
-<h1><a name="基本策略"></a>基本策略</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>基本策略</h1>
 <p>每个 Mvc 框架都有自己的本地化字符串的解决方案， Nutz.Mvc 的这个是相当简陋的。我只是个人觉得足够用了。下面我把它简单介绍一下：</p>
 <ul type="disc">
 <li>假定所有的本地化字符串文件都会存放在某一目录下
@@ -74,10 +38,8 @@
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="使用字符串"></a>使用字符串</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<h2><a name="在主模块上声明"></a>在主模块上声明</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>使用字符串</h1>
+<h2>在主模块上声明</h2>
 <p>比如：</p>
 <pre>...
 @Localization("mymsg")
@@ -90,8 +52,7 @@ public class MyMainModule {
 <li><b> .properties</b> 文件 一定要是 UTF-8 编码的</li>
 <li>比如 @Locallization("mymsg") 会指向 CLASSPATH 下的 <b>mymsg</b> 目录</li>
 </ul>
-<h2><a name="在_JSP_里使用"></a>在 JSP 里使用</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>在 JSP 里使用</h2>
 <p><b>直接 Scriptlet</b></p>
 <pre>...
 &lt;h1&gt;&lt;%=((Map&lt;String,String&gt;)request.getObject("msg")).get("my.msg.key")%&gt;&lt;/h1&gt;
@@ -102,9 +63,7 @@ public class MyMainModule {
 &lt;h1&gt;${msg['my.msg.key']}&lt;/h1&gt;
 ...
 </pre>
-<p></p>
-<h2><a name="我到底支持哪些语言"></a>我到底支持哪些语言</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h2>我到底支持哪些语言</h2>
 <p>请参看 <b>org.nutz.mvc.Mvcs</b> 的 JavaDoc，这里我列几个常用的方法:</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -129,29 +88,26 @@ public class MyMainModule {
 </tr>
 </table>
 <div class="hr"><b></b></div>
-<h1><a name="切换本地语言"></a>切换本地语言</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>切换本地语言</h1>
 <p>自从 1.b.44 之后，Nutz 对本地字符串语言切换的接口做了改动:</p>
-<pre>// 设置一个本地字符串
-@At("/lang/change")
+<pre><span class="zdoc_code_cmt">// 设置一个本地字符串
+</span>@At("/lang/change")
 @Ok("redirect:/")
 public void changeLocal( @Param("lang") String lang){
     Mvcs.setLocalizationKey(lang);
 }
 </pre>
 <p>1.b.44 版本 之前，只能采用如下方法:</p>
-<pre>// 设置一个本地字符串
-@At("/lang/change")
+<pre><span class="zdoc_code_cmt">// 设置一个本地字符串
+</span>@At("/lang/change")
 @Ok("redirect:/")
 public void changeLocal( @Param("lang") String lang, HttpSession sess){
     Mvcs.setLocale(sess, lang);
     Mvcs.setLocaleName(sess, lang);
 }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="设置应用程序的默认语言"></a>设置应用程序的默认语言</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>设置应用程序的默认语言</h1>
 <p>对于任何一个支持多语言版本的应用程序，第一次启动的时候，总要采用一种语言。自 1.b.44 之后，Nutz 给出了一个明确的方法，来设置这个信息。你可以在应用程序启动的Setup 时，调用:</p>
 <pre>...
 Mvcs.setDefaultLocalizationKey("zh_CN");
@@ -163,10 +119,8 @@ Mvcs.setDefaultLocalizationKey("zh_CN");
 public class MyMainModule {
 ...
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="使用过滤器"></a>使用过滤器</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>使用过滤器</h1>
 <p>有些是由，你想让你的 JSP 文件 (不是通过 Nutz.Mvc 入口函数访问的)也可以使用"<b>本地化字符串</b>"功能，那么你需要在 web.xml 这么配置:</p>
 <pre>&lt;!--
 	Nutz.Mvc 还提供了一个过滤器，你可以用这个过滤器为所有的直接访问的 jsp 设置必要的 Request 属性。 比如 ${base}
@@ -187,10 +141,8 @@ public class MyMainModule {
 	&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
-<h1><a name="定制自己的本地化字符串方式"></a>定制自己的本地化字符串方式</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>定制自己的本地化字符串方式</h1>
 <p>你需要自己实现一个 MessageLoader 的接口，然后声明到 '@Localization' 中。比如你的实现类名字为 'MyMessageLoader'，那么你应该这么声明:</p>
 <pre>...
 @Localization( type=MyMessageLoader.class,
@@ -216,8 +168,7 @@ public class MyMainModule {
 </pre>
 <p>你声明在 '@Localization' 中的 "value" 的值，会被传入这个接口，作为 refer 参数的值</p>
 <div class="hr"><b></b></div>
-<h1><a name="让_Ioc_容器管理你的_MessageLoader"></a>让 Ioc 容器管理你的 MessageLoader</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
+<h1>让 Ioc 容器管理你的 MessageLoader</h1>
 <p>这是 1.b.45 已后才有的方法:</p>
 <pre>...
 @Localization( type=MyMessageLoader.class,
@@ -228,17 +179,6 @@ public class MyMainModule {
 </pre>
 <p>提供了 "beanName" 属性，这样，Nutz.Mvc 将从 Ioc 容器中加载名字为 "myMessages" 的对象。当然它的类型必须是你声明的 "MyMessageLoader.class" </p>
 </div>
-<script type="text/javascript">
-    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
-    var disqus_shortname = 'nutzmanual'; // required: replace example with your forum shortname
-
-    /* * * DON'T EDIT BELOW THIS LINE * * */
-    (function() {
-        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-</script>
-<div id="disqus_thread"></div>
+<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
 </html>
