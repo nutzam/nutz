@@ -282,7 +282,7 @@ public abstract class Xmls {
     }
 
     /**
-     * 从 XML 元素中得到指定属性的值，如该指定属性不存在，则返回空字符串
+     * 从 XML 元素中得到指定属性的值，如该指定属性不存在，则返回Null
      * 
      * @param ele
      *            XML 元素
@@ -290,6 +290,6 @@ public abstract class Xmls {
      */
     public static String getAttr(Element ele, String attrName) {
         Node node = ele.getAttributes().getNamedItem(attrName);
-        return node != null ? node.getNodeValue() : "";
+        return node != null ? node.getNodeValue() : null;
     }
 }
