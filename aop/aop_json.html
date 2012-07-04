@@ -1,18 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>用json文件声明Aop切片</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>用json文件声明Aop切片</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">用json文件声明Aop切片</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#需使用的类">需使用的类</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#看看一个示例的ioc配置文件">看看一个示例的ioc配置文件</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#规则如下:">规则如下:</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#拓展使用_--_声明式事务">拓展使用 -- 声明式事务</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#按照上述声明:">按照上述声明:</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#重要提醒_--_与@Aop同时使用">重要提醒 -- 与@Aop同时使用</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>需使用的类</h1>
+<h1><a name="需使用的类"></a>需使用的类</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>org.nutz.ioc.aop.config.impl.JsonAopConfigration</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>看看一个示例的ioc配置文件</h1>
+<h1><a name="看看一个示例的ioc配置文件"></a>看看一个示例的ioc配置文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>配置示例:</p>
 <pre>var ioc = {
 	log : {
@@ -52,7 +79,8 @@
 ['.+','.+','ioc:myMI']
 ['com\.wendal\.nutz\..+','get.+','org.nutz.ioc.aop.config.impl.MyMI2','false']
 </pre>
-<h2>规则如下:</h2>
+<h2><a name="规则如下:"></a>规则如下:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>第一个值,对应className,必选,用于匹配类的全称的正则表达式</li>
 <li>第二个值,对应methodName,必选,用于匹配方法名的正则表达式</li>
@@ -60,7 +88,8 @@
 <li>第四个值,对应singleton,可选,仅当interceptorName为类名时有效</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>拓展使用 -- 声明式事务</h1>
+<h1><a name="拓展使用_--_声明式事务"></a>拓展使用 -- 声明式事务</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>首先,声明5种事务等级对应的拦截器(使用内置的事务拦截器 org.nutz.aop.interceptor.TransactionInterceptor)</p>
 <pre>	txNONE : {
 		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
@@ -102,7 +131,8 @@
 		}
 	}
 </pre>
-<h2>按照上述声明:</h2>
+<h2><a name="按照上述声明:"></a>按照上述声明:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>对于com.service包下的类的全部方法,均应用log拦截器</li>
 <li>对于com.service.status包下的类的全部get/set方法,均应用txNONE拦截器,事务级别 NONE</li>
@@ -112,7 +142,8 @@
 <li>对于com.service.auth包下的类的全部方法,均应用txSERIALIZABLE拦截器,事务级别 SERIALIZABLE</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>重要提醒 -- 与@Aop同时使用</h1>
+<h1><a name="重要提醒_--_与@Aop同时使用"></a>重要提醒 -- 与@Aop同时使用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>如果你既使用了@Aop注解,又配置了上述的声明式Aop,你需要ComboAopConfigration来整合两种配置,示例:</p>
 <pre>$aop : {
 	type : 'org.nutz.ioc.aop.config.impl.ComboAopConfigration',

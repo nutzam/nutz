@@ -1,14 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>AOP -- 声明式切片</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>AOP -- 声明式切片</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">AOP -- 声明式切片</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div class="zdoc_folder"><span class="num">1</span><a href="#单纯的AOP">单纯的AOP</a></div>
+<ul>
+<li>
+<div><span class="num">1.1</span><a href="#创建一个拦截器类,在方法执行前后打印一句日志">创建一个拦截器类,在方法执行前后打印一句日志</a></div>
+</li>
+<li>
+<div><span class="num">1.2</span><a href="#输出">输出</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">2</span><a href="#在Ioc中使用Aop">在Ioc中使用Aop</a></div>
+<ul>
+<li>
+<div><span class="num">2.1</span><a href="#声明拦截器">声明拦截器</a></div>
+</li>
+<li>
+<div><span class="num">2.2</span><a href="#在对象的方法中声明切片">在对象的方法中声明切片</a></div>
+</li>
+<li>
+<div><span class="num">2.3</span><a href="#将上一个例子,改造为Ioc形式">将上一个例子,改造为Ioc形式</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">3</span><a href="#已经为你准备好的拦截器">已经为你准备好的拦截器</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>单纯的AOP</h1>
-<h2>创建一个拦截器类,在方法执行前后打印一句日志</h2>
+<h1><a name="单纯的AOP"></a>单纯的AOP</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="创建一个拦截器类,在方法执行前后打印一句日志"></a>创建一个拦截器类,在方法执行前后打印一句日志</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <pre>package aop;
 import org.nutz.aop.ClassAgent;
 import org.nutz.aop.ClassDefiner;
@@ -58,7 +91,8 @@ class LogInterceptor implements MethodInterceptor {
     }
 }
 </pre>
-<h2>输出</h2>
+<h2><a name="输出"></a>输出</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <pre>登陆成功
 -----------------------------------------------------
 -----------------------------------------------------
@@ -67,19 +101,23 @@ class LogInterceptor implements MethodInterceptor {
 方法执行完毕 --&gt;public boolean aop.UserAction.login(java.lang.String,java.lang.String) throws java.lang.Throwable
 </pre>
 <div class="hr"><b></b></div>
-<h1>在Ioc中使用Aop</h1>
-<h2>声明拦截器</h2>
+<h1><a name="在Ioc中使用Aop"></a>在Ioc中使用Aop</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h2><a name="声明拦截器"></a>声明拦截器</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。</li>
 <li>将这个对象声明在你的Ioc配置文件里，就像一个普通的对象一样</li>
 </ul>
-<h2>在对象的方法中声明切片</h2>
+<h2><a name="在对象的方法中声明切片"></a>在对象的方法中声明切片</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>在你要拦截的方法上，声明 @Aop 注解或者其他配置形式,如js/xml</li>
 <li>@Aop 注解接受数目可变的字符串，每个字符串都是一个拦截器的名称,即必须在ioc中声明这个拦截器</li>
 <li>方法所在的对象必须是Ioc容器中的对象</li>
 </ul>
-<h2>将上一个例子,改造为Ioc形式</h2>
+<h2><a name="将上一个例子,改造为Ioc形式"></a>将上一个例子,改造为Ioc形式</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <pre>package aop;
 import org.nutz.ioc.aop.Aop;
 import org.nutz.ioc.loader.annotation.IocBean;
@@ -123,7 +161,8 @@ import org.nutz.aop.MethodInterceptor;
 }
 </pre>
 <div class="hr"><b></b></div>
-<h1>已经为你准备好的拦截器</h1>
+<h1><a name="已经为你准备好的拦截器"></a>已经为你准备好的拦截器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>org.nutz.aop.interceptor.LoggingMethodInterceptor 添加日志记录</li>
 <li>org.nutz.aop.interceptor.TransactionInterceptor 添加数据库事务(用于NutDao)</li>

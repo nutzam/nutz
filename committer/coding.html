@@ -1,13 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>Nutz Java 编码规范 (V1.0)</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz Java 编码规范 (V1.0)</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">Nutz Java 编码规范 (V1.0)</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#0_规范的规范">0. 规范的规范</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#1_代码格式">1. 代码格式</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#2_命名">2. 命名</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#21_包">2.1 包</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#22_类和接口">2.2 类和接口</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#23_成员变量">2.3 成员变量</a></div>
+</li>
+<li>
+<div><span class="num">3.4</span><a href="#24_常量">2.4 常量</a></div>
+</li>
+<li>
+<div><span class="num">3.5</span><a href="#25_局部变量">2.5 局部变量</a></div>
+</li>
+<li>
+<div><span class="num">3.6</span><a href="#26_成员函数和静态函数">2.6 成员函数和静态函数</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">4</span><a href="#3_注释">3. 注释</a></div>
+<ul>
+<li>
+<div><span class="num">4.1</span><a href="#31_类_Java_Doc">3.1  类 Java Doc</a></div>
+</li>
+<li>
+<div><span class="num">4.2</span><a href="#32_函数_Java_Doc">3.2  函数 Java Doc</a></div>
+</li>
+<li>
+<div><span class="num">4.3</span><a href="#33_字段_Java_Doc">3.3  字段 Java Doc</a></div>
+</li>
+<li>
+<div><span class="num">4.4</span><a href="#34_函数内部注释">3.4  函数内部注释</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">5</span><a href="#4_编程">4. 编程</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#5_单元测试">5. 单元测试</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>0. 规范的规范</h1>
+<h1><a name="0_规范的规范"></a>0. 规范的规范</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>本规范的每一条目必须无二义性，并且可执行。否则作废</li>
 <li>本规范的条目分为两个级别:
@@ -19,7 +75,8 @@
 <li>本规范所有的“规则”条目必须被遵守</li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>1. 代码格式</h1>
+<h1><a name="1_代码格式"></a>1. 代码格式</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-使用统一的 Eclipse 的代码格式: <a href="https://github.com/nutzam/nutz/blob/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml">https://github.com/nutzam/nutz/blob/master/doc/eclipse/nutz-eclipse-java-code-format-1.0.xml</a>
 <ul type="disc">
@@ -33,9 +90,11 @@
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>2. 命名</h1>
+<h1><a name="2_命名"></a>2. 命名</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <div class="hr"><b></b></div>
-<h2>2.1 包</h2>
+<h2><a name="21_包"></a>2.1 包</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-包名必须全部小写，2个以内单词。
 <ol type="a">
@@ -45,7 +104,8 @@
 <li><span style="color:#FF0000;"><b>R</b></span>-所有项目的包要以 “org.nutz” 为父 包 。</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>2.2 类和接口</h2>
+<h2><a name="22_类和接口"></a>2.2 类和接口</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#008800;"><b>S</b></span>-最好为名词</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-命名类和接口时，需要将所有单词的首字母大写。</li>
@@ -83,7 +143,8 @@
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>2.3 成员变量</h2>
+<h2><a name="23_成员变量"></a>2.3 成员变量</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#008800;"><b>S</b></span>-最好为单数名词</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-能 private 就不要 default，能 default 就不要 protected，最好不要 public</li>
@@ -95,12 +156,14 @@
 <li><span style="color:#FF0000;"><b>R</b></span>-不要用一个字母，尤其是 i，你可以用 index 或者 cursor 来代替</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>2.4 常量</h2>
+<h2><a name="24_常量"></a>2.4 常量</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-命名常量（带有 final 修饰符的域）时需分隔。如 ： public final int MAX_VALUE = 30 。</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>2.5 局部变量</h2>
+<h2><a name="25_局部变量"></a>2.5 局部变量</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-局域变量名要尽量短，推荐用缩写，比如 StringBuilder sb</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-总的来说局部变量请随意命名，越短越好</li>
@@ -120,7 +183,8 @@
  }
 </pre>
 <div class="hr"><b></b></div>
-<h2>2.6 成员函数和静态函数</h2>
+<h2><a name="26_成员函数和静态函数"></a>2.6 成员函数和静态函数</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-除了 setter / getter，其他的函数采用动词或者动名短语</li>
 <li><span style="color:#008800;"><b>S</b></span>-以下情况可以允许写奇怪函数 -- <sup>名称简短，让人一眼不知道什么意思，用了以后一眼就能知道什么意思</sup>
@@ -145,7 +209,8 @@
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>3. 注释</h1>
+<h1><a name="3_注释"></a>3. 注释</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-注释必须和代码保持同步 。</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-注释中的第一个句子要以（英文）句号、问号或者感叹号结束。 Java成工具会将注释中的第一个句子放在方法汇总表和索引中。</li>
@@ -155,24 +220,28 @@
 <li><span style="color:#FF0000;"><b>R</b></span>-示例代码以 &lt;PRE&gt;&lt;/PRE&gt; 包裹。</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>3.1  类 Java Doc </h2>
+<h2><a name="31_类_Java_Doc"></a>3.1  类 Java Doc </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-要著名作者，格式为 @Author XiaoMing(xm@gmail.com)</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-继承的方法可以省略注释，但是被继承方法必须有注释。</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>3.2  函数 Java Doc </h2>
+<h2><a name="32_函数_Java_Doc"></a>3.2  函数 Java Doc </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-简单的 get/set 方法可以省略注释。</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-继承的方法可以省略注释，但是被继承方法必须有注释。</li>
 </ol>
 <div class="hr"><b></b></div>
-<h2>3.3  字段 Java Doc </h2>
+<h2><a name="33_字段_Java_Doc"></a>3.3  字段 Java Doc </h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li><span style="color:#FF0000;"><b>R</b></span>-没有更多说明了</li>
 </ul>
 <div class="hr"><b></b></div>
-<h2>3.4  函数内部注释</h2>
+<h2><a name="34_函数内部注释"></a>3.4  函数内部注释</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li><span style="color:#FF0000;"><b>R</b></span>-行注释和块注释都是可以被接受的</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-不要写 JAVA DOC，没意义</li>
@@ -196,7 +265,8 @@ else if(xxxxx){
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>4. 编程</h1>
+<h1><a name="4_编程"></a>4. 编程</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-你的每一次提交，必须都是编译通过的</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-你的每一次提交，最好都是通过 JUnit 测试的
@@ -219,7 +289,8 @@ else if(xxxxx){
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>5. 单元测试</h1>
+<h1><a name="5_单元测试"></a>5. 单元测试</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li><span style="color:#FF0000;"><b>R</b></span>-用例名请用 "<span style="color:#0000FF;"><b>长名</b></span>" - 一句话，用下划线_代替空白
 <ul type="disc">

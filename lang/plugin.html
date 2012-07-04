@@ -1,20 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>部署时决定-插件机制</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>部署时决定-插件机制</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">部署时决定-插件机制</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是插件">什么是插件</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#简单使用插件">简单使用插件</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#与_Ioc_容器一起工作">与 Ioc 容器一起工作</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#最后一点说明">最后一点说明</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>什么是插件</h1>
-<p><img src="imgs/lang/plugin_motivation.png"/></p>
+<h1><a name="什么是插件"></a>什么是插件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p><img src="plugin_motivation.png"/></p>
 <p>如果我们的项目依赖了一个接口，但是我们在开发时，真的没办法确定，部署的时候，到底采用哪个实现。</p>
-<p>比如 <a href="#lang/log.html">Nutz 的 Log</a>。 它在运行时，会判读当前运行环境 log4j 是否可用（有 log4j 的org.apache.log4j.Logger类)，如果没有，那么它就把日志信息输出到控制台上。它的实现，就是依靠的方式。</p>
+<p>比如 <a href="log.html">Nutz 的 Log</a>。 它在运行时，会判读当前运行环境 log4j 是否可用（有 log4j 的org.apache.log4j.Logger类)，如果没有，那么它就把日志信息输出到控制台上。它的实现，就是依靠的方式。</p>
 <p>但是，同复杂强大的 OSGI 插件体系不同，这里的插件只是强调，在部署时决定采用什么实现。在运行时，它是没办法更改的。因此 Nutz 虽然在编译时依赖了 Log4j，但是在运行时，没有 log4j 的 jar，依然能够工作的很好。</p>
 <p>也正因为，这个插件简单的令人发指。有兴趣的同学可以参看：<a href="https://github.com/nutzam/nutz/tree/master/src/org/nutz/plugin">org.nutz.plugin</a> 里面的源代码，我想几分钟你就会全部看完。</p>
 <div class="hr"><b></b></div>
-<h1>简单使用插件</h1>
+<h1><a name="简单使用插件"></a>简单使用插件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>比如有一个接口：</p>
 <pre>public interface Said{
 	String say();
@@ -92,8 +109,9 @@ System.out.println(said.say());
 <li>构造函数参数的顺序，就是插件的优先级，第一个最优先</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>与 Ioc 容器一起工作</h1>
-<p>有些时候，你的 Plugin 实现类需要一些配置信息，某些配置信息可能相当复杂。 我们可以将插件同 <a href="#ioc/hello.html">Ioc 容器</a>联用（通过 IocPlugManager&lt;T&gt;）。</p>
+<h1><a name="与_Ioc_容器一起工作"></a>与 Ioc 容器一起工作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有些时候，你的 Plugin 实现类需要一些配置信息，某些配置信息可能相当复杂。 我们可以将插件同 <a href="../ioc/hello.html">Ioc 容器</a>联用（通过 IocPlugManager&lt;T&gt;）。</p>
 <p>比如我们修改一下上面的两个插件，让它们都需要被配置一个字段:</p>
 <pre>public class PeterSaidPlugin implements Plugin, Said {
 	private String prefix;
@@ -132,7 +150,7 @@ System.out.println(said.say());
 	}
 }
 </pre>
-<p>在 <a href="#ioc/hello.html">Ioc 容器</a>的 Json 配置文件中:</p>
+<p>在 <a href="../ioc/hello.html">Ioc 容器</a>的 Json 配置文件中:</p>
 <pre><span class="zdoc_code_cmt">// plugins.js
 </span>{
 	peter : {
@@ -156,7 +174,8 @@ Said said = plugins.get();
 System.out.println(said.say());
 </pre>
 <div class="hr"><b></b></div>
-<h1>最后一点说明</h1>
+<h1><a name="最后一点说明"></a>最后一点说明</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>我曾一度怀疑这个插件功能很无聊，因为它真的可以用“简陋”二字来形容（我们实现这个插件用的时间还没有我写这篇文档所用时间的一半），但是它毕竟给了你一条很简明的途径，让你的程序可以做到：</p>
 <p><span style="color:#FF0000;"><b>部署时才决定某一个接口的实现</b></span></p>
 <p>你用微小的代价（实现一个接口函数）获得下面两个好处：</p>

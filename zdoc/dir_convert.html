@@ -1,19 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>zDoc 目录转换细则</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>zDoc 目录转换细则</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">zDoc 目录转换细则</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
-<h1>将目录转换成另外一组 HTML 文档</h1>
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#将目录转换成另外一组_HTML_文档">将目录转换成另外一组 HTML 文档</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#将目录转换成一个大文件">将目录转换成一个大文件</a></div>
+</li>
+</ul>
+<h1><a name="将目录转换成另外一组_HTML_文档"></a>将目录转换成另外一组 HTML 文档</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>将 index.xml 的内容生成一组 HTML 元素</li>
 <li>根据根目录下 index.html 文件，将生成的 HTML 元素插入 index.html 占位符 ${html} 处</li>
 <li>如果根目录下有 zdoc.css ，则将其链入所有的生成的 HTML 中</li>
 <li>如果根目录下有其他的 css 文件以及 js 文件，将其拷贝到目标目录下。</li>
 </ul>
-<h1>将目录转换成一个大文件</h1>
+<h1><a name="将目录转换成一个大文件"></a>将目录转换成一个大文件</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>无论转换成 PDF 或者 HTML，均无特别需要注意的。</li>
 <li>根据 index.xml 生成章节顺序以及结构</li>

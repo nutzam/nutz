@@ -1,19 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>一对多映射</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>一对多映射</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">一对多映射</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是一对多映射">什么是一对多映射</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#在_POJO_中配置一对多映射">在 POJO 中配置一对多映射</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#你不仅可以在集合类型字段上声明一对多映射">你不仅可以在集合类型字段上声明一对多映射</a></div>
+<ul>
+<li>
+<div><span class="num">3.1</span><a href="#数组">数组</a></div>
+</li>
+<li>
+<div><span class="num">3.2</span><a href="#Map">Map</a></div>
+</li>
+<li>
+<div><span class="num">3.3</span><a href="#POJO">POJO</a></div>
+</li>
+</ul>
+</li>
+<li>
+<div><span class="num">4</span><a href="#插入操作">插入操作</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#获取操作">获取操作</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#更新操作">更新操作</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#删除操作">删除操作</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>什么是一对多映射</h1>
-<p>有两张数据表，其中A表的某个字段的值指向B表的主键。因为B表的任何一条记录理论上可以对应A表的多条记录，所以称这种映射为B表对A表数据的一对多映射。(<span style="color:#999999;"> 当然，反过来，你也可是说，是A表对B表的</span><a href="#dao/links_one.html">一对一映射</a>)。</p>
+<h1><a name="什么是一对多映射"></a>什么是一对多映射</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>有两张数据表，其中A表的某个字段的值指向B表的主键。因为B表的任何一条记录理论上可以对应A表的多条记录，所以称这种映射为B表对A表数据的一对多映射。(<span style="color:#999999;"> 当然，反过来，你也可是说，是A表对B表的</span><a href="links_one.html">一对一映射</a>)。</p>
 <p>上述结构，如果用 POJO 来表示的话，可以参看下图：</p>
-<p><img src="imgs/dao/links_many.png"/></p>
+<p><img src="links_many.png"/></p>
 <p>如上图，一个 Master 自然就能对应多个 Pet ，所以， Master.pets （一个 List&lt;Pet&gt;） 就可以指向多个 Pet 对象，那么我们说 Master.pets 就是 Master 对 Pet 的一对多映射。</p>
 <div class="hr"><b></b></div>
-<h1>在 POJO 中配置一对多映射</h1>
+<h1><a name="在_POJO_中配置一对多映射"></a>在 POJO 中配置一对多映射</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>在 POJO 类中字段中增加注解 <b>@Many</b>：</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
@@ -38,16 +75,17 @@ public class Master extends Pojo {
 </ul>
 <p>因此：</p>
 <ul type="disc">
-<li>目标 POJO 类 （<span style="color:#AA0000;">Pet</span>）中<b>必须</b>存在一个字段，用来同本 POJO <a href="#dao/primary_key.html">POJO 类的主键</a>关联
+<li>目标 POJO 类 （<span style="color:#AA0000;">Pet</span>）中<b>必须</b>存在一个字段，用来同本 POJO <a href="primary_key.html">POJO 类的主键</a>关联
 <ul type="circle">
 <li><span style="color:#FF0000;"><b>还要注意</b></span>，这里的名称是 目标 POJO 的 <b>JAVA</b> 字段的名称。</li>
 <li><span style="color:#FF0000;"><b>注意</b></span>，这里是大小写敏感的。</li>
 </ul>
 </li>
-<li>该字段必须同本 <a href="#dao/primary_key.html">POJO 类的主键</a>类型相同</li>
+<li>该字段必须同本 <a href="primary_key.html">POJO 类的主键</a>类型相同</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>你不仅可以在集合类型字段上声明一对多映射</h1>
+<h1><a name="你不仅可以在集合类型字段上声明一对多映射"></a>你不仅可以在集合类型字段上声明一对多映射</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>本 POJO 类的 @Many 映射，可以不止声明在 List 对象上，它还可以声明在</p>
 <ul type="disc">
 <li>数组</li>
@@ -55,7 +93,8 @@ public class Master extends Pojo {
 <li>POJO</li>
 </ul>
 <div class="hr"><b></b></div>
-<h2>数组</h2>
+<h2><a name="数组"></a>数组</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>例如：</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
@@ -66,7 +105,8 @@ public class Master extends Pojo {
 </span></pre>
 <p>当采用 fetchLinks 获取值的时候，会自动填充此数组</p>
 <div class="hr"><b></b></div>
-<h2>Map</h2>
+<h2><a name="Map"></a>Map</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>如果采用 Map 类型， 我们还需要你为 @Many 注解多添加一个参数，通过这个参数, Nutz.Dao 才能知道采用目标 POJO 对象的哪一个字段来作为 Map　的键。</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
@@ -86,7 +126,8 @@ public class Master extends Pojo {
 <li>请注意，将 Map 的第一个泛型参数设置正确，同 key  所指向的字段类型相同即可。</li>
 </ul>
 <div class="hr"><b></b></div>
-<h2>POJO</h2>
+<h2><a name="POJO"></a>POJO</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>例如：</p>
 <pre>@Table("t_master")
 public class Master extends Pojo {
@@ -100,7 +141,8 @@ public class Master extends Pojo {
 </pre>
 <p>选出的结果集中的第一个记录。</p>
 <div class="hr"><b></b></div>
-<h1>插入操作</h1>
+<h1><a name="插入操作"></a>插入操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>如果你已经实现准备好了这样的对象：</p>
 <pre>Master master = new Master();
 master.setName("Peter");
@@ -122,7 +164,7 @@ master.setPets(pets);
 执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoBai",29)
 执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoHei",29)
 </pre>
-<p>这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 <a href="#dao/primary_key.html">关于主键</a>一章。</p>
+<p>这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 <a href="primary_key.html">关于主键</a>一章。</p>
 <ul type="disc">
 <li>这里因为是一对多映射，所以会首先插入主对象，以便用新的主键值更新映射对象的映射字段</li>
 <li>如果你的对象中包括多个 @Many 字段，被你的正则式匹配上，那么这些字段对应的字段（如果不为null）都会被匹配，并首先被插入</li>
@@ -137,7 +179,8 @@ master.setPets(pets);
 </pre>
 <p>看，并不会插入 master 对象。</p>
 <div class="hr"><b></b></div>
-<h1>获取操作</h1>
+<h1><a name="获取操作"></a>获取操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>仅仅获取映射对象：</p>
 <pre>Master master = dao.fetch(Master.class, "Peter");
 dao.fetchLinks(master, "pets");
@@ -151,7 +194,8 @@ dao.fetchLinks(master, "pets");
 </pre>
 <p>然后，你可以通过 master.getPets() 得到 Nutz.Dao 为 master.pets 字段设置的值。</p>
 <div class="hr"><b></b></div>
-<h1>更新操作</h1>
+<h1><a name="更新操作"></a>更新操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>同时更新 pet 和 master</p>
 <pre>dao.updateWith(master, "pets");
 </pre>
@@ -166,7 +210,8 @@ dao.fetchLinks(master, "pets");
 <pre>循环 master.pets 并依次执行SQL: UPDATE t_pet ...
 </pre>
 <div class="hr"><b></b></div>
-<h1>删除操作</h1>
+<h1><a name="删除操作"></a>删除操作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>同时删除 master 和 pets</p>
 <pre>dao.deleteWith(master, "pets");
 </pre>

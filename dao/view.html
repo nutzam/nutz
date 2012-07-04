@@ -1,13 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>使用视图</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>使用视图</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">使用视图</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要视图">为什么需要视图</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#在_POJO_对象上使用视图">在 POJO 对象上使用视图</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>为什么需要视图</h1>
+<h1><a name="为什么需要视图"></a>为什么需要视图</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>数据库将数据存储在数据表中，有些时候，为了展现某些数据，还需要跨越多个表进行计算。比如你有两个数据表</p>
 <ol type="1">
 <li>雇员表 t_employee</li>
@@ -22,7 +32,8 @@ SELECT * , taskcount = (SELECT COUNT(id) FROM t_task AS t WHERE t.eid = e.id) FR
 <p><span style="color:#008800;">这段代码仅仅是个示意，在不同的数据库上，有不同的写法</span></p>
 <p>那么实际上，我们建立的这个 Employee 的 Java 对象就是要从 v_employee 获取，但是执行 insert, update 或者 delete 的时候，却是操作 t_employee 的。为了这个特殊的需求， Nutz.Dao 提供了 @View 和 @Readonly 这两个注解。</p>
 <div class="hr"><b></b></div>
-<h1>在 POJO 对象上使用视图</h1>
+<h1><a name="在_POJO_对象上使用视图"></a>在 POJO 对象上使用视图</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>我们直接来表述一下 Employee 这个 POJO，这里仅仅是个示意</p>
 <pre>@Table("t_employee")
 @View("v_employee")		<span class="zdoc_code_cmt">// &lt;- 这里声明了视图

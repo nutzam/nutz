@@ -1,19 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>AOP模型 -- NutAop的实现思路</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>AOP模型 -- NutAop的实现思路</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">AOP模型 -- NutAop的实现思路</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么需要特别写出NutAop的模型呢?">为什么需要特别写出NutAop的模型呢?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#基本思路">基本思路</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#具体实现">具体实现</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#注意">注意</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>为什么需要特别写出NutAop的模型呢?</h1>
+<h1><a name="为什么需要特别写出NutAop的模型呢?"></a>为什么需要特别写出NutAop的模型呢?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>NutAop清晰简洁地实现了Aop中最常用,最常见的需求--控制特定方法的执行逻辑</li>
 <li>了解这个模型,能够更好地理解Aop</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>基本思路</h1>
+<h1><a name="基本思路"></a>基本思路</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>原方法(没有返回值)</p>
 <pre>public void exe(){
 	<span class="zdoc_code_cmt">//Do something
@@ -40,7 +57,8 @@ public void exe(){
 <li>由于doChain()返回了,堆栈开始往回走,依次通过原本的拦截器, 这时,你可以改变/替换原本的返回值</li>
 </ul>
 <div class="hr"><b></b></div>
-<h1>具体实现</h1>
+<h1><a name="具体实现"></a>具体实现</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>如果在你的方法中打印堆栈,你将看到类似的信息</p>
 <pre>java.lang.Throwable
 	at org.nutz.aop.asm.test.Aop1.mixArgsVoid(Aop1.java:55)
@@ -55,7 +73,8 @@ public void exe(){
 </pre>
 <p>mixArgsVoid 就是你原本方法</p>
 <div class="hr"><b></b></div>
-<h1>注意</h1>
+<h1><a name="注意"></a>注意</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
 <li>切勿自行实现org.nutz.aop.AopCallback接口,并不要使用该接口声明的方法签名</li>
 <li>虽然org.nutz.aop.MethodInterceptor接口允许你抛出任何异常,但*请不要抛出原方法未声明的受检异常*</li>

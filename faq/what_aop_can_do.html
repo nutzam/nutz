@@ -1,26 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>Nutz.Aop能做什么,不能做什么?</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Aop能做什么,不能做什么?</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">Nutz.Aop能做什么,不能做什么?</div>
 <div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#NutzAop能做什么?">Nutz.Aop能做什么?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#NutzAop不能做什么?">Nutz.Aop不能做什么?</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#NutzAop是如何做到拦截一个方法的">Nutz.Aop是如何做到拦截一个方法的</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#NutzAop实现的细节问题:">Nutz.Aop实现的细节问题:</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#NutzAop能怎么用:">Nutz.Aop能怎么用:</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#NutzAop代码中的注释">Nutz.Aop代码中的注释</a></div>
+</li>
+</ul>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop能做什么?</h1>
+<h1><a name="NutzAop能做什么?"></a>Nutz.Aop能做什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>为实例方法添加 前置(before)/后置(after)/一般异常处理(Exception)/错误(Throwable)</p>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop不能做什么?</h1>
+<h1><a name="NutzAop不能做什么?"></a>Nutz.Aop不能做什么?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>对构造方法进行拦截,对静态方法进行拦截,对字段进行拦截,对final类/final方法进行拦截,对私有方法进行拦截</p>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop是如何做到拦截一个方法的</h1>
+<h1><a name="NutzAop是如何做到拦截一个方法的"></a>Nutz.Aop是如何做到拦截一个方法的</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>继承需要拦截的类. 这个类必须的非abstract非final的顶层类,不能是内部类和本地类(这个很少见)</li>
 <li>override需要拦截的方法. 这个方法必须是非abstract非final非static非native</li>
 <li>嵌入拦截器逻辑到方法中. 看网页: <a href="../ioc/aop_solution.man">Nutz.Aop模型</a></li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop实现的细节问题:</h1>
+<h1><a name="NutzAop实现的细节问题:"></a>Nutz.Aop实现的细节问题:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>使用的是内嵌的精简过的<a href="http://asm.ow2.org/">ASM</a>
 <ol type="a">
@@ -37,7 +62,8 @@
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop能怎么用:</h1>
+<h1><a name="NutzAop能怎么用:"></a>Nutz.Aop能怎么用:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>内置拦截器
 <ol type="a">
@@ -59,7 +85,7 @@
 </li>
 <li>在Ioc中添加Aop支持
 <ol type="a">
-<li><a href="#ioc/loader_annotation.html">@Aop注解</a></li>
+<li><a href="../ioc/loader_annotation.html">@Aop注解</a></li>
 <li>声明式Aop
 <ol type="i">
 <li><a href="../ioc/aop_json.man">json方式</a></li>
@@ -70,7 +96,8 @@
 </li>
 </ol>
 <div class="hr"><b></b></div>
-<h1>Nutz.Aop代码中的注释</h1>
+<h1><a name="NutzAop代码中的注释"></a>Nutz.Aop代码中的注释</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>在org.nutz.aop/org.nutz.aop.interceptor/org.nutz.aop.matcher下的类,基本上都是注释了的</li>
 <li>在org.nutz.aop.asm下的类,基本上是无注释的,在可预见的将来我也不打算添加

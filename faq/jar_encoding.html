@@ -1,29 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
-<head>
-<title>我的Nutz的源码是乱码怎么办？</title>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>我的Nutz的源码是乱码怎么办？</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">我的Nutz的源码是乱码怎么办？</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <div class="hr"><b></b></div>
-<h1>问题的提出</h1>
+<h1><a name="问题的提出"></a>问题的提出</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>采用的是 nutz-source.jar 的方式存放源码</p>
 <div class="hr"><b></b></div>
-<h1>Ecipse 用户</h1>
+<h1><a name="Ecipse_用户"></a>Ecipse 用户</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>打开 </p>
 <pre>window &gt; Preferebces &gt; General &gt; Workspace
 </pre>
 <p>看看"Text file encoding" 项是不是设成 "UTF-8" 了还是不行? 请重启你的Eclipse</p>
 <div class="hr"><b></b></div>
-<h1>Netbean 用户 </h1>
+<h1><a name="Netbean_用户"></a>Netbean 用户 </h1>
+<div style="float:right;"><a href="#top">Top</a></div>
 <ol type="1">
 <li>找到你的Netbeans安装目录下的etc文件夹,如C:\Program Files\NetBeans 6.0 M9\etc</li>
 <li>用记事本打开netbeans.conf</li>
 <li>找到netbeans_default_options这一句(没带#号的,带#号的是注释)</li>
 <li>在最后面加上一个空格,再加入-J-Dfile.encoding=UTF-8</li>
 </ol>
-<h2>比如:</h2>
+<h2><a name="比如:"></a>比如:</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
 <p>-J-DAM_CONFIG_FILE=\"C:\Sun\AppServer\domains\domain1\config\AMConfig.properties\" -J-Dcom.sun.aas.installRoot=\"C:\Sun\AppServer\" -J-Xms128m -J-Xmx512m -J-XX:PermSize=32m -J-XX:MaxPermSize=160m -J-Dapple.laf.useScreenMenuBar=true -J-XX:+UseConcMarkSweepGC -J-XX:+CMSClassUnloadingEnabled -J-XX:+CMSPermGenSweepingEnabled -J-Dfile.encoding=UTF-8</p>
 <p>"}}}</p>
 </div>
