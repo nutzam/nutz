@@ -292,12 +292,19 @@ List&lt;Pet&gt; list = Lang.collection2list(pets);
 <pre>assertEquals("ABC", Strings.trim("\t   ABC \r\n   "));
 </pre>
 </li>
-<li>左填充 (居右)
+<li>左填充 (居右)，当无法填充时不会按照指定的长度截断原字符串
 <pre>assertEquals("00FE", Strings.alignRight("FE", 4, '0'));
+assertEquals("FFFF", Strings.alignRight("FFFF", 2, '0'));
 </pre>
 </li>
-<li>右填充 (居左)
+<li>右填充 (居左)，当无法填充时不会按照指定的长度截断原字符串
 <pre>assertEquals("FE00", Strings.alignLeft("FE", 4, '0'));
+assertEquals("FFFF", Strings.alignLeft("FFFF", 2, '0'));
+</pre>
+</li>
+<li>固定长度左填充 (居右)，当无法填充时将按照指定的长度截断原字符串
+<pre>assertEquals("00FE", Strings.cutRight("FE", 4, '0'));
+assertEquals("FF", Strings.cutRight("FFFF", 2, '0'));
 </pre>
 </li>
 </ul>
