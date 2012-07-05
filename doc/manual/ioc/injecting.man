@@ -209,7 +209,6 @@
 
 		public class ScanValueProxyMaker implements ValueProxyMaker {
 
-			@Override
 			public ValueProxy make(IocMaking ing, IocValue iv) {
 				if ("scan".equals(iv.getType())) {
 					final String address = iv.getValue().toString();
@@ -224,7 +223,10 @@
 				}
 				return null;
 			}
-
+			
+			public String[] supportedTypes() {
+				return new String[]{"scan"};
+			}
 		}
 		}}}
 	添加到 Ioc 容器中
