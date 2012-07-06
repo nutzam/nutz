@@ -1864,14 +1864,7 @@ public abstract class Lang {
             byte[] data = md5.digest();
             StringBuilder sb = new StringBuilder();
             for (byte b : data) {
-                String s = Integer.toHexString(b);
-                int length = s.length();
-                if (length == 1)
-                    sb.append('0').append(s);
-                else if (length == 2)
-                    sb.append(s);
-                else
-                    sb.append(s.substring(length - 2, length));
+                sb.append(Strings.toHex(b, 2));
             }
             return sb.toString();
         }
