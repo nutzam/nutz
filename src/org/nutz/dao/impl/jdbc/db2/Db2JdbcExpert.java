@@ -8,6 +8,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
@@ -132,5 +133,11 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
                     pager.getOffset() + pager.getPageSize());
             sql.setSourceSql(pre + sql.getSourceSql() + last);
         }
+    }
+    
+    public ValueAdaptor getAdaptor(MappingField ef) {
+        if (ef.getTypeMirror().isBoolean())
+            return new DB2BooleanAdaptor();
+        return super.getAdaptor(ef);
     }
 }
