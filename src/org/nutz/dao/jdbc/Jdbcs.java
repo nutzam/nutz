@@ -218,6 +218,11 @@ public abstract class Jdbcs {
         if (mirror.getType().isArray() && mirror.getType().getComponentType() == byte.class) {
             return Jdbcs.Adaptor.asBytes;
         }
+        // inputstream
+        if (mirror.isOf(InputStream.class))
+            return Jdbcs.Adaptor.asBinaryStream;
+        if (mirror.isOf(Reader.class))
+            return Jdbcs.Adaptor.asReader;
 
         // 默认情况
         return Jdbcs.Adaptor.asString;
@@ -663,6 +668,36 @@ public abstract class Jdbcs {
                 }
             }
 
+        };
+        
+        public static final ValueAdaptor asBinaryStream = new ValueAdaptor() {
+
+            public Object get(ResultSet rs, String colName) throws SQLException {
+                return rs.getBinaryStream(colName);
+            }
+            
+            public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
+                if (null == obj) {
+                    stat.setNull(index, Types.BINARY);
+                } else {
+                    stat.setBinaryStream(index, (InputStream) obj);
+                }
+            }
+        };
+        
+        public static final ValueAdaptor asReader = new ValueAdaptor() {
+
+            public Object get(ResultSet rs, String colName) throws SQLException {
+                return rs.getCharacterStream(colName);
+            }
+            
+            public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
+                if (null == obj) {
+                    stat.setNull(index, Types.BINARY);
+                } else {
+                    stat.setCharacterStream(index, (Reader)obj);
+                }
+            }
         };
     }
 

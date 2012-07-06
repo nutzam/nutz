@@ -2,14 +2,18 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
 
 import org.junit.Test;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.BinObject;
 import org.nutz.dao.test.meta.TheGoods;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
 public class BinaryDaoTest extends DaoCase {
@@ -54,4 +58,31 @@ public class BinaryDaoTest extends DaoCase {
 
         new File(path).delete();
     }
+    
+    @Test
+    public void test_blob() throws IOException {
+        dao.create(BinObject.class, true);
+        
+        BinObject obj = new BinObject();
+        obj.setXblob(new ByteArrayInputStream("中文".getBytes()));
+        obj.setXclob(new StringReader("不是英文"));
+        dao.insert(obj);
+        
+        BinObject db_obj = dao.fetch(BinObject.class);
+        assertTrue(Streams.equals(new ByteArrayInputStream("中文".getBytes()), db_obj.getXblob()));
+        assertEquals("不是英文", Lang.readAll(db_obj.getXclob()));
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

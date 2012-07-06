@@ -1,5 +1,8 @@
 package org.nutz.dao.impl.sql;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.reflect.Array;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -159,6 +162,13 @@ public abstract class NutStatement implements DaoStatement {
                     } else if (obj instanceof byte[] || obj instanceof char[]) {
                         if (Array.getLength(obj) > 10240)
                             obj = "*BigData[len=" + Array.getLength(obj) +"]";
+                    } else if (obj instanceof InputStream) {
+                        try {
+                            obj = "*InputStream[len=" + ((InputStream)obj).available() +"]";
+                        }
+                        catch (IOException e) {}
+                    } else if (obj instanceof Reader) {
+                        obj = "*Reader@" + obj.hashCode();
                     }
                 }
                 sb.append(Sqls.formatFieldValue(obj));
@@ -199,6 +209,13 @@ public abstract class NutStatement implements DaoStatement {
             } else if (obj instanceof byte[] || obj instanceof char[]) {
                 if (Array.getLength(obj) > 10240)
                     return "*BigData[len=" + Array.getLength(obj) +"]";
+            } else if (obj instanceof InputStream) {
+                try {
+                    obj = "*InputStream[len=" + ((InputStream)obj).available() +"]";
+                }
+                catch (IOException e) {}
+            } else if (obj instanceof Reader) {
+                obj = "*Reader@" + obj.hashCode();
             }
             return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
         }
