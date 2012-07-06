@@ -160,8 +160,9 @@ public class UploadAdaptor extends PairAdaptor {
             }
             if (contentType.contains("multipart/form-data")) { // 普通表单上传
                 if (sc.getMajorVersion() == 3) { // Servlet 3 会自行解开上传流,暂不支持这种转换
-                    log.info("You are using Serlvet3, pls use req.getParts() to get upload files!!");
-                    // return Uploads.createParamsMap(request);
+                    if (log.isDebugEnabled())
+                        log.debug("Select Servlet3 upload parser --> " + request.getRequestURI());
+                    return new Servlet3Uploading().parse(request, context);
                 }
                 if (log.isDebugEnabled())
                     log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
