@@ -259,7 +259,7 @@ public class Mirror<T> {
 
         // 是 getter
         if (name.startsWith("get") && method.getParameterTypes().length == 0) {
-            name = Strings.lowerFirst(name.substring(4));
+            name = Strings.lowerFirst(name.substring(3));
             getter = method;
             // 寻找 setter
             try {
@@ -273,7 +273,7 @@ public class Mirror<T> {
         else if (name.startsWith("is")
                     && Mirror.me(method.getReturnType()).isBoolean()
                     && method.getParameterTypes().length == 0) {
-            name = Strings.lowerFirst(name.substring(3));
+            name = Strings.lowerFirst(name.substring(2));
             getter = method;
             // 寻找 setter
             try {
@@ -284,7 +284,7 @@ public class Mirror<T> {
         }
         // 是 setter
         else if (name.startsWith("set") && method.getParameterTypes().length == 1) {
-            name = Strings.lowerFirst(name.substring(4));
+            name = Strings.lowerFirst(name.substring(3));
             setter = method;
             // 寻找 getter
             try {

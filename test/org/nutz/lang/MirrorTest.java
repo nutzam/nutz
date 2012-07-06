@@ -16,9 +16,12 @@ import org.nutz.NutzEnum;
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Name;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.meta.Email;
 import org.nutz.lang.reflect.ObjA;
+import org.nutz.lang.util.Callback;
+import org.nutz.lang.util.Callback3;
 
 public class MirrorTest {
 
@@ -586,5 +589,27 @@ public class MirrorTest {
         public byte byteField2;
         public char characterField2;
         public boolean booleanField2;
+    }
+    
+    @Test
+    public void test_evalGetterSetter() throws NoSuchMethodException {
+        Mirror<Pet> mirror = Mirror.me(Pet.class);
+        Mirror.evalGetterSetter(mirror.getGetter("name"), new Callback3<String, Method, Method>() {
+
+            @Override
+            public void invoke(String field, Method getter, Method setter) {
+                assertNotNull(getter);
+                assertNotNull(setter);
+                assertNotNull(field);
+        }
+            
+        }, new Callback<Method>() {
+
+            @Override
+            public void invoke(Method obj) {
+                
+            }
+            
+        });
     }
 }
