@@ -14,6 +14,7 @@ import javax.servlet.http.HttpSession;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -34,6 +35,7 @@ import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.impl.AdaptorErrorContext;
 
 /**
  * 
@@ -153,21 +155,73 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                             HttpServletRequest req,
                             HttpServletResponse resp,
                             String[] pathArgs) {
-        Object[] args = new Object[injs.length];
-        int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
-        int i = 0;// 确保路径参数不会被覆盖
-        // Inject another params
-        for (; i < len; i++) {
-            args[i] = injs[i].get(sc, req, resp, null == pathArgs ? null : pathArgs[i]);
-        }
         Class<?>[] argTypes = method.getParameterTypes();
-        Object obj = getReferObject(sc, req, resp, pathArgs);
-        for (; i < injs.length; i++) {
-            args[i] = injs[i].get(sc, req, resp, obj);
+        Object[] args = new Object[argTypes.length];
+
+        if (args.length != injs.length)
+            throw new IllegalArgumentException("args.length != injs.length , You get a bug, pls report it!!");
+        
+        AdaptorErrorContext errCtx = null;
+        // 也许用户有自己的AdaptorErrorContext实现哦
+        if (argTypes.length > 0) {
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[argTypes.length - 1]))
+                errCtx = (AdaptorErrorContext) Mirror.me(argTypes[argTypes.length - 1]).born(argTypes.length);
+        }
+        
+        Object obj;
+        try {
+            obj = getReferObject(sc, req, resp, pathArgs);
+        }
+        catch (Throwable e) {
+            if (errCtx != null) {
+                if (log.isInfoEnabled())
+                    log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
+                errCtx.setAdaptorError(e, this);
+                args[args.length - 1] = errCtx;
+                return args;
+            }
+            throw Lang.wrapThrow(e);
+        }
+        
+        int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
+        for (int i = 0; i < args.length; i++) {
+            Object value = null;
+            if (i < len) { // 路径参数
+                value = null == pathArgs ? null : pathArgs[i];
+            } else {       // 普通参数
+                value = obj;
+            }
+            try {
+                args[i] = injs[i].get(sc, req, resp, value);
+            }
+            catch (Throwable e) {
+                if (errCtx != null)
+                    errCtx.setError(i, e, method, value, injs[i]); //先错误保存起来,全部转好了,再判断是否需要抛出
+                else
+                    throw Lang.wrapThrow(e);
+            }
             if (args[i] == null && argTypes[i].isPrimitive()) {
                 args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
             }
         }
+        
+        //看看是否有任何错误
+        if (errCtx == null)
+            return args;
+        for (Throwable err : errCtx.getErrors()) {
+            if (err == null)
+                continue;
+            int lastParam = argTypes.length - 1;
+            if (AdaptorErrorContext.class.equals(argTypes[lastParam])) {
+                if (log.isInfoEnabled())
+                    log.info("Adapter Param Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
+                args[lastParam] = errCtx;
+                return args;
+            }
+            // 没有AdaptorErrorContext参数? 那好吧,按之前的方式,抛出异常
+            throw Lang.wrapThrow(err);
+        }
+        
         return args;
     }
 

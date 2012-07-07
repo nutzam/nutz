@@ -65,7 +65,9 @@ public class MvcBaseTest extends AbstractMvcTest {
         request.addParameter("password", "123456");
         request.addParameter("authCode", "Nutz");
         servlet.service(request, response);
-        assertTrue(response.getAsString().indexOf("NumberFormatException") > -1);
+        String resp = response.getAsString();
+        System.out.println(resp);
+        assertTrue(resp.indexOf("NumberFormatException") > -1);
     }
 
     @Test
