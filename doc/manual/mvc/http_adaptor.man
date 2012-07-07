@@ -273,7 +273,21 @@
 		* ServletContext
 		* Ioc & Ioc2
 		
-		如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。
+	还有就是@Attr注解,可以用于获取req或session的attr
+		* 默认先查找Request,然后找Session
+		* 找不到就返回null
+		
+		示例代码:
+		{{{<java>
+		@Ok("json")
+		public Object listAllUser(@Attr("me")User user) {
+			if (user == null || !user.isAdmin())
+			    return new HttpStatusView(500);
+			return dao.query(User.class, null);
+		}
+		}}}
+		
+	如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。
 
 ----------------------------------------------------------------------------------------------
 路径参数
@@ -342,6 +356,35 @@
     	当然，通配符声明的路径参数仍然可以同 @Param 以及 [#特殊参数 特殊参数] 混用，只是请记得，将入口函数
     	中的路径参数排在前面
 		
+
+----------------------------------------------------------------------------------------------
+错误处理
+
+	这是1.b.45及之后的版本才有的功能
+	
+	在以前的版本中,由用户输入导致的类型转换错误(例如字符串转数字,非法日期),都只能通过@Fail处理
+	
+	故,现在引入了AdaptorErrorContext,用于解决这一直以来被骂的缺陷
+	
+	仅当入口方法的最后一个参数为AdaptorErrorContext(其子类也行),才会触发这个错误处理机制
+	
+	看以下代码:
+	{{{<java>
+	// 传入的id,会是一个非法的字符串!!
+    @At({"/err/param", "/err/param/?"})
+    @Fail("http:500")
+    public void errParam(@Param("id") long id, AdaptorErrorContext errCtx) {
+        TestCase.assertNotNull(errCtx); // 当没有异常产生时, errCtx为null
+        TestCase.assertNotNull(errCtx.getErrors()[0]);
+    }
+	}}}
+	当用户输入的参数id,为"Nutz"时,自然会导致异常, 而这个方法的最后一个参数是AdaptorErrorContext,
+	所以,仍将进入这个方法, 且errCtx参数不为null
+	
+	AdaptorErrorContext类本身很简单, 但它也是一个很不错的扩展点. 因为最后一个参数只要求是AdaptorErrorContext
+	或其子类,所以,你可以自定义一个AdaptorErrorContext,覆盖其核心方法 setError,以实现你需要的纠错逻辑
+	
+
 ----------------------------------------------------------------------------------------------
 定制自己的适配器
 	先来看看适配器的接口：
