@@ -590,26 +590,19 @@ public class MirrorTest {
         public char characterField2;
         public boolean booleanField2;
     }
-    
+
     @Test
     public void test_evalGetterSetter() throws NoSuchMethodException {
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         Mirror.evalGetterSetter(mirror.getGetter("name"), new Callback3<String, Method, Method>() {
-
-            @Override
             public void invoke(String field, Method getter, Method setter) {
                 assertNotNull(getter);
                 assertNotNull(setter);
                 assertNotNull(field);
-        }
-            
-        }, new Callback<Method>() {
-
-            @Override
-            public void invoke(Method obj) {
-                
             }
-            
+
+        }, new Callback<Method>() {
+            public void invoke(Method obj) {}
         });
     }
 }
