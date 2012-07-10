@@ -14,16 +14,10 @@ import java.util.Set;
 import java.util.Vector;
 
 import javax.servlet.Filter;
-import javax.servlet.FilterRegistration;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRegistration;
-import javax.servlet.ServletRegistration.Dynamic;
-import javax.servlet.SessionCookieConfig;
-import javax.servlet.SessionTrackingMode;
-import javax.servlet.descriptor.JspConfigDescriptor;
 
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -166,68 +160,11 @@ public class MockServletContext extends MockServletObject implements ServletCont
         throw Lang.noImplement();
     }
 
-    public Dynamic addServlet(String servletName, String className) {
-        throw Lang.noImplement();
-    }
-
-    public Dynamic addServlet(String servletName, Servlet servlet) {
-        throw Lang.noImplement();
-    }
-
-    public Dynamic addServlet(String servletName, Class<? extends Servlet> servletClass) {
-        throw Lang.noImplement();
-    }
-
     public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
         throw Lang.noImplement();
     }
 
-    public ServletRegistration getServletRegistration(String servletName) {
-        throw Lang.noImplement();
-    }
-
-    public Map<String, ? extends ServletRegistration> getServletRegistrations() {
-        throw Lang.noImplement();
-    }
-
-    public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, String className) {
-        throw Lang.noImplement();
-    }
-
-    public javax.servlet.FilterRegistration.Dynamic addFilter(String filterName, Filter filter) {
-        throw Lang.noImplement();
-    }
-
-    public javax.servlet.FilterRegistration.Dynamic addFilter(    String filterName,
-                                                                Class<? extends Filter> filterClass) {
-        throw Lang.noImplement();
-    }
-
     public <T extends Filter> T createFilter(Class<T> clazz) throws ServletException {
-        throw Lang.noImplement();
-    }
-
-    public FilterRegistration getFilterRegistration(String filterName) {
-        throw Lang.noImplement();
-    }
-
-    public Map<String, ? extends FilterRegistration> getFilterRegistrations() {
-        throw Lang.noImplement();
-    }
-
-    public SessionCookieConfig getSessionCookieConfig() {
-        throw Lang.noImplement();
-    }
-
-    public void setSessionTrackingModes(Set<SessionTrackingMode> sessionTrackingModes) {
-        throw Lang.noImplement();
-    }
-
-    public Set<SessionTrackingMode> getDefaultSessionTrackingModes() {
-        throw Lang.noImplement();
-    }
-
-    public Set<SessionTrackingMode> getEffectiveSessionTrackingModes() {
         throw Lang.noImplement();
     }
 
@@ -244,10 +181,6 @@ public class MockServletContext extends MockServletObject implements ServletCont
     }
 
     public <T extends EventListener> T createListener(Class<T> clazz) throws ServletException {
-        throw Lang.noImplement();
-    }
-
-    public JspConfigDescriptor getJspConfigDescriptor() {
         throw Lang.noImplement();
     }
 

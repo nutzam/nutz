@@ -3,7 +3,6 @@ package org.nutz.mock.servlet;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
@@ -11,19 +10,14 @@ import java.util.Map;
 import java.util.Vector;
 import java.util.Map.Entry;
 
-import javax.servlet.AsyncContext;
-import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
@@ -278,8 +272,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
                 this.setCharacterEncoding(((MultipartInputStream) inputStream).getCharset());
                 try {
                     this.setHeader("content-length", inputStream.available());
-                    this.setHeader(    "content-type",
-                                    ((MultipartInputStream) inputStream).getContentType());
+                    this.setHeader("content-type",
+                                   ((MultipartInputStream) inputStream).getContentType());
                 }
                 catch (IOException e) {
                     throw Lang.wrapThrow(e);
@@ -413,29 +407,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return this.session.getServletContext();
     }
 
-    public AsyncContext startAsync() throws IllegalStateException {
-        throw Lang.noImplement();
-    }
-
-    public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
-            throws IllegalStateException {
-        throw Lang.noImplement();
-    }
-
     public boolean isAsyncStarted() {
         throw Lang.noImplement();
     }
 
     public boolean isAsyncSupported() {
         return false;
-    }
-
-    public AsyncContext getAsyncContext() {
-        throw Lang.noImplement();
-    }
-
-    public DispatcherType getDispatcherType() {
-        throw Lang.noImplement();
     }
 
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
@@ -447,14 +424,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     public void logout() throws ServletException {
-        throw Lang.noImplement();
-    }
-
-    public Collection<Part> getParts() throws IOException, ServletException {
-        throw Lang.noImplement();
-    }
-
-    public Part getPart(String name) throws IOException, ServletException {
         throw Lang.noImplement();
     }
 
