@@ -1,30 +1,26 @@
 package org.nutz.mock.servlet;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
-import java.util.Vector;
 import java.util.Map.Entry;
+import java.util.Vector;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
+import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
 import org.nutz.mvc.Mvcs;
 
-public class MockHttpServletRequest implements HttpServletRequest {
+public class MockHttpServletRequest extends HttpServletRequestWrapper {
 
     protected HttpSession session;
 
@@ -33,6 +29,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     protected String[] dispatcherTarget;
 
     public MockHttpServletRequest() {
+        super(Mock.EmtryHttpServletRequest);
         this.headers = new HashMap<String, String>();
         this.dispatcherTarget = new String[1];
         Mvcs.set("", this, null);
@@ -42,24 +39,12 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return this.dispatcherTarget[0];
     }
 
-    public String getAuthType() {
-        throw Lang.noImplement();
-    }
-
     public String getContextPath() {
         return contextPath;
     }
 
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
-    }
-
-    public Cookie[] getCookies() {
-        throw Lang.noImplement();
-    }
-
-    public long getDateHeader(String arg0) {
-        throw Lang.noImplement();
     }
 
     protected Map<String, String> headers;
@@ -74,14 +59,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public Enumeration<String> getHeaderNames() {
         return Lang.enumeration(headers.keySet());
-    }
-
-    public Enumeration<String> getHeaders(String name) {
-        throw Lang.noImplement();
-    }
-
-    public int getIntHeader(String arg0) {
-        throw Lang.noImplement();
     }
 
     protected String method;
@@ -204,26 +181,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
         this.userPrincipal = userPrincipal;
     }
 
-    public boolean isRequestedSessionIdFromCookie() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isRequestedSessionIdFromURL() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isRequestedSessionIdFromUrl() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isRequestedSessionIdValid() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isUserInRole(String arg0) {
-        throw Lang.noImplement();
-    }
-
     protected Map<String, Object> attributeMap = new HashMap<String, Object>();
 
     public Object getAttribute(String key) {
@@ -283,26 +240,6 @@ public class MockHttpServletRequest implements HttpServletRequest {
         return this;
     }
 
-    public String getLocalAddr() {
-        throw Lang.noImplement();
-    }
-
-    public String getLocalName() {
-        throw Lang.noImplement();
-    }
-
-    public int getLocalPort() {
-        throw Lang.noImplement();
-    }
-
-    public Locale getLocale() {
-        throw Lang.noImplement();
-    }
-
-    public Enumeration<Locale> getLocales() {
-        throw Lang.noImplement();
-    }
-
     protected Map<String, String[]> params = new HashMap<String, String[]>();
 
     public String getParameter(String key) {
@@ -351,44 +288,8 @@ public class MockHttpServletRequest implements HttpServletRequest {
         this.protocol = protocol;
     }
 
-    public BufferedReader getReader() throws IOException {
-        throw Lang.noImplement();
-    }
-
-    public String getRealPath(String arg0) {
-        throw Lang.noImplement();
-    }
-
-    public String getRemoteAddr() {
-        throw Lang.noImplement();
-    }
-
-    public String getRemoteHost() {
-        throw Lang.noImplement();
-    }
-
-    public int getRemotePort() {
-        throw Lang.noImplement();
-    }
-
     public RequestDispatcher getRequestDispatcher(String dest) {
         return new MockRequestDispatcher(dispatcherTarget, dest);
-    }
-
-    public String getScheme() {
-        throw Lang.noImplement();
-    }
-
-    public String getServerName() {
-        throw Lang.noImplement();
-    }
-
-    public int getServerPort() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isSecure() {
-        throw Lang.noImplement();
     }
 
     public void removeAttribute(String key) {
@@ -406,25 +307,4 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public ServletContext getServletContext() {
         return this.session.getServletContext();
     }
-
-    public boolean isAsyncStarted() {
-        throw Lang.noImplement();
-    }
-
-    public boolean isAsyncSupported() {
-        return false;
-    }
-
-    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
-        throw Lang.noImplement();
-    }
-
-    public void login(String username, String password) throws ServletException {
-        throw Lang.noImplement();
-    }
-
-    public void logout() throws ServletException {
-        throw Lang.noImplement();
-    }
-
 }

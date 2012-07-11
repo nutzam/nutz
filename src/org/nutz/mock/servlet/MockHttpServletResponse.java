@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
@@ -14,13 +13,14 @@ import java.util.Set;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.mock.Mock;
 
-public class MockHttpServletResponse implements HttpServletResponse {
+public class MockHttpServletResponse extends HttpServletResponseWrapper {
 
     protected ByteArrayOutputStream stream = new ByteArrayOutputStream();
 
@@ -39,6 +39,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
     protected String contentType;
 
     public MockHttpServletResponse() {
+        super(Mock.EmtryHttpServletResponse);
         headers = new HashMap<String, String>();
         cookies = new HashSet<Cookie>();
         status = 200;
@@ -63,22 +64,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     public boolean containsHeader(String key) {
         return headers.containsKey(key);
-    }
-
-    public String encodeRedirectURL(String arg0) {
-        throw Lang.noImplement();
-    }
-
-    public String encodeRedirectUrl(String arg0) {
-        throw Lang.noImplement();
-    }
-
-    public String encodeURL(String arg0) {
-        throw Lang.noImplement();
-    }
-
-    public String encodeUrl(String arg0) {
-        throw Lang.noImplement();
     }
 
     public void sendError(int error) throws IOException {
@@ -151,10 +136,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
         return writer;
     }
 
-    public boolean isCommitted() {
-        throw Lang.noImplement();
-    }
-
     public void reset() {
         stream.reset();
     }
@@ -163,18 +144,10 @@ public class MockHttpServletResponse implements HttpServletResponse {
         stream.reset();
     }
 
-    public void setBufferSize(int arg0) {
-        throw Lang.noImplement();
-    }
-
     protected String characterEncoding = Encoding.defaultEncoding();
 
     public void setCharacterEncoding(String characterEncoding) {
         this.characterEncoding = characterEncoding;
-    }
-
-    public void setContentLength(int arg0) {
-        throw Lang.noImplement();
     }
 
     public void setContentType(String contentType) {
@@ -220,14 +193,6 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     public String getHeader(String key) {
         return headers.get(key);
-    }
-
-    public Collection<String> getHeaders(String name) {
-        throw Lang.noImplement();
-    }
-
-    public Collection<String> getHeaderNames() {
-        throw Lang.noImplement();
     }
 
 }

@@ -3,9 +3,14 @@ package org.nutz.mock;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Proxy;
 
 import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.MockHttpSession;
@@ -107,4 +112,21 @@ public abstract class Mock {
         }
     }
 
+    public static final InvocationHandler EmtryInvocationHandler = new InvocationHandler() {
+        public Object invoke(Object proxy, java.lang.reflect.Method method, Object[] args)
+                throws Throwable {
+            throw Lang.noImplement();
+        };
+    };
+
+    public static final HttpServletRequest EmtryHttpServletRequest = (HttpServletRequest) Proxy.newProxyInstance(Mock.class.getClassLoader(),
+                                                                                                                 new Class[]{HttpServletRequest.class},
+                                                                                                                 EmtryInvocationHandler);
+    
+    public static final HttpServletResponse EmtryHttpServletResponse = (HttpServletResponse) Proxy.newProxyInstance(Mock.class.getClassLoader(),
+                                                                                                                 new Class[]{HttpServletResponse.class},
+                                                                                                                 EmtryInvocationHandler);
+    
+    
+    
 }
