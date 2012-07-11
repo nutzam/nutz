@@ -158,6 +158,12 @@ public class UploadAdaptor extends PairAdaptor {
             if (contentType == null) {
                 throw Lang.makeThrow(IllegalArgumentException.class, "Content-Type is NULL!!");
             }
+            if (contentType.contains("multipart/form-data")) { // 普通表单上传
+                if (log.isDebugEnabled())
+                    log.debug("Select Html4 Form upload parser --> " + request.getRequestURI());
+                Uploading ing = new FastUploading();
+                return ing.parse(request, context);
+            }
             if (contentType.contains("application/octet-stream")) { // Html5
                                                                     // 流式上传
                 if (log.isDebugEnabled())
