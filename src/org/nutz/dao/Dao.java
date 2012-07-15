@@ -228,7 +228,7 @@ public interface Dao {
     int update(Object obj, String regex);
 
     /**
-     * 更新一个对象，并且忽略所有非 null 字段。
+     * 更新一个对象，并且忽略所有 null 字段。
      * 
      * @param obj
      *            要被更新的对象
