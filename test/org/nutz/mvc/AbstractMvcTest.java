@@ -29,7 +29,7 @@ public abstract class AbstractMvcTest {
 
     @Before
     public void init() throws Throwable {
-        servletContext = new MockServletContext();
+        servletContext = Mock.servlet.context();
         servletConfig = new MockServletConfig(servletContext, "nutz");
         initServletConfig();
         servlet = new NutServlet();

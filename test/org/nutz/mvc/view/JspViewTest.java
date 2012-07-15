@@ -13,7 +13,7 @@ public class JspViewTest {
 
     @Before
     public void before() {
-        Mvcs.setServletContext(new MockServletContext());
+        Mvcs.setServletContext(Mock.servlet.context());
     }
 
     @Test

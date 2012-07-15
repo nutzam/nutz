@@ -229,6 +229,8 @@ public interface Dao {
 
     /**
      * 更新一个对象，并且忽略所有 null 字段。
+     * <p>
+     * 注意: 基本数据类型都是不可能为null的,这些字段肯定会更新
      * 
      * @param obj
      *            要被更新的对象
@@ -242,7 +244,7 @@ public interface Dao {
      *            </ul>
      *            <b style=color:red>注意：</b> 如果是集合，数组或者 Map，所有的对象必须类型相同，否则可能会出错
      * 
-     * @return 返回实际被更新的记录条数，一般的情况下，如果更新成功，返回 1，否则，返回 0
+     * @return 返回实际被更新的记录条数，一般的情况下，如果是单一Pojo,更新成功，返回 1，否则，返回 0
      */
     int updateIgnoreNull(Object obj);
 
