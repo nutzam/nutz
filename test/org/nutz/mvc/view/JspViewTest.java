@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
-import org.nutz.mock.servlet.MockServletContext;
 import org.nutz.mvc.Mvcs;
 
 public class JspViewTest {
