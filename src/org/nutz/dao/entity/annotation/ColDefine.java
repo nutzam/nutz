@@ -16,25 +16,36 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ColDefine {
 
-    /**
-     * 数据库字段类型
-     * 
-     * @see org.nutz.dao.entity.annotation.ColType
-     */
-    ColType type() default ColType.VARCHAR;
+	/**
+	 * 数据库字段类型
+	 * 
+	 * @see org.nutz.dao.entity.annotation.ColType
+	 */
+	ColType type() default ColType.VARCHAR;
 
-    int width() default 0;
+	int width() default 0;
 
-    int precision() default 2;
+	int precision() default 2;
 
-    boolean notNull() default false;
+	boolean notNull() default false;
 
-    boolean unsigned() default false;
+	boolean unsigned() default false;
 
-    /**
-     * 描述当前字段是否自增，如果和 @Id 冲突，以 @Id 的优先
-     */
-    boolean auto() default false;
+	/**
+	 * 描述当前字段是否自增，如果和 @Id 冲突，以 @Id 的优先
+	 */
+	boolean auto() default false;
 
-    String customType() default "";
+	String customType() default "";
+
+	/**
+	 * 描述当前字段是否可插入
+	 */
+	boolean insert() default true;
+
+	/**
+	 * 描述当前字段是否可更新
+	 */
+	boolean update() default true;
+
 }
