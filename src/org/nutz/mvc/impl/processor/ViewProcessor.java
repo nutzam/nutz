@@ -1,8 +1,17 @@
 package org.nutz.mvc.impl.processor;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
@@ -17,6 +26,7 @@ import org.nutz.mvc.view.VoidView;
 
 public class ViewProcessor extends AbstractProcessor {
 
+	private Map<Class, Map<String, Method>> klassGetMethodCache = new HashMap<Class, Map<String, Method>>();
 	protected View view;
 	public static final String DEFAULT_ATTRIBUTE = "obj";
 	private static final Log log = Logs.get();
@@ -35,11 +45,34 @@ public class ViewProcessor extends AbstractProcessor {
 			((View) re).render(ac.getRequest(), ac.getResponse(), err);
 		} else {
 			putRequestAttribute(ac.getRequest(), null == re ? err : re);
+			putRequestAttributeByGetMethod(ac.getRequest(),ac.getModule());
 			view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
 		}
 		doNext(ac);
 	}
 	
+	private void putRequestAttributeByGetMethod(HttpServletRequest request, Object module) throws Throwable {
+		Map<String, Method> getMethods = klassGetMethodCache.get(module.getClass());
+		if( getMethods == null){
+			BeanInfo beanInfo= Introspector.getBeanInfo(module.getClass());
+			PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
+			getMethods = new HashMap<String, Method>();
+			for (PropertyDescriptor pd : pds) {
+				if ("class".equals(pd.getName())) {
+					continue;
+				}
+				Method getReadMethod = pd.getReadMethod();
+				String attrName = Strings.lowerFirst(getReadMethod.getName().replaceFirst("get", ""));
+				getMethods.put(attrName, getReadMethod);
+			}
+			klassGetMethodCache.put(module.getClass(), getMethods);
+		}
+		for(Map.Entry<String, Method> entry : getMethods.entrySet()){
+			Object result = entry.getValue().invoke(module);
+			request.setAttribute(entry.getKey(), result);
+		}
+	}
+
 	/**
 	 * 保存对象到attribute
 	 */
