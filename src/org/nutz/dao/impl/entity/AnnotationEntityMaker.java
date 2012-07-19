@@ -314,6 +314,15 @@ public class AnnotationEntityMaker implements EntityMaker {
 		else
 			ef.setColumnName(info.annColumn.value());
 
+		// 字段的插入更新操作
+		if (null == info.annColumn) {
+			ef.setInsertable(true);
+			ef.setUpdateable(true);
+		} else {
+			ef.setInsertable(info.annColumn.insertable());
+			ef.setUpdateable(info.annColumn.updateable());
+		}
+
 		// 字段的注释
 		boolean hasColumnComment = null != info.columnComment;
 		ef.setHasColumnComment(hasColumnComment);
@@ -386,8 +395,8 @@ public class AnnotationEntityMaker implements EntityMaker {
 			// 自增，如果 @Id(auto=false)，则忽略
 			if (info.annDefine.auto() && !ef.isId())
 				ef.setAsAutoIncreasement();
-			
-			//是否为自定义类型呢?
+
+			// 是否为自定义类型呢?
 			if (info.annDefine.customType().length() > 0) {
 				ef.setCustomDbType(info.annDefine.customType());
 			}

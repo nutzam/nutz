@@ -146,8 +146,19 @@ public interface MappingField extends EntityField {
 	 * @return 当前字段是否有注释。
 	 */
 	boolean hasColumnComment();
-	
+
 	void setCustomDbType(String customDbType);
-	 
+
 	String getCustomDbType();
+
+	/**
+	 * @return 当前字段是否参与保存操作
+	 */
+	boolean isInsertable();
+
+	/**
+	 * @return 当前字段是否参与更新操作
+	 */
+	boolean isUpdateable();
+
 }

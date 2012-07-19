@@ -41,10 +41,14 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean casesensitive;
 
 	private boolean hasColumnComment;
-	
+
 	private String customDbType;
 
 	private ValueAdaptor adaptor;
+
+	private boolean insertable;
+
+	private boolean updateable;
 
 	public NutMappingField(Entity<?> entity) {
 		super(entity);
@@ -204,8 +208,27 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	public void setCustomDbType(String customDbType) {
 		this.customDbType = customDbType;
 	}
-	
+
 	public String getCustomDbType() {
 		return customDbType;
 	}
+
+	@Override
+	public boolean isInsertable() {
+		return insertable;
+	}
+
+	@Override
+	public boolean isUpdateable() {
+		return updateable;
+	}
+
+	public void setInsertable(boolean insertable) {
+		this.insertable = insertable;
+	}
+
+	public void setUpdateable(boolean updateable) {
+		this.updateable = updateable;
+	}
+
 }
