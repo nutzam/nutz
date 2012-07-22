@@ -143,13 +143,13 @@ public class NutLoading2 implements Loading {
 		/*
 		 * 创建主模块的配置信息
 		 */
-		ActionInfo mainInfo = LoadingsImpl.createInfo(mainModule);
+		ActionInfo mainInfo = Loadings2.createInfo(mainModule);
 
 		/*
 		 * 准备要加载的模块列表
 		 */
 		//TODO 为什么用Set呢? 用List不是更快吗?
-		Set<Class<?>> modules = LoadingsImpl.scanModules(mainModule);
+		Set<Class<?>> modules = Loadings2.scanModules(mainModule);
 		
 		if (modules.isEmpty())
 			if (log.isWarnEnabled())
@@ -160,9 +160,10 @@ public class NutLoading2 implements Loading {
 		 * 分析所有的子模块
 		 */
 		for (Class<?> module : modules) {
-			ActionInfo moduleInfo = LoadingsImpl.createInfo(module).mergeWith(mainInfo);
+			module = GenerateController.dump(module);
+			ActionInfo moduleInfo = Loadings2.createInfo(module).mergeWith(mainInfo);
 			for (Method method : module.getMethods()) {
-				/*
+				/**
 				 * public 就是入口函数
 				 */
 				if(module.getSimpleName().endsWith("Controller")){
@@ -191,7 +192,7 @@ public class NutLoading2 implements Loading {
 					}
 				}
 				// 增加到映射中
-				ActionInfo info = LoadingsImpl.createInfo(method,module).mergeWith(moduleInfo);
+				ActionInfo info = Loadings2.createInfo(method,module).mergeWith(moduleInfo);
 				info.setViewMakers(makers);
 				mapping.add(maker, info, config);
 				hasAtMethod = true;
@@ -239,14 +240,14 @@ public class NutLoading2 implements Loading {
 	private UrlMapping createUrlMapping(NutConfig config) throws Exception {
 		UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
 		if (umb != null)
-			return LoadingsImpl.evalObj(config, umb.value(), umb.args());
+			return Loadings2.evalObj(config, umb.value(), umb.args());
 		return new UrlMappingImpl();
 	}
 
 	private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
 		ChainBy ann = mainModule.getAnnotation(ChainBy.class);
 		ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
-											: LoadingsImpl.evalObj(config, ann.type(), ann.args());
+											: Loadings2.evalObj(config, ann.type(), ann.args());
 		if (log.isDebugEnabled())
 			log.debugf("@ChainBy(%s)", maker.getClass().getName());
 		return maker;
@@ -257,7 +258,7 @@ public class NutLoading2 implements Loading {
 		if (null != sb) {
 			if (log.isInfoEnabled())
 				log.info("Setup application...");
-			Setup setup = LoadingsImpl.evalObj(config, sb.value(), sb.args());
+			Setup setup = Loadings2.evalObj(config, sb.value(), sb.args());
 			config.setAttributeIgnoreNull(Setup.class.getName(), setup);
 			setup.init(config);
 		}

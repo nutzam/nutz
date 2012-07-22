@@ -8,6 +8,7 @@ import java.lang.reflect.Method;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.mvc.annotation.Modules;
 import org.objectweb.asm.*;
 
 /**
@@ -40,7 +41,7 @@ public class GenerateController {
 		ctx.set("DmName", DmName);
 		ctx.set("dmFullName", dmFullName);
 		
-		ClassReader cr = new ClassReader(clazz.getName());
+		ClassReader cr = new ClassReader(clazz.getResourceAsStream(clazz.getName()));
 		ClassWriter cw = new ClassWriter(cr,0);
 		
 		Method[] methods = clazz.getMethods();
@@ -81,6 +82,9 @@ public class GenerateController {
 	public static boolean needDump(Class<?> clazz) {
 		if (clazz == null)
 			return false;
+		if(clazz.getAnnotation(Modules.class) != null){ // 不处理主模块
+			return false;
+		}
 		if (clazz.getName().length() > "Controller".length()
 				&& clazz.getName().endsWith("Controller")) {
 			try {
@@ -103,12 +107,17 @@ public class GenerateController {
 
 	private static void generateIndex(ClassWriter cw,Context ctx) {
 		{
+			AnnotationVisitor av0 = null;
 			MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "index", "()V", null,
 					null);
 			{
-				AnnotationVisitor av0 = mv.visitAnnotation(
+				av0 = mv.visitAnnotation(
 						"Lorg/nutz/mvc/annotation/Ok;", true);
 				av0.visit("value", ">>:/"+ctx.getString("dmName")+"/list");
+				av0.visitEnd();
+			}
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 				av0.visitEnd();
 			}
 			mv.visitCode();
@@ -124,6 +133,10 @@ public class GenerateController {
 			MethodVisitor mv = cw
 					.visitMethod(ACC_PUBLIC, "list", "(II)Lorg/nutz/mvc/util/PageForm;",
 							"(II)Lorg/nutz/mvc/util/PageForm<L"+ctx.getString("dmFullName")+";>;", null);
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0.visitEnd();
+			}
 			{
 				av0 = mv.visitParameterAnnotation(0,
 						"Lorg/nutz/mvc/annotation/Param;", true);
@@ -156,7 +169,12 @@ public class GenerateController {
 
 	private static void generateCreate(ClassWriter cw,Context ctx) {
 		{
+			AnnotationVisitor av0 = null;
 			MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "create", "()V", null, null);
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0.visitEnd();
+			}
 			mv.visitCode();
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 1);
@@ -173,6 +191,10 @@ public class GenerateController {
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
 				av0.visit("value", ">>:/"+ctx.getString("dmName")+"/list");
+				av0.visitEnd();
+			}
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 				av0.visitEnd();
 			}
 			{
@@ -223,6 +245,10 @@ public class GenerateController {
 			AnnotationVisitor av0 = null;
 			mv = cw.visitMethod(ACC_PUBLIC, "edit", "(J)Ljava/lang/Object;",
 					null, null);
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0.visitEnd();
+			}
 			{
 				av0 = mv.visitParameterAnnotation(0,
 						"Lorg/nutz/mvc/annotation/Param;", true);
@@ -280,6 +306,10 @@ public class GenerateController {
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
 				av0.visit("value", ">>:/"+ctx.getString("dmName")+"/list");
+				av0.visitEnd();
+			}
+			{
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 				av0.visitEnd();
 			}
 			{
@@ -342,6 +372,10 @@ public class GenerateController {
 		mv = cw.visitMethod(ACC_PUBLIC, "show", "(J)Ljava/lang/Object;",
 				null, null);
 		{
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+			av0.visitEnd();
+		}
+		{
 			av0 = mv.visitParameterAnnotation(0,
 					"Lorg/nutz/mvc/annotation/Param;", true);
 			av0.visit("value", "id");
@@ -368,6 +402,10 @@ public class GenerateController {
 		{
 			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
 			av0.visit("value", ">>:/"+ctx.getString("dmName")+"/list");
+			av0.visitEnd();
+		}
+		{
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 			av0.visitEnd();
 		}
 		{
@@ -401,6 +439,10 @@ public class GenerateController {
 		{
 			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
 			av0.visit("value", ">>:/"+ctx.getString("dmName")+"/list");
+			av0.visitEnd();
+		}
+		{
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 			av0.visitEnd();
 		}
 		{

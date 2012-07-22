@@ -1,6 +1,6 @@
 package org.nutz.mvc.impl;
 
-import static org.nutz.mvc.impl.LoadingsImpl.*;
+import static org.nutz.mvc.impl.Loadings2.*;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,7 +27,7 @@ public class LoadingsImplTest {
 		Assert.assertEquals("submodule",getContrllerModule(Test3Controller.class));
 		Assert.assertEquals("",getContrllerModule(Test2Controller.class));
 		Assert.assertEquals("submodule",getContrllerModule(Test4Controller.class));
-		Assert.assertEquals("",getContrllerModule(LoadingsImpl.class));
+		Assert.assertEquals("",getContrllerModule(Loadings2.class));
 		Assert.assertEquals("",getContrllerModule(Test5Controller.class));
 		
 		Assert.assertEquals("test", getControllerName(TestController.class));

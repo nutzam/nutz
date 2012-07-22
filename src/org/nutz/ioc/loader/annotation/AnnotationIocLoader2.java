@@ -22,6 +22,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.impl.GenerateController;
 import org.nutz.resource.Scans;
 
 /**
@@ -56,6 +57,12 @@ public class AnnotationIocLoader2 implements IocLoader {
 		int modify = classZ.getModifiers();
 		if (Modifier.isAbstract(modify) || (!Modifier.isPublic(modify)))
 			return;
+		try {
+			Class<?> classX = GenerateController.dump(classZ);
+			classZ = classX;
+		} catch (Exception e) {
+			LOG.error(e);
+		}
 		IocBean iocBean = classZ.getAnnotation(IocBean.class);
 		if (iocBean != null) {
 			if (LOG.isDebugEnabled())

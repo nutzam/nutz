@@ -1,0 +1,42 @@
+<#macro propertyType p>
+	<#if p.type == "string">
+		<input name="${p.name}" value=""/>
+	<#elseif p.type == "select">
+		<select name="${p.name}"></select>
+	</#if>
+</#macro>
+<html>
+<head>
+<title>新建<#noparse>$</#noparse>{msg["${domain_name}.listName"]}</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="layout" content="main">
+</head>
+<body>
+	<div class="row-fluid">
+		<div class="span12">
+			<#noparse>
+			<#if message??>
+ 				<div class="badge badge-info">
+					${message}			 					
+ 				</div>
+			</#if>
+			</#noparse>
+			<form action="<#noparse>$</#noparse>{base }/${low_domain_name}/save" method="post">
+				<table style="width:100%">
+					<tbody>
+				<#list properties as p>
+						<tr>
+							<td ><#noparse>$</#noparse>{msg["${domain_name}.${p.name}"]}:</td>
+							<td ><@propertyType p=p/></td>
+						</tr>
+				</#list>
+						<tr>
+							<td colspan="2" align="center"><input type="submit" class="btn"  value="保存"/>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void();" onclick="history.back();" class="btn">返回</a></td>
+						</tr>
+					</tbody>
+				</table>
+				 </form>
+		</div>
+	</div>
+</body>
+</html>
