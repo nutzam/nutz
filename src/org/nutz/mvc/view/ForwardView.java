@@ -37,26 +37,32 @@ public class ForwardView extends AbstractPathView {
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Exception {
         String path = evalPath(req, obj);
+        String args = "";
+        if (path.contains("?")) { //将参数部分分解出来
+            path = path.substring(0, path.indexOf('?'));
+            args = path.substring(path.indexOf('?'));
+        }
 
+        String ext = getExt();        
         // 空路径，采用默认规则
         if (Strings.isBlank(path)) {
             path = Mvcs.getRequestPath(req);
             path = "/WEB-INF"
                     + (path.startsWith("/") ? "" : "/")
-                    + Files.renameSuffix(path, getExt());
+                    + Files.renameSuffix(path, ext);
         }
         // 绝对路径 : 以 '/' 开头的路径不增加 '/WEB-INF'
         else if (path.charAt(0) == '/') {
-            String ext = getExt();
             if (!path.toLowerCase().endsWith(ext))
                 path += ext;
         }
         // 包名形式的路径
         else {
-            path = "/WEB-INF/" + path.replace('.', '/') + getExt();
+            path = "/WEB-INF/" + path.replace('.', '/') + ext;
         }
 
         // 执行 Forward
+        path = path + args;
         RequestDispatcher rd = req.getRequestDispatcher(path);
         if (rd == null)
             throw Lang.makeThrow("Fail to find Forward '%s'", path);
