@@ -94,8 +94,13 @@ public class ScopeContext implements IocContext {
     }
 
     public void depose() {
-        clear();
-        objs = null;
+        if (objs != null) {
+            clear();
+            objs = null;
+        } else {
+            if (log.isWarnEnabled())
+                log.warn("can't depose twice , skip");
+        }
     }
 
 }
