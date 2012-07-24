@@ -200,9 +200,17 @@ public class NutIoc implements Ioc2 {
     public boolean has(String name) {
         return loader.has(name);
     }
+    
+    private boolean deposed = false;
 
     public void depose() {
+        if (deposed) {
+            if (log.isInfoEnabled())
+                log.info("You can't depose a Ioc twice!");
+            return;
+        }
         context.depose();
+        deposed = true;
         if (loader instanceof CachedIocLoader)
             ((CachedIocLoader) loader).clear();
         if (log.isDebugEnabled())
@@ -210,6 +218,7 @@ public class NutIoc implements Ioc2 {
     }
 
     public void reset() {
+        context.depose();
         context.clear();
         if (loader instanceof CachedIocLoader)
             ((CachedIocLoader) loader).clear();
@@ -257,6 +266,15 @@ public class NutIoc implements Ioc2 {
     
     @Override
     public String toString() {
-        return "/*NutIoc*/\n{\nloader:" + loader + "\n}";
+        return "/*NutIoc*/\n{\nloader:" + loader + ",\n}";
+    }
+    
+    @Override
+    protected void finalize() throws Throwable {
+        if (!deposed) {
+            if (log.isInfoEnabled())
+                log.info("Ioc depose tigger by finalize(), not a good idea!");
+            depose();
+        }
     }
 }
