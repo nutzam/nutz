@@ -11,6 +11,8 @@ import org.junit.Test;
 import org.nutz.el.El;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Maths;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 
 public class El2Test {
@@ -350,5 +352,19 @@ public class El2Test {
         assertEquals(El.eval("0.1354*((70-8)%70)*100"), 0.1354*((70-8)%70)*100);
         assertEquals(El.eval("0.1354*((70d-8)/70)*100"), 0.1354*((70d-8)/70)*100);
         assertEquals(El.eval("0.5006*(70/600*100)"), 0.5006*(70/600*100));
+    }
+    
+    @Test
+    public void testIssue277(){
+        Context context = Lang.context();
+        context.set("strings", Strings.class);
+        assertEquals("a", El.eval(context, "strings.trim(\"  a  \")"));
+    }
+    @Test
+    public void testIssue277_2(){
+        Context context = Lang.context();
+        context.set("strings", Maths.class);
+        //@ TODO 坐等Mirror的BUG解决
+//        assertEquals(2, El.eval(context, "math.max(1, 2)"));
     }
 }
