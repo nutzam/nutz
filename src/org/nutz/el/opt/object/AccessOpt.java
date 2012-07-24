@@ -35,8 +35,12 @@ public class AccessOpt extends TwoTernary implements RunMethod{
     
     public Object run(List<Object> param) {
         Object obj = fetchVar();
-        
-        Mirror<?> me = Mirror.me(obj);
+        Mirror<?> me = null;
+        if(obj instanceof Class){
+            me = Mirror.me((Class<?>)obj);
+        }else{
+            me = Mirror.me(obj);
+        }
         if(param.isEmpty()){
             return me.invoke(obj, right.toString());
         }
