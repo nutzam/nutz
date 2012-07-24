@@ -67,10 +67,11 @@ public class ComboIocLoader implements IocLoader {
             createIocLoader(currentClassName, argsList);
     }
 
+    @SuppressWarnings("unchecked")
     private void createIocLoader(String className, List<String> args) throws ClassNotFoundException {
         Class<? extends IocLoader> klass = loaders.get(className);
         if (klass == null)
-            Lang.loadClass(className);
+            klass = (Class<? extends IocLoader>) Lang.loadClass(className);
         iocLoaders.add((IocLoader) Mirror.me(klass).born(args.toArray(new Object[args.size()])));
     }
 
@@ -108,6 +109,9 @@ public class ComboIocLoader implements IocLoader {
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
     
+    /**
+     * 类别名
+     */
     private static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
     static {
         loaders.put("js", JsonLoader.class);

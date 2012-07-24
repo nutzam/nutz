@@ -218,7 +218,6 @@ public class NutIoc implements Ioc2 {
     }
 
     public void reset() {
-        context.depose();
         context.clear();
         if (loader instanceof CachedIocLoader)
             ((CachedIocLoader) loader).clear();

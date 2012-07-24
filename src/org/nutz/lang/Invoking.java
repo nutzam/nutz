@@ -108,9 +108,17 @@ public class Invoking {
                         invoker = new DefaultInvoker(m, Lang.arrayLast(    args,
                                                                         Mirror.blankArrayArg(pts)));
                         break;
-                    } else if (null != dynaArg && pts.length == 1 && pts[0] == dynaArg.getClass()) {
-                        invoker = new DynamicArgsInvoker(m, dynaArg);
-                        break;
+                    } else if (null != dynaArg && pts.length == 1) {
+                        if (pts[0] == dynaArg.getClass()) {
+                            invoker = new DynamicArgsInvoker(m, Lang.array2array(args, pts[0].getComponentType()));
+                            break;
+                        }
+                        if (pts[0].isArray()) {
+                            if (Mirror.me(pts[0].getComponentType()).getWrapper()
+                                    .equals(Mirror.me(dynaArg.getClass().getComponentType()).getWrapper()))
+                                invoker = new DynamicArgsInvoker(m, Lang.array2array(args, pts[0].getComponentType()));
+                                break;
+                        }
                     }
                 }
                 // if fail to match, try to cast args

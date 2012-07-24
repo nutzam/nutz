@@ -126,7 +126,11 @@ public class Mirror<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T> Mirror<T> me(T obj) {
-        return null == obj ? null : (Mirror<T>) me(obj.getClass());
+        if (obj == null)
+            return null;
+        if (obj instanceof Class<?>)
+            return (Mirror<T>) me((Class<?>)obj);
+        return (Mirror<T>) me(obj.getClass());
     }
 
     /**
