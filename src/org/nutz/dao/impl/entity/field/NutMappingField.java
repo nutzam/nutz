@@ -222,12 +222,10 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		return customDbType;
 	}
 
-	@Override
 	public boolean isInsert() {
 		return insert;
 	}
 
-	@Override
 	public boolean isUpdate() {
 		return update;
 	}
