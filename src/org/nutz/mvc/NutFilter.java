@@ -66,6 +66,7 @@ public class NutFilter implements Filter {
         if (handler != null)
             handler.depose();
         Mvcs.setServletContext(null);
+        Mvcs.close();
     }
 
     @SuppressWarnings("unchecked")
