@@ -363,8 +363,7 @@ public class El2Test {
     @Test
     public void testIssue277_2(){
         Context context = Lang.context();
-        context.set("strings", Maths.class);
-        //@ TODO 坐等Mirror的BUG解决
-//        assertEquals(2, El.eval(context, "math.max(1, 2)"));
+        context.set("math", Maths.class);
+        assertEquals(2, El.eval(context, "math.max(1, 2)"));
     }
 }
