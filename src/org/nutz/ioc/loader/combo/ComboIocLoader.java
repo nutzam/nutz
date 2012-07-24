@@ -1,11 +1,16 @@
 package org.nutz.ioc.loader.combo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
+import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
+import org.nutz.ioc.loader.json.JsonLoader;
+import org.nutz.ioc.loader.xml.XmlIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
@@ -29,6 +34,7 @@ public class ComboIocLoader implements IocLoader {
      * 这个构造方法需要一组特殊的参数
      * <p/>
      * 第一种,以*开头,后面接类名, 如 <code>*org.nutz.ioc.loader.json.JsonLoader</code>
+     * <p/>1.b.45版开始支持类别名: js , json, xml, annotation 分别对应其加载类
      * <p/>
      * 第二种,为具体的参数
      * <p/>
@@ -62,8 +68,10 @@ public class ComboIocLoader implements IocLoader {
     }
 
     private void createIocLoader(String className, List<String> args) throws ClassNotFoundException {
-        iocLoaders.add((IocLoader) Mirror.me(Lang.loadClass(className))
-                                            .born(args.toArray(new Object[args.size()])));
+        Class<? extends IocLoader> klass = loaders.get(className);
+        if (klass == null)
+            Lang.loadClass(className);
+        iocLoaders.add((IocLoader) Mirror.me(klass).born(args.toArray(new Object[args.size()])));
     }
 
     public ComboIocLoader(IocLoader... loaders) {
@@ -98,6 +106,14 @@ public class ComboIocLoader implements IocLoader {
                 return iocObject;
             }
         throw new ObjectLoadException("Object '" + name + "' without define!");
+    }
+    
+    private static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
+    static {
+        loaders.put("js", JsonLoader.class);
+        loaders.put("json", JsonLoader.class);
+        loaders.put("xml", XmlIocLoader.class);
+        loaders.put("annotation", AnnotationIocLoader.class);
     }
 
     // TODO 这个方法好好整理一下 ...
