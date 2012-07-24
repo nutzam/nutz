@@ -252,6 +252,9 @@ public abstract class Mvcs {
 
     // ==================================================================
     private static final ThreadLocal<String> NAME = new ThreadLocal<String>();
+    /**
+     * NutMvc的上下文
+     */
     public static NutMvcContext ctx = new NutMvcContext();
 
     private static ServletContext servletContext;
