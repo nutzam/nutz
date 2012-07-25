@@ -23,7 +23,7 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
         Clob clob = rs.getClob(colName);
         if (clob == null)
             return null;
-        Files.write(f, clob.getAsciiStream());
+        Files.write(f, clob.getCharacterStream());
         return new SimpleClob(f);
     }
 
