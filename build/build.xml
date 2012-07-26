@@ -19,7 +19,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.44-4" />
+	<property name="v" value="-1.b.44-5-test" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -59,6 +59,10 @@
 		</copy>
 	</target>
 
+	<target name="sjar" depends="compile">
+		<echo message="TMP: ${TMP}" />
+		<jar destfile="${OP}/nor${v}.jar" basedir="${TMP}" excludes="org/nutz/template/**"/>
+	</target>
 	<target name="jar" depends="compile">
 		<echo message="TMP: ${TMP}" />
 		<!--jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}" />
@@ -82,6 +86,9 @@
 	</target>
 
 	<target name="run" depends="jar">
+		<delete dir="${TMP}" />
+	</target>
+	<target name="fastrun" depends="sjar">
 		<delete dir="${TMP}" />
 	</target>
 </project>

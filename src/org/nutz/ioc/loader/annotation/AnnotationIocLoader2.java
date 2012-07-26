@@ -59,6 +59,8 @@ public class AnnotationIocLoader2 implements IocLoader {
 			return;
 		try {
 			Class<?> classX = GenerateController.dump(classZ);
+			LOG.debugf("IOC CLASS NAME: %s",classX.getName());
+			classX.getDeclaredFields();
 			classZ = classX;
 		} catch (Exception e) {
 			LOG.error(e);

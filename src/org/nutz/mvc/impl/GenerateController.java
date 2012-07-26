@@ -9,7 +9,15 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.annotation.Modules;
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassAdapter;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 
 /**
  * 需要判断clazz是否需要增强 取得需要生成的方法(不检查dao是否存在,不存在直接初始化报错)
@@ -24,11 +32,11 @@ public class GenerateController {
 	 * @return
 	 * @throws Exception
 	 */
-	public static Class<?> dump(Class<?> clazz) throws Exception {
+	public static Class<?> dump(final Class<?> clazz) throws Exception {
 
 		if(!needDump(clazz)) return clazz;
 		
-		Context ctx = Lang.context();
+		final Context ctx = Lang.context();
 		String ctrName = clazz.getSimpleName();
 		String ctrFullName = clazz.getName().replace('.', '/');
 		String dmName = Strings.lowerFirst(ctrName.substring(0,ctrName.indexOf("Controller")));
@@ -40,43 +48,51 @@ public class GenerateController {
 		ctx.set("dmName", dmName);
 		ctx.set("DmName", DmName);
 		ctx.set("dmFullName", dmFullName);
-		
-		ClassReader cr = new ClassReader(clazz.getResourceAsStream(clazz.getName()));
-		ClassWriter cw = new ClassWriter(cr,0);
-		
-		Method[] methods = clazz.getMethods();
-		for(String mName : initMethods){
-			boolean need = true;
-			for(Method m : methods){
-				if(m.getName().equals(mName)){
-					need = false;
-					break;
-				}
+		ClassReader cr = new ClassReader(clazz.getResourceAsStream(clazz.getSimpleName()+".class"));
+		ClassWriter cw = new ClassWriter(0);
+		class ChangVersionAdapter extends ClassAdapter{
+
+			public ChangVersionAdapter(ClassVisitor cv) {
+				super(cv);
 			}
-			if(need){
-				if("index".equals(mName)){
-					generateIndex(cw,ctx);
-				}else if("list".equals(mName)){
-					generateList(cw,ctx);
-				}else if("create".equals(mName)){
-					generateCreate(cw,ctx);
-				}else if("save".equals(mName)){
-					generateSave(cw,ctx);
-				}else if("edit".equals(mName)){
-					generateEdit(cw,ctx);
-				}else if("update".equals(mName)){
-					generateUpdate(cw,ctx);
-				}else if("show".equals(mName)){
-					generateShow(cw,ctx);
-				}else if("delete".equals(mName)){
-					generateDelete(cw,ctx);
-				}else if("deleteAll".equals(mName)){
-					generateDeleteAll(cw,ctx);
+			@Override
+			public void visitEnd() {
+				Method[] methods = clazz.getMethods();
+				for(String mName : initMethods){
+					boolean need = true;
+					for(Method m : methods){
+						if(m.getName().equals(mName)){
+							need = false;
+							break;
+						}
+					}
+					if(need){
+						if("index".equals(mName)){
+							generateIndex(this,ctx);
+						}else if("list".equals(mName)){
+							generateList(this,ctx);
+						}else if("create".equals(mName)){
+							generateCreate(this,ctx);
+						}else if("save".equals(mName)){
+							generateSave(this,ctx);
+						}else if("edit".equals(mName)){
+							generateEdit(this,ctx);
+						}else if("update".equals(mName)){
+							generateUpdate(this,ctx);
+						}else if("show".equals(mName)){
+							generateShow(this,ctx);
+						}else if("delete".equals(mName)){
+							generateDelete(this,ctx);
+						}else if("deleteAll".equals(mName)){
+							generateDeleteAll(this,ctx);
+						}
+					}
 				}
+				super.visitEnd();
 			}
 		}
-		cw.visitEnd();
-		return new MyClassLoader().defineClass(cw.toByteArray());
+		cr.accept(new ChangVersionAdapter(cw), 0);
+		return new MyClassLoader().defineClass(clazz.getName(),cw.toByteArray());
 	}
 
 	public static boolean needDump(Class<?> clazz) {
@@ -92,23 +108,18 @@ public class GenerateController {
 				boolean need = f0.getBoolean(null);
 				return need;
 			} catch (SecurityException e) {
-				return false;
 			} catch (NoSuchFieldException e) {
-				return false;
 			} catch (IllegalArgumentException e) {
-				return false;
 			} catch (IllegalAccessException e) {
-				return false;
 			}
-		} else {
-			return false;
-		}
+		} 
+		return false;
 	}
 
-	private static void generateIndex(ClassWriter cw,Context ctx) {
+	private static void generateIndex(ClassVisitor cr,Context ctx) {
 		{
 			AnnotationVisitor av0 = null;
-			MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "index", "()V", null,
+			MethodVisitor mv = cr.visitMethod(ACC_PUBLIC, "index", "()V", null,
 					null);
 			{
 				av0 = mv.visitAnnotation(
@@ -127,10 +138,10 @@ public class GenerateController {
 		}
 	}
 
-	private static void generateList(ClassWriter cw,Context ctx) {
+	private static void generateList(ClassVisitor cr,Context ctx) {
 		{
 			AnnotationVisitor av0 = null;
-			MethodVisitor mv = cw
+			MethodVisitor mv = cr
 					.visitMethod(ACC_PUBLIC, "list", "(II)Lorg/nutz/mvc/util/PageForm;",
 							"(II)Lorg/nutz/mvc/util/PageForm<L"+ctx.getString("dmFullName")+";>;", null);
 			{
@@ -167,10 +178,10 @@ public class GenerateController {
 		}
 	}
 
-	private static void generateCreate(ClassWriter cw,Context ctx) {
+	private static void generateCreate(ClassVisitor cv,Context ctx) {
 		{
 			AnnotationVisitor av0 = null;
-			MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "create", "()V", null, null);
+			MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "create", "()V", null, null);
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
 				av0.visitEnd();
@@ -182,11 +193,11 @@ public class GenerateController {
 		}
 	}
 
-	private static void generateSave(ClassWriter cw,Context ctx) {
+	private static void generateSave(ClassVisitor cv,Context ctx) {
 		{
 			MethodVisitor mv = null;
 			AnnotationVisitor av0 = null;
-			mv = cw.visitMethod(ACC_PUBLIC, "save",
+			mv = cv.visitMethod(ACC_PUBLIC, "save",
 					"(L"+ctx.getString("dmFullName")+";)Ljava/lang/Object;", null, null);
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
@@ -239,11 +250,11 @@ public class GenerateController {
 		}
 	}
 
-	private static void generateEdit(ClassWriter cw,Context ctx) {
+	private static void generateEdit(ClassVisitor cv,Context ctx) {
 		{
 			MethodVisitor mv = null;
 			AnnotationVisitor av0 = null;
-			mv = cw.visitMethod(ACC_PUBLIC, "edit", "(J)Ljava/lang/Object;",
+			mv = cv.visitMethod(ACC_PUBLIC, "edit", "(J)Ljava/lang/Object;",
 					null, null);
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
@@ -297,11 +308,11 @@ public class GenerateController {
 		}
 	}
 
-	private static void generateUpdate(ClassWriter cw,Context ctx) {
+	private static void generateUpdate(ClassVisitor cv,Context ctx) {
 		{
 			MethodVisitor mv = null;
 			AnnotationVisitor av0 = null;
-			mv = cw.visitMethod(ACC_PUBLIC, "update",
+			mv = cv.visitMethod(ACC_PUBLIC, "update",
 					"(L"+ctx.getString("dmFullName")+";)Ljava/lang/Object;", null, null);
 			{
 				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
@@ -327,7 +338,7 @@ public class GenerateController {
 			Label l0 = new Label();
 			mv.visitJumpInsn(IFNULL, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, ""+ctx.getString("dmFullName")+"Controller", "dao",
+			mv.visitFieldInsn(GETFIELD, ctx.getString("ctrFullName"), "dao",
 					"Lorg/nutz/dao/Dao;");
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKEINTERFACE, "org/nutz/dao/Dao", "update",
@@ -366,10 +377,10 @@ public class GenerateController {
 			mv.visitEnd();
 		}
 	}
-	private static void generateShow(ClassWriter cw,Context ctx){
+	private static void generateShow(ClassVisitor cv,Context ctx){
 		MethodVisitor mv = null;
 		AnnotationVisitor av0 = null;
-		mv = cw.visitMethod(ACC_PUBLIC, "show", "(J)Ljava/lang/Object;",
+		mv = cv.visitMethod(ACC_PUBLIC, "show", "(J)Ljava/lang/Object;",
 				null, null);
 		{
 			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
@@ -394,10 +405,10 @@ public class GenerateController {
 		mv.visitEnd();
 	}
 
-	private static void generateDelete(ClassWriter cw,Context ctx) {
+	private static void generateDelete(ClassVisitor cv,Context ctx) {
 		MethodVisitor mv = null;
 		AnnotationVisitor av0 = null;
-		mv = cw.visitMethod(ACC_PUBLIC, "delete",
+		mv = cv.visitMethod(ACC_PUBLIC, "delete",
 				"(Ljava/lang/Long;)Ljava/lang/Object;", null, null);
 		{
 			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
@@ -416,7 +427,7 @@ public class GenerateController {
 		}
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, ""+ctx.getString("dmFullName")+"Controller", "dao",
+		mv.visitFieldInsn(GETFIELD, ctx.getString("ctrFullName"), "dao",
 				"Lorg/nutz/dao/Dao;");
 		mv.visitLdcInsn(Type.getType("L"+ctx.getString("dmFullName")+";"));
 		mv.visitVarInsn(ALOAD, 1);
@@ -431,10 +442,10 @@ public class GenerateController {
 		mv.visitEnd();
 	}
 
-	private static void generateDeleteAll(ClassWriter cw,Context ctx) {
+	private static void generateDeleteAll(ClassVisitor cv,Context ctx) {
 		MethodVisitor mv = null;
 		AnnotationVisitor av0 = null;
-		mv = cw.visitMethod(ACC_PUBLIC, "deleteAll",
+		mv = cv.visitMethod(ACC_PUBLIC, "deleteAll",
 				"(Ljava/lang/String;)Ljava/lang/Object;", null, null);
 		{
 			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Ok;", true);
@@ -493,8 +504,8 @@ public class GenerateController {
 	}
 
 	static class MyClassLoader extends ClassLoader {
-		public Class<?> defineClass(byte[] buffer) {
-			return super.defineClass(null, buffer, 0, buffer.length, null);
+		public Class<?> defineClass(String name ,byte[] buffer) {
+			return super.defineClass(name, buffer, 0, buffer.length, null);
 		}
 	}
 }
