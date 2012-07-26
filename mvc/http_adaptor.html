@@ -62,6 +62,9 @@
 <li>
 <div><span class="num">4.1</span><a href="#NutzMvc_支持的特殊参数类型">Nutz.Mvc 支持的特殊参数类型</a></div>
 </li>
+<li>
+<div><span class="num">4.2</span><a href="#还有就是@Attr注解,可以用于获取req或session的attr">还有就是@Attr注解,可以用于获取req或session的attr</a></div>
+</li>
 </ul>
 </li>
 <li>
@@ -82,7 +85,10 @@
 </ul>
 </li>
 <li>
-<div><span class="num">6</span><a href="#定制自己的适配器">定制自己的适配器</a></div>
+<div><span class="num">6</span><a href="#错误处理">错误处理</a></div>
+</li>
+<li>
+<div><span class="num">7</span><a href="#定制自己的适配器">定制自己的适配器</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -308,6 +314,20 @@ public String someFunc(	@Param("pid") int petId,
 <li>ServletContext</li>
 <li>Ioc &amp; Ioc2</li>
 </ul>
+<h2><a name="还有就是@Attr注解,可以用于获取req或session的attr"></a>还有就是@Attr注解,可以用于获取req或session的attr</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>默认先查找Request,然后找Session</li>
+<li>找不到就返回null</li>
+</ul>
+<p>示例代码:</p>
+<pre>@Ok("json")
+public Object listAllUser(@Attr("me")User user) {
+	if (user == null || !user.isAdmin())
+	    return new HttpStatusView(500);
+	return dao.query(User.class, null);
+}
+</pre>
 <p>如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。</p>
 <div class="hr"><b></b></div>
 <h1><a name="路径参数"></a>路径参数</h1>
@@ -367,6 +387,24 @@ public String getComment(String author, int topicId, int commentId){
 <li>右侧可能没有字符，但是如果有，也一定是  <span style="color:#FF00FF;"><b>'/'</b></span></li>
 </ul>
 <p>当然，通配符声明的路径参数仍然可以同 @Param 以及 <a href="#特殊参数">特殊参数</a> 混用，只是请记得，将入口函数中的路径参数排在前面</p>
+<div class="hr"><b></b></div>
+<h1><a name="错误处理"></a>错误处理</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这是1.b.45及之后的版本才有的功能</p>
+<p>在以前的版本中,由用户输入导致的类型转换错误(例如字符串转数字,非法日期),都只能通过@Fail处理</p>
+<p>故,现在引入了AdaptorErrorContext,用于解决这一直以来被骂的缺陷</p>
+<p>仅当入口方法的最后一个参数为AdaptorErrorContext(其子类也行),才会触发这个错误处理机制</p>
+<p>看以下代码:</p>
+<pre><span class="zdoc_code_cmt">// 传入的id,会是一个非法的字符串!!
+</span>@At({"/err/param", "/err/param/?"})
+@Fail("http:500")
+public void errParam(@Param("id") long id, AdaptorErrorContext errCtx) {
+    TestCase.assertNotNull(errCtx); <span class="zdoc_code_cmt">// 当没有异常产生时, errCtx为null
+</span>    TestCase.assertNotNull(errCtx.getErrors()[0]);
+}
+</pre>
+<p>当用户输入的参数id,为"Nutz"时,自然会导致异常, 而这个方法的最后一个参数是AdaptorErrorContext,所以,仍将进入这个方法, 且errCtx参数不为null</p>
+<p>AdaptorErrorContext类本身很简单, 但它也是一个很不错的扩展点. 因为最后一个参数只要求是AdaptorErrorContext或其子类,所以,你可以自定义一个AdaptorErrorContext,覆盖其核心方法 setError,以实现你需要的纠错逻辑</p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的适配器"></a>定制自己的适配器</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

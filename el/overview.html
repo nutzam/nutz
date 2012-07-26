@@ -40,6 +40,9 @@
 <li>
 <div><span class="num">5.2</span><a href="#支持对象方法调用">支持对象方法调用</a></div>
 </li>
+<li>
+<div><span class="num">5.3</span><a href="#支持静态方法调用">支持静态方法调用</a></div>
+</li>
 </ul>
 </li>
 <li>
@@ -338,7 +341,7 @@ System.out.println(exp.eval(context));  <span class="zdoc_code_cmt">// 将打印
 "EL": {"custom":[...函数列表...]}
 }
 <span class="zdoc_code_cmt"># 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
-</span>NutConfig.load("配置文件");
+</span>NutConf.load("配置文件");
 </pre>
 <p>完成这两步后, 你就定义了你自己的函数. 看个trim的例子:</p>
 <pre>public class Trim implements RunMethod, Plugin{
@@ -388,6 +391,13 @@ assertEquals(10, El.eval(context, "a.add(b).intValue()"));
 <li>然后你就进行各种各样的虐待, 皮鞭, 蜡烛, 想来啥来啥...额...太邪恶了...</li>
 <li>同样, EL 是使用反射的, 所以会存在一些底层异常的问题.</li>
 </ul>
+<h2><a name="支持静态方法调用"></a>支持静态方法调用</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>没看错, EL支持静态方法调用, 不过, 在调用之前你需要设置一个变量才行...</p>
+<pre>Context context = Lang.context();
+context.set("strings", Strings.class);
+assertEquals("nutz", El.eval(context, "strings.trim(\"    nutz   \")"));
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="一些表达式的例子"></a>一些表达式的例子</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
