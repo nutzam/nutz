@@ -400,6 +400,11 @@ public class Scans {
     private Set<ResourceLocation> locations = new HashSet<ResourceLocation>();
 
     private Scans() {
+        if (Lang.isAndroid) {
+            if (log.isInfoEnabled())
+                log.info("Running in Android , so nothing I can scan , just disable myself");
+            return;
+        }
         // 当前文件夹
         locations.add(ResourceLocation.file(new File(".")));
         // 推测一下nutz自身所在的位置
