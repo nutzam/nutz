@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.conf.NutConf;
 import org.nutz.el.El;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
@@ -365,5 +366,17 @@ public class El2Test {
         Context context = Lang.context();
         context.set("math", Maths.class);
         assertEquals(2, El.eval(context, "math.max(1, 2)"));
+    }
+    
+    @Test
+    public void testIssue279(){
+        Context context = Lang.context();
+        context.set("math", Maths.class);
+        System.out.println(Maths.class.toString());
+        assertEquals("class org.nutz.lang.Maths", El.eval(context, "math.toString()"));
+        
+        NutConf.load("org/nutz/el/issue279/279.js");
+        assertEquals(El.eval("uuuid(false)"), "abc");
+        assertEquals(El.eval("uuuid()"), "abc");
     }
 }

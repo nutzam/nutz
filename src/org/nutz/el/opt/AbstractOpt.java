@@ -2,7 +2,7 @@ package org.nutz.el.opt;
 
 import org.nutz.el.ElException;
 import org.nutz.el.Operator;
-import org.nutz.el.obj.IdentifierObj;
+import org.nutz.el.obj.Elobj;
 
 /**
  * 操作符抽象类
@@ -42,8 +42,8 @@ public abstract class AbstractOpt implements Operator{
         if(obj instanceof String){
             return obj;
         }
-        if(obj instanceof IdentifierObj){
-            return ((IdentifierObj) obj).fetchVal();
+        if(obj instanceof Elobj){
+            return ((Elobj) obj).fetchVal();
         }
         if(obj instanceof Operator){
             return ((Operator) obj).calculate();

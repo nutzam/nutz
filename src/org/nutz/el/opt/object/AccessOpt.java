@@ -4,9 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.nutz.el.Operator;
+import org.nutz.el.obj.Elobj;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.el.opt.TwoTernary;
-import org.nutz.el.obj.IdentifierObj;
 import org.nutz.lang.Mirror;
 
 /**
@@ -57,8 +57,8 @@ public class AccessOpt extends TwoTernary implements RunMethod{
         if(left instanceof Operator){
             return ((Operator) left).calculate();
         }
-        if(left instanceof IdentifierObj){
-            return ((IdentifierObj) left).fetchVal();
+        if(left instanceof Elobj){
+            return ((Elobj) left).fetchVal();
         }
         return left;
     }

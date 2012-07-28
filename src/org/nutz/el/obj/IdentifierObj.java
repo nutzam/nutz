@@ -8,7 +8,7 @@ import org.nutz.lang.util.Context;
  * @author juqkai(juqkai@gmail.com)
  *
  */
-public class IdentifierObj {
+public class IdentifierObj implements Elobj{
     private String val;
     private ElCache ec;
     public IdentifierObj(String val) {
