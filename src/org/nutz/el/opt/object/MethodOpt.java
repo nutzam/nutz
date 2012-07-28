@@ -18,6 +18,16 @@ import org.nutz.el.opt.custom.CustomMake;
  */
 public class MethodOpt extends TwoTernary {
 
+    private int size = 0;
+    
+    public void setSize(int size) {
+        this.size = size;
+    }
+    
+    public int getSize() {
+        return size;
+    }
+
     public int fetchPriority() {
         return 1;
     }
@@ -27,7 +37,12 @@ public class MethodOpt extends TwoTernary {
             left = rpn.poll();
             return;
         }
-        super.wrap(rpn);
+        if(getSize() <= 0){
+            left = rpn.poll();
+        } else {
+            right = rpn.poll();
+            left = rpn.poll();
+        }
     }
     
     public Object calculate(){
@@ -71,4 +86,7 @@ public class MethodOpt extends TwoTernary {
         return "method";
     }
 
+    public String toString() {
+        return super.toString() + "(" + size + ")";
+    }
 }

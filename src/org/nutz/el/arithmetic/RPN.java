@@ -5,7 +5,7 @@ import java.util.Queue;
 
 import org.nutz.el.ElCache;
 import org.nutz.el.Operator;
-import org.nutz.el.obj.IdentifierObj;
+import org.nutz.el.obj.Elobj;
 import org.nutz.lang.util.Context;
 
 /**
@@ -54,8 +54,8 @@ public class RPN {
             Operator obj = (Operator) el2.peek();
             return obj.calculate();
         }
-        if(el2.peek() instanceof IdentifierObj){
-            return ((IdentifierObj) el2.peek()).fetchVal();
+        if(el2.peek() instanceof Elobj){
+            return ((Elobj) el2.peek()).fetchVal();
         }
         return el2.peek();
     }
@@ -79,8 +79,8 @@ public class RPN {
                 operand.addFirst(opt);
                 continue;
             }
-            if(rpn.peek() instanceof IdentifierObj){
-                ((IdentifierObj) rpn.peek()).setEc(ec);
+            if(rpn.peek() instanceof Elobj){
+                ((Elobj) rpn.peek()).setEc(ec);
             }
             operand.addFirst(rpn.poll());
         }

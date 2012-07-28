@@ -8,13 +8,13 @@ import java.util.Queue;
 
 import org.nutz.el.ElException;
 import org.nutz.el.Parse;
+import org.nutz.el.obj.Elobj;
 import org.nutz.el.opt.arithmetic.LBracketOpt;
 import org.nutz.el.opt.arithmetic.NegativeOpt;
 import org.nutz.el.opt.arithmetic.RBracketOpt;
 import org.nutz.el.opt.arithmetic.SubOpt;
 import org.nutz.el.opt.object.InvokeMethodOpt;
 import org.nutz.el.opt.object.MethodOpt;
-import org.nutz.el.obj.IdentifierObj;
 import org.nutz.lang.Lang;
 
 /**
@@ -35,6 +35,9 @@ public class Converter {
     
     //上一个数据
     private Object prev = null;
+    
+    private MethodOpt prem = null;
+    private int paramSize = 0;
     
     public Converter(CharQueue reader) {
         this.exp = reader;
@@ -100,10 +103,13 @@ public class Converter {
      * 转换数据,主要是转换负号,方法执行
      */
     private Object parseItem(Object item){
+        paramSize++;
         //左括号
         if(item instanceof LBracketOpt){
-            if(prev instanceof IdentifierObj){
-                item = new Object[]{new MethodOpt(), new LBracketOpt()};
+            if(prev instanceof Elobj){
+                prem = new MethodOpt();
+                item = new Object[]{prem, new LBracketOpt()};
+                paramSize = 0;
                 bracket.addFirst(BracketType.Method);
             }else {
                 bracket.addFirst(BracketType.Default);
@@ -113,7 +119,9 @@ public class Converter {
         if(item instanceof RBracketOpt){
             switch(bracket.poll()){
             case Method:
+                prem.setSize(paramSize - 1);
                 item = new Object[]{new RBracketOpt(),new InvokeMethodOpt()};
+                prem = null;
                 break;
             default :
                 break;
