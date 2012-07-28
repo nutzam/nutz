@@ -1,8 +1,11 @@
 package org.nutz.dao.util.blob;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import java.io.Reader;
 import java.io.Writer;
 import java.sql.Clob;
@@ -61,7 +64,15 @@ public class SimpleClob implements Clob {
     }
 
     public void truncate(long len) throws SQLException {
-        Files.write(file, new Byte[]{});
+        try {
+            new RandomAccessFile(file, "rw").setLength(len);
+        }
+        catch (FileNotFoundException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 
     public void free() throws SQLException {

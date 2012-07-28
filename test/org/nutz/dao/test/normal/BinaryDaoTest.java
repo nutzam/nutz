@@ -7,11 +7,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.StringReader;
+import java.sql.SQLException;
 
 import org.junit.Test;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.BinObject;
 import org.nutz.dao.test.meta.TheGoods;
+import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -71,6 +73,21 @@ public class BinaryDaoTest extends DaoCase {
         BinObject db_obj = dao.fetch(BinObject.class);
         assertTrue(Streams.equals(new ByteArrayInputStream("中文".getBytes()), db_obj.getXblob()));
         assertEquals("不是英文", Lang.readAll(db_obj.getXclob()));
+    }
+    
+    //for issue 278
+    @Test
+    public void test_clob() throws IOException, SQLException {
+        dao.create(BinObject.class, true);
+        BinObject bin = new BinObject();
+        File f = File.createTempFile("clob", "data");
+        Files.write(f, "中文");
+        bin.setMyClob(new SimpleClob(f));
+        dao.insert(bin);
+        
+        bin = dao.fetch(BinObject.class);
+        String str = Lang.readAll(bin.getMyClob().getCharacterStream());
+        assertEquals("中文", str);
     }
 }
 

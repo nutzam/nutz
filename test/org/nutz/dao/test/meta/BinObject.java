@@ -2,8 +2,10 @@ package org.nutz.dao.test.meta;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.sql.Clob;
 
 import org.nutz.dao.entity.annotation.ColDefine;
+import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Table;
 
@@ -39,5 +41,14 @@ public class BinObject {
         this.xclob = xclob;
     }
     
+    @Column
+    private Clob myClob;
     
+    public Clob getMyClob() {
+        return myClob;
+    }
+    
+    public void setMyClob(Clob myClob) {
+        this.myClob = myClob;
+    }
 }
