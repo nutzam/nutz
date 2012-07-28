@@ -5,7 +5,11 @@ import java.lang.reflect.Method;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.nutz.ioc.impl.NutIoc;
+import org.nutz.ioc.loader.annotation.AnnotationIocLoader2;
 import org.nutz.ioc.loader.annotation.Inject;
+import org.nutz.ioc.loader.combo.ComboIocLoader;
+import org.nutz.ioc.loader.json.JsonLoader;
 import org.nutz.lang.Mirror;
 
 import controllers.OrdersController;
@@ -25,6 +29,19 @@ public class GenerateControllerTest {
 		clazz.getDeclaredFields();
 		Field[] fields = mirror.getFields(Inject.class);
 		Assert.assertEquals(0, fields.length);
+		Method[] methods = clazz.getMethods();
+		for(Method m1 : methods){
+			//m1.getAnnotation(Inject.class);
+			m1.getAnnotations();
+		}
+//		Object module = Mirror.me(clazz).born();
+//		Object module2 = new OrdersController();
+		
+		// init by ioc
+		NutIoc ioc = new NutIoc(new ComboIocLoader(new JsonLoader("dao.js"),new AnnotationIocLoader2("controllers")));
+		Object module = ioc.get(clazz, clazz.getName());
+		Method m2 = clazz.getMethod("create", null);
+		m2.invoke(module, new Object[]{});
 	}
 	
 }

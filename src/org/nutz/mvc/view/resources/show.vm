@@ -19,7 +19,7 @@
 				<#list properties as p>
 						<tr>
 							<td ><#noparse>$</#noparse>{msg["${domain_name}.${p.name}"]}:</td>
-							<td ><#noparse>$</#noparse>{obj.${p.name}}</td>
+							<td ><#noparse>$</#noparse>{obj.${p.name}!''}</td>
 						</tr>
 				</#list>
 						<tr>

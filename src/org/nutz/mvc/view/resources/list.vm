@@ -13,7 +13,7 @@
 								${message}			 					
 			 				</div>
 		 				</#if>
-		 				<#if obj.results.size() != 0>
+		 				<#if obj.results??>
 		 					</#noparse>
 		 				<form action="<#noparse>${base }</#noparse>/${low_domain_name}/deleteAll" method="post">
 		 					<table width="100%">
@@ -27,19 +27,22 @@
 		 							</tr>
 		 						</thead>
 		 						<tbody><#noparse>
-		 							<#each obj.results as it>
+		 							<#list obj.results as it>
 		 							<tr>
-		 								<td><input type="checkbox" name="ids" value="${it.id }"></td>
+		 								<td><input type="checkbox" name="ids" value="${it.id!'' }"></td>
 		 								</#noparse>
 		 								<#list properties as p>
-		 									<td><#noparse>$</#noparse>{it.${p.name}}</td>
+		 									<td><#noparse>$</#noparse>{it.${p.name}!''}</td>
 		 								</#list>
+		 								<#noparse>
 		 								<td>
-		 									<a href="<#noparse>${base }</#noparse>/${low_domain_name}/edit?id=<#noparse>${it.id}">编辑</a>
-		 									<a href="${base }</#noparse>/${low_domain_name}/delete?id=<#noparse>${it.id}</#noparse>">删除</a>
+		 									<a href="${base }</#noparse>/${low_domain_name}/edit?id=<#noparse>${it.id!''}">编辑</a>
+		 									<a href="${base }</#noparse>/${low_domain_name}/delete?id=<#noparse>${it.id!''}</#noparse>">删除</a>
 										</td >
 		 							</tr>
-		 							</#each>
+		 							<#noparse>
+		 							</#list>
+		 							</#noparse>
 		 						</tbody>
 		 					</table>
 	 					</form>
@@ -52,13 +55,17 @@
 								<span >第${obj.pager.pageNumber}页，总页数：${obj.pager.pageCount}，总记录：${obj.pager.recordCount }</span>
 								<#if ! obj.pager.last>
 									<a href="${base }</#noparse>/${low_domain_name}/list?offset=<#noparse>${obj.pager.pageNumber +1}</#noparse>" class="after">下一页</a>
+								<#noparse>
 								</#if>
+								</noparse>
 							</div>
 						</div>
-	 					</#if>
-	 					<#if <#noparse>obj.results.size() == 0>
+						<#noparse>
+							<#else>
 	 						没有$</#noparse>{msg["${domain_name}.listName"]}，去<a href="<#noparse>${base }</#noparse>/${low_domain_name}/create">添加</a>
+	 					<#noparse>
 	 					</#if>
+	 					</#noparse>
 		 			</div>
 		 	</div>
 </body>

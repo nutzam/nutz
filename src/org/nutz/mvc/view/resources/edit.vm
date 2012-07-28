@@ -1,6 +1,6 @@
 <#macro propertyType p>
 	<#if p.type == "string">
-		<input name="${p.name}" value="<#noparse>$</#noparse>{obj.${p.name}}"/>
+		<input name="${p.name}" value="<#noparse>$</#noparse>{obj.${p.name}!''}"/>
 	<#elseif p.type == "select">
 		<select name="${p.name}">
 		</select>

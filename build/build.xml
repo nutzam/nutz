@@ -61,7 +61,7 @@
 
 	<target name="sjar" depends="compile">
 		<echo message="TMP: ${TMP}" />
-		<jar destfile="${OP}/nor${v}.jar" basedir="${TMP}" excludes="org/nutz/template/**"/>
+		<jar destfile="../../ttcms/webapp/WEB-INF/lib/nor${v}.jar" basedir="${TMP}" excludes="org/nutz/template/**"/>
 	</target>
 	<target name="jar" depends="compile">
 		<echo message="TMP: ${TMP}" />

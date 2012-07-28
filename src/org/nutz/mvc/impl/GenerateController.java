@@ -4,6 +4,8 @@ import static org.objectweb.asm.Opcodes.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -27,6 +29,7 @@ import org.objectweb.asm.Type;
 public class GenerateController {
 	private static final String[] initMethods = new String[]{
 		"index","list","create","save","edit","update","show","delete","deleteAll"};
+	private static final Map<String,Class<?>> classCache = new HashMap<String, Class<?>>();
 	/**
 	 * @param clazz
 	 * @return
@@ -35,7 +38,9 @@ public class GenerateController {
 	public static Class<?> dump(final Class<?> clazz) throws Exception {
 
 		if(!needDump(clazz)) return clazz;
-		
+		if(classCache.containsKey(clazz.getName())){  // for cache ，TODO 也可以改造classLoader,这需要好好设计一下
+			return classCache.get(clazz.getName());
+		}
 		final Context ctx = Lang.context();
 		String ctrName = clazz.getSimpleName();
 		String ctrFullName = clazz.getName().replace('.', '/');
@@ -92,7 +97,9 @@ public class GenerateController {
 			}
 		}
 		cr.accept(new ChangVersionAdapter(cw), 0);
-		return new MyClassLoader().defineClass(clazz.getName(),cw.toByteArray());
+		Class<?> clazz2 = new MyClassLoader().defineClass(clazz.getName(),cw.toByteArray());
+		classCache.put(clazz.getName(), clazz2);
+		return clazz2;
 	}
 
 	public static boolean needDump(Class<?> clazz) {
@@ -128,7 +135,7 @@ public class GenerateController {
 				av0.visitEnd();
 			}
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			mv.visitCode();
@@ -145,7 +152,7 @@ public class GenerateController {
 					.visitMethod(ACC_PUBLIC, "list", "(II)Lorg/nutz/mvc/util/PageForm;",
 							"(II)Lorg/nutz/mvc/util/PageForm<L"+ctx.getString("dmFullName")+";>;", null);
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			{
@@ -183,7 +190,7 @@ public class GenerateController {
 			AnnotationVisitor av0 = null;
 			MethodVisitor mv = cv.visitMethod(ACC_PUBLIC, "create", "()V", null, null);
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			mv.visitCode();
@@ -205,7 +212,7 @@ public class GenerateController {
 				av0.visitEnd();
 			}
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			{
@@ -220,10 +227,6 @@ public class GenerateController {
 			mv.visitVarInsn(ALOAD, 1);
 			Label l0 = new Label();
 			mv.visitJumpInsn(IFNULL, l0);
-			mv.visitTypeInsn(NEW, ""+ctx.getString("dmFullName")+"");
-			mv.visitInsn(DUP);
-			mv.visitMethodInsn(INVOKESPECIAL, ""+ctx.getString("dmFullName")+"", "<init>", "()V");
-			mv.visitVarInsn(ASTORE, 1);
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, ctx.getString("ctrFullName"), "dao",
 					"Lorg/nutz/dao/Dao;");
@@ -257,7 +260,7 @@ public class GenerateController {
 			mv = cv.visitMethod(ACC_PUBLIC, "edit", "(J)Ljava/lang/Object;",
 					null, null);
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			{
@@ -320,7 +323,7 @@ public class GenerateController {
 				av0.visitEnd();
 			}
 			{
-				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+				av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 				av0.visitEnd();
 			}
 			{
@@ -383,7 +386,7 @@ public class GenerateController {
 		mv = cv.visitMethod(ACC_PUBLIC, "show", "(J)Ljava/lang/Object;",
 				null, null);
 		{
-			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 			av0.visitEnd();
 		}
 		{
@@ -416,7 +419,7 @@ public class GenerateController {
 			av0.visitEnd();
 		}
 		{
-			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 			av0.visitEnd();
 		}
 		{
@@ -453,7 +456,7 @@ public class GenerateController {
 			av0.visitEnd();
 		}
 		{
-			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold", true);
+			av0 = mv.visitAnnotation("Lorg/nutz/mvc/annotation/Scoffold;", true);
 			av0.visitEnd();
 		}
 		{
@@ -504,6 +507,9 @@ public class GenerateController {
 	}
 
 	static class MyClassLoader extends ClassLoader {
+		public MyClassLoader(){
+			super(MyClassLoader.class.getClassLoader());
+		}
 		public Class<?> defineClass(String name ,byte[] buffer) {
 			return super.defineClass(name, buffer, 0, buffer.length, null);
 		}

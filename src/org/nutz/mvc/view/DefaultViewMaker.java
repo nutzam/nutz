@@ -49,7 +49,7 @@ public class DefaultViewMaker implements ViewMaker {
 		if (VIEW_RAW.equals(type))
 			return new RawView(value);
 		if(VIEW_SCOFFOLDVM.equals(type)){
-			return new ScoffoldVmView(type);
+			return new ScoffoldVmView(value);
 		}
 		return null;
 	}
