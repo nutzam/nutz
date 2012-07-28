@@ -342,7 +342,13 @@ public abstract class Mvcs {
     // 重置当前线程所持有的对象
     public static void resetALL() {
         // TODO 不清理,貌似也没啥问题呢
+        String name = getName();
+        if (name == null)
+            return;
         NAME.set(null);
+        ctx.reqs.remove(name);
+        ctx.resps.remove(name);
+        ctx.actionCtxs.remove(name);
     }
 
     public static HttpSession getHttpSession() {
