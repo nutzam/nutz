@@ -155,19 +155,23 @@ public class Castors {
 
         this.map = new HashMap<Integer, Castor<?,?>>();
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-        for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
-            Class<?> baseClass = it.next();
-            if (baseClass == null)
-                continue;
-            List<Class<?>> list = Scans.me().scanPackage(baseClass);
-            if (null != list && list.size() > 0)
-                classes.addAll(list);
-        }
-        // 一个类都找不到,好吧,加载默认的,从文件读取列表
-        if (classes.size() == 0) {
-            if (log.isWarnEnabled())
-                log.warn("!!No castor found!!!!!!!!! Load default castor list");
-            classes.addAll(defaultCastorList);
+        if (Lang.isAndroid) {
+            classes.addAll(classes);
+        } else {
+            for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
+                Class<?> baseClass = it.next();
+                if (baseClass == null)
+                    continue;
+                List<Class<?>> list = Scans.me().scanPackage(baseClass);
+                if (null != list && list.size() > 0)
+                    classes.addAll(list);
+            }
+            // 一个类都找不到,好吧,加载默认的,从文件读取列表
+            if (classes.size() == 0) {
+                if (log.isWarnEnabled())
+                    log.warn("!!No castor found!!!!!!!!! Load default castor list");
+                classes.addAll(defaultCastorList);
+            }
         }
         for (Class<?> klass : classes) {
             try {

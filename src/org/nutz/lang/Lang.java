@@ -1872,4 +1872,14 @@ public abstract class Lang {
             throw Lang.impossible();
         }
     }
+    
+    public static final boolean isAndroid;
+    static {
+        boolean flag = false;
+        try {
+            Class.forName("android.Manifest");
+            flag = true;
+        } catch (Throwable e) {}
+        isAndroid = flag;
+    }
 }

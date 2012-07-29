@@ -24,8 +24,10 @@ public class BinObject {
     }
 
     @ColDefine(customType="blob")
+    @Column
     private InputStream xblob;
     @ColDefine(customType="clob")
+    @Column
     private Reader xclob;
     public InputStream getXblob() {
         return xblob;
