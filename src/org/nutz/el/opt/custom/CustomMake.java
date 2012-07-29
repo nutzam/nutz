@@ -24,7 +24,7 @@ public class CustomMake {
      * 加载插件
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    private static void init(){
+    public static void init(){
         List<String> plug = (List<String>) ((Map)NutConf.get("EL")).get("custom");
         String [] t = plug.toArray(new String[0]);
         PluginManager<RunMethod> rm = new SimplePluginManager<RunMethod>(t);
