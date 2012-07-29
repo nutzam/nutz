@@ -15,6 +15,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.NutMessageMap;
@@ -260,11 +261,11 @@ public abstract class Mvcs {
     private static ServletContext servletContext;
 
     public static final HttpServletRequest getReq() {
-        return ctx.reqs.get(getName());
+        return ctx.reqThreadLocal.get().getAs(HttpServletRequest.class, "req");
     }
 
     public static final HttpServletResponse getResp() {
-        return ctx.resps.get(getName());
+        return ctx.reqThreadLocal.get().getAs(HttpServletResponse.class, "resp");
     }
 
     public static final String getName() {
@@ -272,13 +273,13 @@ public abstract class Mvcs {
     }
 
     public static final ActionContext getActionContext() {
-        return ctx.actionCtxs.get(getName());
+        return ctx.reqThreadLocal.get().getAs(ActionContext.class, "ActionContext");
     }
 
     public static void set(String name, HttpServletRequest req, HttpServletResponse resp) {
         NAME.set(name);
-        ctx.reqs.put(name, req);
-        ctx.resps.put(name, resp);
+        ctx.reqThreadLocal.get().set("req", req);
+        ctx.reqThreadLocal.get().set("resp", resp);
     }
 
     public static void setServletContext(ServletContext servletContext) {
@@ -286,7 +287,7 @@ public abstract class Mvcs {
     }
 
     public static void setActionContext(ActionContext actionContext) {
-        ctx.actionCtxs.put(getName(), actionContext);
+        ctx.reqThreadLocal.get().set("ActionContext", actionContext);
     }
 
     public static ServletContext getServletContext() {
@@ -294,11 +295,11 @@ public abstract class Mvcs {
     }
 
     public static void setIocContext(IocContext iocContext) {
-        ctx.iocCtxs.put(getName(), iocContext);
+        ctx.reqThreadLocal.get().set("IocContext", iocContext);
     }
 
     public static IocContext getIocContext() {
-        return ctx.iocCtxs.get(getName());
+        return ctx.reqThreadLocal.get().getAs(IocContext.class, "IocContext");
     }
 
     // 新的,基于ThreadLoacl改造过的Mvc辅助方法
@@ -346,9 +347,7 @@ public abstract class Mvcs {
         if (name == null)
             return;
         NAME.set(null);
-        ctx.reqs.remove(name);
-        ctx.resps.remove(name);
-        ctx.actionCtxs.remove(name);
+        ctx.reqThreadLocal.set(Lang.context());
     }
 
     public static HttpSession getHttpSession() {
