@@ -11,15 +11,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.annotation.Modules;
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.ClassAdapter;
-import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
-import org.objectweb.asm.Type;
+import org.objectweb.asm.*;
+
 
 /**
  * 需要判断clazz是否需要增强 取得需要生成的方法(不检查dao是否存在,不存在直接初始化报错)

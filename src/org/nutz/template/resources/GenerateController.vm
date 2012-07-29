@@ -7,8 +7,7 @@ import org.nutz.lang.Strings;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.Param;
 
-import utils.*;
-import utils.form.*;
+import org.nutz.mvc.util.*;
 import domains.*;
 import services.*;
 
@@ -30,7 +29,6 @@ public class ${domain_name}Controller {
 	public Object save(@Param("..")${domain_name} ${low_domain_name}) {
 		String message = "";
 		if(${low_domain_name} != null){
-				${low_domain_name} = new ${domain_name}();
 				dao.insert(${low_domain_name});
 				message = "插入成功";
 				return  message;

@@ -21,7 +21,7 @@ public class TextParse {
 		cfg.setDefaultEncoding(charsetName);
 		//cfg.setDirectoryForTemplateLoading(new File(templateDir));
 		cfg.setClassForTemplateLoading(org.nutz.template.util.TextParse.class,"/org/nutz/template/resources/"); // for the resources in jar
-		// TODO , 这里的template loading应该要自定义类,因为需要从jar中加载
+		// TODO , 这里的template loading应该要自定义类,使用file 和classpath多loader加载，这样方便系统对模板进行定制
 	}
 	public static String parse(String fileName,@SuppressWarnings("rawtypes") Map model) throws IOException, TemplateException{
 		if(! initialed)
