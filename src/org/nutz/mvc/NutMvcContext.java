@@ -11,14 +11,19 @@ import org.nutz.mvc.config.AtMap;
 
 public class NutMvcContext extends SimpleContext {
 
-    public ThreadLocal<Context> reqThreadLocal = new ThreadLocal<Context>();
+    public ThreadLocal<Context> reqThreadLocal = new ThreadLocal<Context>() {
+
+        protected Context initialValue() {
+            return Lang.context();
+        }
+    };
     public Map<String, Ioc> iocs = new HashMap<String, Ioc>();
     public Map<String, AtMap> atMaps = new HashMap<String, AtMap>();
     public Map<String, NutConfig> nutConfigs = new HashMap<String, NutConfig>();
     public Map<String, Map<String, Map<String, Object>>> localizations = new HashMap<String, Map<String, Map<String, Object>>>();
     
     public void close() {
-        reqThreadLocal.set(Lang.context());
+        reqThreadLocal.get().clear();
         iocs.clear();
         atMaps.clear();
         nutConfigs.clear();

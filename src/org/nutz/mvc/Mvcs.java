@@ -15,7 +15,6 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.NutMessageMap;
@@ -342,12 +341,8 @@ public abstract class Mvcs {
 
     // 重置当前线程所持有的对象
     public static void resetALL() {
-        // TODO 不清理,貌似也没啥问题呢
-        String name = getName();
-        if (name == null)
-            return;
+        ctx.reqThreadLocal.get().clear();
         NAME.set(null);
-        ctx.reqThreadLocal.set(Lang.context());
     }
 
     public static HttpSession getHttpSession() {
