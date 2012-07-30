@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.util.NutType;
@@ -33,13 +34,13 @@ import org.nutz.resource.impl.FileResource;
  * 
  */
 public class NutConf {
-    
+
     private static final Log log = Logs.get();
-    
+
     private static final String DEFAULT_CONFIG = "org/nutz/conf/NutzDefaultConfig.js";
 
     // 所有的配置信息
-    private Map<String, Object> map = new HashMap<String,Object>();
+    private Map<String, Object> map = new HashMap<String, Object>();
     private static final Object lock = new Object();
 
     private static NutConf conf;
@@ -61,6 +62,7 @@ public class NutConf {
 
     public static void load(String... paths) {
         me().loadResource(paths);
+        CustomMake.init();
     }
 
     /**

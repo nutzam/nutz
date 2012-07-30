@@ -10,7 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.conf.NutConf;
 import org.nutz.el.El;
-import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Maths;
@@ -377,7 +376,6 @@ public class El2Test {
         assertEquals("class org.nutz.lang.Maths", El.eval(context, "math.toString()"));
         
         NutConf.load("org/nutz/el/issue279/279.js");
-        CustomMake.init();
         assertEquals(El.eval("uuuid(false)"), "abc");
         assertEquals(El.eval("uuuid()"), "abc");
     }
