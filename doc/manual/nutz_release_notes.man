@@ -65,7 +65,7 @@
     * [https://github.com/nutzam/nutz/issues/250 Issue 250] 编译时，也应该支持 Servlet 3.0  {#AAA;by} {*zozoh}
     * [https://github.com/nutzam/nutz/issues/249 Issue 249] 在glassfish-3.1.2-web下项目启动失败 项目维护 Lang 重要  {#AAA;by} {*ichaly}
     * [https://github.com/nutzam/nutz/issues/247 Issue 247] 文件池文档中的在池中创建一个文件描述错误 项目维护 Lang FAQ  {#AAA;by} {*hzl7652}
-    * [https://github.com/nutzam/nutz/issues/245 Issue 245] 查询返回List<Record>的方法，Record中的key都变成了小写  {#AAA;by} {*zhuer0632}
+    * [https://github.com/nutzam/nutz/issues/245 Issue 245] 查询返回List`<Record>`的方法，Record中的key都变成了小写  {#AAA;by} {*zhuer0632}
     * [https://github.com/nutzam/nutz/issues/244 Issue 244] 文档的MVC部分没有关于@Attr的信息 项目维护 Mvc  {#AAA;by} {*shevawen}
     * [https://github.com/nutzam/nutz/issues/243 Issue 243] Mapl.cell的Path规则  {#AAA;by} {*shevawen}
     * [https://github.com/nutzam/nutz/issues/240 Issue 240] filter中执行跳转时,obj未传进去,报空指针异常 项目维护 Mvc  {#AAA;by} {*lziilzii}
