@@ -228,7 +228,7 @@ public class Json {
      * 
      * @param eleType
      *            对象类型
-     * @param cs
+     * @param reader
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException

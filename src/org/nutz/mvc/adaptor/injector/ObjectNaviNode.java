@@ -98,7 +98,6 @@ public class ObjectNaviNode {
     /**
      * 提取子路径
      * @param path
-     * @return
      */
     private String fetchSubPath(String path){
         if(isList(fetchNode(path))){
@@ -134,7 +133,6 @@ public class ObjectNaviNode {
     
     /**
      * 提取出list,map结构
-     * @return
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public Object get(){
@@ -158,7 +156,6 @@ public class ObjectNaviNode {
     /**
      * 是否是list节点
      * @param key
-     * @return
      */
     private boolean isList(String key){
         return key.indexOf(LIST_SEPARATOR) > 0;

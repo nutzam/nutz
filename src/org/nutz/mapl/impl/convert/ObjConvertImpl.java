@@ -22,7 +22,7 @@ import org.nutz.mapl.MaplConvert;
 /**
  * 对象转换
  * 将MapList结构转换成对应的对象
- * @ TODO 具有循环引用的对象应该会出问题
+ * TODO 具有循环引用的对象应该会出问题
  * @author juqkai(juqkai@gmail.com)
  */
 public class ObjConvertImpl implements MaplConvert{

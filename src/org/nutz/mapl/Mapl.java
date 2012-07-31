@@ -39,7 +39,6 @@ public class Mapl {
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
      * @param maplist
      * @param path 路径
-     * @return
      */
     public static Object cell(Object maplist, String path){
         MaplRebuild mr = new MaplRebuild(maplist);
@@ -70,7 +69,6 @@ public class Mapl {
      *            maplist结构的对象
      * @param paths
      *            过滤列表
-     * @return
      */
     public static Object includeFilter(Object maplist, List<String> paths) {
         FilterConvertImpl filter = new FilterConvertImpl(paths);
@@ -85,7 +83,6 @@ public class Mapl {
      *            maplist结构的对象
      * @param paths
      *            过滤列表
-     * @return
      */
     public static Object excludeFilter(Object maplist, List<String> paths) {
         FilterConvertImpl filter = new FilterConvertImpl(paths);
@@ -102,7 +99,6 @@ public class Mapl {
      *            maplist结构的对象
      * @param model
      *            转换模板, 一个JSON格式的reader
-     * @return
      */
     public static Object convert(Object maplist, Reader model) {
         StructureConvert convert = new StructureConvert(model);
@@ -116,7 +112,6 @@ public class Mapl {
      *            maplist结构的对象
      * @param model
      *            转换模板, 也是一个规定格式的maplist结构
-     * @return
      */
     public static Object convert(Object maplist, Object model) {
         StructureConvert convert = new StructureConvert(model);

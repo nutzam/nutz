@@ -66,7 +66,6 @@ public class MaplRebuild{
     /**
      * 访问结点
      * @param path 路径
-     * @return
      */
     public Object cell(String path){
         model = Model.cell;
@@ -76,7 +75,6 @@ public class MaplRebuild{
     }
     /**
      * 提取重建后的MapList
-     * @return
      */
     public Object fetchNewobj(){
         return newobj.get("obj");
@@ -93,7 +91,6 @@ public class MaplRebuild{
      * 注入
      * @param obj
      * @param i
-     * @return
      */
     @SuppressWarnings("unchecked")
     private Object inject(Object obj, int i){
@@ -153,7 +150,6 @@ public class MaplRebuild{
      * 注入MAP
      * @param obj
      * @param i
-     * @return 
      */
     @SuppressWarnings("unchecked")
     private Object injectMap(Object obj, int i) {

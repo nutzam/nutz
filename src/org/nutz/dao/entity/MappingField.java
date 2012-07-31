@@ -17,7 +17,7 @@ public interface MappingField extends EntityField {
 	 * 
 	 * @param obj
 	 *            被注入对象
-	 * @param rs
+	 * @param rec
 	 *            结果集
 	 */
 	void injectValue(Object obj, Record rec);

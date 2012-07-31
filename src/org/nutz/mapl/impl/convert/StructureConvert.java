@@ -94,7 +94,6 @@ public class StructureConvert extends MaplEach implements MaplConvert{
      * 转换
      * @param obj 目标对象
      * @param model 对应关系
-     * @return 
      */
     public Object convert(Object obj){
         each(obj);
@@ -105,8 +104,6 @@ public class StructureConvert extends MaplEach implements MaplConvert{
 
     /**
      * 重建新对象
-     * @param path
-     * @param object
      */
     protected void DLR(String path, Object object) {
         if(relation.containsKey(path)){

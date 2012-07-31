@@ -32,7 +32,6 @@ public class NutMvcContext extends SimpleContext {
     
     /**
      * 获取默认Ioc,在单个NutFilter/NutServlet中非常合用
-     * @return
      */
     public Ioc getDefaultIoc() {
         if (iocs.isEmpty())
