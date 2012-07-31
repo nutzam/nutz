@@ -93,7 +93,6 @@ public class StructureConvert extends MaplEach implements MaplConvert{
     /**
      * 转换
      * @param obj 目标对象
-     * @param model 对应关系
      */
     public Object convert(Object obj){
         each(obj);
