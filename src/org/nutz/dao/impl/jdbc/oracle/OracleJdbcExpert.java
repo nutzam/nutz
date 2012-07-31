@@ -20,16 +20,16 @@ import org.nutz.dao.util.Pojos;
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
     private static String CSEQ = "CREATE SEQUENCE ${T}_${F}_SEQ  MINVALUE 1"
-                                    + " MAXVALUE 999999999999 INCREMENT BY 1 START"
-                                    + " WITH 1 CACHE 20 NOORDER  NOCYCLE";
+                                 + " MAXVALUE 999999999999 INCREMENT BY 1 START"
+                                 + " WITH 1 CACHE 20 NOORDER  NOCYCLE";
     private static String DSEQ = "DROP SEQUENCE ${T}_${F}_SEQ";
 
     private static String CTRI = "create or replace trigger ${T}_${F}_ST"
-                                    + " BEFORE INSERT ON ${T}"
-                                    + " FOR EACH ROW"
-                                    + " BEGIN "
-                                    + " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
-                                    + " END ${T}_${F}_ST;";
+                                 + " BEFORE INSERT ON ${T}"
+                                 + " FOR EACH ROW"
+                                 + " BEGIN "
+                                 + " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
+                                 + " END ${T}_${F}_ST;";
 
     public OracleJdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);
@@ -82,10 +82,10 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
             }
             pkNames.setLength(pkNames.length() - 1);
             pkNames2.setLength(pkNames2.length() - 1);
-            String sql = String.format(    "alter table %s add constraint primary_key_%s primary key (%s)",
-                                        en.getTableName(),
-                                        pkNames2,
-                                        pkNames);
+            String sql = String.format("alter table %s add constraint primary_key_%s primary key (%s)",
+                                       en.getTableName(),
+                                       pkNames2,
+                                       pkNames);
             sqls.add(Sqls.create(sql));
         }
         // // 处理非主键unique
@@ -128,21 +128,21 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0) {
             pojo.insertFirst(Pojos.Items.wrap("SELECT * FROM (SELECT T.*, ROWNUM RN FROM ("));
-            pojo.append(Pojos.Items.wrapf(    ") T WHERE ROWNUM <= %d) WHERE RN > %d",
-                                            pager.getOffset() + pager.getPageSize(),
-                                            pager.getOffset()));
+            pojo.append(Pojos.Items.wrapf(") T WHERE ROWNUM <= %d) WHERE RN > %d",
+                                          pager.getOffset() + pager.getPageSize(),
+                                          pager.getOffset()));
         }
     }
-    
+
     @Override
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0) {
             String pre = "SELECT * FROM (SELECT T.*, ROWNUM RN FROM (";
-            String last = String.format(    ") T WHERE ROWNUM <= %d) WHERE RN > %d",
-                    pager.getOffset() + pager.getPageSize(),
-                    pager.getOffset());
+            String last = String.format(") T WHERE ROWNUM <= %d) WHERE RN > %d",
+                                        pager.getOffset() + pager.getPageSize(),
+                                        pager.getOffset());
             sql.setSourceSql(pre + sql.getSourceSql() + last);
         }
     }
@@ -197,8 +197,10 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 return true;
             List<Sql> sqls = new ArrayList<Sql>();
             for (MappingField pk : en.getPks()) {
-                String sql = gSQL(DSEQ, en.getTableName(), pk.getColumnName());
-                sqls.add(Sqls.create(sql));
+                if (pk.isAutoIncreasement()) {
+                    String sql = gSQL(DSEQ, en.getTableName(), pk.getColumnName());
+                    sqls.add(Sqls.create(sql));
+                }
             }
             try {
                 dao.execute(sqls.toArray(new Sql[sqls.size()]));

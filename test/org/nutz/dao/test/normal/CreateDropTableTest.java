@@ -72,4 +72,16 @@ public class CreateDropTableTest extends DaoCase {
             Assert.assertTrue(isTrue);
         }
     }
+
+    @Test
+    public void createDropTableInOracle() throws Exception {
+        boolean isOracle = dao.meta().isOracle();
+        if (isOracle) {
+            dao.create(CatAutoId.class, true);
+            Assert.assertTrue(dao.drop(CatAutoId.class));
+
+            dao.create(CatNotAutoId.class, true);
+            Assert.assertTrue(dao.drop(CatNotAutoId.class));
+        }
+    }
 }
