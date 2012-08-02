@@ -10,6 +10,7 @@ import java.util.Map;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.mapl.MaplCompile;
 
 /**
@@ -56,6 +57,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        // 一定要关闭文件啊，有木有
+        finally {
+            Streams.safeClose(reader);
         }
     }
 
