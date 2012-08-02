@@ -51,12 +51,11 @@ public abstract class Jdbcs {
         File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
         // 如果没有则使用默认的映射文件
         if (null == f) {
-            conf = Json.fromJson(    JdbcExpertConfigFile.class,
-                                    Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js"))
-                        .init();
+            conf = Json.fromJson(JdbcExpertConfigFile.class,
+                                 Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
         } else
-            conf = Json.fromJson(    JdbcExpertConfigFile.class,
-                                    Streams.fileInr("nutz_jdbc_experts.js")).init();
+            conf = Json.fromJson(JdbcExpertConfigFile.class,
+                                 Streams.fileInr("nutz_jdbc_experts.js")).init();
         try {
             for (String key : conf.getExperts().keySet()) {
                 // 检查一下正则表达式是否正确
@@ -669,13 +668,13 @@ public abstract class Jdbcs {
             }
 
         };
-        
+
         public static final ValueAdaptor asBinaryStream = new ValueAdaptor() {
 
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getBinaryStream(colName);
             }
-            
+
             public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
@@ -684,18 +683,18 @@ public abstract class Jdbcs {
                 }
             }
         };
-        
+
         public static final ValueAdaptor asReader = new ValueAdaptor() {
 
             public Object get(ResultSet rs, String colName) throws SQLException {
                 return rs.getCharacterStream(colName);
             }
-            
+
             public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                    stat.setCharacterStream(index, (Reader)obj);
+                    stat.setCharacterStream(index, (Reader) obj);
                 }
             }
         };
@@ -785,8 +784,8 @@ public abstract class Jdbcs {
         }
         // 二进制流
         else if (mirror.isOf(InputStream.class)
-                    || mirror.is(byte[].class)
-                    || mirror.isOf(Blob.class)) {
+                 || mirror.is(byte[].class)
+                 || mirror.isOf(Blob.class)) {
             ef.setColumnType(ColType.BINARY);
         }
         /*
@@ -794,10 +793,10 @@ public abstract class Jdbcs {
          */
         else {
             if (log.isDebugEnabled())
-                log.debugf(    "take field '%s(%s)'(%s) as VARCHAR(50)",
-                            ef.getName(),
-                            Lang.getTypeClass(ef.getType()).getName(),
-                            ef.getEntity().getType().getName());
+                log.debugf("take field '%s(%s)'(%s) as VARCHAR(50)",
+                           ef.getName(),
+                           Lang.getTypeClass(ef.getType()).getName(),
+                           ef.getEntity().getType().getName());
             ef.setColumnType(ColType.VARCHAR);
             ef.setWidth(50);
         }
