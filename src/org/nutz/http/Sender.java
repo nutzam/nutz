@@ -1,6 +1,7 @@
 package org.nutz.http;
 
 import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -14,7 +15,7 @@ import java.util.zip.InflaterInputStream;
 
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
-import org.nutz.lang.Lang;
+import org.nutz.lang.stream.NullInputStream;
 
 /**
  * @author zozoh(zozohtnt@gmail.com)
@@ -67,8 +68,14 @@ public abstract class Sender {
                 rep.setStream(is);
             }
 
-            else
-                rep.setStream(Lang.ins(""));
+            else {
+                try {
+                    rep.setStream(conn.getInputStream());
+                }
+                catch (FileNotFoundException e) {
+                    rep.setStream(new NullInputStream());
+                }
+            }
         }
         return rep;
     }
