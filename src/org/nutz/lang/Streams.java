@@ -341,6 +341,12 @@ public abstract class Streams {
         return true;
     }
 
+    /**
+     * 安全刷新一个可刷新的对象，可接受 null
+     * 
+     * @param fa
+     *            可刷新对象
+     */
     public static void safeFlush(Flushable fa) {
         if (null != fa)
             try {
@@ -361,8 +367,8 @@ public abstract class Streams {
             throw new NullPointerException("ins is null!");
         if (ins instanceof BufferedInputStream)
             return (BufferedInputStream) ins;
-        //BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
-        return new BufferedInputStream(ins); 
+        // BufferedInputStream的构造方法,竟然是允许null参数的!! 我&$#^$&%
+        return new BufferedInputStream(ins);
     }
 
     /**
@@ -424,10 +430,10 @@ public abstract class Streams {
                 catch (IOException e) {}
         }
         if (null == ins) {
-            //TODO 考虑一下,应该抛异常呢?还是返回null呢?
-            
+            // TODO 考虑一下,应该抛异常呢?还是返回null呢?
+
             throw new RuntimeException(new FileNotFoundException(path));
-            //return null;
+            // return null;
         }
         return buff(ins);
     }
