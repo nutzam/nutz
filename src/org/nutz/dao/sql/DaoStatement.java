@@ -19,6 +19,51 @@ import org.nutz.dao.pager.Pager;
 public interface DaoStatement {
 
     /**
+     * @return 当前语句是否是一个 SELECT 语句
+     */
+    boolean isSelect();
+
+    /**
+     * @return 当前语句是否是一个 UPDATE 语句
+     */
+    boolean isUpdate();
+
+    /**
+     * @return 当前语句是否是一个 DELETE 语句
+     */
+    boolean isDelete();
+
+    /**
+     * @return 当前语句是否是一个 INSERT 语句
+     */
+    boolean isInsert();
+
+    /**
+     * @return 当前语句是否是一个 CREATE 语句
+     */
+    boolean isCreate();
+
+    /**
+     * @return 当前语句是否是一个 DROP 语句
+     */
+    boolean isDrop();
+
+    /**
+     * @return 当前语句是否是一个 RUN 语句
+     */
+    boolean isRun();
+
+    /**
+     * @return 当前语句是否是一个 ALTER 语句
+     */
+    boolean isAlter();
+
+    /**
+     * @return 当前语句是否是一个 OTHER 语句
+     */
+    boolean isOther();
+
+    /**
      * @return 当前语句所关联的实体
      */
     Entity<?> getEntity();
@@ -87,6 +132,7 @@ public interface DaoStatement {
 
     /**
      * <b>无结果的话,会抛NPE</b>
+     * 
      * @return 将结果对象作为 int 返回
      */
     int getInt();
@@ -98,6 +144,7 @@ public interface DaoStatement {
 
     /**
      * <b>无结果的话,会抛NPE</b>
+     * 
      * @return 将结果对象作为 boolean 返回
      */
     boolean getBoolean();
@@ -165,6 +212,6 @@ public interface DaoStatement {
      *             回调函数抛出的异常
      */
     void onAfter(Connection conn, ResultSet rs) throws SQLException;
-    
+
     DaoStatement setPager(Pager pager);
 }

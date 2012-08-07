@@ -180,9 +180,30 @@ public class DaoSupport {
     }
 
     protected int _exec(final DaoStatement... sts) {
-        DaoExec exec = new DaoExec(sts);
-        Trans.exec(exec); //还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
-        return exec.re;
+        // 看看是不是都是 SELECT 语句
+        boolean isAllSelect = true;
+        for (DaoStatement st : sts) {
+            if (!st.isSelect()) {
+                isAllSelect = false;
+                break;
+            }
+        }
+        // 这个是具体执行的逻辑，作为一个回调
+        // 后面的逻辑是判断到底应不应该在一个事务里运行它
+        DaoExec callback = new DaoExec(sts);
+
+        // 如果强制没有事务或者都是 SELECT，没必要启动事务
+        if (isAllSelect || Trans.isTransactionNone()) {
+            runner.run(dataSource, callback);
+        }
+        // 否则启动事务
+        // wendal: 还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
+        else {
+            Trans.exec(callback);
+        }
+
+        // 搞定，返回结果 ^_^
+        return callback.re;
     }
 
     /**
@@ -202,15 +223,15 @@ public class DaoSupport {
     protected class DaoExec implements Atom, ConnCallback {
         private DaoStatement[] sts;
         private int re;
-        
+
         public DaoExec(DaoStatement... sts) {
             this.sts = sts;
         }
-        
+
         public void run() {
             runner.run(dataSource, this);
         }
-        
+
         public void invoke(Connection conn) throws Exception {
             for (DaoStatement st : sts) {
                 if (st == null) {

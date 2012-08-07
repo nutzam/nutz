@@ -90,10 +90,10 @@ public class NutPojo extends NutStatement implements Pojo {
         }
         return re;
     }
-    
+
     public String toPreparedStatement() {
         StringBuilder sb = new StringBuilder();
-        for (PItem item : items) 
+        for (PItem item : items)
             item.joinSql(getEntity(), sb);
         return sb.toString();
     }
@@ -216,8 +216,8 @@ public class NutPojo extends NutStatement implements Pojo {
     public String toString() {
         if (SqlType.RUN == this.getSqlType()) {
             return this.getSqlType().name()
-                    + (null == before ? "" : " :before{...}")
-                    + (null == after ? "" : " :after{...}");
+                   + (null == before ? "" : " :before{...}")
+                   + (null == after ? "" : " :after{...}");
         }
         return super.toString();
     }
