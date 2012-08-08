@@ -33,10 +33,46 @@ public abstract class Times {
     }
 
     /**
+     * 将一个时间字符串，转换成一个一天中的绝对秒数
+     * 
+     * @param ts
+     *            时间字符串，符合格式 "HH:mm:ss"
+     * @return 一天中的绝对秒数
+     */
+    public static int T(String ts) {
+        String[] tss = Strings.splitIgnoreBlank(":");
+        if (null != tss && tss.length == 3) {
+            int hh = Integer.parseInt(tss[0]);
+            int mm = Integer.parseInt(tss[1]);
+            int ss = Integer.parseInt(tss[2]);
+            return hh * 3600 + mm * 60 + ss;
+        }
+        throw Lang.makeThrow("Wrong format of time string '%s'", ts);
+    }
+
+    /**
      * @return 服务器当前时间
      */
     public static Date now() {
         return new Date(System.currentTimeMillis());
+    }
+
+    /**
+     * @param d
+     *            时间对象
+     * 
+     * @return 时间对象在一天中的秒数
+     */
+    public static int sec(Date d) {
+        String ts = Times.format(DF_TIME, d);
+        return T(ts);
+    }
+
+    /**
+     * @return 当前时间在一天中的秒数
+     */
+    public static int sec() {
+        return sec(now());
     }
 
     /**
@@ -157,10 +193,10 @@ public abstract class Times {
     public static String sT(int sec) {
         int[] ss = T(sec);
         return Strings.alignRight(ss[0], 2, '0')
-                + ":"
-                + Strings.alignRight(ss[1], 2, '0')
-                + ":"
-                + Strings.alignRight(ss[2], 2, '0');
+               + ":"
+               + Strings.alignRight(ss[1], 2, '0')
+               + ":"
+               + Strings.alignRight(ss[2], 2, '0');
     }
 
     /**
@@ -300,6 +336,7 @@ public abstract class Times {
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateFormat DF_TIME = new SimpleDateFormat("HH:mm:ss");
 
     private static final long MS_DAY = 3600 * 24 * 1000;
     private static final long MS_WEEK = MS_DAY * 7;
