@@ -16,7 +16,6 @@ public abstract class Maths {
      */
     public static int max(int... nums) {
         return takeOne(new CompareSomeThing() {
-            @Override
             public boolean compare(int arg0, int arg1) {
                 return arg0 > arg1;
             }
@@ -31,7 +30,6 @@ public abstract class Maths {
      */
     public static int min(int... nums) {
         return takeOne(new CompareSomeThing() {
-            @Override
             public boolean compare(int arg0, int arg1) {
                 return arg0 < arg1;
             }
