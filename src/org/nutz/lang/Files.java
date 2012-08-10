@@ -702,6 +702,10 @@ public abstract class Files {
         if (src == null || target == null)
             return false;
         makeDir(target.getParentFile());
+        if (src.isDirectory()) {
+            src = new File(src.getCanonicalPath() + File.separator);
+            target = new File(target.getCanonicalPath() + File.separator);
+        }
         return src.renameTo(target);
     }
 
