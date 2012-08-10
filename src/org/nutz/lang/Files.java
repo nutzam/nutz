@@ -348,6 +348,28 @@ public abstract class Files {
     }
 
     /**
+     * 如果文件对象不存在，则创建它
+     * 
+     * @param f
+     *            文件对象
+     * @return 传入的文件对象，以便为调用者省略一行代码
+     */
+    public static File createFileIfNoExists(File f) {
+        if (null == f)
+            return f;
+        if (!f.exists())
+            try {
+                Files.createNewFile(f);
+            }
+            catch (IOException e) {
+                throw Lang.wrapThrow(e);
+            }
+        if (!f.isFile())
+            throw Lang.makeThrow("'%s' should be a file!", f);
+        return f;
+    }
+
+    /**
      * 试图生成一个目录对象，如果文件不存在则创建它。 如果给出的 PATH 是相对路径 则会在 CLASSPATH
      * 中寻找，如果未找到，则会在用户主目录中创建这个目录
      * 
@@ -365,6 +387,23 @@ public abstract class Files {
         if (!f.isDirectory())
             throw Lang.makeThrow("'%s' should be a directory!", path);
         return f;
+    }
+
+    /**
+     * 传入一个目录对象，如果目录不存在，则创建目录
+     * 
+     * @param d
+     *            文件目录对象
+     * @return 文件目录对象，以便调用者省略一行代码
+     */
+    public static File createDirIfNoExists(File d) {
+        if (null == d)
+            return d;
+        if (!d.exists())
+            Files.makeDir(d);
+        if (!d.isDirectory())
+            throw Lang.makeThrow("'%s' should be a directory!", d);
+        return d;
     }
 
     /**
@@ -904,8 +943,8 @@ public abstract class Files {
         return dir.listFiles(new FileFilter() {
             public boolean accept(File f) {
                 return !f.isHidden()
-                        && f.isFile()
-                        && (null == suffix || f.getName().endsWith(suffix));
+                       && f.isFile()
+                       && (null == suffix || f.getName().endsWith(suffix));
             }
         });
     }
