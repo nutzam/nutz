@@ -40,7 +40,7 @@ public abstract class Times {
      * @return 一天中的绝对秒数
      */
     public static int T(String ts) {
-        String[] tss = Strings.splitIgnoreBlank(":");
+        String[] tss = Strings.splitIgnoreBlank(ts, ":");
         if (null != tss && tss.length == 3) {
             int hh = Integer.parseInt(tss[0]);
             int mm = Integer.parseInt(tss[1]);
