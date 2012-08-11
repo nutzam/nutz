@@ -48,6 +48,10 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
+        	//如果是@Readonly，则说明字段来自视图，创建表时忽略
+        	if(mf.isReadonly()){
+        		continue;
+        	}
             sb.append('\n').append(mf.getColumnName());
             // 自增主键特殊形式关键字
             if (mf.isId() && mf.isAutoIncreasement()) {
