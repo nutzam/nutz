@@ -9,6 +9,8 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import org.junit.Test;
 
@@ -19,7 +21,7 @@ public class StringsTest {
         assertEquals("", Strings.dup("", 4));
         assertEquals("ssssssss", Strings.dup("ss", 4));
     }
-    
+
     @Test
     public void test_dup_char() {
         assertEquals("", Strings.dup(null, 4));
@@ -27,7 +29,7 @@ public class StringsTest {
         assertEquals("aaaa", Strings.dup('a', 4));
         assertEquals("    ", Strings.dup(' ', 4));
     }
-    
+
     @Test
     public void test_capitalize() {
         assertNull(Strings.capitalize(null));
@@ -36,7 +38,7 @@ public class StringsTest {
         assertEquals("Aa", Strings.capitalize("aa"));
         assertEquals("Aa", Strings.capitalize("Aa"));
     }
-    
+
     @Test
     public void test_lower_first() {
         assertNull(Strings.lowerFirst(null));
@@ -46,7 +48,7 @@ public class StringsTest {
         assertEquals("vCD", Strings.lowerFirst("VCD"));
         assertEquals("vff", Strings.lowerFirst("Vff"));
     }
-    
+
     @Test
     public void test_equals_string_ignore_case() {
         assertTrue(Strings.equalsIgnoreCase(null, null));
@@ -56,8 +58,8 @@ public class StringsTest {
         assertTrue(Strings.equalsIgnoreCase("aBc", "abC"));
         assertFalse(Strings.equalsIgnoreCase("aB", "abC"));
     }
-    
-    @Test 
+
+    @Test
     public void test_equals_string() {
         assertTrue(Strings.equals(null, null));
         assertFalse(Strings.equals(null, "a"));
@@ -66,7 +68,7 @@ public class StringsTest {
         assertFalse(Strings.equals("aBc", "abC"));
         assertFalse(Strings.equals("aB", "abC"));
     }
-    
+
     @Test
     public void test_is_empty() {
         assertTrue(Strings.isEmpty(null));
@@ -75,7 +77,7 @@ public class StringsTest {
         assertFalse(Strings.isEmpty(" at "));
         assertFalse(Strings.isEmpty(new StringBuffer(" ")));
     }
-    
+
     @Test
     public void test_is_blank() {
         assertTrue(Strings.isBlank(null));
@@ -84,7 +86,7 @@ public class StringsTest {
         assertFalse(Strings.isBlank(" at "));
         assertTrue(Strings.isBlank(new StringBuffer(" ")));
     }
-    
+
     @Test
     public void test_trim() {
         assertEquals(null, Strings.trim(null));
@@ -101,7 +103,7 @@ public class StringsTest {
         assertEquals("multi world", Strings.trim(new StringBuffer(" multi world ")));
         assertEquals("nutz加油", Strings.trim(new StringBuilder(" nutz加油 ")));
     }
-    
+
     @Test
     public void test_split_ignore_blank() {
         assertArrayEquals(null, Strings.splitIgnoreBlank(null));
@@ -109,10 +111,12 @@ public class StringsTest {
         assertArrayEquals(new String[]{"2", "3", "5"}, Strings.splitIgnoreBlank("2,3,, 5"));
         assertArrayEquals(new String[]{"2", "3", "5", "6"}, Strings.splitIgnoreBlank("2,3,, 5,6,"));
         assertArrayEquals(new String[]{"2,3,5,6,"}, Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
-        assertArrayEquals(new String[]{"2,3", "5", "6,"}, Strings.splitIgnoreBlank("2,3 ,,5,,6,", ",,"));
-        assertArrayEquals(new String[]{"2,3", "5", "6,"}, Strings.splitIgnoreBlank("2,3,,5 ,,,,6,", ",,"));
+        assertArrayEquals(new String[]{"2,3", "5", "6,"},
+                          Strings.splitIgnoreBlank("2,3 ,,5,,6,", ",,"));
+        assertArrayEquals(new String[]{"2,3", "5", "6,"},
+                          Strings.splitIgnoreBlank("2,3,,5 ,,,,6,", ",,"));
     }
-    
+
     @Test
     public void test_fill_digit() {
         assertEquals("-1", Strings.fillDigit(-1, 2));
@@ -121,7 +125,7 @@ public class StringsTest {
         assertEquals("333", Strings.fillDigit(333, 2));
         assertEquals("0033", Strings.fillDigit(33, 4));
     }
-    
+
     @Test
     public void test_fill_hex() {
         assertEquals("ffffffff", Strings.fillHex(-1, 2));
@@ -129,15 +133,14 @@ public class StringsTest {
         assertEquals("14d", Strings.fillHex(333, 2));
         assertEquals("0021", Strings.fillHex(33, 4));
     }
-    
+
     @Test
     public void test_fill_binary() {
         assertEquals("1", Strings.fillBinary(1, -1));
         assertEquals("100001", Strings.fillBinary(33, 2));
         assertEquals("00100001", Strings.fillBinary(33, 8));
     }
-    
-    
+
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void test_to_digit() {
         assertEquals("1", Strings.toDigit(11, 1));
@@ -145,7 +148,7 @@ public class StringsTest {
         assertEquals("", Strings.toDigit(1, 0));
         Strings.toDigit(1, -1);
     }
-    
+
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void test_to_hex() {
         assertEquals("b", Strings.toHex(11, 1));
@@ -153,7 +156,7 @@ public class StringsTest {
         assertEquals("", Strings.toHex(11, 0));
         Strings.toHex(1, -1);
     }
-    
+
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void test_to_binary() {
         assertEquals("1", Strings.toBinary(11, 1));
@@ -161,7 +164,7 @@ public class StringsTest {
         assertEquals("", Strings.toBinary(11, 0));
         Strings.toBinary(1, -1);
     }
-    
+
     @Test(expected = StringIndexOutOfBoundsException.class)
     public void test_cut_right() {
         assertNull(Strings.cutRight(null, 2, 'c'));
@@ -171,7 +174,7 @@ public class StringsTest {
         assertEquals("", Strings.cutRight("abc", 0, 'c'));
         Strings.cutRight("abc", -1, 'c');
     }
-    
+
     @Test
     public void test_align_left() {
         assertNull(Strings.alignLeft(null, 2, 'c'));
@@ -179,7 +182,7 @@ public class StringsTest {
         assertEquals("acc", Strings.alignLeft("a", 3, 'c'));
         assertEquals("aaaa", Strings.alignLeft("aaaa", 3, 'c'));
     }
-    
+
     @Test
     public void test_align_right() {
         assertNull(Strings.alignRight(null, 2, 'c'));
@@ -219,18 +222,18 @@ public class StringsTest {
 
     @Test
     public void test_max_length_4_collection() {
-        assertEquals(0, Strings.maxLength((Collection<String>)null));
+        assertEquals(0, Strings.maxLength((Collection<String>) null));
         assertEquals(0, Strings.maxLength(new HashSet<CharSequence>()));
         assertEquals(3, Strings.maxLength(Arrays.asList("a", "bb", "ccc")));
     }
-    
+
     @Test
     public void test_max_length_4_array() {
-        assertEquals(0, Strings.maxLength((String[])null));
+        assertEquals(0, Strings.maxLength((String[]) null));
         assertEquals(0, Strings.maxLength(new String[4]));
-        assertEquals(3, Strings.maxLength(new String[] {"a", "bb", "ccc"}));
+        assertEquals(3, Strings.maxLength(new String[]{"a", "bb", "ccc"}));
     }
-    
+
     @Test
     public void test_default_string_when_null() {
         assertEquals("", Strings.sNull(null));
@@ -238,7 +241,7 @@ public class StringsTest {
         assertEquals(" ", Strings.sNull(" ", "b"));
         assertEquals("a", Strings.sNull("a", "b"));
     }
-    
+
     @Test
     public void test_default_string_when_blank() {
         assertEquals("", Strings.sBlank(null));
@@ -271,7 +274,7 @@ public class StringsTest {
         assertTrue(Strings.isin(arr, "a"));
         assertFalse(Strings.isin(arr, "ccC"));
     }
-    
+
     @Test
     public void test_is_email() {
         assertFalse(Strings.isEmail(""));
@@ -282,7 +285,7 @@ public class StringsTest {
         assertTrue(Strings.isEmail("mc02cxj.test@sina.com.cn"));
         Strings.isEmail(null);
     }
-    
+
     @Test
     public void test_upper_word() {
         assertEquals("", Strings.upperWord("-", '-'));
@@ -290,12 +293,21 @@ public class StringsTest {
         assertEquals("aBCD", Strings.upperWord("a-b-c-d", '-'));
         assertEquals("helloWorld", Strings.upperWord("hello-world", '-'));
     }
-    
+
     @Test
     public void test_escape_html() {
         assertEquals("&lt;/article&gt;Oops &lt;script&gt;alert(&quot;hello world&quot;);&lt;/script&gt;",
                      Strings.escapeHtml("</article>Oops <script>alert(\"hello world\");</script>"));
-        assertEquals("alert(&#x27;hello world&#x27;);",
-                     Strings.escapeHtml("alert('hello world');"));
+        assertEquals("alert(&#x27;hello world&#x27;);", Strings.escapeHtml("alert('hello world');"));
+    }
+
+    @Test
+    public void test_splice() throws Exception {
+        Set<String> strs = new LinkedHashSet<String>();
+        strs.add("aaa");
+        strs.add("bbb");
+        strs.add("ccc");
+        assertEquals("aaa,bbb,ccc", Strings.splice(strs));
+        assertEquals("aaa|bbb|ccc", Strings.splice(strs, "|"));
     }
 }
