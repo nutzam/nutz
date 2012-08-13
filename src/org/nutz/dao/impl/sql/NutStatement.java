@@ -28,6 +28,42 @@ public abstract class NutStatement implements DaoStatement {
         this.context = new SqlContext();
     }
 
+    public boolean isSelect() {
+        return SqlType.SELECT == sqlType;
+    }
+
+    public boolean isUpdate() {
+        return SqlType.UPDATE == sqlType;
+    }
+
+    public boolean isDelete() {
+        return SqlType.DELETE == sqlType;
+    }
+
+    public boolean isInsert() {
+        return SqlType.INSERT == sqlType;
+    }
+
+    public boolean isCreate() {
+        return SqlType.CREATE == sqlType;
+    }
+
+    public boolean isDrop() {
+        return SqlType.DROP == sqlType;
+    }
+
+    public boolean isRun() {
+        return SqlType.RUN == sqlType;
+    }
+
+    public boolean isAlter() {
+        return SqlType.ALTER == sqlType;
+    }
+
+    public boolean isOther() {
+        return SqlType.OTHER == sqlType;
+    }
+
     public Entity<?> getEntity() {
         return entity;
     }
@@ -73,7 +109,7 @@ public abstract class NutStatement implements DaoStatement {
         if (i == null)
             return 0;// TODO 是不是应该抛出异常呢?
         return i;// TODO 怪怪的,如果getObject返回null,这里就NPE了 by zozoh
-                    // 因为自动解包的原因,by wendal
+                 // 因为自动解包的原因,by wendal
     }
 
     public String getString() {
@@ -133,8 +169,8 @@ public abstract class NutStatement implements DaoStatement {
 
             if (maxRow != mtrx.length)
                 sb.append("\n  .............................................")
-                        .append("\n  !!!Too many data . Only display 50 lines , don't show the remaining record")
-                        .append("\n  .............................................");
+                  .append("\n  !!!Too many data . Only display 50 lines , don't show the remaining record")
+                  .append("\n  .............................................");
             // 输出可执行的 SQL 语句, TODO 格式非常不好看!!如果要复制SQL,很麻烦!!!
             sb.append("\n  For example:> \"");
             sb.append(toExampleStatement(mtrx, sql));
@@ -143,7 +179,7 @@ public abstract class NutStatement implements DaoStatement {
 
         return sb.toString();
     }
-    
+
     protected String toExampleStatement(Object[][] mtrx, String sql) {
         StringBuilder sb = new StringBuilder();
         String[] ss = sql.split("[?]");
@@ -154,17 +190,17 @@ public abstract class NutStatement implements DaoStatement {
                 Object obj = mtrx[0][i];
                 if (obj != null) {
                     if (obj instanceof Blob) {
-                        Blob blob = (Blob)obj;
+                        Blob blob = (Blob) obj;
                         obj = "Blob(" + blob.hashCode() + ")";
                     } else if (obj instanceof Clob) {
-                        Clob clob = (Clob)obj;
-                        obj = "Clob(" +clob.hashCode() + ")";
+                        Clob clob = (Clob) obj;
+                        obj = "Clob(" + clob.hashCode() + ")";
                     } else if (obj instanceof byte[] || obj instanceof char[]) {
                         if (Array.getLength(obj) > 10240)
-                            obj = "*BigData[len=" + Array.getLength(obj) +"]";
+                            obj = "*BigData[len=" + Array.getLength(obj) + "]";
                     } else if (obj instanceof InputStream) {
                         try {
-                            obj = "*InputStream[len=" + ((InputStream)obj).available() +"]";
+                            obj = "*InputStream[len=" + ((InputStream) obj).available() + "]";
                         }
                         catch (IOException e) {}
                     } else if (obj instanceof Reader) {
@@ -195,29 +231,29 @@ public abstract class NutStatement implements DaoStatement {
 
         return sb.toString();
     }
-    
+
     protected String param2String(Object obj) {
         if (obj == null)
             return "NULL";
         else {
             if (obj instanceof Blob) {
-                Blob blob = (Blob)obj;
+                Blob blob = (Blob) obj;
                 return "Blob(" + blob.hashCode() + ")";
             } else if (obj instanceof Clob) {
-                Clob clob = (Clob)obj;
-                return "Clob(" +clob.hashCode() + ")";
+                Clob clob = (Clob) obj;
+                return "Clob(" + clob.hashCode() + ")";
             } else if (obj instanceof byte[] || obj instanceof char[]) {
                 if (Array.getLength(obj) > 10240)
-                    return "*BigData[len=" + Array.getLength(obj) +"]";
+                    return "*BigData[len=" + Array.getLength(obj) + "]";
             } else if (obj instanceof InputStream) {
                 try {
-                    obj = "*InputStream[len=" + ((InputStream)obj).available() +"]";
+                    obj = "*InputStream[len=" + ((InputStream) obj).available() + "]";
                 }
                 catch (IOException e) {}
             } else if (obj instanceof Reader) {
                 obj = "*Reader@" + obj.hashCode();
             }
-            return Castors.me().castToString(obj); //TODO 太长的话,应该截取一部分
+            return Castors.me().castToString(obj); // TODO 太长的话,应该截取一部分
         }
     }
 }

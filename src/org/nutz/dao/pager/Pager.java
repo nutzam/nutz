@@ -9,7 +9,7 @@ public class Pager implements PageInfo, Serializable {
     private static final long serialVersionUID = 8848523495013555357L;
 
     /**
-     * 改变这个，当每页大小超过 MAX_FETCH_SIZE 时，这个将士默认的 fetchSize
+     * 改变这个，当每页大小超过 MAX_FETCH_SIZE 时，这个将是默认的 fetchSize
      */
     public static int DEFAULT_PAGE_SIZE = 20;
 

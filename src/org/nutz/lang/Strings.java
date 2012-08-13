@@ -69,8 +69,8 @@ public abstract class Strings {
         if (Character.isUpperCase(char0))
             return s.toString();
         return new StringBuilder(len).append(Character.toUpperCase(char0))
-                                        .append(s.subSequence(1, len))
-                                        .toString();
+                                     .append(s.subSequence(1, len))
+                                     .toString();
     }
 
     /**
@@ -90,8 +90,8 @@ public abstract class Strings {
         if (Character.isLowerCase(c))
             return s.toString();
         return new StringBuilder(len).append(Character.toLowerCase(c))
-                                        .append(s.subSequence(1, len))
-                                        .toString();
+                                     .append(s.subSequence(1, len))
+                                     .toString();
     }
 
     /**
@@ -713,4 +713,38 @@ public abstract class Strings {
         }
         return sb.toString();
     }
+
+    /**
+     * 根据给定的分隔符拼接字符串
+     * 
+     * @param strs
+     *            字符串集合
+     * @param sp
+     *            分隔符
+     * @return
+     */
+    public static String splice(Collection<String> strs, String sp) {
+        if (strs == null || strs.size() == 0) {
+            return "";
+        }
+        if (sp == null)
+            sp = "";
+        StringBuilder sb = new StringBuilder();
+        for (String str : strs) {
+            sb.append(str.trim()).append(sp);
+        }
+        return sb.substring(0, sb.length() - sp.length());
+    }
+
+    /**
+     * 使用逗号作为分隔符拼接字符串
+     * 
+     * @param strs
+     *            字符串集合
+     * @return
+     */
+    public static String splice(Collection<String> strs) {
+        return splice(strs, ",");
+    }
+
 }

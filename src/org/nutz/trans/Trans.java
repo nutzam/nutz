@@ -70,6 +70,11 @@ public abstract class Trans {
             trans.get().rollback();
     }
 
+    public static boolean isTransactionNone() {
+        Transaction t = trans.get();
+        return null == t || t.getLevel() == Connection.TRANSACTION_NONE;
+    }
+
     /**
      * 执行一组原子操作，默认的事务级别为: TRANSACTION_READ_COMMITTED。详细请看 exec(int level,
      * Atom... atoms) 函数的说明

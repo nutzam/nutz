@@ -4,22 +4,48 @@ package org.nutz.lang;
  * A group of helper functions to counting some ...
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author pw
  */
 public abstract class Maths {
 
     /**
-     * Seek the maximum number from an INT array
+     * 返回最大的一个
      * 
      * @param nums
-     *            INT array
-     * @return the maximum
+     * @return
      */
     public static int max(int... nums) {
+        return takeOne(new CompareSomeThing() {
+            public boolean compare(int arg0, int arg1) {
+                return arg0 > arg1;
+            }
+        }, nums);
+    }
+
+    /**
+     * 返回最小的一个
+     * 
+     * @param nums
+     * @return
+     */
+    public static int min(int... nums) {
+        return takeOne(new CompareSomeThing() {
+            public boolean compare(int arg0, int arg1) {
+                return arg0 < arg1;
+            }
+        }, nums);
+    }
+
+    private interface CompareSomeThing {
+        public boolean compare(int arg0, int arg1);
+    }
+
+    private static int takeOne(CompareSomeThing cp, int... nums) {
         if (null == nums || nums.length == 0)
             return 0;
         int re = nums[0];
         for (int i = 1; i < nums.length; i++) {
-            if (nums[i] > re)
+            if (cp.compare(nums[i], re))
                 re = nums[i];
         }
         return re;
