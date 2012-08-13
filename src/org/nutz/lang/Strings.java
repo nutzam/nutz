@@ -727,11 +727,13 @@ public abstract class Strings {
         if (strs == null || strs.size() == 0) {
             return "";
         }
+        if (sp == null)
+            sp = "";
         StringBuilder sb = new StringBuilder();
         for (String str : strs) {
             sb.append(str.trim()).append(sp);
         }
-        return sb.substring(0, sb.length() - 1);
+        return sb.substring(0, sb.length() - sp.length());
     }
 
     /**
