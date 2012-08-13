@@ -19,16 +19,10 @@ public abstract class TwoTernary extends AbstractOpt{
     }
 
     public Object getRight() {
-        if(right instanceof Operator){
-            return ((Operator) right).calculate();
-        }
-        return right;
+        return calculateItem(right);
     }
 
     public Object getLeft() {
-        if(left instanceof Operator){
-            return ((Operator) left).calculate();
-        }
-        return left;
+        return calculateItem(left);
     }
 }
