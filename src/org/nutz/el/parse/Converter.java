@@ -7,12 +7,14 @@ import java.util.List;
 import java.util.Queue;
 
 import org.nutz.el.ElException;
+import org.nutz.el.Operator;
 import org.nutz.el.Parse;
 import org.nutz.el.obj.Elobj;
 import org.nutz.el.opt.arithmetic.LBracketOpt;
 import org.nutz.el.opt.arithmetic.NegativeOpt;
 import org.nutz.el.opt.arithmetic.RBracketOpt;
 import org.nutz.el.opt.arithmetic.SubOpt;
+import org.nutz.el.opt.object.CommaOpt;
 import org.nutz.el.opt.object.InvokeMethodOpt;
 import org.nutz.el.opt.object.MethodOpt;
 import org.nutz.lang.Lang;
@@ -103,7 +105,17 @@ public class Converter {
      * 转换数据,主要是转换负号,方法执行
      */
     private Object parseItem(Object item){
-        paramSize++;
+        //处理参数个数
+        if(paramSize == 0){
+            if(!(item instanceof Operator)){
+                paramSize = 1;
+            }
+        } else {
+            if(item instanceof CommaOpt){
+                paramSize ++;
+            }
+        }
+        
         //左括号
         if(item instanceof LBracketOpt){
             if(prev instanceof Elobj){
@@ -115,11 +127,13 @@ public class Converter {
                 bracket.addFirst(BracketType.Default);
             }
         }
+        
         //右括号
         if(item instanceof RBracketOpt){
             switch(bracket.poll()){
             case Method:
-                prem.setSize(paramSize - 1);
+                prem.setSize(paramSize);
+                paramSize = -1;
                 item = new Object[]{new RBracketOpt(),new InvokeMethodOpt()};
                 prem = null;
                 break;

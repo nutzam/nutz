@@ -33,10 +33,6 @@ public class MethodOpt extends TwoTernary {
     }
     
     public void wrap(Queue<Object> rpn) {
-        if(rpn.peek() instanceof AccessOpt){
-            left = rpn.poll();
-            return;
-        }
         if(getSize() <= 0){
             left = rpn.poll();
         } else {
