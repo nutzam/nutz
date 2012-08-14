@@ -16,9 +16,7 @@ public class GetSender extends Sender {
         try {
             openConnection();
             setupRequestHeader();
-            setupDoInputOutputFlag();
             return createResponse(getResponseHeader());
-
         }
         catch (Exception e) {
             throw new HttpException(request.getUrl().toString(), e);
