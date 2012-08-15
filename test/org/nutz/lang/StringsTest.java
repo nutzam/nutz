@@ -9,8 +9,6 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 import org.junit.Test;
 
@@ -301,13 +299,4 @@ public class StringsTest {
         assertEquals("alert(&#x27;hello world&#x27;);", Strings.escapeHtml("alert('hello world');"));
     }
 
-    @Test
-    public void test_splice() throws Exception {
-        Set<String> strs = new LinkedHashSet<String>();
-        strs.add("aaa");
-        strs.add("bbb");
-        strs.add("ccc");
-        assertEquals("aaa,bbb,ccc", Strings.splice(strs));
-        assertEquals("aaa|bbb|ccc", Strings.splice(strs, "|"));
-    }
 }
