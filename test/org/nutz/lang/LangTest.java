@@ -1,6 +1,10 @@
 package org.nutz.lang;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -304,5 +308,24 @@ public class LangTest {
         assertEquals("f96b697d7cb7938d525a2f31aaf161d0", Lang.md5("message digest"));
         assertEquals("c3fcd3d76192e4007dfb496cca67e13b", Lang.md5("abcdefghijklmnopqrstuvwxyz"));
         assertEquals("046a899ee7a6ec88d370211a518c9e80", Lang.md5("算法"));
+    }
+
+    @Test
+    public void test_reverse() throws Exception {
+        String[] sa = new String[]{"aaa", "bbb", "ccc", "ddd"};
+        Lang.reverse(sa);
+        assertTrue("ddd,ccc,bbb,aaa".equals(printArray(sa)));
+
+        Integer[] ia = new Integer[]{1, 2, 3, 4};
+        Lang.reverse(ia);
+        assertTrue("4,3,2,1".equals(printArray(ia)));
+    }
+
+    private <T> String printArray(T[] sa) {
+        StringBuilder sb = new StringBuilder();
+        for (T t : sa) {
+            sb.append(t).append(",");
+        }
+        return sb.substring(0, sb.length() - 1);
     }
 }

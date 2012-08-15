@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -1872,14 +1873,35 @@ public abstract class Lang {
             throw Lang.impossible();
         }
     }
-    
+
     public static final boolean isAndroid;
     static {
         boolean flag = false;
         try {
             Class.forName("android.Manifest");
             flag = true;
-        } catch (Throwable e) {}
+        }
+        catch (Throwable e) {}
         isAndroid = flag;
+    }
+
+    /**
+     * 将数组内容倒着排序
+     * 
+     * @param arrays
+     */
+    public static <T> void reverse(T[] arrays) {
+        int size = arrays.length;
+        for (int i = 0; i < size; i++) {
+            int ih = i;
+            int it = size - 1 - i;
+            if (ih == it || ih > it) {
+                break;
+            }
+            T ah = arrays[ih];
+            T swap = arrays[it];
+            arrays[ih] = swap;
+            arrays[it] = ah;
+        }
     }
 }
