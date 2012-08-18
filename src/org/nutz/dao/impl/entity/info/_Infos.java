@@ -3,6 +3,7 @@ package org.nutz.dao.impl.entity.info;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.annotation.ColDefine;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Comment;
@@ -124,6 +125,17 @@ public class _Infos {
         info.annPrev = field.getAnnotation(Prev.class);
         info.annReadonly = field.getAnnotation(Readonly.class);
         info.columnComment = field.getAnnotation(Comment.class);
+        
+        //检查@Id和@Name的属性类型
+        if (info.annId != null) {
+            if (!Mirror.me(field.getType()).isIntLike())
+                throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Id , but not Number type!!", field);
+        }
+        
+        if (info.annName != null)
+            if (!Mirror.me(field.getType()).isStringLike())
+                throw Lang.makeThrow(DaoException.class, "Field(%s) annotation @Name , but not String type!!", field);
+        
         return info;
     }
 

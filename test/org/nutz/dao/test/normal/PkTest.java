@@ -4,7 +4,10 @@ import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.ErrorAnnId;
+import org.nutz.dao.test.meta.ErrorAnnName;
 
 public class PkTest extends DaoCase {
 
@@ -66,4 +69,13 @@ public class PkTest extends DaoCase {
         assertEquals("XiaoBai", dog.getName());
     }
 
+    //github issue 296
+    @Test(expected=DaoException.class)
+    public void test_error_ann_id() {
+        dao.getEntity(ErrorAnnId.class);
+    }
+    @Test(expected=DaoException.class)
+    public void test_error_ann_name() {
+        dao.getEntity(ErrorAnnName.class);
+    }
 }
