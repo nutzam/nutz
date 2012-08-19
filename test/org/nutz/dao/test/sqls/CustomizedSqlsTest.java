@@ -17,6 +17,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.test.DaoCase;
@@ -146,5 +147,15 @@ public class CustomizedSqlsTest extends DaoCase {
         dao.execute(sql);
         Country c = dao.fetch(Country.class, "ABC");
         assertNull(c.getDetail());
+    }
+    
+    @Test
+    public void test_cnd_pager() {
+        pojos.init();
+        Sql sql = Sqls.create("select * from t_pet $condition");
+        sql.setCondition(Cnd.where("name", "=", "wendal"));
+        Pager pager = dao.createPager(1, 20);
+        sql.setPager(pager);
+        dao.execute(sql);
     }
 }
