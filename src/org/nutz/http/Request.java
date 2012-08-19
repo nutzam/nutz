@@ -44,10 +44,10 @@ public class Request {
         return Request.create(url, method, params, Header.create());
     }
 
-    public static Request create(    String url,
-                                    METHOD method,
-                                    Map<String, Object> params,
-                                    Header header) {
+    public static Request create(String url,
+                                 METHOD method,
+                                 Map<String, Object> params,
+                                 Header header) {
         return new Request().setMethod(method).setParams(params).setUrl(url).setHeader(header);
     }
 
@@ -91,7 +91,7 @@ public class Request {
     public InputStream getInputStream() {
         // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
         if (null == data) {
-			return new ByteInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+            return new ByteInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
         }
         return new ByteInputStream(data);
     }

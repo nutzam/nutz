@@ -1871,7 +1871,7 @@ public abstract class Lang {
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.impossible();
-        } 
+        }
     }
 
     public static final boolean isAndroid;
