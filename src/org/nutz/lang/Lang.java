@@ -1861,7 +1861,7 @@ public abstract class Lang {
             str = "";
         try {
             MessageDigest md5 = MessageDigest.getInstance("md5");
-            md5.update(str.getBytes(Encoding.CHARSET_UTF8));
+            md5.update(Strings.getBytesUTF8(str));
             byte[] data = md5.digest();
             StringBuilder sb = new StringBuilder();
             for (byte b : data) {
@@ -1871,7 +1871,7 @@ public abstract class Lang {
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.impossible();
-        }
+        } 
     }
 
     public static final boolean isAndroid;

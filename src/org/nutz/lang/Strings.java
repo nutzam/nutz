@@ -1,5 +1,6 @@
 package org.nutz.lang;
 
+import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -712,6 +713,14 @@ public abstract class Strings {
             }
         }
         return sb.toString();
+    }
+    
+    public static byte[] getBytesUTF8(String cs){
+    	try {
+			return cs.getBytes(Encoding.UTF8);
+		} catch (UnsupportedEncodingException e) {
+			throw Lang.wrapThrow(e);
+		}
     }
 
 }
