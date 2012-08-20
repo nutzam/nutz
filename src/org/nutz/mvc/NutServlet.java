@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.ServletNutConfig;
 
 /**
@@ -49,7 +50,8 @@ public class NutServlet extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        Mvcs.resetALL();
+        String preName = Mvcs.getName();
+        Context preContext = Mvcs.resetALL();
         try {
             if (sp != null)
                 req = sp.filter(req, resp, getServletContext());
@@ -58,6 +60,10 @@ public class NutServlet extends HttpServlet {
                 resp.sendError(404);
         } finally {
             Mvcs.resetALL();
+            if (preName != null)
+                Mvcs.set(preName, (HttpServletRequest)req, (HttpServletResponse)resp);
+            if (preContext != null)
+                Mvcs.ctx.reqThreadLocal.set(preContext);
         }
     }
 }

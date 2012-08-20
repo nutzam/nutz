@@ -16,6 +16,7 @@ import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
 import org.nutz.mvc.impl.NutMessageMap;
 import org.nutz.mvc.ioc.SessionIocContext;
@@ -340,9 +341,10 @@ public abstract class Mvcs {
     // ==================================================================
 
     // 重置当前线程所持有的对象
-    public static void resetALL() {
-        ctx.reqThreadLocal.get().clear();
+    public static Context resetALL() {
+        Context context = ctx.reqThreadLocal.get();
         NAME.set(null);
+        return context;
     }
 
     public static HttpSession getHttpSession() {

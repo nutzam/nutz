@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.FilterNutConfig;
 
 /**
@@ -72,7 +73,8 @@ public class NutFilter implements Filter {
     @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
-        Mvcs.resetALL();
+        String preName = Mvcs.getName();
+        Context preContext = Mvcs.resetALL();
         try {
             if (sp != null)
                 req = sp.filter((HttpServletRequest) req,
@@ -105,6 +107,10 @@ public class NutFilter implements Filter {
         }
         finally {
             Mvcs.resetALL();
+            if (preName != null)
+                Mvcs.set(preName, (HttpServletRequest)req, (HttpServletResponse)resp);
+            if (preContext != null)
+                Mvcs.ctx.reqThreadLocal.set(preContext);
         }
     }
 }
