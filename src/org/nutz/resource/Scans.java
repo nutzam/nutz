@@ -168,9 +168,10 @@ public class Scans {
                 } else {
                     list.add(new FileResource(src, srcFile));
                 }
-                return list;
             }
-            return scan(src.substring(1), regex);
+            else
+                scan(src.substring(1), regex);
+            //虽然已经找到一些了, 但还是扫描一些吧,这样才全!!
         }
         for (ResourceLocation location : locations) {
             location.scan(src, pattern, list);
