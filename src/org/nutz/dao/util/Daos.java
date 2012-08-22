@@ -240,7 +240,7 @@ public abstract class Daos {
             if (mf != null)
                 colName = mf.getColumnName();
             sql.append(colName).append("=");
-            if (head.special) {
+            if (head.special()) {
                 if ("+1".equals(head.value()) || "-1".equals(head.value())) {
                     sql.append(colName);
                 }
