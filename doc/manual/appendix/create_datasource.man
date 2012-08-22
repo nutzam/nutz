@@ -71,6 +71,60 @@
 			}
 		}
 		}}}
+		
+	如何使用这些配置? 请看文章末尾.
+--------------------------------------------------------------------------------------
+Druid
+
+	国产精品连接池,淘宝温少诚意出品
+	
+	druid : 直接书写 Java 代码
+		{{{<Java>
+		import com.alibaba.druid.pool.DruidDataSource;
+		
+		...
+		
+		DruidDataSource dds = new DruidDataSource();
+        dds.setDriverClassName("org.postgresql.Driver");
+        dds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
+        dds.setUsername("enzozhong");
+        dds.setPassword("123");
+		...
+		dds.close();  // 关闭池内所有连接
+		}}}
+	druid : 通过 Nutz.Ioc 的 JSON 配置文件
+		{{{<IOC-JSON 配置>
+		{
+			dataSource : {
+                type : "com.alibaba.druid.pool.DruidDataSource",
+                events : {
+                    depose : 'close'
+                },
+                fields : {
+                    driverClassName : "org.postgresql.Driver",
+                    url : "jdbc:postgresql://localhost:5432/mydatabase",
+                    username : "enzozhong",
+                    password : "123"
+                }
+            }
+		}
+		}}}
+	druid: 通过 Nutz.Ioc 的 XML 配置文件
+		{{{<IOC-XML 配置>
+			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
+				<obj name="dataSource" type="com.alibaba.druid.pool.DruidDataSource">
+					<events>
+						<depose>close</depose>
+					</events>
+					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
+					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
+					<field name="username"><str>enzozhong</str></field>
+					<field name="password"><str>123</str></field>
+				</obj>
+			</ioc>
+		}}}
+		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+		 * [http://code.alibabatech.com/wiki/pages/viewpage.action?pageId=2916406 更多配置]
 --------------------------------------------------------------------------------------
 Apache Tomcat 7 连接池
 
@@ -173,55 +227,6 @@ Apache DBCP
 		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
---------------------------------------------------------------------------------------
-Druid
-	druid : 直接书写 Java 代码
-		{{{<Java>
-		import com.alibaba.druid.pool.DruidDataSource;
-		
-		...
-		
-		DruidDataSource dds = new DruidDataSource ();
-        dds.setDriverClassName ( "org.postgresql.Driver" );
-        dds.setUrl ( "jdbc:postgresql://localhost:5432/mydatabase" );
-        dds.setUsername ( "enzozhong" );
-        dds.setPassword ( "123" );
-		...
-		dds.close();  // 关闭池内所有连接
-		}}}
-	druid : 通过 Nutz.Ioc 的 JSON 配置文件
-		{{{<IOC-JSON 配置>
-		{
-			dataSource : {
-                type : "com.alibaba.druid.pool.DruidDataSource",
-                events : {
-                    depose : 'close'
-                },
-                fields : {
-                    driverClassName : "org.postgresql.Driver",
-                    url : "jdbc:postgresql://localhost:5432/mydatabase",
-                    username : "enzozhong",
-                    password : "*123"
-                }
-            }
-		}
-		}}}
-	druid: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="com.alibaba.druid.pool.DruidDataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClassName"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>enzozhong</str></field>
-					<field name="password"><str>123</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
-		 * [http://code.alibabatech.com/wiki/pages/viewpage.action?pageId=2916406 更多配置]
 --------------------------------------------------------------------------------------
 C3P0
 	c3p0: 直接书写 Java 代码
@@ -361,10 +366,24 @@ BoneCP
 		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
+容器提供的连接池(JNDI)
+
+	Java代码方式:
+		不写了,这个大家都懂
+		
+	由于是通过JNDI获取,所以不再是一个Ioc的bean, 我们只需要引用它就可以了.例如:
+		{{{<js>
+		{
+			type : "org.nutz.dao.impl.NutDao",
+			args : [{jndi:"jdbc/dataSource"}]
+		}
+		}}}
+	
+--------------------------------------------------------------------------------------
 如何使用这些配置
 
 	Java代码的方式:
-		{{{
+		{{{<java>
 		//创建dataSource,以DBCP为例
 		DataSource ds = new DataSource();
 		ds.setDriverClassName("org.postgresql.Driver");
@@ -386,7 +405,7 @@ BoneCP
 		}}}
 	
 	通过 Nutz.Ioc 的 JSON 配置文件
-		{{{
+		{{{<js>
 		//将配置信息保存到dao.js,并存放于src文件夹下
 		
 		Ioc ioc = new NutIoc(new JsonLoader("dao.js"));
