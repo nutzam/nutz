@@ -221,4 +221,9 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals("record23", pets.get(3).getName());
         assertEquals("record24", pets.get(4).getName());
     }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void test_fetch_null_name() {
+        dao.fetch(Pet.class, (String)null);
+    }
 }

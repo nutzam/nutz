@@ -441,6 +441,8 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T fetch(Class<T> classOfT, String name) {
+        if (name == null)
+            throw new IllegalArgumentException("name MUST NOT NULL!");
         Entity<T> en = holder.getEntity(classOfT);
         if (en.getNameField() == null)
             throw new DaoException("Need @Name for " + classOfT);
