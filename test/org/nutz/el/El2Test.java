@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.nutz.conf.NutConf;
 import org.nutz.el.El;
 import org.nutz.el.issue.Issue293;
+import org.nutz.el.issue.Issue303;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Maths;
@@ -401,4 +402,13 @@ public class El2Test {
         assertEquals("xxx", El.eval(context, "a.printParam(a.info)"));
     }
     
+    @Test
+    public void testIssue303(){
+        Context context = Lang.context();
+        Issue303 item = new Issue303("item");
+        item.child = new Issue303("child");
+        context.set("item", item);
+        
+        assertEquals("child", El.eval(context, "item.child.getName()"));
+    }
 }
