@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
@@ -41,16 +43,19 @@ public class NutConf {
 
     // 所有的配置信息
     private Map<String, Object> map = new HashMap<String, Object>();
-    private static final Object lock = new Object();
+    private static final Lock lock = new ReentrantLock();
 
     private static NutConf conf;
 
     private static NutConf me() {
-        if (null == conf) {
-            synchronized (lock) {
+        lock.lock();
+        try{
+            if (null == conf) {
                 if (null == conf)
                     conf = new NutConf();
             }
+        } finally{
+            lock.unlock();
         }
         return conf;
     }
@@ -88,8 +93,9 @@ public class NutConf {
                         map = (Map) Mapl.merge(map, m);
                         for (Object key : m.keySet()) {
                             if (key.equals("include")) {
+                                map.remove("include");
                                 List<String> include = (List) m.get("include");
-                                loadResource(include.toArray(new String[0]));
+                                loadResource(include.toArray(new String[include.size()]));
                             }
                         }
                     }
@@ -131,5 +137,12 @@ public class NutConf {
             return map.get(key);
         }
         return Mapl.maplistToObj(map.get(key), type);
+    }
+    
+    /**
+     * 清理所有配置信息
+     */
+    public static void clear(){
+        conf = null;
     }
 }
