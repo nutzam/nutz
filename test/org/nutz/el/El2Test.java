@@ -410,5 +410,6 @@ public class El2Test {
         context.set("item", item);
         
         assertEquals("child", El.eval(context, "item.child.getName()"));
+        assertEquals(0, El.eval(context, "item.list.size()"));
     }
 }
