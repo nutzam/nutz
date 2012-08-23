@@ -45,7 +45,12 @@ public class NutConfigTest {
     public void loadDefaultConfigTest(){
         NutConf.load("org/nutz/conf/NutzDefaultConfig.js");
         Map<?, ?> conf = (Map<?, ?>) NutConf.get("TEST", Map.class);
-        assertNotNull(conf);
+        assertNull(conf); /*
+        by wendal:
+            原本写的是assertNotNull,从TestCase的角度看,是错误的.
+            然而,如果改成assertNull, 单独跑这个测试是pass,但如果本类中其他TestCase先跑,那么这个测试必然fail
+            原因在于NutConf并不清除之前的配置信息, 建议加个NutConf.clear(), 然后在每个TestCase之前运行(即onBefore)
+        */
     }
     
     @Test

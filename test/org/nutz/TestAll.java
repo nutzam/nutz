@@ -1,7 +1,6 @@
 package org.nutz;
 
 import org.junit.runner.RunWith;
-
 import org.junit.runners.Suite;
 
 /**
@@ -13,4 +12,5 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AllWithDB.class, AllWithoutDB.class})
-public class TestAll {}
+public class TestAll {
+}

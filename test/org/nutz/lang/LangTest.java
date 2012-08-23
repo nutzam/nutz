@@ -20,6 +20,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
+import org.nutz.lang.meta.TestR;
 
 public class LangTest {
 
@@ -327,5 +328,11 @@ public class LangTest {
             sb.append(t).append(",");
         }
         return sb.substring(0, sb.length() - 1);
+    }
+    
+    @Test
+    public void test_obj2map_again() {
+        TestR r = new TestR();
+        Lang.obj2map(r);
     }
 }
