@@ -5,8 +5,10 @@ import java.util.Map;
 
 import org.nutz.el.Operator;
 import org.nutz.el.obj.Elobj;
+import org.nutz.el.obj.FieldObj;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.el.opt.TwoTernary;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 /**
@@ -58,7 +60,16 @@ public class AccessOpt extends TwoTernary implements RunMethod{
             return ((Operator) left).calculate();
         }
         if(left instanceof Elobj){
-            return ((Elobj) left).fetchVal();
+            Object obj = ((Elobj) left).fetchVal();
+            if(right instanceof FieldObj){
+                try {
+                    return Mirror.me(obj).getField(((Elobj)right).getVal());
+                }
+                catch (NoSuchFieldException e) {
+                    throw Lang.wrapThrow(e);
+                }
+            }
+            return obj;
         }
         return left;
     }

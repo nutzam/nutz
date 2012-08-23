@@ -1,6 +1,7 @@
 package org.nutz.el.parse;
 
 import org.nutz.el.Parse;
+import org.nutz.el.obj.AbstractObj;
 import org.nutz.el.obj.IdentifierObj;
 
 /**
@@ -26,7 +27,7 @@ public class IdentifierParse implements Parse{
             if(sb.toString().equals("false")){
                 return Boolean.FALSE;
             }
-            return new IdentifierObj(sb.toString());
+            return new AbstractObj(sb.toString());
         }
         return nullobj;
     }
