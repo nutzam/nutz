@@ -187,7 +187,7 @@ public class UpdateTest extends DaoCase {
     
     @Test
     public void test_update_self_plus() {
-        pojos.initData();
+        dao.create(Pet.class, true);
         Pet pet = Pet.create("Xy");
         pet.setAge(98);
         dao.insert(pet);
