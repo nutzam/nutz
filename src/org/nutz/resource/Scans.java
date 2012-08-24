@@ -323,8 +323,6 @@ public class Scans {
         if (!list.isEmpty()) {
             for (NutResource nr : list) {
                 if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
-                    if (log.isInfoEnabled())
-                        log.infof("Resource can't map to Class, Resource %s", nr);
                     continue;
                 }
                 InputStream in = null;
