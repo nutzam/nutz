@@ -13,7 +13,6 @@ import org.junit.runners.Suite;
                         FloatSetTest.class,
                         SimpleNodeTest.class,
                         DisksTest.class,
-                        ByteInputStreamTest.class,
                         ContextTest.class,
                         NutMapTest.class})
 public class AllUtil {

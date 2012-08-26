@@ -4,6 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,7 +22,6 @@ import java.io.Reader;
 import java.io.Writer;
 
 import org.nutz.lang.stream.NullInputStream;
-import org.nutz.lang.util.ByteInputStream;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -568,7 +568,7 @@ public abstract class Streams {
     }
 
     public static InputStream wrap(byte[] bytes) {
-        return new ByteInputStream(bytes);
+        return new ByteArrayInputStream(bytes);
     }
 
     /**

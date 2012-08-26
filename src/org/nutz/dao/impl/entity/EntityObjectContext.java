@@ -1,11 +1,11 @@
 package org.nutz.dao.impl.entity;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.lang.util.AbstractContext;
-import org.nutz.lang.util.ArraySet;
 import org.nutz.lang.util.Context;
 
 public class EntityObjectContext extends AbstractContext {
@@ -26,7 +26,7 @@ public class EntityObjectContext extends AbstractContext {
     }
 
     public Set<String> keys() {
-        Set<String> names = new ArraySet<String>(en.getMappingFields().size());
+        Set<String> names = new HashSet<String>(en.getMappingFields().size());
         names.add(ME);
         for (MappingField mf : en.getMappingFields())
             names.add(mf.getName());

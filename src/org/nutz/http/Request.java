@@ -1,5 +1,6 @@
 package org.nutz.http;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
@@ -10,7 +11,6 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Strings;
-import org.nutz.lang.util.ByteInputStream;
 
 public class Request {
 
@@ -91,9 +91,9 @@ public class Request {
     public InputStream getInputStream() {
         // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
         if (null == data) {
-            return new ByteInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+            return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
         }
-        return new ByteInputStream(data);
+        return new ByteArrayInputStream(data);
     }
 
     public byte[] getData() {

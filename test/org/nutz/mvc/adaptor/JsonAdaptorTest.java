@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 
 import org.junit.Test;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.mock.Mock;
 import org.nutz.mvc.AbstractMvcTest;
@@ -20,7 +21,7 @@ public class JsonAdaptorTest extends AbstractMvcTest {
 
     private void initreq(String path, String json) {
         request.setPathInfo(path);
-        request.setInputStream(Mock.servlet.ins(new StringInputStream(json, "UTF-8")));
+        request.setInputStream(Mock.servlet.ins(new StringInputStream(json, Encoding.CHARSET_UTF8)));
     }
     
     @Test

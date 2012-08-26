@@ -2,6 +2,7 @@ package org.nutz.mock.servlet.multipart.inputing;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.charset.Charset;
 
 import org.nutz.lang.Lang;
 
@@ -18,7 +19,7 @@ public class InputingHelper {
     }
 
     public Inputing wrap(String fmt, Object... args) {
-        return new StringInputing(String.format(fmt, args) + "\r\n", charset);
+        return new StringInputing(String.format(fmt, args) + "\r\n", Charset.forName(charset));
     }
 
     public Inputing name(String name) {
@@ -42,7 +43,7 @@ public class InputingHelper {
     }
 
     public Inputing data(String str) {
-        return new StringInputing(str, charset);
+        return new StringInputing(str, Charset.forName(charset));
     }
 
     public Inputing file(File f) {
