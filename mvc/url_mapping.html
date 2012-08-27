@@ -262,6 +262,17 @@ public class SubModule{
 	 ...
 </pre>
 <p>当然，一般的说，很少有人在主模块上声明 @At</p>
+<p><span style="color:#FF0000;"><b>注:</b></span> 使用不带参数的@At()注解, 默认会使用方法名/类名的小写做为入口地址!</p>
+<pre><span class="zdoc_code_cmt">// 比如 
+</span>@At
+public String getPet() {
+    ...
+
+<span class="zdoc_code_cmt">// 与下面的代码是等效的
+</span>@At("/getpet")
+public String getPet() {
+    ...
+</pre>
 <p>通过上面的内容我们可以知道，只要有一个 URL，我们就知道如何设置注解 '@At'，但是你确定我们要匹配的 URL 就是 </p>
 <ul type="disc">
 <li><span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span></li>
