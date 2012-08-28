@@ -133,4 +133,9 @@ public class ScansTest {
         List<NutResource> list = Scans.me().scan(testPath, null);
         assertTrue(list.size() > 10);
     }
+    
+    @Test
+    public void test_scan_root() {
+        Scans.me().scan("", ".+\\.xml");
+    }
 }

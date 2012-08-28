@@ -329,7 +329,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		// Id 字段
 		if (null != info.annId) {
 			ef.setAsId();
-			if (info.annId.auto())
+			if (info.annId.auto() && info.annPrev == null)
 				ef.setAsAutoIncreasement();
 		}
 
@@ -428,11 +428,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 			}
 			// '@Id' : 的自动后续获取
 			else if (null != info.annId && info.annId.auto()) {
-				MappingField idField = en.getField(info.name);
-				String autoSql = "SELECT MAX($field) AS $field FROM $view";
-				Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
-				autoInfo.setEntity(en);
-				en.addAfterInsertMacro(autoInfo);
+				en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
 			}
 		}
 	}
