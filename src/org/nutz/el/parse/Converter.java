@@ -29,7 +29,7 @@ import org.nutz.lang.Lang;
  * 
  */
 public class Converter {
-    private static final List<Parse> parses = new ArrayList<Parse>();
+    private final List<Parse> parses = new ArrayList<Parse>();
 
     // 表达式字符队列
     private CharQueue exp;
