@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -394,22 +395,49 @@ public class El2Test {
 
     @Test
     public void testIssue293() {
-        
+
         Context context = Lang.context();
         context.set("static", new Issue293());
         context.set("a", Issue293.class);
-        
+
         assertEquals("xxx", El.eval(context, "a.printParam(a.info)"));
     }
-    
+
     @Test
-    public void testIssue303(){
+    public void testIssue303() {
         Context context = Lang.context();
         Issue303 item = new Issue303("item");
         item.child = new Issue303("child");
         context.set("item", item);
-        
+
         assertEquals("child", El.eval(context, "item.child.getName()"));
         assertEquals(0, El.eval(context, "item.list.size()"));
+    }
+
+    @Test
+    public void testIssue306() throws InterruptedException {
+        int size = 100;
+        final CountDownLatch count = new CountDownLatch(size);
+        final List<Integer> error = new ArrayList<Integer>();
+        for (int index = 0; index < size; index++) {
+            new Thread() {
+                public void run() {
+                    try {
+                        El.eval("1+1");
+                    }
+                    catch (Exception e) {
+                        error.add(1);
+                    }
+                    finally {
+                        count.countDown();
+                    }
+                }
+
+            }.start();
+        }
+        count.await();
+        if (error.size() > 0) {
+            fail();
+        }
     }
 }
