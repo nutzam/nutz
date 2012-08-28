@@ -1461,7 +1461,7 @@ public abstract class Lang {
      * @param millisecond
      *            休眠时间
      */
-    public void quiteSleep(long millisecond) {
+    public static void quiteSleep(long millisecond) {
         try {
             if (millisecond > 0)
                 Thread.sleep(millisecond);

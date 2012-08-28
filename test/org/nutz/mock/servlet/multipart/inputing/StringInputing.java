@@ -2,6 +2,7 @@ package org.nutz.mock.servlet.multipart.inputing;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.stream.StringInputStream;
@@ -14,7 +15,7 @@ public class StringInputing implements Inputing {
         ins = Lang.ins(str);
     }
     
-    StringInputing(String str, String charset) {
+    StringInputing(String str, Charset charset) {
         ins = new StringInputStream(str, charset);
     }
 
