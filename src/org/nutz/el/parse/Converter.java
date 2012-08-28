@@ -4,7 +4,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 import org.nutz.el.ElException;
 import org.nutz.el.Operator;
@@ -30,7 +29,7 @@ import org.nutz.lang.Lang;
  * 
  */
 public class Converter {
-    private static final List<Parse> parses = new ArrayList<Parse>();
+    private final List<Parse> parses = new ArrayList<Parse>();
 
     // 表达式字符队列
     private CharQueue exp;
