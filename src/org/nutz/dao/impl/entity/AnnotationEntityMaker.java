@@ -329,7 +329,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		// Id 字段
 		if (null != info.annId) {
 			ef.setAsId();
-			if (info.annId.auto())
+			if (info.annId.auto() && info.annPrev == null)
 				ef.setAsAutoIncreasement();
 		}
 
