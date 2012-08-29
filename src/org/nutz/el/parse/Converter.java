@@ -6,7 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.nutz.el.ElException;
-import org.nutz.el.Operator;
 import org.nutz.el.Parse;
 import org.nutz.el.obj.Elobj;
 import org.nutz.el.obj.FieldObj;
@@ -35,14 +34,11 @@ public class Converter {
     private CharQueue exp;
     // 表达式项
     private LinkedList<Object> itemCache;
-    // 括号栈
-    private LinkedList<BracketType> bracket = new LinkedList<BracketType>();
+    // 方法栈
+    private LinkedList<MethodOpt> methods = new LinkedList<MethodOpt>();
 
     // 上一个数据
     private Object prev = null;
-
-    private MethodOpt prem = null;
-    private int paramSize = 0;
 
     public Converter(CharQueue reader) {
         this.exp = reader;
@@ -151,41 +147,35 @@ public class Converter {
      */
     private Object parseItem(Object item) {
         // 处理参数个数
-        if (paramSize == 0) {
-            if (!(item instanceof Operator)) {
-                paramSize = 1;
-            }
-        } else {
-            if (item instanceof CommaOpt) {
-                paramSize++;
+        if (methods.peek() != null) {
+            MethodOpt opt = methods.peek();
+            if (opt.getSize() <= 0) {
+                if (!(item instanceof CommaOpt) && !(item instanceof RBracketOpt)) {
+                    opt.setSize(1);
+                }
+            } else {
+                if (item instanceof CommaOpt) {
+                    opt.setSize(opt.getSize() + 1);
+                }
             }
         }
 
         // 左括号
         if (item instanceof LBracketOpt) {
             if (prev instanceof Elobj) {
-                prem = new MethodOpt();
+                MethodOpt prem = new MethodOpt();
                 item = new Object[]{prem, new LBracketOpt()};
-                paramSize = 0;
-                bracket.addFirst(BracketType.Method);
+                methods.addFirst(prem);
             } else {
-                bracket.addFirst(BracketType.Default);
+                methods.addFirst(null);
             }
         }
 
         // 右括号
         if (item instanceof RBracketOpt) {
-            switch (bracket.poll()) {
-            case Method:
-                prem.setSize(paramSize);
-                paramSize = -1;
+            if (methods.poll() != null) {
                 item = new Object[]{new RBracketOpt(), new InvokeMethodOpt()};
-                prem = null;
-                break;
-            default:
-                break;
             }
-
         }
         // 转换负号'-'
         if (item instanceof SubOpt && NegativeOpt.isNegetive(prev)) {
@@ -219,20 +209,5 @@ public class Converter {
      */
     public boolean isEnd() {
         return itemCache.isEmpty();
-    }
-
-    /**
-     * 括号类型
-     * 
-     */
-    enum BracketType {
-        /**
-         * 方法
-         */
-        Method,
-        /**
-         * 默认
-         */
-        Default;
     }
 }

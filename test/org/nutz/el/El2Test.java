@@ -1,6 +1,8 @@
 package org.nutz.el;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -10,7 +12,6 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.conf.NutConf;
-import org.nutz.el.El;
 import org.nutz.el.issue.Issue293;
 import org.nutz.el.issue.Issue303;
 import org.nutz.el.speed.SimpleSpeedTest;
@@ -439,5 +440,28 @@ public class El2Test {
         if (error.size() > 0) {
             fail();
         }
+    }
+    
+    @Test
+    public void testIssue307(){
+        Context context = Lang.context();
+        List<String> list = new ArrayList<String>();
+        list.add("jk");
+        context.set("list", list);
+        context.set("System", System.class);
+        
+        El.eval(context, "list.add(list.get(0))");
+        assertEquals(2, list.size());
+    }
+    
+    @Test
+    public void testIssue308(){
+        Context context = Lang.context();
+        List<String> list = new ArrayList<String>();
+        list.add("jk");
+        context.set("list", list);
+        context.set("System", System.class);
+        
+//        El.eval(context, "System.getenv('Path').getClass().getName()");
     }
 }
