@@ -115,9 +115,10 @@ public class Invoking {
                         }
                         if (pts[0].isArray()) {
                             if (Mirror.me(pts[0].getComponentType()).getWrapper()
-                                    .equals(Mirror.me(dynaArg.getClass().getComponentType()).getWrapper()))
+                                    .equals(Mirror.me(dynaArg.getClass().getComponentType()).getWrapper())){
                                 invoker = new DynamicArgsInvoker(m, Lang.array2array(args, pts[0].getComponentType()));
                                 break;
+                            }
                         }
                     }
                 }

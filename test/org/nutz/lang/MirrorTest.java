@@ -605,4 +605,9 @@ public class MirrorTest {
             public void invoke(Method obj) {}
         });
     }
+    
+    @Test
+    public void testIssue309(){
+        assertEquals("jk", Mirror.me(String.class).invoke(String.class, "valueOf", "jk"));
+    }
 }
