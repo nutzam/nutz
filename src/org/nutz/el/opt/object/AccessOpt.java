@@ -8,6 +8,8 @@ import org.nutz.el.obj.Elobj;
 import org.nutz.el.obj.FieldObj;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.el.opt.TwoTernary;
+import org.nutz.lang.InvokingException;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 /**
@@ -37,11 +39,27 @@ public class AccessOpt extends TwoTernary implements RunMethod{
     public Object run(List<Object> param) {
         Object obj = fetchVar();
         Mirror<?> me = null;
-        me = Mirror.me(obj);
-        if(param.isEmpty()){
-            return me.invoke(obj, right.toString());
+        if (obj == null)
+            throw new NullPointerException();
+        if (obj instanceof Class) {
+            //也许是个静态方法
+            me = Mirror.me(obj);
+            try {
+                return me.invoke(obj, right.toString(), param.toArray());
+            } catch (InvokingException e) {
+                throw e;
+            } catch (Throwable e) {
+                if (Lang.unwrapThrow(e) instanceof NoSuchMethodException) {
+                    me = Mirror.me(obj.getClass().getClass());
+                    return me.invoke(obj, right.toString(), param.toArray());
+                }
+                throw Lang.wrapThrow(e);
+            }
         }
-        return me.invoke(obj, right.toString(), param.toArray());
+        else {
+            me = Mirror.me(obj);
+            return me.invoke(obj, right.toString(), param.toArray());
+        }
     }
     
     /**

@@ -462,6 +462,7 @@ public class El2Test {
         context.set("list", list);
         context.set("System", System.class);
         
-//        El.eval(context, "System.getenv('Path').getClass().getName()");
+        El.eval(context, "System.getenv('Path').getClass().getName()");
     }
+    
 }
