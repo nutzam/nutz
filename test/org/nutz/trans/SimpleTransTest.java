@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import java.sql.Connection;
 
+import javax.sql.DataSource;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.ConnCallback;
@@ -84,7 +86,23 @@ public class SimpleTransTest extends DaoCase {
                         conns[1] = conn;
                     } 
                 });
+                //必然是同一个对象
                 assertEquals(conns[0], conns[1]);
+                assertTrue(conns[0] == conns[1]);
+                try {
+                    //必然是同一个对象
+                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
+                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
+                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
+                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
+
+                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), Trans.get().getConnection(ioc.get(DataSource.class)));
+                    
+                    assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == Trans.get().getConnection(ioc.get(DataSource.class)));
+                }
+                catch (Throwable e) {
+                    throw Lang.wrapThrow(e);
+                }
             } 
         });
     }
