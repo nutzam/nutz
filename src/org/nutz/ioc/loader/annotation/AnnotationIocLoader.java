@@ -130,7 +130,15 @@ public class AnnotationIocLoader implements IocLoader {
                 fieldList.add(iocField.getName());
             }
             // 处理字段(以@Inject方式,位于set方法)
-            Method[] methods = mirror.getMethods();
+            Method[] methods;
+            try {
+                methods = classZ.getMethods();
+            }
+            catch (Exception e) {
+                // 如果获取失败,就忽略之
+                log.info("Fail to call getMethods(), miss class or Security Limit, ignore it", e);
+                methods = new Method[0];
+            }
             for (Method method : methods) {
                 Inject inject = method.getAnnotation(Inject.class);
                 if (inject == null)
@@ -140,18 +148,19 @@ public class AnnotationIocLoader implements IocLoader {
                 if(Modifier.isAbstract(m) || (!Modifier.isPublic(m))
                         || Modifier.isStatic(m))
                     continue;
-                if (method.getName().startsWith("set") 
-                    && method.getName().length() > 3
+                String methodName = method.getName();
+                if (methodName.startsWith("set") 
+                    && methodName.length() > 3
                     && method.getParameterTypes().length == 1) {
                     IocField iocField = new IocField();
-                    iocField.setName(Strings.lowerFirst(method.getName().substring(3)));
+                    iocField.setName(Strings.lowerFirst(methodName.substring(3)));
                     if(fieldList.contains(iocField.getName()))
                         throw duplicateField(classZ,iocField.getName());
                     IocValue iocValue;
                     if (Strings.isBlank(inject.value())) {
                         iocValue = new IocValue();
                         iocValue.setType(IocValue.TYPE_REFER);
-                        iocValue.setValue(Strings.lowerFirst(method.getName().substring(3)));
+                        iocValue.setValue(Strings.lowerFirst(methodName.substring(3)));
                     } else
                         iocValue = convert(inject.value());
                     iocField.setValue(iocValue);
