@@ -2,8 +2,11 @@ package org.nutz.trans;
 
 import static org.junit.Assert.*;
 
+import java.sql.Connection;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.lang.Lang;
 
@@ -65,4 +68,24 @@ public class SimpleTransTest extends DaoCase {
         dao.delete(cat2);
     }
 
+
+    @Test
+    public void test_issue312() {
+        Trans.exec(new Atom(){
+            public void run() {
+                final Connection[] conns = new Connection[2];
+                dao.run(new ConnCallback() {
+                    public void invoke(Connection conn) throws Exception {
+                        conns[0] = conn;
+                    } 
+                });
+                dao.run(new ConnCallback() {
+                    public void invoke(Connection conn) throws Exception {
+                        conns[1] = conn;
+                    } 
+                });
+                assertEquals(conns[0], conns[1]);
+            } 
+        });
+    }
 }
