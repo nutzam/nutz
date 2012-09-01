@@ -96,11 +96,7 @@ public abstract class Jdbcs {
             throw Lang.wrapThrow(e);
         }
         finally {
-            if (null != conn)
-                try {
-                    conn.close();
-                }
-                catch (SQLException e) {}
+            Trans.closeConnectionAuto(conn);
         }
     }
 

@@ -212,14 +212,22 @@ public abstract class Trans {
     
     /**
      * 如果在事务中,则返回事务的连接,否则直接从数据源取一个新的连接
-     * @param ds
-     * @return
-     * @throws SQLException
      */
     public static Connection getConnectionAuto(DataSource ds) throws SQLException{
         if (get() == null)
             return ds.getConnection();
         else
             return get().getConnection(ds);
+    }
+    
+    public static void closeConnectionAuto(Connection conn) {
+        if (get() == null && null != conn) {
+            try {
+                conn.close();
+            }
+            catch (SQLException e) {
+                throw Lang.wrapThrow(e);
+            }
+        }
     }
 }

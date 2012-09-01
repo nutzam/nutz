@@ -3,7 +3,6 @@ package org.nutz.dao.impl.entity;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -490,15 +489,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 							e.getMessage());
 		}
 		finally {
-			if (null != conn) {
-				try {
-					conn.close();
-				}
-				catch (SQLException e) {
-					if (log.isWarnEnabled())
-						log.warn("Fail to close connection!", e);
-				}
-			}
+			Trans.closeConnectionAuto(conn);
 		}
 	}
 
