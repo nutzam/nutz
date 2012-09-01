@@ -52,6 +52,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Trans;
 
 /**
  * 根据一个 Class 对象生成 Entity 的实例
@@ -477,7 +478,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 	private void _checkupEntityFieldsWithDatabase(NutEntity<?> en) {
 		Connection conn = null;
 		try {
-			conn = datasource.getConnection();
+		    conn = Trans.getConnectionAuto(datasource);
 			expert.setupEntityField(conn, en);
 		}
 		catch (Exception e) {

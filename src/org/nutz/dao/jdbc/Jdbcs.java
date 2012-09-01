@@ -31,6 +31,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Email;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Trans;
 
 /**
  * 提供一些与 JDBC 有关的帮助函数
@@ -85,7 +86,7 @@ public abstract class Jdbcs {
     public static JdbcExpert getExpert(DataSource ds) {
         Connection conn = null;
         try {
-            conn = ds.getConnection();
+            conn = Trans.getConnectionAuto(ds);
             DatabaseMetaData meta = conn.getMetaData();
             String pnm = meta.getDatabaseProductName();
             String ver = meta.getDatabaseProductVersion();

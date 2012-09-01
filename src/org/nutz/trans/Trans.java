@@ -1,6 +1,9 @@
 package org.nutz.trans;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+
+import javax.sql.DataSource;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -205,5 +208,18 @@ public abstract class Trans {
      */
     public static void close() throws Exception {
         Trans._depose();
+    }
+    
+    /**
+     * 如果在事务中,则返回事务的连接,否则直接从数据源取一个新的连接
+     * @param ds
+     * @return
+     * @throws SQLException
+     */
+    public static Connection getConnectionAuto(DataSource ds) throws SQLException{
+        if (get() == null)
+            return ds.getConnection();
+        else
+            return get().getConnection(ds);
     }
 }
