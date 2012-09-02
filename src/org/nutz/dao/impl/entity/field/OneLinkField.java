@@ -1,4 +1,4 @@
-package org.nutz.dao.impl.entity.field;
+﻿package org.nutz.dao.impl.entity.field;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
@@ -9,7 +9,7 @@ import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.impl.entity.info.LinkInfo;
 import org.nutz.lang.Lang;
 
-public class OneLinkField extends AbstractLinkField implements LinkField {
+public class OneLinkField extends AbstractLinkField  {
 
     public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);

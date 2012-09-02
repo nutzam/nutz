@@ -1,4 +1,4 @@
-package org.nutz.dao.impl;
+﻿package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.util.HashMap;
@@ -66,14 +66,20 @@ public class EntityHolder {
     /**
      * 重新载入
      */
-    public <T> Entity<T> reloadEntity(Class<T> classOfT) {
-        Entity<T> re = getEntity(classOfT);
-        if (null != re) {
-            synchronized (map) {
-                map.remove(re.getType());
-            }
+    public <T> Entity<T> reloadEntity(Dao dao, Class<T> classOfT) {
+
+        final Entity<T> re = maker.make(classOfT);
+        synchronized (map) {
+            map.put(classOfT, re);
         }
-        return getEntity(classOfT);
+        support.expert.createEntity(dao, re);
+        // 最后在数据库中验证一下实体各个字段
+        support.run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                support.expert.setupEntityField(conn, re);
+            }
+        });
+        return re;
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
