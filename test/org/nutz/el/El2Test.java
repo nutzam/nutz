@@ -14,9 +14,11 @@ import org.junit.Test;
 import org.nutz.conf.NutConf;
 import org.nutz.el.issue.Issue293;
 import org.nutz.el.issue.Issue303;
+import org.nutz.el.issue.Issue314;
 import org.nutz.el.speed.SimpleSpeedTest;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Maths;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 
@@ -463,6 +465,24 @@ public class El2Test {
         context.set("System", System.class);
         
         El.eval(context, "System.getenv('Path').getClass().getName()");
+        assertEquals("1", Mirror.me(String.class).invoke(String.class, "valueOf", 1));
+        
+        assertEquals("jk", Mirror.me(String.class).invoke(String.class, "valueOf", "jk"));
     }
     
+    @Test
+    public void test_issue314() {
+        Context context = Lang.context();
+        
+        context.set("String", String.class);
+        
+        Issue314 i314 = new Issue314();
+        List<String> list = new ArrayList<String>();
+        list.add("123");
+        i314.setList(list);
+        context.set("map", i314);
+        
+        assertEquals("123", El.eval(context, "String.valueOf(123)"));
+        assertEquals("123", El.eval(context, "map.list.get(0)"));
+    }
 }
