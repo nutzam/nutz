@@ -1,4 +1,4 @@
-package org.nutz.dao.impl.entity.field;
+﻿package org.nutz.dao.impl.entity.field;
 
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
@@ -14,7 +14,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
 
-public class ManyLinkField extends AbstractLinkField implements LinkField {
+public class ManyLinkField extends AbstractLinkField  {
 
     public ManyLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
