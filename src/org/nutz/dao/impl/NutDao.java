@@ -1,4 +1,4 @@
-package org.nutz.dao.impl;
+﻿package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -652,9 +652,7 @@ public class NutDao extends DaoSupport implements Dao {
                 return en;
             }
         }
-        en = holder.reloadEntity(classOfT); //需要重新载入,以免之前数据库表的信息影响Entity
-        expert.createEntity(this, en);
-        return holder.reloadEntity(classOfT); //再次重新载入,使配置信息与数据库信息相符
+        return holder.reloadEntity(this, classOfT);
     }
 
     public boolean drop(Class<?> classOfT) {
