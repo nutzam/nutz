@@ -1,4 +1,4 @@
-﻿package org.nutz.dao.impl;
+package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
