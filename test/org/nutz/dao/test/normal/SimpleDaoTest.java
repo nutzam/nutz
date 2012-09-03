@@ -6,8 +6,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
 import org.junit.Test;
+import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
@@ -224,5 +224,10 @@ public class SimpleDaoTest extends DaoCase {
     @Test(expected=IllegalArgumentException.class)
     public void test_fetch_null_name() {
         dao.fetch(Pet.class, (String)null);
+    }
+    
+    @Test(expected=IllegalArgumentException.class)
+    public void test_create_error_class() {
+        dao.create(Nutz.class, true);
     }
 }

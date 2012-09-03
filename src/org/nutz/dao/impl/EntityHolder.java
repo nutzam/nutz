@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.dao.ConnCallback;
+import org.nutz.dao.Dao;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.impl.entity.NutEntity;

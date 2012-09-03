@@ -208,6 +208,10 @@ public class AnnotationEntityMaker implements EntityMaker {
 		if (miId != null)
 			tmp.add(0, miId);
 		infos = tmp;
+		
+        // 映射字段搞完了? 我看看你到底有没有字段!!
+		if (infos.isEmpty())
+		    throw Lang.makeThrow(IllegalArgumentException.class,"Pojo(%s) without any Mapping Field!!", type);
 
 		/*
 		 * 解析所有映射字段
