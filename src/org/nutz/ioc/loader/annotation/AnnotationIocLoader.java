@@ -201,8 +201,17 @@ public class AnnotationIocLoader implements IocLoader {
                     fieldList.add(iocField.getName());
                 }
             }
-            if (log.isDebugEnabled())
-                log.debugf("Processed Ioc Class : %s as [%s]", classZ, beanName);
+        } else {
+            if (log.isWarnEnabled()) {
+                Field[] fields = classZ.getDeclaredFields();
+                for (Field field : fields)
+                    if (field.getAnnotation(Inject.class) != null) {
+                        log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
+                                  classZ.getName(),
+                                  field.getName());
+                        break;
+                    }
+            }
         }
     }
 
