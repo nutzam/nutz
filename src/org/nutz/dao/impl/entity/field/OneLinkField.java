@@ -3,7 +3,6 @@
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
-import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkType;
 import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.impl.entity.info.LinkInfo;
