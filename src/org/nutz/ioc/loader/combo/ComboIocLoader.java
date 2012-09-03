@@ -2,8 +2,10 @@ package org.nutz.ioc.loader.combo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
@@ -65,6 +67,14 @@ public class ComboIocLoader implements IocLoader {
         }
         if (currentClassName != null)
             createIocLoader(currentClassName, argsList);
+        
+        Set<String> beanNames = new HashSet<String>();
+        for (IocLoader loader : iocLoaders) {
+            for (String beanName : loader.getName()) {
+                if (!beanNames.add(beanName) && log.isWarnEnabled())
+                    log.warnf("Found Duplicate beanName=%s, pls check you config!", beanName);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
