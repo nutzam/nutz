@@ -1,4 +1,4 @@
-package org.nutz.dao.test.normal;
+﻿package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
@@ -27,7 +27,6 @@ import org.nutz.lang.Lang;
 
 public class SimpleDaoTest extends DaoCase {
 
-    @Before
     public void before() {
         dao.create(Pet.class, true);
     }
