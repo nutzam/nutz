@@ -282,4 +282,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public List<SqlExpression> cloneExps() {
         return new ArrayList<SqlExpression>(exps);
     }
+    
+    public void setTop(boolean top) {
+        this.top = top;
+    }
 }

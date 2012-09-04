@@ -18,6 +18,7 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.link.DoClearLinkVisitor;
@@ -29,6 +30,7 @@ import org.nutz.dao.impl.link.DoInsertLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateRelationLinkVisitor;
+import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.PojoEachEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoEachRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchEntityCallback;
@@ -39,11 +41,13 @@ import org.nutz.dao.impl.sql.pojo.PojoQueryRecordCallback;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
@@ -499,6 +503,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T fetchLinks(T obj, final String regex) {
+        return fetchLinks(obj, regex, null);
+    }
+    
+    public <T> T fetchLinks(final T obj, final String regex, final Condition cnd) {
         if (null == obj)
             return null;
         Lang.each(obj, false, new Each<Object>() {
@@ -507,8 +515,8 @@ public class NutDao extends DaoSupport implements Dao {
                 EntityOperator opt = _optBy(ele);
                 if (null == opt)
                     return;
-                opt.entity.visitMany(ele, regex, doFetch(opt));
-                opt.entity.visitManyMany(ele, regex, doFetch(opt));
+                opt.entity.visitMany(ele, regex, doLinkQuery(opt, cnd));
+                opt.entity.visitManyMany(ele, regex, doLinkQuery(opt, cnd));
                 opt.entity.visitOne(ele, regex, doFetch(opt));
                 opt.exec();
             }
@@ -736,6 +744,45 @@ public class NutDao extends DaoSupport implements Dao {
         return new DoFetchLinkVisitor().opt(opt);
     }
 
+    private LinkVisitor doLinkQuery(EntityOperator opt, final Condition cnd) {
+        return new AbstractLinkVisitor() {
+            public void visit(final Object obj, final LinkField lnk) {
+                Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
+                pojo.setOperatingObject(obj);
+                PItem[] _cndItems = Pojos.Items.cnd(lnk.createCondition(obj));
+                pojo.append(_cndItems);
+                if (cnd != null) {
+                    if (cnd instanceof Criteria) {
+                        Criteria cri = (Criteria)cnd;
+                        SqlExpressionGroup seg = cri.where();
+                        if (_cndItems.length > 0 && seg != null && !seg.isEmpty()) {
+                            seg.setTop(false);
+                            pojo.append(Pojos.Items.wrap(" AND "));
+                        }
+                        pojo.append(cri);
+                        if (cri.getPager() != null) {
+                            pojo.setPager(cri.getPager());
+                            expert.formatQuery(pojo);
+                        }
+                    }
+                    // 普通条件
+                    else {
+                        pojo.append(new ConditionPItem(cnd));
+                    }
+                }
+                pojo.setAfter(new PojoCallback() {
+                    public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+                        Object value = lnk.getCallback().invoke(conn, rs, pojo);
+                        lnk.setValue(obj, value);
+                        return value;
+                    }
+                });
+                pojo.setEntity(lnk.getLinkedEntity());
+                opt.add(pojo);
+            }
+        }.opt(opt);
+    }
+    
     // ==========================================================
     // 下面几个是快速创建实体操作对象的帮助函数
 
