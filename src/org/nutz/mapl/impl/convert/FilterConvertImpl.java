@@ -21,18 +21,18 @@ import org.nutz.mapl.impl.MaplRebuild;
  */
 public class FilterConvertImpl extends MaplEach implements MaplConvert{
     //处理列表
-    private List<String> paths = new ArrayList<String>();
+    private List<String> items = new ArrayList<String>();
     //类型, 取名自exclude(排除), include(包含), false时为排除, true时为包含
     private boolean clude = false;
     private MaplRebuild build = new MaplRebuild();
     
     @SuppressWarnings("unchecked")
     public FilterConvertImpl(String path) {
-        paths = (List<String>) Json.fromJson(Streams.fileInr(path));
+        items = (List<String>) Json.fromJson(Streams.fileInr(path));
     }
     
     public FilterConvertImpl(List<String> paths){
-        this.paths = paths;
+        this.items = paths;
     }
     
     /**
@@ -46,7 +46,7 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
     
     protected void DLR(String path, Object item) {
         if(clude){
-            if(paths.contains(path)){
+            if(items.contains(path)){
                 build.put(path, item, arrayIndex);
             } 
         }
@@ -56,10 +56,20 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
         if(clude){
            return;
         }
-        for(String p : paths){
-            if(!p.startsWith(path) && !path.startsWith(p)){
-                build.put(path, item, arrayIndex);
+        int isFilter = 0;
+        for(String p : items){
+            if(
+                    p.equals(path) 
+                    || path.startsWith((p + ".")) 
+                    || p.startsWith(path + ".") 
+                    || path.startsWith((p + "[]")) 
+                    || p.startsWith(path + "[]") 
+            ){
+                isFilter++;
             }
+        }
+        if(isFilter == 0){
+            build.put(path, item, arrayIndex);
         }
     }
 
