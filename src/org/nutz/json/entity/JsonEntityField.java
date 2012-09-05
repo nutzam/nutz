@@ -31,33 +31,16 @@ public class JsonEntityField {
     /**
      * 根据名称获取字段实体, 默认以set优先
      */
-    public static JsonEntityField eval(Mirror<?> mirror, String name){
-        Method[] methods = mirror.findSetters(name);
-        if(methods.length == 1){
-            Type[] types = Lang.getMethodParamTypes(mirror, methods[0]);
-            JsonEntityField jef = new JsonEntityField();
-            jef.genericType = types[0];
-            fillJef(jef, mirror, name);
-            return jef;
-        }else {
-            try {
-                return eval(mirror, mirror.getField(name));
-            } catch (NoSuchFieldException e) {
-                for(Field field : mirror.getFields()){
-                    JsonField jf = field.getAnnotation(JsonField.class);
-                    if(jf == null){
-                        continue;
-                    }
-                    if (null != jf && jf.ignore())
-                        return null;
-                    if(jf.value().equals(name)){
-                        return eval(mirror, field);
-                    }
-                }
-                return null;
-            }
-        }
+    public static JsonEntityField eval(Mirror<?> mirror, Method method){
+        Type[] types = Lang.getMethodParamTypes(mirror, method);
+        JsonEntityField jef = new JsonEntityField();
+        jef.genericType = types[0];
+        String name = Strings.lowerFirst(method.getName().substring(3));
+        jef.name = name;
+        fillJef(jef, mirror, name);
+        return jef;
     }
+    
     @SuppressWarnings("deprecation")
     public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
         if(fld == null){
@@ -96,7 +79,17 @@ public class JsonEntityField {
             // @ TODO 如果是纯方法, 没有字段的形式进行注入时并没有getter方法, 但是这里的实现可能有点欠妥.
             try{
                 jef.ejecting = mirror.getEjecting(name);
-            }catch(Exception e){}
+            }catch(Exception e){
+                for (Field field : mirror.getFields()) {
+                    JsonField jf = field.getAnnotation(JsonField.class);
+                    if (jf == null)
+                        continue;
+                    if (name.equals(jf.value())) {
+                        jef.ejecting = mirror.getEjecting(name);
+                        break;
+                    }
+                }
+            }
         if (null == jef.injecting)
             jef.injecting = mirror.getInjecting(name);
         if (null == jef.name)
@@ -118,14 +111,18 @@ public class JsonEntityField {
     }
 
     public Object getValue(Object obj) {
+        if (ejecting == null)
+            return null;
         return ejecting.eject(obj);
     }
 
-    public Object createValue(Object holder, Object value) {
+    public Object createValue(Object holder, Object value, Type type) {
+        if (type == null)
+            type = genericType;
         if (this.createBy == null)
-            return Mapl.maplistToObj(value, genericType);
+            return Mapl.maplistToObj(value, type);
         try {
-            return holder.getClass().getMethod(createBy, Type.class, Object.class).invoke(holder, genericType, value);
+            return holder.getClass().getMethod(createBy, Type.class, Object.class).invoke(holder, type, value);
         } catch (Throwable e){
             throw Lang.wrapThrow(e);
         }

@@ -182,4 +182,8 @@ public class ActionContext extends SimpleContext {
         this.set(SERVLET_CONTEXT, sc);
         return this;
     }
+    
+    public String toString() {
+        return getInnerMap().toString();
+    }
 }

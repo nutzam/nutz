@@ -13,6 +13,8 @@ import java.util.Stack;
 
 import org.nutz.castor.Castors;
 import org.nutz.el.El;
+import org.nutz.json.Json;
+import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -181,8 +183,9 @@ public class ObjConvertImpl implements MaplConvert{
         context.set(fetchPath(), obj);
         Map<String, ?> map = (Map<String, ?>) model;
         
+        JsonEntity jen = Json.getEntity(me.getType());
         for(String key : map.keySet()){
-            JsonEntityField jef = JsonEntityField.eval(me, key);
+            JsonEntityField jef = jen.getField(key);
             if(jef == null){
                 continue;
             }
@@ -196,12 +199,12 @@ public class ObjConvertImpl implements MaplConvert{
                 if(val instanceof El){
                     val = ((El)val).eval(context);
                 }
-                jef.setValue(obj, Castors.me().castTo(jef.createValue(obj, val), Lang.getTypeClass(jef.getGenericType())));
+                //jef.setValue(obj, Castors.me().castTo(jef.createValue(obj, val, null), Lang.getTypeClass(jef.getGenericType())));
+                jef.setValue(obj, jef.createValue(obj, val, null));
                 continue;
             }
             path.push(key);
-            Object o = jef.createValue(obj, inject(val, jef.getGenericType()));
-            jef.setValue(obj, o);
+            jef.setValue(obj, jef.createValue(obj, val, me.getGenericsType(0)));
         }
         return obj;
     }

@@ -1,10 +1,16 @@
 package org.nutz.json.entity;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.BorningException;
 
@@ -16,6 +22,8 @@ import org.nutz.lang.born.BorningException;
 public class JsonEntity {
 
     private List<JsonEntityField> fields;
+    
+    private Map<String, JsonEntityField> fieldMap = new HashMap<String, JsonEntityField>();
 
     private Borning<?> borning;
 
@@ -24,18 +32,29 @@ public class JsonEntity {
     public JsonEntity(Mirror<?> mirror) {
         Field[] flds = mirror.getFields();
         fields = new ArrayList<JsonEntityField>(flds.length);
-        List<JsonEntityField> hasAnnos = new ArrayList<JsonEntityField>();
+        Set<String> names = new HashSet<String>();
         for (Field fld : flds) {
             JsonEntityField ef = JsonEntityField.eval(mirror, fld);
-            if (null != ef) {
-                if (ef.hasAnno())
-                    hasAnnos.add(ef);
-                else
-                    fields.add(ef);
+            if (null == ef) {
+                names.add(fld.getName());
+                continue;
+            }
+            if (names.add(ef.getName())) {
+                fields.add(ef);
+                fieldMap.put(ef.getName(), ef);
             }
         }
-        if (hasAnnos.size() > 0 )
-            fields.addAll(hasAnnos);
+        for (Method method : mirror.getMethods()) {
+            String methodName = method.getName();
+            if (methodName.length() > 3 && methodName.startsWith("set")) {
+                String name = Strings.lowerFirst(methodName.substring(3));
+                if (names.add(name)) {
+                    JsonEntityField ef = JsonEntityField.eval(mirror, method);
+                    fields.add(ef);
+                    fieldMap.put(ef.getName(), ef);
+                }
+            }
+        }
 
         try {
             borning = mirror.getBorning();
@@ -55,4 +74,7 @@ public class JsonEntity {
         return borning.born(new Object[0]);
     }
 
+    public JsonEntityField getField(String name) {
+        return fieldMap.get(name);
+    }
 }

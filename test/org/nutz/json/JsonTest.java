@@ -23,6 +23,7 @@ import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
+import org.nutz.json.meta.MapTreeNode;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.json.meta.TestBy;
 import org.nutz.lang.Lang;
@@ -773,5 +774,14 @@ public class JsonTest {
 
     public static String justOK(Object obj) {
         return "I am OK";
+    }
+    
+    
+    @Test
+    public void test_createBy() {
+        String str = "{children: [{name :'wendal'}]}";
+        MapTreeNode node = Json.fromJson(MapTreeNode.class, str);
+        System.out.println(Json.toJson(node));
+        System.out.println(node.getChildren().get(0).getClass());
     }
 }
