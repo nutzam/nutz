@@ -58,7 +58,6 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
         }
         int isFilter = 0;
         for(String p : items){
-            System.out.println(p + ":" + path);
             if(!(
                     p.equals(path) 
                     || path.startsWith((p + ".")) 
