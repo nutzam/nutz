@@ -309,4 +309,40 @@ public class MaplTest {
         JsonFormat jf = new JsonFormat(true);
         assertEquals("{\"address\":[{\"name\":\"abc\"}, {\"name\":\"123\"}],\"name\":\"nutz\"}", Json.toJson(newobj, jf));
     }
+
+    
+    /**
+         * 排除过滤测试，过滤多个项的内容
+         */
+        @Test
+        public void excludeFilterConvertTest_MultiplePath1(){
+            List<String> paths = new ArrayList<String>();
+            paths.add("users[].name");
+            paths.add("people[].age");
+            Object dest = Json.fromJson(Streams.fileInr("org/nutz/json/mateList.txt"));
+            Object obj = Mapl.excludeFilter(dest, paths);
+            assertNotNull(Mapl.cell(obj, "users"));
+            assertEquals(12, Mapl.cell(obj, "users[0].age"));
+            assertEquals("1", Mapl.cell(obj, "people[0].name"));
+        }
+        
+        /**
+         * 排除过滤测试，过滤多个项的内容。这是来自手册上的例子
+         */
+        @Test
+        public void excludeFilterConvertTest_MultiplePath2(){
+            String json = "{name:'nutz', age:12, address:[{area:1,name:'abc'},{area:2,name:'123'}]}";
+            Object obj = Json.fromJson(json);
+            List<String> list = new ArrayList<String>();
+            list.add("age");
+            list.add("address[].area");
+            Object newobj = Mapl.excludeFilter(obj, list);
+            assertNull(Mapl.cell(newobj, "age"));
+            assertEquals("nutz", Mapl.cell(newobj, "name"));
+            assertNull(Mapl.cell(newobj, "address[0].area"));
+            assertEquals("abc", Mapl.cell(newobj, "address[0].name"));
+        }
+        
+
+    
 }
