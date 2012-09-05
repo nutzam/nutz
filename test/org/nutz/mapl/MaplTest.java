@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.nutz.json.Abc;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.mapl.Mapl;
@@ -298,5 +299,14 @@ public class MaplTest {
         assertTrue(Mapl.cell(list,"[0].items[1]").equals("bb"));
         assertTrue(Mapl.cell(list,"[0].items[]").equals("aa"));
         assertTrue(Mapl.cell(list,"[0].items").equals(items));
+    }
+    
+    @Test
+    public void testIssue322(){
+        String json = "{name:'nutz', age:12, address:[{area:1,name:'abc'},{area:2,name:'123'}]}";
+        Object obj = Json.fromJson(json);
+        Object newobj = Mapl.excludeFilter(obj, Lang.list("age", "address[].area"));
+        JsonFormat jf = new JsonFormat(true);
+        assertEquals("{\"address\":[{\"name\":\"abc\"}, {\"name\":\"123\"}],\"name\":\"nutz\"}", Json.toJson(newobj, jf));
     }
 }
