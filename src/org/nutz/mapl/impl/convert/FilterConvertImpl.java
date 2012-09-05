@@ -56,10 +56,15 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
         if(clude){
            return;
         }
+        boolean inFilter = false;
         for(String p : paths){
-            if(!p.startsWith(path) && !path.startsWith(p)){
-                build.put(path, item, arrayIndex);
+            if(path.startsWith(p)){
+                inFilter = true;
+                break;
             }
+        }
+        if(!inFilter){
+        	build.put(path, item, arrayIndex);
         }
     }
 
