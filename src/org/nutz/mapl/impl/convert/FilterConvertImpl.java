@@ -58,17 +58,17 @@ public class FilterConvertImpl extends MaplEach implements MaplConvert{
         }
         int isFilter = 0;
         for(String p : items){
-            if(!(
+            if(
                     p.equals(path) 
                     || path.startsWith((p + ".")) 
                     || p.startsWith(path + ".") 
                     || path.startsWith((p + "[]")) 
                     || p.startsWith(path + "[]") 
-            )){
+            ){
                 isFilter++;
             }
         }
-        if(isFilter == items.size()){
+        if(isFilter == 0){
             build.put(path, item, arrayIndex);
         }
     }
