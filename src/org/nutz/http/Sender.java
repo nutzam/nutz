@@ -80,7 +80,9 @@ public abstract class Sender {
         return rep;
     }
 
-    protected Map<String, String> getResponseHeader() {
+    protected Map<String, String> getResponseHeader() throws IOException {
+        if (conn.getResponseCode() < 0)
+            throw new IOException("Network error!! resp code < 0");
         Map<String, String> reHeaders = new HashMap<String, String>();
         for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
             List<String> val = en.getValue();
