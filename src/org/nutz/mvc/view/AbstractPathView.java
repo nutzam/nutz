@@ -86,7 +86,7 @@ public abstract class AbstractPathView implements View {
         Map<String,Object> session_attr = new HashMap<String, Object>();
         for (Enumeration<String> en = req.getSession().getAttributeNames(); en.hasMoreElements();) {
             String tem = en.nextElement();
-            session_attr.put(tem, req.getAttribute(tem));
+            session_attr.put(tem, req.getSession().getAttribute(tem));
         }
         context.set("session_attr", session_attr);
         
