@@ -90,8 +90,11 @@ public class JsonEntityField {
                     }
                 }
             }
-        if (null == jef.injecting)
-            jef.injecting = mirror.getInjecting(name);
+        if (null == jef.injecting) {
+            try {
+                jef.injecting = mirror.getInjecting(name);
+            } catch (Throwable e) {}
+        }
         if (null == jef.name)
             jef.name = name;
     }
@@ -107,7 +110,8 @@ public class JsonEntityField {
     }
 
     public void setValue(Object obj, Object value) {
-        injecting.inject(obj, value);
+        if (injecting != null)
+            injecting.inject(obj, value);
     }
 
     public Object getValue(Object obj) {
