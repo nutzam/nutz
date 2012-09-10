@@ -46,7 +46,7 @@ public class JsonEntity {
         }
         for (Method method : mirror.getMethods()) {
             String methodName = method.getName();
-            if (methodName.length() > 3 && methodName.startsWith("set")) {
+            if (methodName.length() > 3 && methodName.startsWith("set") && method.getParameterTypes().length == 1) {
                 String name = Strings.lowerFirst(methodName.substring(3));
                 if (names.add(name)) {
                     JsonEntityField ef = JsonEntityField.eval(mirror, method);
