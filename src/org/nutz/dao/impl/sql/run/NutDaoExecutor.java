@@ -196,14 +196,18 @@ public class NutDaoExecutor implements DaoExecutor {
                 }
                 int[] counts = pstat.executeBatch();
 
-                pstat.close();
-                statIsClosed = true;
-
                 // 计算总共影响的行数
                 int sum = 0;
                 for (int i : counts)
-                    sum += i;
+                    if (i > 0)
+                        sum += i;
+                        
+                if (sum == 0)
+                    sum = pstat.getUpdateCount();
 
+                pstat.close();
+                statIsClosed = true;
+                
                 st.getContext().setUpdateCount(sum);
             }
         }
