@@ -22,9 +22,9 @@
     映射数据表和Java类。
 
     通过 EntityMaker 接口，Nutz 封装了这个过程，你可以重载 NutDao 的一个函数:
-    {{{
+    {{{<JAVA>
     public class MyDao extends NutDao {
-        @Override
+
         protected EntityMaker createEntityMaker() {
             return new MyEntityMaker();
         }
@@ -48,7 +48,7 @@
     
     描述字段
         {{{
-        @Column
+        @Column //提醒一下,这一行是多余的
         @Name
         @ColDefine(type=ColType.VARCHAR, width=20)
         private String name;

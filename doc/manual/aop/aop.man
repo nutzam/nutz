@@ -17,6 +17,7 @@
         
         public class UserAction { //被AOP的类,必须是public的非abstract类!
             
+            /*将要被AOP的方法*/
             public boolean login(String username, String password) throws Throwable {
                 if ("wendal".equals(username) && "qazwsxedc".equals(password)) {
                     System.out.println("登陆成功");
@@ -50,7 +51,7 @@
         class LogInterceptor implements MethodInterceptor {
             public void filter(InterceptorChain chain) throws Throwable {
                 System.out.println("方法即将执行 -->" + chain.getCallingMethod());
-                chain.doChain();// 继续执行其他拦截器
+                chain.doChain();// 继续执行其他拦截器,如果没有,则执行原方法
                 System.out.println("方法执行完毕 -->" + chain.getCallingMethod());
             }
         }
@@ -67,6 +68,8 @@
 		}}}
 ------------------------------------------------------------------------------
 在Ioc中使用Aop
+
+	只有被Ioc容器管理的对象,才能使用AOP!!
 
 	声明拦截器
 		* 你需要有一个拦截器对象，如果你愿意，你当然可以有不止一个拦截器对象。

@@ -37,7 +37,7 @@
 		@Column
 		@Id
 		@Next( @SQL("SELECT currval('t_pet_id_seq')") )
-		private int id;
+		private long id;
 	...
 	}}}
 	如上例，执行插入后，你的 Pet 对象的 id 会被数据库中新的值更新。
@@ -87,7 +87,7 @@
 			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')"),
 			@SQL(db = DB.OTHER,  "SELECT MAX(id) FROM t_pet") 
 		})
-		private int id;
+		private long id;
 	...
 	}}}
 	现在 Nutz.Dao 支持这些数据库:
@@ -96,3 +96,17 @@
 		H2, DB2, PSQL, ORACLE, SQLSERVER, MYSQL, OTHER
 	}
 	}}}
+
+	特别说一下Oracle的seq
+	{{{
+	@Table("t_pet")
+	public class Pet{
+		@Column
+		@Id(auto=false)
+		@Prev({
+			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')")
+		})
+		private long id;
+	...
+	}}}
+	

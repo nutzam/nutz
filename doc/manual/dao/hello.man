@@ -28,6 +28,7 @@
 	  name  VARCHAR(50) NOT NULL UNIQUE,
 	  age INT
 	);
+	//对于最新版的Nutz,你可以用简单的dao.create(XXX.class, false)来完成建表
 	}}}
 
 -----------------------------------------------------------------------------------------------------------------
@@ -39,10 +40,10 @@
 	import org.nutz.dao.entity.annotation.*;
 
 	@Table("t_person")   // 声明了Person对象的数据表
-	public class Person {
+	public class Person { //无需继承任何Nutz的类
 
 		@Column	  // 表示该对象属性可以映射到数据库里作为一个字段
-		@Id       // 表示该字段为一个自增长的Id
+		@Id       // 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
 		private int id;
 		
 		@Column
@@ -100,7 +101,7 @@
 	
 	 * Nutz.Dao 全部的文档并不很多，花上1-2个晚上，你就可以看完。
 	 * 你如果想快速了解 Nutz.Dao 到底支持多少注解，[annotations.man 请看这里]
-	 * 在 [http://nutzdemo.googlecode.com Nutz 的 Demo Site] 上，我们也会不断增加有针对性的演示，你可以 \
-	   [http://nutzdemo.googlecode.com 访问它的首页]，看看里面有没有你需要的例子代码
+	 * 在 [http://github.com/nutzam/nutzdemo Nutz 的 Demo Site] 上，我们也会不断增加有针对性的演示，你可以 \
+	   [http://github.com/nutzam/nutzdemo 访问它的首页]，看看里面有没有你需要的例子代码
 
 

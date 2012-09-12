@@ -166,5 +166,5 @@
 		 * 一个接受数目可变的 Atom 对象
 		 * 一个接受一个整型值用以界定本事务的级别，以及一个数目可变的 Atom 对象
 	 * Atom 类就是 java.lang.Runnable 的一个别名
-	 * 在一个 Atom 里，无论同时操作多少 DataSource，都是事务安全的
+	 * 在一个 Atom 里，无论同时操作多少 DataSource，都是事务安全的(由于不是使用XADataSource,无法100%保证)
 	 * 你可以通过实现自己的 Transaction 实现类，扩展 Nutz.Dao 对于事务的支持

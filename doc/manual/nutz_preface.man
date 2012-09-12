@@ -1,5 +1,6 @@
 #title: 写在前面的话
 #verifier:Xiaofeng.Fu(hilliate@gmail.com)
+#author: zozoh(zozohtnt@gmail.com)
 
 <logo.png>
 --------------------------------------------------------------------------------------------------------

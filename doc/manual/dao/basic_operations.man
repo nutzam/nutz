@@ -1,6 +1,7 @@
 #title: Dao 接口的基本操作
 #index:0,1
 
+----------------------------------------------------------------------------------------------------
 概述
 	传统关系型数据库定义了四种数据操作：
 	 # 插入 Insert
@@ -11,18 +12,19 @@
 	
 	但是，Nutz.Dao 认为从使用者的角度来看，这四种操作还是有所不同的。比如，查询返回的结果，很多时候仅仅是一条记录。
 	我们需要为这种情况进行优化。所以，Nutz.Dao 在传统关系型数据库数据操作的基础上定义了如下的数据操作：
-	|| 插入 || Insert	|| 一条 SQL 插入一条记录 ||
+	|| 插入 || Insert	|| 一条 SQL 插入一条记录或者多条记录 ||
+	|| 插入 || FastInsert|| 一条 SQL ,通过batch插入多条记录 ||
 	|| 删除 || Delete	|| 一条 SQL 删除一条记录 ||
 	|| 更新 || Update	|| 一条 SQL 更新一条或者多条记录 ||
 	|| 获取 || Fetch	|| 一条 SQL 获取一条记录 ||
 	|| 查询 || Query	|| 一条 SQL 根据条件获取多条记录 ||
 	|| 清除 || Clear	|| 一条 SQL 根据条件删除多条记录	||
 	
-	{#FF0000;*请注意：} 这里我是说 “{/一条}”  SQL。 如果通过 Dao 接口，你传入的是一个集合或者数组，它为为每一个元素
+	{#FF0000;*请注意：} 这里我是说 “{/一条}”  SQL。 如果通过 Dao 接口，你传入的是一个集合或者数组，它会为每一个元素
 	都生成一条 SQL 并执行，并更新操作:
 	{{{<java>
 	Pet[] pets = xxxx;
-	dao.update(pets);	// 可以是数组，当然 pets 也可以是集合，
+	dao.update(pets);	// 可以是数组，当然 pets 也可以是集合
 	}}}
 	同理，delete 和 insert 也支持传入数组和集合
 
@@ -36,21 +38,21 @@
 创建数据表
     
     为 Pet 创建数据表，如果数据表存在，先 DROP 掉，再创建
-    {{{
-    dao.create(Pet.class, true);
+    {{{<java>
+    dao.create(Pet.class, true); //生产环境你可千万别这样写!!
     }}}
 
     为 Pet 创建数据表，如果数据表存在，忽略
-    {{{
-    dao.create(Pet.class, false);
+    {{{<java>
+    dao.create(Pet.class, false); //一般我们都这样写
     }}}
 
 -----------------------------------------------------------------------------------------------------------------
 删除数据表
     
     删除 Pet 的数据表
-    {{{
-    dao.drop(Pet.class);
+    {{{<java>
+    dao.drop(Pet.class);//全部删掉哦,没条件的,慎用!!
     }}}
 
 -----------------------------------------------------------------------------------------------------------------
@@ -103,11 +105,11 @@
 查询 Query
 	查询全部记录
 		{{{<java>
-		List<Person> = dao.query(Person.class,null,null);
+		List<Person> people = dao.query(Person.class,null);
 		}}}
 	按条件查询
 		{{{<java>
-		List<Person> people = dao.query(Person.class, Cnd.where("name", "like", "P%"), null);
+		List<Person> people = dao.query(Person.class, Cnd.where("name", "like", "P%"));
 		}}}
 		* Cnd 类的全名是 org.nutz.dao.Cnd
 			* 它主要是用来快速替你建立一个 org.nutz.dao.Condition 接口的实现类
@@ -119,7 +121,7 @@
 
 	分页查询
 		{{{<java>
-		List<Person>people = dao.query(Person.class, null, dao.createPager(1, 4));
+		List<Person> people = dao.query(Person.class, Cnd.where("age", ">", 18), dao.createPager(2, 4));
 		}}}
 		* dao.createPager 第一个参数是第几页，第二参数是一页有多少条记录
 		* 关于分页更多的说明，请参看 [pager.man 分页查询]
@@ -128,7 +130,7 @@
 清除 Clear
 	清除所有记录
 		{{{<java>
-		dao.clear(Person.class);
+		dao.clear(Person.class); //还是那句,慎用
 		}}}
 	按条件清除
 		{{{<java>

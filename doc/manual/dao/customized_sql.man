@@ -114,7 +114,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 	如何执行 Sql 对象
 		当你顺利的创建了一个 Sql 对象，执行它就相当简单了，比如：
 		{{{<JAVA>
-		void demoSql(Dao dao){
+		public void demoSql(Dao dao){
 			Sql sql = Sqls.create("SELECT name FROM t_abc WHERE name LIKE @name");
 			sql.params().set("name", "A%");
 			dao.execute(sql);
@@ -122,17 +122,6 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 		}}}
 		这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回
 		结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。
-	
-    批量执行
-        在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作
-        {{{
-        Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
-        sql.params().set("name","XiaoBai").set("id",4);
-        sql.addBatch();
-        sql.params().set("name","XiaoHei").set("id",5);
-        sql.addBatch();
-        dao.execute(sql);
-        }}}
 
 	回调的用处
 		接上例，你需要这么改造一下你的函数：
@@ -150,10 +139,11 @@ Sql 对象 -- org.nutz.dao.sql.Sql
 			});
 			dao.execute(sql);
 			return sql.getList(String.class);
+			// Nutz内置了大量回调, 请查看Sqls.callback的属性
 		}
 		}}}
 		看到熟悉的 ResultSet 了吧。 当然，如果你执行的不是 SELECT 语句，你依然可以设置回调，但是 ResultSet 
-		参数就是 null  了。
+		参数就是 null了。
 		
 		总结一下：
 		 # 回调对象实现接口 org.nutz.dao.sql.SqlCallback，事实上，就像上例所示，这种场景非常适合使用匿名类。
@@ -181,6 +171,18 @@ Sql 对象 -- org.nutz.dao.sql.Sql
         只要你保证你的 Master 类声明了 `@Table` 并且每个字段上的 `@Column` 可以同你的 ResultSet 配置起来
         那么，上面的代码可以很方便的帮你获取一个 `List<Master>`.
 
+	
+	
+    批量执行
+        在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作
+        {{{
+        Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
+        sql.params().set("name","XiaoBai").set("id",4);
+        sql.addBatch();
+        sql.params().set("name","XiaoHei").set("id",5);
+        sql.addBatch();
+        dao.execute(sql);
+        }}}
 ----------------------------------------------------------------------------------------------------
 Nutz.Dao SQL 文件的格式
 
@@ -355,5 +357,6 @@ Nutz.Dao SQL 文件的格式
 		dao.execute(sql);
 		return sql.getList(Pet.class);
 		}}}
+	提醒一下,SqlServer数据库下, 用于分页的sql对象,不要重复使用!!
 
 	
