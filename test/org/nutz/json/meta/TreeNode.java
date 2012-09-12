@@ -1,10 +1,8 @@
 package org.nutz.json.meta;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.nutz.castor.Castors;
 import org.nutz.json.JsonField;
 import org.nutz.lang.util.NutType;
 import org.nutz.mapl.Mapl;
