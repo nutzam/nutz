@@ -26,6 +26,8 @@
 <div><span class="num">3</span><a href="#监听其他事件">监听其他事件</a></div>
 </li>
 </ul>
+<p></p>
+<div class="hr"><b></b></div>
 <h1><a name="都有哪些事件"></a>都有哪些事件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>Nutz.Ioc 容器有三种事件：</p>
@@ -35,6 +37,7 @@
 <li>对象被销毁</li>
 </ul>
 <p>在这三种时刻，你如果想做一些特殊的操作，比如，当一个数据源被销毁时，你希望能够关闭所有的连接，你可以在 JSON 配置文件中，声明一下，你想监听什么事件，以及怎么监听。</p>
+<div class="hr"><b></b></div>
 <h1><a name="怎么监听"></a>怎么监听</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>我们为 Pet 对象增加一个新的属性:</p>
@@ -42,14 +45,14 @@
 
 	private int fetchCount;
 	
-	... <span class="zdoc_code_cmt">// 省略其他属性以及 getter 和 setter
-</span></pre>
+	... // 省略其他属性以及 getter 和 setter
+</pre>
 <h2><a name="通过实现一个触发器"></a>通过实现一个触发器</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <h3><a name="触发器"></a>触发器</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>package nutz.demo.ioc.book;<span class="zdoc_code_cmt">//提醒: 不要把你的类放在缺省包中!!
-</span>
+<pre>package nutz.demo.ioc.book;//提醒: 不要把你的类放在缺省包中!!
+
 import org.nutz.ioc.IocEventTrigger;
 
 public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
@@ -74,6 +77,7 @@ public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
 	}
 }
 </pre>
+<p></p>
 <h3><a name="调用代码"></a>调用代码</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/events.js"));
@@ -86,6 +90,7 @@ System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoBai be fetch 3 times
 </pre>
+<p></p>
 <h2><a name="通过对象自身的一个函数"></a>通过对象自身的一个函数</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>这个函数必须为  public，并且不能有参数</p>
@@ -95,6 +100,7 @@ System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 	this.fetchCount++;
 }
 </pre>
+<p></p>
 <h3><a name="在_JSON_配置文件中增加新的对象"></a>在 JSON 配置文件中增加新的对象</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>xh : {
@@ -116,6 +122,7 @@ System.out.printf("%s be fetch %d times\n", xh.getName(), xh.getFetchCount());
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoHei be fetch 2 times
 </pre>
+<div class="hr"><b></b></div>
 <h1><a name="监听其他事件"></a>监听其他事件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>events : {

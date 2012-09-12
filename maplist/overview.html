@@ -89,8 +89,8 @@ class B{
 class C{
     public static void main(String args[]){
         String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-        <span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
-</span>        Object obj = Json.fromJson(json);
+        //这样得到的就是Mapl结构的数据了.
+        Object obj = Json.fromJson(json);
         
         B b = Mapl.maplistToObj(obj, B.class);
     }
@@ -118,8 +118,8 @@ Mapl.toMapl.b);
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Mapl结构的数据时非常的繁杂, 经常需要很多层的类型转换.</p>
 <pre>String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-<span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
-</span>Object obj = Json.fromJson(json);
+//这样得到的就是Mapl结构的数据了.
+Object obj = Json.fromJson(json);
 </pre>
 <p>上面的obj, 如果我想取as索引为1的name的值, 怎么办? 只能这样:</p>
 <pre>Map map = (Map) obj;
@@ -155,7 +155,7 @@ Object obj3 = Mapl.merge(obj1, obj2);
 </pre>
 <p>规则:</p>
 <ul type="disc">
-<li>普通对象, 保存为List, 但是要去年重复.</li>
+<li>普通对象, 保存为List, 但是要去除重复.</li>
 <li>合并map, 如果key值相同, 那么后一个值覆盖前面的值, 注意, 对值将会进行递归合并</li>
 <li>list不做递归合并, 只做简单的合并, 清除重复</li>
 </ul>
@@ -265,6 +265,7 @@ assertEquals(dest, Json.toJson(obj, new JsonFormat()));
       ]
  }
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="MapList的增删改"></a>MapList的增删改</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

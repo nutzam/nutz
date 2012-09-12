@@ -64,6 +64,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="0_规范的规范"></a>0. 规范的规范</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <ol type="1">
 <li>本规范的每一条目必须无二义性，并且可执行。否则作废</li>
 <li>本规范的条目分为两个级别:
@@ -182,6 +183,7 @@
 	return aos.getBrief();
  }
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h2><a name="26_成员函数和静态函数"></a>2.6 成员函数和静态函数</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -195,14 +197,14 @@
 </ol>
 </li>
 <li><span style="color:#008800;"><b>S</b></span>-支持链式赋值的 setter 允许写成 ，并且也可以支持同名 getter
-<pre><span class="zdoc_code_cmt">// Setter
-</span>public Pet name(String name){
+<pre>// Setter
+public Pet name(String name){
 	this.name = name;
 	return this;
 }
 
-<span class="zdoc_code_cmt">// Getter
-</span>public String name(){
+// Getter
+public String name(){
 	return this.name;
 }
 </pre>
@@ -247,20 +249,20 @@
 <li><span style="color:#FF0000;"><b>R</b></span>-不要写 JAVA DOC，没意义</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-代码质量不好但能正常运行，或者还没有实现的代码用 “ //TODO: ”</li>
 <li><span style="color:#FF0000;"><b>R</b></span>-在 if ... else .. 分支上做注释格式应该如下：
-<pre><span class="zdoc_code_cmt">// comments for case A
-</span>if(xxxx){
-	<span class="zdoc_code_cmt">//TODO you code here
-</span>}
+<pre>// comments for case A
+if(xxxx){
+	//TODO you code here
+}
 /*
  * Multipline comments for case B
  */
 else if(xxxxx){
-	<span class="zdoc_code_cmt">//TODO you code here
-</span>}
-<span class="zdoc_code_cmt">// comments for default case
-</span>else{
-	<span class="zdoc_code_cmt">//TODO you code here
-</span>}
+	//TODO you code here
+}
+// comments for default case
+else{
+	//TODO you code here
+}
 </pre>
 </li>
 </ul>

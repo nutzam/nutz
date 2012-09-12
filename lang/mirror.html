@@ -154,6 +154,7 @@ Borning&lt;Pet&gt; borning = mirror.getBorning("XiaoBai");
 Pet xb = borning.born("XiaoBai");
 Pet xh = borning.born("XiaoHei");
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="更方便的调用"></a>更方便的调用</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -175,6 +176,7 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <p>控制台输出：</p>
 <pre>Get Hello~~~ @ 1259836169165
 </pre>
+<p></p>
 <h2><a name="参数自动转型"></a>参数自动转型</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>System.out.println(mirror.invoke(mc, "getInfo", new Email("zozoh", "263.net")));
@@ -192,17 +194,18 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <li>如果没有泛型参数，返回 null
 <pre>Type[] types = Mirror.getTypeParams(MyClass.class);
 </pre>
+<p></p>
 </li>
 </ul>
 <h2><a name="获取_getter"></a>获取 getter</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre><span class="zdoc_code_cmt">// 获取 getName() 方法
-</span>Method getter = mirror.getGetter("name");
+<pre>// 获取 getName() 方法
+Method getter = mirror.getGetter("name");
 </pre>
 <h2><a name="获取_setter"></a>获取 setter</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre><span class="zdoc_code_cmt">// 获取 setName(String) 方法
-</span>Method setter = mirror.getSetter("name", String.class);
+<pre>// 获取 setName(String) 方法
+Method setter = mirror.getSetter("name", String.class);
 </pre>
 <h2><a name="获取全部属性"></a>获取全部属性</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -218,6 +221,7 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Method[] methods = mirror.getStaticMethods();
 </pre>
+<p></p>
 <h2><a name="获取字段"></a>获取字段</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
@@ -232,6 +236,7 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <li>获取第一个声明了特殊注解的字段
 <pre>Field f = mirror.getField(MyAnnotation.class);
 </pre>
+<p></p>
 </li>
 </ul>
 <h2><a name="获取字段值"></a>获取字段值</h2>
@@ -244,6 +249,7 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <li>优先通过 getter 获取字段值，如果没有，则直接获取字段值
 <pre>Object v = mirror.getValue(obj, "name");
 </pre>
+<p></p>
 </li>
 </ul>
 <h2><a name="设置字段值"></a>设置字段值</h2>
@@ -256,6 +262,7 @@ System.out.println(mirror.invoke(mc, "getInfo", "Hello~~~"));
 <li>为对象的一个字段设置。优先调用 setter 方法。
 <pre>mirror.setValue(obj, "name", "XiaoBai");
 </pre>
+<p></p>
 </li>
 </ul>
 </div>

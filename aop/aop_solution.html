@@ -24,6 +24,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要特别写出NutAop的模型呢?"></a>为什么需要特别写出NutAop的模型呢?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <ul type="disc">
 <li>NutAop清晰简洁地实现了Aop中最常用,最常见的需求--控制特定方法的执行逻辑</li>
 <li>了解这个模型,能够更好地理解Aop</li>
@@ -33,8 +34,8 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>原方法(没有返回值)</p>
 <pre>public void exe(){
-	<span class="zdoc_code_cmt">//Do something
-</span>}
+	//Do something
+}
 </pre>
 <p>被改造后</p>
 <pre>import org.nutz.aop.InterceptorChain;
@@ -65,10 +66,10 @@ public void exe(){
 	at org.nutz.aop.asm.test.Aop1$$NUTZAOP._aop_invoke(Unknown Source)
 	at org.nutz.aop.InterceptorChain.invoke(InterceptorChain.java:51)
 	at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:39)
-	at org.nutz.aop.interceptor.LoggingMethodInterceptor.filter(LoggingMethodInterceptor.java:29) <span class="zdoc_code_cmt">//拦截器B
-</span>	at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
-	at org.nutz.aop.AbstractMethodInterceptor.filter(AbstractMethodInterceptor.java:10) <span class="zdoc_code_cmt">//拦截器A
-</span>	at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
+	at org.nutz.aop.interceptor.LoggingMethodInterceptor.filter(LoggingMethodInterceptor.java:29) //拦截器B
+	at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
+	at org.nutz.aop.AbstractMethodInterceptor.filter(AbstractMethodInterceptor.java:10) //拦截器A
+	at org.nutz.aop.InterceptorChain.doChain(InterceptorChain.java:42)
 	at org.nutz.aop.asm.test.Aop1$$NUTZAOP.mixArgsVoid(Unknown Source)
 </pre>
 <p>mixArgsVoid 就是你原本方法</p>

@@ -24,13 +24,13 @@
 <div><span class="num">2.3</span><a href="#如何执行_Sql_对象">如何执行 Sql 对象</a></div>
 </li>
 <li>
-<div><span class="num">2.4</span><a href="#批量执行">批量执行</a></div>
+<div><span class="num">2.4</span><a href="#回调的用处">回调的用处</a></div>
 </li>
 <li>
-<div><span class="num">2.5</span><a href="#回调的用处">回调的用处</a></div>
+<div><span class="num">2.5</span><a href="#获取一个列表的回调">获取一个列表的回调</a></div>
 </li>
 <li>
-<div><span class="num">2.6</span><a href="#获取一个列表的回调">获取一个列表的回调</a></div>
+<div><span class="num">2.6</span><a href="#批量执行">批量执行</a></div>
 </li>
 </ul>
 </li>
@@ -151,11 +151,11 @@ UPDATE FROM $table SET name=@name WHERE id=@id
 </ul>
 <p>所有的占位符可以同样的名称出现的多个地方。并且变量占位符和参数占位符的名称不互相干扰，比如:</p>
 <pre>Sql sql = Sqls.create("INSERT INTO $table ($name,$age,$weight) VALUES(@name,@age,@weight)");
-<span class="zdoc_code_cmt">// 为变量占位符设值
-</span>sql.vars().set("table","t_person");	
+// 为变量占位符设值
+sql.vars().set("table","t_person");	
 sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
-<span class="zdoc_code_cmt">// 为参数占位符设值
-</span>sql.params().set("name","Peter").set("age",18).set("weight",60);
+// 为参数占位符设值
+sql.params().set("name","Peter").set("age",18).set("weight",60);
 </pre>
 <p>通过上例，我们可以看出，变量占位符和参数占位符的确可以重名且不相互干扰的。</p>
 <h2><a name="Sql_的逃逸字符"></a>Sql 的逃逸字符</h2>
@@ -175,23 +175,13 @@ sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
 <h2><a name="如何执行_Sql_对象"></a>如何执行 Sql 对象</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>当你顺利的创建了一个 Sql 对象，执行它就相当简单了，比如：</p>
-<pre>void demoSql(Dao dao){
+<pre>public void demoSql(Dao dao){
 	Sql sql = Sqls.create("SELECT name FROM t_abc WHERE name LIKE @name");
 	sql.params().set("name", "A%");
 	dao.execute(sql);
 }
 </pre>
 <p>这就完了吗？我怎么取得查询的结果呢。是的，同 UPDATE, DELETE, INSERT 不同， SELECT 是需要返回结果的，但是 Nutz.Dao 也不太清楚怎样为你自定义的 SELECT 语句返回结果，于是，就需要你设置回调。</p>
-<h2><a name="批量执行"></a>批量执行</h2>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作</p>
-<pre>Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
-sql.params().set("name","XiaoBai").set("id",4);
-sql.addBatch();
-sql.params().set("name","XiaoHei").set("id",5);
-sql.addBatch();
-dao.execute(sql);
-</pre>
 <h2><a name="回调的用处"></a>回调的用处</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>接上例，你需要这么改造一下你的函数：</p>
@@ -208,9 +198,10 @@ dao.execute(sql);
 	});
 	dao.execute(sql);
 	return sql.getList(String.class);
+	// Nutz内置了大量回调, 请查看Sqls.callback的属性
 }
 </pre>
-<p>看到熟悉的 ResultSet 了吧。 当然，如果你执行的不是 SELECT 语句，你依然可以设置回调，但是 ResultSet 参数就是 null  了。</p>
+<p>看到熟悉的 ResultSet 了吧。 当然，如果你执行的不是 SELECT 语句，你依然可以设置回调，但是 ResultSet 参数就是 null了。</p>
 <p>总结一下：</p>
 <ol type="1">
 <li>回调对象实现接口 org.nutz.dao.sql.SqlCallback，事实上，就像上例所示，这种场景非常适合使用匿名类。</li>
@@ -241,6 +232,16 @@ dao.execute(sql);
 List&lt;Master&gt; list = sql.getList(Master.class);
 </pre>
 <p>只要你保证你的 Master 类声明了 @Table 并且每个字段上的 @Column 可以同你的 ResultSet 配置起来那么，上面的代码可以很方便的帮你获取一个 List&lt;Master&gt;.</p>
+<h2><a name="批量执行"></a>批量执行</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在 Nutz 1.b.38 之后的版本，自定义 SQL 可以支持批量操作</p>
+<pre>Sql sql = Sqls.create("UPDATE t_pet SET name=@name WHERE id=@id");
+sql.params().set("name","XiaoBai").set("id",4);
+sql.addBatch();
+sql.params().set("name","XiaoHei").set("id",5);
+sql.addBatch();
+dao.execute(sql);
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="NutzDao_SQL_文件的格式"></a>Nutz.Dao SQL 文件的格式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -263,6 +264,7 @@ SELECT * FROM t_pet WHERE id=@id
 /* listpets*/
 SELECT * FROM t_pet $condition
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="加载_SQL_文件"></a>加载 SQL 文件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -285,6 +287,7 @@ System.out.println(dao.sqls().count());
 ((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
 System.out.println(dao.sqls().count());
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="条件变量占位符"></a>条件变量占位符</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -360,6 +363,7 @@ sql.setCondition(Cnd.where("id", "&gt;", 35));
 	return sql.getObject(Pet.class);
 }
 </pre>
+<p></p>
 <h3><a name="查询实体的回调"></a>查询实体的回调</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>List&lt;Pet&gt; demoEntityQuery(Dao dao) {
@@ -384,6 +388,7 @@ sql.setEntity(dao.getEntity(Pet.class));
 dao.execute(sql);
 return sql.getList(Pet.class);
 </pre>
+<p>提醒一下,SqlServer数据库下, 用于分页的sql对象,不要重复使用!!</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

@@ -26,6 +26,8 @@
 </ul>
 </li>
 </ul>
+<p></p>
+<div class="hr"><b></b></div>
 <h1><a name="鸭子法则"></a>鸭子法则</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p><b>如果它走路像鸭子，说话像鸭子，样子像鸭子，叫声也像鸭子，那它就是一只鸭子。</b></p>
@@ -58,6 +60,7 @@
 </tr>
 </table>
 <p>否则，这个 Map 被认为，是在声明对象的每个字段。</p>
+<div class="hr"><b></b></div>
 <h1><a name="匿名对象"></a>匿名对象</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果，一个字段的值就是这样一个 “鸭子 Map” 呢？ 那么，自然会被认为是另外一个对象。这个对象没有名字，你不能通过 Ioc 接口直接获得，它隐藏在某个对象的某个字段里面。所以我们称这个对象为 <b>匿名对象</b></p>
@@ -67,8 +70,8 @@
 <pre>var ioc = {
 	xb : {
 		name : 'XiaoBai',
-		<span class="zdoc_code_cmt">// 请注意，在这里， friend 字段，直接声明了另外一个对象
-</span>		friend : {
+		// 请注意，在这里， friend 字段，直接声明了另外一个对象
+		friend : {
 			type : 'nutz.demo.ioc.book.Pet',
 			fields : {
 				name : 'XiaoHei'
@@ -77,12 +80,14 @@
 	}
 }
 </pre>
+<p></p>
 <h2><a name="调用代码"></a>调用代码</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
 Pet pet = ioc.get(Pet.class, "xb");
 System.out.println(pet.getFriend().getName());
 </pre>
+<p></p>
 <h2><a name="控制台输出"></a>控制台输出</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoHei

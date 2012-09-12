@@ -100,8 +100,8 @@
 <p>而关于 <b>"好用"</b>，还有下面这三层含义：</p>
 <h2><a name="它容易使用吗？"></a>它容易使用吗？</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>System.out.println(El.eval("3+4*5").equals(23));  <span class="zdoc_code_cmt">// 将打印 true，够简单吧
-</span></pre>
+<pre>System.out.println(El.eval("3+4*5").equals(23));  // 将打印 true，够简单吧
+</pre>
 <p>表达式接受的是字符串输入，输出则是一个Object对象，而Object对象本身是根据计算结果进行进行了自动封装的。</p>
 <h2><a name="它功能强大吗？"></a>它功能强大吗？</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -109,8 +109,8 @@
 <p><b>它支持变量</b>，比如</p>
 <pre>Context context = Lang.context();
 context.set("a", 10);
-System.out.println(El.eval(context, "a*10"));  <span class="zdoc_code_cmt">// 将打印 100 
-</span></pre>
+System.out.println(El.eval(context, "a*10"));  // 将打印 100 
+</pre>
 <p>通过 Context 接口，你可以为你的表达式随意设置变量的值。它支持如下类型的 Java 数据</p>
 <ul type="disc">
 <li>整型 - int 或  Integer</li>
@@ -134,13 +134,13 @@ System.out.println(El.eval(context, "a*10"));  <span class="zdoc_code_cmt">// �
 <li>对运算树的根结点进行运算.</li>
 </ol>
 <p>当然我也提供了一个提升效率的手段，因为如果每次计算都经过这三个步骤当然慢，所以我们可以对它先预编译：</p>
-<pre>El exp = new El("a*10");  <span class="zdoc_code_cmt">// 预编译结果为一个 El 对象
-</span>
+<pre>El exp = new El("a*10");  // 预编译结果为一个 El 对象
+
 Context context = Lang.context();
 context.set("a", 10);
 
-System.out.println(exp.eval(context));  <span class="zdoc_code_cmt">// 将打印 100 
-</span></pre>
+System.out.println(exp.eval(context));  // 将打印 100 
+</pre>
 <p>El在实例化时就会对表达式进行预编译，会直接编译成运算树，当调用eval方法时，就不用再耗时的编译动作了.</p>
 <p>它的 eval 函数是线程安全的，只要在多个线程内给它不同的 context 就是了。当然，你也可以在多个线程间共享同一个 Context，那运行起来一定很有趣，不是吗？</p>
 <div class="hr"><b></b></div>
@@ -335,36 +335,37 @@ System.out.println(exp.eval(context));  <span class="zdoc_code_cmt">// 将打印
 </table>
 <p>使用很简单吧.</p>
 <p>当EL里面的功能无法满足你的需求时, 你可以自定义一些功能来实现, 怎么自定义呢? </p>
-<pre><span class="zdoc_code_cmt"># 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
-</span><span class="zdoc_code_cmt"># 在配置文件中添加一个配置项:
-</span>{
+<pre># 创建一个类, 使它实现 org.nutz.el.opt.RunMethod, org.nutz.plugin.Plugin 这两个接口.
+# 在配置文件中添加一个配置项:
+{
 "EL": {"custom":[...函数列表...]}
 }
-<span class="zdoc_code_cmt"># 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
-</span>NutConf.load("配置文件");
-<span class="zdoc_code_cmt">//加载自定义函数配置, 必须!因为默认情况下, CustomMake只在static{}块中加载一次配置, 新添加的配置在static之后的话, 那么新添加的函数配置将不会生效!
-</span>CustomMake.init();
+# 如果你只使用了EL这一个模块, 没有其它模块, 并且在其它地方都没有加载过配置, 请使用下面的语句加载配置:
+NutConf.load("配置文件");
+//加载自定义函数配置, 必须!因为默认情况下, CustomMake只在static{}块中加载一次配置, 新添加的配置在static之后的话, 那么新添加的函数配置将不会生效!
+CustomMake.init();
 </pre>
 <p>完成这两步后, 你就定义了你自己的函数. 看个trim的例子:</p>
 <pre>public class Trim implements RunMethod, Plugin{
-    <span class="zdoc_code_cmt">//处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
-</span>    public Object run(List&lt;Object&gt; fetchParam) {
+    //处理方法, fetchParam为函数的参数. 它会将EL中函数括号后的所有内容传递过来
+    public Object run(List&lt;Object&gt; fetchParam) {
         if(fetchParam.size() &lt;= 0){
         throw new ElException("trim方法参数错误");
         }
         String obj = (String) fetchParam.get(0);
         return obj.trim();
     }
-    <span class="zdoc_code_cmt">//是否可以执行
-</span>    public boolean canWork() {
+    //是否可以执行
+    public boolean canWork() {
         return true;
     }
-    <span class="zdoc_code_cmt">//在EL表达式中的函数名
-</span>    public String fetchSelf() {
+    //在EL表达式中的函数名
+    public String fetchSelf() {
         return "trim";
     }
 }
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="还有些什么功能?"></a>还有些什么功能?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -372,11 +373,11 @@ System.out.println(exp.eval(context));  <span class="zdoc_code_cmt">// 将打印
 <h2><a name="忠于_Java"></a>忠于 Java </h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>Nutz中的 EL 完全忠实于 JAVA 基本运算规则, 并没有做一些扩展, 比如最常见的, 数据类型转换,在 JAVA 中进行数值运算的过程中, 是根据运算符两边的类型而最终决定运算结果的类型的, 比如: </p>
-<pre>7/3  <span class="zdoc_code_cmt">// 将返回int型
-</span>而 
-(1.0 * 7)/3    <span class="zdoc_code_cmt">// 返回double
-</span>(1.0f * 7)/3   <span class="zdoc_code_cmt">// 则返回float
-</span></pre>
+<pre>7/3  // 将返回int型
+而 
+(1.0 * 7)/3    // 返回double
+(1.0f * 7)/3   // 则返回float
+</pre>
 <p>为什么后面两个返回类型不一样呢?  因为在 JAVA 中默认浮点类型是 double 哦.</p>
 <p>基于这个原因, 在 EL 中同样保留了这些特点. 所以, 亲, 要是没返回 double 别骂我们哦~~~</p>
 <h2><a name="支持对象方法调用"></a>支持对象方法调用</h2>
@@ -400,74 +401,90 @@ assertEquals(10, El.eval(context, "a.add(b).intValue()"));
 context.set("strings", Strings.class);
 assertEquals("nutz", El.eval(context, "strings.trim(\"    nutz   \")"));
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="一些表达式的例子"></a>一些表达式的例子</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="普通运算"></a>普通运算</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>System.out.println(El.eval("3+2*5"));
-<span class="zdoc_code_cmt">// 输出为  13
-</span></pre>
+// 输出为  13
+</pre>
+<p></p>
 <h2><a name="字符串操作"></a>字符串操作</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>System.out.println(El.eval("trim(\"  abc  \")"));
-<span class="zdoc_code_cmt">// 输出为  abc
-</span></pre>
+// 输出为  abc
+</pre>
+<p></p>
 <h2><a name="Java_对象属性属性访问调用"></a>Java 对象属性属性访问调用</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 Pet pet = new Pet();
 pet.setName("GFW");
 context.set("pet",pet);
 System.out.println(El.eval(context,"pet.name"));
-<span class="zdoc_code_cmt">// 输出为  GFW
-</span></pre>
+// 输出为  GFW
+</pre>
+<p></p>
 <h2><a name="函数调用"></a>函数调用	</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 Pet pet = new Pet();
 context.set("pet",pet);
 El.eval(context, "pet.setName('XiaoBai')");
 
 System.out.println(El.eval(context,"pet.getName()"));
-<span class="zdoc_code_cmt">// 输出为  XiaoBai
-</span></pre>
+// 输出为  XiaoBai
+</pre>
+<p></p>
 <h2><a name="数组访问"></a>数组访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 context.set("x",Lang.array("A", "B", "C"));
 
 System.out.println(El.eval(context,"x[0].toLowerCase()"));
-<span class="zdoc_code_cmt">// 输出为  a
-</span></pre>
+// 输出为  a
+</pre>
+<p></p>
 <h2><a name="列表访问"></a>列表访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 context.set("x",Lang.list("A", "B", "C"));
 
 System.out.println(El.eval(context,"x[0].toLowerCase()"));
-<span class="zdoc_code_cmt">// 输出为  a
-</span></pre>
+// 输出为  a
+</pre>
+<p></p>
 <h2><a name="Map_访问"></a>Map 访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 context.set("map",Lang.map("{x:10, y:5}"));
 
 System.out.println(El.eval(context,"map['x'] * map['y']"));
-<span class="zdoc_code_cmt">// 输出为  50
-</span></pre>
+// 输出为  50
+</pre>
+<p></p>
 <h2><a name="判断"></a>判断</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>Context context = new Context();
 context.set("a",5);
 
 System.out.println(El.eval(context,"a&gt;10"));
-<span class="zdoc_code_cmt">// 输出为  false
-</span>
+// 输出为  false
+
 context.set("a",20);
 System.out.println(El.eval(context,"a&gt;10"));
-<span class="zdoc_code_cmt">// 输出为  true
-</span></pre>
+// 输出为  true
+</pre>
+<p></p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
 </body>

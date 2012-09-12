@@ -88,7 +88,7 @@ public class Pet{
 <p>之后，为你插入的对象执行</p>
 <pre>SELECT MAX(id) FROM t_pet;
 </pre>
-<p>并设置到 pet 对象中。当然，不同的数据库，获得自增值的方式是不一样的，请参看 <a href="next_prev.html">在插入前后的为字段设值</a>里面描述了，通过 @Next 注解，声明数据库本地方言，来获取自增值。</p>
+<p>并设置到 pet 对象中。当然，不同的数据库，获得自增值的方式是不一样的，请参看 <a href="next_prev.html">在插入前后的为字段设值</a>里面描述了，通过 @Next 注解，声明数据库本地方言，来获取自增值。注意!! 这里的自增是由数据库表来实现的,而非NutDao的内部自增机制!!</p>
 <h2><a name="手工设值"></a>手工设值</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>由于默认的，@Id 字段被认为是自增的，所以在插入时，Nutz.Dao 会忽略这个字段。但是，有些时候，你的整数主键不是自增的，你希望手工为其设值，怎么办呢？ 你可以给 @Id 设一个属性: auto=false</p>

@@ -34,8 +34,8 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 org.ioc.impl.NutIoc 里，默认有一个 IocContext，它的 scope 是 "app"。</p>
 <p>每次从 NutIoc 里获取对象，如果你想告诉容器：“嘿，我还有另外的一个缓存，请优先在里面查查”你可以这样调用：</p>
-<pre>IocContext myCache = ...;  <span class="zdoc_code_cmt">// 获取你的缓存
-</span>MyObject obj = ioc.get(MyObjec.class, "objName", myCache);
+<pre>IocContext myCache = ...;  // 获取你的缓存
+MyObject obj = ioc.get(MyObjec.class, "objName", myCache);
 </pre>
 <p>Nutz.Ioc 默认提供了两个 IocContext:</p>
 <ul type="disc">

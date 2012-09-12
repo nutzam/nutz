@@ -223,6 +223,7 @@ public class Department {
                         @Param("..") Food food){
 	...
 </pre>
+<p></p>
 <h3><a name="JSON_的支持"></a>JSON 的支持</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>你的 HTTP 参数也可以是一个 JSON 字符串</p>
@@ -328,6 +329,7 @@ public Object listAllUser(@Attr("me")User user) {
 	return dao.query(User.class, null);
 }
 </pre>
+<p></p>
 <p>如果你还想支持更多的类型，那么你就需要定制你自己的适配器了，稍后会有详细描述。</p>
 <div class="hr"><b></b></div>
 <h1><a name="路径参数"></a>路径参数</h1>
@@ -348,31 +350,32 @@ public Object listAllUser(@Attr("me")User user) {
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@At("/topic/?/comment/?")
 public String getComment(int topicId, int commentId){
-    <span class="zdoc_code_cmt">// 如果输入的 URL 是： /topic/35/comment/171
-</span>    <span class="zdoc_code_cmt">// 那么 topicId 就是 35
-</span>    <span class="zdoc_code_cmt">// 而 commentId 就是 171
-</span>}
+    // 如果输入的 URL 是： /topic/35/comment/171
+    // 那么 topicId 就是 35
+    // 而 commentId 就是 171
+}
 </pre>
 <p>如果你有这种需求，我想不用我废话了，不解释，你懂的。</p>
 <h2><a name="多层通配符"></a>多层通配符</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@At("/article/*")
 public String getArticle(String author, int articleId){
-    <span class="zdoc_code_cmt">// 如果输入的 URL 是： /article/zozoh/1352
-</span>    <span class="zdoc_code_cmt">// 那么 author 就是 "zozoh"
-</span>    <span class="zdoc_code_cmt">// 而 articleId 就是 1352       	
-</span>}
+    // 如果输入的 URL 是： /article/zozoh/1352
+    // 那么 author 就是 "zozoh"
+    // 而 articleId 就是 1352       	
+}
 </pre>
 <p>Nutz.Mvc 在一层一层解析路径的时候，碰到了 <span style="color:#FF00FF;"><b>'*'</b></span>，	它就会将这个路径从此处截断，后面的字串按照字符 '/' 拆分成一个字符串数组。为入口函数填充参数的时候，会优先将这个路径参数数组按照顺序填充成参数。之后，如果它发现入口函数还有参数没有被填充完全，它才应用适配器的内部逻辑，填充其余的参数。</p>
 <h2><a name="单层多层通配符混用"></a>单层多层通配符混用</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@At("/user/?/topic/?/comment/*")
 public String getComment(String author, int topicId, int commentId){
-    <span class="zdoc_code_cmt">// 如果输入的 URL 是： /user/zozoh/topic/35/comment/171            // 那么 author 就是 "zozoh" 
-</span>    <span class="zdoc_code_cmt">// 而 topicId 就是 35
-</span>    <span class="zdoc_code_cmt">// 而 commentId 就是 171
-</span>}
+    // 如果输入的 URL 是： /user/zozoh/topic/35/comment/171            // 那么 author 就是 "zozoh" 
+    // 而 topicId 就是 35
+    // 而 commentId 就是 171
+}
 </pre>
+<p></p>
 <h2><a name="通配符的限制"></a>通配符的限制	</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>总之，在 @At 注解中通过通配符，你可以声明你的路径参数，但是你的通配符必须是一层路径，但是它们有限制：</p>
@@ -395,12 +398,12 @@ public String getComment(String author, int topicId, int commentId){
 <p>故,现在引入了AdaptorErrorContext,用于解决这一直以来被骂的缺陷</p>
 <p>仅当入口方法的最后一个参数为AdaptorErrorContext(其子类也行),才会触发这个错误处理机制</p>
 <p>看以下代码:</p>
-<pre><span class="zdoc_code_cmt">// 传入的id,会是一个非法的字符串!!
-</span>@At({"/err/param", "/err/param/?"})
+<pre>// 传入的id,会是一个非法的字符串!!
+@At({"/err/param", "/err/param/?"})
 @Fail("http:500")
 public void errParam(@Param("id") long id, AdaptorErrorContext errCtx) {
-    TestCase.assertNotNull(errCtx); <span class="zdoc_code_cmt">// 当没有异常产生时, errCtx为null
-</span>    TestCase.assertNotNull(errCtx.getErrors()[0]);
+    TestCase.assertNotNull(errCtx); // 当没有异常产生时, errCtx为null
+    TestCase.assertNotNull(errCtx.getErrors()[0]);
 }
 </pre>
 <p>当用户输入的参数id,为"Nutz"时,自然会导致异常, 而这个方法的最后一个参数是AdaptorErrorContext,所以,仍将进入这个方法, 且errCtx参数不为null</p>

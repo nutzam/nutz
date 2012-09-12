@@ -82,8 +82,8 @@
 <p>最重要的一个改变，就是原来的 entity.fields() 方法，变成了 entity.getMappingFields()。这个是有同学向我抱怨过，因此觉得有必要在这里特别提一下。</p>
 <p><span style="color:#FF0000;"><b> org.nutz.dao.tool 包的兼容问题</b></span></p>
 <p>某些很有探索精神的同学可能偶然发现了 Nutz 还隐藏了一个 Dao 工具类的包，里面的方法可以跨数据库的建表，所以很有可能在自己的项目里也这么应用了。但是不幸的是，1.b.38 之后，这个包没了。因为我们不再需要它了。你的建表可以用:</p>
-<pre>dao.create(Pet.class, true);   <span class="zdoc_code_cmt">// true 表示如果存在，先 DROP 掉再建, false 表示如果存在就不建了
-</span></pre>
+<pre>dao.create(Pet.class, true);   // true 表示如果存在，先 DROP 掉再建, false 表示如果存在就不建了
+</pre>
 <p>来完成。当然，删表，可以用:</p>
 <pre>dao.drop(Pet.class);
 </pre>
@@ -104,6 +104,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="问题修复"></a>问题修复</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <ul type="disc">
 <li><a href="http://code.google.com/p/nutz/issues/detail?id=34">Issue 34</a> dao: support JPA Annotation <span style="color:#AAAAAA;">by</span> <b>zozoh</b></li>
 <li><a href="http://code.google.com/p/nutz/issues/detail?id=85">Issue 85</a> NutDao 中需要提供批量更新操作的方法. <span style="color:#AAAAAA;">by</span> <b>ming300</b></li>

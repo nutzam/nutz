@@ -41,7 +41,7 @@
 <p>从上图，我们可以清楚的看到，Nutz.Dao 会首先分析你传入的 Class&lt;?&gt;，然后将将映射关系保存成一个 Entity&lt;?&gt;，也就是说通过找个 Entity&lt;?&gt;，NutDao 可以了解到调用者打算怎么映射数据表和Java类。</p>
 <p>通过 EntityMaker 接口，Nutz 封装了这个过程，你可以重载 NutDao 的一个函数:</p>
 <pre>public class MyDao extends NutDao {
-    @Override
+
     protected EntityMaker createEntityMaker() {
         return new MyEntityMaker();
     }
@@ -64,7 +64,7 @@ public class PetBean {
 </ul>
 <h2><a name="描述字段"></a>描述字段</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Column
+<pre>@Column //提醒一下,这一行是多余的
 @Name
 @ColDefine(type=ColType.VARCHAR, width=20)
 private String name;
@@ -109,8 +109,8 @@ public interface EntityMaker {
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
 map.put("name", "abc");
 map.put("age", 18);
-dao.update(map);    <span class="zdoc_code_cmt">// 这个是不会有编译错误的
-</span></pre>
+dao.update(map);    // 这个是不会有编译错误的
+</pre>
 <p>我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””</p>
 <p>现在，我们已经支持了这个特性:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();

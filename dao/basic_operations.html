@@ -64,6 +64,8 @@
 <div><span class="num">12</span><a href="#插入和更新集合">插入和更新集合</a></div>
 </li>
 </ul>
+<p></p>
+<div class="hr"><b></b></div>
 <h1><a name="概述"></a>概述</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>传统关系型数据库定义了四种数据操作：</p>
@@ -79,7 +81,12 @@
 <tr>
 <td> 插入 </td>
 <td> Insert	</td>
-<td> 一条 SQL 插入一条记录 </td>
+<td> 一条 SQL 插入一条记录或者多条记录 </td>
+</tr>
+<tr>
+<td> 插入 </td>
+<td> FastInsert</td>
+<td> 一条 SQL ,通过batch插入多条记录 </td>
 </tr>
 <tr>
 <td> 删除 </td>
@@ -107,10 +114,10 @@
 <td> 一条 SQL 根据条件删除多条记录	</td>
 </tr>
 </table>
-<p><span style="color:#FF0000;"><b>请注意：</b></span> 这里我是说 “<i>一条</i>”  SQL。 如果通过 Dao 接口，你传入的是一个集合或者数组，它为为每一个元素都生成一条 SQL 并执行，并更新操作:</p>
+<p><span style="color:#FF0000;"><b>请注意：</b></span> 这里我是说 “<i>一条</i>”  SQL。 如果通过 Dao 接口，你传入的是一个集合或者数组，它会为每一个元素都生成一条 SQL 并执行，并更新操作:</p>
 <pre>Pet[] pets = xxxx;
-dao.update(pets);	<span class="zdoc_code_cmt">// 可以是数组，当然 pets 也可以是集合，
-</span></pre>
+dao.update(pets);	// 可以是数组，当然 pets 也可以是集合
+</pre>
 <p>同理，delete 和 insert 也支持传入数组和集合</p>
 <div class="hr"><b></b></div>
 <h1><a name="示例的前提条件"></a>示例的前提条件</h1>
@@ -124,17 +131,19 @@ dao.update(pets);	<span class="zdoc_code_cmt">// 可以是数组，当然 pets �
 <h1><a name="创建数据表"></a>创建数据表</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>为 Pet 创建数据表，如果数据表存在，先 DROP 掉，再创建</p>
-<pre>dao.create(Pet.class, true);
+<pre>dao.create(Pet.class, true); //生产环境你可千万别这样写!!
 </pre>
 <p>为 Pet 创建数据表，如果数据表存在，忽略</p>
-<pre>dao.create(Pet.class, false);
+<pre>dao.create(Pet.class, false); //一般我们都这样写
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="删除数据表"></a>删除数据表</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>删除 Pet 的数据表</p>
-<pre>dao.drop(Pet.class);
+<pre>dao.drop(Pet.class);//全部删掉哦,没条件的,慎用!!
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="插入_Insert"></a>插入 Insert</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -180,16 +189,17 @@ dao.update(p)
 <p>根据 ID 删除 （如果你的实体声明了 @Id 字段）</p>
 <pre>dao.delete(Person.class,2);
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="查询_Query"></a>查询 Query</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="查询全部记录"></a>查询全部记录</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>List&lt;Person&gt; = dao.query(Person.class,null,null);
+<pre>List&lt;Person&gt; people = dao.query(Person.class,null);
 </pre>
 <h2><a name="按条件查询"></a>按条件查询</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>List&lt;Person&gt; people = dao.query(Person.class, Cnd.where("name", "like", "P%"), null);
+<pre>List&lt;Person&gt; people = dao.query(Person.class, Cnd.where("name", "like", "P%"));
 </pre>
 <ul type="disc">
 <li>Cnd 类的全名是 org.nutz.dao.Cnd
@@ -205,7 +215,7 @@ dao.update(p)
 </ul>
 <h2><a name="分页查询"></a>分页查询</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>List&lt;Person&gt;people = dao.query(Person.class, null, dao.createPager(1, 4));
+<pre>List&lt;Person&gt; people = dao.query(Person.class, Cnd.where("age", "&gt;", 18), dao.createPager(2, 4));
 </pre>
 <ul type="disc">
 <li>dao.createPager 第一个参数是第几页，第二参数是一页有多少条记录</li>
@@ -216,7 +226,7 @@ dao.update(p)
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="清除所有记录"></a>清除所有记录</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>dao.clear(Person.class);
+<pre>dao.clear(Person.class); //还是那句,慎用
 </pre>
 <h2><a name="按条件清除"></a>按条件清除</h2>
 <div style="float:right;"><a href="#top">Top</a></div>

@@ -66,15 +66,15 @@ final Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
 
 pet1.setNickname("BaiBai");
 pet2.setNickname("HeiHei");
-<span class="zdoc_code_cmt">// Begin transaction		
-</span>Trans.exec(new Atom(){
+// Begin transaction		
+Trans.exec(new Atom(){
 	public void run() {
 		dao.update(pet1);
 		dao.update(pet2);
 	}
 });
-<span class="zdoc_code_cmt">// End transaction
-</span></pre>
+// End transaction
+</pre>
 <p>提供一个 org.nutz.trans.Atom 接口的匿名实现，在里面执行的所有的 Dao 操作都是原子性的，因为它们在同一个 “<b>原子</b> (<span style="color:#008800;">Atom</span>)” 里。</p>
 <div class="hr"><b></b></div>
 <h2><a name="事务的关键就是原子的界定"></a>事务的关键就是原子的界定</h2>
@@ -121,9 +121,9 @@ public interface Atom extends Runnable {}
 		dao.update(xxx);
 		dao.update(bbb);
 
-		<span class="zdoc_code_cmt">// 在下层模板，虽然你指定了新的事务级别，但是这里的事务级别还是
-</span>		<span class="zdoc_code_cmt">// 'TRANSACTION_READ_COMMITTED'。在一个事务中，级别一旦设定就不可更改
-</span>		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
+		// 在下层模板，虽然你指定了新的事务级别，但是这里的事务级别还是
+		// 'TRANSACTION_READ_COMMITTED'。在一个事务中，级别一旦设定就不可更改
+		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
 			public void run(){
 				dao.update(CCC);
 				dao.update(EEE);
@@ -142,8 +142,8 @@ public interface Atom extends Runnable {}
 	});
 }
 
-<span class="zdoc_code_cmt">// 在另外一个函数里，可以这么使用
-</span>public void updateDogAndCat(final Pet dog, final Pet cat){
+// 在另外一个函数里，可以这么使用
+public void updateDogAndCat(final Pet dog, final Pet cat){
 	Trans.exec(new Atom(){
 		public void run(){
 			updatePet(dog);
@@ -152,11 +152,12 @@ public interface Atom extends Runnable {}
 	});
 }
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="扩展实现"></a>扩展实现</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>com.zzh.trans.Trans 类的 exec()方法，接受数目可变的 Atom 实例，足够方便了吧。 但是它默认只能支持在一台机器上保证事务性，就是在一个 JVM 里保证代码的事务性。如果跨越多个JVM一起组合的 Service，如何保证事务性呢，很抱歉，Nutz.Dao 的第一版的实现里不包括跨越多个JVM依然保证事务性的功能，但是你如果真的需要这个功能也没关系，你可以自己写一个 org.nutz.trans.Transaction 的实现，然后在你的应用启动时，通过</p>
-<pre>com.zzh.trans.Trans.setup(你的实现类)
+<p>org.nutz.trans.Trans 类的 exec()方法，接受数目可变的 Atom 实例，足够方便了吧。 但是它默认只能支持在一台机器上保证事务性，就是在一个 JVM 里保证代码的事务性。如果跨越多个JVM一起组合的 Service，如何保证事务性呢，很抱歉，Nutz.Dao 的第一版的实现里不包括跨越多个JVM依然保证事务性的功能，但是你如果真的需要这个功能也没关系，你可以自己写一个 org.nutz.trans.Transaction 的实现，然后在你的应用启动时，通过</p>
+<pre>org.nutz.trans.Trans.setup(你的实现类)
 </pre>
 <p>替换 Nutz.Dao 的默认实现。</p>
 <div class="hr"><b></b></div>
@@ -170,7 +171,7 @@ public interface Atom extends Runnable {}
 </ul>
 </li>
 <li>Atom 类就是 java.lang.Runnable 的一个别名</li>
-<li>在一个 Atom 里，无论同时操作多少 DataSource，都是事务安全的</li>
+<li>在一个 Atom 里，无论同时操作多少 DataSource，都是事务安全的(由于不是使用XADataSource,无法100%保证)</li>
 <li>你可以通过实现自己的 Transaction 实现类，扩展 Nutz.Dao 对于事务的支持</li>
 </ul>
 </div>

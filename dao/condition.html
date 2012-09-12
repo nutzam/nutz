@@ -29,7 +29,7 @@
 <div><span class="num">3.1</span><a href="#直接硬编码">直接硬编码</a></div>
 </li>
 <li>
-<div><span class="num">3.2</span><a href="#一个友好一些的工具类_--_Cnd">一个友好一些的工具类 -- Cnd</a></div>
+<div><span class="num">3.2</span><a href="#一个友好的工具类_--_Cnd">一个友好的工具类 -- Cnd</a></div>
 </li>
 </ul>
 </li>
@@ -37,6 +37,7 @@
 <div><span class="num">4</span><a href="#拼装更加复杂的条件">拼装更加复杂的条件</a></div>
 </li>
 </ul>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="概述"></a>概述</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -92,7 +93,7 @@
 <pre>Cnd.wrap("name LIKE 'J%' AND age&gt;20 ORDER BY name ASC");
 </pre>
 <p>就会按照 name 字段排序。</p>
-<h2><a name="一个友好一些的工具类_--_Cnd"></a>一个友好一些的工具类 -- Cnd</h2>
+<h2><a name="一个友好的工具类_--_Cnd"></a>一个友好的工具类 -- Cnd</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>有些情况，数据库中的字段同 Java 对象中的字段并不同名，所以就需要给 Java 字段上的数据库字段注解加上参数 @Column(<span style="color:#FF00FF;">"数据库字段名"</span>)如果你通过 Cnd.wrap() 硬编码某个字段，那么当这个字段数据库字段名发生改变时，你就需要改动很多。因此你希望仅仅将对于数据库的变动限制在 Java 对象的源文件里所以 Nutz 提供了 Cnd.where() 方法</p>
 <pre>Condition c = Cnd.where("age","&gt;",30).and("name", "LIKE", "%K%").asc("name").desc("id");
@@ -108,6 +109,7 @@ Condition c = Cnd.where(e1).or(e2).asc("name");
 <p>这个条件将生成 SQL </p>
 <pre>WHERE (name LIKE 'P%' AND age&gt;'20') OR (name LIKE 'S%' AND age&lt;'30') ORDER BY name ASC
 </pre>
+<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="拼装更加复杂的条件"></a>拼装更加复杂的条件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -118,11 +120,11 @@ Condition c = Cnd.where(e1).or(e2).asc("name");
 <li>让生成的 SQL 可以被参数化，更好的支持 PreparedStatement</li>
 </ol>
 <p>这个接口的使用也很简单，它基本符合 "IDE 的所见即所得" 接口设计原则。 就是说，如果你的 IDE 有智能提示的话，你使用这个接口是不需要文档的。</p>
-<pre><span class="zdoc_code_cmt">// 创建一个 Criteria 接口实例
-</span>Criteria cri = Cnd.cri();
+<pre>// 创建一个 Criteria 接口实例
+Criteria cri = Cnd.cri();
 
-<span class="zdoc_code_cmt">// 组装条件
-</span>if(...){
+// 组装条件
+if(...){
     cri.where().andIn("id", 3,4,5).andIn("name", "Peter", "Wendal", "Juqkai");
 }else if(...){
     cri.where().andLT("id", 9);
@@ -134,8 +136,8 @@ if(...){
 
 cri.getOrderBy().asc("name").desc("id");
 
-<span class="zdoc_code_cmt">// 执行查询
-</span>List&lt;MyObj&gt; list = dao.query(MyObj.class, cri, null);
+// 执行查询
+List&lt;MyObj&gt; list = dao.query(MyObj.class, cri, null);
 </pre>
 <p>Criteria 的 where() 函数返回的是 SqlExpressionGroup，主要由它来提供各种 SQL 条件的组合方法。这里需要给出一点提示，比如方法名 <span style="color:#008800;"><b> andGT</b></span>，表示的是 and<span style="color:#008800;"><b>G</b></span>reat<span style="color:#008800;"><b>T</b></span>han，即"<span style="color:#008800;"><b>大于</b></span>" 的意思，同理:</p>
 <ul type="disc">

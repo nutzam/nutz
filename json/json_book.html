@@ -41,6 +41,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="目标"></a>目标</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <ul type="disc">
 <li>通过简单的toJson 和fromJson能完成绝大部分的互转工作, 不再需要额外的配置.</li>
 <li>能够提供模板, 容易的更改Json的展现, 和反向的Java Object生成</li>
@@ -94,8 +95,8 @@ map = Json.fromJson(HashMap.class, Lang.inr(json));
 	private Sex sex;
 	private Date birthday;
 	private UserObject bestFriend;
-<span class="zdoc_code_cmt">//省略Getter/setter
-</span>}
+//省略Getter/setter
+}
 </pre>
 <p>Java转换成Json:</p>
 <pre>UserObject peter = new UserObject();

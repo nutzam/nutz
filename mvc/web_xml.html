@@ -18,6 +18,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="在_webxml_中，一个比较典型的例子："></a>在 web.xml 中，一个比较典型的例子：</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p></p>
 <pre>&lt;filter&gt;
     &lt;filter-name&gt;nutz&lt;/filter-name&gt;
     &lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
@@ -32,6 +33,7 @@
     &lt;url-pattern&gt;/*&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </pre>
+<p></p>
 <ul type="disc">
 <li>如果你没有声明 '<b>modules</b>' 参数，这个过滤器将不会映射 URL，但是它并不会抛异常</li>
 <li>默认的，只要被正则式 <b> "^(.+[.])(jsp|png|gif|jpg|js|css|jspx|jpeg)$"</b> 匹配上的 URL 都不会被 Nutz 过滤器处理</li>
@@ -61,6 +63,7 @@
 	&lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
 &lt;/filter-mapping&gt;
 </pre>
+<p></p>
 <h1><a name="比较传统的方式"></a>比较传统的方式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>&lt;filter&gt;
@@ -90,6 +93,7 @@
 	    &lt;url-pattern&gt;*.nut&lt;/url-pattern&gt;
     &lt;/servlet-mapping&gt;
 </pre>
+<p></p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
