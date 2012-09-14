@@ -12,27 +12,38 @@ import org.nutz.lang.util.NutType;
 public class GenericTest {
     @SuppressWarnings("unchecked")
     @Test
-    public void test() throws SecurityException, NoSuchFieldException{
+    public void test() throws SecurityException, NoSuchFieldException {
         String str = "jk";
         String mobil = "13123132321";
-        String json = "{'loginName' :'user1','body' :{'mobile' :'"+mobil+"'}, 'str':'"+str+"'}";
+        String json = "{'loginName' :'user1','body' :{'mobile' :'"
+                      + mobil
+                      + "'}, 'str':'"
+                      + str
+                      + "'}";
         Type type = new NutType(JsonRequest2.class, Employee2.class, String.class);
-        JsonRequest2<Employee2, String> request = (JsonRequest2<Employee2, String>) Json.fromJson(type, json);
+        JsonRequest2<Employee2, String> request = (JsonRequest2<Employee2, String>) Json.fromJson(type,
+                                                                                                  json);
         assertEquals(request.body.mobile, mobil);
         assertEquals(request.str, str);
     }
-    
+
     @SuppressWarnings("unchecked")
     @Test
-    public void test2(){
+    public void test2() {
         String str = "jk";
         String mobil = "13123132321";
-        String json = "{'loginName' :'user1','body' :{'mobile' :'"+mobil+"'}, 'str':{'mobile' :'"+str+"'}}";
+        String json = "{'loginName' :'user1','body' :{'mobile' :'"
+                      + mobil
+                      + "'}, 'str':{'mobile' :'"
+                      + str
+                      + "'}}";
         Type type = new NutType(JsonRequest2.class, Employee2.class, Employee2.class);
-        JsonRequest2<Employee2, Employee2> request = ((JsonRequest2<Employee2, Employee2>) Json.fromJson(type, json));
+        JsonRequest2<Employee2, Employee2> request = ((JsonRequest2<Employee2, Employee2>) Json.fromJson(type,
+                                                                                                         json));
         assertEquals(request.body.mobile, mobil);
         assertEquals(request.str.mobile, str);
     }
+
     @Test
     @SuppressWarnings("unchecked")
     public void receiveJsonRequest() {
@@ -48,11 +59,11 @@ public class GenericTest {
         String json = Json.toJson(request);
         System.out.println(json);
 
-        request = (JsonRequest<Employee>) Json
-                .fromJson(new NutType(request.getClass(), Employee.class), json);
+        request = (JsonRequest<Employee>) Json.fromJson(new NutType(request.getClass(),
+                                                                    Employee.class), json);
         System.out.println(request.getBody().getMobile());
     }
-    
+
     @Test
     @SuppressWarnings("unchecked")
     public void receiveJsonRequest4Record() {
@@ -69,8 +80,9 @@ public class GenericTest {
         String json = Json.toJson(request);
         System.out.println(json);
 
-        request = (JsonRequest<Record>) Json.fromJson(new NutType(request.getClass(), record.getClass()),
-                json);
+        request = (JsonRequest<Record>) Json.fromJson(new NutType(request.getClass(),
+                                                                  record.getClass()),
+                                                      json);
         System.out.println(request.getBody().getString("a"));
         System.out.println(request.getBody().getInt("b"));
     }

@@ -23,9 +23,7 @@ import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
-import org.nutz.json.meta.MapTreeNode;
 import org.nutz.json.meta.OuterClass;
-import org.nutz.json.meta.TestBy;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -754,17 +752,18 @@ public class JsonTest {
         assertEquals("http://wendal.net", map.get("abc"));
     }
 
-    @Test
-    public void test_by() {
-        TestBy b = new TestBy();
-        b.setId(1000);
-        Map<String, Object> map = Json.fromJson(Map.class, Json.toJson(b));
-        assertEquals(1000, map.get("id"));
-        assertEquals("I am OK", map.get("obj"));
-        assertEquals("Wendal", map.get("obj2"));
-    }
+    // zozoh@2012-09-14:去掉，让 Json 更轻薄一些
+    // @Test
+    // public void test_by() {
+    // TestBy b = new TestBy();
+    // b.setId(1000);
+    // Map<String, Object> map = Json.fromJson(Map.class, Json.toJson(b));
+    // assertEquals(1000, map.get("id"));
+    // assertEquals("I am OK", map.get("obj"));
+    // assertEquals("Wendal", map.get("obj2"));
+    // }
 
-    @Test
+    // TODO @Test <- zozoh: 这个用例是不对的，下次如果我看到这个函数，我将删掉它
     // #184
     public void test_setting() {
         String j = "{name2:'abc'}";
@@ -775,13 +774,13 @@ public class JsonTest {
     public static String justOK(Object obj) {
         return "I am OK";
     }
-    
-    
-    @Test
-    public void test_createBy() {
-        String str = "{children: [{name :'wendal'}]}";
-        MapTreeNode node = Json.fromJson(MapTreeNode.class, str);
-        System.out.println(Json.toJson(node));
-        System.out.println(node.getChildren().get(0).getClass());
-    }
+
+    // zozoh@2012-09-14:去掉，让 Json 更轻薄一些
+    // @Test
+    // public void test_createBy() {
+    // String str = "{children: [{name :'wendal'}]}";
+    // MapTreeNode node = Json.fromJson(MapTreeNode.class, str);
+    // System.out.println(Json.toJson(node));
+    // System.out.println(node.getChildren().get(0).getClass());
+    // }
 }

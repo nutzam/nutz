@@ -251,14 +251,14 @@ public class Json {
     /**
      * 获取一个 Json 实体
      */
-    public static JsonEntity getEntity(Class<?> classOfT) {
-        JsonEntity je = entities.get(classOfT.getName());
+    public static JsonEntity getEntity(Mirror<?> mirror) {
+        JsonEntity je = entities.get(mirror.getTypeId());
         if (null == je)
             synchronized (entities) {
-                je = entities.get(classOfT.getName());
+                je = entities.get(mirror.getTypeId());
                 if (null == je) {
-                    je = new JsonEntity(Mirror.me(classOfT));
-                    entities.put(classOfT.getName(), je);
+                    je = new JsonEntity(mirror);
+                    entities.put(mirror.getTypeId(), je);
                 }
             }
         return je;

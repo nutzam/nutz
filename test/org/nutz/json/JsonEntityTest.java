@@ -9,12 +9,13 @@ import org.junit.Test;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.meta.JENObj;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 
 public class JsonEntityTest {
 
     @Test
     public void test_entity_parse() {
-        JsonEntity jen = Json.getEntity(JENObj.class);
+        JsonEntity jen = Json.getEntity(Mirror.me(JENObj.class));
         assertEquals(3, jen.getFields().size());
 
         assertEquals(long.class, jen.getField("id").getGenericType());

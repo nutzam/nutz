@@ -15,6 +15,7 @@ import org.nutz.log.Logs;
 public class JdbcExpertConfigFile {
 
     private Map<String, Class<? extends JdbcExpert>> experts;
+    
     private Map<Pattern, Class<? extends JdbcExpert>> _experts; 
 
     private Map<String, Object> config;
@@ -69,6 +70,7 @@ public class JdbcExpertConfigFile {
         return pool;
     }
 
+    // 在 fromJson 的时候，会被调用
     public void setExperts(Map<String, Class<? extends JdbcExpert>> experts) {
         this.experts = experts;
         this._experts = new HashMap<Pattern, Class<? extends JdbcExpert>>();

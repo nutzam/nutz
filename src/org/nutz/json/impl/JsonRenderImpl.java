@@ -216,7 +216,7 @@ public class JsonRenderImpl implements JsonRender {
         /*
          * Default
          */
-        JsonEntity jen = Json.getEntity(type);
+        JsonEntity jen = Json.getEntity(Mirror.me(type));
         List<JsonEntityField> fields = jen.getFields();
         appendBraceBegin();
         increaseFormatIndent();

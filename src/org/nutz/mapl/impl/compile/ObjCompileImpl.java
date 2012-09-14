@@ -19,18 +19,19 @@ import org.nutz.mapl.MaplCompile;
 
 /**
  * 将对象理解成Map+List
+ * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class ObjCompileImpl implements MaplCompile<Object>{
-    
+public class ObjCompileImpl implements MaplCompile<Object> {
+
     private Map<Object, Object> memo = new HashMap<Object, Object>();
-    
+
     @SuppressWarnings("rawtypes")
     public Object parse(Object obj) {
         if (null == obj) {
             return null;
         } else if (obj instanceof ObjCompileImpl) {
-            return ((ObjCompileImpl)obj).parse(null);
+            return ((ObjCompileImpl) obj).parse(null);
         } else if (obj instanceof Class) {
             return obj;
         } else if (obj instanceof Mirror) {
@@ -55,13 +56,13 @@ public class ObjCompileImpl implements MaplCompile<Object>{
             }
             // 其他
             else {
-                //既然到了这里, 那么断定它只有List, Array, Map, Object这4种类型
-                //是否已经存在(循环引用)
-                if (memo.containsKey(obj)){
+                // 既然到了这里, 那么断定它只有List, Array, Map, Object这4种类型
+                // 是否已经存在(循环引用)
+                if (memo.containsKey(obj)) {
                     return memo.get(obj);
-                }else{
-                    //这里使用了一个小小的占坑技巧, 
-                    if(obj instanceof Collection || obj.getClass().isArray()){
+                } else {
+                    // 这里使用了一个小小的占坑技巧,
+                    if (obj instanceof Collection || obj.getClass().isArray()) {
                         List<Object> list = new ArrayList<Object>();
                         memo.put(obj, list);
                         // 集合
@@ -113,7 +114,7 @@ public class ObjCompileImpl implements MaplCompile<Object>{
         if (null == obj)
             return null;
         Class<? extends Object> type = obj.getClass();
-        JsonEntity jen = Json.getEntity(type);
+        JsonEntity jen = Json.getEntity(Mirror.me(type));
         List<JsonEntityField> fields = jen.getFields();
         ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
         for (JsonEntityField jef : fields) {
@@ -134,9 +135,9 @@ public class ObjCompileImpl implements MaplCompile<Object>{
         }
         return writeItem(list, map);
     }
-    
-    private Map<String, Object> writeItem(List<Pair> list, Map<String, Object> map){
-        for(Pair p : list){
+
+    private Map<String, Object> writeItem(List<Pair> list, Map<String, Object> map) {
+        for (Pair p : list) {
             map.put(p.name, p.value);
         }
         return map;

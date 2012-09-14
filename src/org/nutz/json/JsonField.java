@@ -11,20 +11,16 @@ import java.lang.annotation.Target;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.FIELD})
+@Target({ElementType.FIELD, ElementType.METHOD})
 public @interface JsonField {
 
     String value() default "";
 
     /**
+     * 仅仅对 Field 有效，对 Method 则无效
+     * 
      * @return 是否忽略这个字段
      */
     boolean ignore() default false;
-    
-    @Deprecated
-    String by() default "";
-    
-    String getBy() default "";
 
-    String createBy() default "";
 }
