@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nutz.Nutz;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -90,5 +91,27 @@ public class ClassTools {
                 log.info("Fail to read ClassName from class InputStream", e);
         }
         return null;
+    }
+    
+    private static ClassLoader nutClassLoader;
+    static {
+        nutClassLoader = Nutz.class.getClassLoader();
+        //当使用JavaSE是,如果Nutz通过bootClassLoader加载,那么就会为null
+        if (nutClassLoader == null)
+            try {
+                nutClassLoader = ClassLoader.getSystemClassLoader();
+            }catch (Throwable e) {}
+    }
+    
+    /**
+     * 获取nutz.jar的ClassLoader的方法
+     */
+    public static ClassLoader getClassLoader() {
+        return nutClassLoader;
+    }
+    
+    @Deprecated
+    public static void setNutClassLoader(ClassLoader nutClassLoader) {
+        ClassTools.nutClassLoader = nutClassLoader;
     }
 }

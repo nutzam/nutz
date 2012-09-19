@@ -94,7 +94,7 @@ public class Scans {
         }
         catch (Throwable e) { // Android上会死
             String classFile = klass.getName().replace('.', '/') + ".class";
-            URL url = klass.getClassLoader().getResource(classFile);
+            URL url = ClassTools.getClassLoader().getResource(classFile);
             if (url != null) { // 基本上不可能为null
                 String str = url.toString();
                 str = str.substring(0, str.length() - classFile.length());
@@ -179,7 +179,7 @@ public class Scans {
         // 如果啥都没找到,那么,用增强扫描
         if (list.isEmpty()) {
             try {
-                Enumeration<URL> enu = getClass().getClassLoader().getResources(src);
+                Enumeration<URL> enu = ClassTools.getClassLoader().getResources(src);
                 if (enu != null && enu.hasMoreElements()) {
                     while (enu.hasMoreElements()) {
                         try {
@@ -413,7 +413,7 @@ public class Scans {
         String[] referPaths = new String[]{    "META-INF/MANIFEST.MF",
                                             "log4j.properties",
                                             ".nutz.resource.mark"};
-        ClassLoader cloader = getClass().getClassLoader();
+        ClassLoader cloader = ClassTools.getClassLoader();
         for (String referPath : referPaths) {
             try {
                 Enumeration<URL> urls = cloader.getResources(referPath);

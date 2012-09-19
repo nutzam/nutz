@@ -8,7 +8,6 @@ import java.net.URLDecoder;
 import java.util.LinkedList;
 
 import org.nutz.lang.Encoding;
-import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
@@ -144,7 +143,7 @@ public abstract class Disks {
      * @return 绝对路径
      */
     public static String absolute(String path) {
-        return absolute(path, Files.class.getClassLoader(), Encoding.defaultEncoding());
+        return absolute(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
     }
 
     /**

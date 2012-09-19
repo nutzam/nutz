@@ -19,6 +19,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
 
 /**
@@ -435,7 +436,7 @@ public abstract class Files {
      * @return 文件对象，如果不存在，则为 null
      */
     public static File findFile(String path, String enc) {
-        return findFile(path, Files.class.getClassLoader(), enc);
+        return findFile(path, ClassTools.getClassLoader(), enc);
     }
 
     /**
@@ -461,7 +462,7 @@ public abstract class Files {
      * @return 文件对象，如果不存在，则为 null
      */
     public static File findFile(String path) {
-        return findFile(path, Files.class.getClassLoader(), Encoding.defaultEncoding());
+        return findFile(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
     }
 
     /**

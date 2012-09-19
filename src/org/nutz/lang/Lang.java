@@ -40,6 +40,7 @@ import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
+import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.SimpleContext;
 
@@ -1686,7 +1687,7 @@ public abstract class Lang {
         InputStream is = null;
         try {
             String classFileName = "/" + Lang.class.getName().replace('.', '/') + ".class";
-            is = Lang.class.getClassLoader().getResourceAsStream(classFileName);
+            is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
             if (is != null && is.available() > 8) {
                 is.skip(7);
                 return is.read() > 49;
