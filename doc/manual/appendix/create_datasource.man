@@ -406,8 +406,10 @@ BoneCP
 	由于是通过JNDI获取,所以不再是一个Ioc的bean, 我们只需要引用它就可以了,不需要再写dataSource的bean.例如:
 		{{{<js>
 		{
+                    dao : {
 			type : "org.nutz.dao.impl.NutDao",
 			args : [{jndi:"jdbc/dataSource"}]
+                    }
 		}
 		}}}
 	
