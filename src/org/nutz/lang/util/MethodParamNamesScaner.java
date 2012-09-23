@@ -29,9 +29,13 @@ public class MethodParamNamesScaner {
             if (size == 0)
                 return new ArrayList<String>(0);
             List<String> list = getParamNames(method.getDeclaringClass()).get(getKey(method));
-            if (list != null && list.size() != size)
+            if (list == null)
+                return null;
+            if (list.size() == size)
+                return list;
+            if (list.size() > size)
                 return list.subList(0, size);
-            return list;
+            return null;
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
