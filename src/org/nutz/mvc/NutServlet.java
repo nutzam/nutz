@@ -60,10 +60,13 @@ public class NutServlet extends HttpServlet {
                 resp.sendError(404);
         } finally {
             Mvcs.resetALL();
-            if (preName != null)
-                Mvcs.set(preName, (HttpServletRequest)req, (HttpServletResponse)resp);
-            if (preContext != null)
-                Mvcs.ctx.reqThreadLocal.set(preContext);
+            //仅当forward/incule时,才需要恢复之前设置
+            if (null != (req.getAttribute("javax.servlet.forward.request_uri"))) {
+                if (preName != null)
+                    Mvcs.set(preName, req, resp);
+                if (preContext != null)
+                    Mvcs.ctx.reqThreadLocal.set(preContext);
+            }
         }
     }
 }

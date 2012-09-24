@@ -15,6 +15,7 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
@@ -344,6 +345,7 @@ public abstract class Mvcs {
     public static Context resetALL() {
         Context context = ctx.reqThreadLocal.get();
         NAME.set(null);
+        ctx.reqThreadLocal.set(Lang.context());
         return context;
     }
 

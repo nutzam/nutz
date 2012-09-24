@@ -75,10 +75,12 @@ public class NutFilter implements Filter {
             throws IOException, ServletException {
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
+        HttpServletRequest request = (HttpServletRequest)req;
+        HttpServletResponse response = (HttpServletResponse)resp;
         try {
             if (sp != null)
-                req = sp.filter((HttpServletRequest) req,
-                                (HttpServletResponse) resp,
+                req = sp.filter(request,
+                                response,
                                 Mvcs.getServletContext());
             if (needRealName && skipMode) {
                 // 直接无视自己的名字!!到容器取nutzservlet的名字!!
@@ -92,11 +94,11 @@ public class NutFilter implements Filter {
                 }
                 needRealName = false;
             }
-            Mvcs.set(this.selfName, (HttpServletRequest) req, (HttpServletResponse) resp);
+            Mvcs.set(this.selfName, request, response);
             if (!skipMode) {
-                RequestPath path = Mvcs.getRequestPathObject((HttpServletRequest) req);
+                RequestPath path = Mvcs.getRequestPathObject(request);
                 if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-                    if (handler.handle((HttpServletRequest) req, (HttpServletResponse) resp))
+                    if (handler.handle(request, response))
                         return;
                 }
             }
@@ -107,10 +109,13 @@ public class NutFilter implements Filter {
         }
         finally {
             Mvcs.resetALL();
-            if (preName != null)
-                Mvcs.set(preName, (HttpServletRequest)req, (HttpServletResponse)resp);
-            if (preContext != null)
-                Mvcs.ctx.reqThreadLocal.set(preContext);
+            //仅当forward/incule时,才需要恢复之前设置
+            if (null != (request.getAttribute("javax.servlet.forward.request_uri"))) {
+                if (preName != null)
+                    Mvcs.set(preName, request, response);
+                if (preContext != null)
+                    Mvcs.ctx.reqThreadLocal.set(preContext);
+            }
         }
     }
 }
