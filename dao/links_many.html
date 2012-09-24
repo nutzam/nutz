@@ -101,8 +101,8 @@ public class Master extends Pojo {
 	@Many(target = Pet.class, field = "masterId")
 	private Pet[] pets;
 	
-	// ... 省略其余代码
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略其余代码
+</span></pre>
 <p>当采用 fetchLinks 获取值的时候，会自动填充此数组</p>
 <div class="hr"><b></b></div>
 <h2><a name="Map"></a>Map</h2>
@@ -113,8 +113,8 @@ public class Master extends Pojo {
 	@Many(target = Pet.class, field = "masterId", key="name")
 	private Map&lt;String,Pet&gt; pets;
 	
-	// ... 省略其余代码
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略其余代码
+</span></pre>
 <p>其中：</p>
 <ul type="disc">
 <li>key 所指的字段 name，表示 Pet 对象的  name 字段， Nutz.Dao  将采用这个字段作为 Map 的键
@@ -134,8 +134,8 @@ public class Master extends Pojo {
 	@Many(target = Pet.class, field = "masterId")
 	private Pet pet;
 	
-	// ... 省略其余代码
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略其余代码
+</span></pre>
 <p>则会从 Pet 对象的数据表中，选取<b>第一个</b> masterId 为当前对象主键值的 Pet 对象。至于什么是 “<b>第一</b>”不同的数据库有所不同。总之，就是 SQL 语句：</p>
 <pre>SELECT * FROM t_pet;
 </pre>
@@ -158,8 +158,8 @@ master.setPets(pets);
 </pre>
 <p>Nutz.Dao 会根据正则表达式 "pets" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：</p>
 <pre>执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
-执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
-将该最大值 29 赋给 master 对象的主键 id
+执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  <span class="zdoc_code_cmt">// 假设返回的值是 29
+</span>将该最大值 29 赋给 master 对象的主键 id
 循环 master.pets，将该最大值 29 赋给每一个 pet 对象的 pet.masterId 字段
 执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoBai",29)
 执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("XiaoHei",29)
@@ -186,8 +186,8 @@ master.setPets(pets);
 dao.fetchLinks(master, "pets");
 </pre>
 <p>这会执行操作：</p>
-<pre>执行 SQL: SELECT * FROM t_master WHERE name='Peter'; // 如果 master.id 是 12
-执行 SQL: SELECT * FROM t_pet WHERE masterId=12;
+<pre>执行 SQL: SELECT * FROM t_master WHERE name='Peter'; <span class="zdoc_code_cmt">// 如果 master.id 是 12
+</span>执行 SQL: SELECT * FROM t_pet WHERE masterId=12;
 </pre>
 <p>但是 Nutz.Dao 没有提供一次获取 master 对象以及 pets 对象的方法，因为，你完全可以把上面的两句话写在一行上：</p>
 <pre>Master master = dao.fetchLinks(dao.fetch(Master.class, "Peter"), "pets");

@@ -49,7 +49,6 @@
 <p>首先你需要建立一个测试数据库，比如，我们叫 zzhtest. 建议不要使用test.</p>
 <pre>mysql:&gt; create database zzhtest;
 </pre>
-<p></p>
 <h2><a name="2_创建连接配置文件"></a>2. 创建连接配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 Eclipse 项目里，增加一个新的 source folder ：右击项目 &gt; New &gt; Source Folder</p>
@@ -64,8 +63,8 @@
 </ol>
 <p>这个文件的正文为：</p>
 <pre>driver=com.mysql.jdbc.Driver
-url=jdbc:mysql://127.0.0.1:3306/zzhtest
-username=root
+url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/zzhtest
+</span>username=root
 password=123456
 </pre>
 <p>一共四行。当然，不用我说，大家一定知道怎么修改吧,建立好文件的项目结构为：</p>
@@ -79,12 +78,11 @@ password=123456
 
 log4j.additivity.org.nutz=false
 
-#Appenders ...
-log4j.appender.NUTZ=org.apache.log4j.ConsoleAppender
+<span class="zdoc_code_cmt">#Appenders ...
+</span>log4j.appender.NUTZ=org.apache.log4j.ConsoleAppender
 log4j.appender.NUTZ.layout=org.apache.log4j.PatternLayout
 log4j.appender.NUTZ.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 </pre>
-<p></p>
 <h2><a name="4_检查"></a>4. 检查</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>你的项目应该看起来是这个样子：</p>
@@ -105,7 +103,6 @@ log4j.appender.NUTZ.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 <div class="hr"><b></b></div>
 <h1><a name="最后_"></a>最后 ...</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ul type="disc">
 <li>Nutz 是开源项目，你可以修改源代码，并运行JUnit 测试，来验证你的修改会不会导致错误</li>
 <li>你还可以增加 JUnit 测试，来看看 Nutz 的代码品质到底如何</li>

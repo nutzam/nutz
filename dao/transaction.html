@@ -66,15 +66,15 @@ final Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
 
 pet1.setNickname("BaiBai");
 pet2.setNickname("HeiHei");
-// Begin transaction		
-Trans.exec(new Atom(){
+<span class="zdoc_code_cmt">// Begin transaction		
+</span>Trans.exec(new Atom(){
 	public void run() {
 		dao.update(pet1);
 		dao.update(pet2);
 	}
 });
-// End transaction
-</pre>
+<span class="zdoc_code_cmt">// End transaction
+</span></pre>
 <p>提供一个 org.nutz.trans.Atom 接口的匿名实现，在里面执行的所有的 Dao 操作都是原子性的，因为它们在同一个 “<b>原子</b> (<span style="color:#008800;">Atom</span>)” 里。</p>
 <div class="hr"><b></b></div>
 <h2><a name="事务的关键就是原子的界定"></a>事务的关键就是原子的界定</h2>
@@ -121,9 +121,9 @@ public interface Atom extends Runnable {}
 		dao.update(xxx);
 		dao.update(bbb);
 
-		// 在下层模板，虽然你指定了新的事务级别，但是这里的事务级别还是
-		// 'TRANSACTION_READ_COMMITTED'。在一个事务中，级别一旦设定就不可更改
-		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
+		<span class="zdoc_code_cmt">// 在下层模板，虽然你指定了新的事务级别，但是这里的事务级别还是
+</span>		<span class="zdoc_code_cmt">// 'TRANSACTION_READ_COMMITTED'。在一个事务中，级别一旦设定就不可更改
+</span>		Trans.exec(Connection.TRANSACTION_SERIALIZABLE, new Atom(){
 			public void run(){
 				dao.update(CCC);
 				dao.update(EEE);
@@ -142,8 +142,8 @@ public interface Atom extends Runnable {}
 	});
 }
 
-// 在另外一个函数里，可以这么使用
-public void updateDogAndCat(final Pet dog, final Pet cat){
+<span class="zdoc_code_cmt">// 在另外一个函数里，可以这么使用
+</span>public void updateDogAndCat(final Pet dog, final Pet cat){
 	Trans.exec(new Atom(){
 		public void run(){
 			updatePet(dog);
@@ -152,7 +152,6 @@ public void updateDogAndCat(final Pet dog, final Pet cat){
 	});
 }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="扩展实现"></a>扩展实现</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

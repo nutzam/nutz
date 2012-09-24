@@ -36,8 +36,8 @@ SELECT * , taskcount = (SELECT COUNT(id) FROM t_task AS t WHERE t.eid = e.id) FR
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>我们直接来表述一下 Employee 这个 POJO，这里仅仅是个示意</p>
 <pre>@Table("t_employee")
-@View("v_employee")		// &lt;- 这里声明了视图
-public class Employee{
+@View("v_employee")		<span class="zdoc_code_cmt">// &lt;- 这里声明了视图
+</span>public class Employee{
 	
 	@Column
 	@Id
@@ -45,15 +45,14 @@ public class Employee{
 
 	...
 
-	@Column("taskcount")	// 其实可以不用声明数据库字段名 "taskcount"，因为多数数据库忽略大小写
-	@Readonly		// &lt;- 这里声明了只读字段，即视图里增加的字段
-	private int taskCount;
+	@Column("taskcount")	<span class="zdoc_code_cmt">// 其实可以不用声明数据库字段名 "taskcount"，因为多数数据库忽略大小写
+</span>	@Readonly		<span class="zdoc_code_cmt">// &lt;- 这里声明了只读字段，即视图里增加的字段
+</span>	private int taskCount;
 
 	...
 
 }
 </pre>
-<p></p>
 <ul type="disc">
 <li>通过 @View， Nutz.Dao 知道了当查询数据时候，应该从哪里获取数据</li>
 <li>通过 @Readonly 注解 Nutz.Dao 知道，当修改或者删除数据的时候，那些字段应该忽略。</li>

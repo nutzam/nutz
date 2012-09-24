@@ -79,7 +79,6 @@
 &lt;/servlet-mapping&gt;
 </pre>
 <p>同样，根据 Servlet 的规范，你的 &lt;url-pattern&gt; 可以有如下几种形式的值:</p>
-<p></p>
 <div class="hr"><b></b></div>
 <h2><a name="webxml_中的全匹配_-_/*"></a>web.xml 中的全匹配 - /*</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -92,8 +91,8 @@
 <li><span style="color:#FF00FF;"><b> /img</b></span><span style="color:#0000FF;"><b> /logo</b></span><b>.png</b></li>
 </ul>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>调用 request 对象不同方法将会返回的值：</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -124,8 +123,8 @@
 <li><span style="color:#FF00FF;"><b> /abc</b></span><span style="color:#0000FF;"><b> /logo</b></span><b>.png</b></li>
 </ul>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>调用 request 对象不同方法将会返回的值：</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -146,8 +145,8 @@
 </tr>
 </table>
 <p>因此我们可以认为， req.getPathInfo() 的值是：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
----------------------------------^   匹配 /abc/*，从这个位置之后的字符串 
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span>---------------------------------^   匹配 /abc/*，从这个位置之后的字符串 
 </pre>
 <div class="hr"><b></b></div>
 <h2><a name="webxml_中的后缀匹配_-_*nut"></a>web.xml 中的后缀匹配 - *.nut</h2>
@@ -158,8 +157,8 @@
 <li><span style="color:#FF00FF;"><b> /abc</b></span><b>.nut</b></li>
 </ul>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>调用 request 对象不同方法将会返回的值：</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -184,8 +183,8 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>转发到本 Context 的任何请求必须为 <b> /abc/getlist.nut</b>，才会调用这个 Servlet</p>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>调用 request 对象不同方法将会返回的值：</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
@@ -264,13 +263,13 @@ public class SubModule{
 </pre>
 <p>当然，一般的说，很少有人在主模块上声明 @At</p>
 <p><span style="color:#FF0000;"><b>注:</b></span> 使用不带参数的@At()注解, 默认会使用方法名/类名的小写做为入口地址!</p>
-<pre>// 比如 
-@At
+<pre><span class="zdoc_code_cmt">// 比如 
+</span>@At
 public String getPet() {
     ...
 
-// 与下面的代码是等效的
-@At("/getpet")
+<span class="zdoc_code_cmt">// 与下面的代码是等效的
+</span>@At("/getpet")
 public String getPet() {
     ...
 </pre>
@@ -279,13 +278,12 @@ public String getPet() {
 <li><span style="color:#FF00FF;"><b> /module</b></span> <span style="color:#0000FF;"><b> /action</b></span></li>
 </ul>
 <p>吗？ 不，这同时也得参考 web.xml 的匹配方式：</p>
-<p></p>
 <div class="hr"><b></b></div>
 <h2><a name="Nutz_中的全匹配_-_/*"></a>Nutz 中的全匹配 - /*</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
 <ul type="disc">
 <li>/abc/getlist</li>
@@ -294,8 +292,8 @@ public String getPet() {
 <h2><a name="Nutz_中的目录匹配_-_/abc/*"></a>Nutz 中的目录匹配 - /abc/*</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
 <ul type="disc">
 <li>/getlist</li>
@@ -311,8 +309,8 @@ public String getPet() {
 <h2><a name="Nutz_中的后缀匹配_-_*nut"></a>Nutz 中的后缀匹配 - *.nut</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
 <ul type="disc">
 <li>/abc/getlist</li>
@@ -321,8 +319,8 @@ public String getPet() {
 <h2><a name="Nutz_中的精确匹配_-_/abc/getlistnut"></a>Nutz 中的精确匹配 - /abc/getlist.nut</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果请求为：</p>
-<pre>http://localhost:8080/testweb/abc/getlist.nut
-</pre>
+<pre>http:<span class="zdoc_code_cmt">//localhost:8080/testweb/abc/getlist.nut
+</span></pre>
 <p>对于 Nutz.Mvc 我们需要匹配的部分为：</p>
 <ul type="disc">
 <li>/abc/getlist</li>

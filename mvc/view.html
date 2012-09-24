@@ -231,7 +231,6 @@ public View myFunction(@Param("type") type){
 <li>这个也将对应 <span style="color:#0000AA;"><i><b>abc/bbc.jsp</b></i></span>
 <pre>@Ok("jsp:/abc/bbc.jsp")
 </pre>
-<p></p>
 </li>
 </ul>
 <h3><a name="本地化字符串"></a>本地化字符串</h3>
@@ -286,7 +285,6 @@ public View myFunction(@Param("type") type){
 入口函数返回： Pet 对象
 则取 pet.getId() 填充 ${obj.id}
 </pre>
-<p></p>
 <h3><a name="用_HTTP_参数填充"></a>用 HTTP 参数填充</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
@@ -294,12 +292,11 @@ public View myFunction(@Param("type") type){
 如果没有这个参数，入口函数返回什么，直接 toString() 以后填充
 如果入口函数是 void 或者返回 null，则用空串填充
 </pre>
-<p></p>
 <h3><a name="另外一种写法"></a>另外一种写法</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>@Ok("redirect:/pet/detail.nut?pid=${id}")
-//等价于
-@Ok("&gt;&gt;:/pet/detail.nut?pid=${id}")
+<span class="zdoc_code_cmt">//等价于
+</span>@Ok("&gt;&gt;:/pet/detail.nut?pid=${id}")
 </pre>
 <div class="hr"><b></b></div>
 <h2><a name="内部重定向视图"></a>内部重定向视图</h2>
@@ -307,8 +304,8 @@ public View myFunction(@Param("type") type){
 <p>视图的实现类为： <b>org.nutz.mvc.view.ForwardView</b></p>
 <p>一般的使用形式：</p>
 <pre>@Ok("forward:/pet/list.nut")
-//或者
-@Ok("forward:/article/2009/10465.html")
+<span class="zdoc_code_cmt">//或者
+</span>@Ok("forward:/article/2009/10465.html")
 同时也可以写成
 @Ok("-&gt;:/article/2009/10465.html")
 </pre>
@@ -326,7 +323,6 @@ public View myFunction(@Param("type") type){
 <li>这个将对应 <span style="color:#0000AA;"><i><b>abc/bbc.jsp</b></i></span>
 <pre>@Ok("jsp:/abc/bbc.jsp")
 </pre>
-<p></p>
 </li>
 </ul>
 <p>它将按照给定的视图值，服务器内部重定向到指定的地址.</p>
@@ -442,8 +438,8 @@ public View myFunction(@Param("type") type){
 <p>实现 org.nutz.mvc.View 接口，比如：</p>
 <pre>public class PdfView implements View{
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj){
-        // TODO 实现代码 ...
-    }
+        <span class="zdoc_code_cmt">// TODO 实现代码 ...
+</span>    }
 }
 </pre>
 <p>实现 Render 函数即可，第三个参数就是你的入口函数的返回</p>

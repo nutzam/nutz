@@ -89,8 +89,8 @@ class B{
 class C{
     public static void main(String args[]){
         String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-        //这样得到的就是Mapl结构的数据了.
-        Object obj = Json.fromJson(json);
+        <span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
+</span>        Object obj = Json.fromJson(json);
         
         B b = Mapl.maplistToObj(obj, B.class);
     }
@@ -118,8 +118,8 @@ Mapl.toMapl.b);
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>就如我最开始说的那样, Json.fromJson 很难用, 就是因为在读取Mapl结构的数据时非常的繁杂, 经常需要很多层的类型转换.</p>
 <pre>String json = "{'name':'b', 'as':[{'name':'nutz','id':1},{'name':'jk','id':2}]}";
-//这样得到的就是Mapl结构的数据了.
-Object obj = Json.fromJson(json);
+<span class="zdoc_code_cmt">//这样得到的就是Mapl结构的数据了.
+</span>Object obj = Json.fromJson(json);
 </pre>
 <p>上面的obj, 如果我想取as索引为1的name的值, 怎么办? 只能这样:</p>
 <pre>Map map = (Map) obj;
@@ -265,7 +265,6 @@ assertEquals(dest, Json.toJson(obj, new JsonFormat()));
       ]
  }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="MapList的增删改"></a>MapList的增删改</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

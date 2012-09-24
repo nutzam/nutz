@@ -102,7 +102,6 @@ public class MyMainModule {
 &lt;h1&gt;${msg['my.msg.key']}&lt;/h1&gt;
 ...
 </pre>
-<p></p>
 <h2><a name="我到底支持哪些语言"></a>我到底支持哪些语言</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>请参看 <b>org.nutz.mvc.Mvcs</b> 的 JavaDoc，这里我列几个常用的方法:</p>
@@ -132,23 +131,22 @@ public class MyMainModule {
 <h1><a name="切换本地语言"></a>切换本地语言</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>自从 1.b.44 之后，Nutz 对本地字符串语言切换的接口做了改动:</p>
-<pre>// 设置一个本地字符串
-@At("/lang/change")
+<pre><span class="zdoc_code_cmt">// 设置一个本地字符串
+</span>@At("/lang/change")
 @Ok("redirect:/")
 public void changeLocal( @Param("lang") String lang){
     Mvcs.setLocalizationKey(lang);
 }
 </pre>
 <p>1.b.44 版本 之前，只能采用如下方法:</p>
-<pre>// 设置一个本地字符串
-@At("/lang/change")
+<pre><span class="zdoc_code_cmt">// 设置一个本地字符串
+</span>@At("/lang/change")
 @Ok("redirect:/")
 public void changeLocal( @Param("lang") String lang, HttpSession sess){
     Mvcs.setLocale(sess, lang);
     Mvcs.setLocaleName(sess, lang);
 }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="设置应用程序的默认语言"></a>设置应用程序的默认语言</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -163,7 +161,6 @@ Mvcs.setDefaultLocalizationKey("zh_CN");
 public class MyMainModule {
 ...
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="使用过滤器"></a>使用过滤器</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -187,7 +184,6 @@ public class MyMainModule {
 	&lt;url-pattern&gt;*.jspx&lt;/url-pattern&gt;
 &lt;/filter-mapping&gt;
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的本地化字符串方式"></a>定制自己的本地化字符串方式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

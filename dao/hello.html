@@ -27,7 +27,6 @@
 <div class="hr"><b></b></div>
 <h1><a name="检查运行环境"></a>检查运行环境</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ol type="1">
 <li>首先，你必须安装 JDK1.5 或者以上版本：
 <ol type="a">
@@ -57,25 +56,24 @@
   name  VARCHAR(50) NOT NULL UNIQUE,
   age INT
 );
-//对于最新版的Nutz,你可以用简单的dao.create(XXX.class, false)来完成建表
-</pre>
-<p></p>
+<span class="zdoc_code_cmt">//对于最新版的Nutz,你可以用简单的dao.create(XXX.class, false)来完成建表
+</span></pre>
 <div class="hr"><b></b></div>
 <h1><a name="创建_POJO"></a>创建 POJO</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>在 Java 项目中建立一个POJO，比如 com.zzh.demo.Person :</p>
 <pre>import org.nutz.dao.entity.annotation.*;
 
-@Table("t_person")   // 声明了Person对象的数据表
-public class Person { //无需继承任何Nutz的类
-
-	@Column	  // 表示该对象属性可以映射到数据库里作为一个字段
-	@Id       // 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
-	private int id;
+@Table("t_person")   <span class="zdoc_code_cmt">// 声明了Person对象的数据表
+</span>public class Person { <span class="zdoc_code_cmt">//无需继承任何Nutz的类
+</span>
+	@Column	  <span class="zdoc_code_cmt">// 表示该对象属性可以映射到数据库里作为一个字段
+</span>	@Id       <span class="zdoc_code_cmt">// 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
+</span>	private int id;
 	
 	@Column
-	@Name    // 表示该字段可以用来标识此对象，或者是字符型主键，或者是唯一性约束
-	private String name;
+	@Name    <span class="zdoc_code_cmt">// 表示该字段可以用来标识此对象，或者是字符型主键，或者是唯一性约束
+</span>	private String name;
 
 	@Column
 	private int age;

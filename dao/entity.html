@@ -64,8 +64,8 @@ public class PetBean {
 </ul>
 <h2><a name="描述字段"></a>描述字段</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>@Column //提醒一下,这一行是多余的
-@Name
+<pre>@Column <span class="zdoc_code_cmt">//提醒一下,这一行是多余的
+</span>@Name
 @ColDefine(type=ColType.VARCHAR, width=20)
 private String name;
 </pre>
@@ -109,8 +109,8 @@ public interface EntityMaker {
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
 map.put("name", "abc");
 map.put("age", 18);
-dao.update(map);    // 这个是不会有编译错误的
-</pre>
+dao.update(map);    <span class="zdoc_code_cmt">// 这个是不会有编译错误的
+</span></pre>
 <p>我记得当时我们的理由是：“搞不定呀，我们不知道表名呀””</p>
 <p>现在，我们已经支持了这个特性:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();

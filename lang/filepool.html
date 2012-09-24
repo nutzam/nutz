@@ -67,19 +67,18 @@
 <p>对于文件池，它有一个接口 '<span style="color:#AA00AA;"><b>org.nutz.filepool.FilePool</b></span>' 以及一个简单的实现 '<span style="color:#AA00AA;"><b>org.nutz.filepool.NutFilePool</b></span>'。当然，你可以根据需要实现自己的特殊规则的文件池实现类。</p>
 <h2><a name="创建文件池"></a>创建文件池</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面最多同时有2000个文件
-FilePool pool = new NutFilePool("~/tmp/myfiles", 2000);
+<pre><span class="zdoc_code_cmt">// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面最多同时有2000个文件
+</span>FilePool pool = new NutFilePool("~/tmp/myfiles", 2000);
 
-// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面不限文件
-FilePool pool = new NutFilePool("~/tmp/myfiles");
-// 相当于 FilePool pool = new NutFilePool("~/tmp/myfiles", 0);
-</pre>
-<p></p>
+<span class="zdoc_code_cmt">// 将目录 ~/tmp/myfiles 作为一个文件池的根目录，里面不限文件
+</span>FilePool pool = new NutFilePool("~/tmp/myfiles");
+<span class="zdoc_code_cmt">// 相当于 FilePool pool = new NutFilePool("~/tmp/myfiles", 0);
+</span></pre>
 <h2><a name="在池中创建一个文件"></a>在池中创建一个文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>File f = pool.createFile(".png");  // 该文件本句之后，已经被创建
-// TODO 为这个文件写入内容
-</pre>
+<pre>File f = pool.createFile(".png");  <span class="zdoc_code_cmt">// 该文件本句之后，已经被创建
+</span><span class="zdoc_code_cmt">// TODO 为这个文件写入内容
+</span></pre>
 <p>实际上， NutFilePool 会将你的 id （一个 Long 值）以及后缀变成如下形式的文件路径:</p>
 <pre>~/tmp/myfiles/00/00/00/00/00/00/00/EF.png
 </pre>
@@ -90,41 +89,34 @@ FilePool pool = new NutFilePool("~/tmp/myfiles");
 <p>了解了这个之后，之后的操作就都顺理成章了 ^_^</p>
 <h2><a name="从池中获取一个文件"></a>从池中获取一个文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>File f = pool.getFile(239, ".png");  // 如果文件不存在，将返回 null
-</pre>
-<p></p>
+<pre>File f = pool.getFile(239, ".png");  <span class="zdoc_code_cmt">// 如果文件不存在，将返回 null
+</span></pre>
 <h2><a name="从池中获取一个文件，如果不存在，创建它"></a>从池中获取一个文件，如果不存在，创建它</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>File f = pool.returnFile(239, ".png");  
 </pre>
-<p></p>
 <h2><a name="从池中删除一个文件"></a>从池中删除一个文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>File f = pool.removeFile(239, ".png");
 </pre>
-<p></p>
 <h2><a name="判断池中是否存在一个文件"></a>判断池中是否存在一个文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>boolean exists = pool.hasFile(239, ".png");
 </pre>
-<p></p>
 <h2><a name="看看当前池中最大的文件_ID"></a>看看当前池中最大的文件 ID</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>long maxId = pool.current();
 </pre>
-<p></p>
 <h2><a name="看看某一个池中的文件的_ID_为多少"></a>看看某一个池中的文件的 ID 为多少</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>File f = pool.getFile(239, ".png");
 long fId = pool.getFileId(f, ".png");
-// fId should be 239
-</pre>
-<p></p>
+<span class="zdoc_code_cmt">// fId should be 239
+</span></pre>
 <h2><a name="清除池中所有文件"></a>清除池中所有文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>pool.clear();
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="在_Ioc_中使用"></a>在 Ioc 中使用</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

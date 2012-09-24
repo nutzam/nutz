@@ -34,7 +34,6 @@
 <div class="hr"><b></b></div>
 <h1><a name="需使用的类"></a>需使用的类</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ul type="disc">
 <li>org.nutz.ioc.aop.config.impl.JsonAopConfigration</li>
 </ul>
@@ -116,8 +115,8 @@
 		type : 'org.nutz.aop.interceptor.TransactionInterceptor',
 		args : [8]
 	},
-	//声明一个log进行日志记录
-	log : {
+	<span class="zdoc_code_cmt">//声明一个log进行日志记录
+</span>	log : {
 		type :'org.nutz.aop.interceptor.LoggingMethodInterceptor'
 	}
 </pre>
@@ -138,7 +137,6 @@
 </pre>
 <h2><a name="按照上述声明:"></a>按照上述声明:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ul type="disc">
 <li>对于com.service包下的类的全部方法,均应用log拦截器</li>
 <li>对于com.service.status包下的类的全部get/set方法,均应用txNONE拦截器,事务级别 NONE</li>

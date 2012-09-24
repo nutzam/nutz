@@ -138,14 +138,12 @@ xb : { name: 'XiaoBai'	}
 	xb : { dead: true }
 }
 </pre>
-<p></p>
 <h2><a name="数字"></a>数字</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
 	xb : { age: 24 }
 }
 </pre>
-<p></p>
 <h2><a name="内部对象"></a>内部对象</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
@@ -291,8 +289,8 @@ public class ScanValueProxyMaker implements ValueProxyMaker {
 
 			return new ValueProxy() {
 				public Object get(IocMaking ing) {
-					// 根据 address 创建一个对象
-					throw Lang.noImplement();
+					<span class="zdoc_code_cmt">// 根据 address 创建一个对象
+</span>					throw Lang.noImplement();
 				}
 
 			};
@@ -310,8 +308,8 @@ public class ScanValueProxyMaker implements ValueProxyMaker {
 <pre>Ioc2 ioc = new NutIoc(new JsonLoader("path/path/name.js"));
 ioc.addValueProxyMaker(new ScanValueProxyMaker());
 
-// 下面，你就可以正常使用 Ioc 接口了
-</pre>
+<span class="zdoc_code_cmt">// 下面，你就可以正常使用 Ioc 接口了
+</span></pre>
 <p><span style="color:#FF0000;"><b>注意</b></span>，这里使用的是 Ioc2 接口，它继承自 Ioc 接口，提供了更高级的方法</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

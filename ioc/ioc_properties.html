@@ -36,26 +36,26 @@
 <p>如果我们采用了 Ioc 方式组织我们的程序，我们（程序员）会理直气壮的对运维人员说：“你去改xxxx Ioc 文件去。”</p>
 <p>老实说，运维人员会恨死你，我列一个很简单的 JSON 配置文件:</p>
 <pre>var ioc = {
-	// 数据源
-	dataSource : {
+	<span class="zdoc_code_cmt">// 数据源
+</span>	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
 		events : {
 			depose :"close"
 		},
 		fields : {
 			driverClassName : "com.mysql.jdbc.Driver",
-			url             : "jdbc:mysql://127.0.0.1:3306/mydb",
-			username        : "root",
+			url             : "jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb",
+</span>			username        : "root",
 			password        : "123456",
 			initialSize     : 10,
 			maxActive       : 100,
 			testOnReturn    : true,
-			//validationQueryTimeout : 5,
-			validationQuery : "select 1"
+			<span class="zdoc_code_cmt">//validationQueryTimeout : 5,
+</span>			validationQuery : "select 1"
 		}
 	},
-	// Dao
-	dao : {
+	<span class="zdoc_code_cmt">// Dao
+</span>	dao : {
 		type :'org.nutz.dao.impl.NutDao',
 		args : [ {refer :"dataSource"}]
 	}
@@ -64,16 +64,16 @@
 <p>这个配置文件就是简单的配置了以下数据源，以及一个 Dao 对象。一个运维人员打开这个文件，首先映入眼帘的就是 <span style="color:#FF0000;"><b>"org.apache.commons.dbcp.BasicDataSource"</b></span> 以及 <span style="color:#FF0000;"><b>depose :"close"</b></span>他会吓的够呛，心里嘀咕:"这TM是神马东西！"</p>
 <p>运维人员希望看到什么呢？ 他希望看到这个:</p>
 <pre>db-driver=com.mysql.jdbc.Driver
-db-url=jdbc:mysql://127.0.0.1:3306/mydb
-db-username=root
+db-url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb
+</span>db-username=root
 db-password=123456
 </pre>
 <p>这样格式的文件，傻子也知道怎么维护。</p>
 <p>当然，很多小JIAN人喜欢XML，这样的文件</p>
 <pre>&lt;db&gt;
     &lt;driver&gt;com.mysql.jdbc.Driver&lt;/driver&gt;
-    &lt;url&gt;jdbc:mysql://127.0.0.1:3306/mydb&lt;/url&gt;
-    &lt;username&gt;root&lt;/username&gt;
+    &lt;url&gt;jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb&lt;/url&gt;
+</span>    &lt;username&gt;root&lt;/username&gt;
     &lt;password&gt;123456&lt;/password&gt;
 &lt;/db&gt;
 </pre>
@@ -86,21 +86,21 @@ db-password=123456
 <p>就用上面的例子，如果我们需要暴露给运维人员一个 properties 文件任其修改：</p>
 <pre>-----------------------------------------------------[下面是 myapp.properties 文件的内容]---
 db-driver=com.mysql.jdbc.Driver
-db-url=jdbc:mysql://127.0.0.1:3306/mydb
-db-username=root
+db-url=jdbc:mysql:<span class="zdoc_code_cmt">//127.0.0.1:3306/mydb
+</span>db-username=root
 db-password=123456
 </pre>
 <p>那么我们的 Ioc 文件就改成这样：</p>
 <pre>var ioc = {
-	// 读取配置文件
-	config : {
+	<span class="zdoc_code_cmt">// 读取配置文件
+</span>	config : {
 		type : "org.nutz.ioc.impl.PropertiesProxy",
 		fields : {
 			paths : ["myapp.properties"]
 		}
 	},
-	// 数据源
-	dataSource : {
+	<span class="zdoc_code_cmt">// 数据源
+</span>	dataSource : {
 		type :"org.apache.commons.dbcp.BasicDataSource",
 		events : {
 			depose :"close"
@@ -113,12 +113,12 @@ db-password=123456
 			initialSize     : 10,
 			maxActive       : 100,
 			testOnReturn    : true,
-			//validationQueryTimeout : 5,
-			validationQuery : "select 1"
+			<span class="zdoc_code_cmt">//validationQueryTimeout : 5,
+</span>			validationQuery : "select 1"
 		}
 	},
-	// Dao
-	dao : {
+	<span class="zdoc_code_cmt">// Dao
+</span>	dao : {
 		type :'org.nutz.dao.impl.NutDao',
 		args : [ {refer :"dataSource"}]
 	}
@@ -145,7 +145,6 @@ db-password=123456
 <pre>@Inject("java:$config.get('xxxxx')
 private String myXXXX;
 </pre>
-<p></p>
 <h1><a name="关于更多扩展的意淫"></a>关于更多扩展的意淫</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>现在的云端应用，你不弄七八台机器放在一负载均衡后面，你都不好意思叫它们服务器。并且这些机器基本都是跑一样的程序，用一样的配置文件，很多运维人员（尤其是不会写脚本的鼠标派运维人员）会很痛苦：</p>

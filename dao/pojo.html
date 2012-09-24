@@ -32,7 +32,6 @@
 <div><span class="num">3</span><a href="#总结一下这四个约定">总结一下这四个约定</a></div>
 </li>
 </ul>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要提供更多构建_POJO_的手段"></a>为什么需要提供更多构建 POJO 的手段</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -55,8 +54,8 @@
 		return pet;
 	}
 
-	// ... 省略后面代码，包括字段声明以及 getter 和 setter
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</span></pre>
 <p>只要你声明了一个可访问的，带有一个参数其类型为ResultSet，且返回值为 Pet 的静态函数，名称无所谓， 那么 Nutz.Dao 在构建 Pet 对象时，就会优先使用这个函数。 因为 Nutz.Dao 认为你打算亲自来做 ResultSet 到 POJO 字段的映射工作。你可以将这个过程写的很快，因为如果交由 Nutz.Dao 来做的话，它不得不做一些字段类型的判断以及转换的工作。</p>
 <h2><a name="第二优先：带一个参数的构造函数"></a>第二优先：带一个参数的构造函数</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -72,8 +71,8 @@
 		nickname = rs.getString("nick");
 	}
 	
-	// ... 省略后面代码，包括字段声明以及 getter 和 setter
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</span></pre>
 <p>只要你声明了构造函数 Pet(ResultSet rs)， 那么 Nutz.Dao 在构建的时候，就不会使用默认构造函数，无论你是否声明它。</p>
 <h2><a name="第三优先：无参数静态工厂方法"></a>第三优先：无参数静态工厂方法</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -87,8 +86,8 @@
 	
 	private Pet(){}
 	
-	// ... 省略后面代码，包括字段声明以及 getter 和 setter
-</pre>
+	<span class="zdoc_code_cmt">// ... 省略后面代码，包括字段声明以及 getter 和 setter
+</span></pre>
 <p>你的静态函数名称是无所谓的，只要它的返回类型是当前的类，并且无参数。 如果出现多个符合改条件的函数，Nutz.Dao 会挑取任意一个。</p>
 <h2><a name="最不优先：默认构造函数"></a>最不优先：默认构造函数</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -109,8 +108,8 @@
 	@Column
 	private String nickname;
 
-	// ... 这里是 getter 和 setter
-}
+	<span class="zdoc_code_cmt">// ... 这里是 getter 和 setter
+</span>}
 </pre>
 <h3><a name="自己定制的默认构造函数"></a>自己定制的默认构造函数</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -131,10 +130,9 @@
 	@Column
 	private String nickname;
 
-	// ... 这里是 getter 和 setter
-}
+	<span class="zdoc_code_cmt">// ... 这里是 getter 和 setter
+</span>}
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="总结一下这四个约定"></a>总结一下这四个约定</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

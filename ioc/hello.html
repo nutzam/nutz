@@ -38,7 +38,6 @@
 <div><span class="num">3</span><a href="#关于进阶">关于进阶</a></div>
 </li>
 </ul>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="Ioc_的概念"></a>Ioc 的概念</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -119,17 +118,16 @@ var ioc = {
 	 * 你当然也可以做更细致的设置
 	 */
 	xiaohei : {
-		type : 'nutz.demo.ioc.book.Pet', // 类型
-		singleton : false, // 是否为单件
-		args : [ 'XiaoHei' ], // 构造函数参数
-		fields : {
+		type : 'nutz.demo.ioc.book.Pet', <span class="zdoc_code_cmt">// 类型
+</span>		singleton : false, <span class="zdoc_code_cmt">// 是否为单件
+</span>		args : [ 'XiaoHei' ], <span class="zdoc_code_cmt">// 构造函数参数
+</span>		fields : {
 			birthday : '2009-11-3 08:02:14',
-			friend : {refer : 'xiaobai'}	// 指向容器里另外一个对象
-		}
+			friend : {refer : 'xiaobai'}	<span class="zdoc_code_cmt">// 指向容器里另外一个对象
+</span>		}
 	}
 }
 </pre>
-<p></p>
 <h2><a name="调用代码"></a>调用代码</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>package nutz.demo.ioc.book;
@@ -152,7 +150,6 @@ public class HelloPet {
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoBai - [Asia/Shanghai]
 </pre>
-<p></p>
 <h2><a name="如果配置文件中声明了类型，则可不传入类型"></a>如果配置文件中声明了类型，则可不传入类型</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Pet xh = ioc.get(null, "xiaohei");
@@ -161,7 +158,6 @@ System.out.printf("%s's friend is %s\n", xh.getName(), xh.getFriend().getName())
 <p>控制台输出：</p>
 <pre>XiaoHei's friend is XiaoBai
 </pre>
-<p></p>
 <h2><a name="声明了_singleton:_false，那么它每次获取，都会生成一个新的实例"></a>声明了 singleton: false，那么它每次获取，都会生成一个新的实例</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Pet p1 = ioc.get(null, "xiaohei");
@@ -171,7 +167,6 @@ System.out.println(p1==p2);
 <p>控制台输出：</p>
 <pre>false
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="关于进阶"></a>关于进阶</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

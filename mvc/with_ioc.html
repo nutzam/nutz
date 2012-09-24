@@ -69,7 +69,6 @@ public class MainModule {
 public class PetModule {
    ...
 </pre>
-<p></p>
 <ul type="disc">
 <li>如果你声明了这个注解， Nutz.Mvc 构造你的这个模块的时候，会通过 Ioc 容器获取，而不直接调用默认构造函数了。</li>
 <li>如果你的 '@InjectName' 并没有值，那么默认会将你的模块类名首字母小写作为模块的注入名

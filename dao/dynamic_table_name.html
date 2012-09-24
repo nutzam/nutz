@@ -67,8 +67,8 @@
 <p>毫无疑问，首先，需要配置你的 POJO。 Nutz.Dao 提供的 @Table 注解本身就支持动态表名，比如：</p>
 <pre>@Table("t_employee_${cid}")
 public class Employee{
-	// The class fields and methods...
-}
+	<span class="zdoc_code_cmt">// The class fields and methods...
+</span>}
 </pre>
 <p>@Table 注解支持字符串模板的写法，在你希望放置动态表名变量的位置插入 ${变量名} ，如 ${cid}，那么${cid} 会在运行时被 Nutz.Dao 替换。</p>
 <p>如何替换？用什么替换？请看下面一节。</p>
@@ -279,8 +279,8 @@ public class Company {
 <pre>@Table("t_company")
 public class Company {
 
-	// ... another fields ...
-
+	<span class="zdoc_code_cmt">// ... another fields ...
+</span>
 	@Many(target = Employee.class, field = "companyId")
 	private List&lt;Employee&gt; employees;
 
@@ -292,8 +292,8 @@ public class Company {
 		this.employees = employees;
 	}
 
-	// ... another methods ...
-
+	<span class="zdoc_code_cmt">// ... another methods ...
+</span>
 }
 </pre>
 <p>可以看到，在字段 employees 增加了 @Many 说明，就像一般的一对多映射一样， field 项声明了 Employee 类必须有一个名叫（companyId）的字段指向 Company 的主键。所以 Employee 类的代码为：</p>

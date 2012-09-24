@@ -56,7 +56,6 @@
 	}
 });
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="字段过滤器的原理"></a>字段过滤器的原理</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -73,24 +72,22 @@
     ...
     private Map&lt;Class&lt;?&gt;, FieldMatcher&gt; map;
     ...
-
 </pre>
 <p>而且既然在 ThreadLocal 设置了数据，它就不得不考虑如何让你清除这个数据。因此，它的写法也保证了你一定会清掉你的数据了。</p>
 <pre>FieldFilter ... run(new Atom(){   &lt;-- 开始将自身加入 ThreadLocal
     public void run(){
-        // 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
-    }
+        <span class="zdoc_code_cmt">// 这里是你的代码，你的 Dao 调用都会得到 ThreadLocal 中你对于实体字段过滤的设置
+</span>    }
 });   &lt;-- run 方法结束前，会从 ThreadLocal 清除自身
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="字段过滤器的创建"></a>字段过滤器的创建</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>下面是一个最简单和常用的例子：</p>
 <pre>FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
 <ul type="disc">
@@ -112,46 +109,42 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.lock(Pet.class, "^last|age$").run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
 <h2><a name="忽略空值"></a>忽略空值</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
 <h2><a name="保留几个字段且忽略空值"></a>保留几个字段且忽略空值</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class,"^id|name|age|last$", true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
 <h2><a name="忽略少数字段且忽略空值"></a>忽略少数字段且忽略空值</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, null, "^age|last$", true).run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
-<p></p>
 <h2><a name="为多个实体设置字段过滤"></a>为多个实体设置字段过滤</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>FieldFilter.create(Pet.class, true)
            .set(Master.class, "^id|name$")
            .run(new Atom(){
     public void run(){
-        // TODO 你的 DAO 操作代码
-    }
+        <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
+</span>    }
 });
 </pre>
 </div>

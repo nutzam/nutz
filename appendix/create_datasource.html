@@ -206,7 +206,6 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="Nutz内置,非常适合新手!!无需额外下载其他连接池,方便尝试NutDao的功能"></a>Nutz内置,非常适合新手!!无需额外下载其他连接池,方便尝试NutDao的功能.</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ul type="disc">
 <li>不要生产环境中使用这个DataSource!!</li>
 <li>不要用它来测试NutDao的性能!!</li>
@@ -222,42 +221,38 @@
 ...
 
 SimpleDataSource ds = new SimpleDataSource();
-//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
-ds.setjdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUsername("demo");
+<span class="zdoc_code_cmt">//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
+</span>ds.setjdbcUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUsername("demo");
 ds.setPassword("123456");
 ...
-//ds.close();  // 这个DataSource不是一个连接池,所以关不关都行
-</pre>
-<p></p>
+<span class="zdoc_code_cmt">//ds.close();  // 这个DataSource不是一个连接池,所以关不关都行
+</span></pre>
 <h2><a name="SimpleDataSource:_通过_NutzIoc_的_JSON_配置文件"></a>SimpleDataSource: 通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
 	dataSource : {
 		type : "org.nutz.dao.impl.SimpleDataSource",
 		fields : {
-			jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-			username : 'demo',
+			jdbcUrl : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			username : 'demo',
 			password : '123456'
 		}
 	}
 }
 </pre>
-<p></p>
 <h2><a name="SimpleDataSource:_通过_NutzIoc_的_XML_配置文件"></a>SimpleDataSource: 通过 Nutz.Ioc 的 XML 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>	&lt;ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd"&gt;
 		&lt;obj name="dataSource" type="org.nutz.dao.impl.SimpleDataSource"&gt;
-			&lt;field name="jdbcUrl"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="jdbcUrl"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
 </pre>
-<p></p>
 <h2><a name="附送一个完整的NutDao配置js文件"></a>附送一个完整的NutDao配置js文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <pre>var ioc = {
 	dao : {
 		type : "org.nutz.dao.impl.NutDao",
@@ -266,14 +261,13 @@ ds.setPassword("123456");
 	dataSource : {
 		type : "org.nutz.dao.impl.SimpleDataSource",
 		fields : {
-			jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-			username : 'demo',
+			jdbcUrl : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			username : 'demo',
 			password : '123456'
 		}
 	}
 }
 </pre>
-<p></p>
 <p>如何使用这些配置? 请看文章末尾.</p>
 <div class="hr"><b></b></div>
 <h1><a name="Druid"></a>Druid</h1>
@@ -287,12 +281,12 @@ ds.setPassword("123456");
 
 DruidDataSource dds = new DruidDataSource();
 dds.setDriverClassName("org.postgresql.Driver");
-dds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-dds.setUsername("enzozhong");
+dds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>dds.setUsername("enzozhong");
 dds.setPassword("123");
 ...
-dds.close();  // 关闭池内所有连接
-</pre>
+dds.close();  <span class="zdoc_code_cmt">// 关闭池内所有连接
+</span></pre>
 <h2><a name="druid_:_通过_NutzIoc_的_JSON_配置文件"></a>druid : 通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
@@ -303,8 +297,8 @@ dds.close();  // 关闭池内所有连接
         },
         fields : {
             driverClassName : "org.postgresql.Driver",
-            url : "jdbc:postgresql://localhost:5432/mydatabase",
-            username : "enzozhong",
+            url : "jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase",
+</span>            username : "enzozhong",
             password : "123"
         }
     }
@@ -318,8 +312,8 @@ dds.close();  // 关闭池内所有连接
 				&lt;depose&gt;close&lt;/depose&gt;
 			&lt;/events&gt;
 			&lt;field name="driverClassName"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="username"&gt;&lt;str&gt;enzozhong&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="username"&gt;&lt;str&gt;enzozhong&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -340,12 +334,12 @@ dds.close();  // 关闭池内所有连接
 
 DataSource ds = new DataSource();
 ds.setDriverClassName("org.postgresql.Driver");
-ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUsername("demo");
+ds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUsername("demo");
 ds.setPassword("123456");
 ...
-ds.close();  // 关闭池内所有连接
-</pre>
+ds.close();  <span class="zdoc_code_cmt">// 关闭池内所有连接
+</span></pre>
 <h2><a name="通过_NutzIoc_的_JSON_配置文件"></a>通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
@@ -356,8 +350,8 @@ ds.close();  // 关闭池内所有连接
 		},
 		fields : {
 			driverClassName : 'org.postgresql.Driver',
-			url : 'jdbc:postgresql://localhost:5432/mydatabase',
-			username : 'demo',
+			url : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			username : 'demo',
 			password : '123456'
 		}
 	}
@@ -371,8 +365,8 @@ ds.close();  // 关闭池内所有连接
 				&lt;depose&gt;close&lt;/depose&gt;
 			&lt;/events&gt;
 			&lt;field name="driverClassName"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -392,12 +386,12 @@ ds.close();  // 关闭池内所有连接
 
 BasicDataSource ds = new BasicDataSource();
 ds.setDriverClassName("org.postgresql.Driver");
-ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUsername("demo");
+ds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUsername("demo");
 ds.setPassword("123456");
 ...
-ds.close();  // 关闭池内所有连接
-</pre>
+ds.close();  <span class="zdoc_code_cmt">// 关闭池内所有连接
+</span></pre>
 <h2><a name="dbcp:_通过_NutzIoc_的_JSON_配置文件"></a>dbcp: 通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
@@ -408,8 +402,8 @@ ds.close();  // 关闭池内所有连接
 		},
 		fields : {
 			driverClassName : 'org.postgresql.Driver',
-			url : 'jdbc:postgresql://localhost:5432/mydatabase',
-			username : 'demo',
+			url : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			username : 'demo',
 			password : '123456'
 		}
 	}
@@ -423,8 +417,8 @@ ds.close();  // 关闭池内所有连接
 				&lt;depose&gt;close&lt;/depose&gt;
 			&lt;/events&gt;
 			&lt;field name="driverClassName"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -444,12 +438,12 @@ ds.close();  // 关闭池内所有连接
 
 ComboPooledDataSource ds = new ComboPooledDataSource();
 ds.setDriverClass("org.postgresql.Driver");
-ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUser("demo");
+ds.setJdbcUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUser("demo");
 ds.setPassword("123456");
 ...
-ds.close();  // 关闭池内所有连接
-</pre>
+ds.close();  <span class="zdoc_code_cmt">// 关闭池内所有连接
+</span></pre>
 <h2><a name="c3p0:_通过_NutzIoc_的_JSON_配置文件"></a>c3p0: 通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
@@ -460,8 +454,8 @@ ds.close();  // 关闭池内所有连接
 		},
 		fields : {
 			driverClass : 'org.postgresql.Driver',
-			jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-			user : 'demo',
+			jdbcUrl : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			user : 'demo',
 			password : '123456'
 		}
 	}
@@ -475,8 +469,8 @@ ds.close();  // 关闭池内所有连接
 				&lt;depose&gt;close&lt;/depose&gt;
 			&lt;/events&gt;
 			&lt;field name="driverClass"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="jdbcUrl"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="user"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="jdbcUrl"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="user"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -495,8 +489,8 @@ ds.close();  // 关闭池内所有连接
 
 ProxoolDataSource ds = new ProxoolDataSource();
 ds.setDriver("org.postgresql.Driver");
-ds.setDriverUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUser("demo");
+ds.setDriverUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUser("demo");
 ds.setPassword("123456");
 ...
 </pre>
@@ -507,8 +501,8 @@ ds.setPassword("123456");
 		type : "org.logicalcobwebs.proxool.ProxoolDataSource",
 		fields : {
 			driver : 'org.postgresql.Driver',
-			driverUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-			user : 'demo',
+			driverUrl : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			user : 'demo',
 			password : '123456'
 		}
 	}
@@ -519,8 +513,8 @@ ds.setPassword("123456");
 <pre>	&lt;ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd"&gt;
 		&lt;obj name="dataSource" type="org.logicalcobwebs.proxool.ProxoolDataSource"&gt;
 			&lt;field name="driver"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="driverUrl"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="user"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="driverUrl"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="user"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -540,11 +534,10 @@ ds.setPassword("123456");
 
 BoneCPDataSource ds = new BoneCPDataSource();
 ds.setDriver("org.postgresql.Driver");
-ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUsername("demo");
+ds.setJdbcUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUsername("demo");
 ds.setPassword("123456");
 ...
-
 </pre>
 <h2><a name="bonecp:_通过_NutzIoc_的_JSON_配置文件"></a>bonecp: 通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -556,8 +549,8 @@ ds.setPassword("123456");
 		},
 		fields : {
 			driverClass : 'org.postgresql.Driver',
-			jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-			username : 'demo',
+			jdbcUrl : 'jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase',
+</span>			username : 'demo',
 			password : '123456'
 		}
 	}
@@ -571,8 +564,8 @@ ds.setPassword("123456");
 				&lt;depose&gt;close&lt;/depose&gt;
 			&lt;/events&gt;
 			&lt;field name="driverClass"&gt;&lt;str&gt;org.postgresql.Driver&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql://localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
-			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
+			&lt;field name="url"&gt;&lt;str&gt;jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase&lt;/str&gt;&lt;/field&gt;
+</span>			&lt;field name="username"&gt;&lt;str&gt;demo&lt;/str&gt;&lt;/field&gt;
 			&lt;field name="password"&gt;&lt;str&gt;123456&lt;/str&gt;&lt;/field&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
@@ -589,63 +582,62 @@ ds.setPassword("123456");
 <h2><a name="由于是通过JNDI获取,所以不再是一个Ioc的bean,_我们只需要引用它就可以了,不需要再写dataSource的bean例如:"></a>由于是通过JNDI获取,所以不再是一个Ioc的bean, 我们只需要引用它就可以了,不需要再写dataSource的bean.例如:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
+            dao : {
 	type : "org.nutz.dao.impl.NutDao",
 	args : [{jndi:"jdbc/dataSource"}]
+            }
 }
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="如何使用这些配置"></a>如何使用这些配置</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="Java代码的方式:"></a>Java代码的方式:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>//创建dataSource,以DBCP为例
-DataSource ds = new DataSource();
+<pre><span class="zdoc_code_cmt">//创建dataSource,以DBCP为例
+</span>DataSource ds = new DataSource();
 ds.setDriverClassName("org.postgresql.Driver");
-ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
-ds.setUsername("demo");
+ds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
+</span>ds.setUsername("demo");
 ds.setPassword("123456");
 Dao dao = new NutDao(ds);
 
 dao.create(User.class, true);
 dao.insert(User.create("wendal","123456"));
 
-//.... ... ...
-
-//所有操作都已经完成,关闭连接池,退出系统
-ds.close();
+<span class="zdoc_code_cmt">//.... ... ...
+</span>
+<span class="zdoc_code_cmt">//所有操作都已经完成,关闭连接池,退出系统
+</span>ds.close();
 return;
 
-//额外提醒,NutDao是线程安全的,请不要多次创建NutDao,除非你有多个DataSource
-</pre>
-<p></p>
+<span class="zdoc_code_cmt">//额外提醒,NutDao是线程安全的,请不要多次创建NutDao,除非你有多个DataSource
+</span></pre>
 <h2><a name="通过_NutzIoc_的_JSON_配置文件"></a>通过 Nutz.Ioc 的 JSON 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>//将配置信息保存到dao.js,并存放于src文件夹下
-
+<pre><span class="zdoc_code_cmt">//将配置信息保存到dao.js,并存放于src文件夹下
+</span>
 Ioc ioc = new NutIoc(new JsonLoader("dao.js"));
 DataSource ds = ioc.get(DataSource.class);
-Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
-
+Dao dao = new NutDao(ds); <span class="zdoc_code_cmt">//如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
+</span>
 dao.create(User.class, true);
 dao.insert(User.create("wendal","123456"));
 
-ioc.depose(); //关闭Ioc容器
-</pre>
+ioc.depose(); <span class="zdoc_code_cmt">//关闭Ioc容器
+</span></pre>
 <h2><a name="通过_NutzIoc_的_XML_配置文件"></a>通过 Nutz.Ioc 的 XML 配置文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>//将配置信息保存到dao.xml,并存放于src文件夹下
-
+<pre><span class="zdoc_code_cmt">//将配置信息保存到dao.xml,并存放于src文件夹下
+</span>
 Ioc ioc = new NutIoc(new XmlIocLoader("dao.js"));
 DataSource ds = ioc.get(DataSource.class);
-Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
-
+Dao dao = new NutDao(ds); <span class="zdoc_code_cmt">//如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
+</span>
 dao.create(User.class, true);
 dao.insert(User.create("wendal","123456"));
 
-ioc.depose(); //关闭Ioc容器
-</pre>
-<p></p>
+ioc.depose(); <span class="zdoc_code_cmt">//关闭Ioc容器
+</span></pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>

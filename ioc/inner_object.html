@@ -26,7 +26,6 @@
 </ul>
 </li>
 </ul>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="鸭子法则"></a>鸭子法则</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -70,8 +69,8 @@
 <pre>var ioc = {
 	xb : {
 		name : 'XiaoBai',
-		// 请注意，在这里， friend 字段，直接声明了另外一个对象
-		friend : {
+		<span class="zdoc_code_cmt">// 请注意，在这里， friend 字段，直接声明了另外一个对象
+</span>		friend : {
 			type : 'nutz.demo.ioc.book.Pet',
 			fields : {
 				name : 'XiaoHei'
@@ -80,14 +79,12 @@
 	}
 }
 </pre>
-<p></p>
 <h2><a name="调用代码"></a>调用代码</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
 Pet pet = ioc.get(Pet.class, "xb");
 System.out.println(pet.getFriend().getName());
 </pre>
-<p></p>
 <h2><a name="控制台输出"></a>控制台输出</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoHei

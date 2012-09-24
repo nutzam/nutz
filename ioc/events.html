@@ -26,7 +26,6 @@
 <div><span class="num">3</span><a href="#监听其他事件">监听其他事件</a></div>
 </li>
 </ul>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="都有哪些事件"></a>都有哪些事件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -45,14 +44,14 @@
 
 	private int fetchCount;
 	
-	... // 省略其他属性以及 getter 和 setter
-</pre>
+	... <span class="zdoc_code_cmt">// 省略其他属性以及 getter 和 setter
+</span></pre>
 <h2><a name="通过实现一个触发器"></a>通过实现一个触发器</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <h3><a name="触发器"></a>触发器</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>package nutz.demo.ioc.book;//提醒: 不要把你的类放在缺省包中!!
-
+<pre>package nutz.demo.ioc.book;<span class="zdoc_code_cmt">//提醒: 不要把你的类放在缺省包中!!
+</span>
 import org.nutz.ioc.IocEventTrigger;
 
 public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
@@ -77,7 +76,6 @@ public class OnFetchPet implements IocEventTrigger&lt;Pet&gt; {
 	}
 }
 </pre>
-<p></p>
 <h3><a name="调用代码"></a>调用代码</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/events.js"));
@@ -90,7 +88,6 @@ System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>XiaoBai be fetch 3 times
 </pre>
-<p></p>
 <h2><a name="通过对象自身的一个函数"></a>通过对象自身的一个函数</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>这个函数必须为  public，并且不能有参数</p>
@@ -100,7 +97,6 @@ System.out.printf("%s be fetch %d times", pet.getName(), pet.getFetchCount());
 	this.fetchCount++;
 }
 </pre>
-<p></p>
 <h3><a name="在_JSON_配置文件中增加新的对象"></a>在 JSON 配置文件中增加新的对象</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>xh : {

@@ -151,11 +151,11 @@ UPDATE FROM $table SET name=@name WHERE id=@id
 </ul>
 <p>所有的占位符可以同样的名称出现的多个地方。并且变量占位符和参数占位符的名称不互相干扰，比如:</p>
 <pre>Sql sql = Sqls.create("INSERT INTO $table ($name,$age,$weight) VALUES(@name,@age,@weight)");
-// 为变量占位符设值
-sql.vars().set("table","t_person");	
+<span class="zdoc_code_cmt">// 为变量占位符设值
+</span>sql.vars().set("table","t_person");	
 sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
-// 为参数占位符设值
-sql.params().set("name","Peter").set("age",18).set("weight",60);
+<span class="zdoc_code_cmt">// 为参数占位符设值
+</span>sql.params().set("name","Peter").set("age",18).set("weight",60);
 </pre>
 <p>通过上例，我们可以看出，变量占位符和参数占位符的确可以重名且不相互干扰的。</p>
 <h2><a name="Sql_的逃逸字符"></a>Sql 的逃逸字符</h2>
@@ -198,8 +198,8 @@ sql.params().set("name","Peter").set("age",18).set("weight",60);
 	});
 	dao.execute(sql);
 	return sql.getList(String.class);
-	// Nutz内置了大量回调, 请查看Sqls.callback的属性
-}
+	<span class="zdoc_code_cmt">// Nutz内置了大量回调, 请查看Sqls.callback的属性
+</span>}
 </pre>
 <p>看到熟悉的 ResultSet 了吧。 当然，如果你执行的不是 SELECT 语句，你依然可以设置回调，但是 ResultSet 参数就是 null了。</p>
 <p>总结一下：</p>
@@ -264,7 +264,6 @@ SELECT * FROM t_pet WHERE id=@id
 /* listpets*/
 SELECT * FROM t_pet $condition
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="加载_SQL_文件"></a>加载 SQL 文件</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -287,7 +286,6 @@ System.out.println(dao.sqls().count());
 ((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
 System.out.println(dao.sqls().count());
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h1><a name="条件变量占位符"></a>条件变量占位符</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -363,7 +361,6 @@ sql.setCondition(Cnd.where("id", "&gt;", 35));
 	return sql.getObject(Pet.class);
 }
 </pre>
-<p></p>
 <h3><a name="查询实体的回调"></a>查询实体的回调</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>List&lt;Pet&gt; demoEntityQuery(Dao dao) {

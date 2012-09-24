@@ -98,20 +98,20 @@ public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
 <pre>...
 tmpFilePool : {
     type : 'org.nutz.filepool.NutFilePool',
-    // 临时文件最大个数为 1000 个
-    args : [ "~/nutz/blog/upload/tmps", 1000 ]   
+    <span class="zdoc_code_cmt">// 临时文件最大个数为 1000 个
+</span>    args : [ "~/nutz/blog/upload/tmps", 1000 ]   
 },
 uploadFileContext : {
     type : 'org.nutz.mvc.upload.UploadingContext',
     singleton : false,
     args : [ { refer : 'tmpFilePool' } ],
     fields : {
-        // 是否忽略空文件, 默认为 false
-        ignoreNull : true,
-        // 单个文件最大尺寸(大约的值，单位为字节，即 1048576 为 1M)
-        maxFileSize : 1048576,
-        // 正则表达式匹配可以支持的文件名
-        nameFilter : '^(.+[.])(gif|jpg|png)$' 
+        <span class="zdoc_code_cmt">// 是否忽略空文件, 默认为 false
+</span>        ignoreNull : true,
+        <span class="zdoc_code_cmt">// 单个文件最大尺寸(大约的值，单位为字节，即 1048576 为 1M)
+</span>        maxFileSize : 1048576,
+        <span class="zdoc_code_cmt">// 正则表达式匹配可以支持的文件名
+</span>        nameFilter : '^(.+[.])(gif|jpg|png)$' 
     } 
 },
 myUpload : {
@@ -140,20 +140,19 @@ public class MyUtils {
         return sc.getRealPath(path);
     }
 }
-
 </pre>
 <p>然后，你可以在 Ioc 容器的配置文件里，增一个对象，并修改 'tmpFilePool' 对象的配置信息：</p>
 <pre>utils : {
     type : 'com.abc.myapp.MyUtils',
     fields : {
-        sc : {app:'$servlet'}   // 将 ServletContext 对象注入 MyUtils
-    }
+        sc : {app:'$servlet'}   <span class="zdoc_code_cmt">// 将 ServletContext 对象注入 MyUtils
+</span>    }
 },
 
 tmpFilePool : {
     type : 'org.nutz.filepool.NutFilePool',
-    args : [ {java:'$utils.getPath("/WEB-INF/tmp")'}, 1000 ]   // 调用 MyUtils.getPath 函数
-},
+    args : [ {java:'$utils.getPath("/WEB-INF/tmp")'}, 1000 ]   <span class="zdoc_code_cmt">// 调用 MyUtils.getPath 函数
+</span>},
 </pre>
 <div class="hr"><b></b></div>
 <h2><a name="在入口函数的参数里获得上传的文件"></a>在入口函数的参数里获得上传的文件</h2>
@@ -172,13 +171,12 @@ public void uploadPhoto( @Param("photo") File f){
 <p>但是，如果你也想知道这个文件在客户端原本的名字，怎么办呢？你可以：</p>
 <pre>@AdaptBy(type = UploadAdaptor.class, args = { "ioc:myUpload" })
 public void uploadPhoto( @Param("photo") TempFile tf){
-    File f = tf.getFile();                       // 这个是保存的临时文件
-    FieldMeta meta = tf.getMeta();               // 这个原本的文件信息
-    String oldName = meta.getFileLocalName();    // 这个时原本的文件名称
-    // TODO do what you wanna to do here ...
-}
+    File f = tf.getFile();                       <span class="zdoc_code_cmt">// 这个是保存的临时文件
+</span>    FieldMeta meta = tf.getMeta();               <span class="zdoc_code_cmt">// 这个原本的文件信息
+</span>    String oldName = meta.getFileLocalName();    <span class="zdoc_code_cmt">// 这个时原本的文件名称
+</span>    <span class="zdoc_code_cmt">// TODO do what you wanna to do here ...
+</span>}
 </pre>
-<p></p>
 <div class="hr"><b></b></div>
 <h2><a name="一次上传多个同名文件"></a>一次上传多个同名文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -206,7 +204,6 @@ public void uploadPhoto( @Param("photo") TempFile[] tfs){
 <div style="float:right;"><a href="#top">Top</a></div>
 <h2><a name="1b44及之后的版本,同时兼容Html5流式上传_但,请注意以下事项:"></a>1.b.44及之后的版本,同时兼容Html5流式上传. 但,请注意以下事项:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p></p>
 <ul type="disc">
 <li>上传的Content-Type必须是application/octet-stream</li>
 <li>必须带Content-Length</li>

@@ -107,11 +107,11 @@ food.setPets(pets);
 </pre>
 <p>Nutz.Dao 会根据正则表达式 "pets" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：</p>
 <pre>执行 SQL : INSERT INTO t_food (name) VALUES("Fish");
-执行 SQL 获取 最大值： SELECT MAX(id) FROM t_food  // 假设返回的值是 6
-循环 food.pets
+执行 SQL 获取 最大值： SELECT MAX(id) FROM t_food  <span class="zdoc_code_cmt">// 假设返回的值是 6
+</span>循环 food.pets
 	执行 SQL: INSERT INTO t_pet (name) VALUES("XiaoBai");
-	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  // 假设返回的值是 97
-	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  <span class="zdoc_code_cmt">// 假设返回的值是 97
+</span>	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
 	...
 </pre>
 <p>这里通过 SELECT MAX 来获取插入的最大值，是默认的做法，如果你想修改这个默认做法，请参看 <a href="primary_key.html">关于主键</a>一章。</p>
@@ -125,8 +125,8 @@ food.setPets(pets);
 <p>如果 food.id 的值为 6，那么上述操作实际上会执行：</p>
 <pre>循环 food.pets
 	执行 SQL: INSERT INTO t_pet (name) VALUES("XiaoBai");
-	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  // 假设返回的值是 97
-	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
+	执行 SQL 获取 最大值： SELECT MAX(id) FROM t_pet  <span class="zdoc_code_cmt">// 假设返回的值是 97
+</span>	执行 SQL 插入关联: INSERT INTO t_pet_food (foodid, petid) VALUES(6, 97);
 	...
 </pre>
 <p>看，并不会插入 food 对象。</p>
@@ -147,8 +147,8 @@ food.setPets(pets);
 dao.fetchLinks(food, "pets");
 </pre>
 <p>这会执行操作：</p>
-<pre>执行 SQL: SELECT * FROM t_food WHERE name='Fish'; // 如果 food.id 是6
-执行 SQL: SELECT * FROM t_pet WHERE id IN (SELECT petid FROM t_pet_food WHERE foodid=6)
+<pre>执行 SQL: SELECT * FROM t_food WHERE name='Fish'; <span class="zdoc_code_cmt">// 如果 food.id 是6
+</span>执行 SQL: SELECT * FROM t_pet WHERE id IN (SELECT petid FROM t_pet_food WHERE foodid=6)
 </pre>
 <p>但是 Nutz.Dao 没有提供一次获取 food 对象以及 pets 对象的方法，因为，你完全可以把上面的两句话写在一行上：</p>
 <pre>Food food = dao.fetchLinks(dao.fetch(Food.class, "Fish"), "pets");

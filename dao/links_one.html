@@ -75,8 +75,8 @@ pet.setMaster(master);
 </pre>
 <p>Nutz.Dao 会根据正则表达式 "master" 寻找可以被匹配上的映射字段（只要声明了 @One, @Many, @ManyMany 任何一个注解，都是映射字段）并根据注解具体的配置信息，执行相应的 SQL。比如上面的操作，会实际上：</p>
 <pre>执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
-执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
-将该最大值 29 赋给 master 对象的主键 id
+执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  <span class="zdoc_code_cmt">// 假设返回的值是 29
+</span>将该最大值 29 赋给 master 对象的主键 id
 将该最大值 29 赋给 pet.masterId 字段
 执行 SQL : INSERT INTO t_pet (name,masterId) VALUES("Xiaobai",29)
 </pre>
@@ -90,8 +90,8 @@ pet.setMaster(master);
 </pre>
 <p>那么上述操作实际上会执行：</p>
 <pre>执行 SQL : INSERT INTO t_master (name) VALUES("Peter");
-执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  // 假设返回的值是 29
-将该最大值 29 赋给 master 对象的主键 id
+执行 SQL 获取 最大值： SELECT MAX(id) FROM t_master  <span class="zdoc_code_cmt">// 假设返回的值是 29
+</span>将该最大值 29 赋给 master 对象的主键 id
 </pre>
 <p>看，并不会插入 pet 对象。</p>
 <div class="hr"><b></b></div>
@@ -102,8 +102,8 @@ pet.setMaster(master);
 dao.fetchLinks(pet, "master");
 </pre>
 <p>这会执行操作：</p>
-<pre>执行 SQL: SELECT * FROM t_pet WHERE name='XiaoBai';  // 如果 pet.masterId 是 29
-执行 SQL: SELECT * FROM t_master WHERE id=29;
+<pre>执行 SQL: SELECT * FROM t_pet WHERE name='XiaoBai';  <span class="zdoc_code_cmt">// 如果 pet.masterId 是 29
+</span>执行 SQL: SELECT * FROM t_master WHERE id=29;
 </pre>
 <p>但是 Nutz.Dao 没有提供一次获取 pet 对象以及 master 对象的方法，因为，你完全可以把上面的两句话写在一行上：</p>
 <pre>Pet pet = dao.fetchLinks(dao.fetch(Pet.class, "XiaoBai"), "master");
