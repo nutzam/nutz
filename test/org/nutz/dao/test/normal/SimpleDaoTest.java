@@ -1,4 +1,4 @@
-﻿package org.nutz.dao.test.normal;
+package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
