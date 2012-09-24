@@ -91,7 +91,8 @@ class Zdoc
       exit
     end
 
-    system("git checkout -b gh-pages #{remote_name}/gh-pages")
+    system("git checkout gh-pages")
+    system("git pull --rebase #{remote_name} gh-pages")
     Dir['**'].each do |dir|
       FileUtils.rm_rf File.expand_path(dir)
     end
