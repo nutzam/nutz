@@ -13,6 +13,7 @@ import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.SqlType;
 import org.nutz.dao.util.Daos;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -58,7 +59,7 @@ public class NutDaoExecutor implements DaoExecutor {
             // case INSERT:
             // 见鬼了，未知类型，也当作普通 SQL 运行吧，见 Issue#13
             default:
-                if (log.isInfoEnabled())
+                if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
                     log.info("Can't indentify SQL type :   " + st);
                 paramMatrix = st.getParamMatrix();
                 // 木有参数，直接运行
