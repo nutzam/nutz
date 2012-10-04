@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
 /**
@@ -57,7 +58,7 @@ public abstract class Castor<FROM, TO> {
             if (null == coll)
                 throw new FailToCastObjectException(String.format(    "Castors don't know how to implement '%s'",
                                                                     toType.getName()),
-                                                    e);
+                                                    Lang.unwrapThrow(e));
         }
         return coll;
     }

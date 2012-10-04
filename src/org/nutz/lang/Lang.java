@@ -1010,7 +1010,7 @@ public abstract class Lang {
                 return (T) map;
             }
             catch (Exception e) {
-                throw new FailToCastObjectException("target type fail to born!", e);
+                throw new FailToCastObjectException("target type fail to born!", unwrapThrow(e));
             }
 
         }
