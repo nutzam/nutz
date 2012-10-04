@@ -97,9 +97,18 @@ public class UrlMappingImpl implements UrlMapping {
     public ActionInvoker get(ActionContext ac) {
         String path = Mvcs.getRequestPath(ac.getRequest());
         ActionInvoker invoker = root.get(ac, path);
+        if (invoker != null) {
+            ActionChain chain = invoker.getActionChain(ac);
+            if (chain != null) {
+                if (log.isDebugEnabled()) {
+                    log.debugf("Found mapping for path=%s : %s", path, chain);
+                }
+                return invoker;
+            }
+        }
         if (log.isDebugEnabled())
-            log.debugf("find mapping (%s) for path '%s'", invoker, path);
-        return invoker;
+            log.debugf("Search mapping for path=%s : NOT Action match", path);
+        return null;
     }
 
 }

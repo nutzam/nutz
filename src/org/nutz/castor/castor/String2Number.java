@@ -2,6 +2,7 @@ package org.nutz.castor.castor;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 
@@ -35,7 +36,7 @@ public class String2Number extends Castor<String, Number> {
         catch (Exception e) {
             throw new FailToCastObjectException(String.format(    "Fail to cast '%s' to <%s>",
                                                                 src,
-                                                                toType.getName()), e);
+                                                                toType.getName()), Lang.unwrapThrow(e));
         }
     }
 }

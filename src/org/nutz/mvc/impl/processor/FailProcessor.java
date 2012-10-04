@@ -22,10 +22,9 @@ public class FailProcessor extends ViewProcessor {
         view = evalView(config, ai, ai.getFailView());
     }
     
-    @Override
     public void process(ActionContext ac) throws Throwable {
         if (log.isErrorEnabled())
-            log.error("Catch handle error URI=" + Mvcs.getReq().getRequestURL(), ac.getError());
+            log.error("Catch handle error URI=" + Mvcs.getRequestPath(ac.getRequest()), ac.getError());
         super.process(ac);
     }
 }

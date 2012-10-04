@@ -5,10 +5,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.nutz.json.Json;
-import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.ActionChain;
 import org.nutz.mvc.ActionContext;
 
@@ -19,6 +19,8 @@ import org.nutz.mvc.ActionContext;
  */
 public class ActionInvoker {
 
+    private static final Log log = Logs.get();
+    
     private ActionChain defaultChain;
 
     private Map<String, ActionChain> chainMap;
@@ -53,27 +55,30 @@ public class ActionInvoker {
      * @return true- 成功的找到一个动作链并执行。 false- 没有找到动作链
      */
     public boolean invoke(ActionContext ac) {
+        ActionChain chain = getActionChain(ac);
+        if (chain == null) {
+            if (log.isDebugEnabled())
+                log.debugf("Not chain for req (path=%s, method=%s)", ac.getPath(), ac.getRequest().getMethod());
+            return false;
+        }
+        chain.doChain(ac);
+        return true;
+    }
+
+    public ActionChain getActionChain(ActionContext ac) {
         HttpServletRequest req = ac.getRequest();
         String httpMethod = Strings.sNull(req.getMethod(), "GET").toUpperCase();
         ActionChain chain = chainMap.get(httpMethod);
         // 找到了特殊HTTP方法的处理动作链
         if (null != chain) {
-            chain.doChain(ac);
-            return true;
+            return chain;
         }
         // 这个 URL 所有的HTTP方法用统一的动作链处理
         else if (null != defaultChain) {
-            defaultChain.doChain(ac);
-            return true;
+            return defaultChain;
         }
         // 否则将认为不能处理
-        return false;
-    }
-
-    public String toString() {
-        return String.format(    "%s&%s",
-                                defaultChain == null ? "----" : "DEFT",
-                                Json.toJson(chainMap.keySet(), JsonFormat.compact()));
+        return null;
     }
 
 }

@@ -23,10 +23,11 @@ public class ActionHandler {
         ActionContext ac = new ActionContext();
         ac.setRequest(req).setResponse(resp).setServletContext(config.getServletContext());
 
+        Mvcs.setActionContext(ac);
+        
         ActionInvoker invoker = mapping.get(ac);
         if (null == invoker)
             return false;
-        Mvcs.setActionContext(ac);
         return invoker.invoke(ac);
     }
 
