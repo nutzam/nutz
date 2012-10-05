@@ -54,7 +54,7 @@ public class NutActionChain implements ActionChain {
     String methodStr;
     public String toString() {
         if (methodStr == null)
-            methodStr = String.format("%s.%s(...)", method.getDeclaringClass().getSimpleName(), method.getName());
+            methodStr = Lang.simpleMetodDesc(method);
         return methodStr;
     }
 }

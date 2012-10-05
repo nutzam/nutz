@@ -1905,4 +1905,8 @@ public abstract class Lang {
             arrays[it] = ah;
         }
     }
+    
+    public static String simpleMetodDesc(Method method) {
+        return String.format("%s.%s(...)", method.getDeclaringClass().getSimpleName(), method.getName());
+    }
 }
