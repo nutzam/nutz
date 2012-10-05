@@ -1,6 +1,7 @@
 package org.nutz.aop;
 
 import java.lang.reflect.Method;
+import java.util.Collections;
 import java.util.List;
 
 import org.nutz.log.Log;
@@ -85,10 +86,16 @@ public class InterceptorChain {
         return returnValue;
     }
 
+    /**
+     * 正在被调用的Method
+     */
     public Method getCallingMethod() {
         return callingMethod;
     }
 
+    /**
+     * 方法调用的参数数组,如果你要改变参数,那么必须保证参数类型与方法参数兼容.
+     */
     public Object[] getArgs() {
         return args;
     }
@@ -105,4 +112,17 @@ public class InterceptorChain {
         return invoked;
     }
 
+    /**
+     * 获取当前的方法拦截器列表,注意,这个列表是不可修改的.如果需要修改,那么请通过{@link #setMethodInterceptors(List)}
+     */
+    public List<MethodInterceptor> getMethodInterceptors() {
+        return Collections.unmodifiableList(miList);
+    }
+    
+    /**
+     * 设置当前调用的方法拦截器列表,注意,这个set只对当前方法调用有效.
+     */
+    public void setMethodInterceptors(List<MethodInterceptor> miList) {
+        this.miList = miList;
+    }
 }
