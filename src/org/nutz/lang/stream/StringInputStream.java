@@ -1,9 +1,11 @@
 package org.nutz.lang.stream;
 
 import java.io.ByteArrayInputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Lang;
 
 public class StringInputStream extends ByteArrayInputStream {
 
@@ -20,6 +22,11 @@ public class StringInputStream extends ByteArrayInputStream {
             return new byte[0];
         if (charset == null)
             charset = Encoding.CHARSET_UTF8;
-        return str.toString().getBytes(charset);
+        try {
+            return str.toString().getBytes(charset.name());
+        }
+        catch (UnsupportedEncodingException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 }

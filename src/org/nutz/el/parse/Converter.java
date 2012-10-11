@@ -99,13 +99,13 @@ public class Converter {
     private LinkedList<Object> clearUp(LinkedList<Object> rpn) {
         LinkedList<Object> dest = new LinkedList<Object>();
         while (!rpn.isEmpty()) {
-            if (!(rpn.peekFirst() instanceof Elobj)) {
-                dest.add(rpn.pollFirst());
+            if (!(rpn.getFirst() instanceof Elobj)) {
+                dest.add(rpn.removeFirst());
                 continue;
             }
-            Elobj obj = (Elobj) rpn.pollFirst();
+            Elobj obj = (Elobj) rpn.removeFirst();
             // 方法对象
-            if (rpn.peekFirst() instanceof MethodOpt) {
+            if (!rpn.isEmpty() && rpn.getFirst() instanceof MethodOpt) {
                 dest.add(new MethodObj(obj.getVal()));
                 continue;
             }
@@ -113,7 +113,7 @@ public class Converter {
             if (dest.size() > 0
                 && dest.getLast() instanceof AccessOpt
                 && rpn.size() > 0
-                && rpn.peekFirst() instanceof AccessOpt) {
+                && rpn.getFirst() instanceof AccessOpt) {
                 dest.add(new FieldObj(obj.getVal()));
                 continue;
             }

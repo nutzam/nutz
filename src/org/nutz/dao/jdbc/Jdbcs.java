@@ -1,6 +1,12 @@
 package org.nutz.dao.jdbc;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.math.BigDecimal;
@@ -677,10 +683,33 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                    if (obj instanceof InputStream)
-                        stat.setBinaryStream(index, (InputStream) obj);
-                    else
-                        throw Lang.impossible();
+                    if (obj instanceof InputStream) {
+                        try {
+                            File f = Jdbcs.getFilePool().createFile(".dat");
+                            FileOutputStream fos = new FileOutputStream(f);
+                            InputStream in = (InputStream) obj;
+                            int size = 0;
+                            byte[] cbuf = new byte[8192];
+                            while (true) {
+                                int len = in.read(cbuf);
+                                if (len == -1)
+                                    break;
+                                if (len == 0)
+                                    continue;
+                                size += len;
+                                fos.write(cbuf, 0, len);
+                            }
+                            fos.flush();
+                            fos.close();
+                            stat.setBinaryStream(index, new FileInputStream(f), size);
+                        }
+                        catch (FileNotFoundException e) {
+                            throw Lang.impossible();
+                        }
+                        catch (IOException e) {
+                            throw Lang.wrapThrow(e);
+                        }
+                    }
                 }
             }
         };
@@ -695,7 +724,7 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                    stat.setCharacterStream(index, (Reader) obj);
+                    setCharacterStream(index, obj, stat);
                 }
             }
         };
@@ -805,5 +834,33 @@ public abstract class Jdbcs {
 
     public static FilePool getFilePool() {
         return conf.getPool();
+    }
+    
+    public static void setCharacterStream(int index, Object obj, PreparedStatement stat) throws SQLException {
+        try {
+            File f = Jdbcs.getFilePool().createFile(".dat");
+            FileWriter fw = new FileWriter(f);
+            Reader reader = (Reader) obj;
+            int size = 0;
+            char[] cbuf = new char[8192];
+            while (reader.ready()) {
+                int len = reader.read(cbuf);
+                if (len == -1)
+                    break;
+                if (len == 0)
+                    continue;
+                size += len;
+                fw.write(cbuf, 0, len);
+            }
+            fw.flush();
+            fw.close();
+            stat.setCharacterStream(index, new FileReader(f), size);
+        }
+        catch (FileNotFoundException e) {
+            throw Lang.impossible();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 }

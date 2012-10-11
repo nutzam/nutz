@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import org.nutz.dao.impl.jdbc.ClobValueAdaptor;
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.filepool.FilePool;
 
 public class OracleClobAdapter extends ClobValueAdaptor {
@@ -19,7 +20,7 @@ public class OracleClobAdapter extends ClobValueAdaptor {
             stat.setNull(index, Types.CLOB);
         } else {
             Clob clob = (Clob) obj;
-            stat.setCharacterStream(index, clob.getCharacterStream());
+            Jdbcs.setCharacterStream(index, clob.getCharacterStream(), stat);
         }
     }
 
