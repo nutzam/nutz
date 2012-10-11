@@ -22,6 +22,7 @@ import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.entity.field.NutMappingField;
 import org.nutz.dao.impl.jdbc.BlobValueAdaptor;
 import org.nutz.dao.impl.jdbc.ClobValueAdaptor;
+import org.nutz.filepool.FilePool;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -676,7 +677,10 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                    stat.setBinaryStream(index, (InputStream) obj);
+                    if (obj instanceof InputStream)
+                        stat.setBinaryStream(index, (InputStream) obj);
+                    else
+                        throw Lang.impossible();
                 }
             }
         };
@@ -799,4 +803,7 @@ public abstract class Jdbcs {
         }
     }
 
+    public static FilePool getFilePool() {
+        return conf.getPool();
+    }
 }

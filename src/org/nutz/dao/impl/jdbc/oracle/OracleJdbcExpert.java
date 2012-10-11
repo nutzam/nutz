@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
+import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
@@ -38,6 +40,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public ValueAdaptor getAdaptor(MappingField ef) {
         if (ef.getTypeMirror().isBoolean())
             return new OracleBooleanAdaptor();
+        if (Clob.class.isAssignableFrom(ef.getTypeClass()))
+            return new OracleClobAdapter(Jdbcs.getFilePool());
         return super.getAdaptor(ef);
     }
 
