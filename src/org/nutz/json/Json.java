@@ -230,6 +230,10 @@ public class Json {
             Files.createFileIfNoExists(f);
             writer = Streams.fileOutw(f);
             Json.toJson(writer, obj, format);
+            writer.append('\n');
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
         }
         finally {
             Streams.safeClose(writer);
