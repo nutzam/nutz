@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -30,10 +31,18 @@ public class UrlMappingImpl implements UrlMapping {
     }
 
     public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
-        ActionChain chain = maker.eval(config, ai);
+
+        //检查所有的path
         for (String path : ai.getPaths()) {
             if (Strings.isBlank(path))
                 throw new BlankAtException(ai.getModuleType(), ai.getMethod());
+
+            if (path.charAt(0) != '/')
+                throw Lang.makeThrow(IllegalArgumentException.class, "Mapping path not startwith / : path=%s, method=%s", path, ai.getMethod());
+        }
+        
+        ActionChain chain = maker.eval(config, ai);
+        for (String path : ai.getPaths()) {
 
             // 尝试获取，看看有没有创建过这个 URL 调用者
             ActionInvoker invoker = map.get(path);
@@ -56,38 +65,10 @@ public class UrlMappingImpl implements UrlMapping {
             else {
                 invoker.setDefaultChain(chain);
             }
-
-            /*
-             * 打印基本调试信息
-             */
-            if (log.isDebugEnabled()) {
-                // 打印路径
-                String[] paths = ai.getPaths();
-                StringBuilder sb = new StringBuilder();
-                if (null != paths && paths.length > 0) {
-                    sb.append("   '").append(paths[0]).append("'");
-                    for (int i = 1; i < paths.length; i++)
-                        sb.append(", '").append(paths[i]).append("'");
-                } else {
-                    sb.append("!!!EMPTY!!!");
-                }
-                // 打印方法名
-                Method method = ai.getMethod();
-                String str;
-                if (null != method)
-                    str = method.getName() + "(...) : " + method.getReturnType().getSimpleName();
-                else
-                    str = "???";
-                log.debugf(    "%s >> %s | @Ok(%s) @Fail(%s) | by %d Filters | (I:%s/O:%s)",
-                            Strings.alignLeft(sb, 30, ' '),
-                            str,
-                            ai.getOkView(),
-                            ai.getFailView(),
-                            (null == ai.getFilterInfos() ? 0 : ai.getFilterInfos().length),
-                            ai.getInputEncoding(),
-                            ai.getOutputEncoding());
-            }
         }
+        
+        printActionMapping(ai);
+        
         // TODO 下面个IF要不要转换到NutLoading中去呢?
         // 记录一个 @At.key
         if (!Strings.isBlank(ai.getPathKey()))
@@ -97,9 +78,51 @@ public class UrlMappingImpl implements UrlMapping {
     public ActionInvoker get(ActionContext ac) {
         String path = Mvcs.getRequestPath(ac.getRequest());
         ActionInvoker invoker = root.get(ac, path);
+        if (invoker != null) {
+            ActionChain chain = invoker.getActionChain(ac);
+            if (chain != null) {
+                if (log.isDebugEnabled()) {
+                    log.debugf("Found mapping for path=%s : %s", path, chain);
+                }
+                return invoker;
+            }
+        }
         if (log.isDebugEnabled())
-            log.debugf("find mapping (%s) for path '%s'", invoker, path);
-        return invoker;
+            log.debugf("Search mapping for path=%s : NOT Action match", path);
+        return null;
     }
 
+    protected void printActionMapping(ActionInfo ai) {
+
+        /*
+         * 打印基本调试信息
+         */
+        if (log.isDebugEnabled()) {
+            // 打印路径
+            String[] paths = ai.getPaths();
+            StringBuilder sb = new StringBuilder();
+            if (null != paths && paths.length > 0) {
+                sb.append("   '").append(paths[0]).append("'");
+                for (int i = 1; i < paths.length; i++)
+                    sb.append(", '").append(paths[i]).append("'");
+            } else {
+                throw Lang.impossible();
+            }
+            // 打印方法名
+            Method method = ai.getMethod();
+            String str;
+            if (null != method)
+                str = String.format("%-30s : %-10s",Lang.simpleMetodDesc(method), method.getReturnType().getSimpleName());
+            else
+                throw Lang.impossible();
+            log.debugf(    "%s >> %s | @Ok(%-5s) @Fail(%-5s) | by %d Filters | (I:%s/O:%s)",
+                        Strings.alignLeft(sb, 30, ' '),
+                        str,
+                        ai.getOkView(),
+                        ai.getFailView(),
+                        (null == ai.getFilterInfos() ? 0 : ai.getFilterInfos().length),
+                        ai.getInputEncoding(),
+                        ai.getOutputEncoding());
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package org.nutz.mvc.impl;
 
+import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
 
@@ -13,8 +14,10 @@ public class NutActionChain implements ActionChain {
     private Processor head;
 
     private Processor errorProcessor;
+    
+    private Method method;
 
-    public NutActionChain(List<Processor> list, Processor errorProcessor) {
+    public NutActionChain(List<Processor> list, Processor errorProcessor, Method method) {
         if (null != list) {
             Iterator<Processor> it = list.iterator();
             if (it.hasNext()) {
@@ -28,6 +31,7 @@ public class NutActionChain implements ActionChain {
             }
         }
         this.errorProcessor = errorProcessor;
+        this.method = method;
     }
 
     public void doChain(ActionContext ac) {
@@ -46,4 +50,11 @@ public class NutActionChain implements ActionChain {
         }
     }
 
+    
+    String methodStr;
+    public String toString() {
+        if (methodStr == null)
+            methodStr = Lang.simpleMetodDesc(method);
+        return methodStr;
+    }
 }

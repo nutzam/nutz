@@ -296,7 +296,7 @@ public class Castors {
                                                                 src,
                                                                 e.getClass().getSimpleName(),
                                                                 e.getMessage()),
-                                                e);
+                                                Lang.unwrapThrow(e));
         }
     }
 

@@ -97,8 +97,10 @@ public class UploadingContext {
 
     public UploadingContext setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
-        if (bufferSize < 1024 && log.isWarnEnabled())
-            log.warn("Uploading buffer is less than 1024!!");
+        if (bufferSize < 128 && log.isWarnEnabled()) {
+            log.warn("Uploading buffer is less than 128!! Auto-fix to 128!! 8192 will be much better!!");
+            this.bufferSize = 128;
+        }
         return this;
     }
 
