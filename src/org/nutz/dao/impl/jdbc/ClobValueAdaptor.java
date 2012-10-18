@@ -9,7 +9,6 @@ import java.sql.Types;
 
 import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.filepool.FilePool;
-import org.nutz.lang.Files;
 import org.nutz.lang.Streams;
 
 public class ClobValueAdaptor extends AbstractFileValueAdaptor {
