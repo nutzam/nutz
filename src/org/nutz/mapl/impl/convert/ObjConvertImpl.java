@@ -177,6 +177,9 @@ public class ObjConvertImpl implements MaplConvert {
 
     @SuppressWarnings("unchecked")
     private Object injectObj(Object model, Mirror<?> mirror) {
+        // zzh: 如果是 Object，那么就不要转换了
+        if (mirror.getType() == Object.class)
+            return model;
         Object obj = mirror.born();
         context.set(fetchPath(), obj);
         Map<String, ?> map = (Map<String, ?>) model;
