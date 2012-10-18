@@ -9,6 +9,7 @@ import javax.sql.DataSource;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.impl.DaoRunner;
+import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Trans;
@@ -46,7 +47,7 @@ public class NutDaoRunner implements DaoRunner {
                                 log.error(e1);
                         }
                     }
-                throw new DaoException(e);
+                throw new DaoException(Lang.unwrapThrow(e));
             }
         }
         // 无事务

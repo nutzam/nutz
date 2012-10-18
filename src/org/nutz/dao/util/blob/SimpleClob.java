@@ -28,7 +28,15 @@ public class SimpleClob implements Clob {
     }
 
     public String getSubString(long pos, int length) throws SQLException {
-        throw Lang.noImplement();
+        if (pos < 1)
+            throw new SQLException("pos<1");
+        pos--;
+        String str = Files.read(file);
+        if (pos >= length)
+            throw new IllegalArgumentException("pos="+pos);
+        if (pos + length >= length())
+            return str.substring((int)pos);
+        return str.substring((int)pos, (int)(pos + length - 1));
     }
 
     public Reader getCharacterStream() throws SQLException {
