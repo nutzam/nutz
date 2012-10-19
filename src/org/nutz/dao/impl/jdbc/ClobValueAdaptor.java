@@ -9,7 +9,7 @@ import java.sql.Types;
 
 import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.filepool.FilePool;
-import org.nutz.lang.Files;
+import org.nutz.lang.Streams;
 
 public class ClobValueAdaptor extends AbstractFileValueAdaptor {
 
@@ -23,7 +23,7 @@ public class ClobValueAdaptor extends AbstractFileValueAdaptor {
         Clob clob = rs.getClob(colName);
         if (clob == null)
             return null;
-        Files.write(f, clob.getCharacterStream());
+        Streams.writeAndClose(Streams.fileOutw(f), clob.getCharacterStream());
         return new SimpleClob(f);
     }
 

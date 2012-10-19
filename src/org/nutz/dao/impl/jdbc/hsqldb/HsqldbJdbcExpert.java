@@ -102,6 +102,10 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
             if (mf.getTypeMirror().isDouble())
                 return "NUMERIC(15,10)";
             return "FLOAT";
+        case BINARY:
+            return "BLOB";
+        case TEXT :
+            return "CLOB";
         default :
             break;
         }

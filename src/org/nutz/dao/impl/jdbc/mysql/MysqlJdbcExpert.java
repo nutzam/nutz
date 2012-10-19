@@ -61,6 +61,9 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
             }
             return "BIGINT(" + (width * 4) + ")";
         }
+        if (mf.getColumnType() == ColType.BINARY) {
+            return "MediumBlob"; //默认用16M的应该可以了吧?
+        }
         // 其它的参照默认字段规则 ...
         return super.evalFieldType(mf);
     }
