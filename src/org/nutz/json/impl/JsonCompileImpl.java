@@ -11,6 +11,7 @@ import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.lang.stream.QueueReader;
 import org.nutz.mapl.MaplCompile;
 
 /**
@@ -21,32 +22,27 @@ import org.nutz.mapl.MaplCompile;
  */
 public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
 
-    private int cursor;
-    private Reader reader;
-    private int col;
-    private int row;
-
-    private static final int END = -1;
-
-    private boolean skipOneChar = false;
-
+    private QueueReader qis;
+    
     public Object parse(Reader reader) {
         if (reader == null)
             return null;
-        this.reader = reader;
+        this.qis = new QueueReader(reader);
         try {
 
             // 开始读取数据
-            if (!tryNextChar())
+            qis.peek();
+            if(qis.isEnd()){
                 return null;
+            }
             skipCommentsAndBlank();
-            if (cursor == 'v') {
+            if (qis.peek() == 'v') {
                 /*
                  * Meet the var ioc ={ maybe, try to find the '{' and break
                  */
                 OUTER: while (true) {
-                    nextChar();// 尝试找到{,以确定是否为"var ioc ={"格式
-                    switch (cursor) {
+                    qis.poll();// 尝试找到{,以确定是否为"var ioc ={"格式
+                    switch (qis.peek()) {
                     case '{':
                         // case '['://还真有人这样写
                         break OUTER;
@@ -65,8 +61,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     }
 
     protected Object parseFromHere() throws IOException {
-        skipCommentsAndBlank();
-        switch (cursor) {
+        switch (qis.peek()) {
         case '{':
             Map<String, Object> map = new LinkedHashMap<String, Object>();
             parseMap(map);
@@ -77,7 +72,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             return list;
         case '"':
         case '\'':
-            return parseString(cursor);// 看来是个String
+            return parseString();// 看来是个String
         default:
             return parseSimpleType();// 其他基本数据类型
         }
@@ -88,25 +83,27 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
      * @param endTag
      *            以什么作为结束符
      */
-    private String parseString(int endTag) throws IOException {
+    private String parseString() throws IOException {
+        int endTag = qis.poll();
         // 直至读取到相应的结束符!
         StringBuilder sb = new StringBuilder();
         while (true) {
-            nextChar();
-            if (cursor == endTag)
+            if (qis.peek() == endTag){
+                qis.poll();
                 break;
-            if (cursor == '\\') {// 转义字符?
+            }
+            if (qis.peek() == '\\') {// 转义字符?
                 parseSp(sb);
             } else
-                sb.append((char) cursor);
+                sb.append((char) qis.poll());
         }
         return sb.toString();
     }
 
     // 读取转义字符
     private void parseSp(StringBuilder sb) throws IOException {
-        nextChar();
-        switch (cursor) {
+        qis.poll();
+        switch (qis.poll()) {
         case 'n':
             sb.append('\n');
             break;
@@ -131,7 +128,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         case 'u':
             char[] hex = new char[4];
             for (int i = 0; i < 4; i++)
-                hex[i] = (char) nextChar();
+                hex[i] = (char) qis.poll();
             sb.append((char) Integer.valueOf(new String(hex), 16).intValue());
             break;
         case 'b': // 这个支持一下又何妨?
@@ -152,42 +149,23 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
      */
     private Object parseSimpleType() throws IOException {
         StringBuilder sb = new StringBuilder();
-        switch (cursor) {
-        case 't':
-            // 看来是true
-            if ('r' == nextChar())
-                if ('u' == nextChar())
-                    if ('e' == nextChar())
-                        return Boolean.TRUE;
-            throw makeError("'true' is expected!");
-        case 'f':
-            // 看来是false
-            if ('a' == nextChar())
-                if ('l' == nextChar())
-                    if ('s' == nextChar())
-                        if ('e' == nextChar())
-                            return Boolean.FALSE;
-            throw makeError("'false' is expected!");
-        case 'u':
-            // 看来是undefined
-            if ('n' == nextChar())
-                if ('d' == nextChar())
-                    if ('e' == nextChar())
-                        if ('f' == nextChar())
-                            if ('i' == nextChar())
-                                if ('n' == nextChar())
-                                    if ('e' == nextChar())
-                                        if ('d' == nextChar())
-                                            return null;
-            throw makeError("'undefined' is expected!");
-        case 'n':
-            // 看来是null
-            if ('u' == nextChar())
-                if ('l' == nextChar())
-                    if ('l' == nextChar())
-                        return null;
-            throw makeError("'null' is expected!");
-
+        if(qis.startWith("true")){
+            qis.skip(4);
+            return Boolean.TRUE;
+        }
+        if(qis.startWith("false")){
+            qis.skip(5);
+            return Boolean.FALSE;
+        }
+        if(qis.startWith("undefined")){
+            qis.skip(9);
+            return null;
+        }
+        if(qis.startWith("null")){
+            qis.skip(4);
+            return null;
+        }
+        switch (qis.peek()) {
         case '.':
         case '0':
         case '1':
@@ -201,10 +179,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         case '9':
         case '-':
             // 看来是数字
-            sb.append((char) cursor);
-            boolean hasPoint = cursor == '.';
+            boolean hasPoint = qis.peek() == '.';
+            sb.append((char) qis.poll());
             while (true) {
-                if (!tryNextChar()) {// 读完了? 处理一下
+                if (qis.isEnd()) {// 读完了? 处理一下
                     if (hasPoint)
                         return Double.parseDouble(sb.toString());
                     else {
@@ -214,7 +192,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
                         return p;
                     }
                 }
-                switch (cursor) {
+                switch (qis.peek()) {
                 case '0':
                 case '1':
                 case '2':
@@ -225,26 +203,27 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
                 case '7':
                 case '8':
                 case '9':
-                    sb.append((char) cursor);
+                    sb.append((char) qis.poll());
                     break;
                 case '.':
                     if (hasPoint)
                         throw unexpectedChar();
                     else {
                         hasPoint = true;
-                        sb.append((char) cursor);
+                        sb.append((char) qis.poll());
                         break;
                     }
                 case 'L':
                 case 'l':
                     if (hasPoint)
                         throw unexpectedChar();
+                    qis.poll();
                     return Long.parseLong(sb.toString());
                 case 'F':
                 case 'f':
+                    qis.poll();
                     return Float.parseFloat(sb.toString());
                 default: {// 越界读取了!!
-                    skipOneChar = true;
                     if (hasPoint)
                         return Double.parseDouble(sb.toString());
                     else {
@@ -265,22 +244,20 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
      * 
      */
     private void parseMap(Map<String, Object> map) throws IOException {
-        nextChar();
+        qis.poll();
         skipCommentsAndBlank();
-        if (cursor == '}')
+        if (qis.peek() == '}')
             return;
         while (true) {
             parseMapItem(map);
-            nextChar();
             skipCommentsAndBlank();
-            switch (cursor) {
+            switch (qis.poll()) {
             case '}':
                 return;
             case ',':
-                nextChar();
                 skipCommentsAndBlank();
                 // 如果结束
-                if (cursor == '}')
+                if (qis.peek() == '}')
                     return;
                 continue;
             default:
@@ -305,42 +282,46 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     protected String fetchKey() throws IOException {
         // 找key
         String key = null;
-        switch (cursor) {
+        switch (qis.peek()) {
         case '"':
         case '\'':
-            key = parseString(cursor);
-            nextChar();
+            key = parseString();
             skipCommentsAndBlank();
+            //去掉":"
+            if(!(qis.poll() == ':')){
+                throw makeError("Error JSON (KEY : VALUE) syntax!");
+            }
             break;
         default:
             // 没办法,看来是无分隔符的字符串,找一下吧
             StringBuilder sb = new StringBuilder();
-            sb.append((char) cursor);
+//            sb.append((char) qis.peek());
             OUTER: while (true) {
-                nextChar();
-                switch (cursor) {
+                switch (qis.peek()) {
                 case '\\':// 特殊字符
+                    qis.poll();
                     parseSp(sb);
                     break;
                 case ' ':
                 case '/':
+                    qis.poll();
                     skipCommentsAndBlank();
-                    if (cursor == ':') {
+                    if (qis.poll() == ':') {
                         key = sb.toString().trim().intern();
                         break OUTER;
                     } else
                         throw unexpectedChar();
                 case ':':
+                    qis.poll();
                     key = sb.toString().trim().intern();
                     break OUTER;
                 default:
-                    sb.append((char) cursor);
+                    sb.append((char) qis.poll());
                 }
             }
         }
         // TODO 判断一下key是否合法
         // 当前字符为: 跳过去
-        nextChar();
         skipCommentsAndBlank();
         return key;
     }
@@ -352,22 +333,20 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
      * @throws IOException
      */
     private void parseList(List<Object> list) throws IOException {
-        nextChar();
+        qis.poll();
         skipCommentsAndBlank();
-        if (cursor == ']')
+        if (qis.peek() == ']')
             return;
         while (true) {
             list.add(parseFromHere());
-            nextChar();
             skipCommentsAndBlank();
-            switch (cursor) {
+            switch (qis.poll()) {
             case ']':
                 return;
             case ',':// 看来还有元素
-                nextChar();
                 skipCommentsAndBlank();
                 // 如果没有正确结束
-                if (cursor == ']')
+                if (qis.peek() == ']')
                     return;
                 continue;
             default:
@@ -377,27 +356,14 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
 
     }
 
-    private int nextChar() throws IOException {
-        if (!tryNextChar())
-            throw unexpectedEnd();
-        if (cursor == '\n') {
-            row++;
-            col = 0;
-        } else
-            col++;
-        return cursor;
-    }
-
     private void skipCommentsAndBlank() throws IOException {
         skipBlank();
-        while (cursor == '/') {
-            nextChar();
-            if (cursor == '/') { // inline comment
-                skipInlineComment();
-                nextChar();
-            } else if (cursor == '*') { // block comment
+        while (qis.peek() == '/') {
+            int v = qis.peekNext();
+            if (v == '/') { // inline comment
+                qis.readLine();
+            } else if (v == '*') { // block comment
                 skipBlockComment();
-                nextChar();
             } else {
                 throw makeError("Error comment syntax!");
             }
@@ -405,45 +371,30 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         }
     }
 
-    private void skipInlineComment() throws IOException {
-        while (nextChar() != '\n') {}
-    }
-
     private void skipBlank() throws IOException {
-        while (cursor >= 0 && cursor <= 32)
-            nextChar();
+        while (qis.peek() >= 0 && qis.peek() <= 32)
+            qis.poll();
     }
 
     private void skipBlockComment() throws IOException {
-        nextChar();
+        //过滤块注释开始的"/*"两个字符
+        qis.skip(2);
         while (true) {
-            if (cursor == '*') {
-                if (nextChar() == '/')
+            if (qis.poll() == '*') {
+                if (qis.peek() == '/'){
+                    qis.poll();
                     break;
-            } else
-                nextChar();
+                }
+            }
         }
     }
 
-    private boolean tryNextChar() throws IOException {
-        if (skipOneChar) {
-            skipOneChar = false;
-            return cursor != END;
-        }
-        cursor = reader.read();
-        return cursor != END;
+    private JsonException makeError(String message) throws IOException {
+        return new JsonException(qis.getRow(), qis.getCol(), (char) qis.peek(), message);
     }
 
-    private JsonException makeError(String message) {
-        return new JsonException(row, col, (char) cursor, message);
-    }
-
-    private JsonException unexpectedEnd() {
-        return new JsonException(row, col, (char) cursor, "Unexpected End");
-    }
-
-    private JsonException unexpectedChar() {
-        return new JsonException(row, col, (char) cursor, "Unexpected char");
+    private JsonException unexpectedChar() throws IOException {
+        return new JsonException(qis.getRow(), qis.getCol(), (char) qis.peek(), "Unexpected char");
     }
 
     // public static void main(String[] args) {
