@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -446,6 +447,20 @@ public abstract class Lang {
         for (T ele : eles)
             list.add(ele);
         return list;
+    }
+
+    /**
+     * 创建一个 Hash 集合
+     * 
+     * @param eles
+     *            可变参数
+     * @return 集合对象
+     */
+    public static <T> Set<T> set(T... eles) {
+        Set<T> set = new HashSet<T>();
+        for (T ele : eles)
+            set.add(ele);
+        return set;
     }
 
     /**
@@ -1905,8 +1920,10 @@ public abstract class Lang {
             arrays[it] = ah;
         }
     }
-    
+
     public static String simpleMetodDesc(Method method) {
-        return String.format("%s.%s(...)", method.getDeclaringClass().getSimpleName(), method.getName());
+        return String.format("%s.%s(...)",
+                             method.getDeclaringClass().getSimpleName(),
+                             method.getName());
     }
 }
