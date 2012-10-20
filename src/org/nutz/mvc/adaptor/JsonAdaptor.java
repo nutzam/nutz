@@ -32,6 +32,7 @@ public class JsonAdaptor extends PairAdaptor {
         // Read all as String
         try {
             String str = Streams.readAndClose(Streams.utf8r(req.getInputStream()));
+            //TODO URL传来的参数会丢失
             return Json.fromJson(str);
         }
         catch (Exception e) {

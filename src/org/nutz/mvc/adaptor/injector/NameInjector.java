@@ -47,6 +47,9 @@ public class NameInjector implements ParamInjector {
             // Map 对象，详细分析一下
             if (refer instanceof Map<?, ?>) {
                 Object value = ((Map<?, ?>) refer).get(name);
+                if (value == null) { //TODO 临时解决JsonAdaptor丢URL参数的问题
+                    return fromReqParam(req);
+                }
                 // 如果 value 是集合，并且有范型参数，需要预先将集合内的对象都转换一遍
                 // Issue #32
                 if ((value instanceof Collection<?>) && null != paramTypes && paramTypes.length > 0) {
@@ -73,8 +76,11 @@ public class NameInjector implements ParamInjector {
         /*
          * 直接从 http params 里取
          */
+        return fromReqParam(req);
+    }
+
+    public Object fromReqParam(HttpServletRequest req) {
         String[] params = req.getParameterValues(name);
         return Castors.me().castTo(params, type);
     }
-
 }
