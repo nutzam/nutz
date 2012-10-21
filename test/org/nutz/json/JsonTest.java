@@ -34,6 +34,13 @@ import org.nutz.lang.util.NutType;
 public class JsonTest {
 
     @Test
+    public void test_map_in_map() {
+        String str = "{a:{},b:100}";
+        Map<String, Object> map = (Map<String, Object>) Json.fromJson(str);
+        assertEquals(100, ((Integer) map.get("b")).intValue());
+    }
+
+    @Test
     public void test_bear_error_end_list() {
         int[] is = Json.fromJson(int[].class, "[2,]");
         assertEquals(2, is[0]);
