@@ -80,8 +80,8 @@ public class ModuleProcessor extends AbstractProcessor {
 
             }
             ac.setMethod(method);
-            if (log.isDebugEnabled()) //打印实际执行的Method信息
-                log.debugf("Handle URL[%s] by Method[%s]",ac.getPath(),method);
+            //if (log.isDebugEnabled()) //打印实际执行的Method信息
+            //    log.debugf("Handle URL[%s] by Method[%s]",ac.getPath(),method);
             doNext(ac);
         }
         finally {
