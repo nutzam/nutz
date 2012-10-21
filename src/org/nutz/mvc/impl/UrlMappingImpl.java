@@ -82,7 +82,7 @@ public class UrlMappingImpl implements UrlMapping {
             ActionChain chain = invoker.getActionChain(ac);
             if (chain != null) {
                 if (log.isDebugEnabled()) {
-                    log.debugf("Found mapping for path=%s : %s", path, chain);
+                    log.debugf("Found mapping for [%s] path=%s : %s", ac.getRequest().getMethod(), path, chain);
                 }
                 return invoker;
             }

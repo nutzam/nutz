@@ -1,3 +1,3 @@
 {
-	"TEST":{"name", "jk"}
+	"TEST":{"name": "jk"}
 }
