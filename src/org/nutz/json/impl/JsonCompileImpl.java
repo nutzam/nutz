@@ -246,8 +246,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     private void parseMap(Map<String, Object> map) throws IOException {
         qis.poll();
         skipCommentsAndBlank();
-        if (qis.peek() == '}')
+        if (qis.peek() == '}'){
+            qis.poll();
             return;
+        }
         while (true) {
             parseMapItem(map);
             skipCommentsAndBlank();
