@@ -5,19 +5,16 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.nutz.castor.castor.Array2Array;
 import org.nutz.castor.castor.Object2Object;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.TypeExtractor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.resource.Scans;
 
 /**
  * 一个创建 Castor 的工厂类。它的使用方式是：
@@ -52,10 +49,7 @@ public class Castors {
      * 如何抽取对象的类型级别
      */
     private TypeExtractor extractor;
-    /**
-     * Castor 的搜索路径
-     */
-    private List<Class<?>> paths;
+    
     /**
      * Castor 的配置
      */
@@ -81,49 +75,6 @@ public class Castors {
     }
 
     /**
-     * 你的的 Castor 可能存在在不同包下，你可以把每个包下的随便一个 Castor 作为例子放到一个列表里。 这样， Nutz.Castor
-     * 就能找到同一包下其他的 Castor 了。
-     * <p>
-     * 你的 Castor 存放在 CLASSPAH 下或者 Jar 包里都是没有问题的
-     * 
-     * @param paths
-     *            Castor 例子列表
-     */
-    public synchronized Castors setPaths(List<Class<?>> paths) {
-        if (paths != null) {
-            this.paths = paths;
-            reload();
-        }
-        return this;
-    }
-
-    /**
-     * 将 Castor 的寻找路径恢复成默认值。
-     */
-    public synchronized Castors resetPaths() {
-        paths = new ArrayList<Class<?>>();
-        paths.add(Array2Array.class);
-        reload();
-        return this;
-    }
-
-    /**
-     * 增加 Castor 的寻找路径。
-     * 
-     * @param paths
-     *            示例 Castor
-     */
-    public synchronized Castors addPaths(Class<?>... paths) {
-        if (null != paths) {
-            for (Class<?> path : paths)
-                if (path != null)
-                    this.paths.add(path);
-            reload();
-        }
-        return this;
-    }
-
-    /**
      * 设置自定义的对象类型提取器逻辑
      * 
      * @param te
@@ -136,43 +87,20 @@ public class Castors {
 
     private Castors() {
         setting = new DefaultCastorSetting();
-        resetPaths();
+        reload();
     }
 
     private void reload() {
-        if (paths == null || paths.size() == 0) {
-            resetPaths();
-            return;
-        }
         HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
         for (Method m1 : setting.getClass().getMethods()) {
             Class<?>[] pts = m1.getParameterTypes();
             if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0]))
                 settingMap.put(pts[0], m1);
         }
-        // build castors
-//        this.map = new HashMap<String, Map<String, Castor<?, ?>>>();
 
         this.map = new HashMap<Integer, Castor<?,?>>();
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
-        if (Lang.isAndroid) {
-            classes.addAll(defaultCastorList);
-        } else {
-            for (Iterator<Class<?>> it = paths.iterator(); it.hasNext();) {
-                Class<?> baseClass = it.next();
-                if (baseClass == null)
-                    continue;
-                List<Class<?>> list = Scans.me().scanPackage(baseClass);
-                if (null != list && list.size() > 0)
-                    classes.addAll(list);
-            }
-            // 一个类都找不到,好吧,加载默认的,从文件读取列表
-            if (classes.size() == 0) {
-                if (log.isWarnEnabled())
-                    log.warn("!!No castor found!!!!!!!!! Load default castor list");
-                classes.addAll(defaultCastorList);
-            }
-        }
+        classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
             try {
                 if (Modifier.isAbstract(klass.getModifiers()))
@@ -188,6 +116,15 @@ public class Castors {
         }
         if (log.isDebugEnabled())
             log.debugf("Using %s castor for Castors", map.size());
+    }
+    
+    public void addCastor(Class<?> klass) {
+        try {
+            fillMap(klass, new HashMap<Class<?>, Method>());
+        }
+        catch (Throwable e) {
+            throw Lang.wrapThrow(Lang.unwrapThrow(e));
+        }
     }
     
     /**
