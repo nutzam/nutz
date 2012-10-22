@@ -400,9 +400,9 @@ public class CastorTest {
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
     }
 
-    @Test
-    public void load_form_nowhere() {
-        Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
-        castors.castTo(1, Long.class);
-    }
+//    @Test
+//    public void load_form_nowhere() {
+//        Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
+//        castors.castTo(1, Long.class);
+//    }
 }
