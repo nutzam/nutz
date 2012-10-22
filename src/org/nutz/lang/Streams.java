@@ -102,7 +102,7 @@ public abstract class Streams {
      * @return 写入的字节数
      * @throws IOException
      */
-    public static int write(OutputStream ops, InputStream ins) throws IOException {
+    public static long write(OutputStream ops, InputStream ins) throws IOException {
         return write(ops, ins, BUF_SIZE);
     }
 
@@ -122,19 +122,19 @@ public abstract class Streams {
      * 
      * @throws IOException
      */
-    public static int write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
+    public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
         if (null == ops || null == ins)
             return 0;
 
         byte[] buf = new byte[bufferSize];
         int len;
-        int re = 0;
+        long bytesCount = 0;
         while (-1 != (len = ins.read(buf))) {
-            re += len;
+            bytesCount += len;
             ops.write(buf, 0, len);
         }
         ops.flush();
-        return re;
+        return bytesCount;
     }
 
     /**
@@ -148,7 +148,7 @@ public abstract class Streams {
      *            输入流
      * @return 写入的字节数
      */
-    public static int writeAndClose(OutputStream ops, InputStream ins) {
+    public static long writeAndClose(OutputStream ops, InputStream ins) {
         try {
             return write(ops, ins);
         }
