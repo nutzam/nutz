@@ -811,7 +811,7 @@ public abstract class Files {
     public static String getName(String path) {
         if (!Strings.isBlank(path)) {
             int pos = path.replace('\\', '/').lastIndexOf('/');
-            if (pos > 0)
+            if (pos != -1)
                 return path.substring(pos + 1);
         }
         return path;
