@@ -28,8 +28,12 @@ public class Issue338Test extends DaoCase {
         
         dao.insertWith(ask, "replys");
         
+        ask.setReplys(null);
         dao.deleteWith(ask, "replys");
+        assertEquals(2, dao.count(AskReply.class));
         
+        ask = dao.fetchLinks(ask, null);
+        dao.deleteWith(ask, "replys");
         assertEquals(0, dao.count(AskReply.class));
     }
 }

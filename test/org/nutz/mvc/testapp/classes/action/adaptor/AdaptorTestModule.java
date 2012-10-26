@@ -1,6 +1,7 @@
 package org.nutz.mvc.testapp.classes.action.adaptor;
 
 import java.util.List;
+import java.util.Map;
 
 import junit.framework.TestCase;
 
@@ -20,7 +21,7 @@ import org.nutz.mvc.testapp.BaseWebappTest;
 @IocBean
 @At("/adaptor")
 @Ok("raw")
-@Fail("raw")
+@Fail("http:500")
 public class AdaptorTestModule extends BaseWebappTest {
 
     @At("/json/pet/array")
@@ -40,9 +41,17 @@ public class AdaptorTestModule extends BaseWebappTest {
     
     // 传入的id,会是一个非法的字符串!!
     @At({"/err/param", "/err/param/?"})
-    @Fail("http:500")
     public void errParam(@Param("id") long id, AdaptorErrorContext errCtx) {
         TestCase.assertNotNull(errCtx);
         TestCase.assertNotNull(errCtx.getErrors()[0]);
+    }
+    
+    @At("/json/type")
+    @AdaptBy(type=JsonAdaptor.class)
+    public void jsonMapType(Map<String, Double> map) {
+        TestCase.assertNotNull(map);
+        TestCase.assertEquals(1, map.size());
+        TestCase.assertEquals(123456.0, map.get("abc").doubleValue());
+        System.out.println(map.get("abc"));
     }
 }

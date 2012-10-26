@@ -31,9 +31,8 @@ public class JsonAdaptor extends PairAdaptor {
                             HttpServletResponse resp, String[] pathArgs) {
         // Read all as String
         try {
-            String str = Streams.readAndClose(Streams.utf8r(req.getInputStream()));
             //TODO URL传来的参数会丢失
-            return Json.fromJson(str);
+            return Json.fromJson(Streams.utf8r(req.getInputStream()));
         }
         catch (Exception e) {
             throw Lang.wrapThrow(e);
