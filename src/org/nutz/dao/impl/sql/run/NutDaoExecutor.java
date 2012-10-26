@@ -103,10 +103,9 @@ public class NutDaoExecutor implements DaoExecutor {
         }
         // -------------------------------------------------
         // 生成 Sql 语句
-            String sql = st.toPreparedStatement();
+        String sql = st.toPreparedStatement();
         // 打印调试信息
-            if (log.isDebugEnabled())
-                log.debug(sql);
+        
         ResultSet rs = null;
         Statement stat = null;
         try {
@@ -114,7 +113,8 @@ public class NutDaoExecutor implements DaoExecutor {
             // 木有参数，直接运行
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
-
+                if (log.isDebugEnabled())
+                    log.debug(st);
                 stat = conn.createStatement(st.getContext()
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
@@ -131,7 +131,8 @@ public class NutDaoExecutor implements DaoExecutor {
                     if (log.isWarnEnabled())
                         log.warnf("Drop last %d rows parameters for:\n%s",
                                 paramMatrix.length - 1, st);
-                } else if (log.isDebugEnabled()) {
+                } 
+                if (log.isDebugEnabled()) {
                     log.debug(st);
                 }
 
