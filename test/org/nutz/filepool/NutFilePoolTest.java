@@ -63,10 +63,16 @@ public class NutFilePoolTest {
     }
 
     @Test public void test_blank_suffix(){
-        String home = "D:\\tomcat6.0\\Tomcat 6.0\\webapps\\ai-tuan\\WEB-INF\\tmp";
+        String home = "~/tmp_nutz";
+        new File(home).delete();
+        new File(home).mkdirs();
         FilePool filePool = new NutFilePool(home);
-        filePool.createFile("");
-        
+        File f = filePool.createFile("");
+        System.out.println(f);
+
+        new NutFilePool(home);
+        new NutFilePool(home);
+        new NutFilePool(home);
         //在生成一次,报错
         new NutFilePool(home);
     }
