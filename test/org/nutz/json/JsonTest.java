@@ -33,6 +33,15 @@ import org.nutz.lang.util.NutType;
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
 
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void test_empty_array_field() {
+        String str = "{a:[],b:100}";
+        Map<String, Object> map = (Map<String, Object>) Json.fromJson(str);
+        assertEquals(100, ((Integer) map.get("b")).intValue());
+        assertEquals(0, ((List) map.get("a")).size());
+    }
+
     @Test
     public void test_map_in_map() {
         String str = "{a:{},b:100}";
