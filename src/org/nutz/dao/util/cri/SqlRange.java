@@ -15,5 +15,4 @@ public class SqlRange extends NoParamsSqlExpression implements SqlExpression {
     public void joinSql(Entity<?> en, StringBuilder sb) {
         sb.append(String.format("%s%s IN (%s)", (not ? " NOT " : ""), _fmtcol(en), sql));
     }
-
 }
