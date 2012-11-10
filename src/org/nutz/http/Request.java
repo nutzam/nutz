@@ -58,15 +58,21 @@ public class Request {
     private Header header;
     private Map<String, Object> params;
     private byte[] data;
+    private URL cacheUrl;
 
     public URL getUrl() {
+        if (cacheUrl != null) {
+            return cacheUrl;
+        }
+
         StringBuilder sb = new StringBuilder(url);
         try {
             if (this.isGet() && null != params && params.size() > 0) {
                 sb.append(url.indexOf('?') > 0 ? '&' : '?');
                 sb.append(getURLEncodedParams());
             }
-            return new URL(sb.toString());
+            cacheUrl = new URL(sb.toString());
+            return cacheUrl;
         }
         catch (Exception e) {
             throw new HttpException(sb.toString(), e);
