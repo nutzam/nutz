@@ -55,7 +55,7 @@
 <div><span class="num">6.2</span><a href="#字符串操作">字符串操作</a></div>
 </li>
 <li>
-<div><span class="num">6.3</span><a href="#Java_对象属性属性访问调用">Java 对象属性属性访问调用</a></div>
+<div><span class="num">6.3</span><a href="#Java_对象属性访问调用">Java 对象属性访问调用</a></div>
 </li>
 <li>
 <div><span class="num">6.4</span><a href="#函数调用">函数调用</a></div>
@@ -413,9 +413,9 @@ assertEquals("nutz", El.eval(context, "strings.trim(\"    nutz   \")"));
 <pre>System.out.println(El.eval("trim(\"  abc  \")"));
 <span class="zdoc_code_cmt">// 输出为  abc
 </span></pre>
-<h2><a name="Java_对象属性属性访问调用"></a>Java 对象属性属性访问调用</h2>
+<h2><a name="Java_对象属性访问调用"></a>Java 对象属性访问调用</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 Pet pet = new Pet();
 pet.setName("GFW");
 context.set("pet",pet);
@@ -424,7 +424,7 @@ System.out.println(El.eval(context,"pet.name"));
 </span></pre>
 <h2><a name="函数调用"></a>函数调用	</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 Pet pet = new Pet();
 context.set("pet",pet);
 El.eval(context, "pet.setName('XiaoBai')");
@@ -434,7 +434,7 @@ System.out.println(El.eval(context,"pet.getName()"));
 </span></pre>
 <h2><a name="数组访问"></a>数组访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 context.set("x",Lang.array("A", "B", "C"));
 
 System.out.println(El.eval(context,"x[0].toLowerCase()"));
@@ -442,7 +442,7 @@ System.out.println(El.eval(context,"x[0].toLowerCase()"));
 </span></pre>
 <h2><a name="列表访问"></a>列表访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 context.set("x",Lang.list("A", "B", "C"));
 
 System.out.println(El.eval(context,"x[0].toLowerCase()"));
@@ -450,7 +450,7 @@ System.out.println(El.eval(context,"x[0].toLowerCase()"));
 </span></pre>
 <h2><a name="Map_访问"></a>Map 访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 context.set("map",Lang.map("{x:10, y:5}"));
 
 System.out.println(El.eval(context,"map['x'] * map['y']"));
@@ -458,7 +458,7 @@ System.out.println(El.eval(context,"map['x'] * map['y']"));
 </span></pre>
 <h2><a name="判断"></a>判断</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = new Context();
+<pre>Context context = Lang.content();
 context.set("a",5);
 
 System.out.println(El.eval(context,"a&gt;10"));
