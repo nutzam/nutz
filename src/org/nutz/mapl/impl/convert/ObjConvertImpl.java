@@ -141,6 +141,9 @@ public class ObjConvertImpl implements MaplConvert {
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private Object injectCollection(Object model, Mirror<?> me) {
+        if (! (model instanceof Collection)) {
+            throw Lang.makeThrow("Not a Collection --> " + model.getClass());
+        }
         Collection re = null;
         if (!me.isInterface()) {
             re = (Collection) me.born();

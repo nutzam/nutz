@@ -12,6 +12,9 @@ import org.nutz.aop.MethodInterceptor;
  */
 public class AbstractMethodInterceptor implements MethodInterceptor {
 
+    /**
+     * 拦截方法调用, 将拦截器的行为, 分成: 之前,之后,抛异常,抛错误 -- 4种拦截点
+     */
     public void filter(InterceptorChain chain) throws Throwable {
         try {
             if (beforeInvoke(chain.getCallingObj(), chain.getCallingMethod(), chain.getArgs()))
@@ -33,19 +36,51 @@ public class AbstractMethodInterceptor implements MethodInterceptor {
 
     }
 
-    public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
-        return returnObj;
-    }
-
+    /**
+     * 在方法执行前拦截
+     * @param obj 被拦截的对象
+     * @param method 被拦截的方法
+     * @param args 被拦截的方法的参数
+     * @return 如果继续往下走,就返回true,否则就退出AOP执行链
+     */
     public boolean beforeInvoke(Object obj, Method method, Object... args) {
         return true;
     }
+    
+    /**
+     * 在方法执行后拦截
+     * @param obj 被拦截的对象
+     * @param returnObj 被拦截的方法的返回值的对象
+     * @param method 被拦截的方法
+     * @param args 被拦截方法的参数
+     * @return 将会替代原方法返回值的值
+     */
+    public Object afterInvoke(Object obj, Object returnObj, Method method, Object... args) {
+        return returnObj;
+    }
+    
+    /**
+     * 抛出Exception的时候拦截
+     * @param e 异常对象
+     * @param obj 被拦截的对象
+     * @param method 被拦截的方法
+     * @param args 被拦截方法的返回值
+     * @return 是否继续抛出异常
+     */
+    public boolean whenException(Exception e, Object obj, Method method, Object... args) {
+        return true;
+    }
 
+    /**
+     * 抛出Throwable的时候拦截
+     * @param e 异常对象
+     * @param obj 被拦截的对象
+     * @param method 被拦截的方法
+     * @param args 被拦截方法的返回值
+     * @return 是否继续抛出异常
+     */
     public boolean whenError(Throwable e, Object obj, Method method, Object... args) {
         return true;
     }
 
-    public boolean whenException(Exception e, Object obj, Method method, Object... args) {
-        return true;
-    }
 }

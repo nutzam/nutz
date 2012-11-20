@@ -1,6 +1,8 @@
 package org.nutz.ioc.impl;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -37,6 +39,17 @@ public class PropertiesProxy {
     public PropertiesProxy(String... paths) {
         this(true);
         this.setPaths(paths);
+    }
+
+    public PropertiesProxy(InputStream in) {
+        this(true);
+        try {
+            mp = new MultiLineProperties();
+            mp.load(new InputStreamReader(in));
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 
     /**
