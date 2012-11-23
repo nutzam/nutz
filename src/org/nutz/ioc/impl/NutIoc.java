@@ -183,6 +183,9 @@ public class NutIoc implements Ioc2 {
                         op = maker.make(ing, iobj);
                     }
                     // 处理异常
+                    catch (IocException e) {
+                        throw e;
+                    }
                     catch (Throwable e) {
                         throw new IocException(Lang.unwrapThrow(e), "For object [%s] - type:[%s]", name, type);
                     }
