@@ -23,6 +23,7 @@ import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.born.BorningException;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -182,8 +183,8 @@ public class NutIoc implements Ioc2 {
                         op = maker.make(ing, iobj);
                     }
                     // 处理异常
-                    catch (ObjectLoadException e) {
-                        throw new IocException(e, "For object [%s] - type:[%s]", name, type);
+                    catch (Throwable e) {
+                        throw new IocException(Lang.unwrapThrow(e), "For object [%s] - type:[%s]", name, type);
                     }
                 }
             }

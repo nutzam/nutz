@@ -72,7 +72,7 @@ public class ScopeContext implements IocContext {
             checkBuffer();
 
             synchronized (this) {
-                if (!objs.containsKey(name)) {
+                if (objs.containsKey(name)) {
                     if (log.isDebugEnabled())
                         log.debugf("Remove object '%s' from [%s] ", name, scope);
                     return null != objs.remove(name);
