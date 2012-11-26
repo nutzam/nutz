@@ -7,8 +7,8 @@ import javax.sql.DataSource;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.log.Logs;
 import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 用模板的方式操作事务
@@ -60,7 +60,11 @@ public abstract class Trans {
             if (DEBUG)
                 log.debugf("Attach Transaction id=%d, level=%d", tn.getId(), level);
         }
-        count.set(count.get() + 1);
+        int tCount = count.get() + 1;
+        count.set(tCount);
+        if (log.isDebugEnabled())
+            log.debugf("trans_begain: ", tCount);
+
     }
 
     static void _commit() throws Exception {
@@ -239,17 +243,17 @@ public abstract class Trans {
     public static void close() throws Exception {
         Trans._depose();
     }
-    
+
     /**
      * 如果在事务中,则返回事务的连接,否则直接从数据源取一个新的连接
      */
-    public static Connection getConnectionAuto(DataSource ds) throws SQLException{
+    public static Connection getConnectionAuto(DataSource ds) throws SQLException {
         if (get() == null)
             return ds.getConnection();
         else
             return get().getConnection(ds);
     }
-    
+
     public static void closeConnectionAuto(Connection conn) {
         if (get() == null && null != conn) {
             try {

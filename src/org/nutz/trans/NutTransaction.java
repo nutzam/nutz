@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
@@ -11,9 +12,11 @@ import org.nutz.lang.ComboException;
 
 public class NutTransaction extends Transaction {
 
-    private static int ID = 0;
+    private static AtomicLong TransIdMaker = new AtomicLong();
 
     private List<ConnInfo> list;
+    
+    private long id;
 
     private static class ConnInfo {
         ConnInfo(DataSource ds, Connection conn, int level) throws SQLException {
@@ -31,9 +34,9 @@ public class NutTransaction extends Transaction {
 
     public NutTransaction() {
         list = new ArrayList<ConnInfo>();
+        id = TransIdMaker.getAndIncrement();
     }
 
-    @Override
     protected void commit() {
         ComboException ce = new ComboException();
         for (ConnInfo cInfo : list) {
@@ -68,9 +71,8 @@ public class NutTransaction extends Transaction {
         return conn;
     }
 
-    @Override
-    public int getId() {
-        return ID++;
+    public long getId() {
+        return id;
     }
 
     @Override
