@@ -259,8 +259,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             case ',':
                 skipCommentsAndBlank();
                 // 如果结束
-                if (qis.peek() == '}')
+                if (qis.peek() == '}') {
+                    qis.poll();
                     return;
+                }
                 continue;
             default:
                 throw unexpectedChar();

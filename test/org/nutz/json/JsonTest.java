@@ -2,6 +2,7 @@ package org.nutz.json;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -24,6 +25,7 @@ import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -799,4 +801,16 @@ public class JsonTest {
     // System.out.println(Json.toJson(node));
     // System.out.println(node.getChildren().get(0).getClass());
     // }
+    
+    @Test
+    public void test_json3() {
+        File f = Files.findFile("org/nutz/json/x.json");
+        Map<String, Object> map = Json.fromJsonFile(Map.class, f);
+        assertEquals(3, map.size());
+        System.out.println(map.keySet());
+        assertTrue(map.containsKey("dao"));
+        
+        String str = "{rs:{ok:true,},yes:true}";
+        System.out.println(Json.fromJson(str));
+    }
 }
