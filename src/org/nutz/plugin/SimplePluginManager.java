@@ -55,10 +55,12 @@ public class SimplePluginManager<T> implements PluginManager<T> {
 
     @SuppressWarnings("unchecked")
     private void loadPlugin(String pluginClassName) throws PluginException {
-        try {
-            if (pluginClassName != null)
+        if (pluginClassName != null)
+            try {
                 loadPlugin((Class<? extends T>) Lang.loadClass(pluginClassName));
-        }
-        catch (Throwable e) {}
+            }
+            catch (Throwable e) {
+                throw new PluginException(pluginClassName, e);
+            }
     }
 }
