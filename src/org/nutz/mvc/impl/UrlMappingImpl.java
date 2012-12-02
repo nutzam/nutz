@@ -2,6 +2,7 @@ package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.lang.Lang;
@@ -33,12 +34,14 @@ public class UrlMappingImpl implements UrlMapping {
     public void add(ActionChainMaker maker, ActionInfo ai, NutConfig config) {
 
         //检查所有的path
-        for (String path : ai.getPaths()) {
+        String[] paths = ai.getPaths();
+        for (int i = 0; i < paths.length; i++) {
+            String path = paths[i];
             if (Strings.isBlank(path))
                 throw new BlankAtException(ai.getModuleType(), ai.getMethod());
-
+            
             if (path.charAt(0) != '/')
-                throw Lang.makeThrow(IllegalArgumentException.class, "Mapping path not startwith / : path=%s, method=%s", path, ai.getMethod());
+                paths[i] = '/' + path;
         }
         
         ActionChain chain = maker.eval(config, ai);
