@@ -211,8 +211,6 @@ public class Castors {
         if (toType.isAssignableFrom(fromType))
             return (T) src;
         Mirror<?> from = Mirror.me(fromType, extractor);
-        if (from.canCastToDirectly(toType)) // Use language built-in cases
-            return (T) src;
         Castor c = find(from, toType);
         if (null == c)
             throw new FailToCastObjectException(String.format(    "Can not find castor for '%s'=>'%s' in (%d) because:\n%s",
@@ -220,6 +218,9 @@ public class Castors {
                                                                 toType.getName(),
                                                                 map.size(),
                                                                 "Fail to find matched castor"));
+        if (Object2Object.class.getName().equals(c.getClass().getName()) && from.canCastToDirectly(toType)) { // Use language built-in cases
+            return (T) src;
+        }
         try {
             return (T) c.cast(src, toType, args);
         }
@@ -252,13 +253,22 @@ public class Castors {
 
     @SuppressWarnings("unchecked")
     private <F, T> Castor<F, T> find(Mirror<F> from, Class<T> toType) {
+        int key = Castor.fetchHash(from.getType(), toType);
+        // 哈，这种类型以前转过，直接返回转换器就行了
+        if (map.containsKey(key)) {
+            return (Castor<F, T>) map.get(key);
+        }
+        
         Mirror<T> to = Mirror.me(toType, extractor);
         Class<?>[] fets = from.extractTypes();
         Class<?>[] tets = to.extractTypes();
         for(Class<?> ft : fets){
             for(Class<?> tt : tets){
                 if(map.containsKey(Castor.fetchHash(ft, tt))){
-                    return (Castor<F, T>) map.get(Castor.fetchHash(ft, tt));
+                    Castor<F, T> castor = (Castor<F, T>) map.get(Castor.fetchHash(ft, tt));
+                    // 缓存转换器，加速下回转换速度
+                    map.put(key, castor);
+                    return castor;
                 }
             }
         }
@@ -314,7 +324,7 @@ public class Castors {
         }
     }
     
-    private static List<Class<?>> defaultCastorList = new ArrayList<Class<?>>(100);
+    private static List<Class<?>> defaultCastorList = new ArrayList<Class<?>>(120);
     static {
         defaultCastorList.add(org.nutz.castor.castor.String2Character.class);
         defaultCastorList.add(org.nutz.castor.castor.Calendar2String.class);

@@ -26,7 +26,7 @@ import org.nutz.mvc.config.FilterNutConfig;
  */
 public class NutFilter implements Filter {
 
-    private ActionHandler handler;
+    protected ActionHandler handler;
 
     private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico)$";
 
