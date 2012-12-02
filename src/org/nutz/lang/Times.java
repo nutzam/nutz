@@ -338,6 +338,6 @@ public abstract class Times {
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
     private static final DateFormat DF_TIME = new SimpleDateFormat("HH:mm:ss");
 
-    private static final long MS_DAY = 3600 * 24 * 1000;
+    private static final long MS_DAY = 3600L * 24 * 1000;
     private static final long MS_WEEK = MS_DAY * 7;
 }

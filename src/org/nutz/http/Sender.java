@@ -1,7 +1,6 @@
 package org.nutz.http;
 
 import java.io.BufferedInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -29,9 +28,7 @@ public abstract class Sender {
     }
 
     public static Sender create(Request request) {
-        if (request.isGet())
-            return new GetSender(request);
-        return new PostSender(request);
+        return request.isGet() ? new GetSender(request) : new PostSender(request);
     }
 
     protected Request request;
@@ -46,8 +43,7 @@ public abstract class Sender {
 
     public abstract Response send() throws HttpException;
 
-    protected Response createResponse(Map<String, String> reHeaders)
-            throws IOException {
+    protected Response createResponse(Map<String, String> reHeaders) throws IOException {
         Response rep = null;
         if (reHeaders != null) {
             rep = new Response(conn, reHeaders);
@@ -72,7 +68,7 @@ public abstract class Sender {
                 try {
                     rep.setStream(conn.getInputStream());
                 }
-                catch (FileNotFoundException e) {
+                catch (IOException e) {
                     rep.setStream(new NullInputStream());
                 }
             }

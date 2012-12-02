@@ -27,8 +27,6 @@ public final class Logs {
      * @param clazz
      *            your class
      * @return Log
-     * @throws NullPointerException
-     *             when clazz is null
      */
     public static Log getLog(Class<?> clazz) {
         return getLog(clazz.getName());
@@ -40,8 +38,6 @@ public final class Logs {
      * @param className
      *            the name of Log
      * @return Log
-     * @throws NullPointerException
-     *             when className is null, maybe it will case NPE
      */
     public static Log getLog(String className) {
         return adapter.getLogger(className);
