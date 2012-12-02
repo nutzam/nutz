@@ -65,6 +65,11 @@ public abstract class AbstractNutConfig implements NutConfig {
     }
 
     public String getAppRoot() {
+        String webinf = getServletContext().getRealPath("/WEB-INF/");
+        if (webinf == null) {
+            log.info("/WEB-INF/ not Found?!");
+            return "";
+        }
         String root = getServletContext().getRealPath("/").replace('\\', '/');
         if (root.endsWith("/"))
             return root.substring(0, root.length() - 1);
