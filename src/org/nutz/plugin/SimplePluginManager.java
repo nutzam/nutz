@@ -48,9 +48,7 @@ public class SimplePluginManager<T> implements PluginManager<T> {
             try {
                 list.add((Plugin) pluginClass.newInstance());
             }
-            catch (Throwable e) {
-                throw new PluginException(pluginClass.getName(), e);
-            }
+            catch (Throwable e) {}
     }
 
     @SuppressWarnings("unchecked")
@@ -59,8 +57,6 @@ public class SimplePluginManager<T> implements PluginManager<T> {
             try {
                 loadPlugin((Class<? extends T>) Lang.loadClass(pluginClassName));
             }
-            catch (Throwable e) {
-                throw new PluginException(pluginClassName, e);
-            }
+            catch (Throwable e) {}
     }
 }

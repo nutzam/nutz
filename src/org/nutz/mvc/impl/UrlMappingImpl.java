@@ -2,7 +2,6 @@ package org.nutz.mvc.impl;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.nutz.lang.Lang;
