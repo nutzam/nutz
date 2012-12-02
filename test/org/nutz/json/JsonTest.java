@@ -819,6 +819,6 @@ public class JsonTest {
         map = Json.fromJson(Map.class, str);
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
-        assertEquals(3, ((List<Integer>)map.get("rs")).get(2));
+        assertEquals(3, ((List<Integer>)map.get("rs")).get(2).intValue());
     }
 }
