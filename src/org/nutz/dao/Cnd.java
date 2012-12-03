@@ -8,7 +8,6 @@ import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.cnd.SimpleCondition;
 import org.nutz.dao.util.cri.Exps;
-import org.nutz.dao.util.cri.OrderBySet;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
