@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.castor.castor.Object2Object;
 import org.nutz.lang.Lang;
@@ -98,7 +99,7 @@ public class Castors {
                 settingMap.put(pts[0], m1);
         }
 
-        this.map = new HashMap<Integer, Castor<?,?>>();
+        this.map = new ConcurrentHashMap<Integer, Castor<?,?>>();
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
