@@ -340,4 +340,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         autoInfo.setEntity(en);
         return autoInfo;
     }
+
+    public boolean isSupportAutoIncrement() {
+        return true;
+    }
 }

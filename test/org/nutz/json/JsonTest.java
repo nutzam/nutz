@@ -811,6 +811,14 @@ public class JsonTest {
         assertTrue(map.containsKey("dao"));
         
         String str = "{rs:{ok:true,},yes:true}";
-        System.out.println(Json.fromJson(str));
+        map = Json.fromJson(Map.class, str);
+        assertEquals(2, map.size());
+        assertEquals(map.get("yes"), true);
+        
+        str = "{rs:[1,2,3,],yes:true}";
+        map = Json.fromJson(Map.class, str);
+        assertEquals(2, map.size());
+        assertEquals(map.get("yes"), true);
+        assertEquals(3, ((List<Integer>)map.get("rs")).get(2).intValue());
     }
 }

@@ -587,13 +587,16 @@ public abstract class Streams {
     }
 
     public static void appendWriteAndClose(File f, String text) {
+        FileWriter fw = null;
         try {
-            FileWriter fw = new FileWriter(f, true);
+            fw = new FileWriter(f, true);
             fw.write(text);
-            fw.close();
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        finally {
+            safeClose(fw);
         }
 
     }
