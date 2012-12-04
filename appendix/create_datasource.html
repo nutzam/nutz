@@ -582,10 +582,10 @@ ds.setPassword("123456");
 <h2><a name="由于是通过JNDI获取,所以不再是一个Ioc的bean,_我们只需要引用它就可以了,不需要再写dataSource的bean例如:"></a>由于是通过JNDI获取,所以不再是一个Ioc的bean, 我们只需要引用它就可以了,不需要再写dataSource的bean.例如:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>{
-            dao : {
-	type : "org.nutz.dao.impl.NutDao",
-	args : [{jndi:"jdbc/dataSource"}]
-            }
+	dao : {
+		type : "org.nutz.dao.impl.NutDao",
+		args : [{jndi:"jdbc/dataSource"}]
+	}
 }
 </pre>
 <div class="hr"><b></b></div>
