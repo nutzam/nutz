@@ -5,7 +5,7 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.b.47</version>
+	<version>1.b.48</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -43,9 +43,16 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>git@github.com/nutzam/nutz</connection>
-		<url>http://github.com/nutzam/nutz</url>
+		<connection>scm:git:git@github.com:nutzam/nutz.git</connection>
+		<developerConnection>scm:git:git@github.com:nutzam/nutz.git</developerConnection>
+		<url>git@github.com:nutzam/nutz.git</url>
 	</scm>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
 
 	<repositories>
 	</repositories>
@@ -104,7 +111,7 @@
 	<build>
 		<sourceDirectory>${project.basedir}/src</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/test</testSourceDirectory>
-		
+
 		<resources>
 			<resource>
 				<directory>${project.basedir}/src</directory>
