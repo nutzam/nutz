@@ -1,8 +1,8 @@
 package org.nutz.json;
 
-import org.hsqldb.lib.StopWatch;
 import org.junit.Test;
 import org.nutz.json.bean.JsonObject;
+import org.nutz.lang.Stopwatch;
 
 import com.alibaba.fastjson.JSON;
 
@@ -13,23 +13,25 @@ public class JsonFaster {
         nutzJson(10000);
         fastJson(10000);
         
-        StopWatch sw = new StopWatch();
-        sw.start();
+        Stopwatch sw = Stopwatch.begin();
         nutzJson(50*10000);
-        System.out.println(sw.elapsedTimeToMessage("Nutz-Json 50w次耗时: "));
+        sw.stop();
+        System.out.println("Nutz-Json 50w次耗时: " + sw.getDuration());
         
         sw.start();
         fastJson(50*10000);
-        System.out.println(sw.elapsedTimeToMessage("Fast-Json 50w次耗时: "));
+        System.out.println("Fast-Json 50w次耗时: " + sw.getDuration());
         
         //-------------------------------------------------------------------
         sw.start();
         nutzJson(50*10000);
-        System.out.println(sw.elapsedTimeToMessage("Nutz-Json 50w次耗时: "));
+        sw.stop();
+        System.out.println("Nutz-Json 50w次耗时: " + sw.getDuration());
         
         sw.start();
         fastJson(50*10000);
-        System.out.println(sw.elapsedTimeToMessage("Fast-Json 50w次耗时: "));
+        sw.stop();
+        System.out.println("Fast-Json 50w次耗时: " + sw.getDuration());
     }
     
     public void nutzJson(int time) {
