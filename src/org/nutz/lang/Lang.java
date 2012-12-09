@@ -37,6 +37,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
+import org.nutz.lang.born.BorningException;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringReader;
@@ -160,6 +161,9 @@ public abstract class Lang {
     public static Throwable unwrapThrow(Throwable e) {
         if (e == null)
             return null;
+        if (e instanceof BorningException) {
+            return e;
+        }
         if (e instanceof InvocationTargetException) {
             InvocationTargetException itE = (InvocationTargetException) e;
             if (itE.getTargetException() != null)
