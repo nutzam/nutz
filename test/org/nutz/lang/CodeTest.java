@@ -18,7 +18,7 @@ public class CodeTest {
 
     @Test
     public void analysisFile() throws Exception {
-        File file = new File(path + "CodeAnalysisDemo1.ca");
+        File file = new File(path + "/CodeAnalysisDemo1.ca");
         CodeAnalysisResult analysisResult = Code.countingCode(file, null);
         Assert.assertEquals(4, analysisResult.getImportLines());
         Assert.assertEquals(5, analysisResult.getCommentLines());
