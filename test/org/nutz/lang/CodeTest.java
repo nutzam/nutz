@@ -13,7 +13,7 @@ public class CodeTest {
     private static String path;
 
     static {
-        path = CodeTest.class.getResource("").getPath();
+        path = Files.findFile("org/nutz/lang/CodeAnalysisDemo1.ca").getParent();
     }
 
     @Test
