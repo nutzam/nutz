@@ -1,6 +1,11 @@
 package org.nutz.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
@@ -32,6 +37,12 @@ import org.nutz.lang.util.NutType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
+
+    @Test
+    public void test_empty_obj_toJson() {
+        String j = Json.toJson(new Person(), JsonFormat.compact().setQuoteName(true));
+        assertEquals("{\"age\":0,\"num\":0}", j);
+    }
 
     @SuppressWarnings("rawtypes")
     @Test
