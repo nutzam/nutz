@@ -215,4 +215,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return false;
     }
 
+    public boolean isSupportAutoIncrement() {
+        return false;
+    }
 }

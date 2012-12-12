@@ -347,7 +347,7 @@ public interface Dao {
     <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager);
 
     /**
-     * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
+     * 查询一组对象。你可以为这次查询设定条件
      * 
      * @param classOfT
      *            对象类型

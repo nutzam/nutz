@@ -25,10 +25,10 @@ import org.nutz.mvc.adaptor.ParamInjector;
 public class MapPairInjector implements ParamInjector {
 
     @SuppressWarnings("unchecked")
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         Map<String, Object> map = new HashMap<String, Object>();
         Enumeration<String> enu = (Enumeration<String>) req.getParameterNames();
         while (enu.hasMoreElements()) {

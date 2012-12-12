@@ -22,7 +22,6 @@ public class StringsTest {
 
     @Test
     public void test_dup_char() {
-        assertEquals("", Strings.dup(null, 4));
         assertEquals("", Strings.dup(' ', 0));
         assertEquals("aaaa", Strings.dup('a', 4));
         assertEquals("    ", Strings.dup(' ', 4));

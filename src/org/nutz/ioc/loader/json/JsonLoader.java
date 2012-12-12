@@ -31,7 +31,7 @@ public class JsonLoader extends MapLoader {
     public JsonLoader(Reader reader) {
         loadFromReader(reader);
         if(log.isDebugEnabled())
-            log.debugf("Loaded %d bean define from reader", getMap().size());
+            log.debugf("Loaded %d bean define from reader --\n%s", getMap().size(), getMap().keySet());
     }
 
     public JsonLoader(String... paths) {
@@ -45,7 +45,7 @@ public class JsonLoader extends MapLoader {
             throw Lang.wrapThrow(e);
         }
         if(log.isDebugEnabled())
-            log.debugf("Loaded %d bean define from path=%s", getMap().size(), Arrays.toString(paths));
+            log.debugf("Loaded %d bean define from path=%s --> %s", getMap().size(), Arrays.toString(paths), getMap().keySet());
     }
 
     private void loadFromReader(Reader reader) {
