@@ -6,19 +6,19 @@ import org.nutz.lang.Lang;
 public class BorningException extends RuntimeException {
 
     public BorningException(Class<?> type, Object[] args) {
-        this(new RuntimeException("Don't know how to born it!"), type, args);
+        this(null, type, args);
     }
 
     public BorningException(Class<?> type, Class<?>[] argTypes) {
-        this(new RuntimeException("Don't know how to born it!"), type, argTypes);
+        this(null, type, argTypes);
     }
 
     public BorningException(Throwable e, Class<?> type, Object[] args) {
-        super(makeMessage(e, type, args), e);
+        super(makeMessage(e, type, args), Lang.unwrapThrow(e));
     }
 
     public BorningException(Throwable e, Class<?> type, Class<?>[] argTypes) {
-        super(makeMessage(e, type, argTypes), e);
+        super(makeMessage(e, type, argTypes), Lang.unwrapThrow(e));
     }
 
     private static String makeMessage(Throwable e, Class<?> type, Class<?>[] argTypes) {

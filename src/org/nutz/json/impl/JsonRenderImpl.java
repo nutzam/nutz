@@ -17,7 +17,6 @@ import java.util.regex.Pattern;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.json.JsonRender;
-import org.nutz.json.ToJson;
 import org.nutz.json.entity.JsonEntity;
 import org.nutz.json.entity.JsonEntityField;
 import org.nutz.lang.FailToGetValueException;
@@ -180,43 +179,25 @@ public class JsonRenderImpl implements JsonRender {
     private void pojo2Json(Object obj) throws IOException {
         if (null == obj)
             return;
-        Class<? extends Object> type = obj.getClass();
-        ToJson tj = type.getAnnotation(ToJson.class);
-        String myMethodName = Strings.sNull(null == tj ? null : tj.value(), "toJson");
-        try {
-            /*
-             * toJson()
-             */
-            try {
-                Method myMethod = type.getMethod(myMethodName);
-                if (!myMethod.isAccessible())
-                    myMethod.setAccessible(true);
-                Object re = myMethod.invoke(obj);
-                writer.append(String.valueOf(re));
-                return;
-            }
-            /*
-             * toJson(JsonFormat fmt)
-             */
-            catch (NoSuchMethodException e1) {
-                try {
-                    Method myMethod = type.getMethod(myMethodName, JsonFormat.class);
-                    if (!myMethod.isAccessible())
-                        myMethod.setAccessible(true);
-                    Object re = myMethod.invoke(obj, format);
-                    writer.append(String.valueOf(re));
-                    return;
-                }
-                catch (NoSuchMethodException e) {}
-            }
-        }
-        catch (Exception e) {
-            throw Lang.wrapThrow(e);
-        }
         /*
          * Default
          */
+        Class<?> type = obj.getClass();
         JsonEntity jen = Json.getEntity(Mirror.me(type));
+        Method toJsonMethod = jen.getToJsonMethod();
+        if (toJsonMethod != null) {
+            try {
+                if (toJsonMethod.getParameterTypes().length == 0) {
+                    writer.append(String.valueOf(toJsonMethod.invoke(obj)));
+                } else {
+                    writer.append(String.valueOf(toJsonMethod.invoke(obj, format)));
+                }
+                return;
+            }
+            catch (Exception e) {
+                throw Lang.wrapThrow(e);
+            }
+        }
         List<JsonEntityField> fields = jen.getFields();
         appendBraceBegin();
         increaseFormatIndent();
