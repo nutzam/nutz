@@ -1,5 +1,7 @@
 package org.nutz.mvc.adaptor;
 
+import java.io.InputStream;
+import java.io.Reader;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -22,10 +24,12 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
 import org.nutz.mvc.adaptor.injector.IocObjInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
+import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
 import org.nutz.mvc.adaptor.injector.RequestInjector;
 import org.nutz.mvc.adaptor.injector.ResponseInjector;
@@ -44,9 +48,9 @@ import org.nutz.mvc.impl.AdaptorErrorContext;
  * @author juqkai(juqkai@gmail.com)
  */
 public abstract class AbstractAdaptor implements HttpAdaptor {
-    
+
     private static final Log log = Logs.get();
-    
+
     protected ParamInjector[] injs;
 
     protected Method method;
@@ -133,6 +137,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         else if (Ioc.class.isAssignableFrom(type)) {
             return new IocInjector();
         }
+        // InputStream
+        else if (InputStream.class.isAssignableFrom(type)) {
+            return new HttpInputStreamInjector();
+        }
+        // Reader
+        else if (Reader.class.isAssignableFrom(type)) {
+            return new HttpReaderInjector();
+        }
         return null;
     }
 
@@ -151,23 +163,24 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
      */
     protected abstract ParamInjector evalInjectorBy(Type type, Param param);
 
-    public Object[] adapt(    ServletContext sc,
-                            HttpServletRequest req,
-                            HttpServletResponse resp,
-                            String[] pathArgs) {
+    public Object[] adapt(ServletContext sc,
+                          HttpServletRequest req,
+                          HttpServletResponse resp,
+                          String[] pathArgs) {
         Class<?>[] argTypes = method.getParameterTypes();
         Object[] args = new Object[argTypes.length];
 
         if (args.length != injs.length)
             throw new IllegalArgumentException("args.length != injs.length , You get a bug, pls report it!!");
-        
+
         AdaptorErrorContext errCtx = null;
         // 也许用户有自己的AdaptorErrorContext实现哦
         if (argTypes.length > 0) {
             if (AdaptorErrorContext.class.isAssignableFrom(argTypes[argTypes.length - 1]))
-                errCtx = (AdaptorErrorContext) Mirror.me(argTypes[argTypes.length - 1]).born(argTypes.length);
+                errCtx = (AdaptorErrorContext) Mirror.me(argTypes[argTypes.length - 1])
+                                                     .born(argTypes.length);
         }
-        
+
         Object obj;
         try {
             obj = getReferObject(sc, req, resp, pathArgs);
@@ -182,13 +195,13 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             }
             throw Lang.wrapThrow(e);
         }
-        
+
         int len = Math.min(args.length, null == pathArgs ? 0 : pathArgs.length);
         for (int i = 0; i < args.length; i++) {
             Object value = null;
             if (i < len) { // 路径参数
                 value = null == pathArgs ? null : pathArgs[i];
-            } else {       // 普通参数
+            } else { // 普通参数
                 value = obj;
             }
             try {
@@ -196,7 +209,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             }
             catch (Throwable e) {
                 if (errCtx != null)
-                    errCtx.setError(i, e, method, value, injs[i]); //先错误保存起来,全部转好了,再判断是否需要抛出
+                    errCtx.setError(i, e, method, value, injs[i]); // 先错误保存起来,全部转好了,再判断是否需要抛出
                 else
                     throw Lang.wrapThrow(e);
             }
@@ -204,8 +217,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
             }
         }
-        
-        //看看是否有任何错误
+
+        // 看看是否有任何错误
         if (errCtx == null)
             return args;
         for (Throwable err : errCtx.getErrors()) {
@@ -221,7 +234,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             // 没有AdaptorErrorContext参数? 那好吧,按之前的方式,抛出异常
             throw Lang.wrapThrow(err);
         }
-        
+
         return args;
     }
 
@@ -231,7 +244,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                                     String[] pathArgs) {
         return null;
     }
-    
+
     /**
      * 这是最后的大招了,查一下形参的名字,作为@Param("形参名")进行处理
      */
@@ -240,7 +253,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         if (names != null)
             return new NameInjector(names.get(index), method.getParameterTypes()[index], null);
         else if (log.isInfoEnabled())
-            log.info("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index="+index);
+            log.info("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index="
+                     + index);
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }
