@@ -131,8 +131,7 @@ public class AnnotationIocLoader implements IocLoader {
                 if (Strings.isBlank(inject.value())) {
                     iocValue = new IocValue();
                     iocValue.setType(IocValue.TYPE_REFER);
-                    //默认使用字段class的simpleName
-                    iocValue.setValue(Strings.lowerFirst(field.getType().getSimpleName()));
+                    iocValue.setValue(field.getName());
                 } else
                     iocValue = convert(inject.value());
                 iocField.setValue(iocValue);
