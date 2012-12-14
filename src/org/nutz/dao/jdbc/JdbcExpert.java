@@ -92,4 +92,6 @@ public interface JdbcExpert {
     void formatQuery(DaoStatement daoStatement);
 
     Pojo fetchPojoId(Entity<?> en ,MappingField idField);
+    
+    boolean isSupportAutoIncrement();
 }

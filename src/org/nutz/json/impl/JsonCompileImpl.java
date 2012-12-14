@@ -259,8 +259,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             case ',':
                 skipCommentsAndBlank();
                 // 如果结束
-                if (qis.peek() == '}')
+                if (qis.peek() == '}') {
+                    qis.poll();
                     return;
+                }
                 continue;
             default:
                 throw unexpectedChar();
@@ -350,8 +352,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             case ',':// 看来还有元素
                 skipCommentsAndBlank();
                 // 如果没有正确结束
-                if (qis.peek() == ']')
+                if (qis.peek() == ']') {
+                    qis.poll();
                     return;
+                }
                 continue;
             default:
                 throw unexpectedChar();

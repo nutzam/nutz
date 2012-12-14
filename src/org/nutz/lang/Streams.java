@@ -90,7 +90,7 @@ public abstract class Streams {
     }
 
     /**
-     * 将输出流写入一个输出流。块大小为 8192
+     * 将输入流写入一个输出流。块大小为 8192
      * <p>
      * <b style=color:red>注意</b>，它并不会关闭输入/出流
      * 
@@ -107,7 +107,7 @@ public abstract class Streams {
     }
 
     /**
-     * 将输出流写入一个输出流。
+     * 将输入流写入一个输出流。
      * <p>
      * <b style=color:red>注意</b>，它并不会关闭输入/出流
      * 
@@ -138,7 +138,7 @@ public abstract class Streams {
     }
 
     /**
-     * 将输出流写入一个输出流。块大小为 8192
+     * 将输入流写入一个输出流。块大小为 8192
      * <p>
      * <b style=color:red>注意</b>，它会关闭输入/出流
      * 
@@ -162,7 +162,7 @@ public abstract class Streams {
     }
 
     /**
-     * 将文本输出流写入一个文本输出流。块大小为 8192
+     * 将文本输入流写入一个文本输出流。块大小为 8192
      * <p>
      * <b style=color:red>注意</b>，它并不会关闭输入/出流
      * 
@@ -184,7 +184,7 @@ public abstract class Streams {
     }
 
     /**
-     * 将文本输出流写入一个文本输出流。块大小为 8192
+     * 将文本输入流写入一个文本输出流。块大小为 8192
      * <p>
      * <b style=color:red>注意</b>，它会关闭输入/出流
      * 
@@ -587,13 +587,16 @@ public abstract class Streams {
     }
 
     public static void appendWriteAndClose(File f, String text) {
+        FileWriter fw = null;
         try {
-            FileWriter fw = new FileWriter(f, true);
+            fw = new FileWriter(f, true);
             fw.write(text);
-            fw.close();
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
+        }
+        finally {
+            safeClose(fw);
         }
 
     }

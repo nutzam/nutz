@@ -51,12 +51,16 @@ public class Stopwatch {
     }
 
     public long start() {
-        from = nano ? System.nanoTime() : System.currentTimeMillis();
+        from = currentTime();
         return from;
     }
 
+    private long currentTime() {
+        return nano ? System.nanoTime() : System.currentTimeMillis();
+    }
+
     public long stop() {
-        to = nano ? System.nanoTime() : System.currentTimeMillis();
+        to = currentTime();
         return to;
     }
 

@@ -18,7 +18,7 @@ public abstract class Transaction {
             this.level = level;
     }
 
-    public abstract int getId();
+    public abstract long getId();
 
     protected abstract void commit();
 

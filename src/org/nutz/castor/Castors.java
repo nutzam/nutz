@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.castor.castor.Object2Object;
 import org.nutz.lang.Lang;
@@ -98,7 +99,7 @@ public class Castors {
                 settingMap.put(pts[0], m1);
         }
 
-        this.map = new HashMap<Integer, Castor<?,?>>();
+        this.map = new ConcurrentHashMap<String, Castor<?,?>>();
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
@@ -139,8 +140,8 @@ public class Castors {
      */
     private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
         Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-        if(!map.containsKey(castor.hashCode())){
-            map.put(castor.hashCode(), castor);
+        if(!map.containsKey(castor.toString())){
+            map.put(castor.toString(), castor);
         }
         Method m = settingMap.get(castor.getClass());
         if (null == m) {
@@ -160,7 +161,8 @@ public class Castors {
      * First index is "from" (source) The second index is "to" (target)
      */
 //    private Map<String, Map<String, Castor<?, ?>>> map;
-    private Map<Integer, Castor<?,?>> map;
+//    private Map<Integer, Castor<?,?>> map;
+    private Map<String, Castor<?,?>> map;
 
     /**
      * 转换一个 POJO 从一个指定的类型到另外的类型
@@ -253,7 +255,7 @@ public class Castors {
 
     @SuppressWarnings("unchecked")
     private <F, T> Castor<F, T> find(Mirror<F> from, Class<T> toType) {
-        int key = Castor.fetchHash(from.getType(), toType);
+        String key = Castor.key(from.getType(), toType);
         // 哈，这种类型以前转过，直接返回转换器就行了
         if (map.containsKey(key)) {
             return (Castor<F, T>) map.get(key);
@@ -264,8 +266,8 @@ public class Castors {
         Class<?>[] tets = to.extractTypes();
         for(Class<?> ft : fets){
             for(Class<?> tt : tets){
-                if(map.containsKey(Castor.fetchHash(ft, tt))){
-                    Castor<F, T> castor = (Castor<F, T>) map.get(Castor.fetchHash(ft, tt));
+                if(map.containsKey(Castor.key(ft, tt))){
+                    Castor<F, T> castor = (Castor<F, T>) map.get(Castor.key(ft, tt));
                     // 缓存转换器，加速下回转换速度
                     map.put(key, castor);
                     return castor;

@@ -15,9 +15,9 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class Response {
-
+    private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
+    
     public Response(HttpURLConnection conn, Map<String, String> reHeader) throws IOException {
-        protocal = "HTTP/1.1";
         status = conn.getResponseCode();
         detail = conn.getResponseMessage();
         this.header = Header.create(reHeader);
@@ -29,7 +29,7 @@ public class Response {
     private Header header;
     private InputStream stream;
     private Cookie cookie;
-    private String protocal;
+    private String protocal = DEF_PROTOCAL_VERSION;
     private int status;
     private String detail;
 
@@ -83,7 +83,7 @@ public class Response {
     }
 
     public Reader getReader() {
-        String encoding = getEncodeType();
+        String encoding = this.getEncodeType();
         if (null == encoding || "UTF-8".equalsIgnoreCase(encoding))
             return getReader(Encoding.defaultEncoding());
         else

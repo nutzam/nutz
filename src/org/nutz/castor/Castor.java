@@ -64,7 +64,7 @@ public abstract class Castor<FROM, TO> {
     }
     
     public int hashCode() {
-        return fetchHash(fromClass.getName() ,toClass.getName());
+        return toString().hashCode();
     }
     
     public boolean equals(Object obj) {
@@ -74,20 +74,12 @@ public abstract class Castor<FROM, TO> {
         Castor<?, ?> castor = (Castor<?, ?>) obj;
         return toString().equals(castor.toString());
     }
-    /**
-     * 取得hash值
-     */
-    public static int fetchHash(Class<?> from, Class<?> to){
-        return fetchHash(from.getName(), to.getName());
-    }
-    /**
-     * 取得Hash值
-     */
-    public static int fetchHash(String from, String to){
-        return (from + "2" + to).hashCode();
-    }
     
     public String toString() {
+        return fromClass.getName() + "2" + toClass.getName();
+    }
+    
+    public static final String key(Class<?> fromClass, Class<?> toClass) {
         return fromClass.getName() + "2" + toClass.getName();
     }
 }

@@ -25,11 +25,21 @@ public class JNDI_Value implements ValueProxy{
     public Object get(IocMaking ing) {
         try {
             if (cntxt == null)
-                cntxt = (Context)new InitialContext().lookup("java:/comp/env");
+                cntxt = (Context)new InitialContext().lookup("java:comp/env");
             return cntxt.lookup(jndiName);
         }
         catch (NamingException e) {
-            throw Lang.wrapThrow(e);
+            try {
+                return new InitialContext().lookup(jndiName);
+            }
+            catch (NamingException e2) {
+                try {
+                    return ((Context)new InitialContext().lookup("java:/comp/env")).lookup(jndiName);
+                }
+                catch (NamingException e3) {
+                    throw Lang.wrapThrow(e3);
+                }
+            }
         }
     }
 
