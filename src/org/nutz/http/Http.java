@@ -46,7 +46,15 @@ public class Http {
     public static Response get(String url) {
         return Sender.create(Request.get(url)).send();
     }
+    
+    public static Response get(String url, int timeout) {
+        return Sender.create(Request.get(url)).setTimeout(timeout).send();
+    }
 
+    public static String post(String url, Map<String, Object> params, int timeout) {
+        return Sender.create(Request.create(url, METHOD.POST, params, null)).setTimeout(timeout).send().getContent();
+    }
+    
     public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
         return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
     }

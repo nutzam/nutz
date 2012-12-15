@@ -26,9 +26,18 @@ public abstract class Sender {
     public static Sender create(String url) {
         return create(Request.get(url));
     }
+    
+    public static Sender create(String url, int timeout) {
+    	return create(Request.get(url)).setTimeout(timeout);
+    }
 
     public static Sender create(Request request) {
         return request.isGet() ? new GetSender(request) : new PostSender(request);
+    }
+    
+    public static Sender create(Request request, int timeout) {
+    	Sender sender = request.isGet() ? new GetSender(request) : new PostSender(request);
+    	return sender.setTimeout(timeout);
     }
 
     protected Request request;
@@ -111,4 +120,12 @@ public abstract class Sender {
                 conn.addRequestProperty(entry.getKey(), entry.getValue());
     }
 
+    public int getTimeout() {
+        return timeout;
+    }
+
+    public Sender setTimeout(int timeout) {
+        this.timeout = timeout;
+        return this;
+    }
 }
