@@ -125,7 +125,11 @@ public class Request {
     }
 
     public Request setUrl(String url) {
-        this.url = url;
+        if (url != null && url.indexOf("://") < 0)
+            //默认采用http协议
+            this.url = "http://" + url;
+        else
+            this.url = url;
         return this;
     }
 
@@ -166,5 +170,4 @@ public class Request {
             return new Cookie();
         return new Cookie(s);
     }
-
 }
