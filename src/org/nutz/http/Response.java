@@ -107,6 +107,10 @@ public class Response {
         }
     }
 
+    public void print(Writer writer) {
+        print(writer, null);
+    }
+
     public void print(Writer writer, String charsetName) {
         Reader reader = null;
         try {
