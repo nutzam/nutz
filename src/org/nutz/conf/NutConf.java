@@ -122,7 +122,7 @@ public class NutConf {
                                 loadResource(include.toArray(new String[include.size()]));
                             }
                             catch (Exception e) {
-							    throw Lang.wrapThrow(e, "Config file include only support list!");
+                                throw Lang.wrapThrow(e, "Config file include only support list!");
                             }
                         }
                     }
