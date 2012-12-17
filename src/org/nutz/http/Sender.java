@@ -129,12 +129,4 @@ public abstract class Sender {
                 conn.addRequestProperty(entry.getKey(), entry.getValue());
     }
 
-    public int getTimeout() {
-        return timeout;
-    }
-
-    public Sender setTimeout(int timeout) {
-        this.timeout = timeout;
-        return this;
-    }
 }
