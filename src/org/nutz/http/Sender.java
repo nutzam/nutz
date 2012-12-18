@@ -119,5 +119,14 @@ public abstract class Sender {
             for (Entry<String, String> entry : header.getAll())
                 conn.addRequestProperty(entry.getKey(), entry.getValue());
     }
+    
+    public Sender setTimeout(int timeout) {
+		this.timeout = timeout;
+		return this;
+	}
+    
+    public int getTimeout() {
+		return timeout;
+	}
 
 }
