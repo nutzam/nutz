@@ -1,6 +1,8 @@
 package org.nutz.lang;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
@@ -1866,27 +1868,140 @@ public abstract class Lang {
     }
 
     /**
-     * 使用MD5加密文字
-     * 
-     * @param str
-     *            需要加密的文字
-     * @return MD5加密后的文字
+     * @see #digest(String, File)
      */
-    public static String md5(String str) {
-        if (str == null)
-            str = "";
+    public static String md5(File f) {
+        return digest("MD5", f);
+    }
+
+    /**
+     * @see #digest(String, InputStream)
+     */
+    public static String md5(InputStream ins) {
+        return digest("MD5", ins);
+    }
+
+    /**
+     * @see #digest(String, CharSequence)
+     */
+    public static String md5(CharSequence cs) {
+        return digest("MD5", cs);
+    }
+
+    /**
+     * @see #digest(String, File)
+     */
+    public static String sha1(File f) {
+        return digest("SHA1", f);
+    }
+
+    /**
+     * @see #digest(String, InputStream)
+     */
+    public static String sha1(InputStream ins) {
+        return digest("SHA1", ins);
+    }
+
+    /**
+     * @see #digest(String, CharSequence)
+     */
+    public static String sha1(CharSequence cs) {
+        return digest("SHA1", cs);
+    }
+
+    /**
+     * 从数据文件计算出数字签名
+     * 
+     * @param algorithm
+     *            算法，比如 "SHA1" 或者 "MD5" 等
+     * @param f
+     *            文件
+     * @return 数字签名
+     */
+    public static String digest(String algorithm, File f) {
+        return digest(algorithm, Streams.fileIn(f));
+    }
+
+    /**
+     * 从流计算出数字签名，计算完毕流会被关闭
+     * 
+     * @param algorithm
+     *            算法，比如 "SHA1" 或者 "MD5" 等
+     * @param ins
+     *            输入流
+     * @return 数字签名
+     */
+    public static String digest(String algorithm, InputStream ins) {
         try {
-            MessageDigest md5 = MessageDigest.getInstance("md5");
-            md5.update(Strings.getBytesUTF8(str));
-            byte[] data = md5.digest();
-            StringBuilder sb = new StringBuilder();
-            for (byte b : data) {
-                sb.append(Strings.toHex(b, 2));
+            MessageDigest md = MessageDigest.getInstance(algorithm);
+
+            byte[] bs = new byte[1024];
+            int len = 0;
+            while ((len = ins.read(bs)) != -1) {
+                md.update(bs, 0, len);
             }
+
+            byte[] hashBytes = md.digest();
+
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < hashBytes.length; i++) {
+                sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
             return sb.toString();
         }
         catch (NoSuchAlgorithmException e) {
-            throw Lang.impossible();
+            throw Lang.wrapThrow(e);
+        }
+        catch (FileNotFoundException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(ins);
+        }
+    }
+
+    /**
+     * 从字符串计算出数字签名
+     * 
+     * @param algorithm
+     *            算法，比如 "SHA1" 或者 "MD5" 等
+     * @param cs
+     *            字符串
+     * @return 数字签名
+     */
+    public static String digest(String algorithm, CharSequence cs) {
+        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs));
+    }
+
+    /**
+     * 从字节数组计算出数字签名
+     * 
+     * @param algorithm
+     *            算法，比如 "SHA1" 或者 "MD5" 等
+     * @param bytes
+     *            字节数组
+     * @return 数字签名
+     */
+    public static String digest(String algorithm, byte[] bytes) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(algorithm);
+            md.update(bytes);
+
+            byte[] hashBytes = md.digest();
+
+            StringBuffer sb = new StringBuffer();
+            for (int i = 0; i < hashBytes.length; i++) {
+                sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            return sb.toString();
+        }
+        catch (NoSuchAlgorithmException e) {
+            throw Lang.wrapThrow(e);
         }
     }
 

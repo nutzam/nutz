@@ -715,9 +715,9 @@ public abstract class Strings {
         return sb.toString();
     }
 
-    public static byte[] getBytesUTF8(String cs) {
+    public static byte[] getBytesUTF8(CharSequence cs) {
         try {
-            return cs.getBytes(Encoding.UTF8);
+            return cs.toString().getBytes(Encoding.UTF8);
         }
         catch (UnsupportedEncodingException e) {
             throw Lang.wrapThrow(e);

@@ -26,18 +26,18 @@ public abstract class Sender {
     public static Sender create(String url) {
         return create(Request.get(url));
     }
-    
+
     public static Sender create(String url, int timeout) {
-    	return create(Request.get(url)).setTimeout(timeout);
+        return create(Request.get(url)).setTimeout(timeout);
     }
 
     public static Sender create(Request request) {
         return request.isGet() ? new GetSender(request) : new PostSender(request);
     }
-    
+
     public static Sender create(Request request, int timeout) {
-    	Sender sender = request.isGet() ? new GetSender(request) : new PostSender(request);
-    	return sender.setTimeout(timeout);
+        Sender sender = request.isGet() ? new GetSender(request) : new PostSender(request);
+        return sender.setTimeout(timeout);
     }
 
     protected Request request;
@@ -51,15 +51,6 @@ public abstract class Sender {
     }
 
     public abstract Response send() throws HttpException;
-
-    public Sender setTimeout(int timeout) {
-        this.timeout = timeout;
-        return this;
-    }
-
-    public int getTimeout() {
-        return timeout;
-    }
 
     protected Response createResponse(Map<String, String> reHeaders) throws IOException {
         Response rep = null;
