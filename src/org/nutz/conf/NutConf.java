@@ -4,14 +4,19 @@ import java.io.File;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.nutz.castor.Castors;
 import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.NutType;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -33,7 +38,7 @@ import org.nutz.resource.impl.FileResource;
  * </ul>
  * 
  * @author juqkai(juqkai@gmail.com)
- * 
+ * @author qinerg(qinerg@gmail.com)
  */
 public class NutConf {
 
@@ -44,6 +49,8 @@ public class NutConf {
     // 所有的配置信息
     private Map<String, Object> map = new HashMap<String, Object>();
     private static final Lock lock = new ReentrantLock();
+    // 保存已经加载过的文件，防止循环引用
+    private Set<String> loaded = new HashSet<String>();
 
     private static NutConf conf;
 
@@ -77,8 +84,12 @@ public class NutConf {
     private void loadResource(String... paths) {
         for (String path : paths) {
             List<NutResource> resources;
-            if (path.endsWith(".js")) {
+            if (path.endsWith(".js") || path.endsWith(".json")) {
                 File f = Files.findFile(path);
+                if (null == f) {
+                    log.warnf("Config file not find! for [%s]", path);
+                    continue;
+                }
                 resources = new ArrayList<NutResource>();
                 resources.add(new FileResource(f));
             } else {
@@ -86,16 +97,32 @@ public class NutConf {
             }
 
             for (NutResource nr : resources) {
+                if (nr instanceof FileResource) {
+                    FileResource fr = (FileResource)nr;
+                    log.debug(fr.getFile().getAbsolutePath());
+                    // 已经加载过就不再加载,防止循环引用
+            		if (loaded.contains(fr.getFile().getAbsolutePath()))
+            		    continue;
+            		loaded.add(fr.getFile().getAbsolutePath());
+                }
                 try {
                     Object obj = Json.fromJson(nr.getReader());
                     if (obj instanceof Map) {
                         Map m = (Map) obj;
-                        map = (Map) Mapl.merge(map, m);
-                        for (Object key : m.keySet()) {
-                            if (key.equals("include")) {
-                                map.remove("include");
+                        for (Object key: m.keySet()) {
+                            // 不是吧配置项重复，赶紧检查配置文件吧!
+                            if (map.containsKey(key))
+                                log.warnf("Configuration items '%s' defines repeat, be overwritten!", key);
+                            map.put(key.toString(), m.get(key));
+                        }
+                        if (m.containsKey("include")) {
+                            map.remove("include");
+                            try {
                                 List<String> include = (List) m.get("include");
                                 loadResource(include.toArray(new String[include.size()]));
+                            }
+                            catch (Exception e) {
+                                throw Lang.wrapThrow(e, "Config file include only support list!");
                             }
                         }
                     }
@@ -114,12 +141,80 @@ public class NutConf {
     public static Object get(String key, Type type) {
         return me().getItem(key, type);
     }
+    
+    /**
+     * 读取一个配置项, 并转换成相应的类型.
+     */
+    public static <T> T get(String key, Class<T> type) {
+        return Castors.me().castTo(me().getItem(key, null), type);
+    }
 
     /**
      * 读取配置项, 返回Map, List或者 Object. 具体返回什么, 请参考 JSON 规则
      */
     public static Object get(String key) {
         return me().getItem(key, null);
+    }
+    
+    /**
+     * 读取字符串形式的配置项
+     */
+    public static String getStr(String key) {
+        return (String)me().getItem(key, null);
+    }
+    
+    /**
+     * 读取字符串形式的配置项，如果为空或转换错误则返回默认值
+     */
+    public static String getStr(String key, String defaultValue) {
+        return Strings.sNull(getStr(key), defaultValue);
+    }
+    
+    /**
+     * 读取 Integer 形式的配置项
+     */
+    public static Integer getInt(String key) {
+        return get(key, Integer.class);
+    }
+    
+    /**
+     * 读取 Integer 形式的配置项，如果为空或转换错误则返回默认值
+     */
+    public static Integer getInt(String key, int defaultValue) {
+        try {
+            Integer i = getInt(key);
+            if (null != i) 
+                return i;
+        }
+        catch (Exception e) {
+        }
+        return defaultValue;
+    }
+    
+    /**
+     * 读取 Boolean 形式的配置项，支持以下格式
+     * <ul>
+     * <li>1 | 0
+     * <li>yes | no
+     * <li>on | off
+     * <li>true | false
+     * </ul>
+     */
+    public static Boolean getBool(String key) {
+        return Lang.parseBoolean(getStr(key));
+    }
+    
+    /**
+     * 读取 Boolean 形式的配置项，如果为空或转换错误则返回默认值
+     */
+    public static Boolean getBool(String key, boolean defaultValue) {
+        try {
+	        if (null != get(key))
+	            return getBool(getStr(key));
+	    }
+        catch (Exception e) {
+        }
+        return defaultValue;
     }
 
     /**

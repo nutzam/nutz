@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
 
+import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.MultiLineProperties;
@@ -117,6 +118,28 @@ public class PropertiesProxy {
             return dfval;
         }
     }
+    
+    /**
+     * 支持以下格式
+     * <ul>
+     * <li>1 | 0
+     * <li>yes | no
+     * <li>on | off
+     * <li>true | false
+     * </ul>
+     */
+    public Boolean getBool(String key) {
+        return Lang.parseBoolean(get(key));
+    }
+
+    public Boolean getBool(String key, boolean defaultValue) {
+        try {
+            return Lang.parseBoolean(get(key));
+	    }
+	    catch (Exception e) {
+	        return defaultValue;
+	    }
+    }
 
     public String getTrim(String key) {
         return Strings.trim(get(key));
@@ -124,6 +147,10 @@ public class PropertiesProxy {
 
     public String getTrim(String key, String defaultValue) {
         return Strings.trim(get(key, defaultValue));
+    }
+    
+    public <T> T get(String key, Class<T> type) {
+    	return Castors.me().castTo(mp.get(key), type);
     }
 
     public List<String> getKeys() {
