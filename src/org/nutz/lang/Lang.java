@@ -1943,12 +1943,7 @@ public abstract class Lang {
 
             byte[] hashBytes = md.digest();
 
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < hashBytes.length; i++) {
-                sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-            return sb.toString();
+            return fixedHexString(hashBytes);
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
@@ -1993,12 +1988,7 @@ public abstract class Lang {
 
             byte[] hashBytes = md.digest();
 
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < hashBytes.length; i++) {
-                sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-            return sb.toString();
+            return fixedHexString(hashBytes);
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
@@ -2040,5 +2030,14 @@ public abstract class Lang {
         return String.format("%s.%s(...)",
                              method.getDeclaringClass().getSimpleName(),
                              method.getName());
+    }
+    
+    public static String fixedHexString(byte[] hashBytes) {
+    	StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < hashBytes.length; i++) {
+            sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
+        }
+
+        return sb.toString();
     }
 }
