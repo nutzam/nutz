@@ -2,6 +2,7 @@ package org.nutz.mvc.impl.chainconfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,15 +33,23 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
         List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", jsonPaths);
         try {
             File defaultChainsFile = Files.findFile("org/nutz/mvc/impl/chainconfig/default-chains.js");
-            if (defaultChainsFile == null) {
-                log.warn("org/nutz/mvc/impl/chainconfig/default-chains.js NOT Found!!");
-                throw new NutRuntimeException("Default Chains File Not FOUND?!");
+            if (defaultChainsFile != null && defaultChainsFile.exists())
+            	map.putAll(Json.fromJsonFile(Map.class, defaultChainsFile));
+            else {
+            	if (!Lang.isAndroid) {
+            		log.warn("org/nutz/mvc/impl/chainconfig/default-chains.js NOT Found!!");
+                    throw new NutRuntimeException("Default Chains File Not FOUND?!");
+            	}
+            	map.putAll(Json.fromJson(Map.class, new InputStreamReader(getClass().getClassLoader().getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
             }
-            map.putAll(Json.fromJsonFile(Map.class, defaultChainsFile));
+            
             for (NutResource nr : list)
                 map.putAll(Json.fromJson(Map.class,nr.getReader()));
         }
         catch (IOException e) {
+        	if (Lang.isAndroid) { //操Android
+        		
+        	}
             throw Lang.wrapThrow(e);
         }
     }
