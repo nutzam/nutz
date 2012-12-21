@@ -6,6 +6,7 @@ import java.io.IOException;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -30,12 +31,7 @@ public class NutFilePool implements FilePool {
                                     homePath,
                                     this.getClass().getName());
 
-        try {
-            home = new File(home.getCanonicalPath());
-        }
-        catch (IOException e1) {
-            throw Lang.wrapThrow(e1);
-        }
+        home = new File(Disks.normalize(homePath));
 
         if (log.isDebugEnabled()) {
             log.debugf("file-pool.home: '%s'", home.getAbsolutePath());
