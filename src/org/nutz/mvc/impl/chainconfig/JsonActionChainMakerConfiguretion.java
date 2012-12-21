@@ -36,7 +36,7 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
             if (defaultChainsFile != null && defaultChainsFile.exists())
             	map.putAll(Json.fromJsonFile(Map.class, defaultChainsFile));
             else {
-            	if (!Lang.isAndroid) {
+            	if (!Lang.isAndroid) {//操Android
             		log.warn("org/nutz/mvc/impl/chainconfig/default-chains.js NOT Found!!");
                     throw new NutRuntimeException("Default Chains File Not FOUND?!");
             	}
@@ -47,10 +47,7 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
                 map.putAll(Json.fromJson(Map.class,nr.getReader()));
         }
         catch (IOException e) {
-        	if (Lang.isAndroid) { //操Android
-        		
-        	}
-            throw Lang.wrapThrow(e);
+        	throw Lang.wrapThrow(e);
         }
     }
     
