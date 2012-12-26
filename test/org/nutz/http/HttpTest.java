@@ -13,7 +13,7 @@ public class HttpTest {
 
     @Test
     public void testGet() {
-        Response response = Http.get("http://nutzam.com");
+        Response response = Http.get("http://nutztest.herokuapp.com/get");
         assertNotNull(response);
         assertNotNull(response.getContent());
         assertNotNull(response.getDetail());
@@ -47,9 +47,10 @@ public class HttpTest {
         Map<String, Object> parms = new HashMap<String, Object>();
         parms.put("version", "NutzTest");
         parms.put("website", Nutz.version());
-        String response = Http.post("http://p.sunfarms.net/muchang/ping.php",parms,"utf-8","utf-8");
+        String response = Http.post("http://nutztest.herokuapp.com/post",parms,"utf-8","utf-8");
         assertNotNull(response);
         assertTrue(response.length() > 0);
-        assertTrue(response.indexOf("OK") > -1);
+        // 该post的返回值是"version: #{params[:version]}, website: #{params[:website]}"
+        assertEquals(response, String.format("version: %s, website: %s", "NutzTest", Nutz.version()));
     }
 }
