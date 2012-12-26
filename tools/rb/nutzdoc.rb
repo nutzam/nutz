@@ -89,6 +89,7 @@ class Nutzdoc
       send @options.type
     end
 
+    private
     def before_work
       validate_options
 
@@ -103,9 +104,13 @@ class Nutzdoc
         @message = "Google Wiki"
         @command += " #{@options.wiki_index_page} #{@options.wiki_img_url}"
       end
+      if is_windows?
+        @command += "> nul"
+      else
+        @command += ">/dev/null 2>&1"
+      end
     end
 
-    private
     def pages
       pages_before_work
 
@@ -212,10 +217,10 @@ class Nutzdoc
           exit
         end
 
-        if File.exist?("#{@options.pdf_font_path}pdf_font.ttf")
-          @options.pdf_font = "#{@options.pdf_font_path}pdf_font.ttf"
-        elsif File.exist?("#{@options.pdf_font_path}pdf_font.ttc")
-          @options.pdf_font = "#{@options.pdf_font_path}pdf_font.ttc"
+        if File.exist?("#{@options.pdf_font_path}/pdf_font.ttf")
+          @options.pdf_font = "#{@options.pdf_font_path}/pdf_font.ttf"
+        elsif File.exist?("#{@options.pdf_font_path}/pdf_font.ttc")
+          @options.pdf_font = "#{@options.pdf_font_path}/pdf_font.ttc"
         else
           puts "Font folder path hasn't font file, please check it, and must be font file name is pdf_font.ttf or pdf_font.ttc."
           exit
