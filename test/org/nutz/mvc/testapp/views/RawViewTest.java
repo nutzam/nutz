@@ -12,13 +12,11 @@ public class RawViewTest extends BaseWebappTest {
         get("/views/raw");
         assertEquals("ABC", resp.getContent());
 
-
         get("/views/raw2");
         assertEquals(3, resp.getContent().length());
 
         get("/views/raw3");
         assertEquals(3, resp.getContent().length());
-
 
         get("/views/raw4");
         assertEquals("", resp.getContent());
