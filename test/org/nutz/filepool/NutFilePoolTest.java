@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.lang.Files;
+import org.nutz.lang.util.Disks;
 
 public class NutFilePoolTest {
 
@@ -63,17 +64,17 @@ public class NutFilePoolTest {
     }
 
     @Test public void test_blank_suffix(){
-        String home = "~/tmp_nutz";
-        new File(home).delete();
-        new File(home).mkdirs();
-        FilePool filePool = new NutFilePool(home);
+        String absolutePath = Disks.absolute("~/tmp_nutz");
+        new File(absolutePath).delete();
+        new File(absolutePath).mkdirs();
+        FilePool filePool = new NutFilePool(absolutePath);
         File f = filePool.createFile("");
         System.out.println(f);
 
-        new NutFilePool(home);
-        new NutFilePool(home);
-        new NutFilePool(home);
+        new NutFilePool(absolutePath);
+        new NutFilePool(absolutePath);
+        new NutFilePool(absolutePath);
         //在生成一次,报错
-        new NutFilePool(home);
+        new NutFilePool(absolutePath);
     }
 }
