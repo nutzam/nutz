@@ -3,6 +3,7 @@
 require "sinatra"
 require "sinatra/namespace"
 require "sinatra/reloader" if development?
+require "sinatra/json"
 
 get '/' do
   "Hello, here is nutz test server."
@@ -86,6 +87,19 @@ namespace '/nutztest' do
       get "/#{item}" do
           "null"
       end
+    end
+
+    %w{raw raw2 raw3}.each do |item|
+      get "/#{item}" do
+          "ABC"
+      end
+    end
+
+    get "/raw4" do
+    end
+
+    get "/raw5" do
+      json({:name => "wendal"}, :content_type => "text/javascript")
     end
 
     %w{red red2 red3}.each do |item|
