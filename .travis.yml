@@ -1,0 +1,13 @@
+language: java
+jdk:
+  - openjdk6
+  - openjdk7
+  - oraclejdk7
+# whitelist
+branches:
+  only:
+    - master
+before_script:
+  - mysql -e 'create database nutztest;'
+  - cp ./tools/travis-ci/nutz-test.properties ./test/
+  - cp ./tools/travis-ci/log4j.properties ./test/
