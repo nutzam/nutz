@@ -64,17 +64,17 @@ public class NutFilePoolTest {
     }
 
     @Test public void test_blank_suffix(){
-        String absolutePath = Disks.absolute("~/tmp_nutz");
-        new File(absolutePath).delete();
-        new File(absolutePath).mkdirs();
-        FilePool filePool = new NutFilePool(absolutePath);
+        String home = Disks.normalize("~/tmp_nutz");
+        new File(home).delete();
+        new File(home).mkdirs();
+        FilePool filePool = new NutFilePool(home);
         File f = filePool.createFile("");
         System.out.println(f);
 
-        new NutFilePool(absolutePath);
-        new NutFilePool(absolutePath);
-        new NutFilePool(absolutePath);
+        new NutFilePool(home);
+        new NutFilePool(home);
+        new NutFilePool(home);
         //在生成一次,报错
-        new NutFilePool(absolutePath);
+        new NutFilePool(home);
     }
 }
