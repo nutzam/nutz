@@ -137,7 +137,7 @@ public abstract class Disks {
     }
 
     /**
-     * 获取一个路径的绝对路径
+     * 获取一个路径的绝对路径。如果该路径不存在，则返回null
      * 
      * @param path
      *            路径
@@ -148,7 +148,7 @@ public abstract class Disks {
     }
 
     /**
-     * 获取一个路径的绝对路径
+     * 获取一个路径的绝对路径。如果该路径不存在，则返回null
      * 
      * @param path
      *            路径
