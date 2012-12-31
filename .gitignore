@@ -5,3 +5,5 @@
 /.settings/
 *.DS_Store
 /target/
+/test/nutz-test.properties
+/test/log4j.properties
