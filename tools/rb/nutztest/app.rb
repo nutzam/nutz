@@ -99,7 +99,7 @@ namespace '/nutztest' do
     end
 
     get "/raw5" do
-      json({:name => "wendal"}, :content_type => "text/javascript")
+      json :name => "wendal"
     end
 
     %w{red red2 red3}.each do |item|
