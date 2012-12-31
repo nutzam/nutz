@@ -22,6 +22,6 @@ public class RawViewTest extends BaseWebappTest {
         assertEquals("", resp.getContent());
 
         get("/views/raw5");
-        assertTrue(resp.getHeader().get("Content-Type").startsWith("text/javascript"));
+        assertTrue(resp.getHeader().get("Content-Type").startsWith("application/json"));
     }
 }
