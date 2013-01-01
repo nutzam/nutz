@@ -54,9 +54,6 @@ public class JsonEntity {
         Field[] flds = mirror.getFields();
         fields = new ArrayList<JsonEntityField>(flds.length);
         for (Field fld : flds) {
-            // 以特殊字符开头的字段，看起来是隐藏字段
-            if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
-                continue;
 
             JsonEntityField ef = JsonEntityField.eval(mirror, fld);
             if (null == ef) {
@@ -155,4 +152,5 @@ public class JsonEntity {
     public Method getToJsonMethod() {
         return toJsonMethod;
     }
+
 }
