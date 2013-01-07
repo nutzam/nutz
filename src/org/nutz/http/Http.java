@@ -1,6 +1,9 @@
 package org.nutz.http;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -70,4 +73,32 @@ public class Http {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static ProxySwitcher proxySwitcher;
+    
+    public static void setHttpProxy(String host, int port) {
+    	final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+    	proxySwitcher = new ProxySwitcher() {
+    		public Proxy getProxy(URL url) {
+    			return proxy;
+    		}
+    	};
+    }
+    
+    public static void setSocktProxy(String host, int port) {
+    	final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
+    	proxySwitcher = new ProxySwitcher() {
+    		public Proxy getProxy(URL url) {
+    			return proxy;
+    		}
+    	};
+    }
+    
+    public static ProxySwitcher getProxySwitcher() {
+		return proxySwitcher;
+	}
+    
+    public static void setProxySwitcher(ProxySwitcher proxySwitcher) {
+		Http.proxySwitcher = proxySwitcher;
+	}
 }
