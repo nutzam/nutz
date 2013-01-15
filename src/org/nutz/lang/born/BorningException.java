@@ -41,7 +41,7 @@ public class BorningException extends RuntimeException {
         StringBuilder sb = new StringBuilder();
         String name = null == type ? "unknown" : type.getName();
         sb.append("Fail to born '").append(name).append('\'');
-        if (null != args && args.length > 0) {
+        if (null != args) {
             sb.append("\n by args: [");
             for (Object arg : args)
                 sb.append("\n  @(").append(arg).append(')');
