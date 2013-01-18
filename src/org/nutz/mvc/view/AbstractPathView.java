@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.nutz.el.El;
 import org.nutz.lang.Lang;
@@ -83,14 +84,15 @@ public abstract class AbstractPathView implements View {
         context.set("a", req_attr);//兼容最初的写法
         context.set("req_attr", req_attr);
         
-        Map<String,Object> session_attr = new HashMap<String, Object>();
-        for (Enumeration<String> en = req.getSession().getAttributeNames(); en.hasMoreElements();) {
-            String tem = en.nextElement();
-            session_attr.put(tem, req.getSession().getAttribute(tem));
+        HttpSession session = Mvcs.getHttpSession(false);
+        if (session != null) {
+        	Map<String,Object> session_attr = new HashMap<String, Object>();
+            for (Enumeration<String> en = session.getAttributeNames(); en.hasMoreElements();) {
+                String tem = en.nextElement();
+                session_attr.put(tem, session.getAttribute(tem));
+            }
+            context.set("session_attr", session_attr);
         }
-        context.set("session_attr", session_attr);
-        
-        
         // 请求的参数表,需要兼容之前的p.参数, Fix issue 418
         Map<String,String> p = new HashMap<String, String>();
         for (Object o : req.getParameterMap().keySet()) {
