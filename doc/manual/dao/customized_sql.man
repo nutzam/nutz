@@ -21,11 +21,11 @@ Nutz.Dao 自定义 SQL 的概述
 	因此，Nutz.Dao 的自定义 SQL 部分的解决方案是：
 	 # 用户可以硬编码 SQL 语句，比如：
 		{{{<JAVA>
-		Sql sql = Sqls.create("DELETE FROM t_abc WHERE name='Peter'");
+		Sql sql = Sqls.create("DELETE t_abc WHERE name='Peter'");
 		}}}
 	 # 支持占位符的书写方式，比如：
 		{{{<JAVA>
-		Sql sql = Sqls.create("DELETE FROM $table WHERE name=@name");
+		Sql sql = Sqls.create("DELETE $table WHERE name=@name");
 		sql.vars().set("table","t_abc");
 		sql.params().set("name","Peter");
 		}}}
@@ -34,9 +34,9 @@ Nutz.Dao 自定义 SQL 的概述
 	 # 用户可以将所有的 SQL 语句存放在一个或者多个文件中，语句的间隔可以通过注释，比如：
 		{{{
 		/* delete.data */
-		DELETE FROM $table WHERE name LIKE @name
+		DELETE $table WHERE name LIKE @name
 		/* update.data */
-		UPDATE FROM $table SET name=@name WHERE id=@id
+		UPDATE $table SET name=@name WHERE id=@id
 		}}}
 		在你的 Java 代码中：
 		{{{
