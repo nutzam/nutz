@@ -1,6 +1,5 @@
 package org.nutz.mvc;
 
-
 /**
  * 整个应用启动以及关闭的时候需要做的额外逻辑
  * 
@@ -13,13 +12,13 @@ public interface Setup {
      * 
      * @param config
      */
-    void init(NutConfig config);
+    void init(NutConfig nc);
 
     /**
      * 关闭时，额外逻辑
      * 
      * @param config
      */
-    void destroy(NutConfig config);
+    void destroy(NutConfig nc);
 
 }
