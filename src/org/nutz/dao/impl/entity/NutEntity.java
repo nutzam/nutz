@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityIndex;
@@ -182,6 +183,8 @@ public class NutEntity<T> implements Entity<T> {
         BornContext<T> bc = Borns.evalByArgTypes(type, ResultSet.class);
         if (null != bc)
             this.bornByRS = bc.getBorning();
+        else if (null == bornByDefault)
+        	throw new DaoException("Need non-arg constructor : " + type);
 
         // 映射
         this.ones = new LinkFieldSet();

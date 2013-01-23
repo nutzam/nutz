@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Reader;
+import java.io.StringReader;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -41,7 +42,6 @@ import org.nutz.castor.FailToCastObjectException;
 import org.nutz.json.Json;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
-import org.nutz.lang.stream.StringReader;
 import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
@@ -354,7 +354,7 @@ public abstract class Lang {
      * @return 文本输出流对象
      */
     public static Reader inr(CharSequence cs) {
-        return new StringReader(cs);
+        return new StringReader(cs.toString());
     }
 
     /**
