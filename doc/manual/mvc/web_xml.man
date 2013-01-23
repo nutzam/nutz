@@ -46,7 +46,7 @@
  	注意,如果你使用[view.man Forward视图],请这样写filter-mapping
  	{{{
  	<filter-mapping>
-    	<filter-name>nutz</filtername>
+    	<filter-name>nutz</filter-name>
     	<url-pattern>/*</url-pattern>
     	<dispatcher>REQUEST</dispatcher>
     	<dispatcher>FORWARD</dispatcher>

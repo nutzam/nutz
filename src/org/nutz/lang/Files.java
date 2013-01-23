@@ -667,9 +667,8 @@ public abstract class Files {
                 return false;
         InputStream ins = new BufferedInputStream(new FileInputStream(src));
         OutputStream ops = new BufferedOutputStream(new FileOutputStream(target));
-        int b;
-        while (-1 != (b = ins.read()))
-            ops.write(b);
+        
+        Streams.write(ops, ins);
 
         Streams.safeClose(ins);
         Streams.safeFlush(ops);

@@ -1,6 +1,9 @@
 package org.nutz.http;
 
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
 
@@ -46,7 +49,15 @@ public class Http {
     public static Response get(String url) {
         return Sender.create(Request.get(url)).send();
     }
+    
+    public static Response get(String url, int timeout) {
+        return Sender.create(Request.get(url)).setTimeout(timeout).send();
+    }
 
+    public static String post(String url, Map<String, Object> params, int timeout) {
+        return Sender.create(Request.create(url, METHOD.POST, params, null)).setTimeout(timeout).send().getContent();
+    }
+    
     public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
         return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
     }
@@ -62,4 +73,32 @@ public class Http {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static ProxySwitcher proxySwitcher;
+    
+    public static void setHttpProxy(String host, int port) {
+    	final Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(host, port));
+    	proxySwitcher = new ProxySwitcher() {
+    		public Proxy getProxy(URL url) {
+    			return proxy;
+    		}
+    	};
+    }
+    
+    public static void setSocktProxy(String host, int port) {
+    	final Proxy proxy = new Proxy(Proxy.Type.SOCKS, new InetSocketAddress(host, port));
+    	proxySwitcher = new ProxySwitcher() {
+    		public Proxy getProxy(URL url) {
+    			return proxy;
+    		}
+    	};
+    }
+    
+    public static ProxySwitcher getProxySwitcher() {
+		return proxySwitcher;
+	}
+    
+    public static void setProxySwitcher(ProxySwitcher proxySwitcher) {
+		Http.proxySwitcher = proxySwitcher;
+	}
 }

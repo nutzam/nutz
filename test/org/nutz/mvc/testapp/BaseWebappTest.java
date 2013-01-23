@@ -27,29 +27,46 @@ public abstract class BaseWebappTest {
 
     protected Response resp;
 
+    private boolean isRunInMaven = false;
+
+    private String serverURL = "http://localhost:8888";
+
+    {
+        for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+            if (ste.getClassName().startsWith("org.apache.maven.surefire")) {
+                isRunInMaven = true;
+                serverURL = "http://nutztest.herokuapp.com";
+                break;
+            }
+        }
+    }
+
     @Before
     public void startServer() throws Throwable {
-
-        try {
-            URL url = getClass().getClassLoader().getResource("org/nutz/mvc/testapp/Root/FLAG");
-            String path = url.toExternalForm();
-            System.err.println(url);
-            server = new Server(8888);
-            String warUrlString = path.substring(0, path.length() - 4);
-            server.setHandler(new WebAppContext(warUrlString, getContextPath()));
-            server.start();
-        }
-        catch (Throwable e) {
-            if (server != null)
-                server.stop();
-            throw e;
+        if (!isRunInMaven) {
+            try {
+                URL url = getClass().getClassLoader().getResource("org/nutz/mvc/testapp/Root/FLAG");
+                String path = url.toExternalForm();
+                System.err.println(url);
+                server = new Server(8888);
+                String warUrlString = path.substring(0, path.length() - 4);
+                server.setHandler(new WebAppContext(warUrlString, getContextPath()));
+                server.start();
+            }
+            catch (Throwable e) {
+                if (server != null)
+                    server.stop();
+                throw e;
+            }
         }
     }
 
     @After
     public void shutdownServer() throws Throwable {
-        if (server != null)
-            server.stop();
+        if (!isRunInMaven) {
+            if (server != null)
+                server.stop();
+        }
     }
 
     public String getContextPath() {
@@ -57,7 +74,7 @@ public abstract class BaseWebappTest {
     }
 
     public String getBaseURL() {
-        return "http://localhost:8888" + getContextPath();
+        return serverURL + getContextPath();
     }
 
     public Response get(String path) {

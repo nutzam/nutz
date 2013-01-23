@@ -3,6 +3,7 @@ package org.nutz.lang.stream;
 import java.io.IOException;
 import java.io.Reader;
 
+@Deprecated
 public class StringReader extends Reader {
 
     private CharSequence cs;

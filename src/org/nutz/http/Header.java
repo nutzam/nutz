@@ -78,4 +78,17 @@ public class Header {
         return header;
     }
 
+    public String get(String key, String defaultValue) {
+    	String value = get(key);
+    	if (value == null)
+    		return defaultValue;
+    	return value;
+    }
+    
+    public int getInt(String key, int defaultValue) {
+    	String value = get(key);
+    	if (value == null)
+    		return defaultValue;
+    	return Integer.parseInt(value);
+    }
 }

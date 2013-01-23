@@ -107,11 +107,11 @@ public class RawView implements View {
     private static final Map<String, String> contentTypeMap = new HashMap<String, String>();
 
     static {
-        contentTypeMap.put("xml", "text/xml");
+        contentTypeMap.put("xml","application/xml");
         contentTypeMap.put("html", "text/html");
         contentTypeMap.put("htm", "text/html");
         contentTypeMap.put("stream", "application/octet-stream");
-        contentTypeMap.put("js", "text/javascript");
-        contentTypeMap.put("json", "text/javascript");
+        contentTypeMap.put("js", "application/javascript");
+        contentTypeMap.put("json", "application/json");
     }
 }
