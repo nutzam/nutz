@@ -12,7 +12,7 @@ import org.nutz.el.opt.TwoTernary;
 import org.nutz.lang.InvokingException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.util.SimpleContext;
+import org.nutz.lang.util.Context;
 
 /**
  * 访问符:'.'
@@ -36,8 +36,8 @@ public class AccessOpt extends TwoTernary implements RunMethod{
                 return om.get(right.toString());
             }
         }
-        if (obj instanceof SimpleContext) {
-            SimpleContext sc = (SimpleContext) obj;
+        if (obj instanceof Context) {
+            Context sc = (Context) obj;
             if (sc.has(right.toString())) {
                 return sc.get(right.toString());
             }
