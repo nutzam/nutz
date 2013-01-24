@@ -7,8 +7,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.castor.Castors;
-import org.nutz.lang.Lang;
+import org.nutz.mapl.Mapl;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 /**
@@ -32,14 +31,13 @@ public class JsonInjector implements ParamInjector {
                         HttpServletResponse resp,
                         Object refer) {
         if (null == name)
-            return Castors.me().castTo(refer, Lang.getTypeClass(type));
+            return Mapl.maplistToObj(refer, type);
 
         Map<String, Object> map = (Map<String, Object>)refer;
         Object theObj = map.get(name);
         if (null == theObj)
             return null;
-        Class<?> clazz = Lang.getTypeClass(type);
-        return Castors.me().castTo(theObj, clazz);
+        return Mapl.maplistToObj(map, type);
     }
 
 }

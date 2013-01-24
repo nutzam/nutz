@@ -39,8 +39,8 @@ public class ForwardView extends AbstractPathView {
         String path = evalPath(req, obj);
         String args = "";
         if (path != null && path.contains("?")) { //将参数部分分解出来
-            path = path.substring(0, path.indexOf('?'));
             args = path.substring(path.indexOf('?'));
+            path = path.substring(0, path.indexOf('?'));
         }
 
         String ext = getExt();        
@@ -71,7 +71,7 @@ public class ForwardView extends AbstractPathView {
     }
 
     /**
-     * 子类可以覆盖这个方法，给出自己特殊的后缀
+     * 子类可以覆盖这个方法，给出自己特殊的后缀,必须小写哦
      * 
      * @return 后缀
      */

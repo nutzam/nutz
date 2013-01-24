@@ -1,7 +1,13 @@
 package org.nutz.json;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -24,6 +30,7 @@ import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.OuterClass;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
@@ -32,6 +39,21 @@ import org.nutz.lang.util.NutType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
+
+    @Test
+    public void test_empty_obj_toJson() {
+        String j = Json.toJson(new Person(), JsonFormat.compact().setQuoteName(true));
+        assertEquals("{\"age\":0,\"num\":0}", j);
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void test_empty_array_field() {
+        String str = "{a:[],b:100}";
+        Map<String, Object> map = (Map<String, Object>) Json.fromJson(str);
+        assertEquals(100, ((Integer) map.get("b")).intValue());
+        assertEquals(0, ((List) map.get("a")).size());
+    }
 
     @Test
     public void test_map_in_map() {
@@ -790,4 +812,24 @@ public class JsonTest {
     // System.out.println(Json.toJson(node));
     // System.out.println(node.getChildren().get(0).getClass());
     // }
+    
+    @Test
+    public void test_json3() {
+        File f = Files.findFile("org/nutz/json/x.json");
+        Map<String, Object> map = Json.fromJsonFile(Map.class, f);
+        assertEquals(3, map.size());
+        System.out.println(map.keySet());
+        assertTrue(map.containsKey("dao"));
+        
+        String str = "{rs:{ok:true,},yes:true}";
+        map = Json.fromJson(Map.class, str);
+        assertEquals(2, map.size());
+        assertEquals(map.get("yes"), true);
+        
+        str = "{rs:[1,2,3,],yes:true}";
+        map = Json.fromJson(Map.class, str);
+        assertEquals(2, map.size());
+        assertEquals(map.get("yes"), true);
+        assertEquals(3, ((List<Integer>)map.get("rs")).get(2).intValue());
+    }
 }

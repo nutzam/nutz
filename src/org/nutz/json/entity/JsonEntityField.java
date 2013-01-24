@@ -40,12 +40,19 @@ public class JsonEntityField {
         if (fld == null) {
             return null;
         }
-        JsonField jf = fld.getAnnotation(JsonField.class);
-        if (null != jf && jf.ignore())
-            return null;
 
         // 瞬时变量就不要持久化了
         if (Modifier.isTransient(fld.getModifiers()))
+            return null;
+    	
+        // 以特殊字符开头的字段，看起来是隐藏字段
+        // XXX 有用户就是_开头的字段也要啊! by wendal
+    	//if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
+    	if (fld.getName().startsWith("$") && fld.getAnnotation(JsonField.class) == null)
+    		return null;
+    	
+        JsonField jf = fld.getAnnotation(JsonField.class);
+        if (null != jf && jf.ignore())
             return null;
 
         JsonEntityField jef = new JsonEntityField();

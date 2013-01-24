@@ -50,8 +50,10 @@ public class SingleColumnCondtionPItem extends AbstractPItem {
             else if (null != def)
                 params[off++] = def;
             // 试图转换传入的对象
-            else if (null != obj)
+            else if (null != obj) {
+                // TODO 这是啥规则?!!! 完全搞不懂!!!
                 params[off++] = Castors.me().castTo(obj, colType);
+            }
             // 逼急了，老子抛异常了!
             else
                 throw Lang.impossible();

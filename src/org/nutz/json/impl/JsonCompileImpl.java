@@ -23,7 +23,7 @@ import org.nutz.mapl.MaplCompile;
 public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
 
     private QueueReader qis;
-    
+
     public Object parse(Reader reader) {
         if (reader == null)
             return null;
@@ -32,7 +32,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
 
             // 开始读取数据
             qis.peek();
-            if(qis.isEnd()){
+            if (qis.isEnd()) {
                 return null;
             }
             skipCommentsAndBlank();
@@ -88,7 +88,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         // 直至读取到相应的结束符!
         StringBuilder sb = new StringBuilder();
         while (true) {
-            if (qis.peek() == endTag){
+            if (qis.peek() == endTag) {
                 qis.poll();
                 break;
             }
@@ -149,19 +149,19 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
      */
     private Object parseSimpleType() throws IOException {
         StringBuilder sb = new StringBuilder();
-        if(qis.startWith("true")){
+        if (qis.startWith("true")) {
             qis.skip(4);
             return Boolean.TRUE;
         }
-        if(qis.startWith("false")){
+        if (qis.startWith("false")) {
             qis.skip(5);
             return Boolean.FALSE;
         }
-        if(qis.startWith("undefined")){
+        if (qis.startWith("undefined")) {
             qis.skip(9);
             return null;
         }
-        if(qis.startWith("null")){
+        if (qis.startWith("null")) {
             qis.skip(4);
             return null;
         }
@@ -246,7 +246,7 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     private void parseMap(Map<String, Object> map) throws IOException {
         qis.poll();
         skipCommentsAndBlank();
-        if (qis.peek() == '}'){
+        if (qis.peek() == '}') {
             qis.poll();
             return;
         }
@@ -259,8 +259,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             case ',':
                 skipCommentsAndBlank();
                 // 如果结束
-                if (qis.peek() == '}')
+                if (qis.peek() == '}') {
+                    qis.poll();
                     return;
+                }
                 continue;
             default:
                 throw unexpectedChar();
@@ -289,15 +291,15 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
         case '\'':
             key = parseString();
             skipCommentsAndBlank();
-            //去掉":"
-            if(!(qis.poll() == ':')){
+            // 去掉":"
+            if (!(qis.poll() == ':')) {
                 throw makeError("Error JSON (KEY : VALUE) syntax!");
             }
             break;
         default:
             // 没办法,看来是无分隔符的字符串,找一下吧
             StringBuilder sb = new StringBuilder();
-//            sb.append((char) qis.peek());
+            // sb.append((char) qis.peek());
             OUTER: while (true) {
                 switch (qis.peek()) {
                 case '\\':// 特殊字符
@@ -337,8 +339,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     private void parseList(List<Object> list) throws IOException {
         qis.poll();
         skipCommentsAndBlank();
-        if (qis.peek() == ']')
+        if (qis.peek() == ']') {
+            qis.poll();
             return;
+        }
         while (true) {
             list.add(parseFromHere());
             skipCommentsAndBlank();
@@ -348,8 +352,10 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
             case ',':// 看来还有元素
                 skipCommentsAndBlank();
                 // 如果没有正确结束
-                if (qis.peek() == ']')
+                if (qis.peek() == ']') {
+                    qis.poll();
                     return;
+                }
                 continue;
             default:
                 throw unexpectedChar();
@@ -379,11 +385,11 @@ public class JsonCompileImpl implements JsonParser, MaplCompile<Reader> {
     }
 
     private void skipBlockComment() throws IOException {
-        //过滤块注释开始的"/*"两个字符
+        // 过滤块注释开始的"/*"两个字符
         qis.skip(2);
         while (true) {
             if (qis.poll() == '*') {
-                if (qis.peek() == '/'){
+                if (qis.peek() == '/') {
                     qis.poll();
                     break;
                 }

@@ -21,7 +21,10 @@ public abstract class Uploads {
      * @return 当前会话的上传进度对象，如果没有上传，则返回 null
      */
     public static UploadInfo getInfo(HttpServletRequest req) {
-        return (UploadInfo) Mvcs.getHttpSession().getAttribute(UploadInfo.SESSION_NAME);
+    	HttpSession session = Mvcs.getHttpSession(false);
+    	if (session == null)
+    		return null;
+        return (UploadInfo) session.getAttribute(UploadInfo.SESSION_NAME);
     }
 
     /**
@@ -31,7 +34,7 @@ public abstract class Uploads {
      */
     public static UploadInfo createInfo(HttpServletRequest req) {
         UploadInfo info = new UploadInfo();
-        HttpSession sess = Mvcs.getHttpSession();
+        HttpSession sess = Mvcs.getHttpSession(false);
         if (null != sess) {
             sess.setAttribute(UploadInfo.SESSION_NAME, info);
         }

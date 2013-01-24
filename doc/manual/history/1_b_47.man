@@ -1,0 +1,86 @@
+#title: 1.b.47 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.47 发行注记
+
+    前一版 [http://nutzam.com/doc/html/#history/1_b_46.html 1.b.46] 的时候有一个小问题，就是 JSON 文件的
+    解析更严格了，如果对象尾部多了一个逗号（","）（当然，JSON 语法上，这个的确是错的），JSON 解析会报错。
+    详细请参看 [https://github.com/nutzam/nutz/issues/349 Issue 349]
+
+    考虑到大家都是粗心的人（多打一个逗号很平常），并且之前 Nutz 的 JSON 解析检查并没有这么严格，所以我们
+    想最好还是紧急发布一版，这个版本和 1.b.46 区别就是能容忍更多一点 JSON 的语法错误。
+
+    这样，升级到最新的 {*1.b.46} 的同学如果 JSON 解析遇到问题，愤然质问我们的时候，
+    我们可以蛋定的答道：“同学，你 out 了，你应该用 1.b.47”
+
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
+     * Nutz 的主页 :  [http://nutzam.com]
+
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/348 Issue 348] 当一个IocBean的字段注入失败时, 第二次获取这个bean,会得到一个不完整的对象(部分字段为注入) {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/349 Issue 349] 1.b.46 加载json配置文件时尾部多个“,”会出错 {#AAA;by} {*zwt}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*826}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
+
+    <http://www.nutzam.com/wiki/img/emma.png>
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+
+--------------------------------------------------------------------------------------------------------
+文档
+
+    {#888;/ -- 木有任何改动 --}
+
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [https://github.com/nutzam/nutzdemo NutzDemo] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
+    
+    || 贡献者           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || wendal           ||  O   ||  O   ||  O   ||  O   ||  O   ||  -   ||  O   ||
+    || zwt              ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://q.weibo.com/128323 Nutz的新浪微群]
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[http://nutzam.com/doc/html/ 用户手册]
+

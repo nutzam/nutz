@@ -61,11 +61,80 @@ public abstract class Times {
      * @param d
      *            时间对象
      * 
+     * @return 时间对象在一天中的毫秒数
+     */
+    public static long ms(Date d) {
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        return ms(c);
+    }
+
+    /**
+     * @param c
+     *            时间对象
+     * 
+     * @return 时间对象在一天中的毫秒数
+     */
+    public static int ms(Calendar c) {
+        int ms = c.get(Calendar.HOUR_OF_DAY) * 3600000;
+        ms += c.get(Calendar.MINUTE) * 60000;
+        ms += c.get(Calendar.SECOND) * 1000;
+        ms += c.get(Calendar.MILLISECOND);
+        return ms;
+    }
+
+    /**
+     * @return 当前时间在一天中的毫秒数
+     */
+    public static int ms() {
+        return ms(Calendar.getInstance());
+    }
+
+    /**
+     * 根据一个当天的绝对毫秒数，得到一个时间字符串，格式为 "HH:mm:ss.EEE"
+     * 
+     * @param ms
+     *            当天的绝对毫秒数
+     * @return 时间字符串
+     */
+    public static String mss(int ms) {
+        int sec = ms / 1000;
+        ms = ms - sec * 1000;
+        return secs((int) sec) + "." + Strings.alignRight(ms, 3, '0');
+    }
+
+    /**
+     * 根据一个当天的绝对秒数，得到一个时间字符串，格式为 "HH:mm:ss"
+     * 
+     * @param ms
+     *            当天的绝对秒数
+     * @return 时间字符串
+     */
+    public static String secs(int sec) {
+        int hh = sec / 3600;
+        sec -= hh * 3600;
+        int mm = sec / 60;
+        sec -= mm * 60;
+        return Strings.alignRight(hh, 2, '0')
+               + ":"
+               + Strings.alignRight(mm, 2, '0')
+               + ":"
+               + Strings.alignRight(sec, 2, '0');
+
+    }
+
+    /**
+     * @param d
+     *            时间对象
+     * 
      * @return 时间对象在一天中的秒数
      */
+    @SuppressWarnings("deprecation")
     public static int sec(Date d) {
-        String ts = Times.format(DF_TIME, d);
-        return T(ts);
+        int sec = d.getHours() * 3600;
+        sec += d.getMinutes() * 60;
+        sec += d.getSeconds();
+        return sec;
     }
 
     /**
@@ -336,8 +405,7 @@ public abstract class Times {
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
-    private static final DateFormat DF_TIME = new SimpleDateFormat("HH:mm:ss");
 
-    private static final long MS_DAY = 3600 * 24 * 1000;
+    private static final long MS_DAY = 3600L * 24 * 1000;
     private static final long MS_WEEK = MS_DAY * 7;
 }

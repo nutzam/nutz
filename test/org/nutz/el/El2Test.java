@@ -464,7 +464,7 @@ public class El2Test {
         context.set("list", list);
         context.set("System", System.class);
         
-        El.eval(context, "System.getenv('Path').getClass().getName()");
+        El.eval(context, "System.getenv('PATH').getClass().getName()");
         assertEquals("1", Mirror.me(String.class).invoke(String.class, "valueOf", 1));
         
         assertEquals("jk", Mirror.me(String.class).invoke(String.class, "valueOf", "jk"));

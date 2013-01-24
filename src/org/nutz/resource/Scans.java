@@ -5,8 +5,10 @@ import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -21,6 +23,7 @@ import javax.servlet.ServletContext;
 
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.util.ClassTools;
@@ -97,6 +100,12 @@ public class Scans {
             URL url = ClassTools.getClassLoader().getResource(classFile);
             if (url != null) { // 基本上不可能为null
                 String str = url.toString();
+                try {
+                    str = URLDecoder.decode(str, Encoding.UTF8);
+                }
+                catch (UnsupportedEncodingException e1) {
+                    throw Lang.impossible();
+                }
                 str = str.substring(0, str.length() - classFile.length());
                 try {
                     registerLocation(new URL(str));

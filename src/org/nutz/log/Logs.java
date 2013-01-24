@@ -1,5 +1,6 @@
 package org.nutz.log;
 
+import org.nutz.log.impl.NopLog;
 import org.nutz.plugin.SimplePluginManager;
 
 /**
@@ -27,8 +28,6 @@ public final class Logs {
      * @param clazz
      *            your class
      * @return Log
-     * @throws NullPointerException
-     *             when clazz is null
      */
     public static Log getLog(Class<?> clazz) {
         return getLog(clazz.getName());
@@ -40,8 +39,6 @@ public final class Logs {
      * @param className
      *            the name of Log
      * @return Log
-     * @throws NullPointerException
-     *             when className is null, maybe it will case NPE
      */
     public static Log getLog(String className) {
         return adapter.getLogger(className);
@@ -75,4 +72,21 @@ public final class Logs {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * 开放自定义设置LogAdapter,注意,不能设置为null!! 如果你打算完全禁用Nutz的log,可以设置为NOP_ADAPTER
+     * @param adapter 你所偏好的LogAdapter
+     */
+    public static void setAdapter(LogAdapter adapter) {
+		Logs.adapter = adapter;
+	}
+    
+    /**
+     * 什么都不做的适配器,无任何输出,某些人就想完全禁用掉NutzLog,就可以用上它了
+     */
+    public static LogAdapter NOP_ADAPTER = new LogAdapter() {
+		public Log getLogger(String className) {
+			return NopLog.NOP;
+		}
+	};
 }

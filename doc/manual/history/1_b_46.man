@@ -1,0 +1,124 @@
+#title: 1.b.46 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.46 发行注记
+
+    人有旦夕祸福，月有阴晴圆缺，万万想不到，3个月前，认为铁板钉钉的事还是阴差阳错的没搞完。就像你信心满满的准备打一个
+    喷嚏的时候，你万万木有料到旁边会有人捅你的咯吱窝。吹牛死全家，看来以后没做出东西来不能随便说。
+    X个月后，我们会有啥，bulabulabula ... 这个话以后我再也不说了，再吹牛就让那个大再开一次！
+    同时，突然觉得老罗微胖在我心目中毅然决然的高大了起来，跳票还能说的那么理直气壮，这得是什么境界才能做得到啊。
+
+    当然，想不到的事情还有很多，譬如木有想到 GoogleDoc 又不能用了，也木有想到，都完球了，还不能用，靠，骏马跑在戈壁上！
+
+    不管怎么样，[http://nutzam.com Nutz] 这个小 jar 包这 3 个月来一直在被持续的微量的改进着，
+    [http://wendal.net/ 无敌的 wendal] 懒洋洋的催道：“该写注记了吧!”
+    然后统计了一下，靠，又 fix 了 30 多个 Issue，接受的 pull request 也更多了 ...
+
+    这个版就是个 bug fix 版，没啥大改动，很多微小的地方出现的错误一一被各位同学揪了出来，
+    大家可以安心升级，享受各位同学这 3 个月来用心的成果 ^_^
+
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
+     * Nutz 的主页 :  [http://nutzam.com]
+
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/278 Issue 278] 使用nutz获取clob字段,并将转换为String后,出现乱码问题 Dao  {#AAA;by} {*xiaxiaofeng}
+    * [https://github.com/nutzam/nutz/issues/271 Issue 271] 将 Mock 移动到新的源码包里去 需求  {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/265 Issue 265] 让适配器所产生的错误,可捕捉,可处理 Mvc {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/264 Issue 264] DB2 9.x下对boolean属性为空的实体更新时报错 Dao {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/263 Issue 263] Mirror类的evalGetterSetter方法无法正确获取getter/setter Lang 重要 {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/260 Issue 260] Blob字段处理 Dao 重要  {#AAA;by} {*aodixiaoqiang}
+    * [https://github.com/nutzam/nutz/issues/255 Issue 255] glassfish-3.1.2-web下使用nutz上传文件出现file为null Mvc 重要  {#AAA;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/254 Issue 254] 允许通过Ioc加载MessageLoader实现  {#AAA;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/250 Issue 250] 编译时，也应该支持 Servlet 3.0  {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/249 Issue 249] 在glassfish-3.1.2-web下项目启动失败 项目维护 Lang 重要  {#AAA;by} {*ichaly}
+    * [https://github.com/nutzam/nutz/issues/247 Issue 247] 文件池文档中的在池中创建一个文件描述错误 项目维护 Lang FAQ  {#AAA;by} {*hzl7652}
+    * [https://github.com/nutzam/nutz/issues/245 Issue 245] 查询返回List<Record>的方法，Record中的key都变成了小写  {#AAA;by} {*zhuer0632}
+    * [https://github.com/nutzam/nutz/issues/244 Issue 244] 文档的MVC部分没有关于@Attr的信息 项目维护 Mvc  {#AAA;by} {*shevawen}
+    * [https://github.com/nutzam/nutz/issues/243 Issue 243] Mapl.cell的Path规则  {#AAA;by} {*shevawen}
+    * [https://github.com/nutzam/nutz/issues/240 Issue 240] filter中执行跳转时,obj未传进去,报空指针异常 项目维护 Mvc  {#AAA;by} {*lziilzii}
+    * [https://github.com/nutzam/nutz/issues/239 Issue 239] Mapl添加"增删改" Json 需求  {#AAA;by} {*juqkai}
+    * [https://github.com/nutzam/nutz/issues/238 Issue 238] 国际化动态切换失效 项目维护 Mvc  {#AAA;by} {*mamacmm}
+    * [https://github.com/nutzam/nutz/issues/180 Issue 180] Eclipse debug 模式启动时，AOP 导致 AjaxModule 弹出错误提示 FAQ AOP  {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/82 Issue 82] 文档 Ioc，需要一篇介绍 Ioc 原理的文档，解释加载对象的过程 Ioc 文档  {#AAA;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/49 Issue 49] 探讨“插入前后的设置” Dao 需求  {#AAA;by} {*conanca}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*826}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
+
+    <http://www.nutzam.com/wiki/img/emma.png>
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+
+--------------------------------------------------------------------------------------------------------
+文档
+
+     * 少量修改 [lang/filepool.man 文件池]
+     * 少量修改 [faq/jar_encoding.man 我的Nutz的源码是乱码怎么办？]
+
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [https://github.com/nutzam/nutzdemo NutzDemo] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
+    
+    || 贡献者           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || aodixiaoqiang    ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || biggates         ||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || conanca          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || enzozhong        ||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || hzl7652          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || ichaly           ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || juqkai           ||  O   ||  O   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || lziilzii         ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || lzxz1234         ||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || mamacmm          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || nutblog          ||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || shevawen         ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || wendal           ||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||
+    || xiaxiaofeng      ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || xing-kenny       ||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
+    || zhuer0632        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || zozoh            ||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  -   ||
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://q.weibo.com/128323 Nutz的新浪微群]
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取 [http://build.sunfarms.net/nutz/ 最新的快照版] 和
+	[http://nutzam.com/doc/html/ 用户手册]
+

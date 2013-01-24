@@ -183,6 +183,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 return "NUMBER(15,10)";
             return "NUMBER";
         case TIME:
+        case DATETIME:
+        case DATE:
             return "DATE";
         default:
             return super.evalFieldType(mf);
@@ -215,4 +217,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return false;
     }
 
+    public boolean isSupportAutoIncrement() {
+        return false;
+    }
 }

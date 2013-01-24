@@ -4,5 +4,6 @@
 /tmp/
 /.settings/
 *.DS_Store
-target/
-D:*
+/target/
+/test/nutz-test.properties
+/test/log4j.properties

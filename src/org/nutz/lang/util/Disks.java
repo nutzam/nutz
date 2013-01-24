@@ -37,8 +37,9 @@ public abstract class Disks {
             re++;
         } else if (f.isDirectory()) {
             File[] fs = null == filter ? f.listFiles() : f.listFiles(filter);
-            for (File theFile : fs)
-                re += visitFile(theFile, fv, filter);
+            if (fs != null)
+                for (File theFile : fs)
+                    re += visitFile(theFile, fv, filter);
         }
         return re;
     }
@@ -136,7 +137,7 @@ public abstract class Disks {
     }
 
     /**
-     * 获取一个路径的绝对路径
+     * 获取一个路径的绝对路径。如果该路径不存在，则返回null
      * 
      * @param path
      *            路径
@@ -147,7 +148,7 @@ public abstract class Disks {
     }
 
     /**
-     * 获取一个路径的绝对路径
+     * 获取一个路径的绝对路径。如果该路径不存在，则返回null
      * 
      * @param path
      *            路径
@@ -211,6 +212,28 @@ public abstract class Disks {
         catch (UnsupportedEncodingException e) {
             return null;
         }
-
+    }
+    
+    /**
+     * 遍历文件夹下以特定后缀结尾的文件(不包括文件夹,不包括.开头的文件)
+     * @param path 根路径
+     * @param suffix 后缀
+     * @param deep 是否深层遍历
+     * @param fv 你所提供的访问器,当然就是你自己的逻辑咯
+     */
+    public static final void visitFile(String path, final String suffix, final boolean deep, final FileVisitor fv) {
+    	visitFile(new File(path), new FileVisitor() {
+			public void visit(File f) {
+				if (f.isDirectory())
+					return;
+				fv.visit(f);
+			}
+		}, new FileFilter() {
+			public boolean accept(File f) {
+				if (f.isDirectory())
+					return deep;
+				return !f.getName().startsWith(".") && f.getName().endsWith(suffix);
+			}
+		});
     }
 }

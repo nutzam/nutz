@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.dao.Chain;
 import org.nutz.dao.Condition;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
@@ -85,11 +86,17 @@ public abstract class Pojos {
 		}
 
 		public static PItem cndId(Entity<?> en, Number id) {
-			return cndColumn(en.getIdField(), id);
+		    MappingField mappingField = en.getIdField();
+		    if (mappingField == null)
+		        throw new DaoException("expect @Id but NOT found. " + en.getType().getName());
+			return cndColumn(mappingField, id);
 		}
 
 		public static PItem cndName(Entity<?> en, String name) {
-			return cndColumn(en.getNameField(), name);
+		    MappingField mappingField = en.getNameField();
+            if (mappingField == null)
+                throw new DaoException("expect @Name but NOT found. " + en.getType().getName());
+			return cndColumn(mappingField, name);
 		}
 
 		public static PItem cndColumn(MappingField mappingField, Object def) {

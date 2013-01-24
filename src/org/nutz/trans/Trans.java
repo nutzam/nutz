@@ -7,6 +7,8 @@ import javax.sql.DataSource;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 用模板的方式操作事务
@@ -15,11 +17,18 @@ import org.nutz.lang.Mirror;
  * @author wendal(wendal1985@gmail.com)
  */
 public abstract class Trans {
+    
+    private static final Log log = Logs.get();
 
     private static Class<? extends Transaction> implClass;
 
     static ThreadLocal<Transaction> trans = new ThreadLocal<Transaction>();
     static ThreadLocal<Integer> count = new ThreadLocal<Integer>();
+    
+    /**
+     * 事务debug开关
+     */
+    public static boolean DEBUG = false;
 
     /**
      * @return 当前线程的事务，如果没有事务，返回 null
@@ -39,24 +48,43 @@ public abstract class Trans {
     }
 
     static void _begain(int level) throws Exception {
-        if (null == trans.get()) {
-            Transaction tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
+        Transaction tn = trans.get();
+        if (null == tn) {
+            tn = null == implClass ? new NutTransaction() : Mirror.me(implClass).born();
             tn.setLevel(level);
             trans.set(tn);
             count.set(0);
+            if (DEBUG)
+                log.debugf("Start New Transaction id=%d, level=%d", tn.getId(), level);
+        } else {
+            if (DEBUG)
+                log.debugf("Attach Transaction id=%d, level=%d", tn.getId(), level);
         }
-        count.set(count.get() + 1);
+        int tCount = count.get() + 1;
+        count.set(tCount);
+        if (log.isDebugEnabled())
+            log.debugf("trans_begain: ", tCount);
+
     }
 
     static void _commit() throws Exception {
         count.set(count.get() - 1);
-        if (count.get() == 0)
-            trans.get().commit();
+        Transaction tn = trans.get();
+        if (count.get() == 0) {
+            if (DEBUG)
+                log.debug("Transaction Commit id="+tn.getId());
+            tn.commit();
+        } else {
+            if (DEBUG)
+                log.debugf("Transaction delay Commit id=%d, count=%d", tn.getId(), count.get());
+        }
     }
 
     static void _depose() {
         if (count.get() == 0)
             try {
+                if (DEBUG)
+                    log.debugf("Transaction depose id=%d", trans.get().getId());
                 trans.get().close();
             }
             catch (Throwable e) {
@@ -69,8 +97,14 @@ public abstract class Trans {
 
     static void _rollback(Integer num) {
         count.set(num);
-        if (count.get() == 0)
+        if (count.get() == 0) {
+            if (DEBUG)
+                log.debugf("Transaction rollback id=%s", trans.get().getId());
             trans.get().rollback();
+        } else {
+            if (DEBUG)
+                log.debugf("Transaction delay rollback id=%s", trans.get().getId());
+        }
     }
 
     public static boolean isTransactionNone() {
@@ -209,17 +243,17 @@ public abstract class Trans {
     public static void close() throws Exception {
         Trans._depose();
     }
-    
+
     /**
      * 如果在事务中,则返回事务的连接,否则直接从数据源取一个新的连接
      */
-    public static Connection getConnectionAuto(DataSource ds) throws SQLException{
+    public static Connection getConnectionAuto(DataSource ds) throws SQLException {
         if (get() == null)
             return ds.getConnection();
         else
             return get().getConnection(ds);
     }
-    
+
     public static void closeConnectionAuto(Connection conn) {
         if (get() == null && null != conn) {
             try {

@@ -47,7 +47,7 @@ public abstract class Nums {
             return is;
         int length = ary.length + is.length;
         int[] re = new int[length];
-        System.arraycopy(ary, 0, re, 0, Math.min(ary.length, length));
+        System.arraycopy(ary, 0, re, 0, ary.length);
         int i = ary.length;
         for (int num : is)
             re[i++] = num;

@@ -1,48 +1,10 @@
-#title: 1.b.45 发行注记
+#title: 1.b.48 发行注记
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.45 发行注记
+1.b.48 发行注记
 
-    Hi 大家好，从六月初发布了 Nutz.1.b.44 以来，已经过去将近两个月了，期间我们颇收集了一些小 bug，
-    于是就发这个 bug fix 版吧。 使用 1.b.4x 的同学可以安心升级。 
-    还在用 1.b.3x 的同学建议你快点升级 -_-!。
-
-    另外说一下，临到发布前，我们还是决定将 "mock" 包从 nutz.jar 里移走，它的内容现在被移动到 "test" 目录下了，
-    这个包可能不会有太多人用到，如果个别人想用，可以从 test 目录里 copy 源代码自行编译。这个算是 nutz
-    瘦身活动的开始。我们之后会努力让这个小 jar 包更稳定和小巧。
-
-    这两个多月，[http://wendal.net 无敌的Wendal] 开始录制 Nutz 系列教程，现已经录了两季了：
-     * [http://v.youku.com/v_show/id_XNDMxODAzMTQ4.html 视频: Nutz 入门教程第一季 - 基础框架的搭建]
-     * [http://v.youku.com/v_show/id_XNDMxODA5MjQw.html 视频: Nutz入门教程第二季 - Ioc 漫谈]
-
-    这两个教程的下载地址都在 [https://code.google.com/p/nutz/downloads/list Nutz 下载列表]里能找到。
-    内容对初学者是很有帮助的，高级用户也推荐看一看：视频录制期间，[http://wendal.net Wendal] 出现了几次
-    可爱的输出错误，看着他修复时果断且狐疑的样子，我都被萌到了，啊哈哈哈哈 ^_^。
-
-    如果想更及时关注教程更新信息的同学，可以到新浪微博关注：
-     * [http://weibo.com/wendalme @WendalMe]
-     * 或者 [http://weibo.com/zozoh @zozoh]
-     * 或者 [http://weibo.com/pangwu86 @胖五86]
-    这三个微博都会随时推 [http://s.weibo.com/weibo/Nutz Nutz 的相关动态]。
-
-    5月底由于参加了 [http://www.iteye.com/news/24777 我们的开源项目] 组织的活动，我们录了几段视频：
-     * [http://v.youku.com/v_show/id_XNDAzMDI0NDEy.html 视频:Nutz一次刻意的意外！]
-     * [http://v.youku.com/v_show/id_XNDA3MDE3ODc2.html 视频: nutz_宣传片第0季]
-    有兴趣的朋友大家可以看看。
-
-    {#008800;*======= 特别预告 ===========}
-
-    一个月前，我曾经因为好玩，假模假样的采访过 [http://weibo.com/pangwu86 @胖五86]:
-     * [http://v.youku.com/v_show/id_XNDA5MTk5MTcy.html `视频: Nutz [任何人采任何人] 之 zozoh采胖五`]
-    但是这个谈话我自己回头看的时候觉得很有意思。尤其是最后，胖五透露了一点我们未来的规划 ...
-
-    由于很多不可预测的原因，我们年初计划的 "Nutz 的应用" 一拖再拖。
-    不过，如果不出意外，我可以比较负责任的说，
-    下次我们再见面，大家会得到一个基于 Nutz 的应用的。
-    一个绝对值得你试着用用，而且肯定有用的应用 （{#CCCCCC;/ 注：不是 CMS 类的}）。
-    我都有点等不急了，2个月，快点过去吧 ... 阿门 ~~~
-    
+    ...
 
     ------------------------------ Nutz 的下载地址的分隔线 -------------------------
 
@@ -54,30 +16,11 @@
 --------------------------------------------------------------------------------------------------------
 问题修复
 
-    * [https://github.com/nutzam/nutz/issues/278 Issue 278] 使用nutz获取clob字段,并将转换为String后,出现乱码问题 Dao  {#AAA;by} {*xiaxiaofeng}
-    * [https://github.com/nutzam/nutz/issues/271 Issue 271] 将 Mock 移动到新的源码包里去 需求  {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/265 Issue 265] 让适配器所产生的错误,可捕捉,可处理 Mvc {#AAA;by} {*wendal}
-    * [https://github.com/nutzam/nutz/issues/264 Issue 264] DB2 9.x下对boolean属性为空的实体更新时报错 Dao {#AAA;by} {*wendal}
-    * [https://github.com/nutzam/nutz/issues/263 Issue 263] Mirror类的evalGetterSetter方法无法正确获取getter/setter Lang 重要 {#AAA;by} {*wendal}
-    * [https://github.com/nutzam/nutz/issues/260 Issue 260] Blob字段处理 Dao 重要  {#AAA;by} {*aodixiaoqiang}
-    * [https://github.com/nutzam/nutz/issues/255 Issue 255] glassfish-3.1.2-web下使用nutz上传文件出现file为null Mvc 重要  {#AAA;by} {*wendal}
-    * [https://github.com/nutzam/nutz/issues/254 Issue 254] 允许通过Ioc加载MessageLoader实现  {#AAA;by} {*enzozhong}
-    * [https://github.com/nutzam/nutz/issues/250 Issue 250] 编译时，也应该支持 Servlet 3.0  {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/249 Issue 249] 在glassfish-3.1.2-web下项目启动失败 项目维护 Lang 重要  {#AAA;by} {*ichaly}
-    * [https://github.com/nutzam/nutz/issues/247 Issue 247] 文件池文档中的在池中创建一个文件描述错误 项目维护 Lang FAQ  {#AAA;by} {*hzl7652}
-    * [https://github.com/nutzam/nutz/issues/245 Issue 245] 查询返回List`<Record>`的方法，Record中的key都变成了小写  {#AAA;by} {*zhuer0632}
-    * [https://github.com/nutzam/nutz/issues/244 Issue 244] 文档的MVC部分没有关于@Attr的信息 项目维护 Mvc  {#AAA;by} {*shevawen}
-    * [https://github.com/nutzam/nutz/issues/243 Issue 243] Mapl.cell的Path规则  {#AAA;by} {*shevawen}
-    * [https://github.com/nutzam/nutz/issues/240 Issue 240] filter中执行跳转时,obj未传进去,报空指针异常 项目维护 Mvc  {#AAA;by} {*lziilzii}
-    * [https://github.com/nutzam/nutz/issues/239 Issue 239] Mapl添加"增删改" Json 需求  {#AAA;by} {*juqkai}
-    * [https://github.com/nutzam/nutz/issues/238 Issue 238] 国际化动态切换失效 项目维护 Mvc  {#AAA;by} {*mamacmm}
-    * [https://github.com/nutzam/nutz/issues/180 Issue 180] Eclipse debug 模式启动时，AOP 导致 AjaxModule 弹出错误提示 FAQ AOP  {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/82 Issue 82] 文档 Ioc，需要一篇介绍 Ioc 原理的文档，解释加载对象的过程 Ioc 文档  {#AAA;by} {*zozoh}
-    * [https://github.com/nutzam/nutz/issues/49 Issue 49] 探讨“插入前后的设置” Dao 需求  {#AAA;by} {*conanca}
+    ...
 
 --------------------------------------------------------------------------------------------------------
 质量
-	共通过了 {#FF00FF;*781}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
+	共通过了 {#FF00FF;*826}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
 
     <http://www.nutzam.com/wiki/img/emma.png>
 	 
@@ -96,8 +39,7 @@
 --------------------------------------------------------------------------------------------------------
 文档
 
-     * 少量修改 [lang/filepool.man 文件池]
-     * 少量修改 [faq/jar_encoding.man 我的Nutz的源码是乱码怎么办？]
+    {#888;/ -- 木有任何改动 --}
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -114,20 +56,7 @@
 	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
     
     || 贡献者           || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
-    || aodixiaoqiang    ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || conanca          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || enzozhong        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || hzl7652          ||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||
-    || ichaly           ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || juqkai           ||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
-    || lziilzii         ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || mamacmm          ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || shevawen         ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || wendal       	||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||  O   ||
-    || xiaxiaofeng      ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || ywjno            ||  -   ||  -   ||  -   ||  O   ||  -   ||  O   ||  -   ||
-    || zhuer0632        ||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
-    || zozoh         	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || Aduan            ||  -   ||  -   ||  O   ||  -   ||  -   ||  -   ||  -   ||
 
 
 	另外，很多朋友都在：

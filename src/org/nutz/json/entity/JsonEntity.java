@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonField;
+import org.nutz.json.JsonFormat;
+import org.nutz.json.ToJson;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -34,6 +36,8 @@ public class JsonEntity {
     private BorningException err;
 
     private Map<String, Integer> typeParams; // 如果本类型是范型，存放范型标识的下标
+    
+    private Method toJsonMethod;
 
     public JsonEntity(Mirror<?> mirror) {
         // 处理范型
@@ -50,9 +54,6 @@ public class JsonEntity {
         Field[] flds = mirror.getFields();
         fields = new ArrayList<JsonEntityField>(flds.length);
         for (Field fld : flds) {
-            // 以特殊字符开头的字段，看起来是隐藏字段
-            if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
-                continue;
 
             JsonEntityField ef = JsonEntityField.eval(mirror, fld);
             if (null == ef) {
@@ -102,6 +103,36 @@ public class JsonEntity {
         catch (BorningException e) {
             err = e;
         }
+        
+        Class<? extends Object> klass = mirror.getType();
+        ToJson tj = klass.getAnnotation(ToJson.class);
+        String myMethodName = Strings.sNull(null == tj ? null : tj.value(), "toJson");
+        try {
+            /*
+             * toJson()
+             */
+            try {
+                Method myMethod = klass.getMethod(myMethodName);
+                if (!myMethod.isAccessible())
+                    myMethod.setAccessible(true);
+                toJsonMethod = myMethod;
+            }
+            /*
+             * toJson(JsonFormat fmt)
+             */
+            catch (NoSuchMethodException e1) {
+                try {
+                    Method myMethod = klass.getMethod(myMethodName, JsonFormat.class);
+                    if (!myMethod.isAccessible())
+                        myMethod.setAccessible(true);
+                    toJsonMethod = myMethod;
+                }
+                catch (NoSuchMethodException e) {}
+            }
+        }
+        catch (Exception e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 
     public List<JsonEntityField> getFields() {
@@ -117,4 +148,9 @@ public class JsonEntity {
     public JsonEntityField getField(String name) {
         return fieldMap.get(name);
     }
+    
+    public Method getToJsonMethod() {
+        return toJsonMethod;
+    }
+
 }

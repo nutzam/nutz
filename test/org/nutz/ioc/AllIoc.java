@@ -13,5 +13,6 @@ import org.nutz.ioc.val.AllVal;
                         AllJsonIoc.class,
                         AllLoader.class,
                         AllVal.class,
-                        AllAopConfigration.class})
+                        AllAopConfigration.class,
+                        SimpleIocTest.class})
 public class AllIoc {}

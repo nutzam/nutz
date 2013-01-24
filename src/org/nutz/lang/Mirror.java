@@ -1310,7 +1310,7 @@ public class Mirror<T> {
      * @return 当前类型是不是接口
      */
     public boolean isInterface() {
-        return null == klass ? null : klass.isInterface();
+        return klass.isInterface();
     }
 
     /**

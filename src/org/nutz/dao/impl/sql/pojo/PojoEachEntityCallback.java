@@ -9,6 +9,7 @@ import org.nutz.dao.pager.ResultSetLooping;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.SqlContext;
+import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
@@ -33,6 +34,7 @@ public class PojoEachEntityCallback implements PojoCallback {
                 try {
                     each.invoke(index, obj, rowCount);
                 }
+                catch (ContinueLoop e) {}
                 catch (LoopException e) {
                     throw Lang.wrapThrow(e);
                 }

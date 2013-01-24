@@ -1,6 +1,7 @@
 package org.nutz.ioc.impl;
 
 import org.nutz.ioc.IocEventTrigger;
+import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ObjectMaker;
 import org.nutz.ioc.ObjectProxy;
@@ -101,7 +102,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw Lang.wrapThrow(e);
+            throw Lang.wrapThrow(e, IocException.class);
         }
 
         // 返回
