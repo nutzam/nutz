@@ -200,6 +200,8 @@ public class Mirror<T> {
         for (Method method : klass.getMethods()) {
             if (method.getParameterTypes().length != 0)
                 continue;
+            if (!method.isAccessible()) //有些时候,即使是public的方法,也不一定能访问
+            	method.setAccessible(true);
             if (_get.equals(method.getName()))
                 return method;
             if (_is.equals(method.getName())) {
