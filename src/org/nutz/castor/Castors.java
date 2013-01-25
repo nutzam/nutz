@@ -363,6 +363,7 @@ public class Castors {
         defaultCastorList.add(org.nutz.castor.castor.String2Class.class);
         defaultCastorList.add(org.nutz.castor.castor.String2Pattern.class);
         defaultCastorList.add(org.nutz.castor.castor.String2Map.class);
+        defaultCastorList.add(org.nutz.castor.castor.String2BigDecimal.class);
         defaultCastorList.add(org.nutz.castor.castor.Mirror2Class.class);
         defaultCastorList.add(org.nutz.castor.castor.SqlTime2String.class);
         defaultCastorList.add(org.nutz.castor.castor.Object2Object.class);
