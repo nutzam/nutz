@@ -11,14 +11,12 @@ import java.util.Map;
 import org.nutz.json.JsonException;
 import org.nutz.json.JsonParser;
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 import org.nutz.mapl.MaplCompile;
 
 /**
- * 将json理解为Map+List
+ * 将json理解为Map+List,以Token的方式读取,避免回溯等操作
  * 
- * @author wendal
+ * @author wendal(wendal1985@gmail.com)
  * 
  */
 public class JsonCompileImplV2 implements JsonParser, MaplCompile<Reader> {
@@ -30,7 +28,7 @@ public class JsonCompileImplV2 implements JsonParser, MaplCompile<Reader> {
 
 final class JsonTokenScan {
 
-	//private static final Log log = Logs.get();
+	// private static final Log log = Logs.get();
 
 	Reader reader;
 
@@ -46,7 +44,7 @@ final class JsonTokenScan {
 	}
 
 	protected void _nextToken() {
-		//System.out.println("_nextToken > " + (char) token.type);
+		// System.out.println("_nextToken > " + (char) token.type);
 		switch (token.type) {
 		case MapStart:
 		case MapEnd:
@@ -102,8 +100,8 @@ final class JsonTokenScan {
 				case Comma:
 					nextToken = nextToken2;
 					nextToken.type = c;
-					//log.debug("Break OtherString token : " + (char) c);
-					//log.debug("OtherString token : " + (char) token.type);
+					// log.debug("Break OtherString token : " + (char) c);
+					// log.debug("OtherString token : " + (char) token.type);
 					break OUT;
 				case ' ':
 				case '\t':
@@ -118,7 +116,7 @@ final class JsonTokenScan {
 			}
 			token.type = OtherString;
 			token.value = sb.toString();
-			//log.debug("OtherString Token > " + token.value);
+			// log.debug("OtherString Token > " + token.value);
 			return;
 		}
 	}
@@ -132,7 +130,7 @@ final class JsonTokenScan {
 		}
 		token.type = nextChar();
 		_nextToken();
-		//log.debug("token: " + token);
+		// log.debug("token: " + token);
 	}
 
 	protected void skipComment() {
@@ -152,7 +150,7 @@ final class JsonTokenScan {
 					return;
 			}
 		default:
-			throw new JsonException("Unexpect Comment char : " + c);
+			throw unexpectChar(c);
 		}
 	}
 
@@ -172,6 +170,7 @@ final class JsonTokenScan {
 
 	protected Map<String, Object> readMap() {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
+		boolean hasComma = false;
 		OUT: while (true) {
 			nextToken();
 			switch (token.type) {
@@ -180,22 +179,27 @@ final class JsonTokenScan {
 			case SimpleString:
 			case OtherString:
 				String key = token.value;
-				//log.debug("key=" + key + "      " + token);
+				// log.debug("key=" + key + "      " + token);
 				nextToken();
 				if (token.type != MapPair) {
-					throw new JsonException("Unexpect token : " + token);
+					throw unexpectChar((char)token.type);
 				}
 				Object obj = readObject(MapEnd);
-				if (obj == COMMA)
+				if (obj == COMMA) {
+					if (hasComma)
+						throw unexpectChar((char)Comma);
+					hasComma = true;
 					continue;
+				}
 				if (obj == END)
-					throw new JsonException("Unexpect token : " + token);
+					throw unexpectChar((char)token.type);
 				map.put(key, obj);
+				hasComma = false;
 				break;
 			case Comma:
 				continue;
 			default:
-				throw new JsonException("Unexpect token : " + token);
+				throw unexpectChar((char)token.type);
 			}
 		}
 		return map;
@@ -203,20 +207,26 @@ final class JsonTokenScan {
 
 	protected List<Object> readList() {
 		List<Object> list = new ArrayList<Object>();
+		boolean hasComma = false;
 		while (true) {
 			Object obj = readObject(ListEnd);
 			if (obj == END)
 				break;
-			if (obj == COMMA)
+			if (obj == COMMA) {
+				if (hasComma)
+					throw unexpectChar((char)Comma);
+				hasComma = true;
 				continue;
+			}
 			list.add(obj);
+			hasComma = false;
 		}
 		return list;
 	}
 
 	protected Object readObject(int endTag) {
 		nextToken();
-		//System.out.println(">>>> " + token.type + "    " + token);
+		// System.out.println(">>>> " + token.type + "    " + token);
 		switch (token.type) {
 		case MapStart:
 			return readMap();
@@ -230,19 +240,19 @@ final class JsonTokenScan {
 			if (len == 0)
 				return "";
 			switch (value.charAt(0)) {
-			case 't' :
+			case 't':
 				if ("true".equals(value))
 					return true;
 				break;
-			case 'f' :
+			case 'f':
 				if ("false".equals(value))
 					return false;
 				break;
-			case  'n' :
+			case 'n':
 				if ("null".endsWith(value))
 					return null;
 				break;
-			case 'u' :
+			case 'u':
 				if ("undefined".endsWith(value))
 					return null;
 				break;
@@ -278,17 +288,17 @@ final class JsonTokenScan {
 				}
 				long n = Long.parseLong(token.value);
 				if (Integer.MAX_VALUE >= n && n >= Integer.MIN_VALUE) {
-					return (int)n;
+					return (int) n;
 				}
 				return n;
 			}
-			throw new JsonException("Unexpect Token : " + token);
+			throw new JsonException(row, col, value.charAt(0), "Unexpect String = " + value);
 		default:
 			if (token.type == endTag)
 				return END;
 			if (token.type == Comma)
 				return COMMA;
-			throw new JsonException("Unexpect Token : " + token);
+			throw unexpectChar((char)token.type);
 		}
 	}
 
@@ -296,64 +306,53 @@ final class JsonTokenScan {
 		int c = 0;
 		boolean add = false;
 		OUT: while (true) {
-			try {
-				c = reader.read();
-			}
-			catch (IOException e) {
-				throw new JsonException(e);
-			}
+			c = readChar();
 			switch (c) {
-			case -1 :
+			case -1:
 				return null;
-			case ' '  :
-			case '\t' :
-			case '\n' :
-			case '\r' :
+			case ' ':
+			case '\t':
+			case '\n':
+			case '\r':
 				continue;
-			case '/' :
+			case '/':
 				skipComment();
 				break;
-			default :
+			default:
 				add = true;
 				break OUT;
 			}
 		}
-		
+
 		switch (c) {
 		case 'v':
-			while (nextChar() != MapStart){
-			}
+			while (nextChar() != MapStart) {}
 			return readMap();
-		case MapStart :
+		case MapStart:
 			return readMap();
-		case ListStart :
+		case ListStart:
 			return readList();
 		case '\'':
 		case '"':
-			return readString((char)c);
+			return readString((char) c);
 		default:
 			nextToken = nextToken2;
 			nextToken.type = OtherString;
 			if (add)
-				nextToken.value = (char)c + Lang.readAll(reader);
+				nextToken.value = (char) c + Lang.readAll(reader);
 			else
 				nextToken.value = Lang.readAll(reader);
-			System.out.println("VVVVV>>>>>>>" + nextToken.value);
+			//System.out.println("VVVVV>>>>>>>" + nextToken.value);
 			return readObject(-1);
 		}
 	}
 
 	char nextChar() {
-		try {
-			int c = reader.read();
-			//System.out.println("+++++++++++===>> " + (char) c);
-			if (c == -1)
-				throw new JsonException("Unexpect EOF");
-			return (char) c;
-		}
-		catch (IOException e) {
-			throw new JsonException(e);
-		}
+		int c = readChar();
+		// System.out.println("+++++++++++===>> " + (char) c);
+		if (c == -1)
+			throw new JsonException("Unexpect EOF");
+		return (char) c;
 	}
 
 	protected char parseSp() {
@@ -383,7 +382,30 @@ final class JsonTokenScan {
 		case 'f':
 			return '\f';
 		default:
-			throw new JsonException("Unexpect char : " + c);
+			throw unexpectChar(c);
+		}
+	}
+
+	int row = 1;
+	int col = 0;
+
+	private int readChar() {
+		try {
+			int c = reader.read();
+			switch (c) {
+			case -1:
+				break;
+			case '\n':
+				row++;
+				col = 0;
+			default:
+				col++;
+				break;
+			}
+			return c;
+		}
+		catch (IOException e) {
+			throw new JsonException(e);
 		}
 	}
 
@@ -394,16 +416,17 @@ final class JsonTokenScan {
 	static final int MapPair = ':';
 	static final int SimpleString = 0;
 	static final int OtherString = 1;
-	static final int EOF = 0xFF;
 	static final int Comma = ',';
 
+	protected JsonException unexpectChar(char c) {
+		return new JsonException(row, col, c, "Unexpect Char");
+	}
 }
 
 class JsonToken {
 	int type;
 	String value;
 
-	@Override
 	public String toString() {
 		return "[" + (char) type + " " + value + "]" + hashCode();
 	}
