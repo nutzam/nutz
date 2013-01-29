@@ -1969,26 +1969,38 @@ public abstract class Lang {
      * @return 数字签名
      */
     public static String digest(String algorithm, CharSequence cs) {
-        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs));
+        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs),null,1);
     }
 
-    /**
-     * 从字节数组计算出数字签名
-     * 
-     * @param algorithm
-     *            算法，比如 "SHA1" 或者 "MD5" 等
-     * @param bytes
-     *            字节数组
-     * @return 数字签名
-     */
-    public static String digest(String algorithm, byte[] bytes) {
-        try {
-            MessageDigest md = MessageDigest.getInstance(algorithm);
-            md.update(bytes);
+	/**
+	 * 从字节数组计算出数字签名
+	 * 
+	 * @param algorithm
+	 *            算法，比如 "SHA1" 或者 "MD5" 等
+	 * @param bytes
+	 *            字节数组
+	 * @param salt
+	 *            随机字节数组
+	 * @param iterations
+	 *            迭代次数
+	 * @return 数字签名
+	 */
+	public static String digest(String algorithm, byte[] bytes, byte[] salt, int iterations) {
+		try {
+			MessageDigest md = MessageDigest.getInstance(algorithm);
 
-            byte[] hashBytes = md.digest();
+			if (salt != null) {
+				md.update(salt);
+			}
 
-            return fixedHexString(hashBytes);
+			byte[] hashBytes = md.digest(bytes);
+
+			for (int i = 1; i < iterations; i++) {
+				md.reset();
+				hashBytes = md.digest(hashBytes);
+			}
+
+			return fixedHexString(hashBytes);
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
