@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import javax.sql.DataSource;
 
 import org.nutz.dao.DB;
-import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityMaker;
@@ -437,7 +436,8 @@ public class AnnotationEntityMaker implements EntityMaker {
             // '@Id' : 的自动后续获取
             else if (null != info.annId && info.annId.auto()) {
                 if (expert != null && !expert.isSupportAutoIncrement()) {
-                    throw new DaoException("Database not Support AutoIncrement, So @Id or @Id(auto=true) will always FAIL!!Use auto=false and @Prev , pls!!");
+                	//仅提醒,因为如果有触发器的话,还是可以插入的
+                    log.debug("Database don't support auto-increment. If insert fail, pls add trigger in database or using @Prev in Pojo");
                 }
                 en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
             }
