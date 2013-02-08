@@ -16,13 +16,13 @@ repositories {
     mavenCentral()
 }
 sourceSets {
-  	main{
-			java.srcDir  "$projectDir/src"
-		}
-		test {
-			java.srcDirs "$projectDir/test","$projectDir/performance"
-			resources.srcDir "$projectDir/test-prop"
-		}
+    main{
+            java.srcDir  "$projectDir/src"
+        }
+        test {
+            java.srcDirs "$projectDir/test","$projectDir/performance"
+            resources.srcDir "$projectDir/test-prop"
+        }
 }
 tasks.withType(Compile) {  
     options.encoding = "UTF-8"  
@@ -38,17 +38,17 @@ dependencies {
     testCompile "com.alibaba:fastjson:1.1.27"
     testCompile "org.eclipse.jetty:jetty-webapp:7.6.8.v20121106"
     testCompile "org.eclipse.jetty:jetty-jsp:7.6.8.v20121106"
-}	
+}    
 processResources {
-		from ('src'){
-			exclude '**/*.java';
-		}
+        from ('src'){
+            exclude '**/*.java';
+        }
 }
 processTestResources {
-		from ('test'){
-			exclude '**/*.java';
-		}
+        from ('test'){
+            exclude '**/*.java';
+        }
 }
 test {
-	jvmArgs "-Dfile.encoding=utf-8"
+    jvmArgs "-Dfile.encoding=utf-8"
 }
