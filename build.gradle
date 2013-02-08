@@ -9,7 +9,7 @@ sourceCompatibility = 1.6
 targetCompatibility = 1.6
 
 defaultTasks 'build'
-buildDir="target"
+buildDir = "target"
 repositories {
     flatDir(dirs:"deps")
     mavenLocal()
@@ -17,12 +17,12 @@ repositories {
 }
 sourceSets {
     main{
-            java.srcDir  "$projectDir/src"
-        }
-        test {
-            java.srcDirs "$projectDir/test","$projectDir/performance"
-            resources.srcDir "$projectDir/test-prop"
-        }
+        java.srcDir  "$projectDir/src"
+    }
+    test {
+        java.srcDirs "$projectDir/test","$projectDir/performance"
+        resources.srcDir "$projectDir/test-prop"
+    }
 }
 tasks.withType(Compile) {  
     options.encoding = "UTF-8"  
@@ -40,14 +40,14 @@ dependencies {
     testCompile "org.eclipse.jetty:jetty-jsp:7.6.8.v20121106"
 }    
 processResources {
-        from ('src'){
-            exclude '**/*.java';
-        }
+    from ('src'){
+        exclude '**/*.java';
+    }
 }
 processTestResources {
-        from ('test'){
-            exclude '**/*.java';
-        }
+    from ('test'){
+        exclude '**/*.java';
+    }
 }
 test {
     jvmArgs "-Dfile.encoding=utf-8"
