@@ -1,14 +1,16 @@
 package org.nutz.resource;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.servlet.Servlet;
 
 import junit.extensions.ActiveTestSuite;
 import junit.extensions.RepeatedTest;
@@ -137,5 +139,11 @@ public class ScansTest {
     @Test
     public void test_scan_root() {
         Scans.me().scan("", ".+\\.xml");
+    }
+    
+    @Test
+    public void test_resource_jar() throws MalformedURLException {
+    	Scans.me().registerLocation(Servlet.class);
+    	Scans.me().registerLocation(getClass().getClassLoader().getResource("javax/servlet/Servlet.class"));
     }
 }
