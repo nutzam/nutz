@@ -130,6 +130,9 @@ public class Scans {
             if (str.endsWith(".jar")) {
                 return ResourceLocation.jar(str);
             } else if (str.contains("jar!")) {
+            	if (str.startsWith("jar:file:")) {
+            		str = str.substring("jar:file:".length());
+            	}
                 return ResourceLocation.jar(str.substring(0, str.lastIndexOf("jar!") + 3));
             } else if (str.startsWith("file:")) {
                 return ResourceLocation.file(new File(url.getFile()));
