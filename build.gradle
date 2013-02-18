@@ -51,4 +51,9 @@ processTestResources {
 }
 test {
     jvmArgs "-Dfile.encoding=utf-8"
+	testLogging {
+        exceptionFormat "full" // default is "short"
+		events "passed", "skipped", "failed"
+		stackTraceFilters "truncate", "groovy"
+    }
 }
