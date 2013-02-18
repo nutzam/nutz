@@ -14,4 +14,4 @@ before_script:
 notifications:
   email: false
   
-script: gradle --stacktrace --debug check
+script: gradle --stacktrace check
