@@ -50,10 +50,13 @@ processTestResources {
     }
 }
 test {
+	include "org/nutz/TestAll"
     jvmArgs "-Dfile.encoding=utf-8"
+	showStackTraces = true
 	testLogging {
-        exceptionFormat "full" // default is "short"
-		events "passed", "skipped", "failed"
-		stackTraceFilters "truncate", "groovy"
+        debug {
+            events "started", "skipped", "failed"
+            exceptionFormat "full"
+        }
     }
 }
