@@ -50,7 +50,7 @@ processTestResources {
     }
 }
 test {
-	include "org/nutz/TestAll"
+	include "org/nutz/TestAll*"
     jvmArgs "-Dfile.encoding=utf-8"
 	showStackTraces = true
 	testLogging {
