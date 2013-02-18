@@ -2,6 +2,7 @@ package org.nutz.dao.impl.sql.run;
 
 import static java.lang.String.format;
 
+import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,6 +54,10 @@ public class NutDaoExecutor implements DaoExecutor {
             case RUN:
                 st.onAfter(conn, null);
                 break;
+            case CALL:
+            case EXEC:
+            	_runExec(conn, st);
+            	break;
             // 插入 & 删除 & 更新
             // case DELETE:
             // case UPDATE:
@@ -85,7 +90,67 @@ public class NutDaoExecutor implements DaoExecutor {
 
     }
 
-    private void _runSelect(Connection conn, DaoStatement st)
+    // 执行存储过程,简单实现
+    protected void _runExec(Connection conn, DaoStatement st) throws SQLException {
+		if (st.getContext().getPager() != null) {
+			throw Lang.makeThrow(DaoException.class, "NOT Pageable : " + st);
+		}
+		
+		// 打印调试信息
+		String sql = st.toPreparedStatement();
+        if (log.isDebugEnabled())
+            log.debug(sql);
+		
+		Object[][] paramMatrix = st.getParamMatrix();
+		
+		CallableStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = conn.prepareCall(sql);
+			ValueAdaptor[] adaptors = st.getAdaptors();
+			// 创建语句并设置参数
+			if (paramMatrix != null && paramMatrix.length > 0) {
+				for (int i = 0; i < paramMatrix[0].length; i++) {
+			        adaptors[i].set((PreparedStatement) stmt,
+			                paramMatrix[0][i], i + 1);
+			    }
+			}
+			
+			stmt.execute();
+			
+			//先尝试读取第一个,并调用一次回调
+			rs = stmt.getResultSet();
+			try {
+				st.onAfter(conn, rs);
+			}
+			finally {
+				if (rs != null)
+					rs.close();
+			}
+			
+			while (true) {
+				if (stmt.getMoreResults()) {
+					rs = stmt.getResultSet();
+					try {
+						st.onAfter(conn, rs);
+					}
+					finally {
+						if (rs != null)
+							rs.close();
+					}
+				// NOT support for this yet.  by wendal
+				//} else if (stmt.getUpdateCount() > -1) {
+				//	st.onAfter(conn, null);
+				}
+				break;
+			}
+		}
+		finally {
+			stmt.close();
+		}
+	}
+
+	private void _runSelect(Connection conn, DaoStatement st)
             throws SQLException {
 
         Object[][] paramMatrix = st.getParamMatrix();

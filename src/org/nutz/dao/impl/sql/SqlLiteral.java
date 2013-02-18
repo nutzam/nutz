@@ -118,6 +118,12 @@ class SqlLiteral implements Cloneable {
             type = SqlType.TRUNCATE;
         else if (stack.firstEquals("ALTER"))
             type = SqlType.ALTER;
+        else if (stack.firstEquals("EXEC"))
+            type = SqlType.EXEC;
+        else if (stack.firstEquals("CALL"))
+            type = SqlType.CALL;
+        else if (stack.firstEquals("{CALL"))
+            type = SqlType.CALL;
         else
             type = SqlType.OTHER;
 
