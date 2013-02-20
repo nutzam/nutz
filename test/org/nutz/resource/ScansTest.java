@@ -85,7 +85,7 @@ public class ScansTest {
         String testPath = Assert.class.getPackage().getName().replace('.', '/');
         String testFilter = "^.*(Assert|Test)\\.class$";
         List<NutResource> list = Scans.me().scan(testPath, testFilter);
-        Collections.sort(list);
+        //Collections.sort(list);
         assertEquals(2, list.size());
         assertTrue(list.get(0).getName().endsWith("Assert.class"));
         assertTrue(list.get(1).getName().endsWith("Test.class"));
