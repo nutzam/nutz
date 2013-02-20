@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 
 import org.nutz.Nutz;
@@ -51,12 +52,15 @@ public class NutLoading implements Loading {
             log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
         }
         if (log.isDebugEnabled()) {
+        	Properties sys = System.getProperties();
             log.debug("Web Container Information:");
             log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
             log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
-            log.debugf(" - Java Version    : %s", System.getProperties().get("java.version"));
-            log.debugf(" - File separator  : %s", System.getProperties().get("file.separator"));
-            log.debugf(" - Timezone        : %s", System.getProperties().get("user.timezone"));
+            log.debugf(" - Java Version    : %s", sys.get("java.version"));
+            log.debugf(" - File separator  : %s", sys.get("file.separator"));
+            log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
+            log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
+            log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
         }
         /*
          * 准备返回值
