@@ -86,7 +86,7 @@ public class Scans {
                                     "folder or file like '%s' no found in %s",
                                     regex,
                                     Castors.me().castToString(paths));
-        return list;
+        return new ArrayList<NutResource>((new HashSet<NutResource>(list)));
     }
 
     public void registerLocation(Class<?> klass) {
@@ -287,7 +287,6 @@ public class Scans {
                                                     final String base) throws IOException {
         NutResource nutResource = new NutResource() {
 
-            @Override
             public InputStream getInputStream() throws IOException {
                 ZipInputStream zis = makeZipInputStream(jarPath);
                 ZipEntry ens = null;
@@ -296,6 +295,10 @@ public class Scans {
                         return zis;
                 }
                 throw Lang.impossible();
+            }
+            
+            public int hashCode() {
+            	return (jarPath + ":" + entryName).hashCode();
             }
         };
         if (entryName.equals(base))

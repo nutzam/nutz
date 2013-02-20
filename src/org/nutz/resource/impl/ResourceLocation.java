@@ -23,7 +23,7 @@ public abstract class ResourceLocation {
         if (!root.exists())
             return new ErrorResourceLocation(root);
         try {
-            return new FileSystemResourceLocation(root.getAbsoluteFile());
+            return new FileSystemResourceLocation(root.getAbsoluteFile().getCanonicalFile());
         } catch (Exception e) {
             return new ErrorResourceLocation(root);
         }
