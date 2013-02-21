@@ -23,6 +23,15 @@ import org.nutz.lang.stream.NullInputStream;
  * 
  */
 public abstract class Sender {
+	
+	/**
+	 * 默认连接超时, 30秒
+	 */
+	public static int Default_Conn_Timeout = 30*1000;
+	/**
+	 * 默认读取超时, 10分钟
+	 */
+	public static int Default_Read_Timeout = 10*60*1000;
 
     public static Sender create(String url) {
         return create(Request.get(url));
@@ -109,14 +118,20 @@ public abstract class Sender {
     		Proxy proxy = proxySwitcher.getProxy(request.getUrl());
     		if (proxy != null) {
     			conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
+    			conn.setConnectTimeout(Default_Conn_Timeout);
     	        if (timeout > 0)
     	            conn.setReadTimeout(timeout);
+    	        else
+    	        	conn.setReadTimeout(Default_Read_Timeout);
     	        return;
     		}
     	}
         conn = (HttpURLConnection) request.getUrl().openConnection();
+        conn.setConnectTimeout(Default_Conn_Timeout);
         if (timeout > 0)
             conn.setReadTimeout(timeout);
+        else
+        	conn.setReadTimeout(Default_Read_Timeout);
     }
 
     protected void setupRequestHeader() {

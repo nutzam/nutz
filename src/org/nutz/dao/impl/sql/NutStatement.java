@@ -59,6 +59,14 @@ public abstract class NutStatement implements DaoStatement {
     public boolean isAlter() {
         return SqlType.ALTER == sqlType;
     }
+    
+    public boolean isExec() {
+    	return SqlType.EXEC == sqlType;
+    }
+    
+    public boolean isCall() {
+    	return SqlType.CALL == sqlType;
+    }
 
     public boolean isOther() {
         return SqlType.OTHER == sqlType;

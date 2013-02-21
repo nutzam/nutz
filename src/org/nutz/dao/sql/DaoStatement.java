@@ -62,6 +62,10 @@ public interface DaoStatement {
      * @return 当前语句是否是一个 OTHER 语句
      */
     boolean isOther();
+    
+    boolean isExec();
+    
+    boolean isCall();
 
     /**
      * @return 当前语句所关联的实体

@@ -167,7 +167,7 @@ public abstract class Lang {
             if (itE.getTargetException() != null)
                 return unwrapThrow(itE.getTargetException());
         }
-        if (e.getCause() != null)
+        if (e instanceof RuntimeException && e.getCause() != null && e.getMessage() == null)
             return unwrapThrow(e.getCause());
         return e;
     }

@@ -8,8 +8,10 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
 import org.nutz.dao.impl.jdbc.mysql.MysqlJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 
 /**
@@ -85,5 +87,12 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
         createRelation(dao, en);
 
         return true;
+    }
+    
+    public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
+    	String autoSql = "SELECT MAX($field) AS $field FROM $view";
+        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
+        autoInfo.setEntity(en);
+        return autoInfo;
     }
 }

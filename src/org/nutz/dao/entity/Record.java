@@ -12,6 +12,7 @@ import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
+import org.nutz.dao.DaoException;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
@@ -30,20 +31,22 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     private static final long serialVersionUID = 4614645901639942051L;
 
     public static Record create(ResultSet rs) {
+    	String name = null;
+    	int i = 0;
         try {
             Record re = new Record();
             ResultSetMetaData meta = rs.getMetaData();
             int count = meta.getColumnCount();
-            for (int i = 1; i <= count; i++) {
-                String name = meta.getColumnLabel(i);
+            for (i = 1; i <= count; i++) {
+                name = meta.getColumnLabel(i);
                 switch (meta.getColumnType(i)) {
                 case Types.TIMESTAMP: {
-                    re.set(name, rs.getTimestamp(name));
+                    re.set(name, rs.getTimestamp(i));
                     break;
                 }
                 case Types.DATE: {// ORACLE的DATE类型包含时间,如果用默认的只有日期没有时间 from
                                     // cqyunqin
-                    re.set(name, rs.getTimestamp(name));
+                    re.set(name, rs.getTimestamp(i));
                     break;
                 }
                 case Types.CLOB: {
@@ -59,7 +62,10 @@ public class Record implements Map<String, Object>, java.io.Serializable {
             return re;
         }
         catch (SQLException e) {
-            throw Lang.wrapThrow(e);
+        	if (name != null) {
+        		throw new DaoException(String.format("Column Name=%s, index=%d", name, i), e);
+        	}
+            throw new DaoException(e);
         }
     }
 

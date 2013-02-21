@@ -6,6 +6,7 @@ import org.junit.Test;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
 import org.nutz.ioc.meta.issue348.DogMaster;
+import org.nutz.ioc.meta.issue399.Issue399Service;
 
 public class SimpleIocTest {
 
@@ -18,5 +19,18 @@ public class SimpleIocTest {
         }
         catch (IocException e) {}
         ioc.get(DogMaster.class);
+    }
+    
+    @Test
+    public void test_no_singleton_depose() {
+    	Ioc ioc = new NutIoc(new AnnotationIocLoader(Issue399Service.class.getPackage().getName()));
+    	for (int i = 0; i < 100; i++) {
+			ioc.get(Issue399Service.class);
+		}
+    	ioc.depose();
+    	System.gc();
+    	assertEquals(100, Issue399Service.CreateCount);
+    	assertEquals(0, Issue399Service.DeposeCount);
+    	
     }
 }

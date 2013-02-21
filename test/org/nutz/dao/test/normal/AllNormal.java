@@ -16,5 +16,6 @@ import org.junit.runners.Suite;
                         PkTest.class,
                         BinaryDaoTest.class,
                         CreateDropTableTest.class,
-                        CreateTableWithCommentTest.class})
+                        CreateTableWithCommentTest.class,
+                        DaoRecordTest.class})
 public class AllNormal {}

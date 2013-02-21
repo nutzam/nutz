@@ -18,8 +18,8 @@ public class DoDeleteLinkVisitor extends AbstractLinkVisitor {
 
     public void visit(Object obj, LinkField lnk) {
         Object value = lnk.getValue(obj);
-        if (value == null) {
-            log.infof("Value of LinkField(@%s-->%s.%s) is null, ingore",
+        if (value == null || Lang.length(value) == 0) {
+            log.infof("Value of LinkField(@%s-->%s.%s) is null or isEmtry, ingore",
                        lnk.getLinkType(), lnk.getEntity().getType().getSimpleName(),
                        lnk.getHostField().getName());
             return;
