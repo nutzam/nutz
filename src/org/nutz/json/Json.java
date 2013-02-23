@@ -193,7 +193,7 @@ public class Json {
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
             if (format == null)
-                format = JsonFormat.nice();
+                format = JsonFormat.compact();
             new JsonRenderImpl(writer, format).render(obj);
             writer.flush();
         }
