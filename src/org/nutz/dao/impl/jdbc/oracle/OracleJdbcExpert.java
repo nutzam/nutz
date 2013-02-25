@@ -79,13 +79,13 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         List<MappingField> pks = en.getPks();
         if (pks.size() > 1) {
             StringBuilder pkNames = new StringBuilder();
-            StringBuilder pkNames2 = new StringBuilder();
             for (MappingField pk : pks) {
                 pkNames.append(pk.getColumnName()).append(',');
-                pkNames2.append(pk.getColumnName()).append('_');
             }
             pkNames.setLength(pkNames.length() - 1);
-            pkNames2.setLength(pkNames2.length() - 1);
+            
+            String pkNames2 = makePksName(en);
+            
             String sql = String.format("alter table %s add constraint primary_key_%s primary key (%s)",
                                        en.getTableName(),
                                        pkNames2,
