@@ -2,6 +2,7 @@ package org.nutz.mvc;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -24,7 +25,7 @@ import org.nutz.mvc.config.FilterNutConfig;
  * @author juqkai(juqkai@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class NutFilter implements Filter {
+public class NutFilter implements Filter, Runnable {
 
     protected ActionHandler handler;
 
@@ -39,26 +40,16 @@ public class NutFilter implements Filter {
     private SessionProvider sp;
 
     private boolean needRealName = true;
+    
+    // 初始化完成标志
+    private boolean initFinish = false;
+    
+    private FilterConfig conf;
+    private CountDownLatch initLatch = new CountDownLatch(1);
 
     public void init(FilterConfig conf) throws ServletException {
-        Mvcs.setServletContext(conf.getServletContext());
-        this.selfName = conf.getFilterName();
-        Mvcs.set(selfName, null, null);
-
-        FilterNutConfig config = new FilterNutConfig(conf);
-        Mvcs.setNutConfig(config);
-        // 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
-        // @see Issue 301
-        String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
-        if (!"true".equals(skipMode)) {
-            handler = new ActionHandler(config);
-            String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
-            if (!"null".equalsIgnoreCase(regx)) {
-                ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
-            }
-        } else
-            this.skipMode = true;
-        sp = config.getSessionProvider();
+        this.conf = conf;
+        new Thread(this).start();
     }
 
     public void destroy() {
@@ -70,9 +61,16 @@ public class NutFilter implements Filter {
         Mvcs.close();
     }
 
-    @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
+        if (!initFinish)
+            try {
+                // 如果尚未完成初始化，则阻塞等待
+                initLatch.await();
+            }
+            catch (Exception e) {
+            }
+        
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         HttpServletRequest request = (HttpServletRequest)req;
@@ -117,5 +115,31 @@ public class NutFilter implements Filter {
                     Mvcs.ctx.reqThreadLocal.set(preContext);
             }
         }
+    }
+    
+    @Override
+    public void run() {
+        // 开始异步初始化
+        Mvcs.setServletContext(conf.getServletContext());
+        this.selfName = conf.getFilterName();
+        Mvcs.set(selfName, null, null);
+
+        FilterNutConfig config = new FilterNutConfig(conf);
+        Mvcs.setNutConfig(config);
+        // 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
+        // @see Issue 301
+        String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
+        if (!"true".equals(skipMode)) {
+            handler = new ActionHandler(config);
+            String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
+            if (!"null".equalsIgnoreCase(regx)) {
+                ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+            }
+        } else
+            this.skipMode = true;
+        sp = config.getSessionProvider();
+        // 初始化完成，唤醒等待的线程
+        initFinish = true;
+        initLatch.countDown();
     }
 }
