@@ -59,7 +59,9 @@ public class RawView implements View {
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws Throwable {
-        resp.setContentType(contentType);
+    	//如果用户自行设置了,那就不要再设置了!
+    	if (resp.getContentType() == null)
+    		resp.setContentType(contentType);
         if (obj == null)
             return;
         //文件

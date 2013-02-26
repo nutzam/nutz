@@ -902,6 +902,7 @@ public class Mirror<T> {
      * 
      * @throws BorningException
      *             当没有发现合适的 Borning 时抛出
+     * @throws NullPointerException when args is null
      */
     public Borning<T> getBorningByArgTypes(Class<?>... argTypes) throws BorningException {
         BornContext<T> bc = Borns.evalByArgTypes(klass, argTypes);
