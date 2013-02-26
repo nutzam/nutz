@@ -38,7 +38,7 @@ public class HttpTest {
     public void testEncode() {
         //根据Http头的Content-Type自动识别编码类型
         Response response1 = Http.get("www.baidu.com");
-        assertTrue("gbk".equals(response1.getEncodeType()));
+        assertEquals("utf-8", response1.getEncodeType());
         assertTrue(response1.getContent().indexOf("百度") > 0);
         //如果Http头中没有指定编码类型，用户也可以手工指定
         Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");

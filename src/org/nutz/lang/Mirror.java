@@ -1489,8 +1489,8 @@ public class Mirror<T> {
      *            函数参数类型列表
      * @return 变参空数组
      */
-    public static Object[] blankArrayArg(Class<?>[] pts) {
-        return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
+    public static Object blankArrayArg(Class<?>[] pts) {
+        return Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
     }
 
     /**
