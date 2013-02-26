@@ -9,6 +9,8 @@ import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 这是一个神奇的DataSource!!你甚至不需要设置driverClassName!!
@@ -19,10 +21,17 @@ import org.nutz.lang.Lang;
  */
 public class SimpleDataSource implements DataSource {
 
+	private static final Log log = Logs.get();
+	
     private String username;
     private String password;
     protected String driverClassName;
     private String jdbcUrl;
+    
+    public SimpleDataSource() {
+		log.warn("SimpleDataSource is use for Test/Attempt, NOT Using in Production environment!");
+		log.warn("SimpleDataSource is NOT a Connection Pool, So it is slow but safe for debug/study");
+	}
     
     public Connection getConnection() throws SQLException {
         Connection conn;
