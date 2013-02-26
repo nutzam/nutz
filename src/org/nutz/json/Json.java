@@ -188,12 +188,12 @@ public class Json {
      * @param obj
      *            JAVA 对象
      * @param format
-     *            JSON 字符串格式化 , 若format为null, 则定义为JsonFormat.compact()
+     *            JSON 字符串格式化 , 若format为null, 则定义为JsonFormat.nice()
      */
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
             if (format == null)
-                format = JsonFormat.compact();
+                format = JsonFormat.nice();
             new JsonRenderImpl(writer, format).render(obj);
             writer.flush();
         }
