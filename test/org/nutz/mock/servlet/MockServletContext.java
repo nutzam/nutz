@@ -83,7 +83,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
     }
 
     public String getServerInfo() {
-        throw Lang.noImplement();
+        return "NutServer TestCase 1.0";
     }
 
     public Servlet getServlet(String name) throws ServletException {

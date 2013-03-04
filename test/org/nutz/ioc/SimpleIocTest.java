@@ -23,6 +23,8 @@ public class SimpleIocTest {
     
     @Test
     public void test_no_singleton_depose() {
+    	Issue399Service.CreateCount = 0;
+    	Issue399Service.DeposeCount = 0;
     	Ioc ioc = new NutIoc(new AnnotationIocLoader(Issue399Service.class.getPackage().getName()));
     	for (int i = 0; i < 100; i++) {
 			ioc.get(Issue399Service.class);

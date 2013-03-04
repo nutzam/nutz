@@ -45,5 +45,10 @@ import java.lang.annotation.Target;
 public @interface PK {
 
     String[] value();
+    
+    /**
+     * 仅建表时使用
+     */
+    String name() default "";
 
 }

@@ -13,5 +13,3 @@ before_script:
   - cp ./tools/travis-ci/log4j.properties ./test/
 notifications:
   email: false
-  
-script: gradle --stacktrace check

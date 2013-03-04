@@ -19,6 +19,7 @@ import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.meta.Email;
+import org.nutz.lang.meta.Issue392Bean;
 import org.nutz.lang.reflect.ObjA;
 import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.Callback3;
@@ -609,5 +610,11 @@ public class MirrorTest {
     @Test
     public void testIssue309(){
         assertEquals("jk", Mirror.me(String.class).invoke(String.class, "valueOf", "jk"));
+    }
+    
+    @Test
+    public void testIssue392() {
+    	assertEquals(0, Mirror.me(Issue392Bean.class).born(new byte[]{}).getLen());
+    	assertEquals(6, Mirror.me(Issue392Bean.class).born(new byte[]{1,2,3,4,5,6}).getLen());
     }
 }

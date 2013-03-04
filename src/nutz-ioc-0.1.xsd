@@ -50,6 +50,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="t_events">
@@ -94,6 +95,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="1" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="1" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 		<xs:attribute ref="name" use="required"></xs:attribute>
 	</xs:complexType>
@@ -153,6 +155,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="t_tag_array">
@@ -175,6 +178,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="t_tag_set">
@@ -197,6 +201,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 	</xs:complexType>
 	<xs:complexType name="t_tag_str">
@@ -255,6 +260,7 @@
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="1" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="1" />
+			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 		<xs:attribute ref="key" use="required"></xs:attribute>
 	</xs:complexType>

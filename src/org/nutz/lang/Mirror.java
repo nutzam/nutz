@@ -902,6 +902,7 @@ public class Mirror<T> {
      * 
      * @throws BorningException
      *             当没有发现合适的 Borning 时抛出
+     * @throws NullPointerException when args is null
      */
     public Borning<T> getBorningByArgTypes(Class<?>... argTypes) throws BorningException {
         BornContext<T> bc = Borns.evalByArgTypes(klass, argTypes);
@@ -1489,8 +1490,8 @@ public class Mirror<T> {
      *            函数参数类型列表
      * @return 变参空数组
      */
-    public static Object[] blankArrayArg(Class<?>[] pts) {
-        return (Object[]) Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
+    public static Object blankArrayArg(Class<?>[] pts) {
+        return Array.newInstance(pts[pts.length - 1].getComponentType(), 0);
     }
 
     /**

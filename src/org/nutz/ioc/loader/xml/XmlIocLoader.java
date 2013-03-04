@@ -184,6 +184,7 @@ public class XmlIocLoader implements IocLoader {
     protected static final String EVN_TAG = IocValue.TYPE_ENV;
     protected static final String JNDI_TAG = IocValue.TYPE_JNDI;
     protected static final String SYS_TAG = IocValue.TYPE_SYS;
+    protected static final String APP_TAG = IocValue.TYPE_APP;
 
     protected IocValue parseX(Element element) throws Throwable {
         IocValue iocValue = new IocValue();
@@ -205,6 +206,9 @@ public class XmlIocLoader implements IocLoader {
             iocValue.setValue(element.getTextContent());
         } else if (FILE_TAG.equalsIgnoreCase(type)) {
             iocValue.setType(FILE_TAG);
+            iocValue.setValue(element.getTextContent());
+        } else if (APP_TAG.equalsIgnoreCase(type)) {
+            iocValue.setType(APP_TAG);
             iocValue.setValue(element.getTextContent());
         } else if (OBJ_TAG.equalsIgnoreCase(type)) {
             iocValue.setType(REFER_TAG);

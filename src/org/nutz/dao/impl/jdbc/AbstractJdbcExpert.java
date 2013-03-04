@@ -17,6 +17,7 @@ import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
+import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.impl.entity.field.ManyManyLinkField;
 import org.nutz.dao.impl.entity.macro.SqlFieldMacro;
 import org.nutz.dao.jdbc.JdbcExpert;
@@ -343,5 +344,18 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 
     public boolean isSupportAutoIncrement() {
         return true;
+    }
+    
+    public String makePksName(Entity<?> en) {
+    	String name = en.getType().getAnnotation(PK.class).name();
+    	if (Strings.isBlank(name)) {
+    		StringBuilder sb = new StringBuilder();
+    		for (MappingField mf : en.getPks()) {
+                sb.append("_").append(mf.getColumnName());
+            }
+    		sb.setLength(sb.length() - 1);
+    		return sb.toString();
+    	}
+    	return name;
     }
 }

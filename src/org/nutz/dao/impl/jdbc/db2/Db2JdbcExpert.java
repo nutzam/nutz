@@ -58,10 +58,8 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
         // 创建联合主键
         if (en.getPks().size() > 1) {
             sb = new StringBuilder();
-            sb.append("ALTER TABLE ").append(en.getTableName()).append(" ADD CONSTRAINT PK");
-            for (MappingField mf : en.getPks()) {
-                sb.append("_").append(mf.getColumnName());
-            }
+            sb.append("ALTER TABLE ").append(en.getTableName()).append(" ADD CONSTRAINT PK_");
+            sb.append(makePksName(en));
             sb.append(" PRIMARY KEY (");
             for (MappingField mf : en.getPks()) {
                 sb.append(mf.getColumnName()).append(",");
