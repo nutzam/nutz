@@ -68,11 +68,7 @@ public class AccessOpt extends TwoTernary implements RunMethod{
         }
         else {
             me = Mirror.me(obj);
-            try{
-                return me.invoke(obj, right.toString(), param.toArray());
-            }catch (Exception e){
-                return me.getValue(obj, right.toString());
-            }
+            return me.invoke(obj, right.toString(), param.toArray());
         }
     }
     
