@@ -11,7 +11,7 @@ import java.util.Map;
  * 构建新的MapList结构对象, 根据path重建MapList结构
  * @author juqkai(juqkai@gmail.com)
  */
-public class MaplRebuild{
+public class MaplRebuild {
     enum Model{add,del, cell}
     private Model model = Model.add;
     private String[] keys;
@@ -22,17 +22,17 @@ public class MaplRebuild{
     protected LinkedList<Integer> arrayIndex = new LinkedList<Integer>();
     //新MapList结构
     private Map<String, Object> newobj = new HashMap<String, Object>();
-    
+
     private Object cellObj = null;
-    
+
     public MaplRebuild(){
         newobj.put("obj", null);
     }
-    
+
     public MaplRebuild(Object mapl){
         newobj.put("obj", mapl);
     }
-    
+
     /**
      * 添加属性
      * @param path 路径
@@ -52,7 +52,7 @@ public class MaplRebuild{
         this.arrayIndex = arrayIndex;
         put(path, obj);
     }
-    
+
     /**
      * 删除结点
      * @param path
@@ -62,7 +62,7 @@ public class MaplRebuild{
         init(path, null);
         inject(newobj, 0);
     }
-    
+
     /**
      * 访问结点
      * @param path 路径
@@ -79,14 +79,14 @@ public class MaplRebuild{
     public Object fetchNewobj(){
         return newobj.get("obj");
     }
-    
+
     private void init(String keys, Object obj){
         keys = "obj." + keys;
         this.keys = keys.split("\\.");
         val = obj;
         arrayItem = 0;
     }
-    
+
     /**
      * 注入
      * @param obj
@@ -122,7 +122,7 @@ public class MaplRebuild{
         }
         if(obj instanceof List){
             try{
-                int index = Integer.parseInt(keys[i]); 
+                int index = Integer.parseInt(keys[i]);
                 injectList((List<Object>) obj, i, index);
                 return obj;
             }catch (Exception e) {
@@ -131,9 +131,9 @@ public class MaplRebuild{
         }
         return injectMap(obj, i);
     }
-    
+
     private int fetchIndex(String val){
-        int index = 0; 
+        int index = 0;
         if(val.indexOf(']') == 1){
             //[]格式的路径, 即索引放在arrayIndex里面的.
             if(arrayIndex.size() > arrayItem){
@@ -141,11 +141,15 @@ public class MaplRebuild{
             }
         } else {
             //[1]格式, 路径上自带索引
-            index = Integer.parseInt(val.substring(1, val.length() - 1));
+        	try{
+        		index = Integer.parseInt(val.substring(1, val.length() - 1));
+        	} catch (Exception e) {
+        		index = -1;
+        	}
         }
         return index;
     }
-    
+
     /**
      * 注入MAP
      * @param obj
@@ -158,7 +162,7 @@ public class MaplRebuild{
         if(obj != null){
             map = (Map<String, Object>) obj;
         }
-        
+
         if(model == Model.add){
             if(i == keys.length - 1){
                 map.put(key, val);
@@ -184,7 +188,7 @@ public class MaplRebuild{
                 return map;
             }
         }
-        
+
         if(map.containsKey(key) && map.get(key) != null){
             inject(map.get(key), i + 1);
         }
@@ -208,8 +212,12 @@ public class MaplRebuild{
                 }
                 return;
             }
-            if(list.size() <= index){
-                list.add(index, new HashMap<String, Object>());
+            if(-1 == index){
+                index = list.size();
+            }
+            
+            while(list.size() <= index){
+                list.add(list.size(), new HashMap<String, Object>());
             }
         } else if(model == Model.del){
             if(i == keys.length - 1){
@@ -234,5 +242,5 @@ public class MaplRebuild{
         }
         inject((Map<String, Object>) list.get(index), i + 1);
     }
-    
+
 }
