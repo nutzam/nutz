@@ -485,4 +485,12 @@ public class El2Test {
         assertEquals("123", El.eval(context, "String.valueOf(123)"));
         assertEquals("123", El.eval(context, "map.list.get(0)"));
     }
+    
+    @Test
+    public void test_issue411(){
+    	El el=new El("a[0].b.isPass('')?'1':'2'");
+        Context ctx = Lang.context();
+        ctx.set("a",new Object[]{new org.nutz.el.issue411.Issue411.A()} );
+        assertEquals("1", el.eval(ctx));
+    }
 }

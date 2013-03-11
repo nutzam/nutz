@@ -46,6 +46,8 @@ public class BorningException extends RuntimeException {
             for (Object arg : args)
                 sb.append("\n  @(").append(arg).append(')');
             sb.append("]");
+        } else {
+        	sb.append("\n by args: []");
         }
         if (null != e) {
             sb.append(" becasue:\n").append(getExceptionMessage(e));

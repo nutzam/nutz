@@ -6,7 +6,6 @@ import java.util.Map;
 import org.nutz.el.ElException;
 import org.nutz.el.Operator;
 import org.nutz.el.obj.Elobj;
-import org.nutz.el.obj.FieldObj;
 import org.nutz.el.opt.RunMethod;
 import org.nutz.el.opt.TwoTernary;
 import org.nutz.lang.InvokingException;
@@ -77,18 +76,11 @@ public class AccessOpt extends TwoTernary implements RunMethod{
      * 取得变得的值
      */
     public Object fetchVar(){
-        if(left instanceof AccessOpt){
-            return ((AccessOpt)left).fetchVar();
-        }
         if(left instanceof Operator){
             return ((Operator) left).calculate();
         }
         if(left instanceof Elobj){
-            Object obj = ((Elobj) left).fetchVal();
-            if(right instanceof FieldObj){
-                return Mirror.me(obj).getValue(obj, ((Elobj)right).getVal());
-            }
-            return obj;
+            return ((Elobj) left).fetchVal();
         }
         return left;
     }

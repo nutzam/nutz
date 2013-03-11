@@ -46,6 +46,7 @@ public abstract class Borns {
      * @param args
      *            构造参数数组
      * @return 构建信息对象
+     * @throws NullPointerException when args is null
      */
     public static <T> BornContext<T> eval(Class<T> type, Object... args) {
         BornContext<T> re;

@@ -250,7 +250,7 @@ public class Scans {
         String packagePath = pkg.replace('.', '/').replace('\\', '/');
         if (!packagePath.endsWith("/"))
             packagePath += "/";
-        return rs2class(scan(packagePath, regex));
+        return rs2class(pkg, scan(packagePath, regex));
     }
 
     public static boolean isInJar(File file) {
@@ -333,17 +333,26 @@ public class Scans {
      *            列表
      * @return 类对象列表
      */
-    private static List<Class<?>> rs2class(List<NutResource> list) {
+    private static List<Class<?>> rs2class(String pkg, List<NutResource> list) {
         Set<Class<?>> re = new HashSet<Class<?>>(list.size());
         if (!list.isEmpty()) {
             for (NutResource nr : list) {
                 if (!nr.getName().endsWith(".class") || nr.getName().endsWith("package-info.class")) {
                     continue;
                 }
+                // Class快速载入
+                String className = pkg + "." + nr.getName().substring(0, nr.getName().length() - 6).replaceAll("[/\\\\]", ".");
+                try {
+                	Class<?> klass = Lang.loadClass(className);
+                    re.add(klass);
+					continue;
+				}
+				catch (Throwable e) {}
+                // 失败了? 尝试终极方法,当然了,慢多了
                 InputStream in = null;
                 try {
                     in = nr.getInputStream();
-                    String className = ClassTools.getClassName(in);
+                    className = ClassTools.getClassName(in);
                     if (className == null) {
                         if (log.isInfoEnabled())
                             log.infof("Resource can't map to Class, Resource %s", nr);
