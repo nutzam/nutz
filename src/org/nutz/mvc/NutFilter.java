@@ -2,6 +2,7 @@ package org.nutz.mvc;
 
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -13,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.FilterNutConfig;
@@ -24,7 +26,7 @@ import org.nutz.mvc.config.FilterNutConfig;
  * @author juqkai(juqkai@gmail.com)
  * @author wendal(wendal1985@gmail.com)
  */
-public class NutFilter implements Filter {
+public class NutFilter implements Filter, Runnable {
 
     protected ActionHandler handler;
 
@@ -40,25 +42,20 @@ public class NutFilter implements Filter {
 
     private boolean needRealName = true;
 
-    public void init(FilterConfig conf) throws ServletException {
-        Mvcs.setServletContext(conf.getServletContext());
-        this.selfName = conf.getFilterName();
-        Mvcs.set(selfName, null, null);
+    // 初始化完成标志
+    private boolean initFinish = false;
+    
+    private FilterConfig conf;
+    
+    private CountDownLatch initLatch = new CountDownLatch(1);
 
-        FilterNutConfig config = new FilterNutConfig(conf);
-        Mvcs.setNutConfig(config);
-        // 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
-        // @see Issue 301
-        String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
-        if (!"true".equals(skipMode)) {
-            handler = new ActionHandler(config);
-            String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
-            if (!"null".equalsIgnoreCase(regx)) {
-                ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
-            }
-        } else
-            this.skipMode = true;
-        sp = config.getSessionProvider();
+    public void init(FilterConfig conf) throws ServletException {
+        this.conf = conf;
+        // 根据参数 asyn 决定是否采用异步加载的方式, 默认为 false
+        if (Lang.parseBoolean(conf.getInitParameter("asyn")))
+            new Thread(this).start();
+        else
+            run();
     }
 
     public void destroy() {
@@ -73,15 +70,21 @@ public class NutFilter implements Filter {
     @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
+        if (!initFinish)
+            try {
+                // 如果尚未完成初始化，则阻塞等待
+                initLatch.await();
+            }
+            catch (Exception e) {
+            }
+        
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
-        HttpServletRequest request = (HttpServletRequest)req;
-        HttpServletResponse response = (HttpServletResponse)resp;
+        HttpServletRequest request = (HttpServletRequest) req;
+        HttpServletResponse response = (HttpServletResponse) resp;
         try {
             if (sp != null)
-                req = sp.filter(request,
-                                response,
-                                Mvcs.getServletContext());
+                req = sp.filter(request, response, Mvcs.getServletContext());
             if (needRealName && skipMode) {
                 // 直接无视自己的名字!!到容器取nutzservlet的名字!!
                 Enumeration<String> names = Mvcs.getServletContext().getAttributeNames();
@@ -109,7 +112,7 @@ public class NutFilter implements Filter {
         }
         finally {
             Mvcs.resetALL();
-            //仅当forward/incule时,才需要恢复之前设置
+            // 仅当forward/incule时,才需要恢复之前设置
             if (null != (request.getAttribute("javax.servlet.forward.request_uri"))) {
                 if (preName != null)
                     Mvcs.set(preName, request, response);
@@ -117,5 +120,31 @@ public class NutFilter implements Filter {
                     Mvcs.ctx.reqThreadLocal.set(preContext);
             }
         }
+    }
+
+    public void run() {
+        // 开始初始化
+        Mvcs.setServletContext(conf.getServletContext());
+        this.selfName = conf.getFilterName();
+        Mvcs.set(selfName, null, null);
+        
+        FilterNutConfig config = new FilterNutConfig(conf);
+        Mvcs.setNutConfig(config);
+
+        // 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
+        // @see Issue 301
+        String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
+        if (!"true".equals(skipMode)) {
+            handler = new ActionHandler(config);
+            String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
+            if (!"null".equalsIgnoreCase(regx))
+                ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+        } else
+            this.skipMode = true;
+
+        sp = config.getSessionProvider();
+        initFinish = true;
+        // 初始化完成，唤醒等待的线程
+        initLatch.countDown();
     }
 }
