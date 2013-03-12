@@ -818,6 +818,5 @@ public class NutDao extends DaoSupport implements Dao {
 
     //---------------------------------------------------------------
     //专属于NutDao的一些帮助方法
-
-
+    
 }
