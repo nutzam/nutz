@@ -143,7 +143,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
     }
 
     public String getContextPath() {
-        throw Lang.noImplement();
+        return "";
     }
 
     // =====================================================3.0

@@ -1,0 +1,63 @@
+#title: Session机制
+#author: wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------------------------
+Session机制是什么?
+
+	Session即HttpSession对象,是维护客户端/服务器端的身份识别机制之一
+	
+	默认情况下,单机使用,并不需要特别的Session机制
+	
+	但,如果是集群,或者你想用Redis/Memcached等存放Session,那么就需要自定义Session了
+	
+	Session有很多种, 例如:
+		
+		*容器本身提供的(tomcat/jetty/jboss/weblogic等都自带跨JVM的Session,功能强大但存放的对象必须实现Serializable
+		*自行实现的,针对性高,可控性高
+		
+	如果是容器提供的Session机制,那么大部分情况下都是对应用透明的,所以nutz也没什么可以做的
+	
+	对于控制欲很强,业务不是非常复杂的,自定义Session肯定是首选啦
+	
+-----------------------------------------------------------------------------------------
+涉及到的注解和接口
+
+	`@SessionBy` -- 定义在主模块(全局的,难道你还想每个子模块一种?!),就是为了说明下一个接口的对象如何生成
+	`SessionProvider` -- 过滤器式的Session提供者
+	
+	最废品的一个SessionBy和SessionProvider实现
+	{{{
+	@SessionBy(NopSessionProvider.class)
+	public class MainModule {} //其他的果断不理啦
+	
+	public class NopSessionProvider extend AbstractSessionProvider {
+	
+		public HttpSession createSession(HttpServletRequest req,
+									 HttpServletResponse resp,
+									 ServletContext servletContext) {
+			//使用容器原生的Session实现 == 等于什么都没做
+			return req.getSession(true);
+			// 你可以根据req的cookie判断是新建一个你自己的Session对象还是从某种集合中取出相应的Session对象
+			// 例如用memcached,jdbc,redis来存放键值
+		}
+	
+	}
+	}}}
+	
+---------------------------------------------------------------------------------------------
+对自定义SessionProvider实现的提醒
+
+	如果你打算实现分布式的Session:
+	
+		* 所有写操作(setXXX)都要持久化到数据库或其他独立的存储空间(所有机器均能访问的)中
+		* 所有读操作(getXXX)都应该从数据库或其他独立的存储空间中获取
+	
+	减少在Session中存放的内容
+	
+		* Session的读写,肯定比原生Session慢,因为原生Session仅仅同一个JVM中的Map
+		* 注意数据同步的问题
+		
+--------------------------------------------------------------------------------------------
+哪里有现成的实现?
+
+	ztask项目,有一个基于mongo的实现

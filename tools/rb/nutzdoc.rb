@@ -12,11 +12,12 @@
   请使用`-h`查看使用文档
 
 ==注意事项
-所需的nutz.jar, nutzdoc.jar, iText.jar, iTextAsian.jar需要放在该文件同一目录下
+默认情况下把所需要用到的nutz.jar, nutzdoc.jar, iText.jar, iTextAsian.jar需要放在该文件同一目录下
 
 在本脚本中`Github Pages`的上传目录为`nutz`的`gh-pages`分支，
 如果打算使用本脚本自动生成你自己的`Github Pages`的话，
-请自行修改`pages_before_work`方法
+请自行修改`pages_before_work`方法中所指定的remote地址（需要有push权限），
+以及`pages_after_work`方法（里面的处理可能是不需要的）。
 
 =end
 
@@ -40,27 +41,27 @@ class Nutzdoc
           options.type = type
         end
 
-        opts.on('-i', '--input_path [INPUT_PATH]', 'Set doc input path') do |input_path|
+        opts.on('-i', '--input-path [INPUT-PATH]', 'Set doc input path') do |input_path|
           options.input_path = input_path
         end
 
-        opts.on('-o', '--output_path [OUTPUT_PATH]', 'Set doc output path.') do |output_path|
+        opts.on('-o', '--output-path [OUTPUT_PATH]', 'Set doc output path.') do |output_path|
           options.output_path = output_path
         end
 
-        opts.on('--wiki_index_page [GOOGLE_WIKI_INDEX_PAGE]', "Set Google wiki doc's index page") do |wiki_index_page|
+        opts.on('--wip', '--wiki-index-page [GOOGLE_WIKI_INDEX_PAGE]', "Set Google wiki doc's index page") do |wiki_index_page|
           options.wiki_index_page = wiki_index_page
         end
 
-        opts.on('--wiki_img_url [GOOGLE_WIKI_IMAGE_URL]', "Set Google wiki doc's image url") do |wiki_img_url|
+        opts.on('--wiu' ,'--wiki-img-url [GOOGLE_WIKI_IMAGE_URL]', "Set Google wiki doc's image url") do |wiki_img_url|
           options.wiki_img_url = wiki_img_url
         end
 
-        opts.on('--pdf_font_path [PDF_FONT_PATH]', 'Set pdf font path', 'Default path is THIS file path') do |pdf_font_path|
+        opts.on('--pdf-font-path [PDF_FONT_PATH]', 'Set pdf font path', 'Default path is THIS file path') do |pdf_font_path|
           options.pdf_font_path = pdf_font_path
         end
 
-        opts.on('--pdf_needs_jar_path [PDF_NEEDS_JAR_PATH]', 'Set pdf iText and iTextAsian jar path', 'Default path is THIS file path') do |pdf_needs_jar_path|
+        opts.on('--pdf-needs-jar-path [PDF_NEEDS_JAR_PATH]', 'Set pdf iText and iTextAsian jar path', 'Default path is THIS file path') do |pdf_needs_jar_path|
           options.pdf_needs_jar_path = pdf_needs_jar_path
         end
 
@@ -99,7 +100,8 @@ class Nutzdoc
       set_classpath
 
       @message = @options.type
-      @command = "#{@set} #{@class_path} && java org.nutz.doc.Doc #{@options.type} #{@options.input_path} #{@options.output_path}"
+      type = @options.type == 'pages' ? 'html' : @options.type
+      @command = "#{@set} #{@class_path} && java org.nutz.doc.Doc #{type} #{@options.input_path} #{@options.output_path}"
       if 'gwiki' == @options.type
         @message = "Google Wiki"
         @command += " #{@options.wiki_index_page} #{@options.wiki_img_url}"
@@ -122,32 +124,20 @@ class Nutzdoc
       system('git commit -am "update doc"')
       puts "-"*80
       puts "start push to Github Pages ......"
-      system("git push #{remote_name} gh-pages")
+      system("git push gh-pages master:gh-pages")
       puts "Github Pages has pushed."
       puts "-"*80
     end
 
     def pages_before_work
       work_path = File.expand_path(@options.output_path)
-      FileUtils.cp_r("#{File.expand_path(@options.input_path)}/../../.git", "#{work_path}/.git")
       Dir.chdir(work_path)
 
-      remote_name = "origin"
-      can_push = false
-      `git remote -v`.split("\n").each do |line|
-        if m = line.match(/(.+)\s+git@github\.com:nutzam\/nutz\.git \(push\)/)
-          can_push = true
-          remote_name = m[1]
-        end
-      end
+      remote_url = 'git@github.com:nutzam/nutz.git'
+      system('git init .')
+      system("git remote add gh-pages #{remote_url}")
+      system("git pull --rebase gh-pages gh-pages")
 
-      unless can_push
-        puts "Oops, you not have push remote. So, just Check it."
-        exit
-      end
-
-      system("git checkout gh-pages")
-      system("git pull --rebase #{remote_name} gh-pages")
       Dir['**'].each do |dir|
         FileUtils.rm_rf File.expand_path(dir)
       end

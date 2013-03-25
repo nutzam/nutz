@@ -69,6 +69,7 @@
 		<doc path="module_of_request.man"/>
     	<doc path="rest.man"/>
 		<doc path="annotations.man"/>
+		<doc path="session.man"></doc>
 	</doc>
 	<doc path="json" title="Json 手册">
 		<doc path="hello.man"/>
