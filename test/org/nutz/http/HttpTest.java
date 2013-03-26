@@ -52,4 +52,10 @@ public class HttpTest {
     	//抛出超时异常
     	Http.get("www.baidu.com", 1);
     }
+    
+    @Test
+    public void test_https() {
+    	Response response = Http.get("https://github.com");
+    	assertTrue(response.getStatus() == 200);
+    }
 }
