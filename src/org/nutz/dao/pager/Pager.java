@@ -3,10 +3,14 @@ package org.nutz.dao.pager;
 import java.io.Serializable;
 
 import org.nutz.lang.util.PageInfo;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class Pager implements PageInfo, Serializable {
 
     private static final long serialVersionUID = 8848523495013555357L;
+    
+    private static final Log log = Logs.get();
 
     /**
      * 改变这个，当每页大小超过 MAX_FETCH_SIZE 时，这个将是默认的 fetchSize
@@ -54,7 +58,8 @@ public class Pager implements PageInfo, Serializable {
     }
 
     public Pager setPageNumber(int pn) {
-        // pageNumber = pn > FIRST_PAGE_NUMBER ? pn : FIRST_PAGE_NUMBER;
+    	if (1 > pn && log.isInfoEnabled())
+    		log.infof("PageNumber shall start at 1 ,but input is %d, that mean pager is disable", pn);
         pageNumber = pn;
         return this;
     }
