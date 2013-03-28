@@ -62,8 +62,8 @@ public abstract class Trans {
         }
         int tCount = count.get() + 1;
         count.set(tCount);
-        if (DEBUG)
-            log.debugf("trans_begain: %d", tCount);
+        //if (DEBUG)
+        //    log.debugf("trans_begain: %d", tCount);
 
     }
 
