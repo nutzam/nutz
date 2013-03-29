@@ -211,7 +211,7 @@ public View myFunction(@Param("type") type){
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如果你使用 JSTL，你还可以</p>
 <ul type="disc">
-<li>通过 ${msg.xxxx} 输出本地字符创，参看 <a href="localization.html">本地化字符串更多的介绍</a></li>
+<li>通过 ${msg.xxxx} 输出本地字符串，参看 <a href="localization.html">本地化字符串更多的介绍</a></li>
 <li>通过 ${base} 输出当前应用的 ContextPath</li>
 <li>通过 ${obj.xxx} 输出要渲染对象的某个属性值</li>
 <li>你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"</li>
@@ -365,7 +365,7 @@ public View myFunction(@Param("type") type){
 <p>使用方式</p>
 <pre>@Ok("raw")
 </pre>
-<p>将方法的返回值直接写入流，数据对象可以是如下类型: </p>
+<p>将方法的返回值直接写入流，数据对象可以是如下类型:</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
 <td> null        </td>
@@ -386,6 +386,10 @@ public View myFunction(@Param("type") type){
 <tr>
 <td> Reader      </td>
 <td> 按文本方式写入HTTP响应流，并关闭 Reader  </td>
+</tr>
+<tr>
+<td> File		   </td>
+<td> 文件下载 </td>
 </tr>
 <tr>
 <td> 默认的      </td>
@@ -468,7 +472,8 @@ public View myFunction(@Param("type") type){
 <div class="hr"><b></b></div>
 <h2><a name="已有的,经过检验的自定义视图"></a>已有的,经过检验的自定义视图</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p><a href="http://axhack.javaeye.com/blog/542441">Freemarker</a> <a href="http://myblog.sunfarms.net/100.html">Freemarker</a> 可以拓展为Velocity</p>
+<p><a href="http://axhack.javaeye.com/blog/542441">Freemarker</a> </p>
+<p><a href="http://myblog.sunfarms.net/100.html">Freemarker</a> 可以拓展为Velocity</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>juqkai</b><a href="mailto:juqkai@gmail.com">&lt;juqkai@gmail.com&gt;</a></div>
 </body>
