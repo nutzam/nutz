@@ -153,4 +153,7 @@ public abstract class AbstractLog implements Log {
         return isWarnEnabled;
     }
 
+    public Log setTag(String tag) {
+    	return this;
+    }
 }

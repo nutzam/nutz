@@ -84,9 +84,5 @@ public final class Logs {
     /**
      * 什么都不做的适配器,无任何输出,某些人就想完全禁用掉NutzLog,就可以用上它了
      */
-    public static LogAdapter NOP_ADAPTER = new LogAdapter() {
-		public Log getLogger(String className) {
-			return NopLog.NOP;
-		}
-	};
+    public static LogAdapter NOP_ADAPTER = NopLog.NOP;
 }
