@@ -156,7 +156,7 @@
 		
 		使用 JSTL
 			如果你使用 JSTL，你还可以
-			 * 通过 `${msg.xxxx}` 输出本地字符创，参看 [localization.man 本地化字符串更多的介绍]
+			 * 通过 `${msg.xxxx}` 输出本地字符串，参看 [localization.man 本地化字符串更多的介绍]
 			 * 通过 `${base}` 输出当前应用的 ContextPath
 			 * 通过 `${obj.xxx}` 输出要渲染对象的某个属性值
 			 * 你需要知道，JSP 视图，会将要渲染的对象存入 request 对象的一个属性里，属性名为 "obj"
@@ -324,12 +324,13 @@
 		{{{
 		@Ok("raw")
 		}}}
-		将方法的返回值直接写入流，数据对象可以是如下类型: 
+		将方法的返回值直接写入流，数据对象可以是如下类型:
 		|| null        || 什么都不做 ||
 		|| `byte[]`    || 按二进制方式写入HTTP响应流 ||
 		|| InputStream || 按二进制方式写入响应流，并关闭 InputStream? ||
 		|| `char[]`    || 按文本方式写入HTTP响应流 ||
 		|| Reader      || 按文本方式写入HTTP响应流，并关闭 Reader  ||
+		|| File		   || 文件下载 ||
 		|| 默认的      || 直接将对象 toString() 后按文本方式写入HTTP响应流 ||
 		 
 		默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
@@ -393,5 +394,7 @@
 		 * 所有的视图工厂，必须有一个 public 的默认构造函数。
 	--------------------------------------------------------------------------------------
 	已有的,经过检验的自定义视图
+	
 		[http://axhack.javaeye.com/blog/542441 Freemarker] 
+		
 		[http://myblog.sunfarms.net/100.html Freemarker] 可以拓展为Velocity

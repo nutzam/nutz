@@ -1,15 +1,20 @@
 package org.nutz.log.impl;
 
 import org.nutz.log.Log;
+import org.nutz.log.LogAdapter;
 
 /**
  * 一个什么都不做的Log实现,任何Level都返回false
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class NopLog implements Log {
+public class NopLog implements Log, LogAdapter {
+
+	public Log getLogger(String className) {
+		return NOP;
+	}
 	
-	public static final Log NOP = new NopLog();
+	public static final NopLog NOP = new NopLog();
 	
 	protected NopLog() {
 	}
@@ -84,5 +89,9 @@ public class NopLog implements Log {
 	}
 	
 	public void debug(Object message) {
+	}
+	
+	public Log setTag(String tag) {
+		return this;
 	}
 }
