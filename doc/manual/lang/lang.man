@@ -165,7 +165,7 @@ XML
 			}}}
 		 * 是否为空白
 			{{{
-			assertTrue(Strings.isEmpty("\t \r\n"));
+			assertTrue(Strings.isBlank("\t \r\n"));
 			}}}
 		 * 是否被特定字符包裹
 			{{{
