@@ -19,8 +19,9 @@
     ------------------------------ Nutz 的下载地址的分隔线 -------------------------
 
      * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
-     * 日编译下载地址 : [http://build.sunfarms.net/nutz/]
+     * 每日构建地址 : [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/]
      * Nutz 的主页 :  [http://nutzam.com]
+     * Github 地址 :  [https://github.com/nutzam/nutz]
 
 --------------------------------------------------------------------------------------------------------
 问题修复
