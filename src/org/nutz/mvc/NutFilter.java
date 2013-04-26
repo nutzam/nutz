@@ -1,7 +1,6 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
-import java.util.Enumeration;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -32,36 +31,34 @@ public class NutFilter implements Filter {
 
     private Pattern ignorePtn;
 
-    private boolean skipMode;
-
     private String selfName;
 
     private SessionProvider sp;
 
-    private boolean needRealName = true;
+    private NutFilter2 proxyFilter;//代理老版本的Filter
 
     public void init(FilterConfig conf) throws ServletException {
+    	if ("true".equals(Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase())) {
+    		proxyFilter = new NutFilter2();
+    		return;
+    	}
         Mvcs.setServletContext(conf.getServletContext());
         this.selfName = conf.getFilterName();
         Mvcs.set(selfName, null, null);
 
         FilterNutConfig config = new FilterNutConfig(conf);
         Mvcs.setNutConfig(config);
-        // 如果仅仅是用来更新 Message 字符串的，不加载 Nutz.Mvc 设定
-        // @see Issue 301
-        String skipMode = Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase();
-        if (!"true".equals(skipMode)) {
-            handler = new ActionHandler(config);
-            String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
-            if (!"null".equalsIgnoreCase(regx)) {
-                ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
-            }
-        } else
-            this.skipMode = true;
+        handler = new ActionHandler(config);
+        String regx = Strings.sNull(config.getInitParameter("ignore"), IGNORE);
+        if (!"null".equalsIgnoreCase(regx)) {
+            ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
+        }
         sp = config.getSessionProvider();
     }
 
     public void destroy() {
+    	if (proxyFilter != null)
+    		return;
         Mvcs.resetALL();
         Mvcs.set(selfName, null, null);
         if (handler != null)
@@ -70,9 +67,12 @@ public class NutFilter implements Filter {
         Mvcs.close();
     }
 
-    @SuppressWarnings("unchecked")
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
+    	if (proxyFilter != null) {
+    		proxyFilter.doFilter(req, resp, chain);
+    		return;
+    	}
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         HttpServletRequest request = (HttpServletRequest)req;
@@ -82,25 +82,11 @@ public class NutFilter implements Filter {
                 req = sp.filter(request,
                                 response,
                                 Mvcs.getServletContext());
-            if (needRealName && skipMode) {
-                // 直接无视自己的名字!!到容器取nutzservlet的名字!!
-                Enumeration<String> names = Mvcs.getServletContext().getAttributeNames();
-                while (names.hasMoreElements()) {
-                    String name = (String) names.nextElement();
-                    if (name.endsWith("_localization")) {
-                        this.selfName = name.substring(0, name.length() - "_localization".length());
-                        break;
-                    }
-                }
-                needRealName = false;
-            }
             Mvcs.set(this.selfName, request, response);
-            if (!skipMode) {
-                RequestPath path = Mvcs.getRequestPathObject(request);
-                if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
-                    if (handler.handle(request, response))
-                        return;
-                }
+            RequestPath path = Mvcs.getRequestPathObject(request);
+            if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
+                if (handler.handle(request, response))
+                    return;
             }
             // 更新 Request 必要的属性
             Mvcs.updateRequestAttributes((HttpServletRequest) req);

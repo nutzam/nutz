@@ -151,6 +151,8 @@ public abstract class Mvcs {
     public static void updateRequestAttributes(HttpServletRequest req) {
         // 初始化本次请求的多国语言字符串
         Map<String, Map<String, Object>> msgss = getMessageSet();
+        if (msgss == null && !ctx.localizations.isEmpty())
+        	msgss = ctx.localizations.values().iterator().next();
         if (null != msgss) {
             Map<String, Object> msgs = null;
 

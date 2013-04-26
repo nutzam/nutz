@@ -155,7 +155,7 @@ public class AnnotationEntityMaker implements EntityMaker {
                 manymanys.add(_Infos.createLinkInfo(field));
             }
             // 应该忽略
-            else if (Modifier.isTransient(field.getModifiers())
+            else if ((Modifier.isTransient(field.getModifiers()) && null == field.getAnnotation(Column.class))
                      || (shouldUseColumn && (null == field.getAnnotation(Column.class)
                                              && null == field.getAnnotation(Id.class) && null == field.getAnnotation(Name.class)))) {
                 continue;

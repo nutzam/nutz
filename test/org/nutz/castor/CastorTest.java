@@ -24,6 +24,18 @@ import org.nutz.lang.meta.Email;
 
 public class CastorTest {
 
+    /**
+     * 参见 Issue #435
+     */
+    @Test
+    public void test_yyMMdd_to_Timestamp() {
+        Castors cts = Castors.me();
+        String str = "2013-04-17";
+        Timestamp t = cts.castTo(str, Timestamp.class);
+        String s0 = cts.castToString(t);
+        assertEquals("2013-04-17 00:00:00", s0);
+    }
+
     @Test
     public void test_null_to_byte_and_short() {
         Castors cts = Castors.me();
@@ -372,8 +384,8 @@ public class CastorTest {
         Castors.me().setSetting(new MyCastorSetting());
         Date date = new Date();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        assertEquals(    new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date),
-                        Castors.me().castToString(timestamp));
+        assertEquals(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date),
+                     Castors.me().castToString(timestamp));
 
         Castors.me().setSetting(new DefaultCastorSetting());
 
@@ -400,9 +412,9 @@ public class CastorTest {
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
     }
 
-//    @Test
-//    public void load_form_nowhere() {
-//        Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
-//        castors.castTo(1, Long.class);
-//    }
+    // @Test
+    // public void load_form_nowhere() {
+    // Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
+    // castors.castTo(1, Long.class);
+    // }
 }

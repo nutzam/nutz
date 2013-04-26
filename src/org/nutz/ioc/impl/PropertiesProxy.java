@@ -33,7 +33,7 @@ public class PropertiesProxy {
     // 是否忽略无法加载的文件
     private boolean ignoreResourceNotFound = false;
 
-    private MultiLineProperties mp;
+    private MultiLineProperties mp = new MultiLineProperties();
 
     public PropertiesProxy() {
         this(true);
