@@ -39,7 +39,7 @@
 		{*直接 Scriptlet}
 		{{{
 		...
-		<h1><%=((Map<String,String>)request.getObject("msg")).get("my.msg.key")%></h1>
+		<h1><%=((Map<String,String>)request.getAttribute("msg")).get("my.msg.key")%></h1>
 		...
 		}}}
 		
