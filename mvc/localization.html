@@ -94,7 +94,7 @@ public class MyMainModule {
 <div style="float:right;"><a href="#top">Top</a></div>
 <p><b>直接 Scriptlet</b></p>
 <pre>...
-&lt;h1&gt;&lt;%=((Map&lt;String,String&gt;)request.getObject("msg")).get("my.msg.key")%&gt;&lt;/h1&gt;
+&lt;h1&gt;&lt;%=((Map&lt;String,String&gt;)request.getAttribute("msg")).get("my.msg.key")%&gt;&lt;/h1&gt;
 ...
 </pre>
 <p><b>采用 JSTL</b></p>
