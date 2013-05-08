@@ -12,6 +12,7 @@ import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
+import org.nutz.mvc.ViewMaker2;
 import org.nutz.mvc.view.ViewWrapper;
 import org.nutz.mvc.view.VoidView;
 
@@ -77,7 +78,12 @@ public class ViewProcessor extends AbstractProcessor {
         }
         
         for (ViewMaker maker : ai.getViewMakers()) {
-            View view = maker.make(config.getIoc(), type, value);
+        	if (maker instanceof ViewMaker2) {
+        		View view = ((ViewMaker2)maker).make(config, ai, type, value);
+        		if (view != null)
+        			return view;
+        	}
+        	View view = maker.make(config.getIoc(), type, value);
             if (null != view)
                 return view;
         }
