@@ -420,8 +420,11 @@ public class Images {
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
                 Files.write(tmp, (InputStream)img);
-                tmp.deleteOnExit();
-                return read(tmp);
+                try {
+					return read(tmp);
+				} finally {
+					tmp.delete();
+				}
             }
             throw Lang.makeThrow("Unkown img info!! --> " + img);
         }
