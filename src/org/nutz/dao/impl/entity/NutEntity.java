@@ -155,6 +155,16 @@ public class NutEntity<T> implements Entity<T> {
      */
     private PkType pkType;
 
+    /**
+     * 是否有Java字段与数据库字段的便捷对应方式
+     */
+    private boolean hasSimpleColumn;
+
+    /**
+     * Java字段与数据库字段的便捷对应关系的字符
+     */
+    private Character simpleColumn;
+
     public NutEntity(Class<T> type) {
         this.type = type;
         this.mirror = Mirror.me(type);
@@ -470,5 +480,21 @@ public class NutEntity<T> implements Entity<T> {
 
     public String getColumnComent(String columnName) {
         return columnComments.get(columnName);
+    }
+
+    public void setHasSimpleColumn(boolean hasSimpleColumn) {
+        this.hasSimpleColumn = hasSimpleColumn;
+    }
+
+    public boolean hasSimpleColumn() {
+        return hasSimpleColumn;
+    }
+
+    public Character getSimpleColumn() {
+        return simpleColumn;
+    }
+
+    public void setSimpleColumn(Character simpleColumn) {
+        this.simpleColumn = simpleColumn;
     }
 }

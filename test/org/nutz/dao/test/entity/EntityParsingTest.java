@@ -134,4 +134,13 @@ public class EntityParsingTest extends DaoCase {
         Entity<?> en = en(TO5.class);
         assertEquals("toid", en.getField("id").getColumnName());
     }
+
+    @Test
+    public void test_simple_column() {
+        Entity<?> en = en(TO7.class);
+        assertEquals("primary_key", en.getField("primaryKey").getColumnName());
+        assertEquals("foreign#key", en.getField("foreignKey").getColumnName());
+        assertEquals("simple_column", en.getField("simpleColumn").getColumnName());
+        assertEquals("has-simple-column-anno", en.getField("hasSimpleColumnAnno").getColumnName());
+    }
 }

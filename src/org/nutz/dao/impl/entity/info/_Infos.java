@@ -17,6 +17,7 @@ import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
+import org.nutz.dao.entity.annotation.SimpleColumn;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.eject.EjectByField;
@@ -125,7 +126,8 @@ public class _Infos {
         info.annPrev = field.getAnnotation(Prev.class);
         info.annReadonly = field.getAnnotation(Readonly.class);
         info.columnComment = field.getAnnotation(Comment.class);
-        
+        info.simpleColumn = field.getAnnotation(SimpleColumn.class);
+
         //检查@Id和@Name的属性类型
         if (info.annId != null) {
             if (!Mirror.me(field.getType()).isIntLike())
