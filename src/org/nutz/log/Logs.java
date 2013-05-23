@@ -1,5 +1,6 @@
 package org.nutz.log;
 
+import org.nutz.lang.Lang;
 import org.nutz.log.impl.NopLog;
 import org.nutz.plugin.SimplePluginManager;
 
@@ -48,7 +49,15 @@ public final class Logs {
      * 返回以调用者的类命名的Log,是获取Log对象最简单的方法!
      */
     public static Log get() {
-        return adapter.getLogger(Thread.currentThread().getStackTrace()[2].getClassName());
+    	StackTraceElement[] sts = Thread.currentThread().getStackTrace();
+    	if (Lang.isAndroid) {
+    		for (int i = 0; i < sts.length; i++) {
+				if (sts[i].getClassName().equals(Logs.class.getName())) {
+					return adapter.getLogger(sts[i+1].getClassName());
+				}
+			}
+    	}
+    	return adapter.getLogger(sts[2].getClassName());
     }
 
     /**

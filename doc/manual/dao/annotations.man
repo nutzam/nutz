@@ -8,12 +8,12 @@
  * 直接浏览源代码: [https://github.com/nutzam/nutz/tree/master/src/org/nutz/dao/entity/annotation]
  * 用 Git 工具检出源代码: [https://github.com/nutzam/nutz.git]
  * 用 SVN 工具检出源代码（因只在新版本发布的时候更新该地址，不推荐）: [http://code.google.com/p/nutz/source/checkout]
- * 下载源代码: [https://github.com/ywjno/yuchberry-server-plus/zipball/master]
+ * 下载源代码: [https://github.com/nutzam/nutz/zipball/master]
 
 || {#888;@Column}	|| 字段			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Column} ||
 || {#888;@ColDefine}|| 字段精确定义	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.ColDefine} ||
 || {#888;@Default}	|| 默认值		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Default} ||
-|| {#888;@EL}		|| 字段表达式宏	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.SQL} ||
+|| {#888;@EL}		|| 字段表达式宏	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.EL} ||
 || {#888;@Id}		|| 数字主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Id} ||
 || {#888;@Name}		|| 字符主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Name} ||
 || {#888;@PK}		|| 复合主键		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.PK} ||
@@ -26,3 +26,7 @@
 || {#888;@SQL}		|| 字段SQL宏	|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.SQL} ||
 || {#888;@Table}	|| 表名			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Table} ||
 || {#888;@View}		|| 视图名		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.View} ||
+|| {#888;@TableMeta}	|| 表设置			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.TableMeta} ||
+|| {#888;@TableIndexes}	|| 表索引			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.TableIndexes} ||
+|| {#888;@Index}		|| 具体的索引内容		|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Index} ||
+|| {#888;@Comment}	|| 表或者字段的注释			|| @see JDoc: {#56F;org.nutz.dao.entity.annotation.Comment} ||

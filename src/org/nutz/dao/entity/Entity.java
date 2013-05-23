@@ -17,7 +17,7 @@ import org.nutz.lang.util.Context;
 public interface Entity<T> {
 
     /**
-     * @return 实体的 Java 类型`
+     * @return 实体的 Java 类型
      */
     Class<T> getType();
 

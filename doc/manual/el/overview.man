@@ -244,7 +244,7 @@
 	Java 对象属性访问调用
 
     	{{{<JAVA>
-    	Context context = Lang.content();
+    	Context context = Lang.context();
     	Pet pet = new Pet();
     	pet.setName("GFW");
     	context.set("pet",pet);

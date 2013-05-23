@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.nutz.lang.Streams;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
 
@@ -667,7 +666,7 @@ public abstract class Files {
                 return false;
         InputStream ins = new BufferedInputStream(new FileInputStream(src));
         OutputStream ops = new BufferedOutputStream(new FileOutputStream(target));
-        
+
         Streams.write(ops, ins);
 
         Streams.safeClose(ins);

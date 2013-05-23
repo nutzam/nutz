@@ -14,6 +14,8 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -418,8 +420,11 @@ public class Images {
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
                 Files.write(tmp, (InputStream)img);
-                tmp.deleteOnExit();
-                return read(tmp);
+                try {
+					return read(tmp);
+				} finally {
+					tmp.delete();
+				}
             }
             throw Lang.makeThrow("Unkown img info!! --> " + img);
         }
@@ -469,7 +474,7 @@ public class Images {
      * @param quality
      *            质量 0.1f ~ 1.0f
      */
-    public static void writeJpeg(RenderedImage im, File targetJpg, float quality) {
+    public static void writeJpeg(RenderedImage im, Object targetJpg, float quality) {
         try {
             ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
             ImageWriteParam param = writer.getDefaultWriteParam();
@@ -504,12 +509,14 @@ public class Images {
         //Read the image raster
         Raster raster = reader.readRaster(0, null); 
         BufferedImage image = createJPEG4(raster);
-        File tmp = File.createTempFile("nutz.img", "jpg"); //需要写到文件,然后重新解析哦
-        writeJpeg(image, tmp, 1);
-        return read(tmp);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        writeJpeg(image, out, 1);
+        out.flush();
+        BufferedImage img = read(new ByteArrayInputStream(out.toByteArray()));
+        return img;
     }
     
-      /**                                                                                                                                           
+  /**                                                                                                                                           
     Java's ImageIO can't process 4-component images                                                                                             
     and Java2D can't apply AffineTransformOp either,                                                                                            
     so convert raster data to RGB.                                                                                                              
