@@ -26,8 +26,7 @@
 	@Table("t_employee")
 	@View("v_employee")		// <- 这里声明了视图
 	public class Employee{
-		
-		@Column
+
 		@Id
 		private int id;
 

@@ -12,15 +12,17 @@
 	{#F00;*注意：} 对于一个 POJO，你可以同时为其声明 @Id 和 @Name，它们都能正常工作。你只需要保证 @Name 对应的字段
 	在数据库里有唯一性约束即可。 但是通常， Nutz.Dao 并没有假设你同时在一个 POJO 里应用 @Id, @Name 和 @PK，如果你
 	这么做了，可能会引发一些奇怪的问题。事实上，你也不可能这么做，不是吗？
+
+	TIPS：注解 @Id 与注解 @Name 声明的字段不需要另外加上注解 @Column；
+	在注解 @PK 里面声明的对应复合主键的字段不需要另外加上注解 @Column。
 -----------------------------------------------------------------------------------------------------------------
 整数型主键
 	{{{
 	@Table("t_pet")
 	public class Pet{
-		@Column
 		@Id
 		private int id;
-	...
+		...
 	}}}
 	通过 @Id 声明了一个整数型主键后，你可以：
 	{{{
@@ -46,10 +48,9 @@
 		{{{
 		@Table("t_pet")
 		public class Pet{
-			@Column
 			@Id(auto=false)
 			private int id;
-		...
+			...
 		}}}
 		Nutz.Dao 在插入对象是，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。
 
@@ -64,10 +65,9 @@
 	{{{
 	@Table("t_pet")
 	public class Pet{
-		@Column
 		@Name
 		private String name;
-	...
+		...
 	}}}
 	通过 @Name 声明了一个字符型主键后，你可以：
 	{{{
@@ -78,10 +78,9 @@
 		{{{
 		@Table("t_pet")
 			public class Pet{
-				@Column
 				@Name(casesensitive=false)
 				private String name;
-			...
+				...
 		}}}
 		因此
 		{{{
@@ -96,12 +95,10 @@
 	@Table("t_pet")
 	@PK( {"masterId", "petId"} )
 	public class Pet{
-		@Column
 		private int masterId
 
-		@Column
 		private int petId;
-	...
+		...
 	}}}
 	通过 @PK 声明了复合主键，你就可以:
 
@@ -121,6 +118,3 @@
 	其他操作
 		至于 update, clear, insert 则和平常的对象一样。 不过 Update 的时候，你的 POJO 所有的复合主键字段需要被设上值，
 		才能正确被更新。
-	
-
-

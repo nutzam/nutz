@@ -48,7 +48,7 @@
     
     描述字段
         {{{
-        @Column //提醒一下,这一行是多余的
+        @Column //提醒一下,对于@Name注解来说这一行是多余的
         @Name
         @ColDefine(type=ColType.VARCHAR, width=20)
         private String name;
@@ -121,16 +121,3 @@ EntityMaker 接口
 
     实际上，NutDao 是根据给定的 Map，先构建了一个 `Entity<?>`，然后之后的事情就顺理
     成章了。这个特性从另外一方面也验证了现在的实体机制，它的确工作的还不错 :)
-
-
-
-
-
-
-
-
-
-
-
-
-

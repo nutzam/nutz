@@ -184,11 +184,9 @@ Nutz对于动态表名的支持
 			@Table("t_company")
 			public class Company {
 
-				@Column
 				@Id
 				private int id;
 
-				@Column
 				@Name
 				private String name;
 
@@ -274,11 +272,9 @@ Nutz对于动态表名的支持
 			@Table("t_employee_${cid}")
 			public class Employee {
 
-				@Column
 				@Id
 				private int id;
 
-				@Column
 				@Name
 				private String name;
 
@@ -365,4 +361,3 @@ Nutz对于动态表名的支持
 	由于我是个职业界面设计师，所以我会自然而然的将我设计 UE 时很多原则应用在编程接口的设计上，事实上我发现，
 	这的确在某种程度上让程序接口更简洁更轻便了，所以自然也就会对程序员更友好了。当然我并不否认 Nutz 可能依然
 	存在一些脑残设计，我和你们一样不能忍受它们，如果发现它们请第一时间通知我。在讨论区发个贴就是个很好的办法。
-

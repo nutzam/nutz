@@ -34,7 +34,6 @@
 	{{{
 	@Table("t_pet")
 	public class Pet{
-		@Column
 		@Id
 		@Next( @SQL("SELECT currval('t_pet_id_seq')") )
 		private long id;
@@ -80,7 +79,6 @@
 	{{{
 	@Table("t_pet")
 	public class Pet{
-		@Column
 		@Id
 		@Next({
 			@SQL(db = DB.PSQL,   "SELECT currval('t_pet_id_seq')"),
@@ -101,7 +99,6 @@
 	{{{
 	@Table("t_pet")
 	public class Pet{
-		@Column
 		@Id(auto=false)
 		@Prev({
 			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')")
@@ -109,4 +106,3 @@
 		private long id;
 	...
 	}}}
-	
