@@ -77,7 +77,6 @@ public class Pet{
 <p>在插入之后，你想通过一段 SQL 为你的 POJO 某一个字段设值。你可以通过 @Next 属性</p>
 <pre>@Table("t_pet")
 public class Pet{
-	@Column
 	@Id
 	@Next( @SQL("SELECT currval('t_pet_id_seq')") )
 	private long id;
@@ -113,7 +112,6 @@ private String name;
 <p>无论是 @Prev 还是 @Next，你都是通过 @SQL 声明的数据库方言。但是，假设你并不确定你的 POJO 将会工作在哪一个数据库上，比如你的项目有两个数据源，一个是 Oracle 一个是 Postgresql，那么你的 POJO 该如何写方言呢？</p>
 <pre>@Table("t_pet")
 public class Pet{
-	@Column
 	@Id
 	@Next({
 		@SQL(db = DB.PSQL,   "SELECT currval('t_pet_id_seq')"),
@@ -131,7 +129,6 @@ public class Pet{
 <p>特别说一下Oracle的seq</p>
 <pre>@Table("t_pet")
 public class Pet{
-	@Column
 	@Id(auto=false)
 	@Prev({
 		@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')")

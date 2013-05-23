@@ -18,19 +18,14 @@
 </ul>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
-<td> <span style="color:#888888;">@ColDefine</span></td>
-<td> 字段精确定义	</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.ColDefine</span> </td>
-</tr>
-<tr>
 <td> <span style="color:#888888;">@Column</span>	</td>
 <td> 字段			</td>
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Column</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@Comment</span>	</td>
-<td> 注释			</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Comment</span> </td>
+<td> <span style="color:#888888;">@ColDefine</span></td>
+<td> 字段精确定义	</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.ColDefine</span> </td>
 </tr>
 <tr>
 <td> <span style="color:#888888;">@Default</span>	</td>
@@ -48,9 +43,14 @@
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Id</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@Index</span>		</td>
-<td> 索引		</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Index</span> </td>
+<td> <span style="color:#888888;">@Name</span>		</td>
+<td> 字符主键		</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Name</span> </td>
+</tr>
+<tr>
+<td> <span style="color:#888888;">@PK</span>		</td>
+<td> 复合主键		</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.PK</span> </td>
 </tr>
 <tr>
 <td> <span style="color:#888888;">@Many</span>		</td>
@@ -63,29 +63,19 @@
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.ManyMany</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@Name</span>		</td>
-<td> 字符主键		</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Name</span> </td>
-</tr>
-<tr>
-<td> <span style="color:#888888;">@Next</span>		</td>
-<td> 自动获取		</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Next</span> </td>
-</tr>
-<tr>
 <td> <span style="color:#888888;">@One</span>		</td>
 <td> 一对一映射	</td>
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.One</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@PK</span>		</td>
-<td> 复合主键		</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.PK</span> </td>
-</tr>
-<tr>
 <td> <span style="color:#888888;">@Prev</span>		</td>
 <td> 自动设置		</td>
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Prev</span> </td>
+</tr>
+<tr>
+<td> <span style="color:#888888;">@Next</span>		</td>
+<td> 自动获取		</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Next</span> </td>
 </tr>
 <tr>
 <td> <span style="color:#888888;">@Readonly</span>	</td>
@@ -103,9 +93,9 @@
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Table</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@TableIndexes</span>	</td>
-<td> 表索引			</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.TableIndexes</span> </td>
+<td> <span style="color:#888888;">@View</span>		</td>
+<td> 视图名		</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.View</span> </td>
 </tr>
 <tr>
 <td> <span style="color:#888888;">@TableMeta</span>	</td>
@@ -113,9 +103,19 @@
 <td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.TableMeta</span> </td>
 </tr>
 <tr>
-<td> <span style="color:#888888;">@View</span>		</td>
-<td> 视图名		</td>
-<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.View</span> </td>
+<td> <span style="color:#888888;">@TableIndexes</span>	</td>
+<td> 表索引			</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.TableIndexes</span> </td>
+</tr>
+<tr>
+<td> <span style="color:#888888;">@Index</span>		</td>
+<td> 具体的索引内容		</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Index</span> </td>
+</tr>
+<tr>
+<td> <span style="color:#888888;">@Comment</span>	</td>
+<td> 表或者字段的注释			</td>
+<td> @see JDoc: <span style="color:#5566FF;">org.nutz.dao.entity.annotation.Comment</span> </td>
 </tr>
 </table>
 </div>

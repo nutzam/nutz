@@ -67,16 +67,14 @@
 @Table("t_person")   <span class="zdoc_code_cmt">// 声明了Person对象的数据表
 </span>public class Person { <span class="zdoc_code_cmt">//无需继承任何Nutz的类
 </span>
-	@Column	  <span class="zdoc_code_cmt">// 表示该对象属性可以映射到数据库里作为一个字段
-</span>	@Id       <span class="zdoc_code_cmt">// 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
+	@Id       <span class="zdoc_code_cmt">// 表示该字段为一个自增长的Id,注意,是数据库表中自增!!
 </span>	private int id;
-	
-	@Column
+
 	@Name    <span class="zdoc_code_cmt">// 表示该字段可以用来标识此对象，或者是字符型主键，或者是唯一性约束
 </span>	private String name;
 
-	@Column
-	private int age;
+	@Column	  <span class="zdoc_code_cmt">// 表示该对象属性可以映射到数据库里作为一个字段
+</span>	private int age;
 
 	public int getId() {
 		return id;

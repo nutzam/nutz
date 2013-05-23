@@ -38,8 +38,7 @@ SELECT * , taskcount = (SELECT COUNT(id) FROM t_task AS t WHERE t.eid = e.id) FR
 <pre>@Table("t_employee")
 @View("v_employee")		<span class="zdoc_code_cmt">// &lt;- 这里声明了视图
 </span>public class Employee{
-	
-	@Column
+
 	@Id
 	private int id;
 
