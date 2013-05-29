@@ -51,9 +51,15 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 
 	private boolean update = true;
 
+	private boolean hasSimpleColumn;
+
+	private Character simpleColumn;
+
 	public NutMappingField(Entity<?> entity) {
 		super(entity);
 		casesensitive = true;
+		hasSimpleColumn = entity.hasSimpleColumn();
+		simpleColumn = entity.getSimpleColumn();
 	}
 
 	public ValueAdaptor getAdaptor() {
@@ -238,4 +244,19 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.update = update;
 	}
 
+	public void setHasSimpleColumn(boolean hasSimpleColumn) {
+		this.hasSimpleColumn = hasSimpleColumn;
+	}
+
+	public boolean hasSimpleColumn() {
+		return hasSimpleColumn;
+	}
+
+	public Character getSimpleColumn() {
+		return simpleColumn;
+	}
+
+	public void setSimpleColumn(Character simpleColumn) {
+		this.simpleColumn = simpleColumn;
+	}
 }

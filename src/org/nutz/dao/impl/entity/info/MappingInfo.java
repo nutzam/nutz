@@ -10,6 +10,7 @@ import org.nutz.dao.entity.annotation.Next;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
+import org.nutz.dao.entity.annotation.SimpleColumn;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 
@@ -34,6 +35,8 @@ public class MappingInfo extends FieldInfo {
     public Readonly annReadonly;
 
     public Comment columnComment;
+
+    public SimpleColumn simpleColumn;
 
     public Class<?> getFieldTypeClass() {
         return Lang.getTypeClass(fieldType);

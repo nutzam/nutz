@@ -2,6 +2,7 @@ package org.nutz.dao.impl.entity.info;
 
 import org.nutz.dao.entity.annotation.Comment;
 import org.nutz.dao.entity.annotation.PK;
+import org.nutz.dao.entity.annotation.SimpleColumn;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.entity.annotation.TableIndexes;
 import org.nutz.dao.entity.annotation.TableMeta;
@@ -21,4 +22,5 @@ public class TableInfo {
 
     public Comment tableComment;
 
+    public SimpleColumn simpleColumn;
 }

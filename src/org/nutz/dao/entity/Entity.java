@@ -274,4 +274,13 @@ public interface Entity<T> {
      */
     String getColumnComent(String columnName);
 
+    /**
+     * @return 是否有Java字段与数据库字段的便捷对应方式
+     */
+    boolean hasSimpleColumn();
+
+    /**
+     * @return Java字段与数据库字段的便捷对应关系的字符
+     */
+    Character getSimpleColumn();
 }

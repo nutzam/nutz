@@ -28,6 +28,7 @@ import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.One;
 import org.nutz.dao.entity.annotation.PK;
 import org.nutz.dao.entity.annotation.SQL;
+import org.nutz.dao.entity.annotation.SimpleColumn;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.entity.annotation.TableIndexes;
 import org.nutz.dao.entity.annotation.TableMeta;
@@ -111,6 +112,11 @@ public class AnnotationEntityMaker implements EntityMaker {
                                              : null;
         en.setHasTableComment(hasTableComment);
         en.setTableComment(tableComment);
+
+        boolean hasSimpleColumn = null != ti.simpleColumn;
+        Character simpleColumn = hasSimpleColumn ? ti.simpleColumn.value() : null;
+        en.setHasSimpleColumn(hasSimpleColumn);
+        en.setSimpleColumn(simpleColumn);
 
         /*
          * 获取所有的数据库字段
@@ -281,6 +287,7 @@ public class AnnotationEntityMaker implements EntityMaker {
         info.annPK = mirror.getAnnotation(PK.class);
         info.annIndexes = mirror.getAnnotation(TableIndexes.class);
         info.tableComment = mirror.getAnnotation(Comment.class);
+        info.simpleColumn = mirror.getAnnotation(SimpleColumn.class);
         return info;
     }
 
@@ -316,10 +323,19 @@ public class AnnotationEntityMaker implements EntityMaker {
         ef.setType(info.fieldType);
 
         // 字段的数据库名
-        if (null == info.annColumn || Strings.isBlank(info.annColumn.value()))
-            ef.setColumnName(info.name);
-        else
+        if (null == info.annColumn || Strings.isBlank(info.annColumn.value())) {
+            if (null != info.simpleColumn) {
+                ef.setColumnName(Strings.lowerWord(info.name, info.simpleColumn.value()));
+            } else {
+                if (ef.hasSimpleColumn()) {
+                    ef.setColumnName(Strings.lowerWord(info.name, ef.getSimpleColumn()));
+                } else {
+                    ef.setColumnName(info.name);
+                }
+            }
+        } else {
             ef.setColumnName(info.annColumn.value());
+        }
 
         // 字段的注释
         boolean hasColumnComment = null != info.columnComment;
