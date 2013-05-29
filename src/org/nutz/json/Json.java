@@ -28,7 +28,12 @@ public class Json {
     // ============================Json.fromJson================================
     // =========================================================================
     /**
-     * 从一个文本输入流中，生成一个对象。
+     * 从文本输入流中生成 JAVA 对象。
+     * 
+     * @param reader
+     *            文本输入流
+     * @return JAVA 对象
+     * @throws JsonException
      */
     public static Object fromJson(Reader reader) throws JsonException {
     	return new org.nutz.json.impl.JsonCompileImpl().parse(reader);
@@ -36,13 +41,13 @@ public class Json {
     }
 
     /**
-     * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
+     * 根据指定的类型，从文本输入流中生成 JAVA 对象。 指定的类型可以是任意 JAVA 对象。
      * 
      * @param type
      *            对象类型
      * @param reader
-     *            输入流
-     * @return 特定类型的 JAVA 对象
+     *            文本输入流
+     * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
     @SuppressWarnings("unchecked")
@@ -51,13 +56,13 @@ public class Json {
     }
 
     /**
-     * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
+     * 根据指定的类型，从文本输入流中生成 JAVA 对象。 指定的类型可以是任意 JAVA 对象。
      * 
      * @param type
      *            对象类型，可以是范型
      * @param reader
      *            文本输入流
-     * @return 特定类型的 JAVA 对象
+     * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
     public static Object fromJson(Type type, Reader reader) throws JsonException {
@@ -72,13 +77,13 @@ public class Json {
     }
 
     /**
-     * 根据指定的类型，从输入流中生成 JSON 对象。 你的类型可以是任何 Java 对象。
+     * 根据指定的类型，从字符串中生成 JAVA 对象。 指定的类型可以是任意 JAVA 对象。
      * 
      * @param type
      *            对象类型，可以是范型
      * @param cs
      *            JSON 字符串
-     * @return 特定类型的 JAVA 对象
+     * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
     public static Object fromJson(Type type, CharSequence cs) throws JsonException {
@@ -86,20 +91,20 @@ public class Json {
     }
 
     /**
-     * 根据指定的类型，读取指定文件生成 JSON 对象。 你的类型可以是任何 Java 对象。
+     * 根据指定的类型，读取指定的 JSON 文件生成 JAVA 对象。 指定的类型可以是任意 JAVA 对象。
      * 
      * @param type
-     *            对象类型，可以是范型
+     *            对象类型
      * @param f
      *            文件对象
-     * @return 特定类型的 JAVA 对象
+     * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
-    public static <T> T fromJsonFile(Class<T> klass, File f) {
+    public static <T> T fromJsonFile(Class<T> type, File f) {
         BufferedReader br = null;
         try {
             br = buffr(fileInr(f));
-            return Json.fromJson(klass, br);
+            return Json.fromJson(type, br);
         }
         finally {
             Streams.safeClose(br);
@@ -107,7 +112,7 @@ public class Json {
     }
 
     /**
-     * 从 JSON 字符串中，获取 JAVA 对象。 实际上，它就是用一个 Read 包裹给定字符串。
+     * 从 JSON 字符串中，获取 JAVA 对象。 实际上，它就是用一个 Read 包裹了的字符串。
      * <p>
      * 请参看函数 ‘Object fromJson(Reader reader)’ 的描述
      * 
@@ -116,14 +121,14 @@ public class Json {
      * @return JAVA 对象
      * @throws JsonException
      * 
-     * @see org.nutz.lang.Lang
+     * @see  #fromJson(Reader reader)
      */
     public static Object fromJson(CharSequence cs) throws JsonException {
         return fromJson(Lang.inr(cs));
     }
 
     /**
-     * 从 JSON 字符串中，根据获取某种指定类型的 JSON 对象。
+     * 根据指定的类型，从字符串中生成 JAVA 对象。 指定的类型可以是任意 JAVA 对象。
      * <p>
      * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
      * 
@@ -133,6 +138,8 @@ public class Json {
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Class type, Reader reader)
      */
     public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
         return fromJson(type, Lang.inr(cs));
@@ -159,7 +166,7 @@ public class Json {
      * @param obj
      *            JAVA 对象
      * @param format
-     *            JSON 字符串格式化
+     *            JSON 字符串格式化方式 ，若 format 为 null ，则以 JsonFormat.nice() 格式输出
      * @return JSON 字符串
      */
     public static String toJson(Object obj, JsonFormat format) {
@@ -169,7 +176,7 @@ public class Json {
     }
 
     /**
-     * 将一个 JAVA 对象写到一个文本输出流里
+     * 将一个 JAVA 对象以 JSON 的形式写到一个文本输出流里
      * 
      * @param writer
      *            文本输出流
@@ -181,14 +188,14 @@ public class Json {
     }
 
     /**
-     * 将一个 JAVA 对象写到一个文本输出流里，并且可以设定 JSON 字符串的格式化方式
+     * 将一个 JAVA 对象以 JSON 的形式写到一个文本输出流里，并且可以设定 JSON 字符串的格式化方式
      * 
      * @param writer
      *            文本输出流
      * @param obj
      *            JAVA 对象
      * @param format
-     *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
+     *            JSON 字符串格式化方式 ，若 format 为 null ，则以 JsonFormat.nice() 格式输出
      */
     public static void toJson(Writer writer, Object obj, JsonFormat format) {
         try {
@@ -203,7 +210,7 @@ public class Json {
     }
 
     /**
-     * 将一个 JAVA 对象写到一个文本文件里，并且可以设定 JSON 字符串的格式化方式
+     * 将一个 JAVA 对象以 JSON 的形式写到一个文件里
      * 
      * @param f
      *            文本文件
@@ -215,14 +222,14 @@ public class Json {
     }
 
     /**
-     * 将一个 JAVA 对象写到一个文本文件里，并且可以设定 JSON 字符串的格式化方式
+     * 将一个 JAVA 对象以 JSON 的形式写到一个文件里，并且可以设定 JSON 字符串的格式化方式
      * 
      * @param f
      *            文本文件
      * @param obj
      *            JAVA 对象
      * @param format
-     *            JSON 字符串格式化 , 若format, 则定义为JsonFormat.nice()
+     *            JSON 字符串格式化方式 ，若 format 为 null ，则以 JsonFormat.nice() 格式输出
      */
     public static void toJsonFile(File f, Object obj, JsonFormat format) {
         Writer writer = null;
@@ -270,7 +277,7 @@ public class Json {
     /**
      * 从 JSON 字符串中，根据获取某种指定类型的 List 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, CharSequence cs)’ 的描述
      * 
      * @param eleType
      *            对象类型
@@ -278,6 +285,8 @@ public class Json {
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> fromJsonAsList(Class<T> eleType, CharSequence cs) {
@@ -287,14 +296,16 @@ public class Json {
     /**
      * 从 JSON 输入流中，根据获取某种指定类型的 List 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, Reader reader)’ 的描述
      * 
      * @param eleType
      *            对象类型
      * @param reader
-     *            JSON 字符串
+     *            JSON 输入流
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Type type, Reader reader)
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> fromJsonAsList(Class<T> eleType, Reader reader) {
@@ -304,7 +315,7 @@ public class Json {
     /**
      * 从 JSON 字符串中，根据获取某种指定类型的 数组 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, CharSequence cs)’ 的描述
      * 
      * @param eleType
      *            对象类型
@@ -312,6 +323,8 @@ public class Json {
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] fromJsonAsArray(Class<T> eleType, CharSequence cs) {
@@ -321,14 +334,16 @@ public class Json {
     /**
      * 从 JSON 输入流中，根据获取某种指定类型的 数组 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, Reader reader)’ 的描述
      * 
      * @param eleType
      *            对象类型
      * @param reader
-     *            JSON 字符串
+     *            JSON 输入流
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Class type, Reader reader)
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] fromJsonAsArray(Class<T> eleType, Reader reader) {
@@ -338,7 +353,7 @@ public class Json {
     /**
      * 从 JSON 字符串中，根据获取某种指定类型的 Map 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, CharSequence cs)’ 的描述
      * 
      * @param eleType
      *            对象类型
@@ -346,6 +361,8 @@ public class Json {
      *            JSON 字符串
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
     public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType, CharSequence cs) {
@@ -355,14 +372,16 @@ public class Json {
     /**
      * 从 JSON 输入流中，根据获取某种指定类型的 Map 对象。
      * <p>
-     * 请参看函数 ‘<T> T fromJson(Class<T> type, Reader reader)’ 的描述
+     * 请参看函数 ‘Object fromJson(Type type, Reader reader)’ 的描述
      * 
      * @param eleType
      *            对象类型
      * @param reader
-     *            JSON 字符串
+     *            JSON 输入流
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
+     * 
+     * @see  #fromJson(Type type, Reader reader)
      */
     @SuppressWarnings("unchecked")
     public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType, Reader reader) {
