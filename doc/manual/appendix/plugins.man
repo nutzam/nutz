@@ -18,7 +18,7 @@ View
 
 	[http://axhack.javaeye.com/blog/542441 FreeMaker_View]
 	
-	[http://myblog.sunfarms.net/100.html Nutz集成FreeMarker]
+	[http://wendal.net/100 Nutz集成FreeMarker]
 --------------------------------------------------------------------------------------
 Dao
 	
