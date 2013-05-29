@@ -54,7 +54,7 @@
 <div><span class="num">15</span><a href="#问:_Nutz的最稳定版本是?">问: Nutz的最稳定版本是?</a></div>
 </li>
 <li>
-<div><span class="num">16</span><a href="#问:_日志打印find_mapping_null_for_path_[/test],访问啥页面都是404?">问: 日志打印"find mapping null for path [/test]",访问啥页面都是404?</a></div>
+<div><span class="num">16</span><a href="#问:_日志打印find_mapping_[null]_for_path_[/test],访问啥页面都是404?">问: 日志打印"find mapping [null] for path [/test]",访问啥页面都是404?</a></div>
 </li>
 <li>
 <div><span class="num">17</span><a href="#问:_Scansme()_类都是在classPath_路径下搜索文件么?">问: Scans.me() 类都是在classPath 路径下搜索文件么?</a></div>
@@ -223,7 +223,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>答: 最新版就是最稳定版,因为我们自己就在用最新的代码</p>
 <div class="hr"><b></b></div>
-<h1><a name="问:_日志打印find_mapping_null_for_path_[/test],访问啥页面都是404?"></a>问: 日志打印"find mapping <a href="null">null</a> for path [/test]",访问啥页面都是404?</h1>
+<h1><a name="问:_日志打印find_mapping_[null]_for_path_[/test],访问啥页面都是404?"></a>问: 日志打印"find mapping [null] for path [/test]",访问啥页面都是404?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>答: 查看日志,看看模块是不是已经加载了.很多时候,你改成@Modules(scanPackage=true)就解决这种问题</p>
 <div class="hr"><b></b></div>
@@ -289,7 +289,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="问:_能根据返回值来跳转到特定的jsp吗?"></a>问: 能根据返回值来跳转到特定的jsp吗?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>答: 能,@Ok/@Fail都支持EL语法: @Ok("jsp:$</p>
+<p>答: 能,@Ok/@Fail都支持EL语法: @Ok("jsp:${obj == null ? 'index' : 'user'}")</p>
 <div class="hr"><b></b></div>
 <h1><a name="问:_建议_Nutz_实现JAX-RS，全面拥抱REST?"></a>问: 建议 Nutz 实现JAX-RS，全面拥抱REST?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

@@ -21,12 +21,12 @@
 <div class="hr"><b></b></div>
 <h1><a name="搭建_Eclipse_编译环境"></a>搭建 Eclipse 编译环境</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>如果你对于 Eclipse 以及 SVN 不是特别熟悉，请参看 <a href="svn_project.html">从 SVN 编译</a>。如果你认为自己有足够的经验，你需要知道一下几点就能顺利编译：</p>
+<p>如果你对于 Eclipse 以及 Git 不是特别熟悉，请参看 <a href="git_project.html">从 Git编译源码</a>。如果你认为自己有足够的经验，你需要知道一下几点就能顺利编译：</p>
 <ol type="1">
-<li>SVN 的 check out 信息在 http://code.google.com/p/nutz/source/checkout
+<li>Nutz 在 Github 的 地址为 https://github.com/nutzam/nutz
 <ul type="disc">
-<li>如果你只想阅读最新代码，从这里检出：http://nutz.googlecode.com/svn/trunk</li>
-<li>如果你想提交代码，从这里检出： https://nutz.googlecode.com/svn/trunk （当然你得有提交权限）</li>
+<li>获取一份包括历史记录的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git</li>
+<li>如果你只想阅读最新的代码，请运行这个命令：git clone git://github.com/nutzam/nutz.git --depth=0</li>
 </ul>
 </li>
 <li>项目编译依赖
@@ -39,7 +39,7 @@
 </li>
 <li>在编译前，请确定你的项目是用 UTF-8 方式编码的。因为我的源码以及文档用的都是 UTF-8 格式的文件</li>
 </ol>
-<p>你可以参看 <a href="svn_project.html">从 SVN 编译</a>，这是我们推荐的项目构建和编译方式。</p>
+<p>你可以参看 <a href="git_project.html">从 Git编译源码</a>，这是我们推荐的项目构建和编译方式。</p>
 <div class="hr"><b></b></div>
 <h1><a name="如何运行_JUnit_测试"></a>如何运行 JUnit 测试</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
