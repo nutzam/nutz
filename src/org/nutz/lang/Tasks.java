@@ -91,7 +91,7 @@ public abstract class Tasks {
      * @param unit 时间单位
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long initialDelay, int period, TimeUnit unit) {
-        return taskScheduler.scheduleWithFixedDelay(task, initialDelay, period, TimeUnit.SECONDS);
+        return taskScheduler.scheduleWithFixedDelay(task, initialDelay, period, unit);
     }
     
     /**
