@@ -158,12 +158,19 @@ public abstract class Tasks {
 
     /**
      * 根据 Java 虚拟机可用处理器数目返回最佳的线程数。<br>
-     * 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)，其中阻塞系数设为0.9
+     * 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)，其中阻塞系数这里设为0.9
      */
     private static int getBestPoolSize() {
-        // JVM可用处理器的个数
-        final int cores = Runtime.getRuntime().availableProcessors();
-        // 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)
-        return (int)(cores / (1 - 0.9));
+        try {
+            // JVM可用处理器的个数
+            final int cores = Runtime.getRuntime().availableProcessors();
+            // 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)
+            // TODO 阻塞系数是不是需要有个setter方法能让使用者自由设置呢？
+            return (int)(cores / (1 - 0.9));
+        }
+        catch (Throwable e) {
+            // 异常发生时姑且返回10个任务线程池
+            return 10;
+        }
     }
 }
