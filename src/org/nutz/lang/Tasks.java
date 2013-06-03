@@ -41,7 +41,7 @@ public abstract class Tasks {
      * @param unit 时间单位
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, int period, TimeUnit unit) {
-        return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
+        return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
     }
     
     /**
