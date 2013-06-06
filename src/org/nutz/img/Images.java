@@ -353,6 +353,63 @@ public class Images {
     }
 
     /**
+     * 根据给定的起始坐标点与结束坐标点来剪切一个图片，令其符合给定的尺寸，并将其保存成目标图像文件
+     * <p>
+     * 图片格式支持 png | gif | jpg | bmp | wbmp
+     * 
+     * @param srcIm
+     *            源图像文件对象
+     * @param taIm
+     *            目标图像文件对象
+     * @param startPoint
+     *            起始坐标点，其值[x, y]为相对原图片左上角的坐标
+     * @param endPoint
+     *            结束坐标点，其值[x, y]为相对原图片左上角的坐标
+     * @return 被转换前的图像对象
+     * 
+     * @throws IOException
+     *             当读写文件失败时抛出
+     */
+    public static BufferedImage clipScale(Object srcIm, File taIm, int[] startPoint, int[] endPoint) throws IOException {
+        // 计算给定坐标后的图片的尺寸
+        int width = endPoint[0] - startPoint[0];
+        int height = endPoint[1] - startPoint[1];
+
+        BufferedImage old = read(srcIm);
+        BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0], startPoint[1], width, height), width, height);
+
+        write(im, taIm);
+        return old;
+    }
+
+    /**
+     * 根据给定的起始坐标点与结束坐标点来剪切一个图片，令其符合给定的尺寸，并将其保存成目标图像文件
+     * <p>
+     * 图片格式支持 png | gif | jpg | bmp | wbmp
+     * 
+     * @param srcIm
+     *            源图像文件对象
+     * @param taIm
+     *            目标图像文件对象
+     * @param startPoint
+     *            起始坐标点，其值[x, y]为相对原图片左上角的坐标
+     * @param endPoint
+     *            结束坐标点，其值[x, y]为相对原图片左上角的坐标
+     * @return 被转换前的图像对象
+     * 
+     * @throws IOException
+     *             当读写文件失败时抛出
+     */
+    public static BufferedImage clipScale(String srcPath, String taPath, int[] startPoint, int[] endPoint) throws IOException {
+        File srcIm = Files.findFile(srcPath);
+        if (null == srcIm)
+            throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
+
+        File taIm = Files.createFileIfNoExists(taPath);
+        return clipScale(srcIm, taIm, startPoint, endPoint);
+    }
+
+    /**
      * 自动缩放剪切一个图片，令其符合给定的尺寸
      * <p>
      * 如果图片太大，则将其缩小，如果图片太小，则将其放大，多余的部分被裁减
