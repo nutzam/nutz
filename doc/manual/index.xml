@@ -6,6 +6,7 @@
 		<doc path="svn_project.man"/>
 		<doc path="git_project.man"/>
 		<doc path="compile.man"/>
+		<doc path="compile_with_maven.man"/>
 		<doc path="ant.man"/>
 		<doc path="packages.man"/>
 		<doc path="version_naming.man"/>
