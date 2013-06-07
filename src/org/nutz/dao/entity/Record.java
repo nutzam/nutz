@@ -30,6 +30,13 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      */
     private static final long serialVersionUID = 4614645901639942051L;
 
+    /**
+     * 根据 ResultSet 创建一个记录对象
+     * 
+     * @param rs
+     *            ResultSet 对象
+     * @return 记录对象
+     */
     public static Record create(ResultSet rs) {
     	String name = null;
     	int i = 0;
@@ -104,19 +111,32 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     }
 
     /**
-     * @return 记录的字段数
+     * 返回记录中已有的字段的数量
+     * 
+     * @return 记录中已有的字段的数量
      */
     public int getColumnCount() {
         return map.size();
     }
 
     /**
-     * @return 记录的所有字段名
+     * 返回记录中所有的字段名
+     * 
+     * @return 记录中所有的字段名
      */
     public Set<String> getColumnNames() {
         return map.keySet();
     }
 
+    /**
+     * 返回指定字段的 int 值
+     * <p>
+     * 如果该字段在记录中不存在，返回 -1；如果该字段的值不是 int 类型，返回 -1
+     * 
+     * @param name
+     *            字段名
+     * @return 指定字段名的 int 值。如果该字段在记录中不存在，返回 -1；如果该字段的值不是 int 类型，返回 -1
+     */
     public int getInt(String name) {
         try {
             Object val = get(name);
@@ -128,6 +148,15 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         return -1;
     }
 
+    /**
+     * 返回指定字段的 String 值
+     * <p>
+     * 如果该字段在记录中不存在，返回 null
+     * 
+     * @param name
+     *            字段名
+     * @return 指定字段的 String 值。如果该字段在记录中不存在，返回 null
+     */
     public String getString(String name) {
         Object val = get(name);
         if (null == val)
@@ -135,6 +164,15 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         return Castors.me().castToString(val);
     }
 
+    /**
+     * 返回指定字段的 Timestamp 值
+     * <p>
+     * 如果该字段在记录中不存在，返回 null
+     * 
+     * @param name
+     *            字段名
+     * @return 指定字段的 Timestamp 值。如果该字段在记录中不存在，返回 null
+     */
     public Timestamp getTimestamp(String name) {
         Object val = get(name);
         if (null == val)
@@ -142,14 +180,33 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         return Castors.me().castTo(val, Timestamp.class);
     }
 
+    /**
+     * 返回该记录的 JSON 字符串，并且可以设定 JSON 字符串的格式化方式
+     * 
+     * @param format
+     *            JSON 字符串格式化方式 ，若 format 为 null ，则以 JsonFormat.nice() 格式输出
+     * @return JSON 字符串
+     */
     public String toJson(JsonFormat format) {
         return Json.toJson(map, format);
     }
 
+    /**
+     * 返回该记录 JSON 格式的字符串表示
+     * 
+     * @return 该记录 JSON 格式的字符串表示
+     */
     public String toString() {
         return Json.toJson(map);
     }
 
+    /**
+     * 根据指定的类的类型，把该记录转换成该类型的对象
+     * 
+     * @param type
+     *            指定的类的类型
+     * @return 指定的类型的对象
+     */
     public <T> T toPojo(Class<T> type) {
         return Lang.map2Object(map, type);
     }
@@ -158,14 +215,31 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         return en.getObject(this);
     }
 
+    /**
+     * 从记录中移除所有字段与值的对应关系
+     */
     public void clear() {
         map.clear();
     }
 
+    /**
+     * 如果该字段在记录中存在，则返回 true
+     * 
+     * @param key
+     *            字段名
+     * @return true 该字段在记录中存在
+     */
     public boolean containsKey(Object key) {
         return map.containsKey(key.toString().toLowerCase());
     }
 
+    /**
+     * 如果该字段值在记录中存在，则返回 true
+     * 
+     * @param value
+     *            字段值
+     * @return true 该字段值在记录中存在
+     */
     public boolean containsValue(Object value) {
         return map.containsValue(value);
     }
@@ -178,24 +252,55 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         return map.equals(out);
     }
 
+    /**
+     * 返回指定字段的值
+     * <p>
+     * 如果该字段在记录中不存在，返回 null
+     * 
+     * @param name
+     *            字段名
+     * @return 指定字段的值。如果该字段在记录中不存在，返回 null
+     */
     public Object get(Object name) {
         if (null == name)
             return null;
         return map.get(name.toString().toLowerCase());
     }
 
+    /**
+     * 返回该记录的哈希码值
+     */
     public int hashCode() {
         return map.hashCode();
     }
 
+    /**
+     * 如果记录中不存在字段与值的对应关系，则返回 true
+     * 
+     * @return true 记录中不存在字段与值的对应关系
+     */
     public boolean isEmpty() {
         return map.isEmpty();
     }
 
+    /**
+     * 返回记录中所有的字段名
+     * 
+     * @return 记录中所有的字段名
+     */
     public Set<String> keySet() {
         return map.keySet();
     }
 
+    /**
+     * 将字段与其对应的值放入该记录中
+     * 
+     * @param name
+     *            字段名
+     * @param value
+     *            字段值
+     * @return 该字段之前所对应的值；如果之前该字段在该记录中不存在，则返回 null
+     */
     public Object put(String name, Object value) {
         return map.put(name.toLowerCase(), value);
     }
@@ -205,28 +310,65 @@ public class Record implements Map<String, Object>, java.io.Serializable {
             map.put(entry.getKey().toLowerCase(), entry.getValue());
     }
 
+    /**
+     * 将字段从记录中删除
+     * 
+     * @param key
+     *            字段名
+     * @return 该字段所对应的值；如果该字段在该记录中不存在，则返回 null
+     */
     public Object remove(Object key) {
         return map.remove(key.toString().toLowerCase());
     }
 
+    /**
+     * 返回记录的记录数
+     * 
+     * @return 记录的记录数
+     */
     public int size() {
         return map.size();
     }
 
+    /**
+     * 返回记录中所有的字段的值
+     * 
+     * @return 记录中所有的字段的值
+     */
     public Collection<Object> values() {
         return map.values();
     }
 
+    /**
+     * 返回该记录对应的 Chain 对象
+     * 
+     * @return 该记录对应的 Chain 对象
+     */
     public Chain toChain() {
         return Chain.from(map);
     }
 
     // ===========================================
 
+    /**
+     * 返回该字段对应的数据库类型
+     * 
+     * @param name
+     *            字段名
+     * @return 该字段对应的数据库类型
+     */
     public int getSqlType(String name) {
         return sqlTypeMap.get(name.toLowerCase());
     }
 
+    /**
+     * 设置该字段对应的数据库类型
+     * 
+     * @param name
+     *            字段名
+     * @param value
+     *            数据库类型
+     */
     protected void setSqlType(String name, int value) {
         sqlTypeMap.put(name.toLowerCase(), value);
     }
