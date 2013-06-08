@@ -51,6 +51,8 @@ public abstract class Times {
     }
 
     /**
+     * 返回服务器当前时间
+     * 
      * @return 服务器当前时间
      */
     public static Date now() {
@@ -58,18 +60,20 @@ public abstract class Times {
     }
 
     /**
+     * 返回时间对象在一天中的毫秒数
+     * 
      * @param d
      *            时间对象
      * 
      * @return 时间对象在一天中的毫秒数
      */
     public static long ms(Date d) {
-        Calendar c = Calendar.getInstance();
-        c.setTime(d);
-        return ms(c);
+        return ms(C(d));
     }
 
     /**
+     * 返回时间对象在一天中的毫秒数
+     * 
      * @param c
      *            时间对象
      * 
@@ -84,6 +88,8 @@ public abstract class Times {
     }
 
     /**
+     * 返回当前时间在一天中的毫秒数
+     * 
      * @return 当前时间在一天中的毫秒数
      */
     public static int ms() {
@@ -124,20 +130,24 @@ public abstract class Times {
     }
 
     /**
+     * 返回时间对象在一天中的秒数
+     * 
      * @param d
      *            时间对象
      * 
      * @return 时间对象在一天中的秒数
      */
-    @SuppressWarnings("deprecation")
     public static int sec(Date d) {
-        int sec = d.getHours() * 3600;
-        sec += d.getMinutes() * 60;
-        sec += d.getSeconds();
+        Calendar c = C(d);
+        int sec = c.get(Calendar.HOUR_OF_DAY) * 3600;
+        sec += c.get(Calendar.MINUTE) * 60;
+        sec += c.get(Calendar.SECOND);
         return sec;
     }
 
     /**
+     * 返回当前时间在一天中的秒数
+     * 
      * @return 当前时间在一天中的秒数
      */
     public static int sec() {
