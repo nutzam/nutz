@@ -85,8 +85,11 @@ public class RawView implements View {
 				resp.sendError(404);
 				return;
 			}
-			String filename = URLEncoder.encode(file.getName(), Encoding.UTF8);
-			resp.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			if (!resp.containsHeader("Content-Disposition")) {
+				String filename = URLEncoder.encode(file.getName(), Encoding.UTF8);
+				resp.setHeader("Content-Disposition", "attachment; filename=\"" + filename + "\"");
+			}
+			
 			String rangeStr = req.getHeader("Range");
 			if (DISABLE_RANGE_DOWNLOAD || fileSz == 0 || (rangeStr == null || !rangeStr.startsWith("bytes=") || rangeStr.length() < "bytes=1".length())) {
 				resp.setHeader("Content-Length", "" + fileSz);

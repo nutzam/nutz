@@ -1,7 +1,6 @@
 package org.nutz.dao.jdbc;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -686,7 +685,7 @@ public abstract class Jdbcs {
                 if (null == obj) {
                     stat.setNull(index, Types.BINARY);
                 } else {
-                	if (obj instanceof ByteArrayOutputStream) {
+                	if (obj instanceof ByteArrayInputStream) {
                 		stat.setBinaryStream(index, (InputStream)obj, ((ByteArrayInputStream)obj).available());
                 	} else if (obj instanceof InputStream) {
                         try {
