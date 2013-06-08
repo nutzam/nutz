@@ -13,6 +13,8 @@ import org.nutz.resource.Scans;
 public class FileSqlManager extends AbstractSqlManager {
     
     private static final Log log = Logs.get();
+    
+    private Object lock = new Object();
 
     private String[] paths;
 
@@ -32,18 +34,20 @@ public class FileSqlManager extends AbstractSqlManager {
     }
 
     public void refresh() {
-        List<NutResource> list = Scans.me().loadResource(regex, paths);
-        _sql_map = new HashMap<String, String>();
-        for (NutResource ins : list) {
-            if (log.isDebugEnabled())
-                log.debug("Loading sqls from " + ins);
-            try {
-                loadSQL(ins.getReader());
-            }
-            catch (IOException e) {
-                throw Lang.wrapThrow(e);
-            }
-        }
+        synchronized (lock) {
+			List<NutResource> list = Scans.me().loadResource(regex, paths);
+			_sql_map = new HashMap<String, String>();
+			for (NutResource ins : list) {
+				if (log.isDebugEnabled())
+					log.debug("Loading sqls from " + ins);
+				try {
+					loadSQL(ins.getReader());
+				}
+				catch (IOException e) {
+					throw Lang.wrapThrow(e);
+				}
+			}
+		}
     }
 
 }
