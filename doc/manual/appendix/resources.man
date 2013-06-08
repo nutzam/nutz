@@ -40,8 +40,8 @@
 	     @[http://helloqiner.iteye.com/ QinerG] {#008800;*推荐}
 	 * 《[http://helloqiner.iteye.com/blog/982157 在Nutz框架中提供Pojo校验（验证）功能的支持]》 \
 	     @[http://helloqiner.iteye.com/ QinerG] {#008800;*推荐}
-	 * 《[http://myblog.sunfarms.net/100.html 在Nutz MVC中使用Freemarker]》 \
-	     @[http://myblog.sunfarms.net/ wendal] {#008800;*推荐}
+	 * 《[http://wendal.net/100 在Nutz MVC中使用Freemarker]》 \
+	     @[http://wendal.net wendal] {#008800;*推荐}
 	 * 《[http://axhack.iteye.com/blog/542441 给 nutz 添加 freemarker 视图]》 \
 	     @[http://axhack.iteye.com axhack] {#008800;*推荐}
 	 * 《[http://yunhaifeiwu.iteye.com/blog/763832 nutz 文件上传例子]》 \
@@ -54,8 +54,8 @@
 	     @[http://yunhaifeiwu.iteye.com 云海飞舞]
 	 * 《[http://yunhaifeiwu.iteye.com/blog/746886 nutz初使用之MVC HelloWorld (netbeans jsp版）]》 \
 	     @[http://yunhaifeiwu.iteye.com 云海飞舞]
-	 * 《[http://myblog.sunfarms.net/94.html 为NutLab添加一个新项目-Nutz与OpenID集成]》 \
-	     @[http://myblog.sunfarms.net wendal]
+	 * 《[http://wendal.net/94 为NutLab添加一个新项目-Nutz与OpenID集成]》 \
+	     @[http://wendal.net wendal]
 -----------------------------------------------------------------------------------
 关于 Ioc
 	 * 《[http://gevin.iteye.com/blog/1131500 在Nutz中使用Ioc-Annotation的入门教程]》\

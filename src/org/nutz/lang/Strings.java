@@ -148,18 +148,22 @@ public abstract class Strings {
     }
 
     /**
+     * 如果此字符串为 null 或者为空串（""），则返回 true
+     * 
      * @param cs
      *            字符串
-     * @return 是不是为空字符串
+     * @return 如果此字符串为 null 或者为空，则返回 true
      */
     public static boolean isEmpty(CharSequence cs) {
         return null == cs || cs.length() == 0;
     }
 
     /**
+     * 如果此字符串为 null 或者全为空白字符，则返回 true
+     * 
      * @param cs
      *            字符串
-     * @return 是不是为空白字符串
+     * @return 如果此字符串为 null 或者全为空白字符，则返回 true
      */
     public static boolean isBlank(CharSequence cs) {
         if (null == cs)
@@ -177,7 +181,7 @@ public abstract class Strings {
      * 
      * @param cs
      *            字符串
-     * @return 新字符串
+     * @return 去掉了前后空白的新字符串
      */
     public static String trim(CharSequence cs) {
         if (null == cs)
@@ -398,13 +402,15 @@ public abstract class Strings {
     }
 
     /**
+     * 测试此字符串是否被指定的左字符和右字符所包裹；如果该字符串左右两边有空白的时候，会首先忽略这些空白
+     * 
      * @param cs
      *            字符串
      * @param lc
      *            左字符
      * @param rc
      *            右字符
-     * @return 字符串是被左字符和右字符包裹 -- 忽略空白
+     * @return 字符串是被左字符和右字符包裹
      */
     public static boolean isQuoteByIgnoreBlank(CharSequence cs, char lc, char rc) {
         if (null == cs)
@@ -429,6 +435,8 @@ public abstract class Strings {
     }
 
     /**
+     * 测试此字符串是否被指定的左字符和右字符所包裹
+     * 
      * @param cs
      *            字符串
      * @param lc
@@ -477,44 +485,48 @@ public abstract class Strings {
     }
 
     /**
-     * 对obj进行toString()操作,如果为null返回""
+     * 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      * 
      * @param obj
-     * @return obj.toString()
+     *            指定的对象
+     * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      */
     public static String sNull(Object obj) {
         return sNull(obj, "");
     }
 
     /**
-     * 对obj进行toString()操作,如果为null返回def中定义的值
+     * 对指定对象进行 toString 操作；如果该对象为 null ，则返回默认值
      * 
      * @param obj
+     *            指定的对象
      * @param def
-     *            如果obj==null返回的内容
-     * @return obj的toString()操作
+     *            默认值
+     * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回默认值
      */
     public static String sNull(Object obj, String def) {
         return obj != null ? obj.toString() : def;
     }
 
     /**
-     * 对obj进行toString()操作,如果为空串返回""
+     * 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      * 
      * @param obj
-     * @return obj.toString()
+     *            指定的对象
+     * @return 对指定对象进行 toString 操作；如果该对象为 null ，则返回空串（""）
      */
     public static String sBlank(Object obj) {
         return sBlank(obj, "");
     }
 
     /**
-     * 对obj进行toString()操作,如果为空串返回def中定义的值
+     * 对指定对象进行 toString 操作；如果该对象为 null 或者 toString 方法为空串（""），则返回默认值
      * 
      * @param obj
+     *            指定的对象
      * @param def
-     *            如果obj==null返回的内容
-     * @return obj的toString()操作
+     *            默认值
+     * @return 对指定对象进行 toString 操作；如果该对象为 null 或者 toString 方法为空串（""），则返回默认值
      */
     public static String sBlank(Object obj, String def) {
         if (null == obj)
@@ -715,6 +727,14 @@ public abstract class Strings {
         return sb.toString();
     }
 
+    /**
+     * 使用 UTF-8 编码将字符串编码为 byte 序列，并将结果存储到新的 byte 数组
+     * 
+     * @param cs
+     *            字符串
+     * 
+     * @return UTF-8编码后的 byte 数组
+     */
     public static byte[] getBytesUTF8(CharSequence cs) {
         try {
             return cs.toString().getBytes(Encoding.UTF8);

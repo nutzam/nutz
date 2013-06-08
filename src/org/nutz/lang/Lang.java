@@ -1147,6 +1147,8 @@ public abstract class Lang {
     }
 
     /**
+     * 创建一个新的上下文对象
+     * 
      * @return 一个新创建的上下文对象
      */
     public static Context context() {
@@ -1450,6 +1452,7 @@ public abstract class Lang {
      * </ul>
      * 
      * @param s
+     *            字符串
      * @return 布尔值
      */
     public static boolean parseBoolean(String s) {
@@ -1699,7 +1702,11 @@ public abstract class Lang {
         }
     }
 
-    // 判断编译等级
+    /**
+     * 当前运行的 Java 虚拟机是 JDK6 的话，则返回 true
+     * 
+     * @return true 如果当前运行的 Java 虚拟机是 JDK6
+     */
     public static boolean isJDK6() {
         InputStream is = null;
         try {
@@ -1721,6 +1728,7 @@ public abstract class Lang {
      * 获取基本类型的默认值
      * 
      * @param pClass
+     *            基本类型
      * @return 0/false,如果传入的pClass不是基本类型的类,则返回null
      */
     public static Object getPrimitiveDefaultValue(Class<?> pClass) {
@@ -1800,9 +1808,11 @@ public abstract class Lang {
     }
 
     /**
-     * 获取一个Type类型实际对应的Class
+     * 获取一个 Type 类型实际对应的Class
      * 
      * @param type
+     *            类型
+     * @return 与Type类型实际对应的Class
      */
     @SuppressWarnings("rawtypes")
     public static Class<?> getTypeClass(Type type) {
@@ -1833,9 +1843,11 @@ public abstract class Lang {
     }
 
     /**
-     * 返回一个type的泛型数组, 如果没有, 则直接返回null
+     * 返回一个 Type 的泛型数组, 如果没有, 则直接返回null
      * 
      * @param type
+     *            类型
+     * @return 一个 Type 的泛型数组, 如果没有, 则直接返回null
      */
     public static Type[] getGenericsTypes(Type type) {
         if (type instanceof ParameterizedType) {
@@ -1868,6 +1880,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定文件的 MD5 值
+     * 
+     * @param f
+     *            文件
+     * @return 指定文件的 MD5 值
      * @see #digest(String, File)
      */
     public static String md5(File f) {
@@ -1875,6 +1892,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定输入流的 MD5 值
+     * 
+     * @param ins
+     *            输入流
+     * @return 指定输入流的 MD5 值
      * @see #digest(String, InputStream)
      */
     public static String md5(InputStream ins) {
@@ -1882,6 +1904,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定字符串的 MD5 值
+     * 
+     * @param cs
+     *            字符串
+     * @return 指定字符串的 MD5 值
      * @see #digest(String, CharSequence)
      */
     public static String md5(CharSequence cs) {
@@ -1889,6 +1916,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定文件的 SHA1 值
+     * 
+     * @param f
+     *            文件
+     * @return 指定文件的 SHA1 值
      * @see #digest(String, File)
      */
     public static String sha1(File f) {
@@ -1896,6 +1928,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定输入流的 SHA1 值
+     * 
+     * @param ins
+     *            输入流
+     * @return 指定输入流的 SHA1 值
      * @see #digest(String, InputStream)
      */
     public static String sha1(InputStream ins) {
@@ -1903,6 +1940,11 @@ public abstract class Lang {
     }
 
     /**
+     * 获取指定字符串的 SHA1 值
+     * 
+     * @param cs
+     *            字符串
+     * @return 指定字符串的 SHA1 值
      * @see #digest(String, CharSequence)
      */
     public static String sha1(CharSequence cs) {
@@ -2007,6 +2049,7 @@ public abstract class Lang {
         }
     }
 
+    /** 当前运行的 Java 虚拟机是否是在安卓环境 */
     public static final boolean isAndroid;
     static {
         boolean flag = false;
@@ -2019,9 +2062,10 @@ public abstract class Lang {
     }
 
     /**
-     * 将数组内容倒着排序
+     * 将指定的数组的内容倒序排序。注意，这会破坏原数组的内容
      * 
      * @param arrays
+     *            指定的数组
      */
     public static <T> void reverse(T[] arrays) {
         int size = arrays.length;

@@ -87,14 +87,12 @@
 			{{{<JAVA>
 			public class Pet {
 
-				@Column
 				@Id
 				private int id;
-				
-				@Column
+
 				@Name
 				private String name;
-				
+
 				@Column
 				private String nickname;
 
@@ -109,14 +107,12 @@
 					this.nickname = "Unknown";
 				}
 
-				@Column
 				@Id
 				private int id;
-				
-				@Column
+
 				@Name
 				private String name;
-				
+
 				@Column
 				private String nickname;
 
@@ -129,4 +125,3 @@
 	通过头两个约定，你可以让你的数据库操作同直接调用 JDBC 接口一样快。别忘了，在数据库操作的时候，拼装
 	SQL 这点小开销几乎可以忽略不计。第三个约定，适用于在你不希望暴露POJO的构造函数的前提下。最后一个约
 	定则是 Nutz.Dao 的默认期望的工作方式。
-	

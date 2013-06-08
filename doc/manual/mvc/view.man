@@ -395,6 +395,6 @@
 	--------------------------------------------------------------------------------------
 	已有的,经过检验的自定义视图
 	
-		[http://axhack.javaeye.com/blog/542441 Freemarker] 
+		[http://axhack.javaeye.com/blog/542441 Freemarker]
 		
-		[http://myblog.sunfarms.net/100.html Freemarker] 可以拓展为Velocity
+		[http://wendal.net/100 Freemarker] 可以拓展为Velocity

@@ -32,12 +32,12 @@ public abstract class Mvcs {
 
     // TODO 这个变量应该在 1.b.46 之后的某一个版本删掉
     public static final String DEFAULT_MSGS = "$default";
-    
+
     public static final String MSG = "msg";
     public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
     // ====================================================================
-    
+
     public static Map<String, Object> getLocaleMessage(String key) {
         Map<String, Map<String, Object>> msgss = getMessageSet();
         if (null != msgss)
@@ -85,7 +85,9 @@ public abstract class Mvcs {
     }
 
     /**
-     * @return 当前会话的本地字符串集合的键值
+     * 获取当前会话的本地字符串集合的键值；如果当前 HTTP 会话不存在，则返回 null
+     * 
+     * @return 当前会话的本地字符串集合的键值；如果当前 HTTP 会话不存在，则返回 null
      */
     public static String getLocalizationKey() {
         HttpSession sess = getHttpSession();
@@ -93,7 +95,7 @@ public abstract class Mvcs {
     }
 
     /**
-     * 设置本地话字符串的键值
+     * 设置本地化字符串的键值
      * <p>
      * 如果你用的是 Nutz.Mvc 默认的本地化机制，那么你的本地字符串键值，相当于一个你目录名。 <br>
      * 比如 "zh_CN" 等
@@ -111,7 +113,9 @@ public abstract class Mvcs {
     }
 
     /**
-     * @return 当前都加载了哪些种字符串的 key
+     * 返回当前加载了的本地化字符串的键值
+     * 
+     * @return 当前都加载了哪些种字符串的 KEY
      */
     public static Set<String> getLocalizationKeySet() {
         Map<String, Map<String, Object>> msgss = getMessageSet();
@@ -126,6 +130,7 @@ public abstract class Mvcs {
     private static String default_localization_key = null;
 
     /**
+     * 设置默认的多国语言
      * 
      * @param key
      *            默认的多国语言 KEY
@@ -134,6 +139,11 @@ public abstract class Mvcs {
         default_localization_key = key;
     }
 
+    /**
+     * 返回默认的本地化字符串 KEY
+     * 
+     * @return 默认的本地化字符串 KEY
+     */
     public static String getDefaultLocalizationKey() {
         return default_localization_key;
     }
@@ -152,7 +162,7 @@ public abstract class Mvcs {
         // 初始化本次请求的多国语言字符串
         Map<String, Map<String, Object>> msgss = getMessageSet();
         if (msgss == null && !ctx.localizations.isEmpty())
-        	msgss = ctx.localizations.values().iterator().next();
+            msgss = ctx.localizations.values().iterator().next();
         if (null != msgss) {
             Map<String, Object> msgs = null;
 
@@ -177,6 +187,9 @@ public abstract class Mvcs {
 
     /**
      * 获取当前请求的路径，并去掉后缀
+     * 
+     * @param req
+     *            HTTP 请求对象
      */
     public static String getRequestPath(HttpServletRequest req) {
         return getRequestPathObject(req).getPath();
@@ -184,6 +197,9 @@ public abstract class Mvcs {
 
     /**
      * 获取当前请求的路径，并去掉后缀
+     * 
+     * @param req
+     *            HTTP 请求对象
      */
     public static RequestPath getRequestPathObject(HttpServletRequest req) {
         String url = req.getPathInfo();
@@ -194,6 +210,9 @@ public abstract class Mvcs {
 
     /**
      * 获取当前请求的路径，并去掉后缀
+     * 
+     * @param url
+     *            请求路径的URL
      */
     public static RequestPath getRequestPathObject(String url) {
         RequestPath rr = new RequestPath();
@@ -256,6 +275,7 @@ public abstract class Mvcs {
 
     // ==================================================================
     private static final ThreadLocal<String> NAME = new ThreadLocal<String>();
+
     /**
      * NutMvc的上下文
      */
@@ -263,10 +283,18 @@ public abstract class Mvcs {
 
     private static ServletContext servletContext;
 
+    /**
+     * 获取 HTTP 请求对象
+     * @return HTTP 请求对象
+     */
     public static final HttpServletRequest getReq() {
         return ctx.reqThreadLocal.get().getAs(HttpServletRequest.class, "req");
     }
 
+    /**
+     * 获取 HTTP 响应对象
+     * @return HTTP 响应对象
+     */
     public static final HttpServletResponse getResp() {
         return ctx.reqThreadLocal.get().getAs(HttpServletResponse.class, "resp");
     }
@@ -275,6 +303,10 @@ public abstract class Mvcs {
         return NAME.get();
     }
 
+    /**
+     * 获取 Action 执行的上下文
+     * @return Action 执行的上下文
+     */
     public static final ActionContext getActionContext() {
         return ctx.reqThreadLocal.get().getAs(ActionContext.class, "ActionContext");
     }
@@ -285,22 +317,48 @@ public abstract class Mvcs {
         ctx.reqThreadLocal.get().set("resp", resp);
     }
 
+    /**
+     * 设置 Servlet 执行的上下文
+     * 
+     * @param servletContext
+     *            Servlet 执行的上下文
+     */
     public static void setServletContext(ServletContext servletContext) {
         Mvcs.servletContext = servletContext;
     }
 
+    /**
+     * 设置 Action 执行的上下文
+     * 
+     * @param actionContext
+     *            Action 执行的上下文
+     */
     public static void setActionContext(ActionContext actionContext) {
         ctx.reqThreadLocal.get().set("ActionContext", actionContext);
     }
 
+    /**
+     * 获取 Servlet 执行的上下文
+     * @return Servlet 执行的上下文
+     */
     public static ServletContext getServletContext() {
         return servletContext;
     }
 
+    /**
+     * 设置对象装配的上下文环境
+     * 
+     * @param iocContext
+     *            对象装配的上下文环境
+     */
     public static void setIocContext(IocContext iocContext) {
         ctx.reqThreadLocal.get().set("IocContext", iocContext);
     }
 
+    /**
+     * 获取对象装配的上下文环境
+     * @return 进行对象装配的上下文环境
+     */
     public static IocContext getIocContext() {
         return ctx.reqThreadLocal.get().getAs(IocContext.class, "IocContext");
     }
@@ -308,6 +366,10 @@ public abstract class Mvcs {
     // 新的,基于ThreadLoacl改造过的Mvc辅助方法
     // ====================================================================
 
+    /**
+     * 获取全局的Ioc对象
+     * @return 全局的Ioc对象
+     */
     public static Ioc getIoc() {
         return ctx.iocs.get(getName());
     }
@@ -332,7 +394,6 @@ public abstract class Mvcs {
         ctx.localizations.put(getName(), messageSet);
     }
 
-
     public static void setNutConfig(NutConfig config) {
         ctx.nutConfigs.put(getName(), config);
     }
@@ -340,10 +401,12 @@ public abstract class Mvcs {
     public static NutConfig getNutConfig() {
         return ctx.nutConfigs.get(getName());
     }
-    
+
     // ==================================================================
 
-    // 重置当前线程所持有的对象
+    /**
+     * 重置当前线程所持有的对象
+     */
     public static Context resetALL() {
         Context context = ctx.reqThreadLocal.get();
         NAME.set(null);
@@ -361,7 +424,7 @@ public abstract class Mvcs {
             return null;
         return req.getSession(createNew);
     }
-    
+
     public static void close() {
         ctx.clear();
         ctx.close();

@@ -14,16 +14,15 @@ import org.nutz.log.Logs;
 
 /**
  * 定时任务服务的友好封装
- * 
+ *
  * @author QinerG(qinerg@gmail.com)
  */
 public abstract class Tasks {
-    
+
     private static Log logger = Logs.get();
-    // 缺省的定时任务线程池大小，默认10个应该够了吧？
-    private static final int DefaultPoolSize = 10;
-    private static ScheduledThreadPoolExecutor taskScheduler = new ScheduledThreadPoolExecutor(DefaultPoolSize);
-    
+
+    private static ScheduledThreadPoolExecutor taskScheduler = new ScheduledThreadPoolExecutor(getBestPoolSize());
+
     /**
      * 立即启动，并以固定的频率来运行任务。后续任务的启动时间不受前次任务延时影响。
      * @param task 具体待执行的任务
@@ -32,7 +31,7 @@ public abstract class Tasks {
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, int periodSeconds) {
         return scheduleAtFixedRate(task, 0, periodSeconds, TimeUnit.SECONDS);
     }
-    
+
     /**
      * 在指定的延时之后开始以固定的频率来运行任务。后续任务的启动时间不受前次任务延时影响。
      * @param task 具体待执行的任务
@@ -41,9 +40,9 @@ public abstract class Tasks {
      * @param unit 时间单位
      */
     public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, int period, TimeUnit unit) {
-        return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, TimeUnit.SECONDS);
+        return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
     }
-    
+
     /**
      * 在指定的时间点开始以固定的频率运行任务。后续任务的启动时间不受前次任务延时影响。
      * @param task 具体待执行的任务
@@ -73,7 +72,7 @@ public abstract class Tasks {
             }
         }, startTime);
     }
-    
+
     /**
      * 立即启动，两次任务间保持固定的时间间隔
      * @param task 具体待执行的任务
@@ -82,7 +81,7 @@ public abstract class Tasks {
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, int periodSeconds) {
         return scheduleWithFixedDelay(task, 0, periodSeconds, TimeUnit.SECONDS);
     }
-    
+
     /**
      * 在指定的延时之后启动，两次任务间保持固定的时间间隔
      * @param task 具体待执行的任务
@@ -91,9 +90,9 @@ public abstract class Tasks {
      * @param unit 时间单位
      */
     public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long initialDelay, int period, TimeUnit unit) {
-        return taskScheduler.scheduleWithFixedDelay(task, initialDelay, period, TimeUnit.SECONDS);
+        return taskScheduler.scheduleWithFixedDelay(task, initialDelay, period, unit);
     }
-    
+
     /**
      * 在指定的时间点启动，两次任务间保持固定的时间间隔
      * @param task 具体待执行的任务
@@ -105,7 +104,7 @@ public abstract class Tasks {
         Date dt = Times.D(startTime);
         scheduleWithFixedDelay(task, dt, period, unit);
     }
-    
+
     /**
      * 在指定的时间点启动，两次任务间保持固定的时间间隔
      * @param task 具体待执行的任务
@@ -123,7 +122,7 @@ public abstract class Tasks {
             }
         }, startTime);
     }
-    
+
     /**
      * 调整线程池大小
      * @param threadPoolSize
@@ -131,7 +130,7 @@ public abstract class Tasks {
     public static void resizeThreadPool(int threadPoolSize) {
         taskScheduler.setCorePoolSize(threadPoolSize);
     }
-    
+
     /**
      * 返回定时任务线程池，可做更高级的应用
      * @return
@@ -139,7 +138,7 @@ public abstract class Tasks {
     public static ScheduledThreadPoolExecutor getTaskScheduler() {
         return taskScheduler;
     }
-    
+
     /**
      * 关闭定时任务服务
      * <p>系统关闭时可调用此方法终止正在执行的定时任务，一旦关闭后不允许再向线程池中添加任务，否则会报RejectedExecutionException异常</p>
@@ -148,12 +147,30 @@ public abstract class Tasks {
         List<Runnable> awaitingExecution = taskScheduler.shutdownNow();
         logger.infof("Tasks stopping. Tasks awaiting execution: %d", awaitingExecution.size());
     }
-    
+
     /**
      * 重启动定时任务服务
      */
     public static void reset() {
         depose();
-        taskScheduler = new ScheduledThreadPoolExecutor(DefaultPoolSize);
+        taskScheduler = new ScheduledThreadPoolExecutor(getBestPoolSize());
+    }
+
+    /**
+     * 根据 Java 虚拟机可用处理器数目返回最佳的线程数。<br>
+     * 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)，其中阻塞系数这里设为0.9
+     */
+    private static int getBestPoolSize() {
+        try {
+            // JVM可用处理器的个数
+            final int cores = Runtime.getRuntime().availableProcessors();
+            // 最佳的线程数 = CPU可用核心数 / (1 - 阻塞系数)
+            // TODO 阻塞系数是不是需要有个setter方法能让使用者自由设置呢？
+            return (int)(cores / (1 - 0.9));
+        }
+        catch (Throwable e) {
+            // 异常发生时姑且返回10个任务线程池
+            return 10;
+        }
     }
 }
