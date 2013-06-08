@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
+import org.nutz.dao.DaoException;
 import org.nutz.filepool.FilePool;
 import org.nutz.filepool.NutFilePool;
 import org.nutz.filepool.SynchronizedFilePool;
@@ -71,7 +72,7 @@ public class JdbcExpertConfigFile {
         if (pool == null) {
             if (log.isWarnEnabled())
                 log.warnf("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
-            //throw new DaoException("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
+            throw new DaoException("NutDao FilePool create fail!! Blob and Clob Support is DISABLE!!");
         }
         return pool;
     }
