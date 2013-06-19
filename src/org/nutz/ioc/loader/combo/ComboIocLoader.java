@@ -62,8 +62,12 @@ public class ComboIocLoader implements IocLoader {
                     createIocLoader(currentClassName, argsList);
                 currentClassName = str.substring(1);
                 argsList = new ArrayList<String>();
-            } else
-                argsList.add(str);
+            } else {
+            	if (argsList == null) {
+            		throw new IllegalArgumentException("ioc args without Loader ClassName. " + args);
+            	}
+            	argsList.add(str);
+            }
         }
         if (currentClassName != null)
             createIocLoader(currentClassName, argsList);
