@@ -234,9 +234,9 @@ public abstract class NutStatement implements DaoStatement {
                 sb.append(Sqls.formatFieldValue(mtrx[0][i]));
             }
         }
-        if (i < ss.length)
-            sb.append(ss[i]);
-
+        for (; i < ss.length; i++) {
+        	sb.append(ss[i]);
+		}
         return sb.toString();
     }
 
