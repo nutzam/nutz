@@ -56,7 +56,7 @@ public class BorningException extends RuntimeException {
     }
 
     private static String getExceptionMessage(Throwable e) {
-        return Lang.unwrapThrow(e).getMessage();
+        return Lang.unwrapThrow(e).getMessage() + " || Args Error or Abstract Class ?";
     }
 
 }
