@@ -54,9 +54,13 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.trans.Molecule;
 
 public class NutDao extends DaoSupport implements Dao {
+	
+	private static final Log log = Logs.get();
 
     private PojoCallback _pojo_queryEntity;
 
@@ -84,6 +88,14 @@ public class NutDao extends DaoSupport implements Dao {
         _pojo_queryRecord = new PojoQueryRecordCallback();
         _pojo_fetchRecord = new PojoFetchRecordCallback();
         _pojo_eachRecord = new PojoEachRecordCallback();
+        
+        //check for spring DataSourceTransactionManager
+        for (StackTraceElement ele : Thread.currentThread().getStackTrace()) {
+			if (ele.getClassName().startsWith("org.springframework")) {
+				log.info("Note: Make sure set SpringDaoRunner if using DataSourceTransactionManager.");
+				break;
+			}
+		}
     }
 
     public NutDao(DataSource dataSource) {
