@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.entity.field.ManyLinkField;
@@ -133,5 +134,10 @@ public class EntityParsingTest extends DaoCase {
     public void test_complex_pojo_without_db() {
         Entity<?> en = en(TO5.class);
         assertEquals("toid", en.getField("id").getColumnName());
+    }
+    
+    @Test(expected=DaoException.class)
+    public void test_entity_with_two_id() {
+    	dao.create(ErrPet.class, true);
     }
 }

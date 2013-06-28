@@ -17,6 +17,7 @@ import org.nutz.ioc.ValueProxyMaker;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
+import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.ioc.loader.cached.CachedIocLoader;
 import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
 import org.nutz.ioc.meta.IocObject;
@@ -130,6 +131,9 @@ public class NutIoc implements Ioc2 {
         InjectName inm = type.getAnnotation(InjectName.class);
         if (null != inm && (!Strings.isBlank(inm.value())))
             return get(type, inm.value());
+        IocBean iocBean = type.getAnnotation(IocBean.class);
+        if (iocBean != null && (!Strings.isBlank(iocBean.name())))
+        	return get(type, iocBean.name());
         return get(type, Strings.lowerFirst(type.getSimpleName()));
     }
 

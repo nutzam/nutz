@@ -147,7 +147,7 @@ public class IocLoading {
                 }
             }
             // Inner
-            if (isIocObject(map)) {
+            if (map.size() > 0 && isIocObject(map)) {
                 iv.setType(IocValue.TYPE_INNER);
                 try {
                     iv.setValue(map2iobj(map));

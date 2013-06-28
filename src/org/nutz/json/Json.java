@@ -36,8 +36,8 @@ public class Json {
      * @throws JsonException
      */
     public static Object fromJson(Reader reader) throws JsonException {
-    	return new org.nutz.json.impl.JsonCompileImpl().parse(reader);
-        //return new org.nutz.json.impl.JsonCompileImplV2().parse(reader);
+//    	return new org.nutz.json.impl.JsonCompileImpl().parse(reader);
+        return new org.nutz.json.impl.JsonCompileImplV2().parse(reader);
     }
 
     /**

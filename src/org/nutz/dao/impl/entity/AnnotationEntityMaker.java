@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import javax.sql.DataSource;
 
 import org.nutz.dao.DB;
+import org.nutz.dao.DaoException;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityMaker;
@@ -197,10 +198,18 @@ public class AnnotationEntityMaker implements EntityMaker {
         MappingInfo miId = null;
         MappingInfo miName = null;
         for (MappingInfo mi : infos) {
-            if (mi.annId != null)
+            if (mi.annId != null) {
+            	if (miId != null) {
+            		throw new DaoException("Allows only a single @Id ! " + type);
+            	}
                 miId = mi;
-            else if (mi.annName != null)
+            }
+            else if (mi.annName != null) {
+            	if (miName != null) {
+            		throw new DaoException("Allows only a single @Name ! " + type);
+            	}
                 miName = mi;
+            }
             else
                 tmp.add(mi);
         }
