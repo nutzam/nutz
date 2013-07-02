@@ -660,23 +660,4 @@ public class Images {
         }
     }
 
-    public static void main(String[] args) {
-        String dir = "/Users/pw/Pictures/MGS/";
-        String tar = "mgs.gif";
-        String[] fs = new String[]{"mg.png",
-                                   "mgs.png",
-                                   "mgs2.png",
-                                   "mgs3.png",
-                                   "mgs4.png",
-                                   "mgsgz.png",
-                                   "mgspw.png",
-                                   "mgsr.png",
-                                   "mgss.png",
-                                   "mgsops.png"};
-        String[] ufs = new String[fs.length];
-        for (int i = 0; i < fs.length; i++) {
-            ufs[i] = dir + fs[i];
-        }
-        writeGif(dir + tar, ufs, 200);
-    }
 }
