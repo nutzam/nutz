@@ -31,10 +31,11 @@ public class DefaultMirrorFactory implements MirrorFactory {
     private ClassDefiner cd;
 
     private AopConfigration aopConfigration;
+    
+    private static final Object lock = new Object();
 
     public DefaultMirrorFactory(Ioc ioc) {
         this.ioc = ioc;
-        this.cd = new DefaultClassDefiner(getClass().getClassLoader());
     }
 
     @SuppressWarnings("unchecked")
@@ -46,6 +47,22 @@ public class DefaultMirrorFactory implements MirrorFactory {
             return Mirror.me(type);
         }
         try {
+        	// 这段代码的由来:
+        	// 当用户把nutz.jar放到java.ext.dirs下面时,DefaultMirrorFactory的classloader将无法获取用户的类
+        	if (cd == null) {
+        		synchronized (lock) {
+        			if (cd == null) {
+        				ClassLoader cd = type.getClassLoader();
+        				if (cd == null) {
+        					cd = Thread.currentThread().getContextClassLoader();
+        					if (cd == null)
+        						cd = getClass().getClassLoader();
+        				}
+        				log.info("Use as AOP ClassLoader parent : " + cd);
+        		        this.cd = new DefaultClassDefiner(cd);
+        			}
+				}
+        	}
             return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
         }
         catch (ClassNotFoundException e) {}
