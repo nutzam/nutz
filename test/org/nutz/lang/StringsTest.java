@@ -298,4 +298,21 @@ public class StringsTest {
         assertEquals("alert(&#x27;hello world&#x27;);", Strings.escapeHtml("alert('hello world');"));
     }
 
+    @Test
+    public void test_issue461() {
+        char here_is_zenkaku_space_char = '　';
+        String here_is_zenkaku_space_str = String.valueOf(here_is_zenkaku_space_char);
+        StringBuffer here_is_zenkaku_space_sb = new StringBuffer(here_is_zenkaku_space_str);
+        StringBuilder here_is_zenkaku_space_sber = new StringBuilder(here_is_zenkaku_space_str);
+
+        assertEquals("aaa",
+                     Strings.trim(here_is_zenkaku_space_str + "aaa" + here_is_zenkaku_space_str));
+        assertEquals("aaa",
+                     Strings.trim(here_is_zenkaku_space_sb.append("aaa")
+                                                          .append(here_is_zenkaku_space_char)));
+        assertEquals("aaa",
+                     Strings.trim(here_is_zenkaku_space_sber.append("aaa")
+                                                            .append(here_is_zenkaku_space_char)));
+    }
+
 }

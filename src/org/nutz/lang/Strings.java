@@ -177,17 +177,15 @@ public abstract class Strings {
     }
 
     /**
-     * 去掉字符串前后空白
+     * 去掉字符串前后空白字符。空白字符的定义由Character.isWhitespace来判断
      * 
      * @param cs
      *            字符串
-     * @return 去掉了前后空白的新字符串
+     * @return 去掉了前后空白字符的新字符串
      */
     public static String trim(CharSequence cs) {
         if (null == cs)
             return null;
-        if (cs instanceof String)
-            return ((String) cs).trim();
         int length = cs.length();
         if (length == 0)
             return cs.toString();
