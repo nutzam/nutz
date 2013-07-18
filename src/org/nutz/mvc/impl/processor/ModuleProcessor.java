@@ -1,6 +1,8 @@
 package org.nutz.mvc.impl.processor;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
@@ -33,6 +35,8 @@ public class ModuleProcessor extends AbstractProcessor {
     private Class<?> moduleType;
     private Method method;
     private Object moduleObj;
+    
+    private static Map<String, Object> modulesMap = new HashMap<String, Object>();
 
     @Override
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
@@ -40,9 +44,18 @@ public class ModuleProcessor extends AbstractProcessor {
         moduleType = ai.getModuleType();
         // 不使用 Ioc 容器管理模块
         if (Strings.isBlank(ai.getInjectName())) {
-            if (log.isInfoEnabled())
-                log.info("Create Module obj without Ioc --> " + moduleType);
-            moduleObj = Mirror.me(moduleType).born();
+        	// change in 1.b.49 
+        	// 同一个类的入口方法,共用同一个实例
+        	synchronized (modulesMap) {
+				String className = moduleType.getName();
+				moduleObj = modulesMap.get(className);
+				if (moduleObj == null) {
+					if (log.isInfoEnabled())
+		                log.info("Create Module obj without Ioc --> " + moduleType);
+		            moduleObj = Mirror.me(moduleType).born();
+		            modulesMap.put(className, moduleObj);
+				}
+			}
         }
         // 使用 Ioc 容器管理模块
         else {

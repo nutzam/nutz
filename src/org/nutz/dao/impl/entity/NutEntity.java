@@ -29,6 +29,8 @@ import org.nutz.lang.util.Context;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class NutEntity<T> implements Entity<T> {
+	
+	private static final Object[] EMTRY_ARG = new Object[]{};
 
     /**
      * 按照 Java 字段名索引映射字段
@@ -198,7 +200,7 @@ public class NutEntity<T> implements Entity<T> {
             return bornByRS.born(Lang.array(rs));
 
         // 通过反射每个字段逐次设置对象
-        T re = bornByDefault.born(new Object[]{});
+        T re = bornByDefault.born(EMTRY_ARG);
         if (null == matcher)
             for (MappingField fld : fields)
                 fld.injectValue(re, rs);
@@ -212,7 +214,7 @@ public class NutEntity<T> implements Entity<T> {
     }
 
     public T getObject(Record rec) {
-        T obj = bornByDefault.born(new Object[]{});
+        T obj = bornByDefault.born(EMTRY_ARG);
         for (MappingField fld : fields)
             fld.injectValue(obj, rec);
         return obj;
