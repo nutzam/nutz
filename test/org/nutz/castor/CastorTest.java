@@ -19,6 +19,8 @@ import junit.framework.Assert;
 import org.junit.Test;
 import org.nutz.NutzEnum;
 import org.nutz.castor.castor.DateTimeCastor;
+import org.nutz.dao.test.entity.TO0;
+import org.nutz.dao.test.entity.TO5;
 import org.nutz.lang.Lang;
 import org.nutz.lang.meta.Email;
 
@@ -388,9 +390,18 @@ public class CastorTest {
                      Castors.me().castToString(timestamp));
 
         Castors.me().setSetting(new DefaultCastorSetting());
-
     }
 
+    @Test
+    public void testObj2Obj() {
+        TO0 src = new TO0();
+        src.id = 100;
+        src.name = "test";
+        TO5 desc = Castors.me().castTo(src, TO5.class);
+        assertEquals(src.id, desc.getId());
+        assertEquals(src.name, desc.getName());
+    }
+    
     static class MyCastorSetting {
         public static void setup(DateTimeCastor<Timestamp, String> c) {
             c.setDateFormat(new SimpleDateFormat("yyyy/MM/dd"));
