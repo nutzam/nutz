@@ -258,6 +258,9 @@ public class RawView implements View {
 				} else {
 					len = bin.read(buf, 0 , (int)(rangeRange.end - pos));
 				}
+				if (len == -1) {//有时候,非常巧合的,文件已经读取完,就悲剧开始了...
+					break;
+				}
 				if (len > 0) {
 					out.write(buf, 0, len);
 					pos += len;
