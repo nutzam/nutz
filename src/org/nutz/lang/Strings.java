@@ -14,8 +14,127 @@ import org.nutz.lang.meta.Email;
  * @author wendal(wendal1985@gmail.com)
  * @author mawm(ming300@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
+ * @author pw(pangwu86@gmail.com)
  */
-public abstract class Strings {
+public class Strings {
+
+    private Strings() {}
+
+    /**
+     * 是中文字符吗?
+     * 
+     * @param c
+     *            待判定字符
+     * @return 判断结果
+     */
+    public static boolean isChineseCharacter(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+            || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+            || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+            || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+            || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+            || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断字符是否为全角字符
+     * 
+     * @param c
+     *            字符
+     * @return 判断结果
+     */
+    public static boolean isFullWidthCharacter(char c) {
+        // 全角空格为12288，半角空格为32
+        // 其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
+        // 全角空格 || 其他全角字符
+        if (c == 12288 || (c > 65280 && c < 65375)) {
+            return true;
+        }
+        // 中文全部是全角
+        if (isChineseCharacter(c)) {
+            return true;
+        }
+        // 日文判断
+        // 全角平假名 u3040 - u309F
+        // 全角片假名 u30A0 - u30FF
+        if (c >= '\u3040' && c <= '\u30FF') {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 转换成半角字符
+     * 
+     * @param c
+     *            待转换字符
+     * @return 转换后的字符
+     */
+    public static char toHalfWidthCharacter(char c) {
+        if (c == 12288) {
+            return (char) 32;
+        } else if (c > 65280 && c < 65375) {
+            return (char) (c - 65248);
+        }
+        return c;
+    }
+
+    /**
+     * 转换为半角字符串
+     * 
+     * @param str
+     *            待转换字符串
+     * @return 转换后的字符串
+     */
+    public static String toHalfWidthString(CharSequence str) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < str.length(); i++) {
+            sb.append(toHalfWidthCharacter(str.charAt(i)));
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 判断是否是全角字符串(所有字符都是全角)
+     * 
+     * @param str
+     *            被判断的字符串
+     * @return 判断结果
+     */
+    public static boolean isFullWidthString(CharSequence str) {
+        return charLength(str) == str.length() * 2;
+    }
+
+    /**
+     * 判断是否是半角字符串(所有字符都是半角)
+     * 
+     * @param str
+     *            被判断的字符串
+     * @return 判断结果
+     */
+    public static boolean isHalfWidthString(CharSequence str) {
+        return charLength(str) == str.length();
+    }
+
+    /**
+     * 计算字符串的字符长度(全角算2, 半角算1)
+     * 
+     * @param str
+     *            被计算的字符串
+     * @return 字符串的字符长度
+     */
+    public static int charLength(CharSequence str) {
+        int clength = 0;
+        for (int i = 0; i < str.length(); i++) {
+            clength += isFullWidthCharacter(str.charAt(i)) ? 2 : 1;
+        }
+        return clength;
+    }
 
     /**
      * 复制字符串
