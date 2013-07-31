@@ -13,6 +13,58 @@ import java.util.HashSet;
 import org.junit.Test;
 
 public class StringsTest {
+
+    @Test
+    public void test_is_full_width_character() {
+        assertFalse(Strings.isFullWidthCharacter('a'));
+        assertTrue(Strings.isFullWidthCharacter('ａ'));
+        assertFalse(Strings.isFullWidthCharacter('a'));
+        assertTrue(Strings.isFullWidthCharacter('ａ'));
+        assertTrue(Strings.isFullWidthCharacter('。'));
+    }
+
+    @Test
+    public void test_is_full_width_string() {
+        assertTrue(Strings.isFullWidthString("おはようございます"));
+        assertTrue(Strings.isFullWidthString("アイシダイク"));
+        assertTrue(Strings.isFullWidthString("蒼井そら"));
+        assertTrue(Strings.isFullWidthString("我是全角字我是办饺子"));
+        assertTrue(Strings.isFullWidthString("ｗｏ我爱你中国，哈哈哈"));
+        assertFalse(Strings.isFullWidthString("ｗｏ我爱你中国,哈哈哈"));
+        assertFalse(Strings.isFullWidthString("23gdgrt34t98))*&%$#{}:~!@"));
+    }
+
+    @Test
+    public void test_is_half_width_string() {
+        assertFalse(Strings.isHalfWidthString("おはようございます"));
+        assertFalse(Strings.isHalfWidthString("アイシダイク"));
+        assertFalse(Strings.isHalfWidthString("蒼井そら"));
+        assertFalse(Strings.isHalfWidthString("我是全角字我是办饺子"));
+        assertFalse(Strings.isHalfWidthString("ｗｏ我爱你中国，哈哈哈"));
+        assertFalse(Strings.isHalfWidthString("ｗｏ我爱你中国,哈哈哈"));
+        assertTrue(Strings.isHalfWidthString("23gdgrt34t98))*&%$#{}:~!@"));
+    }
+
+    @Test
+    public void test_is_chinese_character() {
+        assertTrue(Strings.isChineseCharacter('你'));
+        assertTrue(Strings.isChineseCharacter('．'));
+        assertTrue(Strings.isChineseCharacter('。'));
+        assertFalse(Strings.isChineseCharacter('A'));
+        assertFalse(Strings.isChineseCharacter('3'));
+        assertFalse(Strings.isChineseCharacter('.'));
+        assertFalse(Strings.isChineseCharacter('#'));
+        assertFalse(Strings.isChineseCharacter('~'));
+        assertFalse(Strings.isChineseCharacter('`'));
+    }
+
+    @Test
+    public void test_char_length() {
+        assertEquals(5, Strings.charLength("12345"));
+        assertEquals(10, Strings.charLength("１２３４５"));
+        assertEquals(15, Strings.charLength("１２３４５12345"));
+    }
+
     @Test
     public void test_dup_char_sequence() {
         assertEquals("", Strings.dup(null, 4));
