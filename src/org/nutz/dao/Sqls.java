@@ -168,6 +168,10 @@ public abstract class Sqls {
     public static Sql fetchString(String sql) {
         return create(sql).setCallback(callback.str());
     }
+    
+    public static Sql queryString(String sql) {
+    	return create(sql).setCallback(callback.strs());
+    }
 
     /**
      * 创建一个获取一组实体对象的 Sql。
