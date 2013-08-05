@@ -30,6 +30,7 @@ import org.nutz.mvc.adaptor.injector.IocObjInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
 import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
+import org.nutz.mvc.adaptor.injector.ReqHeaderInjector;
 import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
 import org.nutz.mvc.adaptor.injector.RequestInjector;
 import org.nutz.mvc.adaptor.injector.ResponseInjector;
@@ -39,6 +40,7 @@ import org.nutz.mvc.adaptor.injector.SessionInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
+import org.nutz.mvc.annotation.ReqHeader;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 
 /**
@@ -66,6 +68,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             Param param = null;
             Attr attr = null;
             IocObj iocObj = null;
+            ReqHeader reqHeader = null;
 
             // find @Param & @Attr & @IocObj in current annotations
             for (int x = 0; x < anns.length; x++)
@@ -78,6 +81,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 } else if (anns[x] instanceof IocObj) {
                     iocObj = (IocObj) anns[x];
                     break;
+                } else if (anns[x] instanceof ReqHeader) {
+                	reqHeader = (ReqHeader)anns[x];
+                	break;
                 }
             // If has @Attr
             if (null != attr) {
@@ -89,6 +95,11 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             if (null != iocObj) {
                 injs[i] = new IocObjInjector(method.getParameterTypes()[i], iocObj.value());
                 continue;
+            }
+            
+            if (null != reqHeader) {
+            	injs[i] = new ReqHeaderInjector(reqHeader.value());
+            	continue;
             }
 
             // And eval as default suport types

@@ -39,8 +39,13 @@ public class ManyLinkField extends AbstractLinkField  {
                                         ta.getType());
 
             // 宿主实体的字段 - 应该是主键
-            hostField = linkedField.getTypeMirror().isIntLike()    ? this.getEntity().getIdField()
-                                                                : this.getEntity().getNameField();
+            if (Strings.isBlank(mapKey)) {
+            	hostField = linkedField.getTypeMirror().isIntLike()    ? this.getEntity().getIdField()
+                                                                       : this.getEntity().getNameField();
+            } else {
+            	hostField = this.getEntity().getField(mapKey);
+            }
+            
             if (null == hostField)
                 throw Lang.makeThrow(    "Fail to find hostField for @Many(field=%s) '%s' : %s<=>%s",
                                         info.many.field(),

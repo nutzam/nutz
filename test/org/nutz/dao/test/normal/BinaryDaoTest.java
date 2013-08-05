@@ -63,16 +63,19 @@ public class BinaryDaoTest extends DaoCase {
     
     @Test
     public void test_blob() throws IOException {
-        dao.create(BinObject.class, true);
-        
-        BinObject obj = new BinObject();
-        obj.setXblob(new ByteArrayInputStream("中文".getBytes()));
-        obj.setXclob(new StringReader("不是英文"));
-        dao.insert(obj);
-        
-        BinObject db_obj = dao.fetch(BinObject.class);
-        assertTrue(Streams.equals(new ByteArrayInputStream("中文".getBytes()), db_obj.getXblob()));
-        assertEquals("不是英文", Lang.readAll(db_obj.getXclob()));
+        // For mysql only
+        if (dao.meta().isMySql()) {
+            dao.create(BinObject.class, true);
+
+            BinObject obj = new BinObject();
+            obj.setXblob(new ByteArrayInputStream("中文".getBytes()));
+            obj.setXclob(new StringReader("不是英文"));
+            dao.insert(obj);
+
+            BinObject db_obj = dao.fetch(BinObject.class);
+            assertTrue(Streams.equals(new ByteArrayInputStream("中文".getBytes()), db_obj.getXblob()));
+            assertEquals("不是英文", Lang.readAll(db_obj.getXclob()));
+        }
     }
     
     //for issue 278

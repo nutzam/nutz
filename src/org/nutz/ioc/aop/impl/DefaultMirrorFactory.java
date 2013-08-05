@@ -23,51 +23,64 @@ import org.nutz.log.Logs;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultMirrorFactory implements MirrorFactory {
-    
-    private static final Log log = Logs.get();
 
-    private Ioc ioc;
+	private static final Log log = Logs.get();
 
-    private ClassDefiner cd;
+	private Ioc ioc;
 
-    private AopConfigration aopConfigration;
+	private ClassDefiner cd;
 
-    public DefaultMirrorFactory(Ioc ioc) {
-        this.ioc = ioc;
-        this.cd = new DefaultClassDefiner(getClass().getClassLoader());
-    }
+	private AopConfigration aopConfigration;
 
-    @SuppressWarnings("unchecked")
-    public <T> Mirror<T> getMirror(Class<T> type, String name) {
-        if (MethodInterceptor.class.isAssignableFrom(type)
-            || type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
-            || AopConfigration.IOCNAME.equals(name)
-            || AopConfigration.class.isAssignableFrom(type)) {
-            return Mirror.me(type);
-        }
-        try {
-            return (Mirror<T>) Mirror.me(cd.load(type.getName() + ClassAgent.CLASSNAME_SUFFIX));
-        }
-        catch (ClassNotFoundException e) {}
-        if (aopConfigration == null)
-            if (ioc.has(AopConfigration.IOCNAME))
-                aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
-            else
-                aopConfigration = new AnnotationAopConfigration();
-        List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
-        if (interceptorPairs == null || interceptorPairs.size() < 1) {
-            if (log.isDebugEnabled())
-                log.debugf("%s , no config to enable AOP.", type);
-            return Mirror.me(type);
-        }
-        ClassAgent agent = new AsmClassAgent();
-        for (InterceptorPair interceptorPair : interceptorPairs)
-            agent.addInterceptor(    interceptorPair.getMethodMatcher(),
-                                    interceptorPair.getMethodInterceptor());
-        return Mirror.me(agent.define(cd, type));
-    }
+	private static final Object lock = new Object();
 
-    public void setAopConfigration(AopConfigration aopConfigration) {
-        this.aopConfigration = aopConfigration;
-    }
+	public DefaultMirrorFactory(Ioc ioc) {
+		this.ioc = ioc;
+	}
+
+	public <T> Mirror<T> getMirror(Class<T> type, String name) {
+		if (MethodInterceptor.class.isAssignableFrom(type)
+			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
+			|| AopConfigration.IOCNAME.equals(name)
+			|| AopConfigration.class.isAssignableFrom(type)) {
+			return Mirror.me(type);
+		}
+
+		if (aopConfigration == null)
+			if (ioc.has(AopConfigration.IOCNAME))
+				aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
+			else
+				aopConfigration = new AnnotationAopConfigration();
+		List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
+		if (interceptorPairs == null || interceptorPairs.size() < 1) {
+			if (log.isDebugEnabled())
+				log.debugf("%s , no config to enable AOP.", type);
+			return Mirror.me(type);
+		}
+
+		synchronized (lock) {
+			// 这段代码的由来:
+			// 当用户把nutz.jar放到java.ext.dirs下面时,DefaultMirrorFactory的classloader将无法获取用户的类
+			if (cd == null) {
+				ClassLoader cd = type.getClassLoader();
+				if (cd == null) {
+					cd = Thread.currentThread().getContextClassLoader();
+					if (cd == null)
+						cd = getClass().getClassLoader();
+				}
+				log.info("Use as AOP ClassLoader parent : " + cd);
+				this.cd = new DefaultClassDefiner(cd);
+			}
+			ClassAgent agent = new AsmClassAgent();
+			for (InterceptorPair interceptorPair : interceptorPairs)
+				agent.addInterceptor(interceptorPair.getMethodMatcher(),
+									 interceptorPair.getMethodInterceptor());
+			return Mirror.me(agent.define(cd, type));
+		}
+
+	}
+
+	public void setAopConfigration(AopConfigration aopConfigration) {
+		this.aopConfigration = aopConfigration;
+	}
 }
