@@ -33,4 +33,9 @@ public class UTF8JsonView implements View {
             throws IOException {
         Mvcs.write(resp, null == obj ? data : obj, format);
     }
+
+    public static final View NICE = new UTF8JsonView(JsonFormat.nice());
+    public static final View COMPACT = new UTF8JsonView(JsonFormat.compact());
+    public static final View FULL = new UTF8JsonView(JsonFormat.full());
+    public static final View FORLOOK = new UTF8JsonView(JsonFormat.forLook());
 }
