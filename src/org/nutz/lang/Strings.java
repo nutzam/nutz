@@ -861,4 +861,29 @@ public class Strings {
         }
     }
 
+    // ####### 几个常用的color相关的字符串转换放这里 ########
+
+    /**
+     * 将数字转为十六进制字符串, 默认要使用2个字符(暂时没考虑负数)
+     * 
+     * @param n
+     *            数字
+     * @return 十六进制字符串
+     */
+    public static String num2hex(int n) {
+        String s = Integer.toHexString(n);
+        return n <= 15 ? "0" + s : s;
+    }
+
+    /**
+     * 十六进制字符串转换为数字
+     * 
+     * @param hex
+     *            十六进制字符串
+     * @return 十进制数字
+     */
+    public static int hex2num(String hex) {
+        return Integer.parseInt(hex, 16);
+    }
+
 }
