@@ -131,6 +131,14 @@ public class PropertiesProxy {
         return Strings.sNull(mp.get(key), defaultValue);
     }
 
+    public String trim(String key) {
+        return Strings.trim(get(key));
+    }
+
+    public String trim(String key, String defaultValue) {
+        return Strings.trim(get(key, defaultValue));
+    }
+
     public int getInt(String key) {
         return getInt(key, -1);
     }

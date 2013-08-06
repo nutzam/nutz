@@ -2013,38 +2013,38 @@ public abstract class Lang {
      * @return 数字签名
      */
     public static String digest(String algorithm, CharSequence cs) {
-        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs),null,1);
+        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs), null, 1);
     }
 
-	/**
-	 * 从字节数组计算出数字签名
-	 * 
-	 * @param algorithm
-	 *            算法，比如 "SHA1" 或者 "MD5" 等
-	 * @param bytes
-	 *            字节数组
-	 * @param salt
-	 *            随机字节数组
-	 * @param iterations
-	 *            迭代次数
-	 * @return 数字签名
-	 */
-	public static String digest(String algorithm, byte[] bytes, byte[] salt, int iterations) {
-		try {
-			MessageDigest md = MessageDigest.getInstance(algorithm);
+    /**
+     * 从字节数组计算出数字签名
+     * 
+     * @param algorithm
+     *            算法，比如 "SHA1" 或者 "MD5" 等
+     * @param bytes
+     *            字节数组
+     * @param salt
+     *            随机字节数组
+     * @param iterations
+     *            迭代次数
+     * @return 数字签名
+     */
+    public static String digest(String algorithm, byte[] bytes, byte[] salt, int iterations) {
+        try {
+            MessageDigest md = MessageDigest.getInstance(algorithm);
 
-			if (salt != null) {
-				md.update(salt);
-			}
+            if (salt != null) {
+                md.update(salt);
+            }
 
-			byte[] hashBytes = md.digest(bytes);
+            byte[] hashBytes = md.digest(bytes);
 
-			for (int i = 1; i < iterations; i++) {
-				md.reset();
-				hashBytes = md.digest(hashBytes);
-			}
+            for (int i = 1; i < iterations; i++) {
+                md.reset();
+                hashBytes = md.digest(hashBytes);
+            }
 
-			return fixedHexString(hashBytes);
+            return fixedHexString(hashBytes);
         }
         catch (NoSuchAlgorithmException e) {
             throw Lang.wrapThrow(e);
@@ -2089,13 +2089,61 @@ public abstract class Lang {
                              method.getDeclaringClass().getSimpleName(),
                              method.getName());
     }
-    
+
     public static String fixedHexString(byte[] hashBytes) {
-    	StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer();
         for (int i = 0; i < hashBytes.length; i++) {
             sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
         }
 
         return sb.toString();
+    }
+
+    /**
+     * 一个便利的方法，将当前线程睡眠一段时间
+     * 
+     * @param ms
+     *            要睡眠的时间 ms
+     */
+    public static void sleep(long ms) {
+        try {
+            Thread.sleep(ms);
+        }
+        catch (InterruptedException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
+     * 一个便利的等待方法同步一个对象
+     * 
+     * @param lock
+     *            锁对象
+     * @param ms
+     *            要等待的时间 ms
+     */
+    public static void wait(Object lock, long ms) {
+        if (null != lock)
+            synchronized (lock) {
+                try {
+                    lock.wait(ms);
+                }
+                catch (InterruptedException e) {
+                    throw Lang.wrapThrow(e);
+                }
+            }
+    }
+
+    /**
+     * 通知对象的同步锁
+     * 
+     * @param lock
+     *            锁对象
+     */
+    public static void notifyAll(Object lock) {
+        if (null != lock)
+            synchronized (lock) {
+                lock.notifyAll();
+            }
     }
 }
