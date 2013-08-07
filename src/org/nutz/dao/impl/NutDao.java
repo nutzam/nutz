@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.sql.DataSource;
 
@@ -61,6 +62,8 @@ import org.nutz.trans.Molecule;
 public class NutDao extends DaoSupport implements Dao {
 	
 	private static final Log log = Logs.get();
+	
+	private static final AtomicLong atomLong = new AtomicLong();
 
     private PojoCallback _pojo_queryEntity;
 
@@ -75,11 +78,14 @@ public class NutDao extends DaoSupport implements Dao {
     private PojoCallback _pojo_eachRecord;
 
     private PojoCallback _pojo_fetchInt;
+    
+    protected volatile long _selfId;
 
     // ==========================================================
     // 下面是 3 个构造函数
     public NutDao() {
         super();
+        _selfId = atomLong.getAndIncrement();
         // 设置默认的回调
         _pojo_queryEntity = new PojoQueryEntityCallback();
         _pojo_fetchEntity = new PojoFetchEntityCallback();
@@ -831,4 +837,12 @@ public class NutDao extends DaoSupport implements Dao {
     //---------------------------------------------------------------
     //专属于NutDao的一些帮助方法
     
+    /**
+     * 当本对象被GC的时候,打印之.<p/>
+     * 因为NutDao是线程安全的,用户反复创建NutDao的话,下面的方法将有提示作用
+     */
+    protected void finalize() throws Throwable {
+    	log.debugf("%s[_selfId=%d] finalize", getClass().getSimpleName(), _selfId);
+    	super.finalize();
+    }
 }
