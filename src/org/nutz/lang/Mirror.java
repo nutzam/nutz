@@ -200,8 +200,8 @@ public class Mirror<T> {
         for (Method method : klass.getMethods()) {
             if (method.getParameterTypes().length != 0)
                 continue;
-            if (!method.isAccessible()) //有些时候,即使是public的方法,也不一定能访问
-            	method.setAccessible(true);
+            if (!method.isAccessible()) // 有些时候,即使是public的方法,也不一定能访问
+                method.setAccessible(true);
             if (_get.equals(method.getName()))
                 return method;
             if (_is.equals(method.getName())) {
@@ -902,7 +902,8 @@ public class Mirror<T> {
      * 
      * @throws BorningException
      *             当没有发现合适的 Borning 时抛出
-     * @throws NullPointerException when args is null
+     * @throws NullPointerException
+     *             when args is null
      */
     public Borning<T> getBorningByArgTypes(Class<?>... argTypes) throws BorningException {
         BornContext<T> bc = Borns.evalByArgTypes(klass, argTypes);
@@ -1258,6 +1259,13 @@ public class Mirror<T> {
      */
     public boolean isStringLike() {
         return CharSequence.class.isAssignableFrom(klass);
+    }
+
+    /**
+     * @return 当前对象是否简单的数值，比如字符串，布尔，字符，数字，日期时间等
+     */
+    public boolean isSimple() {
+        return isStringLike() || isBoolean() || isChar() || isNumber() || isDateTimeLike();
     }
 
     /**

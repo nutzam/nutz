@@ -13,7 +13,7 @@ public class DynamicConstructorBorning<T> implements Borning<T> {
         this.c.setAccessible(true);
     }
 
-    public T born(Object[] args) {
+    public T born(Object... args) {
         try {
             return c.newInstance(Mirror.evalArgToRealArray(args));
         }

@@ -12,7 +12,7 @@ public class MethodBorning<T> implements Borning<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T born(Object[] args) {
+    public T born(Object... args) {
         try {
             return (T) method.invoke(null, args);
         }

@@ -16,7 +16,7 @@ public class MethodCastingBorning<T> implements Borning<T> {
     }
 
     @SuppressWarnings("unchecked")
-    public T born(Object[] args) {
+    public T born(Object... args) {
         try {
             args = Lang.array2ObjectArray(args, pts);
             return (T) method.invoke(null, args);

@@ -12,9 +12,9 @@ import org.nutz.lang.Strings;
  * <li>如果 Number 为原生类型，空白串将被转换成 0
  * <li>如果 Number 为外覆类，空白串将被转换成 null
  * </ul>
- *
+ * 
  * 如果转换失败，将抛出 FailToCastObjectException
- *
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class String2Number extends Castor<String, Number> {
@@ -22,24 +22,29 @@ public class String2Number extends Castor<String, Number> {
     @Override
     public Number cast(String src, Class<?> toType, String... args) {
         if (Strings.isBlank(src)) {
-            if (toType.isPrimitive())
+            if (toType.isPrimitive()) {
+                if (toType == float.class || toType == double.class)
+                    return 0.0f;
                 return 0;
-            else
+            } else {
                 return null;
+            }
         }
-        if (!toType.isPrimitive() && ("null".equals(src) || "NULL".equals(src) || "Null".equals(src))){
+        if (!toType.isPrimitive()
+            && ("null".equals(src) || "NULL".equals(src) || "Null".equals(src))) {
             return null;
         }
         try {
             return (Number) Mirror.me(toType)
-                    .getWrapperClass()
-                    .getConstructor(String.class)
-                    .newInstance(src);
+                                  .getWrapperClass()
+                                  .getConstructor(String.class)
+                                  .newInstance(src);
         }
         catch (Exception e) {
-            throw new FailToCastObjectException(String.format(    "Fail to cast '%s' to <%s>",
-                    src,
-                    toType.getName()), Lang.unwrapThrow(e));
+            throw new FailToCastObjectException(String.format("Fail to cast '%s' to <%s>",
+                                                              src,
+                                                              toType.getName()),
+                                                Lang.unwrapThrow(e));
         }
     }
 }

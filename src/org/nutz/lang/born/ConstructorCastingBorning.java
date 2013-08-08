@@ -15,7 +15,7 @@ public class ConstructorCastingBorning<T> implements Borning<T> {
         this.pts = c.getParameterTypes();
     }
 
-    public T born(Object[] args) {
+    public T born(Object... args) {
         try {
             args = Lang.array2ObjectArray(args, pts);
             return c.newInstance(args);
