@@ -14,6 +14,7 @@ import org.nutz.mvc.View;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author mawn(ming300@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public class UTF8JsonView implements View {
 
