@@ -6,7 +6,6 @@ import org.nutz.dao.impl.sql.ValueEscaper;
 import org.nutz.dao.impl.sql.callback.*;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.born.Borning;
 
@@ -61,7 +60,7 @@ public abstract class Sqls {
      * @see org.nutz.dao.sql.Sql
      */
     public static Sql create(String sql) {
-        return sqlBorning.born(Lang.array(sql));
+        return sqlBorning.born(sql);
     }
 
     /**
@@ -168,9 +167,9 @@ public abstract class Sqls {
     public static Sql fetchString(String sql) {
         return create(sql).setCallback(callback.str());
     }
-    
+
     public static Sql queryString(String sql) {
-    	return create(sql).setCallback(callback.strs());
+        return create(sql).setCallback(callback.strs());
     }
 
     /**
@@ -287,11 +286,11 @@ public abstract class Sqls {
         public SqlCallback records() {
             return new QueryRecordCallback();
         }
-        
+
         public SqlCallback bool() {
             return new FetchBooleanCallback();
         }
-        
+
         public SqlCallback bools() {
             return new QueryBooleanCallback();
         }
@@ -310,7 +309,8 @@ public abstract class Sqls {
         else if (Sqls.isNotNeedQuote(v.getClass()))
             return Sqls.escapeFieldValue(v.toString());
         else
-            return new StringBuilder("'").append(Sqls.escapeFieldValue(Castors.me().castToString(v))).append('\'');
+            return new StringBuilder("'").append(Sqls.escapeFieldValue(Castors.me().castToString(v)))
+                                         .append('\'');
     }
 
     /**
@@ -327,7 +327,7 @@ public abstract class Sqls {
             return Sqls.escapeSqlFieldValue(v.toString());
         else
             return new StringBuilder("'").append(Sqls.escapeSqlFieldValue(v.toString()))
-                                            .append('\'');
+                                         .append('\'');
     }
 
     /**

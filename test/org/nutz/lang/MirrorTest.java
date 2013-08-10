@@ -524,7 +524,7 @@ public class MirrorTest {
     @Test
     public void test_borning_of_constractor() {
         Borning<TBOC> b = Mirror.me(TBOC.class).getBorning("H2");
-        TBOC tb = b.born(Lang.array("H2"));
+        TBOC tb = b.born("H2");
         assertEquals(DB.H2, tb.db);
     }
 
@@ -541,7 +541,7 @@ public class MirrorTest {
     @Test
     public void test_borning_of_method() {
         Borning<TBOM> b = Mirror.me(TBOM.class).getBorning("H2");
-        TBOM tb = b.born(Lang.array("H2"));
+        TBOM tb = b.born("H2");
         assertEquals(DB.H2, tb.db);
     }
 
@@ -606,15 +606,15 @@ public class MirrorTest {
             public void invoke(Method obj) {}
         });
     }
-    
+
     @Test
-    public void testIssue309(){
+    public void testIssue309() {
         assertEquals("jk", Mirror.me(String.class).invoke(String.class, "valueOf", "jk"));
     }
-    
+
     @Test
     public void testIssue392() {
-    	assertEquals(0, Mirror.me(Issue392Bean.class).born(new byte[]{}).getLen());
-    	assertEquals(6, Mirror.me(Issue392Bean.class).born(new byte[]{1,2,3,4,5,6}).getLen());
+        assertEquals(0, Mirror.me(Issue392Bean.class).born(new byte[]{}).getLen());
+        assertEquals(6, Mirror.me(Issue392Bean.class).born(new byte[]{1, 2, 3, 4, 5, 6}).getLen());
     }
 }
