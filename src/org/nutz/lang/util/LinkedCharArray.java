@@ -59,11 +59,10 @@ public class LinkedCharArray {
         return innerGet(offset++);
     }
 
-    public String popFirst(int num) {
-        StringBuilder sb = new StringBuilder();
+    public LinkedCharArray popFirst(int num) {
         for (int i = 0; i < num; i++)
-            sb.append(popFirst());
-        return sb.toString();
+            popFirst();
+        return this;
     }
 
     public char popLast() {
