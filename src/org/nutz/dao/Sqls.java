@@ -135,20 +135,31 @@ public abstract class Sqls {
     }
 
     /**
-     * 创建一个获取长整数的 Sql。
-     * <p>
-     * 这个函数除了执行 create(String)外，还会为这个 Sql 语句设置回调，用来获取长整数值。
-     * <p>
-     * <b style=color:red>注意：</b>你的 Sql 语句返回的 ResultSet 的第一列必须是数字
-     * 
-     * @param sql
-     *            Sql 语句
-     * @return Sql 对象
-     * 
-     * @see org.nutz.dao.sql.Sql
+     * @see #fetchInt(String)
      */
     public static Sql fetchLong(String sql) {
         return create(sql).setCallback(callback.longValue());
+    }
+
+    /**
+     * @see #fetchInt(String)
+     */
+    public static Sql fetchFloat(String sql) {
+        return create(sql).setCallback(callback.floatValue());
+    }
+
+    /**
+     * @see #fetchInt(String)
+     */
+    public static Sql fetchDouble(String sql) {
+        return create(sql).setCallback(callback.doubleValue());
+    }
+
+    /**
+     * @see #fetchInt(String)
+     */
+    public static Sql fetchTimestamp(String sql) {
+        return create(sql).setCallback(callback.timestamp());
     }
 
     /**
@@ -236,6 +247,27 @@ public abstract class Sqls {
          */
         public SqlCallback longValue() {
             return new FetchLongCallback();
+        }
+
+        /**
+         * @return 从 ResultSet 获取一个浮点数的回调对象
+         */
+        public SqlCallback floatValue() {
+            return new FetchFloatCallback();
+        }
+
+        /**
+         * @return 从 ResultSet 获取一个双精度浮点数的回调对象
+         */
+        public SqlCallback doubleValue() {
+            return new FetchDoubleCallback();
+        }
+
+        /**
+         * @return 从 ResultSet 获取一个时间戳对象的回调对象
+         */
+        public SqlCallback timestamp() {
+            return new FetchTimestampCallback();
         }
 
         /**
