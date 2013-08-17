@@ -99,6 +99,10 @@ public class Cnd implements OrderBy, Criteria {
     Cnd() {
         cri = new SimpleCriteria();
     }
+    
+    public SimpleCriteria getCri() {
+		return cri;
+	}
 
     protected Cnd(SqlExpression exp) {
         this();

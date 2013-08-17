@@ -160,6 +160,8 @@ public class DaoSupport {
                 DatabaseMetaData dmd = conn.getMetaData();
                 meta.setProductName(dmd.getDatabaseProductName());
                 meta.setVersion(dmd.getDatabaseProductVersion());
+                log.debug("JDBC Driver --> " + dmd.getDriverVersion());
+                log.debug("JDBC Name   --> " + dmd.getDriverName());
             }
         });
         if (log.isDebugEnabled())

@@ -3,6 +3,9 @@ package org.nutz.mvc;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+
 /**
  * 如果你的应用，在 Session 中保存了一些需要注销的对象，比如你在 Ioc 容器中将一个 DataSource 对象的范围设成
  * "session"，那么请启用本的监听器，它会在一个 session 注销时，关闭 DataSource
@@ -22,7 +25,16 @@ import javax.servlet.http.HttpSessionListener;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public class NutSessionListener implements HttpSessionListener {
+	
+	private static final Log log = Logs.get();
+	
+	public static boolean isSessionScopeEnable = false;
 
+	public NutSessionListener() {
+		isSessionScopeEnable = true;
+		log.info("NutIoc SessionScope is Enable.");
+	}
+	
     public void sessionCreated(HttpSessionEvent se) {}
 
     public void sessionDestroyed(HttpSessionEvent se) {
