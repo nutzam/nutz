@@ -18,7 +18,8 @@ public class ReqHeaderInjector implements ParamInjector {
 		this.name = name;
 	}
 	
-	public Object get(ServletContext sc,
+	@SuppressWarnings("unchecked")
+    public Object get(ServletContext sc,
 					  HttpServletRequest req,
 					  HttpServletResponse resp,
 					  Object refer) {
