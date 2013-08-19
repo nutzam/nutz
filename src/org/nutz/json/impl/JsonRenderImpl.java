@@ -203,6 +203,8 @@ public class JsonRenderImpl implements JsonRender {
         increaseFormatIndent();
         ArrayList<Pair> list = new ArrayList<Pair>(fields.size());
         for (JsonEntityField jef : fields) {
+            if (jef.isIgnore())
+                continue;
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);

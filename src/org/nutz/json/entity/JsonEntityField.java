@@ -18,11 +18,21 @@ public class JsonEntityField {
 
     private String name;
 
+    private boolean ignore;
+
     private Type genericType;
 
     private Injecting injecting;
 
     private Ejecting ejecting;
+
+    public boolean isIgnore() {
+        return ignore;
+    }
+
+    public void setIgnore(boolean ignore) {
+        this.ignore = ignore;
+    }
 
     /**
      * 根据名称获取字段实体, 默认以set优先
@@ -41,25 +51,24 @@ public class JsonEntityField {
             return null;
         }
 
-        // 瞬时变量就不要持久化了
-        if (Modifier.isTransient(fld.getModifiers()))
-            return null;
-    	
         // 以特殊字符开头的字段，看起来是隐藏字段
         // XXX 有用户就是_开头的字段也要啊! by wendal
-    	//if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
-    	if (fld.getName().startsWith("$") && fld.getAnnotation(JsonField.class) == null)
-    		return null;
-    	
-        JsonField jf = fld.getAnnotation(JsonField.class);
-        if (null != jf && jf.ignore())
+        // if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
+        if (fld.getName().startsWith("$") && fld.getAnnotation(JsonField.class) == null)
             return null;
+
+        JsonField jf = fld.getAnnotation(JsonField.class);
 
         JsonEntityField jef = new JsonEntityField();
         jef.genericType = Lang.getFieldType(mirror, fld);
         jef.name = Strings.sBlank(null == jf ? null : jf.value(), fld.getName());
         jef.ejecting = mirror.getEjecting(fld.getName());
         jef.injecting = mirror.getInjecting(fld.getName());
+
+        // 瞬时变量和明确声明忽略的，变 ignore
+        if (Modifier.isTransient(fld.getModifiers()) || (null != jf && jf.ignore())) {
+            jef.setIgnore(true);
+        }
 
         return jef;
     }
