@@ -17,6 +17,7 @@ import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
+import org.nutz.mvc.NutSessionListener;
 import org.nutz.mvc.ioc.RequestIocContext;
 import org.nutz.mvc.ioc.SessionIocContext;
 
@@ -77,7 +78,7 @@ public class ModuleProcessor extends AbstractProcessor {
                 /*
                  * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
                  */
-                if (ioc instanceof Ioc2) {
+                if (NutSessionListener.isSessionScopeEnable && ioc instanceof Ioc2) {
                     reqContext = new RequestIocContext(ac.getRequest());
                     SessionIocContext sessionContext = new SessionIocContext(Mvcs.getHttpSession());
                     IocContext myContext = new ComboContext(reqContext, sessionContext);

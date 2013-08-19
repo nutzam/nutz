@@ -90,7 +90,7 @@ public abstract class Mvcs {
      * @return 当前会话的本地字符串集合的键值；如果当前 HTTP 会话不存在，则返回 null
      */
     public static String getLocalizationKey() {
-        HttpSession sess = getHttpSession();
+        HttpSession sess = getHttpSession(false);
         return null == sess ? null : (String) sess.getAttribute(LOCALE_KEY);
     }
 
