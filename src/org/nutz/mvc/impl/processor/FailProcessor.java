@@ -25,7 +25,7 @@ public class FailProcessor extends ViewProcessor {
     public void process(ActionContext ac) throws Throwable {
         if (log.isWarnEnabled()) {
             String uri = Mvcs.getRequestPath(ac.getRequest());
-            log.warnf("Erro@%s : '%s'", uri, ac.getError().toString());
+            log.warn(String.format("Erro@%s : '%s'", uri), ac.getError());
         }
         super.process(ac);
     }
