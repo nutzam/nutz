@@ -286,4 +286,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public void setTop(boolean top) {
         this.top = top;
     }
+    
+    public List<SqlExpression> getExps() {
+		return exps;
+	}
 }
