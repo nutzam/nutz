@@ -201,11 +201,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
     
     public GroupBy groupBy(String... names) {
-    	return cri.groupBy(names);
+    	cri.groupBy(names);
+    	return this;
     }
     
     public GroupBy having(Condition cnd) {
-    	return cri.having(cnd);
+    	cri.having(cnd);
+    	return this;
     }
     
     public OrderBy getOrderBy() {

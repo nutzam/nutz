@@ -8,6 +8,4 @@ public interface OrderBy extends Condition,PItem {
     OrderBy asc(String name);
 
     OrderBy desc(String name);
-    
-    GroupBy groupBy(String...names);
 }

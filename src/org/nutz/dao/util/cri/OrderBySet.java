@@ -5,18 +5,15 @@ import java.util.List;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
-import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 
 public class OrderBySet extends NoParamsPItem implements OrderBy {
 
     private List<OrderByItem> list;
-    private SimpleCriteria cri;
 
-    OrderBySet(SimpleCriteria cri) {
+    OrderBySet() {
         list = new ArrayList<OrderByItem>(3);
-        this.cri = cri;
     }
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
@@ -50,10 +47,6 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         list.add(desc);
         return this;
     }
-
-    public GroupBy groupBy(String... names) {
-    	return cri.groupBy(names);
-    }
     
     public void setPojo(Pojo pojo) {
         super.setPojo(pojo);
@@ -63,5 +56,9 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
 
     public List<OrderByItem> getItems() {
         return list;
+    }
+    
+    public String toString() {
+    	return toSql(null);
     }
 }
