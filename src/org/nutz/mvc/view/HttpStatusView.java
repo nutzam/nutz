@@ -16,6 +16,11 @@ import org.nutz.mvc.View;
  */
 public class HttpStatusView implements View {
 
+	public static final View HTTP_404 = new HttpStatusView(404);
+	//public static final View HTTP_400 = new HttpStatusView(400);
+	public static final View HTTP_500 = new HttpStatusView(500);
+	public static final View HTTP_502 = new HttpStatusView(502);
+
     private int sc;
 
     public HttpStatusView(int sc) {
