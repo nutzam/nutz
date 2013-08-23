@@ -9,4 +9,5 @@ public interface OrderBy extends Condition,PItem {
 
     OrderBy desc(String name);
     
+    GroupBy groupBy(String...names);
 }
