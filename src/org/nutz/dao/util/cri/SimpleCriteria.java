@@ -36,7 +36,8 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, 
     public void setPojo(Pojo pojo) {
         where.setPojo(pojo);
         orderBy.setPojo(pojo);
-        groupBy.setPojo(pojo);
+        if (groupBy != null)
+        	groupBy.setPojo(pojo);
     }
 
     public void setPager(int pageNumber, int pageSize) {
