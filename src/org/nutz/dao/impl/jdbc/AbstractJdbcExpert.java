@@ -76,21 +76,25 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             rsmd = rs.getMetaData();
             // 循环字段检查
             for (MappingField mf : en.getMappingFields()) {
-                int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
-                // 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
-                // if (!mf.isReadonly() && rsmd.isReadOnly(ci))
-                // mf.setAsReadonly();
-                // 是否非空
-                if (ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci))
-                    mf.setAsNotNull();
-                // 枚举类型在数据库中的值
-                if (mf.getTypeMirror().isEnum()) {
-                    if (Daos.isIntLikeColumn(rsmd, ci)) {
-                        mf.setColumnType(ColType.INT);
-                    } else {
-                        mf.setColumnType(ColType.VARCHAR);
-                    }
-                }
+                try {
+					int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
+					// 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
+					// if (!mf.isReadonly() && rsmd.isReadOnly(ci))
+					// mf.setAsReadonly();
+					// 是否非空
+					if (ResultSetMetaData.columnNoNulls == rsmd.isNullable(ci))
+					    mf.setAsNotNull();
+					// 枚举类型在数据库中的值
+					if (mf.getTypeMirror().isEnum()) {
+					    if (Daos.isIntLikeColumn(rsmd, ci)) {
+					        mf.setColumnType(ColType.INT);
+					    } else {
+					        mf.setColumnType(ColType.VARCHAR);
+					    }
+					}
+				} catch (Exception e) {
+					// TODO 需要log一下不?
+				}
             }
         }
         catch (Exception e) {
