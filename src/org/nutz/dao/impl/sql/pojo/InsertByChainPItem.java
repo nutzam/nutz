@@ -2,6 +2,7 @@ package org.nutz.dao.impl.sql.pojo;
 
 import org.nutz.dao.Chain;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.lang.Lang;
 
@@ -58,6 +59,9 @@ public class InsertByChainPItem extends AbstractPItem {
     }
 
     private String _colname(Entity<?> en, int index) {
-        return en.getField(names[index]).getColumnName();
+    	MappingField field = en.getField(names[index]);
+    	if (field == null)
+    		throw new IllegalArgumentException(String.format("Class %s didn't have field named (%s)", en.getType(), names[index]));
+        return field.getColumnName();
     }
 }

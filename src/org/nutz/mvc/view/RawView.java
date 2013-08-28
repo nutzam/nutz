@@ -82,6 +82,7 @@ public class RawView implements View {
 			if (log.isDebugEnabled())
 				log.debug("File downloading ... " + file.getAbsolutePath());
 			if (!file.exists() || file.isDirectory()) {
+				log.debug("File downloading ... Not Exist : " + file.getAbsolutePath());
 				resp.sendError(404);
 				return;
 			}
