@@ -58,4 +58,12 @@ public class HttpTest {
     	Response response = Http.get("https://github.com");
     	assertTrue(response.getStatus() == 200);
     }
+    
+    @Test
+    public void test_chunked_content() {
+    	Response response = Http.get("http://app.danoolive.com:8201/test");
+    	assertEquals(200, response.getStatus());
+    	assertEquals("chunked", response.getHeader().get("Transfer-Encoding"));
+    	assertEquals("OK", response.getContent());
+    }
 }

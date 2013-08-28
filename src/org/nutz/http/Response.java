@@ -12,6 +12,7 @@ import java.util.Map;
 
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 
 public class Response {
@@ -119,9 +120,11 @@ public class Response {
             else
                 reader = this.getReader(charsetName);
             int c;
-            while (-1 != (c = reader.read())) {
-                writer.write(c);
+            char[] buf = new char[8192];
+            while (-1 != (c = reader.read(buf))) {
+                writer.write(buf, 0, c);
             }
+            writer.flush();
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -133,9 +136,8 @@ public class Response {
     }
     
     public String getContent(String charsetName) {
-        StringBuilder sb = new StringBuilder();
-        Writer w = Lang.opw(sb);
-        print(w, charsetName);
-        return sb.toString();
+    	if (charsetName == null)
+    		return Streams.readAndClose(getReader());
+        return Streams.readAndClose(getReader(charsetName));
     }
 }

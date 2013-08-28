@@ -98,7 +98,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             }
             
             if (null != reqHeader) {
-            	injs[i] = new ReqHeaderInjector(reqHeader.value());
+            	injs[i] = new ReqHeaderInjector(reqHeader.value(), argTypes[i]);
             	continue;
             }
 

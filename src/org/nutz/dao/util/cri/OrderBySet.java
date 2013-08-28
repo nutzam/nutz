@@ -47,8 +47,7 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
         list.add(desc);
         return this;
     }
-
-    @Override
+    
     public void setPojo(Pojo pojo) {
         super.setPojo(pojo);
         for (OrderByItem obi : list)
@@ -57,5 +56,9 @@ public class OrderBySet extends NoParamsPItem implements OrderBy {
 
     public List<OrderByItem> getItems() {
         return list;
+    }
+    
+    public String toString() {
+    	return toSql(null);
     }
 }

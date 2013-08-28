@@ -45,6 +45,7 @@ public class BinaryDaoTest extends DaoCase {
     }
 
     @Test
+    // 如果报错且mysql的话,设置数据库的max_allowed_packet属性哦
     public void test_big_blob() throws IOException {
         String path = "~/tmp/big.blob";
         Files.createFileIfNoExists(path);

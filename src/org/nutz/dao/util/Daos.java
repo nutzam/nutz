@@ -78,7 +78,7 @@ public abstract class Daos {
             if (meta.getColumnName(i).equalsIgnoreCase(colName))
                 return i;
         // TODO 尝试一下meta.getColumnLabel?
-        log.infof("Can not find @Column(%s) in database", colName);
+        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
         throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
     }
 
@@ -277,5 +277,12 @@ public abstract class Daos {
             }
         });
         return ints[0];
+    }
+    
+    public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
+    	for (Class<?> klass : Scans.me().scanPackage(packageName)) {
+			if (klass.getAnnotation(Table.class) != null)
+				dao.create(klass, force);
+		}
     }
 }

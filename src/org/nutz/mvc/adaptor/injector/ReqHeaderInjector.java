@@ -8,14 +8,18 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.castor.Castors;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 public class ReqHeaderInjector implements ParamInjector {
 
 	private String name;
 	
-	public ReqHeaderInjector(String name) {
+	private Class<?> type;
+	
+	public ReqHeaderInjector(String name, Class<?> type) {
 		this.name = name;
+		this.type = type;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -32,7 +36,10 @@ public class ReqHeaderInjector implements ParamInjector {
 			}
 			return headers;
 		}
-		return req.getHeader(name);
+		String val = req.getHeader(name);
+		if (val == null)
+			return null;
+		return Castors.me().castTo(val, type);
 	}
 
 }

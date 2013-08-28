@@ -4,6 +4,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.util.cnd.SimpleCondition;
@@ -45,7 +46,7 @@ import org.nutz.lang.segment.CharSegment;
  * 
  * @see org.nutz.dao.Condition
  */
-public class Cnd implements OrderBy, Criteria {
+public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /*------------------------------------------------------------------*/
     public static Condition format(String format, Object... args) {
@@ -198,7 +199,17 @@ public class Cnd implements OrderBy, Criteria {
     public SqlExpressionGroup where() {
         return cri.where();
     }
-
+    
+    public GroupBy groupBy(String... names) {
+    	cri.groupBy(names);
+    	return this;
+    }
+    
+    public GroupBy having(Condition cnd) {
+    	cri.having(cnd);
+    	return this;
+    }
+    
     public OrderBy getOrderBy() {
         return cri.getOrderBy();
     }
