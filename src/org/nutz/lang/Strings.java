@@ -570,6 +570,23 @@ public class Strings {
     }
 
     /**
+     * 测试此字符串是否被指定的左字符串和右字符串所包裹
+     * 
+     * @param str
+     *            字符串
+     * @param l
+     *            左字符串
+     * @param r
+     *            右字符串
+     * @return 字符串是被左字符串和右字符串包裹
+     */
+    public static boolean isQuoteBy(String str, String l, String r) {
+        if (null == str && null != l && null != r)
+            return false;
+        return str.startsWith(l) && str.endsWith(r);
+    }
+
+    /**
      * 获得一个字符串集合中，最长串的长度
      * 
      * @param coll

@@ -23,6 +23,7 @@ import org.nutz.lang.Strings;
  * 左闭右开区间 : [T0, T1)
  * 左开右闭区间 : (T0, T1]
  * 全开放的区间 : (T0, T1)
+ * 精确等于某值 : (T0) 或 [T0)    # 总之开闭区间无所谓了
  * </pre>
  * 
  * 比如对于数字:
@@ -30,6 +31,7 @@ import org.nutz.lang.Strings;
  * <pre>
  * [4,10]   // >=4 && <=10
  * (6,54]   // >=6 && <54
+ * (,78)    // <78
  * </pre>
  * 
  * 对于日期
@@ -68,9 +70,62 @@ public abstract class Region<T extends Comparable<T>> {
 
     protected T right;
 
-    protected boolean leftIsOpen;
+    protected boolean leftOpen;
 
-    protected boolean rightIsOpen;
+    protected boolean rightOpen;
+
+    public T left() {
+        return left;
+    }
+
+    public T right() {
+        return right;
+    }
+
+    public boolean isLeftOpen() {
+        return leftOpen;
+    }
+
+    public boolean isRightOpen() {
+        return rightOpen;
+    }
+
+    /**
+     * @return 是区间还是一个精确匹配的值
+     */
+    public boolean isRegion() {
+        return left != right;
+    }
+
+    /**
+     * 根据左边开闭区间的情况返回一个正确的左边比较的运算符
+     * 
+     * @param gt
+     *            大于的运算符，开区间时采用
+     * @param gte
+     *            大于等于的运算符，闭区间时采用
+     * @return 运算符
+     */
+    public String leftOpt(String gt, String gte) {
+        if (null == left)
+            return null;
+        return leftOpen ? gt : gte;
+    }
+
+    /**
+     * 根据右边开闭区间的情况返回一个正确的右边比较的运算符
+     * 
+     * @param lt
+     *            小于的运算符，开区间时采用
+     * @param lte
+     *            小于等于的运算符，闭区间时采用
+     * @return 运算符
+     */
+    public String rightOpt(String lt, String lte) {
+        if (null == right)
+            return null;
+        return rightOpen ? lt : lte;
+    }
 
     /**
      * @param obj
@@ -80,13 +135,20 @@ public abstract class Region<T extends Comparable<T>> {
     public boolean match(T obj) {
         if (null == obj)
             return false;
-        int c = obj.compareTo(left);
-        if (c < 0 || c == 0 && leftIsOpen) {
-            return false;
+        if (!isRegion()) {
+            return left.compareTo(obj) == 0;
         }
-        c = obj.compareTo(right);
-        if (c > 0 || c == 0 && rightIsOpen) {
-            return false;
+        if (null != left) {
+            int c = obj.compareTo(left);
+            if (c < 0 || c == 0 && leftOpen) {
+                return false;
+            }
+        }
+        if (null != right) {
+            int c = obj.compareTo(right);
+            if (c > 0 || c == 0 && rightOpen) {
+                return false;
+            }
         }
         return true;
     }
@@ -104,16 +166,21 @@ public abstract class Region<T extends Comparable<T>> {
      * @return 自身
      */
     public Region<T> valueOf(String str) {
-        String[] ss = Strings.splitIgnoreBlank(str.substring(1, str.length() - 1), ",");
-        leftIsOpen = str.charAt(0) == '(';
-        rightIsOpen = str.charAt(str.length() - 1) == ')';
-        left = fromString(ss[0]);
-        right = fromString(ss[1]);
-        // 看看是否需要交换交换...
-        if (left.compareTo(right) > 0) {
-            T o = right;
+        String[] ss = str.substring(1, str.length() - 1).split(",");
+        if (ss.length == 1) {
+            left = fromString(ss[0]);
             right = left;
-            left = o;
+        } else {
+            leftOpen = str.charAt(0) == '(';
+            rightOpen = str.charAt(str.length() - 1) == ')';
+            left = fromString(ss[0]);
+            right = fromString(ss[1]);
+            // 看看是否需要交换交换...
+            if (left.compareTo(right) > 0) {
+                T o = right;
+                right = left;
+                left = o;
+            }
         }
         return this;
     }
@@ -123,6 +190,8 @@ public abstract class Region<T extends Comparable<T>> {
     }
 
     public T fromString(String str) {
+        if (Strings.isBlank(str))
+            return null;
         return Castors.me().castTo(str, eleType);
     }
 

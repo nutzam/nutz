@@ -8,6 +8,13 @@ import org.nutz.lang.Times;
 public class RegionTest {
 
     @Test
+    public void test_equals() {
+        assertFalse(Region.Int("(2)").match(1));
+        assertTrue(Region.Int("(2)").match(2));
+        assertFalse(Region.Int("(2)").match(3));
+    }
+
+    @Test
     public void test_int_regin() {
         assertFalse(Region.Int("(1,3)").match(1));
         assertTrue(Region.Int("(1,3)").match(2));
