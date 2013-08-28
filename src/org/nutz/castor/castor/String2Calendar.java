@@ -3,7 +3,6 @@ package org.nutz.castor.castor;
 import java.util.Calendar;
 
 import org.nutz.lang.Strings;
-import org.nutz.lang.Times;
 
 public class String2Calendar extends DateTimeCastor<String, Calendar> {
 
@@ -12,7 +11,7 @@ public class String2Calendar extends DateTimeCastor<String, Calendar> {
         if (Strings.isBlank(src))
             return null;
         Calendar c = Calendar.getInstance();
-        c.setTime(Times.parseWithoutException(dateTimeFormat, src));
+        c.setTime(toDate(src));
         return c;
     }
 

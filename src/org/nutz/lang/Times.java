@@ -5,6 +5,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 一些时间相关的帮助函数
@@ -12,6 +15,32 @@ import java.util.Date;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public abstract class Times {
+
+    /**
+     * 判断一年是否为闰年，如果给定年份小于1全部为 false
+     * 
+     * @param year
+     *            年份，比如 2012 就是二零一二年
+     * @return 给定年份是否是闰年
+     */
+    public static boolean leapYear(int year) {
+        if (year < 4)
+            return false;
+        return (year % 400 == 0) || (year % 100 != 0 && year % 4 == 0);
+    }
+
+    /**
+     * 判断一年（不包括自己）之前有多少个闰年
+     * 
+     * @param year
+     *            年份，比如 2012 就是二零一二年
+     * @return 闰年的个数
+     */
+    public static int countLeapYear(int year) {
+        // 因为要计算年份到公元元年（0001年）的年份跨度，所以减去1
+        int span = year - 1;
+        return (span / 4) - (span / 100) + (span / 400);
+    }
 
     /**
      * 将一个秒数（天中），转换成一个如下格式的数组:
@@ -57,6 +86,71 @@ public abstract class Times {
      */
     public static Date now() {
         return new Date(System.currentTimeMillis());
+    }
+
+    private static Pattern _P_TIME = Pattern.compile("^((\\d{2,4})([/\\\\-])(\\d{1,2})([/\\\\-])(\\d{1,2}))?"
+                                                     + "(([ ])?"
+                                                     + "(\\d{1,2})(:)(\\d{1,2})(:)(\\d{1,2})"
+                                                     + "(([.])"
+                                                     + "(\\d{1,}))?)?$");
+
+    /**
+     * 根据默认时区计算时间字符串的绝对毫秒数
+     * 
+     * @param ds
+     *            时间字符串
+     * @return 绝对毫秒数
+     * 
+     * @see #ms(String, TimeZone)
+     */
+    public static long ms(String ds) {
+        return ms(ds, TimeZone.getDefault());
+    }
+
+    /**
+     * 根据字符串得到相对于 "UTC 1970-01-01 00:00:00" 的绝对毫秒数。
+     * 本函数假想给定的时间字符串是本地时间。所以计算出来结果后，还需要减去时差
+     * 
+     * 支持的时间格式字符串为:
+     * 
+     * <pre>
+     * yyyy-MM-dd HH:mm:ss
+     * yyyy-MM-dd HH:mm:ss.SSS
+     * yy-MM-dd HH:mm:ss;
+     * yy-MM-dd HH:mm:ss.SSS;
+     * yyyy-MM-dd;
+     * yy-MM-dd;
+     * HH:mm:ss;
+     * HH:mm:ss.SSS;
+     * </pre>
+     * 
+     * @param ds
+     *            时间字符串
+     * @param tz
+     *            你给定的时间字符串是属于哪个时区的
+     * @return 时间
+     */
+    public static long ms(String ds, TimeZone tz) {
+        Matcher m = _P_TIME.matcher(ds);
+        if (m.find()) {
+            int yy = _int(m, 2, 1970);
+            int MM = _int(m, 4, 1);
+            int dd = _int(m, 6, 1);
+
+            int HH = _int(m, 9, 0);
+            int mm = _int(m, 11, 0);
+            int ss = _int(m, 13, 0);
+
+            int ms = _int(m, 16, 0);
+
+            long day = (long) D1970(yy, MM, dd);
+            long MS = day * 86400000L;
+            MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
+            MS += (long) ms;
+
+            return MS - tz.getRawOffset();
+        }
+        throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
 
     /**
@@ -155,24 +249,67 @@ public abstract class Times {
     }
 
     /**
-     * 根据字符串得到时间
-     * 
-     * <pre>
-     * 如果你输入了格式为 "yyyy-MM-dd HH:mm:ss"
-     *    那么会匹配到秒
-     *    
-     * 如果你输入格式为 "yyyy-MM-dd"
-     *    相当于你输入了 "yyyy-MM-dd 00:00:00"
-     * </pre>
+     * 根据字符串得到时间对象
      * 
      * @param ds
      *            时间字符串
      * @return 时间
+     * 
+     * @see #ms(String)
      */
     public static Date D(String ds) {
-        if (ds.length() < 12)
-            return parseWithoutException(DF_DATE, ds);
-        return parseWithoutException(DF_DATE_TIME, ds);
+        return D(ms(ds));
+    }
+
+    private static int _int(Matcher m, int index, int dft) {
+        String s = m.group(index);
+        if (Strings.isBlank(s))
+            return dft;
+        return Integer.parseInt(s);
+    }
+
+    // 常量数组，一年每个月多少天
+    private static final int[] _MDs = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+
+    /**
+     * 计算一个给定日期，距离 1970 年 1 月 1 日有多少天
+     * 
+     * @param yy
+     *            年，比如 1999，或者 43
+     * @param MM
+     *            月，一月为 1，十二月为 12
+     * @param dd
+     *            日，每月一号为 1
+     * @return 天数
+     */
+
+    public static int D1970(int yy, int MM, int dd) {
+        // 转换成相对公元元年的年份
+        int year = (yy < 1970 ? yy + 1970 : yy);
+        // 得到今年之前的基本天数
+        int day = (year - 1970) * 365;
+        // 补上闰年天数
+        day += countLeapYear(year) - countLeapYear(1970);
+        // 计算今年本月之前的月份
+        int mi = Math.min(MM - 1, 11);
+        boolean isLeapYear = leapYear(yy);
+        for (int i = 0; i < mi; i++) {
+            day += _MDs[i];
+        }
+        // 考虑今年是闰年的情况
+        if (isLeapYear && MM > 2) {
+            day++;
+        }
+        // 最后加上天数
+        day += Math.min(dd, _MDs[mi]) - 1;
+
+        // 如果是闰年且本月是 2 月
+        if (isLeapYear && dd == 29) {
+            day++;
+        }
+
+        // 如果是闰年并且过了二月
+        return day;
     }
 
     /**
@@ -372,7 +509,7 @@ public abstract class Times {
      * 安全的 format 方法
      * 
      * @param fmt
-     *            解析类
+     *            时间格式模板
      * @param d
      *            时间对象
      * @return 格式化后的字符串
@@ -382,7 +519,18 @@ public abstract class Times {
     }
 
     /**
-     * 安全的 parse 方法
+     * @param fmt
+     *            时间格式模板
+     * @param d
+     *            时间对象
+     * @return 格式化后的字符串
+     */
+    public static String format(String fmt, Date d) {
+        return new SimpleDateFormat(fmt).format(d);
+    }
+
+    /**
+     * 安全的 parse 方法（包裹RuntimeException）
      * 
      * @param fmt
      *            解析类
@@ -390,7 +538,25 @@ public abstract class Times {
      *            日期时间字符串
      * @return 解析后的时间对象
      */
-    public static Date parseWithoutException(DateFormat fmt, String s) {
+    public static Date parseq(DateFormat fmt, String s) {
+        try {
+            return parse(fmt, s);
+        }
+        catch (ParseException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
+     * 安全的 parse 方法（包裹RuntimeException）
+     * 
+     * @param fmt
+     *            格式化字符串
+     * @param s
+     *            日期时间字符串
+     * @return 解析后的时间对象
+     */
+    public static Date parseq(String fmt, String s) {
         try {
             return parse(fmt, s);
         }
@@ -410,6 +576,19 @@ public abstract class Times {
      */
     public static Date parse(DateFormat fmt, String s) throws ParseException {
         return ((DateFormat) fmt.clone()).parse(s);
+    }
+
+    /**
+     * 安全的 parse 方法
+     * 
+     * @param fmt
+     *            格式化字符串
+     * @param s
+     *            日期时间字符串
+     * @return 解析后的时间对象
+     */
+    public static Date parse(String fmt, String s) throws ParseException {
+        return new SimpleDateFormat(fmt).parse(s);
     }
 
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");

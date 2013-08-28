@@ -30,12 +30,22 @@ public abstract class Dumps {
      * @return 信息
      */
     public static String matcher(Matcher m) {
-        StringBuilder sb = new StringBuilder();
         if (m.find())
-            for (int i = 0; i <= m.groupCount(); i++)
-                sb.append(String.format("%2d: %s\n", i, m.group(i)));
-        else
-            sb.append(String.format("No found!"));
+            return matcherFound(m);
+        return "No found!";
+    }
+
+    /**
+     * 显示 Matcher 的详细信息
+     * 
+     * @param m
+     *            Matcher 对象
+     * @return 信息
+     */
+    public static String matcherFound(Matcher m) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i <= m.groupCount(); i++)
+            sb.append(String.format("%2d: %s\n", i, m.group(i)));
         return sb.toString();
     }
 
