@@ -285,7 +285,8 @@ public abstract class Times {
 
     public static int D1970(int yy, int MM, int dd) {
         // 转换成相对公元元年的年份
-        int year = (yy < 1970 ? yy + 1970 : yy);
+        // 如果给的年份小于 100，那么就认为是从 1970 开始算的年份
+        int year = (yy < 100 ? yy + 1970 : yy);
         // 得到今年之前的基本天数
         int day = (year - 1970) * 365;
         // 补上闰年天数

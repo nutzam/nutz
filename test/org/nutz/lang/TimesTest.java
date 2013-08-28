@@ -14,6 +14,12 @@ public class TimesTest {
     }
 
     @Test
+    public void test_1940() {
+        Date d = Times.D("1940-8-15");
+        assertEquals("1940-08-15", Times.sD(d));
+    }
+
+    @Test
     public void test_d() {
         Date d = new Date(System.currentTimeMillis());
         assertEquals(Times.now().getTime() / 1000, Times.D(Times.sDT(d)).getTime() / 1000);
