@@ -30,7 +30,7 @@ public class MethodInvokeProcessor extends AbstractProcessor{
             throw Lang.unwrapThrow(e);
         }
         catch (InvocationTargetException e) {
-            throw Lang.unwrapThrow(e);
+            throw e.getCause();
         }
     }
 

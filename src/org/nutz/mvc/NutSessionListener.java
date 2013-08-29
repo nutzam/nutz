@@ -23,8 +23,9 @@ import org.nutz.log.Logs;
  * IocContext，因此也就不需要注销
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
-public class NutSessionListener implements HttpSessionListener {
+public final class NutSessionListener implements HttpSessionListener {
 	
 	private static final Log log = Logs.get();
 	

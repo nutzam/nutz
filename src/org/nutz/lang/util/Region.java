@@ -160,9 +160,9 @@ public abstract class Region<T extends Comparable<T>> {
         return true;
     }
 
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Region() {
-        eleType = (Class<T>) Mirror.getTypeParam(getClass(), 0);
+        eleType = (Class<T>)(Class) Mirror.getTypeParam(getClass(), 0);
     }
 
     /**
