@@ -1,9 +1,9 @@
 package org.nutz.dao.test.sqls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +41,22 @@ public class SqlTemplateTest extends DaoCase {
         List<Pet> pets = dao.query(Pet.class, null);
 
         assertEquals("Peter", pets.get(0).getName());
+    }
+
+    @Test
+    public void testBatchUpdate() {
+        pojos.initPet();
+
+        List<Map<String, Object>> batchValues = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> map = Lang.map(String.format("'name':'Pet_%d'", i));
+            batchValues.add(map);
+        }
+        String sql = "INSERT INTO t_pet(name) VALUES(@name)";
+
+        sqlTemplate.batchUpdate(sql, null, batchValues);
+
+        assertEquals(5, sqlTemplate.queryForInt("SELECT COUNT(*) FROM t_pet", null));
     }
 
     @Test
