@@ -194,7 +194,7 @@ public class FastUploading implements Uploading {
                         if (context.isIgnoreNull() && tmp.length() == 0) {}
                         // 默认，空文件也保存
                         else {
-                            params.add(meta.getName(), new TempFile(meta, tmp));
+                            params.putv(meta.getName(), new TempFile(meta, tmp));
                         }
                     }
                 }
@@ -207,7 +207,7 @@ public class FastUploading implements Uploading {
                         assertStreamNotEnd(mm);
                         sb.append(br.dumpAsString(charset));
                     } while (mm == MarkMode.NOT_FOUND);
-                    params.add(meta.getName(), sb.toString());
+                    params.putv(meta.getName(), sb.toString());
                     if (log.isDebugEnabled())
                         log.debugf(    "Found a param, name=[%s] value=[%s]",
                                     meta.getName(),

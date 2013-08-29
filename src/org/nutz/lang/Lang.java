@@ -31,6 +31,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Pattern;
 import java.util.Queue;
 import java.util.Set;
 
@@ -45,6 +46,7 @@ import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.SimpleContext;
 
 /**
@@ -181,42 +183,39 @@ public abstract class Lang {
      * </ul>
      * 当然，如果你重写的 equals 方法会优先
      * 
-     * @param a1
+     * @param a0
      *            比较对象1
-     * @param a2
+     * @param a1
      *            比较对象2
      * @return 是否相等
      */
-    @SuppressWarnings("unchecked")
-    public static boolean equals(Object a1, Object a2) {
-        if (a1 == a2)
+    public static boolean equals(Object a0, Object a1) {
+        if (a0 == a1)
             return true;
 
-        if (a1 == null || a2 == null)
+        if (a0 == null || a1 == null)
             return false;
 
-        if (a1.equals(a2))
+        // 简单的判断是否等于
+        if (a0.equals(a1))
             return true;
 
-        Mirror<?> mr1 = Mirror.me(a1);
+        Mirror<?> mi = Mirror.me(a0);
 
-        if (mr1.isStringLike()) {
-            return a1.toString().equals(a2.toString());
-        }
-        if (mr1.isDateTimeLike()) {
-            return a1.equals(a2);
-        }
-        if (mr1.isNumber()) {
-            return a2 instanceof Number && a1.toString().equals(a2.toString());
+        // 简单类型，变字符串比较，或者正则表达式
+        if (mi.isSimple() || mi.is(Pattern.class)) {
+            return a0.toString().equals(a1.toString());
         }
 
-        if (!a1.getClass().isAssignableFrom(a2.getClass())
-            && !a2.getClass().isAssignableFrom(a1.getClass()))
+        // 如果类型就不能互相转换，那么一定是错的
+        if (!a0.getClass().isAssignableFrom(a1.getClass())
+            && !a1.getClass().isAssignableFrom(a0.getClass()))
             return false;
 
-        if (a1 instanceof Map && a2 instanceof Map) {
-            Map<?, ?> m1 = (Map<?, ?>) a1;
-            Map<?, ?> m2 = (Map<?, ?>) a2;
+        // Map
+        if (a0 instanceof Map && a1 instanceof Map) {
+            Map<?, ?> m1 = (Map<?, ?>) a0;
+            Map<?, ?> m2 = (Map<?, ?>) a1;
             if (m1.size() != m2.size())
                 return false;
             for (Entry<?, ?> e : m1.entrySet()) {
@@ -225,43 +224,39 @@ public abstract class Lang {
                     return false;
             }
             return true;
-        } else if (a1.getClass().isArray()) {
-            if (a2.getClass().isArray()) {
-                int len = Array.getLength(a1);
-                if (len != Array.getLength(a2))
-                    return false;
-                for (int i = 0; i < len; i++) {
-                    if (!equals(Array.get(a1, i), Array.get(a2, i)))
-                        return false;
-                }
-                return true;
-            } else if (a2 instanceof List) {
-                return equals(a1, Lang.collection2array((List<Object>) a2, Object.class));
-            }
-            return false;
-        } else if (a1 instanceof List) {
-            if (a2 instanceof List) {
-                List<?> l1 = (List<?>) a1;
-                List<?> l2 = (List<?>) a2;
-                if (l1.size() != l2.size())
-                    return false;
-                int i = 0;
-                for (Iterator<?> it = l1.iterator(); it.hasNext();) {
-                    if (!equals(it.next(), l2.get(i++)))
-                        return false;
-                }
-                return true;
-            } else if (a2.getClass().isArray()) {
-                return equals(Lang.collection2array((List<Object>) a1, Object.class), a2);
-            }
-            return false;
-        } else if (a1 instanceof Collection && a2 instanceof Collection) {
-            Collection<?> c1 = (Collection<?>) a1;
-            Collection<?> c2 = (Collection<?>) a2;
-            if (c1.size() != c2.size())
-                return false;
-            return c1.containsAll(c2) && c2.containsAll(c1);
         }
+        // 数组
+        else if (a0.getClass().isArray() && a1.getClass().isArray()) {
+            int len = Array.getLength(a0);
+            if (len != Array.getLength(a1))
+                return false;
+            for (int i = 0; i < len; i++) {
+                if (!equals(Array.get(a0, i), Array.get(a1, i)))
+                    return false;
+            }
+            return true;
+        }
+        // 集合
+        else if (a0 instanceof Collection && a1 instanceof Collection) {
+            Collection<?> c0 = (Collection<?>) a0;
+            Collection<?> c1 = (Collection<?>) a1;
+            if (c0.size() != c1.size())
+                return false;
+
+            Iterator<?> it0 = c0.iterator();
+            Iterator<?> it1 = c1.iterator();
+
+            while (it0.hasNext()) {
+                Object o0 = it0.next();
+                Object o1 = it1.next();
+                if (!equals(o0, o1))
+                    return false;
+            }
+
+            return true;
+        }
+
+        // 一定不相等
         return false;
     }
 
@@ -1124,13 +1119,25 @@ public abstract class Lang {
      *            参照 JSON 标准的字符串，但是可以没有前后的大括号
      * @return Map 对象
      */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> map(String str) {
+    public static NutMap map(String str) {
         if (null == str)
             return null;
         if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
-            return (Map<String, Object>) Json.fromJson(str);
-        return (Map<String, Object>) Json.fromJson("{" + str + "}");
+            return Json.fromJson(NutMap.class, str);
+        return Json.fromJson(NutMap.class, "{" + str + "}");
+    }
+
+    /**
+     * 创建一个一个键的 Map 对象
+     * 
+     * @param key
+     *            键
+     * @param v
+     *            值
+     * @return Map 对象
+     */
+    public static NutMap map(String key, Object v) {
+        return new NutMap().putv(key, v);
     }
 
     /**
@@ -1142,7 +1149,7 @@ public abstract class Lang {
      *            字符串参数
      * @return Map 对象
      */
-    public static Map<String, Object> mapf(String fmt, Object... args) {
+    public static NutMap mapf(String fmt, Object... args) {
         return map(String.format(fmt, args));
     }
 
@@ -1713,7 +1720,7 @@ public abstract class Lang {
             String classFileName = Lang.class.getName().replace('.', '/') + ".class";
             is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
             if (is == null)
-            	is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
+                is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
             if (is != null && is.available() > 8) {
                 is.skip(7);
                 return is.read() > 49;

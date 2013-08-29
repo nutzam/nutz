@@ -94,7 +94,14 @@ public abstract class Region<T extends Comparable<T>> {
      * @return 是区间还是一个精确匹配的值
      */
     public boolean isRegion() {
-        return left != right;
+        return left != right && !isNull();
+    }
+
+    /**
+     * @return 当前区间是否为空
+     */
+    public boolean isNull() {
+        return null == left && null == right;
     }
 
     /**
