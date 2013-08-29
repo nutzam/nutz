@@ -226,8 +226,6 @@ public class SqlTemplate {
                                 Class<T> classOfT) {
         Sql sqlObj = createSqlObj(sql, params);
         sqlObj.setCallback(new SqlCallback() {
-
-            @Override
             public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
                 if (null != rs && rs.next())
                     return rs.getObject(1);
@@ -380,8 +378,6 @@ public class SqlTemplate {
         Sql sqlObj = createSqlObj(sql, params);
 
         sqlObj.setCallback(new SqlCallback() {
-
-            @Override
             public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
                 List<T> list = new ArrayList<T>();
                 while (rs.next()) {
