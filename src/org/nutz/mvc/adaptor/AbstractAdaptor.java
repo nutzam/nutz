@@ -264,8 +264,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         if (names != null)
             return new NameInjector(names.get(index), method.getParameterTypes()[index], null);
         else if (log.isInfoEnabled())
-            log.info("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index="
-                     + index);
+            log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s", index, method);
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }
