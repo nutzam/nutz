@@ -26,16 +26,21 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  */
 public final class NutSessionListener implements HttpSessionListener {
-	
-	private static final Log log = Logs.get();
-	
-	public static boolean isSessionScopeEnable = false;
 
-	public NutSessionListener() {
-		isSessionScopeEnable = true;
-		log.info("NutIoc SessionScope is Enable.");
-	}
-	
+    private static final Log log = Logs.get();
+
+    /**
+     * 如果你在 web.xml 配置了这个监听器，那么我们理解你的意图就是要自动创建 session <br>
+     * 否则你就不需要自动创建 session。<br>
+     * 在 Nutz 默认的 ModuleProcessor 里，会根据这个变量来决定是否自动创建session的
+     */
+    public static boolean isSessionScopeEnable = false;
+
+    public NutSessionListener() {
+        isSessionScopeEnable = true;
+        log.info("NutIoc SessionScope is Enable.");
+    }
+
     public void sessionCreated(HttpSessionEvent se) {}
 
     public void sessionDestroyed(HttpSessionEvent se) {
