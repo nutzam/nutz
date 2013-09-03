@@ -55,7 +55,7 @@ public abstract class Nums {
     /**
      * 不解释，你懂的
      */
-    public static long[] array(long... is) {
+    public static long[] arrayL(long... is) {
         return is;
     }
 
