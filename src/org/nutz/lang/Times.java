@@ -103,7 +103,7 @@ public abstract class Times {
      * 
      * @see #ms(String, TimeZone)
      */
-    public static long ms(String ds) {
+    public static long ams(String ds) {
         return ms(ds, TimeZone.getDefault());
     }
 
@@ -255,10 +255,10 @@ public abstract class Times {
      *            时间字符串
      * @return 时间
      * 
-     * @see #ms(String)
+     * @see #ams(String)
      */
     public static Date D(String ds) {
-        return D(ms(ds));
+        return D(ams(ds));
     }
 
     private static int _int(Matcher m, int index, int dft) {
@@ -269,7 +269,18 @@ public abstract class Times {
     }
 
     // 常量数组，一年每个月多少天
-    private static final int[] _MDs = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    private static final int[] _MDs = new int[]{31,
+                                                28,
+                                                31,
+                                                30,
+                                                31,
+                                                30,
+                                                31,
+                                                31,
+                                                30,
+                                                31,
+                                                30,
+                                                31};
 
     /**
      * 计算一个给定日期，距离 1970 年 1 月 1 日有多少天
