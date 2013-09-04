@@ -23,6 +23,14 @@ import org.nutz.lang.Strings;
 @SuppressWarnings("serial")
 public class NutMap extends TreeMap<String, Object> {
 
+    public static NutMap WRAP(Map<String, Object> map) {
+        if (null == map)
+            return null;
+        if (map instanceof NutMap)
+            return (NutMap) map;
+        return new NutMap(map);
+    }
+
     public NutMap() {
         super();
     }

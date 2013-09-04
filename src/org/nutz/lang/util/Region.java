@@ -5,6 +5,7 @@ import java.util.Date;
 import org.nutz.castor.Castors;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 
 /**
  * 描述了一个区间
@@ -61,7 +62,21 @@ public abstract class Region<T extends Comparable<T>> {
     }
 
     public static Region<Date> Date(String str) {
-        return new Region<Date>() {}.valueOf(str);
+        return new Region<Date>() {
+            public Date fromString(String str) {
+                str = Strings.trim(str);
+                if (Strings.isEmpty(str))
+                    return null;
+                return Times.D(str);
+            }
+
+            public String toString(Date d) {
+                String str = Times.sDT(d);
+                if (str.endsWith(" 00:00:00"))
+                    return str.substring(0, 10);
+                return str;
+            }
+        }.valueOf(str);
     }
 
     protected Class<T> eleType;
@@ -160,9 +175,9 @@ public abstract class Region<T extends Comparable<T>> {
         return true;
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public Region() {
-        eleType = (Class<T>)(Class) Mirror.getTypeParam(getClass(), 0);
+        eleType = (Class<T>) (Class) Mirror.getTypeParam(getClass(), 0);
     }
 
     /**
@@ -197,9 +212,24 @@ public abstract class Region<T extends Comparable<T>> {
     }
 
     public T fromString(String str) {
-        if (Strings.isBlank(str))
+        str = Strings.trim(str);
+        if (Strings.isEmpty(str))
             return null;
         return Castors.me().castTo(str, eleType);
+    }
+
+    public String toString() {
+        if (this.isRegion())
+            return String.format("%c%s,%s%c",
+                                 leftOpen ? '(' : '[',
+                                 toString(left),
+                                 toString(right),
+                                 rightOpen ? ')' : ']');
+
+        return String.format("%c%s%c",
+                             leftOpen ? '(' : '[',
+                             toString(left),
+                             rightOpen ? ')' : ']');
     }
 
 }
