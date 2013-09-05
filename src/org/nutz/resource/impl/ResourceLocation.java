@@ -20,9 +20,9 @@ public abstract class ResourceLocation {
     public abstract void scan(String base, Pattern pattern, List<NutResource> list);
     
     public static ResourceLocation file(File root) {
-        if (!root.exists())
-            return new ErrorResourceLocation(root);
         try {
+            if (!root.exists())
+                return new ErrorResourceLocation(root);
             return new FileSystemResourceLocation(root.getAbsoluteFile().getCanonicalFile());
         } catch (Exception e) {
             return new ErrorResourceLocation(root);
