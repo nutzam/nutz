@@ -21,7 +21,9 @@ public class EntityObjectContext extends AbstractContext {
     }
 
     public Context set(String name, Object value) {
-        en.getField(name).setValue(obj, value);
+    	MappingField field = en.getField(name);
+    	if (field != null)
+    		field.setValue(obj, value);
         return this;
     }
 
