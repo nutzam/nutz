@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.mvc.config.FilterNutConfig;
 
 /**
@@ -24,6 +26,8 @@ import org.nutz.mvc.config.FilterNutConfig;
  * @author wendal(wendal1985@gmail.com)
  */
 public class NutFilter implements Filter {
+	
+	private static final Log log = Logs.get();
 
     protected ActionHandler handler;
 
@@ -39,9 +43,11 @@ public class NutFilter implements Filter {
 
     public void init(FilterConfig conf) throws ServletException {
     	if ("true".equals(Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase())) {
+    		log.infof("NutFilter[%s] run as skip-mode", conf.getFilterName());
     		proxyFilter = new NutFilter2();
     		return;
     	}
+    	log.infof("NutFilter[%s] starting ...", conf.getFilterName());
         Mvcs.setServletContext(conf.getServletContext());
         this.selfName = conf.getFilterName();
         Mvcs.set(selfName, null, null);
