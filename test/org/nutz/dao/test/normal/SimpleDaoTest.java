@@ -42,17 +42,19 @@ public class SimpleDaoTest extends DaoCase {
         }
     }
 
-    // for issue #515
+    // for issue #515 写给 mysql 一个特殊的例子
     @Test
     public void test_escape_char() {
-        dao.insert(Pet.create("A").setNickName("AAA"));
-        dao.insert(Pet.create("B").setNickName("B%B"));
+        if (dao.meta().isMySql()) {
+            dao.insert(Pet.create("A").setNickName("AAA"));
+            dao.insert(Pet.create("B").setNickName("B%B"));
 
-        Criteria cri = Cnd.cri();
-        cri.where().andLike("alias", "\\%");
-        List<Pet> pets = dao.query(Pet.class, cri);
-        assertEquals(1, pets.size());
-        assertEquals("B", pets.get(0).getName());
+            Criteria cri = Cnd.cri();
+            cri.where().andLike("alias", "\\%");
+            List<Pet> pets = dao.query(Pet.class, cri);
+            assertEquals(1, pets.size());
+            assertEquals("B", pets.get(0).getName());
+        }
     }
 
     @Test
