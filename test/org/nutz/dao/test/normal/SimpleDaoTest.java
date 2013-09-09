@@ -17,6 +17,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Abc;
@@ -41,6 +42,19 @@ public class SimpleDaoTest extends DaoCase {
         }
     }
 
+    // for issue #515
+    @Test
+    public void test_escape_char() {
+        dao.insert(Pet.create("A").setNickName("AAA"));
+        dao.insert(Pet.create("B").setNickName("B%B"));
+
+        Criteria cri = Cnd.cri();
+        cri.where().andLike("alias", "\\%");
+        List<Pet> pets = dao.query(Pet.class, cri);
+        assertEquals(1, pets.size());
+        assertEquals("B", pets.get(0).getName());
+    }
+
     @Test
     public void test_simple_fetch_record() {
         Pet pet = Pet.create("abc");
@@ -51,7 +65,8 @@ public class SimpleDaoTest extends DaoCase {
         List<Record> pets = dao.query("t_pet", null, null);
         assertEquals(1, pets.size());
         assertEquals("abc", pets.get(0).getString("name"));
-        assertEquals(now / 1000, pets.get(0).getTimestamp("birthday").getTime() / 1000);
+        assertEquals(now / 1000,
+                     pets.get(0).getTimestamp("birthday").getTime() / 1000);
     }
 
     @Test
@@ -97,7 +112,8 @@ public class SimpleDaoTest extends DaoCase {
         insertRecords(8);
         int re = dao.count(Pet.class, new Condition() {
             public String toSql(Entity<?> entity) {
-                return entity.getField("nickName").getColumnName() + " IN ('alias_5','alias_6')";
+                return entity.getField("nickName").getColumnName()
+                       + " IN ('alias_5','alias_6')";
             }
         });
         assertEquals(2, re);
@@ -112,7 +128,9 @@ public class SimpleDaoTest extends DaoCase {
     public void test_count_by_condition() {
         insertRecords(4);
         assertEquals(4, dao.count(Pet.class));
-        assertEquals(2, dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
+        assertEquals(2,
+                     dao.count(Pet.class,
+                               Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
     }
 
     @Test
@@ -197,14 +215,18 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_chain_insert() {
-        dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
+        dao.insert(Pet.class,
+                   Chain.make("name", "wendal").add("nickName", "asfads"));
     }
 
     @Test
     public void test_sql_pager() {
         dao.create(Pet.class, true);
         for (int i = 0; i < 100; i++) {
-            dao.insert(Pet.class, Chain.make("name", "record" + i).add("nickName", "Time="+System.currentTimeMillis()));
+            dao.insert(Pet.class,
+                       Chain.make("name", "record" + i)
+                            .add("nickName",
+                                 "Time=" + System.currentTimeMillis()));
         }
         Pager pager = dao.createPager(5, 5);
         pager.setRecordCount(dao.count(Pet.class));
@@ -212,7 +234,7 @@ public class SimpleDaoTest extends DaoCase {
         sql.setEntity(dao.getEntity(Pet.class));
         sql.setPager(pager);
         dao.execute(sql);
-        
+
         List<Pet> pets = sql.getList(Pet.class);
         assertNotNull(pets);
         assertEquals(5, pets.size());
@@ -222,34 +244,34 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals("record23", pets.get(3).getName());
         assertEquals("record24", pets.get(4).getName());
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void test_fetch_null_name() {
-        dao.fetch(Pet.class, (String)null);
+        dao.fetch(Pet.class, (String) null);
     }
-    
-    @Test(expected=IllegalArgumentException.class)
+
+    @Test(expected = IllegalArgumentException.class)
     public void test_create_error_class() {
         dao.create(Nutz.class, true);
     }
-    
+
     // issue 395 删除一个不存在的管理对象
     @Test
     public void test_delete_null_many() {
-    	 dao.create(Master.class, true);
-         Master master = new Master();
-         master.setName("ACB");
-         dao.insert(master);
-         master = dao.fetch(Master.class);
-         dao.fetchLinks(master, null);
-         dao.deleteWith(master, null);
+        dao.create(Master.class, true);
+        Master master = new Master();
+        master.setName("ACB");
+        dao.insert(master);
+        master = dao.fetch(Master.class);
+        dao.fetchLinks(master, null);
+        dao.deleteWith(master, null);
     }
-    
+
     // issue 396
     @Test
     public void test_insert_with() {
-    	if (!dao.meta().isOracle())
-    		return;
-    	dao.create(Issue396Master.class, true);
+        if (!dao.meta().isOracle())
+            return;
+        dao.create(Issue396Master.class, true);
     }
 }
