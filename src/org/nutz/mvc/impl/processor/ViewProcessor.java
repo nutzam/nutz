@@ -57,7 +57,7 @@ public class ViewProcessor extends AbstractProcessor {
         }
     }
 
-    protected static View evalView(NutConfig config, ActionInfo ai, String viewType) {
+    public static View evalView(NutConfig config, ActionInfo ai, String viewType) {
         if (Strings.isBlank(viewType))
             return new VoidView();
 
