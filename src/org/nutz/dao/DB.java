@@ -44,6 +44,10 @@ public enum DB {
      */
     DERBY,
     /**
+     * 
+     */
+    GBASE,
+    /**
      * 其他数据库
      */
     OTHER

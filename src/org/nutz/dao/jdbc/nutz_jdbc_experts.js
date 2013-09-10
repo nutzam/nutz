@@ -18,7 +18,8 @@ var ioc = {
 		"microsoft sql server.*(11)[.].+" : "org.nutz.dao.impl.jdbc.sqlserver2012.Sqlserver2012JdbcExpert",
 		"hsql.*" : "org.nutz.dao.impl.jdbc.hsqldb.HsqldbJdbcExpert",
 		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLiteJdbcExpert",
-		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert"
+		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert",
+		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert"
 	// ~ 映射结束
 	},
 
@@ -31,6 +32,8 @@ var ioc = {
 	// 临时目录大小，0 为不限大小
 	"pool-max" : 200000,
 	// Mysql 特殊配置
-	"mysql-engine" : "InnoDB"
+	"mysql-engine" : "InnoDB",
+	// GBase 特殊配置
+	"gbase-engine" : "GsDB"
 	// ～ 配置信息结束
 	} };
