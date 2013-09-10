@@ -13,7 +13,7 @@
     大家可以安心升级。
     
     [https://github.com/hzl7652 鲁鲁]同学在本版提交了
-    [https://github.com/nutzam/nutz/pull/488 一个功能]
+    [https://github.com/nutzam/nutz/pull/488 一个SqlTemplate]
     有兴趣的朋友可以试用一下。
 
     从 Issue 列表和社区的反馈来看，似乎 Nutz 里面我们很少注意到的类也被某些同学翻出来使用。
@@ -59,6 +59,15 @@
     * [https://github.com/nutzam/nutz/issues/450 Issue 450] `Raw视图在执行文件下载时,需要支持断点续传(Range头部)` {#888;by} {*}
     * [https://github.com/nutzam/nutz/issues/449 Issue 449] `mvc 本地化字符 直接 Scriptlet 语句错误` {#888;by} {*}
     * [https://github.com/nutzam/nutz/issues/448 Issue 448] `表达式引擎的文档有错别字` {#888;by} {*}
+    
+--------------------------------------------------------------------------------------------------------
+值得注意的修改:
+
+	* mvc: 当Module类不使用Ioc管理时,不再为每个入口方法生成一个实例,而是共享同一个
+	* mvc: Json视图在默认情况下,使用内置的static单例
+	* dao: 支持简单的GroupBy操作
+	* dao: 如果Pojo带2个@Id或@Name,将报错
+	* json: 启用了新的Json解析器
 
 --------------------------------------------------------------------------------------------------------
 质量
@@ -77,11 +86,12 @@
 	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
 	 * [http://www.ibm.com/software/data/db2/ DB2]
 	 * [http://db.apache.org/derby/ Derby]
+	 * [http://www.gbase.cn/ GBASE] -- 实验性
 
 --------------------------------------------------------------------------------------------------------
 文档
 
-   ~ 修订一些错误 ~
+   ~ 修订一些错误 , 温泉加了一堆javadoc~
    
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
