@@ -107,24 +107,16 @@ public class MyMainModule {
 <p>请参看 <b>org.nutz.mvc.Mvcs</b> 的 JavaDoc，这里我列几个常用的方法:</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
-<td> Mvcs.getLocaleName(HttpSession session)					</td>
+<td> Mvcs.getLocalizationKey()                </td>
 <td> 获取当前会话的 Locale 名称 </td>
 </tr>
 <tr>
-<td> Mvcs.setLocaleName(HttpSession session, String name)		</td>
+<td> Mvcs.setLocalizationKey(String key)      </td>
 <td> 为当前会话设置 Locale 的名称 </td>
 </tr>
 <tr>
-<td> Mvcs.getLocaleNames(ServletContext context)			 	</td>
+<td> Mvcs.getLocalizationKeySet()             </td>
 <td> 获取整个应用可用的 Locale 名称集合 </td>
-</tr>
-<tr>
-<td> Mvcs.hasLocaleName(HttpSession session)					</td>
-<td> 判断当前会话是够设置了特殊的 Locale 的名称 </td>
-</tr>
-<tr>
-<td> Mvcs.hasLocale(HttpSession session)						</td>
-<td> 判断当前会话是否已经设置了本地字符串表 </td>
 </tr>
 </table>
 <div class="hr"><b></b></div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.b.49 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.b.49 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">1.b.49 发行注记</div>
@@ -15,13 +15,10 @@
 <div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#值得注意的修改:">值得注意的修改:</a></div>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#质量">质量</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+<div><span class="num">4</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -29,7 +26,7 @@
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>被 <a href="http://wendal.net/">Wendal</a> 催要发 Nutz 新版。前两天 review 了一些 issue，今天要写发行注记的时候突然想到，咦，怎么好像这几天是发布会高峰期哦。个人感觉小米的发布会比魅族的好一点（虽然我的手机是MX2），雷军这次没有喊“碉堡了”，所以要被加十分。工程系的同学表跟风乔布斯，发布会弄的低调平淡一点还是让人看的舒服点。</p>
 <p>Nutz 核心包到现在为止，4年的时间，我们发布了 30 多个版本，这次发布也是属于 Bug 修复版，大家可以安心升级。</p>
-<p><a href="https://github.com/hzl7652">鲁鲁</a>同学在本版提交了<a href="https://github.com/nutzam/nutz/pull/488">一个SqlTemplate</a>有兴趣的朋友可以试用一下。</p>
+<p><a href="https://github.com/hzl7652">鲁鲁</a>同学在本版提交了<a href="https://github.com/nutzam/nutz/pull/488">一个功能</a>有兴趣的朋友可以试用一下。</p>
 <p>从 Issue 列表和社区的反馈来看，似乎 Nutz 里面我们很少注意到的类也被某些同学翻出来使用。这一点，作为一个开源项目，我们表示很欣慰的。</p>
 <p>由于代码越来越稳定，那么我们出版本的频率也会逐渐降低。以前的 <span style="color:#0000AA;"><b>月经版</b></span> 已经没什么必要了，我们会主要把精力放在提高社区的活跃度，给大家更好的支持上面。当然，将近1年的吐血开发，我们正在构筑的很多代码项目接近完成。什么时候完成不好说，因为毕竟不是全职在做，但是到时候希望能给大家惊喜 ^_^</p>
 <p>------------------------------ Nutz 的下载地址的分隔线 -------------------------</p>
@@ -69,16 +66,6 @@
 <li><a href="https://github.com/nutzam/nutz/issues/448">Issue 448</a> 表达式引擎的文档有错别字 <span style="color:#888888;">by</span> </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="值得注意的修改:"></a>值得注意的修改:</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>mvc: 当Module类不使用Ioc管理时,不再为每个入口方法生成一个实例,而是共享同一个</li>
-<li>mvc: Json视图在默认情况下,使用内置的static单例</li>
-<li>dao: 支持简单的GroupBy操作</li>
-<li>dao: 如果Pojo带2个@Id或@Name,将报错</li>
-<li>json: 启用了新的Json解析器</li>
-</ul>
-<div class="hr"><b></b></div>
 <h1><a name="质量"></a>质量</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>共通过了 <span style="color:#FF00FF;"><b>826</b></span>  个单元测试用例,代码覆盖率达到 <span style="color:#FF00FF;">70%</span>(按line计算)</p>
@@ -95,11 +82,10 @@
 <li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
 <li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
 <li><a href="http://db.apache.org/derby/">Derby</a></li>
-<li><a href="http://www.gbase.cn/">GBASE</a> -- 实验性</li>
 </ul>
 <div class="hr"><b></b></div>
 <p>文档</p>
-<p>~ 修订一些错误 , 温泉加了一堆javadoc~</p>
+<p>~ 修订一些错误 ~</p>
 <div class="hr"><b></b></div>
 <h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
