@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -86,7 +87,7 @@ public class Scans {
                                     "folder or file like '%s' no found in %s",
                                     regex,
                                     Castors.me().castToString(paths));
-        return new ArrayList<NutResource>((new HashSet<NutResource>(list)));
+        return new ArrayList<NutResource>((new LinkedHashSet<NutResource>(list)));
     }
 
     public void registerLocation(Class<?> klass) {
