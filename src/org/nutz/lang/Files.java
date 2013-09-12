@@ -974,8 +974,10 @@ public abstract class Files {
 			if (f.exists()) {
 				flag = f.renameTo(tmp2);
 			}
-			if (tmp.renameTo(f))
+			if (tmp.renameTo(f)) {
+				tmp2.delete();
 				return true;
+			}
 			else if (flag)
 				tmp2.renameTo(f); // 如果这里也失败的话,起码.old还在...
 			return false;
