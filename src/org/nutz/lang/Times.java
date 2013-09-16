@@ -13,8 +13,11 @@ import java.util.regex.Pattern;
  * 一些时间相关的帮助函数
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author pw
  */
-public abstract class Times {
+public class Times {
+
+    private Times() {}
 
     /**
      * 判断一年是否为闰年，如果给定年份小于1全部为 false
@@ -89,10 +92,10 @@ public abstract class Times {
     }
 
     private static Pattern _P_TIME = Pattern.compile("^((\\d{2,4})([/\\\\-])(\\d{1,2})([/\\\\-])(\\d{1,2}))?"
-                                                     + "(([ ])?"
+                                                     + "(([ T])?"
                                                      + "(\\d{1,2})(:)(\\d{1,2})(:)(\\d{1,2})"
-                                                     + "(([.])"
-                                                     + "(\\d{1,}))?)?$");
+                                                     + "((([.])(\\d{1,}))|(([+])((\\d{2}):(\\d{2}))))?"
+                                                     + ")?$");
 
     /**
      * 根据默认时区计算时间字符串的绝对毫秒数
@@ -115,8 +118,10 @@ public abstract class Times {
      * 
      * <pre>
      * yyyy-MM-dd HH:mm:ss
+     * yyyy-MM-dd HH:mm:ssZ
      * yyyy-MM-dd HH:mm:ss.SSS
      * yy-MM-dd HH:mm:ss;
+     * yy-MM-dd HH:mm:ssZ;
      * yy-MM-dd HH:mm:ss.SSS;
      * yyyy-MM-dd;
      * yy-MM-dd;
@@ -133,6 +138,7 @@ public abstract class Times {
     public static long ms(String ds, TimeZone tz) {
         Matcher m = _P_TIME.matcher(ds);
         if (m.find()) {
+            // 计算时间
             int yy = _int(m, 2, 1970);
             int MM = _int(m, 4, 1);
             int dd = _int(m, 6, 1);
@@ -141,14 +147,23 @@ public abstract class Times {
             int mm = _int(m, 11, 0);
             int ss = _int(m, 13, 0);
 
-            int ms = _int(m, 16, 0);
+            int ms = _int(m, 17, 0);
 
             long day = (long) D1970(yy, MM, dd);
             long MS = day * 86400000L;
             MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
             MS += (long) ms;
 
-            return MS - tz.getRawOffset();
+            // 计算时区
+            long offset = 0;
+            if (!Strings.isBlank(m.group(18))) {
+                int znum = _int(m, 21, 0);
+                offset = znum * 1000 * 60 * 60 * (m.group(19).equals("+") ? 1 : -1);
+            } else if (tz != null) {
+                offset = tz.getRawOffset();
+            }
+
+            return MS - offset;
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
@@ -269,18 +284,7 @@ public abstract class Times {
     }
 
     // 常量数组，一年每个月多少天
-    private static final int[] _MDs = new int[]{31,
-                                                28,
-                                                31,
-                                                30,
-                                                31,
-                                                30,
-                                                31,
-                                                31,
-                                                30,
-                                                31,
-                                                30,
-                                                31};
+    private static final int[] _MDs = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     /**
      * 计算一个给定日期，距离 1970 年 1 月 1 日有多少天
