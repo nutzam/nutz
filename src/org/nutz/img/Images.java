@@ -650,7 +650,6 @@ public class Images {
             e.setRepeat(0);
             e.start(targetFile);
             for (String f : frameFiles) {
-                System.out.println("add f " + f);
                 e.setDelay(delay);
                 e.addFrame(ImageIO.read(new File(f)));
             }
