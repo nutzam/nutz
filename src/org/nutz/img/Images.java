@@ -650,6 +650,7 @@ public class Images {
             e.setRepeat(0);
             e.start(targetFile);
             for (String f : frameFiles) {
+                System.out.println("add f " + f);
                 e.setDelay(delay);
                 e.addFrame(ImageIO.read(new File(f)));
             }
@@ -660,4 +661,35 @@ public class Images {
         }
     }
 
+    public static void main(String[] args) {
+        String tar = "/Users/pw/tmp/ss2.gif";
+        String[] fs = new String[100];
+        String[] fs_zoom = new String[100];
+        for (int i = 0; i < fs.length; i++) {
+            fs[i] = "/Users/pw/tmp/ss/snap_" + (i + 1) + ".jpg";
+            fs_zoom[i] = "/Users/pw/tmp/ss/snap_zoom_" + (i + 1) + ".jpg";
+        }
+
+        // for (int i = 0; i < fs.length; i++) {
+        // // TODO
+        // try {
+        // ByteArrayOutputStream out = new ByteArrayOutputStream();
+        // BufferedImage image = Images.read(new FileInputStream(fs[i]));
+        // ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
+        // ImageWriteParam param = writer.getDefaultWriteParam();
+        // param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+        // param.setCompressionQuality(0.7f);
+        // ImageOutputStream os = ImageIO.createImageOutputStream(out);
+        // writer.setOutput(os);
+        // writer.write((IIOMetadata) null, new IIOImage(image, null, null),
+        // param);
+        // out.flush();
+        // Files.write(new File(fs_zoom[i]), out.toByteArray());
+        // }
+        // catch (Exception e) {}
+        //
+        // }
+
+        writeGif(tar, fs, 5);
+    }
 }

@@ -9,9 +9,22 @@ import java.util.Map;
 
 import org.nutz.lang.Strings;
 
+/**
+ * @author wendal
+ * @author pw
+ */
 public class Networks {
 
-	public static Map<String, NetworkItem> macs() {
+    private static Map<NetworkType, String> ntMap = new HashMap<NetworkType, String>();
+
+    static {
+        ntMap.put(NetworkType.LAN, "eth, en");
+        ntMap.put(NetworkType.WIFI, "wlan");
+        ntMap.put(NetworkType.ThreeG, "ppp");
+        ntMap.put(NetworkType.VPN, "tun");
+    }
+
+    public static Map<String, NetworkItem> networkItems() {
         Map<String, NetworkItem> netFaces = new HashMap<String, NetworkItem>();
         try {
             Enumeration<NetworkInterface> network = NetworkInterface.getNetworkInterfaces();
@@ -46,5 +59,86 @@ public class Networks {
         }
         catch (Throwable e) {}
         return netFaces;
+    }
+
+    /**
+     * @return 返回当前第一个可用的IP地址
+     */
+    public static String ipv4() {
+        NetworkItem networkItem = firstNetwokrItem();
+        if (networkItem == null)
+            return null;
+        return networkItem.getIpv4();
+    }
+
+    /**
+     * @param nt
+     * @return 返回对应类型的IP地址
+     */
+    public static String ipv4(NetworkType nt) {
+        Map<String, NetworkItem> netFaces = networkItems();
+        if (netFaces.isEmpty()) {
+            return null;
+        }
+        NetworkItem networkItem = getNetworkByType(netFaces, ntMap.get(nt));
+        return networkItem == null ? null : networkItem.getIpv4();
+    }
+
+    /**
+     * @return 返回当前第一个可用的MAC地址
+     */
+    public static String mac() {
+        NetworkItem networkItem = firstNetwokrItem();
+        if (networkItem == null)
+            return null;
+        return networkItem.getMac();
+    }
+
+    /**
+     * @param nt
+     * @return 返回对应类型的MAC地址
+     */
+    public static String mac(NetworkType nt) {
+        Map<String, NetworkItem> netFaces = networkItems();
+        if (netFaces.isEmpty()) {
+            return null;
+        }
+        NetworkItem networkItem = getNetworkByType(netFaces, ntMap.get(nt));
+        return networkItem == null ? null : networkItem.getMac();
+    }
+
+    private static NetworkItem firstNetwokrItem() {
+        Map<String, NetworkItem> netFaces = networkItems();
+        if (netFaces.isEmpty()) {
+            return null;
+        }
+        // 依次尝试
+        NetworkItem re = null;
+        re = getNetworkByType(netFaces, ntMap.get(NetworkType.LAN));
+        if (re == null) {
+            re = getNetworkByType(netFaces, ntMap.get(NetworkType.WIFI));
+        }
+        if (re == null) {
+            re = getNetworkByType(netFaces, ntMap.get(NetworkType.ThreeG));
+        }
+        if (re == null) {
+            re = getNetworkByType(netFaces, ntMap.get(NetworkType.VPN));
+        }
+        if (re == null) {
+            return netFaces.values().iterator().next();
+        } else {
+            return re;
+        }
+    }
+
+    private static NetworkItem getNetworkByType(Map<String, NetworkItem> netFaces, String nt) {
+        String[] nss = Strings.splitIgnoreBlank(nt, ",");
+        for (String ns : nss) {
+            for (int i = 0; i < 10; i++) {
+                if (netFaces.containsKey(ns + i))
+                    return netFaces.get(ns + i);
+            }
+        }
+        return null;
     }
 }
