@@ -89,10 +89,12 @@ public abstract class Times {
     }
 
     private static Pattern _P_TIME = Pattern.compile("^((\\d{2,4})([/\\\\-])(\\d{1,2})([/\\\\-])(\\d{1,2}))?"
-                                                     + "(([ ])?"
+                                                     + "(([ T])?"
                                                      + "(\\d{1,2})(:)(\\d{1,2})(:)(\\d{1,2})"
                                                      + "(([.])"
-                                                     + "(\\d{1,}))?)?$");
+                                                     + "(\\d{1,}))?)?"
+                                                     + "(([+-])(\\d{1,2})(:\\d{1,2})?)?"
+                                                     + "$");
 
     /**
      * 根据默认时区计算时间字符串的绝对毫秒数
@@ -101,10 +103,10 @@ public abstract class Times {
      *            时间字符串
      * @return 绝对毫秒数
      * 
-     * @see #ms(String, TimeZone)
+     * @see #ams(String, TimeZone)
      */
     public static long ams(String ds) {
-        return ms(ds, TimeZone.getDefault());
+        return ams(ds, null);
     }
 
     /**
@@ -130,7 +132,7 @@ public abstract class Times {
      *            你给定的时间字符串是属于哪个时区的
      * @return 时间
      */
-    public static long ms(String ds, TimeZone tz) {
+    public static long ams(String ds, TimeZone tz) {
         Matcher m = _P_TIME.matcher(ds);
         if (m.find()) {
             int yy = _int(m, 2, 1970);
@@ -148,9 +150,35 @@ public abstract class Times {
             MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
             MS += (long) ms;
 
-            return MS - tz.getRawOffset();
+            // 如果没有指定时区，那么用字符串中带有的时区信息，如果依然木有，则用系统默认时区
+            long tzOffset;
+            if (null == tz) {
+                if (!Strings.isBlank(m.group(17))) {
+                    tzOffset = Long.parseLong(m.group(19))
+                               * 3600000L
+                               * (m.group(18).charAt(0) == '-' ? -1 : 1);
+
+                } else {
+                    tzOffset = TimeZone.getDefault().getRawOffset();
+                }
+            }
+            // 采用指定的时区
+            else {
+                tzOffset = tz.getRawOffset();
+            }
+            // 计算
+            return MS - tzOffset;
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
+    }
+
+    /**
+     * 这个接口函数是 1.b.49 提供了，下一版本将改名为 ams，预计在版本 1.b.51 之后被移除
+     * 
+     * @deprecated since 1.b.49 util 1.b.51
+     */
+    public static long ms(String ds, TimeZone tz) {
+        return ams(ds, tz);
     }
 
     /**
