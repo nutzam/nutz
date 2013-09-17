@@ -242,8 +242,22 @@ public abstract class Daos {
                 colName = mf.getColumnName();
             sql.append(colName).append("=");
             if (head.special()) {
-                if ("+1".equals(head.value()) || "-1".equals(head.value())) {
-                    sql.append(colName);
+            	if (head.value() != null && head.value() instanceof String) {
+            		String str = (String)head.value();
+            		if (str.length() > 0) {
+            			switch (str.charAt(0)) {
+						case '+':
+						case '-':
+						case '*':
+						case '/':
+						case '%':
+						case '&':
+						case '^':
+						case '|':
+							sql.append(colName);
+							break;
+						}
+            		}
                 }
                 sql.append(head.value());
             } else {

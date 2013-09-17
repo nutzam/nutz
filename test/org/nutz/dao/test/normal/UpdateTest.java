@@ -6,12 +6,14 @@ import org.junit.Test;
 
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.BeanWithDefault;
 import org.nutz.dao.test.meta.Fighter;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.Platoon;
 import org.nutz.lang.Lang;
+import org.nutz.trans.Atom;
 
 public class UpdateTest extends DaoCase {
 
@@ -159,6 +161,23 @@ public class UpdateTest extends DaoCase {
         dao.update(p);
         p = dao.fetch(Platoon.class, "sF");
         assertNull(p.getLeaderName());
+        
+        p.setLeaderName("ABC");
+        dao.update(p);
+        p = dao.fetch(Platoon.class, "sF");
+        assertEquals("ABC", p.getLeaderName());
+        
+        FieldFilter.create(Platoon.class, true).run(new Atom() {
+			
+			public void run() {
+				System.out.println(FieldFilter.get(Platoon.class));
+				Platoon p = dao.fetch(Platoon.class, "sF");
+				p.setLeaderName(null);
+				dao.update(p);
+			}
+		});
+        p = dao.fetch(Platoon.class, "sF");
+        assertEquals("ABC", p.getLeaderName());
     }
 
     @Test
@@ -194,5 +213,10 @@ public class UpdateTest extends DaoCase {
         pet = dao.fetch(Pet.class, (Cnd)null);
         dao.update(Pet.class, Chain.makeSpecial("age", "+1"), null);
         assertEquals(pet.getAge() + 1, dao.fetch(Pet.class, pet.getId()).getAge());
+    }
+    
+    @Test
+    public void testZZ() {
+    	
     }
 }

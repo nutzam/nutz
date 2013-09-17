@@ -135,6 +135,8 @@ public abstract class Times {
     public static long ams(String ds, TimeZone tz) {
         Matcher m = _P_TIME.matcher(ds);
         if (m.find()) {
+
+            System.out.println(Dumps.matcherFound(m));
             int yy = _int(m, 2, 1970);
             int MM = _int(m, 4, 1);
             int dd = _int(m, 6, 1);

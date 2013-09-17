@@ -8,13 +8,12 @@ import org.nutz.dao.entity.annotation.Many;
 import org.nutz.dao.entity.annotation.Name;
 import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Table;
-import org.nutz.lang.random.R;
 
 @Table("tb_ic_ask")
 public class Ask {
 
     @Name
-    @Prev(els = {@EL("$me.uuid()")})
+    @Prev(els = {@EL("uuid()")})
     @Column("ask_id")
     private String askId;// 问吧ID
 
@@ -66,9 +65,5 @@ public class Ask {
 
     public void setReplys(List<AskReply> replys) {
         this.replys = replys;
-    }
-    
-    public String uuid() {
-        return R.UU16();
     }
 }
