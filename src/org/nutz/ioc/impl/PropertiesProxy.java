@@ -5,7 +5,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import org.nutz.lang.Lang;
@@ -187,5 +189,9 @@ public class PropertiesProxy {
             p.put(key, mp.get(key));
         }
         return p;
+    }
+    
+    public Map<String, String> toMap() {
+    	return new HashMap<String, String>(mp);
     }
 }
