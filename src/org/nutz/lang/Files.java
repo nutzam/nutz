@@ -2,6 +2,7 @@ package org.nutz.lang;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
 
@@ -988,5 +990,34 @@ public abstract class Files {
     
     public static boolean copyOnWrite(String path, Object obj) {
     	return copyOnWrite(new File(path), obj);
+    }
+    
+    public static List<String> readLines(File f) {
+    	List<String> lines = new ArrayList<String>();
+    	BufferedReader br = null;
+    	try {
+			br = Streams.buffr(Streams.fileInr(f));
+			while (br.ready())
+				lines.add(br.readLine());
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		} finally {
+			Streams.safeClose(br);
+		}
+    	return lines;
+    }
+    
+    public static void readLine(File f, Callback<String> callback) {
+    	BufferedReader br = null;
+    	try {
+			br = Streams.buffr(Streams.fileInr(f));
+			while (br.ready())
+				callback.invoke(br.readLine());
+    	} catch (ExitLoop e) {
+		} catch (IOException e) {
+			throw Lang.wrapThrow(e);
+		} finally {
+			Streams.safeClose(br);
+		}
     }
 }
