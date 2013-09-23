@@ -26,6 +26,16 @@ public class JsonEntityField {
 
     private Ejecting ejecting;
 
+    private boolean forceString;
+
+    public boolean isForceString() {
+        return forceString;
+    }
+
+    public void setForceString(boolean forceString) {
+        this.forceString = forceString;
+    }
+
     public boolean isIgnore() {
         return ignore;
     }
@@ -54,7 +64,8 @@ public class JsonEntityField {
         // 以特殊字符开头的字段，看起来是隐藏字段
         // XXX 有用户就是_开头的字段也要啊! by wendal
         // if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
-        if (fld.getName().startsWith("$") && fld.getAnnotation(JsonField.class) == null)
+        if (fld.getName().startsWith("$")
+            && fld.getAnnotation(JsonField.class) == null)
             return null;
 
         JsonField jf = fld.getAnnotation(JsonField.class);
@@ -66,9 +77,14 @@ public class JsonEntityField {
         jef.injecting = mirror.getInjecting(fld.getName());
 
         // 瞬时变量和明确声明忽略的，变 ignore
-        if (Modifier.isTransient(fld.getModifiers()) || (null != jf && jf.ignore())) {
+        if (Modifier.isTransient(fld.getModifiers())
+            || (null != jf && jf.ignore())) {
             jef.setIgnore(true);
         }
+
+        // 判断字段是否被强制输出为字符串
+        if (null != jf)
+            jef.setForceString(jf.forceString());
 
         return jef;
     }

@@ -111,14 +111,16 @@ public class JsonRenderImpl implements JsonRender {
 
     private void appendPairBegin() throws IOException {
         if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
+            writer.append(NL).append(Strings.dup(format.getIndentBy(),
+                                                 format.getIndent()));
     }
 
     private void appendPairSep() throws IOException {
         writer.append(!isCompact(this) ? " :" : ":");
     }
 
-    protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
+    protected void appendPair(boolean needPairEnd, String name, Object value)
+            throws IOException {
         appendPairBegin();
         appendName(name);
         appendPairSep();
@@ -144,7 +146,8 @@ public class JsonRenderImpl implements JsonRender {
 
     private void appendBraceEnd() throws IOException {
         if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
+            writer.append(NL).append(Strings.dup(format.getIndentBy(),
+                                                 format.getIndent()));
         writer.append('}');
     }
 
@@ -168,7 +171,8 @@ public class JsonRenderImpl implements JsonRender {
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
         Set<Entry<?, ?>> entrySet = map.entrySet();
         for (Entry entry : entrySet) {
-            String name = null == entry.getKey() ? "null" : entry.getKey().toString();
+            String name = null == entry.getKey() ? "null" : entry.getKey()
+                                                                 .toString();
             Object value = entry.getValue();
             if (!this.isIgnore(name, value))
                 list.add(new Pair(name, value));
@@ -176,6 +180,7 @@ public class JsonRenderImpl implements JsonRender {
         writeItem(list);
     }
 
+    @SuppressWarnings("unchecked")
     private void pojo2Json(Object obj) throws IOException {
         if (null == obj)
             return;
@@ -190,7 +195,8 @@ public class JsonRenderImpl implements JsonRender {
                 if (toJsonMethod.getParameterTypes().length == 0) {
                     writer.append(String.valueOf(toJsonMethod.invoke(obj)));
                 } else {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj, format)));
+                    writer.append(String.valueOf(toJsonMethod.invoke(obj,
+                                                                     format)));
                 }
                 return;
             }
@@ -219,6 +225,31 @@ public class JsonRenderImpl implements JsonRender {
                                 value = null;
                         }
                     }
+                    // 如果是强制输出为字符串的
+                    if (null != value && jef.isForceString()) {
+                        // 数组
+                        if (value.getClass().isArray()) {
+                            String[] ss = new String[Array.getLength(value)];
+                            for (int i = 0; i < ss.length; i++) {
+                                ss[i] = Array.get(value, i).toString();
+                            }
+                            value = ss;
+                        }
+                        // 集合
+                        else if (value instanceof Collection) {
+                            Collection col = (Collection) Mirror.me(value)
+                                                                .born();
+                            for (Object ele : (Collection) value) {
+                                col.add(ele.toString());
+                            }
+                            value = col;
+                        }
+                        // 其他统统变字符串
+                        else {
+                            value = value.toString();
+                        }
+                    }
+
                     // 加入输出列表 ...
                     list.add(new Pair(name, value));
                 }
@@ -273,7 +304,8 @@ public class JsonRenderImpl implements JsonRender {
                     break;
                 default:
                     if (c >= 256 && format.isAutoUnicode())
-                        writer.append("\\u").append(Integer.toHexString(c).toUpperCase());
+                        writer.append("\\u").append(Integer.toHexString(c)
+                                                           .toUpperCase());
                     else
                         writer.append(c);
                 }

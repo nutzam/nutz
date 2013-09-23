@@ -20,7 +20,9 @@ public class GenericTest {
                       + "'}, 'str':'"
                       + str
                       + "'}";
-        Type type = new NutType(JsonRequest2.class, Employee2.class, String.class);
+        Type type = new NutType(JsonRequest2.class,
+                                Employee2.class,
+                                String.class);
         JsonRequest2<Employee2, String> request = (JsonRequest2<Employee2, String>) Json.fromJson(type,
                                                                                                   json);
         assertEquals(request.body.mobile, mobil);
@@ -37,7 +39,9 @@ public class GenericTest {
                       + "'}, 'str':{'mobile' :'"
                       + str
                       + "'}}";
-        Type type = new NutType(JsonRequest2.class, Employee2.class, Employee2.class);
+        Type type = new NutType(JsonRequest2.class,
+                                Employee2.class,
+                                Employee2.class);
         JsonRequest2<Employee2, Employee2> request = ((JsonRequest2<Employee2, Employee2>) Json.fromJson(type,
                                                                                                          json));
         assertEquals(request.body.mobile, mobil);
@@ -57,11 +61,12 @@ public class GenericTest {
         request.setPassword("1234");
         request.setVersion("1101");
         String json = Json.toJson(request);
-        System.out.println(json);
+        // System.out.println(json);
 
         request = (JsonRequest<Employee>) Json.fromJson(new NutType(request.getClass(),
-                                                                    Employee.class), json);
-        System.out.println(request.getBody().getMobile());
+                                                                    Employee.class),
+                                                        json);
+        // System.out.println(request.getBody().getMobile());
     }
 
     @Test
@@ -78,13 +83,13 @@ public class GenericTest {
         request.setVersion("1101");
         request.setUserType(JsonRequest.USER_TYPE_EMPLOYEE);
         String json = Json.toJson(request);
-        System.out.println(json);
+        // System.out.println(json);
 
         request = (JsonRequest<Record>) Json.fromJson(new NutType(request.getClass(),
                                                                   record.getClass()),
                                                       json);
-        System.out.println(request.getBody().getString("a"));
-        System.out.println(request.getBody().getInt("b"));
+        // System.out.println(request.getBody().getString("a"));
+        // System.out.println(request.getBody().getInt("b"));
     }
 
 }

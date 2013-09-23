@@ -1,11 +1,8 @@
 package org.nutz.lang.util;
 
-import java.util.Date;
-
 import org.nutz.castor.Castors;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
-import org.nutz.lang.Times;
 
 /**
  * 描述了一个区间
@@ -45,38 +42,24 @@ import org.nutz.lang.Times;
  */
 public abstract class Region<T extends Comparable<T>> {
 
-    public static Region<Integer> Int(String str) {
-        return new Region<Integer>() {}.valueOf(str);
+    public static IntRegion Int(String str) {
+        return new IntRegion(str);
     }
 
-    public static Region<Long> Long(String str) {
-        return new Region<Long>() {}.valueOf(str);
+    public static LongRegion Long(String str) {
+        return new LongRegion(str);
     }
 
-    public static Region<Float> Float(String str) {
-        return new Region<Float>() {}.valueOf(str);
+    public static FloatRegion Float(String str) {
+        return new FloatRegion(str);
     }
 
-    public static Region<Double> Double(String str) {
-        return new Region<Double>() {}.valueOf(str);
+    public static DoubleRegion Double(String str) {
+        return new DoubleRegion(str);
     }
 
-    public static Region<Date> Date(String str) {
-        return new Region<Date>() {
-            public Date fromString(String str) {
-                str = Strings.trim(str);
-                if (Strings.isEmpty(str))
-                    return null;
-                return Times.D(str);
-            }
-
-            public String toString(Date d) {
-                String str = Times.sDT(d);
-                if (str.endsWith(" 00:00:00"))
-                    return str.substring(0, 10);
-                return str;
-            }
-        }.valueOf(str);
+    public static DateRegion Date(String str) {
+        return new DateRegion(str);
     }
 
     protected Class<T> eleType;

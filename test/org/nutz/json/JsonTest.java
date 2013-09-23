@@ -29,20 +29,48 @@ import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
+import org.nutz.json.meta.JX;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
+import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
 
     @Test
+    public void test_region_as_String() {
+        String str = "{"
+                     + "n:8, "
+                     + "region:'(4,19]',"
+                     + "regionArray : ['(2,3)','[6,9)'],"
+                     + "regionList : ['(2,3)','(6,8]']"
+                     + "}";
+        JX jx = Json.fromJson(JX.class, str);
+
+        String str2 = Json.toJson(jx);
+        NutMap map = Json.fromJson(NutMap.class, str2);
+        assertEquals(jx.getRegion().toString(), map.get("region"));
+
+        String[] ss = map.getArray("regionArray", String.class);
+        assertEquals(2, ss.length);
+        assertEquals("(2,3)", ss[0]);
+        assertEquals("[6,9)", ss[1]);
+
+        List<String> list = map.getList("regionList", String.class);
+        assertEquals(2, list.size());
+        assertEquals("(2,3)", list.get(0));
+        assertEquals("(6,8]", list.get(1));
+    }
+
+    @Test
     public void test_empty_obj_toJson() {
-        String j = Json.toJson(new Person(), JsonFormat.compact().setQuoteName(true));
+        String j = Json.toJson(new Person(),
+                               JsonFormat.compact().setQuoteName(true));
         assertEquals("{\"age\":0,\"num\":0}", j);
     }
 
@@ -161,14 +189,16 @@ public class JsonTest {
     public void when_name_has_unsupport_char() {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("/tt", 123);
-        assertEquals("{\"/tt\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{\"/tt\":123}",
+                     Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
     }
 
     @Test
     public void when_name_has_number_char_at_first() {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("3T", 123);
-        assertEquals("{\"3T\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{\"3T\":123}",
+                     Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
     }
 
     @Test
@@ -181,7 +211,8 @@ public class JsonTest {
         ints[0] = 65;
         assertEquals("[65]", Json.toJson(ints));
         assertEquals(65, Json.fromJson(Lang.inr("65")));
-        assertEquals(Float.valueOf("65"), Json.fromJson(float.class, Lang.inr("65")));
+        assertEquals(Float.valueOf("65"),
+                     Json.fromJson(float.class, Lang.inr("65")));
         assertEquals(ints[0], Json.fromJson(int[].class, Lang.inr("[65]"))[0]);
     }
 
@@ -200,9 +231,11 @@ public class JsonTest {
 
     @Test
     public void testFloat() {
-        assertEquals(Float.valueOf(2.3f), Json.fromJson(float.class, Lang.inr("2.3")));
+        assertEquals(Float.valueOf(2.3f),
+                     Json.fromJson(float.class, Lang.inr("2.3")));
         assertEquals((Float) 2.3f, Json.fromJson(Float.class, Lang.inr("2.3")));
-        assertEquals(Float.valueOf(.3f), Json.fromJson(float.class, Lang.inr(".3")));
+        assertEquals(Float.valueOf(.3f),
+                     Json.fromJson(float.class, Lang.inr(".3")));
     }
 
     @Test
@@ -473,17 +506,19 @@ public class JsonTest {
         assertEquals(p.getFather().getAge(), p2.getFather().getAge());
         assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
         assertEquals(p.getCompany().getName(), p2.getCompany().getName());
-        assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
-        assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany()
-                                                                  .getCreator()
-                                                                  .getRealname());
-        assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
+        assertEquals(p.getCompany().getCreator().getName(), p2.getCompany()
+                                                              .getCreator()
+                                                              .getName());
+        assertEquals(p.getCompany().getCreator().getRealname(),
+                     p2.getCompany().getCreator().getRealname());
+        assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany()
+                                                             .getCreator()
+                                                             .getAge());
         assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany()
                                                                 .getCreator()
                                                                 .getFather());
-        assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany()
-                                                                  .getCreator()
-                                                                  .getBirthday());
+        assertEquals(p.getCompany().getCreator().getBirthday(),
+                     p2.getCompany().getCreator().getBirthday());
     }
 
     @Test
@@ -504,7 +539,9 @@ public class JsonTest {
     public void testFilterField2() throws Exception {
         Person p = Json.fromJson(Person.class,
                                  getFileAsInputStreamReader("org/nutz/json/person.txt"));
-        String json = Json.toJson(p, JsonFormat.nice().setLocked("realname|father|company"));
+        String json = Json.toJson(p,
+                                  JsonFormat.nice()
+                                            .setLocked("realname|father|company"));
         Person p2 = Json.fromJson(Person.class, Lang.inr(json));
         assertNull(p2.getRealname());
         assertEquals(p.getName(), p2.getName());
@@ -521,7 +558,9 @@ public class JsonTest {
         public boolean equals(Object obj) {
             if (obj instanceof Project) {
                 Project p = (Project) obj;
-                return id == p.id && name.equals(p.name) && alias.equals(p.alias);
+                return id == p.id
+                       && name.equals(p.name)
+                       && alias.equals(p.alias);
             }
             return false;
         }
@@ -685,14 +724,17 @@ public class JsonTest {
     public void test_output_nostr_key_map() {
         Map<Integer, String> map = new HashMap<Integer, String>();
         map.put(22, "hello");
-        assertEquals("{\"22\":\"hello\"}", Json.toJson(map, JsonFormat.compact()));
+        assertEquals("{\"22\":\"hello\"}",
+                     Json.toJson(map, JsonFormat.compact()));
     }
 
     @Test
     public void test_separator() {
         String str = "Nutz";
-        assertEquals("\"Nutz\"", Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
-        assertEquals("'Nutz'", Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
+        assertEquals("\"Nutz\"",
+                     Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
+        assertEquals("'Nutz'",
+                     Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
     }
 
     @Test
@@ -713,12 +755,14 @@ public class JsonTest {
         map.put("abc", "abc中文abc");
         JsonFormat format = new JsonFormat(true);
         format.setAutoUnicode(true);
-        assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}", Json.toJson(map, format));
+        assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}",
+                     Json.toJson(map, format));
     }
 
     @Test
     public void test_toList() {
-        List<Map<String, Integer>> msgList = Json.fromJson(List.class, "[{'a':1}, {'b':2}]");
+        List<Map<String, Integer>> msgList = Json.fromJson(List.class,
+                                                           "[{'a':1}, {'b':2}]");
         assertNotNull(msgList);
         assertTrue(msgList.size() == 2);
         assertEquals(1, msgList.get(0).get("a").intValue());
@@ -744,7 +788,8 @@ public class JsonTest {
     public void test_render_char() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("charX", 'c');
-        assertEquals("{\"charX\":\"c\"}", Json.toJson(map, JsonFormat.compact()));
+        assertEquals("{\"charX\":\"c\"}",
+                     Json.toJson(map, JsonFormat.compact()));
     }
 
     @Test
@@ -812,24 +857,24 @@ public class JsonTest {
     // System.out.println(Json.toJson(node));
     // System.out.println(node.getChildren().get(0).getClass());
     // }
-    
+
     @Test
     public void test_json3() {
         File f = Files.findFile("org/nutz/json/x.json");
         Map<String, Object> map = Json.fromJsonFile(Map.class, f);
         assertEquals(3, map.size());
-        System.out.println(map.keySet());
+        // System.out.println(map.keySet());
         assertTrue(map.containsKey("dao"));
-        
+
         String str = "{rs:{ok:true,},yes:true}";
         map = Json.fromJson(Map.class, str);
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
-        
+
         str = "{rs:[1,2,3,],yes:true}";
         map = Json.fromJson(Map.class, str);
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
-        assertEquals(3, ((List<Integer>)map.get("rs")).get(2).intValue());
+        assertEquals(3, ((List<Integer>) map.get("rs")).get(2).intValue());
     }
 }
