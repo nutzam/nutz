@@ -59,6 +59,7 @@ public class Request {
     private Map<String, Object> params;
     private byte[] data;
     private URL cacheUrl;
+    private InputStream inputStream;
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -95,11 +96,19 @@ public class Request {
     }
 
     public InputStream getInputStream() {
-        // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
-        if (null == data) {
-            return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+        if (inputStream != null) {
+            return inputStream;
+        } else {
+            // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
+            if (null == data) {
+                return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+            }
+            return new ByteArrayInputStream(data);
         }
-        return new ByteArrayInputStream(data);
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     public byte[] getData() {
