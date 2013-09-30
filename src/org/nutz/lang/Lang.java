@@ -31,9 +31,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Pattern;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
@@ -381,7 +381,7 @@ public abstract class Lang {
      * 较方便的创建一个数组，比如：
      * 
      * <pre>
-     * Pet[] pets = Lang.array(pet1, pet2, pet3);
+     * Pet[] pets = Lang.array("A", "B", "A"); => ["A","B","A"]
      * </pre>
      * 
      * @param eles
@@ -390,6 +390,37 @@ public abstract class Lang {
      */
     public static <T> T[] array(T... eles) {
         return eles;
+    }
+
+    /**
+     * 较方便的创建一个没有重复的数组，比如：
+     * 
+     * <pre>
+     * Pet[] pets = Lang.array("A","B","A");  => ["A","B"]
+     * Pet[] pets = Lang.array();  => null
+     * </pre>
+     * 
+     * 返回的顺序会遵循输入的顺序
+     * 
+     * @param eles
+     *            可变参数
+     * @return 数组对象
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] arrayUniq(T... eles) {
+        if (null == eles || eles.length == 0)
+            return null;
+        HashSet<T> set = new HashSet<T>(eles.length);
+        T[] arr = (T[]) Array.newInstance(eles[0].getClass(), set.size());
+        int index = 0;
+        for (int i = 0; i < eles.length; i++) {
+            if (set.contains(eles[i])) {
+                set.remove(eles[i]);
+                arr[index++] = eles[i];
+            }
+        }
+        return arr;
+
     }
 
     /**
@@ -739,7 +770,7 @@ public abstract class Lang {
             return sb;
         return concat(c, coll.iterator());
     }
-    
+
     /**
      * 将一个迭代器转换成字符串
      * <p>
@@ -752,13 +783,13 @@ public abstract class Lang {
      * @return 拼合后的字符串
      */
     public static <T> StringBuilder concat(Object c, Iterator<T> it) {
-    	StringBuilder sb = new StringBuilder();
-    	if (it == null || !it.hasNext())
-    		return sb;
-    	sb.append(it.next());
-    	while (it.hasNext())
-    		sb.append(c).append(it.next());
-    	return sb;
+        StringBuilder sb = new StringBuilder();
+        if (it == null || !it.hasNext())
+            return sb;
+        sb.append(it.next());
+        while (it.hasNext())
+            sb.append(c).append(it.next());
+        return sb;
     }
 
     /**
@@ -1633,9 +1664,8 @@ public abstract class Lang {
      *            POJO 对象
      * @return Map 对象
      */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> obj2map(Object obj) {
-        return obj2map(obj, HashMap.class);
+    public static NutMap obj2map(Object obj) {
+        return obj2map(obj, NutMap.class);
     }
 
     /**
