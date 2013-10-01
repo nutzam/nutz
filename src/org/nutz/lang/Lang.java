@@ -1664,7 +1664,19 @@ public abstract class Lang {
      *            POJO 对象
      * @return Map 对象
      */
-    public static NutMap obj2map(Object obj) {
+    @SuppressWarnings("unchecked")
+    public static Map<String, Object> obj2map(Object obj) {
+        return obj2map(obj, HashMap.class);
+    }
+
+    /**
+     * 将对象转为 Nutz 的标准 Map 封装
+     * 
+     * @param obj
+     *            POJO du对象
+     * @return NutMap 对象
+     */
+    public static NutMap obj2nutmap(Object obj) {
         return obj2map(obj, NutMap.class);
     }
 
