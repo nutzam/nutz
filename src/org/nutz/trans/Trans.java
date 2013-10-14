@@ -58,7 +58,7 @@ public abstract class Trans {
                 log.debugf("Start New Transaction id=%d, level=%d", tn.getId(), level);
         } else {
             if (DEBUG)
-                log.debugf("Attach Transaction id=%d, level=%d", tn.getId(), level);
+                log.debugf("Attach Transaction    id=%d, level=%d", tn.getId(), level);
         }
         int tCount = count.get() + 1;
         count.set(tCount);
@@ -84,7 +84,7 @@ public abstract class Trans {
         if (count.get() == 0)
             try {
                 if (DEBUG)
-                    log.debugf("Transaction depose id=%d", trans.get().getId());
+                    log.debugf("Transaction depose id=%d, count=%s", trans.get().getId(), count.get());
                 trans.get().close();
             }
             catch (Throwable e) {
@@ -99,11 +99,11 @@ public abstract class Trans {
         count.set(num);
         if (count.get() == 0) {
             if (DEBUG)
-                log.debugf("Transaction rollback id=%s", trans.get().getId());
+                log.debugf("Transaction rollback id=%s, count=%s", trans.get().getId(), num);
             trans.get().rollback();
         } else {
             if (DEBUG)
-                log.debugf("Transaction delay rollback id=%s", trans.get().getId());
+                log.debugf("Transaction delay rollback id=%s, count=%s", trans.get().getId(), num);
         }
     }
 
@@ -232,6 +232,8 @@ public abstract class Trans {
         Integer c = Trans.count.get();
         if (c == null)
             c = Integer.valueOf(0);
+        else if (c > 0)
+        	c--;
         Trans._rollback(c);
     }
 
