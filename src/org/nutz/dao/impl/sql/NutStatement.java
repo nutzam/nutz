@@ -115,6 +115,10 @@ public abstract class NutStatement implements DaoStatement {
     public int getInt() {
         return getObject(Integer.class);
     }
+    
+    public Number getNumber() {
+    	return getObject(Number.class);
+    }
 
     public String getString() {
         return getObject(String.class);

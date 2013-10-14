@@ -140,6 +140,8 @@ public interface DaoStatement {
      * @return 将结果对象作为 int 返回
      */
     int getInt();
+    
+    Number getNumber();
 
     /**
      * @return 将结果对象作为 String 返回
