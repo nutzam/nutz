@@ -215,6 +215,27 @@ public class Strings {
     }
 
     /**
+     * 将字符串首字母大写
+     * 
+     * @param s
+     *            字符串
+     * @return 首字母大写后的新字符串
+     */
+    public static String upperFirst(CharSequence s) {
+        if (null == s)
+            return null;
+        int len = s.length();
+        if (len == 0)
+            return "";
+        char c = s.charAt(0);
+        if (Character.isUpperCase(c))
+            return s.toString();
+        return new StringBuilder(len).append(Character.toUpperCase(c))
+                                     .append(s.subSequence(1, len))
+                                     .toString();
+    }
+
+    /**
      * 检查两个字符串的忽略大小写后是否相等.
      * 
      * @param s1

@@ -967,57 +967,61 @@ public abstract class Files {
     }
 
     public static boolean copyOnWrite(File f, Object obj) {
-    	File tmp = new File(f.getAbsolutePath() + ".new");
-    	File tmp2 = new File(f.getAbsolutePath() + ".old");
-    	tmp2.delete();
-    	try {
-			write(tmp, obj);
-			boolean flag = false;
-			if (f.exists()) {
-				flag = f.renameTo(tmp2);
-			}
-			if (tmp.renameTo(f)) {
-				tmp2.delete();
-				return true;
-			}
-			else if (flag)
-				tmp2.renameTo(f); // 如果这里也失败的话,起码.old还在...
-			return false;
-		} finally {
-			tmp.delete();
-		}
+        File tmp = new File(f.getAbsolutePath() + ".new");
+        File tmp2 = new File(f.getAbsolutePath() + ".old");
+        tmp2.delete();
+        try {
+            write(tmp, obj);
+            boolean flag = false;
+            if (f.exists()) {
+                flag = f.renameTo(tmp2);
+            }
+            if (tmp.renameTo(f)) {
+                tmp2.delete();
+                return true;
+            } else if (flag)
+                tmp2.renameTo(f); // 如果这里也失败的话,起码.old还在...
+            return false;
+        }
+        finally {
+            tmp.delete();
+        }
     }
-    
+
     public static boolean copyOnWrite(String path, Object obj) {
-    	return copyOnWrite(new File(path), obj);
+        return copyOnWrite(new File(path), obj);
     }
-    
+
     public static List<String> readLines(File f) {
-    	List<String> lines = new ArrayList<String>();
-    	BufferedReader br = null;
-    	try {
-			br = Streams.buffr(Streams.fileInr(f));
-			while (br.ready())
-				lines.add(br.readLine());
-		} catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		} finally {
-			Streams.safeClose(br);
-		}
-    	return lines;
+        List<String> lines = new ArrayList<String>();
+        BufferedReader br = null;
+        try {
+            br = Streams.buffr(Streams.fileInr(f));
+            while (br.ready())
+                lines.add(br.readLine());
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(br);
+        }
+        return lines;
     }
-    
+
     public static void readLine(File f, Callback<String> callback) {
-    	BufferedReader br = null;
-    	try {
-			br = Streams.buffr(Streams.fileInr(f));
-			while (br.ready())
-				callback.invoke(br.readLine());
-    	} catch (ExitLoop e) {
-		} catch (IOException e) {
-			throw Lang.wrapThrow(e);
-		} finally {
-			Streams.safeClose(br);
-		}
+        BufferedReader br = null;
+        try {
+            br = Streams.buffr(Streams.fileInr(f));
+            while (br.ready())
+                callback.invoke(br.readLine());
+        }
+        catch (ExitLoop e) {}
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(br);
+        }
     }
 }
