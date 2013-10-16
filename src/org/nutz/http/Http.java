@@ -57,17 +57,14 @@ public class Http {
     public static String post(String url, Map<String, Object> params, int timeout) {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
                      .setTimeout(timeout)
-                     .send().getContent();
+                     .send()
+                     .getContent();
     }
 
-    public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
-        return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
-    }
-    
     public static Response post2(String url, Map<String, Object> params, int timeout) {
-    	return Sender.create(Request.create(url, METHOD.POST, params, null))
-                .setTimeout(timeout)
-                .send();
+        return Sender.create(Request.create(url, METHOD.POST, params, null))
+                     .setTimeout(timeout)
+                     .send();
     }
 
     public static String encode(Object s) {
