@@ -29,7 +29,7 @@ public class HttpTest {
         Map<String, Object> parms = new HashMap<String, Object>();
         parms.put("version", "NutzTest");
         parms.put("website", Nutz.version());
-        String response = Http.post("http://nutztest.herokuapp.com/", parms, "utf-8", "utf-8");
+        String response = Http.post("http://nutztest.herokuapp.com/", parms, 5*1000);
         assertNotNull(response);
         assertTrue(response.length() > 0);
         // 该post的返回值是"version: #{params[:version]}, website: #{params[:website]}"
