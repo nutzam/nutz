@@ -54,14 +54,14 @@ public class Http {
         return Sender.create(Request.get(url)).setTimeout(timeout).send();
     }
 
-    public static Response post(String url, Map<String, Object> params, int timeout) {
+    public static String post(String url, Map<String, Object> params, int timeout) {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
                      .setTimeout(timeout)
-                     .send();
+                     .send().getContent();
     }
 
-    public static Response post(String url, Map<String, Object> params, String inenc, String reenc) {
-        return Sender.create(Request.create(url, METHOD.POST, params, null)).send();
+    public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
+        return Sender.create(Request.create(url, METHOD.POST, params, null)).send().getContent();
     }
 
     public static String encode(Object s) {
