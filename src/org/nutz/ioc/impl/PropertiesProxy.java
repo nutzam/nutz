@@ -3,6 +3,7 @@ package org.nutz.ioc.impl;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -62,6 +63,22 @@ public class PropertiesProxy {
     }
 
     /**
+     * @param r
+     *            文本输入流
+     * @since 1.b.50
+     */
+    public PropertiesProxy(Reader r) {
+        this(true);
+        try {
+            mp = new MultiLineProperties();
+            mp.load(r);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
      * 加载指定文件/文件夹的Properties文件,合并成一个Properties对象
      * <p>
      * <b style=color:red>如果有重复的key,请务必注意加载的顺序!!<b/>
@@ -101,13 +118,18 @@ public class PropertiesProxy {
         List<NutResource> list = new ArrayList<NutResource>();
         for (String path : paths) {
             try {
-                List<NutResource> resources = Scans.me().loadResource("^.+[.]properties$", path);
+                List<NutResource> resources = Scans.me()
+                                                   .loadResource("^.+[.]properties$",
+                                                                 path);
                 list.addAll(resources);
             }
             catch (Exception e) {
                 if (ignoreResourceNotFound) {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not load resource from " + path + ": " + e.getMessage());
+                        log.warn("Could not load resource from "
+                                 + path
+                                 + ": "
+                                 + e.getMessage());
                     }
                 } else {
                     throw Lang.wrapThrow(e);
@@ -119,6 +141,16 @@ public class PropertiesProxy {
 
     public void setIgnoreResourceNotFound(boolean ignoreResourceNotFound) {
         this.ignoreResourceNotFound = ignoreResourceNotFound;
+    }
+
+    /**
+     * @param key
+     *            键
+     * @return 是否包括这个键
+     * @since 1.b.50
+     */
+    public boolean has(String key) {
+        return mp.containsKey(key);
     }
 
     public void put(String key, String value) {
@@ -190,8 +222,8 @@ public class PropertiesProxy {
         }
         return p;
     }
-    
+
     public Map<String, String> toMap() {
-    	return new HashMap<String, String>(mp);
+        return new HashMap<String, String>(mp);
     }
 }

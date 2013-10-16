@@ -34,6 +34,8 @@ public class DoInsertLinkVisitor extends AbstractLinkVisitor {
         final Entity<?> en = lnk.getLinkedEntity();
         Lang.each(value, new Each<Object>() {
             public void invoke(int i, Object ele, int length) throws ExitLoop, LoopException {
+            	if (ele == null)
+            		throw new NullPointerException("null ele in linked field!!");
                 // 执行插入
                 opt.addInsert(en, ele);
                 // 更新字段

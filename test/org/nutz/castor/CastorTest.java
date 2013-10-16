@@ -21,6 +21,14 @@ import org.nutz.lang.meta.Email;
 
 public class CastorTest {
 
+    @Test
+    public void test_Double_to_int() {
+        Castors cts = Castors.me();
+        Double d = new Double(1.0);
+        int i = cts.castTo(d, int.class);
+        assertEquals(1, i);
+    }
+
     /**
      * 参见 Issue #435
      */
@@ -37,14 +45,15 @@ public class CastorTest {
     public void test_null_to_byte_and_short() {
         Castors cts = Castors.me();
         Assert.assertEquals((byte) 0, cts.castTo(null, byte.class).byteValue());
-        Assert.assertEquals((short) 0, cts.castTo(null, short.class).shortValue());
+        Assert.assertEquals((short) 0, cts.castTo(null, short.class)
+                                          .shortValue());
     }
 
     /**
      * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
      */
     @Test
-    public void test_cast_blank_to_Long() {
+    public void test_cast_blank_to_Integer() {
         assertNull(Castors.me().castTo("", Integer.class));
         assertEquals(0, (int) Castors.me().castTo("", int.class));
     }
@@ -63,7 +72,9 @@ public class CastorTest {
         Calendar c = Calendar.getInstance();
         c.set(2008, 5, 20, 5, 46, 26);
 
-        Calendar c2 = Castors.me().cast("2008-06-20 05:46:26", String.class, Calendar.class);
+        Calendar c2 = Castors.me().cast("2008-06-20 05:46:26",
+                                        String.class,
+                                        Calendar.class);
 
         assertEquals(c.getTimeInMillis() / 1000, c2.getTimeInMillis() / 1000);
     }
@@ -131,7 +142,6 @@ public class CastorTest {
     @Test
     public void testString2bool() throws FailToCastObjectException {
         assertTrue(Castors.me().castTo("true", boolean.class));
-        assertTrue(Castors.me().castTo(" ", boolean.class));
         assertTrue(Castors.me().castTo("abc", boolean.class));
         assertTrue(Castors.me().castTo("1", boolean.class));
         assertTrue(Castors.me().castTo("-1", boolean.class));
@@ -142,6 +152,7 @@ public class CastorTest {
         assertFalse(Castors.me().castTo("oFf", boolean.class));
         assertFalse(Castors.me().castTo("No", boolean.class));
         assertFalse(Castors.me().castTo("faLsE", boolean.class));
+        assertFalse(Castors.me().castTo(" ", boolean.class));
     }
 
     @Test
@@ -156,8 +167,10 @@ public class CastorTest {
 
     @Test
     public void testString2Float() throws FailToCastObjectException {
-        assertEquals(Float.valueOf(34.67f), Castors.me().castTo("34.67", float.class));
-        assertEquals(new Float(34.67), Castors.me().castTo("34.67", Float.class));
+        assertEquals(Float.valueOf(34.67f),
+                     Castors.me().castTo("34.67", float.class));
+        assertEquals(new Float(34.67), Castors.me()
+                                              .castTo("34.67", Float.class));
     }
 
     @Test
@@ -170,7 +183,8 @@ public class CastorTest {
 
     @Test
     public void testString2JavaDate() throws FailToCastObjectException {
-        java.util.Date date = Castors.me().castTo("2008-6-12", java.util.Date.class);
+        java.util.Date date = Castors.me().castTo("2008-6-12",
+                                                  java.util.Date.class);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         assertEquals(2008, cal.get(Calendar.YEAR));
@@ -184,7 +198,9 @@ public class CastorTest {
     @Test
     public void testString2Date() {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Castors.me().cast("1977-9-21", String.class, java.sql.Date.class));
+        cal.setTime(Castors.me().cast("1977-9-21",
+                                      String.class,
+                                      java.sql.Date.class));
         assertEquals(1977, cal.get(Calendar.YEAR));
         assertEquals(8, cal.get(Calendar.MONTH));
         assertEquals(21, cal.get(Calendar.DAY_OF_MONTH));
@@ -193,7 +209,9 @@ public class CastorTest {
     @Test
     public void testString2Time() throws FailToCastObjectException {
         Calendar cal = Calendar.getInstance();
-        cal.setTime(Castors.me().cast("15:17:23", String.class, java.sql.Time.class));
+        cal.setTime(Castors.me().cast("15:17:23",
+                                      String.class,
+                                      java.sql.Time.class));
         assertEquals(15, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(17, cal.get(Calendar.MINUTE));
         assertEquals(23, cal.get(Calendar.SECOND));
@@ -236,7 +254,8 @@ public class CastorTest {
 
     @Test
     public void testArray2String() throws Exception {
-        Email[] mails = {new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn")};
+        Email[] mails = {new Email("zzh@263.net"),
+                         new Email("zozohtnt@yahoo.com.cn")};
         String done = Castors.me().castToString(mails);
         Email[] mails2 = Castors.me().castTo(done, Email[].class);
         assertTrue(Lang.equals(mails, mails2));
@@ -245,7 +264,8 @@ public class CastorTest {
     @Test
     public void testString2Array() throws Exception {
         String orgs = "zzh@263.net,zozohtnt@yahoo.com.cn";
-        Email[] exp = {new Email("zzh@263.net"), new Email("zozohtnt@yahoo.com.cn")};
+        Email[] exp = {new Email("zzh@263.net"),
+                       new Email("zozohtnt@yahoo.com.cn")};
         Email[] done = Castors.me().castTo(orgs, Email[].class);
         assertTrue(Arrays.equals(exp, done));
     }
@@ -383,7 +403,8 @@ public class CastorTest {
         c2.setTime(d2);
         assertEquals(c1.get(Calendar.YEAR), c2.get(Calendar.YEAR));
         assertEquals(c1.get(Calendar.MONTH), c2.get(Calendar.MONTH));
-        assertEquals(c1.get(Calendar.DAY_OF_MONTH), c1.get(Calendar.DAY_OF_MONTH));
+        assertEquals(c1.get(Calendar.DAY_OF_MONTH),
+                     c1.get(Calendar.DAY_OF_MONTH));
         assertEquals(c1.get(Calendar.HOUR_OF_DAY), c2.get(Calendar.HOUR_OF_DAY));
         assertEquals(c1.get(Calendar.MINUTE), c2.get(Calendar.MINUTE));
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));

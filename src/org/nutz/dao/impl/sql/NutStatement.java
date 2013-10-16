@@ -113,11 +113,11 @@ public abstract class NutStatement implements DaoStatement {
     }
 
     public int getInt() {
-        Integer i = getObject(Integer.class);
-        if (i == null)
-            return 0;// TODO 是不是应该抛出异常呢?
-        return i;// TODO 怪怪的,如果getObject返回null,这里就NPE了 by zozoh
-                 // 因为自动解包的原因,by wendal
+        return getObject(Integer.class);
+    }
+    
+    public Number getNumber() {
+    	return getObject(Number.class);
     }
 
     public String getString() {
