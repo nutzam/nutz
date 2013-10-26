@@ -4,7 +4,7 @@ package org.nutz.http;
 public class HttpException extends RuntimeException {
 
     public HttpException(String url, Throwable cause) {
-        super(cause);
+        super("url="+url, cause);
     }
 
 }

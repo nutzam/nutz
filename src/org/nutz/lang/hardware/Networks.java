@@ -69,10 +69,11 @@ public class Networks {
      * @return 返回当前第一个可用的IP地址
      */
     public static String ipv4() {
-        NetworkItem networkItem = firstNetwokrItem();
-        if (networkItem == null)
-            return null;
-        return networkItem.getIpv4();
+    	for (NetworkItem item : networkItems().values()) {
+			if (!Strings.isBlank(item.getIpv4()) && !"127.0.0.1".equals(item.getIpv4()))
+				return item.getIpv4();
+		}
+    	return null;
     }
 
     /**
