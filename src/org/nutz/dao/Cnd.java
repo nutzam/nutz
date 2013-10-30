@@ -93,6 +93,10 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return new Cnd();
     }
 
+    public static Cnd byCri(SimpleCriteria cri) {
+        return new Cnd().setCri(cri);
+    }
+
     /*------------------------------------------------------------------*/
 
     private SimpleCriteria cri;
@@ -100,10 +104,15 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     Cnd() {
         cri = new SimpleCriteria();
     }
-    
+
+    private Cnd setCri(SimpleCriteria cri) {
+        this.cri = cri;
+        return this;
+    }
+
     public SimpleCriteria getCri() {
-		return cri;
-	}
+        return cri;
+    }
 
     protected Cnd(SqlExpression exp) {
         this();
@@ -199,17 +208,17 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     public SqlExpressionGroup where() {
         return cri.where();
     }
-    
+
     public GroupBy groupBy(String... names) {
-    	cri.groupBy(names);
-    	return this;
+        cri.groupBy(names);
+        return this;
     }
-    
+
     public GroupBy having(Condition cnd) {
-    	cri.having(cnd);
-    	return this;
+        cri.having(cnd);
+        return this;
     }
-    
+
     public OrderBy getOrderBy() {
         return cri.getOrderBy();
     }
