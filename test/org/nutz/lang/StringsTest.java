@@ -224,6 +224,16 @@ public class StringsTest {
         Strings.cutRight("abc", -1, 'c');
     }
 
+    @Test(expected = StringIndexOutOfBoundsException.class)
+    public void test_cut_left() {
+        assertNull(Strings.cutLeft(null, 2, 'c'));
+        assertEquals("ac", Strings.cutLeft("a", 2, 'c'));
+        assertEquals("ab", Strings.cutLeft("ab", 2, 'c'));
+        assertEquals("ab", Strings.cutLeft("abc", 2, 'c'));
+        assertEquals("", Strings.cutLeft("abc", 0, 'c'));
+        Strings.cutLeft("abc", -1, 'c');
+    }
+
     @Test
     public void test_align_left() {
         assertNull(Strings.alignLeft(null, 2, 'c'));

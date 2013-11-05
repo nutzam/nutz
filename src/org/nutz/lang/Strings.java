@@ -476,7 +476,7 @@ public class Strings {
     }
 
     /**
-     * 保证字符串为一固定长度。超过长度，切除，否则补字符。
+     * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
      * 
      * @param s
      *            字符串
@@ -495,6 +495,28 @@ public class Strings {
         if (len < width)
             return Strings.dup(c, width - len) + s;
         return s.substring(len - width, len);
+    }
+
+    /**
+     * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
+     *
+     * @param s
+     *            字符串
+     * @param width
+     *            长度
+     * @param c
+     *            补字符
+     * @return 修饰后的字符串
+     */
+    public static String cutLeft(String s, int width, char c) {
+        if (null == s)
+            return null;
+        int len = s.length();
+        if (len == width)
+            return s;
+        if (len < width)
+            return s + Strings.dup(c, width - len);
+        return s.substring(0, width);
     }
 
     /**
@@ -535,7 +557,7 @@ public class Strings {
         String s = o.toString();
         int length = s.length();
         if (length >= width)
-            return s.toString();
+            return s;
         return new StringBuilder().append(s).append(dup(c, width - length)).toString();
     }
 
