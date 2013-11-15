@@ -13,7 +13,7 @@ import org.nutz.lang.util.Context;
 public class EntityObjectContext extends AbstractContext {
 
     private static final String ME = "$me";
-    
+
     private Map<String, Object> ext = new HashMap<String, Object>();
 
     private Entity<?> en;
@@ -24,12 +24,16 @@ public class EntityObjectContext extends AbstractContext {
         this.obj = obj;
     }
 
+    public int size() {
+        return ext.size();
+    }
+
     public Context set(String name, Object value) {
-    	MappingField field = en.getField(name);
-    	if (field != null)
-    		field.setValue(obj, value);
-    	else 
-    		ext.put(name, value);
+        MappingField field = en.getField(name);
+        if (field != null)
+            field.setValue(obj, value);
+        else
+            ext.put(name, value);
         return this;
     }
 
@@ -46,7 +50,7 @@ public class EntityObjectContext extends AbstractContext {
         if (ME.equals(key))
             return true;
         if (en.getField(key) != null)
-        	return true;
+            return true;
         return ext.containsKey(key);
     }
 
@@ -61,14 +65,14 @@ public class EntityObjectContext extends AbstractContext {
             return obj;
         MappingField field = en.getField(name);
         if (field != null)
-        	return field.getValue(obj);
+            return field.getValue(obj);
         return ext.get(name);
     }
 
     public EntityObjectContext clone() {
-    	EntityObjectContext eoc = new EntityObjectContext(en, obj);
-    	if (!this.ext.isEmpty())
-    		eoc.ext = new HashMap<String, Object>(this.ext);
+        EntityObjectContext eoc = new EntityObjectContext(en, obj);
+        if (!this.ext.isEmpty())
+            eoc.ext = new HashMap<String, Object>(this.ext);
         return eoc;
     }
 }

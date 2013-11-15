@@ -15,6 +15,10 @@ public abstract class AbstractContext implements Context {
         super();
     }
 
+    public boolean isEmpty() {
+        return size() == 0;
+    }
+
     public <T> T getAs(Class<T> type, String name) {
         return Castors.me().castTo(get(name), type);
     }

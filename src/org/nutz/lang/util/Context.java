@@ -20,6 +20,10 @@ public interface Context extends Cloneable {
 
     Context clear();
 
+    int size();
+
+    boolean isEmpty();
+
     Object get(String name);
 
     <T> T getAs(Class<T> type, String name);
