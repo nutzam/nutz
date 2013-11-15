@@ -6,6 +6,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.lang.Strings;
 
@@ -54,6 +55,9 @@ public class Networks {
                     }
                 }
                 netItem.setMtu(face.getMTU());
+                
+                if (netItem.getIpv4() == null && netItem.getMac() == null && netItem.getMtu() < 1)
+                	continue;
                 netFaces.put(face.getName(), netItem);
             }
         }
@@ -65,10 +69,11 @@ public class Networks {
      * @return 返回当前第一个可用的IP地址
      */
     public static String ipv4() {
-        NetworkItem networkItem = firstNetwokrItem();
-        if (networkItem == null)
-            return null;
-        return networkItem.getIpv4();
+    	for (NetworkItem item : networkItems().values()) {
+			if (!Strings.isBlank(item.getIpv4()) && !"127.0.0.1".equals(item.getIpv4()))
+				return item.getIpv4();
+		}
+    	return null;
     }
 
     /**
@@ -125,10 +130,15 @@ public class Networks {
             re = getNetworkByType(netFaces, ntMap.get(NetworkType.VPN));
         }
         if (re == null) {
-            return netFaces.values().iterator().next();
-        } else {
-            return re;
+        	for (Entry<String, NetworkItem> en : netFaces.entrySet()) {
+				if (Strings.isBlank(en.getValue().getIpv4()))
+					continue;
+				if (Strings.isBlank(en.getValue().getMac()))
+					continue;
+				return en.getValue();
+			}
         }
+        return re;
     }
 
     private static NetworkItem getNetworkByType(Map<String, NetworkItem> netFaces, String nt) {

@@ -763,6 +763,9 @@ public class Mirror<T> {
                 return getValue(obj, getField(name));
             }
             catch (NoSuchFieldException e1) {
+                if (obj != null && obj.getClass().isArray() && "length".equals(name)) {
+                	return Lang.length(obj);
+                }
                 throw makeGetValueException(obj.getClass(), name, e);
             }
         }
