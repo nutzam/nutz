@@ -1,6 +1,8 @@
 package org.nutz.mvc.adaptor.injector;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Map;
 
@@ -10,18 +12,32 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 import org.nutz.mvc.adaptor.ParamInjector;
 
 public class NameInjector implements ParamInjector {
 
     protected String name;
+    protected DateFormat dfmt;
+
     protected Class<?> type;
     protected Type[] paramTypes;
 
-    public NameInjector(String name, Class<?> type, Type[] paramTypes) {
+    public NameInjector(String name,
+                        String datefmt,
+                        Class<?> type,
+                        Type[] paramTypes) {
         if (null == name)
-            throw Lang.makeThrow("Can not accept null as name, type '%s'", type.getName());
+            throw Lang.makeThrow("Can not accept null as name, type '%s'",
+                                 type.getName());
         this.name = name;
+        if (Strings.isBlank(datefmt) || !Mirror.me(type).isDateTimeLike()) {
+            dfmt = null;
+        } else {
+            dfmt = new SimpleDateFormat(datefmt);
+        }
         this.type = type;
         this.paramTypes = paramTypes;
     }
@@ -36,10 +52,10 @@ public class NameInjector implements ParamInjector {
      * @return 注入值
      */
     @SuppressWarnings("unchecked")
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         /*
          * 有 refer 就不能从 http params 里取了
          */
@@ -47,12 +63,14 @@ public class NameInjector implements ParamInjector {
             // Map 对象，详细分析一下
             if (refer instanceof Map<?, ?>) {
                 Object value = ((Map<?, ?>) refer).get(name);
-                if (value == null) { //TODO 临时解决JsonAdaptor丢URL参数的问题
+                if (value == null) { // TODO 临时解决JsonAdaptor丢URL参数的问题
                     return fromReqParam(req);
                 }
                 // 如果 value 是集合，并且有范型参数，需要预先将集合内的对象都转换一遍
                 // Issue #32
-                if ((value instanceof Collection<?>) && null != paramTypes && paramTypes.length > 0) {
+                if ((value instanceof Collection<?>)
+                    && null != paramTypes
+                    && paramTypes.length > 0) {
                     try {
                         Collection<?> col = ((Collection<?>) value);
                         Collection<Object> nw = col.getClass().newInstance();
@@ -81,6 +99,12 @@ public class NameInjector implements ParamInjector {
 
     public Object fromReqParam(HttpServletRequest req) {
         String[] params = req.getParameterValues(name);
+        // 不为 null，那么必然要转换成日期
+        if (null != dfmt && params != null && params.length > 0) {
+            Object o = Times.parseq(dfmt, params[0]);
+            return Castors.me().castTo(o, type);
+        }
+        // 默认用转换器转换
         return Castors.me().castTo(params, type);
     }
 }

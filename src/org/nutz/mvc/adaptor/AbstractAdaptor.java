@@ -25,11 +25,11 @@ import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
+import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
 import org.nutz.mvc.adaptor.injector.IocObjInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
-import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.ReqHeaderInjector;
 import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
 import org.nutz.mvc.adaptor.injector.RequestInjector;
@@ -82,8 +82,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                     iocObj = (IocObj) anns[x];
                     break;
                 } else if (anns[x] instanceof ReqHeader) {
-                	reqHeader = (ReqHeader)anns[x];
-                	break;
+                    reqHeader = (ReqHeader) anns[x];
+                    break;
                 }
             // If has @Attr
             if (null != attr) {
@@ -93,13 +93,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
             // If has @IocObj
             if (null != iocObj) {
-                injs[i] = new IocObjInjector(method.getParameterTypes()[i], iocObj.value());
+                injs[i] = new IocObjInjector(method.getParameterTypes()[i],
+                                             iocObj.value());
                 continue;
             }
-            
+
             if (null != reqHeader) {
-            	injs[i] = new ReqHeaderInjector(reqHeader.value(), argTypes[i]);
-            	continue;
+                injs[i] = new ReqHeaderInjector(reqHeader.value(), argTypes[i]);
+                continue;
             }
 
             // And eval as default suport types
@@ -262,9 +263,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected ParamInjector paramNameInject(Method method, int index) {
         List<String> names = MethodParamNamesScaner.getParamNames(method);
         if (names != null)
-            return new NameInjector(names.get(index), method.getParameterTypes()[index], null);
+            return new NameInjector(names.get(index),
+                                    null,
+                                    method.getParameterTypes()[index],
+                                    null);
         else if (log.isInfoEnabled())
-            log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s", index, method);
+            log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
+                      index,
+                      method);
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }

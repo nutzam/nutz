@@ -14,15 +14,15 @@ import org.nutz.lang.Lang;
 public class ArrayInjector extends NameInjector {
 
     public ArrayInjector(String name, Class<?> type, Type[] paramTypes) {
-        super(name, type, paramTypes);
+        super(name, null, type, paramTypes);
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         Object value = null;
         if (null != refer) {
             if (refer instanceof Map) {

@@ -2,13 +2,15 @@ package org.nutz.mvc.testapp.classes.action.adaptor;
 
 import java.io.InputStream;
 import java.io.Reader;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import junit.framework.TestCase;
 
-import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.ioc.annotation.InjectName;
+import org.nutz.ioc.loader.annotation.IocBean;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.mvc.adaptor.JsonAdaptor;
 import org.nutz.mvc.adaptor.meta.Pet;
@@ -26,6 +28,14 @@ import org.nutz.mvc.testapp.BaseWebappTest;
 @Ok("raw")
 @Fail("http:500")
 public class AdaptorTestModule extends BaseWebappTest {
+
+    @At("/github/issue/543")
+    public long issue_543(@Param(value = "d", dfmt = "yyyyMMdd") Date d,
+                          @Param("..") Issue543 o) {
+        if (d.getTime() != o.d.getTime())
+            throw Lang.impossible();
+        return d.getTime();
+    }
 
     /*
      * Githut : #352

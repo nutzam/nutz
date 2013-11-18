@@ -13,14 +13,14 @@ import org.nutz.mvc.adaptor.injector.NameInjector;
 public class MapItemInjector extends NameInjector {
 
     public MapItemInjector(String name, Class<?> type, Type[] paramTypes) {
-        super(name, type, paramTypes);
+        super(name, null, type, paramTypes);
     }
 
     @Override
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         if (null != refer)
             if (refer instanceof Map<?, ?>) {
                 Object value = ((Map<?, ?>) refer).get(name);

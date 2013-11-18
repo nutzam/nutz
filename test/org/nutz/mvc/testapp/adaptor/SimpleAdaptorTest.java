@@ -1,11 +1,23 @@
 package org.nutz.mvc.testapp.adaptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.junit.Test;
+import org.nutz.lang.Times;
 import org.nutz.mvc.testapp.BaseWebappTest;
 
 public class SimpleAdaptorTest extends BaseWebappTest {
+
+    @Test
+    public void test_issue_543() {
+        get("/adaptor/github/issue/543?d=20120924");
+        assertEquals(200, resp.getStatus());
+
+        long ms = Times.ams("2012-09-24");
+        long rems = Long.parseLong(resp.getContent());
+        assertEquals(ms, rems);
+    }
 
     @Test
     public void test_err_param() {

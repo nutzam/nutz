@@ -43,15 +43,16 @@ public class ObjectPairInjector implements ParamInjector {
             this.injs[i] = mirror.getInjecting(f.getName());
             Param param = f.getAnnotation(Param.class);
             String nm = null == param ? f.getName() : param.value();
+            String datefmt = null == param ? null : param.dfmt();
             this.names[i] = prefix + nm;
-            this.converters[i] = Params.makeParamConvertor(f.getType());
+            this.converters[i] = Params.makeParamConvertor(f.getType(), datefmt);
         }
     }
 
-    public Object get(    ServletContext sc,
-                        HttpServletRequest req,
-                        HttpServletResponse resp,
-                        Object refer) {
+    public Object get(ServletContext sc,
+                      HttpServletRequest req,
+                      HttpServletResponse resp,
+                      Object refer) {
         ParamExtractor pe = Params.makeParamExtractor(req, refer);
         Object obj = mirror.born();
         for (int i = 0; i < injs.length; i++) {
