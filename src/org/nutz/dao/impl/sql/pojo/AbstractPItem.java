@@ -3,8 +3,8 @@ package org.nutz.dao.impl.sql.pojo;
 import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
-import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PItem;
+import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.SqlType;
 
 public abstract class AbstractPItem implements PItem {
@@ -45,7 +45,7 @@ public abstract class AbstractPItem implements PItem {
             if (null != mf)
                 return mf.getColumnName();
         }
-        return name;
+        return name.replaceAll("[^0-9a-zA-Z_]", "");
     }
 
 }
