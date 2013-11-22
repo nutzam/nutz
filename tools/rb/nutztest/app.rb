@@ -111,7 +111,16 @@ namespace '/nutztest' do
 
   # SimpleAdaptorTest.java
   namespace '/adaptor' do
-    get %r{/err/param(/[\w]+)?} do
+    get '/github/issue/543' do
+      (Date.parse(params[:d]).to_time.to_i*1000).to_s
+    end
+
+    get '/err/param' do
+      pass unless request.env['rack.request.query_hash']
+      context_path
+    end
+
+    get %r{/err/param/*} do
       context_path
     end
 
