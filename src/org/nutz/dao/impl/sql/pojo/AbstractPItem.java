@@ -45,7 +45,7 @@ public abstract class AbstractPItem implements PItem {
             if (null != mf)
                 return mf.getColumnName();
         }
-        return name.replaceAll("[^0-9a-zA-Z_]", "");
+        return name;
     }
 
 }
