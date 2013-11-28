@@ -178,19 +178,10 @@ public class Strings {
      * @param s
      *            字符串
      * @return 首字母大写后的新字符串
+     * @deprecated 推荐使用 {@link #upperFirst(CharSequence)}
      */
     public static String capitalize(CharSequence s) {
-        if (null == s)
-            return null;
-        int len = s.length();
-        if (len == 0)
-            return "";
-        char char0 = s.charAt(0);
-        if (Character.isUpperCase(char0))
-            return s.toString();
-        return new StringBuilder(len).append(Character.toUpperCase(char0))
-                                     .append(s.subSequence(1, len))
-                                     .toString();
+        return upperFirst(s);
     }
 
     /**
@@ -284,7 +275,9 @@ public class Strings {
      * @return 是否以特殊字符结尾
      */
     public static boolean endsWithChar(String s, char c) {
-        return null != s ? (s.length() == 0 ? false : s.charAt(s.length() - 1) == c) : false;
+        return null != s ? (s.length() == 0 ? false
+                                           : s.charAt(s.length() - 1) == c)
+                        : false;
     }
 
     /**
@@ -499,7 +492,7 @@ public class Strings {
 
     /**
      * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
-     *
+     * 
      * @param s
      *            字符串
      * @param width
@@ -537,7 +530,9 @@ public class Strings {
         int len = s.length();
         if (len >= width)
             return s;
-        return new StringBuilder().append(dup(c, width - len)).append(s).toString();
+        return new StringBuilder().append(dup(c, width - len))
+                                  .append(s)
+                                  .toString();
     }
 
     /**
@@ -558,7 +553,9 @@ public class Strings {
         int length = s.length();
         if (length >= width)
             return s;
-        return new StringBuilder().append(s).append(dup(c, width - length)).toString();
+        return new StringBuilder().append(s)
+                                  .append(dup(c, width - length))
+                                  .toString();
     }
 
     /**
@@ -751,7 +748,8 @@ public class Strings {
      * @return 新字符串
      */
     public static String removeFirst(String str, char c) {
-        return (Strings.isEmpty(str) || c != str.charAt(0)) ? str : str.substring(1);
+        return (Strings.isEmpty(str) || c != str.charAt(0)) ? str
+                                                           : str.substring(1);
     }
 
     /**

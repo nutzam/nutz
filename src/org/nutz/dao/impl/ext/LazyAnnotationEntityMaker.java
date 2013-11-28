@@ -44,8 +44,10 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
 
     private ClassDefiner cd;
 
-    public LazyAnnotationEntityMaker(DataSource datasource, JdbcExpert expert,
-            EntityHolder holder, Dao dao) {
+    public LazyAnnotationEntityMaker(DataSource datasource,
+                                     JdbcExpert expert,
+                                     EntityHolder holder,
+                                     Dao dao) {
         super(datasource, expert, holder);
         this.dao = dao;
         cd = new DefaultClassDefiner(getClass().getClassLoader());
@@ -68,7 +70,7 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
             super(type);
         }
 
-        @SuppressWarnings({ "rawtypes", "unchecked" })
+        @SuppressWarnings({"rawtypes", "unchecked"})
         public void init() {
             List<LinkField> lfs = new ArrayList<LinkField>();
             lfs.addAll(ones.getAll());
@@ -85,14 +87,15 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
             for (LinkField lf : lfs) {
                 String fieldName = lf.getName();
                 try {
-                    Method setter = mirror
-                            .getSetter(mirror.getField(fieldName));
-                    LazyMethodInterceptor lmi = new LazyMethodInterceptor(
-                            setter, fieldName);
+                    Method setter = mirror.getSetter(mirror.getField(fieldName));
+                    LazyMethodInterceptor lmi = new LazyMethodInterceptor(setter,
+                                                                          fieldName);
                     interceptorPairs.add(new InterceptorPair(lmi,
-                            MethodMatcherFactory.matcher("^(get|set)"
-                                    + Strings.capitalize(fieldName) + "$")));
-                } catch (Throwable e) {
+                                                             MethodMatcherFactory.matcher("^(get|set)"
+                                                                                          + Strings.upperFirst(fieldName)
+                                                                                          + "$")));
+                }
+                catch (Throwable e) {
                     if (log.isWarnEnabled())
                         log.warn("Not setter found for LazyLoading ?!", e);
                 }
@@ -101,14 +104,14 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
             ClassAgent agent = new AsmClassAgent();
             for (InterceptorPair interceptorPair : interceptorPairs)
                 agent.addInterceptor(interceptorPair.getMethodMatcher(),
-                        interceptorPair.getMethodInterceptor());
+                                     interceptorPair.getMethodInterceptor());
             Class lazyClass = agent.define(cd, type);
 
             // 检查对象的创建方法
             BornContext<T> bc = Borns.evalByArgTypes(type, ResultSet.class);
             if (null == bc)
                 this.bornByDefault = Mirror.me(lazyClass)
-                        .getBorningByArgTypes();
+                                           .getBorningByArgTypes();
             else
                 this.bornByRS = bc.getBorning();
         }

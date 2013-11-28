@@ -80,12 +80,12 @@ public class StringsTest {
     }
 
     @Test
-    public void test_capitalize() {
-        assertNull(Strings.capitalize(null));
-        assertEquals("", Strings.capitalize(""));
-        assertEquals("A", Strings.capitalize("a"));
-        assertEquals("Aa", Strings.capitalize("aa"));
-        assertEquals("Aa", Strings.capitalize("Aa"));
+    public void test_upperFirst() {
+        assertNull(Strings.upperFirst(null));
+        assertEquals("", Strings.upperFirst(""));
+        assertEquals("A", Strings.upperFirst("a"));
+        assertEquals("Aa", Strings.upperFirst("aa"));
+        assertEquals("Aa", Strings.upperFirst("Aa"));
     }
 
     @Test
@@ -148,8 +148,10 @@ public class StringsTest {
         assertEquals("multi world", Strings.trim(" multi world "));
         assertEquals("nutz加油", Strings.trim(" nutz加油 "));
         assertEquals("", Strings.trim(new StringBuffer("    ")));
-        assertEquals("multi world", Strings.trim(new StringBuffer("multi world")));
-        assertEquals("multi world", Strings.trim(new StringBuffer(" multi world ")));
+        assertEquals("multi world",
+                     Strings.trim(new StringBuffer("multi world")));
+        assertEquals("multi world",
+                     Strings.trim(new StringBuffer(" multi world ")));
         assertEquals("nutz加油", Strings.trim(new StringBuilder(" nutz加油 ")));
     }
 
@@ -157,9 +159,12 @@ public class StringsTest {
     public void test_split_ignore_blank() {
         assertArrayEquals(null, Strings.splitIgnoreBlank(null));
         assertArrayEquals(new String[]{}, Strings.splitIgnoreBlank(" "));
-        assertArrayEquals(new String[]{"2", "3", "5"}, Strings.splitIgnoreBlank("2,3,, 5"));
-        assertArrayEquals(new String[]{"2", "3", "5", "6"}, Strings.splitIgnoreBlank("2,3,, 5,6,"));
-        assertArrayEquals(new String[]{"2,3,5,6,"}, Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
+        assertArrayEquals(new String[]{"2", "3", "5"},
+                          Strings.splitIgnoreBlank("2,3,, 5"));
+        assertArrayEquals(new String[]{"2", "3", "5", "6"},
+                          Strings.splitIgnoreBlank("2,3,, 5,6,"));
+        assertArrayEquals(new String[]{"2,3,5,6,"},
+                          Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
         assertArrayEquals(new String[]{"2,3", "5", "6,"},
                           Strings.splitIgnoreBlank("2,3 ,,5,,6,", ",,"));
         assertArrayEquals(new String[]{"2,3", "5", "6,"},
@@ -357,7 +362,8 @@ public class StringsTest {
     public void test_escape_html() {
         assertEquals("&lt;/article&gt;Oops &lt;script&gt;alert(&quot;hello world&quot;);&lt;/script&gt;",
                      Strings.escapeHtml("</article>Oops <script>alert(\"hello world\");</script>"));
-        assertEquals("alert(&#x27;hello world&#x27;);", Strings.escapeHtml("alert('hello world');"));
+        assertEquals("alert(&#x27;hello world&#x27;);",
+                     Strings.escapeHtml("alert('hello world');"));
     }
 
     @Test
@@ -368,7 +374,9 @@ public class StringsTest {
         StringBuilder here_is_zenkaku_space_sber = new StringBuilder(here_is_zenkaku_space_str);
 
         assertEquals("aaa",
-                     Strings.trim(here_is_zenkaku_space_str + "aaa" + here_is_zenkaku_space_str));
+                     Strings.trim(here_is_zenkaku_space_str
+                                  + "aaa"
+                                  + here_is_zenkaku_space_str));
         assertEquals("aaa",
                      Strings.trim(here_is_zenkaku_space_sb.append("aaa")
                                                           .append(here_is_zenkaku_space_char)));
