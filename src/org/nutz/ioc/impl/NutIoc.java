@@ -25,6 +25,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.repo.LevenshteinDistance;
 
 /**
  * 
@@ -165,8 +166,15 @@ public class NutIoc implements Ioc2 {
 
                         // 读取对象定义
                         IocObject iobj = loader.load(createLoading(), name);
-                        if (null == iobj)
+                        if (null == iobj) {
+                        	for (String iocBeanName : loader.getName()) {
+                        		// 相似性少于3 --> 大小写错误,1-2个字符调换顺序或写错
+								if (3 > LevenshteinDistance.computeLevenshteinDistance(name.toLowerCase(), iocBeanName.toLowerCase())) {
+									throw new IocException("Undefined object '%s' but found similar name '%s'", name, iocBeanName);
+								}
+							}
                             throw new IocException("Undefined object '%s'", name);
+                        }
 
                         // 修正对象类型
                         if (null == iobj.getType())
