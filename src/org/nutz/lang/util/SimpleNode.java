@@ -4,19 +4,20 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class SimpleNode<T> implements Node<T> {
 
-    SimpleNode() {}
+    public SimpleNode() {}
 
     private T obj;
-    private Node<T> parent;
-    private Node<T> prev;
-    private Node<T> next;
-    private Node<T> firstChild;
-    private Node<T> lastChild;
+    private SimpleNode<T> parent;
+    private SimpleNode<T> prev;
+    private SimpleNode<T> next;
+    private SimpleNode<T> firstChild;
+    private SimpleNode<T> lastChild;
 
     public T get() {
         return obj;
@@ -42,7 +43,10 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     public Node<T> prev(Node<T> node) {
-        this.prev = node;
+        SimpleNode<T> nd = (SimpleNode<T>) node;
+        this.prev = nd;
+        nd.next = this;
+        nd.parent = parent;
         return this;
     }
 
@@ -51,7 +55,10 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     public Node<T> next(Node<T> node) {
-        this.next = node;
+        SimpleNode<T> nd = (SimpleNode<T>) node;
+        this.next = nd;
+        nd.prev = this;
+        nd.parent = this;
         return this;
     }
 
@@ -78,7 +85,13 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     public int depth() {
-        return getAncestors().size();
+        int re = 0;
+        Node<T> nd = this;
+        while (null != nd.parent()) {
+            re++;
+            nd = nd.parent();
+        }
+        return re;
     }
 
     public List<Node<T>> getNextSibling() {
@@ -139,7 +152,8 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     public Node<T> parent(Node<T> node) {
-        parent = node;
+        parent = (SimpleNode<T>) node;
+        node.add(this);
         return this;
     }
 
@@ -155,57 +169,57 @@ public class SimpleNode<T> implements Node<T> {
             return this;
         }
         if (nodes.length == 1) {
-            Node<T> node = (Node<T>) nodes[0];
-            node.parent(this);
+            SimpleNode<T> node = (SimpleNode<T>) nodes[0];
+            node.parent = this;
             if (!this.hasChild()) {
                 firstChild = node;
                 lastChild = node;
-                node.next(null);
-                node.prev(null);
+                node.next = null;
+                node.prev = null;
             } else {
-                lastChild.next(node);
-                node.prev(lastChild);
-                node.next(null);
+                lastChild.next = node;
+                node.prev = lastChild;
+                node.next = null;
                 lastChild = node;
             }
         } else {
-            Node<T> theNode = (Node<T>) nodes[0];
-            theNode.parent(this);
-            theNode.next((Node<T>) nodes[1]);
+            SimpleNode<T> theNode = (SimpleNode<T>) nodes[0];
+            theNode.parent = this;
+            theNode.next = (SimpleNode<T>) nodes[1];
             // 加入子节点链表
             if (null == lastChild) {
                 firstChild = theNode;
             } else {
-                lastChild.next(theNode);
+                lastChild.next = theNode;
             }
             // 循环添加
             int i = 1;
             for (; i < nodes.length - 1; i++) {
-                Node<T> node = (Node<T>) nodes[i];
-                node.parent(this);
-                node.prev((Node<T>) nodes[i - 1]);
-                node.next((Node<T>) nodes[i + 1]);
+                SimpleNode<T> node = (SimpleNode<T>) nodes[i];
+                node.parent = this;
+                node.prev = (SimpleNode<T>) nodes[i - 1];
+                node.next = (SimpleNode<T>) nodes[i + 1];
             }
-            lastChild = (Node<T>) nodes[i];
-            lastChild.parent(this);
-            lastChild.prev((Node<T>) nodes[i - 1]);
+            lastChild = (SimpleNode<T>) nodes[i];
+            lastChild.parent = this;
+            lastChild.prev = (SimpleNode<T>) nodes[i - 1];
 
         }
         return this;
     }
 
     public Node<T> addFirst(Node<T> node) {
-        node.parent(this);
+        ((SimpleNode<T>) node).parent = this;
         if (!this.hasChild()) {
-            firstChild = node;
-            lastChild = node;
-            node.next(null);
-            node.prev(null);
+            firstChild = (SimpleNode<T>) node;
+            lastChild = (SimpleNode<T>) node;
+            ((SimpleNode<T>) node).next = null;
+            ((SimpleNode<T>) node).prev = null;
         } else {
-            firstChild.prev(node);
-            node.next(firstChild);
-            node.prev(null);
-            firstChild = node;
+            firstChild.prev = (SimpleNode<T>) node;
+            ((SimpleNode<T>) node).next = firstChild;
+            ((SimpleNode<T>) node).prev = null;
+            firstChild = (SimpleNode<T>) node;
         }
         return this;
     }
@@ -214,6 +228,18 @@ public class SimpleNode<T> implements Node<T> {
         if (hasChild())
             return firstChild.next(index);
         return null;
+    }
+
+    @SuppressWarnings("unchecked")
+    public <E extends Node<T>> void eachChild(Each<E> callback) {
+        SimpleNode<T> nd = firstChild;
+        int i = 0;
+        while (nd != null) {
+            callback.invoke(i++, (E) nd, -1);
+            nd = nd.next;
+            if (nd == firstChild)
+                throw Lang.makeThrow("If i am here, tell me -_-!");
+        }
     }
 
     public Node<T> desc(int... indexes) {
@@ -249,15 +275,15 @@ public class SimpleNode<T> implements Node<T> {
     }
 
     public Node<T> insertBefore(int index, Node<T> node) {
-        Node<T> me = child(index);
+        SimpleNode<T> me = (SimpleNode<T>) child(index);
         if (null != me) {
-            node.next(me);
-            node.prev(me.prev());
-            me.prev().next(node);
-            me.prev(node);
-            node.parent(this);
+            ((SimpleNode<T>) node).next = me;
+            ((SimpleNode<T>) node).prev = me.prev;
+            me.prev.next = (SimpleNode<T>) node;
+            me.prev = (SimpleNode<T>) node;
+            ((SimpleNode<T>) node).parent = this;
             if (firstChild == me)
-                firstChild = node;
+                firstChild = (SimpleNode<T>) node;
         }
         return this;
     }
@@ -265,39 +291,49 @@ public class SimpleNode<T> implements Node<T> {
     public Node<T> pop() {
         if (!hasChild())
             return null;
-        Node<T> re = lastChild;
-        lastChild = lastChild.prev();
+        SimpleNode<T> re = lastChild;
+        lastChild = lastChild.prev;
         if (null == lastChild)
             firstChild = null;
         else
-            lastChild.next(null);
-        return re.prev(null).next(null);
+            lastChild.next = null;
+
+        re.prev = null;
+        re.next = null;
+        return re;
     }
 
     public Node<T> popFirst() {
         if (!hasChild())
             return null;
-        Node<T> re = firstChild;
-        firstChild = firstChild.next();
+        SimpleNode<T> re = firstChild;
+        firstChild = firstChild.next;
         if (null == firstChild)
             lastChild = null;
         else
-            firstChild.prev(null);
-        return re.prev(null).next(null);
+            firstChild.prev = null;
+
+        re.prev = null;
+        re.next = null;
+        return re;
     }
 
     public Node<T> removeChild(int index) {
         if (hasChild()) {
-            Node<T> node = child(index);
+            SimpleNode<T> node = (SimpleNode<T>) child(index);
             if (null == node)
                 return null;
             else if (node.isLast())
                 return pop();
             else if (node.isFirst())
                 return popFirst();
-            node.next().prev(node.prev());
-            node.prev().next(node.next());
-            return node.prev(null).next(null);
+
+            node.next.prev = node.prev;
+            node.prev.next = node.next;
+
+            node.prev = null;
+            node.next = null;
+            return node;
         }
         return null;
     }
@@ -330,7 +366,7 @@ public class SimpleNode<T> implements Node<T> {
 
     static void appendTo(Node<?> node, StringBuilder sb, int depth) {
         sb.append(Strings.dup("    ", depth))
-            .append(node.get() == null ? "NULL" : node.get().toString());
+          .append(node.get() == null ? "NULL" : node.get().toString());
         Node<?> chd = node.firstChild();
         while (chd != null) {
             sb.append('\n');
