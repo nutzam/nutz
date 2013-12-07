@@ -594,7 +594,7 @@ ds.setPassword("123456");
 <h2><a name="Java代码的方式:"></a>Java代码的方式:</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre><span class="zdoc_code_cmt">//创建dataSource,以DBCP为例
-</span>DataSource ds = new DataSource();
+</span>DataSource ds = new BasicDataSource();
 ds.setDriverClassName("org.postgresql.Driver");
 ds.setUrl("jdbc:postgresql:<span class="zdoc_code_cmt">//localhost:5432/mydatabase");
 </span>ds.setUsername("demo");
