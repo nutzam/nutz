@@ -419,7 +419,7 @@ BoneCP
 	Java代码的方式:
 		{{{<java>
 		//创建dataSource,以DBCP为例
-		DataSource ds = new DataSource();
+		DataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.postgresql.Driver");
 		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
