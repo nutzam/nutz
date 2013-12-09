@@ -60,6 +60,7 @@ public class DatabaseMeta {
         }
     }
 
+    @Deprecated
     public String getResultSetMetaSql(String tableName) {
         if (this.isMySql() || this.isPostgresql()) {
             return "SELECT * FROM " + tableName + " LIMIT 1";
