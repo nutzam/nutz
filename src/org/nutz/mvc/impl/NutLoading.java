@@ -62,7 +62,8 @@ public class NutLoading implements Loading {
             log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
             log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
             log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
-            log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            if (config.getServletContext().getMajorVersion() > 2 || config.getServletContext().getMinorVersion() > 4)
+            	log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
         }
         /*
          * 准备返回值
