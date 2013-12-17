@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.sql.callback;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -12,6 +13,7 @@ import org.nutz.dao.pager.ResultSetLooping;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.SqlContext;
+import org.nutz.lang.Streams;
 
 public class QueryMapCallback implements SqlCallback {
 
@@ -43,7 +45,7 @@ public class QueryMapCallback implements SqlCallback {
 							break;
 						}
 						case Types.CLOB: {
-							re.put(name, rs.getString(i));
+							re.put(name, Streams.read(rs.getCharacterStream(i)).toString());
 							break;
 						}
 						default:
@@ -53,7 +55,7 @@ public class QueryMapCallback implements SqlCallback {
 					}
 					list.add(re);
 					return true;
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					if (name != null) {
 						throw new DaoException(String.format("Column Name=%s, index=%d", name, i), e);
 					}
