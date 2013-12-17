@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class Request {
@@ -60,6 +61,7 @@ public class Request {
     private byte[] data;
     private URL cacheUrl;
     private InputStream inputStream;
+    private String enc;
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -99,8 +101,13 @@ public class Request {
         if (inputStream != null) {
             return inputStream;
         } else {
-            // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
             if (null == data) {
+            	if (enc != null)
+					try {
+						return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
+					} catch (UnsupportedEncodingException e) {
+						throw Lang.wrapThrow(e);
+					}
                 return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
             }
             return new ByteArrayInputStream(data);
@@ -179,4 +186,12 @@ public class Request {
             return new Cookie();
         return new Cookie(s);
     }
+    
+    /**
+     * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
+     */
+    public Request setEnc(String reqEnc) {
+		this.enc = reqEnc;
+		return this;
+	}
 }

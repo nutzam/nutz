@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -58,16 +59,16 @@ public abstract class Jdbcs {
      * 根据配置文件获取 experts 的列表
      */
     static {
-        // 看看有没有用户自定义的映射文件
-        File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
-        // 如果没有则使用默认的映射文件
-        if (null == f) {
-            conf = Json.fromJson(JdbcExpertConfigFile.class,
-                                 Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
-        } else
-            conf = Json.fromJson(JdbcExpertConfigFile.class,
-                                 Streams.fileInr("nutz_jdbc_experts.js")).init();
         try {
+
+            // 看看有没有用户自定义的映射文件
+            File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
+            // 如果没有则使用默认的映射文件
+            if (null == f) {
+                conf = Json.fromJson(JdbcExpertConfigFile.class, new InputStreamReader(Jdbcs.class.getResourceAsStream("nutz_jdbc_experts.js"))).init();
+            } else
+                conf = Json.fromJson(JdbcExpertConfigFile.class,Streams.fileInr("nutz_jdbc_experts.js")).init();
+            
             for (String key : conf.getExperts().keySet()) {
                 // 检查一下正则表达式是否正确
                 // 在conf类中自行检查

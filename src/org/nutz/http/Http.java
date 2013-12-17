@@ -78,6 +78,10 @@ public class Http {
             throw Lang.wrapThrow(e);
         }
     }
+    
+    public static String post(String url, Map<String, Object> params, String inenc, String reenc) {
+    	return Sender.create(Request.create(url, METHOD.POST, params, null).setEnc(inenc)).send().getContent(reenc);
+    }
 
     public static ProxySwitcher proxySwitcher;
 
