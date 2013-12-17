@@ -326,6 +326,10 @@ public abstract class Sqls {
         public SqlCallback bools() {
             return new QueryBooleanCallback();
         }
+        
+        public SqlCallback maps() {
+        	return QueryMapCallback.me;
+        }
     }
 
     /**
