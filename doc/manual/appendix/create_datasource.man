@@ -53,7 +53,7 @@
 		
 		SimpleDataSource ds = new SimpleDataSource();
 		//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
-		ds.setjdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
 		ds.setPassword("123456");
 		...
