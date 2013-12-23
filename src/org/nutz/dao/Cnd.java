@@ -50,7 +50,8 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
 
     /*------------------------------------------------------------------*/
     public static Condition format(String format, Object... args) {
-        return Strings.isBlank(format) ? null : new SimpleCondition(format, args);
+        return Strings.isBlank(format) ? null : new SimpleCondition(format,
+                                                                    args);
     }
 
     public static Condition wrap(String str) {
@@ -58,7 +59,8 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
     }
 
     public static Condition wrap(String sql, Object value) {
-        return Strings.isBlank(sql) ? null : new SimpleCondition(new CharSegment(sql).setBy(value));
+        return Strings.isBlank(sql) ? null
+                                   : new SimpleCondition(new CharSegment(sql).setBy(value));
     }
 
     public static SqlExpression exp(String name, String op, Object value) {
@@ -89,6 +91,10 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return new Cnd();
     }
 
+    /**
+     * @return 一个 Cnd 的实例
+     * @deprecated Since 1.b.50 不推荐使用这个函数构建 Cnd 的实例，因为看起来语意不明的样子
+     */
     public static Cnd limit() {
         return new Cnd();
     }
