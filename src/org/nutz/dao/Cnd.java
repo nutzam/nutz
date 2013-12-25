@@ -99,6 +99,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return new Cnd();
     }
 
+    /**
+     * @return 一个 Cnd 的实例
+     */
+    public static Cnd NEW() {
+        return new Cnd();
+    }
+
     public static Cnd byCri(SimpleCriteria cri) {
         return new Cnd().setCri(cri);
     }
