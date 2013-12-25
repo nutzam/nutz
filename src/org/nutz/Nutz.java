@@ -28,6 +28,7 @@ public final class Nutz {
      * @return zTask 项目的版本号
      */
     public static String version() {
+    	System.out.println("yuxaiolong");
         return "1.b.50";
     }
 
