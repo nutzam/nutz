@@ -28,7 +28,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
     private static final Log log = Logs.get();
 
     public int getMajorVersion() {
-        throw Lang.noImplement();
+        return 2;
     }
 
     public String getMimeType(String arg0) {
@@ -36,7 +36,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
     }
 
     public int getMinorVersion() {
-        throw Lang.noImplement();
+        return 5;
     }
 
     public RequestDispatcher getNamedDispatcher(String arg0) {
