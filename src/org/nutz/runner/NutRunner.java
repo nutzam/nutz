@@ -136,8 +136,8 @@ public abstract class NutRunner implements Runnable {
         return String.format("[%s:%d] %s/%s - %d",
                              rnm,
                              count,
-                             Times.sDT(upAt),
-                             Times.sDT(downAt),
+                             upAt   == null ? "NONE" : Times.sDT(upAt),
+                             downAt == null ? "NONE" : Times.sDT(downAt),
                              interval);
     }
 
