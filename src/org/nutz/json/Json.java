@@ -257,17 +257,16 @@ public class Json {
     /**
      * 保存所有的 Json 实体
      */
-    @SuppressWarnings("rawtypes")
-	private static final ConcurrentHashMap<Class, JsonEntity> entities = new ConcurrentHashMap<Class, JsonEntity>();
+	private static final ConcurrentHashMap<String, JsonEntity> entities = new ConcurrentHashMap<String, JsonEntity>();
 
     /**
      * 获取一个 Json 实体
      */
     public static JsonEntity getEntity(Mirror<?> mirror) {
-        JsonEntity je = entities.get(mirror.getType());
+        JsonEntity je = entities.get(mirror.getTypeId());
         if (null == je) {
             je = new JsonEntity(mirror);
-            entities.put(mirror.getType(), je);
+            entities.put(mirror.getTypeId(), je);
         }
         return je;
     }
