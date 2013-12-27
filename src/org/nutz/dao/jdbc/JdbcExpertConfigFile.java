@@ -34,7 +34,7 @@ public class JdbcExpertConfigFile {
             home = Disks.normalize(home);
             if (home == null)
             	home = config.get("pool-home").toString();
-            long max = ((Number) config.get("pool-max")).longValue();
+            long max = config.containsKey("pool-max") ? ((Number) config.get("pool-max")).longValue() : 2000;
             pool = new NutFilePool(home, max);
             pool = new SynchronizedFilePool(pool);
         } catch (Throwable e) {
