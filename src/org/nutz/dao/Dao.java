@@ -331,7 +331,10 @@ public interface Dao {
      * 
      * @see org.nutz.dao.entity.annotation.ManyMany
      */
-    int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd);
+    int updateRelation(Class<?> classOfT,
+                       String regex,
+                       Chain chain,
+                       Condition cnd);
 
     /**
      * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
@@ -352,7 +355,8 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param cnd
-     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序<br>
+     *            只有在调用这个函数的时候， cnd.limit 才会生效
      * @return 对象列表
      */
     <T> List<T> query(Class<T> classOfT, Condition cnd);
@@ -654,10 +658,12 @@ public interface Dao {
      * @see org.nutz.dao.entity.annotation.ManyMany
      */
     <T> T fetchLinks(T obj, String regex);
-    
+
     /**
-     * 根据一个正则表达式，获取对象所有的关联字段, 并按Condition进行数据过滤排序<p/>
+     * 根据一个正则表达式，获取对象所有的关联字段, 并按Condition进行数据过滤排序
+     * <p/>
      * <b>严重提醒,当使用Condition进行数据过滤排序时,应当使regex只匹配特定的映射字段</b>
+     * 
      * @param obj
      *            数据对象
      * @param regex

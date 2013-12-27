@@ -1,6 +1,6 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.HashMap;
 import java.util.List;
@@ -91,52 +91,63 @@ public class QueryTest extends DaoCase {
         Map<String, Pet> map = new HashMap<String, Pet>();
         map.put("pet3", null);
         map.put("pet5", null);
-        List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "in", map.keySet()), null);
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("name", "in", map.keySet()),
+                                   null);
         assertEquals(2, pets.size());
     }
 
     @Test
     public void query_by_int_range() {
         int maxId = dao.getMaxId(Pet.class);
-        List<Pet> pets = dao.query(    Pet.class,
-                                    Cnd.where("id", "IN", new int[]{maxId, maxId - 1}),
-                                    null);
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("id", "IN", new int[]{maxId,
+                                                                   maxId - 1}),
+                                   null);
         assertEquals(2, pets.size());
     }
 
     @Test
     public void clear_by_int_range() {
         int maxId = dao.getMaxId(Pet.class);
-        int num = dao.clear(Pet.class, Cnd.where("id", "IN", new int[]{maxId, maxId - 1}));
+        int num = dao.clear(Pet.class,
+                            Cnd.where("id", "IN", new int[]{maxId, maxId - 1}));
         assertEquals(2, num);
     }
 
     @Test
     public void query_by_long_range() {
         int maxId = dao.getMaxId(Pet.class);
-        List<Pet> pets = dao.query(    Pet.class,
-                                    Cnd.where("id", "IN", new long[]{maxId, maxId - 1}),
-                                    null);
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("id", "IN", new long[]{maxId,
+                                                                    maxId - 1}),
+                                   null);
         assertEquals(2, pets.size());
     }
 
     @Test
     public void query_by_special_char() {
         dao.update(dao.fetch(Pet.class).setName("a@b"));
-        List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a@b"), null);
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("name", "=", "a@b"),
+                                   null);
         assertEquals(1, pets.size());
     }
 
     @Test
     public void query_by_special_char2() {
         dao.update(dao.fetch(Pet.class).setName("a$b"));
-        List<Pet> pets = dao.query(Pet.class, Cnd.where("name", "=", "a$b"), null);
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("name", "=", "a$b"),
+                                   null);
         assertEquals(1, pets.size());
     }
 
     @Test
     public void query_by_pager() {
-        List<Pet> pets = dao.query(Pet.class, Cnd.orderBy().asc("name"), dao.createPager(3, 2));
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.orderBy().asc("name"),
+                                   dao.createPager(3, 2));
         assertEquals(2, pets.size());
         assertEquals("pet4", pets.get(0).getName());
         assertEquals("pet5", pets.get(1).getName());
@@ -144,9 +155,9 @@ public class QueryTest extends DaoCase {
 
     @Test
     public void query_by_like() {
-        List<Pet> pets = dao.query(    Pet.class,
-                                    Cnd.where("name", "LIKE", "6"),
-                                    dao.createPager(1, 10));
+        List<Pet> pets = dao.query(Pet.class,
+                                   Cnd.where("name", "LIKE", "6"),
+                                   dao.createPager(1, 10));
         assertEquals(1, pets.size());
         assertEquals("pet6", pets.get(0).getName());
     }
@@ -176,7 +187,9 @@ public class QueryTest extends DaoCase {
 
     @Test
     public void query_records_pager() {
-        List<Record> pets = dao.query("t_pet:id", Cnd.orderBy().asc("name"), dao.createPager(3, 2));
+        List<Record> pets = dao.query("t_pet:id",
+                                      Cnd.orderBy().asc("name"),
+                                      dao.createPager(3, 2));
         assertEquals(2, pets.size());
         assertEquals("pet4", pets.get(0).get("name"));
         assertEquals("pet5", pets.get(1).get("name"));
@@ -193,7 +206,8 @@ public class QueryTest extends DaoCase {
 
     @Test
     public void query_records_pager_new() {
-        List<Record> pets = dao.query("t_pet:id", Cnd.limit().limit(3, 2).asc("name"));
+        List<Record> pets = dao.query("t_pet:id",
+                                      Cnd.NEW().limit(3, 2).asc("name"));
         assertEquals(2, pets.size());
         assertEquals("pet4", pets.get(0).get("name"));
         assertEquals("pet5", pets.get(1).get("name"));

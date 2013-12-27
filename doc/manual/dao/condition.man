@@ -112,8 +112,8 @@ Nutz 给你的快速实现
     这里需要给出一点提示，比如方法名 {#080;* andGT}，表示的是 and{#080;*G}reat{#080;*T}han，即
     "{#080;*大于}" 的意思，同理:
      * LT : 小于 (LessThan)
-     * GTE : 大于等于 (GreatThanEquale)
-     * LTE : 小于等于 (LessThanEquale)
+     * GTE : 大于等于 (GreatThanEqual)
+     * LTE : 小于等于 (LessThanEqual)
 
 
 
