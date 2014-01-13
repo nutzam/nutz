@@ -1,6 +1,6 @@
 package org.nutz.dao.texp;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,7 @@ public class CndTest extends DaoCase {
     }
 
     protected void after() {}
-    
+
     @Test
     public void test_segment() {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -32,7 +32,7 @@ public class CndTest extends DaoCase {
         map.put("age", 50);
         Condition c1 = Cnd.wrap("name='${name}' AND age>${age}", map);
         assertEquals("name='比尔盖茨' AND age>50", c1.toSql(en));
-        
+
         Worker worker = new Worker();
         worker.name = "老板";
         worker.age = 30;
@@ -49,14 +49,20 @@ public class CndTest extends DaoCase {
 
     @Test
     public void test_bracket() {
-        Condition c = Cnd.where(Cnd.exps("id", ">", 45)).and("name", "LIKE", "%ry%");
+        Condition c = Cnd.where(Cnd.exps("id", ">", 45)).and("name",
+                                                             "LIKE",
+                                                             "%ry%");
         String exp = "WHERE (wid>45) AND wname LIKE '%ry%'";
         assertEquals(exp, c.toSql(en).trim());
     }
 
     @Test
     public void test_order() {
-        Condition c = Cnd.orderBy().asc("id").desc("name").asc("age").desc("workingDay");
+        Condition c = Cnd.orderBy()
+                         .asc("id")
+                         .desc("name")
+                         .asc("age")
+                         .desc("workingDay");
         String exp = "ORDER BY wid ASC, wname DESC, age ASC, days DESC";
         assertEquals(exp, c.toSql(en).trim());
     }
@@ -65,8 +71,14 @@ public class CndTest extends DaoCase {
     public void test_like_in() {
         int[] ages = {4, 7, 9};
         SqlExpression e = Cnd.exps("age", ">", 35).and("id", "<", 47);
-        SqlExpression e2 = Cnd.exps("name", "\tLIKE ", "%t%").and("age", "IN  \n\r", ages).or(e);
-        Condition c = Cnd.where("id", "=", 37).and(e).or(e2).asc("age").desc("id");
+        SqlExpression e2 = Cnd.exps("name", "\tLIKE ", "%t%")
+                              .and("age", "IN  \n\r", ages)
+                              .or(e);
+        Condition c = Cnd.where("id", "=", 37)
+                         .and(e)
+                         .or(e2)
+                         .asc("age")
+                         .desc("id");
         String exp = "WHERE wid=37 AND (age>35 AND wid<47) OR (wname LIKE '%t%' AND age IN (4,7,9) OR (age>35 AND wid<47)) ORDER BY age ASC, wid DESC";
         assertEquals(exp, c.toSql(en).trim());
     }
@@ -137,14 +149,18 @@ public class CndTest extends DaoCase {
 
     @Test
     public void test_add_other_or_method_by_github_issuse_148() {
-        SqlExpression e1 = Cnd.exps("city", "=", "beijing").or("city", "=", "shanghai").or("city", "=", "guangzhou").or("city", "=", "shenzhen");
+        SqlExpression e1 = Cnd.exps("city", "=", "beijing")
+                              .or("city", "=", "shanghai")
+                              .or("city", "=", "guangzhou")
+                              .or("city", "=", "shenzhen");
         SqlExpression e2 = Cnd.exps("age", ">", 18).and("age", "<", 30);
         String exp = "WHERE (ct='beijing' OR ct='shanghai' OR ct='guangzhou' OR ct='shenzhen') AND (age>18 AND age<30)";
         assertEquals(exp, Cnd.where(e1).and(e2).toSql(en).trim());
     }
-    
+
     @Test
     public void test_other_op() {
-        assertEquals(" WHERE ok IS true", Cnd.where("ok", "is", true).toString());
+        assertEquals(" WHERE ok IS true", Cnd.where("ok", "is", true)
+                                             .toString());
     }
 }

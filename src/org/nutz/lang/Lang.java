@@ -399,8 +399,8 @@ public abstract class Lang {
      * 较方便的创建一个没有重复的数组，比如：
      * 
      * <pre>
-     * Pet[] pets = Lang.array("A","B","A");  => ["A","B"]
-     * Pet[] pets = Lang.array();  => null
+     * Pet[] pets = Lang.arrayUniq("A","B","A");  => ["A","B"]
+     * Pet[] pets = Lang.arrayUniq();  => null
      * </pre>
      * 
      * 返回的顺序会遵循输入的顺序
@@ -413,14 +413,17 @@ public abstract class Lang {
     public static <T> T[] arrayUniq(T... eles) {
         if (null == eles || eles.length == 0)
             return null;
+        // 记录重复
         HashSet<T> set = new HashSet<T>(eles.length);
+        for (T ele : eles) {
+            set.add(ele);
+        }
+        // 循环
         T[] arr = (T[]) Array.newInstance(eles[0].getClass(), set.size());
         int index = 0;
-        for (int i = 0; i < eles.length; i++) {
-            if (set.contains(eles[i])) {
-                set.remove(eles[i]);
-                arr[index++] = eles[i];
-            }
+        for (T ele : eles) {
+            if (set.remove(ele))
+                Array.set(arr, index++, ele);
         }
         return arr;
 

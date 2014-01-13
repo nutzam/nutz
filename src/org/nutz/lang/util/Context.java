@@ -56,6 +56,8 @@ public interface Context extends Cloneable {
 
     List<Object> getList(String name);
 
+    <T> List<T> getList(Class<T> classOfT, String name);
+
     Context clone();
 
 }

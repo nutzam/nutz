@@ -160,6 +160,11 @@ public abstract class AbstractContext implements Context {
         return getAs(List.class, name);
     }
 
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(Class<T> classOfT, String name) {
+        return (List<T>) getList(name);
+    }
+
     public abstract AbstractContext clone();
 
 }
