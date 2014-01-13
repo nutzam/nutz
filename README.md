@@ -2,6 +2,8 @@
 
 对于 Java 程序员来说，除 SSH 之外，的另一个选择
 
+### Talk is cheap. Show me the code!!
+
 ### 项目目标
 
 在力所能及的情况下，最大限度的提高Web开发人员的生产力。

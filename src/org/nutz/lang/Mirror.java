@@ -829,6 +829,7 @@ public class Mirror<T> {
             else {
                 _type_id = klass.getName();
             }
+            _type_id += "_" + klass.getClassLoader();
         }
         return _type_id;
     }

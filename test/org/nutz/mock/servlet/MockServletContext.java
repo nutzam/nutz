@@ -29,7 +29,7 @@ public class MockServletContext extends MockServletObject implements
     private static final Log log = Logs.get();
 
     public int getMajorVersion() {
-        return 1;
+        return 2;
     }
 
     public String getMimeType(String arg0) {
@@ -37,7 +37,7 @@ public class MockServletContext extends MockServletObject implements
     }
 
     public int getMinorVersion() {
-        return 0;
+        return 5;
     }
 
     public RequestDispatcher getNamedDispatcher(String arg0) {

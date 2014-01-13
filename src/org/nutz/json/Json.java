@@ -257,7 +257,7 @@ public class Json {
     /**
      * 保存所有的 Json 实体
      */
-    private static final ConcurrentHashMap<String, JsonEntity> entities = new ConcurrentHashMap<String, JsonEntity>();
+	private static final ConcurrentHashMap<String, JsonEntity> entities = new ConcurrentHashMap<String, JsonEntity>();
 
     /**
      * 获取一个 Json 实体

@@ -457,7 +457,7 @@ BoneCP
 		{{{
 		//将配置信息保存到dao.xml,并存放于src文件夹下
 		
-		Ioc ioc = new NutIoc(new XmlIocLoader("dao.js"));
+		Ioc ioc = new NutIoc(new XmlIocLoader("dao.xml"));
 		DataSource ds = ioc.get(DataSource.class);
 		Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
 		

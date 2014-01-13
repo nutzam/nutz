@@ -47,6 +47,7 @@ public class HttpTest {
         Response response1 = Http.get("www.duokan.com");
         assertEquals("utf-8", response1.getEncodeType().toLowerCase());
         assertTrue(response1.getContent().indexOf("多看") > 0);
+
         // 如果Http头中没有指定编码类型，用户也可以手工指定
         Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");
         assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
