@@ -30,7 +30,7 @@ public abstract class Times {
     }
 
     /**
-     * 判断一年（不包括自己）之前有多少个闰年
+     * 判断某年（不包括自己）之前有多少个闰年
      * 
      * @param year
      *            年份，比如 2012 就是二零一二年
@@ -319,9 +319,8 @@ public abstract class Times {
      *            月，一月为 1，十二月为 12
      * @param dd
      *            日，每月一号为 1
-     * @return 天数
+     * @return 距离 1970 年 1 月 1 日的天数
      */
-
     public static int D1970(int yy, int MM, int dd) {
         // 转换成相对公元元年的年份
         // 如果给的年份小于 100，那么就认为是从 1970 开始算的年份
@@ -407,44 +406,44 @@ public abstract class Times {
     }
 
     /**
-     * 根据时间得到字符串
+     * 把时间转换成格式为 y-M-d H:m:s.S 的字符串
      * 
      * @param d
-     *            日期时间对象
-     * @return 时间字符串 , 格式为 y-M-d H:m:s.S
+     *            时间对象
+     * @return 该时间的字符串形式 , 格式为 y-M-d H:m:s.S
      */
     public static String sDTms(Date d) {
         return format(DF_DATE_TIME_MS, d);
     }
 
     /**
-     * 根据时间得到字符串
+     * 把时间转换成格式为 yyyy-MM-dd HH:mm:ss 的字符串
      * 
      * @param d
-     *            日期时间对象
-     * @return 时间字符串 , 格式为 yyyy-MM-dd HH:mm:ss
+     *            时间对象
+     * @return 该时间的字符串形式 , 格式为 yyyy-MM-dd HH:mm:ss
      */
     public static String sDT(Date d) {
         return format(DF_DATE_TIME, d);
     }
 
     /**
-     * 根据时间得到日期字符串
+     * 把时间转换成格式为 yyyy-MM-dd 的字符串
      * 
      * @param d
-     *            日期时间对象
-     * @return 时间字符串 , 格式为 yyyy-MM-dd
+     *            时间对象
+     * @return 该时间的字符串形式 , 格式为 yyyy-MM-dd
      */
     public static String sD(Date d) {
         return format(DF_DATE, d);
     }
 
     /**
-     * 将一个秒数（天中），转换成一个时间字符串
+     * 将一个秒数（天中），转换成一个格式为 HH:mm:ss 的字符串
      * 
      * @param sec
      *            秒数
-     * @return 格式为 'HH:mm:ss' 的字符串
+     * @return 格式为 HH:mm:ss 的字符串
      */
     public static String sT(int sec) {
         int[] ss = T(sec);
@@ -546,10 +545,10 @@ public abstract class Times {
     }
 
     /**
-     * 安全的 format 方法
+     * 以给定的时间格式来安全的对时间进行格式化，并返回格式化后所对应的字符串
      * 
      * @param fmt
-     *            时间格式模板
+     *            时间格式
      * @param d
      *            时间对象
      * @return 格式化后的字符串
@@ -559,8 +558,10 @@ public abstract class Times {
     }
 
     /**
+     * 以给定的时间格式来安全的对时间进行格式化，并返回格式化后所对应的字符串
+     * 
      * @param fmt
-     *            时间格式模板
+     *            时间格式
      * @param d
      *            时间对象
      * @return 格式化后的字符串
@@ -570,13 +571,13 @@ public abstract class Times {
     }
 
     /**
-     * 安全的 parse 方法（包裹RuntimeException）
+     * 以给定的时间格式来安全的解析时间字符串，并返回解析后所对应的时间对象（包裹RuntimeException）
      * 
      * @param fmt
-     *            解析类
+     *            时间格式
      * @param s
-     *            日期时间字符串
-     * @return 解析后的时间对象
+     *            时间字符串
+     * @return 该时间字符串对应的时间对象
      */
     public static Date parseq(DateFormat fmt, String s) {
         try {
@@ -588,13 +589,13 @@ public abstract class Times {
     }
 
     /**
-     * 安全的 parse 方法（包裹RuntimeException）
+     * 以给定的时间格式来安全的解析时间字符串，并返回解析后所对应的时间对象（包裹RuntimeException）
      * 
      * @param fmt
-     *            格式化字符串
+     *            时间格式
      * @param s
-     *            日期时间字符串
-     * @return 解析后的时间对象
+     *            时间字符串
+     * @return 该时间字符串对应的时间对象
      */
     public static Date parseq(String fmt, String s) {
         try {
@@ -606,26 +607,26 @@ public abstract class Times {
     }
 
     /**
-     * 安全的 parse 方法
+     * 以给定的时间格式来安全的解析时间字符串，并返回解析后所对应的时间对象
      * 
      * @param fmt
-     *            解析类
+     *            时间格式
      * @param s
      *            日期时间字符串
-     * @return 解析后的时间对象
+     * @return 该时间字符串对应的时间对象
      */
     public static Date parse(DateFormat fmt, String s) throws ParseException {
         return ((DateFormat) fmt.clone()).parse(s);
     }
 
     /**
-     * 安全的 parse 方法
+     * 以给定的时间格式来安全的解析时间字符串，并返回解析后所对应的时间对象
      * 
      * @param fmt
-     *            格式化字符串
+     *            时间格式
      * @param s
      *            日期时间字符串
-     * @return 解析后的时间对象
+     * @return 该时间字符串对应的时间对象
      */
     public static Date parse(String fmt, String s) throws ParseException {
         return new SimpleDateFormat(fmt).parse(s);
