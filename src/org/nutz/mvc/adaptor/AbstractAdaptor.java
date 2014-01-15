@@ -21,6 +21,7 @@ import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
@@ -56,10 +57,12 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected ParamInjector[] injs;
 
     protected Method method;
+    
+    protected Class<?>[] argTypes;
 
     public void init(Method method) {
         this.method = method;
-        Class<?>[] argTypes = method.getParameterTypes();
+        argTypes = method.getParameterTypes();
         injs = new ParamInjector[argTypes.length];
         Annotation[][] annss = method.getParameterAnnotations();
         Type[] types = method.getGenericParameterTypes();
@@ -179,7 +182,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                           HttpServletRequest req,
                           HttpServletResponse resp,
                           String[] pathArgs) {
-        Class<?>[] argTypes = method.getParameterTypes();
+    	
         Object[] args = new Object[argTypes.length];
 
         if (args.length != injs.length)
@@ -200,7 +203,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         catch (Throwable e) {
             if (errCtx != null) {
                 if (log.isInfoEnabled())
-                    log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
+                    log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue", e);
                 errCtx.setAdaptorError(e, this);
                 args[args.length - 1] = errCtx;
                 return args;
@@ -220,9 +223,10 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 args[i] = injs[i].get(sc, req, resp, value);
             }
             catch (Throwable e) {
-                if (errCtx != null)
+                if (errCtx != null) {
+                	log.infof("Adapter Param Error(%s) index=%d", method, i, e);
                     errCtx.setError(i, e, method, value, injs[i]); // 先错误保存起来,全部转好了,再判断是否需要抛出
-                else
+                } else
                     throw Lang.wrapThrow(e);
             }
             if (args[i] == null && argTypes[i].isPrimitive()) {

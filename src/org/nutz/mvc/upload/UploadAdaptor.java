@@ -16,6 +16,7 @@ import org.nutz.filepool.NutFilePool;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.adaptor.PairAdaptor;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.annotation.Param;
@@ -101,6 +102,19 @@ public class UploadAdaptor extends PairAdaptor {
 
     public UploadingContext getContext() {
         return context;
+    }
+    
+    @Override
+    public Object[] adapt(ServletContext sc,
+    					  HttpServletRequest req,
+    					  HttpServletResponse resp,
+    					  String[] pathArgs) {
+
+    	//临时
+    	if (!Mvcs.getActionContext().getMethod().toGenericString().equals(method.toGenericString())) {
+    		throw new IllegalArgumentException(String.format("Method miss match: expect %s but %s. using Ioc? set singleton=false, pls", method, Mvcs.getActionContext().getMethod()));
+    	}
+    	return super.adapt(sc, req, resp, pathArgs);
     }
 
     protected ParamInjector evalInjectorBy(Type type, Param param) {
