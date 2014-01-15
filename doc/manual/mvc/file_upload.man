@@ -91,7 +91,7 @@
 
         {*#F00;特别注意} 有的同学使用文件上传遇到了
         [https://github.com/nutzam/nutz/issues/575 诡异的问题]
-        如果你要用 Ioc 来管理 UploadAdaptor，你必须为不同的入口函数分配不通的实例。
+        如果你要用 Ioc 来管理 UploadAdaptor，你必须为不同的入口函数分配不同的实例。
         当然这些实例可以引用同样的 `uploadFileContext` 和 `tmpFilePool`。
         否则我们不能保证适配的结果正确。
         
