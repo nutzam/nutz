@@ -55,7 +55,7 @@ public class Castors {
      * Castor 的配置
      */
     private Object setting;
-
+    private HashMap<Class<?>, Method> settingMap;
     /**
      * 设置转换的配置
      * <p>
@@ -92,13 +92,7 @@ public class Castors {
     }
 
     private void reload() {
-        HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
-        for (Method m1 : setting.getClass().getMethods()) {
-            Class<?>[] pts = m1.getParameterTypes();
-            if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0]))
-                settingMap.put(pts[0], m1);
-        }
-
+        buildSettingMap();
         this.map = new ConcurrentHashMap<String, Castor<?, ?>>();
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.addAll(defaultCastorList);
@@ -121,9 +115,19 @@ public class Castors {
             log.debugf("Using %s castor for Castors", map.size());
     }
 
+    private void buildSettingMap() throws SecurityException {
+        settingMap = new HashMap<Class<?>, Method>();
+        for (Method m1 : setting.getClass().getMethods()) {
+            Class<?>[] pts = m1.getParameterTypes();
+            if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0])){
+                settingMap.put(pts[0], m1);
+            }
+        }
+    }
+
     public void addCastor(Class<?> klass) {
         try {
-            fillMap(klass, new HashMap<Class<?>, Method>());
+            fillMap(klass, settingMap);
         }
         catch (Throwable e) {
             throw Lang.wrapThrow(Lang.unwrapThrow(e));
@@ -145,9 +149,10 @@ public class Castors {
             throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
         Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-        if (!map.containsKey(castor.toString())) {
-            map.put(castor.toString(), castor);
-        }
+        //注释掉判断语句，可以替换默认实现
+        //if (!map.containsKey(castor.toString())) {
+        map.put(castor.toString(), castor);
+        //}
         Method m = settingMap.get(castor.getClass());
         if (null == m) {
             for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
