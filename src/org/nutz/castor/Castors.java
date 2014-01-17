@@ -93,7 +93,7 @@ public class Castors {
 
     private void reload() {
         buildSettingMap();
-        this.map = new ConcurrentHashMap<String, Castor<?, ?>>();
+        //this.map = 
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
@@ -102,7 +102,7 @@ public class Castors {
                     continue;
                 if (!Castor.class.isAssignableFrom(klass))
                     continue;
-                fillMap(klass, settingMap);
+                fillMap(klass, settingMap,false);
             }
             catch (Throwable e) {
                 if (log.isWarnEnabled())
@@ -127,7 +127,7 @@ public class Castors {
 
     public void addCastor(Class<?> klass) {
         try {
-            fillMap(klass, settingMap);
+            fillMap(klass, settingMap,true);
         }
         catch (Throwable e) {
             throw Lang.wrapThrow(Lang.unwrapThrow(e));
@@ -140,19 +140,19 @@ public class Castors {
      * 
      * @param klass
      * @param settingMap
+     * @param replace  
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap)
+    private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap,boolean replace)
             throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
         Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-        //注释掉判断语句，可以替换默认实现
-        //if (!map.containsKey(castor.toString())) {
-        map.put(castor.toString(), castor);
-        //}
+        if (!map.containsKey(castor.toString()) || replace) {
+            map.put(castor.toString(), castor);
+        }
         Method m = settingMap.get(castor.getClass());
         if (null == m) {
             for (Entry<Class<?>, Method> entry : settingMap.entrySet()) {
@@ -172,7 +172,7 @@ public class Castors {
      */
     // private Map<String, Map<String, Castor<?, ?>>> map;
     // private Map<Integer, Castor<?,?>> map;
-    private Map<String, Castor<?, ?>> map;
+    private Map<String, Castor<?, ?>> map = new ConcurrentHashMap<String, Castor<?, ?>>();;
 
     /**
      * 转换一个 POJO 从一个指定的类型到另外的类型
