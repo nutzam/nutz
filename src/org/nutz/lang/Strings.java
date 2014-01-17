@@ -18,7 +18,7 @@ import org.nutz.lang.meta.Email;
  */
 public class Strings {
 
-    private Strings() {}
+    protected Strings() {}
 
     /**
      * 是中文字符吗?
