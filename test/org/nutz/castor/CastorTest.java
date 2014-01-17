@@ -17,7 +17,6 @@ import junit.framework.Assert;
 
 import org.junit.Test;
 import org.nutz.NutzEnum;
-import org.nutz.castor.castor.DateTimeCastor;
 import org.nutz.castor.castor.Datetime2String;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Times;

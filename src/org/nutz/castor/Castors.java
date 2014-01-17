@@ -152,6 +152,8 @@ public class Castors {
         Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
         if (!map.containsKey(castor.toString()) || replace) {
             map.put(castor.toString(), castor);
+        }else{
+            castor = map.get(castor.toString());
         }
         Method m = settingMap.get(castor.getClass());
         if (null == m) {
