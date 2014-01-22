@@ -1,5 +1,6 @@
 package org.nutz.mvc.view;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
@@ -14,9 +15,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.img.Images;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -71,12 +74,27 @@ public class RawView implements View {
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
 			throws Throwable {
 		// 如果用户自行设置了,那就不要再设置了!
-		if (resp.getContentType() == null)
+		if (resp.getContentType() == null) {
+			if (obj != null && obj instanceof BufferedImage && "text/plain".equals(contentType)) {
+				contentType = contentTypeMap.get("png");
+			}
 			resp.setContentType(contentType);
+		}
 		if (obj == null)
 			return;
+		OutputStream out = resp.getOutputStream();
+		// 图片?难道是验证码?
+		if (obj instanceof BufferedImage) {
+			if (contentType.contains("png"))
+				ImageIO.write((BufferedImage)obj, "png", out);
+			// @see https://code.google.com/p/webm/source/browse/java/src/main/java/com/google/imageio/?repo=libwebp&name=sandbox%2Fpepijnve%2Fwebp-imageio#imageio%2Fwebp
+			else if (contentType.contains("webp"))
+				ImageIO.write((BufferedImage)obj, "webp", out);
+			else if (contentType.contains("jpg"))
+				Images.writeJpeg((BufferedImage)obj, out, 0.8f);
+		}
 		// 文件
-		if (obj instanceof File) {
+		else if (obj instanceof File) {
 			File file = (File) obj;
 			long fileSz = file.length();
 			if (log.isDebugEnabled())
@@ -94,7 +112,7 @@ public class RawView implements View {
 			String rangeStr = req.getHeader("Range");
 			if (DISABLE_RANGE_DOWNLOAD || fileSz == 0 || (rangeStr == null || !rangeStr.startsWith("bytes=") || rangeStr.length() < "bytes=1".length())) {
 				resp.setHeader("Content-Length", "" + fileSz);
-				Streams.writeAndClose(resp.getOutputStream(), Streams.fileIn(file));
+				Streams.writeAndClose(out, Streams.fileIn(file));
 			} else {
 				// log.debug("Range Download : " + req.getHeader("Range"));
 				List<RangeRange> rs = new ArrayList<RawView.RangeRange>();
@@ -120,13 +138,13 @@ public class RawView implements View {
 				// 暂时只有单range,so,简单起见吧
 				RangeRange rangeRange = rs.get(0);
 				resp.setHeader("Content-Range", String.format("bytes %d-%d/%d", rangeRange.start, rangeRange.end -1, fileSz));
-				writeFileRange(file, resp.getOutputStream(), rangeRange);
+				writeFileRange(file, out, rangeRange);
 			}
 		}
 		// 字节数组
 		else if (obj instanceof byte[]) {
 			resp.setHeader("Content-Length", "" + ((byte[]) obj).length);
-			Streams.writeAndClose(resp.getOutputStream(), (byte[]) obj);
+			Streams.writeAndClose(out, (byte[]) obj);
 		}
 		// 字符数组
 		else if (obj instanceof char[]) {
@@ -140,13 +158,13 @@ public class RawView implements View {
 		}
 		// 二进制流
 		else if (obj instanceof InputStream) {
-			Streams.writeAndClose(resp.getOutputStream(), (InputStream) obj);
+			Streams.writeAndClose(out, (InputStream) obj);
 		}
 		// 普通对象
 		else {
 			byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
 			resp.setHeader("Content-Length", "" + data.length);
-			Streams.writeAndClose(resp.getOutputStream(), data);
+			Streams.writeAndClose(out, data);
 		}
 	}
 
@@ -159,6 +177,10 @@ public class RawView implements View {
 		contentTypeMap.put("stream", "application/octet-stream");
 		contentTypeMap.put("js", "application/javascript");
 		contentTypeMap.put("json", "application/json");
+		contentTypeMap.put("jpg", "image/jpeg");
+		contentTypeMap.put("jpeg", "image/jpeg");
+		contentTypeMap.put("png", "image/png");
+		contentTypeMap.put("webp", "image/webp");
 	}
 
 	public static class RangeRange {

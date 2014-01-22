@@ -21,7 +21,6 @@ import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
-import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;

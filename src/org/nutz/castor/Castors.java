@@ -55,7 +55,7 @@ public class Castors {
      * Castor 的配置
      */
     private Object setting;
-
+    private HashMap<Class<?>, Method> settingMap;
     /**
      * 设置转换的配置
      * <p>
@@ -92,14 +92,8 @@ public class Castors {
     }
 
     private void reload() {
-        HashMap<Class<?>, Method> settingMap = new HashMap<Class<?>, Method>();
-        for (Method m1 : setting.getClass().getMethods()) {
-            Class<?>[] pts = m1.getParameterTypes();
-            if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0]))
-                settingMap.put(pts[0], m1);
-        }
-
-        this.map = new ConcurrentHashMap<String, Castor<?, ?>>();
+        buildSettingMap();
+        //this.map = 
         ArrayList<Class<?>> classes = new ArrayList<Class<?>>();
         classes.addAll(defaultCastorList);
         for (Class<?> klass : classes) {
@@ -108,7 +102,7 @@ public class Castors {
                     continue;
                 if (!Castor.class.isAssignableFrom(klass))
                     continue;
-                fillMap(klass, settingMap);
+                fillMap(klass, settingMap,false);
             }
             catch (Throwable e) {
                 if (log.isWarnEnabled())
@@ -121,9 +115,19 @@ public class Castors {
             log.debugf("Using %s castor for Castors", map.size());
     }
 
+    private void buildSettingMap() throws SecurityException {
+        settingMap = new HashMap<Class<?>, Method>();
+        for (Method m1 : setting.getClass().getMethods()) {
+            Class<?>[] pts = m1.getParameterTypes();
+            if (pts.length == 1 && Castor.class.isAssignableFrom(pts[0])){
+                settingMap.put(pts[0], m1);
+            }
+        }
+    }
+
     public void addCastor(Class<?> klass) {
         try {
-            fillMap(klass, new HashMap<Class<?>, Method>());
+            fillMap(klass, settingMap,true);
         }
         catch (Throwable e) {
             throw Lang.wrapThrow(Lang.unwrapThrow(e));
@@ -136,17 +140,20 @@ public class Castors {
      * 
      * @param klass
      * @param settingMap
+     * @param replace  
      * @throws InstantiationException
      * @throws IllegalAccessException
      * @throws IllegalArgumentException
      * @throws InvocationTargetException
      */
-    private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap)
+    private void fillMap(Class<?> klass, HashMap<Class<?>, Method> settingMap,boolean replace)
             throws InstantiationException, IllegalAccessException,
             IllegalArgumentException, InvocationTargetException {
         Castor<?, ?> castor = (Castor<?, ?>) klass.newInstance();
-        if (!map.containsKey(castor.toString())) {
+        if (!map.containsKey(castor.toString()) || replace) {
             map.put(castor.toString(), castor);
+        }else{
+            castor = map.get(castor.toString());
         }
         Method m = settingMap.get(castor.getClass());
         if (null == m) {
@@ -167,7 +174,7 @@ public class Castors {
      */
     // private Map<String, Map<String, Castor<?, ?>>> map;
     // private Map<Integer, Castor<?,?>> map;
-    private Map<String, Castor<?, ?>> map;
+    private Map<String, Castor<?, ?>> map = new ConcurrentHashMap<String, Castor<?, ?>>();;
 
     /**
      * 转换一个 POJO 从一个指定的类型到另外的类型

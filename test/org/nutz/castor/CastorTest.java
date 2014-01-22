@@ -10,13 +10,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import junit.framework.Assert;
 
 import org.junit.Test;
 import org.nutz.NutzEnum;
+import org.nutz.castor.castor.Datetime2String;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Times;
 import org.nutz.lang.meta.Email;
 
 public class CastorTest {
@@ -395,7 +398,32 @@ public class CastorTest {
         assertEquals(boolean.class, Castors.me().castTo("boolean", Class.class));
 
     }
-
+    @Test
+    public void testDatetime2String(){
+        Date dt = new Date();
+        String strDt = Times.sDT(dt);
+        assertEquals(Castors.me().castToString(dt),strDt);
+        
+    }
+    @Test
+    public void testSetSetting(){
+        //测试设置
+        Date dt = new Date();
+        String strD = Times.sD(dt);
+        Castors cas = Castors.create();
+        cas.setSetting(new TestCastorSetting());
+        assertEquals(cas.castToString(dt),strD);
+    }
+    @Test
+    public void testAddCastor(){
+        Date dt = new Date();
+        String strD = Times.sD(dt);
+        Castors cas = Castors.create();
+        //cas.setSetting(new TestCastorSetting());
+        cas.addCastor(Date2String.class);
+        assertEquals(cas.castToString(dt),strD);
+        
+    }
     private void test_date_equal(java.util.Date d1, java.util.Date d2) {
         Calendar c1 = Calendar.getInstance();
         c1.setTime(d1);
@@ -409,7 +437,12 @@ public class CastorTest {
         assertEquals(c1.get(Calendar.MINUTE), c2.get(Calendar.MINUTE));
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
     }
-
+    private class TestCastorSetting{
+        public void setup(Datetime2String c) {
+            c.setFormat("yyyy-MM-dd");
+        }
+    }
+    
     // @Test
     // public void load_form_nowhere() {
     // Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
