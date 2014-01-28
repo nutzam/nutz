@@ -437,7 +437,8 @@ public class CastorTest {
         assertEquals(c1.get(Calendar.MINUTE), c2.get(Calendar.MINUTE));
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
     }
-    private class TestCastorSetting{
+    
+    class TestCastorSetting{
         public void setup(Datetime2String c) {
             c.setFormat("yyyy-MM-dd");
         }

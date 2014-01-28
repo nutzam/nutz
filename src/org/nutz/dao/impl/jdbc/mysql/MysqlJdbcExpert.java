@@ -35,14 +35,19 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0)
-            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+            pojo.append(Pojos.Items.wrapf(" LIMIT %d, %d",
+                                          pager.getOffset(),
+                                          pager.getPageSize()));
     }
-    
+
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0)
-            sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d, %d", pager.getOffset(), pager.getPageSize()));
+            sql.setSourceSql(sql.getSourceSql()
+                             + String.format(" LIMIT %d, %d",
+                                             pager.getOffset(),
+                                             pager.getPageSize()));
     }
 
     @Override
@@ -52,24 +57,28 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         // Mysql 的精度是按照 bit
         if (mf.getColumnType() == ColType.INT) {
             int width = mf.getWidth();
-            if (width <= 0)
+            if (width <= 0) {
                 return "INT(32)";
-            else if (width <= 4) {
+            } else if (width <= 2) {
                 return "TINYINT(" + (width * 4) + ")";
+            } else if (width <= 4) {
+                return "MEDIUMINT(" + (width * 4) + ")";
             } else if (width <= 8) {
                 return "INT(" + (width * 4) + ")";
             }
             return "BIGINT(" + (width * 4) + ")";
         }
         if (mf.getColumnType() == ColType.BINARY) {
-            return "MediumBlob"; //默认用16M的应该可以了吧?
+            return "MediumBlob"; // 默认用16M的应该可以了吧?
         }
         // 其它的参照默认字段规则 ...
         return super.evalFieldType(mf);
     }
 
     public boolean createEntity(Dao dao, Entity<?> en) {
-        StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
+        StringBuilder sb = new StringBuilder("CREATE TABLE "
+                                             + en.getTableName()
+                                             + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
             sb.append('\n').append(mf.getColumnName());
@@ -105,12 +114,16 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
                     }
                 } else {
                     if (mf.hasDefaultValue())
-                        sb.append(" DEFAULT '").append(getDefaultValue(mf)).append("'");
+                        sb.append(" DEFAULT '")
+                          .append(getDefaultValue(mf))
+                          .append("'");
                 }
             }
 
             if (mf.hasColumnComment()) {
-                sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
+                sb.append(" COMMENT '")
+                  .append(mf.getColumnComment())
+                  .append("'");
             }
 
             sb.append(',');
@@ -159,7 +172,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
-    
+
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
         String autoSql = "SELECT @@@@IDENTITY";
         Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
