@@ -24,11 +24,13 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.json.entity.JsonEntityField;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
+import org.nutz.json.meta.JQ;
 import org.nutz.json.meta.JX;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Files;
@@ -876,5 +878,13 @@ public class JsonTest {
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
         assertEquals(3, ((List<Integer>) map.get("rs")).get(2).intValue());
+    }
+    
+    @Test
+    public void test_ignore_numbers() {
+    	JsonEntityField.setUseIgnoreNumber(true);
+    	assertEquals("{age:100}", Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
+    	assertEquals("{temp:15.0}", Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
+    	assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f), JsonFormat.compact().setQuoteName(false)));
     }
 }
