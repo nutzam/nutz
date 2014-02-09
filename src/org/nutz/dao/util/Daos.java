@@ -293,6 +293,69 @@ public abstract class Daos {
         return ints[0];
     }
     
+    /**
+     * 执行一个特殊的Chain(事实上普通Chain也能执行,但不建议使用)
+     * @see org.nutz.dao.Chain#addSpecial(String, Object)
+     */
+    @SuppressWarnings({ "rawtypes" })
+    public static void insertBySpecialChain(Dao dao, Entity en, String tableName, Chain chain) {
+        if (en != null)
+            tableName = en.getTableName();
+        if (tableName == null)
+            throw Lang.makeThrow(DaoException.class, "tableName and en is NULL !!");
+        final StringBuilder sql = new StringBuilder("INSERT INTO ").append(tableName).append(" (");
+        StringBuilder _value_places = new StringBuilder(" VALUES(");
+        final List<Object> values = new ArrayList<Object>();
+        final List<ValueAdaptor> adaptors = new ArrayList<ValueAdaptor>();
+        Chain head = chain.head();
+        while (head != null) {
+        	String colName = head.name();
+        	MappingField mf = null;
+            if (en != null) {
+                mf = en.getField(colName);
+                if (mf != null)
+                	colName = mf.getColumnName();
+            }
+            sql.append(colName);
+            
+            if (head.special()) {
+            	_value_places.append(head.value());
+            } else {
+                if (en != null)
+                    mf = en.getField(head.name());
+                _value_places.append("?");
+                values.add(head.value());
+                ValueAdaptor adaptor = Jdbcs.getAdaptorBy(head.value());
+                if (mf != null && mf.getAdaptor() != null)
+                    adaptor = mf.getAdaptor();
+                adaptors.add(adaptor);
+            }
+            
+            head = head.next();
+            if (head != null) {
+                sql.append(", ");
+                _value_places.append(", ");
+            }
+        }
+        sql.append(")");
+        _value_places.append(")");
+        sql.append(_value_places);
+        if (log.isDebugEnabled())
+            log.debug(sql);
+        dao.run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                PreparedStatement ps = conn.prepareStatement(sql.toString());
+                try {
+                    for (int i = 0; i < values.size(); i++)
+                        adaptors.get(i).set(ps, values.get(i), i + 1);
+                    ps.execute();
+                } finally {
+                    Daos.safeClose(ps);
+                }
+            }
+        });
+    }
+    
     public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
     	for (Class<?> klass : Scans.me().scanPackage(packageName)) {
 			if (klass.getAnnotation(Table.class) != null)

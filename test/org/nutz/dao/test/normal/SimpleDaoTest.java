@@ -276,4 +276,10 @@ public class SimpleDaoTest extends DaoCase {
             return;
         dao.create(Issue396Master.class, true);
     }
+    
+    @Test
+    public void test_insert_special_chain() {
+    	if (dao.meta().isMySql())
+    		dao.insert(Pet.class, Chain.makeSpecial("birthday", "now()").add("name", "wendal"));
+    }
 }

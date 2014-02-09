@@ -1,7 +1,7 @@
 package org.nutz.dao;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.nutz.dao.entity.Entity;
@@ -330,7 +330,7 @@ public abstract class Chain {
             return false;
         }
         public Map<String, Object> toMap() {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new LinkedHashMap<String, Object>();
             Entry current = head;
             while (current != null) {
                 map.put(current.name, current.value);

@@ -136,6 +136,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public void insert(String tableName, Chain chain) {
+    	if (chain.isSpecial()) {
+    		Daos.insertBySpecialChain(this, null, tableName, chain);
+    		return;
+    	}
         EntityOperator opt = _optBy(chain.toEntityMap(tableName));
         if (null == opt)
             return;
@@ -144,6 +148,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public void insert(Class<?> classOfT, Chain chain) {
+    	if (chain.isSpecial()) {
+    		Daos.insertBySpecialChain(this, getEntity(classOfT), null, chain);
+    		return;
+    	}
         EntityOperator opt = _opt(classOfT);
         opt.myObj = chain;
         opt.addInsertSelfOnly();
