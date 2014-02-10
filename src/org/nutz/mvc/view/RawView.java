@@ -82,9 +82,9 @@ public class RawView implements View {
 		}
 		if (obj == null)
 			return;
-		OutputStream out = resp.getOutputStream();
 		// 图片?难道是验证码?
 		if (obj instanceof BufferedImage) {
+			OutputStream out = resp.getOutputStream();
 			if (contentType.contains("png"))
 				ImageIO.write((BufferedImage)obj, "png", out);
 			// @see https://code.google.com/p/webm/source/browse/java/src/main/java/com/google/imageio/?repo=libwebp&name=sandbox%2Fpepijnve%2Fwebp-imageio#imageio%2Fwebp
@@ -110,6 +110,7 @@ public class RawView implements View {
 			}
 			
 			String rangeStr = req.getHeader("Range");
+			OutputStream out = resp.getOutputStream();
 			if (DISABLE_RANGE_DOWNLOAD || fileSz == 0 || (rangeStr == null || !rangeStr.startsWith("bytes=") || rangeStr.length() < "bytes=1".length())) {
 				resp.setHeader("Content-Length", "" + fileSz);
 				Streams.writeAndClose(out, Streams.fileIn(file));
@@ -144,6 +145,7 @@ public class RawView implements View {
 		// 字节数组
 		else if (obj instanceof byte[]) {
 			resp.setHeader("Content-Length", "" + ((byte[]) obj).length);
+			OutputStream out = resp.getOutputStream();
 			Streams.writeAndClose(out, (byte[]) obj);
 		}
 		// 字符数组
@@ -158,12 +160,14 @@ public class RawView implements View {
 		}
 		// 二进制流
 		else if (obj instanceof InputStream) {
+			OutputStream out = resp.getOutputStream();
 			Streams.writeAndClose(out, (InputStream) obj);
 		}
 		// 普通对象
 		else {
 			byte[] data = String.valueOf(obj).getBytes(Encoding.UTF8);
 			resp.setHeader("Content-Length", "" + data.length);
+			OutputStream out = resp.getOutputStream();
 			Streams.writeAndClose(out, data);
 		}
 	}
