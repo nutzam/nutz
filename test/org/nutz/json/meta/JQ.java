@@ -1,6 +1,6 @@
 package org.nutz.json.meta;
 
-import org.nutz.json.JsonField;
+import org.nutz.json.JsonIgnore;
 
 public class JQ {
 	
@@ -14,11 +14,11 @@ public class JQ {
 		this.hz = hz;
 	}
 
-	@JsonField(null_int=150)
+	@JsonIgnore(null_int=150)
 	private int age;
-	@JsonField(null_double=-255)
+	@JsonIgnore(null_double=-255)
 	private double temp;
-	@JsonField(null_double=-1)
+	@JsonIgnore(null_double=-1)
 	private float hz;
 	public int getAge() {
 		return age;
