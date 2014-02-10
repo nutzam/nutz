@@ -24,18 +24,6 @@ public @interface JsonField {
     boolean ignore() default false;
 
     /**
-     * 使用此功能务必设置JsonEntityField.setUseIgnoreNumber(true);
-     * @return 是否忽略整数(Mirror.isIntLike())字段的特殊值
-     */
-    int null_int() default -94518;
-
-    /**
-     * 使用此功能务必设置JsonEntityField.setUseIgnoreNumber(true);
-     * @return 是否忽略float或double字段的特殊值
-     */
-    double null_double() default -0.94518;
-
-    /**
      * 有些对象类型总是被当做字符串输出会有更好的效果，比如 Region<br>
      * 当然这些对象是可以被 Castors 从字符串正确的转换回来的。即它们有一个带一个字符串为参数的构造函数即可
      * <p>
