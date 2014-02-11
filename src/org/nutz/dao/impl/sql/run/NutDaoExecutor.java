@@ -136,7 +136,8 @@ public class NutDaoExecutor implements DaoExecutor {
 				if (stmt.getMoreResults()) {
 					rs = stmt.getResultSet();
 					try {
-						st.onAfter(conn, rs);
+						if (rs != null)
+							st.onAfter(conn, rs);
 					}
 					finally {
 						if (rs != null)
