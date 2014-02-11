@@ -212,7 +212,7 @@ public class NutMap extends TreeMap<String, Object> {
      * @param value
      */
     @SuppressWarnings("unchecked")
-    public NutMap putv(String key, Object value) {
+    public NutMap addv(String key, Object value) {
         Object obj = get(key);
         if (null == obj)
             put(key, value);
@@ -224,6 +224,19 @@ public class NutMap extends TreeMap<String, Object> {
             list.add(value);
             put(key, list);
         }
+        return this;
+    }
+
+    /**
+     * @deprecated 本函数意义容易发生混淆，已经改名成 addv，下个版将被删除
+     * @since 1.b.51
+     */
+    public NutMap putv(String key, Object value) {
+        return addv(key, value);
+    }
+    
+    public NutMap setv(String key, Object value){
+        this.put(key, value);
         return this;
     }
 }
