@@ -1207,7 +1207,7 @@ public abstract class Lang {
      * @return Map 对象
      */
     public static NutMap map(String key, Object v) {
-        return new NutMap().putv(key, v);
+        return new NutMap().addv(key, v);
     }
 
     /**
