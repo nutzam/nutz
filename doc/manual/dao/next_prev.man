@@ -101,7 +101,7 @@
 	public class Pet{
 		@Id(auto=false)
 		@Prev({
-			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual")
+			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.nextval FROM dual")
 		})
 		private long id;
 	...
