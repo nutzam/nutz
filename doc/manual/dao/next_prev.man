@@ -81,9 +81,9 @@
 	public class Pet{
 		@Id
 		@Next({
-			@SQL(db = DB.PSQL,   "SELECT currval('t_pet_id_seq')"),
-			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')"),
-			@SQL(db = DB.OTHER,  "SELECT MAX(id) FROM t_pet") 
+			@SQL(db = DB.PSQL,   value="SELECT currval('t_pet_id_seq')"),
+			@SQL(db = DB.ORACLE, value="SELECT t_pet_id_seq.currval FROM dual"),
+			@SQL(db = DB.OTHER,  value="SELECT MAX(id) FROM t_pet") 
 		})
 		private long id;
 	...
@@ -101,7 +101,7 @@
 	public class Pet{
 		@Id(auto=false)
 		@Prev({
-			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual')")
+			@SQL(db = DB.ORACLE, "SELECT t_pet_id_seq.currval FROM dual")
 		})
 		private long id;
 	...
