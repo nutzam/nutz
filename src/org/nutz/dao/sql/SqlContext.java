@@ -10,6 +10,8 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.pager.Pager;
 
 public class SqlContext {
+	
+	public static int DEFAULT_FETCH_SIZE = 0;
 
     private FieldMatcher fieldMatcher;
 
@@ -17,7 +19,7 @@ public class SqlContext {
 
     private int updateCount;
 
-    private int fetchSize;
+    private int fetchSize = DEFAULT_FETCH_SIZE;
 
     private int resultSetType;
 

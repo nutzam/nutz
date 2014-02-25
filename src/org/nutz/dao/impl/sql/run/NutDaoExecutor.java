@@ -136,7 +136,8 @@ public class NutDaoExecutor implements DaoExecutor {
 				if (stmt.getMoreResults()) {
 					rs = stmt.getResultSet();
 					try {
-						st.onAfter(conn, rs);
+						if (rs != null)
+							st.onAfter(conn, rs);
 					}
 					finally {
 						if (rs != null)
@@ -188,7 +189,7 @@ public class NutDaoExecutor implements DaoExecutor {
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow); // 游标分页,现在总行数
-                if (st.getContext().getFetchSize() > 0)
+                if (st.getContext().getFetchSize() != 0)
                     stat.setFetchSize(st.getContext().getFetchSize());
                 rs = stat.executeQuery(sql);
             }
@@ -213,6 +214,8 @@ public class NutDaoExecutor implements DaoExecutor {
                         ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow);
+                if (st.getContext().getFetchSize() != 0)
+                    stat.setFetchSize(st.getContext().getFetchSize());
                 for (int i = 0; i < paramMatrix[0].length; i++) {
                     adaptors[i].set((PreparedStatement) stat,
                             paramMatrix[0][i], i + 1);

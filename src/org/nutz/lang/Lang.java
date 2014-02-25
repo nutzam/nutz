@@ -384,7 +384,7 @@ public abstract class Lang {
      * 较方便的创建一个数组，比如：
      * 
      * <pre>
-     * Pet[] pets = Lang.array("A", "B", "A"); => ["A","B","A"]
+     * String[] strs = Lang.array("A", "B", "A"); => ["A","B","A"]
      * </pre>
      * 
      * @param eles
@@ -399,8 +399,8 @@ public abstract class Lang {
      * 较方便的创建一个没有重复的数组，比如：
      * 
      * <pre>
-     * Pet[] pets = Lang.arrayUniq("A","B","A");  => ["A","B"]
-     * Pet[] pets = Lang.arrayUniq();  => null
+     * String[] strs = Lang.arrayUniq("A","B","A");  => ["A","B"]
+     * String[] strs = Lang.arrayUniq();  => null
      * </pre>
      * 
      * 返回的顺序会遵循输入的顺序
