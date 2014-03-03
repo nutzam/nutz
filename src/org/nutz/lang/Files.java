@@ -463,7 +463,24 @@ public abstract class Files {
      * @return 文件对象，如果不存在，则为 null
      */
     public static File findFile(String path) {
-        return findFile(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
+        return findFile(path,
+                        ClassTools.getClassLoader(),
+                        Encoding.defaultEncoding());
+    }
+
+    /**
+     * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
+     * 
+     * @param path
+     *            文件路径
+     * 
+     * @return 文件对象，如果不存在，则抛出一个运行时异常
+     */
+    public static File checkFile(String path) {
+        File f = findFile(path);
+        if (null == f)
+            throw Lang.makeThrow("Fail to found file '%s'", path);
+        return f;
     }
 
     /**
@@ -478,7 +495,9 @@ public abstract class Files {
      * 
      * @return 输出流
      */
-    public static InputStream findFileAsStream(String path, Class<?> klass, String enc) {
+    public static InputStream findFileAsStream(String path,
+                                               Class<?> klass,
+                                               String enc) {
         File f = new File(path);
         if (f.exists())
             try {
@@ -490,7 +509,9 @@ public abstract class Files {
         if (null != klass) {
             InputStream ins = klass.getClassLoader().getResourceAsStream(path);
             if (null == ins)
-                ins = Thread.currentThread().getContextClassLoader().getResourceAsStream(path);
+                ins = Thread.currentThread()
+                            .getContextClassLoader()
+                            .getResourceAsStream(path);
             if (null != ins)
                 return ins;
         }
@@ -597,7 +618,9 @@ public abstract class Files {
         if (null == dir || !dir.exists())
             return false;
         if (!dir.isDirectory())
-            throw new RuntimeException("\"" + dir.getAbsolutePath() + "\" should be a directory!");
+            throw new RuntimeException("\""
+                                       + dir.getAbsolutePath()
+                                       + "\" should be a directory!");
         File[] files = dir.listFiles();
         boolean re = false;
         if (null != files) {
@@ -711,7 +734,8 @@ public abstract class Files {
         if (src == null || target == null || !src.exists())
             return false;
         if (!src.isDirectory())
-            throw new IOException(src.getAbsolutePath() + " should be a directory!");
+            throw new IOException(src.getAbsolutePath()
+                                  + " should be a directory!");
         if (!target.exists())
             if (!makeDir(target))
                 return false;
@@ -720,9 +744,13 @@ public abstract class Files {
         if (null != files) {
             for (File f : files) {
                 if (f.isFile())
-                    re &= copyFile(f, new File(target.getAbsolutePath() + "/" + f.getName()));
+                    re &= copyFile(f, new File(target.getAbsolutePath()
+                                               + "/"
+                                               + f.getName()));
                 else
-                    re &= copyDir(f, new File(target.getAbsolutePath() + "/" + f.getName()));
+                    re &= copyDir(f, new File(target.getAbsolutePath()
+                                              + "/"
+                                              + f.getName()));
             }
         }
         return re;
@@ -826,7 +854,8 @@ public abstract class Files {
      *            要清除的目录名
      * @throws IOException
      */
-    public static void cleanAllFolderInSubFolderes(File dir, String name) throws IOException {
+    public static void cleanAllFolderInSubFolderes(File dir, String name)
+            throws IOException {
         File[] files = dir.listFiles();
         for (File d : files) {
             if (d.isDirectory())
@@ -896,7 +925,9 @@ public abstract class Files {
     public static File[] dirs(File dir) {
         return dir.listFiles(new FileFilter() {
             public boolean accept(File f) {
-                return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
+                return !f.isHidden()
+                       && f.isDirectory()
+                       && !f.getName().startsWith(".");
             }
         });
     }
@@ -920,7 +951,9 @@ public abstract class Files {
     private static void scanDirs(File rootDir, List<File> list) {
         File[] dirs = rootDir.listFiles(new FileFilter() {
             public boolean accept(File f) {
-                return !f.isHidden() && f.isDirectory() && !f.getName().startsWith(".");
+                return !f.isHidden()
+                       && f.isDirectory()
+                       && !f.getName().startsWith(".");
             }
         });
         if (dirs != null) {
