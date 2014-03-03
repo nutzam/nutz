@@ -145,9 +145,13 @@ public class AnnotationIocLoader implements IocLoader {
             }
             catch (Exception e) {
                 // 如果获取失败,就忽略之
-                log.info("Fail to call getMethods(), miss class or Security Limit, ignore it", e);
+                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it", classZ, e);
                 methods = new Method[0];
             }
+            catch (NoClassDefFoundError e) {
+            	log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it", classZ, e);
+                methods = new Method[0];
+			}
             for (Method method : methods) {
                 Inject inject = method.getAnnotation(Inject.class);
                 if (inject == null)
