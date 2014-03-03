@@ -621,7 +621,7 @@ public class Strings {
      * @return 字符串是被左字符串和右字符串包裹
      */
     public static boolean isQuoteBy(String str, String l, String r) {
-        if (null == str && null != l && null != r)
+        if (null == str || null == l || null == r)
             return false;
         return str.startsWith(l) && str.endsWith(r);
     }

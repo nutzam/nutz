@@ -14,6 +14,18 @@ import org.junit.Test;
 
 public class StringsTest {
 
+    /**
+     * for issue #606 (report by <a href="https://github.com/Rekoe">Rekoe</a>)
+     */
+    @Test
+    public void test_isQuoteBy_null() {
+        assertTrue(Strings.isQuoteBy("{abc}", "{", "}"));
+        assertFalse(Strings.isQuoteBy(null, "{", "}"));
+        assertFalse(Strings.isQuoteBy("{abc}", "{", null));
+        assertFalse(Strings.isQuoteBy("{abc}", null, "}"));
+        assertFalse(Strings.isQuoteBy("{abc}", null, null));
+    }
+
     @Test
     public void test_is_full_width_character() {
         assertFalse(Strings.isFullWidthCharacter('a'));
