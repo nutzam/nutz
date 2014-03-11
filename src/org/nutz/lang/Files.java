@@ -301,10 +301,11 @@ public abstract class Files {
     public static String getSuffixName(String path) {
         if (null == path)
             return null;
-        int pos = path.lastIndexOf('.');
-        if (-1 == pos)
+        int p0 = path.lastIndexOf('.');
+        int p1 = path.lastIndexOf('/');
+        if (-1 == p0 || p0 < p1)
             return "";
-        return path.substring(pos + 1);
+        return path.substring(p0 + 1);
     }
 
     /**
