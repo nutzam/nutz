@@ -1,6 +1,6 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
@@ -17,6 +18,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.lang.Each;
+import org.nutz.trans.Molecule;
 
 public class QueryTest extends DaoCase {
 
@@ -25,6 +27,49 @@ public class QueryTest extends DaoCase {
         // Insert 8 records
         for (int i = 0; i < 8; i++)
             dao.insert(Pet.create("pet" + i));
+    }
+
+    /**
+     * add for Issue #605
+     */
+    @Test
+    public void test_query_by_fieldfilter() {
+        Molecule<List<Pet>> mo = new Molecule<List<Pet>>() {
+            public void run() {
+                setObj(dao.query(Pet.class, Cnd.orderBy().asc("id")));
+            }
+        };
+
+        FieldFilter.create(Pet.class, "^id|name$").run(mo);
+        int i = 0;
+        for (Pet pet : mo.getObj()) {
+            assertEquals(i + 1, pet.getId());
+            assertEquals("pet" + i, pet.getName());
+            assertEquals(0, pet.getAge());
+            assertNull(pet.getBirthday());
+            assertNull(pet.getNickName());
+            i++;
+        }
+    }
+
+    /**
+     * add for Issue #605
+     */
+    @Test
+    public void test_fetcy_by_fieldfilter() {
+        Molecule<Pet> mo = new Molecule<Pet>() {
+            public void run() {
+                setObj(dao.fetch(Pet.class, 5));
+            }
+        };
+
+        FieldFilter.create(Pet.class, "^id|name$").run(mo);
+        Pet pet = mo.getObj();
+        assertEquals(5, pet.getId());
+        assertEquals("pet4", pet.getName());
+        assertEquals(0, pet.getAge());
+        assertNull(pet.getBirthday());
+        assertNull(pet.getNickName());
     }
 
     @Test

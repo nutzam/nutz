@@ -98,7 +98,6 @@ public class SimpleDaoTest extends DaoCase {
 
         Pet b = dao.fetch(Pet.class, "B");
         assertEquals("B", b.getName());
-        assertEquals(0, b.getAge());
     }
 
     @Test

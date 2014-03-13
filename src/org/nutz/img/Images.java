@@ -34,6 +34,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.repo.gif.AnimatedGifEncoder;
 
 /**
@@ -478,10 +479,15 @@ public class Images {
      */
     public static BufferedImage read(Object img) {
         try {
+            if(img instanceof CharSequence){
+                return ImageIO.read(Files.checkFile(img.toString()));
+            }
             if (img instanceof File)
                 return ImageIO.read((File) img);
-            else if (img instanceof URL)
+            
+            if (img instanceof URL)
                 img = ((URL) img).openStream();
+            
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
                 Files.write(tmp, (InputStream) img);
@@ -550,6 +556,8 @@ public class Images {
             ImageOutputStream os = ImageIO.createImageOutputStream(targetJpg);
             writer.setOutput(os);
             writer.write((IIOMetadata) null, new IIOImage(im, null, null), param);
+            os.flush();
+            os.close();
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
