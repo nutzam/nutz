@@ -3,10 +3,10 @@ package org.nutz.lang.util;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
@@ -21,7 +21,7 @@ import org.nutz.lang.Strings;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @SuppressWarnings("serial")
-public class NutMap extends TreeMap<String, Object> {
+public class NutMap extends LinkedHashMap<String, Object> {
 
     public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
@@ -234,8 +234,8 @@ public class NutMap extends TreeMap<String, Object> {
     public NutMap putv(String key, Object value) {
         return addv(key, value);
     }
-    
-    public NutMap setv(String key, Object value){
+
+    public NutMap setv(String key, Object value) {
         this.put(key, value);
         return this;
     }

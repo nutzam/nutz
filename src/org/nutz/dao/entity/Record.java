@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     private Map<String, Integer> sqlTypeMap;
 
     public Record() {
-        map = new HashMap<String, Object>();
+        map = new LinkedHashMap<String, Object>();
         sqlTypeMap = new HashMap<String, Integer>();
     }
 
