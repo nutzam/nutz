@@ -240,7 +240,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             if (err == null)
                 continue;
             int lastParam = argTypes.length - 1;
-            if (AdaptorErrorContext.class.equals(argTypes[lastParam])) {
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[lastParam])) {
                 if (log.isInfoEnabled())
                     log.info("Adapter Param Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
                 args[lastParam] = errCtx;
@@ -264,16 +264,19 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
      * 这是最后的大招了,查一下形参的名字,作为@Param("形参名")进行处理
      */
     protected ParamInjector paramNameInject(Method method, int index) {
-        List<String> names = MethodParamNamesScaner.getParamNames(method);
-        if (names != null)
-            return new NameInjector(names.get(index),
-                                    null,
-                                    method.getParameterTypes()[index],
-                                    null);
-        else if (log.isInfoEnabled())
-            log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
-                      index,
-                      method);
+    	if (!Lang.isAndroid) {
+    		List<String> names = MethodParamNamesScaner.getParamNames(method);
+            if (names != null)
+                return new NameInjector(names.get(index),
+                                        null,
+                                        method.getParameterTypes()[index],
+                                        null);
+            else if (log.isInfoEnabled())
+                log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
+                          index,
+                          method);
+    	}
+        
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }
