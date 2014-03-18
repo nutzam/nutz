@@ -27,6 +27,14 @@ public class Request {
         return Request.create(url, METHOD.GET, new HashMap<String, Object>(), header);
     }
 
+    public static Request post(String url) {
+        return create(url, METHOD.POST, new HashMap<String, Object>());
+    }
+
+    public static Request post(String url, Header header) {
+        return Request.create(url, METHOD.POST, new HashMap<String, Object>(), header);
+    }
+
     public static Request create(String url, METHOD method) {
         return create(url, method, new HashMap<String, Object>());
     }
