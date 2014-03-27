@@ -64,6 +64,8 @@ public interface Node<T> {
     boolean isFirst();
 
     List<Node<T>> getAncestors();
+    
+    List<Node<T>> parents();
 
     int depth();
 

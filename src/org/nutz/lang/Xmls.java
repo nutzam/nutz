@@ -1,6 +1,8 @@
 package org.nutz.lang;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 /**
  * XML 的快捷帮助函数
@@ -33,6 +36,31 @@ public abstract class Xmls {
      */
     public static DocumentBuilder xmls() throws ParserConfigurationException {
         return DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    }
+
+    /**
+     * 快捷的解析 XML 文件的帮助方法，它会主动关闭输入流
+     * 
+     * @param ins
+     *            XML 文件输入流
+     * @return Document 对象
+     */
+    public static Document xml(InputStream ins) {
+        try {
+            return xmls().parse(ins);
+        }
+        catch (SAXException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        catch (ParserConfigurationException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(ins);
+        }
     }
 
     /**
@@ -164,7 +192,8 @@ public abstract class Xmls {
      * @return 一个子元素的列表
      */
     public static List<Element> children(Element ele, String regex) {
-        final List<Element> list = new ArrayList<Element>(ele.getChildNodes().getLength());
+        final List<Element> list = new ArrayList<Element>(ele.getChildNodes()
+                                                             .getLength());
         eachChildren(ele, regex, new Each<Element>() {
             public void invoke(int index, Element cld, int length) {
                 list.add(cld);
@@ -195,7 +224,9 @@ public abstract class Xmls {
      * @param callback
      *            回调
      */
-    public static void eachChildren(Element ele, String regex, final Each<Element> callback) {
+    public static void eachChildren(Element ele,
+                                    String regex,
+                                    final Each<Element> callback) {
         Xmls.eachChildren(ele, regex, callback, 0);
     }
 
@@ -211,7 +242,10 @@ public abstract class Xmls {
      * @param off
      *            偏移量。0 表示从第一个迭代。 -1 表示从最后一个迭代。-2表示从倒数第二个迭代
      */
-    public static void eachChildren(Element ele, String regex, final Each<Element> callback, int off) {
+    public static void eachChildren(Element ele,
+                                    String regex,
+                                    final Each<Element> callback,
+                                    int off) {
         if (null == ele || null == callback)
             return;
 
@@ -276,7 +310,8 @@ public abstract class Xmls {
         NamedNodeMap nodeMap = ele.getAttributes();
         Map<String, String> attrs = new HashMap<String, String>(nodeMap.getLength());
         for (int i = 0; i < nodeMap.getLength(); i++) {
-            attrs.put(nodeMap.item(i).getNodeName(), nodeMap.item(i).getNodeValue());
+            attrs.put(nodeMap.item(i).getNodeName(), nodeMap.item(i)
+                                                            .getNodeValue());
         }
         return attrs;
     }
