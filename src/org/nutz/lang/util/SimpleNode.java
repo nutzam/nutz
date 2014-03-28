@@ -74,6 +74,16 @@ public class SimpleNode<T> implements Node<T> {
         return null == prev;
     }
 
+    public List<Node<T>> parents() {
+        LinkedList<Node<T>> list = new LinkedList<Node<T>>();
+        Node<T> me = parent;
+        while (me != null) {
+            list.addFirst(me);
+            me = me.parent();
+        }
+        return list;
+    }
+
     public List<Node<T>> getAncestors() {
         List<Node<T>> list = new LinkedList<Node<T>>();
         Node<T> me = parent;
