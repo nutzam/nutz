@@ -63,7 +63,7 @@ public class RawView implements View {
 	
 	public static final boolean DISABLE_RANGE_DOWNLOAD = false; //禁用断点续传
 
-	private String contentType;
+	protected String contentType;
 
 	public RawView(String contentType) {
 		if (Strings.isBlank(contentType))
@@ -172,7 +172,7 @@ public class RawView implements View {
 		}
 	}
 
-	private static final Map<String, String> contentTypeMap = new HashMap<String, String>();
+	protected static final Map<String, String> contentTypeMap = new HashMap<String, String>();
 
 	static {
 		contentTypeMap.put("xml", "application/xml");
@@ -258,11 +258,8 @@ public class RawView implements View {
 		return !rs.isEmpty();
 	}
 	
-	public static void writeFileRange(File file, OutputStream out, RangeRange rangeRange) {
-		FileInputStream fin = null;
+	public static void writeDownloadRange(DataInputStream in, OutputStream out, RangeRange rangeRange) {
 		try {
-			fin = new FileInputStream(file);
-			DataInputStream in = new DataInputStream(fin);
 			if (rangeRange.start > 0) {
 				long start = rangeRange.start;
 				while (start > 0) {
@@ -294,6 +291,18 @@ public class RawView implements View {
 				}
 			}
 			out.flush();
+		}
+		catch (Throwable e) {
+			throw Lang.wrapThrow(e);
+		}
+	}
+	
+	public static void writeFileRange(File file, OutputStream out, RangeRange rangeRange) {
+		FileInputStream fin = null;
+		try {
+			fin = new FileInputStream(file);
+			DataInputStream in = new DataInputStream(fin);
+			writeDownloadRange(in, out, rangeRange);
 		}
 		catch (Throwable e) {
 			throw Lang.wrapThrow(e);
