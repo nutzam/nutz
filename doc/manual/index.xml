@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<doc title="Nutz 官方手册" author="zozoh(zozohtnt@gmail.com)">
+<doc title="Nutz核心包" author="zozoh(zozohtnt@gmail.com)">
 	<doc path="nutz_preface.man"/>
 	<doc path="nutz_release_notes.man"/>
 	<doc path="committer"  title="关于源码">
@@ -94,17 +94,11 @@
 		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
-	<doc path="zmole" title="zMole">
+	<!--doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
-	</doc>
-	<doc path="zdoc" title="zDoc 手册">
-		<doc path="overview.man"/>
-		<doc path="syntax.man"/>
-		<doc path="index_xml.man"/>
-		<doc path="dir_convert.man"/>
-		<doc path="ant_task.man"/>
-	</doc>
+	</doc-->
 	<doc path="history" title="版本历史">
+		<doc path="1_b_50.man"/>
 		<doc path="1_b_49.man"/>
 		<doc path="1_b_48.man"/>
 		<doc path="1_b_47.man"/>
