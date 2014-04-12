@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -326,5 +327,29 @@ public abstract class Xmls {
     public static String getAttr(Element ele, String attrName) {
         Node node = ele.getAttributes().getNamedItem(attrName);
         return node != null ? node.getNodeValue() : null;
+    }
+    
+    public static Map<String, Object> asMap(Element ele) {
+    	final Map<String, Object> map = new LinkedHashMap<String, Object>();
+    	eachChildren(ele, new Each<Element>() {
+			public void invoke(int index, Element _ele, int length) throws ExitLoop,
+					ContinueLoop, LoopException {
+				String key = _ele.getNodeName();
+				Object val = _ele.getAttribute("value");
+				if (!Strings.isEmpty(String.valueOf(val))) {
+					map.put(key, val);
+					return;
+				}
+				if (!_ele.hasChildNodes())
+					return;
+				NodeList list = _ele.getChildNodes();
+				if (list.getLength() == 1 && !(list.item(0) instanceof Element)) {
+					map.put(key, list.item(0).getTextContent().trim().intern());
+					return ;
+				}
+				map.put(key, asMap(_ele));
+			}
+		});
+    	return map;
     }
 }
