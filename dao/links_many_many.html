@@ -15,19 +15,22 @@
 <div><span class="num">2</span><a href="#在_POJO_中配置多对多映射">在 POJO 中配置多对多映射</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#你不仅可以在集合类型字段上声明一对多映射">你不仅可以在集合类型字段上声明一对多映射</a></div>
+<div><span class="num">3</span><a href="#NutDao_是如何连接关联表的">NutDao 是如何连接关联表的</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#插入操作">插入操作</a></div>
+<div><span class="num">4</span><a href="#你不仅可以在集合类型字段上声明一对多映射">你不仅可以在集合类型字段上声明一对多映射</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#获取操作">获取操作</a></div>
+<div><span class="num">5</span><a href="#插入操作">插入操作</a></div>
 </li>
 <li>
-<div><span class="num">6</span><a href="#更新操作">更新操作</a></div>
+<div><span class="num">6</span><a href="#获取操作">获取操作</a></div>
 </li>
 <li>
-<div><span class="num">7</span><a href="#删除操作">删除操作</a></div>
+<div><span class="num">7</span><a href="#更新操作">更新操作</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#删除操作">删除操作</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -80,6 +83,68 @@ public class Food extends Pojo {
 </ul>
 </li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="NutDao_是如何连接关联表的"></a>NutDao 是如何连接关联表的</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>比如，下面的例子</p>
+<pre>我们有两个 POJO
+public class Pet {
+    @Id
+    public int id;
+    @Name
+    public String name;
+}
+<span class="zdoc_code_cmt">//-------------------------------
+</span>public class Food {
+    @Id
+    public int id;
+    @Name
+    public String name;
+}
+</pre>
+<p>我们设计了一个关联表关联这两个对象，表示一个宠物爱吃什么样的食物</p>
+<pre>t_pet_food
+===================
+ pid | fid
+-----+------
+ 3   | 6
+ 9   | 8
+</pre>
+<p>那么我们可以为 Pet 类声明一个多对多关联</p>
+<pre>public class Pet {
+    @Id
+    public int id;
+    @Name
+    public String name;
+    @ManyMany(target=Food.class, 
+              relation="t_pet_food", 
+              from="pid", 
+              to="fid")
+    public List&lt;Food&gt; foods;
+}
+</pre>
+<p>可以看到，我们指明了，Pet 类的 foods 字段，通过中间表 t_pet_food 来获取一组 Food 对象。因为 @ManyMany 是声明在 Pet 类的字段上的，那么 Pet 类就被称为所谓的"宿主对象"，而 Food则是所谓的"目标对象"。from 指明关联表的 pid 字段的值代表宿主对象，而 to 指明 fid字段代表目标对象。 </p>
+<p>看到这里，有的心思缜密的同学肯定会有一个小小怀疑，NutDao 怎么能知道 pid 对应到 Pet 哪个字段呢？靠猜吗？恭喜你，答对了。NutDao 在解析到这个注解的时候，会看看 Pet 类，你是否在某个字段上声明了 @Id 注解，如果没有，则试图看看你有没有在某个字段上声明了 @Name 注解。当然，如果你没有声明 @Id 注解，而用整数字段作为 pid 一定会出错的，你必须把关联表改成:</p>
+<pre>t_pet_food
+===================
+ pid       | fid
+-----------+------
+ xiaobai   | 6
+ xiaoqiang | 8
+</pre>
+<p>这个约定有点死板对吗？并且如果你用 VARCHAR 作为 pid 的数据表字段类型，但是你的 Pet 却声明了 @Id 注解，一样会错，因为 @Id 注解优先。</p>
+<p>读到这里，你一定感到很郁闷，因为你实在不想改变你的关联表，没关系，你可以下面一样声明你的 @ManyMany 注解</p>
+<pre>...
+@ManyMany(target=Food.class, 
+          relation="t_pet_food", 
+          from="pid:name", 
+          to="fid")
+public List&lt;Food&gt; foods;
+...
+</pre>
+<p>看，你为 from 声明了一个 "pid:name"，这个冒号后面的，就是大声告诉 NutDao 请用 Pet.name来映射这个 pid 字段。这样 NutDao 就不会自己瞎猜了。</p>
+<p>同理，to 也有一样的属性。并且冒号后面的并不用一定是 PK 字段，只要是惟一性字段均可</p>
+<p>说到这里，我不得不解释一下，NutDao 主要是通过你提供的注解来分析 POJO 的。我曾经考虑过，是不是少让大家提供几个注解，我自行分析数据表，然后总能做出合理的决定。但是 ... 数据种类实在太多了，各自有各自的脾气，从植物学的角度来说，这很有可能是一个一望无际的大坑，如果我那么做了，估计我会有相当长的一段时间在坑里幸福的遨游，所以我收起了自己的胆量，弱弱的给出了一组注解，以便我能用更少的代码做更多的事情。当然，就 @ManyMany 这个用法，用冒号分隔，通过注解指明映射字段，我想应该还是可以被多数人接受的。</p>
 <div class="hr"><b></b></div>
 <h1><a name="你不仅可以在集合类型字段上声明一对多映射"></a>你不仅可以在集合类型字段上声明一对多映射</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

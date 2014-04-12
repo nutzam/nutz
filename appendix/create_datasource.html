@@ -629,7 +629,7 @@ ioc.depose(); <span class="zdoc_code_cmt">//关闭Ioc容器
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre><span class="zdoc_code_cmt">//将配置信息保存到dao.xml,并存放于src文件夹下
 </span>
-Ioc ioc = new NutIoc(new XmlIocLoader("dao.js"));
+Ioc ioc = new NutIoc(new XmlIocLoader("dao.xml"));
 DataSource ds = ioc.get(DataSource.class);
 Dao dao = new NutDao(ds); <span class="zdoc_code_cmt">//如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
 </span>

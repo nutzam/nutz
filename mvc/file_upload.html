@@ -122,6 +122,7 @@ myUpload : {
 ...
 </pre>
 <p>这样，在配置文件中，你就可以随心所欲的进行控制了。而且这么写仅仅多写了不到 20 行的配置文件，到也没有特别麻烦，对吗？（相关详细规则描述：<a href="http_adaptor.html#通过_Ioc_容器获得适配器">http_adaptor.man#通过_Ioc_容器获得适配器</a>）</p>
+<p><span style="color:#FF0000;"><b>特别注意</b></span> 有的同学使用文件上传遇到了<a href="https://github.com/nutzam/nutz/issues/575">诡异的问题</a>如果你要用 Ioc 来管理 UploadAdaptor，你必须为不同的入口函数分配不同的实例。当然这些实例可以引用同样的 uploadFileContext 和 tmpFilePool。否则我们不能保证适配的结果正确。</p>
 <p>看到这里，有些同学会问了，为什么你用注解的方式可以这么写：</p>
 <pre>@AdaptBy(type = UploadAdaptor.class, args = { "${app.root}/WEB-INF/tmp" })
 </pre>
