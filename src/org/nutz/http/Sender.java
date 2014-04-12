@@ -115,7 +115,7 @@ public abstract class Sender {
     protected void openConnection() throws IOException {
     	ProxySwitcher proxySwitcher = Http.proxySwitcher;
     	if (proxySwitcher != null) {
-    		Proxy proxy = proxySwitcher.getProxy(request.getUrl());
+    		Proxy proxy = proxySwitcher.getProxy(request);
     		if (proxy != null) {
     			conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
     			conn.setConnectTimeout(Default_Conn_Timeout);

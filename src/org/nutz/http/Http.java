@@ -91,6 +91,10 @@ public class Http {
             public Proxy getProxy(URL url) {
                 return proxy;
             }
+            public Proxy getProxy(Request req) {
+            	req.getHeader().set("Connection", "close");
+            	return getProxy(req.getUrl());
+            }
         };
     }
 
@@ -99,6 +103,10 @@ public class Http {
         proxySwitcher = new ProxySwitcher() {
             public Proxy getProxy(URL url) {
                 return proxy;
+            }
+            public Proxy getProxy(Request req) {
+            	req.getHeader().set("Connection", "close");
+            	return getProxy(req.getUrl());
             }
         };
     }
