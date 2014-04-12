@@ -92,7 +92,27 @@ public abstract class Xmls {
         Element sub = firstChild(ele, subTagName);
         if (null == sub)
             return null;
-        return Strings.sNull(Strings.trim(sub.getTextContent()), "");
+        return getText(sub);
+    }
+
+    public static String getText(Element ele) {
+        StringBuilder sb = new StringBuilder();
+        joinText(ele, sb);
+        return Strings.trim(sb);
+    }
+
+    public static void joinText(Element ele, StringBuilder sb) {
+        if (null == ele)
+            return;
+        NodeList nl = ele.getChildNodes();
+        for (int i = 0; i < nl.getLength(); i++) {
+            Node nd = nl.item(i);
+            if (nd.getNodeType() == Node.TEXT_NODE) {
+                sb.append(nd.getNodeValue());
+            } else if (nd.getNodeType() == Node.ELEMENT_NODE) {
+                joinText((Element) nd, sb);
+            }
+        }
     }
 
     /**
@@ -228,6 +248,30 @@ public abstract class Xmls {
                                     String regex,
                                     final Each<Element> callback) {
         Xmls.eachChildren(ele, regex, callback, 0);
+    }
+
+    /**
+     * 判断某个元素下是否有子元素
+     * 
+     * @param ele
+     *            元素
+     * @param regex
+     *            子元素名称的正则表达式，如果为 null，则元素内如果有任意元素都会返回 false
+     * @return 是否有子元素
+     */
+    public static boolean hasChild(Element ele, String regex) {
+        NodeList nl = ele.getChildNodes();
+        int len = nl.getLength();
+        for (int i = 0; i < len; i++) {
+            Node nd = nl.item(i);
+            if (nd instanceof Element) {
+                if (null == regex)
+                    return false;
+                if (((Element) nd).getTagName().matches(regex))
+                    return true;
+            }
+        }
+        return false;
     }
 
     /**

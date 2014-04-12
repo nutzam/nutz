@@ -62,7 +62,7 @@
 质量
 	共通过了 {#FF00FF;*870+}  个单元测试用例,代码覆盖率达到 {#FF00FF;50+%}(按行计算)
 
-    <emma.png>
+    <../emma.png>
 	 
 	Nutz.Dao 经测试在如下数据库上可以工作正常
 	 * [http://www.h2database.com H2]
