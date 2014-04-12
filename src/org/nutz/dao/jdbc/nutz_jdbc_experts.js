@@ -19,7 +19,8 @@ var ioc = {
 		"hsql.*" : "org.nutz.dao.impl.jdbc.hsqldb.HsqldbJdbcExpert",
 		"sqlite" : "org.nutz.dao.impl.jdbc.sqlite.SQLiteJdbcExpert",
 		".+derby.+" : "org.nutz.dao.impl.jdbc.derby.DerbyJdbcExpert",
-		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert"
+		"gbase.*" : "org.nutz.dao.impl.jdbc.gbase.GBaseJdbcExpert",
+		"sybase.*" : "org.nutz.dao.impl.jdbc.sybase.SybaseIQJdbcExpert"
 	// ~ 映射结束
 	},
 
