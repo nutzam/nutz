@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -2261,5 +2262,41 @@ public abstract class Lang {
             synchronized (lock) {
                 lock.notifyAll();
             }
+    }
+    
+    /**
+     * map对象浅过滤,返回值是一个新的map
+     * @param source 原始的map对象
+     * @param prefix 包含什么前缀,并移除前缀
+     * @param include 正则表达式 仅包含哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param exclude 正则表达式 排除哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param map 映射map, 原始key--目标key (如果有前缀要求,则已经移除了前缀)
+     * @return 经过过滤的map,与原始map不是同一个对象
+     */
+    public static Map<String, Object> filter(Map<String, Object> source, String prefix, String include, String exclude, Map<String, String> keyMap) {
+    	LinkedHashMap<String, Object> dst = new LinkedHashMap<String, Object>();
+    	if (source == null || source.isEmpty())
+    		return dst;
+    	Pattern includePattern = include == null ? null : Pattern.compile(include);
+    	Pattern excludePattern = exclude == null ? null : Pattern.compile(exclude);
+    	
+    	for (Entry<String, Object> en : source.entrySet()) {
+    		String key = en.getKey();
+    		if (prefix != null) {
+    			if (key.startsWith(prefix))
+    				key = key.substring(prefix.length());
+    			else
+    				continue;
+    		}
+    		if (includePattern != null && !includePattern.matcher(key).find())
+    			continue;
+    		if (excludePattern != null && excludePattern.matcher(key).find())
+    			continue;
+    		if (keyMap != null && keyMap.containsKey(key))
+    			dst.put(keyMap.get(key), en.getValue());
+    		else
+    			dst.put(key, en.getValue());
+		}
+    	return dst;
     }
 }
