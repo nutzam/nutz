@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -15,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.nutz.lang.util.Callback2;
+import org.nutz.lang.util.NutMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -372,28 +372,44 @@ public abstract class Xmls {
         Node node = ele.getAttributes().getNamedItem(attrName);
         return node != null ? node.getNodeValue() : null;
     }
-    
-    public static Map<String, Object> asMap(Element ele) {
-    	final Map<String, Object> map = new LinkedHashMap<String, Object>();
-    	eachChildren(ele, new Each<Element>() {
-			public void invoke(int index, Element _ele, int length) throws ExitLoop,
-					ContinueLoop, LoopException {
-				String key = _ele.getNodeName();
-				Object val = _ele.getAttribute("value");
-				if (!Strings.isEmpty(String.valueOf(val))) {
-					map.put(key, val);
-					return;
-				}
-				if (!_ele.hasChildNodes())
-					return;
-				NodeList list = _ele.getChildNodes();
-				if (list.getLength() == 1 && !(list.item(0) instanceof Element)) {
-					map.put(key, list.item(0).getTextContent().trim().intern());
-					return ;
-				}
-				map.put(key, asMap(_ele));
-			}
-		});
-    	return map;
+
+    /**
+     * 根据一个 XML 节点，将其变成一个 Map。这是个简单的映射函数， 仅仅映射一层子节点，比如：
+     * 
+     * <pre>
+     * ...
+     * &lt;pet&gt;
+     *      &lt;name&gt;xiaobai&lt;name&gt;
+     *      &lt;age&gt;15&lt;name&gt;
+     * &lt;pet&gt;
+     * ...
+     * </pre>
+     * 
+     * 会被映射为(注意，所有的值都是字符串哦):
+     * 
+     * <pre>
+     * {
+     *      name : "xiaobai",
+     *      age  : "15"
+     * }
+     * </pre>
+     * 
+     * @param ele
+     *            元素
+     * 
+     * @return 一个 Map 对象
+     */
+    public static NutMap asMap(Element ele) {
+        final NutMap map = new NutMap();
+        eachChildren(ele, new Each<Element>() {
+            public void invoke(int index, Element _ele, int length)
+                    throws ExitLoop, ContinueLoop, LoopException {
+                String key = _ele.getNodeName();
+                String val = getText(_ele);
+                if (!Strings.isBlank(val))
+                    map.setv(key, val);
+            }
+        });
+        return map;
     }
 }
