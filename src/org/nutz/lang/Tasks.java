@@ -28,7 +28,7 @@ public abstract class Tasks {
      * @param task 具体待执行的任务
      * @param period 每次执行任务的间隔时间(单位秒)
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, int periodSeconds) {
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long periodSeconds) {
         return scheduleAtFixedRate(task, 0, periodSeconds, TimeUnit.SECONDS);
     }
 
@@ -39,7 +39,7 @@ public abstract class Tasks {
      * @param periodSeconds 每次执行任务的间隔时间(单位秒)
      * @param unit 时间单位
      */
-    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, int period, TimeUnit unit) {
+    public static ScheduledFuture<?> scheduleAtFixedRate(Runnable task, long initialDelay, long period, TimeUnit unit) {
         return taskScheduler.scheduleAtFixedRate(task, initialDelay, period, unit);
     }
 
@@ -50,7 +50,7 @@ public abstract class Tasks {
      * @param period 每次执行任务的间隔时间
      * @param unit 时间单位
      */
-    public static void scheduleAtFixedRate(Runnable task, String startTime, int period, TimeUnit unit) throws ParseException {
+    public static void scheduleAtFixedRate(Runnable task, String startTime, long period, TimeUnit unit) throws ParseException {
         Date dt = Times.D(startTime);
         scheduleAtFixedRate(task, dt, period, unit);
     }
@@ -62,7 +62,7 @@ public abstract class Tasks {
      * @param period 每次执行任务的间隔时间
      * @param unit 时间单位
      */
-    public static void scheduleAtFixedRate(final Runnable task, Date startTime, final int period, final TimeUnit unit) {
+    public static void scheduleAtFixedRate(final Runnable task, Date startTime, final long period, final TimeUnit unit) {
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
@@ -78,7 +78,7 @@ public abstract class Tasks {
      * @param task 具体待执行的任务
      * @param period 两次任务的间隔时间(单位秒)
      */
-    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, int periodSeconds) {
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long periodSeconds) {
         return scheduleWithFixedDelay(task, 0, periodSeconds, TimeUnit.SECONDS);
     }
 
@@ -89,7 +89,7 @@ public abstract class Tasks {
      * @param period 两次任务的间隔时间(单位秒)
      * @param unit 时间单位
      */
-    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long initialDelay, int period, TimeUnit unit) {
+    public static ScheduledFuture<?> scheduleWithFixedDelay(Runnable task, long initialDelay, long period, TimeUnit unit) {
         return taskScheduler.scheduleWithFixedDelay(task, initialDelay, period, unit);
     }
 
@@ -100,7 +100,7 @@ public abstract class Tasks {
      * @param period 两次任务的间隔时间
      * @param unit 时间单位
      */
-    public static void scheduleWithFixedDelay(Runnable task, String startTime, int period, TimeUnit unit) throws ParseException {
+    public static void scheduleWithFixedDelay(Runnable task, String startTime, long period, TimeUnit unit) throws ParseException {
         Date dt = Times.D(startTime);
         scheduleWithFixedDelay(task, dt, period, unit);
     }
@@ -112,7 +112,7 @@ public abstract class Tasks {
      * @param period 两次任务的间隔时间
      * @param unit 时间单位
      */
-    public static void scheduleWithFixedDelay(final Runnable task, Date startTime, final int period, final TimeUnit unit) {
+    public static void scheduleWithFixedDelay(final Runnable task, Date startTime, final long period, final TimeUnit unit) {
         final Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
