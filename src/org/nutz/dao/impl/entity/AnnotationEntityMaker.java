@@ -18,6 +18,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Comment;
 import org.nutz.dao.entity.annotation.EL;
@@ -391,6 +392,9 @@ public class AnnotationEntityMaker implements EntityMaker {
             ef.setColumnType(info.annDefine.type());
             // 宽度
             ef.setWidth(info.annDefine.width());
+            if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
+            	ef.setWidth(50);
+            }
             // 精度
             ef.setPrecision(info.annDefine.precision());
             // 无符号
