@@ -108,7 +108,6 @@ public abstract class Xmls {
         NodeList nl = ele.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node nd = nl.item(i);
-            System.out.println(nd + " "  + nd.getNodeType());
             switch (nd.getNodeType()) {
 			case Node.TEXT_NODE:
 				sb.append(nd.getNodeValue());
