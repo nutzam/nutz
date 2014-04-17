@@ -108,11 +108,20 @@ public abstract class Xmls {
         NodeList nl = ele.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node nd = nl.item(i);
-            if (nd.getNodeType() == Node.TEXT_NODE) {
-                sb.append(nd.getNodeValue());
-            } else if (nd.getNodeType() == Node.ELEMENT_NODE) {
-                joinText((Element) nd, sb);
-            }
+            System.out.println(nd + " "  + nd.getNodeType());
+            switch (nd.getNodeType()) {
+			case Node.TEXT_NODE:
+				sb.append(nd.getNodeValue());
+				break;
+			case Node.CDATA_SECTION_NODE :
+				sb.append(nd.getNodeValue());
+				break;
+			case Node.ELEMENT_NODE :
+				joinText((Element) nd, sb);
+				break;
+			default:
+				break;
+			}
         }
     }
 
@@ -406,10 +415,12 @@ public abstract class Xmls {
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
                 String val = getText(_ele);
-                if (!Strings.isBlank(val))
+                if (!Strings.isBlank(val)) {
                     map.setv(key, val);
+                }
             }
         });
+        System.out.println(map);
         return map;
     }
 }
