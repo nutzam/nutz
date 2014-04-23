@@ -322,7 +322,7 @@ public class NutLoading implements Loading {
         IocBy ib = mainModule.getAnnotation(IocBy.class);
         if (null != ib) {
             if (log.isDebugEnabled())
-                log.debugf("@IocBy(type=%s, args=%s)", ib.type().getName(), ib.args());
+                log.debugf("@IocBy(type=%s, args=%s)", ib.type().getName(), Json.toJson(ib.args()));
 
             Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
             // 如果是 Ioc2 的实现，增加新的 ValueMaker

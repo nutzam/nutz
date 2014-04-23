@@ -40,6 +40,22 @@ public class JsonRenderImpl implements JsonRender {
 
     private Set<Object> memo = new HashSet<Object>();
 
+    public JsonFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(JsonFormat format) {
+        this.format = format;
+    }
+
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
     public void render(Object obj) throws IOException {
         if (null == obj) {
             writer.write("null");
@@ -90,6 +106,8 @@ public class JsonRenderImpl implements JsonRender {
             }
         }
     }
+
+    public JsonRenderImpl() {}
 
     public JsonRenderImpl(Writer writer, JsonFormat format) {
         this.format = format;

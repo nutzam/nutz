@@ -148,6 +148,15 @@ public class Json {
     // =========================================================================
     // ============================Json.toJson==================================
     // =========================================================================
+    private static Class<? extends JsonRender> jsonRenderCls;
+
+    public static Class<? extends JsonRender> getJsonRenderCls() {
+        return jsonRenderCls;
+    }
+
+    public static void setJsonRenderCls(Class<? extends JsonRender> jsonRenderCls) {
+        jsonRenderCls = jsonRenderCls;
+    }
 
     /**
      * 将一个 JAVA 对象转换成 JSON 字符串
@@ -201,7 +210,16 @@ public class Json {
         try {
             if (format == null)
                 format = JsonFormat.nice();
-            new JsonRenderImpl(writer, format).render(obj);
+
+            Class<? extends JsonRender> jrCls = getJsonRenderCls();
+            if (jrCls == null)
+                jrCls = JsonRenderImpl.class;
+
+            JsonRender jr = Mirror.me(jrCls).born();
+            jr.setWriter(writer);
+            jr.setFormat(format);
+            jr.render(obj);
+
             writer.flush();
         }
         catch (IOException e) {
