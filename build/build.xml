@@ -6,7 +6,6 @@
 	<!-- set global properties for this build -->
 	<property environment="env" />
 
-	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
 	<property name="DEPHOME" value="${env.DEPS}" />
 	<property name="OP" value="${env.OUTPUT}" />
@@ -31,9 +30,6 @@
 	<property name="zall" value="**" />
 
 	<path id="CLASSPATH">
-		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
-			<include name="*.jar" />
-		</fileset>
 		<fileset dir="${DEPHOME}" casesensitive="no">
 			<include name="*.jar" />
 		</fileset>
