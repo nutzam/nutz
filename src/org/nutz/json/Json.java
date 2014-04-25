@@ -36,7 +36,7 @@ public class Json {
      * @throws JsonException
      */
     public static Object fromJson(Reader reader) throws JsonException {
-//    	return new org.nutz.json.impl.JsonCompileImpl().parse(reader);
+        // return new org.nutz.json.impl.JsonCompileImpl().parse(reader);
         return new org.nutz.json.impl.JsonCompileImplV2().parse(reader);
     }
 
@@ -51,7 +51,8 @@ public class Json {
      * @throws JsonException
      */
     @SuppressWarnings("unchecked")
-    public static <T> T fromJson(Class<T> type, Reader reader) throws JsonException {
+    public static <T> T fromJson(Class<T> type, Reader reader)
+            throws JsonException {
         return (T) parse(type, reader);
     }
 
@@ -65,7 +66,8 @@ public class Json {
      * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
-    public static Object fromJson(Type type, Reader reader) throws JsonException {
+    public static Object fromJson(Type type, Reader reader)
+            throws JsonException {
         return parse(type, reader);
     }
 
@@ -86,7 +88,8 @@ public class Json {
      * @return 指定类型的 JAVA 对象
      * @throws JsonException
      */
-    public static Object fromJson(Type type, CharSequence cs) throws JsonException {
+    public static Object fromJson(Type type, CharSequence cs)
+            throws JsonException {
         return fromJson(type, Lang.inr(cs));
     }
 
@@ -121,7 +124,7 @@ public class Json {
      * @return JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Reader reader)
+     * @see #fromJson(Reader reader)
      */
     public static Object fromJson(CharSequence cs) throws JsonException {
         return fromJson(Lang.inr(cs));
@@ -139,9 +142,10 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Class type, Reader reader)
+     * @see #fromJson(Class type, Reader reader)
      */
-    public static <T> T fromJson(Class<T> type, CharSequence cs) throws JsonException {
+    public static <T> T fromJson(Class<T> type, CharSequence cs)
+            throws JsonException {
         return fromJson(type, Lang.inr(cs));
     }
 
@@ -154,8 +158,8 @@ public class Json {
         return jsonRenderCls;
     }
 
-    public static void setJsonRenderCls(Class<? extends JsonRender> jsonRenderCls) {
-        jsonRenderCls = jsonRenderCls;
+    public static void setJsonRenderCls(Class<? extends JsonRender> cls) {
+        jsonRenderCls = cls;
     }
 
     /**
@@ -275,7 +279,7 @@ public class Json {
     /**
      * 保存所有的 Json 实体
      */
-	private static final ConcurrentHashMap<String, JsonEntity> entities = new ConcurrentHashMap<String, JsonEntity>();
+    private static final ConcurrentHashMap<String, JsonEntity> entities = new ConcurrentHashMap<String, JsonEntity>();
 
     /**
      * 获取一个 Json 实体
@@ -304,7 +308,7 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Type type, CharSequence cs)
+     * @see #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> fromJsonAsList(Class<T> eleType, CharSequence cs) {
@@ -323,7 +327,7 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Type type, Reader reader)
+     * @see #fromJson(Type type, Reader reader)
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> fromJsonAsList(Class<T> eleType, Reader reader) {
@@ -342,7 +346,7 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Type type, CharSequence cs)
+     * @see #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] fromJsonAsArray(Class<T> eleType, CharSequence cs) {
@@ -361,7 +365,7 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Class type, Reader reader)
+     * @see #fromJson(Class type, Reader reader)
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] fromJsonAsArray(Class<T> eleType, Reader reader) {
@@ -380,10 +384,11 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Type type, CharSequence cs)
+     * @see #fromJson(Type type, CharSequence cs)
      */
     @SuppressWarnings("unchecked")
-    public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType, CharSequence cs) {
+    public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType,
+                                                   CharSequence cs) {
         return (Map<String, T>) fromJson(NutType.mapStr(eleType), cs);
     }
 
@@ -399,10 +404,11 @@ public class Json {
      * @return 特定类型的 JAVA 对象
      * @throws JsonException
      * 
-     * @see  #fromJson(Type type, Reader reader)
+     * @see #fromJson(Type type, Reader reader)
      */
     @SuppressWarnings("unchecked")
-    public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType, Reader reader) {
+    public static <T> Map<String, T> fromJsonAsMap(Class<T> eleType,
+                                                   Reader reader) {
         return (Map<String, T>) fromJson(NutType.mapStr(eleType), reader);
     }
 

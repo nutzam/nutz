@@ -14,17 +14,18 @@ import org.nutz.mapl.MaplConvert;
 
 /**
  * 将MapList转换成Json
+ * 
  * @author juqkai(juqkai@gmail.com)
  */
-public class JsonConvertImpl implements MaplConvert{
+public class JsonConvertImpl implements MaplConvert {
     private static Class<? extends JsonRender> jsonRenderCls;
 
     public static Class<? extends JsonRender> getJsonRenderCls() {
         return jsonRenderCls;
     }
 
-    public static void setJsonRenderCls(Class<? extends JsonRender> jsonRenderCls) {
-        jsonRenderCls = jsonRenderCls;
+    public static void setJsonRenderCls(Class<? extends JsonRender> cls) {
+        jsonRenderCls = cls;
     }
 
     private JsonFormat format = null;
@@ -32,10 +33,11 @@ public class JsonConvertImpl implements MaplConvert{
     public JsonConvertImpl() {
         format = new JsonFormat();
     }
+
     public JsonConvertImpl(JsonFormat format) {
         this.format = format;
     }
-    
+
     public Object convert(Object obj) {
         StringBuilder sb = new StringBuilder();
         Writer writer = new StringWriter(sb);
@@ -51,7 +53,8 @@ public class JsonConvertImpl implements MaplConvert{
 
             writer.flush();
             return sb.toString();
-        } catch (IOException e) {
+        }
+        catch (IOException e) {
             throw Lang.wrapThrow(e, JsonException.class);
         }
     }
