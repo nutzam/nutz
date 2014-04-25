@@ -230,15 +230,15 @@ public abstract class Disks {
      * 
      * @param path
      *            根路径
-     * @param suffix
-     *            后缀
+     * @param regex
+     *            文件名的正则表达式
      * @param deep
      *            是否深层遍历
      * @param fv
      *            你所提供的访问器,当然就是你自己的逻辑咯
      */
     public static final void visitFile(String path,
-                                       final String suffix,
+                                       final String regex,
                                        final boolean deep,
                                        final FileVisitor fv) {
         File d = Files.findFile(path);
@@ -254,8 +254,11 @@ public abstract class Disks {
             public boolean accept(File f) {
                 if (f.isDirectory())
                     return deep;
-                return !f.getName().startsWith(".")
-                       && f.getName().endsWith(suffix);
+                if (f.isHidden())
+                    return false;
+                if (Strings.isEmpty(regex))
+                    return true;
+                return f.getName().matches(regex);
             }
         });
     }
