@@ -17,6 +17,7 @@ import javax.servlet.http.HttpSession;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.Context;
 import org.nutz.lang.util.MethodParamNamesScaner;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -24,6 +25,7 @@ import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
+import org.nutz.mvc.adaptor.injector.ContextInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
 import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
@@ -56,7 +58,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected ParamInjector[] injs;
 
     protected Method method;
-    
+
     protected Class<?>[] argTypes;
 
     public void init(Method method) {
@@ -159,6 +161,10 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         else if (Reader.class.isAssignableFrom(type)) {
             return new HttpReaderInjector();
         }
+        // Context
+        else if (Context.class.isAssignableFrom(type)) {
+            return new ContextInjector();
+        }
         return null;
     }
 
@@ -181,7 +187,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                           HttpServletRequest req,
                           HttpServletResponse resp,
                           String[] pathArgs) {
-    	
+
         Object[] args = new Object[argTypes.length];
 
         if (args.length != injs.length)
@@ -276,7 +282,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                           index,
                           method);
     	}
-        
+
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }
