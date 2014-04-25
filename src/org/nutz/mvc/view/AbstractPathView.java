@@ -2,6 +2,7 @@ package org.nutz.mvc.view;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -83,6 +84,8 @@ public abstract class AbstractPathView implements View {
         }
         context.set("a", req_attr);//兼容最初的写法
         context.set("req_attr", req_attr);
+        
+        context.set("pathargs", Mvcs.getActionContext().getPathArgs());
         
         HttpSession session = Mvcs.getHttpSession(false);
         if (session != null) {
