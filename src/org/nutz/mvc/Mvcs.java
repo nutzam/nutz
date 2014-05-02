@@ -429,6 +429,5 @@ public abstract class Mvcs {
     public static void close() {
         ctx.clear();
         ctx.close();
-        ctx = null;
     }
 }
