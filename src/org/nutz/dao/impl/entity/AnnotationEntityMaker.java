@@ -101,8 +101,13 @@ public class AnnotationEntityMaker implements EntityMaker {
         /*
          * 获得表名以及视图名称及注释
          */
-        String tableName = null == ti.annTable ? Strings.lowerWord(type.getSimpleName(), '_')
-                                              : ti.annTable.value();
+        String tableName = null;
+        if (null == ti.annTable) {
+        	tableName = Strings.lowerWord(type.getSimpleName(), '_');
+        	log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
+        } else {
+        	tableName = ti.annTable.value();
+        }
         String viewName = null == ti.annView ? tableName : ti.annView.value();
         en.setTableName(tableName);
         en.setViewName(viewName);
