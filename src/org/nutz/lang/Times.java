@@ -544,6 +544,70 @@ public abstract class Times {
         return re;
     }
 
+    private static final String[] _MMM = new String[]{"Jan",
+                                                      "Feb",
+                                                      "Mar",
+                                                      "Apr",
+                                                      "May",
+                                                      "Jun",
+                                                      "Jul",
+                                                      "Aug",
+                                                      "Sep",
+                                                      "Oct",
+                                                      "Nov",
+                                                      "Dec"};
+
+    /**
+     * 将一个时间格式化成容易被人类阅读的格式
+     * 
+     * <pre>
+     * 如果 1 分钟内，打印 Just Now
+     * 如果 1 小时内，打印多少分钟
+     * 如果 1 天之内，打印多少小时之前
+     * 如果是今年之内，打印月份和日期
+     * 否则打印月份和年
+     * </pre>
+     * 
+     * @param d
+     * @return
+     */
+    public static String formatForRead(Date d) {
+        long ms = System.currentTimeMillis() - d.getTime();
+        // 如果 1 分钟内，打印 Just Now
+        if (ms < (60000)) {
+            return "Just Now";
+        }
+        // 如果 1 小时内，打印多少分钟
+        if (ms < (60 * 60000)) {
+            return "" + (ms / 60000) + "Min.";
+        }
+
+        // 如果 1 天之内，打印多少小时之前
+        if (ms < (24 * 3600 * 1000)) {
+            return "" + (ms / 3600000) + "hr.";
+        }
+
+        // 如果一周之内，打印多少天之前
+        if (ms < (7 * 24 * 3600 * 1000)) {
+            return "" + (ms / (24 * 3600000)) + "Day";
+        }
+
+        // 如果是今年之内，打印月份和日期
+        Calendar c = Calendar.getInstance();
+        int thisYear = c.get(Calendar.YEAR);
+
+        c.setTime(d);
+        int yy = c.get(Calendar.YEAR);
+        int mm = c.get(Calendar.MONTH);
+        if (thisYear == yy) {
+            int dd = c.get(Calendar.DAY_OF_MONTH);
+            return String.format("%s %d", _MMM[mm], dd);
+        }
+
+        // 否则打印月份和年
+        return String.format("%s %d", _MMM[mm], yy);
+    }
+
     /**
      * 以给定的时间格式来安全的对时间进行格式化，并返回格式化后所对应的字符串
      * 

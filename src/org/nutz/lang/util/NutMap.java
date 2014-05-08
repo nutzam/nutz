@@ -203,9 +203,8 @@ public class NutMap extends LinkedHashMap<String, Object> {
     /**
      * 为 Map 增加一个名值对。
      * <ul>
-     * <li>如果该键不存在，则添加对象。
      * <li>如果存在并且是 List，则添加到 List。
-     * <li>创建一个 List ，并添加对象
+     * <li>否则创建一个 List ，并添加对像
      * </ul>
      * 
      * @param key
@@ -214,9 +213,9 @@ public class NutMap extends LinkedHashMap<String, Object> {
     @SuppressWarnings("unchecked")
     public NutMap addv(String key, Object value) {
         Object obj = get(key);
-        if (null == obj)
-            put(key, value);
-        else if (obj instanceof List<?>)
+        if (null == obj) {
+            put(key, Lang.list(value));
+        } else if (obj instanceof List<?>)
             ((List<Object>) obj).add(value);
         else {
             List<Object> list = new LinkedList<Object>();
