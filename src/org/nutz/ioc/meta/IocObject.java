@@ -48,6 +48,8 @@ public class IocObject implements Cloneable {
      * 默认的为 "app"
      */
     private String scope;
+    
+    private String factory;
 
     public IocObject() {
         args = new ArrayList<IocValue>();
@@ -129,4 +131,12 @@ public class IocObject implements Cloneable {
     public String toString() {
         return Json.toJson(this);
     }
+
+	public void setFactory(String factory) {
+		this.factory = factory;
+	}
+	
+	public String getFactory() {
+		return factory;
+	}
 }

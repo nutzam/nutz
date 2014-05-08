@@ -206,18 +206,18 @@ public abstract class Jdbcs {
         // BigDecimal
         if (mirror.isOf(BigDecimal.class))
             return Jdbcs.Adaptor.asBigDecimal;
-        // Calendar
-        if (mirror.isOf(Calendar.class))
-            return Jdbcs.Adaptor.asCalendar;
-        // java.util.Date
-        if (mirror.isOf(java.util.Date.class))
-            return Jdbcs.Adaptor.asDate;
         // java.sql.Date
         if (mirror.isOf(java.sql.Date.class))
             return Jdbcs.Adaptor.asSqlDate;
         // java.sql.Time
         if (mirror.isOf(java.sql.Time.class))
             return Jdbcs.Adaptor.asSqlTime;
+        // Calendar
+        if (mirror.isOf(Calendar.class))
+            return Jdbcs.Adaptor.asCalendar;
+        // java.util.Date
+        if (mirror.isOf(java.util.Date.class))
+            return Jdbcs.Adaptor.asDate;
         // Blob
         if (mirror.isOf(Blob.class))
             return new BlobValueAdaptor(conf.getPool());

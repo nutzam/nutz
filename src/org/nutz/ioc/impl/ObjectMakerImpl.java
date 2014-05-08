@@ -67,7 +67,18 @@ public class ObjectMakerImpl implements ObjectMaker {
                 args[i] = vps[i].get(ing);
 
             // 缓存构造函数
-            dw.setBorning((Borning<?>) mirror.getBorning(args));
+            if (iobj.getFactory() != null) {
+            	// factory这属性, 格式应该是  类名#方法名
+            	final String[] tmp = iobj.getFactory().split("#", 2);
+            	final Mirror<?> _mirror = Mirror.me(Lang.loadClass(tmp[0]));
+				dw.setBorning(new Borning<Object>() {
+					public Object born(Object... args) {
+						return _mirror.invoke(null, tmp[1], args);
+					}
+				});
+            } else {
+            	dw.setBorning((Borning<?>) mirror.getBorning(args));
+            }
 
             // 如果这个对象是容器中的单例，那么就可以生成实例了
             // 这一步非常重要，它解除了字段互相引用的问题

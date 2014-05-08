@@ -205,6 +205,11 @@ public class AnnotationIocLoader implements IocLoader {
                     fieldList.add(iocField.getName());
                 }
             }
+            
+            // 处理工厂方法
+            if (!Strings.isBlank(iocBean.factory())) {
+            	iocObject.setFactory(beanName);
+            }
         } else {
             if (log.isWarnEnabled()) {
                 Field[] fields = classZ.getDeclaredFields();

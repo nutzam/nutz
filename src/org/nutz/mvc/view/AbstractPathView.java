@@ -14,6 +14,7 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.Context;
+import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.Loading;
 import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.View;
@@ -83,6 +84,10 @@ public abstract class AbstractPathView implements View {
         }
         context.set("a", req_attr);//兼容最初的写法
         context.set("req_attr", req_attr);
+        
+        ActionContext ac = Mvcs.getActionContext();
+        if (ac != null)
+        	context.set("pathargs", Mvcs.getActionContext().getPathArgs());
         
         HttpSession session = Mvcs.getHttpSession(false);
         if (session != null) {

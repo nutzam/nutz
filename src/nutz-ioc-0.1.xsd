@@ -13,6 +13,7 @@
 	<xs:attribute name="scope" type="xs:string"></xs:attribute>
 	<xs:attribute name="type" type="xs:string"></xs:attribute>
 	<xs:attribute name="singleton" type="xs:boolean"></xs:attribute>
+    <xs:attribute name="factory" type="xs:string"></xs:attribute>
 	<xs:complexType name="t_ioc">
 		<xs:sequence>
 			<xs:element name="obj" type="t_obj" maxOccurs="unbounded" minOccurs="0"></xs:element>
@@ -265,6 +266,7 @@
 		<xs:attribute ref="key" use="required"></xs:attribute>
 	</xs:complexType>
 	<xs:element name="ioc" type="t_ioc"></xs:element>
+
 </xs:schema>
 
 

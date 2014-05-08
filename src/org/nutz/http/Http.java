@@ -17,15 +17,13 @@ public class Http {
         public static String getBoundary(String contentType) {
             if (null == contentType)
                 return null;
-            int pos = contentType.indexOf(";");
-            if (pos <= 10)
-                return null;
-            if (!contentType.substring(0, pos).equalsIgnoreCase("multipart/form-data"))
-                return null;
-            pos = contentType.indexOf("=", pos);
-            if (pos < 0)
-                return null;
-            return contentType.substring(pos + 1);
+            for (String tmp : contentType.split(";")) {
+				tmp = tmp.trim();
+				if (tmp.startsWith("boundary=")) {
+					return tmp.substring("boundary=".length());
+				}
+			}
+            return null;
         }
 
         public static String formatName(String name, String filename, String contentType) {

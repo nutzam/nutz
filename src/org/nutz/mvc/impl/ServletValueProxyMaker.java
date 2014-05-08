@@ -22,6 +22,8 @@ public class ServletValueProxyMaker implements ValueProxyMaker {
     }
 
     public ValueProxy make(IocMaking ing, IocValue iv) {
+    	if (iv.getValue() == null)
+    		return null;
         String value = iv.getValue().toString();
         if ("app".equals(iv.getType())) {
             if ("$servlet".equalsIgnoreCase(value))

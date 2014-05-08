@@ -64,6 +64,8 @@ public @interface IocBean {
      * @return 需要注入的字段名
      */
     String[] fields() default {};
+    
+    String factory() default "";
 
 //    /**
 //     * fields 的别名
