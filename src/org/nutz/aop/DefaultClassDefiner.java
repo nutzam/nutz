@@ -1,5 +1,8 @@
 package org.nutz.aop;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import org.nutz.lang.Lang;
 
 /**
@@ -8,7 +11,46 @@ import org.nutz.lang.Lang;
  * @author Wendal(wendal1985@gmail.com)
  */
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
+	
+	protected static ClassDefiner one;
+	
+	protected static ClassLoader moreClassLoader;
+	
+	public static void init(ClassLoader cd) {
+		if (one == null) {
+			synchronized (DefaultClassDefiner.class) {
+				if (one == null) {
+					AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
+			            public DefaultClassDefiner run() {
+			            	one = new DefaultClassDefiner(DefaultClassDefiner.class.getClassLoader());
+			                return (DefaultClassDefiner) DefaultClassDefiner.defaultOne();
+			            }
+			        });
+				}
+			}
+		}
+		if (moreClassLoader == null)
+			moreClassLoader = cd;
+	}
 
+	public static ClassDefiner defaultOne() {
+		if (one == null)
+			init(null);
+		return one;
+	}
+	
+	public static final Class<?> def(String className, byte[] bytes) {
+		try {
+			return defaultOne().load(className);
+		} catch (Throwable e) {
+			// TODO: handle exception
+		}
+		return defaultOne().define(className, bytes);
+	}
+	
+	/**
+	 * 虽然是public的,但一般情况下不需要用哦. 用默认的全局ClassDefiner就很好.
+	 */
     public DefaultClassDefiner(ClassLoader parent) {
         super(parent);
     }
@@ -51,6 +93,12 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
                 }
                 catch (ClassNotFoundException e3) {}
             }
+        }
+        if (moreClassLoader != null) {
+        	try {
+				return moreClassLoader.loadClass(className);
+			} catch (Throwable e) {
+			}
         }
         return super.loadClass(className);
     }

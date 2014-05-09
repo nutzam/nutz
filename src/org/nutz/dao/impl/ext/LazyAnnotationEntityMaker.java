@@ -9,7 +9,6 @@ import java.util.WeakHashMap;
 import javax.sql.DataSource;
 
 import org.nutz.aop.ClassAgent;
-import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.aop.InterceptorChain;
 import org.nutz.aop.MethodInterceptor;
@@ -42,15 +41,12 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
 
     private Dao dao;
 
-    private ClassDefiner cd;
-
     public LazyAnnotationEntityMaker(DataSource datasource,
                                      JdbcExpert expert,
                                      EntityHolder holder,
                                      Dao dao) {
         super(datasource, expert, holder);
         this.dao = dao;
-        cd = new DefaultClassDefiner(getClass().getClassLoader());
     }
 
     protected <T> NutEntity<T> _createNutEntity(Class<T> type) {
@@ -105,7 +101,7 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
             for (InterceptorPair interceptorPair : interceptorPairs)
                 agent.addInterceptor(interceptorPair.getMethodMatcher(),
                                      interceptorPair.getMethodInterceptor());
-            Class lazyClass = agent.define(cd, type);
+            Class lazyClass = agent.define(DefaultClassDefiner.defaultOne(), type);
 
             // 检查对象的创建方法
             BornContext<T> bc = Borns.evalByArgTypes(type, ResultSet.class);
