@@ -31,22 +31,24 @@ public class DefaultViewMaker implements ViewMaker {
         if (VIEW_JSP.equals(type))
             return new JspView(value);
         if (VIEW_JSON.equals(type))
-            if (Strings.isBlank(value)) 
+            if (Strings.isBlank(value))
                 return UTF8JsonView.COMPACT;
             else {
-            	// 除高级的json format定义之外,也支持简单的缩写
-            	if (value.charAt(0) == '{')
-            		return new UTF8JsonView(Json.fromJson(JsonFormat.class, value));
-            	else if ("nice".equals(value))
-            		return UTF8JsonView.NICE;
-            	else if ("forlook".equals(value))
-            		return UTF8JsonView.FORLOOK;
-            	else if ("full".equals(value))
-            		return UTF8JsonView.FULL;
-            	else if ("compact".equals(value))
-            		return UTF8JsonView.COMPACT;
-            	else 
-            		throw new IllegalArgumentException("unkown json view format : " + value);
+                // 除高级的json format定义之外,也支持简单的缩写
+                if (value.charAt(0) == '{')
+                    return new UTF8JsonView(Json.fromJson(JsonFormat.class,
+                                                          value));
+                else if ("nice".equals(value))
+                    return UTF8JsonView.NICE;
+                else if ("forlook".equals(value))
+                    return UTF8JsonView.FORLOOK;
+                else if ("full".equals(value))
+                    return UTF8JsonView.FULL;
+                else if ("compact".equals(value))
+                    return UTF8JsonView.COMPACT;
+                else
+                    throw new IllegalArgumentException("unkown json view format : "
+                                                       + value);
             }
         if (VIEW_REDIRECT.equals(type) || VIEW_REDIRECT2.equals(type))
             return new ServerRedirectView(value);
@@ -56,8 +58,10 @@ public class DefaultViewMaker implements ViewMaker {
             return new VoidView();
         if (VIEW_IOC.equals(type))
             return ioc.get(View.class, value);
-        if (VIEW_HTTP.equals(type))
-            return new HttpStatusView(Integer.parseInt(value));
+        if (VIEW_HTTP.equals(type)) {
+            return new HttpStatusView(Integer.parseInt(Strings.sBlank(value,
+                                                                      "500")));
+        }
         if (VIEW_RAW.equals(type))
             return new RawView(value);
         return null;
