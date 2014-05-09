@@ -113,7 +113,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw Lang.wrapThrow(e, IocException.class);
+            throw new IocException("create ioc bean fail name="+ ing.getObjectName(), e);
         }
 
         // 返回
