@@ -94,9 +94,16 @@ public class NutMap extends LinkedHashMap<String, Object> {
         return getString(key, null);
     }
 
-    public String getString(String key, String dft) {
+    @SuppressWarnings("rawtypes")
+	public String getString(String key, String dft) {
         Object v = get(key);
-        return null == v ? dft : Castors.me().castTo(v, String.class);
+        if (v == null)
+        	return dft;
+        if (v instanceof List) {
+        	v = ((List)v).iterator().next();
+        }
+        // by wendal : 这还有必要castTo么?
+        return Castors.me().castTo(v, String.class);
     }
 
     public Date getTime(String key) {
