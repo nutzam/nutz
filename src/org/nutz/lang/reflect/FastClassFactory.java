@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.lang.Mirror;
 import org.nutz.repo.org.objectweb.asm.ClassWriter;
@@ -18,8 +17,6 @@ import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.repo.org.objectweb.asm.Type;
 
 public final class FastClassFactory implements Opcodes {
-
-    private static ClassDefiner classDefiner = new DefaultClassDefiner(FastClassFactory.class.getClassLoader());
 
     private static AtomicInteger count = new AtomicInteger();
 
@@ -196,7 +193,7 @@ public final class FastClassFactory implements Opcodes {
 
         cw.visitEnd();
 
-        Class<?> xClass = classDefiner.define(myName.replace('/', '.'),
+        Class<?> xClass = DefaultClassDefiner.def(myName.replace('/', '.'),
                                               cw.toByteArray());
         try {
             xClass.getField(SrcClass_FieldName).set(null, classZ);

@@ -122,7 +122,7 @@ public class ObjectMakerImpl implements ObjectMaker {
             if (log.isWarnEnabled())
                 log.warn(String.format("IobObj: \n%s", iobj.toString()), e);
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw Lang.wrapThrow(e, IocException.class);
+            throw new IocException("create ioc bean fail name="+ ing.getObjectName(), e);
         }
 
         // 返回
