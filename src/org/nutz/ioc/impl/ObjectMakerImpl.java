@@ -16,6 +16,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 在这里，需要考虑 AOP
@@ -25,9 +27,12 @@ import org.nutz.lang.born.Borning;
  */
 public class ObjectMakerImpl implements ObjectMaker {
 
+    private static final Log log = Logs.get();
+
     public ObjectProxy make(IocMaking ing, IocObject iobj) {
         // 获取 Mirror， AOP 将在这个方法中进行
-        Mirror<?> mirror = ing.getMirrors().getMirror(iobj.getType(), ing.getObjectName());
+        Mirror<?> mirror = ing.getMirrors().getMirror(iobj.getType(),
+                                                      ing.getObjectName());
 
         // 获取配置的对象事件集合
         IocEventSet iocEventSet = iobj.getEvents();
@@ -68,16 +73,16 @@ public class ObjectMakerImpl implements ObjectMaker {
 
             // 缓存构造函数
             if (iobj.getFactory() != null) {
-            	// factory这属性, 格式应该是  类名#方法名
-            	final String[] tmp = iobj.getFactory().split("#", 2);
-            	final Mirror<?> _mirror = Mirror.me(Lang.loadClass(tmp[0]));
-				dw.setBorning(new Borning<Object>() {
-					public Object born(Object... args) {
-						return _mirror.invoke(null, tmp[1], args);
-					}
-				});
+                // factory这属性, 格式应该是 类名#方法名
+                final String[] tmp = iobj.getFactory().split("#", 2);
+                final Mirror<?> _mirror = Mirror.me(Lang.loadClass(tmp[0]));
+                dw.setBorning(new Borning<Object>() {
+                    public Object born(Object... args) {
+                        return _mirror.invoke(null, tmp[1], args);
+                    }
+                });
             } else {
-            	dw.setBorning((Borning<?>) mirror.getBorning(args));
+                dw.setBorning((Borning<?>) mirror.getBorning(args));
             }
 
             // 如果这个对象是容器中的单例，那么就可以生成实例了
@@ -97,7 +102,9 @@ public class ObjectMakerImpl implements ObjectMaker {
                     fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
                 }
                 catch (Exception e) {
-                    throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+                    throw Lang.wrapThrow(e,
+                                         "Fail to eval Injector for field: '%s'",
+                                         ifld.getName());
                 }
             }
             dw.setFields(fields);
@@ -112,6 +119,8 @@ public class ObjectMakerImpl implements ObjectMaker {
         }
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
+            if (log.isWarnEnabled())
+                log.warn(String.format("IobObj: \n%s", iobj.toString()), e);
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
             throw Lang.wrapThrow(e, IocException.class);
         }
@@ -121,12 +130,14 @@ public class ObjectMakerImpl implements ObjectMaker {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror, String str) {
+    private static IocEventTrigger<Object> createTrigger(Mirror<?> mirror,
+                                                         String str) {
         if (Strings.isBlank(str))
             return null;
         if (str.contains(".")) {
             try {
-                return (IocEventTrigger<Object>) Mirror.me(Lang.loadClass(str)).born();
+                return (IocEventTrigger<Object>) Mirror.me(Lang.loadClass(str))
+                                                       .born();
             }
             catch (Exception e) {
                 throw Lang.wrapThrow(e);
