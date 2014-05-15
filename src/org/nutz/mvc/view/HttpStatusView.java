@@ -32,6 +32,8 @@ public class HttpStatusView implements View {
      */
     public static class HttpStatusException extends RuntimeException {
 
+        private static final long serialVersionUID = 4035188583429445028L;
+
         private int status;
 
         public int getStatus() {
