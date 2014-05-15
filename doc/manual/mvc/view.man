@@ -199,7 +199,7 @@
 		{{{
 		@Ok("json:{quoteName:true, ignoreNull:true}")
 		}}}
-		视图的值就是： {*`"{quoteName:true, ignoreNull:true}"`}，这个字符串会被转换成 JsonFormat 对象。
+		视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个字符串会被转换成 JsonFormat 对象。
 		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
 	--------------------------------------------------------------------------------------
 	重定向视图
