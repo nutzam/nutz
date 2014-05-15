@@ -71,27 +71,28 @@ public abstract class AbstractPathView implements View {
         Context context = Lang.context();
         // 复制全局的上下文对象
         Object globalContext = Mvcs.getServletContext()
-                                    .getAttribute(Loading.CONTEXT_NAME);
+                                   .getAttribute(Loading.CONTEXT_NAME);
         if (globalContext != null) {
             context.putAll((Context) globalContext);
         }
 
         // 请求对象的属性列表
-        Map<String,Object> req_attr = new HashMap<String, Object>();
+        Map<String, Object> req_attr = new HashMap<String, Object>();
         for (Enumeration<String> en = req.getAttributeNames(); en.hasMoreElements();) {
             String tem = en.nextElement();
-            req_attr.put(tem, req.getAttribute(tem));
+            if (!tem.startsWith("$"))
+                req_attr.put(tem, req.getAttribute(tem));
         }
-        context.set("a", req_attr);//兼容最初的写法
+        context.set("a", req_attr);// 兼容最初的写法
         context.set("req_attr", req_attr);
-        
+
         ActionContext ac = Mvcs.getActionContext();
         if (ac != null)
-        	context.set("pathargs", Mvcs.getActionContext().getPathArgs());
-        
+            context.set("pathargs", Mvcs.getActionContext().getPathArgs());
+
         HttpSession session = Mvcs.getHttpSession(false);
         if (session != null) {
-        	Map<String,Object> session_attr = new HashMap<String, Object>();
+            Map<String, Object> session_attr = new HashMap<String, Object>();
             for (Enumeration<String> en = session.getAttributeNames(); en.hasMoreElements();) {
                 String tem = en.nextElement();
                 session_attr.put(tem, session.getAttribute(tem));
@@ -99,25 +100,25 @@ public abstract class AbstractPathView implements View {
             context.set("session_attr", session_attr);
         }
         // 请求的参数表,需要兼容之前的p.参数, Fix issue 418
-        Map<String,String> p = new HashMap<String, String>();
+        Map<String, String> p = new HashMap<String, String>();
         for (Object o : req.getParameterMap().keySet()) {
             String key = (String) o;
             String value = req.getParameter(key);
             p.put(key, value);
-            context.set(key, value);//以支持直接获取请求参数
+            context.set(key, value);// 以支持直接获取请求参数
         }
         context.set("p", p);
-        
+
         Map<String, String> u = new HashMap<String, String>();
         AtMap at = Mvcs.getAtMap();
         if (at != null) {
-            for(Object o : at.keys()){
+            for (Object o : at.keys()) {
                 String key = (String) o;
                 u.put(key, at.get(key));
             }
             context.set("u", u);
         }
-        
+
         // 加入返回对象
         if (null != obj)
             context.set(ViewProcessor.DEFAULT_ATTRIBUTE, obj);

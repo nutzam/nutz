@@ -422,6 +422,17 @@ public abstract class Times {
     }
 
     /**
+     * 把时间转换成格式为 yy-MM-dd HH:mm:ss.SSS 的字符串
+     * 
+     * @param d
+     *            时间对象
+     * @return 该时间的字符串形式 , 格式为 yy-MM-dd HH:mm:ss.SSS
+     */
+    public static String sDTms2(Date d) {
+        return format(DF_DATE_TIME_MS2, d);
+    }
+
+    /**
      * 把时间转换成格式为 yyyy-MM-dd HH:mm:ss 的字符串
      * 
      * @param d
@@ -702,6 +713,7 @@ public abstract class Times {
     }
 
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");
+    private static final DateFormat DF_DATE_TIME_MS2 = new SimpleDateFormat("yy-MM-dd HH:mm:ss.SSS");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 
