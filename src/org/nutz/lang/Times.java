@@ -126,11 +126,14 @@ public abstract class Times {
      * HH:mm:ss.SSS;
      * </pre>
      * 
+     * 时间字符串后面可以跟 +8 或者 +8:00 表示 GMT+8:00 时区。 同理 -9 或者 -9:00 表示 GMT-9:00 时区
+     * 
      * @param ds
      *            时间字符串
      * @param tz
      *            你给定的时间字符串是属于哪个时区的
      * @return 时间
+     * @see #_P_TIME
      */
     public static long ams(String ds, TimeZone tz) {
         Matcher m = _P_TIME.matcher(ds);
@@ -150,24 +153,26 @@ public abstract class Times {
             MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
             MS += (long) ms;
 
-            // 如果没有指定时区，那么用字符串中带有的时区信息，如果依然木有，则用系统默认时区
-            long tzOffset;
+            // 如果没有指定时区 ...
             if (null == tz) {
+                // 那么用字符串中带有的时区信息，
                 if (!Strings.isBlank(m.group(17))) {
-                    tzOffset = Long.parseLong(m.group(19))
-                               * 3600000L
-                               * (m.group(18).charAt(0) == '-' ? -1 : 1);
+                    tz = TimeZone.getTimeZone(String.format("GMT%s%s:00",
+                                                            m.group(18),
+                                                            m.group(19)));
+                    // tzOffset = Long.parseLong(m.group(19))
+                    // * 3600000L
+                    // * (m.group(18).charAt(0) == '-' ? -1 : 1);
 
-                } else {
-                    tzOffset = TimeZone.getDefault().getRawOffset();
+                }
+                // 如果依然木有，则用系统默认时区
+                else {
+                    tz = TimeZone.getDefault();
                 }
             }
-            // 采用指定的时区
-            else {
-                tzOffset = tz.getRawOffset();
-            }
+
             // 计算
-            return MS - tzOffset;
+            return MS - tz.getRawOffset() - tz.getDSTSavings();
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
