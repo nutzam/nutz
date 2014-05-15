@@ -30,7 +30,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                                  + " BEFORE INSERT ON ${T}"
                                  + " FOR EACH ROW"
                                  + " BEGIN "
+                                 + " IF :new.${F} IS NULL THEN"
                                  + " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
+                                 + " END IF;"
                                  + " END ${T}_${F}_ST;";
 
     public OracleJdbcExpert(JdbcExpertConfigFile conf) {
@@ -83,9 +85,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 pkNames.append(pk.getColumnName()).append(',');
             }
             pkNames.setLength(pkNames.length() - 1);
-            
+
             String pkNames2 = makePksName(en);
-            
+
             String sql = String.format("alter table %s add constraint primary_key_%s primary key (%s)",
                                        en.getTableName(),
                                        pkNames2,
