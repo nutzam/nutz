@@ -233,23 +233,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             }
         }
 
-        // 看看是否有任何错误
-        if (errCtx == null)
-            return args;
-        for (Throwable err : errCtx.getErrors()) {
-            if (err == null)
-                continue;
-            int lastParam = argTypes.length - 1;
-            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[lastParam])) {
-                if (log.isInfoEnabled())
-                    log.info("Adapter Param Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
-                args[lastParam] = errCtx;
-                return args;
-            }
-            // 没有AdaptorErrorContext参数? 那好吧,按之前的方式,抛出异常
-            throw Lang.wrapThrow(err);
-        }
-
         return args;
     }
 
