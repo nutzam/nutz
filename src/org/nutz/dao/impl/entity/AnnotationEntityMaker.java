@@ -279,6 +279,9 @@ public class AnnotationEntityMaker implements EntityMaker {
 		} catch (RuntimeException e) {
 			holder.remove(en);
 			throw e;
+		} catch (Throwable e) {
+			holder.remove(en);
+			throw Lang.wrapThrow(e);
 		}
 
         // 搞定收工，哦耶 ^_^
