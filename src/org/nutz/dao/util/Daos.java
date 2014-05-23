@@ -1,6 +1,9 @@
 package org.nutz.dao.util;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,7 +22,9 @@ import org.nutz.dao.Condition;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
+import org.nutz.dao.FieldFilter;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.Table;
@@ -362,4 +367,79 @@ public abstract class Daos {
 				dao.create(klass, force);
 		}
     }
+    
+	private static Class<?>[] iz = new Class<?>[]{Dao.class};
+	
+	/**
+	 * 创建一个带FieldFilter的Dao代理实例. 注意,为避免出错,生成的Dao对象不应该传递到其他方法去.
+	 * @param dao 原始的Dao实例
+	 * @param filter 字段过滤器
+	 * @return 带FieldFilter的Dao代理实例
+	 */
+	public static Dao ext(Dao dao, FieldFilter filter) {
+		return ext(dao, filter, null);
+	}
+	
+	/**
+	 * 创建一个带TableName的Dao代理实例. 注意,为避免出错,生成的Dao对象不应该传递到其他方法去.
+	 * @param dao 原始的Dao实例
+	 * @param tableName 动态表名上下文
+	 * @return 带TableName的Dao代理实例
+	 */
+	public static Dao ext(Dao dao, Object tableName) {
+		return ext(dao, null, tableName);
+	}
+	
+	public static Dao ext(Dao dao, FieldFilter filter, Object tableName) {
+		if (tableName == null && filter == null)
+			return dao;
+		ExtDaoInvocationHandler handler = new ExtDaoInvocationHandler(dao, filter, tableName);
+		return (Dao) Proxy.newProxyInstance(dao.getClass().getClassLoader(), iz, handler);
+	}
+}
+
+class ExtDaoInvocationHandler implements InvocationHandler {
+	
+	protected ExtDaoInvocationHandler(Dao dao, FieldFilter filter, Object tableName) {
+		this.dao = dao;
+		this.filter = filter;
+		this.tableName = tableName;
+	}
+ 
+	public Dao dao;
+	public FieldFilter filter;
+	public Object tableName;
+ 
+	public Object invoke(Object proxy, final Method method, final Object[] args) throws Throwable {
+		
+		final Molecule<Object> m = new Molecule<Object>() {
+			public void run() {
+				try {
+					setObj(method.invoke(dao, args));
+				}
+				catch (IllegalArgumentException e) {
+					throw Lang.wrapThrow(e);
+				}
+				catch (IllegalAccessException e) {
+					throw Lang.wrapThrow(e);
+				}
+				catch (InvocationTargetException e) {
+					throw Lang.wrapThrow(e.getTargetException());
+				}
+			}
+		};
+		if (filter != null && tableName != null) {
+			TableName.run(tableName, new Runnable() {
+				public void run() {
+					filter.run(m);
+				}
+			});
+			return m.getObj();
+		}
+		if (filter != null)
+			filter.run(m);
+		else
+			TableName.run(tableName, m);
+		return m.getObj();
+	}
 }
