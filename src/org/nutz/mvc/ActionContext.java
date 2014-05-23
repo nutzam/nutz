@@ -31,6 +31,8 @@ public class ActionContext extends SimpleContext {
     private static final String METHOD_RETURN = "nutz.mvc.method.return";
     
     private static final String ERROR = "nutz.mvc.error";
+    
+    public static final String AC_DONE = "nutz.mvc.done";
 
     /**
      * 获取全局的Ioc对象
