@@ -151,7 +151,8 @@ public class NutDaoExecutor implements DaoExecutor {
 			}
 		}
 		finally {
-			stmt.close();
+			if (stmt != null)
+				stmt.close();
 		}
 	}
 

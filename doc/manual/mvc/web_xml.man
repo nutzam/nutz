@@ -52,6 +52,27 @@
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
     }}}
+  
+    更灵活的忽略模式(从1.b.51开始支持)
+    {{{<xml>
+        <filter>
+            <filter-name>nutz</filter-name>
+            <filter-class>org.nutz.mvc.NutFilter</filter-class>
+            <init-param>
+                <param-name>modules</param-name>
+                <param-value>com.mine.app.MainModule</param-value>
+            </init-param>
+            <init-param>
+                <param-name>exclusions</param-name>
+                <!-- *.XXX 忽略后缀 -->
+                <!-- /XX/* 忽略前缀 -->
+                <!-- /cc   忽略固定路径 -->
+                <!-- 下面的例子忽略了html和ftl后缀, 忽略了/rs/和/druid/前缀,和忽略了固定路径/abc/notaction -->
+                <param-value>*.html,*.ftl,/rs/*,/druid/*,/abc/notaction</param-value>
+            </init-param>
+        </filter>
+    }}}
+    
 
 比较传统的方式
     {{{<xml>

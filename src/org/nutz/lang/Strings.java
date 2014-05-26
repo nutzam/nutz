@@ -950,4 +950,42 @@ public class Strings {
         return Lang.concat(sp, array).toString();
     }
 
+    /**
+     * 将一个字节数变成人类容易识别的显示字符串，比如 1.5M 等
+     * 
+     * @param size
+     *            字节数
+     * @param SZU
+     *            千的单位，可能为 1024 或者 1000
+     * @return 人类容易阅读的字符串
+     */
+    private static String _formatSizeForRead(long size, double SZU) {
+        if (size < SZU) {
+            return String.format("%d bytes", size);
+        }
+        double n = (double) size / SZU;
+        if (n < SZU) {
+            return String.format("%5.2f KB", n);
+        }
+        n = n / SZU;
+        if (n < SZU) {
+            return String.format("%5.2f MB", n);
+        }
+        n = n / SZU;
+        return String.format("%5.2f GB", n);
+    }
+
+    /**
+     * @see #_formatSizeForRead(long, double)
+     */
+    public static String formatSizeForReadBy1024(long size) {
+        return _formatSizeForRead(size, 1024);
+    }
+
+    /**
+     * @see #_formatSizeForRead(long, double)
+     */
+    public static String formatSizeForReadBy1000(long size) {
+        return _formatSizeForRead(size, 1000);
+    }
 }

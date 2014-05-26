@@ -199,7 +199,7 @@
 		{{{
 		@Ok("json:{quoteName:true, ignoreNull:true}")
 		}}}
-		视图的值就是： {*`"{quoteName:true, ignoreNull:true}"`}，这个字符串会被转换成 JsonFormat 对象。
+		视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个字符串会被转换成 JsonFormat 对象。
 		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
 	--------------------------------------------------------------------------------------
 	重定向视图
@@ -224,7 +224,7 @@
 			 * "obj.name" 表示对象的 "name" 字段
 		 # 如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
 			 * "p.abc" 就表示 HTTP 参数中的 "abc" 参数
-		 # 如果参数表没有值，则直接用返回的对象来填充。
+		 # 如果参数表没有值，则用空字符串来填充
 		
 		下面举几个例子：
 

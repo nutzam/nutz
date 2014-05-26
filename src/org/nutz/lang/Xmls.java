@@ -14,6 +14,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.nutz.lang.util.Callback2;
+import org.nutz.lang.util.NutMap;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -107,11 +108,19 @@ public abstract class Xmls {
         NodeList nl = ele.getChildNodes();
         for (int i = 0; i < nl.getLength(); i++) {
             Node nd = nl.item(i);
-            if (nd.getNodeType() == Node.TEXT_NODE) {
-                sb.append(nd.getNodeValue());
-            } else if (nd.getNodeType() == Node.ELEMENT_NODE) {
-                joinText((Element) nd, sb);
-            }
+            switch (nd.getNodeType()) {
+			case Node.TEXT_NODE:
+				sb.append(nd.getNodeValue());
+				break;
+			case Node.CDATA_SECTION_NODE :
+				sb.append(nd.getNodeValue());
+				break;
+			case Node.ELEMENT_NODE :
+				joinText((Element) nd, sb);
+				break;
+			default:
+				break;
+			}
         }
     }
 
@@ -370,5 +379,46 @@ public abstract class Xmls {
     public static String getAttr(Element ele, String attrName) {
         Node node = ele.getAttributes().getNamedItem(attrName);
         return node != null ? node.getNodeValue() : null;
+    }
+
+    /**
+     * 根据一个 XML 节点，将其变成一个 Map。这是个简单的映射函数， 仅仅映射一层子节点，比如：
+     * 
+     * <pre>
+     * ...
+     * &lt;pet&gt;
+     *      &lt;name&gt;xiaobai&lt;name&gt;
+     *      &lt;age&gt;15&lt;name&gt;
+     * &lt;pet&gt;
+     * ...
+     * </pre>
+     * 
+     * 会被映射为(注意，所有的值都是字符串哦):
+     * 
+     * <pre>
+     * {
+     *      name : "xiaobai",
+     *      age  : "15"
+     * }
+     * </pre>
+     * 
+     * @param ele
+     *            元素
+     * 
+     * @return 一个 Map 对象
+     */
+    public static NutMap asMap(Element ele) {
+        final NutMap map = new NutMap();
+        eachChildren(ele, new Each<Element>() {
+            public void invoke(int index, Element _ele, int length)
+                    throws ExitLoop, ContinueLoop, LoopException {
+                String key = _ele.getNodeName();
+                String val = getText(_ele);
+                if (!Strings.isBlank(val)) {
+                    map.setv(key, val);
+                }
+            }
+        });
+        return map;
     }
 }

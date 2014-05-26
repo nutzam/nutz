@@ -6,7 +6,6 @@
 	<!-- set global properties for this build -->
 	<property environment="env" />
 
-	<property name="TOMCAT_HOME" value="${env.TOMCAT_HOME}" />
 	<property name="JAVA_HOME" value="${env.JAVA_HOME}" />
 	<property name="DEPHOME" value="${env.DEPS}" />
 	<property name="OP" value="${env.OUTPUT}" />
@@ -19,7 +18,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.50" />
+	<property name="v" value="-1.b.51" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -31,9 +30,6 @@
 	<property name="zall" value="**" />
 
 	<path id="CLASSPATH">
-		<fileset dir="${TOMCAT_HOME}/lib" casesensitive="no">
-			<include name="*.jar" />
-		</fileset>
 		<fileset dir="${DEPHOME}" casesensitive="no">
 			<include name="*.jar" />
 		</fileset>

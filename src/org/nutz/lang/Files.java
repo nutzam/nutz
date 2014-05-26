@@ -350,6 +350,15 @@ public abstract class Files {
         return f;
     }
 
+    public static File createFileIfNoExists2(String path) {
+        try {
+            return createFileIfNoExists(path);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
     /**
      * 如果文件对象不存在，则创建它
      * 
@@ -830,6 +839,15 @@ public abstract class Files {
         if (pos > 0)
             return path.substring(0, pos);
         return "/";
+    }
+
+    /**
+     * @param f
+     *            文件对象
+     * @return 文件或者目录名
+     */
+    public static String getName(File f) {
+        return getName(f.getPath());
     }
 
     /**

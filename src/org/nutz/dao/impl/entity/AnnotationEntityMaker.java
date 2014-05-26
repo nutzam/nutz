@@ -18,6 +18,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.EntityField;
 import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.MappingField;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Comment;
 import org.nutz.dao.entity.annotation.EL;
@@ -100,8 +101,13 @@ public class AnnotationEntityMaker implements EntityMaker {
         /*
          * 获得表名以及视图名称及注释
          */
-        String tableName = null == ti.annTable ? Strings.lowerWord(type.getSimpleName(), '_')
-                                              : ti.annTable.value();
+        String tableName = null;
+        if (null == ti.annTable) {
+        	tableName = Strings.lowerWord(type.getSimpleName(), '_');
+        	log.warnf("No @Table found, fallback to use table name='%s' for type '%s'", tableName, type.getName());
+        } else {
+        	tableName = ti.annTable.value();
+        }
         String viewName = null == ti.annView ? tableName : ti.annView.value();
         en.setTableName(tableName);
         en.setViewName(viewName);
@@ -234,41 +240,49 @@ public class AnnotationEntityMaker implements EntityMaker {
             en.addMappingField(ef);
         }
         holder.set(en); // 保存一下，这样别的实体映射到这里时会用的到
-        /*
-         * 解析所有关联字段
-         */
-        // 一对一 '@One'
-        for (LinkInfo li : ones) {
-            en.addLinkField(new OneLinkField(en, holder, li));
-        }
-        // 一对多 '@Many'
-        for (LinkInfo li : manys) {
-            en.addLinkField(new ManyLinkField(en, holder, li));
-        }
-        // 多对多 '@ManyMany'
-        for (LinkInfo li : manymanys) {
-            en.addLinkField(new ManyManyLinkField(en, holder, li));
-        }
-        // 检查复合主键
-        en.checkCompositeFields(null == ti.annPK ? null : ti.annPK.value());
+        try {
+			/*
+			 * 解析所有关联字段
+			 */
+			// 一对一 '@One'
+			for (LinkInfo li : ones) {
+			    en.addLinkField(new OneLinkField(en, holder, li));
+			}
+			// 一对多 '@Many'
+			for (LinkInfo li : manys) {
+			    en.addLinkField(new ManyLinkField(en, holder, li));
+			}
+			// 多对多 '@ManyMany'
+			for (LinkInfo li : manymanys) {
+			    en.addLinkField(new ManyManyLinkField(en, holder, li));
+			}
+			// 检查复合主键
+			en.checkCompositeFields(null == ti.annPK ? null : ti.annPK.value());
 
-        /*
-         * 交付给 expert 来检查一下数据库一致性
-         */
-        if (null != datasource && null != expert) {
-            _checkupEntityFieldsWithDatabase(en);
-        }
+			/*
+			 * 交付给 expert 来检查一下数据库一致性
+			 */
+			if (null != datasource && null != expert) {
+			    _checkupEntityFieldsWithDatabase(en);
+			}
 
-        /*
-         * 检查字段宏
-         */
-        _evalFieldMacro(en, infos);
+			/*
+			 * 检查字段宏
+			 */
+			_evalFieldMacro(en, infos);
 
-        /*
-         * 解析实体索引
-         */
-        if (null != ti.annIndexes)
-            _evalEntityIndexes(en, ti.annIndexes);
+			/*
+			 * 解析实体索引
+			 */
+			if (null != ti.annIndexes)
+			    _evalEntityIndexes(en, ti.annIndexes);
+		} catch (RuntimeException e) {
+			holder.remove(en);
+			throw e;
+		} catch (Throwable e) {
+			holder.remove(en);
+			throw Lang.wrapThrow(e);
+		}
 
         // 搞定收工，哦耶 ^_^
         return en;
@@ -391,6 +405,9 @@ public class AnnotationEntityMaker implements EntityMaker {
             ef.setColumnType(info.annDefine.type());
             // 宽度
             ef.setWidth(info.annDefine.width());
+            if (ef.getWidth() == 0 && ef.getColumnType() == ColType.VARCHAR) {
+            	ef.setWidth(50);
+            }
             // 精度
             ef.setPrecision(info.annDefine.precision());
             // 无符号

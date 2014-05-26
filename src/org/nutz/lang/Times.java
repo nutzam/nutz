@@ -126,11 +126,14 @@ public abstract class Times {
      * HH:mm:ss.SSS;
      * </pre>
      * 
+     * 时间字符串后面可以跟 +8 或者 +8:00 表示 GMT+8:00 时区。 同理 -9 或者 -9:00 表示 GMT-9:00 时区
+     * 
      * @param ds
      *            时间字符串
      * @param tz
      *            你给定的时间字符串是属于哪个时区的
      * @return 时间
+     * @see #_P_TIME
      */
     public static long ams(String ds, TimeZone tz) {
         Matcher m = _P_TIME.matcher(ds);
@@ -150,24 +153,26 @@ public abstract class Times {
             MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
             MS += (long) ms;
 
-            // 如果没有指定时区，那么用字符串中带有的时区信息，如果依然木有，则用系统默认时区
-            long tzOffset;
+            // 如果没有指定时区 ...
             if (null == tz) {
+                // 那么用字符串中带有的时区信息，
                 if (!Strings.isBlank(m.group(17))) {
-                    tzOffset = Long.parseLong(m.group(19))
-                               * 3600000L
-                               * (m.group(18).charAt(0) == '-' ? -1 : 1);
+                    tz = TimeZone.getTimeZone(String.format("GMT%s%s:00",
+                                                            m.group(18),
+                                                            m.group(19)));
+                    // tzOffset = Long.parseLong(m.group(19))
+                    // * 3600000L
+                    // * (m.group(18).charAt(0) == '-' ? -1 : 1);
 
-                } else {
-                    tzOffset = TimeZone.getDefault().getRawOffset();
+                }
+                // 如果依然木有，则用系统默认时区
+                else {
+                    tz = TimeZone.getDefault();
                 }
             }
-            // 采用指定的时区
-            else {
-                tzOffset = tz.getRawOffset();
-            }
+
             // 计算
-            return MS - tzOffset;
+            return MS - tz.getRawOffset() - tz.getDSTSavings();
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
@@ -417,6 +422,17 @@ public abstract class Times {
     }
 
     /**
+     * 把时间转换成格式为 yy-MM-dd HH:mm:ss.SSS 的字符串
+     * 
+     * @param d
+     *            时间对象
+     * @return 该时间的字符串形式 , 格式为 yy-MM-dd HH:mm:ss.SSS
+     */
+    public static String sDTms2(Date d) {
+        return format(DF_DATE_TIME_MS2, d);
+    }
+
+    /**
      * 把时间转换成格式为 yyyy-MM-dd HH:mm:ss 的字符串
      * 
      * @param d
@@ -544,6 +560,70 @@ public abstract class Times {
         return re;
     }
 
+    private static final String[] _MMM = new String[]{"Jan",
+                                                      "Feb",
+                                                      "Mar",
+                                                      "Apr",
+                                                      "May",
+                                                      "Jun",
+                                                      "Jul",
+                                                      "Aug",
+                                                      "Sep",
+                                                      "Oct",
+                                                      "Nov",
+                                                      "Dec"};
+
+    /**
+     * 将一个时间格式化成容易被人类阅读的格式
+     * 
+     * <pre>
+     * 如果 1 分钟内，打印 Just Now
+     * 如果 1 小时内，打印多少分钟
+     * 如果 1 天之内，打印多少小时之前
+     * 如果是今年之内，打印月份和日期
+     * 否则打印月份和年
+     * </pre>
+     * 
+     * @param d
+     * @return
+     */
+    public static String formatForRead(Date d) {
+        long ms = System.currentTimeMillis() - d.getTime();
+        // 如果 1 分钟内，打印 Just Now
+        if (ms < (60000)) {
+            return "Just Now";
+        }
+        // 如果 1 小时内，打印多少分钟
+        if (ms < (60 * 60000)) {
+            return "" + (ms / 60000) + "Min.";
+        }
+
+        // 如果 1 天之内，打印多少小时之前
+        if (ms < (24 * 3600 * 1000)) {
+            return "" + (ms / 3600000) + "hr.";
+        }
+
+        // 如果一周之内，打印多少天之前
+        if (ms < (7 * 24 * 3600 * 1000)) {
+            return "" + (ms / (24 * 3600000)) + "Day";
+        }
+
+        // 如果是今年之内，打印月份和日期
+        Calendar c = Calendar.getInstance();
+        int thisYear = c.get(Calendar.YEAR);
+
+        c.setTime(d);
+        int yy = c.get(Calendar.YEAR);
+        int mm = c.get(Calendar.MONTH);
+        if (thisYear == yy) {
+            int dd = c.get(Calendar.DAY_OF_MONTH);
+            return String.format("%s %d", _MMM[mm], dd);
+        }
+
+        // 否则打印月份和年
+        return String.format("%s %d", _MMM[mm], yy);
+    }
+
     /**
      * 以给定的时间格式来安全的对时间进行格式化，并返回格式化后所对应的字符串
      * 
@@ -633,6 +713,7 @@ public abstract class Times {
     }
 
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");
+    private static final DateFormat DF_DATE_TIME_MS2 = new SimpleDateFormat("yy-MM-dd HH:mm:ss.SSS");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 

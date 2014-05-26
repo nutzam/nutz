@@ -48,6 +48,10 @@ public enum DB {
      */
     GBASE,
     /**
+     * 
+     */
+    SYBASE,
+    /**
      * 其他数据库
      */
     OTHER

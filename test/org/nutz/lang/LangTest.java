@@ -357,4 +357,28 @@ public class LangTest {
         TestR r = new TestR();
         Lang.obj2map(r);
     }
+    
+    @Test
+    public void test_map_filter() {
+    	Map<String, Object> source = new HashMap<String, Object>();
+    	assertEquals(0, Lang.filter(source, null, null, null, null).size());
+    	source.put("ONE", 1);
+    	source.put("two", 2);
+    	source.put("vip.three", 3);
+    	source.put("four", 4);
+    	source.put("five", 5);
+    	assertEquals(5, Lang.filter(source, null, null, null, null).size());
+
+    	assertEquals(1, Lang.filter(source, "vip.", null, null, null).size());
+    	assertEquals(2, Lang.filter(source, "f", null, null, null).size());
+    	assertTrue(Lang.filter(source, "t", null, null, null).containsKey("wo"));
+
+    	assertEquals(3, Lang.filter(source, null, "^(f|t)", null, null).size());
+    	assertEquals(1, Lang.filter(source, null, "^(f|t)", "(o)", null).size());
+    	assertTrue(Lang.filter(source, null, "^(f|t)", "(o)", null).containsKey("five"));
+    	
+    	Map<String, String> map = new HashMap<String, String>();
+    	map.put("five", "nice");
+    	assertTrue(Lang.filter(source, null, null, null, map).containsKey("nice"));
+    }
 }

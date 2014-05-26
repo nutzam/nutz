@@ -62,6 +62,7 @@ public class NutLoading implements Loading {
             log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
             log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
             log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
+            log.debugf(" - Servlet API     : %d.%d", config.getServletContext().getMajorVersion(), config.getServletContext().getMinorVersion());
             if (config.getServletContext().getMajorVersion() > 2 || config.getServletContext().getMinorVersion() > 4)
             	log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
         }
@@ -125,7 +126,7 @@ public class NutLoading implements Loading {
 
     }
 
-    private UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule, Ioc ioc) throws Exception {
+    protected UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule, Ioc ioc) throws Exception {
         /*
          * @ TODO 个人建议可以将这个方法所涉及的内容转换到Loadings类或相应的组装类中,
          * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
@@ -202,7 +203,7 @@ public class NutLoading implements Loading {
         return mapping;
     }
 
-    private static void createContext(NutConfig config) {
+    protected void createContext(NutConfig config) {
         // 构建一个上下文对象，方便子类获取更多的环境信息
         // 同时，所有 Filter 和 Adaptor 都可以用 ${app.root} 来填充自己
         Context context = Lang.context();
@@ -226,14 +227,14 @@ public class NutLoading implements Loading {
         config.getServletContext().setAttribute(Loading.CONTEXT_NAME, context);
     }
 
-    private UrlMapping createUrlMapping(NutConfig config) throws Exception {
+    protected UrlMapping createUrlMapping(NutConfig config) throws Exception {
         UrlMappingBy umb = config.getMainModule().getAnnotation(UrlMappingBy.class);
         if (umb != null)
             return Loadings.evalObj(config, umb.value(), umb.args());
         return new UrlMappingImpl();
     }
 
-    private ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
+    protected ActionChainMaker createChainMaker(NutConfig config, Class<?> mainModule) {
         ChainBy ann = mainModule.getAnnotation(ChainBy.class);
         ActionChainMaker maker = null == ann ? new NutActionChainMaker(new String[]{})
                                             : Loadings.evalObj(config, ann.type(), ann.args());
@@ -242,7 +243,7 @@ public class NutLoading implements Loading {
         return maker;
     }
 
-    private void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
+    protected void evalSetup(NutConfig config, Class<?> mainModule) throws Exception {
         SetupBy sb = mainModule.getAnnotation(SetupBy.class);
         if (null != sb) {
             if (log.isInfoEnabled())
@@ -253,7 +254,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    private void evalLocalization(NutConfig config, Class<?> mainModule) {
+    protected void evalLocalization(NutConfig config, Class<?> mainModule) {
         Localization lc = mainModule.getAnnotation(Localization.class);
         if (null != lc) {
             if (log.isDebugEnabled())
@@ -289,7 +290,7 @@ public class NutLoading implements Loading {
         }
     }
 
-    private ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
+    protected ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
         Views vms = mainModule.getAnnotation(Views.class);
         ViewMaker[] makers;
         int i = 0;
@@ -318,11 +319,11 @@ public class NutLoading implements Loading {
         return makers;
     }
 
-    private Ioc createIoc(NutConfig config, Class<?> mainModule) throws Exception {
+    protected Ioc createIoc(NutConfig config, Class<?> mainModule) throws Exception {
         IocBy ib = mainModule.getAnnotation(IocBy.class);
         if (null != ib) {
             if (log.isDebugEnabled())
-                log.debugf("@IocBy(type=%s, args=%s)", ib.type().getName(), ib.args());
+                log.debugf("@IocBy(type=%s, args=%s)", ib.type().getName(), Json.toJson(ib.args()));
 
             Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
             // 如果是 Ioc2 的实现，增加新的 ValueMaker
@@ -338,7 +339,7 @@ public class NutLoading implements Loading {
     }
 
     @SuppressWarnings({"all"})
-    private void createSessionProvider(NutConfig config, Class<?> mainModule) throws Exception {
+    protected void createSessionProvider(NutConfig config, Class<?> mainModule) throws Exception {
         SessionBy sb = mainModule.getAnnotation(SessionBy.class);
         if (sb != null) {
             SessionProvider sp = null;
