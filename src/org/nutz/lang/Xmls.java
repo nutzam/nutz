@@ -419,7 +419,6 @@ public abstract class Xmls {
                 }
             }
         });
-        System.out.println(map);
         return map;
     }
 }

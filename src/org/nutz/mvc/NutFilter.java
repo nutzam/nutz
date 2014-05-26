@@ -1,6 +1,8 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.servlet.Filter;
@@ -12,6 +14,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
@@ -33,13 +36,26 @@ public class NutFilter implements Filter {
 
     private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico)$";
 
-    private Pattern ignorePtn;
+    protected Pattern ignorePtn;
 
     private String selfName;
 
-    private SessionProvider sp;
+    protected SessionProvider sp;
 
     private NutFilter2 proxyFilter;//代理老版本的Filter
+    
+    /**
+     * 需要排除的路径前缀
+     */
+    protected Pattern exclusionsPrefix;
+    /**
+     * 需要排除的后缀名
+     */
+    protected Pattern exclusionsSuffix;
+    /**
+     * 需要排除的固定路径
+     */
+    protected Set<String> exclusionPaths;
 
     public void init(FilterConfig conf) throws ServletException {
     	if ("true".equals(Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase())) {
@@ -59,6 +75,38 @@ public class NutFilter implements Filter {
         if (!"null".equalsIgnoreCase(regx)) {
             ignorePtn = Pattern.compile(regx, Pattern.CASE_INSENSITIVE);
         }
+        String exclusions = config.getInitParameter("exclusions");
+        if (exclusions != null) {
+        	String[] tmps = Strings.splitIgnoreBlank(exclusions);
+        	Set<String> prefix = new HashSet<String>();
+        	Set<String> suffix = new HashSet<String>();
+        	Set<String> paths = new HashSet<String>();
+        	for (String tmp : tmps) {
+        		tmp = tmp.trim().intern();
+        		if (tmp.length() > 1) {
+        			if (tmp.startsWith("*")) {
+    					prefix.add(tmp.substring(1));
+    					continue;
+    				} else if (tmp.endsWith("*")) {
+    					suffix.add(tmp.substring(0, tmp.length() - 1));
+    					continue;
+    				}
+        		}
+				paths.add(tmp);
+			}
+        	if (prefix.size() > 0) {
+        		exclusionsPrefix = Pattern.compile("^("+Lang.concat("|", prefix)+")", Pattern.CASE_INSENSITIVE);
+        		log.info("exclusionsPrefix  = " + exclusionsPrefix);
+        	}
+        	if (suffix.size() > 0) {
+        		exclusionsSuffix = Pattern.compile("^("+Lang.concat("|", suffix)+")", Pattern.CASE_INSENSITIVE);
+        		log.info("exclusionsSuffix = " + exclusionsSuffix);
+        	}
+        	if (paths.size() > 0) {
+        		exclusionPaths = paths;
+        		log.info("exclusionsPath   = " + exclusionPaths);
+        	}
+        }
         sp = config.getSessionProvider();
     }
 
@@ -72,6 +120,37 @@ public class NutFilter implements Filter {
         Mvcs.setServletContext(null);
         Mvcs.close();
     }
+    
+    /**
+     * 过滤请求. 过滤顺序(ignorePtn,exclusionsSuffix,exclusionsPrefix,exclusionPaths)
+     * @param matchUrl
+     * @return
+     * @throws IOException
+     * @throws ServletException
+     */
+    protected boolean isExclusion(String matchUrl) throws IOException, ServletException {
+    	if (ignorePtn != null && ignorePtn.matcher(matchUrl).find()) {
+    		return true;
+    	}
+    	if (exclusionsSuffix != null) {
+    		if (exclusionsSuffix.matcher(matchUrl).find()) {
+	    		return true;
+    		}
+    	}
+    	if (exclusionsPrefix != null) {
+    		if (exclusionsPrefix.matcher(matchUrl).find()) {
+	    		return true;
+    		}
+    	}
+    	if (exclusionPaths != null) {
+    		for (String exclusionPath : exclusionPaths) {
+				if (exclusionPath.equals(matchUrl)) {
+		    		return true;
+				}
+			}
+    	}
+    	return false;
+    }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
             throws IOException, ServletException {
@@ -79,25 +158,24 @@ public class NutFilter implements Filter {
     		proxyFilter.doFilter(req, resp, chain);
     		return;
     	}
-        String preName = Mvcs.getName();
-        Context preContext = Mvcs.resetALL();
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)resp;
+        RequestPath path = Mvcs.getRequestPathObject(request);
+        String matchUrl = path.getUrl();
+        
+        String preName = Mvcs.getName();
+        Context preContext = Mvcs.resetALL();
         try {
             if (sp != null)
                 req = sp.filter(request,
                                 response,
                                 Mvcs.getServletContext());
             Mvcs.set(this.selfName, request, response);
-            RequestPath path = Mvcs.getRequestPathObject(request);
-            if (null == ignorePtn || !ignorePtn.matcher(path.getUrl()).find()) {
+            if (!isExclusion(matchUrl)) {
                 if (handler.handle(request, response))
                     return;
             }
-            // 更新 Request 必要的属性
-            Mvcs.updateRequestAttributes((HttpServletRequest) req);
-            // 本过滤器没有找到入口函数，继续其他的过滤器
-            chain.doFilter(req, resp);
+            nextChain(request, response, chain);
         }
         finally {
             Mvcs.resetALL();
@@ -110,4 +188,11 @@ public class NutFilter implements Filter {
             }
         }
     }
+    
+    protected void nextChain(HttpServletRequest req, HttpServletResponse resp, FilterChain chain) throws IOException, ServletException {
+    	// 更新 Request 必要的属性
+        Mvcs.updateRequestAttributes((HttpServletRequest) req);
+        // 本过滤器没有找到入口函数，继续其他的过滤器
+        chain.doFilter(req, resp);
+	}
 }

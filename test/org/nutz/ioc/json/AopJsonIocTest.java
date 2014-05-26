@@ -3,6 +3,7 @@ package org.nutz.ioc.json;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.impl.NutIoc;
@@ -13,6 +14,7 @@ public class AopJsonIocTest {
 
     @Test
     public void test_simple() {
+    	DefaultClassDefiner.reset();
         IocLoader il = new JsonLoader("org/nutz/ioc/json/aop.js");
         Ioc ioc = new NutIoc(il);
         StringBuilder sb = ioc.get(StringBuilder.class, "sb");

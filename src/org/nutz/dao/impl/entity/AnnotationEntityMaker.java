@@ -240,41 +240,49 @@ public class AnnotationEntityMaker implements EntityMaker {
             en.addMappingField(ef);
         }
         holder.set(en); // 保存一下，这样别的实体映射到这里时会用的到
-        /*
-         * 解析所有关联字段
-         */
-        // 一对一 '@One'
-        for (LinkInfo li : ones) {
-            en.addLinkField(new OneLinkField(en, holder, li));
-        }
-        // 一对多 '@Many'
-        for (LinkInfo li : manys) {
-            en.addLinkField(new ManyLinkField(en, holder, li));
-        }
-        // 多对多 '@ManyMany'
-        for (LinkInfo li : manymanys) {
-            en.addLinkField(new ManyManyLinkField(en, holder, li));
-        }
-        // 检查复合主键
-        en.checkCompositeFields(null == ti.annPK ? null : ti.annPK.value());
+        try {
+			/*
+			 * 解析所有关联字段
+			 */
+			// 一对一 '@One'
+			for (LinkInfo li : ones) {
+			    en.addLinkField(new OneLinkField(en, holder, li));
+			}
+			// 一对多 '@Many'
+			for (LinkInfo li : manys) {
+			    en.addLinkField(new ManyLinkField(en, holder, li));
+			}
+			// 多对多 '@ManyMany'
+			for (LinkInfo li : manymanys) {
+			    en.addLinkField(new ManyManyLinkField(en, holder, li));
+			}
+			// 检查复合主键
+			en.checkCompositeFields(null == ti.annPK ? null : ti.annPK.value());
 
-        /*
-         * 交付给 expert 来检查一下数据库一致性
-         */
-        if (null != datasource && null != expert) {
-            _checkupEntityFieldsWithDatabase(en);
-        }
+			/*
+			 * 交付给 expert 来检查一下数据库一致性
+			 */
+			if (null != datasource && null != expert) {
+			    _checkupEntityFieldsWithDatabase(en);
+			}
 
-        /*
-         * 检查字段宏
-         */
-        _evalFieldMacro(en, infos);
+			/*
+			 * 检查字段宏
+			 */
+			_evalFieldMacro(en, infos);
 
-        /*
-         * 解析实体索引
-         */
-        if (null != ti.annIndexes)
-            _evalEntityIndexes(en, ti.annIndexes);
+			/*
+			 * 解析实体索引
+			 */
+			if (null != ti.annIndexes)
+			    _evalEntityIndexes(en, ti.annIndexes);
+		} catch (RuntimeException e) {
+			holder.remove(en);
+			throw e;
+		} catch (Throwable e) {
+			holder.remove(en);
+			throw Lang.wrapThrow(e);
+		}
 
         // 搞定收工，哦耶 ^_^
         return en;

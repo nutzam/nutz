@@ -2278,6 +2278,10 @@ public abstract class Lang {
             }
     }
 
+    public static void runInAnThread(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
     /**
      * map对象浅过滤,返回值是一个新的map
      * 
@@ -2301,6 +2305,7 @@ public abstract class Lang {
         LinkedHashMap<String, Object> dst = new LinkedHashMap<String, Object>();
         if (source == null || source.isEmpty())
             return dst;
+
         Pattern includePattern = include == null ? null
                                                 : Pattern.compile(include);
         Pattern excludePattern = exclude == null ? null

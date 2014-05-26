@@ -160,3 +160,34 @@
 	 * [xml_ioc_loader.man 使用XML作为配置文件格式] -- 使用XML作为配置文件格式
 	 * [loader_annotation.man 使用注解配置Ioc] --使用注解配置Ioc
 	 * [../aop/aop_json.man 用json文件声明Aop切片] -- 在json配置文件中声明Aop及声明式事务
+	 
+--------------------------------------------------------------------------------------------------------
+关于工厂方法
+
+	从1.b.51开始, nutz内置的json/xml/annotation加载器支持工厂方法了
+	
+	Json写法是
+	
+	{{{
+		{
+			ssdb : {
+				type : "org.nutz.ssdbj4.spi.SSDB", // 接口或抽象类
+				args : ["127.0.0.1", 8888, 5000, null],
+				factory : "org.nutz.ssdbj4.SSDBs#pool" // 类名#方法名
+			}
+		}
+	}}}
+	
+	XML写法是
+	
+	{{{
+		<ioc>
+			<obj name="ssdb" type="org.nutz.ssdbj4.spi.SSDB" factory="org.nutz.ssdbj4.SSDBs#pool">
+				<args>
+					<str>127.0.0.1</refer>
+					<int>8888</int>
+					<int>5000</int>
+				</args>
+			</obj>
+		</ioc>
+	}}}

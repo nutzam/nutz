@@ -62,7 +62,7 @@ public class ActionInvoker {
             return false;
         }
         chain.doChain(ac);
-        return true;
+        return ac.getBoolean(ActionContext.AC_DONE, true);
     }
 
     public ActionChain getActionChain(ActionContext ac) {

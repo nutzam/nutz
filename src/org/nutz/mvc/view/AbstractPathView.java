@@ -49,10 +49,11 @@ public abstract class AbstractPathView implements View {
         Context context = Lang.context();
 
         // 解析每个表达式
-        Context expContext = createContext(req, obj);
-        for (Entry<String, El> en : exps.entrySet())
-            context.set(en.getKey(), en.getValue().eval(expContext));
-
+        if (exps.size() != 0) {
+        	Context expContext = createContext(req, obj);
+        	for (Entry<String, El> en : exps.entrySet())
+        		context.set(en.getKey(), en.getValue().eval(expContext));
+        }
         // 生成解析后的路径
         return Strings.trim(this.dest.render(context).toString());
     }

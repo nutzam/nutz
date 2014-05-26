@@ -1,9 +1,9 @@
 package org.nutz.dao.impl;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
@@ -35,11 +35,17 @@ public class EntityHolder {
 
     public EntityHolder(DaoSupport support) {
         this.support = support;
-        this.map = new HashMap<Class<?>, Entity<?>>();
+        this.map = new ConcurrentHashMap<Class<?>, Entity<?>>();
     }
 
     public void set(Entity<?> en) {
         this.map.put(en.getType(), en);
+    }
+    
+    public void remove(Entity<?> en) {
+    	if (en == null || en.getType() == null)
+    		return;
+    	this.map.remove(en.getType());
     }
 
     /**
