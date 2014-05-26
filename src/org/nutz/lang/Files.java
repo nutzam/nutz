@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -462,6 +463,152 @@ public abstract class Files {
      */
     public static File findFile(String path, ClassLoader klassLoader) {
         return findFile(path, klassLoader, Encoding.defaultEncoding());
+    }
+
+    /**
+     * each 函数的参数类型
+     */
+    public enum LsMode {
+        /**
+         * 仅文件
+         */
+        FILE,
+        /**
+         * 仅目录
+         */
+        DIR,
+        /**
+         * 文件和目录
+         */
+        ALL
+    }
+
+    /**
+     * 在一个目录里列出所有的子文件或者目录
+     * 
+     * @param d
+     *            目录
+     * @param p
+     *            正则表达式对象，如果为空，则是全部正则表达式
+     * @param exclude
+     *            true 正则表达式匹配的文件会被忽略，false 正则表达式匹配的文件会被包含
+     * @param mode
+     *            请参看 LsMode 枚举类说明, null 表示 LsMode.ALL
+     * 
+     * @return 得到文件对象数组
+     * @see LsMode
+     */
+    public static File[] ls(File d,
+                            final Pattern p,
+                            final boolean exclude,
+                            LsMode mode) {
+        if (null == p) {
+            return d.listFiles();
+        }
+        // 全部
+        else if (null == mode || LsMode.ALL == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 仅文件
+        else if (LsMode.FILE == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    if (!f.isFile())
+                        return false;
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 仅目录
+        else if (LsMode.DIR == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    if (!f.isDirectory())
+                        return false;
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 不可能
+        throw Lang.impossible();
+    }
+
+    /**
+     * 列文件
+     * 
+     * @param d
+     *            目录对象
+     * @param regex
+     *            正则表达式
+     * @param mode
+     *            模式
+     * @return 文件列表对象
+     * @see #ls(File, Pattern, boolean, LsMode)
+     */
+    public static File[] ls(File d, String regex, LsMode mode) {
+        boolean exclude = false;
+        Pattern p = null;
+        if (!Strings.isBlank(regex)) {
+            exclude = regex.startsWith("!");
+            if (exclude) {
+                regex = Strings.trim(regex.substring(1));
+            }
+            p = Pattern.compile(regex);
+        }
+        return ls(d, p, exclude, mode);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] ls(String path, String regex, LsMode mode) {
+        return ls(checkFile(path), regex, mode);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsFile(File d, String regex) {
+        return ls(d, regex, LsMode.FILE);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsFile(String path, String regex) {
+        return ls(path, regex, LsMode.FILE);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsDir(File d, String regex) {
+        return ls(d, regex, LsMode.DIR);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsDir(String path, String regex) {
+        return ls(path, regex, LsMode.DIR);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsAll(File d, String regex) {
+        return ls(d, regex, LsMode.ALL);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsAll(String path, String regex) {
+        return ls(path, regex, LsMode.ALL);
     }
 
     /**
