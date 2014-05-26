@@ -275,9 +275,7 @@ public class Strings {
      * @return 是否以特殊字符结尾
      */
     public static boolean endsWithChar(String s, char c) {
-        return null != s ? (s.length() == 0 ? false
-                                           : s.charAt(s.length() - 1) == c)
-                        : false;
+        return null != s ? (s.length() == 0 ? false : s.charAt(s.length() - 1) == c) : false;
     }
 
     /**
@@ -530,9 +528,7 @@ public class Strings {
         int len = s.length();
         if (len >= width)
             return s;
-        return new StringBuilder().append(dup(c, width - len))
-                                  .append(s)
-                                  .toString();
+        return new StringBuilder().append(dup(c, width - len)).append(s).toString();
     }
 
     /**
@@ -553,9 +549,7 @@ public class Strings {
         int length = s.length();
         if (length >= width)
             return s;
-        return new StringBuilder().append(s)
-                                  .append(dup(c, width - length))
-                                  .toString();
+        return new StringBuilder().append(s).append(dup(c, width - length)).toString();
     }
 
     /**
@@ -748,8 +742,7 @@ public class Strings {
      * @return 新字符串
      */
     public static String removeFirst(String str, char c) {
-        return (Strings.isEmpty(str) || c != str.charAt(0)) ? str
-                                                           : str.substring(1);
+        return (Strings.isEmpty(str) || c != str.charAt(0)) ? str : str.substring(1);
     }
 
     /**
@@ -942,6 +935,19 @@ public class Strings {
      */
     public static int hex2num(String hex) {
         return Integer.parseInt(hex, 16);
+    }
+
+    /**
+     * 使用给定的分隔符, 将一个数组拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param array
+     *            要拼接的数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(String sp, T... array) {
+        return Lang.concat(sp, array).toString();
     }
 
 }
