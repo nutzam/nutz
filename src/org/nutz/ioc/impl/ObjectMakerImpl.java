@@ -1,5 +1,7 @@
 package org.nutz.ioc.impl;
 
+import java.lang.reflect.Method;
+
 import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocMaking;
@@ -16,6 +18,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
+import org.nutz.lang.born.MethodBorning;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -74,13 +77,11 @@ public class ObjectMakerImpl implements ObjectMaker {
             // 缓存构造函数
             if (iobj.getFactory() != null) {
                 // factory这属性, 格式应该是 类名#方法名
-                final String[] tmp = iobj.getFactory().split("#", 2);
-                final Mirror<?> _mirror = Mirror.me(Lang.loadClass(tmp[0]));
-                dw.setBorning(new Borning<Object>() {
-                    public Object born(Object... args) {
-                        return _mirror.invoke(null, tmp[1], args);
-                    }
-                });
+                String[] ss = iobj.getFactory().split("#", 2);
+                Mirror<?> mi = Mirror.me(Lang.loadClass(ss[0]));
+                Method m = mi.findMethod(ss[1], args);
+                dw.setBorning(new MethodBorning<Object>(m));
+
             } else {
                 dw.setBorning((Borning<?>) mirror.getBorning(args));
             }
@@ -122,7 +123,8 @@ public class ObjectMakerImpl implements ObjectMaker {
             if (log.isWarnEnabled())
                 log.warn(String.format("IobObj: \n%s", iobj.toString()), e);
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw new IocException("create ioc bean fail name="+ ing.getObjectName(), e);
+            throw new IocException("create ioc bean fail name="
+                                   + ing.getObjectName(), e);
         }
 
         // 返回
