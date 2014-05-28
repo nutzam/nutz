@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.nutz.json.Json;
+import org.nutz.lang.Streams;
 import org.nutz.mvc.testapp.BaseWebappTest;
 import org.nutz.mvc.view.RawView;
 import org.nutz.mvc.view.RawView.RangeRange;
@@ -68,6 +69,7 @@ public class RawViewTest extends BaseWebappTest {
                 System.out.println("ERR");
             }
         }
+        Streams.safeClose(in);
 
         rs = new ArrayList<RawView.RangeRange>();
         RawView.parseRange("bytes=128-", rs, 256);
@@ -79,6 +81,7 @@ public class RawViewTest extends BaseWebappTest {
                 System.out.println("ERR");
             }
         }
+        Streams.safeClose(in);
 
         rs = new ArrayList<RawView.RangeRange>();
         RawView.parseRange("bytes=-64", rs, 256);
@@ -90,6 +93,7 @@ public class RawViewTest extends BaseWebappTest {
                 System.out.println("ERR");
             }
         }
+        Streams.safeClose(in);
 
         System.out.println("---------------------------END");
     }

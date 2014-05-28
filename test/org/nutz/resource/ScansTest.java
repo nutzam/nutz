@@ -15,8 +15,8 @@ import javax.servlet.Servlet;
 import junit.extensions.ActiveTestSuite;
 import junit.extensions.RepeatedTest;
 import junit.extensions.TestSetup;
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;

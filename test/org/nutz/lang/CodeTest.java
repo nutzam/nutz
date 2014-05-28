@@ -2,8 +2,7 @@ package org.nutz.lang;
 
 import java.io.File;
 
-import junit.framework.Assert;
-
+import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Code.CodeAnalysisResult;
 import org.nutz.lang.Code.CodeStatisticsResult;
@@ -29,7 +28,10 @@ public class CodeTest {
     @Test
     public void analysisFolder() throws Exception {
         File src = new File(path);
-        CodeStatisticsResult statisticsResult = Code.countingCode(src, "ca", false, null);
+        CodeStatisticsResult statisticsResult = Code.countingCode(src,
+                                                                  "ca",
+                                                                  false,
+                                                                  null);
         Assert.assertEquals(2, statisticsResult.getFileCount());
         Assert.assertEquals(8, statisticsResult.getImportLines());
         Assert.assertEquals(10, statisticsResult.getCommentLines());
@@ -40,7 +42,10 @@ public class CodeTest {
     @Test
     public void analysisFolderAndSubFolder() throws Exception {
         File src = new File(path);
-        CodeStatisticsResult statisticsResult = Code.countingCode(src, "ca", true, null);
+        CodeStatisticsResult statisticsResult = Code.countingCode(src,
+                                                                  "ca",
+                                                                  true,
+                                                                  null);
         Assert.assertEquals(4, statisticsResult.getFileCount());
         Assert.assertEquals(16, statisticsResult.getImportLines());
         Assert.assertEquals(20, statisticsResult.getCommentLines());
