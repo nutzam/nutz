@@ -1,6 +1,6 @@
 package org.nutz.mvc.init;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 import org.nutz.mvc.Mvcs;

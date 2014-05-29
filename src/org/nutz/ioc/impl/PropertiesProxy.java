@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.nutz.castor.Castors;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
@@ -156,6 +157,29 @@ public class PropertiesProxy {
 
     public void put(String key, String value) {
         mp.put(key, value);
+    }
+
+    public PropertiesProxy set(String key, String val) {
+        put(key, val);
+        return this;
+    }
+
+    public String check(String key) {
+        String val = get(key);
+        if (null == val)
+            throw Lang.makeThrow("Ioc.$conf expect property '%s'", key);
+        return val;
+    }
+
+    public boolean getBoolean(String key) {
+        return getBoolean(key, false);
+    }
+
+    public boolean getBoolean(String key, boolean dfval) {
+        String val = get(key);
+        if (Strings.isBlank(val))
+            return dfval;
+        return Castors.me().castTo(val, Boolean.class);
     }
 
     public String get(String key) {

@@ -1073,6 +1073,25 @@ public class Mirror<T> {
     }
 
     /**
+     * 根据一组参数样例，获取一个合理的调用方法
+     * 
+     * @param name
+     *            方法名
+     * @param args
+     *            参数样例
+     * @return
+     */
+    public Method findMethod(String name, Object[] args)
+            throws NoSuchMethodException {
+        if (null == args || args.length == 0)
+            return findMethod(name);
+        Class<?>[] paramTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++)
+            paramTypes[i] = args[i].getClass();
+        return findMethod(name, paramTypes);
+    }
+
+    /**
      * 查找一个方法。匹配的很宽泛
      * 
      * @param name
