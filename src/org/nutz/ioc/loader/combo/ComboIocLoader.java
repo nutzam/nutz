@@ -54,6 +54,12 @@ public class ComboIocLoader implements IocLoader {
      *             如果*开头的参数所指代的类不存在
      */
     public ComboIocLoader(String... args) throws ClassNotFoundException {
+    	if (loaders.isEmpty()) {
+    		loaders.put("js", JsonLoader.class);
+            loaders.put("json", JsonLoader.class);
+            loaders.put("xml", XmlIocLoader.class);
+            loaders.put("annotation", AnnotationIocLoader.class);
+    	}
         ArrayList<String> argsList = null;
         String currentClassName = null;
         for (String str : args) {
@@ -127,12 +133,6 @@ public class ComboIocLoader implements IocLoader {
      * 类别名
      */
     private static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
-    static {
-        loaders.put("js", JsonLoader.class);
-        loaders.put("json", JsonLoader.class);
-        loaders.put("xml", XmlIocLoader.class);
-        loaders.put("annotation", AnnotationIocLoader.class);
-    }
 
     // TODO 这个方法好好整理一下 ...
     public String toString() {

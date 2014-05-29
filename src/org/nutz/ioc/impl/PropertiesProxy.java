@@ -125,18 +125,13 @@ public class PropertiesProxy {
         List<NutResource> list = new ArrayList<NutResource>();
         for (String path : paths) {
             try {
-                List<NutResource> resources = Scans.me()
-                                                   .loadResource("^.+[.]properties$",
-                                                                 path);
+                List<NutResource> resources = Scans.me().loadResource("^.+[.]properties$", path);
                 list.addAll(resources);
             }
             catch (Exception e) {
                 if (ignoreResourceNotFound) {
                     if (log.isWarnEnabled()) {
-                        log.warn("Could not load resource from "
-                                 + path
-                                 + ": "
-                                 + e.getMessage());
+                        log.warn("Could not load resource from " + path + ": " + e.getMessage());
                     }
                 } else {
                     throw Lang.wrapThrow(e);
@@ -283,8 +278,7 @@ public class PropertiesProxy {
             for (String s : ss) {
                 File f = Files.findFile(s);
                 if (null == f) {
-                    throw Lang.makeThrow("Fail to found path '%s' in CLASSPATH or File System!",
-                                         s);
+                    throw Lang.makeThrow("Fail to found path '%s' in CLASSPATH or File System!", s);
                 }
                 // 如果是一个包，引用全部 Files
                 if (f.isDirectory()) {
@@ -295,8 +289,7 @@ public class PropertiesProxy {
                     }, new FileFilter() {
                         public boolean accept(File f) {
                             if (f.isDirectory())
-                                return !f.isHidden()
-                                       && !f.getName().startsWith(".");
+                                return !f.isHidden() && !f.getName().startsWith(".");
                             return f.getName().endsWith(".properties");
                         }
                     });
