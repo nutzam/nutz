@@ -55,7 +55,7 @@ public class NutMap extends LinkedHashMap<String, Object> {
     }
 
     public float getFloat(String key) {
-        return getFloat(key, 0.0f);
+        return getFloat(key, Float.NaN);
     }
 
     public float getFloat(String key, float dft) {
