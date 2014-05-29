@@ -190,19 +190,6 @@ public class PropertiesProxy {
         return Strings.sNull(mp.get(key), defaultValue);
     }
 
-    public boolean getBoolean(String key) {
-        return getBoolean(key, false);
-    }
-
-    public boolean getBoolean(String key, boolean defaultValue) {
-        try {
-            return Boolean.parseBoolean(get(key));
-        }
-        catch (Exception e) {
-            return defaultValue;
-        }
-    }
-
     public String trim(String key) {
         return Strings.trim(get(key));
     }
