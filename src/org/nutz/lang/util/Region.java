@@ -181,7 +181,7 @@ public abstract class Region<T extends Comparable<T>> {
             left = fromString(ss[0]);
             right = fromString(ss[1]);
             // 看看是否需要交换交换...
-            if (left.compareTo(right) > 0) {
+            if (null != left && null != right && left.compareTo(right) > 0) {
                 T o = right;
                 right = left;
                 left = o;
