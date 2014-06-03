@@ -87,8 +87,9 @@ public class ObjectMakerImpl implements ObjectMaker {
                 Mirror<?> mi = Mirror.me(Lang.loadClass(ss[0]));
 
                 if (hasNullArg) {
-                    Method m = (Method) Lang.first(mi.findMethods(ss[1],
-                                                                  ss.length));
+                    Method m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
+                    if (m == null)
+                    	throw new IocException("Factory method not found --> ", iobj.getFactory());
                     dw.setBorning(new MethodCastingBorning<Object>(m));
                 } else {
                     Method m = mi.findMethod(ss[1], args);
