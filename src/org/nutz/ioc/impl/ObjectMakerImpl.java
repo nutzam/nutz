@@ -19,6 +19,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.MethodBorning;
+import org.nutz.lang.born.MethodCastingBorning;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -71,16 +72,28 @@ public class ObjectMakerImpl implements ObjectMaker {
 
             // 先获取一遍，根据这个数组来获得构造函数
             Object[] args = new Object[vps.length];
-            for (int i = 0; i < args.length; i++)
+            boolean hasNullArg = false;
+            for (int i = 0; i < args.length; i++) {
                 args[i] = vps[i].get(ing);
+                if (args[i] == null) {
+                    hasNullArg = true;
+                }
+            }
 
             // 缓存构造函数
             if (iobj.getFactory() != null) {
                 // factory这属性, 格式应该是 类名#方法名
                 String[] ss = iobj.getFactory().split("#", 2);
                 Mirror<?> mi = Mirror.me(Lang.loadClass(ss[0]));
-                Method m = mi.findMethod(ss[1], args);
-                dw.setBorning(new MethodBorning<Object>(m));
+
+                if (hasNullArg) {
+                    Method m = (Method) Lang.first(mi.findMethods(ss[1],
+                                                                  ss.length));
+                    dw.setBorning(new MethodCastingBorning<Object>(m));
+                } else {
+                    Method m = mi.findMethod(ss[1], args);
+                    dw.setBorning(new MethodBorning<Object>(m));
+                }
 
             } else {
                 dw.setBorning((Borning<?>) mirror.getBorning(args));
