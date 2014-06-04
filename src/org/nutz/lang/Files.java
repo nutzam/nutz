@@ -34,8 +34,6 @@ import org.nutz.lang.util.Disks;
  */
 public class Files {
 
-    private Files(){}
-
     /**
      * 读取 UTF-8 文件全部内容
      * 
