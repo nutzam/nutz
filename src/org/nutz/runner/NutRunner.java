@@ -71,6 +71,11 @@ public abstract class NutRunner implements Runnable {
      * @return 本次运行后还需要等待多少个毫秒
      */
     public abstract long exec() throws Exception;
+    
+    @Deprecated
+    public void reg(NutRunner me) {}
+    @Deprecated
+    public void unreg(NutRunner me) {};
 
     /**
      * 开始之前,一般做一些准备工作,比如资源初始化等
@@ -78,7 +83,9 @@ public abstract class NutRunner implements Runnable {
      * @param me
      *            runner本身
      */
-    public abstract void beforeStart(NutRunner me);
+    public void beforeStart(NutRunner me) {
+    	reg(me);
+    };
 
     /**
      * 停止之后,一般是做一些资源回收
@@ -86,7 +93,9 @@ public abstract class NutRunner implements Runnable {
      * @param me
      *            runner本身
      */
-    public abstract void afterStop(NutRunner me);
+    public void afterStop(NutRunner me) {
+    	unreg(me);
+    }
 
     /**
      * 做一些需要定期执行的操作
