@@ -65,6 +65,8 @@ public class DerbyJdbcExpert extends MysqlJdbcExpert {
             return "varchar(1)";
         case BINARY :
             return "BLOB";
+        case TEXT:
+            return "CLOB";
         default :
             break;
         }

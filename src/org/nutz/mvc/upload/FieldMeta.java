@@ -8,7 +8,7 @@ import org.nutz.lang.Strings;
 
 public class FieldMeta {
 
-    FieldMeta(String s) {
+    public FieldMeta(String s) {
         map = new HashMap<String, String>();
         String[] ss = Strings.splitIgnoreBlank(s, "[\n;]");
         for (String pair : ss) {
