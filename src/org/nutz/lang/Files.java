@@ -32,7 +32,7 @@ import org.nutz.lang.util.Disks;
  * @author wendal(wendal1985@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
  */
-public abstract class Files {
+public class Files {
 
     /**
      * 读取 UTF-8 文件全部内容

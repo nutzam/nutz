@@ -23,9 +23,6 @@ public class NutLock {
         return setStop(true);
     }
 
-    /**
-     * 提供便利函数，方便各个线程执行 "唤醒" 操作
-     */
     public void wakeup() {
         synchronized (this) {
             this.notifyAll();

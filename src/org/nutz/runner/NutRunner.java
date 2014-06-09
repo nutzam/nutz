@@ -55,46 +55,52 @@ public abstract class NutRunner implements Runnable {
     }
 
     public void run() {
-        // 判断下log是否已经初始化
         if (log == null) {
             log = Logs.get().setTag(rnm);
         }
         myThread = Thread.currentThread();
-        // 线程开始运行，那么首先注册
-        reg(this);
-        // 干点什么吧, 可以覆盖掉
+
+        beforeStart(this);
         doIt();
-        // 线程结束后，取消注册
-        unreg(this);
+        afterStop(this);
     }
 
     /**
-     * 子类实现的业务逻辑
+     * 具体的业务实现,返回一个sleep数
      * 
      * @return 本次运行后还需要等待多少个毫秒
      */
     public abstract long exec() throws Exception;
+    
+    @Deprecated
+    public void reg(NutRunner me) {}
+    @Deprecated
+    public void unreg(NutRunner me) {};
 
     /**
-     * 注册本Runner
+     * 开始之前,一般做一些准备工作,比如资源初始化等
      * 
      * @param me
-     *            对象本身
+     *            runner本身
      */
-    public abstract void reg(NutRunner me);
+    public void beforeStart(NutRunner me) {
+    	reg(me);
+    };
 
     /**
-     * 注销本Runner
+     * 停止之后,一般是做一些资源回收
      * 
      * @param me
-     *            对象本身
+     *            runner本身
      */
-    public abstract void unreg(NutRunner me);
+    public void afterStop(NutRunner me) {
+    	unreg(me);
+    }
 
     /**
      * 做一些需要定期执行的操作
      */
-    public void doIt() {
+    protected void doIt() {
         while (!lock.isStop()) {
             synchronized (lock) {
                 try {
@@ -136,7 +142,7 @@ public abstract class NutRunner implements Runnable {
         return String.format("[%s:%d] %s/%s - %d",
                              rnm,
                              count,
-                             upAt   == null ? "NONE" : Times.sDT(upAt),
+                             upAt == null ? "NONE" : Times.sDT(upAt),
                              downAt == null ? "NONE" : Times.sDT(downAt),
                              interval);
     }
