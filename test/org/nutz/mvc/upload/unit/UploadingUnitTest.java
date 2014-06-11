@@ -44,6 +44,31 @@ public class UploadingUnitTest {
     }
 
     /**
+     * for issue #617
+     */
+    @Test
+    public void test_upload_empty_just_r_n() throws Exception {
+        MockHttpServletRequest req = Mock.servlet.request();
+        req.setPathInfo("/nutz/junit/uploading");
+        MultipartInputStream ins = Mock.servlet.insmulti(charset);
+        File f = Files.findFile("org/nutz/mvc/upload/files/_r_n.txt");
+        ins.append("theF", f);
+        req.setInputStream(ins);
+        req.init();
+
+        /*
+         * 默认不忽略空文件
+         */
+        Uploading up = UploadUnit.TYPE.born();
+        Map<String, Object> map = up.parse(req, UploadingContext.create(tmps));
+        assertEquals(1, map.size());
+        TempFile tf = (TempFile) map.get("theF");
+
+        assertEquals("_r_n.txt", tf.getMeta().getFileLocalName());
+        assertTrue(Files.equals(f, tf.getFile()));
+    }
+
+    /**
      * 测试限制文件类型：限制文件类型
      */
     @Test(expected = UploadUnsupportedFileTypeException.class)
@@ -61,7 +86,9 @@ public class UploadingUnitTest {
          * 文件超大，会限制
          */
         Uploading up = UploadUnit.TYPE.born();
-        up.parse(req, UploadingContext.create(tmps).setContentTypeFilter("^image/gif$"));
+        up.parse(req,
+                 UploadingContext.create(tmps)
+                                 .setContentTypeFilter("^image/gif$"));
     }
 
     /**
@@ -82,7 +109,9 @@ public class UploadingUnitTest {
          * 文件超大，会限制
          */
         Uploading up = UploadUnit.TYPE.born();
-        up.parse(req, UploadingContext.create(tmps).setNameFilter("^(.+[.])(gif|jpg)$"));
+        up.parse(req,
+                 UploadingContext.create(tmps)
+                                 .setNameFilter("^(.+[.])(gif|jpg)$"));
     }
 
     /**
@@ -103,7 +132,9 @@ public class UploadingUnitTest {
          * 文件超大，会限制
          */
         Uploading up = UploadUnit.TYPE.born();
-        up.parse(req, UploadingContext.create(tmps).setBufferSize(1024).setMaxFileSize(19152));
+        up.parse(req, UploadingContext.create(tmps)
+                                      .setBufferSize(1024)
+                                      .setMaxFileSize(19152));
     }
 
     /**
@@ -129,7 +160,9 @@ public class UploadingUnitTest {
         // zzh: FastUploading 的限制不是特别精确
         // 因为是按块读取的, 每次循环，要读1-3个块，所以尺寸的限制同 缓冲大小，也会有关系
         // 如果缓冲是 171, 可能正好读完
-        up.parse(req, UploadingContext.create(tmps).setBufferSize(171).setMaxFileSize(18620));
+        up.parse(req, UploadingContext.create(tmps)
+                                      .setBufferSize(171)
+                                      .setMaxFileSize(18620));
     }
 
     /**
@@ -201,7 +234,9 @@ public class UploadingUnitTest {
          * 执行上传
          */
         Uploading up = UploadUnit.TYPE.born();
-        Map<String, Object> map = up.parse(req, UploadingContext.create(tmps).setCharset("GBK"));
+        Map<String, Object> map = up.parse(req,
+                                           UploadingContext.create(tmps)
+                                                           .setCharset("GBK"));
         /*
          * 检查以下是不是 GBK 编码被解析成功
          */
@@ -245,7 +280,9 @@ public class UploadingUnitTest {
          * 执行上传
          */
         Uploading up = UploadUnit.TYPE.born();
-        Map<String, Object> map = up.parse(req, UploadingContext.create(tmps).setCharset("GBK"));
+        Map<String, Object> map = up.parse(req,
+                                           UploadingContext.create(tmps)
+                                                           .setCharset("GBK"));
         /*
          * 检查以下是不是 GBK 编码被解析成功
          */
@@ -268,8 +305,10 @@ public class UploadingUnitTest {
          */
         req.setInputStream(Mock.servlet.insmulti("GBK", txt)).init();
         Uploading up = UploadUnit.TYPE.born();
-        TempFile txt2 = (TempFile) up.parse(req, UploadingContext.create(tmps).setCharset("GBK"))
-                                        .get("F0");
+        TempFile txt2 = (TempFile) up.parse(req,
+                                            UploadingContext.create(tmps)
+                                                            .setCharset("GBK"))
+                                     .get("F0");
         // 测试本地的默认编码是否是GBK，即模拟中文环境，本人环境为中文Windows XP
         // 在JVM参数中增加-Dfile.encoding=GBK即可设置好
         // assertEquals("GBK", Charset.defaultCharset().name());
@@ -284,7 +323,8 @@ public class UploadingUnitTest {
          */
         req.setInputStream(Mock.servlet.insmulti("GBK", txt)).init();
         up = UploadUnit.TYPE.born();
-        txt2 = (TempFile) up.parse(req, UploadingContext.create(tmps)).get("F0");
+        txt2 = (TempFile) up.parse(req, UploadingContext.create(tmps))
+                            .get("F0");
         assertFalse("中文.txt".equals(txt2.getMeta().getFileLocalName()));
     }
 
@@ -362,22 +402,24 @@ public class UploadingUnitTest {
     @Test
     public void test_cast_dt01() throws UploadException {
         MockHttpServletRequest req = Mock.servlet.request();
-        req.setHeader(    "content-type",
-                        "multipart/form-data; boundary=----ESDT-321271401654cc6d669eef664aac");
+        req.setHeader("content-type",
+                      "multipart/form-data; boundary=----ESDT-321271401654cc6d669eef664aac");
         Uploading up = UploadUnit.TYPE.born();
         ServletInputStream ins = Mock.servlet.ins("org/nutz/mvc/upload/files/cast_dt01");
         req.setInputStream(ins);
         req.init();
         Map<String, Object> map = up.parse(req, UploadingContext.create(tmps));
         assertEquals(1, map.size());
-        assertEquals("Shapes100.jpg", ((TempFile) map.get("fileData")).getMeta().getFileLocalPath());
+        assertEquals("Shapes100.jpg",
+                     ((TempFile) map.get("fileData")).getMeta()
+                                                     .getFileLocalPath());
     }
 
     @Test
     public void test_upload_text_with_newline_ending() throws UploadException {
         MockHttpServletRequest req = request().setInputStream(ins(Streams.fileIn("org/nutz/mvc/upload/unit/plaint.s")));
-        req.setHeader(    "content-type",
-                        "multipart/form-data; boundary=------NutzMockHTTPBoundary@129021a3e21");
+        req.setHeader("content-type",
+                      "multipart/form-data; boundary=------NutzMockHTTPBoundary@129021a3e21");
         req.setHeader("content-length", "200");
         req.setSession(session(context()));
         req.init();
