@@ -13,6 +13,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.NutzEnum;
 import org.nutz.castor.castor.Datetime2String;
+import org.nutz.castor.castor.String2Array;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 import org.nutz.lang.meta.Email;
@@ -49,6 +50,11 @@ public class CastorTest {
         assertTrue(c.canCast(int.class, int[].class));
         assertTrue(c.canCast(String.class, String[].class));
         assertTrue(c.canCast(Dummy.class, Dummy[].class));
+
+        Castor<String, Object> string2Array = new String2Array();
+
+        assertArrayEquals((String[])string2Array.cast("[\"a\",\"b\",\"c\",123,456]", String[].class),
+                          c.cast("[\"a\",\"b\",\"c\",123,456]", String.class, String[].class));
     }
 
     @Test

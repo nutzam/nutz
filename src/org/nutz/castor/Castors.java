@@ -226,7 +226,7 @@ public class Castors {
             return (T) src;
 
         Class<?> componentType = toType.getComponentType();
-        if (null != componentType && componentType.isAssignableFrom(fromType)) {
+        if (null != componentType && fromType != String.class && componentType.isAssignableFrom(fromType)) {
             Object array = Array.newInstance(componentType, 1);
             Array.set(array, 0, src);
             return (T) array;
