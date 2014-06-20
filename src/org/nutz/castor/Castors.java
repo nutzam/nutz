@@ -1,5 +1,6 @@
 package org.nutz.castor;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -220,8 +221,17 @@ public class Castors {
             // 是对象，直接返回 null
             return null;
         }
+
         if (fromType == toType || toType == null || fromType == null)
             return (T) src;
+
+        Class<?> componentType = toType.getComponentType();
+        if (null != componentType && fromType != String.class && componentType.isAssignableFrom(fromType)) {
+            Object array = Array.newInstance(componentType, 1);
+            Array.set(array, 0, src);
+            return (T) array;
+        }
+
         if (fromType.getName().equals(toType.getName()))
             return (T) src;
         if (toType.isAssignableFrom(fromType))
@@ -324,6 +334,11 @@ public class Castors {
     public boolean canCast(Class<?> fromType, Class<?> toType) {
         if (Mirror.me(fromType).canCastToDirectly(toType))
             return true;
+
+        if (toType.isArray() && toType.getComponentType().isAssignableFrom(fromType)) {
+            return true;
+        }
+
         Castor<?, ?> castor = this.find(fromType, toType);
         return !(castor instanceof Object2Object);
     }

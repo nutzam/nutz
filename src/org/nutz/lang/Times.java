@@ -148,31 +148,47 @@ public abstract class Times {
 
             int ms = _int(m, 16, 0);
 
-            long day = (long) D1970(yy, MM, dd);
-            long MS = day * 86400000L;
-            MS += (((long) HH) * 3600L + ((long) mm) * 60L + ss) * 1000L;
-            MS += (long) ms;
-
-            // 如果没有指定时区 ...
-            if (null == tz) {
-                // 那么用字符串中带有的时区信息，
-                if (!Strings.isBlank(m.group(17))) {
-                    tz = TimeZone.getTimeZone(String.format("GMT%s%s:00",
-                                                            m.group(18),
-                                                            m.group(19)));
-                    // tzOffset = Long.parseLong(m.group(19))
-                    // * 3600000L
-                    // * (m.group(18).charAt(0) == '-' ? -1 : 1);
-
-                }
-                // 如果依然木有，则用系统默认时区
-                else {
-                    tz = TimeZone.getDefault();
-                }
+            /*
+             * zozoh: 先干掉，还是用 SimpleDateFormat 吧，"1980-05-01 15:17:23" 之前的日子
+             * 得出的时间竟然总是多 30 分钟 long day = (long) D1970(yy, MM, dd); long MS =
+             * day * 86400000L; MS += (((long) HH) * 3600L + ((long) mm) * 60L +
+             * ss) * 1000L; MS += (long) ms;
+             * 
+             * // 如果没有指定时区 ... if (null == tz) { // 那么用字符串中带有的时区信息， if
+             * (!Strings.isBlank(m.group(17))) { tz =
+             * TimeZone.getTimeZone(String.format("GMT%s%s:00", m.group(18),
+             * m.group(19))); // tzOffset = Long.parseLong(m.group(19)) // *
+             * 3600000L // * (m.group(18).charAt(0) == '-' ? -1 : 1);
+             * 
+             * } // 如果依然木有，则用系统默认时区 else { tz = TimeZone.getDefault(); } }
+             * 
+             * // 计算 return MS - tz.getRawOffset() - tz.getDSTSavings();
+             */
+            String str = String.format("%04d-%02d-%02d %02d:%02d:%02d.%03d",
+                                       yy,
+                                       MM,
+                                       dd,
+                                       HH,
+                                       mm,
+                                       ss,
+                                       ms);
+            SimpleDateFormat df = (SimpleDateFormat) DF_DATE_TIME_MS4.clone();
+            // 那么用字符串中带有的时区信息 ...
+            if (null == tz && !Strings.isBlank(m.group(17))) {
+                tz = TimeZone.getTimeZone(String.format("GMT%s%s:00",
+                                                        m.group(18),
+                                                        m.group(19)));
             }
-
-            // 计算
-            return MS - tz.getRawOffset() - tz.getDSTSavings();
+            // 指定时区 ...
+            if (null != tz)
+                df.setTimeZone(tz);
+            // 解析返回
+            try {
+                return df.parse(str).getTime();
+            }
+            catch (ParseException e) {
+                throw Lang.wrapThrow(e);
+            }
         }
         throw Lang.makeThrow("Unexpect date format '%s'", ds);
     }
@@ -714,6 +730,7 @@ public abstract class Times {
 
     private static final DateFormat DF_DATE_TIME_MS = new SimpleDateFormat("y-M-d H:m:s.S");
     private static final DateFormat DF_DATE_TIME_MS2 = new SimpleDateFormat("yy-MM-dd HH:mm:ss.SSS");
+    private static final DateFormat DF_DATE_TIME_MS4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 

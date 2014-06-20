@@ -10,6 +10,25 @@ import org.nutz.lang.Lang;
 
 public class BufferRingTest {
 
+    /**
+     * for issue #617
+     */
+    @Test
+    public void test_mark_r_n() throws IOException {
+        RemountBytes boundary = RemountBytes.create("\r\n---");
+        String str = "\r\n\r\n---";
+        InputStream ins = Lang.ins(str);
+        BufferRing br = new BufferRing(ins, 3, 10);
+        String s;
+        MarkMode mode;
+
+        br.load();
+        mode = br.mark(boundary);
+        assertEquals(MarkMode.FOUND, mode);
+        s = br.dumpAsString();
+        assertEquals("\r\n", s);
+    }
+
     @Test
     public void test_cross_ring_item() throws IOException {
         RemountBytes boundary = RemountBytes.create("---");
@@ -314,7 +333,7 @@ public class BufferRingTest {
         s = br.dumpAsString();
         assertEquals("-*", s);
     }
-    
+
     @Test
     public void test_mark_dangerous_char2() throws IOException {
         RemountBytes boundary = RemountBytes.create("*!");
@@ -340,12 +359,12 @@ public class BufferRingTest {
         String s;
         MarkMode mode;
         br.load();
-        
+
         mode = br.mark(boundary);
         assertEquals(MarkMode.FOUND, mode);
         s = br.dumpAsString();
         assertEquals("---", s);
-        
+
         mode = br.mark(boundary);
         assertEquals(MarkMode.STREAM_END, mode);
         s = br.dumpAsString();
