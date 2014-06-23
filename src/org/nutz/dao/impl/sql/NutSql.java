@@ -1,22 +1,21 @@
 package org.nutz.dao.impl.sql;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
-import org.nutz.dao.sql.Sql;
-import org.nutz.dao.sql.SqlCallback;
-import org.nutz.dao.sql.VarIndex;
-import org.nutz.dao.sql.VarSet;
+import org.nutz.dao.sql.*;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 public class NutSql extends NutStatement implements Sql {
 
@@ -69,7 +68,7 @@ public class NutSql extends NutStatement implements Sql {
             // 采用用户的设定
             if (null != clientAdaptors[i])
                 adaptors[i] = clientAdaptors[i];
-            // 自动决定
+                // 自动决定
             else if (null == adaptors[i]) {
                 // 获得对应参数的名称，以及关联的其他索引
                 String name = literal.getParamIndexes().getOrderName(i);
@@ -114,23 +113,52 @@ public class NutSql extends NutStatement implements Sql {
                     vs = null;
                     if (rows.size() > 0)
                         vs = rows.get(rows.size() - 1);
-                } else {
+                }
+                else {
                     break;
                 }
             }
         }
-        Object[][] re = new Object[rows.size()][adaptors.length];
-        int i = 0;
-        for (VarSet row : rows) {
-            Object[] cols = re[i++];
-            for (String name : literal.getParamIndexes().names()) {
+
+        if (rows.size() > 0) {
+            Object[] lastRowParams = getFullParams(lastRow, literal);
+            Object[][] re = new Object[rows.size()][lastRowParams.length];
+            for (int i = 0; i < re.length - 1; ++i) {
+                VarSet row = rows.get(i);
+                re[i] = getFullParams(row, literal);
+            }
+            re[re.length - 1] = lastRowParams;
+            return re;
+        }
+        else {
+            return new Object[rows.size()][adaptors.length];
+        }
+    }
+
+    private Object[] getFullParams(VarSet row, SqlLiteral sqlLiteral) {
+        Map<Integer, String> varIndex2NameMap = sqlLiteral.getVarIndexes().getIndex2NameMap();
+        Map<Integer, String> paramIndex2NameMap = sqlLiteral.getParamIndexes().getIndex2NameMap();
+
+        List<Object> fullParams = new ArrayList<Object>();
+        for (int i : sqlLiteral.stack.getIndexes()) {
+            if (varIndex2NameMap.containsKey(i)) {
+                String name = varIndex2NameMap.get(i);
+                Object value = vars.get(name);
+                if (value instanceof DaoStatement) {
+                    Object[][] paramMatrix = ((DaoStatement) value).getParamMatrix();
+                    if (paramMatrix.length > 0) {
+                        fullParams.addAll(Lang.array2list(paramMatrix[0]));
+                    }
+                }
+            }
+            else {
+                String name = paramIndex2NameMap.get(i);
                 Object value = row.get(name);
-                int[] is = literal.getParamIndexes().getOrderIndex(name);
-                for (int x : is)
-                    cols[x] = value;
+                fullParams.add(value);
             }
         }
-        return re;
+
+        return fullParams.toArray();
     }
 
     public String toPreparedStatement() {
@@ -149,7 +177,7 @@ public class NutSql extends NutStatement implements Sql {
 
     /**
      * 获取语句模板并填充占位符
-     * 
+     *
      * @return 语句模板
      */
     private String[] _createSqlElements() {
@@ -159,8 +187,14 @@ public class NutSql extends NutStatement implements Sql {
         for (String name : vIndex.names()) {
             int[] is = vIndex.indexesOf(name);
             Object obj = vs.get(name);
-            for (int i : is)
-                ss[i] = null == obj ? "" : obj.toString();
+            for (int i : is) {
+                if (obj instanceof DaoStatement) {
+                    ss[i] = ((DaoStatement) obj).toPreparedStatement();
+                }
+                else {
+                    ss[i] = null == obj ? "" : obj.toString();
+                }
+            }
         }
         return ss;
     }
@@ -232,14 +266,14 @@ public class NutSql extends NutStatement implements Sql {
         this.getContext().setPager(pager);
         return this;
     }
-    
+
     public void setSourceSql(String sql) {
         if (literal != null)
             literal.valueOf(sql);
         else
             literal = new SqlLiteral().valueOf(sql);
     }
-    
+
     public String getSourceSql() {
         return this.literal.toString();
     }

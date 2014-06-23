@@ -62,6 +62,10 @@ class WorkingStack {
         return chain.toArray(new String[chain.size()]);
     }
 
+    int[] getIndexes() {
+        return indexes.toArray();
+    }
+
     int size() {
         return chain.size();
     }

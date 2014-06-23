@@ -409,6 +409,34 @@ public class NutDao extends DaoSupport implements Dao {
         return re[0];
     }
 
+    public <T> Pojo queryStatement(Class<T> classOfT, Condition cnd, Pager pager) {
+        Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
+            .append(Pojos.Items.cnd(cnd))
+            .addParamsBy("*")
+            .setPager(pager)
+            .setAfter(_pojo_queryEntity);
+        expert.formatQuery(pojo);
+        return pojo;
+    }
+
+    public <T> Pojo queryStatement(Class<T> classOfT, Condition cnd) {
+        return queryStatement(classOfT, cnd, Pojos.Items.pager(cnd));
+    }
+
+    public Pojo queryStatement(String tableName, Condition cnd, Pager pager) {
+        Pojo pojo = pojoMaker.makeQuery(tableName)
+            .addParamsBy("*")
+            .setPager(pager)
+            .append(Pojos.Items.cnd(cnd));
+        expert.formatQuery(pojo);
+        pojo.setAfter(_pojo_queryRecord);
+        return pojo;
+    }
+
+    public Pojo queryStatement(String tableName, Condition cnd) {
+        return queryStatement(tableName, cnd, Pojos.Items.pager(cnd));
+    }
+
     public <T> List<T> query(Class<T> classOfT, Condition cnd, Pager pager) {
         Pojo pojo = pojoMaker.makeQuery(holder.getEntity(classOfT))
                              .append(Pojos.Items.cnd(cnd))

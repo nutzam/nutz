@@ -24,6 +24,14 @@ class VarIndexImpl implements VarIndex {
         orders = new ArrayList<String>();
     }
 
+    public Map<String, LinkedIntArray> getName2IndexMap() {
+        return this.indexes;
+    }
+
+    public Map<Integer, String> getIndex2NameMap() {
+        return this.names;
+    }
+
     void add(String name, int index) {
         LinkedIntArray lia = indexes.get(name);
         if (null == lia) {
