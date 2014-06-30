@@ -142,6 +142,15 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return this;
     }
 
+    public OrderBy orderBy(String name, String dir) {
+        if ("asc".equalsIgnoreCase(dir)) {
+            this.asc(name);
+        } else {
+            this.desc(name);
+        }
+        return this;
+    }
+
     public Cnd and(SqlExpression exp) {
         cri.where().and(exp);
         return this;

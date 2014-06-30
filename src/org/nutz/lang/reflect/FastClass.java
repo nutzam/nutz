@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 public interface FastClass {
 
-	String CLASSNAME = "FASTCLASS$$";
+	String CLASSNAME = "_FASTCLASS_";
 
 	Object invoke(Object obj, Method method, Object... args);
 
