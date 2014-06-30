@@ -255,7 +255,7 @@
 	函数调用	
 	
     	{{{<JAVA>
-    	Context context = Lang.content();
+    	Context context = Lang.context();
     	Pet pet = new Pet();
         context.set("pet",pet);
         El.eval(context, "pet.setName('XiaoBai')");
@@ -267,7 +267,7 @@
 	数组访问
 	   
         {{{<JAVA>
-        Context context = Lang.content();
+        Context context = Lang.context();
         context.set("x",Lang.array("A", "B", "C"));
         
         System.out.println(El.eval(context,"x[0].toLowerCase()"));
@@ -277,17 +277,17 @@
 	列表访问
 	
         {{{<JAVA>
-        Context context = Lang.content();
+        Context context = Lang.context();
         context.set("x",Lang.list("A", "B", "C"));
         
-        System.out.println(El.eval(context,"x[0].toLowerCase()"));
+        System.out.println(El.eval(context, "x.get(0).toLowerCase()"));
         // 输出为  a
         }}}
 	
 	Map 访问
 	
         {{{<JAVA>
-        Context context = Lang.content();
+        Context context = Lang.context();
         context.set("map",Lang.map("{x:10, y:5}"));
         
         System.out.println(El.eval(context,"map['x'] * map['y']"));
@@ -297,7 +297,7 @@
 	判断
 	
         {{{<JAVA>
-        Context context = Lang.content();
+        Context context = Lang.context();
         context.set("a",5);
         
         System.out.println(El.eval(context,"a>10"));
