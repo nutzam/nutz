@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Each;
 
@@ -394,6 +395,14 @@ public interface Dao {
      * @see org.nutz.dao.Condition
      */
     List<Record> query(String tableName, Condition cnd);
+
+    /**
+     * 获取封装了sql语句的Pojo。
+     */
+    <T> Pojo queryStatement(Class<T> classOfT, Condition cnd, Pager pager);
+    <T> Pojo queryStatement(Class<T> classOfT, Condition cnd);
+    Pojo queryStatement(String tableName, Condition cnd, Pager pager);
+    Pojo queryStatement(String tableName, Condition cnd);
 
     /**
      * 对一组对象进行迭代，这个接口函数非常适用于很大的数据量的集合，因为你不可能把他们都读到内存里

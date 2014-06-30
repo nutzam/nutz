@@ -1,6 +1,9 @@
 package org.nutz.dao.sql;
 
+import org.nutz.lang.util.LinkedIntArray;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -24,4 +27,7 @@ public interface VarIndex {
 
     int size();
 
+    Map<String, LinkedIntArray> getName2IndexMap();
+
+    Map<Integer, String> getIndex2NameMap();
 }
