@@ -55,7 +55,7 @@ public final class FastClassFactory implements Opcodes {
     }
 
     protected static synchronized Class<?> create(Class<?> classZ) {
-        String myName = FastClass.CLASSNAME + count.getAndIncrement();
+        String myName = classZ.getName().replace('.', '/') + FastClass.CLASSNAME + count.getAndIncrement();
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         cw.visit(V1_6,
                  ACC_PUBLIC,
