@@ -3,11 +3,8 @@ package org.nutz.mvc.impl.processor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.lang.Lang;
-import org.nutz.lang.reflect.FastClassFactory;
 import org.nutz.mvc.ActionContext;
-import org.nutz.mvc.Mvcs;
 
 /**
  * 
