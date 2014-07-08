@@ -56,6 +56,8 @@ public class UrlMappingImpl implements UrlMapping {
                 root.add(path, invoker);
                 // 记录一下方法与 url 的映射
                 config.getAtMap().addMethod(path, ai.getMethod());
+            } else if (!ai.isForSpecialHttpMethod()) {
+            	log.debugf("Duplicate @At mapping ? path=" + path);
             }
 
             // 将动作链，根据特殊的 HTTP 方法，保存到调用者内部
