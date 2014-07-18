@@ -99,12 +99,23 @@ public class PropertiesProxy {
         try {
             List<NutResource> list = getResources(paths);
             if (utf8)
-                for (NutResource nr : list)
-                    mp.load(nr.getReader(), false);
+                for (NutResource nr : list) {
+                	Reader r = nr.getReader();
+                	try {
+                		mp.load(nr.getReader(), false);
+                	} finally {
+                		Streams.safeClose(r);
+                	}
+                }
             else {
                 Properties p = new Properties();
                 for (NutResource nr : list) {
-                    p.load(nr.getInputStream());
+                	InputStream in = nr.getInputStream();
+                	try {
+                		p.load(nr.getInputStream());
+                	} finally {
+                		Streams.safeClose(in);
+                	}
                 }
                 mp.putAll(p);
             }

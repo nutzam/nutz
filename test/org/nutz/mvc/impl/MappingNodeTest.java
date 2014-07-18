@@ -82,4 +82,21 @@ public class MappingNodeTest {
 
     }
 
+    @Test
+    public void test_issue() {
+    	MappingNode<String> root = new MappingNode<String>();
+        root.add("/*", "A");
+        root.add("/abc/wendal", "B");
+        root.add("/abc/wen/?/zzz", "B");
+        root.add("/abc/wen/?/zzz/*", "B");
+        ActionContext ac = new ActionContext();
+
+        assertEquals("A", root.get(ac, "/a/b/c/d/e")); // 连第一个路径都不匹配
+        assertEquals("A", root.get(ac, "/abc/abc"));   // 匹配第一路径,但不匹配第二路径
+        assertEquals("B", root.get(ac, "/abc/wendal")); // 匹配第一个路径, 也匹配第二路径
+        assertEquals("B", root.get(ac, "/abc/wen/qq/zzz")); // 匹配全部
+        assertEquals("A", root.get(ac, "/abc/wen/qq/qqq")); // 最后一个路径不匹配
+        assertEquals("B", root.get(ac, "/abc/wen/qq/zzz/123")); // 最后一个路径泛匹配
+        
+    }
 }

@@ -68,13 +68,21 @@ public class MappingNode<T> {
         String key = it.next();
         // 先在 map 里寻找，
         MappingNode<T> node = map.get(key.toLowerCase());
-        if (null != node)
-            return node.get(ac, it);
+        if (null != node) {
+        	// 在子节点中查找
+        	T t = node.get(ac, it);
+        	if (t != null)
+        		return t;
+        	// 找不到的时候, 继续在当前节点找泛匹配(?或者*)
+        }
 
         // 如果没有看看是否有 '?' 的匹配
         if (quesmark != null) {
             ac.getPathArgs().add(key);
-            return quesmark.get(ac, it);
+            T t = quesmark.get(ac, it);
+            if (t != null)
+            	return t;
+            ac.getPathArgs().remove(ac.getPathArgs().size() - 1);
         }
 
         // 还没有则看看是否有 '*' 的匹配
