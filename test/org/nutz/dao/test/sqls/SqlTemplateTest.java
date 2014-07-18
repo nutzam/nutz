@@ -135,12 +135,25 @@ public class SqlTemplateTest extends DaoCase {
     }
 
     @Test
-    public void testQuery() {
+    public void testQueryEntity1() {
         pojos.initPet();
         dao.insert(Pet.create(4));
 
         String sql = "SELECT * FROM t_pet";
         List<Pet> pets = sqlTemplate.query(sql, null, dao.getEntity(Pet.class));
+
+        assertEquals(4, pets.size());
+
+        assertEquals("pet_00", pets.get(0).getName());
+    }
+
+    @Test
+    public void testQueryEntity2() {
+        pojos.initPet();
+        dao.insert(Pet.create(4));
+
+        String sql = "SELECT * FROM t_pet";
+        List<Pet> pets = sqlTemplate.query(sql, null, Pet.class);
 
         assertEquals(4, pets.size());
 
