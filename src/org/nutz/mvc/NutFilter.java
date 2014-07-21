@@ -152,7 +152,7 @@ public class NutFilter implements Filter {
     	return false;
     }
 
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
+    public void doFilter(final ServletRequest req, final ServletResponse resp, final FilterChain chain)
             throws IOException, ServletException {
     	if (proxyFilter != null) {
     		proxyFilter.doFilter(req, resp, chain);
@@ -167,7 +167,7 @@ public class NutFilter implements Filter {
         Context preContext = Mvcs.resetALL();
         try {
             if (sp != null)
-                req = sp.filter(request,
+                request = sp.filter(request,
                                 response,
                                 Mvcs.getServletContext());
             Mvcs.set(this.selfName, request, response);
