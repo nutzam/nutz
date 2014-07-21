@@ -797,7 +797,7 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
      *            对象 java 字段名
      * @return 计算结果
@@ -810,7 +810,7 @@ public interface Dao {
      * @param tableName
      *            表名
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据是支持库这个函数的
      * @param colName
      *            数据库字段名
      * @return 计算结果
@@ -823,7 +823,7 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
      *            对象 java 字段名
      * @param cnd
@@ -838,7 +838,7 @@ public interface Dao {
      * @param tableName
      *            表名
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param colName
      *            数据库字段名
      * @param cnd
