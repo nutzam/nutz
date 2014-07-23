@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Timer;
@@ -14,7 +15,6 @@ import org.nutz.log.Logs;
 
 /**
  * 定时任务服务的友好封装
- *
  * @author QinerG(qinerg@gmail.com)
  */
 public abstract class Tasks {
@@ -22,6 +22,7 @@ public abstract class Tasks {
     private static Log logger = Logs.get();
 
     private static ScheduledThreadPoolExecutor taskScheduler = new ScheduledThreadPoolExecutor(getBestPoolSize());
+    private static List<Timer> timerList = new ArrayList<Timer>();
 
     /**
      * 立即启动，并以固定的频率来运行任务。后续任务的启动时间不受前次任务延时影响。
@@ -69,8 +70,10 @@ public abstract class Tasks {
             public void run() {
                 taskScheduler.scheduleAtFixedRate(task, 0, period, unit);
                 timer.cancel();
+                timerList.remove(timer);
             }
         }, startTime);
+        timerList.add(timer);
     }
 
     /**
@@ -119,8 +122,10 @@ public abstract class Tasks {
             public void run() {
                 taskScheduler.scheduleWithFixedDelay(task, 0, period, unit);
                 timer.cancel();
+                timerList.remove(timer);
             }
         }, startTime);
+        timerList.add(timer);
     }
 
     /**
@@ -144,8 +149,16 @@ public abstract class Tasks {
      * <p>系统关闭时可调用此方法终止正在执行的定时任务，一旦关闭后不允许再向线程池中添加任务，否则会报RejectedExecutionException异常</p>
      */
     public static void depose() {
+    	int timerNum = timerList.size();
+    	//清除Timer
+    	synchronized (timerList) {
+    		for (Timer t: timerList)
+    			t.cancel();
+    		timerList.clear();
+    	}
+    	
         List<Runnable> awaitingExecution = taskScheduler.shutdownNow();
-        logger.infof("Tasks stopping. Tasks awaiting execution: %d", awaitingExecution.size());
+        logger.infof("Tasks stopping. Tasks awaiting execution: %d", timerNum + awaitingExecution.size());
     }
 
     /**
