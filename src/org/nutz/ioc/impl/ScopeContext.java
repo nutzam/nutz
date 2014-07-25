@@ -56,7 +56,8 @@ public class ScopeContext implements IocContext {
                 if (!objs.containsKey(name)) {
                     if (log.isDebugEnabled())
                         log.debugf("Save object '%s' to [%s] ", name, scope);
-                    return null != objs.put(name, obj);
+                    objs.put(name, obj);
+                    return true;
                 }
             }
         }

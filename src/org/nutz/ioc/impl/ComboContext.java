@@ -52,14 +52,14 @@ public class ComboContext implements IocContext {
     public boolean save(String scope, String name, ObjectProxy obj) {
         boolean re = false;
         for (IocContext c : contexts)
-            re &= c.save(scope, name, obj);
+            re |= c.save(scope, name, obj);
         return re;
     }
 
     public boolean remove(String scope, String name) {
         boolean re = false;
         for (IocContext c : contexts)
-            re &= c.remove(scope, name);
+            re |= c.remove(scope, name);
         return re;
     }
 
