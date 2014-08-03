@@ -34,13 +34,24 @@ public class Mapl {
         return new ObjConvertImpl(type).convert(maplist);
     }
 
-    //------------------------------------------------------------------
+    /**
+     * 与maplistToObj实现一样, 少了一步强制转换而已
+     * 
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T maplistToT(Object maplist, Class<T> clz) {
+        return (T) new ObjConvertImpl(clz).convert(maplist);
+    }
+
+    // ------------------------------------------------------------------
     /**
      * 访问MAP, List结构的数据, 通过 uers[2].name 这种形式.
+     * 
      * @param maplist
-     * @param path 路径
+     * @param path
+     *            路径
      */
-    public static Object cell(Object maplist, String path){
+    public static Object cell(Object maplist, String path) {
         MaplRebuild mr = new MaplRebuild(maplist);
         return mr.cell(path);
     }
