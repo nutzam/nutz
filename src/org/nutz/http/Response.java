@@ -17,7 +17,7 @@ import org.nutz.lang.Strings;
 
 public class Response {
     private static final String DEF_PROTOCAL_VERSION = "HTTP/1.1";
-    
+
     public Response(HttpURLConnection conn, Map<String, String> reHeader) throws IOException {
         status = conn.getResponseCode();
         detail = conn.getResponseMessage();
@@ -33,6 +33,7 @@ public class Response {
     private String protocal = DEF_PROTOCAL_VERSION;
     private int status;
     private String detail;
+    private String content;
 
     public String getProtocal() {
         return protocal;
@@ -65,7 +66,7 @@ public class Response {
     public Header getHeader() {
         return header;
     }
-    
+
     /**
      * 根据Http头的Content-Type获取网页的编码类型，如果没有设的话则返回null
      */
@@ -74,8 +75,8 @@ public class Response {
         if (null != contextType) {
             int position = contextType.indexOf("charset=");
             if (position > 0)
-    	        return Strings.trim(contextType.substring(position + 8));
-    	}
+                return Strings.trim(contextType.substring(position + 8));
+        }
         return null;
     }
 
@@ -90,7 +91,7 @@ public class Response {
         else
             return getReader(encoding);
     }
-    
+
     public Reader getReader(String charsetName) {
         return new InputStreamReader(getStream(), Charset.forName(charsetName));
     }
@@ -115,7 +116,7 @@ public class Response {
     public void print(Writer writer, String charsetName) {
         Reader reader = null;
         try {
-            if (null == charsetName) 
+            if (null == charsetName)
                 reader = getReader();
             else
                 reader = this.getReader(charsetName);
@@ -132,12 +133,15 @@ public class Response {
     }
 
     public String getContent() {
-        return getContent(null);
+        if (Strings.isBlank(content)) {
+            content = getContent(null);
+        }
+        return content;
     }
-    
+
     public String getContent(String charsetName) {
-    	if (charsetName == null)
-    		return Streams.readAndClose(getReader());
+        if (charsetName == null)
+            return Streams.readAndClose(getReader());
         return Streams.readAndClose(getReader(charsetName));
     }
 }
