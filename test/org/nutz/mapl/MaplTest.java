@@ -1,6 +1,10 @@
 package org.nutz.mapl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +18,6 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
-import org.nutz.mapl.Mapl;
 
 /**
  * MapList测试
@@ -126,6 +129,37 @@ public class MaplTest {
         assertTrue(obj instanceof Map);
         assertEquals(1, Mapl.cell(obj, "id"));
         assertEquals("jk", Mapl.cell(obj, "name"));
+    }
+
+    /**
+     * 对象转MapList测试
+     */
+    @Test
+    public void objCompileTest2() {
+        A a1 = new A();
+        a1.name = "a1";
+        A a2 = new A();
+        a2.name = "a2";
+        B b = new B();
+        a2.b = b;
+        A a3 = new A();
+        a3.name = "a3";
+
+        C c = new C();
+        c.mylist = new ArrayList<A>();
+        c.mylist.add(a1);
+        c.mylist.add(a2);
+        c.mylist.add(a3);
+
+        String abcJson = Json.toJson(c);
+        Object abc = Json.fromJson(abcJson);
+        C c2 = Mapl.maplistToT(abc, C.class);
+
+        assertTrue(c.mylist.size() == c2.mylist.size());
+        assertTrue(c.mylist.get(0).name.equals(c2.mylist.get(0).name));
+        assertTrue(c.mylist.get(1).name.equals(c2.mylist.get(1).name));
+        assertTrue(c.mylist.get(2).name.equals(c2.mylist.get(2).name));
+        assertTrue(c.mylist.get(1).b.name.equals(c2.mylist.get(1).b.name));
     }
 
     /**
