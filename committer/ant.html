@@ -33,7 +33,7 @@
 <p>Nutz 提供 Ant 编译的脚本，在 Ant 运行前，你需要配置几个环境变量，在你的命令行客户端输入 ant，查看一下你的 ant 安装没有，如果没有请先从<a href="http://ant.apache.org">它的官方网站下载</a>。你还需要检查：</p>
 <ol type="1">
 <li>Java 是否安装，Nutz 需要至少 1.5 以上版本</li>
-<li><a href="http://tomcat.apache.org">Tomcat</a>（Nutz 需要它的 servletAPI），</li>
+<li><a href="http://mvnrepository.com/artifact/javax.servlet/servlet-api/2.5">servlet-api</a>，暂时只适用 2.5 版本的 servlet-api，</li>
 <li><a href="http://logging.apache.org/log4j/">Log4j</a> 在编译时需要它。 当然，运行时，我们不一定需要 Log4j</li>
 </ol>
 <p>有了这些我们就可以顺利编译 Nutz 了。</p>
@@ -46,11 +46,10 @@
 <h1><a name="buildxml_-_快速编译脚本"></a>build.xml - 快速编译脚本</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>这个是我在开发中最常用到的编译脚本，我其他的基于 Nutz 的项目在，在 Nutz 代码更新时，我就运行一下，其他的项目一刷新，就升级到这个 Jar 文件了。</p>
-<p>在 /trunk/build 目录下你能看到 build.bat（写给 windows的）以及 build（写给 Linux）的。你可以将其拷贝到你的 PATH 目录下，以便你在控制台执行。执行前，请先打开脚本文件，修改其中的内容。因为 build.xml 需要如下环境变量：</p>
+<p>在 /build 目录下你能看到 build.bat（写给 windows的）以及 build（写给 Linux）的。你可以将其拷贝到你的 PATH 目录下，以便你在控制台执行。执行前，请先打开脚本文件，修改其中的内容。因为 build.xml 需要如下环境变量：</p>
 <ul type="disc">
-<li><b>TOMCAT_HOME</b> : 你的 tomcat 安装目录，这目录下应该有 lib 目录，下面包括了 servlet-api.jar</li>
 <li><b>JAVA_HOME</b> : 你的 JDK 安装目录，这目录下应该有 jre/lib/rt.jar</li>
-<li><b>DEPS</b> : 第三方 jar 包存放的目录，这个目录下应该有 log4j.jar</li>
+<li><b>DEPS</b> : 第三方 jar 包存放的目录，这个目录下应该有 log4j.jar、servlet-api.jar</li>
 <li><b>OUTPUT</b> : 成功编译后 nutz 的 jar 包的输出目录</li>
 <li><b>PROJECT_HOME</b> : Nutz 的项目目录，这个目录下应该有 src 目录</li>
 </ul>

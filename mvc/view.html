@@ -248,7 +248,7 @@ public View myFunction(@Param("type") type){
 <p>你可以对这个 JSON 字符串的格式进行更多的控制：</p>
 <pre>@Ok("json:{quoteName:true, ignoreNull:true}")
 </pre>
-<p>视图的值就是： <b>"{quoteName:true, ignoreNull:true}"</b>，这个字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
+<p>视图的值就是： "{quoteName:true, ignoreNull:true}"，这个字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
 <div class="hr"><b></b></div>
 <h2><a name="重定向视图"></a>重定向视图</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -276,7 +276,7 @@ public View myFunction(@Param("type") type){
 <li>"p.abc" 就表示 HTTP 参数中的 "abc" 参数</li>
 </ul>
 </li>
-<li>如果参数表没有值，则直接用返回的对象来填充。</li>
+<li>如果参数表没有值，则用空字符串来填充</li>
 </ol>
 <p>下面举几个例子：</p>
 <h3><a name="用返回对象的字段填充："></a>用返回对象的字段填充：</h3>

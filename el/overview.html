@@ -424,7 +424,7 @@ System.out.println(El.eval(context,"pet.name"));
 </span></pre>
 <h2><a name="函数调用"></a>函数调用	</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = Lang.content();
+<pre>Context context = Lang.context();
 Pet pet = new Pet();
 context.set("pet",pet);
 El.eval(context, "pet.setName('XiaoBai')");
@@ -434,7 +434,7 @@ System.out.println(El.eval(context,"pet.getName()"));
 </span></pre>
 <h2><a name="数组访问"></a>数组访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = Lang.content();
+<pre>Context context = Lang.context();
 context.set("x",Lang.array("A", "B", "C"));
 
 System.out.println(El.eval(context,"x[0].toLowerCase()"));
@@ -442,15 +442,15 @@ System.out.println(El.eval(context,"x[0].toLowerCase()"));
 </span></pre>
 <h2><a name="列表访问"></a>列表访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = Lang.content();
+<pre>Context context = Lang.context();
 context.set("x",Lang.list("A", "B", "C"));
 
-System.out.println(El.eval(context,"x[0].toLowerCase()"));
+System.out.println(El.eval(context, "x.get(0).toLowerCase()"));
 <span class="zdoc_code_cmt">// 输出为  a
 </span></pre>
 <h2><a name="Map_访问"></a>Map 访问</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = Lang.content();
+<pre>Context context = Lang.context();
 context.set("map",Lang.map("{x:10, y:5}"));
 
 System.out.println(El.eval(context,"map['x'] * map['y']"));
@@ -458,7 +458,7 @@ System.out.println(El.eval(context,"map['x'] * map['y']"));
 </span></pre>
 <h2><a name="判断"></a>判断</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>Context context = Lang.content();
+<pre>Context context = Lang.context();
 context.set("a",5);
 
 System.out.println(El.eval(context,"a&gt;10"));

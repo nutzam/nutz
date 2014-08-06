@@ -89,8 +89,8 @@ log4j.appender.NUTZ.layout.ConversionPattern=%d [%t] %-5p %c - %m%n
 <p><img src="../imgs/build/21.png"/></p>
 <h2><a name="5_增加_Jetty_的依赖"></a>5. 增加 Jetty 的依赖</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>因为 Nutz 的 Mvc 自动测试，适用嵌入式Servlet容器 <a href="http://jetty.codehaus.org/jetty/">Jetty</a>，因此你需要下一个最新的版本并加入你的 Eclipse 工程的类路径中</p>
-<p>我用的是 'jetty-all-7.4.1.v20110513.jar' 这个版本，我想只要你的版本比我这个新，应该都能兼容。对于不熟悉 Jetty 的朋友，一开始，能找它的下载地址都要费半天劲，让我替你省点事，直接从这个地址:<a href="http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/">http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/</a> 下载就好了。</p>
+<p>因为 Nutz 的 Mvc 自动测试，适用嵌入式 Servlet 容器 <a href="http://www.eclipse.org/jetty/">Jetty</a>，因此你需要下一个最新的版本并加入你的 Eclipse 工程的类路径中</p>
+<p>我用的是 'jetty-all-7.6.15.v20140411.jar' 这个版本，我想只要你的版本比我这个新，应该都能兼容。对于不熟悉 Jetty 的朋友，一开始，能找它的下载地址都要费半天劲，让我替你省点事，直接从这个地址:<a href="http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/">http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/</a> 下载就好了。</p>
 <p><span style="color:#FF0000;"><b> 另外请注意:</b></span> - 可能 Jetty 同 Tomcat 有点冲突，你把它们一起放在你的工程里是不明智的，前面的文章曾提示你将Tomcat 加入你的类路径，仅仅是为了编译，因为 Nutz 需要 Tomcat 中的 servlet-api.jar， 如果你现在下了 Jetty，你就不需要Tomcat 了，再把 Jetty 给你提供的，或者随便谁提供的 servlet-api.jar 加入你的类路径就好了。</p>
 <h2><a name="6_运行"></a>6. 运行</h2>
 <div style="float:right;"><a href="#top">Top</a></div>

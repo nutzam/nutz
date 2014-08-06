@@ -9,7 +9,7 @@
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#为什么需要请求范围的模块">为什么需要请求范围的模块</a></div>
+<div><span class="num">1</span><a href="#为什么需要请求范围的模块(废弃,不建议使用!)">为什么需要请求范围的模块(废弃,不建议使用!)</a></div>
 </li>
 <li>
 <div class="zdoc_folder"><span class="num">2</span><a href="#怎样做？">怎样做？</a></div>
@@ -30,7 +30,7 @@
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="为什么需要请求范围的模块"></a>为什么需要请求范围的模块</h1>
+<h1><a name="为什么需要请求范围的模块(废弃,不建议使用!)"></a>为什么需要请求范围的模块(废弃,不建议使用!)</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>无论 Struts2 还是 Spring，都提供了一种控制器： 每次请求，创建实例，使用后即抛弃。这样的控制器的好处就是可以放心的吧 request 和 response 对象放心的存成它的私有属性，反正使用一次后就丢掉了。</p>
 <p>在 Nutz.Mvc，所谓控制器，实际上就是 Module，默认的，所有的模块都是整个应用程序唯一的，除非你在 Ioc 配置文件里另有说明。</p>

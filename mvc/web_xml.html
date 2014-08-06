@@ -61,6 +61,24 @@
     &lt;dispatcher&gt;FORWARD&lt;/dispatcher&gt;
 &lt;/filter-mapping&gt;
 </pre>
+<p>更灵活的忽略模式(从1.b.51开始支持)</p>
+<pre>    &lt;filter&gt;
+        &lt;filter-name&gt;nutz&lt;/filter-name&gt;
+        &lt;filter-class&gt;org.nutz.mvc.NutFilter&lt;/filter-class&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;modules&lt;/param-name&gt;
+            &lt;param-value&gt;com.mine.app.MainModule&lt;/param-value&gt;
+        &lt;/init-param&gt;
+        &lt;init-param&gt;
+            &lt;param-name&gt;exclusions&lt;/param-name&gt;
+            &lt;!-- *.XXX 忽略后缀 --&gt;
+            &lt;!-- /XX/* 忽略前缀 --&gt;
+            &lt;!-- /cc   忽略固定路径 --&gt;
+            &lt;!-- 下面的例子忽略了html和ftl后缀, 忽略了/rs/和/druid/前缀,和忽略了固定路径/abc/notaction --&gt;
+            &lt;param-value&gt;*.html,*.ftl,/rs/*,/druid/*,/abc/notaction&lt;/param-value&gt;
+        &lt;/init-param&gt;
+    &lt;/filter&gt;
+</pre>
 <h1><a name="比较传统的方式"></a>比较传统的方式</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>&lt;filter&gt;

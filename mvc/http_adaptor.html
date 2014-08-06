@@ -313,6 +313,7 @@ public String someFunc(	@Param("pid") int petId,
 <li>HttpSession</li>
 <li>ServletContext</li>
 <li>Ioc &amp; Ioc2</li>
+<li>Map ServletRequest.getParameterMap()的返回值</li>
 </ul>
 <h2><a name="还有就是@Attr注解,可以用于获取req或session的attr"></a>还有就是@Attr注解,可以用于获取req或session的attr</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -360,7 +361,7 @@ public String getComment(int topicId, int commentId){
 public String getArticle(String author, int articleId){
     <span class="zdoc_code_cmt">// 如果输入的 URL 是： /article/zozoh/1352
 </span>    <span class="zdoc_code_cmt">// 那么 author 就是 "zozoh"
-</span>    <span class="zdoc_code_cmt">// 而 articleId 就是 1352       	
+</span>    <span class="zdoc_code_cmt">// 而 articleId 就是 1352
 </span>}
 </pre>
 <p>Nutz.Mvc 在一层一层解析路径的时候，碰到了 <span style="color:#FF00FF;"><b>'*'</b></span>，	它就会将这个路径从此处截断，后面的字串按照字符 '/' 拆分成一个字符串数组。为入口函数填充参数的时候，会优先将这个路径参数数组按照顺序填充成参数。之后，如果它发现入口函数还有参数没有被填充完全，它才应用适配器的内部逻辑，填充其余的参数。</p>
@@ -374,7 +375,7 @@ public String getComment(String author, int topicId, int commentId){
 </span>    <span class="zdoc_code_cmt">// 而 commentId 就是 171
 </span>}
 </pre>
-<h2><a name="通配符的限制"></a>通配符的限制	</h2>
+<h2><a name="通配符的限制"></a>通配符的限制</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>总之，在 @At 注解中通过通配符，你可以声明你的路径参数，但是你的通配符必须是一层路径，但是它们有限制：</p>
 <pre>你不能这么写

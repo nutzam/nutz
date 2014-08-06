@@ -37,6 +37,9 @@
 <li>
 <div><span class="num">3</span><a href="#关于进阶">关于进阶</a></div>
 </li>
+<li>
+<div><span class="num">4</span><a href="#关于工厂方法">关于工厂方法</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="Ioc_的概念"></a>Ioc 的概念</h1>
@@ -184,6 +187,30 @@ System.out.println(p1==p2);
 <li><a href="loader_annotation.html">使用注解配置Ioc</a> --使用注解配置Ioc</li>
 <li><a href="../aop/aop_json.html">用json文件声明Aop切片</a> -- 在json配置文件中声明Aop及声明式事务</li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="关于工厂方法"></a>关于工厂方法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.b.51开始, nutz内置的json/xml/annotation加载器支持工厂方法了</p>
+<p>Json写法是</p>
+<pre>	{
+		ssdb : {
+			type : "org.nutz.ssdbj4.spi.SSDB", <span class="zdoc_code_cmt">// 接口或抽象类
+</span>			args : ["127.0.0.1", 8888, 5000, null],
+			factory : "org.nutz.ssdbj4.SSDBs<span class="zdoc_code_cmt">#pool" // 类名#方法名
+</span>		}
+	}
+</pre>
+<p>XML写法是</p>
+<pre>	&lt;ioc&gt;
+		&lt;obj name="ssdb" type="org.nutz.ssdbj4.spi.SSDB" factory="org.nutz.ssdbj4.SSDBs<span class="zdoc_code_cmt">#pool"&gt;
+</span>			&lt;args&gt;
+				&lt;str&gt;127.0.0.1&lt;/refer&gt;
+				&lt;int&gt;8888&lt;/int&gt;
+				&lt;int&gt;5000&lt;/int&gt;
+			&lt;/args&gt;
+		&lt;/obj&gt;
+	&lt;/ioc&gt;
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>
