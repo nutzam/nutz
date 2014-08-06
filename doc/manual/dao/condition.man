@@ -10,15 +10,15 @@
 	Nutz.Dao 将如何如何使用这个条件
 		* Dao 接口的 clear 方法和 query 方法的第二个参数，就是为了生成 WHERE 后面那段字符串设计的
 		* 这个参数是一个 org.nutz.dao.Condition 接口的实现类
-		* 通过该接口的 toString(org.nutz.dao.entity.Entity) 方法， Nutz.Dao 将获得 WHERE 后面那段字符串
+		* 通过该接口的 toSql(org.nutz.dao.entity.Entity) 方法， Nutz.Dao 将获得 WHERE 后面那段字符串
 		* 当然也包括 ORDER BY
 ------------------------------------------------------------------------------------------------------------
 Condition 接口
-	* 这个接口只有一个方法 toString(Entity<?> entity)
+	* 这个接口只有一个方法 toSql(Entity<?> entity)
 		* 这个方法带一个参数 org.nutz.dao.entity.Entity
 		* 通过这个参数，实现者可以获得当前需要操作的实体的配置信息
 		* 当然，如果你不需要的话，你可以不理睬这个参数
-	* Nutz.Dao 会将 toString(Entity<?> entity) 的返回直接拼接到SQL 的 WHERE 关键字后面
+	* Nutz.Dao 会将 toSql(Entity<?> entity) 的返回直接拼接到SQL 的 WHERE 关键字后面
 		* 如果你返回的字符串以 WHERE 或者 ORDER BY 开头，它会直接使用，否则会补上一个 WHERE 关键字
 		* 这个判断会忽略前后空白以及大小写
 ------------------------------------------------------------------------------------------------------------
