@@ -73,7 +73,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<version>1.4.177</version>
+			<version>1.4.180</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -85,13 +85,13 @@
 		<dependency>
 			<groupId>org.eclipse.jetty.aggregate</groupId>
 			<artifactId>jetty-all-server</artifactId>
-			<version>7.6.13.v20130916</version>
+			<version>7.6.15.v20140411</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp</artifactId>
-			<version>7.6.13.v20130916</version>
+			<version>7.6.15.v20140411</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -101,9 +101,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>postgresql</groupId>
+			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<version>9.1-901-1.jdbc4</version>
+			<version>9.3-1102-jdbc4</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -143,7 +143,7 @@
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
-				<version>7.6.4.v20120524</version>
+				<version>7.6.15.v20140411</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

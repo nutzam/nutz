@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
 import org.nutz.http.sender.GetSender;
@@ -74,7 +75,7 @@ public abstract class Sender {
                 if (encoding != null && encoding.contains("gzip")) {
                     is2 = new GZIPInputStream(is1);
                 } else if (encoding != null && encoding.contains("deflate")) {
-                    is2 = new InflaterInputStream(is1);
+                    is2 = new InflaterInputStream(is1, new Inflater(true));
                 } else {
                     is2 = is1;
                 }
