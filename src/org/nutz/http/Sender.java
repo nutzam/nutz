@@ -23,15 +23,15 @@ import org.nutz.lang.stream.NullInputStream;
  * 
  */
 public abstract class Sender {
-	
-	/**
-	 * 默认连接超时, 30秒
-	 */
-	public static int Default_Conn_Timeout = 30*1000;
-	/**
-	 * 默认读取超时, 10分钟
-	 */
-	public static int Default_Read_Timeout = 10*60*1000;
+
+    /**
+     * 默认连接超时, 30秒
+     */
+    public static int Default_Conn_Timeout = 30 * 1000;
+    /**
+     * 默认读取超时, 10分钟
+     */
+    public static int Default_Read_Timeout = 10 * 60 * 1000;
 
     public static Sender create(String url) {
         return create(Request.get(url));
@@ -113,25 +113,32 @@ public abstract class Sender {
     }
 
     protected void openConnection() throws IOException {
-    	ProxySwitcher proxySwitcher = Http.proxySwitcher;
-    	if (proxySwitcher != null) {
-    		Proxy proxy = proxySwitcher.getProxy(request);
-    		if (proxy != null) {
-    			conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
-    			conn.setConnectTimeout(Default_Conn_Timeout);
-    	        if (timeout > 0)
-    	            conn.setReadTimeout(timeout);
-    	        else
-    	        	conn.setReadTimeout(Default_Read_Timeout);
-    	        return;
-    		}
-    	}
+        ProxySwitcher proxySwitcher = Http.proxySwitcher;
+        if (proxySwitcher != null) {
+            try {
+                Proxy proxy = proxySwitcher.getProxy(request);
+                if (proxy != null) {
+                    conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
+                    conn.setConnectTimeout(Default_Conn_Timeout);
+                    if (timeout > 0)
+                        conn.setReadTimeout(timeout);
+                    else
+                        conn.setReadTimeout(Default_Read_Timeout);
+                    return;
+                }
+            }
+            catch (IOException e) {
+                if (!Http.autoSwitch) {
+                    throw e;
+                }
+            }
+        }
         conn = (HttpURLConnection) request.getUrl().openConnection();
         conn.setConnectTimeout(Default_Conn_Timeout);
         if (timeout > 0)
             conn.setReadTimeout(timeout);
         else
-        	conn.setReadTimeout(Default_Read_Timeout);
+            conn.setReadTimeout(Default_Read_Timeout);
     }
 
     protected void setupRequestHeader() {
@@ -145,14 +152,14 @@ public abstract class Sender {
             for (Entry<String, String> entry : header.getAll())
                 conn.addRequestProperty(entry.getKey(), entry.getValue());
     }
-    
+
     public Sender setTimeout(int timeout) {
-		this.timeout = timeout;
-		return this;
-	}
-    
+        this.timeout = timeout;
+        return this;
+    }
+
     public int getTimeout() {
-		return timeout;
-	}
+        return timeout;
+    }
 
 }
