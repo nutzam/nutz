@@ -24,7 +24,7 @@
 	命令行客户端输入 ant，查看一下你的 ant 安装没有，如果没有请先从
 	[http://ant.apache.org 它的官方网站下载]。你还需要检查：
 	 # Java 是否安装，Nutz 需要至少 1.5 以上版本
-	 # [http://tomcat.apache.org Tomcat]（Nutz 需要它的 servletAPI），
+	 # [http://mvnrepository.com/artifact/javax.servlet/servlet-api/2.5 servlet-api]，暂时只适用 2.5 版本的 servlet-api，
 	 # [http://logging.apache.org/log4j/ Log4j] 在编译时需要它。 \
 	   当然，运行时，我们不一定需要 Log4j
 	有了这些我们就可以顺利编译 Nutz 了。
@@ -39,15 +39,13 @@ build.xml - 快速编译脚本
 	这个是我在开发中最常用到的编译脚本，我其他的基于 Nutz 的项目在，在 Nutz 
 	代码更新时，我就运行一下，其他的项目一刷新，就升级到这个 Jar 文件了。
 	
-	在 /trunk/build 目录下你能看到 build.bat（写给 windows的）以及 
+	在 /build 目录下你能看到 build.bat（写给 windows的）以及 
 	build（写给 Linux）的。你可以将其拷贝到你的 PATH 目录下，以便你在控制台
 	执行。执行前，请先打开脚本文件，修改其中的内容。因为 build.xml 需要如下
 	环境变量：
-	 
-	 * {*TOMCAT_HOME} : 你的 tomcat 安装目录，这目录下应该有 lib 目录，下面\
-	   包括了 servlet-api.jar 
+
 	 * {*JAVA_HOME} : 你的 JDK 安装目录，这目录下应该有 jre/lib/rt.jar
-	 * {*DEPS} : 第三方 jar 包存放的目录，这个目录下应该有 log4j.jar
+	 * {*DEPS} : 第三方 jar 包存放的目录，这个目录下应该有 log4j.jar、servlet-api.jar
 	 * {*OUTPUT} : 成功编译后 nutz 的 jar 包的输出目录
 	 * {*PROJECT_HOME} : Nutz 的项目目录，这个目录下应该有 src 目录
 	

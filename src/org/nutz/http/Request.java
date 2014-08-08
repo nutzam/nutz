@@ -96,11 +96,13 @@ public class Request {
 
     public String getURLEncodedParams() {
         StringBuilder sb = new StringBuilder();
-        for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-            String key = it.next();
-            sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
-            if (it.hasNext())
-                sb.append('&');
+        if (params != null) {
+            for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+                sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
+                if (it.hasNext())
+                    sb.append('&');
+            }
         }
         return sb.toString();
     }
@@ -110,12 +112,13 @@ public class Request {
             return inputStream;
         } else {
             if (null == data) {
-            	if (enc != null)
-					try {
-						return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
-					} catch (UnsupportedEncodingException e) {
-						throw Lang.wrapThrow(e);
-					}
+                if (enc != null)
+                    try {
+                        return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        throw Lang.wrapThrow(e);
+                    }
                 return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
             }
             return new ByteArrayInputStream(data);
@@ -150,7 +153,7 @@ public class Request {
 
     public Request setUrl(String url) {
         if (url != null && url.indexOf("://") < 0)
-            //默认采用http协议
+            // 默认采用http协议
             this.url = "http://" + url;
         else
             this.url = url;
@@ -194,12 +197,12 @@ public class Request {
             return new Cookie();
         return new Cookie(s);
     }
-    
+
     /**
      * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
      */
     public Request setEnc(String reqEnc) {
-		this.enc = reqEnc;
-		return this;
-	}
+        this.enc = reqEnc;
+        return this;
+    }
 }

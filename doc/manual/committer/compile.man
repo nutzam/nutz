@@ -73,10 +73,10 @@
 		<../imgs/build/21.png>
 
     5. 增加 Jetty 的依赖
-        因为 Nutz 的 Mvc 自动测试，适用嵌入式Servlet容器 [http://jetty.codehaus.org/jetty/ Jetty]，因此你需要下一个最新的版本
+        因为 Nutz 的 Mvc 自动测试，适用嵌入式 Servlet 容器 [http://www.eclipse.org/jetty/ Jetty]，因此你需要下一个最新的版本
         并加入你的 Eclipse 工程的类路径中
 
-        我用的是 'jetty-all-7.4.1.v20110513.jar' 这个版本，我想只要你的版本比我这个新，应该都能兼容。对于不熟悉 Jetty 的朋友，
+        我用的是 'jetty-all-7.6.15.v20140411.jar' 这个版本，我想只要你的版本比我这个新，应该都能兼容。对于不熟悉 Jetty 的朋友，
         一开始，能找它的下载地址都要费半天劲，让我替你省点事，直接从这个地址:
         [http://repo2.maven.org/maven2/org/eclipse/jetty/aggregate/jetty-all/] 下载就好了。
         
