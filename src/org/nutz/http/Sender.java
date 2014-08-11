@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.Socket;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +18,8 @@ import java.util.zip.InflaterInputStream;
 import org.nutz.http.sender.GetSender;
 import org.nutz.http.sender.PostSender;
 import org.nutz.lang.stream.NullInputStream;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * @author zozoh(zozohtnt@gmail.com)
@@ -33,6 +36,8 @@ public abstract class Sender {
      * 默认读取超时, 10分钟
      */
     public static int Default_Read_Timeout = 10 * 60 * 1000;
+    
+    private static final Log log = Logs.get();
 
     public static Sender create(String url) {
         return create(Request.get(url));
@@ -119,6 +124,18 @@ public abstract class Sender {
             try {
                 Proxy proxy = proxySwitcher.getProxy(request);
                 if (proxy != null) {
+
+                	if (Http.autoSwitch) {
+                		Socket socket = null;
+                		try {
+                			socket = new Socket();
+                			socket.connect(proxy.address(), 5*1000);
+                		} finally {
+                			if (socket != null)
+                				socket.close();
+                		}
+                	}
+                    
                     conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                     conn.setConnectTimeout(Default_Conn_Timeout);
                     if (timeout > 0)
@@ -132,6 +149,7 @@ public abstract class Sender {
                 if (!Http.autoSwitch) {
                     throw e;
                 }
+            	log.info("Test proxy FAIl, fallback to direct connection", e);
             }
         }
         conn = (HttpURLConnection) request.getUrl().openConnection();
