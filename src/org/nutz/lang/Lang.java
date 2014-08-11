@@ -126,9 +126,7 @@ public abstract class Lang {
      *            参数
      * @return 运行时异常
      */
-    public static RuntimeException wrapThrow(Throwable e,
-                                             String fmt,
-                                             Object... args) {
+    public static RuntimeException wrapThrow(Throwable e, String fmt, Object... args) {
         return new RuntimeException(String.format(fmt, args), e);
     }
 
@@ -159,8 +157,7 @@ public abstract class Lang {
      * @return 包裹后对象
      */
     @SuppressWarnings("unchecked")
-    public static <T extends Throwable> T wrapThrow(Throwable e,
-                                                    Class<T> wrapper) {
+    public static <T extends Throwable> T wrapThrow(Throwable e, Class<T> wrapper) {
         if (wrapper.isAssignableFrom(e.getClass()))
             return (T) e;
         return Mirror.me(wrapper).born(e);
@@ -540,9 +537,7 @@ public abstract class Lang {
                 arr[0] = e;
                 return arr;
             }
-            T[] arr = (T[]) Array.newInstance(eles.getClass()
-                                                  .getComponentType(),
-                                              eles.length + 1);
+            T[] arr = (T[]) Array.newInstance(eles.getClass().getComponentType(), eles.length + 1);
             arr[0] = e;
             for (int i = 0; i < eles.length; i++) {
                 arr[i + 1] = eles[i];
@@ -571,9 +566,7 @@ public abstract class Lang {
                 arr[0] = e;
                 return arr;
             }
-            T[] arr = (T[]) Array.newInstance(eles.getClass()
-                                                  .getComponentType(),
-                                              eles.length + 1);
+            T[] arr = (T[]) Array.newInstance(eles.getClass().getComponentType(), eles.length + 1);
             for (int i = 0; i < eles.length; i++) {
                 arr[i] = eles[i];
             }
@@ -711,10 +704,7 @@ public abstract class Lang {
      *            数组
      * @return 拼合后的字符串
      */
-    public static <T> StringBuilder concat(int offset,
-                                           int len,
-                                           Object c,
-                                           T[] objs) {
+    public static <T> StringBuilder concat(int offset, int len, Object c, T[] objs) {
         StringBuilder sb = new StringBuilder();
         if (null == objs || len < 0 || 0 == objs.length)
             return sb;
@@ -878,8 +868,7 @@ public abstract class Lang {
      *            列表类型
      * @return 列表对象
      */
-    public static <E> List<E> collection2list(Collection<?> col,
-                                              Class<E> eleType) {
+    public static <E> List<E> collection2list(Collection<?> col, Class<E> eleType) {
         if (null == col)
             return null;
         List<E> list = new ArrayList<E>(col.size());
@@ -1074,8 +1063,7 @@ public abstract class Lang {
      * @throws FailToCastObjectException
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
-            throws FailToCastObjectException {
+    public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
         if (null == toType)
             throw new FailToCastObjectException("target type is Null");
         // 类型相同
@@ -1090,15 +1078,13 @@ public abstract class Lang {
                 return (T) map;
             }
             catch (Exception e) {
-                throw new FailToCastObjectException("target type fail to born!",
-                                                    unwrapThrow(e));
+                throw new FailToCastObjectException("target type fail to born!", unwrapThrow(e));
             }
 
         }
         // 数组
         if (toType.isArray())
-            return (T) Lang.collection2array(src.values(),
-                                             toType.getComponentType());
+            return (T) Lang.collection2array(src.values(), toType.getComponentType());
         // List
         if (List.class == toType) {
             return (T) Lang.collection2list(src.values());
@@ -1160,16 +1146,14 @@ public abstract class Lang {
                             map = (Map) ft.newInstance();
                         }
                         catch (Exception e) {
-                            throw new FailToCastObjectException("target type fail to born!",
-                                                                e);
+                            throw new FailToCastObjectException("target type fail to born!", e);
                         }
                     }
                     // 赋值
                     final Class<?> valType = Mirror.getGenericTypes(field, 1);
                     each(v, new Each<Entry>() {
                         public void invoke(int i, Entry en, int length) {
-                            map.put(en.getKey(),
-                                    Castors.me().castTo(en.getValue(), valType));
+                            map.put(en.getKey(), Castors.me().castTo(en.getValue(), valType));
                         }
                     });
                     vv = map;
@@ -1450,9 +1434,7 @@ public abstract class Lang {
                 Map map = (Map) obj;
                 int len = map.size();
                 int i = 0;
-                if (null != eType
-                    && eType != Object.class
-                    && eType.isAssignableFrom(Entry.class)) {
+                if (null != eType && eType != Object.class && eType.isAssignableFrom(Entry.class)) {
                     for (Object v : map.entrySet())
                         try {
                             callback.invoke(i++, (T) v, len);
@@ -1465,9 +1447,7 @@ public abstract class Lang {
                 } else {
                     for (Object v : map.entrySet())
                         try {
-                            callback.invoke(i++,
-                                            (T) ((Entry) v).getValue(),
-                                            len);
+                            callback.invoke(i++, (T) ((Entry) v).getValue(), len);
                         }
                         catch (ContinueLoop e) {}
                         catch (ExitLoop e) {
@@ -1712,8 +1692,7 @@ public abstract class Lang {
      *            Map 的类型
      * @return Map 对象
      */
-    public static <T extends Map<String, Object>> T obj2map(Object obj,
-                                                            Class<T> mapType) {
+    public static <T extends Map<String, Object>> T obj2map(Object obj, Class<T> mapType) {
         try {
             T map = mapType.newInstance();
             Lang.obj2map(obj, map, new HashMap<Object, Object>());
@@ -1753,8 +1732,7 @@ public abstract class Lang {
      *            集合对象
      * @return 集合对象
      */
-    public static <T extends Collection<E>, E> T enum2collection(Enumeration<E> enums,
-                                                                 T cols) {
+    public static <T extends Collection<E>, E> T enum2collection(Enumeration<E> enums, T cols) {
         while (enums.hasMoreElements())
             cols.add(enums.nextElement());
         return cols;
@@ -1812,12 +1790,9 @@ public abstract class Lang {
      * @throws ClassNotFoundException
      *             如果无法用当前线程的ClassLoader加载
      */
-    public static Class<?> loadClass(String className)
-            throws ClassNotFoundException {
+    public static Class<?> loadClass(String className) throws ClassNotFoundException {
         try {
-            return Thread.currentThread()
-                         .getContextClassLoader()
-                         .loadClass(className);
+            return Thread.currentThread().getContextClassLoader().loadClass(className);
         }
         catch (ClassNotFoundException e) {
             return Class.forName(className);
@@ -1832,12 +1807,10 @@ public abstract class Lang {
     public static boolean isJDK6() {
         InputStream is = null;
         try {
-            String classFileName = Lang.class.getName().replace('.', '/')
-                                   + ".class";
+            String classFileName = Lang.class.getName().replace('.', '/') + ".class";
             is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
             if (is == null)
-                is = ClassTools.getClassLoader()
-                               .getResourceAsStream("/" + classFileName);
+                is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
             if (is != null && is.available() > 8) {
                 is.skip(7);
                 return is.read() > 49;
@@ -1883,8 +1856,7 @@ public abstract class Lang {
      * @param me
      * @param field
      */
-    public static Type getFieldType(Mirror<?> me, String field)
-            throws NoSuchFieldException {
+    public static Type getFieldType(Mirror<?> me, String field) throws NoSuchFieldException {
         return getFieldType(me, me.getField(field));
     }
 
@@ -2138,10 +2110,7 @@ public abstract class Lang {
      * @return 数字签名
      */
     public static String digest(String algorithm, CharSequence cs) {
-        return digest(algorithm,
-                      Strings.getBytesUTF8(null == cs ? "" : cs),
-                      null,
-                      1);
+        return digest(algorithm, Strings.getBytesUTF8(null == cs ? "" : cs), null, 1);
     }
 
     /**
@@ -2157,10 +2126,7 @@ public abstract class Lang {
      *            迭代次数
      * @return 数字签名
      */
-    public static String digest(String algorithm,
-                                byte[] bytes,
-                                byte[] salt,
-                                int iterations) {
+    public static String digest(String algorithm, byte[] bytes, byte[] salt, int iterations) {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
 
@@ -2224,8 +2190,7 @@ public abstract class Lang {
     public static String fixedHexString(byte[] hashBytes) {
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < hashBytes.length; i++) {
-            sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16)
-                             .substring(1));
+            sb.append(Integer.toString((hashBytes[i] & 0xff) + 0x100, 16).substring(1));
         }
 
         return sb.toString();
@@ -2307,10 +2272,8 @@ public abstract class Lang {
         if (source == null || source.isEmpty())
             return dst;
 
-        Pattern includePattern = include == null ? null
-                                                : Pattern.compile(include);
-        Pattern excludePattern = exclude == null ? null
-                                                : Pattern.compile(exclude);
+        Pattern includePattern = include == null ? null : Pattern.compile(include);
+        Pattern excludePattern = exclude == null ? null : Pattern.compile(exclude);
 
         for (Entry<String, Object> en : source.entrySet()) {
             String key = en.getKey();
@@ -2350,5 +2313,16 @@ public abstract class Lang {
             ip = request.getRemoteAddr();
         }
         return ip;
+    }
+
+    /**
+     * @return 返回当前程序运行的根目录
+     */
+    public static String runRootPath() {
+        String cp = Lang.class.getClassLoader().getResource("").toExternalForm();
+        if (cp.startsWith("file:")) {
+            cp = cp.substring("file:".length());
+        }
+        return cp;
     }
 }
