@@ -287,18 +287,18 @@ Nutz.Dao SQL 文件的格式
 	使用 `Entity<?>`
 		Nutz.Dao 会将你的 POJO 预先处理，处理的结果就是 `Entity<?>`。你可以通过 Dao 接口的 getEntity() 方法
 		获取。你通过[annotations.man 实体注解]配置的信息，尤其是 @Column 中配置的数据库字段的名字
-		（当数据库字段名同 Java 字段名不同时）尤其有用。Condition 接口的 `toString(Entity<?>)` 方法是你唯一
+		（当数据库字段名同 Java 字段名不同时）尤其有用。Condition 接口的 `toSql(Entity<?>)` 方法是你唯一
 		要实现的方法，如果你将一个 Condition 赋个了 Sql 对象，在生成真正 SQL 语句的时候，这个 `Entity<?>`
 		又要从那里来呢？答案是，(*你要预先设置}。
 		
-		如果你不设置 `Entity<?>`，那么你的 Condition 的 `toString(Entity<?>)` 参数就是 null。你可以通过 Dao
+		如果你不设置 `Entity<?>`，那么你的 Condition 的 `toSql(Entity<?>)` 参数就是 null。你可以通过 Dao
 		接口随时获取任何一个 POJO 的`Entity<?>`，但是如何设置给你的 Condition 呢，答案是，通过 Sql 对象。
 		{{{<JAVA>
 		void demoEntityCondition(Dao dao) {
 			Sql sql = Sqls.create("UPDATE t_pet SET masterid=@masterId $condition");
 			Entity<Pet> entity = dao.getEntity(Pet.class);
 			sql.setEntity(entity).setCondition(new Condition() {
-				public String toString(Entity<?> entity) {
+				public String toSql(Entity<?> entity) {
 					return String.format("%s LIKE 'Y%'", entity.getField("name").getColumnName());
 				}
 			});
