@@ -27,6 +27,7 @@ import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.lang.Lang;
+import org.nutz.lang.random.R;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -38,11 +39,29 @@ public class SimpleDaoTest extends DaoCase {
         for (int i = 0; i < len; i++) {
             Pet pet = Pet.create("pet" + i);
             pet.setNickName("alias_" + i);
+            pet.setPrice(R.random(30, 100) / 3.1415f);
             dao.insert(pet);
         }
     }
 
-    // for issue #515 写给 mysql 一个特殊的例子
+    /**
+     * for issue #675 提供一个直接返回对象的方法
+     */
+    @Test
+    public void test_dao_func() {
+        insertRecords(10);
+
+        int n = dao.func(Pet.class, "SUM", "price");
+        assertTrue(n > 0);
+
+        Object o = dao.func2(Pet.class, "SUM", "price");
+        assertTrue((o instanceof Double));
+        assertTrue(((Double) o).floatValue() > 0.0f);
+    }
+
+    /**
+     * for issue #515 写给 mysql 一个特殊的例子
+     */
     @Test
     public void test_escape_char() {
         if (dao.meta().isMySql()) {
@@ -275,10 +294,12 @@ public class SimpleDaoTest extends DaoCase {
             return;
         dao.create(Issue396Master.class, true);
     }
-    
+
     @Test
     public void test_insert_special_chain() {
-    	if (dao.meta().isMySql())
-    		dao.insert(Pet.class, Chain.makeSpecial("birthday", "now()").add("name", "wendal"));
+        if (dao.meta().isMySql())
+            dao.insert(Pet.class,
+                       Chain.makeSpecial("birthday", "now()").add("name",
+                                                                  "wendal"));
     }
 }

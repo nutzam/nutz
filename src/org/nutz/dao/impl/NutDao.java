@@ -36,6 +36,7 @@ import org.nutz.dao.impl.sql.pojo.PojoEachEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoEachRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchIntCallback;
+import org.nutz.dao.impl.sql.pojo.PojoFetchObjectCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoQueryEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoQueryRecordCallback;
@@ -79,6 +80,8 @@ public class NutDao extends DaoSupport implements Dao {
 
     private PojoCallback _pojo_fetchInt;
 
+    private PojoCallback _pojo_fetchObject;
+
     protected volatile long _selfId;
 
     // ==========================================================
@@ -91,6 +94,7 @@ public class NutDao extends DaoSupport implements Dao {
         _pojo_fetchEntity = new PojoFetchEntityCallback();
         _pojo_eachEntity = new PojoEachEntityCallback();
         _pojo_fetchInt = new PojoFetchIntCallback();
+        _pojo_fetchObject = new PojoFetchObjectCallback();
         _pojo_queryRecord = new PojoQueryRecordCallback();
         _pojo_fetchRecord = new PojoFetchRecordCallback();
         _pojo_eachRecord = new PojoEachRecordCallback();
@@ -136,10 +140,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public void insert(String tableName, Chain chain) {
-    	if (chain.isSpecial()) {
-    		Daos.insertBySpecialChain(this, null, tableName, chain);
-    		return;
-    	}
+        if (chain.isSpecial()) {
+            Daos.insertBySpecialChain(this, null, tableName, chain);
+            return;
+        }
         EntityOperator opt = _optBy(chain.toEntityMap(tableName));
         if (null == opt)
             return;
@@ -148,10 +152,10 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public void insert(Class<?> classOfT, Chain chain) {
-    	if (chain.isSpecial()) {
-    		Daos.insertBySpecialChain(this, getEntity(classOfT), null, chain);
-    		return;
-    	}
+        if (chain.isSpecial()) {
+            Daos.insertBySpecialChain(this, getEntity(classOfT), null, chain);
+            return;
+        }
         EntityOperator opt = _opt(classOfT);
         opt.myObj = chain;
         opt.addInsertSelfOnly();
@@ -705,6 +709,42 @@ public class NutDao extends DaoSupport implements Dao {
                                      .setAfter(_pojo_fetchInt);
         _exec(pojo);
         return pojo.getInt();
+    }
+
+    public Object func2(Class<?> classOfT, String func2Name, String fieldName) {
+        return func2(classOfT, func2Name, fieldName, null);
+    }
+
+    public Object func2(String tableName, String func2Name, String colName) {
+        return func2(tableName, func2Name, colName, null);
+    }
+
+    public Object func2(Class<?> classOfT,
+                        String func2Name,
+                        String colName,
+                        Condition cnd) {
+        Entity<?> en = holder.getEntity(classOfT);
+        if (null != en.getField(colName))
+            colName = en.getField(colName).getColumnName();
+        DaoStatement pojo = pojoMaker.makeFunc(en.getViewName(),
+                                               func2Name,
+                                               colName)
+                                     .append(Pojos.Items.cnd(cnd))
+                                     .setAfter(_pojo_fetchObject)
+                                     .setEntity(en);
+        _exec(pojo);
+        return pojo.getResult();
+    }
+
+    public Object func2(String tableName,
+                        String func2Name,
+                        String colName,
+                        Condition cnd) {
+        DaoStatement pojo = pojoMaker.makeFunc(tableName, func2Name, colName)
+                                     .append(Pojos.Items.cnd(cnd))
+                                     .setAfter(_pojo_fetchObject);
+        _exec(pojo);
+        return pojo.getResult();
     }
 
     public Pager createPager(int pageNumber, int pageSize) {

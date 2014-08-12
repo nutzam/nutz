@@ -804,6 +804,8 @@ public interface Dao {
      */
     int func(Class<?> classOfT, String funcName, String fieldName);
 
+    Object func2(Class<?> classOfT, String funcName, String fieldName);
+
     /**
      * 对某一个数据表字段，进行计算。
      * 
@@ -816,6 +818,8 @@ public interface Dao {
      * @return 计算结果
      */
     int func(String tableName, String funcName, String colName);
+
+    Object func2(String tableName, String funcName, String colName);
 
     /**
      * 对某一个对象字段，进行计算。
@@ -832,6 +836,11 @@ public interface Dao {
      */
     int func(Class<?> classOfT, String funcName, String fieldName, Condition cnd);
 
+    Object func2(Class<?> classOfT,
+                 String funcName,
+                 String fieldName,
+                 Condition cnd);
+
     /**
      * 对某一个数据表字段，进行计算。
      * 
@@ -846,6 +855,11 @@ public interface Dao {
      * @return 计算结果
      */
     int func(String tableName, String funcName, String colName, Condition cnd);
+
+    Object func2(String tableName,
+                 String funcName,
+                 String colName,
+                 Condition cnd);
 
     /**
      * 根据数据源的类型，创建一个翻页对象
