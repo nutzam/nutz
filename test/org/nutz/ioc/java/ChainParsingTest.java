@@ -27,6 +27,39 @@ public class ChainParsingTest {
     }
 
     @Test
+    public void test_parse_returnvalue_invoke() {
+        String s = "$a.x().f('m', false)";
+        ChainNode cn = N(s);
+        assertEquals(s, cn.toString());
+    }
+    
+    @Test
+    public void test_parse_attr_chain() {
+        String s = "$a.b.c()";
+        ChainNode cn = N(s);
+        assertEquals(s, cn.toString());
+    }
+
+    @Test
+    public void test_invoke_with_number() {
+        String s = NAME("dup('ABC',0)");
+        ChainNode cn = N(s);
+        assertEquals("", cn.eval(null));
+
+        s = NAME("dup('ABC',3)");
+        cn = N(s);
+        assertEquals("ABCABCABC", cn.eval(null));
+
+        s = NAME("dup('ABC',-2)");
+        cn = N(s);
+        assertEquals("A", cn.eval(null));
+
+        s = NAME("tFloat('ABC', .5f)");
+        cn = N(s);
+        assertEquals("ABC:0.5", cn.eval(null));
+    }
+
+    @Test
     public void test_normal_static_call() {
         String s = NAME("getAbc()");
         ChainNode cn = N(s);
@@ -77,7 +110,12 @@ public class ChainParsingTest {
         String s = "@Context.save('xx', 'tt', null)";
         ChainNode cn = N(s);
         assertEquals(s, cn.toString());
-        IocMaking ing = new IocMaking(null, null, new ScopeContext("app"), null, null, null);
+        IocMaking ing = new IocMaking(null,
+                                      null,
+                                      new ScopeContext("app"),
+                                      null,
+                                      null,
+                                      null);
         assertFalse((Boolean) cn.eval(ing));
     }
 
