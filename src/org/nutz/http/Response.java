@@ -73,9 +73,13 @@ public class Response {
     public String getEncodeType() {
         String contextType = header.get("Content-Type");
         if (null != contextType) {
-            int position = contextType.indexOf("charset=");
-            if (position > 0)
-                return Strings.trim(contextType.substring(position + 8));
+        	for (String tmp : contextType.split(";")) {
+        		if (tmp == null)
+        			continue;
+				tmp = tmp.trim();
+				if (tmp.startsWith("charset="))
+					return Strings.trim(tmp.substring(8)).trim();
+			}
         }
         return null;
     }
