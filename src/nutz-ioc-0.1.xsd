@@ -99,6 +99,7 @@
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
 		<xs:attribute ref="name" use="required"></xs:attribute>
+		<xs:attribute name="optional" type="xs:string" use="optional"></xs:attribute>
 	</xs:complexType>
 	<xs:complexType name="t_tag_int">
 		<xs:simpleContent>
