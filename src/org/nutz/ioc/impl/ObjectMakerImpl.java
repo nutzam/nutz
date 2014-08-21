@@ -117,9 +117,10 @@ public class ObjectMakerImpl implements ObjectMaker {
                     fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
                 }
                 catch (Exception e) {
-                    throw Lang.wrapThrow(e,
-                                         "Fail to eval Injector for field: '%s'",
-                                         ifld.getName());
+                	if (!ifld.isOptional()) {
+                        throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
+                	}
+            		log.info("ioc field create fail, and it is optional, ignore error", e);
                 }
             }
             dw.setFields(fields);
