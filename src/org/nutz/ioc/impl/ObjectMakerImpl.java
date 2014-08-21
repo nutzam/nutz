@@ -20,8 +20,6 @@ import org.nutz.lang.Strings;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.MethodBorning;
 import org.nutz.lang.born.MethodCastingBorning;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 /**
  * 在这里，需要考虑 AOP
@@ -30,8 +28,6 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  */
 public class ObjectMakerImpl implements ObjectMaker {
-
-    private static final Log log = Logs.get();
 
     public ObjectProxy make(IocMaking ing, IocObject iobj) {
         // 获取 Mirror， AOP 将在这个方法中进行
@@ -133,7 +129,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw new IocException("create ioc bean fail name=" + ing.getObjectName(), e);
+            throw new IocException(e, "create ioc bean fail name=%s ioc define:\n%s", ing.getObjectName(), iobj);
         }
 
         // 返回
