@@ -215,7 +215,15 @@ public class Scans {
                     log.debug("Fail to run deep scan!", e);
             }
         }
-        list = new ArrayList<NutResource>((new HashSet<NutResource>(list)));
+        ArrayList<NutResource> tmp = new ArrayList<NutResource>();
+        for (NutResource r : list) {
+        	int index = tmp.indexOf(r);
+        	if (index > -1) {
+        		log.infof("same resource [%s] will be override", r.getName());
+        		tmp.set(index, r);
+        	} else
+        		tmp.add(r);
+		}
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
         return list;
