@@ -114,13 +114,10 @@ public class ObjectMakerImpl implements ObjectMaker {
                 IocField ifld = iobj.getFields()[i];
                 try {
                     ValueProxy vp = ing.makeValue(ifld.getValue());
-                    fields[i] = FieldInjector.create(mirror, ifld.getName(), vp);
+                    fields[i] = FieldInjector.create(mirror, ifld.getName(), vp, ifld.isOptional());
                 }
                 catch (Exception e) {
-                	if (!ifld.isOptional()) {
-                        throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
-                	}
-            		log.info("ioc field create fail, and it is optional, ignore error", e);
+                	throw Lang.wrapThrow(e, "Fail to eval Injector for field: '%s'", ifld.getName());
                 }
             }
             dw.setFields(fields);
@@ -135,11 +132,8 @@ public class ObjectMakerImpl implements ObjectMaker {
         }
         // 当异常发生，从 context 里移除 ObjectProxy
         catch (Throwable e) {
-            if (log.isWarnEnabled())
-                log.warn(String.format("IobObj: \n%s", iobj.toString()), e);
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
-            throw new IocException("create ioc bean fail name="
-                                   + ing.getObjectName(), e);
+            throw new IocException("create ioc bean fail name=" + ing.getObjectName(), e);
         }
 
         // 返回
