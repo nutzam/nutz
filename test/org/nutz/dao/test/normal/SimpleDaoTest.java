@@ -55,8 +55,8 @@ public class SimpleDaoTest extends DaoCase {
         assertTrue(n > 0);
 
         Object o = dao.func2(Pet.class, "SUM", "price");
-        assertTrue((o instanceof Double));
-        assertTrue(((Double) o).floatValue() > 0.0f);
+        assertTrue((o instanceof Number));
+        assertTrue(((Number) o).floatValue() > 0.0f);
     }
 
     /**

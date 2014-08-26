@@ -156,6 +156,8 @@ public class XmlIocLoader implements IocLoader {
         for (Element fieldElement : list) {
                 IocField iocField = new IocField();
                 iocField.setName(fieldElement.getAttribute("name"));
+                if ("true".equals(fieldElement.getAttribute("optional")))
+                	iocField.setOptional(true);
                 if (fieldElement.hasChildNodes()) {
                     NodeList nodeList = fieldElement.getChildNodes();
                     for (int j = 0; j < nodeList.getLength(); j++) {

@@ -243,10 +243,14 @@ public class QueryTest extends DaoCase {
     @Test
     public void fetch_record() {
         Record re = dao.fetch("t_pet", Cnd.where("name", "=", "pet3"));
+        if (dao.meta().isOracle())
+        	re.remove("rn");
         Pet pet = re.toPojo(Pet.class);
-        assertEquals(6, re.getColumnCount());
+        assertEquals(7, re.getColumnCount());
         assertEquals(4, pet.getId());
         assertEquals("pet3", pet.getName());
+        dao.create(Pet.class, true);
+        dao.insert(Pet.create("中文啊中文"));
     }
 
     @Test

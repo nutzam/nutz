@@ -18,7 +18,7 @@
 
 	<property name="JDBC_EXPERT" value="org/nutz/dao/jdbc/nutz_jdbc_experts.js" />
 
-	<property name="v" value="-1.b.51" />
+	<property name="v" value="1.b.51" />
 	<property name="zlang" value="org/nutz/lang/**,org/nutz/castor/**,org/nutz/repo/**,org/nutz/resource/**,org/nutz/*.*" />
 	<property name="zplugin" value="org/nutz/plugin/**" />
 	<property name="zlog" value="org/nutz/log/**" />
@@ -57,13 +57,13 @@
 
 	<target name="jar" depends="compile">
 		<echo message="TMP: ${TMP}" />
-		<!--jar destfile="${OP}/nutz-all${v}.jar" basedir="${TMP}" />
-		<jar destfile="${OP}/nutz.lang${v}.jar" basedir="${TMP}" includes="${zlang}" />
-		<jar destfile="${OP}/nutz.json${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
-		<jar destfile="${OP}/nutz.dao${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
-		<jar destfile="${OP}/nutz.ioc${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
-		<jar destfile="${OP}/nutz${v}.jar" basedir="${TMP}" includes="${zall}" />
-		<jar destfile="${OP}/nutz-source${v}.jar" basedir="${SRC}" includes="${zall}" />
+		<!--jar destfile="${OP}/nutz-all-${v}.jar" basedir="${TMP}" />
+		<jar destfile="${OP}/nutz.lang-${v}.jar" basedir="${TMP}" includes="${zlang}" />
+		<jar destfile="${OP}/nutz.json-${v}.jar" basedir="${TMP}" includes="${zlang},${zjson}" />
+		<jar destfile="${OP}/nutz.dao-${v}.jar" basedir="${TMP}" includes="${zlang},${zdao}" />
+		<jar destfile="${OP}/nutz.ioc-${v}.jar" basedir="${TMP}" includes="${zlang},${zjson},${zdao},${zioc}" /-->
+		<jar destfile="${OP}/nutz-${v}.jar" basedir="${TMP}" includes="${zall}" />
+		<jar destfile="${OP}/nutz-source-${v}.jar" basedir="${SRC}" includes="${zall}" />
 	</target>
 
 	<target name="run" depends="jar">

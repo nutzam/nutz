@@ -135,6 +135,7 @@ public class AnnotationIocLoader implements IocLoader {
                 } else
                     iocValue = convert(inject.value());
                 iocField.setValue(iocValue);
+                iocField.setOptional(inject.optional());
                 iocObject.addField(iocField);
                 fieldList.add(iocField.getName());
             }

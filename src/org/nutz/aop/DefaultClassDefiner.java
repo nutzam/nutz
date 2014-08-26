@@ -29,7 +29,7 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 				}
 			}
 		}
-		if (moreClassLoader == null)
+		if (moreClassLoader == null && cd != null)
 			moreClassLoader = cd;
 	}
 

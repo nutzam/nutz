@@ -76,7 +76,7 @@
 
     忽略少数字段
         {{{
-        FieldFilter.lock(Pet.class, "^last|age$").run(new Atom(){
+        FieldFilter.locked(Pet.class, "^last|age$").run(new Atom(){
             public void run(){
                 // TODO 你的 DAO 操作代码
             }
