@@ -65,16 +65,16 @@ public class TimesTest {
     }
 
     @Test
-    public void test_runTime() throws Exception {
-        assertEquals(100000, Times.runTime("100s"));
-        assertEquals(120000, Times.runTime("2m"));
-        assertEquals(10800000, Times.runTime("3h"));
-        assertEquals(172800000, Times.runTime("2d"));
-        assertEquals(100000, Times.runTime("100S"));
-        assertEquals(120000, Times.runTime("2M"));
-        assertEquals(10800000, Times.runTime("3H"));
-        assertEquals(172800000, Times.runTime("2D"));
-        assertEquals(1000, Times.runTime("1000"));
+    public void test_toTimeMillis() throws Exception {
+        assertEquals(100000, Times.toMillis("100s"));
+        assertEquals(120000, Times.toMillis("2m"));
+        assertEquals(10800000, Times.toMillis("3h"));
+        assertEquals(172800000, Times.toMillis("2d"));
+        assertEquals(100000, Times.toMillis("100S"));
+        assertEquals(120000, Times.toMillis("2M"));
+        assertEquals(10800000, Times.toMillis("3H"));
+        assertEquals(172800000, Times.toMillis("2D"));
+        assertEquals(1000, Times.toMillis("1000"));
     }
 
 }

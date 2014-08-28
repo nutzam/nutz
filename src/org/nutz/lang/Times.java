@@ -743,7 +743,7 @@ public abstract class Times {
      * @param tstr
      * @return
      */
-    public static long runTime(String tstr) {
+    public static long toMillis(String tstr) {
         if (Strings.isBlank(tstr)) {
             return 0;
         }
