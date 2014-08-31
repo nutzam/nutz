@@ -22,7 +22,7 @@ public class NutFilter2 implements Filter {
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		if (selfName == null) {
-			selfName = Mvcs.ctx.nutConfigs.keySet().iterator().next();
+			selfName = Mvcs.ctx().nutConfigs.keySet().iterator().next();
 			if (selfName == null) {
 				chain.doFilter(req, resp);
 				return;
