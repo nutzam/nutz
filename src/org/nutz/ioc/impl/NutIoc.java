@@ -140,7 +140,7 @@ public class NutIoc implements Ioc2 {
 
     public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
         if (log.isDebugEnabled())
-            log.debugf("Get '%s'<%s>", name, type);
+            log.debugf("Get '%s'<%s>", name, type == null ? "" : type);
 
         
 
@@ -189,7 +189,7 @@ public class NutIoc implements Ioc2 {
 
                         // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
                         if (log.isDebugEnabled())
-                            log.debugf("\t >> Make...'%s'<%s>", name, type);
+                            log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
                         op = maker.make(ing, iobj);
                     }
                     // 处理异常
@@ -197,7 +197,7 @@ public class NutIoc implements Ioc2 {
                         throw e;
                     }
                     catch (Throwable e) {
-                        throw new IocException(Lang.unwrapThrow(e), "For object [%s] - type:[%s]", name, type);
+                        throw new IocException(Lang.unwrapThrow(e), "For object [%s] - type:[%s]", name, type == null ? "" : type);
                     }
                 }
             }
