@@ -39,6 +39,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpressionGroup and(SqlExpression exp) {
+    	if (exp == null)
+    		throw new NullPointerException("exp is null!");
         if (!exps.isEmpty())
             _add(new Static("AND"));
         return _add(exp);
@@ -134,6 +136,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpressionGroup or(SqlExpression exp) {
+    	if (exp == null)
+    		throw new NullPointerException("exp is null!");
         if (!exps.isEmpty())
             _add(new Static("OR"));
         return _add(exp);
