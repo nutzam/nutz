@@ -171,6 +171,14 @@ public class Request {
     public boolean isPost() {
         return METHOD.POST == method;
     }
+    
+    public boolean isDelete() {
+    	return METHOD.DELETE == method;
+    }
+    
+    public boolean isPut() {
+    	return METHOD.PUT == method;
+    }
 
     public Request setMethod(METHOD method) {
         this.method = method;

@@ -48,11 +48,11 @@ public abstract class Sender {
     }
 
     public static Sender create(Request request) {
-        return request.isGet() ? new GetSender(request) : new PostSender(request);
+        return request.isGet() || request.isDelete() ? new GetSender(request) : new PostSender(request);
     }
 
     public static Sender create(Request request, int timeout) {
-        Sender sender = request.isGet() ? new GetSender(request) : new PostSender(request);
+        Sender sender = request.isGet() || request.isDelete() ? new GetSender(request) : new PostSender(request);
         return sender.setTimeout(timeout);
     }
 
@@ -154,6 +154,7 @@ public abstract class Sender {
         }
         conn = (HttpURLConnection) request.getUrl().openConnection();
         conn.setConnectTimeout(Default_Conn_Timeout);
+        conn.setRequestMethod(request.getMethod().name());
         if (timeout > 0)
             conn.setReadTimeout(timeout);
         else
