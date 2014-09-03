@@ -14,7 +14,7 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 /**
- * 对于 TreeMap 的一个友好封装
+ * 对于 LinkedHashMap 的一个友好封装
  * <p>
  * 同 TreeMap 不同的是，如果 get(null)，它不会抛错，就是返回 null 或默认值
  * 
@@ -43,6 +43,14 @@ public class NutMap extends LinkedHashMap<String, Object> {
     public NutMap(String json) {
         super();
         this.putAll(Lang.map(json));
+    }
+
+    public static NutMap NEW() {
+        return new NutMap();
+    }
+
+    public static NutMap WRAP(String json) {
+        return new NutMap(json);
     }
 
     public int getInt(String key) {
