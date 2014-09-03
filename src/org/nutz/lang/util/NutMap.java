@@ -45,6 +45,22 @@ public class NutMap extends LinkedHashMap<String, Object> {
         this.putAll(Lang.map(json));
     }
 
+    /**
+     * 设置一个字段，如果值为 null 则表示移除
+     * 
+     * @param key
+     *            键
+     * @param v
+     *            值
+     */
+    public void setOrRemove(String key, Object v) {
+        if (null == v) {
+            this.remove(key);
+        } else {
+            this.put(key, v);
+        }
+    }
+
     public int getInt(String key) {
         return getInt(key, -1);
     }
