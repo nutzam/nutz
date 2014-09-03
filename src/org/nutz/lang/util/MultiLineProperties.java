@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +25,7 @@ public class MultiLineProperties implements Map<String, String> {
     }
 
     public MultiLineProperties() {
-        maps = new HashMap<String, String>();
+        maps = new LinkedHashMap<String, String>();
     }
 
     protected Map<String, String> maps;

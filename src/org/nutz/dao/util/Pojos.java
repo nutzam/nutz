@@ -38,9 +38,13 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public abstract class Pojos {
 
+	public static final Log log = Logs.get();
+	
 	// ==========================================================
 	// 以下是创建 POJO 语句元素的帮助方法
 	public static class Items {
@@ -191,6 +195,8 @@ public abstract class Pojos {
 				if (null == fm || fm.match(mf.getName()))
 					re.add(mf);
 		}
+		if (re.isEmpty() && log.isDebugEnabled())
+			log.debug("none field for insert!");
 		return re;
 	}
 
@@ -212,6 +218,8 @@ public abstract class Pojos {
 			if (null == fm || fm.match(mf.getName()))
 				re.add(mf);
 		}
+		if (re.isEmpty() && log.isDebugEnabled())
+			log.debug("none field for update!");
 		return re;
 	}
 

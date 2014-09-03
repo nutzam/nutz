@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -56,8 +57,12 @@ public class NutFilter implements Filter {
      * 需要排除的固定路径
      */
     protected Set<String> exclusionPaths;
+    
+    protected ServletContext sc;
 
     public void init(FilterConfig conf) throws ServletException {
+    	sc = conf.getServletContext();
+    	Mvcs.setServletContext(sc);
     	if ("true".equals(Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase())) {
     		log.infof("NutFilter[%s] run as skip-mode", conf.getFilterName());
     		proxyFilter = new NutFilter2();
@@ -117,8 +122,8 @@ public class NutFilter implements Filter {
         Mvcs.set(selfName, null, null);
         if (handler != null)
             handler.depose();
-        Mvcs.setServletContext(null);
         Mvcs.close();
+        Mvcs.setServletContext(null);
     }
     
     /**
@@ -154,6 +159,8 @@ public class NutFilter implements Filter {
 
     public void doFilter(final ServletRequest req, final ServletResponse resp, final FilterChain chain)
             throws IOException, ServletException {
+    	ServletContext prCtx = Mvcs.getServletContext();
+    	Mvcs.setServletContext(sc);
     	if (proxyFilter != null) {
     		proxyFilter.doFilter(req, resp, chain);
     		return;
@@ -181,10 +188,12 @@ public class NutFilter implements Filter {
             Mvcs.resetALL();
             //仅当forward/incule时,才需要恢复之前设置
             if (null != (request.getAttribute("javax.servlet.forward.request_uri"))) {
+            	if (prCtx != sc)
+            		Mvcs.setServletContext(prCtx);
                 if (preName != null)
                     Mvcs.set(preName, request, response);
                 if (preContext != null)
-                    Mvcs.ctx.reqThreadLocal.set(preContext);
+                    Mvcs.ctx().reqThreadLocal.set(preContext);
             }
         }
     }

@@ -14,6 +14,8 @@ public class IocField {
     private String name;
 
     private IocValue value;
+    
+    private boolean optional;
 
     public String getName() {
         return name;
@@ -35,4 +37,12 @@ public class IocField {
     public String toString() {
         return String.format("{%s:%s}", name, Json.toJson(value));
     }
+
+	public boolean isOptional() {
+		return optional;
+	}
+
+	public void setOptional(boolean optional) {
+		this.optional = optional;
+	}
 }

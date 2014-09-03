@@ -2,25 +2,40 @@ package org.nutz.ioc.weaver;
 
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.inject.Injecting;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class FieldInjector {
+	
+	private static final Log log = Logs.get();
 
-    public static FieldInjector create(Mirror<?> mirror, String fieldName, ValueProxy vp) {
+    public static FieldInjector create(Mirror<?> mirror, String fieldName, ValueProxy vp, boolean optional) {
         FieldInjector fi = new FieldInjector();
         fi.valueProxy = vp;
         fi.inj = mirror.getInjecting(fieldName);
+        fi.optional = optional;
         return fi;
     }
 
     private ValueProxy valueProxy;
     private Injecting inj;
+    private boolean optional;
 
     private FieldInjector() {}
 
     void inject(IocMaking ing, Object obj) {
-        Object value = valueProxy.get(ing);
-        inj.inject(obj, value);
+    	try {
+    		Object value = valueProxy.get(ing);
+            inj.inject(obj, value);
+    	} catch (Throwable e) {
+			if (optional) {
+				log.info("field inject fail, but this field is optional, ignore error", e);
+				return;
+			}
+			throw Lang.wrapThrow(e);
+		}
     }
 }

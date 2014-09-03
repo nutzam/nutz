@@ -26,4 +26,6 @@ public @interface Inject {
      * @return 需要注入的值的表达式
      */
     String value() default "";
+    
+    boolean optional() default false;
 }

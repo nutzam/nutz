@@ -175,9 +175,7 @@ public abstract class Times {
             SimpleDateFormat df = (SimpleDateFormat) DF_DATE_TIME_MS4.clone();
             // 那么用字符串中带有的时区信息 ...
             if (null == tz && !Strings.isBlank(m.group(17))) {
-                tz = TimeZone.getTimeZone(String.format("GMT%s%s:00",
-                                                        m.group(18),
-                                                        m.group(19)));
+                tz = TimeZone.getTimeZone(String.format("GMT%s%s:00", m.group(18), m.group(19)));
             }
             // 指定时区 ...
             if (null != tz)
@@ -318,18 +316,7 @@ public abstract class Times {
     }
 
     // 常量数组，一年每个月多少天
-    private static final int[] _MDs = new int[]{31,
-                                                28,
-                                                31,
-                                                30,
-                                                31,
-                                                30,
-                                                31,
-                                                31,
-                                                30,
-                                                31,
-                                                30,
-                                                31};
+    private static final int[] _MDs = new int[]{31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
     /**
      * 计算一个给定日期，距离 1970 年 1 月 1 日有多少天
@@ -736,4 +723,47 @@ public abstract class Times {
 
     private static final long MS_DAY = 3600L * 24 * 1000;
     private static final long MS_WEEK = MS_DAY * 7;
+
+    private static final long T_1S = 1000;
+    private static final long T_1M = 60 * 1000;
+    private static final long T_1H = 60 * 60 * 1000;
+    private static final long T_1D = 24 * 60 * 60 * 1000;
+
+    /**
+     * 方便的把时间换算成毫秒数
+     * 
+     * 支持几个单位, s(秒), m(分钟), h(小时), d(天)
+     * 
+     * 比如:
+     * 
+     * 100s -> 100000 <br>
+     * 2m -> 120000 <br>
+     * 3h -> 10800000 <br>
+     * 
+     * @param tstr
+     * @return
+     */
+    public static long toMillis(String tstr) {
+        if (Strings.isBlank(tstr)) {
+            return 0;
+        }
+        tstr = tstr.toLowerCase();
+        // FIXME 稍后改成正则判断
+        String tl = tstr.substring(0, tstr.length() - 1);
+        String tu = tstr.substring(tstr.length() - 1);
+        if ("s".equals(tu)) {
+            return T_1S * Long.valueOf(tl);
+        }
+        if ("m".equals(tu)) {
+            return T_1M * Long.valueOf(tl);
+        }
+        if ("h".equals(tu)) {
+            return T_1H * Long.valueOf(tl);
+        }
+        if ("d".equals(tu)) {
+            return T_1D * Long.valueOf(tl);
+        }
+        return Long.valueOf(tstr);
+    }
+
 }

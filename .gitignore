@@ -8,6 +8,7 @@
 /test/nutz-test.properties
 /test/log4j.properties
 /build/tmp
+/build/pub
 /mores
 /root
 /performance
