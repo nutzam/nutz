@@ -49,6 +49,7 @@ import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
 import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.SimpleContext;
 
 /**
@@ -1888,12 +1889,13 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-     * 
+     *
      * @param me
      * @param type
      */
     public static Type getGenericsType(Mirror<?> me, Type type) {
         Type[] types = me.getGenericsTypes();
+        Type t = type;
         if (type instanceof TypeVariable && types != null && types.length > 0) {
             Type[] tvs = me.getType().getTypeParameters();
             for (int i = 0; i < tvs.length; i++) {
@@ -1903,6 +1905,25 @@ public abstract class Lang {
                 }
             }
         }
+        if(!type.equals(t)) {
+            return type;
+        }
+        if (types != null && types.length > 0 && type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) type;
+
+            if (pt.getActualTypeArguments().length >= 0) {
+                NutType nt = new NutType();
+                nt.setOwnerType(pt.getOwnerType());
+                nt.setRawType(pt.getRawType());
+                Type[] tt = new Type[pt.getActualTypeArguments().length];
+                for (int i = 0; i < tt.length; i++) {
+                    tt[i] = types[i];
+                }
+                nt.setActualTypeArguments(tt);
+                return nt;
+            }
+        }
+
         return type;
     }
 

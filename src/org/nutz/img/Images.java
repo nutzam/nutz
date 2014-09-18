@@ -14,6 +14,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,6 +35,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.repo.Base64;
 import org.nutz.repo.gif.AnimatedGifEncoder;
 
 /**
@@ -696,4 +698,48 @@ public class Images {
         }
     }
 
+    /**
+     * 生成该图片对应的 Base64 编码的字符串
+     * 
+     * @param targetFile
+     *            图片文件
+     * @return 图片对应的 Base64 编码的字符串
+     */
+    public static String encodeBase64(String targetFile) {
+        return encodeBase64(new File(targetFile));
+    }
+
+    /**
+     * 生成该图片对应的 Base64 编码的字符串
+     * 
+     * @param targetFile
+     *            图片文件
+     * @return 图片对应的 Base64 编码的字符串
+     */
+    public static String encodeBase64(File targetFile) {
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(targetFile);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BufferedOutputStream bos = new BufferedOutputStream(baos);
+        image.flush();
+        try {
+            ImageIO.write(image, Files.getSuffixName(targetFile), bos);
+            bos.flush();
+            bos.close();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+
+        byte[] bImage = baos.toByteArray();
+
+        return Base64.encodeToString(bImage, false);
+    }
 }

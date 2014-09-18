@@ -1,9 +1,5 @@
 package org.nutz.mvc.adaptor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -14,9 +10,13 @@ import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.annotation.Param;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 /**
  * 将整个 HTTP 请求作为名值对来处理
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  * @author juqkai(juqkai@gmail.com)
  */
@@ -30,8 +30,8 @@ public class PairAdaptor extends AbstractAdaptor {
         if (clazz == null) {
             if (log.isWarnEnabled())
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s",
-                          type,
-                          param);
+                        type,
+                        param);
             return null;
         }
 
@@ -45,8 +45,9 @@ public class PairAdaptor extends AbstractAdaptor {
         String datefmt = param.dfmt();
         // POJO
         if ("..".equals(pm)) {
-            if (clazz.isAssignableFrom(Map.class))
-                return new MapPairInjector();
+            if (Map.class.isAssignableFrom(clazz)) {
+                return new MapPairInjector(type);
+            }
             return new ObjectPairInjector(null, type);
         }
         // POJO with prefix

@@ -307,6 +307,10 @@ public class Strings {
         return true;
     }
 
+    public static boolean isNotBlank(CharSequence cs) {
+        return !isBlank(cs);
+    }
+
     /**
      * 去掉字符串前后空白字符。空白字符的定义由Character.isWhitespace来判断
      * 

@@ -100,22 +100,24 @@ public class PropertiesProxy {
             List<NutResource> list = getResources(paths);
             if (utf8)
                 for (NutResource nr : list) {
-                	Reader r = nr.getReader();
-                	try {
-                		mp.load(nr.getReader(), false);
-                	} finally {
-                		Streams.safeClose(r);
-                	}
+                    Reader r = nr.getReader();
+                    try {
+                        mp.load(nr.getReader(), false);
+                    }
+                    finally {
+                        Streams.safeClose(r);
+                    }
                 }
             else {
                 Properties p = new Properties();
                 for (NutResource nr : list) {
-                	InputStream in = nr.getInputStream();
-                	try {
-                		p.load(nr.getInputStream());
-                	} finally {
-                		Streams.safeClose(in);
-                	}
+                    InputStream in = nr.getInputStream();
+                    try {
+                        p.load(nr.getInputStream());
+                    }
+                    finally {
+                        Streams.safeClose(in);
+                    }
                 }
                 mp.putAll(p);
             }
@@ -199,6 +201,18 @@ public class PropertiesProxy {
 
     public String get(String key, String defaultValue) {
         return Strings.sNull(mp.get(key), defaultValue);
+    }
+
+    public List<String> getList(String key) {
+        List<String> re = new ArrayList<String>();
+        String keyVal = get(key);
+        if (Strings.isNotBlank(keyVal)) {
+            String[] vlist = Strings.splitIgnoreBlank(keyVal, "\n");
+            for (String v : vlist) {
+                re.add(v);
+            }
+        }
+        return re;
     }
 
     public String trim(String key) {
