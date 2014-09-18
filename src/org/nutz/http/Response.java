@@ -90,7 +90,7 @@ public class Response {
 
     public Reader getReader() {
         String encoding = this.getEncodeType();
-        if (null == encoding || "UTF-8".equalsIgnoreCase(encoding))
+        if (null == encoding)
             return getReader(Encoding.defaultEncoding());
         else
             return getReader(encoding);
