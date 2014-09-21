@@ -17,5 +17,12 @@ public class SegmentsTest {
 
         assertEquals("1${A}2haha3${C}4", str);
     }
+    
+    @Test
+    public void test_issue_722() {
+        Context ctx = Lang.context();
+        assertEquals("^.+abc.+$", Segments.replace("^.+abc.+$", ctx));
+//        assertEquals("^.+abc.+${", Segments.replace("^.+abc.+${", ctx));
+    }
 
 }
