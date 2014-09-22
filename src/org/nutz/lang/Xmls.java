@@ -382,25 +382,8 @@ public abstract class Xmls {
     }
 
     /**
-     * 根据一个 XML 节点，将其变成一个 Map。这是个简单的映射函数， 仅仅映射一层子节点，比如：
-     * 
-     * <pre>
-     * ...
-     * &lt;pet&gt;
-     *      &lt;name&gt;xiaobai&lt;name&gt;
-     *      &lt;age&gt;15&lt;name&gt;
-     * &lt;pet&gt;
-     * ...
-     * </pre>
-     * 
-     * 会被映射为(注意，所有的值都是字符串哦):
-     * 
-     * <pre>
-     * {
-     *      name : "xiaobai",
-     *      age  : "15"
-     * }
-     * </pre>
+     * 根据一个 XML 节点，将其变成一个 Map。
+     * <p/><b>注意: 不支持混合节点</b>
      * 
      * @param ele
      *            元素
@@ -408,11 +391,33 @@ public abstract class Xmls {
      * @return 一个 Map 对象
      */
     public static NutMap asMap(Element ele) {
+        return asMap(ele, false);
+    }
+    
+    /**
+     * 根据一个 XML 节点，将其变成一个 Map。
+     * <p/><b>注意: 不支持混合节点</b>
+     * 
+     * @param ele
+     *            元素
+     * @param lowFirst
+     *            是否把所有key的首字母都小写
+     * 
+     * @return 一个 Map 对象
+     */
+    public static NutMap asMap(Element ele, final boolean lowFirst) {
         final NutMap map = new NutMap();
         eachChildren(ele, new Each<Element>() {
             public void invoke(int index, Element _ele, int length)
                     throws ExitLoop, ContinueLoop, LoopException {
                 String key = _ele.getNodeName();
+                if (lowFirst)
+                    key = Strings.lowerFirst(key);
+                Map<String, Object> tmp = asMap(_ele, lowFirst);
+                if (!tmp.isEmpty()) {
+                    map.setv(key, tmp);
+                    return;
+                }
                 String val = getText(_ele);
                 if (!Strings.isBlank(val)) {
                     map.setv(key, val);
