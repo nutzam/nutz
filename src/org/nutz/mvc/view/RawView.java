@@ -90,8 +90,9 @@ public class RawView implements View {
 			// @see https://code.google.com/p/webm/source/browse/java/src/main/java/com/google/imageio/?repo=libwebp&name=sandbox%2Fpepijnve%2Fwebp-imageio#imageio%2Fwebp
 			else if (contentType.contains("webp"))
 				ImageIO.write((BufferedImage)obj, "webp", out);
-			else if (contentType.contains("jpg"))
+			else
 				Images.writeJpeg((BufferedImage)obj, out, 0.8f);
+			return;
 		}
 		// 文件
 		else if (obj instanceof File) {
