@@ -26,6 +26,7 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
+import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
 
@@ -301,5 +302,11 @@ public class SimpleDaoTest extends DaoCase {
             dao.insert(Pet.class,
                        Chain.makeSpecial("birthday", "now()").add("name",
                                                                   "wendal"));
+    }
+    
+    @Test
+    public void test_issue_726() {
+        dao.create(Issue726.class, true);
+        assertTrue(dao.getEntity(Issue726.class).getColumn("id").isAutoIncreasement());
     }
 }

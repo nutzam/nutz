@@ -359,8 +359,13 @@ public class AnnotationEntityMaker implements EntityMaker {
         // Id 字段
         if (null != info.annId) {
             ef.setAsId();
-            if (info.annId.auto() && info.annPrev == null)
+            if (info.annId.auto()) {
+                if (info.annPrev != null) {
+                    // XXX 兼容性改变 1.b.51
+                    log.infof("field %s mark as @Id(auto=true) and @Prev", info.name);
+                }
                 ef.setAsAutoIncreasement();
+            }
         }
 
         // Name 字段
