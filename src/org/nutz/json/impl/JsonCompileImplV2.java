@@ -379,6 +379,8 @@ final class JsonTokenScan {
 			return (char) Integer.valueOf(new String(hex), 16).intValue();
 		case 'b': // 这个支持一下又何妨?
 			return ' ';// 空格
+		case 'v' :
+			return ' ';// replace by blackspace
 		case 'f':
 			return '\f';
 		default:

@@ -312,11 +312,18 @@ public class JsonRenderImpl implements JsonRender {
                     writer.append("\\n");
                     break;
                 case '\t':
+                case 0x0B: // \v
                     writer.append("\\t");
                     break;
                 case '\r':
                     writer.append("\\r");
                     break;
+                case '\f':
+                	writer.append("\\f");
+                	break;
+                case '\b':
+                	writer.append("\\b");
+                	break;
                 case '\\':
                     writer.append("\\\\");
                     break;
