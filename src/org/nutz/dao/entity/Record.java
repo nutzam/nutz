@@ -217,7 +217,7 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      * @return 该记录 JSON 格式的字符串表示
      */
     public String toString() {
-        return Json.toJson(map);
+        return Json.toJson(map, JsonFormat.full());
     }
 
     /**
