@@ -131,7 +131,7 @@ public abstract class Pojos {
 				Number id = null != obj ? ((Number) en.getIdField().getValue(obj)) : null;
 				return cndId(en, id);
 			case NAME:
-				String name = null != obj ? en.getNameField().getValue(obj).toString() : null;
+				String name = null != obj ? Strings.sNull(en.getNameField().getValue(obj), null) : null;
 				return cndName(en, name);
 			case COMPOSITE:
 				Object[] pks = null;
