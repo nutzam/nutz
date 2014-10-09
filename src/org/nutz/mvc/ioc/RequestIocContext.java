@@ -2,7 +2,9 @@ package org.nutz.mvc.ioc;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.ServletRequest;
 
@@ -77,4 +79,21 @@ public class RequestIocContext implements IocContext {
         return req;
     }
 
+    public Set<String> names() {
+        Set<String> list = new HashSet<String>();
+        synchronized (req) {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> ems = req.getAttributeNames();
+            while (ems.hasMoreElements()) {
+                String key = ems.nextElement();
+                if (null == key)
+                    continue;
+                Object value = req.getAttribute(key);
+                if (value instanceof ObjectProxy) {
+                    list.add(key);
+                }
+            }
+        }
+        return list;
+    }
 }
