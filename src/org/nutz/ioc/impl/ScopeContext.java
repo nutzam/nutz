@@ -2,6 +2,7 @@ package org.nutz.ioc.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.nutz.ioc.IocContext;
@@ -104,4 +105,7 @@ public class ScopeContext implements IocContext {
         }
     }
 
+    public Set<String> names() {
+        return objs.keySet();
+    }
 }

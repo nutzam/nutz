@@ -1,6 +1,7 @@
 package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -212,7 +213,7 @@ public class NutIoc implements Ioc2 {
     }
 
     public boolean has(String name) {
-        return loader.has(name);
+        return loader.has(name) || context.fetch(name) != null;
     }
     
     private boolean deposed = false;
@@ -238,7 +239,10 @@ public class NutIoc implements Ioc2 {
     }
 
     public String[] getNames() {
-        return loader.getName();
+        Set<String> list = new HashSet<String>();
+        list.addAll(Arrays.asList(loader.getName()));
+        list.addAll(context.names());
+        return list.toArray(new String[list.size()]);
     }
 
     public void addValueProxyMaker(ValueProxyMaker vpm) {

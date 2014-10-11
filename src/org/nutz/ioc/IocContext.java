@@ -1,5 +1,7 @@
 package org.nutz.ioc;
 
+import java.util.Set;
+
 /**
  * 进行对象装配的上下文环境。
  * 
@@ -51,4 +53,5 @@ public interface IocContext {
      */
     void depose();
 
+    Set<String> names();
 }
