@@ -1,4 +1,4 @@
-#title: 匿名对象
+#title: 如何定义对象
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 
@@ -58,3 +58,35 @@
 		{{{
 		XiaoHei
 		}}}
+
+--------------------------------------------------------------------------------------------------------
+JSON 加载器
+
+    从上面的例子代码可以看出来，Nutz 的Ioc实现需要你提供一个加载器给它。
+    
+    {{{
+    Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
+                                 ^
+                                 +----- 这里你提供了一个加载器
+    }}}
+    
+    你这个加载器是怎么实现的 NutIoc 并不关心。
+    在 Nutz 最早的版本，它提供的第一个加载器就是 JsonLoader。
+
+    对于 JsonLoader 更多的描述，请参看 [ioc_loader.man 配置文件的格式]
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
