@@ -191,3 +191,31 @@
 			</obj>
 		</ioc>
 	}}}
+
+--------------------------------------------------------------------------------------------------------
+可选属性
+
+	从1.b.51开始, nutz内置的json/xml/annotation加载器支持可选属性了
+	
+	有时候,某些服务即使不存在也不会影响系统的运行,但这些属性又是ioc配置好的,这时就需要可选属性了
+	
+	注解的写法是
+	
+	{{{
+		@IocBean
+		public class MqttService {
+		
+			@Inject(optional=true)
+			protect Dao dao;
+			
+			@Inject
+			protect MqttClient client;
+			
+			public void publish(String topic, Object data) {
+				if (dao != null) { // 有就记录,没有就算了呗
+					dao.insert(new MqttHistory(topic, String.value(data));
+				}
+				client.publish(topic, data);
+			}
+		}
+	}}}
