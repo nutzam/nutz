@@ -35,7 +35,7 @@
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	<property name="OUTPUT" value="." />
 
-	<property name="nutz-version" value="1.b.50" />
+	<property name="nutz-version" value="1.b.51" />
 	<tstamp>
 		<format property="now-date" locale="en" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>
@@ -51,8 +51,8 @@
 	<property name="zdoc-dir" value="${pub-dir}/manual" />
 	<property name="zdoc-en-dir" value="${pub-dir}/manual_en" />
 
-	<property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}" />
-	<!-- <property name="nutz.jar.pre" value="nutz-${nutz-version}"></property> -->
+	<!--property name="nutz.dest.pre" value="nutz-${nutz-version}-snapshot-${now-date}" /-->
+	<property name="nutz.dest.pre" value="nutz-${nutz-version}"></property>
 	<!-- 用于正式版 -->
 
 	<property name="nutz.jar.source" value="${pub-dir}/${nutz.dest.pre}-sources.jar" />
@@ -108,7 +108,7 @@
 			<fileset dir="src" excludes="**/*.java" />
 		</copy>
 		<jar destfile="${nutz.jar.jdk5}" basedir="${classes-dir-jdk5}" index="true" />
-		<javac destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8" classpathref="nutz-classpath" includeantruntime="false" />
+		<javac  compiler="org.eclipse.jdt.core.JDTCompilerAdapter" destdir="${classes-dir-jdk6}" debuglevel="lines,vars,source" debug="true" srcdir="src" source="1.6" target="1.6" encoding="utf-8" classpathref="nutz-classpath" includeantruntime="false" />
 		<copy todir="${classes-dir-jdk6}">
 			<fileset file="License.txt" />
 			<fileset dir="src" excludes="**/*.java" />
