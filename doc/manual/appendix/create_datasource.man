@@ -32,6 +32,7 @@
 		* NutDao几乎不需要任何配置文件(只有一个nutz_jdbc_experts.js 绝大部分时间你不会遇到它!)
 		* 本文说到的js/xml文件,都是NutIoc的文件,不是NutDao的配置文件!!
 		* 不要重复创建DataSource,不要重复创建NutDao!!!!!!!
+		* 务必参考本小节末尾的提醒!!
 
 --------------------------------------------------------------------------------------
 内置的SimpleDataSource
@@ -465,5 +466,45 @@ BoneCP
 		dao.insert(User.create("wendal","123456"));
 		
 		ioc.depose(); //关闭Ioc容器
+		}}}
+		
+--------------------------------------------------------------------------------------
+严重提醒
+
+	* 上面提及的Java代码均为演示(main方法中的简单示例),实际用的时候, 必须将ioc容器本身单例化(例如存放到一个static属性)
+	* 重复创建DataSource(例如反复创建ioc容器, new NutIoc(...))会导致数据库连接数耗尽!!
+	* ioc容器本身,应该尽可能作为单例, 不要创建一个ioc容器后,获取ioc对象,然后就抛弃, 例如:
+	
+	绝对错误的用法
+		{{{
+		public Dao getDao() { // 无论改方法被调用一次还是N次, 均为错误!!
+			Ioc ioc = new NutIoc(new XmlIocLoader("ioc/dao.js")); // 反复创建ioc容器
+			return ioc.get(Dao.class); //方法返回后, ioc必然被gc, 从而触发ioc的depose事件,导致DataSource关闭!
+		}
+		}}}
+		
+	比较正确的用法
+		{{{
+		private static Ioc ioc;
+		
+		public Dao getDao() { // 暂不考虑线程同步的问题
+			if (ioc == null)
+				ioc = new NutIoc(new XmlIocLoader("ioc/dao.js")); 
+			return ioc.get(Dao.class);
+		}
+		}}}
+		
+	Mvc中的正确用法,使用IocBy配置ioc,尽可能通过@Inject等方式获取ioc的bean.
+	在无法直接获取Ioc容器的代码中,使用下列代码
+		{{{
+		// 在request作用域内
+		public Dao getDao() {
+			Mvcs.getIoc().get(Dao.class);
+		}
+		
+		// 在request作用域之外
+		public Dao getDao() {
+			Mvcs.ctx().getDefaultIoc().get(Dao.class);
+		}
 		}}}
 		
