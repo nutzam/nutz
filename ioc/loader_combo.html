@@ -20,6 +20,9 @@
 <li>
 <div><span class="num">4</span><a href="#现在你都可以复合什么?">现在你都可以复合什么?</a></div>
 </li>
+<li>
+<div><span class="num">5</span><a href="#类名的简写">类名的简写</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要复合加载器"></a>为什么需要复合加载器</h1>
@@ -86,6 +89,27 @@ public class MainModule {
 <li>MapLoader</li>
 <li>其他任何你自己实现的 IocLoader</li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="类名的简写"></a>类名的简写</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>是不是觉得写*org.nutz.ioc.loader.json.JsonLoader很长,那么你可以写成*json,</p>
+<pre>js         --&gt; org.nutz.ioc.loader.json.JsonLoader
+json       --&gt; org.nutz.ioc.loader.json.JsonLoader
+xml        --&gt; org.nutz.ioc.loader.xml.XmlIocLoader
+annotation --&gt; org.nutz.ioc.loader.annotation.AnnotationIocLoader
+</pre>
+<p>本小节开头的配置就可以写成: </p>
+<pre>@IocBy(type = ComboIocProvider.class,
+       args = {"*json",
+               "dao.js", 
+               "service.js", 
+               "*annotation", 
+               "com.myapp.module",
+               "com.myapp.service"
+		})
+public class MainModule {
+	...
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

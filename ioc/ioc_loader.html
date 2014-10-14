@@ -1,40 +1,121 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>定义自己的配置文件格式</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+<title>如何配置一个 IocBean</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">定义自己的配置文件格式</div>
+<div class="zdoc_header">如何配置一个 IocBean</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#你如果不喜欢_JSON_怎么办？">你如果不喜欢 JSON 怎么办？</a></div>
+<div><span class="num">1</span><a href="#使用Json">使用Json</a></div>
 </li>
 <li>
-<div class="zdoc_folder"><span class="num">2</span><a href="#在_NutzIoc_定义一个对象的数据结构是怎样的？">在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</a></div>
+<div><span class="num">2</span><a href="#你如果不喜欢_JSON_怎么办？">你如果不喜欢 JSON 怎么办？</a></div>
+</li>
+<li>
+<div class="zdoc_folder"><span class="num">3</span><a href="#在_NutzIoc_定义一个对象的数据结构是怎样的？">在 Nutz.Ioc 定义一个对象的数据结构是怎样的？</a></div>
 <ul>
 <li>
-<div><span class="num">2.1</span><a href="#事件集合_IocEventSet">事件集合 IocEventSet</a></div>
+<div><span class="num">3.1</span><a href="#事件集合_IocEventSet">事件集合 IocEventSet</a></div>
 </li>
 <li>
-<div><span class="num">2.2</span><a href="#值_IocValue">值 IocValue</a></div>
+<div><span class="num">3.2</span><a href="#值_IocValue">值 IocValue</a></div>
 </li>
 <li>
-<div><span class="num">2.3</span><a href="#字段_IocField">字段 IocField</a></div>
+<div><span class="num">3.3</span><a href="#字段_IocField">字段 IocField</a></div>
 </li>
 </ul>
 </li>
 <li>
-<div><span class="num">3</span><a href="#实现你的加载器">实现你的加载器</a></div>
+<div><span class="num">4</span><a href="#实现你的加载器">实现你的加载器</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#最后">最后</a></div>
+<div><span class="num">5</span><a href="#最后">最后</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#附:已经可用的IocLoader">附:已经可用的IocLoader</a></div>
+<div><span class="num">6</span><a href="#附:已经可用的IocLoader">附:已经可用的IocLoader</a></div>
 </li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="使用Json"></a>使用Json</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>NutIoc 包含一个 JsonLoader，通常同学们会这么用:</p>
+<pre>Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
+</pre>
+<p>JsonLoader 从一个 JS 文件中加载一组 IocBean 的配置信息，这个JS文件的格式通常为</p>
+<pre>{
+	"对象名称" : {
+		type      : "对象类型",
+        parent    : "被继承的对象名称",
+		events    : {
+			fetch : "触发器的类型或者函数名",
+			create : "触发器的类型或者函数名",
+			depose : "触发器的类型或者函数名"
+		},
+		args : [
+			参数1， 参数2 ...
+		],
+		fields : {
+			"字段名称1" : 字段值1 ,
+			"字段名称2" : 字段值2 ,
+			...
+		}
+	}
+}
+</pre>
+<p>比如:</p>
+<pre>var ioc = {
+    bean   : {
+        fields : {
+            x: 100,
+            y: 80
+        }
+    },
+    myBean : {
+        <span class="zdoc_code_cmt">// 对象的 Java 类型
+</span>        type      : 'demo.MyBean',    
+
+        <span class="zdoc_code_cmt">// 如果声明，表对象的属性从 "bean" 对象继承
+</span>        <span class="zdoc_code_cmt">// 你可以看到 "bean" 对象在上面声明了两个属性 x:100, y:80
+</span>        <span class="zdoc_code_cmt">// 那么你的 bean 也会继承这个属性。当然你在自己的 fields 字段里
+</span>        <span class="zdoc_code_cmt">// 可以进行覆盖。同理，任何属性，比如  type, singleton, events, args
+</span>        <span class="zdoc_code_cmt">// 都是可以在 parent 里声明，以便做到最大限度的复用的。
+</span>        parent    : 'bean',           
+
+        <span class="zdoc_code_cmt">// 不声明，默认为 true
+</span>		singleton : true,
+
+        <span class="zdoc_code_cmt">// 这里声明对象的三种事件。事件的处理函数可以是一个接口，也可以是自身的
+</span>        <span class="zdoc_code_cmt">// 一个方法。
+</span>        events    : {      
+            <span class="zdoc_code_cmt">// 当这个对象被创建后，如果你想做点特殊的操作，又不好在构造函数里做
+</span>            <span class="zdoc_code_cmt">// 你可以实现一个 IocEventTrigger&lt;T&gt;，容器在创建这个对象后
+</span>            <span class="zdoc_code_cmt">// 会调用这个接口的唯一方法
+</span>            create: "demo.MyBeanCreateTrigger",
+
+            <span class="zdoc_code_cmt">// 如果你 MyBean bean = ioc.get(MyBean.class,"myBean"); 之后都要再调用一个
+</span>            <span class="zdoc_code_cmt">// 函数来进行一些必要操作，比如计数之类的，你可以声明 "fetch" 事件
+</span>            <span class="zdoc_code_cmt">// 下面的声明表示容器交还给你前，会调用一下 bean.onFetch()
+</span>            <span class="zdoc_code_cmt">// 当然你的对象本身要有一个函数 "onFetch()" 它不能有参数
+</span>            fetch : "onFetch",   
+
+            <span class="zdoc_code_cmt">// 当对象被容器销毁时触发。
+</span>            depose : "demo.MyBeanDeposeTrigger"
+        },
+
+        <span class="zdoc_code_cmt">// 构造函数参数，即对象要有对应的构造函数，否则抛错
+</span>        args      : [ 'I am great' ], 
+
+        <span class="zdoc_code_cmt">// 详细声明每个字段的值
+</span>        fields    : {                 
+            name   : 'XiaoBai',
+            number : 49
+        }
+    }
+};
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="你如果不喜欢_JSON_怎么办？"></a>你如果不喜欢 JSON 怎么办？</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -60,48 +141,29 @@
 <p>在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部信息，你会发现它其实也简单：</p>
 <pre>public class IocObject {
 
-	private Class&lt;?&gt; type;
-	private boolean singleton;
-	private IocEventSet events;
-	private List&lt;IocValue&gt; args;
-	private List&lt;IocField&gt; fields;
-	private String scope;
+    <span class="zdoc_code_cmt">// 对象的 Java 类型
+</span>	private Class&lt;?&gt; type;
+
+    <span class="zdoc_code_cmt">// 声明对象是否为单例
+</span>	private boolean singleton;
+
+    <span class="zdoc_code_cmt">// 对象监听何种事件，对应有
+</span>    <span class="zdoc_code_cmt">//  "fetch"   - 每次对象被 ioc.get 的时候，触发
+</span>    <span class="zdoc_code_cmt">//  "create"  - 当且仅当对象被 new 的时候触发
+</span>    <span class="zdoc_code_cmt">//  "depose"  - 当对象被容器销毁时触发
+</span>	private IocEventSet events;
+
+    <span class="zdoc_code_cmt">// 对象构造函数的参数列表
+</span>	private List&lt;IocValue&gt; args;
+
+    <span class="zdoc_code_cmt">// 对象的字段
+</span>	private List&lt;IocField&gt; fields;
+
+    <span class="zdoc_code_cmt">// 对象的缓存范围，默认为 "app"
+</span>	private String scope;
 	
 	<span class="zdoc_code_cmt">// 省略所有的 getter 和 setter 函数
 </span></pre>
-<p>看看这个类的属性，顾名思义：</p>
-<ul type="disc">
-<li><b>type</b> --  对象类型</li>
-<li><b>singleton</b> -- 声明对象是否为单例</li>
-<li><b>events</b> -- 对象监听何种事件</li>
-<li><b>args</b> -- 对象构造函数的参数列表</li>
-<li><b>fields</b> -- 对象的字段</li>
-</ul>
-<p>没有对象的名称，对吗？是的，通过 JSON （如果你了解一点 Javascript，那就更容易理解了），你通常要这么写：</p>
-<pre>你的 JSON 文件，下面是正文
-------------------------------------------------
-{
-	"对象名称" : {
-		type : "对象类型",
-		singleton : true | false,
-		events : {
-			fetch : "触发器的类型或者函数名",
-			create : "触发器的类型或者函数名",
-			depose : "触发器的类型或者函数名"
-		},
-		args : [
-			参数1， 参数2 ...
-		],
-		fields : {
-			"字段名称1" : 字段值1 ,
-			"字段名称2" : 字段值2 ,
-			...
-		}
-	}
-}
-</pre>
-<p>那么你如果想通过其他的配置文件格式，比如 XML 类获取 IocObject， 文件格式应该如何定义，完全看你个人的喜好了。</p>
-<p>这里需要说一下：</p>
 <h2><a name="事件集合_IocEventSet"></a>事件集合 IocEventSet</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>描述了一个对象可以监听的事件。三个属性分别表示： </p>

@@ -37,6 +37,9 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">5</span><a href="#无需匿名内部类的写法">无需匿名内部类的写法</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="为什么需要过滤字段"></a>为什么需要过滤字段</h1>
@@ -107,7 +110,7 @@
 </ul>
 <h2><a name="忽略少数字段"></a>忽略少数字段</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>FieldFilter.lock(Pet.class, "^last|age$").run(new Atom(){
+<pre>FieldFilter.locked(Pet.class, "^last|age$").run(new Atom(){
     public void run(){
         <span class="zdoc_code_cmt">// TODO 你的 DAO 操作代码
 </span>    }
@@ -147,6 +150,21 @@
 </span>    }
 });
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="无需匿名内部类的写法"></a>无需匿名内部类的写法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.b.51开始支持不使用匿名内部类的方法, Daos.ext方法. 该方法有两个变种, 分别支持字段过滤和动态表名.</p>
+<p>示例</p>
+<pre><span class="zdoc_code_cmt">//原写法
+</span>FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
+    public void run(){
+        dao.update(pet); <span class="zdoc_code_cmt">// 这里的pet必须是final
+</span>    }
+});
+<span class="zdoc_code_cmt">// 新的写法
+</span>Daos.ext(dao, FieldFilter.create(Pet.class, "^id|name$")).update(pet);
+<span class="zdoc_code_cmt">// ext方法会返回一个Dao实例,是对原有dao对象的封装
+</span></pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

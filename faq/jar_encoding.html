@@ -18,6 +18,10 @@
 <pre>window &gt; Preferebces &gt; General &gt; Workspace
 </pre>
 <p>看看"Text file encoding" 项是不是设成 "UTF-8" 了还是不行? 请重启你的Eclipse</p>
+<p>全局UTF-8设置, 打开eclipse.ini,在末尾加入</p>
+<pre>  	-Dfile.encoding=UTF-8
+</pre>
+<p>建议同时在windows/linux下使用的童鞋使用全局设置,避免部署时编码问题导致的问题</p>
 <div class="hr"><b></b></div>
 <h1><a name="Netbean_用户"></a>Netbean 用户 </h1>
 <div style="float:right;"><a href="#top">Top</a></div>

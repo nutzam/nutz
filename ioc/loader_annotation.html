@@ -18,7 +18,7 @@
 <div><span class="num">3</span><a href="#指定对象的名称">指定对象的名称</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#不要单例">不要单例</a></div>
+<div><span class="num">4</span><a href="#不要单例?">不要单例?</a></div>
 </li>
 <li>
 <div><span class="num">5</span><a href="#为对象传递构造函数">为对象传递构造函数</a></div>
@@ -31,6 +31,9 @@
 </li>
 <li>
 <div><span class="num">8</span><a href="#如果要注入的字段在超类怎么办">如果要注入的字段在超类怎么办</a></div>
+</li>
+<li>
+<div><span class="num">9</span><a href="#工厂方法">工厂方法</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -99,7 +102,7 @@ public class MyObject {
 <p>因此对于一个 Nutz.Mvc 的模块类来说， @InjectName + @IocBean 是一个比较方便的写法。</p>
 <p>但是现在我也承认， @IocBean 的 name 属性有点多余，或者 @InjectName 有点多余。 但是由于是过了几个版本以后才认识到的这个问题，所以我想，不如就留着这个设计，作为 Nutz 这个项目的一段 <b>盲肠</b>， 希望列位看官理解我们的苦衷，毕竟我们宣称了接口不会有重大变动之后，就要拿掉这个盲肠话，仿佛自己打了一记自己嘴巴。因此，人类的劣根性导致我们这么安慰自己：“没事没事，这个设计虽然有一点点臃肿，但是没人让人更难用，也过得去啦 -_-!”</p>
 <div class="hr"><b></b></div>
-<h1><a name="不要单例"></a>不要单例</h1>
+<h1><a name="不要单例?"></a>不要单例?</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>默认的，Ioc 容器管理的对象都是单例的，你如果不想单例，你可以:</p>
 <pre>@IocBean(name="myObject", singleton=false)
@@ -241,6 +244,13 @@ public AbcService extends Service {
 </pre>
 <p>比如上例，你的 AbcService 从 Service 继承，但是 Serivce 有一个私有字段为 "private Dao dao"， 你怎么描述它的注入呢？ 你可以通过 @IocBean 注解提供 fields 属性，描述你要注入超类那个字段，比如上面的例子，我们会为超类的 "dao" 字段注入一个名为 "dao" 容器对象。 </p>
 <p>但是，如果我想注入的容器对象同超类的那个字段名字不一样怎么办？ 或者我不打算注入一个容器对象，我想注入一个字符串，或者布尔值怎么办？ 呵呵，抱歉，截止到现在，我们还没有解决这个问题，不过很快我们会给出一个设计，并且我可以负责的说，给出新的设计一定会兼容现在的这个用法的。</p>
+<div class="hr"><b></b></div>
+<h1><a name="工厂方法"></a>工厂方法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@IocBean(factory="net.wendal.mqtt.MqttAbcServiceFactory<span class="zdoc_code_cmt">#create")
+</span>public AbcService extends Service {
+	...
+</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

@@ -21,7 +21,7 @@
 <div><span class="num">4</span><a href="#在容器对象里获得_ServletContext">在容器对象里获得 ServletContext</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#容器管理对象的生命周期范围">容器管理对象的生命周期范围</a></div>
+<div><span class="num">5</span><a href="#容器管理对象的生命周期范围(不建议使用)">容器管理对象的生命周期范围(不建议使用)</a></div>
 </li>
 <li>
 <div><span class="num">6</span><a href="#需要注意的问题">需要注意的问题</a></div>
@@ -98,8 +98,9 @@ fields : {
 <p>那么，你在 servletContext 里的属性也会被一并注入</p>
 <p>当然，你的 Ioc 容器，必须实现了 Ioc2 这个接口，默认的 NutIoc 就是实现这个接口的。</p>
 <div class="hr"><b></b></div>
-<h1><a name="容器管理对象的生命周期范围"></a>容器管理对象的生命周期范围</h1>
+<h1><a name="容器管理对象的生命周期范围(不建议使用)"></a>容器管理对象的生命周期范围(不建议使用)</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>不建议使用, 入口类应该做成线程安全的,不含与具体请相关的属性</p>
 <p>如果你使用的是 Nutz.Ioc 标准容器，或者你的 Ioc 容器实现了 Ioc2 接口，那么你的模块类的生命周期是可以定制的。以 Nutz 的 Json 配置语法为例，你可以为你的对象增加属性：</p>
 <pre>{
 	petModule : {

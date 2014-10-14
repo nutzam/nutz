@@ -40,6 +40,9 @@
 <li>
 <div><span class="num">4</span><a href="#关于工厂方法">关于工厂方法</a></div>
 </li>
+<li>
+<div><span class="num">5</span><a href="#可选属性">可选属性</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="Ioc_的概念"></a>Ioc 的概念</h1>
@@ -210,6 +213,29 @@ System.out.println(p1==p2);
 			&lt;/args&gt;
 		&lt;/obj&gt;
 	&lt;/ioc&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="可选属性"></a>可选属性</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从1.b.51开始, nutz内置的json/xml/annotation加载器支持可选属性了</p>
+<p>有时候,某些服务即使不存在也不会影响系统的运行,但这些属性又是ioc配置好的,这时就需要可选属性了</p>
+<p>注解的写法是</p>
+<pre>	@IocBean
+	public class MqttService {
+	
+		@Inject(optional=true)
+		protect Dao dao;
+		
+		@Inject
+		protect MqttClient client;
+		
+		public void publish(String topic, Object data) {
+			if (dao != null) { <span class="zdoc_code_cmt">// 有就记录,没有就算了呗
+</span>				dao.insert(new MqttHistory(topic, String.value(data));
+			}
+			client.publish(topic, data);
+		}
+	}
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

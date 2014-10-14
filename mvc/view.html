@@ -60,6 +60,9 @@
 <li>
 <div><span class="num">4.8</span><a href="#Raw视图">Raw视图</a></div>
 </li>
+<li>
+<div><span class="num">4.9</span><a href="#RawView2">RawView2</a></div>
+</li>
 </ul>
 </li>
 <li>
@@ -249,6 +252,12 @@ public View myFunction(@Param("type") type){
 <pre>@Ok("json:{quoteName:true, ignoreNull:true}")
 </pre>
 <p>视图的值就是： "{quoteName:true, ignoreNull:true}"，这个字符串会被转换成 JsonFormat 对象。如果你想了解更多的 Json 转换的介绍哦，请参看 <a href="overview.html">Json 手册</a></p>
+<p>格式控制支持4个常用模式的简写</p>
+<pre>@Ok("json:full")
+@Ok("json:nice")
+@Ok("json:forlook")
+@Ok("json:compact")
+</pre>
 <div class="hr"><b></b></div>
 <h2><a name="重定向视图"></a>重定向视图</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -341,7 +350,7 @@ public View myFunction(@Param("type") type){
 <p>使用形式</p>
 <pre>@Ok("void")
 </pre>
-<p>对 HTTP 输出流不做任何处理</p>
+<p>对 HTTP 输出流不做任何处理,空实现.</p>
 <div class="hr"><b></b></div>
 <h2><a name="从_Ioc_容器中获取的视图"></a>从 Ioc 容器中获取的视图</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -392,6 +401,10 @@ public View myFunction(@Param("type") type){
 <td> 文件下载 </td>
 </tr>
 <tr>
+<td> BufferedImage</td>
+<td> 根据设置的Content-Type转为指定的图片格式 </td>
+</tr>
+<tr>
 <td> 默认的      </td>
 <td> 直接将对象 toString() 后按文本方式写入HTTP响应流 </td>
 </tr>
@@ -425,7 +438,23 @@ public View myFunction(@Param("type") type){
 <td> @Ok("raw:js")     </td>
 <td> 等价于@Ok("raw:application/x-javascript"); </td>
 </tr>
+<tr>
+<td> @Ok("raw:jpg")     </td>
+<td> 等价于@Ok("raw:image/jpeg"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:png")     </td>
+<td> 等价于@Ok("raw:image/png"); </td>
+</tr>
+<tr>
+<td> @Ok("raw:webp")     </td>
+<td> 等价于@Ok("raw:image/webp"); </td>
+</tr>
 </table>
+<h2><a name="RawView2"></a>RawView2</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.RawView2</b></p>
+<p>该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.</p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的视图"></a>定制自己的视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.b.51 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.b.51 发行注记</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
 <div class="zdoc_header">1.b.51 发行注记</div>
@@ -12,22 +12,16 @@
 <div><span class="num">1</span><a href="#1b51_发行注记">1.b.51 发行注记</a></div>
 </li>
 <li>
-<div><span class="num">2</span><a href="#兼容性">兼容性</a></div>
+<div><span class="num">2</span><a href="#问题修复">问题修复</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#新功能">新功能</a></div>
+<div><span class="num">3</span><a href="#质量">质量</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#问题修复">问题修复</a></div>
+<div><span class="num">4</span><a href="#文档">文档</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#质量">质量</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#文档">文档</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+<div><span class="num">5</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
@@ -41,27 +35,6 @@
 <li>下载地址 : <a href="http://downloads.nutzam.com/">http://downloads.nutzam.com/</a></li>
 <li>Nutz 的主页 :  <a href="http://nutzam.com">http://nutzam.com</a></li>
 <li>Github 地址 :  <a href="https://github.com/nutzam/nutz">https://github.com/nutzam/nutz</a></li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="兼容性"></a>兼容性</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>Dao: 优先使用getter/setter取值/赋值, 之前的版本是直接反射属性</li>
-<li>Resources: Scans扫描资源时,总是以最后一个资源为准</li>
-<li>Lang: MultiLineProperties现在是有有序的map, ProperiesProxy会受到影响</li>
-<li>Mvc: Mvcs.ctx属性被标注为启用,后续代码应使用Mvcs.ctx()方法.</li>
-<li>Dao: Record类的toString方法现在输出的json format是full</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="新功能"></a>新功能</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>Ioc: 支持factory和optional,详情看ioc的文档</li>
-<li>Lang: Xmls类支持Map-List结构的简单XML解析了,能解析微信公众平台的XML</li>
-<li>Http: 支持代理服务器fallback, 即代理服务器不可用时自动回落到无代理模式</li>
-<li>Lang: PropertiesProxy支持自身展开的功能</li>
-<li>Dao: 支持Sqlserver 2014</li>
-<li>Dao: Daos类添加了2个ext方法,可以无需内部类就进行字段过滤和动态表名.</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="问题修复"></a>问题修复</h1>
