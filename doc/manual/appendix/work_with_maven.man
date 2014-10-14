@@ -24,7 +24,7 @@ Nutz的POM
 	<dependency>
 		<groupId>org.nutz</groupId>
 		<artifactId>nutz</artifactId>
-		<version>1.b.44</version>
+		<version>1.b.51</version>
 	</dependency>
 	}}}
 	无需添加repository即可使用Nutz.不要惊讶,因为我们已经将Nutz提交到maven中央仓库!

@@ -12,6 +12,11 @@ import java.util.regex.Pattern;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import org.nutz.lang.util.Callback2;
 import org.nutz.lang.util.NutMap;
@@ -109,18 +114,18 @@ public abstract class Xmls {
         for (int i = 0; i < nl.getLength(); i++) {
             Node nd = nl.item(i);
             switch (nd.getNodeType()) {
-			case Node.TEXT_NODE:
-				sb.append(nd.getNodeValue());
-				break;
-			case Node.CDATA_SECTION_NODE :
-				sb.append(nd.getNodeValue());
-				break;
-			case Node.ELEMENT_NODE :
-				joinText((Element) nd, sb);
-				break;
-			default:
-				break;
-			}
+            case Node.TEXT_NODE:
+                sb.append(nd.getNodeValue());
+                break;
+            case Node.CDATA_SECTION_NODE:
+                sb.append(nd.getNodeValue());
+                break;
+            case Node.ELEMENT_NODE:
+                joinText((Element) nd, sb);
+                break;
+            default:
+                break;
+            }
         }
     }
 
@@ -157,6 +162,66 @@ public abstract class Xmls {
             public void invoke(int index, Element cld, int length) {
                 tag[0] = cld;
                 Lang.Break();
+            }
+        });
+        return tag[0];
+    }
+
+    /**
+     * 从一个 XML 元素开始，根据一条 XPath 获取一个元素
+     * 
+     * @param ele
+     *            XML 元素
+     * @param xpath
+     *            要获取的元素的 XPath
+     * @return 元素，null 表示不存在
+     */
+    public static Element getEle(Element ele, String xpath) {
+        XPathFactory factory = XPathFactory.newInstance();
+        XPath xp = factory.newXPath();
+        try {
+            XPathExpression expression = xp.compile(xpath);
+            return (Element) expression.evaluate(ele, XPathConstants.NODE);
+        }
+        catch (XPathExpressionException e) {
+            throw Lang.wrapThrow(e);
+        }
+
+    }
+
+    /**
+     * 从某个元素里获取一个指定下标的子元素
+     * 
+     * @param ele
+     *            XML 元素
+     * @param index
+     *            子元素下标（0 base）
+     * @return 子元素
+     */
+    public static Element getChild(Element ele, int index) {
+        return getChild(ele, index, null);
+    }
+
+    /**
+     * 从某个元素里获取一个指定下标且指定名称的子元素
+     * 
+     * @param ele
+     *            XML 元素
+     * @param index
+     *            子元素下标（0 base）
+     * @param regex
+     *            元素名称的正则表达式
+     * @return 子元素
+     */
+    public static Element getChild(Element ele, final int index, String regex) {
+        final int pos = index;
+        final Element[] tag = new Element[1];
+        eachChildren(ele, null, new Each<Element>() {
+            public void invoke(int index, Element cld, int length) {
+                if (index >= pos) {
+                    tag[0] = cld;
+                    Lang.Break();
+                }
             }
         });
         return tag[0];
@@ -383,7 +448,8 @@ public abstract class Xmls {
 
     /**
      * 根据一个 XML 节点，将其变成一个 Map。
-     * <p/><b>注意: 不支持混合节点</b>
+     * <p/>
+     * <b>注意: 不支持混合节点</b>
      * 
      * @param ele
      *            元素
@@ -393,10 +459,11 @@ public abstract class Xmls {
     public static NutMap asMap(Element ele) {
         return asMap(ele, false);
     }
-    
+
     /**
      * 根据一个 XML 节点，将其变成一个 Map。
-     * <p/><b>注意: 不支持混合节点</b>
+     * <p/>
+     * <b>注意: 不支持混合节点</b>
      * 
      * @param ele
      *            元素

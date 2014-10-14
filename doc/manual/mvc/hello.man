@@ -158,7 +158,7 @@
 		
 --------------------------------------------------------------------
 如何进阶
-	 * [http://nutzdemo.googlecode.com/ 访问 demo site]
+	 * [http://github.com/nutzam/nutzdemo/ 访问 demo site]
 	 * [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
 	 * [overview.man 详细阅读 Mvc 手册]
 	

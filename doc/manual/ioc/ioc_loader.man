@@ -1,68 +1,24 @@
-#title: 定义自己的配置文件格式
+#title: 如何配置一个 IocBean
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------------------------
-你如果不喜欢 JSON 怎么办？
-	
-	我很喜欢 JSON，因为它语法轻巧。当然，我不能保证你也很喜欢 JSON，因为你可能会说：
-	
-	 * 没有很好的 JSON 编辑器 -- {#999;/如果是这样，我推荐你试试 Eclipse 自带的 Javascript 编辑器}。
-	 * 我更喜欢 XML，我不喜欢大括号
-	 * 我就是讨厌 JSON
-	
-	那么，你想自己规定自己的配置文件格式吗？ 你可以定义一个比  JSON  更酷的配置文件语法，当然
-	你得多写一点点代码，解析你的配置文件。但是你就想做点很酷的事情，不是吗？
-	
-	Nutz.Ioc 提供了一个扩展点：{*org.nutz.ioc.IocLoader} 接口。实际上 JSON 的配置文件语法，不过是
-	我预先为这个接口写的一个实现，所以你当然也可以写一个，请注意 Nutz.Ioc 接口是如何被构建的：
-	{{{
-	Ioc ioc = new NutIoc(new JsonLoader("文件路径"));
-	}}}
-	我提供的 JsonLoader 没有任何“特殊待遇”，它和你自己要实现的 IocLoader 地位是完全一样的，你完全可以
-	这么写：
-	{{{
-	Ioc ioc = new NutIoc(new MyIocLoader());
-	}}}
-	只要你正确的实现了 IocLoader 接口，如何持有对象，如果解释对象的语义，都由 Nutz.Ioc 的标准实现流程
-	负责，你完全不用操心。
-	
-	你可能还有一个问题：“{*那么 IocLoader 接口实现起来复杂吗？}”
-	
-	我可以负责任的告诉你，虽然那不是极其简单，但是绝对不复杂。你只要理解下面这个知识即可：
---------------------------------------------------------------------------------------------------------
-在 Nutz.Ioc 定义一个对象的数据结构是怎样的？
-	
-	在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部
-	信息，你会发现它其实也简单：
-	{{{
-	public class IocObject {
+使用Json
 
-		private Class<?> type;
-		private boolean singleton;
-		private IocEventSet events;
-		private List<IocValue> args;
-		private List<IocField> fields;
-		private String scope;
-		
-		// 省略所有的 getter 和 setter 函数
-	}}}
-	看看这个类的属性，顾名思义：
-	 * {*type} --  对象类型
-	 * {*singleton} -- 声明对象是否为单例
-	 * {*events} -- 对象监听何种事件
-	 * {*args} -- 对象构造函数的参数列表
-	 * {*fields} -- 对象的字段
-	
-	没有对象的名称，对吗？是的，通过 JSON （如果你了解一点 Javascript，那就更容易理解了），你通常要这么写：
+    NutIoc 包含一个 JsonLoader，通常同学们会这么用:
+
+    {{{
+    Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
+    }}}
+    
+    JsonLoader 从一个 JS 文件中加载一组 IocBean 的配置信息，这个JS文件的格式通常为
+
 	{{{
-	你的 JSON 文件，下面是正文
-	------------------------------------------------
 	{
 		"对象名称" : {
-			type : "对象类型",
-			singleton : true | false,
-			events : {
+			type      : "对象类型",
+            parent    : "被继承的对象名称",
+			events    : {
 				fetch : "触发器的类型或者函数名",
 				create : "触发器的类型或者函数名",
 				depose : "触发器的类型或者函数名"
@@ -78,11 +34,129 @@
 		}
 	}
 	}}}
-	那么你如果想通过其他的配置文件格式，比如 XML 类获取 IocObject， 文件格式应该如何定义，完全看你个人的喜好了。
+
+    比如:
+
+    {{{
+    var ioc = {
+        bean   : {
+            fields : {
+                x: 100,
+                y: 80
+            }
+        },
+        myBean : {
+            // 对象的 Java 类型
+            type      : 'demo.MyBean',    
+
+            // 如果声明，表对象的属性从 "bean" 对象继承
+            // 你可以看到 "bean" 对象在上面声明了两个属性 x:100, y:80
+            // 那么你的 bean 也会继承这个属性。当然你在自己的 fields 字段里
+            // 可以进行覆盖。同理，任何属性，比如  type, singleton, events, args
+            // 都是可以在 parent 里声明，以便做到最大限度的复用的。
+            parent    : 'bean',           
+
+            // 不声明，默认为 true
+			singleton : true,
+
+            // 这里声明对象的三种事件。事件的处理函数可以是一个接口，也可以是自身的
+            // 一个方法。
+            events    : {      
+                // 当这个对象被创建后，如果你想做点特殊的操作，又不好在构造函数里做
+                // 你可以实现一个 IocEventTrigger<T>，容器在创建这个对象后
+                // 会调用这个接口的唯一方法
+                create: "demo.MyBeanCreateTrigger",
+
+                // 如果你 MyBean bean = ioc.get(MyBean.class,"myBean"); 之后都要再调用一个
+                // 函数来进行一些必要操作，比如计数之类的，你可以声明 "fetch" 事件
+                // 下面的声明表示容器交还给你前，会调用一下 bean.onFetch()
+                // 当然你的对象本身要有一个函数 "onFetch()" 它不能有参数
+                fetch : "onFetch",   
+
+                // 当对象被容器销毁时触发。
+                depose : "demo.MyBeanDeposeTrigger"
+            },
+
+            // 构造函数参数，即对象要有对应的构造函数，否则抛错
+            args      : [ 'I am great' ], 
+
+            // 详细声明每个字段的值
+            fields    : {                 
+                name   : 'XiaoBai',
+                number : 49
+            }
+        }
+    };
+    }}}
+    
+
+--------------------------------------------------------------------------------------------------------
+你如果不喜欢 JSON 怎么办？
 	
-	这里需要说一下：
+	我很喜欢 JSON，因为它语法轻巧。当然，我不能保证你也很喜欢 JSON，因为你可能会说：
 	
+	 * 没有很好的 JSON 编辑器 -- {#999;/如果是这样，我推荐你试试 Eclipse 自带的 Javascript 编辑器}。
+	 * 我更喜欢 XML，我不喜欢大括号
+	 * 我就是讨厌 JSON
+	
+	那么，你想自己规定自己的配置文件格式吗？ 你可以定义一个比  JSON  更酷的配置文件语法，当然
+	你得多写一点点代码，解析你的配置文件。但是你就想做点很酷的事情，不是吗？
+	
+	Nutz.Ioc 提供了一个扩展点：{*org.nutz.ioc.IocLoader} 接口。实际上 JSON 的配置文件语法，不过是
+	我预先为这个接口写的一个实现，所以你当然也可以写一个，请注意 Nutz.Ioc 接口是如何被构建的：
+
+	{{{
+	Ioc ioc = new NutIoc(new JsonLoader("文件路径"));
+	}}}
+
+	我提供的 JsonLoader 没有任何“特殊待遇”，它和你自己要实现的 IocLoader 地位是完全一样的，你完全可以
+	这么写：
+    
+	{{{
+	Ioc ioc = new NutIoc(new MyIocLoader());
+	}}}
+
+	只要你正确的实现了 IocLoader 接口，如何持有对象，如果解释对象的语义，都由 Nutz.Ioc 的标准实现流程
+	负责，你完全不用操心。
+	
+	你可能还有一个问题：“{*那么 IocLoader 接口实现起来复杂吗？}”
+	
+	我可以负责任的告诉你，虽然那不是极其简单，但是绝对不复杂。你只要理解下面这个知识即可：
+--------------------------------------------------------------------------------------------------------
+在 Nutz.Ioc 定义一个对象的数据结构是怎样的？
+	
+	在 org.nutz.ioc.meta.IocObject 类中，你如果拿到它的源代码，或者是 JDoc，它描述了在容器中一个对象的全部
+	信息，你会发现它其实也简单：
+
+	{{{
+	public class IocObject {
+
+        // 对象的 Java 类型
+		private Class<?> type;
+
+        // 声明对象是否为单例
+		private boolean singleton;
+
+        // 对象监听何种事件，对应有
+        //  "fetch"   - 每次对象被 ioc.get 的时候，触发
+        //  "create"  - 当且仅当对象被 new 的时候触发
+        //  "depose"  - 当对象被容器销毁时触发
+		private IocEventSet events;
+
+        // 对象构造函数的参数列表
+		private List<IocValue> args;
+
+        // 对象的字段
+		private List<IocField> fields;
+
+        // 对象的缓存范围，默认为 "app"
+		private String scope;
+		
+		// 省略所有的 getter 和 setter 函数
+	}}}
+
 	事件集合 IocEventSet
+
 		描述了一个对象可以监听的事件。三个属性分别表示： 
 
 		 * create: 对象创建时触发 
@@ -95,6 +169,7 @@
 		 * 如果是 IocEventTrigger 的实现类，你的实现类必须有一个 public 的默认构造函数
 	
 	值 IocValue
+
 		描述了对象的一个值，这个值可以是构造函数的参数，也可以是一个字段的值。 
 		它由两个属性，一个是值的类型，另外一个是 value。 
 		
@@ -112,12 +187,15 @@
 		 * 你的 ValueProxyMaker 可以扩展这个约定 
 	
 	字段 IocField
+
 		描述了一个对象的字段，两个属性分别表示字段名，和字段值
 	
 	
 --------------------------------------------------------------------------------------------------------
 实现你的加载器
+
 	你的 IocLoader 的实现类需要实现三个方法:
+
 	{{{
 	public interface IocLoader {
 
@@ -144,10 +222,13 @@
 	}}}
 --------------------------------------------------------------------------------------------------------
 最后
+
 	没什么要说的了，充分发挥你的想象力吧，如果你愿意，将配置信息放在 PDF 里，放在 excel 表格里都是可以的 
 	如果你完成了一个IocLoader,不妨分享出来,我们将收录到 http://github.com/nutzam/nutzmore/
+
 --------------------------------------------------------------------------------------------------------
 附:已经可用的IocLoader
+
 	* 使用Json作为配置文件 org.nutz.ioc.loader.json.JsonLoader
 	* 使用XML作为配置文件 org.nutz.ioc.loader.xml.XmlIocLoader
 	* 使用注解作为配置文件 org.nutz.ioc.loader.annotation.AnnotationIocLoader

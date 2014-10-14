@@ -19,25 +19,6 @@
      * 下载地址 : [http://downloads.nutzam.com/]
      * Nutz 的主页 :  [http://nutzam.com]
      * Github 地址 :  [https://github.com/nutzam/nutz]
-     
---------------------------------------------------------------------------------------------------------
-兼容性
-
-	* Dao: 优先使用getter/setter取值/赋值, 之前的版本是直接反射属性
-	* Resources: Scans扫描资源时,总是以最后一个资源为准
-	* Lang: MultiLineProperties现在是有有序的map, ProperiesProxy会受到影响
-	* Mvc: Mvcs.ctx属性被标注为启用,后续代码应使用Mvcs.ctx()方法.
-	* Dao: Record类的toString方法现在输出的json format是full
-
---------------------------------------------------------------------------------------------------------
-新功能
-
-	* Ioc: 支持factory和optional,详情看ioc的文档
-	* Lang: Xmls类支持Map-List结构的简单XML解析了,能解析微信公众平台的XML
-	* Http: 支持代理服务器fallback, 即代理服务器不可用时自动回落到无代理模式
-	* Lang: PropertiesProxy支持自身展开的功能
-	* Dao: 支持Sqlserver 2014
-	* Dao: Daos类添加了2个ext方法,可以无需内部类就进行字段过滤和动态表名.
 
 --------------------------------------------------------------------------------------------------------
 问题修复

@@ -128,8 +128,9 @@ public class LazyAnnotationEntityMaker extends AnnotationEntityMaker {
         public void filter(InterceptorChain chain) throws Throwable {
             LazyStatus stat = status.get(chain.getCallingObj());
             if (stat == null) {
-                if (chain.getCallingMethod() != setter)
+                if (!chain.getCallingMethod().equals(setter)) {
                     dao.fetchLinks(chain.getCallingObj(), fieldName);// 这里会触发setter被调用
+                }
                 status.put(chain.getCallingObj(), LazyStatus.NO_NEED); // 如果setter被调用,那么也就不再需要懒加载了
             }
             chain.doChain();

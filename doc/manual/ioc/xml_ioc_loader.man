@@ -2,9 +2,9 @@
 #index:0,1
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-格式约定: 参阅xsd文件(包含在jar中): [http://code.google.com/p/nutz/source/browse/trunk/src/nutz-ioc-0.1.xsd nutz-ioc-0.1.xsd]
+格式约定: 参阅xsd文件(包含在jar中): [https://github.com/nutzam/nutz/blob/master/src/nutz-ioc-0.1.xsd nutz-ioc-0.1.xsd]
 
-示例文件 [http://code.google.com/p/nutz/source/browse/trunk/test/org/nutz/ioc/loader/xml/conf/zzh-offered.xml 示例]:
+示例文件 [https://github.com/nutzam/nutz/blob/master/test/org/nutz/ioc/loader/xml/conf/zzh-offered.xml 示例]:
 {{{
 <ioc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">

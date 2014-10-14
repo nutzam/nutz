@@ -201,6 +201,16 @@
 		}}}
 		视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个字符串会被转换成 JsonFormat 对象。
 		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
+		
+		格式控制支持4个常用模式的简写
+		{{{
+		@Ok("json:full")
+		@Ok("json:nice")
+		@Ok("json:forlook")
+		@Ok("json:compact")
+		}}}
+		
+		
 	--------------------------------------------------------------------------------------
 	重定向视图
 		视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
@@ -295,7 +305,7 @@
 		{{{
 		@Ok("void")
 		}}}
-		对 HTTP 输出流不做任何处理
+		对 HTTP 输出流不做任何处理,空实现.
 	--------------------------------------------------------------------------------------
 	从 Ioc 容器中获取的视图
 		
@@ -331,7 +341,9 @@
 		|| `char[]`    || 按文本方式写入HTTP响应流 ||
 		|| Reader      || 按文本方式写入HTTP响应流，并关闭 Reader  ||
 		|| File		   || 文件下载 ||
+		|| BufferedImage|| 根据设置的Content-Type转为指定的图片格式 ||
 		|| 默认的      || 直接将对象 toString() 后按文本方式写入HTTP响应流 ||
+		
 		 
 		默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
 		{{{
@@ -344,6 +356,15 @@
 		|| @Ok("raw:stream") || 等价于@Ok("raw:application/octet-stream"); ||
 		|| @Ok("raw:json")   || 等价于@Ok("raw:application/x-javascript"); ||
 		|| @Ok("raw:js")     || 等价于@Ok("raw:application/x-javascript"); ||
+		|| @Ok("raw:jpg")     || 等价于@Ok("raw:image/jpeg"); ||
+		|| @Ok("raw:png")     || 等价于@Ok("raw:image/png"); ||
+		|| @Ok("raw:webp")     || 等价于@Ok("raw:image/webp"); ||
+		
+	RawView2
+	
+		视图的实现类为： {*org.nutz.mvc.view.RawView2}
+		
+		该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.
 		
 ------------------------------------------------------------------------------------------
 定制自己的视图

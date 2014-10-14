@@ -107,4 +107,30 @@
 	 * MapLoader
 	 * 其他任何你自己实现的 IocLoader
 
+----------------------------------------------------------------------------------------
+类名的简写
 
+	是不是觉得写*org.nutz.ioc.loader.json.JsonLoader很长,那么你可以写成*json,
+	
+	{{{
+	js         --> org.nutz.ioc.loader.json.JsonLoader
+	json       --> org.nutz.ioc.loader.json.JsonLoader
+    xml        --> org.nutz.ioc.loader.xml.XmlIocLoader
+    annotation --> org.nutz.ioc.loader.annotation.AnnotationIocLoader
+	}}}
+	
+	本小节开头的配置就可以写成: 
+	
+	{{{<Java>
+	@IocBy(type = ComboIocProvider.class,
+	       args = {"*json",
+	               "dao.js", 
+	               "service.js", 
+	               "*annotation", 
+	               "com.myapp.module",
+	               "com.myapp.service"
+			})
+	public class MainModule {
+		...
+	}}}
+	

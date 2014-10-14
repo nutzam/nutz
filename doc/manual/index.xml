@@ -98,6 +98,7 @@
 		<doc path="zmole_get_start.man"/>
 	</doc-->
 	<doc path="history" title="版本历史">
+		<doc path="1_b_51.man"/>
 		<doc path="1_b_50.man"/>
 		<doc path="1_b_49.man"/>
 		<doc path="1_b_48.man"/>

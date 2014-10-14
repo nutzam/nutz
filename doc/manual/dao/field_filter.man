@@ -121,42 +121,23 @@
         });
         }}}
 
+---------------------------------------------------------------------------------------------------
+无需匿名内部类的写法
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	从1.b.51开始支持不使用匿名内部类的方法, Daos.ext方法. 该方法有两个变种, 分别支持字段过滤和动态表名.
+	
+	示例
+	
+    {{{
+    //原写法
+    FieldFilter.create(Pet.class, "^id|name$").run(new Atom(){
+        public void run(){
+            dao.update(pet); // 这里的pet必须是final
+        }
+    });
+    // 新的写法
+    Daos.ext(dao, FieldFilter.create(Pet.class, "^id|name$")).update(pet);
+    // ext方法会返回一个Dao实例,是对原有dao对象的封装
+    }}}
 
 
