@@ -724,10 +724,10 @@ public abstract class Times {
     private static final long MS_DAY = 3600L * 24 * 1000;
     private static final long MS_WEEK = MS_DAY * 7;
 
-    private static final long T_1S = 1000;
-    private static final long T_1M = 60 * 1000;
-    private static final long T_1H = 60 * 60 * 1000;
-    private static final long T_1D = 24 * 60 * 60 * 1000;
+    public static final int T_1S = 1000;
+    public static final int T_1M = 60 * 1000;
+    public static final int T_1H = 60 * 60 * 1000;
+    public static final int T_1D = 24 * 60 * 60 * 1000;
 
     /**
      * 方便的把时间换算成毫秒数
@@ -751,19 +751,67 @@ public abstract class Times {
         // FIXME 稍后改成正则判断
         String tl = tstr.substring(0, tstr.length() - 1);
         String tu = tstr.substring(tstr.length() - 1);
-        if ("s".equals(tu)) {
+        if (TIME_S_EN.equals(tu)) {
             return T_1S * Long.valueOf(tl);
         }
-        if ("m".equals(tu)) {
+        if (TIME_M_EN.equals(tu)) {
             return T_1M * Long.valueOf(tl);
         }
-        if ("h".equals(tu)) {
+        if (TIME_H_EN.equals(tu)) {
             return T_1H * Long.valueOf(tl);
         }
-        if ("d".equals(tu)) {
+        if (TIME_D_EN.equals(tu)) {
             return T_1D * Long.valueOf(tl);
         }
         return Long.valueOf(tstr);
     }
 
+    private static String TIME_S_EN = "s";
+    private static String TIME_M_EN = "m";
+    private static String TIME_H_EN = "h";
+    private static String TIME_D_EN = "d";
+
+    private static String TIME_S_CN = "秒";
+    private static String TIME_M_CN = "分";
+    private static String TIME_H_CN = "时";
+    private static String TIME_D_CN = "天";
+
+    /**
+     * 一段时间长度的毫秒数转换为一个时间长度的字符串
+     * 
+     * 1000 -> 1s
+     * 
+     * 120000 - 2m
+     * 
+     * @param mi
+     *            毫秒数
+     * @return 可以正常识别的文字
+     */
+    public static String fromMillis(long mi) {
+        return _fromMillis(mi, TIME_S_EN, TIME_M_EN, TIME_H_EN, TIME_D_EN);
+    }
+
+    public static String fromMillisCN(long mi) {
+        return _fromMillis(mi, TIME_S_CN, TIME_M_CN, TIME_H_CN, TIME_D_CN);
+    }
+
+    public static String _fromMillis(long mi, String S, String M, String H, String D) {
+        if (mi < T_1S) {
+            return "1s";
+        }
+        if (mi < T_1M) {
+            return (int) mi / T_1S + S;
+        }
+        if (mi >= T_1M && mi < T_1H) {
+            int m = (int) mi / T_1M;
+            return m + M + fromMillis(mi - m * T_1M);
+        }
+        if (mi >= T_1H && mi < T_1D) {
+            int h = (int) mi / T_1H;
+            return h + H + fromMillis(mi - h * T_1H);
+        }
+        // if (mi > T_1D)
+        int d = (int) mi / T_1D;
+        return d + D + fromMillis(mi - d * T_1D);
+    }
 }
