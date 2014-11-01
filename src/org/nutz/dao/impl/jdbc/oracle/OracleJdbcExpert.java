@@ -1,6 +1,9 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
 import java.sql.Clob;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +21,9 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -222,4 +228,20 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public boolean isSupportAutoIncrement() {
         return false;
     }
+    
+    private final static Log log = Logs.get();
+    
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		 if (meta == null)
+	            return 0;
+	        int columnCount = meta.getColumnCount();
+	        String colName = mf.getColumnName();
+	        for (int i = 1; i <= columnCount; i++)
+	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
+	                return i;
+	        // TODO 尝试一下meta.getColumnLabel?
+	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
+	        throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+	}
 }

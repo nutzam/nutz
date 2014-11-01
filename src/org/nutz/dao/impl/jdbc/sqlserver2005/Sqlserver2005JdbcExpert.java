@@ -1,5 +1,8 @@
 package org.nutz.dao.impl.jdbc.sqlserver2005;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +20,9 @@ import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 
@@ -192,4 +198,19 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         autoInfo.setEntity(en);
         return autoInfo;
     }
+    private final static Log log = Logs.get();
+    
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		 if (meta == null)
+	            return 0;
+	        int columnCount = meta.getColumnCount();
+	        String colName = mf.getColumnName();
+	        for (int i = 1; i <= columnCount; i++)
+	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
+	                return i;
+	        // TODO 尝试一下meta.getColumnLabel?
+	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
+	        throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+	}
 }
