@@ -36,7 +36,7 @@ public abstract class Sender {
      * 默认读取超时, 10分钟
      */
     public static int Default_Read_Timeout = 10 * 60 * 1000;
-    
+
     private static final Log log = Logs.get();
 
     public static Sender create(String url) {
@@ -48,11 +48,13 @@ public abstract class Sender {
     }
 
     public static Sender create(Request request) {
-        return request.isGet() || request.isDelete() ? new GetSender(request) : new PostSender(request);
+        return request.isGet() || request.isDelete() ? new GetSender(request)
+                                                    : new PostSender(request);
     }
 
     public static Sender create(Request request, int timeout) {
-        Sender sender = request.isGet() || request.isDelete() ? new GetSender(request) : new PostSender(request);
+        Sender sender = request.isGet() || request.isDelete() ? new GetSender(request)
+                                                             : new PostSender(request);
         return sender.setTimeout(timeout);
     }
 
@@ -116,6 +118,7 @@ public abstract class Sender {
     protected void setupDoInputOutputFlag() {
         conn.setDoInput(true);
         conn.setDoOutput(true);
+        // conn.setUseCaches(false);
     }
 
     protected void openConnection() throws IOException {
@@ -125,17 +128,18 @@ public abstract class Sender {
                 Proxy proxy = proxySwitcher.getProxy(request);
                 if (proxy != null) {
 
-                	if (Http.autoSwitch) {
-                		Socket socket = null;
-                		try {
-                			socket = new Socket();
-                			socket.connect(proxy.address(), 5*1000);
-                		} finally {
-                			if (socket != null)
-                				socket.close();
-                		}
-                	}
-                    
+                    if (Http.autoSwitch) {
+                        Socket socket = null;
+                        try {
+                            socket = new Socket();
+                            socket.connect(proxy.address(), 5 * 1000);
+                        }
+                        finally {
+                            if (socket != null)
+                                socket.close();
+                        }
+                    }
+
                     conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                     conn.setConnectTimeout(Default_Conn_Timeout);
                     if (timeout > 0)
@@ -149,7 +153,7 @@ public abstract class Sender {
                 if (!Http.autoSwitch) {
                     throw e;
                 }
-            	log.info("Test proxy FAIl, fallback to direct connection", e);
+                log.info("Test proxy FAIl, fallback to direct connection", e);
             }
         }
         conn = (HttpURLConnection) request.getUrl().openConnection();
