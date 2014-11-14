@@ -36,7 +36,7 @@ public final class Nutz {
     }
 
     public static int minorVersion() {
-        return 51;
+        return 52;
     }
     
     public static String releaseLevel() {

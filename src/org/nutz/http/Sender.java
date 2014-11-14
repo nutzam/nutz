@@ -3,6 +3,7 @@ package org.nutz.http;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.net.Socket;
@@ -127,19 +128,21 @@ public abstract class Sender {
             try {
                 Proxy proxy = proxySwitcher.getProxy(request);
                 if (proxy != null) {
-
                     if (Http.autoSwitch) {
                         Socket socket = null;
                         try {
                             socket = new Socket();
                             socket.connect(proxy.address(), 5 * 1000);
+                            OutputStream out = socket.getOutputStream();
+                            out.write('\n');
+                            out.flush();
                         }
                         finally {
                             if (socket != null)
                                 socket.close();
                         }
                     }
-
+                    log.debug("connect via proxy : " + proxy);
                     conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                     conn.setConnectTimeout(Default_Conn_Timeout);
                     if (timeout > 0)
