@@ -13,7 +13,15 @@ public class ErrorResourceLocation extends ResourceLocation {
     private static final Log log = Logs.get();
     
     Object loc;
-    public ErrorResourceLocation(Object loc) {
+    
+    public static ErrorResourceLocation make(Object loc) {
+        if (loc == null) {
+            log.debug("null scan path object");
+        }
+        return new ErrorResourceLocation(loc);
+    }
+    
+    private ErrorResourceLocation(Object loc) {
         this.loc = loc;
         if (log.isInfoEnabled())
             log.info("ErrorResourceLocation [loc=" + loc + "], maybe it is in your classpath, but not exist");
