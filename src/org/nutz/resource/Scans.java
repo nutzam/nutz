@@ -147,7 +147,7 @@ public class Scans {
             if (log.isInfoEnabled())
                 log.info("Fail to registerLocation --> " + url, e);
         }
-        return new ErrorResourceLocation(url);
+        return ErrorResourceLocation.make(url);
     }
 
     public List<NutResource> scan(String src) {

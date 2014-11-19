@@ -22,10 +22,10 @@ public abstract class ResourceLocation {
     public static ResourceLocation file(File root) {
         try {
             if (!root.exists())
-                return new ErrorResourceLocation(root);
+                return ErrorResourceLocation.make(root);
             return new FileSystemResourceLocation(root.getAbsoluteFile().getCanonicalFile());
         } catch (Exception e) {
-            return new ErrorResourceLocation(root);
+            return ErrorResourceLocation.make(root);
         }
     }
     
@@ -33,7 +33,7 @@ public abstract class ResourceLocation {
         try {
             return new JarResourceLocation(jarPath);
         } catch (Exception e) {
-            return new ErrorResourceLocation(jarPath);
+            return ErrorResourceLocation.make(jarPath);
         }
     }
 }
