@@ -69,6 +69,11 @@ public class NutMap extends LinkedHashMap<String, Object> {
         return new NutMap(json);
     }
 
+    public Object get(String key, Object dft) {
+        Object v = get(key);
+        return null == v ? dft : v;
+    }
+
     public int getInt(String key) {
         return getInt(key, -1);
     }
