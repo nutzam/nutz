@@ -54,7 +54,7 @@ public class AnnotationIocLoader implements IocLoader {
         }
     }
 
-    private void addClass(Class<?> classZ) {
+    protected void addClass(Class<?> classZ) {
         if (classZ.isInterface()
             || classZ.isMemberClass()
             || classZ.isEnum()
