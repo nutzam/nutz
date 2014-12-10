@@ -326,8 +326,13 @@ final class JsonTokenScan {
 
 		switch (c) {
 		case 'v':
-			while (nextChar() != MapStart) {}
-			return readMap();
+			while (true) {
+			    int z = nextChar();
+			    if (z == '{')
+			        return readMap();
+			    if (z == '[')
+			        return readList();
+			}
 		case MapStart:
 			return readMap();
 		case ListStart:
