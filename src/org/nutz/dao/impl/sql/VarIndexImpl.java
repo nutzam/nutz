@@ -2,7 +2,7 @@ package org.nutz.dao.impl.sql;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -19,8 +19,8 @@ class VarIndexImpl implements VarIndex {
     private ArrayList<String> orders;
 
     VarIndexImpl() {
-        indexes = new HashMap<String, LinkedIntArray>();
-        names = new HashMap<Integer, String>();
+        indexes = new LinkedHashMap<String, LinkedIntArray>();
+        names = new LinkedHashMap<Integer, String>();
         orders = new ArrayList<String>();
     }
 
