@@ -84,6 +84,10 @@ public class JsonFormat {
      * 是否自动将值应用Unicode编码
      */
     private boolean autoUnicode;
+    /**
+     * unicode编码用大写还是小写
+     */
+    private boolean unicodeLower;
 
     public boolean ignore(String name) {
         if (null != actived)
@@ -187,5 +191,14 @@ public class JsonFormat {
     public boolean isAutoUnicode() {
         return autoUnicode;
     }
+
+	public boolean isUnicodeLower() {
+		return unicodeLower;
+	}
+
+	public void setUnicodeLower(boolean unicodeLower) {
+		this.unicodeLower = unicodeLower;
+	}
+    
     
 }

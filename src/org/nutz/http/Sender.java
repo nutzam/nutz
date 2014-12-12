@@ -142,7 +142,7 @@ public abstract class Sender {
                                 socket.close();
                         }
                     }
-                    log.debug("connect via proxy : " + proxy);
+                    log.debug("connect via proxy : " + proxy + " for " + request.getUrl());
                     conn = (HttpURLConnection) request.getUrl().openConnection(proxy);
                     conn.setConnectTimeout(Default_Conn_Timeout);
                     if (timeout > 0)

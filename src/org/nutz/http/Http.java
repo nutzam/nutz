@@ -99,6 +99,14 @@ public class Http {
             }
 
             public Proxy getProxy(Request req) {
+                if ("close".equals(req.getHeader().get("NoProxy")))
+                    return null;
+                String url = req.getUrl().toString();
+                if (url.startsWith("http") && url.contains("://") && url.length() > "https://".length()) {
+                    url = url.substring(url.indexOf("://") + "://".length());
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                        return null;
+                }
                 req.getHeader().set("Connection", "close");
                 return getProxy(req.getUrl());
             }
@@ -113,6 +121,14 @@ public class Http {
             }
 
             public Proxy getProxy(Request req) {
+                if ("close".equals(req.getHeader().get("NoProxy")))
+                    return null;
+                String url = req.getUrl().toString();
+                if (url.startsWith("http") && url.contains("://") && url.length() > "https://".length()) {
+                    url = url.substring(url.indexOf("://"));
+                    if (url.startsWith("127.0.0") || url.startsWith("localhost"))
+                        return null;
+                }
                 req.getHeader().set("Connection", "close");
                 return getProxy(req.getUrl());
             }

@@ -136,6 +136,10 @@ class JarResourceLocation extends ResourceLocation {
     String jarPath;
 
     public JarResourceLocation(String jarPath) {
+        if (jarPath.startsWith("zip:"))
+            jarPath = jarPath.substring(4);
+        if (jarPath.startsWith("file:/"))
+            jarPath = jarPath.substring("file:/".length());
         this.jarPath = jarPath;
         try {
             ZipInputStream zis = Scans.makeZipInputStream(jarPath);

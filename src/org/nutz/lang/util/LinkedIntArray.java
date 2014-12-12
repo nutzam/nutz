@@ -79,7 +79,10 @@ public class LinkedIntArray {
 
     private void checkBound(int index) {
         if (index >= size() || index < 0)
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+            throw new IndexOutOfBoundsException("Index: "
+                                                + index
+                                                + ", Size: "
+                                                + size());
     }
 
     public LinkedIntArray clear() {
@@ -110,7 +113,14 @@ public class LinkedIntArray {
     public int[] toArray() {
         int[] re = new int[size()];
         for (int i = 0; i < re.length; i++)
-            re[i] = (char) this.get(i);
+            re[i] = this.get(i);
+        return re;
+    }
+
+    public byte[] toByteArray() {
+        byte[] re = new byte[size()];
+        for (int i = 0; i < re.length; i++)
+            re[i] = (byte) this.get(i);
         return re;
     }
 

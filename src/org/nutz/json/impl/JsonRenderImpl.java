@@ -328,9 +328,14 @@ public class JsonRenderImpl implements JsonRender {
                     writer.append("\\\\");
                     break;
                 default:
-                    if (c >= 256 && format.isAutoUnicode())
-                        writer.append("\\u").append(Strings.fillHex(c, 4)
-                                                           .toUpperCase());
+                    if (c >= 256 && format.isAutoUnicode()) {
+                        writer.append("\\u");
+                        String u = Strings.fillHex(c, 4);
+                        if (format.isUnicodeLower())
+                        	writer.write(u.toLowerCase());
+                        else
+                        	writer.write(u.toUpperCase());
+                    }
                     else
                         writer.append(c);
                 }
