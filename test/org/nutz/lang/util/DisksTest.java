@@ -16,6 +16,12 @@ public class DisksTest {
         assertEquals("B", Disks.getCanonicalPath("A/B/../../B"));
         assertEquals("B/A", Disks.getCanonicalPath("../B/A"));
         assertEquals("B/A", Disks.getCanonicalPath("../../B/A"));
+        
+        assertEquals("/a/c", Disks.getCanonicalPath("/a/b/../c"));
+        assertEquals("/a/b/c", Disks.getCanonicalPath("/a/b/./c"));
+        assertEquals("/a/b", Disks.getCanonicalPath("/a/b/c/.."));
+        assertEquals("/a/b", Disks.getCanonicalPath("/a/b/c//.."));
+        assertEquals("/a/c", Disks.getCanonicalPath("/a/./c/"));
     }
 
     @Test
