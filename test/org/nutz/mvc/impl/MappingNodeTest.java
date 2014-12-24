@@ -43,6 +43,8 @@ public class MappingNodeTest {
         root.add("/a/?/?", "A");
         root.add("/a/*", "B");
         root.add("/a/x", "C");
+        root.add("/x/?/*", "D");
+        root.add("/m/?/**", "E");
 
         ActionContext ac = new ActionContext();
         assertEquals("A", root.get(ac, "/a/b/c"));
@@ -56,6 +58,14 @@ public class MappingNodeTest {
         assertEquals("C", root.get(ac, "/a/x/"));
         assertEquals("/a/x/", ac.getPath());
         assertEquals("", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("D", root.get(ac, "/x/a/o/p"));
+        assertEquals("/x/a/o/p", ac.getPath());
+        assertEquals("a,o,p", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("E", root.get(ac, "/m/a/o/p"));
+        assertEquals("/m/a/o/p", ac.getPath());
+        assertEquals("a,o/p", Lang.concat(",", ac.getPathArgs()).toString());
     }
 
     @Test
