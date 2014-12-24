@@ -3,9 +3,60 @@ package org.nutz.mvc.impl;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
+import org.nutz.lang.Lang;
 import org.nutz.mvc.ActionContext;
 
 public class MappingNodeTest {
+
+    @Test
+    public void test_remain() {
+        MappingNode<String> root = new MappingNode<String>();
+        root.add("/a/?/?", "A");
+        root.add("/a/**", "B");
+        root.add("/a/x", "C");
+        root.add("/a/?/m/**", "D");
+
+        ActionContext ac = new ActionContext();
+        assertEquals("A", root.get(ac, "/a/b/c"));
+        assertEquals("/a/b/c", ac.getPath());
+        assertEquals("b,c", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("B", root.get(ac, "/a/c/d/e"));
+        assertEquals("/a/c/d/e", ac.getPath());
+        assertEquals(1, ac.getPathArgs().size());
+        assertEquals("c/d/e", ac.getPathArgs().get(0));
+
+        assertEquals("C", root.get(ac, "/a/x/"));
+        assertEquals("/a/x/", ac.getPath());
+        assertEquals("", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("D", root.get(ac, "/a/c/m/x/y/z"));
+        assertEquals("/a/c/m/x/y/z", ac.getPath());
+        assertEquals(2, ac.getPathArgs().size());
+        assertEquals("c", ac.getPathArgs().get(0));
+        assertEquals("x/y/z", ac.getPathArgs().get(1));
+    }
+
+    @Test
+    public void test_quesmark_asterisk() {
+        MappingNode<String> root = new MappingNode<String>();
+        root.add("/a/?/?", "A");
+        root.add("/a/*", "B");
+        root.add("/a/x", "C");
+
+        ActionContext ac = new ActionContext();
+        assertEquals("A", root.get(ac, "/a/b/c"));
+        assertEquals("/a/b/c", ac.getPath());
+        assertEquals("b,c", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("B", root.get(ac, "/a/c/d/e"));
+        assertEquals("/a/c/d/e", ac.getPath());
+        assertEquals("c,d,e", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("C", root.get(ac, "/a/x/"));
+        assertEquals("/a/x/", ac.getPath());
+        assertEquals("", Lang.concat(",", ac.getPathArgs()).toString());
+    }
 
     @Test
     public void test_simple_mapping() {
@@ -84,7 +135,7 @@ public class MappingNodeTest {
 
     @Test
     public void test_issue() {
-    	MappingNode<String> root = new MappingNode<String>();
+        MappingNode<String> root = new MappingNode<String>();
         root.add("/*", "A");
         root.add("/abc/wendal", "B");
         root.add("/abc/wen/?/zzz", "B");
@@ -92,11 +143,11 @@ public class MappingNodeTest {
         ActionContext ac = new ActionContext();
 
         assertEquals("A", root.get(ac, "/a/b/c/d/e")); // 连第一个路径都不匹配
-        assertEquals("A", root.get(ac, "/abc/abc"));   // 匹配第一路径,但不匹配第二路径
+        assertEquals("A", root.get(ac, "/abc/abc")); // 匹配第一路径,但不匹配第二路径
         assertEquals("B", root.get(ac, "/abc/wendal")); // 匹配第一个路径, 也匹配第二路径
         assertEquals("B", root.get(ac, "/abc/wen/qq/zzz")); // 匹配全部
         assertEquals("A", root.get(ac, "/abc/wen/qq/qqq")); // 最后一个路径不匹配
         assertEquals("B", root.get(ac, "/abc/wen/qq/zzz/123")); // 最后一个路径泛匹配
-        
+
     }
 }
