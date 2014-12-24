@@ -40,6 +40,7 @@ public class MappingNodeTest {
     @Test
     public void test_quesmark_asterisk() {
         MappingNode<String> root = new MappingNode<String>();
+        root.add("/*", "root");
         root.add("/a/?/?", "A");
         root.add("/a/*", "B");
         root.add("/a/x", "C");
@@ -63,9 +64,17 @@ public class MappingNodeTest {
         assertEquals("/x/a/o/p", ac.getPath());
         assertEquals("a,o,p", Lang.concat(",", ac.getPathArgs()).toString());
 
+        assertEquals("D", root.get(ac, "/x/a"));
+        assertEquals("/x/a", ac.getPath());
+        assertEquals("a", Lang.concat(",", ac.getPathArgs()).toString());
+
         assertEquals("E", root.get(ac, "/m/a/o/p"));
         assertEquals("/m/a/o/p", ac.getPath());
         assertEquals("a,o/p", Lang.concat(",", ac.getPathArgs()).toString());
+
+        assertEquals("E", root.get(ac, "/m/a"));
+        assertEquals("/m/a", ac.getPath());
+        assertEquals("a", Lang.concat(",", ac.getPathArgs()).toString());
     }
 
     @Test

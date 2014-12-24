@@ -80,7 +80,7 @@ public class MappingNode<T> {
     private T get(ActionContext ac, String[] ss, int off) {
         // 路径已经没有内容了，看看本节点是否有一个对象
         if (off >= ss.length) {
-            return obj == null ? asterisk : obj;
+            return obj == null ? (asterisk == null ? remain : asterisk) : obj;
         }
 
         String key = ss[off];
