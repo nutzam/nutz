@@ -46,20 +46,40 @@ public abstract class Region<T extends Comparable<T>> {
         return new IntRegion(str);
     }
 
+    public static IntRegion Intf(String fmt, Object... args) {
+        return new IntRegion(String.format(fmt, args));
+    }
+
     public static LongRegion Long(String str) {
         return new LongRegion(str);
+    }
+
+    public static LongRegion Longf(String fmt, Object... args) {
+        return new LongRegion(String.format(fmt, args));
     }
 
     public static FloatRegion Float(String str) {
         return new FloatRegion(str);
     }
 
+    public static FloatRegion Floatf(String fmt, Object... args) {
+        return new FloatRegion(String.format(fmt, args));
+    }
+
     public static DoubleRegion Double(String str) {
         return new DoubleRegion(str);
     }
 
+    public static DoubleRegion Doublef(String fmt, Object... args) {
+        return new DoubleRegion(String.format(fmt, args));
+    }
+
     public static DateRegion Date(String str) {
         return new DateRegion(str);
+    }
+
+    public static DateRegion Datef(String fmt, Object... args) {
+        return new DateRegion(String.format(fmt, args));
     }
 
     protected Class<T> eleType;
@@ -191,7 +211,7 @@ public abstract class Region<T extends Comparable<T>> {
     }
 
     public String toString(T obj) {
-        return obj.toString();
+        return null == obj ? "" : obj.toString();
     }
 
     public T fromString(String str) {

@@ -24,6 +24,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.Mvcs;
 import org.nutz.resource.Scans;
 
 /**
@@ -39,9 +40,21 @@ public class AnnotationIocLoader implements IocLoader {
     private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 
     public AnnotationIocLoader(String... packages) {
-        for (String packageZ : packages)
-            for (Class<?> classZ : Scans.me().scanPackage(packageZ))
-                addClass(classZ);
+        for (String packageZ : packages) {
+            // 启用动态路径
+            if (packageZ.equals("$dynamic")) {
+                String[] pkgs = Strings.splitIgnoreBlank(Mvcs.ann_dynamic_path);
+                if (null != pkgs)
+                    for (String pkg : pkgs)
+                        for (Class<?> classZ : Scans.me().scanPackage(pkg))
+                            addClass(classZ);
+            }
+            // 否则老样子 ...
+            else {
+                for (Class<?> classZ : Scans.me().scanPackage(packageZ))
+                    addClass(classZ);
+            }
+        }
         if (map.size() > 0) {
             if (log.isInfoEnabled())
                 log.infof("Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
@@ -146,20 +159,26 @@ public class AnnotationIocLoader implements IocLoader {
             }
             catch (Exception e) {
                 // 如果获取失败,就忽略之
-                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it", classZ, e);
+                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it",
+                          classZ,
+                          e);
                 methods = new Method[0];
             }
             catch (NoClassDefFoundError e) {
-            	log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it", classZ, e);
+                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it",
+                          classZ,
+                          e);
                 methods = new Method[0];
-			}
+            }
             for (Method method : methods) {
                 Inject inject = method.getAnnotation(Inject.class);
                 if (inject == null)
                     continue;
                 // 过滤特殊方法
                 int m = method.getModifiers();
-                if (Modifier.isAbstract(m) || (!Modifier.isPublic(m)) || Modifier.isStatic(m))
+                if (Modifier.isAbstract(m)
+                    || (!Modifier.isPublic(m))
+                    || Modifier.isStatic(m))
                     continue;
                 String methodName = method.getName();
                 if (methodName.startsWith("set")
@@ -206,27 +225,28 @@ public class AnnotationIocLoader implements IocLoader {
                     fieldList.add(iocField.getName());
                 }
             }
-            
+
             // 处理工厂方法
             if (!Strings.isBlank(iocBean.factory())) {
-            	iocObject.setFactory(beanName);
+                iocObject.setFactory(beanName);
             }
         } else {
-        	// 这里只是检查一下@Inject,要避免抛出异常.
+            // 这里只是检查一下@Inject,要避免抛出异常.
             try {
-				if (log.isWarnEnabled()) {
-				    Field[] fields = classZ.getDeclaredFields();
-				    for (Field field : fields)
-				        if (field.getAnnotation(Inject.class) != null) {
-				            log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
-				                      classZ.getName(),
-				                      field.getName());
-				            break;
-				        }
-				}
-			} catch (Exception e) {
-				// 无需处理.
-			}
+                if (log.isWarnEnabled()) {
+                    Field[] fields = classZ.getDeclaredFields();
+                    for (Field field : fields)
+                        if (field.getAnnotation(Inject.class) != null) {
+                            log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
+                                      classZ.getName(),
+                                      field.getName());
+                            break;
+                        }
+                }
+            }
+            catch (Exception e) {
+                // 无需处理.
+            }
         }
     }
 
@@ -249,13 +269,15 @@ public class AnnotationIocLoader implements IocLoader {
         return map.containsKey(name);
     }
 
-    public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
+    public IocObject load(IocLoading loading, String name)
+            throws ObjectLoadException {
         if (has(name))
             return map.get(name);
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
 
-    private static final IocException duplicateField(Class<?> classZ, String name) {
+    private static final IocException duplicateField(Class<?> classZ,
+                                                     String name) {
         return Lang.makeThrow(IocException.class,
                               "Duplicate filed defined! Class=%s,FileName=%s",
                               classZ,

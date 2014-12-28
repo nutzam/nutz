@@ -116,7 +116,10 @@ public abstract class Disks {
                 if (paths.size() > 0)
                     paths.removeLast();
                 continue;
-            } else {
+            } if (".".equals(s)) {
+            	// pass
+            }
+            else {
                 paths.add(s);
             }
         }

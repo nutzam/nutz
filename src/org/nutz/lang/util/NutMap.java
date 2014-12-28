@@ -144,13 +144,14 @@ public class NutMap extends LinkedHashMap<String, Object> {
         return null == v ? dft : Castors.me().castTo(v, Date.class);
     }
 
-    public <T extends Enum<?>> T getEnum(String key, Class<T> classOfEnum) {
+    public <T extends Enum<T>> T getEnum(String key, Class<T> classOfEnum) {
         String s = getString(key);
         if (Strings.isBlank(s))
             return null;
-        return Castors.me().castTo(s, classOfEnum);
+        return Enum.valueOf(classOfEnum, s);
     }
 
+    @SuppressWarnings("unchecked")
     public boolean isEnum(String key, Enum<?>... eus) {
         if (null == eus || eus.length == 0)
             return false;
