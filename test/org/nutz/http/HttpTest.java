@@ -4,11 +4,24 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
+
 import org.junit.Test;
 import org.nutz.Nutz;
+import org.nutz.http.Request.METHOD;
+import org.nutz.json.Json;
 
 public class HttpTest {
 
@@ -73,5 +86,45 @@ public class HttpTest {
         assertEquals(200, response.getStatus());
         assertEquals("chunked", response.getHeader().get("Transfer-Encoding"));
         assertEquals("OK", response.getContent());
+    }
+    
+    @Test
+    public void test_getBoundary() {
+    	String boundary = Http.multipart.getBoundary("multipart/form-data; charset=utf-8; boundary=0xKhTmLbOuNdArY-1593BCBB-3B9B-433B-8BC0-4B768CDA81CF");
+    	assertEquals("0xKhTmLbOuNdArY-1593BCBB-3B9B-433B-8BC0-4B768CDA81CF", boundary);
+    	boundary = Http.multipart.getBoundary("multipart/form-data; charset=utf-8; boundary=0xKhTmLbOuNdArY-5DA6CD94-6D26-4C89-9F8D-09307F3A6F97");
+    	assertEquals("0xKhTmLbOuNdArY-5DA6CD94-6D26-4C89-9F8D-09307F3A6F97", boundary);
+    }
+    
+    @Test
+    public void test_yeelink() {
+        String key = "f7bd63b34b30303a11a36f6fd7628ef4";
+        String device_id = "12825";
+        String sensor_id = "20872";
+        Map<String, Object> data = new HashMap<String, Object>();
+        data.put("value", 31.3);
+        String url = String.format("http://api.yeelink.net/v1.1/device/%s/sensor/%s/datapoints", device_id, sensor_id);
+        System.out.println("URL="+url);
+        Request req = Request.create(url, METHOD.POST);
+        req.setData(Json.toJson(data));
+        //req.getHeader().set("U-ApiKey", key);
+        Response resp = Sender.create(req).send();
+        System.out.println(resp.getStatus());
+    }
+    
+    @Test
+    public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {
+        SSLContext sc = SSLContext.getInstance("SSL");
+        TrustManager[] tmArr={new X509TrustManager(){
+            public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException{}
+            public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException {}
+            public X509Certificate[] getAcceptedIssuers() {return null;}
+        }};
+        sc.init(null, tmArr, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        
+        String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
+        Response response = Http.get(url);
+        System.out.println(response.getContent());
     }
 }
