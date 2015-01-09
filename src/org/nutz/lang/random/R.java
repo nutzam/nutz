@@ -54,7 +54,7 @@ public abstract class R {
     }
 
     private static final char[] _UU64 = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".toCharArray();
-    private static final char[] _UU32 = "0123456789abcdefghijklmnopqrstuvwxyz".toCharArray();
+    private static final char[] _UU32 = "0123456789abcdefghijklmnopqrstuv".toCharArray();
 
     /**
      * @return 64进制表示的紧凑格式的 UUID
@@ -141,7 +141,15 @@ public abstract class R {
     }
     
     public static UUID fromUU32(String u32) {
-    	return new UUID(Long.parseUnsignedLong(u32.substring(0, 13), 32), Long.parseUnsignedLong(u32.substring(13), 32));
+    	return new UUID(parseUnsignedLong(u32.substring(0, 13), 32), parseUnsignedLong(u32.substring(13), 32));
+    }
+    
+    public static long parseUnsignedLong(String s, int radix) {
+        int len = s.length();
+        long first = Long.parseLong(s.substring(0, len - 1), radix);
+        int second = Character.digit(s.charAt(len - 1), radix);
+        long result = first * radix + second;
+        return result;
     }
     
     /**
