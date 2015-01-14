@@ -8,12 +8,15 @@ import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.impl.NutIoc;
 import org.nutz.ioc.loader.json.JsonLoader;
+import org.nutz.lang.Lang;
 
 
 public class JsonAopConfigrationTest {
 
-    //@Test
+    @Test
     public void test_jsonAop(){
+        if (!Lang.isAndroid)// 只为禁用
+            return;
         DefaultClassDefiner.init(getClass().getClassLoader());
         Ioc ioc = new NutIoc(new JsonLoader("org/nutz/ioc/aop/config/impl/jsonfile-aop.js"));
         Assert.assertTrue(ioc.getNames().length > 0);
