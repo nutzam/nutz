@@ -33,4 +33,6 @@ public @interface JsonField {
      * @see org.nutz.lang.util.Region
      */
     boolean forceString() default false;
+    
+    String dateFormat() default "";
 }

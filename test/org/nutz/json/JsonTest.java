@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,6 +23,9 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.nutz.castor.Castor;
+import org.nutz.castor.Castors;
+import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;
@@ -31,6 +35,7 @@ import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.JQ;
 import org.nutz.json.meta.JX;
+import org.nutz.json.meta.MyDate2StringCastor;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
@@ -884,5 +889,34 @@ public class JsonTest {
     	assertEquals("{age:100}", Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
     	assertEquals("{temp:15.0}", Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
     	assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f), JsonFormat.compact().setQuoteName(false)));
+    }
+    
+    @Test
+    public void test_unicode() {
+    	Map<String, String> map = new HashMap<String, String>();
+    	map.put("中文", "地球");
+    	map.put("\t", "\t");
+    	String str = Json.toJson(map, JsonFormat.full().setAutoUnicode(true));
+    	System.out.println(str);
+    	Object obj = Json.fromJson(str);
+    	System.out.println(obj);
+    }
+    
+    @Test
+    public void test_json_date() {
+        Castors cs = Castors.create();
+        cs.addCastor(MyDate2StringCastor.class);
+        NutMap map = new NutMap();
+        map.put("now", new Date());
+        System.out.println(Json.toJson(map, JsonFormat.compact()));
+        System.out.println(Json.toJson(map, JsonFormat.compact().setCastors(cs)));
+    }
+    
+    @Test
+    public void test_json_date2() {
+        NutMap map = new NutMap();
+        map.put("now", new Date());
+        System.out.println(Json.toJson(map, JsonFormat.compact()));
+        System.out.println(Json.toJson(map, JsonFormat.compact().setDateFormat("yyyy-MM-dd")));
     }
 }
