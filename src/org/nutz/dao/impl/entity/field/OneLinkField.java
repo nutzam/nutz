@@ -4,12 +4,20 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkType;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.impl.entity.info.LinkInfo;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class OneLinkField extends AbstractLinkField  {
+	
+	public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info, Class<?> target, MappingField field, MappingField key) {
+		super(entity, holder, info);
+		this.targetType = target;
+		this.hostField = field;
+		this.linkedField = key;
+	}
 
     public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
