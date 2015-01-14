@@ -152,7 +152,7 @@ public class DaoSupport {
             if (log.isWarnEnabled())
                 log.warn("Replaced a running dataSource!");
         dataSource = ds;
-        if (expert != null)
+        if (expert == null)
             expert = Jdbcs.getExpert(ds);
         pojoMaker = new NutPojoMaker(expert);
 
