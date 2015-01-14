@@ -40,6 +40,8 @@ import org.nutz.dao.impl.sql.pojo.PojoFetchObjectCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoQueryEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoQueryRecordCallback;
+import org.nutz.dao.jdbc.JdbcExpert;
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
@@ -942,5 +944,29 @@ public class NutDao extends DaoSupport implements Dao {
                    getClass().getSimpleName(),
                    _selfId);
         super.finalize();
+    }
+    
+    public void setExpert(Object obj) throws Exception {
+        if (obj == null)
+            throw new NullPointerException("expert MUST NOT NULL!!");
+        if (obj instanceof JdbcExpert) {
+            this.expert = (JdbcExpert)obj;
+        } else {
+            String name = obj.toString();
+            this.expert = Jdbcs.getExpert(name, "");
+            if (this.expert == null) {
+                if (name.contains(".")) {
+                    this.expert = (JdbcExpert) Lang.loadClass(name).newInstance();
+                } else {
+                    throw new DaoException("not such expert=" + obj);
+                }
+            }
+        }
+        DataSource ds = this.dataSource;
+        // 如果数据源比expert先设置,那么需要重新设置一次
+        if (ds != null) {
+            this.dataSource = null;
+            setDataSource(ds);
+        }
     }
 }
