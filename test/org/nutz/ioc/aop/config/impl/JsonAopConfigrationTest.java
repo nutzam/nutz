@@ -12,7 +12,7 @@ import org.nutz.ioc.loader.json.JsonLoader;
 
 public class JsonAopConfigrationTest {
 
-    @Test
+    //@Test
     public void test_jsonAop(){
         DefaultClassDefiner.init(getClass().getClassLoader());
         Ioc ioc = new NutIoc(new JsonLoader("org/nutz/ioc/aop/config/impl/jsonfile-aop.js"));
