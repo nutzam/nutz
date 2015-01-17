@@ -218,8 +218,8 @@ public abstract class Daos {
     /**
      * 查询某sql的结果条数
      */
-    public static int queryCount(Dao dao, String sql) {
-        Sql sql2 = Sqls.fetchLong("select count(1) FROM ("+sql+")");
+    public static long queryCount(Dao dao, String sql) {
+        Sql sql2 = Sqls.fetchInt("select count(1) from (" +sql + ") as _nutz_tmp_" + System.currentTimeMillis());
         dao.execute(sql2);
         return sql2.getInt();
     }
