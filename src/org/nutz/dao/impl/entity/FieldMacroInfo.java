@@ -23,6 +23,12 @@ public class FieldMacroInfo {
      * 值，可能是一个表达式或者 SQL 语句
      */
     private String value;
+    
+    public FieldMacroInfo(MacroType type, DB db, String value) {
+    	this.type = type;
+    	this.db = db;
+    	this.value = value;
+	}
 
     public FieldMacroInfo(EL el) {
         type = MacroType.EL;

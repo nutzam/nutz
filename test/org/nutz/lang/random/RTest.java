@@ -21,4 +21,14 @@ public class RTest {
         }
     }
 
+    @Test
+    public void test_uu32() {
+        for (int i = 0; i < 100000; i++) {
+            UUID uuid = UUID.randomUUID();
+            //System.out.println(uuid);
+            //System.out.println(R.UU32(uuid));
+            //System.out.println(R.fromUU32(R.UU32(uuid)));
+            assertEquals(uuid, R.fromUU32(R.UU32(uuid)));
+        }
+    }
 }

@@ -20,6 +20,22 @@ public class ManyManyLinkField extends AbstractLinkField {
     private String fromColumnName;
 
     private String toColumnName;
+    
+    public ManyManyLinkField(Entity<?> host, EntityHolder holder, LinkInfo info, Class<?> klass, String from, String to, String relation, String key) {
+    	super(host, holder, info);
+    	this.targetType = klass;
+        this.mapKey = key;
+        this.relationTableName = EntityName.create(relation);
+
+        String[] ss = Strings.splitIgnoreBlank(from, ":");
+        this.fromColumnName = ss[0];
+        String fromField = ss.length > 1 ? ss[1] : null;
+
+        ss = Strings.splitIgnoreBlank(to, ":");
+        this.toColumnName = ss[0];
+        String toField = ss.length > 1 ? ss[1] : null;
+        _make(host, fromField, toField);
+	}
 
     public ManyManyLinkField(Entity<?> host, EntityHolder holder, LinkInfo info) {
         super(host, holder, info);
@@ -34,7 +50,9 @@ public class ManyManyLinkField extends AbstractLinkField {
         ss = Strings.splitIgnoreBlank(info.manymany.to(), ":");
         this.toColumnName = ss[0];
         String toField = ss.length > 1 ? ss[1] : null;
-
+        _make(host, fromField, toField);
+    }
+    protected void _make(Entity<?> host, String fromField, String toField) {
         /*
          * 开始分析两个实体的链接字段
          */
@@ -84,7 +102,7 @@ public class ManyManyLinkField extends AbstractLinkField {
         // 最后再检查一下 ...
         if (null == hostField || null == linkedField) {
             throw Lang.makeThrow(    "Invalid @ManyMany in '%s'(%s): lack @Id or @Name",
-                                    info.name,
+                                    getName(),
                                     host.getType().getName());
         }
 

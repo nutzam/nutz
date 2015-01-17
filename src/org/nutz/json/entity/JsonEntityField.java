@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 
 import org.nutz.json.JsonField;
 import org.nutz.json.JsonIgnore;
@@ -38,6 +39,8 @@ public class JsonEntityField {
     private boolean isDouble;
     
     private boolean hasJsonIgnore;
+    
+    private SimpleDateFormat dateFormat;
 
     public boolean isForceString() {
         return forceString;
@@ -97,6 +100,9 @@ public class JsonEntityField {
         // 判断字段是否被强制输出为字符串
         if (null != jf) {
             jef.setForceString(jf.forceString());
+            if (!Strings.isBlank(jf.dateFormat())) {
+                jef.dateFormat = new SimpleDateFormat(jf.dateFormat());
+            }
         }
         
         JsonIgnore jsonIgnore = fld.getAnnotation(JsonIgnore.class);
@@ -143,5 +149,8 @@ public class JsonEntityField {
         }
         return val;
     }
-
+    
+    public SimpleDateFormat getDateFormat() {
+        return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
+    }
 }

@@ -54,6 +54,7 @@ public abstract class R {
     }
 
     private static final char[] _UU64 = "-0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz".toCharArray();
+    private static final char[] _UU32 = "0123456789abcdefghijklmnopqrstuv".toCharArray();
 
     /**
      * @return 64进制表示的紧凑格式的 UUID
@@ -121,7 +122,36 @@ public abstract class R {
         String uu16 = UU16FromUU64(uu64);
         return UUID.fromString(UU(uu16));
     }
-
+    
+    public static String UU32(UUID uu) {
+    	StringBuilder sb =  new StringBuilder();
+    	long m = uu.getMostSignificantBits();
+    	long l = uu.getLeastSignificantBits();
+    	for (int i = 0; i < 13; i++) {
+			sb.append(_UU32[(int)(m >> ((13 - i - 1)*5)) & 31]);
+		}
+    	for (int i = 0; i < 13; i++) {
+			sb.append(_UU32[(int)(l >> ((13 - i - 1))*5) & 31]);
+		}
+    	return sb.toString();
+    }
+    
+    public static String UU32() {
+    	return UU32(UUID.randomUUID());
+    }
+    
+    public static UUID fromUU32(String u32) {
+    	return new UUID(parseUnsignedLong(u32.substring(0, 13), 32), parseUnsignedLong(u32.substring(13), 32));
+    }
+    
+    public static long parseUnsignedLong(String s, int radix) {
+        int len = s.length();
+        long first = Long.parseLong(s.substring(0, len - 1), radix);
+        int second = Character.digit(s.charAt(len - 1), radix);
+        long result = first * radix + second;
+        return result;
+    }
+    
     /**
      * 将紧凑格式的 UU16 字符串变成标准 UUID 格式的字符串
      * 

@@ -1,5 +1,6 @@
 package org.nutz.json;
 
+import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
 import org.nutz.castor.Castors;
@@ -88,6 +89,8 @@ public class JsonFormat {
      * unicode编码用大写还是小写
      */
     private boolean unicodeLower;
+    
+    private SimpleDateFormat dateFormat;
 
     public boolean ignore(String name) {
         if (null != actived)
@@ -200,5 +203,16 @@ public class JsonFormat {
 		this.unicodeLower = unicodeLower;
 	}
     
+    public JsonFormat setDateFormat(String df) {
+        if (df == null) {
+            this.dateFormat = null;
+        } else {
+            this.dateFormat = new SimpleDateFormat(df);
+        }
+        return this;
+    }
     
+    public SimpleDateFormat getDateFormat() {
+        return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
+    }
 }

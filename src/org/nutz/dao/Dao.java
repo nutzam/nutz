@@ -914,4 +914,6 @@ public interface Dao {
      * @return 是否移除成功
      */
     boolean drop(String tableName);
+    
+    void setExpert(Object obj) throws Exception;
 }
