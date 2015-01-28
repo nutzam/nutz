@@ -193,8 +193,12 @@ public class NutEntity<T> implements Entity<T> {
         this.manys = new LinkFieldSet();
         this.manymanys = new LinkFieldSet();
     }
-
+    
     public T getObject(ResultSet rs, FieldMatcher matcher) {
+        return getObject(rs, matcher, null);
+    }
+
+    public T getObject(ResultSet rs, FieldMatcher matcher, String prefix) {
         // 构造时创建对象
         if (null != bornByRS)
             return bornByRS.born(rs);
@@ -203,20 +207,24 @@ public class NutEntity<T> implements Entity<T> {
         T re = bornByDefault.born(EMTRY_ARG);
         if (null == matcher)
             for (MappingField fld : fields)
-                fld.injectValue(re, rs);
+                fld.injectValue(re, rs, prefix);
         else
             for (MappingField fld : fields)
                 if (matcher.match(fld.getName()))
-                    fld.injectValue(re, rs);
+                    fld.injectValue(re, rs, prefix);
 
         // 返回构造的对象
         return re;
     }
-
+    
     public T getObject(Record rec) {
+        return getObject(rec, null);
+    }
+
+    public T getObject(Record rec, String prefix) {
         T obj = bornByDefault.born(EMTRY_ARG);
         for (MappingField fld : fields)
-            fld.injectValue(obj, rec);
+            fld.injectValue(obj, rec, prefix);
         return obj;
 
     }

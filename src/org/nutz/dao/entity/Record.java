@@ -234,6 +234,10 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     public <T> T toEntity(Entity<T> en) {
         return en.getObject(this);
     }
+    
+    public <T> T toEntity(Entity<T> en, String prefix) {
+        return en.getObject(this, prefix);
+    }
 
     /**
      * 从记录中移除所有字段与值的对应关系

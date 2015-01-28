@@ -64,17 +64,17 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 		this.adaptor = adaptor;
 	}
 
-	public void injectValue(Object obj, Record rec) {
+	public void injectValue(Object obj, Record rec, String prefix) {
 		try {
-			Object val = rec.get(columnName);
+			Object val = rec.get(prefix == null ? columnName : prefix + columnName);
 			this.setValue(obj, val);
 		}
 		catch (Exception e) {}
 	}
 
-	public void injectValue(Object obj, ResultSet rs) {
+	public void injectValue(Object obj, ResultSet rs, String prefix) {
 		try {
-			this.setValue(obj, adaptor.get(rs, columnName));
+			this.setValue(obj, adaptor.get(rs, prefix == null ? columnName : prefix + columnName));
 		}
 		catch (SQLException e) {}
 	}
