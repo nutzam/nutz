@@ -7,6 +7,7 @@ import static org.nutz.dao.util.cri.Exps.inInt;
 import static org.nutz.dao.util.cri.Exps.inLong;
 import static org.nutz.dao.util.cri.Exps.inStr;
 import static org.nutz.dao.util.cri.Exps.inSql;
+import static org.nutz.dao.util.cri.Exps.inParamsSql;
 import static org.nutz.dao.util.cri.Exps.isNull;
 import static org.nutz.dao.util.cri.Exps.like;
 import static org.nutz.dao.util.cri.Exps.lt;
@@ -102,6 +103,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup andNotInBySql(String name, String subSql, Object... args) {
         return and(inSql(name, subSql, args).not());
     }
+    
+    public SqlExpressionGroup andInByParamsSql(String name, String subSql, Object... args) {
+        return and(inParamsSql(name, subSql, args));
+    }
+
+    public SqlExpressionGroup andNotInByParamsSql(String name, String subSql, Object... args) {
+        return and(inParamsSql(name, subSql, args).not());
+    }
 
     public SqlExpressionGroup andNotIn(String name, long... ids) {
         return and(inLong(name, ids).not());
@@ -194,6 +203,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup orNotInBySql(String name, String subSql, Object... args) {
         return or(inSql(name, subSql, args).not());
+    }
+    
+    public SqlExpressionGroup orInByParamsSql(String name, String subSql, Object... args) {
+        return or(inParamsSql(name, subSql, args));
+    }
+
+    public SqlExpressionGroup orNotInByParamsSql(String name, String subSql, Object... args) {
+        return or(inParamsSql(name, subSql, args).not());
     }
 
     public SqlExpressionGroup orNotIn(String name, long... ids) {
