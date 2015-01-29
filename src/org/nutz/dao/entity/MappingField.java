@@ -19,8 +19,9 @@ public interface MappingField extends EntityField {
 	 *            被注入对象
 	 * @param rec
 	 *            结果集
+	 * @param prefix TODO
 	 */
-	void injectValue(Object obj, Record rec);
+	void injectValue(Object obj, Record rec, String prefix);
 
 	/**
 	 * 通过 resultSet 为映射字段注入值
@@ -29,8 +30,9 @@ public interface MappingField extends EntityField {
 	 *            被注入对象
 	 * @param rs
 	 *            结果集
+	 * @param prefix TODO
 	 */
-	void injectValue(Object obj, ResultSet rs);
+	void injectValue(Object obj, ResultSet rs, String prefix);
 
 	/**
 	 * @return 字段值适配器

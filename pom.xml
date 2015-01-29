@@ -5,7 +5,7 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.b.51</version>
+	<version>1.b.52</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -47,12 +47,6 @@
 		<developerConnection>scm:git:git://github.com/nutzam/nutz.git</developerConnection>
 		<url>git://github.com/nutzam/nutz.git</url>
 	</scm>
-
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
 
 	<repositories>
 	</repositories>

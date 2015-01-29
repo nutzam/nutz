@@ -6,6 +6,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkType;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.EntityHolder;
+import org.nutz.dao.impl.entity.NutEntity;
 import org.nutz.dao.impl.entity.info.LinkInfo;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
@@ -56,7 +57,14 @@ public class ManyLinkField extends AbstractLinkField  {
         }
     }
 
-    public Condition createCondition(Object host) {
+    public ManyLinkField(NutEntity<?> en, EntityHolder holder, LinkInfo info, Class<?> klass, MappingField mf, MappingField mfKey) {
+    	super(en, holder, info);
+    	this.targetType = klass;
+    	this.hostField = mf;
+    	this.linkedField = mfKey;
+	}
+
+	public Condition createCondition(Object host) {
         return null == linkedField ? null : Cnd.where(    linkedField.getName(),
                                                         "=",
                                                         hostField.getValue(host));

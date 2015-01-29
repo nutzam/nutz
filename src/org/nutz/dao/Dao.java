@@ -64,6 +64,8 @@ public interface Dao {
      * @return 对象
      */
     <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
+    
+    <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm, String prefix);
 
     /**
      * 将一个对象插入到一个数据源。
@@ -914,4 +916,6 @@ public interface Dao {
      * @return 是否移除成功
      */
     boolean drop(String tableName);
+    
+    void setExpert(Object obj) throws Exception;
 }

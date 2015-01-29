@@ -32,7 +32,7 @@ public class ByteInputStream extends InputStream {
     @Override
     public int read() throws IOException {
         if (cursor < length)
-            return bytes[cursor++];
+            return bytes[cursor++] & 0xff;
         return -1;
     }
  

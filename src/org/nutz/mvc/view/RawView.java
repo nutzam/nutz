@@ -75,7 +75,7 @@ public class RawView implements View {
 			throws Throwable {
 		// 如果用户自行设置了,那就不要再设置了!
 		if (resp.getContentType() == null) {
-			if (obj != null && obj instanceof BufferedImage && "text/plain".equals(contentType)) {
+			if (!Lang.isAndroid && obj != null && obj instanceof BufferedImage && "text/plain".equals(contentType)) {
 				contentType = contentTypeMap.get("png");
 			}
 			resp.setContentType(contentType);
@@ -83,7 +83,7 @@ public class RawView implements View {
 		if (obj == null)
 			return;
 		// 图片?难道是验证码?
-		if (obj instanceof BufferedImage) {
+		if (!Lang.isAndroid && obj instanceof BufferedImage) {
 			OutputStream out = resp.getOutputStream();
 			if (contentType.contains("png"))
 				ImageIO.write((BufferedImage)obj, "png", out);
