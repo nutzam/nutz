@@ -16,11 +16,12 @@ import java.util.Map;
 
 /**
  * 将整个 HTTP 请求作为名值对来处理
- *
+ * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author juqkai(juqkai@gmail.com)
  */
 public class PairAdaptor extends AbstractAdaptor {
+
     private static final Log log = Logs.get();
 
     protected ParamInjector evalInjectorBy(Type type, Param param) {
@@ -30,8 +31,8 @@ public class PairAdaptor extends AbstractAdaptor {
         if (clazz == null) {
             if (log.isWarnEnabled())
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s",
-                        type,
-                        param);
+                          type,
+                          param);
             return null;
         }
 
@@ -59,6 +60,13 @@ public class PairAdaptor extends AbstractAdaptor {
             return new ArrayInjector(pm, clazz, paramTypes);
 
         // Name-value
+        return getNameInjector(pm, datefmt, clazz, paramTypes);
+    }
+
+    protected ParamInjector getNameInjector(String pm,
+                                            String datefmt,
+                                            Class<?> clazz,
+                                            Type[] paramTypes) {
         return new NameInjector(pm, datefmt, clazz, paramTypes);
     }
 

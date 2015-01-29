@@ -98,7 +98,7 @@ public class HttpTest {
     
     @Test
     public void test_yeelink() {
-        String key = "f7bd63b34b30303a11a36f6fd7628ef4";
+        //String key = "f7bd63b34b30303a11a36f6fd7628ef4";
         String device_id = "12825";
         String sensor_id = "20872";
         Map<String, Object> data = new HashMap<String, Object>();
