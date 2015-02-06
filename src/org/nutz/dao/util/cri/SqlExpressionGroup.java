@@ -19,6 +19,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 组合一组表达式，只能增加，不能减少
@@ -28,6 +30,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     private List<SqlExpression> exps;
 
     private boolean top;
+    
+    private static final Log log = Logs.get();
 
     public SqlExpressionGroup() {
         exps = new ArrayList<SqlExpression>(); // 默认就是10个，能放5个条件，够了吧
@@ -39,8 +43,11 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpressionGroup and(SqlExpression exp) {
-    	if (exp == null)
-    		throw new NullPointerException("exp is null!");
+    	if (exp == null) {
+    		if (log.isTraceEnabled())
+    			log.trace("ignore null SqlExpression");
+    		return this;
+    	}
         if (!exps.isEmpty())
             _add(new Static("AND"));
         return _add(exp);
