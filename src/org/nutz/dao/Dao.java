@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Each;
 
@@ -27,6 +28,8 @@ public interface Dao {
      * @see org.nutz.dao.SqlManager
      */
     SqlManager sqls();
+    
+    PojoMaker pojoMaker();
 
     /**
      * 执行一组 Sql，这些 Sql 将会一起被提交
