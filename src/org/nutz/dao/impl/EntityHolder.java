@@ -183,4 +183,7 @@ public class EntityHolder {
         return getEntity(first.getClass());
     }
 
+    public boolean hasType(String typeName) {
+    	return map.containsKey(typeName);
+    }
 }

@@ -48,12 +48,6 @@
 		<url>git://github.com/nutzam/nutz.git</url>
 	</scm>
 
-	<parent>
-		<groupId>org.sonatype.oss</groupId>
-		<artifactId>oss-parent</artifactId>
-		<version>7</version>
-	</parent>
-
 	<repositories>
 	</repositories>
 	<dependencies>

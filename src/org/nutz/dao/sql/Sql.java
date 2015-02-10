@@ -3,7 +3,6 @@ package org.nutz.dao.sql;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.jdbc.ValueAdaptor;
-import org.nutz.dao.pager.Pager;
 
 /**
  * 封装了自定义 SQL
@@ -99,12 +98,4 @@ public interface Sql extends DaoStatement {
     public void setSourceSql(String sql) ;
     
     public String getSourceSql() ;
-    
-    /**
-     * 为自定义SQL设置Pager
-     * <p/><b>如果设置为非空值,那么将附加上分页语句!!</b>
-     * <p/><b>由于不带SQL语法分析,无法探知用户是否已经自行添加分页语句!!</b>
-     * <p/><b>使用这个功能,你就不要自己在SQL里面写limit了!!!</b>
-     */
-    public DaoStatement setPager(Pager pager);
 }

@@ -124,7 +124,11 @@ public class NutDao extends DaoSupport implements Dao {
     // ==========================================================
 
     public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm) {
-        return holder.getEntity(classOfT).getObject(rs, fm);
+        return getObject(classOfT, rs, fm, null);
+    }
+    
+    public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm, String prefix) {
+        return holder.getEntity(classOfT).getObject(rs, fm, prefix);
     }
 
     public <T> T insert(final T obj) {

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -70,11 +71,18 @@ public class AnnotationEntityMaker implements EntityMaker {
     private JdbcExpert expert;
 
     private EntityHolder holder;
-
-    public AnnotationEntityMaker(DataSource datasource, JdbcExpert expert, EntityHolder holder) {
-        this.datasource = datasource;
+    
+    protected AnnotationEntityMaker() {
+	}
+    
+    public void init(DataSource datasource, JdbcExpert expert, EntityHolder holder) {
+    	this.datasource = datasource;
         this.expert = expert;
         this.holder = holder;
+    }
+
+    public AnnotationEntityMaker(DataSource datasource, JdbcExpert expert, EntityHolder holder) {
+        init(datasource, expert, holder);
     }
 
     public <T> Entity<T> make(Class<T> type) {
@@ -147,6 +155,8 @@ public class AnnotationEntityMaker implements EntityMaker {
         List<LinkInfo> manys = new ArrayList<LinkInfo>();
         List<LinkInfo> manymanys = new ArrayList<LinkInfo>();
 
+        String[] _tmp = ti.annPK == null ? null : ti.annPK.value();
+        List<String> pks = _tmp == null ? new ArrayList<String>() : Arrays.asList(_tmp);
         // 循环所有的字段，查找有没有数据库映射字段
         for (Field field : en.getMirror().getFields()) {
             // '@One'
@@ -164,7 +174,8 @@ public class AnnotationEntityMaker implements EntityMaker {
             // 应该忽略
             else if ((Modifier.isTransient(field.getModifiers()) && null == field.getAnnotation(Column.class))
                      || (shouldUseColumn && (null == field.getAnnotation(Column.class)
-                                             && null == field.getAnnotation(Id.class) && null == field.getAnnotation(Name.class)))) {
+                                             && null == field.getAnnotation(Id.class) && null == field.getAnnotation(Name.class)))
+                                             && !pks.contains(field.getName())) {
                 continue;
             }
             // '@Column'

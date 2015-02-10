@@ -64,6 +64,11 @@ public class NutDaoExecutor implements DaoExecutor {
             // case INSERT:
             // 见鬼了，未知类型，也当作普通 SQL 运行吧，见 Issue#13
             default:
+            	if (st.isForceExecQuery()) {
+            		// run as select
+            		_runSelect(conn, st);
+                    break;
+            	}
                 if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
                     log.info("Can't indentify SQL type :   " + st);
                 paramMatrix = st.getParamMatrix();

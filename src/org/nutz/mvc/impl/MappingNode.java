@@ -114,6 +114,9 @@ public class MappingNode<T> {
         // 最后看看是不是有 '**' 匹配
         if (null != remain) {
             String ph = Lang.concat(off, ss.length - off, "/", ss).toString();
+            if (!Strings.isBlank(ac.getSuffix())) {
+                ph += "." + ac.getSuffix();
+            }
             ac.getPathArgs().add(ph);
             return remain;
         }
@@ -135,6 +138,10 @@ public class MappingNode<T> {
     }
 
     public T get(ActionContext ac, String path) {
+        return get(ac, path, null);
+    }
+
+    public T get(ActionContext ac, String path, String suffix) {
         ac.setPath(path);
         ac.setPathArgs(new LinkedList<String>());
         String[] ss = Strings.splitIgnoreBlank(path, "/");

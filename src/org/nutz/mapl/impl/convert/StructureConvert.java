@@ -1,7 +1,7 @@
 package org.nutz.mapl.impl.convert;
 
 import java.io.Reader;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +62,7 @@ import org.nutz.mapl.impl.MaplRebuild;
  */
 public class StructureConvert extends MaplEach implements MaplConvert{
     //关系
-    private Map<String, List<String>> relation = new HashMap<String, List<String>>();
+    private Map<String, List<String>> relation = new LinkedHashMap<String, List<String>>();
     
     private MaplRebuild structure = new MaplRebuild();
     

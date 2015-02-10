@@ -134,7 +134,8 @@ public class OptParse implements Parse {
             return new QuestionSelectOpt();
         
         case '.':
-            if(!Character.isJavaIdentifierStart(exp.peek(1))){
+        	char p = exp.peek(1);
+        	if (p != '\'' && p != '"' && !Character.isJavaIdentifierStart(p)){
                 return nullobj;
             }
             exp.poll();

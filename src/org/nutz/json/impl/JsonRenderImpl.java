@@ -278,6 +278,8 @@ public class JsonRenderImpl implements JsonRender {
                         else {
                             value = value2string(jef, value);
                         }
+                    } else if (jef.hasDateFormat() && null != value && value instanceof Date) {
+                        value = jef.getDateFormat().format((Date)value);
                     }
 
                     // 加入输出列表 ...

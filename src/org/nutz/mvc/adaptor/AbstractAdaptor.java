@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -58,11 +59,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
     protected Method method;
     
     protected Class<?>[] argTypes;
+    
+    protected String[] defaultValues;
 
     public void init(Method method) {
         this.method = method;
         argTypes = method.getParameterTypes();
         injs = new ParamInjector[argTypes.length];
+        defaultValues = new String[argTypes.length];
         Annotation[][] annss = method.getParameterAnnotations();
         Type[] types = method.getGenericParameterTypes();
         for (int i = 0; i < annss.length; i++) {
@@ -116,6 +120,11 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             // 这个设计是因为了 "路径参数"
             if (null == injs[i]) {
                 injs[i] = paramNameInject(method, i);
+            }
+            if (param != null) {
+            	String tmp = param.df();
+            	if (tmp != null && tmp.equals("//NOT EXIST IN//"))
+            		defaultValues[i] = tmp;
             }
         }
     }
@@ -204,6 +213,15 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 if (log.isInfoEnabled())
                     log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue", e);
                 errCtx.setAdaptorError(e, this);
+                for (int i = 0; i < args.length - 1; i++) {
+                	if (args[i] == null) {
+                    	if (defaultValues[i] != null) {
+                    		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+                    	} else if (argTypes[i].isPrimitive()) {
+                    		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+                    	}
+                    }
+				}
                 args[args.length - 1] = errCtx;
                 return args;
             }
@@ -228,8 +246,12 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 } else
                     throw Lang.wrapThrow(e);
             }
-            if (args[i] == null && argTypes[i].isPrimitive()) {
-                args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+            if (args[i] == null) {
+            	if (defaultValues[i] != null) {
+            		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+            	} else if (argTypes[i].isPrimitive()) {
+            		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+            	}
             }
         }
 
@@ -270,7 +292,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 return new NameInjector(names.get(index),
                                         null,
                                         method.getParameterTypes()[index],
-                                        null);
+                                        null, null);
             else if (log.isInfoEnabled())
                 log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
                           index,
