@@ -278,6 +278,15 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup orNotLike(String name, String value, String left, String right, boolean ignoreCase) {
         return or(like(name, value, ignoreCase).left(left).right(right).not());
     }
+    
+    //------------------ between
+    public SqlExpressionGroup andBetween(String name, Object min, Object max) {
+    	return and(new BetweenExpression(name, min, max));
+    }
+    
+    public SqlExpressionGroup orBetween(String name, Object min, Object max) {
+    	return or(new BetweenExpression(name, min, max));
+    }
 
     @Override
     public void setPojo(Pojo pojo) {
