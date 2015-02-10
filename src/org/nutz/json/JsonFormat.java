@@ -41,6 +41,13 @@ public class JsonFormat {
     public static JsonFormat forLook() {
         return new JsonFormat(false).setQuoteName(false).setIgnoreNull(true);
     }
+    
+    /**
+     * 不换行,不忽略控制
+     */
+    public static JsonFormat tidy() {
+    	return new JsonFormat(true).setIgnoreNull(false);
+    }
 
     public JsonFormat() {
         this(true);

@@ -36,16 +36,17 @@ public class DefaultViewMaker implements ViewMaker {
             else {
                 // 除高级的json format定义之外,也支持简单的缩写
                 if (value.charAt(0) == '{')
-                    return new UTF8JsonView(Json.fromJson(JsonFormat.class,
-                                                          value));
+                    return new UTF8JsonView(Json.fromJson(JsonFormat.class, value));
                 else if ("nice".equals(value))
-                    return UTF8JsonView.NICE;
+                    return new UTF8JsonView(JsonFormat.nice());
                 else if ("forlook".equals(value))
-                    return UTF8JsonView.FORLOOK;
+                    return new UTF8JsonView(JsonFormat.forLook());
                 else if ("full".equals(value))
-                    return UTF8JsonView.FULL;
+                    return new UTF8JsonView(JsonFormat.full());
                 else if ("compact".equals(value))
-                    return UTF8JsonView.COMPACT;
+                    return new UTF8JsonView(JsonFormat.compact());
+                else if ("tidy".equals(value))
+                	return new UTF8JsonView(JsonFormat.tidy());
                 else
                     throw new IllegalArgumentException("unkown json view format : "
                                                        + value);
