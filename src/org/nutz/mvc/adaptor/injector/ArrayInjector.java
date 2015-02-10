@@ -13,8 +13,12 @@ import org.nutz.lang.Lang;
 
 public class ArrayInjector extends NameInjector {
 
-    public ArrayInjector(String name, Class<?> type, Type[] paramTypes) {
-        super(name, null, type, paramTypes);
+    public ArrayInjector(String name,
+            String datefmt,
+            Type type,
+            Type[] paramTypes,
+            String defaultValue) {
+        super(name, datefmt, type, paramTypes, defaultValue);
     }
 
     @SuppressWarnings("unchecked")
@@ -28,7 +32,7 @@ public class ArrayInjector extends NameInjector {
             if (refer instanceof Map) {
                 value = ((Map<String, Object>) refer).get(name);
                 if (value != null && value.getClass().isArray())
-                    return Lang.array2array(value, type.getComponentType());
+                    return Lang.array2array(value, klass.getComponentType());
             }
             if (value != null)
                 return convertMe(value);
@@ -42,17 +46,17 @@ public class ArrayInjector extends NameInjector {
             // 如果只有一个值，那么试图直接转换
             return convertMe(values[0]);
         }
-        return Lang.array2array(values, type.getComponentType());
+        return Lang.array2array(values, klass.getComponentType());
     }
 
     protected Object convertMe(Object value) {
         try {
-            return Castors.me().castTo(value, type);
+            return Castors.me().castTo(value, klass);
         }
         // zzh: 如果不成，按数组转换
         catch (Exception e) {
-            Object re = Array.newInstance(type.getComponentType(), 1);
-            Object v = Castors.me().castTo(value, type.getComponentType());
+            Object re = Array.newInstance(klass.getComponentType(), 1);
+            Object v = Castors.me().castTo(value, klass.getComponentType());
             Array.set(re, 0, v);
             return re;
         }

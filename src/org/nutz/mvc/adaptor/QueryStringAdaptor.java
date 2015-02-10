@@ -10,12 +10,9 @@ import java.lang.reflect.Type;
  */
 public class QueryStringAdaptor extends PairAdaptor {
 
-    @Override
-    protected ParamInjector getNameInjector(String pm,
-                                            String datefmt,
-                                            Class<?> clazz,
-                                            Type[] paramTypes) {
-        return new QueryStringNameInjector(pm, datefmt, clazz, paramTypes);
+    protected ParamInjector getNameInjector(String pm, String datefmt,
+    		Type type, Type[] paramTypes, String defaultValue) {
+    	return new QueryStringNameInjector(pm, datefmt, type, paramTypes, defaultValue);
     }
 
 }

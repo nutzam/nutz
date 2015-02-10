@@ -83,4 +83,10 @@ public class AdaptorTestModule extends BaseWebappTest {
         TestCase.assertEquals(123456.0, map.get("abc").doubleValue());
         System.out.println(map.get("abc"));
     }
+    
+    @At("/default_value")
+    @Ok("raw")
+    public int default_value(@Param(value="abc", df="123456")int value) {
+    	return value;
+    }
 }

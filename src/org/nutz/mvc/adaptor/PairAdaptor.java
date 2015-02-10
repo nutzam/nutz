@@ -42,6 +42,10 @@ public class PairAdaptor extends AbstractAdaptor {
 
         if (null == param)
             return null;// 让超类来处理吧,我不管了!!
+
+        String defaultValue = null;
+        if (param.df() != null && !"//NOT EXIST IN//".equals(param.df()))
+        	defaultValue = param.df();
         String pm = param.value();
         String datefmt = param.dfmt();
         // POJO
@@ -57,17 +61,18 @@ public class PairAdaptor extends AbstractAdaptor {
         }
         // POJO[]
         else if (clazz.isArray())
-            return new ArrayInjector(pm, clazz, paramTypes);
+            return new ArrayInjector(pm, null, type, paramTypes, defaultValue);
 
         // Name-value
-        return getNameInjector(pm, datefmt, clazz, paramTypes);
+        return getNameInjector(pm, datefmt, type, paramTypes, defaultValue);
     }
 
     protected ParamInjector getNameInjector(String pm,
                                             String datefmt,
-                                            Class<?> clazz,
-                                            Type[] paramTypes) {
-        return new NameInjector(pm, datefmt, clazz, paramTypes);
+                                            Type type,
+                                            Type[] paramTypes,
+                                            String defaultValue) {
+        return new NameInjector(pm, datefmt, type, paramTypes, defaultValue);
     }
 
 }
