@@ -258,7 +258,7 @@ public class DaoSupport {
     	maker.init(dataSource, expert, holder);
     }
     
-    public PojoMaker getPojoMaker() {
+    public PojoMaker pojoMaker() {
 		return pojoMaker;
 	}
 }
