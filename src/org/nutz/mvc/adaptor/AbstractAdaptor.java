@@ -213,6 +213,15 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 if (log.isInfoEnabled())
                     log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue", e);
                 errCtx.setAdaptorError(e, this);
+                for (int i = 0; i < args.length - 1; i++) {
+                	if (args[i] == null) {
+                    	if (defaultValues[i] != null) {
+                    		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+                    	} else if (argTypes[i].isPrimitive()) {
+                    		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+                    	}
+                    }
+				}
                 args[args.length - 1] = errCtx;
                 return args;
             }
@@ -228,7 +237,6 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 value = obj;
             }
             try {
-            	System.out.println(injs[i]);
                 args[i] = injs[i].get(sc, req, resp, value);
             }
             catch (Throwable e) {
