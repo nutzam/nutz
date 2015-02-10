@@ -13,7 +13,9 @@ public interface Parse {
     /**
      * 空对象, 这样更好判断空值
      */
-    static final Object nullobj = new Object();
+    static final Object nullobj = new Object() {
+    	public String toString() {return "/*nutz-el-nullobj*/";}
+    };
     /**
      * 提取队列顶部元素<br>
      * 特别注意,实现本方法的子程序只应该读取自己要转换的数据,不是自己要使用的数据一律不做取操作.<br>
