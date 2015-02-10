@@ -33,8 +33,6 @@ public class NutSql extends NutStatement implements Sql {
     private ValueAdaptor[] adaptors;
 
     private ValueAdaptor[] clientAdaptors;
-    
-    private boolean forceExecQuery;
 
     private NutSql() {
         super();
@@ -244,13 +242,5 @@ public class NutSql extends NutStatement implements Sql {
     
     public String getSourceSql() {
         return this.literal.toString();
-    }
-    
-    public void forceExecQuery() {
-    	this.forceExecQuery = true;
-    }
-    
-    public boolean isForceExecQuery() {
-    	return forceExecQuery;
     }
 }

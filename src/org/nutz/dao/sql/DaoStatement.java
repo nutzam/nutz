@@ -219,6 +219,12 @@ public interface DaoStatement {
      */
     void onAfter(Connection conn, ResultSet rs) throws SQLException;
 
+    /**
+     * 为自定义SQL设置Pager
+     * <p/><b>如果设置为非空值,那么将附加上分页语句!!</b>
+     * <p/><b>由于不带SQL语法分析,无法探知用户是否已经自行添加分页语句!!</b>
+     * <p/><b>使用这个功能,你就不要自己在SQL里面写limit了!!!</b>
+     */
     DaoStatement setPager(Pager pager);
     
     /**
