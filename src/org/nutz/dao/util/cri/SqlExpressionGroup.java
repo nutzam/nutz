@@ -125,9 +125,25 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup andLike(String name, String value) {
         return and(like(name, value));
     }
+    
+    public SqlExpressionGroup andLikeL(String name, String value) {
+        return and(like(name, value).left(null));
+    }
+    
+    public SqlExpressionGroup andLikeR(String name, String value) {
+        return and(like(name, value).right(null));
+    }
 
     public SqlExpressionGroup andNotLike(String name, String value) {
         return and(like(name, value).not());
+    }
+
+    public SqlExpressionGroup andNotLikeL(String name, String value) {
+        return and(like(name, value).left(null).not());
+    }
+
+    public SqlExpressionGroup andNotLikeR(String name, String value) {
+        return and(like(name, value).right(null).not());
     }
 
     public SqlExpressionGroup andLike(String name, String value, boolean ignoreCase) {
@@ -136,6 +152,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup andNotLike(String name, String value, boolean ignoreCase) {
         return and(like(name, value, ignoreCase).not());
+    }
+    
+    public SqlExpressionGroup andLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return and(like(name, value, ignoreCase).left(left).right(right));
+    }
+    
+    public SqlExpressionGroup andNotLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return and(like(name, value, ignoreCase).left(left).right(right).not());
     }
 
     public SqlExpressionGroup or(String name, String op, Object value) {
@@ -218,9 +242,25 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup orLike(String name, String value) {
         return or(like(name, value));
     }
+    
+    public SqlExpressionGroup orLikeL(String name, String value) {
+        return or(like(name, value).left(null));
+    }
+    
+    public SqlExpressionGroup orLikeR(String name, String value) {
+        return or(like(name, value).right(null));
+    }
 
     public SqlExpressionGroup orNotLike(String name, String value) {
         return or(like(name, value).not());
+    }
+
+    public SqlExpressionGroup orNotLikeL(String name, String value) {
+        return or(like(name, value).left(null).not());
+    }
+
+    public SqlExpressionGroup orNotLikeR(String name, String value) {
+        return or(like(name, value).right(null).not());
     }
 
     public SqlExpressionGroup orLike(String name, String value, boolean ignoreCase) {
@@ -229,6 +269,14 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup orNotLike(String name, String value, boolean ignoreCase) {
         return or(like(name, value, ignoreCase).not());
+    }
+    
+    public SqlExpressionGroup orLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return or(like(name, value, ignoreCase).left(left).right(right));
+    }
+    
+    public SqlExpressionGroup orNotLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return or(like(name, value, ignoreCase).left(left).right(right).not());
     }
 
     @Override
