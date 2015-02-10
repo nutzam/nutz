@@ -1,5 +1,10 @@
 package org.nutz.dao.entity;
 
+import javax.sql.DataSource;
+
+import org.nutz.dao.impl.EntityHolder;
+import org.nutz.dao.jdbc.JdbcExpert;
+
 /**
  * Entity 的工厂接口
  * 
@@ -17,4 +22,5 @@ public interface EntityMaker {
      */
     <T> Entity<T> make(Class<T> type);
 
+    void init(DataSource datasource, JdbcExpert expert, EntityHolder holder);
 }
