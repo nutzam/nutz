@@ -196,9 +196,10 @@ public class CastorTest {
         assertEquals(45, (int) Castors.me().castTo("45", int.class));
     }
 
+    @Test
     public void testString2Email() throws FailToCastObjectException {
         Email em = new Email("zozoh@263.net");
-        assertEquals(em, "zozoh@263.net");
+        assertEquals(em.toString(), "zozoh@263.net");
     }
 
     @Test
