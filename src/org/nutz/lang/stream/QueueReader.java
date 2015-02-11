@@ -43,7 +43,7 @@ public class QueueReader extends Reader{
                 return sb.toString();
             default:
                 for(Character c : ends){
-                    if(c.equals(peek())){
+                    if(c.charValue() == peek()){
                         return sb.toString();
                     }
                 }

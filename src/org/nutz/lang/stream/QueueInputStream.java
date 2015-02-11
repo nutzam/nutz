@@ -46,7 +46,7 @@ public class QueueInputStream extends InputStream{
                 return sb.toString();
             default:
                 for(Character c : ends){
-                    if(c.equals(peek())){
+                    if(c.charValue() == peek()){
                         return sb.toString();
                     }
                 }
