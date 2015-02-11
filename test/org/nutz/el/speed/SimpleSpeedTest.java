@@ -1,5 +1,6 @@
 package org.nutz.el.speed;
 
+import org.junit.Test;
 import org.nutz.el.El;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
@@ -21,7 +22,8 @@ public class SimpleSpeedTest {
         return i % 13;
     }
 
-    public static void main(String[] args) throws SecurityException, NoSuchMethodException {
+    @Test
+    public void test_speed() throws SecurityException, NoSuchMethodException {
         final SimpleSpeedTest z = new SimpleSpeedTest();
         final String elstr = "num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i)";
         final Context context = Lang.context("{num:0}");

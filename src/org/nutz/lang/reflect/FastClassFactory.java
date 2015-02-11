@@ -205,13 +205,6 @@ public final class FastClassFactory implements Opcodes {
         }
         return xClass;
     }
-
-    // public static void main(String[] args) throws Throwable {
-    // ASMifierClassVisitor.main(new String[]{"org.nutz.lang.reflect.XXX"});
-    // //
-    // System.out.println(Type.getObjectType(AbstractFastClass.class.getName().replace('.',
-    // // '/')));
-    // }
 }
 
 class Util {
