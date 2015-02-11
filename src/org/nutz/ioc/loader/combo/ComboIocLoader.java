@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.aop.interceptor.ioc.TransIocLoader;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
@@ -36,7 +37,7 @@ public class ComboIocLoader implements IocLoader {
      * 这个构造方法需要一组特殊的参数
      * <p/>
      * 第一种,以*开头,后面接类名, 如 <code>*org.nutz.ioc.loader.json.JsonLoader</code>
-     * <p/>1.b.45版开始支持类别名: js , json, xml, annotation 分别对应其加载类
+     * <p/>1.b.45版开始支持类别名: js , json, xml, annotation trans分别对应其加载类
      * <p/>
      * 第二种,为具体的参数
      * <p/>
@@ -59,6 +60,9 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("json", JsonLoader.class);
             loaders.put("xml", XmlIocLoader.class);
             loaders.put("annotation", AnnotationIocLoader.class);
+            loaders.put("anno", AnnotationIocLoader.class);
+            loaders.put("trans", TransIocLoader.class);
+            loaders.put("tx", TransIocLoader.class);
     	}
         ArrayList<String> argsList = null;
         String currentClassName = null;

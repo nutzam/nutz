@@ -44,11 +44,12 @@
 	                 "service.js", 
 	                 "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
 	                 "com.myapp.module",
-	                 "com.myapp.service"
+	                 "com.myapp.service",
+	                 "*tx"
 			 )); 
 	}}}
-	如上面的例子，组合加载器，组合了两个 Ioc 加载器，一个是 JsonLoader，一个是
-	AnnotationIocLoader。 
+	如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是
+	AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 
 	
 	ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "{#00A;* *}" 开头，
 	则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个
@@ -105,6 +106,7 @@
 	 * JsonLoader
 	 * AnnotationIocLoader
 	 * MapLoader
+	 * TransIocLoader
 	 * 其他任何你自己实现的 IocLoader
 
 ----------------------------------------------------------------------------------------
@@ -117,6 +119,9 @@
 	json       --> org.nutz.ioc.loader.json.JsonLoader
     xml        --> org.nutz.ioc.loader.xml.XmlIocLoader
     annotation --> org.nutz.ioc.loader.annotation.AnnotationIocLoader
+    anno       --> org.nutz.ioc.loader.annotation.AnnotationIocLoader
+    tx         --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
+    trans      --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
 	}}}
 	
 	本小节开头的配置就可以写成: 

@@ -12,7 +12,8 @@ import org.nutz.mvc.ioc.provider.ComboIocProvider;
 @Fail("json")
 @IocBy(type=ComboIocProvider.class,
         args={"*org.nutz.ioc.loader.json.JsonLoader","org/nutz/mvc/testapp/classes/ioc",
-              "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","org.nutz.mvc.testapp.classes"})
+              "*org.nutz.ioc.loader.annotation.AnnotationIocLoader","org.nutz.mvc.testapp.classes",
+              "*tx"})
 @Localization("org/nutz/mvc/testapp/classes/message/")
 public class MainModule {
 
