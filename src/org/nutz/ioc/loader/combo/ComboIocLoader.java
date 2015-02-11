@@ -1,6 +1,7 @@
 package org.nutz.ioc.loader.combo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -74,7 +75,7 @@ public class ComboIocLoader implements IocLoader {
                 argsList = new ArrayList<String>();
             } else {
             	if (argsList == null) {
-            		throw new IllegalArgumentException("ioc args without Loader ClassName. " + args);
+            		throw new IllegalArgumentException("ioc args without Loader ClassName. " + Arrays.toString(args));
             	}
             	argsList.add(str);
             }
