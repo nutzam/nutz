@@ -10,6 +10,7 @@ import org.nutz.ioc.AllIoc;
 import org.nutz.json.AllJson;
 import org.nutz.lang.AllLang;
 import org.nutz.log.AllLog;
+import org.nutz.mapl.MaplTest;
 import org.nutz.mvc.AllMvc;
 import org.nutz.plugin.AllPlugin;
 import org.nutz.resource.AllResourceScan;
@@ -26,6 +27,7 @@ import org.nutz.resource.AllResourceScan;
                         AllMvc.class,
                         AllEl.class,
                         AllLog.class,
-                        AllPlugin.class
+                        AllPlugin.class,
+                        MaplTest.class
                         })
 public class AllWithoutDB {}
