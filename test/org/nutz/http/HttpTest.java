@@ -127,4 +127,20 @@ public class HttpTest {
         Response response = Http.get(url);
         System.out.println(response.getContent());
     }
+    
+    @Test
+    public void test_360safe() throws Throwable {
+    	String url = "https://openapi.360.cn/user/me.json?access_token=1323463692b46eacce7412f3b65877cc54fc6d538db5619b20&fields=id,name,avatar,nick";
+    	SSLContext sc = SSLContext.getInstance("SSL");
+        TrustManager[] tmArr={new X509TrustManager(){
+            public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException{}
+            public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException {}
+            public X509Certificate[] getAcceptedIssuers() {return null;}
+        }};
+        sc.init(null, tmArr, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        
+        Response response = Http.get(url);
+        System.out.println(response.getContent());
+    }
 }
