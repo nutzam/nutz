@@ -27,7 +27,7 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
     // private static String COMMENT_TABLE =
     // "EXECUTE sp_updateextendedproperty N'Description', '$tableComment', N'user', N'dbo', N'table', N'$table', NULL, NULL";
 
-    private static String COMMENT_COLUMN = "EXECUTE sp_addextendedproperty N'Description', '$columnComment', N'user', N'dbo', N'table', N'$table', N'column', N'$column'";
+    private static String COMMENT_COLUMN = "EXECUTE sp_addextendedproperty N'MS_Description', '$columnComment', N'user', N'dbo', N'table', N'$table', N'column', N'$column'";
 
     public Sqlserver2005JdbcExpert(JdbcExpertConfigFile conf) {
         super(conf);

@@ -17,10 +17,11 @@ import org.nutz.mvc.adaptor.injector.NameInjector;
 public class QueryStringNameInjector extends NameInjector {
 
     public QueryStringNameInjector(String name,
-                                   String datefmt,
-                                   Class<?> type,
-                                   Type[] paramTypes) {
-        super(name, datefmt, type, paramTypes);
+            String datefmt,
+            Type type,
+            Type[] paramTypes,
+            String defaultValue) {
+        super(name, datefmt, type, paramTypes, defaultValue);
     }
 
     @Override
@@ -55,10 +56,10 @@ public class QueryStringNameInjector extends NameInjector {
         // 不为 null，那么必然要转换成日期
         if (null != dfmt && params != null) {
             Object o = Times.parseq(dfmt, params);
-            return Castors.me().castTo(o, type);
+            return Castors.me().castTo(o, klass);
         }
         // 默认用转换器转换
-        return Castors.me().castTo(params, type);
+        return Castors.me().castTo(params, klass);
     }
 
 }

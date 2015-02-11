@@ -5,7 +5,17 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import org.nutz.http.Request.METHOD;
 import org.nutz.lang.Encoding;
@@ -141,5 +151,27 @@ public class Http {
 
     public static void setProxySwitcher(ProxySwitcher proxySwitcher) {
         Http.proxySwitcher = proxySwitcher;
+    }
+    
+    /**
+     * 禁用JVM的https证书验证机制, 例如访问12306, 360 openapi之类的自签名证书
+     * @return 禁用成功与否
+     */
+    public static boolean disableJvmHttpsCheck() {
+    	try {
+			SSLContext sc = SSLContext.getInstance("SSL");
+			TrustManager[] tmArr={new X509TrustManager(){
+			    public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException{}
+			    public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException {}
+			    public X509Certificate[] getAcceptedIssuers() {return null;}
+			}};
+			sc.init(null, tmArr, new SecureRandom());
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			return true;
+		} catch (KeyManagementException e) {
+			return false;
+		} catch (NoSuchAlgorithmException e) {
+			return false;
+		}
     }
 }

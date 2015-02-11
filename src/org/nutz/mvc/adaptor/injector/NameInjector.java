@@ -22,24 +22,29 @@ public class NameInjector implements ParamInjector {
     protected String name;
     protected DateFormat dfmt;
 
-    protected Class<?> type;
+    protected Class<?> klass;
+    protected Type type;
     protected Type[] paramTypes;
+    protected String defaultValue;
 
     public NameInjector(String name,
                         String datefmt,
-                        Class<?> type,
-                        Type[] paramTypes) {
+                        Type type,
+                        Type[] paramTypes,
+                        String defaultValue) {
+        this.klass = Mirror.me(type).getType();
         if (null == name)
             throw Lang.makeThrow("Can not accept null as name, type '%s'",
-                                 type.getName());
+                                 klass.getName());
         this.name = name;
-        if (Strings.isBlank(datefmt) || !Mirror.me(type).isDateTimeLike()) {
+        if (Strings.isBlank(datefmt) || !Mirror.me(klass).isDateTimeLike()) {
             dfmt = null;
         } else {
             dfmt = new SimpleDateFormat(datefmt);
         }
         this.type = type;
         this.paramTypes = paramTypes;
+        this.defaultValue = defaultValue;
     }
 
     /**
@@ -85,11 +90,11 @@ public class NameInjector implements ParamInjector {
                         throw Lang.wrapThrow(e);
                     }
                 }
-                return Castors.me().castTo(value, type);
+                return Castors.me().castTo(value, klass);
             }
             // 普通对象，直接转
             else {
-                return Castors.me().castTo(refer, type);
+                return Castors.me().castTo(refer, klass);
             }
         /*
          * 直接从 http params 里取
@@ -102,9 +107,13 @@ public class NameInjector implements ParamInjector {
         // 不为 null，那么必然要转换成日期
         if (null != dfmt && params != null && params.length > 0) {
             Object o = Times.parseq(dfmt, params[0]);
-            return Castors.me().castTo(o, type);
+            return Castors.me().castTo(o, klass);
+        }
+        if (params == null || params.length == 0) {
+        	if (defaultValue != null)
+        		params = new String[]{defaultValue};
         }
         // 默认用转换器转换
-        return Castors.me().castTo(params, type);
+        return Castors.me().castTo(params, klass);
     }
 }

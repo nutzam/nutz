@@ -153,4 +153,8 @@ public class JsonEntityField {
     public SimpleDateFormat getDateFormat() {
         return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
     }
+    
+    public boolean hasDateFormat() {
+        return dateFormat != null;
+    }
 }

@@ -23,6 +23,8 @@ public abstract class NutStatement implements DaoStatement {
     private SqlContext context;
 
     private SqlType sqlType;
+    
+    private boolean forceExecQuery;
 
     public NutStatement() {
         this.context = new SqlContext();
@@ -263,5 +265,13 @@ public abstract class NutStatement implements DaoStatement {
             }
             return Castors.me().castToString(obj); // TODO 太长的话,应该截取一部分
         }
+    }
+
+    public void forceExecQuery() {
+    	this.forceExecQuery = true;
+    }
+    
+    public boolean isForceExecQuery() {
+    	return forceExecQuery;
     }
 }

@@ -123,6 +123,9 @@ public abstract class Exps {
         // !=
         else if ("!=".equals(op) || "<>".equals(op)) {// TODO 检查一下,原本是&&, 明显永远成立
             return eq(name, value).setNot(true);
+        } else if ("BETWEEN".equals(op)) {
+        	Object[] values = (Object[])value;
+        	return new BetweenExpression(name, values[0], values[1]);
         }
         // Others
         return new SimpleExpression(name, op, value);

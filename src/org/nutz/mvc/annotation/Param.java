@@ -26,4 +26,5 @@ public @interface Param {
      */
     String dfmt() default "";
 
+    String df() default "//NOT EXIST IN//";
 }
