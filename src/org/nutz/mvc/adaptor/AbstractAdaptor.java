@@ -54,6 +54,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
     private static final Log log = Logs.get();
 
+    public static final String ParamDefailtTag = "//NOT EXIST IN//";
+
     protected ParamInjector[] injs;
 
     protected Method method;
@@ -123,7 +125,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             }
             if (param != null) {
             	String tmp = param.df();
-            	if (tmp != null && tmp.equals("//NOT EXIST IN//"))
+            	if (tmp != null && !tmp.equals(ParamDefailtTag))
             		defaultValues[i] = tmp;
             }
         }
