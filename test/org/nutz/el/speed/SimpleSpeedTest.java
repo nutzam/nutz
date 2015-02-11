@@ -48,7 +48,7 @@ public class SimpleSpeedTest {
                     context.set("num", 0);
                     for (int i = 0; i < max; i++)
                         context.set("num", El.eval(context.set("i", i), elstr));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
@@ -65,7 +65,7 @@ public class SimpleSpeedTest {
                     context.set("z", z);
                     for (int i = 0; i < max; i++)
                         context.set("num", el2pre.eval(context.set("i", i)));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
@@ -82,7 +82,7 @@ public class SimpleSpeedTest {
                     context.set("z", z);
                     for (int i = 0; i < max; i++)
                         context.set("num", el2pre.eval(context.set("i", i)));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
