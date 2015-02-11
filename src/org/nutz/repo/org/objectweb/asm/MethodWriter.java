@@ -1738,15 +1738,15 @@ class MethodWriter implements MethodVisitor {
         }
     }
 
-    private void writeFrameType(final Object type) {
-        if (type instanceof String) {
-            stackMap.putByte(7).putShort(cw.newClass((String) type));
-        } else if (type instanceof Integer) {
-            stackMap.putByte(((Integer) type).intValue());
-        } else {
-            stackMap.putByte(8).putShort(((Label) type).position);
-        }
-    }
+//    private void writeFrameType(final Object type) {
+//        if (type instanceof String) {
+//            stackMap.putByte(7).putShort(cw.newClass((String) type));
+//        } else if (type instanceof Integer) {
+//            stackMap.putByte(((Integer) type).intValue());
+//        } else {
+//            stackMap.putByte(8).putShort(((Label) type).position);
+//        }
+//    }
 
     // ------------------------------------------------------------------------
     // Utility methods: dump bytecode array
