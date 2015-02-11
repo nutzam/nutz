@@ -42,8 +42,6 @@ public class Invoking {
 
         @Override
         Object invoke(Object obj) throws Exception {
-            System.out.println(obj);
-            System.out.println(method);
             if (isStatic)
                 return method.invoke(null, args);
             return method.invoke(obj, args);

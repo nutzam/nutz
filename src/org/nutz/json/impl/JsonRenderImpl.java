@@ -388,8 +388,6 @@ public class JsonRenderImpl implements JsonRender {
 
     protected String value2string(JsonEntityField jef, Object value) {
         if (value instanceof Date) {
-            System.out.println(jef.getDateFormat());
-            System.out.println(format.getDateFormat());
             SimpleDateFormat df = jef.getDateFormat();
             if (df == null) {
                 df = format.getDateFormat();
