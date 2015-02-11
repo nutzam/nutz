@@ -36,7 +36,7 @@ public class SimpleSpeedTest {
                 int num = 0;
                 for (int i = 0; i < max; i++)
                     num = num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7) - z.abc(i);
-                System.out.println("Num: " + num);
+                //System.out.println("Num: " + num);
             }
         });
 
