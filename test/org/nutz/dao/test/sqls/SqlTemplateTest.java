@@ -93,7 +93,7 @@ public class SqlTemplateTest extends DaoCase {
         dao.insert(pet);
         String sql = "SELECT birthday FROM t_pet";
         Timestamp dbCreateTime = sqlTemplate.queryForObject(sql, null, Timestamp.class);
-        assertEquals(createTime, dbCreateTime);
+        assertEquals(createTime.getTime() / 1000 , dbCreateTime.getTime() / 1000);
 
         String sql1 = "SELECT birthday FROM t_pet WHERE 1=2";
         dbCreateTime = sqlTemplate.queryForObject(sql1, null, Timestamp.class);
