@@ -4,17 +4,8 @@ import static org.junit.Assert.*;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 import org.junit.Test;
 import org.nutz.Nutz;
