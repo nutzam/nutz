@@ -277,53 +277,53 @@ public interface MethodVisitor {
     // Special instructions
     // -------------------------------------------------------------------------
 
-    /**
-     * Visits a LDC instruction.
-     * 
-     * @param cst the constant to be loaded on the stack. This parameter must be
-     *        a non null {@link Integer}, a {@link Float}, a {@link Long}, a
-     *        {@link Double} a {@link String} (or a {@link Type} for
-     *        <tt>.class</tt> constants, for classes whose version is 49.0 or
-     *        more).
-     */
-    void visitLdcInsn(Object cst);
-
-    /**
-     * Visits an IINC instruction.
-     * 
-     * @param var index of the local variable to be incremented.
-     * @param increment amount to increment the local variable by.
-     */
-    void visitIincInsn(int var, int increment);
-
-    /**
-     * Visits a TABLESWITCH instruction.
-     * 
-     * @param min the minimum key value.
-     * @param max the maximum key value.
-     * @param dflt beginning of the default handler block.
-     * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
-     *        the beginning of the handler block for the <tt>min + i</tt> key.
-     */
-    void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels);
-
-    /**
-     * Visits a LOOKUPSWITCH instruction.
-     * 
-     * @param dflt beginning of the default handler block.
-     * @param keys the values of the keys.
-     * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
-     *        the beginning of the handler block for the <tt>keys[i]</tt> key.
-     */
-    void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels);
-
-    /**
-     * Visits a MULTIANEWARRAY instruction.
-     * 
-     * @param desc an array type descriptor (see {@link Type Type}).
-     * @param dims number of dimensions of the array to allocate.
-     */
-    void visitMultiANewArrayInsn(String desc, int dims);
+//    /**
+//     * Visits a LDC instruction.
+//     * 
+//     * @param cst the constant to be loaded on the stack. This parameter must be
+//     *        a non null {@link Integer}, a {@link Float}, a {@link Long}, a
+//     *        {@link Double} a {@link String} (or a {@link Type} for
+//     *        <tt>.class</tt> constants, for classes whose version is 49.0 or
+//     *        more).
+//     */
+//    void visitLdcInsn(Object cst);
+//
+//    /**
+//     * Visits an IINC instruction.
+//     * 
+//     * @param var index of the local variable to be incremented.
+//     * @param increment amount to increment the local variable by.
+//     */
+//    void visitIincInsn(int var, int increment);
+//
+//    /**
+//     * Visits a TABLESWITCH instruction.
+//     * 
+//     * @param min the minimum key value.
+//     * @param max the maximum key value.
+//     * @param dflt beginning of the default handler block.
+//     * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
+//     *        the beginning of the handler block for the <tt>min + i</tt> key.
+//     */
+//    void visitTableSwitchInsn(int min, int max, Label dflt, Label[] labels);
+//
+//    /**
+//     * Visits a LOOKUPSWITCH instruction.
+//     * 
+//     * @param dflt beginning of the default handler block.
+//     * @param keys the values of the keys.
+//     * @param labels beginnings of the handler blocks. <tt>labels[i]</tt> is
+//     *        the beginning of the handler block for the <tt>keys[i]</tt> key.
+//     */
+//    void visitLookupSwitchInsn(Label dflt, int[] keys, Label[] labels);
+//
+//    /**
+//     * Visits a MULTIANEWARRAY instruction.
+//     * 
+//     * @param desc an array type descriptor (see {@link Type Type}).
+//     * @param dims number of dimensions of the array to allocate.
+//     */
+//    void visitMultiANewArrayInsn(String desc, int dims);
 
     // -------------------------------------------------------------------------
     // Exceptions table entries, debug information, max stack and max locals

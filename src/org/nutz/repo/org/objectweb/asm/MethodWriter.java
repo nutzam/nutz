@@ -243,11 +243,11 @@ class MethodWriter implements MethodVisitor {
      */
     private ByteVector stackMap;
 
-    /**
-     * The offset of the last frame that was written in the StackMapTable
-     * attribute.
-     */
-    private int previousFrameOffset;
+//    /**
+//     * The offset of the last frame that was written in the StackMapTable
+//     * attribute.
+//     */
+//    private int previousFrameOffset;
 
     /**
      * The last frame that was written in the StackMapTable attribute.
@@ -1010,141 +1010,141 @@ class MethodWriter implements MethodVisitor {
         }
     }
 
-    public void visitLdcInsn(final Object cst) {
-        Item i = cw.newConstItem(cst);
-        // Label currentBlock = this.currentBlock;
-        if (currentBlock != null) {
-            if (compute == FRAMES) {
-                currentBlock.frame.execute(Opcodes.LDC, 0, cw, i);
-            } else {
-                int size;
-                // computes the stack size variation
-                if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE)
-                {
-                    size = stackSize + 2;
-                } else {
-                    size = stackSize + 1;
-                }
-                // updates current and max stack sizes
-                if (size > maxStackSize) {
-                    maxStackSize = size;
-                }
-                stackSize = size;
-            }
-        }
-        // adds the instruction to the bytecode of the method
-        int index = i.index;
-        if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
-            code.put12(20 /* LDC2_W */, index);
-        } else if (index >= 256) {
-            code.put12(19 /* LDC_W */, index);
-        } else {
-            code.put11(Opcodes.LDC, index);
-        }
-    }
-
-    public void visitIincInsn(final int var, final int increment) {
-        if (currentBlock != null) {
-            if (compute == FRAMES) {
-                currentBlock.frame.execute(Opcodes.IINC, var, null, null);
-            }
-        }
-        if (compute != NOTHING) {
-            // updates max locals
-            int n = var + 1;
-            if (n > maxLocals) {
-                maxLocals = n;
-            }
-        }
-        // adds the instruction to the bytecode of the method
-        if ((var > 255) || (increment > 127) || (increment < -128)) {
-            code.putByte(196 /* WIDE */)
-                    .put12(Opcodes.IINC, var)
-                    .putShort(increment);
-        } else {
-            code.putByte(Opcodes.IINC).put11(var, increment);
-        }
-    }
-
-    public void visitTableSwitchInsn(
-        final int min,
-        final int max,
-        final Label dflt,
-        final Label[] labels)
-    {
-        // adds the instruction to the bytecode of the method
-        int source = code.length;
-        code.putByte(Opcodes.TABLESWITCH);
-        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
-        dflt.put(this, code, source, true);
-        code.putInt(min).putInt(max);
-        for (int i = 0; i < labels.length; ++i) {
-            labels[i].put(this, code, source, true);
-        }
-        // updates currentBlock
-        visitSwitchInsn(dflt, labels);
-    }
-
-    public void visitLookupSwitchInsn(
-        final Label dflt,
-        final int[] keys,
-        final Label[] labels)
-    {
-        // adds the instruction to the bytecode of the method
-        int source = code.length;
-        code.putByte(Opcodes.LOOKUPSWITCH);
-        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
-        dflt.put(this, code, source, true);
-        code.putInt(labels.length);
-        for (int i = 0; i < labels.length; ++i) {
-            code.putInt(keys[i]);
-            labels[i].put(this, code, source, true);
-        }
-        // updates currentBlock
-        visitSwitchInsn(dflt, labels);
-    }
-
-    private void visitSwitchInsn(final Label dflt, final Label[] labels) {
-        // Label currentBlock = this.currentBlock;
-        if (currentBlock != null) {
-            if (compute == FRAMES) {
-                currentBlock.frame.execute(Opcodes.LOOKUPSWITCH, 0, null, null);
-                // adds current block successors
-                addSuccessor(Edge.NORMAL, dflt);
-                dflt.getFirst().status |= Label.TARGET;
-                for (int i = 0; i < labels.length; ++i) {
-                    addSuccessor(Edge.NORMAL, labels[i]);
-                    labels[i].getFirst().status |= Label.TARGET;
-                }
-            } else {
-                // updates current stack size (max stack size unchanged)
-                --stackSize;
-                // adds current block successors
-                addSuccessor(stackSize, dflt);
-                for (int i = 0; i < labels.length; ++i) {
-                    addSuccessor(stackSize, labels[i]);
-                }
-            }
-            // ends current block
-            noSuccessor();
-        }
-    }
-
-    public void visitMultiANewArrayInsn(final String desc, final int dims) {
-        Item i = cw.newClassItem(desc);
-        // Label currentBlock = this.currentBlock;
-        if (currentBlock != null) {
-            if (compute == FRAMES) {
-                currentBlock.frame.execute(Opcodes.MULTIANEWARRAY, dims, cw, i);
-            } else {
-                // updates current stack size (max stack size unchanged because
-                // stack size variation always negative or null)
-                stackSize += 1 - dims;
-            }
-        }
-        // adds the instruction to the bytecode of the method
-        code.put12(Opcodes.MULTIANEWARRAY, i.index).putByte(dims);
-    }
+//    public void visitLdcInsn(final Object cst) {
+//        Item i = cw.newConstItem(cst);
+//        // Label currentBlock = this.currentBlock;
+//        if (currentBlock != null) {
+//            if (compute == FRAMES) {
+//                currentBlock.frame.execute(Opcodes.LDC, 0, cw, i);
+//            } else {
+//                int size;
+//                // computes the stack size variation
+//                if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE)
+//                {
+//                    size = stackSize + 2;
+//                } else {
+//                    size = stackSize + 1;
+//                }
+//                // updates current and max stack sizes
+//                if (size > maxStackSize) {
+//                    maxStackSize = size;
+//                }
+//                stackSize = size;
+//            }
+//        }
+//        // adds the instruction to the bytecode of the method
+//        int index = i.index;
+//        if (i.type == ClassWriter.LONG || i.type == ClassWriter.DOUBLE) {
+//            code.put12(20 /* LDC2_W */, index);
+//        } else if (index >= 256) {
+//            code.put12(19 /* LDC_W */, index);
+//        } else {
+//            code.put11(Opcodes.LDC, index);
+//        }
+//    }
+//
+//    public void visitIincInsn(final int var, final int increment) {
+//        if (currentBlock != null) {
+//            if (compute == FRAMES) {
+//                currentBlock.frame.execute(Opcodes.IINC, var, null, null);
+//            }
+//        }
+//        if (compute != NOTHING) {
+//            // updates max locals
+//            int n = var + 1;
+//            if (n > maxLocals) {
+//                maxLocals = n;
+//            }
+//        }
+//        // adds the instruction to the bytecode of the method
+//        if ((var > 255) || (increment > 127) || (increment < -128)) {
+//            code.putByte(196 /* WIDE */)
+//                    .put12(Opcodes.IINC, var)
+//                    .putShort(increment);
+//        } else {
+//            code.putByte(Opcodes.IINC).put11(var, increment);
+//        }
+//    }
+//
+//    public void visitTableSwitchInsn(
+//        final int min,
+//        final int max,
+//        final Label dflt,
+//        final Label[] labels)
+//    {
+//        // adds the instruction to the bytecode of the method
+//        int source = code.length;
+//        code.putByte(Opcodes.TABLESWITCH);
+//        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
+//        dflt.put(this, code, source, true);
+//        code.putInt(min).putInt(max);
+//        for (int i = 0; i < labels.length; ++i) {
+//            labels[i].put(this, code, source, true);
+//        }
+//        // updates currentBlock
+//        visitSwitchInsn(dflt, labels);
+//    }
+//
+//    public void visitLookupSwitchInsn(
+//        final Label dflt,
+//        final int[] keys,
+//        final Label[] labels)
+//    {
+//        // adds the instruction to the bytecode of the method
+//        int source = code.length;
+//        code.putByte(Opcodes.LOOKUPSWITCH);
+//        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
+//        dflt.put(this, code, source, true);
+//        code.putInt(labels.length);
+//        for (int i = 0; i < labels.length; ++i) {
+//            code.putInt(keys[i]);
+//            labels[i].put(this, code, source, true);
+//        }
+//        // updates currentBlock
+//        visitSwitchInsn(dflt, labels);
+//    }
+//
+//    private void visitSwitchInsn(final Label dflt, final Label[] labels) {
+//        // Label currentBlock = this.currentBlock;
+//        if (currentBlock != null) {
+//            if (compute == FRAMES) {
+//                currentBlock.frame.execute(Opcodes.LOOKUPSWITCH, 0, null, null);
+//                // adds current block successors
+//                addSuccessor(Edge.NORMAL, dflt);
+//                dflt.getFirst().status |= Label.TARGET;
+//                for (int i = 0; i < labels.length; ++i) {
+//                    addSuccessor(Edge.NORMAL, labels[i]);
+//                    labels[i].getFirst().status |= Label.TARGET;
+//                }
+//            } else {
+//                // updates current stack size (max stack size unchanged)
+//                --stackSize;
+//                // adds current block successors
+//                addSuccessor(stackSize, dflt);
+//                for (int i = 0; i < labels.length; ++i) {
+//                    addSuccessor(stackSize, labels[i]);
+//                }
+//            }
+//            // ends current block
+//            noSuccessor();
+//        }
+//    }
+//
+//    public void visitMultiANewArrayInsn(final String desc, final int dims) {
+//        Item i = cw.newClassItem(desc);
+//        // Label currentBlock = this.currentBlock;
+//        if (currentBlock != null) {
+//            if (compute == FRAMES) {
+//                currentBlock.frame.execute(Opcodes.MULTIANEWARRAY, dims, cw, i);
+//            } else {
+//                // updates current stack size (max stack size unchanged because
+//                // stack size variation always negative or null)
+//                stackSize += 1 - dims;
+//            }
+//        }
+//        // adds the instruction to the bytecode of the method
+//        code.put12(Opcodes.MULTIANEWARRAY, i.index).putByte(dims);
+//    }
 
     public void visitTryCatchBlock(
         final Label start,
