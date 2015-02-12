@@ -19,6 +19,7 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.SqlManager;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityMaker;
 import org.nutz.dao.entity.LinkField;
 import org.nutz.dao.entity.LinkVisitor;
 import org.nutz.dao.entity.Record;
@@ -119,8 +120,14 @@ public class NutDao extends DaoSupport implements Dao {
         this(dataSource);
         this.setSqlManager(sqlManager);
     }
+    
+    public NutDao(DataSource dataSource, EntityMaker maker) {
+        this(dataSource);
+        this.holder.maker = maker;
+        maker.init(dataSource, expert, holder);
+    }
 
-    // 上面是 3 个构造函数
+    // 上面是 4 个构造函数
     // ==========================================================
 
     public <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm) {
