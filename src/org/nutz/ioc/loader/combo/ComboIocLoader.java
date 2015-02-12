@@ -55,6 +55,7 @@ public class ComboIocLoader implements IocLoader {
      * @throws ClassNotFoundException
      *             如果*开头的参数所指代的类不存在
      */
+    @SuppressWarnings("unchecked")
     public ComboIocLoader(String... args) throws ClassNotFoundException {
     	if (loaders.isEmpty()) {
     		loaders.put("js", JsonLoader.class);
@@ -64,6 +65,11 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("anno", AnnotationIocLoader.class);
             loaders.put("trans", TransIocLoader.class);
             loaders.put("tx", TransIocLoader.class);
+            try {
+                loaders.put("cache", (Class<? extends IocLoader>) Class.forName("org.nutz.jcache.NutCacheIocLoader"));
+            }
+            catch (ClassNotFoundException e) {
+            }
     	}
         ArrayList<String> argsList = null;
         String currentClassName = null;
