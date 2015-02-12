@@ -36,7 +36,6 @@ import javax.imageio.stream.ImageOutputStream;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.repo.Base64;
-import org.nutz.repo.gif.AnimatedGifEncoder;
 
 /**
  * 对图像操作的简化 API
@@ -667,35 +666,6 @@ public class Images {
                                                 Transparency.OPAQUE,
                                                 DataBuffer.TYPE_BYTE);
         return new BufferedImage(cm, (WritableRaster) raster, true, null);
-    }
-
-    /**
-     * 根据一堆图片生成一个gif图片
-     * 
-     * @param targetFile
-     *            目标输出文件
-     * @param frameFiles
-     *            组成动画的文件
-     * @param delay
-     *            帧间隔
-     * @return 是否生成成功
-     */
-    public static boolean writeGif(String targetFile,
-                                   String[] frameFiles,
-                                   int delay) {
-        try {
-            AnimatedGifEncoder e = new AnimatedGifEncoder();
-            e.setRepeat(0);
-            e.start(targetFile);
-            for (String f : frameFiles) {
-                e.setDelay(delay);
-                e.addFrame(ImageIO.read(new File(f)));
-            }
-            return e.finish();
-        }
-        catch (Exception e) {
-            return false;
-        }
     }
 
     /**
