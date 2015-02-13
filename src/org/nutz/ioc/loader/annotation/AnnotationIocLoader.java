@@ -255,8 +255,13 @@ public class AnnotationIocLoader implements IocLoader {
         if (value.contains(":")) {
             iocValue.setType(value.substring(0, value.indexOf(':')));
             iocValue.setValue(value.substring(value.indexOf(':') + 1));
+            if ("".equals(iocValue.getType()))
+                iocValue.setType(null);
         } else {
-            iocValue.setValue(value); // TODO 是否应该改为默认refer呢?
+            // XXX 兼容性改变, 1.b.52 开始默认就是refer
+            log.info("auto set as         refer:" + value);
+            iocValue.setType("refer"); 
+            iocValue.setValue(value); 
         }
         return iocValue;
     }
