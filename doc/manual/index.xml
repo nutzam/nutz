@@ -94,6 +94,12 @@
 		<doc path="plugin.man"/>
 		<doc path="log.man"/>
 	</doc>
+	<doc path="http" title="Http轻客户端">
+		<doc path="overview.man"></doc>
+	</doc>
+	<doc path="img" title="图像处理小军刀">
+		<doc path="overview.man"></doc>
+	</doc>
 	<!--doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
 	</doc-->
