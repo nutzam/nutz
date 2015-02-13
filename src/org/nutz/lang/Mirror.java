@@ -766,7 +766,7 @@ public class Mirror<T> {
                 if (obj != null && obj.getClass().isArray() && "length".equals(name)) {
                     return Lang.length(obj);
                 }
-                throw makeGetValueException(obj.getClass(), name, e);
+                throw makeGetValueException(obj == null ? getType() : obj.getClass(), name, e);
             }
         }
     }

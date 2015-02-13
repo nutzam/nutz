@@ -3,8 +3,8 @@ package org.nutz.mapl.impl.compile;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,7 +24,7 @@ import org.nutz.mapl.MaplCompile;
  */
 public class ObjCompileImpl implements MaplCompile<Object> {
 
-    private Map<Object, Object> memo = new HashMap<Object, Object>();
+    private Map<Object, Object> memo = new LinkedHashMap<Object, Object>();
 
     @SuppressWarnings("rawtypes")
     public Object parse(Object obj) {
@@ -72,7 +72,7 @@ public class ObjCompileImpl implements MaplCompile<Object> {
                         // 数组
                         return array2Json(obj, list);
                     } else {
-                        Map<String, Object> map = new HashMap<String, Object>();
+                        Map<String, Object> map = new LinkedHashMap<String, Object>();
                         memo.put(obj, map);
                         // Map
                         if (obj instanceof Map) {

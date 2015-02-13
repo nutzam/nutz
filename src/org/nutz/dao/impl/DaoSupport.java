@@ -252,12 +252,6 @@ public class DaoSupport {
             }
         }
     }
-    
-    public void setEntityMaker(EntityMaker maker) {
-    	this.holder.maker = maker;
-    	maker.init(dataSource, expert, holder);
-    }
-    
     public PojoMaker pojoMaker() {
 		return pojoMaker;
 	}

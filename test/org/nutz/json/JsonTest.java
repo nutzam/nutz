@@ -23,9 +23,7 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.nutz.castor.Castor;
 import org.nutz.castor.Castors;
-import org.nutz.castor.FailToCastObjectException;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;

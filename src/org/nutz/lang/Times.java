@@ -545,18 +545,17 @@ public abstract class Times {
         Date[] re = new Date[2];
 
         // 计算开始
-        c.setTimeInMillis(c.getTimeInMillis() + MS_WEEK * from);
-        c.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        c.add(Calendar.DAY_OF_YEAR, 7*from);
+        c.set(Calendar.DAY_OF_WEEK, Calendar.MONDAY);
         c.set(Calendar.HOUR_OF_DAY, 0);
         c.set(Calendar.MINUTE, 0);
         c.set(Calendar.SECOND, 0);
+        c.set(Calendar.MILLISECOND, 0);
         re[0] = c.getTime();
 
         // 计算结束
-        c.setTimeInMillis(c.getTimeInMillis() + MS_WEEK * (len + 1) - 1000);
-        c.set(Calendar.HOUR_OF_DAY, 23);
-        c.set(Calendar.MINUTE, 59);
-        c.set(Calendar.SECOND, 59);
+        c.add(Calendar.DAY_OF_YEAR, 7*(len+1));
+        c.add(Calendar.MILLISECOND, -1);
         re[1] = c.getTime();
 
         // 返回
@@ -720,9 +719,6 @@ public abstract class Times {
     private static final DateFormat DF_DATE_TIME_MS4 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
     private static final DateFormat DF_DATE_TIME = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static final DateFormat DF_DATE = new SimpleDateFormat("yyyy-MM-dd");
-
-    private static final long MS_DAY = 3600L * 24 * 1000;
-    private static final long MS_WEEK = MS_DAY * 7;
 
     public static final long T_1S = 1000;
     public static final long T_1M = 60 * 1000;

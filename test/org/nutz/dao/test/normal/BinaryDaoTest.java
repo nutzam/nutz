@@ -50,7 +50,7 @@ public class BinaryDaoTest extends DaoCase {
         String path = "~/tmp/big.blob";
         Files.createFileIfNoExists(path);
         OutputStream fos = Streams.fileOut(path);
-        for (int i = 0; i < 10240; i++) {
+        for (int i = 0; i < 5*1024; i++) { // 更多的数据需要不同的类型
             fos.write(new byte[1024]);
         }
         fos.close();

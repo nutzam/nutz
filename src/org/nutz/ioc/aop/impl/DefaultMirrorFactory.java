@@ -1,5 +1,7 @@
 package org.nutz.ioc.aop.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.nutz.aop.ClassAgent;
@@ -12,6 +14,7 @@ import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
+import org.nutz.ioc.aop.config.impl.ComboAopConfigration;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -30,7 +33,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
 
 	private ClassDefiner cd;
 
-	private AopConfigration aopConfigration;
+	private List<AopConfigration> list;
 
 	private static final Object lock = new Object();
 
@@ -41,20 +44,42 @@ public class DefaultMirrorFactory implements MirrorFactory {
 	public <T> Mirror<T> getMirror(Class<T> type, String name) {
 		if (MethodInterceptor.class.isAssignableFrom(type)
 			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
-			|| AopConfigration.IOCNAME.equals(name)
+			|| (name != null && name.startsWith(AopConfigration.IOCNAME))
 			|| AopConfigration.class.isAssignableFrom(type)) {
 			return Mirror.me(type);
 		}
 
-		if (aopConfigration == null)
-			if (ioc.has(AopConfigration.IOCNAME))
-				aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
-			else
-				aopConfigration = new AnnotationAopConfigration();
-		List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
-		if (interceptorPairs == null || interceptorPairs.size() < 1) {
+		if (list == null) {
+		    List<AopConfigration> tmp = new ArrayList<AopConfigration>();
+		    boolean flag = true;
+		    String[] names = ioc.getNames();
+		    Arrays.sort(names);
+		    for (String beanName : names) {
+                if (!beanName.startsWith(AopConfigration.IOCNAME))
+                    continue;
+                AopConfigration cnf = ioc.get(AopConfigration.class, beanName);
+                tmp.add(cnf);
+                if (cnf instanceof AnnotationAopConfigration)
+                    flag = false;
+                if (cnf instanceof ComboAopConfigration) {
+                    if (((ComboAopConfigration)cnf).hasAnnotationAop()) {
+                        flag = false;
+                    }
+                }
+            }
+		    if (flag)
+		        tmp.add(new AnnotationAopConfigration());
+		    list = tmp;
+		}
+		List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
+		for (AopConfigration cnf : list) {
+		    List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
+		    if (tmp != null)
+		        interceptorPairs.addAll(tmp);
+        }
+		if (interceptorPairs.isEmpty()) {
 			if (log.isDebugEnabled())
-				log.debugf("%s , no config to enable AOP.", type);
+				log.debugf("%s , no config to enable AOP for this type.", type);
 			return Mirror.me(type);
 		}
 
@@ -81,7 +106,9 @@ public class DefaultMirrorFactory implements MirrorFactory {
 
 	}
 
+	@Deprecated
 	public void setAopConfigration(AopConfigration aopConfigration) {
-		this.aopConfigration = aopConfigration;
+		this.list = new ArrayList<AopConfigration>();
+		this.list.add(aopConfigration);
 	}
 }

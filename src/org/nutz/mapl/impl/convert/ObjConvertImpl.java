@@ -4,8 +4,8 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -110,7 +110,7 @@ public class ObjConvertImpl implements MaplConvert {
     private Object injectMap(Object model, Mirror<?> me) {
         Map re = null;
         if (me.isInterface()) {
-            re = new HashMap();
+            re = new LinkedHashMap();
         } else {
             re = (Map) me.born();
         }
