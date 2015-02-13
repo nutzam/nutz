@@ -2,7 +2,7 @@ package org.nutz.mapl.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +21,7 @@ public class MaplRebuild{
     //数组栈列表
     protected LinkedList<Integer> arrayIndex = new LinkedList<Integer>();
     //新MapList结构
-    private Map<String, Object> newobj = new HashMap<String, Object>();
+    private Map<String, Object> newobj = new LinkedHashMap<String, Object>();
     
     private Object cellObj = null;
     
@@ -107,7 +107,7 @@ public class MaplRebuild{
         //数组
 //        if(key.endsWith("[]")){
         if(key.indexOf('[') >0){
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new LinkedHashMap<String, Object>();
             if(obj != null){
                 map = (Map<String, Object>) obj;
             }
@@ -153,7 +153,7 @@ public class MaplRebuild{
      */
     @SuppressWarnings("unchecked")
     private Object injectMap(Object obj, int i) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new LinkedHashMap<String, Object>();
         String key = keys[i];
         if(obj != null){
             map = (Map<String, Object>) obj;
@@ -166,6 +166,7 @@ public class MaplRebuild{
             }
             if(!map.containsKey(key) || map.get(key) == null){
                 map.put(key, inject(null, i + 1));
+                return map;
             }
         } else if(model == Model.del){
             if(i == keys.length - 1){
@@ -209,7 +210,7 @@ public class MaplRebuild{
                 return;
             }
             if(list.size() <= index){
-                list.add(index, new HashMap<String, Object>());
+                list.add(index, new LinkedHashMap<String, Object>());
             }
         } else if(model == Model.del){
             if(i == keys.length - 1){

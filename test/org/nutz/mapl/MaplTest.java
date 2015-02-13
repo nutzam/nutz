@@ -18,6 +18,7 @@ import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
+import org.nutz.mapl.impl.MaplRebuild;
 
 /**
  * MapList测试
@@ -253,14 +254,30 @@ public class MaplTest {
     @Test
     public void structureConvertRoot2Array() {
         String json = "[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]";
+        System.out.println(Json.fromJson(json));
         String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
+        System.out.println(Json.fromJson(model));
         String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
-        Object obj = Mapl.convert(Json.fromJson(Lang.inr(json)), Lang.inr(model));
-        assertEquals("jk", Mapl.cell(obj, "user[0].姓名"));
-        assertEquals("nutz", Mapl.cell(obj, "user[1].姓名"));
-        assertEquals("jk", Mapl.cell(obj, "people[0].name"));
-        assertEquals(5, Mapl.cell(obj, "people[1].age"));
-        assertEquals(dest, Json.toJson(obj, new JsonFormat()));
+        
+        
+        Object obj = Mapl.convert(Json.fromJson(Lang.inr("[{'name':'jk', 'age':12}]")), Lang.inr(model));
+        System.out.println(obj);
+        
+        
+        
+        
+        
+        
+        
+        
+//        
+//        Object obj = Mapl.convert(Json.fromJson(Lang.inr(json)), Lang.inr(model));
+//        System.out.println(obj.getClass());
+//        assertEquals("jk", Mapl.cell(obj, "user[0].姓名"));
+//        assertEquals("nutz", Mapl.cell(obj, "user[1].姓名"));
+//        assertEquals("jk", Mapl.cell(obj, "people[0].name"));
+//        assertEquals(5, Mapl.cell(obj, "people[1].age"));
+//        assertEquals(dest, Json.toJson(obj, new JsonFormat()));
     }
 
     /**
@@ -270,7 +287,7 @@ public class MaplTest {
     public void structureConvertArray2Root() {
         String json = "{'user':[{'name':'jk', 'age':12},{'name':'nutz', 'age':5}]}";
         String model = "{'user':[{'name':['[].name'], 'age':'[].age'}]}";
-        String dest = "[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}]";
+        String dest = "[{\"name\":\"jk\",\"age\":12}, {\"name\":\"nutz\",\"age\":5}]";
         Object obj = Mapl.convert(Json.fromJson(Lang.inr(json)), Lang.inr(model));
         assertEquals("jk", Mapl.cell(obj, "[0].name"));
         assertEquals(5, Mapl.cell(obj, "[1].age"));
@@ -348,7 +365,7 @@ public class MaplTest {
         Object obj = Json.fromJson(json);
         Object newobj = Mapl.excludeFilter(obj, Lang.list("age", "address[].area"));
         JsonFormat jf = new JsonFormat(true);
-        assertEquals("{\"address\":[{\"name\":\"abc\"}, {\"name\":\"123\"}],\"name\":\"nutz\"}",
+        assertEquals("{\"name\":\"nutz\",\"address\":[{\"name\":\"abc\"}, {\"name\":\"123\"}]}",
                      Json.toJson(newobj, jf));
     }
 
@@ -384,4 +401,11 @@ public class MaplTest {
         assertEquals("abc", Mapl.cell(newobj, "address[0].name"));
     }
 
+    @Test
+    public void test_maplrebuild() {
+    	MaplRebuild req = new MaplRebuild();
+    	req.put("s1[0]", "test");
+    	req.put("s2.s2[0]", "test");
+    	System.out.println(Json.toJson(req.fetchNewobj()));
+    }
 }

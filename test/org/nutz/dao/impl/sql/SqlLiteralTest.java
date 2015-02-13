@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Test;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.test.meta.Pet;
 
 public class SqlLiteralTest {
@@ -178,5 +179,10 @@ public class SqlLiteralTest {
 
         String expect = "INSERT INTO t_pet(userId,userName,alias,age) VALUES(18,'pet','haha',5)";
         assertEquals(expect, sql.toString());
+    }
+    
+    @Test
+    public void test_between() {
+        assertEquals(" WHERE age BETWEEN 18 AND 29", Cnd.where("age", "between", new Object[]{18, 29}).toString());
     }
 }

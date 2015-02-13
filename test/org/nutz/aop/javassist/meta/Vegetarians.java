@@ -9,8 +9,4 @@ public class Vegetarians {
     public static int run(Vegetarian r, int distance) {
         return r.run(distance);
     }
-
-    public static void main(String[] args) {
-        System.out.println(Strings.fillBinary(Modifier.ABSTRACT, 32));
-    }
 }

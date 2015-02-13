@@ -1,22 +1,11 @@
 package org.nutz.http;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
-import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -114,16 +103,21 @@ public class HttpTest {
     
     @Test
     public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {
-        SSLContext sc = SSLContext.getInstance("SSL");
-        TrustManager[] tmArr={new X509TrustManager(){
-            public void checkClientTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException{}
-            public void checkServerTrusted(X509Certificate[] paramArrayOfX509Certificate,String paramString) throws CertificateException {}
-            public X509Certificate[] getAcceptedIssuers() {return null;}
-        }};
-        sc.init(null, tmArr, new SecureRandom());
-        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        
         String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
+        try {
+            Http.disableJvmHttpsCheck();
+            Http.get(url);
+        }catch (Exception e) {
+            fail();
+        }
+    }
+    
+    @Test
+    public void test_360safe() throws Throwable {
+        Http.disableJvmHttpsCheck();
+        
+    	String url = "https://openapi.360.cn/user/me.json?access_token=1323463692b46eacce7412f3b65877cc54fc6d538db5619b20&fields=id,name,avatar,nick";
+
         Response response = Http.get(url);
         System.out.println(response.getContent());
     }

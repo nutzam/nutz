@@ -63,6 +63,5 @@ public class RawView2 extends RawView {
 		OutputStream out = resp.getOutputStream();
 		writeDownloadRange(in, out, rangeRange);
 		out.close();
-		System.out.println("END");
 	}
 }

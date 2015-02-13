@@ -30,4 +30,12 @@ public class ComboAopConfigration implements AopConfigration {
     public void setAopConfigrations(List<AopConfigration> aopConfigrations) {
         this.aopConfigrations = aopConfigrations;
     }
+    
+    public boolean hasAnnotationAop() {
+        for (AopConfigration cnf : aopConfigrations) {
+            if (cnf instanceof AnnotationAopConfigration)
+                return true;
+        }
+        return false;
+    }
 }
