@@ -1,0 +1,18 @@
+machine:
+  timezone: Asia/Shanghai
+  java:
+    version: oraclejdk8
+
+general:
+  branches:
+    only:
+      - master
+
+dependencies:
+  override:
+    - cp ./tools/travis-ci/nutz-test.properties ./test/
+    - cp ./tools/travis-ci/log4j.properties ./test/
+
+database:
+  override:
+    - psql -c 'create database nutztest;' -U ubuntu

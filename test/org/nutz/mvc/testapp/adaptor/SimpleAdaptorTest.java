@@ -3,6 +3,8 @@ package org.nutz.mvc.testapp.adaptor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.TimeZone;
+
 import org.junit.Test;
 import org.nutz.lang.Times;
 import org.nutz.mvc.testapp.BaseWebappTest;
@@ -14,7 +16,7 @@ public class SimpleAdaptorTest extends BaseWebappTest {
         get("/adaptor/github/issue/543?d=20120924");
         assertEquals(200, resp.getStatus());
 
-        long ms = Times.ams("2012-09-24");
+        long ms = Times.ams("2012-09-24", TimeZone.getTimeZone("Asia/Shanghai"));
         long rems = Long.parseLong(resp.getContent());
         assertEquals(ms, rems);
     }
