@@ -1,5 +1,6 @@
 package org.nutz.el.speed;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.el.El;
 import org.nutz.lang.Lang;
@@ -22,6 +23,7 @@ public class SimpleSpeedTest {
         return i % 13;
     }
 
+    @Ignore
     @Test
     public void test_speed() throws SecurityException, NoSuchMethodException {
         final SimpleSpeedTest z = new SimpleSpeedTest();
