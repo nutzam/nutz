@@ -1,5 +1,9 @@
 package org.nutz.dao.impl.jdbc.db2;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.nutz.dao.DB;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
@@ -13,6 +17,9 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class Db2JdbcExpert extends AbstractJdbcExpert {
 
@@ -138,4 +145,19 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
             return new DB2BooleanAdaptor();
         return super.getAdaptor(ef);
     }
+    private final static Log log = Logs.get();
+    
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		 if (meta == null)
+	            return 0;
+	        int columnCount = meta.getColumnCount();
+	        String colName = mf.getColumnName();
+	        for (int i = 1; i <= columnCount; i++)
+	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
+	                return i;
+	        // TODO 尝试一下meta.getColumnLabel?
+	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
+	        throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+	}
 }

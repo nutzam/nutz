@@ -252,7 +252,6 @@ public class DaoSupport {
             }
         }
     }
-    
     public PojoMaker pojoMaker() {
 		return pojoMaker;
 	}
