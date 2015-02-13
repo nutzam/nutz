@@ -1,105 +1,126 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.b.51 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.b.52 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">1.b.51 发行注记</div>
+<div class="zdoc_header">1.b.52 发行注记</div>
 <div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#1b51_发行注记">1.b.51 发行注记</a></div>
+<div><span class="num">1</span><a href="#1b52_发行注记">1.b.52 发行注记</a></div>
 </li>
 <li>
-<div><span class="num">2</span><a href="#兼容性">兼容性</a></div>
+<div><span class="num">2</span><a href="#变更统计">变更统计</a></div>
 </li>
 <li>
-<div><span class="num">3</span><a href="#新功能">新功能</a></div>
+<div><span class="num">3</span><a href="#兼容性">兼容性</a></div>
 </li>
 <li>
-<div><span class="num">4</span><a href="#问题修复">问题修复</a></div>
+<div><span class="num">4</span><a href="#新功能">新功能</a></div>
 </li>
 <li>
-<div><span class="num">5</span><a href="#质量">质量</a></div>
+<div><span class="num">5</span><a href="#问题修复">问题修复</a></div>
 </li>
 <li>
-<div><span class="num">6</span><a href="#文档">文档</a></div>
+<div><span class="num">6</span><a href="#质量">质量</a></div>
 </li>
 <li>
-<div><span class="num">7</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+<div><span class="num">7</span><a href="#文档">文档</a></div>
+</li>
+<li>
+<div><span class="num">8</span><a href="#关联项目的更新">关联项目的更新</a></div>
+</li>
+<li>
+<div><span class="num">9</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="1b51_发行注记"></a>1.b.51 发行注记</h1>
+<h1><a name="1b52_发行注记"></a>1.b.52 发行注记</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>各位好，国庆长假过的爽不。Nutz 又发新版(1.b.51)啦。这个版修复了一个最重要的问题是:<a href="https://github.com/nutzam/nutz/issues/651">Issue 651</a> Times 时间格式化问题 <span style="color:#888888;">by</span> <b>Rekoe</b>是夏令时的问题。强烈建议各位立即升级。</p>
-<p>由于 googlecode 不在支持更新下载包了，我们于是在自己的服务器上做了<a href="http://downloads.nutzam.com/">下载列表</a>顺手也稍微修改了一下 <a href="http://nutzam.com">nutzam.com</a> 那个小主页。等我们手头几个项目完结后，我们会把它再华丽丽的升个级。 </p>
-<p>冬天就要来了，大家注意保暖。</p>
+<p>又是一个 bug 修复安心升级版，Nutz 1.b.52，要升级的同学请随意入。</p>
+<p>春节将至，给大家提前拜年。因为最近实在太忙（当然，以后你们可能会知道我为啥这么忙），总之没啥好说的，这个版的主要工作是 wendal 在搞(实际上前几个版也都是他在搞，呵呵)各位要升级的的，下来 Jar 包玩玩，很安全滴，我天天用，升级嘛，升升更健康。</p>
+<p>@wendal，快过春节的，关于这个版，关于 Nutz，关于 ... 天气 ...总之，你有啥要和大家说的吗？ ^_^</p>
+<p>这里的原本的内容叫"wendal 的占位符",哈哈.</p>
+<p>这个版本东西还是不少的, 一堆bugfix和一些小的新功能.例如一个靠谱的缓存实现(Aop), 通过Xml配置bean,当然,这些都在nutzmore中. 另外,你也许会发现nutz的jar并没有变大,那是因为我们清理了一些死代码. 同时,这一版本的findbugs检查结果也很不错, emma的覆盖率也有提高.</p>
+<p>社区方面, 不定期的"nutz,今晚来一发" <a href="http://my.oschina.net/wendal/blog">http://my.oschina.net/wendal/blog</a> 一直在更新</p>
+<p>QQ群依然是2个,其中的2群,感谢c.A的捐赠,wendal变成的群主,哈哈. 延续之前的风格,Nutz&amp;XBlink群主打基友与高大上, Nutz ② 群继续问答与酱油.</p>
+<p>哦,有些童鞋提到如何捐赠的问题,我们表示感谢(和理解?),但暂时不提供渠道, 简单来说, 咱们不!差!钱!</p>
+<p>至于这几天很火的红包问题,QQ群会有(而且年30大大的有),不过,如果你单纯为了红包而来,我们会严重砍你,哈哈</p>
+<p>新春快乐,各位!</p>
+<p>好了,继续写代码继续挖坑了,就写这么多吧.</p>
+<p>哦哦, 特意再次再次再次推荐一篇文章 <a href="http://wiki.woodpecker.org.cn/moin/AskForHelp">提问的智慧</a></p>
+<p>以上言论仅代表wendal个人意见,如有不敬,你.........能咋的?! ^撒花^</p>
 <p>------------------------------ Nutz 的相关资源的分隔线 -------------------------</p>
 <ul type="disc">
 <li>下载地址 : <a href="http://downloads.nutzam.com/">http://downloads.nutzam.com/</a></li>
-<li>Nutz 的主页 :  <a href="http://nutzam.com">http://nutzam.com</a></li>
+<li>Nutz 的官网 :  <a href="http://nutzam.com">http://nutzam.com</a></li>
 <li>Github 地址 :  <a href="https://github.com/nutzam/nutz">https://github.com/nutzam/nutz</a></li>
+<li>Nutzmore地址: <a href="https://github.com/nutzam/nutzmore">https://github.com/nutzam/nutzmore</a></li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="变更统计"></a>变更统计</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>看看我们到底改了多少东西,啊啊啊</p>
+<pre> 143 files changed, 4668 insertions(+), 4553 deletions(-)
+</pre>
+<p>下一版本会不会更多? 敬请期待</p>
 <div class="hr"><b></b></div>
 <h1><a name="兼容性"></a>兼容性</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
+<p>兼容性,呵呵,只能呵呵, 因为我们没法打包票100%兼容1.b.51,但理应可以的.</p>
 <ul type="disc">
-<li>Dao: 优先使用getter/setter取值/赋值, 之前的版本是直接反射属性</li>
-<li>Resources: Scans扫描资源时,总是以最后一个资源为准</li>
-<li>Lang: MultiLineProperties现在是有有序的map, ProperiesProxy会受到影响</li>
-<li>Mvc: Mvcs.ctx属性被标注为启用,后续代码应使用Mvcs.ctx()方法.</li>
-<li>Dao: Record类的toString方法现在输出的json format是full</li>
+<li>@Inject行为改变, 如果其值包含冒号,将认为是引用特定名字的bean</li>
+<li>Images.writeGif方法及相关的类被移除</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="新功能"></a>新功能</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>Ioc: 支持factory和optional,详情看ioc的文档</li>
-<li>Lang: Xmls类支持Map-List结构的简单XML解析了,能解析微信公众平台的XML</li>
-<li>Http: 支持代理服务器fallback, 即代理服务器不可用时自动回落到无代理模式</li>
-<li>Lang: PropertiesProxy支持自身展开的功能</li>
-<li>Dao: 支持Sqlserver 2014</li>
-<li>Dao: Daos类添加了2个ext方法,可以无需内部类就进行字段过滤和动态表名.</li>
+<li>未声明@Views,@SetupBy时,从ioc加载特定前缀name的ViewMaker和Setup对象</li>
+<li>Aop配置支持从ioc加载特定前缀的AopConfigure对象</li>
+<li>TransIocLoader 自动加载AOP事务所需要的ioc定义</li>
+<li>Cnd支持between</li>
+<li>@Param 支持默认值(仅表单参数)</li>
+<li>Http类提供访问12306和360safe等自签名https地址的解决方案</li>
+<li>Sql类支持强制execQuery方式,即总是取回ResultSet</li>
+<li>@JsonField和JsonFormat支持自定义日期格式</li>
+<li>R.UU32()方法提供32进制的UUID格式</li>
+<li>路径参数支持**</li>
+<li>NetworkType添加蓝牙和NFC</li>
+<li>Dao允许设置JdbcExpert</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="问题修复"></a>问题修复</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li><a href="https://github.com/nutzam/nutz/issues/733">Issue 733</a> Pojos.Items.cndAuto 如果主键值为空,空指针 <span style="color:#888888;">by</span> <b>ming300</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/722">Issue 722</a> 自定义过滤器的match方法中正则验证失效 <span style="color:#888888;">by</span> <b>wqmain</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/721">Issue 721</a> response类中获取的传递过来的utf-8 不起效果 <span style="color:#888888;">by</span> <b>liuzongtao</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/717">Issue 717</a> Http 的方法不支持DELETE 方式的请求 <span style="color:#888888;">by</span> <b>Rekoe</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/710">Issue 710</a> Ioc支持字段可选注入 <span style="color:#888888;">by</span> <b>wendal</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/705">Issue 705</a> Ioc 注入的 Java 调用，不支持负数 <span style="color:#888888;">by</span> <b>zozoh</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/695">Issue 695</a> Ioc手册建议 <span style="color:#888888;">by</span> <b>chenboxiang</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/691">Issue 691</a> session机制问题 @SessionBy(NopSessionProvider.class)还是返回标准session问题 <span style="color:#888888;">by</span> <b>316719744</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/689">Issue 689</a> 关于Record.getInt(String name)对应name不存在时返回值的建议 <span style="color:#888888;">by</span> <b>talentyao</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/688">Issue 688</a> nutz1.50上传多张图片问题 <span style="color:#888888;">by</span> <b>wangyingdong</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/686">Issue 686</a> PropertiesProxy占用文件问题 <span style="color:#888888;">by</span> <b>zhanghuanle</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/682">Issue 682</a> 在扫@At的时候如果重复，是否也可以考虑给个提示 <span style="color:#888888;">by</span> <b>ansn001</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/679">Issue 679</a> el表达式的页面，有好多例子都写错了。 <span style="color:#888888;">by</span> <b>sphsyv</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/675">Issue 675</a> dao.func返回的类型能不能是object类？ <span style="color:#888888;">by</span> <b>wangyingdong</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/674">Issue 674</a> nutz-1.b.50-jdk6 不支持sql2014 <span style="color:#888888;">by</span> <b>frenzy917</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/661">Issue 661</a> AnnotationEntityMaker创建Entity失败时,没有把Entity移除 <span style="color:#888888;">by</span> <b>wendal</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/659">Issue 659</a> 关于FieldFilter 好难用的解决方案~~ <span style="color:#888888;">by</span> <b>blacklong</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/652">Issue 652</a> 重定向视图文档与实现不符 <span style="color:#888888;">by</span> <b>zozoh</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/651">Issue 651</a> Times 时间格式化问题 <span style="color:#888888;">by</span> <b>Rekoe</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/648">Issue 648</a> MVC URL 映射问题 <span style="color:#888888;">by</span> <b>TuWei1992</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/640">Issue 640</a> NutDaoExecutor._runExec中的CallableStatement未采用安全关闭 <span style="color:#888888;">by</span> <b>251505453</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/638">Issue 638</a> 执行Tasks.depose后定时器还在运行 <span style="color:#888888;">by</span> <b>251505453</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/637">Issue 637</a> 文件上传错误！ <span style="color:#888888;">by</span> <b>gql1983</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/635">Issue 635</a> Jdbcs获取Adaptor的问题 <span style="color:#888888;">by</span> <b>JaynLeaew</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/629">Issue 629</a> ioc支持factory方法 <span style="color:#888888;">by</span> <b>wendal</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/624">Issue 624</a> @ColDefine注解修饰Date类型BUG <span style="color:#888888;">by</span> <b>sd4324530</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/617">Issue 617</a> Upload一个以\r\n结尾的文件,会少一个字节 <span style="color:#888888;">by</span> <b>wendal</b></li>
-<li><a href="https://github.com/nutzam/nutz/issues/436">Issue 436</a> ServletValueProxyMaker解析存在NullPointerException的隐患 <span style="color:#888888;">by</span> <b>lAndRaxeE</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/785">Issue 785</a> Json.fromJson 问题和建议 <span style="color:#888888;">by</span> <b>Jastxx</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/781">Issue 781</a> org.nutz.dao.util.Daos.queryCount(Dao, String) 这个方法在mysql下会报错 <span style="color:#888888;">by</span> <b>bugss</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/776">Issue 776</a> 允许设置Dao需要使用的JdbcExpert <span style="color:#888888;">by</span> <b>wendal</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/775">Issue 775</a> RawView在android下无法使用 <span style="color:#888888;">by</span> <b>wendal</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/771">Issue 771</a> 关于Nutz SqlExpressionGroup andLike 模糊检索的问题/需求 <span style="color:#888888;">by</span> <b>wqmain</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/757">Issue 757</a> jsonFormat 添加unicode大小写设置选项 <span style="color:#888888;">by</span> <b>Wizzercn</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/754">Issue 754</a> 建议UrlMappingImpl中重复映射同名方法时,日志输出级别改为warn目前为debug <span style="color:#888888;">by</span> <b>talentyao</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/751">Issue 751</a> dao.fetch(Cnd)的问题 <span style="color:#888888;">by</span> <b>zoeyangfang</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/727">Issue 727</a> json 转成 JSON.stringify(new Date()) 字符为date类型失败 <span style="color:#888888;">by</span> <b>hzl7652</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/720">Issue 720</a> 上传功能的mvc方法不能用基本类型的参数，否则出异常后不能进入方法 <span style="color:#888888;">by</span> <b>zhanghuanle</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/667">Issue 667</a> Cnd中添加orderBy(String name, String dir)方法 <span style="color:#888888;">by</span> <b>QinAIns</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/636">Issue 636</a> @ColDefine(type=ColType.FLOAT,precision=2) bug <span style="color:#888888;">by</span> <b>Rekoe</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/541">Issue 541</a> 需求：增加新的Callback注入任意类型bean的对应属性 <span style="color:#888888;">by</span> <b>wxs123456</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/527">Issue 527</a> 使用orderby条件可能存在sql盲注隐患 <span style="color:#888888;">by</span> <b>lAndRaxeE</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/492">Issue 492</a> Dao自定义SQL,ResultSet为空 <span style="color:#888888;">by</span> <b>enzozhong</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/485">Issue 485</a> mvc-ioc session 级别获取对象在同一session下总是新生成对象。 <span style="color:#888888;">by</span> <b>zouooh</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/424">Issue 424</a> EL不支持p.'user.id' <span style="color:#888888;">by</span> <b>juqkai</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/367">Issue 367</a> 批量更新的操作是否可以自定义表名 <span style="color:#888888;">by</span> <b>ansjsun</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/353">Issue 353</a> 重构Mirror类,实现一个重量级的Mirror <span style="color:#888888;">by</span> <b>wendal</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/248">Issue 248</a> 实现Nutz的HttpServer <span style="color:#888888;">by</span> <b>wendal</b></li>
+<li><a href="https://github.com/nutzam/nutz/issues/211">Issue 211</a> 使用sql server2005表和字段不能正确添加注释 <span style="color:#888888;">by</span> <b>weirhp</b></li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="质量"></a>质量</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>共通过了 <span style="color:#FF00FF;"><b>870+</b></span>  个单元测试用例,代码覆盖率达到 <span style="color:#FF00FF;">50+%</span>(按行计算)</p>
+<p>共通过了 <span style="color:#FF00FF;"><b>950+</b></span>  个单元测试用例,代码覆盖率达到 <span style="color:#FF00FF;">50+%</span>(按行计算)</p>
 <p><img src="emma.png"/></p>
 <p>Nutz.Dao 经测试在如下数据库上可以工作正常</p>
 <ul type="disc">
@@ -119,11 +140,14 @@
 <h1><a name="文档"></a>文档</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li><a href="http://www.nutzam.com/core/el/overview.html">表达式引擎简介</a> 修改</li>
-<li><a href="http://nutzam.com/core/mvc/view.html">重定向视图</a> 修改</li>
-<li><a href="http://nutzam.com/core/ioc/inner_object.html">如何定义对象</a> 修改</li>
-<li><a href="http://nutzam.com/core/ioc/ioc_loader.html">如何配置一个 IocBean</a> 修改</li>
+<li>添加TransAop的说明</li>
+<li>添加org.nutz.http包的说明</li>
+<li>添加org.nutz.img包的说明</li>
 </ul>
+<div class="hr"><b></b></div>
+<h1><a name="关联项目的更新"></a>关联项目的更新</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>nutz-web 使用了nutz 1.b.52 提供的新方法nutzmore项目分拆为多个子modules, 并提供jcache缓存和Xml Entity Maker实现nutzwx API大幅重构,需要依赖nutz 1.b.52nutzmongo dev版更新nutz-quartz 更新构建脚本</p>
 <div class="hr"><b></b></div>
 <h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -135,161 +159,147 @@
 <li>文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题</li>
 </ul>
 <p>如有遗漏,请提醒我们 ^_^</p>
-<p><span style="color:#CCCCCC;"><i>贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...</i></span>   </p>
+<p><span style="color:#CCCCCC;"><i>贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...</i></span></p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
-<td> 贡献者       </td>
+<td> 贡献者         </td>
 <td> 问题 </td>
 <td> 支持 </td>
 <td> 代码 </td>
 <td> 文档 </td>
 </tr>
 <tr>
-<td> 251505453    </td>
+<td> Jastxx     	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> 316719744    </td>
+<td> QinAIns    	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> JaynLeaew    </td>
+<td> Rekoe      	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> Rekoe        </td>
+<td> Wizzercn   	</td>
 <td>  O   </td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> TuWei1992    </td>
+<td> ansjsun    	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> ansn001      </td>
+<td> bugss      	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> blacklong    </td>
+<td> juqkai     	</td>
+<td>  O   </td>
+<td>  -   </td>
+<td>  O   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> lAndRaxeE  	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> chenboxiang  </td>
+<td> talentyao  	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> frenzy917    </td>
+<td> weirhp     	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> gql1983      </td>
+<td> wendal     	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> wqmain     	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> lAndRaxeE    </td>
+<td> wxs123456  	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> liuzongtao   </td>
+<td> zhanghuanle	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> ming300      </td>
-<td>  O   </td>
-<td>  O   </td>
-<td>  -   </td>
-<td>  -   </td>
-</tr>
-<tr>
-<td> sd4324530    </td>
+<td> zoeyangfang	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> sphsyv       </td>
+<td> zouooh     	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> talentyao    </td>
+<td> zozoh     	</td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  O   </td>
+<td>  -   </td>
+</tr>
+<tr>
+<td> 罗马钟        	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
 </tr>
 <tr>
-<td> wangyingdong </td>
+<td> 鲁鲁         	</td>
 <td>  O   </td>
 <td>  -   </td>
 <td>  -   </td>
 <td>  -   </td>
-</tr>
-<tr>
-<td> wendal       </td>
-<td>  O   </td>
-<td>  O   </td>
-<td>  O   </td>
-<td>  O   </td>
-</tr>
-<tr>
-<td> wqmain       </td>
-<td>  O   </td>
-<td>  -   </td>
-<td>  -   </td>
-<td>  -   </td>
-</tr>
-<tr>
-<td> zhanghuanle  </td>
-<td>  O   </td>
-<td>  -   </td>
-<td>  -   </td>
-<td>  -   </td>
-</tr>
-<tr>
-<td> zozoh        </td>
-<td>  O   </td>
-<td>  O   </td>
-<td>  O   </td>
-<td>  O   </td>
 </tr>
 </table>
 <p>另外，很多朋友都在：</p>

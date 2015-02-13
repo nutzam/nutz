@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>小巧的Http客户端</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">小巧的Http客户端</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么有这个package">为什么有这个package</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#基本请求">基本请求</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#设置http代理">设置http代理</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#关于自签名的Https证书">关于自签名的Https证书</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么有这个package"></a>为什么有这个package</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来</p>
+<p>简单来说, 这个package是对UrlConnection操作的薄封装.</p>
+<p>远没有apache http client的完善,但足以满足一般的http请求了.</p>
+<div class="hr"><b></b></div>
+<h1><a name="基本请求"></a>基本请求</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>GET请求</p>
+<pre>	Response response = Http.get("http:<span class="zdoc_code_cmt">//nutztest.herokuapp.com/");
+</span>    assertNotNull(response);
+    assertNotNull(response.getContent());
+    assertNotNull(response.getDetail());
+    assertNotNull(response.getHeader());
+    assertNotNull(response.getProtocal());
+    assertTrue(response.getStatus() &gt; 0);
+    assertNotNull(response.getStream());
+</pre>
+<p>POST请求</p>
+<pre>    Map&lt;String, Object&gt; parms = new HashMap&lt;String, Object&gt;();
+    parms.put("version", "NutzTest");
+    parms.put("website", Nutz.version());
+    String response = Http.post("http:<span class="zdoc_code_cmt">//nutztest.herokuapp.com/",
+</span>                                parms,
+                                5 * 1000); <span class="zdoc_code_cmt">// 可以同时设置超时时间
+</span>    assertNotNull(response);
+    assertTrue(response.length() &gt; 0);
+    <span class="zdoc_code_cmt">// 该post的返回值是"version: #{params[:version]}, website: #{params[:website]}"
+</span>    assertEquals(response,
+                 String.format("version: %s, website: %s",
+                               "NutzTest",
+                               Nutz.version()));
+</pre>
+<p>响应的编码</p>
+<pre>	<span class="zdoc_code_cmt">// 根据Http头的Content-Type自动识别编码类型
+</span>    Response response1 = Http.get("www.duokan.com");
+    assertEquals("utf-8", response1.getEncodeType().toLowerCase());
+    assertTrue(response1.getContent().indexOf("多看") &gt; 0);
+
+    <span class="zdoc_code_cmt">// 如果Http头中没有指定编码类型，用户也可以手工指定
+</span>    Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");
+    assertTrue(response2.getContent("GBK").indexOf("考试吧") &gt; 0);
+</pre>
+<p>上传文件</p>
+<pre>	Request req = Request.create(getBaseURL()+"/upload/image",METHOD.POST);
+    File f = File.createTempFile("nutz", "data");
+    FileWriter fw = new FileWriter(f);
+    fw.write("abc");
+    fw.flush();
+    fw.close();
+    req.getParams().put("file", f);
+    FilePostSender sender = new FilePostSender(req);
+    Response resp = sender.send();
+    assertEquals("image&amp;3", resp.getContent());
+</pre>
+<p>设置代理及代理回落</p>
+<div class="hr"><b></b></div>
+<h1><a name="设置http代理"></a>设置http代理</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Http.setHttpProxy("fuck_fbx.com", 8080);
+</pre>
+<p>代理回落, 即代理服务器不可连接时,尝试直连</p>
+<pre>Http.setAutoSwitch(true);
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="关于自签名的Https证书"></a>关于自签名的Https证书</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>关闭jvm的证书检查(全局的)</p>
+<pre>	Http.disableJvmHttpsCheck();
+	String url = "https:<span class="zdoc_code_cmt">//kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&amp;leftTicketDTO.from_station=UXP&amp;leftTicketDTO.to_station=SJP&amp;purpose_codes=ADULT";
+</span>    Http.get(url);
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

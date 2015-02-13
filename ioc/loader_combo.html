@@ -49,10 +49,11 @@
                  "service.js", 
                  "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
                  "com.myapp.module",
-                 "com.myapp.service"
+                 "com.myapp.service",
+                 "*tx"
 		 )); 
 </pre>
-<p>如上面的例子，组合加载器，组合了两个 Ioc 加载器，一个是 JsonLoader，一个是AnnotationIocLoader。 </p>
+<p>如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 </p>
 <p>ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头，则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头的参数。</p>
 <p>上面的例子，实际上为 Ioc 容器准备了这两个加载器，第一个是 JSON 加载器，它从 dao.js 和service.js 这两个配置文件中读取容器对象的配置信息。 而另外一个 Annotation 加载器，从会扫描包 <b>com.myapp.module</b> 以及 <b>com.myapp.service</b> 已经其下的子包，如果发现有容器对象（声明了 @IocBean 注解，详情请看 <a href="loader_annotation.html">Ioc - Annotation 加载器</a>）就会加载。</p>
 <p>并且这两个加载器的优先级为</p>
@@ -87,6 +88,7 @@ public class MainModule {
 <li>JsonLoader</li>
 <li>AnnotationIocLoader</li>
 <li>MapLoader</li>
+<li>TransIocLoader</li>
 <li>其他任何你自己实现的 IocLoader</li>
 </ul>
 <div class="hr"><b></b></div>
@@ -97,7 +99,10 @@ public class MainModule {
 json       --&gt; org.nutz.ioc.loader.json.JsonLoader
 xml        --&gt; org.nutz.ioc.loader.xml.XmlIocLoader
 annotation --&gt; org.nutz.ioc.loader.annotation.AnnotationIocLoader
-</pre>
+anno       --&gt; org.nutz.ioc.loader.annotation.AnnotationIocLoader
+tx         --&gt; org.nutz.aop.interceptor.ioc.TransIocLoader  <span class="zdoc_code_cmt">#无参数
+</span>trans      --&gt; org.nutz.aop.interceptor.ioc.TransIocLoader  <span class="zdoc_code_cmt">#无参数
+</span></pre>
 <p>本小节开头的配置就可以写成: </p>
 <pre>@IocBy(type = ComboIocProvider.class,
        args = {"*json",

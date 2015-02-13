@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>图像处理小军刀</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">图像处理小军刀</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#为什么有这个package">为什么有这个package</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#图像读取">图像读取</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#图像旋转">图像旋转</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#图像缩放">图像缩放</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="为什么有这个package"></a>为什么有这个package</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来. </p>
+<p>直接原文拷贝啦,从http,哈哈.</p>
+<div class="hr"><b></b></div>
+<h1><a name="图像读取"></a>图像读取</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>你会发现,Images类只有一个read方法,参数类型是Object</p>
+<pre><span class="zdoc_code_cmt">// 可以是URL对象
+</span>Images.read(new Url("http:<span class="zdoc_code_cmt">//www.baidu.com/img/bdlogo.png"));
+</span><span class="zdoc_code_cmt">// 可以是路径
+</span>Images.read("/dev/shm/shiro_login.png");
+<span class="zdoc_code_cmt">// 可以是File对象
+</span>Images.read(new File("/dev/shm/shiro_login.png"));
+<span class="zdoc_code_cmt">// 可以是InputStream
+</span>Images.read(in);
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="图像旋转"></a>图像旋转</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>旋转90度</p>
+<pre>img = Images.rotate(img, 90);
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="图像缩放"></a>图像缩放</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>缩放到指定长宽,等比缩放</p>
+<pre>img = Images.zoomScale(img, 160, 180, Color.WHITE);
+</pre>
+<p>裁剪缩放</p>
+<pre>Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
+}}
+
+------------------------------------------------------------------------
+输出文件
+
+根据文件后缀输出图片
+
+{{{
+Images.write(image, new File("/dev/shm/abc.png"));
+</pre>
+<p>输出jpeg并指定质量</p>
+<pre>Images.writeJpeg(image, new File("/dev/shm/abc.jpg"), 0.9f);
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>
