@@ -6,6 +6,8 @@ package org.nutz.mvc;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public interface Setup {
+    
+    String IOCNAME = "$setup";
 
     /**
      * 启动时，额外逻辑

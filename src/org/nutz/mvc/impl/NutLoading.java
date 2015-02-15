@@ -3,8 +3,11 @@ package org.nutz.mvc.impl;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
@@ -251,6 +254,23 @@ public class NutLoading implements Loading {
             Setup setup = Loadings.evalObj(config, sb.value(), sb.args());
             config.setAttributeIgnoreNull(Setup.class.getName(), setup);
             setup.init(config);
+        } else if (config.getIoc() != null && config.getIoc().has(Setup.IOCNAME)) {
+            String[] names = config.getIoc().getNames();
+            Arrays.sort(names);
+            boolean flag = true;
+            for (String name : names) {
+                if (name != null && name.startsWith(Setup.IOCNAME)) {
+                    if (flag) {
+                        flag = false;
+                        if (log.isInfoEnabled())
+                            log.info("Setup application...");
+                    }
+                    log.debug("load Setup from Ioc by name=" + Setup.IOCNAME);
+                    Setup setup = config.getIoc().get(Setup.class, Setup.IOCNAME);
+                    config.setAttributeIgnoreNull(Setup.class.getName(), setup);
+                    setup.init(config);
+                }
+            }
         }
     }
 
@@ -292,31 +312,39 @@ public class NutLoading implements Loading {
 
     protected ViewMaker[] createViewMakers(Class<?> mainModule, Ioc ioc) throws Exception {
         Views vms = mainModule.getAnnotation(Views.class);
-        ViewMaker[] makers;
-        int i = 0;
+        List<ViewMaker> makers = new ArrayList<ViewMaker>();
         if (null != vms) {
-            makers = new ViewMaker[vms.value().length + 1];
-            for (; i < vms.value().length; i++) {
+            for (int i = 0; i < vms.value().length; i++) {
             	if (vms.value()[i].getAnnotation(IocBean.class) != null && ioc != null) {
-            		makers[i] = ioc.get(vms.value()[i]);
+            	    makers.add(ioc.get(vms.value()[i]));
             	} else {
-            		makers[i] = Mirror.me(vms.value()[i]).born();
+            	    makers.add(Mirror.me(vms.value()[i]).born());
             	}
             }
         } else {
-            makers = new ViewMaker[1];
+            if (ioc != null) {
+                String[] names = ioc.getNames();
+                Arrays.sort(names);
+                for(String name: ioc.getNames()) {
+                    if (name != null && name.startsWith(ViewMaker.IOCNAME)) {
+                        log.debug("add ViewMaker from Ioc by name=" + name);
+                        makers.add(ioc.get(ViewMaker.class, name));
+                    }
+                }
+            }
         }
-        makers[i] = new DefaultViewMaker();// 优先使用用户自定义
+        makers.add(new DefaultViewMaker());// 优先使用用户自定义
 
         if (log.isDebugEnabled()) {
             StringBuilder sb = new StringBuilder();
-            sb.append(makers[0].getClass().getSimpleName());
-            for (i = 0; i < makers.length - 1; i++)
-                sb.append(',').append(makers[i].getClass().getSimpleName());
+            for (ViewMaker maker : makers) {
+                sb.append(maker.getClass().getSimpleName()).append(",");
+            }
+            sb.setLength(sb.length() - 1);
             log.debugf("@Views(%s)", sb);
         }
 
-        return makers;
+        return makers.toArray(new ViewMaker[makers.size()]);
     }
 
     protected Ioc createIoc(NutConfig config, Class<?> mainModule) throws Exception {

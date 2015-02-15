@@ -20,6 +20,8 @@ import org.nutz.ioc.Ioc;
  * 
  */
 public interface ViewMaker {
+    
+    String IOCNAME = "$views";
 
     /**
      * 注解 '@Ok' 和 '@Fail' 的值是个字符串，用户可以随意定义。字符串从第一个冒号处拆成两半

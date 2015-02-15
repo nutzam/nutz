@@ -1,0 +1,66 @@
+#title: 图像处理小军刀
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------
+为什么有这个package
+
+	这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来. 
+	
+	直接原文拷贝啦,从http,哈哈.
+	
+	
+	
+------------------------------------------------------------------------
+图像读取
+
+	你会发现,Images类只有一个read方法,参数类型是Object
+	
+	{{{
+	// 可以是URL对象
+	Images.read(new Url("http://www.baidu.com/img/bdlogo.png"));
+	// 可以是路径
+	Images.read("/dev/shm/shiro_login.png");
+	// 可以是File对象
+	Images.read(new File("/dev/shm/shiro_login.png"));
+	// 可以是InputStream
+	Images.read(in);
+	}}}
+
+------------------------------------------------------------------------
+图像旋转
+
+	旋转90度
+	
+	{{{
+	img = Images.rotate(img, 90);
+	}}}
+
+------------------------------------------------------------------------
+图像缩放
+
+	缩放到指定长宽,等比缩放
+	
+	{{{
+	img = Images.zoomScale(img, 160, 180, Color.WHITE);
+	}}}
+	
+	裁剪缩放
+	
+	{{{
+	Images.clipScale("/dev/shm/abc.jpg", "/dev/shm/abc_out.jpg",  1920, 1080);
+	}}
+	
+------------------------------------------------------------------------
+输出文件
+
+	根据文件后缀输出图片
+	
+	{{{
+	Images.write(image, new File("/dev/shm/abc.png"));
+	}}}
+	
+	输出jpeg并指定质量
+	
+	{{{
+	Images.writeJpeg(image, new File("/dev/shm/abc.jpg"), 0.9f);
+	}}}

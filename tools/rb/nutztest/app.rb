@@ -75,6 +75,15 @@ namespace '/nutztest' do
     end
   end
 
+  namespace "/aop" do
+    get("/test1") do
+    end
+
+    get("/test1/result") do
+      "0"
+    end
+  end
+
   # AllView.java
   namespace '/views' do
     %w{for for2 for3}.each do |item|
@@ -91,7 +100,7 @@ namespace '/nutztest' do
 
     %w{raw raw2 raw3}.each do |item|
       get "/#{item}" do
-          "ABC"
+        "ABC"
       end
     end
 
@@ -104,7 +113,7 @@ namespace '/nutztest' do
 
     %w{red red2 red3}.each do |item|
       get "/#{item}" do
-          context_path
+        context_path
       end
     end
   end
@@ -112,7 +121,7 @@ namespace '/nutztest' do
   # SimpleAdaptorTest.java
   namespace '/adaptor' do
     get '/github/issue/543' do
-      (Date.parse(params[:d]).to_time.to_i*1000).to_s
+      (Time.parse(params[:d]).getlocal("+08:00").to_time.to_i*1000).to_s
     end
 
     get '/err/param' do
@@ -136,6 +145,9 @@ namespace '/nutztest' do
       "I am abc"
     end
 
+    get "/default_value" do
+      params[:abc] || "123456"
+    end
   end
 
   # UploadTest.java
