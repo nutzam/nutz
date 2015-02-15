@@ -228,7 +228,7 @@ public class AnnotationIocLoader implements IocLoader {
 
             // 处理工厂方法
             if (!Strings.isBlank(iocBean.factory())) {
-                iocObject.setFactory(beanName);
+                iocObject.setFactory(iocBean.factory());
             }
         } else {
             // 这里只是检查一下@Inject,要避免抛出异常.
@@ -258,9 +258,9 @@ public class AnnotationIocLoader implements IocLoader {
             if ("".equals(iocValue.getType()))
                 iocValue.setType(null);
         } else {
-            // XXX 兼容性改变, 1.b.52 开始默认就是refer
+            // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
             log.info("auto set as         refer:" + value);
-            iocValue.setType("refer"); 
+            iocValue.setType("refer");
             iocValue.setValue(value); 
         }
         return iocValue;
