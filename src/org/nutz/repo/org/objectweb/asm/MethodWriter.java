@@ -1204,15 +1204,15 @@ class MethodWriter implements MethodVisitor {
 //            }
 //        }
 //    }
-//
-//    public void visitLineNumber(final int line, final Label start) {
-//        if (lineNumber == null) {
-//            lineNumber = new ByteVector();
-//        }
-//        ++lineNumberCount;
-//        lineNumber.putShort(start.position);
-//        lineNumber.putShort(line);
-//    }
+
+    public void visitLineNumber(final int line, final Label start) {
+        if (lineNumber == null) {
+            lineNumber = new ByteVector();
+        }
+        ++lineNumberCount;
+        lineNumber.putShort(start.position);
+        lineNumber.putShort(line);
+    }
 
     public void visitMaxs(final int maxStack, final int maxLocals) {
         if (ClassReader.FRAMES && compute == FRAMES) {
