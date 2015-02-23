@@ -28,7 +28,7 @@ public final class Nutz {
      * @return nutz 项目的版本号
      */
     public static String version() {
-        return String.format("%d.%s.%d", majorVersion(), releaseLevel(), minorVersion());
+        return String.format("%d.%s.%d-dev", majorVersion(), releaseLevel(), minorVersion());
     }
     
     public static int majorVersion() {
@@ -36,7 +36,7 @@ public final class Nutz {
     }
 
     public static int minorVersion() {
-        return 52;
+        return 53;
     }
     
     public static String releaseLevel() {
