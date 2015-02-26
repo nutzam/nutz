@@ -28,9 +28,12 @@ public final class Nutz {
      * @return nutz 项目的版本号
      */
     public static String version() {
-        return String.format("%d.%s.%d", majorVersion(), releaseLevel(), minorVersion());
+        return String.format("%d.%s.%d",
+                             majorVersion(),
+                             releaseLevel(),
+                             minorVersion());
     }
-    
+
     public static int majorVersion() {
         return 1;
     }
@@ -38,7 +41,7 @@ public final class Nutz {
     public static int minorVersion() {
         return 53;
     }
-    
+
     public static String releaseLevel() {
         return "b";
     }
