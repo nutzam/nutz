@@ -3,6 +3,7 @@ package org.nutz.dao.impl.jdbc;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,6 +66,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     // ====================================================================
     // 下面为子类默认实现几个接口函数
 
+    protected abstract int getColumnIndex(Statement stat, ResultSetMetaData meta,MappingField mf) throws SQLException;
     public void setupEntityField(Connection conn, Entity<?> en) {
         Statement stat = null;
         ResultSet rs = null;
@@ -77,7 +79,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             // 循环字段检查
             for (MappingField mf : en.getMappingFields()) {
                 try {
-					int ci = Daos.getColumnIndex(rsmd, mf.getColumnName());
+					//int ci = getColumnIndex(stat,rsmd, mf.getColumnName());
+                	int ci = getColumnIndex(stat,rsmd, mf);
 					// 是否只读，如果人家已经是指明是只读了，那么就不要自作聪明得再从数据库里验证了
 					// if (!mf.isReadonly() && rsmd.isReadOnly(ci))
 					// mf.setAsReadonly();

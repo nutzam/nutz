@@ -219,14 +219,15 @@ public class Scans {
         for (NutResource r : list) {
         	int index = tmp.indexOf(r);
         	if (index > -1) {
-        		log.infof("same resource [%s] will be override", r.getName());
+        		if (log.isDebugEnabled())
+        			log.debugf("same resource [%s] will be override", r.getName());
         		tmp.set(index, r);
         	} else
         		tmp.add(r);
 		}
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
-        return list;
+        return tmp;
     }
 
     public List<Class<?>> scanPackage(Class<?> classZ) {
