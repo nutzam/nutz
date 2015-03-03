@@ -74,12 +74,12 @@ public class NutConf {
     private void loadResource(String... paths) {
         for (String path : paths) {
             List<NutResource> resources;
-            if (path.endsWith(".js")) {
+            if (path.endsWith(".js") || path.endsWith(".json")) {
                 File f = Files.findFile(path);
                 resources = new ArrayList<NutResource>();
                 resources.add(new FileResource(f));
             } else {
-                resources = Scans.me().scan(path, "\\.js$");
+                resources = Scans.me().scan(path, "\\.(js|json)$");
             }
 
             for (NutResource nr : resources) {
