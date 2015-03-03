@@ -50,8 +50,11 @@ public class NutActionChainMaker implements ActionChainMaker {
     }
 
     protected static Processor getProcessorByName(NutConfig config,String name) throws Exception {
-        if (name.startsWith("ioc:") && name.length() > 4)
-            return config.getIoc().get(Processor.class, name.substring(4));
+        if (name.startsWith("ioc:") && name.length() > 4) {
+            if (config.getIoc() == null)
+                throw new IllegalArgumentException("getProcessorByName " + name + " but no ioc !");
+            return config.getIoc().get(Processor.class, name.substring(4).trim());
+        }
         else
             return (Processor) Mirror.me(Lang.loadClass(name)).born();
     }
