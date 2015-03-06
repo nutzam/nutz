@@ -488,4 +488,9 @@ public class CastorTest {
     // Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
     // castors.castTo(1, Long.class);
     // }
+    @Test
+    public void testString2Enum() {
+        Assert.assertEquals(AlipayNotifyType.StatusSync, Castors.create().castTo("StatusSync", AlipayNotifyType.class));
+        Assert.assertEquals(AlipayNotifyType.StatusSync, Castors.create().castTo("trade_status_sync", AlipayNotifyType.class));
+    }
 }
