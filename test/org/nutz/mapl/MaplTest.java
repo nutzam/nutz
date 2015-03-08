@@ -257,7 +257,7 @@ public class MaplTest {
         System.out.println(Json.fromJson(json));
         String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
         System.out.println(Json.fromJson(model));
-        String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
+        //String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
         
         
         Object obj = Mapl.convert(Json.fromJson(Lang.inr("[{'name':'jk', 'age':12}]")), Lang.inr(model));

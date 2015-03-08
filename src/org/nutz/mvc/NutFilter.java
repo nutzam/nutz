@@ -90,10 +90,10 @@ public class NutFilter implements Filter {
         		tmp = tmp.trim().intern();
         		if (tmp.length() > 1) {
         			if (tmp.startsWith("*")) {
-    					prefix.add(tmp.substring(1));
+        			    suffix.add(tmp.substring(1));
     					continue;
     				} else if (tmp.endsWith("*")) {
-    					suffix.add(tmp.substring(0, tmp.length() - 1));
+    					prefix.add(tmp.substring(0, tmp.length() - 1));
     					continue;
     				}
         		}

@@ -12,13 +12,14 @@ import org.w3c.dom.Element;
 
 public class XmlsTest {
 
-	@Test
-	public void testAsMap() {
-		String xmlStr = "<root><name>wendal</name><age>29</age><skills><java>good</java><lua>ok</lua></skills></root>";
-		Document doc = Xmls.xml(new ByteArrayInputStream(xmlStr.getBytes()));
-		Element root = doc.getDocumentElement();
-		Map<String, Object> map = Xmls.asMap(root);
-		System.out.println(map);
-	}
+    @Test
+    public void testAsMap() {
+        String xmlStr = "<root><name>wendal</name><age>29</age><skills><java>good</java><lua>ok</lua></skills></root>";
+        Document doc = Xmls.xml(new ByteArrayInputStream(xmlStr.getBytes()));
+        Element root = doc.getDocumentElement();
+        Map<String, Object> map = Xmls.asMap(root);
+
+        assertEquals("wendal", map.get("name").toString());
+    }
 
 }
