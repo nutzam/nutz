@@ -119,8 +119,7 @@ public abstract class Nums {
         boolean[] ns = new boolean[ss.length];
         for (int i = 0; i < ns.length; i++) {
             try {
-                ns[i] = Pattern.matches("^(1|yes|true|on)$",
-                                        ss[i].toLowerCase());
+                ns[i] = Pattern.matches("^(1|yes|true|on)$", ss[i].toLowerCase());
             }
             catch (NumberFormatException e) {
                 ns[i] = false;
@@ -130,13 +129,24 @@ public abstract class Nums {
     }
 
     /**
-     * @param arr
-     * @param v
-     * @return 第一个匹配元素的下标
+     * @see #indexOf(int[], int, int)
      */
     public static int indexOf(int[] arr, int v) {
+        return indexOf(arr, v, 0);
+    }
+
+    /**
+     * @param arr
+     *            数组
+     * @param v
+     *            值
+     * @param off
+     *            从那个下标开始搜索(包含)
+     * @return 第一个匹配元素的下标
+     */
+    public static int indexOf(int[] arr, int v, int off) {
         if (null != arr)
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = off; i < arr.length; i++) {
                 if (arr[i] == v)
                     return i;
             }
@@ -146,7 +156,7 @@ public abstract class Nums {
     /**
      * @param arr
      * @param v
-     * @return 第一个匹配元素的下标
+     * @return 最后一个匹配元素的下标
      */
     public static int lastIndexOf(int[] arr, int v) {
         if (null != arr)
@@ -158,13 +168,29 @@ public abstract class Nums {
     }
 
     /**
-     * @param arr
-     * @param v
-     * @return 第一个匹配元素的下标
+     * @see #indexOf(char[], char, int)
      */
     public static int indexOf(char[] arr, char v) {
         if (null != arr)
             for (int i = 0; i < arr.length; i++) {
+                if (arr[i] == v)
+                    return i;
+            }
+        return -1;
+    }
+
+    /**
+     * @param arr
+     *            数组
+     * @param v
+     *            值
+     * @param off
+     *            从那个下标开始搜索(包含)
+     * @return 第一个匹配元素的下标
+     */
+    public static int indexOf(char[] arr, char v, int off) {
+        if (null != arr)
+            for (int i = off; i < arr.length; i++) {
                 if (arr[i] == v)
                     return i;
             }
@@ -186,13 +212,24 @@ public abstract class Nums {
     }
 
     /**
-     * @param arr
-     * @param v
-     * @return 第一个匹配元素的下标
+     * @see #indexOf(long[], long, int)
      */
     public static int indexOf(long[] arr, long v) {
+        return indexOf(arr, v, 0);
+    }
+
+    /**
+     * @param arr
+     *            数组
+     * @param v
+     *            值
+     * @param off
+     *            从那个下标开始搜索(包含)
+     * @return 第一个匹配元素的下标
+     */
+    public static int indexOf(long[] arr, long v, int off) {
         if (null != arr)
-            for (int i = 0; i < arr.length; i++) {
+            for (int i = off; i < arr.length; i++) {
                 if (arr[i] == v)
                     return i;
             }
