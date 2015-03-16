@@ -97,7 +97,12 @@ public abstract class Sender {
                     rep.setStream(conn.getInputStream());
                 }
                 catch (IOException e) {
-                    rep.setStream(new NullInputStream());
+                    try {
+                        rep.setStream(conn.getErrorStream());
+                    }
+                    catch (Exception e1) {
+                        rep.setStream(new NullInputStream());
+                    }
                 }
             }
         }
@@ -106,7 +111,7 @@ public abstract class Sender {
 
     protected Map<String, String> getResponseHeader() throws IOException {
         if (conn.getResponseCode() < 0)
-            throw new IOException("Network error!! resp code="+conn.getResponseCode());
+            throw new IOException("Network error!! resp code=" + conn.getResponseCode());
         Map<String, String> reHeaders = new HashMap<String, String>();
         for (Entry<String, List<String>> en : conn.getHeaderFields().entrySet()) {
             List<String> val = en.getValue();
