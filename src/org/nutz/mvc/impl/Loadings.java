@@ -23,6 +23,7 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.Mvcs;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.AdaptBy;
@@ -87,8 +88,21 @@ public abstract class Loadings {
         // 扫描包
         Set<Class<?>> modules = new HashSet<Class<?>>();
         if (null != ann && ann.packages() != null && ann.packages().length > 0) {
-            for (String packageName : ann.packages())
-                scanModuleInPackage(modules, packageName);
+            for (String packageName : ann.packages()) {
+                // 启用动态路径
+                if (packageName.equals("$dynamic")) {
+                    String[] pkgs = Strings.splitIgnoreBlank(Mvcs.dynamic_modules,
+                                                             "[,\n]");
+                    if (null != pkgs)
+                        for (String pkg : pkgs) {
+                            scanModuleInPackage(modules, pkg);
+                        }
+                }
+                // 否则老样子 ...
+                else {
+                    scanModuleInPackage(modules, packageName);
+                }
+            }
         }
         for (Class<?> type : list) {
             // mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
@@ -96,8 +110,9 @@ public abstract class Loadings {
                 URL location = type.getProtectionDomain().getCodeSource().getLocation();
                 if (log.isDebugEnabled())
                     log.debugf("module class location '%s'", location);
-            } catch (NullPointerException e) {
-                //Android上无法拿到getProtectionDomain,just pass
+            }
+            catch (NullPointerException e) {
+                // Android上无法拿到getProtectionDomain,just pass
             }
             Scans.me().registerLocation(type);
         }
@@ -169,7 +184,7 @@ public abstract class Loadings {
             } else {
                 ai.setPaths(at.value());
             }
-            
+
             if (!Strings.isBlank(at.key()))
                 ai.setPathKey(at.key());
         }
@@ -229,8 +244,8 @@ public abstract class Loadings {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void evalHttpAdaptor(ActionInfo ai, AdaptBy ab) {
         if (null != ab) {
-            ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(    ab.type(),
-                                                                                    ab.args()));
+            ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(ab.type(),
+                                                                                 ab.args()));
         }
     }
 
@@ -239,8 +254,10 @@ public abstract class Loadings {
             ai.setInputEncoding(org.nutz.lang.Encoding.UTF8);
             ai.setOutputEncoding(org.nutz.lang.Encoding.UTF8);
         } else {
-            ai.setInputEncoding(Strings.sNull(encoding.input(), org.nutz.lang.Encoding.UTF8));
-            ai.setOutputEncoding(Strings.sNull(encoding.output(), org.nutz.lang.Encoding.UTF8));
+            ai.setInputEncoding(Strings.sNull(encoding.input(),
+                                              org.nutz.lang.Encoding.UTF8));
+            ai.setOutputEncoding(Strings.sNull(encoding.output(),
+                                               org.nutz.lang.Encoding.UTF8));
         }
     }
 

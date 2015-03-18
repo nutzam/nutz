@@ -37,8 +37,14 @@ public abstract class Mvcs {
     public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
     // 这个全局变量用来为 AnnotationIocLoader 添加一个动态加载的包路径
-    // 如果 AnnotationIocLoader 的加载路径值为 $dynamic 则会将启用这个值s
-    public static String ann_dynamic_path = null;
+    // 如果 AnnotationIocLoader 的加载路径值为 $dynamic 则会将启用这个值
+    // 这个值可以是半角逗号或者换行符分隔的多个路径
+    public static String dynamic_ann_paths = null;
+
+    // 这个全局变量用来为 @Modules 添加一个动态模块加载路径
+    // 如果 @Module 的加载路径值为 $dynamic 则会将启用这个值
+    // 这个值可以是半角逗号或者换行符分隔的多个路径
+    public static String dynamic_modules = null;
 
     // ====================================================================
 
@@ -267,9 +273,8 @@ public abstract class Mvcs {
      * @throws IOException
      *             写入失败
      */
-    public static void write(HttpServletResponse resp,
-                             Object obj,
-                             JsonFormat format) throws IOException {
+    public static void write(HttpServletResponse resp, Object obj, JsonFormat format)
+            throws IOException {
         resp.setHeader("Cache-Control", "no-cache");
         if (resp.getContentType() == null)
             resp.setContentType("text/plain");
@@ -314,8 +319,7 @@ public abstract class Mvcs {
      * @return HTTP 请求对象
      */
     public static final HttpServletRequest getReq() {
-        return ctx().reqThreadLocal.get()
-                                   .getAs(HttpServletRequest.class, "req");
+        return ctx().reqThreadLocal.get().getAs(HttpServletRequest.class, "req");
     }
 
     /**
@@ -324,8 +328,7 @@ public abstract class Mvcs {
      * @return HTTP 响应对象
      */
     public static final HttpServletResponse getResp() {
-        return ctx().reqThreadLocal.get().getAs(HttpServletResponse.class,
-                                                "resp");
+        return ctx().reqThreadLocal.get().getAs(HttpServletResponse.class, "resp");
     }
 
     public static final String getName() {
@@ -338,13 +341,10 @@ public abstract class Mvcs {
      * @return Action 执行的上下文
      */
     public static final ActionContext getActionContext() {
-        return ctx().reqThreadLocal.get().getAs(ActionContext.class,
-                                                "ActionContext");
+        return ctx().reqThreadLocal.get().getAs(ActionContext.class, "ActionContext");
     }
 
-    public static void set(String name,
-                           HttpServletRequest req,
-                           HttpServletResponse resp) {
+    public static void set(String name, HttpServletRequest req, HttpServletResponse resp) {
         NAME.set(name);
         ctx().reqThreadLocal.get().set("req", req);
         ctx().reqThreadLocal.get().set("resp", resp);
