@@ -43,7 +43,7 @@ public class AnnotationIocLoader implements IocLoader {
         for (String packageZ : packages) {
             // 启用动态路径
             if (packageZ.equals("$dynamic")) {
-                String[] pkgs = Strings.splitIgnoreBlank(Mvcs.ann_dynamic_path);
+                String[] pkgs = Strings.splitIgnoreBlank(Mvcs.dynamic_ann_paths, "[,\n]");
                 if (null != pkgs)
                     for (String pkg : pkgs)
                         for (Class<?> classZ : Scans.me().scanPackage(pkg))
@@ -261,7 +261,7 @@ public class AnnotationIocLoader implements IocLoader {
             // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
             log.info("auto set as         refer:" + value);
             iocValue.setType("refer");
-            iocValue.setValue(value); 
+            iocValue.setValue(value);
         }
         return iocValue;
     }
@@ -274,15 +274,13 @@ public class AnnotationIocLoader implements IocLoader {
         return map.containsKey(name);
     }
 
-    public IocObject load(IocLoading loading, String name)
-            throws ObjectLoadException {
+    public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
         if (has(name))
             return map.get(name);
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
 
-    private static final IocException duplicateField(Class<?> classZ,
-                                                     String name) {
+    private static final IocException duplicateField(Class<?> classZ, String name) {
         return Lang.makeThrow(IocException.class,
                               "Duplicate filed defined! Class=%s,FileName=%s",
                               classZ,
