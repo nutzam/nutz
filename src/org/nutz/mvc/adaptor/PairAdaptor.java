@@ -30,9 +30,7 @@ public class PairAdaptor extends AbstractAdaptor {
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
             if (log.isWarnEnabled())
-                log.warnf("!!Fail to get Type Class : type=%s , param=%s",
-                          type,
-                          param);
+                log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
             return null;
         }
 
@@ -45,7 +43,7 @@ public class PairAdaptor extends AbstractAdaptor {
 
         String defaultValue = null;
         if (param.df() != null && !ParamDefailtTag.equals(param.df()))
-        	defaultValue = param.df();
+            defaultValue = param.df();
         String pm = param.value();
         String datefmt = param.dfmt();
         // POJO
@@ -60,8 +58,14 @@ public class PairAdaptor extends AbstractAdaptor {
             return new ObjectNavlPairInjector(pm.substring(2), type);
         }
         // POJO[]
-        else if (clazz.isArray())
-            return new ArrayInjector(pm, null, type, paramTypes, defaultValue);
+        else if (clazz.isArray()) {
+            return new ArrayInjector(pm,
+                                     null,
+                                     type,
+                                     paramTypes,
+                                     defaultValue,
+                                     param.array_auto_split());
+        }
 
         // Name-value
         return getNameInjector(pm, datefmt, type, paramTypes, defaultValue);
