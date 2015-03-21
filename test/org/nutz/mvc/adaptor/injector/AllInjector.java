@@ -7,5 +7,5 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({NameInjectorTest.class,
                      ObjectPairInjectorTest.class,
                      ObjectNavlPairInjectorTest.class,
-                     ArrayInjector.class})
+                     ArrayInjectorTest.class})
 public class AllInjector {}
