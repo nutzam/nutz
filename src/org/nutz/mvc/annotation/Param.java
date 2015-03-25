@@ -27,4 +27,13 @@ public @interface Param {
     String dfmt() default "";
 
     String df() default "//NOT EXIST IN//";
+
+    /**
+     * 在输入参数是一个字符串，而入口函数参数是一个数组的时候：
+     * <ul>
+     * <li>true - 会自动将字符串拆分成数组
+     * <li>false - 不会拆分，而只会生成一个元素的数组
+     * </ul>
+     */
+    boolean array_auto_split() default true;
 }

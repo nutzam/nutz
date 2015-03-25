@@ -13,12 +13,16 @@ import org.nutz.lang.Lang;
 
 public class ArrayInjector extends NameInjector {
 
+    private boolean auto_split;
+
     public ArrayInjector(String name,
-            String datefmt,
-            Type type,
-            Type[] paramTypes,
-            String defaultValue) {
+                         String datefmt,
+                         Type type,
+                         Type[] paramTypes,
+                         String defaultValue,
+                         boolean auto_split) {
         super(name, datefmt, type, paramTypes, defaultValue);
+        this.auto_split = auto_split;
     }
 
     @SuppressWarnings("unchecked")
@@ -42,7 +46,7 @@ public class ArrayInjector extends NameInjector {
         if (null == values || values.length == 0)
             return null;
 
-        if (values.length == 1) {
+        if (values.length == 1 && auto_split) {
             // 如果只有一个值，那么试图直接转换
             return convertMe(values[0]);
         }
