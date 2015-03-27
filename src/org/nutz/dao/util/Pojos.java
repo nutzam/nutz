@@ -213,7 +213,10 @@ public abstract class Pojos {
 			}
 			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
 				continue;
-			else if (null != fm && null != refer && fm.isIgnoreNull() && null == mf.getValue(refer))
+			else if (null != fm 
+			      && null != refer 
+			      && fm.isIgnoreNull() 
+			      && null == mf.getValue(Lang.first(refer)))
 				continue;
 			if (null == fm || fm.match(mf.getName()))
 				re.add(mf);
