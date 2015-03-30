@@ -104,7 +104,7 @@ public class NutFilter implements Filter {
         		log.info("exclusionsPrefix  = " + exclusionsPrefix);
         	}
         	if (suffix.size() > 0) {
-        		exclusionsSuffix = Pattern.compile("^("+Lang.concat("|", suffix)+")", Pattern.CASE_INSENSITIVE);
+        		exclusionsSuffix = Pattern.compile("("+Lang.concat("|", suffix)+")$", Pattern.CASE_INSENSITIVE);
         		log.info("exclusionsSuffix = " + exclusionsSuffix);
         	}
         	if (paths.size() > 0) {
