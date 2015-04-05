@@ -29,7 +29,7 @@ import org.nutz.lang.born.MethodCastingBorning;
  */
 public class ObjectMakerImpl implements ObjectMaker {
 
-    public ObjectProxy make(IocMaking ing, IocObject iobj) {
+    public ObjectProxy make(final IocMaking ing, IocObject iobj) {
         // 获取 Mirror， AOP 将在这个方法中进行
         Mirror<?> mirror = ing.getMirrors().getMirror(iobj.getType(),
                                                       ing.getObjectName());
@@ -78,18 +78,27 @@ public class ObjectMakerImpl implements ObjectMaker {
 
             // 缓存构造函数
             if (iobj.getFactory() != null) {
-                // factory这属性, 格式应该是 类名#方法名
-                String[] ss = iobj.getFactory().split("#", 2);
-                Mirror<?> mi = Mirror.me(Lang.loadClass(ss[0]));
-
-                if (hasNullArg) {
-                    Method m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
-                    if (m == null)
-                    	throw new IocException("Factory method not found --> ", iobj.getFactory());
-                    dw.setBorning(new MethodCastingBorning<Object>(m));
+                // factory这属性, 格式应该是 类名#方法名 或者 $iocbean#方法名
+                final String[] ss = iobj.getFactory().split("#", 2);
+                if (ss[0].startsWith("$")) {
+                    dw.setBorning(new Borning<Object>() {
+                        public Object born(Object... args) {
+                            Object factoryBean = ing.getIoc().get(null, ss[0].substring(1));
+                            return Mirror.me(factoryBean).invoke(factoryBean, ss[1], args);
+                        }
+                    });
                 } else {
-                    Method m = mi.findMethod(ss[1], args);
-                    dw.setBorning(new MethodBorning<Object>(m));
+                    Mirror<?> mi = Mirror.me(Lang.loadClass(ss[0]));
+
+                    if (hasNullArg) {
+                        Method m = (Method) Lang.first(mi.findMethods(ss[1],args.length));
+                        if (m == null)
+                            throw new IocException("Factory method not found --> ", iobj.getFactory());
+                        dw.setBorning(new MethodCastingBorning<Object>(m));
+                    } else {
+                        Method m = mi.findMethod(ss[1], args);
+                        dw.setBorning(new MethodBorning<Object>(m));
+                    }
                 }
 
             } else {
