@@ -36,6 +36,7 @@ import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Modules;
+import org.nutz.mvc.annotation.OPTIONS;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
@@ -169,6 +170,8 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (method.getAnnotation(DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
+        if (method.getAnnotation(OPTIONS.class) != null)
+            ai.getHttpMethods().add("OPTIONS");
     }
 
     public static void evalActionChainMaker(ActionInfo ai, Chain cb) {
