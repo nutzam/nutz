@@ -231,4 +231,19 @@
 	}
 	}}}
 	
+	通过其他bean生成此bean, 类似于spring的factory-bean功能
+	
+	{{{
+	@IocBean(factory="$snakerConfigure#build")
+	public class SnakerService{}
+	
+	
+	@IocBean(name="snakerConfigure")
+	public class SnakerConfigure {
+		public SnakerService build() {
+			return ....;
+		}
+	}
+	}}}
+	
 	
