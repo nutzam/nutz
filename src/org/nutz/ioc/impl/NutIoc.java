@@ -19,8 +19,6 @@ import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.ioc.loader.cached.CachedIocLoader;
-import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -94,10 +92,7 @@ public class NutIoc implements Ioc2 {
         this.maker = maker;
         this.defaultScope = defaultScope;
         this.context = context;
-        if (loader instanceof CachedIocLoader)
-            this.loader = loader;
-        else
-            this.loader = CachedIocLoaderImpl.create(loader);
+        this.loader = loader;
         vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
         addValueProxyMaker(new DefaultValueProxyMaker());
 
@@ -226,16 +221,12 @@ public class NutIoc implements Ioc2 {
         }
         context.depose();
         deposed = true;
-        if (loader instanceof CachedIocLoader)
-            ((CachedIocLoader) loader).clear();
         if (log.isDebugEnabled())
             log.debug("!!!Ioc is deposed, you can't use it anymore");
     }
 
     public void reset() {
         context.clear();
-        if (loader instanceof CachedIocLoader)
-            ((CachedIocLoader) loader).clear();
     }
 
     public String[] getNames() {
