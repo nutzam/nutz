@@ -94,7 +94,7 @@ public class NutIoc implements Ioc2 {
         this.defaultScope = defaultScope;
         this.context = context;
         if (loader instanceof ComboIocLoader)
-            this.loader = (ComboIocLoader)loader;
+            this.loader = (ComboIocLoader) loader;
         else
             this.loader = new ComboIocLoader(loader);
         vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
@@ -209,7 +209,7 @@ public class NutIoc implements Ioc2 {
         synchronized (lock_get) {
             T re = op.get(type, ing);
             if (re instanceof IocLoader) {
-                loader.addLoader((IocLoader)re);
+                loader.addLoader((IocLoader) re);
             }
             return re;
         }
