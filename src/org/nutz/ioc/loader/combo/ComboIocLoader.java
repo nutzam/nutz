@@ -145,6 +145,8 @@ public class ComboIocLoader implements IocLoader {
     }
 
     public void addLoader(IocLoader loader) {
+        if (iocLoaders.contains(loader))
+            return;
         iocLoaders.add(loader);
     }
 
