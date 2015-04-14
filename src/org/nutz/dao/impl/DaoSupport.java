@@ -100,6 +100,9 @@ public class DaoSupport {
      */
     public void setSqlManager(SqlManager sqls) {
         this.sqlManager = sqls;
+        int count = sqls.count();
+        if (sqls != null)
+            log.debug("SqlManager Sql count=" + count);
     }
 
     /**
