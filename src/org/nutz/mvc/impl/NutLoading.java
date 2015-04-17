@@ -73,6 +73,7 @@ public class NutLoading implements Loading {
          * 准备返回值
          */
         UrlMapping mapping;
+        Ioc ioc = null;
 
         /*
          * 准备计时
@@ -94,7 +95,7 @@ public class NutLoading implements Loading {
             /*
              * 检查 Ioc 容器并创建和保存它
              */
-            Ioc ioc = createIoc(config, mainModule);
+            ioc = createIoc(config, mainModule);
 
             /*
              * 组装UrlMapping
@@ -117,6 +118,15 @@ public class NutLoading implements Loading {
         catch (Exception e) {
             if (log.isErrorEnabled())
                 log.error("Error happend during start serivce!", e);
+            if (ioc != null) {
+                log.error("try to depose ioc");
+                try {
+                    ioc.depose();
+                }
+                catch (Throwable e2) {
+                    log.error("error when depose ioc", e);
+                }
+            }
             throw Lang.wrapThrow(e, LoadingException.class);
         }
 

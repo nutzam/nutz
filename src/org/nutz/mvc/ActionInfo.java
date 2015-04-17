@@ -2,9 +2,11 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class ActionInfo {
 
@@ -28,7 +30,7 @@ public class ActionInfo {
 
     private String failView;
 
-    private List<String> httpMethods;
+    private Set<String> httpMethods;
 
     private ObjectInfo<? extends ActionFilter>[] filterInfos;
 
@@ -39,7 +41,7 @@ public class ActionInfo {
     private Method method;
 
     public ActionInfo() {
-        httpMethods = new ArrayList<String>(4);
+        httpMethods = new HashSet<String>();
     }
 
     public ActionInfo mergeWith(ActionInfo parent) {
@@ -87,17 +89,11 @@ public class ActionInfo {
     }
 
     /**
-     * 只能接受如下字符串
-     * <ul>
-     * <li>GET
-     * <li>PUT
-     * <li>POST
-     * <li>DELETE
-     * </ul>
+     * 接受各种标准和非标准的Http Method
      * 
      * @return 特殊的 HTTP 方法列表
      */
-    public List<String> getHttpMethods() {
+    public Set<String> getHttpMethods() {
         return httpMethods;
     }
 

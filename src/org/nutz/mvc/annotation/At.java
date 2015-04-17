@@ -84,4 +84,5 @@ public @interface At {
 
     String[] value() default {};
 
+    String[] methods() default {};
 }
