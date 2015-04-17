@@ -36,7 +36,6 @@ import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Filters;
 import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Modules;
-import org.nutz.mvc.annotation.OPTIONS;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.PUT;
@@ -70,7 +69,7 @@ public abstract class Loadings {
         evalFail(ai, method.getAnnotation(Fail.class));
         evalAt(ai, method.getAnnotation(At.class), method.getName());
         evalActionChainMaker(ai, method.getAnnotation(Chain.class));
-        evalHttpMethod(ai, method);
+        evalHttpMethod(ai, method, method.getAnnotation(At.class));
         ai.setMethod(method);
         return ai;
     }
@@ -161,7 +160,7 @@ public abstract class Loadings {
         }
     }
 
-    public static void evalHttpMethod(ActionInfo ai, Method method) {
+    public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
         if (method.getAnnotation(GET.class) != null)
             ai.getHttpMethods().add("GET");
         if (method.getAnnotation(POST.class) != null)
@@ -170,8 +169,9 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (method.getAnnotation(DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
-        if (method.getAnnotation(OPTIONS.class) != null)
-            ai.getHttpMethods().add("OPTIONS");
+        for (String m : at.methods()) {
+            ai.getHttpMethods().add(m.toUpperCase());
+        }
     }
 
     public static void evalActionChainMaker(ActionInfo ai, Chain cb) {
