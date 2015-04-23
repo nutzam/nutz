@@ -8,6 +8,7 @@ jdk:
 branches:
   only:
     - master
+	- coverity_scan
 before_script:
   - psql -c 'create database nutztest;' -U postgres
   - cp ./tools/travis-ci/nutz-test.properties ./test/
