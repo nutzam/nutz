@@ -1,4 +1,4 @@
-### Nutz [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz) [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
+### Nutz [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz) [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master) ![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)
 
 对于 Java 程序员来说，除 SSH 之外，的另一个选择
 
