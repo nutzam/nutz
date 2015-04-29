@@ -1,4 +1,4 @@
-package org.nutz.mvc.impl;
+package org.nutz.mvc;
 
 import java.io.InputStream;
 import java.util.Arrays;
@@ -17,58 +17,70 @@ import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.IocProvider;
-import org.nutz.mvc.NutConfig;
 
 /**
- * <p>定义全局Ioc容器,并实现IocProvider接口,以便与@IocBy注解的融合.</p>
- * <p><b>本实现使用ComboIocLoader作为加载器,所以允许加载其他人员IocLoader定义</b></p>
- * <p>基本配置流程 </p>
- * <p>1. 在web.xml声明本监听器 </p>
- * <p>2. 在web.xml中声明一个param-name叫nutz-iocby,内容是传统ComboIocLoader的参数,用逗号分隔</p>
- * <p>2. 或者在/WEB-INF下放一个nutz.properties, 内容是nutz-iocby=XXXXXXXX</p>
- * <p>3. 在MainModule中声明@IocBy(type=NutMvcListener.class)</p>
+ * <p>
+ * 定义全局Ioc容器,并实现IocProvider接口,以便与@IocBy注解的融合.
+ * </p>
+ * <p>
+ * <b>本实现使用ComboIocLoader作为加载器,所以允许加载其他人员IocLoader定义</b>
+ * </p>
+ * <p>
+ * 基本配置流程
+ * </p>
+ * <p>
+ * 1. 在web.xml声明本监听器
+ * </p>
+ * <p>
+ * 2. 在web.xml中声明一个param-name叫nutz-iocby,内容是传统ComboIocLoader的参数,用逗号分隔
+ * </p>
+ * <p>
+ * 2. 或者在/WEB-INF下放一个nutz.properties, 内容是nutz-iocby=XXXXXXXX
+ * </p>
+ * <p>
+ * 3. 在MainModule中声明@IocBy(type=NutMvcListener.class)
+ * </p>
+ * 
  * @author wendal(wendal1985@gmail.com)
  *
  */
 public class NutMvcListener implements ServletContextListener, IocProvider {
-    
-    public static String PROP_IOCATION = "nutz-properties-location";
+
+    public static String PROP_LOCATION = "nutz-properties-location";
     public static String IOCBY = "iocby";
     protected ServletContext sc;
     protected PropertiesProxy pp;
-    
-    private static Log log;
-    
+
+    private static final Log log = Logs.get();
+
     protected static Ioc ioc;
-    
+
     /**
      * 返回全局Ioc对象,如果未经初始化, 这里就会抛出异常
-     * @return
      */
     public static Ioc ioc() {
         if (ioc == null)
             throw new IllegalArgumentException("NutMvcListener NOT init!!! check your web.xml!!");
         return ioc;
     }
-    
+
     public void contextInitialized(ServletContextEvent event) {
         sc = event.getServletContext();
-        log = Logs.get(); // 押后到这个方法调用的时间点,减少干扰
-        
+
         findConfig();
         initIoc();
-        
+
         // TODO 其他可配置项.
     }
-    
+
     /**
      * 首先,载入需要的配置信息, 分别从nutz.properties和ServletContext的上下文获取.
-     * <p/> 子类可以覆盖这个方法实现从任意方式加载配置
+     * <p/>
+     * 子类可以覆盖这个方法实现从任意方式加载配置
      */
     @SuppressWarnings("unchecked")
     protected void findConfig() {
-        String propLocation = sc.getInitParameter(PROP_IOCATION);
+        String propLocation = sc.getInitParameter(PROP_LOCATION);
         if (Strings.isBlank(propLocation)) {
             propLocation = "nutz.properties";
         }
@@ -92,7 +104,7 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
             Streams.safeClose(in);
         }
     }
-    
+
     /**
      * 初始化Ioc容器,使用ComboIocLoader作为配置方式
      */
@@ -128,7 +140,7 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
             }
         }
     }
-    
+
     /**
      * 这里与IocBy结合起来. 注意,这个实现会忽略IocBy的args参数.
      */
