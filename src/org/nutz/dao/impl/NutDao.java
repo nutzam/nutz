@@ -27,7 +27,6 @@ import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByLinkedFieldLinkVisitor;
 import org.nutz.dao.impl.link.DoDeleteLinkVisitor;
-import org.nutz.dao.impl.link.DoFetchLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
@@ -878,22 +877,6 @@ public class NutDao extends DaoSupport implements Dao {
                 lnk.setValue(obj, value);
             }
         }.opt(opt);
-    }
-    
-    protected Condition fitLinkCondition(Condition cndLink, Condition cnd) {
-        Condition CND = null;
-        Criteria _cnd = (Criteria)cndLink;
-        if (cnd != null && _cnd != null && cnd instanceof Criteria) {
-            Criteria cri = (Criteria)cnd;
-            cri.where().and(_cnd.where());
-            CND = cri;
-        } else {
-            if (cnd != null)
-                CND = cnd;
-            else
-                CND = _cnd;
-        }
-        return CND;
     }
 
     // ==========================================================
