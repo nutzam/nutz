@@ -858,7 +858,7 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     private LinkVisitor doLinkQuery(EntityOperator opt, final Condition cnd) {
-        return new AbstractLinkVisitor() {
+        return new LinkVisitor() {
             public void visit(final Object obj, final LinkField lnk) {
                 Condition cndLink = lnk.createCondition(obj);
                 Condition CND = null;
@@ -876,7 +876,7 @@ public class NutDao extends DaoSupport implements Dao {
                 Object value = query(lnk.getLinkedEntity().getType(), CND);
                 lnk.setValue(obj, value);
             }
-        }.opt(opt);
+        };
     }
 
     // ==========================================================
