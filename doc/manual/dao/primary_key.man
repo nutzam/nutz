@@ -52,7 +52,7 @@
 			private int id;
 			...
 		}}}
-		Nutz.Dao 在插入对象是，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。
+		Nutz.Dao 在插入对象时，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。
 
 	快速插入
 		无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)

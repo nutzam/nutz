@@ -191,6 +191,7 @@ public final class FastClassFactory implements Opcodes {
                                                    constructors);
         }
 
+        cw.visitSource(classZ.getSimpleName() + ".java", null);
         cw.visitEnd();
 
         Class<?> xClass = DefaultClassDefiner.def(myName.replace('/', '.'),

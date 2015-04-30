@@ -53,7 +53,7 @@
 		的时候，无论入口函数返回什么对象,它会将其保存到request的 {*"obj"} 属性中。比如
 		{{{
 		@At
-		@Ok("/test.jsp")
+		@Ok("jsp:/test.jsp")
 		public String test(){
 		    return "this is test";
 		}

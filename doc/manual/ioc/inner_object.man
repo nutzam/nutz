@@ -18,6 +18,7 @@
 	 || {*events}		|| {#080; 监听事件} ||
 	 || {*args}			|| {#080; 构造函数参数} ||
 	 || {*fields}		|| {#080; 字段设定} ||
+	 || {*factory}		|| {#080; 工厂方法} ||
 	
 	否则，这个 Map 被认为，是在声明对象的每个字段。
 
@@ -75,10 +76,34 @@ JSON 加载器
 
     对于 JsonLoader 更多的描述，请参看 [ioc_loader.man 配置文件的格式]
 
-    
+-------------------------------------------------------------------------------------------------------
+工厂方法
 
+	语法:
+	
+	{{{
+		{
+			type : "net.wendal.nutzbook.Cache",
+			args : ["user_profile_cache"],
+			factory:"xxx.xx.xxxxCacheFactory#create"
+		}
+	}}}
+	
+	其中 xxx.xx.xxxxFactory是工厂类的类全名, create是工厂方法, 其参数是"user_profile_cache"
 
+	从1.b.53开始,支持ioc bean做factory bean
+	
+	{{{
+		{
+			type : "net.wendal.nutzbook.Cache",
+			args : ["user_profile_cache"],
+			factory:"$beanCacheFactory#create"
+		}
+	}}}
+	
+	其中的beanCacheFactory是另外一个ioc bean的名称
 
+	
 
 
 
