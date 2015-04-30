@@ -553,7 +553,8 @@ public class NutDao extends DaoSupport implements Dao {
         Entity<?> en = holder.getEntityBy(obj);
         Pojo pojo = pojoMaker.makeQuery(en)
                              .append(Pojos.Items.cndAuto(en, obj))
-                             .setAfter(_pojo_fetchEntity);
+                             .setAfter(_pojo_fetchEntity)
+                             .setPager(createPager(1, 1));
         _exec(pojo);
         return (T) pojo.getResult();
     }
