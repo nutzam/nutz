@@ -69,7 +69,6 @@ public class NutFilter implements Filter {
     		return;
     	}
     	log.infof("NutFilter[%s] starting ...", conf.getFilterName());
-        Mvcs.setServletContext(conf.getServletContext());
         this.selfName = conf.getFilterName();
         Mvcs.set(selfName, null, null);
 
