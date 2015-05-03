@@ -27,6 +27,7 @@ import org.nutz.dao.impl.link.DoClearLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByHostFieldLinkVisitor;
 import org.nutz.dao.impl.link.DoClearRelationByLinkedFieldLinkVisitor;
 import org.nutz.dao.impl.link.DoDeleteLinkVisitor;
+import org.nutz.dao.impl.link.DoFetchLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
@@ -581,7 +582,7 @@ public class NutDao extends DaoSupport implements Dao {
                     return;
                 opt.entity.visitMany(ele, regex, doLinkQuery(opt, cnd));
                 opt.entity.visitManyMany(ele, regex, doLinkQuery(opt, cnd));
-                opt.entity.visitOne(ele, regex, doLinkQuery(opt, cnd));
+                opt.entity.visitOne(ele, regex, doFetch(opt));
                 opt.exec();
             }
         });
@@ -857,6 +858,23 @@ public class NutDao extends DaoSupport implements Dao {
     private LinkVisitor doClear(EntityOperator opt) {
         return new DoClearLinkVisitor().opt(opt);
     }
+    
+    private LinkVisitor doFetch(final EntityOperator opt) {
+        return new LinkVisitor() {
+            public void visit(final Object obj, final LinkField lnk) {
+                Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
+                pojo.setOperatingObject(obj);
+                pojo.append(Pojos.Items.cnd(lnk.createCondition(obj)));
+                pojo.setAfter(new PojoCallback() {
+                    public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
+                        return lnk.getCallback().invoke(conn, rs, pojo);
+                    }
+                });
+                _exec(pojo);
+                lnk.setValue(obj, pojo.getObject(Object.class));
+            }
+        };
+    }
 
     private LinkVisitor doLinkQuery(EntityOperator opt, final Condition cnd) {
         return new LinkVisitor() {
@@ -874,8 +892,15 @@ public class NutDao extends DaoSupport implements Dao {
                     else
                         CND = _cnd;
                 }
-                Object value = query(lnk.getLinkedEntity().getType(), CND);
-                lnk.setValue(obj, value);
+                Pager pager = Pojos.Items.pager(CND);
+                Pojo pojo = pojoMaker.makeQuery(lnk.getLinkedEntity())
+                        .append(Pojos.Items.cnd(CND))
+                        .addParamsBy("*")
+                        .setPager(pager)
+                        .setAfter(_pojo_queryEntity);
+                expert.formatQuery(pojo);
+                _exec(pojo);
+                lnk.setValue(obj, pojo.getList(Object.class));
             }
         };
     }
