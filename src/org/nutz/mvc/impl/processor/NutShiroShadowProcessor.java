@@ -3,6 +3,8 @@ package org.nutz.mvc.impl.processor;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
+import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.Processor;
 
 /**
@@ -33,6 +35,11 @@ public class NutShiroShadowProcessor extends AbstractProcessor {
     public NutShiroShadowProcessor() throws InstantiationException, IllegalAccessException {
         if (clazz != null)
             proxy = (Processor) clazz.newInstance();
+    }
+    
+    public void init(NutConfig config, ActionInfo ai) throws Throwable {
+        if (proxy != null)
+            proxy.init(config, ai);
     }
 
     public void process(ActionContext ac) throws Throwable {
