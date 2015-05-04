@@ -148,6 +148,10 @@ namespace '/nutztest' do
     get "/default_value" do
       params[:abc] || "123456"
     end
+
+    post "/err_ctx" do
+      request.body.string.empty? ? "true" : (request.body.string == "{}").to_s
+    end
   end
 
   # UploadTest.java

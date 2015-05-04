@@ -71,6 +71,11 @@ public class ComboIocLoader implements IocLoader {
                             (Class<? extends IocLoader>) Class.forName("org.nutz.jcache.NutCacheIocLoader"));
             }
             catch (ClassNotFoundException e) {}
+            try {
+                loaders.put("quartz",
+                            (Class<? extends IocLoader>) Class.forName("org.nutz.integration.quartz.QuartzIocLoader"));
+            }
+            catch (ClassNotFoundException e) {}
         }
         ArrayList<String> argsList = null;
         String currentClassName = null;
