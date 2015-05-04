@@ -41,12 +41,12 @@ public class JsonFormat {
     public static JsonFormat forLook() {
         return new JsonFormat(false).setQuoteName(false).setIgnoreNull(true);
     }
-    
+
     /**
      * 不换行,不忽略控制
      */
     public static JsonFormat tidy() {
-    	return new JsonFormat(true).setIgnoreNull(false);
+        return new JsonFormat(true).setIgnoreNull(false);
     }
 
     public JsonFormat() {
@@ -96,7 +96,7 @@ public class JsonFormat {
      * unicode编码用大写还是小写
      */
     private boolean unicodeLower;
-    
+
     private SimpleDateFormat dateFormat;
 
     public boolean ignore(String name) {
@@ -106,10 +106,10 @@ public class JsonFormat {
             return locked.matcher(name).find();
         return false;
     }
-    
-//===================================================================
-//getter setter
-    
+
+    // ===================================================================
+    // getter setter
+
     public boolean isCompact() {
         return compact;
     }
@@ -202,14 +202,14 @@ public class JsonFormat {
         return autoUnicode;
     }
 
-	public boolean isUnicodeLower() {
-		return unicodeLower;
-	}
+    public boolean isUnicodeLower() {
+        return unicodeLower;
+    }
 
-	public void setUnicodeLower(boolean unicodeLower) {
-		this.unicodeLower = unicodeLower;
-	}
-    
+    public void setUnicodeLower(boolean unicodeLower) {
+        this.unicodeLower = unicodeLower;
+    }
+
     public JsonFormat setDateFormat(String df) {
         if (df == null) {
             this.dateFormat = null;
@@ -218,8 +218,12 @@ public class JsonFormat {
         }
         return this;
     }
-    
+
+    public void setDateFormat(SimpleDateFormat df) {
+        this.dateFormat = df;
+    }
+
     public SimpleDateFormat getDateFormat() {
-        return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
+        return dateFormat == null ? null : (SimpleDateFormat) dateFormat.clone();
     }
 }

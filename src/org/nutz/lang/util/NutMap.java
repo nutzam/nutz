@@ -21,7 +21,7 @@ import org.nutz.lang.Strings;
  * @author zozoh(zozohtnt@gmail.com)
  */
 @SuppressWarnings("serial")
-public class NutMap extends LinkedHashMap<String, Object> {
+public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
 
     public static NutMap WRAP(Map<String, Object> map) {
         if (null == map)
@@ -271,4 +271,9 @@ public class NutMap extends LinkedHashMap<String, Object> {
         this.put(key, value);
         return this;
     }
+
+    public void unset(String key) {
+        this.remove(key);
+    }
+
 }

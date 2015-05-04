@@ -18,6 +18,7 @@ import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
 import org.nutz.mvc.annotation.Ok;
+import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.Param;
 import org.nutz.mvc.impl.AdaptorErrorContext;
 import org.nutz.mvc.testapp.BaseWebappTest;
@@ -34,6 +35,8 @@ public class AdaptorTestModule extends BaseWebappTest {
                           @Param("..") Issue543 o) {
         if (d.getTime() != o.d.getTime())
             throw Lang.impossible();
+//        new Throwable().printStackTrace();
+        System.out.println("Hi, hotcode replace");
         return d.getTime();
     }
 
@@ -88,5 +91,13 @@ public class AdaptorTestModule extends BaseWebappTest {
     @Ok("raw")
     public int default_value(@Param(value="abc", df="123456")int value) {
     	return value;
+    }
+
+    @POST
+    @AdaptBy(type = JsonAdaptor.class)
+    @At("/err_ctx")
+    @Ok("raw")
+    public boolean err_ctx(@Param("..")Object obj, AdaptorErrorContext ctx) {
+        return ctx == null;
     }
 }

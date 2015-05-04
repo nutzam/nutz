@@ -2,6 +2,7 @@ package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import javax.sql.DataSource;
 
@@ -19,6 +20,7 @@ import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlContext;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
@@ -167,9 +169,17 @@ public class DaoSupport {
                 meta.setVersion(dmd.getDatabaseProductVersion());
                 log.debug("JDBC Driver --> " + dmd.getDriverVersion());
                 log.debug("JDBC Name   --> " + dmd.getDriverName());
+                if (!Strings.isBlank(dmd.getURL()))
+                    log.debug("JDBC URL    --> " + dmd.getURL());
                 if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
-                	log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
-                	SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
+                    log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
+                    SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
+                }
+                if (meta.isMySql()) {
+                    String sql = "SHOW VARIABLES LIKE 'character_set%'";
+                    ResultSet rs = conn.createStatement().executeQuery(sql);
+                    while (rs.next())
+                        log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
                 }
             }
         });

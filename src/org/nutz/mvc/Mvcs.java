@@ -471,7 +471,7 @@ public abstract class Mvcs {
         ctx().close();
     }
 
-    /** 在入口方法调用时,禁止调用1.b.51新加入的FastClass功能 */
+    /** 在入口方法调用时,是否1.b.51新加入的FastClass功能, 默认禁用 */
     // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
-    public static boolean disableFastClassInvoker = Lang.isAndroid;
+    public static boolean enableFastClassInvoker = false;
 }

@@ -76,4 +76,18 @@ public class SimpleAdaptorTest extends BaseWebappTest {
     	assertEquals(200, resp.getStatus());
     	assertEquals("123456", resp.getContent());
     }
+    
+    /**
+     * Json适配器未正确处理AdaptorErrorContext
+     */
+    @Test
+    public void test_json_err_ctx() {
+        resp = post("/adaptor/err_ctx", "{}");
+        assertEquals(200, resp.getStatus());
+        assertEquals("true", resp.getContent());
+        
+        resp = post("/adaptor/err_ctx", "{1234,3445}");
+        assertEquals(200, resp.getStatus());
+        assertEquals("false", resp.getContent());
+    }
 }
