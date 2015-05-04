@@ -31,6 +31,7 @@ import org.nutz.dao.impl.link.DoInsertLinkVisitor;
 import org.nutz.dao.impl.link.DoInsertRelationLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateLinkVisitor;
 import org.nutz.dao.impl.link.DoUpdateRelationLinkVisitor;
+import org.nutz.dao.impl.sql.pojo.ConditionPItem;
 import org.nutz.dao.impl.sql.pojo.PojoEachEntityCallback;
 import org.nutz.dao.impl.sql.pojo.PojoEachRecordCallback;
 import org.nutz.dao.impl.sql.pojo.PojoFetchEntityCallback;
@@ -44,11 +45,13 @@ import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.dao.util.cri.SqlExpressionGroup;
 import org.nutz.lang.ContinueLoop;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
@@ -864,42 +867,43 @@ public class NutDao extends DaoSupport implements Dao {
                 Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
                 pojo.setOperatingObject(obj);
                 pojo.append(Pojos.Items.cnd(lnk.createCondition(obj)));
-                pojo.setAfter(new PojoCallback() {
-                    public Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException {
-                        return lnk.getCallback().invoke(conn, rs, pojo);
-                    }
-                });
+                pojo.setAfter(lnk.getCallback());
                 _exec(pojo);
                 lnk.setValue(obj, pojo.getObject(Object.class));
             }
         };
     }
 
-    private LinkVisitor doLinkQuery(EntityOperator opt, final Condition cnd) {
+    private LinkVisitor doLinkQuery(final EntityOperator opt, final Condition cnd) {
         return new LinkVisitor() {
             public void visit(final Object obj, final LinkField lnk) {
-                Condition cndLink = lnk.createCondition(obj);
-                Condition CND = null;
-                Criteria _cnd = (Criteria) cndLink;
-                if (cnd != null && _cnd != null && cnd instanceof Criteria) {
-                    Criteria cri = (Criteria) cnd;
-                    cri.where().and(_cnd.where());
-                    CND = cri;
-                } else {
-                    if (cnd != null)
-                        CND = cnd;
-                    else
-                        CND = _cnd;
+                Pojo pojo = opt.maker().makeQuery(lnk.getLinkedEntity());
+                pojo.setOperatingObject(obj);
+                PItem[] _cndItems = Pojos.Items.cnd(lnk.createCondition(obj));
+                pojo.append(_cndItems);
+                if (cnd != null) {
+                    if (cnd instanceof Criteria) {
+                        Criteria cri = (Criteria) cnd;
+                        SqlExpressionGroup seg = cri.where();
+                        if (_cndItems.length > 0 && seg != null && !seg.isEmpty()) {
+                            seg.setTop(false);
+                            pojo.append(Pojos.Items.wrap(" AND "));
+                        }
+                        pojo.append(cri);
+                        if (cri.getPager() != null) {
+                            pojo.setPager(cri.getPager());
+                            expert.formatQuery(pojo);
+                        }
+                    }
+                    // 普通条件
+                    else {
+                        pojo.append(new ConditionPItem(cnd));
+                    }
                 }
-                Pager pager = Pojos.Items.pager(CND);
-                Pojo pojo = pojoMaker.makeQuery(lnk.getLinkedEntity())
-                        .append(Pojos.Items.cnd(CND))
-                        .addParamsBy("*")
-                        .setPager(pager)
-                        .setAfter(_pojo_queryEntity);
-                expert.formatQuery(pojo);
+                pojo.setAfter(lnk.getCallback());
+                pojo.setEntity(lnk.getLinkedEntity());
                 _exec(pojo);
-                lnk.setValue(obj, pojo.getList(Object.class));
+                lnk.setValue(obj, pojo.getResult());
             }
         };
     }
