@@ -17,5 +17,7 @@
     *   [GitHub Pages](http://nutzam.github.io/nutz/)（基本做到文档有变动就更新）
     *   [社区常见问答 Part 1](http://nutzam.github.io/nutz/faq/common_qa_1.html)（新手必看）
 *   [每次构建地址](http://downloads.nutzam.com/)
+*   [各种插件](http://github.com/nutzam/nutzmore)
+*   [好玩的Nutzbook](http://nutzbook.wendal.net) (引导式nutz入门书)
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
