@@ -177,6 +177,15 @@ public abstract class Lang {
         return e;
     }
 
+    public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
+        if (e.getClass() == causeType)
+            return true;
+        Throwable cause = e.getCause();
+        if (null == cause)
+            return false;
+        return isCauseBy(cause, causeType);
+    }
+
     /**
      * 判断两个对象是否相等。 这个函数用处是:
      * <ul>
@@ -1889,7 +1898,7 @@ public abstract class Lang {
 
     /**
      * 当一个类使用<T,K>来定义泛型时,本方法返回类的一个字段的具体类型。
-     *
+     * 
      * @param me
      * @param type
      */
@@ -1905,7 +1914,7 @@ public abstract class Lang {
                 }
             }
         }
-        if(!type.equals(t)) {
+        if (!type.equals(t)) {
             return type;
         }
         if (types != null && types.length > 0 && type instanceof ParameterizedType) {

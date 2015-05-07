@@ -276,4 +276,9 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         this.remove(key);
     }
 
+    public NutBean setAll(Map<String, Object> map) {
+        this.putAll(map);
+        return this;
+    }
+
 }

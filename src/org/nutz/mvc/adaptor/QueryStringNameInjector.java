@@ -17,42 +17,50 @@ import org.nutz.mvc.adaptor.injector.NameInjector;
 public class QueryStringNameInjector extends NameInjector {
 
     public QueryStringNameInjector(String name,
-            String datefmt,
-            Type type,
-            Type[] paramTypes,
-            String defaultValue) {
+                                   String datefmt,
+                                   Type type,
+                                   Type[] paramTypes,
+                                   String defaultValue) {
         super(name, datefmt, type, paramTypes, defaultValue);
     }
 
     @Override
     public Object fromReqParam(HttpServletRequest req) {
-        // 得到 QueryString Map
-        NutMap qsMap = (NutMap) req.getAttribute("_nutz_qs_map");
-        if (null == qsMap) {
-            qsMap = new NutMap();
-            // 分析
-            String qs = req.getQueryString();
-            String[] ss = Strings.splitIgnoreBlank(qs, "[&]");
-            for (String s : ss) {
-                Pair<String> p = Pair.create(s);
-                String val = p.getValue();
-                if (Strings.isBlank(val)) {
-                    qsMap.put(p.getName(), true);
-                } else {
-                    try {
-                        val = URLDecoder.decode(val, "UTF-8");
-                    }
-                    catch (UnsupportedEncodingException e) {
-                        throw Lang.wrapThrow(e);
-                    }
-                    qsMap.put(p.getName(), val);
-                }
-            }
-            // 保存
-            req.setAttribute("_nutz_qs_map", qsMap);
+        String params;
+        // 如果是整个 QueryString ...
+        if ("?".equals(name)) {
+            params = req.getQueryString();
         }
-
-        String params = qsMap.getString(name);
+        // 试图分析 QueryString 的名值对
+        else {
+            // 得到 QueryString Map
+            NutMap qsMap = (NutMap) req.getAttribute("_nutz_qs_map");
+            if (null == qsMap) {
+                qsMap = new NutMap();
+                // 分析
+                String qs = req.getQueryString();
+                String[] ss = Strings.splitIgnoreBlank(qs, "[&]");
+                for (String s : ss) {
+                    Pair<String> p = Pair.create(s);
+                    String val = p.getValue();
+                    if (Strings.isBlank(val)) {
+                        qsMap.put(p.getName(), true);
+                    } else {
+                        try {
+                            val = URLDecoder.decode(val, "UTF-8");
+                        }
+                        catch (UnsupportedEncodingException e) {
+                            throw Lang.wrapThrow(e);
+                        }
+                        qsMap.put(p.getName(), val);
+                    }
+                }
+                // 保存
+                req.setAttribute("_nutz_qs_map", qsMap);
+            }
+            // 得到某个参数的值
+            params = qsMap.getString(name);
+        }
         // 不为 null，那么必然要转换成日期
         if (null != dfmt && params != null) {
             Object o = Times.parseq(dfmt, params);
