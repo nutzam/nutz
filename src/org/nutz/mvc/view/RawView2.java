@@ -20,6 +20,8 @@ public class RawView2 extends RawView {
 	protected DataInputStream in;
 	
 	protected int maxLen;
+	
+	protected RawView2(){}
 
 	public RawView2(String contentType, InputStream in, int maxLen) {
 		super(contentType);

@@ -35,14 +35,15 @@ public class StringOutputStream extends OutputStream {
      */
     @Override
     public void flush() throws IOException {
-        super.flush();
-        baos.flush();
-        if (baos.size() > 0) {
-            if (charset == null)
-                sb.append(new String(baos.toByteArray()));
-            else
-                sb.append(new String(baos.toByteArray(), charset));
-            baos.reset();
+        if (null != baos) {
+            baos.flush();
+            if (baos.size() > 0) {
+                if (charset == null)
+                    sb.append(new String(baos.toByteArray()));
+                else
+                    sb.append(new String(baos.toByteArray(), charset));
+                baos.reset();
+            }
         }
     }
 
