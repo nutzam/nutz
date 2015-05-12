@@ -36,16 +36,6 @@ public abstract class Mvcs {
     public static final String MSG = "msg";
     public static final String LOCALE_KEY = "nutz_mvc_localization_key";
 
-    // 这个全局变量用来为 AnnotationIocLoader 添加一个动态加载的包路径
-    // 如果 AnnotationIocLoader 的加载路径值为 $dynamic 则会将启用这个值
-    // 这个值可以是半角逗号或者换行符分隔的多个路径
-    public static String dynamic_ann_paths = null;
-
-    // 这个全局变量用来为 @Modules 添加一个动态模块加载路径
-    // 如果 @Module 的加载路径值为 $dynamic 则会将启用这个值
-    // 这个值可以是半角逗号或者换行符分隔的多个路径
-    public static String dynamic_modules = null;
-
     // ====================================================================
 
     public static Map<String, Object> getLocaleMessage(String key) {
@@ -176,8 +166,7 @@ public abstract class Mvcs {
         if (null != msgss) {
             Map<String, Object> msgs = null;
 
-            String lKey = Strings.sBlank(Mvcs.getLocalizationKey(),
-                                         getDefaultLocalizationKey());
+            String lKey = Strings.sBlank(Mvcs.getLocalizationKey(), getDefaultLocalizationKey());
 
             if (!Strings.isBlank(lKey))
                 msgs = msgss.get(lKey);
