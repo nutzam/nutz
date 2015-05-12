@@ -1,9 +1,9 @@
 package org.nutz.mvc;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ModuleScanner {
 
-    List<Class<?>> scan();
+    Collection<Class<?>> scan();
 
 }

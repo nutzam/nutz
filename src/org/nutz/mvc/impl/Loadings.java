@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -113,9 +114,9 @@ public abstract class Loadings {
                     }
                 }
                 // 执行扫描，并将结果计入搜索结果
-                List<Class<?>> list = ms.scan();
-                if (null != list)
-                    for (Class<?> type : list) {
+                Collection<Class<?>> col = ms.scan();
+                if (null != col)
+                    for (Class<?> type : col) {
                         if (isModule(type)) {
                             modules.add(type);
                         }
