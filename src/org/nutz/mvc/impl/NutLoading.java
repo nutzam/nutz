@@ -56,7 +56,7 @@ public class NutLoading implements Loading {
             log.infof("Nutz.Mvc[%s] is initializing ...", config.getAppName());
         }
         if (log.isDebugEnabled()) {
-        	Properties sys = System.getProperties();
+            Properties sys = System.getProperties();
             log.debug("Web Container Information:");
             log.debugf(" - Default Charset : %s", Encoding.defaultEncoding());
             log.debugf(" - Current . path  : %s", new File(".").getAbsolutePath());
@@ -65,9 +65,12 @@ public class NutLoading implements Loading {
             log.debugf(" - Timezone        : %s", sys.get("user.timezone"));
             log.debugf(" - OS              : %s %s", sys.get("os.name"), sys.get("os.arch"));
             log.debugf(" - ServerInfo      : %s", config.getServletContext().getServerInfo());
-            log.debugf(" - Servlet API     : %d.%d", config.getServletContext().getMajorVersion(), config.getServletContext().getMinorVersion());
-            if (config.getServletContext().getMajorVersion() > 2 || config.getServletContext().getMinorVersion() > 4)
-            	log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
+            log.debugf(" - Servlet API     : %d.%d",
+                       config.getServletContext().getMajorVersion(),
+                       config.getServletContext().getMinorVersion());
+            if (config.getServletContext().getMajorVersion() > 2
+                || config.getServletContext().getMinorVersion() > 4)
+                log.debugf(" - ContextPath     : %s", config.getServletContext().getContextPath());
         }
         /*
          * 准备返回值
@@ -139,7 +142,8 @@ public class NutLoading implements Loading {
 
     }
 
-    protected UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule, Ioc ioc) throws Exception {
+    protected UrlMapping evalUrlMapping(NutConfig config, Class<?> mainModule, Ioc ioc)
+            throws Exception {
         /*
          * @ TODO 个人建议可以将这个方法所涉及的内容转换到Loadings类或相应的组装类中,
          * 以便将本类加以隔离,使本的职责仅限于MVC整体的初使化,而不再负责UrlMapping的加载
@@ -171,7 +175,7 @@ public class NutLoading implements Loading {
          * 准备要加载的模块列表
          */
         // TODO 为什么用Set呢? 用List不是更快吗?
-        Set<Class<?>> modules = Loadings.scanModules(mainModule);
+        Set<Class<?>> modules = Loadings.scanModules(ioc, mainModule);
 
         if (modules.isEmpty()) {
             if (log.isWarnEnabled())
@@ -195,7 +199,7 @@ public class NutLoading implements Loading {
                 ActionInfo info = Loadings.createInfo(method).mergeWith(moduleInfo);
                 info.setViewMakers(makers);
                 mapping.add(maker, info, config);
-                atMethods ++;
+                atMethods++;
             }
 
             // 记录pathMap
@@ -210,7 +214,7 @@ public class NutLoading implements Loading {
             if (log.isWarnEnabled())
                 log.warn("None @At found in any modules class!!");
         } else {
-        	log.infof("Found %d module methods", atMethods);
+            log.infof("Found %d module methods", atMethods);
         }
 
         return mapping;
@@ -325,17 +329,17 @@ public class NutLoading implements Loading {
         List<ViewMaker> makers = new ArrayList<ViewMaker>();
         if (null != vms) {
             for (int i = 0; i < vms.value().length; i++) {
-            	if (vms.value()[i].getAnnotation(IocBean.class) != null && ioc != null) {
-            	    makers.add(ioc.get(vms.value()[i]));
-            	} else {
-            	    makers.add(Mirror.me(vms.value()[i]).born());
-            	}
+                if (vms.value()[i].getAnnotation(IocBean.class) != null && ioc != null) {
+                    makers.add(ioc.get(vms.value()[i]));
+                } else {
+                    makers.add(Mirror.me(vms.value()[i]).born());
+                }
             }
         } else {
             if (ioc != null) {
                 String[] names = ioc.getNames();
                 Arrays.sort(names);
-                for(String name: ioc.getNames()) {
+                for (String name : ioc.getNames()) {
                     if (name != null && name.startsWith(ViewMaker.IOCNAME)) {
                         log.debug("add ViewMaker from Ioc by name=" + name);
                         makers.add(ioc.get(ViewMaker.class, name));

@@ -24,7 +24,6 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-import org.nutz.mvc.Mvcs;
 import org.nutz.resource.Scans;
 
 /**
@@ -41,19 +40,8 @@ public class AnnotationIocLoader implements IocLoader {
 
     public AnnotationIocLoader(String... packages) {
         for (String packageZ : packages) {
-            // 启用动态路径
-            if (packageZ.equals("$dynamic")) {
-                String[] pkgs = Strings.splitIgnoreBlank(Mvcs.dynamic_ann_paths, "[,\n]");
-                if (null != pkgs)
-                    for (String pkg : pkgs)
-                        for (Class<?> classZ : Scans.me().scanPackage(pkg))
-                            addClass(classZ);
-            }
-            // 否则老样子 ...
-            else {
-                for (Class<?> classZ : Scans.me().scanPackage(packageZ))
-                    addClass(classZ);
-            }
+            for (Class<?> classZ : Scans.me().scanPackage(packageZ))
+                addClass(classZ);
         }
         if (map.size() > 0) {
             if (log.isInfoEnabled())
@@ -176,9 +164,7 @@ public class AnnotationIocLoader implements IocLoader {
                     continue;
                 // 过滤特殊方法
                 int m = method.getModifiers();
-                if (Modifier.isAbstract(m)
-                    || (!Modifier.isPublic(m))
-                    || Modifier.isStatic(m))
+                if (Modifier.isAbstract(m) || (!Modifier.isPublic(m)) || Modifier.isStatic(m))
                     continue;
                 String methodName = method.getName();
                 if (methodName.startsWith("set")

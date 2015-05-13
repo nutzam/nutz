@@ -3,15 +3,8 @@ package org.nutz.lang.util;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public interface NutBean {
-
-    boolean containsKey(Object key);
-
-    Set<String> keySet();
-    
-    Object remove(Object key);
+public interface NutBean extends Map<String, Object> {
 
     /**
      * 设置一个字段，如果值为 null 则表示移除
@@ -22,8 +15,6 @@ public interface NutBean {
      *            值
      */
     void setOrRemove(String key, Object v);
-
-    Object get(Object key);
 
     Object get(String key, Object dft);
 

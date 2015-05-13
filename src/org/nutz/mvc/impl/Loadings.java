@@ -4,12 +4,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
@@ -23,7 +24,7 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor;
-import org.nutz.mvc.Mvcs;
+import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.AdaptBy;
@@ -74,37 +75,63 @@ public abstract class Loadings {
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Class<?> mainModule) {
+    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? false : ann.scanPackage();
         // 准备扫描列表
-        List<Class<?>> list = new LinkedList<Class<?>>();
-        list.add(mainModule);
-        if (null != ann) {
-            for (Class<?> module : ann.value()) {
-                list.add(module);
-            }
-        }
-        // 扫描包
+        Set<Class<?>> forScans = new HashSet<Class<?>>();
+
+        // 准备存放模块类的集合
         Set<Class<?>> modules = new HashSet<Class<?>>();
-        if (null != ann && ann.packages() != null && ann.packages().length > 0) {
-            for (String packageName : ann.packages()) {
-                // 启用动态路径
-                if (packageName.equals("$dynamic")) {
-                    String[] pkgs = Strings.splitIgnoreBlank(Mvcs.dynamic_modules,
-                                                             "[,\n]");
-                    if (null != pkgs)
-                        for (String pkg : pkgs) {
-                            scanModuleInPackage(modules, pkg);
-                        }
+
+        // 添加主模块，简直是一定的
+        forScans.add(mainModule);
+
+        // 根据配置，扩展扫描列表
+        if (null != ann) {
+            // 指定的类，这些类可以作为种子类，如果 ann.scanPackage 为 true 还要递归搜索所有子包
+            for (Class<?> module : ann.value()) {
+                forScans.add(module);
+            }
+
+            // 如果定义了扩展扫描接口 ...
+            for (String str : ann.by()) {
+                ModuleScanner ms;
+                // 扫描器来自 Ioc 容器
+                if (str.startsWith("ioc:")) {
+                    String nm = str.substring("ioc:".length());
+                    ms = ioc.get(ModuleScanner.class, nm);
                 }
-                // 否则老样子 ...
+                // 扫描器直接无参创建
                 else {
+                    try {
+                        Class<?> klass = Class.forName(str);
+                        Mirror<?> mi = Mirror.me(klass);
+                        ms = (ModuleScanner) mi.born();
+                    }
+                    catch (ClassNotFoundException e) {
+                        throw Lang.wrapThrow(e);
+                    }
+                }
+                // 执行扫描，并将结果计入搜索结果
+                Collection<Class<?>> col = ms.scan();
+                if (null != col)
+                    for (Class<?> type : col) {
+                        if (isModule(type)) {
+                            modules.add(type);
+                        }
+                    }
+            }
+
+            // 扫描包，扫描出的类直接计入结果
+            if (ann.packages() != null && ann.packages().length > 0) {
+                for (String packageName : ann.packages()) {
                     scanModuleInPackage(modules, packageName);
                 }
             }
         }
-        for (Class<?> type : list) {
+
+        for (Class<?> type : forScans) {
             // mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
             try {
                 URL location = type.getProtectionDomain().getCodeSource().getLocation();
@@ -116,8 +143,9 @@ public abstract class Loadings {
             }
             Scans.me().registerLocation(type);
         }
+
         // 执行扫描
-        for (Class<?> type : list) {
+        for (Class<?> type : forScans) {
             // 扫描子包
             if (scan) {
                 scanModuleInPackage(modules, type.getPackage().getName());
@@ -257,10 +285,8 @@ public abstract class Loadings {
             ai.setInputEncoding(org.nutz.lang.Encoding.UTF8);
             ai.setOutputEncoding(org.nutz.lang.Encoding.UTF8);
         } else {
-            ai.setInputEncoding(Strings.sNull(encoding.input(),
-                                              org.nutz.lang.Encoding.UTF8));
-            ai.setOutputEncoding(Strings.sNull(encoding.output(),
-                                               org.nutz.lang.Encoding.UTF8));
+            ai.setInputEncoding(Strings.sNull(encoding.input(), org.nutz.lang.Encoding.UTF8));
+            ai.setOutputEncoding(Strings.sNull(encoding.output(), org.nutz.lang.Encoding.UTF8));
         }
     }
 
