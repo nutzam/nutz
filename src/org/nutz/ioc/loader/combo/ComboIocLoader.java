@@ -150,9 +150,15 @@ public class ComboIocLoader implements IocLoader {
     }
 
     public void addLoader(IocLoader loader) {
-        if (iocLoaders.contains(loader))
-            return;
-        iocLoaders.add(loader);
+        if (null != loader) {
+            if (iocLoaders.contains(loader))
+                return;
+            iocLoaders.add(loader);
+            if (log.isInfoEnabled())
+                log.infof("add loader : %s : \n     - %s",
+                          loader.getClass(),
+                          Lang.concat("\n     - ", loader.getName()));
+        }
     }
 
     /**

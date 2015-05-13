@@ -365,13 +365,22 @@ public class NutLoading implements Loading {
         IocBy ib = mainModule.getAnnotation(IocBy.class);
         if (null != ib) {
             if (log.isDebugEnabled())
-                log.debugf("@IocBy(type=%s, args=%s)", ib.type().getName(), Json.toJson(ib.args()));
+                log.debugf("@IocBy(type=%s, args=%s,init=%s)",
+                           ib.type().getName(),
+                           Json.toJson(ib.args()),
+                           Json.toJson(ib.init()));
 
             Ioc ioc = Mirror.me(ib.type()).born().create(config, ib.args());
             // 如果是 Ioc2 的实现，增加新的 ValueMaker
             if (ioc instanceof Ioc2) {
                 ((Ioc2) ioc).addValueProxyMaker(new ServletValueProxyMaker(config.getServletContext()));
             }
+
+            // 如果给定了 Ioc 的初始化，则依次调用
+            for (String objName : ib.init()) {
+                ioc.get(null, objName);
+            }
+
             // 保存 Ioc 对象
             Mvcs.setIoc(ioc);
             return ioc;

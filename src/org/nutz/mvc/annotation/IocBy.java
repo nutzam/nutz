@@ -35,4 +35,11 @@ public @interface IocBy {
      */
     String[] args();
 
+    /**
+     * 声明一组 Ioc 的 Bean 名称
+     * <p>
+     * 如果声明了这个字段，Mvc 会在调用用户 Setup 前，首先试图依次获取对应的 Bean。<br>
+     * 以便触发 Bean 的初始化逻辑
+     */
+    String[] init() default {};
 }
