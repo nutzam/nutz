@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.mvc.ActionContext;
@@ -35,22 +37,15 @@ public class MappingNode<T> {
                 if (off < ss.length) {
                     throw Lang.makeThrow("char '*' should be the last item"
                                                  + " in a Path '../**/%s'",
-                                         Lang.concat(off,
-                                                     ss.length - off,
-                                                     "/",
-                                                     ss));
+                                         Lang.concat(off, ss.length - off, "/", ss));
                 }
                 asterisk = obj;
             }
             // '**'
             else if ("**".equals(key)) {
                 if (off < ss.length) {
-                    throw Lang.makeThrow("'**' should be the last item"
-                                                 + " in a Path '../**/%s'",
-                                         Lang.concat(off,
-                                                     ss.length - off,
-                                                     "/",
-                                                     ss));
+                    throw Lang.makeThrow("'**' should be the last item" + " in a Path '../**/%s'",
+                                         Lang.concat(off, ss.length - off, "/", ss));
                 }
                 remain = obj;
             }
@@ -115,6 +110,12 @@ public class MappingNode<T> {
         if (null != remain) {
             String ph = Lang.concat(off, ss.length - off, "/", ss).toString();
             if (!Strings.isBlank(ac.getSuffix())) {
+                HttpServletRequest req = ac.getRequest();
+                String url = Strings.sBlank(req.getPathInfo(), req.getServletPath());
+                // 看看有没有必要补一个 "/"
+                if (url.endsWith("/." + ac.getSuffix())) {
+                    ph += "/";
+                }
                 ph += "." + ac.getSuffix();
             }
             ac.getPathArgs().add(ph);
@@ -156,10 +157,7 @@ public class MappingNode<T> {
 
     private void appendTo(StringBuilder sb, int indent) {
         String prefix = Strings.dup("   ", indent);
-        sb.append(prefix)
-          .append('<')
-          .append(Strings.sNull(obj, "null"))
-          .append('>');
+        sb.append(prefix).append('<').append(Strings.sNull(obj, "null")).append('>');
 
         prefix = "\n   " + prefix;
         if (null != asterisk) {
