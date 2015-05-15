@@ -9,7 +9,8 @@ public class String2Byte extends String2Number<Byte> {
 
     @Override
     protected Byte valueOf(String str) {
-        return Byte.valueOf(str);
+        _N_Info ni = _eval_radix(str);
+        return Byte.valueOf(ni.val, ni.radix);
     }
 
 }
