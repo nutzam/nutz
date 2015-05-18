@@ -9,7 +9,8 @@ public class String2Integer extends String2Number<Integer> {
 
     @Override
     protected Integer valueOf(String str) {
-        return Integer.valueOf(str);
+        _N_Info ni = _eval_radix(str);
+        return Integer.valueOf(ni.val, ni.radix);
     }
 
 }
