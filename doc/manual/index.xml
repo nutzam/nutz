@@ -100,6 +100,18 @@
 	<doc path="img" title="图像处理小军刀">
 		<doc path="overview.man"></doc>
 	</doc>
+	<doc path="integration" title="与第三方框架的集成">
+		<doc path="nutzmore.man"></doc>
+		<doc path="freemarker.man"></doc>
+		<doc path="velocity.man"></doc>
+		<doc path="beetl.man"></doc>
+		<doc path="smarty4j.man"></doc>
+		<doc path="httl.man"></doc>
+		<doc path="shiro.man"></doc>
+		<doc path="quartz.man"></doc>
+		<doc path="ehcache.man"></doc>
+		<doc path="daocache.man"></doc>
+	</doc>
 	<!--doc path="zmole" title="zMole">
 		<doc path="zmole_get_start.man"/>
 	</doc-->

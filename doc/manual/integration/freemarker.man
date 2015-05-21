@@ -1,0 +1,74 @@
+#title: 集成Freemarker
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+---------------------------------------------------------------------
+将nutz-plugins-views加入到项目中
+
+	下载地址: http://repo1.maven.org/maven2/org/nutz/nutz-plugins-views/
+	
+	maven项目的关联
+	
+	{{{
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz-plugins-views</artifactId>
+			<version>1.b.52.preview</version>
+		</dependency>
+	}}}
+	
+	当然,非maven项目的话, freemarker得自行下载了
+	
+---------------------------------------------------------------------
+修改MainModule类,添加引用
+
+	{{{
+	@Views(value={FreeMarkerViewMaker.class})
+	// 其他配置,如IocBy等等
+	public class MainModule {}
+	}}}
+
+----------------------------------------------------------------------
+用法及默认配置
+
+	入口方法示例
+	
+	{{{
+	@At("/")
+	@Ok("fm:tmpl.index") // 模板文件的路径为  /WEB-INF/tmpl/index.ftl
+	public void index(){}
+	}}}
+	
+	{{{
+	@At("/user")
+	@Ok("fm:/tmpl/user/home") // 模板文件的路径为  /tmpl/user/home.ftl
+	public void home(){}
+	}}}
+
+	可以看到,规则与JspView是一致的,只是后缀变成了ftl
+	
+----------------------------------------------------------------------
+自定义Freemarker的配置
+
+	在src目录下建立freemarker.properties 以下是示例内容
+	
+	{{{
+	#demo configure
+	tag_syntax=auto_detect
+	template_update_delay=-1
+	defaultEncoding=UTF-8
+	url_escaping_charset=UTF-8
+	locale=zh_CN
+	boolean_format=true,false
+	datetime_format=yyyy-MM-dd HH:mm:ss
+	date_format=yyyy-MM-dd
+	time_format=HH:mm:ss
+	number_format=0.######
+	whitespace_stripping=true
+	#auto_import=/ftl/pony/index.ftl as p,/ftl/spring.ftl as s
+	}}}
+	
+-----------------------------------------------------------------------
+可供参考的实例项目
+
+	https://github.com/Rekoe/Rk_Cms
