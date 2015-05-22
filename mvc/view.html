@@ -123,7 +123,7 @@
 </pre>
 <p>的时候，无论入口函数返回什么对象,它会将其保存到request的 <b>"obj"</b> 属性中。比如</p>
 <pre>@At
-@Ok("/test.jsp")
+@Ok("jsp:/test.jsp")
 public String test(){
     return "this is test";
 }

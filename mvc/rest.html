@@ -28,12 +28,13 @@
 <div class="hr"><b></b></div>
 <h1><a name="如何使用_REST"></a>如何使用 REST</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>暂时的，Nutz.Mvc 对于 REST 的支持，仅仅包括四个方法：</p>
+<p>暂时的，Nutz.Mvc 对于 REST 的支持，包括五个方法：</p>
 <ul type="disc">
 <li>GET</li>
 <li>POST</li>
 <li>PUT</li>
 <li>DELETE</li>
+<li>OPTIONS -- 1.b.53新增</li>
 </ul>
 <p>比如，你有一个 User 对象，你想为其增加 "修改" 和 "删除" 的操作，在模块类里你可以定义如下两个方法</p>
 <pre>@At("/user/?")
@@ -67,10 +68,11 @@ public void deleteUser(int userId){
 <li><span style="color:#888888;"><b> @POST</b></span></li>
 <li><span style="color:#888888;"><b> @PUT</b></span></li>
 <li><span style="color:#888888;"><b> @DELETE</b></span></li>
+<li><span style="color:#888888;"><b> @OPTIONS</b></span></li>
 </ul>
 <p>这几个注解描述了当前入口函数仅仅相应什么样的 HTTP 请求方法。在你的应用运行时，即使 Nut.Mvc 匹配上了 URL，如果 HTTP 请求的方法和你声明的不符，它也当这个入口函数不存在。</p>
 <p>如果你不声明这四个注解中的任何一个，则表示你希望你的这个入口函数处理发送到这个 URL 的任何HTTP 请求。</p>
-<p>因此，你可以为一个入口函数声明 (@GET|@POST|@PUT|@DELETE) 中的一个或多个，处理其中一种或者多种HTTP 请求，而另外一个入口函数不声明注解，用来处理余下的其他 HTTP 请求方法。当然，这两个入口函数的 @At 应该是一致的。</p>
+<p>因此，你可以为一个入口函数声明 (@GET|@POST|@PUT|@DELETE|@OPTIONS) 中的一个或多个，处理其中一种或者多种HTTP 请求，而另外一个入口函数不声明注解，用来处理余下的其他 HTTP 请求方法。当然，这两个入口函数的 @At 应该是一致的。</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b></div>
 </body>

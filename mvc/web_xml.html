@@ -14,6 +14,9 @@
 <li>
 <div><span class="num">2</span><a href="#比较传统的方式">比较传统的方式</a></div>
 </li>
+<li>
+<div><span class="num">3</span><a href="#NutMvcListener_--_Servlet上下文监听器">NutMvcListener -- Servlet上下文监听器</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="在_webxml_中，一个比较典型的例子(推荐使用)："></a>在 web.xml 中，一个比较典型的例子(推荐使用)：</h1>
@@ -108,6 +111,48 @@
     &lt;url-pattern&gt;*.nut&lt;/url-pattern&gt;
 &lt;/servlet-mapping&gt;
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="NutMvcListener_--_Servlet上下文监听器"></a>NutMvcListener -- Servlet上下文监听器</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>这个类在1.b.53添加,之前的版本可以简单拷贝源码来获取这个特性.仅需要注意一下IocBy里面写法哦.</li>
+<li>将Ioc在其他部分框架之前加载,实现与其他框架集成Ioc</li>
+<li>提供一个比Mvcs.getIoc()更换的方式获取Ioc容器</li>
+<li>减少用户主动new NutIoc()的可能性</li>
+</ul>
+<pre>&lt;context-param&gt;
+	&lt;param-name&gt;nutz-iocby&lt;/param-name&gt;
+	&lt;param-value&gt;*js,ioc/,*anno,net.wendal.nutzbook,*tx,*org.nutz.integration.quartz.QuartzIocLoader&lt;/param-value&gt;
+&lt;/context-param&gt;
+&lt;listener&gt;
+	&lt;listener-class&gt;org.nutz.mvc.NutMvcListener&lt;/listener-class&gt;
+&lt;/listener&gt;
+</pre>
+<ul type="disc">
+<li>需要定义一个context-param, 名为nutz-iocby, 值为@IocBy中的参数, 完全就是MainModule中@IocBy中,当type=ComboIocProvider.class时参数</li>
+<li>之所以选用ComboIocProvider的形式,因为发现这是最最常用的配置方式了,因为它能融合其他任意IocLoader配置</li>
+<li>其二是listener咯,惯例写上本小节的猪脚org.nutz.mvc.NutMvcListener</li>
+<li>请把这个类放在其他框架之前. 如果有log4j配置相关的Listener,则放在其之后.</li>
+<li>另外,最最重要的是, 在MainModule中,@IocBy需要配置为以下代码</li>
+</ul>
+<pre>@IocBy(type=NutMvcListener.class)
+</pre>
+<ul type="disc">
+<li>没错,这个NutMvcListener同时也实现了IocProvider,所以可以作为@IocBy的类型参数</li>
+<li>在需要使用这个"全局"监听器中的Ioc容器,仅需要如此调用</li>
+<li>不用也不可以为@IocBy的args配置参数了,因为ioc配置已经被你写到web.xml了.</li>
+</ul>
+<pre>Dao dao = NutMvcListener.ioc().get(Dao.class);
+</pre>
+<ul type="disc">
+<li>事实上NutMvcListener支持从nutz.properties加载配置</li>
+<li>所以你可以在src或者maven的resources目录下新增一个文件叫nutz.properties,内容是</li>
+</ul>
+<pre>nutz-iocby=*js,ioc/,*anno,net.wendal.nutzbook,*tx,*org.nutz.integration.quartz.QuartzIocLoader
+</pre>
+<ul type="disc">
+<li>推荐使用web.xml, 除非你喜欢用配置文件及需要部署时修改ioc(几乎不会发生吧?)</li>
+</ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

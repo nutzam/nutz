@@ -28,6 +28,9 @@
 <li>
 <div><span class="num">3</span><a href="#JSON_加载器">JSON 加载器</a></div>
 </li>
+<li>
+<div><span class="num">4</span><a href="#工厂方法">工厂方法</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="鸭子法则"></a>鸭子法则</h1>
@@ -59,6 +62,10 @@
 <tr>
 <td> <b>fields</b>		</td>
 <td> <span style="color:#008800;"> 字段设定</span> </td>
+</tr>
+<tr>
+<td> <b>factory</b>		</td>
+<td> <span style="color:#008800;"> 工厂方法</span> </td>
 </tr>
 </table>
 <p>否则，这个 Map 被认为，是在声明对象的每个字段。</p>
@@ -102,6 +109,25 @@ System.out.println(pet.getFriend().getName());
 </pre>
 <p>你这个加载器是怎么实现的 NutIoc 并不关心。在 Nutz 最早的版本，它提供的第一个加载器就是 JsonLoader。</p>
 <p>对于 JsonLoader 更多的描述，请参看 <a href="ioc_loader.html">配置文件的格式</a></p>
+<div class="hr"><b></b></div>
+<h1><a name="工厂方法"></a>工厂方法</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>语法:</p>
+<pre>	{
+		type : "net.wendal.nutzbook.Cache",
+		args : ["user_profile_cache"],
+		factory:"xxx.xx.xxxxCacheFactory<span class="zdoc_code_cmt">#create"
+</span>	}
+</pre>
+<p>其中 xxx.xx.xxxxFactory是工厂类的类全名, create是工厂方法, 其参数是"user_profile_cache"</p>
+<p>从1.b.53开始,支持ioc bean做factory bean</p>
+<pre>	{
+		type : "net.wendal.nutzbook.Cache",
+		args : ["user_profile_cache"],
+		factory:"$beanCacheFactory<span class="zdoc_code_cmt">#create"
+</span>	}
+</pre>
+<p>其中的beanCacheFactory是另外一个ioc bean的名称</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

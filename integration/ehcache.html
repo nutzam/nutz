@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>集成Ehcache</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">集成Ehcache</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#提醒">提醒</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#准备工作">准备工作</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#怎么用">怎么用</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="提醒"></a>提醒</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这一小节的是如何在应用层(service或者module或action类)中使用ehcache</p>
+<div class="hr"><b></b></div>
+<h1><a name="准备工作"></a>准备工作</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下载ehcache http://ehcache.org/downloads/catalog</p>
+<p>你需要一个js文件</p>
+<div class="hr"><b></b></div>
+<pre>var ioc = {
+	<span class="zdoc_code_cmt">// 直接初始化Ehcache,默认找ehcache.xml文件哦
+</span>	cacheManager : {
+		type : "net.sf.ehcache.CacheManager",
+		factory : "net.sf.ehcache.CacheManager<span class="zdoc_code_cmt">#create"
+</span>	}
+	/* <span class="zdoc_code_cmt">// 与shiro共享一个ehcache示例的方式
+</span>	cacheManager : {
+		type : "net.sf.ehcache.CacheManager",
+		factory : "net.sf.ehcache.CacheManager<span class="zdoc_code_cmt">#getCacheManager",
+</span>		args : ["nutzbook"] <span class="zdoc_code_cmt">// 对应shiro.ini中指定的ehcache.xml中定义的name
+</span>	}
+	 */
+};
+</pre>
+<p>把它放入dao.js同一个文件夹, 并确定在@IocBy中涵盖了这个js</p>
+<div class="hr"><b></b></div>
+<h1><a name="怎么用"></a>怎么用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>在你需要使用Ehcache的地方,加入</p>
+<pre>@Inject CacheManager cacheManager;
+</pre>
+<p>so, 你已经得到CacheManager,怎么玩就随你了</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

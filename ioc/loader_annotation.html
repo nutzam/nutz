@@ -141,18 +141,6 @@ public class MyObject {
 <p>那么你到底能注入什么呢？ 感兴趣的同学可以看这里：<a href="injecting.html">你都可以注入什么</a>。当然，同 Json 的方式有点不同，你这里直接写 "refer:xxxx" 或者 "env:xxxx" 就好了。下面是一个列表</p>
 <table border="1" cellspacing="2" cellpadding="4">
 <tr>
-<td> @Inject("Hello world")              </td>
-<td>  字符串 </td>
-</tr>
-<tr>
-<td> @Inject("135897415")                </td>
-<td>  数字 </td>
-</tr>
-<tr>
-<td> @Inject("true")                     </td>
-<td>  布尔型值 </td>
-</tr>
-<tr>
 <td> @Inject("refer:objName")            </td>
 <td>  注入容器其他对象的引用 </td>
 </tr>
@@ -213,6 +201,7 @@ public class MyObject {
 <td> 容器对象某个方法的返回值 </td>
 </tr>
 </table>
+<p>兼容性改变, 如果你硬要注入一个常量(例如true,false,字符串), 那么写成 ":true" ":false" ":hi"</p>
 <p>基本上，看到上面的表格，你同时也能完全明白怎么 <a href="#为对象传递构造函数">#为对象传递构造函数</a>，不是吗？</p>
 <div class="hr"><b></b></div>
 <h1><a name="声明对象的事件"></a>声明对象的事件</h1>
@@ -247,9 +236,30 @@ public AbcService extends Service {
 <div class="hr"><b></b></div>
 <h1><a name="工厂方法"></a>工厂方法</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>@IocBean(factory="net.wendal.mqtt.MqttAbcServiceFactory<span class="zdoc_code_cmt">#create")
-</span>public AbcService extends Service {
+<pre>@IocBean(factory="net.wendal.mqtt.MqttAbcServiceFactory<span class="zdoc_code_cmt">#create", args={"refer:dao"})
+</span>public class AbcService extends Service {
 	...
+	
+}
+
+<span class="zdoc_code_cmt">// 无任何注解
+</span>public class MqttAbcServiceFactory {
+	public static AbcService create(Dao dao) {
+		return new XXXXAbcService(dao);
+	}
+}
+</pre>
+<p>通过其他bean生成此bean, 类似于spring的factory-bean功能</p>
+<pre>@IocBean(factory="$snakerConfigure<span class="zdoc_code_cmt">#build")
+</span>public class SnakerService{}
+
+
+@IocBean(name="snakerConfigure")
+public class SnakerConfigure {
+	public SnakerService build() {
+		return ....;
+	}
+}
 </pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

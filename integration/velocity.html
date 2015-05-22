@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>集成Velocity</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">集成Velocity</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#将nutz-plugins-views加入到项目中">将nutz-plugins-views加入到项目中</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#修改MainModule类,添加引用">修改MainModule类,添加引用</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#用法及默认配置">用法及默认配置</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#可供参考的实例项目">可供参考的实例项目</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="将nutz-plugins-views加入到项目中"></a>将nutz-plugins-views加入到项目中</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下载地址: http://repo1.maven.org/maven2/org/nutz/nutz-plugins-views/</p>
+<p>maven项目的关联</p>
+<pre>	&lt;dependency&gt;
+		&lt;groupId&gt;org.nutz&lt;/groupId&gt;
+		&lt;artifactId&gt;nutz-plugins-views&lt;/artifactId&gt;
+		&lt;version&gt;1.b.52.preview&lt;/version&gt;
+	&lt;/dependency&gt;
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="修改MainModule类,添加引用"></a>修改MainModule类,添加引用</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Views(value={VelocityViewMaker.class})
+<span class="zdoc_code_cmt">// 其他配置,如IocBy等等
+</span>public class MainModule {}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="用法及默认配置"></a>用法及默认配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>入口方法示例</p>
+<pre>@At("/")
+@Ok("vm:tmpl.index") <span class="zdoc_code_cmt">// 模板文件的路径为  /WEB-INF/tmpl/index.vm
+</span>public void index(){}
+</pre>
+<pre>@At("/user")
+@Ok("vm:/tmpl/user/home") <span class="zdoc_code_cmt">// 模板文件的路径为  /tmpl/user/home.vm
+</span>public void home(){}
+</pre>
+<p>可以看到,规则与JspView是一致的,只是后缀变成了vm</p>
+<div class="hr"><b></b></div>
+<h1><a name="可供参考的实例项目"></a>可供参考的实例项目</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>https://github.com/Wizzercn/NutzWk</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

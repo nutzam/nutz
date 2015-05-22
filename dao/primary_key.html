@@ -98,7 +98,7 @@ public class Pet{
 	private int id;
 	...
 </pre>
-<p>Nutz.Dao 在插入对象是，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。</p>
+<p>Nutz.Dao 在插入对象时，就不会忽略你这个主键的值了，并且在插入完毕后，它也不会执行 SELECT MAX(id)。</p>
 <h2><a name="快速插入"></a>快速插入</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>无论你是不是 @Id(auto=false)，通过 Dao.fastInsert ，都不会执行 SELECT MAX(id)</p>
