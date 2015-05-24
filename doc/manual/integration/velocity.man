@@ -1,0 +1,51 @@
+#title: 集成Velocity
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+---------------------------------------------------------------------
+将nutz-plugins-views加入到项目中
+
+	下载地址: http://repo1.maven.org/maven2/org/nutz/nutz-plugins-views/
+	
+	maven项目的关联
+	
+	{{{
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz-plugins-views</artifactId>
+			<version>1.b.52.preview</version>
+		</dependency>
+	}}}
+	
+---------------------------------------------------------------------
+修改MainModule类,添加引用
+
+	{{{
+	@Views(value={VelocityViewMaker.class})
+	// 其他配置,如IocBy等等
+	public class MainModule {}
+	}}}
+
+----------------------------------------------------------------------
+用法及默认配置
+
+	入口方法示例
+	
+	{{{
+	@At("/")
+	@Ok("vm:tmpl.index") // 模板文件的路径为  /WEB-INF/tmpl/index.vm
+	public void index(){}
+	}}}
+	
+	{{{
+	@At("/user")
+	@Ok("vm:/tmpl/user/home") // 模板文件的路径为  /tmpl/user/home.vm
+	public void home(){}
+	}}}
+
+	可以看到,规则与JspView是一致的,只是后缀变成了vm
+	
+-----------------------------------------------------------------------
+可供参考的实例项目
+
+	https://github.com/Wizzercn/NutzWk
