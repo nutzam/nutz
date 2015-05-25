@@ -59,7 +59,7 @@ public abstract class String2Number<T> extends Castor<String, T> {
     protected _N_Info _eval_radix(String str) {
         if (str.startsWith("0x"))
             return new _N_Info(str.substring(2), 16);
-        if (str.startsWith("0"))
+        if (str.startsWith("0") && str.length() > 1)
             return new _N_Info(str.substring(1), 8);
         if (str.startsWith("0b"))
             return new _N_Info(str.substring(2), 2);

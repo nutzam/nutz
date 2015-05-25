@@ -1,0 +1,10 @@
+#title: 集成Shiro
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+-----------------------------------------------
+直接项目README
+
+	请直接看看项目的README,不会让你失望的!!
+	
+	https://github.com/nutzam/nutzmore/tree/master/nutz-integration-shiro

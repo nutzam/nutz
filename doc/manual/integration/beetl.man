@@ -1,0 +1,35 @@
+#title: 集成beetl
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+---------------------------------------------------
+beetl的官方文档描述
+
+	文档地址 http://ibeetl.com/guide/#_nuts集成
+	
+	地址中写的是nuts,如果将来修正了, 那应该是 http://ibeetl.com/guide/#_nutz集成
+	
+---------------------------------------------------
+关联配置,修改MainModule类,添加注解
+	
+	{{{
+	@Views(value={BeetlViewMaker.class})
+	// 其他配置,如IocBy等等
+	public class MainModule {}
+	}}}
+	
+---------------------------------------------------
+用法
+
+	入口方法示例
+
+	{{{
+	@At("/user")
+	@Ok("beetl:/tmpl/user/home.btl") // 模板文件的路径为  /tmpl/user/home.btl
+	public void home(){}
+	}}}
+	
+-----------------------------------------------------
+自定义配置
+
+	请参考beetl的官方文档
