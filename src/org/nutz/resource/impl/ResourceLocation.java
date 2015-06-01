@@ -9,6 +9,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -138,21 +139,27 @@ class JarResourceLocation extends ResourceLocation {
     public JarResourceLocation(String jarPath) {
         if (jarPath.startsWith("zip:"))
             jarPath = jarPath.substring(4);
-        if (jarPath.startsWith("file:/"))
+        if (jarPath.startsWith("file:/")) {
             jarPath = jarPath.substring("file:/".length());
+            if (!new File(jarPath).exists() && !jarPath.startsWith("/")) {
+                jarPath = "/" + jarPath;
+            }
+        }
         this.jarPath = jarPath;
+        ZipInputStream zis = null;
         try {
-            ZipInputStream zis = Scans.makeZipInputStream(jarPath);
+            zis = Scans.makeZipInputStream(jarPath);
             ZipEntry ens = null;
             while (null != (ens = zis.getNextEntry())) {
                 if (ens.isDirectory())
                     continue;
                 names.add(ens.getName());
             }
-            zis.close();
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             throw Lang.wrapThrow(e);
+        } finally {
+            Streams.safeClose(zis);
         }
     }
 }

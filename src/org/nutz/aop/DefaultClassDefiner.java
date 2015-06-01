@@ -4,6 +4,8 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 一个默认的类加载器
@@ -12,17 +14,20 @@ import org.nutz.lang.Lang;
  */
 public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 	
+    private static final Log log = Logs.get();
+    
 	protected static ClassDefiner one;
 	
 	protected static ClassLoader moreClassLoader;
 	
-	public static void init(ClassLoader cd) {
+	public static void init(final ClassLoader cd) {
+	    log.debug("init DefaultClassDefiner by ClassLoader=" + cd);
 		if (one == null) {
 			synchronized (DefaultClassDefiner.class) {
 				if (one == null) {
 					AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
 			            public DefaultClassDefiner run() {
-			            	one = new DefaultClassDefiner(DefaultClassDefiner.class.getClassLoader());
+			            	one = new DefaultClassDefiner(cd);
 			                return (DefaultClassDefiner) DefaultClassDefiner.defaultOne();
 			            }
 			        });
