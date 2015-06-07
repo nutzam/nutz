@@ -27,7 +27,10 @@ public class DefaultClassDefiner extends ClassLoader implements ClassDefiner {
 				if (one == null) {
 					AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
 			            public DefaultClassDefiner run() {
-			            	one = new DefaultClassDefiner(cd);
+			                if (cd != null)
+			                    one = new DefaultClassDefiner(cd);
+			                else
+			                    one = new DefaultClassDefiner(DefaultClassDefiner.class.getClassLoader());
 			                return (DefaultClassDefiner) DefaultClassDefiner.defaultOne();
 			            }
 			        });
