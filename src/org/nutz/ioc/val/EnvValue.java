@@ -1,18 +1,13 @@
 package org.nutz.ioc.val;
 
-import org.nutz.ioc.IocMaking;
-import org.nutz.ioc.ValueProxy;
-
-public class EnvValue implements ValueProxy {
-
-    private String name;
-
-    public EnvValue(String name) {
-        this.name = name;
+public class EnvValue extends ListableValueProxy {
+    
+    public EnvValue(Object obj) {
+        super(obj);
     }
 
-    public Object get(IocMaking ing) {
-        return System.getenv(name);
+    protected Object getValue(String key) {
+        return System.getenv(key);
     }
 
 }
