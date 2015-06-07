@@ -230,7 +230,7 @@ public class AnnotationIocLoader implements IocLoader {
                         }
                 }
             }
-            catch (Exception e) {
+            catch (Throwable e) {
                 // 无需处理.
             }
         }
