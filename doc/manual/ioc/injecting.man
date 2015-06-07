@@ -111,6 +111,34 @@
 		}
 		}}}
 		`{env : '环境变量名'}` 将会得到系统中环境变量的值
+		
+		从1.b.53开始, env及sys支持数组了, 例如需要JAVA_HOME下面的/bin/java的路径,可以写为
+		
+		{{{
+		{
+			xb : { name : {env : ["JAVA_HOME", "/bin/java"]} }
+		}
+		}}}
+		
+		注入的属性值类似于 /opt/jdk8/bin/java
+		
+		如果某个环境变量不存在的时候当成空字符串,那么,在前面加个感叹号
+		
+		{{{
+		{
+			xb : { name : {env : ["!JAVA_HOME", "/bin/java"]} }
+		}
+		}}}
+		
+		当JAVA_HOME不存在时,就会输出 /bin/java
+		
+		同时也支持默认值哦,用冒号分割
+		
+		{{{
+		{
+			xb : { name : {env : ["!JAVA_HOME:/opt/jdk6", "/bin/java"]} }
+		}
+		}}}
 	
 	文件
 		{{{
