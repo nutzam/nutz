@@ -85,4 +85,10 @@ public @interface At {
     String[] value() default {};
 
     String[] methods() default {};
+    
+    /**
+     * 升级为顶层路径映射,不受类的@At及主模块@At的配置所影响, 默认为false
+     * @return 是否为顶层路径映射
+     */
+    boolean top() default false;
 }

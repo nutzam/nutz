@@ -218,6 +218,8 @@ public abstract class Loadings {
 
             if (!Strings.isBlank(at.key()))
                 ai.setPathKey(at.key());
+            if (at.top())
+                ai.setPathTop(true);
         }
     }
 
