@@ -1,7 +1,9 @@
 package org.nutz.img;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -122,7 +124,7 @@ public class Images {
         x = (w / 2) - (iw / 2);// 确定原点坐标
         y = (h / 2) - (ih / 2);
         BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
-        Graphics gs = rotatedImage.getGraphics();
+        Graphics2D gs = rotatedImage.createGraphics();
         gs.fillRect(0, 0, w, h);// 以给定颜色绘制旋转后图片的背景
         AffineTransform at = new AffineTransform();
         at.rotate(ang, w / 2, h / 2);// 旋转图象
@@ -228,7 +230,7 @@ public class Images {
         }
 
         // 检查背景颜色
-        bgColor = null == bgColor ? Color.black : bgColor;
+        //bgColor = null == bgColor ? Color.black : bgColor;
         // 获得尺寸
         int oW = im.getWidth();
         int oH = im.getHeight();
@@ -261,15 +263,30 @@ public class Images {
             y = 0;
         }
 
-        // 创建图像
-        BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
         // 得到一个绘制接口
-        Graphics gc = re.getGraphics();
-        gc.setColor(bgColor);
-        gc.fillRect(0, 0, w, h);
-        gc.drawImage(im, x, y, nW, nH, bgColor, null);
-        // 返回
-        return re;
+        if (bgColor != null) {
+            // 创建图像
+            BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
+            Graphics2D gc = re.createGraphics();
+            gc.setColor(bgColor);
+            gc.fillRect(0, 0, w, h);
+            gc.drawImage(im, x, y, nW, nH, bgColor, null);
+            gc.dispose();
+            // 返回
+            return re;
+        } else {
+            BufferedImage nimage = new BufferedImage(nW, nH, BufferedImage.TYPE_INT_RGB);
+            Graphics2D gc = nimage.createGraphics();
+            nimage = gc.getDeviceConfiguration().createCompatibleImage(nW, nH, Transparency.TRANSLUCENT);
+            gc.dispose();
+            gc = nimage.createGraphics();
+            gc.fillRect(0, 0, w, h);
+            gc.setComposite(AlphaComposite.Src);
+            gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            gc.drawImage(im, 0, 0, nW, nH, null, null);
+            gc.dispose();
+            return nimage;
+        }
     }
 
     /**
@@ -305,7 +322,7 @@ public class Images {
 
         // 创建图像
         BufferedImage re = new BufferedImage(nW, nH, ColorSpace.TYPE_RGB);
-        re.getGraphics().drawImage(im, 0, 0, nW, nH, null);
+        re.createGraphics().drawImage(im, 0, 0, nW, nH, null);
         // 返回
         return re;
     }
@@ -482,7 +499,7 @@ public class Images {
         }
         // 创建图像
         BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
-        re.getGraphics().drawImage(im, x, y, nW, nH, Color.black, null);
+        re.createGraphics().drawImage(im, x, y, nW, nH, Color.black, null);
         // 返回
         return re;
     }
