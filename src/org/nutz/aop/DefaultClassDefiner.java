@@ -8,7 +8,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 /**
- * 一个默认的类加载器
+ * 一个默认的类定义实现
  * 
  * @author Wendal(wendal1985@gmail.com)
  */
