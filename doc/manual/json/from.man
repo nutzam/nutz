@@ -1,0 +1,73 @@
+#title:Nutz.Json 转为Java对象
+#index:0,1
+#author: wendal(wendal1985@gmail.com)
+------------------------------------------------------
+
+Json字符串转Java对象, 分成几种情况
+
+	从目标对象的类型看:
+	
+	* 无Pojo类对应
+		* Json.fromJson(source/*来源参数*/)
+	* 有Pojo类对应
+		* Json.fromJson(Class<T> klass, source/*来源参数*/)
+		* Json.fromJson(Type t, source/*来源参数*/)
+	* Pojo集合或Map嵌套
+		* Json.fromJsonAsArray(Class<T> klass, source/*来源参数*/)
+		* Json.fromJsonAsList(Class<T> klass, source/*来源参数*/)
+		* Json.fromJsonAsMap(Class<T> klass, source/*来源参数*/)
+	
+	从来源看,一般无难度吧
+	
+	* 字符串
+		* Json.fromJson(CharSequence c)
+		* Json.fromJson(Class<T> klass, CharSequence c)
+	* Reader
+		* Json.fromJson(Reader c)
+		* Json.fromJson(Class<T> klass, Reader reader)
+	* File
+		* Json.fromJsonFile(Class<T> klass, File f)
+		
+无Pojo类对应
+
+	这算是最原始的方法了
+	
+	{{{
+	Object obj = Json.fromJson(str);
+	}}}
+	
+	obj的实际类型可能是 Map,List,基本数据类型的封装类型, String
+	
+有Pojo类对应(简单)
+
+	最常用的方法,也是入门级的方法
+	
+	{{{
+	Pet pet = Json.fromJson(Pet.class, str);
+	pet = Json.fromJson(Pet.class, reader);
+	pet = Json.fromJsonFile(Pet.class, new File("pet.json"));
+	}}}
+	
+有Pojo类对应(复杂自定义)
+
+	fromJson方法中最复杂最灵活的方法群
+	
+	{{{
+	String str = "[{dongdong:{age:80}}]";
+	List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.mapStr(Pet.class)), str/*其他源也可以*/);
+	
+	assertEquals(80, list.get(0).get("dongdong").getAge());// Junit断言一下,肯定是80啦
+	}}}
+	
+Pojo集合或Map嵌套
+
+	这群方法事实上就是 有Pojo类对应(复杂自定义) 中的简写形式
+	
+	{{{
+	String str = "{dongdong:{age:80}}";
+	Map<String, Pet> pets = Map<String, Pet>Json.fromJsonAsMap(Pet.class, str/*其他源也可以*/);
+	
+	assertEquals(80, pets.get("dongdong").getAge());// Junit断言一下,肯定是80啦
+	}}}
+	
+	一通百通,哈哈,仔细琢磨一下吧
