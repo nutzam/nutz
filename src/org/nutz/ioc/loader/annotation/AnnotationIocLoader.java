@@ -238,11 +238,17 @@ public class AnnotationIocLoader implements IocLoader {
 
     protected IocValue convert(String value) {
         IocValue iocValue = new IocValue();
-        if (value.contains(":")) {
+        if (value.startsWith(":")) {
+            iocValue.setType(IocValue.TYPE_NORMAL);
+            iocValue.setValue(value);
+        }
+        else if (value.contains(":")) {
             iocValue.setType(value.substring(0, value.indexOf(':')));
-            iocValue.setValue(value.substring(value.indexOf(':') + 1));
-            if ("".equals(iocValue.getType()))
-                iocValue.setType(null);
+            if (value.endsWith(":")) {
+                iocValue.setValue("");
+            }
+            else
+                iocValue.setValue(value.substring(value.indexOf(':') + 1));
         } else {
             // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
             log.info("auto set as         refer:" + value);
