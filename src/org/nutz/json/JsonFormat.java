@@ -83,6 +83,7 @@ public class JsonFormat {
     /**
      * 用到的类型转换器
      */
+    @JsonField(ignore=true)
     private Castors castors;
     /**
      * 分隔符
