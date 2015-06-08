@@ -10,6 +10,29 @@ import java.util.regex.Pattern;
 public abstract class Nums {
 
     /**
+     * 一个数的字面量的进制和值
+     */
+    public static class Radix {
+        Radix(String val, int radix) {
+            this.val = val;
+            this.radix = radix;
+        }
+
+        public int radix;
+        public String val;
+    }
+
+    public static Radix evalRadix(String str) {
+        if (str.startsWith("0x"))
+            return new Radix(str.substring(2), 16);
+        if (str.startsWith("0") && str.length() > 1)
+            return new Radix(str.substring(1), 8);
+        if (str.startsWith("0b"))
+            return new Radix(str.substring(2), 2);
+        return new Radix(str, 10);
+    }
+
+    /**
      * 将一个字符串变成一个整型数组，如果字符串不符合规则，对应的元素为 -1 <br>
      * 比如：
      * 

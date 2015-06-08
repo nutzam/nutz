@@ -39,6 +39,8 @@ public class ActionInfo {
     private Class<?> moduleType;
 
     private Method method;
+    
+    private boolean pathTop;
 
     public ActionInfo() {
         httpMethods = new HashSet<String>();
@@ -46,7 +48,7 @@ public class ActionInfo {
 
     public ActionInfo mergeWith(ActionInfo parent) {
         // 组合路径 - 与父路径做一个笛卡尔积
-        if (null != paths && null != parent.paths && parent.paths.length > 0) {
+        if (!pathTop && null != paths && null != parent.paths && parent.paths.length > 0) {
             List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
             for (int i = 0; i < parent.paths.length; i++) {
                 String pp = parent.paths[i];
@@ -209,4 +211,13 @@ public class ActionInfo {
         this.method = method;
     }
 
+    public void setPathTop(boolean pathTop) {
+        this.pathTop = pathTop;
+    }
+
+    public boolean isPathTop() {
+        return pathTop;
+    }
+    
+    
 }

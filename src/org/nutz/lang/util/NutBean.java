@@ -6,6 +6,8 @@ import java.util.Map;
 
 public interface NutBean extends Map<String, Object> {
 
+    boolean has(String key);
+
     /**
      * 设置一个字段，如果值为 null 则表示移除
      * 

@@ -47,6 +47,13 @@ import org.nutz.lang.util.NutType;
 public class JsonTest {
 
     @Test
+    public void test_eval_radix() {
+        assertEquals(0700, Json.fromJson(NutMap.class, "{x:0700}").getInt("x"));
+        assertEquals(24, Json.fromJson(NutMap.class, "{x:24}").getInt("x"));
+        assertEquals(0x15, Json.fromJson(NutMap.class, "{x:0x15}").getInt("x"));
+    }
+
+    @Test
     public void test_region_as_String() {
         String str = "{"
                      + "n:8, "
@@ -73,8 +80,7 @@ public class JsonTest {
 
     @Test
     public void test_empty_obj_toJson() {
-        String j = Json.toJson(new Person(),
-                               JsonFormat.compact().setQuoteName(true));
+        String j = Json.toJson(new Person(), JsonFormat.compact().setQuoteName(true));
         assertEquals("{\"age\":0,\"num\":0}", j);
     }
 
@@ -193,16 +199,14 @@ public class JsonTest {
     public void when_name_has_unsupport_char() {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("/tt", 123);
-        assertEquals("{\"/tt\":123}",
-                     Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{\"/tt\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
     }
 
     @Test
     public void when_name_has_number_char_at_first() {
         Map<String, Integer> map = new HashMap<String, Integer>();
         map.put("3T", 123);
-        assertEquals("{\"3T\":123}",
-                     Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{\"3T\":123}", Json.toJson(map, JsonFormat.compact().setQuoteName(false)));
     }
 
     @Test
@@ -215,8 +219,7 @@ public class JsonTest {
         ints[0] = 65;
         assertEquals("[65]", Json.toJson(ints));
         assertEquals(65, Json.fromJson(Lang.inr("65")));
-        assertEquals(Float.valueOf("65"),
-                     Json.fromJson(float.class, Lang.inr("65")));
+        assertEquals(Float.valueOf("65"), Json.fromJson(float.class, Lang.inr("65")));
         assertEquals(ints[0], Json.fromJson(int[].class, Lang.inr("[65]"))[0]);
     }
 
@@ -235,11 +238,9 @@ public class JsonTest {
 
     @Test
     public void testFloat() {
-        assertEquals(Float.valueOf(2.3f),
-                     Json.fromJson(float.class, Lang.inr("2.3")));
+        assertEquals(Float.valueOf(2.3f), Json.fromJson(float.class, Lang.inr("2.3")));
         assertEquals((Float) 2.3f, Json.fromJson(Float.class, Lang.inr("2.3")));
-        assertEquals(Float.valueOf(.3f),
-                     Json.fromJson(float.class, Lang.inr(".3")));
+        assertEquals(Float.valueOf(.3f), Json.fromJson(float.class, Lang.inr(".3")));
     }
 
     @Test
@@ -510,19 +511,17 @@ public class JsonTest {
         assertEquals(p.getFather().getAge(), p2.getFather().getAge());
         assertEquals(p.getFather().getBirthday(), p2.getFather().getBirthday());
         assertEquals(p.getCompany().getName(), p2.getCompany().getName());
-        assertEquals(p.getCompany().getCreator().getName(), p2.getCompany()
-                                                              .getCreator()
-                                                              .getName());
-        assertEquals(p.getCompany().getCreator().getRealname(),
-                     p2.getCompany().getCreator().getRealname());
-        assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany()
-                                                             .getCreator()
-                                                             .getAge());
+        assertEquals(p.getCompany().getCreator().getName(), p2.getCompany().getCreator().getName());
+        assertEquals(p.getCompany().getCreator().getRealname(), p2.getCompany()
+                                                                  .getCreator()
+                                                                  .getRealname());
+        assertEquals(p.getCompany().getCreator().getAge(), p2.getCompany().getCreator().getAge());
         assertEquals(p.getCompany().getCreator().getFather(), p2.getCompany()
                                                                 .getCreator()
                                                                 .getFather());
-        assertEquals(p.getCompany().getCreator().getBirthday(),
-                     p2.getCompany().getCreator().getBirthday());
+        assertEquals(p.getCompany().getCreator().getBirthday(), p2.getCompany()
+                                                                  .getCreator()
+                                                                  .getBirthday());
     }
 
     @Test
@@ -543,9 +542,7 @@ public class JsonTest {
     public void testFilterField2() throws Exception {
         Person p = Json.fromJson(Person.class,
                                  getFileAsInputStreamReader("org/nutz/json/person.txt"));
-        String json = Json.toJson(p,
-                                  JsonFormat.nice()
-                                            .setLocked("realname|father|company"));
+        String json = Json.toJson(p, JsonFormat.nice().setLocked("realname|father|company"));
         Person p2 = Json.fromJson(Person.class, Lang.inr(json));
         assertNull(p2.getRealname());
         assertEquals(p.getName(), p2.getName());
@@ -562,9 +559,7 @@ public class JsonTest {
         public boolean equals(Object obj) {
             if (obj instanceof Project) {
                 Project p = (Project) obj;
-                return id == p.id
-                       && name.equals(p.name)
-                       && alias.equals(p.alias);
+                return id == p.id && name.equals(p.name) && alias.equals(p.alias);
             }
             return false;
         }
@@ -728,17 +723,14 @@ public class JsonTest {
     public void test_output_nostr_key_map() {
         Map<Integer, String> map = new HashMap<Integer, String>();
         map.put(22, "hello");
-        assertEquals("{\"22\":\"hello\"}",
-                     Json.toJson(map, JsonFormat.compact()));
+        assertEquals("{\"22\":\"hello\"}", Json.toJson(map, JsonFormat.compact()));
     }
 
     @Test
     public void test_separator() {
         String str = "Nutz";
-        assertEquals("\"Nutz\"",
-                     Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
-        assertEquals("'Nutz'",
-                     Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
+        assertEquals("\"Nutz\"", Json.toJson(str, JsonFormat.compact().setSeparator('\"')));
+        assertEquals("'Nutz'", Json.toJson(str, JsonFormat.compact().setSeparator('\'')));
     }
 
     @Test
@@ -759,14 +751,12 @@ public class JsonTest {
         map.put("abc", "abc中文abc");
         JsonFormat format = new JsonFormat(true);
         format.setAutoUnicode(true);
-        assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}",
-                     Json.toJson(map, format));
+        assertEquals("{\"abc\":\"abc\\u4E2D\\u6587abc\"}", Json.toJson(map, format));
     }
 
     @Test
     public void test_toList() {
-        List<Map<String, Integer>> msgList = Json.fromJson(List.class,
-                                                           "[{'a':1}, {'b':2}]");
+        List<Map<String, Integer>> msgList = Json.fromJson(List.class, "[{'a':1}, {'b':2}]");
         assertNotNull(msgList);
         assertTrue(msgList.size() == 2);
         assertEquals(1, msgList.get(0).get("a").intValue());
@@ -792,8 +782,7 @@ public class JsonTest {
     public void test_render_char() {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("charX", 'c');
-        assertEquals("{\"charX\":\"c\"}",
-                     Json.toJson(map, JsonFormat.compact()));
+        assertEquals("{\"charX\":\"c\"}", Json.toJson(map, JsonFormat.compact()));
     }
 
     @Test
@@ -881,25 +870,28 @@ public class JsonTest {
         assertEquals(map.get("yes"), true);
         assertEquals(3, ((List<Integer>) map.get("rs")).get(2).intValue());
     }
-    
+
     @Test
     public void test_ignore_numbers() {
-    	assertEquals("{age:100}", Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
-    	assertEquals("{temp:15.0}", Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
-    	assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f), JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{age:100}",
+                     Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{temp:15.0}",
+                     Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f),
+                                               JsonFormat.compact().setQuoteName(false)));
     }
-    
+
     @Test
     public void test_unicode() {
-    	Map<String, String> map = new HashMap<String, String>();
-    	map.put("中文", "地球");
-    	map.put("\t", "\t");
-    	String str = Json.toJson(map, JsonFormat.full().setAutoUnicode(true));
-    	System.out.println(str);
-    	Object obj = Json.fromJson(str);
-    	System.out.println(obj);
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("中文", "地球");
+        map.put("\t", "\t");
+        String str = Json.toJson(map, JsonFormat.full().setAutoUnicode(true));
+        System.out.println(str);
+        Object obj = Json.fromJson(str);
+        System.out.println(obj);
     }
-    
+
     @Test
     public void test_json_date() {
         Castors cs = Castors.create();
@@ -909,7 +901,7 @@ public class JsonTest {
         System.out.println(Json.toJson(map, JsonFormat.compact()));
         System.out.println(Json.toJson(map, JsonFormat.compact().setCastors(cs)));
     }
-    
+
     @Test
     public void test_json_date2() {
         NutMap map = new NutMap();

@@ -2,21 +2,16 @@ package org.nutz.ioc.val;
 
 import java.util.Properties;
 
-import org.nutz.ioc.IocMaking;
-import org.nutz.ioc.ValueProxy;
-
-public class SysPropValue implements ValueProxy{
+public class SysPropValue extends ListableValueProxy {
     
-    private String name;
-    
-    public SysPropValue(String name) {
-        this.name = name;
+    public SysPropValue(Object obj) {
+        super(obj);
     }
 
-    public Object get(IocMaking ing) {
+    public Object getValue(String key) {
         Properties properties = System.getProperties();
         if (properties != null)
-            return properties.get(name);
+            return properties.get(key);
         return null;
     }
 

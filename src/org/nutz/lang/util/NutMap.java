@@ -69,6 +69,10 @@ public class NutMap extends LinkedHashMap<String, Object> implements NutBean {
         return new NutMap(json);
     }
 
+    public boolean has(String key) {
+        return null != get(key);
+    }
+
     public Object get(String key, Object dft) {
         Object v = get(key);
         return null == v ? dft : v;
