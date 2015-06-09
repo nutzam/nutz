@@ -156,6 +156,8 @@ public class NutEntity<T> implements Entity<T> {
      * 实体的主键类型
      */
     private PkType pkType;
+    
+    private boolean complete;
 
     public NutEntity(Class<T> type) {
         this.type = type;
@@ -480,5 +482,13 @@ public class NutEntity<T> implements Entity<T> {
 
     public String getColumnComent(String columnName) {
         return columnComments.get(columnName);
+    }
+
+    public boolean isComplete() {
+        return complete;
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 }

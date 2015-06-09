@@ -276,4 +276,5 @@ public interface Entity<T> {
      */
     String getColumnComent(String columnName);
 
+    boolean isComplete();
 }
