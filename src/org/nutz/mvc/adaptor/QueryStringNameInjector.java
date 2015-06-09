@@ -7,6 +7,7 @@ import java.net.URLDecoder;
 import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.castor.Castors;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.Times;
@@ -47,7 +48,7 @@ public class QueryStringNameInjector extends NameInjector {
                         qsMap.put(p.getName(), true);
                     } else {
                         try {
-                            val = URLDecoder.decode(val, "UTF-8");
+                            val = URLDecoder.decode(val, Encoding.UTF8);
                         }
                         catch (UnsupportedEncodingException e) {
                             throw Lang.wrapThrow(e);

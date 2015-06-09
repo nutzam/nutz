@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.nutz.lang.Encoding;
+
 /**
  * 通过读取Class文件,获得方法形参名称列表
  * @author wendal(wendal1985@gmail.com)
@@ -115,7 +117,7 @@ public class MethodParamNamesScaner {
                 int len = dis.readUnsignedShort();
                 byte[] data = new byte[len];
                 dis.readFully(data);
-                strs.put(i + 1, new String(data, "UTF-8"));//必然是UTF8的
+                strs.put(i + 1, new String(data, Encoding.UTF8));//必然是UTF8的
                 break;
             case 15://CONSTANT_MethodHandle:
                 dis.skipBytes(1);

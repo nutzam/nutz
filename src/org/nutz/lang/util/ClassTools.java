@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nutz.Nutz;
+import org.nutz.lang.Encoding;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
@@ -61,7 +62,7 @@ public class ClassTools {
                     int len = dis.readUnsignedShort();
                     byte[] data = new byte[len];
                     dis.readFully(data);
-                    strs.put(i + 1, new String(data, "UTF-8"));//必然是UTF8的
+                    strs.put(i + 1, new String(data, Encoding.UTF8));//必然是UTF8的
                     break;
                 case 15://CONSTANT_MethodHandle:
                     dis.skipBytes(1);
