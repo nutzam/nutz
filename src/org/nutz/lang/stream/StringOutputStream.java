@@ -11,7 +11,7 @@ public class StringOutputStream extends OutputStream {
     private String charset;
 
     public StringOutputStream(StringBuilder sb) {
-        this(sb, null);
+        this(sb, "UTF-8");
     }
 
     public StringOutputStream(StringBuilder sb, String charset) {
