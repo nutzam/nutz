@@ -214,6 +214,7 @@ public class Mirror<T> {
         String fn = Strings.upperFirst(fieldName);
         String _get = "get" + fn;
         String _is = "is" + fn;
+        Method _m = null;
         for (Method method : klass.getMethods()) {
             if (method.getParameterTypes().length != 0)
                 continue;
@@ -240,9 +241,13 @@ public class Mirror<T> {
                 return method;
             }
 
-            if (fieldName.equals(method.getName()))
-                return method;
+            if (fieldName.equals(method.getName())) {
+                _m = method;
+                continue;
+            }
         }
+        if (_m != null)
+            return _m;
         throw Lang.makeThrow(NoSuchMethodException.class,
                              "Fail to find getter for [%s]->[%s]",
                              klass.getName(),

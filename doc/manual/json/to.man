@@ -1,0 +1,18 @@
+#title:Nutz.Json 转为Json字符串
+#index:0,1
+#author: wendal(wendal1985@gmail.com)
+------------------------------------------------------
+
+转为Json字符串, 归类一下
+
+	输出目标
+	
+	* 字符串
+	* Writer
+	* File
+		
+	格式控制
+	
+	* JsonFormat,即运行时配置
+	* 注解配置,永久的, 请看"Json注解"一节
+		

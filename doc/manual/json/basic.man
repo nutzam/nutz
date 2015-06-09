@@ -1,0 +1,83 @@
+#title: Nutz.Json 基本用法
+#index:0,1
+#author: wendal ( wendal1985@gmail.com@gmail.com )
+
+--------------------------------------------------------
+什么是JSON?
+
+	JSON的[http://json.org/json-zh.html 官方定义] : 一种轻量级的数据交换格式 
+	
+	基本形式如下
+	
+	{{{
+	{
+	/**
+	块注释
+	*/
+		name : "wendal",  // 行末注释
+		email: "wendal1985@gmail.com", // 名值对, 即Map类型的Key-Value
+		tags : ["java", "python", "linux"], // 数组, 即List或Array
+		pets : [   //数组元素可以是对象,数组,普通值
+			{
+				name : "dongdong",
+				type : "dog",
+				age : 10
+			},
+			{
+				name : "fengfeng",
+				type : "unkown",
+				age : -1,
+				food : "dog"
+			}
+		]
+	}
+	}}}
+	
+-------------------------------------------------------
+Nutz对Json的理解
+
+	Nutz把Json结构理解为Map-List, 即Map类型及List类型的嵌套
+	
+	在Nutz中对Json的操作大多数情况下仅一行语句搞定.
+	
+
+-------------------------------------------------------
+将对象转为一个Json字符串
+
+	
+	{{{
+	Pet pet = new Pet();
+	pet.setName("dongdong");
+	pet.setAge(10);
+	Json.toJson(pet);
+	}}}
+	
+	输出的内容是:
+	
+	{{{
+	{
+		name : "dongdong",
+		age : 10
+	}
+	}}}
+	
+-------------------------------------------------------
+将Json字符串转为Java对象
+
+	现有字符串
+	
+	{{{
+	{
+		name : "fengfeng",
+		age : -1
+	}
+	}}}
+	
+	转换代码
+	
+	{{{
+	Pet pet = Json.fromJson(Pet.class, str);
+	pet.getName(); // 值为fengfeng
+	pet.getAge();  // 值为-1
+	}}}
+

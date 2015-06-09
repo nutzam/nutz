@@ -410,9 +410,12 @@ public class Files {
     public static File createDirIfNoExists(File d) {
         if (null == d)
             return d;
-        if (!d.exists())
-            Files.makeDir(d);
-        if (!d.isDirectory())
+        if (!d.exists()) {
+            if (!Files.makeDir(d)) {
+                throw Lang.makeThrow("fail to create '%s', permission deny?", d.getAbsolutePath());
+            }
+        }
+        if (!d.isDirectory()) 
             throw Lang.makeThrow("'%s' should be a directory!", d);
         return d;
     }
