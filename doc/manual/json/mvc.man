@@ -87,7 +87,10 @@ AdaptBy的说明
 		data : $.toJSON({ id: 88, name:"wendal", location : "地球" }),
 		dataType : "json", // 这是服务器响应的数据格式,不是发送内容的格式
 		success : function (re) {
-			console.log( $.toJSON(re));
+			if (re.ok) {
+				console.log(re.data.id);
+				console.log($.toJSON(re.data));
+			}
 		} 
 	});
 	}}}
@@ -120,6 +123,8 @@ AdaptBy的说明
 	Chrome控制台将打印
 	
 	{{{
+	id=88
+	
 	{
 		id : 88,
 		name : "wendal",
