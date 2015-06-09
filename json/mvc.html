@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Json 在Mvc中的用法</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Json 在Mvc中的用法</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com@gmail.com">&lt;wendal1985@gmail.com@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#Mvc中使用Json">Mvc中使用Json</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#@Ok中的json">@Ok中的json</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#示例配置_--_忽略password和salt属性,且缩进为一个空格">示例配置 -- 忽略password和salt属性,且缩进为一个空格</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#示例配置2_--_设置日期格式为yyyyMMdd">示例配置2 -- 设置日期格式为yyyyMMdd</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#AdaptBy的说明">AdaptBy的说明</a></div>
+</li>
+<li>
+<div><span class="num">6</span><a href="#示例代码,页面发送一个User类的json到服务器,_同理可以发送List,Map等等,_然后服务器用json响应">示例代码,页面发送一个User类的json到服务器, 同理可以发送List,Map等等, 然后服务器用json响应</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Mvc中使用Json"></a>Mvc中使用Json</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>第一种,输出用</p>
+<pre>@Ok("json:{locked:'password|salt'}")
+</pre>
+<p>第二中  输入用的</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="@Ok中的json"></a>@Ok中的json</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>首先,必须再再再强调一次,如果返回值是String,即您自行生成Json字符串(无论是拼接的还是Json.toJson的还是用fastJson转的)就别用@Ok("json"),而是用@Ok("raw:json"),否则字符串将再次转义,这样在页面端又得eval一次,而且下面的所有自定义配置统统无效</p>
+<p>@Ok("json:xxx") 对应的类是 UTF8JsonView</p>
+<p>最精简也是最常见的形式</p>
+<pre>@Ok("json")
+
+<span class="zdoc_code_cmt">// 等价于
+</span>@Ok("json:nice")
+</pre>
+<p>内置的模式,一对一对应JsonFormat中的几个快捷方法</p>
+<pre>@Ok("json:nice")
+@Ok("json:full")
+@Ok("json:forLook")
+@Ok("json:compact")
+</pre>
+<p>详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应</p>
+<pre>@Ok("json:{ignoreNull=true, locked:'password|salt'}")
+
+<span class="zdoc_code_cmt">// 翻译为Java代码的话
+</span>
+Json.toJson(obj, new JsonFormat().setIgnoreNull(true).setLocked("password|salt"))
+</pre>
+<h1><a name="示例配置_--_忽略password和salt属性,且缩进为一个空格"></a>示例配置 -- 忽略password和salt属性,且缩进为一个空格</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("json:{indentBy=' ', locked:'password|salt'}")
+</pre>
+<h1><a name="示例配置2_--_设置日期格式为yyyyMMdd"></a>示例配置2 -- 设置日期格式为yyyyMMdd</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@Ok("json:{dateFormat:'yyyyMMdd'}")
+</pre>
+<h1><a name="AdaptBy的说明"></a>AdaptBy的说明</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>JsonAdaptor 适配器本身并没有什么可以配置的东西</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+</pre>
+<p>传输的数据应为POST或PUT,且请求体整个就是一个JSON字符串,而不是表单参数哦</p>
+<h1><a name="示例代码,页面发送一个User类的json到服务器,_同理可以发送List,Map等等,_然后服务器用json响应"></a>示例代码,页面发送一个User类的json到服务器, 同理可以发送List,Map等等, 然后服务器用json响应</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>页面端的代码</p>
+<pre>$.ajax({
+	url : ${base}/user/update
+	type : "POST",
+	data : $.toJSON({ id: 88, name:"wendal", location : "地球" }),
+	dataType : "json", <span class="zdoc_code_cmt">// 这是服务器响应的数据格式,不是发送内容的格式
+</span>	success : function (re) {
+		if (re.ok) {
+			console.log(re.data.id);
+			console.log($.toJSON(re.data));
+		}
+	} 
+});
+</pre>
+<p>服务器端的入口方法</p>
+<pre>@AdaptBy(type=JsonAdaptor.class)
+@At("/user/update")
+@Ok("json:{locked:'password|salt'}")
+public Object update(@Param("..")User user) {
+	NutMap re = new NutMap();
+	if (user == null || user.getId() &lt; 1) {
+		re.put("ok", false);
+		re.put("msg", "null object");
+		return re;
+	}
+	int count = dao.update(user);
+	if (count != 1) {
+		re.put("ok", false);
+		re.put("msg", "no user match");
+		return re;
+	}
+	re.put("data", dao.fetch(User.class, user.getId));
+	re.put("ok", true);
+	return re;
+}
+</pre>
+<p>Chrome控制台将打印</p>
+<pre>id=88
+
+{
+	id : 88,
+	name : "wendal",
+	location : "地球"
+	<span class="zdoc_code_cmt">// 其他属性,但没有password和salt出现
+</span>}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com@gmail.com">&lt;wendal1985@gmail.com@gmail.com&gt;</a></div>
+</body>
+</html>

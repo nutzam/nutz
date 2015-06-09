@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Json 转为Java对象</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Json 转为Java对象</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#Json字符串转Java对象,_分成几种情况">Json字符串转Java对象, 分成几种情况</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#无Pojo类对应">无Pojo类对应</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#有Pojo类对应(简单)">有Pojo类对应(简单)</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#有Pojo类对应(复杂自定义)">有Pojo类对应(复杂自定义)</a></div>
+</li>
+<li>
+<div><span class="num">5</span><a href="#Pojo集合或Map嵌套">Pojo集合或Map嵌套</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="Json字符串转Java对象,_分成几种情况"></a>Json字符串转Java对象, 分成几种情况</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>从目标对象的类型看:</p>
+<ul type="disc">
+<li>无Pojo类对应
+<ul type="circle">
+<li>Json.fromJson(source/*来源参数*/)</li>
+</ul>
+</li>
+<li>有Pojo类对应
+<ul type="circle">
+<li>Json.fromJson(Class<img src="T"/> klass, source/*来源参数*/)</li>
+<li>Json.fromJson(Type t, source/*来源参数*/)</li>
+</ul>
+</li>
+<li>Pojo集合或Map嵌套
+<ul type="circle">
+<li>Json.fromJsonAsArray(Class<img src="T"/> klass, source/*来源参数*/)</li>
+<li>Json.fromJsonAsList(Class<img src="T"/> klass, source/*来源参数*/)</li>
+<li>Json.fromJsonAsMap(Class<img src="T"/> klass, source/*来源参数*/)</li>
+</ul>
+</li>
+</ul>
+<p>从来源看,一般无难度吧</p>
+<ul type="disc">
+<li>字符串
+<ul type="circle">
+<li>Json.fromJson(CharSequence c)</li>
+<li>Json.fromJson(Class<img src="T"/> klass, CharSequence c)</li>
+</ul>
+</li>
+<li>Reader
+<ul type="circle">
+<li>Json.fromJson(Reader c)</li>
+<li>Json.fromJson(Class<img src="T"/> klass, Reader reader)</li>
+</ul>
+</li>
+<li>File
+<ul type="circle">
+<li>Json.fromJsonFile(Class<img src="T"/> klass, File f)</li>
+</ul>
+</li>
+</ul>
+<h1><a name="无Pojo类对应"></a>无Pojo类对应</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这算是最原始的方法了</p>
+<pre>Object obj = Json.fromJson(str);
+</pre>
+<p>obj的实际类型可能是 Map,List,基本数据类型的封装类型, String</p>
+<h1><a name="有Pojo类对应(简单)"></a>有Pojo类对应(简单)</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>最常用的方法,也是入门级的方法</p>
+<pre>Pet pet = Json.fromJson(Pet.class, str);
+pet = Json.fromJson(Pet.class, reader);
+pet = Json.fromJsonFile(Pet.class, new File("pet.json"));
+</pre>
+<h1><a name="有Pojo类对应(复杂自定义)"></a>有Pojo类对应(复杂自定义)</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>fromJson方法中最复杂最灵活的方法群</p>
+<pre>String str = "[{dongdong:{age:80}}]";
+List&lt;Map&lt;String, Pet&gt;&gt; list = (List&lt;Map&lt;String, Pet&gt;&gt;)Json.fromJson(NutType.list(NutType.mapStr(Pet.class)), str/*其他源也可以*/);
+
+assertEquals(80, list.get(0).get("dongdong").getAge());<span class="zdoc_code_cmt">// Junit断言一下,肯定是80啦
+</span></pre>
+<h1><a name="Pojo集合或Map嵌套"></a>Pojo集合或Map嵌套</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>这群方法事实上就是 有Pojo类对应(复杂自定义) 中的简写形式</p>
+<pre>String str = "{dongdong:{age:80}}";
+Map&lt;String, Pet&gt; pets = Map&lt;String, Pet&gt;Json.fromJsonAsMap(Pet.class, str/*其他源也可以*/);
+
+assertEquals(80, pets.get("dongdong").getAge());<span class="zdoc_code_cmt">// Junit断言一下,肯定是80啦
+</span></pre>
+<p>一通百通,哈哈,仔细琢磨一下吧</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

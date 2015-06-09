@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Json 转为Json字符串</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Json 转为Json字符串</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#转为Json字符串,_归类一下">转为Json字符串, 归类一下</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#输出目标">输出目标</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#JsonFormat格式控制">JsonFormat格式控制</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#JsonFormat详解">JsonFormat详解</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="转为Json字符串,_归类一下"></a>转为Json字符串, 归类一下</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>输出目标</p>
+<ul type="disc">
+<li>字符串</li>
+<li>Writer</li>
+<li>File</li>
+</ul>
+<p>格式控制</p>
+<ul type="disc">
+<li>JsonFormat,即运行时配置</li>
+<li>注解配置,永久的, 请看"Json注解"一节</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="输出目标"></a>输出目标</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>如果对象不大,直接转json字符串是最方便的咯</p>
+<pre>Json.toJson(pet);
+</pre>
+<p>输出到Writer,适合大对象,不然耗太多内存了</p>
+<pre>Json.toJson(writer, pet);
+</pre>
+<p>直接输出到文件去</p>
+<pre>Json.toJsonFile(file, pet);
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="JsonFormat格式控制"></a>JsonFormat格式控制</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Json.toJson系列方法,除了输出目标,就是JsonFormat了, 但注意一下,JsonFormat不会影响Json注解中的配置哦</p>
+<p>JsonFormat提供了几种快捷配置(静态方法,但可以继续链式设置)</p>
+<pre>Json.toJson(pet, JsonFormat.compact()); <span class="zdoc_code_cmt">// 紧凑模式 -- 无换行,忽略null值
+</span>Json.toJson(pet, JsonFormat.full());    <span class="zdoc_code_cmt">// 全部输出模式 -- 换行,不忽略null值
+</span>Json.toJson(pet, JsonFormat.nice());    <span class="zdoc_code_cmt">// 一般模式 -- 换行,但忽略null值
+</span>Json.toJson(pet, JsonFormat.forLook()); <span class="zdoc_code_cmt">// 为了打印出来容易看，把名字去掉引号
+</span>Json.toJson(pet, JsonFormat.tiny());    <span class="zdoc_code_cmt">// 不换行,不忽略空值
+</span></pre>
+<div class="hr"><b></b></div>
+<h1><a name="JsonFormat详解"></a>JsonFormat详解</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>下面,将一一讲解JsonFormat中的配置项. 各种配置均可链式设置,以达到叠加效果.</p>
+<p>indentBy -- 缩进所使用的字符,默认是3个空格</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setIndentBy("\t"));<span class="zdoc_code_cmt">// 输出的缩进将使用tab
+</span></pre>
+<p>compact -- 是否为紧凑模式,默认为false. 若为true,indent和indentBy将无效.</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setCompact(true)); <span class="zdoc_code_cmt">// 不作任何换行和缩进
+</span></pre>
+<p>quoteName -- key是否用双引号包起来,默认为true,同时也是json标准格式的要求. 若设置为false,则新版的jquery将解析出错.</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setQuoteName(false)); <span class="zdoc_code_cmt">// 输出类似 {name:"wendal"}
+</span></pre>
+<p>ignoreNull -- 是否忽略控制,默认为false</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setIgnoreNull(true)); <span class="zdoc_code_cmt">// null值的key-value将不会输出,但空List还是会的.
+</span></pre>
+<p>actived -- 仅输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setActived("^(name|id|location)$"); <span class="zdoc_code_cmt">// 仅输出name/id/location,其他key都不输出
+</span></pre>
+<p>locked -- 与actived刚好相反, 不输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setLocked("^(location)$"); <span class="zdoc_code_cmt">// 不输出location,其他key正常输出
+</span></pre>
+<p>separator -- 分隔符,不可配置,路过吧</p>
+<p>autoUnicode -- 自动转换为unicode,默认为false. 特殊需要,一般用不上</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setAutoUnicode(true); <span class="zdoc_code_cmt">// 当非英文字符出现时,转为uf003 形式 
+</span></pre>
+<p>unicodeLower -- Unicode编码是大写还是小写,默认大写</p>
+<p>dateFormat -- 日期格式</p>
+<pre>Json.fromJson(pet, JsonFormat.full().setDateFormat("yyyyMMdd"); <span class="zdoc_code_cmt">// 将输出类似于 {"b":"20190823"}
+</span></pre>
+<p>castors -- 高级货,基本上不会用到.</p>
+<p>indent -- 临时变量.</p>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

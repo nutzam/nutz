@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>Nutz.Json 基本用法</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">Nutz.Json 基本用法</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com@gmail.com">&lt;wendal1985@gmail.com@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#什么是JSON?">什么是JSON?</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#Nutz对Json的理解">Nutz对Json的理解</a></div>
+</li>
+<li>
+<div><span class="num">3</span><a href="#将对象转为一个Json字符串">将对象转为一个Json字符串</a></div>
+</li>
+<li>
+<div><span class="num">4</span><a href="#将Json字符串转为Java对象">将Json字符串转为Java对象</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="什么是JSON?"></a>什么是JSON?</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>JSON的<a href="http://json.org/json-zh.html">官方定义</a> : 一种轻量级的数据交换格式 </p>
+<p>基本形式如下</p>
+<pre>{
+/**
+块注释
+*/
+	name : "wendal",  <span class="zdoc_code_cmt">// 行末注释
+</span>	email: "wendal1985@gmail.com", <span class="zdoc_code_cmt">// 名值对, 即Map类型的Key-Value
+</span>	tags : ["java", "python", "linux"], <span class="zdoc_code_cmt">// 数组, 即List或Array
+</span>	pets : [   <span class="zdoc_code_cmt">//数组元素可以是对象,数组,普通值
+</span>		{
+			name : "dongdong",
+			type : "dog",
+			age : 10
+		},
+		{
+			name : "fengfeng",
+			type : "unkown",
+			age : -1,
+			food : "dog"
+		}
+	]
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="Nutz对Json的理解"></a>Nutz对Json的理解</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>Nutz把Json结构理解为Map-List, 即Map类型及List类型的嵌套</p>
+<p>在Nutz中对Json的操作大多数情况下仅一行语句搞定.</p>
+<div class="hr"><b></b></div>
+<h1><a name="将对象转为一个Json字符串"></a>将对象转为一个Json字符串</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>Pet pet = new Pet();
+pet.setName("dongdong");
+pet.setAge(10);
+Json.toJson(pet);
+</pre>
+<p>输出的内容是:</p>
+<pre>{
+	name : "dongdong",
+	age : 10
+}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="将Json字符串转为Java对象"></a>将Json字符串转为Java对象</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>现有字符串</p>
+<pre>{
+	name : "fengfeng",
+	age : -1
+}
+</pre>
+<p>转换代码</p>
+<pre>Pet pet = Json.fromJson(Pet.class, str);
+pet.getName(); <span class="zdoc_code_cmt">// 值为fengfeng
+</span>pet.getAge();  <span class="zdoc_code_cmt">// 值为-1
+</span></pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com@gmail.com">&lt;wendal1985@gmail.com@gmail.com&gt;</a></div>
+</body>
+</html>
