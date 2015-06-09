@@ -58,7 +58,7 @@ public class EntityHolder {
     @SuppressWarnings("unchecked")
     public <T> Entity<T> getEntity(Class<T> classOfT) {
         Entity<?> re = map.get(classOfT);
-        if (null == re) {
+        if (null == re || !re.isComplete()) {
             synchronized (map) {
                 re = map.get(classOfT);
                 if (null == re) {
