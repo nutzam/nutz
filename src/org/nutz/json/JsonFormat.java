@@ -43,7 +43,7 @@ public class JsonFormat {
     }
 
     /**
-     * 不换行,不忽略控制
+     * 不换行,不忽略空值
      */
     public static JsonFormat tidy() {
         return new JsonFormat(true).setIgnoreNull(false);
@@ -83,6 +83,7 @@ public class JsonFormat {
     /**
      * 用到的类型转换器
      */
+    @JsonField(ignore=true)
     private Castors castors;
     /**
      * 分隔符

@@ -146,13 +146,104 @@
 
     原因不解释。
 
+配置示例1,引用ioc里面的bean
+------------------------------------------------------
+
+	chain.js的代码
+	
+	{{{
+	{
+		"default" : {
+			"ps" : [
+      			"org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
+      			"org.nutz.mvc.impl.processor.EncodingProcessor",
+      			"org.nutz.mvc.impl.processor.ModuleProcessor",
+      			"ioc:wxProcessor", // 引用一个叫wxProcessor的ioc bean
+      			"org.nutz.mvc.impl.processor.ActionFiltersProcessor",
+     			 "org.nutz.mvc.impl.processor.AdaptorProcessor",
+      			"org.nutz.mvc.impl.processor.MethodInvokeProcessor",
+      			"org.nutz.mvc.impl.processor.ViewProcessor"
+      		],
+			"error" : 'org.nutz.mvc.impl.processor.FailProcessor'
+		}
+	}
+	}}}
+
+	WxProcessor类, 标准的注解式Ioc, 确保IocBy扫描到这个类哦
+	
+	{{{
+	// 注意, 确保是非单例哦
+	@IocBean(singleton=false) //默认生成的名字就是类名然后首字母小写,即wxProcessor,对应了chain.js中的配置
+	public class WxProcessor extend AbstractProcessor {
+
+    	@Inject Dao dao;
+    	@Inject XXXService xxxService;
+
+    	// 其他方法.....
+	}
+	}}}
+
+配置示例2,不需要ioc注入
+-----------------------------------------
 
 
+	chain.js的代码
+	
+	{{{
+	{
+		"default" : {
+			"ps" : [
+      			"org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
+      			"org.nutz.mvc.impl.processor.EncodingProcessor",
+      			"org.nutz.mvc.impl.processor.ModuleProcessor",
+      			"net.wendal.nutzbook.mvc.LogTimeProcessor", // 直接写类名
+      			"org.nutz.mvc.impl.processor.ActionFiltersProcessor",
+     			 "org.nutz.mvc.impl.processor.AdaptorProcessor",
+      			"org.nutz.mvc.impl.processor.MethodInvokeProcessor",
+      			"org.nutz.mvc.impl.processor.ViewProcessor"
+      		],
+			"error" : 'org.nutz.mvc.impl.processor.FailProcessor'
+		}
+	}
+	}}}
 
+	LogTimeProcessor类
+	
+	{{{
+package net.wendal.bootstrap.mvc;
 
+import javax.servlet.http.HttpServletRequest;
 
+import org.nutz.lang.Stopwatch;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.impl.processor.AbstractProcessor;
 
+public class LogTimeProcessor extends AbstractProcessor {
+	
+	private static final Log log = Logs.get();
 
+	public LogTimeProcessor() {
+	}
+
+	@Override
+	public void process(ActionContext ac) throws Throwable {
+		Stopwatch sw = Stopwatch.begin();
+		try {
+			doNext(ac);
+		} finally {
+			sw.stop();
+			if (log.isDebugEnabled()) {
+				HttpServletRequest req = ac.getRequest();
+				log.debugf("[%-4s]URI=%s %sms", req.getMethod(), req.getRequestURI(), sw.getDuration());
+			}
+		}
+	}
+
+}
+
+	}}}
 
 
 

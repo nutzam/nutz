@@ -219,15 +219,20 @@ public class Scans {
         for (NutResource r : list) {
         	int index = tmp.indexOf(r);
         	if (index > -1) {
-        		if (log.isDebugEnabled())
-        			log.debugf("same resource [%s] will be override", r.getName());
+        	    NutResource old = tmp.get(index);
+        	    if (old.getSource() != null && r.getSource() != null && old.getSource().equals(r.getSource())) {
+        	        continue;
+        	    }
+        		log.infof("same resource path [%s](%s) will be override by [%s](%s)", 
+        		          tmp.get(index).getName(), tmp.get(index).getSource(),
+        		          r.getName(), r.getSource());
         		tmp.set(index, r);
         	} else
         		tmp.add(r);
 		}
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
-        return tmp;
+        return list;
     }
 
     public List<Class<?>> scanPackage(Class<?> classZ) {
@@ -315,6 +320,7 @@ public class Scans {
             nutResource.setName(entryName);
         else
             nutResource.setName(entryName.substring(base.length()));
+        nutResource.setSource(jarPath + ":" + entryName);
         return nutResource;
     }
 

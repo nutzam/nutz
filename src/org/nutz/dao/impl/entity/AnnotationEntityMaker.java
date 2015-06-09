@@ -296,6 +296,7 @@ public class AnnotationEntityMaker implements EntityMaker {
 		}
 
         // 搞定收工，哦耶 ^_^
+        en.setComplete(true);
         return en;
     }
 

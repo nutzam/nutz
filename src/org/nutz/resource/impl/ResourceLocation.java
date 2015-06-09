@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.nutz.NutRuntimeException;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.util.Disks;
@@ -46,15 +47,9 @@ class FileSystemResourceLocation extends ResourceLocation {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof FileSystemResourceLocation))
             return false;
-        FileSystemResourceLocation other = (FileSystemResourceLocation) obj;
-        if (root == null) {
-            if (other.root != null)
-                return false;
-        } else if (!root.equals(other.root))
-            return false;
-        return true;
+        return root.equals(((FileSystemResourceLocation) obj).root);
     }
     
     public int hashCode() {
@@ -80,8 +75,10 @@ class FileSystemResourceLocation extends ResourceLocation {
 
     File root;
 
-    public FileSystemResourceLocation(File root) {
-        this.root = root;
+    public FileSystemResourceLocation(File root) throws IOException {
+        if (root == null)
+            throw new NutRuntimeException("FileSystemResourceLocation root can't be NULL");
+        this.root = root.getAbsoluteFile().getCanonicalFile();
     }
 }
 
@@ -136,7 +133,7 @@ class JarResourceLocation extends ResourceLocation {
 
     String jarPath;
 
-    public JarResourceLocation(String jarPath) {
+    public JarResourceLocation(String jarPath) throws IOException {
         if (jarPath.startsWith("zip:"))
             jarPath = jarPath.substring(4);
         if (jarPath.startsWith("file:/")) {
@@ -145,7 +142,7 @@ class JarResourceLocation extends ResourceLocation {
                 jarPath = "/" + jarPath;
             }
         }
-        this.jarPath = jarPath;
+        this.jarPath = new File(jarPath).getAbsoluteFile().getCanonicalPath();
         ZipInputStream zis = null;
         try {
             zis = Scans.makeZipInputStream(jarPath);

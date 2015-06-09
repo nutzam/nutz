@@ -20,6 +20,7 @@ public class FileResource extends NutResource {
     public FileResource(File f) {
         this.file = f;
         this.name = f.getName();
+        setSource(f.getAbsolutePath());
     }
 
     public FileResource(String base, File file) {
@@ -31,6 +32,7 @@ public class FileResource extends NutResource {
         this.name = Disks.normalize(Disks.getCanonicalPath(file.getAbsolutePath()));
         this.name = this.name.substring(this.name.indexOf(base) + base.length()).replace('\\', '/');
         this.file = file.getAbsoluteFile();
+        setSource(base + " " + this.file.getAbsolutePath());
     }
 
     public File getFile() {
