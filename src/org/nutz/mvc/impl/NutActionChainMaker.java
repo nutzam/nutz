@@ -2,8 +2,8 @@ package org.nutz.mvc.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
-import org.eclipse.jetty.util.ConcurrentHashSet;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
@@ -22,7 +22,7 @@ public class NutActionChainMaker implements ActionChainMaker {
     
     ActionChainMakerConfiguration co;
     
-    protected ConcurrentHashSet<String> disabledProcessor = new ConcurrentHashSet<String>();
+    protected ConcurrentHashMap<String, String> disabledProcessor = new ConcurrentHashMap<String, String>();
     
     public NutActionChainMaker(String...args) {
         co = new JsonActionChainMakerConfiguretion(args);
@@ -71,7 +71,7 @@ public class NutActionChainMaker implements ActionChainMaker {
                 }
                 catch (Throwable e) {
                     log.info("Optional processor class not found, disabled : " + name);
-                    disabledProcessor.add(name);
+                    disabledProcessor.put(name, name);
                     return null;
                 }
                 return (Processor) Mirror.me(klass).born();
