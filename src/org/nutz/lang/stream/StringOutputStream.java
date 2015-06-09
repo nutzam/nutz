@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.nutz.lang.Encoding;
+
 public class StringOutputStream extends OutputStream {
 
     private StringBuilder sb;
@@ -11,7 +13,7 @@ public class StringOutputStream extends OutputStream {
     private String charset;
 
     public StringOutputStream(StringBuilder sb) {
-        this(sb, "UTF-8");
+        this(sb, Encoding.UTF8);
     }
 
     public StringOutputStream(StringBuilder sb, String charset) {
