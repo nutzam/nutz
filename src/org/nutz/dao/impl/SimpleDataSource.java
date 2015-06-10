@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -109,5 +110,13 @@ public class SimpleDataSource implements DataSource {
 
     public Logger getParentLogger()  {
         throw Lang.noImplement();
+    }
+
+    public static DataSource createDataSource(Properties props) {
+        SimpleDataSource sds = new SimpleDataSource();
+        sds.setJdbcUrl(props.getProperty("url", props.getProperty("jdbcUrl")));
+        sds.setPassword(props.getProperty("password"));
+        sds.setUsername(props.getProperty("username"));
+        return sds;
     }
 }
