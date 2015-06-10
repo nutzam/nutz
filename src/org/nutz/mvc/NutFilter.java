@@ -112,6 +112,7 @@ public class NutFilter implements Filter {
         	}
         }
         sp = config.getSessionProvider();
+        Mvcs.ctx().reqThreadLocal.set(null);
     }
 
     public void destroy() {
@@ -123,6 +124,7 @@ public class NutFilter implements Filter {
             handler.depose();
         Mvcs.close();
         Mvcs.setServletContext(null);
+        Mvcs.ctx().reqThreadLocal.set(null);
     }
     
     /**
@@ -193,6 +195,8 @@ public class NutFilter implements Filter {
                     Mvcs.set(preName, request, response);
                 if (preContext != null)
                     Mvcs.ctx().reqThreadLocal.set(preContext);
+            } else {
+                Mvcs.ctx().reqThreadLocal.set(null);
             }
         }
     }

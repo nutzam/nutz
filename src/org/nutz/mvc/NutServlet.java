@@ -47,8 +47,9 @@ public class NutServlet extends HttpServlet {
         Mvcs.set(selfName, null, null);
         if(handler != null)
             handler.depose();
-        Mvcs.setServletContext(null);
         Mvcs.close();
+        Mvcs.setServletContext(null);
+        Mvcs.ctx().reqThreadLocal.set(null);
     }
 
     @Override
@@ -74,6 +75,8 @@ public class NutServlet extends HttpServlet {
                     Mvcs.set(preName, req, resp);
                 if (preContext != null)
                     Mvcs.ctx().reqThreadLocal.set(preContext);
+            } else {
+                Mvcs.ctx().reqThreadLocal.set(null);
             }
         }
     }
