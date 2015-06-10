@@ -308,7 +308,7 @@ public abstract class Mvcs {
      * @return HTTP 请求对象
      */
     public static final HttpServletRequest getReq() {
-        return ctx().reqThreadLocal.get().getAs(HttpServletRequest.class, "req");
+        return reqt().getAs(HttpServletRequest.class, "req");
     }
 
     /**
@@ -317,7 +317,7 @@ public abstract class Mvcs {
      * @return HTTP 响应对象
      */
     public static final HttpServletResponse getResp() {
-        return ctx().reqThreadLocal.get().getAs(HttpServletResponse.class, "resp");
+        return reqt().getAs(HttpServletResponse.class, "resp");
     }
 
     public static final String getName() {
@@ -330,13 +330,13 @@ public abstract class Mvcs {
      * @return Action 执行的上下文
      */
     public static final ActionContext getActionContext() {
-        return ctx().reqThreadLocal.get().getAs(ActionContext.class, "ActionContext");
+        return reqt().getAs(ActionContext.class, "ActionContext");
     }
 
     public static void set(String name, HttpServletRequest req, HttpServletResponse resp) {
         NAME.set(name);
-        ctx().reqThreadLocal.get().set("req", req);
-        ctx().reqThreadLocal.get().set("resp", resp);
+        reqt().set("req", req);
+        reqt().set("resp", resp);
     }
 
     /**
@@ -358,7 +358,7 @@ public abstract class Mvcs {
      *            Action 执行的上下文
      */
     public static void setActionContext(ActionContext actionContext) {
-        ctx().reqThreadLocal.get().set("ActionContext", actionContext);
+        reqt().set("ActionContext", actionContext);
     }
 
     /**
@@ -380,7 +380,7 @@ public abstract class Mvcs {
      *            对象装配的上下文环境
      */
     public static void setIocContext(IocContext iocContext) {
-        ctx().reqThreadLocal.get().set("IocContext", iocContext);
+        reqt().set("IocContext", iocContext);
     }
 
     /**
@@ -389,7 +389,7 @@ public abstract class Mvcs {
      * @return 进行对象装配的上下文环境
      */
     public static IocContext getIocContext() {
-        return ctx().reqThreadLocal.get().getAs(IocContext.class, "IocContext");
+        return reqt().getAs(IocContext.class, "IocContext");
     }
 
     // 新的,基于ThreadLoacl改造过的Mvc辅助方法
@@ -438,7 +438,7 @@ public abstract class Mvcs {
      * 重置当前线程所持有的对象
      */
     public static Context resetALL() {
-        Context context = ctx().reqThreadLocal.get();
+        Context context = reqt();
         NAME.set(null);
         ctx().reqThreadLocal.set(Lang.context());
         return context;
@@ -458,6 +458,16 @@ public abstract class Mvcs {
     public static void close() {
         ctx().clear();
         ctx().close();
+        ctx = new NutMvcContext();
+    }
+    
+    public static Context reqt() {
+        Context _reqt = ctx().reqThreadLocal.get();
+        if (_reqt == null) {
+            _reqt = Lang.context();
+            ctx().reqThreadLocal.set(_reqt);
+        }
+        return _reqt;
     }
 
     /** 在入口方法调用时,是否1.b.51新加入的FastClass功能, 默认禁用 */
