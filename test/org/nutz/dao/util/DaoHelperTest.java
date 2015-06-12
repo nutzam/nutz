@@ -71,14 +71,6 @@ password=root
         // 这个操作是关掉数据源的
         DaoHelper.me().close();
     }
-    
-    /**
-     * 为了代码方便,写个方法
-     * @return
-     */
-    protected static Dao dao() {
-        return DaoHelper.me().dao();
-    }
 
     /**
      * 1. 不使用pojo类,直接操作数据库, Chain插入,查询结果为Record(一个实现了Map接口的增强版LinkedHashMap).<p/>
@@ -123,7 +115,7 @@ password=root
         assertEquals(2, users.size());
         
         // 因为是倒序,那第一个就是ywjno,第二个是pangwu.
-        // 注意一下Record里面的key都是自动转为小写的
+        // 注意一下Record里面的key都是自动转为小写的,但值不会,这个可以放心.
         assertEquals("ywjno", users.get(0).getString("nm"));
         assertEquals("pangwu", users.get(1).getString("nm"));
         
