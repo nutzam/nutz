@@ -1,4 +1,4 @@
-package org.nutz.dao.impl;
+package org.nutz.dao.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +9,8 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 import org.nutz.dao.Dao;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.log.Log;
