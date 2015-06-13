@@ -1,5 +1,7 @@
 package org.nutz.lang.born;
 
+import java.lang.reflect.Modifier;
+
 import org.nutz.lang.Lang;
 
 @SuppressWarnings("serial")
@@ -33,6 +35,12 @@ public class BorningException extends RuntimeException {
         }
         if (null != e) {
             sb.append(" becasue:\n").append(getExceptionMessage(e));
+        } else if (type != null){
+            if (type.isInterface()) {
+                sb.append(" becasue: ").append(type.getName()).append("is interface!!");
+            } else if (Modifier.isAbstract(type.getModifiers())) {
+                sb.append(" becasue: ").append(type.getName()).append("is abstract class and can't found static factory method!");
+            }
         }
         return sb.toString();
     }
