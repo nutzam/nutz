@@ -1,13 +1,6 @@
 package org.nutz.dao.util;
 
-import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.List;
-import java.util.logging.Logger;
-
-import javax.sql.DataSource;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -18,6 +11,11 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.util.meta.SimplePojo;
+import org.nutz.lang.random.R;
+import org.nutz.lang.random.StringGenerator;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * DaoHelper的TestCase及文档
@@ -25,6 +23,8 @@ import org.nutz.dao.entity.Record;
  *
  */
 public class DaoHelperTest extends Assert {
+    
+    private static final Log log = Logs.get(); // 这是获取Nutz的日志封装类的方法,你喜欢就用,不喜欢就用log4j的Logger或者System.out.println都可以.
 
     /**
      * 程序启动, 初始化DaoHelper
@@ -167,6 +167,36 @@ password=root
         
         // 最后的最后,人在表在, 人没了,表也干掉
         dao.drop(tableName);
+    }
+    
+    /**
+     * 2. 带Pojo的基本操作,单表无操作
+     */
+    @Test
+    public void test_pojo_singal() {
+        // 首先,得到Dao实例
+        Dao dao = DaoHelper.me().dao();
+        
+        // 强制建表
+        dao.create(SimplePojo.class, true); // 真实代码可别写true,被删表了别找我!!!
+        
+        // 先生成个随机字符串帮助实例
+        StringGenerator sg = R.sg(10);
+        // 插入几条记录
+        for (int i = 0; i < 100; i++) {
+            dao.insert(new SimplePojo(sg.next(), "http://www." + sg.next() + ".cn", R.random(10, 100)));
+        }
+        // 统计一下,应该是100条
+        assertEquals(100, dao.count(SimplePojo.class));
+        
+        // 看看大于45岁的有多少人,虽然理论上是一半一半,事实上经常不是这样...
+        int re = dao.count(SimplePojo.class, Cnd.where("age", ">", 45));
+        log.infof("older than 45y : %d", re);
+        
+        // 分页查询,跟无Pojo时的操作差不多
+        List<SimplePojo> pojos = dao.query(SimplePojo.class, Cnd.where("age", ">", 45), dao.createPager(2, 10));
+        
+        log.infof("size=%d", pojos.size()); // 肯定小于等于10
     }
 
     // TODO 继续写带Pojo的简单操作及3种关联关系的操作
