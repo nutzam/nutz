@@ -22,7 +22,7 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class DaoHelperTest extends Assert {
+public class DaoUpTest extends Assert {
     
     private static final Log log = Logs.get(); // 这是获取Nutz的日志封装类的方法,你喜欢就用,不喜欢就用log4j的Logger或者System.out.println都可以.
 
@@ -39,7 +39,7 @@ username=root
 password=root
          */
         // 且加入了对应的数据库驱动, 混熟了可以加入druid和log4j(务必把log4j.properties弄好且日志为debug级)
-        DaoHelper.me().init(DaoHelperTest.class.getClassLoader().getResourceAsStream("nutz-test.properties"));
+        DaoUp.me().init(DaoUpTest.class.getClassLoader().getResourceAsStream("nutz-test.properties"));
         // 请留意nutz输出的日志,如果没有日志输出,那就肯定是log4j没配置好, 建议删掉log4j然后继续.
         
 
@@ -47,12 +47,12 @@ password=root
         
         // 如果是其他数据源(连接池), 新建对应的DataSource后如下初始化
         /**
-        DaoHelper.me().setDataSource(dataSource);
+        DaoUp.me().setDataSource(dataSource);
         */
         
         // 如果是古董项目, 通过某个静态方法获取连接, 可以创建个匿名内部类初始化
         /**
-        DaoHelper.me().setDataSource(new DataSource() {
+        DaoUp.me().setDataSource(new DataSource() {
             public Connection getConnection() throws SQLException {
                 return XXXXX.getConnection(); // XXXXX.getConnection()代表遗留项目中获取数据库连接的方法
             }
@@ -69,7 +69,7 @@ password=root
     public static void tearDown() throws Exception {
         // 提醒再提醒,这个千万千万别乱调用
         // 这个操作是关掉数据源的
-        DaoHelper.me().close();
+        DaoUp.me().close();
     }
 
     /**
@@ -82,7 +82,7 @@ password=root
     // 提醒一句,下面的assert均为Junit的方法
     public void test_without_pojo() {
         // 首先,得到Dao实例
-        Dao dao = DaoHelper.me().dao();
+        Dao dao = DaoUp.me().dao();
         
         // 弱弱地定义个表名方便操作
         String tableName = "tx_test_user";
@@ -175,7 +175,7 @@ password=root
     @Test
     public void test_pojo_singal() {
         // 首先,得到Dao实例
-        Dao dao = DaoHelper.me().dao();
+        Dao dao = DaoUp.me().dao();
         
         // 强制建表
         dao.create(SimplePojo.class, true); // 真实代码可别写true,被删表了别找我!!!

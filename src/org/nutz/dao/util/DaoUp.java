@@ -23,20 +23,20 @@ import org.nutz.log.Logs;
  * <b>Mvc应尽量使用注入,而非主动取Dao实例,更不应该主动new NutDao!!!</b>
  * <p/> 最基本的用法<p/>
 <code>
-    DaoHelper.me().init(new File("db.properties"));
-    Dao dao = DaoHelper.me().dao();
+    DaoUp.me().init(new File("db.properties"));
+    Dao dao = DaoUp.me().dao();
     
     dao.insert(.......);
     
     // 注意,不是每次用完Dao就关,是整个程序关闭的时候才关!!
     // 程序结束前关闭相关资源.
-    DaoHelper.me().close();
+    DaoUp.me().close();
 </code>
  * 
  * @author wendal(wendal1985@gmail.com)
  *
  */
-public class DaoHelper {
+public class DaoUp {
     
     /**
      * 日志对象
@@ -46,7 +46,7 @@ public class DaoHelper {
     /**
      * 内置单例
      */
-    protected static DaoHelper me = new DaoHelper();
+    protected static DaoUp me = new DaoUp();
     
     /**
      * Druid数据源的工厂方法类
@@ -75,21 +75,21 @@ public class DaoHelper {
      * 获取内置的DaoHelper单例
      * @return DaoHelper实例
      */
-    public static DaoHelper me() {
+    public static DaoUp me() {
         return me;
     }
 
     /**
      * 注意构造方法时protected的,如果需要新建多个DaoHelper,请继承DaoHelper,从而暴露构造方法或使用工厂方法!!
      */
-    protected DaoHelper(String name) {
+    protected DaoUp(String name) {
         this.name = name;
     }
     
     /**
      * 注意构造方法时protected的,如果需要新建多个DaoHelper,请继承DaoHelper,从而暴露构造方法或使用工厂方法!!
      */
-    protected DaoHelper() {
+    protected DaoUp() {
         this("t"+Thread.currentThread().getId() + "_" + System.currentTimeMillis());
     }
     
@@ -164,10 +164,10 @@ public class DaoHelper {
      */
     public void init(Properties props) {
         if (dao != null) {
-            throw new IllegalArgumentException("DaoHelper is inited!!");
+            throw new IllegalArgumentException("DaoUp is inited!!");
         }
         if (props.size() == 0) {
-            throw new IllegalArgumentException("DaoHelper props size=0!!!");
+            throw new IllegalArgumentException("DaoUp props size=0!!!");
         }
         DataSource ds = buildDataSource(props);
         setDataSource(ds);
@@ -195,7 +195,7 @@ public class DaoHelper {
     public synchronized void close() {
         if (dao == null)
             return;
-        log.infof("shutdown DaoHelper(name=%s)", name);
+        log.infof("shutdown DaoUp(name=%s)", name);
         try {
             Mirror.me(dataSource).invoke(dataSource, "close");
         }
@@ -215,7 +215,7 @@ public class DaoHelper {
     public void setAutoCloseWhenFinalize(boolean autoCloseWhenFinalize) {
         this.autoCloseWhenFinalize = autoCloseWhenFinalize;
         if (!autoCloseWhenFinalize) {
-            log.warnf("DaoHelper[%s] autoCloseWhenFinalize is disabled. You had been WARN!!", name);
+            log.warnf("DaoUp[%s] autoCloseWhenFinalize is disabled. You had been WARN!!", name);
         }
     }
     
