@@ -1,5 +1,6 @@
 package org.nutz.dao;
 
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -264,13 +265,63 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         cri.setPager(pager);
         return this;
     }
-
+    
+    /**
+     * 根据一个对象生成Cnd条件. 忽略空值/零值,不忽略Date,不忽略主键
+     * @see org.nutz.dao.Cnd#from(Dao, Object, FieldFilter)
+     * @param dao Dao实例
+     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
+     */
     public static Cnd from(Dao dao, Object obj) {
         return from(dao, obj, null);
     }
-    
-    @SuppressWarnings({"rawtypes", "unchecked"})
+
+    /**
+     * 根据一个对象生成Cnd条件. 按filter过滤属性, 且忽略空值/零值,不忽略Date,不忽略主键
+     * @param dao Dao实例
+     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
+     * @param filter 过滤字段属性
+     * @return Cnd条件
+     */
     public static Cnd from(Dao dao, Object obj, FieldFilter filter) {
+        return from(dao, obj, filter, true, true, false, false, false, false);
+    }
+    
+    /**
+     * 根据一个对象生成Cnd条件. 按filter过滤属性,不忽略主键
+     * @param dao Dao实例
+     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
+     * @param filter 过滤字段属性
+     * @param ignoreNull 是否忽略空值
+     * @param ignoreZero 是否忽略0值
+     * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
+     * @return Cnd条件
+     */
+    public static Cnd from(Dao dao, Object obj, FieldFilter filter,
+                           boolean ignoreNull, boolean ignoreZero, boolean ignoreDate) {
+        return from(dao, obj, filter, ignoreNull, ignoreZero, ignoreDate, false, false, false);
+    }
+    
+    /**
+     * 根据一个对象生成Cnd条件
+     * @param dao Dao实例
+     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
+     * @param filter 属性过滤
+     * @param ignoreNull 是否忽略空值
+     * @param ignoreZero 是否忽略0值
+     * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
+     * @param ignoreId   是否忽略@Id所标注的主键属性
+     * @param ignoreName 是否忽略 \@Name 所标注的主键属性
+     * @param ignorePk   是否忽略 \@Pk 所引用的复合主键 
+     * @return Cnd条件
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static Cnd from(Dao dao, Object obj, FieldFilter filter, 
+                           boolean ignoreNull, boolean ignoreZero, boolean ignoreDate, 
+                           boolean ignoreId,
+                           boolean ignoreName,
+                           boolean ignorePk
+                           ) {
         if (obj == null)
             return null;
         obj = Lang.first(obj);
@@ -303,9 +354,23 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         
         Cnd cnd = Cnd.NEW();
         for (MappingField mf : mfs) {
-            Object val = mf.getValue(obj);
-            if (val == null || (val instanceof Number && ((Number)val).doubleValue() == 0.0))
+            if (ignoreId && mf.isId())
                 continue;
+            if (ignoreName && mf.isName())
+                continue;
+            if (ignorePk && mf.isCompositePk())
+                continue;
+            Object val = mf.getValue(obj);
+            if (val == null) {
+                if (ignoreNull)
+                    continue;
+            } if (val instanceof Number && ((Number)val).doubleValue() == 0.0) {
+                if (ignoreZero)
+                    continue;
+            } if (val instanceof Date) {
+                if (ignoreDate)
+                    continue;
+            }
             cnd.and(mf.getName(), "=", val);
         }
         return cnd;
