@@ -25,6 +25,7 @@ import org.nutz.ioc.loader.map.MapLoader;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Streams;
+import org.nutz.lang.util.NutMap;
 
 public class SimpleJsonIocTest {
 
@@ -283,5 +284,12 @@ public class SimpleJsonIocTest {
         assertTrue(f.getName().length() > 0);
         System.out.println(f.getName());
         assertTrue(f.getName().equals("/tmp/,-1"));
+    }
+    
+    @Test
+    public void test_nan() {
+        NutMap map = new NutMap();
+        map.put("key", Double.NaN);
+        assertEquals("{\"key\":null}", Json.toJson(map, JsonFormat.tidy()));
     }
 }

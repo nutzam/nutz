@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #title: 案例
 #author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
@@ -24,3 +25,14 @@
 
 	请看上面，{*企业应用}列表屈指可数，所以，可想而知，我们是多～～～么地渴望您的来信啊!
 	
+=======
+#title: 案例
+#author:zozoh(zozohtnt@gmail.com)
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+--------------------------------------------------------------------------------------
+看用户提交的列表好了
+
+	[https://github.com/nutzam/nutz/issues/819 案例提交]
+	
+>>>>>>> branch 'master' of https://github.com/nutzam/nutz.git
