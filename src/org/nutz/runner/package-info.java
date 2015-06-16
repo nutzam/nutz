@@ -1,3 +1,4 @@
 /**
- * TODO 添加package注释
- */package org.nutz.runner;
+ * 线程辅助
+ */
+package org.nutz.runner;

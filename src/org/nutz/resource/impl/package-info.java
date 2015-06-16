@@ -1,3 +1,4 @@
 /**
- * TODO 添加package注释
- */package org.nutz.resource.impl;
+ * 资源的描述类
+ */
+package org.nutz.resource.impl;

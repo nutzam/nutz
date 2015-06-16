@@ -1,3 +1,4 @@
 /**
- * TODO 添加package注释
- */package org.nutz.repo.org.objectweb.asm;
+ * 精简过的asm库,请勿引用
+ */
+package org.nutz.repo.org.objectweb.asm;
