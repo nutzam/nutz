@@ -1,6 +1,10 @@
 package org.nutz.dao;
 
+import java.util.Iterator;
+import java.util.List;
+
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
@@ -12,6 +16,7 @@ import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
 
@@ -260,4 +265,49 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return this;
     }
 
+    public static Cnd from(Dao dao, Object obj) {
+        return from(dao, obj, null);
+    }
+    
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public static Cnd from(Dao dao, Object obj, FieldFilter filter) {
+        if (obj == null)
+            return null;
+        obj = Lang.first(obj);
+        if (obj == null) {
+            return null;
+        }
+        if (obj.getClass() == Class.class) {
+            throw Lang.impossible();
+        }
+        if (obj instanceof String || obj instanceof Number || obj instanceof Boolean) {
+            throw Lang.impossible();
+        }
+        Entity en = dao.getEntity(obj.getClass());
+        if (en == null) {
+            throw Lang.impossible();
+        }
+        
+        List<MappingField> mfs = en.getMappingFields();
+        if (filter != null) {
+            FieldMatcher fm = filter.map().get(obj.getClass());
+            if (fm != null) {
+                Iterator<MappingField> it = mfs.iterator();
+                while (it.hasNext()) {
+                    MappingField mf = it.next();
+                    if (!fm.match(mf.getName()))
+                        it.remove();
+                }
+            }
+        }
+        
+        Cnd cnd = Cnd.NEW();
+        for (MappingField mf : mfs) {
+            Object val = mf.getValue(obj);
+            if (val == null || (val instanceof Number && ((Number)val).doubleValue() == 0.0))
+                continue;
+            cnd.and(mf.getName(), "=", val);
+        }
+        return cnd;
+    }
 }
