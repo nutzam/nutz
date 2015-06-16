@@ -75,7 +75,17 @@ public class JsonRenderImpl implements JsonRender {
                 string2Json(((Enum) obj).name());
             }
             // 数字，布尔等
-            else if (mr.isNumber() || mr.isBoolean()) {
+            else if (mr.isNumber()) {
+                String tmp = obj.toString();
+                if (tmp.equals("NaN")) {
+                    // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?
+                    // 因为此时已经写入了key:
+                    writer.write("null");
+                }
+                else
+                    writer.write(tmp);
+            }
+            else if (mr.isBoolean()) {
                 writer.append(obj.toString());
             }
             // 字符串
