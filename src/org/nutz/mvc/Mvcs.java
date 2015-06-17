@@ -470,7 +470,7 @@ public abstract class Mvcs {
         return _reqt;
     }
 
-    /** 在入口方法调用时,是否1.b.51新加入的FastClass功能, 默认禁用 */
+    /** 在入口方法调用时,是否禁用1.b.51新加入的FastClass功能, 默认禁用 */
     // PS: 如果这个修改导致异常,请报issue,并将这个变量设置为true
-    public static boolean enableFastClassInvoker = false;
+    public static boolean disableFastClassInvoker = true;
 }
