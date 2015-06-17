@@ -31,11 +31,9 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 											  final HttpServletResponse resp,
 											  final ServletContext servletContext);
 	
-	public HttpSession getExistSession(final HttpServletRequest req,
+	public abstract HttpSession getExistSession(final HttpServletRequest req,
                                        final HttpServletResponse resp,
-                                       final ServletContext servletContext) {
-	    return null;
-	}
+                                       final ServletContext servletContext);
 
 	public void notifyStop() {}
 
