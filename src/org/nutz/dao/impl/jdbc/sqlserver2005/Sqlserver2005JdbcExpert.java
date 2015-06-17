@@ -140,8 +140,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
             return "float";
         case BINARY:
             return "varbinary(max)";
-        case TEXT :
-            return "nvarchar(max)";
+        //case TEXT :
+        //    return "nvarchar(max)";
         default :
             break;
         }
