@@ -30,6 +30,10 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 	public abstract HttpSession createSession(final HttpServletRequest req,
 											  final HttpServletResponse resp,
 											  final ServletContext servletContext);
+	
+	public abstract HttpSession getExistSession(final HttpServletRequest req,
+                                       final HttpServletResponse resp,
+                                       final ServletContext servletContext);
 
 	public void notifyStop() {}
 
@@ -48,6 +52,7 @@ public abstract class AbstractSessionProvider implements SessionProvider {
 			this.req = req;
 			this.resp = resp;
 			this.servletContext = servletContext;
+			this.session = getExistSession(req, resp, servletContext);
 		}
 
 		public HttpSession getSession(boolean create) {

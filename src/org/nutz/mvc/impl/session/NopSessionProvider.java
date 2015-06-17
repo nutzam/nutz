@@ -18,4 +18,7 @@ public class NopSessionProvider extends AbstractSessionProvider {
 		return req.getSession(true);
 	}
 
+	public HttpSession getExistSession(HttpServletRequest req, HttpServletResponse resp, ServletContext servletContext) {
+	    return req.getSession(false);
+	}
 }
