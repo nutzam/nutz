@@ -53,6 +53,14 @@ public final class FastClassFactory implements Opcodes {
             }
         }
     }
+    
+    public static Object invoke(Object obj, Method method, Object ... args) {
+        return get(method.getDeclaringClass()).invoke(obj, method, args);
+    }
+    
+    public static Object invoke(Object obj, String method, Object ... args) {
+        return get(obj.getClass()).invoke(obj, method, args);
+    }
 
     protected static synchronized Class<?> create(Class<?> classZ) {
         String myName = classZ.getName().replace('.', '/') + FastClass.CLASSNAME + count.getAndIncrement();
@@ -194,8 +202,9 @@ public final class FastClassFactory implements Opcodes {
         cw.visitSource(classZ.getSimpleName() + ".java", null);
         cw.visitEnd();
 
-        Class<?> xClass = DefaultClassDefiner.def(myName.replace('/', '.'),
-                                              cw.toByteArray());
+        Class<?> xClass = DefaultClassDefiner.defaultOne().define(myName.replace('/', '.'),
+                                              cw.toByteArray(),
+                                              classZ.getClassLoader());
         try {
             xClass.getField(SrcClass_FieldName).set(null, classZ);
             xClass.getField(MethodArray_FieldName).set(null, methods);

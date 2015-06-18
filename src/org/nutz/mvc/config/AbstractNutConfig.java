@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.ServletContext;
 
-import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.json.Json;
@@ -41,8 +40,6 @@ public abstract class AbstractNutConfig implements NutConfig {
          * 确保用户声明了 MainModule
          */
         Class<?> mainModule = getMainModule();
-
-        DefaultClassDefiner.init(mainModule.getClassLoader());
         
         /*
          * 获取 Loading

@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -24,6 +25,12 @@ import org.nutz.lang.Mirror;
 public abstract class AbstractClassAgent implements ClassAgent {
 
     private ArrayList<Pair> pairs = new ArrayList<Pair>();
+    
+    /**
+     * 这个属性仅限测试时重置类名用
+     */
+    @Deprecated
+    public static AtomicLong t;
 
     public ClassAgent addInterceptor(MethodMatcher matcher, MethodInterceptor listener) {
         if (null != listener)
@@ -34,8 +41,8 @@ public abstract class AbstractClassAgent implements ClassAgent {
     public <T> Class<T> define(ClassDefiner cd, Class<T> klass) {
         if (klass.getName().endsWith(CLASSNAME_SUFFIX))
             return klass;
-        String newName = klass.getName() + CLASSNAME_SUFFIX;
-        Class<T> newClass = try2Load(newName, cd);
+        String newName = klass.getName() + (t == null ? "" : "$" + t.get()) +  CLASSNAME_SUFFIX;
+        Class<T> newClass = try2Load(newName, klass.getClassLoader());
         if (newClass != null)
             return newClass;
         if (checkClass(klass) == false)
@@ -89,26 +96,13 @@ public abstract class AbstractClassAgent implements ClassAgent {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T> Class<T> try2Load(String newName, ClassDefiner cd) {
+    protected <T> Class<T> try2Load(String newName, ClassLoader loader) {
         try {
-            return (Class<T>) cd.load(newName);
+            if (loader == null)
+                return (Class<T>) getClass().getClassLoader().loadClass(newName);
+            return (Class<T>) loader.loadClass(newName);
         }
         catch (ClassNotFoundException e) {
-            ClassLoader classLoader = getClass().getClassLoader();
-            try {
-                return (Class<T>) Class.forName(newName, false, classLoader);
-            }
-            catch (ClassNotFoundException e2) {
-                try {
-                    return (Class<T>) Lang.loadClass(newName);
-                }
-                catch (ClassNotFoundException e1) {
-                    try {
-                        return (Class<T>) classLoader.loadClass(newName);
-                    }
-                    catch (ClassNotFoundException e3) {}
-                }
-            }
         }
         return null;
     }

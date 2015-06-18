@@ -24,7 +24,7 @@ public class MethodInvokeProcessor extends AbstractProcessor{
         	if (Mvcs.disableFastClassInvoker)
         		ac.setMethodReturn(method.invoke(module, args));
         	else
-        		ac.setMethodReturn(FastClassFactory.get(module.getClass()).invoke(module, method, args));
+        		ac.setMethodReturn(FastClassFactory.invoke(module, method, args));
             doNext(ac);
         } 
         catch (IllegalAccessException e) {
