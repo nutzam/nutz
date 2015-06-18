@@ -1,5 +1,6 @@
 package org.nutz.ioc.aop.impl;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -80,6 +81,12 @@ public class DefaultMirrorFactory implements MirrorFactory {
         if (interceptorPairs.isEmpty()) {
             if (log.isDebugEnabled())
                 log.debugf("%s , no config to enable AOP for this type.", type);
+            return Mirror.me(type);
+        }
+
+        int mod = type.getModifiers();
+        if (Modifier.isFinal(mod) || Modifier.isAbstract(mod)) {
+            log.info("%s configure to use aop, but it is final/abstract, skip it");
             return Mirror.me(type);
         }
 
