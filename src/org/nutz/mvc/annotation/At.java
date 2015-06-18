@@ -82,8 +82,14 @@ public @interface At {
      */
     String key() default "";
 
+    /**
+     * 需要映射的路径,可以多个
+     */
     String[] value() default {};
 
+    /**
+     * 需要映射的HTTP方法,例如POST GET 等等
+     */
     String[] methods() default {};
     
     /**
