@@ -76,7 +76,7 @@ import java.lang.annotation.Target;
 public @interface At {
 
     /**
-     * 如果为这个映射声明一个 key，哪么，可以通过 key 来访问这个 @At 的一个值
+     * 如果为这个映射声明一个 key，那么，可以通过 key 来访问这个 @At 的一个值
      * <p>
      * 默认的，你不需要关心这个属性
      */
