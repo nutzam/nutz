@@ -6,10 +6,12 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
+import org.objectweb.asm.util.ASMifier;
 
 public class FastClassFactoryTest extends Assert {
 
@@ -21,11 +23,12 @@ public class FastClassFactoryTest extends Assert {
 
     @Test
     public void testInvokeObjectMethodObjectArray() throws InvocationTargetException {
+        DefaultClassDefiner.DEBUG_DIR = "/nutz_fastclass/";
         FastClass fc = FastClassFactory.get(Pet.class);
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         for (int i = 0; i < 10000; i++) {
-            fc.born();
+            fc.born(new Class<?>[0]);
         }
         for (int i = 0; i < 10000; i++) {
             new Pet();
@@ -55,7 +58,7 @@ public class FastClassFactoryTest extends Assert {
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
-            pet = (Pet) fc.born();
+            pet = (Pet) fc.born(new Class[0]);
         }
 
         sw.stop();
@@ -87,7 +90,10 @@ public class FastClassFactoryTest extends Assert {
 //        Lang.quiteSleep(1000);
 //        System.gc();
         
-        System.out.println(pet);
+        System.out.println(pet.hashCode());
     }
 
+    public static void main(String[] args) throws Exception {
+       ASMifier.main(new String[]{"target/classes/org/nutz/lang/reflect/SimpleFastClass.class"});
+    }
 }

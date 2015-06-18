@@ -1,5 +1,6 @@
 package org.nutz.aop;
 
+import org.nutz.lang.Files;
 import org.nutz.lang.reflect.ReflectTool;
 
 /**
@@ -9,6 +10,8 @@ import org.nutz.lang.reflect.ReflectTool;
  */
 public class DefaultClassDefiner implements ClassDefiner {
     
+    public static String DEBUG_DIR;
+    
     private static ClassDefiner me = new DefaultClassDefiner();
     
     public static ClassDefiner defaultOne() {
@@ -17,6 +20,8 @@ public class DefaultClassDefiner implements ClassDefiner {
 	
     public Class<?> define(String className, byte[] bytes, ClassLoader loader) {
         try {
+            if (DEBUG_DIR != null)
+                Files.write(DEBUG_DIR + className.replace('.', '/') + ".class", bytes);
             return ReflectTool.defineClass(className, bytes, loader);
         }
         catch (Exception e) {

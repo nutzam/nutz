@@ -1,15 +1,16 @@
 package org.nutz.lang.reflect;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.nutz.aop.DefaultClassDefiner;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.repo.org.objectweb.asm.ClassWriter;
 import org.nutz.repo.org.objectweb.asm.MethodVisitor;
@@ -17,13 +18,6 @@ import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.repo.org.objectweb.asm.Type;
 
 public final class FastClassFactory implements Opcodes {
-
-    private static AtomicInteger count = new AtomicInteger();
-
-    public static final String MethodArray_FieldName = "_$$Fast_methodArray";
-    public static final String ConstructorArray_FieldName = "_$$Fast_constructorArray";
-    public static final String SrcClass_FieldName = "_$$Fast_srcClass";
-    public static final String FieldNameArray_FieldName = "_$$Fast_fieldNames";
 
     public static Map<String, FastClass> cache = new ConcurrentHashMap<String, FastClass>();
 
@@ -40,9 +34,8 @@ public final class FastClassFactory implements Opcodes {
             if (fastClass != null) {
                 return fastClass;
             }
-            Class<?> fclass = create(klass);
             try {
-                fastClass = (FastClass) fclass.newInstance();
+                fastClass = create(klass);
                 cache.put(cacheKey, fastClass);
                 return fastClass;
             }
@@ -57,15 +50,11 @@ public final class FastClassFactory implements Opcodes {
     public static Object invoke(Object obj, Method method, Object ... args) {
         return get(method.getDeclaringClass()).invoke(obj, method, args);
     }
-    
-    public static Object invoke(Object obj, String method, Object ... args) {
-        return get(obj.getClass()).invoke(obj, method, args);
-    }
 
-    protected static synchronized Class<?> create(Class<?> classZ) {
-        String myName = classZ.getName().replace('.', '/') + FastClass.CLASSNAME + count.getAndIncrement();
+    protected static synchronized FastClass create(Class<?> classZ) {
+        String myName = classZ.getName().replace('.', '/') + FastClass.CLASSNAME;
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-        cw.visit(V1_6,
+        cw.visit(V1_5,
                  ACC_PUBLIC,
                  myName,
                  null,
@@ -73,83 +62,18 @@ public final class FastClassFactory implements Opcodes {
                  null);
         // 添加默认构造方法
         {
-            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC,
-                                              "<init>",
-                                              "()V",
-                                              null,
-                                              null);
+            MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "<init>", "(Ljava/lang/Class;[Ljava/lang/reflect/Constructor;[Ljava/lang/reflect/Method;[Ljava/lang/reflect/Field;)V", "(Ljava/lang/Class<*>;[Ljava/lang/reflect/Constructor<*>;[Ljava/lang/reflect/Method;[Ljava/lang/reflect/Field;)V", null);
             mv.visitCode();
             mv.visitVarInsn(ALOAD, 0);
-            mv.visitMethodInsn(INVOKESPECIAL,
-                               "org/nutz/lang/reflect/AbstractFastClass",
-                               "<init>",
-                               "()V");
+            mv.visitVarInsn(ALOAD, 1);
+            mv.visitVarInsn(ALOAD, 2);
+            mv.visitVarInsn(ALOAD, 3);
+            mv.visitVarInsn(ALOAD, 4);
+            mv.visitMethodInsn(INVOKESPECIAL, "org/nutz/lang/reflect/AbstractFastClass", "<init>", "(Ljava/lang/Class;[Ljava/lang/reflect/Constructor;[Ljava/lang/reflect/Method;[Ljava/lang/reflect/Field;)V");
             mv.visitInsn(RETURN);
-            mv.visitMaxs(1, 1);
+            mv.visitMaxs(5, 5);
             mv.visitEnd();
-        }
-        // 添加默认字段
-        {
-            cw.visitField(ACC_PUBLIC + ACC_STATIC,
-                          FastClassFactory.MethodArray_FieldName,
-                          "[Ljava/lang/reflect/Method;",
-                          null,
-                          null).visitEnd();
-            cw.visitField(ACC_PUBLIC + ACC_STATIC,
-                          ConstructorArray_FieldName,
-                          "[Ljava/lang/reflect/Constructor;",
-                          null,
-                          null).visitEnd();
-            cw.visitField(ACC_PUBLIC + ACC_STATIC,
-                          SrcClass_FieldName,
-                          "Ljava/lang/Class;",
-                          "Ljava/lang/Class<*>;",
-                          null).visitEnd();
-        }
-        // 实现默认字段的getter
-        {
-            MethodVisitor mv = cw.visitMethod(ACC_PROTECTED,
-                                              "getMethods",
-                                              "()[Ljava/lang/reflect/Method;",
-                                              null,
-                                              null);
-            mv.visitCode();
-            mv.visitFieldInsn(GETSTATIC,
-                              myName,
-                              FastClassFactory.MethodArray_FieldName,
-                              "[Ljava/lang/reflect/Method;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-            // -----------------------------------------------------------------------------------------------------
-            mv = cw.visitMethod(ACC_PROTECTED,
-                                "getConstructors",
-                                "()[Ljava/lang/reflect/Constructor;",
-                                "()[Ljava/lang/reflect/Constructor<*>;",
-                                null);
-            mv.visitCode();
-            mv.visitFieldInsn(GETSTATIC,
-                              myName,
-                              ConstructorArray_FieldName,
-                              "[Ljava/lang/reflect/Constructor;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-            // -----------------------------------------------------------------------------------------------------
-            mv = cw.visitMethod(ACC_PROTECTED,
-                                "getSrcClass",
-                                "()Ljava/lang/Class;",
-                                "()Ljava/lang/Class<*>;",
-                                null);
-            mv.visitCode();
-            mv.visitFieldInsn(GETSTATIC,
-                              myName,
-                              SrcClass_FieldName,
-                              "Ljava/lang/Class;");
-            mv.visitInsn(ARETURN);
-            mv.visitMaxs(1, 1);
-            mv.visitEnd();
-        }
+         }
         Method[] methods = classZ.getMethods();
         Arrays.sort(methods, new MethodComparator());
         // 构建_invoke方法
@@ -206,20 +130,17 @@ public final class FastClassFactory implements Opcodes {
                                               cw.toByteArray(),
                                               classZ.getClassLoader());
         try {
-            xClass.getField(SrcClass_FieldName).set(null, classZ);
-            xClass.getField(MethodArray_FieldName).set(null, methods);
-            xClass.getField(ConstructorArray_FieldName).set(null, constructors);
+            return (FastClass)xClass.getConstructor(Class.class, Constructor[].class, Method[].class, Field[].class).newInstance(classZ, constructors, methods, null);
         }
-        catch (Throwable e) {
-            e.printStackTrace();
+        catch (Exception e) {
+            throw Lang.impossible();
         }
-        return xClass;
     }
 }
 
 class Util {
 
-    public static int compara(Class<?>[] mps1, Class<?>[] mps2) {
+    public static int compare(Class<?>[] mps1, Class<?>[] mps2) {
         if (mps1.length > mps2.length)
             return 1;
         if (mps1.length < mps2.length)
@@ -253,7 +174,7 @@ class ConstructorComparator implements Comparator<Constructor<?>> {
             return 0;
         if (!c1.getName().equals(c2.getName()))
             return c1.getName().compareTo(c2.getName());
-        return Util.compara(c1.getParameterTypes(), c2.getParameterTypes());
+        return Util.compare(c1.getParameterTypes(), c2.getParameterTypes());
     }
 
 }
@@ -265,7 +186,7 @@ class MethodComparator implements Comparator<Method> {
             return 0;
         if (!m1.getName().equals(m2.getName()))
             return m1.getName().compareTo(m2.getName());
-        return Util.compara(m1.getParameterTypes(), m2.getParameterTypes());
+        return Util.compare(m1.getParameterTypes(), m2.getParameterTypes());
     }
 
 }
