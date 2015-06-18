@@ -22,7 +22,7 @@ public class FastClassFactoryTest extends Assert {
     @Test
     public void testInvokeObjectMethodObjectArray() throws InvocationTargetException {
         FastClass fc = FastClassFactory.get(Pet.class);
-        net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
+        //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         for (int i = 0; i < 10000; i++) {
             fc.born();
@@ -33,9 +33,9 @@ public class FastClassFactoryTest extends Assert {
         for (int i = 0; i < 10000; i++) {
             mirror.born();
         }
-        for (int i = 0; i < 10000; i++) {
-            fc2.newInstance();
-        }
+//        for (int i = 0; i < 10000; i++) {
+//            fc2.newInstance();
+//        }
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
@@ -77,15 +77,15 @@ public class FastClassFactoryTest extends Assert {
         System.gc();
         
 
-        sw = Stopwatch.begin();
-        for (int i = 0; i < 1000000; i++) {
-            pet = (Pet) fc2.newInstance(new Class[]{String.class}, new Object[]{"wendal"});
-        }
-        
-        sw.stop();
-        System.out.println("cglib born   :"+sw);
-        Lang.quiteSleep(1000);
-        System.gc();
+//        sw = Stopwatch.begin();
+//        for (int i = 0; i < 1000000; i++) {
+//            pet = (Pet) fc2.newInstance(new Class[]{String.class}, new Object[]{"wendal"});
+//        }
+//        
+//        sw.stop();
+//        System.out.println("cglib born   :"+sw);
+//        Lang.quiteSleep(1000);
+//        System.gc();
         
         System.out.println(pet);
     }

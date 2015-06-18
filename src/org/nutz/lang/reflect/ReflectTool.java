@@ -5,8 +5,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 
-import net.sf.cglib.core.CodeGenerationException;
-import net.sf.cglib.core.ReflectUtils;
+import org.nutz.lang.Lang;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class ReflectTool {
@@ -15,7 +14,7 @@ public class ReflectTool {
     private static final ProtectionDomain PROTECTION_DOMAIN;
     
     static {
-        PROTECTION_DOMAIN = getProtectionDomain(ReflectUtils.class);
+        PROTECTION_DOMAIN = getProtectionDomain(ReflectTool.class);
 
         AccessController.doPrivileged(new PrivilegedAction() {
             public Object run() {
@@ -29,9 +28,9 @@ public class ReflectTool {
                                                                          ProtectionDomain.class });
                     DEFINE_CLASS.setAccessible(true);
                 } catch (ClassNotFoundException e) {
-                    throw new CodeGenerationException(e);
+                    //Lang.impossible();
                 } catch (NoSuchMethodException e) {
-                    throw new CodeGenerationException(e);
+                    //Lang.impossible();
                 }
                 return null;
             }
