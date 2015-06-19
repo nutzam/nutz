@@ -14,6 +14,8 @@ public abstract class AbstractFastClass implements FastClass {
 
 	private static final String[] cMethodName = new String[]{"create", "newInstance"};
 	
+	public static final Class<?>[] EMTRY_PARAM_TYPES = new Class<?>[0];
+	
 	protected Class<?> clazz;
 	protected Constructor<?>[] cs;
 	protected Method[] methods;
@@ -86,6 +88,10 @@ public abstract class AbstractFastClass implements FastClass {
 			catch (Throwable e) {}
 		}
 		throw new IllegalArgumentException("!!Fail to find Constructor for args");
+	}
+	
+	public Object born() {
+	    return born(EMTRY_PARAM_TYPES);
 	}
 
 	private int getConstructorIndex(Class<?>[] cpB) {

@@ -65,6 +65,8 @@ public class ReflectTool {
                                      new Integer(0),
                                      new Integer(b.length),
                                      protectionDomain};
+        if (loader == null)
+            loader = ReflectTool.class.getClassLoader();
         Class c = (Class) DEFINE_CLASS.invoke(loader, args);
         // Force static initializers to run.
         Class.forName(className, true, loader);

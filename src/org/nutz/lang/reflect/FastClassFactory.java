@@ -52,7 +52,11 @@ public final class FastClassFactory implements Opcodes {
     }
 
     protected static synchronized FastClass create(Class<?> classZ) {
-        String myName = classZ.getName().replace('.', '/') + FastClass.CLASSNAME;
+        String myName = classZ.getName().replace('.', '/');
+        if (myName.startsWith("java")) {
+            myName = "org/nutz/lang/reflect" + '/' + myName;
+        }
+        myName += FastClass.CLASSNAME;
         ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
         cw.visit(V1_5,
                  ACC_PUBLIC,

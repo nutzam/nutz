@@ -30,14 +30,4 @@ public class SimpleFastClass extends AbstractFastClass {
         }
         throw Lang.impossible();
     }
-
-//    protected Object _invoke(Object obj, int index, Object... args) {
-//        switch (index) {
-//        case 0:
-//            return toString();
-//        case 1:
-//            return hashCode();
-//        }
-//        throw Lang.impossible();
-//    }
 }

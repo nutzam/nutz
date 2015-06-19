@@ -11,6 +11,7 @@ import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
+import org.nutz.lang.born.Borning;
 import org.objectweb.asm.util.ASMifier;
 
 public class FastClassFactoryTest extends Assert {
@@ -27,6 +28,7 @@ public class FastClassFactoryTest extends Assert {
         FastClass fc = FastClassFactory.get(Pet.class);
         //net.sf.cglib.reflect.FastClass fc2 = net.sf.cglib.reflect.FastClass.create(Pet.class);
         Mirror<Pet> mirror = Mirror.me(Pet.class);
+        Borning<Pet> mb = mirror.getBorning();
         for (int i = 0; i < 10000; i++) {
             fc.born(new Class<?>[0]);
         }
@@ -34,7 +36,7 @@ public class FastClassFactoryTest extends Assert {
             new Pet();
         }
         for (int i = 0; i < 10000; i++) {
-            mirror.born();
+            mb.born();
         }
 //        for (int i = 0; i < 10000; i++) {
 //            fc2.newInstance();
@@ -70,11 +72,22 @@ public class FastClassFactoryTest extends Assert {
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
-            pet = mirror.born();
+            pet = mb.born();
         }
 
         sw.stop();
         System.out.println("mirror born   :"+sw);
+        System.gc();
+        Lang.quiteSleep(1000);
+        System.gc();
+        
+        sw = Stopwatch.begin();
+        for (int i = 0; i < 1000000; i++) {
+            System.currentTimeMillis();
+        }
+
+        sw.stop();
+        System.out.println("NULL          :"+sw);
         System.gc();
         Lang.quiteSleep(1000);
         System.gc();
