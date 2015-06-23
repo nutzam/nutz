@@ -116,15 +116,31 @@ public final class FastClassFactory implements Opcodes {
         Constructor<?>[] constructors = classZ.getConstructors();
         Arrays.sort(constructors, new ConstructorComparator());
         if (constructors.length > 0) {
+            String enhancedSuperName = classZ.getName().replace('.', '/');
             FastClassAdpter.createInokeConstructor(cw.visitMethod(ACC_PROTECTED
                                                                           + ACC_VARARGS,
                                                                   "_born",
                                                                   "(I[Ljava/lang/Object;)Ljava/lang/Object;",
                                                                   null,
                                                                   null),
-                                                   classZ.getName()
-                                                         .replace('.', '/'),
+                                                                  enhancedSuperName,
                                                    constructors);
+            for (Constructor<?> constructor : constructors) {
+                if (constructor.getParameterTypes().length == 0) {
+                    MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "born", "()Ljava/lang/Object;", null, null);
+                    mv.visitCode();
+                    mv.visitTypeInsn(NEW, enhancedSuperName);
+                    mv.visitInsn(DUP);
+                    mv.visitMethodInsn( INVOKESPECIAL,
+                                        enhancedSuperName,
+                                        "<init>",
+                                        Type.getConstructorDescriptor(constructor));
+                    mv.visitInsn(ARETURN);
+                    mv.visitMaxs(2, 1);
+                    mv.visitEnd();
+                    break;
+                }
+            }
         }
 
         cw.visitSource(classZ.getSimpleName() + ".java", null);

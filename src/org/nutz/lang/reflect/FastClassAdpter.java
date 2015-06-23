@@ -63,8 +63,8 @@ public class FastClassAdpter implements Opcodes {
 			mv.visitLabel(l0);
 		}
 
-		mv.visitInsn(ACONST_NULL);
-		mv.visitInsn(ARETURN);
+		mv.visitMethodInsn(INVOKESTATIC, "org/nutz/lang/Lang", "impossible", "()Ljava/lang/RuntimeException;");
+		mv.visitInsn(ATHROW);
 		mv.visitMaxs(4, 3);
 		mv.visitEnd();
 	}
@@ -94,8 +94,8 @@ public class FastClassAdpter implements Opcodes {
 			mv.visitInsn(ARETURN);
 			mv.visitLabel(l0);
 		}
-		mv.visitInsn(ACONST_NULL);
-		mv.visitInsn(ARETURN);
+		mv.visitMethodInsn(INVOKESTATIC, "org/nutz/lang/Lang", "impossible", "()Ljava/lang/RuntimeException;");
+		mv.visitInsn(ATHROW);
 		mv.visitMaxs(4, 3);
 		mv.visitEnd();
 	}

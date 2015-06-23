@@ -30,7 +30,7 @@ public class FastClassFactoryTest extends Assert {
         Mirror<Pet> mirror = Mirror.me(Pet.class);
         Borning<Pet> mb = mirror.getBorning();
         for (int i = 0; i < 10000; i++) {
-            fc.born(new Class<?>[0]);
+            fc.born();
         }
         for (int i = 0; i < 10000; i++) {
             new Pet();
@@ -60,7 +60,7 @@ public class FastClassFactoryTest extends Assert {
 
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
-            pet = (Pet) fc.born(new Class[0]);
+            pet = (Pet) fc.born();
         }
 
         sw.stop();
@@ -83,7 +83,7 @@ public class FastClassFactoryTest extends Assert {
         
         sw = Stopwatch.begin();
         for (int i = 0; i < 1000000; i++) {
-            System.currentTimeMillis();
+            new Object();
         }
 
         sw.stop();
