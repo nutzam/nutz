@@ -89,10 +89,10 @@ password=root
         Dao dao = DaoUp.me().dao();
         
         // 弱弱地定义个表名方便操作
-        String tableName = "tx_test_user";
+        String tableName = "tx_daoup_user";
         
         // 看看有无tx_text_user表,有的话就删掉好了
-        if (dao.exists(tableName)) {
+        if (dao.exists(tableName)) { // 没有openSession之类的事
             dao.drop(tableName);
         }
         
@@ -177,7 +177,7 @@ password=root
      * 2. 带Pojo的基本操作,单表无操作
      */
     @Test
-    public void test_pojo_singal() {
+    public void test_pojo() {
         // 首先,得到Dao实例
         Dao dao = DaoUp.me().dao();
         
@@ -229,6 +229,7 @@ password=root
         
         // 先塞点内容进去
         
+        // 3个用户, wendal, zozoh, pangwu86
         SystemUser userA = new SystemUser();
         userA.setName("wendal");
         SystemUser userB = new SystemUser();
@@ -236,40 +237,33 @@ password=root
         SystemUser userC = new SystemUser();
         userC.setName("pangwu86");
         
+        // 2个组, sysadmin和root
         SystemTeam teamA = new SystemTeam();
         teamA.setName("sysadmin");
         SystemTeam teamB = new SystemTeam();
         teamB.setName("root");
-        SystemTeam teamC = new SystemTeam();
-        teamC.setName("admin");
         
+        // 关联用户到不同的组
         userA.setTeam(teamA);
         userB.setTeam(teamB);
         userC.setTeam(teamB);
-        
-        List<SystemJob> jobs = new ArrayList<SystemJob>();
+
+        List<SystemJob> jobsA = new ArrayList<SystemJob>();
+        List<SystemJob> jobsB = new ArrayList<SystemJob>();
+        List<SystemJob> jobsC = new ArrayList<SystemJob>();
         for (int i = 0; i < 10; i++) {
             SystemJob job = new SystemJob();
-            job.setName(R.UU32());
-            jobs.add(job);
+            jobsA.add(job);
+            job = new SystemJob();
+            jobsB.add(job);
+            if (i < 5) {
+                job = new SystemJob();
+                jobsC.add(job);
+            }
         }
-        userA.setJobs(jobs);
-        
-        jobs = new ArrayList<SystemJob>();
-        for (int i = 0; i < 10; i++) {
-            SystemJob job = new SystemJob();
-            job.setName(R.UU32());
-            jobs.add(job);
-        }
-        userB.setJobs(jobs);
-        
-        jobs = new ArrayList<SystemJob>();
-        for (int i = 0; i < 5; i++) {
-            SystemJob job = new SystemJob();
-            job.setName(R.UU32());
-            jobs.add(job);
-        }
-        userC.setJobs(jobs);
+        userA.setJobs(jobsA);
+        userB.setJobs(jobsB);
+        userC.setJobs(jobsC);
         
         dao.insertWith(userA, null);
         dao.insertWith(userB, null);
@@ -293,9 +287,10 @@ password=root
         // TeamA的任务,就是UserA的任务
         teamA.setJobs(new ArrayList<SystemJob>(userA.getJobs()));
         // TeamB的任务, 是UserB和UserC的任务的集合
-        jobs = new ArrayList<SystemJob>();
+        ArrayList<SystemJob> jobs = new ArrayList<SystemJob>();
         jobs.addAll(userB.getJobs());
         jobs.addAll(userC.getJobs());
+        teamB.setJobs(jobs);
         
         // 现在插入@ManyMany的数据
         dao.insertRelation(teamA, null);
@@ -352,8 +347,106 @@ password=root
         }
         
         // -------------------------------------------------------------------
-        // 更新操作
+        // 更新/删除关联对象/关联信息操作
         
+        // @One更新, 把Team A的名字改成god --> 其实可以直接改... 只是为了演示...
+        SystemUser wendal = dao.fetch(SystemUser.class, "wendal");
+        wendal = dao.fetchLinks(wendal, "team"); // fetchLinks返回的就是原来的对象, 有返回值是为了方便链式调用
+        assertNotNull(wendal.getTeam());
+        
+        wendal.getTeam().setName("god");
+        dao.updateLinks(wendal, null);
+        
+        SystemTeam godTeam = dao.fetch(SystemTeam.class, "god");
+        assertNotNull(godTeam);
+        
+        // @Many 更新
+        
+        SystemUser zozoh = dao.fetchLinks(dao.fetch(SystemUser.class, "wendal"), null);
+        assertNotNull(zozoh.getJobs());
+        
+        // 把前面4个任务的state设置为1, 算是完成吧
+        for (int i = 0; i < 4; i++) {
+            zozoh.getJobs().get(i).setState(1);
+        }
+        dao.updateLinks(zozoh, "jobs");
+        
+        // 既然更新了,那看看未完成的任务是不是21个
+        assertEquals(21, dao.count(SystemJob.class, Cnd.where("state", "=", 0)));
+        
+        
+        // @ManyMany的更新
+        // 单纯更新job表的数据, 与前面的@Many无异, 不再重复
+        // 下面是要更新@ManyMany中的中间表
+        
+        SystemTeam rootTeam = dao.fetch(SystemTeam.class, "root");
+        dao.fetchLinks(rootTeam, null);
+
+        assertNotNull(rootTeam.getJobs());
+        assertEquals(15, rootTeam.getJobs().size());
+        
+        // 移除前11个任务的引用
+        for (int i = 0; i < 11; i++) {
+            rootTeam.getJobs().remove(0);
+        }
+        dao.deleteLinks(rootTeam, null); // deleteLinks的特点就是当前对象引用的关联对象才会删除哦
+        
+        // 重新fetchLinks, 就剩下11个job了
+        dao.fetchLinks(rootTeam, null);
+        assertEquals(11, rootTeam.getJobs().size());
+        
+        
+        // 现在,我们把pangw86这个用户及相关的job删除
+        SystemUser pangwu86 = dao.fetch(SystemUser.class, "pangwu86");
+        assertNotEquals(0, dao.count(SystemJob.class, Cnd.where("userId", "=", pangwu86.getId())));
+        dao.fetchLinks(pangwu86, "jobs");
+        dao.deleteWith(pangwu86, "jobs"); // 因为team还不能删除,所以需要制定只删除jobs
+        
+        assertNull(dao.fetch(SystemUser.class, "pangwu86"));
+        assertEquals(0, dao.count(SystemJob.class, Cnd.where("userId", "=", pangwu86.getId())));
+        
+        // ---------------------------------
+        // 各种clear
+        // 现在,天黑了,统统杀掉
+        
+        // 清除关联关系,直接全干掉
+        zozoh = dao.fetchLinks(dao.fetch(SystemUser.class, "zozoh"), null);
+        dao.clearLinks(zozoh, null);
+        assertEquals(0, dao.count(SystemJob.class, Cnd.where("userId", "=", dao.fetch(SystemUser.class, "zozoh").getId())));
+        assertNotNull(dao.fetch(SystemUser.class, "zozoh")); // 人还在
+        dao.delete(zozoh); // 干掉...
+        dao.clearLinks(zozoh.getTeam(), null); // 所在Team已经没人了,相关的job也清除掉
+        
+        // 连人带team带jobs全删!!
+        wendal = dao.fetch(SystemUser.class, "wendal");
+        SystemTeam team = dao.fetchLinks(wendal, "team").getTeam();
+        
+        dao.clearLinks(wendal, null); // 关联关系全删
+        dao.delete(wendal); // 删掉自己
+        // team与job的关联关系也需要清除
+        dao.clearLinks(team, null); // 二级关联,也干掉
+        
+        assertNull(dao.fetch(SystemUser.class, "wendal")); // 人被删了...
+        assertNull(dao.fetch(SystemTeam.class, "sysadmin")); // 组也删了
+        // 即使数据库记录干掉了, wendal这个对象依然可用,因为完全跟数据库分离的
+        assertEquals(0, dao.count(SystemJob.class, Cnd.where("userId", "=", wendal.getId())));
+        
+        
+        // 应该都挂了吧? 检查一下
+        assertEquals(0, dao.count(SystemUser.class));
+        assertEquals(0, dao.count(SystemTeam.class));
+        assertEquals(0, dao.count(SystemJob.class));
+        // 等等, 别放过了关联表
+        assertEquals(0, dao.count("t_daoup_team_job")); // 可以直接传表名
+        
+        // 好了, 世界清静了...
+    }
+    
+    /**
+     * 
+     */
+    @Test
+    public void test_sql() {
         
     }
 }
