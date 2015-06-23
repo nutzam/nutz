@@ -13,6 +13,7 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.meta.SimplePojo;
 import org.nutz.dao.util.meta.SystemJob;
 import org.nutz.dao.util.meta.SystemTeam;
@@ -510,10 +511,41 @@ password=root
     }
     
     /**
-     * 自定义SQL
+     * 自定义SQL, 解决绝大部分Dao接口无法满足你的sql调用
      */
     @Test
     public void test_sql() {
+        Dao dao = DaoUp.me().dao(); // 不再啰嗦, 不然你也烦了..
         
+        // 首先,我们用前一个test的pojo建表
+        dao.create(SystemUser.class, true);
+        dao.create(SystemTeam.class, true);
+        
+        // 建1个用户,一个Team
+        SystemUser user = new SystemUser();
+        user.setName("wendal");
+        SystemTeam team = new SystemTeam();
+        team.setName("root");
+        user.setTeam(team);
+        dao.insertWith(user, "team");
+        
+        // Dao接口大部分操作都生成单表SQL, 除了@ManyMany.
+        // 所以很多人觉得@One也查2次很浪费啊, 那这里写一条
+        
+        String str = "select u.*,t.* from $user_table u INNER JOIN $team_table t ON u.t_id = t.id where u.nm=@name";
+        Sql sql = Sqls.create(str); // 创建一个自定义Sql对象, 还有各种形式哦
+        sql.vars().set("user_table", dao.getEntity(SystemUser.class).getTableName()); // $开头的是变量,会直接拼入sql哦
+        sql.vars().set("team_table", dao.getEntity(SystemTeam.class).getTableName()); // 同上
+        sql.params().set("name", "wendal"); // @开头的是参数, 会变成问号哦
+        sql.setCallback(Sqls.callback.record()); // Sqls.callback提供N种常用的回调,你需要的一般都在里面了
+        dao.execute(sql); // 注意, execute是没有返回值的, 所需要的值都通过callback来获取
+                          // 不抛出异常就是执行成功
+        Record record = sql.getObject(Record.class); //Sqls.callback.record()的返回值就是Record
+        // 从Record还原出Pojo来
+        SystemUser u = record.toEntity(dao.getEntity(SystemUser.class), "u.");
+        assertNotNull(u);
+        SystemTeam t = record.toEntity(dao.getEntity(SystemTeam.class), "t.");
+        assertNotNull(t);
+        u.setTeam(t);
     }
 }
