@@ -1085,50 +1085,50 @@ class MethodWriter implements MethodVisitor {
 //        visitSwitchInsn(dflt, labels);
 //    }
 //
-//    public void visitLookupSwitchInsn(
-//        final Label dflt,
-//        final int[] keys,
-//        final Label[] labels)
-//    {
-//        // adds the instruction to the bytecode of the method
-//        int source = code.length;
-//        code.putByte(Opcodes.LOOKUPSWITCH);
-//        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
-//        dflt.put(this, code, source, true);
-//        code.putInt(labels.length);
-//        for (int i = 0; i < labels.length; ++i) {
-//            code.putInt(keys[i]);
-//            labels[i].put(this, code, source, true);
-//        }
-//        // updates currentBlock
-//        visitSwitchInsn(dflt, labels);
-//    }
-//
-//    private void visitSwitchInsn(final Label dflt, final Label[] labels) {
-//        // Label currentBlock = this.currentBlock;
-//        if (currentBlock != null) {
-//            if (compute == FRAMES) {
-//                currentBlock.frame.execute(Opcodes.LOOKUPSWITCH, 0, null, null);
-//                // adds current block successors
-//                addSuccessor(Edge.NORMAL, dflt);
-//                dflt.getFirst().status |= Label.TARGET;
-//                for (int i = 0; i < labels.length; ++i) {
-//                    addSuccessor(Edge.NORMAL, labels[i]);
-//                    labels[i].getFirst().status |= Label.TARGET;
-//                }
-//            } else {
-//                // updates current stack size (max stack size unchanged)
-//                --stackSize;
-//                // adds current block successors
-//                addSuccessor(stackSize, dflt);
-//                for (int i = 0; i < labels.length; ++i) {
-//                    addSuccessor(stackSize, labels[i]);
-//                }
-//            }
-//            // ends current block
-//            noSuccessor();
-//        }
-//    }
+    public void visitLookupSwitchInsn(
+        final Label dflt,
+        final int[] keys,
+        final Label[] labels)
+    {
+        // adds the instruction to the bytecode of the method
+        int source = code.length;
+        code.putByte(Opcodes.LOOKUPSWITCH);
+        code.putByteArray(null, 0, (4 - code.length % 4) % 4);
+        dflt.put(this, code, source, true);
+        code.putInt(labels.length);
+        for (int i = 0; i < labels.length; ++i) {
+            code.putInt(keys[i]);
+            labels[i].put(this, code, source, true);
+        }
+        // updates currentBlock
+        visitSwitchInsn(dflt, labels);
+    }
+
+    private void visitSwitchInsn(final Label dflt, final Label[] labels) {
+        // Label currentBlock = this.currentBlock;
+        if (currentBlock != null) {
+            if (compute == FRAMES) {
+                currentBlock.frame.execute(Opcodes.LOOKUPSWITCH, 0, null, null);
+                // adds current block successors
+                addSuccessor(Edge.NORMAL, dflt);
+                dflt.getFirst().status |= Label.TARGET;
+                for (int i = 0; i < labels.length; ++i) {
+                    addSuccessor(Edge.NORMAL, labels[i]);
+                    labels[i].getFirst().status |= Label.TARGET;
+                }
+            } else {
+                // updates current stack size (max stack size unchanged)
+                --stackSize;
+                // adds current block successors
+                addSuccessor(stackSize, dflt);
+                for (int i = 0; i < labels.length; ++i) {
+                    addSuccessor(stackSize, labels[i]);
+                }
+            }
+            // ends current block
+            noSuccessor();
+        }
+    }
 //
 //    public void visitMultiANewArrayInsn(final String desc, final int dims) {
 //        Item i = cw.newClassItem(desc);

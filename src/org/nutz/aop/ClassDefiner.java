@@ -20,21 +20,5 @@ public interface ClassDefiner {
      * @throws ClassFormatError
      *             字节码格式错误
      */
-    Class<?> define(String className, byte[] bytes) throws ClassFormatError;
-
-    /**
-     * @param className
-     *            一个类全名
-     * @return 是否在缓存中存在这个类的定义
-     */
-    boolean has(String className);
-
-    /**
-     * @param className
-     *            一个类的全名
-     * @return 缓存中的类定义
-     * @throws ClassNotFoundException
-     *             如果缓存中没有这个类定义
-     */
-    Class<?> load(String className) throws ClassNotFoundException;
+    Class<?> define(String className, byte[] bytes, ClassLoader c);
 }

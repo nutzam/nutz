@@ -35,10 +35,6 @@ public class AsmClassAgent extends AbstractClassAgent {
                                     String newName,
                                     Class<T> klass,
                                     Constructor<T>[] constructors) {
-        try {
-            return (Class<T>) cd.load(newName);
-        }
-        catch (ClassNotFoundException e) {}
         Method[] methodArray = new Method[pair2s.length];
         List<MethodInterceptor>[] methodInterceptorList = new List[pair2s.length];
         for (int i = 0; i < pair2s.length; i++) {
@@ -48,7 +44,7 @@ public class AsmClassAgent extends AbstractClassAgent {
         }
         byte[] bytes = ClassY.enhandClass(klass, newName, methodArray, constructors);
         //Files.write(new File(newName), bytes);
-        Class<T> newClass = (Class<T>) cd.define(newName, bytes);
+        Class<T> newClass = (Class<T>) cd.define(newName, bytes, klass.getClassLoader());
         try {
             Mirror<T> mirror = Mirror.me(newClass);
             mirror.setValue(null, MethodArray_FieldName, methodArray);

@@ -19,5 +19,8 @@
 *   [每次构建地址](http://downloads.nutzam.com/)
 *   [各种插件](http://github.com/nutzam/nutzmore)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) (引导式nutz入门书)
+*	[在线javadoc](http://javadoc.nutz.cn)
+*	[案例提交](https://github.com/nutzam/nutz/issues/819)  (企业项目及开源项目)
+*	[短地址服务](http://nutz.cn) (贴日志贴代码很方便)
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
