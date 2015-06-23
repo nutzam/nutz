@@ -1,6 +1,7 @@
 package org.nutz.dao.util;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -43,6 +44,7 @@ username=root
 password=root
          */
         // 且加入了对应的数据库驱动, 混熟了可以加入druid和log4j(务必把log4j.properties弄好且日志为debug级)
+        // 程序启动的时候调用*一次*就够了!!!!!!!!!!!!!!
         DaoUp.me().init(DaoUpTest.class.getClassLoader().getResourceAsStream("nutz-test.properties"));
         // 请留意nutz输出的日志,如果没有日志输出,那就肯定是log4j没配置好, 建议删掉log4j然后继续.
         
@@ -74,6 +76,7 @@ password=root
         // 提醒再提醒,这个千万千万别乱调用
         // 这个操作是关掉数据源的
         DaoUp.me().close();
+        // 程序关闭前调用一次就够了!!!
     }
 
     /**
@@ -85,55 +88,59 @@ password=root
     @Test
     // 提醒一句,下面的assert均为Junit的方法
     public void test_without_pojo() {
-        // 首先,得到Dao实例
-        Dao dao = DaoUp.me().dao();
+        // 首先,得到Dao实例, 因为Junit的规则就是setUp先执行,所以Dao已经初始化好了
+        Dao dao = DaoUp.me().dao(); // me()是public静态方法,意味着你可以从任何代码访问到哦
         
         // 弱弱地定义个表名方便操作
         String tableName = "tx_daoup_user";
         
         // 看看有无tx_text_user表,有的话就删掉好了
         if (dao.exists(tableName)) { // 没有openSession之类的事
-            dao.drop(tableName);
+            dao.drop(tableName); // 生产环境可别乱调用,死人了别找我
         }
         
-        // 好了,现在开始建表, 其中的Sqls是Nutz中的自定义SQL的帮助类
+        // 好了,现在开始建表, 其中的Sqls是Nutz中的自定义SQL的帮助类, 具体用法后面还有讲解
         // 为了最大兼容各种数据库,这里就建3个属性,不自增,没默认值
         // 如果您测试的数据库不支持下面的建表sql,自己改一下吧,呵呵.
         dao.execute(Sqls.create("create table " + tableName + " (id int, nm varchar(50), age int)"));
         
-        // 首先,插入4条记录, 不抛异常就是执行成功
+        // 首先,插入4条记录, 不抛异常就是执行成功(Dao接口的方法均如此)
         dao.insert(tableName, Chain.make("id", 1).add("nm", "wendal").add("age", 30));
         dao.insert(tableName, Chain.make("id", 2).add("nm", "zozoh").add("age", 60));
         dao.insert(tableName, Chain.make("id", 3).add("nm", "pangwu").add("age", 20));
         dao.insert(tableName, Chain.make("id", 4).add("nm", "ywjno").add("age", 10));
         
         // 我们统计一下是不是真的4条呢?
-        assertEquals(4, dao.count(tableName));
+        assertEquals(4, dao.count(tableName)); //count方法可以查Pojo所代表的表,也可以直接写表名
+                                                // 类似的方法还有fetch/query/clear等
 
         // ------------------
         // --------- query操作
         
         // 现在查一下小于25,且按nm降序
-        List<Record> users = dao.query(tableName, Cnd.where("age", "<", 25).desc("nm"));
+        List<Record> users = dao.query(tableName, Cnd.where("age", "<", 25).desc("nm")); // Cnd是最常用的查询构建类
         // 理应是2个人
-        assertEquals(2, users.size());
+        assertEquals(2, users.size()); // 忍不住提醒一句啊, 统计总数用dao.count, 因为真的有人这样写: return dao.query(XXX.class, Cnd....).size();
         
         // 因为是倒序,那第一个就是ywjno,第二个是pangwu.
         // 注意一下Record里面的key都是自动转为小写的,但值不会,这个可以放心.
-        assertEquals("ywjno", users.get(0).getString("nm"));
-        assertEquals("pangwu", users.get(1).getString("nm"));
+        assertEquals("ywjno", users.get(0).getString("nm")); // ywjno就是冬日温泉,nutz的其中一位commiter
+        assertEquals("pangwu", users.get(1).getString("nm")); // pangwu,胖五也, 也是commiter
         
         // 查大于15岁,且第二页,每页2条记录, 注意页数是从1开始的,若填了0,就不分页,全部记录
         users = dao.query(tableName, Cnd.where("age", ">", 15), dao.createPager(2, 2));
         // 因为大于15岁的只有3个人,又分页,所以结果应该是只有第3条记录
         assertEquals(1, users.size());
-        assertEquals("pangwu", users.get(0).get("nm"));
+        assertEquals("pangwu", users.get(0).get("nm")); // ^|_|^ ...
         
         // --------------------------
         // --------- update和fetch操作
         
         //现在, 我们更新wendal的年龄,使其变成26,啊啊啊
-        dao.update(tableName, Chain.make("age", 26), Cnd.where("nm", "=", "wendal"));
+        dao.update(tableName, Chain.make("age", 26), Cnd.where("nm", "=", "wendal")); 
+        // Chain是链式的可以继续接下去哦
+        // Chain.make(....).add(...).add(...)
+        // 或者从一个Map/Pojo转化而来 Chain.from(xxxMap) Chain.from(obj)
         // 检查一下wendal的年龄,应该是26
         assertEquals(26, dao.fetch(tableName, Cnd.where("nm", "=", "wendal")).getInt("age"));
         
@@ -164,13 +171,13 @@ password=root
         // 应剩下1条记录
         assertEquals(1, dao.count(tableName));
         
-        // 最后,全部杀光
+        // 最后,全部杀光, 啊啊啊, 减少人口啊啊啊...
         dao.clear(tableName);
-        // 应剩下0条记录
+        // 应剩下0条记录, 没人了...
         assertEquals(0, dao.count(tableName));
         
         // 最后的最后,人在表在, 人没了,表也干掉
-        dao.drop(tableName);
+        dao.drop(tableName); // 三思三思... 
     }
     
     /**
@@ -178,20 +185,31 @@ password=root
      */
     @Test
     public void test_pojo() {
-        // 首先,得到Dao实例
-        Dao dao = DaoUp.me().dao();
+        // 首先,得到Dao实例, 同理, 已经初始化好了的
+        Dao dao = DaoUp.me().dao(); // 因为
+        
+        // 关于SimplePojo, 请务必打开看一眼哦
+        // 这个类同时标注了@Id和@Name,自动建表时以@Id作为主键,@Name作为唯一键
         
         // 强制建表
         dao.create(SimplePojo.class, true); // 真实代码可别写true,被删表了别找我!!!
         
-        // 先生成个随机字符串帮助实例
-        StringGenerator sg = R.sg(10);
+        // 先生成个随机字符串帮助实例, R是nutz内部的随机数相关的帮助类,有UUID, UU32, UU64等很多东西哦
+        StringGenerator sg = R.sg(10); // 代表一个字符串长度为10的随机字符串生成器
         // 插入几条记录
         for (int i = 0; i < 100; i++) {
             dao.insert(new SimplePojo(sg.next(), "http://www." + sg.next() + ".cn", R.random(10, 100)));
         }
         // 统计一下,应该是100条
         assertEquals(100, dao.count(SimplePojo.class));
+        
+        // 批量插入1000条吧
+        List<SimplePojo> list = new ArrayList<SimplePojo>();
+        for (int i = 0; i < 100; i++) {
+            list.add(new SimplePojo(sg.next(), "http://www." + sg.next() + ".cn", R.random(10, 100)));
+        }
+        dao.fastInsert(list); // 注意, list里面的对象必须是同一个类型哦
+                              // fastInsert的特点是快,但不会执行@Prev和@Next, 也不会取回生成的主键哦,有得有失嘛
         
         // 看看大于45岁的有多少人,虽然理论上是一半一半,事实上经常不是这样...
         int re = dao.count(SimplePojo.class, Cnd.where("age", ">", 45));
@@ -201,6 +219,55 @@ password=root
         List<SimplePojo> pojos = dao.query(SimplePojo.class, Cnd.where("age", ">", 45), dao.createPager(2, 10));
         
         log.infof("size=%d", pojos.size()); // 肯定小于等于10
+        
+        // 更新操作
+        SimplePojo pojo = dao.fetch(SimplePojo.class); // 不加参数的话,就是取出第一条记录了
+        assertNotNull(pojo); // 肯定不为null啦
+        
+        pojo.setWebsite("http://nutzbook.wendal.net"); // nutzbook是一本很值得看的nutz书哦
+        dao.update(pojo, "website"); // 只需要更新website, 如果全部属性都更新就 dao.update(pojo, null)
+        
+        // 检查一下是不是真的变成nutzbook的网址了
+        assertEquals("http://nutzbook.wendal.net", dao.fetch(SimplePojo.class, pojo.getId()).getWebsite());
+        
+        // 现在, 随便删掉一条记录
+        dao.delete(SimplePojo.class, 20); // 传入的是数值,所以SimplePojo必须有个@Id的属性
+        assertNull(dao.fetch(SimplePojo.class, 20)); // 肯定删了,或者根本没有,呵呵
+        
+        // 再根据name删掉一条
+        dao.delete(SimplePojo.class, pojo.getName()); // 传入的是字符串,所以SimplePojo必须有个@Name
+        assertNull(dao.fetch(SimplePojo.class, pojo.getName()));
+        
+        // delete方法时删除单条记录,而批量呢? clear方法
+        
+        // 开始大开杀戒
+        dao.clear(SimplePojo.class, Cnd.where("id", "<", 20)); // 删掉所有id小于20的记录,哈哈
+        
+        // 统计一下20以内的记录,应该是0哦
+        assertEquals(0, dao.count(SimplePojo.class, Cnd.where("id", "<", 20)));
+        
+        // 现在,让id大于50的记录的website通通变成nutzbook,哈哈哈
+        int count = dao.update(SimplePojo.class, Chain.make("website", "http://nutzbook.wendal.net").add("createTime", new Date()), Cnd.where("id", ">", 50));
+        assertEquals(count, dao.count(SimplePojo.class, Cnd.where("id", ">", 50).and("website", "=", "http://nutzbook.wendal.net")));
+        // 请留意一下Cnd和Chain的链式写法
+        
+        // 按某人的建议, 查询一下id大于30或者website为nutzbook且name包含a的记录
+        // 翻译成伪sql就是  where id > 300 or (website like "%nutzbook%" and name like "%a%")
+        int size = dao.count(SimplePojo.class, Cnd.where("id", ">", 300).or(Cnd.exps("website", "like", "%nutzbook%").and("name", "like", "%a%")));
+        assertTrue(size > 0);
+        // sql 输出类似于
+        // SELECT COUNT(*) FROM t_test_simple_pojo  WHERE id>300 OR (website LIKE '%nutzbook%' AND name LIKE '%a%')
+        
+        // 关于日志中的sql, 特别说明一下, nutz真正执行的sql是
+        /**
+         * SELECT COUNT(*) FROM t_test_simple_pojo  WHERE id>? OR (website LIKE ? AND name LIKE ?)
+         */
+        // 即PreparedStatement, 参数都是以安全的方式传输.
+        // 而日志中带上参数的以"For example"提示的sql是用于显示的,并非真正执行的sql
+        
+        // 好了, happy完了,全杀
+        dao.clear(SimplePojo.class, null);
+        
     }
 
     // 3种关联关系的操作
@@ -443,7 +510,7 @@ password=root
     }
     
     /**
-     * 
+     * 自定义SQL
      */
     @Test
     public void test_sql() {
