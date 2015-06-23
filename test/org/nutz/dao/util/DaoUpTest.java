@@ -1,5 +1,6 @@
 package org.nutz.dao.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -12,6 +13,9 @@ import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.util.meta.SimplePojo;
+import org.nutz.dao.util.meta.SystemJob;
+import org.nutz.dao.util.meta.SystemTeam;
+import org.nutz.dao.util.meta.SystemUser;
 import org.nutz.lang.random.R;
 import org.nutz.lang.random.StringGenerator;
 import org.nutz.log.Log;
@@ -34,7 +38,7 @@ public class DaoUpTest extends Assert {
         // 请在src或maven的resources下面添加一个文件叫nutz-test.properties
         // 内容类似于
         /**
-url=jdbc:mysql://127.0.0.1/nutz
+url=jdbc:mysql://127.0.0.1/walnut
 username=root
 password=root
          */
@@ -199,5 +203,157 @@ password=root
         log.infof("size=%d", pojos.size()); // 肯定小于等于10
     }
 
-    // TODO 继续写带Pojo的简单操作及3种关联关系的操作
+    // 3种关联关系的操作
+    @Test
+    public void test_links() {
+        // 首先,得到Dao实例
+        Dao dao = DaoUp.me().dao();
+        
+        // 3个Pojo的关系如下
+        // SystemUser -----(1对1)---> SystemTeam
+        // SystemUser -----(1对多)---> SystemJob
+        // SystemTeam -----(多对多)---> SystemJob
+        
+        /*
+         * 场景如下:
+         * 有3个用户, 2个team, 25个任务
+         * A用户属于Team A, 有10个任务
+         * B用户属于Team B, 有10个任务
+         * C用户属于Team B, 有5个任务
+         */
+        
+        // 强制建表
+        dao.create(SystemUser.class, true);
+        dao.create(SystemTeam.class, true);
+        dao.create(SystemJob.class, true);
+        
+        // 先塞点内容进去
+        
+        SystemUser userA = new SystemUser();
+        userA.setName("wendal");
+        SystemUser userB = new SystemUser();
+        userB.setName("zozoh");
+        SystemUser userC = new SystemUser();
+        userC.setName("pangwu86");
+        
+        SystemTeam teamA = new SystemTeam();
+        teamA.setName("sysadmin");
+        SystemTeam teamB = new SystemTeam();
+        teamB.setName("root");
+        SystemTeam teamC = new SystemTeam();
+        teamC.setName("admin");
+        
+        userA.setTeam(teamA);
+        userB.setTeam(teamB);
+        userC.setTeam(teamB);
+        
+        List<SystemJob> jobs = new ArrayList<SystemJob>();
+        for (int i = 0; i < 10; i++) {
+            SystemJob job = new SystemJob();
+            job.setName(R.UU32());
+            jobs.add(job);
+        }
+        userA.setJobs(jobs);
+        
+        jobs = new ArrayList<SystemJob>();
+        for (int i = 0; i < 10; i++) {
+            SystemJob job = new SystemJob();
+            job.setName(R.UU32());
+            jobs.add(job);
+        }
+        userB.setJobs(jobs);
+        
+        jobs = new ArrayList<SystemJob>();
+        for (int i = 0; i < 5; i++) {
+            SystemJob job = new SystemJob();
+            job.setName(R.UU32());
+            jobs.add(job);
+        }
+        userC.setJobs(jobs);
+        
+        dao.insertWith(userA, null);
+        dao.insertWith(userB, null);
+        userC.setTeamId(teamB.getId()); // 因为下一句中team不会插入,所以需要自行把关联字段设置一下
+        dao.insertWith(userC, "jobs"); // 注意, team是已经插入过了,跟userB同一个team哦,所以只需要也只能插入jobs了
+        
+        // 判断一下已经插入的数据, 因为id是自增的,插入后关联对象也理应有值
+        assertTrue(userA.getTeam().getId() > 0);
+        assertTrue(userB.getTeam().getId() > 0);
+        
+        for (SystemJob job : userA.getJobs()) {
+            assertTrue(job.getId() > 0);
+        }
+        for (SystemJob job : userB.getJobs()) {
+            assertTrue(job.getId() > 0);
+        }
+        
+        // 插入userA,userB, userC的时候, @One和@Many都插入了,但@ManyMany是team-->job的映射,并没有插入哦
+        // 因为nutz只认单层单向映射
+        
+        // TeamA的任务,就是UserA的任务
+        teamA.setJobs(new ArrayList<SystemJob>(userA.getJobs()));
+        // TeamB的任务, 是UserB和UserC的任务的集合
+        jobs = new ArrayList<SystemJob>();
+        jobs.addAll(userB.getJobs());
+        jobs.addAll(userC.getJobs());
+        
+        // 现在插入@ManyMany的数据
+        dao.insertRelation(teamA, null);
+        dao.insertRelation(teamB, null);
+        
+        //---------------------------------------------------
+        // 查询操作, fetch及fetchLinks
+        // 关键词: 单向,无状态
+        
+        
+        // 看看zozoh是谁
+        SystemUser who = dao.fetch(SystemUser.class, "zozoh");
+        assertNotNull(who);
+        assertNull(who.getTeam()); // 注意,这是判断是null哦, 因为关联对象是不会主动取的
+        assertNull(who.getJobs()); // 一样是null!!!
+        
+        // 为什么是null呢? 看这句
+        assertTrue(SystemUser.class == who.getClass());
+        // 为什么是相等的呢? 因为Nutz中的Pojo都是无状态的, 不存在托管/非托管的状态
+        // 所以没有hibernate那种代理类的情况,所以数据库的字段也需要映射在具体的java属性中
+        // 而非代理类的隐藏属性里面
+        
+        // 下面取出关联对象
+        dao.fetchLinks(who, "jobs"); // 仅取出jobs
+        assertNotNull(who.getJobs());
+        dao.fetchLinks(who, null); // 全部取出, 观察日志,会发现team和jobs都会取
+        // 为什么jobs都取过,还会再取一次呢? 因为无状态哦, nutz是不会记住这个对象的状态的
+
+        assertNotNull(who.getJobs());
+        assertNotNull(who.getTeam());
+        
+        // 那么, Team的关联对象呢?
+        assertNull(who.getTeam().getJobs());
+        // 原因是fetchLinks只读取一层
+        
+        // 同理, job.getUser()也会是null
+        assertNull(who.getJobs().get(0).getUser());
+        
+        dao.fetchLinks(who.getJobs().get(0), null);
+        // 现在, user.getJob().getUser 是否与 user是同一个对象呢?
+        assertNotEquals(who, who.getJobs().get(0).getUser());
+        
+        // @ManyMany的取出操作是一个样
+        assertNull(who.getTeam().getJobs());
+        assertNotNull(dao.fetchLinks(who.getTeam(), null).getJobs());
+        
+        // 批量fetchLinks
+        List<SystemUser> users = dao.query(SystemUser.class, null); // 要不加个条件判断一下谁最蛋疼?
+        assertEquals(3, users.size());
+        dao.fetchLinks(users, null);
+        for (SystemUser user : users) {
+            assertNotNull(user.getTeam());
+            assertNotNull(user.getJobs());
+        }
+        
+        // -------------------------------------------------------------------
+        // 更新操作
+        
+        
+    }
 }
