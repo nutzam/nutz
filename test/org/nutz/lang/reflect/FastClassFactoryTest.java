@@ -12,7 +12,6 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Stopwatch;
 import org.nutz.lang.born.Borning;
-import org.objectweb.asm.util.ASMifier;
 
 public class FastClassFactoryTest extends Assert {
 
@@ -107,6 +106,6 @@ public class FastClassFactoryTest extends Assert {
     }
 
     public static void main(String[] args) throws Exception {
-       ASMifier.main(new String[]{"target/classes/org/nutz/lang/reflect/SimpleFastClass.class"});
+//       ASMifier.main(new String[]{"target/classes/org/nutz/lang/reflect/SimpleFastClass.class"});
     }
 }
