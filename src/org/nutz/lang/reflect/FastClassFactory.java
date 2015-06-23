@@ -22,6 +22,20 @@ public final class FastClassFactory implements Opcodes {
     public static Map<String, FastClass> cache = new ConcurrentHashMap<String, FastClass>();
 
     private static final Object lock = new Object();
+    
+    protected static boolean useCache = true;
+    
+    public static boolean isUseCache() {
+        return useCache;
+    }
+    
+    public static void setUseCache(boolean useCache) {
+        FastClassFactory.useCache = useCache;
+    }
+    
+    public static void clearCache() {
+        cache.clear();
+    }
 
     public static FastClass get(Class<?> klass) {
         String cacheKey = klass.getName() + "_" + klass.getClassLoader();
@@ -36,7 +50,8 @@ public final class FastClassFactory implements Opcodes {
             }
             try {
                 fastClass = create(klass);
-                cache.put(cacheKey, fastClass);
+                if (useCache)
+                    cache.put(cacheKey, fastClass);
                 return fastClass;
             }
             catch (Exception e) {
