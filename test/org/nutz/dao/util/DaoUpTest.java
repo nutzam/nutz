@@ -399,7 +399,7 @@ password=root
         
         dao.fetchLinks(who.getJobs().get(0), null);
         // 现在, user.getJob().getUser 是否与 user是同一个对象呢?
-        assertNotEquals(who, who.getJobs().get(0).getUser());
+        assertFalse(who == who.getJobs().get(0).getUser());
         
         // @ManyMany的取出操作是一个样
         assertNull(who.getTeam().getJobs());
