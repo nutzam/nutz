@@ -7,6 +7,11 @@ import org.nutz.el.opt.RunMethod;
 import org.nutz.lang.random.R;
 import org.nutz.plugin.Plugin;
 
+/**
+ * EL内置的方法之一, 基本用法 uuid()   uuid(32)  uuid(64), 分别生成16进制,32进制,64进制的UUID字符串
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class MakeUUID implements RunMethod, Plugin {
 
 	public boolean canWork() {
