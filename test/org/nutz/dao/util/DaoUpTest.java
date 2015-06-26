@@ -466,7 +466,7 @@ password=root
         
         // 现在,我们把pangw86这个用户及相关的job删除
         SystemUser pangwu86 = dao.fetch(SystemUser.class, "pangwu86");
-        assertNotEquals(0, dao.count(SystemJob.class, Cnd.where("userId", "=", pangwu86.getId())));
+        assertFalse(0 == dao.count(SystemJob.class, Cnd.where("userId", "=", pangwu86.getId())));
         dao.fetchLinks(pangwu86, "jobs");
         dao.deleteWith(pangwu86, "jobs"); // 因为team还不能删除,所以需要制定只删除jobs
         
