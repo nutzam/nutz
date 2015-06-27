@@ -51,7 +51,7 @@ public class SimpleTransTest extends DaoCase {
         }
         // End transaction
         System.out.println(dao.fetch(Pet.class, pet1.getId()).getName());
-        assertNotEquals(dao.fetch(Pet.class, pet1.getId()).getName(), pet1.getName());
+        assertFalse(dao.fetch(Pet.class, pet1.getId()).getName().equals(pet1.getName()));
     }
 
     @Test
