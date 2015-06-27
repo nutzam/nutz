@@ -1,9 +1,5 @@
 package org.nutz.dao;
 
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -12,14 +8,15 @@ import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.cnd.SimpleCondition;
 import org.nutz.dao.util.cri.Exps;
 import org.nutz.dao.util.cri.SimpleCriteria;
 import org.nutz.dao.util.cri.SqlExpression;
 import org.nutz.dao.util.cri.SqlExpressionGroup;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.CharSegment;
+import org.nutz.lang.util.Callback2;
 
 /**
  * 是 Condition 的一个实现，这个类给你比较方便的方法来构建 Condition 接口的实例。
@@ -446,108 +443,35 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return this;
     }
     
+    protected static FieldMatcher dftFromFieldMatcher = new FieldMatcher().setIgnoreNull(true).setIgnoreZero(true);
+    
     /**
-     * 根据一个对象生成Cnd条件. 忽略空值/零值,不忽略Date,不忽略主键
-     * @see org.nutz.dao.Cnd#from(Dao, Object, FieldFilter)
-     * @param dao Dao实例
-     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
+     * 用默认规则(忽略零值和空值)生成Cnd实例
+     * @param dao Dao实例,不能为null
+     * @param obj 对象, 若为null,则返回值为null, 不可以是Class/字符串/数值/布尔类型
+     * @return Cnd实例
      */
     public static Cnd from(Dao dao, Object obj) {
-        return from(dao, obj, null);
+        return from(dao, obj, dftFromFieldMatcher);
     }
-
+    
     /**
-     * 根据一个对象生成Cnd条件. 按filter过滤属性, 且忽略空值/零值,不忽略Date,不忽略主键
+     * 根据一个对象生成Cnd条件, FieldMatcher详细控制.<p/>
+     * <code>assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreDate(true)).toString());</code>
      * @param dao Dao实例
      * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
+     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值/是否忽略0值/是否忽略java.util.Date类及其子类的对象/是否忽略@Id所标注的主键属性/是否忽略 \@Name 所标注的主键属性/是否忽略 \@Pk 所引用的复合主键 
      * @return Cnd条件
      */
     public static Cnd from(Dao dao, Object obj, FieldMatcher matcher) {
-        return from(dao, obj, matcher, true, false, false, false, false);
-    }
-    
-    /**
-     * 根据一个对象生成Cnd条件. 按filter过滤属性,不忽略主键
-     * @param dao Dao实例
-     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
-     * @param ignoreZero 是否忽略0值
-     * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
-     * @return Cnd条件
-     */
-    public static Cnd from(Dao dao, Object obj, FieldMatcher matcher,
-                           boolean ignoreZero, boolean ignoreDate) {
-        return from(dao, obj, matcher, ignoreZero, ignoreDate, false, false, false);
-    }
-    
-    /**
-     * 根据一个对象生成Cnd条件
-     * @param dao Dao实例
-     * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
-     * @param ignoreZero 是否忽略0值
-     * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
-     * @param ignoreId   是否忽略@Id所标注的主键属性
-     * @param ignoreName 是否忽略 \@Name 所标注的主键属性
-     * @param ignorePk   是否忽略 \@Pk 所引用的复合主键 
-     * @return Cnd条件
-     */
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Cnd from(Dao dao, Object obj, FieldMatcher matcher, 
-                           boolean ignoreZero, boolean ignoreDate, 
-                           boolean ignoreId,
-                           boolean ignoreName,
-                           boolean ignorePk
-                           ) {
-        if (obj == null)
-            return null;
-        obj = Lang.first(obj);
-        if (obj == null) {
-            return null;
-        }
-        if (obj.getClass() == Class.class) {
-            throw Lang.impossible();
-        }
-        if (obj instanceof String || obj instanceof Number || obj instanceof Boolean) {
-            throw Lang.impossible();
-        }
-        Entity en = dao.getEntity(obj.getClass());
-        if (en == null) {
-            throw Lang.impossible();
-        }
-        
-        List<MappingField> mfs = en.getMappingFields();
-        if (matcher != null) {
-                Iterator<MappingField> it = mfs.iterator();
-                while (it.hasNext()) {
-                    MappingField mf = it.next();
-                    if (!matcher.match(mf.getName()))
-                        it.remove();
-                }
-        }
-        
-        Cnd cnd = Cnd.NEW();
-        for (MappingField mf : mfs) {
-            if (ignoreId && mf.isId())
-                continue;
-            if (ignoreName && mf.isName())
-                continue;
-            if (ignorePk && mf.isCompositePk())
-                continue;
-            Object val = mf.getValue(obj);
-            if (val == null) {
-                if (matcher == null || matcher.isIgnoreNull())
-                    continue;
-            } if (val instanceof Number && ((Number)val).doubleValue() == 0.0) {
-                if (ignoreZero)
-                    continue;
-            } if (val instanceof Date) {
-                if (ignoreDate)
-                    continue;
+        final SqlExpressionGroup exps = new SqlExpressionGroup();
+        boolean re = Daos.filterFields(obj, matcher, dao, new Callback2<MappingField, Object>() {
+            public void invoke(MappingField mf, Object val) {
+                exps.and(mf.getName(), "=", val);
             }
-            cnd.and(mf.getName(), "=", val);
-        }
-        return cnd;
+        });
+        if (re)
+            return Cnd.where(exps);
+        return null;
     }
 }

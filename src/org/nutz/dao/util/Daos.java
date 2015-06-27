@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
@@ -37,6 +39,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
@@ -475,6 +478,60 @@ public abstract class Daos {
 		ExtDaoInvocationHandler handler = new ExtDaoInvocationHandler(dao, filter, tableName);
 		return (Dao) Proxy.newProxyInstance(dao.getClass().getClassLoader(), iz, handler);
 	}
+
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static boolean filterFields(Object obj, FieldMatcher matcher, Dao dao, Callback2<MappingField, Object> callback) {
+        if (obj == null)
+            return false;
+        obj = Lang.first(obj);
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() == Class.class) {
+            throw Lang.impossible();
+        }
+        if (obj instanceof String || obj instanceof Number || obj instanceof Boolean) {
+            throw Lang.impossible();
+        }
+        Entity en = dao.getEntity(obj.getClass());
+        if (en == null) {
+            throw Lang.impossible();
+        }
+        
+        List<MappingField> mfs = en.getMappingFields();
+        if (matcher != null) {
+                Iterator<MappingField> it = mfs.iterator();
+                while (it.hasNext()) {
+                    MappingField mf = it.next();
+                    if (!matcher.match(mf.getName()))
+                        it.remove();
+                }
+        }
+        boolean flag = false;
+        for (MappingField mf : mfs) {
+            if (matcher.isIgnoreId() && mf.isId())
+                continue;
+            if (matcher.isIgnoreName() && mf.isName())
+                continue;
+            if (matcher.isIgnorePk() && mf.isCompositePk())
+                continue;
+            Object val = mf.getValue(obj);
+            if (val == null) {
+                if (matcher.isIgnoreNull())
+                    continue;
+            } if (val instanceof Number && ((Number)val).doubleValue() == 0.0) {
+                if (matcher.isIgnoreZero())
+                    continue;
+            } if (val instanceof Date) {
+                if (matcher.isIgnoreDate())
+                    continue;
+            }
+            callback.invoke(mf, val);
+            flag = true;
+        }
+        return flag;
+    }
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
@@ -521,4 +578,5 @@ class ExtDaoInvocationHandler implements InvocationHandler {
 			TableName.run(tableName, m);
 		return m.getObj();
 	}
+
 }
