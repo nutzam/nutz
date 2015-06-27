@@ -40,6 +40,17 @@ import org.nutz.lang.segment.CharSegment;
  * 相当于<br>
  * ORDER BY id DESC
  * 
+ * <p/> <b>带括号的条件语句<b/> where (name="wendal" or age<18) and location != "地球" <p/>
+ * <code>Cnd.where(Cnd.exps("name", "=", "wendal").or("age", "<", 18)).and("location", "!=", "地球")</code>
+ * 
+ * <p/><b>静态条件,直接拼入sql,不做任何转义. Oracle的日期传Date对象,而非用to_date等数据库方法</b><p/>
+ * <code>Cnd.where(new Static("ct < to_date('2015-06-26')")).and(...........) </code>
+ * <p/>
+ * 
+ * <p/><b>between用法</b><p/>
+ * <code>Cnd.where("age", "between", new Object[]{19,29}).and(...........) </code>
+ * <p/>
+ * 
  * <h4 style=color:red>你还需要知道的是:</h4><br>
  * <ul>
  * <li>你设置的字段名，是 java 的字段名 -- 如果 Entity 里有，那么会被转换成数据库字段名
@@ -54,45 +65,100 @@ import org.nutz.lang.segment.CharSegment;
  */
 public class Cnd implements OrderBy, Criteria, GroupBy {
 
-    /*------------------------------------------------------------------*/
+    /**
+     * 用字符串和参数格式化出一个条件语句,注意,不会抹除特殊字符
+     * @param format sql条件
+     * @param args 参数
+     * @return 条件对象
+     */
     public static Condition format(String format, Object... args) {
         return Strings.isBlank(format) ? null : new SimpleCondition(format,
                                                                     args);
     }
 
+    /***
+     * 直接用字符串生成一个条件对象
+     * @param str sql条件
+     * @return 条件对象
+     */
     public static Condition wrap(String str) {
         return Strings.isBlank(str) ? null : new SimpleCondition((Object) str);
     }
 
+    /**
+     * 使用CharSegment拼装一个条件对象
+     * @param sql sql模板
+     * @param value 参数
+     * @return 条件对象
+     * @see org.nutz.lang.segment.CharSegment
+     */
     public static Condition wrap(String sql, Object value) {
         return Strings.isBlank(sql) ? null
                                    : new SimpleCondition(new CharSegment(sql).setBy(value));
     }
 
+    /**
+     * 生成一个条件表达式
+     * @param name Java属性或字段名称
+     * @param op   操作符,可以是 = like 等等
+     * @param value 参数值.
+     * @return 条件表达式
+     */
     public static SqlExpression exp(String name, String op, Object value) {
         return Exps.create(name, op, value);
     }
 
+    /**
+     * 生成一个条件表达式组
+     * @param name Java属性或字段名称
+     * @param op   操作符,可以是 = like 等等
+     * @param value 参数值.
+     * @return 条件表达式组
+     */
     public static SqlExpressionGroup exps(String name, String op, Object value) {
         return exps(exp(name, op, value));
     }
 
+    /**
+     * 将一个条件表达式封装为条件表达式组
+     * @param exp 原本的条件表达式
+     * @return 条件表达式组
+     */
     public static SqlExpressionGroup exps(SqlExpression exp) {
         return new SqlExpressionGroup().and(exp);
     }
 
+    /**
+     * 生成一个新的Cnd实例
+     * @param name java属性或字段名称, 推荐用Java属性
+     * @param op 操作符,可以是= like等等
+     * @param value 参数值. 如果操作符是between,参数值需要是new Object[]{12,39}形式
+     * @return Cnd实例
+     */
     public static Cnd where(String name, String op, Object value) {
         return new Cnd(Cnd.exp(name, op, value));
     }
 
+    /**
+     * 用一个条件表达式构建一个Cnd实例
+     * @param e 条件表达式
+     * @return Cnd实例
+     */
     public static Cnd where(SqlExpression e) {
         return new Cnd(e);
     }
 
+    /**
+     * 生成一个简单条件对象
+     */
     public static SimpleCriteria cri() {
         return new SimpleCriteria();
     }
 
+    /**
+     * 单纯生成一个Orderby条件
+     * @return OrderBy实例
+     */
     public static OrderBy orderBy() {
         return new Cnd();
     }
@@ -112,6 +178,11 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return new Cnd();
     }
 
+    /**
+     * 用SimpleCriteria生成一个Cnd实例
+     * @param cri SimpleCriteria实例
+     * @return Cnd实例
+     */
     public static Cnd byCri(SimpleCriteria cri) {
         return new Cnd().setCri(cri);
     }
@@ -129,6 +200,10 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return this;
     }
 
+    /**
+     * 获取内部的where属性
+     * @return SimpleCriteria实例
+     */
     public SimpleCriteria getCri() {
         return cri;
     }
@@ -138,16 +213,30 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         cri.where().and(exp);
     }
 
+    /**
+     * 按Java属性/字段属性进行升序. <b>不进行SQL特殊字符抹除<b/>  cnd.asc("age")
+     * @param name Java属性/字段属性
+     */
     public OrderBy asc(String name) {
         cri.asc(name);
         return this;
     }
-
+    
+    /**
+     * 按Java属性/字段属性进行降序. <b>不进行SQL特殊字符抹除<b/> cnd.desc("age")
+     * @param name Java属性/字段属性
+     */
     public OrderBy desc(String name) {
         cri.desc(name);
         return this;
     }
 
+    /**
+     * 当dir为asc时判断为升序,否则判定为降序. cnd.orderBy("age", "asc")
+     * @param name Java属性/字段属性
+     * @param dir asc或其他
+     * @return OrderBy实例,事实上就是当前对象
+     */
     public OrderBy orderBy(String name, String dir) {
         if ("asc".equalsIgnoreCase(dir)) {
             this.asc(name);
@@ -157,62 +246,122 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return this;
     }
 
+    /**
+     * Cnd.where(...).and(Cnd.exp(.........)) 或 Cnd.where(...).and(Cnd.exps(.........))
+     * @param exp 条件表达式
+     * @return 当前对象,用于链式调用
+     */
     public Cnd and(SqlExpression exp) {
         cri.where().and(exp);
         return this;
     }
 
+    /**
+     * Cnd.where(...).and("age", "<", 40)
+     * @param name Java属性或字段名称,推荐用Java属性,如果有的话
+     * @param op 操作符,可以是 = like等
+     * @param value 参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
     public Cnd and(String name, String op, Object value) {
         return and(Cnd.exp(name, op, value));
     }
 
+    /**
+     * Cnd.where(...).or(Cnd.exp(.........)) 或 Cnd.where(...).or(Cnd.exps(.........))
+     * @param exp 条件表达式
+     * @return 当前对象,用于链式调用
+     */
     public Cnd or(SqlExpression exp) {
         cri.where().or(exp);
         return this;
     }
 
+    /**
+     * Cnd.where(...).or("age", "<", 40)
+     * @param name Java属性或字段名称,推荐用Java属性,如果有的话
+     * @param op 操作符,可以是 = like等
+     * @param value 参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
     public Cnd or(String name, String op, Object value) {
         return or(Cnd.exp(name, op, value));
     }
 
+    /**
+     * and一个条件表达式并且取非
+     * @param exp 条件表达式
+     * @return 当前对象,用于链式调用
+     */
     public Cnd andNot(SqlExpression exp) {
         cri.where().and(exp.setNot(true));
         return this;
     }
 
+    /**
+     * and一个条件,并且取非
+     * @param name Java属性或字段名称,推荐用Java属性,如果有的话
+     * @param op 操作符,可以是 = like等
+     * @param value 参数值, 如果是between的话需要传入new Object[]{19,28}
+     * @return 当前对象,用于链式调用
+     */
     public Cnd andNot(String name, String op, Object value) {
         return andNot(Cnd.exp(name, op, value));
     }
 
+    /**
+     * @see Cnd#andNot(SqlExpression)
+     */
     public Cnd orNot(SqlExpression exp) {
         cri.where().or(exp.setNot(true));
         return this;
     }
 
+    /**
+     * @see Cnd#andNot(String, String, Object)
+     */
     public Cnd orNot(String name, String op, Object value) {
         return orNot(Cnd.exp(name, op, value));
     }
 
+    /**
+     * 获取分页对象,默认是null
+     */
     public Pager getPager() {
         return cri.getPager();
     }
 
+    /**
+     * 根据实体Entity将本对象转化为sql语句, 条件表达式中的name属性将转化为数据库字段名称
+     */
     public String toSql(Entity<?> en) {
         return cri.toSql(en);
     }
 
+    /**
+     * 判断两个Cnd是否相等
+     */
     public boolean equals(Object obj) {
         return cri.equals(obj);
     }
 
+    /**
+     * 直接转为SQL语句, 如果setPojo未曾调用, 条件表达式中的name属性未映射为数据库字段
+     */
     public String toString() {
         return cri.toString();
     }
 
+    /**
+     * 关联的Pojo,可以用于toString时的name属性映射
+     */
     public void setPojo(Pojo pojo) {
         cri.setPojo(pojo);
     }
 
+    /**
+     * 获取已设置的Pojo, 默认为null
+     */
     public Pojo getPojo() {
         return cri.getPojo();
     }
@@ -233,34 +382,65 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         return cri.paramCount(en);
     }
 
+    /**
+     * 获取Cnd中的where部分,注意,对SqlExpressionGroup的修改也会反映到Cnd中,因为是同一个对象
+     */
     public SqlExpressionGroup where() {
         return cri.where();
     }
 
+    /**
+     * 分组
+     * @param java属性/数据库字段名称
+     */
     public GroupBy groupBy(String... names) {
         cri.groupBy(names);
         return this;
     }
 
+    /**
+     * 分组中的having条件
+     * @param 条件语句
+     */
     public GroupBy having(Condition cnd) {
         cri.having(cnd);
         return this;
     }
 
+    /**
+     * 单独获取排序条件,建议使用asc或desc,而非直接取出排序条件. 取出的对象仅包含分组条件, 不包含where等部分
+     */
     public OrderBy getOrderBy() {
         return cri.getOrderBy();
     }
 
+    /**
+     * 分页
+     * @param pageNumber 页数, 若小于1则代表全部记录
+     * @param pageSize 每页数量
+     * @return 当前对象,用于链式调用
+     */
     public Cnd limit(int pageNumber, int pageSize) {
         cri.setPager(pageNumber, pageSize);
         return this;
     }
 
+    /**
+     * 设置每页大小,并设置页数为1
+     * @param pageSize 每页大小
+     * @return 当前对象,用于链式调用
+     */
+    @Deprecated
     public Cnd limit(int pageSize) {
         cri.setPager(1, pageSize);
         return this;
     }
 
+    /**
+     * 直接设置分页对象, 可以new Pager或dao.createPager得到
+     * @param pager 分页对象
+     * @return 当前对象,用于链式调用
+     */
     public Cnd limit(Pager pager) {
         cri.setPager(pager);
         return this;
@@ -280,34 +460,32 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * 根据一个对象生成Cnd条件. 按filter过滤属性, 且忽略空值/零值,不忽略Date,不忽略主键
      * @param dao Dao实例
      * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param filter 过滤字段属性
+     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
      * @return Cnd条件
      */
-    public static Cnd from(Dao dao, Object obj, FieldFilter filter) {
-        return from(dao, obj, filter, true, true, false, false, false, false);
+    public static Cnd from(Dao dao, Object obj, FieldMatcher matcher) {
+        return from(dao, obj, matcher, true, false, false, false, false);
     }
     
     /**
      * 根据一个对象生成Cnd条件. 按filter过滤属性,不忽略主键
      * @param dao Dao实例
      * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param filter 过滤字段属性
-     * @param ignoreNull 是否忽略空值
+     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
      * @param ignoreZero 是否忽略0值
      * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
      * @return Cnd条件
      */
-    public static Cnd from(Dao dao, Object obj, FieldFilter filter,
-                           boolean ignoreNull, boolean ignoreZero, boolean ignoreDate) {
-        return from(dao, obj, filter, ignoreNull, ignoreZero, ignoreDate, false, false, false);
+    public static Cnd from(Dao dao, Object obj, FieldMatcher matcher,
+                           boolean ignoreZero, boolean ignoreDate) {
+        return from(dao, obj, matcher, ignoreZero, ignoreDate, false, false, false);
     }
     
     /**
      * 根据一个对象生成Cnd条件
      * @param dao Dao实例
      * @param obj 基对象,不可以是Class,字符串,数值和Boolean
-     * @param filter 属性过滤
-     * @param ignoreNull 是否忽略空值
+     * @param matcher 过滤字段属性, 可配置哪些字段可用/不可用/是否忽略空值
      * @param ignoreZero 是否忽略0值
      * @param ignoreDate 是否忽略java.util.Date类及其子类的对象
      * @param ignoreId   是否忽略@Id所标注的主键属性
@@ -316,8 +494,8 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
      * @return Cnd条件
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    public static Cnd from(Dao dao, Object obj, FieldFilter filter, 
-                           boolean ignoreNull, boolean ignoreZero, boolean ignoreDate, 
+    public static Cnd from(Dao dao, Object obj, FieldMatcher matcher, 
+                           boolean ignoreZero, boolean ignoreDate, 
                            boolean ignoreId,
                            boolean ignoreName,
                            boolean ignorePk
@@ -340,16 +518,13 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
         }
         
         List<MappingField> mfs = en.getMappingFields();
-        if (filter != null) {
-            FieldMatcher fm = filter.map().get(obj.getClass());
-            if (fm != null) {
+        if (matcher != null) {
                 Iterator<MappingField> it = mfs.iterator();
                 while (it.hasNext()) {
                     MappingField mf = it.next();
-                    if (!fm.match(mf.getName()))
+                    if (!matcher.match(mf.getName()))
                         it.remove();
                 }
-            }
         }
         
         Cnd cnd = Cnd.NEW();
@@ -362,7 +537,7 @@ public class Cnd implements OrderBy, Criteria, GroupBy {
                 continue;
             Object val = mf.getValue(obj);
             if (val == null) {
-                if (ignoreNull)
+                if (matcher == null || matcher.isIgnoreNull())
                     continue;
             } if (val instanceof Number && ((Number)val).doubleValue() == 0.0) {
                 if (ignoreZero)

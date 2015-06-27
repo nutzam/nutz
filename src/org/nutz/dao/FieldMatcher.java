@@ -5,12 +5,20 @@ import java.util.regex.Pattern;
 import org.nutz.lang.Strings;
 
 /**
- * 字段匹配器
+ * 字段匹配器. 判断顺序 lock--actived-->ignoreNull
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal
  */
 public class FieldMatcher {
 
+    /**
+     * 构建一个字段匹配器.
+     * @param actived 需要保留的字段,必须是合法的正则表达式,可以为null
+     * @param locked  需要忽略的字段,必须是合法的正则表达式,可以为null
+     * @param ignoreNull 是否忽略空值
+     * @return 字段匹配器
+     */
     public static FieldMatcher make(String actived, String locked, boolean ignoreNull) {
         FieldMatcher fm = new FieldMatcher();
         fm.ignoreNull = ignoreNull;
@@ -34,6 +42,11 @@ public class FieldMatcher {
      */
     private boolean ignoreNull;
 
+    /**
+     * 匹配顺序 locked -- actived-- ignoreNull
+     * @param str 需要匹配的字段名称
+     * @return true,如果可用
+     */
     public boolean match(String str) {
         if (null != locked)
             if (locked.matcher(str).find())

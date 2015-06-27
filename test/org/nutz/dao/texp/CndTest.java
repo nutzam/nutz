@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
@@ -179,6 +180,6 @@ public class CndTest extends DaoCase {
         assertEquals(" WHERE name='wendal' AND age=10", Cnd.from(dao, pet).toString());
         
         pet.setAge(0);
-        assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldFilter.create(Pet.class, "age|name"), false, false, true).toString());
+        assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true), false, true).toString());
     }
 }
