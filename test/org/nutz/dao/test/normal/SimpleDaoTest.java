@@ -2,12 +2,10 @@ package org.nutz.dao.test.normal;
 
 import static org.junit.Assert.*;
 
-import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import oracle.net.aso.a;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -15,15 +13,12 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
-import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
-import org.nutz.dao.entity.annotation.ColType;
-import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
@@ -37,7 +32,6 @@ import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.util.Daos;
-import org.nutz.dao.util.cri.Static;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
 
