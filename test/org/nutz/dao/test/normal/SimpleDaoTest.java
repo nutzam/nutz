@@ -276,7 +276,7 @@ public class SimpleDaoTest extends DaoCase {
         dao.fetch(Pet.class, (String) null);
     }
 
-    @Test(expected = DaoException.class)
+    @Test(expected = Exception.class)
     public void test_create_error_class() {
         dao.create(Nutz.class, true);
     }
