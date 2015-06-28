@@ -1,8 +1,13 @@
 package org.nutz.dao.util;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import javax.sql.DataSource;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -10,10 +15,12 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.util.meta.SimplePojo;
 import org.nutz.dao.util.meta.SystemJob;
 import org.nutz.dao.util.meta.SystemTeam;
@@ -30,7 +37,25 @@ import org.nutz.log.Logs;
  */
 public class DaoUpTest extends Assert {
     
+    /** 如果你要在main方法中玩,这样写
+
+    public void static main(String[] args) throws Exception {
+        DaoUp.me().init("db.properties");
+        Dao dao = DaoUp.me().dao();
+        
+        
+        
+        // 如果这是整个程序的结束,执行
+        DaoUp.me().close();
+    }
+
+
+
+
+     */
+   
     private static final Log log = Logs.get(); // 这是获取Nutz的日志封装类的方法,你喜欢就用,不喜欢就用log4j的Logger或者System.out.println都可以.
+    
 
     /**
      * 程序启动, 初始化DaoHelper
@@ -547,5 +572,75 @@ password=root
         SystemTeam t = record.toEntity(dao.getEntity(SystemTeam.class), "t.");
         assertNotNull(t);
         u.setTeam(t);
+    }
+    
+    /**
+     * 自定义SQL, 进阶, 自定义回调
+     */
+    @Test
+    public void test_custom_sql() {
+        Dao dao = DaoUp.me().dao();
+        // 建表,准备数据
+        dao.create(SystemUser.class, true);
+        SystemUser user = new SystemUser();
+        user.setName("wendal");
+        dao.fastInsert(user);
+        user = new SystemUser();
+        user.setName("zozoh");
+        dao.fastInsert(user);
+        
+        Sql sql = Sqls.create("select id from $table $condition");
+        sql.setEntity(dao.getEntity(SystemUser.class)); // 设置之后, setCondition里面的条件就可以用java属性名了
+        sql.setCondition(Cnd.where("name", "=", "zozoh"));
+        
+        sql.vars().set("table", dao.getEntity(SystemUser.class).getTableName()); // 只是为了演示变量设置, 你可以直接在sql里写好表名
+        sql.getContext().attr("hi-我是自定义上下文变量", "哈哈哈哈");
+        sql.setCallback(new SqlCallback() { // 同样的功能可以用内置的Sqls.callback.integer();
+            public Object invoke(Connection conn, ResultSet rs, Sql sql) throws SQLException {
+                assertEquals(sql.getContext().attr("hi-我是自定义上下文变量"), "哈哈哈哈");
+                if (rs.next())
+                    return rs.getInt(1);
+                return -1;
+                // 这里的conn和rs不需要用户代码关闭哦.
+                // 你可以通过sql.
+            }
+        });
+        dao.execute(sql);
+        assertEquals(2, sql.getInt());// 还有sql.getXXXX等等方法等着你哦
+    }
+    
+    /**
+     * 操作数据库连接
+     * @throws SQLException 
+     */
+    @Test
+    public void test_connection() throws SQLException {
+        // 有2种方式,看你喜欢
+        
+        // 第一种, 在Dao接口下执行
+        Dao dao = DaoUp.me().dao();
+        dao.run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                // 做任何你想做的jdbc操作,但最好别关闭这个conn, 因为nutz会为你处理好
+                // 如果当前上下文是事务,那这个连接就是事务那个连接
+            }
+        });
+        
+        // 第二种,不经过Dao,直接从DataSource. 如果是Mvc应用,请通过注入获取DataSouce
+        DataSource ds = DaoUp.me().getDataSource();
+        Connection conn = null;
+        try {
+            conn = ds.getConnection();
+            // 做爱做的事吧 ^_^
+        }
+        finally {
+            try {
+                if (conn != null)
+                    conn.close(); // 务必关闭连接!!!
+            }
+            catch (Throwable e) {
+                log.debug("fail to close Connection", e);
+            }
+        }
     }
 }

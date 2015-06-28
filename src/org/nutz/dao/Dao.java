@@ -653,7 +653,7 @@ public interface Dao {
      * 根据一个正则表达式，获取对象所有的关联字段
      * 
      * @param obj
-     *            数据对象
+     *            数据对象,不可以是Class啊!!!传对象啊!!!
      * @param regex
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @return 更新后的数据对象本身
@@ -742,6 +742,7 @@ public interface Dao {
     <T> T clearLinks(T obj, String regex);
 
     /**
+     * 获取实体描述, 其中包含了Java Pojo<-->数据库的全部映射信息
      * @param classOfT
      *            对象类型
      * @return 实体描述
