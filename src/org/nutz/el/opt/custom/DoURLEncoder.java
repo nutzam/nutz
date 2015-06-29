@@ -27,7 +27,7 @@ public class DoURLEncoder implements RunMethod, Plugin  {
         if (enc == null)
             enc = Encoding.UTF8;
         try {
-            return URLEncoder.encode(val.toString(), Encoding.UTF8);
+            return URLEncoder.encode(val.toString(), enc.toString());
         }
         catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("can't do urlencode[" + val + "]", e);

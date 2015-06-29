@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -520,5 +522,17 @@ public class El2Test {
         String str = Base64.encodeToString("EEE中文".getBytes(Encoding.CHARSET_UTF8), false);
         el = new El("base64('decode', \'" + str + "\')");
         assertEquals("EEE中文", el.eval(ctx));
+    }
+    
+    @Test
+    public void test_urlencode() throws UnsupportedEncodingException {
+        String re = El.eval("urlencode('中文')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.UTF8), re);
+        
+        re = El.eval("urlencode('中文', 'gbk')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.GBK), re);
+        
+        re = El.eval("urlencode('中文', 'gb2312')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.GB2312), re);
     }
 }
