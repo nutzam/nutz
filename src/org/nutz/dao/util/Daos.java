@@ -541,7 +541,6 @@ public abstract class Daos {
      * @param klass 映射Pojo
      * @param add 是否允许添加
      * @param del 是否允许删除
-     * @param ignoreError 是否忽略错误继续执行
      */
     public static void migration(final Dao dao, final Class<?> klass, final boolean add, final boolean del) {
         final Entity<?> en = dao.getEntity(klass);
@@ -612,7 +611,6 @@ public abstract class Daos {
      * @param packageName 指定的package名称
      * @param add 是否允许添加
      * @param del 是否允许删除
-     * @param ignoreError 是否忽略错误继续执行
      */
     public static void migration(Dao dao, String packageName, boolean add, boolean del) {
         for (Class<?> klass : Scans.me().scanPackage(packageName)) {

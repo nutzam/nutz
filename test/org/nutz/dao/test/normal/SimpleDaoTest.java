@@ -414,7 +414,7 @@ public class SimpleDaoTest extends DaoCase {
         String str = "create table t_pet (" + mf.getColumnName() + " " + expert.evalFieldType(mf)  + "," +  mf.getColumnName() + "_2" + " " + expert.evalFieldType(mf) + ")";
         dao.execute(Sqls.create(str));
         
-        Daos.migration(dao, Pet.class, true, true, false);
+        Daos.migration(dao, Pet.class, true, true);
         
     }
 }
