@@ -1,5 +1,6 @@
 package org.nutz.dao.test.meta;
 
+import org.nutz.dao.entity.annotation.Column;
 import org.nutz.dao.entity.annotation.Id;
 import org.nutz.dao.entity.annotation.Table;
 
@@ -8,6 +9,7 @@ public class A extends B {
 
     @Id
     private int id;
+    @Column("u_id")
     private long uid;
 //    private String name;
 
