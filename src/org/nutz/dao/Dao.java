@@ -8,6 +8,7 @@ import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Each;
 
 /**
@@ -104,6 +105,14 @@ public interface Dao {
      */
     <T> T insert(T obj);
     
+    /**
+     * 将一个对象按FieldFilter过滤后,插入到一个数据源。<p/>
+     * <code>dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));</code>
+     * @param obj 要被插入的对象
+     * @param filter 字段过滤器, 其中FieldMatcher.isIgnoreId生效
+     * @return 插入后的对象
+     * @see org.nutz.dao.Dao#insert(Object)
+     */
     <T> T insert(T obj, FieldFilter filter);
 
     /**

@@ -32,6 +32,17 @@ public class FieldMatcher {
     }
     
     /**
+     * 仅配置是否忽略@Id标注的属性,然后生成实例
+     * @param ignoreId 是否忽略@Id标注的属性
+     * @return 字段匹配器实例
+     */
+    public static FieldMatcher create(boolean ignoreId) {
+        FieldMatcher fm = new FieldMatcher();
+        fm.ignoreId = ignoreId;
+        return fm;
+    }
+    
+    /**
      * 构建一个字段匹配器.
      * @param actived 需要保留的字段,必须是合法的正则表达式,可以为null
      * @param locked  需要忽略的字段,必须是合法的正则表达式,可以为null

@@ -378,7 +378,7 @@ public class SimpleDaoTest extends DaoCase {
         dao.clear(Pet.class);
         pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id
-        dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.make(null, null, true).setIgnoreId(false)));
+        dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
     }
