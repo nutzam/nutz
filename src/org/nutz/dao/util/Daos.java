@@ -13,8 +13,10 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -532,6 +534,93 @@ public abstract class Daos {
         }
         return flag;
     }
+    
+    /**
+     * 为数据表自动增减字段
+     * @param dao Dao实例
+     * @param klass 映射Pojo
+     * @param add 是否允许添加
+     * @param del 是否允许删除
+     * @param ignoreError 是否忽略错误继续执行
+     */
+    public static void migration(final Dao dao, final Class<?> klass, final boolean add, final boolean del) {
+        final Entity<?> en = dao.getEntity(klass);
+        if (!dao.exists(klass))
+            return;
+        final JdbcExpert expert = ((NutDao)dao).getJdbcExpert();
+        final List<Sql> sqls = new ArrayList<Sql>();
+        final boolean sqlAddNeedColumn = !dao.meta().isOracle();
+        dao.run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                Statement stat = null;
+                ResultSet rs = null;
+                ResultSetMetaData meta = null;
+                try {
+                    // 获取数据库元信息
+                    stat = conn.createStatement();
+                    rs = stat.executeQuery("select * from " + en.getTableName() + " where 1 != 1");
+                    meta = rs.getMetaData();
+                    
+                    Set<String> columnNames = new HashSet<String>();
+                    int columnCount = meta.getColumnCount();
+                    for (int i = 1; i <= columnCount; i++) {
+                        columnNames.add(meta.getColumnName(i).toLowerCase());
+                    }
+                    for (MappingField mf : en.getMappingFields()) {
+                        String colName = mf.getColumnName();
+                        if (columnNames.contains(colName.toLowerCase())) {
+                            columnNames.remove(colName);
+                            continue;
+                        }
+                        if (add) {
+                            log.infof("add column[%s] to table[%s]", mf.getColumnName(), en.getTableName());
+                            Sql sql = Sqls.create("ALTER table $table ADD " + (sqlAddNeedColumn ? "column" : "") + "$name $type");
+                            sql.vars().set("table", en.getTableName());
+                            sql.vars().set("name", mf.getColumnName());
+                            sql.vars().set("type", expert.evalFieldType(mf));
+                            sqls.add(sql);
+                        }
+                    }
+                    if (del) {
+                        for (String colName : columnNames) {
+                            log.infof("del column[%s] from table[%s]", colName, en.getTableName());
+                            Sql sql = Sqls.create("ALTER table $table DROP column $name");
+                            sql.vars().set("table", en.getTableName());
+                            sql.vars().set("name", colName);
+                            sqls.add(sql);
+                        }
+                    }
+                }
+                catch (SQLException e) {
+                    if (log.isDebugEnabled())
+                        log.debugf("migration Table '%s' fail!", en.getTableName(), e);
+                }
+                // Close ResultSet and Statement
+                finally {
+                    Daos.safeClose(stat, rs);
+                }
+            }
+        });
+        for (Sql sql : sqls) {
+            dao.execute(sql);
+        }
+    }
+
+    /**
+     * 为指定package及旗下package中带@Table注解的Pojo执行migration
+     * @param dao Dao实例
+     * @param packageName 指定的package名称
+     * @param add 是否允许添加
+     * @param del 是否允许删除
+     * @param ignoreError 是否忽略错误继续执行
+     */
+    public static void migration(Dao dao, String packageName, boolean add, boolean del) {
+        for (Class<?> klass : Scans.me().scanPackage(packageName)) {
+            if (klass.getAnnotation(Table.class) != null) {
+                migration(dao, klass, add, del);
+            }
+        }
+    }
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {
@@ -578,5 +667,4 @@ class ExtDaoInvocationHandler implements InvocationHandler {
 			TableName.run(tableName, m);
 		return m.getObj();
 	}
-
 }

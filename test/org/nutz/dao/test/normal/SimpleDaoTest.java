@@ -20,7 +20,10 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
@@ -399,5 +402,19 @@ public class SimpleDaoTest extends DaoCase {
         use.setX(new SimpleBlob(Files.findFile("log4j.properties")));
         use.setY(new SimpleClob(Files.findFile("log4j.properties")));
         dao.update(use);
+    }
+    
+    @Test
+    public void test_migration() {
+        dao.execute(Sqls.create("drop table t_pet"));
+        Entity<Pet> en = dao.getEntity(Pet.class);
+        NutDao dao = (NutDao) this.dao;
+        JdbcExpert expert = dao.getJdbcExpert();
+        MappingField mf = en.getField("age");
+        String str = "create table t_pet (" + mf.getColumnName() + " " + expert.evalFieldType(mf)  + "," +  mf.getColumnName() + "_2" + " " + expert.evalFieldType(mf) + ")";
+        dao.execute(Sqls.create(str));
+        
+        Daos.migration(dao, Pet.class, true, true, false);
+        
     }
 }

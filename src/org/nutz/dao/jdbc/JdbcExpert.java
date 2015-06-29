@@ -94,4 +94,6 @@ public interface JdbcExpert {
     Pojo fetchPojoId(Entity<?> en ,MappingField idField);
     
     boolean isSupportAutoIncrement();
+    
+    String evalFieldType(MappingField mf);
 }

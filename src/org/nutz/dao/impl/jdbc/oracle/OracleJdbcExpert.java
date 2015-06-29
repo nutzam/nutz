@@ -162,8 +162,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return DB.ORACLE.name();
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {
