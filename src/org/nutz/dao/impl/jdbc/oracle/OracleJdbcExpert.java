@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
+import java.sql.Blob;
 import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +20,6 @@ import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Mirror;
-
-import com.mysql.jdbc.Blob;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
