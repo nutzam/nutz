@@ -18,6 +18,9 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Mirror;
+
+import com.mysql.jdbc.Blob;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -40,10 +43,13 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     }
 
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isBoolean())
+        Mirror<?> mirror = ef.getTypeMirror();
+        if (mirror.isBoolean())
             return new OracleBooleanAdaptor();
-        if (Clob.class.isAssignableFrom(ef.getTypeClass()))
+        if (mirror.isOf(Clob.class))
             return new OracleClobAdapter(Jdbcs.getFilePool());
+        if (mirror.isOf(Blob.class))
+            return new OracleBlobAdaptor(Jdbcs.getFilePool());
         return super.getAdaptor(ef);
     }
 
