@@ -16,10 +16,8 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
-import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 /**
  * 
@@ -87,8 +85,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {
@@ -141,19 +138,9 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT limit 1 1 * FROM " + en.getViewName();
     }
-    private final static Log log = Logs.get();
-    
+
 	@Override
 	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
-		 if (meta == null)
-	            return 0;
-	        int columnCount = meta.getColumnCount();
-	        String colName = mf.getColumnName();
-	        for (int i = 1; i <= columnCount; i++)
-	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
-	                return i;
-	        // TODO 尝试一下meta.getColumnLabel?
-	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
-	        throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+		return Daos.getColumnIndex(meta,  mf.getColumnName());
 	}
 }

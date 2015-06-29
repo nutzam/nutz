@@ -20,7 +20,10 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
@@ -31,9 +34,13 @@ import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
+import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.util.Daos;
+import org.nutz.dao.util.blob.SimpleBlob;
+import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
 
@@ -381,5 +388,33 @@ public class SimpleDaoTest extends DaoCase {
         dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
+    }
+    
+    @Test
+    public void test_use_blob_clob() {
+        dao.create(UseBlobClob.class, true);
+        UseBlobClob use = new UseBlobClob();
+        use.setName("wendal");
+        use.setX(new SimpleBlob(Files.findFile("nutz-test.properties")));
+        use.setY(new SimpleClob(Files.findFile("nutz-test.properties")));
+        use = dao.insert(use);
+
+        use.setX(new SimpleBlob(Files.findFile("log4j.properties")));
+        use.setY(new SimpleClob(Files.findFile("log4j.properties")));
+        dao.update(use);
+    }
+    
+    @Test
+    public void test_migration() {
+        dao.execute(Sqls.create("drop table t_pet"));
+        Entity<Pet> en = dao.getEntity(Pet.class);
+        NutDao dao = (NutDao) this.dao;
+        JdbcExpert expert = dao.getJdbcExpert();
+        MappingField mf = en.getField("age");
+        String str = "create table t_pet (" + mf.getColumnName() + " " + expert.evalFieldType(mf)  + "," +  mf.getColumnName() + "_2" + " " + expert.evalFieldType(mf) + ")";
+        dao.execute(Sqls.create(str));
+        
+        Daos.migration(dao, Pet.class, true, true);
+        
     }
 }

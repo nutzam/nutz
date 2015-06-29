@@ -49,7 +49,7 @@ public class DerbyJdbcExpert extends MysqlJdbcExpert {
             sql.setSourceSql(sql.getSourceSql() + String.format(" OFFSET %d ROWS FETCH NEXT %d ROW ONLY", pager.getOffset(), pager.getPageSize()));
     }
 
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

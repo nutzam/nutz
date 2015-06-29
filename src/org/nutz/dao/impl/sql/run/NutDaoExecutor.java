@@ -89,12 +89,12 @@ public class NutDaoExecutor implements DaoExecutor {
             if (log.isDebugEnabled()) {
             	log.debug("SQLException", e);
             	SQLException nextException = e.getNextException();
-                if (e != null)
+                if (nextException != null)
                 	log.debug("SQL NextException", nextException);
             }
             throw new DaoException(format(    "!Nutz SQL Error: '%s'\nPreparedStatement: \n'%s'",
                                             st.toString(),
-                                            st.toPreparedStatement()), e);
+                                            st.toPreparedStatement()) + "\nCaseMessage=" + e.getMessage(), e);
         }
 
     }

@@ -18,6 +18,8 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
@@ -56,8 +58,7 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
                                              pager.getPageSize()));
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         // Mysql 的精度是按照 bit

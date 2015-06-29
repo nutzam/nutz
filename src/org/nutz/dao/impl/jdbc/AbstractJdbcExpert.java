@@ -179,7 +179,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         dao.execute(sqls.toArray(new Sql[sqls.size()]));
     }
 
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

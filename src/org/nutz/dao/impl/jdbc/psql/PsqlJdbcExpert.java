@@ -107,8 +107,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

@@ -31,7 +31,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 /**
- * DaoHelper的TestCase及文档
+ * DaoHelper的TestCase及文档,这个类的信息都是源码里面!!!
  * @author wendal(wendal1985@gmail.com)
  *
  */
@@ -48,10 +48,10 @@ public class DaoUpTest extends Assert {
         // 如果这是整个程序的结束,执行
         DaoUp.me().close();
     }
-
-
-
-
+     */
+    
+    /**
+     * Oracle用户请务必加入druid的jar包,不然肯定报错
      */
    
     private static final Log log = Logs.get(); // 这是获取Nutz的日志封装类的方法,你喜欢就用,不喜欢就用log4j的Logger或者System.out.println都可以.
@@ -224,6 +224,7 @@ password=root
         StringGenerator sg = R.sg(10); // 代表一个字符串长度为10的随机字符串生成器
         // 插入几条记录
         for (int i = 0; i < 100; i++) {
+            // 如果用的是Oracle数据库死在这里了,请加上druid,使其用上连接池.
             dao.insert(new SimplePojo(sg.next(), "http://www." + sg.next() + ".cn", R.random(10, 100)));
         }
         // 统计一下,应该是100条
@@ -626,7 +627,7 @@ password=root
             }
         });
         
-        // 第二种,不经过Dao,直接从DataSource. 如果是Mvc应用,请通过注入获取DataSouce
+        // 第二种,不经过Dao,直接从DataSource. 如果是Mvc应用,请通过注入获取DataSource
         DataSource ds = DaoUp.me().getDataSource();
         Connection conn = null;
         try {
