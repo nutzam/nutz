@@ -178,6 +178,6 @@ public class CndTest extends DaoCase {
         assertEquals(" WHERE (name='wendal' AND age=10)", Cnd.from(dao, pet).toString());
         
         pet.setAge(0);
-        assertEquals(" WHERE (name='wendal' AND age=0)", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true)).toString());
+        assertEquals(" WHERE (name='wendal' AND age=0)", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreZero(false)).toString());
     }
 }

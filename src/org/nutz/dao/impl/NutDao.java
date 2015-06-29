@@ -139,29 +139,28 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T insert(final T obj) {
-        return insert(obj, null);
+        final EntityOperator opt = _optBy(Lang.first(obj));
+        if (null == opt)
+            return null;
+        Lang.each(obj, false, new Each<Object>() {
+            public void invoke(int i, Object ele, int length) throws ExitLoop,
+                    LoopException {
+                opt.addInsert(opt.entity, ele);
+            }
+        });
+        opt.exec();
+        return obj;
     }
     
     @Override
     public <T> T insert(final T obj, FieldFilter filter) {
-        final EntityOperator opt = _optBy(Lang.first(obj));
-        if (null == opt)
-            return null;
-        final Each<Object> each = new Each<Object>() {
-            public void invoke(int i, Object ele, int length) throws ExitLoop,
-                LoopException {
-                opt.addInsert(opt.entity, ele);
-            }
-        };
         if (filter == null)
-            Lang.each(obj, each);
-        else
-            filter.run(new Atom() {
-                public void run() {
-                    Lang.each(obj, each);
-                }
-            });
-        opt.exec();
+            return insert(obj);
+        filter.run(new Atom() {
+            public void run() {
+                insert(obj);
+            }
+        });
         return obj;
     }
 

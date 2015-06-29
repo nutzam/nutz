@@ -194,7 +194,7 @@ public abstract class Pojos {
             if (null == fm || fm.match(mf.getName())) {
                 if (!mf.isAutoIncreasement() && !mf.isReadonly() && mf.isInsert()) {
                     re.add(mf);
-                } else if (mf.isId() && null != fm && !fm.isIgnoreId()) {
+                } else if (fm != null && mf.isId() && !fm.isIgnoreId()) {
                     re.add(mf);
                 }
             }
