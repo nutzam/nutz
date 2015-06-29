@@ -31,9 +31,13 @@ import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
+import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.util.Daos;
+import org.nutz.dao.util.blob.SimpleBlob;
+import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
 
@@ -381,5 +385,19 @@ public class SimpleDaoTest extends DaoCase {
         dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
+    }
+    
+    @Test
+    public void test_use_blob_clob() {
+        dao.create(UseBlobClob.class, true);
+        UseBlobClob use = new UseBlobClob();
+        use.setName("wendal");
+        use.setX(new SimpleBlob(Files.findFile("nutz-test.properties")));
+        use.setY(new SimpleClob(Files.findFile("nutz-test.properties")));
+        use = dao.insert(use);
+
+        use.setX(new SimpleBlob(Files.findFile("log4j.properties")));
+        use.setY(new SimpleClob(Files.findFile("log4j.properties")));
+        dao.update(use);
     }
 }
