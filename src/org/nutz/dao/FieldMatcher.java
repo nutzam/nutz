@@ -6,7 +6,8 @@ import org.nutz.lang.Strings;
 
 /**
  * 字段匹配器. 判断顺序 locked--actived-->ignoreNull. 
- * 除locked/actived/ignoreNull之外的属性, 当前仅用于Cnd.from和Chain.from方法.
+ * 除locked/actived/ignoreNull之外的属性, 当前仅用于Cnd.from和Chain.from方法. <p/>
+ * ignoreId现在可以用于dao.insert了<p/>
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal
@@ -67,11 +68,11 @@ public class FieldMatcher {
     /**
      * 是否忽略空值
      */
-    private boolean ignoreNull;
+    private boolean ignoreNull = true;
     /**
      * 是否忽略零值
      */
-    private boolean ignoreZero;
+    private boolean ignoreZero = true;
     /**
      * 是否忽略日期
      */
@@ -79,7 +80,7 @@ public class FieldMatcher {
     /**
      * 是否忽略@Id标注的属性
      */
-    private boolean ignoreId;
+    private boolean ignoreId = true;
     /**
      * 是否忽略@Name标注的属性
      */
@@ -146,6 +147,8 @@ public class FieldMatcher {
     public FieldMatcher setActived(String actived) {
         if (actived != null)
             this.actived = Pattern.compile(actived);
+        else
+            this.actived = null;
         return this;
     }
 
@@ -157,6 +160,8 @@ public class FieldMatcher {
     public FieldMatcher setLocked(String locked) {
         if (locked != null)
             this.locked = Pattern.compile(locked);
+        else
+            this.locked = null;
         return this;
     }
 
@@ -197,7 +202,7 @@ public class FieldMatcher {
     }
 
     /**
-     * 是否忽略@Id标注的属性
+     * 是否忽略@Id标注的属性,默认忽略
      * @return true,如果忽略
      */
     public boolean isIgnoreId() {

@@ -13,8 +13,10 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
@@ -359,5 +361,25 @@ public class SimpleDaoTest extends DaoCase {
         dao.insertWith(master, null);
         List<Master> list = dao.query(Master.class, null);
         dao.fetchLinks(list, null, Cnd.where("1", "=", 1));
+    }
+    
+    @Test
+    public void test_insert_with_id() {
+        dao.clear(Pet.class);
+        Pet pet = Pet.create("zzz");
+        pet.setId(9090); // 主动设置id
+        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class, FieldMatcher.make(null, null, true).setIgnoreId(false)));
+        dao.insert(pet);
+        pet = dao.fetch(Pet.class); // 只有一条记录
+        assertEquals(9090, pet.getId());
+        
+        /// 然后用1.b.53的新方法测试一下
+        
+        dao.clear(Pet.class);
+        pet = Pet.create("zzz");
+        pet.setId(9090); // 主动设置id
+        dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.make(null, null, true).setIgnoreId(false)));
+        pet = dao.fetch(Pet.class); // 只有一条记录
+        assertEquals(9090, pet.getId());
     }
 }

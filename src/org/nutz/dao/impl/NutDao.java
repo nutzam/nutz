@@ -60,6 +60,7 @@ import org.nutz.lang.LoopException;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.trans.Atom;
 import org.nutz.trans.Molecule;
 
 public class NutDao extends DaoSupport implements Dao {
@@ -138,15 +139,28 @@ public class NutDao extends DaoSupport implements Dao {
     }
 
     public <T> T insert(final T obj) {
+        return insert(obj, null);
+    }
+    
+    @Override
+    public <T> T insert(final T obj, FieldFilter filter) {
         final EntityOperator opt = _optBy(Lang.first(obj));
         if (null == opt)
             return null;
-        Lang.each(obj, false, new Each<Object>() {
+        final Each<Object> each = new Each<Object>() {
             public void invoke(int i, Object ele, int length) throws ExitLoop,
-                    LoopException {
+                LoopException {
                 opt.addInsert(opt.entity, ele);
             }
-        });
+        };
+        if (filter == null)
+            Lang.each(obj, each);
+        else
+            filter.run(new Atom() {
+                public void run() {
+                    Lang.each(obj, each);
+                }
+            });
         opt.exec();
         return obj;
     }
