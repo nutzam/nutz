@@ -8,7 +8,6 @@ import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
-import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Each;
 
 /**
