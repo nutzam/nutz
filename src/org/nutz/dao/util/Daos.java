@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,6 +24,7 @@ import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
@@ -37,6 +39,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
@@ -52,6 +55,14 @@ import org.nutz.trans.Trans;
  */
 public abstract class Daos {
 
+	/**
+	 * 安全关闭Statement和ResultSet
+	 * 
+	 * @param stat
+	 *            Statement实例,可以为null
+	 * @param rs
+	 *            ResultSet实例,可以为null
+	 */
 	private static final Log log = Logs.get();
 
 	public static void safeClose(Statement stat, ResultSet rs) {
@@ -106,6 +117,12 @@ public abstract class Daos {
 		return pager;
 	}
 
+	/**
+	 * 安全关闭Statement
+	 * 
+	 * @param stat
+	 *            Statement实例,可以为null
+	 */
 	public static Pager updatePagerCount(Pager pager, Dao dao, String tableName, Condition cnd) {
 		if (null != pager) {
 			pager.setRecordCount(dao.count(tableName, cnd));
@@ -113,18 +130,46 @@ public abstract class Daos {
 		return pager;
 	}
 
+	/**
+	 * 安全关闭=ResultSet
+	 * 
+	 * @param rs
+	 *            ResultSet实例,可以为null
+	 */
 	public static <T> List<T> queryList(Dao dao, Class<T> klass, String sql_str) {
 		Sql sql = Sqls.create(sql_str).setCallback(Sqls.callback.entities()).setEntity(dao.getEntity(klass));
 		dao.execute(sql);
 		return sql.getList(klass);
 	}
 
+	/**
+	 * 获取colName所在的行数
+	 * 
+	 * @param meta
+	 *            从连接中取出的ResultSetMetaData
+	 * @param colName
+	 *            字段名
+	 * @return 所在的索引,如果不存在就抛出异常
+	 * @throws SQLException
+	 *             指定的colName找不到
+	 */
 	public static Object query(Dao dao, String sql_str, SqlCallback callback) {
 		Sql sql = Sqls.create(sql_str).setCallback(callback);
 		dao.execute(sql);
 		return sql.getResult();
 	}
 
+	/**
+	 * 是不是数值字段
+	 * 
+	 * @param meta
+	 *            从连接中取出的ResultSetMetaData
+	 * @param index
+	 *            字段索引
+	 * @return 如果是就返回true
+	 * @throws SQLException
+	 *             指定的索引不存在
+	 */
 	public static <T> List<T> queryWithLinks(final Dao dao, final Class<T> classOfT, final Condition cnd, final Pager pager, final String regex) {
 		Molecule<List<T>> molecule = new Molecule<List<T>>() {
 			public void run() {
@@ -137,6 +182,19 @@ public abstract class Daos {
 		return Trans.exec(molecule);
 	}
 
+	/**
+	 * 填充记录总数
+	 * 
+	 * @param pager
+	 *            分页对象,如果为null就不进行任何操作
+	 * @param dao
+	 *            Dao实例
+	 * @param entityType
+	 *            实体类,可以通过dao.getEntity获取
+	 * @param cnd
+	 *            查询条件
+	 * @return 传入的Pager参数
+	 */
 	/* 根据Pojo生成数据字典,zdoc格式 */
 	public static StringBuilder dataDict(DataSource ds, String... packages) {
 		StringBuilder sb = new StringBuilder();
@@ -152,9 +210,33 @@ public abstract class Daos {
 		}
 		// log.infof("Found %d table class", ks.size());
 
+		/**
+		 * 填充记录总数
+		 * 
+		 * @param pager
+		 *            分页对象,如果为null就不进行任何操作
+		 * @param dao
+		 *            Dao实例
+		 * @param tableName
+		 *            表名
+		 * @param cnd
+		 *            查询条件
+		 * @return 传入的Pager参数
+		 */
 		JdbcExpert exp = Jdbcs.getExpert(ds);
 		NutDao dao = new NutDao(ds);
 
+		/**
+		 * 根据sql查询特定的记录,并转化为指定的类对象
+		 * 
+		 * @param dao
+		 *            Dao实例
+		 * @param klass
+		 *            Pojo类
+		 * @param sql_str
+		 *            sql语句
+		 * @return 查询结果
+		 */
 		Method evalFieldType;
 		try {
 			evalFieldType = exp.getClass().getDeclaredMethod("evalFieldType", MappingField.class);
@@ -190,6 +272,17 @@ public abstract class Daos {
 	}
 
 	/**
+	 * 执行sql和callback
+	 * 
+	 * @param dao
+	 *            Dao实例
+	 * @param sql_str
+	 *            sql语句
+	 * @param callback
+	 *            sql回调
+	 * @return 回调的返回值
+	 */
+	/**
 	 * 查询sql并把结果放入传入的class组成的List中
 	 */
 	public static <T> List<T> query(Dao dao, Class<T> classOfT, String sql, Condition cnd, Pager pager) {
@@ -201,6 +294,21 @@ public abstract class Daos {
 		return sql2.getList(classOfT);
 	}
 
+	/**
+	 * 在同一个事务内查询对象及关联对象
+	 * 
+	 * @param dao
+	 *            Dao实例
+	 * @param classOfT
+	 *            指定的Pojo类
+	 * @param cnd
+	 *            查询条件
+	 * @param pager
+	 *            分页语句
+	 * @param regex
+	 *            需要查出的关联对象, 可以参阅dao.fetchLinks
+	 * @return 查询结果
+	 */
 	/**
 	 * 查询某sql的结果条数
 	 */
@@ -356,6 +464,61 @@ public abstract class Daos {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static boolean filterFields(Object obj, FieldMatcher matcher, Dao dao, Callback2<MappingField, Object> callback) {
+		if (obj == null)
+			return false;
+		obj = Lang.first(obj);
+		if (obj == null) {
+			return false;
+		}
+		if (obj.getClass() == Class.class) {
+			throw Lang.impossible();
+		}
+		if (obj instanceof String || obj instanceof Number || obj instanceof Boolean) {
+			throw Lang.impossible();
+		}
+		Entity en = dao.getEntity(obj.getClass());
+		if (en == null) {
+			throw Lang.impossible();
+		}
+
+		List<MappingField> mfs = en.getMappingFields();
+		if (matcher != null) {
+			Iterator<MappingField> it = mfs.iterator();
+			while (it.hasNext()) {
+				MappingField mf = it.next();
+				if (!matcher.match(mf.getName()))
+					it.remove();
+			}
+		}
+		boolean flag = false;
+		for (MappingField mf : mfs) {
+			if (matcher.isIgnoreId() && mf.isId())
+				continue;
+			if (matcher.isIgnoreName() && mf.isName())
+				continue;
+			if (matcher.isIgnorePk() && mf.isCompositePk())
+				continue;
+			Object val = mf.getValue(obj);
+			if (val == null) {
+				if (matcher.isIgnoreNull())
+					continue;
+			}
+			if (val instanceof Number && ((Number) val).doubleValue() == 0.0) {
+				if (matcher.isIgnoreZero())
+					continue;
+			}
+			if (val instanceof Date) {
+				if (matcher.isIgnoreDate())
+					continue;
+			}
+			callback.invoke(mf, val);
+			flag = true;
+		}
+		return flag;
+	}
+
 	private static Class<?>[] iz = new Class<?>[] { Dao.class };
 
 	/**
@@ -384,6 +547,17 @@ public abstract class Daos {
 		return ext(dao, null, tableName);
 	}
 
+	/**
+	 * 同时进行字段过滤和动态表名封装
+	 * 
+	 * @param dao
+	 *            Dao实例
+	 * @param filter
+	 *            字段过滤
+	 * @param tableName
+	 *            动态表名参数
+	 * @return 封装好的Dao实例
+	 */
 	public static Dao ext(Dao dao, FieldFilter filter, Object tableName) {
 		if (tableName == null && filter == null)
 			return dao;

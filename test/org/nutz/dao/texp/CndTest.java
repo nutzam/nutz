@@ -10,7 +10,7 @@ import java.util.Map;
 import org.junit.Test;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
-import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Pet;
@@ -170,15 +170,14 @@ public class CndTest extends DaoCase {
     public void test_from_obj() {
         Pet pet = new Pet();
         pet.setName("wendal");
-        System.out.println("===============================");
         System.out.println(Cnd.from(dao, pet));
-        assertEquals(" WHERE name='wendal'", Cnd.from(dao, pet).toString());
+        assertEquals(" WHERE (name='wendal')", Cnd.from(dao, pet).toString());
         
         pet.setAge(10);
         System.out.println(Cnd.from(dao, pet));
-        assertEquals(" WHERE name='wendal' AND age=10", Cnd.from(dao, pet).toString());
+        assertEquals(" WHERE (name='wendal' AND age=10)", Cnd.from(dao, pet).toString());
         
         pet.setAge(0);
-        assertEquals(" WHERE name='wendal' AND age=0", Cnd.from(dao, pet, FieldFilter.create(Pet.class, "age|name"), false, false, true).toString());
+        assertEquals(" WHERE (name='wendal' AND age=0)", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreZero(false)).toString());
     }
 }

@@ -21,6 +21,11 @@ public abstract class Trans {
     private static final Log log = Logs.get();
 
     private static Class<? extends Transaction> implClass;
+    
+    /**
+     * 这个类提供的均为静态方法.
+     */
+    Trans() {}
 
     static ThreadLocal<Transaction> trans = new ThreadLocal<Transaction>();
     static ThreadLocal<Integer> count = new ThreadLocal<Integer>();
@@ -107,6 +112,10 @@ public abstract class Trans {
         }
     }
 
+    /**
+     * 是否在事务中
+     * @return 真,如果在事务中
+     */
     public static boolean isTransactionNone() {
         Transaction t = trans.get();
         return null == t || t.getLevel() == Connection.TRANSACTION_NONE;
@@ -256,6 +265,10 @@ public abstract class Trans {
             return get().getConnection(ds);
     }
 
+    /**
+     * 自动判断是否关闭当前连接
+     * @param conn 数据库连接
+     */
     public static void closeConnectionAuto(Connection conn) {
         if (get() == null && null != conn) {
             try {

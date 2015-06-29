@@ -118,4 +118,10 @@ public class Pet {
     public String toString() {
         return name;
     }
+    
+    public Pet() {}
+    
+    public Pet(String name) {
+        this.name = name;
+    }
 }

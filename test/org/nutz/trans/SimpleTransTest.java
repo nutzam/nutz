@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Lang;
 
 public class SimpleTransTest extends DaoCase {
@@ -25,21 +26,32 @@ public class SimpleTransTest extends DaoCase {
 
     @Test
     public void test_update_rollback() {
+        dao.create(Pet.class, true);
+        dao.insert(Pet.create("XiaoBai"));
+        dao.insert(Pet.create("XiaoHei"));
+        final Pet pet1 = dao.fetch(Pet.class,"XiaoBai");
+        final Pet pet2 = dao.fetch(Pet.class,"XiaoHei");
 
-        final Cat cat = dao.fetch(Cat.class, "xb");
+        pet1.setName("A");
+        pet2.setName("A");
+        // Begin transaction        
+        Trans.DEBUG = true;
         try {
-            Trans.exec(new Atom() {
+            Trans.exec(new Atom(){
                 public void run() {
-                    cat.setName("PPP");
-                    dao.update(cat);
-                    throw Lang.makeThrow("Quite!!!");
+                    dao.update(pet1);
+                    System.out.println(dao.fetch(Pet.class, pet1.getId()).getName());
+                    dao.update(pet2);
+                    //throw Lang.noImplement();
                 }
             });
-            fail();
         }
-        catch (RuntimeException e) {}
-        Cat xb = dao.fetch(Cat.class, "xb");
-        assertTrue(xb.getId() > 0);
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        // End transaction
+        System.out.println(dao.fetch(Pet.class, pet1.getId()).getName());
+        assertFalse(dao.fetch(Pet.class, pet1.getId()).getName().equals(pet1.getName()));
     }
 
     @Test
@@ -64,7 +76,9 @@ public class SimpleTransTest extends DaoCase {
             });
             fail();
         }
-        catch (RuntimeException e) {}
+        catch (RuntimeException e) {
+            e.printStackTrace();
+        }
         assertTrue(dao.fetch(Cat.class, "xb").getName().equals("xb"));
         assertTrue(dao.fetch(Cat.class, "xb2").getName().equals("xb2"));
         dao.delete(cat2);

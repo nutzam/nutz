@@ -10,6 +10,11 @@ import javax.sql.DataSource;
 
 import org.nutz.lang.ComboException;
 
+/**
+ * 默认的事务实现上下文类,用户通常不会直接使用到这个类. 这个类会关联同一事务内多个数据源的连接
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
 public class NutTransaction extends Transaction {
 
     private static AtomicLong TransIdMaker = new AtomicLong();
@@ -32,11 +37,17 @@ public class NutTransaction extends Transaction {
         int oldLevel;
     }
 
+    /**
+     * 新建上下文并初始化自身的层次数据
+     */
     public NutTransaction() {
         list = new ArrayList<ConnInfo>();
         id = TransIdMaker.getAndIncrement();
     }
 
+    /**
+     * 提交事务
+     */
     protected void commit() {
         ComboException ce = new ComboException();
         for (ConnInfo cInfo : list) {
@@ -57,6 +68,9 @@ public class NutTransaction extends Transaction {
         }
     }
 
+    /**
+     * 从数据源获取连接
+     */
     @Override
     public Connection getConnection(DataSource dataSource) throws SQLException {
         for (ConnInfo p : list)
@@ -71,10 +85,16 @@ public class NutTransaction extends Transaction {
         return conn;
     }
 
+    /**
+     * 层次id
+     */
     public long getId() {
         return id;
     }
 
+    /**
+     * 关闭事务,清理现场
+     */
     @Override
     public void close() {
         ComboException ce = new ComboException();
@@ -100,6 +120,9 @@ public class NutTransaction extends Transaction {
         list.clear();
     }
 
+    /**
+     * 执行回滚操作
+     */
     @Override
     protected void rollback() {
         for (ConnInfo cInfo : list) {
