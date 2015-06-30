@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.psql;
 
+import java.sql.Blob;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -9,7 +10,10 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
@@ -138,4 +142,10 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
 
+    @Override
+    public ValueAdaptor getAdaptor(MappingField ef) {
+        if (ef.getTypeMirror().isOf(Blob.class))
+            return new BlobValueAdaptor2(Jdbcs.getFilePool());
+        return super.getAdaptor(ef);
+    }
 }

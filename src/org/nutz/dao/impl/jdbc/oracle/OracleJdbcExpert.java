@@ -12,6 +12,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
+import org.nutz.dao.impl.jdbc.ClobValueAdapter2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -46,9 +48,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         if (mirror.isBoolean())
             return new OracleBooleanAdaptor();
         if (mirror.isOf(Clob.class))
-            return new OracleClobAdapter(Jdbcs.getFilePool());
+            return new ClobValueAdapter2(Jdbcs.getFilePool());
         if (mirror.isOf(Blob.class))
-            return new OracleBlobAdaptor(Jdbcs.getFilePool());
+            return new BlobValueAdaptor2(Jdbcs.getFilePool());
         return super.getAdaptor(ef);
     }
 

@@ -12,7 +12,6 @@ import java.util.Map;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
-import org.nutz.dao.impl.sql.pojo.NoParamsPItem;
 import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -197,7 +196,7 @@ public class NutSql2 extends NutStatement implements Sql {
         return super.toStatement(this.getParamMatrix(), this.toPreparedStatement());
     }
 
-    class SqlVarPItem extends NoParamsPItem {
+    class SqlVarPItem extends AbstractPItem {
 
         public String name;
 
@@ -207,8 +206,46 @@ public class NutSql2 extends NutStatement implements Sql {
 
         public void joinSql(Entity<?> en, StringBuilder sb) {
             Object val = vars.get(name);
-            if (val != null)
-                sb.append(val);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    ((PItem) val).joinSql(en, sb);
+                }
+                else if (val instanceof Condition) {
+                    sb.append(' ').append(Pojos.formatCondition(en, (Condition) val));
+                } else {
+                    sb.append(val);
+                }
+            }
+        }
+        
+        public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).joinAdaptor(en, adaptors, off);
+                }
+            }
+            return off;
+        }
+        
+        public int paramCount(Entity<?> en) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).paramCount(en);
+                }
+            }
+            return 0;
+        }
+        
+        public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).joinParams(en, obj, params, off);
+                }
+            }
+            return off;
         }
     }
 
