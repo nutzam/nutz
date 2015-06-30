@@ -6,7 +6,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
@@ -101,8 +100,7 @@ public class SimpleDaoTest extends DaoCase {
         List<Record> pets = dao.query("t_pet", null, null);
         assertEquals(1, pets.size());
         assertEquals("abc", pets.get(0).getString("name"));
-        assertEquals(now / 1000,
-                     pets.get(0).getTimestamp("birthday").getTime() / 1000);
+        assertEquals(now / 1000, pets.get(0).getTimestamp("birthday").getTime() / 1000);
     }
 
     @Test
@@ -147,8 +145,7 @@ public class SimpleDaoTest extends DaoCase {
         insertRecords(8);
         int re = dao.count(Pet.class, new Condition() {
             public String toSql(Entity<?> entity) {
-                return entity.getField("nickName").getColumnName()
-                       + " IN ('alias_5','alias_6')";
+                return entity.getField("nickName").getColumnName() + " IN ('alias_5','alias_6')";
             }
         });
         assertEquals(2, re);
@@ -163,9 +160,7 @@ public class SimpleDaoTest extends DaoCase {
     public void test_count_by_condition() {
         insertRecords(4);
         assertEquals(4, dao.count(Pet.class));
-        assertEquals(2,
-                     dao.count(Pet.class,
-                               Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
+        assertEquals(2, dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
     }
 
     @Test
@@ -250,8 +245,7 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_chain_insert() {
-        dao.insert(Pet.class,
-                   Chain.make("name", "wendal").add("nickName", "asfads"));
+        dao.insert(Pet.class, Chain.make("name", "wendal").add("nickName", "asfads"));
     }
 
     @Test
@@ -259,9 +253,8 @@ public class SimpleDaoTest extends DaoCase {
         dao.create(Pet.class, true);
         for (int i = 0; i < 100; i++) {
             dao.insert(Pet.class,
-                       Chain.make("name", "record" + i)
-                            .add("nickName",
-                                 "Time=" + System.currentTimeMillis()));
+                       Chain.make("name", "record" + i).add("nickName",
+                                                            "Time=" + System.currentTimeMillis()));
         }
         Pager pager = dao.createPager(5, 5);
         pager.setRecordCount(dao.count(Pet.class));
@@ -313,18 +306,15 @@ public class SimpleDaoTest extends DaoCase {
     @Test
     public void test_insert_special_chain() {
         if (dao.meta().isMySql())
-            dao.insert(Pet.class,
-                       Chain.makeSpecial("birthday", "now()").add("name",
-                                                                  "wendal"));
+            dao.insert(Pet.class, Chain.makeSpecial("birthday", "now()").add("name", "wendal"));
     }
-    
+
     @Test
     public void test_issue_726() {
         dao.create(Issue726.class, true);
         assertTrue(dao.getEntity(Issue726.class).getColumn("id").isAutoIncreasement());
     }
-    
-    
+
     @Test
     public void test_daoex_update() throws Throwable {
         final List<A> list = new ArrayList<A>();
@@ -332,29 +322,27 @@ public class SimpleDaoTest extends DaoCase {
             A a = new A();
             a.setUid(System.currentTimeMillis());
             Lang.quiteSleep(10);
-//            a.setName("zzzz" + System.currentTimeMillis());
+            // a.setName("zzzz" + System.currentTimeMillis());
             list.add(a);
         }
         TableName.run("1", new Runnable() {
-            
-            @Override
             public void run() {
                 dao.create(A.class, true);
                 dao.update(list);
             }
         });
         System.out.println("\n\n\n\n\n\n\n\n");
-        Daos.ext(dao,  FieldFilter.create(A.class, null, "^(name)$", true), 1).update(list);
-        
+        Daos.ext(dao, FieldFilter.create(A.class, null, "^(name)$", true), 1).update(list);
+
     }
-    
+
     @Test
     public void test_bean_uuid() {
-    	Sql sql = Sqls.queryRecord("select * from t_pet");
-    	sql.setPager(dao.createPager(1, 10));
-    	dao.execute(sql);
+        Sql sql = Sqls.queryRecord("select * from t_pet");
+        sql.setPager(dao.createPager(1, 10));
+        dao.execute(sql);
     }
-    
+
     @Test
     public void test_fetchLinks() {
         Master master = new Master();
@@ -369,24 +357,26 @@ public class SimpleDaoTest extends DaoCase {
         List<Master> list = dao.query(Master.class, null);
         dao.fetchLinks(list, null, Cnd.where("1", "=", 1));
     }
-    
+
     @Test
     public void test_insert_with_id() {
         dao.clear(Pet.class);
         Pet pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id
-        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class, FieldMatcher.make(null, null, true).setIgnoreId(false)));
+        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class,
+                                                        FieldMatcher.make(null, null, true)
+                                                                    .setIgnoreId(false)));
         dao.fastInsert(pet);
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
-        
-        /// 然后用1.b.53的新方法测试一下
+
+        // / 然后用1.b.53的新方法测试一下
         if (dao.meta().isPostgresql()) {
             System.out.println("因为Pet的@Id配置了@Next,导致插入后再执行里面的sql会报错");
             // 还没想到怎么解决, FieldMatcher存在的时候忽略@Next?
             return;
         }
-        
+
         dao.clear(Pet.class);
         pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id
@@ -394,7 +384,7 @@ public class SimpleDaoTest extends DaoCase {
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
     }
-    
+
     @Test
     public void test_use_blob_clob() {
         dao.create(UseBlobClob.class, true);
@@ -408,7 +398,7 @@ public class SimpleDaoTest extends DaoCase {
         use.setY(new SimpleClob(Files.findFile("log4j.properties")));
         dao.update(use);
     }
-    
+
     @Test
     public void test_migration() {
         dao.execute(Sqls.create("drop table t_pet"));
@@ -416,10 +406,19 @@ public class SimpleDaoTest extends DaoCase {
         NutDao dao = (NutDao) this.dao;
         JdbcExpert expert = dao.getJdbcExpert();
         MappingField mf = en.getField("age");
-        String str = "create table t_pet (" + mf.getColumnName() + " " + expert.evalFieldType(mf)  + "," +  mf.getColumnName() + "_2" + " " + expert.evalFieldType(mf) + ")";
+        String str = "create table t_pet ("
+                     + mf.getColumnName()
+                     + " "
+                     + expert.evalFieldType(mf)
+                     + ","
+                     + mf.getColumnName()
+                     + "_2"
+                     + " "
+                     + expert.evalFieldType(mf)
+                     + ")";
         dao.execute(Sqls.create(str));
-        
+
         Daos.migration(dao, Pet.class, true, true);
-        
+
     }
 }
