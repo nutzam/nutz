@@ -289,4 +289,8 @@ public abstract class NutStatement implements DaoStatement {
     public boolean isForceExecQuery() {
     	return forceExecQuery;
     }
+
+    public String forPrint() {
+        return super.toString();
+    }
 }

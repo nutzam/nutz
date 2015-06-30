@@ -190,7 +190,7 @@ public class NutDaoExecutor implements DaoExecutor {
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
                 if (log.isDebugEnabled())
-                    log.debug(st);
+                    log.debug(st.forPrint());
                 stat = conn.createStatement(st.getContext()
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)

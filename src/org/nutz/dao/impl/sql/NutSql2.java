@@ -195,6 +195,10 @@ public class NutSql2 extends NutStatement implements Sql {
     public String toString() {
         return super.toStatement(this.getParamMatrix(), this.toPreparedStatement());
     }
+    
+    public String forPrint() {
+        return super.toString();
+    }
 
     class SqlVarPItem extends AbstractPItem {
 
