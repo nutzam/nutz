@@ -184,8 +184,8 @@ public abstract class EntityService<T> extends Service {
      * @param chain 设置值的键值对
      * @param cnd 需要更新的条件语句
      */
-    public void update(Chain chain, Condition cnd) {
-        dao().update(getEntityClass(), chain, cnd);
+    public int update(Chain chain, Condition cnd) {
+        return dao().update(getEntityClass(), chain, cnd);
     }
 
     /**
@@ -194,8 +194,8 @@ public abstract class EntityService<T> extends Service {
      * @param chain 键值对
      * @param cnd 条件语句
      */
-    public void updateRelation(String regex, Chain chain, Condition cnd) {
-        dao().updateRelation(getEntityClass(), regex, chain, cnd);
+    public int updateRelation(String regex, Chain chain, Condition cnd) {
+        return dao().updateRelation(getEntityClass(), regex, chain, cnd);
     }
 
     /**
