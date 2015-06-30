@@ -1,0 +1,155 @@
+package org.nutz.dao.impl;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.nutz.dao.SqlManager;
+import org.nutz.dao.SqlNotFoundException;
+import org.nutz.dao.Sqls;
+import org.nutz.dao.sql.Sql;
+import org.nutz.lang.Streams;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+import org.nutz.resource.NutResource;
+import org.nutz.resource.Scans;
+
+/**
+ * 基于行解析的SqlManager
+ * @author wendal(wendal1985@gmail.com)
+ *
+ */
+public class SimpleSqlManager implements SqlManager {
+    
+    private static final Log log = Logs.get();
+    
+    Map<String, String> sqls = Collections.synchronizedMap(new LinkedHashMap<String, String>());
+
+    protected String[] paths;
+
+    public SimpleSqlManager(String... paths) {
+        this.paths = paths;
+        refresh();
+    }
+
+    public void refresh() {
+        for (String path : paths) {
+            List<NutResource> list = Scans.me().scan(path, ".(sql|sqlx|sqls)$");
+            for (NutResource res : list) {
+                int c = count();
+                log.debugf("load >> %s from root=%s", res.getName(), path);
+                try {
+                    load(res.getReader());
+                }
+                catch (IOException e) {
+                    log.warnf("fail to load %s from root=%s", res.getName(), path, e);
+                }
+                log.debugf("load %d sql >> %s from root=%s", (count() - c), res.getName(), path);
+            }
+        }
+    }
+    
+    public void load(Reader r) throws IOException {
+        try {
+            BufferedReader br = null;
+            if (r instanceof BufferedReader)
+                br = (BufferedReader)r;
+            else
+                br = new BufferedReader(r);
+            StringBuilder key = new StringBuilder();
+            StringBuilder sb = new StringBuilder();
+            OUT: while (br.ready()) {
+                String line = Streams.nextLineTrim(br);
+                if (line == null)
+                    break;
+                if (line.startsWith("/*")) {
+                    if (key.length() > 0 && sb.length() > 0) {
+                        addSql(key.toString(), sb.toString());
+                    }
+                    key.setLength(0);
+                    sb.setLength(0);
+                    
+                    if (line.endsWith("*/")) {
+                        if (line.length() > 4)
+                            key.append(line.substring(2, line.length() - 2).trim());
+                        continue;
+                    } else {
+                        key.append(line.substring(2).trim());
+                        while (br.ready()) {
+                            line = Streams.nextLineTrim(br);
+                            if (line == null)
+                                break OUT;
+                            if (line.endsWith("*/")) {
+                                if (line.length() > 2)
+                                    key.append(line.substring(0, line.length() - 2).trim());
+                                continue OUT;
+                            } else {
+                                key.append(line);
+                            }
+                        }
+                    }
+                }
+                if (key.length() == 0) {
+                    log.infof("skip not key sql line %s", line);
+                    continue;
+                }
+                sb.append(line);
+            }
+            
+            // 最后一个sql也许是存在的
+            if (key.length() > 0 && sb.length() > 0) {
+                addSql(key.toString(), sb.toString());
+            }
+        }
+        finally {
+            Streams.safeClose(r);
+        }
+    }
+    
+    public String get(String key) throws SqlNotFoundException {
+        String sql = sqls.get(key);
+        if (sql == null)
+            throw new SqlNotFoundException(key);
+        return sql;
+    }
+
+    public Sql create(String key) throws SqlNotFoundException {
+        return Sqls.create(get(key));
+    }
+
+    public List<Sql> createCombo(String... keys) {
+        if (keys.length == 0)
+            keys = keys();
+        List<Sql> list = new ArrayList<Sql>(keys.length);
+        for (String key : keys) {
+            list.add(create(key));
+        }
+        return list;
+    }
+
+    public int count() {
+        return sqls.size();
+    }
+
+    public String[] keys() {
+        Set<String> keys = sqls.keySet();
+        return keys.toArray(new String[keys.size()]);
+    }
+
+    public void addSql(String key, String value) {
+        log.debugf("key=[%s], sql=[%s]", key, value);
+        sqls.put(key, value);
+    }
+
+    public void remove(String key) {
+        sqls.remove(key);
+    }
+    
+    
+}
