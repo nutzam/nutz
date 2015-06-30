@@ -163,6 +163,7 @@ public class CustomizedSqlsTest extends DaoCase {
     
     @Test
     public void test_in() {
+        Sqls.setSqlBorning(NutSql2.class);
         dao.clear(Pet.class);
         dao.insert(Pet.create(4));
         List<Pet> pets = dao.query(Pet.class, null, dao.createPager(1, 2));
@@ -175,5 +176,6 @@ public class CustomizedSqlsTest extends DaoCase {
         assertEquals(2, npets.size());
         assertEquals(npets.get(0).getId(), pets.get(0).getId());
         assertEquals(npets.get(1).getId(), pets.get(1).getId());
+        Sqls.setSqlBorning(NutSql.class);
     }
 }
