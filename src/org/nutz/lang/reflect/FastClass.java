@@ -5,15 +5,17 @@ import java.lang.reflect.Method;
 
 public interface FastClass {
 
-	String CLASSNAME = "_FASTCLASS_";
+	String CLASSNAME = "$$FASTCLASS";
 
 	Object invoke(Object obj, Method method, Object... args);
 
-	Object invoke(Object obj, String methodName, Object... args);
+	Object invoke(Object obj, String methodName, Class<?>[] types, Object... args);
 
 	Object born(Constructor<?> constructor, Object... args);
 
-	Object born(Object... args);
+	Object born(Class<?>[] types, Object... args);
+	
+	Object born();
 
 	Object setField(Object obj, String fieldName, Object value);
 

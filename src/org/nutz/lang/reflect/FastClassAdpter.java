@@ -29,9 +29,8 @@ public class FastClassAdpter implements Opcodes {
 		this.enhancedSuperName = enhancedSuperName;
 	}
 
-	public void createInokeMethod() {
+	public void createInvokeMethod() {
 		mv.visitCode();
-
 		for (int i = 0; i < methodNames.length; i++) {
 			mv.visitVarInsn(ILOAD, 2);
 			visitX(i);
@@ -64,13 +63,13 @@ public class FastClassAdpter implements Opcodes {
 			mv.visitLabel(l0);
 		}
 
-		mv.visitInsn(ACONST_NULL);
-		mv.visitInsn(ARETURN);
+		mv.visitMethodInsn(INVOKESTATIC, "org/nutz/lang/Lang", "impossible", "()Ljava/lang/RuntimeException;");
+		mv.visitInsn(ATHROW);
 		mv.visitMaxs(4, 3);
 		mv.visitEnd();
 	}
 
-	public void createInokeConstructor(Constructor<?>[] constructors) {
+	public void createInvokeConstructor(Constructor<?>[] constructors) {
 		mv.visitCode();
 		for (int i = 0; i < constructors.length; i++) {
 			mv.visitVarInsn(ILOAD, 1);
@@ -95,8 +94,8 @@ public class FastClassAdpter implements Opcodes {
 			mv.visitInsn(ARETURN);
 			mv.visitLabel(l0);
 		}
-		mv.visitInsn(ACONST_NULL);
-		mv.visitInsn(ARETURN);
+		mv.visitMethodInsn(INVOKESTATIC, "org/nutz/lang/Lang", "impossible", "()Ljava/lang/RuntimeException;");
+		mv.visitInsn(ATHROW);
 		mv.visitMaxs(4, 3);
 		mv.visitEnd();
 	}
@@ -240,13 +239,13 @@ public class FastClassAdpter implements Opcodes {
 		adpter.methodNames = methodNames;
 		adpter.modifies = modifies;
 		adpter.invokeOps = invokeOps;
-		adpter.createInokeMethod();
+		adpter.createInvokeMethod();
 	}
 
 	public final static void createInokeConstructor(MethodVisitor mv,
 													String enhancedSuperName,
 													Constructor<?>[] constructors) {
 		FastClassAdpter adpter = new FastClassAdpter(mv, enhancedSuperName);
-		adpter.createInokeConstructor(constructors);
+		adpter.createInvokeConstructor(constructors);
 	}
 }

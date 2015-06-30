@@ -377,13 +377,9 @@ public class Scans {
                     Class<?> klass = Lang.loadClass(className);
                     re.add(klass);
                 }
-                catch (ClassNotFoundException e) {
+                catch (Throwable e) {
                     if (log.isInfoEnabled())
-                        log.infof("Resource can't map to Class, Resource %s", nr, e);
-                }
-                catch (IOException e) {
-                    if (log.isInfoEnabled())
-                        log.infof("Resource can't map to Class, Resource %s", nr, e);
+                        log.info("Resource can't map to Class, Resource " + nr.getName(), e);
                 }
                 finally {
                     Streams.safeClose(in);

@@ -12,8 +12,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -23,6 +26,7 @@ import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
@@ -37,6 +41,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.resource.Scans;
@@ -54,11 +59,20 @@ public abstract class Daos {
     
     private static final Log log = Logs.get();
 
+    /**
+     * 安全关闭Statement和ResultSet
+     * @param stat Statement实例,可以为null
+     * @param rs   ResultSet实例,可以为null
+     */
     public static void safeClose(Statement stat, ResultSet rs) {
         safeClose(rs);
         safeClose(stat);
     }
 
+    /**
+     * 安全关闭Statement
+     * @param stat Statement实例,可以为null
+     */
     public static void safeClose(Statement stat) {
         if (null != stat)
             try {
@@ -67,6 +81,10 @@ public abstract class Daos {
             catch (Throwable e) {}
     }
 
+    /**
+     * 安全关闭=ResultSet
+     * @param rs   ResultSet实例,可以为null
+     */
     public static void safeClose(ResultSet rs) {
         if (null != rs)
             try {
@@ -75,6 +93,13 @@ public abstract class Daos {
             catch (Throwable e) {}
     }
 
+    /**
+     * 获取colName所在的行数
+     * @param meta 从连接中取出的ResultSetMetaData
+     * @param colName 字段名
+     * @return 所在的索引,如果不存在就抛出异常
+     * @throws SQLException 指定的colName找不到
+     */
     public static int getColumnIndex(ResultSetMetaData meta, String colName) throws SQLException {
         if (meta == null)
             return 0;
@@ -87,6 +112,13 @@ public abstract class Daos {
         throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
     }
 
+    /**
+     * 是不是数值字段
+     * @param meta 从连接中取出的ResultSetMetaData
+     * @param index 字段索引
+     * @return 如果是就返回true
+     * @throws SQLException 指定的索引不存在
+     */
     public static boolean isIntLikeColumn(ResultSetMetaData meta, int index) throws SQLException {
         switch (meta.getColumnType(index)) {
         case Types.BIGINT:
@@ -99,6 +131,14 @@ public abstract class Daos {
         return false;
     }
 
+    /**
+     * 填充记录总数
+     * @param pager 分页对象,如果为null就不进行任何操作
+     * @param dao Dao实例
+     * @param entityType 实体类,可以通过dao.getEntity获取
+     * @param cnd 查询条件
+     * @return 传入的Pager参数
+     */
     public static Pager updatePagerCount(Pager pager, Dao dao, Class<?> entityType, Condition cnd) {
         if (null != pager) {
             pager.setRecordCount(dao.count(entityType, cnd));
@@ -106,6 +146,14 @@ public abstract class Daos {
         return pager;
     }
 
+    /**
+     * 填充记录总数
+     * @param pager 分页对象,如果为null就不进行任何操作
+     * @param dao Dao实例
+     * @param tableName 表名
+     * @param cnd 查询条件
+     * @return 传入的Pager参数
+     */
     public static Pager updatePagerCount(Pager pager, Dao dao, String tableName, Condition cnd) {
         if (null != pager) {
             pager.setRecordCount(dao.count(tableName, cnd));
@@ -113,6 +161,13 @@ public abstract class Daos {
         return pager;
     }
 
+    /**
+     * 根据sql查询特定的记录,并转化为指定的类对象
+     * @param dao Dao实例
+     * @param klass Pojo类
+     * @param sql_str sql语句
+     * @return 查询结果
+     */
     public static <T> List<T> queryList(Dao dao, Class<T> klass, String sql_str) {
         Sql sql = Sqls.create(sql_str)
                         .setCallback(Sqls.callback.entities())
@@ -121,12 +176,28 @@ public abstract class Daos {
         return sql.getList(klass);
     }
 
+    /**
+     * 执行sql和callback
+     * @param dao Dao实例
+     * @param sql_str sql语句
+     * @param callback sql回调
+     * @return 回调的返回值
+     */
     public static Object query(Dao dao, String sql_str, SqlCallback callback) {
         Sql sql = Sqls.create(sql_str).setCallback(callback);
         dao.execute(sql);
         return sql.getResult();
     }
 
+    /**
+     * 在同一个事务内查询对象及关联对象
+     * @param dao Dao实例
+     * @param classOfT 指定的Pojo类
+     * @param cnd 查询条件
+     * @param pager 分页语句
+     * @param regex 需要查出的关联对象, 可以参阅dao.fetchLinks
+     * @return 查询结果
+     */
     public static <T> List<T> queryWithLinks(    final Dao dao,
                                                 final Class<T> classOfT,
                                                 final Condition cnd,
@@ -143,7 +214,7 @@ public abstract class Daos {
         return Trans.exec(molecule);
     }
 
-    /*根据Pojo生成数据字典,zdoc格式*/
+    /**根据Pojo生成数据字典,zdoc格式*/
     public static StringBuilder dataDict(DataSource ds, String...packages) {
         StringBuilder sb = new StringBuilder();
         List<Class<?>> ks = new ArrayList<Class<?>>();
@@ -361,6 +432,12 @@ public abstract class Daos {
         });
     }
     
+    /**
+     * 为特定package下带@Table注解的类调用dao.create(XXX.class, force), 批量建表
+     * @param dao Dao实例
+     * @param packageName package名称,自动包含子类
+     * @param force 如果表存在,是否先删后建
+     */
     public static void createTablesInPackage(Dao dao, String packageName, boolean force) {
     	for (Class<?> klass : Scans.me().scanPackage(packageName)) {
 			if (klass.getAnnotation(Table.class) != null)
@@ -390,12 +467,158 @@ public abstract class Daos {
 		return ext(dao, null, tableName);
 	}
 	
+	/**
+	 * 同时进行字段过滤和动态表名封装
+	 * @param dao Dao实例
+	 * @param filter 字段过滤
+	 * @param tableName 动态表名参数
+	 * @return 封装好的Dao实例
+	 */
 	public static Dao ext(Dao dao, FieldFilter filter, Object tableName) {
 		if (tableName == null && filter == null)
 			return dao;
 		ExtDaoInvocationHandler handler = new ExtDaoInvocationHandler(dao, filter, tableName);
 		return (Dao) Proxy.newProxyInstance(dao.getClass().getClassLoader(), iz, handler);
 	}
+
+    
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static boolean filterFields(Object obj, FieldMatcher matcher, Dao dao, Callback2<MappingField, Object> callback) {
+        if (obj == null)
+            return false;
+        obj = Lang.first(obj);
+        if (obj == null) {
+            return false;
+        }
+        if (obj.getClass() == Class.class) {
+            throw Lang.impossible();
+        }
+        if (obj instanceof String || obj instanceof Number || obj instanceof Boolean) {
+            throw Lang.impossible();
+        }
+        Entity en = dao.getEntity(obj.getClass());
+        if (en == null) {
+            throw Lang.impossible();
+        }
+        
+        List<MappingField> mfs = en.getMappingFields();
+        if (matcher != null) {
+                Iterator<MappingField> it = mfs.iterator();
+                while (it.hasNext()) {
+                    MappingField mf = it.next();
+                    if (!matcher.match(mf.getName()))
+                        it.remove();
+                }
+        }
+        boolean flag = false;
+        for (MappingField mf : mfs) {
+            if (matcher.isIgnoreId() && mf.isId())
+                continue;
+            if (matcher.isIgnoreName() && mf.isName())
+                continue;
+            if (matcher.isIgnorePk() && mf.isCompositePk())
+                continue;
+            Object val = mf.getValue(obj);
+            if (val == null) {
+                if (matcher.isIgnoreNull())
+                    continue;
+            } if (val instanceof Number && ((Number)val).doubleValue() == 0.0) {
+                if (matcher.isIgnoreZero())
+                    continue;
+            } if (val instanceof Date) {
+                if (matcher.isIgnoreDate())
+                    continue;
+            }
+            callback.invoke(mf, val);
+            flag = true;
+        }
+        return flag;
+    }
+    
+    /**
+     * 为数据表自动增减字段
+     * @param dao Dao实例
+     * @param klass 映射Pojo
+     * @param add 是否允许添加
+     * @param del 是否允许删除
+     */
+    public static void migration(final Dao dao, final Class<?> klass, final boolean add, final boolean del) {
+        final Entity<?> en = dao.getEntity(klass);
+        if (!dao.exists(klass))
+            return;
+        final JdbcExpert expert = ((NutDao)dao).getJdbcExpert();
+        final List<Sql> sqls = new ArrayList<Sql>();
+        final boolean sqlAddNeedColumn = !dao.meta().isOracle();
+        dao.run(new ConnCallback() {
+            public void invoke(Connection conn) throws Exception {
+                Statement stat = null;
+                ResultSet rs = null;
+                ResultSetMetaData meta = null;
+                try {
+                    // 获取数据库元信息
+                    stat = conn.createStatement();
+                    rs = stat.executeQuery("select * from " + en.getTableName() + " where 1 != 1");
+                    meta = rs.getMetaData();
+                    
+                    Set<String> columnNames = new HashSet<String>();
+                    int columnCount = meta.getColumnCount();
+                    for (int i = 1; i <= columnCount; i++) {
+                        columnNames.add(meta.getColumnName(i).toLowerCase());
+                    }
+                    for (MappingField mf : en.getMappingFields()) {
+                        String colName = mf.getColumnName();
+                        if (columnNames.contains(colName.toLowerCase())) {
+                            columnNames.remove(colName);
+                            continue;
+                        }
+                        if (add) {
+                            log.infof("add column[%s] to table[%s]", mf.getColumnName(), en.getTableName());
+                            Sql sql = Sqls.create("ALTER table $table ADD " + (sqlAddNeedColumn ? "column" : "") + "$name $type");
+                            sql.vars().set("table", en.getTableName());
+                            sql.vars().set("name", mf.getColumnName());
+                            sql.vars().set("type", expert.evalFieldType(mf));
+                            sqls.add(sql);
+                        }
+                    }
+                    if (del) {
+                        for (String colName : columnNames) {
+                            log.infof("del column[%s] from table[%s]", colName, en.getTableName());
+                            Sql sql = Sqls.create("ALTER table $table DROP column $name");
+                            sql.vars().set("table", en.getTableName());
+                            sql.vars().set("name", colName);
+                            sqls.add(sql);
+                        }
+                    }
+                }
+                catch (SQLException e) {
+                    if (log.isDebugEnabled())
+                        log.debugf("migration Table '%s' fail!", en.getTableName(), e);
+                }
+                // Close ResultSet and Statement
+                finally {
+                    Daos.safeClose(stat, rs);
+                }
+            }
+        });
+        for (Sql sql : sqls) {
+            dao.execute(sql);
+        }
+    }
+
+    /**
+     * 为指定package及旗下package中带@Table注解的Pojo执行migration
+     * @param dao Dao实例
+     * @param packageName 指定的package名称
+     * @param add 是否允许添加
+     * @param del 是否允许删除
+     */
+    public static void migration(Dao dao, String packageName, boolean add, boolean del) {
+        for (Class<?> klass : Scans.me().scanPackage(packageName)) {
+            if (klass.getAnnotation(Table.class) != null) {
+                migration(dao, klass, add, del);
+            }
+        }
+    }
 }
 
 class ExtDaoInvocationHandler implements InvocationHandler {

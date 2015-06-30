@@ -1,6 +1,7 @@
 package org.nutz.dao.util.blob;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Blob;
@@ -23,6 +24,11 @@ public class SimpleBlob implements Blob {
     }
 
     public byte[] getBytes(long pos, int length) throws SQLException {
+        if (pos == 1 && length == length())
+            try {
+                return Streams.readBytes(getBinaryStream());
+            } catch (IOException e) {
+            }
         throw Lang.noImplement();
     }
 

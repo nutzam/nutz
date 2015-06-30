@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import org.nutz.dao.Dao;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.SimpleDataSource;
+import org.nutz.lang.Files;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.log.Log;
@@ -32,6 +33,8 @@ import org.nutz.log.Logs;
     // 程序结束前关闭相关资源.
     DaoUp.me().close();
 </code>
+<p/><p/>
+请参阅test源码中的DaoUpTest获取Dao的入门技巧.
  * 
  * @author wendal(wendal1985@gmail.com)
  *
@@ -130,7 +133,25 @@ public class DaoUp {
      */
     public void setDataSource(DataSource dataSource) {
         this.dataSource = dataSource;
-        dao = new NutDao(dataSource);
+        setDao(new NutDao(dataSource));
+    }
+    
+    /**
+     * 主动设置Dao实例
+     * @param dao Dao实例
+     */
+    public void setDao(Dao dao) {
+        if (this.dao != null)
+            log.infof("override old Dao=%s by new Dao=%s", this.dao, dao);
+        this.dao = dao;
+    }
+    
+    /**
+     * 从classpath或当前目录下查找配置文件来进行初始化
+     * @param name
+     */
+    public void init(String name) throws IOException {
+        init(new FileInputStream(Files.findFile(name)));
     }
     
     /**

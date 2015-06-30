@@ -103,6 +103,16 @@ public interface Dao {
      * @see org.nutz.dao.entity.annotation.Next
      */
     <T> T insert(T obj);
+    
+    /**
+     * 将一个对象按FieldFilter过滤后,插入到一个数据源。<p/>
+     * <code>dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));</code>
+     * @param obj 要被插入的对象
+     * @param filter 字段过滤器, 其中FieldMatcher.isIgnoreId生效
+     * @return 插入后的对象
+     * @see org.nutz.dao.Dao#insert(Object)
+     */
+    <T> T insert(T obj, FieldFilter filter);
 
     /**
      * 自由的向一个数据表插入一条数据。数据用名值链描述
@@ -653,7 +663,7 @@ public interface Dao {
      * 根据一个正则表达式，获取对象所有的关联字段
      * 
      * @param obj
-     *            数据对象
+     *            数据对象,不可以是Class啊!!!传对象啊!!!
      * @param regex
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @return 更新后的数据对象本身
@@ -742,6 +752,7 @@ public interface Dao {
     <T> T clearLinks(T obj, String regex);
 
     /**
+     * 获取实体描述, 其中包含了Java Pojo<-->数据库的全部映射信息
      * @param classOfT
      *            对象类型
      * @return 实体描述

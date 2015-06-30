@@ -84,12 +84,13 @@ public class AnnotationIocLoader implements IocLoader {
                 }
             }
 
+            // 重名了, 需要用户用@IocBean(name="xxxx") 区分一下
             if (map.containsKey(beanName))
                 throw Lang.makeThrow(IocException.class,
                                      "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
                                      beanName,
                                      classZ,
-                                     map.get(beanName).getClass());
+                                     map.get(beanName).getType());
 
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);

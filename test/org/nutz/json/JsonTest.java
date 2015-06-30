@@ -25,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.Castors;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
@@ -908,5 +909,10 @@ public class JsonTest {
         map.put("now", new Date());
         System.out.println(Json.toJson(map, JsonFormat.compact()));
         System.out.println(Json.toJson(map, JsonFormat.compact().setDateFormat("yyyy-MM-dd")));
+        String str = "[{dongdong:{age:80}}]";
+        System.out.println(Json.fromJson(str));
+        List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.map(String.class, Pet.class)), str/*其他源也可以*/);
+        System.out.println(list);
+        assertEquals(80, list.get(0).get("dongdong").getAge());
     }
 }

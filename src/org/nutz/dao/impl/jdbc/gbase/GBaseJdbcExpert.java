@@ -48,8 +48,7 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 												pager.getPageSize()));
 	}
 
-	@Override
-	protected String evalFieldType(MappingField mf) {
+	public String evalFieldType(MappingField mf) {
 		if (mf.getCustomDbType() != null)
 			return mf.getCustomDbType();
 		// Mysql 的精度是按照 bit

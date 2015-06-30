@@ -233,4 +233,6 @@ public interface DaoStatement {
     void forceExecQuery();
     
     boolean isForceExecQuery();
+    
+    String forPrint();
 }

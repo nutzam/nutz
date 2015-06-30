@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
+import java.sql.Blob;
 import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
+import org.nutz.dao.impl.jdbc.ClobValueAdapter2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -18,6 +21,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Mirror;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -40,10 +44,13 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     }
 
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isBoolean())
+        Mirror<?> mirror = ef.getTypeMirror();
+        if (mirror.isBoolean())
             return new OracleBooleanAdaptor();
-        if (Clob.class.isAssignableFrom(ef.getTypeClass()))
-            return new OracleClobAdapter(Jdbcs.getFilePool());
+        if (mirror.isOf(Clob.class))
+            return new ClobValueAdapter2(Jdbcs.getFilePool());
+        if (mirror.isOf(Blob.class))
+            return new BlobValueAdaptor2(Jdbcs.getFilePool());
         return super.getAdaptor(ef);
     }
 
@@ -157,8 +164,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return DB.ORACLE.name();
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

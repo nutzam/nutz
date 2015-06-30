@@ -6,27 +6,41 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+
 import org.junit.Test;
 import org.nutz.Nutz;
 import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
+import org.nutz.dao.FieldFilter;
+import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
+import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
+import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
 import org.nutz.dao.test.meta.SimplePOJO;
+import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
+import org.nutz.dao.util.Daos;
+import org.nutz.dao.util.blob.SimpleBlob;
+import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
 
@@ -271,7 +285,7 @@ public class SimpleDaoTest extends DaoCase {
         dao.fetch(Pet.class, (String) null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = Exception.class)
     public void test_create_error_class() {
         dao.create(Nutz.class, true);
     }
@@ -308,5 +322,104 @@ public class SimpleDaoTest extends DaoCase {
     public void test_issue_726() {
         dao.create(Issue726.class, true);
         assertTrue(dao.getEntity(Issue726.class).getColumn("id").isAutoIncreasement());
+    }
+    
+    
+    @Test
+    public void test_daoex_update() throws Throwable {
+        final List<A> list = new ArrayList<A>();
+        for (int i = 0; i < 1; i++) {
+            A a = new A();
+            a.setUid(System.currentTimeMillis());
+            Lang.quiteSleep(10);
+//            a.setName("zzzz" + System.currentTimeMillis());
+            list.add(a);
+        }
+        TableName.run("1", new Runnable() {
+            
+            @Override
+            public void run() {
+                dao.create(A.class, true);
+                dao.update(list);
+            }
+        });
+        System.out.println("\n\n\n\n\n\n\n\n");
+        Daos.ext(dao,  FieldFilter.create(A.class, null, "^(name)$", true), 1).update(list);
+        
+    }
+    
+    @Test
+    public void test_bean_uuid() {
+    	Sql sql = Sqls.queryRecord("select * from t_pet");
+    	sql.setPager(dao.createPager(1, 10));
+    	dao.execute(sql);
+    }
+    
+    @Test
+    public void test_fetchLinks() {
+        Master master = new Master();
+        master.setName("wendal");
+        Pet pet = Pet.create("asdfs");
+        Pet pet2 = Pet.create("zzzz");
+        List<Pet> pets = new ArrayList<Pet>();
+        pets.add(pet);
+        pets.add(pet2);
+        master.setPets(pets);
+        dao.insertWith(master, null);
+        List<Master> list = dao.query(Master.class, null);
+        dao.fetchLinks(list, null, Cnd.where("1", "=", 1));
+    }
+    
+    @Test
+    public void test_insert_with_id() {
+        dao.clear(Pet.class);
+        Pet pet = Pet.create("zzz");
+        pet.setId(9090); // 主动设置id
+        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class, FieldMatcher.make(null, null, true).setIgnoreId(false)));
+        dao.fastInsert(pet);
+        pet = dao.fetch(Pet.class); // 只有一条记录
+        assertEquals(9090, pet.getId());
+        
+        /// 然后用1.b.53的新方法测试一下
+        if (dao.meta().isPostgresql()) {
+            System.out.println("因为Pet的@Id配置了@Next,导致插入后再执行里面的sql会报错");
+            // 还没想到怎么解决, FieldMatcher存在的时候忽略@Next?
+            return;
+        }
+        
+        dao.clear(Pet.class);
+        pet = Pet.create("zzz");
+        pet.setId(9090); // 主动设置id
+        dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));
+        pet = dao.fetch(Pet.class); // 只有一条记录
+        assertEquals(9090, pet.getId());
+    }
+    
+    @Test
+    public void test_use_blob_clob() {
+        dao.create(UseBlobClob.class, true);
+        UseBlobClob use = new UseBlobClob();
+        use.setName("wendal");
+        use.setX(new SimpleBlob(Files.findFile("nutz-test.properties")));
+        use.setY(new SimpleClob(Files.findFile("nutz-test.properties")));
+        use = dao.insert(use);
+
+        use.setX(new SimpleBlob(Files.findFile("log4j.properties")));
+        use.setY(new SimpleClob(Files.findFile("log4j.properties")));
+        dao.update(use);
+    }
+    
+    @Test
+    public void test_migration() {
+        dao.execute(Sqls.create("drop table t_pet"));
+        Entity<Pet> en = dao.getEntity(Pet.class);
+        NutDao dao = (NutDao) this.dao;
+        JdbcExpert expert = dao.getJdbcExpert();
+        MappingField mf = en.getField("age");
+        String str = "create table t_pet (" + mf.getColumnName() + " " + expert.evalFieldType(mf)  + "," +  mf.getColumnName() + "_2" + " " + expert.evalFieldType(mf) + ")";
+        dao.execute(Sqls.create(str));
+        
+        Daos.migration(dao, Pet.class, true, true);
+        
     }
 }

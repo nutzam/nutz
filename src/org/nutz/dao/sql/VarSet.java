@@ -15,4 +15,5 @@ public interface VarSet {
 
     Set<String> keys();
 
+    int size();
 }

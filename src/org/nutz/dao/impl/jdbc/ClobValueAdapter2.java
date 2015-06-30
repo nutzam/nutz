@@ -1,17 +1,16 @@
-package org.nutz.dao.impl.jdbc.oracle;
+package org.nutz.dao.impl.jdbc;
 
 import java.sql.Clob;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.nutz.dao.impl.jdbc.ClobValueAdaptor;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.filepool.FilePool;
 
-public class OracleClobAdapter extends ClobValueAdaptor {
+public class ClobValueAdapter2 extends ClobValueAdaptor {
     
-    OracleClobAdapter(FilePool pool) {
+    public ClobValueAdapter2(FilePool pool) {
         super(pool);
     }
 
