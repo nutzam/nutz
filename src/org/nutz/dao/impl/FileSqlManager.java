@@ -104,7 +104,7 @@ public class FileSqlManager implements SqlManager {
                     continue;
                 }
                 if (sb.length() > 0)
-                    sb.append(File.pathSeparator);
+                    sb.append("\n");
                 sb.append(line);
             }
             
