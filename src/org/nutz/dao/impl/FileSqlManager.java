@@ -1,6 +1,7 @@
 package org.nutz.dao.impl;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
@@ -102,6 +103,8 @@ public class FileSqlManager implements SqlManager {
                     log.infof("skip not key sql line %s", line);
                     continue;
                 }
+                if (sb.length() > 0)
+                    sb.append(File.pathSeparator);
                 sb.append(line);
             }
             
