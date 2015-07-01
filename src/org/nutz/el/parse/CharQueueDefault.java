@@ -4,12 +4,16 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.LinkedList;
 
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
+
 /**
  * 字符队列默认实现.
  * @author juqkai(juqkai@gmail.com)
  *
  */
 public class CharQueueDefault implements CharQueue{
+    private static final Log log = Logs.get();
     private Reader reader;
     private LinkedList<Integer> cache;
     private int cursor;
@@ -20,7 +24,7 @@ public class CharQueueDefault implements CharQueue{
         try {
             cursor = reader.read();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.debug("read error", e);
         }
     }
 
@@ -42,7 +46,7 @@ public class CharQueueDefault implements CharQueue{
                 t = reader.read();
                 cache.add(t);
             } catch (IOException e) {
-                e.printStackTrace();
+                log.debug("read error", e);
             }
         }
         return (char) t;
@@ -57,7 +61,7 @@ public class CharQueueDefault implements CharQueue{
                 cursor = cache.poll();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.debug("read error", e);
         }
         return x;
     }
