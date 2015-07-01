@@ -60,7 +60,16 @@ public class OneLinkField extends AbstractLinkField  {
         return Cnd.where(linkedField.getColumnName(), "=", hostField.getValue(host));
     }
 
-    public void updateLinkedField(Object obj, Object linked) {}
+    public void updateLinkedField(Object obj, Object linked) {
+        if (hostField.isId()) {
+            Object val = linkedField.getValue(linked);
+            if (val != null && val instanceof Number) {
+                if (((Number)val).doubleValue() == 0.0) {
+                    linkedField.setValue(linked, hostField.getValue(obj));
+                }
+            }
+        }
+    }
 
     public void saveLinkedField(Object obj, Object linked) {
         Object v = linkedField.getValue(linked);

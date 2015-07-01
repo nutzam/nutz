@@ -7,6 +7,8 @@ import org.junit.Test;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.Base;
 import org.nutz.dao.test.meta.Country;
+import org.nutz.dao.test.meta.issue889.Issue889User;
+import org.nutz.dao.test.meta.issue889.Issue889UserProfile;
 import org.nutz.lang.Lang;
 
 import static org.junit.Assert.*;
@@ -127,4 +129,22 @@ public class OneTest extends DaoCase {
         assertEquals("ABC", c.getName());
     }
 
+
+    
+    @Test
+    public void test_insert_with_one_id() {
+        dao.create(Issue889User.class, true);
+        dao.create(Issue889UserProfile.class, true);
+        
+        Issue889User user = new Issue889User();
+        user.setName("wendal");
+        Issue889UserProfile profile = new Issue889UserProfile();
+        profile.setEmail("wendal1985@gmail.com");
+        user.setProfile(profile);
+        
+        dao.insertWith(user, null);
+        
+        assertTrue(user.getId() > 0);
+        assertEquals(user.getId(), profile.getUserId());
+    }
 }

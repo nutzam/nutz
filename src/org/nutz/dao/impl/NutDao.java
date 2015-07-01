@@ -201,13 +201,37 @@ public class NutDao extends DaoSupport implements Dao {
         EntityOperator opt = _optBy(obj);
         if (null == opt)
             return null;
-
-        opt.entity.visitOne(obj, regex, doInsert(opt));
+        final LinkVisitor one = doInsert(opt);
+        final boolean[] flag = new boolean[1];
+        // issue 889. hostField是@Id(auto=true)的时候
+        // 需要把相应的@One对象,押后到host对象插入之后
+        opt.entity.visitOne(obj, regex, new LinkVisitor() {
+            public void visit(Object obj, LinkField lnk) {
+                if (lnk.getHostField().isId()) {
+                    flag[0] = true;
+                    return;
+                }
+                one.visit(obj, lnk);
+            }
+        });
         opt.addInsert();
         opt.entity.visitMany(obj, regex, doInsert(opt));
         opt.entity.visitManyMany(obj, regex, doInsert(opt));
         opt.entity.visitManyMany(obj, regex, doInsertRelation(opt));
         opt.exec();
+        
+        if (flag[0]) {
+            opt = _optBy(obj);
+            final LinkVisitor _one = doInsert(opt);
+            opt.entity.visitOne(obj, regex, new LinkVisitor() {
+                public void visit(Object obj, LinkField lnk) {
+                    if (!lnk.getHostField().isId())
+                        return;
+                    _one.visit(obj, lnk);
+                }
+            });
+            opt.exec();
+        }
 
         return obj;
     }
