@@ -15,7 +15,7 @@ public class SimpleSqlManagerTest extends Assert {
 
     @Test
     public void testSimpleSqlManager() {
-        new SimpleSqlManager("org/nutz");
+        new FileSqlManager("org/nutz");
     }
 
 }
