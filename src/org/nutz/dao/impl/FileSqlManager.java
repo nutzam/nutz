@@ -72,6 +72,10 @@ public class FileSqlManager implements SqlManager {
                 if (line == null)
                     break;
                 if (line.startsWith("/*")) {
+                    if (key.length() > 0 && line.contains("*/") && !line.endsWith("*/")) {
+                        sb.append(line);
+                        continue;
+                    }
                     if (key.length() > 0 && sb.length() > 0) {
                         addSql(key.toString(), sb.toString());
                     }

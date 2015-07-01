@@ -650,6 +650,8 @@ public abstract class Streams {
         String line = null;
         while (br.ready()) {
             line = br.readLine();
+            if (line == null)
+                break;
             if (Strings.isBlank(line))
                 continue;
             return line.trim();
