@@ -1,0 +1,8 @@
+/*-------------------------------------------------------------------------*/
+/*
+oracle.index
+*/
+SELECT /*+ INDEX(A, IDX_T_PERF_PF2H_DI_II_CT)*/ IN_SPEED,OUT_SPEED,PERCENT_IN_DISCARDS,PERCENT_OUT_DISCARDS,IN_TOTAL_THROUGHPUT,
+ 	OUT_TOTAL_THROUGHPUT, TOTAL_THROUGHPUT,COLLECT_TIME FROM T_PERF_PORT_FLOW_2HOUR A
+WHERE IF_INDEX=@ifIndex AND DEV_ID=@devId AND AREA_ID=@areaId AND DEV_TYPE_ID=@devTypeId
+AND COLLECT_TIME>=TO_DATE(@collectTime,'yyyy-mm-dd hh24:mi:ss')

@@ -104,4 +104,12 @@ public class SQLFileParsingTest {
         sql.params().set("id", 16);
         assertEquals("UPDATE t_abc SET name='ABC' WHERE id=16;", sql.toString());
     }
+    
+    @Test
+    public void test_with_force_index_comment() {
+        SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/force_indexs.sqls");
+        assertEquals(1, sqls.count());
+        assertEquals("oracle.index", sqls.keys()[0]);
+        assertTrue(sqls.get("oracle.index").contains("/*"));
+    }
 }
