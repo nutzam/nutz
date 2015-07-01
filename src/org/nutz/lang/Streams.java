@@ -645,4 +645,15 @@ public abstract class Streams {
         }
 
     }
+    
+    public static String nextLineTrim(BufferedReader br) throws IOException {
+        String line = null;
+        while (br.ready()) {
+            line = br.readLine();
+            if (Strings.isBlank(line))
+                continue;
+            return line.trim();
+        }
+        return line;
+    }
 }
