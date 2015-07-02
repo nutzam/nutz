@@ -21,6 +21,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.born.BornContext;
 import org.nutz.lang.born.Borning;
 import org.nutz.lang.born.Borns;
+import org.nutz.lang.reflect.FastClassFactory;
 import org.nutz.lang.util.Context;
 
 /**
@@ -159,7 +160,7 @@ public class NutEntity<T> implements Entity<T> {
     
     private boolean complete;
 
-    public NutEntity(Class<T> type) {
+    public NutEntity(final Class<T> type) {
         this.type = type;
         this.mirror = Mirror.me(type);
         this.byJava = new HashMap<String, MappingField>();
@@ -179,7 +180,13 @@ public class NutEntity<T> implements Entity<T> {
 
         // 获得默认的构造方法
         try {
-            bornByDefault = mirror.getBorningByArgTypes();
+            //bornByDefault = mirror.getBorningByArgTypes();
+            bornByDefault = new Borning<T>() {
+                @SuppressWarnings("unchecked")
+                public T born(Object... args) {
+                    return (T)FastClassFactory.get(type).born();
+                }
+            };
         }
         catch (Exception e) {}
 

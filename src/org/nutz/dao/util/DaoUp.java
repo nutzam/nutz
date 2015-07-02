@@ -246,6 +246,7 @@ public class DaoUp {
     protected void finalize() throws Throwable {
         if (autoCloseWhenFinalize)
             close();
+        super.finalize();
     }
     
     // TODO 完成一个repl

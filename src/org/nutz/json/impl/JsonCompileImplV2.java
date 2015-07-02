@@ -407,6 +407,7 @@ final class JsonTokenScan {
             case '\n':
                 row++;
                 col = 0;
+                break;
             default:
                 col++;
                 break;

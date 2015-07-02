@@ -3,166 +3,139 @@ package org.nutz.dao.impl.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.impl.sql.pojo.AbstractPItem;
+import org.nutz.dao.impl.sql.pojo.StaticPItem;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.DaoStatement;
+import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.dao.sql.VarIndex;
 import org.nutz.dao.sql.VarSet;
+import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Each;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 
 public class NutSql extends NutStatement implements Sql {
 
-    SqlLiteral literal;
+    protected String sourceSql;
+    protected VarSet vars;
+    protected List<VarSet> rows;
+    protected VarSet params;
+    protected SqlCallback callback;
+    protected VarIndex varIndex;
+    protected VarIndex paramIndex;
+    protected Map<String, ValueAdaptor> customValueAdaptor;
+    protected List<PItem> items;
 
-    private VarSet vars;
-
-    private List<VarSet> rows;
-
-    private VarSet lastRow;
-
-    private SqlCallback callback;
-
-    private ValueAdaptor[] adaptors;
-
-    private ValueAdaptor[] clientAdaptors;
-
-    private NutSql() {
-        super();
-        vars = new SimpleVarSet();
-        rows = new LinkedList<VarSet>();
-        this.addBatch();
+    public NutSql(String source) {
+        this(source, null);
     }
 
-    public NutSql(String sql) {
-        this();
-        this.literal = new SqlLiteral().valueOf(sql);
-        this.setSqlType(this.literal.getType());
-        // 根据字面量，构造一个参数的适配器数组
-        adaptors = new ValueAdaptor[literal.getParamIndexes().getOrders().size()];
-        clientAdaptors = new ValueAdaptor[adaptors.length];
-    }
-
-    private NutSql(SqlLiteral literal, SqlCallback callback) {
-        this();
-        this.literal = literal;
-        this.setSqlType(this.literal.getType());
+    public NutSql(String source, SqlCallback callback) {
+        this.setSourceSql(source);
         this.callback = callback;
-        // 根据字面量，构造一个参数的适配器数组
-        adaptors = new ValueAdaptor[literal.getParamIndexes().getOrders().size()];
-        clientAdaptors = new ValueAdaptor[adaptors.length];
+        this.vars = new SimpleVarSet();
+        this.rows = new ArrayList<VarSet>();
+        this.params = new SimpleVarSet();
+        this.rows.add(params);
+        customValueAdaptor = new HashMap<String, ValueAdaptor>();
     }
 
-    public Sql setEntity(Entity<?> en) {
-        return (Sql) super.setEntity(en);
+    public void setSourceSql(String sql) {
+        this.sourceSql = sql;
+        SqlLiteral literal = new SqlLiteral().valueOf(sql);
+        this.varIndex = literal.getVarIndexes();
+        this.paramIndex = literal.getParamIndexes();
+        if (getSqlType() == null)
+            setSqlType(literal.getType());
+        String[] ss = literal.stack.cloneChain();
+        PItem[] tmp = new PItem[ss.length];
+        for (String var : varIndex.getOrders()) {
+            int[] is = varIndex.indexesOf(var);
+            if (is != null) {
+                for (int i : is) {
+                    tmp[i] = new SqlVarPItem(var);
+                }
+            }
+        }
+        for (String param : paramIndex.getOrders()) {
+            int[] is = paramIndex.indexesOf(param);
+            if (is != null) {
+                for (int i : is) {
+                    tmp[i] = new SqlParamPItem(param);
+                }
+            }
+        }
+        for (int i = 0; i < tmp.length; i++) {
+            if (tmp[i] == null) {
+                tmp[i] = new StaticPItem(ss[i], true);
+            }
+        }
+        this.items = Arrays.asList(tmp);
+    }
+
+    protected int _params_count() {
+        int count = 0;
+        Entity<?> en = getEntity();
+        for (PItem item : items) {
+            count += item.paramCount(en);
+        }
+        return count;
     }
 
     public ValueAdaptor[] getAdaptors() {
-        for (int i = 0; i < adaptors.length; i++) {
-            // 采用用户的设定
-            if (null != clientAdaptors[i])
-                adaptors[i] = clientAdaptors[i];
-            // 自动决定
-            else if (null == adaptors[i]) {
-                // 获得对应参数的名称，以及关联的其他索引
-                String name = literal.getParamIndexes().getOrderName(i);
-                int[] is = literal.getParamIndexes().getOrderIndex(name);
-                // 寻找第一个非 null 的参数
-                Object value = null;
-                for (VarSet row : rows) {
-                    value = row.get(name);
-                    if (null != value)
-                        break;
-                }
-                // 找到了，得到适配器，然后循环设置一下
-                if (null != value) {
-                    ValueAdaptor vab = Jdbcs.getAdaptor(Mirror.me(value));
-                    for (int x : is)
-                        adaptors[x] = vab;
-                }
-                // 如果找不到用 Null 适配器
-                else {
-                    adaptors[i] = Jdbcs.Adaptor.asNull;
-                }
-
-            }
-        }
+        ValueAdaptor[] adaptors = new ValueAdaptor[_params_count()];
+        int i = 0;
+        for (PItem item : items)
+            i = item.joinAdaptor(getEntity(), adaptors, i);
         return adaptors;
     }
 
-    public void setValueAdaptor(String name, ValueAdaptor adaptor) {
-        int[] is = literal.getParamIndexes().getOrderIndex(name);
-        if (null != is)
-            for (int i : is)
-                adaptors[i] = adaptor;
-    }
-
     public Object[][] getParamMatrix() {
-        // 仅仅去掉队尾没有参数设定的VarSet，尽可能的不遍历
-        if (rows.size() > 0) {
-            VarSet vs = rows.get(rows.size() - 1);
-            while (null != vs) {
-                if (vs.keys().size() == 0) {
-                    rows.remove(vs);
-                    vs = null;
-                    if (rows.size() > 0)
-                        vs = rows.get(rows.size() - 1);
-                } else {
-                    break;
-                }
-            }
+        int pc = _params_count();
+        int row_count = rows.size();
+        if (rows.size() > 1 && params.size() == 0 && rows.get(0).size() != 0) {
+            row_count--;
         }
-        Object[][] re = new Object[rows.size()][adaptors.length];
-        int i = 0;
-        for (VarSet row : rows) {
-            Object[] cols = re[i++];
-            for (String name : literal.getParamIndexes().names()) {
-                Object value = row.get(name);
-                int[] is = literal.getParamIndexes().getOrderIndex(name);
-                for (int x : is)
-                    cols[x] = value;
-            }
+        Object[][] re = new Object[row_count][pc];
+        for (int z = 0; z < row_count; z++) {
+            VarSet row = rows.get(z);
+            int i = 0;
+            for (PItem item : items)
+                i = item.joinParams(getEntity(), row, re[z], i);
         }
         return re;
     }
 
     public String toPreparedStatement() {
-        String[] ss = _createSqlElements();
-
-        // 填充参数
-        VarIndex vIndex = literal.getParamIndexes();
-        for (String name : vIndex.names()) {
-            int[] is = vIndex.indexesOf(name);
-            for (int i : is)
-                ss[i] = "?";
-
-        }
-        return Lang.concat(ss).toString();
+        StringBuilder sb = new StringBuilder();
+        for (PItem item : items)
+            item.joinSql(getEntity(), sb);
+        return sb.toString();
     }
 
-    /**
-     * 获取语句模板并填充占位符
-     * 
-     * @return 语句模板
-     */
-    private String[] _createSqlElements() {
-        String[] ss = literal.stack.cloneChain();
-        VarIndex vIndex = literal.getVarIndexes();
-        VarSet vs = vars;
-        for (String name : vIndex.names()) {
-            int[] is = vIndex.indexesOf(name);
-            Object obj = vs.get(name);
-            for (int i : is)
-                ss[i] = null == obj ? "" : obj.toString();
-        }
-        return ss;
+    public void onBefore(Connection conn) throws SQLException {}
+
+    public void onAfter(Connection conn, ResultSet rs) throws SQLException {
+        if (callback != null)
+            getContext().setResult(callback.invoke(conn, rs, this));
+    }
+
+    public DaoStatement setPager(Pager pager) {
+        getContext().setPager(pager);
+        return this;
     }
 
     public VarSet vars() {
@@ -170,25 +143,35 @@ public class NutSql extends NutStatement implements Sql {
     }
 
     public VarSet params() {
-        return lastRow;
+        return params;
+    }
+
+    public void setValueAdaptor(String name, ValueAdaptor adaptor) {
+        this.customValueAdaptor.put(name, adaptor);
     }
 
     public VarIndex varIndex() {
-        return literal.getVarIndexes();
+        return varIndex;
     }
 
     public VarIndex paramIndex() {
-        return literal.getParamIndexes();
+        return paramIndex;
     }
 
     public void addBatch() {
-        lastRow = new SimpleVarSet();
-        rows.add(lastRow);
+        params = new SimpleVarSet();
+        rows.add(params);
     }
 
     public void clearBatch() {
+        params = new SimpleVarSet();
         rows.clear();
-        addBatch();
+        rows.add(params);
+    }
+
+    public Sql setEntity(Entity<?> entity) {
+        super.setEntity(entity);
+        return this;
     }
 
     public Sql setCallback(SqlCallback callback) {
@@ -197,50 +180,173 @@ public class NutSql extends NutStatement implements Sql {
     }
 
     public Sql setCondition(Condition cnd) {
-        this.vars().set("condition", cnd.toSql(this.getEntity()));
+        vars.set("condition", cnd);
         return this;
     }
 
     public Sql duplicate() {
-        return new NutSql(literal, callback);
+        return new NutSql(sourceSql, callback);
     }
 
-    public void onBefore(Connection conn) {}
-
-    public void onAfter(Connection conn, ResultSet rs) throws SQLException {
-        if (null != callback)
-            getContext().setResult(callback.invoke(conn, rs, this));
+    public String getSourceSql() {
+        return sourceSql;
     }
 
-    @Override
     public String toString() {
-        /*
-         * // 语句模板 String[] ss = _createSqlElements();
-         * 
-         * // 填充参数 VarIndex vIndex = literal.getParamIndexes(); VarSet vs =
-         * rows.get(0); for (String name : vIndex.names()) { int[] is =
-         * vIndex.indexesOf(name); String s =
-         * Sqls.formatFieldValue(vs.get(name)).toString(); for (int i : is)
-         * ss[i] = s; }
-         * 
-         * return Lang.concat(ss).toString();
-         */
         return super.toStatement(this.getParamMatrix(), this.toPreparedStatement());
     }
+    
+    public String forPrint() {
+        return super.toString();
+    }
 
-    public NutSql setPager(Pager pager) {
-        this.getContext().setPager(pager);
-        return this;
+    class SqlVarPItem extends AbstractPItem {
+
+        public String name;
+
+        public SqlVarPItem(String name) {
+            this.name = name;
+        }
+
+        public void joinSql(Entity<?> en, StringBuilder sb) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    ((PItem) val).joinSql(en, sb);
+                }
+                else if (val instanceof Condition) {
+                    sb.append(' ').append(Pojos.formatCondition(en, (Condition) val));
+                } else {
+                    sb.append(val);
+                }
+            }
+        }
+        
+        public int joinAdaptor(Entity<?> en, ValueAdaptor[] adaptors, int off) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).joinAdaptor(en, adaptors, off);
+                }
+            }
+            return off;
+        }
+        
+        public int paramCount(Entity<?> en) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).paramCount(en);
+                }
+            }
+            return 0;
+        }
+        
+        public int joinParams(Entity<?> en, Object obj, Object[] params, int off) {
+            Object val = vars.get(name);
+            if (val != null) {
+                if (val instanceof PItem) {
+                    return ((PItem) val).joinParams(en, obj, params, off);
+                }
+            }
+            return off;
+        }
+    }
+
+    class SqlParamPItem extends AbstractPItem {
+
+        public String name;
+
+        public SqlParamPItem(String name) {
+            this.name = name;
+        }
+
+        public void joinSql(Entity<?> en, StringBuilder sb) {
+            Object val = rows.get(0).get(name);
+            if (val == null) {
+                sb.append("?");
+            } else if (val instanceof PItem) {
+                ((PItem) val).joinSql(en, sb);
+            } else if (val.getClass().isArray()) {
+                sb.append(Strings.dup("?,", Lang.length(val)));
+                sb.setLength(sb.length() - 1);
+            } else if (val instanceof Condition) {
+                sb.append(' ').append(Pojos.formatCondition(en, (Condition) val));
+            } else {
+                sb.append("?");
+            }
+        }
+
+        public int joinAdaptor(final Entity<?> en, final ValueAdaptor[] adaptors, final int off) {
+            if (!customValueAdaptor.isEmpty()) {
+                ValueAdaptor custom = customValueAdaptor.get(name);
+                if (custom != null) {
+                    adaptors[off] = custom;
+                    return off + 1;
+                }
+            }
+            Object val = rows.get(0).get(name);
+            if (val == null) {
+                adaptors[off] = Jdbcs.getAdaptorBy(null);
+                return off + 1;
+            } else if (val instanceof PItem) {
+                return ((PItem) val).joinAdaptor(en, adaptors, off);
+            } else if (val.getClass().isArray()) {
+                int len = Lang.length(val);
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        adaptors[off + index] = Jdbcs.getAdaptorBy(ele);
+                    }
+                });
+                return off + len;
+                // } else if (val instanceof Condition) {
+
+            } else {
+                adaptors[off] = Jdbcs.getAdaptorBy(val);
+                return off + 1;
+            }
+        }
+
+        public int joinParams(Entity<?> en, Object obj, final Object[] params, final int off) {
+            VarSet row = (VarSet) obj;
+            Object val = row.get(name);
+            if (val == null) {
+                return off + 1;
+            } else if (val instanceof PItem) {
+                return ((PItem) val).joinParams(en, null, params, off);
+            } else if (val.getClass().isArray()) {
+                int len = Lang.length(val);
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        params[off + index] = ele;
+                    }
+                });
+                return off + len;
+                // } else if (val instanceof Condition) {
+
+            } else {
+                params[off] = val;
+                return off + 1;
+            }
+        }
+
+        public int paramCount(Entity<?> en) {
+            Object val = rows.get(0).get(name);
+            if (val == null) {
+                return 1;
+            } else if (val instanceof PItem) {
+                return ((PItem) val).paramCount(en);
+            } else if (val.getClass().isArray()) {
+                return Lang.length(val);
+            } else if (val instanceof Condition) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
     }
     
-    public void setSourceSql(String sql) {
-        if (literal != null)
-            literal.valueOf(sql);
-        else
-            literal = new SqlLiteral().valueOf(sql);
-    }
-    
-    public String getSourceSql() {
-        return this.literal.toString();
+    SqlLiteral literal() {
+        return new SqlLiteral().valueOf(sourceSql);
     }
 }

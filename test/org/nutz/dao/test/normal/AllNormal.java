@@ -2,6 +2,7 @@ package org.nutz.dao.test.normal;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.nutz.dao.util.DaoUpTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({    FieldFilterTest.class,
@@ -17,5 +18,6 @@ import org.junit.runners.Suite;
                         BinaryDaoTest.class,
                         CreateDropTableTest.class,
                         CreateTableWithCommentTest.class,
-                        DaoRecordTest.class})
+                        DaoRecordTest.class,
+                        DaoUpTest.class})
 public class AllNormal {}

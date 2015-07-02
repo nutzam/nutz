@@ -717,7 +717,6 @@ public abstract class Jdbcs {
                             stat.setBinaryStream(index, new FileInputStream(f), f.length());
                         }
                         catch (FileNotFoundException e) {
-                        	System.gc();
                         	try {
                                 File f = Jdbcs.getFilePool().createFile(".dat");
                                 Streams.writeAndClose(new FileOutputStream(f), (InputStream)obj);

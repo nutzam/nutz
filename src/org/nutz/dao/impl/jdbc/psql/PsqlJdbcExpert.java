@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.psql;
 
+import java.sql.Blob;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -12,149 +13,144 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 import org.nutz.lang.Lang;
-import org.nutz.log.Log;
-import org.nutz.log.Logs;
 
 public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
-    public PsqlJdbcExpert(JdbcExpertConfigFile conf) {
-        super(conf);
-    }
+	public PsqlJdbcExpert(JdbcExpertConfigFile conf) {
+		super(conf);
+	}
 
-    public String getDatabaseType() {
-        return DB.PSQL.name();
-    }
+	public String getDatabaseType() {
+		return DB.PSQL.name();
+	}
 
-    public void formatQuery(Pojo pojo) {
-        Pager pager = pojo.getContext().getPager();
-        // 需要进行分页
-        if (null != pager && pager.getPageNumber() > 0)
-            pojo.append(Pojos.Items.wrapf(    " LIMIT %d OFFSET %d",
-                                            pager.getPageSize(),
-                                            pager.getOffset()));
-    }
-    
-    public void formatQuery(Sql sql) {
-        Pager pager = sql.getContext().getPager();
-        if (null != pager && pager.getPageNumber() > 0) {
-            sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d OFFSET %d",
-                                            pager.getPageSize(),
-                                            pager.getOffset()));
-        }
-    }
+	public void formatQuery(Pojo pojo) {
+		Pager pager = pojo.getContext().getPager();
+		// 需要进行分页
+		if (null != pager && pager.getPageNumber() > 0)
+			pojo.append(Pojos.Items.wrapf(" LIMIT %d OFFSET %d", pager.getPageSize(), pager.getOffset()));
+	}
 
-    public boolean createEntity(Dao dao, Entity<?> en) {
-        StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
-        // 创建字段
-        for (MappingField mf : en.getMappingFields()) {
-            sb.append('\n').append(mf.getColumnName());
-            // 自增主键特殊形式关键字
-            if (mf.isId() && mf.isAutoIncreasement()) {
-                sb.append(" SERIAL");
-            } else {
-                sb.append(' ').append(evalFieldType(mf));
-                // 非主键的 @Name，应该加入唯一性约束
-                if (mf.isName() && en.getPkType() != PkType.NAME) {
-                    sb.append(" UNIQUE NOT NULL");
-                }
-                // 普通字段
-                else {
-                    if (mf.isUnsigned())
-                        sb.append(" UNSIGNED");
-                    if (mf.isNotNull())
-                        sb.append(" NOT NULL");
-                    if (mf.isAutoIncreasement())
-                        throw Lang.noImplement();
-                    if (mf.hasDefaultValue())
-                        sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
-                }
-            }
-            sb.append(',');
-        }
-        // 创建主键
-        List<MappingField> pks = en.getPks();
-        if (!pks.isEmpty()) {
-            sb.append('\n');
-            sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (", en.getTableName().replace('.', '_').replace('"', '_')));
-            for (MappingField pk : pks) {
-                sb.append(pk.getColumnName()).append(',');
-            }
-            sb.setCharAt(sb.length() - 1, ')');
-            sb.append("\n ");
-        }
+	public void formatQuery(Sql sql) {
+		Pager pager = sql.getContext().getPager();
+		if (null != pager && pager.getPageNumber() > 0) {
+			sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d OFFSET %d", pager.getPageSize(), pager.getOffset()));
+		}
+	}
 
-        // 结束表字段设置
-        sb.setCharAt(sb.length() - 1, ')');
+	public boolean createEntity(Dao dao, Entity<?> en) {
+		StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
+		// 创建字段
+		for (MappingField mf : en.getMappingFields()) {
+			sb.append('\n').append(mf.getColumnName());
+			// 自增主键特殊形式关键字
+			if (mf.isId() && mf.isAutoIncreasement()) {
+				sb.append(" SERIAL");
+			} else {
+				sb.append(' ').append(evalFieldType(mf));
+				// 非主键的 @Name，应该加入唯一性约束
+				if (mf.isName() && en.getPkType() != PkType.NAME) {
+					sb.append(" UNIQUE NOT NULL");
+				}
+				// 普通字段
+				else {
+					if (mf.isUnsigned())
+						sb.append(" UNSIGNED");
+					if (mf.isNotNull())
+						sb.append(" NOT NULL");
+					if (mf.isAutoIncreasement())
+						throw Lang.noImplement();
+					if (mf.hasDefaultValue())
+						sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+				}
+			}
+			sb.append(',');
+		}
+		// 创建主键
+		List<MappingField> pks = en.getPks();
+		if (!pks.isEmpty()) {
+			sb.append('\n');
+			sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (", en.getTableName().replace('.', '_').replace('"', '_')));
+			for (MappingField pk : pks) {
+				sb.append(pk.getColumnName()).append(',');
+			}
+			sb.setCharAt(sb.length() - 1, ')');
+			sb.append("\n ");
+		}
 
-        // 执行创建语句
-        dao.execute(Sqls.create(sb.toString()));
+		// 结束表字段设置
+		sb.setCharAt(sb.length() - 1, ')');
 
-        // 创建索引
-        dao.execute(createIndexs(en).toArray(new Sql[0]));
+		// 执行创建语句
+		dao.execute(Sqls.create(sb.toString()));
 
-        // 创建关联表
-        createRelation(dao, en);
+		// 创建索引
+		dao.execute(createIndexs(en).toArray(new Sql[0]));
 
-        // 添加注释(表注释与字段注释)
-        addComment(dao, en);
+		// 创建关联表
+		createRelation(dao, en);
 
-        return true;
-    }
+		// 添加注释(表注释与字段注释)
+		addComment(dao, en);
 
-    public String evalFieldType(MappingField mf) {
-        if (mf.getCustomDbType() != null)
-            return mf.getCustomDbType();
-        switch (mf.getColumnType()) {
-        case INT:
-            // 用户自定义了宽度
-            if (mf.getWidth() > 0)
-                return "NUMERIC(" + mf.getWidth() + ")";
-            // 用数据库的默认宽度
-            return "INT";
+		return true;
+	}
 
-        case FLOAT:
-            // 用户自定义了精度
-            if (mf.getWidth() > 0 && mf.getPrecision() > 0) {
-                return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
-            }
-            // 用默认精度
-            if (mf.getTypeMirror().isDouble())
-                return "NUMERIC(15,10)";
-            return "NUMERIC";
+	public String evalFieldType(MappingField mf) {
+		if (mf.getCustomDbType() != null)
+			return mf.getCustomDbType();
+		switch (mf.getColumnType()) {
+		case INT:
+			// 用户自定义了宽度
+			if (mf.getWidth() > 0)
+				return "NUMERIC(" + mf.getWidth() + ")";
+			// 用数据库的默认宽度
+			return "INT";
 
-        case BINARY:
-            return "BYTEA";
-            
-        case DATETIME:
-            return "TIMESTAMP";
-        default :
-            break;
-        }
-        return super.evalFieldType(mf);
-    }
+		case FLOAT:
+			// 用户自定义了精度
+			if (mf.getWidth() > 0 && mf.getPrecision() > 0) {
+				return "NUMERIC(" + mf.getWidth() + "," + mf.getPrecision() + ")";
+			}
+			// 用默认精度
+			if (mf.getTypeMirror().isDouble())
+				return "NUMERIC(15,10)";
+			return "NUMERIC";
 
-    protected String createResultSetMetaSql(Entity<?> en) {
-        return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
-    }
-    private final static Log log = Logs.get();
-    
+		case BINARY:
+			return "BYTEA";
+
+		case DATETIME:
+			return "TIMESTAMP";
+		default:
+			break;
+		}
+		return super.evalFieldType(mf);
+	}
+
+	protected String createResultSetMetaSql(Entity<?> en) {
+		return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
+	}
+
+	@Override
+	public ValueAdaptor getAdaptor(MappingField ef) {
+		if (ef.getTypeMirror().isOf(Blob.class))
+			return new BlobValueAdaptor2(Jdbcs.getFilePool());
+		return super.getAdaptor(ef);
+	}
+
 	@Override
 	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
-		 if (meta == null)
-	            return 0;
-	        int columnCount = meta.getColumnCount();
-	        String colName = mf.getColumnName();
-	        for (int i = 1; i <= columnCount; i++)
-	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
-	                return i;
-	        // TODO 尝试一下meta.getColumnLabel?
-	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
-	        throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+		return Daos.getColumnIndex(meta, mf.getColumnName());
 	}
 }

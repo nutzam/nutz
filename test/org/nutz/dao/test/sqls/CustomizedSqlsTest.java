@@ -18,7 +18,6 @@ import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.sql.NutSql;
-import org.nutz.dao.impl.sql.NutSql2;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
@@ -163,6 +162,7 @@ public class CustomizedSqlsTest extends DaoCase {
     
     @Test
     public void test_in() {
+        Sqls.setSqlBorning(NutSql.class);
         dao.clear(Pet.class);
         dao.insert(Pet.create(4));
         List<Pet> pets = dao.query(Pet.class, null, dao.createPager(1, 2));
@@ -175,5 +175,6 @@ public class CustomizedSqlsTest extends DaoCase {
         assertEquals(2, npets.size());
         assertEquals(npets.get(0).getId(), pets.get(0).getId());
         assertEquals(npets.get(1).getId(), pets.get(1).getId());
+        Sqls.setSqlBorning(NutSql.class);
     }
 }

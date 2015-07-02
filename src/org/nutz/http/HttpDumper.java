@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.nutz.lang.Encoding;
+import org.nutz.log.Logs;
 
 public class HttpDumper {
     public static void duplicateHttpHeaders(HttpServletRequest request, URLConnection conn) {
@@ -37,7 +38,7 @@ public class HttpDumper {
             in.close();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            Logs.get().debug("read error", e);
         }
         sb.append('\n');
         sb.append("</POSTDATA>");

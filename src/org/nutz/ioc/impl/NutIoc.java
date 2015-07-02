@@ -296,5 +296,6 @@ public class NutIoc implements Ioc2 {
                 log.info("Ioc depose tigger by finalize(), not a good idea!");
             depose();
         }
+        super.finalize();
     }
 }

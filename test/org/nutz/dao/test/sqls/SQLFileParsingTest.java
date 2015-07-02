@@ -2,6 +2,8 @@ package org.nutz.dao.test.sqls;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+import java.io.StringReader;
 import java.util.List;
 
 import org.junit.Test;
@@ -103,5 +105,22 @@ public class SQLFileParsingTest {
         sql.params().set("name", "ABC");
         sql.params().set("id", 16);
         assertEquals("UPDATE t_abc SET name='ABC' WHERE id=16;", sql.toString());
+    }
+    
+    @Test
+    public void test_with_force_index_comment() {
+        SqlManager sqls = new FileSqlManager("org/nutz/dao/test/sqls/force_indexs.sqls");
+        assertEquals(1, sqls.count());
+        assertEquals("oracle.index", sqls.keys()[0]);
+        assertTrue(sqls.get("oracle.index").contains("/*"));
+    }
+    
+    @Test
+    public void test_with_inline_comment() throws IOException {
+        FileSqlManager sqls = new FileSqlManager();
+        sqls.add(new StringReader("/*hi*/\n/*测试*/select 1 from t_pet"));
+        assertEquals(1, sqls.count());
+        assertEquals("hi", sqls.keys()[0]);
+        assertEquals("/*测试*/select 1 from t_pet", sqls.get("hi"));
     }
 }
