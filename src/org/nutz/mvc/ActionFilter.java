@@ -13,5 +13,10 @@ package org.nutz.mvc;
  */
 public interface ActionFilter {
 
+    /**
+     * 过滤入口方法,属于前置过滤
+     * @param actionContext 执行上下文
+     * @return 如果为null,则继续执行下一个动作链, 否则将使用它渲染响应
+     */
     View match(ActionContext actionContext);
 }
