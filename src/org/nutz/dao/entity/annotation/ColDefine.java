@@ -50,7 +50,7 @@ public @interface ColDefine {
 	boolean auto() default false;
 
 	/**
-	 * 自定义数据库字段类型, 例如写  customType="image" 等
+	 * 自定义数据库字段类型, 例如写  customType="image" 等, 然后<b>请务必再设置type属性!!</b>
 	 * @return
 	 */
 	String customType() default "";
