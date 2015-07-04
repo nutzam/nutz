@@ -34,7 +34,7 @@ public class BorningException extends RuntimeException {
             sb.append("]");
         }
         if (null != e) {
-            sb.append(" becasue:\n").append(getExceptionMessage(e));
+            sb.append(" becasue: ").append(getExceptionMessage(e));
         } else if (type != null){
             if (type.isInterface()) {
                 sb.append(" becasue: ").append(type.getName()).append("is interface!!");

@@ -14,6 +14,16 @@ public class TimesTest {
     }
 
     /**
+     * For issue #524 again
+     */
+    @Test
+    public void test_parse_not_second() {
+        long ms0 = Times.ams("2013-09-14 12:33");
+        long ms1 = Times.ams("2013-09-14T12:34");
+        assertEquals(60 * 1000, ms1 - ms0);
+    }
+
+    /**
      * For issue #524
      */
     @Test
