@@ -177,7 +177,6 @@ public class NutEntity<T> implements Entity<T> {
         // 字段宏
         beforeInsertMacroes = new ArrayList<Pojo>(3);
         afterInsertMacroes = new ArrayList<Pojo>(3);
-
         // 获得默认的构造方法
         try {
             //bornByDefault = mirror.getBorningByArgTypes();
