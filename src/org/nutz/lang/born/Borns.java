@@ -88,8 +88,8 @@ public abstract class Borns {
 		} else {
 			re.setArgs(args);
 		}
-
-		switch (re.getMatchType()) {
+		MatchType t = re.getMatchType();
+		switch (t) {
 		case LACK:
 			re.setArgs(Lang.arrayLast(args, re.getLackArg()));
 			break;
@@ -99,7 +99,6 @@ public abstract class Borns {
 		default:
 			re.setArgs(args);
 		}
-
 		return re;
 	}
 
@@ -118,11 +117,8 @@ public abstract class Borns {
 	 *            参考参数类型信息是否是一个变参数组
 	 * @return 构建信息对象
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
-	private static <T> BornContext<T> evalWithArgTypes(boolean accurate,
-													   Class<T> type,
-													   Class<?>[] argTypes,
-													   Object dynaArg) {
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static <T> BornContext<T> evalWithArgTypes(boolean accurate, Class<T> type, Class<?>[] argTypes, Object dynaArg) {
 		// 准备好返回对象
 		BornContext<T> re = new BornContext<T>();
 
@@ -176,8 +172,8 @@ public abstract class Borns {
 						return re.setBorning(new ConstructorCastingBorning(cc));
 					}
 				}
+			} catch (RuntimeException e) {
 			}
-			catch (RuntimeException e) {}
 			// 有没有变参的静态构造方法
 			try {
 				for (Method m : sms) {
@@ -188,8 +184,8 @@ public abstract class Borns {
 						return re.setBorning(new MethodCastingBorning<T>(m));
 					}
 				}
+			} catch (Exception e) {
 			}
-			catch (Exception e) {}
 		}
 
 		return null;
@@ -215,7 +211,7 @@ public abstract class Borns {
 	 *            类实例
 	 * @return 构造信息
 	 */
-	@SuppressWarnings({"rawtypes", "unchecked"})
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static <T> BornContext<T> evalWithoutArgs(Class<T> type) {
 		// 准备好返回对象
 		BornContext<T> re = new BornContext<T>();
@@ -230,7 +226,8 @@ public abstract class Borns {
 			}
 		}
 		// 如果没有默认构造函数 ...
-		catch (Exception e) {}
+		catch (Exception e) {
+		}
 		// 看看有没有默认静态工厂函数
 		Method[] stMethods = mirror.getStaticMethods();
 		for (Method m : stMethods) {

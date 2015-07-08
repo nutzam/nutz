@@ -1,5 +1,8 @@
 package org.nutz.dao.impl.jdbc.sqlserver2005;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +19,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.PItem;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 
 /**
@@ -193,4 +197,9 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         autoInfo.setEntity(en);
         return autoInfo;
     }
+
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		return Daos.getColumnIndex(meta,  mf.getColumnName());
+	}
 }

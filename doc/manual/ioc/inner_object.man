@@ -18,6 +18,69 @@
 	 || {*events}		|| {#080; 监听事件} ||
 	 || {*args}			|| {#080; 构造函数参数} ||
 	 || {*fields}		|| {#080; 字段设定} ||
+<<<<<<< HEAD
+	
+	否则，这个 Map 被认为，是在声明对象的每个字段。
+
+--------------------------------------------------------------------------------------------------------
+匿名对象
+	
+	如果，一个字段的值就是这样一个 “鸭子 Map” 呢？ 那么，自然会被认为是另外一个对象。这个
+	对象没有名字，你不能通过 Ioc 接口直接获得，它隐藏在某个对象的某个字段里面。所以我们
+	称这个对象为 {*匿名对象}
+	
+	匿名对象，没有所谓的单例，你声明了 singleton: true 也没有用。如果它的宿主是单例，它自
+	然也只会被创建一次。否则，每次宿主被创建的时候，它都会被创建。
+	
+	JSON 配置文件：
+		{{{
+		var ioc = {
+			xb : {
+				name : 'XiaoBai',
+				// 请注意，在这里， friend 字段，直接声明了另外一个对象
+				friend : {
+					type : 'nutz.demo.ioc.book.Pet',
+					fields : {
+						name : 'XiaoHei'
+					}
+				}
+			}
+		}
+		}}}
+	
+	调用代码
+		{{{
+		Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
+		Pet pet = ioc.get(Pet.class, "xb");
+		System.out.println(pet.getFriend().getName());
+		}}}
+		
+	控制台输出
+		{{{
+		XiaoHei
+		}}}
+
+--------------------------------------------------------------------------------------------------------
+JSON 加载器
+
+    从上面的例子代码可以看出来，Nutz 的Ioc实现需要你提供一个加载器给它。
+    
+    {{{
+    Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
+                                 ^
+                                 +----- 这里你提供了一个加载器
+    }}}
+    
+    你这个加载器是怎么实现的 NutIoc 并不关心。
+    在 Nutz 最早的版本，它提供的第一个加载器就是 JsonLoader。
+
+    对于 JsonLoader 更多的描述，请参看 [ioc_loader.man 配置文件的格式]
+
+    
+
+
+
+=======
 	 || {*factory}		|| {#080; 工厂方法} ||
 	
 	否则，这个 Map 被认为，是在声明对象的每个字段。
@@ -104,6 +167,7 @@ JSON 加载器
 	其中的beanCacheFactory是另外一个ioc bean的名称
 
 	
+>>>>>>> branch 'master' of https://github.com/nutzam/nutz.git
 
 
 

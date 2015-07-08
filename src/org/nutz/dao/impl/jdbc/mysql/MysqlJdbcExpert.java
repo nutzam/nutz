@@ -1,5 +1,8 @@
 package org.nutz.dao.impl.jdbc.mysql;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -15,7 +18,12 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.test.meta.Pet;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class MysqlJdbcExpert extends AbstractJdbcExpert {
 
@@ -178,4 +186,47 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
         autoInfo.setEntity(en);
         return autoInfo;
     }
+    
+    private final static Log log = Logs.get();
+    
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		 if (meta == null)
+	            return 0;
+	        int columnCount = meta.getColumnCount();
+	        String colName = mf.getColumnName();
+	        for (int i = 1; i <= columnCount; i++)
+	            if (meta.getColumnName(i).equalsIgnoreCase(colName))
+	                return i;
+	        log.infof("Can not find @Column(%s) in table/view (%s)", colName, meta.getTableName(1));
+			StringBuilder sb = new StringBuilder("ALTER TABLE ");
+			sb.append(meta.getTableName(1)).append(" ADD COLUMN ").append(colName).append(" ").append(evalFieldType(mf));
+			if (mf.isUnsigned()) {
+				sb.append(" UNSIGNED");
+			}
+			if (mf.isNotNull()) {
+				sb.append(" NOT NULL");
+			}
+			if (mf.getColumnType() == ColType.TIMESTAMP) {
+				if (mf.hasDefaultValue()) {
+					sb.append(" ").append(mf.getDefaultValue(null).replaceAll("@", "@@"));
+				} else {
+					if (mf.isNotNull()) {
+						sb.append(" DEFAULT 0");
+					} else {
+						sb.append(" NULL DEFAULT NULL");
+					}
+				}
+			} else {
+				if (mf.hasDefaultValue())
+					sb.append(" DEFAULT '").append(mf.getDefaultValue(null).replaceAll("@", "@@")).append("'");
+			}
+			if (mf.hasColumnComment()) {
+				sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
+			}
+			sb.append(';');
+			log.info(sb.toString());
+			stat.execute(sb.toString());
+			throw Lang.makeThrow(SQLException.class, "Can not find @Column(%s)", colName);
+	}
 }

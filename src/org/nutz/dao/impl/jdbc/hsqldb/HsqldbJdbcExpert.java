@@ -1,5 +1,8 @@
 package org.nutz.dao.impl.jdbc.hsqldb;
 
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -13,6 +16,7 @@ import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.Pojos;
 
 /**
@@ -134,4 +138,9 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
     protected String createResultSetMetaSql(Entity<?> en) {
         return "SELECT limit 1 1 * FROM " + en.getViewName();
     }
+
+	@Override
+	protected int getColumnIndex(Statement stat, ResultSetMetaData meta, MappingField mf) throws SQLException {
+		return Daos.getColumnIndex(meta,  mf.getColumnName());
+	}
 }
