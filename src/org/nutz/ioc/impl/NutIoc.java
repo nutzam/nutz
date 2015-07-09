@@ -90,7 +90,7 @@ public class NutIoc implements Ioc2 {
                      IocContext context,
                      String defaultScope,
                      MirrorFactory mirrors) {
-        log.warn("NutIoc init begin ...");
+        log.info("NutIoc init begin ...");
         this.maker = maker;
         this.defaultScope = defaultScope;
         this.context = context;
@@ -106,7 +106,7 @@ public class NutIoc implements Ioc2 {
             this.mirrors = new DefaultMirrorFactory(this);
         else
             this.mirrors = mirrors;
-        log.warn("... NutIoc init complete");
+        log.info("... NutIoc init complete");
     }
 
     /**
