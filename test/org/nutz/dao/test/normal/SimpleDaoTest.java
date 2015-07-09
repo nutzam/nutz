@@ -1,6 +1,10 @@
 package org.nutz.dao.test.normal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -29,6 +33,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
+import org.nutz.dao.test.meta.DynamicTable;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
@@ -419,6 +424,19 @@ public class SimpleDaoTest extends DaoCase {
         dao.execute(Sqls.create(str));
 
         Daos.migration(dao, Pet.class, true, true);
+
+    }
+
+    @Test
+    public void test_dynamic_migration() {
+        for (int i = 0; i < 3; i++) {
+            Daos.ext(dao, i).create(DynamicTable.class, true);
+        }
+
+        for (int i = 0; i < 3; i++) {
+            dao.execute(Sqls.createf("ALTER table dynamic_table%s DROP column create_time", i));
+            Daos.migration(dao, DynamicTable.class, true, true, i);
+        }
 
     }
 }
