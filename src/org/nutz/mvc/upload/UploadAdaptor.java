@@ -26,6 +26,7 @@ import org.nutz.mvc.upload.injector.InputStreamInjector;
 import org.nutz.mvc.upload.injector.MapListInjector;
 import org.nutz.mvc.upload.injector.MapSelfInjector;
 import org.nutz.mvc.upload.injector.ReaderInjector;
+import org.nutz.mvc.upload.injector.TempFileArrayInjector;
 import org.nutz.mvc.upload.injector.TempFileInjector;
 
 /**
@@ -154,6 +155,9 @@ public class UploadAdaptor extends PairAdaptor {
         // List
         if (List.class.isAssignableFrom(clazz))
             return new MapListInjector(paramName);
+        if (TempFile[].class.isAssignableFrom(clazz)) {
+            return new TempFileArrayInjector(paramName);
+        }
         // Other
         return super.evalInjectorBy(type, param);
     }
