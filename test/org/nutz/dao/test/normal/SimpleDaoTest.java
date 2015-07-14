@@ -434,7 +434,7 @@ public class SimpleDaoTest extends DaoCase {
         }
 
         for (int i = 0; i < 3; i++) {
-            dao.execute(Sqls.createf("ALTER table dynamic_table%s DROP column create_time", i));
+            dao.execute(Sqls.createf("ALTER table dynamic_table%s DROP column createTime", i));
             Daos.migration(dao, DynamicTable.class, true, true, i);
         }
 
