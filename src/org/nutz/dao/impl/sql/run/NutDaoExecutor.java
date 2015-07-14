@@ -70,7 +70,7 @@ public class NutDaoExecutor implements DaoExecutor {
                     break;
             	}
                 if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
-                    log.info("Can't indentify SQL type :   " + st);
+                    log.info("Can't identify SQL type :   " + st);
                 paramMatrix = st.getParamMatrix();
                 // 木有参数，直接运行
                 if (null == paramMatrix || paramMatrix.length == 0) {
