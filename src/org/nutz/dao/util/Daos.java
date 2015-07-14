@@ -656,15 +656,15 @@ public abstract class Daos {
                                  final boolean add,
                                  final boolean del,
                                  Object tableName) {
+    	final JdbcExpert expert = ((NutDao) dao).getJdbcExpert();
+    	if (tableName != null && Strings.isNotBlank(tableName.toString())) {
+             dao = ext(dao, tableName);
+         }
         final Entity<?> en = dao.getEntity(klass);
         if (!dao.exists(klass))
             return;
-        final JdbcExpert expert = ((NutDao) dao).getJdbcExpert();
         final List<Sql> sqls = new ArrayList<Sql>();
         final boolean sqlAddNeedColumn = !dao.meta().isOracle();
-        if (tableName != null && Strings.isNotBlank(tableName.toString())) {
-            dao = ext(dao, tableName);
-        }
         dao.run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 expert.setupEntityField(conn, en);
