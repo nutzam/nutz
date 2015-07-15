@@ -21,6 +21,7 @@ import java.util.zip.ZipFile;
 import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
+import org.nutz.log.Logs;
 
 /**
  * 文件操作的帮助函数
@@ -393,10 +394,14 @@ public class Files {
         if (null == thePath)
             thePath = Disks.normalize(path);
         File f = new File(thePath);
-        if (!f.exists())
-            Files.makeDir(f);
+        if (!f.exists()) {
+            boolean flag = Files.makeDir(f);
+            if (!flag) {
+                Logs.get().warnf("create filepool dir(%s) fail!!", f.getPath());
+            }
+        }
         if (!f.isDirectory())
-            throw Lang.makeThrow("'%s' should be a directory!", path);
+            throw Lang.makeThrow("'%s' should be a directory or don't have permission to create it!", path);
         return f;
     }
 

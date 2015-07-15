@@ -14,6 +14,7 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.mvc.Mvcs;
 
 public class JdbcExpertConfigFile {
 
@@ -35,6 +36,14 @@ public class JdbcExpertConfigFile {
             if (home == null)
             	home = config.get("pool-home").toString();
             long max = config.containsKey("pool-max") ? ((Number) config.get("pool-max")).longValue() : 2000;
+            if (home.contains("${app.home}")) {
+                try {
+                    // 这里引用了Mvcs类, 不太舒服,但应该还是有益处的
+                    home.replace("${app.home}", Mvcs.getServletContext().getRealPath("/"));
+                }
+                catch (Throwable e) {
+                }
+            }
             pool = new NutFilePool(home, max);
             pool = new SynchronizedFilePool(pool);
         } catch (Throwable e) {
