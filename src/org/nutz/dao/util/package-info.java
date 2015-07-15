@@ -1,3 +1,3 @@
 /**
- * TODO 添加package注释
+ * Dao工具集
  */package org.nutz.dao.util;

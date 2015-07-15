@@ -19,6 +19,7 @@ import org.nutz.log.Logs;
 
 /**
  * 为非Mvc,Ioc环境下的程序提供辅助支持.<p/>
+ * <b>DaoUp不是一次性产品!! 如果新建DaoUp然后立马抛弃掉, 从中获取的NutDao/DataSource将会关闭!!</b><p/>
  * <b>请注意使用场景!!! 在Mvc下有IocBy的情况下,不需要也不应该使用本类!!</b><p/>
  * <b>Mvc下可以通过 Mvcs.getIoc()或Mvcs.ctx().getDefaultIoc()获取Ioc容器,从而获取其中的Dao实例!!</b><p/>
  * <b>Mvc应尽量使用注入,而非主动取Dao实例,更不应该主动new NutDao!!!</b>
@@ -49,7 +50,7 @@ public class DaoUp {
     /**
      * 内置单例
      */
-    protected static DaoUp me = new DaoUp();
+    protected static DaoUp me = new DaoUp("_defult_");
     
     /**
      * Druid数据源的工厂方法类
@@ -75,25 +76,18 @@ public class DaoUp {
     }
     
     /**
-     * 获取内置的DaoHelper单例
-     * @return DaoHelper实例
+     * 获取内置的DaoUp单例
+     * @return DaoUp实例
      */
     public static DaoUp me() {
         return me;
     }
 
     /**
-     * 注意构造方法时protected的,如果需要新建多个DaoHelper,请继承DaoHelper,从而暴露构造方法或使用工厂方法!!
+     * 需要新建多个DaoUp,请继承DaoUp,从而暴露构造方法或使用工厂方法!!
      */
     protected DaoUp(String name) {
         this.name = name;
-    }
-    
-    /**
-     * 注意构造方法时protected的,如果需要新建多个DaoHelper,请继承DaoHelper,从而暴露构造方法或使用工厂方法!!
-     */
-    protected DaoUp() {
-        this("t"+Thread.currentThread().getId() + "_" + System.currentTimeMillis());
     }
     
     /**
@@ -107,12 +101,12 @@ public class DaoUp {
     protected DataSource dataSource;
     
     /**
-     * 当前DaoHelper的名词
+     * 当前DaoUp的名称
      */
     protected String name;
     
     /**
-     * 返回所持有的Dao实例,如果DaoHelper还没初始化或已经关闭,这里会返回null
+     * 返回所持有的Dao实例,如果DaoUp还没初始化或已经关闭,这里会返回null
      * @return Dao实例
      */
     public Dao dao() {
@@ -120,7 +114,7 @@ public class DaoUp {
     }
     
     /**
-     * 获取数据源, 如果DaoHelper还没初始化或已经关闭,这里会返回null
+     * 获取数据源, 如果DaoUp还没初始化或已经关闭,这里会返回null
      * @return 数据源(连接池)
      */
     public DataSource getDataSource() {
@@ -210,7 +204,7 @@ public class DaoUp {
     }
     
     /**
-     * 关闭本DaoHelper,将关闭DataSource并将dao和dataSource置为null!!!<p/>
+     * 关闭本DaoUp,将关闭DataSource并将dao和dataSource置为null!!!<p/>
      * <b>只能在程序关闭时调用,严禁在每次Dao操作后调用!!</b>
      */
     public synchronized void close() {
@@ -229,7 +223,7 @@ public class DaoUp {
     /**
      * 设置是否在本对象被GC时自动关闭相关资源.<p/>
      * <b>若要设置为false, 请慎重考虑,因为绝大部分情况下设置为true并不能解决您当前遇到的问题!!</b><p/>
-     * DaoHelper类不是设计为即用即抛的!!!而是设计为单例模式的!!!!!!!<p/>
+     * DaoUp类不是设计为即用即抛的!!!而是设计为单例模式的!!!!!!!<p/>
      * <b>如果是遇到DataSource is closed之类的异常, 在考虑使用本配置前请先检讨代码!!!</b><p/>
      * @param autoCloseWhenFinalize 是否自动关闭资源
      */
@@ -248,6 +242,36 @@ public class DaoUp {
             close();
         super.finalize();
     }
+    
+//    /**
+//     * 提供一个配置对象,然后生成Dao实例<p/>
+//     * <p/>应该把对象
+//     * <b>返回的对象!!</b>
+//     * @param conf 可以为DataSource/File/InputStream/Properties/String
+//     * @return 初始化好的Dao实例
+//     * @throws IOException 读取文件出错时抛出
+//     */
+//    public static Dao factory(Object conf) throws IOException {
+//        if (conf == null)
+//            return null;
+//        if (conf instanceof Dao)
+//            return (Dao) conf;
+//        if (conf instanceof DataSource)
+//            return new NutDao((DataSource)conf);
+//        DaoUp up = new DaoUp("daoup_factory_" + System.currentTimeMillis());
+//        if (conf instanceof File) {
+//            up.init((File)conf);
+//        } else if (conf instanceof InputStream) {
+//            up.init((InputStream)conf);
+//        } else if (conf instanceof Properties) {
+//            up.init((Properties)conf);
+//        } else {
+//            up.init(conf.toString());
+//        }
+//        Dao dao = up.dao();
+//        up.autoCloseWhenFinalize = false;
+//        return dao;
+//    }
     
     // TODO 完成一个repl
 //    public static void main(String[] args) {

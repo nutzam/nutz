@@ -1,3 +1,3 @@
 /**
- * TODO 添加package注释
+ * Dao扩展
  */package org.nutz.dao.impl.ext;

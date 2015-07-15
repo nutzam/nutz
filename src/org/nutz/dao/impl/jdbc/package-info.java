@@ -1,3 +1,3 @@
 /**
- * TODO 添加package注释
+ * 数据库方言
  */package org.nutz.dao.impl.jdbc;

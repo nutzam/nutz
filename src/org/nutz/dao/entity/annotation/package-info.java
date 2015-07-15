@@ -1,3 +1,3 @@
 /**
- * TODO 添加package注释
+ * 各种Dao相关的注解
  */package org.nutz.dao.entity.annotation;

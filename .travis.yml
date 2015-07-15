@@ -9,6 +9,8 @@ branches:
   only:
     - master
     - coverity_scan
+addons:
+  postgresql: "9.3"
 before_script:
   - psql -c 'create database nutztest;' -U postgres
   - cp ./tools/travis-ci/nutz-test.properties ./test/
