@@ -651,7 +651,7 @@ public abstract class Daos {
      * @param tableName
      *            动态表名上下文
      */
-    public static void migration(final Dao dao,
+    public static void migration(Dao dao,
                                  final Class<?> klass,
                                  final boolean add,
                                  final boolean del,
@@ -665,6 +665,7 @@ public abstract class Daos {
             return;
         final List<Sql> sqls = new ArrayList<Sql>();
         final boolean sqlAddNeedColumn = !dao.meta().isOracle();
+        final boolean isCanComment = dao.meta().isMySql();
         dao.run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 expert.setupEntityField(conn, en);
@@ -720,7 +721,7 @@ public abstract class Daos {
                                       .append(mf.getDefaultValue(null).replaceAll("@", "@@"))
                                       .append("'");
                             }
-                            if (mf.hasColumnComment() && dao.meta().isMySql()) {
+                            if (mf.hasColumnComment() && isCanComment) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
                             }
                             sb.append(';');
