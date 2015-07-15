@@ -651,7 +651,7 @@ public abstract class Daos {
      * @param tableName
      *            动态表名上下文
      */
-    public static void migration(Dao dao,
+    public static void migration(final Dao dao,
                                  final Class<?> klass,
                                  final boolean add,
                                  final boolean del,
@@ -720,7 +720,7 @@ public abstract class Daos {
                                       .append(mf.getDefaultValue(null).replaceAll("@", "@@"))
                                       .append("'");
                             }
-                            if (mf.hasColumnComment()) {
+                            if (mf.hasColumnComment() && dao.meta().isMySql()) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
                             }
                             sb.append(';');
