@@ -44,7 +44,22 @@ public class JdbcExpertConfigFile {
                 catch (Throwable e) {
                 }
             }
-            pool = new NutFilePool(home, max);
+            try {
+                pool = new NutFilePool(home, max);
+            }
+            catch (Exception e) {
+                // 看看是不是Mvc环境,尝试在WebContent下创建
+                if (!home.startsWith("~/") || Mvcs.getServletContext() == null)
+                    throw e;
+                try {
+                    String tmp = Mvcs.getServletContext().getRealPath("/") + home.substring(2);
+                    pool = new NutFilePool(tmp, max);
+                    log.info("had created filepool under webapp root path");
+                }
+                catch (Exception e1) {
+                    throw e; // 抛出原本的异常好了,哎...
+                }
+            }
             pool = new SynchronizedFilePool(pool);
         } catch (Throwable e) {
             if (log.isWarnEnabled())
