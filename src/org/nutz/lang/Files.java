@@ -278,11 +278,7 @@ public class Files {
     }
 
     /**
-     * 获取文件后缀名，不包括 '.'，如 'abc.gif','，则返回 'gif'
-     * 
-     * @param f
-     *            文件
-     * @return 文件后缀名
+     * @see #getSuffixName(String)
      */
     public static String getSuffixName(File f) {
         if (null == f)
@@ -305,6 +301,32 @@ public class Files {
         if (-1 == p0 || p0 < p1)
             return "";
         return path.substring(p0 + 1);
+    }
+
+    /**
+     * @see #getSuffix(String)
+     */
+    public static String getSuffix(File f) {
+        if (null == f)
+            return null;
+        return getSuffix(f.getAbsolutePath());
+    }
+
+    /**
+     * 获取文件后缀名，包括 '.'，如 'abc.gif','，则返回 '.gif'
+     * 
+     * @param path
+     *            文件路径
+     * @return 文件后缀
+     */
+    public static String getSuffix(String path) {
+        if (null == path)
+            return null;
+        int p0 = path.lastIndexOf('.');
+        int p1 = path.lastIndexOf('/');
+        if (-1 == p0 || p0 < p1)
+            return "";
+        return path.substring(p0);
     }
 
     /**
@@ -415,7 +437,7 @@ public class Files {
                 throw Lang.makeThrow("fail to create '%s', permission deny?", d.getAbsolutePath());
             }
         }
-        if (!d.isDirectory()) 
+        if (!d.isDirectory())
             throw Lang.makeThrow("'%s' should be a directory!", d);
         return d;
     }
@@ -473,14 +495,12 @@ public class Files {
         /**
          * 仅文件
          */
-        FILE,
-        /**
-         * 仅目录
-         */
-        DIR,
-        /**
-         * 文件和目录
-         */
+        FILE, /**
+               * 仅目录
+               */
+        DIR, /**
+              * 文件和目录
+              */
         ALL
     }
 
@@ -1067,7 +1087,8 @@ public class Files {
      *            文件1
      * @param f2
      *            文件2
-     * @return <ul>
+     * @return
+     *         <ul>
      *         <li>true: 两个文件内容完全相等
      *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
      *         </ul>
@@ -1180,7 +1201,8 @@ public class Files {
      *            文件对象
      * @param f2
      *            文件对象
-     * @return <ul>
+     * @return
+     *         <ul>
      *         <li>true: 两个文件内容完全相等
      *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
      *         </ul>
