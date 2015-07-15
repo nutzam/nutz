@@ -156,7 +156,7 @@ public abstract class Jdbcs {
         JdbcExpert re = conf.matchExpert(dbName);
 
         if (null == re) {
-        	log.warnf("Can not support database '%s %s', fallback to MySql 5", productName, version);
+        	log.warnf("unknow database type '%s %s', fallback to MySql 5", productName, version);
         	re = conf.matchExpert("mysql 5");
         }
 
