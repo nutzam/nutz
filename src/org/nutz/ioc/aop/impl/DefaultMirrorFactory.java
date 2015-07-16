@@ -46,7 +46,8 @@ public class DefaultMirrorFactory implements MirrorFactory {
         if (MethodInterceptor.class.isAssignableFrom(type)
             || type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
             || (name != null && name.startsWith(AopConfigration.IOCNAME))
-            || AopConfigration.class.isAssignableFrom(type)) {
+            || AopConfigration.class.isAssignableFrom(type)
+            || Modifier.isAbstract(type.getModifiers())) {
             return Mirror.me(type);
         }
 
