@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +42,11 @@ import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
+import org.nutz.dao.test.meta.issue901.XPlace;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
+import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
@@ -438,5 +441,20 @@ public class SimpleDaoTest extends DaoCase {
             Daos.migration(dao, DynamicTable.class, true, true, i);
         }
 
+    }
+    
+    @Test
+    public void test_varchar_BigDecimal() {
+        dao.create(XPlace.class, true);
+        XPlace place = new XPlace();
+        place.setLat(new BigDecimal("12.3222"));
+        place.setLng(new BigDecimal("29.02333"));
+        dao.insert(place);
+        
+        place = dao.fetch(XPlace.class);
+        assertEquals("12.3222", place.getLat().toString());
+        assertEquals("29.02333", place.getLng().toString());
+        
+        System.out.println(Json.toJson(place));
     }
 }
