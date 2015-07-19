@@ -81,7 +81,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
         }
         if (interceptorPairs.isEmpty()) {
             if (log.isDebugEnabled())
-                log.debugf("%s , no config to enable AOP for this type.", type);
+                log.debugf("%s without AOP", type);
             return Mirror.me(type);
         }
 
@@ -92,8 +92,6 @@ public class DefaultMirrorFactory implements MirrorFactory {
         }
 
         synchronized (lock) {
-            // 这段代码的由来:
-            // 当用户把nutz.jar放到java.ext.dirs下面时,DefaultMirrorFactory的classloader将无法获取用户的类
             if (cd == null) {
                 cd = DefaultClassDefiner.defaultOne();
             }
