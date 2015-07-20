@@ -259,7 +259,7 @@ public class Images {
         // 得到一个绘制接口
         if (bgColor != null) {
             // 创建图像
-            BufferedImage re = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+            BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
             Graphics2D gc = re.createGraphics();
             gc.setColor(bgColor);
             gc.fillRect(0, 0, w, h);
