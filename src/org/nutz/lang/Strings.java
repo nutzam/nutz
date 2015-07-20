@@ -950,7 +950,7 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
-    public static <T> String join(String sp, T... array) {
+    public static <T> String join(String sp, T[] array) {
         return Lang.concat(sp, array).toString();
     }
 
