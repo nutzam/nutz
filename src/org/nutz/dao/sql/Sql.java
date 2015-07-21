@@ -8,6 +8,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
  * 封装了自定义 SQL
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 public interface Sql extends DaoStatement {
 
@@ -19,6 +20,15 @@ public interface Sql extends DaoStatement {
      * @return 变量集合
      */
     VarSet vars();
+    
+    /**
+     * sql.vars().set(name, value)的链式调用方式
+     * @param name 变量名称
+     * @param value 变量值
+     * @return 原Sql对象,用于链式调用
+     * @see #vars()
+     */
+    Sql setVar(String name, Object value);
 
     /**
      * 所谓"参数"，就是当 Sql 对象转换成 PreparedStatement 对象前，会被填充成 ? 的占位符
@@ -29,6 +39,15 @@ public interface Sql extends DaoStatement {
      * @return 参数集合
      */
     VarSet params();
+    
+    /**
+     * sql.params().set(name, value)的链式调用方式
+     * @param name 参数名称
+     * @param value 参数值
+     * @return 原Sql对象,用于链式调用
+     * @see #params()
+     */
+    Sql setParam(String name, Object value);
 
     /**
      * 手动为某个语句参数设置适配器。
