@@ -99,7 +99,7 @@ public class Request {
         if (params != null) {
             for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
                 String key = it.next();
-                sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
+                sb.append(Http.encode(key, this.enc)).append('=').append(Http.encode(params.get(key)));
                 if (it.hasNext())
                     sb.append('&');
             }
