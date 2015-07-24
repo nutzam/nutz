@@ -22,7 +22,8 @@ import org.nutz.dao.DB;
  * public class Pet {
  * 
  *  &#64;Name
- *  &#64;Prev(els=@EL("me.genID()"))
+ *  &#64;Prev(els=@EL("$me.genID()"))
+ *  // 或者 // &#64;Prev(els=@EL("uuid()"))
  *  private String id;
  * 
  *  public String genID(){
