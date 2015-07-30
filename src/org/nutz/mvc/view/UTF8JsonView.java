@@ -32,6 +32,7 @@ public class UTF8JsonView implements View {
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {
+        resp.setContentType("application/json");
         Mvcs.write(resp, null == obj ? data : obj, format);
     }
 
