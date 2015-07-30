@@ -28,9 +28,10 @@ public class EjectByGetter implements Ejecting {
         catch (Exception e) {
             if (log.isInfoEnabled())
                 log.info("Fail to value by getter", e);
-            throw Lang.makeThrow(    "Fail to invoke getter %s.'%s()' because [%s]: %s",
+            throw Lang.makeThrow(    "Fail to invoke getter %s.'%s()' %s because [%s]: %s",
                                     getter.getDeclaringClass().getName(),
                                     getter.getName(),
+                                    (obj == null || getClass().getDeclaringClass() == obj.getClass() ? "" : "<"+obj.getClass()+">"),
                                     Lang.unwrapThrow(e),
                                     Lang.unwrapThrow(e).getMessage());
         }
