@@ -1,6 +1,7 @@
 package org.nutz.mvc.view;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,12 +19,30 @@ import org.nutz.mvc.View;
  */
 public class UTF8JsonView implements View {
 
-    private JsonFormat format;
+    public static String CT = "application/json";
+    public static String JSONP_CT = "application/javascript";
 
-    private Object data;
+    protected JsonFormat format;
 
-    public void setData(Object data) {
+    protected Object data;
+    
+    protected boolean jsonp;
+    
+    protected String jsonpParam;
+
+    public UTF8JsonView setData(Object data) {
         this.data = data;
+        return this;
+    }
+    
+    public UTF8JsonView setJsonp(boolean jsonp) {
+        this.jsonp = jsonp;
+        return this;
+    }
+    
+    public UTF8JsonView setJsonpParam(String jsonpParam) {
+        this.jsonpParam = jsonpParam;
+        return this; 
     }
 
     public UTF8JsonView(JsonFormat format) {
@@ -32,8 +51,17 @@ public class UTF8JsonView implements View {
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {
-        resp.setContentType("application/json");
-        Mvcs.write(resp, null == obj ? data : obj, format);
+        if (resp.getContentType() == null)
+            if (jsonp)
+                resp.setContentType(JSONP_CT);
+            else
+                resp.setContentType(CT);
+        Writer writer = resp.getWriter();
+        if (jsonp)
+            writer.write(req.getParameter(jsonpParam == null ? "jsonp" : jsonpParam) + "(");
+        Mvcs.write(resp, writer,  null == obj ? data : obj, format);
+        if (jsonp)
+            writer.write(req.getParameter(");"));
     }
 
     public static final View NICE = new UTF8JsonView(JsonFormat.nice());

@@ -17,6 +17,7 @@ public class DefaultViewMaker implements ViewMaker {
 
     public static final String VIEW_JSP = "jsp";
     public static final String VIEW_JSON = "json";
+    public static final String VIEW_JSONP = "jsonp";
     public static final String VIEW_REDIRECT = "redirect";
     public static final String VIEW_REDIRECT2 = ">>";
     public static final String VIEW_VOID = "void";
@@ -30,23 +31,23 @@ public class DefaultViewMaker implements ViewMaker {
         type = type.toLowerCase();
         if (VIEW_JSP.equals(type))
             return new JspView(value);
-        if (VIEW_JSON.equals(type))
+        if (VIEW_JSON.equals(type) || VIEW_JSONP.equals(type))
             if (Strings.isBlank(value))
                 return UTF8JsonView.COMPACT;
             else {
                 // 除高级的json format定义之外,也支持简单的缩写
                 if (value.charAt(0) == '{')
-                    return new UTF8JsonView(Json.fromJson(JsonFormat.class, value));
+                    return new UTF8JsonView(Json.fromJson(JsonFormat.class, value)).setJsonp(VIEW_JSONP.equals(type));
                 else if ("nice".equals(value))
-                    return new UTF8JsonView(JsonFormat.nice());
+                    return new UTF8JsonView(JsonFormat.nice()).setJsonp(VIEW_JSONP.equals(type));
                 else if ("forlook".equals(value))
-                    return new UTF8JsonView(JsonFormat.forLook());
+                    return new UTF8JsonView(JsonFormat.forLook()).setJsonp(VIEW_JSONP.equals(type));
                 else if ("full".equals(value))
-                    return new UTF8JsonView(JsonFormat.full());
+                    return new UTF8JsonView(JsonFormat.full()).setJsonp(VIEW_JSONP.equals(type));
                 else if ("compact".equals(value))
-                    return new UTF8JsonView(JsonFormat.compact());
+                    return new UTF8JsonView(JsonFormat.compact()).setJsonp(VIEW_JSONP.equals(type));
                 else if ("tidy".equals(value))
-                	return new UTF8JsonView(JsonFormat.tidy());
+                	return new UTF8JsonView(JsonFormat.tidy()).setJsonp(VIEW_JSONP.equals(type));
                 else
                     throw new IllegalArgumentException("unkown json view format : "
                                                        + value);
