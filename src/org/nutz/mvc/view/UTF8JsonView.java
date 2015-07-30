@@ -25,24 +25,25 @@ public class UTF8JsonView implements View {
     protected JsonFormat format;
 
     protected Object data;
-    
+
     protected boolean jsonp;
-    
+
     protected String jsonpParam;
 
     public UTF8JsonView setData(Object data) {
+
         this.data = data;
         return this;
     }
-    
+
     public UTF8JsonView setJsonp(boolean jsonp) {
         this.jsonp = jsonp;
         return this;
     }
-    
+
     public UTF8JsonView setJsonpParam(String jsonpParam) {
         this.jsonpParam = jsonpParam;
-        return this; 
+        return this;
     }
 
     public UTF8JsonView(JsonFormat format) {
@@ -51,6 +52,7 @@ public class UTF8JsonView implements View {
 
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {
+
         if (resp.getContentType() == null)
             if (jsonp)
                 resp.setContentType(JSONP_CT);
@@ -59,7 +61,7 @@ public class UTF8JsonView implements View {
         Writer writer = resp.getWriter();
         if (jsonp)
             writer.write(req.getParameter(jsonpParam == null ? "jsonp" : jsonpParam) + "(");
-        Mvcs.write(resp, writer,  null == obj ? data : obj, format);
+        Mvcs.write(resp, writer, null == obj ? data : obj, format);
         if (jsonp)
             writer.write(req.getParameter(");"));
     }
