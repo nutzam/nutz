@@ -349,4 +349,14 @@ public class NutSql extends NutStatement implements Sql {
     SqlLiteral literal() {
         return new SqlLiteral().valueOf(sourceSql);
     }
+    
+    public Sql setParam(String name, Object value) {
+        params().set(name, value);
+        return this;
+    }
+    
+    public Sql setVar(String name, Object value) {
+        vars().set(name, value);
+        return this;
+    }
 }

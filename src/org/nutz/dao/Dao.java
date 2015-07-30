@@ -931,5 +931,7 @@ public interface Dao {
      */
     boolean drop(String tableName);
     
+    Sql execute(Sql sql);
+    
     void setExpert(Object obj) throws Exception;
 }

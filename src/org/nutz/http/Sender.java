@@ -64,6 +64,8 @@ public abstract class Sender {
     protected int timeout;
 
     protected HttpURLConnection conn;
+    
+    protected HttpReqRespInterceptor interceptor;
 
     protected Sender(Request request) {
         this.request = request;
@@ -106,6 +108,8 @@ public abstract class Sender {
                 }
             }
         }
+        if (this.interceptor != null)
+            this.interceptor.afterResponse(request, conn, rep);
         return rep;
     }
 
@@ -128,6 +132,8 @@ public abstract class Sender {
     }
 
     protected void openConnection() throws IOException {
+        if (this.interceptor != null)
+            this.interceptor.beforeConnect(request);
         ProxySwitcher proxySwitcher = Http.proxySwitcher;
         if (proxySwitcher != null) {
             try {
@@ -171,6 +177,8 @@ public abstract class Sender {
             conn.setReadTimeout(timeout);
         else
             conn.setReadTimeout(Default_Read_Timeout);
+        if (interceptor != null)
+            this.interceptor.afterConnect(request, conn);
     }
 
     protected void setupRequestHeader() {
@@ -194,4 +202,8 @@ public abstract class Sender {
         return timeout;
     }
 
+    public Sender setInterceptor(HttpReqRespInterceptor interceptor) {
+        this.interceptor = interceptor;
+        return this;
+    }
 }

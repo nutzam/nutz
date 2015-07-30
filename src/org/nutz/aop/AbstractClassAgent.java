@@ -42,6 +42,10 @@ public abstract class AbstractClassAgent implements ClassAgent {
         if (klass.getName().endsWith(CLASSNAME_SUFFIX))
             return klass;
         String newName = klass.getName() + (t == null ? "" : "$" + t.get()) +  CLASSNAME_SUFFIX;
+        return define(cd, klass, newName);
+    }
+    
+    public <T> Class<T> define(ClassDefiner cd, Class<T> klass, String newName) {
         Class<T> newClass = try2Load(newName, klass.getClassLoader());
         if (newClass != null)
             return newClass;

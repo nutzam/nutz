@@ -967,4 +967,10 @@ public class NutDao extends DaoSupport implements Dao {
             setDataSource(ds);
         }
     }
+    
+    public Sql execute(Sql sql) {
+        if (sql != null)
+            execute(new Sql[]{sql});
+        return sql;
+    }
 }

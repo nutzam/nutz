@@ -129,8 +129,7 @@ public class Images {
         AffineTransform at = new AffineTransform();
         at.rotate(ang, w / 2, h / 2);// 旋转图象
         at.translate(x, y);
-        AffineTransformOp op = new AffineTransformOp(at,
-                                                     AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        AffineTransformOp op = new AffineTransformOp(at, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
         op.filter(image, rotatedImage);
         image = rotatedImage;
         return image;
@@ -159,11 +158,8 @@ public class Images {
      * @throws IOException
      *             当读写文件失败时抛出
      */
-    public static BufferedImage zoomScale(Object srcIm,
-                                          File taIm,
-                                          int w,
-                                          int h,
-                                          Color bgColor) throws IOException {
+    public static BufferedImage zoomScale(Object srcIm, File taIm, int w, int h, Color bgColor)
+            throws IOException {
         BufferedImage old = read(srcIm);
         BufferedImage im = Images.zoomScale(old, w, h, bgColor);
         write(im, taIm);
@@ -221,16 +217,13 @@ public class Images {
      * 
      * @return 被转换后的图像
      */
-    public static BufferedImage zoomScale(BufferedImage im,
-                                          int w,
-                                          int h,
-                                          Color bgColor) {
+    public static BufferedImage zoomScale(BufferedImage im, int w, int h, Color bgColor) {
         if (w == -1 || h == -1) {
             return zoomScale(im, w, h);
         }
 
         // 检查背景颜色
-        //bgColor = null == bgColor ? Color.black : bgColor;
+        // bgColor = null == bgColor ? Color.black : bgColor;
         // 获得尺寸
         int oW = im.getWidth();
         int oH = im.getHeight();
@@ -275,9 +268,10 @@ public class Images {
             // 返回
             return re;
         } else {
-            BufferedImage nimage = new BufferedImage(nW, nH, BufferedImage.TYPE_INT_RGB);
+            BufferedImage nimage = new BufferedImage(nW, nH, BufferedImage.TYPE_INT_ARGB);
             Graphics2D gc = nimage.createGraphics();
-            nimage = gc.getDeviceConfiguration().createCompatibleImage(nW, nH, Transparency.TRANSLUCENT);
+            nimage = gc.getDeviceConfiguration()
+                       .createCompatibleImage(nW, nH, Transparency.TRANSLUCENT);
             gc.dispose();
             gc = nimage.createGraphics();
             gc.fillRect(0, 0, w, h);
@@ -372,10 +366,8 @@ public class Images {
      * @throws IOException
      *             当读写文件失败时抛出
      */
-    public static BufferedImage clipScale(String srcPath,
-                                          String taPath,
-                                          int w,
-                                          int h) throws IOException {
+    public static BufferedImage clipScale(String srcPath, String taPath, int w, int h)
+            throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -402,10 +394,8 @@ public class Images {
      * @throws IOException
      *             当读写文件失败时抛出
      */
-    public static BufferedImage clipScale(Object srcIm,
-                                          File taIm,
-                                          int[] startPoint,
-                                          int[] endPoint) throws IOException {
+    public static BufferedImage clipScale(Object srcIm, File taIm, int[] startPoint, int[] endPoint)
+            throws IOException {
         // 计算给定坐标后的图片的尺寸
         int width = endPoint[0] - startPoint[0];
         int height = endPoint[1] - startPoint[1];
@@ -415,8 +405,7 @@ public class Images {
                                                             startPoint[1],
                                                             width,
                                                             height),
-                                            width,
-                                            height);
+                                            width, height);
 
         write(im, taIm);
         return old;
@@ -581,9 +570,7 @@ public class Images {
      * @param quality
      *            质量 0.1f ~ 1.0f
      */
-    public static void writeJpeg(RenderedImage im,
-                                 Object targetJpg,
-                                 float quality) {
+    public static void writeJpeg(RenderedImage im, Object targetJpg, float quality) {
         try {
             ImageWriter writer = ImageIO.getImageWritersBySuffix("jpg").next();
             ImageWriteParam param = writer.getDefaultWriteParam();
@@ -591,9 +578,7 @@ public class Images {
             param.setCompressionQuality(quality);
             ImageOutputStream os = ImageIO.createImageOutputStream(targetJpg);
             writer.setOutput(os);
-            writer.write((IIOMetadata) null,
-                         new IIOImage(im, null, null),
-                         param);
+            writer.write((IIOMetadata) null, new IIOImage(im, null, null), param);
             os.flush();
             os.close();
         }
@@ -609,7 +594,7 @@ public class Images {
      * http://stackoverflow.com/questions/2408613/problem-reading-jpeg-image-
      * using-imageio-readfile-file
      * 
-     * */
+     */
     private static BufferedImage readJpeg(InputStream in) throws IOException {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
         ImageReader reader = null;
@@ -651,24 +636,18 @@ public class Images {
 
             double val = y + 1.402 * (cr - 128) - k;
             val = (val - 128) * .65f + 128;
-            rgb[base] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff
-                                                          : (byte) (val + 0.5);
+            rgb[base] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff : (byte) (val + 0.5);
 
             val = y - 0.34414 * (cb - 128) - 0.71414 * (cr - 128) - k;
             val = (val - 128) * .65f + 128;
-            rgb[base + 1] = val < 0.0 ? (byte) 0
-                                     : val > 255.0 ? (byte) 0xff
-                                                  : (byte) (val + 0.5);
+            rgb[base + 1] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff : (byte) (val + 0.5);
 
             val = y + 1.772 * (cb - 128) - k;
             val = (val - 128) * .65f + 128;
-            rgb[base + 2] = val < 0.0 ? (byte) 0
-                                     : val > 255.0 ? (byte) 0xff
-                                                  : (byte) (val + 0.5);
+            rgb[base + 2] = val < 0.0 ? (byte) 0 : val > 255.0 ? (byte) 0xff : (byte) (val + 0.5);
         }
 
-        raster = Raster.createInterleavedRaster(new DataBufferByte(rgb,
-                                                                   rgb.length),
+        raster = Raster.createInterleavedRaster(new DataBufferByte(rgb, rgb.length),
                                                 w,
                                                 h,
                                                 w * 3,

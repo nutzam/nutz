@@ -121,4 +121,25 @@ public class HttpTest {
         Response response = Http.get(url);
         System.out.println(response.getContent());
     }
+    
+    @Test
+    public void test_cookie() {
+        Cookie cookie = new Cookie();
+        cookie.setDebug(true);
+        Request req = Request.get("http://115.28.27.32:8090/nutzbook/user/login");
+        Response resp = Sender.create(req).setInterceptor(cookie).send();
+        String expected = cookie.toString();
+        System.out.println(resp.getStatus());
+        System.out.println(Json.toJson(cookie));
+        resp = Sender.create(req).setInterceptor(cookie).send();
+        System.out.println(Json.toJson(cookie)); // 第二次应该没有新的cookie
+        assertEquals(expected, cookie.toString()); // 所以两次toString的结果是一样的, 即同一个session
+    }
+    
+    @Test
+    public void test_ys7() {
+        String re = Http.post("https://open.ys7.com/api/method", null, 5*1000);
+        assertNotNull(re);
+        System.out.println(re);
+    }
 }

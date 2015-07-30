@@ -160,10 +160,8 @@ public class StringsTest {
         assertEquals("multi world", Strings.trim(" multi world "));
         assertEquals("nutz加油", Strings.trim(" nutz加油 "));
         assertEquals("", Strings.trim(new StringBuffer("    ")));
-        assertEquals("multi world",
-                     Strings.trim(new StringBuffer("multi world")));
-        assertEquals("multi world",
-                     Strings.trim(new StringBuffer(" multi world ")));
+        assertEquals("multi world", Strings.trim(new StringBuffer("multi world")));
+        assertEquals("multi world", Strings.trim(new StringBuffer(" multi world ")));
         assertEquals("nutz加油", Strings.trim(new StringBuilder(" nutz加油 ")));
     }
 
@@ -171,12 +169,9 @@ public class StringsTest {
     public void test_split_ignore_blank() {
         assertArrayEquals(null, Strings.splitIgnoreBlank(null));
         assertArrayEquals(new String[]{}, Strings.splitIgnoreBlank(" "));
-        assertArrayEquals(new String[]{"2", "3", "5"},
-                          Strings.splitIgnoreBlank("2,3,, 5"));
-        assertArrayEquals(new String[]{"2", "3", "5", "6"},
-                          Strings.splitIgnoreBlank("2,3,, 5,6,"));
-        assertArrayEquals(new String[]{"2,3,5,6,"},
-                          Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
+        assertArrayEquals(new String[]{"2", "3", "5"}, Strings.splitIgnoreBlank("2,3,, 5"));
+        assertArrayEquals(new String[]{"2", "3", "5", "6"}, Strings.splitIgnoreBlank("2,3,, 5,6,"));
+        assertArrayEquals(new String[]{"2,3,5,6,"}, Strings.splitIgnoreBlank("2,3,5,6,", ",,"));
         assertArrayEquals(new String[]{"2,3", "5", "6,"},
                           Strings.splitIgnoreBlank("2,3 ,,5,,6,", ",,"));
         assertArrayEquals(new String[]{"2,3", "5", "6,"},
@@ -386,9 +381,7 @@ public class StringsTest {
         StringBuilder here_is_zenkaku_space_sber = new StringBuilder(here_is_zenkaku_space_str);
 
         assertEquals("aaa",
-                     Strings.trim(here_is_zenkaku_space_str
-                                  + "aaa"
-                                  + here_is_zenkaku_space_str));
+                     Strings.trim(here_is_zenkaku_space_str + "aaa" + here_is_zenkaku_space_str));
         assertEquals("aaa",
                      Strings.trim(here_is_zenkaku_space_sb.append("aaa")
                                                           .append(here_is_zenkaku_space_char)));
@@ -397,4 +390,9 @@ public class StringsTest {
                                                             .append(here_is_zenkaku_space_char)));
     }
 
+    @Test
+    public void test_join_array() throws Exception {
+        assertTrue("1920x1080".equals(Strings.join("x", new String[]{"1920", "1080"})));
+        assertTrue("1920x1080".equals(Strings.join("x", new Integer[]{1920, 1080})));
+    }
 }

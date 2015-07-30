@@ -1,4 +1,10 @@
-### Nutz [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz) [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master) ![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)
+### Nutz 
+[![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
+[![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
+![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
+[![GitHub release](https://img.shields.io/github/release/nutzam/nutz.svg)](https://github.com/nutzam/nutz/releases)
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 对于 Java 程序员来说，除 SSH 之外，的另一个选择
 
@@ -16,7 +22,7 @@
     *   [官网](http://nutzam.com/core/nutz_preface.html)（发布新版本时更新）
     *   [GitHub Pages](http://nutzam.github.io/nutz/)（基本做到文档有变动就更新）
     *   [社区常见问答 Part 1](http://nutzam.github.io/nutz/faq/common_qa_1.html)（新手必看）
-*   [每次构建地址](http://downloads.nutzam.com/)
+*   [视频+官方发布](http://downloads.nutzam.com/)
 *   [各种插件](http://github.com/nutzam/nutzmore)
 *   [好玩的Nutzbook](http://nutzbook.wendal.net) (引导式nutz入门书)
 *	[在线javadoc](http://javadoc.nutz.cn)

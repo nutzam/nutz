@@ -54,14 +54,32 @@ public class Http {
         }
     }
 
+    /**
+     * 访问一个URL
+     * @param url 需要访问的URL
+     * @return http响应
+     */
     public static Response get(String url) {
         return Sender.create(Request.get(url)).send();
     }
 
+    /**
+     * 访问一个URL,并设置超时
+     * @param url 需要访问的URL 
+     * @param timeout 超时设置,单位为毫秒
+     * @return http响应
+     */
     public static Response get(String url, int timeout) {
         return Sender.create(Request.get(url)).setTimeout(timeout).send();
     }
 
+    /**
+     * 访问一个URL,并设置超时及参数
+     * @param url 需要访问的URL
+     * @param params 参数
+     * @param timeout 超时设置,单位为毫秒
+     * @return http响应
+     */
     public static String post(String url, Map<String, Object> params, int timeout) {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
                      .setTimeout(timeout)
@@ -69,18 +87,29 @@ public class Http {
                      .getContent();
     }
 
+    /**
+     * 访问一个URL,并设置超时及参数
+     * @param url 需要访问的URL
+     * @param params 参数
+     * @param timeout 超时设置,单位为毫秒
+     * @return http响应
+     */
     public static Response post2(String url, Map<String, Object> params, int timeout) {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
                      .setTimeout(timeout)
                      .send();
     }
-
+    
     public static String encode(Object s) {
+        return encode(s, null);
+    }
+
+    public static String encode(Object s, String enc) {
         if (null == s)
             return "";
         try {
             // Fix issue 283, 按照“茶几”的意见再次修改
-            return URLEncoder.encode(s.toString(), Encoding.CHARSET_UTF8.name());
+            return URLEncoder.encode(s.toString(), enc == null ? Encoding.CHARSET_UTF8.name() : enc);
         }
         catch (UnsupportedEncodingException e) {
             throw Lang.wrapThrow(e);
