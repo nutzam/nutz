@@ -30,27 +30,31 @@ public class DefaultViewMaker implements ViewMaker {
         type = type.toLowerCase();
         if (VIEW_JSP.equals(type))
             return new JspView(value);
-        if (VIEW_JSON.equals(type))
+        if (VIEW_JSON.equals(type)) {
             if (Strings.isBlank(value))
                 return UTF8JsonView.COMPACT;
-            else {
-                // 除高级的json format定义之外,也支持简单的缩写
-                if (value.charAt(0) == '{')
-                    return new UTF8JsonView(Json.fromJson(JsonFormat.class, value));
-                else if ("nice".equals(value))
-                    return new UTF8JsonView(JsonFormat.nice());
-                else if ("forlook".equals(value))
-                    return new UTF8JsonView(JsonFormat.forLook());
-                else if ("full".equals(value))
-                    return new UTF8JsonView(JsonFormat.full());
-                else if ("compact".equals(value))
-                    return new UTF8JsonView(JsonFormat.compact());
-                else if ("tidy".equals(value))
-                	return new UTF8JsonView(JsonFormat.tidy());
-                else
-                    throw new IllegalArgumentException("unkown json view format : "
-                                                       + value);
-            }
+
+            boolean parsed = value.startsWith("!");
+            if (parsed)
+                value = value.substring(1);
+
+            // 除高级的json format定义之外,也支持简单的缩写
+            if (value.charAt(0) == '{')
+                return new UTF8JsonView(Json.fromJson(JsonFormat.class, value)).setParsed(parsed);
+            else if ("nice".equals(value))
+                return new UTF8JsonView(JsonFormat.nice()).setParsed(parsed);
+            else if ("forlook".equals(value))
+                return new UTF8JsonView(JsonFormat.forLook()).setParsed(parsed);
+            else if ("full".equals(value))
+                return new UTF8JsonView(JsonFormat.full()).setParsed(parsed);
+            else if ("compact".equals(value))
+                return new UTF8JsonView(JsonFormat.compact()).setParsed(parsed);
+            else if ("tidy".equals(value))
+                return new UTF8JsonView(JsonFormat.tidy()).setParsed(parsed);
+            else
+                throw new IllegalArgumentException("unkown json view format : " + value);
+        }
+
         if (VIEW_REDIRECT.equals(type) || VIEW_REDIRECT2.equals(type))
             return new ServerRedirectView(value);
         if (VIEW_FORWARD.equals(type) || VIEW_FORWARD2.equals(type))
@@ -60,8 +64,7 @@ public class DefaultViewMaker implements ViewMaker {
         if (VIEW_IOC.equals(type))
             return ioc.get(View.class, value);
         if (VIEW_HTTP.equals(type)) {
-            return new HttpStatusView(Integer.parseInt(Strings.sBlank(value,
-                                                                      "500")));
+            return new HttpStatusView(Integer.parseInt(Strings.sBlank(value, "500")));
         }
         if (VIEW_RAW.equals(type))
             return new RawView(value);

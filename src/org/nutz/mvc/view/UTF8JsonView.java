@@ -22,6 +22,8 @@ public class UTF8JsonView implements View {
 
     private Object data;
 
+    private boolean parsed;
+
     public void setData(Object data) {
         this.data = data;
     }
@@ -30,9 +32,15 @@ public class UTF8JsonView implements View {
         this.format = format;
     }
 
+    public UTF8JsonView setParsed(boolean parsed) {
+        this.parsed = parsed;
+        return this;
+    }
+
     public void render(HttpServletRequest req, HttpServletResponse resp, Object obj)
             throws IOException {
-        resp.setContentType("application/json");
+        if (parsed)
+            resp.setContentType("application/json");
         Mvcs.write(resp, null == obj ? data : obj, format);
     }
 
