@@ -1,6 +1,7 @@
 package org.nutz.mvc;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -264,12 +265,17 @@ public abstract class Mvcs {
      */
     public static void write(HttpServletResponse resp, Object obj, JsonFormat format)
             throws IOException {
+        write(resp, resp.getWriter(), obj, format);
+    }
+    
+    public static void write(HttpServletResponse resp, Writer writer, Object obj, JsonFormat format)
+            throws IOException {
         resp.setHeader("Cache-Control", "no-cache");
         if (resp.getContentType() == null)
             resp.setContentType("text/plain");
 
         // by mawm 改为直接采用resp.getWriter()的方式直接输出!
-        Json.toJson(resp.getWriter(), obj, format);
+        Json.toJson(writer, obj, format);
 
         resp.flushBuffer();
     }

@@ -197,7 +197,10 @@ public class DaoUp {
         if (druidFactoryClass != null) {
             log.debug("build DruidDataSource by props");
             Mirror<?> mirror = Mirror.me(druidFactoryClass);
-            return (DataSource) mirror.invoke(null, "createDataSource", props);
+            DataSource ds = (DataSource) mirror.invoke(null, "createDataSource", props);
+            if (!props.containsKey("maxWait"))
+                Mirror.me(ds).setValue(ds, "maxWait", 15*1000);
+            return ds;
         }
         log.debug("build SimpleteDataSource by props");
         return SimpleDataSource.createDataSource(props);
