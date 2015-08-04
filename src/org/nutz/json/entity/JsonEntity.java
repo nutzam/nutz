@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.nutz.json.JsonException;
@@ -29,7 +29,7 @@ public class JsonEntity {
 
     private List<JsonEntityField> fields;
 
-    private Map<String, JsonEntityField> fieldMap = new HashMap<String, JsonEntityField>();
+    private Map<String, JsonEntityField> fieldMap = new LinkedHashMap<String, JsonEntityField>();
 
     private Borning<?> borning;
 
@@ -42,7 +42,7 @@ public class JsonEntity {
     public JsonEntity(Mirror<?> mirror) {
         // 处理范型
         Type type = mirror.getActuallyType();
-        typeParams = new HashMap<String, Integer>();
+        typeParams = new LinkedHashMap<String, Integer>();
         if (type instanceof ParameterizedType) {
             ParameterizedType pmType = (ParameterizedType) type;
             int i = 0;
