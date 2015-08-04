@@ -1,10 +1,14 @@
 ### Nutz 
+
 [![Build Status](https://travis-ci.org/nutzam/nutz.png?branch=master)](https://travis-ci.org/nutzam/nutz)
 [![Circle CI](https://circleci.com/gh/nutzam/nutz/tree/master.svg?style=svg)](https://circleci.com/gh/nutzam/nutz/tree/master)
 ![Coverity Scan Build Status](https://scan.coverity.com/projects/4917/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.nutz/nutz/)
 [![GitHub release](https://img.shields.io/github/release/nutzam/nutz.svg)](https://github.com/nutzam/nutz/releases)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+
+[![Join the chat at https://gitter.im/nutzam/nutz](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/nutzam/nutz?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 
 对于 Java 程序员来说，除 SSH 之外，的另一个选择
 
