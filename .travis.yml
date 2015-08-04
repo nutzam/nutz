@@ -25,7 +25,8 @@ env:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "E1z+6z9M4iTdAXZ2a1rYSrxfIOq6PkdXEMutAbIn/bp1e/Qvb5IVoAS0heo7SPwcIlHlN8mDiOtKdzbcu9q8VaftfHwFjff6AoKyuWtfDqE1ecTfflebWwzmtXKJmT5uxBPvu442dS4sIc2zx3zjvnxMsSmvrdSwbMxwdbAKvDc="
-
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
 addons:
   coverity_scan:
     project:
