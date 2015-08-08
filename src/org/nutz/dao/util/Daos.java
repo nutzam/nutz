@@ -684,6 +684,8 @@ public abstract class Daos {
                         columnNames.add(meta.getColumnName(i).toLowerCase());
                     }
                     for (MappingField mf : en.getMappingFields()) {
+                        if (mf.isReadonly())
+                            continue;
                         String colName = mf.getColumnName();
                         if (columnNames.contains(colName.toLowerCase())) {
                             columnNames.remove(colName.toLowerCase());

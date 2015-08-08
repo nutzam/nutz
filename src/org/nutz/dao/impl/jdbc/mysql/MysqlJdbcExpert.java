@@ -80,6 +80,8 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
                                              + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
+            if (mf.isReadonly())
+                continue;
             sb.append('\n').append(mf.getColumnName());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
