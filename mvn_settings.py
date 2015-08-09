@@ -41,10 +41,10 @@ f = open(homedir + '/.m2/mySettings.xml', 'w')
 f.write(m2Str)
 f.close()
 
-print m2Str
+#print m2Str
 
 print "read to deploy"
-if "1.6.0" in subprocess.check_output("java -Xmx32m -version", shell=1) :
-  subprocess.check_call("mvn clean deploy --settings ~/.m2/mySettings.xml", shell=1)
+if "1.6.0" in subprocess.check_output("java -Xmx32m -version", shell=1, stderr=subprocess.STDOUT) :
+  subprocess.check_call("mvn clean deploy --settings ~/.m2/mySettings.xml", shell=1, stderr=subprocess.STDOUT)
 else :
   print "not java 6"
