@@ -3,6 +3,7 @@ import sys
 import os
 import os.path
 import xml.dom.minidom
+import subprocess
 
 if os.environ["TRAVIS_SECURE_ENV_VARS"] == "false":
   print "no secure env vars available, skipping deployment"
@@ -43,3 +44,6 @@ m2Str = m2.toxml()
 f = open(homedir + '/.m2/mySettings.xml', 'w')
 f.write(m2Str)
 f.close()
+
+if "1.6" in subprocess.check_output("java -version", shell=1) :
+  subprocess.call("mvn clean deploy --settings ~/.m2/mySettings.xml", shell=1)
