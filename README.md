@@ -35,6 +35,28 @@
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
 
+### Maven 资源
+
+稳定发布版本
+
+```xml
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz</artifactId>
+			<version>1.b.52</version>
+		</dependency>
+```
+
+快照版本在每次提交后会自动deploy到sonatype快照库,享受各种bug fix和新功能
+
+```xml
+		<dependency>
+			<groupId>org.nutz</groupId>
+			<artifactId>nutz</artifactId>
+			<version>1.b.53-SNAPSHOT</version>
+		</dependency>
+```
+
 ### Thanks YourKit
 
 YourKit supports open source projects with its full-featured Java Profiler.
