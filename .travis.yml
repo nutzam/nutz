@@ -25,8 +25,12 @@ env:
    # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
    #   via the "travis encrypt" command using the project repo's public key
    - secure: "E1z+6z9M4iTdAXZ2a1rYSrxfIOq6PkdXEMutAbIn/bp1e/Qvb5IVoAS0heo7SPwcIlHlN8mDiOtKdzbcu9q8VaftfHwFjff6AoKyuWtfDqE1ecTfflebWwzmtXKJmT5uxBPvu442dS4sIc2zx3zjvnxMsSmvrdSwbMxwdbAKvDc="
+   - SONATYPE_USERNAME=wendal
+   - secure : "BaXmGpodQiuU23YgtUThWCHf7Vig2Gv3UfpBjo3FATgn1LRF3i2IOgY5sCSi+XJYqx+05fVNdwVYccxS/9UfhPNSqQuslIwgmg0y9f26DYaX2gaW+jk8padhZRkeBrY3fO+g9nQuu+Epgqi0ITru6+IjH932O0m1JR7iJu2RNhs=""
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - python mvn_settings.py
+  - mvn clean deploy --settings ~/.m2/mySettings.xml
 addons:
   coverity_scan:
     project:
