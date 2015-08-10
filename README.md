@@ -59,6 +59,8 @@
 
 关于如何在maven启用下载快照版本,可以参阅[How to download SNAPSHOT version from maven SNAPSHOT repository?](http://stackoverflow.com/questions/7715321/how-to-download-snapshot-version-from-maven-snapshot-repository)
 
+或者你可以直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.b.53-SNAPSHOT/)
+
 ### Thanks YourKit
 
 YourKit supports open source projects with its full-featured Java Profiler.
