@@ -1,6 +1,6 @@
 sudo: false
 language: java
-script: mvn clean source:jar javadoc:jar cobertura:cobertura package
+script: mvn clean source:jar cobertura:cobertura package
 jdk:
   - openjdk6
   - openjdk7
