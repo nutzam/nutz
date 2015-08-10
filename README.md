@@ -57,6 +57,8 @@
 		</dependency>
 ```
 
+关于如何在maven启用下载快照版本,可以参阅[How to download SNAPSHOT version from maven SNAPSHOT repository?](http://stackoverflow.com/questions/7715321/how-to-download-snapshot-version-from-maven-snapshot-repository)
+
 ### Thanks YourKit
 
 YourKit supports open source projects with its full-featured Java Profiler.
