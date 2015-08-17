@@ -11,7 +11,7 @@ public class RegionTest {
     public void test_gt_lt() {
         assertFalse(Region.Int("(,2)").match(3));
         assertTrue(Region.Int("(1,2]").match(2));
-        assertFalse(Region.Int("[2,)").match(3));
+        assertTrue(Region.Int("[2,)").match(3));
     }
 
     @Test
