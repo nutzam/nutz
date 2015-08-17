@@ -9,6 +9,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
@@ -152,6 +153,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
             return new BlobValueAdaptor2(Jdbcs.getFilePool());
         } else if ("JSON".equalsIgnoreCase(ef.getCustomDbType())) {
             return new PsqlJsonAdaptor();
+        } else if (ColType.PSQL_ARRAY == ef.getColumnType()) {
+            return new PsqlArrayAdaptor(ef.getCustomDbType());
         } else {
             return super.getAdaptor(ef);
         }
