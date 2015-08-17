@@ -51,8 +51,8 @@ public class HttpTest {
         assertTrue(response1.getContent().indexOf("多看") > 0);
 
         // 如果Http头中没有指定编码类型，用户也可以手工指定
-        Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");
-        assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
+        //Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");
+        //assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
     }
 
     @Test(expected = HttpException.class)
@@ -112,15 +112,15 @@ public class HttpTest {
         }
     }
     
-    @Test
-    public void test_360safe() throws Throwable {
-        Http.disableJvmHttpsCheck();
-        
-    	String url = "https://openapi.360.cn/user/me.json?access_token=1323463692b46eacce7412f3b65877cc54fc6d538db5619b20&fields=id,name,avatar,nick";
-
-        Response response = Http.get(url);
-        System.out.println(response.getContent());
-    }
+//    @Test
+//    public void test_360safe() throws Throwable {
+//        Http.disableJvmHttpsCheck();
+//        
+//    	String url = "https://openapi.360.cn/user/me.json?access_token=1323463692b46eacce7412f3b65877cc54fc6d538db5619b20&fields=id,name,avatar,nick";
+//
+//        Response response = Http.get(url);
+//        System.out.println(response.getContent());
+//    }
     
     @Test
     public void test_cookie() {
@@ -136,10 +136,10 @@ public class HttpTest {
         assertEquals(expected, cookie.toString()); // 所以两次toString的结果是一样的, 即同一个session
     }
     
-    @Test
-    public void test_ys7() {
-        String re = Http.post("https://open.ys7.com/api/method", null, 5*1000);
-        assertNotNull(re);
-        System.out.println(re);
-    }
+//    @Test
+//    public void test_ys7() {
+//        String re = Http.post("https://open.ys7.com/api/method", null, 5*1000);
+//        assertNotNull(re);
+//        System.out.println(re);
+//    }
 }

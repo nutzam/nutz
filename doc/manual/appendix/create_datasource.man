@@ -478,7 +478,7 @@ BoneCP
 	绝对错误的用法
 		{{{
 		public Dao getDao() { // 无论改方法被调用一次还是N次, 均为错误!!
-			Ioc ioc = new NutIoc(new XmlIocLoader("ioc/dao.js")); // 反复创建ioc容器
+			Ioc ioc = new NutIoc(new JsonLoader("ioc/dao.js")); // 反复创建ioc容器
 			return ioc.get(Dao.class); //方法返回后, ioc必然被gc, 从而触发ioc的depose事件,导致DataSource关闭!
 		}
 		}}}
@@ -489,7 +489,7 @@ BoneCP
 		
 		public Dao getDao() { // 暂不考虑线程同步的问题
 			if (ioc == null)
-				ioc = new NutIoc(new XmlIocLoader("ioc/dao.js")); 
+				ioc = new NutIoc(new JsonLoader("ioc/dao.js")); 
 			return ioc.get(Dao.class);
 		}
 		}}}

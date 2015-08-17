@@ -126,12 +126,10 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
 
         try {
             dropRelation(dao, en);
-            if (tableName.equals(viewName)) {
-                dao.execute(Sqls.create("DROP TABLE " + tableName));
-            } else {
-                dao.execute(Sqls.create("DROP VIEW " + viewName),
-                            Sqls.create("DROP TABLE " + tableName));
+            if (!tableName.equals(viewName) && dao.exists(viewName)) {
+                dao.execute(Sqls.create("DROP VIEW " + viewName));
             }
+            dao.execute(Sqls.create("DROP TABLE " + tableName));
         }
         catch (Exception e) {
             return false;

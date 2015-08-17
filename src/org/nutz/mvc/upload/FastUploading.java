@@ -1,6 +1,7 @@
 package org.nutz.mvc.upload;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -200,18 +201,19 @@ public class FastUploading implements Uploading {
                 }
                 // 作为提交值读取
                 else {
-                    StringBuilder sb = new StringBuilder();
+                    ByteArrayOutputStream bao = new ByteArrayOutputStream();
                     do {
                         info.current = br.load();
                         mm = br.mark(itemEndlBytes);
                         assertStreamNotEnd(mm);
-                        sb.append(br.dumpAsString(charset));
+                        br.dump(bao);
                     } while (mm == MarkMode.NOT_FOUND);
-                    params.addv(meta.getName(), sb.toString());
+                    String val = new String(bao.toByteArray(), charset);
+                    params.addv(meta.getName(), val);
                     if (log.isDebugEnabled())
                         log.debugf(    "Found a param, name=[%s] value=[%s]",
                                     meta.getName(),
-                                    sb.toString());
+                                    val);
                 }
 
             } while (mm != MarkMode.STREAM_END);
