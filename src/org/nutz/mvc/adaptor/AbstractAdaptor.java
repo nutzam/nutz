@@ -23,6 +23,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
+import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
@@ -38,6 +39,7 @@ import org.nutz.mvc.adaptor.injector.ResponseInjector;
 import org.nutz.mvc.adaptor.injector.ServletContextInjector;
 import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
 import org.nutz.mvc.adaptor.injector.SessionInjector;
+import org.nutz.mvc.adaptor.injector.ViewModelInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
@@ -170,6 +172,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         else if (Reader.class.isAssignableFrom(type)) {
             return new HttpReaderInjector();
         }
+        // ViewModel
+        else if (ViewModel.class.isAssignableFrom(type))
+            return new ViewModelInjector();
         return null;
     }
 

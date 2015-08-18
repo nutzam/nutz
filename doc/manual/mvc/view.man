@@ -86,7 +86,24 @@
 		
 		Json 视图的更多介绍请参看 [#JSON_视图]
 
+	根据返回值决定视图(1.b.53开始支持)
 	
+		声明如下内容
+		{{{
+		@Ok("re:jsp:/index")
+		public String login(@Param("..")User user, ViewModel model) {
+		    // 检查登陆参数等等...
+		    
+		    if (ok) {
+		        return null; // 返回null, 则代表走默认视图 jsp:/index
+		    }
+		    // 登陆失败
+		    model.set("err-msg", "用户名或密码错误");
+		    return "jsp:/user/login";
+		}
+		}}}
+		
+		ViewZone 视图的更多说明请参阅  [#根据返回值决定视图]
 	
 ------------------------------------------------------------------------------------------
 怎样使用视图？
@@ -365,6 +382,47 @@
 		视图的实现类为： {*org.nutz.mvc.view.RawView2}
 		
 		该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.
+		
+	根据返回值决定视图
+	
+		视图的实现类为： {*org.nutz.mvc.view.ViewZone}
+		
+		该视图允许带一个默认视图,当方法返回值为null时调用
+		
+		一般形式, 默认视图为VoidView
+		
+		{{{
+		@Ok("re")
+		}}}
+		
+		一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图
+		
+		{{{
+		@Ok("re:jsp:/index")
+		}}}
+		
+		通过ViewModel进行视图传值. 因为其他视图的行为一般以方法的返回值作为视图渲染所需要的值,
+		而re视图的返回值用于决定最终使用的视图,所以需要额外的ViewModel传递值.
+		ViewModel是可选参数, 若不需要就可以不声明.
+		
+		{{{
+		@Ok("re:jsp:/index")
+		public String login(@Param("..")User user, ViewModel model) {
+		    // 检查登陆参数等等...
+		    
+		    if (ok) {
+		        return null; // 返回null, 则代表走默认视图 jsp:/index
+		    }
+		    // 登陆失败
+		    model.set("err-msg", "用户名或密码错误");
+		    return "jsp:/user/login";
+		}
+		}}}
+		
+		
+		注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.
+		
+		返回值所代表的视图,不需要与默认视图一致.
 		
 ------------------------------------------------------------------------------------------
 定制自己的视图
