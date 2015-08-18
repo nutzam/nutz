@@ -49,7 +49,7 @@ public @interface Many {
     String field();
 
     /**
-     * 一个属性名,缺省情况下,按参考字段名{@link #field()}的类型选取@Id或者@Name等主键字段
+     * 当前类的一个属性名,缺省情况下,按参考字段名{@link #field()}的类型选取@Id或者@Name等主键字段
      */
     String key() default "";
 
