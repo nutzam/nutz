@@ -35,6 +35,7 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
 import org.nutz.dao.test.meta.DynamicTable;
+import org.nutz.dao.test.meta.Investor;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
@@ -43,6 +44,7 @@ import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
+import org.nutz.dao.test.meta.issue918.Region;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
@@ -456,5 +458,22 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals("29.02333", place.getLng().toString());
         
         System.out.println(Json.toJson(place));
+    }
+    
+    @Test
+    public void test_xxx() {
+        Sql task_sql= Sqls.create("SELECT * FROM act_ru_task WHERE CATEGORY_=@category AND ( ASSIGNEE_=@userId  $assignee ) ORDER BY create_time_ desc");
+        task_sql.params().set("category",1);
+        task_sql.params().set("userId", 2);
+        task_sql.vars().set("assignee", "and name != 'hi'");
+
+        System.out.println(task_sql.toPreparedStatement());
+        System.out.println(task_sql.forPrint());
+        System.out.println(">>"+task_sql);
+    }
+    
+    @Test
+    public void test_issue_918() {
+        dao.create(Region.class, true); 
     }
 }

@@ -34,6 +34,7 @@ import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
 import org.nutz.json.meta.JQ;
 import org.nutz.json.meta.JX;
+import org.nutz.json.meta.Msg;
 import org.nutz.json.meta.MyDate2StringCastor;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Files;
@@ -914,5 +915,12 @@ public class JsonTest {
         List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.map(String.class, Pet.class)), str/*其他源也可以*/);
         System.out.println(list);
         assertEquals(80, list.get(0).get("dongdong").getAge());
+    }
+    
+    @Test
+    public void test_self_toString_toJson() {
+        Msg msg = new Msg("200", "ok");
+        System.out.println(Json.toJson(msg));
+        System.out.println(msg);
     }
 }
