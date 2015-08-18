@@ -101,14 +101,8 @@ public class NutDao extends DaoSupport implements Dao {
         _pojo_queryRecord = new PojoQueryRecordCallback();
         _pojo_fetchRecord = new PojoFetchRecordCallback();
         _pojo_eachRecord = new PojoEachRecordCallback();
-
-        // check for spring DataSourceTransactionManager
-        for (StackTraceElement ele : Thread.currentThread().getStackTrace()) {
-            if (ele.getClassName().startsWith("org.springframework")) {
-                log.info("Note: Make sure set SpringDaoRunner if using DataSourceTransactionManager.");
-                break;
-            }
-        }
+        if (log.isDebugEnabled())
+            log.debugf("%s[_selfId=%d] init ...", getClass().getSimpleName(), _selfId);
     }
 
     public NutDao(DataSource dataSource) {
