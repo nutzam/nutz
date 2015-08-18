@@ -180,4 +180,12 @@ public class CndTest extends DaoCase {
         pet.setAge(0);
         assertEquals(" WHERE (name='wendal' AND age=0)", Cnd.from(dao, pet, FieldMatcher.make("age|name", null, true).setIgnoreZero(false)).toString());
     }
+    
+    @Test
+    public void test_not_sql_group() {
+        SqlExpression e2 = Cnd.exps("f2", "=", 1);
+        SqlExpression e3 = Cnd.exps("f3", "=", 1);
+        Condition c = Cnd.where(e2).andNot(e3);
+        assertEquals(" WHERE (f2=1) AND NOT (f3=1)", c.toString());
+    }
 }

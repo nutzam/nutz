@@ -31,6 +31,8 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     private boolean top;
     
+    protected boolean not;
+    
     private static final Log log = Logs.get();
 
     public SqlExpressionGroup() {
@@ -309,9 +311,15 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
         if (!exps.isEmpty()) {
             if (top) {
                 sb.append(" WHERE ");
+                if (not)
+                    sb.append("NOT (");
                 for (SqlExpression exp : exps)
                     exp.joinSql(en, sb);
+                if (not)
+                    sb.append(')');
             } else {
+                if (not)
+                    sb.append("NOT ");
                 sb.append('(');
                 for (SqlExpression exp : exps)
                     exp.joinSql(en, sb);
@@ -340,6 +348,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpression setNot(boolean not) {
+        this.not = not;
         return this;
     }
 
