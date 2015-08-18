@@ -218,7 +218,7 @@ Nutz.Dao SQL 文件的格式
 	
 	对于 Dao 接口的默认实现， org.nutz.dao.impl.NutDao，提供两个方法，一个是通过构造函数，另一个是 setter 函数。
 
-	在构造时加载
+	在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)
 		{{{<JAVA>
 		Dao dao = new NutDao(datasource,new FileSqlManager("demo/sqls/all.sqls"));
 		System.out.println(dao.sqls().count());
@@ -230,7 +230,7 @@ Nutz.Dao SQL 文件的格式
 		 * 如不是存在在 CLASSPATH 中的文件，则需要写上绝对路径。
 		 * 如果你给出的 path 是一个目录，那么该目录下所有后缀为{*.sqls} 的文件都会被加载
 
-	在构造之后的任何时加载
+	在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)
 		{{{<JAVA>
 		Dao dao = new NutDao(datasource);
 		((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
@@ -343,13 +343,26 @@ Nutz.Dao SQL 文件的格式
 			}}}
 			
 			那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)
+			
+	多条件占位符(1.b.53开始提供)
+	
+		任意变量的值类型为Condition时,均自动识别为条件占位符
+		
+			{{{<JAVA>
+				Sql sql = Sql.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
+				sql.setVar("vip_cnd", Cnd.where("level", ">", 5));
+				sql.setVar("girl_cnd", Cnd.where("age", "<", 30));
+				sql.setCallback(Sqls.callback.records());
+				dao.execute(sql);
+			}}}
+			
+		注意事项: 如果调用过setEntity,那么对应的Cnd会进行属性名-字段名映射.
 	
 ------------------------------------------------------------------------------------------------
 分页
 
-	这是1.b.43才添加的功能!
+	对于不太复杂的sql, 分页还是需要的.
 	
-	一直被投诉,终于被实现!
 		{{{<JAVA>
 		Sql sql = Sqls.queryEntity("SELECT * FROM t_pet");
 		sql.setPager(dao.createPager(2,20));
@@ -357,6 +370,9 @@ Nutz.Dao SQL 文件的格式
 		dao.execute(sql);
 		return sql.getList(Pet.class);
 		}}}
-	提醒一下,SqlServer数据库下, 用于分页的sql对象,不要重复使用!!
+		
+	提醒一下, 用于分页的sql对象,不可重复使用!!
+	
+	若自动分页失败(例如生成的sql错误),那只能自行分页了.
 
 	
