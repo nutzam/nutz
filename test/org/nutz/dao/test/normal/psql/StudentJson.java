@@ -1,0 +1,41 @@
+package org.nutz.dao.test.normal.psql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.nutz.dao.entity.annotation.ColDefine;
+import org.nutz.json.Json;
+import org.nutz.lang.util.NutMap;
+
+public class StudentJson extends Student {
+
+    public StudentJson() {}
+
+    public StudentJson(ResultSet rs) throws SQLException {
+        this.setId(rs.getInt("id"));
+        this.data = NutMap.WRAP(rs.getString("data"));
+        this.studentResult = Json.fromJson(StudentResult.class, rs.getString("studentResult"));
+    }
+
+    @ColDefine(customType = "json")
+    private NutMap data;
+
+    @ColDefine(customType = "json")
+    private StudentResult studentResult;
+
+    public NutMap getData() {
+        return data;
+    }
+
+    public void setData(NutMap data) {
+        this.data = data;
+    }
+
+    public StudentResult getStudentResult() {
+        return studentResult;
+    }
+
+    public void setStudentResult(StudentResult studentResult) {
+        this.studentResult = studentResult;
+    }
+}
