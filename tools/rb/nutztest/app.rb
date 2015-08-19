@@ -88,13 +88,13 @@ namespace '/nutztest' do
   namespace '/views' do
     %w{for for2 for3}.each do |item|
       get "/#{item}" do
-          context_path
+        context_path
       end
     end
 
     %w{jsp jsp2 jsp3 jsp4}.each do |item|
       get "/#{item}" do
-          "null"
+        "null"
       end
     end
 
@@ -115,6 +115,21 @@ namespace '/nutztest' do
       get "/#{item}" do
         context_path
       end
+    end
+
+    get "/resp/to/:type" do
+      case params["type"]
+      when "1"
+        "hi"
+      when "2"
+        json :name => "wendal"
+      else
+        context_path
+      end
+    end
+
+    get "/resp2" do
+      "hi"
     end
   end
 
