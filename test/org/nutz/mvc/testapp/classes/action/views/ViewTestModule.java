@@ -106,7 +106,7 @@ public class ViewTestModule {
     }
     
     @At("/resp/to/?")
-    @Ok("resp")
+    @Ok("re")
     public String resp1(int type, ViewModel model) {
         switch (type) {
         case 1:
