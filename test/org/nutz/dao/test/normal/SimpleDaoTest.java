@@ -9,7 +9,9 @@ import static org.junit.Assert.fail;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -45,6 +47,7 @@ import org.nutz.dao.test.meta.issue396.Issue396Master;
 import org.nutz.dao.test.meta.issue726.Issue726;
 import org.nutz.dao.test.meta.issue901.XPlace;
 import org.nutz.dao.test.meta.issue918.Region;
+import org.nutz.dao.test.meta.issue928.BeanWithSet;
 import org.nutz.dao.util.Daos;
 import org.nutz.dao.util.blob.SimpleBlob;
 import org.nutz.dao.util.blob.SimpleClob;
@@ -475,5 +478,27 @@ public class SimpleDaoTest extends DaoCase {
     @Test
     public void test_issue_918() {
         dao.create(Region.class, true); 
+    }
+    
+    @Test
+    public void test_issue_928() {
+        dao.create(BeanWithSet.class, true);
+        BeanWithSet s = new BeanWithSet();
+        Set<Long> uids = new HashSet<Long>();
+        Long UID = 1234455656L;
+        uids.add(UID);
+        s.setUids(uids);
+        
+        Set<String> names = new HashSet<String>();
+        names.add("wendal");
+        s.setNames(names);
+        System.out.println(names);
+        
+        dao.insert(s);
+        
+        BeanWithSet out = dao.fetch(BeanWithSet.class);
+        assertEquals(Long.class, out.getUids().iterator().next().getClass());
+        assertEquals(UID, out.getUids().iterator().next());
+        
     }
 }
