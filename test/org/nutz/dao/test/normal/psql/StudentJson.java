@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.nutz.dao.entity.annotation.ColDefine;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.json.Json;
 import org.nutz.lang.util.NutMap;
 
@@ -17,10 +18,10 @@ public class StudentJson extends Student {
         this.studentResult = Json.fromJson(StudentResult.class, rs.getString("studentResult"));
     }
 
-    @ColDefine(customType = "json")
+    @ColDefine(customType = "json", type = ColType.PSQL_JSON)
     private NutMap data;
 
-    @ColDefine(customType = "json")
+    @ColDefine(customType = "json", type = ColType.PSQL_JSON)
     private StudentResult studentResult;
 
     public NutMap getData() {
