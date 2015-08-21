@@ -31,7 +31,7 @@ public class Pet {
     &#64;Id
     private int id;
 
-    &#64;ColDefine(customType = "json")
+    &#64;ColDefine(customType = "json", type = ColType.PSQL_JSON)
     private NutMap data;
 
     // ... 省略后面代码，包括字段声明以及 getter 和 setter
@@ -48,13 +48,13 @@ public class Jone {
     &#64;Id
     private int id;
 
-    &#64;ColDefine(customType = "json")
+    &#64;ColDefine(customType = "json", type = ColType.PSQL_JSON)
     private Information info;
 
     // ... 省略后面代码，包括字段声明以及 getter 和 setter
 }
 </code>
- * 
+ *
  */
 public class PsqlJsonAdaptor implements ValueAdaptor {
 

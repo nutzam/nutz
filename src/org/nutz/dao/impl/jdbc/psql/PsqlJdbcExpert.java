@@ -137,6 +137,13 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
         case DATETIME:
             return "TIMESTAMP";
+
+        case PSQL_JSON:
+            return "JSON";
+
+        case PSQL_ARRAY:
+            return "ARRAY";
+
         default:
             break;
         }
@@ -151,7 +158,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
     public ValueAdaptor getAdaptor(MappingField ef) {
         if (ef.getTypeMirror().isOf(Blob.class)) {
             return new BlobValueAdaptor2(Jdbcs.getFilePool());
-        } else if ("JSON".equalsIgnoreCase(ef.getCustomDbType())) {
+        } else if (ColType.PSQL_JSON == ef.getColumnType()) {
             return new PsqlJsonAdaptor();
         } else if (ColType.PSQL_ARRAY == ef.getColumnType()) {
             return new PsqlArrayAdaptor(ef.getCustomDbType());
