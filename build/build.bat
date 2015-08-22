@@ -5,8 +5,7 @@ SET DEPS=D:\home\nutz\deps
 SET OUTPUT=D:\home\nutz\jars
 SET PROJECT_HOME=D:\home\zozoh\workspace\svn\google.nutz\trunk
 
-D:
-cd %PROJECT_HOME%\build
+cd /d %PROJECT_HOME%\build
 ant
 
 @echo on
