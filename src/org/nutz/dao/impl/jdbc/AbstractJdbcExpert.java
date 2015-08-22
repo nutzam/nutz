@@ -220,6 +220,10 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
             if (mf.getTypeMirror().isDouble())
                 return "NUMERIC(15,10)";
             return "FLOAT";
+        case PSQL_ARRAY:
+            return "ARRAY";
+        case PSQL_JSON:
+            return "JSON";
         }
         throw Lang.makeThrow(    "Unsupport colType '%s' of field '%s' in '%s' ",
                                 mf.getColumnType(),
