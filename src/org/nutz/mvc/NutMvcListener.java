@@ -102,6 +102,7 @@ public class NutMvcListener implements ServletContextListener, IocProvider {
         } else {
             pp = new PropertiesProxy(in);
             Streams.safeClose(in);
+            this.pp = pp;
         }
     }
 

@@ -37,7 +37,6 @@ import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
 import org.nutz.dao.test.meta.Abc;
 import org.nutz.dao.test.meta.DynamicTable;
-import org.nutz.dao.test.meta.Investor;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
@@ -66,7 +65,7 @@ public class SimpleDaoTest extends DaoCase {
         for (int i = 0; i < len; i++) {
             Pet pet = Pet.create("pet" + i);
             pet.setNickName("alias_" + i);
-            pet.setPrice(R.random(30, 100) / 3.1415f);
+            pet.setPrice((float)(R.random(30, 100) / Math.PI));
             dao.insert(pet);
         }
     }
@@ -500,5 +499,14 @@ public class SimpleDaoTest extends DaoCase {
         assertEquals(Long.class, out.getUids().iterator().next().getClass());
         assertEquals(UID, out.getUids().iterator().next());
         
+    }
+    
+    @Test
+    public void test_query_2() {
+        dao.insert(Pet.create(100));
+        List<Pet> list = dao.query(Pet.class, null);
+        for (Pet pet : list) {
+            assertNotNull(pet.getName());
+        }
     }
 }

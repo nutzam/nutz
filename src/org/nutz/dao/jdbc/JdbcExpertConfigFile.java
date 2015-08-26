@@ -39,7 +39,7 @@ public class JdbcExpertConfigFile {
             if (home.contains("${app.home}")) {
                 try {
                     // 这里引用了Mvcs类, 不太舒服,但应该还是有益处的
-                    home.replace("${app.home}", Mvcs.getServletContext().getRealPath("/"));
+                    home = home.replace("${app.home}", Mvcs.getServletContext().getRealPath("/"));
                 }
                 catch (Throwable e) {
                 }
