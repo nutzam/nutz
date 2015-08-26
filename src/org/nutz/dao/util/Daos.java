@@ -656,10 +656,10 @@ public abstract class Daos {
                                  final boolean add,
                                  final boolean del,
                                  Object tableName) {
-    	final JdbcExpert expert = ((NutDao) dao).getJdbcExpert();
-    	if (tableName != null && Strings.isNotBlank(tableName.toString())) {
-             dao = ext(dao, tableName);
-         }
+        final JdbcExpert expert = ((NutDao) dao).getJdbcExpert();
+        if (tableName != null && Strings.isNotBlank(tableName.toString())) {
+            dao = ext(dao, tableName);
+        }
         final Entity<?> en = dao.getEntity(klass);
         if (!dao.exists(klass))
             return;
@@ -800,6 +800,25 @@ public abstract class Daos {
                 migration(dao, klass, add, del, null);
             }
         }
+    }
+
+    /**
+     * 检查分表中是否有字段变化 提示
+     * 
+     * @param dao
+     * @param tableName
+     * @param clsType
+     */
+    public static void checkTableColumn(Dao dao, Object tableName, final Class<?> clsType) {
+        final NutDao d = (NutDao) dao;
+        final JdbcExpert expert = d.getJdbcExpert();
+        ext(d, tableName).run(new ConnCallback() {
+            @Override
+            public void invoke(Connection conn) throws Exception {
+                Entity<?> en = d.getEntity(clsType);
+                expert.setupEntityField(conn, en);
+            }
+        });
     }
 }
 
