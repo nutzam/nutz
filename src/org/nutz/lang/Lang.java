@@ -2000,7 +2000,7 @@ public abstract class Lang {
     public static <T> Class<T> forName(String name, Class<T> type) {
         Class<?> re;
         try {
-            re = Class.forName(name);
+            re = Lang.loadClass(name);
             return (Class<T>) re;
         }
         catch (ClassNotFoundException e) {

@@ -60,7 +60,7 @@ public class SimpleDataSource implements DataSource {
     public void close() {}
     
     public void setDriverClassName(String driverClassName) throws ClassNotFoundException {
-        Class.forName(driverClassName);
+        Lang.loadClass(driverClassName);
     }
     
     public void setUsername(String username) {
@@ -88,7 +88,7 @@ public class SimpleDataSource implements DataSource {
                             "org.sqlite.JDBC"};
         for (String driverClassName : drivers) {
             try {
-                Class.forName(driverClassName);
+                Lang.loadClass(driverClassName);
             } catch (Throwable e) {}
         }
     }

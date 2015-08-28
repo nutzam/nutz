@@ -105,7 +105,7 @@ public abstract class Loadings {
                 // 扫描器直接无参创建
                 else {
                     try {
-                        Class<?> klass = Class.forName(str);
+                        Class<?> klass = Lang.loadClass(str);
                         Mirror<?> mi = Mirror.me(klass);
                         ms = (ModuleScanner) mi.born();
                     }

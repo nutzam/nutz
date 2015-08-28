@@ -68,12 +68,12 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("tx", TransIocLoader.class);
             try {
                 loaders.put("cache",
-                            (Class<? extends IocLoader>) Class.forName("org.nutz.jcache.NutCacheIocLoader"));
+                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.jcache.NutCacheIocLoader"));
             }
             catch (ClassNotFoundException e) {}
             try {
                 loaders.put("quartz",
-                            (Class<? extends IocLoader>) Class.forName("org.nutz.integration.quartz.QuartzIocLoader"));
+                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.integration.quartz.QuartzIocLoader"));
             }
             catch (ClassNotFoundException e) {}
         }

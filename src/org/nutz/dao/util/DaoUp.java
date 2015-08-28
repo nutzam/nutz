@@ -12,6 +12,7 @@ import org.nutz.dao.Dao;
 import org.nutz.dao.impl.NutDao;
 import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.lang.Files;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Streams;
 import org.nutz.log.Log;
@@ -67,7 +68,7 @@ public class DaoUp {
             /**
              * 加载DruidDataSourceFactory, 即Druid连接池的工厂类
              */
-            druidFactoryClass = Class.forName("com.alibaba.druid.pool.DruidDataSourceFactory");
+            druidFactoryClass = Lang.loadClass("com.alibaba.druid.pool.DruidDataSourceFactory");
         }
         catch (ClassNotFoundException e) {
             // 找不到就用内置的SimpleDataSource好了.
