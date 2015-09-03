@@ -1,5 +1,6 @@
 package org.nutz.ioc.impl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -47,6 +48,11 @@ public class PropertiesProxy {
 
     public PropertiesProxy() {
         this(true);
+    }
+    
+    public PropertiesProxy(boolean utf8, String... paths) {
+        this(utf8);
+        this.setPaths(paths);
     }
 
     public PropertiesProxy(boolean utf8) {
@@ -111,12 +117,13 @@ public class PropertiesProxy {
             else {
                 Properties p = new Properties();
                 for (NutResource nr : list) {
-                    InputStream in = nr.getInputStream();
+                    // 用字符流来读取文件
+                    BufferedReader bf = new BufferedReader(new InputStreamReader(nr.getInputStream()));
                     try {
-                        p.load(nr.getInputStream());
+                        p.load(bf);
                     }
                     finally {
-                        Streams.safeClose(in);
+                        Streams.safeClose(bf);
                     }
                 }
                 mp.putAll(p);
