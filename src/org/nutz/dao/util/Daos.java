@@ -866,4 +866,17 @@ class ExtDaoInvocationHandler implements InvocationHandler {
             TableName.run(tableName, m);
         return m.getObj();
     }
+    
+    public static String getTableName(Dao dao, Class<?> klass, Object t) {
+        final Entity<?> en = dao.getEntity(klass);
+        if (t == null)
+            return en.getTableName();
+        final String[] name = new String[1];
+        TableName.run(t, new Runnable() {
+            public void run() {
+                name[0] = en.getTableName();
+            }
+        });
+        return name[0];
+    }
 }
