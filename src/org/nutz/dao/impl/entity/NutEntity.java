@@ -185,8 +185,9 @@ public class NutEntity<T> implements Entity<T> {
 
         // 获得默认的构造方法
         try {
-            type.getConstructor();// 测试是否有默认构造方法
+            bornByDefault = mirror.getBorningByArgTypes();
             try {
+                type.getConstructor();// 测试是否有默认构造方法
                 final FastClass fast = FastClassFactory.get(type);
                 bornByDefault = new Borning<T>() {
                     @SuppressWarnings("unchecked")
