@@ -16,6 +16,8 @@ public class PsqlArrayTest extends DaoCase {
 
     @Test
     public void crud() {
+        if (!dao.meta().isPostgresql())
+            return;
         StudentArray student = new StudentArray();
         Integer[] payByQuarter = {1000, 1300, 1500, 1200};
         String[] schedule = new String[]{"02", "05", "08", "11"};

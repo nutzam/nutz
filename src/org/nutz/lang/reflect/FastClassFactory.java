@@ -13,6 +13,7 @@ import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.repo.org.objectweb.asm.ClassWriter;
+import org.nutz.repo.org.objectweb.asm.Label;
 import org.nutz.repo.org.objectweb.asm.MethodVisitor;
 import org.nutz.repo.org.objectweb.asm.Opcodes;
 import org.nutz.repo.org.objectweb.asm.Type;
@@ -144,6 +145,11 @@ public final class FastClassFactory implements Opcodes {
                 if (constructor.getParameterTypes().length == 0) {
                     MethodVisitor mv = cw.visitMethod(ACC_PUBLIC, "born", "()Ljava/lang/Object;", null, null);
                     mv.visitCode();
+                    // start of fuck linenumber
+                    Label tmp = new Label();
+                    mv.visitLabel(tmp);
+                    mv.visitLineNumber(1, tmp);
+                    // end of Linenumber
                     mv.visitTypeInsn(NEW, enhancedSuperName);
                     mv.visitInsn(DUP);
                     mv.visitMethodInsn( INVOKESPECIAL,

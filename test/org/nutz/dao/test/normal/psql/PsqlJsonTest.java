@@ -19,6 +19,8 @@ public class PsqlJsonTest extends DaoCase {
 
     @Test
     public void crud() {
+        if (!dao.meta().isPostgresql())
+            return;
         NutMap data = NutMap.NEW().setv("name", "Alpha").setv("age", 20).setv("addr", "Beijing");
         StudentResult alphaResult = new StudentResult();
         alphaResult.setMathematics("A");

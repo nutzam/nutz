@@ -6,12 +6,17 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.activation.DataSource;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -28,10 +33,13 @@ import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
+import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.DaoCase;
 import org.nutz.dao.test.meta.A;
@@ -53,6 +61,7 @@ import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.random.R;
 
 public class SimpleDaoTest extends DaoCase {
@@ -507,6 +516,35 @@ public class SimpleDaoTest extends DaoCase {
         List<Pet> list = dao.query(Pet.class, null);
         for (Pet pet : list) {
             assertNotNull(pet.getName());
+        }
+    }
+    
+    @Test
+    public void test_get_sql() throws Throwable {
+        NutDao dao = new NutDao(ioc.get(javax.sql.DataSource.class));
+        final List<String> sqls = new ArrayList<String>();
+        final Method m = NutStatement.class.getDeclaredMethod("toStatement", Object[][].class, String.class);
+        m.setAccessible(true);
+        dao.setExecutor(new DaoExecutor() {
+            public void exec(Connection conn, DaoStatement st) {
+                String psql = st.toPreparedStatement();
+                sqls.add(psql);
+                // 如果需要带数据的, 因为nutz并不生成和执行带数据的sql,所以需要通过
+                // st.toPreparedStatement() 与 参数矩阵 st.getParamMatrix() 综合生成
+                // 这里调用非公开api中的toStatement
+                // 事实上根据参数矩阵(getParamMatrix)和Sql语句(toPreparedStatement)就能逐一替换生成
+                try {
+                    String ssql = (String) m.invoke(st, st.getParamMatrix(), psql);
+                    sqls.add(ssql);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        dao.insert(Pet.create("hi"));
+        for (String sql : sqls) {
+            System.out.println(sql);
         }
     }
 }
