@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -15,8 +14,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.activation.DataSource;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -61,7 +58,6 @@ import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Mirror;
 import org.nutz.lang.random.R;
 
 public class SimpleDaoTest extends DaoCase {

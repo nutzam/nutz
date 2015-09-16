@@ -14,7 +14,7 @@ import org.nutz.dao.entity.annotation.Table;
 @Comment("行政区域")
 public class Region extends AbstractTree<Region> {
  
-	private static final long serialVersionUID = 1L;
+	//private static final long serialVersionUID = 1L;
 	
 	@Column
 	private String name;
