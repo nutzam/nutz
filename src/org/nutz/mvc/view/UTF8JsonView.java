@@ -60,7 +60,7 @@ public class UTF8JsonView implements View {
                 resp.setContentType(CT);
         Writer writer = resp.getWriter();
         if (jsonp)
-            writer.write(req.getParameter(jsonpParam == null ? "jsonp" : jsonpParam) + "(");
+            writer.write(req.getParameter(jsonpParam == null ? "callback" : jsonpParam) + "(");
         Mvcs.write(resp, writer, null == obj ? data : obj, format);
         if (jsonp)
             writer.write(req.getParameter(");"));

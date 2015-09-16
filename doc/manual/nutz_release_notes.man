@@ -10,7 +10,7 @@
 
     实际上，作为 Nutz 项目发起人的我，这两年的精力很多不在 Nutz 上，我逐渐的退化成 Nutz 的重重重度用户了。
     现在 Nutz 项目实际推动的人是 [http://wendal.net/ wendal]。
-    记得那一年(2009年)，也是一个秋天，我发布了 Nutz 第19版，
+    记得那一年(2009年)，也是一个秋天，我发布了 Nutz 第15版，
     也是那个秋天，我遇到了[http://wendal.net/ wendal]，
     那时他还年起，我也不老 ...
     然后我们 ... 厄，就一版一版的发布到现在咯。
@@ -44,8 +44,22 @@
     ---------------- 下面是 wendal 说点啥的分割线----------------
 
 
-    ...
-
+    擦,貌似我也不老吧...
+    
+    这半年,首先必须提一下[http://nutzbook.wendal.net Nutzbook], 引导式Nutz入门指南
+    及衍生的项目[nutz-book-project https://github.com/wendal/nutz-book-project], 据说已经是入门nutz的神器哦
+    
+    然后呢, 首先感谢一下[https://github.com/fangoxyz 面], 他实现了一个[https://github.com/fangoxyz/DaoCache daocache],
+    且该插件已经在生产上运行良好,然后逼着我完成了"官方版"[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-daocache daocache]
+    
+    然后还有[https://github.com/Rekoe 科技]的[https://github.com/Rekoe/Rk_Cms Rk_Cms], 
+    ,[https://github.com/Wizzercn/ 大鲨鱼]的[https://github.com/Wizzercn/NutzWk NutzWk],
+    ,[https://github.com/wukonggg/ wukong]的[https://github.com/wukonggg/mz-g 零售CRM]
+    ,[https://github.com/elkan1788 elkan1788]的[https://github.com/elkan1788/mpsdk4j-demo 微信平台]
+    , 都是非常有爱的项目, 及QQ群里各种基情四射的项目和意见(或福利^_^)
+    
+    另外, [https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-sqltpl sqltpl]的灵感来自[http://my.oschina.net/dongcb678 littleant]的[http://my.oschina.net/dongcb678/blog/300356 高仿ibatis(mybatis)实现sql的集中管理].
+    在此之前我一直觉得解析mybatis那种XML简直是噩梦.
 
     ---------------- Nutz 的相关资源的分隔线 ------------------
 
@@ -53,21 +67,41 @@
      * Nutz 的官网 :  [http://nutzam.com]
      * Github 地址 :  [https://github.com/nutzam/nutz]
      * Nutzmore地址: [https://github.com/nutzam/nutzmore]
+     * Nutzbook: [http://nutzbook.wendal.net]
+     
 
 --------------------------------------------------------------------------------------------------------
 变更统计
 
-    .. wendal 来写一下 ..
+     417 files changed, 5275 insertions(+), 14550 deletions(-)
 
 --------------------------------------------------------------------------------------------------------
 兼容性
     
-    .. wendal 来写一下 ..
+    * Json输出的属性顺序,现在按原生顺序输出了
+    * @Ok("json")的默认Content-Type变成application/json了
 
 --------------------------------------------------------------------------------------------------------
 新功能
 
-    .. wendal 来写一下 ..
+    * 重新实现的NutSql,支持多个Cnd条件, Cnd条件参数化, 带数据库特定注释的Sql #887
+    * @Ok("re:jsp:/index") return ">>:/user/login" 根据返回值来进行视图选择,同时新增ViewModel类用于传递值 #925
+    * Aop的ClassLoader机制改造, 使用cglib形式的解决方案, 从而解决不同ClassDefine之间的访问问题
+    * Daos类新增自动修改表结构的migration方法 #886
+    * dao.insert/update 现在支持更复杂的过滤条件, 其中insert现在支持强制插入自增主键
+    * DaoUp类用于解决非Web环境下创建NutDao的问题,其DaoUpTest是Dao操作的快速入门说明
+    * EL表达式新增内置方法uuid(32) uuid(16) urlencode base64
+    * 动作链的js配置支持可选处理器, 发现shiro插件时能自动加载
+    * NutDao进行缓存插件兼容性改造,完全兼容daocache插件了
+    * Web环境下用于提前初始化Ioc容器的NutMvcListener
+    * IocLoader可以为一个Ioc Bean了, NutIoc会自动发现并加载他们
+    * Ioc的Js配置文件中, 支持数组形式的变量拼接了
+    * MethodInvokeProcessor默认启用改进过的FastClass调用, Eclipse热代码修改不再有warning
+    * Pojo对象生成现在通过FastClass了
+    * 支持Pgsql的Json类型
+    * 使用Youkit改进了性能
+    * 快照版已经自动发布了
+    * 新增@Ok("jsonp"), 默认使用请求参数中的callback作为回调方法名
 
 --------------------------------------------------------------------------------------------------------
 问题修复
@@ -151,17 +185,25 @@
 	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
 	 * [http://www.ibm.com/software/data/db2/ DB2]
 	 * [http://db.apache.org/derby/ Derby]
-	 * [http://www.gbase.cn/ GBASE] -- 实验性
+	 * [http://www.gbase.cn/ GBASE]
 
 --------------------------------------------------------------------------------------------------------
 文档
 
-    .. wendal 来写一下 ..
+    * add: 第三方框架集成
+    * change: 自定义Sql
+    * rewrite: Json手册
+    * remove: 创建连接池中关于bonecp的描述,该连接池已经被其作者抛弃
     
 --------------------------------------------------------------------------------------------------------
 关联项目的更新
 
-    .. wendal 来写一下 ..
+    * add: daocache Dao层缓存实现
+    * change: shiro 权限插件更新
+    * change: quartz 定时任务插件更新
+    * add: sqltpl 模板化的自定义SQL
+    * add: protobuf 序列化插件
+    * add: freemaker及velocity的ViewMaker官方参考实现
 
 --------------------------------------------------------------------------------------------------------
 主要贡献者名单
@@ -201,13 +243,8 @@
 
 
 	另外，很多朋友都在：
-	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [https://nutz.cn/yvr/ Nutz 社区(测试中)]
 	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
-     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
-	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
-     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
-     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
-	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
-	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群(推荐)]
 
 	欢迎访问[http://nutzam.com 官网],以获取更多信息
