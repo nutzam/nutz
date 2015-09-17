@@ -58,6 +58,10 @@ public class ActionInfo {
             }
             paths = myPaths.toArray(new String[myPaths.size()]);
         }
+        // 出现下面这种情况,是因为需要继承MainModule的@At
+        else if (paths == null && parent.paths != null && parent.paths.length > 0) {
+            paths = parent.paths;
+        }
 
         if (null == pathMap) {
             pathMap = parent.pathMap;
