@@ -41,6 +41,7 @@
     另外澄清一下，免得不时总有朋友问：现在市面上的，无论是果壳网，坚果云，还是锤子科技刚出的坚果手机，
     他们统统和 Nutz 没有半毛钱关系。我们是一个自由的，松散的，独立的，写代码完全看心情的开源团体，谢谢。
 
+    ---------------- 上面是 zozoh 说点啥的分割线----------------
     ---------------- 下面是 wendal 说点啥的分割线----------------
 
 
@@ -60,6 +61,8 @@
     
     另外, [https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-sqltpl sqltpl]的灵感来自[http://my.oschina.net/dongcb678 littleant]的[http://my.oschina.net/dongcb678/blog/300356 高仿ibatis(mybatis)实现sql的集中管理].
     在此之前我一直觉得解析mybatis那种XML简直是噩梦.
+    
+    红烧鲨鱼面 -- 上面提及的几位,只有"大鲨鱼"和"面"是食材, 然后我前天在海鲜市场看到了活的小鲨鱼,而且最近半年我以面食为主,所以你懂了.
 
     ---------------- Nutz 的相关资源的分隔线 ------------------
 
@@ -68,6 +71,7 @@
      * Github 地址 :  [https://github.com/nutzam/nutz]
      * Nutzmore地址: [https://github.com/nutzam/nutzmore]
      * Nutzbook: [http://nutzbook.wendal.net]
+     * Git@OSC镜像 [https://git.oschina.net/wendal/nutz]
      
 
 --------------------------------------------------------------------------------------------------------
@@ -195,6 +199,7 @@
     * change: 自定义Sql
     * rewrite: Json手册
     * remove: 创建连接池中关于bonecp的描述,该连接池已经被其作者抛弃
+    * add: 大量的javadoc更新/添加
     
 --------------------------------------------------------------------------------------------------------
 关联项目的更新
@@ -244,7 +249,8 @@
 
 
 	另外，很多朋友都在：
-	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [https://nutz.cn/yvr 社区(测试中)]
      * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群(推荐)]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
 
 	欢迎访问[http://nutzam.com 官网],以获取更多信息
