@@ -757,7 +757,7 @@ public abstract class Daos {
 		final NutDao d = (NutDao) dao;
 		final JdbcExpert expert = d.getJdbcExpert();
 		ext(d, tableName).run(new ConnCallback() {
-			@Override
+			
 			public void invoke(Connection conn) throws Exception {
 				Entity<?> en = d.getEntity(clsType);
 				expert.setupEntityField(conn, en);

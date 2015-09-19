@@ -33,6 +33,7 @@
 *	[在线javadoc](http://javadoc.nutz.cn)
 *	[案例提交](https://github.com/nutzam/nutz/issues/819)  (企业项目及开源项目)
 *	[短地址服务](http://nutz.cn) (贴日志贴代码很方便)
+*	[社区](https://nutz.cn/yvr) (测试中)
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
 
@@ -44,7 +45,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.52</version>
+			<version>1.b.54</version>
 		</dependency>
 ```
 
@@ -64,7 +65,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.b.53-SNAPSHOT</version>
+			<version>1.r.54-SNAPSHOT</version>
 		</dependency>
 		<!-- 其他依赖 -->
 	</dependencies>
@@ -72,7 +73,7 @@
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.b.53-SNAPSHOT/)
+或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.54-SNAPSHOT/)
 
 ## Sponsorship
 

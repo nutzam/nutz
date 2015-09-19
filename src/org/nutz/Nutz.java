@@ -50,13 +50,13 @@ public final class Nutz {
      * 发布流水
      */
     public static int minorVersion() {
-        return 53;
+        return 54;
     }
 
     /**
      * 质量号
      */
     public static String releaseLevel() {
-        return "b";
+        return "r";
     }
 }

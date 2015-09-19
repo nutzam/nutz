@@ -35,7 +35,7 @@
 	<property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
 	<property name="OUTPUT" value="." />
 
-	<property name="nutz-version" value="1.b.53" />
+	<property name="nutz-version" value="1.r.54" />
 	<tstamp>
 		<format property="now-date" locale="en" pattern="yyyyMMdd_hhmmaa" timezone="Asia/Shanghai" />
 	</tstamp>

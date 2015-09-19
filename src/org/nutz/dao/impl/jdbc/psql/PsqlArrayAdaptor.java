@@ -54,12 +54,12 @@ public class PsqlArrayAdaptor implements ValueAdaptor {
         this.customDbType = customDbType;
     }
 
-    @Override
+    
     public Object get(ResultSet rs, String colName) throws SQLException {
         return rs.getObject(colName);
     }
 
-    @Override
+    
     public void set(PreparedStatement stat, Object obj, int index) throws SQLException {
         if (null == obj) {
             stat.setNull(index, Types.NULL);
