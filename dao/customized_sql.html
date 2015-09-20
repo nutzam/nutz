@@ -41,10 +41,10 @@
 <div class="zdoc_folder"><span class="num">4</span><a href="#加载_SQL_文件">加载 SQL 文件</a></div>
 <ul>
 <li>
-<div><span class="num">4.1</span><a href="#在构造时加载">在构造时加载</a></div>
+<div><span class="num">4.1</span><a href="#在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
 </li>
 <li>
-<div><span class="num">4.2</span><a href="#在构造之后的任何时加载">在构造之后的任何时加载</a></div>
+<div><span class="num">4.2</span><a href="#在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)">在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</a></div>
 </li>
 </ul>
 </li>
@@ -57,13 +57,16 @@
 <li>
 <div><span class="num">5.2</span><a href="#使用_Entity<?>">使用 Entity&lt;?&gt;</a></div>
 </li>
+<li>
+<div><span class="num">5.3</span><a href="#多条件占位符(1b53开始提供)">多条件占位符(1.b.53开始提供)</a></div>
+</li>
 </ul>
 </li>
 <li>
 <div class="zdoc_folder"><span class="num">6</span><a href="#分页">分页</a></div>
 <ul>
 <li>
-<div><span class="num">6.1</span><a href="#一直被投诉,终于被实现!">一直被投诉,终于被实现!</a></div>
+<div><span class="num">6.1</span><a href="#对于不太复杂的sql,_分页还是需要的">对于不太复杂的sql, 分页还是需要的.</a></div>
 </li>
 </ul>
 </li>
@@ -225,7 +228,7 @@ sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
 <h2><a name="获取一个列表的回调"></a>获取一个列表的回调</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>为了更加详细的说明一下回调的用处，我们再下面这个例子：</p>
-<pre>Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
+<pre>Sql sql = Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
 sql.setCallback(Sqls.callback.entities());
 sql.setEntity(dao.getEntity(Master.class));
 dao.execute(sql);
@@ -269,7 +272,7 @@ SELECT * FROM t_pet $condition
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>如何使用上述的 SQL 文件呢，可以将数个 SQL 文件加载到 Dao 对象中。在之后，只要得到 Dao 的对象，可以使用 dao.sqls() 方法获得org.nutz.dao.SqlManager 接口，从这个接口中你就可以获得你预先定义好的 Sql 对象了。</p>
 <p>对于 Dao 接口的默认实现， org.nutz.dao.impl.NutDao，提供两个方法，一个是通过构造函数，另一个是 setter 函数。</p>
-<h2><a name="在构造时加载"></a>在构造时加载</h2>
+<h2><a name="在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)"></a>在构造时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Dao dao = new NutDao(datasource,new FileSqlManager("demo/sqls/all.sqls"));
 System.out.println(dao.sqls().count());
@@ -280,7 +283,7 @@ System.out.println(dao.sqls().count());
 <li>如不是存在在 CLASSPATH 中的文件，则需要写上绝对路径。</li>
 <li>如果你给出的 path 是一个目录，那么该目录下所有后缀为<b>.sqls</b> 的文件都会被加载</li>
 </ul>
-<h2><a name="在构造之后的任何时加载"></a>在构造之后的任何时加载</h2>
+<h2><a name="在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)"></a>在构造之后的任何时加载(示意代码,新建NutDao属于重量级操作,应使用单例或Ioc模式)</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Dao dao = new NutDao(datasource);
 ((NutDao)dao).setSqlManager(new FileSqlManager("demo/sqls/all.sqls"));
@@ -373,11 +376,21 @@ sql.setCondition(Cnd.where("id", "&gt;", 35));
 }
 </pre>
 <p>那么，我提供了一个 Sqls.queryEntity 函数也就不奇怪了吧。 :)</p>
+<h2><a name="多条件占位符(1b53开始提供)"></a>多条件占位符(1.b.53开始提供)</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<h3><a name="任意变量的值类型为Condition时,均自动识别为条件占位符"></a>任意变量的值类型为Condition时,均自动识别为条件占位符</h3>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>	Sql sql = Sql.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
+	sql.setVar("vip_cnd", Cnd.where("level", "&gt;", 5));
+	sql.setVar("girl_cnd", Cnd.where("age", "&lt;", 30));
+	sql.setCallback(Sqls.callback.records());
+	dao.execute(sql);
+</pre>
+<p>注意事项: 如果调用过setEntity,那么对应的Cnd会进行属性名-字段名映射.</p>
 <div class="hr"><b></b></div>
 <h1><a name="分页"></a>分页</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>这是1.b.43才添加的功能!</p>
-<h2><a name="一直被投诉,终于被实现!"></a>一直被投诉,终于被实现!</h2>
+<h2><a name="对于不太复杂的sql,_分页还是需要的"></a>对于不太复杂的sql, 分页还是需要的.</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>Sql sql = Sqls.queryEntity("SELECT * FROM t_pet");
 sql.setPager(dao.createPager(2,20));
@@ -385,7 +398,8 @@ sql.setEntity(dao.getEntity(Pet.class));
 dao.execute(sql);
 return sql.getList(Pet.class);
 </pre>
-<p>提醒一下,SqlServer数据库下, 用于分页的sql对象,不要重复使用!!</p>
+<p>提醒一下, 用于分页的sql对象,不可重复使用!!</p>
+<p>若自动分页失败(例如生成的sql错误),那只能自行分页了.</p>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

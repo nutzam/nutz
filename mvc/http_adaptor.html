@@ -128,17 +128,6 @@
                         @Param("pnm") String petName){
 	...
 </pre>
-<p>通过这个注解，为每个参数声明 HTTP 参数名。实验性,不推荐在生产环境中使用. 仅当class是通过ecj/eclipse编译的,才完整支持.请参看: <a href="http://wendal.net/416.html">在Ant/Maven中使用ecj编译器(Eclipse内置的Java编译器)</a>特例:你连@Param都不写(1.b.43+)</p>
-<pre>public String someFunc(	int pid,
-                        String petName){
-	...
-</pre>
-<p>那么,这等同于</p>
-<pre>public String someFunc(	@Param("petId") int petId,
-                        @Param("petName") String petName){
-	...
-</pre>
-<p>很神奇,很方便,不是吗? 前提是编译的时候,加上-debug,保留局部变量名,且大部分IDE都是默认打开这个属性的.</p>
 <h3><a name="表单方式_-_Form_Bean"></a>表单方式 - Form Bean</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>有些时候，你需要入口函数接受一个对象，比如一个表单对象</p>

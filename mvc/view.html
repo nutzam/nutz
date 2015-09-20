@@ -20,6 +20,9 @@
 <li>
 <div><span class="num">2.2</span><a href="#比如_Json_视图">比如 Json 视图</a></div>
 </li>
+<li>
+<div><span class="num">2.3</span><a href="#根据返回值决定视图(1b53开始支持)">根据返回值决定视图(1.b.53开始支持)</a></div>
+</li>
 </ul>
 </li>
 <li>
@@ -62,6 +65,9 @@
 </li>
 <li>
 <div><span class="num">4.9</span><a href="#RawView2">RawView2</a></div>
+</li>
+<li>
+<div><span class="num">4.10</span><a href="#根据返回值决定视图">根据返回值决定视图</a></div>
 </li>
 </ul>
 </li>
@@ -149,6 +155,22 @@ public String test(){
 </ul>
 <p>等，这时候你用 Json 视图来输出本身也是自找别扭，建议你使用 <a href="#Raw视图">#Raw视图</a></p>
 <p>Json 视图的更多介绍请参看 <a href="#JSON_视图">#JSON_视图</a></p>
+<h2><a name="根据返回值决定视图(1b53开始支持)"></a>根据返回值决定视图(1.b.53开始支持)</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>声明如下内容</p>
+<pre>@Ok("re:jsp:/index")
+public String login(@Param("..")User user, ViewModel model) {
+    <span class="zdoc_code_cmt">// 检查登陆参数等等...
+</span>    
+    if (ok) {
+        return null; <span class="zdoc_code_cmt">// 返回null, 则代表走默认视图 jsp:/index
+</span>    }
+    <span class="zdoc_code_cmt">// 登陆失败
+</span>    model.set("err-msg", "用户名或密码错误");
+    return "jsp:/user/login";
+}
+</pre>
+<p>ViewZone 视图的更多说明请参阅  <a href="#根据返回值决定视图">#根据返回值决定视图</a></p>
 <div class="hr"><b></b></div>
 <h1><a name="怎样使用视图？"></a>怎样使用视图？</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
@@ -257,6 +279,9 @@ public View myFunction(@Param("type") type){
 @Ok("json:nice")
 @Ok("json:forlook")
 @Ok("json:compact")
+</pre>
+<p>1.b.53 开始支持jsonp,默认取请求参数中的callback作为回调名称</p>
+<pre>@Ok("jsonp")
 </pre>
 <div class="hr"><b></b></div>
 <h2><a name="重定向视图"></a>重定向视图</h2>
@@ -455,6 +480,31 @@ public View myFunction(@Param("type") type){
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>视图的实现类为： <b>org.nutz.mvc.view.RawView2</b></p>
 <p>该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.</p>
+<h2><a name="根据返回值决定视图"></a>根据返回值决定视图</h2>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>视图的实现类为： <b>org.nutz.mvc.view.ViewZone</b></p>
+<p>该视图允许带一个默认视图,当方法返回值为null时调用</p>
+<p>一般形式, 默认视图为VoidView</p>
+<pre>@Ok("re")
+</pre>
+<p>一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图</p>
+<pre>@Ok("re:jsp:/index")
+</pre>
+<p>通过ViewModel进行视图传值. 因为其他视图的行为一般以方法的返回值作为视图渲染所需要的值,而re视图的返回值用于决定最终使用的视图,所以需要额外的ViewModel传递值.ViewModel是可选参数, 若不需要就可以不声明.</p>
+<pre>@Ok("re:jsp:/index")
+public String login(@Param("..")User user, ViewModel model) {
+    <span class="zdoc_code_cmt">// 检查登陆参数等等...
+</span>    
+    if (ok) {
+        return null; <span class="zdoc_code_cmt">// 返回null, 则代表走默认视图 jsp:/index
+</span>    }
+    <span class="zdoc_code_cmt">// 登陆失败
+</span>    model.set("err-msg", "用户名或密码错误");
+    return "jsp:/user/login";
+}
+</pre>
+<p>注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.</p>
+<p>返回值所代表的视图,不需要与默认视图一致.</p>
 <div class="hr"><b></b></div>
 <h1><a name="定制自己的视图"></a>定制自己的视图</h1>
 <div style="float:right;"><a href="#top">Top</a></div>

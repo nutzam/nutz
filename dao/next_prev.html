@@ -71,6 +71,14 @@ public class Pet{
 <li>如果 SQL 执行的结果集包含多条记录，只有第一条记录的第一列的值会被使用</li>
 <li>@SQL 更详细的语法规范请参看 <a href="customized_sql.html">自定义 SQL</a></li>
 </ul>
+<p>此外，@Prev 也支持传入 EL 表达式，详情请查看 @EL 的 javadoc</p>
+<pre>@Prev(els=@EL("$me.genID()"))
+private String id;
+
+public String genID(){
+	return org.nutz.lang.random.R.UU16();
+}
+</pre>
 <div class="hr"><b></b></div>
 <h1><a name="插入之后_-_@Next"></a>插入之后 - @Next</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
