@@ -119,7 +119,7 @@ public class HttpTest {
     public void test_cookie() {
         Cookie cookie = new Cookie();
         cookie.setDebug(true);
-        Request req = Request.get("http://115.28.27.32:8090/nutzbook/user/login");
+        Request req = Request.get("https://nutz.cn/user/login");
         Response resp = Sender.create(req).setInterceptor(cookie).send();
         String expected = cookie.toString();
         System.out.println(resp.getStatus());
