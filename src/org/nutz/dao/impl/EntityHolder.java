@@ -39,13 +39,17 @@ public class EntityHolder {
     }
 
     public void set(Entity<?> en) {
-        this.map.put(en.getType(), en);
+        synchronized (map) {
+            this.map.put(en.getType(), en);
+        }
     }
-    
+
     public void remove(Entity<?> en) {
-    	if (en == null || en.getType() == null)
-    		return;
-    	this.map.remove(en.getType());
+        if (en == null || en.getType() == null)
+            return;
+        synchronized (map) {
+            this.map.remove(en.getType());
+        }
     }
 
     /**
@@ -69,13 +73,15 @@ public class EntityHolder {
         }
         return (Entity<T>) re;
     }
-    
+
     /**
      * 重新载入
      */
     public <T> Entity<T> reloadEntity(Dao dao, Class<T> classOfT) {
         final Entity<T> re = maker.make(classOfT);
-        map.put(classOfT, re);
+        synchronized (map) {
+            map.put(classOfT, re);
+        }
         support.expert.createEntity(dao, re);
         // 最后在数据库中验证一下实体各个字段
         support.run(new ConnCallback() {
@@ -172,8 +178,8 @@ public class EntityHolder {
         if (first instanceof Map<?, ?>) {
             Object tableName = ((Map<String, ?>) first).get(".table");
             if (null == tableName)
-                throw Lang.makeThrow(    "Can not insert map without key '.table' : \n%s",
-                                        Json.toJson(first, JsonFormat.forLook()));
+                throw Lang.makeThrow("Can not insert map without key '.table' : \n%s",
+                                     Json.toJson(first, JsonFormat.forLook()));
             return makeEntity(tableName.toString(), (Map<String, ?>) first);
         }
         // 作为 POJO 构建
@@ -181,6 +187,8 @@ public class EntityHolder {
     }
 
     public boolean hasType(Class<?> typeName) {
-    	return map.containsKey(typeName);
+        synchronized (map) {
+            return map.containsKey(typeName);
+        }
     }
 }
