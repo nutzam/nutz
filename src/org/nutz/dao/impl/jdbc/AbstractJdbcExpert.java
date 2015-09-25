@@ -375,6 +375,6 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         if (mf.getTypeMirror().isNumber())
             sb.append(" DEFAULT ").append(getDefaultValue(mf));
         else
-            sb.append(" DEFAULT '").append(getDefaultValue(mf).replaceAll("@", "@@")).append('\'');
+            sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
     }
 }
