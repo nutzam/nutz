@@ -109,7 +109,7 @@ public class GBaseJdbcExpert extends AbstractJdbcExpert {
 					}
 				} else {
 					if (mf.hasDefaultValue())
-						sb.append(" DEFAULT '").append(getDefaultValue(mf)).append("'");
+					    addDefaultValue(sb, mf);
 				}
 			}
 

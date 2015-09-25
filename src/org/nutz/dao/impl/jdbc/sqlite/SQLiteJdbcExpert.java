@@ -62,7 +62,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
                     sb.append(" PRIMARY KEY");
                 }
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
             }
             sb.append(',');
         }

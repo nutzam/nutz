@@ -117,6 +117,7 @@ public class HttpTest {
     
     @Test
     public void test_cookie() {
+        Http.disableJvmHttpsCheck();
         Cookie cookie = new Cookie();
         cookie.setDebug(true);
         Request req = Request.get("https://nutz.cn/user/login");
