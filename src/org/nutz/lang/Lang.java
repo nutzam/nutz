@@ -1073,7 +1073,8 @@ public abstract class Lang {
      * @throws FailToCastObjectException
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
+    public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
+            throws FailToCastObjectException {
         if (null == toType)
             throw new FailToCastObjectException("target type is Null");
         // 类型相同
@@ -2180,6 +2181,7 @@ public abstract class Lang {
 
     /** 当前运行的 Java 虚拟机是否是在安卓环境 */
     public static final boolean isAndroid;
+
     static {
         boolean flag = false;
         try {
