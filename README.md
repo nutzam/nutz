@@ -23,6 +23,7 @@
 
 *   [项目官网](http://nutzam.com)
 *   [Github](https://github.com/nutzam/nutz)
+*   [Nutz社区](https://nutz.cn/yvr)
 *   在线文档
     *   [官网](http://nutzam.com/core/nutz_preface.html)（发布新版本时更新）
     *   [GitHub Pages](http://nutzam.github.io/nutz/)（基本做到文档有变动就更新）
@@ -33,7 +34,6 @@
 *	[在线javadoc](http://javadoc.nutz.cn)
 *	[案例提交](https://github.com/nutzam/nutz/issues/819)  (企业项目及开源项目)
 *	[短地址服务](http://nutz.cn) (贴日志贴代码很方便)
-*	[社区](https://nutz.cn/yvr) (测试中)
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
 
