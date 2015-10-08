@@ -34,6 +34,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Table;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -673,7 +674,7 @@ public abstract class Daos {
                                  final boolean add,
                                  final boolean del,
                                  Object tableName) {
-        final JdbcExpert expert = ((NutDao) dao).getJdbcExpert();
+        final AbstractJdbcExpert expert = (AbstractJdbcExpert) ((NutDao) dao).getJdbcExpert();
         if (tableName != null && Strings.isNotBlank(tableName.toString())) {
             dao = ext(dao, tableName);
         }
@@ -736,9 +737,7 @@ public abstract class Daos {
                                 }
                             } else {
                                 if (mf.hasDefaultValue())
-                                    sb.append(" DEFAULT '")
-                                      .append(mf.getDefaultValue(null).replaceAll("@", "@@"))
-                                      .append("'");
+                                	expert.addDefaultValue(sb, mf);
                             }
                             if (mf.hasColumnComment() && isCanComment) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
