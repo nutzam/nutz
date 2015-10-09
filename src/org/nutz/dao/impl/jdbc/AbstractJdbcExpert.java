@@ -148,7 +148,7 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         return "SELECT * FROM " + en.getViewName() + " where 1!=1";
     }
 
-    protected void createRelation(Dao dao, Entity<?> en) {
+    public void createRelation(Dao dao, Entity<?> en) {
         final List<Sql> sqls = new ArrayList<Sql>(5);
         for (LinkField lf : en.visitManyMany(null, null, null)) {
             ManyManyLinkField mm = (ManyManyLinkField) lf;

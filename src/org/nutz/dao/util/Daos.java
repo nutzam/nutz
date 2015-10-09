@@ -30,6 +30,8 @@ import org.nutz.dao.FieldMatcher;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.entity.Entity;
+import org.nutz.dao.entity.EntityField;
+import org.nutz.dao.entity.EntityIndex;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.entity.annotation.Table;
@@ -43,6 +45,7 @@ import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.segment.CharSegment;
 import org.nutz.lang.util.Callback2;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -648,10 +651,7 @@ public abstract class Daos {
      * @param del
      *            是否允许删除
      */
-    public static void migration(Dao dao,
-                                 final Class<?> klass,
-                                 final boolean add,
-                                 final boolean del) {
+    public static void migration(Dao dao, final Class<?> klass, final boolean add, final boolean del) {
         migration(dao, klass, add, del, null);
     }
 
@@ -682,6 +682,7 @@ public abstract class Daos {
         if (!dao.exists(klass))
             return;
         final List<Sql> sqls = new ArrayList<Sql>();
+        List<String> indexs = new ArrayList<String>();
         final boolean sqlAddNeedColumn = !dao.meta().isOracle();
         final boolean isCanComment = dao.meta().isMySql();
         dao.run(new ConnCallback() {
@@ -737,7 +738,7 @@ public abstract class Daos {
                                 }
                             } else {
                                 if (mf.hasDefaultValue())
-                                	expert.addDefaultValue(sb, mf);
+                                    expert.addDefaultValue(sb, mf);
                             }
                             if (mf.hasColumnComment() && isCanComment) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
@@ -756,6 +757,14 @@ public abstract class Daos {
                             sqls.add(sql);
                         }
                     }
+                    // show index from mytable;
+                    String showIndexs = "show index from " + en.getTableName();
+                    PreparedStatement ppstat = conn.prepareStatement(showIndexs);
+                    ResultSet rest = ppstat.executeQuery();
+                    List<String> indexs = new ArrayList<String>();
+                    while (rest.next()) {
+                        indexs.add(rest.getString(1));
+                    }
                 }
                 catch (SQLException e) {
                     if (log.isDebugEnabled())
@@ -770,6 +779,48 @@ public abstract class Daos {
         for (Sql sql : sqls) {
             dao.execute(sql);
         }
+        // 创建索引
+        List<Sql> indexsSql = createIndexs(en, indexs);
+        if (!Lang.isEmpty(indexsSql)) {
+            dao.execute(indexsSql.toArray(new Sql[0]));
+        }
+        // 创建关联表
+        expert.createRelation(dao, en);
+    }
+
+    private static List<Sql> createIndexs(Entity<?> en, List<String> indexsHis) {
+        List<Sql> sqls = new ArrayList<Sql>();
+        StringBuilder sb = new StringBuilder();
+        List<EntityIndex> indexs = en.getIndexes();
+        for (EntityIndex index : indexs) {
+            if (indexsHis.contains(index.getName())) {
+                continue;
+            }
+            sb.setLength(0);
+            if (index.isUnique())
+                sb.append("Create UNIQUE Index ");
+            else
+                sb.append("Create Index ");
+            if (index.getName().contains("$"))
+                sb.append(TableName.render(new CharSegment(index.getName())));
+            else
+                sb.append(index.getName());
+            sb.append(" ON ").append(en.getTableName()).append("(");
+            for (EntityField field : index.getFields()) {
+                if (field instanceof MappingField) {
+                    MappingField mf = (MappingField) field;
+                    sb.append(mf.getColumnName()).append(',');
+                } else {
+                    throw Lang.makeThrow(DaoException.class,
+                                         "%s %s is NOT a mapping field, can't use as index field!!",
+                                         en.getClass(),
+                                         field.getName());
+                }
+            }
+            sb.setCharAt(sb.length() - 1, ')');
+            sqls.add(Sqls.create(sb.toString()));
+        }
+        return sqls;
     }
 
     /**
