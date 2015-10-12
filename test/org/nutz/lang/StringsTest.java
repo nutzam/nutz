@@ -395,4 +395,12 @@ public class StringsTest {
         assertTrue("1920x1080".equals(Strings.join("x", new String[]{"1920", "1080"})));
         assertTrue("1920x1080".equals(Strings.join("x", new Integer[]{1920, 1080})));
     }
+
+    @Test
+    public void test_change_charset() throws Exception {
+        assertTrue("你妹的".equals(Strings.changeCharset("\u4f60\u59b9\u7684",
+                                                      Encoding.CHARSET_UTF8)));
+        assertTrue("nutz是个好类库".equals(Strings.changeCharset("nutz\u662f\u4e2a\u597d\u7c7b\u5e93",
+                                                            Encoding.CHARSET_UTF8)));
+    }
 }

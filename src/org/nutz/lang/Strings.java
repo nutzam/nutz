@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -991,5 +992,22 @@ public class Strings {
      */
     public static String formatSizeForReadBy1000(long size) {
         return _formatSizeForRead(size, 1000);
+    }
+
+    /**
+     * 改变字符编码集
+     * 
+     * @param cs
+     *            原字符串
+     * @param newCharset
+     *            指定的新编码集
+     * @return
+     */
+    public static String changeCharset(CharSequence cs, Charset newCharset) {
+        if (cs != null) {
+            byte[] bs = cs.toString().getBytes();
+            return new String(bs, newCharset);
+        }
+        return null;
     }
 }
