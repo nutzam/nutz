@@ -360,8 +360,17 @@ public class JsonRenderImpl implements JsonRender {
                         else
                         	writer.write(u.toUpperCase());
                     }
-                    else
-                        writer.append(c);
+                    else {
+                        if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
+                                || (c >= '\u2000' && c < '\u2100')) {
+                            writer.write("\\u");
+                            String hhhh = Integer.toHexString(c);
+                            writer.write("0000", 0, 4 - hhhh.length());
+                            writer.write(hhhh);
+                        } else {
+                            writer.append(c);
+                        }
+                    }
                 }
             }
             writer.append(format.getSeparator());
