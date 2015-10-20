@@ -15,6 +15,7 @@ import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.View;
 import org.nutz.mvc.ViewMaker;
 import org.nutz.mvc.ViewMaker2;
+import org.nutz.mvc.impl.processor.ViewProcessor;
 
 public class ViewZone implements View {
     
@@ -45,7 +46,9 @@ public class ViewZone implements View {
         else {
             View v = makeView(config, ai, obj.toString(), false);
             if (index > -1) {
-                v.render(req, resp, Mvcs.getActionContext().getMethodArgs()[index]);
+                Object re = Mvcs.getActionContext().getMethodArgs()[index];
+                ViewProcessor.putRequestAttribute(req, re);
+                v.render(req, resp, re);
             } else {
                 v.render(req, resp, null);
             }
