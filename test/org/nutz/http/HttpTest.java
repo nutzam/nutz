@@ -78,21 +78,21 @@ public class HttpTest {
     	assertEquals("0xKhTmLbOuNdArY-5DA6CD94-6D26-4C89-9F8D-09307F3A6F97", boundary);
     }
     
-    @Test
-    public void test_yeelink() {
-        //String key = "f7bd63b34b30303a11a36f6fd7628ef4";
-        String device_id = "12825";
-        String sensor_id = "20872";
-        Map<String, Object> data = new HashMap<String, Object>();
-        data.put("value", 31.3);
-        String url = String.format("http://api.yeelink.net/v1.1/device/%s/sensor/%s/datapoints", device_id, sensor_id);
-        System.out.println("URL="+url);
-        Request req = Request.create(url, METHOD.POST);
-        req.setData(Json.toJson(data));
-        //req.getHeader().set("U-ApiKey", key);
-        Response resp = Sender.create(req).send();
-        System.out.println(resp.getStatus());
-    }
+//    @Test
+//    public void test_yeelink() {
+//        //String key = "f7bd63b34b30303a11a36f6fd7628ef4";
+//        String device_id = "12825";
+//        String sensor_id = "20872";
+//        Map<String, Object> data = new HashMap<String, Object>();
+//        data.put("value", 31.3);
+//        String url = String.format("http://api.yeelink.net/v1.1/device/%s/sensor/%s/datapoints", device_id, sensor_id);
+//        System.out.println("URL="+url);
+//        Request req = Request.create(url, METHOD.POST);
+//        req.setData(Json.toJson(data));
+//        //req.getHeader().set("U-ApiKey", key);
+//        Response resp = Sender.create(req).send();
+//        System.out.println(resp.getStatus());
+//    }
     
     @Test
     public void test_12306() throws NoSuchAlgorithmException, KeyManagementException {

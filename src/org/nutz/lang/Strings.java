@@ -951,8 +951,21 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
-    public static <T> String join(String sp, T[] array) {
+    public static <T> String join2(String sp, T[] array) {
         return Lang.concat(sp, array).toString();
+    }
+    
+    /**
+     * 使用给定的分隔符, 将一个数组拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param array
+     *            要拼接的数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(String sp, T ... args) {
+        return Lang.concat(sp, args).toString();
     }
 
     /**
