@@ -30,40 +30,47 @@ public class RawView2 extends RawView {
 	}
 
 	public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) throws Throwable {
-		if (resp.getContentType() == null)
-			resp.setContentType(contentType);
-		resp.addHeader("Connection", "close");
-		String rangeStr = req.getHeader("Range");
-		if (rangeStr == null) {
-			resp.setContentLength(maxLen);
-			Streams.writeAndClose(resp.getOutputStream(), in);
-			return;
-		}
-		List<RangeRange> rs = new ArrayList<RawView.RangeRange>();
-		if (!parseRange(rangeStr, rs, maxLen)) {
-			resp.setStatus(416);
-			return;
-		}
-		// 暂时只实现了单range
-		if (rs.size() != 1) {
-			// TODO 完成多range的下载
-			log.info("multipart/byteranges is NOT support yet");
-			resp.setStatus(416);
-			return;
-		}
-		long totolSize = 0;
-		for (RangeRange rangeRange : rs) {
-			totolSize += (rangeRange.end - rangeRange.start);
-		}
-		resp.setStatus(206);
-		resp.setHeader("Content-Length", "" + totolSize);
-		resp.setHeader("Accept-Ranges", "bytes");
-		
-		// 暂时只有单range,so,简单起见吧
-		RangeRange rangeRange = rs.get(0);
-		resp.setHeader("Content-Range", String.format("bytes %d-%d/%d", rangeRange.start, rangeRange.end -1, maxLen));
-		OutputStream out = resp.getOutputStream();
-		writeDownloadRange(in, out, rangeRange);
-		out.close();
+		try {
+            if (resp.getContentType() == null)
+                resp.setContentType(contentType);
+            resp.addHeader("Connection", "close");
+            String rangeStr = req.getHeader("Range");
+            if (rangeStr == null) {
+                resp.setContentLength(maxLen);
+                Streams.writeAndClose(resp.getOutputStream(), in);
+                return;
+            }
+            List<RangeRange> rs = new ArrayList<RawView.RangeRange>();
+            if (!parseRange(rangeStr, rs, maxLen)) {
+                resp.setStatus(416);
+                return;
+            }
+            // 暂时只实现了单range
+            if (rs.size() != 1) {
+                // TODO 完成多range的下载
+                log.info("multipart/byteranges is NOT support yet");
+                resp.setStatus(416);
+                return;
+            }
+            long totolSize = 0;
+            for (RangeRange rangeRange : rs) {
+                totolSize += (rangeRange.end - rangeRange.start);
+            }
+            resp.setStatus(206);
+            resp.setHeader("Content-Length", "" + totolSize);
+            resp.setHeader("Accept-Ranges", "bytes");
+            // 暂时只有单range,so,简单起见吧
+            RangeRange rangeRange = rs.get(0);
+            resp.setHeader("Content-Range",
+                           String.format("bytes %d-%d/%d",
+                                         rangeRange.start,
+                                         rangeRange.end - 1,
+                                         maxLen));
+            OutputStream out = resp.getOutputStream();
+            writeDownloadRange(in, out, rangeRange);
+        }
+        finally {
+            Streams.safeClose(in);
+        }
 	}
 }
