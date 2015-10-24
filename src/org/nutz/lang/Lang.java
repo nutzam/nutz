@@ -1624,7 +1624,7 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     private static <T extends Map<String, Object>> void obj2map(Object obj,
                                                                 T map,
-                                                                Map<Object, Object> memo) {
+                                                                final Map<Object, Object> memo) {
         // 已经转换过了，不要递归转换
         if (null == obj || memo.containsKey(obj))
             return;
@@ -1633,7 +1633,7 @@ public abstract class Lang {
         // Fix issue #497
         // 如果是 Map，就直接 putAll 一下咯
         if (obj instanceof Map<?, ?>) {
-            map.putAll((Map<? extends String, ? extends Object>) obj);
+            map.putAll(__change_map_to_nutmap((Map<String, Object>) obj, memo));
             return;
         }
 
@@ -1643,20 +1643,34 @@ public abstract class Lang {
         for (Field fld : flds) {
             Object v = mirror.getValue(obj, fld);
             if (null == v) {
-                map.put(fld.getName(), null);
                 continue;
             }
-            Mirror<?> mr = Mirror.me(fld.getType());
-            if (mr.isNumber()
-                || mr.isBoolean()
-                || mr.isChar()
-                || mr.isStringLike()
-                || mr.isEnum()
-                || mr.isDateTimeLike()) {
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
                 map.put(fld.getName(), v);
-            } else if (memo.containsKey(v)) {
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
                 map.put(fld.getName(), null);
-            } else {
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list, ele, memo);
+                    }
+                });
+                map.put(fld.getName(), list);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                map.put(fld.getName(), map2);
+            }
+            // 看来要递归
+            else {
                 T sub;
                 try {
                     sub = (T) map.getClass().newInstance();
@@ -1667,6 +1681,93 @@ public abstract class Lang {
                 obj2map(v, sub, memo);
                 map.put(fld.getName(), sub);
             }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private static NutMap __change_map_to_nutmap(Map<String, Object> map,
+                                                 final Map<Object, Object> memo) {
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            Object v = en.getValue();
+            if (null == v)
+                continue;
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
+                re.put(en.getKey(), v);
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
+                continue;
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list2 = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list2, ele, memo);
+                    }
+                });
+                re.put(en.getKey(), list2);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                re.put(en.getKey(), map2);
+            }
+            // 看来要递归
+            else {
+                NutMap map2 = obj2nutmap(v);
+                re.put(en.getKey(), map2);
+            }
+        }
+        return re;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void __join_ele_to_list_as_map(List<Object> list,
+                                                  Object o,
+                                                  final Map<Object, Object> memo) {
+        if (null == o) {
+            return;
+        }
+
+        // 如果是 Map，就直接 putAll 一下咯
+        if (o instanceof Map<?, ?>) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+            return;
+        }
+
+        Mirror<?> mr = Mirror.me(o);
+        // 普通值
+        if (mr.isSimple()) {
+            list.add(o);
+        }
+        // 已经输出过了
+        else if (memo.containsKey(o)) {
+            list.add(null);
+        }
+        // 数组或者集合
+        else if (mr.isColl()) {
+            final List<Object> list2 = new ArrayList<Object>(Lang.length(o));
+            Lang.each(o, new Each<Object>() {
+                public void invoke(int index, Object ele, int length) {
+                    __join_ele_to_list_as_map(list2, ele, memo);
+                }
+            });
+            list.add(list2);
+        }
+        // Map
+        else if (mr.isMap()) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+        }
+        // 看来要递归
+        else {
+            NutMap map = obj2nutmap(o);
+            list.add(map);
         }
     }
 

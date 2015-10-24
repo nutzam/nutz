@@ -114,7 +114,7 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
     }
 
     /**
@@ -143,8 +143,8 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
-                                                                                               : typeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
+                                                                                                 : typeExtractor);
     }
 
     /**
@@ -305,7 +305,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -319,7 +320,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.upperFirst(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -362,8 +364,9 @@ public class Mirror<T> {
                                         Callback3<String, Method, Method> callback) {
         evalGetterSetter(method, callback, new Callback<Method>() {
             public void invoke(Method method) {
-                throw Lang.makeThrow(errmsgFormat, method.getName(), method.getDeclaringClass()
-                                                                           .getName());
+                throw Lang.makeThrow(errmsgFormat,
+                                     method.getName(),
+                                     method.getDeclaringClass().getName());
             }
         });
     }
@@ -531,7 +534,10 @@ public class Mirror<T> {
         return _getFields(false, true, noFinal, true);
     }
 
-    private Field[] _getFields(boolean noStatic, boolean noMember, boolean noFinal, boolean noInner) {
+    private Field[] _getFields(boolean noStatic,
+                               boolean noMember,
+                               boolean noFinal,
+                               boolean noInner) {
         Class<?> cc = klass;
         Map<String, Field> map = new LinkedHashMap<String, Field>();
         while (null != cc && cc != Object.class) {
@@ -729,7 +735,8 @@ public class Mirror<T> {
      *            值
      * @throws FailToSetValueException
      */
-    public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
+    public void setValue(Object obj, String fieldName, Object value)
+            throws FailToSetValueException {
         if (null == value) {
             try {
                 setValue(obj, this.getField(fieldName), null);
@@ -755,7 +762,8 @@ public class Mirror<T> {
     private static RuntimeException makeGetValueException(Class<?> type, String name, Throwable e) {
         return new FailToGetValueException(String.format("Fail to get value for [%s]->[%s]",
                                                          type.getName(),
-                                                         name), e);
+                                                         name),
+                                           e);
     }
 
     /**
@@ -967,7 +975,8 @@ public class Mirror<T> {
         return bc.doBorn();
     }
 
-    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
+    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes,
+                                                   Class<?>[] methodArgTypes) {
         if (paramTypes.length == 0 && methodArgTypes.length == 0)
             return true;
         if (paramTypes.length == methodArgTypes.length) {
@@ -1331,7 +1340,12 @@ public class Mirror<T> {
      * @return 当前对象是否简单的数值，比如字符串，布尔，字符，数字，日期时间等
      */
     public boolean isSimple() {
-        return isStringLike() || isBoolean() || isChar() || isNumber() || isDateTimeLike();
+        return isStringLike()
+               || isBoolean()
+               || isChar()
+               || isNumber()
+               || isDateTimeLike()
+               || isEnum();
     }
 
     /**
@@ -1538,9 +1552,7 @@ public class Mirror<T> {
      */
     public boolean isNumber() {
         return Number.class.isAssignableFrom(klass)
-               || klass.isPrimitive()
-               && !is(boolean.class)
-               && !is(char.class);
+               || klass.isPrimitive() && !is(boolean.class) && !is(char.class);
     }
 
     /**
@@ -1765,6 +1777,7 @@ public class Mirror<T> {
     }
 
     private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
+
     static {
 
         TypeMapping2.put(Short.class, short.class);
