@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import org.nutz.lang.util.CronSequenceGenerator;
 
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -127,6 +129,33 @@ public abstract class Tasks {
         }, startTime);
         timerList.add(timer);
     }
+    /**
+     * 在指定的时间点启动任务只运行一次
+     * @param task 具体待执行的任务
+     * @param startTime 运行的时间点
+     */
+    public static void scheduleAtFixedTime(final Runnable task, Date startTime) {
+        final Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                taskScheduler.execute(task);
+                timer.cancel();
+                timerList.remove(timer);
+            }
+        }, startTime);
+        timerList.add(timer);
+    }
+    /**
+     * 在符合条件的时间点启动任务
+     * @param task 具体待执行的任务
+     * @param startTime 运行的时间点
+     */
+    public static void scheduleAtFixedTime(final Runnable task, String expression) {
+        TimeSchedule timeSchedule = new TimeSchedule(task,expression);
+        timeSchedule.start();
+        
+    }
 
     /**
      * 调整线程池大小
@@ -185,5 +214,38 @@ public abstract class Tasks {
             // 异常发生时姑且返回10个任务线程池
             return 10;
         }
+    }
+    public static void main(String[] args) {
+        Tasks.scheduleAtFixedTime(new Runnable(){
+            @Override
+            public void run() {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E");  
+                Date date = new Date();
+                System.out.println(format.format(date));  
+                System.out.println("this task test");
+                System.out.println("===============");
+            }
+        }, "0/5 * * * * *");
+    }
+
+}
+class TimeSchedule implements Runnable{
+    private final Runnable task;
+    private final CronSequenceGenerator cron;
+
+    public TimeSchedule(Runnable task, String expression) {
+        this.task = task;
+        this.cron =  new CronSequenceGenerator(expression);
+    }
+
+    public void start(){
+        Date startTime = cron.next(new Date());
+        Tasks.scheduleAtFixedTime(this,startTime);
+    }
+
+    @Override
+    public void run() {
+        task.run();
+        start();
     }
 }
