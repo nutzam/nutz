@@ -34,7 +34,7 @@ public class DefaultViewMaker implements ViewMaker {
 
         if (VIEW_JSON.equals(type) || VIEW_JSONP.equals(type))
             if (Strings.isBlank(value))
-                return UTF8JsonView.COMPACT;
+                return VIEW_JSONP.equals(type) ? UTF8JsonView.JSONP : UTF8JsonView.COMPACT;
             else {
                 // 除高级的json format定义之外,也支持简单的缩写
                 if (value.charAt(0) == '{')
