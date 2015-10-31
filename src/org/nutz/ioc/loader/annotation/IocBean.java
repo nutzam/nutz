@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
