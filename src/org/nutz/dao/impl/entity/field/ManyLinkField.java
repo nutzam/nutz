@@ -6,6 +6,7 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkType;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.EntityHolder;
+import org.nutz.dao.impl.entity.NutEntity;
 import org.nutz.dao.impl.entity.info.LinkInfo;
 import org.nutz.lang.Each;
 import org.nutz.lang.ExitLoop;
@@ -39,12 +40,12 @@ public class ManyLinkField extends AbstractLinkField  {
                                         ta.getType());
 
             // 宿主实体的字段 - 应该是主键
-            if (Strings.isBlank(mapKey)) {
+            //if (Strings.isBlank(mapKey)) {
             	hostField = linkedField.getTypeMirror().isIntLike()    ? this.getEntity().getIdField()
                                                                        : this.getEntity().getNameField();
-            } else {
-            	hostField = this.getEntity().getField(mapKey);
-            }
+            //} else {
+            //	hostField = this.getEntity().getField(mapKey);
+            //}
             
             if (null == hostField)
                 throw Lang.makeThrow(    "Fail to find hostField for @Many(field=%s) '%s' : %s<=>%s",
@@ -56,7 +57,14 @@ public class ManyLinkField extends AbstractLinkField  {
         }
     }
 
-    public Condition createCondition(Object host) {
+    public ManyLinkField(NutEntity<?> en, EntityHolder holder, LinkInfo info, Class<?> klass, MappingField mf, MappingField mfKey) {
+    	super(en, holder, info);
+    	this.targetType = klass;
+    	this.hostField = mf;
+    	this.linkedField = mfKey;
+	}
+
+	public Condition createCondition(Object host) {
         return null == linkedField ? null : Cnd.where(    linkedField.getName(),
                                                         "=",
                                                         hostField.getValue(host));

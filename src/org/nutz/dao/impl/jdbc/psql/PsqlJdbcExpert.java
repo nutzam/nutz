@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.psql;
 
+import java.sql.Blob;
 import java.util.List;
 
 import org.nutz.dao.DB;
@@ -8,8 +9,12 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
+import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
+import org.nutz.dao.jdbc.Jdbcs;
+import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
@@ -30,17 +35,18 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         Pager pager = pojo.getContext().getPager();
         // 需要进行分页
         if (null != pager && pager.getPageNumber() > 0)
-            pojo.append(Pojos.Items.wrapf(    " LIMIT %d OFFSET %d",
-                                            pager.getPageSize(),
-                                            pager.getOffset()));
+            pojo.append(Pojos.Items.wrapf(" LIMIT %d OFFSET %d",
+                                          pager.getPageSize(),
+                                          pager.getOffset()));
     }
-    
+
     public void formatQuery(Sql sql) {
         Pager pager = sql.getContext().getPager();
         if (null != pager && pager.getPageNumber() > 0) {
-            sql.setSourceSql(sql.getSourceSql() + String.format(" LIMIT %d OFFSET %d",
-                                            pager.getPageSize(),
-                                            pager.getOffset()));
+            sql.setSourceSql(sql.getSourceSql()
+                             + String.format(" LIMIT %d OFFSET %d",
+                                             pager.getPageSize(),
+                                             pager.getOffset()));
         }
     }
 
@@ -48,6 +54,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
+            if (mf.isReadonly())
+                continue;
             sb.append('\n').append(mf.getColumnName());
             // 自增主键特殊形式关键字
             if (mf.isId() && mf.isAutoIncreasement()) {
@@ -67,7 +75,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
                     if (mf.isAutoIncreasement())
                         throw Lang.noImplement();
                     if (mf.hasDefaultValue())
-                        sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                        addDefaultValue(sb, mf);
                 }
             }
             sb.append(',');
@@ -76,7 +84,8 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         List<MappingField> pks = en.getPks();
         if (!pks.isEmpty()) {
             sb.append('\n');
-            sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (", en.getTableName()));
+            sb.append(String.format("CONSTRAINT %s_pkey PRIMARY KEY (",
+                                    en.getTableName().replace('.', '_').replace('"', '_')));
             for (MappingField pk : pks) {
                 sb.append(pk.getColumnName()).append(',');
             }
@@ -102,8 +111,7 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {
@@ -126,10 +134,17 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
 
         case BINARY:
             return "BYTEA";
-            
+
         case DATETIME:
             return "TIMESTAMP";
-        default :
+
+        case PSQL_JSON:
+            return "JSON";
+
+        case PSQL_ARRAY:
+            return "ARRAY";
+
+        default:
             break;
         }
         return super.evalFieldType(mf);
@@ -139,4 +154,16 @@ public class PsqlJdbcExpert extends AbstractJdbcExpert {
         return "SELECT * FROM " + en.getViewName() + " LIMIT 1";
     }
 
+    @Override
+    public ValueAdaptor getAdaptor(MappingField ef) {
+        if (ef.getTypeMirror().isOf(Blob.class)) {
+            return new BlobValueAdaptor2(Jdbcs.getFilePool());
+        } else if (ColType.PSQL_JSON == ef.getColumnType()) {
+            return new PsqlJsonAdaptor();
+        } else if (ColType.PSQL_ARRAY == ef.getColumnType()) {
+            return new PsqlArrayAdaptor(ef.getCustomDbType());
+        } else {
+            return super.getAdaptor(ef);
+        }
+    }
 }

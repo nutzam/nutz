@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ import org.nutz.lang.meta.Email;
  */
 public class Strings {
 
-    private Strings() {}
+    protected Strings() {}
 
     /**
      * 是中文字符吗?
@@ -178,19 +179,10 @@ public class Strings {
      * @param s
      *            字符串
      * @return 首字母大写后的新字符串
+     * @deprecated 推荐使用 {@link #upperFirst(CharSequence)}
      */
     public static String capitalize(CharSequence s) {
-        if (null == s)
-            return null;
-        int len = s.length();
-        if (len == 0)
-            return "";
-        char char0 = s.charAt(0);
-        if (Character.isUpperCase(char0))
-            return s.toString();
-        return new StringBuilder(len).append(Character.toUpperCase(char0))
-                                     .append(s.subSequence(1, len))
-                                     .toString();
+        return upperFirst(s);
     }
 
     /**
@@ -210,6 +202,27 @@ public class Strings {
         if (Character.isLowerCase(c))
             return s.toString();
         return new StringBuilder(len).append(Character.toLowerCase(c))
+                                     .append(s.subSequence(1, len))
+                                     .toString();
+    }
+
+    /**
+     * 将字符串首字母大写
+     * 
+     * @param s
+     *            字符串
+     * @return 首字母大写后的新字符串
+     */
+    public static String upperFirst(CharSequence s) {
+        if (null == s)
+            return null;
+        int len = s.length();
+        if (len == 0)
+            return "";
+        char c = s.charAt(0);
+        if (Character.isUpperCase(c))
+            return s.toString();
+        return new StringBuilder(len).append(Character.toUpperCase(c))
                                      .append(s.subSequence(1, len))
                                      .toString();
     }
@@ -293,6 +306,10 @@ public class Strings {
                 return false;
         }
         return true;
+    }
+
+    public static boolean isNotBlank(CharSequence cs) {
+        return !isBlank(cs);
     }
 
     /**
@@ -455,7 +472,7 @@ public class Strings {
     }
 
     /**
-     * 保证字符串为一固定长度。超过长度，切除，否则补字符。
+     * 保证字符串为一固定长度。超过长度，切除左侧字符，否则左侧填补字符。
      * 
      * @param s
      *            字符串
@@ -474,6 +491,28 @@ public class Strings {
         if (len < width)
             return Strings.dup(c, width - len) + s;
         return s.substring(len - width, len);
+    }
+
+    /**
+     * 保证字符串为一固定长度。超过长度，切除右侧字符，否则右侧填补字符。
+     * 
+     * @param s
+     *            字符串
+     * @param width
+     *            长度
+     * @param c
+     *            补字符
+     * @return 修饰后的字符串
+     */
+    public static String cutLeft(String s, int width, char c) {
+        if (null == s)
+            return null;
+        int len = s.length();
+        if (len == width)
+            return s;
+        if (len < width)
+            return s + Strings.dup(c, width - len);
+        return s.substring(0, width);
     }
 
     /**
@@ -514,7 +553,7 @@ public class Strings {
         String s = o.toString();
         int length = s.length();
         if (length >= width)
-            return s.toString();
+            return s;
         return new StringBuilder().append(s).append(dup(c, width - length)).toString();
     }
 
@@ -567,6 +606,23 @@ public class Strings {
             return false;
         int length = cs.length();
         return length > 1 && cs.charAt(0) == lc && cs.charAt(length - 1) == rc;
+    }
+
+    /**
+     * 测试此字符串是否被指定的左字符串和右字符串所包裹
+     * 
+     * @param str
+     *            字符串
+     * @param l
+     *            左字符串
+     * @param r
+     *            右字符串
+     * @return 字符串是被左字符串和右字符串包裹
+     */
+    public static boolean isQuoteBy(String str, String l, String r) {
+        if (null == str || null == l || null == r)
+            return false;
+        return str.startsWith(l) && str.endsWith(r);
     }
 
     /**
@@ -886,4 +942,85 @@ public class Strings {
         return Integer.parseInt(hex, 16);
     }
 
+    /**
+     * 使用给定的分隔符, 将一个数组拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param array
+     *            要拼接的数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join2(String sp, T[] array) {
+        return Lang.concat(sp, array).toString();
+    }
+    
+    /**
+     * 使用给定的分隔符, 将一个数组拼接成字符串
+     * 
+     * @param sp
+     *            分隔符
+     * @param array
+     *            要拼接的数组
+     * @return 拼接好的字符串
+     */
+    public static <T> String join(String sp, T ... args) {
+        return Lang.concat(sp, args).toString();
+    }
+
+    /**
+     * 将一个字节数变成人类容易识别的显示字符串，比如 1.5M 等
+     * 
+     * @param size
+     *            字节数
+     * @param SZU
+     *            千的单位，可能为 1024 或者 1000
+     * @return 人类容易阅读的字符串
+     */
+    private static String _formatSizeForRead(long size, double SZU) {
+        if (size < SZU) {
+            return String.format("%d bytes", size);
+        }
+        double n = (double) size / SZU;
+        if (n < SZU) {
+            return String.format("%5.2f KB", n);
+        }
+        n = n / SZU;
+        if (n < SZU) {
+            return String.format("%5.2f MB", n);
+        }
+        n = n / SZU;
+        return String.format("%5.2f GB", n);
+    }
+
+    /**
+     * @see #_formatSizeForRead(long, double)
+     */
+    public static String formatSizeForReadBy1024(long size) {
+        return _formatSizeForRead(size, 1024);
+    }
+
+    /**
+     * @see #_formatSizeForRead(long, double)
+     */
+    public static String formatSizeForReadBy1000(long size) {
+        return _formatSizeForRead(size, 1000);
+    }
+
+    /**
+     * 改变字符编码集
+     * 
+     * @param cs
+     *            原字符串
+     * @param newCharset
+     *            指定的新编码集
+     * @return
+     */
+    public static String changeCharset(CharSequence cs, Charset newCharset) {
+        if (cs != null) {
+            byte[] bs = cs.toString().getBytes();
+            return new String(bs, newCharset);
+        }
+        return null;
+    }
 }

@@ -3,6 +3,8 @@ package org.nutz.lang.util;
 import java.util.Iterator;
 import java.util.List;
 
+import org.nutz.lang.Each;
+
 /**
  * 树节点。
  * 
@@ -43,9 +45,9 @@ public interface Node<T> {
     Node<T> popFirst();
 
     Node<T> removeChild(int index);
-    
+
     int getIndex();
-    
+
     /**
      * @return true 成功移除，false 不能移除
      */
@@ -62,6 +64,8 @@ public interface Node<T> {
     boolean isFirst();
 
     List<Node<T>> getAncestors();
+    
+    List<Node<T>> parents();
 
     int depth();
 
@@ -86,4 +90,6 @@ public interface Node<T> {
     Node<T> lastChild();
 
     Iterator<Node<T>> iterator();
+
+    <E extends Node<T>> void eachChild(Each<E> callback);
 }

@@ -1,9 +1,8 @@
 package org.nutz.log.impl;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.nutz.lang.Times;
 import org.nutz.log.Log;
 import org.nutz.log.LogAdapter;
 import org.nutz.plugin.Plugin;
@@ -27,8 +26,6 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
     public static class SystemLog extends AbstractLog {
 
         private final static SystemLog me = new SystemLog();
-        
-        private final static DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         
         private static boolean warned;
 
@@ -76,13 +73,13 @@ public class SystemLogAdapter implements LogAdapter, Plugin {
         }
 
         private void printOut(String level, Object message, Throwable t) {
-            System.out.printf("%s %s [%s] %s\n",DATE_FORMAT.format(new Date()), level, Thread.currentThread().getName(),message);
+            System.out.printf("%s %s [%s] %s\n", Times.sDTms(new Date()), level, Thread.currentThread().getName(),message);
             if (t != null)
                 t.printStackTrace(System.out);
         }
 
         private void errorOut(String level, Object message, Throwable t) {
-            System.err.printf("%s %s [%s] %s\n",DATE_FORMAT.format(new Date()), level, Thread.currentThread().getName(),message);
+            System.err.printf("%s %s [%s] %s\n", Times.sDTms(new Date()), level, Thread.currentThread().getName(),message);
             if (t != null)
                 t.printStackTrace(System.err);
         }

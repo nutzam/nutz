@@ -64,43 +64,8 @@
 -------------------------------------------------------------------------------------------------------
 编译 Nutz
 
-    [svn_project.man 从 SVN 编译] 这篇文章的后一半给出详细的图文介绍，告诉大家如何在 Eclipse 上搭建一个
-    Nutz 的编译环境。至于 Git 用户，鉴于你们大多是骨灰级玩家，随便编译个项目对大家来说是毛毛雨，小意思。
-    但是，这里还是列一下 Nutz 编译的必要条件，无论你是用 NetBean 还是 Eclipse 还是 JDK 手动编译，都会
-    有点帮助：
+    [compile_with_maven.man 运行 JUnit 测试 - Maven]
     
-    Nutz 编译依赖如下 jar:
-     * Log4j-1.2.15 以上版本 : {#080; 仅编译时需要，运行时不需要}
-     * servlet-api.jar : {#080; 编译时需要，运行时，如果用 Nutz.Mvc 就需要，随便找一个 JSP/Servlet 容器，里面就会给你这个 jar, 比如 TOMCAT}
+    [compile.man  运行 JUnit 测试 - Eclipse]
     
-    如果你想运行 Nutz 的单元测试，你需要依赖更多的 Jar
-     * 一个数据库驱动，比如我用的 mysql-connector-java-5.1.7-bin.jar
-     * 一个数据库连接池，比如我用的 commons-dbcp-1.4.jar + commons-pool-1.5.4.jar 
-         * 更多关于数据库连接池的介绍请看 [../appendix/create_datasource.man 如何创建 DataSource]
-     * 一个特殊的数据库链接池 bonecp-0.7.0.jar， 因为我们为其专门写了测试用例
-     * 于是你还需要
-         * slf4j-api-1.6.1.jar
-         * slf4j-simple-1.6.1.jar
-         * google-collect-1.0.jar
-    
-    上面这些 jar 是运行 Nutz 的单元测试才需要的，你如果不打算运行 Nutz 的单元测试，你不一定需要它们。
-    关于 Nutz 的单元测试，你还需要看这篇文章 : [compile.man 运行 JUnit 测试]，它告诉如何修改一个配置文件
-    就能成功运行 Nutz 的单元测试.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    [ant.man 使用 Ant 编译]

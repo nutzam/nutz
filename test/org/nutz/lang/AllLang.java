@@ -10,6 +10,7 @@ import org.nutz.lang.segment.CharSegmentTest;
 import org.nutz.lang.segment.SegmentsTest;
 import org.nutz.lang.stream.StringOutputStreamTest;
 import org.nutz.lang.util.AllUtil;
+import org.nutz.lang.util.XmlsTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({    MirrorTest.class,
@@ -27,5 +28,6 @@ import org.nutz.lang.util.AllUtil;
                         StringOutputStreamTest.class,
                         AllMeta.class,
                         CodeTest.class,
-                        AllEncrypts.class})
+                        AllEncrypts.class,
+                        XmlsTest.class})
 public class AllLang {}

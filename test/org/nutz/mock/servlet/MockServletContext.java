@@ -23,12 +23,13 @@ import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class MockServletContext extends MockServletObject implements ServletContext {
+public class MockServletContext extends MockServletObject implements
+        ServletContext {
 
     private static final Log log = Logs.get();
 
     public int getMajorVersion() {
-        throw Lang.noImplement();
+        return 2;
     }
 
     public String getMimeType(String arg0) {
@@ -36,7 +37,7 @@ public class MockServletContext extends MockServletObject implements ServletCont
     }
 
     public int getMinorVersion() {
-        throw Lang.noImplement();
+        return 5;
     }
 
     public RequestDispatcher getNamedDispatcher(String arg0) {
@@ -160,11 +161,13 @@ public class MockServletContext extends MockServletObject implements ServletCont
         throw Lang.noImplement();
     }
 
-    public <T extends Servlet> T createServlet(Class<T> clazz) throws ServletException {
+    public <T extends Servlet> T createServlet(Class<T> clazz)
+            throws ServletException {
         throw Lang.noImplement();
     }
 
-    public <T extends Filter> T createFilter(Class<T> clazz) throws ServletException {
+    public <T extends Filter> T createFilter(Class<T> clazz)
+            throws ServletException {
         throw Lang.noImplement();
     }
 
@@ -180,7 +183,8 @@ public class MockServletContext extends MockServletObject implements ServletCont
         throw Lang.noImplement();
     }
 
-    public <T extends EventListener> T createListener(Class<T> clazz) throws ServletException {
+    public <T extends EventListener> T createListener(Class<T> clazz)
+            throws ServletException {
         throw Lang.noImplement();
     }
 

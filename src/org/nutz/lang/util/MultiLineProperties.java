@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,21 +25,23 @@ public class MultiLineProperties implements Map<String, String> {
     }
 
     public MultiLineProperties() {
-        maps = new HashMap<String, String>();
+        maps = new LinkedHashMap<String, String>();
     }
 
     protected Map<String, String> maps;
 
     /**
      * <b>载入并销毁之前的记录</b>
+     * 
      * @param reader
      * @throws IOException
      */
     public synchronized void load(Reader reader) throws IOException {
         load(reader, false);
     }
-        
-    public synchronized void load(Reader reader, boolean clear) throws IOException {
+
+    public synchronized void load(Reader reader, boolean clear)
+            throws IOException {
         if (clear)
             this.clear();
         BufferedReader tr = null;
@@ -51,7 +53,7 @@ public class MultiLineProperties implements Map<String, String> {
         while (null != (s = tr.readLine())) {
             if (Strings.isBlank(s))
                 continue;
-            if (s.length() > 0 && s.trim().charAt(0) == '#') //只要第一个非空白字符是#,就认为是注释
+            if (s.length() > 0 && s.trim().charAt(0) == '#') // 只要第一个非空白字符是#,就认为是注释
                 continue;
             int pos;
             char c = '0';
@@ -62,7 +64,7 @@ public class MultiLineProperties implements Map<String, String> {
             }
             if (c == '=') {
                 String name = s.substring(0, pos);
-                maps.put(name, s.substring(pos + 1));
+                maps.put(Strings.trim(name), s.substring(pos + 1));
             } else if (c == ':') {
                 String name = s.substring(0, pos);
                 StringBuffer sb = new StringBuffer();
@@ -73,11 +75,11 @@ public class MultiLineProperties implements Map<String, String> {
                         break;
                     sb.append("\r\n" + ss);
                 }
-                maps.put(name, sb.toString());
+                maps.put(Strings.trim(name), sb.toString());
                 if (null == ss)
                     return;
             } else {
-                maps.put(s, null);
+                maps.put(Strings.trim(s), null);
             }
         }
     }

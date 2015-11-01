@@ -8,6 +8,7 @@ import java.net.URLDecoder;
 import java.util.LinkedList;
 
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
@@ -75,8 +76,10 @@ public abstract class Disks {
      * @return 相对于基础路径对象的相对路径
      */
     public static String getRelativePath(String base, String path) {
-        String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base), "[\\\\/]");
-        String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path), "[\\\\/]");
+        String[] bb = Strings.splitIgnoreBlank(getCanonicalPath(base),
+                                               "[\\\\/]");
+        String[] ff = Strings.splitIgnoreBlank(getCanonicalPath(path),
+                                               "[\\\\/]");
         int len = Math.min(bb.length, ff.length);
         int pos = 0;
         for (; pos < len; pos++)
@@ -90,7 +93,9 @@ public abstract class Disks {
         if (base.endsWith("/"))
             dir = 0;
 
-        StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length - pos - dir));
+        StringBuilder sb = new StringBuilder(Strings.dup("../", bb.length
+                                                                - pos
+                                                                - dir));
         return sb.append(Lang.concat(pos, ff.length - pos, '/', ff)).toString();
     }
 
@@ -111,7 +116,10 @@ public abstract class Disks {
                 if (paths.size() > 0)
                     paths.removeLast();
                 continue;
-            } else {
+            } if (".".equals(s)) {
+            	// pass
+            }
+            else {
                 paths.add(s);
             }
         }
@@ -144,7 +152,9 @@ public abstract class Disks {
      * @return 绝对路径
      */
     public static String absolute(String path) {
-        return absolute(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
+        return absolute(path,
+                        ClassTools.getClassLoader(),
+                        Encoding.defaultEncoding());
     }
 
     /**
@@ -158,7 +168,9 @@ public abstract class Disks {
      *            路径编码方式
      * @return 绝对路径
      */
-    public static String absolute(String path, ClassLoader klassLoader, String enc) {
+    public static String absolute(String path,
+                                  ClassLoader klassLoader,
+                                  String enc) {
         path = normalize(path, enc);
         if (Strings.isEmpty(path))
             return null;
@@ -169,7 +181,9 @@ public abstract class Disks {
             try {
                 url = klassLoader.getResource(path);
                 if (null == url)
-                    url = Thread.currentThread().getContextClassLoader().getResource(path);
+                    url = Thread.currentThread()
+                                .getContextClassLoader()
+                                .getResource(path);
                 if (null == url)
                     url = ClassLoader.getSystemResource(path);
             }
@@ -213,27 +227,42 @@ public abstract class Disks {
             return null;
         }
     }
-    
+
     /**
      * 遍历文件夹下以特定后缀结尾的文件(不包括文件夹,不包括.开头的文件)
-     * @param path 根路径
-     * @param suffix 后缀
-     * @param deep 是否深层遍历
-     * @param fv 你所提供的访问器,当然就是你自己的逻辑咯
+     * 
+     * @param path
+     *            根路径
+     * @param regex
+     *            文件名的正则表达式
+     * @param deep
+     *            是否深层遍历
+     * @param fv
+     *            你所提供的访问器,当然就是你自己的逻辑咯
      */
-    public static final void visitFile(String path, final String suffix, final boolean deep, final FileVisitor fv) {
-    	visitFile(new File(path), new FileVisitor() {
-			public void visit(File f) {
-				if (f.isDirectory())
-					return;
-				fv.visit(f);
-			}
-		}, new FileFilter() {
-			public boolean accept(File f) {
-				if (f.isDirectory())
-					return deep;
-				return !f.getName().startsWith(".") && f.getName().endsWith(suffix);
-			}
-		});
+    public static final void visitFile(String path,
+                                       final String regex,
+                                       final boolean deep,
+                                       final FileVisitor fv) {
+        File d = Files.findFile(path);
+        if (null == d)
+            return;
+        visitFile(d, new FileVisitor() {
+            public void visit(File f) {
+                if (f.isDirectory())
+                    return;
+                fv.visit(f);
+            }
+        }, new FileFilter() {
+            public boolean accept(File f) {
+                if (f.isDirectory())
+                    return deep;
+                if (f.isHidden())
+                    return false;
+                if (Strings.isEmpty(regex))
+                    return true;
+                return f.getName().matches(regex);
+            }
+        });
     }
 }

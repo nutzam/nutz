@@ -33,6 +33,8 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
+            if (mf.isReadonly())
+                continue;
             sb.append('\n').append(mf.getColumnName());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -48,7 +50,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
                 else if (mf.isNotNull())
                     sb.append(" NOT NULL");
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
             }
             sb.append(',');
         }
@@ -81,8 +83,7 @@ public class HsqldbJdbcExpert extends AbstractJdbcExpert {
         return true;
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

@@ -19,6 +19,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.sql.Pojo;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 组合一组表达式，只能增加，不能减少
@@ -28,6 +30,10 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     private List<SqlExpression> exps;
 
     private boolean top;
+    
+    protected boolean not;
+    
+    private static final Log log = Logs.get();
 
     public SqlExpressionGroup() {
         exps = new ArrayList<SqlExpression>(); // 默认就是10个，能放5个条件，够了吧
@@ -39,6 +45,11 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpressionGroup and(SqlExpression exp) {
+    	if (exp == null) {
+    		if (log.isTraceEnabled())
+    			log.trace("ignore null SqlExpression");
+    		return this;
+    	}
         if (!exps.isEmpty())
             _add(new Static("AND"));
         return _add(exp);
@@ -116,9 +127,25 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup andLike(String name, String value) {
         return and(like(name, value));
     }
+    
+    public SqlExpressionGroup andLikeL(String name, String value) {
+        return and(like(name, value).left(null));
+    }
+    
+    public SqlExpressionGroup andLikeR(String name, String value) {
+        return and(like(name, value).right(null));
+    }
 
     public SqlExpressionGroup andNotLike(String name, String value) {
         return and(like(name, value).not());
+    }
+
+    public SqlExpressionGroup andNotLikeL(String name, String value) {
+        return and(like(name, value).left(null).not());
+    }
+
+    public SqlExpressionGroup andNotLikeR(String name, String value) {
+        return and(like(name, value).right(null).not());
     }
 
     public SqlExpressionGroup andLike(String name, String value, boolean ignoreCase) {
@@ -128,12 +155,22 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup andNotLike(String name, String value, boolean ignoreCase) {
         return and(like(name, value, ignoreCase).not());
     }
+    
+    public SqlExpressionGroup andLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return and(like(name, value, ignoreCase).left(left).right(right));
+    }
+    
+    public SqlExpressionGroup andNotLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return and(like(name, value, ignoreCase).left(left).right(right).not());
+    }
 
     public SqlExpressionGroup or(String name, String op, Object value) {
         return or(Exps.create(name, op, value));
     }
 
     public SqlExpressionGroup or(SqlExpression exp) {
+    	if (exp == null)
+    		throw new NullPointerException("exp is null!");
         if (!exps.isEmpty())
             _add(new Static("OR"));
         return _add(exp);
@@ -207,9 +244,25 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     public SqlExpressionGroup orLike(String name, String value) {
         return or(like(name, value));
     }
+    
+    public SqlExpressionGroup orLikeL(String name, String value) {
+        return or(like(name, value).left(null));
+    }
+    
+    public SqlExpressionGroup orLikeR(String name, String value) {
+        return or(like(name, value).right(null));
+    }
 
     public SqlExpressionGroup orNotLike(String name, String value) {
         return or(like(name, value).not());
+    }
+
+    public SqlExpressionGroup orNotLikeL(String name, String value) {
+        return or(like(name, value).left(null).not());
+    }
+
+    public SqlExpressionGroup orNotLikeR(String name, String value) {
+        return or(like(name, value).right(null).not());
     }
 
     public SqlExpressionGroup orLike(String name, String value, boolean ignoreCase) {
@@ -218,6 +271,23 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
 
     public SqlExpressionGroup orNotLike(String name, String value, boolean ignoreCase) {
         return or(like(name, value, ignoreCase).not());
+    }
+    
+    public SqlExpressionGroup orLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return or(like(name, value, ignoreCase).left(left).right(right));
+    }
+    
+    public SqlExpressionGroup orNotLike(String name, String value, String left, String right, boolean ignoreCase) {
+        return or(like(name, value, ignoreCase).left(left).right(right).not());
+    }
+    
+    //------------------ between
+    public SqlExpressionGroup andBetween(String name, Object min, Object max) {
+    	return and(new BetweenExpression(name, min, max));
+    }
+    
+    public SqlExpressionGroup orBetween(String name, Object min, Object max) {
+    	return or(new BetweenExpression(name, min, max));
     }
 
     @Override
@@ -241,9 +311,15 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
         if (!exps.isEmpty()) {
             if (top) {
                 sb.append(" WHERE ");
+                if (not)
+                    sb.append("NOT (");
                 for (SqlExpression exp : exps)
                     exp.joinSql(en, sb);
+                if (not)
+                    sb.append(')');
             } else {
+                if (not)
+                    sb.append("NOT ");
                 sb.append('(');
                 for (SqlExpression exp : exps)
                     exp.joinSql(en, sb);
@@ -272,6 +348,7 @@ public class SqlExpressionGroup extends AbstractPItem implements SqlExpression {
     }
 
     public SqlExpression setNot(boolean not) {
+        this.not = not;
         return this;
     }
 

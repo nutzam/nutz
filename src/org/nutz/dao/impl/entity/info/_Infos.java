@@ -19,9 +19,7 @@ import org.nutz.dao.entity.annotation.Prev;
 import org.nutz.dao.entity.annotation.Readonly;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
-import org.nutz.lang.eject.EjectByField;
 import org.nutz.lang.eject.EjectByGetter;
-import org.nutz.lang.inject.InjectByField;
 import org.nutz.lang.inject.InjectBySetter;
 import org.nutz.lang.util.Callback3;
 
@@ -29,12 +27,16 @@ public class _Infos {
 
     private final static String ERR_MSG = "Method '%s'(%s) can not add '@Column', it MUST be a setter or getter!";
 
+    @SuppressWarnings("rawtypes")
     private static <T extends FieldInfo> T create(Class<T> classOfT, Field field) {
         T info = Mirror.me(classOfT).born();
         info.name = field.getName();
+        // XXX 兼容性改变 从1.b.51开始, 优先走getter/setter
+        // 老版本是只从属性取值/设置值,不走getter/setter
         info.fieldType = field.getGenericType();
-        info.injecting = new InjectByField(field);
-        info.ejecting = new EjectByField(field);
+        Mirror me = Mirror.me(field.getDeclaringClass());
+        info.injecting = me.getInjecting(field.getName());
+        info.ejecting = me.getEjecting(field.getName());
         return info;
     }
 

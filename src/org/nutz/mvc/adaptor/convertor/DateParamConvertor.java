@@ -1,15 +1,26 @@
 package org.nutz.mvc.adaptor.convertor;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.nutz.castor.Castors;
 import org.nutz.lang.Strings;
+import org.nutz.lang.Times;
 import org.nutz.mvc.adaptor.ParamConvertor;
 
 public class DateParamConvertor implements ParamConvertor {
 
     private Class<?> type;
+    private DateFormat dfmt;
 
-    public DateParamConvertor(Class<?> type) {
+    public DateParamConvertor(Class<?> type, String datefmt) {
         this.type = type;
+        if (Strings.isBlank(datefmt)) {
+            dfmt = null;
+        } else {
+            dfmt = new SimpleDateFormat(datefmt);
+        }
     }
 
     public Object convert(String[] ss) {
@@ -19,7 +30,12 @@ public class DateParamConvertor implements ParamConvertor {
         if (Strings.isBlank(ss[0]))
             return null;
 
+        // 如果不为 null，必然要转换成日期
+        if (null != dfmt) {
+            Date o = Times.parseq(dfmt, ss[0]);
+            return Castors.me().castTo(o, type);
+        }
+        // 默认采用转换器转换
         return Castors.me().cast(ss[0], String.class, type);
     }
-
 }

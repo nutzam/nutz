@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import org.nutz.lang.Encoding;
+
 public class StringOutputStream extends OutputStream {
 
     private StringBuilder sb;
@@ -11,7 +13,7 @@ public class StringOutputStream extends OutputStream {
     private String charset;
 
     public StringOutputStream(StringBuilder sb) {
-        this(sb, null);
+        this(sb, Encoding.UTF8);
     }
 
     public StringOutputStream(StringBuilder sb, String charset) {
@@ -35,14 +37,15 @@ public class StringOutputStream extends OutputStream {
      */
     @Override
     public void flush() throws IOException {
-        super.flush();
-        baos.flush();
-        if (baos.size() > 0) {
-            if (charset == null)
-                sb.append(new String(baos.toByteArray()));
-            else
-                sb.append(new String(baos.toByteArray(), charset));
-            baos.reset();
+        if (null != baos) {
+            baos.flush();
+            if (baos.size() > 0) {
+                if (charset == null)
+                    sb.append(new String(baos.toByteArray()));
+                else
+                    sb.append(new String(baos.toByteArray(), charset));
+                baos.reset();
+            }
         }
     }
 

@@ -38,9 +38,13 @@ import org.nutz.dao.sql.PojoCallback;
 import org.nutz.dao.sql.SqlType;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public abstract class Pojos {
 
+	public static final Log log = Logs.get();
+	
 	// ==========================================================
 	// 以下是创建 POJO 语句元素的帮助方法
 	public static class Items {
@@ -127,7 +131,7 @@ public abstract class Pojos {
 				Number id = null != obj ? ((Number) en.getIdField().getValue(obj)) : null;
 				return cndId(en, id);
 			case NAME:
-				String name = null != obj ? en.getNameField().getValue(obj).toString() : null;
+				String name = null != obj ? Strings.sNull(en.getNameField().getValue(obj), null) : null;
 				return cndName(en, name);
 			case COMPOSITE:
 				Object[] pks = null;
@@ -184,15 +188,21 @@ public abstract class Pojos {
 		return new NutPojo().setSqlType(SqlType.RUN).setAfter(callback);
 	}
 
-	public static List<MappingField> getFieldsForInsert(Entity<?> en, FieldMatcher fm) {
-		List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
-		for (MappingField mf : en.getMappingFields()) {
-			if (!mf.isAutoIncreasement() && !mf.isReadonly() && mf.isInsert())
-				if (null == fm || fm.match(mf.getName()))
-					re.add(mf);
-		}
-		return re;
-	}
+    public static List<MappingField> getFieldsForInsert(Entity<?> en, FieldMatcher fm) {
+        List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
+        for (MappingField mf : en.getMappingFields()) {
+            if (null == fm || fm.match(mf.getName())) {
+                if (!mf.isAutoIncreasement() && !mf.isReadonly() && mf.isInsert()) {
+                    re.add(mf);
+                } else if (fm != null && mf.isId() && !fm.isIgnoreId()) {
+                    re.add(mf);
+                }
+            }
+        }
+        if (re.isEmpty() && log.isDebugEnabled())
+            log.debug("none field for insert!");
+        return re;
+    }
 
 	public static List<MappingField> getFieldsForUpdate(Entity<?> en, FieldMatcher fm, Object refer) {
 		List<MappingField> re = new ArrayList<MappingField>(en.getMappingFields().size());
@@ -207,11 +217,16 @@ public abstract class Pojos {
 			}
 			if (mf.isReadonly() || mf.isAutoIncreasement() || !mf.isUpdate())
 				continue;
-			else if (null != fm && null != refer && fm.isIgnoreNull() && null == mf.getValue(refer))
+			else if (null != fm 
+			      && null != refer 
+			      && fm.isIgnoreNull() 
+			      && null == mf.getValue(Lang.first(refer)))
 				continue;
 			if (null == fm || fm.match(mf.getName()))
 				re.add(mf);
 		}
+		if (re.isEmpty() && log.isDebugEnabled())
+			log.debug("none field for update!");
 		return re;
 	}
 

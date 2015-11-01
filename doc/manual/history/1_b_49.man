@@ -1,0 +1,131 @@
+#title: 1.b.49 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.49 发行注记
+
+    被 [http://wendal.net/ Wendal] 催要发 Nutz 新版。前两天 review 了一些 issue，今天要写
+    发行注记的时候突然想到，咦，怎么好像这几天是发布会高峰期哦。个人感觉小米的发布会比魅族
+    的好一点（虽然我的手机是MX2），雷军这次没有喊“碉堡了”，所以要被加十分。工程系的同学表
+    跟风乔布斯，发布会弄的低调平淡一点还是让人看的舒服点。
+
+    Nutz 核心包到现在为止，4年的时间，我们发布了 30 多个版本，这次发布也是属于 Bug 修复版，
+    大家可以安心升级。
+    
+    [https://github.com/hzl7652 鲁鲁]同学在本版提交了
+    [https://github.com/nutzam/nutz/pull/488 一个功能]
+    有兴趣的朋友可以试用一下。
+
+    从 Issue 列表和社区的反馈来看，似乎 Nutz 里面我们很少注意到的类也被某些同学翻出来使用。
+    这一点，作为一个开源项目，我们表示很欣慰的。
+
+    由于代码越来越稳定，那么我们出版本的频率也会逐渐降低。以前的 {*#00A;月经版} 已经没什么
+    必要了，我们会主要把精力放在提高社区的活跃度，给大家更好的支持上面。
+    当然，将近1年的吐血开发，我们正在构筑的很多代码项目接近完成。什么时候完成不好说，因为
+    毕竟不是全职在做，但是到时候希望能给大家惊喜 ^_^
+
+
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * 每日构建地址 : [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/]
+     * Nutz 的主页 :  [http://nutzam.com]
+     * Github 地址 :  [https://github.com/nutzam/nutz]
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/512 Issue 512] `AbstractAdaptor类参数检查提示不明确` {#888;by} {*Rekoe}
+    * [https://github.com/nutzam/nutz/issues/509 Issue 509] `增加批量更新方法，重新实现Array Collection类型查询参数处理` {#888;by} {*hzl7652}
+    * [https://github.com/nutzam/nutz/issues/508 Issue 508] `表结构发生不匹配时候提示不详细` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/506 Issue 506] `有关session的处理，提升性能` {#888;by} {*for5million}
+    * [https://github.com/nutzam/nutz/issues/502 Issue 502] `LinkedCharArray的popLast函数的返回值感觉不太科学` {#888;by} {*007slm}
+    * [https://github.com/nutzam/nutz/issues/500 Issue 500] `JsonView应该使用单例及支持format简写` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/499 Issue 499] `支持注入req的Header字段` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/497 Issue 497] `Lang.obj2map 不能转 map` {#888;by} {*nulijiabei}
+    * [https://github.com/nutzam/nutz/issues/495 Issue 495] `关于索引变量设置问题` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/477 Issue 477] `使用IocBy来加载ComboIocProvider时，某种情况下无法启动服务的问题` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/475 Issue 475] `添加queryString方法` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/473 Issue 473] `nutz b.48 使用 json.fromJson时，若jsonStr不标准的话会直接内存溢出` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/472 Issue 472] `存取DATE类型的时候发生错误` {#888;by} {*tomasWade}
+    * [https://github.com/nutzam/nutz/issues/468 Issue 468] `Ioc 不能注入空 Map` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/466 Issue 466] `修改Tasks类中默认的线程个数，让其值跟JVM可用处理器数目相匹配` {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/463 Issue 463] `添加使用Maven来运行JUnit的文档` {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/462 Issue 462] `更新Json类的javadoc` {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/460 Issue 460] `需要更新文档中的「本地化字符串」章节里面的内容` {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/459 Issue 459] `FileSqlManager sql语句获取异常 fail to find SQL` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/457 Issue 457] `完善注解的javadoc文档` {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/451 Issue 451] `扩展 NUTZ 的 ViewMaker，构建时提供更多的信息` {#888;by} {*ericktang}
+    * [https://github.com/nutzam/nutz/issues/450 Issue 450] `Raw视图在执行文件下载时,需要支持断点续传(Range头部)` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/449 Issue 449] `mvc 本地化字符 直接 Scriptlet 语句错误` {#888;by} {*}
+    * [https://github.com/nutzam/nutz/issues/448 Issue 448] `表达式引擎的文档有错别字` {#888;by} {*}
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*826}  个单元测试用例,代码覆盖率达到 {#FF00FF;70%}(按line计算)
+
+    <http://www.nutzam.com/wiki/img/emma.png>
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+
+--------------------------------------------------------------------------------------------------------
+文档
+
+   ~ 修订一些错误 ~
+   
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+	贡献的种类:
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 博客: 在本版本开发期间，写过关于 Nutz 的文章，并被 [http://code.google.com/p/nutz/wiki/appendix_resources 推荐列表]收录
+	 * 代码: 提交过至少一个修订
+	 * Demo: 为 [https://github.com/nutzam/nutzdemo NutzDemo] 提交过代码
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 * 测试: 发布前，参与测试周发布人给出的任务
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
+    
+    || 贡献者       || 问题 || 博客 || 支持 || 代码 || 示例 || 文档 || 测试 ||
+    || 007slm     	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || Rekoe      	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || ericktang  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || for5million	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || nulijiabei 	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || pangwu      	||  O   ||  O   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || qinerg      	||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  O   ||
+    || sevenine   	||  -   ||  -   ||  -   ||  O   ||  -   ||  -   ||  O   ||
+    || tomasWade  	||  O   ||  -   ||  -   ||  -   ||  -   ||  -   ||  -   ||
+    || 冬天的温泉   ||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || 鲁鲁       	||  O   ||  -   ||  -   ||  O   ||  -   ||  -   ||  O   ||
+    || zozoh       	||  O   ||  -   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+    || wendal      	||  O   ||  O   ||  O   ||  O   ||  -   ||  -   ||  O   ||
+
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+	 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://q.weibo.com/128323 Nutz的新浪微群]
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取 [https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/ 最新的快照版] 和
+	[http://nutzam.com/doc/html/ 用户手册]
+

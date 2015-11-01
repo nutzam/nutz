@@ -10,6 +10,7 @@ import java.io.FileWriter;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.math.BigDecimal;
 import java.sql.Blob;
@@ -58,16 +59,16 @@ public abstract class Jdbcs {
      * 根据配置文件获取 experts 的列表
      */
     static {
-        // 看看有没有用户自定义的映射文件
-        File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
-        // 如果没有则使用默认的映射文件
-        if (null == f) {
-            conf = Json.fromJson(JdbcExpertConfigFile.class,
-                                 Streams.fileInr("org/nutz/dao/jdbc/nutz_jdbc_experts.js")).init();
-        } else
-            conf = Json.fromJson(JdbcExpertConfigFile.class,
-                                 Streams.fileInr("nutz_jdbc_experts.js")).init();
         try {
+
+            // 看看有没有用户自定义的映射文件
+            File f = Files.findFile("nutz_jdbc_experts.js");// TODO 不可配置??
+            // 如果没有则使用默认的映射文件
+            if (null == f) {
+                conf = Json.fromJson(JdbcExpertConfigFile.class, new InputStreamReader(Jdbcs.class.getResourceAsStream("nutz_jdbc_experts.js"))).init();
+            } else
+                conf = Json.fromJson(JdbcExpertConfigFile.class,Streams.fileInr("nutz_jdbc_experts.js")).init();
+            
             for (String key : conf.getExperts().keySet()) {
                 // 检查一下正则表达式是否正确
                 // 在conf类中自行检查
@@ -154,8 +155,10 @@ public abstract class Jdbcs {
 
         JdbcExpert re = conf.matchExpert(dbName);
 
-        if (null == re)
-            throw Lang.makeThrow("Can not support database '%s %s'", productName, version);
+        if (null == re) {
+        	log.warnf("unknow database type '%s %s', fallback to MySql 5", productName, version);
+        	re = conf.matchExpert("mysql 5");
+        }
 
         return re;
     }
@@ -203,18 +206,18 @@ public abstract class Jdbcs {
         // BigDecimal
         if (mirror.isOf(BigDecimal.class))
             return Jdbcs.Adaptor.asBigDecimal;
-        // Calendar
-        if (mirror.isOf(Calendar.class))
-            return Jdbcs.Adaptor.asCalendar;
-        // java.util.Date
-        if (mirror.isOf(java.util.Date.class))
-            return Jdbcs.Adaptor.asDate;
         // java.sql.Date
         if (mirror.isOf(java.sql.Date.class))
             return Jdbcs.Adaptor.asSqlDate;
         // java.sql.Time
         if (mirror.isOf(java.sql.Time.class))
             return Jdbcs.Adaptor.asSqlTime;
+        // Calendar
+        if (mirror.isOf(Calendar.class))
+            return Jdbcs.Adaptor.asCalendar;
+        // java.util.Date
+        if (mirror.isOf(java.util.Date.class))
+            return Jdbcs.Adaptor.asDate;
         // Blob
         if (mirror.isOf(Blob.class))
             return new BlobValueAdaptor(conf.getPool());
@@ -714,7 +717,6 @@ public abstract class Jdbcs {
                             stat.setBinaryStream(index, new FileInputStream(f), f.length());
                         }
                         catch (FileNotFoundException e) {
-                        	System.gc();
                         	try {
                                 File f = Jdbcs.getFilePool().createFile(".dat");
                                 Streams.writeAndClose(new FileOutputStream(f), (InputStream)obj);

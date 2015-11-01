@@ -39,9 +39,10 @@ public class AnnotationIocLoader implements IocLoader {
     private HashMap<String, IocObject> map = new HashMap<String, IocObject>();
 
     public AnnotationIocLoader(String... packages) {
-        for (String packageZ : packages)
+        for (String packageZ : packages) {
             for (Class<?> classZ : Scans.me().scanPackage(packageZ))
                 addClass(classZ);
+        }
         if (map.size() > 0) {
             if (log.isInfoEnabled())
                 log.infof("Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
@@ -54,7 +55,7 @@ public class AnnotationIocLoader implements IocLoader {
         }
     }
 
-    private void addClass(Class<?> classZ) {
+    protected void addClass(Class<?> classZ) {
         if (classZ.isInterface()
             || classZ.isMemberClass()
             || classZ.isEnum()
@@ -67,7 +68,7 @@ public class AnnotationIocLoader implements IocLoader {
         IocBean iocBean = classZ.getAnnotation(IocBean.class);
         if (iocBean != null) {
             if (log.isDebugEnabled())
-                log.debugf("Found a Class with Ioc-Annotation : %s", classZ);
+                log.debugf("Found : %s", classZ);
 
             // 采用 @IocBean->name
             String beanName = iocBean.name();
@@ -83,12 +84,13 @@ public class AnnotationIocLoader implements IocLoader {
                 }
             }
 
+            // 重名了, 需要用户用@IocBean(name="xxxx") 区分一下
             if (map.containsKey(beanName))
                 throw Lang.makeThrow(IocException.class,
                                      "Duplicate beanName=%s, by %s !!  Have been define by %s !!",
                                      beanName,
                                      classZ,
-                                     map.get(beanName).getClass());
+                                     map.get(beanName).getType());
 
             IocObject iocObject = new IocObject();
             iocObject.setType(classZ);
@@ -135,6 +137,7 @@ public class AnnotationIocLoader implements IocLoader {
                 } else
                     iocValue = convert(inject.value());
                 iocField.setValue(iocValue);
+                iocField.setOptional(inject.optional());
                 iocObject.addField(iocField);
                 fieldList.add(iocField.getName());
             }
@@ -145,7 +148,15 @@ public class AnnotationIocLoader implements IocLoader {
             }
             catch (Exception e) {
                 // 如果获取失败,就忽略之
-                log.info("Fail to call getMethods(), miss class or Security Limit, ignore it", e);
+                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it",
+                          classZ,
+                          e);
+                methods = new Method[0];
+            }
+            catch (NoClassDefFoundError e) {
+                log.infof("Fail to call getMethods() in Class=%s, miss class or Security Limit, ignore it",
+                          classZ,
+                          e);
                 methods = new Method[0];
             }
             for (Method method : methods) {
@@ -201,27 +212,49 @@ public class AnnotationIocLoader implements IocLoader {
                     fieldList.add(iocField.getName());
                 }
             }
+
+            // 处理工厂方法
+            if (!Strings.isBlank(iocBean.factory())) {
+                iocObject.setFactory(iocBean.factory());
+            }
         } else {
-            if (log.isWarnEnabled()) {
-                Field[] fields = classZ.getDeclaredFields();
-                for (Field field : fields)
-                    if (field.getAnnotation(Inject.class) != null) {
-                        log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
-                                  classZ.getName(),
-                                  field.getName());
-                        break;
-                    }
+            // 这里只是检查一下@Inject,要避免抛出异常.
+            try {
+                if (log.isWarnEnabled()) {
+                    Field[] fields = classZ.getDeclaredFields();
+                    for (Field field : fields)
+                        if (field.getAnnotation(Inject.class) != null) {
+                            log.warnf("class(%s) don't has @IocBean, but field(%s) has @Inject! Miss @IocBean ??",
+                                      classZ.getName(),
+                                      field.getName());
+                            break;
+                        }
+                }
+            }
+            catch (Throwable e) {
+                // 无需处理.
             }
         }
     }
 
     protected IocValue convert(String value) {
         IocValue iocValue = new IocValue();
-        if (value.contains(":")) {
+        if (value.startsWith(":")) {
+            iocValue.setType(IocValue.TYPE_NORMAL);
+            iocValue.setValue(value);
+        }
+        else if (value.contains(":")) {
             iocValue.setType(value.substring(0, value.indexOf(':')));
-            iocValue.setValue(value.substring(value.indexOf(':') + 1));
+            if (value.endsWith(":")) {
+                iocValue.setValue("");
+            }
+            else
+                iocValue.setValue(value.substring(value.indexOf(':') + 1));
         } else {
-            iocValue.setValue(value); // TODO 是否应该改为默认refer呢?
+            // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
+            log.info("auto set as         refer:" + value);
+            iocValue.setType("refer");
+            iocValue.setValue(value);
         }
         return iocValue;
     }

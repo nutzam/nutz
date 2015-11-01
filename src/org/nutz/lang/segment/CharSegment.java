@@ -162,6 +162,9 @@ public class CharSegment implements Segment, Cloneable {
                 switch (b) {
                 case '$':
                     b = reader.read();
+                    if (b == -1) {
+                        b = '$'; // 伪抹除
+                    }
                     org.append((char) b);
                     // Escape
                     if (b == '$') {

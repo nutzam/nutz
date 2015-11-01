@@ -1,6 +1,7 @@
 package org.nutz.lang;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -30,14 +31,19 @@ public class Invoking {
     private static class DefaultInvoker extends Invoker {
 
         private Object[] args;
+        
+        private boolean isStatic;
 
         public DefaultInvoker(Method method, Object[] args) {
             super(method);
             this.args = args;
+            this.isStatic = Modifier.isStatic(method.getModifiers());
         }
 
         @Override
         Object invoke(Object obj) throws Exception {
+            if (isStatic)
+                return method.invoke(null, args);
             return method.invoke(obj, args);
         }
     }

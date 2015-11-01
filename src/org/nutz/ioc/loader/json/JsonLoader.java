@@ -27,6 +27,8 @@ import org.nutz.resource.Scans;
 public class JsonLoader extends MapLoader {
     
     private static final Log log = Logs.get();
+    
+    private String[] paths;
 
     public JsonLoader(Reader reader) {
         loadFromReader(reader);
@@ -38,14 +40,17 @@ public class JsonLoader extends MapLoader {
         this.setMap(new HashMap<String, Map<String, Object>>());
         List<NutResource> list = Scans.me().loadResource("^(.+[.])(js|json)$", paths);
         try {
-            for (NutResource nr : list)
+            for (NutResource nr : list) {
+            	log.debugf("loading ioc js config from [%s]", nr.getName());
                 loadFromReader(nr.getReader());
+            }
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
         }
         if(log.isDebugEnabled())
             log.debugf("Loaded %d bean define from path=%s --> %s", getMap().size(), Arrays.toString(paths), getMap().keySet());
+        this.paths = paths;
     }
 
     private void loadFromReader(Reader reader) {
@@ -55,4 +60,9 @@ public class JsonLoader extends MapLoader {
             getMap().putAll(map);
     }
 
+    public String toString() {
+    	if (paths == null)
+    		return super.toString();
+    	return "/*JsonLoader" + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
+    }
 }

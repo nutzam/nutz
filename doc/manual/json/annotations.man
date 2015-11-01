@@ -1,0 +1,176 @@
+#title:Nutz.Json 注解一览表
+#index:0,1
+#author: wendal(wendal1985@gmail.com)
+-------------------------------------------------------------------------------------------------
+
+共3个注解
+
+	|| {#080;@JsonField}		|| 属性或方法 || 控制是否忽略该属性,控制输出及日期格式 ||
+	|| {#080;@JsonIgnore}		|| 属性或方法 || 专门用于控制忽略特定数值 ||
+	|| {#080;@ToJson}	        || 方法           || 自定义本对象转换为Json字符串的逻辑||
+
+---------------------------------------------------------------------------	
+JsonField的ignore配置详解
+
+	忽略属性,无论是fromJson还是toJson,永久性的哦,即使JsonFormat也不可控制. 默认为false
+	
+	{{{
+	public class Pet {
+		private String name;
+		private int age;
+		
+		@JsonField(ignore=true)
+		private String location;
+	}
+	}}}
+	
+	测试代码
+	
+	{{{
+	Pet pet = new Pet();
+	pet.setName("dongdong");
+	pet.setAge(10);
+	pet.setLocation("地球");
+	Json.toJson(pet);
+	}}}
+	
+	输出
+	
+	{{{
+	{
+		name : "dongdong",
+		age : 10
+	}
+	}}}
+
+------------------------------------------	
+JsonField的forceString配置
+
+	指定属性直接应用toJson,而不进行Map-List变换,默认为false
+	
+	{{{
+	public class Pet {
+		private String name;
+		private int age;
+		
+		@JsonField(forceString=true)
+		private Location location;
+	}
+	
+	public class Location {
+		private String planet;
+		private String area;
+		
+		public Location(){}
+		
+		public Location(String planet, String area) {
+			this.planet = planet;
+			this.area = area;
+		}
+		
+		public String toString() { 
+			// 任何返回值就会直接拼入json字符串,不经转义.
+			// 这里返回 "[1,PI]"
+			// 那么拼入字符串中的值就是  [1, PI]
+			return "[1, PI]";
+			
+		}
+	}
+	}}}
+	
+	测试代码
+	
+	{{{
+	Pet pet = new Pet();
+	pet.setName("dongdong");
+	pet.setAge(10);
+	pet.setLocation(new Location("地球", "北半球"));
+	Json.toJson(pet);
+	}}}
+	
+	输出,注意PI并没有用双引号圈起来.
+	
+	{{{
+	{
+		name : "dongdong",
+		age : 10,
+		location : [1, PI]
+	}
+	}}}
+	
+----------------------------------------------
+JsonField的dateFormat配置
+
+	当属性类型为java.util.Date类或其子类时,这配置可以控制输出的日期格式
+	
+	{{{
+	public class Pet {
+		private String name;
+		
+		@JsonField(dateFormat="yyyyMMdd")
+		private java.util.Date born;
+	}
+	}}}
+
+	测试代码
+	
+	{{{
+	Pet pet = new Pet();
+	pet.setName("dongdong");
+	pet.setDate(new Date());
+	Json.toJson(pet);
+	}}}
+	
+	输出
+	
+	{{{
+	{
+		name : "dongdong",
+		born : "20150608"
+	}
+	}}}
+	
+----------------------------------------------
+JsonIgnore注解
+
+	当前,这个注解是专门用于忽略特定的数值
+	
+	下面的配置,就是当age为100时不输出,当location为0.2d时也不输出
+	
+	{{{
+	public class Pet {
+		private String name;
+		
+		@JsonIgnore(null_int=100)
+		private int age;
+		
+		@JsonIgnore(null_double=0.2d)
+		private double location;
+	}
+	}}}
+	
+	注意,切勿import错了哦,因为jackson里面也有个相同名称的注解
+	
+----------------------------------------------
+ToJson注解
+
+	这个注解可以让你完全控制当前类的json输出, 方法的返回值将直接拼入Json字符串,不经过任何转义.
+	
+	被注解的方法有2种方式,无参或以JsonFormat作为参数,返回值必须是String
+	
+	{{{
+	@ToJson
+	public String wendalJson() {
+		return "age:" + age + ", /*我就喜欢弄个注释*/";
+	}
+	}}}
+	
+	{{{
+	@ToJson
+	public String wendalJson(JsonFormat jf) {
+		if (name == null && jf.isIgnoreNull) {
+			return "{age:" + age + "}";
+		}
+		return "{age:" + age + ", name: null}"; // 我就喜欢返回个null,有值也返回null,咋的,就是这么任性
+	}
+	}}}

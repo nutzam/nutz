@@ -1,5 +1,6 @@
 package org.nutz.dao.impl.jdbc.oracle;
 
+import java.sql.Blob;
 import java.sql.Clob;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +12,8 @@ import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.PkType;
 import org.nutz.dao.impl.jdbc.AbstractJdbcExpert;
+import org.nutz.dao.impl.jdbc.BlobValueAdaptor2;
+import org.nutz.dao.impl.jdbc.ClobValueAdapter2;
 import org.nutz.dao.jdbc.JdbcExpertConfigFile;
 import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.jdbc.ValueAdaptor;
@@ -18,6 +21,7 @@ import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Pojo;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.util.Pojos;
+import org.nutz.lang.Mirror;
 
 public class OracleJdbcExpert extends AbstractJdbcExpert {
 
@@ -30,7 +34,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                                  + " BEFORE INSERT ON ${T}"
                                  + " FOR EACH ROW"
                                  + " BEGIN "
+                                 + " IF :new.${F} IS NULL THEN"
                                  + " SELECT ${T}_${F}_seq.nextval into :new.${F} FROM dual;"
+                                 + " END IF;"
                                  + " END ${T}_${F}_ST;";
 
     public OracleJdbcExpert(JdbcExpertConfigFile conf) {
@@ -38,10 +44,13 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     }
 
     public ValueAdaptor getAdaptor(MappingField ef) {
-        if (ef.getTypeMirror().isBoolean())
+        Mirror<?> mirror = ef.getTypeMirror();
+        if (mirror.isBoolean())
             return new OracleBooleanAdaptor();
-        if (Clob.class.isAssignableFrom(ef.getTypeClass()))
-            return new OracleClobAdapter(Jdbcs.getFilePool());
+        if (mirror.isOf(Clob.class))
+            return new ClobValueAdapter2(Jdbcs.getFilePool());
+        if (mirror.isOf(Blob.class))
+            return new BlobValueAdaptor2(Jdbcs.getFilePool());
         return super.getAdaptor(ef);
     }
 
@@ -49,6 +58,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         StringBuilder sb = new StringBuilder("CREATE TABLE " + en.getTableName() + "(");
         // 创建字段
         for (MappingField mf : en.getMappingFields()) {
+            if (mf.isReadonly())
+                continue;
             sb.append('\n').append(mf.getColumnName());
             sb.append(' ').append(evalFieldType(mf));
             // 非主键的 @Name，应该加入唯一性约束
@@ -62,7 +73,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 if (mf.isNotNull())
                     sb.append(" NOT NULL");
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
                 if (mf.isUnsigned()) // 有点暴力
                     sb.append(" Check ( ").append(mf.getColumnName()).append(" >= 0)");
             }
@@ -83,9 +94,9 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
                 pkNames.append(pk.getColumnName()).append(',');
             }
             pkNames.setLength(pkNames.length() - 1);
-            
+
             String pkNames2 = makePksName(en);
-            
+
             String sql = String.format("alter table %s add constraint primary_key_%s primary key (%s)",
                                        en.getTableName(),
                                        pkNames2,
@@ -155,8 +166,7 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
         return DB.ORACLE.name();
     }
 
-    @Override
-    protected String evalFieldType(MappingField mf) {
+    public String evalFieldType(MappingField mf) {
         if (mf.getCustomDbType() != null)
             return mf.getCustomDbType();
         switch (mf.getColumnType()) {

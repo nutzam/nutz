@@ -1,14 +1,16 @@
 package org.nutz.dao;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.jdbc.ValueAdaptor;
+import org.nutz.dao.util.Daos;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.util.Callback2;
 
 /**
  * 名值链。
@@ -238,6 +240,23 @@ public abstract class Chain {
         return from(obj, null);
     }
     
+    public static Chain from(Object obj, FieldMatcher fm, Dao dao) {
+        final Chain[] chains = new Chain[1];
+        boolean re = Daos.filterFields(obj, fm, dao, new Callback2<MappingField, Object>() {
+            public void invoke(MappingField mf, Object val) {
+                if (mf.isReadonly() || !mf.isUpdate())
+                    return;
+                if (chains[0] == null)
+                    chains[0] = Chain.make(mf.getName(), val);
+                else
+                    chains[0].add(mf.getName(), val);
+            }
+        });
+        if (re)
+            return chains[0];
+        return null;
+    }
+    
     //=============================================================
     //===========update语句使用特定的值,例如+1 -1 toDate()等========
     //=============================================================
@@ -246,6 +265,7 @@ public abstract class Chain {
      * 添加一个特殊节点, 如果value非空,则有3个情况:<p>
      * <li>+1 效果如age=age+1</li>
      * <li>-1 效果如count=count-1</li>
+     * <li>支持的运算符有 + - *\/ % & ^ |
      * <li>其他值, 则对value.toString(),效果如 time=todate("XXXXX")</li>
      * 
      * @since 1.b.44
@@ -329,7 +349,7 @@ public abstract class Chain {
             return false;
         }
         public Map<String, Object> toMap() {
-            Map<String, Object> map = new HashMap<String, Object>();
+            Map<String, Object> map = new LinkedHashMap<String, Object>();
             Entry current = head;
             while (current != null) {
                 map.put(current.name, current.value);

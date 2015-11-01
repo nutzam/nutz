@@ -25,7 +25,7 @@ import org.nutz.dao.DB;
  * <li>特殊占位符: $view: 表示当前实体对象的视图名称
  * <li>特殊占位符: $field: 表示注解所在字段数据库名称
  * </ul>
- * <li>参数: @XXX， 直接参考对象自身的属性值
+ * <li>参数: '@XXX'， 直接参考对象自身的属性值
  * </ul>
  * 
  * @author zozoh(zozohtnt@gmail.com)

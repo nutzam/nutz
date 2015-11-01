@@ -2,6 +2,7 @@ package org.nutz.ioc.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 
 import org.nutz.ioc.IocContext;
@@ -56,7 +57,8 @@ public class ScopeContext implements IocContext {
                 if (!objs.containsKey(name)) {
                     if (log.isDebugEnabled())
                         log.debugf("Save object '%s' to [%s] ", name, scope);
-                    return null != objs.put(name, obj);
+                    objs.put(name, obj);
+                    return true;
                 }
             }
         }
@@ -103,4 +105,7 @@ public class ScopeContext implements IocContext {
         }
     }
 
+    public Set<String> names() {
+        return objs.keySet();
+    }
 }

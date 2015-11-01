@@ -35,7 +35,8 @@ public class MsgDigestInputStream extends FilterInputStream {
 	
 	public int read(byte[] b) throws IOException {
 		int len = this.in.read(b);
-		md.update(b, 0 , len);
+		if (-1 != len)
+		    md.update(b, 0 , len);
 		return len;
 	}
 	

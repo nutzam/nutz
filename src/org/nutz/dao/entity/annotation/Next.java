@@ -15,10 +15,13 @@ import java.lang.annotation.Target;
  * 比如一个自增的字段（数据库通过触发器和序列为其自动+1），插入后，可以通过一条 SQL 获取这个字段的值
  * <p>
  * <b style=color:red>注意：</b> 你的字段只能允许是字符型的，或者是整数型的。否则会报错。
- * 
+ * <p>
+ * 除此之外，还可以通过 EL 表达式来设置值。
+ *
  * @author zozoh(zozohtnt@gmail.com)
- * 
+ *
  * @see org.nutz.dao.entity.annotation.SQL
+ * @see org.nutz.dao.entity.annotation.EL
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})

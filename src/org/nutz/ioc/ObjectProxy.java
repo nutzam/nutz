@@ -33,6 +33,13 @@ public class ObjectProxy {
      * 销毁时触发器。如果有静态对象被销毁，触发
      */
     private IocEventTrigger<Object> depose;
+    
+    public ObjectProxy() {
+	}
+    
+    public ObjectProxy(Object obj) {
+    	this.obj = obj;
+	}
 
     public ObjectProxy setWeaver(ObjectWeaver weaver) {
         this.weaver = weaver;

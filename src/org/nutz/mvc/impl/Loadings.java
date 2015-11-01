@@ -4,12 +4,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.ioc.Ioc;
 import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
@@ -23,6 +24,7 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.HttpAdaptor;
+import org.nutz.mvc.ModuleScanner;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
 import org.nutz.mvc.annotation.AdaptBy;
@@ -68,41 +70,82 @@ public abstract class Loadings {
         evalFail(ai, method.getAnnotation(Fail.class));
         evalAt(ai, method.getAnnotation(At.class), method.getName());
         evalActionChainMaker(ai, method.getAnnotation(Chain.class));
-        evalHttpMethod(ai, method);
+        evalHttpMethod(ai, method, method.getAnnotation(At.class));
         ai.setMethod(method);
         return ai;
     }
 
-    public static Set<Class<?>> scanModules(Class<?> mainModule) {
+    public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
         Modules ann = mainModule.getAnnotation(Modules.class);
         boolean scan = null == ann ? false : ann.scanPackage();
         // 准备扫描列表
-        List<Class<?>> list = new LinkedList<Class<?>>();
-        list.add(mainModule);
+        Set<Class<?>> forScans = new HashSet<Class<?>>();
+
+        // 准备存放模块类的集合
+        Set<Class<?>> modules = new HashSet<Class<?>>();
+
+        // 添加主模块，简直是一定的
+        forScans.add(mainModule);
+
+        // 根据配置，扩展扫描列表
         if (null != ann) {
+            // 指定的类，这些类可以作为种子类，如果 ann.scanPackage 为 true 还要递归搜索所有子包
             for (Class<?> module : ann.value()) {
-                list.add(module);
+                forScans.add(module);
+            }
+
+            // 如果定义了扩展扫描接口 ...
+            for (String str : ann.by()) {
+                ModuleScanner ms;
+                // 扫描器来自 Ioc 容器
+                if (str.startsWith("ioc:")) {
+                    String nm = str.substring("ioc:".length());
+                    ms = ioc.get(ModuleScanner.class, nm);
+                }
+                // 扫描器直接无参创建
+                else {
+                    try {
+                        Class<?> klass = Lang.loadClass(str);
+                        Mirror<?> mi = Mirror.me(klass);
+                        ms = (ModuleScanner) mi.born();
+                    }
+                    catch (ClassNotFoundException e) {
+                        throw Lang.wrapThrow(e);
+                    }
+                }
+                // 执行扫描，并将结果计入搜索结果
+                Collection<Class<?>> col = ms.scan();
+                if (null != col)
+                    for (Class<?> type : col) {
+                        if (isModule(type)) {
+                            modules.add(type);
+                        }
+                    }
+            }
+
+            // 扫描包，扫描出的类直接计入结果
+            if (ann.packages() != null && ann.packages().length > 0) {
+                for (String packageName : ann.packages()) {
+                    scanModuleInPackage(modules, packageName);
+                }
             }
         }
-        // 扫描包
-        Set<Class<?>> modules = new HashSet<Class<?>>();
-        if (null != ann && ann.packages() != null && ann.packages().length > 0) {
-            for (String packageName : ann.packages())
-                scanModuleInPackage(modules, packageName);
-        }
-        for (Class<?> type : list) {
+
+        for (Class<?> type : forScans) {
             // mawm 为了兼容maven,根据这个type来加载该type所在jar的加载
             try {
                 URL location = type.getProtectionDomain().getCodeSource().getLocation();
                 if (log.isDebugEnabled())
                     log.debugf("module class location '%s'", location);
-            } catch (NullPointerException e) {
-                //Android上无法拿到getProtectionDomain,just pass
+            }
+            catch (NullPointerException e) {
+                // Android上无法拿到getProtectionDomain,just pass
             }
             Scans.me().registerLocation(type);
         }
+
         // 执行扫描
-        for (Class<?> type : list) {
+        for (Class<?> type : forScans) {
             // 扫描子包
             if (scan) {
                 scanModuleInPackage(modules, type.getPackage().getName());
@@ -145,7 +188,7 @@ public abstract class Loadings {
         }
     }
 
-    public static void evalHttpMethod(ActionInfo ai, Method method) {
+    public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
         if (method.getAnnotation(GET.class) != null)
             ai.getHttpMethods().add("GET");
         if (method.getAnnotation(POST.class) != null)
@@ -154,6 +197,9 @@ public abstract class Loadings {
             ai.getHttpMethods().add("PUT");
         if (method.getAnnotation(DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
+        for (String m : at.methods()) {
+            ai.getHttpMethods().add(m.toUpperCase());
+        }
     }
 
     public static void evalActionChainMaker(ActionInfo ai, Chain cb) {
@@ -169,9 +215,11 @@ public abstract class Loadings {
             } else {
                 ai.setPaths(at.value());
             }
-            
+
             if (!Strings.isBlank(at.key()))
                 ai.setPathKey(at.key());
+            if (at.top())
+                ai.setPathTop(true);
         }
     }
 
@@ -229,8 +277,8 @@ public abstract class Loadings {
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static void evalHttpAdaptor(ActionInfo ai, AdaptBy ab) {
         if (null != ab) {
-            ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(    ab.type(),
-                                                                                    ab.args()));
+            ai.setAdaptorInfo((ObjectInfo<? extends HttpAdaptor>) new ObjectInfo(ab.type(),
+                                                                                 ab.args()));
         }
     }
 

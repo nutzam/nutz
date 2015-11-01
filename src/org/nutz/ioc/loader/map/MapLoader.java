@@ -25,7 +25,7 @@ public class MapLoader implements IocLoader {
     
     private static final Log log = Logs.get();
 
-    private Map<String, Map<String, Object>> map;
+    protected Map<String, Map<String, Object>> map;
 
     protected MapLoader() {
         map = new HashMap<String, Map<String, Object>>();

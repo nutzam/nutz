@@ -26,7 +26,7 @@
     之后，他在鼓起勇气阅读的之前，通常也会倒吸一口凉气。
 
 	当然，人的智慧就是在这过程中得到了淬炼，你的意志力，你的智慧，都会得到不同程度的升华。
-	但是 Nutz 这个小框架开发的初中并不是希望锻炼你，折磨你，事实上，它希望尽一切可能，
+	但是 Nutz 这个小框架开发的初衷并不是希望锻炼你，折磨你，事实上，它希望尽一切可能，
     让你远离这种锻炼...
 
 	...为此，我们也提供一个复合加载器，你可以将你的耦合关系写在配置文件中，或者Annotation
@@ -44,11 +44,12 @@
 	                 "service.js", 
 	                 "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
 	                 "com.myapp.module",
-	                 "com.myapp.service"
+	                 "com.myapp.service",
+	                 "*tx"
 			 )); 
 	}}}
-	如上面的例子，组合加载器，组合了两个 Ioc 加载器，一个是 JsonLoader，一个是
-	AnnotationIocLoader。 
+	如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是
+	AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 
 	
 	ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "{#00A;* *}" 开头，
 	则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个
@@ -105,6 +106,36 @@
 	 * JsonLoader
 	 * AnnotationIocLoader
 	 * MapLoader
+	 * TransIocLoader
 	 * 其他任何你自己实现的 IocLoader
 
+----------------------------------------------------------------------------------------
+类名的简写
 
+	是不是觉得写*org.nutz.ioc.loader.json.JsonLoader很长,那么你可以写成*json,
+	
+	{{{
+	js         --> org.nutz.ioc.loader.json.JsonLoader
+	json       --> org.nutz.ioc.loader.json.JsonLoader
+    xml        --> org.nutz.ioc.loader.xml.XmlIocLoader
+    annotation --> org.nutz.ioc.loader.annotation.AnnotationIocLoader
+    anno       --> org.nutz.ioc.loader.annotation.AnnotationIocLoader
+    tx         --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
+    trans      --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
+	}}}
+	
+	本小节开头的配置就可以写成: 
+	
+	{{{<Java>
+	@IocBy(type = ComboIocProvider.class,
+	       args = {"*json",
+	               "dao.js", 
+	               "service.js", 
+	               "*annotation", 
+	               "com.myapp.module",
+	               "com.myapp.service"
+			})
+	public class MainModule {
+		...
+	}}}
+	

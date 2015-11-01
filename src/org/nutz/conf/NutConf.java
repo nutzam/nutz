@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.nutz.el.opt.custom.CustomMake;
 import org.nutz.json.Json;
@@ -43,19 +41,18 @@ public class NutConf {
 
     // 所有的配置信息
     private Map<String, Object> map = new HashMap<String, Object>();
-    private static final Lock lock = new ReentrantLock();
 
-    private static NutConf conf;
+    // zozoh 单利的话，没必要用这个吧 ...
+    // private static final Lock lock = new ReentrantLock();
+
+    private volatile static NutConf conf;
 
     private static NutConf me() {
-        lock.lock();
-        try{
-            if (null == conf) {
+        if (null == conf) {
+            synchronized (NutConf.class) {
                 if (null == conf)
                     conf = new NutConf();
             }
-        } finally{
-            lock.unlock();
         }
         return conf;
     }
@@ -77,12 +74,12 @@ public class NutConf {
     private void loadResource(String... paths) {
         for (String path : paths) {
             List<NutResource> resources;
-            if (path.endsWith(".js")) {
+            if (path.endsWith(".js") || path.endsWith(".json")) {
                 File f = Files.findFile(path);
                 resources = new ArrayList<NutResource>();
                 resources.add(new FileResource(f));
             } else {
-                resources = Scans.me().scan(path, "\\.js$");
+                resources = Scans.me().scan(path, "\\.(js|json)$");
             }
 
             for (NutResource nr : resources) {
@@ -138,11 +135,11 @@ public class NutConf {
         }
         return Mapl.maplistToObj(map.get(key), type);
     }
-    
+
     /**
      * 清理所有配置信息
      */
-    public static void clear(){
+    public static void clear() {
         conf = null;
     }
 }

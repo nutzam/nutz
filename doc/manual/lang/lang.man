@@ -4,17 +4,17 @@
 #index:0,1
 -----------------------------------------------------------------------------------------
 什么是函数糖？
-	
+
 	Java 的语法比 C/C++ 友好很多， 因为它设计之初，就是为了考虑到程序员的使用是否舒适。
 	当然很多事情愿望是美好的，现实是残酷的。Java 语言本身的语法仍然不可避免的带有着 10年前那种
 	的僵硬和严谨。这里是一些小小的尝试，你会发现，大多数情况，通过一些静态函数，一行代码完全
 	可以做很多事情， 而且比“甜甜”的 Ruby 也差不了太多。
-	
+
 	你可以查看 [https://github.com/nutzam/nutz/tree/master/src/org/nutz/lang org.nutz.lang] 下
 	的源代码。为了便于你学习，我将里面部分最常用的用法列在文档你，便于快速学习查看。
-	
-	我希望在 80% 以上的情况下，这些函数能让你有效的缩短你 代码的体积，并且增加代码的可读性。
-	
+
+	我希望在 80% 以上的情况下，这些函数能让你有效的缩短你代码的体积，并且增加代码的可读性。
+
 -----------------------------------------------------------------------------------------
 异常
     创建异常
@@ -30,7 +30,7 @@
             {{{
             throw Lang.noImplement();
             }}}
-         
+
     包裹异常
          * 用运行时异常包裹抛出对象，如果抛出对象本身就是运行时异常，则直接返回。
             {{{
@@ -48,7 +48,7 @@
             {{{
             throw Lang.wrapThrow(e, "Error for %d [%s]", obj.getId(), obj.getName());
             }}}
-		
+
 -----------------------------------------------------------------------------------------
 对象
      * 比较对象: 支持数组，集合，和容器
@@ -72,42 +72,42 @@
             }
         });
         }}}
-    
+
 -----------------------------------------------------------------------------------------
 容器转换
      * 数组 to Map
         {{{
         Pet[] pets = new Pet[3];
         ... // 为数组赋值
-        
+
         // 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
         Map<String,Pet> petMap = Lang.array2map(HashMap.class, pets, "name");
         }}}
      * 数组 to 数组
         {{{
         Pet[] pets = new Pet[3];
-        
+
         String[] ss = Lang.array2array(pets, String.class);
         }}}
      * 集合 to 数组
         {{{
         List<Pet> pets = new ArrayList<Pet>();
         ... // 为列表赋值
-        
+
         Pet[] petArray = Lang.collection2array(pets);
         }}}
      * 集合 to 列表
         {{{
         Queue<Pet> pets = new ArrayDeque<Pet>();
         ... // 为队列赋值
-        
+
         List<Pet> list = Lang.collection2list(pets);
         }}}
      * 集合 to Map
         {{{
         Queue<Pet> pets = new ArrayDeque<Pet>();
         ... // 为队列赋值
-        
+
         // 将把 Pet 对象的 name 字段的值作为 Key， 创建一个 Map
         Map<String,Pet> petMap = Lang.collection2map(HashMap.class, pets, "name");
         }}}
@@ -115,7 +115,7 @@
         {{{
         return Lang.map2Object(map,Pet.class);
         }}}
-			
+
 -----------------------------------------------------------------------------------------
 对象模拟
      * 生成数组
@@ -134,7 +134,7 @@
         {{{
         Map<String,Object> map = Lang.map("{a:10, b:'ABC', c:true}");
         }}}
-        
+
      * 从字符串生成 List
         {{{
         List<Object> list =  Lang.list("[true, 23, 'ABC']");
@@ -170,14 +170,14 @@ XML
 		 * 是否被特定字符包裹
 			{{{
 			assertTrue(Strings.isQuoteBy("[ABC]", '[', ']'));
-			
+
 			// 忽略空白
 			assertTrue(Strings.isQuoteByIgnoreBlank("  \t [ABC]\r\n  ", '[', ']'));
 			}}}
 		 * 集合中的最长串
 			{{{
 			assertEquals(3, Strings.maxLength((String[]){"A","ABC","BC"}));
-			
+
 			// 集合
 			assertEquals(3, Strings.maxLength(Lang.list("['A','ABC','BC']")));
 			}}}
@@ -189,7 +189,7 @@ XML
 			{{{
 			assertEquals("abc", Strings.sBlank(" \n\t", "abc"));
 			}}}
-			
+
 	修改
 		 * 首字母大写
 			{{{
@@ -216,7 +216,12 @@ XML
 		 * 固定长度左填充 (居右)，当无法填充时将按照指定的长度截断原字符串
 			{{{
 			assertEquals("00FE", Strings.cutRight("FE", 4, '0'));
-			assertEquals("FF", Strings.cutRight("FFFF", 2, '0'));
+			assertEquals("CD", Strings.cutRight("ABCD", 2, '0'));
+			}}}
+		 * 固定长度右填充 (居左)，当无法填充时将按照指定的长度截断原字符串
+			{{{
+			assertEquals("FE00", Strings.cutRight("FE", 4, '0'));
+			assertEquals("AB", Strings.cutRight("ABCD", 2, '0'));
 			}}}
 	转换
 		 * 二进制形式字符串
@@ -232,12 +237,12 @@ XML
 			assertEquals(3, Strings.splitIgnoreBlank("A,B,C"));
 			assertEquals(3, Strings.splitIgnoreBlank(",A,B,,C,"));
 			}}}
-		 
+
 	创建重复
 		{{{
 		// 重复字符
 		assertEquals("---", Strings.dup('-', 3));
-		
+
 		// 重复字串
 		assertEquals("ABCABCABC", Strings.dup("ABC", 3));
 		}}}
@@ -256,7 +261,7 @@ XML
 			{{{
 			return Resources.scanClass(Lang.class);
 			}}}
-		 
+
 	创建-删除-拷贝
 		 * 创建新文件，如果父目录不存在，也一并创建
 			{{{
@@ -346,7 +351,7 @@ XML
 		 * 获取文件后缀名
 			{{{
 			assertEquals("txt", Files.getSuffixName(new File("D:/demo/abc.txt")));
-			}}} 
+			}}}
 
 -----------------------------------------------------------------------------------------
 秒表
@@ -358,7 +363,7 @@ XML
 	sw.stop();
 	System.out.println(sw.getDuration());
 	}}}
-    
+
 -----------------------------------------------------------------------------------------
 随机数据
 	 * 随机字符串
@@ -391,7 +396,7 @@ XML
 		for(int i=0; i<100; i++)
 			System.out.println(r.next());
 		}}}
-	
+
 -----------------------------------------------------------------------------------------
 其他
      * 打印 java.util.regex.Matcher 的详细信息

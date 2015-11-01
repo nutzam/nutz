@@ -15,6 +15,13 @@ Ecipse 用户
     看看
     "Text file encoding" 项是不是设成 "UTF-8" 了
     还是不行? 请重启你的Eclipse
+    
+    全局UTF-8设置, 打开eclipse.ini,在末尾加入
+  {{{
+  	-Dfile.encoding=UTF-8
+  }}}
+  
+  建议同时在windows/linux下使用的童鞋使用全局设置,避免部署时编码问题导致的问题
 
 -------------------------------------------------------------
 Netbean 用户 

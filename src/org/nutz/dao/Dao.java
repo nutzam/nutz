@@ -6,6 +6,7 @@ import java.util.List;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.pager.Pager;
+import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
 import org.nutz.lang.Each;
 
@@ -27,6 +28,8 @@ public interface Dao {
      * @see org.nutz.dao.SqlManager
      */
     SqlManager sqls();
+    
+    PojoMaker pojoMaker();
 
     /**
      * 执行一组 Sql，这些 Sql 将会一起被提交
@@ -64,6 +67,8 @@ public interface Dao {
      * @return 对象
      */
     <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm);
+    
+    <T> T getObject(Class<T> classOfT, ResultSet rs, FieldMatcher fm, String prefix);
 
     /**
      * 将一个对象插入到一个数据源。
@@ -98,6 +103,16 @@ public interface Dao {
      * @see org.nutz.dao.entity.annotation.Next
      */
     <T> T insert(T obj);
+    
+    /**
+     * 将一个对象按FieldFilter过滤后,插入到一个数据源。<p/>
+     * <code>dao.insert(pet, FieldFilter.create(Pet.class, FieldMatcher.create(false)));</code>
+     * @param obj 要被插入的对象
+     * @param filter 字段过滤器, 其中FieldMatcher.isIgnoreId生效
+     * @return 插入后的对象
+     * @see org.nutz.dao.Dao#insert(Object)
+     */
+    <T> T insert(T obj, FieldFilter filter);
 
     /**
      * 自由的向一个数据表插入一条数据。数据用名值链描述
@@ -331,7 +346,10 @@ public interface Dao {
      * 
      * @see org.nutz.dao.entity.annotation.ManyMany
      */
-    int updateRelation(Class<?> classOfT, String regex, Chain chain, Condition cnd);
+    int updateRelation(Class<?> classOfT,
+                       String regex,
+                       Chain chain,
+                       Condition cnd);
 
     /**
      * 查询一组对象。你可以为这次查询设定条件，并且只获取一部分对象（翻页）
@@ -352,7 +370,8 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param cnd
-     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序
+     *            WHERE 条件。如果为 null，将获取全部数据，顺序为数据库原生顺序<br>
+     *            只有在调用这个函数的时候， cnd.limit 才会生效
      * @return 对象列表
      */
     <T> List<T> query(Class<T> classOfT, Condition cnd);
@@ -644,7 +663,7 @@ public interface Dao {
      * 根据一个正则表达式，获取对象所有的关联字段
      * 
      * @param obj
-     *            数据对象
+     *            数据对象,不可以是Class啊!!!传对象啊!!!
      * @param regex
      *            正则表达式，描述了什么样的关联字段将被关注。如果为 null，则表示全部的关联字段都会被查询
      * @return 更新后的数据对象本身
@@ -654,10 +673,12 @@ public interface Dao {
      * @see org.nutz.dao.entity.annotation.ManyMany
      */
     <T> T fetchLinks(T obj, String regex);
-    
+
     /**
-     * 根据一个正则表达式，获取对象所有的关联字段, 并按Condition进行数据过滤排序<p/>
+     * 根据一个正则表达式，获取对象所有的关联字段, 并按Condition进行数据过滤排序
+     * <p/>
      * <b>严重提醒,当使用Condition进行数据过滤排序时,应当使regex只匹配特定的映射字段</b>
+     * 
      * @param obj
      *            数据对象
      * @param regex
@@ -731,6 +752,7 @@ public interface Dao {
     <T> T clearLinks(T obj, String regex);
 
     /**
+     * 获取实体描述, 其中包含了Java Pojo<-->数据库的全部映射信息
      * @param classOfT
      *            对象类型
      * @return 实体描述
@@ -791,12 +813,14 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
      *            对象 java 字段名
      * @return 计算结果
      */
     int func(Class<?> classOfT, String funcName, String fieldName);
+
+    Object func2(Class<?> classOfT, String funcName, String fieldName);
 
     /**
      * 对某一个数据表字段，进行计算。
@@ -804,12 +828,14 @@ public interface Dao {
      * @param tableName
      *            表名
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据是支持库这个函数的
      * @param colName
      *            数据库字段名
      * @return 计算结果
      */
     int func(String tableName, String funcName, String colName);
+
+    Object func2(String tableName, String funcName, String colName);
 
     /**
      * 对某一个对象字段，进行计算。
@@ -817,7 +843,7 @@ public interface Dao {
      * @param classOfT
      *            对象类型
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param fieldName
      *            对象 java 字段名
      * @param cnd
@@ -826,13 +852,18 @@ public interface Dao {
      */
     int func(Class<?> classOfT, String funcName, String fieldName, Condition cnd);
 
+    Object func2(Class<?> classOfT,
+                 String funcName,
+                 String fieldName,
+                 Condition cnd);
+
     /**
      * 对某一个数据表字段，进行计算。
      * 
      * @param tableName
      *            表名
      * @param funcName
-     *            计算函数名，请确保你的数据是支持这个函数的
+     *            计算函数名，请确保你的数据库是支持这个函数的
      * @param colName
      *            数据库字段名
      * @param cnd
@@ -840,6 +871,11 @@ public interface Dao {
      * @return 计算结果
      */
     int func(String tableName, String funcName, String colName, Condition cnd);
+
+    Object func2(String tableName,
+                 String funcName,
+                 String colName,
+                 Condition cnd);
 
     /**
      * 根据数据源的类型，创建一个翻页对象
@@ -894,4 +930,8 @@ public interface Dao {
      * @return 是否移除成功
      */
     boolean drop(String tableName);
+    
+    Sql execute(Sql sql);
+    
+    void setExpert(Object obj) throws Exception;
 }

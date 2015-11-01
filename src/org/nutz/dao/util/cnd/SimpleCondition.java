@@ -24,4 +24,7 @@ public class SimpleCondition implements Condition {
         return content;
     }
 
+    public String toString() {
+    	return toSql(null);
+    }
 }

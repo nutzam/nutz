@@ -64,8 +64,13 @@ public class NutDaoExecutor implements DaoExecutor {
             // case INSERT:
             // 见鬼了，未知类型，也当作普通 SQL 运行吧，见 Issue#13
             default:
+            	if (st.isForceExecQuery()) {
+            		// run as select
+            		_runSelect(conn, st);
+                    break;
+            	}
                 if (st.getSqlType() == SqlType.OTHER && log.isInfoEnabled())
-                    log.info("Can't indentify SQL type :   " + st);
+                    log.info("Can't identify SQL type :   " + st);
                 paramMatrix = st.getParamMatrix();
                 // 木有参数，直接运行
                 if (null == paramMatrix || paramMatrix.length == 0) {
@@ -84,12 +89,12 @@ public class NutDaoExecutor implements DaoExecutor {
             if (log.isDebugEnabled()) {
             	log.debug("SQLException", e);
             	SQLException nextException = e.getNextException();
-                if (e != null)
+                if (nextException != null)
                 	log.debug("SQL NextException", nextException);
             }
             throw new DaoException(format(    "!Nutz SQL Error: '%s'\nPreparedStatement: \n'%s'",
                                             st.toString(),
-                                            st.toPreparedStatement()), e);
+                                            st.toPreparedStatement()) + "\nCaseMessage=" + e.getMessage(), e);
         }
 
     }
@@ -136,7 +141,8 @@ public class NutDaoExecutor implements DaoExecutor {
 				if (stmt.getMoreResults()) {
 					rs = stmt.getResultSet();
 					try {
-						st.onAfter(conn, rs);
+						if (rs != null)
+							st.onAfter(conn, rs);
 					}
 					finally {
 						if (rs != null)
@@ -150,7 +156,8 @@ public class NutDaoExecutor implements DaoExecutor {
 			}
 		}
 		finally {
-			stmt.close();
+			if (stmt != null)
+				stmt.close();
 		}
 	}
 
@@ -183,12 +190,12 @@ public class NutDaoExecutor implements DaoExecutor {
             if (null == paramMatrix || paramMatrix.length == 0
                     || paramMatrix[0].length == 0) {
                 if (log.isDebugEnabled())
-                    log.debug(st);
+                    log.debug(st.forPrint());
                 stat = conn.createStatement(st.getContext()
                         .getResultSetType(), ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow); // 游标分页,现在总行数
-                if (st.getContext().getFetchSize() > 0)
+                if (st.getContext().getFetchSize() != 0)
                     stat.setFetchSize(st.getContext().getFetchSize());
                 rs = stat.executeQuery(sql);
             }
@@ -213,6 +220,8 @@ public class NutDaoExecutor implements DaoExecutor {
                         ResultSet.CONCUR_READ_ONLY);
                 if (lastRow > 0)
                     stat.setMaxRows(lastRow);
+                if (st.getContext().getFetchSize() != 0)
+                    stat.setFetchSize(st.getContext().getFetchSize());
                 for (int i = 0; i < paramMatrix[0].length; i++) {
                     adaptors[i].set((PreparedStatement) stat,
                             paramMatrix[0][i], i + 1);

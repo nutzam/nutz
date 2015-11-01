@@ -84,23 +84,23 @@ public class ObjectPairInjectorTest {
         // 检测
         assertEquals("A", pojo.str);
     }
-    
+
     @Test
-    public void test_date(){
+    public void test_date() {
         // 准备数据
         MockHttpServletRequest req = Mock.servlet.request();
         req.setParameter("date", "2010-01-01");
         // 执行
         MvcTestPojo pojo = (MvcTestPojo) inj().get(null, req, null, null);
-        
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         System.out.println(sdf.format(pojo.date));
         assertEquals("2010-01-01", sdf.format(pojo.date));
-        
+
         req.setParameter("date", "");
         // 执行
         MvcTestPojo pojoNull = (MvcTestPojo) inj().get(null, req, null, null);
-        
+
         assertEquals(null, pojoNull.date);
     }
 

@@ -1,0 +1,190 @@
+#title: 1.b.52 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.52 发行注记
+
+    又是一个 bug 修复安心升级版，`Nutz 1.b.52`，要升级的同学请随意入。
+
+    春节将至，给大家提前拜年。因为最近实在太忙（当然，以后你们可能会知道我为啥这么忙），
+    总之没啥好说的，这个版的主要工作是 wendal 在搞(实际上前几个版也都是他在搞，呵呵)
+    各位要升级的的，下来 Jar 包玩玩，很安全滴，我天天用，升级嘛，升升更健康。
+
+    @wendal，快过春节的，关于这个版，关于 Nutz，关于 ... 天气 ...
+    总之，你有啥要和大家说的吗？ ^_^
+
+    这里的原本的内容叫"wendal 的占位符",哈哈.
+    
+    这个版本东西还是不少的, 一堆bugfix和一些小的新功能.
+    例如一个靠谱的缓存实现(Aop), 通过Xml配置bean,当然,这些都在nutzmore中. 另外,
+    你也许会发现nutz的jar并没有变大,那是因为我们清理了一些死代码. 
+    同时,这一版本的findbugs检查结果也很不错, emma的覆盖率也有提高.
+    
+    社区方面, 不定期的"nutz,今晚来一发" [http://my.oschina.net/wendal/blog] 一直在更新
+    
+    QQ群依然是2个,其中的2群,感谢c.A的捐赠,wendal变成的群主,哈哈. 延续之前的风格,
+    Nutz&XBlink群主打基友与高大上, Nutz ② 群继续问答与酱油.
+    
+    哦,有些童鞋提到如何捐赠的问题,我们表示感谢(和理解?),但暂时不提供渠道, 简单来说, 咱们不!差!钱!
+    
+    至于这几天很火的红包问题,QQ群会有(而且年30大大的有),不过,如果你单纯为了红包而来,我们会严重砍你,哈哈
+    
+    新春快乐,各位!
+    
+    好了,继续写代码继续挖坑了,就写这么多吧.
+    
+    哦哦, 特意再次再次再次推荐一篇文章 [http://wiki.woodpecker.org.cn/moin/AskForHelp 提问的智慧]
+    
+    以上言论仅代表wendal个人意见,如有不敬,你.........能咋的?! ^撒花^
+  
+
+    ------------------------------ Nutz 的相关资源的分隔线 -------------------------
+
+     * 下载地址 : [http://downloads.nutzam.com/]
+     * Nutz 的官网 :  [http://nutzam.com]
+     * Github 地址 :  [https://github.com/nutzam/nutz]
+     * Nutzmore地址: [https://github.com/nutzam/nutzmore]
+
+--------------------------------------------------------------------------------------------------------
+变更统计
+
+	看看我们到底改了多少东西,啊啊啊
+
+	{{{
+	 143 files changed, 4668 insertions(+), 4553 deletions(-)
+	}}}
+	
+	下一版本会不会更多? 敬请期待
+
+--------------------------------------------------------------------------------------------------------
+兼容性
+
+	兼容性,呵呵,只能呵呵, 因为我们没法打包票100%兼容1.b.51,但理应可以的.
+
+	* @Inject行为改变, 如果其值包含冒号,将认为是引用特定名字的bean
+	* Images.writeGif方法及相关的类被移除
+	
+
+--------------------------------------------------------------------------------------------------------
+新功能
+
+	* 未声明@Views,@SetupBy时,从ioc加载特定前缀name的ViewMaker和Setup对象
+	* Aop配置支持从ioc加载特定前缀的AopConfigure对象
+	* TransIocLoader 自动加载AOP事务所需要的ioc定义
+	* Cnd支持between
+	* @Param 支持默认值(仅表单参数)
+	* Http类提供访问12306和360safe等自签名https地址的解决方案
+	* Sql类支持强制execQuery方式,即总是取回ResultSet
+	* @JsonField和JsonFormat支持自定义日期格式
+	* R.UU32()方法提供32进制的UUID格式
+	* 路径参数支持**
+	* NetworkType添加蓝牙和NFC
+	* Dao允许设置JdbcExpert
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/785 Issue 785] Json.fromJson 问题和建议 {#888;by} {*Jastxx}
+    * [https://github.com/nutzam/nutz/issues/781 Issue 781] org.nutz.dao.util.Daos.queryCount(Dao, String) 这个方法在mysql下会报错 {#888;by} {*bugss}
+    * [https://github.com/nutzam/nutz/issues/776 Issue 776] 允许设置Dao需要使用的JdbcExpert {#888;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/775 Issue 775] RawView在android下无法使用 {#888;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/771 Issue 771] 关于Nutz SqlExpressionGroup andLike 模糊检索的问题/需求 {#888;by} {*wqmain}
+    * [https://github.com/nutzam/nutz/issues/757 Issue 757] jsonFormat 添加unicode大小写设置选项 {#888;by} {*Wizzercn}
+    * [https://github.com/nutzam/nutz/issues/754 Issue 754] 建议UrlMappingImpl中重复映射同名方法时,日志输出级别改为warn目前为debug {#888;by} {*talentyao}
+    * [https://github.com/nutzam/nutz/issues/751 Issue 751] dao.fetch(Cnd)的问题 {#888;by} {*zoeyangfang}
+    * [https://github.com/nutzam/nutz/issues/727 Issue 727] json 转成 JSON.stringify(new Date()) 字符为date类型失败 {#888;by} {*hzl7652}
+    * [https://github.com/nutzam/nutz/issues/720 Issue 720] 上传功能的mvc方法不能用基本类型的参数，否则出异常后不能进入方法 {#888;by} {*zhanghuanle}
+    * [https://github.com/nutzam/nutz/issues/667 Issue 667] Cnd中添加orderBy(String name, String dir)方法 {#888;by} {*QinAIns}
+    * [https://github.com/nutzam/nutz/issues/636 Issue 636] @ColDefine(type=ColType.FLOAT,precision=2) bug {#888;by} {*Rekoe}
+    * [https://github.com/nutzam/nutz/issues/541 Issue 541] 需求：增加新的Callback注入任意类型bean的对应属性 {#888;by} {*wxs123456}
+    * [https://github.com/nutzam/nutz/issues/527 Issue 527] 使用orderby条件可能存在sql盲注隐患 {#888;by} {*lAndRaxeE}
+    * [https://github.com/nutzam/nutz/issues/492 Issue 492] Dao自定义SQL,ResultSet为空 {#888;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/485 Issue 485] mvc-ioc session 级别获取对象在同一session下总是新生成对象。 {#888;by} {*zouooh}
+    * [https://github.com/nutzam/nutz/issues/424 Issue 424] EL不支持p.'user.id' {#888;by} {*juqkai}
+    * [https://github.com/nutzam/nutz/issues/367 Issue 367] 批量更新的操作是否可以自定义表名 {#888;by} {*ansjsun}
+    * [https://github.com/nutzam/nutz/issues/353 Issue 353] 重构Mirror类,实现一个重量级的Mirror {#888;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/248 Issue 248] 实现Nutz的HttpServer {#888;by} {*wendal}
+    * [https://github.com/nutzam/nutz/issues/211 Issue 211] 使用sql server2005表和字段不能正确添加注释 {#888;by} {*weirhp}
+
+--------------------------------------------------------------------------------------------------------
+质量
+
+	共通过了 {#FF00FF;*950+}  个单元测试用例,代码覆盖率达到 {#FF00FF;50+%}(按行计算)
+
+    <emma.png>
+
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+	 * [http://www.gbase.cn/ GBASE] -- 实验性
+
+--------------------------------------------------------------------------------------------------------
+文档
+
+    * 添加TransAop的说明
+    * 添加org.nutz.http包的说明
+    * 添加org.nutz.img包的说明
+    
+--------------------------------------------------------------------------------------------------------
+关联项目的更新
+
+	* nutz-web 使用了nutz 1.b.52 提供的新方法
+	* nutzmore项目分拆为多个子modules, 并提供jcache缓存和Xml Entity Maker实现
+	* nutzwx API大幅重构,需要依赖nutz 1.b.52
+	* nutzmongo dev版更新
+	* nutz-quartz 更新构建脚本
+
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+
+	贡献的种类:
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 支持: 被我们看见回答网友提问者（当然，这个统计很不准）
+	 * 代码: 提交过至少一个修订
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+
+	 如有遗漏,请提醒我们 ^_^
+
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}
+
+    || 贡献者         || 问题 || 支持 || 代码 || 文档 ||
+    || Jastxx     	||  O   ||  -   ||  -   ||  -   ||
+    || QinAIns    	||  O   ||  -   ||  -   ||  -   ||
+    || Rekoe      	||  O   ||  -   ||  -   ||  -   ||
+    || Wizzercn   	||  O   ||  O   ||  -   ||  -   ||
+    || ansjsun    	||  O   ||  -   ||  -   ||  -   ||
+    || bugss      	||  O   ||  -   ||  -   ||  -   ||
+    || juqkai     	||  O   ||  -   ||  O   ||  -   ||
+    || lAndRaxeE  	||  O   ||  -   ||  -   ||  -   ||
+    || talentyao  	||  O   ||  -   ||  -   ||  -   ||
+    || weirhp     	||  O   ||  -   ||  -   ||  -   ||
+    || wendal     	||  O   ||  O   ||  O   ||  -   ||
+    || wqmain     	||  O   ||  -   ||  -   ||  -   ||
+    || wxs123456  	||  O   ||  -   ||  -   ||  -   ||
+    || zhanghuanle	||  O   ||  -   ||  -   ||  -   ||
+    || zoeyangfang	||  O   ||  -   ||  -   ||  -   ||
+    || zouooh     	||  O   ||  -   ||  -   ||  -   ||
+    || zozoh     	||  O   ||  O   ||  O   ||  -   ||
+    || 罗马钟        	||  O   ||  -   ||  -   ||  -   ||
+    || 鲁鲁         	||  O   ||  -   ||  -   ||  -   ||
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+
+	欢迎访问[http://nutzam.com 官网],以获取更多信息

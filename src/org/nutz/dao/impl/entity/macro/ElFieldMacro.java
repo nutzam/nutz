@@ -29,7 +29,10 @@ public class ElFieldMacro extends NutPojo {
     private ElFieldMacro() {}
 
     public void onAfter(Connection conn, ResultSet rs) throws SQLException {
-        Context context = entityField.getEntity().wrapAsContext(getOperatingObject());
+        Context context = entityField.getEntity()
+                                     .wrapAsContext(getOperatingObject());
+        context.set("field", entityField.getColumnName());
+        context.set("view", entityField.getEntity());
         Object value = bin.eval(context);
         entityField.setValue(getOperatingObject(), value);
     }

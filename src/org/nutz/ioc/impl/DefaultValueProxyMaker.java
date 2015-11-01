@@ -79,11 +79,11 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         }
         // Env
         else if ("env".equals(type)) {
-            return new EnvValue(value.toString());
+            return new EnvValue(value);
         }
         // System Properties
         else if ("sys".equals(type)) {
-            return new SysPropValue(value.toString());
+            return new SysPropValue(value);
         }
         // Inner
         else if ("inner".equals(type)) {

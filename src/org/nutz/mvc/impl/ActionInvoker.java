@@ -40,7 +40,10 @@ public class ActionInvoker {
     public void addChain(String httpMethod, ActionChain chain) {
         if (Strings.isBlank(httpMethod))
             throw Lang.makeThrow("chain need a valid HTTP Method, but is is '%s'", httpMethod);
-        chainMap.put(httpMethod.toUpperCase(), chain);
+        ActionChain old = chainMap.put(httpMethod.toUpperCase(), chain);
+        if (old != null) {
+            log.warnf("Duplicate @At mapping with same HttpMethod");
+        }
     }
 
     public void setDefaultChain(ActionChain defaultChain) {
@@ -62,7 +65,7 @@ public class ActionInvoker {
             return false;
         }
         chain.doChain(ac);
-        return true;
+        return ac.getBoolean(ActionContext.AC_DONE, true);
     }
 
     public ActionChain getActionChain(ActionContext ac) {

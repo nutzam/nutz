@@ -24,6 +24,17 @@ import org.nutz.lang.meta.TestR;
 
 public class LangTest {
 
+    /**
+     * for issue #584
+     */
+    @Test
+    public void test_arrayUniq() {
+        assertNull(Lang.arrayUniq());
+
+        String[] ss = Lang.arrayUniq("A", "B", "A");
+        assertTrue(Lang.equals(Lang.array("A", "B"), ss));
+    }
+
     public static class A {
         private int id;
         private String name;
@@ -170,11 +181,16 @@ public class LangTest {
     public void test_concat4_offset_len() {
         assertEquals("", Lang.concat(0, 2, "-", null).toString());
         assertEquals("", Lang.concat(0, 2, "-", new String[]{}).toString());
-        assertEquals("a-b", Lang.concat(0, 2, "-", new String[]{"a", "b"}).toString());
-        assertEquals("b", Lang.concat(1, 1, "-", new String[]{"a", "b"}).toString());
-        assertEquals("c", Lang.concat(2, 2, "-", new String[]{"a", "b", "c"}).toString());
-        assertEquals("", Lang.concat(2, 2, "-", new String[]{"a", "b"}).toString());
-        assertEquals("", Lang.concat(1, -1, "-", new String[]{"a", "b"}).toString());
+        assertEquals("a-b", Lang.concat(0, 2, "-", new String[]{"a", "b"})
+                                .toString());
+        assertEquals("b", Lang.concat(1, 1, "-", new String[]{"a", "b"})
+                              .toString());
+        assertEquals("c", Lang.concat(2, 2, "-", new String[]{"a", "b", "c"})
+                              .toString());
+        assertEquals("", Lang.concat(2, 2, "-", new String[]{"a", "b"})
+                             .toString());
+        assertEquals("", Lang.concat(1, -1, "-", new String[]{"a", "b"})
+                             .toString());
     }
 
     public static class BC {
@@ -230,15 +246,19 @@ public class LangTest {
     @Test
     public void test_array_first() {
         assertArrayEquals(new String[]{"a"}, Lang.arrayFirst("a", null));
-        assertArrayEquals(new String[]{"a"}, Lang.arrayFirst("a", new String[]{}));
-        assertArrayEquals(new String[]{"a", "b"}, Lang.arrayFirst("a", new String[]{"b"}));
+        assertArrayEquals(new String[]{"a"},
+                          Lang.arrayFirst("a", new String[]{}));
+        assertArrayEquals(new String[]{"a", "b"},
+                          Lang.arrayFirst("a", new String[]{"b"}));
     }
 
     @Test
     public void test_array_last() {
         assertArrayEquals(new String[]{"a"}, Lang.arrayLast(null, "a"));
-        assertArrayEquals(new String[]{"a"}, Lang.arrayLast(new String[]{}, "a"));
-        assertArrayEquals(new String[]{"b", "a"}, Lang.arrayLast(new String[]{"b"}, "a"));
+        assertArrayEquals(new String[]{"a"},
+                          Lang.arrayLast(new String[]{}, "a"));
+        assertArrayEquals(new String[]{"b", "a"},
+                          Lang.arrayLast(new String[]{"b"}, "a"));
     }
 
     @Test
@@ -306,8 +326,10 @@ public class LangTest {
         assertEquals("d41d8cd98f00b204e9800998ecf8427e", Lang.md5(""));
         assertEquals("0cc175b9c0f1b6a831c399e269772661", Lang.md5("a"));
         assertEquals("900150983cd24fb0d6963f7d28e17f72", Lang.md5("abc"));
-        assertEquals("f96b697d7cb7938d525a2f31aaf161d0", Lang.md5("message digest"));
-        assertEquals("c3fcd3d76192e4007dfb496cca67e13b", Lang.md5("abcdefghijklmnopqrstuvwxyz"));
+        assertEquals("f96b697d7cb7938d525a2f31aaf161d0",
+                     Lang.md5("message digest"));
+        assertEquals("c3fcd3d76192e4007dfb496cca67e13b",
+                     Lang.md5("abcdefghijklmnopqrstuvwxyz"));
         assertEquals("046a899ee7a6ec88d370211a518c9e80", Lang.md5("算法"));
     }
 
@@ -329,10 +351,34 @@ public class LangTest {
         }
         return sb.substring(0, sb.length() - 1);
     }
-    
+
     @Test
     public void test_obj2map_again() {
         TestR r = new TestR();
         Lang.obj2map(r);
+    }
+    
+    @Test
+    public void test_map_filter() {
+    	Map<String, Object> source = new HashMap<String, Object>();
+    	assertEquals(0, Lang.filter(source, null, null, null, null).size());
+    	source.put("ONE", 1);
+    	source.put("two", 2);
+    	source.put("vip.three", 3);
+    	source.put("four", 4);
+    	source.put("five", 5);
+    	assertEquals(5, Lang.filter(source, null, null, null, null).size());
+
+    	assertEquals(1, Lang.filter(source, "vip.", null, null, null).size());
+    	assertEquals(2, Lang.filter(source, "f", null, null, null).size());
+    	assertTrue(Lang.filter(source, "t", null, null, null).containsKey("wo"));
+
+    	assertEquals(3, Lang.filter(source, null, "^(f|t)", null, null).size());
+    	assertEquals(1, Lang.filter(source, null, "^(f|t)", "(o)", null).size());
+    	assertTrue(Lang.filter(source, null, "^(f|t)", "(o)", null).containsKey("five"));
+    	
+    	Map<String, String> map = new HashMap<String, String>();
+    	map.put("five", "nice");
+    	assertTrue(Lang.filter(source, null, null, null, map).containsKey("nice"));
     }
 }

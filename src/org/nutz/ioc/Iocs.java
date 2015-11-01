@@ -17,7 +17,7 @@ import org.nutz.lang.meta.Pair;
  */
 public abstract class Iocs {
 
-    private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events)$";
+    private static final String OBJFIELDS = "^(type|scope|singleton|fields|args|events|factory)$";
 
     public static boolean isIocObject(Map<String, ?> map) {
         for (Entry<String, ?> en : map.entrySet())

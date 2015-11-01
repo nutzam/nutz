@@ -1,25 +1,21 @@
 package org.nutz.castor.castor;
 
-import java.text.DateFormat;
-
 import org.nutz.castor.Castor;
+import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Times;
 
 public abstract class DateTimeCastor<FROM, TO> extends Castor<FROM, TO> {
 
-    public DateFormat dateTimeFormat;
-    public DateFormat dateFormat;
-    public DateFormat timeFormat;
-
-    public void setDateTimeFormat(DateFormat format) {
-        this.dateTimeFormat = format;
-    }
-
-    public void setDateFormat(DateFormat dateFormat) {
-        this.dateFormat = dateFormat;
-    }
-
-    public void setTimeFormat(DateFormat timeFormat) {
-        this.timeFormat = timeFormat;
+    protected java.util.Date toDate(String src) {
+        try {
+            return Times.D(src);
+        }
+        catch (Throwable e) {
+            throw new FailToCastObjectException(e,
+                                                "'%s' to %s",
+                                                src,
+                                                java.util.Date.class.getName());
+        }
     }
 
 }

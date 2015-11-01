@@ -13,7 +13,7 @@ public class IocException extends RuntimeException {
     }
 
     public IocException(Throwable cause, String fmt, Object... args) {
-        super(String.format(fmt, args), cause);
+        super(cause.getMessage() + " " + String.format(fmt, args), cause);
     }
 
 }

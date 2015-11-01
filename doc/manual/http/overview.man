@@ -1,0 +1,99 @@
+#title: 小巧的Http客户端
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+------------------------------------------------------------------------
+为什么有这个package
+
+	这个package一直有,老久了,只是一直都是我们内部自己用,没有直接写出来
+	
+	简单来说, 这个package是对UrlConnection操作的薄封装.
+	
+	远没有apache http client的完善,但足以满足一般的http请求了.
+	
+------------------------------------------------------------------------
+基本请求
+
+	GET请求
+	
+	{{{
+		Response response = Http.get("http://nutztest.herokuapp.com/");
+        assertNotNull(response);
+        assertNotNull(response.getContent());
+        assertNotNull(response.getDetail());
+        assertNotNull(response.getHeader());
+        assertNotNull(response.getProtocal());
+        assertTrue(response.getStatus() > 0);
+        assertNotNull(response.getStream());
+	}}}
+	
+	POST请求
+	
+	{{{
+	    Map<String, Object> parms = new HashMap<String, Object>();
+        parms.put("version", "NutzTest");
+        parms.put("website", Nutz.version());
+        String response = Http.post("http://nutztest.herokuapp.com/",
+                                    parms,
+                                    5 * 1000); // 可以同时设置超时时间
+        assertNotNull(response);
+        assertTrue(response.length() > 0);
+        // 该post的返回值是"version: #{params[:version]}, website: #{params[:website]}"
+        assertEquals(response,
+                     String.format("version: %s, website: %s",
+                                   "NutzTest",
+                                   Nutz.version()));
+	}}}
+	
+	响应的编码
+	
+	{{{
+		// 根据Http头的Content-Type自动识别编码类型
+        Response response1 = Http.get("www.duokan.com");
+        assertEquals("utf-8", response1.getEncodeType().toLowerCase());
+        assertTrue(response1.getContent().indexOf("多看") > 0);
+
+        // 如果Http头中没有指定编码类型，用户也可以手工指定
+        Response response2 = Http.get("www.exam8.com/SiteMap/Article1.htm");
+        assertTrue(response2.getContent("GBK").indexOf("考试吧") > 0);
+	}}}
+	
+	上传文件
+	
+	{{{
+		Request req = Request.create(getBaseURL()+"/upload/image",METHOD.POST);
+        File f = File.createTempFile("nutz", "data");
+        FileWriter fw = new FileWriter(f);
+        fw.write("abc");
+        fw.flush();
+        fw.close();
+        req.getParams().put("file", f);
+        FilePostSender sender = new FilePostSender(req);
+        Response resp = sender.send();
+        assertEquals("image&3", resp.getContent());
+	}}}
+	
+设置代理及代理回落
+------------------------------------------------------------------------
+
+	设置http代理
+	
+	{{{
+	Http.setHttpProxy("fuck_fbx.com", 8080);
+	}}}
+	
+	代理回落, 即代理服务器不可连接时,尝试直连
+	
+	{{{
+	Http.setAutoSwitch(true);
+	}}}
+
+------------------------------------------------------------------------
+关于自签名的Https证书
+
+	关闭jvm的证书检查(全局的)
+	
+	{{{
+		Http.disableJvmHttpsCheck();
+		String url = "https://kyfw.12306.cn/otn/leftTicket/queryT?leftTicketDTO.train_date=2015-01-12&leftTicketDTO.from_station=UXP&leftTicketDTO.to_station=SJP&purpose_codes=ADULT";
+        Http.get(url);
+	}}}

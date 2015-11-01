@@ -1,9 +1,14 @@
 package org.nutz.dao.impl;
 
 import java.io.PrintWriter;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 
 import javax.sql.DataSource;
@@ -23,10 +28,12 @@ public class SimpleDataSource implements DataSource {
 
 	private static final Log log = Logs.get();
 	
-    private String username;
-    private String password;
+	protected String username;
+    protected String password;
     protected String driverClassName;
-    private String jdbcUrl;
+    protected String jdbcUrl;
+    
+    protected AtomicLong active = new AtomicLong();
     
     public SimpleDataSource() {
 		log.warn("SimpleDataSource is use for Test/Attempt, NOT Using in Production environment!");
@@ -39,13 +46,21 @@ public class SimpleDataSource implements DataSource {
             conn = DriverManager.getConnection(jdbcUrl, username, password);
         else
             conn = DriverManager.getConnection(jdbcUrl);
-        return conn;
+        active.incrementAndGet();
+        final Connection _conn = conn;
+        return (Connection) Proxy.newProxyInstance(conn.getClass().getClassLoader(), new Class[]{Connection.class}, new InvocationHandler() {
+            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+                if (method.getName().equals("close") && method.getParameterTypes().length == 0)
+                    active.decrementAndGet();
+                return method.invoke(_conn, args);
+            }
+        });
     }
     
     public void close() {}
     
     public void setDriverClassName(String driverClassName) throws ClassNotFoundException {
-        Class.forName(driverClassName);
+        Lang.loadClass(driverClassName);
     }
     
     public void setUsername(String username) {
@@ -73,7 +88,7 @@ public class SimpleDataSource implements DataSource {
                             "org.sqlite.JDBC"};
         for (String driverClassName : drivers) {
             try {
-                Class.forName(driverClassName);
+                Lang.loadClass(driverClassName);
             } catch (Throwable e) {}
         }
     }
@@ -109,5 +124,17 @@ public class SimpleDataSource implements DataSource {
 
     public Logger getParentLogger()  {
         throw Lang.noImplement();
+    }
+
+    public static DataSource createDataSource(Properties props) {
+        SimpleDataSource sds = new SimpleDataSource();
+        sds.setJdbcUrl(props.getProperty("url", props.getProperty("jdbcUrl")));
+        sds.setPassword(props.getProperty("password"));
+        sds.setUsername(props.getProperty("username"));
+        return sds;
+    }
+    
+    public long getActiveCount() {
+        return active.get();
     }
 }

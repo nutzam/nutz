@@ -13,10 +13,13 @@ import java.lang.annotation.Target;
  * 当插入一个对象之前，通过一个 SQL 从数据库中获取值，并赋予该字段。
  * <p>
  * <b style=color:red>注意：</b> 你的字段只能允许是字符型的，或者是整数型的。否则会报错。
- * 
+ * <p>
+ * 除此之外，还可以通过 EL 表达式来设置值。
+ *
  * @author zozoh(zozohtnt@gmail.com)
- * 
+ *
  * @see org.nutz.dao.entity.annotation.SQL
+ * @see org.nutz.dao.entity.annotation.EL
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})

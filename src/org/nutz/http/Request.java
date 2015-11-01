@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class Request {
@@ -24,6 +25,14 @@ public class Request {
 
     public static Request get(String url, Header header) {
         return Request.create(url, METHOD.GET, new HashMap<String, Object>(), header);
+    }
+
+    public static Request post(String url) {
+        return create(url, METHOD.POST, new HashMap<String, Object>());
+    }
+
+    public static Request post(String url, Header header) {
+        return Request.create(url, METHOD.POST, new HashMap<String, Object>(), header);
     }
 
     public static Request create(String url, METHOD method) {
@@ -59,6 +68,8 @@ public class Request {
     private Map<String, Object> params;
     private byte[] data;
     private URL cacheUrl;
+    private InputStream inputStream;
+    private String enc;
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -85,21 +96,37 @@ public class Request {
 
     public String getURLEncodedParams() {
         StringBuilder sb = new StringBuilder();
-        for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-            String key = it.next();
-            sb.append(Http.encode(key)).append('=').append(Http.encode(params.get(key)));
-            if (it.hasNext())
-                sb.append('&');
+        if (params != null) {
+            for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
+                String key = it.next();
+                sb.append(Http.encode(key, this.enc)).append('=').append(Http.encode(params.get(key)));
+                if (it.hasNext())
+                    sb.append('&');
+            }
         }
         return sb.toString();
     }
 
     public InputStream getInputStream() {
-        // TODO 需要根据请求来进行编码，这里首先先固定用 UTF-8 好了
-        if (null == data) {
-            return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+        if (inputStream != null) {
+            return inputStream;
+        } else {
+            if (null == data) {
+                if (enc != null)
+                    try {
+                        return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
+                    }
+                    catch (UnsupportedEncodingException e) {
+                        throw Lang.wrapThrow(e);
+                    }
+                return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+            }
+            return new ByteArrayInputStream(data);
         }
-        return new ByteArrayInputStream(data);
+    }
+
+    public void setInputStream(InputStream inputStream) {
+        this.inputStream = inputStream;
     }
 
     public byte[] getData() {
@@ -126,7 +153,7 @@ public class Request {
 
     public Request setUrl(String url) {
         if (url != null && url.indexOf("://") < 0)
-            //默认采用http协议
+            // 默认采用http协议
             this.url = "http://" + url;
         else
             this.url = url;
@@ -143,6 +170,14 @@ public class Request {
 
     public boolean isPost() {
         return METHOD.POST == method;
+    }
+    
+    public boolean isDelete() {
+    	return METHOD.DELETE == method;
+    }
+    
+    public boolean isPut() {
+    	return METHOD.PUT == method;
     }
 
     public Request setMethod(METHOD method) {
@@ -169,5 +204,13 @@ public class Request {
         if (null == s)
             return new Cookie();
         return new Cookie(s);
+    }
+
+    /**
+     * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
+     */
+    public Request setEnc(String reqEnc) {
+        this.enc = reqEnc;
+        return this;
     }
 }

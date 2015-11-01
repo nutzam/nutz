@@ -5,15 +5,24 @@ import java.sql.Timestamp;
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.*;
 import org.nutz.lang.Strings;
+import org.nutz.lang.random.R;
+import org.nutz.lang.random.StringGenerator;
 
 @Table("t_pet")
-@TableIndexes({@Index(name="t_pet_name_masterId",fields={"name","masterId"}, unique=true),
-               @Index(name="t_pet_name_age",fields={"name","age"}, unique=false)})
+@TableIndexes({@Index(name = "t_pet_name_masterId", unique = true,
+                       fields = {"name", "masterId"}),
+               @Index(name = "t_pet_name_age", fields = {"name", "age"},
+                       unique = false)})
 public class Pet {
+
+    private static StringGenerator sg = R.sg(5, 10);
 
     public static Pet create(String name) {
         Pet pet = new Pet();
         pet.setName(name);
+        pet.setAge(R.random(3, 10));
+        pet.setNickName(sg.next());
+        pet.setBirthday(new Timestamp(System.currentTimeMillis()));
         return pet;
     }
 
@@ -42,6 +51,17 @@ public class Pet {
 
     @Column
     private Timestamp birthday;
+
+    @Column
+    private float price;
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
     public int getId() {
         return id;
@@ -97,5 +117,11 @@ public class Pet {
 
     public String toString() {
         return name;
+    }
+    
+    public Pet() {}
+    
+    public Pet(String name) {
+        this.name = name;
     }
 }

@@ -15,6 +15,7 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,23 +23,62 @@ import java.util.Map;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.nutz.castor.Castors;
 import org.nutz.dao.test.meta.Base;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.json.meta.JA;
 import org.nutz.json.meta.JB;
 import org.nutz.json.meta.JC;
 import org.nutz.json.meta.JENObj;
 import org.nutz.json.meta.JMapItem;
+import org.nutz.json.meta.JQ;
+import org.nutz.json.meta.JX;
+import org.nutz.json.meta.Msg;
+import org.nutz.json.meta.MyDate2StringCastor;
 import org.nutz.json.meta.OuterClass;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.stream.StringInputStream;
 import org.nutz.lang.stream.StringOutputStream;
+import org.nutz.lang.util.NutMap;
 import org.nutz.lang.util.NutType;
 
 @SuppressWarnings({"unchecked"})
 public class JsonTest {
+
+    @Test
+    public void test_eval_radix() {
+        assertEquals(0700, Json.fromJson(NutMap.class, "{x:0700}").getInt("x"));
+        assertEquals(24, Json.fromJson(NutMap.class, "{x:24}").getInt("x"));
+        assertEquals(0x15, Json.fromJson(NutMap.class, "{x:0x15}").getInt("x"));
+    }
+
+    @Test
+    public void test_region_as_String() {
+        String str = "{"
+                     + "n:8, "
+                     + "region:'(4,19]',"
+                     + "regionArray : ['(2,3)','[6,9)'],"
+                     + "regionList : ['(2,3)','(6,8]']"
+                     + "}";
+        JX jx = Json.fromJson(JX.class, str);
+
+        String str2 = Json.toJson(jx);
+        NutMap map = Json.fromJson(NutMap.class, str2);
+        assertEquals(jx.getRegion().toString(), map.get("region"));
+
+        String[] ss = map.getArray("regionArray", String.class);
+        assertEquals(2, ss.length);
+        assertEquals("(2,3)", ss[0]);
+        assertEquals("[6,9)", ss[1]);
+
+        List<String> list = map.getList("regionList", String.class);
+        assertEquals(2, list.size());
+        assertEquals("(2,3)", list.get(0));
+        assertEquals("(6,8]", list.get(1));
+    }
 
     @Test
     public void test_empty_obj_toJson() {
@@ -812,24 +852,75 @@ public class JsonTest {
     // System.out.println(Json.toJson(node));
     // System.out.println(node.getChildren().get(0).getClass());
     // }
-    
+
     @Test
     public void test_json3() {
         File f = Files.findFile("org/nutz/json/x.json");
         Map<String, Object> map = Json.fromJsonFile(Map.class, f);
         assertEquals(3, map.size());
-        System.out.println(map.keySet());
+        // System.out.println(map.keySet());
         assertTrue(map.containsKey("dao"));
-        
+
         String str = "{rs:{ok:true,},yes:true}";
         map = Json.fromJson(Map.class, str);
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
-        
+
         str = "{rs:[1,2,3,],yes:true}";
         map = Json.fromJson(Map.class, str);
         assertEquals(2, map.size());
         assertEquals(map.get("yes"), true);
-        assertEquals(3, ((List<Integer>)map.get("rs")).get(2).intValue());
+        assertEquals(3, ((List<Integer>) map.get("rs")).get(2).intValue());
+    }
+
+    @Test
+    public void test_ignore_numbers() {
+        assertEquals("{age:100}",
+                     Json.toJson(new JQ(100, -255, -1), JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{temp:15.0}",
+                     Json.toJson(new JQ(150, 15.0, -1), JsonFormat.compact().setQuoteName(false)));
+        assertEquals("{hz:100.5}", Json.toJson(new JQ(150, -255, 100.5f),
+                                               JsonFormat.compact().setQuoteName(false)));
+    }
+
+    @Test
+    public void test_unicode() {
+        Map<String, String> map = new HashMap<String, String>();
+        map.put("中文", "地球");
+        map.put("\t", "\t");
+        String str = Json.toJson(map, JsonFormat.full().setAutoUnicode(true));
+        System.out.println(str);
+        Object obj = Json.fromJson(str);
+        System.out.println(obj);
+    }
+
+    @Test
+    public void test_json_date() {
+        Castors cs = Castors.create();
+        cs.addCastor(MyDate2StringCastor.class);
+        NutMap map = new NutMap();
+        map.put("now", new Date());
+        System.out.println(Json.toJson(map, JsonFormat.compact()));
+        System.out.println(Json.toJson(map, JsonFormat.compact().setCastors(cs)));
+    }
+
+    @Test
+    public void test_json_date2() {
+        NutMap map = new NutMap();
+        map.put("now", new Date());
+        System.out.println(Json.toJson(map, JsonFormat.compact()));
+        System.out.println(Json.toJson(map, JsonFormat.compact().setDateFormat("yyyy-MM-dd")));
+        String str = "[{dongdong:{age:80}}]";
+        System.out.println(Json.fromJson(str));
+        List<Map<String, Pet>> list = (List<Map<String, Pet>>)Json.fromJson(NutType.list(NutType.map(String.class, Pet.class)), str/*其他源也可以*/);
+        System.out.println(list);
+        assertEquals(80, list.get(0).get("dongdong").getAge());
+    }
+    
+    @Test
+    public void test_self_toString_toJson() {
+        Msg msg = new Msg("200", "ok");
+        System.out.println(Json.toJson(msg));
+        System.out.println(msg);
     }
 }

@@ -114,7 +114,7 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(defaultTypeExtractor);
     }
 
     /**
@@ -143,8 +143,8 @@ public class Mirror<T> {
      */
     public static <T> Mirror<T> me(Class<T> classOfT, TypeExtractor typeExtractor) {
         return null == classOfT ? null
-                               : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
-                                                                                               : typeExtractor);
+                                : new Mirror<T>(classOfT).setTypeExtractor(typeExtractor == null ? defaultTypeExtractor
+                                                                                                 : typeExtractor);
     }
 
     /**
@@ -194,24 +194,60 @@ public class Mirror<T> {
      *             没有找到 Getter
      */
     public Method getGetter(String fieldName) throws NoSuchMethodException {
-        String fn = Strings.capitalize(fieldName);
+        return getGetter(fieldName, null);
+    }
+
+    /**
+     * 根据名称和返回值获取一个 Getter。
+     * <p>
+     * 比如，你想获取 abc 的 getter ，那么优先查找 getAbc()，如果没有则查找isAbc()，最后才是查找 abc()。
+     * 
+     * @param fieldName
+     *            字段名
+     * @param returnType
+     *            返回值
+     * @return 方法
+     * @throws NoSuchMethodException
+     *             没有找到 Getter
+     */
+    public Method getGetter(String fieldName, Class<?> returnType) throws NoSuchMethodException {
+        String fn = Strings.upperFirst(fieldName);
         String _get = "get" + fn;
         String _is = "is" + fn;
+        Method _m = null;
         for (Method method : klass.getMethods()) {
             if (method.getParameterTypes().length != 0)
                 continue;
+
+            Class<?> mrt = method.getReturnType();
+
+            // 必须有返回类型
+            if (null == mrt)
+                continue;
+
+            // 如果给了返回类型，用它判断一下
+            if (null != returnType && !returnType.equals(mrt))
+                continue;
+
             if (!method.isAccessible()) // 有些时候,即使是public的方法,也不一定能访问
                 method.setAccessible(true);
+
             if (_get.equals(method.getName()))
                 return method;
+
             if (_is.equals(method.getName())) {
-                if (!Mirror.me(method.getReturnType()).isBoolean())
+                if (!Mirror.me(mrt).isBoolean())
                     throw new NoSuchMethodException();
                 return method;
             }
-            if (fieldName.equals(method.getName()))
-                return method;
+
+            if (fieldName.equals(method.getName())) {
+                _m = method;
+                continue;
+            }
         }
+        if (_m != null)
+            return _m;
         throw Lang.makeThrow(NoSuchMethodException.class,
                              "Fail to find getter for [%s]->[%s]",
                              klass.getName(),
@@ -229,7 +265,7 @@ public class Mirror<T> {
      *             没有找到 Getter
      */
     public Method getGetter(Field field) throws NoSuchMethodException {
-        return getGetter(field.getName());
+        return getGetter(field.getName(), field.getType());
     }
 
     /**
@@ -269,7 +305,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.capitalize(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -283,7 +320,8 @@ public class Mirror<T> {
             getter = method;
             // 寻找 setter
             try {
-                setter = method.getDeclaringClass().getMethod("set" + Strings.capitalize(name),
+                setter = method.getDeclaringClass().getMethod("set"
+                                                              + Strings.upperFirst(name),
                                                               method.getReturnType());
             }
             catch (Exception e) {}
@@ -294,7 +332,7 @@ public class Mirror<T> {
             setter = method;
             // 寻找 getter
             try {
-                getter = method.getDeclaringClass().getMethod("get" + Strings.capitalize(name));
+                getter = method.getDeclaringClass().getMethod("get" + Strings.upperFirst(name));
             }
             catch (Exception e) {}
 
@@ -326,8 +364,9 @@ public class Mirror<T> {
                                         Callback3<String, Method, Method> callback) {
         evalGetterSetter(method, callback, new Callback<Method>() {
             public void invoke(Method method) {
-                throw Lang.makeThrow(errmsgFormat, method.getName(), method.getDeclaringClass()
-                                                                           .getName());
+                throw Lang.makeThrow(errmsgFormat,
+                                     method.getName(),
+                                     method.getDeclaringClass().getName());
             }
         });
     }
@@ -360,7 +399,7 @@ public class Mirror<T> {
      */
     public Method getSetter(String fieldName, Class<?> paramType) throws NoSuchMethodException {
         try {
-            String setterName = "set" + Strings.capitalize(fieldName);
+            String setterName = "set" + Strings.upperFirst(fieldName);
             try {
                 return klass.getMethod(setterName, paramType);
             }
@@ -405,7 +444,7 @@ public class Mirror<T> {
      * @return 函数数组
      */
     public Method[] findSetters(String fieldName) {
-        String mName = "set" + Strings.capitalize(fieldName);
+        String mName = "set" + Strings.upperFirst(fieldName);
         List<Method> ms = new ArrayList<Method>();
         for (Method m : this.klass.getMethods()) {
             if (!Modifier.isStatic(m.getModifiers())
@@ -495,7 +534,10 @@ public class Mirror<T> {
         return _getFields(false, true, noFinal, true);
     }
 
-    private Field[] _getFields(boolean noStatic, boolean noMember, boolean noFinal, boolean noInner) {
+    private Field[] _getFields(boolean noStatic,
+                               boolean noMember,
+                               boolean noFinal,
+                               boolean noInner) {
         Class<?> cc = klass;
         Map<String, Field> map = new LinkedHashMap<String, Field>();
         while (null != cc && cc != Object.class) {
@@ -693,7 +735,8 @@ public class Mirror<T> {
      *            值
      * @throws FailToSetValueException
      */
-    public void setValue(Object obj, String fieldName, Object value) throws FailToSetValueException {
+    public void setValue(Object obj, String fieldName, Object value)
+            throws FailToSetValueException {
         if (null == value) {
             try {
                 setValue(obj, this.getField(fieldName), null);
@@ -719,7 +762,8 @@ public class Mirror<T> {
     private static RuntimeException makeGetValueException(Class<?> type, String name, Throwable e) {
         return new FailToGetValueException(String.format("Fail to get value for [%s]->[%s]",
                                                          type.getName(),
-                                                         name), e);
+                                                         name),
+                                           e);
     }
 
     /**
@@ -763,7 +807,10 @@ public class Mirror<T> {
                 return getValue(obj, getField(name));
             }
             catch (NoSuchFieldException e1) {
-                throw makeGetValueException(obj.getClass(), name, e);
+                if (obj != null && obj.getClass().isArray() && "length".equals(name)) {
+                    return Lang.length(obj);
+                }
+                throw makeGetValueException(obj == null ? getType() : obj.getClass(), name, e);
             }
         }
     }
@@ -794,6 +841,7 @@ public class Mirror<T> {
             else {
                 _type_id = klass.getName();
             }
+            _type_id += "_" + klass.getClassLoader();
         }
         return _type_id;
     }
@@ -927,7 +975,8 @@ public class Mirror<T> {
         return bc.doBorn();
     }
 
-    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes, Class<?>[] methodArgTypes) {
+    private static boolean doMatchMethodParamsType(Class<?>[] paramTypes,
+                                                   Class<?>[] methodArgTypes) {
         if (paramTypes.length == 0 && methodArgTypes.length == 0)
             return true;
         if (paramTypes.length == methodArgTypes.length) {
@@ -993,18 +1042,26 @@ public class Mirror<T> {
      * @return 输出方式
      */
     public Ejecting getEjecting(String fieldName) {
+        return getEjecting(fieldName, null);
+    }
+
+    public Ejecting getEjecting(Field field) {
         try {
-            return new EjectByGetter(getGetter(fieldName));
+            return new EjectByGetter(getGetter(field));
+        }
+        catch (NoSuchMethodException e1) {
+            return new EjectByField(field);
+        }
+    }
+
+    public Ejecting getEjecting(String fieldName, Class<?> returnType) {
+        try {
+            return new EjectByGetter(getGetter(fieldName, returnType));
         }
         catch (NoSuchMethodException e) {
             try {
                 Field field = this.getField(fieldName);
-                try {
-                    return new EjectByGetter(getGetter(field));
-                }
-                catch (NoSuchMethodException e1) {
-                    return new EjectByField(field);
-                }
+                return getEjecting(field);
             }
             catch (NoSuchFieldException e1) {
                 throw Lang.wrapThrow(e1);
@@ -1026,6 +1083,24 @@ public class Mirror<T> {
      */
     public Object invoke(Object obj, String methodName, Object... args) {
         return getInvoking(methodName, args).invoke(obj);
+    }
+
+    /**
+     * 根据一组参数样例，获取一个合理的调用方法
+     * 
+     * @param name
+     *            方法名
+     * @param args
+     *            参数样例
+     * @return
+     */
+    public Method findMethod(String name, Object[] args) throws NoSuchMethodException {
+        if (null == args || args.length == 0)
+            return findMethod(name);
+        Class<?>[] paramTypes = new Class<?>[args.length];
+        for (int i = 0; i < args.length; i++)
+            paramTypes[i] = args[i].getClass();
+        return findMethod(name, paramTypes);
     }
 
     /**
@@ -1265,7 +1340,12 @@ public class Mirror<T> {
      * @return 当前对象是否简单的数值，比如字符串，布尔，字符，数字，日期时间等
      */
     public boolean isSimple() {
-        return isStringLike() || isBoolean() || isChar() || isNumber() || isDateTimeLike();
+        return isStringLike()
+               || isBoolean()
+               || isChar()
+               || isNumber()
+               || isDateTimeLike()
+               || isEnum();
     }
 
     /**
@@ -1472,9 +1552,7 @@ public class Mirror<T> {
      */
     public boolean isNumber() {
         return Number.class.isAssignableFrom(klass)
-               || klass.isPrimitive()
-               && !is(boolean.class)
-               && !is(char.class);
+               || klass.isPrimitive() && !is(boolean.class) && !is(char.class);
     }
 
     /**
@@ -1699,6 +1777,7 @@ public class Mirror<T> {
     }
 
     private static final Map<Class<?>, Class<?>> TypeMapping2 = new HashMap<Class<?>, Class<?>>();
+
     static {
 
         TypeMapping2.put(Short.class, short.class);
@@ -1709,5 +1788,22 @@ public class Mirror<T> {
         TypeMapping2.put(Byte.class, byte.class);
         TypeMapping2.put(Character.class, char.class);
         TypeMapping2.put(Boolean.class, boolean.class);
+    }
+
+    /**
+     * 
+     * 
+     * @param clzInterface
+     *            接口clz
+     * @return 判断是否实现某个接口
+     */
+    public boolean hasInterface(Class<?> clzInterface) {
+        Class<?>[] interfaces = klass.getInterfaces();
+        for (int i = 0; i < interfaces.length; i++) {
+            if (clzInterface.equals(interfaces[i])) {
+                return true;
+            }
+        }
+        return false;
     }
 }

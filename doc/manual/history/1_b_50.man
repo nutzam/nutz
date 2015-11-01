@@ -1,0 +1,138 @@
+#title: 1.b.50 发行注记
+#index:0,1
+#author:zozoh(zozohtnt@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.b.50 发行注记
+
+    大约半年多前，Nutz 发布了 `1.b.49`，随着时间的推移，不断有小伙伴提出 Issue，看起来又攒了 20 多个，
+    那么我们就再发一版吧。
+
+    新版的发布正好春意更浓，很多同学都说 Nutz 原来的主页过于简陋，我们做了[http://nutzam.com 改版]。
+    这半年，我们重写了文档生成器 *zDoc*， 再补充点文档就要和大家见面了。它支持 `markdown` 语法哦。
+
+    另外，[http://code.google.com/p/nutz/downloads/list Nutz的下载列表] 因为 google 服务的原因
+    近期将迁移到别的地方，[http://wendal.net 无敌的wendal] 将会负责这个事情。等我们办妥了，会在官网
+    和新闻里通知大家 ^_^
+
+    下一个版本将于 9月左右发布，也和本版一样属于安心升级版。
+
+    最后祝小伙伴们在这个春意愈发浓烈的日子享受每一天，多做运动（你懂的），身体健康，万事如意哈。
+
+    ------------------------------ Nutz 的下载地址的分隔线 -------------------------
+
+     * 稳定版下载地址 : [http://code.google.com/p/nutz/downloads/list]
+     * Nutz 的主页 :  [http://nutzam.com]
+     * Github 地址 :  [https://github.com/nutzam/nutz]
+
+--------------------------------------------------------------------------------------------------------
+问题修复
+
+    * [https://github.com/nutzam/nutz/issues/610 Issue 610] 为什么是Mvcs.getHttpSession(false); 是false呢? {#888;by} {*zhuer0632}
+    * [https://github.com/nutzam/nutz/issues/609 Issue 609] 给 Request 类添加 `post` 方法 {#888;by} {*ywjno}
+    * [https://github.com/nutzam/nutz/issues/599 Issue 599] 使用mariadb驱动jar连接mariadb 数据库分页显示数据不全 {#888;by} {*lyayzh}
+    * [https://github.com/nutzam/nutz/issues/597 Issue 597] Json 数字字段支持忽略特殊值 {#888;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/596 Issue 596] insert 的时候 Special 无效 {#888;by} {*hiscaler}
+    * [https://github.com/nutzam/nutz/issues/594 Issue 594] Dao数字字段对应MySQL中的字段 {#888;by} {*enzozhong}
+    * [https://github.com/nutzam/nutz/issues/593 Issue 593] 看文档时发现几个错别字，有人可以改下吗？ {#888;by} {*xiajs}
+    * [https://github.com/nutzam/nutz/issues/589 Issue 589] 修改setSetting测试不通过 {#888;by} {*belialofking}
+    * [https://github.com/nutzam/nutz/issues/587 Issue 587] Castors类中setSetting与addCastor冲突 {#888;by} {*belialofking}
+    * [https://github.com/nutzam/nutz/issues/584 Issue 584] Lang类中，ArrayUniq方法不起作用 {#888;by} {*tomasWade}
+    * [https://github.com/nutzam/nutz/issues/570 Issue 570] Domino JavaAgent 中调用Json.toJson(obj) 报错 {#888;by} {*hanang128}
+    * [https://github.com/nutzam/nutz/issues/567 Issue 567] 50版本不能自动创建缓存文件池目录 {#888;by} {*Wizzercn}
+    * [https://github.com/nutzam/nutz/issues/559 Issue 559] 关于Http中旧方法删除的问题 {#888;by} {*Rekoe}
+    * [https://github.com/nutzam/nutz/issues/557 Issue 557] 字段过滤:还是会有null字段更新 {#888;by} {*Rekoe}
+    * [https://github.com/nutzam/nutz/issues/551 Issue 551] 建议修改首字母大写方法名 {#888;by} {*liuzongtao}
+    * [https://github.com/nutzam/nutz/issues/549 Issue 549] 表达式引擎 问题 {#888;by} {*771724316}
+    * [https://github.com/nutzam/nutz/issues/546 Issue 546] 多对多 {#888;by} {*lzf715}
+    * [https://github.com/nutzam/nutz/issues/544 Issue 544] LazyNutDao 在Json序列化的时候无法正常序列化二级以上关联对象 {#888;by} {*Nesson}
+    * [https://github.com/nutzam/nutz/issues/543 Issue 543] MVC默认适配器Date类型支持 {#888;by} {*bcw104}
+    * [https://github.com/nutzam/nutz/issues/533 Issue 533] ViewProcessor.evalView的警告提示不正确 {#888;by} {*fjay}
+    * [https://github.com/nutzam/nutz/issues/528 Issue 528] 事务回滚失败 {#888;by} {*for5million}
+    * [https://github.com/nutzam/nutz/issues/524 Issue 524] 升级49版本后，日期转换出错 {#888;by} {*fjay}
+    * [https://github.com/nutzam/nutz/issues/520 Issue 520] makeSpecial 或 addSpecial 更新字段值只能+1或-1 {#888;by} {*wqmain}
+    * [https://github.com/nutzam/nutz/issues/517 Issue 517] Trans内调用DAO会导致死锁 {#888;by} {*ericktang}
+    * [https://github.com/nutzam/nutz/issues/514 Issue 514] 在bae中使用nutz mvc出现以下问题 {#888;by} {*kk17}
+    * [https://github.com/nutzam/nutz/issues/469 Issue 469] Json 如何忽略数字字段 {#888;by} {*zozoh}
+    * [https://github.com/nutzam/nutz/issues/464 Issue 464] 设置 @ColDefine(update=false) 建表字段类型和长度为varchar(0)的问题 {#888;by} {*superhanliu}
+    * [https://github.com/nutzam/nutz/issues/452 Issue 452] group by和having能否支持？ {#888;by} {*zhuer0632}
+    * [https://github.com/nutzam/nutz/issues/407 Issue 407] Cnd工具类是否能够增加对group by用法的支持 {#888;by} {*windsummer}
+
+
+--------------------------------------------------------------------------------------------------------
+质量
+	共通过了 {#FF00FF;*870+}  个单元测试用例,代码覆盖率达到 {#FF00FF;50+%}(按行计算)
+
+    <../emma.png>
+	 
+	Nutz.Dao 经测试在如下数据库上可以工作正常
+	 * [http://www.h2database.com H2]
+	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
+	 * [http://hsqldb.org hsqldb]
+	 * [http://www.mysql.com MySql]
+	 * [http://www.oracle.com Oracle]
+	 * [http://www.postgresql.org Postgresql]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
+	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
+	 * [http://www.ibm.com/software/data/db2/ DB2]
+	 * [http://db.apache.org/derby/ Derby]
+	 * [http://www.gbase.cn/ GBASE] -- 实验性
+
+--------------------------------------------------------------------------------------------------------
+文档
+
+    * [http://nutzam.com/core/dao/links_many_many.html 多对多映射] - 更多的补充说明
+   
+--------------------------------------------------------------------------------------------------------
+主要贡献者名单
+
+	贡献的种类:
+	 * 问题: 给项目的[https://github.com/nutzam/nutz/issues 问题列表]汇报一个上的问题，并且该问题被本次发布包括
+	 * 支持: 被我们看见回答网友提问者（当然，这个统计很不准）
+	 * 代码: 提交过至少一个修订
+	 * 文档: 提交过文档，在讨论区发帖或者通过文档上的留言指出现有文档存在的问题
+	 
+	 如有遗漏,请提醒我们 ^_^
+	 
+	{#CCC;/贡献列表，我已经写了一个小程序，根据 Issue 列表来自动统计...}   
+
+     || 贡献者          || 问题 || 支持 || 代码 || 文档 ||
+     || 771724316       ||  O   ||  -   ||  -   ||  -   ||
+     || Jay 蓝色幽默    ||  O   ||  -   ||  -   ||  -   ||
+     || Nesson          ||  O   ||  -   ||  -   ||  -   ||
+     || Rekoe           ||  O   ||  -   ||  -   ||  -   ||
+     || Wizzercn        ||  O   ||  -   ||  -   ||  -   ||
+     || bcw104          ||  O   ||  -   ||  -   ||  -   ||
+     || belialofking    ||  O   ||  -   ||  -   ||  -   ||
+     || ericktang       ||  O   ||  -   ||  -   ||  -   ||
+     || for5million     ||  O   ||  -   ||  -   ||  -   ||
+     || hanang128       ||  O   ||  -   ||  -   ||  -   ||
+     || hiscaler        ||  O   ||  -   ||  -   ||  -   ||
+     || kk17            ||  O   ||  -   ||  -   ||  -   ||
+     || liuzongtao      ||  O   ||  -   ||  -   ||  -   ||
+     || lyayzh          ||  O   ||  -   ||  -   ||  -   ||
+     || lzf715          ||  O   ||  -   ||  -   ||  -   ||
+     || superhanliu     ||  O   ||  -   ||  -   ||  -   ||
+     || tomasWade       ||  O   ||  -   ||  -   ||  -   ||
+     || wendal          ||  O   ||  O   ||  O   ||  -   ||
+     || windsummer      ||  O   ||  -   ||  -   ||  -   ||
+     || wqmain          ||  O   ||  -   ||  -   ||  -   ||
+     || xiajs           ||  O   ||  -   ||  -   ||  -   ||
+     || zhuer0632       ||  O   ||  -   ||  -   ||  -   ||
+     || zozoh           ||  O   ||  O   ||  O   ||  O   ||
+     || 冬天的温泉      ||  O   ||  O   ||  O   ||  -   ||
+     || 罗马钟          ||  O   ||  -   ||  -   ||  -   ||
+     || 科技            ||  -   ||  O   ||  -   ||  -   ||
+
+
+	另外，很多朋友都在：
+	 * [https://groups.google.bg/group/nutzam?hl=zh-CN Nutzam 讨论区]
+	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
+     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群]
+	 * GTalk 聊天群 {#AAAAAA;/添加帐号 nutzam@chatterous.com 为好友，然后发送 @join 指令}
+     * [http://www.douban.com/group/339199/ Nutz的豆瓣小组]
+     * [http://www.chatterous.com/nutzam/ Nutz的聊天室]
+	回答新手的问题，我们现在只能根据印象草草统计，贡献列表非常不完善。
+	我们正在想办法，争取在不远的将来，能记录下来大家每一点一滴的付出 ^_^!
+	
+	欢迎访问[http://nutzam.com 官网],以获取更多信息
+

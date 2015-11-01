@@ -75,23 +75,32 @@ namespace '/nutztest' do
     end
   end
 
+  namespace "/aop" do
+    get("/test1") do
+    end
+
+    get("/test1/result") do
+      "0"
+    end
+  end
+
   # AllView.java
   namespace '/views' do
     %w{for for2 for3}.each do |item|
       get "/#{item}" do
-          context_path
+        context_path
       end
     end
 
     %w{jsp jsp2 jsp3 jsp4}.each do |item|
       get "/#{item}" do
-          "null"
+        "null"
       end
     end
 
     %w{raw raw2 raw3}.each do |item|
       get "/#{item}" do
-          "ABC"
+        "ABC"
       end
     end
 
@@ -104,14 +113,38 @@ namespace '/nutztest' do
 
     %w{red red2 red3}.each do |item|
       get "/#{item}" do
-          context_path
+        context_path
       end
+    end
+
+    get "/resp/to/:type" do
+      case params["type"]
+      when "1"
+        "hi"
+      when "2"
+        json :name => "wendal"
+      else
+        context_path
+      end
+    end
+
+    get "/resp2" do
+      "hi"
     end
   end
 
   # SimpleAdaptorTest.java
   namespace '/adaptor' do
-    get %r{/err/param(/[\w]+)?} do
+    get '/github/issue/543' do
+      (Time.parse(params[:d]).getlocal("+08:00").to_time.to_i*1000).to_s
+    end
+
+    get '/err/param' do
+      pass unless request.env['rack.request.query_hash']
+      context_path
+    end
+
+    get %r{/err/param/*} do
       context_path
     end
 
@@ -127,6 +160,13 @@ namespace '/nutztest' do
       "I am abc"
     end
 
+    get "/default_value" do
+      params[:abc] || "123456"
+    end
+
+    post "/err_ctx" do
+      request.body.string.empty? ? "true" : (request.body.string == "{}").to_s
+    end
   end
 
   # UploadTest.java

@@ -1,6 +1,7 @@
 package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,13 +19,13 @@ import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.impl.DefaultMirrorFactory;
 import org.nutz.ioc.loader.annotation.IocBean;
-import org.nutz.ioc.loader.cached.CachedIocLoader;
-import org.nutz.ioc.loader.cached.CachedIocLoaderImpl;
+import org.nutz.ioc.loader.combo.ComboIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
+import org.nutz.repo.LevenshteinDistance;
 
 /**
  * 
@@ -32,7 +33,7 @@ import org.nutz.log.Logs;
  * @author wendal(wendal1985@gmail.com)
  */
 public class NutIoc implements Ioc2 {
-    
+
     private static final Object lock_get = new Object();
 
     private static final Log log = Logs.get();
@@ -42,7 +43,7 @@ public class NutIoc implements Ioc2 {
     /**
      * 读取配置文件的 Loader
      */
-    private IocLoader loader;
+    private ComboIocLoader loader;
     /**
      * 缓存对象上下文环境
      */
@@ -84,18 +85,19 @@ public class NutIoc implements Ioc2 {
         this(maker, loader, context, defaultScope, null);
     }
 
-    protected NutIoc(    ObjectMaker maker,
-                        IocLoader loader,
-                        IocContext context,
-                        String defaultScope,
-                        MirrorFactory mirrors) {
+    protected NutIoc(ObjectMaker maker,
+                     IocLoader loader,
+                     IocContext context,
+                     String defaultScope,
+                     MirrorFactory mirrors) {
+        log.info("NutIoc init begin ...");
         this.maker = maker;
         this.defaultScope = defaultScope;
         this.context = context;
-        if (loader instanceof CachedIocLoader)
-            this.loader = loader;
+        if (loader instanceof ComboIocLoader)
+            this.loader = (ComboIocLoader) loader;
         else
-            this.loader = CachedIocLoaderImpl.create(loader);
+            this.loader = new ComboIocLoader(loader);
         vpms = new ArrayList<ValueProxyMaker>(5); // 预留五个位置，足够了吧
         addValueProxyMaker(new DefaultValueProxyMaker());
 
@@ -104,6 +106,7 @@ public class NutIoc implements Ioc2 {
             this.mirrors = new DefaultMirrorFactory(this);
         else
             this.mirrors = mirrors;
+        log.info("... NutIoc init complete");
     }
 
     /**
@@ -133,15 +136,13 @@ public class NutIoc implements Ioc2 {
             return get(type, inm.value());
         IocBean iocBean = type.getAnnotation(IocBean.class);
         if (iocBean != null && (!Strings.isBlank(iocBean.name())))
-        	return get(type, iocBean.name());
+            return get(type, iocBean.name());
         return get(type, Strings.lowerFirst(type.getSimpleName()));
     }
 
     public <T> T get(Class<T> type, String name, IocContext context) throws IocException {
         if (log.isDebugEnabled())
-            log.debugf("Get '%s'<%s>", name, type);
-
-        
+            log.debugf("Get '%s'<%s>", name, type == null ? "" : type);
 
         // 创建对象创建时
         IocMaking ing = makeIocMaking(context, name);
@@ -165,8 +166,18 @@ public class NutIoc implements Ioc2 {
 
                         // 读取对象定义
                         IocObject iobj = loader.load(createLoading(), name);
-                        if (null == iobj)
+                        if (null == iobj) {
+                            for (String iocBeanName : loader.getName()) {
+                                // 相似性少于3 --> 大小写错误,1-2个字符调换顺序或写错
+                                if (3 > LevenshteinDistance.computeLevenshteinDistance(name.toLowerCase(),
+                                                                                       iocBeanName.toLowerCase())) {
+                                    throw new IocException("Undefined object '%s' but found similar name '%s'",
+                                                           name,
+                                                           iocBeanName);
+                                }
+                            }
                             throw new IocException("Undefined object '%s'", name);
+                        }
 
                         // 修正对象类型
                         if (null == iobj.getType())
@@ -181,7 +192,7 @@ public class NutIoc implements Ioc2 {
 
                         // 根据对象定义，创建对象，maker 会自动的缓存对象到 context 中
                         if (log.isDebugEnabled())
-                            log.debugf("\t >> Make...'%s'<%s>", name, type);
+                            log.debugf("\t >> Make...'%s'<%s>", name, type == null ? "" : type);
                         op = maker.make(ing, iobj);
                     }
                     // 处理异常
@@ -189,13 +200,20 @@ public class NutIoc implements Ioc2 {
                         throw e;
                     }
                     catch (Throwable e) {
-                        throw new IocException(Lang.unwrapThrow(e), "For object [%s] - type:[%s]", name, type);
+                        throw new IocException(Lang.unwrapThrow(e),
+                                               "For object [%s] - type:[%s]",
+                                               name,
+                                               type == null ? "" : type);
                     }
                 }
             }
         }
         synchronized (lock_get) {
-            return (T) op.get(type, ing);
+            T re = op.get(type, ing);
+            if (re instanceof IocLoader) {
+                loader.addLoader((IocLoader) re);
+            }
+            return re;
         }
     }
 
@@ -204,9 +222,9 @@ public class NutIoc implements Ioc2 {
     }
 
     public boolean has(String name) {
-        return loader.has(name);
+        return loader.has(name) || context.fetch(name) != null;
     }
-    
+
     private boolean deposed = false;
 
     public void depose() {
@@ -217,20 +235,19 @@ public class NutIoc implements Ioc2 {
         }
         context.depose();
         deposed = true;
-        if (loader instanceof CachedIocLoader)
-            ((CachedIocLoader) loader).clear();
         if (log.isDebugEnabled())
             log.debug("!!!Ioc is deposed, you can't use it anymore");
     }
 
     public void reset() {
         context.clear();
-        if (loader instanceof CachedIocLoader)
-            ((CachedIocLoader) loader).clear();
     }
 
     public String[] getNames() {
-        return loader.getName();
+        Set<String> list = new HashSet<String>();
+        list.addAll(Arrays.asList(loader.getName()));
+        list.addAll(context.names());
+        return list.toArray(new String[list.size()]);
     }
 
     public void addValueProxyMaker(ValueProxyMaker vpm) {
@@ -268,12 +285,12 @@ public class NutIoc implements Ioc2 {
         }
         return new IocMaking(this, mirrors, cntx, maker, vpms, name);
     }
-    
+
     @Override
     public String toString() {
         return "/*NutIoc*/\n{\nloader:" + loader + ",\n}";
     }
-    
+
     @Override
     protected void finalize() throws Throwable {
         if (!deposed) {
@@ -281,5 +298,6 @@ public class NutIoc implements Ioc2 {
                 log.info("Ioc depose tigger by finalize(), not a good idea!");
             depose();
         }
+        super.finalize();
     }
 }

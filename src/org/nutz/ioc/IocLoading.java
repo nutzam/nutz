@@ -1,11 +1,13 @@
 package org.nutz.ioc;
 
+import static org.nutz.ioc.Iocs.isIocObject;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.castor.FailToCastObjectException;
@@ -20,8 +22,6 @@ import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
-
-import static org.nutz.ioc.Iocs.*;
 
 public class IocLoading {
 
@@ -117,6 +117,11 @@ public class IocLoading {
             catch (Exception e) {
                 throw E(e, "Wrong args: '%s'", v);
             }
+            // factory方法
+            v = map.get("factory");
+            if (v != null && !Strings.isBlank(v.toString())) {
+            	iobj.setFactory(v.toString());
+			}
         }
         return iobj;
     }

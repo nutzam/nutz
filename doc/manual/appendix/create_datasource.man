@@ -32,6 +32,7 @@
 		* NutDao几乎不需要任何配置文件(只有一个nutz_jdbc_experts.js 绝大部分时间你不会遇到它!)
 		* 本文说到的js/xml文件,都是NutIoc的文件,不是NutDao的配置文件!!
 		* 不要重复创建DataSource,不要重复创建NutDao!!!!!!!
+		* 务必参考本小节末尾的提醒!!
 
 --------------------------------------------------------------------------------------
 内置的SimpleDataSource
@@ -53,7 +54,7 @@
 		
 		SimpleDataSource ds = new SimpleDataSource();
 		//ds.setDriverClassName("org.postgresql.Driver"); //默认加载了大部分数据库的驱动!!
-		ds.setjdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
+		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
 		ds.setPassword("123456");
 		...
@@ -106,7 +107,7 @@
 		
 	如何使用这些配置? 请看文章末尾.
 --------------------------------------------------------------------------------------
-Druid
+Druid(推荐)
 
 	国产精品连接池,淘宝温少诚意出品,带强大的监控功能哦
 	
@@ -136,7 +137,8 @@ Druid
                     driverClassName : "org.postgresql.Driver",
                     url : "jdbc:postgresql://localhost:5432/mydatabase",
                     username : "enzozhong",
-                    password : "123"
+                    password : "123",
+                    maxWait: 15000, // 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程
                 }
             }
 		}
@@ -260,7 +262,7 @@ Apache DBCP
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听]
 --------------------------------------------------------------------------------------
-C3P0
+C3P0(不推荐)
 	c3p0: 直接书写 Java 代码
 		{{{<Java>
 		import com.mchange.v2.c3p0.ComboPooledDataSource;
@@ -308,7 +310,7 @@ C3P0
 		}}}
 		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
 --------------------------------------------------------------------------------------
-Proxool
+Proxool(严重不推荐)
 	proxool: 直接书写 Java 代码
 		{{{<Java>
 		import org.logicalcobwebs.proxool.ProxoolDataSource;
@@ -349,54 +351,7 @@ Proxool
 		}}}
 		 * Proxool 没有提供关闭所有连接的函数，不过你可以参看它的官方文档，自己写一个释放所有连接的类，配置在 Ioc 容器的 depose 事件中
 		 * 关于 depose 事件，更多详情请参看 [../ioc/events.man 事件监听] - {*通过实现一个触发器}
---------------------------------------------------------------------------------------
-BoneCP
-	bonecp: 直接书写 Java 代码
-		{{{<Java>
-		import com.jolbox.bonecp.BoneCPDataSource;
-		
-		...
-		
-		BoneCPDataSource ds = new BoneCPDataSource();
-		ds.setDriver("org.postgresql.Driver");
-		ds.setJdbcUrl("jdbc:postgresql://localhost:5432/mydatabase");
-		ds.setUsername("demo");
-		ds.setPassword("123456");
-		...
-		
-		}}}
-	bonecp: 通过 Nutz.Ioc 的 JSON 配置文件
-		{{{<IOC-JSON 配置>
-		{
-			dataSource : {
-				type : "com.jolbox.bonecp.BoneCPDataSource",
-				events : {
-					depose : 'close'
-				},
-				fields : {
-					driverClass : 'org.postgresql.Driver',
-					jdbcUrl : 'jdbc:postgresql://localhost:5432/mydatabase',
-					username : 'demo',
-					password : '123456'
-				}
-			}
-		}
-		}}}
-	bonecp: 通过 Nutz.Ioc 的 XML 配置文件
-		{{{<IOC-XML 配置>
-			<ioc xsi:noNamespaceSchemaLocation="nutz-ioc-0.1.xsd">
-				<obj name="dataSource" type="com.jolbox.bonecp.BoneCPDataSource">
-					<events>
-						<depose>close</depose>
-					</events>
-					<field name="driverClass"><str>org.postgresql.Driver</str></field>
-					<field name="url"><str>jdbc:postgresql://localhost:5432/mydatabase</str></field>
-					<field name="username"><str>demo</str></field>
-					<field name="password"><str>123456</str></field>
-				</obj>
-			</ioc>
-		}}}
-		 * 注册了 depose 事件，当整个 Ioc 容器注销时，将 {*真正 }  关闭所有池内连接
+
 --------------------------------------------------------------------------------------
 容器提供的连接池(JNDI)
 
@@ -418,8 +373,8 @@ BoneCP
 
 	Java代码的方式:
 		{{{<java>
-		//创建dataSource,以DBCP为例
-		DataSource ds = new DataSource();
+		//创建dataSource,以DBCP为例, 代码仅供演示,实际使用的话必须单例
+		DataSource ds = new BasicDataSource();
 		ds.setDriverClassName("org.postgresql.Driver");
 		ds.setUrl("jdbc:postgresql://localhost:5432/mydatabase");
 		ds.setUsername("demo");
@@ -440,7 +395,7 @@ BoneCP
 	
 	通过 Nutz.Ioc 的 JSON 配置文件
 		{{{<js>
-		//将配置信息保存到dao.js,并存放于src文件夹下
+		//将配置信息保存到dao.js,并存放于src文件夹下. 代码仅供演示,实际使用的话必须单例
 		
 		Ioc ioc = new NutIoc(new JsonLoader("dao.js"));
 		DataSource ds = ioc.get(DataSource.class);
@@ -455,9 +410,9 @@ BoneCP
 	
 	通过 Nutz.Ioc 的 XML 配置文件
 		{{{
-		//将配置信息保存到dao.xml,并存放于src文件夹下
+		//将配置信息保存到dao.xml,并存放于src文件夹下. 代码仅供演示,实际使用的话必须单例
 		
-		Ioc ioc = new NutIoc(new XmlIocLoader("dao.js"));
+		Ioc ioc = new NutIoc(new XmlIocLoader("dao.xml"));
 		DataSource ds = ioc.get(DataSource.class);
 		Dao dao = new NutDao(ds); //如果已经定义了dao,那么改成dao = ioc.get(Dao.class);
 		
@@ -465,5 +420,45 @@ BoneCP
 		dao.insert(User.create("wendal","123456"));
 		
 		ioc.depose(); //关闭Ioc容器
+		}}}
+		
+--------------------------------------------------------------------------------------
+严重提醒
+
+	* 上面提及的Java代码均为演示(main方法中的简单示例),实际用的时候, 必须将ioc容器本身单例化(例如存放到一个static属性)
+	* 重复创建DataSource(例如反复创建ioc容器, new NutIoc(...))会导致数据库连接数耗尽!!
+	* ioc容器本身,应该尽可能作为单例, 不要创建一个ioc容器后,获取ioc对象,然后就抛弃, 例如:
+	
+	绝对错误的用法
+		{{{
+		public Dao getDao() { // 无论改方法被调用一次还是N次, 均为错误!!
+			Ioc ioc = new NutIoc(new JsonLoader("ioc/dao.js")); // 反复创建ioc容器
+			return ioc.get(Dao.class); //方法返回后, ioc必然被gc, 从而触发ioc的depose事件,导致DataSource关闭!
+		}
+		}}}
+		
+	比较正确的用法
+		{{{
+		private static Ioc ioc;
+		
+		public Dao getDao() { // 暂不考虑线程同步的问题
+			if (ioc == null)
+				ioc = new NutIoc(new JsonLoader("ioc/dao.js")); 
+			return ioc.get(Dao.class);
+		}
+		}}}
+		
+	Mvc中的正确用法,使用IocBy配置ioc,尽可能通过@Inject等方式获取ioc的bean.
+	在无法直接获取Ioc容器的代码中,使用下列代码
+		{{{
+		// 在request作用域内
+		public Dao getDao() {
+			Mvcs.getIoc().get(Dao.class);
+		}
+		
+		// 在request作用域之外
+		public Dao getDao() {
+			Mvcs.ctx().getDefaultIoc().get(Dao.class);
+		}
 		}}}
 		

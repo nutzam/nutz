@@ -15,8 +15,8 @@ import javax.servlet.Servlet;
 import junit.extensions.ActiveTestSuite;
 import junit.extensions.RepeatedTest;
 import junit.extensions.TestSetup;
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.nutz.lang.Files;
 import org.nutz.lang.Strings;
@@ -87,8 +87,8 @@ public class ScansTest {
         List<NutResource> list = Scans.me().scan(testPath, testFilter);
         //Collections.sort(list);
         assertEquals(2, list.size());
-        assertTrue(list.get(0).getName().endsWith("Assert.class") || list.get(0).getName().endsWith("Assert.class"));
-        assertTrue(list.get(1).getName().endsWith("Test.class") || list.get(1).getName().endsWith("Test.class"));
+        assertTrue(list.get(0).getName().endsWith("Assert.class") || list.get(1).getName().endsWith("Assert.class"));
+        assertTrue(list.get(0).getName().endsWith("Test.class") || list.get(1).getName().endsWith("Test.class"));
     }
 
     // @Ignore

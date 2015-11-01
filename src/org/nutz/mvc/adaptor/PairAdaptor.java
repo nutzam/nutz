@@ -1,9 +1,5 @@
 package org.nutz.mvc.adaptor;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import org.nutz.lang.Lang;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -14,6 +10,10 @@ import org.nutz.mvc.adaptor.injector.ObjectNavlPairInjector;
 import org.nutz.mvc.adaptor.injector.ObjectPairInjector;
 import org.nutz.mvc.annotation.Param;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 /**
  * 将整个 HTTP 请求作为名值对来处理
  * 
@@ -21,10 +21,11 @@ import org.nutz.mvc.annotation.Param;
  * @author juqkai(juqkai@gmail.com)
  */
 public class PairAdaptor extends AbstractAdaptor {
+
     private static final Log log = Logs.get();
 
     protected ParamInjector evalInjectorBy(Type type, Param param) {
-        // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递 
+        // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
         Class<?> clazz = Lang.getTypeClass(type);
         if (clazz == null) {
@@ -32,19 +33,24 @@ public class PairAdaptor extends AbstractAdaptor {
                 log.warnf("!!Fail to get Type Class : type=%s , param=%s", type, param);
             return null;
         }
-        
+
         Type[] paramTypes = null;
         if (type instanceof ParameterizedType)
             paramTypes = ((ParameterizedType) type).getActualTypeArguments();
 
-        
         if (null == param)
-            return null;//让超类来处理吧,我不管了!!
+            return null;// 让超类来处理吧,我不管了!!
+
+        String defaultValue = null;
+        if (param.df() != null && !ParamDefailtTag.equals(param.df()))
+            defaultValue = param.df();
         String pm = param.value();
+        String datefmt = param.dfmt();
         // POJO
         if ("..".equals(pm)) {
-            if (clazz.isAssignableFrom(Map.class))
-                return new MapPairInjector();
+            if (Map.class.isAssignableFrom(clazz)) {
+                return new MapPairInjector(type);
+            }
             return new ObjectPairInjector(null, type);
         }
         // POJO with prefix
@@ -52,11 +58,25 @@ public class PairAdaptor extends AbstractAdaptor {
             return new ObjectNavlPairInjector(pm.substring(2), type);
         }
         // POJO[]
-        else if (clazz.isArray())
-            return new ArrayInjector(pm, clazz, paramTypes);
+        else if (clazz.isArray()) {
+            return new ArrayInjector(pm,
+                                     null,
+                                     type,
+                                     paramTypes,
+                                     defaultValue,
+                                     param.array_auto_split());
+        }
 
         // Name-value
-        return new NameInjector(pm, clazz, paramTypes);
+        return getNameInjector(pm, datefmt, type, paramTypes, defaultValue);
     }
-    
+
+    protected ParamInjector getNameInjector(String pm,
+                                            String datefmt,
+                                            Type type,
+                                            Type[] paramTypes,
+                                            String defaultValue) {
+        return new NameInjector(pm, datefmt, type, paramTypes, defaultValue);
+    }
+
 }

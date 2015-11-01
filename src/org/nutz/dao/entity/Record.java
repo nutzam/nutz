@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +17,8 @@ import org.nutz.dao.DaoException;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 /**
  * 记录对象
@@ -29,6 +32,23 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      * @author mawenming at Jan 11, 2011 2:20:09 PM
      */
     private static final long serialVersionUID = 4614645901639942051L;
+    
+    private static final Log log = Logs.get();
+    
+    protected static int DEFAULT_INT = -1;
+
+    /** change as you own risk!!
+     * <p/> 除非你很清楚自己在干啥,否则不要碰这个值!!
+     * */
+    public static void __you_own_risk_changeDefaultIntNumber(int i) {
+    	DEFAULT_INT = i;
+    	log.info("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    	log.info("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    	log.warn("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    	log.warn("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    	log.error("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    	log.error("!!!!!!!!!!!! NOW !! org.nutz.dao.entity.Record.DEFAULT_INT = " + i);
+    }
 
     /**
      * 根据 ResultSet 创建一个记录对象
@@ -81,7 +101,7 @@ public class Record implements Map<String, Object>, java.io.Serializable {
     private Map<String, Integer> sqlTypeMap;
 
     public Record() {
-        map = new HashMap<String, Object>();
+        map = new LinkedHashMap<String, Object>();
         sqlTypeMap = new HashMap<String, Integer>();
     }
 
@@ -141,11 +161,11 @@ public class Record implements Map<String, Object>, java.io.Serializable {
         try {
             Object val = get(name);
             if (null == val)
-                return -1;
+                return DEFAULT_INT;
             return Castors.me().castTo(val, int.class);
         }
         catch (Exception e) {}
-        return -1;
+        return DEFAULT_INT;
     }
 
     /**
@@ -197,7 +217,7 @@ public class Record implements Map<String, Object>, java.io.Serializable {
      * @return 该记录 JSON 格式的字符串表示
      */
     public String toString() {
-        return Json.toJson(map);
+        return Json.toJson(map, JsonFormat.full());
     }
 
     /**
@@ -213,6 +233,10 @@ public class Record implements Map<String, Object>, java.io.Serializable {
 
     public <T> T toEntity(Entity<T> en) {
         return en.getObject(this);
+    }
+    
+    public <T> T toEntity(Entity<T> en, String prefix) {
+        return en.getObject(this, prefix);
     }
 
     /**

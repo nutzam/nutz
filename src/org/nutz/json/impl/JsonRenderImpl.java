@@ -4,8 +4,11 @@ import java.io.IOException;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -40,6 +43,22 @@ public class JsonRenderImpl implements JsonRender {
 
     private Set<Object> memo = new HashSet<Object>();
 
+    public JsonFormat getFormat() {
+        return format;
+    }
+
+    public void setFormat(JsonFormat format) {
+        this.format = format;
+    }
+
+    public Writer getWriter() {
+        return writer;
+    }
+
+    public void setWriter(Writer writer) {
+        this.writer = writer;
+    }
+
     public void render(Object obj) throws IOException {
         if (null == obj) {
             writer.write("null");
@@ -56,7 +75,17 @@ public class JsonRenderImpl implements JsonRender {
                 string2Json(((Enum) obj).name());
             }
             // 数字，布尔等
-            else if (mr.isNumber() || mr.isBoolean()) {
+            else if (mr.isNumber()) {
+                String tmp = obj.toString();
+                if (tmp.equals("NaN")) {
+                    // TODO 怎样才能应用上JsonFormat中是否忽略控制呢?
+                    // 因为此时已经写入了key:
+                    writer.write("null");
+                }
+                else
+                    writer.write(tmp);
+            }
+            else if (mr.isBoolean()) {
                 writer.append(obj.toString());
             }
             // 字符串
@@ -65,7 +94,16 @@ public class JsonRenderImpl implements JsonRender {
             }
             // 日期时间
             else if (mr.isDateTimeLike()) {
-                string2Json(format.getCastors().castToString(obj));
+                boolean flag = true;
+                if (obj instanceof Date) {
+                    DateFormat df = format.getDateFormat();
+                    if (df != null) {
+                        string2Json(df.format((Date)obj));
+                        flag = false;
+                    }
+                }
+                if (flag)
+                    string2Json(format.getCastors().castToString(obj));
             }
             // 其他
             else {
@@ -91,6 +129,8 @@ public class JsonRenderImpl implements JsonRender {
         }
     }
 
+    public JsonRenderImpl() {}
+
     public JsonRenderImpl(Writer writer, JsonFormat format) {
         this.format = format;
         this.writer = writer;
@@ -111,14 +151,16 @@ public class JsonRenderImpl implements JsonRender {
 
     private void appendPairBegin() throws IOException {
         if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
+            writer.append(NL).append(Strings.dup(format.getIndentBy(),
+                                                 format.getIndent()));
     }
 
     private void appendPairSep() throws IOException {
         writer.append(!isCompact(this) ? " :" : ":");
     }
 
-    protected void appendPair(boolean needPairEnd, String name, Object value) throws IOException {
+    protected void appendPair(boolean needPairEnd, String name, Object value)
+            throws IOException {
         appendPairBegin();
         appendName(name);
         appendPairSep();
@@ -144,7 +186,8 @@ public class JsonRenderImpl implements JsonRender {
 
     private void appendBraceEnd() throws IOException {
         if (!isCompact(this))
-            writer.append(NL).append(Strings.dup(format.getIndentBy(), format.getIndent()));
+            writer.append(NL).append(Strings.dup(format.getIndentBy(),
+                                                 format.getIndent()));
         writer.append('}');
     }
 
@@ -168,7 +211,8 @@ public class JsonRenderImpl implements JsonRender {
         ArrayList<Pair> list = new ArrayList<Pair>(map.size());
         Set<Entry<?, ?>> entrySet = map.entrySet();
         for (Entry entry : entrySet) {
-            String name = null == entry.getKey() ? "null" : entry.getKey().toString();
+            String name = null == entry.getKey() ? "null" : entry.getKey()
+                                                                 .toString();
             Object value = entry.getValue();
             if (!this.isIgnore(name, value))
                 list.add(new Pair(name, value));
@@ -176,6 +220,7 @@ public class JsonRenderImpl implements JsonRender {
         writeItem(list);
     }
 
+    @SuppressWarnings("unchecked")
     private void pojo2Json(Object obj) throws IOException {
         if (null == obj)
             return;
@@ -190,7 +235,8 @@ public class JsonRenderImpl implements JsonRender {
                 if (toJsonMethod.getParameterTypes().length == 0) {
                     writer.append(String.valueOf(toJsonMethod.invoke(obj)));
                 } else {
-                    writer.append(String.valueOf(toJsonMethod.invoke(obj, format)));
+                    writer.append(String.valueOf(toJsonMethod.invoke(obj,
+                                                                     format)));
                 }
                 return;
             }
@@ -219,6 +265,33 @@ public class JsonRenderImpl implements JsonRender {
                                 value = null;
                         }
                     }
+                    // 如果是强制输出为字符串的
+                    if (null != value && jef.isForceString()) {
+                        // 数组
+                        if (value.getClass().isArray()) {
+                            String[] ss = new String[Array.getLength(value)];
+                            for (int i = 0; i < ss.length; i++) {
+                                ss[i] = Array.get(value, i).toString();
+                            }
+                            value = ss;
+                        }
+                        // 集合
+                        else if (value instanceof Collection) {
+                            Collection col = (Collection) Mirror.me(value)
+                                                                .born();
+                            for (Object ele : (Collection) value) {
+                                col.add(ele.toString());
+                            }
+                            value = col;
+                        }
+                        // 其他统统变字符串
+                        else {
+                            value = value2string(jef, value);
+                        }
+                    } else if (jef.hasDateFormat() && null != value && value instanceof Date) {
+                        value = jef.getDateFormat().format((Date)value);
+                    }
+
                     // 加入输出列表 ...
                     list.add(new Pair(name, value));
                 }
@@ -263,19 +336,41 @@ public class JsonRenderImpl implements JsonRender {
                     writer.append("\\n");
                     break;
                 case '\t':
+                case 0x0B: // \v
                     writer.append("\\t");
                     break;
                 case '\r':
                     writer.append("\\r");
                     break;
+                case '\f':
+                	writer.append("\\f");
+                	break;
+                case '\b':
+                	writer.append("\\b");
+                	break;
                 case '\\':
                     writer.append("\\\\");
                     break;
                 default:
-                    if (c >= 256 && format.isAutoUnicode())
-                        writer.append("\\u").append(Integer.toHexString(c).toUpperCase());
-                    else
-                        writer.append(c);
+                    if (c >= 256 && format.isAutoUnicode()) {
+                        writer.append("\\u");
+                        String u = Strings.fillHex(c, 4);
+                        if (format.isUnicodeLower())
+                        	writer.write(u.toLowerCase());
+                        else
+                        	writer.write(u.toUpperCase());
+                    }
+                    else {
+                        if (c < ' ' || (c >= '\u0080' && c < '\u00a0')
+                                || (c >= '\u2000' && c < '\u2100')) {
+                            writer.write("\\u");
+                            String hhhh = Integer.toHexString(c);
+                            writer.write("0000", 0, 4 - hhhh.length());
+                            writer.write(hhhh);
+                        } else {
+                            writer.append(c);
+                        }
+                    }
                 }
             }
             writer.append(format.getSeparator());
@@ -310,4 +405,16 @@ public class JsonRenderImpl implements JsonRender {
         writer.append(']');
     }
 
+    protected String value2string(JsonEntityField jef, Object value) {
+        if (value instanceof Date) {
+            SimpleDateFormat df = jef.getDateFormat();
+            if (df == null) {
+                df = format.getDateFormat();
+            }
+            if (df != null) {
+                return df.format((Date)value);
+            }
+        }
+        return value.toString();
+    }
 }

@@ -6,12 +6,12 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 import org.junit.Test;
-
 import org.nutz.NutzEnum;
 import org.nutz.dao.DB;
 import org.nutz.dao.entity.annotation.Id;
@@ -54,6 +54,14 @@ public class MirrorTest {
         }
 
         fs = Mirror.me(MTGSF.class).getStaticField(false);
+        List<Field> tmp = new ArrayList<Field>();
+        for (Field field : fs) {
+            if (field.getName().equals("$jacocoData"))
+                continue;
+            tmp.add(field);
+        }
+        if (fs.length != tmp.size())
+            fs = tmp.toArray(new Field[tmp.size()]);
         assertEquals(5, fs.length);
         for (Field f : fs) {
             assertFalse(f.getName().startsWith("m_"));
@@ -85,6 +93,14 @@ public class MirrorTest {
     @Test
     public void test_duplicate_method_for_getAllDeclareMethods() {
         Method[] ms = Mirror.me(TDMFGADMII.class).getAllDeclaredMethodsWithoutTop();
+        List<Method> tmp = new ArrayList<Method>();
+        for (Method method : ms) {
+            if (method.getName().equals("$jacocoInit"))
+                continue;
+            tmp.add(method);
+        }
+        if (ms.length != tmp.size())
+            ms = tmp.toArray(new Method[tmp.size()]);
         assertEquals(2, ms.length);
     }
 

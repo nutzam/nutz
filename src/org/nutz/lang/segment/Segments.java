@@ -72,6 +72,8 @@ public class Segments {
      * @return 替换后的字符串
      */
     public static String replace(String pattern, Context context) {
+        if (null == pattern)
+            return null;
         if (null == context)
             return pattern;
         return replace(new CharSegment(pattern), context);

@@ -50,15 +50,15 @@ public class FilePostSender extends PostSender {
                         if(f.length() == 0)
                             continue;
                         InputStream is = Streams.fileIn(f);
-                        byte[] buffer = new byte[is.available()];
+                        byte[] buffer = new byte[8192];
                         while (true) {
                             int amountRead = is.read(buffer);
                             if (amountRead == -1) {
                                 break;
                             }
                             outs.write(buffer, 0, amountRead);
-                            outs.writeBytes("\r\n");
                         }
+                        outs.writeBytes("\r\n");
                         Streams.safeClose(is);
                     } else {
                         outs.writeBytes("Content-Disposition:    form-data;    name=\""

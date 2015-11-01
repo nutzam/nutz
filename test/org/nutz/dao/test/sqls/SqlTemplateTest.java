@@ -1,9 +1,9 @@
 package org.nutz.dao.test.sqls;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +44,22 @@ public class SqlTemplateTest extends DaoCase {
     }
 
     @Test
+    public void testBatchUpdate() {
+        pojos.initPet();
+
+        List<Map<String, Object>> batchValues = new ArrayList<Map<String, Object>>();
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> map = Lang.map(String.format("'name':'Pet_%d'", i));
+            batchValues.add(map);
+        }
+        String sql = "INSERT INTO t_pet(name) VALUES(@name)";
+
+        sqlTemplate.batchUpdate(sql, null, batchValues);
+
+        assertEquals(5, sqlTemplate.queryForInt("SELECT COUNT(*) FROM t_pet", null));
+    }
+
+    @Test
     public void testQueryForInt() {
         pojos.initPet();
         dao.insert(Pet.create(1));
@@ -77,7 +93,7 @@ public class SqlTemplateTest extends DaoCase {
         dao.insert(pet);
         String sql = "SELECT birthday FROM t_pet";
         Timestamp dbCreateTime = sqlTemplate.queryForObject(sql, null, Timestamp.class);
-        assertEquals(createTime, dbCreateTime);
+        assertEquals(createTime.getTime() / 1000 , dbCreateTime.getTime() / 1000);
 
         String sql1 = "SELECT birthday FROM t_pet WHERE 1=2";
         dbCreateTime = sqlTemplate.queryForObject(sql1, null, Timestamp.class);
@@ -119,12 +135,25 @@ public class SqlTemplateTest extends DaoCase {
     }
 
     @Test
-    public void testQuery() {
+    public void testQueryEntity1() {
         pojos.initPet();
         dao.insert(Pet.create(4));
 
         String sql = "SELECT * FROM t_pet";
         List<Pet> pets = sqlTemplate.query(sql, null, dao.getEntity(Pet.class));
+
+        assertEquals(4, pets.size());
+
+        assertEquals("pet_00", pets.get(0).getName());
+    }
+
+    @Test
+    public void testQueryEntity2() {
+        pojos.initPet();
+        dao.insert(Pet.create(4));
+
+        String sql = "SELECT * FROM t_pet";
+        List<Pet> pets = sqlTemplate.query(sql, null, Pet.class);
 
         assertEquals(4, pets.size());
 

@@ -1,11 +1,25 @@
 package org.nutz.mvc.testapp.adaptor;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+
+import java.util.TimeZone;
 
 import org.junit.Test;
+import org.nutz.lang.Times;
 import org.nutz.mvc.testapp.BaseWebappTest;
 
 public class SimpleAdaptorTest extends BaseWebappTest {
+
+    @Test
+    public void test_issue_543() {
+        get("/adaptor/github/issue/543?d=20120924");
+        assertEquals(200, resp.getStatus());
+
+        long ms = Times.ams("2012-09-24", TimeZone.getTimeZone("Asia/Shanghai"));
+        long rems = Long.parseLong(resp.getContent());
+        assertEquals(ms, rems);
+    }
 
     @Test
     public void test_err_param() {
@@ -37,7 +51,7 @@ public class SimpleAdaptorTest extends BaseWebappTest {
     }
 
     /*
-     * Githut : #352
+     * Github : #352
      */
     @Test
     public void test_reader_as_string() {
@@ -46,5 +60,34 @@ public class SimpleAdaptorTest extends BaseWebappTest {
             fail();
         }
         assertEquals("I am abc", resp.getContent());
+    }
+    
+    /**
+     * Github #768 入口方法的参数的默认值
+     */
+    @Test
+    public void test_default_value() {
+    	resp = get("/adaptor/default_value?abc=123");
+    	assertEquals(200, resp.getStatus());
+    	assertEquals("123", resp.getContent());
+    	
+
+    	resp = get("/adaptor/default_value");
+    	assertEquals(200, resp.getStatus());
+    	assertEquals("123456", resp.getContent());
+    }
+    
+    /**
+     * Json适配器未正确处理AdaptorErrorContext
+     */
+    @Test
+    public void test_json_err_ctx() {
+        resp = post("/adaptor/err_ctx", "{}");
+        assertEquals(200, resp.getStatus());
+        assertEquals("true", resp.getContent());
+        
+        resp = post("/adaptor/err_ctx", "{1234,3445}");
+        assertEquals(200, resp.getStatus());
+        assertEquals("false", resp.getContent());
     }
 }

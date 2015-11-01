@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.nutz.castor.Castors;
 import org.nutz.ioc.Ioc;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -22,14 +23,15 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.mvc.HttpAdaptor;
 import org.nutz.mvc.Scope;
+import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.adaptor.injector.AllAttrInjector;
 import org.nutz.mvc.adaptor.injector.AppAttrInjector;
 import org.nutz.mvc.adaptor.injector.HttpInputStreamInjector;
+import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.IocInjector;
 import org.nutz.mvc.adaptor.injector.IocObjInjector;
 import org.nutz.mvc.adaptor.injector.NameInjector;
 import org.nutz.mvc.adaptor.injector.PathArgInjector;
-import org.nutz.mvc.adaptor.injector.HttpReaderInjector;
 import org.nutz.mvc.adaptor.injector.ReqHeaderInjector;
 import org.nutz.mvc.adaptor.injector.RequestAttrInjector;
 import org.nutz.mvc.adaptor.injector.RequestInjector;
@@ -37,6 +39,7 @@ import org.nutz.mvc.adaptor.injector.ResponseInjector;
 import org.nutz.mvc.adaptor.injector.ServletContextInjector;
 import org.nutz.mvc.adaptor.injector.SessionAttrInjector;
 import org.nutz.mvc.adaptor.injector.SessionInjector;
+import org.nutz.mvc.adaptor.injector.ViewModelInjector;
 import org.nutz.mvc.annotation.Attr;
 import org.nutz.mvc.annotation.IocObj;
 import org.nutz.mvc.annotation.Param;
@@ -53,14 +56,21 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
     private static final Log log = Logs.get();
 
+    public static final String ParamDefailtTag = "//NOT EXIST IN//";
+
     protected ParamInjector[] injs;
 
     protected Method method;
+    
+    protected Class<?>[] argTypes;
+    
+    protected String[] defaultValues;
 
     public void init(Method method) {
         this.method = method;
-        Class<?>[] argTypes = method.getParameterTypes();
+        argTypes = method.getParameterTypes();
         injs = new ParamInjector[argTypes.length];
+        defaultValues = new String[argTypes.length];
         Annotation[][] annss = method.getParameterAnnotations();
         Type[] types = method.getGenericParameterTypes();
         for (int i = 0; i < annss.length; i++) {
@@ -82,8 +92,8 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                     iocObj = (IocObj) anns[x];
                     break;
                 } else if (anns[x] instanceof ReqHeader) {
-                	reqHeader = (ReqHeader)anns[x];
-                	break;
+                    reqHeader = (ReqHeader) anns[x];
+                    break;
                 }
             // If has @Attr
             if (null != attr) {
@@ -93,13 +103,14 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
 
             // If has @IocObj
             if (null != iocObj) {
-                injs[i] = new IocObjInjector(method.getParameterTypes()[i], iocObj.value());
+                injs[i] = new IocObjInjector(method.getParameterTypes()[i],
+                                             iocObj.value());
                 continue;
             }
-            
+
             if (null != reqHeader) {
-            	injs[i] = new ReqHeaderInjector(reqHeader.value());
-            	continue;
+                injs[i] = new ReqHeaderInjector(reqHeader.value(), argTypes[i]);
+                continue;
             }
 
             // And eval as default suport types
@@ -113,6 +124,11 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             // 这个设计是因为了 "路径参数"
             if (null == injs[i]) {
                 injs[i] = paramNameInject(method, i);
+            }
+            if (param != null) {
+            	String tmp = param.df();
+            	if (tmp != null && !tmp.equals(ParamDefailtTag))
+            		defaultValues[i] = tmp;
             }
         }
     }
@@ -156,6 +172,9 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         else if (Reader.class.isAssignableFrom(type)) {
             return new HttpReaderInjector();
         }
+        // ViewModel
+        else if (ViewModel.class.isAssignableFrom(type))
+            return new ViewModelInjector();
         return null;
     }
 
@@ -178,7 +197,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                           HttpServletRequest req,
                           HttpServletResponse resp,
                           String[] pathArgs) {
-        Class<?>[] argTypes = method.getParameterTypes();
+    	
         Object[] args = new Object[argTypes.length];
 
         if (args.length != injs.length)
@@ -199,8 +218,17 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
         catch (Throwable e) {
             if (errCtx != null) {
                 if (log.isInfoEnabled())
-                    log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
+                    log.info("Adapter Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue", e);
                 errCtx.setAdaptorError(e, this);
+                for (int i = 0; i < args.length - 1; i++) {
+                	if (args[i] == null) {
+                    	if (defaultValues[i] != null) {
+                    		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+                    	} else if (argTypes[i].isPrimitive()) {
+                    		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+                    	}
+                    }
+				}
                 args[args.length - 1] = errCtx;
                 return args;
             }
@@ -219,13 +247,18 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
                 args[i] = injs[i].get(sc, req, resp, value);
             }
             catch (Throwable e) {
-                if (errCtx != null)
+                if (errCtx != null) {
+                	log.infof("Adapter Param Error(%s) index=%d", method, i, e);
                     errCtx.setError(i, e, method, value, injs[i]); // 先错误保存起来,全部转好了,再判断是否需要抛出
-                else
+                } else
                     throw Lang.wrapThrow(e);
             }
-            if (args[i] == null && argTypes[i].isPrimitive()) {
-                args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+            if (args[i] == null) {
+            	if (defaultValues[i] != null) {
+            		args[i] = Castors.me().castTo(defaultValues[i], argTypes[i]);
+            	} else if (argTypes[i].isPrimitive()) {
+            		args[i] = Lang.getPrimitiveDefaultValue(argTypes[i]);
+            	}
             }
         }
 
@@ -236,7 +269,7 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
             if (err == null)
                 continue;
             int lastParam = argTypes.length - 1;
-            if (AdaptorErrorContext.class.equals(argTypes[lastParam])) {
+            if (AdaptorErrorContext.class.isAssignableFrom(argTypes[lastParam])) {
                 if (log.isInfoEnabled())
                     log.info("Adapter Param Error catched , but I found AdaptorErrorContext param, so, set it to args, and continue");
                 args[lastParam] = errCtx;
@@ -260,12 +293,19 @@ public abstract class AbstractAdaptor implements HttpAdaptor {
      * 这是最后的大招了,查一下形参的名字,作为@Param("形参名")进行处理
      */
     protected ParamInjector paramNameInject(Method method, int index) {
-        List<String> names = MethodParamNamesScaner.getParamNames(method);
-        if (names != null)
-            return new NameInjector(names.get(index), method.getParameterTypes()[index], null);
-        else if (log.isInfoEnabled())
-            log.info("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index="
-                     + index);
+    	if (!Lang.isAndroid) {
+    		List<String> names = MethodParamNamesScaner.getParamNames(method);
+            if (names != null)
+                return new NameInjector(names.get(index),
+                                        null,
+                                        method.getParameterTypes()[index],
+                                        null, null);
+            else if (log.isInfoEnabled())
+                log.infof("Complie without debug info? can't deduce param name. fail back to PathArgInjector!! index=%d > %s",
+                          index,
+                          method);
+    	}
+        
         return new PathArgInjector(method.getParameterTypes()[index]);
     }
 }

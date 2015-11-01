@@ -1,10 +1,11 @@
 package org.nutz.mvc.impl;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
@@ -14,33 +15,45 @@ public class MappingNode<T> {
 
     private T obj;
 
-    private T asterisk;
+    private T asterisk; // 匹配 *
 
-    private MappingNode<T> quesmark;
+    private T remain; // 匹配 **
 
-    private Map<String, MappingNode<T>> map;
+    private MappingNode<T> quesmark; // 匹配 ?
+
+    private Map<String, MappingNode<T>> map; // 匹配精确的值
 
     public MappingNode() {
         map = new HashMap<String, MappingNode<T>>();
     }
 
-    private void add(Iterator<String> it, T obj) {
+    private void add(T obj, String[] ss, int off) {
         // 还有路径
-        if (it.hasNext()) {
-            String key = it.next().toLowerCase();
+        if (off < ss.length) {
+            String key = ss[off].toLowerCase();
+            off++;
             // '*'
             if ("*".equals(key)) {
-                if (it.hasNext()) {
-                    throw Lang.makeThrow(    "char '*' should be the last item in a Path '../*/%s/..'",
-                                            it.next());
+                if (off < ss.length) {
+                    throw Lang.makeThrow("char '*' should be the last item"
+                                                 + " in a Path '../**/%s'",
+                                         Lang.concat(off, ss.length - off, "/", ss));
                 }
                 asterisk = obj;
             }
+            // '**'
+            else if ("**".equals(key)) {
+                if (off < ss.length) {
+                    throw Lang.makeThrow("'**' should be the last item" + " in a Path '../**/%s'",
+                                         Lang.concat(off, ss.length - off, "/", ss));
+                }
+                remain = obj;
+            }
             // '?'
             else if ("?".equals(key)) {
-                if (quesmark == null) //也许这个节点之前就已经有值呢
+                if (quesmark == null) // 也许这个节点之前就已经有值呢
                     quesmark = new MappingNode<T>();
-                quesmark.add(it, obj);
+                quesmark.add(obj, ss, off);
             }
             // 其它节点，加入 map
             else {
@@ -49,7 +62,7 @@ public class MappingNode<T> {
                     node = new MappingNode<T>();
                     map.put(key, node);
                 }
-                node.add(it, obj);
+                node.add(obj, ss, off);
             }
 
         }
@@ -59,42 +72,66 @@ public class MappingNode<T> {
         }
     }
 
-    private T get(ActionContext ac, Iterator<String> it) {
+    private T get(ActionContext ac, String[] ss, int off) {
         // 路径已经没有内容了，看看本节点是否有一个对象
-        if (!it.hasNext()) {
-            return obj == null ? asterisk : obj;
+        if (off >= ss.length) {
+            return obj == null ? (asterisk == null ? remain : asterisk) : obj;
         }
 
-        String key = it.next();
+        String key = ss[off];
         // 先在 map 里寻找，
         MappingNode<T> node = map.get(key.toLowerCase());
-        if (null != node)
-            return node.get(ac, it);
+        if (null != node) {
+            // 在子节点中查找
+            T t = node.get(ac, ss, off + 1);
+            if (t != null)
+                return t;
+            // 找不到的时候, 继续在当前节点找泛匹配(?或者*)
+        }
 
         // 如果没有看看是否有 '?' 的匹配
         if (quesmark != null) {
             ac.getPathArgs().add(key);
-            return quesmark.get(ac, it);
+            T t = quesmark.get(ac, ss, off + 1);
+            if (t != null)
+                return t;
+            ac.getPathArgs().remove(ac.getPathArgs().size() - 1);
         }
 
         // 还没有则看看是否有 '*' 的匹配
         if (null != asterisk) {
             List<String> pathArgs = ac.getPathArgs();
-            pathArgs.add(key);
-            while (it.hasNext())
-                pathArgs.add(it.next());
+            while (off < ss.length)
+                pathArgs.add(ss[off++]);
             return asterisk;
+        }
+
+        // 最后看看是不是有 '**' 匹配
+        if (null != remain) {
+            String ph = Lang.concat(off, ss.length - off, "/", ss).toString();
+            if (!Strings.isBlank(ac.getSuffix())) {
+                HttpServletRequest req = ac.getRequest();
+                String url = Strings.sBlank(req.getPathInfo(), req.getServletPath());
+                // 看看有没有必要补一个 "/"
+                if (url.endsWith("/." + ac.getSuffix())) {
+                    ph += "/";
+                }
+                ph += "." + ac.getSuffix();
+            }
+            ac.getPathArgs().add(ph);
+            return remain;
         }
 
         return null;
     }
 
     /**
-     * 增加一个映射,将 obj 映射到 path 上,或 path 上的[?,*] 
+     * 增加一个映射,将 obj 映射到 path 上,或 path 上的[?,*]
      */
     public void add(String path, T obj) {
         try {
-            add(Lang.list(Strings.splitIgnoreBlank(path, "/")).iterator(), obj);
+            String[] ss = Strings.splitIgnoreBlank(path, "/");
+            add(obj, ss, 0);
         }
         catch (Exception e) {
             throw Lang.wrapThrow(e, "Wrong Url path format '%s'", path);
@@ -102,9 +139,14 @@ public class MappingNode<T> {
     }
 
     public T get(ActionContext ac, String path) {
+        return get(ac, path, null);
+    }
+
+    public T get(ActionContext ac, String path, String suffix) {
         ac.setPath(path);
         ac.setPathArgs(new LinkedList<String>());
-        return get(ac, Lang.list(Strings.splitIgnoreBlank(path, "/")).iterator());
+        String[] ss = Strings.splitIgnoreBlank(path, "/");
+        return get(ac, ss, 0);
     }
 
     public String toString() {

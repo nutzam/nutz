@@ -8,6 +8,8 @@ import java.util.Map;
 
 import org.nutz.json.Json;
 import org.nutz.lang.Lang;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 import org.nutz.resource.NutResource;
 import org.nutz.resource.Scans;
 
@@ -18,6 +20,8 @@ import org.nutz.resource.Scans;
  */
 public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfiguration {
 
+	private static final Log log = Logs.get();
+	
     protected Map<String,Map<String,Object>> map = new HashMap<String, Map<String,Object>>();
     
     @SuppressWarnings("unchecked")
@@ -26,8 +30,12 @@ public class JsonActionChainMakerConfiguretion implements ActionChainMakerConfig
         try {
             map.putAll(Json.fromJson(Map.class, new InputStreamReader(getClass().getClassLoader().getResourceAsStream("org/nutz/mvc/impl/chainconfig/default-chains.js"))));
             
-            for (NutResource nr : list)
-                map.putAll(Json.fromJson(Map.class,nr.getReader()));
+            if (!list.isEmpty()) {
+                for (NutResource nr : list)
+                    map.putAll(Json.fromJson(Map.class,nr.getReader()));
+                if (log.isDebugEnabled())
+                	log.debug("ActionChain Config:\n" + Json.toJson(map));
+            }
         }
         catch (IOException e) {
         	throw Lang.wrapThrow(e);

@@ -64,6 +64,7 @@ public interface Entity<T> {
      * @return Java 对象
      */
     T getObject(ResultSet rs, FieldMatcher matcher);
+    T getObject(ResultSet rs, FieldMatcher matcher, String prefix);
 
     /**
      * 从一个记录中生成一个实体实例
@@ -74,6 +75,7 @@ public interface Entity<T> {
      * @return Java 对象
      */
     T getObject(Record rec);
+    T getObject(Record rec, String prefix);
 
     /**
      * 根据实体的 Java 字段名获取一个实体字段对象
@@ -274,4 +276,5 @@ public interface Entity<T> {
      */
     String getColumnComent(String columnName);
 
+    boolean isComplete();
 }

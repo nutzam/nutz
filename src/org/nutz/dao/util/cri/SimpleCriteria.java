@@ -1,19 +1,23 @@
 package org.nutz.dao.util.cri;
 
+import org.nutz.dao.Condition;
 import org.nutz.dao.Sqls;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.impl.sql.pojo.AbstractPItem;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Criteria;
+import org.nutz.dao.sql.GroupBy;
 import org.nutz.dao.sql.OrderBy;
 import org.nutz.dao.sql.Pojo;
 
-public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
+public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy, GroupBy {
 
     private SqlExpressionGroup where;
 
     private OrderBySet orderBy;
+    
+    private GroupBySet groupBy;
 
     private Pager pager;
 
@@ -24,13 +28,16 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
 
     public void joinSql(Entity<?> en, StringBuilder sb) {
         where.joinSql(en, sb);
+        if (groupBy != null)
+        	groupBy.joinSql(en, sb);
         orderBy.joinSql(en, sb);
     }
 
-    @Override
     public void setPojo(Pojo pojo) {
         where.setPojo(pojo);
         orderBy.setPojo(pojo);
+        if (groupBy != null)
+        	groupBy.setPojo(pojo);
     }
 
     public void setPager(int pageNumber, int pageSize) {
@@ -89,6 +96,16 @@ public class SimpleCriteria extends AbstractPItem implements Criteria, OrderBy {
 
     public SqlExpressionGroup where() {
         return where;
+    }
+    
+    public GroupBy groupBy(String...names) {
+    	groupBy = new GroupBySet(names);
+    	return this;
+    }
+    
+    public GroupBy having(Condition cnd) {
+    	groupBy.having(cnd);
+    	return this;
     }
 
     public OrderBy getOrderBy() {

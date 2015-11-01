@@ -2,6 +2,7 @@ package org.nutz.dao.impl;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
 
 import javax.sql.DataSource;
 
@@ -18,6 +19,8 @@ import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.dao.sql.DaoStatement;
 import org.nutz.dao.sql.PojoMaker;
 import org.nutz.dao.sql.Sql;
+import org.nutz.dao.sql.SqlContext;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
@@ -99,6 +102,10 @@ public class DaoSupport {
      */
     public void setSqlManager(SqlManager sqls) {
         this.sqlManager = sqls;
+        if (sqls != null) {
+            int count = sqls.count();
+            log.debug("SqlManager Sql count=" + count);
+        }
     }
 
     /**
@@ -151,7 +158,8 @@ public class DaoSupport {
             if (log.isWarnEnabled())
                 log.warn("Replaced a running dataSource!");
         dataSource = ds;
-        expert = Jdbcs.getExpert(ds);
+        if (expert == null)
+            expert = Jdbcs.getExpert(ds);
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
@@ -162,6 +170,18 @@ public class DaoSupport {
                 meta.setVersion(dmd.getDatabaseProductVersion());
                 log.debug("JDBC Driver --> " + dmd.getDriverVersion());
                 log.debug("JDBC Name   --> " + dmd.getDriverName());
+                if (!Strings.isBlank(dmd.getURL()))
+                    log.debug("JDBC URL    --> " + dmd.getURL());
+                if (dmd.getDriverName().contains("mariadb") || dmd.getDriverName().contains("sqlite")) {
+                    log.warn("Auto-select fetch size to Integer.MIN_VALUE, enable for ResultSet Streaming");
+                    SqlContext.DEFAULT_FETCH_SIZE = Integer.MIN_VALUE;
+                }
+                if (meta.isMySql()) {
+                    String sql = "SHOW VARIABLES LIKE 'character_set%'";
+                    ResultSet rs = conn.createStatement().executeQuery(sql);
+                    while (rs.next())
+                        log.debugf("Mysql : %s=%s", rs.getString(1), rs.getString(2));
+                }
             }
         });
         if (log.isDebugEnabled())
@@ -246,4 +266,8 @@ public class DaoSupport {
             }
         }
     }
+    
+    public PojoMaker pojoMaker() {
+		return pojoMaker;
+	}
 }

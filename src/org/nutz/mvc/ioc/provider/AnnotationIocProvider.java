@@ -10,6 +10,8 @@ import org.nutz.mvc.NutConfig;
 public class AnnotationIocProvider implements IocProvider {
 
     public Ioc create(NutConfig config, String[] args) {
+    	if (args == null || args.length == 0)
+    		args = new String[]{config.getMainModule().getPackage().getName()};
         return new NutIoc(new AnnotationIocLoader(args), new ScopeContext("app"), "app");
     }
 

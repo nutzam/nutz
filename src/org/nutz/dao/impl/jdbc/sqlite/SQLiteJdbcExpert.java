@@ -38,6 +38,8 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
         // 创建字段
         boolean mPks = en.getPks().size() > 1;
         for (MappingField mf : en.getMappingFields()) {
+            if (mf.isReadonly())
+                continue;
             sb.append('\n').append(mf.getColumnName());
             // Sqlite的整数型主键,一般都是自增的,必须定义为(PRIMARY KEY
             // AUTOINCREMENT),但这样就无法定义多主键!!
@@ -60,7 +62,7 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
                     sb.append(" PRIMARY KEY");
                 }
                 if (mf.hasDefaultValue())
-                    sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
+                    addDefaultValue(sb, mf);
             }
             sb.append(',');
         }

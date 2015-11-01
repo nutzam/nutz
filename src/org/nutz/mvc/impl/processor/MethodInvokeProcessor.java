@@ -4,7 +4,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.reflect.FastClassFactory;
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.Mvcs;
 
 /**
  * 
@@ -13,14 +15,16 @@ import org.nutz.mvc.ActionContext;
  *
  */
 public class MethodInvokeProcessor extends AbstractProcessor{
-
-    public void process(ActionContext ac) throws Throwable {
+	
+	public void process(ActionContext ac) throws Throwable {
         Object module = ac.getModule();
         Method method = ac.getMethod();
         Object[] args = ac.getMethodArgs();
         try {
-            Object re = method.invoke(module, args);
-            ac.setMethodReturn(re);
+        	if (Mvcs.disableFastClassInvoker)
+        		ac.setMethodReturn(method.invoke(module, args));
+        	else
+        		ac.setMethodReturn(FastClassFactory.invoke(module, method, args));
             doNext(ac);
         } 
         catch (IllegalAccessException e) {
@@ -30,8 +34,7 @@ public class MethodInvokeProcessor extends AbstractProcessor{
             throw Lang.unwrapThrow(e);
         }
         catch (InvocationTargetException e) {
-            throw Lang.unwrapThrow(e);
+            throw e.getCause();
         }
     }
-
 }

@@ -1,0 +1,115 @@
+#title:Nutz.Json 转为Json字符串
+#index:0,1
+#author: wendal(wendal1985@gmail.com)
+------------------------------------------------------
+
+转为Json字符串, 归类一下
+
+	输出目标
+	
+	* 字符串
+	* Writer
+	* File
+		
+	格式控制
+	
+	* JsonFormat,即运行时配置
+	* 注解配置,永久的, 请看"Json注解"一节
+		
+------------------------------------------------------
+输出目标
+
+	如果对象不大,直接转json字符串是最方便的咯
+	
+	{{{
+	Json.toJson(pet);
+	}}}
+	
+	输出到Writer,适合大对象,不然耗太多内存了
+	
+	{{{
+	Json.toJson(writer, pet);
+	}}}
+	
+	直接输出到文件去
+	
+	{{{
+	Json.toJsonFile(file, pet);
+	}}}
+	
+------------------------------------------------------
+JsonFormat格式控制
+
+	Json.toJson系列方法,除了输出目标,就是JsonFormat了, 但注意一下,JsonFormat不会影响Json注解中的配置哦
+	
+	JsonFormat提供了几种快捷配置(静态方法,但可以继续链式设置)
+	
+	{{{
+	Json.toJson(pet, JsonFormat.compact()); // 紧凑模式 -- 无换行,忽略null值
+	Json.toJson(pet, JsonFormat.full());    // 全部输出模式 -- 换行,不忽略null值
+	Json.toJson(pet, JsonFormat.nice());    // 一般模式 -- 换行,但忽略null值
+	Json.toJson(pet, JsonFormat.forLook()); // 为了打印出来容易看，把名字去掉引号
+	Json.toJson(pet, JsonFormat.tiny());    // 不换行,不忽略空值
+	}}}
+	
+------------------------------------------------------
+JsonFormat详解
+
+	下面,将一一讲解JsonFormat中的配置项. 各种配置均可链式设置,以达到叠加效果.
+	
+	indentBy -- 缩进所使用的字符,默认是3个空格
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setIndentBy("\t"));// 输出的缩进将使用tab
+	}}}
+	
+	compact -- 是否为紧凑模式,默认为false. 若为true,indent和indentBy将无效.
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setCompact(true)); // 不作任何换行和缩进
+	}}}
+	
+	quoteName -- key是否用双引号包起来,默认为true,同时也是json标准格式的要求. 若设置为false,则新版的jquery将解析出错.
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setQuoteName(false)); // 输出类似 {name:"wendal"}
+	}}}
+	
+	ignoreNull -- 是否忽略控制,默认为false
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setIgnoreNull(true)); // null值的key-value将不会输出,但空List还是会的.
+	}}}
+	
+	actived -- 仅输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setActived("^(name|id|location)$"); // 仅输出name/id/location,其他key都不输出
+	}}}
+	
+	locked -- 与actived刚好相反, 不输出哪些的key,默认为null,即允许所有key. 注意,这是正则表达式!
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setLocked("^(location)$"); // 不输出location,其他key正常输出
+	}}}
+	
+	separator -- 分隔符,不可配置,路过吧
+	
+	autoUnicode -- 自动转换为unicode,默认为false. 特殊需要,一般用不上
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setAutoUnicode(true); // 当非英文字符出现时,转为uf003 形式 
+	}}}
+	
+	unicodeLower -- Unicode编码是大写还是小写,默认大写
+	
+	dateFormat -- 日期格式
+	
+	{{{
+	Json.fromJson(pet, JsonFormat.full().setDateFormat("yyyyMMdd"); // 将输出类似于 {"b":"20190823"}
+	}}}
+	
+	castors -- 高级货,基本上不会用到.
+	
+	indent -- 临时变量.
+	

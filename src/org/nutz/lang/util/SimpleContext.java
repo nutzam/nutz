@@ -24,6 +24,10 @@ public class SimpleContext extends AbstractContext {
         this.map = map;
     }
 
+    public int size() {
+        return map.size();
+    }
+
     public Context set(String name, Object value) {
         map.put(name, value);
         return this;

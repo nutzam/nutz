@@ -17,7 +17,7 @@ import org.nutz.dao.impl.NutDao;
  */
 public class LazyNutDao extends NutDao {
 	
-	private boolean cycle = true;
+	private boolean cycle = false;
     
     public void setDataSource(DataSource ds) {
         super.setDataSource(ds);
@@ -44,6 +44,11 @@ public class LazyNutDao extends NutDao {
 
     public LazyNutDao(DataSource dataSource) {
         super(dataSource);
+    }
+    
+    public LazyNutDao(DataSource dataSource, boolean cycle) {
+        super(dataSource);
+        setCycle(cycle);
     }
 
     public LazyNutDao(DataSource dataSource, SqlManager sqlManager) {

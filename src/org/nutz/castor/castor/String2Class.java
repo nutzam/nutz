@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.nutz.castor.Castor;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.lang.Lang;
 
 import static java.lang.String.*;
 
@@ -36,7 +37,7 @@ public class String2Class extends Castor<String, Class> {
         if (null != c)
             return c;
         try {
-            return Class.forName(src);
+            return Lang.loadClass(src);
         }
         catch (ClassNotFoundException e) {
             throw new FailToCastObjectException(format("String '%s' can not cast to Class<?>!", src));

@@ -14,14 +14,15 @@ public class NameInjectorTest {
 
     @SuppressWarnings({"unchecked"})
     private static <T> T inj(String name, Class<T> type, HttpServletRequest req) {
-        return (T) new NameInjector(name, type, null).get(null, req, null, null);
+        NameInjector nminj = new NameInjector(name, null, type, null, null);
+        return (T) nminj.get(null, req, null, null);
     }
 
     /**
      * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
      */
     @Test
-    public void test_balnk_param_to_number() {
+    public void test_blank_param_to_number() {
         // 准备数据
         MockHttpServletRequest req = Mock.servlet.request();
         req.setParameter("a", "  ");

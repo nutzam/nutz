@@ -26,6 +26,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,7 +34,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
+import java.util.regex.Pattern;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -45,6 +48,8 @@ import org.nutz.lang.stream.StringOutputStream;
 import org.nutz.lang.stream.StringWriter;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutType;
 import org.nutz.lang.util.SimpleContext;
 
 /**
@@ -172,6 +177,15 @@ public abstract class Lang {
         return e;
     }
 
+    public static boolean isCauseBy(Throwable e, Class<? extends Throwable> causeType) {
+        if (e.getClass() == causeType)
+            return true;
+        Throwable cause = e.getCause();
+        if (null == cause)
+            return false;
+        return isCauseBy(cause, causeType);
+    }
+
     /**
      * 判断两个对象是否相等。 这个函数用处是:
      * <ul>
@@ -181,42 +195,42 @@ public abstract class Lang {
      * </ul>
      * 当然，如果你重写的 equals 方法会优先
      * 
-     * @param a1
+     * @param a0
      *            比较对象1
-     * @param a2
+     * @param a1
      *            比较对象2
      * @return 是否相等
      */
-    @SuppressWarnings("unchecked")
-    public static boolean equals(Object a1, Object a2) {
-        if (a1 == a2)
+    public static boolean equals(Object a0, Object a1) {
+        if (a0 == a1)
             return true;
 
-        if (a1 == null || a2 == null)
-            return false;
-
-        if (a1.equals(a2))
+        if (a0 == null && a1 == null)
             return true;
 
-        Mirror<?> mr1 = Mirror.me(a1);
-
-        if (mr1.isStringLike()) {
-            return a1.toString().equals(a2.toString());
-        }
-        if (mr1.isDateTimeLike()) {
-            return a1.equals(a2);
-        }
-        if (mr1.isNumber()) {
-            return a2 instanceof Number && a1.toString().equals(a2.toString());
-        }
-
-        if (!a1.getClass().isAssignableFrom(a2.getClass())
-            && !a2.getClass().isAssignableFrom(a1.getClass()))
+        if (a0 == null || a1 == null)
             return false;
 
-        if (a1 instanceof Map && a2 instanceof Map) {
-            Map<?, ?> m1 = (Map<?, ?>) a1;
-            Map<?, ?> m2 = (Map<?, ?>) a2;
+        // 简单的判断是否等于
+        if (a0.equals(a1))
+            return true;
+
+        Mirror<?> mi = Mirror.me(a0);
+
+        // 简单类型，变字符串比较，或者正则表达式
+        if (mi.isSimple() || mi.is(Pattern.class)) {
+            return a0.toString().equals(a1.toString());
+        }
+
+        // 如果类型就不能互相转换，那么一定是错的
+        if (!a0.getClass().isAssignableFrom(a1.getClass())
+            && !a1.getClass().isAssignableFrom(a0.getClass()))
+            return false;
+
+        // Map
+        if (a0 instanceof Map && a1 instanceof Map) {
+            Map<?, ?> m1 = (Map<?, ?>) a0;
+            Map<?, ?> m2 = (Map<?, ?>) a1;
             if (m1.size() != m2.size())
                 return false;
             for (Entry<?, ?> e : m1.entrySet()) {
@@ -225,43 +239,39 @@ public abstract class Lang {
                     return false;
             }
             return true;
-        } else if (a1.getClass().isArray()) {
-            if (a2.getClass().isArray()) {
-                int len = Array.getLength(a1);
-                if (len != Array.getLength(a2))
-                    return false;
-                for (int i = 0; i < len; i++) {
-                    if (!equals(Array.get(a1, i), Array.get(a2, i)))
-                        return false;
-                }
-                return true;
-            } else if (a2 instanceof List) {
-                return equals(a1, Lang.collection2array((List<Object>) a2, Object.class));
-            }
-            return false;
-        } else if (a1 instanceof List) {
-            if (a2 instanceof List) {
-                List<?> l1 = (List<?>) a1;
-                List<?> l2 = (List<?>) a2;
-                if (l1.size() != l2.size())
-                    return false;
-                int i = 0;
-                for (Iterator<?> it = l1.iterator(); it.hasNext();) {
-                    if (!equals(it.next(), l2.get(i++)))
-                        return false;
-                }
-                return true;
-            } else if (a2.getClass().isArray()) {
-                return equals(Lang.collection2array((List<Object>) a1, Object.class), a2);
-            }
-            return false;
-        } else if (a1 instanceof Collection && a2 instanceof Collection) {
-            Collection<?> c1 = (Collection<?>) a1;
-            Collection<?> c2 = (Collection<?>) a2;
-            if (c1.size() != c2.size())
-                return false;
-            return c1.containsAll(c2) && c2.containsAll(c1);
         }
+        // 数组
+        else if (a0.getClass().isArray() && a1.getClass().isArray()) {
+            int len = Array.getLength(a0);
+            if (len != Array.getLength(a1))
+                return false;
+            for (int i = 0; i < len; i++) {
+                if (!equals(Array.get(a0, i), Array.get(a1, i)))
+                    return false;
+            }
+            return true;
+        }
+        // 集合
+        else if (a0 instanceof Collection && a1 instanceof Collection) {
+            Collection<?> c0 = (Collection<?>) a0;
+            Collection<?> c1 = (Collection<?>) a1;
+            if (c0.size() != c1.size())
+                return false;
+
+            Iterator<?> it0 = c0.iterator();
+            Iterator<?> it1 = c1.iterator();
+
+            while (it0.hasNext()) {
+                Object o0 = it0.next();
+                Object o1 = it1.next();
+                if (!equals(o0, o1))
+                    return false;
+            }
+
+            return true;
+        }
+
+        // 一定不相等
         return false;
     }
 
@@ -383,7 +393,7 @@ public abstract class Lang {
      * 较方便的创建一个数组，比如：
      * 
      * <pre>
-     * Pet[] pets = Lang.array(pet1, pet2, pet3);
+     * String[] strs = Lang.array("A", "B", "A"); => ["A","B","A"]
      * </pre>
      * 
      * @param eles
@@ -392,6 +402,40 @@ public abstract class Lang {
      */
     public static <T> T[] array(T... eles) {
         return eles;
+    }
+
+    /**
+     * 较方便的创建一个没有重复的数组，比如：
+     * 
+     * <pre>
+     * String[] strs = Lang.arrayUniq("A","B","A");  => ["A","B"]
+     * String[] strs = Lang.arrayUniq();  => null
+     * </pre>
+     * 
+     * 返回的顺序会遵循输入的顺序
+     * 
+     * @param eles
+     *            可变参数
+     * @return 数组对象
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] arrayUniq(T... eles) {
+        if (null == eles || eles.length == 0)
+            return null;
+        // 记录重复
+        HashSet<T> set = new HashSet<T>(eles.length);
+        for (T ele : eles) {
+            set.add(ele);
+        }
+        // 循环
+        T[] arr = (T[]) Array.newInstance(eles[0].getClass(), set.size());
+        int index = 0;
+        for (T ele : eles) {
+            if (set.remove(ele))
+                Array.set(arr, index++, ele);
+        }
+        return arr;
+
     }
 
     /**
@@ -732,7 +776,24 @@ public abstract class Lang {
         StringBuilder sb = new StringBuilder();
         if (null == coll || coll.isEmpty())
             return sb;
-        Iterator<T> it = coll.iterator();
+        return concat(c, coll.iterator());
+    }
+
+    /**
+     * 将一个迭代器转换成字符串
+     * <p>
+     * 每个元素之间，都会用一个给定的字符分隔
+     * 
+     * @param c
+     *            分隔符
+     * @param coll
+     *            集合
+     * @return 拼合后的字符串
+     */
+    public static <T> StringBuilder concat(Object c, Iterator<T> it) {
+        StringBuilder sb = new StringBuilder();
+        if (it == null || !it.hasNext())
+            return sb;
         sb.append(it.next());
         while (it.hasNext())
             sb.append(c).append(it.next());
@@ -1012,7 +1073,8 @@ public abstract class Lang {
      * @throws FailToCastObjectException
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <T> T map2Object(Map<?, ?> src, Class<T> toType) throws FailToCastObjectException {
+    public static <T> T map2Object(Map<?, ?> src, Class<T> toType)
+            throws FailToCastObjectException {
         if (null == toType)
             throw new FailToCastObjectException("target type is Null");
         // 类型相同
@@ -1124,13 +1186,25 @@ public abstract class Lang {
      *            参照 JSON 标准的字符串，但是可以没有前后的大括号
      * @return Map 对象
      */
-    @SuppressWarnings("unchecked")
-    public static Map<String, Object> map(String str) {
+    public static NutMap map(String str) {
         if (null == str)
             return null;
         if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
-            return (Map<String, Object>) Json.fromJson(str);
-        return (Map<String, Object>) Json.fromJson("{" + str + "}");
+            return Json.fromJson(NutMap.class, str);
+        return Json.fromJson(NutMap.class, "{" + str + "}");
+    }
+
+    /**
+     * 创建一个一个键的 Map 对象
+     * 
+     * @param key
+     *            键
+     * @param v
+     *            值
+     * @return Map 对象
+     */
+    public static NutMap map(String key, Object v) {
+        return new NutMap().addv(key, v);
     }
 
     /**
@@ -1142,7 +1216,7 @@ public abstract class Lang {
      *            字符串参数
      * @return Map 对象
      */
-    public static Map<String, Object> mapf(String fmt, Object... args) {
+    public static NutMap mapf(String fmt, Object... args) {
         return map(String.format(fmt, args));
     }
 
@@ -1170,10 +1244,24 @@ public abstract class Lang {
     /**
      * 根据一段 JSON 字符串，生产一个新的上下文对象
      * 
+     * @param fmt
+     *            JSON 字符串模板
+     * @param args
+     *            模板参数
+     * 
+     * @return 一个新创建的上下文对象
+     */
+    public static Context contextf(String fmt, Object... args) {
+        return context(Lang.mapf(fmt, args));
+    }
+
+    /**
+     * 根据一段 JSON 字符串，生产一个新的上下文对象
+     * 
      * @return 一个新创建的上下文对象
      */
     public static Context context(String str) {
-        return context().putAll(map(str));
+        return context(map(str));
     }
 
     /**
@@ -1536,30 +1624,53 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     private static <T extends Map<String, Object>> void obj2map(Object obj,
                                                                 T map,
-                                                                Map<Object, Object> memo) {
+                                                                final Map<Object, Object> memo) {
+        // 已经转换过了，不要递归转换
         if (null == obj || memo.containsKey(obj))
             return;
         memo.put(obj, "");
 
+        // Fix issue #497
+        // 如果是 Map，就直接 putAll 一下咯
+        if (obj instanceof Map<?, ?>) {
+            map.putAll(__change_map_to_nutmap((Map<String, Object>) obj, memo));
+            return;
+        }
+
+        // 下面是普通的 POJO
         Mirror<?> mirror = Mirror.me(obj.getClass());
         Field[] flds = mirror.getFields();
         for (Field fld : flds) {
             Object v = mirror.getValue(obj, fld);
             if (null == v) {
-                map.put(fld.getName(), null);
                 continue;
             }
-            Mirror<?> mr = Mirror.me(fld.getType());
-            if (mr.isNumber()
-                || mr.isBoolean()
-                || mr.isChar()
-                || mr.isStringLike()
-                || mr.isEnum()
-                || mr.isDateTimeLike()) {
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
                 map.put(fld.getName(), v);
-            } else if (memo.containsKey(v)) {
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
                 map.put(fld.getName(), null);
-            } else {
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list, ele, memo);
+                    }
+                });
+                map.put(fld.getName(), list);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                map.put(fld.getName(), map2);
+            }
+            // 看来要递归
+            else {
                 T sub;
                 try {
                     sub = (T) map.getClass().newInstance();
@@ -1573,6 +1684,93 @@ public abstract class Lang {
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private static NutMap __change_map_to_nutmap(Map<String, Object> map,
+                                                 final Map<Object, Object> memo) {
+        NutMap re = new NutMap();
+        for (Map.Entry<String, Object> en : map.entrySet()) {
+            Object v = en.getValue();
+            if (null == v)
+                continue;
+            Mirror<?> mr = Mirror.me(v);
+            // 普通值
+            if (mr.isSimple()) {
+                re.put(en.getKey(), v);
+            }
+            // 已经输出过了
+            else if (memo.containsKey(v)) {
+                continue;
+            }
+            // 数组或者集合
+            else if (mr.isColl()) {
+                final List<Object> list2 = new ArrayList<Object>(Lang.length(v));
+                Lang.each(v, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length) {
+                        __join_ele_to_list_as_map(list2, ele, memo);
+                    }
+                });
+                re.put(en.getKey(), list2);
+            }
+            // Map
+            else if (mr.isMap()) {
+                NutMap map2 = __change_map_to_nutmap((Map<String, Object>) v, memo);
+                re.put(en.getKey(), map2);
+            }
+            // 看来要递归
+            else {
+                NutMap map2 = obj2nutmap(v);
+                re.put(en.getKey(), map2);
+            }
+        }
+        return re;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void __join_ele_to_list_as_map(List<Object> list,
+                                                  Object o,
+                                                  final Map<Object, Object> memo) {
+        if (null == o) {
+            return;
+        }
+
+        // 如果是 Map，就直接 putAll 一下咯
+        if (o instanceof Map<?, ?>) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+            return;
+        }
+
+        Mirror<?> mr = Mirror.me(o);
+        // 普通值
+        if (mr.isSimple()) {
+            list.add(o);
+        }
+        // 已经输出过了
+        else if (memo.containsKey(o)) {
+            list.add(null);
+        }
+        // 数组或者集合
+        else if (mr.isColl()) {
+            final List<Object> list2 = new ArrayList<Object>(Lang.length(o));
+            Lang.each(o, new Each<Object>() {
+                public void invoke(int index, Object ele, int length) {
+                    __join_ele_to_list_as_map(list2, ele, memo);
+                }
+            });
+            list.add(list2);
+        }
+        // Map
+        else if (mr.isMap()) {
+            NutMap map2 = __change_map_to_nutmap((Map<String, Object>) o, memo);
+            list.add(map2);
+        }
+        // 看来要递归
+        else {
+            NutMap map = obj2nutmap(o);
+            list.add(map);
+        }
+    }
+
     /**
      * 将对象转换成 Map
      * 
@@ -1583,6 +1781,17 @@ public abstract class Lang {
     @SuppressWarnings("unchecked")
     public static Map<String, Object> obj2map(Object obj) {
         return obj2map(obj, HashMap.class);
+    }
+
+    /**
+     * 将对象转为 Nutz 的标准 Map 封装
+     * 
+     * @param obj
+     *            POJO du对象
+     * @return NutMap 对象
+     */
+    public static NutMap obj2nutmap(Object obj) {
+        return obj2map(obj, NutMap.class);
     }
 
     /**
@@ -1713,7 +1922,7 @@ public abstract class Lang {
             String classFileName = Lang.class.getName().replace('.', '/') + ".class";
             is = ClassTools.getClassLoader().getResourceAsStream(classFileName);
             if (is == null)
-            	is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
+                is = ClassTools.getClassLoader().getResourceAsStream("/" + classFileName);
             if (is != null && is.available() > 8) {
                 is.skip(7);
                 return is.read() > 49;
@@ -1797,6 +2006,7 @@ public abstract class Lang {
      */
     public static Type getGenericsType(Mirror<?> me, Type type) {
         Type[] types = me.getGenericsTypes();
+        Type t = type;
         if (type instanceof TypeVariable && types != null && types.length > 0) {
             Type[] tvs = me.getType().getTypeParameters();
             for (int i = 0; i < tvs.length; i++) {
@@ -1806,6 +2016,25 @@ public abstract class Lang {
                 }
             }
         }
+        if (!type.equals(t)) {
+            return type;
+        }
+        if (types != null && types.length > 0 && type instanceof ParameterizedType) {
+            ParameterizedType pt = (ParameterizedType) type;
+
+            if (pt.getActualTypeArguments().length >= 0) {
+                NutType nt = new NutType();
+                nt.setOwnerType(pt.getOwnerType());
+                nt.setRawType(pt.getRawType());
+                Type[] tt = new Type[pt.getActualTypeArguments().length];
+                for (int i = 0; i < tt.length; i++) {
+                    tt[i] = types[i];
+                }
+                nt.setActualTypeArguments(tt);
+                return nt;
+            }
+        }
+
         return type;
     }
 
@@ -1873,7 +2102,7 @@ public abstract class Lang {
     public static <T> Class<T> forName(String name, Class<T> type) {
         Class<?> re;
         try {
-            re = Class.forName(name);
+            re = Lang.loadClass(name);
             return (Class<T>) re;
         }
         catch (ClassNotFoundException e) {
@@ -2053,6 +2282,7 @@ public abstract class Lang {
 
     /** 当前运行的 Java 虚拟机是否是在安卓环境 */
     public static final boolean isAndroid;
+
     static {
         boolean flag = false;
         try {
@@ -2145,5 +2375,87 @@ public abstract class Lang {
             synchronized (lock) {
                 lock.notifyAll();
             }
+    }
+
+    public static void runInAnThread(Runnable runnable) {
+        new Thread(runnable).start();
+    }
+
+    /**
+     * map对象浅过滤,返回值是一个新的map
+     * 
+     * @param source
+     *            原始的map对象
+     * @param prefix
+     *            包含什么前缀,并移除前缀
+     * @param include
+     *            正则表达式 仅包含哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param exclude
+     *            正则表达式 排除哪些key(如果有前缀要求,则已经移除了前缀)
+     * @param map
+     *            映射map, 原始key--目标key (如果有前缀要求,则已经移除了前缀)
+     * @return 经过过滤的map,与原始map不是同一个对象
+     */
+    public static Map<String, Object> filter(Map<String, Object> source,
+                                             String prefix,
+                                             String include,
+                                             String exclude,
+                                             Map<String, String> keyMap) {
+        LinkedHashMap<String, Object> dst = new LinkedHashMap<String, Object>();
+        if (source == null || source.isEmpty())
+            return dst;
+
+        Pattern includePattern = include == null ? null : Pattern.compile(include);
+        Pattern excludePattern = exclude == null ? null : Pattern.compile(exclude);
+
+        for (Entry<String, Object> en : source.entrySet()) {
+            String key = en.getKey();
+            if (prefix != null) {
+                if (key.startsWith(prefix))
+                    key = key.substring(prefix.length());
+                else
+                    continue;
+            }
+            if (includePattern != null && !includePattern.matcher(key).find())
+                continue;
+            if (excludePattern != null && excludePattern.matcher(key).find())
+                continue;
+            if (keyMap != null && keyMap.containsKey(key))
+                dst.put(keyMap.get(key), en.getValue());
+            else
+                dst.put(key, en.getValue());
+        }
+        return dst;
+    }
+
+    /**
+     * 获得访问者的IP地址, 反向代理过的也可以获得
+     * 
+     * @param request
+     * @return
+     */
+    public static String getIP(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
+    /**
+     * @return 返回当前程序运行的根目录
+     */
+    public static String runRootPath() {
+        String cp = Lang.class.getClassLoader().getResource("").toExternalForm();
+        if (cp.startsWith("file:")) {
+            cp = cp.substring("file:".length());
+        }
+        return cp;
     }
 }

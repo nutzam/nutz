@@ -3,6 +3,7 @@ package org.nutz.lang.util;
 import java.util.ArrayList;
 
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 
 public class LinkedCharArray {
 
@@ -97,7 +98,10 @@ public class LinkedCharArray {
 
     private void checkBound(int index) {
         if (index >= size() || index < 0)
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size());
+            throw new IndexOutOfBoundsException("Index: "
+                                                + index
+                                                + ", Size: "
+                                                + size());
     }
 
     public LinkedCharArray clear() {
@@ -178,6 +182,10 @@ public class LinkedCharArray {
 
     public String toString() {
         return new String(toArray());
+    }
+
+    public String toTrimmed() {
+        return Strings.trim(toString());
     }
 
     public String popAll() {

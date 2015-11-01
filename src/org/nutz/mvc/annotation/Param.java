@@ -16,6 +16,24 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Param {
 
-    String value(); // 不能有默认值，因为本注解可以声明在字段上
+    /**
+     * 对应到 HTTP 参数里的参数名称
+     */
+    String value();
 
+    /**
+     * 如果是日期对象，这个参数可以声明其特殊的格式，如果不声明，则用 Times 函数来转换
+     */
+    String dfmt() default "";
+
+    String df() default "//NOT EXIST IN//";
+
+    /**
+     * 在输入参数是一个字符串，而入口函数参数是一个数组的时候：
+     * <ul>
+     * <li>true - 会自动将字符串拆分成数组
+     * <li>false - 不会拆分，而只会生成一个元素的数组
+     * </ul>
+     */
+    boolean array_auto_split() default true;
 }

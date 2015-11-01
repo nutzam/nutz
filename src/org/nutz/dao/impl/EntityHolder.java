@@ -1,9 +1,9 @@
 package org.nutz.dao.impl;
 
 import java.sql.Connection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
@@ -35,11 +35,21 @@ public class EntityHolder {
 
     public EntityHolder(DaoSupport support) {
         this.support = support;
-        this.map = new HashMap<Class<?>, Entity<?>>();
+        this.map = new ConcurrentHashMap<Class<?>, Entity<?>>();
     }
 
     public void set(Entity<?> en) {
-        this.map.put(en.getType(), en);
+        synchronized (map) {
+            this.map.put(en.getType(), en);
+        }
+    }
+
+    public void remove(Entity<?> en) {
+        if (en == null || en.getType() == null)
+            return;
+        synchronized (map) {
+            this.map.remove(en.getType());
+        }
     }
 
     /**
@@ -52,7 +62,7 @@ public class EntityHolder {
     @SuppressWarnings("unchecked")
     public <T> Entity<T> getEntity(Class<T> classOfT) {
         Entity<?> re = map.get(classOfT);
-        if (null == re) {
+        if (null == re || !re.isComplete()) {
             synchronized (map) {
                 re = map.get(classOfT);
                 if (null == re) {
@@ -63,12 +73,11 @@ public class EntityHolder {
         }
         return (Entity<T>) re;
     }
-    
+
     /**
      * 重新载入
      */
     public <T> Entity<T> reloadEntity(Dao dao, Class<T> classOfT) {
-
         final Entity<T> re = maker.make(classOfT);
         synchronized (map) {
             map.put(classOfT, re);
@@ -169,12 +178,17 @@ public class EntityHolder {
         if (first instanceof Map<?, ?>) {
             Object tableName = ((Map<String, ?>) first).get(".table");
             if (null == tableName)
-                throw Lang.makeThrow(    "Can not insert map without key '.table' : \n%s",
-                                        Json.toJson(first, JsonFormat.forLook()));
+                throw Lang.makeThrow("Can not insert map without key '.table' : \n%s",
+                                     Json.toJson(first, JsonFormat.forLook()));
             return makeEntity(tableName.toString(), (Map<String, ?>) first);
         }
         // 作为 POJO 构建
         return getEntity(first.getClass());
     }
 
+    public boolean hasType(Class<?> typeName) {
+        synchronized (map) {
+            return map.containsKey(typeName);
+        }
+    }
 }

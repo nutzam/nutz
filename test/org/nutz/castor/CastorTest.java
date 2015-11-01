@@ -1,28 +1,85 @@
 package org.nutz.castor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.junit.Test;
 import org.nutz.NutzEnum;
-import org.nutz.castor.castor.DateTimeCastor;
+import org.nutz.castor.castor.Datetime2String;
+import org.nutz.castor.castor.String2Array;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Times;
 import org.nutz.lang.meta.Email;
+import org.nutz.lang.util.NutMap;
+
+import static org.junit.Assert.*;
 
 public class CastorTest {
+
+    class Dummy {
+        int id;
+        String msg;
+        Date date;
+
+        public Dummy(int id, String msg, Date date) {
+            this.id = id;
+            this.msg = msg;
+            this.date = date;
+        }
+    }
+
+    @Test
+    public void test_string_2_nutmap() {
+        Castors c = Castors.me();
+
+        NutMap map = c.castTo("{x:100}", NutMap.class);
+        assertEquals(1, map.size());
+        assertEquals(100, map.getInt("x"));
+    }
+
+    @Test
+    public void test_str_2_number_zero() {
+        Castors c = Castors.me();
+
+        assertEquals((Integer) 0, c.castTo("0", int.class));
+    }
+
+    @Test
+    public void Object2Array() {
+        Castors c = Castors.me();
+
+        assertArrayEquals(new int[]{Integer.MIN_VALUE},
+                          c.cast(Integer.MIN_VALUE, int.class, int[].class));
+        assertArrayEquals(new String[]{"First"}, c.cast("First", String.class, String[].class));
+
+        Dummy dummy = new Dummy(123, "abc", new Date());
+        assertArrayEquals(new Dummy[]{dummy}, c.cast(dummy, Dummy.class, Dummy[].class));
+
+        assertTrue(c.canCast(int.class, int[].class));
+        assertTrue(c.canCast(String.class, String[].class));
+        assertTrue(c.canCast(Dummy.class, Dummy[].class));
+
+        Castor<String, Object> string2Array = new String2Array();
+
+        assertArrayEquals((String[]) string2Array.cast("[\"a\",\"b\",\"c\",123,456]",
+                                                       String[].class),
+                          c.cast("[\"a\",\"b\",\"c\",123,456]", String.class, String[].class));
+    }
+
+    @Test
+    public void test_Double_to_int() {
+        Castors cts = Castors.me();
+        Double d = new Double(1.0);
+        int i = cts.castTo(d, int.class);
+        assertEquals(1, i);
+    }
 
     /**
      * 参见 Issue #435
@@ -47,7 +104,7 @@ public class CastorTest {
      * 根据 Issue 272，如果为空串，原生类型的外覆类应该返回 null
      */
     @Test
-    public void test_cast_blank_to_Long() {
+    public void test_cast_blank_to_Integer() {
         assertNull(Castors.me().castTo("", Integer.class));
         assertEquals(0, (int) Castors.me().castTo("", int.class));
     }
@@ -134,7 +191,6 @@ public class CastorTest {
     @Test
     public void testString2bool() throws FailToCastObjectException {
         assertTrue(Castors.me().castTo("true", boolean.class));
-        assertTrue(Castors.me().castTo(" ", boolean.class));
         assertTrue(Castors.me().castTo("abc", boolean.class));
         assertTrue(Castors.me().castTo("1", boolean.class));
         assertTrue(Castors.me().castTo("-1", boolean.class));
@@ -145,6 +201,7 @@ public class CastorTest {
         assertFalse(Castors.me().castTo("oFf", boolean.class));
         assertFalse(Castors.me().castTo("No", boolean.class));
         assertFalse(Castors.me().castTo("faLsE", boolean.class));
+        assertFalse(Castors.me().castTo(" ", boolean.class));
     }
 
     @Test
@@ -152,9 +209,10 @@ public class CastorTest {
         assertEquals(45, (int) Castors.me().castTo("45", int.class));
     }
 
+    @Test
     public void testString2Email() throws FailToCastObjectException {
         Email em = new Email("zozoh@263.net");
-        assertEquals(em, "zozoh@263.net");
+        assertEquals(em.toString(), "zozoh@263.net");
     }
 
     @Test
@@ -197,6 +255,7 @@ public class CastorTest {
     public void testString2Time() throws FailToCastObjectException {
         Calendar cal = Calendar.getInstance();
         cal.setTime(Castors.me().cast("15:17:23", String.class, java.sql.Time.class));
+
         assertEquals(15, cal.get(Calendar.HOUR_OF_DAY));
         assertEquals(17, cal.get(Calendar.MINUTE));
         assertEquals(23, cal.get(Calendar.SECOND));
@@ -380,23 +439,32 @@ public class CastorTest {
     }
 
     @Test
-    public void test_self_setting() {
-        Castors.me().setSetting(new MyCastorSetting());
-        Date date = new Date();
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        assertEquals(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(date),
-                     Castors.me().castToString(timestamp));
-
-        Castors.me().setSetting(new DefaultCastorSetting());
+    public void testDatetime2String() {
+        Date dt = new Date();
+        String strDt = Times.sDT(dt);
+        assertEquals(Castors.me().castToString(dt), strDt);
 
     }
 
-    static class MyCastorSetting {
-        public static void setup(DateTimeCastor<Timestamp, String> c) {
-            c.setDateFormat(new SimpleDateFormat("yyyy/MM/dd"));
-            c.setTimeFormat(new SimpleDateFormat("HH:mm:ss"));
-            c.setDateTimeFormat(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss"));
-        }
+    @Test
+    public void testSetSetting() {
+        // 测试设置
+        Date dt = new Date();
+        String strD = Times.sD(dt);
+        Castors cas = Castors.create();
+        cas.setSetting(new TestCastorSetting());
+        assertEquals(cas.castToString(dt), strD);
+    }
+
+    @Test
+    public void testAddCastor() {
+        Date dt = new Date();
+        String strD = Times.sD(dt);
+        Castors cas = Castors.create();
+        // cas.setSetting(new TestCastorSetting());
+        cas.addCastor(Date2String.class);
+        assertEquals(cas.castToString(dt), strD);
+
     }
 
     private void test_date_equal(java.util.Date d1, java.util.Date d2) {
@@ -412,9 +480,22 @@ public class CastorTest {
         assertEquals(c1.get(Calendar.SECOND), c2.get(Calendar.SECOND));
     }
 
+    class TestCastorSetting {
+        public void setup(Datetime2String c) {
+            c.setFormat("yyyy-MM-dd");
+        }
+    }
+
     // @Test
     // public void load_form_nowhere() {
     // Castors castors = Castors.create().setPaths(new ArrayList<Class<?>>(0));
     // castors.castTo(1, Long.class);
     // }
+    @Test
+    public void testString2Enum() {
+        Assert.assertEquals(AlipayNotifyType.StatusSync,
+                            Castors.create().castTo("StatusSync", AlipayNotifyType.class));
+        Assert.assertEquals(AlipayNotifyType.StatusSync,
+                            Castors.create().castTo("trade_status_sync", AlipayNotifyType.class));
+    }
 }

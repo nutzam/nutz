@@ -1,4 +1,4 @@
-#title: 匿名对象
+#title: 如何定义对象
 #index:0,1
 #author:zozoh(zozohtnt@gmail.com)
 
@@ -18,6 +18,7 @@
 	 || {*events}		|| {#080; 监听事件} ||
 	 || {*args}			|| {#080; 构造函数参数} ||
 	 || {*fields}		|| {#080; 字段设定} ||
+	 || {*factory}		|| {#080; 工厂方法} ||
 	
 	否则，这个 Map 被认为，是在声明对象的每个字段。
 
@@ -58,3 +59,59 @@
 		{{{
 		XiaoHei
 		}}}
+
+--------------------------------------------------------------------------------------------------------
+JSON 加载器
+
+    从上面的例子代码可以看出来，Nutz 的Ioc实现需要你提供一个加载器给它。
+    
+    {{{
+    Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/book/inner.js"));
+                                 ^
+                                 +----- 这里你提供了一个加载器
+    }}}
+    
+    你这个加载器是怎么实现的 NutIoc 并不关心。
+    在 Nutz 最早的版本，它提供的第一个加载器就是 JsonLoader。
+
+    对于 JsonLoader 更多的描述，请参看 [ioc_loader.man 配置文件的格式]
+
+-------------------------------------------------------------------------------------------------------
+工厂方法
+
+	语法:
+	
+	{{{
+		{
+			type : "net.wendal.nutzbook.Cache",
+			args : ["user_profile_cache"],
+			factory:"xxx.xx.xxxxCacheFactory#create"
+		}
+	}}}
+	
+	其中 xxx.xx.xxxxFactory是工厂类的类全名, create是工厂方法, 其参数是"user_profile_cache"
+
+	从1.b.53开始,支持ioc bean做factory bean
+	
+	{{{
+		{
+			type : "net.wendal.nutzbook.Cache",
+			args : ["user_profile_cache"],
+			factory:"$beanCacheFactory#create"
+		}
+	}}}
+	
+	其中的beanCacheFactory是另外一个ioc bean的名称
+
+	
+
+
+
+
+
+
+
+
+
+
+

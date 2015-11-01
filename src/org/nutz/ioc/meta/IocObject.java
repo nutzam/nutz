@@ -30,6 +30,11 @@ public class IocObject implements Cloneable {
 
     /**
      * 对象监听何种事件
+     * <ul>
+     * <li>"fetch" - 每次对象被 ioc.get 的时候，触发
+     * <li>"create" - 当且仅当对象被 new 的时候触发
+     * <li>"depose" - 当对象被容器销毁时触发
+     * </ul>
      */
     private IocEventSet events;
 
@@ -48,6 +53,8 @@ public class IocObject implements Cloneable {
      * 默认的为 "app"
      */
     private String scope;
+
+    private String factory;
 
     public IocObject() {
         args = new ArrayList<IocValue>();
@@ -124,9 +131,17 @@ public class IocObject implements Cloneable {
     public IocObject clone() {
         return Json.fromJson(IocObject.class, Json.toJson(this));
     }
-    
+
     @Override
     public String toString() {
         return Json.toJson(this);
+    }
+
+    public void setFactory(String factory) {
+        this.factory = factory;
+    }
+
+    public String getFactory() {
+        return factory;
     }
 }

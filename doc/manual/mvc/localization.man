@@ -54,11 +54,9 @@
 		
 		请参看 {*org.nutz.mvc.Mvcs} 的 JavaDoc，这里我列几个常用的方法:
 		
-		|| Mvcs.getLocaleName(HttpSession session)					|| 获取当前会话的 Locale 名称 ||
-		|| Mvcs.setLocaleName(HttpSession session, String name)		|| 为当前会话设置 Locale 的名称 ||
-		|| Mvcs.getLocaleNames(ServletContext context)			 	|| 获取整个应用可用的 Locale 名称集合 ||
-		|| Mvcs.hasLocaleName(HttpSession session)					|| 判断当前会话是够设置了特殊的 Locale 的名称 ||
-		|| Mvcs.hasLocale(HttpSession session)						|| 判断当前会话是否已经设置了本地字符串表 ||
+		|| Mvcs.getLocalizationKey()                || 获取当前会话的 Locale 名称 ||
+		|| Mvcs.setLocalizationKey(String key)      || 为当前会话设置 Locale 的名称 ||
+		|| Mvcs.getLocalizationKeySet()             || 获取整个应用可用的 Locale 名称集合 ||
 		
 ------------------------------------------------------------------------------------------
 切换本地语言

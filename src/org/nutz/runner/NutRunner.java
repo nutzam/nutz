@@ -7,15 +7,19 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
 /**
- * 所有后台运行的业务逻辑均需集成本类
+ * 封装Runnable的带lock的启动器
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author pw
+ * @author wendal
  */
 public abstract class NutRunner implements Runnable {
 
     protected Log log;
 
+    /**
+     * 所属的关联线程
+     */
     protected Thread myThread;
 
     /**
@@ -48,53 +52,75 @@ public abstract class NutRunner implements Runnable {
      */
     protected Date downAt;
 
+    /**
+     * 新建一个启动器
+     * @param rname 本启动器的名称
+     */
     public NutRunner(String rname) {
         this.rnm = rname;
         this.count = 0;
         this.lock = new NutLock();
     }
 
+    /**
+     * 主逻辑,用户代码不应该覆盖.
+     */
     public void run() {
-        // 判断下log是否已经初始化
         if (log == null) {
             log = Logs.get().setTag(rnm);
         }
         myThread = Thread.currentThread();
-        // 线程开始运行，那么首先注册
-        reg(this);
-        // 干点什么吧, 可以覆盖掉
+
+        beforeStart(this);
         doIt();
-        // 线程结束后，取消注册
-        unreg(this);
+        afterStop(this);
     }
 
     /**
-     * 子类实现的业务逻辑
+     * 具体的业务实现,返回一个sleep数
      * 
      * @return 本次运行后还需要等待多少个毫秒
      */
     public abstract long exec() throws Exception;
 
     /**
-     * 注册本Runner
-     * 
-     * @param me
-     *            对象本身
+     * 注册本对象到线程管理器,已废弃
+     * @param me 本对象
      */
-    public abstract void reg(NutRunner me);
+    @Deprecated
+    public void reg(NutRunner me) {}
 
     /**
-     * 注销本Runner
+     * 从线程管理器反注册,已废弃
+     * @param me 本对象
+     */
+    @Deprecated
+    public void unreg(NutRunner me) {};
+
+    /**
+     * 开始之前,一般做一些准备工作,比如资源初始化等
      * 
      * @param me
-     *            对象本身
+     *            runner本身
      */
-    public abstract void unreg(NutRunner me);
+    public void beforeStart(NutRunner me) {
+        reg(me);
+    };
+
+    /**
+     * 停止之后,一般是做一些资源回收
+     * 
+     * @param me
+     *            runner本身
+     */
+    public void afterStop(NutRunner me) {
+        unreg(me);
+    }
 
     /**
      * 做一些需要定期执行的操作
      */
-    public void doIt() {
+    protected void doIt() {
         while (!lock.isStop()) {
             synchronized (lock) {
                 try {
@@ -132,47 +158,86 @@ public abstract class NutRunner implements Runnable {
         }
     }
 
+    /**
+     * 返回格式为 [名称:总启动次数] 最后启动时间:最后休眠时间 - 休眠间隔
+     */
     public String toString() {
         return String.format("[%s:%d] %s/%s - %d",
                              rnm,
                              count,
-                             Times.sDT(upAt),
-                             Times.sDT(downAt),
+                             upAt == null ? "NONE" : Times.sDT(upAt),
+                             downAt == null ? "NONE" : Times.sDT(downAt),
                              interval);
     }
 
+    /**
+     * 是否正在等待运行
+     * @return true,如果正在等待
+     */
     public boolean isWaiting() {
         return null != downAt;
     }
 
+    /**
+     * 是否正在执行用户代码
+     * @return true,如果正在exec方法内部
+     */
     public boolean isRunning() {
         return null == downAt;
     }
 
+    /**
+     * 获取执行间隔
+     * @return 执行间隔
+     */
     public long getInterval() {
         return interval;
     }
 
+    /**
+     * 获取最后启动时间
+     * @return 最后启动时间
+     */
     public Date getUpAt() {
         return upAt;
     }
 
+    /**
+     * 获取最后一次等待开始的时间
+     * @return 最后一次等待开始的时间
+     */
     public Date getDownAt() {
         return downAt;
     }
 
+    /**
+     * 获取本启动器的名称
+     * @return 本启动器的名称
+     */
     public String getName() {
         return rnm;
     }
 
+    /**
+     * 获取累计的启动次数
+     * @return 总启动次数
+     */
     public int getCount() {
         return count;
     }
 
+    /**
+     * 获取线程NutLock锁
+     * @return 线程NutLock锁
+     */
     public NutLock getLock() {
         return lock;
     }
 
+    /**
+     * 获取所属线程是否存活
+     * @return 所属线程是否存活
+     */
     public boolean isAlive() {
         if (myThread != null) {
             return myThread.isAlive();
@@ -180,6 +245,10 @@ public abstract class NutRunner implements Runnable {
         return false;
     }
 
+    /**
+     * 强行关闭所属线程
+     * @param err 传给Thread.stop方法的对象
+     */
     @SuppressWarnings("deprecation")
     public void stop(Throwable err) {
         myThread.stop(err);

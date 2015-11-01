@@ -4,6 +4,8 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.nutz.ioc.Ioc;
 import org.nutz.ioc.Ioc2;
 import org.nutz.ioc.IocContext;
@@ -28,7 +30,7 @@ import org.nutz.mvc.ioc.SessionIocContext;
  * 
  */
 public class ModuleProcessor extends AbstractProcessor {
-    
+
     private static final Log log = Logs.get();
 
     private String injectName;
@@ -36,7 +38,7 @@ public class ModuleProcessor extends AbstractProcessor {
     private Class<?> moduleType;
     private Method method;
     private Object moduleObj;
-    
+
     private static Map<String, Object> modulesMap = new HashMap<String, Object>();
 
     @Override
@@ -45,18 +47,19 @@ public class ModuleProcessor extends AbstractProcessor {
         moduleType = ai.getModuleType();
         // 不使用 Ioc 容器管理模块
         if (Strings.isBlank(ai.getInjectName())) {
-        	// change in 1.b.49 
-        	// 同一个类的入口方法,共用同一个实例
-        	synchronized (modulesMap) {
-				String className = moduleType.getName();
-				moduleObj = modulesMap.get(className);
-				if (moduleObj == null) {
-					if (log.isInfoEnabled())
-		                log.info("Create Module obj without Ioc --> " + moduleType);
-		            moduleObj = Mirror.me(moduleType).born();
-		            modulesMap.put(className, moduleObj);
-				}
-			}
+            // change in 1.b.49
+            // 同一个类的入口方法,共用同一个实例
+            synchronized (modulesMap) {
+                String className = moduleType.getName();
+                moduleObj = modulesMap.get(className);
+                if (moduleObj == null) {
+                    if (log.isInfoEnabled())
+                        log.info("Create Module obj without Ioc --> "
+                                 + moduleType);
+                    moduleObj = Mirror.me(moduleType).born();
+                    modulesMap.put(className, moduleObj);
+                }
+            }
         }
         // 使用 Ioc 容器管理模块
         else {
@@ -72,16 +75,27 @@ public class ModuleProcessor extends AbstractProcessor {
             } else {
                 Ioc ioc = ac.getIoc();
                 if (null == ioc)
-                    throw Lang.makeThrow(    "Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app",
-                                            injectName, injectName);
+                    throw Lang.makeThrow("Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app",
+                                         injectName,
+                                         injectName);
                 Object obj;
                 /*
                  * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象
                  */
-                if (NutSessionListener.isSessionScopeEnable && ioc instanceof Ioc2) {
+                if (NutSessionListener.isSessionScopeEnable
+                    && ioc instanceof Ioc2) {
                     reqContext = new RequestIocContext(ac.getRequest());
-                    SessionIocContext sessionContext = new SessionIocContext(Mvcs.getHttpSession());
-                    IocContext myContext = new ComboContext(reqContext, sessionContext);
+                    HttpSession sess = Mvcs.getHttpSession(false);
+                    IocContext myContext = null;
+                    // 如果容器可以创建 Session ...
+                    if (null != sess) {
+                        SessionIocContext sessionContext = new SessionIocContext(sess);
+                        myContext = new ComboContext(reqContext, sessionContext);
+                    }
+                    // 如果容器禁止了 Session ...
+                    else {
+                        myContext = reqContext;
+                    }
                     Mvcs.setIocContext(myContext);
                     obj = ((Ioc2) ioc).get(moduleType, injectName, myContext);
                 }
@@ -94,8 +108,8 @@ public class ModuleProcessor extends AbstractProcessor {
 
             }
             ac.setMethod(method);
-            //if (log.isDebugEnabled()) //打印实际执行的Method信息
-            //    log.debugf("Handle URL[%s] by Method[%s]",ac.getPath(),method);
+            // if (log.isDebugEnabled()) //打印实际执行的Method信息
+            // log.debugf("Handle URL[%s] by Method[%s]",ac.getPath(),method);
             doNext(ac);
         }
         finally {

@@ -10,6 +10,7 @@ import java.lang.annotation.Target;
  * 给出字段的更加精确的数据库类型描述，方便 Dao 创建数据表
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author wendal(wendal1985@gmail.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
@@ -23,12 +24,24 @@ public @interface ColDefine {
 	 */
 	ColType type() default ColType.VARCHAR;
 
+	/**
+	 * 宽度/长度, 例如定义字符串长度为1024 就写  width=1024
+	 */
 	int width() default 0;
 
+	/**
+	 * 精度,小数点后多少位,默认是2
+	 */
 	int precision() default 2;
 
+	/**
+	 * 是否为非空,默认为false
+	 */
 	boolean notNull() default false;
 
+	/**
+	 * 是否为无符号数值,默认为false
+	 */
 	boolean unsigned() default false;
 
 	/**
@@ -36,6 +49,10 @@ public @interface ColDefine {
 	 */
 	boolean auto() default false;
 
+	/**
+	 * 自定义数据库字段类型, 例如写  customType="image" 等, 然后<b>请务必再设置type属性!!</b>
+	 * @return
+	 */
 	String customType() default "";
 
 	/**

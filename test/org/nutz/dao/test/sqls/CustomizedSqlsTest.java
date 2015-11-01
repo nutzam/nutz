@@ -17,6 +17,7 @@ import org.nutz.dao.Sqls;
 import org.nutz.dao.TableName;
 import org.nutz.dao.impl.FileSqlManager;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.sql.NutSql;
 import org.nutz.dao.pager.Pager;
 import org.nutz.dao.sql.Sql;
 import org.nutz.dao.sql.SqlCallback;
@@ -157,5 +158,23 @@ public class CustomizedSqlsTest extends DaoCase {
         Pager pager = dao.createPager(1, 20);
         sql.setPager(pager);
         dao.execute(sql);
+    }
+    
+    @Test
+    public void test_in() {
+        Sqls.setSqlBorning(NutSql.class);
+        dao.clear(Pet.class);
+        dao.insert(Pet.create(4));
+        List<Pet> pets = dao.query(Pet.class, null, dao.createPager(1, 2));
+        Sql sql = Sqls.create("select * from t_pet where id in (@ids)");
+        sql.setEntity(dao.getEntity(Pet.class));
+        sql.setCallback(Sqls.callback.entities());
+        sql.params().set("ids", new int[]{pets.get(0).getId(), pets.get(1).getId()});
+        dao.execute(sql);
+        List<Pet> npets = sql.getList(Pet.class);
+        assertEquals(2, npets.size());
+        assertEquals(npets.get(0).getId(), pets.get(0).getId());
+        assertEquals(npets.get(1).getId(), pets.get(1).getId());
+        Sqls.setSqlBorning(NutSql.class);
     }
 }

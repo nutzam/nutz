@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.nutz.aop.AbstractClassAgent;
 import org.nutz.aop.ClassDefiner;
 import org.nutz.aop.DefaultClassDefiner;
 import org.nutz.dao.DatabaseMeta;
@@ -104,10 +106,18 @@ public class Nutzs {
         notSupport(format("[%S] don't support this test", meta.getTypeName()));
     }
 
+    /**
+     * 调用此方法将改变AOP类名命名规则
+     * @return
+     */
+    @SuppressWarnings("deprecation")
     public static ClassDefiner cd() {
+        if (AbstractClassAgent.t == null)
+            AbstractClassAgent.t = new AtomicLong(8);
+        AbstractClassAgent.t.incrementAndGet();
         return AccessController.doPrivileged(new PrivilegedAction<DefaultClassDefiner>() {
             public DefaultClassDefiner run() {
-                return new DefaultClassDefiner(Nutzs.class.getClassLoader());
+                return new DefaultClassDefiner();
             }
         });
     }

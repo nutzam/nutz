@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * @author wendal(wendal1985@gmail.com)
  * 
  */
-@Target(ElementType.TYPE)
+@Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
@@ -64,6 +64,8 @@ public @interface IocBean {
      * @return 需要注入的字段名
      */
     String[] fields() default {};
+    
+    String factory() default "";
 
 //    /**
 //     * fields 的别名

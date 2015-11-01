@@ -1,0 +1,48 @@
+#title: 集成Ehcache
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+-----------------------------------------------
+提醒
+
+	这一小节的是如何在应用层(service或者module或action类)中使用ehcache
+	
+-----------------------------------------------
+准备工作
+
+	下载ehcache http://ehcache.org/downloads/catalog
+	
+你需要一个js文件
+--------------------------------------------------
+
+	{{{
+	var ioc = {
+		// 直接初始化Ehcache,默认找ehcache.xml文件哦
+		cacheManager : {
+			type : "net.sf.ehcache.CacheManager",
+			factory : "net.sf.ehcache.CacheManager#create"
+		}
+		/* // 与shiro共享一个ehcache示例的方式
+		cacheManager : {
+			type : "net.sf.ehcache.CacheManager",
+			factory : "net.sf.ehcache.CacheManager#getCacheManager",
+			args : ["nutzbook"] // 对应shiro.ini中指定的ehcache.xml中定义的name
+		}
+		 */
+	};
+	}}}
+	
+	把它放入dao.js同一个文件夹, 并确定在@IocBy中涵盖了这个js
+	
+--------------------------------------------------------
+怎么用
+
+	在你需要使用Ehcache的地方,加入
+	
+	{{{
+	@Inject CacheManager cacheManager;
+	}}}
+	
+	so, 你已经得到CacheManager,怎么玩就随你了
+	
+	

@@ -100,7 +100,7 @@
 	因此，人类的劣根性导致我们这么安慰自己：“没事没事，这个设计虽然有一点点臃肿，但是没人让人更难用，
 	也过得去啦 -_-!”
 --------------------------------------------------------------------------------------------------------
-不要单例
+不要单例?
 
 	默认的，Ioc 容器管理的对象都是单例的，你如果不想单例，你可以:
 	{{{<Java>
@@ -146,9 +146,6 @@
 	那么你到底能注入什么呢？ 感兴趣的同学可以看这里：[injecting.man 你都可以注入什么]。
 	当然，同 Json 的方式有点不同，你这里直接写 "refer:xxxx" 或者 "env:xxxx" 就好了。下面是一个列表
 	
-	|| @Inject("Hello world")              ||  字符串 ||
-	|| @Inject("135897415")                ||  数字 ||
-	|| @Inject("true")                     ||  布尔型值 ||
 	|| @Inject("refer:objName")            ||  注入容器其他对象的引用 ||
 	|| @Inject("refer:$Ioc")               ||  容器自身 ||
 	|| @Inject("refer:$Name")              ||  对象的名称，即你在 @InjectName 或者 @IocBean 里声明的 name ||
@@ -164,6 +161,8 @@
 	|| @Inject("java:$xh.name")                              || 容器对象某个属性 ||
 	|| @Inject("java:$xh.getXXX()")                          || 容器对象某个方法的返回值 ||
 	|| @Inject("$xh.getXXX("some string", true, 34)")        || 容器对象某个方法的返回值 ||
+	
+	兼容性改变, 如果你硬要注入一个常量(例如true,false,字符串), 那么写成 ":true" ":false" ":hi"
 	
 	基本上，看到上面的表格，你同时也能完全明白怎么 [#为对象传递构造函数]，不是吗？
 --------------------------------------------------------------------------------------------------------
@@ -214,8 +213,37 @@
 	字符串，或者布尔值怎么办？ 呵呵，抱歉，截止到现在，我们还没有解决这个问题，不过很快我们会给出一个设计，
 	并且我可以负责的说，给出新的设计一定会兼容现在的这个用法的。
 
+--------------------------------------------------------------------------------------------------------
+工厂方法
 
-
-
-
-
+	{{{<Java>
+	@IocBean(factory="net.wendal.mqtt.MqttAbcServiceFactory#create", args={"refer:dao"})
+	public class AbcService extends Service {
+		...
+		
+	}
+	
+	// 无任何注解
+	public class MqttAbcServiceFactory {
+		public static AbcService create(Dao dao) {
+			return new XXXXAbcService(dao);
+		}
+	}
+	}}}
+	
+	通过其他bean生成此bean, 类似于spring的factory-bean功能
+	
+	{{{
+	@IocBean(factory="$snakerConfigure#build")
+	public class SnakerService{}
+	
+	
+	@IocBean(name="snakerConfigure")
+	public class SnakerConfigure {
+		public SnakerService build() {
+			return ....;
+		}
+	}
+	}}}
+	
+	

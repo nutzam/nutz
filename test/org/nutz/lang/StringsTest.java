@@ -14,6 +14,18 @@ import org.junit.Test;
 
 public class StringsTest {
 
+    /**
+     * for issue #606 (report by <a href="https://github.com/Rekoe">Rekoe</a>)
+     */
+    @Test
+    public void test_isQuoteBy_null() {
+        assertTrue(Strings.isQuoteBy("{abc}", "{", "}"));
+        assertFalse(Strings.isQuoteBy(null, "{", "}"));
+        assertFalse(Strings.isQuoteBy("{abc}", "{", null));
+        assertFalse(Strings.isQuoteBy("{abc}", null, "}"));
+        assertFalse(Strings.isQuoteBy("{abc}", null, null));
+    }
+
     @Test
     public void test_is_full_width_character() {
         assertFalse(Strings.isFullWidthCharacter('a'));
@@ -80,12 +92,12 @@ public class StringsTest {
     }
 
     @Test
-    public void test_capitalize() {
-        assertNull(Strings.capitalize(null));
-        assertEquals("", Strings.capitalize(""));
-        assertEquals("A", Strings.capitalize("a"));
-        assertEquals("Aa", Strings.capitalize("aa"));
-        assertEquals("Aa", Strings.capitalize("Aa"));
+    public void test_upperFirst() {
+        assertNull(Strings.upperFirst(null));
+        assertEquals("", Strings.upperFirst(""));
+        assertEquals("A", Strings.upperFirst("a"));
+        assertEquals("Aa", Strings.upperFirst("aa"));
+        assertEquals("Aa", Strings.upperFirst("Aa"));
     }
 
     @Test
@@ -224,6 +236,16 @@ public class StringsTest {
         Strings.cutRight("abc", -1, 'c');
     }
 
+    @Test(expected = StringIndexOutOfBoundsException.class)
+    public void test_cut_left() {
+        assertNull(Strings.cutLeft(null, 2, 'c'));
+        assertEquals("ac", Strings.cutLeft("a", 2, 'c'));
+        assertEquals("ab", Strings.cutLeft("ab", 2, 'c'));
+        assertEquals("ab", Strings.cutLeft("abc", 2, 'c'));
+        assertEquals("", Strings.cutLeft("abc", 0, 'c'));
+        Strings.cutLeft("abc", -1, 'c');
+    }
+
     @Test
     public void test_align_left() {
         assertNull(Strings.alignLeft(null, 2, 'c'));
@@ -347,7 +369,8 @@ public class StringsTest {
     public void test_escape_html() {
         assertEquals("&lt;/article&gt;Oops &lt;script&gt;alert(&quot;hello world&quot;);&lt;/script&gt;",
                      Strings.escapeHtml("</article>Oops <script>alert(\"hello world\");</script>"));
-        assertEquals("alert(&#x27;hello world&#x27;);", Strings.escapeHtml("alert('hello world');"));
+        assertEquals("alert(&#x27;hello world&#x27;);",
+                     Strings.escapeHtml("alert('hello world');"));
     }
 
     @Test
@@ -367,4 +390,17 @@ public class StringsTest {
                                                             .append(here_is_zenkaku_space_char)));
     }
 
+    @Test
+    public void test_join_array() throws Exception {
+        assertTrue("1920x1080".equals(Strings.join("x", new String[]{"1920", "1080"})));
+        assertTrue("1920x1080".equals(Strings.join("x", new Integer[]{1920, 1080})));
+    }
+
+    @Test
+    public void test_change_charset() throws Exception {
+        assertTrue("你妹的".equals(Strings.changeCharset("\u4f60\u59b9\u7684",
+                                                      Encoding.CHARSET_UTF8)));
+        assertTrue("nutz是个好类库".equals(Strings.changeCharset("nutz\u662f\u4e2a\u597d\u7c7b\u5e93",
+                                                            Encoding.CHARSET_UTF8)));
+    }
 }

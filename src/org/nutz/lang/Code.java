@@ -32,10 +32,10 @@ public class Code {
 
         public CodeAnalysisResult() {}
 
-        public CodeAnalysisResult(    long normalLines,
-                                    long commentLines,
-                                    long whiteLines,
-                                    long importLines) {
+        public CodeAnalysisResult(long normalLines,
+                                  long commentLines,
+                                  long whiteLines,
+                                  long importLines) {
             this.normalLines = normalLines;
             this.commentLines = commentLines;
             this.whiteLines = whiteLines;
@@ -60,6 +60,17 @@ public class Code {
 
         public long getTotalLines() {
             return normalLines + commentLines + whiteLines + importLines;
+        }
+
+        public String toString() {
+            return String.format("All      : %d lines\n"
+                                         + "comments : %d lines\n"
+                                         + "blank    : %d lines\n"
+                                         + "imports  : %d lines\n",
+                                 normalLines,
+                                 commentLines,
+                                 whiteLines,
+                                 importLines);
         }
 
     }
@@ -144,7 +155,8 @@ public class Code {
      *            代码分析配置项(为空的话，则按照JAVA代码来进行分析统计)
      * @return 分析结果
      */
-    public static CodeAnalysisResult countingCode(File file, CodeAnalysisConf conf) {
+    public static CodeAnalysisResult countingCode(File file,
+                                                  CodeAnalysisConf conf) {
         if (!Files.isFile(file)) {
             throw new RuntimeException("file is not a File, can't analysis it.");
         }
@@ -182,10 +194,11 @@ public class Code {
                     // 空白行(多行注解内的空白行不算在内)
                     whiteLines++;
                 } else if (line.startsWith(conf.singleLineCommentStart)
-                            || (line.startsWith(conf.multiLineCommentStart) && line.endsWith(conf.multiLineCommentEnd))) {
+                           || (line.startsWith(conf.multiLineCommentStart) && line.endsWith(conf.multiLineCommentEnd))) {
                     // 单行注释
                     commentLines++;
-                } else if (line.startsWith(conf.pakStart) || line.startsWith(conf.impStart)) {
+                } else if (line.startsWith(conf.pakStart)
+                           || line.startsWith(conf.impStart)) {
                     // package与import
                     importLines++;
                 } else {
@@ -206,7 +219,10 @@ public class Code {
             }
         }
         // 记录并返回统计结果
-        return new CodeAnalysisResult(normalLines, commentLines, whiteLines, importLines);
+        return new CodeAnalysisResult(normalLines,
+                                      commentLines,
+                                      whiteLines,
+                                      importLines);
     }
 
     /**
@@ -233,23 +249,34 @@ public class Code {
         }
         CodeStatisticsResult statisticsResult = new CodeStatisticsResult(src);
         boolean useParticularType = !Strings.isBlank(suffix);
-        folderAnalysis(src, useParticularType, suffix, countSubFolder, conf, statisticsResult);
+        folderAnalysis(src,
+                       useParticularType,
+                       suffix,
+                       countSubFolder,
+                       conf,
+                       statisticsResult);
         return statisticsResult;
     }
 
-    private static void folderAnalysis(    File src,
-                                        boolean useParticularType,
-                                        String suffix,
-                                        boolean countSubFolder,
-                                        CodeAnalysisConf conf,
-                                        CodeStatisticsResult statisticsResult) {
+    private static void folderAnalysis(File src,
+                                       boolean useParticularType,
+                                       String suffix,
+                                       boolean countSubFolder,
+                                       CodeAnalysisConf conf,
+                                       CodeStatisticsResult statisticsResult) {
         for (File f : src.listFiles()) {
             if (countSubFolder && Files.isDirectory(f)) {
-                folderAnalysis(f, useParticularType, suffix, countSubFolder, conf, statisticsResult);
+                folderAnalysis(f,
+                               useParticularType,
+                               suffix,
+                               countSubFolder,
+                               conf,
+                               statisticsResult);
             } else {
                 if (useParticularType
                     && !suffix.equalsIgnoreCase(f.getName()
-                                                    .substring(f.getName().lastIndexOf('.') + 1))) {
+                                                 .substring(f.getName()
+                                                             .lastIndexOf('.') + 1))) {
                     continue;
                 }
                 statisticsResult.addCodeAnalysisResult(countingCode(f, conf));

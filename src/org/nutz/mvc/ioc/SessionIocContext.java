@@ -2,7 +2,9 @@ package org.nutz.mvc.ioc;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -75,5 +77,23 @@ public class SessionIocContext implements IocContext {
 
     public HttpSession getSession() {
         return session;
+    }
+    
+    public Set<String> names() {
+        Set<String> list = new HashSet<String>();
+        synchronized (session) {
+            @SuppressWarnings("unchecked")
+            Enumeration<String> ems = session.getAttributeNames();
+            while (ems.hasMoreElements()) {
+                String key = ems.nextElement();
+                if (null == key)
+                    continue;
+                Object value = session.getAttribute(key);
+                if (value instanceof ObjectProxy) {
+                    list.add(key);
+                }
+            }
+        }
+        return list;
     }
 }

@@ -103,7 +103,6 @@ Nutz 的未来
 		 # [http://www.douban.com/group/339199/ Nutz 的微笑]
 	 # 或者加入 QQ 群
 		 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）] -- 感谢 {*E-Hunter} 的支持  
-		 * [http://qun.qq.com/#jointhegroup/gid/60504323 Nutz在微笑 （60504323）超级群] -- 感谢 {*milk cat!} 和 {*yanick} 的支持  
 		 * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群] -- 感谢 {*c.A} 的支持  
 	 
 	 考虑到，现在这个特殊时期，[https://groups.google.com/group/nutzam 讨论区] 即使用 https 也会不时被墙。

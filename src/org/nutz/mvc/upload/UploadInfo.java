@@ -13,7 +13,7 @@ import java.io.Serializable;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  */
-public class UploadInfo implements Serializable {
+public class UploadInfo implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1145316598297147074L;
 

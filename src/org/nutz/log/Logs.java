@@ -71,8 +71,9 @@ public final class Logs {
     public static void init() {
         try {
             String packageName = Logs.class.getPackage().getName() + ".impl.";
-            adapter = new SimplePluginManager<LogAdapter>(    packageName + "Log4jLogAdapter",
-                                                            packageName + "SystemLogAdapter").get();
+            adapter = new SimplePluginManager<LogAdapter>(    packageName + "Slf4jLogAdapter",
+                    packageName + "Log4jLogAdapter",
+                    packageName + "SystemLogAdapter").get();
         }
         catch (Throwable e) {
             //这是不应该发生的,SystemLogAdapter应该永远返回true

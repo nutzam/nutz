@@ -38,6 +38,13 @@ public class ChainParsing {
             if (c == ',') {
                 checkIfNeedAddNode();
             }
+            // 属性
+            else if (null != first && c == '.') {
+                String fn = clearStringBuffer();
+                if (!Strings.isBlank(fn)) {
+                    addNode(new FieldNode(fn));
+                }
+            }
             // String
             else if (c == '\'' || c == '"') {
                 clearStringBuffer();
@@ -77,11 +84,18 @@ public class ChainParsing {
                 ends.popLast();
                 ChainNode[] args = argss.popLast().toArray();
                 int pos = funcName.lastIndexOf('.');
+                // 嗯... 看来是静态方法调用 ...
                 if (pos > 0) {
                     String className = funcName.substring(0, pos);
                     funcName = funcName.substring(pos + 1);
                     addNode(new StaticFunctionNode(className, funcName, args));
-                } else {
+                }
+                // 前面节点如果为 (...)，那么 . 会被计入
+                else if (pos == 0) {
+                    addNode(new ObjectFunctionNode(funcName.substring(1), args));
+                }
+                // 简直就是一个方法调用
+                else {
                     addNode(new ObjectFunctionNode(funcName, args));
                 }
                 clearStringBuffer();
@@ -112,7 +126,7 @@ public class ChainParsing {
                 addNode(new BooleanNode(s));
             }
             // number
-            else if (s.matches("^([0-9]+)$")) {
+            else if (s.matches("^([-]?[0-9]+)?([.][0-9]+)?([fL]?)$")) {
                 addNode(new NumberNode(s));
             }
             // the chain is empty
@@ -122,7 +136,9 @@ public class ChainParsing {
                     throw Lang.makeThrow("Don't know how to invoke '%s'", s);
                 String className = s.substring(0, pos);
                 String funcName = s.substring(pos + 1);
-                addNode(new StaticFunctionNode(className, funcName, new ChainNode[0]));
+                addNode(new StaticFunctionNode(className,
+                                               funcName,
+                                               new ChainNode[0]));
             }
             // some node had been built
             else {

@@ -61,6 +61,14 @@
 		public class MainModule {
 			...
 		}}}
+		
+		如果你需要使用ioc, 除了从init的NutConfig对象的getIoc方法获取之后,还可以这样写
+		{{{
+		@SetupBy(value=MyAppSetup.class, args="ioc:myAppSetup")
+		public class MainModule {
+			...
+		}}}
+		
 	
 	--------------------------------------------------------------------
 	@Views - 自定义的扩展视图
@@ -145,3 +153,6 @@
 		{{{
 		@Encoding(input="UTF-8",output="UTF-8")
 		}}}
+		
+		注意! 通过URL发送的参数,是不受影响的!! 例如在URL中发送中文,那么@Encoding不会有作用,
+		你需要用POST传参数,或者修改tomcat的server.xml,修改其中的URIEncoding属性.

@@ -1,13 +1,14 @@
 package org.nutz.castor.castor;
 
-import java.text.DateFormat;
 import java.util.Calendar;
+
+import org.nutz.lang.Times;
 
 public class Calendar2String extends DateTimeCastor<Calendar, String> {
 
     @Override
     public String cast(Calendar src, Class<?> toType, String... args) {
-        return ((DateFormat) dateTimeFormat.clone()).format(src.getTime());
+        return Times.sDT(src.getTime());
     }
 
 }

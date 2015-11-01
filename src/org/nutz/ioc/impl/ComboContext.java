@@ -1,6 +1,8 @@
 package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.nutz.ioc.IocContext;
 import org.nutz.ioc.ObjectProxy;
@@ -52,14 +54,14 @@ public class ComboContext implements IocContext {
     public boolean save(String scope, String name, ObjectProxy obj) {
         boolean re = false;
         for (IocContext c : contexts)
-            re &= c.save(scope, name, obj);
+            re |= c.save(scope, name, obj);
         return re;
     }
 
     public boolean remove(String scope, String name) {
         boolean re = false;
         for (IocContext c : contexts)
-            re &= c.remove(scope, name);
+            re |= c.remove(scope, name);
         return re;
     }
 
@@ -75,5 +77,12 @@ public class ComboContext implements IocContext {
 
     public IocContext[] getContexts() {
         return contexts;
+    }
+    
+    public Set<String> names() {
+        Set<String> list = new HashSet<String>();
+        for (IocContext c : contexts)
+            list.addAll(c.names());
+        return list;
     }
 }

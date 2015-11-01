@@ -73,7 +73,9 @@ public class SimpleClob implements Clob {
 
     public void truncate(long len) throws SQLException {
         try {
-            new RandomAccessFile(file, "rw").setLength(len);
+            RandomAccessFile raf = new RandomAccessFile(file, "rw");
+            raf.setLength(len);
+            raf.close();
         }
         catch (FileNotFoundException e) {
             throw Lang.wrapThrow(e);

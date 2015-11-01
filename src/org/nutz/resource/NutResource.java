@@ -7,6 +7,8 @@ import java.io.Reader;
 import org.nutz.lang.Streams;
 
 public abstract class NutResource {
+    
+    public NutResource() {}
 
     public boolean equals(Object obj) {
     	if (obj == null)
@@ -45,4 +47,16 @@ public abstract class NutResource {
 
     protected String name;
 
+    /**
+     * 这个对象的来源
+     */
+    protected String source;
+    
+    public void setSource(String source) {
+        this.source = source;
+    }
+    
+    public String getSource() {
+        return source;
+    }
 }

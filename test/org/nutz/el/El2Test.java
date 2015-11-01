@@ -4,7 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -16,11 +18,13 @@ import org.nutz.el.issue.Issue293;
 import org.nutz.el.issue.Issue303;
 import org.nutz.el.issue.Issue314;
 import org.nutz.el.speed.SimpleSpeedTest;
+import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Maths;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
+import org.nutz.repo.Base64;
 
 public class El2Test {
     El el;
@@ -492,5 +496,43 @@ public class El2Test {
         Context ctx = Lang.context();
         ctx.set("a",new Object[]{new org.nutz.el.issue411.Issue411.A()} );
         assertEquals("1", el.eval(ctx));
+    }
+    
+    @Test
+    public void test_uu32_uu64(){
+        Context ctx = Lang.context();
+        
+        El el = new El("uuid()");
+        assertEquals(32, el.eval(ctx).toString().length());
+        
+        el = new El("uuid(32)");
+        assertTrue(26 >= el.eval(ctx).toString().length());
+        
+        el = new El("uuid(64)");
+        assertTrue(23 >= el.eval(ctx).toString().length());
+    }
+    
+    @Test
+    public void test_base64(){
+        Context ctx = Lang.context();
+        
+        El el = new El("base64('中文,英文abc,火星文((%&(*')");
+        assertEquals(Base64.encodeToString("中文,英文abc,火星文((%&(*".getBytes(Encoding.CHARSET_UTF8), false), el.eval(ctx));
+        
+        String str = Base64.encodeToString("EEE中文".getBytes(Encoding.CHARSET_UTF8), false);
+        el = new El("base64('decode', \'" + str + "\')");
+        assertEquals("EEE中文", el.eval(ctx));
+    }
+    
+    @Test
+    public void test_urlencode() throws UnsupportedEncodingException {
+        String re = El.eval("urlencode('中文')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.UTF8), re);
+        
+        re = El.eval("urlencode('中文', 'gbk')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.GBK), re);
+        
+        re = El.eval("urlencode('中文', 'gb2312')").toString();
+        assertEquals(URLEncoder.encode("中文", Encoding.GB2312), re);
     }
 }

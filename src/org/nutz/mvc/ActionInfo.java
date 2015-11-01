@@ -2,9 +2,11 @@ package org.nutz.mvc;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 public class ActionInfo {
 
@@ -28,7 +30,7 @@ public class ActionInfo {
 
     private String failView;
 
-    private List<String> httpMethods;
+    private Set<String> httpMethods;
 
     private ObjectInfo<? extends ActionFilter>[] filterInfos;
 
@@ -37,14 +39,16 @@ public class ActionInfo {
     private Class<?> moduleType;
 
     private Method method;
+    
+    private boolean pathTop;
 
     public ActionInfo() {
-        httpMethods = new ArrayList<String>(4);
+        httpMethods = new HashSet<String>();
     }
 
     public ActionInfo mergeWith(ActionInfo parent) {
         // 组合路径 - 与父路径做一个笛卡尔积
-        if (null != paths && null != parent.paths && parent.paths.length > 0) {
+        if (!pathTop && null != paths && null != parent.paths && parent.paths.length > 0) {
             List<String> myPaths = new ArrayList<String>(paths.length * parent.paths.length);
             for (int i = 0; i < parent.paths.length; i++) {
                 String pp = parent.paths[i];
@@ -53,6 +57,10 @@ public class ActionInfo {
                 }
             }
             paths = myPaths.toArray(new String[myPaths.size()]);
+        }
+        // 出现下面这种情况,是因为需要继承MainModule的@At
+        else if (paths == null && parent.paths != null && parent.paths.length > 0) {
+            paths = parent.paths;
         }
 
         if (null == pathMap) {
@@ -87,17 +95,11 @@ public class ActionInfo {
     }
 
     /**
-     * 只能接受如下字符串
-     * <ul>
-     * <li>GET
-     * <li>PUT
-     * <li>POST
-     * <li>DELETE
-     * </ul>
+     * 接受各种标准和非标准的Http Method
      * 
      * @return 特殊的 HTTP 方法列表
      */
-    public List<String> getHttpMethods() {
+    public Set<String> getHttpMethods() {
         return httpMethods;
     }
 
@@ -213,4 +215,13 @@ public class ActionInfo {
         this.method = method;
     }
 
+    public void setPathTop(boolean pathTop) {
+        this.pathTop = pathTop;
+    }
+
+    public boolean isPathTop() {
+        return pathTop;
+    }
+    
+    
 }

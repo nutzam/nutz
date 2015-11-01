@@ -8,7 +8,9 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.nutz.NutRuntimeException;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Streams;
 import org.nutz.lang.util.Disks;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -20,12 +22,12 @@ public abstract class ResourceLocation {
     public abstract void scan(String base, Pattern pattern, List<NutResource> list);
     
     public static ResourceLocation file(File root) {
-        if (!root.exists())
-            return new ErrorResourceLocation(root);
         try {
+            if (!root.exists())
+                return ErrorResourceLocation.make(root);
             return new FileSystemResourceLocation(root.getAbsoluteFile().getCanonicalFile());
         } catch (Exception e) {
-            return new ErrorResourceLocation(root);
+            return ErrorResourceLocation.make(root);
         }
     }
     
@@ -33,7 +35,7 @@ public abstract class ResourceLocation {
         try {
             return new JarResourceLocation(jarPath);
         } catch (Exception e) {
-            return new ErrorResourceLocation(jarPath);
+            return ErrorResourceLocation.make(jarPath);
         }
     }
 }
@@ -45,15 +47,9 @@ class FileSystemResourceLocation extends ResourceLocation {
             return true;
         if (obj == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (!(obj instanceof FileSystemResourceLocation))
             return false;
-        FileSystemResourceLocation other = (FileSystemResourceLocation) obj;
-        if (root == null) {
-            if (other.root != null)
-                return false;
-        } else if (!root.equals(other.root))
-            return false;
-        return true;
+        return root.equals(((FileSystemResourceLocation) obj).root);
     }
     
     public int hashCode() {
@@ -79,8 +75,10 @@ class FileSystemResourceLocation extends ResourceLocation {
 
     File root;
 
-    public FileSystemResourceLocation(File root) {
-        this.root = root;
+    public FileSystemResourceLocation(File root) throws IOException {
+        if (root == null)
+            throw new NutRuntimeException("FileSystemResourceLocation root can't be NULL");
+        this.root = root.getAbsoluteFile().getCanonicalFile();
     }
 }
 
@@ -135,20 +133,30 @@ class JarResourceLocation extends ResourceLocation {
 
     String jarPath;
 
-    public JarResourceLocation(String jarPath) {
-        this.jarPath = jarPath;
+    public JarResourceLocation(String jarPath) throws IOException {
+        if (jarPath.startsWith("zip:"))
+            jarPath = jarPath.substring(4);
+        if (jarPath.startsWith("file:/")) {
+            jarPath = jarPath.substring("file:/".length());
+            if (!new File(jarPath).exists() && !jarPath.startsWith("/")) {
+                jarPath = "/" + jarPath;
+            }
+        }
+        this.jarPath = new File(jarPath).getAbsoluteFile().getCanonicalPath();
+        ZipInputStream zis = null;
         try {
-            ZipInputStream zis = Scans.makeZipInputStream(jarPath);
+            zis = Scans.makeZipInputStream(jarPath);
             ZipEntry ens = null;
             while (null != (ens = zis.getNextEntry())) {
                 if (ens.isDirectory())
                     continue;
                 names.add(ens.getName());
             }
-            zis.close();
         }
-        catch (Exception e) {
+        catch (Throwable e) {
             throw Lang.wrapThrow(e);
+        } finally {
+            Streams.safeClose(zis);
         }
     }
 }

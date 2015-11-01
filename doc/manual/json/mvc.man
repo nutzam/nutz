@@ -1,0 +1,134 @@
+#title: Nutz.Json 在Mvc中的用法
+#index:0,1
+#author: wendal ( wendal1985@gmail.com@gmail.com )
+---------------------------------------------------------------
+
+Mvc中使用Json
+
+	第一种,输出用
+	
+	{{{
+	@Ok("json:{locked:'password|salt'}")
+	}}}
+	
+	第二中  输入用的
+	
+	{{{
+	@AdaptBy(type=JsonAdaptor.class)
+	}}}
+	
+---------------------------------------------------------------
+@Ok中的json
+
+	首先,必须再再再强调一次,如果返回值是String,即您自行生成Json字符串(无论是拼接的还是Json.toJson的还是用fastJson转的)
+	就别用@Ok("json"),而是用@Ok("raw:json"),否则字符串将再次转义,这样在页面端又得eval一次,而且下面的所有自定义配置统统无效
+
+	@Ok("json:xxx") 对应的类是 UTF8JsonView
+
+	最精简也是最常见的形式
+	
+	{{{
+	@Ok("json")
+	
+	// 等价于
+	@Ok("json:nice")
+	}}}
+	
+	内置的模式,一对一对应JsonFormat中的几个快捷方法
+	
+	{{{
+	@Ok("json:nice")
+	@Ok("json:full")
+	@Ok("json:forLook")
+	@Ok("json:compact")
+	}}}
+	
+	详细配置, 后面的就是JsonFormat的json形式而已,与JsonFormat的属性一一对应
+	
+	{{{
+	@Ok("json:{ignoreNull=true, locked:'password|salt'}")
+	
+	// 翻译为Java代码的话
+	
+	Json.toJson(obj, new JsonFormat().setIgnoreNull(true).setLocked("password|salt"))
+	}}}
+	
+示例配置 -- 忽略password和salt属性,且缩进为一个空格
+
+	{{{
+	@Ok("json:{indentBy=' ', locked:'password|salt'}")
+	}}}
+	
+示例配置2 -- 设置日期格式为yyyyMMdd
+	
+	{{{
+	@Ok("json:{dateFormat:'yyyyMMdd'}")
+	}}}
+	
+AdaptBy的说明
+
+	JsonAdaptor 适配器本身并没有什么可以配置的东西
+	
+	{{{
+	@AdaptBy(type=JsonAdaptor.class)
+	}}}
+	
+	传输的数据应为POST或PUT,且请求体整个就是一个JSON字符串,而不是表单参数哦
+	
+示例代码,页面发送一个User类的json到服务器, 同理可以发送List,Map等等, 然后服务器用json响应
+
+
+	页面端的代码
+	
+	{{{
+	$.ajax({
+		url : ${base}/user/update
+		type : "POST",
+		data : $.toJSON({ id: 88, name:"wendal", location : "地球" }),
+		dataType : "json", // 这是服务器响应的数据格式,不是发送内容的格式
+		success : function (re) {
+			if (re.ok) {
+				console.log(re.data.id);
+				console.log($.toJSON(re.data));
+			}
+		} 
+	});
+	}}}
+	
+	服务器端的入口方法
+	
+	{{{
+	@AdaptBy(type=JsonAdaptor.class)
+	@At("/user/update")
+	@Ok("json:{locked:'password|salt'}")
+	public Object update(@Param("..")User user) {
+		NutMap re = new NutMap();
+		if (user == null || user.getId() < 1) {
+			re.put("ok", false);
+			re.put("msg", "null object");
+			return re;
+		}
+		int count = dao.update(user);
+		if (count != 1) {
+			re.put("ok", false);
+			re.put("msg", "no user match");
+			return re;
+		}
+		re.put("data", dao.fetch(User.class, user.getId));
+		re.put("ok", true);
+		return re;
+	}
+	}}}
+	
+	Chrome控制台将打印
+	
+	{{{
+	id=88
+	
+	{
+		id : 88,
+		name : "wendal",
+		location : "地球"
+		// 其他属性,但没有password和salt出现
+	}
+	}}}

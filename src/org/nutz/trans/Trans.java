@@ -21,6 +21,11 @@ public abstract class Trans {
     private static final Log log = Logs.get();
 
     private static Class<? extends Transaction> implClass;
+    
+    /**
+     * 这个类提供的均为静态方法.
+     */
+    Trans() {}
 
     static ThreadLocal<Transaction> trans = new ThreadLocal<Transaction>();
     static ThreadLocal<Integer> count = new ThreadLocal<Integer>();
@@ -58,7 +63,7 @@ public abstract class Trans {
                 log.debugf("Start New Transaction id=%d, level=%d", tn.getId(), level);
         } else {
             if (DEBUG)
-                log.debugf("Attach Transaction id=%d, level=%d", tn.getId(), level);
+                log.debugf("Attach Transaction    id=%d, level=%d", tn.getId(), level);
         }
         int tCount = count.get() + 1;
         count.set(tCount);
@@ -84,7 +89,7 @@ public abstract class Trans {
         if (count.get() == 0)
             try {
                 if (DEBUG)
-                    log.debugf("Transaction depose id=%d", trans.get().getId());
+                    log.debugf("Transaction depose id=%d, count=%s", trans.get().getId(), count.get());
                 trans.get().close();
             }
             catch (Throwable e) {
@@ -99,14 +104,18 @@ public abstract class Trans {
         count.set(num);
         if (count.get() == 0) {
             if (DEBUG)
-                log.debugf("Transaction rollback id=%s", trans.get().getId());
+                log.debugf("Transaction rollback id=%s, count=%s", trans.get().getId(), num);
             trans.get().rollback();
         } else {
             if (DEBUG)
-                log.debugf("Transaction delay rollback id=%s", trans.get().getId());
+                log.debugf("Transaction delay rollback id=%s, count=%s", trans.get().getId(), num);
         }
     }
 
+    /**
+     * 是否在事务中
+     * @return 真,如果在事务中
+     */
     public static boolean isTransactionNone() {
         Transaction t = trans.get();
         return null == t || t.getLevel() == Connection.TRANSACTION_NONE;
@@ -232,6 +241,8 @@ public abstract class Trans {
         Integer c = Trans.count.get();
         if (c == null)
             c = Integer.valueOf(0);
+        else if (c > 0)
+        	c--;
         Trans._rollback(c);
     }
 
@@ -254,6 +265,10 @@ public abstract class Trans {
             return get().getConnection(ds);
     }
 
+    /**
+     * 自动判断是否关闭当前连接
+     * @param conn 数据库连接
+     */
     public static void closeConnectionAuto(Connection conn) {
         if (get() == null && null != conn) {
             try {

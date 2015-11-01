@@ -1,0 +1,33 @@
+#title: 集成HTTL(废弃)
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+
+---------------------------------------------------------------------
+HTTL官网信息
+
+	不建议使用,因为作者已经停止更新
+
+	官网地址 http://httl.github.io/zh/
+	
+	nutz插件的下载 http://httl.github.io/zh/download.html
+	
+---------------------------------------------------------------------
+关联插件
+	
+	修改MainModule类,添加引用
+
+	{{{
+	@Views(value={HttlViewMaker.class})
+	// 其他配置,如IocBy等等
+	public class MainModule {}
+	}}}
+
+----------------------------------------------------------------------	
+用法
+
+	{{{
+	@At("/user")
+	@Ok("httl:/tmpl/user/home.httl") // 模板文件的路径为  /tmpl/user/home.httl
+	public void home(){}
+	}}}
+	

@@ -2,7 +2,7 @@ package org.nutz.dao.entity.annotation;
 
 /**
  * 描述一个数据库字段类型
- * 
+ *
  * @author zozoh(zozohtnt@gmail.com)
  */
 public enum ColType {
@@ -11,7 +11,7 @@ public enum ColType {
      * 不解释
      */
     CHAR,
-    
+
     /**
      * 不解释
      */
@@ -60,5 +60,15 @@ public enum ColType {
     /**
      * 浮点:根据字段的宽度和精度来决定具体的数据库字段类型
      */
-    FLOAT
+    FLOAT,
+
+    /**
+     * JSON:PostgreSQL 的 JSON 类型
+     */
+    PSQL_JSON,
+
+    /**
+     * 数组:PostgreSQL 的数组类型
+     */
+    PSQL_ARRAY
 }

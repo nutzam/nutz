@@ -1,7 +1,9 @@
 package org.nutz.img;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.Transparency;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -14,6 +16,7 @@ import java.awt.image.DataBufferByte;
 import java.awt.image.Raster;
 import java.awt.image.RenderedImage;
 import java.awt.image.WritableRaster;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,7 +37,7 @@ import javax.imageio.stream.ImageOutputStream;
 
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
-import org.nutz.repo.gif.AnimatedGifEncoder;
+import org.nutz.repo.Base64;
 
 /**
  * 对图像操作的简化 API
@@ -121,7 +124,7 @@ public class Images {
         x = (w / 2) - (iw / 2);// 确定原点坐标
         y = (h / 2) - (ih / 2);
         BufferedImage rotatedImage = new BufferedImage(w, h, image.getType());
-        Graphics gs = rotatedImage.getGraphics();
+        Graphics2D gs = rotatedImage.createGraphics();
         gs.fillRect(0, 0, w, h);// 以给定颜色绘制旋转后图片的背景
         AffineTransform at = new AffineTransform();
         at.rotate(ang, w / 2, h / 2);// 旋转图象
@@ -186,8 +189,11 @@ public class Images {
      * @throws IOException
      *             当读写文件失败时抛出
      */
-    public static BufferedImage zoomScale(String srcPath, String taPath, int w, int h, Color bgColor)
-            throws IOException {
+    public static BufferedImage zoomScale(String srcPath,
+                                          String taPath,
+                                          int w,
+                                          int h,
+                                          Color bgColor) throws IOException {
         File srcIm = Files.findFile(srcPath);
         if (null == srcIm)
             throw Lang.makeThrow("Fail to find image file '%s'!", srcPath);
@@ -217,7 +223,7 @@ public class Images {
         }
 
         // 检查背景颜色
-        bgColor = null == bgColor ? Color.black : bgColor;
+        // bgColor = null == bgColor ? Color.black : bgColor;
         // 获得尺寸
         int oW = im.getWidth();
         int oH = im.getHeight();
@@ -250,15 +256,31 @@ public class Images {
             y = 0;
         }
 
-        // 创建图像
-        BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
         // 得到一个绘制接口
-        Graphics gc = re.getGraphics();
-        gc.setColor(bgColor);
-        gc.fillRect(0, 0, w, h);
-        gc.drawImage(im, x, y, nW, nH, bgColor, null);
-        // 返回
-        return re;
+        if (bgColor != null) {
+            // 创建图像
+            BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
+            Graphics2D gc = re.createGraphics();
+            gc.setColor(bgColor);
+            gc.fillRect(0, 0, w, h);
+            gc.drawImage(im, x, y, nW, nH, bgColor, null);
+            gc.dispose();
+            // 返回
+            return re;
+        } else {
+            BufferedImage nimage = new BufferedImage(nW, nH, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D gc = nimage.createGraphics();
+            nimage = gc.getDeviceConfiguration()
+                       .createCompatibleImage(nW, nH, Transparency.TRANSLUCENT);
+            gc.dispose();
+            gc = nimage.createGraphics();
+            gc.fillRect(0, 0, w, h);
+            gc.setComposite(AlphaComposite.Src);
+            gc.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+            gc.drawImage(im, 0, 0, nW, nH, null, null);
+            gc.dispose();
+            return nimage;
+        }
     }
 
     /**
@@ -294,7 +316,7 @@ public class Images {
 
         // 创建图像
         BufferedImage re = new BufferedImage(nW, nH, ColorSpace.TYPE_RGB);
-        re.getGraphics().drawImage(im, 0, 0, nW, nH, null);
+        re.createGraphics().drawImage(im, 0, 0, nW, nH, null);
         // 返回
         return re;
     }
@@ -317,7 +339,8 @@ public class Images {
      * @throws IOException
      *             当读写文件失败时抛出
      */
-    public static BufferedImage clipScale(Object srcIm, File taIm, int w, int h) throws IOException {
+    public static BufferedImage clipScale(Object srcIm, File taIm, int w, int h)
+            throws IOException {
         BufferedImage old = read(srcIm);
         BufferedImage im = Images.clipScale(old, w, h);
         write(im, taIm);
@@ -381,7 +404,8 @@ public class Images {
         BufferedImage im = Images.clipScale(old.getSubimage(startPoint[0],
                                                             startPoint[1],
                                                             width,
-                                                            height), width, height);
+                                                            height),
+                                            width, height);
 
         write(im, taIm);
         return old;
@@ -464,7 +488,7 @@ public class Images {
         }
         // 创建图像
         BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
-        re.getGraphics().drawImage(im, x, y, nW, nH, Color.black, null);
+        re.createGraphics().drawImage(im, x, y, nW, nH, Color.black, null);
         // 返回
         return re;
     }
@@ -478,10 +502,15 @@ public class Images {
      */
     public static BufferedImage read(Object img) {
         try {
+            if (img instanceof CharSequence) {
+                return ImageIO.read(Files.checkFile(img.toString()));
+            }
             if (img instanceof File)
                 return ImageIO.read((File) img);
-            else if (img instanceof URL)
+
+            if (img instanceof URL)
                 img = ((URL) img).openStream();
+
             if (img instanceof InputStream) {
                 File tmp = File.createTempFile("nutz_img", ".jpg");
                 Files.write(tmp, (InputStream) img);
@@ -550,6 +579,8 @@ public class Images {
             ImageOutputStream os = ImageIO.createImageOutputStream(targetJpg);
             writer.setOutput(os);
             writer.write((IIOMetadata) null, new IIOImage(im, null, null), param);
+            os.flush();
+            os.close();
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
@@ -563,7 +594,7 @@ public class Images {
      * http://stackoverflow.com/questions/2408613/problem-reading-jpeg-image-
      * using-imageio-readfile-file
      * 
-     * */
+     */
     private static BufferedImage readJpeg(InputStream in) throws IOException {
         Iterator<ImageReader> readers = ImageIO.getImageReadersByFormatName("JPEG");
         ImageReader reader = null;
@@ -634,30 +665,47 @@ public class Images {
     }
 
     /**
-     * 根据一堆图片生成一个gif图片
+     * 生成该图片对应的 Base64 编码的字符串
      * 
      * @param targetFile
-     *            目标输出文件
-     * @param frameFiles
-     *            组成动画的文件
-     * @param delay
-     *            帧间隔
-     * @return 是否生成成功
+     *            图片文件
+     * @return 图片对应的 Base64 编码的字符串
      */
-    public static boolean writeGif(String targetFile, String[] frameFiles, int delay) {
-        try {
-            AnimatedGifEncoder e = new AnimatedGifEncoder();
-            e.setRepeat(0);
-            e.start(targetFile);
-            for (String f : frameFiles) {
-                e.setDelay(delay);
-                e.addFrame(ImageIO.read(new File(f)));
-            }
-            return e.finish();
-        }
-        catch (Exception e) {
-            return false;
-        }
+    public static String encodeBase64(String targetFile) {
+        return encodeBase64(new File(targetFile));
     }
 
+    /**
+     * 生成该图片对应的 Base64 编码的字符串
+     * 
+     * @param targetFile
+     *            图片文件
+     * @return 图片对应的 Base64 编码的字符串
+     */
+    public static String encodeBase64(File targetFile) {
+        BufferedImage image = null;
+
+        try {
+            image = ImageIO.read(targetFile);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        BufferedOutputStream bos = new BufferedOutputStream(baos);
+        image.flush();
+        try {
+            ImageIO.write(image, Files.getSuffixName(targetFile), bos);
+            bos.flush();
+            bos.close();
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+
+        byte[] bImage = baos.toByteArray();
+
+        return Base64.encodeToString(bImage, false);
+    }
 }

@@ -32,5 +32,4 @@ public abstract class AbstractSqlExpression extends AbstractPItem implements Sql
         en = _en(en);
         return null == en ? null : en.getField(name);
     }
-
 }

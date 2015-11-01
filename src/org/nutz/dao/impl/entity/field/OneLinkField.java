@@ -4,12 +4,20 @@ import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
 import org.nutz.dao.entity.Entity;
 import org.nutz.dao.entity.LinkType;
+import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.impl.EntityHolder;
 import org.nutz.dao.impl.entity.info.LinkInfo;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 
 public class OneLinkField extends AbstractLinkField  {
+	
+	public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info, Class<?> target, MappingField field, MappingField key) {
+		super(entity, holder, info);
+		this.targetType = target;
+		this.hostField = field;
+		this.linkedField = key;
+	}
 
     public OneLinkField(Entity<?> entity, EntityHolder holder, LinkInfo info) {
         super(entity, holder, info);
@@ -52,7 +60,16 @@ public class OneLinkField extends AbstractLinkField  {
         return Cnd.where(linkedField.getColumnName(), "=", hostField.getValue(host));
     }
 
-    public void updateLinkedField(Object obj, Object linked) {}
+    public void updateLinkedField(Object obj, Object linked) {
+        if (hostField.isId()) {
+            Object val = linkedField.getValue(linked);
+            if (val != null && val instanceof Number) {
+                if (((Number)val).doubleValue() == 0.0) {
+                    linkedField.setValue(linked, hostField.getValue(obj));
+                }
+            }
+        }
+    }
 
     public void saveLinkedField(Object obj, Object linked) {
         Object v = linkedField.getValue(linked);

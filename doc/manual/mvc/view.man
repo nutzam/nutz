@@ -53,7 +53,7 @@
 		的时候，无论入口函数返回什么对象,它会将其保存到request的 {*"obj"} 属性中。比如
 		{{{
 		@At
-		@Ok("/test.jsp")
+		@Ok("jsp:/test.jsp")
 		public String test(){
 		    return "this is test";
 		}
@@ -86,7 +86,24 @@
 		
 		Json 视图的更多介绍请参看 [#JSON_视图]
 
+	根据返回值决定视图(1.b.53开始支持)
 	
+		声明如下内容
+		{{{
+		@Ok("re:jsp:/index")
+		public String login(@Param("..")User user, ViewModel model) {
+		    // 检查登陆参数等等...
+		    
+		    if (ok) {
+		        return null; // 返回null, 则代表走默认视图 jsp:/index
+		    }
+		    // 登陆失败
+		    model.set("err-msg", "用户名或密码错误");
+		    return "jsp:/user/login";
+		}
+		}}}
+		
+		ViewZone 视图的更多说明请参阅  [#根据返回值决定视图]
 	
 ------------------------------------------------------------------------------------------
 怎样使用视图？
@@ -199,8 +216,23 @@
 		{{{
 		@Ok("json:{quoteName:true, ignoreNull:true}")
 		}}}
-		视图的值就是： {*`"{quoteName:true, ignoreNull:true}"`}，这个字符串会被转换成 JsonFormat 对象。
+		视图的值就是： `"{quoteName:true, ignoreNull:true}"`，这个字符串会被转换成 JsonFormat 对象。
 		如果你想了解更多的 Json 转换的介绍哦，请参看 [overview.man Json 手册]
+		
+		格式控制支持4个常用模式的简写
+		{{{
+		@Ok("json:full")
+		@Ok("json:nice")
+		@Ok("json:forlook")
+		@Ok("json:compact")
+		}}}
+		
+		1.b.53 开始支持jsonp,默认取请求参数中的callback作为回调名称
+		{{{
+		@Ok("jsonp")
+		}}}
+		
+		
 	--------------------------------------------------------------------------------------
 	重定向视图
 		视图的实现类为： {*org.nutz.mvc.view.ServerRedirectView}
@@ -224,7 +256,7 @@
 			 * "obj.name" 表示对象的 "name" 字段
 		 # 如果占位符名称以 "p." 开头，，用 HTTP 参数表的值来填充
 			 * "p.abc" 就表示 HTTP 参数中的 "abc" 参数
-		 # 如果参数表没有值，则直接用返回的对象来填充。
+		 # 如果参数表没有值，则用空字符串来填充
 		
 		下面举几个例子：
 
@@ -295,7 +327,7 @@
 		{{{
 		@Ok("void")
 		}}}
-		对 HTTP 输出流不做任何处理
+		对 HTTP 输出流不做任何处理,空实现.
 	--------------------------------------------------------------------------------------
 	从 Ioc 容器中获取的视图
 		
@@ -331,7 +363,9 @@
 		|| `char[]`    || 按文本方式写入HTTP响应流 ||
 		|| Reader      || 按文本方式写入HTTP响应流，并关闭 Reader  ||
 		|| File		   || 文件下载 ||
+		|| BufferedImage|| 根据设置的Content-Type转为指定的图片格式 ||
 		|| 默认的      || 直接将对象 toString() 后按文本方式写入HTTP响应流 ||
+		
 		 
 		默认设置resp的ContentType为text/plain，当然,你可以设置ContentType的值
 		{{{
@@ -344,6 +378,56 @@
 		|| @Ok("raw:stream") || 等价于@Ok("raw:application/octet-stream"); ||
 		|| @Ok("raw:json")   || 等价于@Ok("raw:application/x-javascript"); ||
 		|| @Ok("raw:js")     || 等价于@Ok("raw:application/x-javascript"); ||
+		|| @Ok("raw:jpg")     || 等价于@Ok("raw:image/jpeg"); ||
+		|| @Ok("raw:png")     || 等价于@Ok("raw:image/png"); ||
+		|| @Ok("raw:webp")     || 等价于@Ok("raw:image/webp"); ||
+		
+	RawView2
+	
+		视图的实现类为： {*org.nutz.mvc.view.RawView2}
+		
+		该视图用于已知长度的输入流进行断点续传,一般用户不会接触到.
+		
+	根据返回值决定视图
+	
+		视图的实现类为： {*org.nutz.mvc.view.ViewZone}
+		
+		该视图允许带一个默认视图,当方法返回值为null时调用
+		
+		一般形式, 默认视图为VoidView
+		
+		{{{
+		@Ok("re")
+		}}}
+		
+		一般形式2, 自定义默认视图, 可以是re视图以外的任意可用视图
+		
+		{{{
+		@Ok("re:jsp:/index")
+		}}}
+		
+		通过ViewModel进行视图传值. 因为其他视图的行为一般以方法的返回值作为视图渲染所需要的值,
+		而re视图的返回值用于决定最终使用的视图,所以需要额外的ViewModel传递值.
+		ViewModel是可选参数, 若不需要就可以不声明.
+		
+		{{{
+		@Ok("re:jsp:/index")
+		public String login(@Param("..")User user, ViewModel model) {
+		    // 检查登陆参数等等...
+		    
+		    if (ok) {
+		        return null; // 返回null, 则代表走默认视图 jsp:/index
+		    }
+		    // 登陆失败
+		    model.set("err-msg", "用户名或密码错误");
+		    return "jsp:/user/login";
+		}
+		}}}
+		
+		
+		注意, 入口的方法的ViewModel参数不可以重新赋值,否则无法传值.
+		
+		返回值所代表的视图,不需要与默认视图一致.
 		
 ------------------------------------------------------------------------------------------
 定制自己的视图

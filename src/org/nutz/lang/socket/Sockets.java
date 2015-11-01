@@ -3,7 +3,7 @@ package org.nutz.lang.socket;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
@@ -23,6 +23,10 @@ import org.nutz.log.Logs;
 public abstract class Sockets {
 
     private static final Log log = Logs.get();
+    
+    public static void send(String host, int port, InputStream ins, OutputStream ops) {
+    	send(host, port, ins, ops, 0);
+    }
 
     /**
      * 向某主机发送一些字节内容，并将返回写入输出流
@@ -36,10 +40,11 @@ public abstract class Sockets {
      * @param ops
      *            主机返回的输入流
      */
-    public static void send(String host, int port, InputStream ins, OutputStream ops) {
+    public static void send(String host, int port, InputStream ins, OutputStream ops, int timeout) {
         Socket socket = null;
         try {
-            socket = new Socket(InetAddress.getByName(host), port);
+            socket = new Socket();
+            socket.connect(InetSocketAddress.createUnresolved(host, port), timeout);
             // 发送关闭命令
             OutputStream sOut = socket.getOutputStream();
             Streams.write(sOut, ins);

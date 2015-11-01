@@ -4,8 +4,10 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 
 import org.nutz.json.JsonField;
+import org.nutz.json.JsonIgnore;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
@@ -15,7 +17,7 @@ import org.nutz.lang.inject.InjectBySetter;
 import org.nutz.lang.inject.Injecting;
 
 public class JsonEntityField {
-
+	
     private String name;
 
     private boolean ignore;
@@ -25,6 +27,28 @@ public class JsonEntityField {
     private Injecting injecting;
 
     private Ejecting ejecting;
+
+    private boolean forceString;
+    
+    private double ignoreNullDouble = -0.94518;
+    
+    private int ignoreNullInt = -94518;
+    
+    private boolean isInt;
+    
+    private boolean isDouble;
+    
+    private boolean hasJsonIgnore;
+    
+    private SimpleDateFormat dateFormat;
+
+    public boolean isForceString() {
+        return forceString;
+    }
+
+    public void setForceString(boolean forceString) {
+        this.forceString = forceString;
+    }
 
     public boolean isIgnore() {
         return ignore;
@@ -54,7 +78,8 @@ public class JsonEntityField {
         // 以特殊字符开头的字段，看起来是隐藏字段
         // XXX 有用户就是_开头的字段也要啊! by wendal
         // if (fld.getName().startsWith("_") || fld.getName().startsWith("$"))
-        if (fld.getName().startsWith("$") && fld.getAnnotation(JsonField.class) == null)
+        if (fld.getName().startsWith("$")
+            && fld.getAnnotation(JsonField.class) == null)
             return null;
 
         JsonField jf = fld.getAnnotation(JsonField.class);
@@ -66,10 +91,32 @@ public class JsonEntityField {
         jef.injecting = mirror.getInjecting(fld.getName());
 
         // 瞬时变量和明确声明忽略的，变 ignore
-        if (Modifier.isTransient(fld.getModifiers()) || (null != jf && jf.ignore())) {
+        if (Modifier.isTransient(fld.getModifiers())
+            || (null != jf && jf.ignore())) {
             jef.setIgnore(true);
         }
 
+
+        // 判断字段是否被强制输出为字符串
+        if (null != jf) {
+            jef.setForceString(jf.forceString());
+            if (!Strings.isBlank(jf.dateFormat())) {
+                jef.dateFormat = new SimpleDateFormat(jf.dateFormat());
+            }
+        }
+        
+        JsonIgnore jsonIgnore = fld.getAnnotation(JsonIgnore.class);
+        if (jsonIgnore != null) {
+            Mirror<?> fldMirror = Mirror.me(fld.getType());
+            jef.isInt = fldMirror.isInt();
+            jef.isDouble = fldMirror.isDouble() || fldMirror.isFloat();
+        	jef.hasJsonIgnore = true;
+            if (jef.isDouble)
+            	jef.ignoreNullDouble = jsonIgnore.null_double();
+            if (jef.isInt)
+            	jef.ignoreNullInt = jsonIgnore.null_int();
+        }
+        
         return jef;
     }
 
@@ -91,7 +138,23 @@ public class JsonEntityField {
     public Object getValue(Object obj) {
         if (ejecting == null)
             return null;
-        return ejecting.eject(obj);
+        Object val = ejecting.eject(obj);
+        if (val == null)
+        	return null;
+        if (hasJsonIgnore) {
+            if (isInt && ((Number)val).intValue() == ignoreNullInt)
+            	return null;
+            if (isDouble && ((Number)val).doubleValue() == ignoreNullDouble)
+            	return null;
+        }
+        return val;
     }
-
+    
+    public SimpleDateFormat getDateFormat() {
+        return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
+    }
+    
+    public boolean hasDateFormat() {
+        return dateFormat != null;
+    }
 }

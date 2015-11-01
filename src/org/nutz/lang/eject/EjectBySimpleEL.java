@@ -16,7 +16,7 @@ public class EjectBySimpleEL implements Ejecting {
             throw new IllegalArgumentException("MUST NOT Null/Blank");
         if (by.indexOf('#') > 0) {
             try {
-                method = Class.forName(by.substring(0, by.indexOf('#')))
+                method = Lang.loadClass(by.substring(0, by.indexOf('#')))
                                 .getMethod(by.substring(by.indexOf('#')+1), Object.class);
             }
             catch (Throwable e) {

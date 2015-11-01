@@ -1,12 +1,14 @@
 package org.nutz.ioc.loader.combo;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.aop.interceptor.ioc.TransIocLoader;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
@@ -36,7 +38,8 @@ public class ComboIocLoader implements IocLoader {
      * 这个构造方法需要一组特殊的参数
      * <p/>
      * 第一种,以*开头,后面接类名, 如 <code>*org.nutz.ioc.loader.json.JsonLoader</code>
-     * <p/>1.b.45版开始支持类别名: js , json, xml, annotation 分别对应其加载类
+     * <p/>
+     * 1.b.45版开始支持类别名: js , json, xml, annotation trans分别对应其加载类
      * <p/>
      * 第二种,为具体的参数
      * <p/>
@@ -53,7 +56,27 @@ public class ComboIocLoader implements IocLoader {
      * @throws ClassNotFoundException
      *             如果*开头的参数所指代的类不存在
      */
+    @SuppressWarnings("unchecked")
     public ComboIocLoader(String... args) throws ClassNotFoundException {
+        if (loaders.isEmpty()) {
+            loaders.put("js", JsonLoader.class);
+            loaders.put("json", JsonLoader.class);
+            loaders.put("xml", XmlIocLoader.class);
+            loaders.put("annotation", AnnotationIocLoader.class);
+            loaders.put("anno", AnnotationIocLoader.class);
+            loaders.put("trans", TransIocLoader.class);
+            loaders.put("tx", TransIocLoader.class);
+            try {
+                loaders.put("cache",
+                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.jcache.NutCacheIocLoader"));
+            }
+            catch (ClassNotFoundException e) {}
+            try {
+                loaders.put("quartz",
+                            (Class<? extends IocLoader>) Lang.loadClass("org.nutz.integration.quartz.QuartzIocLoader"));
+            }
+            catch (ClassNotFoundException e) {}
+        }
         ArrayList<String> argsList = null;
         String currentClassName = null;
         for (String str : args) {
@@ -63,15 +86,16 @@ public class ComboIocLoader implements IocLoader {
                 currentClassName = str.substring(1);
                 argsList = new ArrayList<String>();
             } else {
-            	if (argsList == null) {
-            		throw new IllegalArgumentException("ioc args without Loader ClassName. " + args);
-            	}
-            	argsList.add(str);
+                if (argsList == null) {
+                    throw new IllegalArgumentException("ioc args without Loader ClassName. "
+                                                       + Arrays.toString(args));
+                }
+                argsList.add(str);
             }
         }
         if (currentClassName != null)
             createIocLoader(currentClassName, argsList);
-        
+
         Set<String> beanNames = new HashSet<String>();
         for (IocLoader loader : iocLoaders) {
             for (String beanName : loader.getName()) {
@@ -117,22 +141,30 @@ public class ComboIocLoader implements IocLoader {
             if (iocLoader.has(name)) {
                 IocObject iocObject = iocLoader.load(loading, name);
                 if (log.isDebugEnabled())
-                    log.debugf("Found IocObject(%s) in IocLoader(%s)", name, iocLoader.getClass().getSimpleName() + "@" + iocLoader.hashCode());
+                    log.debugf("Found IocObject(%s) in IocLoader(%s)",
+                               name,
+                               iocLoader.getClass().getSimpleName() + "@" + iocLoader.hashCode());
                 return iocObject;
             }
         throw new ObjectLoadException("Object '" + name + "' without define!");
     }
-    
+
+    public void addLoader(IocLoader loader) {
+        if (null != loader) {
+            if (iocLoaders.contains(loader))
+                return;
+            iocLoaders.add(loader);
+            if (log.isInfoEnabled())
+                log.infof("add loader : %s : \n     - %s",
+                          loader.getClass(),
+                          Lang.concat("\n     - ", loader.getName()));
+        }
+    }
+
     /**
      * 类别名
      */
     private static Map<String, Class<? extends IocLoader>> loaders = new HashMap<String, Class<? extends IocLoader>>();
-    static {
-        loaders.put("js", JsonLoader.class);
-        loaders.put("json", JsonLoader.class);
-        loaders.put("xml", XmlIocLoader.class);
-        loaders.put("annotation", AnnotationIocLoader.class);
-    }
 
     // TODO 这个方法好好整理一下 ...
     public String toString() {

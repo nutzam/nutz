@@ -1,5 +1,7 @@
 package org.nutz.el.speed;
 
+import org.junit.Ignore;
+import org.junit.Test;
 import org.nutz.el.El;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Stopwatch;
@@ -21,7 +23,9 @@ public class SimpleSpeedTest {
         return i % 13;
     }
 
-    public static void main(String[] args) throws SecurityException, NoSuchMethodException {
+    @Ignore
+    @Test
+    public void test_speed() throws SecurityException, NoSuchMethodException {
         final SimpleSpeedTest z = new SimpleSpeedTest();
         final String elstr = "num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7)-z.abc(i)";
         final Context context = Lang.context("{num:0}");
@@ -34,7 +38,7 @@ public class SimpleSpeedTest {
                 int num = 0;
                 for (int i = 0; i < max; i++)
                     num = num + (i - 1 + 2 - 3 + 4 - 5 + 6 - 7) - z.abc(i);
-                System.out.println("Num: " + num);
+                //System.out.println("Num: " + num);
             }
         });
 
@@ -46,7 +50,7 @@ public class SimpleSpeedTest {
                     context.set("num", 0);
                     for (int i = 0; i < max; i++)
                         context.set("num", El.eval(context.set("i", i), elstr));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
@@ -63,7 +67,7 @@ public class SimpleSpeedTest {
                     context.set("z", z);
                     for (int i = 0; i < max; i++)
                         context.set("num", el2pre.eval(context.set("i", i)));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);
@@ -80,7 +84,7 @@ public class SimpleSpeedTest {
                     context.set("z", z);
                     for (int i = 0; i < max; i++)
                         context.set("num", el2pre.eval(context.set("i", i)));
-                    System.out.println("Num: " + context.getInt("num"));
+                    //System.out.println("Num: " + context.getInt("num"));
                 }
                 catch (Exception e) {
                     throw Lang.wrapThrow(e);

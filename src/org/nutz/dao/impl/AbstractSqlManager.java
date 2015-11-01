@@ -8,10 +8,10 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -178,6 +178,10 @@ public abstract class AbstractSqlManager implements SqlManager {
         String get(String key) {
             return map.get(key);
         }
+        
+        Set<Entry<String, String>> entrySet() {
+        	return map.entrySet();
+        }
     }
 
     public void remove(String key) {
@@ -199,14 +203,10 @@ public abstract class AbstractSqlManager implements SqlManager {
             else
                 bufferedReader = new BufferedReader(reader);
             SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
-
-            Iterator<String> it = p.keys().iterator();
             _sql_keys = new ArrayList<String>(p.map.size());
-            while (it.hasNext()) {
-                String key = it.next();
-                String value = Strings.trim(p.get(key));
-                addSql(key, value);
-            }
+            for (Entry<String, String> en : p.entrySet()) {
+            	addSql(en.getKey(), Strings.trim(en.getValue()));
+			}
         }
         finally {
             Streams.safeClose(bufferedReader);

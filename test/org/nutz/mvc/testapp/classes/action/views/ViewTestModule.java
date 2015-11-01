@@ -9,6 +9,7 @@ import org.nutz.ioc.annotation.InjectName;
 import org.nutz.ioc.loader.annotation.IocBean;
 import org.nutz.json.Json;
 import org.nutz.lang.Streams;
+import org.nutz.mvc.ViewModel;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Ok;
 
@@ -102,5 +103,25 @@ public class ViewTestModule {
         Map<String, String> map = new HashMap<String, String>();
         map.put("name", "wendal");
         return Json.toJson(map);
+    }
+    
+    @At("/resp/to/?")
+    @Ok("re")
+    public String resp1(int type, ViewModel model) {
+        switch (type) {
+        case 1:
+            return ">>:/views/resp2";
+        case 2 :
+            model.put("name", "wendal");
+            return "json:tidy";
+        default:
+            return "raw";
+        }
+    }
+    
+    @At("/resp2")
+    @Ok("raw")
+    public String resp2() {
+        return "hi";
     }
 }

@@ -144,3 +144,56 @@
 	 * `Map<?,?>`
 	 * 数组 `( T[] )`
 	Nutz.Dao 会自动替你拆包，对集合成员依次执行相应操作。 对于 Map，它会迭代每一个值。
+	
+
+----------------------------------------------------------------------------------------------------------------
+自动建表
+
+	Dao接口有一个create方法,通过它可以让nutz为你建好数据库表
+	
+	{{{
+	dao.create(Pet.class, false);
+	}}}
+
+	第一个参数是Pojo类, 第二个参数是如果表存在,是不是先删再重新建,否则就是保持原样
+	
+	字段的详细定义,例如定义长度
+	
+	{{{
+	@ColDefine(width=1024)
+	private String data;
+	}}}
+	
+	强制自定义字段类型
+	
+	{{{
+	@ColDefine(customType="TEXT", type=ColType.VARCHAR)
+	private String fu;
+	}}}
+	
+	添加索引, 类级注解
+	{{{
+	@TableIndexes({@Index(name="orderid_userid", fields={"orderId", "userId"})})
+	public class UserOrder {
+	
+		private long id;
+		private long orderId;
+		private long userId;
+		//... 其他属性
+	}
+	}}}
+	
+	局限性
+		* 不生成外键
+		* 如果主表存在,但关联表不存在,当第二个参数为false时, 关联表不会被创建
+		* 只能解决一般建表需求,复制的表结构请通过自定义sql完成
+	
+----------------------------------------------------------------------------------------------------------------
+批量建表,扫描某个package下的bean,为带@Table注解的类建表
+	
+	{{{
+	Daos.createTablesInPackage(dao, "net.wendal.nutzbook.bean", false);
+	}}}
+	
+		
+

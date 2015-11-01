@@ -46,7 +46,13 @@ public class NutFilePool implements FilePool {
                 }
             });
             if (null != subs && subs.length > 0) {
-                last = new File(last.getAbsolutePath() + "/" + subs[subs.length - 1]);
+                String lastName = "00";
+                for (String sub : subs) {
+                    if (sub.compareTo(lastName) > 0) {
+                        lastName = sub;
+                    }
+                }
+                last = new File(last.getAbsolutePath() + "/" + lastName);
                 if (last.isFile()) {
                     cursor = Pools.getFileId(home, last);
                     break;

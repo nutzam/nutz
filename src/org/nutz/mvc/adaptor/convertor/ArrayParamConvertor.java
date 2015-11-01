@@ -14,7 +14,7 @@ public class ArrayParamConvertor implements ParamConvertor {
 
     public ArrayParamConvertor(Class<?> eleType) {
         this.eleType = eleType;
-        this.convertor = Params.makeParamConvertor(eleType);
+        this.convertor = Params.makeParamConvertor(eleType, null);
     }
 
     public Object convert(String[] ss) {

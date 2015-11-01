@@ -23,4 +23,16 @@ public @interface JsonField {
      */
     boolean ignore() default false;
 
+    /**
+     * 有些对象类型总是被当做字符串输出会有更好的效果，比如 Region<br>
+     * 当然这些对象是可以被 Castors 从字符串正确的转换回来的。即它们有一个带一个字符串为参数的构造函数即可
+     * <p>
+     * 这个声明，也将作用于数组，和集合
+     * 
+     * @return 这个字段是否被强制输出成字符串
+     * @see org.nutz.lang.util.Region
+     */
+    boolean forceString() default false;
+    
+    String dateFormat() default "";
 }

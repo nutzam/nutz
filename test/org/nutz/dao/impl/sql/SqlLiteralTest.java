@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.junit.Test;
+import org.nutz.dao.Cnd;
 import org.nutz.dao.test.meta.Pet;
 
 public class SqlLiteralTest {
@@ -21,8 +22,8 @@ public class SqlLiteralTest {
     @Test
     public void test_chinese_var_name() {
         NutSql sql = L("INSERT INTO t_chin(名称,描述) VALUES($名,$述)");
-        assertEquals(2, sql.literal.getVarIndexes().size());
-        Iterator<String> nms = sql.literal.getVarIndexes().names().iterator();
+        assertEquals(2, sql.literal().getVarIndexes().size());
+        Iterator<String> nms = sql.literal().getVarIndexes().names().iterator();
         assertEquals("名", nms.next());
         assertEquals("述", nms.next());
 
@@ -37,8 +38,8 @@ public class SqlLiteralTest {
     @Test
     public void test_chinese_param_name() {
         NutSql sql = L("INSERT INTO t_chin(名称,描述) VALUES(@名,@述)");
-        assertEquals(2, sql.literal.getParamIndexes().size());
-        Iterator<String> nms = sql.literal.getParamIndexes().names().iterator();
+        assertEquals(2, sql.literal().getParamIndexes().size());
+        Iterator<String> nms = sql.literal().getParamIndexes().names().iterator();
         assertEquals("名", nms.next());
         assertEquals("述", nms.next());
 
@@ -80,21 +81,21 @@ public class SqlLiteralTest {
 
     @Test
     public void test_sql_types() {
-        assertTrue(L("InSeRT INTO $T ($id,$name) VALUES(@id,@name)").literal.isINSERT());
-        assertTrue(L("UPDaTE $T SET $id=@id").literal.isUPDATE());
-        assertTrue(L("sELECT * FROM $T").literal.isSELECT());
-        assertTrue(L("DeLETE FROM $T").literal.isDELETE());
-        assertTrue(L("Drop table $T").literal.isDROP());
-        assertTrue(L("crEATE table abc(id INT)").literal.isCREATE());
+        assertTrue(L("InSeRT INTO $T ($id,$name) VALUES(@id,@name)").literal().isINSERT());
+        assertTrue(L("UPDaTE $T SET $id=@id").literal().isUPDATE());
+        assertTrue(L("sELECT * FROM $T").literal().isSELECT());
+        assertTrue(L("DeLETE FROM $T").literal().isDELETE());
+        assertTrue(L("Drop table $T").literal().isDROP());
+        assertTrue(L("crEATE table abc(id INT)").literal().isCREATE());
     }
 
     @Test
     public void test_var_set_index() {
         NutSql sql = L("$A,$B,@C,@D,@C");
-        int[] is = sql.literal.getParamIndexes().getOrderIndex("C");
+        int[] is = sql.literal().getParamIndexes().getOrderIndex("C");
         assertEquals(0, is[0]);
         assertEquals(2, is[1]);
-        is = sql.literal.getParamIndexes().getOrderIndex("D");
+        is = sql.literal().getParamIndexes().getOrderIndex("D");
         assertEquals(1, is[0]);
     }
 
@@ -132,9 +133,9 @@ public class SqlLiteralTest {
     @Test
     public void test_param_names() {
         NutSql sql = L("UPDATE dao_platoon SET name=@name1,base=@baseName2,leader=@leaderName3 WHERE id=@id4");
-        String[] paramNames = sql.literal.getParamIndexes()
+        String[] paramNames = sql.literal().getParamIndexes()
                                             .names()
-                                            .toArray(new String[sql.literal.getParamIndexes()
+                                            .toArray(new String[sql.literal().getParamIndexes()
                                                                             .names()
                                                                             .size()]);
         String result[] = {"leaderName3", "id4", "baseName2", "name1"};
@@ -146,9 +147,9 @@ public class SqlLiteralTest {
     @Test
     public void test_var_names() {
         NutSql sql = L("InSeRT INTO $T ($id,$name) VALUES(@id1,@name2)");
-        String[] varNames = sql.literal.getVarIndexes()
+        String[] varNames = sql.literal().getVarIndexes()
                                         .names()
-                                        .toArray(new String[sql.literal.getVarIndexes().size()]);
+                                        .toArray(new String[sql.literal().getVarIndexes().size()]);
         String result[] = {"T", "name", "id"};
         // System.out.println(Json.toJson(varNames));
 
@@ -178,5 +179,10 @@ public class SqlLiteralTest {
 
         String expect = "INSERT INTO t_pet(userId,userName,alias,age) VALUES(18,'pet','haha',5)";
         assertEquals(expect, sql.toString());
+    }
+    
+    @Test
+    public void test_between() {
+        assertEquals(" WHERE age BETWEEN 18 AND 29", Cnd.where("age", "between", new Object[]{18, 29}).toString());
     }
 }

@@ -12,6 +12,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -86,7 +87,7 @@ public class Scans {
                                     "folder or file like '%s' no found in %s",
                                     regex,
                                     Castors.me().castToString(paths));
-        return new ArrayList<NutResource>((new HashSet<NutResource>(list)));
+        return new ArrayList<NutResource>((new LinkedHashSet<NutResource>(list)));
     }
 
     public void registerLocation(Class<?> klass) {
@@ -146,7 +147,7 @@ public class Scans {
             if (log.isInfoEnabled())
                 log.info("Fail to registerLocation --> " + url, e);
         }
-        return new ErrorResourceLocation(url);
+        return ErrorResourceLocation.make(url);
     }
 
     public List<NutResource> scan(String src) {
@@ -214,7 +215,21 @@ public class Scans {
                     log.debug("Fail to run deep scan!", e);
             }
         }
-        list = new ArrayList<NutResource>((new HashSet<NutResource>(list)));
+        ArrayList<NutResource> tmp = new ArrayList<NutResource>();
+        for (NutResource r : list) {
+        	int index = tmp.indexOf(r);
+        	if (index > -1) {
+        	    NutResource old = tmp.get(index);
+        	    if (old.getSource() != null && r.getSource() != null && old.getSource().equals(r.getSource())) {
+        	        continue;
+        	    }
+        		log.infof("same resource path [%s](%s) will be override by [%s](%s)", 
+        		          tmp.get(index).getName(), tmp.get(index).getSource(),
+        		          r.getName(), r.getSource());
+        		tmp.set(index, r);
+        	} else
+        		tmp.add(r);
+		}
         if (log.isDebugEnabled())
             log.debugf("Found %s resource by src( %s ) , regex( %s )", list.size(), src, regex);
         return list;
@@ -305,6 +320,7 @@ public class Scans {
             nutResource.setName(entryName);
         else
             nutResource.setName(entryName.substring(base.length()));
+        nutResource.setSource(jarPath + ":" + entryName);
         return nutResource;
     }
 
@@ -361,13 +377,9 @@ public class Scans {
                     Class<?> klass = Lang.loadClass(className);
                     re.add(klass);
                 }
-                catch (ClassNotFoundException e) {
+                catch (Throwable e) {
                     if (log.isInfoEnabled())
-                        log.infof("Resource can't map to Class, Resource %s", nr, e);
-                }
-                catch (IOException e) {
-                    if (log.isInfoEnabled())
-                        log.infof("Resource can't map to Class, Resource %s", nr, e);
+                        log.info("Resource can't map to Class, Resource " + nr.getName(), e);
                 }
                 finally {
                     Streams.safeClose(in);

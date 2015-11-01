@@ -1,7 +1,6 @@
 package org.nutz.lang;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
@@ -9,17 +8,20 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.Reader;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.nutz.lang.util.Callback;
 import org.nutz.lang.util.ClassTools;
 import org.nutz.lang.util.Disks;
+import org.nutz.log.Logs;
 
 /**
  * 文件操作的帮助函数
@@ -29,7 +31,7 @@ import org.nutz.lang.util.Disks;
  * @author wendal(wendal1985@gmail.com)
  * @author bonyfish(mc02cxj@gmail.com)
  */
-public abstract class Files {
+public class Files {
 
     /**
      * 读取 UTF-8 文件全部内容
@@ -277,11 +279,7 @@ public abstract class Files {
     }
 
     /**
-     * 获取文件后缀名，不包括 '.'，如 'abc.gif','，则返回 'gif'
-     * 
-     * @param f
-     *            文件
-     * @return 文件后缀名
+     * @see #getSuffixName(String)
      */
     public static String getSuffixName(File f) {
         if (null == f)
@@ -299,10 +297,37 @@ public abstract class Files {
     public static String getSuffixName(String path) {
         if (null == path)
             return null;
-        int pos = path.lastIndexOf('.');
-        if (-1 == pos)
+        int p0 = path.lastIndexOf('.');
+        int p1 = path.lastIndexOf('/');
+        if (-1 == p0 || p0 < p1)
             return "";
-        return path.substring(pos + 1);
+        return path.substring(p0 + 1);
+    }
+
+    /**
+     * @see #getSuffix(String)
+     */
+    public static String getSuffix(File f) {
+        if (null == f)
+            return null;
+        return getSuffix(f.getAbsolutePath());
+    }
+
+    /**
+     * 获取文件后缀名，包括 '.'，如 'abc.gif','，则返回 '.gif'
+     * 
+     * @param path
+     *            文件路径
+     * @return 文件后缀
+     */
+    public static String getSuffix(String path) {
+        if (null == path)
+            return null;
+        int p0 = path.lastIndexOf('.');
+        int p1 = path.lastIndexOf('/');
+        if (-1 == p0 || p0 < p1)
+            return "";
+        return path.substring(p0);
     }
 
     /**
@@ -347,6 +372,15 @@ public abstract class Files {
         return f;
     }
 
+    public static File createFileIfNoExists2(String path) {
+        try {
+            return createFileIfNoExists(path);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
     /**
      * 如果文件对象不存在，则创建它
      * 
@@ -382,10 +416,14 @@ public abstract class Files {
         if (null == thePath)
             thePath = Disks.normalize(path);
         File f = new File(thePath);
-        if (!f.exists())
-            Files.makeDir(f);
+        if (!f.exists()) {
+            boolean flag = Files.makeDir(f);
+            if (!flag) {
+                Logs.get().warnf("create filepool dir(%s) fail!!", f.getPath());
+            }
+        }
         if (!f.isDirectory())
-            throw Lang.makeThrow("'%s' should be a directory!", path);
+            throw Lang.makeThrow("'%s' should be a directory or don't have permission to create it!", path);
         return f;
     }
 
@@ -399,8 +437,11 @@ public abstract class Files {
     public static File createDirIfNoExists(File d) {
         if (null == d)
             return d;
-        if (!d.exists())
-            Files.makeDir(d);
+        if (!d.exists()) {
+            if (!Files.makeDir(d)) {
+                throw Lang.makeThrow("fail to create '%s', permission deny?", d.getAbsolutePath());
+            }
+        }
         if (!d.isDirectory())
             throw Lang.makeThrow("'%s' should be a directory!", d);
         return d;
@@ -453,6 +494,147 @@ public abstract class Files {
     }
 
     /**
+     * each 函数的参数类型
+     */
+    public enum LsMode {
+        /**
+         * 仅文件
+         */
+        FILE, /**
+               * 仅目录
+               */
+        DIR, /**
+              * 文件和目录
+              */
+        ALL
+    }
+
+    /**
+     * 在一个目录里列出所有的子文件或者目录
+     * 
+     * @param d
+     *            目录
+     * @param p
+     *            正则表达式对象，如果为空，则是全部正则表达式
+     * @param exclude
+     *            true 正则表达式匹配的文件会被忽略，false 正则表达式匹配的文件会被包含
+     * @param mode
+     *            请参看 LsMode 枚举类说明, null 表示 LsMode.ALL
+     * 
+     * @return 得到文件对象数组
+     * @see LsMode
+     */
+    public static File[] ls(File d, final Pattern p, final boolean exclude, LsMode mode) {
+        if (null == p) {
+            return d.listFiles();
+        }
+        // 全部
+        else if (null == mode || LsMode.ALL == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 仅文件
+        else if (LsMode.FILE == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    if (!f.isFile())
+                        return false;
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 仅目录
+        else if (LsMode.DIR == mode) {
+            return d.listFiles(new FileFilter() {
+                public boolean accept(File f) {
+                    if (!f.isDirectory())
+                        return false;
+                    return p.matcher(f.getName()).find() ^ exclude;
+                }
+            });
+        }
+        // 不可能
+        throw Lang.impossible();
+    }
+
+    /**
+     * 列文件
+     * 
+     * @param d
+     *            目录对象
+     * @param regex
+     *            正则表达式
+     * @param mode
+     *            模式
+     * @return 文件列表对象
+     * @see #ls(File, Pattern, boolean, LsMode)
+     */
+    public static File[] ls(File d, String regex, LsMode mode) {
+        boolean exclude = false;
+        Pattern p = null;
+        if (!Strings.isBlank(regex)) {
+            exclude = regex.startsWith("!");
+            if (exclude) {
+                regex = Strings.trim(regex.substring(1));
+            }
+            p = Pattern.compile(regex);
+        }
+        return ls(d, p, exclude, mode);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] ls(String path, String regex, LsMode mode) {
+        return ls(checkFile(path), regex, mode);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsFile(File d, String regex) {
+        return ls(d, regex, LsMode.FILE);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsFile(String path, String regex) {
+        return ls(path, regex, LsMode.FILE);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsDir(File d, String regex) {
+        return ls(d, regex, LsMode.DIR);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsDir(String path, String regex) {
+        return ls(path, regex, LsMode.DIR);
+    }
+
+    /**
+     * @see #ls(File, String, LsMode)
+     */
+    public static File[] lsAll(File d, String regex) {
+        return ls(d, regex, LsMode.ALL);
+    }
+
+    /**
+     * @see #ls(String, String, LsMode)
+     */
+    public static File[] lsAll(String path, String regex) {
+        return ls(path, regex, LsMode.ALL);
+    }
+
+    /**
      * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
      * 
      * @param path
@@ -462,6 +644,21 @@ public abstract class Files {
      */
     public static File findFile(String path) {
         return findFile(path, ClassTools.getClassLoader(), Encoding.defaultEncoding());
+    }
+
+    /**
+     * 从 CLASSPATH 下或从指定的本机器路径下寻找一个文件
+     * 
+     * @param path
+     *            文件路径
+     * 
+     * @return 文件对象，如果不存在，则抛出一个运行时异常
+     */
+    public static File checkFile(String path) {
+        File f = findFile(path);
+        if (null == f)
+            throw Lang.makeThrow("Fail to found file '%s'", path);
+        return f;
     }
 
     /**
@@ -649,30 +846,74 @@ public abstract class Files {
     }
 
     /**
-     * 拷贝一个文件
+     * 相当于 copyFile(src,target,-1)
      * 
-     * @param src
-     *            原始文件
-     * @param target
-     *            新文件
-     * @return 是否拷贝成功
-     * @throws IOException
+     * @see #copyFile(File, File, long)
      */
     public static boolean copyFile(File src, File target) throws IOException {
+        return copyFile(src, target, -1);
+    }
+
+    /**
+     * 将一个文件 copy 一部分（或者全部）到另外一个文件。如果目标文件不存在，创建它先。
+     * 
+     * @param src
+     *            源文件
+     * @param target
+     *            目标文件
+     * @param count
+     *            要 copy 的字节数，0 表示什么都不 copy， -1 表示 copy 全部数据
+     * @return
+     * @throws IOException
+     */
+    public static boolean copyFile(File src, File target, long count) throws IOException {
         if (src == null || target == null || !src.exists())
             return false;
         if (!target.exists())
             if (!createNewFile(target))
                 return false;
-        InputStream ins = new BufferedInputStream(new FileInputStream(src));
-        OutputStream ops = new BufferedOutputStream(new FileOutputStream(target));
 
-        Streams.write(ops, ins);
+        // 0 字节？ 那就啥都不做咯
+        if (count == 0)
+            return true;
 
-        Streams.safeClose(ins);
-        Streams.safeFlush(ops);
-        Streams.safeClose(ops);
+        FileInputStream ins = null;
+        FileOutputStream ops = null;
+        FileChannel in = null;
+        FileChannel out = null;
+
+        try {
+            ins = new FileInputStream(src);
+            ops = new FileOutputStream(target);
+            in = ins.getChannel();
+            out = ops.getChannel();
+
+            long maxCount = in.size();
+            if (count < 0 || count > maxCount)
+                count = maxCount;
+
+            in.transferTo(0, count, out);
+        }
+        finally {
+            Streams.safeClose(out);
+            Streams.safeFlush(ops);
+            Streams.safeClose(ops);
+            Streams.safeClose(in);
+            Streams.safeClose(ins);
+        }
         return target.setLastModified(src.lastModified());
+    }
+
+    /**
+     * @see #copyFile(File, File, long)
+     */
+    public static boolean copyFileWithoutException(File src, File target, long count) {
+        try {
+            return copyFile(src, target, -1);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
     }
 
     /**
@@ -802,6 +1043,15 @@ public abstract class Files {
     }
 
     /**
+     * @param f
+     *            文件对象
+     * @return 文件或者目录名
+     */
+    public static String getName(File f) {
+        return getName(f.getPath());
+    }
+
+    /**
      * @param path
      *            全路径
      * @return 文件或者目录名
@@ -842,7 +1092,8 @@ public abstract class Files {
      *            文件1
      * @param f2
      *            文件2
-     * @return <ul>
+     * @return
+     *         <ul>
      *         <li>true: 两个文件内容完全相等
      *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
      *         </ul>
@@ -881,7 +1132,7 @@ public abstract class Files {
                 return new File(dir.getAbsolutePath() + "/" + path);
             return new File(dir.getParent() + "/" + path);
         }
-        return new File(path);
+        throw Lang.makeThrow("dir noexists: %s", dir);
     }
 
     /**
@@ -955,7 +1206,8 @@ public abstract class Files {
      *            文件对象
      * @param f2
      *            文件对象
-     * @return <ul>
+     * @return
+     *         <ul>
      *         <li>true: 两个文件内容完全相等
      *         <li>false: 任何一个文件对象为 null，不存在 或内容不相等
      *         </ul>
@@ -964,4 +1216,62 @@ public abstract class Files {
         return isEquals(f1, f2);
     }
 
+    public static boolean copyOnWrite(File f, Object obj) {
+        File tmp = new File(f.getAbsolutePath() + ".new");
+        File tmp2 = new File(f.getAbsolutePath() + ".old");
+        tmp2.delete();
+        try {
+            write(tmp, obj);
+            boolean flag = false;
+            if (f.exists()) {
+                flag = f.renameTo(tmp2);
+            }
+            if (tmp.renameTo(f)) {
+                tmp2.delete();
+                return true;
+            } else if (flag)
+                tmp2.renameTo(f); // 如果这里也失败的话,起码.old还在...
+            return false;
+        }
+        finally {
+            tmp.delete();
+        }
+    }
+
+    public static boolean copyOnWrite(String path, Object obj) {
+        return copyOnWrite(new File(path), obj);
+    }
+
+    public static List<String> readLines(File f) {
+        List<String> lines = new ArrayList<String>();
+        BufferedReader br = null;
+        try {
+            br = Streams.buffr(Streams.fileInr(f));
+            while (br.ready())
+                lines.add(br.readLine());
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(br);
+        }
+        return lines;
+    }
+
+    public static void readLine(File f, Callback<String> callback) {
+        BufferedReader br = null;
+        try {
+            br = Streams.buffr(Streams.fileInr(f));
+            while (br.ready())
+                callback.invoke(br.readLine());
+        }
+        catch (ExitLoop e) {}
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+        finally {
+            Streams.safeClose(br);
+        }
+    }
 }

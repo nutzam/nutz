@@ -1,5 +1,8 @@
 package org.nutz.ioc.aop.impl;
 
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.nutz.aop.ClassAgent;
@@ -12,6 +15,7 @@ import org.nutz.ioc.aop.MirrorFactory;
 import org.nutz.ioc.aop.config.AopConfigration;
 import org.nutz.ioc.aop.config.InterceptorPair;
 import org.nutz.ioc.aop.config.impl.AnnotationAopConfigration;
+import org.nutz.ioc.aop.config.impl.ComboAopConfigration;
 import org.nutz.lang.Mirror;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -24,63 +28,84 @@ import org.nutz.log.Logs;
  */
 public class DefaultMirrorFactory implements MirrorFactory {
 
-	private static final Log log = Logs.get();
+    private static final Log log = Logs.get();
 
-	private Ioc ioc;
+    private Ioc ioc;
 
-	private ClassDefiner cd;
+    private ClassDefiner cd;
 
-	private AopConfigration aopConfigration;
+    private List<AopConfigration> list;
 
-	private static final Object lock = new Object();
+    private static final Object lock = new Object();
 
-	public DefaultMirrorFactory(Ioc ioc) {
-		this.ioc = ioc;
-	}
+    public DefaultMirrorFactory(Ioc ioc) {
+        this.ioc = ioc;
+    }
 
-	public <T> Mirror<T> getMirror(Class<T> type, String name) {
-		if (MethodInterceptor.class.isAssignableFrom(type)
-			|| type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
-			|| AopConfigration.IOCNAME.equals(name)
-			|| AopConfigration.class.isAssignableFrom(type)) {
-			return Mirror.me(type);
-		}
+    public <T> Mirror<T> getMirror(Class<T> type, String name) {
+        if (MethodInterceptor.class.isAssignableFrom(type)
+            || type.getName().endsWith(ClassAgent.CLASSNAME_SUFFIX)
+            || (name != null && name.startsWith(AopConfigration.IOCNAME))
+            || AopConfigration.class.isAssignableFrom(type)
+            || Modifier.isAbstract(type.getModifiers())) {
+            return Mirror.me(type);
+        }
 
-		if (aopConfigration == null)
-			if (ioc.has(AopConfigration.IOCNAME))
-				aopConfigration = ioc.get(AopConfigration.class, AopConfigration.IOCNAME);
-			else
-				aopConfigration = new AnnotationAopConfigration();
-		List<InterceptorPair> interceptorPairs = aopConfigration.getInterceptorPairList(ioc, type);
-		if (interceptorPairs == null || interceptorPairs.size() < 1) {
-			if (log.isDebugEnabled())
-				log.debugf("%s , no config to enable AOP.", type);
-			return Mirror.me(type);
-		}
+        if (list == null) {
+            List<AopConfigration> tmp = new ArrayList<AopConfigration>();
+            boolean flag = true;
+            String[] names = ioc.getNames();
+            Arrays.sort(names);
+            for (String beanName : names) {
+                if (!beanName.startsWith(AopConfigration.IOCNAME))
+                    continue;
+                AopConfigration cnf = ioc.get(AopConfigration.class, beanName);
+                tmp.add(cnf);
+                if (cnf instanceof AnnotationAopConfigration)
+                    flag = false;
+                if (cnf instanceof ComboAopConfigration) {
+                    if (((ComboAopConfigration) cnf).hasAnnotationAop()) {
+                        flag = false;
+                    }
+                }
+            }
+            if (flag)
+                tmp.add(new AnnotationAopConfigration());
+            list = tmp;
+        }
+        List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
+        for (AopConfigration cnf : list) {
+            List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
+            if (tmp != null)
+                interceptorPairs.addAll(tmp);
+        }
+        if (interceptorPairs.isEmpty()) {
+            if (log.isDebugEnabled())
+                log.debugf("%s without AOP", type);
+            return Mirror.me(type);
+        }
 
-		synchronized (lock) {
-			// 这段代码的由来:
-			// 当用户把nutz.jar放到java.ext.dirs下面时,DefaultMirrorFactory的classloader将无法获取用户的类
-			if (cd == null) {
-				ClassLoader cd = type.getClassLoader();
-				if (cd == null) {
-					cd = Thread.currentThread().getContextClassLoader();
-					if (cd == null)
-						cd = getClass().getClassLoader();
-				}
-				log.info("Use as AOP ClassLoader parent : " + cd);
-				this.cd = new DefaultClassDefiner(cd);
-			}
-			ClassAgent agent = new AsmClassAgent();
-			for (InterceptorPair interceptorPair : interceptorPairs)
-				agent.addInterceptor(interceptorPair.getMethodMatcher(),
-									 interceptorPair.getMethodInterceptor());
-			return Mirror.me(agent.define(cd, type));
-		}
+        int mod = type.getModifiers();
+        if (Modifier.isFinal(mod) || Modifier.isAbstract(mod)) {
+            log.info("%s configure to use aop, but it is final/abstract, skip it");
+            return Mirror.me(type);
+        }
 
-	}
+        synchronized (lock) {
+            if (cd == null) {
+                cd = DefaultClassDefiner.defaultOne();
+            }
+            ClassAgent agent = new AsmClassAgent();
+            for (InterceptorPair interceptorPair : interceptorPairs)
+                agent.addInterceptor(interceptorPair.getMethodMatcher(),
+                                     interceptorPair.getMethodInterceptor());
+            return Mirror.me(agent.define(cd, type));
+        }
 
-	public void setAopConfigration(AopConfigration aopConfigration) {
-		this.aopConfigration = aopConfigration;
-	}
+    }
+
+    public void setAopConfigration(AopConfigration aopConfigration) {
+        this.list = new ArrayList<AopConfigration>();
+        this.list.add(aopConfigration);
+    }
 }
