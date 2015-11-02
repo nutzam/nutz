@@ -180,6 +180,7 @@ public class MethodParamNamesScaner {
                         int str_index = dis.readUnsignedShort();
                         String codeAttrName = strs.get(str_index);
                         int code_attribute_length = dis.readInt();
+                        String key = methodName + "," + descriptor;
                         if ("LocalVariableTable".equals(codeAttrName)) {//形参在LocalVariableTable属性中
                             int local_variable_table_length = dis.readUnsignedShort();
                             List<String> varNames = new ArrayList<String>(local_variable_table_length);
@@ -192,7 +193,8 @@ public class MethodParamNamesScaner {
                                 if (!"this".equals(varName)) //非静态方法,第一个参数是this
                                     varNames.add(varName);
                             }
-                            names.put(methodName + "," + descriptor, varNames);
+                            if (!names.containsKey(key))
+                                names.put(key, varNames);
                         } else if ("MethodParameters".equals(codeAttrName)) {
                             // JDK 8的参数名存储, 需要编译时加了-parameters 选项
                             // http://www.java-allandsundry.com/2013/12/java-8-parameter-name-at-runtime.html
@@ -204,6 +206,7 @@ public class MethodParamNamesScaner {
                                 if (!"this".equals(varName)) //非静态方法,第一个参数是this
                                     varNames.add(varName);
                             }
+                            names.put(key, varNames);
                         } else
                             dis.skipBytes(code_attribute_length);
                     }
