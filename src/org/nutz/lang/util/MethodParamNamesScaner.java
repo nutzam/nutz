@@ -193,6 +193,17 @@ public class MethodParamNamesScaner {
                                     varNames.add(varName);
                             }
                             names.put(methodName + "," + descriptor, varNames);
+                        } else if ("MethodParameters".equals(codeAttrName)) {
+                            // JDK 8的参数名存储, 需要编译时加了-parameters 选项
+                            // http://www.java-allandsundry.com/2013/12/java-8-parameter-name-at-runtime.html
+                            int paramCount = dis.readByte();
+                            List<String> varNames = new ArrayList<String>(paramCount);
+                            for (int l = 0; l < paramCount; l++) {
+                                String varName = strs.get(dis.readUnsignedShort());
+                                dis.skipBytes(2);
+                                if (!"this".equals(varName)) //非静态方法,第一个参数是this
+                                    varNames.add(varName);
+                            }
                         } else
                             dis.skipBytes(code_attribute_length);
                     }
