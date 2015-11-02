@@ -349,13 +349,17 @@ public class AnnotationEntityMaker implements EntityMaker {
         // 字段的 Java 名称
         ef.setName(info.name);
         ef.setType(info.fieldType);
-
+        String columnName = "";
         // 字段的数据库名
-        if (null == info.annColumn || Strings.isBlank(info.annColumn.value()))
-            ef.setColumnName(info.name);
-        else
-            ef.setColumnName(info.annColumn.value());
-
+        if (null == info.annColumn || Strings.isBlank(info.annColumn.value())){
+            columnName = info.name;
+        }else{
+            columnName = info.annColumn.value();
+        }
+        if(null != info.annColumn && info.annColumn.hump()){
+            columnName = Strings.lowerWord(columnName, '_');
+        }
+        ef.setColumnName(columnName);
         // 字段的注释
         boolean hasColumnComment = null != info.columnComment;
         ef.setHasColumnComment(hasColumnComment);
