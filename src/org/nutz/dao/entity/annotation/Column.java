@@ -30,5 +30,7 @@ import java.lang.annotation.Target;
 public @interface Column {
 
     String value() default "";
+    
+    boolean hump() default false;
 
 }
