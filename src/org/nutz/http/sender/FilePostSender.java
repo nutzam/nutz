@@ -32,39 +32,37 @@ public class FilePostSender extends PostSender {
             Map<String, Object> params = request.getParams();
             if (null != params && params.size() > 0) {
                 DataOutputStream outs = new DataOutputStream(conn.getOutputStream());
-                for (Entry<String,?> entry : params.entrySet()) {
+                for (Entry<String, ?> entry : params.entrySet()) {
                     outs.writeBytes("--" + boundary + SEPARATOR);
                     String key = entry.getKey();
                     File f = null;
                     if (entry.getValue() instanceof File)
-                        f = (File)entry.getValue();
+                        f = (File) entry.getValue();
                     else if (entry.getValue() instanceof String)
                         f = Files.findFile(entry.getValue().toString());
                     if (f != null && f.exists()) {
                         outs.writeBytes("Content-Disposition:    form-data;    name=\""
                                         + key
-                                        + "\";    filename=\""
-                                        + entry.getValue()
-                                        + "\"\r\n");
-                        outs.writeBytes("Content-Type:   application/octet-stream\r\n\r\n");
-                        if(f.length() == 0)
+                                        + "\";    filename=\"");
+                        outs.write(f.getName().getBytes(request.getEnc()));
+                        outs.writeBytes("\"" + SEPARATOR);
+                        outs.writeBytes("Content-Type:   application/octet-stream"
+                                        + SEPARATOR
+                                        + SEPARATOR);
+                        if (f.length() == 0)
                             continue;
                         InputStream is = Streams.fileIn(f);
-                        byte[] buffer = new byte[8192];
-                        while (true) {
-                            int amountRead = is.read(buffer);
-                            if (amountRead == -1) {
-                                break;
-                            }
-                            outs.write(buffer, 0, amountRead);
-                        }
-                        outs.writeBytes("\r\n");
+                        Streams.write(outs, is);
+                        outs.writeBytes(SEPARATOR);
                         Streams.safeClose(is);
                     } else {
                         outs.writeBytes("Content-Disposition:    form-data;    name=\""
                                         + key
-                                        + "\"\r\n\r\n");
-                        outs.writeBytes(entry.getValue() + "\r\n");
+                                        + "\""
+                                        + SEPARATOR
+                                        + SEPARATOR);
+                        outs.write(entry.getValue().toString().getBytes(request.getEnc()));
+                        outs.writeBytes(SEPARATOR);
                     }
                 }
                 outs.writeBytes("--" + boundary + "--" + SEPARATOR);
@@ -75,7 +73,7 @@ public class FilePostSender extends PostSender {
             return createResponse(getResponseHeader());
 
         }
-        catch(IOException e) {
+        catch (IOException e) {
             throw new HttpException(request.getUrl().toString(), e);
         }
     }

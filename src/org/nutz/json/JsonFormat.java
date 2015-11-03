@@ -12,7 +12,7 @@ import org.nutz.castor.Castors;
  * @author Wendal(wendal1985@gmail.com)
  * 
  */
-public class JsonFormat {
+public class JsonFormat implements Cloneable {
 
     /**
      * 紧凑模式 -- 无换行,忽略null值
@@ -226,5 +226,22 @@ public class JsonFormat {
 
     public SimpleDateFormat getDateFormat() {
         return dateFormat == null ? null : (SimpleDateFormat) dateFormat.clone();
+    }
+    
+    public JsonFormat clone() {
+        JsonFormat jf = new JsonFormat();
+        jf.indent = this.indent;
+        jf.indentBy = this.indentBy;
+        jf.compact = this.compact;
+        jf.quoteName = this.quoteName;
+        jf.ignoreNull = this.ignoreNull;
+        jf.actived = this.actived;
+        jf.locked = this.locked;
+        jf.castors = this.castors;
+        jf.separator = this.separator;
+        jf.autoUnicode = this.autoUnicode;
+        jf.unicodeLower = this.unicodeLower;
+        jf.dateFormat = this.dateFormat;
+        return jf;
     }
 }

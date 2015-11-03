@@ -11,7 +11,6 @@ import java.util.Map;
 import org.nutz.json.Json;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 
 public class Request {
 
@@ -69,7 +68,7 @@ public class Request {
     private byte[] data;
     private URL cacheUrl;
     private InputStream inputStream;
-    private String enc;
+    private String enc = Encoding.UTF8;
 
     public URL getUrl() {
         if (cacheUrl != null) {
@@ -99,7 +98,9 @@ public class Request {
         if (params != null) {
             for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
                 String key = it.next();
-                sb.append(Http.encode(key, this.enc)).append('=').append(Http.encode(params.get(key)));
+                sb.append(Http.encode(key, this.enc))
+                  .append('=')
+                  .append(Http.encode(params.get(key), this.enc));
                 if (it.hasNext())
                     sb.append('&');
             }
@@ -112,14 +113,12 @@ public class Request {
             return inputStream;
         } else {
             if (null == data) {
-                if (enc != null)
-                    try {
-                        return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
-                    }
-                    catch (UnsupportedEncodingException e) {
-                        throw Lang.wrapThrow(e);
-                    }
-                return new ByteArrayInputStream(Strings.getBytesUTF8(getURLEncodedParams()));
+                try {
+                    return new ByteArrayInputStream(getURLEncodedParams().getBytes(enc));
+                }
+                catch (UnsupportedEncodingException e) {
+                    throw Lang.wrapThrow(e);
+                }
             }
             return new ByteArrayInputStream(data);
         }
@@ -171,13 +170,13 @@ public class Request {
     public boolean isPost() {
         return METHOD.POST == method;
     }
-    
+
     public boolean isDelete() {
-    	return METHOD.DELETE == method;
+        return METHOD.DELETE == method;
     }
-    
+
     public boolean isPut() {
-    	return METHOD.PUT == method;
+        return METHOD.PUT == method;
     }
 
     public Request setMethod(METHOD method) {
@@ -210,7 +209,12 @@ public class Request {
      * 设置发送内容的编码,仅对String或者Map<String,Object>类型的data有效
      */
     public Request setEnc(String reqEnc) {
-        this.enc = reqEnc;
+        if (reqEnc != null)
+            this.enc = reqEnc;
         return this;
+    }
+
+    public String getEnc() {
+        return enc;
     }
 }

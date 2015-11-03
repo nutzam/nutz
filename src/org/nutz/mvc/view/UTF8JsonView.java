@@ -61,7 +61,7 @@ public class UTF8JsonView implements View {
         Writer writer = resp.getWriter();
         if (jsonp)
             writer.write(req.getParameter(jsonpParam == null ? "callback" : jsonpParam) + "(");
-        Mvcs.write(resp, writer, null == obj ? data : obj, format);
+        Mvcs.write(resp, writer, null == obj ? data : obj, format.clone());
         if (jsonp)
             writer.write(");");
     }
@@ -70,4 +70,5 @@ public class UTF8JsonView implements View {
     public static final View COMPACT = new UTF8JsonView(JsonFormat.compact());
     public static final View FULL = new UTF8JsonView(JsonFormat.full());
     public static final View FORLOOK = new UTF8JsonView(JsonFormat.forLook());
+    public static final View JSONP = new UTF8JsonView(JsonFormat.compact()).setJsonp(true);
 }

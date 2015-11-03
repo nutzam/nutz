@@ -68,7 +68,7 @@ public class AnnotationIocLoader implements IocLoader {
         IocBean iocBean = classZ.getAnnotation(IocBean.class);
         if (iocBean != null) {
             if (log.isDebugEnabled())
-                log.debugf("Found a Class with Ioc-Annotation : %s", classZ);
+                log.debugf("Found : %s", classZ);
 
             // 采用 @IocBean->name
             String beanName = iocBean.name();
