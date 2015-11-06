@@ -9,6 +9,7 @@ import java.lang.annotation.Target;
  * Json字段的映射
  * 
  * @author zozoh(zozohtnt@gmail.com)
+ * @author 有心猴(belialofking@163.com)
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD, ElementType.METHOD})
@@ -34,5 +35,8 @@ public @interface JsonField {
      */
     boolean forceString() default false;
     
+    @Deprecated
     String dateFormat() default "";
+    
+    String dataFormat() default "";
 }
