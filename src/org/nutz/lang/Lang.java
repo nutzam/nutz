@@ -1189,9 +1189,58 @@ public abstract class Lang {
     public static NutMap map(String str) {
         if (null == str)
             return null;
+        str = Strings.trim(str);
         if ((str.length() > 0 && str.charAt(0) == '{') && str.endsWith("}"))
             return Json.fromJson(NutMap.class, str);
         return Json.fromJson(NutMap.class, "{" + str + "}");
+    }
+
+    /**
+     * 将一个 Map 所有的键都按照回调进行修改
+     * 
+     * 本函数遇到数组或者集合，会自动处理每个元素
+     * 
+     * @param obj
+     *            要转换的 Map 或者 集合或者数组
+     * 
+     * @param mkc
+     *            键值修改的回调
+     * @param recur
+     *            遇到 Map 是否递归
+     * 
+     * @see MapKeyConvertor
+     */
+    @SuppressWarnings("unchecked")
+    public static void convertMapKey(Object obj, MapKeyConvertor mkc, boolean recur) {
+        // Map
+        if (obj instanceof Map<?, ?>) {
+            Map<String, Object> map = (Map<String, Object>) obj;
+            NutMap map2 = new NutMap();
+            for (Map.Entry<String, Object> en : map.entrySet()) {
+                String key = en.getKey();
+                Object val = en.getValue();
+
+                if (recur)
+                    convertMapKey(val, mkc, recur);
+
+                String newKey = mkc.convertKey(key);
+                map2.put(newKey, val);
+            }
+            map.clear();
+            map.putAll(map2);
+        }
+        // Collection
+        else if (obj instanceof Collection<?>) {
+            for (Object ele : (Collection<?>) obj) {
+                convertMapKey(ele, mkc, recur);
+            }
+        }
+        // Array
+        else if (obj.getClass().isArray()) {
+            for (Object ele : (Object[]) obj) {
+                convertMapKey(ele, mkc, recur);
+            }
+        }
     }
 
     /**
