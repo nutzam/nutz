@@ -93,11 +93,14 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         else if ("jndi".equals(type)) {
             return new JNDI_Value(value.toString());
         }
+        else if ("el".equals(type)) {
+            return new EL_Value(value.toString());
+        }
         return null;
     }
 
     public String[] supportedTypes() {
-        return Lang.array("refer", "java", "env", "file", "sys", "jndi");
+        return Lang.array("refer", "java", "env", "file", "sys", "jndi", "el");
     }
 
 }
