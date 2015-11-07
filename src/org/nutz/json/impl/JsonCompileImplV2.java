@@ -180,7 +180,7 @@ final class JsonTokenScan {
             case SimpleString:
             case OtherString:
                 String key = token.value;
-                // log.debug("key=" + key + "      " + token);
+                // log.debug("key=" + key + " " + token);
                 nextToken();
                 if (token.type != MapPair) {
                     throw unexpectChar((char) token.type);
@@ -227,7 +227,7 @@ final class JsonTokenScan {
 
     protected Object readObject(int endTag) {
         nextToken();
-        // System.out.println(">>>> " + token.type + "    " + token);
+        // System.out.println(">>>> " + token.type + " " + token);
         switch (token.type) {
         case MapStart:
             return readMap();
@@ -328,6 +328,7 @@ final class JsonTokenScan {
 
         switch (c) {
         case 'v':
+        case '(':
             while (true) {
                 int z = nextChar();
                 if (z == '{')

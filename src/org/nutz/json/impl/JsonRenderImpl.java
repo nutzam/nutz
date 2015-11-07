@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -30,7 +30,7 @@ import org.nutz.lang.Strings;
 /**
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
- * 
+ * @author 有心猴(belialofking@163.com)
  */
 @SuppressWarnings({"rawtypes"})
 public class JsonRenderImpl implements JsonRender {
@@ -254,12 +254,14 @@ public class JsonRenderImpl implements JsonRender {
             String name = jef.getName();
             try {
                 Object value = jef.getValue(obj);
+
                 // 判断是否应该被忽略
                 if (!this.isIgnore(name, value)) {
+                    Mirror mirror = null;
                     // 以前曾经输出过 ...
                     if (null != value) {
                         // zozoh: 循环引用的默认行为，应该为 null，以便和其他语言交换数据
-                        Mirror mirror = Mirror.me(value);
+                        mirror = Mirror.me(value);
                         if (mirror.isPojo()) {
                             if (memo.contains(value))
                                 value = null;
@@ -288,8 +290,10 @@ public class JsonRenderImpl implements JsonRender {
                         else {
                             value = value2string(jef, value);
                         }
-                    } else if (jef.hasDateFormat() && null != value && value instanceof Date) {
-                        value = jef.getDateFormat().format((Date)value);
+                    } else if (jef.hasDataFormat() && null != value && value instanceof Date) {
+                        value = jef.getDataFormat().format((Date)value);
+                    } else if (jef.hasDataFormat() && null != value && mirror.isNumber()) {
+                        value = jef.getDataFormat().format(value);
                     }
 
                     // 加入输出列表 ...
@@ -406,14 +410,18 @@ public class JsonRenderImpl implements JsonRender {
     }
 
     protected String value2string(JsonEntityField jef, Object value) {
-        if (value instanceof Date) {
-            SimpleDateFormat df = jef.getDateFormat();
-            if (df == null) {
+        
+        Format df = jef.getDataFormat();
+        if (df == null) {
+            Mirror mirror = Mirror.me(value);
+            if (value instanceof Date) {
                 df = format.getDateFormat();
+            }else if (mirror.isNumber()) {
+                df = format.getNumberFormat();
             }
-            if (df != null) {
-                return df.format((Date)value);
-            }
+        }
+        if (df != null) {
+            return df.format(value);
         }
         return value.toString();
     }
