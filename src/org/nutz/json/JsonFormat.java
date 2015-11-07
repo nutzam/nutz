@@ -1,5 +1,6 @@
 package org.nutz.json;
 
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.regex.Pattern;
 
@@ -10,6 +11,7 @@ import org.nutz.castor.Castors;
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author Wendal(wendal1985@gmail.com)
+ * @author 有心猴(belialofking@163.com)
  * 
  */
 public class JsonFormat implements Cloneable {
@@ -99,6 +101,9 @@ public class JsonFormat implements Cloneable {
     private boolean unicodeLower;
 
     private SimpleDateFormat dateFormat;
+    
+    private NumberFormat numberFormat;
+
 
     public boolean ignore(String name) {
         if (null != actived)
@@ -228,6 +233,16 @@ public class JsonFormat implements Cloneable {
         return dateFormat == null ? null : (SimpleDateFormat) dateFormat.clone();
     }
     
+    
+    public NumberFormat getNumberFormat() {
+        return numberFormat == null ? null : (NumberFormat) numberFormat.clone();
+    }
+
+    public void setNumberFormat(NumberFormat numberFormat) {
+        this.numberFormat = numberFormat;
+    }
+    
+    
     public JsonFormat clone() {
         JsonFormat jf = new JsonFormat();
         jf.indent = this.indent;
@@ -242,6 +257,7 @@ public class JsonFormat implements Cloneable {
         jf.autoUnicode = this.autoUnicode;
         jf.unicodeLower = this.unicodeLower;
         jf.dateFormat = this.dateFormat;
+        jf.numberFormat = this.numberFormat;
         return jf;
     }
 }
