@@ -168,8 +168,7 @@ public class NutFilter implements Filter {
     	}
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)resp;
-        RequestPath path = Mvcs.getRequestPathObject(request);
-        String matchUrl = path.getUrl();
+        String matchUrl = request.getServletPath() + Strings.sBlank(request.getPathInfo());
         
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
