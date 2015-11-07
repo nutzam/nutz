@@ -5,12 +5,16 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.nutz.json.Json;
+import org.nutz.lang.ContinueLoop;
+import org.nutz.lang.Each;
 import org.nutz.lang.Encoding;
+import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
+import org.nutz.lang.LoopException;
 
 public class Request {
 
@@ -94,16 +98,23 @@ public class Request {
     }
 
     public String getURLEncodedParams() {
-        StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder();
         if (params != null) {
-            for (Iterator<String> it = params.keySet().iterator(); it.hasNext();) {
-                String key = it.next();
-                sb.append(Http.encode(key, this.enc))
-                  .append('=')
-                  .append(Http.encode(params.get(key), this.enc));
-                if (it.hasNext())
-                    sb.append('&');
+            for (Entry<String, Object> en : params.entrySet()) {
+                final String key = en.getKey();
+                Object val = en.getValue();
+                if (val == null)
+                    val = "";
+                Lang.each(val, new Each<Object>() {
+                    public void invoke(int index, Object ele, int length)throws ExitLoop, ContinueLoop, LoopException {
+                        sb.append(Http.encode(key, enc))
+                        .append('=')
+                        .append(Http.encode(ele, enc)).append('&');
+                    }
+                });
             }
+            if (sb.length() > 0)
+                sb.setLength(sb.length() - 1);
         }
         return sb.toString();
     }
