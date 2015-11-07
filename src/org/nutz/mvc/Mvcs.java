@@ -352,6 +352,9 @@ public abstract class Mvcs {
      *            Servlet 执行的上下文
      */
     public static void setServletContext(ServletContext servletContext) {
+        if (servletContext == null) {
+            Mvcs.servletContext.remove();
+        }
         if (def_servletContext == null)
             def_servletContext = servletContext;
         Mvcs.servletContext.set(servletContext);
