@@ -34,7 +34,7 @@
 
 ------------------------------------------------------------------------------------------
 默认的注解解析
-    
+
     通过在你的 POJO 类上标注注解，可以让 Nutz 来理解你打算怎么映射字段，这里我们举几个例子
 
     声明实体对应的表名
@@ -45,7 +45,7 @@
         }}}
          * 将对应到数据表 "pet_bean"
          * @Table("t_pet") 将对应到 "t_pet"
-    
+
     描述字段
         {{{
         @Column //提醒一下,对于@Name注解来说这一行是多余的
@@ -54,7 +54,8 @@
         private String name;
         }}}
          * 将对应到数据表的 "name" 字段 -- 默认用 field 的名字
-         * 如果 @Column("nm") 将对应到数据表的 "nm" 字段
+         * 如果 @Column(hump = true) 则该 field 对应为数据表的蛇底式小写(snake_case)的字段
+         * 如果 @Column("nm") 则对应到数据表的 "nm" 字段
          * @Name 表示这个字段有唯一性约束，你可以 `Pet pet = dao.fetch(Pet.class,"abc");`
          * @Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写
          * @ColDefine 是给出这个字段最精确的描述，比如上例就是 `VARCHAR(20)`
@@ -91,7 +92,7 @@ EntityMaker 接口
 
 ------------------------------------------------------------------------------------------
 动态实体
-    
+
     在 1.b.38 之前的版本，曾经记得有个朋友提出一个意见，他希望:
     {{{
     Map<String,Object> map = new HashMap<String,Object>();
@@ -107,7 +108,7 @@ EntityMaker 接口
     map.put(".table", "t_person");
     map.put("name", "abc");
     map.put("age", 18);
-    dao.update(map); 
+    dao.update(map);
     }}}
     你给的 Map 只要多一个固定的名值对 ".table"，那么我就能知道你想操作的数据库表名。
     所以，你还可以:
@@ -116,7 +117,7 @@ EntityMaker 接口
     map.put(".table", "t_person");
     map.put("name", "abc");
     map.put("age", 18);
-    dao.insert(map); 
+    dao.insert(map);
     }}}
 
     实际上，NutDao 是根据给定的 Map，先构建了一个 `Entity<?>`，然后之后的事情就顺理
