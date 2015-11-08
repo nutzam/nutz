@@ -28,6 +28,8 @@ public class EL_Value extends SimpleContext implements ValueProxy {
             return false;
         if ("sys".equals(key))
             return true;
+        if ("env".equals(key))
+            return true;
         if ("$ioc".equals(key))
             return true;
         if (key.startsWith("$") && key.length() > 1)
@@ -38,6 +40,7 @@ public class EL_Value extends SimpleContext implements ValueProxy {
     public Set<String> keys() {
         Set<String> keys = super.keys();
         keys.add("sys");
+        keys.add("env");
         keys.add("$ioc");
         for (String name : ioc.getNames()) {
             keys.add("$"+name);
@@ -54,6 +57,8 @@ public class EL_Value extends SimpleContext implements ValueProxy {
             return null;
         if ("sys".equals(key))
             return System.getProperties();
+        if ("env".equals(key))
+            return System.getenv();
         if ("$ioc".equals(key))
             return ioc;
         if (key.startsWith("$") && key.length() > 1)
