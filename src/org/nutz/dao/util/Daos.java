@@ -682,7 +682,7 @@ public abstract class Daos {
         if (!dao.exists(klass))
             return;
         final List<Sql> sqls = new ArrayList<Sql>();
-        List<String> indexs = new ArrayList<String>();
+        final Set<String> _indexs = new HashSet<String>();
         final boolean sqlAddNeedColumn = !dao.meta().isOracle();
         final boolean isCanComment = dao.meta().isMySql();
         dao.run(new ConnCallback() {
@@ -761,9 +761,9 @@ public abstract class Daos {
                     String showIndexs = "show index from " + en.getTableName();
                     PreparedStatement ppstat = conn.prepareStatement(showIndexs);
                     ResultSet rest = ppstat.executeQuery();
-                    List<String> indexs = new ArrayList<String>();
                     while (rest.next()) {
-                        indexs.add(rest.getString(1));
+                    	String index = rest.getString(3);
+                        _indexs.add(index);
                     }
                 }
                 catch (SQLException e) {
@@ -780,7 +780,7 @@ public abstract class Daos {
             dao.execute(sql);
         }
         // 创建索引
-        List<Sql> indexsSql = createIndexs(en, indexs);
+        List<Sql> indexsSql = createIndexs(en, _indexs);
         if (!Lang.isEmpty(indexsSql)) {
             dao.execute(indexsSql.toArray(new Sql[0]));
         }
@@ -788,7 +788,7 @@ public abstract class Daos {
         expert.createRelation(dao, en);
     }
 
-    private static List<Sql> createIndexs(Entity<?> en, List<String> indexsHis) {
+    private static List<Sql> createIndexs(Entity<?> en, Set<String> indexsHis) {
         List<Sql> sqls = new ArrayList<Sql>();
         StringBuilder sb = new StringBuilder();
         List<EntityIndex> indexs = en.getIndexes();
