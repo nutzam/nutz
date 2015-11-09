@@ -780,15 +780,14 @@ public abstract class Daos {
             dao.execute(sql);
         }
         // 创建索引
-        List<Sql> indexsSql = createIndexs(en, _indexs);
+        List<Sql> indexsSql = createIndexs(dao,en, _indexs,tableName);
         if (!Lang.isEmpty(indexsSql)) {
             dao.execute(indexsSql.toArray(new Sql[0]));
         }
         // 创建关联表
         expert.createRelation(dao, en);
     }
-
-    private static List<Sql> createIndexs(Entity<?> en, Set<String> indexsHis) {
+    private static List<Sql> createIndexs(Dao dao,Entity<?> en, Set<String> indexsHis,Object t) {
         List<Sql> sqls = new ArrayList<Sql>();
         StringBuilder sb = new StringBuilder();
         List<EntityIndex> indexs = en.getIndexes();
@@ -805,7 +804,7 @@ public abstract class Daos {
                 sb.append(TableName.render(new CharSegment(index.getName())));
             else
                 sb.append(index.getName());
-            sb.append(" ON ").append(en.getTableName()).append("(");
+            sb.append(" ON ").append(getTableName(dao, en, t)).append("(");
             for (EntityField field : index.getFields()) {
                 if (field instanceof MappingField) {
                     MappingField mf = (MappingField) field;
@@ -891,9 +890,11 @@ public abstract class Daos {
     /**
      * 获取动态表的表名
      */
-
     public static String getTableName(Dao dao, Class<?> klass, Object t) {
-        final Entity<?> en = dao.getEntity(klass);
+        return getTableName(dao, dao.getEntity(klass), t);
+    }
+    
+    public static String getTableName(Dao dao, final Entity<?> en, Object t) {
         if (t == null)
             return en.getTableName();
         final String[] name = new String[1];
