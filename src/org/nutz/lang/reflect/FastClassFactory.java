@@ -108,8 +108,8 @@ public final class FastClassFactory implements Opcodes {
                 modifies[i] = methods[i].getModifiers();
                 if (classZ.isInterface())
                     invokeOps[i] = INVOKEINTERFACE;
-                else if (Modifier.isAbstract(methods[i].getModifiers()))
-                    invokeOps[i] = INVOKESPECIAL;
+                //else if (Modifier.isAbstract(methods[i].getModifiers()))
+                //    invokeOps[i] = INVOKESPECIAL;
                 else if (Modifier.isStatic(methods[i].getModifiers()))
                     invokeOps[i] = INVOKESTATIC;
                 else
