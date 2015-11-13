@@ -19,10 +19,10 @@ public class BlobValueAdaptor extends AbstractFileValueAdaptor {
     }
 
     public Object get(ResultSet rs, String colName) throws SQLException {
-        File f = this.createTempFile();
         Blob blob = rs.getBlob(colName);
         if (blob == null)
             return null;
+        File f = this.createTempFile();
         Files.write(f, blob.getBinaryStream());
         return new SimpleBlob(f);
     }

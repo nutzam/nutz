@@ -217,7 +217,7 @@ public class DaoSupport {
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
         Transaction t = Trans.get();
-        if ((Trans.isTransactionNone() && isAllSelect) || // 用户没有指定用事务,又全部都是Select,那就不需要开事务咯
+        if ((Trans.isTransactionNone() && isAllSelect && !meta.isPostgresql()) || // 用户没有指定用事务,又全部都是Select,那就不需要开事务咯
                 // SQLite只有SERIALIZABLE和READ_UNCOMMITTED事务了
                 (meta.isSQLite() && (t == null || (t.getLevel() != Connection.TRANSACTION_SERIALIZABLE
                                               && t.getLevel() != Connection.TRANSACTION_READ_UNCOMMITTED))) 
