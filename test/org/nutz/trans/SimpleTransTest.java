@@ -101,16 +101,16 @@ public class SimpleTransTest extends DaoCase {
                     } 
                 });
                 //必然是同一个对象
-                assertEquals(conns[0], conns[1]);
+                //assertEquals(conns[0], conns[1]);
                 assertTrue(conns[0] == conns[1]);
                 try {
                     //必然是同一个对象
-                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
-                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
-                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
-                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), conns[1]);
+                    assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == conns[1]);
+                    assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == conns[1]);
+                    assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == conns[1]);
+                    assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == conns[1]);
 
-                    assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), Trans.get().getConnection(ioc.get(DataSource.class)));
+                    //assertEquals(Trans.get().getConnection(ioc.get(DataSource.class)), Trans.get().getConnection(ioc.get(DataSource.class)));
                     
                     assertTrue(Trans.get().getConnection(ioc.get(DataSource.class)) == Trans.get().getConnection(ioc.get(DataSource.class)));
                 }

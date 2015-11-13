@@ -215,7 +215,7 @@ public class DaoSupport {
         DaoExec callback = new DaoExec(sts);
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
-        if (sts.length == 1 || isAllSelect || Trans.isTransactionNone()) {
+        if (isAllSelect || (sts.length == 1 && Trans.isTransactionNone())) {
             runner.run(dataSource, callback);
         }
         // 否则启动事务
