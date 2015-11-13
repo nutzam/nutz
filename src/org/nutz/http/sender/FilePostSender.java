@@ -16,6 +16,7 @@ import org.nutz.lang.ExitLoop;
 import org.nutz.lang.Lang;
 import org.nutz.lang.LoopException;
 import org.nutz.lang.Streams;
+import org.nutz.lang.random.R;
 
 public class FilePostSender extends PostSender {
 
@@ -28,7 +29,7 @@ public class FilePostSender extends PostSender {
     @Override
     public Response send() throws HttpException {
         try {
-            String boundary = "---------------------------[Nutz]7d91571440efc";
+            String boundary = "---------------------------[Nutz]aabbcc"+R.UU32();
             openConnection();
             setupRequestHeader();
             conn.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);

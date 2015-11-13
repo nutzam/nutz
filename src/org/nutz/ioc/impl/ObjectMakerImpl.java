@@ -141,7 +141,7 @@ public class ObjectMakerImpl implements ObjectMaker {
             String msg = e.getMessage();
             if (msg.length() > 16*1024)
                 throw new IocException(e);
-            throw new IocException(e, "FAIL to create Ioc Bean name=[%s] \nbeacase [%s]", ing.getObjectName(), e.getMessage());
+            throw new IocException(e, "FAIL to create Ioc Bean name=[%s]", ing.getObjectName());
         }
 
         // 返回

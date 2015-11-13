@@ -95,7 +95,7 @@ public abstract class Jdbcs {
      * @see org.nutz.dao.jdbc.Jdbcs#getExpert(String, String)
      */
     public static JdbcExpert getExpert(DataSource ds) {
-    	log.info("Get Connection from DataSource for JdbcExpert");
+    	log.info("Get Connection from DataSource for JdbcExpert, if I lock at here, check your database server and configure");
         Connection conn = null;
         try {
             conn = Trans.getConnectionAuto(ds);
@@ -851,6 +851,10 @@ public abstract class Jdbcs {
 
     public static FilePool getFilePool() {
         return conf.getPool();
+    }
+    
+    public static void setFilePool(FilePool pool) {
+        conf.setPool(pool);
     }
     
     public static void setCharacterStream(int index, Object obj, PreparedStatement stat) throws SQLException {

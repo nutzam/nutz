@@ -81,13 +81,13 @@ public class DefaultMirrorFactory implements MirrorFactory {
         }
         if (interceptorPairs.isEmpty()) {
             if (log.isDebugEnabled())
-                log.debugf("%s without AOP", type);
+                log.debugf("Load %s without AOP", type);
             return Mirror.me(type);
         }
 
         int mod = type.getModifiers();
         if (Modifier.isFinal(mod) || Modifier.isAbstract(mod)) {
-            log.info("%s configure to use aop, but it is final/abstract, skip it");
+            log.info("%s configure to use AOP, but it is final/abstract, skip it");
             return Mirror.me(type);
         }
 

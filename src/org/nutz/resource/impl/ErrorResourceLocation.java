@@ -24,7 +24,7 @@ public class ErrorResourceLocation extends ResourceLocation {
     private ErrorResourceLocation(Object loc) {
         this.loc = loc;
         if (log.isInfoEnabled())
-            log.info("ErrorResourceLocation [loc=" + loc + "], maybe it is in your classpath, but not exist");
+            log.info("[loc=" + loc + "]not exist");
     }
     public String toString() {
         return "ErrorResourceLocation [loc=" + loc + "]";
