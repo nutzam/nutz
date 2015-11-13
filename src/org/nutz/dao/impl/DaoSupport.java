@@ -25,6 +25,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+import org.nutz.trans.Transaction;
 
 /**
  * Dao 接口实现类的一些基础环境
@@ -215,7 +216,12 @@ public class DaoSupport {
         DaoExec callback = new DaoExec(sts);
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
-        if (isAllSelect || (sts.length == 1 && Trans.isTransactionNone())) {
+        Transaction t = Trans.get();
+        if ((Trans.isTransactionNone() && isAllSelect) || // 用户没有指定用事务,又全部都是Select,那就不需要开事务咯
+                // SQLite只有SERIALIZABLE和READ_UNCOMMITTED事务了
+                (meta.isSQLite() && (t == null || (t.getLevel() != Connection.TRANSACTION_SERIALIZABLE
+                                              && t.getLevel() != Connection.TRANSACTION_READ_UNCOMMITTED))) 
+                ) {
             runner.run(dataSource, callback);
         }
         // 否则启动事务
