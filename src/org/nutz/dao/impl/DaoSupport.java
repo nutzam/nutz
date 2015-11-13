@@ -164,7 +164,7 @@ public class DaoSupport {
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
-        runner.run(dataSource, new ConnCallback() {
+        run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 DatabaseMetaData dmd = conn.getMetaData();
                 meta.setProductName(dmd.getDatabaseProductName());
@@ -216,13 +216,22 @@ public class DaoSupport {
         DaoExec callback = new DaoExec(sts);
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
-        Transaction t = Trans.get();
-        if ((Trans.isTransactionNone() && isAllSelect && !meta.isPostgresql()) || // 用户没有指定用事务,又全部都是Select,那就不需要开事务咯
-                // SQLite只有SERIALIZABLE和READ_UNCOMMITTED事务了
-                (meta.isSQLite() && (t == null || (t.getLevel() != Connection.TRANSACTION_SERIALIZABLE
-                                              && t.getLevel() != Connection.TRANSACTION_READ_UNCOMMITTED))) 
-                ) {
-            runner.run(dataSource, callback);
+        boolean useTrans = false;
+        switch (meta.getType()) {
+        case PSQL:
+            useTrans = true;
+            break;
+        case SQLITE:
+            Transaction t = Trans.get();
+            useTrans = (t != null && (t.getLevel() == Connection.TRANSACTION_SERIALIZABLE
+                                   || t.getLevel() == Connection.TRANSACTION_READ_UNCOMMITTED));
+            break;
+        default:
+            useTrans = !(Trans.isTransactionNone() && (sts.length==1 || isAllSelect));
+            break;
+        }
+        if (!useTrans) {
+            run(callback);
         }
         // 否则启动事务
         // wendal: 还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
@@ -257,7 +266,7 @@ public class DaoSupport {
         }
 
         public void run() {
-            runner.run(dataSource, this);
+            DaoSupport.this.run(this);
         }
 
         public void invoke(Connection conn) throws Exception {
