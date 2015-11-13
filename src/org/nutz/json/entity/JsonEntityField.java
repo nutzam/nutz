@@ -72,6 +72,7 @@ public class JsonEntityField {
         return jef;
     }
 
+    @SuppressWarnings({"deprecation", "rawtypes"})
     public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
         if (fld == null) {
             return null;
