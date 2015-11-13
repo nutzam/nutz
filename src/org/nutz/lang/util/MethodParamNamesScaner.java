@@ -1,9 +1,13 @@
 package org.nutz.lang.util;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 通过读取Class文件,获得方法形参名称列表
@@ -52,5 +56,16 @@ public class MethodParamNamesScaner {
         } catch (Throwable e) {
             throw new RuntimeException(e);
         }
+    }
+    
+    public static Map<String, List<String>> getParamNames(Class<?> klass) throws IOException {     
+        InputStream in = klass.getResourceAsStream("/" + klass.getName().replace('.', '/') + ".class");        
+        return getParamNames(in);      
+    }
+    
+    public static Map<String, List<String>> getParamNames(InputStream ins) throws IOException {
+        if (ins == null)
+            return new HashMap<String, List<String>>();
+        return ClassMetaReader.build(ins).paramNames;
     }
 }
