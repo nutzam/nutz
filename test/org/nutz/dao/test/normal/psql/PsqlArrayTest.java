@@ -11,6 +11,8 @@ import org.nutz.lang.Lang;
 public class PsqlArrayTest extends DaoCase {
     @Override
     protected void before() {
+        if (!dao.meta().isPostgresql())
+            return;
         dao.create(StudentArray.class, true);
     }
 
