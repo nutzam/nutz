@@ -1,5 +1,6 @@
 package org.nutz.mvc.impl;
 
+import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
@@ -18,6 +19,8 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.Segments;
+import org.nutz.lang.util.ClassMeta;
+import org.nutz.lang.util.ClassMetaReader;
 import org.nutz.lang.util.Context;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -46,6 +49,8 @@ import org.nutz.resource.Scans;
 public abstract class Loadings {
 
     private static final Log log = Logs.get();
+    
+    public static final boolean DISPLAY_METHOD_LINENUMBER = true;
 
     public static ActionInfo createInfo(Class<?> type) {
         ActionInfo ai = new ActionInfo();
@@ -58,6 +63,17 @@ public abstract class Loadings {
         evalAt(ai, type.getAnnotation(At.class), type.getSimpleName());
         evalActionChainMaker(ai, type.getAnnotation(Chain.class));
         evalModule(ai, type);
+        if (DISPLAY_METHOD_LINENUMBER) {
+            InputStream ins = type.getClassLoader().getResourceAsStream(type.getName().replace(".", "/") + ".class");
+            if (ins != null) {
+                try {
+                    ClassMeta meta = ClassMetaReader.build(ins);
+                    ai.setMeta(meta);
+                }
+                catch (Exception e) {
+                }
+            }
+        }
         return ai;
     }
 

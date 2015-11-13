@@ -7,6 +7,7 @@ import java.util.List;
 import org.nutz.lang.Lang;
 import org.nutz.mvc.ActionChain;
 import org.nutz.mvc.ActionContext;
+import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.Processor;
 
 public class NutActionChain implements ActionChain {
@@ -16,8 +17,10 @@ public class NutActionChain implements ActionChain {
     private Processor errorProcessor;
     
     private Method method;
+    
+    private Integer lineNumber;
 
-    public NutActionChain(List<Processor> list, Processor errorProcessor, Method method) {
+    public NutActionChain(List<Processor> list, Processor errorProcessor, ActionInfo ai) {
         if (null != list) {
             Iterator<Processor> it = list.iterator();
             if (it.hasNext()) {
@@ -31,7 +34,8 @@ public class NutActionChain implements ActionChain {
             }
         }
         this.errorProcessor = errorProcessor;
-        this.method = method;
+        this.method = ai.getMethod();
+        this.lineNumber = ai.getLineNumber();
     }
 
     public void doChain(ActionContext ac) {
@@ -53,8 +57,13 @@ public class NutActionChain implements ActionChain {
     
     String methodStr;
     public String toString() {
-        if (methodStr == null)
-            methodStr = Lang.simpleMetodDesc(method);
+        if (methodStr == null) {
+            String tmp = Lang.simpleMetodDesc(method);
+            if (lineNumber != null) {
+                tmp = String.format("(%s.java:%d) %s", method.getDeclaringClass().getSimpleName(), lineNumber, tmp);
+            }
+            methodStr = tmp;
+        }
         return methodStr;
     }
 }
