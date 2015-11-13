@@ -12,12 +12,7 @@ public class ClassMeta {
     public Map<String, List<String>> paramNames = new HashMap<String, List<String>>();
     public Map<String, Integer> methodLines = new HashMap<String, Integer>();
     
-    @Override
     public String toString() {
-        NutMap map = new NutMap();
-        map.put("type", type);
-        map.put("paramNames", paramNames);
-        map.put("methodLines", methodLines);
-        return Json.toJson(map);
+        return Json.toJson(this);
     }
 }
