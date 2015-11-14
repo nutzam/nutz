@@ -798,6 +798,7 @@ public class Mirror<T> {
      * @throws FailToGetValueException
      *             既没发现 getter，又没有字段
      */
+    @SuppressWarnings("rawtypes")
     public Object getValue(Object obj, String name) throws FailToGetValueException {
         try {
             return this.getGetter(name).invoke(obj);
@@ -807,8 +808,20 @@ public class Mirror<T> {
                 return getValue(obj, getField(name));
             }
             catch (NoSuchFieldException e1) {
-                if (obj != null && obj.getClass().isArray() && "length".equals(name)) {
-                    return Lang.length(obj);
+                if (obj != null) {
+                    if (obj.getClass().isArray() && "length".equals(name)) {
+                        return Lang.length(obj);
+                    }
+                    if (obj instanceof Map) {
+                        return ((Map)obj).get(name);
+                    }
+                    if (obj instanceof List) {
+                        try {
+                            return ((List)obj).get(Integer.parseInt(name));
+                        }
+                        catch (Exception e2) {
+                        }
+                    }
                 }
                 throw makeGetValueException(obj == null ? getType() : obj.getClass(), name, e);
             }
