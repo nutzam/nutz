@@ -1,20 +1,27 @@
 package org.nutz.dao.util.blob;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.sql.Blob;
 import java.sql.SQLException;
 
+import org.nutz.dao.jdbc.Jdbcs;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 
-public class SimpleBlob implements Blob {
+public class SimpleBlob implements Blob, Serializable {
 
+    private static final long serialVersionUID = 4192412466410263969L;
+    
     private File file;
 
+    public SimpleBlob() {}
+    
     public SimpleBlob(File f) {
         this.file = f;
     }
@@ -68,4 +75,11 @@ public class SimpleBlob implements Blob {
         throw Lang.noImplement();
     }
 
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        Streams.writeAndClose(out, new FileInputStream(file));
+    }
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
+        file = Jdbcs.getFilePool().createFile(".blob");
+        Files.write(file, in);
+    }
 }
