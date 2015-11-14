@@ -31,16 +31,6 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         return new NutMap(map);
     }
 
-    private String keySep;
-
-    public String getKeySep() {
-        return keySep;
-    }
-
-    public void setKeySep(String keySep) {
-        this.keySep = keySep;
-    }
-
     public NutMap() {
         super();
     }
@@ -77,29 +67,6 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     public static NutMap WRAP(String json) {
         return new NutMap(json);
-    }
-
-    @SuppressWarnings("unchecked")
-    public Object get(String key) {
-        if (null == keySep)
-            return super.get(key);
-        String[] keys = Strings.splitIgnoreBlank(key, keySep);
-        if (keys.length == 1) {
-            return super.get(keys[0]);
-        }
-        // 循环获取
-        Map<String, Object> obj = this;
-        int last = keys.length - 1;
-        for (int i = 0; i < last; i++) {
-            Object o = obj.get(keys[i]);
-            if (null == o || !(o instanceof Map))
-                return null;
-            obj = (Map<String, Object>) o;
-        }
-
-        // 最后一步，获取值
-        return obj.get(keys[last]);
-
     }
 
     public boolean has(String key) {

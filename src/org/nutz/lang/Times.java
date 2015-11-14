@@ -5,6 +5,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -649,7 +650,7 @@ public abstract class Times {
      * @return 格式化后的字符串
      */
     public static String format(String fmt, Date d) {
-        return new SimpleDateFormat(fmt).format(d);
+        return new SimpleDateFormat(fmt, Locale.ENGLISH).format(d);
     }
 
     /**
