@@ -1,5 +1,6 @@
 package org.nutz.http;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -18,6 +19,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import org.nutz.http.Request.METHOD;
+import org.nutz.http.sender.FilePostSender;
 import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 
@@ -98,6 +100,25 @@ public class Http {
         return Sender.create(Request.create(url, METHOD.POST, params, null))
                      .setTimeout(timeout)
                      .send();
+    }
+    
+    public static Response post3(String url, Object body, Header header, int timeout) {
+        Request req = Request.create(url, METHOD.POST).setHeader(header);
+        if (body != null) {
+            if (body instanceof InputStream) {
+                req.setInputStream((InputStream) body);
+            } else if (body instanceof byte[]) {
+                req.setData((byte[])body);
+            } else {
+                req.setData(String.valueOf(body));
+            }
+        }
+        return Sender.create(req).setTimeout(timeout).send();
+    }
+    
+    public static Response upload(String url, Map<String, Object> params, Header header, int timeout) {
+        Request req = Request.create(url, METHOD.POST, params, header);
+        return new FilePostSender(req).setTimeout(timeout).send();
     }
     
     public static String encode(Object s) {

@@ -124,7 +124,7 @@ public class NutFilter implements Filter {
             handler.depose();
         Mvcs.close();
         Mvcs.setServletContext(null);
-        Mvcs.ctx().reqThreadLocal.set(null);
+        Mvcs.ctx().reqThreadLocal.remove();
     }
     
     /**
@@ -148,12 +148,8 @@ public class NutFilter implements Filter {
 	    		return true;
     		}
     	}
-    	if (exclusionPaths != null) {
-    		for (String exclusionPath : exclusionPaths) {
-				if (exclusionPath.equals(matchUrl)) {
-		    		return true;
-				}
-			}
+    	if (exclusionPaths != null && exclusionPaths.contains(matchUrl)) {
+    		return true;
     	}
     	return false;
     }
@@ -168,8 +164,7 @@ public class NutFilter implements Filter {
     	}
         HttpServletRequest request = (HttpServletRequest)req;
         HttpServletResponse response = (HttpServletResponse)resp;
-        RequestPath path = Mvcs.getRequestPathObject(request);
-        String matchUrl = path.getUrl();
+        String matchUrl = request.getServletPath() + Strings.sBlank(request.getPathInfo());
         
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
@@ -196,7 +191,8 @@ public class NutFilter implements Filter {
                 if (preContext != null)
                     Mvcs.ctx().reqThreadLocal.set(preContext);
             } else {
-                Mvcs.ctx().reqThreadLocal.set(null);
+                Mvcs.ctx().reqThreadLocal.remove();
+                Mvcs.setServletContext(null);
             }
         }
     }

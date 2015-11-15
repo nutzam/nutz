@@ -45,12 +45,12 @@ public class AnnotationIocLoader implements IocLoader {
         }
         if (map.size() > 0) {
             if (log.isInfoEnabled())
-                log.infof("Scan complete ! Found %s classes in %s base-packages!\nbeans = %s",
+                log.infof("Found %s classes in %s base-packages!\nbeans = %s",
                           map.size(),
                           packages.length,
                           Castors.me().castToString(map.keySet()));
         } else {
-            log.warn("NONE Annotation-Class found!! Check your configure or report a bug!! packages="
+            log.warn("NONE Annotation-Class found!! Check your ioc configure!! packages="
                      + Arrays.toString(packages));
         }
     }
@@ -270,7 +270,7 @@ public class AnnotationIocLoader implements IocLoader {
     public IocObject load(IocLoading loading, String name) throws ObjectLoadException {
         if (has(name))
             return map.get(name);
-        throw new ObjectLoadException("Object '" + name + "' without define!");
+        throw new ObjectLoadException("Object '" + name + "' without define! Pls check your ioc configure");
     }
 
     private static final IocException duplicateField(Class<?> classZ, String name) {

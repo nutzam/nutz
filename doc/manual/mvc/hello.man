@@ -15,57 +15,57 @@
 详细步骤
 
 	创建一个 Dynamic Web Project
-	
+
 		创建一个新的 Dynamic Web Project （File > New > Project ... > Web > Dynamic Web Project）
-		
+
 		 * 项目的名称为 hellonutz
 		 * 这个例子使用的是 Tomcat 6.0，所以请将 Dynamic Web module version 设置成 2.5
 			 * 如果你的 Tomcat 是 7.0， 则可以设置成 3.0
-		
+
 		<hello/project_new.png>
-	
+
 	创建一个 Tomcat 运行服务器
-	
+
 		如果你已经在 Eclipse 中创建了一个 Tomcat 服务器，请
 		[#将_Nutzjar_加入_lib_目录中 跳过本步骤]，直接将项目 hellonutz 添加到这个服务器中即可
-	
+
 		在 Eclipse 的 Servers 视图中点击右键，选择 `New>Server`
-		
+
 		<hello/server_new.png>
-		
+
 		我们使用的 Tomcat 6.0，当然你可以根据自己的需要选用你的 Tomcat 版本，现在 7.0 已经出来了 ^_^
-		
+
 		<hello/server_config.png>
-	
+
 		将项目加入运行服务器
-		
+
 		<hello/server_add_project.png>
-		
+
 		点击 'Finish' 按钮，在 Servers 视图应该出现一个 Tomcat 服务器，这个服务器下应该有一个项目 -- hellonutz
 
 	将 Nutz.jar 加入 lib 目录中
-	
+
 		本例子需要 Nutz-1.a.31 或者更高的版本，
-		不过你可以[../committer/svn_project.man 自己编译一个最新版本]
-		
+		不过你可以[../committer/git_project.man 自己编译一个最新版本]
+
 		在 WebContent > WEB-INF > lib 文件夹下右键选择 New > File
-	
+
 		<hello/link_nutz.png>
-		
+
 		点击 'Finish' Eclipse 会将 nutz 的 jar 链到项目中
 
 	创建主模块
-	
+
 		在 src 目录上右键选择 New > Class
-	
+
 		<hello/main_module.png>
-		
+
 		直接点 'Finsih'， 后面我们会修改它的代码
 
 	修改 web.xml
-		
+
 		通过声明一个 Filter，[web_xml.man 将 Nutz.mvc 挂载到 Tomcat 中]
-		
+
 		{{{<xml>
 		<?xml version="1.0" encoding="UTF-8"?>
 		<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -88,15 +88,15 @@
 			</filter-mapping>
 		</web-app>
 		}}}
-		
+
 
 	创建入口函数
-	
+
 		打开刚才创建的 MainModule.java，添加一个函数，整个类的源代码如下：
-		
+
 		{{{<Java>
 		package demo.hello;
-		
+
 		import org.nutz.mvc.annotation.*;
 
 		public class MainModule {
@@ -109,24 +109,24 @@
 
 		}
 		}}}
-		
+
 		如果你想知道更多配置方式，请参看
 		 * [modules.man Nutz.Mvc 的配置语法]
 		 * [url_mapping.man URL 映射]
-		 
+
 
 	创建 jsp 页面
-	
+
 		因为我们在入口函数里声明了一个 [view.man#JSP_视图 JSP 视图]，按照视图的定义
-		
+
 		 * @Ok("jsp:jsp.hello")
-		
+
 		我们需要在 WEB-INF 下面建立一个名为 {*jsp} 的文件夹，并在里面建立一个 {*hello.jsp}
-	
+
 		<hello/jsp.png>
-		
+
 		下面是 hello.jsp 的源代码：
-		
+
 		{{{<Jsp>
 		<html>
 		<head>
@@ -137,29 +137,29 @@
 		</body>
 		</html>
 		}}}
-		
+
 		仅仅是输出入口函数的返回值。是的，无论入口函数返回什么，都会保存在 request 对象 "obj" 属性中
 
 	启动服务
-	
+
 		<hello/server_run.png>
-		
+
 		控制台输出
-		
+
 		<hello/console.png>
-		
+
 		如果你想打印更详细的日志，请参看 [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
-	
+
 	在浏览器中访问
-	
+
 		<hello/ok.png>
-		
+
 	这篇文章虽然不算短，但是实际上，你需要作的事情不多，不是吗？ ^_^
-		
+
 --------------------------------------------------------------------
 如何进阶
 	 * [http://github.com/nutzam/nutzdemo/ 访问 demo site]
 	 * [../lang/log.man#让_Nutz_输出日志 让_Nutz_输出日志]
 	 * [overview.man 详细阅读 Mvc 手册]
-	
+
 

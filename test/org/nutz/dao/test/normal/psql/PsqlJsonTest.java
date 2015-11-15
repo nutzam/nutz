@@ -14,6 +14,8 @@ public class PsqlJsonTest extends DaoCase {
 
     @Override
     protected void before() {
+        if (!dao.meta().isPostgresql())
+            return;
         dao.create(StudentJson.class, true);
     }
 

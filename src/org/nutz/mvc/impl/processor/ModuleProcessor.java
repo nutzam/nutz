@@ -63,7 +63,17 @@ public class ModuleProcessor extends AbstractProcessor {
         }
         // 使用 Ioc 容器管理模块
         else {
+            Ioc ioc = config.getIoc();
+            if (null == ioc)
+                throw Lang.makeThrow("Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app!! Miss @IocBy at MainMdoule??",
+                                     injectName,
+                                     injectName);
             injectName = ai.getInjectName();
+            if (!ioc.has(injectName)) {
+                log.warnf("Moudle with @InjectName('%s') or @IocBean('%s') but no such ioc bean found!! Pls check your ioc configure!!",
+                          injectName,
+                          injectName);
+            }
         }
     }
 
@@ -74,10 +84,6 @@ public class ModuleProcessor extends AbstractProcessor {
                 ac.setModule(moduleObj);
             } else {
                 Ioc ioc = ac.getIoc();
-                if (null == ioc)
-                    throw Lang.makeThrow("Moudle with @InjectName('%s') or @IocBean('%s') but you not declare a Ioc for this app",
-                                         injectName,
-                                         injectName);
                 Object obj;
                 /*
                  * 如果 Ioc 容器实现了高级接口，那么会为当前请求设置上下文对象

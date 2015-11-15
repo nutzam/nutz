@@ -1,6 +1,7 @@
 package org.nutz.el.opt.object;
 
 import java.lang.reflect.Array;
+import java.util.List;
 import java.util.Map;
 
 import org.nutz.el.opt.TwoTernary;
@@ -16,6 +17,7 @@ public class ArrayOpt extends TwoTernary {
     public int fetchPriority() {
         return 1;
     }
+    @SuppressWarnings("rawtypes")
     public Object calculate() {
         Object lval = calculateItem(left);
         Object rval = calculateItem(right);
@@ -26,6 +28,8 @@ public class ArrayOpt extends TwoTernary {
             if(om.containsKey(right.toString())){
                 return om.get(right.toString());
             }
+        } else if (lval instanceof List) {
+            return ((List)lval).get((Integer)rval);
         }
         
         return Array.get(lval, (Integer)rval);

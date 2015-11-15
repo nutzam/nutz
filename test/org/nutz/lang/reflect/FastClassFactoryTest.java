@@ -2,11 +2,16 @@ package org.nutz.lang.reflect;
 
 import java.lang.reflect.InvocationTargetException;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.aop.DefaultClassDefiner;
+import org.nutz.dao.Dao;
+import org.nutz.dao.impl.DaoSupport;
+import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.sql.Sql;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Mirror;
@@ -103,6 +108,15 @@ public class FastClassFactoryTest extends Assert {
 //        System.gc();
         
         System.out.println(pet.hashCode());
+    }
+    
+    @Test
+    public void test_fastclass_for_datasource() {
+        FastClassFactory.get(Dao.class);
+        FastClassFactory.get(BasicDataSource.class);
+        FastClass fc = FastClassFactory.get(DaoSupport.class);
+        fc = FastClassFactory.get(NutDao.class);
+        fc.invoke(new NutDao(), "execute", new Class[]{Sql.class}, new Object[]{null});
     }
 
     public static void main(String[] args) throws Exception {

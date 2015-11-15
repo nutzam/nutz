@@ -115,4 +115,7 @@ public class JdbcExpertConfigFile {
         this.config = config;
     }
 
+    public void setPool(FilePool pool) {
+        this.pool = pool;
+    }
 }

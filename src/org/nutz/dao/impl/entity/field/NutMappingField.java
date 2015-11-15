@@ -10,6 +10,8 @@ import org.nutz.dao.entity.annotation.ColType;
 import org.nutz.dao.impl.entity.EntityObjectContext;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.lang.segment.Segment;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class NutMappingField extends AbstractEntityField implements MappingField {
 
@@ -50,6 +52,8 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 	private boolean insert = true;
 
 	private boolean update = true;
+	
+	private static final Log log = Logs.get();
 
 	public NutMappingField(Entity<?> entity) {
 		super(entity);
@@ -69,14 +73,22 @@ public class NutMappingField extends AbstractEntityField implements MappingField
 			Object val = rec.get(prefix == null ? columnName : prefix + columnName);
 			this.setValue(obj, val);
 		}
-		catch (Exception e) {}
+		catch (Exception e) {
+            if (log.isTraceEnabled()) {
+                log.tracef("columnName="+columnName, e);
+            }
+		}
 	}
 
 	public void injectValue(Object obj, ResultSet rs, String prefix) {
 		try {
 			this.setValue(obj, adaptor.get(rs, prefix == null ? columnName : prefix + columnName));
 		}
-		catch (SQLException e) {}
+		catch (SQLException e) {
+		    if (log.isTraceEnabled()) {
+		        log.tracef("columnName="+columnName, e);
+		    }
+		}
 	}
 
 	public String getColumnName() {

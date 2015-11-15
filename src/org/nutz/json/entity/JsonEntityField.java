@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.text.DecimalFormat;
+import java.text.Format;
 import java.text.SimpleDateFormat;
 
 import org.nutz.json.JsonField;
@@ -40,7 +42,7 @@ public class JsonEntityField {
     
     private boolean hasJsonIgnore;
     
-    private SimpleDateFormat dateFormat;
+    private Format dataFormat;
 
     public boolean isForceString() {
         return forceString;
@@ -70,6 +72,7 @@ public class JsonEntityField {
         return jef;
     }
 
+    @SuppressWarnings({"deprecation", "rawtypes"})
     public static JsonEntityField eval(Mirror<?> mirror, Field fld) {
         if (fld == null) {
             return null;
@@ -100,8 +103,17 @@ public class JsonEntityField {
         // 判断字段是否被强制输出为字符串
         if (null != jf) {
             jef.setForceString(jf.forceString());
-            if (!Strings.isBlank(jf.dateFormat())) {
-                jef.dateFormat = new SimpleDateFormat(jf.dateFormat());
+            String dataFormat = jf.dataFormat();
+            if(Strings.isBlank(dataFormat)){
+                dataFormat = jf.dateFormat();
+            }
+            if(!Strings.isBlank(dataFormat)){
+                Mirror jfmirror = Mirror.me(jef.genericType);
+                if(jfmirror.isNumber()){
+                    jef.dataFormat = new DecimalFormat(dataFormat);
+                }else if(jfmirror.isDateTimeLike()){
+                    jef.dataFormat = new SimpleDateFormat(dataFormat);
+                }
             }
         }
         
@@ -150,11 +162,11 @@ public class JsonEntityField {
         return val;
     }
     
-    public SimpleDateFormat getDateFormat() {
-        return dateFormat == null ? null : (SimpleDateFormat)dateFormat.clone();
+    public Format getDataFormat() {
+        return dataFormat == null ? null : (Format)dataFormat.clone();
     }
     
-    public boolean hasDateFormat() {
-        return dateFormat != null;
+    public boolean hasDataFormat() {
+        return dataFormat != null;
     }
 }

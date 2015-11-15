@@ -25,6 +25,7 @@ import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Atom;
 import org.nutz.trans.Trans;
+import org.nutz.trans.Transaction;
 
 /**
  * Dao 接口实现类的一些基础环境
@@ -163,7 +164,7 @@ public class DaoSupport {
         pojoMaker = new NutPojoMaker(expert);
 
         meta = new DatabaseMeta();
-        runner.run(dataSource, new ConnCallback() {
+        run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
                 DatabaseMetaData dmd = conn.getMetaData();
                 meta.setProductName(dmd.getDatabaseProductName());
@@ -215,8 +216,22 @@ public class DaoSupport {
         DaoExec callback = new DaoExec(sts);
 
         // 如果强制没有事务或者都是 SELECT，没必要启动事务
-        if (sts.length == 1 || isAllSelect || Trans.isTransactionNone()) {
-            runner.run(dataSource, callback);
+        boolean useTrans = false;
+        switch (meta.getType()) {
+        case PSQL:
+            useTrans = true;
+            break;
+        case SQLITE:
+            Transaction t = Trans.get();
+            useTrans = (t != null && (t.getLevel() == Connection.TRANSACTION_SERIALIZABLE
+                                   || t.getLevel() == Connection.TRANSACTION_READ_UNCOMMITTED));
+            break;
+        default:
+            useTrans = !(Trans.isTransactionNone() && (sts.length==1 || isAllSelect));
+            break;
+        }
+        if (!useTrans) {
+            run(callback);
         }
         // 否则启动事务
         // wendal: 还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
@@ -251,7 +266,7 @@ public class DaoSupport {
         }
 
         public void run() {
-            runner.run(dataSource, this);
+            DaoSupport.this.run(this);
         }
 
         public void invoke(Connection conn) throws Exception {

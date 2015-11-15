@@ -50,6 +50,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -95,6 +96,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="1" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="1" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="1" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="1" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -156,6 +158,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -179,6 +182,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -202,6 +206,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>
@@ -236,6 +241,11 @@
 			<xs:extension base="xs:string"></xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
+	<xs:complexType name="t_tag_el">
+		<xs:simpleContent>
+			<xs:extension base="xs:string"></xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
 	<xs:complexType name="t_tag_sys">
 		<xs:simpleContent>
 			<xs:extension base="xs:string"></xs:extension>
@@ -261,6 +271,7 @@
 			<xs:element name="map" type="t_tag_map" minOccurs="0" maxOccurs="1" />
 			<xs:element name="set" type="t_tag_set" minOccurs="0" maxOccurs="1" />
 			<xs:element name="jndi" type="t_tag_jndi" minOccurs="0" maxOccurs="1" />
+			<xs:element name="el" type="t_tag_el" minOccurs="0" maxOccurs="1" />
 			<xs:element name="sys" type="t_tag_sys" minOccurs="0" maxOccurs="1" />
 			<xs:element name="app" type="t_tag_sys" minOccurs="0" maxOccurs="unbounded" />
 		</xs:choice>

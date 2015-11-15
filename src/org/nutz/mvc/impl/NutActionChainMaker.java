@@ -45,7 +45,7 @@ public class NutActionChainMaker implements ActionChainMaker {
             /*
              * 返回动作链实例
              */
-            ActionChain chain = new NutActionChain(list, errorProcessor, ai.getMethod());
+            ActionChain chain = new NutActionChain(list, errorProcessor, ai);
             return chain;
         } catch (Throwable e) {
             if (log.isDebugEnabled())
