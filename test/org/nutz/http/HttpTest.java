@@ -9,8 +9,6 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.nutz.Nutz;
-import org.nutz.http.Request.METHOD;
-import org.nutz.json.Json;
 
 public class HttpTest {
 
