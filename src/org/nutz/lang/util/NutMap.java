@@ -2,11 +2,14 @@ package org.nutz.lang.util;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.nutz.castor.Castors;
 import org.nutz.lang.Each;
@@ -71,6 +74,72 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     public boolean has(String key) {
         return null != get(key);
+    }
+
+    @Override
+    public boolean containsValue(Object value) {
+        if (null == _map)
+            return super.containsValue(value);
+        return super.containsValue(value) || _map.containsValue(value);
+    }
+
+    @Override
+    public boolean containsKey(Object key) {
+        if (null == _map)
+            return super.containsKey(key);
+        return super.containsKey(key) || _map.containsKey(key);
+    }
+
+    public Set<String> keySet() {
+        if (null == _map)
+            return super.keySet();
+        HashSet<String> keys = new HashSet<String>();
+        keys.addAll(super.keySet());
+        keys.addAll(_map.keySet());
+        return keys;
+    }
+
+    public Collection<Object> values() {
+        if (null == _map)
+            return super.values();
+        List<Object> vals = new LinkedList<Object>();
+        vals.addAll(super.values());
+        vals.addAll(_map.values());
+        return vals;
+    }
+
+    public Set<Entry<String, Object>> entrySet() {
+        if (null == _map)
+            return super.entrySet();
+        HashSet<Entry<String, Object>> vals = new HashSet<Entry<String, Object>>();
+        vals.addAll(_map.entrySet());
+        vals.addAll(super.entrySet());
+        return vals;
+    }
+
+    private NutMap _map;
+
+    public NutMap attach(NutMap map) {
+        _map = map;
+        return this;
+    }
+
+    public NutMap detach() {
+        NutMap re = _map;
+        _map = null;
+        return re;
+    }
+
+    @Override
+    public Object get(Object key) {
+        if (_map == null)
+            return super.get(key);
+
+        if (super.containsKey(key)) {
+            return super.get(key);
+        }
+
+        return _map.get(key);
     }
 
     public Object get(String key, Object dft) {
