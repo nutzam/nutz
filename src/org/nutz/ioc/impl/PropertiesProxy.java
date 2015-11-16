@@ -345,4 +345,8 @@ public class PropertiesProxy extends MultiLineProperties {
     public Map<String, String> toMap() {
         return new HashMap<String, String>(this);
     }
+    
+    public String get(String key) {
+        return super.get(key);
+    }
 }
