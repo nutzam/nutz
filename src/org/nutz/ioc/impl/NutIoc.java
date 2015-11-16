@@ -294,8 +294,11 @@ public class NutIoc implements Ioc2 {
     @Override
     protected void finalize() throws Throwable {
         if (!deposed) {
-            if (log.isInfoEnabled())
-                log.info("Ioc depose tigger by finalize(), not a good idea!");
+            log.error("Ioc depose tigger by GC!!!\n"
+                    + "Common Reason for that is YOUR code call 'new NutIoc(...)',"
+                    + " and then get some beans(most is Dao) from it and abandon it!!!\n"
+                    + "If using nutz.mvc, call Mvcs.ctx().getDefaultIoc() to get ioc container.\n"
+                    + "Not nutz.mvc? use like this:     public static Ioc ioc;");
             depose();
         }
         super.finalize();
