@@ -6,6 +6,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -45,6 +48,7 @@ import org.nutz.dao.test.meta.DynamicTable;
 import org.nutz.dao.test.meta.Master;
 import org.nutz.dao.test.meta.Pet;
 import org.nutz.dao.test.meta.PetObj;
+import org.nutz.dao.test.meta.PojoWithNull;
 import org.nutz.dao.test.meta.SimplePOJO;
 import org.nutz.dao.test.meta.UseBlobClob;
 import org.nutz.dao.test.meta.issue396.Issue396Master;
@@ -59,6 +63,7 @@ import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
+import org.nutz.lang.util.NutMap;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -543,4 +548,42 @@ public class SimpleDaoTest extends DaoCase {
             System.out.println(sql);
         }
     }
+    
+    /**
+     * 插入时忽略空值
+     */
+    @Test
+    public void test_daos_ext_insert_without_null() {
+        dao.create(PojoWithNull.class, true);
+        final PojoWithNull p = new PojoWithNull();
+        p.setName("hi");
+        p.setNickname("wendal");
+        //dao.insert(p.getClass(), Chain.from(p, FieldMatcher.make(null, null, true)));
+        //Daos.ext(dao, FieldFilter.create(p.getClass(), true)).insert(p);
+        
+        dao.insert(p, FieldFilter.create(p.getClass(), true));
+    }
+    
+    
+//    @Test
+//    public void test_map_blob() throws FileNotFoundException {
+//        if (dao.exists("t_test_map_blob")) {
+//            dao.drop("t_test_map_blob");
+//            Lang.quiteSleep(1000);
+//        }
+//        dao.execute(Sqls.create("create table t_test_map_blob(id VARCHAR(60),filecontent blob)"));
+//        
+//        NutMap map = new NutMap().setv(".table", "t_test_map_blob");
+//        map.put("id", R.UU32());
+//        map.put("filecontent", new FileInputStream("W:\\usb3.0_intel_1.0.10.255_w7.zip"));
+//        
+//        dao.insert(map);
+//        
+//        Record re = dao.fetch("t_test_map_blob", Cnd.NEW());
+//        assertNotNull(re);
+//        System.out.println(re.get("filecontent").getClass());
+//        System.out.println(new String((byte[])re.get("filecontent")));
+//        
+////        assertEquals("你好", new String((byte[])re.get("filecontent")));
+//    }
 }

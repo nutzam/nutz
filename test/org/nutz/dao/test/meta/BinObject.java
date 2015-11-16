@@ -44,7 +44,7 @@ public class BinObject {
         this.xclob = xclob;
     }
 
-    @Column
+    @Column("myclob")
     private Clob myClob;
 
     public Clob getMyClob() {
