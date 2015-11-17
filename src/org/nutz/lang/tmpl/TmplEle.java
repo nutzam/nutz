@@ -1,9 +1,9 @@
 package org.nutz.lang.tmpl;
 
-import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutBean;
 
 interface TmplEle {
 
-    void join(StringBuilder sb, NutMap context, boolean showKey);
+    void join(StringBuilder sb, NutBean context, boolean showKey);
 
 }

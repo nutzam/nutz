@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
+import org.nutz.lang.util.NutBean;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -73,14 +74,14 @@ public class Tmpl {
     /**
      * @see #exec(String, Pattern, int, NutMap, boolean)
      */
-    public static String exec(String tmpl, NutMap context) {
+    public static String exec(String tmpl, NutBean context) {
         return exec(tmpl, null, -1, context, true);
     }
 
     /**
      * @see #exec(String, Pattern, int, NutMap, boolean)
      */
-    public static String exec(String tmpl, NutMap context, boolean showKey) {
+    public static String exec(String tmpl, NutBean context, boolean showKey) {
         return exec(tmpl, null, -1, context, showKey);
     }
 
@@ -104,7 +105,7 @@ public class Tmpl {
     public static String exec(String tmpl,
                               Pattern ptn,
                               int groupIndex,
-                              NutMap context,
+                              NutBean context,
                               boolean showKey) {
         return new Tmpl(tmpl, ptn, groupIndex).render(context, showKey);
     }
@@ -200,11 +201,11 @@ public class Tmpl {
 
     }
 
-    public String render(NutMap context) {
+    public String render(NutBean context) {
         return render(context, true);
     }
 
-    public String render(NutMap context, boolean showKey) {
+    public String render(NutBean context, boolean showKey) {
         StringBuilder sb = new StringBuilder();
         for (TmplEle ele : list) {
             ele.join(sb, context, showKey);

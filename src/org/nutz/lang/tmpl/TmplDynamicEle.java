@@ -1,6 +1,6 @@
 package org.nutz.lang.tmpl;
 
-import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutBean;
 import org.nutz.mapl.Mapl;
 
 abstract class TmplDynamicEle<T> implements TmplEle {
@@ -12,7 +12,7 @@ abstract class TmplDynamicEle<T> implements TmplEle {
     protected T dft;
 
     @Override
-    public void join(StringBuilder sb, NutMap context, boolean showKey) {
+    public void join(StringBuilder sb, NutBean context, boolean showKey) {
         Object val = Mapl.cell(context, key);
         String str = _val(val);
 

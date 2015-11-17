@@ -6,9 +6,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -63,7 +60,6 @@ import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
 import org.nutz.lang.random.R;
-import org.nutz.lang.util.NutMap;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -75,7 +71,7 @@ public class SimpleDaoTest extends DaoCase {
         for (int i = 0; i < len; i++) {
             Pet pet = Pet.create("pet" + i);
             pet.setNickName("alias_" + i);
-            pet.setPrice((float)(R.random(30, 100) / Math.PI));
+            pet.setPrice((float) (R.random(30, 100) / Math.PI));
             dao.insert(pet);
         }
     }
@@ -182,7 +178,8 @@ public class SimpleDaoTest extends DaoCase {
     public void test_count_by_condition() {
         insertRecords(4);
         assertEquals(4, dao.count(Pet.class));
-        assertEquals(2, dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
+        assertEquals(2,
+                     dao.count(Pet.class, Cnd.wrap("name IN ('pet2','pet3') ORDER BY name ASC")));
     }
 
     @Test
@@ -385,9 +382,10 @@ public class SimpleDaoTest extends DaoCase {
         dao.clear(Pet.class);
         Pet pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id
-        Dao dao = Daos.ext(this.dao, FieldFilter.create(Pet.class,
-                                                        FieldMatcher.make(null, null, true)
-                                                                    .setIgnoreId(false)));
+        Dao dao = Daos.ext(this.dao,
+                           FieldFilter.create(Pet.class,
+                                              FieldMatcher.make(null, null, true)
+                                                          .setIgnoreId(false)));
         dao.fastInsert(pet);
         pet = dao.fetch(Pet.class); // 只有一条记录
         assertEquals(9090, pet.getId());
@@ -456,7 +454,7 @@ public class SimpleDaoTest extends DaoCase {
         }
 
     }
-    
+
     @Test
     public void test_varchar_BigDecimal() {
         dao.create(XPlace.class, true);
@@ -464,31 +462,31 @@ public class SimpleDaoTest extends DaoCase {
         place.setLat(new BigDecimal("12.3222"));
         place.setLng(new BigDecimal("29.02333"));
         dao.insert(place);
-        
+
         place = dao.fetch(XPlace.class);
         assertEquals("12.3222", place.getLat().toString());
         assertEquals("29.02333", place.getLng().toString());
-        
+
         System.out.println(Json.toJson(place));
     }
-    
+
     @Test
     public void test_xxx() {
-        Sql task_sql= Sqls.create("SELECT * FROM act_ru_task WHERE CATEGORY_=@category AND ( ASSIGNEE_=@userId  $assignee ) ORDER BY create_time_ desc");
-        task_sql.params().set("category",1);
+        Sql task_sql = Sqls.create("SELECT * FROM act_ru_task WHERE CATEGORY_=@category AND ( ASSIGNEE_=@userId  $assignee ) ORDER BY create_time_ desc");
+        task_sql.params().set("category", 1);
         task_sql.params().set("userId", 2);
         task_sql.vars().set("assignee", "and name != 'hi'");
 
         System.out.println(task_sql.toPreparedStatement());
         System.out.println(task_sql.forPrint());
-        System.out.println(">>"+task_sql);
+        System.out.println(">>" + task_sql);
     }
-    
+
     @Test
     public void test_issue_918() {
-        dao.create(Region.class, true); 
+        dao.create(Region.class, true);
     }
-    
+
     @Test
     public void test_issue_928() {
         dao.create(BeanWithSet.class, true);
@@ -497,20 +495,20 @@ public class SimpleDaoTest extends DaoCase {
         Long UID = 1234455656L;
         uids.add(UID);
         s.setUids(uids);
-        
+
         Set<String> names = new HashSet<String>();
         names.add("wendal");
         s.setNames(names);
         System.out.println(names);
-        
+
         dao.insert(s);
-        
+
         BeanWithSet out = dao.fetch(BeanWithSet.class);
         assertEquals(Long.class, out.getUids().iterator().next().getClass());
         assertEquals(UID, out.getUids().iterator().next());
-        
+
     }
-    
+
     @Test
     public void test_query_2() {
         dao.insert(Pet.create(100));
@@ -519,12 +517,14 @@ public class SimpleDaoTest extends DaoCase {
             assertNotNull(pet.getName());
         }
     }
-    
+
     @Test
     public void test_get_sql() throws Throwable {
         NutDao dao = new NutDao(ioc.get(javax.sql.DataSource.class));
         final List<String> sqls = new ArrayList<String>();
-        final Method m = NutStatement.class.getDeclaredMethod("toStatement", Object[][].class, String.class);
+        final Method m = NutStatement.class.getDeclaredMethod("toStatement",
+                                                              Object[][].class,
+                                                              String.class);
         m.setAccessible(true);
         dao.setExecutor(new DaoExecutor() {
             public void exec(Connection conn, DaoStatement st) {
@@ -548,7 +548,7 @@ public class SimpleDaoTest extends DaoCase {
             System.out.println(sql);
         }
     }
-    
+
     /**
      * 插入时忽略空值
      */
@@ -558,32 +558,34 @@ public class SimpleDaoTest extends DaoCase {
         final PojoWithNull p = new PojoWithNull();
         p.setName("hi");
         p.setNickname("wendal");
-        //dao.insert(p.getClass(), Chain.from(p, FieldMatcher.make(null, null, true)));
-        //Daos.ext(dao, FieldFilter.create(p.getClass(), true)).insert(p);
-        
+        // dao.insert(p.getClass(), Chain.from(p, FieldMatcher.make(null, null,
+        // true)));
+        // Daos.ext(dao, FieldFilter.create(p.getClass(), true)).insert(p);
+
         dao.insert(p, FieldFilter.create(p.getClass(), true));
     }
-    
-    
-//    @Test
-//    public void test_map_blob() throws FileNotFoundException {
-//        if (dao.exists("t_test_map_blob")) {
-//            dao.drop("t_test_map_blob");
-//            Lang.quiteSleep(1000);
-//        }
-//        dao.execute(Sqls.create("create table t_test_map_blob(id VARCHAR(60),filecontent blob)"));
-//        
-//        NutMap map = new NutMap().setv(".table", "t_test_map_blob");
-//        map.put("id", R.UU32());
-//        map.put("filecontent", new FileInputStream("W:\\usb3.0_intel_1.0.10.255_w7.zip"));
-//        
-//        dao.insert(map);
-//        
-//        Record re = dao.fetch("t_test_map_blob", Cnd.NEW());
-//        assertNotNull(re);
-//        System.out.println(re.get("filecontent").getClass());
-//        System.out.println(new String((byte[])re.get("filecontent")));
-//        
-////        assertEquals("你好", new String((byte[])re.get("filecontent")));
-//    }
+
+    // @Test
+    // public void test_map_blob() throws FileNotFoundException {
+    // if (dao.exists("t_test_map_blob")) {
+    // dao.drop("t_test_map_blob");
+    // Lang.quiteSleep(1000);
+    // }
+    // dao.execute(Sqls.create("create table t_test_map_blob(id
+    // VARCHAR(60),filecontent blob)"));
+    //
+    // NutMap map = new NutMap().setv(".table", "t_test_map_blob");
+    // map.put("id", R.UU32());
+    // map.put("filecontent", new
+    // FileInputStream("W:\\usb3.0_intel_1.0.10.255_w7.zip"));
+    //
+    // dao.insert(map);
+    //
+    // Record re = dao.fetch("t_test_map_blob", Cnd.NEW());
+    // assertNotNull(re);
+    // System.out.println(re.get("filecontent").getClass());
+    // System.out.println(new String((byte[])re.get("filecontent")));
+    //
+    //// assertEquals("你好", new String((byte[])re.get("filecontent")));
+    // }
 }
