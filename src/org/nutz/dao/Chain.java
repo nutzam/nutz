@@ -282,7 +282,7 @@ public abstract class Chain {
         return chain;
     }
     
-    private static class DefaultChain extends Chain {
+    public static class DefaultChain extends Chain {
         private Entry head;
         private Entry current;
         private Entry tail;
@@ -380,17 +380,17 @@ public abstract class Chain {
             }
             return re;
         }
-        
-        private static class Entry {
-            protected String name;
-            Object value;
-            ValueAdaptor adaptor;
-            boolean special;
-            Entry next;
-            public Entry(String name, Object value) {
-                this.name = name;
-                this.value = value;
-            }
+    }
+    
+    public static class Entry {
+        protected String name;
+        Object value;
+        ValueAdaptor adaptor;
+        boolean special;
+        Entry next;
+        public Entry(String name, Object value) {
+            this.name = name;
+            this.value = value;
         }
     }
 }
