@@ -1,6 +1,6 @@
 package org.nutz.lang.tmpl;
 
-import org.nutz.lang.util.NutMap;
+import org.nutz.lang.util.NutBean;
 
 class TmplStaticEle implements TmplEle {
 
@@ -11,7 +11,7 @@ class TmplStaticEle implements TmplEle {
     }
 
     @Override
-    public void join(StringBuilder sb, NutMap context, boolean showKey) {
+    public void join(StringBuilder sb, NutBean context, boolean showKey) {
         sb.append(str);
     }
 
