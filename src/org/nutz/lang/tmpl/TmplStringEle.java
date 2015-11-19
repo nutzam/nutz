@@ -5,7 +5,7 @@ import org.nutz.castor.Castors;
 class TmplStringEle extends TmplDynamicEle<String> {
 
     public TmplStringEle(String key, String dft) {
-        this.key = key;
+        super(null, key, null, dft);
         this.dft = dft;
     }
 

@@ -249,19 +249,15 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         return null == v ? dft : Castors.me().castTo(v, classOfT);
     }
 
-    /**
-     * 将一个字段转换成列表。因为返回的是容器，所以本函数永远不会返回 null
-     * 
-     * @param <T>
-     * @param key
-     * @param eleType
-     * @return 列表对象，如果字段不存在或者为空，则返回一个空列表
-     */
-    @SuppressWarnings("unchecked")
     public <T> List<T> getList(String key, final Class<T> eleType) {
+        return getList(key, eleType, new ArrayList<T>());
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> List<T> getList(String key, final Class<T> eleType, List<T> dft) {
         Object v = get(key);
         if (null == v)
-            return new ArrayList<T>();
+            return dft;
 
         if (v instanceof CharSequence) {
             return Lang.list(Castors.me().castTo(v, eleType));
@@ -279,19 +275,17 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     }
 
-    /**
-     * 将一个字段转换成数组。因为返回的是容器，所以本函数永远不会返回 null
-     * 
-     * @param <T>
-     * @param key
-     * @param eleType
-     * @return 数组对象，如果字段不存在或者为空，则返回一个空数组
-     */
     @SuppressWarnings("unchecked")
-    public <T> T[] getArray(String key, final Class<T> eleType) {
+    @Override
+    public <T> T[] getArray(String key, Class<T> eleType) {
+        return getArray(key, eleType, (T[]) Array.newInstance(eleType, 0));
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> T[] getArray(String key, final Class<T> eleType, T[] dft) {
         Object v = get(key);
         if (null == v)
-            return (T[]) Array.newInstance(eleType, 0);
+            return dft;
 
         if (v instanceof CharSequence) {
             return Lang.array(Castors.me().castTo(v, eleType));

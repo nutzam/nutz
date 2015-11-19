@@ -15,4 +15,9 @@ class TmplStaticEle implements TmplEle {
         sb.append(str);
     }
 
+    @Override
+    public String toString() {
+        return str.replace("$", "$$");
+    }
+
 }

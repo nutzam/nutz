@@ -6,7 +6,7 @@ import org.nutz.lang.Strings;
 class TmplIntEle extends TmplDynamicEle<Integer> {
 
     public TmplIntEle(String key, String fmt, String dft) {
-        this.key = key;
+        super("int", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%d");
         this.dft = null == dft ? null : Integer.valueOf(dft);
     }

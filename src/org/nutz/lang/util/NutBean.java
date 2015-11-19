@@ -61,8 +61,17 @@ public interface NutBean extends Map<String, Object> {
      * 
      * @param <T>
      * @param key
+     *            键
      * @param eleType
+     *            列表元素类型
+     * @param dft
+     *            默认值
      * @return 列表对象，如果字段不存在或者为空，则返回一个空列表
+     */
+    <T> List<T> getList(String key, Class<T> eleType, List<T> dft);
+
+    /**
+     * @see #getList(String, Class, List)
      */
     <T> List<T> getList(String key, Class<T> eleType);
 
@@ -71,8 +80,17 @@ public interface NutBean extends Map<String, Object> {
      * 
      * @param <T>
      * @param key
+     *            键
      * @param eleType
+     *            数组元素类型
+     * @param dft
+     *            默认值
      * @return 数组对象，如果字段不存在或者为空，则返回一个空数组
+     */
+    <T> T[] getArray(String key, Class<T> eleType, T[] dft);
+
+    /**
+     * @see #getArray(String, Class, Object[])
      */
     <T> T[] getArray(String key, Class<T> eleType);
 

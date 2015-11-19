@@ -5,7 +5,9 @@ import java.util.HashMap;
 import org.nutz.lang.Strings;
 import org.nutz.lang.segment.Segment;
 import org.nutz.lang.segment.Segments;
+import org.nutz.lang.tmpl.Tmpl;
 import org.nutz.lang.util.Context;
+import org.nutz.lang.util.NutBean;
 
 public class NutMessageMap extends HashMap<String, Object> {
 
@@ -15,6 +17,9 @@ public class NutMessageMap extends HashMap<String, Object> {
         return Strings.sNull(super.get(key), key.toString());
     }
 
+    /**
+     * @deprecated
+     */
     public String get(String key, Context context) {
         Object obj = super.get(key);
         if (null == obj)
@@ -22,6 +27,13 @@ public class NutMessageMap extends HashMap<String, Object> {
         if (obj instanceof Segment)
             return Segments.replace((Segment) obj, context);
         return obj.toString();
+    }
+
+    public String get(String key, NutBean context) {
+        Object obj = super.get(key);
+        if (null == obj)
+            return key;
+        return Tmpl.exec(obj.toString(), context);
     }
 
     public Object getObject(String key) {

@@ -9,7 +9,7 @@ import org.nutz.lang.Times;
 class TmplDateEle extends TmplDynamicEle<Date> {
 
     public TmplDateEle(String key, String fmt, String dft) {
-        this.key = key;
+        super("date", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "yyyy-MM-dd'T'HH:mm:ss");
         this.dft = Castors.me().castTo(dft, Date.class);
     }

@@ -217,4 +217,12 @@ public class Tmpl {
         return this.keys;
     }
 
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (TmplEle ele : list) {
+            sb.append(ele);
+        }
+        return sb.toString();
+    }
+
 }

@@ -8,8 +8,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.nutz.lang.Lang;
-import org.nutz.lang.segment.CharSegment;
-import org.nutz.lang.segment.Segment;
 import org.nutz.lang.util.MultiLineProperties;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
@@ -74,13 +72,8 @@ public class NutMessageLoader implements MessageLoader {
                     }
 
                     // 将本地化字符串增加到当前语言
-                    for (String key : p.keySet()) {
-                        String str = p.get(key);
-                        Segment seg = (new CharSegment()).valueOf(str);
-                        if (seg.keys().isEmpty())
-                            msgs.put(key, str);
-                        else
-                            msgs.put(key, seg);
+                    for (Map.Entry<String, String> en : p.entrySet()) {
+                        msgs.put(en.getKey(), en.getValue());
                     }
 
                 } // ~ 内部循环结束

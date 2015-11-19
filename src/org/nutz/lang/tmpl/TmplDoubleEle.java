@@ -6,7 +6,7 @@ import org.nutz.lang.Strings;
 class TmplDoubleEle extends TmplDynamicEle<Double> {
 
     public TmplDoubleEle(String key, String fmt, String dft) {
-        this.key = key;
+        super("double", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%#.2f");
         this.dft = null == dft ? null : Double.valueOf(dft);
     }

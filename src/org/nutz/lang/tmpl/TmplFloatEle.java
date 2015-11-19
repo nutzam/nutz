@@ -6,7 +6,7 @@ import org.nutz.lang.Strings;
 class TmplFloatEle extends TmplDynamicEle<Float> {
 
     public TmplFloatEle(String key, String fmt, String dft) {
-        this.key = key;
+        super("float", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%#.2f");
         this.dft = null == dft ? null : Float.valueOf(dft);
     }

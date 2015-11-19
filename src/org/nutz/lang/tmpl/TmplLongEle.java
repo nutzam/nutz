@@ -6,7 +6,7 @@ import org.nutz.lang.Strings;
 class TmplLongEle extends TmplDynamicEle<Long> {
 
     public TmplLongEle(String key, String fmt, String dft) {
-        this.key = key;
+        super("long", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%d");
         this.dft = null == dft ? null : Long.valueOf(dft);
     }
