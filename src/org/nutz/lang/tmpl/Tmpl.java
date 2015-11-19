@@ -30,7 +30,7 @@ import org.nutz.lang.util.NutMap;
  */
 public class Tmpl {
 
-    private static final Pattern _P2 = Pattern.compile("([\\w\\d_.\\[\\]]+)"
+    private static final Pattern _P2 = Pattern.compile("([\\w\\d_.\\[\\]'\"-]+)"
                                                        + "(<(int|long|boolean|float|double|date|string)( *: *([^>]*))?>)?"
                                                        + "([?] *(.*) *)?");
     private Pattern _P;
