@@ -117,6 +117,12 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         return vals;
     }
 
+    public void clear() {
+        super.clear();
+        if (null != _map)
+            _map.clear();
+    }
+
     private NutMap _map;
 
     public NutMap attach(NutMap map) {

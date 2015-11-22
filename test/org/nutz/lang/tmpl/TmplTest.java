@@ -11,6 +11,14 @@ import org.nutz.lang.Times;
 public class TmplTest {
 
     @Test
+    public void test_special_key() {
+        assertEquals("ABC", Tmpl.exec("A${a-b}C", Lang.map("'a-b':'B'}")));
+        assertEquals("ABC", Tmpl.exec("A${'a.b'}C", Lang.map("'a.b':'B'}")));
+        assertEquals("A1C", Tmpl.exec("A${pos[0].'x.x'}C", Lang.map("pos:[{'x.x':1},{'y.y':2}]}")));
+        assertEquals("A2C", Tmpl.exec("A${pos[1].'y.y'}C", Lang.map("pos:[{'x.x':1},{'y.y':2}]}")));
+    }
+
+    @Test
     public void test_string() {
         assertEquals("ABC", Tmpl.exec("A${a.b}C", Lang.map("a:{b:'B'}")));
         assertEquals("ABC", Tmpl.exec("A${a.b[1]}C", Lang.map("a:{b:['A','B','C']}")));

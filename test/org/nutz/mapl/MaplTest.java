@@ -28,6 +28,21 @@ import org.nutz.mapl.impl.MaplRebuild;
 public class MaplTest {
 
     /**
+     * Issue #978
+     */
+    @Test
+    public void cellTestSpecialKey() {
+        Object dest = Json.fromJson("{'a.b':'AB', x : [{'c.d':'CD'},{'e.f':'EF'}]}");
+
+        assertEquals("AB", Mapl.cell(dest, "'a.b'"));
+        assertEquals("CD", Mapl.cell(dest, "x[0].'c.d'"));
+        assertEquals("CD", Mapl.cell(dest, "x.0.'c.d'"));
+        assertEquals("EF", Mapl.cell(dest, "x[1].'e.f'"));
+        assertEquals("EF", Mapl.cell(dest, "x.1.'e.f'"));
+
+    }
+
+    /**
      * 测试MAP提取
      */
     @Test
@@ -206,6 +221,7 @@ public class MaplTest {
     /**
      * 结构转换测试
      */
+
     /**
      * 简单转换
      */
@@ -257,27 +273,23 @@ public class MaplTest {
         System.out.println(Json.fromJson(json));
         String model = "[{'name':['user[].姓名', 'people[].name'], 'age':['user[].年龄', 'people[].age']}]";
         System.out.println(Json.fromJson(model));
-        //String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"}, {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12}, {\"姓名\":\"nutz\",\"年龄\":5}]}";
-        
-        
-        Object obj = Mapl.convert(Json.fromJson(Lang.inr("[{'name':'jk', 'age':12}]")), Lang.inr(model));
+        // String dest = "{\"people\":[{\"age\":12,\"name\":\"jk\"},
+        // {\"age\":5,\"name\":\"nutz\"}],\"user\":[{\"姓名\":\"jk\",\"年龄\":12},
+        // {\"姓名\":\"nutz\",\"年龄\":5}]}";
+
+        Object obj = Mapl.convert(Json.fromJson(Lang.inr("[{'name':'jk', 'age':12}]")),
+                                  Lang.inr(model));
         System.out.println(obj);
-        
-        
-        
-        
-        
-        
-        
-        
-//        
-//        Object obj = Mapl.convert(Json.fromJson(Lang.inr(json)), Lang.inr(model));
-//        System.out.println(obj.getClass());
-//        assertEquals("jk", Mapl.cell(obj, "user[0].姓名"));
-//        assertEquals("nutz", Mapl.cell(obj, "user[1].姓名"));
-//        assertEquals("jk", Mapl.cell(obj, "people[0].name"));
-//        assertEquals(5, Mapl.cell(obj, "people[1].age"));
-//        assertEquals(dest, Json.toJson(obj, new JsonFormat()));
+
+        //
+        // Object obj = Mapl.convert(Json.fromJson(Lang.inr(json)),
+        // Lang.inr(model));
+        // System.out.println(obj.getClass());
+        // assertEquals("jk", Mapl.cell(obj, "user[0].姓名"));
+        // assertEquals("nutz", Mapl.cell(obj, "user[1].姓名"));
+        // assertEquals("jk", Mapl.cell(obj, "people[0].name"));
+        // assertEquals(5, Mapl.cell(obj, "people[1].age"));
+        // assertEquals(dest, Json.toJson(obj, new JsonFormat()));
     }
 
     /**
@@ -403,9 +415,9 @@ public class MaplTest {
 
     @Test
     public void test_maplrebuild() {
-    	MaplRebuild req = new MaplRebuild();
-    	req.put("s1[0]", "test");
-    	req.put("s2.s2[0]", "test");
-    	System.out.println(Json.toJson(req.fetchNewobj()));
+        MaplRebuild req = new MaplRebuild();
+        req.put("s1[0]", "test");
+        req.put("s2.s2[0]", "test");
+        System.out.println(Json.toJson(req.fetchNewobj()));
     }
 }

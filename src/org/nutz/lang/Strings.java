@@ -954,7 +954,7 @@ public class Strings {
     public static <T> String join2(String sp, T[] array) {
         return Lang.concat(sp, array).toString();
     }
-    
+
     /**
      * 使用给定的分隔符, 将一个数组拼接成字符串
      * 
@@ -964,7 +964,7 @@ public class Strings {
      *            要拼接的数组
      * @return 拼接好的字符串
      */
-    public static <T> String join(String sp, T ... args) {
+    public static <T> String join(String sp, T... args) {
         return Lang.concat(sp, args).toString();
     }
 
@@ -1022,5 +1022,134 @@ public class Strings {
             return new String(bs, newCharset);
         }
         return null;
+    }
+
+    /**
+     * 将字符串根据转移字符转移
+     * 
+     * @param str
+     *            字符串
+     * @return 转移后的字符串
+     */
+    public static String evalEscape(String str) {
+        StringBuilder sb = new StringBuilder();
+        char[] cs = str.toCharArray();
+        for (int i = 0; i < cs.length; i++) {
+            char c = cs[i];
+            // 如果是转义字符
+            if (c == '\\') {
+                c = cs[++i];
+                switch (c) {
+                case 'n':
+                    sb.append('\n');
+                    break;
+                case 'r':
+                    sb.append('\r');
+                    break;
+                case 't':
+                    sb.append('\t');
+                    break;
+                case 'b':
+                    sb.append('\b');
+                    break;
+                case '\'':
+                case '"':
+                case '\\':
+                    sb.append(c);
+                    break;
+                default:
+                    throw Lang.makeThrow("evalEscape invalid char[%d] '%c'  : %s", i, c, str);
+                }
+            }
+            // 否则添加
+            else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 将字符串按照某个或几个分隔符拆分。 其中，遇到字符串 "..." 或者 '...' 并不拆分
+     * 
+     * @param str
+     *            要被拆分的字符串
+     * @param keepQuote
+     *            是否保持引号
+     * @param seps
+     *            分隔符
+     * @return 拆分后的数组
+     */
+    public static String[] split(String str, boolean keepQuote, char... seps) {
+        List<String> list = new LinkedList<String>();
+        char[] cs = str.toCharArray();
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < cs.length; i++) {
+            char c = cs[i];
+            // 遇到分隔符号
+            if (Nums.isin(seps, c)) {
+                if (!Strings.isBlank(sb)) {
+                    String s2 = sb.toString();
+                    if (!keepQuote)
+                        s2 = evalEscape(s2);
+                    list.add(s2);
+                    sb = new StringBuilder();
+                }
+            }
+            // 如果是转义字符
+            else if (c == '\\') {
+                i++;
+                if (i < cs.length) {
+                    c = cs[i];
+                    sb.append(c);
+                } else {
+                    break;
+                }
+            }
+            // 字符串
+            else if (c == '\'' || c == '"' || c == '`') {
+                if (keepQuote)
+                    sb.append(c);
+                while (++i < cs.length) {
+                    char c2 = cs[i];
+                    // 如果是转义字符
+                    if (c2 == '\\') {
+                        sb.append('\\');
+                        i++;
+                        if (i < cs.length) {
+                            c2 = cs[i];
+                            sb.append(c2);
+                        } else {
+                            break;
+                        }
+                    }
+                    // 退出字符串
+                    else if (c2 == c) {
+                        if (keepQuote)
+                            sb.append(c2);
+                        break;
+                    }
+                    // 其他附加
+                    else {
+                        sb.append(c2);
+                    }
+                }
+            }
+            // 其他，计入
+            else {
+                sb.append(c);
+            }
+        }
+
+        // 添加最后一个
+        if (!Strings.isBlank(sb)) {
+            String s2 = sb.toString();
+            if (!keepQuote)
+                s2 = evalEscape(s2);
+            list.add(s2);
+        }
+
+        // 返回拆分后的数组
+        return list.toArray(new String[list.size()]);
     }
 }
