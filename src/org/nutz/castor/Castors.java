@@ -366,6 +366,7 @@ public class Castors {
         defaultCastorList.add(org.nutz.castor.castor.Array2Map.class);
         defaultCastorList.add(org.nutz.castor.castor.Array2Object.class);
         defaultCastorList.add(org.nutz.castor.castor.Array2String.class);
+        defaultCastorList.add(org.nutz.castor.castor.Boolean2Boolean.class);
         defaultCastorList.add(org.nutz.castor.castor.Boolean2Number.class);
         defaultCastorList.add(org.nutz.castor.castor.Boolean2String.class);
         defaultCastorList.add(org.nutz.castor.castor.Calendar2Datetime.class);
