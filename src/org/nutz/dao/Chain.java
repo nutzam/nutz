@@ -10,6 +10,7 @@ import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.util.Daos;
 import org.nutz.json.Json;
 import org.nutz.lang.Mirror;
+import org.nutz.lang.Strings;
 import org.nutz.lang.util.Callback2;
 
 /**
@@ -197,8 +198,15 @@ public abstract class Chain {
                 if (null != fm && !fm.match(name))
                     continue;
                 Object v = en.getValue();
-                if (null != fm && null == v && fm.isIgnoreNull())
-                    continue;
+                if (null != fm ) {
+                    if (null == v) {
+                        if (fm.isIgnoreNull())
+                            continue;
+                    } else if (fm.isIgnoreBlankStr() && v instanceof String) {
+                        if (Strings.isBlank((String)v))
+                            continue;
+                    }
+                }
                 if (c == null) {
                     c = Chain.make(name, v);
                 } else {
@@ -215,8 +223,13 @@ public abstract class Chain {
                 if (null != fm && !fm.match(f.getName()))
                     continue;
                 Object v = mirror.getValue(obj, f.getName());
-                if (null != fm && null == v && fm.isIgnoreNull())
-                    continue;
+                if (null == v) {
+                    if (fm.isIgnoreNull())
+                        continue;
+                } else if (fm.isIgnoreBlankStr() && v instanceof String) {
+                    if (Strings.isBlank((String)v))
+                        continue;
+                }
                 if (c == null) {
                     c = Chain.make(f.getName(), v);
                 } else {

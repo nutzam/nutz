@@ -624,14 +624,16 @@ public abstract class Daos {
             if (val == null) {
                 if (matcher.isIgnoreNull())
                     continue;
-            }
-            if (val instanceof Number && ((Number) val).doubleValue() == 0.0) {
-                if (matcher.isIgnoreZero())
+            } else {
+                if (matcher.isIgnoreZero() && val instanceof Number && ((Number) val).doubleValue() == 0.0) {
                     continue;
-            }
-            if (val instanceof Date) {
-                if (matcher.isIgnoreDate())
+                }
+                if (matcher.isIgnoreDate() && val instanceof Date) {
                     continue;
+                }
+                if (matcher.isIgnoreBlankStr() && val instanceof String) {
+                
+                }
             }
             callback.invoke(mf, val);
             flag = true;

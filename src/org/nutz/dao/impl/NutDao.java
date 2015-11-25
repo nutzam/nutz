@@ -465,6 +465,7 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         pojo.setAfter(_pojo_eachEntity);
         pojo.getContext().attr(Each.class.getName(), callback);
+        pojo.getContext().attr("dao-cache-skip", "true");
         _exec(pojo);
         return pojo.getInt();
     }
@@ -496,6 +497,7 @@ public class NutDao extends DaoSupport implements Dao {
         expert.formatQuery(pojo);
         pojo.setAfter(_pojo_eachRecord);
         pojo.getContext().attr(Each.class.getName(), callback);
+        pojo.getContext().attr("dao-cache-skip", "true");
         _exec(pojo);
         return pojo.getInt();
     }

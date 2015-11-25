@@ -67,6 +67,34 @@ public class FieldMatcher {
         fm.ignorePk = ignorePk;
         return fm;
     }
+    
+    /**
+     * 构建一个字段匹配器.
+     * @param actived 需要保留的字段,必须是合法的正则表达式,可以为null
+     * @param locked  需要忽略的字段,必须是合法的正则表达式,可以为null
+     * @param ignoreNull 是否忽略空值
+     * @param ignoreZero 是否忽略零值,仅针对数值类型
+     * @param ignoreDate 是否忽略java.util.Date及其子类的属性
+     * @param ignoreId   是否忽略@Id标注的属性
+     * @param ignoreName 是否忽略@Name标注的属性
+     * @param ignorePk   是否忽略@Pk引用的属性
+     * @return 字段/属性匹配器
+     */
+    public static FieldMatcher make(String actived, String locked, boolean ignoreNull, 
+                                    boolean ignoreZero, boolean ignoreDate, 
+                                    boolean ignoreId,
+                                    boolean ignoreName,
+                                    boolean ignorePk,
+                                    boolean ignoreBlankStr) {
+        FieldMatcher fm = make(actived, locked, ignoreNull);
+        fm.ignoreZero = ignoreZero;
+        fm.ignoreDate = ignoreDate;
+        fm.ignoreId = ignoreId;
+        fm.ignoreName = ignoreName;
+        fm.ignorePk = ignorePk;
+        fm.ignoreBlankStr = ignoreBlankStr;
+        return fm;
+    }
 
     /**
      * 哪些字段可用
@@ -80,6 +108,10 @@ public class FieldMatcher {
      * 是否忽略空值
      */
     private boolean ignoreNull = true;
+    /**
+     * 是否忽略空白字符串
+     */
+    private boolean ignoreBlankStr;
     /**
      * 是否忽略零值
      */
@@ -264,6 +296,14 @@ public class FieldMatcher {
     public FieldMatcher setIgnorePk(boolean ignorePk) {
         this.ignorePk = ignorePk;
         return this;
+    }
+
+    public boolean isIgnoreBlankStr() {
+        return ignoreBlankStr;
+    }
+
+    public void setIgnoreBlankStr(boolean ignoreBlankStr) {
+        this.ignoreBlankStr = ignoreBlankStr;
     }
 
 }
