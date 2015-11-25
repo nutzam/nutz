@@ -14,6 +14,8 @@ public class LTEOpt extends TwoTernary {
     public Object calculate() {
         Number lval = (Number) calculateItem(this.left);
         Number rval = (Number) calculateItem(this.right);
+        if (lval == null || rval == null)
+            return false;
         if(rval instanceof Double || lval instanceof Double){
             return lval.doubleValue() <= rval.doubleValue();
         }

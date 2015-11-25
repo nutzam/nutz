@@ -16,6 +16,9 @@ public class AndOpt extends TwoTernary {
 
     public Object calculate() {
         Object lval = calculateItem(this.left);
+        if (null == lval)
+            return false;
+
         if (!(lval instanceof Boolean)) {
             // throw new ElException("操作数类型错误!");
             return Castors.me().castTo(lval, Boolean.class);
@@ -23,7 +26,10 @@ public class AndOpt extends TwoTernary {
         if (!(Boolean) lval) {
             return false;
         }
+
         Object rval = calculateItem(this.right);
+        if (null == rval)
+            return false;
         if (!(rval instanceof Boolean)) {
             // throw new ElException("操作数类型错误!");
             return Castors.me().castTo(rval, Boolean.class);
