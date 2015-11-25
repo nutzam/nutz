@@ -2,7 +2,7 @@ package org.nutz.el.opt.logic;
 
 import java.util.Queue;
 
-import org.nutz.el.ElException;
+import org.nutz.castor.Castors;
 import org.nutz.el.opt.AbstractOpt;
 
 /**
@@ -25,7 +25,8 @@ public class NotOpt extends AbstractOpt{
         if(rval instanceof Boolean){
             return !(Boolean) rval;
         }
-        throw new ElException("'!'操作符操作失败!");
+        //throw new ElException("'!'操作符操作失败!");
+        return Castors.me().castTo(rval, Boolean.class);
     }
     
     public String fetchSelf() {

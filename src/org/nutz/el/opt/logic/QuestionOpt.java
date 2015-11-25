@@ -1,6 +1,6 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.ElException;
+import org.nutz.castor.Castors;
 import org.nutz.el.opt.TwoTernary;
 
 /**
@@ -22,7 +22,8 @@ public class QuestionOpt extends TwoTernary{
         Object obj = getLeft();
         if (obj instanceof Boolean)
         	return (Boolean)obj;
-        throw new ElException("三元表达式错误! --> " + obj);
+        //throw new ElException("三元表达式错误! --> " + obj);
+        return Castors.me().castTo(obj, Boolean.class);
     }
 
     public String fetchSelf() {

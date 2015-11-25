@@ -51,6 +51,10 @@ public class Tmpl {
         return new Tmpl(tmpl, null, -1);
     }
 
+    public static Tmpl parsef(String fmt, Object... args) {
+        return new Tmpl(String.format(fmt, args), null, -1);
+    }
+
     /**
      * 解析模板对象，并用上下文进行渲染。DDD
      * <p/>

@@ -1,6 +1,6 @@
 package org.nutz.el.opt.logic;
 
-import org.nutz.el.ElException;
+import org.nutz.castor.Castors;
 import org.nutz.el.opt.TwoTernary;
 
 /**
@@ -16,14 +16,16 @@ public class OrOpt extends TwoTernary{
     public Object calculate() {
         Object lval = calculateItem(left);
         if(!(lval instanceof Boolean)){
-            throw new ElException("操作数类型错误!");
+            //throw new ElException("操作数类型错误!");
+            return Castors.me().castTo(lval, Boolean.class);
         }
         if((Boolean)lval){
             return true;
         }
         Object rval = calculateItem(right);
         if(!(rval instanceof Boolean)){
-            throw new ElException("操作数类型错误!");
+            //throw new ElException("操作数类型错误!");
+            return Castors.me().castTo(rval, Boolean.class);
         }
         if((Boolean)rval){
             return true;

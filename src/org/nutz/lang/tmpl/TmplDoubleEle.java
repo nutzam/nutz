@@ -8,12 +8,11 @@ class TmplDoubleEle extends TmplDynamicEle<Double> {
     public TmplDoubleEle(String key, String fmt, String dft) {
         super("double", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%#.2f");
-        this.dft = null == dft ? null : Double.valueOf(dft);
     }
 
     @Override
     protected String _val(Object val) {
-        Double n = null == val ? dft : Castors.me().castTo(val, Double.class);
+        Double n = Castors.me().castTo(val, Double.class);
         if (null != n) {
             return String.format(fmt, n);
         }

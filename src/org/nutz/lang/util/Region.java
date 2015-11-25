@@ -96,8 +96,28 @@ public abstract class Region<T extends Comparable<T>> {
         return left;
     }
 
+    public Region<T> left(T left) {
+        this.left = left;
+        return this;
+    }
+
+    public Region<T> leftOpen(boolean open) {
+        this.leftOpen = open;
+        return this;
+    }
+
     public T right() {
         return right;
+    }
+
+    public Region<T> right(T right) {
+        this.right = right;
+        return this;
+    }
+
+    public Region<T> rightOpen(boolean open) {
+        this.rightOpen = open;
+        return this;
     }
 
     public boolean isLeftOpen() {

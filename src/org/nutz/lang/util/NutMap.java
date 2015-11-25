@@ -354,4 +354,19 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
         return this;
     }
 
+    public NutMap setMap(Map<?, ?> map, boolean ignoreNullValue) {
+        for (Map.Entry<?, ?> en : map.entrySet()) {
+            Object key = en.getKey();
+            Object val = en.getValue();
+
+            if (null == key)
+                continue;
+
+            if (null == val && ignoreNullValue)
+                continue;
+
+            this.put(key.toString(), val);
+        }
+        return this;
+    }
 }
