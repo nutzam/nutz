@@ -166,6 +166,10 @@ public class Scans {
      * @return 资源列表
      */
     public List<NutResource> scan(String src, String regex) {
+        if (src.isEmpty())
+            throw new RuntimeException("emtry src is NOT allow");
+        if ("/".equals(src))
+            throw new RuntimeException("root path is NOT allow");
         List<NutResource> list = new ArrayList<NutResource>();
         Pattern pattern = regex == null ? null : Pattern.compile(regex);
         // 先看看是不是文件系统上一个具体的文件
