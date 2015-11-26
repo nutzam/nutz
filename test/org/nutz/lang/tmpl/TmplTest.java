@@ -9,6 +9,11 @@ import org.nutz.lang.Lang;
 import org.nutz.lang.Times;
 
 public class TmplTest {
+    
+    @Test
+    public void test_dynamic_dft(){
+        assertEquals("ABC", Tmpl.exec("A${b?x}C", Lang.map("x:'B'}")));
+    }
 
     @Test
     public void test_special_key() {

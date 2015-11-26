@@ -1,11 +1,10 @@
 package org.nutz.mvc.view;
 
-import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.nutz.lang.Lang;
 import org.nutz.mvc.View;
 
 /**
@@ -55,29 +54,48 @@ public class HttpStatusView implements View {
 
     }
 
-    private int statusCode;
+    private HttpServerResponse info;
 
-    public HttpStatusView(int statusCode) {
-        this.statusCode = statusCode;
+    public HttpStatusView(HttpServerResponse info) {
+        this.info = info;
     }
 
-    public void render(HttpServletRequest req,
-                       HttpServletResponse resp,
-                       Object obj) {
-        int code = this.statusCode;
+    public HttpStatusView(int statusCode) {
+        info = new HttpServerResponse();
+        info.updateCode(statusCode, null);
+    }
+
+    public HttpStatusView(Map<?, ?> map) {
+        this(200);
+        info.update(map);
+    }
+
+    public void render(HttpServletRequest req, HttpServletResponse resp, Object obj) {
+        HttpServerResponse info = this.info.clone();
+
+        // 指明了动态的 code
         if (obj != null && obj instanceof HttpStatusException) {
-            code = ((HttpStatusException) obj).getStatus();
+            HttpStatusException hse = ((HttpStatusException) obj);
+            info.updateCode(hse.getStatus(), hse.getMessage());
+        }
+        // 指明了 Header
+        else if (obj instanceof Map<?, ?>) {
+            info.update((Map<?, ?>) obj);
         }
 
-        if (code >= 400)
-            try {
-                resp.sendError(code);
-            }
-            catch (IOException e) {
-                throw Lang.wrapThrow(e);
-            }
-        else
-            resp.setStatus(code);
+        info.render(resp);
+
+        // if (code >= 400){
+        // try {
+        // resp.sendError(code);
+        // }
+        // catch (IOException e) {
+        // throw Lang.wrapThrow(e);
+        // }
+        // }
+        // else
+        // resp.setStatus(code);
+
     }
 
 }

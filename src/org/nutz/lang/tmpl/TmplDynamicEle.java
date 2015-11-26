@@ -11,17 +11,15 @@ abstract class TmplDynamicEle<T> implements TmplEle {
 
     private String _org_fmt;
 
-    private String _org_dft;
+    private String dft;
 
     protected String fmt;
-
-    protected T dft;
 
     protected TmplDynamicEle(String type, String key, String fmt, String dft_str) {
         this._type = type;
         this.key = key;
         this._org_fmt = fmt;
-        this._org_dft = dft_str;
+        this.dft = dft_str;
     }
 
     @Override
@@ -34,8 +32,8 @@ abstract class TmplDynamicEle<T> implements TmplEle {
             }
             sb.append('>');
         }
-        if (null != _org_dft) {
-            sb.append('?').append(_org_dft);
+        if (null != dft) {
+            sb.append('?').append(dft);
         }
         return sb.append('}').toString();
     }
@@ -43,6 +41,12 @@ abstract class TmplDynamicEle<T> implements TmplEle {
     @Override
     public void join(StringBuilder sb, NutBean context, boolean showKey) {
         Object val = Mapl.cell(context, key);
+        if (null == val && null != dft) {
+            val = Mapl.cell(context, dft);
+        }
+        if (null == val) {
+            val = dft;
+        }
         String str = _val(val);
 
         // 如果木值

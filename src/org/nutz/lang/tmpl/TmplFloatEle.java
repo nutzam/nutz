@@ -8,12 +8,11 @@ class TmplFloatEle extends TmplDynamicEle<Float> {
     public TmplFloatEle(String key, String fmt, String dft) {
         super("float", key, fmt, dft);
         this.fmt = Strings.sNull(fmt, "%#.2f");
-        this.dft = null == dft ? null : Float.valueOf(dft);
     }
 
     @Override
     protected String _val(Object val) {
-        Float n = null == val ? dft : Castors.me().castTo(val, Float.class);
+        Float n = Castors.me().castTo(val, Float.class);
         if (null != n) {
             return String.format(fmt, n);
         }
