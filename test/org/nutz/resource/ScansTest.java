@@ -136,10 +136,10 @@ public class ScansTest {
         assertTrue(list.size() > 10);
     }
     
-    @Test
-    public void test_scan_root() {
-        Scans.me().scan("", ".+\\.xml");
-    }
+//    @Test
+//    public void test_scan_root() {
+//        Scans.me().scan("", ".+\\.xml");
+//    }
     
     @Test
     public void test_resource_jar() throws MalformedURLException {
