@@ -23,6 +23,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.sql.DataSource;
 
@@ -54,6 +56,8 @@ public abstract class Jdbcs {
     private static final Log log = Logs.get();
 
     private static final JdbcExpertConfigFile conf;
+    
+    public static Map<String, ValueAdaptor> customValueAdaptorMap = new ConcurrentHashMap<String, ValueAdaptor>();
 
     /*
      * 根据配置文件获取 experts 的列表
@@ -168,8 +172,23 @@ public abstract class Jdbcs {
             return Adaptor.asNull;
         return getAdaptor(Mirror.me(obj));
     }
+    
+    /**
+     * 注册一个自定义ValueAdaptor,若adaptor为null,则取消注册
+     * @param className 类名
+     * @param adaptor 值适配器实例,若为null,则取消注册
+     * @return 原有的值适配器
+     */
+    public static ValueAdaptor register(String className, ValueAdaptor adaptor) {
+        if (adaptor == null)
+            return customValueAdaptorMap.remove(className);
+        return customValueAdaptorMap.put(className, adaptor);
+    }
 
     public static ValueAdaptor getAdaptor(Mirror<?> mirror) {
+        ValueAdaptor custom = customValueAdaptorMap.get(mirror.getType().getName());
+        if (custom != null)
+            return custom;
         // String and char
         if (mirror.isStringLike())
             return Jdbcs.Adaptor.asString;
