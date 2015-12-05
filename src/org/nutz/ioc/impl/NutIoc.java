@@ -2,6 +2,7 @@ package org.nutz.ioc.impl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +40,8 @@ public class NutIoc implements Ioc2 {
     private static final Log log = Logs.get();
 
     private static final String DEF_SCOPE = "app";
+    
+    protected Date createTime;
 
     /**
      * 读取配置文件的 Loader
@@ -91,6 +94,7 @@ public class NutIoc implements Ioc2 {
                      String defaultScope,
                      MirrorFactory mirrors) {
         log.info("NutIoc init begin ...");
+        this.createTime = new Date();
         this.maker = maker;
         this.defaultScope = defaultScope;
         this.context = context;
@@ -233,10 +237,12 @@ public class NutIoc implements Ioc2 {
                 log.info("You can't depose a Ioc twice!");
             return;
         }
+        if (log.isInfoEnabled())
+            log.infof("Closing %s@%s startup date [%s]", getClass(), hashCode(), this.createTime);
         context.depose();
         deposed = true;
-        if (log.isDebugEnabled())
-            log.debug("!!!Ioc is deposed, you can't use it anymore");
+        if (log.isInfoEnabled())
+            log.infof("%s@%s is deposed.", getClass(), hashCode());
     }
 
     public void reset() {
