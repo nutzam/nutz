@@ -176,19 +176,14 @@ public class Scans {
         if (src.startsWith("~/"))
             src = Disks.normalize(src);
         File srcFile = new File(src);
-        if (src.startsWith("/") || srcFile.exists()) {
-            if (srcFile.exists()) {
-                if (srcFile.isDirectory()) {
-                    Disks.visitFile(srcFile,
-                                    new ResourceFileVisitor(list, src),
-                                    new ResourceFileFilter(pattern));
-                } else {
-                    list.add(new FileResource(src, srcFile));
-                }
+        if (srcFile.exists()) {
+            if (srcFile.isDirectory()) {
+                Disks.visitFile(srcFile,
+                                new ResourceFileVisitor(list, src),
+                                new ResourceFileFilter(pattern));
+            } else {
+                list.add(new FileResource(src, srcFile));
             }
-            else
-                scan(src.substring(1), regex);
-            //虽然已经找到一些了, 但还是扫描一些吧,这样才全!!
         }
         for (ResourceLocation location : locations) {
             location.scan(src, pattern, list);
