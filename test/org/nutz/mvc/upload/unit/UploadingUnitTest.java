@@ -20,6 +20,7 @@ import org.nutz.lang.Streams;
 import org.nutz.mock.Mock;
 import org.nutz.mock.servlet.MockHttpServletRequest;
 import org.nutz.mock.servlet.multipart.MultipartInputStream;
+import org.nutz.mvc.upload.FieldMeta;
 import org.nutz.mvc.upload.TempFile;
 import org.nutz.mvc.upload.UploadException;
 import org.nutz.mvc.upload.UploadOutOfSizeException;
@@ -426,5 +427,12 @@ public class UploadingUnitTest {
 
         Uploading up = UploadUnit.TYPE.born();
         up.parse(req, UploadingContext.create(tmps));
+    }
+    
+    @Test
+    public void test_issue_992() {
+        String str = "Content-Disposition: form-data; name=\"adminiAuthorityFile\"; filename=\"2.1检举、控告危害航标的行为，对破案有功; 及时制止危害航标的行为，防止事故发生或者减少损失;捞获水上漂流航标，主动送交航标管理机关奖励.xls\"\r\nContent-Type: application/octet-stream";
+        FieldMeta fm = new FieldMeta(str);
+        assertEquals("2.1检举、控告危害航标的行为，对破案有功; 及时制止危害航标的行为，防止事故发生或者减少损失;捞获水上漂流航标，主动送交航标管理机关奖励.xls", fm.getFileLocalName());
     }
 }
