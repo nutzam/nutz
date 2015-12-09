@@ -26,7 +26,7 @@
 
     答: 把conf文件夹设置为源文件夹,  右键conf文件夹,Build Path, As Source folder
 ------------------------------------------------------------------------
-问: Sql.create后,为何sql.getList(XXX.class)返回null?
+问: Sqls.create后,为何sql.getList(XXX.class)返回null?
 
     答: 执行dao.execute(sql)后才可能有结果
 ------------------------------------------------------------------------
