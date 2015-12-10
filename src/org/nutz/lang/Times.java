@@ -66,16 +66,25 @@ public abstract class Times {
      * 将一个时间字符串，转换成一个一天中的绝对秒数
      * 
      * @param ts
-     *            时间字符串，符合格式 "HH:mm:ss"
+     *            时间字符串，符合格式 "HH:mm:ss" 或者 "HH:mm"
      * @return 一天中的绝对秒数
      */
     public static int T(String ts) {
         String[] tss = Strings.splitIgnoreBlank(ts, ":");
-        if (null != tss && tss.length == 3) {
-            int hh = Integer.parseInt(tss[0]);
-            int mm = Integer.parseInt(tss[1]);
-            int ss = Integer.parseInt(tss[2]);
-            return hh * 3600 + mm * 60 + ss;
+        if (null != tss) {
+            // 仅仅到分钟
+            if (tss.length == 2) {
+                int hh = Integer.parseInt(tss[0]);
+                int mm = Integer.parseInt(tss[1]);
+                return hh * 3600 + mm * 60;
+            }
+            // 到秒
+            if (tss.length == 3) {
+                int hh = Integer.parseInt(tss[0]);
+                int mm = Integer.parseInt(tss[1]);
+                int ss = Integer.parseInt(tss[2]);
+                return hh * 3600 + mm * 60 + ss;
+            }
         }
         throw Lang.makeThrow("Wrong format of time string '%s'", ts);
     }

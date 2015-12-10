@@ -35,6 +35,7 @@ public class Tmpl {
                                                        + "([?] *(.*) *)?");
     private Pattern _P;
     private int groupIndex;
+    private int escapeIndex;
     private List<TmplEle> list;
     private List<String> keys;
 
@@ -48,11 +49,11 @@ public class Tmpl {
      * @see #parse(String, Pattern, int)
      */
     public static Tmpl parse(String tmpl) {
-        return new Tmpl(tmpl, null, -1);
+        return new Tmpl(tmpl, null, -1, 0);
     }
 
     public static Tmpl parsef(String fmt, Object... args) {
-        return new Tmpl(String.format(fmt, args), null, -1);
+        return new Tmpl(String.format(fmt, args), null, -1, 0);
     }
 
     /**
@@ -69,24 +70,26 @@ public class Tmpl {
      *            一个正则表达式，指明占位符的形式。
      * @param groupIndex
      *            指定正则表达式，哪个匹配组作为你的占位符内容
+     * @param escapeIndex
+     *            指明了逃逸字符的组，如果为 -1 则表示没有逃逸字符
      * @return 模板对象
      */
-    public static Tmpl parse(String tmpl, Pattern ptn, int groupIndex) {
-        return new Tmpl(tmpl, ptn, groupIndex);
+    public static Tmpl parse(String tmpl, Pattern ptn, int groupIndex, int escapeIndex) {
+        return new Tmpl(tmpl, ptn, groupIndex, escapeIndex);
     }
 
     /**
      * @see #exec(String, Pattern, int, NutMap, boolean)
      */
     public static String exec(String tmpl, NutBean context) {
-        return exec(tmpl, null, -1, context, true);
+        return exec(tmpl, null, -1, 0, context, true);
     }
 
     /**
      * @see #exec(String, Pattern, int, NutMap, boolean)
      */
     public static String exec(String tmpl, NutBean context, boolean showKey) {
-        return exec(tmpl, null, -1, context, showKey);
+        return exec(tmpl, null, -1, 0, context, showKey);
     }
 
     /**
@@ -109,9 +112,10 @@ public class Tmpl {
     public static String exec(String tmpl,
                               Pattern ptn,
                               int groupIndex,
+                              int escapeIndex,
                               NutBean context,
                               boolean showKey) {
-        return new Tmpl(tmpl, ptn, groupIndex).render(context, showKey);
+        return new Tmpl(tmpl, ptn, groupIndex, escapeIndex).render(context, showKey);
     }
 
     private Tmpl() {
@@ -119,22 +123,24 @@ public class Tmpl {
         keys = new LinkedList<String>();
     }
 
-    private Tmpl(Pattern ptn, int groupIndex) {
+    private Tmpl(Pattern ptn, int groupIndex, int escapeIndex) {
         this();
         // 默认的模板占位符
         if (null == ptn) {
-            _P = Pattern.compile("(?<![$])[$][{]([^}]+)[}]");
-            this.groupIndex = 1;
+            _P = Pattern.compile("((?<![$])[$][{]([^}]+)[}])|([$]([$][{][^}]+[}]))");
+            this.groupIndex = 2;
+            this.escapeIndex = 4;
         }
         // 自定义的占位符
         else {
             _P = ptn;
             this.groupIndex = groupIndex;
+            this.escapeIndex = escapeIndex;
         }
     }
 
-    private Tmpl(String tmpl, Pattern ptn, int groupIndex) {
-        this(ptn, groupIndex);
+    private Tmpl(String tmpl, Pattern ptn, int groupIndex, int escapeIndex) {
+        this(ptn, groupIndex, escapeIndex);
 
         // 开始解析
         Matcher m = _P.matcher(tmpl);
@@ -147,53 +153,62 @@ public class Tmpl {
                 list.add(new TmplStaticEle(tmpl.substring(lastIndex, pos)));
             }
 
-            // 分析键
-            Matcher m2 = _P2.matcher(m.group(this.groupIndex));
+            // 看看是逃逸呢，还是匹配上了
+            String s_escape = this.escapeIndex > 0 ? m.group(this.escapeIndex) : null;
+            String s_match = m.group(this.groupIndex);
 
-            if (!m2.find())
-                throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
-
-            String key = m2.group(1);
-            String type = Strings.sNull(m2.group(3), "string");
-            String fmt = m2.group(5);
-            String dft = m2.group(7);
-
-            // 记录键
-            keys.add(key);
-
-            // 创建元素
-            if ("string".equals(type)) {
-                list.add(new TmplStringEle(key, dft));
+            // 如果是逃逸
+            if (!Strings.isBlank(s_escape)) {
+                list.add(new TmplStaticEle(s_escape));
             }
-            // int
-            else if ("int".equals(type)) {
-                list.add(new TmplIntEle(key, fmt, dft));
-            }
-            // long
-            else if ("long".equals(type)) {
-                list.add(new TmplLongEle(key, fmt, dft));
-            }
-            // boolean
-            else if ("boolean".equals(type)) {
-                list.add(new TmplBooleanEle(key, fmt, dft));
-            }
-            // float
-            else if ("float".equals(type)) {
-                list.add(new TmplFloatEle(key, fmt, dft));
-            }
-            // double
-            else if ("double".equals(type)) {
-                list.add(new TmplDoubleEle(key, fmt, dft));
-            }
-            // date
-            else if ("date".equals(type)) {
-                list.add(new TmplDateEle(key, fmt, dft));
-            }
-            // 靠不可能
+            // 否则分析键
             else {
-                throw Lang.impossible();
-            }
+                Matcher m2 = _P2.matcher(s_match);
 
+                if (!m2.find())
+                    throw Lang.makeThrow("Fail to parse tmpl key '%s'", m.group(1));
+
+                String key = m2.group(1);
+                String type = Strings.sNull(m2.group(3), "string");
+                String fmt = m2.group(5);
+                String dft = m2.group(7);
+
+                // 记录键
+                keys.add(key);
+
+                // 创建元素
+                if ("string".equals(type)) {
+                    list.add(new TmplStringEle(key, dft));
+                }
+                // int
+                else if ("int".equals(type)) {
+                    list.add(new TmplIntEle(key, fmt, dft));
+                }
+                // long
+                else if ("long".equals(type)) {
+                    list.add(new TmplLongEle(key, fmt, dft));
+                }
+                // boolean
+                else if ("boolean".equals(type)) {
+                    list.add(new TmplBooleanEle(key, fmt, dft));
+                }
+                // float
+                else if ("float".equals(type)) {
+                    list.add(new TmplFloatEle(key, fmt, dft));
+                }
+                // double
+                else if ("double".equals(type)) {
+                    list.add(new TmplDoubleEle(key, fmt, dft));
+                }
+                // date
+                else if ("date".equals(type)) {
+                    list.add(new TmplDateEle(key, fmt, dft));
+                }
+                // 靠不可能
+                else {
+                    throw Lang.impossible();
+                }
+            }
             // 记录
             lastIndex = m.end();
         }
