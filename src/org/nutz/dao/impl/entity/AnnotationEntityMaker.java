@@ -456,7 +456,10 @@ public class AnnotationEntityMaker implements EntityMaker {
         }
 
         // 字段值的适配器
-        ef.setAdaptor(expert.getAdaptor(ef));
+        if (null == info.annDefine || null == info.annDefine.adaptor() || info.annDefine.adaptor().isInterface())
+            ef.setAdaptor(expert.getAdaptor(ef));
+        else
+            ef.setAdaptor(Mirror.me(info.annDefine.adaptor()).born());
 
         // 输入输出
         ef.setInjecting(info.injecting);

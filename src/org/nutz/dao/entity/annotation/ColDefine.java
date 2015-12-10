@@ -6,6 +6,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.nutz.dao.jdbc.ValueAdaptor;
+
 /**
  * 给出字段的更加精确的数据库类型描述，方便 Dao 创建数据表
  * 
@@ -64,5 +66,10 @@ public @interface ColDefine {
 	 * 描述当前字段是否可更新
 	 */
 	boolean update() default true;
+	
+	/**
+	 * 自定义ValueAdaptor
+	 */
 
+	Class<? extends ValueAdaptor> adaptor() default ValueAdaptor.class;
 }

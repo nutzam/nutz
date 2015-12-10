@@ -5,7 +5,10 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.nutz.dao.DaoException;
 import org.nutz.dao.sql.SqlContext;
+import org.nutz.log.Logs;
+import org.nutz.log.Log;
 
 /**
  * 遍历 RersultSet
@@ -13,6 +16,27 @@ import org.nutz.dao.sql.SqlContext;
  * @author zozoh(zozohtnt@gmail.com)
  */
 public abstract class ResultSetLooping {
+    
+    private static Log log = Logs.get();
+    
+    /**
+     * 当结果集大于指定数量时,输出警告日志,默认-1不启用
+     */
+    public static int WARN_BIG_SIZE = -1;
+    
+    /**
+     * 当结果集大于指定大小时,报错,默认-1不启用
+     */
+    public static int ERROR_BIG_SIZE = -1;
+
+    /**
+     * 可以在SqlConext中设置key来实现单独配置
+     */
+    public static String KEY_WARN_SIZE = "sql-result-size-warn";
+    /**
+     * 可以在SqlConext中设置key来实现单独配置
+     */
+    public static String KEY_ERROR_SIZE = "sql-result-size-error";
 
     protected List<Object> list;
 
@@ -27,6 +51,10 @@ public abstract class ResultSetLooping {
         Pager pager = context.getPager();
         if (null == rs)
             return;
+        int warnSize = (context.attr(KEY_WARN_SIZE) == null ? WARN_BIG_SIZE : ((Number)(context.attr(KEY_WARN_SIZE))).intValue());
+        int errorSize = (context.attr(KEY_ERROR_SIZE) == null ? ERROR_BIG_SIZE : ((Number)(context.attr(KEY_ERROR_SIZE))).intValue());
+        boolean warnBigResult = log.isWarnEnabled() && warnSize > 0;
+        boolean errorBigResult = errorSize > 0;
         /**
          * 如果没有设置 Pager 或者 rs 的类型是 ResultSet.TYPE_FORWARD_ONLY，那么<br>
          * 无法利用 游标的滚动 来计算结果集合大小。这比较高效，但是如果使用者希望得到页数量，<br>
@@ -45,6 +73,14 @@ public abstract class ResultSetLooping {
             // 循环调用
             while (rs.next()) {
                 createObject(++index, rs, context, -1);
+                if (warnBigResult && index > warnSize) {
+                    warnBigResult = false;
+                    this.warnBig(rs, context, index, warnSize);
+                }
+                if (errorBigResult && index > errorSize) {
+                    errorBigResult = false;
+                    this.errorBig(rs, context, index, errorSize);
+                }
             }
         }
         /**
@@ -71,6 +107,14 @@ public abstract class ResultSetLooping {
                     createObject(++index, rs, context, rowCount);
                     if (!rs.next())
                         break;
+                    if (warnBigResult && index > warnSize) {
+                        warnBigResult = false;
+                        this.warnBig(rs, context, index, warnSize);
+                    }
+                    if (errorBigResult && index > errorSize) {
+                        errorBigResult = false;
+                        this.errorBig(rs, context, index, errorSize);
+                    }
                 }
         }
     }
@@ -108,5 +152,12 @@ public abstract class ResultSetLooping {
                                             ResultSet rs,
                                             SqlContext context,
                                             int rowCount);
+    
+    protected void warnBig(ResultSet rs, SqlContext ctx, int index, int warnSize) {
+        log.warnf("BIG Result, pager=%s", ctx.getPager());
+    }
 
+    protected void errorBig(ResultSet rs, SqlContext ctx, int index, int errorSize) {
+        throw new DaoException("result size bigger than limit="+errorSize);
+    }
 }

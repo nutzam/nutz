@@ -336,6 +336,16 @@ public abstract class Sqls {
             return new QueryBooleanCallback();
         }
         
+        /**
+         * 与record()类似,但区分大小写
+         */
+        public SqlCallback map() {
+            return FetchMapCallback.me;
+        }
+        /**
+         * 与records()类似,但区分大小写
+         * @return
+         */
         public SqlCallback maps() {
         	return QueryMapCallback.me;
         }

@@ -166,25 +166,24 @@ public class Scans {
      * @return 资源列表
      */
     public List<NutResource> scan(String src, String regex) {
+        if (src.isEmpty())
+            throw new RuntimeException("emtry src is NOT allow");
+        if ("/".equals(src))
+            throw new RuntimeException("root path is NOT allow");
         List<NutResource> list = new ArrayList<NutResource>();
         Pattern pattern = regex == null ? null : Pattern.compile(regex);
         // 先看看是不是文件系统上一个具体的文件
         if (src.startsWith("~/"))
             src = Disks.normalize(src);
         File srcFile = new File(src);
-        if (src.startsWith("/") || srcFile.exists()) {
-            if (srcFile.exists()) {
-                if (srcFile.isDirectory()) {
-                    Disks.visitFile(srcFile,
-                                    new ResourceFileVisitor(list, src),
-                                    new ResourceFileFilter(pattern));
-                } else {
-                    list.add(new FileResource(src, srcFile));
-                }
+        if (srcFile.exists()) {
+            if (srcFile.isDirectory()) {
+                Disks.visitFile(srcFile,
+                                new ResourceFileVisitor(list, src),
+                                new ResourceFileFilter(pattern));
+            } else {
+                list.add(new FileResource(src, srcFile));
             }
-            else
-                scan(src.substring(1), regex);
-            //虽然已经找到一些了, 但还是扫描一些吧,这样才全!!
         }
         for (ResourceLocation location : locations) {
             location.scan(src, pattern, list);

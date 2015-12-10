@@ -162,7 +162,7 @@ Sql 对象 -- org.nutz.dao.sql.Sql
         
         为了更加详细的说明一下回调的用处，我们再下面这个例子：
         {{{<Java>
-        Sql sql = Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
+        Sql sql = Sqls.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
         sql.setCallback(Sqls.callback.entities());
         sql.setEntity(dao.getEntity(Master.class));
         dao.execute(sql);
@@ -349,7 +349,7 @@ Nutz.Dao SQL 文件的格式
 		任意变量的值类型为Condition时,均自动识别为条件占位符
 		
 			{{{<JAVA>
-				Sql sql = Sql.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
+				Sql sql = Sqls.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
 				sql.setVar("vip_cnd", Cnd.where("level", ">", 5));
 				sql.setVar("girl_cnd", Cnd.where("age", "<", 30));
 				sql.setCallback(Sqls.callback.records());

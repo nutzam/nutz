@@ -31,15 +31,15 @@ import org.nutz.mvc.config.FilterNutConfig;
  */
 public class NutFilter implements Filter {
 	
-	private static final Log log = Logs.get();
+	protected static Log log;
 
     protected ActionHandler handler;
 
-    private static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico)$";
+    protected static final String IGNORE = "^.+\\.(jsp|png|gif|jpg|js|css|jspx|jpeg|swf|ico)$";
 
     protected Pattern ignorePtn;
 
-    private String selfName;
+    protected String selfName;
 
     protected SessionProvider sp;
 
@@ -61,6 +61,7 @@ public class NutFilter implements Filter {
     protected ServletContext sc;
 
     public void init(FilterConfig conf) throws ServletException {
+        log = Logs.getLog(getClass());
     	sc = conf.getServletContext();
     	Mvcs.setServletContext(sc);
     	if ("true".equals(Strings.sNull(conf.getInitParameter("skip-mode"), "false").toLowerCase())) {
