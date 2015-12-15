@@ -28,6 +28,8 @@ public class TempFileArrayInjector implements ParamInjector {
 
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        if (refer == null)
+            return null;
         Object obj = ((Map<String, Object>) refer).get(name);
         if (obj == null || Lang.length(obj) == 0)
             return EMTRY;

@@ -21,6 +21,8 @@ public class FileInjector implements ParamInjector {
 
     @SuppressWarnings("unchecked")
     protected File getFile(Object refer) {
+        if (refer == null)
+            return null;
         Object obj = ((Map<String, Object>) refer).get(name);
         if (obj == null)
             return null;
