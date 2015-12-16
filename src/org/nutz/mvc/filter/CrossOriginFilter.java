@@ -6,7 +6,6 @@ import org.nutz.log.Logs;
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
 import org.nutz.mvc.View;
-import org.nutz.mvc.view.HttpServerResponse;
 import org.nutz.mvc.view.VoidView;
 
 import javax.servlet.http.HttpServletResponse;
