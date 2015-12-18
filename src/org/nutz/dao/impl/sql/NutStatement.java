@@ -118,9 +118,48 @@ public abstract class NutStatement implements DaoStatement {
     }
 
     public int getInt() {
-        return getObject(Integer.class);
+        return getNumber().intValue();
     }
     
+    public int getInt(int defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.intValue();
+    }
+
+    public long getLong() {
+        return getNumber().longValue();
+    }
+    public long getLong(long defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.longValue();
+    }
+
+    public double getDouble() {
+        return getNumber().doubleValue();
+    }
+
+    public double getDouble(double defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.doubleValue();
+    }
+
+    public float getFloat() {
+        return getNumber().floatValue();
+    }
+
+    public float getFloat(float defaultValue) {
+        Number re = getNumber();
+        if (re == null)
+            return defaultValue;
+        return re.floatValue();
+    }
+
     public Number getNumber() {
     	return getObject(Number.class);
     }
