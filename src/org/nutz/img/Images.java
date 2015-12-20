@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -554,6 +555,25 @@ public class Images {
     public static void write(RenderedImage im, File targetFile) {
         try {
             ImageIO.write(im, Files.getSuffixName(targetFile), targetFile);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
+     * 将内存中的一个写入输出流
+     * 
+     * @param im
+     *            图片对象
+     * @param imFormat
+     *            图片格式
+     * @param out
+     *            输出流
+     */
+    public static void write(RenderedImage im, String imFormat, OutputStream out) {
+        try {
+            ImageIO.write(im, imFormat, out);
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);

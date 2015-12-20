@@ -19,6 +19,8 @@ public class TempFileInjector implements ParamInjector {
 
     @SuppressWarnings("unchecked")
     public TempFile get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        if (refer == null)
+            return null;
         Object tmp = ((Map<String, Object>) refer).get(name);
         if (tmp != null && tmp instanceof TempFile)
             return (TempFile)tmp;

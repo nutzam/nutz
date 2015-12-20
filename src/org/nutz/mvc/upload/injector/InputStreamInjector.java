@@ -19,6 +19,8 @@ public class InputStreamInjector extends FileInjector {
                         HttpServletRequest req,
                         HttpServletResponse resp,
                         Object refer) {
+        if (refer == null)
+            return null;
         File f = getFile(refer);
         return Streams.buff(Streams.fileIn(f));
     }

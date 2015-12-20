@@ -44,7 +44,7 @@ Charts of Nutz.Mvc
 				 * If return is a view, it will use the view to render null(null? yes. The third parameter would be null in this case.)
 					 * You can use org.nutz.mvc.view.ViewWrapper to wrap your return object with view. ViewWrapper is also a View
 				 * Or it will use the view annotated by @Ok to render return object of {*Entrance Function}
-				 * If there is an exception thrown, it will use the view annotated by @Error to render exception object
+				 * If there is an exception thrown, it will use the view annotated by @Fail to render exception object
 -------------------------------------------------------------------------------------------------
 You also need to know	
 	About @At

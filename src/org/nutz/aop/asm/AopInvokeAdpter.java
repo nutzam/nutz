@@ -34,7 +34,7 @@ class AopInvokeAdpter extends AopMethodAdapter {
             // start of fuck linenumber
             Label tmp = new Label();
             mv.visitLabel(tmp);
-            mv.visitLineNumber(1, tmp);
+            mv.visitLineNumber(i+1, tmp);
             // end of Linenumber
             Method method = methodArray[i];
             mv.visitVarInsn(ILOAD, 1);

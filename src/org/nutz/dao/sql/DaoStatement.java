@@ -135,11 +135,25 @@ public interface DaoStatement {
     Object getResult();
 
     /**
-     * <b>无结果的话,会抛NPE</b>
+     * <b>无结果的话,会抛NPE,可以考虑用getInt(defaultValue)</b>
      * 
      * @return 将结果对象作为 int 返回
      */
     int getInt();
+
+    int getInt(int defalutValue);
+
+    long getLong();
+
+    long getLong(long defaultValue);
+
+    double getDouble();
+
+    double getDouble(double defaultValue);
+
+    float getFloat();
+
+    float getFloat(float defaultValue);
     
     Number getNumber();
 

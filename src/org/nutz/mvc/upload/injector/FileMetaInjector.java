@@ -19,6 +19,8 @@ public class FileMetaInjector implements ParamInjector {
 
     @SuppressWarnings("unchecked")
     public Object get(ServletContext sc, HttpServletRequest req, HttpServletResponse resp, Object refer) {
+        if (refer == null)
+            return null;
         return ((TempFile) ((Map<String, Object>) refer).get(name)).getMeta();
     }
 

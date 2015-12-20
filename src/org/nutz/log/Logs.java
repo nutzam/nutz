@@ -71,7 +71,9 @@ public final class Logs {
     public static void init() {
         try {
             String packageName = Logs.class.getPackage().getName() + ".impl.";
-            adapter = new SimplePluginManager<LogAdapter>(    packageName + "Slf4jLogAdapter",
+            adapter = new SimplePluginManager<LogAdapter>(
+                    packageName + "CustomLogAdapter",
+                    packageName + "Slf4jLogAdapter",
                     packageName + "Log4jLogAdapter",
                     packageName + "SystemLogAdapter").get();
         }
