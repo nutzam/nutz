@@ -58,14 +58,14 @@ public class ObjectNaviNode {
             case '(':
                 i++;
                 StringBuilder sb2 = new StringBuilder();
+                boolean isNumber = true;
                 for (; i < chars.length; i++) {
                     char c2 = chars[i];
                     switch (c2) {
                     case ']':
                     case ')':
                         if ((c == '[' && c2 == ']') || (c == '(' && c2 == ')')) {
-                            String tmp = sb2.toString();
-                            if (tmp.matches("^[0-9]$") && !(c == '(')) {
+                            if (isNumber && !(c == '(')) {
                                 sb.append(':').append(sb2);
                             } else {
                                 sb.append('.').append(sb2);
@@ -73,6 +73,7 @@ public class ObjectNaviNode {
                             continue OUT;
                         }
                     }
+                    isNumber = isNumber && Character.isDigit(c2);
                     sb2.append(c2);
                 }
                 break;
