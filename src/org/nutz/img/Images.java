@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -259,7 +260,7 @@ public class Images {
         // 得到一个绘制接口
         if (bgColor != null) {
             // 创建图像
-            BufferedImage re = new BufferedImage(w, h, ColorSpace.TYPE_RGB);
+            BufferedImage re = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
             Graphics2D gc = re.createGraphics();
             gc.setColor(bgColor);
             gc.fillRect(0, 0, w, h);
@@ -315,7 +316,7 @@ public class Images {
         }
 
         // 创建图像
-        BufferedImage re = new BufferedImage(nW, nH, ColorSpace.TYPE_RGB);
+        BufferedImage re = new BufferedImage(nW, nH, im.getType());
         re.createGraphics().drawImage(im, 0, 0, nW, nH, null);
         // 返回
         return re;
@@ -554,6 +555,25 @@ public class Images {
     public static void write(RenderedImage im, File targetFile) {
         try {
             ImageIO.write(im, Files.getSuffixName(targetFile), targetFile);
+        }
+        catch (IOException e) {
+            throw Lang.wrapThrow(e);
+        }
+    }
+
+    /**
+     * 将内存中的一个写入输出流
+     * 
+     * @param im
+     *            图片对象
+     * @param imFormat
+     *            图片格式
+     * @param out
+     *            输出流
+     */
+    public static void write(RenderedImage im, String imFormat, OutputStream out) {
+        try {
+            ImageIO.write(im, imFormat, out);
         }
         catch (IOException e) {
             throw Lang.wrapThrow(e);
