@@ -39,8 +39,7 @@ public abstract class Streams {
     /**
      * 判断两个输入流是否严格相等
      */
-    public static boolean equals(InputStream sA, InputStream sB)
-            throws IOException {
+    public static boolean equals(InputStream sA, InputStream sB) throws IOException {
         int dA;
         while ((dA = sA.read()) != -1) {
             int dB = sB.read();
@@ -103,8 +102,7 @@ public abstract class Streams {
      * @return 写入的字节数
      * @throws IOException
      */
-    public static long write(OutputStream ops, InputStream ins)
-            throws IOException {
+    public static long write(OutputStream ops, InputStream ins) throws IOException {
         return write(ops, ins, BUF_SIZE);
     }
 
@@ -124,8 +122,7 @@ public abstract class Streams {
      * 
      * @throws IOException
      */
-    public static long write(OutputStream ops, InputStream ins, int bufferSize)
-            throws IOException {
+    public static long write(OutputStream ops, InputStream ins, int bufferSize) throws IOException {
         if (null == ops || null == ins)
             return 0;
 
@@ -135,6 +132,14 @@ public abstract class Streams {
         while (-1 != (len = ins.read(buf))) {
             bytesCount += len;
             ops.write(buf, 0, len);
+        }
+        // 啥都没写，强制触发一下写
+        // 这是考虑到 walnut 的输出流实现，比如你写一个空文件
+        // 那么输入流就是空的，但是 walnut 的包裹输出流并不知道你写过了
+        // 它人你就是打开一个输出流，然后再关上，所以自然不会对内容做改动
+        // 所以这里触发一个写，它就知道，喔你要写个空喔。
+        if (0 == bytesCount) {
+            ops.write(buf, 0, 0);
         }
         ops.flush();
         return bytesCount;
@@ -485,9 +490,7 @@ public abstract class Streams {
         return utf8r(fileIn(file));
     }
 
-    private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF,
-                                                     (byte) 0xBB,
-                                                     (byte) 0xBF};
+    private static final byte[] UTF_BOM = new byte[]{(byte) 0xEF, (byte) 0xBB, (byte) 0xBF};
 
     /**
      * 判断并移除UTF-8的BOM头
@@ -501,9 +504,7 @@ public abstract class Streams {
             int len = pis.read(header, 0, 3);
             if (len < 1)
                 return in;
-            if (header[0] != UTF_BOM[0]
-                || header[1] != UTF_BOM[1]
-                || header[2] != UTF_BOM[2]) {
+            if (header[0] != UTF_BOM[0] || header[1] != UTF_BOM[1] || header[2] != UTF_BOM[2]) {
                 pis.unread(header, 0, len);
             }
             return pis;
@@ -645,7 +646,7 @@ public abstract class Streams {
         }
 
     }
-    
+
     public static String nextLineTrim(BufferedReader br) throws IOException {
         String line = null;
         while (br.ready()) {

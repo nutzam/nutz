@@ -94,7 +94,7 @@ public final class Colors {
                              parseInt(m.group(3), 10));
         }
 
-        // RGBA值: rgba(6,6,6,0.8)
+        // RGBA值: rgba(6,6,6,255)
         p = Pattern.compile("^RGBA\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*[)]$");
         m = p.matcher(str);
         if (m.find()) {
@@ -102,6 +102,18 @@ public final class Colors {
                              parseInt(m.group(2), 10),
                              parseInt(m.group(3), 10),
                              parseInt(m.group(4), 10));
+        }
+
+        // RGBA值: rgba(6,6,6,0.9)
+        p = Pattern.compile("^RGBA\\s*[(]\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(0?[.][0-9]+)\\s*[)]$");
+        m = p.matcher(str);
+        if (m.find()) {
+            float alpha = Float.parseFloat(m.group(4));
+
+            return new Color(parseInt(m.group(1), 10),
+                             parseInt(m.group(2), 10),
+                             parseInt(m.group(3), 10),
+                             (int) (255.0f * alpha));
         }
 
         // 全都匹配不上，返回黑色
