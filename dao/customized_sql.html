@@ -228,7 +228,7 @@ sql.vars().set("name","f_name").set("age","f_age").set("weight","f_weight");
 <h2><a name="获取一个列表的回调"></a>获取一个列表的回调</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>为了更加详细的说明一下回调的用处，我们再下面这个例子：</p>
-<pre>Sql sql = Sql.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
+<pre>Sql sql = Sqls.create("SELECT m.* FROM master m JOIN detail d ON m.d_id=d.d_id WHERE d.name='aa'");
 sql.setCallback(Sqls.callback.entities());
 sql.setEntity(dao.getEntity(Master.class));
 dao.execute(sql);
@@ -380,7 +380,7 @@ sql.setCondition(Cnd.where("id", "&gt;", 35));
 <div style="float:right;"><a href="#top">Top</a></div>
 <h3><a name="任意变量的值类型为Condition时,均自动识别为条件占位符"></a>任意变量的值类型为Condition时,均自动识别为条件占位符</h3>
 <div style="float:right;"><a href="#top">Top</a></div>
-<pre>	Sql sql = Sql.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
+<pre>	Sql sql = Sqls.create("select * from user where id in (select id from vips $vip_cnd ) and name in (select name from girls $girl_cnd )");
 	sql.setVar("vip_cnd", Cnd.where("level", "&gt;", 5));
 	sql.setVar("girl_cnd", Cnd.where("age", "&lt;", 30));
 	sql.setCallback(Sqls.callback.records());

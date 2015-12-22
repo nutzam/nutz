@@ -1,253 +1,48 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 <head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
-<title>1.b.53 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
+<title>1.r.54 发行注记</title><link href="zdoc.css" rel="stylesheet" type="text/css"/>
 </head>
 <body><a name="top"></a>
-<div class="zdoc_header">1.b.53 发行注记</div>
-<div class="zdoc_author"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_header">1.r.54 发行注记</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 <div class="zdoc_body">
 <ul class="zdoc_index_table">
 <li>
-<div><span class="num">1</span><a href="#1b53_发行注记">1.b.53 发行注记</a></div>
+<div><span class="num">1</span><a href="#主要内容:">主要内容:</a></div>
 </li>
 <li>
-<div><span class="num">2</span><a href="#变更统计">变更统计</a></div>
-</li>
-<li>
-<div><span class="num">3</span><a href="#兼容性">兼容性</a></div>
-</li>
-<li>
-<div><span class="num">4</span><a href="#新功能">新功能</a></div>
-</li>
-<li>
-<div><span class="num">5</span><a href="#问题修复">问题修复</a></div>
-</li>
-<li>
-<div><span class="num">6</span><a href="#质量">质量</a></div>
-</li>
-<li>
-<div><span class="num">7</span><a href="#文档">文档</a></div>
-</li>
-<li>
-<div><span class="num">8</span><a href="#关联项目的更新">关联项目的更新</a></div>
-</li>
-<li>
-<div><span class="num">9</span><a href="#主要贡献者名单">主要贡献者名单</a></div>
+<div><span class="num">2</span><a href="#详细列表:">详细列表:</a></div>
 </li>
 </ul>
 <div class="hr"><b></b></div>
-<h1><a name="1b53_发行注记"></a>1.b.53 发行注记</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>又到金秋，距离上一个版 <a href="http://nutzam.com/core/history/1_b_52.html">1.b.52</a> 也颇有段时间了。在 <a href="http://wendal.net/">wendal</a> 的催促下（事实上他白天晚上的在QQ上催了我两个多月）终于熬到了这一天。</p>
-<p>实际上，作为 Nutz 项目发起人的我，这两年的精力很多不在 Nutz 上，我逐渐的退化成 Nutz 的重重重度用户了。现在 Nutz 项目实际推动的人是 <a href="http://wendal.net/">wendal</a>。记得那一年(2009年)，也是一个秋天，我发布了 Nutz 第15版，也是那个秋天，我遇到了<a href="http://wendal.net/">wendal</a>，那时他还年起，我也不老 ...然后我们 ... 厄，就一版一版的发布到现在咯。</p>
-<p>实际上没有神奇的 wendal，这个小项目是不会走到今天的。而这些年来，我发现对于 Nutz, 我和 wendal 的交流并不很多，形式主要就是在 Issue 的回复，代码的提交，和我一直坚持写的这份发行注记上。但是效果却出奇的好，基本上印证了我很早以前的一个观点：“最好的沟通，就是不沟通”</p>
-<p>可能有好奇的朋友会问：你精力不在 Nutz 上，在哪里呀？我只能说，请关注我最近开通的微信公众号(<b>rain_on_sand</b>  <i>雨打沙滩点点坑</i>)吧，过段日子你会知道的，嘿嘿。当然，肯定也和 Nutz 有关啦。</p>
-<p>这可能是我最后一次写 Nutz 的发行注记了，以后希望 wendal 来接替这份工作。下一个版的 Nutz 开发工作将完全由wendal 来主导（实际上之前的很多版本也都是他在主导）。我则希望自己花更多的精力在 Nutz 的推广方面。</p>
-<p>那么既然是最后一次写发行注记，我就多说点心里话:</p>
-<p>Nutz 的用户虽然不多，估计也就万人左右，深度用户估计也不过千人吧。但是 Nutz 却实实在在的是大家智慧的结晶。将近6年的时间，大家用一个个的补丁和bug，让这个小类库变得越来越卓岳不群。以前有几个朋友总对我说：“Nutz真的很不错，就差点包装了。” 我总是笑而不答，心说：“还不够好，包装个毛？”现在，作为它多年的用户，我可以负责任的说，这个类库真的很棒,是时候让更多的人知道它了。我想，作为 Nutz 这个小项目的发起人#0，让更多的人享用到大家智慧的结晶，是我义不容辞的责任。</p>
-<p>不出意外的话，这个版应该是最后一个 b 版本，下一个版将升级成 r，即，下一个版本将是 1.r.54</p>
-<p>另外澄清一下，免得不时总有朋友问：现在市面上的，无论是果壳网，坚果云，还是锤子科技刚出的坚果手机，他们统统和 Nutz 没有半毛钱关系。我们是一个自由的，松散的，独立的，写代码完全看心情的开源团体，谢谢。</p>
-<p>---------------- 上面是 zozoh 说点啥的分割线-------------------------------- 下面是 wendal 说点啥的分割线----------------</p>
-<p>擦,貌似我也不老吧...</p>
-<p>这半年,首先必须提一下<a href="http://nutzbook.wendal.net">Nutzbook</a>, 引导式Nutz入门指南及衍生的项目<a href="nutz-book-project">https://github.com/wendal/nutz-book-project</a>, 据说已经是入门nutz的神器哦</p>
-<p>然后呢, 首先感谢一下<a href="https://github.com/fangoxyz">面</a>, 他实现了一个<a href="https://github.com/fangoxyz/DaoCache">daocache</a>,且该插件已经在生产上运行良好,然后逼着我完成了"官方版"<a href="https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-daocache">daocache</a></p>
-<p>然后还有<a href="https://github.com/Rekoe">科技</a>的<a href="https://github.com/Rekoe/Rk_Cms">Rk_Cms</a>, ,<a href="https://github.com/Wizzercn/">大鲨鱼</a>的<a href="https://github.com/Wizzercn/NutzWk">NutzWk</a>,,<a href="https://github.com/wukonggg/">wukong</a>的<a href="https://github.com/wukonggg/mz-g">零售CRM</a>,<a href="https://github.com/elkan1788">elkan1788</a>的<a href="https://github.com/elkan1788/mpsdk4j-demo">微信平台</a>, 都是非常有爱的项目, 及QQ群里各种基情四射的项目和意见(或福利^_^)</p>
-<p>另外, <a href="https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-sqltpl">sqltpl</a>的灵感来自<a href="http://my.oschina.net/dongcb678">littleant</a>的<a href="http://my.oschina.net/dongcb678/blog/300356">高仿ibatis(mybatis)实现sql的集中管理</a>.在此之前我一直觉得解析mybatis那种XML简直是噩梦.</p>
-<p>红烧鲨鱼面 -- 上面提及的几位,只有"大鲨鱼"和"面"是食材, 然后我前天在海鲜市场看到了活的小鲨鱼,而且最近半年我以面食为主,所以你懂了.</p>
-<p>---------------- Nutz 的相关资源的分隔线 ------------------</p>
-<ul type="disc">
-<li>下载地址 : <a href="http://downloads.nutzam.com/">http://downloads.nutzam.com/</a></li>
-<li>Nutz 的官网 :  <a href="http://nutzam.com">http://nutzam.com</a></li>
-<li>Github 地址 :  <a href="https://github.com/nutzam/nutz">https://github.com/nutzam/nutz</a></li>
-<li>Nutzmore地址: <a href="https://github.com/nutzam/nutzmore">https://github.com/nutzam/nutzmore</a></li>
-<li>Nutzbook: <a href="http://nutzbook.wendal.net">http://nutzbook.wendal.net</a></li>
-<li>Git@OSC镜像 <a href="https://git.oschina.net/wendal/nutz">https://git.oschina.net/wendal/nutz</a></li>
-</ul>
+<p>1.r.54 发行注记(20151223)</p>
+<p>Nutz终于出正式版了,想想都有点鸡冻!!本版本理论上完全兼容1.b.53, 请放心升级.</p>
 <div class="hr"><b></b></div>
-<h1><a name="变更统计"></a>变更统计</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>417 files changed, 5275 insertions(+), 14550 deletions(-)</p>
-<div class="hr"><b></b></div>
-<h1><a name="兼容性"></a>兼容性</h1>
+<p>新功能/问题修复</p>
+<h1><a name="主要内容:"></a>主要内容: </h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>Json输出的属性顺序,现在按原生顺序输出了</li>
-<li>@Ok("json")的默认Content-Type变成application/json了</li>
-<li>若MainModule设置了@At,但子模块没有设置@At,现在会继承MainModule的@At设置, 可以通过@At(top=true)回避</li>
+<li>dao减少不必要的自动事务操作,部分场景下大幅提高性能</li>
+<li>支持JDK8的参数名读取</li>
+<li>el内置now函数</li>
+<li>用于跨域调用的CrossOriginFilter</li>
+<li>dao现在支持注册全局自定义ValueAdaptor,字段也设置自定义ValueAdaptor</li>
+<li>一个小小的tmpl实现</li>
+<li>PropertiesProxy现在实现了Map接口</li>
+<li>修正jsonp和re两个mvc视图的bug</li>
+<li>dao.each方法与daocache冲突的bug</li>
+<li>FieldMatcher支持过滤空白字符串</li>
+<li>修正与jquery datatable的参数兼容性bug</li>
 </ul>
-<div class="hr"><b></b></div>
-<h1><a name="新功能"></a>新功能</h1>
+<h1><a name="详细列表:"></a>详细列表:</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <ul type="disc">
-<li>重新实现的NutSql,支持多个Cnd条件, Cnd条件参数化, 带数据库特定注释的Sql #887</li>
-<li>@Ok("re:jsp:/index") return "&gt;&gt;:/user/login" 根据返回值来进行视图选择,同时新增ViewModel类用于传递值 #925</li>
-<li>Aop的ClassLoader机制改造, 使用cglib形式的解决方案, 从而解决不同ClassDefine之间的访问问题</li>
-<li>Daos类新增自动修改表结构的migration方法 #886</li>
-<li>dao.insert/update 现在支持更复杂的过滤条件, 其中insert现在支持强制插入自增主键</li>
-<li>DaoUp类用于解决非Web环境下创建NutDao的问题,其DaoUpTest是Dao操作的快速入门说明</li>
-<li>EL表达式新增内置方法uuid(32) uuid(16) urlencode base64</li>
-<li>动作链的js配置支持可选处理器, 发现shiro插件时能自动加载</li>
-<li>NutDao进行缓存插件兼容性改造,完全兼容daocache插件了</li>
-<li>Web环境下用于提前初始化Ioc容器的NutMvcListener</li>
-<li>IocLoader可以为一个Ioc Bean了, NutIoc会自动发现并加载他们</li>
-<li>Ioc的Js配置文件中, 支持数组形式的变量拼接了</li>
-<li>MethodInvokeProcessor默认启用改进过的FastClass调用, Eclipse热代码修改不再有warning</li>
-<li>Pojo对象生成现在通过FastClass了</li>
-<li>支持Pgsql的Json类型</li>
-<li>使用Youkit改进了性能</li>
-<li>快照版已经自动发布了</li>
-<li>新增@Ok("jsonp"), 默认使用请求参数中的callback作为回调方法名</li>
+<li><a href="https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.54">issue@github</a> 不再详细列出</li>
 </ul>
-<div class="hr"><b></b></div>
-<h1><a name="问题修复"></a>问题修复</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li><a href="https://github.com/nutzam/nutz/issues/941">Issue 941</a> 文档加个Test章节或者独立个Test库出来 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/936">Issue 936</a> 应用事务拦截器之后,抛出的异常的类型变了 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/925">Issue 925</a> 新增一个根据返回值决定最终视图的View <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/918">Issue 918</a> 关于注解@View 和@@Readonly的问题 <span style="color:#888888;">by</span> <a href="https://github.com/ohohco">ohohco</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/917">Issue 917</a> dao.drop方法,如果pojo有@VIew但不存在,会出现删除table失败 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/916">Issue 916</a> FastUploading处理超长文本时会截断输出 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/907">Issue 907</a> 指定json视图返回的content type 为application/json <span style="color:#888888;">by</span> <a href="https://github.com/TuWei1992">TuWei1992</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/897">Issue 897</a> 多文件Form上传，配置了忽略空文件的情况下，引发的异常 <span style="color:#888888;">by</span> <a href="https://github.com/albinhdk">albinhdk</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/894">Issue 894</a> http.post方法指定发送内容编码为gbk，并未生效的问题 <span style="color:#888888;">by</span> <a href="https://github.com/zhanghuanle">zhanghuanle</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/891">Issue 891</a> mvc传参必须@Param？ <span style="color:#888888;">by</span> <a href="https://github.com/csg0328">csg0328</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/889">Issue 889</a> 当@One的hostField是@Id时, dao.insertWith插入关联字段的值总是0 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/888">Issue 888</a> EntityService类 update 返回void <span style="color:#888888;">by</span> <a href="https://github.com/javanan">javanan</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/887">Issue 887</a> oracle自定义sql，按索引查询，被当做注释过滤掉了。 <span style="color:#888888;">by</span> <a href="https://github.com/txc1234">txc1234</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/886">Issue 886</a> 根据Pojo定义自动增减数据库字段 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/885">Issue 885</a> 自定义sql设置数组参数的问题 <span style="color:#888888;">by</span> <a href="https://github.com/JaynLeaew">JaynLeaew</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/884">Issue 884</a> Chain.from方法会包含非数据库字段 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/883">Issue 883</a> &gt;&gt;重定向不支持中文 <span style="color:#888888;">by</span> <a href="https://github.com/enzozhong">enzozhong</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/881">Issue 881</a> dao.create为Sqlserver 2005建表时Blob类型错误 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/879">Issue 879</a> 未正确处理toJson中NaN的值 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/878">Issue 878</a> DaoUp -- 非Mvc,Ioc环境下的使用Dao的工厂类 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/877">Issue 877</a> EL表达式的UUID支持UU32和UU64, 及添加Base64 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/875">Issue 875</a> 重写Json的文档 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/873">Issue 873</a> 两个连用的$.post中会解析不到数据，时好时坏，请问各位怎么解决？ <span style="color:#888888;">by</span> <a href="https://github.com/516388532">516388532</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/865">Issue 865</a> org.nutz.lang.Files.createDirIfNoExists(String path)无访问权限时最好能提示 <span style="color:#888888;">by</span> <a href="https://github.com/cr3at">cr3at</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/860">Issue 860</a> module中的url映射需求！ <span style="color:#888888;">by</span> <a href="https://github.com/ohohco">ohohco</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/855">Issue 855</a> 为QuartzIocLoader在ComboIocLoader添加缩写 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/854">Issue 854</a> 在动作链中添加shiro插件探测及加载 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/849">Issue 849</a> 改造fetchLinks实现,使其支持缓存扩展 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/848">Issue 848</a> 关于添加只构造一次Ioc容器的IocProvider的建议 <span style="color:#888888;">by</span> <a href="https://github.com/JaynLeaew">JaynLeaew</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/844">Issue 844</a> 讨论一下Dao的缓存实现 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/843">Issue 843</a> 使用 jquery form plugin 进行ajax表单提交 表单中存在input type="file" 元素 <span style="color:#888888;">by</span> <a href="https://github.com/hzl7652">hzl7652</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/841">Issue 841</a> Oracle 插入Blob对象失败 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/840">Issue 840</a> Json.toJson(JsonFormat.full()) 会死循环 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/837">Issue 837</a> NutMvc初始化失败时，若ioc容器已经生成，应触发depose事件 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/829">Issue 829</a> 如果一个Bean实现了IocLoader接口,那自动加入Ioc的加载器列表 <span style="color:#888888;">by</span> <a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/828">Issue 828</a> 支持更多Http方法 <span style="color:#888888;">by</span> <a href="https://github.com/xbl">xbl</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/825">Issue 825</a> 缓存的相关文档在哪里 <span style="color:#888888;">by</span> <a href="https://github.com/zhangsm">zhangsm</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/820">Issue 820</a> Scans.scan重复加载资源问题 <span style="color:#888888;">by</span> <a href="https://github.com/talentyao">talentyao</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/816">Issue 816</a> <img src="input name=&quot;borrowDetailsStr&quot; type=&quot;text&quot; /"/>  这个输入框里面输入含逗号的信息，nutz自动解析为多个字符串数组 <span style="color:#888888;">by</span> <a href="https://github.com/cuker919">cuker919</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/815">Issue 815</a> Http类对https的处理 <span style="color:#888888;">by</span> <a href="https://github.com/Rekoe">Rekoe</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/805">Issue 805</a> Daos.exts 方法批量更新错误 <span style="color:#888888;">by</span> <a href="https://github.com/Rekoe">Rekoe</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/803">Issue 803</a> @Column 创建字段类型解析错误 <span style="color:#888888;">by</span> <a href="https://github.com/Rekoe">Rekoe</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/799">Issue 799</a> 一对多的映射失败 <span style="color:#888888;">by</span> <a href="https://github.com/majong">majong</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/767">Issue 767</a> nutz有没有像ibatis<img src="isNotNull"/>&amp;<img src="isNotEmpty"/>这样的功能，按照参数组装sql <span style="color:#888888;">by</span> <a href="https://github.com/programmer-monkey">programmer-monkey</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/755">Issue 755</a> build.bat的一点小建议 <span style="color:#888888;">by</span> <a href="https://github.com/gisphm">gisphm</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/662">Issue 662</a> Images.zoomScale 图片缩放，透明背景的png文件自动添加了背景色 <span style="color:#888888;">by</span> <a href="https://github.com/Wizzercn">Wizzercn</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/613">Issue 613</a> sqls执行查询结果集为空 <span style="color:#888888;">by</span> <a href="https://github.com/373492364">373492364</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/602">Issue 602</a> Cnd.wrap构造sql语句有问题 <span style="color:#888888;">by</span> <a href="https://github.com/lplion">lplion</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/563">Issue 563</a> 能否整个在线的javadoc <span style="color:#888888;">by</span> <a href="https://github.com/asterisk622">asterisk622</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/493">Issue 493</a> Ioc的.js配置文件的Java调用问题：当java方法参数中出现负数时，启动应用异常 <span style="color:#888888;">by</span> <a href="https://github.com/conanca">conanca</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/467">Issue 467</a> Cnd.where(e2).andNot(e3);不对 <span style="color:#888888;">by</span> <a href="https://github.com/zhuer0632">zhuer0632</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/442">Issue 442</a> sql文件中强制索引被当成普通注释解析 <span style="color:#888888;">by</span> <a href="https://github.com/realcbb">realcbb</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/408">Issue 408</a> 希望手册的json部分采用zdoc的方式发布 <span style="color:#888888;">by</span> <a href="https://github.com/ywjno">ywjno</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/335">Issue 335</a> IOC注入格式可否支持  env:'环境变量名'/mypath/test ? <span style="color:#888888;">by</span> <a href="https://github.com/codering">codering</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/284">Issue 284</a> filter过滤器 <span style="color:#888888;">by</span> <a href="https://github.com/jicu7766240">jicu7766240</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/282">Issue 282</a> 从文件池中获取/删除一个文件,为什么要我指定后缀名呢 <span style="color:#888888;">by</span> <a href="https://github.com/conanca">conanca</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/221">Issue 221</a> org.nutz.img.Images建议加个起始起始坐标点与结束坐标点 <span style="color:#888888;">by</span> <a href="https://github.com/csg0328">csg0328</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/137">Issue 137</a> 关于@Filters的使用方法 <span style="color:#888888;">by</span> <a href="https://github.com/Rekoe">Rekoe</a></li>
-<li><a href="https://github.com/nutzam/nutz/issues/66">Issue 66</a> 1.39中dao.insert()方法,没有忽略null字段 <span style="color:#888888;">by</span> <a href="https://github.com/happyday517">happyday517</a></li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="质量"></a>质量</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<p>共通过了 <span style="color:#FF00FF;"><b>950+</b></span>  个单元测试用例,代码覆盖率达到 <span style="color:#FF00FF;">50+%</span>(按行计算)</p>
-<p><img src="emma.png"/></p>
-<p>Nutz.Dao 经测试在如下数据库上可以工作正常</p>
-<ul type="disc">
-<li><a href="http://www.h2database.com">H2</a></li>
-<li><a href="http://www.sqlite.org">SQLite</a> -- 仅有限支持事务操作</li>
-<li><a href="http://hsqldb.org">hsqldb</a></li>
-<li><a href="http://www.mysql.com">MySql</a></li>
-<li><a href="http://www.oracle.com">Oracle</a></li>
-<li><a href="http://www.postgresql.org">Postgresql</a></li>
-<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2005</a></li>
-<li><a href="http://www.microsoft.com/hk/sql/default.mspx">SqlServer2000</a></li>
-<li><a href="http://www.ibm.com/software/data/db2/">DB2</a></li>
-<li><a href="http://db.apache.org/derby/">Derby</a></li>
-<li><a href="http://www.gbase.cn/">GBASE</a></li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="文档"></a>文档</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>add: 第三方框架集成</li>
-<li>change: 自定义Sql</li>
-<li>rewrite: Json手册</li>
-<li>remove: 创建连接池中关于bonecp的描述,该连接池已经被其作者抛弃</li>
-<li>add: 大量的javadoc更新/添加</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="关联项目的更新"></a>关联项目的更新</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li>add: daocache Dao层缓存实现</li>
-<li>change: shiro 权限插件更新</li>
-<li>change: quartz 定时任务插件更新</li>
-<li>add: sqltpl 模板化的自定义SQL</li>
-<li>add: protobuf 序列化插件</li>
-<li>add: freemaker及velocity的ViewMaker官方参考实现</li>
-</ul>
-<div class="hr"><b></b></div>
-<h1><a name="主要贡献者名单"></a>主要贡献者名单</h1>
-<div style="float:right;"><a href="#top">Top</a></div>
-<ul type="disc">
-<li><a href="https://github.com/373492364">373492364</a></li>
-<li><a href="https://github.com/516388532">516388532</a></li>
-<li><a href="https://github.com/JaynLeaew">JaynLeaew</a></li>
-<li><a href="https://github.com/Rekoe">Rekoe</a></li>
-<li><a href="https://github.com/TuWei1992">TuWei1992</a></li>
-<li><a href="https://github.com/Wizzercn">Wizzercn</a></li>
-<li><a href="https://github.com/albinhdk">albinhdk</a></li>
-<li><a href="https://github.com/asterisk622">asterisk622</a></li>
-<li><a href="https://github.com/codering">codering</a></li>
-<li><a href="https://github.com/conanca">conanca</a></li>
-<li><a href="https://github.com/cr3at">cr3at</a></li>
-<li><a href="https://github.com/csg0328">csg0328</a></li>
-<li><a href="https://github.com/cuker919">cuker919</a></li>
-<li><a href="https://github.com/gisphm">gisphm</a></li>
-<li><a href="https://github.com/javanan">javanan</a></li>
-<li><a href="https://github.com/jicu7766240">jicu7766240</a></li>
-<li><a href="https://github.com/lplion">lplion</a></li>
-<li><a href="https://github.com/majong">majong</a></li>
-<li><a href="https://github.com/ohohco">ohohco</a></li>
-<li><a href="https://github.com/programmer-monkey">programmer-monkey</a></li>
-<li><a href="https://github.com/realcbb">realcbb</a></li>
-<li><a href="https://github.com/talentyao">talentyao</a></li>
-<li><a href="https://github.com/txc1234">txc1234</a></li>
-<li><a href="https://github.com/wendal">wendal</a></li>
-<li><a href="https://github.com/xbl">xbl</a></li>
-<li><a href="https://github.com/zhanghuanle">zhanghuanle</a></li>
-<li><a href="https://github.com/zhangsm">zhangsm</a></li>
-<li><a href="https://github.com/zhuer0632">zhuer0632</a></li>
-<li><a href="https://github.com/ywjno">冬天的温泉</a></li>
-<li><a href="https://github.com/happyday517">幸福的旁边</a></li>
-<li><a href="https://github.com/enzozhong">罗马钟</a></li>
-<li><a href="https://github.com/hzl7652">鲁鲁</a></li>
-</ul>
-<p>另外，很多朋友都在：</p>
-<ul type="disc">
-<li><a href="https://nutz.cn/yvr">社区(测试中)</a></li>
-<li><a href="http://qun.qq.com/#jointhegroup/gid/68428921">Nutz ② 群 （68428921）超级群(推荐)</a></li>
-<li><a href="http://qun.qq.com/air/#58444676">Nutz &amp; XBlink （58444676 超级群）</a></li>
-</ul>
-<p>欢迎访问<a href="http://nutzam.com">官网</a>,以获取更多信息</p>
+<p>欢迎访问<a href="http://nutzam.com">官网</a> 及 <a href="https://nutz.cn">Nutz社区</a>,以获取更多信息</p>
+<p><a href="https://nutz.cn">Nutz社区</a>已经累计了500+的问答帖子,平均首次回复时间少于1小时哦</p>
 </div>
-<div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
 </body>
 </html>

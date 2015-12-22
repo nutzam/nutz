@@ -71,7 +71,8 @@ private String name;
 </pre>
 <ul type="disc">
 <li>将对应到数据表的 "name" 字段 -- 默认用 field 的名字</li>
-<li>如果 @Column("nm") 将对应到数据表的 "nm" 字段</li>
+<li>如果 @Column(hump = true) 则该 field 对应为数据表的蛇底式小写(snake_case)的字段</li>
+<li>如果 @Column("nm") 则对应到数据表的 "nm" 字段</li>
 <li>@Name 表示这个字段有唯一性约束，你可以 Pet pet = dao.fetch(Pet.class,"abc");</li>
 <li>@Name(casesensitive=false) 表示依靠这个字段 fetch 时，忽略大小写</li>
 <li>@ColDefine 是给出这个字段最精确的描述，比如上例就是 VARCHAR(20)
@@ -117,14 +118,14 @@ dao.update(map);    <span class="zdoc_code_cmt">// 这个是不会有编译错�
 map.put(".table", "t_person");
 map.put("name", "abc");
 map.put("age", 18);
-dao.update(map); 
+dao.update(map);
 </pre>
 <p>你给的 Map 只要多一个固定的名值对 ".table"，那么我就能知道你想操作的数据库表名。所以，你还可以:</p>
 <pre>Map&lt;String,Object&gt; map = new HashMap&lt;String,Object&gt;();
 map.put(".table", "t_person");
 map.put("name", "abc");
 map.put("age", 18);
-dao.insert(map); 
+dao.insert(map);
 </pre>
 <p>实际上，NutDao 是根据给定的 Map，先构建了一个 Entity&lt;?&gt;，然后之后的事情就顺理成章了。这个特性从另外一方面也验证了现在的实体机制，它的确工作的还不错 :)</p>
 </div>
