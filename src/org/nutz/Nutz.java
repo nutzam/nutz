@@ -33,7 +33,7 @@ public final class Nutz {
      * @return nutz 项目的版本号
      */
     public static String version() {
-        return String.format("%d.%s.%d",
+        return String.format("%d.%s.%d.r2",
                              majorVersion(),
                              releaseLevel(),
                              minorVersion());

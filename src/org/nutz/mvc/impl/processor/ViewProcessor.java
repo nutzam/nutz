@@ -48,11 +48,17 @@ public class ViewProcessor extends AbstractProcessor {
                 putRequestAttribute(ac.getRequest(), ((ViewWrapper)re).getData());
             ((View) re).render(ac.getRequest(), ac.getResponse(), err);
         } else {
-            if (index > -1 && re == null && err == null && !(view instanceof ViewZone)) {
-                re = ac.getMethodArgs()[index];
+            if (view instanceof ViewZone) {
+                if (index > -1)
+                    putRequestAttribute(ac.getRequest(), ac.getMethodArgs()[index]);
+                view.render(ac.getRequest(), ac.getResponse(), re);
+            } else {
+                if (index > -1 && re == null && err == null) {
+                    re = ac.getMethodArgs()[index];
+                }
+                putRequestAttribute(ac.getRequest(), null == re ? err : re);
+                view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
             }
-            putRequestAttribute(ac.getRequest(), null == re ? err : re);
-            view.render(ac.getRequest(), ac.getResponse(), null == re ? err : re);
         }
         doNext(ac);
     }
