@@ -654,6 +654,35 @@ public abstract class Lang {
     }
 
     /**
+     * 清除数组中的特定值
+     * 
+     * @param objs
+     *            数组
+     * @param val
+     *            值，可以是 null，如果是对象，则会用 equals 来比较
+     * @return 新的数组实例
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] without(T[] objs, T val) {
+        if (null == objs || objs.length == 0) {
+            return objs;
+        }
+        List<T> list = new ArrayList<T>(objs.length);
+        Class<?> eleType = null;
+        for (T obj : objs) {
+            if (obj == val || (null != obj && null != val && obj.equals(val)))
+                continue;
+            if (null == eleType)
+                eleType = obj.getClass();
+            list.add(obj);
+        }
+        if (list.isEmpty()) {
+            return (T[]) new Object[0];
+        }
+        return list.toArray((T[]) Array.newInstance(eleType, list.size()));
+    }
+
+    /**
      * 将一个长整型数组转换成字符串
      * <p>
      * 每个元素之间，都会用一个给定的字符分隔
