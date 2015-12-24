@@ -1,256 +1,33 @@
-#title: 1.b.53 发行注记
+#title: 1.r.54 发行注记
 #index:0,1
-#author:zozoh(zozohtnt@gmail.com)
 #author:wendal(wendal1985@gmail.com)
 --------------------------------------------------------------------------------------------------------
-1.b.53 发行注记
+1.r.54 发行注记(20151223)
     
-    又到金秋，距离上一个版 [http://nutzam.com/core/history/1_b_52.html 1.b.52] 也颇有段时间了。
-    在 [http://wendal.net/ wendal] 的催促下（事实上他白天晚上的在QQ上催了我两个多月）终于熬到了这一天。
-
-    实际上，作为 Nutz 项目发起人的我，这两年的精力很多不在 Nutz 上，我逐渐的退化成 Nutz 的重重重度用户了。
-    现在 Nutz 项目实际推动的人是 [http://wendal.net/ wendal]。
-    记得那一年(2009年)，也是一个秋天，我发布了 Nutz 第15版，
-    也是那个秋天，我遇到了[http://wendal.net/ wendal]，
-    那时他还年起，我也不老 ...
-    然后我们 ... 厄，就一版一版的发布到现在咯。
-
-    实际上没有神奇的 wendal，这个小项目是不会走到今天的。而这些年来，我发现对于 Nutz, 我和 wendal 的
-    交流并不很多，形式主要就是在 Issue 的回复，代码的提交，和我一直坚持写的这份发行注记上。
-    但是效果却出奇的好，基本上印证了我很早以前的一个观点：“最好的沟通，就是不沟通”
-
-    可能有好奇的朋友会问：你精力不在 Nutz 上，在哪里呀？
-    我只能说，请关注我最近开通的微信公众号({*rain_on_sand}  {/雨打沙滩点点坑})吧，过段日子你会知道的，嘿嘿。
-    当然，肯定也和 Nutz 有关啦。
-
-    这可能是我最后一次写 Nutz 的发行注记了，以后希望 wendal 来接替这份工作。下一个版的 Nutz 开发工作将完全由
-    wendal 来主导（实际上之前的很多版本也都是他在主导）。我则希望自己花更多的精力在 Nutz 的推广方面。
-
-    那么既然是最后一次写发行注记，我就多说点心里话:
-
-    Nutz 的用户虽然不多，估计也就万人左右，深度用户估计也不过千人吧。
-    但是 Nutz 却实实在在的是大家智慧的结晶。
-    将近6年的时间，大家用一个个的补丁和bug，让这个小类库变得越来越卓岳不群。
-    以前有几个朋友总对我说：“Nutz真的很不错，就差点包装了。” 
-    我总是笑而不答，心说：“还不够好，包装个毛？”
-    现在，作为它多年的用户，我可以负责任的说，这个类库真的很棒,是时候让更多的人知道它了。
-    我想，作为 Nutz 这个小项目的发起人#0，让更多的人享用到大家智慧的结晶，是我义不容辞的责任。
-
-    不出意外的话，这个版应该是最后一个 b 版本，下一个版将升级成 r，即，下一个版本将是 1.r.54
-
-    另外澄清一下，免得不时总有朋友问：现在市面上的，无论是果壳网，坚果云，还是锤子科技刚出的坚果手机，
-    他们统统和 Nutz 没有半毛钱关系。我们是一个自由的，松散的，独立的，写代码完全看心情的开源团体，谢谢。
-
-    ---------------- 上面是 zozoh 说点啥的分割线----------------
-    ---------------- 下面是 wendal 说点啥的分割线----------------
-
-
-    擦,貌似我也不老吧...
-    
-    这半年,首先必须提一下[http://nutzbook.wendal.net Nutzbook], 引导式Nutz入门指南
-    及衍生的项目[nutz-book-project https://github.com/wendal/nutz-book-project], 据说已经是入门nutz的神器哦
-    
-    然后呢, 首先感谢一下[https://github.com/fangoxyz 面], 他实现了一个[https://github.com/fangoxyz/DaoCache daocache],
-    且该插件已经在生产上运行良好,然后逼着我完成了"官方版"[https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-daocache daocache]
-    
-    然后还有[https://github.com/Rekoe 科技]的[https://github.com/Rekoe/Rk_Cms Rk_Cms], 
-    ,[https://github.com/Wizzercn/ 大鲨鱼]的[https://github.com/Wizzercn/NutzWk NutzWk],
-    ,[https://github.com/wukonggg/ wukong]的[https://github.com/wukonggg/mz-g 零售CRM]
-    ,[https://github.com/elkan1788 elkan1788]的[https://github.com/elkan1788/mpsdk4j-demo 微信平台]
-    , 都是非常有爱的项目, 及QQ群里各种基情四射的项目和意见(或福利^_^)
-    
-    另外, [https://github.com/nutzam/nutzmore/tree/master/nutz-plugins-sqltpl sqltpl]的灵感来自[http://my.oschina.net/dongcb678 littleant]的[http://my.oschina.net/dongcb678/blog/300356 高仿ibatis(mybatis)实现sql的集中管理].
-    在此之前我一直觉得解析mybatis那种XML简直是噩梦.
-    
-    红烧鲨鱼面 -- 上面提及的几位,只有"大鲨鱼"和"面"是食材, 然后我前天在海鲜市场看到了活的小鲨鱼,而且最近半年我以面食为主,所以你懂了.
-
-    ---------------- Nutz 的相关资源的分隔线 ------------------
-
-     * 下载地址 : [http://downloads.nutzam.com/]
-     * Nutz 的官网 :  [http://nutzam.com]
-     * Github 地址 :  [https://github.com/nutzam/nutz]
-     * Nutzmore地址: [https://github.com/nutzam/nutzmore]
-     * Nutzbook: [http://nutzbook.wendal.net]
-     * Git@OSC镜像 [https://git.oschina.net/wendal/nutz]
-     
+  Nutz终于出正式版了,想想都有点鸡冻!!本版本理论上完全兼容1.b.53, 请放心升级.
 
 --------------------------------------------------------------------------------------------------------
-变更统计
+新功能/问题修复
 
-     417 files changed, 5275 insertions(+), 14550 deletions(-)
+  主要内容: 
+    * dao减少不必要的自动事务操作,部分场景下大幅提高性能
+    * 支持JDK8的参数名读取
+    * el内置now函数
+    * 用于跨域调用的CrossOriginFilter
+    * dao现在支持注册全局自定义ValueAdaptor,字段也设置自定义ValueAdaptor
+    * 一个小小的tmpl实现
+    * PropertiesProxy现在实现了Map接口
+    * 修正jsonp和re两个mvc视图的bug
+    * dao.each方法与daocache冲突的bug
+    * FieldMatcher支持过滤空白字符串 
+    * 修正与jquery datatable的参数兼容性bug
 
---------------------------------------------------------------------------------------------------------
-兼容性
+
+  详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.54 issue@github] 不再详细列出
+
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
     
-    * Json输出的属性顺序,现在按原生顺序输出了
-    * @Ok("json")的默认Content-Type变成application/json了
-    * 若MainModule设置了@At,但子模块没有设置@At,现在会继承MainModule的@At设置, 可以通过@At(top=true)回避
-
---------------------------------------------------------------------------------------------------------
-新功能
-
-    * 重新实现的NutSql,支持多个Cnd条件, Cnd条件参数化, 带数据库特定注释的Sql #887
-    * @Ok("re:jsp:/index") return ">>:/user/login" 根据返回值来进行视图选择,同时新增ViewModel类用于传递值 #925
-    * Aop的ClassLoader机制改造, 使用cglib形式的解决方案, 从而解决不同ClassDefine之间的访问问题
-    * Daos类新增自动修改表结构的migration方法 #886
-    * dao.insert/update 现在支持更复杂的过滤条件, 其中insert现在支持强制插入自增主键
-    * DaoUp类用于解决非Web环境下创建NutDao的问题,其DaoUpTest是Dao操作的快速入门说明
-    * EL表达式新增内置方法uuid(32) uuid(16) urlencode base64
-    * 动作链的js配置支持可选处理器, 发现shiro插件时能自动加载
-    * NutDao进行缓存插件兼容性改造,完全兼容daocache插件了
-    * Web环境下用于提前初始化Ioc容器的NutMvcListener
-    * IocLoader可以为一个Ioc Bean了, NutIoc会自动发现并加载他们
-    * Ioc的Js配置文件中, 支持数组形式的变量拼接了
-    * MethodInvokeProcessor默认启用改进过的FastClass调用, Eclipse热代码修改不再有warning
-    * Pojo对象生成现在通过FastClass了
-    * 支持Pgsql的Json类型
-    * 使用Youkit改进了性能
-    * 快照版已经自动发布了
-    * 新增@Ok("jsonp"), 默认使用请求参数中的callback作为回调方法名
-
---------------------------------------------------------------------------------------------------------
-问题修复
-
-    * [https://github.com/nutzam/nutz/issues/941 Issue 941] 文档加个Test章节或者独立个Test库出来 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/936 Issue 936] 应用事务拦截器之后,抛出的异常的类型变了 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/925 Issue 925] 新增一个根据返回值决定最终视图的View {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/918 Issue 918] 关于注解@View 和@@Readonly的问题 {#888;by} [https://github.com/ohohco ohohco]
-    * [https://github.com/nutzam/nutz/issues/917 Issue 917] dao.drop方法,如果pojo有@VIew但不存在,会出现删除table失败 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/916 Issue 916] FastUploading处理超长文本时会截断输出 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/907 Issue 907] 指定json视图返回的content type 为application/json {#888;by} [https://github.com/TuWei1992 TuWei1992]
-    * [https://github.com/nutzam/nutz/issues/897 Issue 897] 多文件Form上传，配置了忽略空文件的情况下，引发的异常 {#888;by} [https://github.com/albinhdk albinhdk]
-    * [https://github.com/nutzam/nutz/issues/894 Issue 894] http.post方法指定发送内容编码为gbk，并未生效的问题 {#888;by} [https://github.com/zhanghuanle zhanghuanle]
-    * [https://github.com/nutzam/nutz/issues/891 Issue 891] mvc传参必须@Param？ {#888;by} [https://github.com/csg0328 csg0328]
-    * [https://github.com/nutzam/nutz/issues/889 Issue 889] 当@One的hostField是@Id时, dao.insertWith插入关联字段的值总是0 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/888 Issue 888] EntityService类 update 返回void {#888;by} [https://github.com/javanan javanan]
-    * [https://github.com/nutzam/nutz/issues/887 Issue 887] oracle自定义sql，按索引查询，被当做注释过滤掉了。 {#888;by} [https://github.com/txc1234 txc1234]
-    * [https://github.com/nutzam/nutz/issues/886 Issue 886] 根据Pojo定义自动增减数据库字段 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/885 Issue 885] 自定义sql设置数组参数的问题 {#888;by} [https://github.com/JaynLeaew JaynLeaew]
-    * [https://github.com/nutzam/nutz/issues/884 Issue 884] Chain.from方法会包含非数据库字段 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/883 Issue 883] >>重定向不支持中文 {#888;by} [https://github.com/enzozhong enzozhong]
-    * [https://github.com/nutzam/nutz/issues/881 Issue 881] dao.create为Sqlserver 2005建表时Blob类型错误 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/879 Issue 879] 未正确处理toJson中NaN的值 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/878 Issue 878] DaoUp -- 非Mvc,Ioc环境下的使用Dao的工厂类 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/877 Issue 877] EL表达式的UUID支持UU32和UU64, 及添加Base64 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/875 Issue 875] 重写Json的文档 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/873 Issue 873] 两个连用的$.post中会解析不到数据，时好时坏，请问各位怎么解决？ {#888;by} [https://github.com/516388532 516388532]
-    * [https://github.com/nutzam/nutz/issues/865 Issue 865] org.nutz.lang.Files.createDirIfNoExists(String path)无访问权限时最好能提示 {#888;by} [https://github.com/cr3at cr3at]
-    * [https://github.com/nutzam/nutz/issues/860 Issue 860] module中的url映射需求！ {#888;by} [https://github.com/ohohco ohohco]
-    * [https://github.com/nutzam/nutz/issues/855 Issue 855] 为QuartzIocLoader在ComboIocLoader添加缩写 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/854 Issue 854] 在动作链中添加shiro插件探测及加载 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/849 Issue 849] 改造fetchLinks实现,使其支持缓存扩展 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/848 Issue 848] 关于添加只构造一次Ioc容器的IocProvider的建议 {#888;by} [https://github.com/JaynLeaew JaynLeaew]
-    * [https://github.com/nutzam/nutz/issues/844 Issue 844] 讨论一下Dao的缓存实现 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/843 Issue 843] 使用 jquery form plugin 进行ajax表单提交 表单中存在input type="file" 元素 {#888;by} [https://github.com/hzl7652 hzl7652]
-    * [https://github.com/nutzam/nutz/issues/841 Issue 841] Oracle 插入Blob对象失败 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/840 Issue 840] Json.toJson(JsonFormat.full()) 会死循环 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/837 Issue 837] NutMvc初始化失败时，若ioc容器已经生成，应触发depose事件 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/829 Issue 829] 如果一个Bean实现了IocLoader接口,那自动加入Ioc的加载器列表 {#888;by} [https://github.com/wendal wendal]
-    * [https://github.com/nutzam/nutz/issues/828 Issue 828] 支持更多Http方法 {#888;by} [https://github.com/xbl xbl]
-    * [https://github.com/nutzam/nutz/issues/825 Issue 825] 缓存的相关文档在哪里 {#888;by} [https://github.com/zhangsm zhangsm]
-    * [https://github.com/nutzam/nutz/issues/820 Issue 820] Scans.scan重复加载资源问题 {#888;by} [https://github.com/talentyao talentyao]
-    * [https://github.com/nutzam/nutz/issues/816 Issue 816] <input name="borrowDetailsStr" type="text" />  这个输入框里面输入含逗号的信息，nutz自动解析为多个字符串数组 {#888;by} [https://github.com/cuker919 cuker919]
-    * [https://github.com/nutzam/nutz/issues/815 Issue 815] Http类对https的处理 {#888;by} [https://github.com/Rekoe Rekoe]
-    * [https://github.com/nutzam/nutz/issues/805 Issue 805] Daos.exts 方法批量更新错误 {#888;by} [https://github.com/Rekoe Rekoe]
-    * [https://github.com/nutzam/nutz/issues/803 Issue 803] @Column 创建字段类型解析错误 {#888;by} [https://github.com/Rekoe Rekoe]
-    * [https://github.com/nutzam/nutz/issues/799 Issue 799] 一对多的映射失败 {#888;by} [https://github.com/majong majong]
-    * [https://github.com/nutzam/nutz/issues/767 Issue 767] nutz有没有像ibatis<isNotNull>&<isNotEmpty>这样的功能，按照参数组装sql {#888;by} [https://github.com/programmer-monkey programmer-monkey]
-    * [https://github.com/nutzam/nutz/issues/755 Issue 755] build.bat的一点小建议 {#888;by} [https://github.com/gisphm gisphm]
-    * [https://github.com/nutzam/nutz/issues/662 Issue 662] Images.zoomScale 图片缩放，透明背景的png文件自动添加了背景色 {#888;by} [https://github.com/Wizzercn Wizzercn]
-    * [https://github.com/nutzam/nutz/issues/613 Issue 613] sqls执行查询结果集为空 {#888;by} [https://github.com/373492364 373492364]
-    * [https://github.com/nutzam/nutz/issues/602 Issue 602] Cnd.wrap构造sql语句有问题 {#888;by} [https://github.com/lplion lplion]
-    * [https://github.com/nutzam/nutz/issues/563 Issue 563] 能否整个在线的javadoc {#888;by} [https://github.com/asterisk622 asterisk622]
-    * [https://github.com/nutzam/nutz/issues/493 Issue 493] Ioc的.js配置文件的Java调用问题：当java方法参数中出现负数时，启动应用异常 {#888;by} [https://github.com/conanca conanca]
-    * [https://github.com/nutzam/nutz/issues/467 Issue 467] Cnd.where(e2).andNot(e3);不对 {#888;by} [https://github.com/zhuer0632 zhuer0632]
-    * [https://github.com/nutzam/nutz/issues/442 Issue 442] sql文件中强制索引被当成普通注释解析 {#888;by} [https://github.com/realcbb realcbb]
-    * [https://github.com/nutzam/nutz/issues/408 Issue 408] 希望手册的json部分采用zdoc的方式发布 {#888;by} [https://github.com/ywjno ywjno]
-    * [https://github.com/nutzam/nutz/issues/335 Issue 335] IOC注入格式可否支持  {env:'环境变量名'/mypath/test} ? {#888;by} [https://github.com/codering codering]
-    * [https://github.com/nutzam/nutz/issues/284 Issue 284] filter过滤器 {#888;by} [https://github.com/jicu7766240 jicu7766240]
-    * [https://github.com/nutzam/nutz/issues/282 Issue 282] 从文件池中获取/删除一个文件,为什么要我指定后缀名呢 {#888;by} [https://github.com/conanca conanca]
-    * [https://github.com/nutzam/nutz/issues/221 Issue 221] org.nutz.img.Images建议加个起始起始坐标点与结束坐标点 {#888;by} [https://github.com/csg0328 csg0328]
-    * [https://github.com/nutzam/nutz/issues/137 Issue 137] 关于@Filters的使用方法 {#888;by} [https://github.com/Rekoe Rekoe]
-    * [https://github.com/nutzam/nutz/issues/66 Issue 66] 1.39中dao.insert()方法,没有忽略null字段 {#888;by} [https://github.com/happyday517 happyday517]
-
-
---------------------------------------------------------------------------------------------------------
-质量
-
-	共通过了 {#FF00FF;*950+}  个单元测试用例,代码覆盖率达到 {#FF00FF;50+%}(按行计算)
-
-    <emma.png>
-
-	Nutz.Dao 经测试在如下数据库上可以工作正常
-	 * [http://www.h2database.com H2]
-	 * [http://www.sqlite.org SQLite] -- 仅有限支持事务操作
-	 * [http://hsqldb.org hsqldb]
-	 * [http://www.mysql.com MySql]
-	 * [http://www.oracle.com Oracle]
-	 * [http://www.postgresql.org Postgresql]
-	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2005]
-	 * [http://www.microsoft.com/hk/sql/default.mspx SqlServer2000]
-	 * [http://www.ibm.com/software/data/db2/ DB2]
-	 * [http://db.apache.org/derby/ Derby]
-	 * [http://www.gbase.cn/ GBASE]
-
---------------------------------------------------------------------------------------------------------
-文档
-
-    * add: 第三方框架集成
-    * change: 自定义Sql
-    * rewrite: Json手册
-    * remove: 创建连接池中关于bonecp的描述,该连接池已经被其作者抛弃
-    * add: 大量的javadoc更新/添加
-    
---------------------------------------------------------------------------------------------------------
-关联项目的更新
-
-    * add: daocache Dao层缓存实现
-    * change: shiro 权限插件更新
-    * change: quartz 定时任务插件更新
-    * add: sqltpl 模板化的自定义SQL
-    * add: protobuf 序列化插件
-    * add: freemaker及velocity的ViewMaker官方参考实现
-
---------------------------------------------------------------------------------------------------------
-主要贡献者名单
-
-    * [https://github.com/373492364 373492364]
-    * [https://github.com/516388532 516388532]
-    * [https://github.com/JaynLeaew JaynLeaew]
-    * [https://github.com/Rekoe Rekoe]
-    * [https://github.com/TuWei1992 TuWei1992]
-    * [https://github.com/Wizzercn Wizzercn]
-    * [https://github.com/albinhdk albinhdk]
-    * [https://github.com/asterisk622 asterisk622]
-    * [https://github.com/codering codering]
-    * [https://github.com/conanca conanca]
-    * [https://github.com/cr3at cr3at]
-    * [https://github.com/csg0328 csg0328]
-    * [https://github.com/cuker919 cuker919]
-    * [https://github.com/gisphm gisphm]
-    * [https://github.com/javanan javanan]
-    * [https://github.com/jicu7766240 jicu7766240]
-    * [https://github.com/lplion lplion]
-    * [https://github.com/majong majong]
-    * [https://github.com/ohohco ohohco]
-    * [https://github.com/programmer-monkey programmer-monkey]
-    * [https://github.com/realcbb realcbb]
-    * [https://github.com/talentyao talentyao]
-    * [https://github.com/txc1234 txc1234]
-    * [https://github.com/wendal wendal]
-    * [https://github.com/xbl xbl]
-    * [https://github.com/zhanghuanle zhanghuanle]
-    * [https://github.com/zhangsm zhangsm]
-    * [https://github.com/zhuer0632 zhuer0632]
-    * [https://github.com/ywjno 冬天的温泉]
-    * [https://github.com/happyday517 幸福的旁边]
-    * [https://github.com/enzozhong 罗马钟]
-    * [https://github.com/hzl7652 鲁鲁]
-
-
-	另外，很多朋友都在：
-	 * [https://nutz.cn/yvr 社区(测试中)]
-     * [http://qun.qq.com/#jointhegroup/gid/68428921 Nutz ② 群 （68428921）超级群(推荐)]
-	 * [http://qun.qq.com/air/#58444676 Nutz & XBlink （58444676 超级群）]
-
-	欢迎访问[http://nutzam.com 官网],以获取更多信息
+[https://nutz.cn Nutz社区]已经累计了500+的问答帖子,平均首次回复时间少于1小时哦
