@@ -1,0 +1,33 @@
+#title: 1.r.54 发行注记
+#index:0,1
+#author:wendal(wendal1985@gmail.com)
+--------------------------------------------------------------------------------------------------------
+1.r.54 发行注记(20151223)
+    
+  Nutz终于出正式版了,想想都有点鸡冻!!本版本理论上完全兼容1.b.53, 请放心升级.
+
+--------------------------------------------------------------------------------------------------------
+新功能/问题修复
+
+  主要内容: 
+    * dao减少不必要的自动事务操作,部分场景下大幅提高性能
+    * 支持JDK8的参数名读取
+    * el内置now函数
+    * 用于跨域调用的CrossOriginFilter
+    * dao现在支持注册全局自定义ValueAdaptor,字段也设置自定义ValueAdaptor
+    * 一个小小的tmpl实现
+    * PropertiesProxy现在实现了Map接口
+    * 修正jsonp和re两个mvc视图的bug
+    * dao.each方法与daocache冲突的bug
+    * FieldMatcher支持过滤空白字符串 
+    * 修正与jquery datatable的参数兼容性bug
+
+
+  详细列表:
+  
+    * [https://github.com/nutzam/nutz/issues?q=is%3Aissue+is%3Aclosed+milestone%3A1.r.54 issue@github] 不再详细列出
+
+
+欢迎访问[http://nutzam.com 官网] 及 [https://nutz.cn Nutz社区],以获取更多信息
+    
+[https://nutz.cn Nutz社区]已经累计了500+的问答帖子,平均首次回复时间少于1小时哦
