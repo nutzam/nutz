@@ -65,7 +65,7 @@
 		<dependency>
 			<groupId>org.nutz</groupId>
 			<artifactId>nutz</artifactId>
-			<version>1.r.54.r2</version>
+			<version>1.r.55-SNAPSHOT</version>
 		</dependency>
 		<!-- 其他依赖 -->
 	</dependencies>
@@ -73,7 +73,7 @@
 
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
-或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.54.r2/)
+或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.54-SNAPSHOT/)
 
 ## Sponsorship
 
