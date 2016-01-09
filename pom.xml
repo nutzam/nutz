@@ -5,7 +5,7 @@
 	<artifactId>nutz</artifactId>
 	<packaging>jar</packaging>
 	<name>Nutz</name>
-	<version>1.r.54.r2</version>
+	<version>1.r.55-SNAPSHOT</version>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -103,13 +103,13 @@
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.36</version>
+			<version>5.1.37</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
-			<version>1.0.14</version>
+			<version>1.0.16</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
