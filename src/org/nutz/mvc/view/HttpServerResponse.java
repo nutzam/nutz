@@ -91,7 +91,9 @@ public class HttpServerResponse {
             }
             // 否则就认为是 HTTP 200
             else {
-                this.updateCode(200, null);
+                if (statusCode <= 0) {
+                    this.updateCode(200, null);
+                }
                 this.body = str.getBytes(Encoding.UTF8);
             }
         }
@@ -137,6 +139,16 @@ public class HttpServerResponse {
     public void updateCode(int statusCode, String statusText) {
         this.statusCode = statusCode;
         this.statusText = Strings.sNull(statusText, Http.getStatusText(statusCode));
+    }
+
+    public void updateBody(String body) {
+        if (!Strings.isBlank(body))
+            try {
+                this.body = body.getBytes(Encoding.UTF8);
+            }
+            catch (UnsupportedEncodingException e) {
+                throw Lang.wrapThrow(e);
+            }
     }
 
     public void render(HttpServletResponse resp) {
