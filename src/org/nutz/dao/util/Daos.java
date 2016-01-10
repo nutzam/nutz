@@ -794,7 +794,18 @@ public abstract class Daos {
         StringBuilder sb = new StringBuilder();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
-            if (indexsHis.contains(index.getName())) {
+        	String indexName = index.getName();
+        	 if (indexName.contains("$")){
+             	final String name = index.getName();
+             	final Molecule<String> m = new Molecule<String>() {
+                     public void run() {
+                     	setObj(TableName.render(new CharSegment(name)));
+                     }
+                 };
+                 TableName.run(t, m);
+                 indexName = m.getObj();
+             } 
+            if (indexsHis.contains(indexName)) {
                 continue;
             }
             sb.setLength(0);
@@ -802,18 +813,7 @@ public abstract class Daos {
                 sb.append("Create UNIQUE Index ");
             else
                 sb.append("Create Index ");
-            if (index.getName().contains("$")){
-            	final String name = index.getName();
-            	final Molecule<String> m = new Molecule<String>() {
-                    public void run() {
-                    	setObj(TableName.render(new CharSegment(name)));
-                    }
-                };
-                TableName.run(t, m);
-                sb.append(m.getObj());
-            }
-            else
-                sb.append(index.getName());
+            sb.append(indexName);
             sb.append(" ON ").append(getTableName(dao, en, t)).append("(");
             for (EntityField field : index.getFields()) {
                 if (field instanceof MappingField) {
