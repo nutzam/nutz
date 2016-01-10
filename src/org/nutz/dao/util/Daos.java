@@ -802,8 +802,16 @@ public abstract class Daos {
                 sb.append("Create UNIQUE Index ");
             else
                 sb.append("Create Index ");
-            if (index.getName().contains("$"))
-                sb.append(TableName.render(new CharSegment(index.getName())));
+            if (index.getName().contains("$")){
+            	final String name = index.getName();
+            	final Molecule<String> m = new Molecule<String>() {
+                    public void run() {
+                    	setObj(TableName.render(new CharSegment(name)));
+                    }
+                };
+                TableName.run(t, m);
+                sb.append(m.getObj());
+            }
             else
                 sb.append(index.getName());
             sb.append(" ON ").append(getTableName(dao, en, t)).append("(");
