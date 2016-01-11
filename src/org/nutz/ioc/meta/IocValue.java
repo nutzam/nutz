@@ -1,6 +1,8 @@
 package org.nutz.ioc.meta;
 
 import org.nutz.json.Json;
+import org.nutz.json.JsonFormat;
+import org.nutz.lang.util.NutMap;
 
 /**
  * 描述了对象的一个值，这个值可以是构造函数的参数，也可以是一个字段的值。
@@ -66,4 +68,9 @@ public class IocValue {
         return String.format("{%s:%s}", type, Json.toJson(value));
     }
 
+    public String toJson(JsonFormat jf) {
+        if (this.type == null || TYPE_NORMAL.equals(type))
+            return Json.toJson(this.value, jf);
+        return Json.toJson(new NutMap().addv(this.type, this.value), jf);
+    }
 }
