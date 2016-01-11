@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.meta.IocObject;
+import org.nutz.json.Json;
 
 public class AnnotationIocLoaderTest {
 
@@ -26,8 +27,9 @@ public class AnnotationIocLoaderTest {
         IocObject iocObject = iocLoader.load(null, "classB");
         assertNotNull(iocObject);
         assertNotNull(iocObject.getFields());
-        assertTrue(iocObject.getFields().length == 1);
-        assertEquals("refer", iocObject.getFields()[0].getValue().getType());
+        assertTrue(iocObject.getFields().size() == 1);
+        System.out.println(Json.toJson(iocObject));
+        assertEquals("refer", iocObject.getFields().values().iterator().next().getValue().getType());
     }
 
 }

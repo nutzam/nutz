@@ -1,6 +1,8 @@
 package org.nutz.ioc.impl;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.nutz.ioc.IocEventTrigger;
 import org.nutz.ioc.IocException;
@@ -114,9 +116,10 @@ public class ObjectMakerImpl implements ObjectMaker {
             }
 
             // 获得每个字段的注入方式
-            FieldInjector[] fields = new FieldInjector[iobj.getFields().length];
+            List<IocField> _fields = new ArrayList<IocField>(iobj.getFields().values());
+            FieldInjector[] fields = new FieldInjector[_fields.size()];
             for (int i = 0; i < fields.length; i++) {
-                IocField ifld = iobj.getFields()[i];
+                IocField ifld = _fields.get(i);
                 try {
                     ValueProxy vp = ing.makeValue(ifld.getValue());
                     fields[i] = FieldInjector.create(mirror, ifld.getName(), vp, ifld.isOptional());
@@ -139,7 +142,7 @@ public class ObjectMakerImpl implements ObjectMaker {
         catch (Throwable e) {
             ing.getContext().remove(iobj.getScope(), ing.getObjectName());
             String msg = e.getMessage();
-            if (msg.length() > 16*1024)
+            if (msg != null && msg.length() > 16*1024)
                 throw new IocException(e);
             throw new IocException(e, "FAIL to create Ioc Bean name=[%s]", ing.getObjectName());
         }

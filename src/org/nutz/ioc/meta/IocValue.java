@@ -1,7 +1,13 @@
 package org.nutz.ioc.meta;
 
+import java.lang.reflect.Field;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.nutz.ioc.Iocs;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
+import org.nutz.lang.Mirror;
 import org.nutz.lang.util.NutMap;
 
 /**
@@ -42,10 +48,38 @@ public class IocValue {
     public static final String TYPE_JNDI = "jndi";
     public static final String TYPE_EL = "el";
     public static final String TYPE_APP = "app";
+    
+    public static Set<String> types = new HashSet<String>();
+    static {
+        Mirror<IocValue> mirror = Mirror.me(IocValue.class);
+        for(Field field : IocValue.class.getFields()) {
+            if (field.getName().startsWith("TYPE_")) {
+                types.add(mirror.getValue(null, field).toString());
+            }
+        }
+    }
 
     private String type;
 
     private Object value;
+    
+    public IocValue() {}
+    
+    public IocValue(String key) {
+        if (key.contains(":")) {
+            IocValue tmp = Iocs.convert(key, false);
+            this.type = tmp.type;
+            this.value = tmp.value;
+        } else {
+            this.type = TYPE_NORMAL;
+            this.value = key;
+        }
+    }
+    
+    public IocValue(String type, Object val) {
+        this.type = type;
+        this.value = val;
+    }
 
     public String getType() {
         return type;

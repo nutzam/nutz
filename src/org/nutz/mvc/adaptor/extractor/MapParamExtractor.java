@@ -32,6 +32,8 @@ public class MapParamExtractor implements ParamExtractor {
                 return null;
             return new String[]{obj.toString()};
         }
+        if (req == null)
+            return null;
         return req.getParameterValues(name);
     }
 
@@ -39,7 +41,8 @@ public class MapParamExtractor implements ParamExtractor {
     public Set<String> keys() {
         Set<String> ss = new HashSet<String>();
         ss.addAll(map.keySet());
-        ss.addAll(req.getParameterMap().keySet());
+        if (req != null)
+            ss.addAll(req.getParameterMap().keySet());
         return ss;
     }
 

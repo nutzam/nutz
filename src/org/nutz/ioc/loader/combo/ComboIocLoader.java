@@ -14,6 +14,7 @@ import org.nutz.ioc.IocLoading;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.loader.annotation.AnnotationIocLoader;
 import org.nutz.ioc.loader.json.JsonLoader;
+import org.nutz.ioc.loader.properties.PropertiesIocLoader;
 import org.nutz.ioc.loader.xml.XmlIocLoader;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.json.Json;
@@ -66,6 +67,8 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("anno", AnnotationIocLoader.class);
             loaders.put("trans", TransIocLoader.class);
             loaders.put("tx", TransIocLoader.class);
+            loaders.put("props", PropertiesIocLoader.class);
+            loaders.put("properties", PropertiesIocLoader.class);
             try {
                 loaders.put("cache",
                             (Class<? extends IocLoader>) Lang.loadClass("org.nutz.jcache.NutCacheIocLoader"));
