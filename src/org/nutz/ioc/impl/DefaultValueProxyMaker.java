@@ -21,6 +21,9 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
         if ("null".equals(type) || null == value) {
             return new StaticValue(null);
         }
+        if (value instanceof ValueProxy) {
+            return (ValueProxy)value;
+        }
         // String, Number, .....
         else if ("normal".equals(type) || null == type) {
             // Array

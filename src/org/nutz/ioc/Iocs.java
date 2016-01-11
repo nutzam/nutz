@@ -7,6 +7,7 @@ import org.nutz.ioc.meta.IocEventSet;
 import org.nutz.ioc.meta.IocField;
 import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
+import org.nutz.ioc.val.StaticValue;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.meta.Pair;
@@ -124,9 +125,9 @@ public abstract class Iocs {
     
     public static IocObject wrap(Object obj) {
         IocObject iobj = new IocObject();
-        iobj.setType(obj.getClass());
-        iobj.setFactory(Iocs.class.getName() + ":self");
-        IocValue ival = new IocValue(IocValue.TYPE_NORMAL, obj);
+        //iobj.setType(obj.getClass());
+        iobj.setFactory(Iocs.class.getName() + "#self");
+        IocValue ival = new IocValue(null, new StaticValue(obj));
         iobj.addArg(ival);
         return iobj;
     }
