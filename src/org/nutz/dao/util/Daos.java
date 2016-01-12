@@ -782,16 +782,14 @@ public abstract class Daos {
             dao.execute(sql);
         }
         // 创建索引
-        List<Sql> indexsSql = createIndexs(dao,en, _indexs,tableName);
-        if (!Lang.isEmpty(indexsSql)) {
-            dao.execute(indexsSql.toArray(new Sql[0]));
-        }
+        createIndexs(dao,en, _indexs,tableName);
         // 创建关联表
         expert.createRelation(dao, en);
     }
-    private static List<Sql> createIndexs(Dao dao,Entity<?> en, Set<String> indexsHis,Object t) {
+    private static void createIndexs(Dao dao,Entity<?> en, Set<String> indexsHis,Object t) {
         List<Sql> sqls = new ArrayList<Sql>();
         StringBuilder sb = new StringBuilder();
+        List<String> delIndexs = new ArrayList<String>();
         List<EntityIndex> indexs = en.getIndexes();
         for (EntityIndex index : indexs) {
         	String indexName = index.getName();
@@ -805,6 +803,7 @@ public abstract class Daos {
                  TableName.run(t, m);
                  indexName = m.getObj();
              } 
+        	delIndexs.add(indexName);
             if (indexsHis.contains(indexName)) {
                 continue;
             }
@@ -829,7 +828,22 @@ public abstract class Daos {
             sb.setCharAt(sb.length() - 1, ')');
             sqls.add(Sqls.create(sb.toString()));
         }
-        return sqls;
+        if (!Lang.isEmpty(sqls)) {
+            dao.execute(sqls.toArray(new Sql[0]));
+        }
+		Iterator<String> iterator = indexsHis.iterator();
+		List<Sql> delSqls = new ArrayList<Sql>();
+		while (iterator.hasNext()) {
+			String index = iterator.next();
+			if (delIndexs.contains(index) || Lang.equals("PRIMARY", index)) {
+				continue;
+			}
+			delSqls.add(Sqls.createf("ALTER TABLE %s DROP INDEX %s", getTableName(dao, en, t), index));
+		}
+		if (!Lang.isEmpty(delSqls)) {
+			dao.execute(Lang.collection2array(delSqls));
+		}
+        
     }
 
     /**
@@ -857,7 +871,6 @@ public abstract class Daos {
             }
         }
     }
-
     /**
      * 为指定package及旗下package中带@Table注解的Pojo执行migration
      * 
