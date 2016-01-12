@@ -113,7 +113,7 @@ public abstract class Iocs {
         } else {
             // XXX 兼容性改变, 1.b.52 开始默认就是refer, 如果真的要输入常量
             //log.info("auto set as         refer:" + value);
-            iocValue.setType("refer");
+            iocValue.setType(IocValue.TYPE_REFER);
             iocValue.setValue(value);
         }
         return iocValue;
