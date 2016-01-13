@@ -9,11 +9,14 @@ import static org.junit.Assert.fail;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.Test;
 import org.nutz.Nutz;
@@ -21,6 +24,7 @@ import org.nutz.castor.Castors;
 import org.nutz.dao.Chain;
 import org.nutz.dao.Cnd;
 import org.nutz.dao.Condition;
+import org.nutz.dao.ConnCallback;
 import org.nutz.dao.Dao;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.FieldFilter;
@@ -32,6 +36,7 @@ import org.nutz.dao.entity.MappingField;
 import org.nutz.dao.entity.Record;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.impl.NutDao;
+import org.nutz.dao.impl.SimpleDataSource;
 import org.nutz.dao.impl.sql.NutStatement;
 import org.nutz.dao.jdbc.JdbcExpert;
 import org.nutz.dao.pager.Pager;
@@ -59,7 +64,10 @@ import org.nutz.dao.util.blob.SimpleClob;
 import org.nutz.json.Json;
 import org.nutz.lang.Files;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Stopwatch;
 import org.nutz.lang.random.R;
+import org.nutz.trans.Atom;
+import org.nutz.trans.Trans;
 
 public class SimpleDaoTest extends DaoCase {
 
@@ -112,7 +120,7 @@ public class SimpleDaoTest extends DaoCase {
     public void test_simple_fetch_record() {
         Pet pet = Pet.create("abc");
         long now = System.currentTimeMillis();
-        pet.setBirthday(Castors.me().castTo(now, Timestamp.class));
+        pet.setBirthday(Castors.me().castTo(now/1000*1000, Timestamp.class));
         dao.insert(pet);
 
         List<Record> pets = dao.query("t_pet", null, null);
@@ -588,4 +596,77 @@ public class SimpleDaoTest extends DaoCase {
     //
     //// assertEquals("你好", new String((byte[])re.get("filecontent")));
     // }
+    
+    //@Test
+    public void test_fastinsert_speed() {
+        SimpleDataSource ds = new SimpleDataSource();
+        ds.setJdbcUrl("jdbc:mysql://localhost/nutztest");
+        ds.setUsername("root");
+        ds.setPassword("root");
+        dao = new NutDao(ds);
+        // 删表重建
+        dao.create(Pet.class, true);
+        Lang.sleep(1000);
+        
+        Stopwatch sw = Stopwatch.begin();
+        // 生成10*2000个对象
+        List<List<Pet>> list = new ArrayList<List<Pet>>();
+        for (int i = 0; i < 10; i++) {
+            List<Pet> pets = new ArrayList<Pet>();
+            for (int j = 0; j < 2000; j++) {
+                Pet pet = Pet.create(R.UU32());
+                pets.add(pet);
+            }
+            list.add(pets);
+        }
+        sw.stop();
+        
+        System.out.println("生成对象的耗时: " + sw);
+        
+        
+        for (final List<Pet> tmp : list) {
+            sw = Stopwatch.begin();
+            Trans.exec(new Atom() {
+                public void run() {
+                    dao.fastInsert(tmp);
+                }
+            });
+            
+            sw.stop();
+            
+            System.out.println("fastInsert插入2000个对象的耗时" + sw);
+        }
+        
+        dao.create(Pet.class, false);
+        for (int i = 0; i < 10; i++) {
+            try {
+                final int  t = i;
+                Connection conn = ds.getConnection();
+                conn.setAutoCommit(false);
+                sw = Stopwatch.begin();
+                System.out.println(System.currentTimeMillis());
+                PreparedStatement ps = conn.prepareStatement("INSERT INTO t_pet(name,alias) VALUES(?,?)");
+                System.out.println(System.currentTimeMillis());
+                for (int j = 0; j < 2000; j++) {
+                    ps.setString(1, "pet_"+t+"_" + j);
+                    ps.setString(2, "");
+//                    ps.setInt(3, 30);
+//                    ps.setInt(4, 0);
+//                    ps.setDate(5, null);
+//                    ps.setFloat(6, 0);
+                    ps.addBatch();
+                }
+                System.out.println(System.currentTimeMillis());
+                ps.executeBatch();
+                conn.commit();
+                sw.stop();
+                System.out.println(sw);
+                ps.close();
+                conn.close();
+            }
+            catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }
