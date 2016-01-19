@@ -75,6 +75,8 @@ public class DaoSupport {
      * SQL 管理接口实现类
      */
     private SqlManager sqlManager;
+    
+    protected int autoTransLevel = Connection.TRANSACTION_READ_COMMITTED;
 
     public DaoSupport() {
         this.runner = new NutDaoRunner();
@@ -236,7 +238,7 @@ public class DaoSupport {
         // 否则启动事务
         // wendal: 还是很有必要的!!尤其是解决insert的@Prev/@Next不在同一个链接的问题
         else {
-            Trans.exec(callback);
+            Trans.exec(autoTransLevel, callback);
         }
 
         // 搞定，返回结果 ^_^
@@ -285,4 +287,8 @@ public class DaoSupport {
     public PojoMaker pojoMaker() {
 		return pojoMaker;
 	}
+    
+    public void setAutoTransLevel(int autoTransLevel) {
+        this.autoTransLevel = autoTransLevel;
+    }
 }
