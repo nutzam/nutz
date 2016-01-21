@@ -59,8 +59,17 @@ public class NutFilter implements Filter {
     protected Set<String> exclusionPaths;
     
     protected ServletContext sc;
-
+    
     public void init(FilterConfig conf) throws ServletException {
+    	try {
+    		_init(conf);
+    	} finally {
+    		Mvcs.set(null, null, null);
+            Mvcs.ctx().removeReqCtx();
+    	}
+    }
+
+    public void _init(FilterConfig conf) throws ServletException {
         log = Logs.getLog(getClass());
     	sc = conf.getServletContext();
     	Mvcs.setServletContext(sc);
@@ -113,7 +122,6 @@ public class NutFilter implements Filter {
         	}
         }
         sp = config.getSessionProvider();
-        Mvcs.ctx().reqThreadLocal.set(null);
     }
 
     public void destroy() {
@@ -125,7 +133,8 @@ public class NutFilter implements Filter {
             handler.depose();
         Mvcs.close();
         Mvcs.setServletContext(null);
-        Mvcs.ctx().reqThreadLocal.remove();
+        Mvcs.set(null, null, null);
+        Mvcs.ctx().removeReqCtx();
     }
     
     /**
@@ -167,6 +176,14 @@ public class NutFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse)resp;
         String matchUrl = request.getServletPath() + Strings.sBlank(request.getPathInfo());
         
+        String markKey = "nutz_ctx_mark";
+        Integer mark = (Integer) req.getAttribute(markKey);
+    	if (mark != null) {
+    		req.setAttribute(markKey, mark+1);
+    	} else {
+    		req.setAttribute(markKey, 0);
+    	}
+    	
         String preName = Mvcs.getName();
         Context preContext = Mvcs.resetALL();
         try {
@@ -182,17 +199,19 @@ public class NutFilter implements Filter {
             nextChain(request, response, chain);
         }
         finally {
-            Mvcs.resetALL();
             //仅当forward/incule时,才需要恢复之前设置
-            if (null != (request.getAttribute("javax.servlet.forward.request_uri"))) {
-            	if (prCtx != sc)
-            		Mvcs.setServletContext(prCtx);
-                if (preName != null)
-                    Mvcs.set(preName, request, response);
-                if (preContext != null)
-                    Mvcs.ctx().reqThreadLocal.set(preContext);
+            if (mark != null) {
+                Mvcs.ctx().reqCtx(preContext);
+            	Mvcs.setServletContext(prCtx);
+                Mvcs.set(preName, request, response);
+                if (mark == 0) {
+                	req.removeAttribute(markKey);
+                } else {
+                	req.setAttribute(markKey, mark - 1);
+                }
             } else {
-                Mvcs.ctx().reqThreadLocal.remove();
+            	Mvcs.set(null, null, null);
+                Mvcs.ctx().removeReqCtx();
                 Mvcs.setServletContext(null);
             }
         }

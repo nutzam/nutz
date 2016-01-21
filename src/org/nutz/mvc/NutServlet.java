@@ -49,12 +49,19 @@ public class NutServlet extends HttpServlet {
             handler.depose();
         Mvcs.close();
         Mvcs.setServletContext(null);
-        Mvcs.ctx().reqThreadLocal.set(null);
+        Mvcs.ctx().removeReqCtx();
     }
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
+    	String markKey = "nutz_ctx_mark";
+        Integer mark = (Integer) req.getAttribute(markKey);
+    	if (mark != null) {
+    		req.setAttribute(markKey, mark+1);
+    	} else {
+    		req.setAttribute(markKey, 0);
+    	}
     	ServletContext prCtx = Mvcs.getServletContext();
         Mvcs.setServletContext(sc);
         String preName = Mvcs.getName();
@@ -66,17 +73,20 @@ public class NutServlet extends HttpServlet {
             if (!handler.handle(req, resp))
                 resp.sendError(404);
         } finally {
-            Mvcs.resetALL();
+        	Mvcs.resetALL();
             //仅当forward/incule时,才需要恢复之前设置
-            if (null != (req.getAttribute("javax.servlet.forward.request_uri"))) {
-            	if (prCtx != sc)
-            		Mvcs.setServletContext(prCtx);
-                if (preName != null)
-                    Mvcs.set(preName, req, resp);
-                if (preContext != null)
-                    Mvcs.ctx().reqThreadLocal.set(preContext);
+            if (mark != null) {
+            	Mvcs.setServletContext(prCtx);
+                Mvcs.set(preName, req, resp);
+                Mvcs.ctx().reqCtx(preContext);
+                if (mark == 0) {
+                	req.removeAttribute(markKey);
+                } else {
+                	req.setAttribute(markKey, mark - 1);
+                }
             } else {
-                Mvcs.ctx().reqThreadLocal.set(null);
+                Mvcs.setServletContext(null);
+                Mvcs.ctx().removeReqCtx();
             }
         }
     }

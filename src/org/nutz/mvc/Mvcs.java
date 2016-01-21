@@ -16,7 +16,6 @@ import org.nutz.ioc.Ioc;
 import org.nutz.ioc.IocContext;
 import org.nutz.json.Json;
 import org.nutz.json.JsonFormat;
-import org.nutz.lang.Lang;
 import org.nutz.lang.Strings;
 import org.nutz.lang.util.Context;
 import org.nutz.mvc.config.AtMap;
@@ -449,7 +448,7 @@ public abstract class Mvcs {
     public static Context resetALL() {
         Context context = reqt();
         NAME.set(null);
-        ctx().reqThreadLocal.set(Lang.context());
+        ctx().removeReqCtx();
         return context;
     }
 
@@ -471,12 +470,7 @@ public abstract class Mvcs {
     }
     
     public static Context reqt() {
-        Context _reqt = ctx().reqThreadLocal.get();
-        if (_reqt == null) {
-            _reqt = Lang.context();
-            ctx().reqThreadLocal.set(_reqt);
-        }
-        return _reqt;
+        return ctx().reqCtx();
     }
 
     /** 在入口方法调用时,是否禁用1.b.51新加入的FastClass功能, 默认禁用 */
