@@ -34,6 +34,7 @@ public class IocCustomizedValueTypeTest {
 
         Pet pet = ioc.get(Pet.class, "xb");
         assertEquals("CC:XiaoBai", pet.getName());
+    	ioc.depose();
     }
 
 }

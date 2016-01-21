@@ -27,5 +27,6 @@ public class AopJsonIocTest {
         fox.getName();
         assertEquals("B:getName0;A:getName0;B:getName0;A:getName0;", sb.toString());
 
+    	ioc.depose();
     }
 }

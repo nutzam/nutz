@@ -30,5 +30,6 @@ public class PropertiesIocLoaderTest {
         NutIoc ioc = new NutIoc(pp);
         PropertiesProxy p = ioc.get(PropertiesProxy.class, "conf");
         assertEquals(p, pp);
+    	ioc.depose();
     }
 }
