@@ -32,7 +32,7 @@ public class AtMapInitTest extends AbstractMvcTest {
         
         Mvcs.set("nutz", request, response);
         
-        AtMap am = Mvcs.getAtMap();
+        AtMap am = Mvcs.ctx().atMaps.values().iterator().next();
         assertEquals("/atmap/ABC", am.get("at.abc"));
         assertEquals("/atmap/xyz", am.get("at.xyz"));
     }
