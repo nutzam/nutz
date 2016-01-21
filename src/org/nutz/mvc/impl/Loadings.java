@@ -78,14 +78,14 @@ public abstract class Loadings {
 
     public static ActionInfo createInfo(Method method) {
         ActionInfo ai = new ActionInfo();
-        evalEncoding(ai, method.getAnnotation(Encoding.class));
-        evalHttpAdaptor(ai, method.getAnnotation(AdaptBy.class));
-        evalActionFilters(ai, method.getAnnotation(Filters.class));
-        evalOk(ai, method.getAnnotation(Ok.class));
-        evalFail(ai, method.getAnnotation(Fail.class));
-        evalAt(ai, method.getAnnotation(At.class), method.getName());
-        evalActionChainMaker(ai, method.getAnnotation(Chain.class));
-        evalHttpMethod(ai, method, method.getAnnotation(At.class));
+        evalEncoding(ai, Mirror.getAnnotationDeep(method, Encoding.class));
+        evalHttpAdaptor(ai, Mirror.getAnnotationDeep(method, AdaptBy.class));
+        evalActionFilters(ai, Mirror.getAnnotationDeep(method, Filters.class));
+        evalOk(ai, Mirror.getAnnotationDeep(method, Ok.class));
+        evalFail(ai, Mirror.getAnnotationDeep(method, Fail.class));
+        evalAt(ai, Mirror.getAnnotationDeep(method, At.class), method.getName());
+        evalActionChainMaker(ai, Mirror.getAnnotationDeep(method, Chain.class));
+        evalHttpMethod(ai, method, Mirror.getAnnotationDeep(method, At.class));
         ai.setMethod(method);
         return ai;
     }
@@ -329,9 +329,8 @@ public abstract class Loadings {
             || Modifier.isInterface(classModify))
             return false;
         for (Method method : classZ.getMethods())
-            if (method.isAnnotationPresent(At.class))
+            if (Mirror.getAnnotationDeep(method, At.class) != null)
                 return true;
         return false;
     }
-
 }

@@ -1819,4 +1819,35 @@ public class Mirror<T> {
         }
         return false;
     }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <T extends Annotation> T getAnnotationDeep(Method method, Class<T> annotationClass) {
+        T t = method.getAnnotation(annotationClass);
+        if (t != null)
+            return t;
+        Class klass = method.getDeclaringClass();
+        while (klass != null && klass != Object.class) {
+            try {
+                Method tmp = klass.getMethod(method.getName(), method.getParameterTypes());
+                t = tmp.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {
+                break;
+            }
+            klass = klass.getSuperclass();
+        }
+        for (Class klass2 : method.getDeclaringClass().getInterfaces()) {
+            try {
+                Method tmp = klass2.getMethod(method.getName(), method.getParameterTypes());
+                t = tmp.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {
+            }
+        }
+        return null;
+    }
 }
