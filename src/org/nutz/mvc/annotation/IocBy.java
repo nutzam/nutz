@@ -7,6 +7,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import org.nutz.mvc.IocProvider;
+import org.nutz.mvc.ioc.provider.ComboIocProvider;
 
 /**
  * 本注解仅在主模块类上声明才有效。
@@ -26,7 +27,7 @@ public @interface IocBy {
     /**
      * 通过 IocProvider，来决定采用何种方式的 Ioc 容器
      */
-    Class<? extends IocProvider> type();
+    Class<? extends IocProvider> type() default ComboIocProvider.class;
 
     /**
      * 这个参数将传递给 IocProvider 的 create 方法，作为构造 Ioc 容器必要的参数
