@@ -19,6 +19,7 @@ public class SimpleIocTest {
         }
         catch (IocException e) {}
         ioc.get(DogMaster.class);
+    	ioc.depose();
     }
     
     @Test
