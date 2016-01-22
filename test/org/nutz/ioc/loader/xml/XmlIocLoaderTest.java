@@ -72,6 +72,7 @@ public class XmlIocLoaderTest {
         assertEquals("TheB", c.getFriends().get(1).getName());
         assertEquals(1,c.getMap().size());
         assertEquals("ABC",c.getMap().get("abc"));
+    	ioc.depose();
     }
     
 }

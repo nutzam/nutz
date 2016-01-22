@@ -51,6 +51,7 @@ public class SimpleJsonIocTest {
         assertEquals("b", obj.getStrss()[0][1]);
         assertEquals("c", obj.getStrss()[1][0]);
         assertEquals("d", obj.getStrss()[1][1]);
+    	ioc.depose();
     }
 
     @Test
@@ -78,6 +79,7 @@ public class SimpleJsonIocTest {
         IocLoader loader = new JsonLoader("org/nutz/ioc/json/empty.js");
         Ioc ioc = new NutIoc(loader);
         assertEquals(0, ioc.getNames().length);
+    	ioc.depose();
     }
 
     @Test
