@@ -195,4 +195,8 @@ public class Sqlserver2005JdbcExpert extends AbstractJdbcExpert {
         autoInfo.setEntity(en);
         return autoInfo;
     }
+    
+    public boolean addColumnNeedColumn() {
+        return false;
+    }
 }

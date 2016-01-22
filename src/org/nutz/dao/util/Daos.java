@@ -704,7 +704,7 @@ public abstract class Daos {
             return;
         final List<Sql> sqls = new ArrayList<Sql>();
         final Set<String> _indexs = new HashSet<String>();
-        final boolean sqlAddNeedColumn = !dao.meta().isOracle();
+        final boolean sqlAddNeedColumn = expert.addColumnNeedColumn();
         final boolean isCanComment = dao.meta().isMySql();
         dao.run(new ConnCallback() {
             public void invoke(Connection conn) throws Exception {
@@ -736,7 +736,7 @@ public abstract class Daos {
                                       mf.getColumnName(),
                                       en.getTableName());
                             StringBuilder sb = new StringBuilder("ALTER TABLE ");
-                            sb.append(meta.getTableName(1)).append(" ADD ");
+                            sb.append(en.getTableName()).append(" ADD ");
                             if (sqlAddNeedColumn)
                                 sb.append("COLUMN ");
                             sb.append(colName).append(" ").append(expert.evalFieldType(mf));

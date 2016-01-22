@@ -377,4 +377,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
         else
             sb.append(" DEFAULT '").append(getDefaultValue(mf)).append('\'');
     }
+    
+    public boolean addColumnNeedColumn() {
+        return true;
+    }
 }
