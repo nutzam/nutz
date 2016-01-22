@@ -77,14 +77,15 @@ public class SQLiteJdbcExpert extends MysqlJdbcExpert {
             sb.setCharAt(sb.length() - 1, ')');
             sb.append("\n ");
         }
-        // 创建索引
-        dao.execute(createIndexs(en).toArray(new Sql[0]));
 
         // 结束表字段设置
         sb.setCharAt(sb.length() - 1, ')');
 
         // 执行创建语句
         dao.execute(Sqls.create(sb.toString()));
+        
+        // 创建索引
+        dao.execute(createIndexs(en).toArray(new Sql[0]));
         // 创建关联表
         createRelation(dao, en);
 
