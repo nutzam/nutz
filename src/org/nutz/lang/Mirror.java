@@ -1820,18 +1820,35 @@ public class Mirror<T> {
         return false;
     }
 
+
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <T extends Annotation> T getAnnotationDeep(Method method, Class<T> annotationClass) {
         T t = method.getAnnotation(annotationClass);
         if (t != null)
             return t;
-        Class klass = method.getDeclaringClass();
+        Class klass = method.getDeclaringClass().getSuperclass();
         while (klass != null && klass != Object.class) {
             try {
-                Method tmp = klass.getMethod(method.getName(), method.getParameterTypes());
-                t = tmp.getAnnotation(annotationClass);
-                if (t != null)
-                    return t;
+                for (Method m : klass.getMethods()) {
+                    if (m.getName().equals(method.getName())) {
+                        Class[] mParameters = m.getParameterTypes();
+                        Class[] methodParameters = method.getParameterTypes();
+                        if (mParameters.length != methodParameters.length)
+                            continue;
+                        boolean match = true;
+                        for (int i = 0; i < mParameters.length; i++) {
+                            if (!mParameters[i].isAssignableFrom(methodParameters[i])) {
+                                match = false;
+                                break;
+                            }
+                        }
+                        if (match) {
+                            t = m.getAnnotation(annotationClass);
+                            if (t != null)
+                                return t;
+                        }
+                    }
+                }
             }
             catch (Exception e) {
                 break;
@@ -1845,9 +1862,36 @@ public class Mirror<T> {
                 if (t != null)
                     return t;
             }
-            catch (Exception e) {
-            }
+            catch (Exception e) {}
         }
         return null;
     }
+
+    public static <T extends Annotation> T getAnnotationDeep(Class<?> type, Class<T> annotationClass) {
+        T t = type.getAnnotation(annotationClass);
+        if (t != null)
+            return t;
+        Class<?> klass = type.getSuperclass();
+        while (klass != null && klass != Object.class) {
+            try {
+                t = klass.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {
+                break;
+            }
+            klass = klass.getSuperclass();
+        }
+        for (Class<?> klass2 : type.getInterfaces()) {
+            try {
+                t = klass2.getAnnotation(annotationClass);
+                if (t != null)
+                    return t;
+            }
+            catch (Exception e) {}
+        }
+        return null;
+    }
+
 }

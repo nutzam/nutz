@@ -53,14 +53,14 @@ public abstract class Loadings {
 
     public static ActionInfo createInfo(Class<?> type) {
         ActionInfo ai = new ActionInfo();
-        evalEncoding(ai, type.getAnnotation(Encoding.class));
-        evalHttpAdaptor(ai, type.getAnnotation(AdaptBy.class));
-        evalActionFilters(ai, type.getAnnotation(Filters.class));
-        evalPathMap(ai, type.getAnnotation(PathMap.class));
-        evalOk(ai, type.getAnnotation(Ok.class));
-        evalFail(ai, type.getAnnotation(Fail.class));
-        evalAt(ai, type.getAnnotation(At.class), type.getSimpleName());
-        evalActionChainMaker(ai, type.getAnnotation(Chain.class));
+        evalEncoding(ai, Mirror.getAnnotationDeep(type, Encoding.class));
+        evalHttpAdaptor(ai, Mirror.getAnnotationDeep(type, AdaptBy.class));
+        evalActionFilters(ai, Mirror.getAnnotationDeep(type, Filters.class));
+        evalPathMap(ai, Mirror.getAnnotationDeep(type, PathMap.class));
+        evalOk(ai, Mirror.getAnnotationDeep(type, Ok.class));
+        evalFail(ai, Mirror.getAnnotationDeep(type, Fail.class));
+        evalAt(ai, Mirror.getAnnotationDeep(type, At.class), type.getSimpleName());
+        evalActionChainMaker(ai, Mirror.getAnnotationDeep(type, Chain.class));
         evalModule(ai, type);
         if (Mvcs.DISPLAY_METHOD_LINENUMBER) {
             InputStream ins = type.getClassLoader().getResourceAsStream(type.getName().replace(".", "/") + ".class");
@@ -204,13 +204,13 @@ public abstract class Loadings {
     }
 
     public static void evalHttpMethod(ActionInfo ai, Method method, At at) {
-        if (method.getAnnotation(GET.class) != null)
+        if (Mirror.getAnnotationDeep(method, GET.class) != null)
             ai.getHttpMethods().add("GET");
-        if (method.getAnnotation(POST.class) != null)
+        if (Mirror.getAnnotationDeep(method, POST.class) != null)
             ai.getHttpMethods().add("POST");
-        if (method.getAnnotation(PUT.class) != null)
+        if (Mirror.getAnnotationDeep(method, PUT.class) != null)
             ai.getHttpMethods().add("PUT");
-        if (method.getAnnotation(DELETE.class) != null)
+        if (Mirror.getAnnotationDeep(method, DELETE.class) != null)
             ai.getHttpMethods().add("DELETE");
         for (String m : at.methods()) {
             ai.getHttpMethods().add(m.toUpperCase());
@@ -261,8 +261,8 @@ public abstract class Loadings {
         ai.setModuleType(type);
         String beanName = null;
         // 按照5.10.3章节的说明，优先使用IocBean.name的注解声明bean的名字 Modify By QinerG@gmai.com
-        InjectName innm = type.getAnnotation(InjectName.class);
-        IocBean iocBean = type.getAnnotation(IocBean.class);
+        InjectName innm = Mirror.getAnnotationDeep(type,InjectName.class);
+        IocBean iocBean = Mirror.getAnnotationDeep(type,IocBean.class);
         if (innm == null && iocBean == null) // TODO 再考虑考虑
             return;
         if (iocBean != null) {
