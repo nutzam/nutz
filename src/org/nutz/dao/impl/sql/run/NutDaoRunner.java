@@ -9,7 +9,8 @@ import javax.sql.DataSource;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.impl.DaoRunner;
-import org.nutz.lang.Lang;
+import org.nutz.json.Json;
+import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Trans;
@@ -32,26 +33,22 @@ public class NutDaoRunner implements DaoRunner {
             Savepoint sp = null;
             try {
                 conn = t.getConnection(dataSource);
-                sp = conn.setSavepoint();
+                String productName = Strings.sBlank(conn.getMetaData().getDatabaseProductName());
+                if (productName.equalsIgnoreCase("PostgreSQL")) {
+                    sp = conn.setSavepoint();
+                }
                 callback.invoke(conn);
             }
             catch (Exception e) {
-                if (e instanceof DaoException)
-                    if (null != conn
-                        && null != e.getCause()
-                        && e.getCause() instanceof SQLException) {
-                        try {
-                            if (null == sp)
-                                conn.rollback();
-                            else
-                                conn.rollback(sp);
-                        }
-                        catch (SQLException e1) {
-                            if (log.isErrorEnabled())
-                                log.error(e1);
-                        }
+                if (sp != null)
+                    try {
+                        conn.rollback(sp);
                     }
-                throw new DaoException(Lang.unwrapThrow(e));
+                    catch (SQLException e1) {
+                    }
+                if (e instanceof DaoException)
+                    throw (DaoException)e;
+                throw new DaoException(e);
             }
         }
         // 无事务
