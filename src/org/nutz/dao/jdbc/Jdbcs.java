@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -891,7 +892,7 @@ public abstract class Jdbcs {
     }
 }
 
-class ReadOnceInputStream extends FilterInputStream {
+class ReadOnceInputStream extends FilterInputStream implements Serializable {
 	
 	private File f;
 	
@@ -926,5 +927,12 @@ class ReadOnceInputStream extends FilterInputStream {
 		f.delete();
 		super.finalize();
 	}
-	
+
+    private void writeObject(java.io.ObjectOutputStream out) throws java.io.IOException {
+        Streams.writeAndClose(out, new FileInputStream(f));
+    }
+    private void readObject(java.io.ObjectInputStream in) throws java.io.IOException, ClassNotFoundException{
+        f = Jdbcs.getFilePool().createFile(".dat");
+        Files.write(f, in);
+    }
 }
