@@ -381,4 +381,8 @@ public abstract class AbstractJdbcExpert implements JdbcExpert {
     public boolean addColumnNeedColumn() {
         return true;
     }
+    
+    public boolean supportTimestampDefault() {
+        return true;
+    }
 }

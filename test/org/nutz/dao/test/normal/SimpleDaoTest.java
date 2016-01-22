@@ -385,6 +385,8 @@ public class SimpleDaoTest extends DaoCase {
 
     @Test
     public void test_insert_with_id() {
+        if (dao.meta().isSqlServer())
+            return;
         dao.clear(Pet.class);
         Pet pet = Pet.create("zzz");
         pet.setId(9090); // 主动设置id

@@ -98,4 +98,6 @@ public interface JdbcExpert {
     String evalFieldType(MappingField mf);
     
     boolean addColumnNeedColumn();
+    
+    boolean supportTimestampDefault();
 }

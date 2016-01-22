@@ -234,4 +234,8 @@ public class OracleJdbcExpert extends AbstractJdbcExpert {
     public boolean addColumnNeedColumn() {
         return false;
     }
+    
+    public boolean supportTimestampDefault() {
+        return false;
+    }
 }

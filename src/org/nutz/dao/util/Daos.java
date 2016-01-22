@@ -746,7 +746,7 @@ public abstract class Daos {
                             if (mf.isNotNull()) {
                                 sb.append(" NOT NULL");
                             }
-                            if (mf.getColumnType() == ColType.TIMESTAMP) {
+                            if (mf.getColumnType() == ColType.TIMESTAMP && expert.supportTimestampDefault()) {
                                 if (mf.hasDefaultValue()) {
                                     sb.append(" ")
                                       .append(mf.getDefaultValue(null).replaceAll("@", "@@"));
@@ -764,7 +764,7 @@ public abstract class Daos {
                             if (mf.hasColumnComment() && isCanComment) {
                                 sb.append(" COMMENT '").append(mf.getColumnComment()).append("'");
                             }
-                            sb.append(';');
+                            //sb.append(';');
                             Sql sql = Sqls.create(sb.toString());
                             sqls.add(sql);
                         }
