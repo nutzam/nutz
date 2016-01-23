@@ -9,7 +9,6 @@ import javax.sql.DataSource;
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
 import org.nutz.dao.impl.DaoRunner;
-import org.nutz.json.Json;
 import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
