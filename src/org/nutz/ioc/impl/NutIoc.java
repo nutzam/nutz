@@ -166,7 +166,7 @@ public class NutIoc implements Ioc2 {
                 if (null == op) {
                     try {
                         if (log.isDebugEnabled())
-                            log.debug("\t >> Load definition");
+                            log.debug("\t >> Load definition name="+name);
 
                         // 读取对象定义
                         IocObject iobj = loader.load(createLoading(), name);
