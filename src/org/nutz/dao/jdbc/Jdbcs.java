@@ -894,6 +894,8 @@ public abstract class Jdbcs {
 
 class ReadOnceInputStream extends FilterInputStream implements Serializable {
 	
+	private static final long serialVersionUID = -2601685798106193691L;
+
 	private File f;
 	
 	public boolean readed;
