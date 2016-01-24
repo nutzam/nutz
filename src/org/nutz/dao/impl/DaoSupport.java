@@ -119,6 +119,9 @@ public class DaoSupport {
      */
     public void setRunner(DaoRunner runner) {
         this.runner = runner;
+        if (runner instanceof NutDaoRunner) {
+        	((NutDaoRunner)runner).setMeta(meta);
+        }
     }
 
     /**
@@ -129,6 +132,9 @@ public class DaoSupport {
      */
     public void setExecutor(DaoExecutor executor) {
         this.executor = executor;
+        if (executor instanceof NutDaoExecutor) {
+        	((NutDaoExecutor)executor).setMeta(meta);
+        }
     }
 
     /**
@@ -192,6 +198,8 @@ public class DaoSupport {
 
         holder = new EntityHolder(this);
         holder.maker = createEntityMaker();
+        setRunner(runner);
+        setExecutor(executor);
     }
 
     public void execute(final Sql... sqls) {

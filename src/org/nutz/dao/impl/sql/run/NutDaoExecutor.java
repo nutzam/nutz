@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.nutz.dao.DaoException;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.impl.DaoExecutor;
 import org.nutz.dao.jdbc.ValueAdaptor;
 import org.nutz.dao.pager.Pager;
@@ -327,5 +328,10 @@ public class NutDaoExecutor implements DaoExecutor {
         if (log.isTraceEnabled())
             log.trace("...DONE");
     }
-
+    
+    protected DatabaseMeta meta;
+    
+    public void setMeta(DatabaseMeta meta) {
+		this.meta = meta;
+	}
 }

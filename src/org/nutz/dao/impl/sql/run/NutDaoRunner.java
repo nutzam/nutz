@@ -8,8 +8,8 @@ import javax.sql.DataSource;
 
 import org.nutz.dao.ConnCallback;
 import org.nutz.dao.DaoException;
+import org.nutz.dao.DatabaseMeta;
 import org.nutz.dao.impl.DaoRunner;
-import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 import org.nutz.trans.Trans;
@@ -32,8 +32,7 @@ public class NutDaoRunner implements DaoRunner {
             Savepoint sp = null;
             try {
                 conn = t.getConnection(dataSource);
-                String productName = Strings.sBlank(conn.getMetaData().getDatabaseProductName());
-                if (productName.equalsIgnoreCase("PostgreSQL")) {
+                if (meta.isPostgresql()) {
                     sp = conn.setSavepoint();
                 }
                 callback.invoke(conn);
@@ -88,4 +87,10 @@ public class NutDaoRunner implements DaoRunner {
             }
         }
     }
+    
+    protected DatabaseMeta meta;
+    
+    public void setMeta(DatabaseMeta meta) {
+		this.meta = meta;
+	}
 }
