@@ -1,0 +1,89 @@
+#title: AOP -- 在Mvc中的使用
+#author:wendal(wendal1985@gmail.com)
+#index:0,1
+-----------------------------------------------------
+重要提醒:
+
+	* AOP只能用于Ioc Bean对象, 即从Ioc容器获取的对象, 不是直接new一个对象就能aop的
+	* 自定义Aop拦截器,一般情况下别"吃掉"异常, 因为事务拦截器需要检测到异常才能回滚
+	* 留意拦截器的先后顺序
+
+-----------------------------------------------------
+示例配置
+
+	主模块的IocBy配置
+
+	{{{
+	@IocBy(args={
+				"*js", "ioc/", // 读取ioc/下的js/json配置文件 
+				"*anno", "net.wendal.nutzbook", // 扫描package下的ioc注解
+				"*tx", // 内置的事务拦截器
+				"*async", "48", // 异步执行注解
+				"*net.wendal.nutzbook.aop.DemoAopLoader" // 自定义aop注解加载器
+		})
+	}}}
+
+	一个演示的入口类
+	
+	{{{
+	@At("/user")
+	@IocBean
+	public class UserAction {
+	
+		@Inject
+		protect Dao dao;
+	
+		@At
+		@Ok("json") // 前端ajax
+		@Aop(TransAop.txREPEATABLE_READ)
+		public Object login(@Param("name")String name, @Param("passwd")String passwd) {
+			if (dao.count(User.class, Cnd.where("name", "=", name).and("password", "=", passwd) > 0)
+				return true;
+			return false;
+		}
+		
+		@At("/check/email")
+		@Async // 异步执行,不会等方法真正执行
+		public void vaildEmail() {
+			// ... 发邮件等等
+		}
+		
+		@At("/check/log")
+		@SysLog // 自定义注解,后面会介绍
+		public void justCheckLog() {
+			/// .....
+		}
+	}
+	}}}
+	
+	自定义SysLog的注解类
+	
+	{{{
+	@Retention(RetentionPolicy.RUNTIME) // 必须带这个,不然读取不到的
+	@Target({ElementType.METHOD}) // aop,一般指方法
+	@Documented // 记录到javadoc
+	public @interface SysLog {
+	}
+	}}}
+	
+	处理类
+	
+	{{{
+	package net.wendal.nutzbook.aop;
+	
+	public class DemoAopLoader extends SimpleAopMaker<SysLog> {
+	
+		public List<? extends MethodInterceptor> makeIt(SysLog sysLog, Method method, Ioc ioc) {
+			return Arrays.asList(new SysLogMethodInterceptor());
+		}
+	}
+	
+	class SysLogMethodInterceptor implements MethodInterceptor {
+		private static final Log log = Logs.get();
+		public void filter(final InterceptorChain chain) throws Throwable {
+			log.debug("hi");
+			chain.doChain(); // 继续下一个拦截器, 如果要终止执行,不调用该方法即可
+			log.debug("byte");
+		}
+	}
+	}}}
