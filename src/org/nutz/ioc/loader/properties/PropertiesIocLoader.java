@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
-import org.nutz.ioc.Iocs;
 import org.nutz.ioc.ObjectLoadException;
 import org.nutz.ioc.impl.PropertiesProxy;
 import org.nutz.ioc.meta.IocObject;
@@ -76,6 +75,6 @@ public class PropertiesIocLoader extends PropertiesProxy implements IocLoader {
         }
         
         // 插入自身
-        this.objs.put("conf", Iocs.wrap(this));
+        //this.objs.put("conf", Iocs.wrap(this));
     }
 }

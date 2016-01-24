@@ -1,12 +1,10 @@
 package org.nutz.ioc.loader.properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.nutz.ioc.ObjectLoadException;
-import org.nutz.ioc.impl.NutIoc;
-import org.nutz.ioc.impl.PropertiesProxy;
 import org.nutz.json.Json;
 
 public class PropertiesIocLoaderTest {
@@ -27,9 +25,9 @@ public class PropertiesIocLoaderTest {
         System.out.println(Json.toJson(pp.load(null, "ds")));
         assertEquals("root", pp.load(null, "ds").getFields().get("username").getValue().getValue());
         
-        NutIoc ioc = new NutIoc(pp);
-        PropertiesProxy p = ioc.get(PropertiesProxy.class, "conf");
-        assertEquals(p, pp);
-    	ioc.depose();
+//        NutIoc ioc = new NutIoc(pp);
+//        PropertiesProxy p = ioc.get(PropertiesProxy.class, "conf");
+//        assertEquals(p, pp);
+//    	ioc.depose();
     }
 }

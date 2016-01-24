@@ -11,7 +11,12 @@ import org.nutz.lang.Mirror;
 import org.nutz.plugin.Plugin;
 
 /**
- * 间接调用一个RunMethod类(必须有无参构造方法)或指定类的指定方法(如果不是静态方法,则必须带无参构造方法)
+ * 间接调用一个RunMethod类(必须有无参构造方法)或指定类的指定方法(如果不是静态方法,则必须带无参构造方法)<p/>
+ * 
+ * 调用示例 <p/>
+ * <code>@El("by('net.wendal.util.FuckId')")</code><p/>
+ * <code>@El("by('net.wendal.util.FuckId#staticFunc')")</code><p/>
+ * <code>@El("by('net.wendal.util.FuckId#make')")</code><p/>
  * @author wendal(wendal1985@gmail.com)
  *
  */
