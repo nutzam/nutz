@@ -29,6 +29,8 @@ public class JsonLoader extends MapLoader {
     private static final Log log = Logs.get();
     
     private String[] paths;
+    
+    protected JsonLoader(){}
 
     public JsonLoader(Reader reader) {
         loadFromReader(reader);
@@ -63,6 +65,6 @@ public class JsonLoader extends MapLoader {
     public String toString() {
     	if (paths == null)
     		return super.toString();
-    	return "/*JsonLoader" + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
+    	return "/*" + getClass().getSimpleName() + Arrays.toString(paths) + "*/\n" + Json.toJson(map);
     }
 }
