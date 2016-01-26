@@ -103,6 +103,8 @@ public class Db2JdbcExpert extends AbstractJdbcExpert {
             if (mf.getTypeMirror().isDouble())
                 return "decimal(15,10)";
             return "FLOAT";
+        case TIMESTAMP:
+        	return "TIMESTAMP";
         default:
             break;
         }
