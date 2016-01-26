@@ -2539,10 +2539,10 @@ public abstract class Lang {
     }
     
     public static <T> T copyProperties(Object origin, T target) {
-    	return copyProperties(origin, target, null, null, false);
+    	return copyProperties(origin, target, null, null, false, true);
     }
     
-    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull) {
+    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull, boolean ignoreStatic) {
     	if (origin == null)
     		throw new IllegalArgumentException("origin is null");
     	if (target == null)
@@ -2557,6 +2557,8 @@ public abstract class Lang {
     		if (at != null && !at.matcher(name).find())
     			continue;
     		if (lock != null && lo.matcher(name).find())
+    			continue;
+    		if (ignoreStatic && Modifier.isStatic(field.getModifiers()))
     			continue;
 			Object val = originMirror.getValue(origin, field);
 			if (ignoreNull && val == null)
