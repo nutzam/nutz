@@ -14,6 +14,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -2535,5 +2536,38 @@ public abstract class Lang {
             cp = cp.substring("file:".length());
         }
         return cp;
+    }
+    
+    public static <T> T copyProperties(Object origin, T target) {
+    	return copyProperties(origin, target, null, null, false);
+    }
+    
+    public static <T> T copyProperties(Object origin, T target, String active, String lock, boolean ignoreNull) {
+    	if (origin == null)
+    		throw new IllegalArgumentException("origin is null");
+    	if (target == null)
+    		throw new IllegalArgumentException("target is null");
+    	Pattern at = active == null ? null : Pattern.compile(active);
+    	Pattern lo = lock == null ? null : Pattern.compile(lock);
+    	Mirror<Object> originMirror = Mirror.me(origin);
+    	Mirror<T> targetMirror = Mirror.me(target);
+    	Field[] fields = targetMirror.getFields();
+    	for (Field field : originMirror.getFields()) {
+    		String name = field.getName();
+    		if (at != null && !at.matcher(name).find())
+    			continue;
+    		if (lock != null && lo.matcher(name).find())
+    			continue;
+			Object val = originMirror.getValue(origin, field);
+			if (ignoreNull && val == null)
+				continue;
+			for (Field _field : fields) {
+				if (_field.getName().equals(field.getName())) {
+					targetMirror.setValue(target, _field, val);
+				}
+			}
+			// TODO 支持getter/setter比对
+		}
+    	return target;
     }
 }
