@@ -23,10 +23,11 @@ public class AsyncAopIocLoader extends SimpleAopMaker<Async>{
 	public AsyncAopIocLoader(int size) {
 		this.size = size;
 		es = Executors.newFixedThreadPool(size);
-		System.out.println("self=" + getName()[0]);
 	}
 	
 	public List<? extends MethodInterceptor> makeIt(Async async, Method method, Ioc ioc) {
+		if (!async.enable())
+			return null;
 		return Arrays.asList(new AsyncMethodInterceptor(method, async, es));
 	}
 	

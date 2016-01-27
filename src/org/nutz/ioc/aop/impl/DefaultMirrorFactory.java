@@ -76,7 +76,7 @@ public class DefaultMirrorFactory implements MirrorFactory {
         List<InterceptorPair> interceptorPairs = new ArrayList<InterceptorPair>();
         for (AopConfigration cnf : list) {
             List<InterceptorPair> tmp = cnf.getInterceptorPairList(ioc, type);
-            if (tmp != null)
+            if (tmp != null && tmp.size() > 0)
                 interceptorPairs.addAll(tmp);
         }
         if (interceptorPairs.isEmpty()) {
