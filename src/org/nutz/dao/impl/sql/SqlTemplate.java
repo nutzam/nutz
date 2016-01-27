@@ -541,7 +541,7 @@ public class SqlTemplate {
         return newParams;
     }
 
-    private String inSqlProcess(String paramName, Object paramObj) {
+    private static String inSqlProcess(String paramName, Object paramObj) {
         int len = Array.getLength(paramObj);
         StringBuilder inSqlExp = new StringBuilder();
         for (int i = 0; i < len; i++) {
@@ -552,7 +552,7 @@ public class SqlTemplate {
         return inSqlExp.toString();
     }
 
-    private void inParamProcess(String paramName, Object paramObj, Map<String, Object> newParams) {
+    private static void inParamProcess(String paramName, Object paramObj, Map<String, Object> newParams) {
         int len = Array.getLength(paramObj);
         for (int i = 0; i < len; i++) {
             String inParamName = paramName + i;

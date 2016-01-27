@@ -23,7 +23,7 @@ public class Min implements RunMethod, Plugin{
         return n1;
     }
     
-    private Object min(Number n1, Number n2){
+    private static Object min(Number n1, Number n2){
         if(n1 == null){
             return n2;
         }
