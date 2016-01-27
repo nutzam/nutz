@@ -147,7 +147,7 @@
 	当然，同 Json 的方式有点不同，你这里直接写 "refer:xxxx" 或者 "env:xxxx" 就好了。下面是一个列表
 	
 	|| @Inject("refer:objName")            ||  注入容器其他对象的引用 ||
-	|| @Inject("refer:$Ioc")               ||  容器自身 ||
+	|| @Inject("refer:$ioc")               ||  容器自身 ||
 	|| @Inject("refer:$Name")              ||  对象的名称，即你在 @InjectName 或者 @IocBean 里声明的 name ||
 	|| @Inject("refer:$Context")           ||  容器上下文 ||
 	|| @Inject("env:JAVA_HOME")            ||  系统环境变量 ||

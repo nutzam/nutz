@@ -27,7 +27,6 @@ Nutz的POM
 		<version>1.r.54</version>
 	</dependency>
 	}}}
-	无需添加repository即可使用Nutz.不要惊讶,因为我们已经将Nutz提交到maven中央仓库!
 	
 Nutz使用Maven来构建的吗?
 	答案是肯定的,基本上没用ant来构建nutz核心库了
