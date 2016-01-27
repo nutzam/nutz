@@ -18,7 +18,6 @@ import org.nutz.resource.Scans;
 /**
  * 从 Json 文件中读取配置信息。 支持 Merge with parent ，利用 MapLoader
  * <p>
- * 注，如果 JSON 配置文件被打入 Jar 包中，这个加载器将不能正常工作
  * 
  * @author zozoh(zozohtnt@gmail.com)
  * @author wendal(wendal1985@gmail.com)
