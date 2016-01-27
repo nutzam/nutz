@@ -16,7 +16,9 @@ public class UU32FilePool implements FilePool {
 
 	public File createFile(String suffix) {
 		String key = R.UU32();
-		return new File(root, key.substring(0, 2) + File.separator + key.substring(2));
+		File dir = new File(root, key.substring(0, 2));
+		Files.createDirIfNoExists(dir);
+		return new File(dir, key.substring(2));
 	}
 	public void clear() {
 		Files.deleteDir(root);
