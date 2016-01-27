@@ -19,6 +19,7 @@ import java.util.Map;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.nutz.castor.FailToCastObjectException;
+import org.nutz.dao.test.meta.Pet;
 import org.nutz.json.Json;
 import org.nutz.lang.meta.TestR;
 
@@ -380,5 +381,26 @@ public class LangTest {
     	Map<String, String> map = new HashMap<String, String>();
     	map.put("five", "nice");
     	assertTrue(Lang.filter(source, null, null, null, map).containsKey("nice"));
+    }
+    
+    @Test
+    public void test_copy_properties() {
+    	Pet pet = Pet.create("wendal");
+    	pet.setAge(30);
+    	
+    	Pet pet2 = new Pet();
+    	Lang.copyProperties(pet, pet2);
+    	assertEquals(pet.getName(), pet2.getName());
+    	assertEquals(pet.getAge(), pet2.getAge());
+    	
+    	pet2 = new Pet();
+    	Lang.copyProperties(pet, pet2, "age", null, false, true);
+    	assertEquals(null, pet2.getName());
+    	assertEquals(pet.getAge(), pet2.getAge());
+    	
+    	pet2 = new Pet();
+    	Lang.copyProperties(pet, pet2, null, "age", false, true);
+    	assertEquals(pet.getName(), pet2.getName());
+    	assertEquals(0, pet2.getAge());
     }
 }
