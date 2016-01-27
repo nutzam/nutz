@@ -1711,8 +1711,7 @@ public class Mirror<T> {
         for (Class<?> pt : parameterTypes)
             sb.append(getTypeDescriptor(pt));
         sb.append(')');
-        String s = sb.toString();
-        return s;
+        return sb.toString();
     }
 
     /**

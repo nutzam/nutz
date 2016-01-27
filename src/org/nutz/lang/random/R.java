@@ -148,8 +148,7 @@ public abstract class R {
         int len = s.length();
         long first = Long.parseLong(s.substring(0, len - 1), radix);
         int second = Character.digit(s.charAt(len - 1), radix);
-        long result = first * radix + second;
-        return result;
+        return first * radix + second;
     }
     
     /**

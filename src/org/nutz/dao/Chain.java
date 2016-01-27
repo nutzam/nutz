@@ -34,8 +34,7 @@ public abstract class Chain {
      * @return 链头
      */
     public static Chain make(String name, Object value) {
-        DefaultChain chain = new DefaultChain(name, value);
-        return chain;
+        return new DefaultChain(name, value);
     }
 
     /**

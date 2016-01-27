@@ -632,8 +632,7 @@ public class Images {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         writeJpeg(image, out, 1);
         out.flush();
-        BufferedImage img = read(new ByteArrayInputStream(out.toByteArray()));
-        return img;
+        return read(new ByteArrayInputStream(out.toByteArray()));
     }
 
     /**

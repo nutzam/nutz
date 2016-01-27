@@ -345,8 +345,7 @@ public abstract class Sockets {
      * @return 动作映射表
      */
     public static Map<String, SocketAction> createActions() {
-        Map<String, SocketAction> actions = new HashMap<String, SocketAction>();
-        return actions;
+        return new HashMap<String, SocketAction>();
     }
 
 }
