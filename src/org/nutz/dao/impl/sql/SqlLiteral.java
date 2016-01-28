@@ -130,7 +130,7 @@ class SqlLiteral implements Cloneable {
         return this;
     }
 
-    private int readTokenName(char[] cs, int i, StringBuilder sb) {
+    private static int readTokenName(char[] cs, int i, StringBuilder sb) {
         for (++i; i < cs.length; i++) {
             int b = (int) cs[i];
             // Special case for underline ('_')

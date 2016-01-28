@@ -23,7 +23,7 @@ public class Max implements RunMethod, Plugin{
         return n1;
     }
     
-    private Object max(Number n1, Number n2){
+    private static Object max(Number n1, Number n2){
         if(n1 == null){
             return n2;
         }

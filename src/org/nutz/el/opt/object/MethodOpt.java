@@ -49,8 +49,7 @@ public class MethodOpt extends TwoTernary {
         if(!(left instanceof AccessOpt)){
             return CustomMake.make(left.toString());
         }
-        AccessOpt lval = (AccessOpt) left;
-        return lval;
+        return (AccessOpt) left;
     }
     
     

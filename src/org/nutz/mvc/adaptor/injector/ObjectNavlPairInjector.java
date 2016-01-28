@@ -50,8 +50,7 @@ public class ObjectNavlPairInjector implements ParamInjector {
             }
         }
         Object model = no.get();
-        Object re = Mapl.maplistToObj(model, type);
-        return re;
+        return Mapl.maplistToObj(model, type);
 //        return no.inject(mirror);
     }
 

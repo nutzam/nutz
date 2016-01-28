@@ -16,9 +16,7 @@ public class NutPojoMaker implements PojoMaker {
     }
 
     public Pojo makePojo(SqlType type) {
-        Pojo pojo = expert.createPojo(type);
-
-        return pojo;
+        return expert.createPojo(type);
     }
 
     public Pojo makeInsert(Entity<?> en) {

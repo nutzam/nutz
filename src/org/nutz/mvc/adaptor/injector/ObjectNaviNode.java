@@ -141,7 +141,7 @@ public class ObjectNaviNode {
      * 取得节点名
      * 
      */
-    private String fetchNode(String path) {
+    private static String fetchNode(String path) {
         if (path.indexOf(separator) <= 0) {
             return path;
         }
@@ -186,7 +186,7 @@ public class ObjectNaviNode {
      * 是否是list节点
      * @param key
      */
-    private boolean isList(String key){
+    private static boolean isList(String key){
         return key.indexOf(LIST_SEPARATOR) > 0;
     }
 

@@ -64,9 +64,7 @@ public class DefaultWeaver implements ObjectWeaver {
             args[i] = this.args[i].get(ing);
 
         // 创建实例
-        Object obj = borning.born(args);
-
-        return obj;
+        return borning.born(args);
     }
 
     public Object onCreate(Object obj) {
