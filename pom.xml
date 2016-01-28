@@ -77,15 +77,15 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.eclipse.jetty.aggregate</groupId>
-			<artifactId>jetty-all-server</artifactId>
-			<version>7.6.16.v20140903</version>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+			<version>7.6.18.v20150929</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-jsp</artifactId>
-			<version>7.6.16.v20140903</version>
+			<version>7.6.18.v20150929</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -110,6 +110,22 @@
 			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 			<version>1.0.16</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<artifactId>jconsole</artifactId>
+					<groupId>com.alibaba</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>tools</artifactId>
+					<groupId>com.alibaba</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>7.6.18.v20150929</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
