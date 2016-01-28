@@ -226,7 +226,7 @@ public class ObjConvertImpl implements MaplConvert {
         return obj;
     }
 
-    private boolean isLeaf(Object obj) {
+    private static boolean isLeaf(Object obj) {
         if (obj instanceof Map) {
             return false;
         }
