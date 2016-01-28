@@ -78,74 +78,74 @@ public class NutMap extends LinkedHashMap<String, Object>implements NutBean {
 
     @Override
     public boolean containsValue(Object value) {
-        if (null == _map)
+        if (null == map)
             return super.containsValue(value);
-        return super.containsValue(value) || _map.containsValue(value);
+        return super.containsValue(value) || map.containsValue(value);
     }
 
     @Override
     public boolean containsKey(Object key) {
-        if (null == _map)
+        if (null == map)
             return super.containsKey(key);
-        return super.containsKey(key) || _map.containsKey(key);
+        return super.containsKey(key) || map.containsKey(key);
     }
 
     public Set<String> keySet() {
-        if (null == _map)
+        if (null == map)
             return super.keySet();
         HashSet<String> keys = new HashSet<String>();
         keys.addAll(super.keySet());
-        keys.addAll(_map.keySet());
+        keys.addAll(map.keySet());
         return keys;
     }
 
     public Collection<Object> values() {
-        if (null == _map)
+        if (null == map)
             return super.values();
         List<Object> vals = new LinkedList<Object>();
         vals.addAll(super.values());
-        vals.addAll(_map.values());
+        vals.addAll(map.values());
         return vals;
     }
 
     public Set<Entry<String, Object>> entrySet() {
-        if (null == _map)
+        if (null == map)
             return super.entrySet();
         HashSet<Entry<String, Object>> vals = new HashSet<Entry<String, Object>>();
-        vals.addAll(_map.entrySet());
+        vals.addAll(map.entrySet());
         vals.addAll(super.entrySet());
         return vals;
     }
 
     public void clear() {
         super.clear();
-        if (null != _map)
-            _map.clear();
+        if (null != map)
+            map.clear();
     }
 
-    private NutMap _map;
+    private NutMap map;
 
     public NutMap attach(NutMap map) {
-        _map = map;
+        this.map = map;
         return this;
     }
 
     public NutMap detach() {
-        NutMap re = _map;
-        _map = null;
+        NutMap re = map;
+        map = null;
         return re;
     }
 
     @Override
     public Object get(Object key) {
-        if (_map == null)
+        if (map == null)
             return super.get(key);
 
         if (super.containsKey(key)) {
             return super.get(key);
         }
 
-        return _map.get(key);
+        return map.get(key);
     }
 
     public Object get(String key, Object dft) {

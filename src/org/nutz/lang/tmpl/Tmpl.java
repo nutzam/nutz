@@ -33,7 +33,7 @@ public class Tmpl {
     private static final Pattern _P2 = Pattern.compile("([\\w\\d_.\\[\\]'\"-]+)"
                                                        + "(<(int|long|boolean|float|double|date|string)( *: *([^>]*))?>)?"
                                                        + "([?] *(.*) *)?");
-    private Pattern _P;
+    private Pattern pattern;
     private int groupIndex;
     private int escapeIndex;
     private List<TmplEle> list;
@@ -127,13 +127,13 @@ public class Tmpl {
         this();
         // 默认的模板占位符
         if (null == ptn) {
-            _P = Pattern.compile("((?<![$])[$][{]([^}]+)[}])|([$]([$][{][^}]+[}]))");
+            pattern = Pattern.compile("((?<![$])[$][{]([^}]+)[}])|([$]([$][{][^}]+[}]))");
             this.groupIndex = 2;
             this.escapeIndex = 4;
         }
         // 自定义的占位符
         else {
-            _P = ptn;
+            pattern = ptn;
             this.groupIndex = groupIndex;
             this.escapeIndex = escapeIndex;
         }
@@ -143,7 +143,7 @@ public class Tmpl {
         this(ptn, groupIndex, escapeIndex);
 
         // 开始解析
-        Matcher m = _P.matcher(tmpl);
+        Matcher m = pattern.matcher(tmpl);
         int lastIndex = 0;
 
         while (m.find()) {

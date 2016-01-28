@@ -5,30 +5,30 @@ import org.nutz.mapl.Mapl;
 
 abstract class TmplDynamicEle<T> implements TmplEle {
 
-    private String _type;
+    private String type;
 
     private String key;
 
-    private String _org_fmt;
+    private String orgFmt;
 
     private String dft;
 
     protected String fmt;
 
     protected TmplDynamicEle(String type, String key, String fmt, String dft_str) {
-        this._type = type;
+        this.type = type;
         this.key = key;
-        this._org_fmt = fmt;
+        this.orgFmt = fmt;
         this.dft = dft_str;
     }
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("${").append(key);
-        if (null != _type) {
-            sb.append('<').append(_type);
-            if (null != _org_fmt) {
-                sb.append(':').append(_org_fmt);
+        if (null != type) {
+            sb.append('<').append(type);
+            if (null != orgFmt) {
+                sb.append(':').append(orgFmt);
             }
             sb.append('>');
         }
