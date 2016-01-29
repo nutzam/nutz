@@ -18,9 +18,9 @@ import org.nutz.mvc.Mvcs;
 
 public class JdbcExpertConfigFile {
 
-    private Map<String, Class<? extends JdbcExpert>> experts;
+    private Map<String, Class<? extends JdbcExpert>> experts1;
     
-    private Map<Pattern, Class<? extends JdbcExpert>> _experts; 
+    private Map<Pattern, Class<? extends JdbcExpert>> experts2; 
 
     private Map<String, Object> config;
 
@@ -69,12 +69,12 @@ public class JdbcExpertConfigFile {
     }
 
     public JdbcExpert getExpert(String str) {
-        Class<? extends JdbcExpert> type = experts.get(str);
+        Class<? extends JdbcExpert> type = experts1.get(str);
         return Mirror.me(type).born(config);
     }
 
     public JdbcExpert matchExpert(String dbName) {
-        for (Entry<Pattern, Class<? extends JdbcExpert>> entry : _experts.entrySet()) {
+        for (Entry<Pattern, Class<? extends JdbcExpert>> entry : experts2.entrySet()) {
             if (entry.getKey().matcher(dbName).find())
                 return Mirror.me(entry.getValue()).born(this);
         }
@@ -85,7 +85,7 @@ public class JdbcExpertConfigFile {
      * 注意,返回的Map实例不允许被修改
      */
     public Map<String, Class<? extends JdbcExpert>> getExperts() {
-        return Collections.unmodifiableMap(experts);
+        return Collections.unmodifiableMap(experts1);
     }
 
     public Map<String, Object> getConfig() {
@@ -103,11 +103,11 @@ public class JdbcExpertConfigFile {
 
     // 在 fromJson 的时候，会被调用
     public void setExperts(Map<String, Class<? extends JdbcExpert>> experts) {
-        this.experts = experts;
-        this._experts = new HashMap<Pattern, Class<? extends JdbcExpert>>();
+        this.experts1 = experts;
+        this.experts2 = new HashMap<Pattern, Class<? extends JdbcExpert>>();
         for (Entry<String, Class<? extends JdbcExpert>> entry : experts.entrySet()) {
             //忽略大小写,并且让换行符与.能够匹配
-            _experts.put(Pattern.compile(entry.getKey(), Pattern.DOTALL & Pattern.CASE_INSENSITIVE), entry.getValue());
+            experts2.put(Pattern.compile(entry.getKey(), Pattern.DOTALL & Pattern.CASE_INSENSITIVE), entry.getValue());
         }
     }
 

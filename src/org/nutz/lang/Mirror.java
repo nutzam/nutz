@@ -835,28 +835,28 @@ public class Mirror<T> {
         return klass;
     }
 
-    private String _type_id;
+    private String typeId;
 
     /**
      * @return 本类型的唯一标识名称
      */
     public String getTypeId() {
-        if (null == _type_id) {
+        if (null == typeId) {
             if (null != type && type instanceof ParameterizedType) {
                 ParameterizedType pmType = (ParameterizedType) type;
                 List<Type> list = new ArrayList<Type>(pmType.getActualTypeArguments().length);
                 for (Type pmA : pmType.getActualTypeArguments()) {
                     list.add(pmA);
                 }
-                _type_id = String.format("%s<%s>", klass.getName(), Lang.concat(",", list));
+                typeId = String.format("%s<%s>", klass.getName(), Lang.concat(",", list));
             }
             // TODO 这里应该作一些更多的判断
             else {
-                _type_id = klass.getName();
+                typeId = klass.getName();
             }
-            _type_id += "_" + klass.getClassLoader();
+            typeId += "_" + klass.getClassLoader();
         }
-        return _type_id;
+        return typeId;
     }
 
     /**

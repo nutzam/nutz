@@ -34,21 +34,21 @@ import org.nutz.lang.util.LinkedCharArray;
  */
 public abstract class AbstractSqlManager implements SqlManager {
 
-    protected Map<String, String> _sql_map;
-    private List<String> _sql_keys;
+    protected Map<String, String> sqlMap;
+    private List<String> sqlKeys;
     
     private boolean allowDuplicate = true;
 
     private Map<String, String> map() {
-        if (null == _sql_map)
+        if (null == sqlMap)
             this.refresh();
-        return _sql_map;
+        return sqlMap;
     }
 
     private List<String> keylist() {
-        if (null == _sql_keys)
+        if (null == sqlKeys)
             this.refresh();
-        return _sql_keys;
+        return sqlKeys;
     }
 
     public boolean contains(String key) {
@@ -203,7 +203,7 @@ public abstract class AbstractSqlManager implements SqlManager {
             else
                 bufferedReader = new BufferedReader(reader);
             SqlFileBuilder p = new SqlFileBuilder(bufferedReader);
-            _sql_keys = new ArrayList<String>(p.map.size());
+            sqlKeys = new ArrayList<String>(p.map.size());
             for (Entry<String, String> en : p.entrySet()) {
             	addSql(en.getKey(), Strings.trim(en.getValue()));
 			}

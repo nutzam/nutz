@@ -36,7 +36,7 @@ public class NutPojo extends NutStatement implements Pojo {
     /**
      * 缓存语句共包括的参数数量
      */
-    private int _pmnum;
+    private int pmnum;
 
     /**
      * 当前操作对象
@@ -52,7 +52,7 @@ public class NutPojo extends NutStatement implements Pojo {
         super();
         params = new LinkedList<Object>();
         items = new ArrayList<PItem>(6);
-        _pmnum = -1;
+        pmnum = -1;
         append(Pojos.Items.sqlType());
     }
 
@@ -227,14 +227,14 @@ public class NutPojo extends NutStatement implements Pojo {
     }
 
     private int _params_count() {
-        if (_pmnum < 0) {
-            _pmnum = 0;
+        if (pmnum < 0) {
+            pmnum = 0;
             Entity<?> en = getEntity();
             for (PItem item : items) {
-                _pmnum += item.paramCount(en);
+                pmnum += item.paramCount(en);
             }
         }
-        return _pmnum;
+        return pmnum;
     }
     
     public String forPrint() {
