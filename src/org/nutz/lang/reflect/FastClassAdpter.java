@@ -201,7 +201,7 @@ public class FastClassAdpter implements Opcodes {
 			return;
 		}
 		if (returnType.equals(Type.getType(Object.class))) {
-			;
+			
 		} else {
 			if (returnType.getOpcode(IRETURN) != ARETURN) {
 				checkCast2();

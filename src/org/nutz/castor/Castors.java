@@ -175,7 +175,7 @@ public class Castors {
      */
     // private Map<String, Map<String, Castor<?, ?>>> map;
     // private Map<Integer, Castor<?,?>> map;
-    private Map<String, Castor<?, ?>> map = new ConcurrentHashMap<String, Castor<?, ?>>();;
+    private Map<String, Castor<?, ?>> map = new ConcurrentHashMap<String, Castor<?, ?>>();
 
     /**
      * 转换一个 POJO 从一个指定的类型到另外的类型
