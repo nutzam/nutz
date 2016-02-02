@@ -92,7 +92,7 @@ public abstract class Loadings {
 
     public static Set<Class<?>> scanModules(Ioc ioc, Class<?> mainModule) {
         Modules ann = mainModule.getAnnotation(Modules.class);
-        boolean scan = null == ann ? false : ann.scanPackage();
+        boolean scan = null == ann ? true : ann.scanPackage();
         // 准备扫描列表
         Set<Class<?>> forScans = new HashSet<Class<?>>();
 
