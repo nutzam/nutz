@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nutz.aop.interceptor.async.AsyncAopIocLoader;
 import org.nutz.aop.interceptor.ioc.TransIocLoader;
 import org.nutz.ioc.IocLoader;
 import org.nutz.ioc.IocLoading;
@@ -69,6 +70,7 @@ public class ComboIocLoader implements IocLoader {
             loaders.put("tx", TransIocLoader.class);
             loaders.put("props", PropertiesIocLoader.class);
             loaders.put("properties", PropertiesIocLoader.class);
+            loaders.put("async", AsyncAopIocLoader.class);
             try {
                 loaders.put("cache",
                             (Class<? extends IocLoader>) Lang.loadClass("org.nutz.jcache.NutCacheIocLoader"));
