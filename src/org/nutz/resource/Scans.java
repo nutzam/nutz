@@ -378,7 +378,7 @@ public class Scans {
                 }
                 catch (Throwable e) {
                     if (log.isInfoEnabled())
-                        log.info("Resource can't map to Class, Resource " + nr.getName(), e);
+                        log.info("Resource can't map to Class, Resource " + nr.getName());
                 }
                 finally {
                     Streams.safeClose(in);
