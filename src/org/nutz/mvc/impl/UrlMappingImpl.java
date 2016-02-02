@@ -22,9 +22,9 @@ public class UrlMappingImpl implements UrlMapping {
 
     private static final Log log = Logs.get();
 
-    private Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
+    protected Map<String, ActionInvoker> map;// 这个对象有点多余,考虑换成AtMap吧!!
 
-    private MappingNode<ActionInvoker> root;
+    protected MappingNode<ActionInvoker> root;
 
     public UrlMappingImpl() {
         this.map = new HashMap<String, ActionInvoker>();
