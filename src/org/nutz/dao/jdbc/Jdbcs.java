@@ -269,7 +269,7 @@ public abstract class Jdbcs {
 
             public void set(PreparedStatement stat, Object obj, int i) throws SQLException {
                 stat.setNull(i, Types.NULL);
-            };
+            }
 
         };
 

@@ -8,7 +8,7 @@
 			"org.nutz.el.opt.custom.MakeUUID",
 			"org.nutz.el.opt.custom.DoBase64",
 			"org.nutz.el.opt.custom.DoURLEncoder",
-			"org.nutz.el.opt.custom.TimeNow"
-			"org.nutz.el.opt.custom.ByMake",
+			"org.nutz.el.opt.custom.TimeNow",
+			"org.nutz.el.opt.custom.ByMake"
 		]}
 }

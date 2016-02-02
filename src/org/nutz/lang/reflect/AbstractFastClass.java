@@ -105,7 +105,7 @@ public abstract class AbstractFastClass implements FastClass {
 
 	protected Constructor<?>[] getConstructors() {
 	    return cs;
-	};
+	}
 
 	private int getMethodIndex(Method method) {
 		for (int i = 0; i < methods.length; i++) {
