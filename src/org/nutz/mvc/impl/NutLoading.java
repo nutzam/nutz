@@ -217,6 +217,10 @@ public class NutLoading implements Loading {
         } else {
             log.infof("Found %d module methods", atMethods);
         }
+        
+        config.setUrlMapping(mapping);
+        config.setActionChainMaker(maker);
+        config.setViewMakers(makers);
 
         return mapping;
     }
@@ -286,6 +290,10 @@ public class NutLoading implements Loading {
                     setup.init(config);
                 }
             }
+        } else if (Setup.class.isAssignableFrom(mainModule)) { // MainModule自己就实现了Setup接口呢?
+        	Setup setup = (Setup)Mirror.me(mainModule).born();
+        	config.setAttributeIgnoreNull(Setup.class.getName(), setup);
+        	setup.init(config);
         }
     }
 

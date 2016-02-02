@@ -45,8 +45,12 @@ public class ModuleProcessor extends AbstractProcessor {
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
         method = ai.getMethod();
         moduleType = ai.getModuleType();
+        // 直接指定了对象
+        if (ai.getModuleObj() != null) {
+        	moduleObj = ai.getModuleObj();
+        }
         // 不使用 Ioc 容器管理模块
-        if (Strings.isBlank(ai.getInjectName())) {
+        else if (Strings.isBlank(ai.getInjectName())) {
             // change in 1.b.49
             // 同一个类的入口方法,共用同一个实例
             synchronized (modulesMap) {

@@ -48,7 +48,7 @@ public class NutActionChainMaker implements ActionChainMaker {
             return new NutActionChain(list, errorProcessor, ai);
         } catch (Throwable e) {
             if (log.isDebugEnabled())
-                log.debugf("Eval FAIL!! : %s",ai.getMethod());
+                log.debugf("Eval FAIL!! : %s",ai.getMethod(), e);
             throw Lang.wrapThrow(e);
         }
     }

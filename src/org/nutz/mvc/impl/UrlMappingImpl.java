@@ -101,6 +101,11 @@ public class UrlMappingImpl implements UrlMapping {
             log.debugf("Search mapping for path=%s : NOT Action match", path);
         return null;
     }
+    
+    public void add(String path, ActionInvoker invoker) {
+    	root.add(path, invoker);
+    	map.put(path, invoker);
+    }
 
     protected void printActionMapping(ActionInfo ai) {
 

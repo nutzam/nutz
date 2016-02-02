@@ -29,4 +29,5 @@ public interface UrlMapping {
      */
     ActionInvoker get(ActionContext ac);
 
+    void add(String path, ActionInvoker invoker);
 }

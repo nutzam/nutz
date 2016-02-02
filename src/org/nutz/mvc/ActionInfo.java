@@ -49,6 +49,8 @@ public class ActionInfo {
     private ClassMeta meta;
     
     private Integer lineNumber;
+    
+    private Object obj;//
 
     public ActionInfo() {
         httpMethods = new HashSet<String>();
@@ -251,5 +253,13 @@ public class ActionInfo {
     
     public Integer getLineNumber() {
         return lineNumber;
+    }
+    
+    public void setModuleObj(Object obj) {
+		this.obj = obj;
+	}
+    
+    public Object getModuleObj() {
+    	return this.obj;
     }
 }
