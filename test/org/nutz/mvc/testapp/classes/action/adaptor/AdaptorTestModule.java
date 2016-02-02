@@ -17,6 +17,7 @@ import org.nutz.mvc.adaptor.meta.Pet;
 import org.nutz.mvc.annotation.AdaptBy;
 import org.nutz.mvc.annotation.At;
 import org.nutz.mvc.annotation.Fail;
+import org.nutz.mvc.annotation.GET;
 import org.nutz.mvc.annotation.Ok;
 import org.nutz.mvc.annotation.POST;
 import org.nutz.mvc.annotation.Param;
@@ -99,5 +100,11 @@ public class AdaptorTestModule extends BaseWebappTest {
     @Ok("raw")
     public boolean err_ctx(@Param("..")Object obj, AdaptorErrorContext ctx) {
         return ctx == null;
+    }
+    
+    //@GET
+    @At("/sqldate")
+    public String test_sql_date(@Param("checkDate")java.sql.Date checkDate){
+    	return checkDate.toString();
     }
 }
