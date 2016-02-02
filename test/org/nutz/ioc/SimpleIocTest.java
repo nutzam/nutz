@@ -30,10 +30,13 @@ public class SimpleIocTest {
     	for (int i = 0; i < 100; i++) {
 			ioc.get(Issue399Service.class);
 		}
+    	
+    	assertEquals(1, ioc.getNamesByType(Issue399Service.class).length);
+    	ioc.getByType(Issue399Service.class);
+    	
     	ioc.depose();
     	System.gc();
-    	assertEquals(100, Issue399Service.CreateCount);
+    	assertEquals(101, Issue399Service.CreateCount);
     	assertEquals(0, Issue399Service.DeposeCount);
-    	
     }
 }
