@@ -18,6 +18,6 @@ public class UploadTestModule {
     @AdaptBy(type=UploadAdaptor.class,args={"~/tmp"})
     @At("/upload/*")
     public String test_upload(String type, @Param("file")TempFile file){
-        return type + "&" + file.getFile().length();
+        return type + "&" + file.getSize();
     }
 }
