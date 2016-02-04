@@ -57,6 +57,7 @@
 
 		在刚才创建的 Source Folder 下创建一个 log4j.properties 文件，正文为：
 		{{{
+		log4j.rootLogger=debug, NUTZ
 		log4j.category.org.nutz=debug, NUTZ
 
 		log4j.additivity.org.nutz=false

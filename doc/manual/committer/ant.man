@@ -23,7 +23,7 @@
 	Nutz 提供 Ant 编译的脚本，在 Ant 运行前，你需要配置几个环境变量，在你的
 	命令行客户端输入 ant，查看一下你的 ant 安装没有，如果没有请先从
 	[http://ant.apache.org 它的官方网站下载]。你还需要检查：
-	 # Java 是否安装，Nutz 需要至少 1.5 以上版本
+	 # Java 是否安装，Nutz 需要至少 1.6 以上版本
 	 # [http://mvnrepository.com/artifact/javax.servlet/servlet-api/2.5 servlet-api]，暂时只适用 2.5 版本的 servlet-api，
 	 # [http://logging.apache.org/log4j/ Log4j] 在编译时需要它。 \
 	   当然，运行时，我们不一定需要 Log4j
