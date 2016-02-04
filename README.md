@@ -72,6 +72,63 @@
 
 或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.55-SNAPSHOT/)
 
+## 基于注解配置
+
+MainModule主配置类
+
+```
+@SetupBy(value=MainSetup.class)
+@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/",
+										   "*anno", "net.wendal.nutzbook",
+										   "*quartz",
+										   "*async",
+										   "*tx"
+										   })
+@Modules(scanPackage=true)
+@ChainBy(args="mvc/nutzbook-mvc-chain.js")
+@Ok("json:full")
+@Fail("jsp:jsp.500")
+@Localization(value="msg/", defaultLocalizationKey="zh-CN")
+@Views({BeetlViewMaker.class})
+@SessionBy(ShiroSessionProvider.class)
+public class MainModule {
+}
+```
+
+入口方法
+
+```
+  @At
+  @RequiresPermissions("user:delete")
+  @Aop(TransAop.READ_COMMITTED)
+  @Ok("json")
+  public Object delete(@Param("id")int id) {
+    int me = Toolkit.uid();
+    if (me == id) {
+      return new NutMap().setv("ok", false).setv("msg", "不能删除当前用户!!");
+    }
+    dao.delete(User.class, id); // 再严谨一些的话,需要判断是否为>0
+    dao.clear(UserProfile.class, Cnd.where("userId", "=", me));
+    return new NutMap().setv("ok", true);
+  }
+```
+
+非MVC环境下的NutDao -- DaoUp类
+
+```
+// 初始化DaoUp类
+DaoUp.me().init(("db.properties"));
+
+Dao dao = DaoUp.me().dao();
+dao.insert("t_user", Chain.make("id", 1).add("nm", "wendal").add("age", 30));
+List<Record> users = dao.query("t_user", Cnd.where("age", "<", 25).desc("nm"));
+
+List<User> girls = dao.count(User.class, Cnd.where("age", "<", 25).and("sex", "=", "female"));
+
+// 程序结束前销毁
+DaoUp.me().close();
+```
+
 ## Sponsorship
 
 YourKit supports open source projects with its full-featured Java Profiler.
