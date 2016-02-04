@@ -11,6 +11,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.upload.TempFile;
 
+/**
+ * @since 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用.
+ */
+@Deprecated
 public class FileInjector implements ParamInjector {
 
     public FileInjector(String name) {

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.nutz.lang.Streams;
 
+@Deprecated
 public class InputStreamInjector extends FileInjector {
 
     public InputStreamInjector(String name) {

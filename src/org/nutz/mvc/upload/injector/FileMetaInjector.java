@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.nutz.mvc.adaptor.ParamInjector;
 import org.nutz.mvc.upload.TempFile;
 
+@Deprecated
 public class FileMetaInjector implements ParamInjector {
 
     public FileMetaInjector(String name) {
