@@ -24,9 +24,9 @@
 	# 最精简搭配,适合尝试阶段的新手,默认输出的就是Debug信息,完全无鸭梨!!
 		* nutz.jar
 	# 经典搭配,适合大部分人的需要
-		* nutz.jar + log4j-1.2.14.jar
+		* nutz.jar + log4j-1.2.17.jar
 	# 推荐搭配,搭配最新的log4j
-		* nutz.jar + log4j-1.2.16.jar
+		* nutz.jar + log4j-1.2.17.jar
 	# 性能至上,使用Logback
 		* nutz.jar + log4j-over-slf4j.jar + slf4j-api.jar + logback.jar
 	# 传统选择,使用JDK Loggging

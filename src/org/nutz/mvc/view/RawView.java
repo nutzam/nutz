@@ -39,6 +39,7 @@ import org.nutz.mvc.View;
  * <li><b>InputStream</b> - 按二进制方式写入响应流，并关闭 InputStream
  * <li><b>char[]</b> - 按文本方式写入HTTP响应流
  * <li><b>Reader</b> - 按文本方式写入HTTP响应流，并关闭 Reader
+ * <li><b>BufferedImage</b> - 按图片方式写入HTTP响应流，并关闭 Reader
  * <li><b>默认的</b> - 直接将对象 toString() 后按文本方式写入HTTP响应流
  * </ol>
  * <p>

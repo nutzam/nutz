@@ -1,7 +1,11 @@
 package org.nutz.mvc.impl.processor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.nutz.mvc.ActionContext;
 import org.nutz.mvc.ActionFilter;
+import org.nutz.mvc.ActionFilter2;
 import org.nutz.mvc.ActionInfo;
 import org.nutz.mvc.NutConfig;
 import org.nutz.mvc.ObjectInfo;
@@ -15,14 +19,19 @@ import org.nutz.mvc.View;
  */
 public class ActionFiltersProcessor extends AbstractProcessor {
 
-    private ActionFilter[] filters = {};
+    protected List<ActionFilter> filters = new ArrayList<ActionFilter>();
+    
+    protected List<ActionFilter2> filters2 = new ArrayList<ActionFilter2>();
     
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
         ObjectInfo<? extends ActionFilter>[] filterInfos = ai.getFilterInfos();
         if (null != filterInfos) {
-            filters = new ActionFilter[filterInfos.length];
-            for (int i = 0; i < filters.length; i++) {
-                filters[i] = evalObj(config, filterInfos[i]);
+            for (int i = 0; i < filterInfos.length; i++) {
+            	ActionFilter filter = evalObj(config, filterInfos[i]);
+                filters.add(filter);
+                if (filter instanceof ActionFilter2) {
+                	filters2.add(0, (ActionFilter2)filter);
+                }
             }
         }
     }
@@ -38,6 +47,9 @@ public class ActionFiltersProcessor extends AbstractProcessor {
             }
         }
         doNext(ac);
+        for (ActionFilter2 filter2 : filters2) {
+			filter2.after(ac);
+		}
     }
 
 }

@@ -21,18 +21,74 @@
 
 *   [项目官网](http://nutzam.com)
 *   [Github](https://github.com/nutzam/nutz)
-*   [Nutz社区](https://nutz.cn/)
+*   [Nutz社区](https://nutz.cn/) 有问必答,秒回复
 *   在线文档
-    *   [官网](http://nutzam.com/core/nutz_preface.html)（发布新版本时更新）
-    *   [GitHub Pages](http://nutzam.github.io/nutz/)（基本做到文档有变动就更新）
-    *   [社区常见问答 Part 1](http://nutzam.github.io/nutz/faq/common_qa_1.html)（新手必看）
+    *   [官网](http://nutzam.com/core/nutz_preface.html) 发布新版本时更新
+    *   [GitHub Pages](http://nutzam.github.io/nutz/) 基本做到文档有变动就更新
 *   [视频+官方发布](http://downloads.nutzam.com/)
 *   [各种插件](http://github.com/nutzam/nutzmore)
-*   [好玩的Nutzbook](http://nutzbook.wendal.net) (引导式nutz入门书)
-*	[在线javadoc](http://javadoc.nutz.cn)
-*	[案例提交](https://github.com/nutzam/nutz/issues/819) (企业项目及开源项目)
+*   [好玩的Nutzbook](http://nutzbook.wendal.net) 引导式nutz入门书
+*	[在线javadoc](http://nutzam.com/javadoc/)
+*	[案例提交](https://github.com/nutzam/nutz/issues/819) 企业项目及开源项目
 
 现已通过 Oracle JDK 8、Oracle JDK 7、OpenJDK 7、OpenJDK 6下的 maven 测试，请查阅 [Travis CI地址](https://travis-ci.org/nutzam/nutz)、 [CircleCI地址](https://circleci.com/gh/nutzam/nutz)
+
+## 基于注解配置
+
+MainModule主配置类
+
+```java
+@SetupBy(value=MainSetup.class)
+@IocBy(type=ComboIocProvider.class, args={"*js", "ioc/",
+										   "*anno", "net.wendal.nutzbook",
+										   "*quartz",
+										   "*async",
+										   "*tx"
+										   })
+@Modules(scanPackage=true)
+@ChainBy(args="mvc/nutzbook-mvc-chain.js")
+@Ok("json:full")
+@Fail("jsp:jsp.500")
+@Localization(value="msg/", defaultLocalizationKey="zh-CN")
+@Views({BeetlViewMaker.class})
+@SessionBy(ShiroSessionProvider.class)
+public class MainModule {
+}
+```
+
+入口方法
+
+```java
+  @At
+  @RequiresPermissions("user:delete")
+  @Aop(TransAop.READ_COMMITTED)
+  @Ok("json")
+  public Object delete(@Param("id")int id) {
+    int me = Toolkit.uid();
+    if (me == id) {
+      return new NutMap().setv("ok", false).setv("msg", "不能删除当前用户!!");
+    }
+    dao.delete(User.class, id); // 再严谨一些的话,需要判断是否为>0
+    dao.clear(UserProfile.class, Cnd.where("userId", "=", me));
+    return new NutMap().setv("ok", true);
+  }
+```
+
+非MVC环境下的NutDao -- DaoUp类
+
+```java
+// 初始化DaoUp类
+DaoUp.me().init(("db.properties"));
+
+Dao dao = DaoUp.me().dao();
+dao.insert("t_user", Chain.make("id", 1).add("nm", "wendal").add("age", 30));
+List<Record> users = dao.query("t_user", Cnd.where("age", "<", 25).desc("nm"));
+
+List<User> girls = dao.count(User.class, Cnd.where("age", "<", 25).and("sex", "=", "female"));
+
+// 程序结束前销毁
+DaoUp.me().close();
+```
 
 ### Maven 资源
 
@@ -71,6 +127,7 @@
 也可以将repositories配置放入$HOME/.m2/settings.xml中
 
 或者直接去[快照库下载](https://oss.sonatype.org/content/repositories/snapshots/org/nutz/nutz/1.r.55-SNAPSHOT/)
+
 
 ## Sponsorship
 
