@@ -16,8 +16,12 @@ import org.nutz.lang.Encoding;
 import org.nutz.lang.Lang;
 import org.nutz.lang.Streams;
 import org.nutz.lang.Strings;
+import org.nutz.log.Log;
+import org.nutz.log.Logs;
 
 public class HttpServerResponse {
+	
+    private static final Log log = Logs.get();
 
     private int statusCode;
 
@@ -153,15 +157,19 @@ public class HttpServerResponse {
 
     public void render(HttpServletResponse resp) {
         resp.setStatus(statusCode);
-
+        
+        // 标记是否需要sendError
+        boolean flag = statusCode >= 400;
+        
         if (null != header && header.size() > 0) {
             for (Map.Entry<String, String> en : header.entrySet()) {
                 resp.setHeader(en.getKey(), en.getValue());
             }
+            flag = false;
         }
 
         if (body != null) {
-            resp.setHeader("CONTENT-LENGTH", "" + body.length);
+            resp.setContentLength(body.length);
             OutputStream out;
             try {
                 out = resp.getOutputStream();
@@ -170,6 +178,15 @@ public class HttpServerResponse {
                 throw Lang.wrapThrow(e);
             }
             Streams.writeAndClose(out, body);
+            flag = false;
+        }
+        
+        if (flag){
+            try {
+                resp.sendError(statusCode);
+            } catch (IOException e) {
+                log.debugf("sendError(%d) failed -- %s",statusCode, e.getMessage());
+            }
         }
     }
 
