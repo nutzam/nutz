@@ -76,7 +76,7 @@
 
 MainModule主配置类
 
-```
+```java
 @SetupBy(value=MainSetup.class)
 @IocBy(type=ComboIocProvider.class, args={"*js", "ioc/",
 										   "*anno", "net.wendal.nutzbook",
@@ -97,7 +97,7 @@ public class MainModule {
 
 入口方法
 
-```
+```java
   @At
   @RequiresPermissions("user:delete")
   @Aop(TransAop.READ_COMMITTED)
@@ -115,7 +115,7 @@ public class MainModule {
 
 非MVC环境下的NutDao -- DaoUp类
 
-```
+```java
 // 初始化DaoUp类
 DaoUp.me().init(("db.properties"));
 
