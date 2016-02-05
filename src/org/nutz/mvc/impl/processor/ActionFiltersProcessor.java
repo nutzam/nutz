@@ -21,6 +21,9 @@ public class ActionFiltersProcessor extends AbstractProcessor {
 
     protected List<ActionFilter> filters = new ArrayList<ActionFilter>();
     
+    /**
+     * filters2中的顺序与filters是相反的.
+     */
     protected List<ActionFilter2> filters2 = new ArrayList<ActionFilter2>();
     
     public void init(NutConfig config, ActionInfo ai) throws Throwable {
@@ -37,19 +40,32 @@ public class ActionFiltersProcessor extends AbstractProcessor {
     }
 
     public void process(ActionContext ac) throws Throwable {
-        View view;
+    	// 总流程参考AbstractMethodInterceptor
+    	
+    	// 前置
         for (ActionFilter filter : filters) {
-            view = filter.match(ac);
+            View view = filter.match(ac);
             if (null != view) {
                 ac.setMethodReturn(view);
                 renderView(ac);
                 return;
             }
         }
-        doNext(ac);
-        for (ActionFilter2 filter2 : filters2) {
-			filter2.after(ac);
-		}
+        try {
+        	doNext(ac);
+        	// 后置
+            for (ActionFilter2 filter2 : filters2) {
+    			filter2.after(ac);
+    		}
+        } catch (Throwable e) {
+        	if (filters2.isEmpty())
+        		throw e;
+        	// 异常
+        	for (ActionFilter2 filter2 : filters2) {
+    			if (filter2.whenError(ac, e))
+    				throw e;
+    		}
+        }
     }
 
 }
