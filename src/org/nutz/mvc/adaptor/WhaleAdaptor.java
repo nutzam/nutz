@@ -25,9 +25,7 @@ import java.util.Map;
 /**
  * 自动适配普通表单/文件上传表单/Json表单的数据
  * 
- * @since 1.r.55开始使用与servlet 3.0+一致的Part接口,原方法标记为弃用.
  */
-@Deprecated
 public class WhaleAdaptor extends PairAdaptor {
 	
 	protected static Log log = Logs.get();
@@ -56,6 +54,7 @@ public class WhaleAdaptor extends PairAdaptor {
         uploadCtx = up;
     }
 	
+	@SuppressWarnings("deprecation")
 	protected ParamInjector evalInjectorBy(Type type, Param param) {
         // TODO 这里的实现感觉很丑, 感觉可以直接用type进行验证与传递
         // TODO 这里将Type的影响局限在了 github issue #30 中提到的局部范围
