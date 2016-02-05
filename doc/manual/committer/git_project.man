@@ -67,5 +67,3 @@
     [compile_with_maven.man 运行 JUnit 测试 - Maven]
 
     [compile.man  运行 JUnit 测试 - Eclipse]
-
-    [ant.man 使用 Ant 编译]

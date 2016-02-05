@@ -4,7 +4,7 @@
 ------------------------------------------------------------------------------------------
 动作链机制概述
 
-    在新的版本中(1.b.36)之后的版本，Nutz.Mvc 统一采用动作链机制来处理每一个 HTTP 请求。
+    Nutz.Mvc 统一采用动作链机制来处理每一个 HTTP 请求。
     我们认为:
      * 对于一个 HTTP 请求的处理实际上是由一系列子处理构成的
          * 比如根据映射找到入口函数
@@ -158,7 +158,7 @@
       			"org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
       			"org.nutz.mvc.impl.processor.EncodingProcessor",
       			"org.nutz.mvc.impl.processor.ModuleProcessor",
-      			"ioc:wxProcessor", // 引用一个叫wxProcessor的ioc bean
+      			"ioc:wxProcessor", // 引用一个叫wxProcessor的ioc bean, 必须是prototype,即singleton=false
       			"org.nutz.mvc.impl.processor.ActionFiltersProcessor",
      			 "org.nutz.mvc.impl.processor.AdaptorProcessor",
       			"org.nutz.mvc.impl.processor.MethodInvokeProcessor",
@@ -245,9 +245,46 @@ public class LogTimeProcessor extends AbstractProcessor {
 
 	}}}
 
+-----------------------------------------------------------------------------------------
+用代码方式配置
 
 
+	不想用js配置,觉得繁琐,要不试试代码方式配置,因为@ChainBy只需要一个实现了ActionChainMaker的类哦
+	
+	{{{
+	public class MyActionChainMaker implements ActionChainMaker {
+		
+		// 该接口只有一个方法
+		public ActionChain eval(NutConfig config, ActionInfo ai) {
+			// 提醒: config可以获取ioc等信息, ai可以获取方法上的各种配置及方法本身
+			// 正常处理的列表
+			List<Processor> list = new ArrayList<>();
+			list.add(new UpdateRequestAttributesProcessor()); // 设置base/msg等内置属性
+			list.add(new EncodingProcessor()); // 设置编码信息@Encoding
+			list.add(new ModuleProcessor()); // 获取入口类的对象,从ioc或直接new
+			list.add(new ActionFiltersProcessor()); // 处理@Filters
+			list.add(new AdaptorProcessor()); // 处理@Adaptor
+			list.add(new MethodInvokeProcessor()); // 执行入口方法
+			list.add(new ViewProcessor()); // 对入口方法进行渲染@Ok
+			
+			// 最后是专门负责兜底的异常处理器,这个处理器可以认为是全局异常处理器,对应@Fail
+			Processor error = new FailProcessor();
+			return new NutActionChain(list, error, ai);
+		}	
+	}
+	
+	
+	@ChainBy(type=MyActionChainMaker.class, args={})
+	public class MainModule{}
+	}}}
+	
+-------------------------------------------------------------------------------------------
+自定义处理器的一些提醒
 
+	* 尽量不要吃掉异常,如果需要catch并忽略,严重建议打印一下日志
+	* ActionContext可以获取的信息,取决于所在的位置,例如AdaptorProcessor之前的处理器在doNext之前拿不到方法参数,但之后可以获取.
+	* doNext是继续执行下一个处理器的方法,如果要终止调用,不执行该方法就可以了
+	* 绝大多数情况下处理器都不是单例,也不应该是单例!!如果从ioc容器获取,务必确保该处理器声明为singleton=false
 
 
 

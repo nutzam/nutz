@@ -69,7 +69,37 @@
 	
 	{#F00;*请注意} 如果你要让 Ioc 容器管理你的过滤器，你的应用必须已经声明了一个 Ioc 容器。 如何在
 	Mvc 框架中声明 Ioc 容器，请参看	[with_ioc.man 同 Ioc 容器一起工作]
-	
 
+---------------------------------------------------------------------------------------------	
+如果Filter实现了Processor接口
 
+	从1.r.55开始,如果一个类同时实现了ActionFilter和Processor,那么事情就变得有趣得多
 	
+	{{{
+	public class SayHiFilterProcessor extends AbstractProcessor implements ActionFilter  {
+	
+		public View match(ActionContext ac) {
+			log.debug("match? maybe.")
+			return null;
+		}
+		
+		public void process(ActionContext ac) throws Throwable {
+			log.debug("before doNext");
+			doNext(ac);
+			log.debug("after doNext");
+		}
+	}
+	}}}
+	
+	假设入口方法仅输出一句日志"你好",那么就能看到这样的日志
+	
+	{{{
+	
+	DEBUG - match? maybe.
+	DEBUG - before doNext
+	INFO  - 你好
+	DEBUG - after doNext
+	
+	}}}
+	
+	可以看到,类似于aop的环绕式输出,关于Processor接口的更多信息,请参考[action_chain.man 动作链]

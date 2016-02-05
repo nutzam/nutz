@@ -39,10 +39,10 @@
 	事情，它只是调用其他的加载器：
 	{{{<Java>
 	@IocBy(type=ComboIocLoader.class, args={
-	                 "*org.nutz.ioc.loader.json.JsonLoader",
-	                 "dao.js", 
-	                 "service.js", 
-	                 "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
+	                 "*js",
+	                 "ioc/dao.js", 
+	                 "ioc/service.js", 
+	                 "*anno", 
 	                 "com.myapp.module",
 	                 "com.myapp.service",
 	                 "*tx"
@@ -85,10 +85,10 @@
 	下面给个例子：
 	{{{<Java>
 	@IocBy(type = ComboIocProvider.class,
-	       args = {"*org.nutz.ioc.loader.json.JsonLoader",
-	               "dao.js", 
-	               "service.js", 
-	               "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
+	       args = {"*js",
+	               "ioc/dao.js", 
+	               "ioc/service.js", 
+	               "*anno", 
 	               "com.myapp.module",
 	               "com.myapp.service"
 			})
@@ -108,12 +108,11 @@
 	 * MapLoader
 	 * TransIocLoader
 	 * AsyncAopIocLoader
-	 * 其他任何你自己实现的 IocLoader
+	 * PropertiesIocLoader
+	 * 所有实现的 IocLoader接口的类
 
 ----------------------------------------------------------------------------------------
 类名的简写
-
-	是不是觉得写*org.nutz.ioc.loader.json.JsonLoader很长,那么你可以写成*json,
 	
 	{{{
 	js         --> org.nutz.ioc.loader.json.JsonLoader
@@ -124,22 +123,8 @@
     tx         --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
     trans      --> org.nutz.aop.interceptor.ioc.TransIocLoader  #无参数
     async	   --> org.nutz.aop.interceptor.async.AsyncAopIocLoader #可以带一个线程池大小的参数
-    props	   --> org.nutz.ioc.loader.properties.PropertiesIocLoader
+    props	   --> org.nutz.ioc.loader.properties.PropertiesIocLoader # 通过properties文件定义ioc bean
     properties --> org.nutz.ioc.loader.properties.PropertiesIocLoader
-	}}}
-	
-	本小节开头的配置就可以写成: 
-	
-	{{{<Java>
-	@IocBy(type = ComboIocProvider.class,
-	       args = {"*json",
-	               "dao.js", 
-	               "service.js", 
-	               "*annotation", 
-	               "com.myapp.module",
-	               "com.myapp.service"
-			})
-	public class MainModule {
-		...
+    quartz 	   --> org.nutz.integration.quartz.QuartzIocLoader # 需要quartz插件,在nutzmore项目有
 	}}}
 	

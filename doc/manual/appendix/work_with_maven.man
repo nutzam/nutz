@@ -2,22 +2,6 @@
 #author:wendal(wendal1985@gmail.com)
 #index:0,1
 --------------------------------------------------------------------------------------
-Nutz的POM
-	当前的POM
-	{{{
-	<project>
-		<modelVersion>4.0.0</modelVersion>
-		<groupId>org.nutz</groupId>
-		<artifactId>nutz</artifactId>
-		<packaging>jar</packaging>
-		<name>Nutz</name>
-		<version>1.r.54</version>
-		<url>http://nutz.googlecode.com</url>
-		<!-- other info ...... -->
-	</project>
-	}}}
-	你可以在 [https://github.com/nutzam/nutz/blob/master/pom.xml 这里]找到当前POM
-	
 如何使用
 	将Nutz加入你的POM
 	{{{

@@ -9,7 +9,7 @@
 
     这个适配器专门解析形式为
     {{{
-    <form target="hideWin" enctype="multipart/form-data">
+    <form target="hideWin" enctype="multipart/form-data" method="post">
         <input type="file">
         ...
     }}}
@@ -55,7 +55,7 @@
             ...
         }}}
         请注意这里的 "ioc:myUpload"，Nutz.Mvc 发现你的参数为此形式时，它会从 Ioc 容器里获取你的
-        上传适配器的实例（名字为{*myUpload}），而不是直接 new 出来。
+        上传适配器的实例（名字为{*myUpload}），而不是直接 new 出来, 而且必须为singleton=false。
 
         然后你需要在你的 Ioc 配置文件里 （以 Json 配置为例子）配置你的 UploadAdaptor, 你需要增加
         下面这三个对象：
@@ -152,7 +152,7 @@
         }}}
         你的参数 f 将获取到表单项中:
         {{{
-        <form target="hideWin" enctype="multipart/form-data">
+        <form target="hideWin" enctype="multipart/form-data" method="post">
             <input type="file" name="photo">
             ...
         }}}
@@ -174,7 +174,7 @@
 
         相信很多同学都会有这样的用法，就是，希望一次上传的表单为：
         {{{
-        <form target="hideWin" enctype="multipart/form-data">
+        <form target="hideWin" enctype="multipart/form-data" method="post">
             <input type="file" name="photo">
             <input type="file" name="photo">
             <input type="file" name="photo">
@@ -204,23 +204,12 @@ Html5流式上传(实验性)
 		* 不支持Content-Type过滤,因为上传数据中通常不携带这种信息
 		* 支持文件名过滤,但请留意默认文件名nutz.jpg
 
+-------------------------------------------------------------------------------------
+可用的参数类型
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	* TempFile 推荐
+	* File 已废弃
+	* FileMeta 已废弃
+	* InputStream 不推荐
+	* Reader 不推荐
+	* Map 用于得到全部参数 
