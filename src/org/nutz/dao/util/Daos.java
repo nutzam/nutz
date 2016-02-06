@@ -603,7 +603,7 @@ public abstract class Daos {
             throw Lang.impossible();
         }
 
-        List<MappingField> mfs = en.getMappingFields();
+        List<MappingField> mfs = new ArrayList<MappingField>(en.getMappingFields());
         if (matcher != null) {
             Iterator<MappingField> it = mfs.iterator();
             while (it.hasNext()) {
