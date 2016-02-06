@@ -1,8 +1,10 @@
 package org.nutz.ioc.impl;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 
+import org.nutz.ioc.IocException;
 import org.nutz.ioc.IocMaking;
 import org.nutz.ioc.ValueProxy;
 import org.nutz.ioc.ValueProxyMaker;
@@ -10,6 +12,7 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.ioc.val.*;
 import org.nutz.lang.Lang;
+import org.nutz.lang.Strings;
 
 public class DefaultValueProxyMaker implements ValueProxyMaker {
 
@@ -72,6 +75,16 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
             }
             return new ReferValue(s);
         }
+        // Refer_Type
+        else if (IocValue.TYPE_REFER_TYPE.equals(type)) {
+        	if (value instanceof CharSequence) {
+        		String[] tmp = value.toString().split("#");
+        		return new ReferTypeValue(tmp[0], Lang.forName(tmp[0], Object.class));
+        	} else if (value instanceof Field) {
+        		return new ReferTypeValue(((Field)value).getName(), ((Field)value).getType());
+        	}
+        	throw new IocException("unspported refer_type:'%s'", value);
+        }
         // Java
         else if ("java".equals(type)) {
             return new JavaValue(value.toString());
@@ -103,7 +116,7 @@ public class DefaultValueProxyMaker implements ValueProxyMaker {
     }
 
     public String[] supportedTypes() {
-        return Lang.array("refer", "java", "env", "file", "sys", "jndi", "el");
+        return Lang.array("refer", "refer_type", "java", "env", "file", "sys", "jndi", "el");
     }
 
 }
