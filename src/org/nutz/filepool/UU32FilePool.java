@@ -8,10 +8,10 @@ import java.io.File;
 
 public class UU32FilePool implements FilePool {
 	
-	File root;
+	protected File root;
 	
 	public UU32FilePool(String path) {
-		this.root = Files.createDirIfNoExists(root);
+		this.root = Files.createDirIfNoExists(path);
 	}
 
 	public File createFile(String suffix) {
