@@ -12,7 +12,6 @@ import org.nutz.ioc.meta.IocObject;
 import org.nutz.ioc.meta.IocValue;
 import org.nutz.ioc.val.*;
 import org.nutz.lang.Lang;
-import org.nutz.lang.Strings;
 
 public class DefaultValueProxyMaker implements ValueProxyMaker {
 
