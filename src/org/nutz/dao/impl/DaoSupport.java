@@ -134,6 +134,7 @@ public class DaoSupport {
         this.executor = executor;
         if (executor instanceof NutDaoExecutor) {
         	((NutDaoExecutor)executor).setMeta(meta);
+        	((NutDaoExecutor)executor).setExpert(expert);
         }
     }
 

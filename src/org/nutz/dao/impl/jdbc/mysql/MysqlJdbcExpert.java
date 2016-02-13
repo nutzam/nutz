@@ -173,9 +173,10 @@ public class MysqlJdbcExpert extends AbstractJdbcExpert {
     }
 
     public Pojo fetchPojoId(Entity<?> en, MappingField idField) {
-        String autoSql = "SELECT @@@@IDENTITY";
-        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
-        autoInfo.setEntity(en);
-        return autoInfo;
+//        String autoSql = "SELECT @@@@IDENTITY";
+//        Pojo autoInfo = new SqlFieldMacro(idField, autoSql);
+//        autoInfo.setEntity(en);
+//        return autoInfo;
+    	return null;
     }
 }

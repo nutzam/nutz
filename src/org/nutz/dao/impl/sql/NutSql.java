@@ -3,6 +3,7 @@ package org.nutz.dao.impl.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -128,7 +129,7 @@ public class NutSql extends NutStatement implements Sql {
 
     public void onBefore(Connection conn) throws SQLException {}
 
-    public void onAfter(Connection conn, ResultSet rs) throws SQLException {
+    public void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException {
         if (callback != null)
             getContext().setResult(callback.invoke(conn, rs, this));
     }

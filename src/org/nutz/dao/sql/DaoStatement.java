@@ -3,6 +3,7 @@ package org.nutz.dao.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import org.nutz.dao.entity.Entity;
@@ -228,10 +229,11 @@ public interface DaoStatement {
      *            当前执行语句的连接
      * @param rs
      *            当前语句执行的结果集
+     * @param stmt TODO
      * @throws SQLException
      *             回调函数抛出的异常
      */
-    void onAfter(Connection conn, ResultSet rs) throws SQLException;
+    void onAfter(Connection conn, ResultSet rs, Statement stmt) throws SQLException;
 
     /**
      * 为自定义SQL设置Pager

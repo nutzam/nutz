@@ -3,6 +3,7 @@ package org.nutz.dao.sql;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 /**
  * POJO 查询语句回调对象
@@ -18,10 +19,11 @@ public interface PojoCallback {
      *            结果集
      * @param pojo
      *            SQL语句
+     * @param stmt TODO
      * @return 对象会保存在 Pojo 的 result 对象中
      * @throws SQLException
      *             SQL 发生错误
      */
-    Object invoke(Connection conn, ResultSet rs, Pojo pojo) throws SQLException;
+    Object invoke(Connection conn, ResultSet rs, Pojo pojo, Statement stmt) throws SQLException;
 
 }

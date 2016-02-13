@@ -485,11 +485,12 @@ public class AnnotationEntityMaker implements EntityMaker {
             }
             // '@Id' : 的自动后续获取
             else if (null != info.annId && info.annId.auto()) {
-                if (expert != null && !expert.isSupportAutoIncrement()) {
-                	//仅提醒,因为如果有触发器的话,还是可以插入的
-                    log.debug("Database don't support auto-increment. If insert fail, pls add trigger in database or using @Prev in Pojo");
-                }
-                en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
+//                if (expert != null && !expert.isSupportAutoIncrement()) {
+//                	//仅提醒,因为如果有触发器的话,还是可以插入的
+//                    log.debug("Database don't support auto-increment. If insert fail, pls add trigger in database or using @Prev in Pojo");
+//                }
+            	if (!expert.isSupportAutoIncrement())
+            		en.addAfterInsertMacro(expert.fetchPojoId(en, en.getField(info.name)));
             }
         }
     }
