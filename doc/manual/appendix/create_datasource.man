@@ -10,7 +10,7 @@
 		* 基本实现 - 生成标准的 Connection 对象
 		* 连接池实现 - 生成自动参与连接池的 Connection 对象。此实现与中间层连接池管理器一起使用。
 		
-	简单来说,就是获取数据库连接的一个通用接口, 常见的dbcp,c3p0,druid,bonecp都是DataSource的实现.
+	简单来说,就是获取数据库连接的一个通用接口, 常见的dbcp,c3p0,druid都是DataSource的实现.
 	
 	NutDao也选用DataSource作为获取数据库连接的方式, 且只调用其无参数的getConnection()方法,
 	也是大部分数据库连接池唯一支持的方法.
@@ -89,7 +89,8 @@ Druid(推荐)
                     url : "jdbc:postgresql://localhost:5432/mydatabase",
                     username : "enzozhong",
                     password : "123",
-                    maxWait: 15000, // 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程
+                    maxWait: 15000, // 若不配置此项,如果数据库未启动,druid会一直等可用连接,卡住启动过程,
+                    defaultAutoCommit : false // 提高fastInsert的性能
                 }
             }
 		}
