@@ -218,7 +218,7 @@ public class NutIoc implements Ioc2 {
         }
         synchronized (lock_get) {
             T re = op.get(type, ing);
-            if (re instanceof IocLoader) {
+            if (!name.startsWith("$") && re instanceof IocLoader) {
                 loader.addLoader((IocLoader) re);
             }
             return re;
