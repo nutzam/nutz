@@ -935,5 +935,5 @@ public interface Dao {
     
     void setExpert(Object obj) throws Exception;
     
-    <T> T insert(T t, boolean ignoreNull, boolean ignoreZero);
+    <T> T insert(T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr);
 }

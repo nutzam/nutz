@@ -225,7 +225,7 @@ public abstract class Chain {
                 if (null == v) {
                     if (fm.isIgnoreNull())
                         continue;
-                } else if (fm.isIgnoreBlankStr() && v instanceof String) {
+                } else if (fm != null && fm.isIgnoreBlankStr() && v instanceof String) {
                     if (Strings.isBlank((String)v))
                         continue;
                 }

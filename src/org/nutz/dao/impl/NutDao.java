@@ -984,7 +984,7 @@ public class NutDao extends DaoSupport implements Dao {
         return sql;
     }
     
-    public <T> T insert(final T t, boolean ignoreNull, boolean ignoreZero) {
+    public <T> T insert(final T t, boolean ignoreNull, boolean ignoreZero, boolean ignoreBlankStr) {
     	Object obj = Lang.first(t);
     	Entity<?> en = getEntity(obj.getClass());
     	List<String> names = new ArrayList<String>();
@@ -996,6 +996,8 @@ public class NutDao extends DaoSupport implements Dao {
 			if (ignoreZero && (tmp == null || (tmp instanceof Number && ((Number)tmp).intValue() == 0))) {
 				continue;
 			}
+			if (ignoreBlankStr && (tmp instanceof CharSequence && Strings.isBlank((CharSequence)tmp)))
+				continue;
 			names.add(mf.getName());
 		}
     	FieldFilter ff = FieldFilter.create(obj.getClass(), "^("+Strings.join("|", names.toArray())+")$");

@@ -19,7 +19,7 @@ import org.nutz.lang.Strings;
 import org.nutz.log.Log;
 import org.nutz.log.Logs;
 
-public class HttpServerResponse {
+public class HttpServerResponse implements Cloneable {
 	
     private static final Log log = Logs.get();
 
