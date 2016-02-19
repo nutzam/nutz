@@ -339,7 +339,7 @@ public class NutIoc implements Ioc2 {
 			if (op.getObj() != null && klass.isAssignableFrom(op.getObj().getClass()))
 				names.add(name);
 		}
-    	return names.toArray(new String[names.size()]);
+    	return new LinkedHashSet<String>(names).toArray(new String[names.size()]);
     }
     
     public <K> K getByType(Class<K> klass) {
