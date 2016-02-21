@@ -36,13 +36,16 @@
 </li>
 </ul>
 </li>
+<li>
+<div><span class="num">4</span><a href="#可用的参数类型">可用的参数类型</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="关于文件上传"></a>关于文件上传</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>大多数的 Web 应用都不可避免的，会涉及到文件上传。文件上传，不过是一种适配 HTTP 输入流的方式。为此，Nutz.Mvc 内置了一个专门处理文件上传的适配器 <b>org.nutz.mvc.upload.UploadAdaptor</b></p>
 <p>这个适配器专门解析形式为</p>
-<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+<pre>&lt;form target="hideWin" enctype="multipart/form-data" method="post"&gt;
     &lt;input type="file"&gt;
     ...
 </pre>
@@ -93,7 +96,7 @@ public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
 public void uploadPhoto(@Param("id") int id, @Param("photo") File f){
     ...
 </pre>
-<p>请注意这里的 "ioc:myUpload"，Nutz.Mvc 发现你的参数为此形式时，它会从 Ioc 容器里获取你的上传适配器的实例（名字为<b>myUpload</b>），而不是直接 new 出来。</p>
+<p>请注意这里的 "ioc:myUpload"，Nutz.Mvc 发现你的参数为此形式时，它会从 Ioc 容器里获取你的上传适配器的实例（名字为<b>myUpload</b>），而不是直接 new 出来, 而且必须为singleton=false。</p>
 <p>然后你需要在你的 Ioc 配置文件里 （以 Json 配置为例子）配置你的 UploadAdaptor, 你需要增加下面这三个对象：</p>
 <pre>...
 tmpFilePool : {
@@ -164,7 +167,7 @@ public void uploadPhoto( @Param("photo") File f){
     ...
 </pre>
 <p>你的参数 f 将获取到表单项中:</p>
-<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+<pre>&lt;form target="hideWin" enctype="multipart/form-data" method="post"&gt;
     &lt;input type="file" name="photo"&gt;
     ...
 </pre>
@@ -182,7 +185,7 @@ public void uploadPhoto( @Param("photo") TempFile tf){
 <h2><a name="一次上传多个同名文件"></a>一次上传多个同名文件</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>相信很多同学都会有这样的用法，就是，希望一次上传的表单为：</p>
-<pre>&lt;form target="hideWin" enctype="multipart/form-data"&gt;
+<pre>&lt;form target="hideWin" enctype="multipart/form-data" method="post"&gt;
     &lt;input type="file" name="photo"&gt;
     &lt;input type="file" name="photo"&gt;
     &lt;input type="file" name="photo"&gt;
@@ -211,6 +214,17 @@ public void uploadPhoto( @Param("photo") TempFile[] tfs){
 <li>默认情况下,对于的表单属性是filedata,除非在Content-Disposition另外声明</li>
 <li>不支持Content-Type过滤,因为上传数据中通常不携带这种信息</li>
 <li>支持文件名过滤,但请留意默认文件名nutz.jpg</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="可用的参数类型"></a>可用的参数类型</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>TempFile 推荐</li>
+<li>File 已废弃</li>
+<li>FileMeta 已废弃</li>
+<li>InputStream 不推荐</li>
+<li>Reader 不推荐</li>
+<li>Map 用于得到全部参数</li>
 </ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>

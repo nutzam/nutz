@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>AOP -- 在Mvc中的使用</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">AOP -- 在Mvc中的使用</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#重要提醒:">重要提醒:</a></div>
+</li>
+<li>
+<div><span class="num">2</span><a href="#示例配置">示例配置</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="重要提醒:"></a>重要提醒:</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>AOP只能用于Ioc Bean对象, 即从Ioc容器获取的对象, 不是直接new一个对象就能aop的</li>
+<li>自定义Aop拦截器,一般情况下别"吃掉"异常, 因为事务拦截器需要检测到异常才能回滚</li>
+<li>留意拦截器的先后顺序</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="示例配置"></a>示例配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>主模块的IocBy配置</p>
+<pre>@IocBy(args={
+			"*js", "ioc/", <span class="zdoc_code_cmt">// 读取ioc/下的js/json配置文件 
+</span>			"*anno", "net.wendal.nutzbook", <span class="zdoc_code_cmt">// 扫描package下的ioc注解
+</span>			"*tx", <span class="zdoc_code_cmt">// 内置的事务拦截器
+</span>			"*async", "48", <span class="zdoc_code_cmt">// 异步执行注解
+</span>			"*net.wendal.nutzbook.aop.DemoAopLoader" <span class="zdoc_code_cmt">// 自定义aop注解加载器
+</span>	})
+</pre>
+<p>一个演示的入口类</p>
+<pre>@At("/user")
+@IocBean
+public class UserAction {
+
+	@Inject
+	protect Dao dao;
+
+	@At
+	@Ok("json") <span class="zdoc_code_cmt">// 前端ajax
+</span>	@Aop(TransAop.txREPEATABLE_READ)
+	public Object login(@Param("name")String name, @Param("passwd")String passwd) {
+		if (dao.count(User.class, Cnd.where("name", "=", name).and("password", "=", passwd) &gt; 0)
+			return true;
+		return false;
+	}
+	
+	@At("/check/email")
+	@Async <span class="zdoc_code_cmt">// 异步执行,不会等方法真正执行
+</span>	public void vaildEmail() {
+		<span class="zdoc_code_cmt">// ... 发邮件等等
+</span>	}
+	
+	@At("/check/log")
+	@SysLog <span class="zdoc_code_cmt">// 自定义注解,后面会介绍
+</span>	public void justCheckLog() {
+		<span class="zdoc_code_cmt">/// .....
+</span>	}
+}
+</pre>
+<p>自定义SysLog的注解类</p>
+<pre>@Retention(RetentionPolicy.RUNTIME) <span class="zdoc_code_cmt">// 必须带这个,不然读取不到的
+</span>@Target({ElementType.METHOD}) <span class="zdoc_code_cmt">// aop,一般指方法
+</span>@Documented <span class="zdoc_code_cmt">// 记录到javadoc
+</span>public @interface SysLog {
+}
+</pre>
+<p>处理类</p>
+<pre>package net.wendal.nutzbook.aop;
+
+public class DemoAopLoader extends SimpleAopMaker&lt;SysLog&gt; {
+
+	public List&lt;? extends MethodInterceptor&gt; makeIt(SysLog sysLog, Method method, Ioc ioc) {
+		return Arrays.asList(new SysLogMethodInterceptor());
+	}
+}
+
+class SysLogMethodInterceptor implements MethodInterceptor {
+	private static final Log log = Logs.get();
+	public void filter(final InterceptorChain chain) throws Throwable {
+		log.debug("hi");
+		chain.doChain(); <span class="zdoc_code_cmt">// 继续下一个拦截器, 如果要终止执行,不调用该方法即可
+</span>		log.debug("byte");
+	}
+}
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

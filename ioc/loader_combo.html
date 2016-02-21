@@ -43,15 +43,15 @@
 <h1><a name="复合加载器的使用方法"></a>复合加载器的使用方法</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
 <p>复合加载器非常简单，似乎只花了 Wendal 同学不到 1 个小时的时间，因为它本身并不做任何事情，它只是调用其他的加载器：</p>
-<pre>Ioc ioc = new NutIoc(new ComboIocLoader(
-                 "*org.nutz.ioc.loader.json.JsonLoader",
-                 "dao.js", 
-                 "service.js", 
-                 "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
+<pre>@IocBy(type=ComboIocLoader.class, args={
+                 "*js",
+                 "ioc/dao.js", 
+                 "ioc/service.js", 
+                 "*anno", 
                  "com.myapp.module",
                  "com.myapp.service",
                  "*tx"
-		 )); 
+		 }) 
 </pre>
 <p>如上面的例子，组合加载器，组合了3个 Ioc 加载器，一个是 JsonLoader，一个是AnnotationIocLoader, 一个是AOP事务的TransIocLoader(1.b.52新增)。 </p>
 <p>ComboIocLoader 的构造函数是个字符串形变参数组，所有的参数，如果以星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头，则被认为是加载器的类型，后面的参数都作为这个加载器构造函数的参数，直到遇到下一个星号 "<span style="color:#0000AA;"><b> *</b></span>" 开头的参数。</p>
@@ -69,10 +69,10 @@
 <p><span style="color:#008800;"><i>其他 IocProvider</i></span></p>
 <p>下面给个例子：</p>
 <pre>@IocBy(type = ComboIocProvider.class,
-       args = {"*org.nutz.ioc.loader.json.JsonLoader",
-               "dao.js", 
-               "service.js", 
-               "*org.nutz.ioc.loader.annotation.AnnotationIocLoader", 
+       args = {"*js",
+               "ioc/dao.js", 
+               "ioc/service.js", 
+               "*anno", 
                "com.myapp.module",
                "com.myapp.service"
 		})
@@ -89,12 +89,13 @@ public class MainModule {
 <li>AnnotationIocLoader</li>
 <li>MapLoader</li>
 <li>TransIocLoader</li>
-<li>其他任何你自己实现的 IocLoader</li>
+<li>AsyncAopIocLoader</li>
+<li>PropertiesIocLoader</li>
+<li>所有实现的 IocLoader接口的类</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="类名的简写"></a>类名的简写</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>是不是觉得写*org.nutz.ioc.loader.json.JsonLoader很长,那么你可以写成*json,</p>
 <pre>js         --&gt; org.nutz.ioc.loader.json.JsonLoader
 json       --&gt; org.nutz.ioc.loader.json.JsonLoader
 xml        --&gt; org.nutz.ioc.loader.xml.XmlIocLoader
@@ -102,19 +103,11 @@ annotation --&gt; org.nutz.ioc.loader.annotation.AnnotationIocLoader
 anno       --&gt; org.nutz.ioc.loader.annotation.AnnotationIocLoader
 tx         --&gt; org.nutz.aop.interceptor.ioc.TransIocLoader  <span class="zdoc_code_cmt">#无参数
 </span>trans      --&gt; org.nutz.aop.interceptor.ioc.TransIocLoader  <span class="zdoc_code_cmt">#无参数
+</span>async	   --&gt; org.nutz.aop.interceptor.async.AsyncAopIocLoader <span class="zdoc_code_cmt">#可以带一个线程池大小的参数
+</span>props	   --&gt; org.nutz.ioc.loader.properties.PropertiesIocLoader <span class="zdoc_code_cmt"># 通过properties文件定义ioc bean
+</span>properties --&gt; org.nutz.ioc.loader.properties.PropertiesIocLoader
+quartz 	   --&gt; org.nutz.integration.quartz.QuartzIocLoader <span class="zdoc_code_cmt"># 需要quartz插件,在nutzmore项目有
 </span></pre>
-<p>本小节开头的配置就可以写成: </p>
-<pre>@IocBy(type = ComboIocProvider.class,
-       args = {"*json",
-               "dao.js", 
-               "service.js", 
-               "*annotation", 
-               "com.myapp.module",
-               "com.myapp.service"
-		})
-public class MainModule {
-	...
-</pre>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head><meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8"/>
+<title>声明式Aop事务</title><link href="../zdoc.css" rel="stylesheet" type="text/css"/>
+</head>
+<body><a name="top"></a>
+<div class="zdoc_header">声明式Aop事务</div>
+<div class="zdoc_author"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+<div class="zdoc_body">
+<ul class="zdoc_index_table">
+<li>
+<div><span class="num">1</span><a href="#声明式事务">声明式事务</a></div>
+</li>
+</ul>
+<div class="hr"><b></b></div>
+<h1><a name="声明式事务"></a>声明式事务</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<pre>@IocBy(type=ComboIocProvider.class,
+    args={"*json","org/nutz/mvc/testapp/classes/ioc",
+          "*anno","org.nutz.mvc.testapp.classes",
+          "*tx" <span class="zdoc_code_cmt">// 你只需要加上这一行,即可声明5种不同事务级别的拦截器.
+</span>	})
+public class MainModule {}
+
+<span class="zdoc_code_cmt">// 演示aop事务
+</span>@IocBean <span class="zdoc_code_cmt">// 需要aop,那当然需要时ioc的bean
+</span>public class UserService {
+	@Inject Dao dao; <span class="zdoc_code_cmt">// 注入NutDao实例,必须的,哈哈
+</span>
+	@Aop(TransAop.READ_COMMITTED) <span class="zdoc_code_cmt">// TransAop里面定义5个产量,分别对应不同级别的事务拦截器
+</span>	public void add(User user) {
+		dao.insert(user);
+		dao.update(UserToken.class, Chain.make("xxx","xxx"), Cnd.where(.......);
+		<span class="zdoc_code_cmt">// 务必注意,必须抛出异常,才能回滚!! 是抛出,不能被catch吃掉.
+</span>	}
+}	
+</pre>
+</div>
+<div class="zdoc_footer"><em>By:</em><b>wendal</b><a href="mailto:wendal1985@gmail.com">&lt;wendal1985@gmail.com&gt;</a></div>
+</body>
+</html>

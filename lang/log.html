@@ -85,7 +85,8 @@
 </li>
 <li>在项目的 CLASSPATH 根目录部署 log4j.properties</li>
 <li>将 log4j.category.org.nutz 基本设成 DEBUG，你就能看到 Nutz 框架详细的 Log
-<pre>log4j.category.org.nutz=DEBUG, A1
+<pre>log4j.rootLogger=DEBUG, A1
+log4j.category.org.nutz=DEBUG, A1
  
 log4j.appender.A1=org.apache.log4j.ConsoleAppender
 log4j.appender.A1.layout=org.apache.log4j.PatternLayout

@@ -35,11 +35,17 @@
 <li>
 <div><span class="num">9</span><a href="#chainjs的代码">chain.js的代码</a></div>
 </li>
+<li>
+<div><span class="num">10</span><a href="#用代码方式配置">用代码方式配置</a></div>
+</li>
+<li>
+<div><span class="num">11</span><a href="#自定义处理器的一些提醒">自定义处理器的一些提醒</a></div>
+</li>
 </ul>
 <div class="hr"><b></b></div>
 <h1><a name="动作链机制概述"></a>动作链机制概述</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>在新的版本中(1.b.36)之后的版本，Nutz.Mvc 统一采用动作链机制来处理每一个 HTTP 请求。我们认为:</p>
+<p>Nutz.Mvc 统一采用动作链机制来处理每一个 HTTP 请求。我们认为:</p>
 <ul type="disc">
 <li>对于一个 HTTP 请求的处理实际上是由一系列子处理构成的
 <ul type="circle">
@@ -164,7 +170,7 @@ public void funcD(){}
   			"org.nutz.mvc.impl.processor.UpdateRequestAttributesProcessor",
   			"org.nutz.mvc.impl.processor.EncodingProcessor",
   			"org.nutz.mvc.impl.processor.ModuleProcessor",
-  			"ioc:wxProcessor", <span class="zdoc_code_cmt">// 引用一个叫wxProcessor的ioc bean
+  			"ioc:wxProcessor", <span class="zdoc_code_cmt">// 引用一个叫wxProcessor的ioc bean, 必须是prototype,即singleton=false
 </span>  			"org.nutz.mvc.impl.processor.ActionFiltersProcessor",
  			 "org.nutz.mvc.impl.processor.AdaptorProcessor",
   			"org.nutz.mvc.impl.processor.MethodInvokeProcessor",
@@ -239,6 +245,44 @@ public void process(ActionContext ac) throws Throwable {
 
 }
 </pre>
+<div class="hr"><b></b></div>
+<h1><a name="用代码方式配置"></a>用代码方式配置</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<p>不想用js配置,觉得繁琐,要不试试代码方式配置,因为@ChainBy只需要一个实现了ActionChainMaker的类哦</p>
+<pre>public class MyActionChainMaker implements ActionChainMaker {
+	
+	<span class="zdoc_code_cmt">// 该接口只有一个方法
+</span>	public ActionChain eval(NutConfig config, ActionInfo ai) {
+		<span class="zdoc_code_cmt">// 提醒: config可以获取ioc等信息, ai可以获取方法上的各种配置及方法本身
+</span>		<span class="zdoc_code_cmt">// 正常处理的列表
+</span>		List&lt;Processor&gt; list = new ArrayList&lt;&gt;();
+		list.add(new UpdateRequestAttributesProcessor()); <span class="zdoc_code_cmt">// 设置base/msg等内置属性
+</span>		list.add(new EncodingProcessor()); <span class="zdoc_code_cmt">// 设置编码信息@Encoding
+</span>		list.add(new ModuleProcessor()); <span class="zdoc_code_cmt">// 获取入口类的对象,从ioc或直接new
+</span>		list.add(new ActionFiltersProcessor()); <span class="zdoc_code_cmt">// 处理@Filters
+</span>		list.add(new AdaptorProcessor()); <span class="zdoc_code_cmt">// 处理@Adaptor
+</span>		list.add(new MethodInvokeProcessor()); <span class="zdoc_code_cmt">// 执行入口方法
+</span>		list.add(new ViewProcessor()); <span class="zdoc_code_cmt">// 对入口方法进行渲染@Ok
+</span>		
+		<span class="zdoc_code_cmt">// 最后是专门负责兜底的异常处理器,这个处理器可以认为是全局异常处理器,对应@Fail
+</span>		Processor error = new FailProcessor();
+		return new NutActionChain(list, error, ai);
+	}	
+}
+
+
+@ChainBy(type=MyActionChainMaker.class, args={})
+public class MainModule{}
+</pre>
+<div class="hr"><b></b></div>
+<h1><a name="自定义处理器的一些提醒"></a>自定义处理器的一些提醒</h1>
+<div style="float:right;"><a href="#top">Top</a></div>
+<ul type="disc">
+<li>尽量不要吃掉异常,如果需要catch并忽略,严重建议打印一下日志</li>
+<li>ActionContext可以获取的信息,取决于所在的位置,例如AdaptorProcessor之前的处理器在doNext之前拿不到方法参数,但之后可以获取.</li>
+<li>doNext是继续执行下一个处理器的方法,如果要终止调用,不执行该方法就可以了</li>
+<li>绝大多数情况下处理器都不是单例,也不应该是单例!!如果从ioc容器获取,务必确保该处理器声明为singleton=false</li>
+</ul>
 </div>
 <div class="zdoc_footer"><em>By:</em><b>zozoh</b><a href="mailto:zozohtnt@gmail.com">&lt;zozohtnt@gmail.com&gt;</a></div>
 </body>

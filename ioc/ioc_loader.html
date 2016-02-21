@@ -41,7 +41,8 @@
 <div class="hr"><b></b></div>
 <h1><a name="使用Json"></a>使用Json</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>NutIoc 包含一个 JsonLoader，通常同学们会这么用:</p>
+<p>NutIoc 包含一个 JsonLoader，通常同学们*不*会这么用!!!</p>
+<p>在Mvc环境下,声明了@IocBy,那么new NutIoc基本上等于自寻死路!!! 通过Mvcs.getIoc()可以获取已有Ioc容器.</p>
 <pre>Ioc ioc = new NutIoc(new JsonLoader("path/to/mybeans.js"));
 </pre>
 <p>JsonLoader 从一个 JS 文件中加载一组 IocBean 的配置信息，这个JS文件的格式通常为</p>
@@ -61,8 +62,9 @@
 			"字段名称1" : 字段值1 ,
 			"字段名称2" : 字段值2 ,
 			...
-		}
-	}
+		},
+		factory : "xxx.yyy.zzz<span class="zdoc_code_cmt">#create" //工厂类#工厂方法
+</span>	}
 }
 </pre>
 <p>比如:</p>

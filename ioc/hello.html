@@ -59,7 +59,7 @@
 <div class="hr"><b></b></div>
 <h1><a name="一个简单的例子"></a>一个简单的例子</h1>
 <div style="float:right;"><a href="#top">Top</a></div>
-<p>在这个例子中，你需要一 POJO，以及一个 JSON 配置文件。例子的源代码，你可以访问 <a href="http://nutzdemo.googlecode.com">http://nutzdemo.googlecode.com</a>  获取</p>
+<p>在这个例子中，你需要一 POJO，以及一个 JSON 配置文件。例子的源代码，你可以访问 <a href="http://nutzbook.wendal.net">Nutzbook</a>  获取</p>
 <h2><a name="POJO_源代码"></a>POJO 源代码</h2>
 <div style="float:right;"><a href="#top">Top</a></div>
 <pre>package nutz.demo.ioc.book;
@@ -148,7 +148,8 @@ public class HelloPet {
 		Ioc ioc = new NutIoc(new JsonLoader("nutz/demo/ioc/pet/pets.js"));
 		Pet pet = ioc.get(Pet.class, "xiaobai");
 		System.out.printf("%s - [%s]\n", pet.getName(), pet.getBirthday().getTimeZone().getID());
-	}
+		ioc.depose(); <span class="zdoc_code_cmt">// 关闭ioc容器.
+</span>	}
 
 }
 </pre>
