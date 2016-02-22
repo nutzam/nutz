@@ -27,13 +27,22 @@ import static java.lang.Integer.parseInt;
 public final class Colors {
 
     /**
+     * @see #as(String)
+     * 
+     * @deprecated
+     */
+    public static Color fromString(String str) {
+        return as(str);
+    }
+
+    /**
      * 将字符串变成颜色值
      * 
      * @param str
      *            颜色字符串，详细，请参看本类的总体描述，如果为空，则表示黑色
      * @return 颜色对象
      */
-    public static Color fromString(String str) {
+    public static Color as(String str) {
         if (null == str)
             return Color.BLACK;
 
@@ -118,7 +127,6 @@ public final class Colors {
 
         // 全都匹配不上，返回黑色
         return Color.BLACK;
-
     }
 
     private Colors() {}
